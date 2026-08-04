@@ -129,6 +129,43 @@ theorem differentiable_compactFourier {f : ℝ → ℂ} (hf : Continuous f) (a b
     Differentiable ℂ (compactFourier f a b) := fun z =>
   (hasDerivAt_compactFourier hf a b z).differentiableAt
 
+/-- **The exponential type of a compact Fourier transform.**  An amplitude bounded by `M` on the
+interval produces a transform growing at most like `exp(max(|a|,|b|) |Im z|)` — exponential type
+`max(|a|,|b|)`, which is the Paley–Wiener bound. -/
+theorem norm_compactFourier_le {f : ℝ → ℂ} {M : ℝ} {a b : ℝ} (hab : a ≤ b)
+    (hM : ∀ x ∈ Set.uIoc a b, ‖f x‖ ≤ M) (z : ℂ) :
+    ‖compactFourier f a b z‖ ≤ M * Real.exp (max |a| |b| * |z.im|) * (b - a) := by
+  have hbound : ∀ x ∈ Set.uIoc a b,
+      ‖f x * Complex.exp (Complex.I * (z * (x : ℂ)))‖ ≤ M * Real.exp (max |a| |b| * |z.im|) := by
+    intro x hx
+    have hxR : |x| ≤ max |a| |b| := abs_le_max_abs_of_mem_uIoc hx
+    have hfx : ‖f x‖ ≤ M := hM x hx
+    have hMnonneg : 0 ≤ M := le_trans (norm_nonneg _) hfx
+    have hnorm : ‖f x * Complex.exp (Complex.I * (z * (x : ℂ)))‖
+        = ‖f x‖ * Real.exp ((Complex.I * (z * (x : ℂ))).re) := by
+      rw [norm_mul, Complex.norm_exp]
+    have hre : (Complex.I * (z * (x : ℂ))).re = -(z.im * x) := by
+      simp [Complex.mul_re, Complex.mul_im]
+    have hle : -(z.im * x) ≤ max |a| |b| * |z.im| := by
+      have h1 : -(z.im * x) ≤ |z.im * x| := neg_le_abs _
+      have h2 : |z.im * x| = |z.im| * |x| := abs_mul _ _
+      have h3 : |z.im| * |x| ≤ |z.im| * max |a| |b| :=
+        mul_le_mul_of_nonneg_left hxR (abs_nonneg _)
+      have h4 : |z.im| * max |a| |b| = max |a| |b| * |z.im| := by ring
+      linarith [h1, h2, h3, h4]
+    have hexp : Real.exp ((Complex.I * (z * (x : ℂ))).re)
+        ≤ Real.exp (max |a| |b| * |z.im|) := by
+      rw [hre]
+      exact Real.exp_le_exp.mpr hle
+    rw [hnorm]
+    have hexppos : (0 : ℝ) < Real.exp ((Complex.I * (z * (x : ℂ))).re) := Real.exp_pos _
+    calc ‖f x‖ * Real.exp ((Complex.I * (z * (x : ℂ))).re)
+        ≤ M * Real.exp ((Complex.I * (z * (x : ℂ))).re) := by gcongr
+      _ ≤ M * Real.exp (max |a| |b| * |z.im|) := mul_le_mul_of_nonneg_left hexp hMnonneg
+  have h := intervalIntegral.norm_integral_le_of_norm_le_const hbound
+  rw [compactFourier]
+  rwa [abs_of_nonneg (by linarith : (0 : ℝ) ≤ b - a)] at h
+
 /-! ## The identity theorem along the real axis -/
 
 /-- **An entire function vanishing almost everywhere on a nondegenerate real interval vanishes

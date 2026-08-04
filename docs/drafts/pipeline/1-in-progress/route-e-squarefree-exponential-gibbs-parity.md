@@ -3381,3 +3381,97 @@ Full proof:
 `../2-fully-proven/new_scientific_knowledge/route-e-central-wold-finite-moment-parity-blindness.md`.
 Lean:
 `MobiusWoldFiniteMomentParityBlindness.lean`.
+
+## Explicit grade-recurrent entropy-spread relation
+
+`[PAPER-PROVED RELATION / ROW ADMISSION / MIXED COST / SEAM ADMISSION; PHYSICAL CAPACITY OPEN]`
+
+The formula-less relation in `SOURCE-POINTED-BIFILTERED-CENTRAL-HALL` is now replaced by one exact
+source-predeclared hypergraph.  Put
+
+\[
+ L=\log\log X,\quad k=\lfloor\sqrt L\rfloor,\quad
+ Y=\exp((\log X)^{1/3}),\quad
+ W=\exp(\exp\sqrt L),\quad Z=X^{1/L^2},
+\]
+
+and let (\mathcal P_X) be the primes in ((W,Z]).  For central squarefree (n), split its ordered
+prime factors into consecutive blocks (u_i) of breadth (k_i\asymp\sqrt L).  Define, before any
+reservoir choice,
+
+\[
+ I(n)=\{i:u_i\ge YZ^{k_i-2}\},\qquad a(n)=\prod_{i\notin I(n)}u_i=X^{o(1)}.
+\]
+
+Enumerate (I(n)=\{i_1<\cdots<i_d\}), put
+
+\[
+ \sigma_{i_j}=(-1)^{j+1},\qquad b_{i_j}=k_{i_j}-3+\sigma_{i_j},
+\]
+
+and include **every** pairwise-disjoint allocation (R_i\subset\mathcal P_X\setminus\operatorname{supp}n)
+with (\#R_i=b_i).  Set (t_i=\prod_{p\in R_i}p).  Sparse-forbidden structured-(E_3) stability gives
+pairwise coprime (m_i) with
+
+\[
+ {u_i\over t_i}<m_i\le {u_i\over t_i}
+   +\sqrt{u_i/t_i}(\log u_i)^{1.55},\qquad q_i=t_im_i.
+\]
+
+The physical cells are
+
+\[
+ v_S=a\prod_{i\in S}q_i\prod_{i\in I\setminus S}u_i,qquad S\subseteq I.
+\]
+
+Call their family (R_X^{\rm gr}).  It is fixed by ordinary factorization, (X), prime order, the
+annular pool, and the structured-(E_3) ranges; it does not inspect (M(X)), a block defect, an
+exceptional sign, or a divisor observation.
+
+The following are now paper theorems.
+
+1. (\mu(v_S)=(-1)^{|S|}\mu(n)) and
+   (\omega(v_S)=\omega(n)+\sum_{i\in S}\sigma_i).
+2. Full-terminal grade drift is exactly zero or one; all corners remain central.
+3. Every row exists after (O(L)) adversarial prime exclusions, and all corners have scale
+   (v_S/n=1+o(1)).
+4. Per-cube mixed Gibbs cost is (X^{-1/2+o(1)}), hence (O(X)) anchored rows cost
+   (X^{1/2+o(1)}).
+5. At the critical prime aperture, every replacement is smooth and the block containing a unique
+   large source prime is forced active.  That coordinate has exact sector law (1\to0).
+6. Deterministic least-prime reservoirs fail: a fixed active reservoir packet divides every full
+   terminal on an (X^{1-o(1)}) anchor class.
+7. Any pool forcing (K) primes into every terminal has physical capacity at most
+   \[
+   O(X)\,{S(\mathcal P)^K\over K!},\qquad S(\mathcal P)=\sum_{p\in\mathcal P}{1\over p}.
+   \]
+   Thus every polylogarithmic pool is dead.  The annulus above has
+   (S(\mathcal P_X)=L-2\log L-\sqrt L+O(1)) while total reservoir product is (X^{O(1/L)}).
+8. Weighting allocations by (1/T) has a source-uniform normalizer: for every deleted source
+   support (O) of size at most (2L) and (m\le2L),
+   \[
+   e_m((1/p)_{p\in\mathcal P_X\setminus O})
+   ={S(\mathcal P_X)^m\over m!}(1+o(1)).
+   \]
+
+The finite physical harmonic-capacity theorem is Lean-proved in
+`RHTower/Sieve/HarmonicReservoirCapacity.lean` and wired into the `RHTower` umbrella.  It counts
+physical integers, not labels.
+
+`[CONJECTURE: ENTROPY-SPREAD-GRADE-RECURRENT-CUBE-CAPACITY]`  On the fixed relation
+(R_X^{\rm gr}), choose nonnegative cube weights, source-first, such that:
+
+1. every physical corner has incoming load at most one and uncovered central Gibbs load is
+   (X^{1/2+o(1)});
+2. every physical subinterval satisfies interval Hall expansion for the actual opposite-parity
+   corner union;
+3. endpoint truncation of the exact seam coordinate realizes the normalized friable (-1) and
+   one-large-prime (+1) fluxes; and
+4. the already-proved mixed-cost sum remains (X^{1/2+o(1)}).
+
+This supersedes the earlier formula-less (R_X) clause.  Remaining frontier is cross-anchor physical
+co-degree/interval expansion and weighted co-moving endpoint flux.  Row admission, reservoir
+normalization, Wold recurrence, seam existence, and analytic mixed cost are no longer open.
+
+Full proof and hostile audit:
+`../2-fully-proven/new_scientific_knowledge/route-e-grade-recurrent-sparse-reservoir-cube-admission.md`.

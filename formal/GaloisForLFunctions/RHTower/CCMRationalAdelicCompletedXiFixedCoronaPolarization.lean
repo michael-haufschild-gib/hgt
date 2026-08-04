@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.PrimeDepthBVWoldReesCoronaQuotient
+import GaloisForLFunctions.RHTower.PrimeDepthBVWoldReesCoronaContractionNoGo
 import GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianHarmonicSourcePrimitive
 
 /-!
@@ -292,24 +293,29 @@ theorem completedXiSameFiberHodgeRotation_sq
 weight; even linearity is unnecessary for uniqueness. -/
 theorem completedXiHodgeHiddenUntwist_unique
     (q : XiZeroCopy)
-    (T : ℂ → PrimeDepthBVWoldReesCoronaCoordinate)
-    (hT : ∀ c : ℂ,
+    (T : ℂ → PrimeDepthBVWoldReesCoronaCoordinate) :
+    (∀ c : ℂ,
       T (deningerXiHarmonicHodgeWeight q * c) =
-        primeDepthBVWoldReesCoronaRealification c) :
-    T = completedXiHodgeHiddenUntwist q := by
-  funext z
-  have hz :
-      deningerXiHarmonicHodgeWeight q *
-          (-deningerXiHarmonicHodgeWeight q * z) = z := by
-    rw [← mul_assoc, mul_neg,
-      deningerXiHarmonicHodgeWeight_sq]
-    ring
-  calc
-    T z = T (deningerXiHarmonicHodgeWeight q *
-        (-deningerXiHarmonicHodgeWeight q * z)) := by rw [hz]
-    _ = primeDepthBVWoldReesCoronaRealification
-        (-deningerXiHarmonicHodgeWeight q * z) := hT _
-    _ = completedXiHodgeHiddenUntwist q z := rfl
+        primeDepthBVWoldReesCoronaRealification c) ↔
+      T = completedXiHodgeHiddenUntwist q := by
+  constructor
+  · intro hT
+    funext z
+    have hz :
+        deningerXiHarmonicHodgeWeight q *
+            (-deningerXiHarmonicHodgeWeight q * z) = z := by
+      rw [← mul_assoc, mul_neg,
+        deningerXiHarmonicHodgeWeight_sq]
+      ring
+    calc
+      T z = T (deningerXiHarmonicHodgeWeight q *
+          (-deningerXiHarmonicHodgeWeight q * z)) := by rw [hz]
+      _ = primeDepthBVWoldReesCoronaRealification
+          (-deningerXiHarmonicHodgeWeight q * z) := hT _
+      _ = completedXiHodgeHiddenUntwist q z := rfl
+  · intro hT c
+    rw [hT]
+    exact completedXiHodgeHiddenUntwist_hodge q c
 
 /-! ## Zero-hidden physical lift and resolved graph -/
 
@@ -351,6 +357,160 @@ def completedXiResolvedCoefficientLift
     CompletedXiSameFiberHodgePlane :=
   (c, -((K : ℂ) * deningerXiHarmonicHodgeWeight q * c))
 
+/-! ## Fixed same-fibre shear rigidity -/
+
+/-- Self-polarization of one completed-Xi coefficient is its squared
+complex norm. -/
+theorem completedXiSameFiberPolarization_self
+    (q : XiZeroCopy) (c : ℂ) :
+    completedXiSameFiberPolarization q c c = Complex.normSq c := by
+  rw [completedXiSameFiberPolarization_eq]
+  simp [Complex.normSq, Complex.mul_re]
+
+/-- Exact fixed-polarization energy of the resolved coefficient.  The
+Hodge-mate coefficient contributes the positive excess `K^2`. -/
+theorem completedXiResolvedCoefficientLift_fixedPolarization
+    (q : XiZeroCopy) (K : ℝ) (c : ℂ) :
+    completedXiSameFiberHodgePlanePolarization q
+        (completedXiResolvedCoefficientLift q K c)
+        (completedXiResolvedCoefficientLift q K c) =
+      (1 + K ^ 2) * completedXiSameFiberPolarization q c c := by
+  have hweight :
+      Complex.normSq (deningerXiHarmonicHodgeWeight q) = 1 := by
+    rw [Complex.normSq_eq_norm_sq,
+      norm_deningerXiHarmonicHodgeWeight]
+    norm_num
+  rw [completedXiSameFiberHodgePlanePolarization,
+    completedXiResolvedCoefficientLift]
+  rw [completedXiSameFiberPolarization_self,
+    completedXiSameFiberPolarization_self,
+    Complex.normSq_neg, Complex.normSq_mul,
+    Complex.normSq_mul, Complex.normSq_ofReal, hweight]
+  ring
+
+/-- Exact unconditional classification of resolved versus physical fixed
+same-fibre norms.  Equality occurs precisely when either the Hodge-mate shear
+vanishes or the physical coefficient itself vanishes. -/
+theorem completedXiResolvedCoefficientLift_fixedNorm_eq_iff
+    (q : XiZeroCopy) (K : ℝ) (c : ℂ) :
+    completedXiSameFiberHodgePlanePolarization q
+        (completedXiResolvedCoefficientLift q K c)
+        (completedXiResolvedCoefficientLift q K c) =
+      completedXiSameFiberHodgePlanePolarization q (c, 0) (c, 0) ↔
+        K = 0 ∨ c = 0 := by
+  rw [completedXiResolvedCoefficientLift_fixedPolarization]
+  have hphysical :
+      completedXiSameFiberHodgePlanePolarization q (c, 0) (c, 0) =
+        completedXiSameFiberPolarization q c c := by
+    simp [completedXiSameFiberHodgePlanePolarization,
+      completedXiSameFiberPolarization_self]
+  rw [hphysical]
+  rw [completedXiSameFiberPolarization_self]
+  constructor
+  · intro h
+    by_cases hc : c = 0
+    · exact Or.inr hc
+    · left
+      have hpos : 0 < Complex.normSq c := Complex.normSq_pos.mpr hc
+      have hKsq : K ^ 2 = 0 := by nlinarith
+      exact sq_eq_zero_iff.mp hKsq
+  · rintro (hK | hc)
+    · subst K
+      norm_num
+    · subst c
+      simp
+
+/-- Fixed same-fibre norm preservation on every physical coefficient is
+equivalent to zero Hodge-mate shear. -/
+theorem completedXiResolvedCoefficientLift_fixedNorm_preserving_iff
+    (q : XiZeroCopy) (K : ℝ) :
+    (∀ c : ℂ,
+      completedXiSameFiberHodgePlanePolarization q
+          (completedXiResolvedCoefficientLift q K c)
+          (completedXiResolvedCoefficientLift q K c) =
+        completedXiSameFiberHodgePlanePolarization q (c, 0) (c, 0)) ↔
+      K = 0 := by
+  constructor
+  · intro h
+    have hclass :=
+      (completedXiResolvedCoefficientLift_fixedNorm_eq_iff q K 1).mp (h 1)
+    simpa using hclass
+  · intro hK c
+    exact
+      (completedXiResolvedCoefficientLift_fixedNorm_eq_iff q K c).2 (Or.inl hK)
+
+/-- Shear carrying a zero-hidden completed-Xi coefficient to its resolved
+Hodge-mate graph. -/
+def completedXiSameFiberResolvedShear
+    (q : XiZeroCopy) (K : ℝ)
+    (z : CompletedXiSameFiberHodgePlane) :
+    CompletedXiSameFiberHodgePlane :=
+  (z.1, z.2 - (K : ℂ) * deningerXiHarmonicHodgeWeight q * z.1)
+
+@[simp]
+theorem completedXiSameFiberResolvedShear_physical
+    (q : XiZeroCopy) (K : ℝ) (c : ℂ) :
+    completedXiSameFiberResolvedShear q K (c, 0) =
+      completedXiResolvedCoefficientLift q K c := by
+  simp [completedXiSameFiberResolvedShear,
+    completedXiResolvedCoefficientLift]
+
+/-- The resolved shear preserves the literal fixed same-fibre norm on the
+whole coefficient plane exactly when its Hodge-mate coefficient vanishes. -/
+theorem completedXiSameFiberResolvedShear_fixedNorm_iff
+    (q : XiZeroCopy) (K : ℝ) :
+    (∀ z : CompletedXiSameFiberHodgePlane,
+      completedXiSameFiberHodgePlanePolarization q
+          (completedXiSameFiberResolvedShear q K z)
+          (completedXiSameFiberResolvedShear q K z) =
+        completedXiSameFiberHodgePlanePolarization q z z) ↔
+      K = 0 := by
+  constructor
+  · intro h
+    have h1 := h (1, 0)
+    rw [completedXiSameFiberResolvedShear_physical] at h1
+    have hclass :=
+      (completedXiResolvedCoefficientLift_fixedNorm_eq_iff q K 1).mp h1
+    simpa using hclass
+  · intro hK z
+    subst K
+    simp [completedXiSameFiberResolvedShear]
+
+/-- Source-dagger form of the same rigidity: the resolved shear commutes
+with the fixed completed-Xi odd Hodge rotation exactly for `K = 0`. -/
+theorem completedXiSameFiberResolvedShear_commutes_hodge_iff
+    (q : XiZeroCopy) (K : ℝ) :
+    (∀ z : CompletedXiSameFiberHodgePlane,
+      completedXiSameFiberResolvedShear q K
+          (completedXiSameFiberHodgeRotation q z) =
+        completedXiSameFiberHodgeRotation q
+          (completedXiSameFiberResolvedShear q K z)) ↔
+      K = 0 := by
+  constructor
+  · intro h
+    have hfirst := congrArg Prod.fst (h (1, 0))
+    simp only [completedXiSameFiberResolvedShear,
+      completedXiSameFiberHodgeRotation, mul_zero, mul_one,
+      zero_sub, sub_zero] at hfirst
+    change (0 : ℂ) = deningerXiHarmonicHodgeWeight q *
+      (-((K : ℂ) * deningerXiHarmonicHodgeWeight q)) at hfirst
+    have hzeroC : (0 : ℂ) = (K : ℂ) := by
+      calc
+        0 = deningerXiHarmonicHodgeWeight q *
+            (-((K : ℂ) * deningerXiHarmonicHodgeWeight q)) := hfirst
+        _ = (K : ℂ) := by
+          rw [show deningerXiHarmonicHodgeWeight q *
+              (-((K : ℂ) * deningerXiHarmonicHodgeWeight q)) =
+            -(K : ℂ) * (deningerXiHarmonicHodgeWeight q *
+              deningerXiHarmonicHodgeWeight q) by ring,
+            deningerXiHarmonicHodgeWeight_sq]
+          ring
+    exact_mod_cast hzeroC.symm
+  · intro hK z
+    subst K
+    simp [completedXiSameFiberResolvedShear,
+      completedXiSameFiberHodgeRotation]
+
 /-- The source resolved coefficient lands on the explicit fixed-metric graph.
 This identity holds for every real `K`, including off-line Route-R weights. -/
 theorem completedXiFixedCoronaComparison_resolvedCoefficientLift
@@ -386,6 +546,26 @@ theorem completedXiFixedCoronaComparison_resolvedCoefficientLift
     simpa using
       (primeDepthBVWoldReesCoronaRealification_real_smul (-K) c)
 
+/-- Target-side unconditional classification of fixed same-fibre norm rigidity.
+The explicit Route-R graph and zero-hidden lift have the same fixed product norm
+exactly when the shear or the physical coefficient vanishes. -/
+theorem completedXiFixedCoronaComparison_resolved_fixedNorm_eq_iff
+    (q : XiZeroCopy) (K : ℝ) (c : ℂ) :
+    primeDepthBVWoldFixedCoronaPolarization
+        (primeDepthBVWoldReesCoronaRealification c,
+          -K • primeDepthBVWoldReesCoronaRealification c)
+        (primeDepthBVWoldReesCoronaRealification c,
+          -K • primeDepthBVWoldReesCoronaRealification c) =
+      primeDepthBVWoldFixedCoronaPolarization
+        (primeDepthBVWoldReesCoronaScalarLift c)
+        (primeDepthBVWoldReesCoronaScalarLift c) ↔
+      K = 0 ∨ c = 0 := by
+  rw [← completedXiFixedCoronaComparison_resolvedCoefficientLift q K c,
+    ← completedXiFixedCoronaComparison_zeroHidden q c,
+    completedXiFixedCoronaComparison_polarization,
+    completedXiFixedCoronaComparison_polarization]
+  exact completedXiResolvedCoefficientLift_fixedNorm_eq_iff q K c
+
 /-- Existing harmonic corona graph is exactly the scalar graph with coefficient
 `primeDepthBVWoldReesCoronaWeight`. -/
 theorem primeDepthBVWoldReesCoronaResolvedLift_eq_graph
@@ -420,6 +600,149 @@ theorem completedXiFixedCoronaComparison_resolvedLift
 def ccmRationalAdelicPrimeXiLeadingZeroCopy
     (rho : XiDivisorSupport) : XiZeroCopy :=
   ⟨rho, ⟨0, xiSupportMultiplicity_pos rho⟩⟩
+
+/-- Explicit Hodge-mate coefficient of the actual retained rational-adelic
+adjacent-depth Route-R atom. -/
+def ccmRationalAdelicPrimeXiHodgeMateCoefficient
+    (p : Nat.Primes) (rho : XiDivisorSupport) : ℝ :=
+  primeDepthBVWoldReesCoronaWeight
+    (primeDepthBVWoldXiCenteredRate rho)
+    (ccmRationalAdelicPrimeRelativeXiCellZero p)
+    (ccmRationalAdelicPrimeRelativeXiCellOne p)
+
+/-- The actual Hodge-mate coefficient vanishes exactly at critical-line support.
+The prime-dependent adjacent attenuation is strictly positive, so it cannot erase
+the centered horizontal Xi rate. -/
+theorem ccmRationalAdelicPrimeXiHodgeMateCoefficient_eq_zero_iff_re_eq_half
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho = 0 ↔
+      (rho : ℂ).re = 1 / 2 := by
+  rw [ccmRationalAdelicPrimeXiHodgeMateCoefficient,
+    primeDepthBVWoldReesCoronaWeight_adjacent_eq_zero_iff,
+    primeDepthBVWoldXiCenteredRate_eq_zero_iff]
+
+/-- Actual fixed same-fibre norm identity for the retained period-one source
+atom.  This proposition contains no line-placement premise. -/
+def CCMRationalAdelicPrimeXiSameFiberNormIdentity
+    (p : Nat.Primes) (rho : XiDivisorSupport) : Prop :=
+  completedXiSameFiberHodgePlanePolarization
+      (ccmRationalAdelicPrimeXiLeadingZeroCopy rho)
+      (completedXiResolvedCoefficientLift
+        (ccmRationalAdelicPrimeXiLeadingZeroCopy rho)
+        (ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho)
+        (iteratedDeriv (xiSupportMultiplicity rho) XiC
+          (xiSpectralPointSupport rho)))
+      (completedXiResolvedCoefficientLift
+        (ccmRationalAdelicPrimeXiLeadingZeroCopy rho)
+        (ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho)
+        (iteratedDeriv (xiSupportMultiplicity rho) XiC
+          (xiSpectralPointSupport rho))) =
+    completedXiSameFiberHodgePlanePolarization
+      (ccmRationalAdelicPrimeXiLeadingZeroCopy rho)
+      (iteratedDeriv (xiSupportMultiplicity rho) XiC
+        (xiSpectralPointSupport rho), 0)
+      (iteratedDeriv (xiSupportMultiplicity rho) XiC
+        (xiSpectralPointSupport rho), 0)
+
+/-- Source-dagger form of the actual retained-atom identity: the resolved
+source shear commutes with the literal completed-Xi Hodge rotation. -/
+def CCMRationalAdelicPrimeXiSourceDaggerIdentity
+    (p : Nat.Primes) (rho : XiDivisorSupport) : Prop :=
+  ∀ z : CompletedXiSameFiberHodgePlane,
+    completedXiSameFiberResolvedShear
+        (ccmRationalAdelicPrimeXiLeadingZeroCopy rho)
+        (ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho)
+        (completedXiSameFiberHodgeRotation
+          (ccmRationalAdelicPrimeXiLeadingZeroCopy rho) z) =
+      completedXiSameFiberHodgeRotation
+        (ccmRationalAdelicPrimeXiLeadingZeroCopy rho)
+        (completedXiSameFiberResolvedShear
+          (ccmRationalAdelicPrimeXiLeadingZeroCopy rho)
+          (ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho) z)
+
+/-- Exact formal closure of the Hodge-mate coefficient gap: the actual
+same-fibre norm identity is equivalent to `K = 0`, using the already proved
+non-erasure of the multiplicity-leading Xi coefficient. -/
+theorem ccmRationalAdelicPrimeXiSameFiberNormIdentity_iff_hodgeMateCoefficient_eq_zero
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    CCMRationalAdelicPrimeXiSameFiberNormIdentity p rho ↔
+      ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho = 0 := by
+  unfold CCMRationalAdelicPrimeXiSameFiberNormIdentity
+  rw [completedXiResolvedCoefficientLift_fixedNorm_eq_iff]
+  exact or_iff_left (iteratedDeriv_XiC_ne_zero_at_supportMultiplicity rho)
+
+/-- Equivalent source-dagger closure of the same explicit coefficient. -/
+theorem ccmRationalAdelicPrimeXiSourceDaggerIdentity_iff_hodgeMateCoefficient_eq_zero
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    CCMRationalAdelicPrimeXiSourceDaggerIdentity p rho ↔
+      ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho = 0 := by
+  exact completedXiSameFiberResolvedShear_commutes_hodge_iff
+    (ccmRationalAdelicPrimeXiLeadingZeroCopy rho)
+    (ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho)
+
+/-- The retained atom has equal resolved and physical fixed norms exactly when
+its Xi support lies on the critical line. -/
+theorem ccmRationalAdelicPrimeXiSameFiberNormIdentity_iff_re_eq_half
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    CCMRationalAdelicPrimeXiSameFiberNormIdentity p rho ↔
+      (rho : ℂ).re = 1 / 2 :=
+  (ccmRationalAdelicPrimeXiSameFiberNormIdentity_iff_hodgeMateCoefficient_eq_zero
+    p rho).trans
+    (ccmRationalAdelicPrimeXiHodgeMateCoefficient_eq_zero_iff_re_eq_half p rho)
+
+/-- The retained source shear commutes with the fixed Hodge rotation exactly
+when its Xi support lies on the critical line. -/
+theorem ccmRationalAdelicPrimeXiSourceDaggerIdentity_iff_re_eq_half
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    CCMRationalAdelicPrimeXiSourceDaggerIdentity p rho ↔
+      (rho : ℂ).re = 1 / 2 :=
+  (ccmRationalAdelicPrimeXiSourceDaggerIdentity_iff_hodgeMateCoefficient_eq_zero
+    p rho).trans
+    (ccmRationalAdelicPrimeXiHodgeMateCoefficient_eq_zero_iff_re_eq_half p rho)
+
+/-- Fixed-norm and source-dagger identities are two exact presentations of
+the same retained-atom condition. -/
+theorem ccmRationalAdelicPrimeXiSameFiberNormIdentity_iff_sourceDaggerIdentity
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    CCMRationalAdelicPrimeXiSameFiberNormIdentity p rho ↔
+      CCMRationalAdelicPrimeXiSourceDaggerIdentity p rho :=
+  (ccmRationalAdelicPrimeXiSameFiberNormIdentity_iff_re_eq_half p rho).trans
+    (ccmRationalAdelicPrimeXiSourceDaggerIdentity_iff_re_eq_half p rho).symm
+
+/-- At any one fixed ordinary prime, fixed-norm preservation for every actual
+Xi support point is exactly the Riemann hypothesis. -/
+theorem forall_ccmRationalAdelicPrimeXiSameFiberNormIdentity_iff_riemannHypothesis
+    (p : Nat.Primes) :
+    (∀ rho : XiDivisorSupport,
+      CCMRationalAdelicPrimeXiSameFiberNormIdentity p rho) ↔
+      RiemannHypothesis := by
+  constructor
+  · intro hidentity
+    rw [rh_iff_xi_ne_zero_right]
+    intro s hs hzero
+    let rho : XiDivisorSupport :=
+      ⟨s, mem_xi_divisor_support_of_eq_zero hzero⟩
+    have hhalf :=
+      (ccmRationalAdelicPrimeXiSameFiberNormIdentity_iff_re_eq_half p rho).mp
+        (hidentity rho)
+    have hright := mem_rightHalf.mp hs
+    dsimp [rho] at hhalf
+    linarith
+  · intro hRH rho
+    exact
+      (ccmRationalAdelicPrimeXiSameFiberNormIdentity_iff_re_eq_half p rho).2
+        (xi_divisor_support_re_eq_half_of_rh hRH rho)
+
+/-- At any one fixed ordinary prime, source-dagger compatibility for every
+actual Xi support point is exactly the Riemann hypothesis. -/
+theorem forall_ccmRationalAdelicPrimeXiSourceDaggerIdentity_iff_riemannHypothesis
+    (p : Nat.Primes) :
+    (∀ rho : XiDivisorSupport,
+      CCMRationalAdelicPrimeXiSourceDaggerIdentity p rho) ↔
+      RiemannHypothesis := by
+  rw [← forall_ccmRationalAdelicPrimeXiSameFiberNormIdentity_iff_riemannHypothesis p]
+  exact forall_congr' fun rho =>
+    (ccmRationalAdelicPrimeXiSameFiberNormIdentity_iff_sourceDaggerIdentity p rho).symm
 
 /-- Actual rational-adelic leading-Xi coefficient placed on its canonical
 completed-Xi coordinate line. -/

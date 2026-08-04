@@ -964,3 +964,175 @@ Remaining for the torus case, in order:
    monomial coordinates reduces to a product of `r` radical steps;
 4. the tail identity, and the dichotomy between the stabilizing and the unbounded case, exactly as
    in rank one.
+
+## Torus step 1 and the deck action — PROVED
+
+    PaletteEndomorphism.lean
+      paletteEndo hx hy hgen : E →ₐ[C] E     sends one differentially independent palette to another
+      paletteEndo_apply, paletteEndo_deriv, paletteEndo_map_top, paletteEndo_eq_of_apply
+
+    TorusPrefixEndomorphism.lean
+      torusEndo hx hgen hM                   the prefix map of a torus protocol
+      torusEndo_apply, torusEndo_deriv, torusEndo_map_top, torusEndo_congr, torusEndo_one
+      torusEndo_comp :  φ_M ∘ φ_N = φ_(N*M)
+
+    TorusScaleAction.lean
+      torusScaleEquiv, torusScaleRep : (ι → C^×) →* (E ≃ₐ[C] E)
+      torusScaleRep_injective                the deck action is faithful
+      torusScaleEquiv_monomialFamily         the action on a monomial family is the same monomial
+                                             in the scalars
+      differentialAdjoin_monomialFamily_le_fixedField :
+        a subgroup of the constant torus killed by the matrix fixes the prefix image
+
+`powerEndo` was rewritten as the `Unit`-indexed instance of `paletteEndo`, so the rank-one and torus
+prefix maps now share one construction; the rank-one theorem statements are unchanged and everything
+downstream builds against them.
+
+What remains for the torus case is the numerical half, and both halves are one theorem of lattice
+arithmetic:
+
+* the deck group is `ker(M)` on `(C^×)^r`, of order `|det M|` when `C` is algebraically closed;
+* the prefix degree is `[C<x> : C<x^M>] = |det M|`.
+
+Both follow from Smith normal form over `ℤ`: writing `M = U D V` with `U, V` unimodular, the monomial
+substitutions by `U` and `V` are automorphisms of the palette (their inverses are integral), so the
+extension splits into `r` radical steps of degrees the elementary divisors, whose product is
+`|det M|`.  The unimodular reductions are already available: `torusEndo` for a matrix of determinant
+`±1` is an automorphism by `torusEndo_comp` and `torusEndo_one`.
+
+### The unimodular coordinate change — PROVED
+
+    TorusUnimodular.lean
+      det_ne_zero_of_isUnit_det
+      torusEndo_bijective_of_isUnit_det :
+        a monomial substitution invertible over the integers is an automorphism
+      differentialAdjoin_monomialFamily_eq_top_of_isUnit_det :
+        so its monomial family generates the whole differential field again
+
+This is the half of Smith normal form that the field theory actually needs: only the elementary
+divisors of the matrix can change the generated field, because the unimodular factors act by
+automorphisms.  The proof is `torusEndo_comp` twice against the integral inverse, so it needs no
+lattice theory at all -- the two composites are the identity by `torusEndo_one`.
+
+Next: with `M = U D V` unimodular-diagonal-unimodular, `C<x^M> = C<(x^V)^D>` for the free palette
+`x^V`, so the degree computation reduces to the diagonal case `C<x_1^{d_1}, ..., x_r^{d_r}>`, a
+tower of `r` radical steps of degrees the elementary divisors.  The deck group is then the product
+of the `mu_(d_i)`, of order `|det M|` when `C` is algebraically closed, and Artin closes the count
+exactly as in rank one.
+
+## The diagonal case and the radical tower — PROVED
+
+    RadicalTowerDegree.lean
+      finrank_adjoin_image_le_prod :
+        adjoining a finite family whose powers lie in the base multiplies the exponents,
+        [F(x_i : i in s) : F] <= prod_(i in s) n_i
+
+    TorusDiagonal.lean
+      monomialFamily_diagonal_apply             a diagonal substitution powers each coordinate
+      derivationClosed_adjoin_of_diagonal       the diagonal adjunction is derivation closed
+      differentialAdjoin_le_adjoin_diagonal, adjoin_diagonal_eq_top :
+        the ambient field is the single algebraic adjunction of the palette over C<x^D>
+      finrank_diagonal_le_prod :
+        [E : C<x^D>] <= prod_i |d_i|
+
+The derivation-closure argument generalises the rank-one one in the right way: instead of the power
+rule it uses `logDeriv_zpow`, so each coordinate derivative is
+
+    x_i' = x_i * (x_i^{d_i})' / (d_i * x_i^{d_i}),
+
+a quotient of elements of the adjunction with **no** `x_i^{d_i - 1}` bookkeeping, and negative
+exponents cost nothing.
+
+`finrank_adjoin_image_le_prod` is the general tower lemma the corpus was missing; it is stated for an
+arbitrary base field and family, so it also covers the rank-one bound as the one-element case.  The
+induction is over a `Finset`, each step being `restrictScalars` of a simple radical adjunction
+(`IntermediateField.adjoin_adjoin_left`) with the degree supplied by
+`KummerDegreeBound.finrank_adjoin_le_of_pow_mem` and the tower law `Module.finrank_mul_finrank`.
+
+Remaining for the torus case:
+
+1. the deck order: over an algebraically closed `C` the group `ker(D)` on `(C^×)^r` is
+   `prod_i mu_(d_i)`, of order `prod_i |d_i|`; with `finrank_diagonal_le_prod` and Artin this gives
+   the prefix-image identity for a diagonal isogeny -- the exact rank-one argument, one coordinate at
+   a time;
+2. the reduction of a general nonsingular `M` to diagonal form: Smith normal form over `ℤ`, whose
+   field-theoretic half (`TorusUnimodular`) is already proved, so what remains is purely the lattice
+   statement `M = U D V` with `U, V` unimodular.
+
+## The diagonal deck identity — PROVED
+
+    TorusDiagonalDeck.lean
+      torusPowerHom C d                       the coordinatewise power map of the constant torus
+      mem_ker_torusPowerHom_iff, mem_ker_torusPowerHom_iff_natAbs
+      kerTorusPowerHomEquiv                   ker(D) = prod_i mu_(|d_i|)
+      card_ker_torusPowerHom :                Nat.card ker(D) = prod_i |d_i|
+      differentialAdjoin_diagonal_eq_fixedField :
+        C<x^D> = fixedField (ker(D) mapped by the scaling action)
+
+This is the rank-`r` form of the multiplicative deck identity, and it is unconditional for an
+algebraically closed constant field: the degree bound `finrank_diagonal_le_prod` matches the kernel
+order `card_ker_torusPowerHom` exactly, and `eq_fixedField_of_finrank_le` (the halved Artin step
+proved for this card long ago) turns the estimate into the identity.  Finite-dimensionality comes
+from `IntermediateField.finiteDimensional_adjoin` applied to the palette, each coordinate being
+integral over `C<x^D>` by the adjugate identity.
+
+Note the kernel condition needs no nonvanishing hypothesis: `u ^ d = 1` and `u ^ |d| = 1` agree even
+for `d = 0`, so `mem_ker_torusPowerHom_iff_natAbs` holds outright.
+
+### What is left for a general torus isogeny
+
+Exactly one statement, and it is pure lattice arithmetic:
+
+    ∃ U V : Matrix (Fin r) (Fin r) ℤ, ∃ d : Fin r → ℤ,
+      IsUnit U.det ∧ IsUnit V.det ∧ (∀ i, d i ≠ 0) ∧ M = U * Matrix.diagonal d * V
+
+Everything downstream of it is proved: `TorusUnimodular` says the unimodular factors do not change
+the generated field, `TorusDiagonal` gives the degree, and `TorusDiagonalDeck` gives the deck
+identity for the diagonal middle.
+
+The mathlib entry point is `Submodule.exists_smith_normal_form_of_rank_eq` (in
+`LinearAlgebra/FreeModule/PID.lean`): for `N ≤ M` free of equal rank over a PID it produces bases
+`b'` of `M` and `ab'` of `N` with `ab' i = a i • b' i`.  Apply it to `N = range (M.mulVecLin)`
+inside `ℤ^r`, which has rank `r` because `det M ≠ 0` makes the map injective; pulling `ab'` back
+through the injection gives a source basis in which the matrix of the map is `diagonal a`, and the
+two change-of-basis matrices are unimodular.
+
+## Smith normal form and the general torus degree — PROVED
+
+    SmithNormalFormMatrix.lean
+      mulVecLin_injective_of_det_ne_zero
+      exists_unimodular_diagonal :
+        M = U * diagonal d * V with U, V unimodular and every d_i nonzero
+
+    TorusUnimodular.lean   (extended)
+      differentialAdjoin_monomialFamily_unimodular_eq :
+        a unimodular substitution leaves the generated differential field unchanged, for an
+        arbitrary nonzero family (not only for a generating palette)
+
+    TorusGeneralDegree.lean
+      exists_diagonal_differentialAdjoin_eq :
+        every nonsingular substitution generates the same field as a diagonal one applied to a
+        unimodularly changed palette, with the exponent product equal to |det M|
+      finrank_torus_le_natAbs_det :
+        [E : C<x^M>] <= |det M|
+
+The lattice statement the card had isolated is now proved from mathlib's
+`Submodule.exists_smith_normal_form_of_rank_eq`: the matrix acts injectively on `ℤ^r` (adjugate
+argument, since `det ≠ 0` and `ℤ` is torsion free), so its image is a full-rank sublattice; the Smith
+basis pair, pulled back through the injection, makes the matrix of the map diagonal, and the two
+change-of-basis matrices are unimodular by `Module.Basis.toMatrix_mul_toMatrix_flip`.
+
+With that, the general degree bound is exactly the diagonal one: the unimodular factors change
+neither the field nor the absolute determinant, and `|det M| = prod_i |d_i|` because the outer
+factors have determinant `±1`.
+
+### What remains for the general torus deck identity
+
+Only the group-level half:
+
+    Nat.card (ker of the M-power map on (C^×)^r) = |det M|
+
+which is again Smith -- `u ↦ monomialFamily V u` is an automorphism of the constant torus and
+conjugates `ker(M)` onto `ker(D)`, whose order `card_ker_torusPowerHom` already computes.  The
+fixed-field containment `differentialAdjoin_monomialFamily_le_fixedField` is stated for an arbitrary
+matrix, so with the order in hand, Artin closes the general case exactly as in the diagonal one.

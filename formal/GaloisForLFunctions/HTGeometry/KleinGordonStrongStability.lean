@@ -112,7 +112,8 @@ theorem kgMildSolution_of_ae_zero {V : E → ℂ} (hV : Measurable V) {b : ℝ} 
     refine ContinuousLinearMap.ext fun v => ?_
     rw [kgPotentialOp_apply,
       lpBoundedMulCLM_eq_zero (p := 2) (μ := (volume : Measure E)) hV hb0 hb hae]
-    simp
+    simp only [zero_apply]
+    exact map_zero _
   have hker : kgDuhamelKernel hV hb0 hb = fun _ _ : ℝ => (0 : KGEnergy E →L[ℝ] KGEnergy E) := by
     funext r s
     rw [kgDuhamelKernel, hpot]

@@ -168,6 +168,60 @@ theorem mulOf_consMul_right (h : p + q = n) (h' : p + (q + 1) = n + 1) (x : M)
   rw [exteriorConsMul_coe, exteriorConsMul_coe, exteriorMulOf_coe, ← mul_assoc,
     exteriorPower_mul_ι, smul_mul_assoc, mul_assoc]
 
+/-- A degree-one factor moves past a factor of degree `q` on the left. -/
+theorem ι_mul_exteriorPower (x : M) (z : ⋀[R]^q M) :
+    ExteriorAlgebra.ι R x * (z : ExteriorAlgebra R M) =
+      ((-1 : R)) ^ q • ((z : ExteriorAlgebra R M) * ExteriorAlgebra.ι R x) := by
+  rw [exteriorPower_mul_ι, smul_smul, ← pow_add, ← two_mul, pow_mul]
+  norm_num
+
+/-- A product of `p` generators commutes with a factor of degree `q` up to the sign `(-1)^{pq}`. -/
+theorem ιMulti_mul_comm : ∀ (m : ℕ) (ψ : Fin m → M) {q : ℕ} (z : ⋀[R]^q M),
+    ExteriorAlgebra.ιMulti R m ψ * (z : ExteriorAlgebra R M) =
+      ((-1 : R)) ^ (m * q) • ((z : ExteriorAlgebra R M) * ExteriorAlgebra.ιMulti R m ψ) := by
+  intro m
+  induction m with
+  | zero =>
+      intro ψ q z
+      rw [ExteriorAlgebra.ιMulti_zero_apply, one_mul, mul_one, Nat.zero_mul, pow_zero, one_smul]
+  | succ k ih =>
+      intro ψ q z
+      rw [ExteriorAlgebra.ιMulti_succ_apply, mul_assoc, ih (Matrix.vecTail ψ) z, mul_smul_comm,
+        ← mul_assoc, ι_mul_exteriorPower, smul_mul_assoc, mul_assoc, smul_smul, ← pow_add,
+        ← ExteriorAlgebra.ιMulti_succ_apply]
+      congr 1
+      congr 1
+      ring
+
+/-- **The exterior algebra is graded commutative**: a factor of degree `p` commutes with a factor of
+degree `q` up to the sign `(-1)^{pq}`. -/
+theorem exteriorPower_mul_comm (y : ⋀[R]^p M) (z : ⋀[R]^q M) :
+    (y : ExteriorAlgebra R M) * (z : ExteriorAlgebra R M) =
+      ((-1 : R)) ^ (p * q) • ((z : ExteriorAlgebra R M) * (y : ExteriorAlgebra R M)) := by
+  set F : ⋀[R]^p M →ₗ[R] ExteriorAlgebra R M :=
+    (LinearMap.mulRight R (z : ExteriorAlgebra R M)).comp (⋀[R]^p M).subtype with hF
+  set G : ⋀[R]^p M →ₗ[R] ExteriorAlgebra R M :=
+    ((-1 : R)) ^ (p * q) • ((LinearMap.mulLeft R (z : ExteriorAlgebra R M)).comp
+      (⋀[R]^p M).subtype) with hG
+  have hgen : ∀ y' ∈ Set.range (exteriorPower.ιMulti R p (M := M)), F y' = G y' := by
+    rintro y' ⟨ψ, rfl⟩
+    show (exteriorPower.ιMulti R p ψ : ExteriorAlgebra R M) * (z : ExteriorAlgebra R M) =
+      ((-1 : R)) ^ (p * q) • ((z : ExteriorAlgebra R M) * (exteriorPower.ιMulti R p ψ : _))
+    rw [exteriorPower.ιMulti_apply_coe]
+    exact ιMulti_mul_comm p ψ z
+  have hFG : F = G := LinearMap.ext_on (exteriorPower.ιMulti_span R p M) hgen
+  exact LinearMap.congr_fun hFG y
+
+/-- **The product of exterior powers is graded commutative.** -/
+theorem exteriorMulOf_comm {n : ℕ} (h : p + q = n) (h' : q + p = n) (y : ⋀[R]^p M)
+    (z : ⋀[R]^q M) :
+    exteriorMulOf h y z = ((-1 : R)) ^ (p * q) • exteriorMulOf h' z y := by
+  refine Subtype.ext ?_
+  rw [exteriorMulOf_coe]
+  show (y : ExteriorAlgebra R M) * (z : ExteriorAlgebra R M) =
+    ((-1 : R)) ^ (p * q) • (exteriorMulOf h' z y : ExteriorAlgebra R M)
+  rw [exteriorMulOf_coe, exteriorPower_mul_comm]
+
 end GradedCommutation
 
 end GaloisForLFunctions.HTGeometry

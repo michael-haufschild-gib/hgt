@@ -5407,3 +5407,164 @@ What this does **not** yet do: the fibre bound `D` is supplied as a hypothesis, 
 unconditional instance proved here is the crude `D ≤ N²`, which is too lossy for the application.
 The useful instance is `D ≤ max_{j ≤ N³} d₃(j) = N^{o(1)}`, a divisor-function bound; that is the
 next brick.
+
+### The sixth-moment estimate, unconditionally — `Sieve/CubeFibreDivisorBound.lean`, `Sieve/DirichletSixthMomentDivisor.lean`, `Sieve/DirichletMeasureSixthMoment.lean`
+
+The hypothesis `D` left open by the previous section is now discharged. The corpus already owned the
+divisor bound (`RHTower/DivisorBound.card_divisors_le_const_mul_rpow` : `d(n) ≤ C_ε n^ε`, proved from
+Bernoulli's inequality per prime), and a triple `(n,m,k)` with `nmk = j` is determined by the pair
+`(n, nm)`, both of which divide `j`.
+
+- **`cubeFibre_card_le_divisors_sq`** : `#fibre(j) ≤ d(j)²` — the injection `(n,m,k) ↦ (n, nm)` into
+  pairs of divisors;
+- **`exists_cubeFibre_card_le_rpow`** : for every `ε > 0` there is `C > 0` with
+  `#fibre(j) ≤ C·N^ε` for every `N ≥ 1` and every fibre of `[1,N]³ → [1,N³]`. The exponent
+  bookkeeping is `d(j)² ≤ (C₀ (N³)^{ε/6})² = C₀² N^ε`.
+
+Substituting it removes the last hypothesis from the sixth-moment layer:
+
+- **`exists_sixthMoment_dirPoly_rpow`** :
+
+      ∑_r |F(λ_r)|⁶ ≤ (T + 4N³(1+log N³))(δ^{-1} + 2log N³) · C N^ε · (∑_n |a_n|²)³
+
+  for every Dirichlet polynomial of length `N` and every `δ`-separated family in `[δ/2, T−δ/2]`;
+- **`exists_card_largeValues_sixth_rpow`** : the same divided by `V⁶`;
+- **`volume_largeValues_sixth_le`**, **`exists_volume_largeValues_sixth_rpow`** : the measure form,
+
+      V⁶ · |{t ∈ (0,T] : |F(t)| ≥ V}| ≤ (T + 4N³(1+log N³)) · C N^ε · (∑_n |a_n|²)³ ,
+
+  obtained by running `volume_largeValues_le` on the cube — the level set is literally the same set,
+  since `‖F³‖ = ‖F‖³` (`largeValues_cube_setOf`).
+
+Built, wired, axiom-clean (six theorems, every one `[propext, Classical.choice, Quot.sound]`).
+
+This is the first estimate in the corpus that says something nontrivial about a Dirichlet polynomial
+over a frequency range **wider than any zero-free region**, and it is exactly the object the previous
+section identified as the missing input: the pointwise bound is replaced by a bound on the measure of
+the set where the polynomial is large. What remains between here and `(15)` is the passage from that
+measure bound to a bound on the weighted frequency integral of `|F|²` that Gallagher's identity
+produces — a dyadic decomposition over the level `V`, convergent because the count decays like
+`V^{-6}` and the integrand grows like `V²`.
+
+### The sixth moment as an integral — `Sieve/DirichletIntegralSixthMoment.lean`
+
+The form a bilinear argument actually consumes: no spacing, no level set, no test points.
+
+- **`integral_sixth_dirPoly_le`**, **`exists_integral_sixth_dirPoly_rpow`** :
+
+      ∫_0^T |F(t)|⁶ dt ≤ (T + 4N³(1+log N³)) · C_ε N^ε · (∑_n |a_n|²)³ .
+
+Obtained by feeding the cube into the corpus's own `DirichletIntegralBound.integral_normSq_dirPoly_le`
+(which was already stated for the interval integral and needs no positivity hypothesis on `T`).
+
+Note the shape: `∑|a_n|²` enters **cubed**. The estimate is therefore strong exactly when the
+coefficient vector is spread out — which is what a multiplicative factorization of the polynomial
+produces, and is the reason the Matomäki–Radziwiłł argument factorizes before estimating. Applied to
+an unfactored polynomial with `∑|a_n|² ≍ N` it gives nothing beyond the second moment; applied to a
+prime-supported factor with `∑|a_p|² ≍ ∑_{p ∼ P} 1/p ≍ 1/log P` it is a genuine saving.
+
+Built, wired, axiom-clean.
+
+### Combining the two estimates — `Sieve/DirichletProductSplit.lean`
+
+A large-values estimate improves a mean square only in combination with a threshold argument, and
+that combination is now a theorem.
+
+- **`integral_normSq_mul_split`** : for two Dirichlet polynomials and any threshold `V`,
+
+      ∫_0^T |P|²|Q|² ≤ V²∫_0^T|P|² + (sup|P|)²(sup|Q|)²·|{t ∈ (0,T] : |Q(t)| ≥ V}| .
+
+  Below the threshold `Q` is replaced by `V`; above it both factors are replaced by their trivial
+  sizes and only the measure of the exceptional set survives. Proved by splitting the domain along
+  the measurable set `{|Q| ≥ V}` (`integral_inter_add_sdiff`), with the discarded piece of the
+  comparison integral bounded below by zero.
+- **`integral_normSq_mul_le_of_sixth`**, **`integral_normSq_mul_le_sixth`** : the same with the
+  exceptional set measured by the sixth moment, in the division-free form
+
+      V⁶∫_0^T|P|²|Q|² ≤ V⁸∫_0^T|P|² + (sup|P|)²(sup|Q|)²·(T + 4M³(1+log M³))·D·(∑_n|b_n|²)³ .
+
+Built, wired, axiom-clean (three theorems).
+
+Optimising `V` in the second form gives `∫|PQ|² ≍ X^{3/4}Y^{1/4}` with `X = ∫|P|²` and `Y` the
+exceptional term, against the trivial `(sup|Q|)²X`. The saving is a genuine power whenever
+`(sup|P|)²D(∑|b_n|²)³ < (∑|a_n|²)(sup|Q|)⁶`, which is what a prime-supported second factor over a
+dyadic range supplies — `∑_p 1/p² ≪ 1/(P log P)` against `(∑_p 1/p)⁶ ≍ (log P)^{-6}`. This is the
+first place in the chain where the estimate beats the trivial bound *without* using the zero-free
+region, and it is the reason the Matomäki–Radziwiłł argument factorizes before estimating.
+
+### The bilinear coefficient bound, unconditionally — `Sieve/ProdIdxFibreDivisorBound.lean`
+
+`DirichletBilinear.sum_norm_sq_dirConv_le` — the corpus's `ℓ²` bound for a convolution — was stated
+with an open hypothesis `D` bounding the fibres of `(n,m) ↦ nm`. The same divisor injection used for
+the cube discharges it:
+
+- **`prodIdx_fibre_card_le_divisors`** : `#{(n,m) : nm = r} ≤ d(r)`, since a pair with a given
+  product is determined by its first entry, which divides the product;
+- **`exists_prodIdx_fibre_card_le_rpow`** : `#fibre ≤ C_ε·(NM)^ε`;
+- **`exists_sum_norm_sq_dirConv_le_rpow`** :
+
+      ∑_r |(a * b)_r|² ≤ C_ε (NM)^ε · (∑_j |a_j|²)(∑_k |b_k|²) ,
+
+  with no hypothesis at all.
+
+Built, wired, axiom-clean. This closes a hypothesis that had been open in the corpus's bilinear layer
+since it was written, and it is the coefficient input every mean-value theorem in the chain consumes.
+
+### Gallagher's identity against a mean square — `Sieve/GallagherSplitIntegral.lean`
+
+`GallagherSplit.gallagher_split` consumes a **pointwise** bound on the Dirichlet polynomial over
+`|w| ≤ W`. That is precisely what the zero-free region can supply and precisely what caps the method
+at long windows. A large-values estimate supplies no pointwise bound — it controls only the integral
+of `|F|²` — so the identity needs a second split, and the Gallagher weight's uniform cap provides it:
+
+- **`fourier_triC_re_le_two_sq`** : `Re 𝓕(tri_δ)(w) ≤ 2δ²` for every `w`, from the corpus's own
+  Lorentzian majorant `norm_fourier_triC_le`;
+- **`gallagher_split_integral`** :
+
+      ∫_ℝ |∑_{u < log n ≤ u+δ} a_n|² du ≤ 2δ²·∫_{|w| ≤ W}|F(w)|² dw + M₂·2/(π²W) ;
+
+- **`setIntegral_normSq_logWindowSum_le_integral`**, and
+  **`setIntegral_normSq_multiplicative_window_le_integral`** : the same over any range of starting
+  positions, and in the multiplicative-window form `x < n ≤ x·e^δ`.
+
+Built, wired, axiom-clean (four theorems).
+
+The two splits are complementary and the corpus now owns both: the pointwise split is sharp when a
+zero-free region reaches `W`, the integral split when it does not. The large-values layer of the
+previous sections feeds the second, and this is the interface through which it reaches the
+short-interval variance — the point where the derivation stopped being able to grow the window.
+
+### The two halves joined — `Sieve/LogPolyDirPoly.lean`, `Sieve/GallagherMeanValue.lean`
+
+The Gallagher side of the corpus works with `logPoly a s w = ∑_{n ∈ s} a_n n^{2πiw}`; the mean-value
+and large-values side works with `dirPoly N c t = ∑_{n ≤ N} c_n n^{it}`. They are the same object:
+
+- **`logPoly_eq_dirPoly`** : `logPoly a (Icc 1 N) w = dirPoly N (n ↦ a_{n+1}) (2πw)`, by the
+  successor reindexing the corpus already owned (`image_succ_univ`, `succ_injOn`);
+- **`dirPoly_conj_neg`** : `dirPoly N (conj∘c) t = conj (dirPoly N c (−t))` — reflecting the
+  frequency costs nothing, since conjugating the coefficients preserves the `ℓ²` norm;
+- **`integral_Icc_normSq_dirPoly_symm_le`** : the mean value theorem on a symmetric range,
+  `∫_{|t| ≤ T}|F|² ≤ 2(T + 4N(1+log N))∑|c_n|²`;
+- **`integral_Icc_normSq_logPoly_le`** :
+
+      ∫_{|w| ≤ W} |logPoly a (Icc 1 N) w|² dw ≤ (2πW + 4N(1+log N))/π · ∑_{n ≤ N}|a_n|² ,
+
+  the change of variables `t = 2πw` turning the factor `2` from the two halves into the `π`.
+
+Composing with the integral split gives the base estimate of the whole programme, with **no**
+arithmetic input at all:
+
+- **`gallagher_meanValue_le`**, **`gallagher_meanValue_window_le`** :
+
+      ∫_ℝ |∑_{u < log n ≤ u+δ} a_n|² du
+        ≤ 2δ²(2πW + 4N(1+log N))/π · ∑_{n ≤ N}|a_n|² + (∑_{n ≤ N}|a_n|)²·2/(π²W) ,
+
+  for every `W > 0`, and the same over any range of multiplicative starting positions.
+
+Built, wired, axiom-clean (seven theorems).
+
+For `a = μ` this is `≪ δ²WN + δ²N²log N + N²/W`; at `W ≍ N^{1/2}/δ` it is `≪ δN^{3/2} + δ²N²log N`,
+against the trivial `δN²`. So the corpus now proves an unconditional power saving for the Möbius
+short-interval mean square using **neither** a zero-free region **nor** any cancellation estimate —
+the entire gain is the diagonal of the mean value theorem. That is the baseline every arithmetic
+input in this chain has to beat, and it is the right place to measure the large-values layer against.

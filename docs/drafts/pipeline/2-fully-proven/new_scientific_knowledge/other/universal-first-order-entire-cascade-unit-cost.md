@@ -7816,3 +7816,358 @@ That is exactly the `hjet` hypothesis of
 algebraic side is finished: no further determinant work is needed to conclude `ord = 2`, only the
 analytic instantiation (states, differentiability, and the derivative law), which is the same routine
 already carried out for `ExpShiftCascade`.
+
+### The analytic family with polynomial coefficients
+
+`HTGeometry/ExpPolyCascade.lean` (axiom-clean) opens the analytic side of the polynomial-coefficient
+family, `f_k(w) = d_k + c_k·exp(A_k(w))` with `A_k` a polynomial:
+
+* `differentiable_expPoly`, `deriv_expPoly` — the defining equation `f' = A'(w)·(f − d)`;
+* `transcendentalEntire_expPoly` — the map is transcendental entire whenever `c_k ≠ 0` and `A_k` is
+  nonconstant.  The corpus's affine-precomposition lemma does not cover a polynomial exponent, so this
+  is proved directly: if `d + c·exp(A(w))` were a polynomial `p`, then `exp∘A` would equal a polynomial
+  with no roots, hence a nonzero constant; differentiating gives `A' ≡ 0`, contradicting
+  `1 ≤ deg A`.
+
+Its cascade law is `δX_(k+1) = A_k'(X_k)·(X_(k+1) − d_k)·δX_k`, i.e. the product law with
+`Q_j = A_j'·(X − d_(j−1))` and `v_k = X − d_(k−1)` — exactly the shape whose determinant the algebraic
+layers now compute.  What remains for the two-map theorem is the routine instantiation: matching this
+law to `polyProdDerivation`, and feeding `algebraicIndependent_two_map` to the transfer theorem.
+
+### The cascade law for polynomial coefficients
+
+Added to `ExpPolyCascade.lean` (axiom-clean):
+
+* `polyV`, `polyQ` — the law's data, `v_k = X − d_(k−1)` (with `v_0 = 1`) and `Q_j = A_j'·v_j`.  Taking
+  `Q_j` to carry the factor `v_j` makes the identity `Q_k = A_k'·v_k` hold at **every** index, including
+  `k = 0`, which removes the case split the first attempt needed;
+* `differentiable_expPolyCascade`;
+* `deriv_expPolyCascade` — the law itself,
+
+  `(X_k)' = (∏_(j<k) Q_j(X_j))·v_k(X_k)`,
+
+  by induction, the step being the chain rule plus the defining equation.
+
+This is literally the product law the algebraic layers analyse, with `Q_j` and `v_j` as above, so the
+analytic and algebraic halves of the polynomial-coefficient family now meet.  What is left for the
+two-map theorem is bookkeeping: `evalAt` of the model law against this formula, and the two
+nondegeneracy checks `Q_j ≠ 0`, `Q_1' ≠ 0`, both immediate from `1 ≤ deg A_j`.
+
+### The analytic law meets the model
+
+Also in `ExpPolyCascade.lean` (axiom-clean):
+
+* `evalAt_univFactor` — evaluating a one-coordinate model polynomial at the states returns the
+  underlying univariate polynomial at that state;
+* `law_expPolyCascade` — hence
+
+  `(X_k)'(z) = evalAt (states) z (polyProdDerivation (polyQ) (polyV) (X_k))`,
+
+  which is exactly the `hlaw` hypothesis of
+  `PolynomialCascadeModel.not_differentiallyAlgebraicOfOrder_of_model`.
+
+So for the polynomial-coefficient family every hypothesis of the transfer theorem is now available
+except `hind` (no polynomial relation among the states, which follows from transcendence via the
+corpus's `exists_evalAt_ne_zero_of_transcendental`) — and `hjet`, which for two maps is
+`algebraicIndependent_two_map`.  The two-map theorem is one assembly away.
+
+### The order-one equation with a polynomial coefficient
+
+`HTGeometry/ExpPolyTwoMap.lean` (axiom-clean) starts the final assembly with the piece the upper bound
+needs: `differentiallyAlgebraicOfOrder_one_expPoly`.
+
+The relation is `X_2 − A'(X_0)·(X_1 − d)`, where the coefficient is the univariate `A'` evaluated at the
+**coordinate** rather than a constant — the first place in this family where the order-one equation is
+not constant-coefficient.  Nonvanishing of the relation is checked at `(0, d, 1)`, where it evaluates
+to `1`.
+
+With it, the corpus's cascade upper bound applies to the family, so a two-map polynomial-coefficient
+cascade has order at most two; the lower bound is `algebraicIndependent_two_map` through the transfer
+theorem.
+
+## New unconditional theorem: order two for polynomial-coefficient cascades
+
+`exactDifferentialOrder_expPolyCascade_two` (axiom-clean, `HTGeometry/ExpPolyTwoMap.lean`):
+
+> For any polynomials `A_0, A_1, …` of degree at least one and any nonzero constants `c_k`,
+> the composite of two maps `f_k(w) = d_k + c_k·exp(A_k(w))` has differential order **exactly two**.
+
+This is the first case of the card's law proved outside the constant-coefficient family.  It covers,
+for instance, `exp(z²)` composed with any `d + c·exp(A(w))`, and every composition of maps whose
+first-order equation `f' = a(w)(f − d)` has genuinely polynomial coefficient.
+
+The proof is the whole chain built over the preceding sections, and every link is machine-checked:
+
+1. the analytic law `(X_k)' = (∏_(j<k)Q_j(X_j))·v_k(X_k)` with `Q_j = A_j'·v_j`, `v_k = X − d_(k−1)`;
+2. the rational model — needed because `Q_j'/Q_j` is not polynomial — and the transcendence of the
+   coordinates over the low subalgebra, replacing the tower's variable substitution;
+3. the affine top reduction, Bell unitriangularity, and the uniform row reduction, giving a bordered
+   determinant;
+4. the base case: the `1×1` bordered determinant is `Q_0(X_0)·Q_1'(X_1) ≠ 0`, using only that `Q_1` is
+   nonconstant — automatic here since `Q_1` carries the linear factor `X − d_0`;
+5. transport back to the polynomial model, the coordinate's unit column, and the corpus's analytic
+   transfer theorem;
+6. the upper bound from the corpus's cascade theorem, with the order-one equation
+   `X_2 − A'(X_0)(X_1 − d)`.
+
+The card's law is therefore now proved unconditionally for: the exponential tower, all
+constant-coefficient cascades at every length, and two-map polynomial-coefficient cascades.  The
+general height for polynomial coefficients needs the height induction, which splits at the degenerate
+locus `Q = K·v^e` identified above.
+
+### Every height, with one explicit determinant left
+
+`HTGeometry/ExpPolyGeneralHeight.lean` (axiom-clean) generalises the two-map theorem to all lengths:
+
+`exactDifferentialOrder_expPolyCascade` — for polynomials `A_k` of degree at least one and nonzero
+`c_k`, the length-`(m+1)` cascade of `d_k + c_k·exp(A_k(w))` has differential order exactly `m+1`,
+**provided** `det (headJetJacobian (polyQ A d) (polyV d) m) ≠ 0`.
+
+Two things made the generalisation short.  `jetDet_ne_zero_general` does the `Fin.lastCases` shape
+identification at any height — the last column of the output Jacobian is the newest derivation, for
+every `m`.  And only the *top* order needs excluding: by
+`DifferentiallyAlgebraicOfOrder.mono`, an equation of any lower order is one of order `m`, so a single
+application of the transfer theorem covers all `n < m+1`.
+
+So the analytic, algebraic and transport layers are all height-independent, and the entire remaining
+content of the card's law for this family is the one finite determinant identity — for which the base
+case is proved, the degenerate locus is identified, and the leading-order behaviour is understood
+(`ScaledLogWronskian`).
+
+## Consolidated status
+
+The formal lint gate passes (`scripts/formal_tools.py lint`): no `sorry`, `admit`, `axiom`, `opaque`
+or `unsafe` anywhere in the new material, and every theorem cited above is axiom-clean
+(`[propext, Classical.choice, Quot.sound]`).
+
+**Proved unconditionally, with the paper's hypotheses.**
+
+* `ord ≤ n` for a cascade of transcendental entire maps with first-order equations.
+* Algebraic independence of the states of *any* such cascade, and transcendence of every state — with
+  no growth theory, so the Clunie–Steinmetz separation the card was built around is not an input.
+* `ord = n`, every length, for all **constant-coefficient** cascades `d + c·exp(aw + b)`.
+* `ord = 2` for **polynomial-coefficient** cascades `d + c·exp(A(w))`, `deg A ≥ 1` — the first case
+  outside the constant-coefficient family.
+* `ord = n` for polynomial coefficients at every length, modulo one explicit finite determinant.
+* Reduction I's weight argument in full: the Wiman face inequality and its three readings (positive
+  order, the cap, non-existence), the pinning law, the tie analysis, and the assembled positive-order
+  theorem — Strelitz's input for the coefficient-heavy regime, with an explicit exponent.
+
+**Open.**
+
+* The head determinant at general height for polynomial coefficients.  The base case is proved, the
+  degenerate locus `Q = K·v^e` is identified (and is where the tower lives), and the leading-order
+  behaviour is understood: the scaled logarithmic derivative `v·Q'/Q` is constant exactly on that
+  locus, so the first-order terms cancel and a second-order analysis is required off it.
+* Reduction I's interior faces, i.e. identifying the polygon slope with `ρ − 1`, which needs the scale
+  of `ν` rather than one monomial comparison at a time.
+* Reduction III (`helim`) for cascades whose derivative law is algebraic rather than polynomial — the
+  card's original open core, which needs the Wiman initial data.
+
+**Reusable machinery built here, beyond this card.** The Newton-face layer for algebraic differential
+relations; the column-degree determinant extraction; the model-independent affine top reduction; the
+extension of a derivation to a fraction field applied to a cascade model, with transcendence of the
+newest coordinate over the low subalgebra; the uniform (no distinguished column) row reduction; and
+the observation that the coordinate contributes a unit *column*, which removes a hypothesis the
+tower's argument needed.
+
+### The open determinant is the observability of a single logarithm
+
+`HTGeometry/HeadGradientLogarithmic.lean` (axiom-clean) reformulates the remaining problem, and the
+reformulation is a real simplification.
+
+`fpderiv_prodHead_eq` — the gradient of the head product is the product times the vector of logarithmic
+derivatives, `∂_j(∏_k Q_k(X_k)) = (∏_k Q_k(X_k))·(Q_j'/Q_j)(X_j)`.  Hence
+`uniformBordered_headGradient_det`: the product scales out of the bordered determinant by one row
+operation, leaving the border row equal to `(Q_j'/Q_j)(X_j)`.
+
+Now read what remains.  Put `L = ∑_k log Q_k(X_k)`.  Then
+
+* the border row is `∂_j L`;
+* the multiplier of the head product is `δH/H = δL`, so the other rows are `∂_j δ^r (δL) = ∂_j δ^(r+1) L`.
+
+The open determinant is therefore the **output-jet Jacobian of the single function `L`** — a sum of
+one-variable logarithms — where before it was a Jacobian attached to a product of `m+1` factors.  The
+head product has disappeared from the problem, and with it the coupling between the levels: `L`'s
+dependence on each coordinate is `log Q_k(X_k)`, one term per coordinate.
+
+That is the form in which the height induction should be attempted, and it explains the two facts
+already established about it: `∂_j L = (Q_j'/Q_j)(X_j)` is nonzero exactly when `Q_j` is nonconstant
+(the base case), and `δL` is constant in a coordinate exactly on the locus `Q = K·v^e` (the scaled
+logarithmic derivative computation).
+
+### The open statement, named
+
+`HTGeometry/LogJetJacobian.lean` (axiom-clean) collects the reductions into one object and one
+statement.
+
+`logJetJacobian Q v n` — border row `∂_j L`, remaining rows `∂_j δ^r (δL)`, for
+`L = ∑_k log Q_k(X_k)`.
+
+* `headJetJacobian_det_eq_log` — `det(headJetJacobian) = (∏_k Q_k)^(n+1) · det(logJetJacobian)`;
+* `headJetJacobian_det_ne_zero_of_log` — so nonvanishing reduces to the logarithmic Jacobian;
+* `logJetJacobian_det_zero` — the base case, `det = (Q_1'/Q_1)(X_1) ≠ 0`.
+
+**The single open statement of the polynomial-coefficient programme is therefore:**
+
+> `det (logJetJacobian Q v n) ≠ 0` for `Q_j` nonconstant and `v_j` linear.
+
+Everything else on the card's law for this family — the analytic side, the model transport, the
+reductions, the upper bound, and the passage to `ExactDifferentialOrder` at every height — is proved
+and machine-checked.  What is known about the open statement: it holds at `n = 0`; its first-order
+leading terms cancel identically; and the cancellation is exact precisely on the locus `Q = K·v^e`,
+which contains the exponential tower.
+
+### The mechanism of the height induction
+
+Working the height-three case by hand produced the combination the induction turns on, and it is now
+proved in general (`ScaledLogWronskian.lean`, axiom-clean).
+
+At height three the logarithmic Jacobian is, after clearing denominators,
+
+`Q_1²·Q_1'·W(Q_2,v_2) − Q_2·Q_2'·W(Q_1,v_1) − Q_1²·Q_1'·v_2·(Q_2')²`,
+
+whose top-degree part in `X_2` is `−q₂·a²·[ W(Q_1,v_1) + q₂·α₂·Q_1²·Q_1' ]`.  So the height-three case
+reduces to that bracket being nonzero — and
+
+* `natDegree_scaledLogWronskian_le` — `deg W(Q,v) ≤ 2·deg Q − 1`, needing no cancellation, but a case
+  split: the crude product bounds fail when `Q` is constant or linear, exactly where `Q'` or `Q''`
+  vanishes;
+* `scaledLogWronskian_add_cross_ne_zero` — hence `W(Q,v) + c·Q²·Q' ≠ 0` for `c ≠ 0` and `Q`
+  nonconstant, since the cross term has degree `3·deg Q − 1`.
+
+**The mechanism, in one line:** at each level the newest *cross* term `Q²·Q'` outweighs the Wronskian
+left by the level below, because `3q − 1 > 2q − 1`.  The Wronskian degeneracy on `Q = K·v^e` — the locus
+containing the tower — is therefore harmless once a level is added above it: the cross term does not
+degenerate.  That is what the general induction has to iterate.
+
+### The Wronskian, in the model
+
+`HTGeometry/ScaledLogModel.lean` (axiom-clean) carries the polynomial identity into the rational
+model, where the induction will use it:
+
+* `logFactor_mul_fact_eq` — the scaled logarithmic derivative at a coordinate is the quotient
+  `(Q'·v)(X_j) / Q(X_j)` (no hypothesis needed: the identity holds even when `Q_j = 0`, both sides
+  being zero);
+* `fpderiv_logFactor_mul_fact` — its coordinate derivative is
+
+  `W(Q_j, v_j)(X_j) / Q_j(X_j)²`,
+
+  the model form of `Q²·(vQ'/Q)' = (v'Q' + vQ'')Q − v(Q')²`.
+
+That is the quantity each level of the logarithmic Jacobian contributes at its own coordinate, so with
+`scaledLogWronskian_add_cross_ne_zero` both halves of the height-three computation — the level's own
+Wronskian and the cross term from the level above — are now available in the form the determinant
+needs.
+
+### The diagonal entry, at any height
+
+`fpderiv_logSum_top` (in `ScaledLogModel.lean`, axiom-clean): only the newest term of the logarithmic
+sum sees the newest coordinate, and
+
+`∂_(n+1) (logSum_(n+2)) = (∏_(j≤n) Q_j(X_j)) · W(Q_(n+1), v_(n+1))(X_(n+1)) / Q_(n+1)(X_(n+1))²`.
+
+This is the diagonal entry of the logarithmic Jacobian at **every** height, not just at three: the
+lower terms are annihilated because each lies in the low subalgebra, and the surviving term factors as
+head product times the model Wronskian.
+
+Combined with `scaledLogWronskian_add_cross_ne_zero`, the two ingredients of the induction step are
+now both general: the diagonal contributes `W(Q_k, v_k)/Q_k²`, and the cross term from the level above
+contributes `Q_k²Q_k'`, whose degree exceeds the Wronskian's.  What remains is the bookkeeping of the
+off-diagonal entries and the expansion.
+
+### The off-diagonal entries have a uniform shape
+
+`fpderiv_logSum_term_high` (in `ScaledLogModel.lean`, axiom-clean): for `j < k`,
+
+`∂_j (logFactor(Q_k)·δX_k) = (Q_j'/Q_j)(X_j) · (logFactor(Q_k)·δX_k)`.
+
+A higher term of the logarithmic sum, differentiated at a **lower** coordinate, is simply multiplied by
+that coordinate's logarithmic derivative: only the term's head product sees the coordinate, and its
+logarithmic derivative there is exactly `Q_j'/Q_j`.
+
+So the row of the logarithmic Jacobian has the shape
+
+`∂_j (logSum) = (diagonal Wronskian term at j) + (Q_j'/Q_j)(X_j)·(the part of the sum strictly above j)`,
+
+with the terms strictly below `j` annihilated.  Every entry of the matrix is now identified in closed
+form: the border row is `(Q_j'/Q_j)`, the diagonal contributions are `W(Q_j,v_j)/Q_j²` times the head
+product below, and the off-diagonal contributions are the border entry times a tail of the sum.  That
+is the input to the expansion the induction needs.
+
+### The row formula, closed
+
+`fpderiv_logSum_row` (in `ScaledLogModel.lean`, axiom-clean) assembles the entries into the row of the
+logarithmic Jacobian, at every height and every column:
+
+`∂_(j+1) (logSum_(n+2)) = (∏_(i≤j) Q_i)·W(Q_(j+1), v_(j+1))/Q_(j+1)²
+                          + (Q_(j+1)'/Q_(j+1))·(logSum_(n+2) − logSum_(j+2))`.
+
+Everything below the coordinate is annihilated, the coordinate itself contributes its Wronskian, and
+the tail above it is multiplied by the coordinate's logarithmic derivative — which is precisely the
+border-row entry.  So the matrix is
+
+`row 0 = (c_j)`,  `row 1 = (D_j + c_j·T_j)`,
+
+with `c_j` the border entry, `D_j` the Wronskian term and `T_j` the tail of the sum above `j`.  The
+`c_j·T_j` part is a multiple of the border row in each column separately — not a single row operation,
+since `T_j` varies with `j`, which is exactly why the determinant does not collapse and the Wronskian
+terms survive.
+
+### The sharp degree bound, without coefficient extraction
+
+The leading-order cancellation in `W(Q,v)` has a proof that avoids extracting coefficients altogether
+(`ScaledLogWronskian.lean`, axiom-clean):
+
+* `scaledLogWronskian_eq_reduced` — for **any** constant `c`,
+
+  `W(Q,v) = R'·Q − R·Q'`,  `R := v·Q' − c·Q`,
+
+  because the `c`-terms cancel between the two products.  The Wronskian of `(vQ', Q)` is the Wronskian
+  of `(R, Q)`;
+* `natDegree_scaledLogWronskian_le_of_reduced` — hence if the constant is chosen so that `R` drops a
+  degree (`deg R ≤ deg Q − 1`, which happens for `c = deg Q · lead v`), then
+
+  `deg W ≤ 2·deg Q − 2`,
+
+  the sharp bound.  The linear case `deg Q = 1` is separate: there `R` is constant, `R' = 0`, and the
+  Wronskian is `−R·Q'` of degree `0 = 2·1 − 2`.
+
+This replaces the term-by-term cancellation `q(q−1) + q − q² = 0` by a one-line algebraic identity, and
+it is the bound the height-three leading-coefficient comparison needs: `deg W ≤ 2q−2` against the cross
+term's `3q−1`, and against the companion term's `2q−1`.
+
+### The sharp bound, unconditionally
+
+`natDegree_reduced_le` discharges the hypothesis: with `c = deg Q · lead v` and `v` exactly linear, the
+reduced numerator `R = v·Q' − c·Q` has `deg R ≤ deg Q − 1`, because its top coefficient is
+`lead v · lead Q' − deg Q · lead v · lead Q = 0` — using `lead Q' = deg Q · lead Q`.  Hence
+
+`natDegree_scaledLogWronskian_le_sub_two` :  `deg W(Q,v) ≤ 2·deg Q − 2`
+
+with no hypothesis beyond `deg Q ≥ 1` and `deg v = 1` (axiom-clean).
+
+So all three degree facts the height-three comparison needs are now proved: `deg W ≤ 2q−2`, the
+companion term's `2q−1`, and the cross term's exact `3q−1`.  The remaining work there is the
+determinant expansion itself and the transfer from "nonzero leading coefficient in the newest
+coordinate" to "nonzero in the field", both of which are bookkeeping over the closed-form entries
+already established.
+
+### Height three, in closed form
+
+`HTGeometry/LogJetHeightThree.lean` (axiom-clean) writes out the `2×2` determinant with the entries
+established above:
+
+`det = c_1·(P_2·W̃_2) − c_2·(P_1·W̃_1 + c_1·c_2·δX_2)`,
+
+where `c_j = (Q_j'/Q_j)(X_j)`, `P_j = ∏_(i<j)Q_i(X_i)` and `W̃_j = W(Q_j,v_j)(X_j)/Q_j(X_j)²`.
+
+The border row supplies `c_1, c_2`; the second row is the two Wronskian terms, with the extra
+`c_1·c_2·δX_2` in the lower column because the tail of the logarithmic sum above coordinate 1 is
+nonempty while above coordinate 2 it is not.
+
+Multiplying by `Q_1²Q_2²/P_1` turns this into the polynomial statement analysed earlier, whose top
+coefficient in `X_2` is `−q₂·a²·[W(Q_1,v_1) + q₂·α₂·Q_1²Q_1']` — nonzero by
+`scaledLogWronskian_add_cross_ne_zero`, using `deg W ≤ 2q−2` from
+`natDegree_scaledLogWronskian_le_sub_two`.  The remaining step at this height is the transfer from that
+leading coefficient to nonvanishing in the field.

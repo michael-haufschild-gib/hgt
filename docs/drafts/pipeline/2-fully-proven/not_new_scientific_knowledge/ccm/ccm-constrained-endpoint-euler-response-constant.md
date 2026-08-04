@@ -888,6 +888,129 @@ What remains is purely quantitative: the *rate* of the lower bound,
 endpoint ODE `(4)` the missing rate is equivalent to a lower bound on the endpoint value
 `|psi_c(1)|²`, which is the differentiated form of the same classical asymptotic.
 
+The structural input any sharp two-sided estimate must use is now formalized, in
+`RHTower/BandLimitedExtension.lean`: the eigenfunctions are *band-limited*, in the Paley–Wiener sense.
+
+- `swap_interval_integral_complex` — the complex rectangle Fubini (the corpus had only the real one).
+- **`bandTransform_eq_windowIntegral`** — the sinc kernel is the inverse transform of the frequency
+  window, so for every continuous test function
+
+  ```text
+  (B_c Phi)(x) = (c/2 pi) ∫_(-1)^1 F(-c t) exp (i c x t) dt,     F(omega) = ∫_(-1)^1 Phi(y) e^(i omega y) dy.
+  ```
+
+  Inserting the window representation of the kernel and interchanging the two compact integrals leaves
+  the whole `x`-dependence in one exponential, whose frequency runs over a compact interval.
+- `bandSpectrum`, `continuous_bandSpectrum`, `bandFourier_eq_compactFourier` — the corpus's
+  finite-Fourier moment *is* a compact Fourier transform at a real frequency, so its continuity (indeed
+  analyticity) in the frequency is free.
+- `bandTransformEntire`, `bandTransformEntire_ofReal`, **`differentiable_bandTransformEntire`**,
+  `norm_bandTransformEntire_le` — hence the band transform of any continuous test function extends to
+  an entire function of exponential type `|c|`, with the explicit Paley–Wiener bound
+  `‖F(z)‖ <= C e^(|c| |Im z|)` (the general growth lemma `norm_compactFourier_le` is in
+  `CompactFourierEntire.lean`).
+- **`exists_entire_extension_eigenExtension`** — an `L²` eigenfunction is `1/nu` times its own band
+  transform, so **the prolate eigenfunctions are restrictions of entire functions of exponential type
+  `c`**, with an explicit growth constant.
+
+This is the frame in which the missing rate lives: the leakage compares the eigenfunction's mass inside
+the band with the mass its entire extension is forced to carry outside, and the exponential type is the
+only thing that controls that comparison.
+
+That comparison is now an *identity*.  `RHTower/FourierPlancherelIntegral.lean` supplies the analytic
+tool mathlib lacks — Plancherel for the classical Fourier *integral* rather than for `L²` classes:
+
+- `lp_norm_sq_eq_integral`, `coeFn_fourier_toLp`, **`integral_norm_sq_fourier_eq`**,
+  `integrable_norm_sq_fourier` — for a function that is both integrable and square integrable,
+  `∫ ‖𝓕 f (xi)‖² d xi = ∫ ‖f x‖² dx` and the spectral density is integrable.  The corpus's band-specific
+  Plancherel is now a one-line consequence.
+- `continuous_fourier_of_integrable` — the Fourier integral of an integrable function is continuous
+  (mathlib's `L¹` transform is a bounded continuous function and represents the classical integral).
+
+`RHTower/BandTransformEnergy.lean` then computes the energy:
+
+- `windowSpectrum`, `integrable_windowSpectrum`, `memLp_windowSpectrum` — the spectrum truncated to the
+  frequency window is integrable and square integrable.
+- **`bandTransform_eq_fourier_windowSpectrum`** — the band transform *is* the Fourier integral of its
+  windowed spectrum, `(B_c Phi)(x) = 𝓕 (1_([-k,k]) 𝓕 (trunc Phi)) (-x)`: the Jacobian `2 pi/c` of the
+  window change of variables cancels the prefactor of the window representation exactly.
+- **`integral_sq_bandTransform_eq_form`** — hence by Plancherel the *total* energy of the band transform
+  on the line is the band quadratic form,
+
+  ```text
+  ∫_ℝ (B_c Phi)² = ∫∫ sinc_c(x-y) Phi(x) Phi(y),
+  ```
+
+  which is the projection identity `‖P f‖² = ⟪P f, f⟫` in explicit form.
+- `bandClass_eigenExtension`, **`integral_sq_eigenExtension`**, **`integral_outside_sq_eigenExtension`** —
+  for an eigenfunction, `nu² ∫_ℝ psi² = nu ‖psi‖²`, so its band-limited extension carries energy
+  `‖psi‖²/nu` on the line and
+
+  ```text
+  ∫_(|x| > 1) psi² = ‖psi‖² (1 - nu)/nu
+  ```
+
+  outside the band.  **The leakage is exactly the mass the eigenfunction's entire extension is forced to
+  spend outside `[-1, 1]`.**
+
+So the missing rate is now a statement with no operator theory left in it: for an entire function of
+exponential type `c` with unit mass on `[-1, 1]`, the mass outside `[-1, 1]` is at least
+`c_0 c^(1/2) e^(-2c)`.  That is the concentration inequality Fuchs's asymptotic proves, and it is the
+only remaining analytic input on this side.
+
+The standard toolbox for that class of functions is now in the tree, in `RHTower/PaleyWienerNorms.lean`
+— mathlib has neither inequality:
+
+- `compactFourier_eq_fourier_indicator`, **`integral_norm_sq_compactFourier`** — a function synthesised
+  from a compactly supported spectrum, `Psi(x) = ∫_(-k)^k H(v) e^(2 pi i v x) dv`, is the Fourier
+  integral of the spectrum extended by zero, so Plancherel computes its energy exactly:
+  `∫_ℝ |Psi|² = ∫_(-k)^k |H|²`.
+- **`norm_sq_compactFourier_le`** (Nikolskii) — Cauchy–Schwarz on the synthesis integral:
+  `|Psi(x)|² <= 2k ∫ |H|² = 2k ∫_ℝ |Psi|²`.
+- **`hasDerivAt_compactFourier_real`**, **`integral_norm_sq_deriv_compactFourier_le`** (Bernstein) — the
+  derivative of a synthesis is the synthesis of the frequency-multiplied spectrum, and since
+  `|2 pi v| <= 2 pi k` on the window its energy is at most `(2 pi k)²` times the original.
+- `bandTransform_eq_compactFourier`, `integral_sq_bandTransform_eq_synthesis`,
+  **`sq_bandTransform_le`**, **`integral_sq_bandTransform_bernstein`** — instantiated at the band
+  window `k = c/(2 pi)`: the band transform obeys `(B_c Phi)(x)² <= (c/pi) ∫_ℝ (B_c Phi)²` and its
+  derivative has energy at most `c²` times its own.
+- **`sq_eigenExtension_le`** — hence every eigenfunction of the band operator obeys the pointwise bound
+  `psi(x)² <= (c/pi) ‖psi‖²/nu` at every real point.
+
+These are the sup-norm and derivative bounds every route to the sharp rate uses.  They do not by
+themselves produce it: fed through the exact endpoint ODE `(4)` they give only
+`L'(c) >= -(2/pi)`, because the pointwise bound is polynomial while the truth is exponentially small —
+the extremal analysis (WKB for the prolate ODE, or the Riemann–Hilbert method) is what supplies the
+exponent, and that remains the open input.
+
+The extremal analysis is an *ODE* argument, and the corpus already owns a prolate-ODE layer —
+`prolateSLAction`, the conserved Wronskian and its endpoint collapse (`ProlateWronskian`), the
+one-turning-point variation mechanism (`ProlateOneTurningVariation`), the band self-adjointness
+`prolateSLAction_band_symmetric` (`ProlateBandSymmetric`), the Hermite rescaling identity
+(`FuchsProlateScale`) — but that layer was only ever connected to the *integral* operator in the easy
+direction (`slepian_commutation_eigen`: an ODE solution is carried to an ODE solution).  The connector
+in the spectral direction is now built, in `RHTower/ProlateJointEigen.lean`:
+
+- **`contDiff_bandTransform`** — the band transform of a continuous function is `C^∞`, because it is the
+  real part of an entire function of the space variable (the Paley–Wiener representation of the previous
+  step).  **`contDiff_eigenExtension`** — hence every eigenfunction of the band operator is `C^∞`, being
+  `1/nu` times its own band transform.  This discharges the differentiability hypotheses the commuting
+  theorem carries.
+- `prolateSLAction_const_mul` — the prolate action is homogeneous on differentiable functions.
+- **`bandTransform_prolateSLAction`** — the commuting theorem read in the spectral direction: if
+  `T Phi = lambda Phi` pointwise then `T (P_c Phi) = lambda (P_c Phi)`.  **The prolate Sturm–Liouville
+  action maps the pointwise `lambda`-eigenspace of the band transform into itself.**
+- `inner_bandClass_eq`, `bandOperatorL2_bandClass` — the `L²` dictionary the spectral step consumes: the
+  band class of a continuous function transports the inner product to the interval pairing and the band
+  operator to the band transform.
+
+What remains to reach a *joint* eigenfunction — a band eigenfunction that also solves the prolate
+equation, which is what the WKB/Wronskian machinery can then be pointed at — is the finite-dimensional
+spectral step: the `lambda`-eigenspace of a compact operator is finite dimensional, the prolate action is
+symmetric on it (`prolateSLAction_band_symmetric`, whose boundary terms vanish because `1 - y²` does), and
+a symmetric operator on a finite-dimensional inner-product space has an eigenvector.  No simplicity
+hypothesis is needed for that route.
+
 ## Lean gates
 
 - [x] Lean: the sinc kernel equals the finite-Fourier character integral — equation `(6)` (already in the
@@ -929,8 +1052,32 @@ endpoint ODE `(4)` the missing rate is equivalent to a lower bound on the endpoi
   (`CompactFourierEntire.lean`), an entire function vanishing a.e. on a real interval vanishes, the
   band uncertainty principle (`BandUncertainty.lean`), and the Fredholm alternative
   (`BandStrictGap.lean`, `norm_bandOperatorL2_lt_one`)
-- [ ] Lean: the **rate** of the lower leakage envelope `1 - ‖B_c‖ >= c_0 c^(1/2) e^(-2c)`, and
-  antitonicity of its logarithmic derivative — the last classical inputs
+- [x] Lean: **Paley–Wiener for the band transform** — the sinc kernel is the inverse window transform,
+  so the band transform of any continuous test function is a window integral, hence entire of
+  exponential type `|c|`; the prolate eigenfunctions are therefore restrictions of entire functions of
+  exponential type `c` (`BandLimitedExtension.lean`, `exists_entire_extension_eigenExtension`)
+- [x] Lean: **Plancherel for the classical Fourier integral** (absent from mathlib, which has only the
+  `L²`-class isometry) and the **leakage as an outside mass**: the band transform is the Fourier integral
+  of its windowed spectrum, so its total energy on the line is the band quadratic form, and an
+  eigenfunction's entire extension spends exactly `‖psi‖²(1 - nu)/nu` of its energy outside the band
+  (`FourierPlancherelIntegral.lean`, `BandTransformEnergy.lean`,
+  `integral_outside_sq_eigenExtension`)
+- [x] Lean: the **Paley–Wiener toolbox** — Plancherel, Nikolskii and Bernstein for a compactly supported
+  spectrum, instantiated on the band: `(B_c Phi)(x)² <= (c/pi) ∫ (B_c Phi)²`, the derivative energy bound
+  `<= c²`, and the eigenfunction sup bound `psi(x)² <= (c/pi)‖psi‖²/nu`
+  (`PaleyWienerNorms.lean`, `sq_eigenExtension_le`, `integral_sq_bandTransform_bernstein`)
+- [x] Lean: the **spectral direction of the commuting theorem** — band eigenfunctions are `C^∞` (from the
+  Paley–Wiener representation) and the prolate Sturm–Liouville action maps the pointwise eigenspace of the
+  band transform into itself, with the `L²` dictionary for the spectral step
+  (`ProlateJointEigen.lean`, `bandTransform_prolateSLAction`, `contDiff_eigenExtension`)
+- [ ] Lean: the **joint eigenfunction** — finite-dimensionality of the eigenspace plus symmetry of the
+  prolate action on it (both ingredients present) gives a band eigenfunction solving the prolate equation,
+  with no simplicity hypothesis; then the ODE layer (Wronskian, turning point, Hermite rescaling) applies
+  to the actual operator
+- [ ] Lean: the **rate** of the lower leakage envelope, now equivalent to a pure concentration
+  inequality for entire functions of exponential type `c` — unit mass on `[-1, 1]` forces mass at least
+  `c_0 c^(1/2) e^(-2c)` outside — and antitonicity of the logarithmic derivative.  The polynomial
+  toolbox above is not enough: the exponent needs the extremal (WKB / Riemann–Hilbert) analysis
 - [x] Lean: the constrained ground-state ratio `8/11` derived from the prolate-to-Hermite coefficient
   limits, with the Hermite weight arithmetic `q_1 = 3/8` (`tendsto_ellSqRatio_of_hermiteLimits`)
 - [ ] Lean: the prolate-to-Hermite coefficient limits `ell_j(lambda) -> h_(4j)(0)` for the true

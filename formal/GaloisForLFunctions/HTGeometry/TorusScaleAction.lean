@@ -26,7 +26,7 @@ variable {C E : Type u} [Field C] [Field E] [Algebra C E] [Differential C] [Diff
 
 section
 
-variable {ι : Type u} {x : ι → E} (hx : DifferentialIndependent C x)
+variable {ι : Type*} {x : ι → E} (hx : DifferentialIndependent C x)
   (hgen : differentialAdjoin C (Set.range x) = ⊤)
 
 include hx hgen in
@@ -41,10 +41,12 @@ def torusScaleEquiv (u : ι → Cˣ) : E ≃ₐ[C] E :=
         (fun i ↦ (u i).ne_zero)]
       exact hgen)
 
+omit [CharZero E] in
 theorem torusScaleEquiv_apply (u : ι → Cˣ) (i : ι) :
     torusScaleEquiv hx hgen u (x i) = algebraMap C E ((u i : C)) * x i :=
   GaloisForLFunctions.differentialIndependentTopAlgEquiv_apply _ _ _ _ _ _ i
 
+omit [CharZero E] in
 theorem torusScaleEquiv_deriv (u : ι → Cˣ) (z : E) :
     torusScaleEquiv hx hgen u z′ = Differential.deriv (torusScaleEquiv hx hgen u z) :=
   GaloisForLFunctions.differentialIndependentTopAlgEquiv_deriv _ _ _ _ _ _ z
@@ -65,7 +67,6 @@ theorem torusScaleEquiv_mul (u v : ι → Cˣ) :
   · rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply, torusScaleEquiv_deriv, torusScaleEquiv_deriv]
   · rw [AlgEquiv.mul_apply, torusScaleEquiv_apply, torusScaleEquiv_apply, map_mul,
       AlgEquiv.commutes, torusScaleEquiv_apply]
-    change algebraMap C E (((u * v) i : C)) * x i = _
     rw [show ((u * v) i : C) = (u i : C) * (v i : C) from rfl, map_mul]
     ring
 
@@ -88,12 +89,14 @@ section
 variable {r : ℕ} {x : Fin r → E} (hx : DifferentialIndependent C x)
   (hgen : differentialAdjoin C (Set.range x) = ⊤)
 
+omit [Differential C] [DifferentialAlgebra C E] [CharZero E] in
 include hx in
 theorem torus_palette_ne_zero (i : Fin r) : x i ≠ 0 := by
   intro hi
   exact ((algebraicIndependent_of_differentialIndependent hx).transcendental i)
     (hi ▸ isAlgebraic_zero)
 
+omit [CharZero E] in
 include hx in
 /-- The deck representation of a torus protocol is faithful. -/
 theorem torusScaleRep_injective : Function.Injective (torusScaleRep hx hgen) := by
@@ -105,17 +108,18 @@ theorem torusScaleRep_injective : Function.Injective (torusScaleRep hx hgen) := 
     mul_right_cancel₀ (torus_palette_ne_zero hx i) h
   exact Units.ext ((algebraMap C E).injective hcast)
 
+omit [CharZero E] in
 /-- **The scaling action on a monomial family** is by the same monomial in the scalars. -/
 theorem torusScaleEquiv_monomialFamily (u : Fin r → Cˣ) (M : Matrix (Fin r) (Fin r) ℤ)
     (i : Fin r) :
     torusScaleEquiv hx hgen u (monomialFamily M x i)
       = algebraMap C E (monomialFamily M (fun j ↦ ((u j : C))) i) * monomialFamily M x i := by
   have hx0 : ∀ j, x j ≠ 0 := torus_palette_ne_zero hx
-  rw [monomialFamily_apply, map_prod, monomialFamily_apply, monomialFamily_apply, map_prod,
-    ← Finset.prod_mul_distrib]
+  simp only [monomialFamily_apply, map_prod, ← Finset.prod_mul_distrib]
   refine Finset.prod_congr rfl fun j _ ↦ ?_
   rw [map_zpow₀, torusScaleEquiv_apply, mul_zpow, map_zpow₀]
 
+omit [CharZero E] in
 /-- **The deck group of a torus isogeny fixes its prefix image.**  A scalar vector killed by the
 matrix acts trivially on the differential field of the monomial family. -/
 theorem differentialAdjoin_monomialFamily_le_fixedField

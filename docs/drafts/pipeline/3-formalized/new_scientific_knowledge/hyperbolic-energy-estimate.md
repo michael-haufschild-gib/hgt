@@ -140,6 +140,34 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 76 | **the Grönwall estimate for the perturbed equation** | **`kgStrongEnergy_le_exp`** | **built** |
 | 77 | time reflection and two-sided uniqueness | `SolvesKGSource.comp_neg`, **`eq_zero_of_solvesKGSource`**, **`eq_of_solvesKGSource`** | **built** |
 | 78 | **uniqueness for a bounded measurable potential** | **`eq_of_solvesKGSource_potential`** | **built** |
+| 79 | reflection and the two-sided Grönwall estimate | `kgStrongEnergy_comp_neg`, **`kgStrongEnergy_le_exp_abs`** | **built** |
+| 80 | **continuous dependence in the perturbed strong class** | `SolvesKGSource.sub`, **`kgStrongEnergy_sub_le_exp_abs`** | **built** |
+| 81 | the Volterra equation with a vanishing kernel | `volterraIterate_zero_kernel`, **`volterraSolution_zero_kernel`** | **built** |
+| 82 | **the two constructions agree where they overlap** | **`kgMildSolution_of_ae_zero`** | **built** |
+| 83 | the half-order propagator `sin(t⟨D⟩)/⟨D⟩` | `kgSinFreqOp`, `norm_kgSinFreqOp_le`, `kgSinFreqOp_zero`, **`continuous_kgSinFreqOp_apply`**, `continuous_kgSinFreqOp_comp` | **built** |
+| 84 | the field-level Duhamel data | `kgFieldFree`, `kgFieldFree_zero`, `norm_kgFieldFree_le`, `kgFieldKernel`, `norm_kgFieldKernel_le`, **`strongKernel_kgFieldKernel`** | **built** |
+| 85 | **well-posedness of the field equation for arbitrary `L²` data** | `kgFieldMild`, `continuous_kgFieldMild`, **`kgFieldMild_eq`**, `kgFieldMild_zero`, **`norm_kgFieldMild_le`**, `eq_kgFieldMild_of_duhamel`, **`exists_unique_kgFieldMild`** | **built** |
+| 86 | **the strong field is the mild field** | `kgFieldMild_zero_op`, `kgSinFreqOp_eq_comp`, `kgFreeField_eq_kgFieldFree`, **`kgFreeField_eq_kgFieldMild`** | **built** |
+| 87 | **the velocity datum needs no regularity** | `kgSinFreqOp_apply`, **`hasDerivAt_kgSinFreqOp`**, **`hasDerivAt_kgFieldFree`**, `deriv_kgFieldFree_zero` | **built** |
+| 88 | **linearity of the field solution and continuous dependence** | `kgFieldFree_sub`, `intervalIntegrable_kgFieldKernel`, **`kgFieldMild_sub`**, **`norm_kgFieldMild_sub_le`** | **built** |
+| 89 | the subtraction law for the half-order propagator | **`kgSinFreqOp_sub`**, `continuous_kgCosOp_comp` | **built** |
+| 90 | **the Duhamel term with observation and source times separated** | **`intervalIntegral_kgFieldKernel_separated`**, **`kgFieldMild_eq_separated`** | **built** |
+| 91 | **the product rule for a strongly differentiable operator family** | **`hasDerivAt_strong_apply`** | **built** |
+| 92 | the Duhamel integral of the half-order propagator is regular | `kgSinFreqOp_eq_freqInv_comp`, `kgSinFreqOp_apply_freqInv`, **`intervalIntegral_kgSinFreqOp_eq`** | **built** |
+| 93 | the endpoint derivatives of the two Duhamel integrals | **`hasDerivAt_intervalIntegral_kgCosOp`**, **`hasDerivAt_intervalIntegral_kgSinOp`** | **built** |
+| 94 | the subtraction law for the cosine propagator, and the commutation | **`kgCosOp_sub`**, **`kgSinFreqOp_comm_kgCosOp`** | **built** |
+| 95 | the derivatives of the two halves of the separated term | **`hasDerivAt_kgDuhamelFirst`**, **`hasDerivAt_kgDuhamelSecond`** | **built** |
+| 96 | **the Duhamel term is differentiable, with the classical derivative** | **`hasDerivAt_kgDuhamel`**, **`kgDuhamel_deriv_eq`** | **built** |
+| 97 | **the mild field solution is differentiable, with the classical velocity** | **`hasDerivAt_kgFieldMild`**, **`deriv_kgFieldMild`** | **built** |
+| 98 | **the `C¹` Cauchy problem is solved with the prescribed data** | `kgFieldMild_at_zero`, **`deriv_kgFieldMild_at_zero`**, **`exists_kgFieldMild_c1`** | **built** |
+| 99 | the subtraction law for the energy-coordinate sine | **`kgSinOp_sub`** | **built** |
+| 100 | the two integrals of a regular source, and their recombination | `intervalIntegral_kgCosOp_freqInv`, `intervalIntegral_kgSinOp_freqInv`, **`kgSinDuhamel_recombine`** | **built** |
+| 101 | the endpoint contributions add up to the source | `kgCosOp_sq_add_kgSinOp_sq_apply`, **`kgEndpoint_sum`** | **built** |
+| 102 | **the velocity integral is differentiable for a regular source** | **`hasDerivAt_kgCosDuhamel`** | **built** |
+| 103 | the smoothing perturbation | `kgSmoothingOp`, `norm_kgSmoothingOp_le`, `kgSinFreqOp_freqInv` | **built** |
+| 104 | the solution, its velocity and its acceleration | `kgSmoothMild`, `kgSmoothVel`, `kgSmoothAcc`, **`hasDerivAt_kgSmoothMild`**, **`hasDerivAt_kgSmoothVel`** | **built** |
+| 105 | the solution is doubly regular, with explicit regularising vector | **`kgSmoothMild_eq`** | **built** |
+| 106 | **a smoothing perturbation makes the mild solution strong** | **`solvesKGSource_kgSmoothMild`**, **`kgStrongEnergy_kgSmoothMild_le`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
@@ -149,8 +177,12 @@ Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` 
 `KleinGordonEnergyConservation.lean` (58–60), `KleinGordonMildSolution.lean` again (61),
 `L2FourierMultiplier.lean` again (62), `KleinGordonPropagatorDerivative.lean` (63–65),
 `KleinGordonStrongSolution.lean` (66–69), `KleinGordonStrongUniqueness.lean` (70–73),
-`KleinGordonPotentialStrong.lean` (74–78). All wired into the umbrella; axioms
-`[propext, Classical.choice, Quot.sound]`.
+`KleinGordonPotentialStrong.lean` (74–78), `KleinGordonStrongStability.lean` (79–82),
+`KleinGordonFieldMild.lean` (83–86), `KleinGordonFieldRegularity.lean` (87–88),
+`KleinGordonDuhamelSeparation.lean` (89–90), `KleinGordonDuhamelDerivative.lean` (91–93),
+`KleinGordonDuhamelFirstDerivative.lean` (94–96), `KleinGordonFieldVelocity.lean` (97–98),
+`KleinGordonDuhamelSecondDerivative.lean` (99–102), `KleinGordonSmoothingStrong.lean` (103–106).
+All wired into the umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
 
@@ -704,6 +736,235 @@ That is the card's headline theorem — *"the Cauchy problem has at most one suc
 for the clock equation with a genuinely rough potential, in a class of solutions the corpus can also
 construct.
 
+
+### Closing the perturbed theory, and one honest limit
+
+Statements 79–82 finish the perturbed strong layer. Reflecting time carries a solution to a solution
+and leaves the energy unchanged (`kgStrongEnergy_comp_neg`), so the Grönwall estimate holds on both
+sides of the initial slice (**`kgStrongEnergy_le_exp_abs`**); the class is linear, so applying it to a
+difference turns uniqueness into **continuous dependence** (**`kgStrongEnergy_sub_le_exp_abs`**) — the
+same upgrade statement 15 makes for the pointwise theory. Statement 82 checks the two constructions
+against each other: a potential vanishing almost everywhere collapses the perturbation series to its
+first term, so **`kgMildSolution_of_ae_zero`** says the mild solution of the first-order system *is*
+the propagator.
+
+What is **not** available, and should not be claimed, is strong existence with a rough potential. The
+Duhamel term of the second-order equation is `∫₀ᵗ (sin((t-s)⟨D⟩)/⟨D⟩) Wu(s) ds`; differentiating once
+is harmless, but the second differentiation produces `∫₀ᵗ ⟨D⟩ sin((t-s)⟨D⟩) Wu(s) ds`, whose integrand
+is **unbounded** unless `Wu(s)` is itself regular — and multiplication by a merely measurable bounded
+`V` destroys frequency localisation, so `Vu(s)` is not. This is not a gap in the formalisation: a mild
+solution with a rough potential genuinely need not be a strong one. The estimate (76), uniqueness (78)
+and stability (80) hold for whatever strong solutions exist; existence at that regularity is the mild
+theory of statements 54–56, and the bridge between them requires a smoothing hypothesis on `W`.
+
+
+### The Duhamel formula one level down
+
+The mild theory of statements 54–56 lives in the energy space, on pairs `(⟨D⟩u, ∂ₜu)`. Statements
+83–86 write it where the classical theory writes it — for the field itself:
+
+`u(t) = cos(t⟨D⟩)f + (sin(t⟨D⟩)/⟨D⟩)h + ∫₀ᵗ (sin((t-s)⟨D⟩)/⟨D⟩) W u(s) ds`.
+
+Every operator here is a Fourier multiplier with symbol bounded by **one**, uniformly in time:
+`|sin(r⟨ξ⟩)/⟨ξ⟩| ≤ ⟨ξ⟩⁻¹ ≤ 1`. That is the same cancellation which made the propagator differentiable
+on regular data (statement 65), used here for a different purpose — it makes the half-order
+propagator `kgSinFreqOp` a contraction, so the Volterra layer applies with **no regularity hypothesis
+on the data at all**. `f` and `h` are arbitrary elements of `L²`:
+
+**`exists_unique_kgFieldMild`**: for every `f, h ∈ L²` there is exactly one continuous curve
+satisfying the Duhamel formula above; it starts at `f` (`kgFieldMild_zero`) and obeys
+
+**`norm_kgFieldMild_le`**: `‖u(t)‖ ≤ (‖f‖+‖h‖)e^{‖W‖|t|}`.
+
+Statement 86 identifies the two constructions of this card. `sin(t⟨D⟩)/⟨D⟩` is the energy-coordinate
+sine composed with `⟨D⟩⁻¹` (`kgSinFreqOp_eq_comp`), so the strong field of statement 68 with datum
+`(f, h)` is the field-level *free* solution with datum `(⟨D⟩⁻²f, ⟨D⟩⁻¹h)`, and hence
+
+**`kgFreeField_eq_kgFieldMild`**: the strong solution **is** the mild solution of its own Cauchy
+data.
+
+So the card now carries the same equation in three registers — pointwise classical (1–45), first-order
+mild in the energy space (46–61), and second-order strong and mild for the field (62–86) — with the
+identifications between them proved wherever both are defined.
+
+
+### How little regularity the first derivative needs
+
+Statement 87 sharpens the differentiability hypothesis. Statement 67 differentiated the free field
+*twice*, and for that both data had to be regularised. For the **first** derivative the velocity
+datum needs nothing at all: `d/dt [sin(t⟨ξ⟩)/⟨ξ⟩] = cos(t⟨ξ⟩)` is bounded, so
+
+**`hasDerivAt_kgSinFreqOp`**: `d/dt (sin(t⟨D⟩)/⟨D⟩)h = cos(t⟨D⟩)h` for **every** `h ∈ L²`,
+
+and only the position datum has to carry one power of `⟨D⟩⁻¹` (**`hasDerivAt_kgFieldFree`**). With
+`deriv_kgFieldFree_zero` the Cauchy data are read off exactly: the free field starts at the position
+datum with velocity the velocity datum, and the velocity datum is arbitrary.
+
+Statement 88 completes the field-level well-posedness triple. The Duhamel formula is linear in its
+data, so the difference of two solutions is *itself* a solution — of the difference of the data
+(**`kgFieldMild_sub`**, by uniqueness, once the two Duhamel integrals are subtracted, which needs the
+interval integrability supplied by the strong continuity of the kernel). Applying the exponential
+bound to that difference gives
+
+**`norm_kgFieldMild_sub_le`**: `‖u₁(t) - u₂(t)‖ ≤ (‖f₁-f₂‖ + ‖h₁-h₂‖)e^{‖W‖|t|}`,
+
+continuous dependence at the level of the field, for arbitrary `L²` data and any bounded
+perturbation.
+
+
+### Unentangling the two times
+
+What blocks a naive differentiation of the Duhamel term is that the observation time `t` appears
+*twice*: in the upper limit of the integral and inside the propagator `sin((t-s)⟨D⟩)/⟨D⟩`. Statements
+89–90 unentangle them, and the tool is again the addition formula:
+
+`sin((t-s)⟨ξ⟩)/⟨ξ⟩ = (sin(t⟨ξ⟩)/⟨ξ⟩)·cos(s⟨ξ⟩) - cos(t⟨ξ⟩)·(sin(s⟨ξ⟩)/⟨ξ⟩)`,
+
+which at the operator level is **`kgSinFreqOp_sub`**. Substituting it and pulling the two
+`t`-dependent factors out of the Bochner integral — legitimate precisely because they are *bounded*,
+via `ContinuousLinearMap.intervalIntegral_comp_comm` — gives
+
+**`intervalIntegral_kgFieldKernel_separated`**:
+`∫₀ᵗ (sin((t-s)⟨D⟩)/⟨D⟩)g(s) ds = (sin(t⟨D⟩)/⟨D⟩)(∫₀ᵗ cos(s⟨D⟩)g(s) ds) - cos(t⟨D⟩)(∫₀ᵗ (sin(s⟨D⟩)/⟨D⟩)g(s) ds)`,
+
+and hence the Duhamel formula itself in separated form (**`kgFieldMild_eq_separated`**). The
+observation time now sits only in two fixed operators and in the upper limits; the source time only
+inside the integrals. That is the shape in which the remaining differentiations become ordinary: the
+upper limits fall to the fundamental theorem of calculus, and the two operators to the derivative
+lemmas of statements 65 and 87.
+
+
+### The three inputs the differentiation needs
+
+With the times separated, the Duhamel term is `T₁(t)A(t) - T₂(t)B(t)` with `A, B` depending on `t`
+only through their upper limits. Differentiating it needs three things, and statements 91–93 supply
+all three.
+
+**The product rule for a strongly differentiable family** (91). The operator families here are
+*never* differentiable in the operator norm, only when applied to a fixed vector, so the usual product
+rule does not apply as stated. But the splitting
+
+`T(s)y(s) - T(t)y(t) = T(s)(y(s) - y(t)) + (T(s) - T(t))y(t)`
+
+works: divided by `s-t`, the first term is `T(s)` applied to the slope of `y`, which converges by the
+*joint* continuity of a uniformly bounded strongly continuous family (statement 49), and the second is
+the slope of `s ↦ T(s)y(t)` at a fixed vector, which converges by hypothesis. That is
+**`hasDerivAt_strong_apply`**, and it is the piece of infrastructure the whole differentiation rests
+on.
+
+**The regularity of the integrals** (92). The product rule's hypothesis is a derivative at the fixed
+vector `y(t)`, and for the cosine propagator that vector has to lie in the range of `⟨D⟩⁻¹`. It does:
+`sin(s⟨D⟩)/⟨D⟩ = ⟨D⟩⁻¹ ∘ sin(s⟨D⟩)`, and `⟨D⟩⁻¹` is *bounded*, so it passes through the Bochner
+integral — **`intervalIntegral_kgSinFreqOp_eq`** exhibits `∫₀ᵗ (sin(s⟨D⟩)/⟨D⟩)g(s) ds` as `⟨D⟩⁻¹`
+applied to another integral.
+
+**The endpoint derivatives** (93), which are the fundamental theorem of calculus for a continuous
+Banach-valued integrand.
+
+
+### The Duhamel term differentiated
+
+Statements 94–96 carry out the differentiation. Applying the product rule of statement 91 to each
+half of the separated term gives four contributions:
+
+`d/dt[(sin(t⟨D⟩)/⟨D⟩)A(t)] = (sin(t⟨D⟩)/⟨D⟩)(cos(t⟨D⟩)g(t)) + cos(t⟨D⟩)A(t)`,
+`d/dt[cos(t⟨D⟩)B(t)] = cos(t⟨D⟩)(⟨D⟩⁻¹ sin(t⟨D⟩)g(t)) - sin(t⟨D⟩)C(t)`,
+
+the second using that `B(t) = ⟨D⟩⁻¹C(t)` is regular (statement 92), which is exactly what the cosine
+propagator's derivative asks for. Subtracting, the **endpoint contributions cancel**: they are
+`(sin(t⟨D⟩)/⟨D⟩)cos(t⟨D⟩)g(t)` and `cos(t⟨D⟩)(sin(t⟨D⟩)/⟨D⟩)g(t)`, equal because the multipliers
+commute (**`kgSinFreqOp_comm_kgCosOp`**). What survives is
+
+`cos(t⟨D⟩)A(t) + sin(t⟨D⟩)C(t)`,
+
+and the cosine subtraction law `cos((t-s)⟨ξ⟩) = cos(t⟨ξ⟩)cos(s⟨ξ⟩) + sin(t⟨ξ⟩)sin(s⟨ξ⟩)`
+(**`kgCosOp_sub`**) recombines it into one integral. So
+
+**`hasDerivAt_kgDuhamel`** with **`kgDuhamel_deriv_eq`**:
+`d/dt ∫₀ᵗ (sin((t-s)⟨D⟩)/⟨D⟩)g(s) ds = ∫₀ᵗ cos((t-s)⟨D⟩)g(s) ds`,
+
+the classical formula, for any continuous `g` and with no regularity hypothesis whatever. The
+cancellation of the endpoint terms is why the first derivative is free; it is the *second*
+differentiation, where `⟨D⟩ sin((t-s)⟨D⟩)` appears with nothing to absorb the `⟨D⟩`, that needs `g`
+itself to be regular.
+
+
+### The variation-of-constants formula for the velocity
+
+Adding the derivative of the free field (statement 87) to the derivative of the Duhamel term
+(statement 96) gives the velocity of the mild solution in closed form:
+
+**`deriv_kgFieldMild`**: `∂ₜu(t) = -sin(t⟨D⟩)g + cos(t⟨D⟩)h + ∫₀ᵗ cos((t-s)⟨D⟩) W u(s) ds`
+
+for the Cauchy data `u(0) = ⟨D⟩⁻¹g`, `∂ₜu(0) = h`. One power of `⟨D⟩⁻¹` on the position datum is the
+*only* regularity used anywhere: the velocity datum `h` and the perturbation `W` are arbitrary.
+
+At `t = 0` the integral vanishes, `sin(0⟨D⟩) = 0` and `cos(0⟨D⟩) = 1`, so the formula returns `h`
+(**`deriv_kgFieldMild_at_zero`**). Together with `kgFieldMild_at_zero` that is
+
+**`exists_kgFieldMild_c1`**: *for every `g, h ∈ L²` and every bounded perturbation there is a
+differentiable curve satisfying the field-level Duhamel formula, with position datum `⟨D⟩⁻¹g` and
+velocity datum `h`* — the Cauchy problem solved in the `C¹` sense with the data one prescribes,
+uniqueness already being statement 85.
+
+The programme of the card is now closed in the direction it was opened. The estimate of statements
+1–45 controls a solution by its data; statements 46–98 construct that solution — mild in the energy
+space, mild and `C¹` at the level of the field, strong for regular data — and prove for each
+construction the same three theorems the pointwise theory has: existence, the exponential energy
+bound, and uniqueness.
+
+
+### Where the regularity of the source is finally used
+
+The velocity carries the integral `∫₀ᵗ cos((t-s)⟨D⟩)k(s) ds`, and differentiating it once more is the
+step the card recorded as blocked. Statements 99–102 unblock it, and identify exactly what the
+blockage was.
+
+Separating the times again writes the integral as `cos(t⟨D⟩)P(t) + sin(t⟨D⟩)Q(t)` with
+`P(t) = ∫₀ᵗ cos(s⟨D⟩)k`, `Q(t) = ∫₀ᵗ sin(s⟨D⟩)k`. The product rule of statement 91 now needs `P(t)`
+and `Q(t)` in the range of `⟨D⟩⁻¹` — and they are there **exactly when `k` is**, because a bounded
+operator passes through the integral (statement 100). That is the whole obstruction: a merely bounded
+potential does not put `Vu(s)` in that range.
+
+For `k = ⟨D⟩⁻¹k₀` the computation closes, and closes beautifully. The two endpoint contributions are
+`cos(t⟨D⟩)⟨D⟩⁻¹cos(t⟨D⟩)k₀(t)` and `sin(t⟨D⟩)⟨D⟩⁻¹sin(t⟨D⟩)k₀(t)`, whose sum is `⟨D⟩⁻¹k₀(t) = k(t)` by
+the **Pythagorean identity** of statement 59 (**`kgEndpoint_sum`**); the two surviving terms recombine
+by the sine subtraction law (**`kgSinOp_sub`**, **`kgSinDuhamel_recombine`**). So
+
+**`hasDerivAt_kgCosDuhamel`**:
+`d/dt ∫₀ᵗ cos((t-s)⟨D⟩)k(s) ds = k(t) - ∫₀ᵗ sin((t-s)⟨D⟩)k₀(s) ds`  for `k = ⟨D⟩⁻¹k₀`.
+
+The `k(t)` is the source term of the equation appearing from the endpoint, exactly as the classical
+derivation predicts, and the remaining integral is the one the second derivative of the field needs.
+
+
+### Mild becomes strong, and the perturbed theory closes
+
+Statements 103–106 build the bridge the card recorded as missing. The obstruction was that the
+second differentiation of the Duhamel term produces `⟨D⟩ sin((t-s)⟨D⟩)Wu(s)` with nothing to absorb
+the `⟨D⟩`. What absorbs it is a factor `⟨D⟩⁻¹` in the perturbation itself:
+
+`W = ⟨D⟩⁻¹W₀`,  `W₀` bounded (**`kgSmoothingOp`**, of norm at most `‖W₀‖`).
+
+With Cauchy data `⟨D⟩⁻²g₀` and `⟨D⟩⁻¹h₀`, the field-level mild solution is differentiable
+(statement 97), and its velocity is differentiable too because the source `Wu(s) = ⟨D⟩⁻¹(W₀u(s))` is
+regular — that is statement 102 applied verbatim (**`hasDerivAt_kgSmoothVel`**). Statement 105 then
+exhibits the solution as doubly regular,
+
+`u(t) = ⟨D⟩⁻²(cos(t⟨D⟩)g₀ + sin(t⟨D⟩)h₀ + ∫₀ᵗ sin((t-s)⟨D⟩)W₀u(s) ds)`,
+
+which is what turns the derivative identity into the equation. The result is
+
+**`solvesKGSource_kgSmoothMild`**: *the constructed field is a strong solution of
+`⟨D⟩⁻²(∂ₜ²u) = -u + ⟨D⟩⁻²(Wu)`.*
+
+So the perturbed strong theory is no longer about a hypothetical class. Its estimate (76), its
+uniqueness (78) and its stability (80) now apply to an object the corpus builds, and
+**`kgStrongEnergy_kgSmoothMild_le`** states the first of these for it directly:
+`F(t) ≤ F(0)e^{‖W₀‖|t|}`. Existence, estimate and uniqueness hold together, for the same solution, in
+the perturbed second-order equation — which is what the card set out to prove, in the one regularity
+class where all three are true.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -724,6 +985,25 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-04 — statements 103–106: **mild becomes strong** for a smoothing perturbation. The
+  perturbed strong theory now has a constructed solution; existence, estimate and uniqueness meet.
+- 2026-08-04 — statements 99–102: the second differentiation of the Duhamel term, for a regular
+  source. The endpoint contributions add to the source by the Pythagorean identity.
+- 2026-08-04 — statements 97–98: the variation-of-constants formula for the velocity, and the `C¹`
+  Cauchy problem solved with the prescribed data. The construction programme is closed.
+- 2026-08-04 — statements 94–96: the Duhamel term differentiated. Endpoint contributions cancel by
+  commutation; the survivors recombine by the cosine subtraction law into the classical integral.
+- 2026-08-04 — statements 91–93: the product rule for a strongly differentiable operator family,
+  the regularity of the Duhamel integrals, and their endpoint derivatives.
+- 2026-08-04 — statements 89–90: the subtraction law for the half-order propagator, and the Duhamel
+  term rewritten with the observation and source times separated.
+- 2026-08-04 — statements 87–88: the velocity datum needs no regularity for the first derivative;
+  linearity of the field solution in its data, and continuous dependence at the field level.
+- 2026-08-04 — statements 83–86: the field-level Duhamel formula. Well-posedness for arbitrary `L²`
+  data (no regularity), and the identification of the strong field with the mild one.
+- 2026-08-04 — statements 79–82: two-sided estimate, continuous dependence, and the agreement of
+  the mild and free constructions. The obstruction to strong existence with a rough potential is
+  recorded as a mathematical fact, not a gap.
 - 2026-08-04 — statements 74–78: the potential returns. Grönwall for the perturbed strong equation
   and two-sided uniqueness for a bounded measurable potential.
 - 2026-08-04 — statements 70–73: uniqueness and well-posedness for the strong `L²` Cauchy problem.

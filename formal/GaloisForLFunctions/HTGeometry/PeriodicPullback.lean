@@ -204,3 +204,67 @@ theorem periodicCohomologyMap_constantClass {p : 𝕜} (T : (Fin r → 𝕜) →
 end CohomologyFunctor
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+section Functoriality
+
+variable {𝕜 : Type*} [RCLike 𝕜] {r s t n : ℕ}
+
+open ContinuousAlternatingMap
+
+/-- A map of lattices carries the whole period lattice into the period lattice. -/
+theorem map_periodLattice {p : 𝕜} (T : (Fin r → 𝕜) →L[𝕜] (Fin s → 𝕜))
+    (hT : ∀ l : Fin r, T (p • (Pi.single l (1 : 𝕜) : Fin r → 𝕜)) ∈ periodLattice p s)
+    {c : Fin r → 𝕜} (hc : c ∈ periodLattice p r) : T c ∈ periodLattice p s := by
+  induction hc using AddSubgroup.closure_induction with
+  | mem x hx =>
+      obtain ⟨i, rfl⟩ := hx
+      exact hT i
+  | zero => rw [_root_.map_zero]; exact zero_mem _
+  | add x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
+  | neg x _ hx => rw [map_neg]; exact neg_mem hx
+
+/-- Pullback of forms is functorial. -/
+theorem linearPullback_comp (T : (Fin r → 𝕜) →L[𝕜] (Fin s → 𝕜))
+    (T' : (Fin t → 𝕜) →L[𝕜] (Fin r → 𝕜)) (ω : PeriodicFormSpace 𝕜 s n) :
+    linearPullback (T.comp T') ω = linearPullback T' (linearPullback T ω) := by
+  funext w
+  ext v
+  rfl
+
+theorem linearPullback_id (ω : PeriodicFormSpace 𝕜 r n) :
+    linearPullback (ContinuousLinearMap.id 𝕜 (Fin r → 𝕜)) ω = ω := by
+  funext w
+  ext v
+  rfl
+
+/-- **The map induced on cohomology by the identity is the identity.** -/
+theorem periodicCohomologyMap_id {p : 𝕜}
+    (hT : ∀ l : Fin r, (ContinuousLinearMap.id 𝕜 (Fin r → 𝕜))
+      (p • (Pi.single l (1 : 𝕜) : Fin r → 𝕜)) ∈ periodLattice p r) (n : ℕ) :
+    periodicCohomologyMap p (ContinuousLinearMap.id 𝕜 (Fin r → 𝕜)) hT n = LinearMap.id := by
+  refine LinearMap.ext fun ξ => ?_
+  refine Quotient.inductionOn' ξ fun ω => ?_
+  show Submodule.Quotient.mk _ = _
+  refine congrArg Submodule.Quotient.mk (Subtype.ext ?_)
+  exact linearPullback_id (ω : PeriodicFormSpace 𝕜 r (n + 1))
+
+/-- **The maps induced on cohomology compose.** -/
+theorem periodicCohomologyMap_comp {p : 𝕜} (T : (Fin r → 𝕜) →L[𝕜] (Fin s → 𝕜))
+    (T' : (Fin t → 𝕜) →L[𝕜] (Fin r → 𝕜))
+    (hT : ∀ l : Fin r, T (p • (Pi.single l (1 : 𝕜) : Fin r → 𝕜)) ∈ periodLattice p s)
+    (hT' : ∀ l : Fin t, T' (p • (Pi.single l (1 : 𝕜) : Fin t → 𝕜)) ∈ periodLattice p r)
+    (hTT' : ∀ l : Fin t, (T.comp T') (p • (Pi.single l (1 : 𝕜) : Fin t → 𝕜)) ∈
+      periodLattice p s) (n : ℕ) :
+    periodicCohomologyMap p (T.comp T') hTT' n =
+      (periodicCohomologyMap p T' hT' n).comp (periodicCohomologyMap p T hT n) := by
+  refine LinearMap.ext fun ξ => ?_
+  refine Quotient.inductionOn' ξ fun ω => ?_
+  show Submodule.Quotient.mk _ = _
+  refine congrArg Submodule.Quotient.mk (Subtype.ext ?_)
+  exact linearPullback_comp T T' (ω : PeriodicFormSpace 𝕜 s (n + 1))
+
+end Functoriality
+
+end GaloisForLFunctions.HTGeometry

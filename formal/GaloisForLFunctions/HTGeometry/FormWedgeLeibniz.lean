@@ -89,6 +89,32 @@ theorem wedgeForm_sum_right {ι : Type*} (h : p + q = n) (t : Finset ι)
     wedgeForm h α (∑ i ∈ t, β i) = ∑ i ∈ t, wedgeForm h α (β i) :=
   map_sum (wedgeFormRightₗ h α) β t
 
+/-- **The wedge product of alternating forms is graded commutative.** -/
+theorem wedgeForm_comm (h : p + q = n) (h' : q + p = n) (α : (Fin r → 𝕜) [⋀^Fin p]→L[𝕜] 𝕜)
+    (β : (Fin r → 𝕜) [⋀^Fin q]→L[𝕜] 𝕜) :
+    wedgeForm h α β = ((-1 : 𝕜)) ^ (p * q) • wedgeForm h' β α := by
+  obtain ⟨a, rfl⟩ : ∃ a, constantFormOfExterior 𝕜 r p a = α :=
+    ⟨_, (constantFormOfExterior 𝕜 r p).apply_symm_apply α⟩
+  obtain ⟨b, rfl⟩ : ∃ b, constantFormOfExterior 𝕜 r q b = β :=
+    ⟨_, (constantFormOfExterior 𝕜 r q).apply_symm_apply β⟩
+  rw [wedgeForm_constantFormOfExterior, wedgeForm_constantFormOfExterior,
+    exteriorMulOf_comm h h', map_smul]
+
+/-- **The wedge product of alternating forms is associative.** -/
+theorem wedgeForm_assoc {m m' k : ℕ} (h₁ : p + q = m) (h₂ : m + k = n) (h₃ : q + k = m')
+    (h₄ : p + m' = n) (α : (Fin r → 𝕜) [⋀^Fin p]→L[𝕜] 𝕜) (β : (Fin r → 𝕜) [⋀^Fin q]→L[𝕜] 𝕜)
+    (γ : (Fin r → 𝕜) [⋀^Fin k]→L[𝕜] 𝕜) :
+    wedgeForm h₂ (wedgeForm h₁ α β) γ = wedgeForm h₄ α (wedgeForm h₃ β γ) := by
+  obtain ⟨a, rfl⟩ : ∃ a, constantFormOfExterior 𝕜 r p a = α :=
+    ⟨_, (constantFormOfExterior 𝕜 r p).apply_symm_apply α⟩
+  obtain ⟨b, rfl⟩ : ∃ b, constantFormOfExterior 𝕜 r q b = β :=
+    ⟨_, (constantFormOfExterior 𝕜 r q).apply_symm_apply β⟩
+  obtain ⟨c, rfl⟩ : ∃ c, constantFormOfExterior 𝕜 r k c = γ :=
+    ⟨_, (constantFormOfExterior 𝕜 r k).apply_symm_apply γ⟩
+  rw [wedgeForm_constantFormOfExterior, wedgeForm_constantFormOfExterior,
+    wedgeForm_constantFormOfExterior, wedgeForm_constantFormOfExterior,
+    exteriorMulOf_assoc h₁ h₂ h₃ h₄]
+
 end WedgeForm
 
 section Leibniz

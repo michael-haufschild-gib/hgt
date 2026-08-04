@@ -21,7 +21,7 @@ namespace RHTower
 
 /-- **Universal smooth-Perron Littlewood law.** -/
 theorem partialSumSeq_subpower_of_smoothPerron {b : ℕ → ℂ} {Θ : ℝ}
-    (hb : ∀ n : ℕ, ‖b n‖ ≤ 1) (hΘ0 : 0 < Θ) (hΘ1 : Θ ≤ 1)
+    (hb : ∀ n : ℕ, ‖b n‖ ≤ 1) (hΘ0 : 0 < Θ)
     (hshift : ∀ δ a : ℝ, 0 < δ → δ < 1 → 0 < a →
       ∃ (F : ℂ → ℂ) (Kb : ℝ), 0 ≤ Kb ∧
         (∀ y : ℝ, ‖F (((Θ + δ : ℝ) : ℂ) + (y : ℝ) * I)‖ ≤
@@ -91,7 +91,10 @@ theorem partialSumSeq_subpower_of_smoothPerron {b : ℕ → ℂ} {Θ : ℝ}
   let r : ℝ := Θ + ε
   let H : ℝ := B ^ r
   have hMreal : 0 < (M : ℝ) := by exact_mod_cast hM
-  have hB : 1 ≤ B := by dsimp [B]; linarith [Nat.cast_nonneg M]
+  have hB : 1 ≤ B := by
+    dsimp [B]
+    have hM0 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
+    linarith
   have hB0 : 0 < B := zero_lt_one.trans_le hB
   have hr : 0 < r := by dsimp [r]; linarith
   have hr1 : r < 1 := by simpa [r] using hrlt
@@ -101,7 +104,6 @@ theorem partialSumSeq_subpower_of_smoothPerron {b : ℕ → ℂ} {Θ : ℝ}
     dsimp [H]
     simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le hB hr1.le
   have hX : (M : ℝ) + H ≤ 2 * B := by dsimp [B]; linarith
-  have hX0 : 0 < (M : ℝ) + H := by positivity
   have hR : ((M : ℝ) + H) / H ≤ 2 * B := by
     calc
       ((M : ℝ) + H) / H ≤ (M : ℝ) + H := div_le_self (by positivity) hH1

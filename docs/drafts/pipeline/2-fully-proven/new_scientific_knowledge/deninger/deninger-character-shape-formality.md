@@ -349,6 +349,99 @@ Leibniz rule; both are built here.
   primitive, so the class of a wedge is the wedge of the invariant representatives, and on invariant
   forms the wedge is the product of `Λ^*(L ⊗ ℝ)` by construction (`wedgeForm_constantFormOfExterior`).
 
+**The colimit over the lattice filtration.**
+`formal/GaloisForLFunctions/HTGeometry/TorusCohomologyColimit.lean`.
+
+- `periodicCohomologyMap_id`, `periodicCohomologyMap_comp`, `map_periodLattice`,
+  `linearPullback_comp` (in `PeriodicPullback.lean`) — pullback of forms is functorial, so the
+  cohomologies really form a directed system.
+- `TorusCoverSystem` — a directed system of tori, given by the covering spaces and the lifts of the
+  homomorphisms between them, with `DirectedSystem` instances for the cohomologies, for the exterior
+  powers of the duals, and for the duals themselves.
+- `torusCohomologyColimitEquiv` — **the comparison passes to the colimit**: `colim_L Λ^k(L ⊗ ℝ) ≅
+  colim_L H^k(T_L)`, from the stagewise isomorphism and its naturality.
+- `torusCohomologyColimitExteriorEquiv` — composed with the commutation of exterior powers with
+  filtered colimits along injective maps, this is
+  `Λ^k(colim_L (L ⊗ ℝ)) ≅ colim_L H^k(T_L)`, which is `(2)` in cohomology.
+- `coordProjectionSystem`, `coordProjectionSystem_surjective` — the tower of tori of a monotone
+  family of dimensions, with the coordinate projections as lifts: the hypothesis class of the
+  colimit theorem is inhabited by the systems that actually arise from a lattice filtration.
+
+**The smooth de Rham complex of the torus.**
+`formal/GaloisForLFunctions/HTGeometry/PeriodicSmoothness.lean`,
+`.../SmoothPeriodicCohomology.lean`.
+
+The `C^1` model above computes the cohomology but is not literally a complex, because `d ∘ d` needs
+two derivatives.  The whole construction is therefore redone in the smooth category, which needs one
+theorem mathlib does not have: **smoothness under the integral sign** for the averaging operator.
+
+- `averageOp_continuous`, `averageOp_contDiff`, `averageOp_contDiff_infty` and the same for
+  `weightHomotopy` — the derivative of the average is the average of the derivative, so the order of
+  differentiability is preserved; induction on the order gives `C^n` and hence `C^∞`.
+- `periodicAveragedData_contDiff`, `periodic_closed_eq_const_add_exact_smooth` — the averaging
+  decomposition of a closed periodic form stays inside the smooth forms.
+- `smoothPeriodicClosedForms`, `smoothPeriodicExactForms`, `smoothPeriodicCohomology`,
+  `smoothPeriodicCohomologyEquiv` — **the cohomology of the smooth periodic de Rham complex is the
+  space of constant alternating forms**: the inclusion of the invariant forms into the de Rham
+  complex of the torus is a quasi-isomorphism.
+- `smoothPeriodicForms`, `extDeriv_mem_smoothPeriodicForms`, `fderiv_periodic`,
+  `smoothExtDerivMap`, `smoothExtDerivMap_comp` — `Ω^*(T_L;ℝ)` as an actual cochain complex of
+  `ℝ`-vector spaces, with `d ∘ d = 0`; `mem_ker_smoothExtDerivMap` and
+  `mem_range_smoothExtDerivMap` identify its kernel and image with the closed and the exact forms,
+  so `smoothPeriodicCohomology` is its cohomology.
+
+**`Ω^*(T_L;ℝ)` as a commutative differential graded algebra.**
+`formal/GaloisForLFunctions/HTGeometry/ExteriorGradedMul.lean` (extended),
+`.../FormWedgeLeibniz.lean` (extended), `.../SmoothPeriodicDGA.lean`.
+
+- `ι_mul_exteriorPower`, `ιMulti_mul_comm`, `exteriorPower_mul_comm`, `exteriorMulOf_comm` — **the
+  exterior algebra is graded commutative**, `x·y = (-1)^{pq} y·x` for homogeneous `x, y`; mathlib has
+  neither this nor the wedge product it governs.  Proved by induction on the degree from the
+  anticommutation of the generators, then extended off the generators by linearity.
+- `wedgeForm_comm`, `wedgeForm_assoc` — the same for the wedge product of alternating forms.
+- `form_coeff_contDiff`, `wedgeForm_contDiff`, `wedgeForm_mem_smoothPeriodicForms` — the wedge of
+  smooth periodic forms is a smooth periodic form.
+- `smoothWedge` and its bilinearity, `smoothWedge_assoc`, `smoothWedge_comm`,
+  `smoothExtDerivMap_smoothWedge` — **all the axioms of a commutative differential graded algebra**
+  for `Ω^*(T_L;ℝ)` with `smoothExtDerivMap` as the differential: bilinear, associative, graded
+  commutative, and the differential is a graded derivation.
+
+**Commutative differential graded algebras, and `(2)` as a single morphism.**
+`formal/GaloisForLFunctions/HTGeometry/CDGA.lean`, `.../TorusDeRhamCDGA.lean`.
+
+Mathlib has graded algebras and homological complexes but no commutative differential graded
+algebras, so the structure is built here.
+
+- `CDGAStructure` — a family of modules in nonnegative degrees with a bilinear, associative, graded
+  commutative product adding degrees and a differential raising it by one, squaring to zero and
+  satisfying the Leibniz rule.
+- `CDGAStructure.cocycles`, `.coboundaries`, `.cohomology` — the cohomology in each degree.
+- `CDGAHom`, `CDGAHom.cocyclesMap`, `CDGAHom.cohomologyMap`, `CDGAHom.IsQuasiIso` — morphisms, the
+  induced map on cohomology, and the notion of quasi-isomorphism.
+- `exteriorCDGA` — `Λ^*(L ⊗ ℝ)` with the exterior product and the zero differential.
+- `torusDeRhamCDGA` — **`Ω^*(T_L;ℝ)` as an object**: the smooth periodic forms with `smoothWedge`
+  and `smoothExtDerivMap`, every axiom discharged from the theorems above.
+- `torusFormalityHom` — **the comparison of `(2)` as a single morphism of commutative differential
+  graded algebras**.
+
+- `torusFormality_isQuasiIso` — **the comparison is a quasi-isomorphism**: it induces an isomorphism
+  on cohomology in every degree, injective because a constant form with a smooth periodic primitive
+  vanishes, surjective because averaging writes every closed smooth periodic form as a constant one
+  plus an exact one.
+
+So `(2)` for a single torus is a single morphism of commutative differential graded algebras
+together with the statement that it is a quasi-isomorphism, all unconditional in Lean.  (The module
+family of a `CDGAStructure` is a parameter, not a field: an instance-carrying field blocks the
+definitional unfolding that the coercions of a concrete algebra need.)
+
+**The colimit of a directed system of such algebras.**
+`formal/GaloisForLFunctions/HTGeometry/CDGAColimit.lean`.
+
+- `CDGADirectedSystem` — the functoriality of a directed family of morphisms.
+- `degTransition`, `colimDeg`, `directedSystem_deg` — the direct limit in each degree.
+- `colimD`, `colimD_of`, `colimD_comp` — the differential on the limit and that it squares to zero,
+  so the colimit of a directed system of algebras is a differential graded module.
+
 ### What cannot be stated in Lean, and why
 
 - `C^*_sh(T_F;ℝ)` is the filtered colimit over `L` of the complexes `Ω^*(T_L;ℝ)`.  Every ingredient
@@ -356,10 +449,15 @@ Leibniz rule; both are built here.
   comparison in `L`, the exactness of filtered colimits (`directLimit_map_exact`), and the
   commutation of exterior powers with them (`exteriorPowerDirectLimitEquiv`,
   `deningerExterior_iSup_adjoin`).  Each `Ω^*(T_L;ℝ)` is now a differential graded algebra and the
-  comparison with `Λ^*(L ⊗ ℝ)` is a multiplicative quasi-isomorphism, natural in `L`.  What is not
-  written down is the assembly of the filtered colimit itself as a single object: Lean has no
-  category of CDGAs to take that colimit in, so the statement `(2)` remains an assertion about a
-  diagram whose every vertex, every edge and every comparison is a theorem here.
+  comparison with `Λ^*(L ⊗ ℝ)` is a multiplicative quasi-isomorphism, natural in `L`, and the
+  comparison of the colimits is an isomorphism.  `Ω^*(T_L;ℝ)` is a commutative differential graded
+  algebra in the full sense — every axiom is a theorem, the object is built, `(2)` is written down as
+  a single morphism `torusFormalityHom` of such algebras, and `torusFormality_isQuasiIso` says it is
+  a quasi-isomorphism.  For a single torus, `(2)` is therefore completely formalized.  Of the
+  filtered colimit of these algebras, the underlying differential graded module is built
+  (`colimDeg`, `colimD`, `colimD_comp`); what is still missing is the product on the colimit, which
+  needs a bilinear map out of a direct limit — for two elements one must descend to a common stage,
+  and neither mathlib's `Module.DirectLimit` nor the corpus yet has that lifting principle.
 - `(3)` and `(4)` are statements about free `E_∞` `Hℝ`-algebras.  mathlib has no `E_∞`-algebras and
   no CDGA homotopy theory.  What survives is the algebraic content of "a free commutative algebra
   on generators in odd degree one is the exterior algebra": that is the universal property of
@@ -387,4 +485,14 @@ scalars.
   ingredient of `(2)` except the assembly of the colimit is now a theorem.  Also formalized the
   wedge product of differential forms and the **Leibniz rule** `d(ω ∧ η) = dω ∧ η + (-1)^p ω ∧ dη`
   — neither is in mathlib — so each `Ω^*(T_L;ℝ)` is a differential graded algebra, and the
-  comparison with `Λ^*(L ⊗ ℝ)` is multiplicative.
+  comparison with `Λ^*(L ⊗ ℝ)` is multiplicative.  Finally formalized the colimit over the lattice
+  filtration: `Λ^k(colim_L (L ⊗ ℝ)) ≅ colim_L H^k(T_L)`, with a concrete inhabited system of tori so
+  the statement is not vacuous.  Finally redid the construction in the smooth category — which needed
+  smoothness under the integral sign, absent from mathlib — so `Ω^*(T_L;ℝ)` is an actual cochain
+  complex with `d ∘ d = 0` and its cohomology is `Λ^*(L ⊗ ℝ)`.  Proved graded commutativity of the
+  exterior algebra and of the wedge product, and smoothness of the wedge, so every axiom of a
+  commutative differential graded algebra holds for `Ω^*(T_L;ℝ)`.  Built the structure `CDGA` with
+  its cohomology, morphisms and quasi-isomorphisms — mathlib has none — and `(2)` as a single
+  morphism `torusFormalityHom : exteriorCDGA ⟶ torusDeRhamCDGA`, and proved
+  `torusFormality_isQuasiIso`.  For a single torus, statement `(2)` is now fully formalized.  Also
+  built the degreewise colimit of a directed system of such algebras with its differential.

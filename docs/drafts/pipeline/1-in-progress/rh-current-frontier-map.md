@@ -6193,3 +6193,69 @@ the moving-prime comparison for `n≥19` is open.
 - `RHTower/DeningerVanishingCohomology.lean`
 - `RHTower/DeningerBauCohomologyCriterion.lean`
 - `RHTower/DeningerBaseConjWord.lean`
+
+## 2026-08-04 Route E explicit-relation frontier update
+
+`OPEN-SOURCE-001` remains open, but its earlier formula-less (R_X) clause is obsolete.  The fixed
+source-predeclared relation is now (R_X^{\rm gr}) from
+`../2-fully-proven/new_scientific_knowledge/route-e-grade-recurrent-sparse-reservoir-cube-admission.md`:
+
+- ordered prime factors of each central squarefree source are split into
+  (\asymp\sqrt{\log\log X})-breadth blocks;
+- robust active blocks are defined by (u_i\ge YZ^{k_i-2}) before reservoir selection;
+- active coordinates alternate grade changes (+1,-1), using (k_i-2) or (k_i-4) primes from the
+  annulus
+  \[
+  \exp(\exp\sqrt{\log\log X})<p\le X^{1/(\log\log X)^2};
+  \]
+- every admissible disjoint reservoir allocation and every sparse-forbidden structured-(E_3)
+  token is included; cube corners replace (u_i) by (q_i=t_im_i).
+
+Unconditional paper results now prove:
+
+1. literal Möbius checkerboard on every cube;
+2. full-terminal Wold drift exactly zero or one and all-corner central recurrence;
+3. source-pure row admission after (O(\log\log X)) prime exclusions;
+4. (X^{-1/2+o(1)}) mixed Gibbs cost per anchored cube;
+5. a forced-active exact (1\to0) large-prime seam coordinate on every one-large-prime source;
+6. deterministic-reservoir common-divisor no-go;
+7. harmonic-pool capacity law
+   \[
+   \#\text{physical terminals}\le O(X)S(\mathcal P)^K/K!;
+   \]
+8. source-uniform reciprocal (1/T) reservoir normalization on the annular pool.
+
+Item 7's finite physical-incidence/factorial theorem is unconditional Lean in
+`RHTower/Sieve/HarmonicReservoirCapacity.lean`, wired into `RHTower`.  This imports the general
+fermionic elementary-symmetric bound from `HTGeometry`; `HilbertMetric` and `QuantumAlg` expose no
+stronger source-specific Hall theorem.  Existing `BalancedHallCapacity`, `HallInjection`,
+`MarkerSupplyMatching`, and `CubeFibreDivisorBound` remain global-cardinality or representation-
+fibre infrastructure and do not prove adjacency-restricted interval Hall.
+
+Two tempting versions are now dead:
+
+- least-missing-prime reservoirs concentrate all terminal load on multiples of a fixed primorial;
+- entropy spread over (p\le(\log\log X)^4) has huge label count but reciprocal mass
+  (o(\sqrt{\log\log X})), so its entire physical terminal set is
+  \(X\exp(-\Omega(\sqrt L\log L))\).
+
+The annular pool is forced by simultaneous requirements: reciprocal mass
+(L-2\log L-\sqrt L+O(1)) at central Wold scale, adversarial source-exclusion stability, and total
+reservoir product (X^{O(1/L)}).  Alternating (+1,-1) coordinates are forced by physical Wold-layer
+capacity; the discarded monotone (+3) version pushed full terminals a fixed number of normal-order
+standard deviations upward.
+
+**Exact open core.**  Prove `ENTROPY-SPREAD-GRADE-RECURRENT-CUBE-CAPACITY` for this fixed
+(R_X^{\rm gr}):
+
+1. cross-anchor physical incoming corner load at most one with only (X^{1/2+o(1)}) central
+   uncovered Gibbs mass;
+2. exact interval Hall expansion for every physical subinterval, after quotienting all
+   representation collisions;
+3. nonnegative endpoint weights whose truncation of the proved seam coordinate realizes the
+   normalized friable (-1) and one-large-prime (+1) co-moving fluxes.
+
+Mixed cost, row supply, pool entropy, source-support deletion, central grade, and seam admission are
+proved.  Do not replace the three remaining physical statements by global target counts, label
+normalization, static sector cancellation, Mertens prefix energy, or a complete-bipartite flow;
+each is already classified as theatre or as an RH-bearing restatement.
