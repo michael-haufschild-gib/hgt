@@ -134,6 +134,7 @@ omit [CharZero E] in
 theorem scaleRep_gen (u : Cˣ) : scaleRep hg hgen u g = algebraMap C E (u : C) * g :=
   scaleEquiv_gen hg hgen u
 
+omit [CharZero E] in
 include hg in
 /-- The deck representation is faithful: a scaling that fixes the generator is trivial. -/
 theorem scaleRep_injective : Function.Injective (scaleRep hg hgen) := by
@@ -174,6 +175,7 @@ theorem differentialAdjoin_pow_le_fixedField {N : ℕ} :
     rw [scaleRep_eq] at hfix ⊢
     rw [scaleEquiv_deriv, hfix]
 
+omit [CharZero E] in
 include hg in
 /-- The deck group at a given exponent has exactly that order when the coefficient field contains a
 primitive root of unity. -/
@@ -186,6 +188,7 @@ theorem card_map_rootsOfUnity {N : ℕ} (hN : 0 < N) {ζ : C} (hζ : IsPrimitive
   rw [← hcard]
   simpa [Nat.card_eq_fintype_card] using hζ.card_rootsOfUnity
 
+omit [CharZero E] in
 include hg in
 /-- The deck group at a given exponent is finite. -/
 theorem finite_map_rootsOfUnity {N : ℕ} (hN : 0 < N) :
