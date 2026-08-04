@@ -23,7 +23,7 @@ noncomputable def triC (δ : ℝ) : ℝ → ℂ := fun t => ((tri δ t : ℝ) : 
 theorem continuous_triC (δ : ℝ) : Continuous (triC δ) :=
   Complex.continuous_ofReal.comp (continuous_tri δ)
 
-theorem hasCompactSupport_triC (δ : ℝ) : HasCompactSupport (triC δ) := by
+theorem hasCompactSupport_triC {δ : ℝ} (hδ : 0 ≤ δ) : HasCompactSupport (triC δ) := by
   refine HasCompactSupport.intro (K := Set.Icc (-δ) δ) isCompact_Icc fun x hx => ?_
   have habs : δ ≤ |x| := by
     rw [Set.mem_Icc] at hx
@@ -37,22 +37,22 @@ theorem hasCompactSupport_triC (δ : ℝ) : HasCompactSupport (triC δ) := by
   rw [triC]
   simp [tri_eq_zero habs]
 
-theorem integrable_triC (δ : ℝ) : Integrable (triC δ) :=
-  (continuous_triC δ).integrable_of_hasCompactSupport (hasCompactSupport_triC δ)
+theorem integrable_triC {δ : ℝ} (hδ : 0 ≤ δ) : Integrable (triC δ) :=
+  (continuous_triC δ).integrable_of_hasCompactSupport (hasCompactSupport_triC hδ)
 
 /-- **The Fourier transform of the triangular kernel is the Fejér weight.** -/
 theorem fourier_triC {δ : ℝ} (hδ : 0 < δ) (w : ℝ) :
     𝓕 (triC δ) w = (δ : ℂ) * fejerWeightAt δ (-(2 * Real.pi * w)) := by
   rw [Real.fourier_real_eq, ← integral_tri_phase hδ (-(2 * Real.pi * w))]
   refine integral_congr_ae (Filter.Eventually.of_forall fun v => ?_)
-  rw [Circle.smul_def, Real.fourierChar_apply, triC]
+  simp only [triC, Circle.smul_def, Real.fourierChar_apply]
   rw [show ((2 * Real.pi * -(v * w) : ℝ) : ℂ) = ((v * -(2 * Real.pi * w) : ℝ) : ℂ) by
     push_cast; ring]
   ring
 
-theorem continuous_fourier_triC (δ : ℝ) : Continuous (𝓕 (triC δ)) :=
+theorem continuous_fourier_triC {δ : ℝ} (hδ : 0 ≤ δ) : Continuous (𝓕 (triC δ)) :=
   VectorFourier.fourierIntegral_continuous Real.continuous_fourierChar
-    (L := (innerSL ℝ (E := ℝ)).toLinearMap₁₂) (by fun_prop) (integrable_triC δ)
+    (L := (innerSL ℝ (E := ℝ)).toLinearMap₁₂) (by fun_prop) (integrable_triC hδ)
 
 /-- The transform is dominated by a Lorentzian: the interval-length bound and the `L^{-2}` bound
 combine into an integrable majorant. -/
@@ -94,20 +94,18 @@ theorem norm_fourier_triC_le {δ : ℝ} (hδ : 0 < δ) (w : ℝ) :
 theorem integrable_fourier_triC {δ : ℝ} (hδ : 0 < δ) : Integrable (𝓕 (triC δ)) := by
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hne : δ * Real.pi ≠ 0 := by positivity
-  have hlor : Integrable fun w : ℝ => (1 + (δ * Real.pi * w) ^ 2)⁻¹ := by
-    have h := integrable_inv_one_add_sq.comp_mul_left (δ * Real.pi)
-    exact h
+  have hlor : Integrable fun w : ℝ => (1 + (δ * Real.pi * w) ^ 2)⁻¹ :=
+    integrable_inv_one_add_sq.comp_mul_left' hne
   have hmaj : Integrable fun w : ℝ => 2 * δ ^ 2 * (1 + (δ * Real.pi * w) ^ 2)⁻¹ :=
     hlor.const_mul _
-  refine Integrable.mono' hmaj (continuous_fourier_triC δ).aestronglyMeasurable ?_
+  refine Integrable.mono' hmaj (continuous_fourier_triC hδ.le).aestronglyMeasurable ?_
   refine Filter.Eventually.of_forall fun w => ?_
-  rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
   have := norm_fourier_triC_le hδ w
   rwa [div_eq_mul_inv] at this
 
 /-- **Fourier inversion for the triangular kernel.** -/
 theorem fourierInv_fourier_triC {δ : ℝ} (hδ : 0 < δ) :
     𝓕⁻ (𝓕 (triC δ)) = triC δ :=
-  (continuous_triC δ).fourierInv_fourier_eq (integrable_triC δ) (integrable_fourier_triC hδ)
+  (continuous_triC δ).fourierInv_fourier_eq (integrable_triC hδ.le) (integrable_fourier_triC hδ)
 
 end RHTower.Sieve

@@ -3492,6 +3492,7 @@ import GaloisForLFunctions.RHTower.Sieve.MoebiusTwistMajorantRatio
 import GaloisForLFunctions.RHTower.Sieve.MoebiusTwistSharpLittleO
 import GaloisForLFunctions.RHTower.Sieve.LogWindowKernel
 import GaloisForLFunctions.RHTower.Sieve.TriangularKernel
+import GaloisForLFunctions.RHTower.Sieve.TriangularInversion
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment
@@ -5605,3 +5606,4 @@ import GaloisForLFunctions.RHTower.DeningerStageCohomologyModule
 import GaloisForLFunctions.RHTower.DeningerCohomologyBasis
 import GaloisForLFunctions.RHTower.DeningerCohomologyFunctor
 import GaloisForLFunctions.RHTower.DeningerFrobeniusCohomology
+import GaloisForLFunctions.RHTower.DeningerExteriorNaturality

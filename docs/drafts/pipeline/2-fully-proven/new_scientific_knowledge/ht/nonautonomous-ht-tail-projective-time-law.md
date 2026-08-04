@@ -2715,3 +2715,30 @@ already in the corpus:
 Then `hypertranscendentalOver_of_notMem_bot` applies to the transported structure and
 `hypertranscendentalOver_algHom_iff` carries the conclusion to `E`, giving the card's exact wording
 of `(3)`: the phase generators are differentially transcendental.
+
+### Why the identification does not go through as stated: an instance-path mismatch
+
+Attempting the identification directly fails for a structural reason worth recording.  `JetField C ι`
+is a `def` wrapping `FractionRing (JetPoly C ι)` and carries its own `Field` instance, while
+`FractionRing (DifferentialPolynomial Unit C)` carries the `OreLocalization` one.  The two types are
+definitionally equal but their algebraic instance *terms* differ, so
+
+    Derivation ℤ (JetField C Unit) (JetField C Unit)
+    Derivation ℤ (FractionRing (DifferentialPolynomial Unit C)) (FractionRing …)
+
+are not interchangeable, and `rw` cannot cross the boundary.  Worse, a statement phrased on
+`JetField C Unit` silently picks up the *canonical* jet derivation instance rather than the
+transported one, which would make the identification vacuous.
+
+Consequences for the next pass:
+
+- state the identification on `FractionRing (DifferentialPolynomial Unit C)` only, never on
+  `JetField`, so that the `letI` transported structure is the one elaborated;
+- to reach the free-field theorems, either transport along the identity ring equivalence between the
+  two presentations, or restate `hypertranscendentalOver_of_notMem_bot` for an abstract free
+  differential field given by a differentially independent generator, which avoids `JetField`
+  altogether.
+
+The second option is the cleaner one and is what the remaining work should build: the proof only uses
+`pd`, `ordJet`, `mem_jetLevel_iff` and the order arithmetic, all of which can be phrased for the
+fraction field of a jet polynomial ring with any compatible differential structure.

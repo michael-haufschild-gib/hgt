@@ -4344,3 +4344,26 @@ Unconditional, wired into `GaloisForLFunctions.RHTower`.
 With `LogWindowKernel.integral_normSq_logWindowSum` this leaves exactly one step to Gallagher's
 lemma: Fourier inversion for the compactly supported continuous `tri δ`, whose transform is
 integrable by the `L^{-2}` bound the corpus already owns.
+
+### Fourier inversion for the triangular kernel
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/TriangularInversion.lean`.
+
+- `triC δ` — the triangular kernel as a complex-valued function, with `continuous_triC`,
+  `hasCompactSupport_triC`, `integrable_triC`;
+- **`fourier_triC`** — `𝓕 (triC δ) w = δ · fejerWeightAt δ (−2πw)`, i.e. mathlib's Fourier transform
+  of the overlap kernel *is* the corpus's Fejér weight;
+- `norm_fourier_triC_le` — the two corpus bounds (`≤ δ` from the interval length, `≤ 4/(δL²)` from
+  the decay) combine into the Lorentzian majorant `2δ²/(1 + (δπw)²)`, since `x ≤ A` and `x ≤ B` force
+  `x ≤ 2AB/(A+B)`;
+- `integrable_fourier_triC` — hence the transform is integrable, the majorant being a scaled
+  `(1 + x²)⁻¹`;
+- **`fourierInv_fourier_triC`** — `𝓕⁻ (𝓕 (triC δ)) = triC δ`.
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+Both halves of Gallagher's reduction are now theorems of this corpus: the exact overlap identity
+(`LogWindowKernel`) and the inversion of its kernel (`TriangularKernel` + `TriangularInversion`).
+Composing them expresses the logarithmic short-interval mean square as a nonnegative weighted
+integral of `|∑_n a_n n^{-iξ}|²` — the bridge to the twisted cancellation proved earlier on this
+card.

@@ -189,6 +189,10 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Proved the comparison with the exterior power natural in the
+  lattice: the map induced on cohomology by a transition and the exterior power
+  of the transposed exponent matrix have the same matrix of minors in the
+  corresponding bases, so the identification intertwines them.
 - 2026-08-04 — Formalized the action of `(4)` on cohomology: Frobenius acts on
   the cohomology of degree `k` of a stage by the `k`-th power of its exponent,
   and a Galois element by the permutation of the coordinates.  This is the
@@ -1049,6 +1053,24 @@ generalized to an arbitrary primitive in
   the pure power action on local cohomology.
 - `deningerMatrixCLM_perm`, `deningerCohomologyMap_perm` — **a Galois element acts by the
   permutation of the coordinates** of the alternating form.
+
+### The comparison with the exterior power is natural
+
+`formal/GaloisForLFunctions/RHTower/DeningerExteriorNaturality.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerDetForm_subtype_sum`, `deningerDetFormBasis_repr` — the coordinates of a constant
+  alternating form in the basis of determinant forms are its coefficients along the `k`-element sets
+  of coordinates.
+- `deningerCohomologyBasis_repr`, `deningerCohomologyBasis_repr_map` — **the matrix of the map
+  induced on cohomology by a transition, in the bases of classes of logarithmic wedges, is the
+  matrix of minors of the exponent matrix.**
+- `deningerExteriorMap_basis_repr` — **the exterior power of the transposed exponent matrix has the
+  same matrix of minors** in the bases of the exterior powers.
+- `deningerCohomologyExterior_naturality` — **the identification `H^k ≅ Λ^k(L ⊗ ℂ)` intertwines the
+  map induced by a transition with the exterior power of the transition.**  With the theorem that
+  exterior powers commute with direct limits, this is `(6)` for any directed system of stages, up to
+  the pro-Ind bookkeeping.
 
 ### Remaining
 
