@@ -79,7 +79,7 @@ two-dimensional supertrace pairs with it as $2$.  Finally, a Mellin--Hardy
 density theorem identifies $H^2/BH^2$ as the natural Hilbert globalization of
 the scalar Connes--Consani--Marcolli/Meyer zeta quotient, and matches the cyclic
 pairing with its finite-packet spectral characters.  The algebraic core has an
-unconditional Lean~4 formalization.
+exact ring-theoretic proof over the stated crossed-product models.
 \end{abstract}
 
 \medskip
@@ -1005,28 +1005,6 @@ m\text{ in graded }HC_0(\B_B)
 The functional equation does not merely impose a symmetry on the character;
 when internalized, it changes the homology theory in which orientation is
 visible.
-
-\section{Formal verification of the algebraic core}
-
-The algebraic implications used in Sections 4, 6, and 9 have been formalized
-unconditionally in Lean~4 with mathlib.  The source file is
-\begin{center}
-\texttt{formal/GaloisForLFunctions/RHTower/RealCoronaQuaternionicCyclic.lean}.
-\end{center}
-It proves, for arbitrary rings and compatible Real modules where possible:
-\begin{enumerate}
-\item $(2e-1)^2=1$ and $\sigma(2e-1)=-(2e-1)$;
-\item $(m\sigma)^2=-1$ and construction of the odd Real structure;
-\item $(e_+-e_-)^2=1-e_{\R}$ and the partial square law (6.3);
-\item the equivalences (9.3), commutator identity (9.4), and annihilation by
-      every additive cyclic trace;
-\item anticommutation (9.5) and the explicit matrix supertrace value $2$.
-\end{enumerate}
-The file contains no \texttt{sorry}, \texttt{admit}, added axiom,
-\texttt{opaque}, or \texttt{unsafe} declaration.  It passes direct elaboration,
-the repository formal lint gate, and the targeted module build.  Analytic
-existence of the corona idempotent is proved in Sections 2--3 and is not encoded
-as an axiom in the formalization.
 
 \section{Relation to prior constructions}
 

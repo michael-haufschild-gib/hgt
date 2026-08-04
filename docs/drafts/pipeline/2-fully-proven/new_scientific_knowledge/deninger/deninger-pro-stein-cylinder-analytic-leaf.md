@@ -189,6 +189,22 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized the transition law of `(6)`: the covering intertwines
+  a transition map with the linear map of its exponent matrix, so the pullback
+  of a generator is the constant form of the determinant composed with that
+  matrix, and its expansion in the generators is by the minors.  The linear
+  models compose and preserve the identity, so the comparison of `(5)` is
+  natural in the lattice.
+- 2026-08-04 — Closed `(5)` completely at a finite stage: the primitive of the
+  decomposition is holomorphic, so the cohomology is computed inside the
+  holomorphic de Rham complex.  A branch of the logarithm is analytic on its
+  domain, and the descent of a periodic complex differentiable form is a
+  holomorphic stage form.
+- 2026-08-04 — Formalized that a complex differentiable function of several
+  variables is analytic: the Cauchy integral formula on a polydisc, the
+  geometric series in several variables, the monomials of multi-indices as
+  continuous multilinear maps, and the term-by-term summation of the resulting
+  series under the torus integral.  Mathlib has none of this.
 - 2026-08-04 — Closed `(5)` in every degree at a finite stage: every closed
   holomorphic form is a combination of the exterior products of the logarithmic
   differentials plus an exact form, the combination is unique, and no nonzero
@@ -868,17 +884,93 @@ generalized to an arbitrary primitive in
   finite stage in every degree, with the generators of the statement — up to the analyticity of the
   primitive, which is the one remaining gap below.
 
+### The Cauchy integral formula on a polydisc
+
+`formal/GaloisForLFunctions/HTGeometry/PolydiscCauchyFormula.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `polydiscCauchyFormula` — **an entire function of several complex variables is the integral of its
+  values on the distinguished boundary of a polydisc against the product Cauchy kernel.**  The proof
+  peels off one coordinate at a time: the recurrence for the torus integral turns the outermost
+  variable into a circle integral, the remaining kernel factors out of it, and the one-variable
+  Cauchy formula finishes each step.  Mathlib defines the torus integral but proves nothing with it.
+
+### The geometric series in several variables
+
+`formal/GaloisForLFunctions/HTGeometry/MultiGeometricSeries.lean` and
+`formal/GaloisForLFunctions/HTGeometry/MultiIndexMultilinear.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `hasSum_multiGeometric` — the product of the geometric series of finitely many contractions is the
+  sum over all multi-indices of the corresponding monomials.
+- `hasSum_degree_regroup` — a family indexed by multi-indices regroups into a series indexed by the
+  total degree, whose terms are the finite sums over the tuples of that sum.
+- `multiIndexCMM` — the monomial of a multi-index as a continuous multilinear map: the coordinates
+  of the multi-index, listed with multiplicity, select the arguments whose product is taken.  Its
+  value on a constant tuple is the monomial and its norm is at most one.
+
+### Complex differentiability implies analyticity in several variables
+
+`formal/GaloisForLFunctions/HTGeometry/PolydiscSeriesCoefficients.lean` and
+`formal/GaloisForLFunctions/HTGeometry/PolydiscAnalytic.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `polydiscCoeff`, `polydiscSeries` — the Cauchy coefficient of a multi-index and the formal
+  multilinear series it defines, with the bound `‖coefficient‖ ≤ M / R^{|m|}` by the maximum on the
+  torus, and the count of multi-indices of a given degree.
+- `hasSum_torusIntegral` — a dominated series of torus integrals may be summed term by term.
+- `polydiscHasFPowerSeriesOnBall` — **the series converges to the function on a ball of the
+  polydisc.**  The kernel expands into the geometric series of the coordinate ratios, the expansion
+  is summed under the integral against the geometric majorant, and the Cauchy formula identifies the
+  total.
+- `analyticAt_of_differentiable` — **a complex differentiable function of several complex variables,
+  with values in any complex Banach space, is analytic.**  Mathlib has this only in one variable;
+  this is what the primitive of the descent needed.
+
+### The descended primitive is holomorphic
+
+`formal/GaloisForLFunctions/RHTower/DeningerHolomorphicDescent.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerLogBranch_analyticAt`, `deningerLogBranchDeriv_analyticAt` — a branch of the logarithm
+  and its derivative are analytic on the domain where the coordinate ratios avoid the cut.
+- `deningerDescendForm_holomorphic` — **the descent of a periodic complex differentiable form is a
+  holomorphic stage form**: upstairs it is analytic by the several-variable analyticity above, and
+  near a point of the stage it is its pullback along a branch of the logarithm.
+- `deningerConstantStageForm_holomorphic` — the constant stage forms are holomorphic.
+- `deningerStage_closed_form_decomposition_hol`,
+  `deningerStage_closed_form_dlog_decomposition_hol` — **`(5)` at a finite stage, in every degree,
+  inside the holomorphic de Rham complex**: every closed holomorphic form is a combination of the
+  exterior products of the logarithmic differentials of the coordinates plus the exterior derivative
+  of a *holomorphic* form.  With `deningerDlogWedge_not_exact` and
+  `deningerConstantStageForm_unique` the comparison is an isomorphism.
+
+### The transition law for the generators
+
+`formal/GaloisForLFunctions/RHTower/DeningerTransitionWedge.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerMatrixCLM`, `deningerExpMap_matrixCLM` — the linear map of an exponent matrix on the
+  covering spaces, and the commuting square: the exponential covering intertwines a monomial
+  transition with it.
+- `deningerMonomialDeriv_comp_expDeriv` — the chain rule for the transition along the covering.
+- `deningerMonomialPullback_dlogWedge` — **the pullback of an exterior product of logarithmic
+  differentials along a transition map is the constant stage form of the determinant form composed
+  with the exponent matrix.**
+- `deningerSubsetCoeff_detForm_comp`, `deningerMonomialPullback_dlogWedge_sum` — **the transition
+  acts on the generators by the minors of the exponent matrix**, that is, by the `k`-th exterior
+  power of the lattice map.  This is the naturality in the lattice of the comparison
+  `Λ^k(L ⊗ ℂ) ≅ H^k` of `(5)`.
+- `deningerMatrixCLM_comp`, `deningerMatrixCLM_id` — the linear models compose and preserve the
+  identity, matching the composition law of the transition maps.
+
 ### Remaining
 
-1. **The analyticity of the primitive.**  `(5)` is closed at a finite stage in every degree, in
-   both directions: every closed holomorphic form is a combination of the exterior products of the
-   logarithmic differentials plus an exterior derivative, the combination is unique, and no nonzero
-   combination is exact.  The primitive produced by the descent is proved differentiable with
-   continuous derivative; upgrading it to analytic needs "complex differentiable implies analytic"
-   in several variables, which mathlib does not have in any form.  Until that is built, the
-   surjectivity half of `(5)` computes the cohomology of the stage in the `C^1` category and the
-   injectivity half in the holomorphic one.
-2. **`(6)`**, the colimit of `(5)` over the filtered category of pairs `(W, L)`: the pro-Ind
-   formalism, absent from mathlib.
-3. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
+1. **`(6)`**, the colimit of `(5)` over the filtered category of pairs `(W, L)`.  `(5)` itself is
+   closed at every finite stage, in every degree, in both directions and inside the holomorphic de
+   Rham complex, and the comparison is proved natural in the lattice: the transitions act on the
+   generators by the minors of the exponent matrix.  What is left is the pro-Ind formalism itself —
+   the filtered category of pairs and the colimit of the resulting system — which mathlib does not
+   have and which the card defines stagewise.
+2. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
    mathlib — and the pro-Ind global-section formalism.

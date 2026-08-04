@@ -474,6 +474,92 @@ So the spectral half of `(4)`–`(5)` is now proved for the operator itself, not
 in the Hilbert space and pointwise.  What the card still imports is only the classical asymptotic input: the
 differentiated fixed-mode (Fuchs) expansion `(9)` and the constrained limit `(12)`.
 
+**The constant-transport half of `(10)`--`(18)` is proved**, in
+`RHTower/CCMEndpointResponseConstants.lean`.  Each equation of the card that is a *limit inference* is now a
+theorem whose hypotheses are exactly the named inputs, and nothing else:
+
+- `tendsto_endpointSq_div_leakage` — equation `(10)`: from the endpoint identity `(5)` in the form
+  `E = -d'/(4(1-d))` together with `d -> 0` and the logarithmic asymptotic `d'/(lambda d) -> -8 pi`, the
+  normalized endpoint square tends to `2 pi`.
+- `tendsto_endpointSq_div_reference` — the transport form of `(11)`: a mode whose leakage is negligible
+  against the reference leakage has vanishing normalized endpoint square.
+- `tendsto_ellSqRatio_of_deltaRatio` — equation `(12)`: the constrained ground-state statement
+  `delta/d_1 -> 8/11` and the coefficient statement `ell_0²/(ell_0²+ell_1²) -> 8/11` are the same, given the
+  exact orthogonality formula `(3)` for `delta` and negligibility of the ground leakage.
+- `tendsto_constrainedEndpointSq` — equation `(13)`: for the two-mode seed
+  `g = (ell_1 e_0 - ell_0 e_1)/sqrt(ell_0²+ell_1²)` the normalized endpoint square tends to `16 pi/11`.  The
+  ground term and the cross term vanish; the cross term needs the elementary bound
+  `|2 ell_0 ell_1/(ell_0²+ell_1²)| <= 1` and the identity `|uv|/w = sqrt(u²/w) sqrt(v²/w)`
+  (`tendsto_cross_div_zero`).
+- `tendsto_lowerExteriorAmplitudeSq` — equation `(15)`: the endpoint scaling `a = g(lambda)/(pi sqrt lambda)`
+  turns `16 pi/11` into `16/(11 pi)`.
+- `tendsto_primeResponse_div_leakage` — equation `(18)`: the amplitude constant against the exterior sawtooth
+  incidence constant `pi²/12 · z` gives `(4 pi/33) z`.
+
+So the arithmetic of the response constants is machine-checked end to end, and what remains are exactly three
+analytic imports: the differentiated fixed-mode asymptotic `(9)`, the constrained ground-state ratio
+`delta/d_1 -> 8/11`, and the exterior sawtooth incidence constant `(17)`.
+
+**The exterior sawtooth incidence constant `(17)` is proved**, in
+`RHTower/CCMEndpointSawtoothResponse.lean`, by identifying the endpoint layer's own pairing with the
+sawtooth incidence layer the tree already owns (`CCMSawtoothDilationIncidence`,
+`CCMSawtoothExteriorTail`: the exact period mean `1/(12 n)`, the uniform `O(1/L)` averaging error, the
+`O(1/n)` domination and the dominated limit):
+
+- `sawTail L s = e^{-s/2} S(L e^s)`, and `sawTail_mul_shift` computes the pairing with the `log n`
+  translate pointwise: the two half-weights combine to `e^{-s} n^{-1/2}`, the dilation
+  `L e^{s+log n} = n L e^s` moves inside the second sawtooth, and `S = pi · sawUnit(·/(2 pi))`
+  contributes `pi²`.  `integral_sawTail_mul_shift` turns this into the corpus's exterior response
+  through the change of variables `x = L e^s`.
+- `tendsto_sawTailPrimeResponse` — equation `(17)`: the complete von Mangoldt incidence of the
+  endpoint tail converges to `(pi²/12) sum Lambda(n) n^{-2}` as the aperture grows.
+- `ofReal_tsum_vonMangoldt_div_sq` identifies that Euler scalar with `-zeta'(2)/zeta(2)` (mathlib's
+  `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` transported across the real-to-complex cast), and
+  `tendsto_sawTailPrimeResponse_ofReal` states `(17)` with the zeta constant.
+- `tendsto_primeResponse_div_leakage_sawTail` — equation `(18)` with the constant supplied: given the
+  amplitude limit `(15)`, the response over the reference leakage tends to
+  `(4 pi/33) sum Lambda(n) n^{-2}`.
+
+The whole chain of the card is therefore machine-checked from one place onwards: the only inputs still
+imported are the differentiated fixed-mode asymptotic `(9)` and the constrained ground-state ratio
+`delta/d_1 -> 8/11`.
+
+**The imported asymptotic `(9)` is now reduced to its envelope form.**  An envelope alone says nothing
+about derivatives, but one structural fact repairs that, and the repair is proved in
+`HTGeometry/LogDerivativeFromEnvelope.lean`:
+
+- `tendsto_deriv_of_monotoneOn_of_tendsto_div` (and its antitone companion) — if `f x / x -> L` and
+  `deriv f` is eventually monotone in either direction, then `deriv f -> L`.  Two applications of the
+  mean value theorem: monotonicity puts `deriv f u` on one side of every slope over `[u, c]`, whose
+  limit is `L`, which bounds the derivative; the slope over `[c/2, c]` also tends to `L` and is caught
+  between the derivative's endpoint values, which squeezes it.
+- `tendsto_log_div_of_envelope` — a two-sided envelope `c₁ x^k e^{-b x} <= D x <= c₂ x^k e^{-b x}`
+  gives `log (D x)/x -> -b`.
+- `tendsto_logDeriv_of_envelope_of_antitoneOn` — the two combined: envelope plus antitone logarithmic
+  derivative give `D'/D -> -b`.
+- `tendsto_scaled_logDeriv` — under the CCM reparametrisation `c = 2 pi lambda²` this becomes
+  `d'(lambda)/(lambda d(lambda)) -> -(2 · 2 pi · b)`, which at `b = 2` is exactly the card's `-8 pi`.
+- `tendsto_endpointSq_div_leakage_of_envelope` (in `CCMEndpointResponseConstants`) — the composition:
+  from the envelope, the antitone logarithmic derivative and the endpoint identity `(5)`, equation
+  `(10)` follows.
+
+So `(9)` is needed only in its *envelope* form — the two-sided fixed-mode Fuchs scale, which is the
+form the tree already models in `ConstrainedProlateLeakageStructure.FuchsEnvelope` — together with
+antitonicity of the leakage logarithmic derivative.  The sharp constant `A_m` is not used anywhere.
+
+**The `8/11` is now derived, not imported.**  `hermiteWeight j = binom(4j, 2j)/16^j`, with
+`hermiteWeight 1 = 3/8`, and `tendsto_ellSqRatio_of_hermiteLimits` shows that the prolate-to-Hermite
+coefficient limits `ell_0² -> A`, `ell_1² -> A · 3/8` force
+
+```text
+ell_0²/(ell_0²+ell_1²) -> 1/(1 + 3/8) = 8/11,
+ell_1²/(ell_0²+ell_1²) -> 3/11,
+```
+
+so `tendsto_constrainedEndpointSq_of_hermiteLimits` gives `(13)` directly from those limits — the
+constrained-prolate ground-state theorem is not needed as a separate input, only the Hermite limits it
+itself rests on.
+
 ## Lean gates
 
 - [x] Lean: the sinc kernel equals the finite-Fourier character integral — equation `(6)` (already in the
@@ -496,8 +582,20 @@ differentiated fixed-mode (Fuchs) expansion `(9)` and the constrained limit `(12
 - [x] Lean: the regularity dictionary — an `L²` eigenfunction of the band operator has a continuous
   representative satisfying the pointwise `bandTransform` eigenrelation at every real point
   (`bandTransform_eigenExtension`)
-- [ ] Lean: the differentiated fixed-mode (Fuchs) expansion `(9)` — imported classical asymptotics
-- [ ] Lean: the constrained limit `(12)` and the response constants `(13)`–`(18)`
+- [x] Lean: the response-constant transport — `(10)`, `(11)`, `(12)`, `(13)`, `(15)`, `(18)` as limit
+  inferences from their named inputs (`CCMEndpointResponseConstants.lean`)
+- [x] Lean: the reduction of `(9)` to its envelope form — envelope plus antitone logarithmic
+  derivative give the differentiated asymptotic (`LogDerivativeFromEnvelope`,
+  `tendsto_endpointSq_div_leakage_of_envelope`)
+- [ ] Lean: the two-sided fixed-mode leakage envelope for the true operator, and antitonicity of its
+  logarithmic derivative — the last classical inputs
+- [x] Lean: the constrained ground-state ratio `8/11` derived from the prolate-to-Hermite coefficient
+  limits, with the Hermite weight arithmetic `q_1 = 3/8` (`tendsto_ellSqRatio_of_hermiteLimits`)
+- [ ] Lean: the prolate-to-Hermite coefficient limits `ell_j(lambda) -> h_(4j)(0)` for the true
+  operator — the last classical input on the coefficient side
+- [x] Lean: the exterior sawtooth incidence constant `(17)` — the endpoint pairing identified with the
+  corpus sawtooth incidence layer, with the Euler scalar identified as `-zeta'(2)/zeta(2)`
+  (`CCMEndpointSawtoothResponse.lean`)
 
 ## Gates
 

@@ -179,6 +179,7 @@ theorem exists_component_initial_separant_powers_mem_diffPolyIterateIdeal
     exists_oracle_initial_separant_powers_mem_diffPolyIterateIdeal φ hinj hcomm hAvars hPle
       hPdvd hQ⟩
 
+omit [CharZero L] in
 /-- **Separant-only Ritt reduction over a coefficient ring.**
 
 Phase one of the reduction removes every jet above the leader with a power of the separant as the

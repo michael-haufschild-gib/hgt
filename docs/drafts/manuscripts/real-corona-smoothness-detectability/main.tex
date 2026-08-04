@@ -75,6 +75,14 @@ equivalent to finiteness of both compactified sectors, giving nonsmoothness for 
 nontrivial primitive self-dual Dirichlet completions, and positive completed-zeta powers.  Finally,
 self-dual fixed sectors satisfy defect $=$ analytic rank $+$ twice upper multiplicity, while fixed
 crossed-product $K_0$ records support and cyclic defect records multiplicity.
+
+We also compute the two-sided Clifford product.  Opposite phases cancel exactly on the closed CCM
+recipient: $(-iL_c)(iL_d)=L_{cd}$.  Separately, the multiplicity-exact Xi numerical pairing has a
+positive $2\times2$ Gram lift whose Clifford-graded trace is exactly the Weil quadratic form.
+Matrix positivity is unconditional; nonnegativity of the extracted scalar on the full
+square-summable test domain is equivalent to the Riemann hypothesis.  This gives a non-circular
+positivity theorem and identifies the exact additional bridge required to make it a positivity
+theorem for the closed CCM product.
 \end{abstract}
 
 \maketitle
@@ -326,6 +334,53 @@ $F_{n,k}(z)=z^n(z^2-1)^k$ in the real window $[-1,1]$,
 where $k_\pm$ are the two fixed crossed-product character ranks.
 \end{theorem}
 
+\begin{theorem}[Clifford product, Weil pairing, and positivity boundary]
+\label{thm:cliffordweil}
+On the literal closed CCM recipient, put
+\[
+             \mathcal K_c^-=-iL_c,\qquad \mathcal K_d^+=iL_d.
+\]
+Then, in every cyclic degree,
+\[
+                    \mathcal K_c^-\mathcal K_d^+=L_{cd}.       \tag{1.22}
+\]
+Let $\mathfrak Z_\Xi$ be the multiplicity-exact centered Xi divisor, let
+$\jmath$ be critical-line reflection, and let $J$ be its reindexing involution on
+$\ell^2(\mathfrak Z_\Xi)$.  For square-summable divisor tests,
+\[
+ \langle JE_G,E_F\rangle
+   =\sum_{q\in\mathfrak Z_\Xi}F(z_q)\overline{G(\bar z_q)}
+   =:\mathcal W_\Xi(F,G).                              \tag{1.23}
+\]
+For $v\in\ell^2(\mathfrak Z_\Xi)$ define
+\[
+ T_v(\lambda,\mu)=\lambda v+\mu iJv,\quad
+ G_J(v)=T_v^*T_v,\quad
+ \Gamma=\begin{pmatrix}0&i\\-i&0\end{pmatrix}.
+\]
+With $q_J(v)=\operatorname{Re}\langle Jv,v\rangle$,
+\[
+ G_J(v)=
+ \begin{pmatrix}\|v\|^2&iq_J(v)\\-iq_J(v)&\|v\|^2\end{pmatrix}\ge0,
+ \qquad
+ \frac12\Tr\bigl(\Gamma G_J(v)\bigr)=q_J(v).          \tag{1.24}
+\]
+At $v=E_F$ the last scalar is $\operatorname{Re}\mathcal W_\Xi(F,F)$.  Matrix
+positivity is unconditional, while
+\[
+ \mathrm{RH}\quad\Longleftrightarrow\quad
+ \operatorname{Re}\mathcal W_\Xi(F,F)\ge0
+ \quad\text{for every square-summable }F.             \tag{1.25}
+\]
+The two channel energies are
+\[
+ \frac12\|v+Jv\|^2=\|v\|^2+q_J(v),\qquad
+ \frac12\|v-Jv\|^2=\|v\|^2-q_J(v).                   \tag{1.26}
+\]
+Thus the positive product retains both signs; scalar Weil positivity is dominance of the positive
+reflection channel, not a consequence of matrix positivity.
+\end{theorem}
+
 \subsection{Relation to prior work and logical scope}
 
 The CCM framework formulates the Weil explicit formula as a Lefschetz trace on cyclic homology of
@@ -341,6 +396,10 @@ the canonical odd complete-divisor realization excludes the corona projector fro
 algebra; the literal closed CCM target is nonzero and has an exact Haar--Meyer boundary separator;
 an untwisted anti-Real bivariant realization cannot equal its Real-even Lefschetz morphism; and the
 parity-corrected survivor is the Clifford transgression.
+Theorem~\ref{thm:cliffordweil} adds the exact two-sided product and, on the divisor side, separates
+positivity of a Gram product from positivity of its graded scalar coefficient.  The first is
+Hilbert geometry; the second is the Weil criterion itself.  No analytic realization map from the
+closed CCM product to that divisor Gram lift is asserted.
 
 The four questions are closed in their maximal typed universes.  Theorems
 \ref{thm:projectorcomplete} and \ref{thm:patching} quantify over every invariant-domain operator
@@ -894,6 +953,127 @@ untwisted lift, and all scalar parity corrections are classified by $\bar z=-z$.
 distinguished positive Clifford choice is $iL_c$.
 \end{remark}
 
+\subsection{The Clifford-corrected product and the Weil coefficient}
+\label{sec:cliffordweil}
+
+A two-sided product contains a class and its adjoint-oriented factor.  Define the opposite
+transgression by
+\[
+                     \mathcal K_c^-=-iL_c.            \tag{4.26}
+\]
+It is anti-Real for the same reason as $\mathcal K_c^+=iL_c$: conjugation changes the scalar sign
+while $L_c$ is Real-even.
+
+\begin{proposition}[Exact phase cancellation]\label{prop:phaseproduct}
+For all $c,d\in C_\Q$, all cyclic degrees $n$, and all $x\in\mathcal Q_n$,
+\[
+                  \mathcal K_c^-\bigl(\mathcal K_d^+(x)\bigr)=L_{cd}(x). \tag{4.27}
+\]
+\end{proposition}
+
+\begin{proof}
+Linearity and the descended action law give
+\[
+ (-iL_c)(iL_dx)=(-i)iL_cL_dx=L_{cd}x.
+\]
+No trace, zero-location statement, or positivity hypothesis enters.  This is the product at the
+proved recipient type: endomorphisms of the literal closed cyclic module.  A lift to a chosen
+entire bivariant theory would require that theory's independent bornological and summability
+hypotheses; none is inserted into (4.27).
+\end{proof}
+
+We next compute the exact divisor-side numerical pairing.  This calculation does not assert an
+analytic realization map from (4.27) to the Hilbert carrier.  Use centered spectral coordinates $z_q$ on the
+multiplicity-exact Xi divisor $\mathfrak Z_\Xi$.  Critical-line reflection is an involution
+$q\mapsto\jmath q$ satisfying $z_{\jmath q}=\bar z_q$.  On
+$H_\Xi=\ell^2(\mathfrak Z_\Xi)$ put
+\[
+                         (Jv)_q=v_{\jmath q}.          \tag{4.28}
+\]
+Then $J$ is a complex-linear isometry and $J^2=1$.  We use the convention that the Hilbert inner
+product is conjugate-linear in its first variable.  For a square-summable test $F$, define
+$E_F(q)=F(z_q)$.
+
+\begin{proposition}[Exact polarized pairing]\label{prop:weilpairing}
+For square-summable tests $F,G$,
+\[
+ \langle JE_G,E_F\rangle
+ =\sum_{q\in\mathfrak Z_\Xi}F(z_q)\overline{G(\bar z_q)}
+ =\mathcal W_\Xi(F,G).                                \tag{4.29}
+\]
+\end{proposition}
+
+\begin{proof}
+Reindexing by $\jmath$ preserves the counting measure on divisor copies.  Hence
+\[
+ \langle JE_G,E_F\rangle
+ =\sum_q\overline{E_G(\jmath q)}E_F(q)
+ =\sum_qF(z_q)\overline{G(z_{\jmath q})}.
+\]
+The identity $z_{\jmath q}=\bar z_q$ gives (4.29).  Square summability and
+Cauchy--Schwarz give absolute convergence.
+\end{proof}
+
+The unconditional positivity object is matrix-valued.  Taking a scalar graded coefficient before
+proving a Hodge sign would discard the negative reflection channel.
+
+\begin{proposition}[Positive Clifford Gram lift]\label{prop:gramlift}
+Let $H$ be a complex Hilbert space, let $J:H\to H$ be a complex-linear isometry with $J^2=1$, and
+let $v\in H$.  Put
+\[
+ q_J(v)=\operatorname{Re}\langle Jv,v\rangle,\quad
+ T_v(\lambda,\mu)=\lambda v+\mu iJv,\quad G_J(v)=T_v^*T_v.
+\]
+Then $J$ is self-adjoint, $\langle Jv,v\rangle=q_J(v)\in\R$, and equations
+\textup{(1.24)} and \textup{(1.26)} hold.  In particular $G_J(v)$ is positive semidefinite.
+\end{proposition}
+
+\begin{proof}
+Isometry and involutivity give
+\[
+             \langle Ja,b\rangle
+             =\langle J(Ja),Jb\rangle
+             =\langle a,Jb\rangle,                   \tag{4.30}
+\]
+so $J=J^*$ and $\langle Jv,v\rangle$ is real.  Expanding the Gram matrix of $v,iJv$ gives
+\[
+ T_v^*T_v=
+ \begin{pmatrix}
+ \langle v,v\rangle&\langle v,iJv\rangle\\
+ \langle iJv,v\rangle&\langle iJv,iJv\rangle
+ \end{pmatrix}
+ =\begin{pmatrix}\|v\|^2&iq_J(v)\\-iq_J(v)&\|v\|^2\end{pmatrix}.
+\]
+It is positive because
+$\langle G_J(v)(\lambda,\mu),(\lambda,\mu)\rangle
+=\|T_v(\lambda,\mu)\|^2\ge0$.  Direct multiplication by $\Gamma$ gives
+$\frac12\Tr(\Gamma G_J(v))=q_J(v)$.  Finally, the norm addition and subtraction identities,
+$\|Jv\|=\|v\|$, and
+$\operatorname{Re}\langle v,Jv\rangle=q_J(v)$ give (1.26).
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:cliffordweil}]
+Equation (1.22) is Proposition~\ref{prop:phaseproduct}; (1.23) is Proposition
+\ref{prop:weilpairing}; and (1.24), (1.26) are Proposition~\ref{prop:gramlift}.  Taking $v=E_F$
+and $G=F$ in (4.29) identifies the graded coefficient with
+$\operatorname{Re}\mathcal W_\Xi(F,F)$.
+
+If RH holds, critical-line reflection fixes every centered divisor point, so $J=1$ and
+$\operatorname{Re}\mathcal W_\Xi(F,F)=\|E_F\|^2\ge0$.  Conversely, an off-line reflection orbit
+supports a square-summable sign test with values $1$ and $-1$ on its two spectral points and zero
+elsewhere.  Its reflected inner product is strictly negative, contradicting scalar
+nonnegativity.  This proves (1.25) without using matrix positivity in either direction.  Matrix
+positivity is instead the independent Gram identity $G_J(v)=T_v^*T_v$.
+\end{proof}
+
+\begin{remark}[Non-circularity]
+The theorem does not call $\frac12\Tr(\Gamma G_J)$ positive.  It proves positivity of $G_J$ and
+computes that signed coefficient exactly.  Declaring the coefficient nonnegative for all tests
+would be equivalent to RH by (1.25).  Any further proof must therefore supply arithmetic source
+information selecting the $J=+1$ channel; Clifford or Morita stabilization alone cannot supply
+that selection.
+\end{remark}
+
 \section{Endpoint-holomorphic smoothness}\label{sec:p3}
 
 Let $Z=Z_+\sqcup Z_-\subset\C$ and let $U$ be a connected set containing $Z$ and the relevant
@@ -1174,7 +1354,9 @@ P1 is the unbounded free-block shadow: the canonical odd divisor operator antico
 orientation, so the projector commutator retains the full unbounded norm and fails Lipschitz
 regularity.  P2 is the Real-cyclic shadow: the descended Lefschetz operator occupies the Real-even
 channel, while a proposed corona character occupies the anti-Real channel; multiplication by $i$
-is the exact Clifford passage between them.  P3 is the holomorphic free-block shadow: the two
+is the exact Clifford passage between them.  Theorem~\ref{thm:cliffordweil} computes its two-sided
+recipient-level product and, independently, the divisor-side two-channel Gram matrix whose signed
+Clifford coefficient is the Weil form.  P3 is the holomorphic free-block shadow: the two
 constant sign values cannot be continued through a common interior accumulation endpoint.  P4 is
 the fixed-block collateral: diagonal $K_0$ sees whether a coordinate occurs, whereas analytic
 order and cyclic rank retain its primary multiplicity.
@@ -1215,7 +1397,10 @@ necessary-and-sufficient divisor classification.
 For cyclic models, Theorem~\ref{thm:p2} already has theory-independent quantifiers.  Every
 anti-Real realized bivariant character is excluded from the untwisted Real-even Lefschetz class,
 and every scalar correction is classified by $\bar z=-z$; $iL_c$ is the canonical Clifford
-representative.  Changing the bornological implementation cannot alter this parity theorem.
+representative.  Theorem~\ref{thm:cliffordweil} closes its recipient-level product law and gives an
+unconditional positive Gram lift of the independent Xi pairing.  It also classifies the exact scalar boundary:
+nonnegativity of the graded Weil coefficient on the full Xi domain is RH.  Changing the
+bornological implementation cannot alter either parity or this signature statement.
 
 For fixed sectors, Theorem~\ref{thm:p4} is multiplicity-exact for every self-dual analytic family.
 Ordinary fixed crossed-product $K_0$ records support, while the local primary length, equivalently

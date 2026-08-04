@@ -2423,3 +2423,104 @@ is done.  What remains for the initial half is the analogous coefficient stateme
 monomial of the right-block initial, multiplied by the leader power, is a monomial of the
 polynomial.  This needs a coefficient formula for `differentialPolynomialTwoBlockEquiv`, which is
 built from `diffPolySumSplit` and `MvPolynomial.commAlgEquiv` and currently has none in the corpus.
+
+### Gap 2 eliminated, not closed
+
+`exists_separant_power_mem_diffPolyIterateIdeal` (in `RittRingGeneralComponent.lean`) runs **phase
+one only**: it clears every jet above the leader with a power of the separant, and the remainder,
+having order at most that of `A`, is divisible by `A` over the fraction field by the component
+oracle and over the ring by primitivity (`MvPolynomialPrimitive.dvd_of_fraction_map_dvd`).  The
+initial never enters, so the multiplier is `S(A)^e` alone.
+
+`exists_twoBlock_swap_separant_saturation` (in `TwoBlockSwapSymmetry.lean`) is the two-block form:
+
+  `symm(S(equiv A)^e) · swap 𝒫 ∈ [A]` .
+
+By `differentialPolynomialTwoBlockEquiv_pderiv_inr` the multiplier is `(∂A/∂Y_m)^e`, a two-block
+polynomial whose variables are variables of `A` -- so `hMorder` follows from
+`mvPolynomial_vars_pderiv_subset` with no coefficient formula for the splitting.  Gap 2 is therefore
+no longer needed: the remaining inputs of the bridge are `hMnot` (`A ∤ (∂A/∂Y_m)^e`, from right-block
+leader degree and primeness of `A`) and the primitivity/irreducibility of `A` in the swapped view
+(Gauss ascent).
+
+## Block bookkeeping for the (★) assembly — built
+
+`formal/GaloisForLFunctions/HTGeometry/TwoBlockInitialSeparant.lean` (axiom-clean):
+
+- `not_dvd_pderiv_pow` — **a prime polynomial does not divide a power of its own separant** (the
+  separant is nonzero in characteristic zero and of strictly smaller degree in the differentiated
+  variable).  This is `hMnot` for the separant-only multiplier.
+- `differentialPolynomialTwoBlockSwap_involutive`, `differentialPolynomialRight_injective`,
+  `isUnit_of_isUnit_differentialPolynomialRight`.
+- `primitive_swap_of_irreducible` — an irreducible two-block polynomial with a left-block jet is
+  primitive for the right block, so Gauss ascent applies to its swapped localization.
+- `mem_vars_twoBlockEquiv_iff` / `mem_vars_twoBlockSwap_iff` — **the block variable dictionary**:
+  a right-block jet occurs in a two-block polynomial exactly when the corresponding variable occurs
+  in its split form, and the swap exchanges the blocks.  Both are proved from the characteristic-zero
+  criterion "a variable occurs iff its partial derivative is nonzero" together with the pderiv
+  compatibility, so no coefficient formula for the splitting is needed.
+- `scalarDifferentialPolynomialOrder_swap_le_iff` — the left-block order of a two-block polynomial is
+  bounded by `N` exactly when no left-block jet above `N` occurs.  This is what turns `hMorder` and
+  `hQorder` into statements about two-block variables.
+
+Every hypothesis of the swapped-view divisibility bridge is now available in the shape the (★)
+argument produces it; what remains is the assembly itself.
+
+## (★), order half — PROVED
+
+`formal/GaloisForLFunctions/HTGeometry/TwoBlockOrderSymmetry.lean`:
+
+    theorem twoBlock_leftOrder_le_rightOrder :
+      ord_U (Cc.polynomial) ≤ ord_Y (Cc.polynomial)
+
+unconditional, axiom-clean `[propext, Classical.choice, Quot.sound]`.
+
+Proof as planned: assume a left-block jet above the right-block order; take an irreducible factor
+`A` carrying it (`exists_irreducible_factor_mem_vars`); its right-block support equals that of `P`
+(`irreducible_factor_right_vars_eq`) and Gauss ascent makes both of its localizations irreducible;
+`exists_twoBlock_swap_separant_saturation` supplies `S(A)^e · swap 𝒫 ∈ [A]` with
+`S(A) = ∂A/∂Y_m`; the three bridge hypotheses are then
+
+- `hMorder`  from `vars (∂A/∂Y_m)^e ⊆ vars A` and the block dictionary,
+- `hMnot`    from `not_dvd_pderiv_pow` after Gauss contraction of the swapped divisibility,
+- `hQorder`  from the assumption itself (`ord_Y 𝒫 = m < n ≤ ord_U A`),
+
+so `dvd_of_saturation_bridge` gives `A ∣ swap 𝒫`, hence `swap A ∣ 𝒫`; but `swap A` carries the
+right-block jet `n > m`, and a divisor's variables are variables of `𝒫`.  Contradiction.
+
+This is the statement whose circularity blocked the cross-difference route for the whole programme:
+the bridge's order hypothesis is the negation of the conclusion, so in the contradiction branch it
+is free.
+
+**Next:** the degree half.  With `ord_U 𝒫 ≤ ord_Y 𝒫` the component oracle now applies to `swap 𝒫`
+directly for every irreducible factor, giving `A ∣ swap 𝒫` unconditionally, hence `𝒫 ∣ swap 𝒫` by
+squarefree recombination; since the swap preserves total degree, `𝒫` and `swap 𝒫` are associates and
+all block orders and leader degrees agree.
+
+## (★) — PROVED IN FULL
+
+`formal/GaloisForLFunctions/HTGeometry/TwoBlockOrderSymmetry.lean`, all axiom-clean:
+
+- `PrimitiveTwoBlockDifferentialCharacteristic.twoBlockEquiv_vars_eq` — the right-block support of
+  the cleared characteristic is the support of `P`.
+- `PrimitiveTwoBlockDifferentialCharacteristic.squarefree` — the cleared characteristic is
+  squarefree in the two-block ring (squarefreeness over the jet fraction field ascends, because a
+  left-block constant divisor is excluded by primitivity).
+- `irreducible_factor_dvd_twoBlockSwap` — **every irreducible factor divides the block swap**: the
+  cross-differences put the swap in the factor's general component, the proved order half makes its
+  right-block order small enough for the component's characteristic property, and primitivity
+  contracts the divisibility to the two-block ring.
+- `twoBlock_dvd_swap` — squarefree recombination: `𝒫 ∣ swap 𝒫`.
+- `twoBlock_associated_swap` — `𝒫` and `swap 𝒫` are associates (apply the swap to the divisibility
+  and cancel).
+- `twoBlock_degreeOf_inl_eq_degreeOf_inr` — **(★)**:
+
+      ∀ k,  deg_{U_k} 𝒫 = deg_{Y_k} 𝒫 .
+
+In particular `ord_U 𝒫 = ord_Y 𝒫 = m` and `deg_{U_m} 𝒫 = deg_{Y_m} 𝒫 = d`, which is exactly the
+statement the research note listed as the missing mathematics, and the card's central open point.
+
+**What this unlocks.**  With (★) the single-generator conclusion follows from theorems the corpus
+already has: for a nonconstant coefficient ratio `w = a/b`, the polynomial `a(U) − w·b(U)` is a
+relation of `y` over `F⟨w⟩` of rank at most `(m, d)`, so `eq_differentialAdjoin_of_ratio_rank_le`
+(equivalently `eq_of_characteristic_rank_eq`) gives `F⟨w⟩ = G`.

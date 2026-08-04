@@ -1,5 +1,6 @@
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+import GaloisForLFunctions.HTGeometry.LogDerivativeFromEnvelope
 
 /-!
 # The constrained endpoint response constants
@@ -201,6 +202,110 @@ theorem tendsto_primeResponse_div_leakage {d1 A S R : ℝ → ℝ} {z : ℝ}
   filter_upwards [hR] with l hl
   rw [hl]
   ring
+
+/-! ## The Hermite weights behind `8/11` -/
+
+/-- The Hermite contrast weight `q_j = binom(4j, 2j)/16^j` of the constrained ground state. -/
+def hermiteWeight (j : ℕ) : ℝ := (Nat.choose (4 * j) (2 * j) : ℝ) / 16 ^ j
+
+theorem hermiteWeight_zero : hermiteWeight 0 = 1 := by
+  simp [hermiteWeight]
+
+theorem hermiteWeight_one : hermiteWeight 1 = 3 / 8 := by
+  rw [hermiteWeight]
+  norm_num [Nat.choose]
+
+/-- **The ratio `8/11` from the prolate-to-Hermite limits.**  With `ell_0² -> A` and
+`ell_1² -> A q_1 = A · 3/8`, the ground weight of the two-mode seed tends to `8/11`. -/
+theorem tendsto_ellSqRatio_of_hermiteLimits {L0 L1 : ℝ → ℝ} {A : ℝ} (hA : 0 < A)
+    (h0 : Tendsto (fun l => L0 l ^ 2) atTop (𝓝 A))
+    (h1 : Tendsto (fun l => L1 l ^ 2) atTop (𝓝 (A * hermiteWeight 1))) :
+    Tendsto (fun l => L0 l ^ 2 / (L0 l ^ 2 + L1 l ^ 2)) atTop (𝓝 (8 / 11)) := by
+  have hden : Tendsto (fun l => L0 l ^ 2 + L1 l ^ 2) atTop (𝓝 (A + A * hermiteWeight 1)) :=
+    h0.add h1
+  have hne : A + A * hermiteWeight 1 ≠ 0 := by
+    rw [hermiteWeight_one]
+    positivity
+  have hquot : Tendsto (fun l => L0 l ^ 2 / (L0 l ^ 2 + L1 l ^ 2)) atTop
+      (𝓝 (A / (A + A * hermiteWeight 1))) := h0.div hden hne
+  have hval : A / (A + A * hermiteWeight 1) = 8 / 11 := by
+    rw [hermiteWeight_one]
+    field_simp
+    ring
+  rwa [hval] at hquot
+
+/-- The excited weight of the same seed tends to `3/11`. -/
+theorem tendsto_ellSqRatio_excited_of_hermiteLimits {L0 L1 : ℝ → ℝ} {A : ℝ} (hA : 0 < A)
+    (h0 : Tendsto (fun l => L0 l ^ 2) atTop (𝓝 A))
+    (h1 : Tendsto (fun l => L1 l ^ 2) atTop (𝓝 (A * hermiteWeight 1))) :
+    Tendsto (fun l => L1 l ^ 2 / (L0 l ^ 2 + L1 l ^ 2)) atTop (𝓝 (3 / 11)) := by
+  have hden : Tendsto (fun l => L0 l ^ 2 + L1 l ^ 2) atTop (𝓝 (A + A * hermiteWeight 1)) :=
+    h0.add h1
+  have hne : A + A * hermiteWeight 1 ≠ 0 := by
+    rw [hermiteWeight_one]
+    positivity
+  have hquot : Tendsto (fun l => L1 l ^ 2 / (L0 l ^ 2 + L1 l ^ 2)) atTop
+      (𝓝 (A * hermiteWeight 1 / (A + A * hermiteWeight 1))) := h1.div hden hne
+  have hval : A * hermiteWeight 1 / (A + A * hermiteWeight 1) = 3 / 11 := by
+    rw [hermiteWeight_one]
+    field_simp
+    ring
+  rwa [hval] at hquot
+
+/-- **Equation `(13)` from the prolate-to-Hermite limits.**  The two-mode seed's normalized endpoint
+square tends to `16 pi/11` once the coefficient limits are known; no separate constrained-prolate
+input is needed beyond them. -/
+theorem tendsto_constrainedEndpointSq_of_hermiteLimits {d1 e0 e1 L0 L1 : ℝ → ℝ} {A : ℝ} (hA : 0 < A)
+    (hw : ∀ᶠ l in atTop, 0 < l * d1 l)
+    (hE0 : Tendsto (fun l => e0 l ^ 2 / (l * d1 l)) atTop (𝓝 0))
+    (hE1 : Tendsto (fun l => e1 l ^ 2 / (l * d1 l)) atTop (𝓝 (2 * Real.pi)))
+    (h0 : Tendsto (fun l => L0 l ^ 2) atTop (𝓝 A))
+    (h1 : Tendsto (fun l => L1 l ^ 2) atTop (𝓝 (A * hermiteWeight 1))) :
+    Tendsto (fun l => (L1 l * e0 l - L0 l * e1 l) ^ 2 / (L0 l ^ 2 + L1 l ^ 2) / (l * d1 l))
+      atTop (𝓝 (16 * Real.pi / 11)) :=
+  tendsto_constrainedEndpointSq hw hE0 hE1 (tendsto_ellSqRatio_of_hermiteLimits hA h0 h1)
+    (tendsto_ellSqRatio_excited_of_hermiteLimits hA h0 h1)
+
+/-! ## The endpoint constant from a Fuchs-type leakage envelope -/
+
+/-- **Equation `(10)` from a Fuchs-type envelope.**  Suppose the leakage `D`, in the aperture
+variable, is trapped between two multiples of `c^k e^{-2c}`, its logarithmic derivative is antitone,
+and the endpoint identity `(5)` holds along the aperture scaling `c = 2 pi lambda²`.  Then the
+normalized endpoint square tends to `2 pi`.
+
+This is the exact reduction of the card's imported asymptotic `(9)`: only the two-sided envelope —
+the standard form of the fixed-mode Fuchs scale — and monotonicity of the logarithmic derivative are
+used, not the sharp constant. -/
+theorem tendsto_endpointSq_div_leakage_of_envelope {D Dp E : ℝ → ℝ} {k₁ k₂ : ℕ} {a c₁ c₂ : ℝ}
+    (hc₁ : 0 < c₁) (hc₂ : 0 < c₂)
+    (hDderiv : ∀ x, HasDerivAt D (Dp x) x)
+    (hDpos : ∀ x ∈ Set.Ioi a, 0 < D x)
+    (hanti : AntitoneOn (fun x => Dp x / D x) (Set.Ioi a))
+    (hlow : ∀ᶠ x in atTop, c₁ * x ^ k₁ * Real.exp (-(2 * x)) ≤ D x)
+    (hup : ∀ᶠ x in atTop, D x ≤ c₂ * x ^ k₂ * Real.exp (-(2 * x)))
+    (hd0 : Tendsto (fun l => D (2 * Real.pi * l ^ 2)) atTop (𝓝 0))
+    (hrel : ∀ᶠ l in atTop, E l
+      = -(Dp (2 * Real.pi * l ^ 2) * (2 * (2 * Real.pi) * l))
+        / (4 * (1 - D (2 * Real.pi * l ^ 2)))) :
+    Tendsto (fun l => E l / (l * D (2 * Real.pi * l ^ 2))) atTop (𝓝 (2 * Real.pi)) := by
+  have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
+  have hderivEq : ∀ x, deriv D x = Dp x := fun x => (hDderiv x).deriv
+  have hDdiff : DifferentiableOn ℝ D (Set.Ioi a) := fun x _ =>
+    ((hDderiv x).differentiableAt).differentiableWithinAt
+  have hantiDeriv : AntitoneOn (fun x => deriv D x / D x) (Set.Ioi a) := by
+    intro u hu v hv huv
+    simp only [hderivEq]
+    exact hanti hu hv huv
+  have hlogDeriv : Tendsto (fun x => Dp x / D x) atTop (𝓝 (-2)) := by
+    have h := GaloisForLFunctions.HTGeometry.tendsto_logDeriv_of_envelope_of_antitoneOn
+      hc₁ hc₂ hDdiff hDpos hantiDeriv hlow hup
+    refine h.congr (fun x => ?_)
+    rw [hderivEq x]
+  have hscaled := GaloisForLFunctions.HTGeometry.tendsto_scaled_logDeriv
+    (D := D) (D' := Dp) (β := 2 * Real.pi) (b := 2) hpi hlogDeriv
+  have hval : -(2 * (2 * Real.pi) * 2) = -(8 * Real.pi) := by ring
+  rw [hval] at hscaled
+  exact tendsto_endpointSq_div_leakage hd0 hscaled hrel
 
 end GaloisForLFunctions.RHTower
 

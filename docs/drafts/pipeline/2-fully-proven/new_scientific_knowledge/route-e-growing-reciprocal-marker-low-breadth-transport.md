@@ -4100,3 +4100,133 @@ over `t` instead. These are the first bricks of that average.
 
 All six are unconditional (`[propext, Classical.choice, Quot.sound]`) and wired into
 `GaloisForLFunctions.RHTower`.
+
+### The twisted Möbius sum enters the corpus's own contour machinery
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusTwistPerron.lean`.
+
+Audit correction to the note above: the `t = 0` case of the analytic input is **not** missing from
+the corpus. `Sieve/ChebyshevPNT.tendsto_sum_vonMangoldt_div` is the prime number theorem and
+`Sieve/MoebiusSharpLittleO.tendsto_norm_sum_moebius_div` is `‖∑_{n≤N} μ(n)‖/N → 0`, both
+unconditional, both proved here by a full contour argument with the zero-free region. What the
+frequency average needs is the *twisted* sum `∑_{n≤N} μ(n)n^{-iτ}`, and the first step of that is
+now built:
+
+- `moebiusTwist τ n = μ(n)·n^{-iτ}`, with `norm_moebiusTwist_le_one` — the twist is unimodular, so
+  the corpus's smoothed Perron formula (stated for arbitrary coefficients of modulus at most one)
+  applies verbatim;
+- `tsum_moebiusTwist_cpow` — the twisted Dirichlet series is the untwisted one shifted:
+  `∑ μ(n)n^{-iτ}n^{-s} = LSeries μ (s + iτ)`;
+- `norm_tsum_moebiusTwist_smoothWeight_le` — **the Perron bound with the same constant for every
+  twist**, because `norm_LSeries_moebius_le_uniform` is uniform in the height of the line.
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+What this does not yet give is the saving: the shifted contour argument has to be run for
+`invZeta(s + iτ)`, whose zero-free rectangle is the corpus's rectangle translated by `τ`. That
+translation, not the Perron step, is the remaining work on this route.
+
+### The contour shift transfers to the twist
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/InvZetaTwistShift.lean`.
+
+The obstacle named at the end of the previous section is gone. Holomorphy of `invZeta(s + iτ)` on a
+rectangle `[c,d] × [-T,T]` is holomorphy of `invZeta` on the translated rectangle
+`[c,d] × [τ-T, τ+T]`, and that sits inside the corpus's own symmetric rectangle at height `|τ| + T`.
+So no new analysis is needed — only a `MapsTo`:
+
+- `mapsTo_add_mul_I` — the vertical shift carries `[c,d] × [-T,T]` into `[c,d] × [-(|τ|+T), |τ|+T]`;
+- `differentiableOn_invZetaTwist_rect`, `differentiableOn_invZetaTwistW_rect` — holomorphy of the
+  twisted integrand, by composition with that shift;
+- `exists_integral_invZetaTwistW_shift` — **the four-edge identity for the twisted Perron integrand,
+  unconditionally**, at every twist `τ` and every height `T`, the zero-free input being taken at
+  height `|τ| + T`.
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+The twist therefore costs exactly one thing: the passage from height `T` to height `|τ| + T`, which
+is the loss the zero-free region already charges for working further up the strip. What remains on
+this route is to re-run the *edge bounds* (`MoebiusContourBound`, `MoebiusSaving`) at the enlarged
+height, which is where the `log⁹` of the zero-free region is spent.
+
+### The twisted contour bound, assembled
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusTwistEdgeAssembly.lean`,
+`formal/GaloisForLFunctions/RHTower/Sieve/MoebiusTwistEdgeSubstitution.lean`.
+
+The three edge estimates of the Perron argument (`TruncationError`, `HorizontalEdgeBound`,
+`VerticalEdgeBound`) are already stated for an *arbitrary* integrand `F : ℂ → ℂ`, so they apply to
+`invZeta(· + iτ)` with no change at all. Only the two `invZeta`-specific steps needed twisting, and
+both are now proved:
+
+- `tsum_moebiusTwist_smoothWeight_eq_invZeta_integral` — the twisted Perron identity in terms of the
+  regular reciprocal;
+- `norm_tsum_moebiusTwist_smoothWeight_le_edges` — the four-edge inequality for the twist;
+- `continuous_invZetaTwist_line`, `continuousOn_invZetaTwist_left_line` — the two continuity inputs,
+  by composing with `y ↦ y + τ`;
+- `exists_norm_tsum_moebiusTwist_smoothWeight_le` — **the twisted contour bound**,
+
+      ‖∑' μ(n)n^{-iτ}·w(n)‖ ≤ 2M_d C/T + 2 M_h C (d−c)/T^{j+1} + M_c(2(N+H)^c/c + 2C),
+
+  with **one absolute constant `C`, uniform in the twist `τ`**.
+
+All unconditional (`[propext, Classical.choice, Quot.sound]`), wired into
+`GaloisForLFunctions.RHTower`.
+
+The twist has cost exactly one thing throughout: the zero-free hypothesis is taken at height
+`|τ| + T` instead of `T`. What remains is to substitute the concrete geometry — the abscissae
+`c(K), d(K)` and the height `T(K)` of `MoebiusContourBound` — with `K` chosen large enough that
+`3 + 2(|τ| + T(K)) ≤ K`; the edge bounds themselves (`InvZetaLeftLine`, `InvZetaEdgeBounds`) are
+already pointwise in the height, so they apply at `y + τ` directly.
+
+### The twisted contour bound at the concrete rectangle
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusTwistContourBound.lean`.
+
+The concrete geometry substitutes with one adjustment. The twist moves every height by `τ`, so the
+truncation height available to it is
+
+    twistHeight K τ = truncHeight K − |τ|,
+
+chosen so that `|τ| + twistHeight K τ = truncHeight K` exactly: **the twisted contour occupies the
+same band as the untwisted one**, and the zero-free rectangle is the one already proved.
+
+- `abs_add_twistHeight` — that identity;
+- `exists_norm_tsum_moebiusTwist_smoothWeight_le_concrete` — **the twisted contour bound**, valid for
+  every twist with `5 + 4|τ| ≤ K`, with the *same* `C`, `M₀` and the same edge constants
+  `invZetaRightBound K`, `invZetaEdgeBound K` as the untwisted bound.
+
+The side condition `5 + 4|τ| ≤ K` is exactly what keeps the two horizontal edges at distance at
+least one from the real axis, which is where `norm_invZeta_horizontal_le` needs them; the three edge
+estimates are pointwise in the height, so each applies at the shifted height with no change.
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+The remaining steps on this route are the twisted analogues of `MoebiusSaving` (rewrite the left-edge
+term `(N+H)^{c(K)}` as the saving `(N+H)·exp(−c₀ log(N+H)/(16 log⁹K))`) and of the width choice, which
+together give `‖∑_{n≤N} μ(n)n^{-iτ}‖ = o(N)` uniformly over a growing range of `τ`.
+
+### The twisted saving
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusTwistSaving.lean`.
+
+`exists_norm_tsum_moebiusTwist_smoothWeight_le_saving` — the twisted contour bound with the left-edge
+term written as the trivial size times a genuine decay,
+
+    (N+H) · exp(−c₀·log(N+H) / (16 log⁹K)),
+
+uniformly over twists with `5 + 4|τ| ≤ K`. The twist moved the *height* of the contour, not its
+abscissa, so this step is unchanged from the untwisted argument.
+
+Unconditional, wired into `GaloisForLFunctions.RHTower`.
+
+**Route summary.** The twisted analogue of the corpus's own Möbius contour argument is now complete
+up to the choice of smoothing width: Perron → shifted Dirichlet series → contour shift → four edges
+→ concrete rectangle → saving, every step unconditional and every constant uniform in `τ`. The
+remaining steps are the twisted analogues of `MoebiusContourBoundGeneral` (arbitrary smoothing
+width), `MoebiusSmoothLittleO` and `MoebiusSharpLittleO`, which choose `H` and `K` and give
+
+    sup_{|τ| ≤ T} ‖∑_{n ≤ N} μ(n)n^{-iτ}‖ = o(N)
+
+for `T` growing with `N` — the frequency-uniform Möbius cancellation the mean-square input is
+assembled from.

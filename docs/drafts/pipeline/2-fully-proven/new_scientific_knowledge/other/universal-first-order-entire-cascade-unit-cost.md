@@ -6842,3 +6842,119 @@ Together these say the scaled model's output-jet Jacobian is the tower's, with r
 columns by `a_0^j`, and the entries pushed through an injective ring map.  Determinants therefore differ
 by a nonzero constant, so the tower's nonvanishing transports and the height induction is not re-run —
 which is the point of doing the widening this way.
+
+### The scaled model's determinant, transported
+
+`scaled_jet_det_ne_zero` (unconditional, axiom-clean): for any scales `a : ℕ → ℂ` with every
+`a k ≠ 0`, the output-jet determinant of the *scaled* model is nonzero at every height.
+
+No induction is repeated.  The identity
+`C(a_N)·∂_{i+1}(δ_a^j X_N) = C(a₀)^j·C(a_{i+1})·φ(∂_{i+1}(δ^j X_N))`
+follows from the three transport lemmas, and then:
+
+* `Matrix.det_mul_column` pulls the constant `C(a_N)` out of the left side as `C(a_N)^{m+1}`;
+* `det_mul_row` and `det_mul_column` pull `∏_j C(a₀)^j` and `∏_i C(a_{i+1})` out of the right;
+* `AlgHom.map_det` turns `det (φ.mapMatrix B)` into `φ (det B)`, which is nonzero because `φ` is
+  injective and the tower's determinant is nonzero.
+
+So the tower's observability is inherited by every exponential cascade with nonzero linear parts.  What
+remains is the analytic instantiation: `exp(a_k w + b_k)` is transcendental entire, its cascade's
+derivative law is exactly `scaledDerivation`, and `PolynomialCascadeModel` then converts the
+determinant into the order statement.
+
+### The law holds for every affine-exponential cascade
+
+`exactDifferentialOrder_expAffineCascade` (unconditional, axiom-clean): for **any** sequences
+`a, b : ℕ → ℂ` with every `a k ≠ 0`, the length-`n` cascade of
+
+`f_k(w) = exp(a_k w + b_k)`
+
+has differential order exactly `n`.  This is a two-parameter family at every level — infinitely many
+distinct cascades at each height, not one.
+
+`HTGeometry/ExpAffineCascade.lean` supplies the analytic half and closes the chain:
+
+* `transcendentalEntire_expAffine` — from `transcendentalEntire_affine_precomp`;
+* `differentiallyAlgebraicOfOrder_one_expAffine` — from the affine order-invariance iff applied to
+  `ExactDifferentialOrder Complex.exp 1`, which is the tower theorem at height one;
+* `deriv_expAffineCascade` — the derivative law `(Y_k)' = (∏_{j<k}a_j)·Y_1⋯Y_k`;
+* `law_expAffineCascade` — that law *is* `scaledDerivation` evaluated at the states, so
+  `PolynomialCascadeModel` applies verbatim;
+* `pderiv_zero_scaledJet` — the jets avoid the coordinate, transported from the tower through the
+  conjugation and cancelling `C(a_N) ≠ 0` in the domain;
+* `not_differentiallyAlgebraicOfOrder_expAffine` — the coordinate contributes a unit row and column,
+  so the full Jacobian's determinant is `scaled_jet_det_ne_zero`.
+
+**Status.** The card's law is now unconditional on an infinite two-parameter family at every height,
+with only the paper's own hypotheses.  The general case still needs `helim` for cascades whose
+derivative law is algebraic rather than polynomial — and the polynomial case is exactly the
+first-order entire family `f' = a·f`, so this is the whole reach of the polynomial-model method.
+
+### `HTGeometry/AffineTopReduction.lean` — the reduction with the exponential structure removed
+
+The exponential cascades' top reduction used only that the top variable is driven *affinely*:
+`δ X = A·X + B` with `A, B` free of `X`.  That hypothesis is now isolated, unconditional and
+axiom-clean:
+
+* `iterate_of_affine_law` — every jet is again affine, `δ^i X = A_i·X + B_i`, with
+  `A_0 = 1`, `B_0 = 0`, `A_{i+1} = δA_i + A_i·A`, `B_{i+1} = δB_i + A_i·B`;
+* `pderiv_top_iterate_of_affine` — the variable's own partial derivative of the `i`-th jet is exactly
+  `A_i`, so the Jacobian's top column is constant in `X`;
+* `pderiv_low_iterate_of_affine` — every other partial derivative is `∂_j B_i + X·∂_j A_i`, so the
+  other columns are linear in `X`: the Jacobian **is** a column pencil;
+* `affineJetA_mem` / `affineJetB_mem` — a derivation-stable subalgebra containing `A` and `B` contains
+  every coefficient, which is how the freeness hypotheses are discharged in practice.
+
+Why this matters for the card: the next family beyond `f' = a·f` is `f' = a(w)f + b(w)` with **polynomial**
+coefficients — still first-order, still transcendental entire (e.g. `exp(w²)`), and still a *polynomial*
+derivative law for the cascade, since `δ Y_{k+1} = (a_k(Y_k)·Y_{k+1} + b_k(Y_k))·δ Y_k`.  The top state
+of such a cascade obeys exactly `δ X_N = A·X_N + B` with `A = δX_{N−1}·a_{N−1}(X_{N−1})` and
+`B = δX_{N−1}·b_{N−1}(X_{N−1})`, both free of `X_N`.  So this module is the first step of that
+reduction, and what remains is the determinant extraction (already built as `columnPencil`) plus the
+recursion on `A`.
+
+### `HTGeometry/AffineTopDeterminant.lean` — the general one-variable reduction
+
+`det_ne_zero_of_affine_top` (unconditional, axiom-clean).  For a model derivation with
+
+`δ X_N = A·X_N + B`,  `A, B ∈ freeAlg N` (the subalgebra generated by the other variables),
+
+the output-jet determinant of `X_N` against `{X_N} ∪ {X_{c j}}` is nonzero as soon as the determinant of
+
+`(∂_{c j} A_{i+1})_{i,j < n}`
+
+is — the Jacobian of the *positive* homogeneous coefficients of the affine law.  One variable is
+eliminated per application, and the only hypotheses are freeness and stability.
+
+Supporting: `freeAlg N` with `pderiv_eq_zero_of_mem_freeAlg`, `pderiv_mem_freeAlg`, and
+`varSub_eq_C_of_mem_freeAlg` (the fresh-variable substitution under which everything free of `X_N` is a
+constant).  The proof is: substitute, so the Jacobian becomes a literal `columnPencil`; take the top
+coefficient (`coeff_det_columnPencil`); expand along the row `i = 0`, which is a unit vector because
+`A_0 = 1` (`det_columnLeading_of_row_zero`).
+
+This is the exponential cascades' reduction with every trace of the exponential removed: there
+`A = δX_{N−1}` and `B = 0`, but the lemma sees only the affine law.  It is the general first step for
+cascades built from `f' = a(w)f + b(w)` with polynomial coefficients — the largest first-order entire
+family whose cascade still has a polynomial derivative law.
+
+### Shifts are free: the translation transport
+
+`shifted_jet_det_ne_zero` (unconditional, axiom-clean): the model with
+
+`δ X_{k+1} = a_k·(X_{k+1} − e_{k+1})·δ X_k`
+
+has nonzero output-jet determinant at every height, for every choice of shifts `e`.
+
+This is the model of a cascade of maps `f(w) = d + c·exp(a w + b)` — i.e. of **every transcendental
+entire solution of a constant-coefficient first-order linear equation**, since `f' = a(f − d)`.
+
+The transport is cheaper than the scaling one because translation is exact: `transHom e : X_k ↦ X_k + e_k`
+is an automorphism (`transHom_injective`), it *commutes* with every partial derivative
+(`pderiv_transHom`), and it conjugates the two models with no constant at all
+(`shiftedDerivation_transHom`).  The only wrinkle is that the output is `X_N`, not `transHom e (X_N)`;
+they differ by a constant, which the jets kill for `i ≥ 1` and the partial derivatives kill for `i = 0`,
+so the two Jacobians agree entrywise up to `transHom e`.
+
+Composed with the scaling transport, the observability determinant is now known for every model of the
+form `δ X_{k+1} = (a_k X_{k+1} + β_k)·δ X_k` with `a_k ≠ 0` and constant `β_k` — the whole
+constant-coefficient first-order entire family, four parameters per level.

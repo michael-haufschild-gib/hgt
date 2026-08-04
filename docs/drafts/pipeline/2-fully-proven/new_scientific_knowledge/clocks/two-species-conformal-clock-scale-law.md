@@ -2599,6 +2599,25 @@ The first half of that theory is now built, in the child card
   initial slice, and hence continuous dependence: the energy of the difference of two solutions at
   any time is controlled by the energy of the difference of their Cauchy data.
 
+- **`kgWaveOp_eq_of_contDiff`**, **`solvesWaveEq_comp_eventCLM`** — and the bridge: a solution of the
+  corpus's own `SolvesPotentialWaveAt (kgWaveOp d) V u` is a solution in time-space coordinates, so
+  every Fourier-built probe with spatially compact support inherits all of the above, and
+  **`solvesWaveEq_comp_eventCLM_iff`** records that the two formulations are the same statement;
+- **`eq_of_solvesPotentialWave_of_data_eq`** — the capstone in the corpus's own language: two smooth
+  spatially compactly supported solutions of `□u + Vu = 0` with a bounded continuous potential and
+  the same Cauchy data on the initial slice agree at every event.
+
+The estimate no longer needs compact spatial support: `DecayingSolution` collects the integrability
+and domination conditions that replace it, and **`waveEnergy_le_exp_of_decaying`** proves
+`E(t) ≤ E(0)·exp((‖V‖_∞+1)t)` in that generality — the form a Fourier-built probe, which decays
+rather than vanishes outside a compact set, can meet. In the corpus's own language that reads
+**`eq_zero_of_solvesPotentialWave_of_decaying`**: a smooth decaying solution of `□u + Vu = 0` whose
+value and time derivative vanish on the initial slice vanishes at every event. The decay hypotheses
+are a genuine restriction, not a consequence of the equation: `not_decayingSolution_one_field` shows
+the constant field solves the free equation with non-integrable energy density, so a Fourier-built
+probe — bounded, not automatically decaying — needs its energy and Green products shown integrable
+before the estimate applies to it.
+
 This is uniqueness, not existence. The existence half — a Galerkin scheme or a fixed point in a
 Sobolev scale — is what would lower the regularity threshold of the probe construction below
 `C^{2d+5}`; the estimate above is its quantitative input.

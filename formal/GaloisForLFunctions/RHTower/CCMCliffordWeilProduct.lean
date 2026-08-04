@@ -215,10 +215,21 @@ def xiWeilCliffordGram (v : XiWeilCarrier) : Matrix (Fin 2) (Fin 2) ℂ :=
 def xiWeilCliffordCoefficient (v : XiWeilCarrier) : ℂ :=
   CliffordWeil.coefficient xiWeilLineConjLinearIsometry v
 
+/-- Polarized numerical pairing of critical-line reflection on the Xi Hilbert carrier. -/
+def xiWeilCliffordPairing (v w : XiWeilCarrier) : ℂ :=
+  inner ℂ (xiWeilLineConjLinearIsometry w) v
+
 /-- The Xi Clifford matrix is positive without RH. -/
 theorem xiWeilCliffordGram_posSemidef (v : XiWeilCarrier) :
     Matrix.PosSemidef (xiWeilCliffordGram v) :=
   CliffordWeil.gram_posSemidef xiWeilLineConjLinearIsometry v
+
+/-- The polarized numerical pairing is exactly the multiplicity-exact Xi Weil form. -/
+theorem xiWeilCliffordPairing_evaluation_eq_polarization
+    (F G : ℂ → ℂ) (hF : XiWeilSquareSummable F) (hG : XiWeilSquareSummable G) :
+    xiWeilCliffordPairing (xiWeilEvaluationLp F hF) (xiWeilEvaluationLp G hG) =
+      xiWeilPolarization F G := by
+  exact inner_xiWeilLineConjLp_evaluation_eq_polarization F G hF hG
 
 /-- The Clifford coefficient on an evaluation vector is exactly the diagonal Xi Weil form. -/
 theorem xiWeilCliffordCoefficient_evaluation_eq_polarization_re

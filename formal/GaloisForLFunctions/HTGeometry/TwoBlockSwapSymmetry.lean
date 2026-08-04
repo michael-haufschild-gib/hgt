@@ -377,6 +377,77 @@ theorem exists_twoBlock_swap_controlled_saturation
   rw [map_mul, AlgEquiv.apply_symm_apply, mul_assoc]
   exact hmem
 
+/-- **The block swap is saturated by a power of the separant alone.**
+
+Only phase one of the reduction is needed: it clears every jet above the leader with the separant as
+multiplier, and what is left has order at most that of the factor, so the component's characteristic
+property and primitivity make it divisible by the factor over the ring.
+
+The multiplier is therefore `S(A)^e`, and by
+`differentialPolynomialTwoBlockEquiv_pderiv_inr` its two-block form is the right-block partial
+derivative of `A`, whose variables are variables of `A`.  This is the form in which the divisibility
+bridge can consume the certificate. -/
+theorem exists_twoBlock_swap_separant_saturation
+    {F E : Type*} [Field F] [Field E] [Differential F] [Differential E] [Algebra F E]
+    [DifferentialAlgebra F E] [CharZero F] [CharZero E]
+    (G : IntermediateField F E) (hGclosed : DerivationClosed G) {y : E}
+    (hG : G ≤ differentialAdjoin F ({y} : Set E))
+    (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+    (P : DifferentialPolynomial Unit G)
+    (hP : IsMinimalScalarDifferentialPolynomialRank
+      (differentialIntermediateRelationIdeal G y : Set _) P)
+    (hPirr : Irreducible P)
+    (Cc : PrimitiveTwoBlockDifferentialCharacteristic G hG hy P)
+    {A : DifferentialPolynomial (Unit ⊕ Unit) F}
+    (hAdvd : A ∣ Cc.polynomial)
+    (hAvars : (differentialPolynomialTwoBlockEquiv F A).vars = P.vars)
+    (hAirr : Irreducible (MvPolynomial.map
+      (algebraMap (DifferentialPolynomial Unit F)
+        (FractionRing (DifferentialPolynomial Unit F)))
+      (differentialPolynomialTwoBlockEquiv F A))) :
+    letI : Differential (DifferentialPolynomial Unit F) := differentialPolynomialDifferential F
+    ∃ e : ℕ,
+      (differentialPolynomialTwoBlockEquiv F).symm
+            (scalarDifferentialPolynomialSeparant
+              (differentialPolynomialTwoBlockEquiv F A) ^ e) *
+          differentialPolynomialTwoBlockSwap F Cc.polynomial ∈
+        differentialPolynomialFamilyIterateIdeal A := by
+  classical
+  letI : Differential (DifferentialPolynomial Unit F) := differentialPolynomialDifferential F
+  letI : Differential (FractionRing (DifferentialPolynomial Unit F)) :=
+    differentialIndependentJetFractionDifferential y hy
+  obtain ⟨Pc, hPcprime, hPcle, hPcdvd, hcross⟩ :=
+    exists_component_crossDifference_mem G hGclosed hG hy P hP hPirr Cc hAdvd hAvars hAirr
+  have hAvarsNonempty : (differentialPolynomialTwoBlockEquiv F A).vars.Nonempty := by
+    rw [hAvars]
+    exact hP.2.2.1
+  have hAprim : MvPolynomialPrimitive (differentialPolynomialTwoBlockEquiv F A) := by
+    intro r hr
+    exact Cc.primitive r (hr.trans (map_dvd (differentialPolynomialTwoBlockEquiv F) hAdvd))
+  have hCne : differentialPolynomialTwoBlockEquiv F Cc.polynomial ≠ 0 :=
+    (differentialPolynomialTwoBlockEquiv F).injective.ne Cc.ne_zero
+  obtain ⟨μ, hμsupp⟩ : (differentialPolynomialTwoBlockEquiv F Cc.polynomial).support.Nonempty := by
+    rw [Finset.nonempty_iff_ne_empty]
+    intro hempty
+    exact hCne (MvPolynomial.support_eq_empty.mp hempty)
+  have hμ : algebraMap (DifferentialPolynomial Unit F)
+      (FractionRing (DifferentialPolynomial Unit F))
+      (differentialPolynomialTwoBlockCoefficient μ Cc.polynomial) ≠ 0 := by
+    refine fun h0 => (MvPolynomial.mem_support_iff.mp hμsupp) ?_
+    have hzero : differentialPolynomialTwoBlockCoefficient μ Cc.polynomial = 0 :=
+      IsFractionRing.injective (DifferentialPolynomial Unit F)
+        (FractionRing (DifferentialPolynomial Unit F)) (by simpa using h0)
+    exact hzero
+  have hswapmem := twoBlockSwap_mem_of_crossDifference_mem
+    (algebraMap (DifferentialPolynomial Unit F)
+      (FractionRing (DifferentialPolynomial Unit F)))
+    Cc.polynomial Cc.diagonal hcross hμ
+  obtain ⟨e, hmem⟩ := exists_separant_power_mem_diffPolyIterateIdeal
+    (algebraMap_jetFraction_deriv hy) hAvarsNonempty hAprim hPcle hPcdvd hswapmem
+  refine ⟨e, mem_familyIterateIdeal_of_twoBlockEquiv_mem ?_⟩
+  rw [map_mul, AlgEquiv.apply_symm_apply]
+  exact hmem
+
 end
 
 end GaloisForLFunctions
