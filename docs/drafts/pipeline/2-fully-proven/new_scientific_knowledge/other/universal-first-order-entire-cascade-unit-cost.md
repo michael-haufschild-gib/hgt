@@ -7709,3 +7709,110 @@ So the general product law splits cleanly:
 Next: the polynomial induction on the degenerate locus, which yields `ord = n` for every cascade of
 maps `d + c·exp(K(w − d)^(e+1)/(e+1))` — a strictly larger family than the constant-coefficient one
 already proved, and the first case beyond it.
+
+### The degenerate model is triangular
+
+Three more facts on the locus (`ProductLawDegenerate.lean`, axiom-clean, no `sorry`):
+
+* `logSum_of_pow` — the closed form,
+  `logSum_k = ∑_(j<k) (e_j+1)·v_j'(X_j)·∏_(i<j)Q_i(X_i)`, with every denominator cancelled;
+* `fpderiv_prodHead_of_le` — the head product below a coordinate is killed by that coordinate's
+  derivation;
+* `fpderiv_logSum_of_pow` — hence, when each `v_j` is linear so that `v_j'` is a constant, **the
+  logarithmic sum at level `k+1` is free of the coordinate `k`**: its `j`-th term involves only
+  coordinates strictly below `j`.
+
+That last statement is the triangularity the height induction runs on, and it is the exact analogue of
+the tower's `towerSum m ∈ lowAlg m`.  On the degenerate locus the general product law therefore has the
+same shape as the tower — polynomial, triangular, with the newest coordinate entering one term at a
+time — but with column degrees `e_j+1` where the tower has `1`, which is what the column-degree
+extraction was built to absorb.
+
+### First result off the constant-coefficient family: the two-map cascade
+
+`HTGeometry/ProductLawBaseCase.lean` (axiom-clean) closes the height-one case and, with it, the whole
+chain fires for the first time on a genuinely non-constant-coefficient law.
+
+* `fpderiv_prodHead_two` — the gradient of a two-factor head product is `Q_0(X_0)·Q_1'(X_1)`;
+* `bordered_det_ne_zero_zero` — so the `1×1` bordered determinant is nonzero exactly when `Q_1` is
+  nonconstant;
+* `prodOutput_det_ne_zero_two` — hence the output-jet determinant of the second coordinate of any
+  linear-terminal product law with `Q_1` nonconstant is nonzero.
+
+The hypotheses are exactly the right ones: `Q_1 = a_1·(X − d_0)` is nonconstant for **every** cascade of
+first-order linear entire maps, because the factor `(X − d_0)` is always there.  Nothing about the
+coefficients `a_j` is assumed — they may be arbitrary polynomials, so this covers compositions like
+`exp(z²) ∘ (d + c·exp(A(w)))`, which lie outside the constant-coefficient family proved earlier.
+
+The chain that produced it, end to end and machine-checked: affine top reduction → Bell
+unitriangularity → uniform row reduction → bordered rows replaced by jet rows → the single entry.
+Every step is stated for the general product law; only the last is height-specific.
+
+### Back to the polynomial model
+
+`HTGeometry/ProductLawPolynomialBridge.lean` (axiom-clean) closes the loop the fraction field opened.
+
+The law of a cascade of first-order linear entire maps is polynomial in the states; the fraction field
+was needed only to run the determinant argument.  `polyProdDerivation` is that law on the polynomial
+ring, and `algebraMap_polyProdDerivation` shows the two agree — proved by induction on the polynomial,
+since the combinator route founders on the scalar-tower instances.  Hence
+`algebraMap_iterate_polyProdDerivation`: the polynomial jets map onto the rational ones.
+
+`algebraicIndependent_of_field` then transfers algebraic independence back along the inclusion, which
+is what `PolynomialCascadeModel`'s analytic transfer theorem consumes.  So the determinant computed in
+the fraction field is usable by the analytic layer without ever leaving the polynomial model —
+the detour through the fraction field costs nothing.
+
+### The coordinate contributes a unit column, not a unit row
+
+`HTGeometry/JetJacobianWithCoordinate.lean` (axiom-clean) supplies the last generic piece, and improves
+on the tower's version of it.
+
+The family the analytic transfer consumes is the coordinate together with the jets of a state.  Its
+Jacobian against the coordinate derivations has a unit **column** — the coordinate's own — so expanding
+there gives
+
+`det = det(∂_(i+1) (jets))`,
+
+with **no condition on how the jets depend on the coordinate**.  The tower expanded along the
+corresponding row instead, which required a separate lemma saying its jets are free of `X_0`; that is
+true for the tower, whose law is `∏_(i=1)^k X_i`, but false for a general first-order linear cascade,
+whose law carries `Q_0(X_0)` whenever the first map has nonconstant coefficient.
+
+`algebraicIndependent_cons_of_jetDet`: a nonvanishing jet Jacobian gives algebraic independence of
+`(X_0, jets)` for **any** polynomial model law — exactly the hypothesis of
+`PolynomialCascadeModel.not_differentiallyAlgebraicOfOrder_of_model`.
+
+### The determinant transported back
+
+`HTGeometry/ProductLawJetDeterminant.lean` (axiom-clean):
+
+* `algebraMap_pderiv` — the coordinate derivations of the polynomial ring map onto those of the
+  rational model (again by induction on the polynomial, the combinator route being blocked by the
+  scalar-tower instances);
+* `algebraMap_modelJet` — hence the model jets map onto the rational jets;
+* `jetDet_ne_zero_of_field` — so a determinant computed in the fraction field certifies the polynomial
+  jet Jacobian.  The two matrices are transposes of one another, since the rational side indexes rows
+  by jets and the polynomial side by derivations.
+
+Chained with `algebraicIndependent_cons_of_jetDet`, a rational-model determinant now yields exactly the
+algebraic independence that `PolynomialCascadeModel.not_differentiallyAlgebraicOfOrder_of_model`
+consumes.  The algebraic half of the linear-coefficient programme is therefore complete end to end:
+from the analytic law of a cascade, through the fraction field where the determinant is computable,
+back to the polynomial model where the transfer theorem lives.
+
+### The algebraic capstone for two maps
+
+`HTGeometry/ProductLawTwoMapIndependence.lean` (axiom-clean) closes the algebraic half:
+
+* `jetDet_ne_zero_two` — the two-map jet Jacobian is nonzero **in the polynomial model**, obtained by
+  identifying the `Fin.lastCases` column ordering of the rational determinant with the plain one and
+  transporting;
+* `algebraicIndependent_two_map` — hence `(z, X_2, δX_2)` is algebraically independent over `ℂ` for
+  every linear-terminal product law whose first factor is nonconstant.
+
+That is exactly the `hjet` hypothesis of
+`PolynomialCascadeModel.not_differentiallyAlgebraicOfOrder_of_model`, so for a two-map cascade the
+algebraic side is finished: no further determinant work is needed to conclude `ord = 2`, only the
+analytic instantiation (states, differentiability, and the derivative law), which is the same routine
+already carried out for `ExpShiftCascade`.

@@ -844,11 +844,49 @@ into an aperture limit:
   exponential rate: at large aperture the band operator is asymptotically the identity on its own
   scale.
 
-What the envelope gate still needs is the matching *lower* bound `1 - ‖B_c‖ >= c_0 c^(1/2) e^(-2c)`
-and the antitonicity of the logarithmic derivative of the leakage.  The lower bound is an upper bound
-on `‖B_c‖` with an exponentially small gap; the exact endpoint ODE `(4)` shows it is equivalent to a
-*lower* bound on the endpoint value `|psi_c(1)|²`, which is the differentiated form of the same
-classical asymptotic.
+The *qualitative* form of the lower envelope — that the leakage is strictly positive — is now proved
+as well, and it required building the Paley–Wiener side of the theory, which mathlib does not have.
+`HTGeometry/CompactFourierEntire.lean` moves the frequency into the complex plane:
+
+- `compactFourier`, `hasDerivAt_compactFourier`, `differentiable_compactFourier` — for a continuous
+  amplitude on a compact interval, `z ↦ ∫_a^b f(x) e^(i z x) dx` is **entire**.  Differentiation under
+  the integral is legitimate because on the interval the derivative of the integrand is dominated by
+  the constant `sup|f| · max(|a|,|b|) · exp((‖z‖+1) max(|a|,|b|))`.
+- **`entire_eq_zero_of_ae_vanishing_on_real_interval`** — an entire function vanishing *almost
+  everywhere* on a nondegenerate interval of real frequencies vanishes identically.  A null set cannot
+  swallow a punctured interval, so every punctured neighbourhood of the centre still contains a zero
+  and the identity theorem applies.  The almost-everywhere form is what a vanishing tail *integral*
+  delivers, so no continuity of the transform is needed.
+
+`RHTower/BandUncertainty.lean` applies this to the band:
+
+- `bandFourierEntire`, `bandFourierEntire_ofReal`, `differentiable_bandFourierEntire` — the spectral
+  amplitude `xi ↦ 𝓕 (trunc Phi) (xi)` is the restriction to the real axis of an entire function of the
+  frequency.
+- **`eqOn_zero_of_spectral_tail_eq_zero`** — the qualitative uncertainty principle: a continuous test
+  function whose spectral mass outside the window vanishes is zero on the open band.  Tail mass zero
+  gives almost-everywhere vanishing beyond the band edge; the identity theorem spreads it to all
+  frequencies; Fourier inversion (both the truncation and its transform are integrable, the latter
+  because it is zero) returns the truncation at each of its continuity points.
+
+`RHTower/BandStrictGap.lean` closes the gap with the Fredholm alternative:
+
+- **`not_hasEigenvalue_one`** — `1` is not an eigenvalue of `B_c`.  An eigenvector at `1` has a
+  continuous representative (the corpus regularity dictionary), its Rayleigh quotient is `1`, so its
+  spectral tail vanishes, so by uncertainty it is zero on the open band — and the two endpoints are a
+  null set, so its energy is zero, contradicting that an eigenvector is nonzero.
+- **`norm_bandOperatorL2_lt_one`**, `one_sub_norm_bandOperatorL2_pos` — hence `‖B_c‖ < 1` for every
+  aperture.  The Fredholm alternative leaves only two cases: `1` is an eigenvalue (excluded above) or
+  `1` lies in the resolvent set, and then mathlib's Rayleigh theory gives a uniform gap
+  `rayleigh <= ‖B_c‖ - eps`, which contradicts the norm being the supremum of the (nonnegative)
+  Rayleigh quotients.
+
+So the leakage is now known to satisfy `0 < 1 - ‖B_c‖ <= 64 c² e^(-2c)`, and in particular its
+logarithm is defined — which is what any logarithmic-derivative statement about the leakage needs.
+What remains is purely quantitative: the *rate* of the lower bound,
+`1 - ‖B_c‖ >= c_0 c^(1/2) e^(-2c)`, and the antitonicity of the logarithmic derivative.  By the exact
+endpoint ODE `(4)` the missing rate is equivalent to a lower bound on the endpoint value
+`|psi_c(1)|²`, which is the differentiated form of the same classical asymptotic.
 
 ## Lean gates
 
@@ -886,8 +924,13 @@ classical asymptotic.
   between `0` and its energy (by density of the continuous test functions), hence `‖B_c‖ <= 1`; with
   the envelope this gives `|1 - ‖B_c‖| <= 64 c² e^(-2c)` and `‖B_c‖ -> 1`
   (`BandOperatorContraction.lean`, `tendsto_norm_bandOperatorL2_atTop`)
-- [ ] Lean: the matching **lower** leakage envelope for the true operator, and antitonicity of its
-  logarithmic derivative — the last classical inputs
+- [x] Lean: the **strict** band gap `‖B_c‖ < 1`, hence `0 < 1 - ‖B_c‖` — the qualitative lower
+  envelope.  Requires the Paley–Wiener theory mathlib lacks: the compact Fourier transform is entire
+  (`CompactFourierEntire.lean`), an entire function vanishing a.e. on a real interval vanishes, the
+  band uncertainty principle (`BandUncertainty.lean`), and the Fredholm alternative
+  (`BandStrictGap.lean`, `norm_bandOperatorL2_lt_one`)
+- [ ] Lean: the **rate** of the lower leakage envelope `1 - ‖B_c‖ >= c_0 c^(1/2) e^(-2c)`, and
+  antitonicity of its logarithmic derivative — the last classical inputs
 - [x] Lean: the constrained ground-state ratio `8/11` derived from the prolate-to-Hermite coefficient
   limits, with the Hermite weight arithmetic `q_1 = 3/8` (`tendsto_ellSqRatio_of_hermiteLimits`)
 - [ ] Lean: the prolate-to-Hermite coefficient limits `ell_j(lambda) -> h_(4j)(0)` for the true

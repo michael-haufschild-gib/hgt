@@ -27,6 +27,98 @@ namespace RHTower
 
 open Sieve
 
+private theorem one_le_mul_of_one_le {x y : ℝ} (hx : 1 ≤ x) (hy : 1 ≤ y) :
+    1 ≤ x * y := by
+  simpa only [one_mul] using
+    mul_le_mul hx hy zero_le_one (le_trans zero_le_one hx)
+
+private theorem rpow_one_sub_le_self {B w : ℝ} (hB : 1 ≤ B) (hw : 0 ≤ w) :
+    B ^ (1 - w) ≤ B := by
+  calc
+    B ^ (1 - w) ≤ B ^ (1 : ℝ) :=
+      Real.rpow_le_rpow_of_exponent_le hB (by linarith)
+    _ = B := Real.rpow_one B
+
+private theorem nonneg_two_mul_add_one_mul_div {x r q : ℝ}
+    (hx : 0 ≤ x) (hr : 0 ≤ r) (hq : 0 ≤ q) :
+    0 ≤ 2 * (x + 1) * r / q := by
+  exact div_nonneg
+    (mul_nonneg (mul_nonneg (by norm_num) (by linarith)) hr) hq
+
+private theorem rpow_le_rpow_two_stage {X Y w θ : ℝ}
+    (hX : 0 ≤ X) (hXY : X ≤ Y) (hw : 0 ≤ w) (hY : 1 ≤ Y) (hwθ : w ≤ θ) :
+    X ^ w ≤ Y ^ θ :=
+  le_trans (Real.rpow_le_rpow hX hXY hw)
+    (Real.rpow_le_rpow_of_exponent_le hY hwθ)
+
+private theorem mul_le_mul_two_stage {a b c d : ℝ}
+    (hab : a ≤ b) (hcd : c ≤ d) (hc : 0 ≤ c) (hb : 0 ≤ b) :
+    a * c ≤ b * d :=
+  mul_le_mul hab hcd hc hb
+
+private theorem rewrite_two_radius_lower {fc fs rawB rawX B X w : ℝ}
+    (hB : rawB = B) (hX : rawX = X)
+    (h : fc * Real.exp (-(rawB ^ (1 - w) * rawX ^ w)) ≤ fs) :
+    fc * Real.exp (-(B ^ (1 - w) * X ^ w)) ≤ fs := by
+  simpa only [hB, hX] using h
+
+/-- Polynomial zeta growth on the large discs used by the RH three-circles argument. -/
+private theorem exists_bound_riemannZeta_disc_high {δ : ℝ} (hδ : 0 < δ) :
+    ∃ E : ℝ, 3 ≤ E ∧ ∀ t : ℝ, 6 ≤ |t| → ∀ z : ℂ,
+      ‖z - ((3 : ℂ) + (t : ℝ) * I)‖ ≤ 3 - (1 / 2 + δ / 4) →
+        ‖riemannZeta z‖ ≤ E * (2 + |t|) := by
+  let E : ℝ := 3 * (1 + 4 / δ)
+  have hfrac : 0 ≤ 4 / δ := by positivity
+  have hE3 : 3 ≤ E := by dsimp only [E]; nlinarith
+  refine ⟨E, hE3, fun t ht z hz => ?_⟩
+  let c : ℂ := (3 : ℂ) + (t : ℝ) * I
+  have hcre : c.re = 3 := by dsimp only [c]; simp
+  have hcim : c.im = t := by dsimp only [c]; simp
+  have hreabs := Complex.abs_re_le_norm (z - c)
+  rw [Complex.sub_re, hcre] at hreabs
+  have hrelo : 1 / 2 + δ / 4 ≤ z.re := by
+    have h := (abs_le.mp (hreabs.trans (by simpa only [c] using hz))).1
+    linarith
+  have hzre : 0 < z.re := by linarith
+  have hcNorm := Complex.norm_le_abs_re_add_abs_im c
+  rw [hcre, hcim, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 3)] at hcNorm
+  have hnormz : ‖z‖ ≤ 3 * (2 + |t|) := by
+    have htri : ‖z‖ ≤ ‖z - c‖ + ‖c‖ := by
+      simpa only [sub_add_cancel] using norm_add_le (z - c) c
+    have hzc : ‖z - c‖ ≤ 3 - (1 / 2 + δ / 4) := by simpa only [c] using hz
+    linarith [abs_nonneg t]
+  have htC : |t| ≤ ‖c - 1‖ := by
+    have him := Complex.abs_im_le_norm (c - 1)
+    rw [Complex.sub_im, hcim] at him
+    simpa using him
+  have hc1 : ‖c - 1‖ ≤ ‖c - z‖ + ‖z - 1‖ := by
+    have hsplit : c - 1 = (c - z) + (z - 1) := by ring
+    rw [hsplit]
+    exact norm_add_le _ _
+  have hcz : ‖c - z‖ = ‖z - c‖ := norm_sub_rev c z
+  rw [hcz] at hc1
+  have hzc : ‖z - c‖ ≤ 3 - (1 / 2 + δ / 4) := by simpa only [c] using hz
+  have hden1 : 1 ≤ ‖z - 1‖ := by linarith
+  have hz1 : z ≠ 1 := by
+    intro h
+    subst z
+    norm_num at hden1
+  have hreInv : 1 / z.re ≤ 4 / δ := by
+    apply (div_le_div_iff₀ hzre hδ).2
+    nlinarith
+  have hfirst : ‖z‖ / ‖z - 1‖ ≤ ‖z‖ := div_le_self (norm_nonneg z) hden1
+  have hsecond : ‖z‖ / z.re ≤ ‖z‖ * (4 / δ) := by
+    rw [div_eq_mul_inv]
+    exact mul_le_mul_of_nonneg_left (by simpa only [one_div] using hreInv) (norm_nonneg z)
+  have hzeta := Sieve.norm_riemannZeta_strip_le hzre hz1
+  calc
+    ‖riemannZeta z‖ ≤ ‖z‖ / ‖z - 1‖ + ‖z‖ / z.re := hzeta
+    _ ≤ ‖z‖ + ‖z‖ * (4 / δ) := add_le_add hfirst hsecond
+    _ = ‖z‖ * (1 + 4 / δ) := by ring
+    _ ≤ (3 * (2 + |t|)) * (1 + 4 / δ) :=
+      mul_le_mul_of_nonneg_right hnormz (by positivity)
+    _ = E * (2 + |t|) := by dsimp only [E]; ring
+
 /-- **RH three-circles lower bound for zeta.**  On every line a fixed positive distance right of
 the critical line, and outside a fixed bounded-height box, zeta is bounded below by the
 exponential of a strict sublinear power of the logarithmic height. -/
@@ -46,65 +138,9 @@ theorem exists_three_circles_zeta_lower_bound_of_rh (hRH : RiemannHypothesis)
   have hr₁ρ : (1 : ℝ) / 4 < 1 / 2 := by norm_num
   have hρR : (1 : ℝ) / 2 ≤ R := by linarith
   have hr₁r₃ : (1 : ℝ) / 4 < r₃ := by linarith
-  set E : ℝ := 3 * (1 + 4 / δ) with hE
-  have hE0 : 0 < E := by rw [hE]; positivity
-  have h4E : (1 : ℝ) ≤ 4 * E := by
-    have hfrac : 0 ≤ 4 / δ := by positivity
-    rw [hE]
-    nlinarith
-  have hdisc : ∀ t : ℝ, 6 ≤ |t| → ∀ z : ℂ,
-      ‖z - ((a : ℂ) + (t : ℝ) * I)‖ ≤ R →
-        ‖riemannZeta z‖ ≤ E * (2 + |t|) := by
-    intro t ht z hz
-    set c : ℂ := (a : ℂ) + (t : ℝ) * I with hc
-    have hcre : c.re = a := by rw [hc]; simp
-    have hcim : c.im = t := by rw [hc]; simp
-    have hreabs := Complex.abs_re_le_norm (z - c)
-    rw [Complex.sub_re, hcre] at hreabs
-    have hrelo : a - R ≤ z.re := by
-      have := (abs_le.mp (hreabs.trans hz)).1
-      linarith
-    have hzre : 0 < z.re := by
-      have har : a - R = 1 / 2 + δ / 4 := by rw [hR]; ring
-      rw [har] at hrelo
-      linarith
-    have hcNorm := Complex.norm_le_abs_re_add_abs_im c
-    rw [hcre, hcim, abs_of_nonneg (by rw [ha]; norm_num)] at hcNorm
-    have hnormz : ‖z‖ ≤ 3 * (2 + |t|) := by
-      have htri : ‖z‖ ≤ ‖z - c‖ + ‖c‖ := by
-        simpa only [sub_add_cancel] using norm_add_le (z - c) c
-      linarith [abs_nonneg t]
-    have htC : |t| ≤ ‖c - 1‖ := by
-      have him := Complex.abs_im_le_norm (c - 1)
-      rw [Complex.sub_im, hcim] at him
-      simpa using him
-    have hc1 : ‖c - 1‖ ≤ ‖c - z‖ + ‖z - 1‖ := by
-      have hsplit : c - 1 = (c - z) + (z - 1) := by ring
-      rw [hsplit]
-      exact norm_add_le _ _
-    have hcz : ‖c - z‖ = ‖z - c‖ := norm_sub_rev c z
-    rw [hcz] at hc1
-    have hden1 : 1 ≤ ‖z - 1‖ := by linarith
-    have hz1 : z ≠ 1 := by
-      intro h
-      subst z
-      norm_num at hden1
-    have hreInv : 1 / z.re ≤ 4 / δ := by
-      apply (div_le_div_iff₀ hzre hδ).2
-      nlinarith
-    have hfirst : ‖z‖ / ‖z - 1‖ ≤ ‖z‖ :=
-      div_le_self (norm_nonneg z) hden1
-    have hsecond : ‖z‖ / z.re ≤ ‖z‖ * (4 / δ) := by
-      rw [div_eq_mul_inv]
-      exact mul_le_mul_of_nonneg_left (by simpa only [one_div] using hreInv) (norm_nonneg z)
-    have hzeta := Sieve.norm_riemannZeta_strip_le hzre hz1
-    calc
-      ‖riemannZeta z‖ ≤ ‖z‖ / ‖z - 1‖ + ‖z‖ / z.re := hzeta
-      _ ≤ ‖z‖ + ‖z‖ * (4 / δ) := add_le_add hfirst hsecond
-      _ = ‖z‖ * (1 + 4 / δ) := by ring
-      _ ≤ (3 * (2 + |t|)) * (1 + 4 / δ) :=
-        mul_le_mul_of_nonneg_right hnormz (by positivity)
-      _ = E * (2 + |t|) := by rw [hE]; ring
+  obtain ⟨E, hE3, hdisc0⟩ := exists_bound_riemannZeta_disc_high hδ
+  have hE0 : 0 < E := lt_of_lt_of_le (by norm_num) hE3
+  have h4E : (1 : ℝ) ≤ 4 * E := by nlinarith
   set B : ℝ :=
     2 * (Real.log (3 / (1 / 4 : ℝ)) + 1) * (1 / 4) / (1 / 2 - 1 / 4) with hB
   have hlog12 : 0 ≤ Real.log (3 / (1 / 4 : ℝ)) := Real.log_nonneg (by norm_num)
@@ -135,7 +171,7 @@ theorem exists_three_circles_zeta_lower_bound_of_rh (hRH : RiemannHypothesis)
     have := Real.log_le_log (by norm_num : (0 : ℝ) < 1 / 4) hgap.le
     linarith
   have hθ0 : 0 ≤ θ := by rw [hθ]; exact div_nonneg hnum hden.le
-  clear_value θ K B E R r₃ a
+  clear_value θ K B R r₃ a
   have hθ1 : θ < 1 := by
     rw [hθ, div_lt_one hden]
     have := Real.log_lt_log (by linarith : (0 : ℝ) < a - 1 / 2 - δ) hgap2
@@ -204,7 +240,12 @@ theorem exists_three_circles_zeta_lower_bound_of_rh (hRH : RiemannHypothesis)
     have hM : ∀ z ∈ ball c R, ‖riemannZeta z‖ ≤ E * (2 + |t|) := by
       intro z hz
       have hd : ‖z - c‖ < R := by rwa [mem_ball, dist_eq_norm] at hz
-      exact hdisc t (by simpa [t] using ht) z hd.le
+      exact hdisc0 t (by simpa [t] using ht) z (by
+        calc
+          ‖z - ((3 : ℂ) + (t : ℝ) * I)‖ = ‖z - c‖ := by
+            rw [show (3 : ℂ) = (((3 : ℝ) : ℂ)) by norm_num, hc, ha]
+          _ ≤ R := hd.le
+          _ = 3 - (1 / 2 + δ / 4) := by rw [hR, ha])
     have hmain := norm_lower_bound_of_two_radii
       (by norm_num : (0 : ℝ) < 1 / 4) hr₁ρ hρR hr₁r₃ hRbig hf hne hMi
       (by norm_num : (0 : ℝ) < 1 / 4) hmc hM
@@ -229,9 +270,11 @@ theorem exists_three_circles_zeta_lower_bound_of_rh (hRH : RiemannHypothesis)
     have hRr : R - r₃ = δ / 4 := by rw [hR, hr₃]; ring
     have hRr0 : 0 < R - r₃ := by rw [hRr]; linarith
     have hfac0 : 0 < 8 * r₃ / δ := by positivity
-    have houter :
-        2 * (Real.log (E * (2 + |t|) / (1 / 4)) + 1) * r₃ / (R - r₃)
-          ≤ K * (1 + Real.log (2 + |t|)) := by
+    let X : ℝ :=
+      2 * (Real.log (E * (2 + |t|) / (1 / 4)) + 1) * r₃ / (R - r₃)
+    let Y : ℝ := K * (1 + Real.log (2 + |t|))
+    have houter : X ≤ Y := by
+      dsimp only [X, Y]
       rw [hMm, hlogsplit, hRr, hK]
       have hkey : Real.log (4 * E) + Real.log (2 + |t|) + 1
           ≤ (Real.log (4 * E) + 2) * (1 + Real.log (2 + |t|)) := by
@@ -256,7 +299,8 @@ theorem exists_three_circles_zeta_lower_bound_of_rh (hRH : RiemannHypothesis)
         _ = 8 * r₃ / δ * (Real.log (4 * E) + 2) *
               (1 + Real.log (2 + |t|)) :=
                 (mul_assoc _ _ _).symm
-    have houter1 : 1 ≤ K * (1 + Real.log (2 + |t|)) := by
+    have houter1 : 1 ≤ Y := by
+      dsimp only [Y]
       calc
         (1 : ℝ) ≤ K := hK1
         _ = K * 1 := (mul_one K).symm
@@ -266,44 +310,29 @@ theorem exists_three_circles_zeta_lower_bound_of_rh (hRH : RiemannHypothesis)
       apply Real.log_nonneg
       calc
         (1 : ℝ) ≤ 4 * E * (2 + |t|) :=
-          le_trans h4E (by
-            have hmul0 : 0 ≤ 4 * E * ((2 + |t|) - 1) :=
-              mul_nonneg (by positivity) (by linarith only [hbase])
-            nlinarith only [hmul0])
+          one_le_mul_of_one_le h4E hbase
         _ = E * (2 + |t|) / (1 / 4) := hMm.symm
-    have hbase0 :
-        0 ≤ 2 * (Real.log (E * (2 + |t|) / (1 / 4)) + 1) * r₃ / (R - r₃) := by
-      exact div_nonneg
-        (mul_nonneg (mul_nonneg (by norm_num) (by linarith only [hlogM])) hr₃0.le)
-        hRr0.le
-    have hpow1 : B ^ (1 - w) ≤ B := by
-      have hexp : 1 - w ≤ (1 : ℝ) := sub_le_one.mpr hw0
-      simpa only [Real.rpow_one] using
-        (Real.rpow_le_rpow_of_exponent_le hB1 hexp)
-    have hpow3 :
-        (2 * (Real.log (E * (2 + |t|) / (1 / 4)) + 1) * r₃ / (R - r₃)) ^ w
-          ≤ (K * (1 + Real.log (2 + |t|))) ^ θ :=
-      le_trans (Real.rpow_le_rpow hbase0 houter hw0)
-        (Real.rpow_le_rpow_of_exponent_le houter1 hwθ)
-    have hprod :
-        B ^ (1 - w) *
-            (2 * (Real.log (E * (2 + |t|) / (1 / 4)) + 1) * r₃ /
-              (R - r₃)) ^ w
-          ≤ B * (K * (1 + Real.log (2 + |t|))) ^ θ :=
-      mul_le_mul hpow1 hpow3 (Real.rpow_nonneg hbase0 _) hB0.le
-    rw [← hB] at hmain
+    have hbase0 : 0 ≤ X := by
+      dsimp only [X]
+      exact nonneg_two_mul_add_one_mul_div hlogM hr₃0.le hRr0.le
+    have hpow1 : B ^ (1 - w) ≤ B := rpow_one_sub_le_self hB1 hw0
+    have hpow3 : X ^ w ≤ Y ^ θ :=
+      rpow_le_rpow_two_stage hbase0 houter hw0 houter1 hwθ
+    have hXpow : 0 ≤ X ^ w := Real.rpow_nonneg hbase0 w
+    have hprod : B ^ (1 - w) * X ^ w ≤ B * Y ^ θ :=
+      mul_le_mul_two_stage hpow1 hpow3 hXpow hB0.le
+    have hmainNamed :
+        ‖riemannZeta c‖ * Real.exp (-(B ^ (1 - w) * X ^ w)) ≤ ‖riemannZeta s‖ :=
+      rewrite_two_radius_lower (B := B) (X := X) hB.symm (by rfl) hmain
+    change (1 : ℝ) / 4 * Real.exp (-(B * Y ^ θ)) ≤ ‖riemannZeta s‖
     calc
-      (1 : ℝ) / 4 * Real.exp (-(B * (K * (1 + Real.log (2 + |t|))) ^ θ))
-          ≤ 1 / 4 * Real.exp (-(B ^ (1 - w) *
-              (2 * (Real.log (E * (2 + |t|) / (1 / 4)) + 1) * r₃ /
-                (R - r₃)) ^ w)) :=
+      (1 : ℝ) / 4 * Real.exp (-(B * Y ^ θ))
+          ≤ 1 / 4 * Real.exp (-(B ^ (1 - w) * X ^ w)) :=
             mul_le_mul_of_nonneg_left
               (Real.exp_le_exp.mpr (by linarith only [hprod])) (by norm_num)
-      _ ≤ ‖riemannZeta c‖ * Real.exp (-(B ^ (1 - w) *
-              (2 * (Real.log (E * (2 + |t|) / (1 / 4)) + 1) * r₃ /
-                (R - r₃)) ^ w)) :=
+      _ ≤ ‖riemannZeta c‖ * Real.exp (-(B ^ (1 - w) * X ^ w)) :=
             mul_le_mul_of_nonneg_right hmc (Real.exp_pos _).le
-      _ ≤ ‖riemannZeta s‖ := hmain
+      _ ≤ ‖riemannZeta s‖ := hmainNamed
   · have hge : 2 ≤ s.re := by rw [ha] at hright; linarith
     have hval := norm_riemannZeta_ge_of_two_le_re hge
     calc
@@ -397,8 +426,7 @@ theorem exists_zeta_lower_bound_subpolynomial_of_rh (hRH : RiemannHypothesis)
 line, the regular reciprocal is holomorphic and grows slower than every positive power of height.
 This is the exact analytic datum needed by shifted smoothed Perron. -/
 theorem exists_invZeta_shift_data_of_rh (hRH : RiemannHypothesis)
-    {δ ε : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) (hε : 0 < ε) (d : ℝ)
-    (hd : 1 / 2 + δ ≤ d) :
+    {δ ε : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) (hε : 0 < ε) (d : ℝ) :
     ∃ Kb : ℝ, 0 ≤ Kb ∧
       DifferentiableOn ℂ invZeta (verticalStrip (1 / 2 + δ) d) ∧
       ∀ s ∈ verticalStrip (1 / 2 + δ) d,

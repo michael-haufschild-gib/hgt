@@ -215,9 +215,15 @@ theorem extDeriv_wedgeForm (h : p + q = n) {ω : PeriodicFormSpace 𝕜 r p}
     have hsign : ((-1 : 𝕜) ^ (p + p)) = 1 := by
       rw [← two_mul, pow_mul]
       norm_num
+    have hcancel : ∀ (a : 𝕜) (X : (Fin r → 𝕜) [⋀^Fin (n + 1)]→L[𝕜] 𝕜),
+        a • ((-1 : 𝕜) ^ p • ((-1 : 𝕜) ^ p • X)) = a • X := by
+      intro a X
+      ext v
+      show a * ((-1 : 𝕜) ^ p * ((-1 : 𝕜) ^ p * (X v))) = a * (X v)
+      rw [← mul_assoc ((-1 : 𝕜) ^ p), ← pow_add, hsign, one_mul]
     rw [← constantFormOfExterior_coordExterior p S, wedgeForm_constantFormOfExterior, hW,
-      mulOf_consMul_right h (by omega), map_smul, smul_comm, smul_smul, mul_assoc, ← pow_add,
-      hsign, mul_one]
+      mulOf_consMul_right h (by omega), map_smul, smul_comm, hcancel]
+    rfl
   rw [hderiv, hleft, hright, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun S _ => ?_
   rw [← Finset.sum_add_distrib]

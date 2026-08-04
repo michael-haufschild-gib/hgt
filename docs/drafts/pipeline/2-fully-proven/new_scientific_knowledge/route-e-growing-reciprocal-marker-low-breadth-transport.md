@@ -5365,3 +5365,45 @@ What the contour layer does buy, and keeps:
   in the mean-square input and so accept the Matomäki–Radziwiłł bound unchanged when it arrives.
 
 Only the *input* to Gallagher's frequency integral has to be replaced. That is the open work.
+
+### Toward the real input — the sixth-moment large-values estimate
+
+The correction above identifies the single thing that has to be replaced: the *pointwise* bound on
+the Dirichlet polynomial over the frequency range, which the zero-free region cannot supply beyond
+`|τ| ≤ exp((log N)^{1/10})`. The substitute is a *large-values* estimate, and the standard way to
+sharpen one is to raise the polynomial to a power before applying a mean-value theorem. Three new
+modules do that, using the corpus's own mean-value theorem unchanged.
+
+- `Sieve/DirichletCubeConvolution.lean`
+  - `cubeIdx`, `convCube` — the threefold Dirichlet convolution, indexed by `Fin (N³)`;
+  - `exp_phase_cubeIdx` — the phases multiply: `n^{it}m^{it}k^{it} = (nmk)^{it}`;
+  - **`dirPoly_convCube`** : `F(t)³ = ∑_{j ≤ N³} b_j j^{it}`, i.e. the cube of a Dirichlet
+    polynomial is a Dirichlet polynomial with the convolved coefficients.
+
+- `Sieve/DirichletCubeCoefficients.lean`
+  - `cubeFibre` — the triples with a given product;
+  - `cubeFibre_card_le_sq` : `#fibre ≤ N²`, since the first two factors determine the third;
+  - **`sum_normSq_convCube_le`** : `∑_j |b_j|² ≤ D·(∑_n |a_n|²)³` for any `D` bounding the fibre
+    size — Cauchy–Schwarz on each fibre, then fibrewise summation.
+
+- `Sieve/DirichletSixthMoment.lean`
+  - **`sixthMoment_dirPoly`** :
+
+        ∑_r |F(λ_r)|⁶ ≤ (T + 4N³(1+log N³))(δ^{-1} + 2log N³) · D · (∑_n |a_n|²)³
+
+    at frequencies `δ`-separated inside `[δ/2, T−δ/2]`;
+  - **`card_largeValues_sixth_le`** : the same divided by `V⁶` — a cap on how many separated
+    frequencies can have `|F| ≥ V`.
+
+The point of the exponent is that the spread `T` is now divided by `V⁶` rather than `V²`. In the
+second-moment form the `T`-term is useless once `V` is anywhere near the trivial size `∑|a_n|`;
+in the sixth-power form it is not, and that is the mechanism by which a large-values argument covers
+a frequency range far beyond any zero-free region.
+
+Built, wired into `GaloisForLFunctions/RHTower.lean`, axiom-clean (four theorems, every one
+`[propext, Classical.choice, Quot.sound]`).
+
+What this does **not** yet do: the fibre bound `D` is supplied as a hypothesis, and the only
+unconditional instance proved here is the crude `D ≤ N²`, which is too lossy for the application.
+The useful instance is `D ≤ max_{j ≤ N³} d₃(j) = N^{o(1)}`, a divisor-function bound; that is the
+next brick.

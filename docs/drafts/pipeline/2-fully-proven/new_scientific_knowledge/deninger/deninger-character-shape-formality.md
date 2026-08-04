@@ -324,21 +324,42 @@ invariant `n`-form, on a product of linear forms the determinant of their values
   derivative in coordinates**: the coefficients of a `C^1` form are `C^1`, and the exterior
   derivative is the sum of the wedges of their differentials with the coordinate forms.
 
+**The wedge product and the Leibniz rule — the differential graded algebra.**
+`formal/GaloisForLFunctions/HTGeometry/ExteriorGradedMul.lean`, `.../FormWedgeLeibniz.lean`,
+`.../PeriodicCohomologyRing.lean`.  Mathlib has no wedge product of differential forms and no
+Leibniz rule; both are built here.
+
+- `exteriorMulOf` (+ bilinearity, `exteriorMulOf_assoc`) — the product of exterior powers in the
+  degree prescribed by an equation, inherited from the exterior algebra.
+- `ιMulti_mul_ι`, `exteriorPower_mul_ι`, `mulOf_consMul_right` — **a factor of degree one moves past
+  a factor of degree `p` at the cost of `(-1)^p`**, proved from the anticommutation of the
+  generators by induction and extended off the generators by linearity.
+- `wedgeForm` (+ bilinearity, `wedgeForm_expansion`) — the wedge product of alternating forms,
+  transported from the exterior algebra of the dual; its expansion in the coordinate forms.
+- `extDeriv_wedgeForm` — **the Leibniz rule**
+  `d(ω ∧ η) = dω ∧ η + (-1)^p ω ∧ dη`, for `C^1` forms of any degrees on a coordinate space.  This
+  is what makes `Ω^*(T_L;ℝ)` a differential graded algebra.
+- `wedgeForm_differentiable`, `wedgeForm_fderiv_continuous`, `wedgeForm_periodic`,
+  `wedgeForm_mem_closed` — the wedge of two closed periodic `C^1` forms is one, so the product stays
+  inside the complex.
+- `wedgeForm_extDeriv_left`, `wedgeForm_extDeriv_right` — wedging with a closed form commutes with
+  `d` (with the sign `(-1)^p` on the left), hence exact ∧ closed is exact.
+- `wedgeForm_class_eq` — **the comparison is multiplicative**: replacing a closed form by its
+  invariant representative plus an exact term changes the wedge by an exact term with a periodic
+  primitive, so the class of a wedge is the wedge of the invariant representatives, and on invariant
+  forms the wedge is the product of `Λ^*(L ⊗ ℝ)` by construction (`wedgeForm_constantFormOfExterior`).
+
 ### What cannot be stated in Lean, and why
 
 - `C^*_sh(T_F;ℝ)` is the filtered colimit over `L` of the complexes `Ω^*(T_L;ℝ)`.  Every ingredient
   of `(2)` is now formalized separately — each term and its cohomology, the naturality of the
   comparison in `L`, the exactness of filtered colimits (`directLimit_map_exact`), and the
   commutation of exterior powers with them (`exteriorPowerDirectLimitEquiv`,
-  `deningerExterior_iSup_adjoin`).  What is not written down is the colimit of the complexes as a
-  single CDGA together with its multiplicative structure.  The multiplicative half needs a wedge
-  product of differential forms and the Leibniz rule for `extDeriv`, neither of which mathlib has;
-  the algebraic side of it is available here, since `constantFormOfExterior` transports the whole
-  graded-algebra structure of `ExteriorAlgebra ℝ (L ⊗ ℝ)` onto the invariant forms, the wedge with a
-  one-form is `exteriorConsMul`, and the exterior derivative of an arbitrary form is expressed
-  through it by `extDeriv_eq_sum_consMul`.  What is left for the general Leibniz rule is moving a
-  one-form past a form of degree `p` (the sign `(-1)^p`) and the bookkeeping of the resulting double
-  sum.
+  `deningerExterior_iSup_adjoin`).  Each `Ω^*(T_L;ℝ)` is now a differential graded algebra and the
+  comparison with `Λ^*(L ⊗ ℝ)` is a multiplicative quasi-isomorphism, natural in `L`.  What is not
+  written down is the assembly of the filtered colimit itself as a single object: Lean has no
+  category of CDGAs to take that colimit in, so the statement `(2)` remains an assertion about a
+  diagram whose every vertex, every edge and every comparison is a theorem here.
 - `(3)` and `(4)` are statements about free `E_∞` `Hℝ`-algebras.  mathlib has no `E_∞`-algebras and
   no CDGA homotopy theory.  What survives is the algebraic content of "a free commutative algebra
   on generators in odd degree one is the exterior algebra": that is the universal property of
@@ -363,7 +384,7 @@ scalars.
   wrong: the covering model needs only `extDeriv` and periodicity.  Also formalized the naturality
   of the comparison in `L`, and made the identification with `Λ^*(L ⊗ ℝ)` canonical (basis-free)
   by proving that mathlib's `exteriorPower.pairingDual` is bijective for a finite basis.  Every
-  ingredient of `(2)` except the CDGA structure of the colimit is now a theorem.  Also formalized
-  the wedge with a one-form, the degree-zero Leibniz rule, the coordinate basis of the invariant
-  forms and the exterior derivative in coordinates, which are the inputs of the general Leibniz
-  rule.
+  ingredient of `(2)` except the assembly of the colimit is now a theorem.  Also formalized the
+  wedge product of differential forms and the **Leibniz rule** `d(ω ∧ η) = dω ∧ η + (-1)^p ω ∧ dη`
+  — neither is in mathlib — so each `Ω^*(T_L;ℝ)` is a differential graded algebra, and the
+  comparison with `Λ^*(L ⊗ ℝ)` is multiplicative.

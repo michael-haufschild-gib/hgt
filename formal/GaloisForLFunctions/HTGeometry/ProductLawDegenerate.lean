@@ -45,4 +45,57 @@ theorem logFactor_mul_prodJet_of_pow {K : ℂ} (hK : K ≠ 0) {e j : ℕ}
   field_simp
   ring
 
+/-- A factor at another coordinate is killed. -/
+theorem fpderiv_fact_of_ne {p : Polynomial ℂ} {j k : ℕ} (h : j ≠ k) :
+    fpderiv k (fact p j) = 0 := by
+  rw [derivation_fact, fpderiv_fx_of_ne h, mul_zero]
+
+/-- The head product below a coordinate is killed by that coordinate's derivation. -/
+theorem fpderiv_prodHead_of_le : ∀ {j k : ℕ}, j ≤ k → fpderiv k (prodHead Q j) = 0 := by
+  intro j
+  induction j with
+  | zero =>
+      intro k _
+      rw [prodHead_zero]
+      exact (fpderiv k).map_one_eq_zero
+  | succ j ih =>
+      intro k hk
+      rw [prodHead_succ, Derivation.leibniz, ih (by omega : j ≤ k),
+        fpderiv_fact_of_ne (by omega : j ≠ k)]
+      simp
+
+/-- **The logarithmic sum on the degenerate locus.**  Every denominator cancels. -/
+theorem logSum_of_pow {K : ℕ → ℂ} {e : ℕ → ℕ}
+    (hK : ∀ j, K j ≠ 0) (hv : ∀ j, v j ≠ 0)
+    (hQ : ∀ j, Q j = Polynomial.C (K j) * (v j) ^ (e j + 1)) (k : ℕ) :
+    logSum Q v k
+      = ∑ j ∈ Finset.range k,
+          fact (Polynomial.C ((e j : ℂ) + 1) * (v j).derivative) j * prodHead Q j := by
+  refine Finset.sum_congr rfl fun j _ => ?_
+  exact logFactor_mul_prodJet_of_pow Q v (hK j) (hv j) (hQ j)
+
+/-- **The logarithmic sum avoids the newest coordinate on the degenerate locus.**  Each term involves
+only coordinates strictly below its index, because the terminal factor cancelled and the remaining
+derivative is a constant. -/
+theorem fpderiv_logSum_of_pow {K : ℕ → ℂ} {e : ℕ → ℕ}
+    (hK : ∀ j, K j ≠ 0) (hv : ∀ j, v j ≠ 0)
+    (hQ : ∀ j, Q j = Polynomial.C (K j) * (v j) ^ (e j + 1))
+    (hlin : ∀ j, (v j).derivative.natDegree = 0) (k : ℕ) :
+    fpderiv k (logSum Q v (k + 1)) = 0 := by
+  rw [logSum_of_pow Q v hK hv hQ, map_sum]
+  refine Finset.sum_eq_zero fun j hj => ?_
+  have hjk : j < k + 1 := Finset.mem_range.mp hj
+  rw [Derivation.leibniz, fpderiv_prodHead_of_le Q (by omega : j ≤ k)]
+  by_cases hjeq : j = k
+  · have hconst : fact (Polynomial.C ((e j : ℂ) + 1) * (v j).derivative) j
+        = algebraMap ℂ CascadeField (((e j : ℂ) + 1) * (v j).derivative.coeff 0) := by
+      have hd : (v j).derivative = Polynomial.C ((v j).derivative.coeff 0) :=
+        Polynomial.eq_C_of_natDegree_eq_zero (hlin j)
+      conv_lhs => rw [hd]
+      rw [← Polynomial.C_mul, fact_C]
+    rw [hconst, (fpderiv k).map_algebraMap]
+    simp
+  · rw [fpderiv_fact_of_ne hjeq]
+    simp
+
 end GaloisForLFunctions.HTGeometry

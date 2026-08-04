@@ -916,3 +916,51 @@ not more general theory but the next group -- the split torus `G_m^r`, where the
 `C^r`, the logarithmic derivative is coordinatewise, and `d a_i` is the integer matrix of the
 isogeny.  In characteristic zero `G_a` has no nontrivial isogenies, so the torus case settles every
 connected commutative **linear** group; only abelian varieties would remain.
+
+## The torus case is under construction — first three modules PROVED
+
+The next group after `G_m` is the split torus `G_m^r`, where an isogeny is a nonsingular integer
+matrix acting by monomial substitution.  Three modules are built (wired, axiom-clean):
+
+    TorusMonomialFamily.lean
+      logDeriv_zpow, zpow_sum_of_ne_zero
+      monomialFamily M x i = ∏_j x_j ^ M i j
+      monomialFamily_one, monomialFamily_mul     substitutions compose by matrix multiplication
+      logDeriv_monomialFamily :
+        logDeriv (monomialFamily M x i) = ∑_j M i j * logDeriv (x j)          = card (5) for tori
+
+    DifferentialIndependentTransfer.lean
+      differentialIndependent_of_range_subset_closure :
+        a finite family over which an independent family of the same size is differentially
+        algebraic is itself differentially independent
+
+    TorusMonomialIndependence.lean
+      exponent_eq_of_prod_pow_eq, prod_zpow_eq_one_iff :
+        a nontrivial monomial in an algebraically independent family is never 1
+      monomialFamily_injective_of_det_ne_zero
+      pow_det_eq_monomialFamily_adjugate :  x_i ^ det M = monomial of the adjugate
+      differentialIndependent_monomialFamily :
+        a nonsingular monomial substitution preserves differential independence
+
+`logDeriv_monomialFamily` is already the rank-`r` form of the card's (5): the velocity transports by
+the integer matrix itself, which is `d a` for the isogeny, and it is invertible over `ℚ` exactly when
+the isogeny is one.  `differentialIndependent_monomialFamily` is the input that makes the power
+endomorphism construction generalize: the substituted palette is again a free differential palette,
+so the universal property gives the prefix endomorphism of the protocol.
+
+The transfer lemma is the reusable piece: it identifies a differential transcendence basis by a
+matroid rank count (`eRk` of the spanning family is at least the size of the independent one, and at
+most its own size) rather than by computing a transcendence degree.  The corpus already had the
+matroid, its closure, and the exchange law; what was missing was this counting step.
+
+Remaining for the torus case, in order:
+
+1. the prefix endomorphism `x ↦ monomialFamily M x` as a differential `C`-algebra endomorphism of
+   the ambient field, with image `C<monomialFamily M x>` (the rank-one construction, with
+   `differentialIndependent_monomialFamily` in place of `differentialIndependent_pow`);
+2. the deck group: `ker(M)` on `(C^×)^r`, of order `|det M|` when `C` is algebraically closed --
+   Smith normal form over `ℤ` (mathlib has `Basis.SmithNormalForm`);
+3. the degree count `[C<x> : C<x^M>] = |det M|`, again by Smith normal form: a unimodular change of
+   monomial coordinates reduces to a product of `r` radical steps;
+4. the tail identity, and the dichotomy between the stabilizing and the unbounded case, exactly as
+   in rank one.

@@ -131,6 +131,15 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 67 | the free field of a doubly regular datum, and its two derivatives | `kgFreeField`, `kgFreeVelocity`, **`hasDerivAt_kgFreeField`**, **`hasDerivAt_kgFreeVelocity`**, `deriv_kgFreeField`, `deriv_deriv_kgFreeField`, `kgFreeField_eq` | **built** |
 | 68 | **the strong `L²` solution of the free Klein–Gordon equation** | **`kgFreeField_kleinGordon`**, `kgFreeField_zero`, `kgFreeVelocity_zero`, **`exists_kgFreeField`** | **built** |
 | 69 | **energy conservation for the strong solution** | `kgFreeGradient`, `kgFreqInvOp_kgFreeGradient`, `kgPropagator_kgFreeState`, **`kgFreeField_energy_const`** | **built** |
+| 70 | `⟨D⟩⁻¹` is self-adjoint, and the two calculus helpers | **`inner_kgFreqInvOp`**, `hasDerivAt_clm`, `hasDerivAt_norm_sq` | **built** |
+| 71 | the strong solution class and its conserved energy | `SolvesKG`, `kgStrongEnergy`, `kgStrongEnergy_nonneg`, **`hasDerivAt_kgStrongEnergy`**, **`kgStrongEnergy_const`** | **built** |
+| 72 | **uniqueness for the strong Cauchy problem** | **`eq_zero_of_solvesKG`**, `SolvesKG.sub`, **`eq_of_solvesKG`** | **built** |
+| 73 | **well-posedness: the constructed field is the solution** | **`solvesKG_kgFreeField`**, **`eq_kgFreeField_of_solvesKG`** | **built** |
+| 74 | strong solutions with a bounded perturbation | `SolvesKGSource`, `solvesKGSource_zero`, **`hasDerivAt_kgStrongEnergy_source`** | **built** |
+| 75 | the energy derivative is dominated by the energy | **`abs_deriv_kgStrongEnergy_le`** | **built** |
+| 76 | **the Grönwall estimate for the perturbed equation** | **`kgStrongEnergy_le_exp`** | **built** |
+| 77 | time reflection and two-sided uniqueness | `SolvesKGSource.comp_neg`, **`eq_zero_of_solvesKGSource`**, **`eq_of_solvesKGSource`** | **built** |
+| 78 | **uniqueness for a bounded measurable potential** | **`eq_of_solvesKGSource_potential`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
@@ -139,7 +148,8 @@ Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` 
 `KleinGordonL2Propagator.lean` and `L2FourierMultiplier.lean` again (57),
 `KleinGordonEnergyConservation.lean` (58–60), `KleinGordonMildSolution.lean` again (61),
 `L2FourierMultiplier.lean` again (62), `KleinGordonPropagatorDerivative.lean` (63–65),
-`KleinGordonStrongSolution.lean` (66–69). All wired into the umbrella; axioms
+`KleinGordonStrongSolution.lean` (66–69), `KleinGordonStrongUniqueness.lean` (70–73),
+`KleinGordonPotentialStrong.lean` (74–78). All wired into the umbrella; axioms
 `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -629,6 +639,71 @@ That is the energy of the card's opening paragraph — `∫ (∂ₜu)² + |∇u|
 normalisation where `⟨ξ⟩²` carries both the gradient and the mass — now proved conserved for a
 solution the corpus constructs, not merely bounded for a solution assumed to exist.
 
+
+### The energy method, in `L²`
+
+The card opens with the energy method for pointwise solutions: differentiate
+`E = ∫ (∂ₜu)² + |∇u|² + u²`, integrate the Laplacian by parts, and Grönwall. Statements 70–73 run the
+same argument for the strong `L²` solutions of statement 68, and the whole of it — supports,
+integration by parts, domination, differentiation under the integral — collapses to a single fact:
+`⟨D⟩⁻¹` is **self-adjoint**, because its symbol `⟨ξ⟩⁻¹` is real (**`inner_kgFreqInvOp`**).
+
+The conserved quantity needs no more derivatives than the equation supplies:
+
+`F(t) = ‖⟨D⟩⁻¹∂ₜu(t)‖² + ‖u(t)‖²`.
+
+Differentiating gives `2 Re⟪⟨D⟩⁻¹∂ₜu, ⟨D⟩⁻¹∂ₜ²u⟫ + 2 Re⟪u, ∂ₜu⟫`; moving one `⟨D⟩⁻¹` across the inner
+product turns the first term into `2 Re⟪∂ₜu, ⟨D⟩⁻²∂ₜ²u⟫`, which the equation makes `-2 Re⟪∂ₜu, u⟫`,
+cancelling the second. So **`kgStrongEnergy_const`**: `F` is constant. With vanishing Cauchy data
+`F ≡ 0`, and since `F` dominates `‖u‖²`,
+
+**`eq_zero_of_solvesKG`**: a strong solution with vanishing Cauchy data vanishes at every time,
+
+and by linearity of the class (`SolvesKG.sub`), **`eq_of_solvesKG`**: two strong solutions with the
+same field and velocity at time zero agree everywhere. Statement 73 closes the loop:
+**`solvesKG_kgFreeField`** says the constructed field is such a solution — the class is inhabited,
+not vacuous — and **`eq_kgFreeField_of_solvesKG`** says every strong solution with those Cauchy data
+*is* the constructed field.
+
+That is well-posedness of the strong Cauchy problem for the free equation: existence (68), the
+estimate (69), and uniqueness (72), all three proved for the same class of objects, with the energy
+argument of the card's opening paragraph carried out in `L²` rather than pointwise.
+
+
+### The potential, in the strong theory
+
+Statements 74–78 put the potential back. A bounded operator `W` on `L²` is added to the equation,
+
+`∂ₜ²u = -⟨D⟩²u + Wu`,
+
+and the free energy `F = ‖⟨D⟩⁻¹∂ₜu‖² + ‖u‖²` stops being conserved — but its derivative is controlled
+*by itself*. The computation of statement 71 now leaves one surviving term,
+
+`F'(t) = 2 Re⟪∂ₜu, ⟨D⟩⁻²(Wu)⟫`,
+
+and the point is which side to move the two factors of `⟨D⟩⁻¹` to. Moving them **left**, onto `∂ₜu`,
+gives `2 Re⟪⟨D⟩⁻²∂ₜu, Wu⟫`, whose first argument is a contraction of `⟨D⟩⁻¹∂ₜu` — one of the two terms
+of `F` itself. So `|F'| ≤ 2‖⟨D⟩⁻¹∂ₜu‖·‖W‖·‖u‖ ≤ ‖W‖ F` (**`abs_deriv_kgStrongEnergy_le`**), and
+mathlib's Grönwall closes it:
+
+**`kgStrongEnergy_le_exp`**: `F(t) ≤ F(0)·e^{‖W‖t}` for `t ≥ 0`.
+
+Moving them right instead would have produced `‖∂ₜu‖`, which `F` does not control — the estimate would
+not close. That asymmetry is the whole content of the perturbed case.
+
+Time reflection (`SolvesKGSource.comp_neg`) makes the estimate two-sided, so a solution with vanishing
+Cauchy data vanishes at *every* time (**`eq_zero_of_solvesKGSource`**), and by linearity
+
+**`eq_of_solvesKGSource`**: two strong solutions of `∂ₜ²u = -⟨D⟩²u + Wu` with the same Cauchy data
+agree everywhere;
+
+**`eq_of_solvesKGSource_potential`**: the same for `W` = multiplication by a measurable potential
+bounded by `b` — no continuity, decay or smoothness of `V` anywhere.
+
+That is the card's headline theorem — *"the Cauchy problem has at most one such solution"* — proved
+for the clock equation with a genuinely rough potential, in a class of solutions the corpus can also
+construct.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -649,6 +724,10 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-04 — statements 74–78: the potential returns. Grönwall for the perturbed strong equation
+  and two-sided uniqueness for a bounded measurable potential.
+- 2026-08-04 — statements 70–73: uniqueness and well-posedness for the strong `L²` Cauchy problem.
+  The whole energy method reduces to the self-adjointness of `⟨D⟩⁻¹`.
 - 2026-08-04 — statements 66–69: the strong `L²` solution of the free Klein–Gordon equation on
   doubly regular data, and exact conservation of `‖⟨D⟩u‖² + ‖∂ₜu‖²` for it.
 - 2026-08-04 — statements 62–65: the domain of the generator is the range of `⟨D⟩⁻¹`, and on it

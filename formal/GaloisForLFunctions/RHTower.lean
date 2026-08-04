@@ -113,6 +113,8 @@ import GaloisForLFunctions.RHTower.BandEdgePairingConstruction
 import GaloisForLFunctions.RHTower.BandLeakageEnvelope
 import GaloisForLFunctions.RHTower.BandLeakageSpectralTail
 import GaloisForLFunctions.RHTower.BandOperatorContraction
+import GaloisForLFunctions.RHTower.BandStrictGap
+import GaloisForLFunctions.RHTower.BandUncertainty
 import GaloisForLFunctions.RHTower.BandFormBridge
 import GaloisForLFunctions.RHTower.BandFrequencyWindow
 import GaloisForLFunctions.RHTower.BandQuadraticFormFourier
@@ -3536,6 +3538,11 @@ import GaloisForLFunctions.RHTower.Sieve.CoeffRatioQuantitative
 import GaloisForLFunctions.RHTower.Sieve.CoeffRatioRate
 import GaloisForLFunctions.RHTower.Sieve.MoebiusTwistRate
 import GaloisForLFunctions.RHTower.Sieve.MoebiusTwistSharpRate
+import GaloisForLFunctions.RHTower.Sieve.DirichletCubeConvolution
+import GaloisForLFunctions.RHTower.Sieve.DirichletCubeCoefficients
+import GaloisForLFunctions.RHTower.Sieve.DirichletSixthMoment
+import GaloisForLFunctions.RHTower.Sieve.CubeFibreDivisorBound
+import GaloisForLFunctions.RHTower.Sieve.DirichletSixthMomentDivisor
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment
