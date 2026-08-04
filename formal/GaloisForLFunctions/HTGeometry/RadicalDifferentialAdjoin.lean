@@ -95,6 +95,45 @@ theorem differentialAdjoin_le_adjoin_pow (g : E) (hg : g ≠ 0) {N : ℕ} (hN : 
       rw [differentialJet_succ]
       exact derivationClosed_adjoin_of_pow g hg hN ih
 
+
+/-- **A radical generator of the whole field.**  If the element generates the ambient differential
+field, adjoining it to the differential field of its power is everything. -/
+theorem adjoin_pow_eq_top (g : E) (hg : g ≠ 0) {N : ℕ} (hN : 0 < N)
+    (htop : differentialAdjoin C ({g} : Set E) = ⊤) :
+    (↥(differentialAdjoin C ({g ^ N} : Set E)))⟮g⟯ = ⊤ := by
+  have hle := differentialAdjoin_le_adjoin_pow (C := C) g hg hN
+  rw [htop] at hle
+  have hres : ((↥(differentialAdjoin C ({g ^ N} : Set E)))⟮g⟯).restrictScalars C = ⊤ :=
+    top_le_iff.mp hle
+  have htop' : ((⊤ : IntermediateField (↥(differentialAdjoin C ({g ^ N} : Set E))) E)).restrictScalars C
+      = ⊤ := IntermediateField.restrictScalars_top
+  exact IntermediateField.restrictScalars_injective C (hres.trans htop'.symm)
+
+/-- **The degree of the ambient field over the differential field of a power.**  For a radical
+generator of the whole field the degree is at most the exponent. -/
+theorem finrank_differentialAdjoin_pow_le (g : E) (hg : g ≠ 0) {N : ℕ} (hN : 0 < N)
+    (htop : differentialAdjoin C ({g} : Set E) = ⊤) :
+    Module.finrank (↥(differentialAdjoin C ({g ^ N} : Set E))) E ≤ N := by
+  have hb := finrank_adjoin_pow_le (C := C) g hN
+  rw [adjoin_pow_eq_top g hg hN htop] at hb
+  rwa [IntermediateField.finrank_top'] at hb
+
+/-- The ambient field is finite dimensional over the differential field of a power of a radical
+generator. -/
+theorem finiteDimensional_differentialAdjoin_pow (g : E) (hg : g ≠ 0) {N : ℕ} (hN : 0 < N)
+    (htop : differentialAdjoin C ({g} : Set E) = ⊤) :
+    FiniteDimensional (↥(differentialAdjoin C ({g ^ N} : Set E))) E := by
+  have hmem : g ^ N ∈ differentialAdjoin C ({g ^ N} : Set E) :=
+    subset_differentialAdjoin C _ rfl
+  have hint : IsIntegral (↥(differentialAdjoin C ({g ^ N} : Set E))) g :=
+    isIntegral_of_pow_mem (α := g)
+      (c := (⟨g ^ N, hmem⟩ : ↥(differentialAdjoin C ({g ^ N} : Set E)))) hN rfl
+  have hfd : FiniteDimensional (↥(differentialAdjoin C ({g ^ N} : Set E)))
+      (↥((↥(differentialAdjoin C ({g ^ N} : Set E)))⟮g⟯)) :=
+    IntermediateField.adjoin.finiteDimensional hint
+  rw [adjoin_pow_eq_top g hg hN htop] at hfd
+  exact (IntermediateField.topEquiv.toLinearEquiv).finiteDimensional
+
 end
 
 end GaloisForLFunctions.HTGeometry

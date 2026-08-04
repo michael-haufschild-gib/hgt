@@ -7254,3 +7254,37 @@ Two corollaries make it concrete:
 
 So the Strelitz input of Reduction I is available under a hypothesis that can be read off the equation
 in one glance, and is automatic whenever the top-degree part contains a pure power of `f`.
+
+## Towards the polynomial-coefficient cascades: the rational model
+
+The next family beyond constant coefficients is the first-order **linear** equation with polynomial
+coefficients, `f' = a(w)(f − d)`, whose transcendental entire solutions are `d + c·exp(A(w))` with
+`A' = a` — the family that contains `exp(z²)`.  Its cascade law is still polynomial in the states,
+
+`δ X_(k+1) = a_k(X_k)·(X_(k+1) − d_k)·δ X_k`,   so   `δ X_k = ∏_(j<k) g_j(X_j)`,
+
+a product of univariate factors, one per coordinate — the same shape as the exponential tower, with
+`g_j(X) = X` replaced by an arbitrary polynomial.  The Bell induction needs the logarithmic derivative
+of that product, and `g_j'/g_j` is not a polynomial: the model has to be the **fraction field** of the
+state polynomial ring.  That is legitimate for the card's purpose, because algebraic independence over
+`ℂ` transfers back along the inclusion, and the Jacobian criterion only needs a domain.
+
+`HTGeometry/ProductLawFractionModel.lean` builds that model (axiom-clean):
+
+* `CascadeField = FractionRing (MvPolynomial ℕ ℂ)`, coordinates `fx k`, coordinate derivations
+  `fpderiv k`;
+* `univFactor`, `prodFactor`, `prodJet` — the univariate factors and their products, with
+  `univFactor_ne_zero` (a nonzero univariate polynomial stays nonzero in one coordinate, proved by
+  evaluating that coordinate);
+* `derivation_univFactor` — the chain rule `D(p(X_j)) = p'(X_j)·D X_j` for **any** derivation, proved
+  by induction on `p`; mathlib has no such lemma;
+* `prodDerivation` — the product law as a derivation of the fraction field, obtained from the corpus's
+  `fractionRingDerivation`;
+* `prodDerivation_prodJet` — the identity the whole induction will run on:
+
+  `δ(δ X_k) = δ X_k · ∑_(j<k) (g_j'(X_j)/g_j(X_j))·δ X_j`.
+
+The corpus already owned the extension of a derivation to a fraction field (`FractionRingDerivation`,
+via the square-zero graph homomorphism), so none of that had to be rebuilt.  What remains for this
+family is the observability determinant in the new model — the analogue of `sumJacobian_det_ne_zero`,
+with `1/X_j` replaced by `g_j'/g_j`.

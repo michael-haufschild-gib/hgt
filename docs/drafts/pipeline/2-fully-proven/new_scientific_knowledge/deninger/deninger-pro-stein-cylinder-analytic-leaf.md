@@ -189,6 +189,9 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Built the exterior product of continuous alternating forms, so
+  the cylinder de Rham complex `(3)` carries its algebra structure; on the way,
+  the boundedness of a multilinear map on a finite coordinate space.
 - 2026-08-04 — Formalized the exactness of filtered colimits, one of the two
   named ingredients of `(7)`; the other is Cartan theorem B.
 - 2026-08-04 — Closed `(6)` in the concrete model: the maps induced on
@@ -1108,6 +1111,21 @@ generalized to an arbitrary primitive in
 
   This is the ingredient of `(7)` that the proof invokes as "filtered colimits of complex vector
   spaces are exact"; the remaining ingredient is Cartan theorem B at the finite Stein stages.
+
+### The exterior product of the de Rham complex `(3)`
+
+`formal/GaloisForLFunctions/HTGeometry/MultilinearFiniteDimensional.lean` and
+`formal/GaloisForLFunctions/HTGeometry/ContinuousWedge.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `multilinearMap_bound` — **a multilinear map whose arguments run over a finite coordinate space is
+  bounded** by the sum of its values on the tuples of coordinate vectors, so
+  `alternatingMapToContinuous` turns any alternating map there into a continuous one.  Mathlib has
+  the bounded-implies-continuous direction but not this boundedness.
+- `continuousWedge` — **the exterior product of two continuous alternating forms**, built from
+  mathlib's algebraic alternating coproduct and the boundedness above, with its bilinearity
+  (`continuousWedge_add_left`, `continuousWedge_smul_left`, and the right-hand versions).  This is
+  the product that makes `(3)` a de Rham algebra rather than a complex of modules.
 
 ### Remaining
 

@@ -82,6 +82,19 @@ theorem lpBoundedMulCLM_eq_zero {φ : α → 𝕜} (hφ : Measurable φ) {C : �
   rw [h3]
   rfl
 
+/-- A symbol that is almost everywhere a negative induces the negative of the multiplier. -/
+theorem lpBoundedMulCLM_neg {φ ψ : α → 𝕜} (hφ : Measurable φ) (hψ : Measurable ψ)
+    {C D : ℝ} (hC0 : 0 ≤ C) (hC : ∀ x, ‖φ x‖ ≤ C) (hD0 : 0 ≤ D) (hD : ∀ x, ‖ψ x‖ ≤ D)
+    (hae : ∀ᵐ x ∂μ, ψ x = -φ x) :
+    lpBoundedMulCLM (p := p) (μ := μ) hψ hD0 hD
+      = -lpBoundedMulCLM (p := p) (μ := μ) hφ hC0 hC := by
+  refine ContinuousLinearMap.ext fun f => Lp.ext ?_
+  filter_upwards [lpBoundedMulCLM_coeFn (p := p) (μ := μ) hψ hD0 hD f,
+    lpBoundedMulCLM_coeFn (p := p) (μ := μ) hφ hC0 hC f,
+    Lp.coeFn_neg (lpBoundedMulCLM (p := p) (μ := μ) hφ hC0 hC f), hae] with x h1 h2 h3 h4
+  show ((lpBoundedMulCLM (p := p) (μ := μ) hψ hD0 hD f : Lp 𝕜 p μ) : α → 𝕜) x = _
+  rw [h1, h4, neg_apply, h3, Pi.neg_apply, h2, neg_mul]
+
 end MulAlgebra
 
 end MeasureTheory
@@ -188,6 +201,19 @@ theorem fourierMulCLM_eq_zero {φ : E → ℂ} (hφ : Measurable φ) {C : ℝ} (
   rw [fourierMulCLM_apply,
     lpBoundedMulCLM_eq_zero (p := 2) (μ := (volume : Measure E)) hφ hC0 hC hae]
   simp
+
+/-- A symbol that is almost everywhere a negative gives the negative of the multiplier. -/
+theorem fourierMulCLM_neg {φ ψ : E → ℂ} (hφ : Measurable φ) (hψ : Measurable ψ)
+    {C D : ℝ} (hC0 : 0 ≤ C) (hC : ∀ ξ, ‖φ ξ‖ ≤ C) (hD0 : 0 ≤ D) (hD : ∀ ξ, ‖ψ ξ‖ ≤ D)
+    (hae : ∀ᵐ ξ ∂(volume : Measure E), ψ ξ = -φ ξ) :
+    fourierMulCLM hψ hD0 hD = -fourierMulCLM hφ hC0 hC := by
+  refine ContinuousLinearMap.ext fun f => ?_
+  rw [fourierMulCLM_apply,
+    lpBoundedMulCLM_neg (p := 2) (μ := (volume : Measure E)) hφ hψ hC0 hC hD0 hD hae]
+  show fourierL2inv E (-(lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hφ hC0 hC
+      (fourierL2 E f))) = _
+  rw [map_neg]
+  rfl
 
 /-- **A symbol that is almost everywhere a sum gives the sum of the multipliers.** -/
 theorem fourierMulCLM_add {φ ψ χ : E → ℂ} (hφ : Measurable φ) (hψ : Measurable ψ)

@@ -731,10 +731,40 @@ most of order `log c`, giving the ratio `O(c² log c) e^(-2c)`.  The tail integr
   aperture* (improper FTC with primitive `8 arctan(omega - c)`).
 
 So the trial's out-of-band spectral mass is bounded by the absolute constant `8 pi` (both sides), while
-its in-band mass is at least of order `e^(2c)/c²`.  What remains to convert this into the leakage
-envelope is the variational step alone: the largest band eigenvalue as the supremum of the Rayleigh
-quotient of the compact positive symmetric band operator, together with the evenness bridge
-identifying `bandFourier` with the cosine transform on even test functions.
+its in-band mass is at least of order `e^(2c)/c²`.  Both of those steps are now proved, in `RHTower/BandVariational.lean`:
+
+- `one_sub_norm_le_rayleigh_deficit` — **the variational bound**: for any bounded operator on a real
+  inner-product space and any nonzero vector, `1 - ‖B‖ <= (‖psi‖² - ⟪B psi, psi⟫)/‖psi‖²`.  It is pure
+  Cauchy–Schwarz — the leakage envelope needs no spectral theorem, only that every Rayleigh quotient is
+  at most the operator norm.
+- `integral_eq_zero_of_odd`, `bandFourier_of_even` — **the even-test bridge**: on an even test function
+  the finite-Fourier moment is real and equals the cosine transform, the sine part being an odd
+  integral over a symmetric interval; and `kaiserTrial_even` supplies the evenness of the trial.
+
+So every ingredient of the upper leakage envelope is proved: the trial, its transform, the two mass
+bounds, the tail integral, the leakage-as-spectral-tail identity, and the variational bound.  That last bridge is now proved as well, in `RHTower/BandFormBridge.lean`:
+
+- `inner_continuousKernelOperator_eq`, `norm_sq_eq_integral` (extracted in `ProlateL2Operator`) — the
+  quadratic form and the energy of a kernel operator as subtype double integrals.
+- `bandClass`, `coeFn_bandClass` — the `L²` class of a continuous test function on the band.
+- `inner_bandOperatorL2_bandClass`, `norm_sq_bandClass` — the dictionary in interval integrals:
+
+  ```text
+  ⟪B_c (psi|), (psi|)⟫ = ∫∫ sinc_c(x-y) psi(x) psi(y),      ‖(psi|)‖² = ∫ psi².
+  ```
+
+- `one_sub_norm_bandOperatorL2_le` — hence the **function-level variational bound**: every continuous
+  test function with nonzero band class bounds the band leakage,
+
+  ```text
+  1 - ‖B_c‖ <= [∫ psi² - ∫∫ sinc_c(x-y) psi psi]/∫ psi².
+  ```
+
+So the leakage of the true band operator is now bounded by a completely explicit function-level
+quantity, and the Kaiser–Bessel trial supplies the numerator and denominator estimates
+(`sq_integral_kaiserTrial_cos_le`, `integral_Ioi_cauchy_envelope`, `integral_kaiserTrial_cos_ge`).  What
+remains is the numerical assembly: expressing the trial's deficit through
+`leakage_eq_spectral_tail` — the trial's own spectral tail — and combining the two mass estimates.
 
 ## Lean gates
 

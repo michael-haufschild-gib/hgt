@@ -35,6 +35,12 @@ open MeasureTheory intervalIntegral
 def kaiserTrial (c x : ℝ) : ℝ :=
   ∑' k : ℕ, (c ^ 2 * (1 - x ^ 2) / 4) ^ k / (Nat.factorial k : ℝ) ^ 2
 
+/-- The trial weight is even: each term depends on `x` only through `x²`. -/
+theorem kaiserTrial_even (c x : ℝ) : kaiserTrial c (-x) = kaiserTrial c x := by
+  rw [kaiserTrial, kaiserTrial]
+  refine tsum_congr fun k => ?_
+  rw [neg_sq]
+
 /-- Squared factorials dominate factorials, so the trial series converges. -/
 theorem summable_kaiserTerm (u : ℝ) :
     Summable fun k : ℕ => u ^ k / (Nat.factorial k : ℝ) ^ 2 := by

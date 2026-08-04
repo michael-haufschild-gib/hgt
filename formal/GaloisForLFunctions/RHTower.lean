@@ -111,6 +111,7 @@ import GaloisForLFunctions.RHTower.BakerWeldIndependence
 import GaloisForLFunctions.RHTower.BandEdgePairing
 import GaloisForLFunctions.RHTower.BandEdgePairingConstruction
 import GaloisForLFunctions.RHTower.BandLeakageSpectralTail
+import GaloisForLFunctions.RHTower.BandFormBridge
 import GaloisForLFunctions.RHTower.BandFrequencyWindow
 import GaloisForLFunctions.RHTower.BandQuadraticFormFourier
 import GaloisForLFunctions.RHTower.BandTrialMoments
@@ -118,6 +119,7 @@ import GaloisForLFunctions.RHTower.BandKaiserBounds
 import GaloisForLFunctions.RHTower.BandKaiserTail
 import GaloisForLFunctions.RHTower.BandKaiserTrial
 import GaloisForLFunctions.RHTower.BandTrialSeries
+import GaloisForLFunctions.RHTower.BandVariational
 import GaloisForLFunctions.RHTower.BandTransformSymmetric
 import GaloisForLFunctions.RHTower.BarrierIsTheExpansion
 import GaloisForLFunctions.RHTower.BernoulliFourierBridge
@@ -3508,6 +3510,11 @@ import GaloisForLFunctions.RHTower.Sieve.LinearVsMultiplicativeWindow
 import GaloisForLFunctions.RHTower.Sieve.LinearWindowMeasurable
 import GaloisForLFunctions.RHTower.Sieve.LinearBlockEstimate
 import GaloisForLFunctions.RHTower.Sieve.LinearRangeEstimate
+import GaloisForLFunctions.RHTower.Sieve.LinearRangeVariable
+import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareCapstone
+import GaloisForLFunctions.RHTower.Sieve.LogPolyMoebius
+import GaloisForLFunctions.RHTower.Sieve.MoebiusMeanSquareRange
+import GaloisForLFunctions.RHTower.Sieve.DiscreteWindowBridge
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment

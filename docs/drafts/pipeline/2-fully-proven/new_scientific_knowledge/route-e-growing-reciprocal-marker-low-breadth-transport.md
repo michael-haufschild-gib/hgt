@@ -4664,3 +4664,148 @@ What remains for the card's `(15)`–`(17)` is to sum the block estimate over th
 blocks covering a dyadic range, convert the integral over `u` back to the discrete sum over integer
 starts (`RealWindowVariance.integral_realWindow_eq_sum` does the discrete↔real half), and choose
 `ε`, `W` against `B(N)` so both error terms are `o(L²)`.
+
+### The range estimate
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/LinearRangeEstimate.lean`.
+
+- `blockCost L Y ε M₁ M₂ W = 2(M₁·log(1+L/Y) + M₂·2/(π²W)) + 2(εL+1)²·log(1+ε)`, with
+  `blockCost_nonneg`;
+- **`setIntegral_normSq_linWindowSum_range_le`** — the blocks `Y(1+ε)^k < x ≤ Y(1+ε)^{k+1}` tile
+  `Y < x ≤ Y(1+ε)^K`, and by induction on `K`,
+
+      ∫_{log Y}^{log(Y(1+ε)^K)} |∑_{e^u < n ≤ e^u+L} a_n|² du ≤ K · blockCost L Y ε M₁ M₂ W .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+The induction uses only `Set.Ioc_union_Ioc_eq_Ioc` for the tiling and the monotonicity
+`log(1 + L/Y(1+ε)^k) ≤ log(1 + L/Y)` — the base point of each block is at least `Y`, so every block
+pays at most the cost at `Y`.
+
+`K` blocks of ratio `1+ε` cover a range of ratio `(1+ε)^K`, so a dyadic range costs
+`K ≈ log 2 / log(1+ε)` blocks and the total is
+
+    (log 2 / log(1+ε)) · [ 2(M₁·log(1+L/Y) + M₂·2/(π²W)) + 2(εL+1)²·log(1+ε) ]
+      ≈ (2 log 2 / ε)·(M₁·L/Y + M₂·2/(π²W)) + 2 log 2 · ε L² ,
+
+the two error terms whose balance in `ε` completes the card's `(15)`–`(17)`.
+
+### Back to the linear variable
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/LinearRangeVariable.lean`.
+
+- `linSum a s L x = ∑_{x < n ≤ x+L} a_n`, with `linWindowSum_eq_linSum`;
+- `exp_image_Ioc` — `exp '' Ioc A B = Ioc (e^A) (e^B)`;
+- **`integral_Ioc_eq_integral_log`** — the change of variables
+
+      ∫_{e^A}^{e^B} F(x) dx = ∫_A^B e^u · F(e^u) du ;
+
+- `integrableOn_normSq_expMul`, **`integral_Ioc_normSq_linSum_le`** —
+
+      ∫_{e^A}^{e^B} |∑_{x<n≤x+L} a_n|² dx ≤ e^B · ∫_A^B |∑_{e^u<n≤e^u+L} a_n|² du .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+**Why the measure-theoretic change of variables and not the interval one.** The usual substitution
+lemma `intervalIntegral.integral_comp_smul_deriv` requires the integrand to be *continuous*, and the
+window sum jumps at every integer. `MeasureTheory.integral_image_eq_integral_abs_deriv_smul` imposes
+no condition on the integrand at all — only injectivity and differentiability of the substitution —
+so it applies directly. This is the right tool whenever the integrand is a lattice-point count.
+
+Composing with the range estimate, the card's mean square over a dyadic range of *linear* starting
+points is now bounded by the two analytic inputs, in the `dx` variable that
+`RealWindowVariance.integral_realWindow_eq_sum` converts to the discrete sum over integer starts.
+
+### The linear mean square over a range — capstone
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/LinearMeanSquareCapstone.lean`.
+
+**`integral_Ioc_normSq_linSum_range_le`** — over the starting points `Y < x ≤ Y(1+ε)^K`,
+
+    ∫ |∑_{x < n ≤ x+L} a_n|² dx ≤ Y(1+ε)^K · K · blockCost L Y ε M₁ M₂ W ,
+
+with `blockCost = 2(M₁·log(1+L/Y) + M₂·2/(π²W)) + 2(εL+1)²·log(1+ε)`.
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+**This is the card's analytic input, in linear windows, as one theorem.** `M₁` bounds
+`|∑_n a_n n^{2πiw}|²` for `|w| ≤ W` and `M₂` bounds it everywhere; for `a = μ` the first is supplied
+by the twisted cancellation `exists_bound_norm_sum_moebiusTwist_div` and the second is the trivial
+`|s|²`. The whole passage — Gallagher's identity, the frequency split and its tail, the tiling, the
+linear/multiplicative transfer with its excess, the change of variables, and the summation over
+blocks — is proved unconditionally, with no analytic input beyond the twisted contour bound.
+
+Reading off the sizes with `Z = Y(1+ε)^K ≍ 2Y` (a dyadic range, `K ≈ log 2/log(1+ε)`):
+
+    ∫_Y^{2Y} |∑_{x<n≤x+L} μ(n)|² dx  ≪  Y·(1/ε)·(M₁·L/Y + M₂/W) + Y·ε·L² ,
+
+so the two error terms balance at `ε ≍ (M₁/(YL) + M₂/(WL²))^{1/2}`, and both are `o(YL²)` exactly
+when `M₁ = o(Y L)` and `M₂/W = o(L)` — the first being the twisted cancellation and the second the
+growth of the admissible frequency range.
+
+### The two halves meet
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/LogPolyMoebius.lean`.
+
+**`logPoly_moebius_eq`** — the Dirichlet polynomial of Gallagher's identity at the Möbius
+coefficients *is* the twisted Möbius sum:
+
+    logPoly μ s w = ∑_{n ∈ s} μ(n) n^{2πiw} = ∑_{n ∈ s} moebiusTwist (−2πw) n .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+This is the join between the two halves built on this card. The quantity `M₁` that
+`integral_Ioc_normSq_linSum_range_le` consumes — a bound on `|logPoly μ s w|²` for `|w| ≤ W` — is
+literally the quantity `exists_bound_norm_sum_moebiusTwist_div` bounds, at `τ = −2πw`. The
+correspondence is exact, not asymptotic: `n^{2πiw} = n^{-iτ}` with `τ = −2πw`, and the admissible
+range `5 + 4|τ| ≤ contourParam(N+H)` becomes `|w| ≤ (contourParam(N+H) − 5)/(8π) =: W`.
+
+So the card's analytic input in linear windows follows from the twisted contour bound with no
+further analysis: substituting `M₁ = (B(N)·N)²` and `M₂ = |s|²` into the capstone gives the
+short-interval mean square, and the balance in `ε` recorded above makes both error terms `o(YL²)`.
+
+### The Möbius short-interval mean square over a range
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusMeanSquareRange.lean`.
+
+- `moebiusC`, `norm_moebiusC_le_one`;
+- `normSq_logPoly_moebiusC_le` — the trivial bound `|logPoly μ s w|² ≤ (#s)²`, valid at every
+  frequency;
+- **`integral_Ioc_normSq_moebius_range_le`** — the capstone at the Möbius coefficients:
+
+      ∫_Y^{Y(1+ε)^K} |∑_{x < n ≤ x+L} μ(n)|² dx
+        ≤ Y(1+ε)^K · K · ( 2(M₁·log(1+L/Y) + (#s)²·2/(π²W)) + 2(εL+1)²·log(1+ε) ) ,
+
+  where the only hypothesis carrying arithmetic is
+
+      ∀ |w| ≤ W,  ‖∑_{n ∈ s} μ(n)n^{-i(−2πw)}‖² ≤ M₁ ,
+
+  which is exactly what `exists_bound_norm_sum_moebiusTwist_div` supplies.
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+**The card's analytic input is now one theorem with one arithmetic hypothesis, and that hypothesis is
+proved elsewhere in this corpus.** Everything else — the trivial bound, Gallagher's reduction and all
+its steps, the linear/multiplicative transfer, the change of variables, the block summation — is
+elementary and proved.
+
+### The discrete window variance as a set integral
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/DiscreteWindowBridge.lean`.
+
+- `linSum_eq_realWindow` — the linear window sum of this development and the corpus's `realWindow`
+  sum are the **same object** (`rfl`): both are the sum over `{n < M : x < n ≤ x + L}`;
+- **`sum_normSq_Ioc_eq_setIntegral`** —
+
+      ∑_{k < K} |∑_{Y+k < n ≤ Y+k+L} c_n|² = ∫_{(Y, Y+K]} |∑_{x < n ≤ x+L} c_n|² dx .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+That the two window notions coincide definitionally is worth recording: the corpus's
+`RealWindow.realWindow` was built for the elementary variance layer, and this development arrived at
+the same filter independently. No conversion is needed, only the interval-to-set integral step.
+
+**The card's mean square is now a set integral that the Möbius range bound applies to.** With
+`Y(1+ε)^K` matched to `Y + K'`, `integral_Ioc_normSq_moebius_range_le` bounds it in terms of the
+frequency-restricted Möbius bound and the trivial size — completing the passage from the card's
+`(15)`–`(17)` to the twisted contour argument.

@@ -205,6 +205,121 @@ theorem kgSinOp_zero : kgSinOp (E := E) 0 = 0 := by
   rw [zero_mul, Real.sin_zero]
   norm_num
 
+theorem kgCosOp_eq (t : ℝ) : kgCosOp (E := E) t
+    = fourierMulCLM (measurable_kgCosSymbol (E := E) t) zero_le_one (norm_kgCosSymbol_le t) := rfl
+
+theorem kgSinOp_eq (t : ℝ) : kgSinOp (E := E) t
+    = fourierMulCLM (measurable_kgSinPhase (E := E) t) zero_le_one (norm_kgSinPhase_le t) := rfl
+
+section Addition
+
+variable (t s : ℝ)
+
+private theorem measurable_cosMulCos :
+    Measurable fun ξ : E => kgCosSymbol t ξ * kgCosSymbol s ξ :=
+  (measurable_kgCosSymbol t).mul (measurable_kgCosSymbol s)
+
+private theorem measurable_sinMulSin :
+    Measurable fun ξ : E => kgSinPhase t ξ * kgSinPhase s ξ :=
+  (measurable_kgSinPhase t).mul (measurable_kgSinPhase s)
+
+private theorem measurable_cosMulSin :
+    Measurable fun ξ : E => kgCosSymbol t ξ * kgSinPhase s ξ :=
+  (measurable_kgCosSymbol t).mul (measurable_kgSinPhase s)
+
+private theorem measurable_sinMulCos :
+    Measurable fun ξ : E => kgSinPhase t ξ * kgCosSymbol s ξ :=
+  (measurable_kgSinPhase t).mul (measurable_kgCosSymbol s)
+
+private theorem norm_cosMulCos_le (ξ : E) : ‖kgCosSymbol t ξ * kgCosSymbol s ξ‖ ≤ 1 := by
+  rw [norm_mul]
+  exact mul_le_one₀ (norm_kgCosSymbol_le t ξ) (norm_nonneg _) (norm_kgCosSymbol_le s ξ)
+
+private theorem norm_sinMulSin_le (ξ : E) : ‖kgSinPhase t ξ * kgSinPhase s ξ‖ ≤ 1 := by
+  rw [norm_mul]
+  exact mul_le_one₀ (norm_kgSinPhase_le t ξ) (norm_nonneg _) (norm_kgSinPhase_le s ξ)
+
+private theorem norm_cosMulSin_le (ξ : E) : ‖kgCosSymbol t ξ * kgSinPhase s ξ‖ ≤ 1 := by
+  rw [norm_mul]
+  exact mul_le_one₀ (norm_kgCosSymbol_le t ξ) (norm_nonneg _) (norm_kgSinPhase_le s ξ)
+
+private theorem norm_sinMulCos_le (ξ : E) : ‖kgSinPhase t ξ * kgCosSymbol s ξ‖ ≤ 1 := by
+  rw [norm_mul]
+  exact mul_le_one₀ (norm_kgSinPhase_le t ξ) (norm_nonneg _) (norm_kgCosSymbol_le s ξ)
+
+private theorem norm_negSinMulSin_le (ξ : E) : ‖-(kgSinPhase t ξ * kgSinPhase s ξ)‖ ≤ 1 := by
+  rw [norm_neg]
+  exact norm_sinMulSin_le t s ξ
+
+/-- **The addition law for the cosine propagator.** -/
+theorem kgCosOp_add :
+    kgCosOp (E := E) (t + s)
+      = (kgCosOp t).comp (kgCosOp s) - (kgSinOp t).comp (kgSinOp s) := by
+  have hcc := measurable_cosMulCos (E := E) t s
+  have hss := measurable_sinMulSin (E := E) t s
+  have hnss : Measurable fun ξ : E => -(kgSinPhase t ξ * kgSinPhase s ξ) := hss.neg
+  have hc1 : (kgCosOp (E := E) t).comp (kgCosOp s)
+      = fourierMulCLM hcc zero_le_one (norm_cosMulCos_le t s) := by
+    rw [kgCosOp_eq, kgCosOp_eq]
+    exact fourierMulCLM_comp _ _ hcc _ _ _ _ _ (norm_cosMulCos_le t s)
+      (Filter.Eventually.of_forall fun _ => rfl)
+  have hc2 : (kgSinOp (E := E) t).comp (kgSinOp s)
+      = fourierMulCLM hss zero_le_one (norm_sinMulSin_le t s) := by
+    rw [kgSinOp_eq, kgSinOp_eq]
+    exact fourierMulCLM_comp _ _ hss _ _ _ _ _ (norm_sinMulSin_le t s)
+      (Filter.Eventually.of_forall fun _ => rfl)
+  have hneg : fourierMulCLM hnss zero_le_one (norm_negSinMulSin_le t s)
+      = -fourierMulCLM hss zero_le_one (norm_sinMulSin_le t s) :=
+    fourierMulCLM_neg hss hnss zero_le_one (norm_sinMulSin_le t s) zero_le_one
+      (norm_negSinMulSin_le t s) (Filter.Eventually.of_forall fun _ => rfl)
+  have hadd : kgCosOp (E := E) (t + s)
+      = fourierMulCLM hcc zero_le_one (norm_cosMulCos_le t s)
+        + fourierMulCLM hnss zero_le_one (norm_negSinMulSin_le t s) := by
+    rw [kgCosOp_eq]
+    refine fourierMulCLM_add hcc hnss (measurable_kgCosSymbol (E := E) (t + s)) zero_le_one
+      (norm_cosMulCos_le t s) zero_le_one (norm_negSinMulSin_le t s) zero_le_one
+      (norm_kgCosSymbol_le (t + s)) (Filter.Eventually.of_forall fun ξ => ?_)
+    show ((Real.cos ((t + s) * kgFreq ξ) : ℝ) : ℂ)
+        = ((Real.cos (t * kgFreq ξ) : ℝ) : ℂ) * ((Real.cos (s * kgFreq ξ) : ℝ) : ℂ)
+          + -(((Real.sin (t * kgFreq ξ) : ℝ) : ℂ) * ((Real.sin (s * kgFreq ξ) : ℝ) : ℂ))
+    rw [add_mul, Real.cos_add]
+    push_cast
+    ring
+  rw [hadd, hneg, hc1, hc2, sub_eq_add_neg]
+
+/-- **The addition law for the sine propagator.** -/
+theorem kgSinOp_add :
+    kgSinOp (E := E) (t + s)
+      = (kgCosOp t).comp (kgSinOp s) + (kgSinOp t).comp (kgCosOp s) := by
+  have hcs := measurable_cosMulSin (E := E) t s
+  have hsc := measurable_sinMulCos (E := E) t s
+  have hc1 : (kgCosOp (E := E) t).comp (kgSinOp s)
+      = fourierMulCLM hcs zero_le_one (norm_cosMulSin_le t s) := by
+    rw [kgCosOp_eq, kgSinOp_eq]
+    exact fourierMulCLM_comp _ _ hcs _ _ _ _ _ (norm_cosMulSin_le t s)
+      (Filter.Eventually.of_forall fun _ => rfl)
+  have hc2 : (kgSinOp (E := E) t).comp (kgCosOp s)
+      = fourierMulCLM hsc zero_le_one (norm_sinMulCos_le t s) := by
+    rw [kgSinOp_eq, kgCosOp_eq]
+    exact fourierMulCLM_comp _ _ hsc _ _ _ _ _ (norm_sinMulCos_le t s)
+      (Filter.Eventually.of_forall fun _ => rfl)
+  have hadd : kgSinOp (E := E) (t + s)
+      = fourierMulCLM hcs zero_le_one (norm_cosMulSin_le t s)
+        + fourierMulCLM hsc zero_le_one (norm_sinMulCos_le t s) := by
+    rw [kgSinOp_eq]
+    refine fourierMulCLM_add hcs hsc (measurable_kgSinPhase (E := E) (t + s)) zero_le_one
+      (norm_cosMulSin_le t s) zero_le_one (norm_sinMulCos_le t s) zero_le_one
+      (norm_kgSinPhase_le (t + s)) (Filter.Eventually.of_forall fun ξ => ?_)
+    show ((Real.sin ((t + s) * kgFreq ξ) : ℝ) : ℂ)
+        = ((Real.cos (t * kgFreq ξ) : ℝ) : ℂ) * ((Real.sin (s * kgFreq ξ) : ℝ) : ℂ)
+          + ((Real.sin (t * kgFreq ξ) : ℝ) : ℂ) * ((Real.cos (s * kgFreq ξ) : ℝ) : ℂ)
+    rw [add_mul, Real.sin_add]
+    push_cast
+    ring
+  rw [hadd, hc1, hc2]
+
+end Addition
+
 end Operators
 
 /-! ## The propagator on the energy space -/
@@ -263,6 +378,30 @@ theorem continuous_kgPropagator_comp {ι : Type*} [TopologicalSpace ι] {r : ι 
     {v : ι → KGEnergy E} (hr : Continuous r) (hv : Continuous v) :
     Continuous fun i => kgPropagator (r i) (v i) :=
   continuous_of_strong_comp norm_kgPropagator_le continuous_kgPropagator_apply hr hv
+
+/-- **The propagator is a one-parameter group.** -/
+theorem kgPropagator_add (t s : ℝ) :
+    kgPropagator (E := E) (t + s) = (kgPropagator t).comp (kgPropagator s) := by
+  refine ContinuousLinearMap.ext fun v => ?_
+  have hcos := kgCosOp_add (E := E) t s
+  have hsin := kgSinOp_add (E := E) t s
+  rw [ContinuousLinearMap.comp_apply, kgPropagator_apply, kgPropagator_apply, kgPropagator_apply,
+    hcos, hsin]
+  refine Prod.ext ?_ ?_
+  · show (((kgCosOp (E := E) t).comp (kgCosOp s) - (kgSinOp t).comp (kgSinOp s)) v.1
+        + ((kgCosOp (E := E) t).comp (kgSinOp s) + (kgSinOp t).comp (kgCosOp s)) v.2)
+      = kgCosOp t (kgCosOp s v.1 + kgSinOp s v.2)
+        + kgSinOp t (-(kgSinOp s v.1) + kgCosOp s v.2)
+    simp only [ContinuousLinearMap.sub_apply, add_apply, ContinuousLinearMap.comp_apply, map_add,
+      map_neg]
+    abel
+  · show (-((((kgCosOp (E := E) t).comp (kgSinOp s) + (kgSinOp t).comp (kgCosOp s))) v.1)
+        + ((kgCosOp (E := E) t).comp (kgCosOp s) - (kgSinOp t).comp (kgSinOp s)) v.2)
+      = -(kgSinOp t (kgCosOp s v.1 + kgSinOp s v.2))
+        + kgCosOp t (-(kgSinOp s v.1) + kgCosOp s v.2)
+    simp only [ContinuousLinearMap.sub_apply, add_apply, ContinuousLinearMap.comp_apply, map_add,
+      map_neg]
+    abel
 
 /-- **The propagator starts at the identity.** -/
 theorem kgPropagator_zero_apply (v : KGEnergy E) : kgPropagator 0 v = v := by

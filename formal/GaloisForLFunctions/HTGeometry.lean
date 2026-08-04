@@ -2855,6 +2855,7 @@ import GaloisForLFunctions.HTGeometry.ShiftedCoeffFun
 import GaloisForLFunctions.HTGeometry.PolynomialMinimumModulus
 import GaloisForLFunctions.HTGeometry.TopSymbolWimanPlace
 import GaloisForLFunctions.HTGeometry.NewtonWeightPositiveOrder
+import GaloisForLFunctions.HTGeometry.ProductLawFractionModel
 import GaloisForLFunctions.HTGeometry.WimanPlaceRoot
 import GaloisForLFunctions.HTGeometry.RpowExpAsymptotics
 import GaloisForLFunctions.HTGeometry.WimanValironCleanBound
@@ -4908,3 +4909,5 @@ import GaloisForLFunctions.HTGeometry.WaveL2CapstoneEvent
 import GaloisForLFunctions.HTGeometry.WaveSourceFlux
 import GaloisForLFunctions.HTGeometry.DirectLimitExact
 import GaloisForLFunctions.HTGeometry.TrigPolynomialBernstein
+import GaloisForLFunctions.HTGeometry.MultilinearFiniteDimensional
+import GaloisForLFunctions.HTGeometry.ContinuousWedge

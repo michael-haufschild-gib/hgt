@@ -110,6 +110,30 @@ theorem integrable_of_realIntervalL2 (f : RealIntervalL2 a b) :
     Integrable (f : ClosedInterval a b → ℝ) (volume : Measure (ClosedInterval a b)) :=
   (Lp.memLp f).integrable (by norm_num)
 
+/-- **The quadratic form of a kernel operator is the double integral of its kernel.** -/
+theorem inner_continuousKernelOperator_eq (K : C(ClosedInterval a b × ClosedInterval a b, ℝ))
+    (f g : RealIntervalL2 a b) :
+    (inner ℝ (continuousKernelOperator K f) g : ℝ)
+      = ∫ x : ClosedInterval a b, ∫ y : ClosedInterval a b,
+          K (x, y) * ((g x : ℝ) * (f y : ℝ)) ∂volume ∂volume := by
+  rw [L2.inner_def]
+  refine integral_congr_ae ?_
+  filter_upwards [continuousKernelOperator_coeFn K f] with x hx
+  rw [RCLike.inner_apply, starRingEnd_apply, star_trivial, hx, ← integral_const_mul]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+  ring
+
+/-- The squared `L²` norm on the band is the integral of the square. -/
+theorem norm_sq_eq_integral (f : RealIntervalL2 a b) :
+    ‖f‖ ^ 2 = ∫ x : ClosedInterval a b, ((f x : ℝ)) ^ 2 ∂volume := by
+  have h := L2.inner_def (𝕜 := ℝ) f f
+  have hnorm : (inner ℝ f f : ℝ) = ‖f‖ ^ 2 := real_inner_self_eq_norm_sq f
+  rw [hnorm] at h
+  rw [h]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  simp only [RCLike.inner_apply, starRingEnd_apply, star_trivial]
+  ring
+
 /-- **The integral operator of a symmetric continuous kernel is symmetric.**  Fubini for the bounded
 kernel against two integrable functions. -/
 theorem continuousKernelOperator_symmetric
@@ -131,15 +155,7 @@ theorem continuousKernelOperator_symmetric
     hprod.bdd_mul (c := ‖K‖) K.continuous.aestronglyMeasurable
       (Filter.Eventually.of_forall fun z => K.norm_coe_le_norm _)
   -- both sides are the same double integral
-  have hleft : (inner ℝ (continuousKernelOperator K f) g : ℝ)
-      = ∫ x : ClosedInterval a b, ∫ y : ClosedInterval a b,
-          K (x, y) * ((g x : ℝ) * (f y : ℝ)) ∂volume ∂volume := by
-    rw [L2.inner_def]
-    refine integral_congr_ae ?_
-    filter_upwards [continuousKernelOperator_coeFn K f] with x hx
-    rw [RCLike.inner_apply, starRingEnd_apply, star_trivial, hx, ← integral_const_mul]
-    refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
-    ring
+  have hleft := inner_continuousKernelOperator_eq K f g
   have hright : (inner ℝ f (continuousKernelOperator K g) : ℝ)
       = ∫ y : ClosedInterval a b, ∫ x : ClosedInterval a b,
           K (x, y) * ((g x : ℝ) * (f y : ℝ)) ∂volume ∂volume := by
