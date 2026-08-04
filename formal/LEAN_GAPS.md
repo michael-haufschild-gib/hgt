@@ -19,7 +19,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 6194 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Decomposition.lean` |
 | 5659 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 5058 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
-| 4949 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 4951 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 4763 | `formal/GaloisForLFunctions/HTGeometry/GaussianTorsionLanguageTailLock.lean` |
 | 4479 | `formal/GaloisForLFunctions/QuantumAlg/Core/Components/EncodedBitGates.lean` |
 | 4251 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/StructuredCircuit.lean` |

@@ -93,9 +93,11 @@ theorem uniformBordered_bell_det_eq (U : CascadeField) (n : ℕ)
     rw [Matrix.det_succ_row_zero]
     have hzero : ∀ j : Fin (n + 1), j ≠ 0 → D 0 j = 0 := by
       intro j hj
-      refine Fin.cases ?_ (fun j' => ?_) j
-      · exact (hj rfl).elim
-      · simp [hD]
+      obtain ⟨j', rfl⟩ : ∃ j' : Fin n, j = j'.succ := by
+        rcases Fin.eq_zero_or_eq_succ j with h | h
+        · exact absurd h hj
+        · exact h
+      simp [hD]
     rw [Finset.sum_eq_single (0 : Fin (n + 1))]
     · have h00 : D 0 0 = 1 := by simp [hD]
       rw [h00]

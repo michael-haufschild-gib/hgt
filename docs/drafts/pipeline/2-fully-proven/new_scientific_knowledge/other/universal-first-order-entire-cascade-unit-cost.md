@@ -7632,3 +7632,80 @@ The remaining step is that determinant bookkeeping: `bordered(Bell) = D · borde
 `det D = 1`, after which the open question is a bordered determinant of gradients of jets of the
 logarithmic sum — with the border row being the sum's own coefficient vector
 `(Q_j'/Q_j)(X_j)`, a coincidence the final argument should exploit.
+
+### Bell rows replaced by jet rows
+
+`HTGeometry/ProductLawBorderedRows.lean` (axiom-clean) completes the determinant bookkeeping.
+
+The evaluated Bell coefficients, truncated to the rows the bordered matrix actually uses, are upper
+triangular with unit diagonal (`bellCoeff_triangular`, `bellCoeff_diagonal`), so `bellCoeff_det = 1`.
+The truncation itself is justified by the same triangularity: the top coefficient vanishes because a
+Bell value of index `r+1` involves only the jets up to `r` (`fpderiv_prodBell_succ_truncated`).
+
+`uniformBordered_bell_det_eq`: bordering that matrix by an identity row gives `D` with `det D = 1`, and
+
+`bordered(Bell gradients) = D · bordered(jet gradients)`,
+
+so the two determinants are equal.  The remaining open determinant is therefore
+
+`det [ row 0 = ∇(∏_(j)Q_j) ;  rows r = ∇(δ^r U) ]`,  `U = ∑_j (Q_j'/Q_j)(X_j)·δX_j`,
+
+a bordered Jacobian of the jets of the logarithmic sum, bordered by the gradient of the head product.
+Both border and body are built from the same data `(Q_j'/Q_j)(X_j)` — the head product's gradient is
+`H·(Q_j'/Q_j)(X_j)` — which is the structure the final argument has to use.
+
+### Why the tower's argument does not generalise — the degenerate locus
+
+Working out the leading behaviour of the bordered determinant produced a structural finding worth
+recording, because it explains the shape of everything above.
+
+The leading term is governed by the **scaled logarithmic derivative** `T = v·Q'/Q`, whose
+numerator-cleared derivative is `Q²·T' = (v'Q' + v·Q'')·Q − v·(Q')²`.  Its top coefficient vanishes
+identically: for `Q = aX^q + …`, `v = αX + β`, the three contributions carry `q(q−1)`, `q` and `−q²`
+and sum to zero.  That is not an accident — `T → q·α` at infinity, so `T'` is a second-order quantity.
+
+`HTGeometry/ScaledLogWronskian.lean` (axiom-clean) makes the structure exact:
+
+* `scaledLogWronskian_mul` — `W(P·R) = R²·W(P) + P²·W(R)`, because `T` is a logarithmic derivative and
+  therefore additive;
+* `scaledLogWronskian_self` — `W(v) = v²·v''`, so a linear `v` is degenerate;
+* `scaledLogWronskian_pow`, `scaledLogWronskian_C_mul_pow` — **the Wronskian vanishes exactly on
+  `Q = K·v^k`**, where `T = k·v'` is constant.
+
+So the general product law has a genuine degenerate locus, and **the exponential tower sits on it**:
+there `Q = v = X`, `T ≡ 1`.  The tower's determinant argument is therefore the argument at the one
+place where the scaled logarithmic derivative carries no information — which is exactly why it cannot
+be transported, and why the general case needs a second-order analysis rather than a leading-term one.
+
+For the cascade of first-order linear maps, `Q_k = a_k·(X − d_(k−1))` and `v_k = X − d_(k−1)`, so the
+degenerate case is `a_k = K·(X − d_(k−1))^j` — a real family of entire cascades, not an artefact.  The
+general argument must therefore split on this locus, as the tower's does implicitly.
+
+### The degenerate locus is where the model becomes polynomial again
+
+The split the previous section forced turns out to be the productive one, and it changes the plan.
+
+On the degenerate locus `Q_j = K_j·v_j^(e_j)`, the terminal factor cancels out of the logarithmic sum
+(`logFactor_mul_prodJet_of_pow`, in `HTGeometry/ProductLawDegenerate.lean`, axiom-clean):
+
+`(Q_j'/Q_j)(X_j)·δX_j = (e_j + 1)·v_j'(X_j)·∏_(i<j)Q_i(X_i)`,
+
+free of the `j`-th coordinate.  Consequently the logarithmic sum has **no denominators at all** on this
+locus — every division introduced by the fraction field cancels — so the model there is polynomial, and
+the induction can proceed with the column-degree extraction rather than a leading-term analysis of
+rational functions.
+
+This is exactly the tower's cancellation (`Q = v = X`, `e = 0`), and the locus is a genuine family: it
+is where the cascade's maps are `d + c·exp(A(w))` with `A'(w) = K(w − d)^e`, i.e. `A` a monomial in
+`w − d`, of every degree.  The tower is its `e = 0, K = 1` point.
+
+So the general product law splits cleanly:
+
+* **degenerate locus** — polynomial model, tower-style induction with column degrees `e_j + 1` instead
+  of `1`.  All the machinery for it is now built;
+* **off the locus** — the scaled logarithmic derivative is nonconstant, the model is genuinely
+  rational, and the leading terms cancel at first order, so a second-order argument is needed.
+
+Next: the polynomial induction on the degenerate locus, which yields `ord = n` for every cascade of
+maps `d + c·exp(K(w − d)^(e+1)/(e+1))` — a strictly larger family than the constant-coefficient one
+already proved, and the first case beyond it.
