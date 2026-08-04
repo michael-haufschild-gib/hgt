@@ -1,8 +1,8 @@
 # Mass-Bessel bounded-orbit rigidity
 
-**Stage:** 2 — fully proven on paper  
+**Stage:** 3 — formalized in Lean 4  
 **Date frozen:** 2026-08-04  
-**Label:** `[LOCAL-RESEARCH] [PAPER-PROVED]`  
+**Label:** `[LOCAL-RESEARCH] [LEAN-PROVED]`  
 **Origin:** positive survivor of the source-selected bounded-orbit conjecture
 
 ## 1. Exact theorem
@@ -95,12 +95,50 @@ this prime-critical mass gauge was not found in the internal route or external
 collision search, but it remains a local synthesis of standard multiplier
 theory.  Label is `[LOCAL-RESEARCH]`, not `[NOVEL]`.
 
-## 6. Lean target
+## 6. Lean proof
 
-Formalize in two layers:
+Module:
 
-1. the sign law `sign(q(\xi))=-sign(\xi)` for the complex mass square root;
-2. an abstract measure-space theorem saying a multiplier orbit with a
-   nonzero-sign real growth exponent has no nonzero two-sided bounded vector.
+`formal/GaloisForLFunctions/HTGeometry/MassGaugeHalfWaveL2.lean`
 
-Status: `[PAPER-PROVED]`; Lean module not yet written.
+Exact capstones:
+
+- `massGaugeDispersion_im_neg_of_pos`;
+- `massGaugeDispersion_im_pos_of_neg`;
+- `massGaugeHalfWaveL2_apply_norm_ge_restriction`;
+- `massGaugeHalfWaveL2_orbit_unbounded_of_restricted_growth`;
+- `massGaugeHalfWaveL2_nonzero_orbit_unbounded`.
+
+Lean sharpened the paper proof.  No pointwise lower bound on `|f|` is needed.
+For a nonzero `L²` class, its support has positive measure away from `{0}`.
+Countable signed radiation-level sets
+
+\[
+ \{\xi:\ \pm q(\xi)\ge 1/(n+1)\}
+\]
+
+contain a positive-measure support piece for some `n`.  Restricting `f` to
+that piece gives a nonzero `L²` vector and the exact lower law
+
+\[
+ e^{u/(n+1)}\|f_n\|_2\le
+ \|G_{a,\lambda}(\pm u)f\|_2,
+ \qquad u\ge0.
+\]
+
+Thus the formal capstone states the unboundedness directly:
+
+\[
+ f\ne0\Longrightarrow
+ \forall C\in\mathbb R\ \exists u\in\mathbb R,
+ \quad C<\|G_{a,\lambda}(u)f\|_2.
+\]
+
+Verification:
+
+- `lake env lean GaloisForLFunctions/HTGeometry/MassGaugeHalfWaveL2.lean`;
+- `lake build GaloisForLFunctions.HTGeometry.MassGaugeHalfWaveL2`;
+- `#print axioms` on all capstones: only `propext`, `Classical.choice`,
+  `Quot.sound`.
+
+Status: `[LEAN-PROVED]`.

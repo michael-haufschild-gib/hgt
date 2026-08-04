@@ -3567,6 +3567,7 @@ import GaloisForLFunctions.RHTower.Sieve.DirichletSymmSplit
 import GaloisForLFunctions.RHTower.Sieve.DirichletConvSplit
 import GaloisForLFunctions.RHTower.Sieve.PrimeCubeSupport
 import GaloisForLFunctions.RHTower.Sieve.GallagherDyadicTail
+import GaloisForLFunctions.RHTower.Sieve.PrimePowerSupport
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment

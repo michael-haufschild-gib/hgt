@@ -1,0 +1,9 @@
+import GaloisForLFunctions.QECLean.Foundations.Basic
+import GaloisForLFunctions.QECLean.Foundations.Gates
+import GaloisForLFunctions.QECLean.Foundations.Tensor
+import GaloisForLFunctions.QECLean.Foundations.GateConjugation
+import GaloisForLFunctions.QECLean.Foundations.UniformTransversalGate
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+set_option maxSynthPendingDepth 3

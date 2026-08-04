@@ -2,12 +2,13 @@
 
 - **ID:** `arithmetic-xi-stokes-central-rank-port-law`
 - **Stage:** 2-fully-proven
-- **Type:** BRIDGE / ARITHMETIC REALIZATION / NO-GO CLOSURE
+- **Type:** BRIDGE / ARITHMETIC REALIZATION / VANISHING AND SCALING LAW / NO-GO CLOSURE
 - **Upstream:** `../1-in-progress/arithmetic-xi-stokes-rank-port-realization.md`
 - **Target manuscript:** `../4-publication-ready/polarized-stokes-microlocal-witt-law/`
 - **Novelty label:** `[BRIDGE]`.  Scalar twists and determinant weights are standard separately.
   New claim is restricted to their exact identification with the coefficient-generated Stokes
-  one-port functional and the certified rational-adelic Xi transgression.
+  one-port functional and the certified rational-adelic Xi transgression, together with the
+  reflection-product factorization and rank-renormalized Mertens three-regime theorem.
 
 ## 1. Setup
 
@@ -101,6 +102,26 @@ prod_i lambda^(r_i x_i)
 The coefficient-generated coarea theorem independently identifies exactly the same
 `M(x)=sum_i r_i x_i` in `Q=P-lambda_0 M^2`, with `P>0`.  This proves both characterizations.  No
 zero of Xi and no vanishing premise occurs.  QED.
+
+### Theorem 2.2 (universal component refinement)
+
+For an arbitrary directed mixed-channel relation `E` on a finite Stokes block set, a scalar tuple
+is invisible on every edge if and only if it is constant on the equivalence closure of `E`.  If
+components are labelled by `alpha`, determinant response factors as
+
+```text
+prod_i lambda_[i]^(r_i x_i)
+  = prod_alpha lambda_alpha^(sum_(i in alpha) r_i x_i).       (2.3)
+```
+
+Thus disconnected data have one central determinant port per component.  The unique-port claim is
+sharp and follows for coefficient-generated data because (1.1) makes their graph complete.
+
+#### Proof
+
+Edge invisibility in (1.2) gives equality of endpoint scalars.  Equality propagates along the
+reflexive, symmetric, transitive closure, and componentwise constants cancel on every edge.
+Regroup the product of block determinant ratios by component to obtain (2.3).  QED.
 
 ## 3. Why arithmetic cannot live in physical rank or formal contact
 
@@ -261,7 +282,122 @@ For `n>=2`, `log n>0`, so `delta_n(rho)=1` iff `2 Re(rho)-1=0`.  The coefficient
 hence (5.6) vanishes exactly on the critical line.  Quantifying over Xi support is the definition
 of the RH divisor condition.  QED.
 
-## 6. Exact commutative diagram
+### Theorem 5.2 (rank-powered determinant transgression)
+
+Let `x` be an integral Stokes dimension vector and `M(x)=sum_i r_i x_i`.  For every positive
+integer `n`,
+
+```text
+delta_(n^M(x))(s) = delta_n(s)^M(x).                         (5.7)
+```
+
+Consequently the physical source comparison at clock `n^M(x)` satisfies
+
+```text
+Res(D_(n^M(x),rho) y)
+  = (delta_n(rho)^M(x) - 1)c_rho epsilon_0^(1)(y).            (5.8)
+```
+
+The multiplier is exactly holonomy minus identity on the determinant line of the central Stokes
+twist.  On a trace-one prime cycle it is `(delta_n(rho)^M(x)-1)c_rho`; for `n>=2` and `M(x)>0`,
+it vanishes exactly on the critical line.
+
+#### Proof
+
+Iterate multiplicativity in (4.1), or expand the real exponential, to obtain (5.7).  Apply Theorem
+5.1 with clock `n^M(x)` and substitute (5.7).  The determinant interpretation is (2.2).  Since
+`c_rho != 0` and exponent `M(x) log n` is positive, equality of the positive real exponential to
+one is equivalent to `2 Re(rho)-1=0`.  QED.
+
+## 6. Reflection-paired prime vanishing and Mertens scaling
+
+For `s^vee = 1-conj(s)` and a positive physical rank `M`, define the normalized real defect
+
+```text
+a_(p,M)(s) = delta_p(s)^M - 1
+```
+
+and the cutoff prime energy
+
+```text
+E_(N,M)(s) = -sum_(p<=N) a_(p,M)(s) a_(p,M)(s^vee) / p.     (6.1)
+```
+
+At a Xi divisor, Theorem 5.2 identifies each `a_(p,M)` with the rank-powered cyclic residue on
+the trace-one prime cycle divided by its nonzero leading Xi jet.
+
+### Theorem 6.1 (Stokes--Mertens reflection and vanishing law)
+
+For every positive integer `M`:
+
+```text
+E_(N,M)(s)
+  = sum_(p<=N) 4 sinh^2(M (Re(s)-1/2) log p) / p >= 0.       (6.2)
+```
+
+If `N>=2`, then
+
+```text
+E_(N,M)(s)=0  iff  Re(s)=1/2.                                (6.3)
+```
+
+For an arbitrary sequence `s_N`, put `c_N=M(Re(s_N)-1/2)log N`.  Then
+
+```text
+c_N -> 0       implies E_(N,M)(s_N) -> 0;
+c_N -> c in R  implies E_(N,M)(s_N) -> Phi(c);
+|c_N| -> oo    implies E_(N,M)(s_N) -> oo,                   (6.4)
+
+Phi(c)=4 int_0^1 sinh^2(cu)/u du.
+```
+
+The profile is even and strictly positive away from zero.  After the forced scaling, it is
+independent of every Stokes rank, contact coefficient, and ramification pattern except through
+the single port `M`, which has been absorbed into `c_N`.
+
+#### Proof
+
+Reflection gives `delta_p(s^vee)^M=delta_p(s)^(-M)`.  With `g=delta_p(s)^M`,
+
+```text
+-(g-1)(g^(-1)-1)=g+g^(-1)-2
+                   =4 sinh^2(M(Re(s)-1/2)log p),
+```
+
+which proves (6.2).  For `N>=2`, all summands are nonnegative and the `p=2` summand vanishes only
+when `M(Re(s)-1/2)log 2=0`; positivity of `M` proves (6.3).
+
+Let `S_N=sum_(p<=N)(log p)^2/p`.  Mertens's first theorem in prime form,
+`sum_(p<=x)(log p)/p=log x+O(1)`, and partial summation give
+
+```text
+S_N = (1/2)(log N)^2 + O(log N).                              (6.5)
+```
+
+Writing `epsilon_N=M(Re(s_N)-1/2)`, the elementary bounds
+`|u|<=|sinh u|` and `|sinh u|<=|u|cosh C` for `|u|<=C` yield
+
+```text
+4 epsilon_N^2 S_N <= E_(N,M)(s_N)
+  <= 4 cosh^2(C) epsilon_N^2 S_N       when |c_N|<=C.         (6.6)
+```
+
+Equations (6.5)--(6.6) prove the zero and divergent regimes.  For fixed `c`, the measures
+
+```text
+nu_N = (1/log N) sum_(p<=N) (log p)/p delta_(log p/log N)
+```
+
+converge weakly to Lebesgue measure on `[0,1]`, again by Mertens and partial summation.  Testing
+against the continuous extension of `4 sinh^2(cu)/u` proves the middle limit for fixed `c`.
+For `c_N->c`, the mean-value theorem bounds the difference by
+`K|c_N-c|S_N/(log N)^2`, which tends to zero.  Positivity of `Phi` is immediate from the
+integrand.  QED.
+
+This is a genuine finite vanishing theorem and a number-theoretic scaling theorem.  It is not a
+global theorem that (6.3) holds for every Xi divisor; that assertion remains RH.
+
+## 7. Exact defect diagram
 
 The arithmetic realization is summarized by
 
@@ -272,10 +408,11 @@ degree-one rational-adelic source  --j_rho-->  first Xi jet line
 physical two-leg defect           --Res---->  first Xi jet line.
 ```
 
-The square commutes by Theorem 5.1.  The top source and the family `L_(n,s)` are pre-divisor.
-Divisor specialization enters only through the first nonzero Xi jet.
+The failure of the square to commute has residue exactly
+`(Hol(L_(n,rho))-1)j_rho`, by Theorem 5.1.  The top source and the family `L_(n,s)` are
+pre-divisor.  Divisor specialization enters only through the first nonzero Xi jet.
 
-## 7. Hostile audit
+## 8. Hostile audit
 
 - This is not `delta_n(s)-1` renamed as rank.  Rank remains integral; arithmetic is central
   monodromy, and `M` is its independently forced determinant exponent.
@@ -287,20 +424,27 @@ Divisor specialization enters only through the first nonzero Xi jet.
 - This is not a new RH proof.  It identifies the only channel in which the certified arithmetic
   obstruction can live.  A theorem forcing its global triviality would still be exactly the open
   source-null-homology/RH step.
+- The reflection energy is not positivity smuggled in as annihilation.  It has an exact finite
+  vanishing locus and a Mertens scaling law, but supplies no reason every Xi divisor must lie in
+  that locus.
 - The theorem is false without connectedness: one common scalar survives on each connected mixed
   Hom component, producing one determinant port per component.  Coefficient-generated spectra
   avoid this failure because (1.1) makes the interaction graph complete.
 
-## 8. Formalization target
+## 9. Formalization closure
 
-One new Lean module must certify:
+Module `GaloisForLFunctions.RHTower.ArithmeticXiStokesCentralRankPort` certifies:
 
 1. connected/complete mixed-channel scalar classification;
 2. common scalar cancellation on Hom transport;
 3. determinant scaling by `M`;
 4. arithmetic mate-gain multiplicativity and reflection inversion (reusing existing theorems);
 5. equality of the certified source transgression with the central holonomy defect;
-6. trace-one Xi specialization and exact zero classifier.
+6. trace-one Xi specialization and exact zero classifier;
+7. reflection-defect product factorization;
+8. finite prime-energy vanishing iff criticality;
+9. subcritical, critical-window, and supercritical Mertens regimes.
 
 No axiom, `sorry`, `admit`, `opaque`, `unsafe`, RH assumption, or global vanishing theorem is
-permitted.
+used. Targeted module build passes; axiom report contains only `propext`, `Classical.choice`, and
+`Quot.sound`.

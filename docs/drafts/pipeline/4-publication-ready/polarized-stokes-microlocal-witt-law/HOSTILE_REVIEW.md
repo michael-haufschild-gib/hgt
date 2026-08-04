@@ -1,6 +1,6 @@
 # Hostile referee report
 
-Manuscript: *The Lorentzian Stokes Coarea Law for Nonabelian Hodge Diagrams*
+Manuscript: *The Lorentzian Stokes Coarea Law and Its Arithmetic Reflection Theorem*
 
 Audit date: 2026-08-04. Target band: Advances in Mathematics / Compositio Mathematica / Duke
 Mathematical Journal. This is an internal adversarial audit, not external peer review.
@@ -16,12 +16,19 @@ Central result is a global structural theorem, not a renamed matrix lemma:
 with the coefficient-generated positive part explicit and negative inertia plus nullity at most
 one. The law survives genuine cyclic orbit descent, arbitrary-genus rank fusion, all finite type-A
 markings, and the polynomial multi-Rees family. It yields a concrete exclusion theorem for
-nonabelian-Hodge graphs (`lambda_2 <= 2`) and is sharp on Douçot's twisted triangle.
+nonabelian-Hodge graphs (`lambda_2 <= 2`) and is sharp on Douçot's twisted triangle. New arithmetic
+application classifies the scalar kernel of relative Stokes transport, proves coefficient
+generation leaves one common center, and identifies its determinant weight with the same
+physical-rank functional `M`. An explicit Möbius--theta/rational-adelic source then realizes the
+determinant holonomy defect as `(delta_n(rho)^M - 1)c_rho`.
+Pairing the normalized defect with its critical reflection produces a positive prime energy with
+an exact finite vanishing locus and a rank-renormalized Mertens three-regime theorem.
 
 The paper is below Annals/Inventiones scale: it does not construct a new irregular
 Riemann--Hilbert equivalence. It does clear a renowned broad-journal threshold because it finds a
 previously unstated global invariant across several established theories and proves nontrivial
-classification and spectral consequences.
+classification and spectral consequences. Arithmetic section is a structural application, not an
+RH proof; final draft maintains that boundary explicitly.
 
 ## Adversarial attacks
 
@@ -133,6 +140,95 @@ published ramified Stokes Cartan polarization with that coarea, no global common
 no joint inertia/nullity classification, and no `lambda_2<=2` theorem for realized nonabelian-Hodge
 graphs. Priority remains provisional pending expert circulation; the paper does not claim otherwise.
 
+### 16. “The arithmetic defect is merely renamed physical rank.”
+
+Closed. Physical rank and `K_0` coordinates are discrete and locally constant in continuous
+families, while `delta_n(s)-1` varies with `Re(s)`. Formal-contact strata also forget coefficient
+magnitudes preserving equality patterns. Arithmetic therefore cannot reside in rank or bare
+contact. It resides in central monodromy over a fixed Stokes skeleton; `M` occurs only as
+determinant exponent.
+
+### 17. “One common scalar is obvious, not a universal law.”
+
+Scalar cancellation is elementary and is not claimed separately as deep novelty. Structural claim
+combines three independently forced facts: arbitrary interaction graphs have one invisible scalar
+per component; coefficient-generated mixed irregularity makes graph complete; restriction of
+determinant characters gives exactly same `M` as coarea theorem's unique nonpositive port.
+
+### 18. “The Xi coefficient was inserted after selecting a zero.”
+
+Closed. Paper constructs explicit pre-divisor source `Psi_(m,k)` from perfect-power Möbius part,
+logarithmic translations, local theta moments, and no spectral point. Direct Fourier--Laplace
+calculation gives `zeta(m s)^-1 X^(k)(w)` on an honest strip and half-plane. Cofinal
+`m -> infinity` reaches every Xi jet; divisor specialization occurs only afterward at first
+nonzero grade.
+
+### 19. “Prime tensor is an invented detector with trace one by definition.”
+
+Closed algebraically. Source is minimal unitization of algebraic rational adeles-class-space
+crossed product. Endpoint functional reads identity-scaling coefficient at zero adele and is a
+trace by scaling invariance. Cycle `(g U_p) tensor (g U_(p^-1))` has trace one because labels
+multiply to identity and `g(0)=1`. No divisor or RH premise occurs.
+
+### 20. “Choosing clock `q=n^M` fits answer by hand.”
+
+Objection limits novelty claim but does not invalidate theorem. Determinant functoriality forces
+holonomy `delta_n^M`; independent multiplicativity gives `delta_(n^M)=delta_n^M`. Paracyclic source
+defect is parametrized by integer clock `q`, so `q=n^M` is forced compatibility, not fitted
+normalization. Earlier draft stopped at a representation theorem. Final draft now proves more:
+reflection-product factorization, exact finite vanishing, and the full rank-scaled Mertens
+trichotomy. It still does not claim global Xi annihilation.
+
+### 21. “Positive real holonomy off line is not a holomorphic family of connections.”
+
+Correct, and paper says so. It constructs a rank-one Betti local system for each parameter and a
+real-analytic family in `s`; it makes no holomorphic parameter-space or de Rham-family claim.
+Regular-singular central tensoring leaves irregular skeleton unchanged pointwise.
+
+### 22. “RH equivalence is circular.”
+
+It is an exact classifier, not evidence for RH. For positive rank and `n >= 2`, nonzero leading jet
+reduces defect vanishing to `exp(M(2 Re(rho)-1) log n)=1`, hence critical line. Quantifying over
+divisor support restates RH. Paper names missing independent theorem: global source-null-homology
+of this central paracyclic defect. No positivity, reflection, or Stokes result is claimed to prove it.
+
+### 23. “RH language lowers paper quality by mixing an elementary equivalence into a Stokes paper.”
+
+Material is justified only as application of unique-port theorem. It yields a new proof
+architecture—arithmetic selection must kill one specified central Bockstein channel—and closes the
+previously missing realization. Editorial risk remains: some journals may prefer arithmetic
+section as companion paper. This is scope risk, not correctness gap. Core general-journal theorem
+remains independently complete if section is split.
+
+### 24. “The claimed vanishing theorem is only the identity `sinh(u)=0 iff u=0`.”
+
+That identity proves the finite zero locus after the source has been constructed, but is not the
+whole theorem. Load-bearing statement is that the two factors are normalized rank-powered
+rational-adelic Xi transgressions at reflected divisor fibres, and their exponent is the same `M`
+independently forced by Stokes coarea and determinant restriction. Prime summation then has a
+nontrivial logarithmic transition profile. Paper labels finite vanishing exactly and does not call
+it zero exclusion for Xi.
+
+### 25. “Mertens already proves the critical-window limit.”
+
+Correct ancestry, explicitly cited. Weighted-prime weak convergence, partial summation, and the
+hyperbolic profile are not claimed separately as new. Candidate novelty is interface theorem:
+unique Stokes rank port becomes exact renormalization exponent, while its two reflected source
+residues become factors of prime energy. Literature audit found no such Stokes/Xi statement.
+
+### 26. “Only fixed critical coordinate is proved; moving windows are asserted.”
+
+Closed. Proof treats arbitrary `s_N`. Fixed-coordinate convergence follows from weak convergence
+of Mertens measures. Uniform mean-value estimate on compact `c`-intervals, together with
+`S_N/(log N)^2 -> 1/2`, transports it to every `c_N -> c`. Subcritical and supercritical regimes
+follow from explicit two-sided susceptibility bounds.
+
+### 27. “Positive reflection energy should imply RH.”
+
+No. Positivity detects transverse displacement after it exists. It supplies no source identity
+forcing every Xi-divisor energy to vanish. Manuscript states this immediately after theorem and
+retains global source-null-homology as missing arithmetic step. Claiming more would be circular.
+
 ## Proof and scope audit
 
 | Component | Hostile check | Result |
@@ -150,20 +246,34 @@ graphs. Priority remains provisional pending expert circulation; the paper does 
 | Deformation complex | `d1 d0=0`, `H0=H2=center`, tangent quotient | Correct |
 | Marking legs | positive fluctuation complement | Correct |
 | Spectrum | eigenvalue ordering and affine multiplicity | Correct |
+| Central kernel | arbitrary graph components and complete coefficient graph | Correct |
+| Determinant port | component weights and connected exponent `M` | Correct |
+| Arithmetic no-go | discrete rank and contact-stratum blindness | Correct |
+| Möbius--theta landing | pre-divisor source, domain, Fubini, cofinal limit | Correct |
+| Rational-adelic trace | crossed-product trace and prime-cycle normalization | Correct |
+| Xi transgression | rank-powered clock, nonzero jet, pointwise classifier | Correct |
+| Reflection energy | negative product of two normalized unsquared residues | Correct |
+| Finite vanishing | `N >= 2`, `M > 0`, exact critical-line locus | Correct |
+| Mertens trichotomy | moving windows; vanishing/profile/divergence | Correct |
+| RH boundary | equivalence stated; global vanishing not asserted | Correct |
 
 ## Verification audit
 
 - Every displayed new theorem has an exact private theorem witness in `CLAIM_TRACE_AUDIT.md`.
 - Stokes sources contain no `sorry`, `admit`, project `axiom`, `opaque`, or `unsafe` declaration.
 - Capstone axiom reports use only `propext`, `Classical.choice`, and `Quot.sound`.
-- Targeted module builds pass; modules are wired into the HTGeometry umbrella.
+- Targeted module builds pass; Stokes modules are wired into `HTGeometry`, arithmetic module into
+  `RHTower`.
 - Repository-wide lint is red only for two unrelated unreachable modules, neither imported by this
   paper's theorem surface.
-- Latest PDF is A4, 13 pages, with no undefined references, overflow, clipping, or broken glyphs.
+- Latest PDF is A4, 21 pages, with no undefined references, overflow, clipping, or broken glyphs.
 
 ## Final judgment
 
 **Internal hostile-review pass.** The manuscript is mathematically coherent, sharply scoped,
 formally dependency-closed for its new claims, and significant enough for submission to a renowned
-general mathematics journal in the target band. Remaining uncertainty is historical priority and
-editorial taste, which only external experts can settle; it is not a known proof gap.
+general mathematics journal in the target band. Arithmetic reflection theorem strengthens
+cross-domain impact with genuine finite vanishing and prime-scaling results and identifies what an
+RH proof would still require, but it is not the missing global annihilation theorem. Remaining
+uncertainty is historical priority and editorial taste,
+which only external experts can settle; it is not a known proof gap.

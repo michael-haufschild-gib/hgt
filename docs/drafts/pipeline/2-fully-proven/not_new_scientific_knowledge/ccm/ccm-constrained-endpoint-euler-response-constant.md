@@ -1171,8 +1171,15 @@ One of the two remaining computations — the size of the WKB exponent — is no
 
 What is still needed to convert this into the leakage envelope is the inner-band bookkeeping — verifying the
 scaled-subsolution hypothesis at the scales `delta ~ c^(-2/3)`, `eta ~ c^(-1/3)` and chaining the three
-comparisons — and the initial condition `v(b) <= V(b)` near the endpoint, which the crude flux bound of the
-earlier step supplies for `1 - b ~ c^(-2)`.
+comparisons — and the initial condition `v(b) <= V(b)` near the endpoint.
+
+For that initial condition the two ingredients of the crude bound are now standalone lemmas rather than steps
+buried in a proof (`ProlateEndpointLowerBound.lean`): **`antitoneOn_of_turning`** (beyond the turning point a
+nonnegative solution is antitone on the band) and **`prolate_deriv_lower_bound`** (the differential inequality
+`(1+y) psi'(y) >= -(chi + c²) psi(y)`, from bounding the flux integrand by its left-endpoint value).  The
+latter is exactly the crude bound `v(y) <= (chi + c²)/(1+y)` in derivative form, and comparing it with the WKB
+profile at `b` is an algebraic inequality in `b, c, chi` — `(chi+c²)²(1-b) <= (chi + c² b²)(1+b)` — which holds
+for `1 - b` small in terms of `c`.
 
 ## Lean gates
 

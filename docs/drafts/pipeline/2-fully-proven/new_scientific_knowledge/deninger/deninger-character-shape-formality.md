@@ -503,6 +503,16 @@ a direct limit but not bilinear ones; this is what the product on a colimit alge
   that comparison is the exterior power of the colimit of the duals of the covering spaces**, so for
   the lattice filtration of a unit space it is `Λ^n(V_F ⊗ ℝ)`.
 
+**Towers of tori from integer matrices.**
+`formal/GaloisForLFunctions/HTGeometry/IntegerCoverSystem.lean`.
+
+- `integerVector_mem_periodLattice` — a vector with integer coordinates lies in the period lattice
+  of period one.
+- `IntegerCoverSystem`, `matrixCover`, `torusCoverSystemOfMatrices` — **a functorial family of
+  integer matrices is a tower of tori**.  This is the form in which a filtration by lattices
+  produces one: after choosing a basis of each lattice, restriction along an inclusion is an
+  integer matrix, and its functoriality is matrix multiplication.
+
 ### What cannot be stated in Lean, and why
 
 - `C^*_sh(T_F;ℝ)` is the filtered colimit over `L` of the complexes `Ω^*(T_L;ℝ)`.  Every ingredient
@@ -523,11 +533,11 @@ a direct limit but not bilinear ones; this is what the product on a colimit alge
   is instantiated: `torusFormalityColimit_isQuasiIso` is `(2)` for a directed system of tori, and
   `exteriorColimEquiv` identifies the source of that comparison with the exterior power of the
   colimit of the duals.  What is not written down is the dictionary between the card's `𝓛_F` and a
-  `TorusCoverSystem`: choosing, for each lattice `L`, a basis identifying `Hom(L,ℝ)` with `ℝ^{rk L}`
-  and checking that restriction along `L ⊆ L'` becomes a coordinate projection.  That is a choice of
-  coordinates, not a theorem; the objects on both sides of it are formalized here
-  (`deningerLatticeFree`, `deningerFGSubmodule_directed` on one side, `coordProjectionSystem` on the
-  other).
+  `TorusCoverSystem`: choosing, for each lattice `L`, a basis identifying `Hom(L,ℝ)` with `ℝ^{rk L}`,
+  which turns restriction along `L ⊆ L'` into an integer matrix.  Everything after that choice is a
+  theorem here — `torusCoverSystemOfMatrices` takes the matrices to the tower of tori — and
+  everything before it too (`deningerLatticeFree`, `deningerFGSubmodule_directed`).  What is missing
+  is only the choice itself and the identification of the restriction matrices.
 - `(3)` and `(4)` are statements about free `E_∞` `Hℝ`-algebras.  mathlib has no `E_∞`-algebras and
   no CDGA homotopy theory.  What survives is the algebraic content of "a free commutative algebra
   on generators in odd degree one is the exterior algebra": that is the universal property of
@@ -570,4 +580,6 @@ scalars.
   induced morphism of colimits `colimHom`, and proved that a stagewise quasi-isomorphism has
   quasi-isomorphic colimit (`colimHom_isQuasiIso`), and assembled statement `(2)` for a directed
   system of tori as `torusFormalityColimit_isQuasiIso`, with `exteriorColimEquiv` identifying its
-  source as an exterior power of a colimit.
+  source as an exterior power of a colimit, and reduced the remaining lattice-to-torus dictionary to
+  a choice of bases by proving that any functorial family of integer matrices is a tower of tori
+  (`torusCoverSystemOfMatrices`).

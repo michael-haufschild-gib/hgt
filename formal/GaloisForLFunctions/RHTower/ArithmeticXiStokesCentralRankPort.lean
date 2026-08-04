@@ -1,7 +1,9 @@
 import GaloisForLFunctions.HTGeometry.StokesUniversalMicrolocalWittLaw
 import GaloisForLFunctions.RHTower.MobiusThetaPhysicalParacyclicSourceNullHomology
 import GaloisForLFunctions.RHTower.DeningerCenteredFlowCountercharacterRelativeCurvatureNoGo
+import GaloisForLFunctions.RHTower.PrimeClockCriticalProfile
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.Topology.Connected.TotallyDisconnected
 
 /-!
 # Arithmetic Xi realization of the unique Stokes rank port
@@ -19,6 +21,7 @@ premise occurs.
 -/
 
 open scoped BigOperators Matrix
+open Filter Topology
 
 namespace GaloisForLFunctions.IrregularStokes
 
@@ -92,6 +95,39 @@ theorem scalarHomTransport_invisible_iff_componentwise
 /-- Integral ramification-weighted physical rank of an actual dimension vector. -/
 def physicalRankNat {n : ℕ} (r x : Fin n → ℕ) : ℕ :=
   ∑ i, r i * x i
+
+/-- A continuously varying physical-rank family on a preconnected parameter space is constant,
+because physical rank is discrete. -/
+theorem continuousPhysicalRankFamily_constant
+    {X : Type*} [TopologicalSpace X] [PreconnectedSpace X]
+    (rank : X → ℕ) (hrank : Continuous rank) (s t : X) :
+    rank s = rank t :=
+  PreconnectedSpace.constant (by infer_instance : PreconnectedSpace X) hrank
+
+/-- The Deninger central defect cannot be realized as one continuously varying physical rank on
+the complex parameter plane. -/
+theorem not_exists_continuousPhysicalRank_eq_centralDefect
+    {n : ℕ} (hn : 2 ≤ n) :
+    ¬ ∃ rank : ℂ → ℕ, Continuous rank ∧
+      ∀ s, (rank s : ℝ) = RHTower.deningerHalfDensityMateGain n s - 1 := by
+  rintro ⟨rank, hrank, hrealize⟩
+  have hconst : rank (0 : ℂ) = rank (1 / 2 : ℂ) :=
+    continuousPhysicalRankFamily_constant rank hrank _ _
+  have hhalfGain :
+      RHTower.deningerHalfDensityMateGain n (1 / 2 : ℂ) = 1 :=
+    (RHTower.deningerHalfDensityMateGain_eq_one_iff_re_eq_half hn _).2 (by norm_num)
+  have hhalfRank : rank (1 / 2 : ℂ) = 0 := by
+    have h := hrealize (1 / 2 : ℂ)
+    rw [hhalfGain, sub_self] at h
+    exact_mod_cast h
+  have hzeroRank : rank (0 : ℂ) = 0 := hconst.trans hhalfRank
+  have hzeroGain : RHTower.deningerHalfDensityMateGain n (0 : ℂ) = 1 := by
+    have h := hrealize (0 : ℂ)
+    rw [hzeroRank, Nat.cast_zero] at h
+    linarith
+  have hline :=
+    (RHTower.deningerHalfDensityMateGain_eq_one_iff_re_eq_half hn (0 : ℂ)).1 hzeroGain
+  norm_num at hline
 
 /-- Ramification-weighted physical rank carried by one chosen component of a finite partition. -/
 def componentPhysicalRankNat {n k : ℕ} (component : Fin n → Fin k)
@@ -401,6 +437,220 @@ theorem ccmXiPrimeDeterminantCentralHolonomyDefect_eq_zero_iff
   rw [← centralHolonomyDefect_pow_clock_eq_determinant hnpos]
   exact ccmXiPrimeCentralHolonomyDefect_eq_zero_iff
     (le_trans hn (Nat.le_pow hport)) rho
+
+/-! ## Reflection-paired prime energy and arithmetic vanishing -/
+
+/-- Real determinant-holonomy defect at a prime clock.  At a Xi divisor this is the normalized
+rank-powered cyclic residue, with the nonzero leading Xi jet divided out. -/
+def determinantCentralGainDefect (p M : ℕ) (s : ℂ) : ℝ :=
+  RHTower.deningerHalfDensityMateGain p s ^ M - 1
+
+/-- The positive reflected prime energy selected by the Stokes determinant-rank port. -/
+def stokesRankPortPrimeEnergy (N M : ℕ) (s : ℂ) : ℝ :=
+  RHTower.primeClockCutoffEnergy N ((M : ℝ) * (s.re - 1 / 2))
+
+/-- Determinant holonomy at rank `M` is the exponential of twice the rank-scaled horizontal
+coordinate. -/
+theorem centralHolonomy_pow_eq_exp_rankPort (p M : ℕ) (s : ℂ) :
+    RHTower.deningerHalfDensityMateGain p s ^ M =
+      Real.exp (2 * (M : ℝ) * (s.re - 1 / 2) * Real.log p) := by
+  rw [RHTower.deningerHalfDensityMateGain, ← Real.exp_nat_mul]
+  congr 1
+  ring
+
+/-- Reflection pairing turns two signed determinant defects into one positive hyperbolic square. -/
+theorem determinantCentralGainDefect_reflection_product
+    (p M : ℕ) (s : ℂ) :
+    -(determinantCentralGainDefect p M s *
+        determinantCentralGainDefect p M (1 - star s)) =
+      4 * Real.sinh ((M : ℝ) * (s.re - 1 / 2) * Real.log p) ^ 2 := by
+  rw [determinantCentralGainDefect, determinantCentralGainDefect,
+    centralHolonomy_pow_eq_exp_rankPort,
+    centralHolonomy_pow_eq_exp_rankPort]
+  have hreflect : (1 - star s).re - 1 / 2 = -(s.re - 1 / 2) := by
+    simp
+    ring
+  rw [hreflect]
+  let u : ℝ := (M : ℝ) * (s.re - 1 / 2) * Real.log p
+  rw [show 2 * (M : ℝ) * (s.re - 1 / 2) * Real.log p = 2 * u by
+      dsimp [u]; ring,
+    show 2 * (M : ℝ) * (-(s.re - 1 / 2)) * Real.log p = -(2 * u) by
+      dsimp [u]; ring]
+  change -((Real.exp (2 * u) - 1) * (Real.exp (-(2 * u)) - 1)) =
+    4 * Real.sinh u ^ 2
+  rw [Real.sinh_eq, Real.exp_neg]
+  have hdouble : Real.exp (2 * u) = Real.exp u ^ 2 := by
+    rw [pow_two, ← Real.exp_add]
+    congr 1
+    ring
+  rw [hdouble, Real.exp_neg u]
+  field_simp [Real.exp_ne_zero]
+  ring
+
+/-- Exact factorization of the Stokes prime energy as the negative product of the two normalized
+Xi-compatible transgression defects at reflected parameters. -/
+theorem stokesRankPortPrimeEnergy_eq_reflectionDefectSum
+    (N M : ℕ) (s : ℂ) :
+    stokesRankPortPrimeEnergy N M s =
+      ∑ p ∈ Nat.primesLE N,
+        -(determinantCentralGainDefect p M s *
+          determinantCentralGainDefect p M (1 - star s)) / p := by
+  rw [stokesRankPortPrimeEnergy, RHTower.primeClockCutoffEnergy_eq_sinh]
+  apply Finset.sum_congr rfl
+  intro p hp
+  rw [determinantCentralGainDefect_reflection_product]
+
+/-- At a cutoff containing the prime `2`, prime-clock energy vanishes only at zero horizontal
+displacement. -/
+theorem primeClockCutoffEnergy_eq_zero_iff
+    {N : ℕ} (hN : 2 ≤ N) (ε : ℝ) :
+    RHTower.primeClockCutoffEnergy N ε = 0 ↔ ε = 0 := by
+  have hsusceptibility : 0 < RHTower.primeClockSusceptibility N := by
+    rw [RHTower.primeClockSusceptibility]
+    apply Finset.sum_pos'
+    · intro p hp
+      positivity
+    · refine ⟨2, Nat.mem_primesLE.mpr ⟨hN, by norm_num⟩, ?_⟩
+      positivity
+  constructor
+  · intro hzero
+    have hlower := RHTower.primeClockCutoffEnergy_quadratic_lower N ε
+    rw [hzero] at hlower
+    have hepsilon : ε ^ 2 = 0 := by nlinarith [sq_nonneg ε]
+    exact sq_eq_zero_iff.mp hepsilon
+  · rintro rfl
+    exact RHTower.primeClockCutoffEnergy_zero N
+
+/-- **Finite arithmetic vanishing theorem.**  For positive physical rank and any cutoff containing
+`2`, reflection-paired Stokes/Xi prime energy vanishes exactly on the critical line. -/
+theorem stokesRankPortPrimeEnergy_eq_zero_iff
+    {N M : ℕ} (hN : 2 ≤ N) (hM : 0 < M) (s : ℂ) :
+    stokesRankPortPrimeEnergy N M s = 0 ↔ s.re = 1 / 2 := by
+  rw [stokesRankPortPrimeEnergy, primeClockCutoffEnergy_eq_zero_iff hN]
+  have hMne : (M : ℝ) ≠ 0 := by exact_mod_cast hM.ne'
+  constructor
+  · intro h
+    exact sub_eq_zero.mp ((mul_eq_zero.mp h).resolve_left hMne)
+  · intro h
+    rw [h, sub_self, mul_zero]
+
+/-- The universal Mertens profile is even. -/
+theorem primeClockUniversalProfile_neg (c : ℝ) :
+    RHTower.primeClockUniversalProfile (-c) =
+      RHTower.primeClockUniversalProfile c := by
+  unfold RHTower.primeClockUniversalProfile
+  apply intervalIntegral.integral_congr
+  intro u hu
+  unfold RHTower.primeClockScalingProfileIntegrand
+  rw [neg_mul, Real.sinh_neg]
+  ring
+
+/-- The prime-clock profile dominates its exact quadratic susceptibility limit. -/
+theorem primeClockUniversalProfile_quadratic_lower (c : ℝ) :
+    2 * c ^ 2 ≤ RHTower.primeClockUniversalProfile c := by
+  have hleft : Tendsto
+      (fun N : ℕ => 4 * c ^ 2 *
+        (RHTower.primeClockSusceptibility N / Real.log N ^ 2))
+      Filter.atTop (nhds (2 * c ^ 2)) := by
+    have h := RHTower.tendsto_primeClockSusceptibility_div_log_sq.const_mul
+      (4 * c ^ 2)
+    convert h using 1
+    norm_num
+    ring
+  apply le_of_tendsto_of_tendsto hleft
+    (RHTower.tendsto_primeClockCutoffEnergy_critical_profile c)
+  filter_upwards [Filter.eventually_ge_atTop 2] with N hN
+  exact (RHTower.primeClockCutoffEnergy_critical_scaled_sandwich N c hN).1
+
+/-- The universal Mertens profile vanishes only at the central scaling coordinate. -/
+theorem primeClockUniversalProfile_eq_zero_iff (c : ℝ) :
+    RHTower.primeClockUniversalProfile c = 0 ↔ c = 0 := by
+  constructor
+  · intro hzero
+    have hlower := primeClockUniversalProfile_quadratic_lower c
+    rw [hzero] at hlower
+    nlinarith [sq_nonneg c]
+  · rintro rfl
+    simp [RHTower.primeClockUniversalProfile,
+      RHTower.primeClockScalingProfileIntegrand]
+
+/-- The universal Mertens profile is strictly positive away from zero. -/
+theorem primeClockUniversalProfile_pos_iff (c : ℝ) :
+    0 < RHTower.primeClockUniversalProfile c ↔ c ≠ 0 := by
+  constructor
+  · intro hpos hzero
+    subst c
+    simp [RHTower.primeClockUniversalProfile,
+      RHTower.primeClockScalingProfileIntegrand] at hpos
+  · intro hc
+    have hlower := primeClockUniversalProfile_quadratic_lower c
+    have hsq : 0 < c ^ 2 := sq_pos_of_ne_zero hc
+    nlinarith
+
+/-- Subcritical rank-port windows have vanishing prime energy. -/
+theorem tendsto_stokesRankPortPrimeEnergy_zero_of_scaled_tendsto_zero
+    (M : ℕ) (s : ℕ → ℂ)
+    (hscaled : Tendsto
+      (fun N : ℕ => (M : ℝ) * ((s N).re - 1 / 2) * Real.log N)
+      Filter.atTop (nhds 0)) :
+    Tendsto (fun N : ℕ => stokesRankPortPrimeEnergy N M (s N))
+      Filter.atTop (nhds 0) := by
+  simpa [stokesRankPortPrimeEnergy] using
+    RHTower.tendsto_primeClockCutoffEnergy_zero_of_scaled_tendsto_zero
+      (fun N : ℕ => (M : ℝ) * ((s N).re - 1 / 2)) hscaled
+
+/-- **Rank-port/Mertens critical-window law.**  If the forced rank-scaled horizontal coordinate
+times `log N` tends to `c`, the reflected Stokes/Xi prime energy tends to the universal prime-clock
+profile.  In particular the limit is independent of the Stokes ranks after this forced scaling. -/
+theorem tendsto_stokesRankPortPrimeEnergy_critical_profile
+    (M : ℕ) (s : ℕ → ℂ) (c : ℝ)
+    (hscaled : Tendsto
+      (fun N : ℕ => (M : ℝ) * ((s N).re - 1 / 2) * Real.log N)
+      Filter.atTop (nhds c)) :
+    Tendsto (fun N : ℕ => stokesRankPortPrimeEnergy N M (s N))
+      Filter.atTop (nhds (RHTower.primeClockUniversalProfile c)) := by
+  let cN : ℕ → ℝ := fun N =>
+    (M : ℝ) * ((s N).re - 1 / 2) * Real.log N
+  have hprofile :=
+    RHTower.tendsto_primeClockCutoffEnergy_critical_profile_of_tendsto cN c hscaled
+  apply hprofile.congr'
+  filter_upwards [Filter.eventually_ge_atTop 2] with N hN
+  have hlogne : Real.log (N : ℝ) ≠ 0 :=
+    (Real.log_pos (by exact_mod_cast hN)).ne'
+  rw [stokesRankPortPrimeEnergy]
+  congr 1
+  dsimp [cN]
+  field_simp
+
+/-- Supercritical rank-port windows have divergent prime energy. -/
+theorem tendsto_stokesRankPortPrimeEnergy_atTop_of_scaled_tendsto_atTop
+    (M : ℕ) (s : ℕ → ℂ)
+    (hscaled : Tendsto
+      (fun N : ℕ => |(M : ℝ) * ((s N).re - 1 / 2)| * Real.log N)
+      Filter.atTop Filter.atTop) :
+    Tendsto (fun N : ℕ => stokesRankPortPrimeEnergy N M (s N))
+      Filter.atTop Filter.atTop := by
+  simpa [stokesRankPortPrimeEnergy] using
+    RHTower.tendsto_primeClockCutoffEnergy_atTop_of_scaled_tendsto_atTop
+      (fun N : ℕ => (M : ℝ) * ((s N).re - 1 / 2)) hscaled
+
+/-- Global unitarity of the pre-divisor arithmetic central character on Xi support.  Positivity of
+the holonomy makes `gain = 1` exactly the rank-one unitary condition. -/
+def XiArithmeticCentralCharacterUnitary (n : ℕ) : Prop :=
+  ∀ rho : RHTower.XiDivisorSupport,
+    RHTower.deningerHalfDensityMateGain n (rho : ℂ) = 1
+
+/-- The arithmetic central character is unitary on every Xi divisor fibre exactly when RH holds.
+This is a classifier and does not assert either side. -/
+theorem xiArithmeticCentralCharacterUnitary_iff_riemannHypothesis
+    {n : ℕ} (hn : 2 ≤ n) :
+    XiArithmeticCentralCharacterUnitary n ↔ RiemannHypothesis := by
+  rw [← RHTower.xiBoundaryCharacterNeutral_iff_riemannHypothesis]
+  unfold XiArithmeticCentralCharacterUnitary RHTower.XiBoundaryCharacterNeutral
+  apply forall_congr'
+  intro rho
+  rw [RHTower.deningerHalfDensityMateGain_eq_one_iff_re_eq_half hn,
+    RHTower.xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff]
 
 end
 end GaloisForLFunctions.IrregularStokes

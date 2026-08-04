@@ -31,14 +31,15 @@
 \newcommand{\Pcal}{\mathcal P}
 \newcommand{\Mcal}{\mathcal M}
 \begin{document}
-\title[The Lorentzian Stokes coarea law]{The Lorentzian Stokes coarea law and its arithmetic central port}
+\title[The Lorentzian Stokes coarea law]{The Lorentzian Stokes coarea law and its arithmetic reflection theorem}
 \author{M.~Haufschild}
 \address{Independent researcher}
 \email{haufschildmichael@gmail.com}
 \date{4 August 2026}
-\subjclass[2020]{Primary 34M40, 32S60; Secondary 14D24, 15A18, 18F20, 16G20}
+\subjclass[2020]{Primary 34M40, 32S60; Secondary 11M26, 14D24, 15A18, 18F20, 16G20}
 \keywords{Stokes structure, irregular Riemann--Hilbert correspondence, microsupport,
-vanishing cycle, characteristic cycle, Rees construction, wild character variety, Witt index}
+vanishing cycle, Rees construction, wild character variety, central local system,
+Riemann Xi function, Mertens theorem, rational adeles, Witt index}
 
 \begin{abstract}
 Let $B$ be the core adjacency matrix attached by Boalch--Yamakawa and Dou\c{c}ot to a finite
@@ -70,10 +71,28 @@ Lorentzian coarea law.  We finally classify scalar twists invisible to every mix
 for a coefficient-generated spectrum there is only one, the common center, and its determinant
 weight is exactly the physical-rank functional in the coarea law.  The positive half-density
 character $\delta_n(s)=\exp((2\operatorname{Re}s-1)\log n)$ therefore gives a pre-divisor
-arithmetic central local system.  At a zero of the completed Riemann function, holonomy minus
-identity on the first nonzero jet is the rational-adelic cyclic transgression
-$(\delta_n(\rho)-1)c_\rho$.  This realizes the obstruction in the unique rank port but does not
-assert its global vanishing.
+arithmetic central local system.  If $M(x)$ is positive, its determinant holonomy is
+$\delta_n(s)^{M(x)}=\delta_{n^{M(x)}}(s)$.  At a zero of the completed Riemann function, holonomy
+minus identity on the first nonzero jet is the rational-adelic cyclic transgression
+\[
+                 (\delta_n(\rho)^{M(x)}-1)c_\rho.
+\]
+Pairing its normalized value with the value at the reflected divisor
+$\rho^\vee=1-\overline\rho$ produces the positive prime energy
+\[
+ \mathcal E_{N,M}(\rho)=
+ \sum_{p\leq N}\frac{4\sinh^2(M(\Re\rho-\tfrac12)\log p)}p.
+\]
+For every $N\geq2$ and $M>0$, this energy vanishes exactly on the critical line.  More sharply,
+if $M(\Re s_N-\tfrac12)\log N\to c$, then
+\[
+ \mathcal E_{N,M}(s_N)\longrightarrow
+ 4\int_0^1\frac{\sinh^2(cu)}u\,du,
+\]
+with vanishing below and divergence above this logarithmic window.  Thus the independently forced
+Stokes rank is also the exact arithmetic renormalization exponent.  This realizes and quantifies
+the obstruction in the unique rank port but does not assert its global vanishing on all $\Xi$
+divisors.
 \end{abstract}
 \maketitle
 
@@ -170,8 +189,10 @@ the scalar raised to $M(x)$.  Thus $M$ is simultaneously the unique nonpositive 
 unique determinant weight invisible to relative Stokes data.  Section~\ref{sec:arithmetic}
 constructs the half-density character in that center and identifies its holonomy defect on the
 leading completed-Riemann jet with an explicit trace-one rational-adelic cyclic residue.  The
-construction is unconditional; annihilation at every divisor point remains equivalent to the
-Riemann hypothesis and is not claimed.
+construction is unconditional.  Reflection pairing then gives a positive prime energy whose
+finite vanishing locus is exactly the critical line and whose rank-scaled critical window has a
+universal Mertens profile.  Annihilation at every divisor point remains equivalent to the Riemann
+hypothesis and is not claimed.
 
 Sections~\ref{sec:coefficients}--\ref{sec:global} prove coefficient and global laws.
 Sections~\ref{sec:cellular}--\ref{sec:transport} construct categorical microlocal realization.
@@ -821,6 +842,550 @@ The residual is not called a vanishing channel merely because its norm is positi
 explicit quotient in \eqref{eq:corona-exact}.  Under a boundary Stokes realization,
 Theorem~\ref{thm:transport} carries this quotient to the corresponding relative vanishing object.
 
+\section{Central-port law and arithmetic realization}\label{sec:arithmetic}
+
+This section determines the full scalar kernel of relative Stokes transport and then places an
+arithmetic character in that kernel.  The result is stronger than assigning a number to the
+negative square in \eqref{eq:intro-law}: the scalar is defined before a divisor is chosen, the
+rank functional is forced independently by determinant functoriality, and the $\Xi$ coefficient is
+reached by an explicit M\"obius--theta source.
+
+\subsection{The component law for relative channels}
+
+Let $\Gamma$ be the directed interaction graph of a finite Stokes datum: its vertices are the
+Stokes circles $i\in I$, and $i\to j$ is an edge whenever the mixed channel
+$\Irr\Hom(i,j)$ is nonzero.  Write $V_i=\CC^{r_i}$ and let
+$T_i\in\operatorname{GL}(V_i)$ be formal monodromy.
+For $\lambda=(\lambda_i)_{i\in I}\in(\CC^\times)^I$, put
+$T_i^\lambda=\lambda_iT_i$.  On a mixed Hom channel the twisted transport is
+\begin{equation}\label{eq:scalar-hom-transport}
+ f\longmapsto T_j^\lambda f(T_i^\lambda)^{-1}
+   =\lambda_j\lambda_i^{-1}T_jfT_i^{-1}.
+\end{equation}
+Let $d_\Gamma\lambda$ denote the edge tuple
+$(\lambda_j\lambda_i^{-1})_{i\to j}$.  Components below are components of the underlying
+unoriented graph.
+
+\begin{theorem}[Central-component law]\label{thm:central-components}
+A scalar tuple is invisible on every nonzero relative Stokes channel if and only if it is constant
+on every component of $\Gamma$.  Equivalently,
+\begin{equation}\label{eq:central-kernel}
+ \ker d_\Gamma=\{\lambda:\lambda_i=\lambda_j
+       \text{ whenever }i,j\text{ lie in the same component}\}.
+\end{equation}
+If $\alpha\in\pi_0(\Gamma)$ and
+\[
+ M_\alpha(x)=\sum_{i\in\alpha}r_ix_i,
+\]
+then the scalar $\lambda_\alpha$ on that component acts on the determinant line of
+$V(x)=\bigoplus_iV_i^{\oplus x_i}$ with weight $M_\alpha(x)$:
+\begin{equation}\label{eq:component-determinant}
+ \frac{\det T_x^\lambda}{\det T_x}
+       =\prod_{\alpha\in\pi_0(\Gamma)}
+          \lambda_\alpha^{M_\alpha(x)}.
+\end{equation}
+Thus there is one channel-invisible scalar, and one determinant port, per component.
+\end{theorem}
+
+\begin{proof}
+If $i\to j$ is an edge, invisibility in \eqref{eq:scalar-hom-transport} gives
+$\lambda_j\lambda_i^{-1}=1$, hence $\lambda_i=\lambda_j$.  Propagation along an unoriented path,
+using equality symmetrically, makes $\lambda$ constant on each component.  Conversely a
+componentwise constant tuple cancels in \eqref{eq:scalar-hom-transport}.  This proves
+\eqref{eq:central-kernel}.  Finally
+\[
+ \frac{\det(\lambda_iT_i)^{x_i}}{\det(T_i)^{x_i}}
+       =\lambda_i^{r_ix_i}.
+\]
+Multiplication over $i$ and regrouping by components gives
+\eqref{eq:component-determinant}.
+\end{proof}
+
+For the coefficient-generated datum of Section~\ref{sec:coefficients}, $\Gamma$ is complete.
+Indeed, if $i\ne j$, choose branches $a\in i$ and $b\in j$.  They are distinct, so
+$k(a,b)\geq1$ and $h(a,b)>0$; this positive term occurs in the sum defining
+$\Irr\Hom(i,j)$.  Hence $\pi_0(\Gamma)$ is a singleton.
+
+\begin{theorem}[Central-port duality]\label{thm:central-port}
+For a nonempty coefficient-generated Stokes spectrum, the exact sequence
+\begin{equation}\label{eq:central-exact}
+ 1\longrightarrow\CC^\times\xrightarrow{\Delta}(\CC^\times)^I
+   \xrightarrow{d_\Gamma}(\CC^\times)^{E(\Gamma)}
+\end{equation}
+is exact at $(\CC^\times)^I$.  For every integral dimension vector $x$, restriction of its
+determinant character to $\im\Delta$ is
+\begin{equation}\label{eq:rank-determinant-character}
+              \lambda\longmapsto\lambda^{M(x)},\qquad
+              M(x)=\sum_i r_ix_i.
+\end{equation}
+The same $M$ is the unique port through which a nonpositive term can enter the coarea
+polarization.  Thus the metric one-port theorem and the relative-channel kernel theorem have the
+same rank functional, obtained by independent constructions.
+\end{theorem}
+
+\begin{proof}
+Completeness of $\Gamma$ and Theorem~\ref{thm:central-components} identify the kernel with the
+diagonal.  Equation \eqref{eq:rank-determinant-character} is
+\eqref{eq:component-determinant} for the single component.  Formula
+\eqref{eq:intro-law}, or its intrinsic form in Theorem~\ref{thm:coarea}, independently
+identifies the only subtractive coordinate as the same ramification-weighted sum $M$.
+\end{proof}
+
+\begin{remark}\label{rem:disconnected-ports}
+Connectedness is sharp.  If the relative interaction graph has $b$ components, then $b$ independent
+central scalars survive, with determinant weights $M_1,\ldots,M_b$.  Consequently no theorem
+claiming one universal port can hold for a disconnected Stokes skeleton without an additional
+fusion relation.  Coefficient-generated spectra evade this obstruction because their mixed
+irregularity graph is complete.
+\end{remark}
+
+\subsection{Why arithmetic is neither rank nor formal contact}
+
+Two tempting identifications are impossible.
+
+\begin{proposition}[Rank and contact-stratum no-go]\label{prop:arithmetic-no-go}
+Fix a finite-length Stokes category over a connected parameter space.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item The continuously varying number
+\[
+ \delta_n(s)-1=\exp((2\Re s-1)\log n)-1,\qquad n\geq2,
+\]
+cannot be a physical-rank or Grothendieck-group class.
+\item Suppose two equivariant coefficient systems have the same orbit map and, for every
+$a,b,k$, the same truth value of $c_{a,k}=c_{b,k}$.  Then they have identical contacts,
+threshold blocks, mixed Hom irregularities, Cartan/coarea forms, capacities, and filtered Rees
+specializations.  In particular, bare coefficient contact cannot recover the magnitude $\log n$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+Physical ranks and coordinates of $K_0$ are integral.  A continuous map from a connected space to
+this discrete lattice is constant, whereas the displayed function is nonconstant in $\Re s$.
+
+For (ii), $k(a,b)$ is the largest exponent at which coefficient equality fails.  Equality of all
+these truth values therefore preserves every $k(a,b)$ and $h(a,b)$, hence every threshold
+partition and persistence length.  The definitions in Sections~\ref{sec:coefficients} and
+\ref{sec:rees} then preserve all listed quantities.
+\end{proof}
+
+The proposition forces any continuously varying, relative-channel-invisible arithmetic datum into
+monodromy or extension data over a fixed irregular skeleton.  Theorem~\ref{thm:central-port} then
+forces a scalar such datum into the common center.  This is a classification, not a choice of
+convenient coordinates.
+
+\subsection{The pre-divisor arithmetic character}
+
+For $n\geq1$ and $s\in\CC$, define
+\begin{equation}\label{eq:delta-character}
+ \delta_n(s)=\exp((2\Re s-1)\log n)>0,\qquad
+ \chi_{n,s}(k)=\delta_n(s)^k\quad(k\in\pi_1(S^1)=\mathbb Z).
+\end{equation}
+Let $\mathcal L_{n,s}$ be the rank-one Betti local system represented by $\chi_{n,s}$.  Tensoring
+every Stokes block with $\mathcal L_{n,s}$ replaces $T_i$ by $\delta_n(s)T_i$.  This family is
+real analytic, not holomorphic, in $s$; no holomorphic parameter-space assertion is used.
+
+\begin{theorem}[Arithmetic realization of the central port]\label{thm:arithmetic-center}
+The family $\mathcal L_{n,s}$ is defined before any zero or divisor is selected and satisfies:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item it fixes all exponential differences, analytic Stokes walls, mixed Hom transports, directed
+microstalk ranks, coefficient cuts, coarea forms, capacities, corona quotients, and Rees
+specializations;
+\item on the determinant line of $V(x)$ its relative holonomy is
+\begin{equation}\label{eq:det-holonomy}
+                       \delta_n(s)^{M(x)};
+\end{equation}
+\item for $m,n\geq1$,
+\begin{equation}\label{eq:delta-multiplicative}
+ \delta_{mn}(s)=\delta_m(s)\delta_n(s),\qquad
+ \delta_{n^{M(x)}}(s)=\delta_n(s)^{M(x)};
+\end{equation}
+\item critical reflection dualizes the local system:
+\begin{equation}\label{eq:delta-reflection}
+                  \delta_n(1-\overline s)=\delta_n(s)^{-1};
+\end{equation}
+\item among scalar twists invisible on every mixed channel, it is uniquely determined by its
+holonomy on any one Stokes block.
+\end{enumerate}
+For $n\geq2$, $\mathcal L_{n,s}$ is unitary if and only if $\Re s=1/2$.
+\end{theorem}
+
+\begin{proof}
+The tensor factor is regular singular and common to every block.  It changes no irregular
+exponential factor, so all difference, wall, contact, microlocal, and filtered constructions are
+unchanged; cancellation on mixed channels is also immediate from
+\eqref{eq:scalar-hom-transport}.  Equation \eqref{eq:det-holonomy} is
+Theorem~\ref{thm:central-port}.  The first identity in \eqref{eq:delta-multiplicative} follows from
+$\log(mn)=\log m+\log n$; iteration gives the second.  Since
+$2\Re(1-\overline s)-1=-(2\Re s-1)$, \eqref{eq:delta-reflection} follows.  Uniqueness is
+Theorem~\ref{thm:central-components}.  Finally a positive real rank-one holonomy is unitary exactly
+when it is one; for $n\geq2$, positivity of $\log n$ makes this equivalent to
+$\Re s=1/2$.
+\end{proof}
+
+\subsection{A target-free source for all completed-\texorpdfstring{$\Xi$}{Xi} jets}
+
+We now show that the $\Xi$ coefficient used below is reached by arithmetic source data rather than
+inserted at a chosen zero.  Set
+\[
+ \xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s),\qquad
+ \mathcal X(w)=\xi\left(\frac12+iw\right).
+\]
+Define
+\[
+ h(t)=2\pi(2\pi t^4-3t^2)e^{-\pi t^2},\qquad
+ \Theta(x)=\sum_{\ell\geq0}e^{x/2}h(\ell e^x).
+\]
+This is the even theta-cusp Schwartz kernel, normalized so that
+\begin{equation}\label{eq:theta-xi-transform}
+             \int_{\RR}e^{-iwx}\Theta(x)\,dx=\mathcal X(w)
+             \qquad(|\Im w|<1).
+\end{equation}
+The identity follows by termwise Mellin integration of the polynomial Gaussian and the theta
+functional equation; this normalization is the standard Fourier form of the completed zeta
+function \cite{Titchmarsh1986}.
+
+For $m\geq1$, let
+\[
+ a_m(N)=
+ \begin{cases}
+   \mu(q),&N=q^m,\\
+   0,&\text{otherwise},
+ \end{cases}
+\]
+and, for each jet grade $k\geq0$, form the source
+\begin{equation}\label{eq:mobius-theta-source}
+ \Psi_{m,k}(x)=\sum_{N\geq1}
+    a_m(N)N^{-1/2}\bigl(-i(x-\log N)\bigr)^k\Theta(x-\log N).
+\end{equation}
+Every object in \eqref{eq:mobius-theta-source} is defined without a spectral point.
+
+\begin{proposition}[Source-to-$\Xi$ jet landing]\label{prop:source-xi-jet}
+Put $s_w=\frac12+iw$.  If $|\Im w|<1$ and $\Re s_w>1/m$, then
+\begin{equation}\label{eq:source-xi-transform}
+ \int_{\RR}e^{-iwx}\Psi_{m,k}(x)\,dx
+      =\zeta(ms_w)^{-1}\mathcal X^{(k)}(w).
+\end{equation}
+For fixed $w$ with $\Re s_w>0$, the left side tends cofinally, as $m\to\infty$, to
+$\mathcal X^{(k)}(w)$.
+\end{proposition}
+
+\begin{proof}
+The strip bound makes every polynomially weighted theta packet integrable.  The half-plane
+condition gives
+$\sum_N|a_m(N)|N^{-\Re s_w}<\infty$, so Fubini applies.  In the $N$th term set
+$y=x-\log N$.  Differentiating \eqref{eq:theta-xi-transform} under the integral gives
+\[
+ \int_{\RR}e^{-iwy}(-iy)^k\Theta(y)\,dy=\mathcal X^{(k)}(w).
+\]
+Translation contributes $N^{-iw}$, and therefore the coefficient sum is
+\[
+ \sum_{N\geq1}a_m(N)N^{-s_w}
+   =\sum_{q\geq1}\mu(q)q^{-ms_w}
+   =\zeta(ms_w)^{-1}.
+\]
+This proves \eqref{eq:source-xi-transform}.  If $\Re s_w>0$, then
+$\zeta(ms_w)\to1$: the absolutely convergent tail
+$\sum_{q\geq2}q^{-m\Re s_w}$ tends to zero.  The stated cofinal limit follows.
+\end{proof}
+
+Let $\rho$ be a nontrivial divisor point of $\xi$ and put
+\begin{equation}\label{eq:xi-leading-jet}
+ w_\rho=-i(\rho-\tfrac12),\qquad
+ r_\rho=\operatorname{ord}_{w_\rho}\mathcal X,\qquad
+ c_\rho=\mathcal X^{(r_\rho)}(w_\rho)\ne0.
+\end{equation}
+Since $0<\Re\rho<1$, $|\Im w_\rho|<1$ and $\Re s_{w_\rho}>0$.  Thus
+Proposition~\ref{prop:source-xi-jet} reaches every jet at $w_\rho$, all lower grades vanish, and
+the first nonzero grade lands at $c_\rho$ without division by $\mathcal X$.
+
+\subsection{Rational-adelic trace and the rank-powered transgression}
+
+For completeness we construct the cyclic source used for the final landing.  Let
+\[
+ \mathcal B=\mathcal S(\RR)\otimes
+     \mathcal B_c(\mathbb A_{\QQ,f}),\qquad G=\QQ^{\times},
+\]
+where the second factor is the algebraic Bruhat space on finite adeles.  The algebraic crossed
+product $A_0=\mathcal B\rtimes_{\rm alg}G$ consists of finite sums $aU_q$ with
+\begin{equation}\label{eq:crossed-product}
+                  (aU_q)(bU_\ell)=a(q\cdot b)U_{q\ell}.
+\end{equation}
+Let $A_{\rm ad}$ be its minimal unitization.  Evaluation at the zero adele is multiplicative on
+$\mathcal B$ and invariant under scaling.  Hence
+\begin{equation}\label{eq:epsilon-zero}
+ \varepsilon_0(\alpha,F)=\alpha+\operatorname{ev}_0(F(1))
+\end{equation}
+is a trace on $A_{\rm ad}$.  Indeed, on two crossed-product monomials both traces vanish unless
+$q\ell=1$; in that case scaling invariance and commutativity in $\mathcal B$ give
+$\operatorname{ev}_0(a(q\cdot b))=\operatorname{ev}_0(b(\ell\cdot a))$.
+The unitization terms are immediate.
+
+Take the genuine degree-one cyclic bar
+\[
+ C_1(A_{\rm ad})=A_{\rm ad}\otimes A_{\rm ad},\qquad
+ \tau(a_0\otimes a_1)=a_1\otimes a_0,
+\]
+and its cyclic trace
+\begin{equation}\label{eq:cyclic-trace}
+ \varepsilon_0^{(1)}(a_0\otimes a_1)
+     =\varepsilon_0(a_0a_1),\qquad
+ \varepsilon_0^{(1)}\tau=\varepsilon_0^{(1)}.
+\end{equation}
+Let $g=e^{-\pi x^2}\otimes\mathbf 1_{\widehat{\mathbb Z}}$, so
+$\operatorname{ev}_0(g)=1$, and for an ordinary prime $p$ define
+\begin{equation}\label{eq:prime-cycle}
+                u_p=(gU_p)\otimes(gU_{p^{-1}}).
+\end{equation}
+
+\begin{lemma}[Trace-one prime cycle]\label{lem:prime-trace-one}
+For every ordinary prime $p$,
+\[
+                         \varepsilon_0^{(1)}(u_p)=1.
+\]
+\end{lemma}
+
+\begin{proof}
+The scaling labels in \eqref{eq:prime-cycle} multiply to one.  Since zero is fixed by scaling,
+\[
+ \varepsilon_0^{(1)}(u_p)
+ =\operatorname{ev}_0\bigl(g(p\cdot g)\bigr)
+ =\operatorname{ev}_0(g)^2=1.
+\]
+\end{proof}
+
+Define
+\[
+ C(y)=(\varepsilon_0^{(1)}(y),0),\qquad
+ \operatorname{Res}(z_0,z_1)=z_0+z_1,
+\]
+and, for every independent grade $k$ and spectral parameter $w$,
+\[
+ L_{k,w}(y)=\mathcal X^{(k)}(w)C(y).
+\]
+Proposition~\ref{prop:source-xi-jet} realizes $L_{k,w}$ as the cofinal limit of the same expression
+with $\mathcal X^{(k)}(w)$ replaced by the transform of $\Psi_{m,k}$.  For a positive integer
+clock $q$, put
+\begin{equation}\label{eq:paracyclic-rotation}
+ R_{q,s}(z_0,z_1)=(z_1,\delta_q(s)z_0),\qquad
+ D_{q,s,k,w}=R_{q,s}L_{k,w}-L_{k,w}\tau.
+\end{equation}
+Notice that $R_{q,s}^2=\delta_q(s)\operatorname{id}$; this is a paracyclic, not generally cyclic,
+target rotation.
+
+\begin{theorem}[Rank-port/$\Xi$ determinant law]\label{thm:rank-port-xi}
+Let $x\in\NN^I$, $n\geq1$, and let $\rho$ be any nontrivial divisor point.  Then, for every
+$y\in C_1(A_{\rm ad})$,
+\begin{equation}\label{eq:rank-port-xi}
+ \boxed{\;
+ \operatorname{Res}\bigl(D_{n^{M(x)},\rho,r_\rho,w_\rho}y\bigr)
+ =\bigl(\delta_n(\rho)^{M(x)}-1\bigr)c_\rho
+      \varepsilon_0^{(1)}(y).
+ \;}
+\end{equation}
+The multiplier on the right is precisely holonomy minus identity on the determinant line of
+$V(x)\otimes\mathcal L_{n,\rho}$.  On the trace-one prime cycle,
+\begin{equation}\label{eq:prime-rank-port-xi}
+ \operatorname{Res}\bigl(D_{n^{M(x)},\rho,r_\rho,w_\rho}u_p\bigr)
+       =\bigl(\delta_n(\rho)^{M(x)}-1\bigr)c_\rho.
+\end{equation}
+If $n\geq2$ and $M(x)>0$, this quantity vanishes if and only if
+$\Re\rho=1/2$.
+\end{theorem}
+
+\begin{proof}
+Write $a=c_\rho\varepsilon_0^{(1)}(y)$.  Cyclic trace invariance gives
+\[
+ L_{r_\rho,w_\rho}(\tau y)=(a,0),\qquad
+ R_{q,\rho}L_{r_\rho,w_\rho}(y)=(0,\delta_q(\rho)a).
+\]
+Subtraction and coordinate sum yield
+\[
+ \operatorname{Res}(D_{q,\rho,r_\rho,w_\rho}y)
+       =(\delta_q(\rho)-1)a.
+\]
+Take $q=n^{M(x)}$ and use \eqref{eq:delta-multiplicative}.  By
+\eqref{eq:det-holonomy}, $\delta_n(\rho)^{M(x)}$ is exactly the determinant-line holonomy ratio.
+Lemma~\ref{lem:prime-trace-one} gives \eqref{eq:prime-rank-port-xi}.  Since $c_\rho\ne0$,
+$n\geq2$, and $M(x)>0$, its vanishing is equivalent to
+\[
+ \exp\bigl(M(x)(2\Re\rho-1)\log n\bigr)=1.
+\]
+The exponent is real and $M(x)\log n>0$, so this holds exactly when $\Re\rho=1/2$.
+\end{proof}
+
+The theorem gives the following arithmetic defect diagram:
+\[
+\begin{array}{ccc}
+ C_1(A_{\rm ad})&\xrightarrow{\quad L_{r_\rho,w_\rho}\quad}&\CC^2\\
+ \big\downarrow{\tau}&&\big\downarrow{R_{n^{M(x)},\rho}}\\
+ C_1(A_{\rm ad})&\xrightarrow{\quad L_{r_\rho,w_\rho}\quad}&\CC^2
+ \xrightarrow{\ \operatorname{Res}\ }\CC .
+\end{array}
+\]
+Its failure to commute is measured by determinant holonomy minus identity, and the exponent is
+the independently forced Stokes rank port $M(x)$.
+
+\subsection{Reflection-paired vanishing and the Stokes--Mertens law}
+
+Put $s^\vee=1-\overline s$.  At a nontrivial divisor $\rho$, the functional equation and reality
+of $\xi$ make $\rho^\vee$ a divisor of the same multiplicity.  Fix a positive integer $M$ and,
+for a prime $p$, normalize the two rank-powered transgressions by their nonzero leading jets:
+\begin{equation}\label{eq:normalized-reflected-defects}
+ \begin{aligned}
+ a_{p,M}(\rho)
+  &=\frac{\operatorname{Res}(D_{p^M,\rho,r_\rho,w_\rho}u_p)}{c_\rho}
+    =\delta_p(\rho)^M-1,\\
+ a_{p,M}(\rho^\vee)
+  &=\frac{\operatorname{Res}
+      (D_{p^M,\rho^\vee,r_{\rho^\vee},w_{\rho^\vee}}u_p)}{c_{\rho^\vee}}
+    =\delta_p(\rho)^{-M}-1.
+ \end{aligned}
+\end{equation}
+The division here removes only the source jet, which is nonzero by definition; it does not alter
+or postulate a divisor.  For arbitrary $s\in\CC$ define the same pre-divisor defects by
+$a_{p,M}(s)=\delta_p(s)^M-1$ and set
+\begin{equation}\label{eq:stokes-prime-energy}
+ \mathcal E_{N,M}(s)
+   =-\sum_{p\leq N}\frac{a_{p,M}(s)a_{p,M}(s^\vee)}p.
+\end{equation}
+
+\begin{theorem}[Stokes--Mertens reflection and vanishing law]
+\label{thm:stokes-mertens}
+Let $M>0$.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item Reflection pairing is the exact positive factorization
+\begin{equation}\label{eq:stokes-energy-hyperbolic}
+ \boxed{\quad
+ \mathcal E_{N,M}(s)
+   =\sum_{p\leq N}
+      \frac{4\sinh^2(M(\Re s-\tfrac12)\log p)}p\geq0.
+ \quad}
+\end{equation}
+At a divisor this is the negative product of the two normalized rational-adelic $\Xi$
+transgressions in \eqref{eq:normalized-reflected-defects}.
+\item For every $N\geq2$,
+\begin{equation}\label{eq:finite-stokes-vanishing}
+             \mathcal E_{N,M}(s)=0
+             \quad\Longleftrightarrow\quad \Re s=\frac12.
+\end{equation}
+Thus one prime already gives an exact arithmetic vanishing locus, while the full prime system
+quantifies transverse escape.
+\item Let $s_N\in\CC$ be arbitrary and put
+\(
+ c_N=M(\Re s_N-\tfrac12)\log N.
+\)
+Then
+\begin{equation}\label{eq:stokes-mertens-trichotomy}
+ \begin{array}{rcl}
+ c_N\longrightarrow0
+   &\Longrightarrow&\mathcal E_{N,M}(s_N)\longrightarrow0,\\[2mm]
+ c_N\longrightarrow c\in\RR
+   &\Longrightarrow&\displaystyle
+      \mathcal E_{N,M}(s_N)\longrightarrow
+      \Phi(c):=4\int_0^1\frac{\sinh^2(cu)}u\,du,\\[3mm]
+ |c_N|\longrightarrow\infty
+   &\Longrightarrow&\mathcal E_{N,M}(s_N)\longrightarrow\infty.
+ \end{array}
+\end{equation}
+The middle profile is even, and $\Phi(c)>0$ for $c\ne0$.  In particular the critical-window
+limit is independent of every Stokes multiplicity and contact coefficient: their sole surviving
+quantity $M$ has been absorbed by the forced scaling.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Write $g=\delta_p(s)^M>0$.  Reflection gives
+$\delta_p(s^\vee)^M=g^{-1}$, and hence
+\[
+ -a_{p,M}(s)a_{p,M}(s^\vee)
+ =-(g-1)(g^{-1}-1)=g+g^{-1}-2.
+\]
+Since
+$g=\exp(2M(\Re s-\tfrac12)\log p)$, the last expression is
+$4\sinh^2(M(\Re s-\tfrac12)\log p)$.  Summing proves
+\eqref{eq:stokes-energy-hyperbolic}; at a divisor,
+\eqref{eq:normalized-reflected-defects} follows from
+Theorem~\ref{thm:rank-port-xi}.  If $N\geq2$, the sum contains $p=2$ and consists of nonnegative
+terms.  It is zero exactly when
+$M(\Re s-\tfrac12)\log2=0$, which proves \eqref{eq:finite-stokes-vanishing}.
+
+For completeness we prove the limiting assertion from the prime form of Mertens's first theorem
+\cite{Mertens1874}.
+Put
+\[
+ S_N=\sum_{p\leq N}\frac{(\log p)^2}{p}.
+\]
+Partial summation applied to
+$\sum_{p\leq x}(\log p)/p=\log x+O(1)$ gives
+\begin{equation}\label{eq:prime-susceptibility}
+                 S_N=\frac12(\log N)^2+O(\log N).
+\end{equation}
+Indeed, if $A(x)=\sum_{p\leq x}(\log p)/p$, then
+$S_N=(\log N)A(N)-\int_2^NA(t)\,dt/t+O(1)$, and substitution of
+$A(t)=\log t+O(1)$ yields \eqref{eq:prime-susceptibility}.
+
+Write
+\[
+ E_N^{\rm pr}(\varepsilon)=
+   \sum_{p\leq N}\frac{4\sinh^2(\varepsilon\log p)}p,
+ \qquad
+ \mathcal E_{N,M}(s)=E_N^{\rm pr}\bigl(M(\Re s-\tfrac12)\bigr).
+\]
+Set $\varepsilon_N=M(\Re s_N-\tfrac12)$, so $c_N=\varepsilon_N\log N$.
+The inequalities $|u|\leq|\sinh u|$ and
+$|\sinh u|\leq|u|\cosh C$ for $|u|\leq C$ give
+\begin{equation}\label{eq:stokes-energy-sandwich}
+ 4\varepsilon_N^2S_N\leq\mathcal E_{N,M}(s_N),
+ \qquad
+ \mathcal E_{N,M}(s_N)\leq4\cosh^2(C)\varepsilon_N^2S_N
+ \quad(|c_N|\leq C).
+\end{equation}
+Together with \eqref{eq:prime-susceptibility}, these bounds prove the first and third regimes.
+
+For the middle regime first take $c_N=c$.  The finite measures
+\[
+ \nu_N=\frac1{\log N}\sum_{p\leq N}\frac{\log p}{p}
+             \,\delta_{\log p/\log N}
+\]
+converge weakly to Lebesgue measure on $[0,1]$, again by Mertens's theorem and partial summation.
+The function $u\mapsto4\sinh^2(cu)/u$, continuously extended by zero at $u=0$, is continuous;
+therefore
+\[
+ \mathcal E_{N,M}(s_N)=
+ \int_0^1\frac{4\sinh^2(cu)}u\,d\nu_N(u)\longrightarrow\Phi(c).
+\]
+If merely $c_N\to c$, all $c_N$ lie in one compact interval eventually.  The mean-value theorem
+and \eqref{eq:prime-susceptibility} give, for a constant $K$ depending only on that interval,
+\[
+ \left|E_N^{\rm pr}(c_N/\log N)-E_N^{\rm pr}(c/\log N)\right|
+ \leq K|c_N-c|\frac{S_N}{(\log N)^2}\longrightarrow0.
+\]
+This proves the middle regime.  Evenness and strict positivity of $\Phi$ away from zero are
+immediate from its integrand.
+\end{proof}
+
+The theorem turns the central representation law into a number-theoretic scaling theorem and a
+literal finite vanishing theorem.  It does not force the energy to vanish on every $\Xi$ divisor.
+For any fixed $n,N\geq2$ and any positive-rank $x$, it sharpens the classifier to
+\begin{equation}\label{eq:rh-unitarity-form}
+\begin{aligned}
+ \mathrm{RH}
+ &\Longleftrightarrow
+   \mathcal L_{n,\rho}\ \text{is unitary for every nontrivial divisor point }\rho\,,\\
+ &\Longleftrightarrow
+   \operatorname{Res}(D_{n^{M(x)},\rho,r_\rho,w_\rho}u_p)=0
+   \quad\text{for every such }\rho\text{ and every prime }p,\\
+ &\Longleftrightarrow
+   \mathcal E_{N,M(x)}(\rho)=0
+   \quad\text{for every such }\rho.
+\end{aligned}
+\end{equation}
+Equation \eqref{eq:rh-unitarity-form} is an exact classifier, not a proof of its left side.
+The construction supplies the carrier and identifies its only possible invisible port.  What
+remains is an independent arithmetic theorem forcing global triviality, equivalently
+source-null-homology of the displayed paracyclic defect.  No positivity, reflection symmetry,
+or Stokes realization established here supplies that missing annihilation.
+
 \section{The Stokes deformation complex}\label{sec:deformation}
 
 We derive the dimension identity from tangent data.  Fix $p$ punctures and integers
@@ -971,6 +1536,9 @@ appear in \cite{Boalch2025,Doucot2025}; and Hiroe gives a scalar spectral-curve 
 \cite{Hiroe2019}.  The diagram formula \eqref{eq:published-B} and the dimension identity
 $\dim\Mcal_B=2-(d,d)$ are due to Boalch--Yamakawa and Dou\c{c}ot
 \cite{BoalchYamakawa2020,Doucot2021}.  These are inputs, not novelty claims.
+Rank-one local systems, determinant scaling, the adeles-class-space source, and the classical
+theta transform of $\xi$ are likewise not claimed as new separately
+\cite{Connes1999,ConnesConsaniMarcolli2007,Titchmarsh1986}.
 
 New claim is the complete polarization and its consequences:
 \begin{align*}
@@ -986,6 +1554,21 @@ share the same rank port, yielding the arbitrary-genus Euler--capacity law.  Ana
 microstalk calculations explain why mixed Hom irregularity is the directed local multiplicity
 entering that polarization.
 
+Arithmetic novelty is the exact bridge, not its elementary pieces.  The universal component law
+classifies every relative-channel-invisible scalar and shows that its determinant weights are
+component physical ranks.  Coefficient generation collapses these to the same single functional
+$M$ forced by the coarea theorem.  The pre-divisor M\"obius--theta and rational-adelic source then
+lands the rank-powered determinant defect at every completed-$\Xi$ divisor point as
+$(\delta_n(\rho)^{M(x)}-1)c_\rho$.  No zero position enters construction of source, character,
+interaction graph, or determinant exponent.
+Reflection pairing before codiagonal erasure is an additional theorem-level consequence: the
+negative product of the two normalized unsquared transgressions is exactly the positive energy
+\eqref{eq:stokes-energy-hyperbolic}.  Mertens's theorem then gives the three-regime limit
+\eqref{eq:stokes-mertens-trichotomy}.  Neither Mertens's estimate nor a hyperbolic-square identity
+is claimed separately as new; candidate novelty is that the independently forced Stokes
+determinant port is precisely the renormalization exponent and that the rational-adelic $\Xi$
+defects furnish the two reflected factors.
+
 Any of the following would falsify the theorem as stated.
 \begin{enumerate}[label=(\arabic*),leftmargin=2.2em]
 \item an equivariant spectrum violating Lemma~\ref{lem:three-point};
@@ -995,7 +1578,14 @@ Any of the following would falsify the theorem as stated.
 \item a directed exponential germ whose quotient microstalk mass differs from its degree;
 \item a nonzero compatible rank-zero charge of nonpositive fused energy;
 \item a nonnegative Rees specialization whose negative index plus nullity exceeds one;
-\item a positive corona block violating \eqref{eq:schur} or \eqref{eq:corona-exact}.
+\item a positive corona block violating \eqref{eq:schur} or \eqref{eq:corona-exact};
+\item a nonconstant scalar twist invisible on a connected interaction graph;
+\item determinant response of a common scalar differing from $\lambda^{M(x)}$;
+\item failure of the trace-one identity or of the rank-powered transgression
+      \eqref{eq:rank-port-xi};
+\item failure of reflection factorization \eqref{eq:stokes-energy-hyperbolic}, finite vanishing
+      \eqref{eq:finite-stokes-vanishing}, or any regime in
+      \eqref{eq:stokes-mertens-trichotomy};
 \item a realized nonabelian Hodge graph with $\lambda_2(B)>2$.
 \end{enumerate}
 Conversely, this is not an analytic existence criterion: a quadratic form satisfying the Witt law
@@ -1015,6 +1605,18 @@ monotonicity, Rees stability, Schur order independence, and the adjacency bound
 $\lambda_2\leq2$.  It also replaces the former interface between coefficient contacts and
 microlocal multiplicities by an exact categorical quotient calculation.
 
+The central-component law adds an arithmetic meaning to the same port.  Relative Stokes channels
+see only scalar ratios, so connected coefficient spectra leave one invisible center; determinant
+functoriality reads that center with exponent $M$.  The half-density character and explicit
+rational-adelic prime cycle then convert its determinant holonomy defect into the first nonzero
+$\Xi$ jet, with exact value $(\delta_n(\rho)^{M(x)}-1)c_\rho$.  This supplies a new proof
+architecture for any arithmetic selection theorem.  Reflection now turns two such unsquared
+defects into a prime energy with an exact finite vanishing locus and a universal rank-scaled
+Mertens profile.  This quantifies the one channel but does not annihilate it: a proof of RH must
+still kill the named central Bockstein channel, not reconstruct microsupport or add another
+positive form.  Establishing that global source-null-homology remains equivalent to RH and is not
+proved here.
+
 \begin{thebibliography}{99}
 \bibitem{Boalch2014}
 P.~Boalch, \emph{Geometry and braiding of Stokes data; fission and wild character varieties},
@@ -1028,6 +1630,12 @@ arXiv:1512.08091.
 \bibitem{BoalchYamakawa2020}
 P.~Boalch and D.~Yamakawa, \emph{Diagrams for nonabelian Hodge spaces on the affine line},
 C. R. Math. \textbf{358} (2020), 59--65.
+\bibitem{Connes1999}
+A.~Connes, \emph{Trace formula in noncommutative geometry and the zeros of the Riemann zeta
+function}, Selecta Math. (N.S.) \textbf{5} (1999), 29--106.
+\bibitem{ConnesConsaniMarcolli2007}
+A.~Connes, C.~Consani and M.~Marcolli, \emph{The Weil proof and the geometry of the adeles
+class space}, arXiv:math/0703392.
 \bibitem{DKRH}
 A.~D'Agnolo and M.~Kashiwara, \emph{Riemann--Hilbert correspondence for holonomic
 $\mathcal D$-modules}, Publ. Math. Inst. Hautes Etudes Sci. \textbf{123} (2016), 69--197.
@@ -1053,11 +1661,17 @@ are of Stieltjes type}, SIAM J. Matrix Anal. Appl. \textbf{15} (1994), 98--106.
 J.~J.~McDonald, M.~Neumann, H.~Schneider and M.~J.~Tsatsomeros, \emph{Inverse $M$-matrix
 inequalities and generalized ultrametric matrices}, Linear Algebra Appl. \textbf{220} (1995),
 321--341.
+\bibitem{Mertens1874}
+F.~Mertens, \emph{Ein Beitrag zur analytischen Zahlentheorie},
+J. Reine Angew. Math. \textbf{78} (1874), 46--62.
 \bibitem{Nabben1995}
 R.~Nabben and R.~S.~Varga, \emph{Generalized ultrametric matrices---a class of inverse
 $M$-matrices}, Linear Algebra Appl. \textbf{220} (1995), 365--390.
 \bibitem{Sabbah}
 C.~Sabbah, \emph{Introduction to Stokes Structures}, Lecture Notes in Mathematics 2060,
 Springer, 2013.
+\bibitem{Titchmarsh1986}
+E.~C.~Titchmarsh, \emph{The Theory of the Riemann Zeta-Function}, 2nd ed., revised by
+D.~R.~Heath-Brown, Oxford University Press, 1986.
 \end{thebibliography}
 \end{document}

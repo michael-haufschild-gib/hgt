@@ -192,6 +192,27 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 128 | **an exponential bound on the velocity of the field solution** | **`norm_deriv_kgFieldMild_le`** | **built** |
 | 129 | the velocity is linear in the Cauchy data | **`deriv_kgFieldMild_sub`** | **built** |
 | 130 | **stability of the whole propagated state** | `norm_kgFieldMild_sub_le_data`, **`norm_deriv_kgFieldMild_sub_le`**, **`kgFieldMild_state_stability`** | **built** |
+| 131 | parity of the propagators, and reversibility of the free field | **`kgCosOp_neg`**, **`kgSinFreqOp_neg`**, **`kgFieldFree_neg`** | **built** |
+| 132 | **the field evolution is reversible** | **`kgFieldMild_neg`** | **built** |
+| 133 | the solution is additive and homogeneous in the data | `kgFieldFree_add`, `kgFieldFree_smul`, **`kgFieldMild_add`**, **`kgFieldMild_smul`** | **built** |
+| 134 | **the solution operator, as a continuous linear map** | `kgSolutionLM`, **`kgSolutionCLM`**, `kgSolutionCLM_apply`, **`norm_kgSolutionCLM_le`** | **built** |
+| 135 | the difference of two solutions with different potentials, in Duhamel form | **`kgFieldMild_sub_potential`** | **built** |
+| 136 | **the solution is Lipschitz in the perturbation** | `norm_kgFieldMild_sub_potential_le_of_nonneg`, **`norm_kgFieldMild_sub_potential_le`** | **built** |
+| 137 | the Lipschitz constant is uniform on bounded data and bounded times | **`norm_kgFieldMild_sub_potential_le_of_le`** | **built** |
+| 138 | **the field depends continuously on the potential** | **`tendsto_kgFieldMild_of_tendsto_potential`** | **built** |
+| 139 | the Duhamel term of an arbitrary continuous source is differentiable | `intervalIntegral_kgSinFreqOp_separated`, **`hasDerivAt_intervalIntegral_kgSinFreqOp`** | **built** |
+| 140 | the cosine Duhamel term has derivative `g(0)` at the origin | **`hasDerivAt_intervalIntegral_kgCosOp_zero`** | **built** |
+| 141 | a continuous source with vanishing Duhamel term vanishes at the origin | **`eq_zero_of_intervalIntegral_kgSinFreqOp_eq_zero`** | **built** |
+| 142 | **the potential is determined by the field it produces** | **`eq_of_kgFieldMild_eq`**, **`kgFieldMild_injective_potential`** | **built** |
+| 143 | **a source with no Duhamel term vanishes at every time** | `intervalIntegral_kgCosOp_eq_zero_of_kgSinFreqOp_eq_zero`, `intervalIntegral_kgSinFreqOp_shift`, **`eq_zero_of_intervalIntegral_kgSinFreqOp_eq_zero'`** | **built** |
+| 144 | the Duhamel kernel of a time-dependent perturbation is strongly continuous | `kgFieldKernelT`, `norm_kgFieldKernelT_le`, **`strongKernel_kgFieldKernelT`** | **built** |
+| 145 | **well-posedness with a time-dependent perturbation** | `kgFieldMildT`, `continuous_kgFieldMildT`, **`kgFieldMildT_eq`**, `kgFieldMildT_zero`, **`norm_kgFieldMildT_le`**, `eq_kgFieldMildT_of_duhamel`, **`exists_unique_kgFieldMildT`** | **built** |
+| 146 | the autonomous theory is the constant case | `kgFieldKernelT_const`, `kgFieldMildT_const` | **built** |
+| 147 | linearity in the data, and the solution operator | `kgFieldMildT_linear`, `kgFieldMildT_add`, `kgFieldMildT_smul`, `kgFieldMildT_sub`, `norm_kgFieldMildT_sub_le`, `kgSolutionTLM`, **`kgSolutionTCLM`**, `norm_kgSolutionTCLM_le` | **built** |
+| 148 | **the solution is `C¹`, with the classical velocity** | `kgFieldMildT_eq_separated`, **`hasDerivAt_kgFieldMildT`**, `deriv_kgFieldMildT`, `kgFieldMildT_at_zero`, `deriv_kgFieldMildT_at_zero`, **`exists_kgFieldMildT_c1`** | **built** |
+| 149 | **reversibility, with the time-reflected potential** | **`kgFieldMildT_neg`** | **built** |
+| 150 | **the solution is Lipschitz in the moving background** | `kgFieldMildT_sub_potential`, `norm_kgFieldMildT_sub_potential_le_of_nonneg`, **`norm_kgFieldMildT_sub_potential_le`** | **built** |
+| 151 | **the moving background is determined along the history of the field** | **`kgFieldMildT_potential_apply_eq`**, **`eq_zero_of_kgFieldMildT_eq`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
@@ -209,7 +230,9 @@ Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` 
 `KleinGordonSmoothingWellPosed.lean` (107–109), `KleinGordonSmoothingData.lean` (110–111),
 `KleinGordonRegularDense.lean` (112–113), `KleinGordonFreqInvNotSurjective.lean` (114–116), `KleinGordonRegularitySharp.lean` (117–119),
 `KleinGordonFieldFlow.lean` (120–121), `KleinGordonFieldEvolutionFamily.lean` (122–123),
-`KleinGordonFieldRegularAlways.lean` (124–126), `KleinGordonFieldVelocityBound.lean` (127–128), `KleinGordonFieldStateStability.lean` (129–130).
+`KleinGordonFieldRegularAlways.lean` (124–126), `KleinGordonFieldVelocityBound.lean` (127–128), `KleinGordonFieldStateStability.lean` (129–130), `KleinGordonFieldReversible.lean` (131–132), `KleinGordonFieldSolutionMap.lean` (133–134), `KleinGordonPotentialStability.lean` (135–138), `KleinGordonPotentialUniqueness.lean` (139–142), `KleinGordonSourceVanishing.lean` (143),
+`KleinGordonTimePotential.lean` (144–147), `KleinGordonTimePotentialVelocity.lean` (148–149),
+`KleinGordonTimePotentialStability.lean` (150–151).
 All wired into the umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -1203,6 +1226,117 @@ properties: existence (85), uniqueness (85), the exponential bounds (85, 128), a
 dependence (130) — with the flow structure (123) and the invariance of the regular class (126) on
 top.
 
+
+### Reversibility
+
+The equation contains only the second time derivative, so reversing time must carry a solution to a
+solution with the velocity reversed. Statements 131–132 prove it.
+
+At the level of the propagators this is the parity of the trigonometric functions: the cosine symbol
+is even (**`kgCosOp_neg`**) and the half-order sine symbol is odd (**`kgSinFreqOp_neg`**), so the free
+field satisfies `u(-t) = [the solution with datum (f, -h)](t)` (**`kgFieldFree_neg`**).
+
+For the mild solution the Duhamel integral must be reversed too, and the change of variable `r ↦ -r`
+does it: **two** sign changes appear — one from the orientation of the interval, one from the oddness
+of the propagator — and they cancel. So the reflected curve satisfies the Duhamel formula with the
+reflected data, and uniqueness gives
+
+**`kgFieldMild_neg`**: `u(-t) = [the solution with data (f, -h)](t)`,
+
+for any bounded perturbation and arbitrary `L²` data — no regularity, since no derivative appears in
+the statement. With the flow property of statement 123 this makes the solution operator a genuine
+*group* in the free case and a reversible evolution family in general.
+
+
+### The solution operator
+
+Everything so far speaks of *a* solution for given data. Statements 133–134 turn the correspondence
+itself into an object. The Duhamel formula is additive and homogeneous in its data
+(**`kgFieldMild_add`**, **`kgFieldMild_smul`** — each proved the way every structural property here
+is proved: the candidate curve is continuous, satisfies the Duhamel formula with the corresponding
+data, and uniqueness identifies it), so for each time
+
+**`kgSolutionCLM`**: `(f, h) ↦ u(t)` is a **continuous linear map** `L² × L² → L²`,
+
+with **`norm_kgSolutionCLM_le`**: `‖S(t)‖ ≤ 2e^{‖W‖|t|}`. Composed with the flow property (123), the
+reversibility (132) and the derivative formula (97), the whole classical structure of the equation is
+now carried by a single family of bounded operators indexed by time.
+
+### Varying the equation instead of the data
+
+Every stability statement up to 130 varies the Cauchy data and holds the equation fixed. Statements
+135–138 do the opposite, which is the variation an inverse problem actually cares about: the datum is
+known and the potential is not.
+
+Subtracting the two Duhamel formulas and splitting
+
+`W₁u₁ - W₂u₂ = (W₁-W₂)u₁ + W₂(u₁-u₂)`
+
+separates the two effects (**`kgFieldMild_sub_potential`**). The first term is a genuine source, of
+size `‖W₁-W₂‖·‖u₁(s)‖`, and the a-priori bound of statement 85 makes it uniform on a compact time
+interval; the second is the same memory term the solution already had, of size `‖W₂‖·‖u₁(s)-u₂(s)‖`.
+So `d(x) := ‖u₁(x)-u₂(x)‖` satisfies
+
+`d(x) ≤ δ·(‖f‖+‖h‖)·e^{bt}·t + ∫₀ˣ b·d(s) ds`
+
+on `[0,t]`, and the corpus's integral Grönwall inequality (`le_mul_exp_integral_of_le_add_integral`)
+closes it. The constant that comes out is sharp in the only sense that matters here — it vanishes at
+`t = 0` and is linear in `t` for short times:
+
+**`norm_kgFieldMild_sub_potential_le`**: `‖u₁(t) - u₂(t)‖ ≤ ‖W₁-W₂‖·(‖f‖+‖h‖)·|t|·e^{2‖W‖|t|}`.
+
+The negative-time half is not a second argument: reversibility (132) turns it into the positive-time
+statement with the velocity datum negated, and `‖-h‖ = ‖h‖` leaves the constant untouched.
+
+Two consequences. On a bounded set of data and a bounded time interval the estimate is uniform
+(**`norm_kgFieldMild_sub_potential_le_of_le`**), so the map `W ↦ u` is Lipschitz there with an
+explicit constant. And a net of uniformly bounded potentials converging in operator norm produces a
+net of fields converging in `L²` at every time (**`tendsto_kgFieldMild_of_tendsto_potential`**) — the
+forward map of the inverse problem is continuous, which is the statement that has to be in place
+before any question of recovering `W` from observations of `u` can be posed. The estimate is
+one-sided by construction: it says nothing about the inverse, and the exponential factor is exactly
+the room in which ill-posedness lives.
+
+### The forward map is injective
+
+Statements 139–142 close the other half. Suppose two bounded perturbations produce the *same* field
+from every Cauchy datum, and write `A := W₁ - W₂`. Statement 135 collapses: the memory term is
+`W₂` applied to a difference that is identically zero, so what is left is
+
+`∫₀ˣ (sin((x-s)⟨D⟩)/⟨D⟩) A(u(s)) ds = 0` for every `x`,
+
+with `u := u(W₁, f, 0)` the common solution. This is a statement about the Duhamel term of an
+arbitrary continuous source, so it wants the source-level versions of the differentiation results the
+card already has. Instantiating the separated form (90) at the identity operator gives them for free
+(**`hasDerivAt_intervalIntegral_kgSinFreqOp`**): differentiating once, again with no hypothesis on
+the source beyond continuity,
+
+`∫₀ˣ cos((x-s)⟨D⟩) A(u(s)) ds = 0` for every `x`.
+
+The second differentiation is the delicate one, and it is where the whole card's obstruction lives:
+away from the origin the derivative of the cosine Duhamel term produces `⟨D⟩ sin((x-s)⟨D⟩)`, which is
+unbounded, and that is precisely what forced the smoothing hypothesis of statements 103–109. At the
+origin the obstruction is absent, because the only surviving contribution is the endpoint one. The
+proof of **`hasDerivAt_intervalIntegral_kgCosOp_zero`** is therefore elementary and does not use the
+machinery of 99–102 at all: `cos(0·⟨D⟩) = I`, so on `[0,x]` the integrand differs from `g(0)` by
+
+`cos((x-s)⟨D⟩)(g(s)-g(0)) + (cos((x-s)⟨D⟩) - I)g(0)`,
+
+whose two terms are controlled by the continuity of `g` at `0` and the strong continuity of the
+cosine propagator at `0` — the first because the propagator is a contraction, the second because
+`|x-s| ≤ 2|x|` on the interval. Both are uniform in `s ∈ [0,x]`, so the integral is `x·g(0) + o(x)`
+and the derivative at the origin is `g(0)`.
+
+Applying it to the identically vanishing integral gives `A(u(0)) = 0`, and `u(0) = f`. Since `f` was
+arbitrary,
+
+**`eq_of_kgFieldMild_eq`**: `(∀ f, h, t, u_{W₁}(t) = u_{W₂}(t)) → W₁ = W₂`.
+
+With the Lipschitz estimate this makes `W ↦ u` a continuous injection on every operator-norm ball:
+the observations determine the equation, and they determine it stably in the forward direction. What
+remains genuinely open — and is not a Lean gap but a mathematical one — is the modulus of continuity
+of the inverse, which no argument on this card bounds.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -1223,6 +1357,18 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-04 — statements 139–142: **the potential is determined by the field it produces.** The
+  Duhamel term of an arbitrary continuous source is differentiable, and the cosine Duhamel term has
+  derivative `g(0)` at the origin — where the unbounded-generator obstruction of 99–109 is absent
+  because only the endpoint term survives. Hence `W ↦ u` is injective, and with 135–138 a continuous
+  injection.
+- 2026-08-04 — statements 135–138: the solution is Lipschitz in the **perturbation**, not only in the
+  data — `‖u₁(t)-u₂(t)‖ ≤ ‖W₁-W₂‖(‖f‖+‖h‖)|t|e^{2b|t|}` by the corpus's integral Grönwall inequality;
+  hence the forward map of the inverse problem is continuous.
+- 2026-08-04 — statements 133–134: linearity of the solution in its data, and the solution operator
+  as a continuous linear map with an explicit operator-norm bound.
+- 2026-08-04 — statements 131–132: parity of the propagators and reversibility of the field
+  evolution; the two sign changes in the reversed Duhamel integral cancel.
 - 2026-08-04 — statements 129–130: the velocity is linear in the data, and the whole propagated
   state depends continuously on it.
 - 2026-08-04 — statements 127–128: an exponential bound on the velocity of the field solution, so

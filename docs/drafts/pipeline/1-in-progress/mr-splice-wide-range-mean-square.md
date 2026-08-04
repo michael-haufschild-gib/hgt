@@ -217,3 +217,133 @@ prime-support sixth moment (fibre 9) on the exceptional set and the Halász unif
 saving on the good set; pre-certify the log bookkeeping numerically before Lean.
 
 - 2026-08-04 — stage 3a built and verified.
+
+## 2026-08-04 stage 3b as frozen is FALSIFIED by pre-certification
+
+The full numeric model — Ramaré designated range `(P₁, z]` with Brun rough remainder
+`(9·log P₁/log z)²` and square part, weighted pointwise Cauchy–Schwarz over dyadic prime blocks
+(harmonic weights `H/h_P`, `∑ h_P/H = 1`), per-block double split with the fibre-9 prime sixth
+moment, stage-3a Gallagher far tail — gives, at its optimum over
+`θ ∈ {0.55, 0.6, 0.7}`, `log P₁ ∈ (log N)^{0.5..0.8}`, `z = N^{0.05..0.2}`, all thresholds:
+
+```text
+variance/L² ≈ (log N)^{+2.8}   —   DIVERGES.
+```
+
+**The certified obstruction.**  The dominant term is the exceptional-set tail of the long factor:
+
+```text
+B₂²·∫_{|F₁| ≥ V₁}|F₁|²  ≈  B₂²·(N/P)²·log N·log K₁
+```
+
+by the mean-value layer cake — after the harmonic weights this costs `≈ log N · log log N`
+per block-sum and nothing in the built toolkit pays for it.  Verified escape attempts, both dead:
+
+- ℓ-adapted high moments of the prime factor (`(2P)^ℓ ≍ T`): at `log P ≍ (log N)^{0.6}` the
+  `ℓ!·(log P)^{(1+2a)ℓ}` mass costs `exp((log N)^{0.4+o(1)})`; at `log P ≍ log N` the moment
+  degenerates to a fixed moment and returns fixed log-powers — never enough to beat the
+  `sup²`-free requirement.
+- pointwise contour control of `F₁` reaches only `|w| ≤ exp((log N)^{1/10})`
+  ([[contour-route-is-long-windows-only]]); the mid-range `exp((log N)^{1/10}) ≤ |w| ≤ N/L`
+  is untouched.
+
+**Surviving requirement (the real MR heart).**  The level sets of the long μ-cofactor factor
+`F₁` must be controlled *arithmetically*, by re-factorizing `F₁` itself at a lower designated
+range and iterating — the Matomäki–Radziwiłł range induction `[P₁,Q₁], [P₂,Q₂], …` over
+`≈ log log N` scales, where each range's exceptional set is paid by the next range's prime
+polynomial.  No single-split or double-split architecture over one range can close, at any
+threshold choice: this is now certified, not suspected.
+
+**Next unit (stage 3b′): the induction model.**  Build the numeric model of the full MR range
+induction (their Sections 3–5 skeleton): the scale schedule `log P_j ≍ ρ^j`, per-scale
+moment-adapted `ℓ_j`, the induction inequality tying scale `j`'s exceptional measure to scale
+`j+1`'s polynomial, and the terminal scale paid by `MoebiusUniformFrequency`.  Only after the
+model certifies an explicit `(log)^{-c}` does any Lean statement get frozen.  The generalized
+prime-fibre mass bound `∑|coeffs(F₂^ℓ)|² ≤ ℓ!·(∑|b_p|²)^ℓ` (variable `ℓ`, extending the fibre-9
+cube module) will be an ingredient of every certified variant, but is not licensed until the
+induction model closes.
+
+- 2026-08-04 — stage 3b falsified as frozen; obstruction and surviving induction shape recorded.
+
+## 2026-08-04 stage 3b″: the MR-note architecture replaces the induction guess
+
+Fetched and read the actual Matomäki–Radziwiłł expository note (arXiv:1502.02374), which proves
+exactly the corridor target (`∑_{x≤n≤x+X^δ} λ(n) = o(X^δ)` a.e., variance `≪ X/(log X)^{1/3−ε}`)
+in 12 self-contained pages.  The real mechanism for polynomial windows needs **neither** the range
+induction guessed in 3b′ **nor** any product-split/sixth-moment machinery:
+
+**Route (A) — note §4 (λ-specific).**  Parseval (their Lemma 4: ranges `[0, X^{1−δ}]` plus dyadic
+`max_{T>X^{1−δ}}(X^{1−δ}/T)∫_T^{2T}`, = our stage-3a shape) → `t ≤ (log X)^{10}` by the twisted
+PNT bound (corpus owns, stronger) → ONE Ramaré range `[P, Q]`, `P = exp((log X)^{2/3+ε})`,
+`Q = X^{δ/3}`, rough remainder by sieve density `log P/log Q` **inside the MVT coefficient mass**
+(my earlier model mis-charged this as a squared per-window Brun count — the correct cost is
+linear, fundamental-lemma constant) → `H = (log X)^5` short-range splitting, Cauchy–Schwarz cost
+`(H log(Q/P))²` → **the short prime polynomial is pointwise `≪ (log X)^{-A}` for ALL
+`(log X)^{10} ≤ |t| ≤ X`** via Perron + `log ζ` on the Vinogradov–Korobov line (their Lemma 2).
+*Blocker for the corpus:* Lemma 2 needs a zero-free region `σ ≥ 1 − c/(log t)^κ` with `κ < 1`;
+the corpus's 3-4-1/DLVP layer is `κ = 1` and provably cannot feed it (the required
+`log P ≥ (log X)^κ·log log X` collides with `log P ≤ log Q ≪ log X`).  A Littlewood-quality
+region (`c·log log t/log t`) would still yield a `(log log X)^{-1}` saving; Vinogradov–Korobov
+gives `(log X)^{-1/3+ε}`.  Either is a major classical formalization (Weyl/Vinogradov sums).
+
+**Route (B) — note appendix (general `f`, no zero-free region at all).**  Their Theorem 3:
+saving `(log X)^{-1/48}` with `H = (log X)^{1/48}`, `log P = (log X)^{1−1/48}`,
+`log Q = log X/log log X`, via [4, Lemmas 3, 8, 11, 12, 14]:
+split `t`-set at `|Q_{j,H}(1+it)| ≶ (log X)^{-100}`; small side by MVT; large side by a
+well-spaced set `𝒯` with `|𝒯| ≪ exp((log X)^{1/48+o(1)})` ([4, L8]: adapted-moment count for the
+SHORT prime polynomial), each point paid by the Halász sup for the long factor
+(`≪ (log X)^{-1/24}`, [4, L3] — the corpus's `MoebiusUniformFrequency` layer is this bound's
+mechanism) times the prime large-value refinement ([4, L11]) whose spacing factor
+`exp(−(log X)^{1/5})` absorbs `|𝒯|` since `1/5 > 1/48`.  **Every ingredient is in the corpus's
+existing technology class** (mean values, spaced large-value counts, Halász distance) — no new
+zero-free region.
+
+**Frozen stage 3b″ (route B), missing-piece list against the corpus:**
+1. `[LICENSED — first Lean unit]` variable-`ℓ` adapted moment count for short prime polynomials
+   (range ratio `e^{1/H}`): the ℓ-fold analogue of `PrimeCubeSupport` (fibre of an ordered
+   ℓ-tuple of primes with fixed product ≤ ℓ^{ℓ−1}; mass `≤ ℓ!·(∑|b_p|²)^ℓ`), feeding the
+   spaced-count bound `|𝒯| ≪ exp((log X)^{1+o(1)}/log P)`.  Consumer now certified.
+2. Halász–Montgomery duality / prime large-value refinement with the spacing decay ([4, L11]) —
+   audit `DirichletLargeValuesCount`, `AlmostOrthogonality`, `CharacterSeparation` first.
+3. Halász sup for the sharp long factor `F_{j,H}` ([4, L3]) — bridge from `MoebiusUniformFrequency`
+   (smooth Euler sums) to sharp cutoffs; this is the known "mean-value Halász" frontier.
+4. Ramaré + short-range splitting assembly ([4, L12] = note (3)+(5)) — corpus has all pieces.
+5. Multiplicative Parseval ([4, L14] / note Lemma 4) — stage 3a covers the additive shape;
+   decide additive vs multiplicative normalization at assembly time.
+
+- 2026-08-04 — 3b′ induction guess superseded by the note's actual architecture; route (B)
+  frozen; unit 1 licensed.
+
+## 2026-08-04 route-B unit 1 built: the variable-ℓ adapted moment
+
+`RHTower/Sieve/PrimePowerSupport.lean` (wired into `RHTower.lean`; targeted build 8802 jobs;
+axioms only `propext, Classical.choice, Quot.sound`; zero warnings):
+
+- `powIdx`, `powIdx_val_add_one` — the `ℓ`-tuple product index in `Fin (N^ℓ)`;
+- `dirPoly_convPow` — **the `ℓ`-th power of a Dirichlet polynomial is a Dirichlet polynomial**
+  (`Finset.prod_univ_sum` over the pi-type, phases multiplied via `Real.log_prod` and
+  `Complex.exp_sum`);
+- `sum_normSq_convPow_le_of_support` — the power's `ℓ²` mass through an arbitrary support;
+- `powFibreOn_primeSupport_card_le` — a tuple of primes with fixed product has every coordinate
+  among the ≤ `ℓ` anchor primes (`Prime.dvd_finsetProd_iff`), so the prime-supported fibre has
+  at most `ℓ^ℓ` points (fibre ⊆ `piFinset` of the anchor image);
+- `sum_normSq_convPow_le_of_prime_support` — mass `≤ ℓ^ℓ·(∑‖b_p‖²)^ℓ`;
+- `largeValues_pow_setOf`, `volume_largeValues_pow_symm_le_of_prime_support` — the adapted-moment
+  level-set bound
+
+  ```text
+  V^{2ℓ}·|{t ∈ [-T,T] : |F(t)| ≥ V}| ≤ 2(T + 4N^ℓ(1+log N^ℓ))·ℓ^ℓ·(∑_p ‖b_p‖²)^ℓ,
+  ```
+
+  for every `ℓ ≠ 0` — the sixth moment (`ℓ = 3`, fibre 9) is now the special case.
+
+This is the counting engine for the route-B well-spaced set `𝒯`: with `N` the short prime range
+`e^{(j+1)/H}` and `ℓ ≈ log T/(j/H)` so that `N^ℓ ≍ T`, the `ℓ^ℓ = exp(ℓ log ℓ)` fibre cost is
+exactly the tolerable `exp((log X)^{1/48+o(1)})` loss of [4, Lemma 8].
+
+**Next units:** (2) the spaced-count corollary of this bound (from measure to well-spaced point
+counts — the corpus's `DirichletLargeValuesCount` pattern at variable `ℓ`); then the [4, L11]
+duality refinement audit; then the numeric re-certification of the full route-B bookkeeping with
+these corpus constants before assembly.
+
+- 2026-08-04 — unit 1 built and verified.

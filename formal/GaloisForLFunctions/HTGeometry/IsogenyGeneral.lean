@@ -46,22 +46,27 @@ theorem cokerCard_eq_card_quotient (f : G →* H) : f.cokerCard = Nat.card (H �
 
 end MonoidHom
 
+/-- A homomorphism of additive commutative groups is an **isogeny** when both its kernel and its
+cokernel are finite. -/
+structure IsAddIsogeny {G H : Type*} [AddCommGroup G] [AddCommGroup H] (f : G →+ H) : Prop where
+  /-- The kernel is finite. -/
+  finite_ker : Finite f.ker
+  /-- The cokernel is finite. -/
+  finite_coker : Finite (H ⧸ f.range)
+
 /-- A homomorphism of commutative groups is an **isogeny** when both its kernel and its cokernel
 are finite.  Surjective maps with finite kernel and injective maps with finite cokernel are the
 two extreme cases. -/
-@[to_additive IsAddIsogeny /-- A homomorphism of additive commutative groups is an **isogeny**
-when both its kernel and its cokernel are finite. -/]
-def IsIsogeny (f : G →* H) : Prop := Finite f.ker ∧ Finite (H ⧸ f.range)
+@[to_additive IsAddIsogeny]
+structure IsIsogeny (f : G →* H) : Prop where
+  /-- The kernel is finite. -/
+  finite_ker : Finite f.ker
+  /-- The cokernel is finite. -/
+  finite_coker : Finite (H ⧸ f.range)
 
 namespace IsIsogeny
 
 variable {f : G →* H} {g : H →* K}
-
-@[to_additive]
-theorem finite_ker (hf : IsIsogeny f) : Finite f.ker := hf.1
-
-@[to_additive]
-theorem finite_coker (hf : IsIsogeny f) : Finite (H ⧸ f.range) := hf.2
 
 @[to_additive]
 theorem kerCard_ne_zero (hf : IsIsogeny f) : f.kerCard ≠ 0 := by

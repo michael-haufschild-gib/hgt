@@ -1,10 +1,10 @@
 # Arithmetic Xi--Stokes rank-port realization
 
 - **ID:** `arithmetic-xi-stokes-rank-port-realization`
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / REALIZATION AUDIT
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / ARITHMETIC REALIZATION / VANISHING AND SCALING LAW
 - **Source:** `../4-publication-ready/polarized-stokes-microlocal-witt-law/` and Route R/L source-dagger corpus
-- **Statement:** `[CONJECTURE]` A source-defined arithmetic comparison realizes the Xi horizontal defect as the unique one-port corona quotient of a coefficient-generated Stokes polarization, without identifying the continuously varying defect with an integral physical-rank class and without assuming its vanishing.
+- **Statement:** `[PROVED]` A pre-divisor arithmetic central character realizes the Xi horizontal defect in the unique Stokes determinant-rank port; reflection pairing gives an exact finite vanishing theorem and a rank-scaled Mertens three-regime law.
 
 ## Goal
 
@@ -55,13 +55,13 @@ whose quotient coordinates are independently defined.
 ## Gates
 
 - [x] 0 → 1 in-progress: exact source-purity and anti-theatre conditions frozen
-- [ ] internal corpus audit complete
-- [ ] external primary-literature audit complete
-- [ ] exact realization constructed with complete paper proof
-- [ ] hostile review confirms it is not a renamed RH-equivalent detector
-- [ ] 1 → 2 fully-proven
-- [ ] 2 → 3 formalized: exact unconditional Lean theorem, targeted build and axiom audit
-- [ ] Stage-4 Stokes manuscript revised only after preceding gates close
+- [x] internal corpus audit complete
+- [x] external primary-literature audit complete
+- [x] exact realization constructed with complete paper proof
+- [x] hostile review confirms it is not a renamed RH-equivalent detector
+- [x] 1 → 2 fully-proven
+- [x] 2 → 3 formalized: exact unconditional Lean theorem, targeted build and axiom audit
+- [x] Stage-4 Stokes manuscript revised after preceding gates closed
 
 ## Falsifiers
 
@@ -95,8 +95,10 @@ whose quotient coordinates are independently defined.
   `n` and reflection sends it to its inverse.  At a Xi divisor point, holonomy-minus-identity on
   the first nonzero jet is exactly `(delta_n(rho)-1)c_rho`, which is the already certified cyclic
   residue transgression on the trace-one ordinary-prime class.
-- **Status:** Stage 1; exact paper theorem and Lean module still required before revision of the
-  Stage-4 manuscript.
+- **Status:** Stage 3. Paper proof is in
+  `../2-fully-proven/arithmetic-xi-stokes-central-rank-port-law.md`; exact theorem module is
+  `formal/GaloisForLFunctions/RHTower/ArithmeticXiStokesCentralRankPort.lean`; Stage-4 manuscript
+  includes the reflection-product vanishing and Mertens theorem.
 
 ## Internal-corpus audit
 
@@ -139,7 +141,7 @@ whose quotient coordinates are independently defined.
   the unique connected channel-invisible determinant weight, and the certified arithmetic
   transgression lands in that port.
 
-## Exact theorem under proof
+## Exact theorem proved
 
 Let `I` be the orbit set of a finite equivariant Puiseux spectrum, `r_i>0`, and let the interaction
 graph join `i,j` when the mixed Hom irregularity is nonzero.  It is complete for distinct orbit
@@ -169,6 +171,26 @@ certified unsquared residue transgression.
 This theorem is unconditional but is not an RH proof: forcing the central holonomy defect to be
 trivial at every Xi support point is still exactly the open global source-null-homology statement.
 
+The strengthened reflection theorem sets
+
+```text
+E_(N,M)(s) = -sum_(p<=N)
+  (delta_p(s)^M-1)(delta_p(1-conj(s))^M-1)/p.
+```
+
+It proves the exact hyperbolic factorization, finite vanishing iff `Re(s)=1/2`, and all three
+regimes for `M(Re(s_N)-1/2)log N`: zero, universal profile
+`4 int_0^1 sinh^2(cu)/u du`, and divergence.
+
+## Formal audit
+
+- Module: `GaloisForLFunctions.RHTower.ArithmeticXiStokesCentralRankPort`
+- Targeted source check: `lake env lean GaloisForLFunctions/RHTower/ArithmeticXiStokesCentralRankPort.lean` — PASS
+- Final module audit: `lake build GaloisForLFunctions.RHTower.ArithmeticXiStokesCentralRankPort` — PASS
+- Axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
+- Forbidden declaration scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
+- Umbrella: imported by `GaloisForLFunctions/RHTower.lean`
+
 ## Log
 
 - 2026-08-04 — created in Stage 1 after the user requested an arithmetic realization connecting the
@@ -178,3 +200,6 @@ trivial at every Xi support point is still exactly the open global source-null-h
   insertion.  Replaced them by the connected central-twist classification: arithmetic enters as
   common monodromy, every relative Stokes/Hom channel cancels it, and determinant detects it with
   the same physical-rank functional `M` appearing in the coarea law.
+- 2026-08-04 — promoted through paper proof and unconditional formalization. Reflection pairing
+  converted the representation law into finite arithmetic vanishing plus rank-scaled Mertens
+  transition theorem. Targeted build and axiom audit passed; Stage-4 paper revised.

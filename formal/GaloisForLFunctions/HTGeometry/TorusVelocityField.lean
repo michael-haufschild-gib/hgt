@@ -339,30 +339,26 @@ theorem torusCharacter_eq_of_scale_eigen [CharZero C] (hconst : ∀ c : C, c′ 
   intro e he u hu
   by_contra hne
   -- the difference polynomial vanishes on the palette
-  set L : IntermediateField C E := torusVelocityField C x with hL
-  set cu : ↥L → ↥L := fun z ↦ z with hcu
-  have hmemC : ∀ c : C, algebraMap C E c ∈ L := fun c ↦ (L).algebraMap_mem c
-  set chiL : (Fin r →₀ ℕ) → ↥L := fun f ↦ ⟨algebraMap C E (torusCharacterAt u f),
-    hmemC (torusCharacterAt u f)⟩ with hchiL
-  set Q : MvPolynomial (Fin r) ↥L :=
+  have hmemC : ∀ c : C, algebraMap C E c ∈ torusVelocityField C x := fun c ↦
+    (torusVelocityField C x).algebraMap_mem c
+  let chiL : (Fin r →₀ ℕ) → ↥(torusVelocityField C x) := fun f ↦
+    ⟨algebraMap C E (torusCharacterAt u f), hmemC (torusCharacterAt u f)⟩
+  have hchiL : ∀ f, (algebraMap (↥(torusVelocityField C x)) E) (chiL f)
+      = torusCharacter C E f u := fun f ↦ algebraMap_torusCharacterAt u f
+  let Q : MvPolynomial (Fin r) ↥(torusVelocityField C x) :=
     ∑ f ∈ P.support, MvPolynomial.monomial f ((chiL f - chiL d) * MvPolynomial.coeff f P)
-    with hQ
+  have hQ : Q = ∑ f ∈ P.support,
+      MvPolynomial.monomial f ((chiL f - chiL d) * MvPolynomial.coeff f P) := rfl
   have hQeval : MvPolynomial.aeval x Q = 0 := by
     rw [hQ, map_sum]
     have hterm : ∀ f ∈ P.support,
         MvPolynomial.aeval x
             (MvPolynomial.monomial f ((chiL f - chiL d) * MvPolynomial.coeff f P))
           = (torusCharacter C E f u - torusCharacter C E d u) *
-            ((algebraMap (↥L) E) (MvPolynomial.coeff f P) * ∏ i, (x i) ^ (f i)) := by
+            ((algebraMap (↥(torusVelocityField C x)) E) (MvPolynomial.coeff f P)
+              * ∏ i, (x i) ^ (f i)) := by
       intro f _
-      rw [MvPolynomial.aeval_monomial, map_mul, map_sub]
-      have h1 : (algebraMap (↥L) E) (chiL f) = torusCharacter C E f u := by
-        rw [hchiL]
-        exact algebraMap_torusCharacterAt u f
-      have h2 : (algebraMap (↥L) E) (chiL d) = torusCharacter C E d u := by
-        rw [hchiL]
-        exact algebraMap_torusCharacterAt u d
-      rw [h1, h2, Finsupp.prod]
+      rw [MvPolynomial.aeval_monomial, map_mul, map_sub, hchiL f, hchiL d, Finsupp.prod]
       rw [show (∏ i ∈ f.support, (x i) ^ (f i)) = ∏ i, (x i) ^ (f i) from
         Finset.prod_subset (Finset.subset_univ f.support) (fun i _ hi ↦ by
           rw [Finsupp.notMem_support_iff.mp hi, pow_zero])]
@@ -373,16 +369,25 @@ theorem torusCharacter_eq_of_scale_eigen [CharZero C] (hconst : ∀ c : C, c′ 
     rw [hscale] at hfixu
     have hdsum : torusCharacter C E d u * MvPolynomial.aeval x P
         = ∑ f ∈ P.support, torusCharacter C E d u *
-            ((algebraMap (↥L) E) (MvPolynomial.coeff f P) * ∏ i, (x i) ^ (f i)) := by
+            ((algebraMap (↥(torusVelocityField C x)) E) (MvPolynomial.coeff f P)
+              * ∏ i, (x i) ^ (f i)) := by
       rw [MvPolynomial.aeval_def, MvPolynomial.eval₂_eq, Finset.mul_sum]
       refine Finset.sum_congr rfl fun f _ ↦ ?_
       rw [show (∏ i ∈ f.support, (x i) ^ (f i)) = ∏ i, (x i) ^ (f i) from
         Finset.prod_subset (Finset.subset_univ f.support) (fun i _ hi ↦ by
           rw [Finsupp.notMem_support_iff.mp hi, pow_zero])]
     rw [hdsum] at hfixu
-    rw [← Finset.sum_sub_distrib]
-    rw [hfixu]
-    simp [sub_self]
+    have hsplit : ∀ f ∈ P.support,
+        (torusCharacter C E f u - torusCharacter C E d u) *
+            ((algebraMap (↥(torusVelocityField C x)) E) (MvPolynomial.coeff f P)
+              * ∏ i, (x i) ^ (f i))
+          = torusCharacter C E f u *
+              ((algebraMap (↥(torusVelocityField C x)) E) (MvPolynomial.coeff f P)
+                * ∏ i, (x i) ^ (f i))
+            - torusCharacter C E d u *
+              ((algebraMap (↥(torusVelocityField C x)) E) (MvPolynomial.coeff f P)
+                * ∏ i, (x i) ^ (f i)) := fun f _ ↦ sub_mul _ _ _
+    rw [Finset.sum_congr rfl hsplit, Finset.sum_sub_distrib, hfixu, sub_self]
   have hQ0 : Q = 0 := hindep hQeval
   have hcoeff := congrArg (MvPolynomial.coeff e) hQ0
   rw [hQ, MvPolynomial.coeff_zero] at hcoeff
@@ -392,12 +397,12 @@ theorem torusCharacter_eq_of_scale_eigen [CharZero C] (hconst : ∀ c : C, c′ 
     rw [MvPolynomial.coeff_monomial, if_pos rfl] at hcoeff
     rcases mul_eq_zero.mp hcoeff with h | h
     · apply hne
-      have := congrArg (algebraMap (↥L) E) (sub_eq_zero.mp h)
-      rw [algebraMap_torusCharacterAt, algebraMap_torusCharacterAt] at this
-      exact this
+      have hEq := congrArg (algebraMap (↥(torusVelocityField C x)) E) (sub_eq_zero.mp h)
+      rw [hchiL e, hchiL d] at hEq
+      exact hEq
     · exact hcP h
   · intro f _ hfe
-    rw [MvPolynomial.coeff_monomial, if_neg (Ne.symm hfe)]
+    rw [MvPolynomial.coeff_monomial, if_neg hfe]
   · intro hnot
     exact absurd he hnot
 

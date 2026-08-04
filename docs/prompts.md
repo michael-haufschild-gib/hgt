@@ -34,7 +34,7 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem for the cards in docs/drafts/pipeline/3-formalized/new_scientific_knowledge/ccm
+formalize UNCONDITIONALLY in lean any proven theorem for docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/other/isogeny-tail-maurer-cartan-holography.md
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done - no simplifications.
 
@@ -112,7 +112,9 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about this topic: we assume that the actual route leading to the rh proof will be a "frankenstein" that combines parts of every route we investigated so far in a unique and creative way. we assume that this will require a creative reinterpretation of the problem and once the rh proof is delivered it will become "of course, why did nobody think of it, it is so obvious" in hindsight.
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about this topic: docs/reports/mass-shifted-spectral-trace-route.md 
+
+attack the "### 9.3 Exact open core" by using a heavy loop of conjecturing -> proof or fail -> conjecturing -> proof or fail -> conjecturing -> ...
 
 collect enough novel and significant knowledge to overcome the obstacles. do not get married to a specific route or drift into classical routes. our research corpus is ahead of your training data and literature, never assume how the solution must look like but let our research corpus guide you.
 
@@ -138,6 +140,8 @@ folders to check for already existing research:
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 - formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
 - formal/GaloisForLFunctions/QuantumAlg for lean related to quantum algorithm around prime numbers
+- formal/GaloisForLFunctions/QECLean.lean for lean related to Quantum Error Correction
+- formal/GaloisForLFunctions/PNTPlus.lean for lean related to Prime Number Theorem
   
 goal is met when lean corpus has an uncondtional formal proof for rh.
 

@@ -105,6 +105,8 @@ ALLOWED_ROOT_LEAN = {
     "Hurwitz.lean",
     "KummerRootApplications.lean",
     "MainTheorems.lean",
+    "PNTPlus.lean",
+    "QECLean.lean",
     "QuantumAlg.lean",
     "RHTower.lean",
     "U0.lean",

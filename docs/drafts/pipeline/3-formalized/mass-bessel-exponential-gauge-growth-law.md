@@ -1,8 +1,8 @@
 # Mass-Bessel exponential-gauge growth law
 
-**Stage:** 2 — fully proven on paper  
+**Stage:** 3 — formalized in Lean 4  
 **Date frozen:** 2026-08-04  
-**Label:** `[BRIDGE] [PAPER-PROVED]`  
+**Label:** `[BRIDGE] [LEAN-PROVED]`  
 **Origin:** positive survivor of the failed critical-gauge energy conjecture
 
 ## 1. Exact theorem
@@ -17,9 +17,10 @@ Let `a>\lambda>0`.  For `u,\xi\in\mathbb R`, set
 where the square root is principal, and let `G_{a,\lambda}(u)` be the
 corresponding Fourier multiplier on `L^2(\mathbb R)`.
 
-Then:
+Then the dependency-closed core is:
 
-1. `G_{a,\lambda}` is a strongly continuous group of bounded operators;
+1. `G_{a,\lambda}(0)=I` and
+   `G_{a,\lambda}(u+v)=G_{a,\lambda}(u)G_{a,\lambda}(v)`;
 2. for every real `u`,
    \[
    \|G_{a,\lambda}(u)\|_{L^2\to L^2}=e^{\lambda|u|};
@@ -148,14 +149,37 @@ Klein--Gordon theory.  Its value here is the route-specific identification of
 the Bessel `1/2` barrier with prime-source gauge.  Label remains `[BRIDGE]`, not
 `[NOVEL]`, unless an external exact-collision search proves otherwise.
 
-## 7. Lean target
+## 7. Lean proof
 
-Formalize the algebraic core without spectral computation:
+Module:
 
-1. define the real and imaginary parts of the principal square root on the
-   curve `(\xi-i\lambda)^2+a^2`;
-2. prove `|q(\xi)|<\lambda` and the two limits;
-3. deduce the exact supremum `\sup_\xi e^{u q(\xi)}=e^{\lambda|u|}`;
-4. prove the abstract equivalent-norm no-unitarization corollary.
+`formal/GaloisForLFunctions/HTGeometry/MassGaugeHalfWaveL2.lean`
 
-Status: `[PAPER-PROVED]`; Lean module not yet written.
+Exact capstones:
+
+- `massGaugeHalfWaveL2_zero_apply`;
+- `massGaugeHalfWaveL2_add_apply`;
+- `massGaugeHalfWaveL2_norm_eq`;
+- `massGaugeHalfWaveL2_no_equivalent_invariant_size`.
+
+The norm lower bound is not obtained from an attained supremum.  Lean extracts
+a finite positive-measure interval inside the appropriate radiation tail and
+tests the multiplier on its normalized indicator.  This proves the actual
+`L²` continuous-linear-map norm, not only a pointwise symbol estimate.
+
+The last capstone is stronger than the Hilbert-norm corollary: any real size
+functional bounded above and below by positive multiples of `L²` and invariant
+along one nonzero orbit yields `False`.
+
+The standard strong-continuity corollary remains paper-level and is not used by
+the route or any Lean capstone.  Algebraic group law, exact norm, and
+no-unitarization obstruction are unconditional in Lean.
+
+Verification:
+
+- `lake env lean GaloisForLFunctions/HTGeometry/MassGaugeHalfWaveL2.lean`;
+- `lake build GaloisForLFunctions.HTGeometry.MassGaugeHalfWaveL2`;
+- `#print axioms` on all capstones: only `propext`, `Classical.choice`,
+  `Quot.sound`.
+
+Status: `[LEAN-PROVED]`.

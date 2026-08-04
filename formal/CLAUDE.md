@@ -14,10 +14,20 @@ of six theorem areas:
 | q62 Böttcher | `GaloisForLFunctions.Bottcher` | `Bottcher.q62_independence`, `Bottcher.q62_mixed`, `Bottcher.q62_phiMero_norm_gap`, `Bottcher.q62_phiMero_linGap`, `Bottcher.q62_phiMero_linGap_roots`, `Bottcher.q62_phiMero_norm_gap_roots`, `Bottcher.q62_phiMero_mixed_far_roots`, `Bottcher.q62_phiMero_mixed_far_roots_swapped` |
 | Hilbert metrics | `GaloisForLFunctions.HilbertMetric` | finite graded Pluecker partitions and Gaussian feature-determinant laws |
 
-`GaloisForLFunctions.MainTheorems` imports all six, plus one vendored area:
-`GaloisForLFunctions.QuantumAlg` (quantum algorithms; Apache-2.0, read-only,
-see `GaloisForLFunctions/QuantumAlg/PROVENANCE.md`).  Its modules use the Lean
-module system (`module`, `public import`); ours do not.
+`GaloisForLFunctions.MainTheorems` imports all six, plus three vendored areas
+(all Apache-2.0, all read-only — re-sync from upstream instead of editing, and
+read the area's `PROVENANCE.md` before touching it):
+
+| Vendored area | Upstream | Contents |
+|---|---|---|
+| `GaloisForLFunctions.QuantumAlg` | Lean-QuantumAlg | quantum algorithms; uses the Lean module system (`module`, `public import`), ours do not |
+| `GaloisForLFunctions.PNTPlus` | PrimeNumberTheoremAnd | prime number theorem with error term, Wiener–Ikehara, Perron/Mellin calculus, Selberg sieve, Brun–Titchmarsh |
+| `GaloisForLFunctions.QECLean` | QECLean | quantum error correction: Pauli/symplectic layer, stabilizer framework, toric/surface/Steane/bivariate-bicycle codes |
+
+`PNTPlus` proves the PNT independently of `RHTower/Sieve/ChebyshevPNT.lean`;
+both are kept (see `PNTPlus/PROVENANCE.md` for the overlap map).  Parts of
+`QECLean` rest on `native_decide` and so depend on `Lean.ofReduceBool` — check
+`#print axioms` before citing one of its distance certificates.
 
 ## Start Here
 

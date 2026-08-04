@@ -1,0 +1,7 @@
+import GaloisForLFunctions.QECLean.RepetitionCode.EncodeDecode
+import GaloisForLFunctions.QECLean.RepetitionCode.LogicalX
+import GaloisForLFunctions.QECLean.RepetitionCode.Recovery
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+set_option maxSynthPendingDepth 3

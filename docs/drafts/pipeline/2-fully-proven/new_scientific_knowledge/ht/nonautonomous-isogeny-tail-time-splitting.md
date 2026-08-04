@@ -1261,3 +1261,26 @@ distinct characters (test on `u = (2, 1, ..., 1)`), so Dedekind's independence o
 This is the input for the remaining invariant theory: with `E = L(x)` and the deck action diagonal,
 the fixed field of a subgroup `S` of the constant torus is `L` adjoined the monomials whose exponent
 vectors annihilate `S`, which will give items (6) and (7) for `G_m^r`.
+
+## The eigen-support law — PROVED
+
+    TorusVelocityField.lean   (extended)
+      torusCharacterAt, algebraMap_torusCharacterAt
+      aeval_torusScale :
+        rescaling a polynomial in the palette multiplies each monomial by its character
+      torusCharacter_eq_of_scale_eigen :
+        if a polynomial in the palette is an eigenvector of every rescaling in a set S, with
+        eigenvalue the character of an exponent vector d, then every monomial occurring in it has
+        the same character as d on S
+
+This is the invariant-theoretic core at the polynomial level, and it is exactly where the rank-`r`
+torsor pays off: the monomials `x^e` are linearly independent over the velocity field (that is
+`algebraicIndependent_palette_over_velocityField`), so the eigen-equation can be read coefficientwise
+and each monomial is forced into the character class of `d`.
+
+What remains for items (6) and (7) at rank `r` is the passage from polynomials to the fraction field:
+for a fixed element `z = P/Q`, the denominator ideal `{R : R z ∈ L[x]}` is stable under the action,
+hence (by the eigen-support law applied to its elements) contains a monomial, so `z` can be written
+with monomial denominator and the law applies directly to the numerator.  With that, the fixed field
+of a subgroup `S` of the constant torus is `L` adjoined the monomials annihilated by `S`, which with
+the row-lattice monotonicity gives the tail of a torus protocol as `C<x^(Λ_∞), velocities>`.
