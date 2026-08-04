@@ -347,7 +347,7 @@ quotient vector space.
 For a finite-dimensional vector space $V$ and $\varepsilon\in\{0,1\}$, define the exponential
 germ $E(V,\varepsilon)$ by
 \[
- E(W)=V,qquad (E(L),E(R))=
+ E(W)=V,\qquad (E(L),E(R))=
  \begin{cases}(V,0),&\varepsilon=1,\\(0,V),&\varepsilon=0,
  \end{cases}
 \]
@@ -516,7 +516,7 @@ $P_A(x)=\sum_i x_i^2+\sum_e\ell_e\nu_e(x)^2$.
 
 \begin{proposition}[Principal-conormal Hessian]\label{prop:hessian}
 \begin{equation}\label{eq:hessian}
-                   \frac12\Hess(P_A)=I+\sum_e\ell_e,d\nu_e\otimes d\nu_e.
+                   \frac12\Hess(P_A)=I+\sum_e\ell_e\,d\nu_e\otimes d\nu_e.
 \end{equation}
 The sole subtractive Hessian term in $Q_A$ is $-(H-1)dM\otimes dM$.
 \end{proposition}
@@ -774,7 +774,13 @@ For
  B=\begin{pmatrix}0&6&4\\6&0&3\\4&3&0\end{pmatrix},\qquad C=2I-B,
 \]
 one has $\one^TC\one=-20$, $\det C=-258$, and $\operatorname{tr}C=6$.  Hence inertia is
-$(2,1,0)$.  One negative direction is sharp.
+$(2,1,0)$.  Explicitly, with
+$u=x-3y-2z$ and $v=y+\frac{15}{16}z$,
+\[
+ (x,y,z)C(x,y,z)^T=2u^2-16v^2+\frac{129}{16}z^2.
+\]
+The triangular coordinate change has determinant one, so this is a congruence diagonalization.
+One negative direction is sharp.
 \end{example}
 
 \section{Novelty boundary and falsifiers}\label{sec:novelty}

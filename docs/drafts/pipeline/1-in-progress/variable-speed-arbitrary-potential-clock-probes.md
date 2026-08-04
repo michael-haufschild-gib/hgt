@@ -38,14 +38,20 @@ weakened before the construction can be repeated.
    iterates at `|t| ≤ T` never look outside it, and transport every conclusion of the global theory
    along that equality.
 2. **The two-parameter Hill propagator.** The Duhamel kernel needs the solution started at an
-   arbitrary time `s`, not at `0`. Time translation of the speed gives it:
-   `hillFlowFrom ω s y₀ t := hillFlow (ω(·+s)) y₀ (t-s)`. Needed: it solves the equation, its value
-   at `t = s` is `y₀`, the energy bound in the form `E(t) ≤ E(s)e^{2K|t-s|}`, and joint continuity in
-   `(t, s, ξ)` — the last from the corpus's flow-comparison estimate `norm_hillFlow_sub_le`, since
-   two base times give two coefficient functions close on windows.
-3. **The multipliers.** `hillCosc t ξ := u_c(t;0,ξ)/ω(0,ξ)` and `hillSinc t s ξ := u_s(t;s,ξ)`, the
-   damped cosine and the sine propagator, as elements of `E →ᵇ ℂ`; both bounded on windows, and the
-   sine gains one power of the weight because `ω(t)|u_s| ≤ e^{K|t-s|}` and `ω ≥ ½ min(m,c_min)⟨ξ⟩`.
+   arbitrary time `s`, not at `0`. Do *not* build it by translating the speed: the base-time
+   derivative of a translated flow is painful, and it is not needed. For any fundamental pair the
+   propagator is the bilinear combination
+
+   ```
+   P(t,s) = S(t)C(s) - C(t)S(s),
+   ```
+
+   already separated in the two times and built from the two base-`0` solutions the corpus owns. All
+   that has to be added is the Wronskian normalization `CS' - SC' = 1`.
+3. **The multipliers.** `hillCoscSymbol t ξ := C(t,ξ)/ω(0,ξ)` and `hillPropSymbol t s ξ := P(t,s,ξ)`
+   as elements of `E →ᵇ ℂ`; both bounded on windows, and the free term must carry one power of
+   damping — the undamped cosine family is *not* norm-continuous in time (at a fixed time difference
+   the sup over frequencies of `|cos(tω) - cos(t'ω)|` is `2`).
 4. **The driven flow.** `hillPotentialFlow a G₀ := volterraSolution (free term) (kernel)` with the
    windowed theory, its pointwise Duhamel identity, and the two time derivatives — the second one
    being the equation `∂ₜ²û = -ω(t)²û + (a_t * û)`.
@@ -61,3 +67,65 @@ weakened before the construction can be repeated.
 The principal part must still be independent of the point. A chart whose principal part varies in
 space needs genuine variable-coefficient hyperbolic theory — energy estimates in Sobolev spaces with
 commutator terms — of which mathlib has none.
+
+## Progress
+
+### Phase 1 — the windowed Volterra theory: **done**
+
+`formal/GaloisForLFunctions/HTGeometry/VolterraWindowedEquation.lean`:
+
+- `timeClamp`, `volterraClampF`, `volterraClampK` — the data clamped to a window;
+- **`volterraIterate_congr_of_window`** — data agreeing on a window give the same Picard iterates
+  inside it, because the integral runs between `0` and the time; hence
+  **`volterraSolution_congr_of_window`**;
+- **`volterraSolution_eq_window`**, **`norm_volterraSolution_le_window`**,
+  **`continuousOn_volterraSolution_window`** — every conclusion of the global theory, transported to
+  a window on which the data are bounded;
+- `VolterraLocallyBounded` and **`volterraSolution_eq_of_locallyBounded`**,
+  **`continuous_volterraSolution_of_locallyBounded`** — data bounded on every window, which is what a
+  propagator with growing energy supplies.
+
+Nothing of the 440-line global development had to be reproved.
+
+### Phase 2 — the Duhamel calculus and the fundamental pair: **done**
+
+`formal/GaloisForLFunctions/HTGeometry/DuhamelVariableOscillator.lean` — the scalar calculus with an
+*abstract* fundamental pair, since a variable frequency has no addition formula:
+
+- `duhamelPairFirstPart`, `duhamelPairSecondPart` — the two moments of the source, with
+  `t`-independent integrands;
+- `duhamelPair`, `duhamelPairDeriv` and **`hasDerivAt_duhamelPair`** — the first derivative, where the
+  two source terms cancel;
+- **`hasDerivAt_duhamelPairDeriv`** — the second derivative *is* the driven equation
+  `u'' = -ω²u + h`, the source reappearing exactly once, weighted by the Wronskian.
+
+`formal/GaloisForLFunctions/HTGeometry/HillFundamentalPair.lean`:
+
+- `hillCos`, `hillSin` and their velocities — the two canonical solutions;
+- `const_of_hasDerivAt_zero` and **`hillWronskian_eq_one`** — the Wronskian is constant along the
+  equation and equals one, which is the normalization the Duhamel formula needs;
+- `hillProp` — the propagator `S(t)C(s) - C(t)S(s)`, separated in the two times, vanishing on the
+  diagonal;
+- **`mul_abs_hillSin_massive_le`**, `abs_hillSinDeriv_massive_le`, `abs_hillSin_massive_le` — the sine
+  member gains one power of the frequency, its velocity none, both uniformly in the frequency.
+
+`formal/GaloisForLFunctions/HTGeometry/HillPropagatorSymbol.lean` — the propagator read as a symbol:
+
+- `hillPropSymbol`, `hillCoscSymbol` and their derivatives in each time variable;
+- `hillSpeedRatio` and **`abs_hillPropSymbol_le`**, **`abs_hillCoscSymbol_le`** — bounded on every
+  window of times by `2(max(1, c(0)/c_min)/m)e^{K(|t|+|s|)}`, with **no frequency on the right**;
+- **`abs_hillPropSymbolTimeDeriv_le`**, **`abs_hillPropSymbolBaseDeriv_le`**,
+  **`abs_hillCoscSymbolDeriv_le`** — and so are both partial derivatives, which is what makes the
+  symbol Lipschitz in the times *uniformly in the frequency*: the undamped cosine family is not, and
+  that is exactly why the free term carries one power of damping;
+- `continuous_hillPropSymbol_freq`, `continuous_hillCoscSymbol_freq` — continuity in the frequency.
+
+Axioms of all of the above: `[propext, Classical.choice, Quot.sound]`.
+
+### What remains
+
+3. Package the symbols as bounded continuous functions and prove joint continuity in the two times
+   (mean value theorem with the window constants above).
+4. The driven flow, by the windowed Volterra theory, and its pointwise Duhamel identity.
+5. The field equation with the potential, in the chart.
+6. The chart layer, the probes, and the scale law.

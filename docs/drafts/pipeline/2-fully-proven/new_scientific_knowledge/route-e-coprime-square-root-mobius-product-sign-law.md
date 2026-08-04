@@ -8726,3 +8726,56 @@ So two of the card's three external inputs are now single averaged short-interva
 arithmetic function each, over the `√x` starting points `x/a`.  The third, `hMRp`, is the same
 statement for the weights `μ²·1_{p∤·}` at the rescaled parameters; reducing it the same way is the
 next step.
+
+### All three inputs reduced; the Abel layer generalised
+
+**Correction to the previous entry.**  The Abel development first written inside
+`SquarefreeLogSum.lean` has been generalised and moved: `weightLogSum_abel`, `weightLogSum_eq`,
+`abs_weightLogSum_sub_le`, `sum_Icc_one_split`, `sum_Icc_telescope_inv`, `sum_Icc_shift_one` and the
+endpoint limits now live in **`RHTower/Sieve/LogSumFromCount.lean`**, stated for an arbitrary weight.
+`SquarefreeLogSum.lean` is now the `μ²` instance only.  The mathematical content is unchanged; the
+names `squarefreeLogSum_abel`, `squarefreeLogSum_eq`, `abs_squarefreeLogSum_sub_le` no longer exist.
+
+**`RHTower/Sieve/LogSumFromCount.lean` — the general passage.**  For any weight `f` with
+
+    | ∑_{n ≤ m} f(n) − mc |  ≤  C√m + C,
+
+**`tendsto_block_log_mean_of_count`** gives
+
+    ∑_{⌈u⌉ ≤ a ≤ ⌊2u⌋} f(a)/a  →  c · log 2.
+
+Abel summation trades `1/a` for the partial sums against `1/m − 1/(m+1)`, whose total mass over
+`(M, N]` is `1/(M+1) − 1/(N+1)`; the counting error is therefore multiplied by something of size
+`1/M`, and `√N/M → 0` across a block of ratio two.  **The natural mean and the logarithmic mean of a
+square-root-regular weight agree** — that is the whole reason the normalisation by `h√x log 2`
+produces the square of the block mean.
+
+**`RHTower/Sieve/CoprimeLogSum.lean` — the third weight.**
+`abs_coprimeSquarefreeWeight_le_one`, **`abs_weightErr_coprime_le`** (the corpus's coprime window
+estimate at starting point `0`, with `R = ⌊√m⌋+1`, giving `3√m + 3`), and
+
+    **`tendsto_coprime_block_log_mean`** :  ∑_{⌈u⌉ ≤ a ≤ ⌊2u⌋} μ²(a)·1_{p∤a}/a → (D p/(p+1)) log 2,
+
+which matches `SharedSectorLimit.tendsto_blockMean_coprime` exactly.
+
+**`RHTower/Sieve/MRFibreDensityAt.lean` — the moving pair of parameters.**
+`AveragedShortIntervalDensityAt f c X hh`, and **`MRBilinearAt_of_averaged`**: for any unit-bounded
+weight whose count is `mc + O(√m)` and whose block mean tends to `c`,
+
+    ∑_{a ∈ block(X)} | (∑_{b ∈ fibre(a)} f(b)) − c·h√X/a | = o(h√X)  ⟹  MRBilinearAt f X hh.
+
+Instantiated at `μ²·1_{p∤·}` and `(X, h) = (x/p², h/p)` this is
+**`MRBilinearAt_coprime_of_averaged`** — the card's `hMRp`.
+
+**`RHTower/Sieve/RouteEAveraged.lean` (continued) — the card's `(3)` on averaged estimates alone.**
+**`route_e_sign_density_of_averaged_all`** and **`route_e_signClass_nonempty_of_averaged_all`** take
+exactly three hypotheses beyond the window law:
+
+    ∑_{a ∈ block} |∑_{b ∈ fibre(a)} μ(b)|                        = o(h√x),
+    ∑_{a ∈ block} |∑_{b ∈ fibre(a)} μ²(b) − D·h√x/a|             = o(h√x),
+    ∑_{a ∈ block(x/p²)} |∑_{b ∈ fibre(a)} μ²1_{p∤}(b) − D_p·h√x/(pa)| = o(h√x/p)   (each prime `p`),
+
+and prove the card's `(3)` and its consequence.  **Every one of the card's external inputs is now a
+single averaged short-interval estimate for one arithmetic function**, over the block of starting
+points, with all three constants (`0`, `D²`, `D²/(p+1)²`) derived from logarithmic block means rather
+than assumed.  Nothing else about Matomäki–Radziwiłł's theorem is used.

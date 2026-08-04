@@ -54,10 +54,10 @@ theorem deningerFlip_contract_eq {ω : E → E [⋀^Fin (n + 1)]→L[ℂ] ℂ} (
 
 /-- The integrand of the homotopy operator is differentiable in the base point. -/
 theorem deningerHomotopyKernel_hasFDerivAt {ω : E → E [⋀^Fin (n + 1)]→L[ℂ] ℂ}
-    (hana : AnalyticOnNhd ℂ ω Set.univ) (x : E) (t : ℝ) :
+    (hdiff : Differentiable ℂ ω) (x : E) (t : ℝ) :
     HasFDerivAt (deningerHomotopyKernel ω t) (deningerHomotopyKDeriv ω x t) x := by
   have hω : HasFDerivAt ω (fderiv ℂ ω (deningerScale t x)) (deningerScale t x) :=
-    (hana _ (Set.mem_univ _)).differentiableAt.hasFDerivAt
+    (hdiff (deningerScale t x)).hasFDerivAt
   have hscale : HasFDerivAt (fun y : E => deningerScale t y) (deningerScale t) x :=
     (deningerScale t).hasFDerivAt
   have hcomp : HasFDerivAt (fun y : E => ω (deningerScale t y))
@@ -154,16 +154,10 @@ theorem deningerHomotopyKDeriv_continuous {ω : E → E [⋀^Fin (n + 1)]→L[�
 
 /-- **The homotopy operator differentiates to the derivative of its integrand.** -/
 theorem deningerHomotopyOperator_hasFDerivAt {ω : E → E [⋀^Fin (n + 1)]→L[ℂ] ℂ}
-    (hana : AnalyticOnNhd ℂ ω Set.univ) (w₀ : E) :
+    (hdiff : Differentiable ℂ ω) (hcont' : Continuous (fderiv ℂ ω)) (w₀ : E) :
     HasFDerivAt (deningerHomotopyOperator ω)
       (∫ t in (0 : ℝ)..1, deningerHomotopyKDeriv ω w₀ t) w₀ := by
-  have hcont : Continuous ω := by
-    rw [continuous_iff_continuousAt]
-    exact fun x => (hana x (Set.mem_univ x)).continuousAt
-  have hana' : AnalyticOnNhd ℂ (fderiv ℂ ω) Set.univ := hana.fderiv_of_isOpen isOpen_univ
-  have hcont' : Continuous (fderiv ℂ ω) := by
-    rw [continuous_iff_continuousAt]
-    exact fun x => (hana' x (Set.mem_univ x)).continuousAt
+  have hcont : Continuous ω := hdiff.continuous
   have hKne : ((fun p : ℝ × E => (p.1 : ℂ) • p.2) ''
       (Set.Icc (0 : ℝ) 1 ×ˢ Metric.closedBall w₀ 1)).Nonempty :=
     ⟨(0 : ℂ) • w₀, ⟨(0, w₀), ⟨⟨le_refl 0, zero_le_one⟩, Metric.mem_closedBall_self zero_le_one⟩,
@@ -255,7 +249,7 @@ theorem deningerHomotopyOperator_hasFDerivAt {ω : E → E [⋀^Fin (n + 1)]→L
     ((deningerHomotopyKDeriv_continuous hcont hcont' w₀).aestronglyMeasurable)
     (Filter.Eventually.of_forall hbound)
     (intervalIntegrable_const)
-    (Filter.Eventually.of_forall fun t _ x _ => deningerHomotopyKernel_hasFDerivAt hana x t)
+    (Filter.Eventually.of_forall fun t _ x _ => deningerHomotopyKernel_hasFDerivAt hdiff x t)
 
 /-- A natural-number multiple in a complex vector space is the multiple by the cast scalar. -/
 theorem deningerNsmul_eq_cast_smul {M : Type*} [AddCommGroup M] [Module ℂ M] (k : ℕ) (m : M) :
@@ -274,19 +268,13 @@ theorem deningerIntegral_comp_comm {X Y : Type*} [NormedAddCommGroup X] [NormedS
 /-- **The Poincaré lemma in degree `n + 1`**: a closed holomorphic form on a finite-dimensional
 complex vector space is the exterior derivative of the homotopy operator applied to it. -/
 theorem deningerExtDeriv_homotopyOperator {ω : E → E [⋀^Fin (n + 1)]→L[ℂ] ℂ}
-    (hana : AnalyticOnNhd ℂ ω Set.univ) (hclosed : ∀ y : E, extDeriv ω y = 0) (x : E) :
-    extDeriv (deningerHomotopyOperator ω) x = ω x := by
-  have hcont : Continuous ω := by
-    rw [continuous_iff_continuousAt]
-    exact fun y => (hana y (Set.mem_univ y)).continuousAt
-  have hana' : AnalyticOnNhd ℂ (fderiv ℂ ω) Set.univ := hana.fderiv_of_isOpen isOpen_univ
-  have hcont' : Continuous (fderiv ℂ ω) := by
-    rw [continuous_iff_continuousAt]
-    exact fun y => (hana' y (Set.mem_univ y)).continuousAt
+    (hdiff : Differentiable ℂ ω) (hcont' : Continuous (fderiv ℂ ω))
+    (hclosed : ∀ y : E, extDeriv ω y = 0) (x : E) : extDeriv (deningerHomotopyOperator ω) x = ω x := by
+  have hcont : Continuous ω := hdiff.continuous
   have hDcont : Continuous fun t : ℝ => deningerHomotopyKDeriv ω x t :=
     deningerHomotopyKDeriv_continuous hcont hcont' x
   -- the exterior derivative of the homotopy operator is the integral of the alternatized derivative
-  rw [extDeriv, (deningerHomotopyOperator_hasFDerivAt hana x).fderiv]
+  rw [extDeriv, (deningerHomotopyOperator_hasFDerivAt hdiff hcont' x).fderiv]
   have hcomm : alternatizeUncurryFin (∫ t in (0 : ℝ)..1, deningerHomotopyKDeriv ω x t) =
       ∫ t in (0 : ℝ)..1, alternatizeUncurryFin (deningerHomotopyKDeriv ω x t) :=
     deningerIntegral_comp_comm (alternatizeUncurryFinCLM ℂ E ℂ (n := n))
@@ -307,7 +295,7 @@ theorem deningerExtDeriv_homotopyOperator {ω : E → E [⋀^Fin (n + 1)]→L[�
       exact h
     have hωt : HasDerivAt (fun s : ℝ => ω (deningerScale s x))
         ((fderiv ℂ ω (deningerScale t x)) x) t := by
-      have hfd := ((hana _ (Set.mem_univ (deningerScale t x))).differentiableAt.hasFDerivAt)
+      have hfd := (hdiff (deningerScale t x)).hasFDerivAt
       exact (hfd.restrictScalars ℝ).comp_hasDerivAt t hcurve
     have h := hpow.smul hωt
     rw [deningerAlternatize_homotopyKDeriv hclosed x t]

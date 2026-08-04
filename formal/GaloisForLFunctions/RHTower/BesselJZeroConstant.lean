@@ -296,6 +296,15 @@ theorem continuousOn_jacCorrDeriv :
   exact continuousOn_const.mul
     ((Real.continuous_sqrt.comp (by fun_prop)).continuousOn.pow 3)
 
+theorem continuousOn_jacCorr {s : Set ℝ} (hs : ∀ v ∈ s, v ^ 2 < 4) : ContinuousOn jacCorr s := by
+  rw [show jacCorr = fun t : ℝ => 1 / Real.sqrt (1 - t ^ 2 / 4) - 1 from by
+    funext t
+    rw [jacCorr]]
+  refine ContinuousOn.sub (ContinuousOn.div continuousOn_const ?_ ?_) continuousOn_const
+  · exact (Real.continuous_sqrt.comp (by fun_prop)).continuousOn
+  · intro v hv
+    exact ne_of_gt (sqrt_one_sub_quarter_pos (hs v hv))
+
 /-! ## Splitting the Jacobian -/
 
 /-- The Jacobian integrand splits into the pure Fresnel kernel and the correction. -/
@@ -433,17 +442,13 @@ theorem norm_integral_jacCorr_far_le {u δ : ℝ} (hu : 0 < u) (hδ : 0 < δ) (h
       ring
     · apply Continuous.intervalIntegrable
       fun_prop
-    · apply Continuous.intervalIntegrable
-      refine Continuous.mul ?_ (by fun_prop)
-      refine Complex.continuous_ofReal.comp ?_
+    · refine ContinuousOn.intervalIntegrable ?_
+      refine ContinuousOn.mul ?_ (by fun_prop)
+      refine Complex.continuous_ofReal.comp_continuousOn ?_
       rw [show jacWeight = fun t : ℝ => (Real.sqrt 2 - 1) - jacCorr t from by
         funext t
         rw [jacWeight]]
-      refine continuous_const.sub ?_
-      rw [show jacCorr = fun t : ℝ => 1 / Real.sqrt (1 - t ^ 2 / 4) - 1 from by
-        funext t
-        rw [jacCorr]]
-      fun_prop
+      exact continuousOn_const.sub (continuousOn_jacCorr (fun v hv => hvsq v hv))
   rw [hsplit]
   have htri : ‖(∫ v in δ..Real.sqrt 2, ((Real.sqrt 2 - 1 : ℝ) : ℂ)
         * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I))
@@ -459,9 +464,387 @@ theorem norm_integral_jacCorr_far_le {u δ : ℝ} (hu : 0 < u) (hδ : 0 < δ) (h
     linarith
   have hb1 : 4 * (Real.sqrt 2 - 1) / (u * δ) + 4 * jacWeight δ / (u * δ)
       ≤ 8 * (Real.sqrt 2 - 1) / (u * δ) := by
-    rw [div_add_div_same, div_le_div_iff₀ (by positivity) (by positivity)]
-    nlinarith [hw0]
+    rw [← add_div, div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ 4 * (Real.sqrt 2 - 1) - 4 * jacWeight δ)
+      (by positivity : (0 : ℝ) ≤ u * δ)]
   linarith [htri, hconst, hdec, hb1]
+
+
+
+/-- The near block: the correction is at most `δ²/4` there. -/
+theorem norm_integral_jacCorr_near_le {u δ : ℝ} (hδ : 0 < δ) (hδ2 : δ ≤ Real.sqrt 2) :
+    ‖∫ v in (0 : ℝ)..δ, ((jacCorr v : ℝ) : ℂ)
+        * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I)‖ ≤ δ ^ 3 / 4 := by
+  have hbound : ∀ v ∈ Set.uIoc (0 : ℝ) δ,
+      ‖((jacCorr v : ℝ) : ℂ) * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I)‖
+        ≤ δ ^ 2 / 4 := by
+    intro v hv
+    rw [Set.uIoc_of_le hδ.le] at hv
+    have hv0 : 0 ≤ v := hv.1.le
+    have hvδ : v ≤ δ := hv.2
+    have hvle : v ≤ Real.sqrt 2 := le_trans hvδ hδ2
+    have hnn : 0 ≤ jacCorr v := by
+      refine jacCorr_nonneg ?_
+      have hs2 : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)
+      nlinarith [Real.sqrt_nonneg 2]
+    have hle := jacCorr_le hv0 hvle
+    rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_nonneg hnn]
+    nlinarith [hle, hv0, hvδ]
+  have h := intervalIntegral.norm_integral_le_of_norm_le_const hbound
+  have hval : δ ^ 2 / 4 * |δ - 0| = δ ^ 3 / 4 := by
+    rw [sub_zero, abs_of_pos hδ]
+    ring
+  calc ‖∫ v in (0 : ℝ)..δ, ((jacCorr v : ℝ) : ℂ)
+        * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I)‖ ≤ δ ^ 2 / 4 * |δ - 0| := h
+    _ = δ ^ 3 / 4 := hval
+
+/-- The correction integral, split at an arbitrary `δ`. -/
+theorem norm_integral_jacCorr_split_le {u δ : ℝ} (hu : 0 < u) (hδ : 0 < δ)
+    (hδ2 : δ ≤ Real.sqrt 2) :
+    ‖∫ v in (0 : ℝ)..Real.sqrt 2, ((jacCorr v : ℝ) : ℂ)
+        * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I)‖
+      ≤ δ ^ 3 / 4 + 8 * (Real.sqrt 2 - 1) / (u * δ) := by
+  have hs2 : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)
+  have hs2pos : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  have hcont : ∀ a b : ℝ, 0 ≤ a → b ≤ Real.sqrt 2 → a ≤ b →
+      IntervalIntegrable (fun v : ℝ => ((jacCorr v : ℝ) : ℂ)
+        * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I)) volume a b := by
+    intro a b ha hb hab
+    refine ContinuousOn.intervalIntegrable ?_
+    refine ContinuousOn.mul ?_ (by fun_prop)
+    refine Complex.continuous_ofReal.comp_continuousOn ?_
+    refine continuousOn_jacCorr ?_
+    intro v hv
+    rw [Set.uIcc_of_le hab] at hv
+    have hv0 : 0 ≤ v := le_trans ha hv.1
+    have hvle : v ≤ Real.sqrt 2 := le_trans hv.2 hb
+    nlinarith [Real.sqrt_nonneg 2]
+  have hsplit : (∫ v in (0 : ℝ)..δ, ((jacCorr v : ℝ) : ℂ)
+        * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I))
+      + (∫ v in δ..Real.sqrt 2, ((jacCorr v : ℝ) : ℂ)
+        * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I))
+      = ∫ v in (0 : ℝ)..Real.sqrt 2, ((jacCorr v : ℝ) : ℂ)
+        * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I) :=
+    intervalIntegral.integral_add_adjacent_intervals
+      (hcont 0 δ le_rfl hδ2 hδ.le) (hcont δ (Real.sqrt 2) hδ.le le_rfl hδ2)
+  rw [← hsplit]
+  have htri := norm_add_le
+    (∫ v in (0 : ℝ)..δ, ((jacCorr v : ℝ) : ℂ)
+      * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I))
+    (∫ v in δ..Real.sqrt 2, ((jacCorr v : ℝ) : ℂ)
+      * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I))
+  linarith [htri, norm_integral_jacCorr_near_le (u := u) hδ hδ2,
+    norm_integral_jacCorr_far_le hu hδ hδ2]
+
+/-- **The correction is `O(u^{-3/4})`.**  Balancing the two blocks at `δ = u^{-1/4}` — written as
+`1/sqrt(sqrt u)` — gives the bound `4 / sqrt(sqrt u)³`, which is `o(u^{-1/2})`: the correction cannot reach
+the leading Fresnel term. -/
+theorem norm_integral_jacCorr_le {u : ℝ} (hu : 1 ≤ u) :
+    ‖∫ v in (0 : ℝ)..Real.sqrt 2, ((jacCorr v : ℝ) : ℂ)
+        * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I)‖
+      ≤ 4 / Real.sqrt (Real.sqrt u) ^ 3 := by
+  have hu0 : (0 : ℝ) < u := lt_of_lt_of_le zero_lt_one hu
+  have hsu : (1 : ℝ) ≤ Real.sqrt u := by
+    rw [show (1 : ℝ) = Real.sqrt 1 from Real.sqrt_one.symm]
+    exact Real.sqrt_le_sqrt hu
+  have ht : (1 : ℝ) ≤ Real.sqrt (Real.sqrt u) := by
+    rw [show (1 : ℝ) = Real.sqrt 1 from Real.sqrt_one.symm]
+    exact Real.sqrt_le_sqrt hsu
+  have ht0 : (0 : ℝ) < Real.sqrt (Real.sqrt u) := lt_of_lt_of_le zero_lt_one ht
+  have htsq : Real.sqrt (Real.sqrt u) ^ 2 = Real.sqrt u := Real.sq_sqrt (by positivity)
+  have hsusq : Real.sqrt u ^ 2 = u := Real.sq_sqrt hu0.le
+  have hs2 : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)
+  have hs2pos : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  have hs21 : (1 : ℝ) ≤ Real.sqrt 2 := by nlinarith [hs2, hs2pos]
+  have hs2le : Real.sqrt 2 ≤ 1.42 := by
+    rw [show (1.42 : ℝ) = Real.sqrt (1.42 ^ 2) from (Real.sqrt_sq (by norm_num)).symm]
+    exact Real.sqrt_le_sqrt (by norm_num)
+  set δ := 1 / Real.sqrt (Real.sqrt u) with hδdef
+  have hδ : 0 < δ := by
+    rw [hδdef]
+    positivity
+  have hδ2 : δ ≤ Real.sqrt 2 := by
+    rw [hδdef]
+    have h1 : 1 / Real.sqrt (Real.sqrt u) ≤ 1 := by
+      rw [div_le_one ht0]
+      exact ht
+    linarith
+  have hmain := norm_integral_jacCorr_split_le (u := u) hu0 hδ hδ2
+  have hcube : δ ^ 3 = 1 / Real.sqrt (Real.sqrt u) ^ 3 := by
+    rw [hδdef, div_pow, one_pow]
+  have ht4 : Real.sqrt (Real.sqrt u) ^ 4 = u := by
+    rw [show Real.sqrt (Real.sqrt u) ^ 4 = (Real.sqrt (Real.sqrt u) ^ 2) ^ 2 from by ring, htsq,
+      hsusq]
+  have hud : u * δ = Real.sqrt (Real.sqrt u) ^ 3 := by
+    have hne : Real.sqrt (Real.sqrt u) ≠ 0 := ne_of_gt ht0
+    rw [hδdef, mul_one_div, div_eq_iff hne]
+    calc u = Real.sqrt (Real.sqrt u) ^ 4 := ht4.symm
+      _ = Real.sqrt (Real.sqrt u) ^ 3 * Real.sqrt (Real.sqrt u) := by ring
+  rw [hcube, hud] at hmain
+  refine le_trans hmain ?_
+  have hpos : (0 : ℝ) < Real.sqrt (Real.sqrt u) ^ 3 := by positivity
+  have he : (1 / Real.sqrt (Real.sqrt u) ^ 3) / 4
+      = (1 / 4 : ℝ) / Real.sqrt (Real.sqrt u) ^ 3 := by ring
+  rw [he, ← add_div]
+  refine div_le_div_of_nonneg_right ?_ hpos.le
+  linarith [hs2le]
+
+
+/-! ## Assembling the constant -/
+
+/-- The oscillatory representation of `J_0`, as a complex integral. -/
+def besselPhaseIntegral (u : ℝ) : ℂ :=
+  ∫ φ in (0 : ℝ)..(Real.pi / 2), Complex.exp (((u * Real.cos φ : ℝ)) * Complex.I)
+
+theorem besselJ0_eq_re_besselPhaseIntegral (u : ℝ) :
+    besselJ0 u = 2 / Real.pi * (besselPhaseIntegral u).re := by
+  have hint : IntervalIntegrable
+      (fun φ : ℝ => Complex.exp (((u * Real.cos φ : ℝ)) * Complex.I)) volume 0 (Real.pi / 2) := by
+    apply Continuous.intervalIntegrable
+    fun_prop
+  have h := intervalIntegral.intervalIntegral_re
+    (f := fun φ : ℝ => Complex.exp (((u * Real.cos φ : ℝ)) * Complex.I))
+    (a := 0) (b := Real.pi / 2) (μ := volume) hint
+  have hcongr : (∫ φ in (0 : ℝ)..(Real.pi / 2), Real.cos (u * Real.cos φ))
+      = ∫ φ in (0 : ℝ)..(Real.pi / 2),
+        RCLike.re (Complex.exp (((u * Real.cos φ : ℝ)) * Complex.I)) := by
+    refine intervalIntegral.integral_congr ?_
+    intro φ _
+    show Real.cos (u * Real.cos φ)
+      = RCLike.re (Complex.exp ((((u * Real.cos φ : ℝ)) : ℂ) * Complex.I))
+    have hpt : RCLike.re (Complex.exp ((((u * Real.cos φ : ℝ)) : ℂ) * Complex.I))
+        = (Complex.exp ((((u * Real.cos φ : ℝ)) : ℂ) * Complex.I)).re := rfl
+    rw [hpt, Complex.exp_ofReal_mul_I_re]
+  rw [besselJ0_cos_form u, besselPhaseIntegral, hcongr, h]
+  rfl
+
+/-- The correction term with the sign of the phase as it appears in the substitution. -/
+theorem norm_integral_jacCorr_neg_le {u : ℝ} (hu : 1 ≤ u) :
+    ‖∫ v in (0 : ℝ)..Real.sqrt 2, Complex.exp (-((u * v ^ 2 / 2 : ℝ) * Complex.I))
+        * ((jacCorr v : ℝ) : ℂ)‖ ≤ 4 / Real.sqrt (Real.sqrt u) ^ 3 := by
+  have hconj : ∀ v : ℝ, (starRingEnd ℂ) (Complex.exp (-((u * v ^ 2 / 2 : ℝ) * Complex.I))
+      * ((jacCorr v : ℝ) : ℂ))
+      = ((jacCorr v : ℝ) : ℂ) * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I) := by
+    intro v
+    rw [map_mul, Complex.conj_ofReal, ← Complex.exp_conj]
+    rw [show (starRingEnd ℂ) (-((u * v ^ 2 / 2 : ℝ) * Complex.I))
+        = ((u * v ^ 2 / 2 : ℝ) : ℂ) * Complex.I by
+      simp [Complex.conj_I, map_ofNat]]
+    ring
+  have heq : ‖∫ v in (0 : ℝ)..Real.sqrt 2, Complex.exp (-((u * v ^ 2 / 2 : ℝ) * Complex.I))
+        * ((jacCorr v : ℝ) : ℂ)‖
+      = ‖∫ v in (0 : ℝ)..Real.sqrt 2, ((jacCorr v : ℝ) : ℂ)
+        * Complex.exp (((u * v ^ 2 / 2 : ℝ)) * Complex.I)‖ := by
+    rw [← RCLike.norm_conj (K := ℂ), ← intervalIntegral.intervalIntegral_conj]
+    congr 1
+    exact intervalIntegral.integral_congr fun v _ => hconj v
+  rw [heq]
+  exact norm_integral_jacCorr_le hu
+
+/-- **The scaled oscillatory integral converges to the Fresnel constant.** -/
+theorem norm_sqrt_mul_besselPhaseIntegral_sub_le {u : ℝ} (hu : 1 ≤ u) :
+    ‖((Real.sqrt u : ℝ) : ℂ) * besselPhaseIntegral u
+        - Complex.exp ((u : ℝ) * Complex.I) * ((Real.sqrt 2 : ℝ) : ℂ)
+          * (starRingEnd ℂ) fresnelValue‖
+      ≤ (2 * Real.sqrt 2 + 4) / Real.sqrt (Real.sqrt u) := by
+  have hu0 : (0 : ℝ) < u := lt_of_lt_of_le zero_lt_one hu
+  have hsu : (1 : ℝ) ≤ Real.sqrt u := by
+    rw [show (1 : ℝ) = Real.sqrt 1 from Real.sqrt_one.symm]
+    exact Real.sqrt_le_sqrt hu
+  have hsu0 : (0 : ℝ) < Real.sqrt u := lt_of_lt_of_le zero_lt_one hsu
+  have ht : (1 : ℝ) ≤ Real.sqrt (Real.sqrt u) := by
+    rw [show (1 : ℝ) = Real.sqrt 1 from Real.sqrt_one.symm]
+    exact Real.sqrt_le_sqrt hsu
+  have ht0 : (0 : ℝ) < Real.sqrt (Real.sqrt u) := lt_of_lt_of_le zero_lt_one ht
+  have htsq : Real.sqrt (Real.sqrt u) ^ 2 = Real.sqrt u := Real.sq_sqrt (by positivity)
+  have hs2pos : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  -- the substitution and the split
+  have hquad : besselPhaseIntegral u = ∫ v in (0 : ℝ)..Real.sqrt 2, quadJacobian u v :=
+    integral_cexp_cos_eq_quad u
+  have hvsq : ∀ v ∈ Set.uIcc (0 : ℝ) (Real.sqrt 2), v ^ 2 < 4 := by
+    intro v hv
+    rw [Set.uIcc_of_le (le_of_lt hs2pos)] at hv
+    have hs2 : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)
+    nlinarith [hv.1, hv.2, Real.sqrt_nonneg 2]
+  have hint1 : IntervalIntegrable
+      (fun v : ℝ => Complex.exp (-((u * v ^ 2 / 2 : ℝ) * Complex.I))) volume 0 (Real.sqrt 2) := by
+    apply Continuous.intervalIntegrable
+    fun_prop
+  have hint2 : IntervalIntegrable
+      (fun v : ℝ => Complex.exp (-((u * v ^ 2 / 2 : ℝ) * Complex.I)) * ((jacCorr v : ℝ) : ℂ))
+      volume 0 (Real.sqrt 2) := by
+    refine ContinuousOn.intervalIntegrable ?_
+    refine ContinuousOn.mul (by fun_prop) ?_
+    exact Complex.continuous_ofReal.comp_continuousOn (continuousOn_jacCorr hvsq)
+  have hsplit : (∫ v in (0 : ℝ)..Real.sqrt 2, quadJacobian u v)
+      = Complex.exp ((u : ℝ) * Complex.I)
+        * ((∫ v in (0 : ℝ)..Real.sqrt 2, Complex.exp (-((u * v ^ 2 / 2 : ℝ) * Complex.I)))
+          + ∫ v in (0 : ℝ)..Real.sqrt 2, Complex.exp (-((u * v ^ 2 / 2 : ℝ) * Complex.I))
+            * ((jacCorr v : ℝ) : ℂ)) := by
+    rw [← intervalIntegral.integral_add hint1 hint2, ← intervalIntegral.integral_const_mul]
+    refine intervalIntegral.integral_congr ?_
+    intro v hv
+    show quadJacobian u v = Complex.exp ((u : ℝ) * Complex.I)
+      * (Complex.exp (-((u * v ^ 2 / 2 : ℝ) * Complex.I))
+        + Complex.exp (-((u * v ^ 2 / 2 : ℝ) * Complex.I)) * ((jacCorr v : ℝ) : ℂ))
+    rw [quadJacobian_eq (hvsq v hv)]
+    push_cast
+    ring
+  -- the main term
+  have hmain := integral_cexp_neg_half_mul_sq hu0
+  have hscale : ((Real.sqrt u : ℝ) : ℂ) * ((Real.sqrt (2 / u) : ℝ) : ℂ)
+      = ((Real.sqrt 2 : ℝ) : ℂ) := by
+    have h : Real.sqrt u * Real.sqrt (2 / u) = Real.sqrt 2 := by
+      rw [← Real.sqrt_mul (le_of_lt hu0)]
+      congr 1
+      field_simp
+    rw [← Complex.ofReal_mul, h]
+  -- assemble
+  rw [hquad, hsplit, hmain]
+  have hF := norm_integral_cexp_neg_sq_sub_le (X := Real.sqrt u) hsu0
+  have hB := norm_integral_jacCorr_neg_le hu
+  set F := ∫ w in (0 : ℝ)..Real.sqrt u, Complex.exp (-((w ^ 2 : ℝ) * Complex.I)) with hFdef
+  set B := ∫ v in (0 : ℝ)..Real.sqrt 2, Complex.exp (-((u * v ^ 2 / 2 : ℝ) * Complex.I))
+    * ((jacCorr v : ℝ) : ℂ) with hBdef
+  have hrewrite : ((Real.sqrt u : ℝ) : ℂ) * (Complex.exp ((u : ℝ) * Complex.I)
+        * (((Real.sqrt (2 / u) : ℝ) : ℂ) * F + B))
+      - Complex.exp ((u : ℝ) * Complex.I) * ((Real.sqrt 2 : ℝ) : ℂ)
+        * (starRingEnd ℂ) fresnelValue
+      = Complex.exp ((u : ℝ) * Complex.I)
+        * (((Real.sqrt 2 : ℝ) : ℂ) * (F - (starRingEnd ℂ) fresnelValue)
+          + ((Real.sqrt u : ℝ) : ℂ) * B) := by
+    rw [← hscale]
+    ring
+  rw [hrewrite, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul]
+  have htri := norm_add_le (((Real.sqrt 2 : ℝ) : ℂ) * (F - (starRingEnd ℂ) fresnelValue))
+    (((Real.sqrt u : ℝ) : ℂ) * B)
+  have hb1 : ‖((Real.sqrt 2 : ℝ) : ℂ) * (F - (starRingEnd ℂ) fresnelValue)‖
+      ≤ Real.sqrt 2 * (2 / Real.sqrt u) := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hs2pos]
+    exact mul_le_mul_of_nonneg_left hF hs2pos.le
+  have hb2 : ‖((Real.sqrt u : ℝ) : ℂ) * B‖
+      ≤ Real.sqrt u * (4 / Real.sqrt (Real.sqrt u) ^ 3) := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hsu0]
+    exact mul_le_mul_of_nonneg_left hB hsu0.le
+  have htle : Real.sqrt (Real.sqrt u) ≤ Real.sqrt u := by
+    nlinarith [htsq, ht, ht0]
+  have hfin1 : Real.sqrt 2 * (2 / Real.sqrt u) ≤ 2 * Real.sqrt 2 / Real.sqrt (Real.sqrt u) := by
+    have h1 : Real.sqrt 2 * (2 / Real.sqrt u) = 2 * Real.sqrt 2 / Real.sqrt u := by ring
+    rw [h1]
+    exact div_le_div_of_nonneg_left (by positivity) ht0 htle
+  have hfin2 : Real.sqrt u * (4 / Real.sqrt (Real.sqrt u) ^ 3)
+      = 4 / Real.sqrt (Real.sqrt u) := by
+    have hne : Real.sqrt (Real.sqrt u) ≠ 0 := ne_of_gt ht0
+    have hne2 : Real.sqrt u ≠ 0 := ne_of_gt hsu0
+    have h3 : Real.sqrt (Real.sqrt u) ^ 3 = Real.sqrt u * Real.sqrt (Real.sqrt u) := by
+      calc Real.sqrt (Real.sqrt u) ^ 3
+          = Real.sqrt (Real.sqrt u) ^ 2 * Real.sqrt (Real.sqrt u) := by ring
+        _ = Real.sqrt u * Real.sqrt (Real.sqrt u) := by rw [htsq]
+    rw [h3]
+    field_simp
+  have hsum : 2 * Real.sqrt 2 / Real.sqrt (Real.sqrt u) + 4 / Real.sqrt (Real.sqrt u)
+      = (2 * Real.sqrt 2 + 4) / Real.sqrt (Real.sqrt u) := by
+    rw [← add_div]
+  linarith [htri, hb1, hb2, hfin1, hfin2.le, hfin2.ge, hsum.le, hsum.ge]
+
+
+
+/-- The real part of the limiting constant is the classical amplitude and phase. -/
+theorem re_exp_mul_conj_fresnelValue (u : ℝ) :
+    (Complex.exp ((u : ℝ) * Complex.I) * ((Real.sqrt 2 : ℝ) : ℂ)
+        * (starRingEnd ℂ) fresnelValue).re
+      = Real.sqrt Real.pi / 2 * (Real.cos u + Real.sin u) := by
+  have hs2 : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)
+  have hconjL : (starRingEnd ℂ) fresnelValue
+      = ((Real.sqrt Real.pi / 2 : ℝ) : ℂ)
+        * Complex.exp (-(((Real.pi / 4 : ℝ)) * Complex.I)) := by
+    rw [fresnelValue_eq, map_mul, Complex.conj_ofReal, ← Complex.exp_conj]
+    congr 2
+    simp [Complex.conj_I, map_ofNat]
+  rw [hconjL]
+  have hcomb : Complex.exp ((u : ℝ) * Complex.I) * ((Real.sqrt 2 : ℝ) : ℂ)
+      * (((Real.sqrt Real.pi / 2 : ℝ) : ℂ) * Complex.exp (-(((Real.pi / 4 : ℝ)) * Complex.I)))
+      = ((Real.sqrt 2 * (Real.sqrt Real.pi / 2) : ℝ) : ℂ)
+        * Complex.exp (((u - Real.pi / 4 : ℝ)) * Complex.I) := by
+    rw [show (((u - Real.pi / 4 : ℝ)) : ℂ) * Complex.I
+        = (u : ℝ) * Complex.I + -(((Real.pi / 4 : ℝ)) * Complex.I) by
+      push_cast
+      ring, Complex.exp_add]
+    push_cast
+    ring
+  rw [hcomb, Complex.mul_re, Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im,
+    Complex.ofReal_re, Complex.ofReal_im, Real.cos_sub, Real.cos_pi_div_four,
+    Real.sin_pi_div_four]
+  linear_combination ((Real.sqrt Real.pi / 4) * (Real.cos u + Real.sin u)) * hs2
+
+/-- **The Bessel constant.**  The classical large-argument asymptotic with the constant identified:
+
+```text
+|sqrt(u) J_0(u) - (cos u + sin u)/sqrt(pi)| <= 5 / u^{1/4},
+```
+
+equivalently `J_0(u) = sqrt(2/(pi u)) cos(u - pi/4) + O(u^{-3/4})`.  The amplitude `sqrt(2/pi)` and the
+phase shift `pi/4` are exactly the Fresnel constant: the exact substitution `v = 2 sin(φ/2)` turns the
+cosine representation into a Fresnel integral plus a correction of size `O(u^{-3/4})`. -/
+theorem abs_sqrt_mul_besselJ0_sub_le {u : ℝ} (hu : 1 ≤ u) :
+    |Real.sqrt u * besselJ0 u - (Real.cos u + Real.sin u) / Real.sqrt Real.pi|
+      ≤ 5 / Real.sqrt (Real.sqrt u) := by
+  have hu0 : (0 : ℝ) < u := lt_of_lt_of_le zero_lt_one hu
+  have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
+  have hpi3 : (3 : ℝ) < Real.pi := Real.pi_gt_three
+  have hspi : (0 : ℝ) < Real.sqrt Real.pi := Real.sqrt_pos.mpr hpi
+  have hspisq : Real.sqrt Real.pi * Real.sqrt Real.pi = Real.pi := Real.mul_self_sqrt hpi.le
+  have hsu : (1 : ℝ) ≤ Real.sqrt u := by
+    rw [show (1 : ℝ) = Real.sqrt 1 from Real.sqrt_one.symm]
+    exact Real.sqrt_le_sqrt hu
+  have ht : (1 : ℝ) ≤ Real.sqrt (Real.sqrt u) := by
+    rw [show (1 : ℝ) = Real.sqrt 1 from Real.sqrt_one.symm]
+    exact Real.sqrt_le_sqrt hsu
+  have ht0 : (0 : ℝ) < Real.sqrt (Real.sqrt u) := lt_of_lt_of_le zero_lt_one ht
+  have hs2 : Real.sqrt 2 ≤ 1.5 := by
+    rw [show (1.5 : ℝ) = Real.sqrt (1.5 ^ 2) from (Real.sqrt_sq (by norm_num)).symm]
+    exact Real.sqrt_le_sqrt (by norm_num)
+  -- the two real parts
+  have hJ : Real.sqrt u * besselJ0 u
+      = 2 / Real.pi * (((Real.sqrt u : ℝ) : ℂ) * besselPhaseIntegral u).re := by
+    rw [besselJ0_eq_re_besselPhaseIntegral u, Complex.mul_re, Complex.ofReal_re,
+      Complex.ofReal_im]
+    ring
+  have htarget : (Real.cos u + Real.sin u) / Real.sqrt Real.pi
+      = 2 / Real.pi * (Complex.exp ((u : ℝ) * Complex.I) * ((Real.sqrt 2 : ℝ) : ℂ)
+        * (starRingEnd ℂ) fresnelValue).re := by
+    rw [re_exp_mul_conj_fresnelValue u]
+    rw [div_eq_iff (ne_of_gt hspi)]
+    have hspisq2 : Real.sqrt Real.pi ^ 2 = Real.pi := Real.sq_sqrt hpi.le
+    field_simp
+    linear_combination (-(Real.cos u + Real.sin u)) * hspisq2
+  -- the complex estimate
+  have hcx := norm_sqrt_mul_besselPhaseIntegral_sub_le hu
+  have hre : |(((Real.sqrt u : ℝ) : ℂ) * besselPhaseIntegral u).re
+        - (Complex.exp ((u : ℝ) * Complex.I) * ((Real.sqrt 2 : ℝ) : ℂ)
+          * (starRingEnd ℂ) fresnelValue).re|
+      ≤ (2 * Real.sqrt 2 + 4) / Real.sqrt (Real.sqrt u) := by
+    have h := Complex.abs_re_le_norm (((Real.sqrt u : ℝ) : ℂ) * besselPhaseIntegral u
+      - Complex.exp ((u : ℝ) * Complex.I) * ((Real.sqrt 2 : ℝ) : ℂ)
+        * (starRingEnd ℂ) fresnelValue)
+    rw [Complex.sub_re] at h
+    linarith [h, hcx]
+  rw [hJ, htarget, ← mul_sub, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 / Real.pi)]
+  have hfin : 2 / Real.pi * ((2 * Real.sqrt 2 + 4) / Real.sqrt (Real.sqrt u))
+      ≤ 5 / Real.sqrt (Real.sqrt u) := by
+    rw [mul_div_assoc'] at *
+    rw [div_le_div_iff₀ (by positivity) ht0]
+    have hnum : 2 / Real.pi * (2 * Real.sqrt 2 + 4) ≤ 5 := by
+      rw [div_mul_eq_mul_div, div_le_iff₀ hpi]
+      nlinarith [hs2, hpi3]
+    nlinarith [hnum, ht0]
+  calc 2 / Real.pi * |(((Real.sqrt u : ℝ) : ℂ) * besselPhaseIntegral u).re
+        - (Complex.exp ((u : ℝ) * Complex.I) * ((Real.sqrt 2 : ℝ) : ℂ)
+          * (starRingEnd ℂ) fresnelValue).re|
+      ≤ 2 / Real.pi * ((2 * Real.sqrt 2 + 4) / Real.sqrt (Real.sqrt u)) :=
+        mul_le_mul_of_nonneg_left hre (by positivity)
+    _ ≤ 5 / Real.sqrt (Real.sqrt u) := hfin
 
 
 end GaloisForLFunctions.RHTower

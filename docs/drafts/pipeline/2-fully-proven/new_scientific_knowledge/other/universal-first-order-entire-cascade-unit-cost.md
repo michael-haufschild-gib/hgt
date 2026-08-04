@@ -6324,3 +6324,24 @@ statements are equivalent.
 
 All RHTower modules added on this card build individually and together
 (`CascadeOrderFromWindow` at 8980 jobs, which imports the rest of them).
+
+### The displacement floor, from the circle floor
+
+`exists_circle_displacement_floor_of_factor`: if `g z − g c = (z − c)·h z` with `h` entire and
+`h c ≠ 0`, then on some circle of any prescribed annulus `[A,B]` (with `A > 0`)
+
+`A·μ ≤ ‖g z − g c‖`
+
+for a positive `μ`. Unconditional, axiom-clean.
+
+Three lines, because the zero-count problem was already solved once: the corpus's
+`exists_radius_displacement_floor` re-derives the minimum modulus internally and inherits the same
+unusable `2·N·H < B − A` hypothesis, whereas applying `exists_circle_floor_of_ne_zero` to the *factor*
+`h` and then `displacement_floor_of_factor` gives the displacement floor with no zero counting at all.
+
+The hypothesis `h c ≠ 0` is `g'(c) ≠ 0` in disguise — differentiating the factorization at `c` gives
+`h c = g'(c)` — so for a nonconstant entire `g` a suitable centre always exists.
+
+This is the last analytic primitive that `exists_norm_comp_gt_at` (the corpus's composition-growth
+theorem at a free base point) requires: it consumes exactly a displacement floor on a circle, plus a
+point where the outer function is large within half that floor of `g c`.

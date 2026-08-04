@@ -562,10 +562,12 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
   swept by the segments to a ball.
 - `deningerIntegral_comp_comm`, `deningerNsmul_eq_cast_smul` — two auxiliary transfers that mathlib
   cannot find by instance search on iterated continuous-linear-map spaces.
-- `deningerExtDeriv_homotopyOperator` — **the Poincaré lemma in degree `k + 1`: a closed
-  holomorphic form on a finite-dimensional complex vector space is the exterior derivative of the
-  homotopy operator applied to it.**  The integrand telescopes to the derivative in the segment
-  parameter of `t^{k+1} ω(t x)`.
+- `deningerExtDeriv_homotopyOperator` — **the Poincaré lemma in degree `k + 1`: a closed form on a
+  finite-dimensional complex vector space that is differentiable with continuous derivative is the
+  exterior derivative of the homotopy operator applied to it.**  The integrand telescopes to the
+  derivative in the segment parameter of `t^{k+1} ω(t x)`.  Only `C^1` regularity is used, not
+  analyticity, so the lemma applies to the primitives it produces once their derivatives are known
+  to be continuous.
 
 ### Closed forms of every degree on a stage landed
 
@@ -580,6 +582,11 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 - `deningerStage_closed_form_exact_upstairs` — **a closed holomorphic form of any degree on a
   character stage becomes exact on the covering space**, with the primitive given by the homotopy
   operator.
+- `deningerCompContinuousLinearMap_id`, `deningerExtDeriv_translate` — the exterior derivative
+  commutes with translation.
+- `deningerPeriodDefect_closed` — **the periodicity defect of that primitive is a closed form of one
+  degree lower**, which is the first step of the descent and the datum whose classes build the
+  cohomology of the stage.
 
 ### Remaining
 

@@ -3673,8 +3673,11 @@ import GaloisForLFunctions.RHTower.Sieve.PairFibre
 import GaloisForLFunctions.RHTower.Sieve.MRFibreReduction
 import GaloisForLFunctions.RHTower.Sieve.PairFibreTrivial
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeGlobalCount
+import GaloisForLFunctions.RHTower.Sieve.LogSumFromCount
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeLogSum
+import GaloisForLFunctions.RHTower.Sieve.CoprimeLogSum
 import GaloisForLFunctions.RHTower.Sieve.MRFibreDensity
+import GaloisForLFunctions.RHTower.Sieve.MRFibreDensityAt
 import GaloisForLFunctions.RHTower.Sieve.RouteEMain
 import GaloisForLFunctions.RHTower.Sieve.RouteEAveraged
 import GaloisForLFunctions.RHTower.SigmaBlockContraction

@@ -1295,3 +1295,62 @@ slice to be a scalar multiple of the characteristic, hence the coefficient ratio
 characteristic are rational in jets of order `< n`, and downward induction gives the bound.  The open
 point is exactly whether the slice ratios lie in `G`; equivalently whether `y` still has rank `(m,d)`
 over `F<G, slice ratios>`.
+
+## The single-generator step: route found (literature-confirmed), and the circularity broken
+
+Ritt's own finish (Differential Algebra II.42-43; restated as Proposition 7 of D'Alfonso-Jeronimo-
+Solerno, *Effective Differential Luroth's Theorem*, J. Algebra 2014, arXiv:1202.6344) is the identity
+
+    D(u,y) := Q0(u)P0(y) - P0(u)Q0(y)  =  a * C(u,y),   a in F,                        (RITT)
+
+where `C` is the cleared two-block characteristic and `P0, Q0` are two of its coefficients with
+`P0(u)/Q0(u)` not in `F`.  `(RITT)` immediately gives the block reciprocity `ord_U C = ord_Y C` and
+the matching top-jet degrees, because `D` is antisymmetric under the block swap; and then the
+cross-relation `P0(U) - w Q0(U)` is a relation of `y` over `F<w>` of rank exactly `(m,d)`.
+
+Two things this session establishes about `(RITT)`:
+
+* **The final step of the classical proof is no longer needed.**  Kolchin's proof (as reproduced in
+  the partial-differential paper arXiv:2210.05469, Theorem 3.1) finishes from `(RITT)` with the
+  differential-isomorphism criterion "no non-identity differential isomorphism over `F<v>` fixes
+  `v` implies `G = F<v>`".  Our `eq_of_characteristic_rank_eq` replaces that entire step: from
+  `(RITT)` the cross-relation has rank `(m,d)` and the theorem gives `G = F<w>` directly.  So the
+  Galois-style machinery (differential isomorphisms, Kolchin's primitive-element criterion) never has
+  to be formalized.
+
+* **The circularity noted above is broken by the block swap.**  The divisibility `C | D` cannot be
+  obtained in the `Y`-ranking (the order hypothesis is the number being bounded).  It must be run in
+  the *reversed* ranking, where the leader is a `U`-jet: there the required bound is
+  `ord_U D <= ord_U C`, which holds by construction because `P0, Q0` are coefficients of `C`.  The
+  corpus already owns the swap and its transport of iterate-ideal membership
+  (`differentialPolynomialTwoBlockSwap_mem_iterateIdeal`), so the certificate can be moved to the
+  block where the bridge applies, and antisymmetry of `D` moves the conclusion back.
+
+Given `C | D`, the passage to `(RITT)` is elementary and needs no ideal theory:
+`deg_{U_k} D <= deg_{U_k} C` for every jet `k` (the coefficients of `D` in the `U` block are among
+those of `C`), so the quotient has no `U` variable, i.e. `D = C * q(Y)`; and a common divisor
+`q(Y)` of all `U`-coefficients `H_mu K(Y) - K_mu H(Y)` of `D` divides `c*K(Y)` and `c*H(Y)` for
+`c = K_nu H_mu - K_mu H_nu`, which is nonzero for some pair exactly because `w` is not in `F`;
+coprimality of `H, K` then forces `q` to be a unit.
+
+## Lean progress — the Luroth criterion (the whole of `(3)` minus one divisibility)
+
+`GaloisForLFunctions/HTGeometry/LurothLowRankCriterion.lean` (wired, axiom-clean):
+
+    vars_nonempty_of_relation                 a nonzero relation is nonconstant
+    eq_differentialAdjoin_of_relation_rank_le  ONE low-rank relation over `F<w>` forces `F<w> = G`
+    eq_differentialAdjoin_of_ratio_rank_le     the same, packaged for a ratio `H(y)/K(y)` of two
+                                                 differential polynomials over the base
+
+The second is the exact interface Ritt's argument needs.  Its hypotheses are: the ratio lies in `G`
+and not in `F`; `H` and `K` involve no jet above the characteristic's order `m`; and their degrees in
+the `m`-th jet are at most the leader degree `d`.  Its conclusion is `F<H(y)/K(y)> = G` -- the card's
+`(3)`.
+
+So `(3)` is now reduced to a purely polynomial statement with no field theory left in it:
+
+    (RITT-DVD)   the cleared two-block characteristic `C` divides the cross-difference
+                 `D(U,Y) = H(U)K(Y) - K(U)H(Y)` of two of its coefficients,
+
+from which the order and degree hypotheses of `eq_differentialAdjoin_of_ratio_rank_le` follow by
+antisymmetry of `D` (see the previous section).  Everything downstream of `(RITT-DVD)` is formal.

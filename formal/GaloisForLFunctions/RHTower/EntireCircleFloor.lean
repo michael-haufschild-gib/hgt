@@ -91,4 +91,56 @@ theorem exists_circle_floor_of_ne_zero {f : ℂ → ℂ}
   refine ⟨s, hs, H ^ (∑ a ∈ T, m a) * L, ?_, hfloor⟩
   positivity
 
+/-! ## The displacement floor -/
+
+/-- **A displacement floor on a circle.**  If the displacement of `g` from its value at `c` factors
+through an analytic function that is nonzero at `c`, then `g` is separated from `g c` on some circle
+of any prescribed annulus. -/
+theorem exists_circle_displacement_floor_of_factor {g h : ℂ → ℂ} {c : ℂ}
+    (hh : AnalyticOnNhd ℂ h (Set.univ : Set ℂ)) (hhc : h c ≠ 0)
+    (hfac : ∀ z : ℂ, g z - g c = (z - c) * h z)
+    {A B : ℝ} (hA : 0 < A) (hAB : A < B) :
+    ∃ s ∈ Set.Icc A B, ∃ ε : ℝ, 0 < ε ∧ ∀ z : ℂ, ‖z - c‖ = s → ε ≤ ‖g z - g c‖ := by
+  obtain ⟨s, hs, μ, hμ0, hfloor⟩ := exists_circle_floor_of_ne_zero hh hhc hA.le hAB
+  obtain ⟨hsA, _⟩ := Set.mem_Icc.mp hs
+  refine ⟨s, hs, A * μ, by positivity, ?_⟩
+  intro z hz
+  have hdisp : s * μ ≤ ‖g z - g c‖ :=
+    displacement_floor_of_factor (U := Set.univ) (fun w _ => hfac w)
+      (fun w _ => Set.mem_univ w) (fun w hw => hfloor w hw) z hz
+  have hstep : A * μ ≤ s * μ := mul_le_mul_of_nonneg_right hsA hμ0.le
+  linarith
+
+/-- The displacement factor at the centre is the derivative. -/
+theorem factor_at_centre {g h : ℂ → ℂ} {c : ℂ} (hg : Differentiable ℂ g)
+    (hh : Differentiable ℂ h) (hfac : ∀ z : ℂ, g z - g c = (z - c) * h z) :
+    h c = deriv g c := by
+  have h1 : HasDerivAt (fun z : ℂ => g z - g c) (deriv g c) c :=
+    ((hg c).hasDerivAt).sub_const _
+  have h2 : HasDerivAt (fun z : ℂ => (z - c) * h z)
+      (1 * h c + (c - c) * deriv h c) c :=
+    (((hasDerivAt_id c).sub_const c).mul ((hh c).hasDerivAt))
+  have hfun : (fun z : ℂ => g z - g c) = fun z : ℂ => (z - c) * h z := funext hfac
+  rw [hfun] at h1
+  have huniq := h1.unique h2
+  simpa using huniq.symm
+
+/-- **A displacement floor from natural hypotheses.**  A nonconstant entire function with nonzero
+derivative at `c` is separated from its value at `c` on some circle of any annulus. -/
+theorem exists_circle_displacement_floor {g : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g (Set.univ : Set ℂ)) {c : ℂ} (hgc : deriv g c ≠ 0)
+    (hnc : ∀ a : ℂ, ¬ ∀ᶠ z in nhds a, g z = g c)
+    {A B : ℝ} (hA : 0 < A) (hAB : A < B) :
+    ∃ s ∈ Set.Icc A B, ∃ ε : ℝ, 0 < ε ∧ ∀ z : ℂ, ‖z - c‖ = s → ε ≤ ‖g z - g c‖ := by
+  obtain ⟨h, hhan, hfac, _⟩ :=
+    exists_displacement_factor isOpen_univ (Set.mem_univ c) hg
+      (fun a _ => hnc a)
+  have hgd : Differentiable ℂ g := fun z => (hg z (Set.mem_univ z)).differentiableAt
+  have hhd : Differentiable ℂ h := fun z => (hhan z (Set.mem_univ z)).differentiableAt
+  have hhc : h c ≠ 0 := by
+    rw [factor_at_centre hgd hhd (fun z => hfac z (Set.mem_univ z))]
+    exact hgc
+  exact exists_circle_displacement_floor_of_factor hhan hhc
+    (fun z => hfac z (Set.mem_univ z)) hA hAB
+
 end RHTower

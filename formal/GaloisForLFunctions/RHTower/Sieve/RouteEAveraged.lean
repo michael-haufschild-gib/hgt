@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.RouteEMain
 import GaloisForLFunctions.RHTower.Sieve.MRFibreDensity
+import GaloisForLFunctions.RHTower.Sieve.MRFibreDensityAt
 
 /-!
 # The sign law from averaged short-interval estimates
@@ -60,5 +61,37 @@ theorem route_e_signClass_nonempty_of_averaged {hh : ℝ → ℝ} {s : ℤ} (hs 
   exact route_e_signClass_nonempty hs hgrow
     (MRBilinear_moebius_of_averaged havg1 (eventually_pos_normalisation hhtop))
     (MRBilinear_moebius_sq_of_averaged havg2 hhtop) hMRp
+
+/-- **The card's Theorem `(3)` from averaged short-interval estimates alone.**  All three inputs of
+the argument are now single averaged estimates over the block of starting points: one cancellation
+statement for `μ`, one equidistribution statement for `μ²`, and one for `μ²·1_{p∤·}` at each
+rescaled pair of parameters. -/
+theorem route_e_sign_density_of_averaged_all {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
+    (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
+    (havg1 : AveragedShortInterval (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
+    (havg2 : AveragedShortIntervalDensity (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+      squarefreeDensity hh)
+    (havgp : ∀ p : ℕ, p.Prime → AveragedShortIntervalDensityAt (coprimeSquarefreeWeight p)
+      (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
+      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ x in atTop,
+      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+        ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) :=
+  route_e_sign_density_of_averaged hs hgrow havg1 havg2
+    (fun p hp => MRBilinearAt_coprime_of_averaged hp (tendsto_of_growth hgrow) (havgp p hp)) hε
+
+/-- **Both sign classes are eventually nonempty, from averaged estimates alone.** -/
+theorem route_e_signClass_nonempty_of_averaged_all {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
+    (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
+    (havg1 : AveragedShortInterval (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
+    (havg2 : AveragedShortIntervalDensity (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+      squarefreeDensity hh)
+    (havgp : ∀ p : ℕ, p.Prime → AveragedShortIntervalDensityAt (coprimeSquarefreeWeight p)
+      (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
+      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ))) :
+    ∀ᶠ x in atTop, (coprimeSignClass x (hh x) s).Nonempty :=
+  route_e_signClass_nonempty_of_averaged hs hgrow havg1 havg2
+    (fun p hp => MRBilinearAt_coprime_of_averaged hp (tendsto_of_growth hgrow) (havgp p hp))
 
 end RHTower.Sieve
