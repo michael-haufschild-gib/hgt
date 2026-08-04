@@ -138,4 +138,13 @@ theorem exactDifferentialOrder_expTower (m : ℕ) :
     ExactDifferentialOrder (expTower (m + 1)) (m + 1) :=
   exactDifferentialOrder_expTower_of_det (towerJet_det_ne_zero m)
 
+
+/-- **Every positive differential order is realised by an explicit entire function.**  The
+`n`-fold exponential is transcendental entire and has differential order exactly `n`. -/
+theorem exists_transcendentalEntire_exactDifferentialOrder (n : ℕ) (hn : 0 < n) :
+    ∃ f : ℂ → ℂ, TranscendentalEntire f ∧ ExactDifferentialOrder f n := by
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  refine ⟨expTower (m + 1), ?_, exactDifferentialOrder_expTower m⟩
+  exact transcendentalEntire_entireCascade (fun _ => transcendentalEntire_exp) (by omega)
+
 end GaloisForLFunctions.HTGeometry

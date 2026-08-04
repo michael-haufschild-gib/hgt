@@ -4043,3 +4043,29 @@ Nothing is quoted and nothing is assumed beyond the schedule.  The card's schedu
 **The low-breadth half of `(8)` is therefore closed.**  What the card still needs from outside is
 only the marker supply `(4)`, which rests on the mean-square input the card cites — not on anything
 in this layer.
+
+### Formal layer — the truncation defect is discharged in both forms of step 1
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/Step1Explicit.lean`.
+
+Both step-1 theorems carried *two* hypotheses, and the prose above asserted — without a Lean
+witness — that the second one is elementary. It now is one:
+
+- `card_le_good_add_correlation_explicit` — `card_le_good_add_correlation` with `hdef` supplied;
+  the only remaining hypothesis is the correlation bound `ε`.
+- `card_le_good_add_meanSquare_explicit` — `card_le_good_add_explicit` with `hdef` supplied;
+  the only remaining hypothesis is the mean-square bound `V`.
+
+In both, the truncation defect contributes the closed term
+
+    L·((B + L − A)/R + M) / ( ½·D·L − (R + L/R) ),
+
+obtained from `AveragedSquarefreeTail.sum_tail_divisor_count_le` (every integer lies in at most `L`
+of the windows `(t, t+L]`); the correlation form is its `A = 0`, `B = X` instance.
+
+Both are unconditional as implications: `#print axioms` gives
+`[propext, Classical.choice, Quot.sound]` for each. Wired into `GaloisForLFunctions.RHTower`.
+
+Step 1 of the Hall-law argument is therefore a single theorem with exactly one hypothesis, in each
+of the two shapes the published input can take. `card_le_good_add_correlation` and
+`card_le_good_add_explicit` are no longer leaves.

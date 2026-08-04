@@ -2,10 +2,10 @@
 
 - **Stage:** 1-in-progress
 - **Status:** `[CONJECTURE] [OPEN CORE]`
-- **Active claim:** `[CONJECTURE — UNIVERSAL_1PLUS_SCHATTEN_STOKES_CARTIER_LANDING]` construct
-  one divisor-independent, coefficient-faithful landing of the all-order source `det2` boundary
-  through the Fréchet ideal `S_(1+) = intersection_(q>1) S_q`; prove its actual Xi Cartier residue
-  is the explicit physical cofinal Gamma Bockstein.
+- **Active claim:** `[CONJECTURE — SINGULAR_ALL_PRIME_CORRECTED_DET2_CARTIER_MONODROMY]`
+  construct one divisor-independent corrected-determinant Stokes functor on the finite-prime/depth
+  source bicomplex, prove aperture compatibility, and identify its cofinal monodromy with the
+  fixed-fibre physical Xi orientation action.  No summability landing is assumed.
 
 ## Exact target
 
@@ -412,7 +412,7 @@ desired RH admission theorem.
 occupation `det2` kernel is not trace class but belongs naturally to every Schatten class above
 order one.  The source completion should retain this entire order scale.
 
-### Sharp Bockstein Schatten wall `[PAPER-PROVED BRIDGE]`
+### Sharp Bockstein Schatten wall `[FORMALIZED BRIDGE]`
 
 Put
 
@@ -421,14 +421,14 @@ Delta_t(p)=F_(-t)(p)-F_t(p),
 F_t(p)=p^t p/(p+1)^2.
 ```
 
-For `|t|<1` and `q>0`,
+For every real `t` and `q>0`,
 
 ```text
 sum_p |Delta_t(p)|^q < infinity
   <-> t=0 or q*(1-|t|)>1.                         (S1)
 ```
 
-Consequently
+Consequently, for every real `t`,
 
 ```text
 Delta_t in intersection_(q>1) ell^q  <-> t=0.    (S2)
@@ -451,9 +451,13 @@ For every ordinary prime `p>=2`,
 
 The first lower constant is strictly positive because `u>0`.  Hence `|Delta_t(p)|^q` is bounded
 above and below by positive constants times `p^(-q*(1-u))`.  Euler's prime-power criterion says
-the latter prime series converges exactly when `q*(1-u)>1`, proving `(S1)`.  If `u>0`, choose
-`q>1` sufficiently close to one that `q*(1-u)<=1`; this proves the reverse implication in `(S2)`.
-The forward implication at `t=0` is immediate.
+the latter prime series converges exactly when `q*(1-u)>1`, proving `(S1)`.  If `0<u<1`, choose
+`q=(1-u)^(-1)>1`, which lies exactly on the divergent threshold.  If `u>=1`, already `q=2`
+violates the strict inequality.  This proves the reverse implication in `(S2)` globally.  The
+forward implication at `t=0` is immediate.
+
+Lean module `PrimeGammaCofinalBocksteinSchattenWall.lean` proves `(S1)`, both uniform prime-power
+bounds, and the unrestricted equivalence `(S2)` with no critical-line or fixed-ideal premise.
 
 This classifier is not the RH producer.  It identifies the weakest all-order regularity that
 would force annihilation without assuming fixed `ell1` preservation or one common Hilbert

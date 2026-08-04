@@ -2254,3 +2254,90 @@ Hence `Wrel ∈ P_A`, and `map φ (equiv D) = C(scalar)·Wrel ∈ P_A`, which is
 `I(A)^a S(A)^b · D ∈ [A]` with the multiplier's left-block order at most that of `A` and
 `A ∤ I(A)^a S(A)^b` (leader degree, `A` prime) → `dvd_of_saturation_bridge` gives `A ∣ D` for every
 irreducible factor → `dvd_of_peeling_prime` gives `𝒫 ∣ D`, which is (RITT-DVD).
+
+## (COMP) exclusion step — built
+
+`formal/GaloisForLFunctions/HTGeometry/ComponentFactorExclusion.lean` (axiom-clean, unconditional):
+
+- `mvPolynomialInitialAt_degreeOf_eq_zero`, `mvPolynomialInitialAt_ne_zero` — the two missing basic
+  facts about the initial.
+- `not_dvd_of_lower_leaderDegree` — a nonzero polynomial of lower rank has no divisor of higher
+  rank.
+- `separant_mul_of_order_eq` — the Leibniz rule for the separant of a product at a shared leader.
+- `initial_notMem_of_oracle` — **the initial of `C` is outside the component of any factor `A` with
+  the same order**, from the characteristic oracle and leader degree.
+- `separant_notMem_of_oracle` — **the separant of a squarefree product `A · B` is outside the
+  component of the irreducible factor `A` with the same order**: the oracle would give
+  `A ∣ S(A)·B`, and primality then forces either `A ∣ S(A)` (excluded by leader degree in
+  characteristic zero) or `A ∣ B` (excluded by squarefreeness).
+
+These are exactly the two exclusions the (COMP) argument needs; both are stated for an arbitrary
+prime with a characteristic oracle, so they apply verbatim to the general component of an
+irreducible factor of the cleared two-block characteristic.
+
+## Multiplier exchange — built
+
+`formal/GaloisForLFunctions/HTGeometry/FactorControlledSaturation.lean`:
+
+`exists_factor_initial_separant_powers_mem_diffPolyIterateIdeal` — **the multiplier exchange**.
+Input: an injective derivation-compatible `φ : K → L`, an irreducible factor `φ(A)` of a squarefree
+`C = φ(A)·B` of the same order, and a certificate
+`I(C)^a · S(C)^b · φ(W) ∈ [φ(A)]`.
+Output: `I(A)^{a'} · S(A)^{b'} · W ∈ [A]` **over the coefficient ring `K`**.
+
+The exceptional polynomials of `C` are cancelled against the general component of `φ(A)`
+(`mem_of_initial_separant_powers_mem`), and the ring-level Ritt reduction then rebuilds the
+multiplier out of `A` itself.  Every variable of the new multiplier occurs in `A`, and no
+denominator is introduced, so the certificate is usable by `dvd_of_saturation_bridge`, which the
+fraction-field certificate was not.
+
+Remaining for (RITT-DVD): the two-block plumbing — instantiate with `K = F{U}`,
+`L = Frac(F{U})`, `A = equiv` of an irreducible factor of the cleared characteristic, `W = equiv D`,
+and the corpus's `exists_mappedCrossRelation_saturation` as the input certificate; then feed
+`dvd_of_saturation_bridge` per factor and recombine with
+`Squarefree.dvd_of_forall_irreducible_factor_dvd`.
+
+## Two-block controlled certificate — built
+
+`formal/GaloisForLFunctions/HTGeometry/TwoBlockControlledSaturation.lean` (axiom-clean):
+
+- `mem_familyIterateIdeal_of_twoBlockEquiv_mem` — the two-block splitting identifies the
+  differential principal ideal of a two-block polynomial with that of its right-block image, so a
+  certificate proved over the coefficient ring transports back unchanged.
+- `exists_twoBlock_controlled_certificate` — **the two-block certificate with a controlled
+  multiplier**: from a mapped saturation certificate for `D` over the jet fraction field it produces
+  `I(equiv A)^{a'} · S(equiv A)^{b'} · D ∈ [A]` in the two-block ring, where the multiplier's
+  coefficients are coefficients of `A`.
+
+Still to do for (RITT-DVD): feed the corpus's `exists_mappedCrossRelation_saturation` (plus the
+clearing identity) in as the input certificate, then feed the output to `dvd_of_saturation_bridge`
+per irreducible factor, and recombine with `Squarefree.dvd_of_forall_irreducible_factor_dvd`.
+
+## Cross-difference certificate assembled — and what it does not buy
+
+`formal/GaloisForLFunctions/HTGeometry/TwoBlockCrossDifferenceControlled.lean` (axiom-clean):
+
+- `mvPolynomialInitialAt_map` — the initial commutes with an injective coefficient map (the corpus
+  had this for the leader and the separant only).
+- `exists_twoBlock_crossDifference_controlled_saturation` — for an irreducible factor `A` of the
+  cleared characteristic with the right-block support of `P`, the cross-difference of any two
+  coefficients satisfies
+  `I(equiv A)^a · S(equiv A)^b · D ∈ [A]` in the two-block ring,
+  the multiplier being built from `A` itself.  The corpus's `exists_mappedCrossRelation_saturation`
+  supplies the input; squarefreeness and the clearing identity transport it to the factor.
+
+This settles the multiplier half of `dvd_of_saturation_bridge` (`hMorder`, `hMnot`).  It does **not**
+settle the bridge's other order hypothesis:
+
+  `hQorder`:  ord_swapped(D) ≤ ord_swapped(A) ,   i.e.   ord_U 𝒫 ≤ m .
+
+That is (★) itself.  The obstruction is intrinsic, not an artefact of the corpus's lemma: a
+membership `M · D ∈ [A]` cannot yield `A ∣ D` without an order bound, because `[A]` contains `D^k A`
+for every `k`, and those are not divisible by `A`.  So the cross-difference route delivers block
+symmetry only once (★) is known; it cannot prove (★).
+
+**Consequence for the plan.**  The remaining attack on (★) must be the slice route (route 3 of the
+research note), not the divisibility bridge.  The machinery built in this cycle is exactly what the
+slice route needs: `exists_phaseOne_reduction` removes all jets above a leader with a separant-power
+multiplier, in either block, over a coefficient ring — which is the operation "cut a slice and
+reduce it" the route requires.

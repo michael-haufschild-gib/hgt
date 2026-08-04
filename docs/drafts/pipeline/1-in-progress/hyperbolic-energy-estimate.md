@@ -59,14 +59,40 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 
 ## Numbered statements
 
-1. `spacePartial`, `timeDeriv`, `SolvesWaveEquation` — the classical clock equation in time-space
-   coordinates.
-2. `spacePartial_eq_zero_of_notMem`, `integrable_of_spatialSupport` — supports and integrability.
-3. `integral_spacePartial_mul` — `∫ ∂ᵢf·g = -∫ f·∂ᵢg` on a spatial slice.
-4. `waveEnergy`, `hasDerivAt_waveEnergy` — the energy and its derivative identity.
-5. `waveEnergy_le_gronwall` — the estimate.
-6. `eq_of_solvesWaveEquation_of_data_eq` — uniqueness for the Cauchy problem.
+| # | statement | Lean name | state |
+|---|---|---|---|
+| 1 | supports of a coordinate partial derivative | `coordPartial_eq_zero_of_eventually`, `hasCompactSupport_coordPartial` | **built** |
+| 2 | integration by parts on a spatial slice | `integral_mul_coordPartial` | **built** |
+| 3 | the Green identity `∫(∑∂ᵢ∂ᵢf)·g = -∑∫∂ᵢf·∂ᵢg` | `integral_laplacian_mul` | **built** |
+| 4 | directional derivatives of a field of events: smoothness, supports, slice bridges | `dirDeriv`, `contDiff_dirDeriv`, `dirDeriv_eq_zero_of_notMem`, `dirDeriv_timeDir_eq`, `dirDeriv_spaceDir_eq` | **built** |
+| 5 | symmetry of the mixed second derivative | `dirDeriv_comm` | **built** |
+| 6 | the clock equation and the energy density | `SolvesWaveEq`, `energyDensity` | **built** |
+| 7 | product/sum rules for a directional derivative | `dirDeriv_mul`, `dirDeriv_sq`, `dirDeriv_add`, `dirDeriv_sum` | **built** |
+| 8 | the pointwise expansion of `∂ₜ(energy density)` | `dirDeriv_energyDensity` | **built** |
+| 9 | the flux identity `∫∂ₜ(energy density) = 2∫(V+1)·u·∂ₜu` | — | next |
+| 10 | differentiation under the integral: `HasDerivAt (waveEnergy u) …` | — | next |
+| 11 | the Grönwall estimate | — | next |
+| 12 | uniqueness for the Cauchy problem | — | next |
+
+Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
+`WaveEnergyFlux.lean` (6–8). All wired into the umbrella; axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+## State of the build
+
+Statements 1–8 are complete: the Green identity, the whole directional calculus on time-space
+including the symmetry of mixed partials, and the pointwise expansion
+
+`∂ₜ(energy density) = 2∂ₜu·∂ₜ²u + ∑ᵢ2∂ᵢu·∂ₜ∂ᵢu + 2u·∂ₜu`.
+
+What remains is bookkeeping of a known shape: substitute the equation into the first term, move the
+`∂ₜ` past the `∂ᵢ` by `dirDeriv_comm` in the second, apply `integral_laplacian_mul` to cancel the
+two, then differentiate under the integral (`hasDerivAt_integral_of_dominated_loc_of_deriv_le`, the
+dominating function being the supremum of the continuous integrand on `Icc (t-1) (t+1) ×ˢ K` times
+the indicator of `K`) and close with `norm_le_gronwallBound_of_norm_deriv_right_le`.
 
 ## Log
+- 2026-08-04 — statements 1–8 formalized in three modules (Green identity, directional calculus,
+  pointwise flux expansion); 9–12 remain.
 - 2026-08-04 — created in 1-in-progress; mathlib inputs verified present
   (`integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable`, `norm_le_gronwallBound_of_norm_deriv_right_le`).

@@ -58,7 +58,7 @@ omit [Differential L] [CharZero L] in
 theorem scalarDifferentialPolynomialOrder_le_of_vars_subset
     {P Q : DifferentialPolynomial Unit L} (h : P.vars ⊆ Q.vars) :
     scalarDifferentialPolynomialOrder P ≤ scalarDifferentialPolynomialOrder Q :=
-  Finset.sup_le fun p hp => Finset.le_sup (f := fun j : Unit × ℕ ↦ j.2) (h hp)
+  Finset.sup_le fun _ hp => Finset.le_sup (f := fun j : Unit × ℕ ↦ j.2) (h hp)
 
 omit [Differential L] [CharZero L] in
 /-- **The initial of a polynomial is outside the component of any factor with the same leader.**
@@ -93,7 +93,7 @@ theorem initial_notMem_of_oracle {C A : DifferentialPolynomial Unit L}
     scalarDifferentialPolynomialLeaderDegree_pos hAvars
   exact not_dvd_of_lower_leaderDegree hA0 hI0 hIorder (by omega) (hPdvd _ hmem hIorder)
 
-omit [CharZero L] in
+omit [Differential L] [CharZero L] in
 /-- The separant of a product is computed by the Leibniz rule at the shared leader. -/
 theorem separant_mul_of_order_eq {A B : DifferentialPolynomial Unit L}
     (horder : scalarDifferentialPolynomialOrder A =
@@ -103,8 +103,10 @@ theorem separant_mul_of_order_eq {A B : DifferentialPolynomial Unit L}
         A * MvPolynomial.pderiv ((), scalarDifferentialPolynomialOrder A) B := by
   rw [scalarDifferentialPolynomialSeparant, scalarDifferentialPolynomialLeader, ← horder,
     Derivation.leibniz]
-  simp [smul_eq_mul, mul_comm]
+  simp only [smul_eq_mul]
+  ring
 
+omit [Differential L] in
 /-- **The separant of a squarefree polynomial is outside the component of an irreducible factor with
 the same leader.**  Divisibility of the separant would, by the Leibniz rule, make the factor divide
 either its own separant -- impossible by leader degree in characteristic zero -- or the
@@ -154,6 +156,33 @@ theorem separant_notMem_of_oracle {A B : DifferentialPolynomial Unit L}
       rw [hT]
       exact ⟨T, by ring⟩
     exact hAirr.not_isUnit (hsquarefree A hsq)
+
+omit [Differential L] in
+/-- **The saturation multiplier can be cancelled against the component of a factor.**  A product of
+powers of the initial and the separant with a further factor lies in the component only through that
+further factor, because neither exceptional polynomial lies in it. -/
+theorem mem_of_initial_separant_powers_mem {A B W : DifferentialPolynomial Unit L} {a b : ℕ}
+    (hAirr : Irreducible A) (hAvars : A.vars.Nonempty)
+    (hsquarefree : Squarefree (A * B))
+    (horder : scalarDifferentialPolynomialOrder A =
+      scalarDifferentialPolynomialOrder (A * B))
+    {P : Ideal (DifferentialPolynomial Unit L)} (hPprime : P.IsPrime)
+    (hPdvd : ∀ Z : DifferentialPolynomial Unit L, Z ∈ P →
+      scalarDifferentialPolynomialOrder Z ≤ scalarDifferentialPolynomialOrder A → A ∣ Z)
+    (hmem : scalarDifferentialPolynomialInitial (A * B) ^ a *
+        (scalarDifferentialPolynomialSeparant (A * B) ^ b * W) ∈ P) :
+    W ∈ P := by
+  have hC0 : A * B ≠ 0 := by
+    intro h0
+    rw [h0] at hsquarefree
+    exact not_squarefree_zero hsquarefree
+  rcases hPprime.mem_or_mem hmem with hI | hrest
+  · exact absurd (hPprime.mem_of_pow_mem a hI)
+      (initial_notMem_of_oracle hC0 hAvars horder hPdvd)
+  · rcases hPprime.mem_or_mem hrest with hS | hW
+    · exact absurd (hPprime.mem_of_pow_mem b hS)
+        (separant_notMem_of_oracle hAirr hAvars hsquarefree horder hPdvd)
+    · exact hW
 
 end
 

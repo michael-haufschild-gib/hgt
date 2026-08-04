@@ -229,28 +229,37 @@ theorem summable_primeGammaCofinalBocksteinSchattenMass_iff
 
 /-- Membership in every prime `ell^q`, `q > 1`, forces and is forced by neutral grade. -/
 theorem all_order_summable_primeGammaCofinalBocksteinSchattenMass_iff
-    {t : ℝ} (ht : |t| < 1) :
+    {t : ℝ} :
     (∀ q : ℝ, 1 < q →
       Summable (primeGammaCofinalBocksteinSchattenMass q t)) ↔
       t = 0 := by
   constructor
   · intro hall
     by_contra ht0
-    have hu0 : 0 < 1 - |t| := by linarith
-    let q : ℝ := (1 - |t|)⁻¹
-    have hq1 : 1 < q := by
-      dsimp [q]
-      rw [one_lt_inv₀ hu0]
-      linarith [abs_pos.mpr ht0]
-    have hsum := hall q hq1
-    have hclass :=
-      (summable_primeGammaCofinalBocksteinSchattenMass_iff
-        (show 0 < q by linarith)).mp hsum
-    rcases hclass with hzero | hstrict
-    · exact ht0 hzero
-    · dsimp [q] at hstrict
-      rw [inv_mul_cancel₀ hu0.ne'] at hstrict
-      linarith
+    by_cases ht : |t| < 1
+    · have hu0 : 0 < 1 - |t| := by linarith
+      let q : ℝ := (1 - |t|)⁻¹
+      have hq1 : 1 < q := by
+        dsimp [q]
+        rw [one_lt_inv₀ hu0]
+        linarith [abs_pos.mpr ht0]
+      have hsum := hall q hq1
+      have hclass :=
+        (summable_primeGammaCofinalBocksteinSchattenMass_iff
+          (show 0 < q by linarith)).mp hsum
+      rcases hclass with hzero | hstrict
+      · exact ht0 hzero
+      · dsimp [q] at hstrict
+        rw [inv_mul_cancel₀ hu0.ne'] at hstrict
+        linarith
+    · have hsum := hall 2 (by norm_num)
+      have hclass :=
+        (summable_primeGammaCofinalBocksteinSchattenMass_iff
+          (show (0 : ℝ) < 2 by norm_num)).mp hsum
+      rcases hclass with hzero | hstrict
+      · exact ht0 hzero
+      · have habs : 1 ≤ |t| := le_of_not_gt ht
+        linarith
   · rintro rfl q hq
     exact (summable_primeGammaCofinalBocksteinSchattenMass_iff
       (by linarith)).2 (Or.inl rfl)

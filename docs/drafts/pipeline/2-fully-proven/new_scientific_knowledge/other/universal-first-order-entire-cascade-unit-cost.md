@@ -442,8 +442,19 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
       explicit instance
 - [x] Lean: sharpness -- polynomial constituents give order `0`, so transcendence cannot be weakened
 - [x] Lean: the Poincare recession consequence, and the charge-count identity
-- [ ] Lean: the growth separation `StepSeparation` -- the one analytic input still open
-- [ ] Lean: observability (`helim`) on the analytic objects -- Reduction III
+- [x] Lean: the growth separation `StepSeparation` -- **no longer needed**.  State independence is
+      proved outright for every first-order entire cascade
+      (`noRelation_entireCascade_of_transcendental`), so Clunie--Steinmetz is not an input to this
+      card at all.  The uniform "window" interface that was going to carry it is refuted
+      (`not_window_comparison`).
+- [x] Lean: transcendence of every cascade state, and the order-zero exclusion
+      (`transcendentalEntire_entireCascade`)
+- [x] Lean: observability (`helim`) for the exponential tower at every height
+      (`exactDifferentialOrder_expTower`): the card's law on an explicit infinite family
+- [x] Lean: the column-pencil determinant calculus the tower induction runs on -- extraction,
+      alternation, unit-row expansion (`ColumnPencilDeterminant`)
+- [ ] Lean: observability (`helim`) on a general cascade -- Reduction III, where the derivative law is
+      algebraic rather than polynomial and the Wiman initial data is needed
 
 ### Lean status
 
@@ -6771,3 +6782,45 @@ the paper's hypotheses, the algebraic independence of the states of *any* first-
 the transcendence of every state, and the length-one case. What is still open in general is `helim`
 (Reduction III) for an arbitrary cascade, where the tower's polynomial derivative law is replaced by an
 algebraic one and the Wiman initial data is needed.
+
+### The order grading is inhabited at every level
+
+`exists_transcendentalEntire_exactDifferentialOrder`: for every `n ≥ 1` there is an explicit
+transcendental entire function of differential order **exactly** `n` — the `n`-fold exponential.
+Unconditional, axiom-clean.
+
+Worth stating separately because it is the non-vacuity of the whole order grading this card is about:
+before this, only `n = 1` had a witness in the corpus, and `DifferentiallyAlgebraicOfOrder` was a
+graded predicate whose levels above one were not known to be attained by any entire function.
+
+Gates updated to match the corpus: the `StepSeparation` gate is closed as **not needed** (state
+independence is now a theorem, and the interface that was to carry it is refuted), transcendence of
+every state and the tower's observability are new closed gates, and the single open Lean gate is
+`helim` on a *general* cascade — where the derivative law is algebraic rather than polynomial.
+
+### `HTGeometry/PolynomialCascadeModel.lean` — the tower argument, made reusable
+
+The transfer that carried the exponential tower is now stated for an arbitrary family with a
+**polynomial derivative law**, so any future instance costs only its own determinant.  Unconditional,
+axiom-clean.
+
+Given entire `Y : ℕ → ℂ → ℂ` and a derivation `δ` on `MvPolynomial ℕ ℂ` with
+
+`deriv (Y k) z = eval (Y · z) (δ (X k))`   (the law needs checking **only on the variables**),
+
+* `deriv_evalAt` — evaluation at the states intertwines `δ` with complex differentiation, by the
+  three-case polynomial induction;
+* `evalAt_modelJet` — hence the `i`-th analytic jet of `Y N` is the evaluation of the `i`-th model jet;
+* `not_differentiallyAlgebraicOfOrder_of_model` — if the coordinate together with the first `m+1`
+  model jets of `X N` are algebraically independent and a nonzero model polynomial never vanishes
+  identically at the states, then `Y N` satisfies no equation of order `m`;
+* `exists_evalAt_ne_zero_of_transcendental` — that last hypothesis holds for *every* cascade of
+  transcendental entire functions, by the state-independence theorem plus `exists_fin_rename`.
+
+So for any cascade whose derivative law is polynomial in the states, the analytic theorem is reduced to
+one determinant in a polynomial ring, with no analysis left.  The exponential cascades
+`f_k(w) = exp(a_k w + b_k)` are exactly the first-order entire families with that property: `f' = a·f`
+gives `δ Y_{k+1} = a_k·Y_{k+1}·δ Y_k`, and the shift `b_k` is invisible to the derivation.  Their model
+is the tower's model rescaled by the constants `a_k`, which a scaling automorphism
+`X_k ↦ a_k X_k` together with rescaling `δ` by `a_0` conjugates onto the tower's — the route to the
+wider family without re-running the height induction.

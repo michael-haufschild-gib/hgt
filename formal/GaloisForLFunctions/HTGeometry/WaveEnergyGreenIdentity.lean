@@ -1,4 +1,7 @@
 import GaloisForLFunctions.HTGeometry.ConformalMetricDalembertian
+import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
+import Mathlib.MeasureTheory.Function.LocallyIntegrable
+import Mathlib.MeasureTheory.Constructions.Pi
 
 /-!
 # The Green identity on a spatial slice
@@ -45,25 +48,29 @@ theorem integrable_of_continuous_compactSupport {f : (Fin d → ℝ) → ℝ} (h
 
 /-- **Integration by parts on a spatial slice.** -/
 theorem integral_mul_coordPartial {f g : (Fin d → ℝ) → ℝ} (hf : ContDiff ℝ ∞ f)
-    (hg : ContDiff ℝ ∞ g) (hfs : HasCompactSupport f) (hgs : HasCompactSupport g) (i : Fin d) :
+    (hg : ContDiff ℝ ∞ g) (hfs : HasCompactSupport f) (i : Fin d) :
     (∫ x : Fin d → ℝ, f x * coordPartial i g x)
       = -∫ x : Fin d → ℝ, coordPartial i f x * g x := by
   have hfc : Continuous f := hf.continuous
   have hgc : Continuous g := hg.continuous
   have hdf : Continuous (coordPartial i f) := (contDiff_coordPartial hf i).continuous
   have hdg : Continuous (coordPartial i g) := (contDiff_coordPartial hg i).continuous
-  have h1 : Integrable (fun x : Fin d → ℝ => coordPartial i f x * g x)
+  have h1 : Integrable (fun x : Fin d → ℝ => fderiv ℝ f x (Pi.single i (1 : ℝ)) * g x)
       (volume : Measure (Fin d → ℝ)) :=
     integrable_of_continuous_compactSupport (hdf.mul hgc)
       ((hasCompactSupport_coordPartial hfs i).mul_right)
-  have h2 : Integrable (fun x : Fin d → ℝ => f x * coordPartial i g x)
+  have h2 : Integrable (fun x : Fin d → ℝ => f x * fderiv ℝ g x (Pi.single i (1 : ℝ)))
       (volume : Measure (Fin d → ℝ)) :=
     integrable_of_continuous_compactSupport (hfc.mul hdg) hfs.mul_right
   have h3 : Integrable (fun x : Fin d → ℝ => f x * g x) (volume : Measure (Fin d → ℝ)) :=
     integrable_of_continuous_compactSupport (hfc.mul hgc) hfs.mul_right
-  exact integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable (v := Pi.single i (1 : ℝ)) h1 h2 h3
-    (fun x _ => differentiableAt_of_contDiff_infty hf x)
-    (fun x _ => differentiableAt_of_contDiff_infty hg x)
+  have hmain : (∫ x : Fin d → ℝ, f x * fderiv ℝ g x (Pi.single i (1 : ℝ)))
+      = -∫ x : Fin d → ℝ, fderiv ℝ f x (Pi.single i (1 : ℝ)) * g x :=
+    integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable
+      (μ := (volume : Measure (Fin d → ℝ))) (v := Pi.single i (1 : ℝ)) h1 h2 h3
+      (fun x _ => differentiableAt_of_contDiff_infty hf x)
+      (fun x _ => differentiableAt_of_contDiff_infty hg x)
+  exact hmain
 
 /-- **The Green identity on a spatial slice.** -/
 theorem integral_laplacian_mul {f g : (Fin d → ℝ) → ℝ} (hf : ContDiff ℝ ∞ f)
@@ -75,7 +82,7 @@ theorem integral_laplacian_mul {f g : (Fin d → ℝ) → ℝ} (hf : ContDiff �
         = -∫ x : Fin d → ℝ, coordPartial i f x * coordPartial i g x := by
     intro i
     have h := integral_mul_coordPartial (f := g) (g := coordPartial i f) hg
-      (contDiff_coordPartial hf i) hgs (hasCompactSupport_coordPartial hfs i) i
+      (contDiff_coordPartial hf i) hgs i
     have hcomm : ∀ x : Fin d → ℝ,
         coordPartial i (coordPartial i f) x * g x
           = g x * coordPartial i (coordPartial i f) x := fun x => mul_comm _ _
@@ -93,7 +100,7 @@ theorem integral_laplacian_mul {f g : (Fin d → ℝ) → ℝ} (hf : ContDiff �
       funext x
       rw [Finset.sum_mul]
     rw [hexp]
-    refine integral_finset_sum Finset.univ fun i _ => ?_
+    refine integral_finsetSum Finset.univ fun i _ => ?_
     exact integrable_of_continuous_compactSupport
       (((contDiff_coordPartial (contDiff_coordPartial hf i) i).continuous).mul hg.continuous)
       ((hasCompactSupport_coordPartial (hasCompactSupport_coordPartial hfs i) i).mul_right)
