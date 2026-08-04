@@ -319,13 +319,61 @@ deliberately unidentified, whereas `(8)` needs `p = q = 1/sqrt(pi)`, i.e.
 Fresnel-type constant), independent of everything above.  `(10)`, `(16)` and `(20)` then need that constant
 plus the exact leakage identities `(13)`, which belong to the endpoint-response cards.
 
+**The Fresnel constant is now proved**, in `formal/GaloisForLFunctions/RHTower/FresnelIntegral.lean`.  It is
+the one irreducible input of `(8)`: the amplitude `sqrt(2/pi)` and the phase shift `-pi/4` of the Bessel
+asymptotic are exactly `int_0^infinity exp(i x²) dx = sqrt(pi) exp(i pi/4)/2`.  mathlib has the Gaussian
+integral for every complex `b` with `re b > 0` but not this boundary case, where the integrand does not decay
+and the integral is only conditionally convergent.
+
+- `cexp_fresnel_split`, `fresnelKernel`, `fresnelValue`, `fresnelRegValue` — the regularised kernel
+  `exp(-(eps - i)x²) = exp(-eps x²) exp(i x²)`: a nonnegative decreasing weight against a convex phase.
+- **`norm_integral_fresnel_tail_le`** — every tail is at most `2/A`, *uniformly in the regularisation*: the
+  weighted first-derivative van der Corput test applies with `w = exp(-eps x²)`, `g = x²`, `g' >= 2A`.  This
+  is the estimate that replaces contour rotation.
+- `integrable_fresnelKernel`, `integral_Ioi_fresnelKernel`, `norm_integral_Ioi_fresnelKernel_tail_le`,
+  `integral_Ioi_fresnelKernel_split` — for `eps > 0` the ray integral is mathlib's complex Gaussian value and
+  splits at `R` with the same tail bound.
+- `norm_integral_fresnel_dereg_le` — removing the regularisation costs at most `R(1 - exp(-eps R²))` on
+  `[0, R]`.
+- `tendsto_fresnelRegValue`, **`norm_integral_fresnel_sub_le`** — hence
+  `|int_0^R exp(i x²) dx - fresnelValue| <= 2/R`: the regularised comparison plus continuity of
+  `(pi/(eps - i))^{1/2}` at `eps = 0`.
+- **`tendsto_integral_cexp_sq_atTop`** — the Fresnel integral converges to the boundary Gaussian value.  No
+  separate Cauchy argument is needed: the `2/R` bound gives convergence and the value at once.
+- `pi_mul_I_ne_zero`, **`cpow_pi_mul_I_half`**, **`fresnelValue_eq`** — the constant in explicit form,
+  `sqrt(pi) exp(i pi/4)/2`, from `log(pi i) = log pi + i pi/2`.
+- **`tendsto_integral_cos_sq_atTop`**, **`tendsto_integral_sin_sq_atTop`** —
+  `int_0^infinity cos(x²) dx = int_0^infinity sin(x²) dx = sqrt(pi/2)/2`.  The equality of the two is the
+  phase `pi/4` itself.
+
+The route from the Fresnel constant to the Bessel constant is under construction in
+`formal/GaloisForLFunctions/RHTower/BesselJZeroConstant.lean`.  The key point is that the substitution is
+*exact*, so no asymptotic expansion of the phase is ever needed:
+
+- **`norm_integral_cexp_neg_sq_sub_le`** — the conjugate Fresnel integral, with the same `2/X` rate.
+- **`integral_cexp_neg_half_mul_sq`** — the rescaling `int_0^{sqrt 2} exp(-i u v²/2) dv
+  = sqrt(2/u) int_0^{sqrt u} exp(-i w²) dw`.
+- `quadJacobian`, `continuousOn_quadJacobian`, **`integral_cexp_cos_eq_quad`** — the exact substitution
+  `v = 2 sin(φ/2)`: since `1 - cos φ = 2 sin²(φ/2)`, the phase `u cos φ` becomes `u(1 - v²/2)` *identically*
+  and the Jacobian is `(1 - v²/4)^{-1/2}`.  This replaces the usual "expand `cos φ` near the stationary
+  point" step by an identity.
+- `jacCorr`, `jacCorrDeriv`, `sqrt_one_sub_quarter_pos`, `sqrt_one_sub_quarter_le_one`, `jacCorr_nonneg`,
+  **`jacCorr_le`**, **`hasDerivAt_jacCorr`**, `jacCorrDeriv_nonneg`, `continuousOn_jacCorrDeriv`,
+  **`quadJacobian_eq`** — the Jacobian splits as `1 + g(v)` with `0 <= g(v) <= v²/4` on `[0, sqrt 2]` and
+  `g'(v) = v/(4 (1-v²/4)^{3/2}) >= 0`.  The `1` gives the Fresnel integral; `g` is nonnegative increasing
+  with an explicit derivative, which is what the weighted van der Corput test consumes.
+
 ## Lean gates
 
 - [x] Lean: the radial angle and its derivative law
 - [x] Lean: equation `(17)` — the limiting density has total mass exactly `1/2`
 - [x] Lean: equation `(7)`, phase half — the second-order expansion of `xi_sigma` with explicit error
 - [x] Lean: the amplitude half of `(7)` — `|A_sigma(x) - x^{-1/2}| <= 4 sigma²`, globally on the ray
-- [ ] Lean: the constant in the Bessel large-argument asymptotic (`p = q = 1/sqrt(pi)`)
+- [x] Lean: the **Fresnel constant** `int_0^infinity exp(i x²) dx = sqrt(pi) exp(i pi/4)/2` — new general
+  infrastructure, absent from mathlib
+- [ ] Lean: the constant in the Bessel large-argument asymptotic (`p = q = 1/sqrt(pi)`).  The exact
+  substitution, the rescaled and conjugate Fresnel integrals and the Jacobian split are proved; what remains
+  is the `O(u^{-3/4})` bound on the correction term (two weighted van der Corput blocks) and the assembly
 - [ ] Lean: equation `(8)`, the fixed-degree radial profile
 - [ ] Lean: equation `(10)`, the weak squared-profile law
 - [ ] Lean: equations `(16)`, `(20)` — total-mass matching and outer-coordinate escape (need `(13)`)

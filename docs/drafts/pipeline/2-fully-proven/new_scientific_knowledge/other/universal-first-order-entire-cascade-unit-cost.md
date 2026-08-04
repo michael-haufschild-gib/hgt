@@ -6102,3 +6102,225 @@ transcendence, since a nonzero univariate `A` has an explicit floor beyond `grow
 (`norm_eval_ge_of_large`), the reciprocal of that floor is bounded there, and a transcendental entire
 function exceeds every polynomial bound (`exists_norm_gt_of_not_polynomial`) — necessarily at a point
 outside any fixed disc, since it is bounded on compacts.
+
+### `HTGeometry/FirstEdgeSeparation.lean` — the separation at the first edge is a theorem
+
+`stepSeparation_first_edge`: for `Y 0 = id` and `Y 1` transcendental entire,
+
+`StepSeparation (prefixFamily Y 1) (Y 1)`
+
+holds unconditionally. Axiom-clean. **The first instance of the card's remaining analytic obligation
+is now discharged**, not assumed.
+
+The proof is a three-constant argument, and each constant comes from a piece built earlier on this
+card:
+
+1. The coefficient `A` is a polynomial in the coordinate alone, so `toPoly A` is univariate and
+   `norm_eval_ge_of_large` gives the *uniform* floor `ε = ‖lead‖/2` at every point beyond
+   `growthRadius (toPoly A)`. The floor does not depend on the point, so `log⁺ε⁻¹` is a constant `L`.
+2. `exists_norm_gt_of_not_polynomial` supplies a point where `‖Y 1 z‖` exceeds `Mbig·(1+‖z‖)^d`.
+   Choosing `Mbig ≥ sup‖Y 1‖` on the closed disc of radius `growthRadius` forces that point to lie
+   *outside* the disc — a transcendental entire function is bounded on compacts, so the witness cannot
+   hide there. This is what makes an uncontrolled existential usable.
+3. Taking `d ≥ c` and `Mbig ≥ exp(c + cL + 1)` makes the growth beat `c·(1 + log⁺‖z‖ + L)`: the
+   `log⁺‖z‖` terms cancel with a nonnegative coefficient and the comparison reduces to `c + cL < log Mbig`.
+
+Supporting `posLog_le_log_one_add` (`log⁺ t ≤ log (1+t)` for `t ≥ 0`) is what lets step 3 discard the
+`log⁺` in favour of the polynomial bound's `log(1+‖z‖)`.
+
+**Card status.** The open obligation is now: `StepSeparation` at edges `m ≥ 2` (where the earlier
+states are no longer just the coordinate), plus observability (`helim`). Edge 1 is closed.
+
+### `RHTower/EntireCircleFloor.lean` — the minimum modulus, with the zero count eliminated
+
+`exists_circle_floor_of_ne_zero`: a nonzero entire function has a **positive floor on some circle of
+any prescribed nondegenerate annulus** about any point where it does not vanish:
+
+```
+f entire, f c ≠ 0, 0 ≤ A < B  →  ∃ s ∈ [A,B], ∃ ε > 0, ∀ z, ‖z − c‖ = s → ε ≤ ‖f z‖
+```
+
+Unconditional, axiom-clean.
+
+The corpus's `exists_radius_norm_ge_of_analytic_at` delivers this only after the caller supplies a
+scale `H` satisfying `2·N·H < B − A`, where `N` is the number of zeros in the surrounding disc —
+data the caller does not have, since `N` appears only in the theorem's own existential. The way out
+is that the *same* theorem's Jensen conjunct bounds `N` a priori:
+
+`N ≤ log(M/‖f c‖) / log((R'−R)/R) =: N₀`,
+
+with `N₀` computed from the bound `M` on a fixed large sphere. Choosing `H = (B−A)/(2(N₀+1))` before
+applying makes the gap condition automatic, because `N₀/(N₀+1) < 1`.
+
+This is the shape of every remaining `StepSeparation` at edges `m ≥ 2`: the coefficient
+`A(z, F_1 z, …)` is a nonzero entire function (by the previous edge's independence), so it has a
+circle floor, and the separation then needs a point on that circle where the new state is large.
+The floor half is now available off the shelf.
+
+### `HTGeometry/SphereMaxModulus.lean` — moving a large value onto a prescribed circle
+
+`exists_sphere_norm_ge` and `exists_sphere_norm_ge_of_le`: for entire `F`, any value on a closed disc
+is dominated by `‖F‖` at some point of the bounding circle, and hence a value on a smaller circle is
+dominated by one on any larger circle. Unconditional, axiom-clean.
+
+This is the transfer the higher-edge separations need. The floor from `exists_circle_floor_of_ne_zero`
+lives on a *circle*, while the corpus's composition-growth results produce a point large somewhere in
+a *disc*; the maximum principle plus compactness of the sphere moves the large value onto the circle,
+so the two can be evaluated at the same point.
+
+Mechanism: `IsCompact.exists_isMaxOn` on the sphere supplies the maximiser, and
+`Complex.norm_le_of_forall_mem_frontier_norm_le` on `ball 0 s` — whose frontier is the sphere and whose
+closure is the closed ball — bounds the disc by it.
+
+With this and the circle floor, the two halves of `StepSeparation` at edges `m ≥ 2` can be evaluated at
+a common point; what is still missing is the quantitative comparison between the floor's decay and the
+composition's growth along a sequence of radii, which is where the Wiman–Valiron/Borel selection
+(already in the corpus) has to enter.
+
+### `RHTower/FloorAndLargeSelection.lean` — one point carrying both facts
+
+`exists_point_floor_and_large`: for entire `g` with `g 0 ≠ 0` and entire `F`, and any `r > 0`,
+
+```
+∃ z ε, 0 < ε ∧ ε ≤ ‖g z‖ ∧ ‖F w‖ ≤ ‖F z‖ ∧ r ≤ ‖z‖ ≤ r + 1     (for every ‖w‖ ≤ r)
+```
+
+Unconditional, axiom-clean. The circle floor and the maximum principle are combined into the single
+selection a separation argument consumes: one point, bounded below for `g` and dominating for `F`,
+with its modulus confined to a prescribed unit window so the selection can be iterated along windows
+going to infinity.
+
+This is the analytic core of `StepSeparation` at any edge, with the geometry finished. What is left is
+purely quantitative: the floor `ε` and the window position `r` must be related so that
+`c·(1 + ∑ log⁺‖X_j z‖ + log⁺ε⁻¹)` stays below `log⁺‖F z‖`. At the first edge that relation was free,
+because a univariate coefficient has a floor independent of the radius; at later edges `ε` degrades
+with the zero count of `A(z, F_1 z, …)`, and controlling that degradation against the composition's
+growth is exactly the Wiman–Valiron/Borel step the corpus already carries
+(`borel_growth`, `exists_ge_lt_two_mul`, `exists_radius_floor_maxTerm_block`).
+
+### `RHTower/StepSeparationFromWindow.lean` — the obligation no longer asks for a point
+
+`stepSeparation_of_window`: with the states entire, the new state entire, and each nonzero coefficient
+nonvanishing at the origin, `StepSeparation X F` follows from a *window comparison* — for each
+coefficient `A` and level `c`, some `r > 0` and reference point `w` in the disc of radius `r` such that
+**every** point `z` of the window `r ≤ ‖z‖ ≤ r+1` carrying a floor `ε` for `A(X(·))` and satisfying
+`‖F w‖ ≤ ‖F z‖` also satisfies
+
+`c·(1 + ∑_j log⁺‖X_j z‖ + log⁺ε⁻¹) < log⁺‖F z‖`.
+
+Unconditional, axiom-clean. The point itself is produced by `exists_point_floor_and_large`; the
+analyst supplies only the inequality.
+
+This is the final restatement of the card's remaining analytic obligation, and it is now in the form
+Wiman–Valiron estimates are naturally stated in: a comparison on an annulus, between the maximum
+modulus of the composite and the joint scale of the earlier states, with a floor as an input rather
+than something to be arranged. The corpus's radius-selection lemmas
+(`exists_radius_floor_maxTerm_block`, `borel_growth`) produce exactly windows of this shape.
+
+Together with `stepSeparation_first_edge` (which discharges the obligation outright at the first
+edge), this is where the card stands: everything algebraic, field-theoretic and value-distributional
+is proved; what is open is one annulus comparison per edge from the second on, plus observability.
+
+### Correcting the nonvanishing hypothesis
+
+`stepSeparation_of_window` as first stated required each nonzero coefficient to be nonvanishing **at
+the origin** — an artefact of centring the floor circle at `0`, and not something the induction
+supplies. Replaced by `stepSeparation_of_window_of_ne`, whose hypothesis is
+
+`∀ A ≠ 0, ∃ c, A(X(c)) ≠ 0`,
+
+i.e. the coefficient is not identically zero along the states. That *is* the independence of the
+earlier states, so it is exactly the induction's own invariant.
+
+Two supporting changes made this possible:
+
+- `exists_sphere_isMaxOn` / `exists_sphere_isMaxOn_at` — the *maximiser* on a circle, dominating the
+  whole closed disc at once. The earlier `exists_sphere_norm_ge` produced a point per `w`, which
+  cannot serve when one point must dominate every `w` in the disc; choosing the maximiser first and
+  applying the maximum principle afterwards fixes the quantifier order.
+- `exists_point_floor_and_large_of_ne` — the selection with the centre chosen where the coefficient is
+  nonzero, and the point taken to be that maximiser.
+
+Worth recording as a method point: the first version was provable but with a hypothesis nothing in the
+development could discharge. The fix was not analytic but a quantifier reordering — "for each `w` some
+`z`" versus "some `z` for all `w`" — which is the kind of gap that a proof assistant surfaces
+immediately and prose does not.
+
+### The induction runs from window comparisons alone
+
+`noRelation_prefixFamily_of_window`: with the states entire, a window comparison at every level gives
+the full state independence
+
+`∀ m, ∀ P ≠ 0, ¬ ∀ z, P(Y_0 z, …, Y_{m-1} z) = 0`.
+
+Unconditional, axiom-clean.
+
+The point is that the nonvanishing hypothesis of `stepSeparation_of_window_of_ne` — "each nonzero
+coefficient is not identically zero along the states" — is precisely the induction's conclusion one
+level down, so it is discharged internally at each step rather than assumed. Nothing outside the
+window comparison is required.
+
+So the card's lower-bound obligation has reached its final shape: **one inequality on an annulus, per
+level**, with the point supplied, the floor supplied, and the maximum-modulus domination supplied:
+
+```
+c·(1 + ∑_j log⁺‖Y_j z‖ + log⁺ε⁻¹) < log⁺‖Y_m z‖
+```
+
+for `z` in the window, given `ε ≤ ‖A(Y(z))‖` and `‖Y_m w‖ ≤ ‖Y_m z‖` for all `w` in the inner disc.
+`stepSeparation_first_edge` is the `m = 1` instance, proved.
+
+### `RHTower/CascadeOrderFromWindow.lean` — the card's theorem at its smallest hypothesis set
+
+```
+exactDifferentialOrder_entireCascade_of_window :
+  (∀ i, TranscendentalEntire (f i)) →
+  (∀ k < n, DifferentiallyAlgebraicOfOrder (f k) 1) →
+  (window comparison at every level) →
+  helim →
+  ExactDifferentialOrder (entireCascade f n) n
+```
+
+Unconditional, axiom-clean. The first two hypotheses are the paper's. The third is one inequality on
+an annulus per level, with the point, the floor and the maximum-modulus domination all supplied by
+`exists_point_floor_and_large_of_ne`. The fourth is the elimination step.
+
+This is the end of the reduction: state independence, the transcendence-degree count, both order
+bridges, the value-distribution estimates, the Clunie interface and the polynomial bookkeeping are all
+proved, and nothing algebraic remains between these hypotheses and the conclusion.
+
+**Summary of the run.** Beginning from a card whose Lean status recorded an abstract skeleton plus two
+external analytic inputs, the following are now proved unconditionally and axiom-clean on the actual
+entire functions:
+
+* `ord_DA(f_n ∘ … ∘ f_1) ≤ n` with exactly the paper's hypotheses — the Clunie–Steinmetz input turned
+  out to be unnecessary for this half, since consecutive states are automatically independent;
+* the order-zero classification (`entire and algebraic ⟺ polynomial`), from which the sharpness of the
+  transcendence hypothesis follows;
+* the length-one case, three independent ways, with `Complex.exp` as an explicit witness;
+* the Poincaré recession consequence and the charge-count identity;
+* the whole lower-bound reduction, ending at one annulus inequality per level plus `helim`, with the
+  `m = 1` instance of that inequality also proved.
+
+### Umbrella audit
+
+`lake build GaloisForLFunctions.HTGeometry` — **succeeds**, 14227 jobs. Every module added on this
+card is wired and compiles inside the umbrella, and the `analyticOnNhd_iteratedDeriv` collision
+repaired earlier is confirmed fixed at umbrella scale.
+
+`lake build GaloisForLFunctions.RHTower` — **fails**, for a reason unrelated to this card:
+
+```
+import ...Sieve.SquarefreeDivisorCount failed, environment already contains
+'RHTower.Sieve.card_divisors_of_squarefree' from ...Sieve.DivisorSquareSum
+```
+
+Two different proofs of the same fact carry the same name — `SquarefreeDivisorCount.lean:37`
+(`Squarefree m → m ≠ 0 → …`) and `DivisorSquareSum.lean:25` (`Squarefree d → …`, used only locally at
+line 37 of that file) — and the umbrella imports both (lines 3283 and 3466). This is concurrent Sieve
+work by another session, not touched here; the minimal repair is to rename the local one in
+`DivisorSquareSum.lean` (two occurrences), since `Squarefree d` already gives `d ≠ 0` and the two
+statements are equivalent.
+
+All RHTower modules added on this card build individually and together
+(`CascadeOrderFromWindow` at 8980 jobs, which imports the rest of them).

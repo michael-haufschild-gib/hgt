@@ -110,6 +110,12 @@ theorem norm_integral_fresnel_tail_le {ε A B : ℝ} (hε : 0 ≤ ε) (hA : 0 < 
 
 /-! ## The regularised integral on the ray -/
 
+/-- The boundary Gaussian value: the Fresnel constant, in Gaussian form. -/
+def fresnelValue : ℂ := ((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2
+
+/-- The regularised Gaussian value. -/
+def fresnelRegValue (ε : ℝ) : ℂ := ((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ) / 2
+
 /-- Notation for the Fresnel kernel with regularisation `ε`. -/
 def fresnelKernel (ε x : ℝ) : ℂ :=
   (Real.exp (-(ε * x ^ 2)) : ℂ) * Complex.exp ((x ^ 2 : ℝ) * Complex.I)
@@ -130,9 +136,8 @@ theorem integrable_fresnelKernel {ε : ℝ} (hε : 0 < ε) :
 
 /-- The regularised Fresnel integral on the ray is mathlib's complex Gaussian integral. -/
 theorem integral_Ioi_fresnelKernel {ε : ℝ} (hε : 0 < ε) :
-    (∫ x in Ioi (0 : ℝ), fresnelKernel ε x)
-      = ((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ) / 2 := by
-  rw [← integral_gaussian_complex_Ioi (re_sub_I_pos hε)]
+    (∫ x in Ioi (0 : ℝ), fresnelKernel ε x) = fresnelRegValue ε := by
+  rw [fresnelRegValue, ← integral_gaussian_complex_Ioi (re_sub_I_pos hε)]
   refine setIntegral_congr_fun measurableSet_Ioi ?_
   intro x _
   exact fresnelKernel_eq ε x
@@ -214,14 +219,12 @@ theorem norm_integral_fresnel_dereg_le {ε R : ℝ} (hε : 0 < ε) (hR : 0 < R) 
 /-! ## The Fresnel limit -/
 
 /-- The regularised value converges as the regularisation is removed. -/
-theorem tendsto_fresnel_reg_value :
-    Filter.Tendsto (fun ε : ℝ => ((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ) / 2)
-      (nhds 0) (nhds (((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2)) := by
+theorem tendsto_fresnelRegValue :
+    Filter.Tendsto fresnelRegValue (nhds 0) (nhds fresnelValue) := by
   have hden : ((0 : ℝ) : ℂ) - Complex.I = -Complex.I := by
     push_cast
     ring
-  have hne : (-Complex.I) ≠ 0 := by
-    simp
+  have hne : (-Complex.I) ≠ 0 := by simp
   have hbase : (Real.pi : ℂ) / (-Complex.I) = (Real.pi : ℂ) * Complex.I := by
     rw [div_eq_iff hne]
     have hII : Complex.I * (-Complex.I) = 1 := by
@@ -237,87 +240,71 @@ theorem tendsto_fresnel_reg_value :
     exact hne
   have hpt : (Real.pi : ℂ) / ((((0 : ℝ)) : ℂ) - Complex.I) = (Real.pi : ℂ) * Complex.I := by
     rw [hden, hbase]
-  have hcomp : ContinuousAt
-      (fun ε : ℝ => ((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ)) 0 := by
-    refine hcont1.cpow_const ?_
+  have hslit : (Real.pi : ℂ) / ((((0 : ℝ)) : ℂ) - Complex.I) ∈ Complex.slitPlane := by
+    rw [hpt, Complex.mem_slitPlane_iff]
     right
-    rw [hpt]
-    simp [Real.pi_ne_zero]
-  have h := (hcomp.div_const 2)
+    simp
+  have hcomp : ContinuousAt
+      (fun ε : ℝ => ((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ)) 0 :=
+    hcont1.cpow continuousAt_const hslit
+  have h := hcomp.div_const 2
+  have hfun : fresnelRegValue
+      = fun ε : ℝ => ((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ) / 2 := by
+    funext ε
+    rw [fresnelRegValue]
   have hval : ((Real.pi : ℂ) / ((((0 : ℝ)) : ℂ) - Complex.I)) ^ (1 / 2 : ℂ) / 2
-      = ((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2 := by
-    rw [hden]
+      = fresnelValue := by
+    rw [fresnelValue, hden]
+  rw [hfun]
   rw [ContinuousAt, hval] at h
   exact h
 
+set_option maxHeartbeats 1000000 in
 /-- **The truncated Fresnel integral is within `2/R` of the boundary Gaussian value.**  The regularised
 comparison costs `R(1 - exp(-εR²))` on `[0,R]` and `2/R` beyond it, and the first cost vanishes as the
 regularisation is removed. -/
 theorem norm_integral_fresnel_sub_le {R : ℝ} (hR : 0 < R) :
-    ‖(∫ x in (0 : ℝ)..R, Complex.exp ((x ^ 2 : ℝ) * Complex.I))
-        - ((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2‖ ≤ 2 / R := by
+    ‖(∫ x in (0 : ℝ)..R, Complex.exp ((x ^ 2 : ℝ) * Complex.I)) - fresnelValue‖ ≤ 2 / R := by
+  set F := ∫ x in (0 : ℝ)..R, Complex.exp ((x ^ 2 : ℝ) * Complex.I) with hF
   have key : ∀ ε : ℝ, 0 < ε →
-      ‖(∫ x in (0 : ℝ)..R, Complex.exp ((x ^ 2 : ℝ) * Complex.I))
-          - ((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2‖
-        ≤ (1 - Real.exp (-(ε * R ^ 2))) * R + 2 / R
-          + ‖((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ) / 2
-              - ((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2‖ := by
+      ‖F - fresnelValue‖ ≤ (1 - Real.exp (-(ε * R ^ 2))) * R + 2 / R
+        + ‖fresnelRegValue ε - fresnelValue‖ := by
     intro ε hε
-    have hsplit := integral_Ioi_fresnelKernel_split hε hR
-    have hval := integral_Ioi_fresnelKernel hε
-    have e1 : (∫ x in (0 : ℝ)..R, fresnelKernel ε x)
-        - ((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ) / 2
-        = -(∫ x in Ioi R, fresnelKernel ε x) := by
-      rw [← hval, hsplit]
+    set G := ∫ x in (0 : ℝ)..R, fresnelKernel ε x with hG
+    have e1 : G - fresnelRegValue ε = -(∫ x in Ioi R, fresnelKernel ε x) := by
+      rw [hG, ← integral_Ioi_fresnelKernel hε, integral_Ioi_fresnelKernel_split hε hR]
       ring
-    have h1 := norm_integral_fresnel_dereg_le hε hR
-    have h2 := norm_integral_Ioi_fresnelKernel_tail_le hε hR
-    have t1 : ‖(∫ x in (0 : ℝ)..R, Complex.exp ((x ^ 2 : ℝ) * Complex.I))
-          - ((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2‖
-        ≤ ‖(∫ x in (0 : ℝ)..R, Complex.exp ((x ^ 2 : ℝ) * Complex.I))
-            - (∫ x in (0 : ℝ)..R, fresnelKernel ε x)‖
-          + ‖(∫ x in (0 : ℝ)..R, fresnelKernel ε x)
-              - ((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2‖ := by
-      simpa [dist_eq_norm] using dist_triangle
-        (∫ x in (0 : ℝ)..R, Complex.exp ((x ^ 2 : ℝ) * Complex.I))
-        (∫ x in (0 : ℝ)..R, fresnelKernel ε x)
-        (((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2)
-    have t2 : ‖(∫ x in (0 : ℝ)..R, fresnelKernel ε x)
-          - ((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2‖
-        ≤ ‖(∫ x in (0 : ℝ)..R, fresnelKernel ε x)
-            - ((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ) / 2‖
-          + ‖((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ) / 2
-              - ((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2‖ := by
-      simpa [dist_eq_norm] using dist_triangle
-        (∫ x in (0 : ℝ)..R, fresnelKernel ε x)
-        (((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ) / 2)
-        (((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2)
-    have t3 : ‖(∫ x in (0 : ℝ)..R, fresnelKernel ε x)
-        - ((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ) / 2‖ ≤ 2 / R := by
+    have h1 : ‖F - G‖ ≤ (1 - Real.exp (-(ε * R ^ 2))) * R := by
+      rw [hF, hG]
+      exact norm_integral_fresnel_dereg_le hε hR
+    have h2 : ‖G - fresnelRegValue ε‖ ≤ 2 / R := by
       rw [e1, norm_neg]
-      exact h2
-    linarith [t1, t2, t3, h1]
-  have hne : (nhdsWithin (0 : ℝ) (Set.Ioi 0)).NeBot := nhdsWithin_Ioi_self_neBot
+      exact norm_integral_Ioi_fresnelKernel_tail_le hε hR
+    have t1 : ‖F - fresnelValue‖ ≤ ‖F - G‖ + ‖G - fresnelValue‖ := by
+      simpa [dist_eq_norm] using dist_triangle F G fresnelValue
+    have t2 : ‖G - fresnelValue‖ ≤ ‖G - fresnelRegValue ε‖ + ‖fresnelRegValue ε - fresnelValue‖ := by
+      simpa [dist_eq_norm] using dist_triangle G (fresnelRegValue ε) fresnelValue
+    linarith [t1, t2, h1, h2]
   have htend : Filter.Tendsto (fun ε : ℝ => (1 - Real.exp (-(ε * R ^ 2))) * R + 2 / R
-        + ‖((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ) / 2
-            - ((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2‖)
+        + ‖fresnelRegValue ε - fresnelValue‖)
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds (2 / R)) := by
     have ha : Filter.Tendsto (fun ε : ℝ => (1 - Real.exp (-(ε * R ^ 2))) * R)
         (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
       have hc : ContinuousAt (fun ε : ℝ => (1 - Real.exp (-(ε * R ^ 2))) * R) 0 := by fun_prop
       have h0 : (1 - Real.exp (-((0 : ℝ) * R ^ 2))) * R = 0 := by norm_num
-      have := hc.continuousWithinAt (s := Set.Ioi (0 : ℝ))
-      rwa [ContinuousWithinAt, h0] at this
-    have hb : Filter.Tendsto (fun ε : ℝ =>
-          ‖((Real.pi : ℂ) / ((ε : ℂ) - Complex.I)) ^ (1 / 2 : ℂ) / 2
-            - ((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2‖)
+      have hcw := hc.continuousWithinAt (s := Set.Ioi (0 : ℝ))
+      rwa [ContinuousWithinAt, h0] at hcw
+    have hb : Filter.Tendsto (fun ε : ℝ => ‖fresnelRegValue ε - fresnelValue‖)
         (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
-      have h := (tendsto_fresnel_reg_value.mono_left nhdsWithin_le_nhds).sub_const
-        (((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2)
+      have h0 : Filter.Tendsto fresnelRegValue (nhdsWithin (0 : ℝ) (Set.Ioi 0))
+          (nhds fresnelValue) := tendsto_fresnelRegValue.mono_left nhdsWithin_le_nhds
+      have h := h0.sub_const fresnelValue
       have h2 := h.norm
       simpa using h2
-    have := (ha.add tendsto_const_nhds).add hb
-    simpa using this
+    have hconst : Filter.Tendsto (fun _ : ℝ => 2 / R) (nhdsWithin (0 : ℝ) (Set.Ioi 0))
+        (nhds (2 / R)) := tendsto_const_nhds
+    have hsum := (ha.add hconst).add hb
+    simpa using hsum
   refine ge_of_tendsto htend ?_
   filter_upwards [self_mem_nhdsWithin] with ε hε
   exact key ε hε
@@ -326,12 +313,149 @@ theorem norm_integral_fresnel_sub_le {R : ℝ} (hR : 0 < R) :
 is the boundary case of the Gaussian integral. -/
 theorem tendsto_integral_cexp_sq_atTop :
     Filter.Tendsto (fun R : ℝ => ∫ x in (0 : ℝ)..R, Complex.exp ((x ^ 2 : ℝ) * Complex.I))
-      Filter.atTop (nhds (((Real.pi : ℂ) / (-Complex.I)) ^ (1 / 2 : ℂ) / 2)) := by
+      Filter.atTop (nhds fresnelValue) := by
   rw [tendsto_iff_norm_sub_tendsto_zero]
-  refine squeeze_zero' (Filter.Eventually.of_forall fun R => norm_nonneg _) ?_ ?_
+  refine squeeze_zero' (g := fun R : ℝ => 2 / R)
+    (Filter.Eventually.of_forall fun R => norm_nonneg _) ?_ ?_
   · filter_upwards [Filter.eventually_gt_atTop (0 : ℝ)] with R hR
     exact norm_integral_fresnel_sub_le hR
   · exact tendsto_const_nhds.div_atTop Filter.tendsto_id
+
+
+/-! ## The explicit constant -/
+
+theorem pi_mul_I_ne_zero : (Real.pi : ℂ) * Complex.I ≠ 0 := by
+  simp [Real.pi_ne_zero]
+
+/-- The principal square root of `pi i` is `sqrt(pi) exp(i pi/4)`. -/
+theorem cpow_pi_mul_I_half :
+    ((Real.pi : ℂ) * Complex.I) ^ (1 / 2 : ℂ)
+      = ((Real.sqrt Real.pi : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I) := by
+  have hnorm : ‖(Real.pi : ℂ) * Complex.I‖ = Real.pi := by
+    simp [abs_of_pos Real.pi_pos]
+  have harg : Complex.arg ((Real.pi : ℂ) * Complex.I) = Real.pi / 2 := by
+    rw [Complex.arg_real_mul _ Real.pi_pos, Complex.arg_I]
+  have hlog : Complex.log ((Real.pi : ℂ) * Complex.I)
+      = ((Real.log Real.pi : ℝ) : ℂ) + ((Real.pi / 2 : ℝ) : ℂ) * Complex.I := by
+    rw [Complex.log, hnorm, harg]
+  rw [Complex.cpow_def_of_ne_zero pi_mul_I_ne_zero, hlog,
+    show (((Real.log Real.pi : ℝ) : ℂ) + ((Real.pi / 2 : ℝ) : ℂ) * Complex.I) * (1 / 2 : ℂ)
+      = ((Real.log Real.pi / 2 : ℝ) : ℂ) + ((Real.pi / 4 : ℝ) : ℂ) * Complex.I by
+      push_cast
+      ring,
+    Complex.exp_add]
+  congr 1
+  rw [← Complex.ofReal_exp]
+  congr 1
+  rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos Real.pi_pos]
+  congr 1
+  ring
+
+/-- **The Fresnel constant in explicit form.** -/
+theorem fresnelValue_eq :
+    fresnelValue
+      = ((Real.sqrt Real.pi / 2 : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I) := by
+  have hne : (-Complex.I) ≠ 0 := by simp
+  have hbase : (Real.pi : ℂ) / (-Complex.I) = (Real.pi : ℂ) * Complex.I := by
+    rw [div_eq_iff hne]
+    have hII : Complex.I * (-Complex.I) = 1 := by
+      simp [Complex.I_mul_I]
+    calc (Real.pi : ℂ) = (Real.pi : ℂ) * 1 := by ring
+      _ = (Real.pi : ℂ) * (Complex.I * (-Complex.I)) := by rw [hII]
+      _ = (Real.pi : ℂ) * Complex.I * (-Complex.I) := by ring
+  rw [fresnelValue, hbase, cpow_pi_mul_I_half]
+  push_cast
+  ring
+
+/-! ## The real Fresnel integrals -/
+
+theorem intervalIntegrable_cexp_sq (R : ℝ) :
+    IntervalIntegrable (fun x : ℝ => Complex.exp ((x ^ 2 : ℝ) * Complex.I)) volume 0 R := by
+  apply Continuous.intervalIntegrable
+  fun_prop
+
+/-- **The Fresnel cosine integral.**  `int_0^infinity cos(x²) dx = sqrt(pi/2)/2`. -/
+theorem tendsto_integral_cos_sq_atTop :
+    Filter.Tendsto (fun R : ℝ => ∫ x in (0 : ℝ)..R, Real.cos (x ^ 2)) Filter.atTop
+      (nhds (Real.sqrt (Real.pi / 2) / 2)) := by
+  have hre : ∀ R : ℝ, (∫ x in (0 : ℝ)..R, Real.cos (x ^ 2))
+      = (∫ x in (0 : ℝ)..R, Complex.exp ((x ^ 2 : ℝ) * Complex.I)).re := by
+    intro R
+    have h := intervalIntegral.intervalIntegral_re
+      (f := fun x : ℝ => Complex.exp ((x ^ 2 : ℝ) * Complex.I))
+      (a := 0) (b := R) (μ := volume) (intervalIntegrable_cexp_sq R)
+    have hcongr : (∫ x in (0 : ℝ)..R, Real.cos (x ^ 2))
+        = ∫ x in (0 : ℝ)..R, RCLike.re (Complex.exp ((x ^ 2 : ℝ) * Complex.I)) := by
+      refine intervalIntegral.integral_congr ?_
+      intro x _
+      show Real.cos (x ^ 2) = RCLike.re (Complex.exp (((x ^ 2 : ℝ) : ℂ) * Complex.I))
+      have hpt : RCLike.re (Complex.exp (((x ^ 2 : ℝ) : ℂ) * Complex.I))
+          = (Complex.exp (((x ^ 2 : ℝ) : ℂ) * Complex.I)).re := rfl
+      rw [hpt, Complex.exp_ofReal_mul_I_re]
+    rw [hcongr, h]
+    rfl
+  have hlim := tendsto_integral_cexp_sq_atTop
+  have hcont : Filter.Tendsto
+      (fun R : ℝ => (∫ x in (0 : ℝ)..R, Complex.exp ((x ^ 2 : ℝ) * Complex.I)).re) Filter.atTop
+      (nhds fresnelValue.re) := (Complex.continuous_re.continuousAt).tendsto.comp hlim
+  have hs2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  have hsq : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)
+  have h2 : Real.sqrt (Real.pi / 2) = Real.sqrt Real.pi / Real.sqrt 2 :=
+    Real.sqrt_div (by positivity) 2
+  have hre_exp : (Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I)).re = Real.sqrt 2 / 2 := by
+    rw [Complex.exp_ofReal_mul_I_re, Real.cos_pi_div_four]
+  have hval : fresnelValue.re = Real.sqrt (Real.pi / 2) / 2 := by
+    rw [fresnelValue_eq, Complex.mul_re, hre_exp]
+    simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
+    rw [h2]
+    field_simp
+    nlinarith [hsq, hs2, Real.sqrt_nonneg Real.pi]
+  rw [funext hre]
+  rw [← hval]
+  exact hcont
+
+
+
+/-- **The Fresnel sine integral.**  `int_0^infinity sin(x²) dx = sqrt(pi/2)/2`, the same value as the
+cosine integral: the boundary Gaussian value has equal real and imaginary parts, which is exactly the
+phase `pi/4`. -/
+theorem tendsto_integral_sin_sq_atTop :
+    Filter.Tendsto (fun R : ℝ => ∫ x in (0 : ℝ)..R, Real.sin (x ^ 2)) Filter.atTop
+      (nhds (Real.sqrt (Real.pi / 2) / 2)) := by
+  have hre : ∀ R : ℝ, (∫ x in (0 : ℝ)..R, Real.sin (x ^ 2))
+      = (∫ x in (0 : ℝ)..R, Complex.exp ((x ^ 2 : ℝ) * Complex.I)).im := by
+    intro R
+    have h := intervalIntegral.intervalIntegral_im
+      (f := fun x : ℝ => Complex.exp ((x ^ 2 : ℝ) * Complex.I))
+      (a := 0) (b := R) (μ := volume) (intervalIntegrable_cexp_sq R)
+    have hcongr : (∫ x in (0 : ℝ)..R, Real.sin (x ^ 2))
+        = ∫ x in (0 : ℝ)..R, RCLike.im (Complex.exp ((x ^ 2 : ℝ) * Complex.I)) := by
+      refine intervalIntegral.integral_congr ?_
+      intro x _
+      show Real.sin (x ^ 2) = RCLike.im (Complex.exp (((x ^ 2 : ℝ) : ℂ) * Complex.I))
+      have hpt : RCLike.im (Complex.exp (((x ^ 2 : ℝ) : ℂ) * Complex.I))
+          = (Complex.exp (((x ^ 2 : ℝ) : ℂ) * Complex.I)).im := rfl
+      rw [hpt, Complex.exp_ofReal_mul_I_im]
+    rw [hcongr, h]
+    rfl
+  have hlim := tendsto_integral_cexp_sq_atTop
+  have hcont : Filter.Tendsto
+      (fun R : ℝ => (∫ x in (0 : ℝ)..R, Complex.exp ((x ^ 2 : ℝ) * Complex.I)).im) Filter.atTop
+      (nhds fresnelValue.im) := (Complex.continuous_im.continuousAt).tendsto.comp hlim
+  have hs2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  have hsq : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)
+  have h2 : Real.sqrt (Real.pi / 2) = Real.sqrt Real.pi / Real.sqrt 2 :=
+    Real.sqrt_div (by positivity) 2
+  have him_exp : (Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I)).im = Real.sqrt 2 / 2 := by
+    rw [Complex.exp_ofReal_mul_I_im, Real.sin_pi_div_four]
+  have hval : fresnelValue.im = Real.sqrt (Real.pi / 2) / 2 := by
+    rw [fresnelValue_eq, Complex.mul_im, him_exp]
+    simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero]
+    rw [h2]
+    field_simp
+    nlinarith [hsq, hs2, Real.sqrt_nonneg Real.pi]
+  rw [funext hre, ← hval]
+  exact hcont
 
 
 end GaloisForLFunctions.RHTower

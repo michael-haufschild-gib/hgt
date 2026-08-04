@@ -8615,3 +8615,114 @@ path is the *mean-value* form of Halász's argument — averaging over `t` rathe
 pointwise — since the pointwise Euler estimate cannot decay: it needs `D² > ∑1/p + ∑1/p²`, and the
 true `D² = ∑1/p + ∑cos(t log p)/p` leaves `∑1/p² − ∑cos(t log p)/p`, which the bound above makes
 `O(log log T)` but never negative.
+
+### The bilinear hypothesis `(5)`, structurally reduced
+
+Four new modules take the card's one external input apart.  All unconditional
+(`[propext, Classical.choice, Quot.sound]`).
+
+**`RHTower/Sieve/PairFibre.lean` — the fibre decomposition.**
+
+- `outerBlock x h`, `innerFibre x h a`, with membership lemmas.
+- **`pairSum_eq_sum_fibre`** — for every weight, every `x` and every `h`,
+
+      ∑_{(a,b) balanced} f(a)f(b)  =  ∑_{a ∈ block} f(a) · ∑_{b ∈ fibre(a)} f(b).
+
+- **`abs_pairSum_le_sum_abs_fibre`** — for `|f| ≤ 1` the outer weight can be discarded.
+- `innerFibre_subset`, **`card_innerFibre_le`** — the fibre above `a` is contained in
+  `[⌈x/a⌉, ⌊(x+h√x)/a⌋]` and has at most `h√x/a + 1` elements.
+
+**This exhibits the shape of the theorem.**  The inner sum is a Möbius sum over an interval of
+length `h√x/a ∈ [h/2, h]`, and the outer variable moves its *starting point* `x/a` across `√x`
+distinct values.  The bilinear all-interval theorem is therefore not a statement about one short
+interval — no pointwise statement is true at the card's window lengths — but about the average over
+the block of starting points.  That is exactly why an arbitrarily slowly growing `h` is admissible.
+
+**`RHTower/Sieve/HarmonicDyadicBlock.lean` — the constant `log 2`.**
+
+- `sum_Icc_one_div_le_log_sub`, `log_sub_le_sum_Icc_one_div` — the telescoped concavity sandwich
+  `log(n+1) − log m ≤ ∑_{m ≤ k ≤ n} 1/k ≤ log n − log(m−1)`.
+- floor/ceiling normalisations, and **`tendsto_sum_dyadic_one_div`**:
+  `∑_{⌈u⌉ ≤ k ≤ ⌊2u⌋} 1/k → log 2`.
+
+**`RHTower/Sieve/PairFibreTrivial.lean` — the normalisation is the trivial size.**
+
+- **`outerBlock_eq`** — for `x ≥ 4` the block is exactly the integer interval `[⌈√x⌉, ⌊2√x⌋]`.
+- `card_outerBlock_le` — it has at most `√x + 1` elements.
+- **`abs_pairSum_le_trivial`** — `|pairSum f x h| ≤ h√x ∑_{a ∈ block} 1/a + (√x + 1)`.
+- **`tendsto_trivial_bound_ratio`** — for any window length tending to infinity that trivial bound,
+  divided by `h√x log 2`, tends to `1`.
+
+So **the card's normalising constant `log 2` is precisely the trivial size of the sum it
+normalises** — it is `∑_{a ∈ block} 1/a` in the limit, nothing else.  Any nonzero limit of the
+normalised pair sum is a genuine correlation, and `(5)`'s assertion is a statement of total
+cancellation against the exact trivial bound.
+
+**`RHTower/Sieve/MRFibreReduction.lean` — the reduction.**
+
+- `AveragedShortInterval f hh` — the `Prop` that the block average of `|∑_{b ∈ fibre(a)} f(b)|` is
+  `o(h√x)`.
+- `tendsto_pairSum_of_averaged`, `MRBilinear_of_averaged`, and
+  **`MRBilinear_moebius_of_averaged`** — for `μ` (whose block mean vanishes) the bilinear
+  all-interval theorem **is** the averaged short-interval property, with no loss:
+
+      AveragedShortInterval μ hh  ⟹  MRBilinear μ hh.
+
+The card's `(5)` at `μ` is thus reduced to a single averaged estimate over `√x` short Möbius sums.
+The remaining instance is `(5)` at `μ²`, where the block mean is `D` rather than `0`; that reduction
+needs in addition the *logarithmic* block mean `∑_{√x < a ≤ 2√x} μ²(a)/a → D log 2`, which is the
+next target.
+
+### `(5)` at `μ²` reduced too, and the constant `D²` derived
+
+Five further modules, all unconditional (`[propext, Classical.choice, Quot.sound]`).
+
+**`RHTower/Sieve/SquarefreeGlobalCount.lean`.**  `abs_sum_moebius_sq_Icc_sub_le`:
+
+    | #{n ≤ m : n squarefree} − m·D |  ≤  2√m + 1.
+
+The corpus's window count is uniform in the starting point, so taking the starting point `0` and
+`R = ⌊√m⌋ + 1` — the least `R` with `m ≤ R²` — balances its two error halves exactly (`R ≤ √m + 1`
+and `m/R ≤ √m`).
+
+**`RHTower/Sieve/HarmonicDyadicBlock.lean` (continued).**  `tendsto_log_sub_log_of_ratio` and
+**`tendsto_sum_Icc_one_div_of_ratio`**: the block harmonic limit depends only on the *normalised
+growth* of the endpoints, so `∑_{p(u) ≤ k ≤ q(u)} 1/k → log 2` whenever `p(u)/u → 1` and
+`q(u)/u → 2`.  Both the block and its shift by one are instances.
+
+**`RHTower/Sieve/SquarefreeLogSum.lean`.**  Abel summation (`HTGeometry.sum_mul_eq_partial_mul_diff`)
+against the count:
+
+- `squarefreeLogSum_abel`, **`squarefreeLogSum_eq`** — the exact split into
+  `D ∑_{m ≤ N} 1/(m+1)`, an error sum, a drift term and a boundary term;
+- `sum_Icc_telescope_inv` — `∑_{M < m ≤ N}(1/m − 1/(m+1)) = 1/(M+1) − 1/(N+1)`, which is what makes
+  the error sum collapse;
+- **`abs_squarefreeLogSum_sub_le`** — the block difference loses only
+  `(3(2√N + 1) + D)/(M+1)`;
+- **`tendsto_squarefree_block_log_mean`** —
+
+      ∑_{⌈u⌉ ≤ a ≤ ⌊2u⌋} μ²(a)/a  →  D · log 2.
+
+**`RHTower/Sieve/MRFibreDensity.lean`.**  `AveragedShortIntervalDensity f c hh` — the fibre sums
+agree with `c` times their lengths, on average over the block — and
+
+- `abs_pairSum_sub_main_le` — the pair sum against its density main term;
+- **`MRBilinear_moebius_sq_of_averaged`** —
+
+      AveragedShortIntervalDensity μ² D hh  ⟹  MRBilinear μ² hh.
+
+**The constant is derived, not assumed.**  The main term is `D·h√x·∑_{a ∈ block} μ²(a)/a`, which the
+logarithmic block mean turns into `D·(D log 2)/log 2 = D²` — exactly the squared block mean the
+bilinear theorem asserts.  Nothing about `D²` enters as a hypothesis.
+
+**`RHTower/Sieve/RouteEAveraged.lean` — the capstone restated.**
+**`route_e_sign_density_of_averaged`** and **`route_e_signClass_nonempty_of_averaged`** prove the
+card's `(3)` and its consequence with `hMR1`, `hMR2` replaced by the two averaged estimates
+
+    ∑_{a ∈ block} |∑_{b ∈ fibre(a)} μ(b)|                 = o(h√x),
+    ∑_{a ∈ block} |∑_{b ∈ fibre(a)} μ²(b) − D·h√x/a|      = o(h√x).
+
+So two of the card's three external inputs are now single averaged short-interval estimates about one
+arithmetic function each, over the `√x` starting points `x/a`.  The third, `hMRp`, is the same
+statement for the weights `μ²·1_{p∤·}` at the rescaled parameters; reducing it the same way is the
+next step.

@@ -189,6 +189,12 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized that a closed holomorphic form of any degree on a
+  character stage is exact on the exponential covering space, with the pullback
+  periodic in every coordinate.
+- 2026-08-04 — Formalized the Poincaré lemma in every degree: the homotopy
+  operator, its derivative under the integral sign, and the telescoping that
+  makes a closed holomorphic form exact.
 - 2026-08-04 — Formalized the contraction identity behind the Poincaré lemma
   in every degree.
 - 2026-08-04 — Formalized the zeroth cohomology of a character stage: the
@@ -539,6 +545,41 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
   prepended splits the alternating sum into the base-point term and the contraction, which is the
   algebraic identity that makes the homotopy operator invert the exterior derivative in every
   degree.
+
+### The Poincaré lemma in every degree landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPoincareKForm.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerHomotopyKernel`, `deningerHomotopyKDeriv`, `deningerHomotopyKernel_hasFDerivAt` — the
+  integrand `t^k · ι_x ω(t x)` of the homotopy operator and its derivative in the base point.
+- `deningerAlternatize_homotopyKDeriv` — **antisymmetrizing that derivative gives
+  `(k+1) t^k ω(t x) + t^{k+1} (Dω)(t x) x`**: the contraction of the form contributes a multiple of
+  the form and, by the contraction identity for closed forms, the contraction of its derivative
+  contributes the derivative at the base point.
+- `deningerHomotopyOperator`, `deningerHomotopyOperator_hasFDerivAt` — the operator and its
+  derivative, by differentiation under the integral sign with a dominating bound on the compact set
+  swept by the segments to a ball.
+- `deningerIntegral_comp_comm`, `deningerNsmul_eq_cast_smul` — two auxiliary transfers that mathlib
+  cannot find by instance search on iterated continuous-linear-map spaces.
+- `deningerExtDeriv_homotopyOperator` — **the Poincaré lemma in degree `k + 1`: a closed
+  holomorphic form on a finite-dimensional complex vector space is the exterior derivative of the
+  homotopy operator applied to it.**  The integrand telescopes to the derivative in the segment
+  parameter of `t^{k+1} ω(t x)`.
+
+### Closed forms of every degree on a stage landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerStageKFormExact.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerExpPullbackForm`, `deningerExpPullbackForm_analytic` — the pullback of a stage form of
+  any degree along the exponential covering is holomorphic on the whole covering space.
+- `deningerExpPullbackForm_closed`, `deningerExpPullbackForm_periodic` — it is closed when the form
+  is closed, and periodic in every coordinate; the periodicity is the datum from which the descent
+  to the stage is computed.
+- `deningerStage_closed_form_exact_upstairs` — **a closed holomorphic form of any degree on a
+  character stage becomes exact on the covering space**, with the primitive given by the homotopy
+  operator.
 
 ### Remaining
 

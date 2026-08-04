@@ -116,6 +116,7 @@ import GaloisForLFunctions.RHTower.BernoulliFourierBridge
 import GaloisForLFunctions.RHTower.BernsteinEllipseRigidity
 import GaloisForLFunctions.RHTower.BerryKeating
 import GaloisForLFunctions.RHTower.BesselBoundWitnesses
+import GaloisForLFunctions.RHTower.BesselJZeroConstant
 import GaloisForLFunctions.RHTower.BesselJZeroEnvelope
 import GaloisForLFunctions.RHTower.BesselJZeroODE
 import GaloisForLFunctions.RHTower.BesselJZeroPhase
@@ -408,6 +409,7 @@ import GaloisForLFunctions.RHTower.CCMFirstClockPhaseNaturalTransportRigidity
 import GaloisForLFunctions.RHTower.CCMFirstClockPrimeEntrySlopeTomography
 import GaloisForLFunctions.RHTower.CCMFirstClockPrimePowerTowerCollapse
 import GaloisForLFunctions.RHTower.CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity
+import GaloisForLFunctions.RHTower.FresnelIntegral
 import GaloisForLFunctions.RHTower.GammaCoorientedPositiveConeNoShorting
 import GaloisForLFunctions.RHTower.GammaSignedFiniteOrbitNoShorting
 import GaloisForLFunctions.RHTower.GammaSignedSummableOrbitNoShorting
@@ -2392,6 +2394,10 @@ import GaloisForLFunctions.RHTower.MidCentral
 import GaloisForLFunctions.RHTower.MinimumModulus
 import GaloisForLFunctions.RHTower.EntireMinimumModulus
 import GaloisForLFunctions.RHTower.EntireMinimumModulusAt
+import GaloisForLFunctions.RHTower.EntireCircleFloor
+import GaloisForLFunctions.RHTower.FloorAndLargeSelection
+import GaloisForLFunctions.RHTower.StepSeparationFromWindow
+import GaloisForLFunctions.RHTower.CascadeOrderFromWindow
 import GaloisForLFunctions.RHTower.PolyaCompositionGrowth
 import GaloisForLFunctions.RHTower.MirrorEdgeSymmetry
 import GaloisForLFunctions.RHTower.MirrorPencil
@@ -3665,7 +3671,12 @@ import GaloisForLFunctions.RHTower.Sieve.MoebiusUniformFrequency
 import GaloisForLFunctions.RHTower.Sieve.HarmonicDyadicBlock
 import GaloisForLFunctions.RHTower.Sieve.PairFibre
 import GaloisForLFunctions.RHTower.Sieve.MRFibreReduction
+import GaloisForLFunctions.RHTower.Sieve.PairFibreTrivial
+import GaloisForLFunctions.RHTower.Sieve.SquarefreeGlobalCount
+import GaloisForLFunctions.RHTower.Sieve.SquarefreeLogSum
+import GaloisForLFunctions.RHTower.Sieve.MRFibreDensity
 import GaloisForLFunctions.RHTower.Sieve.RouteEMain
+import GaloisForLFunctions.RHTower.Sieve.RouteEAveraged
 import GaloisForLFunctions.RHTower.SigmaBlockContraction
 import GaloisForLFunctions.RHTower.SigmaContractionCorollary
 import GaloisForLFunctions.RHTower.SigmaDivisorExhaustion
@@ -5508,3 +5519,5 @@ import GaloisForLFunctions.RHTower.DeningerStageOneFormExact
 import GaloisForLFunctions.RHTower.DeningerStagePowerPermutation
 import GaloisForLFunctions.RHTower.DeningerStageZeroCohomology
 import GaloisForLFunctions.RHTower.DeningerContractionIdentity
+import GaloisForLFunctions.RHTower.DeningerPoincareKForm
+import GaloisForLFunctions.RHTower.DeningerStageKFormExact

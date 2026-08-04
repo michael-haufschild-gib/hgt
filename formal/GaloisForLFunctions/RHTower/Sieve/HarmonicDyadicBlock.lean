@@ -231,4 +231,72 @@ theorem tendsto_sum_dyadic_one_div :
       exact_mod_cast this
     exact sum_Icc_one_div_le_log_sub hm2 hmn
 
+/-- **A ratio of two quantities of linear growth has a logarithmic limit.** -/
+theorem tendsto_log_sub_log_of_ratio {A B : ℝ → ℝ} {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
+    (hA : Tendsto (fun u => A u / u) atTop (𝓝 a)) (hB : Tendsto (fun u => B u / u) atTop (𝓝 b))
+    (hApos : ∀ᶠ u in atTop, 0 < A u) (hBpos : ∀ᶠ u in atTop, 0 < B u) :
+    Tendsto (fun u => Real.log (B u) - Real.log (A u)) atTop (𝓝 (Real.log (b / a))) := by
+  have hratio : Tendsto (fun u => (B u / u) / (A u / u)) atTop (𝓝 (b / a)) :=
+    hB.div hA (ne_of_gt ha)
+  have hlog : Tendsto (fun u => Real.log ((B u / u) / (A u / u))) atTop (𝓝 (Real.log (b / a))) :=
+    (Real.continuousAt_log (by positivity)).tendsto.comp hratio
+  refine Tendsto.congr' ?_ hlog
+  filter_upwards [eventually_gt_atTop (0 : ℝ), hApos, hBpos] with u hu hAu hBu
+  have hid : (B u / u) / (A u / u) = B u / A u := by
+    field_simp
+  rw [hid, Real.log_div (ne_of_gt hBu) (ne_of_gt hAu)]
+
+/-- **The harmonic sum over a block of ratio two.**  Only the normalised growth of the endpoints
+matters. -/
+theorem tendsto_sum_Icc_one_div_of_ratio {p q : ℝ → ℕ}
+    (hp : Tendsto (fun u => ((p u : ℝ)) / u) atTop (𝓝 1))
+    (hq : Tendsto (fun u => ((q u : ℝ)) / u) atTop (𝓝 2))
+    (hp2 : ∀ᶠ u in atTop, 2 ≤ p u) (hpq : ∀ᶠ u in atTop, p u ≤ q u + 1) :
+    Tendsto (fun u => ∑ k ∈ Finset.Icc (p u) (q u), 1 / (k : ℝ)) atTop (𝓝 (Real.log 2)) := by
+  have hone : Tendsto (fun u : ℝ => 1 / u) atTop (𝓝 0) := tendsto_one_div_atTop
+  have hpsub : Tendsto (fun u => ((p u : ℝ) - 1) / u) atTop (𝓝 1) := by
+    have hbase : Tendsto (fun u => ((p u : ℝ)) / u - 1 / u) atTop (𝓝 1) := by
+      have := hp.sub hone
+      rwa [sub_zero] at this
+    refine Tendsto.congr' ?_ hbase
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with u hu
+    field_simp
+  have hqadd : Tendsto (fun u => ((q u : ℝ) + 1) / u) atTop (𝓝 2) := by
+    have hbase : Tendsto (fun u => ((q u : ℝ)) / u + 1 / u) atTop (𝓝 2) := by
+      have := hq.add hone
+      rwa [add_zero] at this
+    refine Tendsto.congr' ?_ hbase
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with u hu
+    field_simp
+  have hq1 : ∀ᶠ u in atTop, 1 ≤ q u := by
+    filter_upwards [hp2, hpq] with u h2 hle
+    omega
+  have hAup : ∀ᶠ u in atTop, (0 : ℝ) < (p u : ℝ) - 1 := by
+    filter_upwards [hp2] with u h2
+    have : (2 : ℝ) ≤ (p u : ℝ) := by exact_mod_cast h2
+    linarith
+  have hBup : ∀ᶠ u in atTop, (0 : ℝ) < ((q u : ℝ)) := by
+    filter_upwards [hq1] with u h1
+    have : (1 : ℝ) ≤ (q u : ℝ) := by exact_mod_cast h1
+    linarith
+  have hAlow : ∀ᶠ u in atTop, (0 : ℝ) < ((p u : ℝ)) := by
+    filter_upwards [hp2] with u h2
+    have : (2 : ℝ) ≤ (p u : ℝ) := by exact_mod_cast h2
+    linarith
+  have hBlow : ∀ᶠ u in atTop, (0 : ℝ) < ((q u : ℝ) + 1) := by
+    filter_upwards [hq1] with u h1
+    have : (1 : ℝ) ≤ (q u : ℝ) := by exact_mod_cast h1
+    linarith
+  have hupper := tendsto_log_sub_log_of_ratio (a := 1) (b := 2) one_pos two_pos hpsub hq hAup hBup
+  have hlower := tendsto_log_sub_log_of_ratio (a := 1) (b := 2) one_pos two_pos hp hqadd hAlow hBlow
+  rw [show (2 : ℝ) / 1 = 2 by norm_num] at hupper hlower
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hlower hupper ?_ ?_
+  · filter_upwards [hp2, hpq] with u h2 hle
+    have hm1 : 1 ≤ p u := by omega
+    have := log_sub_le_sum_Icc_one_div (m := p u) (n := q u) hm1 hle
+    have hcast : ((q u : ℝ)) + 1 = ((q u : ℕ) : ℝ) + 1 := rfl
+    exact this
+  · filter_upwards [hp2, hpq] with u h2 hle
+    exact sum_Icc_one_div_le_log_sub (m := p u) (n := q u) h2 hle
+
 end RHTower.Sieve
