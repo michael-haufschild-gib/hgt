@@ -116,6 +116,7 @@ import GaloisForLFunctions.RHTower.BandTransformEnergy
 import GaloisForLFunctions.RHTower.PaleyWienerNorms
 import GaloisForLFunctions.RHTower.ProlateEndpointLowerBound
 import GaloisForLFunctions.RHTower.ProlateRiccati
+import GaloisForLFunctions.RHTower.ProlateWKBIntegral
 import GaloisForLFunctions.RHTower.ProlateWKBSubsolution
 import GaloisForLFunctions.RHTower.ProlateJointEigen
 import GaloisForLFunctions.RHTower.ProlateJointEigenExistence
@@ -3565,6 +3566,7 @@ import GaloisForLFunctions.RHTower.Sieve.GallagherMeanValue
 import GaloisForLFunctions.RHTower.Sieve.DirichletSymmSplit
 import GaloisForLFunctions.RHTower.Sieve.DirichletConvSplit
 import GaloisForLFunctions.RHTower.Sieve.PrimeCubeSupport
+import GaloisForLFunctions.RHTower.Sieve.GallagherDyadicTail
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment
@@ -5688,3 +5690,4 @@ import GaloisForLFunctions.RHTower.Sieve.ExpSumBernstein
 import GaloisForLFunctions.RHTower.DeningerResidueSequence
 import GaloisForLFunctions.RHTower.CCMRationalAdelicReflectedGaussianCartierComparison
 import GaloisForLFunctions.RHTower.CCMRationalAdelicCompletedXiFixedCoronaPolarization
+import GaloisForLFunctions.RHTower.ArithmeticXiStokesCentralRankPort

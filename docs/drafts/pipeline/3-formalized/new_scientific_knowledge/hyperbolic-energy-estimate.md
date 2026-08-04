@@ -183,6 +183,15 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 119 | **the regularity hypothesis is exactly the domain of differentiability** | **`mem_range_kgFreqInvOp_of_hasDerivAt`**, **`hasDerivAt_kgSinOp_iff`** | **built** |
 | 120 | the addition law for the half-order propagator | **`kgSinFreqOp_add`** | **built** |
 | 121 | **the free field evolution is a flow** | `kgFieldFreeVel`, `hasDerivAt_kgFieldFree'`, **`kgFieldFree_flow`** | **built** |
+| 122 | the free field restarted from an accumulated state | **`kgFieldFree_restart`** | **built** |
+| 123 | **the perturbed evolution is an evolution family** | **`kgFieldMild_flow`** | **built** |
+| 124 | the free part carries the regularising factor | **`kgFieldFree_freqInv`** | **built** |
+| 125 | **the field solution is regular at every time** | `kgFieldReg`, **`kgFieldMild_freqInv`** | **built** |
+| 126 | **the restarted solution has a velocity, so the family iterates** | **`hasDerivAt_kgFieldMild_restart`** | **built** |
+| 127 | the field bounded by the raw data | **`norm_kgFieldMild_le_data`** | **built** |
+| 128 | **an exponential bound on the velocity of the field solution** | **`norm_deriv_kgFieldMild_le`** | **built** |
+| 129 | the velocity is linear in the Cauchy data | **`deriv_kgFieldMild_sub`** | **built** |
+| 130 | **stability of the whole propagated state** | `norm_kgFieldMild_sub_le_data`, **`norm_deriv_kgFieldMild_sub_le`**, **`kgFieldMild_state_stability`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
@@ -199,8 +208,9 @@ Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` 
 `KleinGordonDuhamelSecondDerivative.lean` (99–102), `KleinGordonSmoothingStrong.lean` (103–106),
 `KleinGordonSmoothingWellPosed.lean` (107–109), `KleinGordonSmoothingData.lean` (110–111),
 `KleinGordonRegularDense.lean` (112–113), `KleinGordonFreqInvNotSurjective.lean` (114–116), `KleinGordonRegularitySharp.lean` (117–119),
-`KleinGordonFieldFlow.lean` (120–121). All wired into the umbrella; axioms
-`[propext, Classical.choice, Quot.sound]`.
+`KleinGordonFieldFlow.lean` (120–121), `KleinGordonFieldEvolutionFamily.lean` (122–123),
+`KleinGordonFieldRegularAlways.lean` (124–126), `KleinGordonFieldVelocityBound.lean` (127–128), `KleinGordonFieldStateStability.lean` (129–130).
+All wired into the umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
 
@@ -1110,6 +1120,89 @@ The position datum must carry one power of `⟨D⟩⁻¹` — not for the identi
 velocity at the intermediate time is only defined there (statement 119 shows that is exactly the
 domain); the velocity datum is arbitrary.
 
+
+### The perturbed evolution is an evolution family
+
+Statement 121 makes the free evolution a flow. Statements 122–123 do the same with a perturbation
+present, and the proof is uniqueness rather than algebra.
+
+The shifted curve `τ ↦ u(τ+s)` is continuous, so it is enough to check that it satisfies the Duhamel
+formula with data `(u(s), ∂ₜu(s))`. Splitting `∫₀^{τ+s}` at `s` separates two contributions. The late
+part, `∫_s^{τ+s}`, becomes the Duhamel integral of the shifted curve by the change of variable
+`r = ρ + s`. The early part combines with the free field: **`kgFieldFree_restart`** shows that the
+free field at `τ+s` plus the accumulated source `∫₀^s (sin((τ+s-r)⟨D⟩)/⟨D⟩)k(r)dr` is exactly the free
+field restarted from the accumulated state — the flow identity of statement 121 for the datum, and
+the addition law `kgSinFreqOp_add` applied *under the integral sign* for the source, with `t` and
+`s-r` as its two arguments.
+
+Uniqueness (statement 85) then gives
+
+**`kgFieldMild_flow`**: `u(t+s) = [the solution with data (u(s), ∂ₜu(s))](t)`,
+
+for any bounded perturbation and any `L²` velocity datum. The solution operator is an evolution
+family, which is the last structural property the classical theory asks of it.
+
+
+### The regularity propagates
+
+The evolution family of statement 123 restarts the solution from its state at time `s`. For that to
+be iterable the restarted position datum must itself be regular — otherwise the velocity at the next
+restart is undefined and the family stops after one step. Statements 124–126 show it always is.
+
+Both terms of the Duhamel formula carry the factor. The free part is
+`cos(t⟨D⟩)⟨D⟩⁻¹g + (sin(t⟨D⟩)/⟨D⟩)h = ⟨D⟩⁻¹(cos(t⟨D⟩)g + sin(t⟨D⟩)h)` (**`kgFieldFree_freqInv`**), and
+the Duhamel integrand is `(sin((t-r)⟨D⟩)/⟨D⟩)Wu(r) = ⟨D⟩⁻¹(sin((t-r)⟨D⟩)Wu(r))`, whose `⟨D⟩⁻¹` passes
+through the Bochner integral because it is bounded. So
+
+**`kgFieldMild_freqInv`**: `u(t) = ⟨D⟩⁻¹(cos(t⟨D⟩)g + sin(t⟨D⟩)h + ∫₀ᵗ sin((t-r)⟨D⟩)Wu(r)dr)`
+
+— the solution never leaves the range of `⟨D⟩⁻¹`, and the regularising curve is explicit. Hence
+**`hasDerivAt_kgFieldMild_restart`**: the restarted solution has a velocity at every time, and the
+evolution family can be iterated indefinitely.
+
+This also closes a loop with statement 119: the domain of differentiability is exactly the range of
+`⟨D⟩⁻¹`, and the evolution preserves it. The hypothesis is not just dense (113) and genuine (116) —
+it is *invariant*.
+
+
+### The velocity is bounded too
+
+Statement 85 bounds the field; nothing so far bounded its velocity, which is the other half of the
+state the evolution family carries. Statements 127–128 close that.
+
+The closed formula of statement 97 makes it immediate once the pieces are named. The two propagator
+terms `-sin(t⟨D⟩)g + cos(t⟨D⟩)h` are contractions of the data, contributing `‖g‖ + ‖h‖`. The Duhamel
+term `∫₀ᵗ cos((t-s)⟨D⟩)Wu(s)ds` is estimated by the supremum of its integrand: `cos` is a contraction,
+`‖W‖ ≤ b`, and `‖u(s)‖ ≤ (‖g‖+‖h‖)e^{b|t|}` for `s` between `0` and `t` (**`norm_kgFieldMild_le_data`**,
+the field bound rewritten in the raw data). That contributes a factor `b|t|`, and `1 + x ≤ eˣ` absorbs
+it:
+
+**`norm_deriv_kgFieldMild_le`**: `‖∂ₜu(t)‖ ≤ (‖g‖ + ‖h‖)e^{2‖W‖|t|}`.
+
+So the full state `(u(t), ∂ₜu(t))` — the object the evolution family of statement 123 propagates and
+the object statement 126 shows stays regular — is bounded by its data, exponentially, at a rate set by
+the perturbation alone.
+
+
+### Both components of the state are stable
+
+The evolution family propagates the pair `(u(t), ∂ₜu(t))`. Statement 88 made the position depend
+continuously on the data; statements 129–130 do the same for the velocity, and state the two
+together.
+
+The construction is linear in the data (statement 88), so the difference of two solutions *is* the
+solution of the difference. Uniqueness of derivatives then transfers that to the velocities
+(**`deriv_kgFieldMild_sub`**): the difference of the two velocities is the velocity of the difference
+solution. The bound of statement 128 applied to it gives
+
+**`norm_deriv_kgFieldMild_sub_le`**: `‖∂ₜu₁(t) - ∂ₜu₂(t)‖ ≤ (‖g₁-g₂‖ + ‖h₁-h₂‖)e^{2‖W‖|t|}`,
+
+and **`kgFieldMild_state_stability`** collects it with the position estimate in one statement. So the
+field-level theory now has, for the *whole* state and in the raw Cauchy data, all four classical
+properties: existence (85), uniqueness (85), the exponential bounds (85, 128), and continuous
+dependence (130) — with the flow structure (123) and the invariance of the regular class (126) on
+top.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -1130,6 +1223,14 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-04 — statements 129–130: the velocity is linear in the data, and the whole propagated
+  state depends continuously on it.
+- 2026-08-04 — statements 127–128: an exponential bound on the velocity of the field solution, so
+  the whole propagated state is controlled by its data.
+- 2026-08-04 — statements 124–126: the regularity of the position datum propagates in time, so the
+  evolution family iterates. The regular class is invariant under the evolution.
+- 2026-08-04 — statements 122–123: the perturbed evolution is an evolution family; the restarted
+  solution is identified by uniqueness after splitting the Duhamel integral.
 - 2026-08-04 — statements 120–121: the half-order addition law, and the flow property of the free
   field evolution.
 - 2026-08-04 — statements 117–119: the regularity hypothesis of statement 65 is **exactly** the

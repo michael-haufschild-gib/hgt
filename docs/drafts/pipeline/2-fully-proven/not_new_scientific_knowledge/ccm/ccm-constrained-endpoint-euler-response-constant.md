@@ -1125,12 +1125,54 @@ That combination is now assembled, in the same module:
   on the outer band: **the solution decays at most like the exponential of the exact WKB integral, with no
   error term.**
 
-`∫ sqrt((chi + c² y²)/(1-y²))` is the true tunneling exponent, of size `c(1 + o(1))`.  What
-is still missing for the rate is the *inner* stretch: between the turning point `y_t = sqrt(-chi)/c` and the
-mid-band point `y ≈ 1/sqrt 2` the same profile is a supersolution rather than a subsolution and the
-comparison has no admissible starting value (at the turning point `V` vanishes while `v` does not), and the
-inner allowed region contributes at the same order `c`.  That is exactly the turning-point (Airy) matching,
-and it is now the single remaining analytic ingredient.
+`∫ sqrt((chi + c² y²)/(1-y²))` is the true tunneling exponent, of size `c(1 + o(1))`.
+
+The inner stretch — between the turning point `y_t = sqrt(-chi)/c` and the mid-band point `y ≈ 1/sqrt 2` —
+cannot use the same profile: there the WKB function is a *super*solution, and the forward comparison has no
+admissible starting value (at the turning point `V` vanishes while `v` does not).  Working the problem out
+shows the fix is to keep the *backward* direction throughout and enlarge the profile, and the two enlarged
+profiles are now proved to be subsolutions:
+
+- **`const_subsolution`** — a nonnegative constant `W` is a Riccati subsolution wherever `q <= W²`; in the
+  allowed region `q < 0`, so *every* nonnegative constant qualifies there.  This covers `[0, y_t + delta]`.
+- `hasDerivAt_prolateWKB_smul`, **`prolateWKB_smul_subsolution`** — scaling the WKB profile by `k >= 1`
+  produces the slack `((k²-1)/k) (1-y²) V Q`, and the scaled profile is a subsolution exactly where that
+  slack covers the defect `y (c²(1-2y²) - chi)`.  This covers `[y_t + delta, y_*]` for suitable `k = 1 + eta`.
+
+Chaining the three backward comparisons — constant on `[0, y_t+delta]`, scaled WKB on `[y_t+delta, y_*]`,
+plain WKB on `[y_*, y_1]` — plus the crude flux bound on the last `1 - y_1 ~ c^(-2)` gives
+`∫_0^1 v <= (1+eta) ∫ sqrt(Q/p) + O(1)`, i.e. the sharp exponent provided `eta = o(1)` and `delta` are chosen
+compatibly (the natural scales are `delta ~ c^(-2/3)`, `eta ~ c^(-1/3)`).
+
+One of the two remaining computations — the size of the WKB exponent — is now done exactly, in
+`RHTower/ProlateWKBIntegral.lean`, and it needs no asymptotics at all:
+
+- **`prolateWKB_le_of_nonpos`** — since the eigenvalue parameter is nonpositive, the WKB profile is
+  dominated pointwise by its `chi = 0` value `c y / sqrt(1-y²)`.
+- `hasDerivAt_negMulSqrt`, **`integral_prolateWKB_le`**, **`integral_prolateWKB_le_aperture`** — that
+  dominating profile has the elementary antiderivative `-c sqrt(1-y²)`, so on every subinterval of the right
+  half band
+
+  ```text
+  ∫_a^b sqrt((chi + c² y²)/(1-y²)) dy <= c (sqrt(1-a²) - sqrt(1-b²)) <= c,
+  ```
+
+  an *exact* inequality — sharp, since at `chi = 0, a = 0, b = 1` it is an equality.  No `o(1)` and no
+  eigenvalue asymptotic is needed for this direction.
+- **`exp_neg_aperture_le_endpoint`** — combining with the outer-band comparison: on the outer band a
+  positive solution of the prolate equation loses at most the factor `e^(-c)`,
+
+  ```text
+  Phi(a) e^(-c) <= Phi(b).
+  ```
+
+  Through the exact endpoint identity `(4)` an `e^(-c)` on the eigenfunction is the `e^(-2c)` of the
+  leakage: **the correct exponential rate, with an explicit constant `1` in the exponent.**
+
+What is still needed to convert this into the leakage envelope is the inner-band bookkeeping — verifying the
+scaled-subsolution hypothesis at the scales `delta ~ c^(-2/3)`, `eta ~ c^(-1/3)` and chaining the three
+comparisons — and the initial condition `v(b) <= V(b)` near the endpoint, which the crude flux bound of the
+earlier step supplies for `1 - b ~ c^(-2)`.
 
 ## Lean gates
 
@@ -1209,6 +1251,13 @@ and it is now the single remaining analytic ingredient.
   where `c²(1-2y²) <= chi`, and the assembled decay bound
   `Phi(a) exp(-∫ sqrt((chi+c²y²)/(1-y²))) <= Phi(b)` with no error term
   (`DifferentialInequalityComparison.lean`, `ProlateWKBSubsolution.lean`, `le_endpoint_prolateWKB`)
+- [x] Lean: the **two enlarged subsolutions** covering the inner band — constants (valid throughout the
+  allowed region) and scaled WKB profiles `k · sqrt(Q/p)` with the explicit slack criterion
+  (`ProlateWKBSubsolution.lean`, `const_subsolution`, `prolateWKB_smul_subsolution`)
+- [x] Lean: the **WKB exponent is at most the aperture** — an exact, sharp inequality
+  `∫ sqrt((chi+c²y²)/(1-y²)) <= c(sqrt(1-a²) - sqrt(1-b²)) <= c` via the elementary antiderivative, and hence
+  the explicit outer-band endpoint bound `Phi(a) e^(-c) <= Phi(b)` — the correct exponential rate with
+  constant `1` (`ProlateWKBIntegral.lean`, `exp_neg_aperture_le_endpoint`)
 - [ ] Lean: the **rate** of the lower leakage envelope, now equivalent to a pure concentration
   inequality for entire functions of exponential type `c` — unit mass on `[-1, 1]` forces mass at least
   `c_0 c^(1/2) e^(-2c)` outside — and antitonicity of the logarithmic derivative.  The polynomial

@@ -205,6 +205,79 @@ theorem le_endpoint_prolateWKB {c χ a b : ℝ} {Φ : ℝ → ℝ}
   exact prolateLogDeriv_le_prolateWKB hsm heig hab ha0 ha hb hpos hQ houter hinit y
     ⟨le_of_lt hy.1, le_of_lt hy.2⟩
 
+/-! ## Two further subsolutions: constants, and scaled WKB profiles -/
+
+/-- **A constant is a Riccati subsolution wherever it dominates the potential.**  In the allowed region the
+potential is negative, so *every* nonnegative constant qualifies there. -/
+theorem const_subsolution {c χ W y : ℝ} (hy : y ∈ Ioo (-1 : ℝ) 1) (hy0 : 0 ≤ y) (hW : 0 ≤ W)
+    (hq : (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2) ≤ W ^ 2) :
+    (0 : ℝ) ≤ W ^ 2 + (2 * y / (1 - y ^ 2)) * W - (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2) := by
+  have hp : 0 < 1 - y ^ 2 := by
+    have h1 : -1 < y := hy.1
+    have h2 : y < 1 := hy.2
+    nlinarith
+  have hb : 0 ≤ 2 * y / (1 - y ^ 2) := by positivity
+  have hbW : 0 ≤ (2 * y / (1 - y ^ 2)) * W := mul_nonneg hb hW
+  linarith
+
+/-- The derivative of a scaled WKB profile. -/
+theorem hasDerivAt_prolateWKB_smul {c χ k y : ℝ} (hw : (1 : ℝ) - y ^ 2 ≠ 0)
+    (hR : 0 < (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2)) :
+    HasDerivAt (fun t => k * prolateWKB c χ t)
+      (k * ((2 * c ^ 2 * y * (1 - y ^ 2) + 2 * y * (χ + c ^ 2 * y ^ 2)) / (1 - y ^ 2) ^ 2
+        / (2 * prolateWKB c χ y))) y :=
+  (hasDerivAt_prolateWKB hw hR).const_mul k
+
+/-- **A scaled WKB profile is a Riccati subsolution once the scaling absorbs the defect.**  Scaling by
+`k >= 1` produces the slack `((k²-1)/k) p V Q`, and the profile is a subsolution exactly where that slack
+covers the defect `y (c²(1-2y²) - chi)`. -/
+theorem prolateWKB_smul_subsolution {c χ k y : ℝ} (hy : y ∈ Ioo (-1 : ℝ) 1)
+    (hk : 0 < k) (hQ : 0 < χ + c ^ 2 * y ^ 2)
+    (hmain : y * (c ^ 2 * (1 - 2 * y ^ 2) - χ)
+      ≤ ((k ^ 2 - 1) / k) * ((1 - y ^ 2) * prolateWKB c χ y * (χ + c ^ 2 * y ^ 2))) :
+    k * ((2 * c ^ 2 * y * (1 - y ^ 2) + 2 * y * (χ + c ^ 2 * y ^ 2)) / (1 - y ^ 2) ^ 2
+        / (2 * prolateWKB c χ y))
+      ≤ (k * prolateWKB c χ y) ^ 2 + (2 * y / (1 - y ^ 2)) * (k * prolateWKB c χ y)
+        - (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2) := by
+  have hp : 0 < 1 - y ^ 2 := by
+    have h1 : -1 < y := hy.1
+    have h2 : y < 1 := hy.2
+    nlinarith
+  have hpne : (1 : ℝ) - y ^ 2 ≠ 0 := ne_of_gt hp
+  have hR : 0 < (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2) := div_pos hQ hp
+  have hVpos : 0 < prolateWKB c χ y := by
+    rw [prolateWKB]
+    exact Real.sqrt_pos.mpr hR
+  have hVsq : (prolateWKB c χ y) ^ 2 = (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2) := by
+    rw [prolateWKB]
+    exact Real.sq_sqrt (le_of_lt hR)
+  -- clear the denominators against the positive factor `2 p² V / k`
+  rw [div_div, ← mul_div_assoc,
+    div_le_iff₀ (by positivity : (0 : ℝ) < (1 - y ^ 2) ^ 2 * (2 * prolateWKB c χ y))]
+  -- the scaled slack, rewritten with `V² = q`
+  have hslack : ((k * prolateWKB c χ y) ^ 2 + (2 * y / (1 - y ^ 2)) * (k * prolateWKB c χ y)
+        - (χ + c ^ 2 * y ^ 2) / (1 - y ^ 2)) * ((1 - y ^ 2) ^ 2 * (2 * prolateWKB c χ y))
+      = 2 * (k ^ 2 - 1) * (1 - y ^ 2) * prolateWKB c χ y * (χ + c ^ 2 * y ^ 2)
+        + 4 * y * k * (χ + c ^ 2 * y ^ 2) := by
+    have hVcube : prolateWKB c χ y ^ 3
+        = prolateWKB c χ y * ((χ + c ^ 2 * y ^ 2) / (1 - y ^ 2)) := by
+      rw [show prolateWKB c χ y ^ 3 = prolateWKB c χ y * prolateWKB c χ y ^ 2 by ring, hVsq]
+    ring_nf
+    rw [hVcube, hVsq]
+    field_simp
+    ring
+  rw [hslack]
+  -- the remaining inequality is the hypothesis, cleared of denominators
+  have hk' : k ≠ 0 := ne_of_gt hk
+  have hmain' : 2 * k * (y * (c ^ 2 * (1 - 2 * y ^ 2) - χ))
+      ≤ 2 * (k ^ 2 - 1) * ((1 - y ^ 2) * prolateWKB c χ y * (χ + c ^ 2 * y ^ 2)) := by
+    have h := mul_le_mul_of_nonneg_left hmain (by positivity : (0 : ℝ) ≤ 2 * k)
+    calc 2 * k * (y * (c ^ 2 * (1 - 2 * y ^ 2) - χ))
+        ≤ 2 * k * (((k ^ 2 - 1) / k) * ((1 - y ^ 2) * prolateWKB c χ y * (χ + c ^ 2 * y ^ 2))) := h
+      _ = 2 * (k ^ 2 - 1) * ((1 - y ^ 2) * prolateWKB c χ y * (χ + c ^ 2 * y ^ 2)) := by
+          field_simp
+  nlinarith [hmain']
+
 end GaloisForLFunctions.RHTower
 
 end

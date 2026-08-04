@@ -486,6 +486,23 @@ a direct limit but not bilinear ones; this is what the product on a colimit alge
   the two tori**, so the tori of a `TorusCoverSystem` form a directed system of commutative
   differential graded algebras.
 
+**Formality of a tower of tori — statement `(2)` assembled.**
+`formal/GaloisForLFunctions/HTGeometry/TorusFormalityColimit.lean`.
+
+- `exteriorPullbackHom` — the exterior power of the transpose, as a morphism of the exterior
+  algebras with zero differential (multiplicativity is `exteriorMulOf_map`).
+- `torusSystemHom`, `exteriorSystemHom`, `torusSystem_directed`, `exteriorSystem_directed` — a
+  `TorusCoverSystem` gives two directed systems of commutative differential graded algebras.
+- `torusFormality_compat` — the stagewise comparisons commute with the transition morphisms
+  (`constantFormOfExterior_map_dualMap`).
+- `torusFormalityColimit_isQuasiIso` — **the induced morphism of the colimit algebras is a
+  quasi-isomorphism**: statement `(2)` for a directed system of tori, unconditional in Lean, as a
+  single morphism of commutative differential graded algebras together with the proof that it is a
+  quasi-isomorphism.  The hypothesis class is inhabited by `coordProjectionSystem`.
+- `degTransition_exteriorSystemHom`, `colimDegExteriorEquiv`, `exteriorColimEquiv` — **the source of
+  that comparison is the exterior power of the colimit of the duals of the covering spaces**, so for
+  the lattice filtration of a unit space it is `Λ^n(V_F ⊗ ℝ)`.
+
 ### What cannot be stated in Lean, and why
 
 - `C^*_sh(T_F;ℝ)` is the filtered colimit over `L` of the complexes `Ω^*(T_L;ℝ)`.  Every ingredient
@@ -503,11 +520,14 @@ a direct limit but not bilinear ones; this is what the product on a colimit alge
   and a stagewise quasi-isomorphism has quasi-isomorphic colimit (`colimHom_isQuasiIso`).  So the
   whole shape of `(2)` — the two objects, the morphism, the quasi-isomorphism, and their behaviour
   under the filtered colimit — is formalized, unconditionally, in complete generality.  What is left
-  is only to instantiate it: the transition morphisms of the tower are built (`torusPullbackHom`),
-  the compatibility of `torusFormalityHom` with them is `constantFormOfExterior_map_dualMap`, and the
-  colimit of the sources is `Λ^*(V_F ⊗ ℝ)` by `exteriorPowerDirectLimitEquiv` and
-  `deningerExterior_iSup_adjoin`.  What is left is to package a `TorusCoverSystem` as a
-  `CDGADirectedSystem` and read off `colimHom_isQuasiIso`.
+  is instantiated: `torusFormalityColimit_isQuasiIso` is `(2)` for a directed system of tori, and
+  `exteriorColimEquiv` identifies the source of that comparison with the exterior power of the
+  colimit of the duals.  What is not written down is the dictionary between the card's `𝓛_F` and a
+  `TorusCoverSystem`: choosing, for each lattice `L`, a basis identifying `Hom(L,ℝ)` with `ℝ^{rk L}`
+  and checking that restriction along `L ⊆ L'` becomes a coordinate projection.  That is a choice of
+  coordinates, not a theorem; the objects on both sides of it are formalized here
+  (`deningerLatticeFree`, `deningerFGSubmodule_directed` on one side, `coordProjectionSystem` on the
+  other).
 - `(3)` and `(4)` are statements about free `E_∞` `Hℝ`-algebras.  mathlib has no `E_∞`-algebras and
   no CDGA homotopy theory.  What survives is the algebraic content of "a free commutative algebra
   on generators in odd degree one is the exterior algebra": that is the universal property of
@@ -548,4 +568,6 @@ scalars.
   built the degreewise colimit of a directed system of such algebras with its differential, and the
   bilinear lifting principle for direct limits, the colimit algebra `colimCDGA` itself, and the
   induced morphism of colimits `colimHom`, and proved that a stagewise quasi-isomorphism has
-  quasi-isomorphic colimit (`colimHom_isQuasiIso`).
+  quasi-isomorphic colimit (`colimHom_isQuasiIso`), and assembled statement `(2)` for a directed
+  system of tori as `torusFormalityColimit_isQuasiIso`, with `exteriorColimEquiv` identifying its
+  source as an exterior power of a colimit.

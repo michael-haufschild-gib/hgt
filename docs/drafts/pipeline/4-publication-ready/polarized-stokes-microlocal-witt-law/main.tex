@@ -31,7 +31,7 @@
 \newcommand{\Pcal}{\mathcal P}
 \newcommand{\Mcal}{\mathcal M}
 \begin{document}
-\title[The Lorentzian Stokes coarea law]{The Lorentzian Stokes coarea law for nonabelian Hodge diagrams}
+\title[The Lorentzian Stokes coarea law]{The Lorentzian Stokes coarea law and its arithmetic central port}
 \author{M.~Haufschild}
 \address{Independent researcher}
 \email{haufschildmichael@gmail.com}
@@ -66,7 +66,14 @@ cyclic order by rotation through $\pi/k$ and record transverse orientation.  The
 constructible boundary germ has one directed microstalk over each wall; normalized directed
 microstalk mass equals mixed Hom irregularity.  Thus published Cartan polarization, analytic
 Stokes walls, microlocal Morse groups, Rees channels, and corona elimination are shadows of one
-Lorentzian coarea law.
+Lorentzian coarea law.  We finally classify scalar twists invisible to every mixed Stokes channel:
+for a coefficient-generated spectrum there is only one, the common center, and its determinant
+weight is exactly the physical-rank functional in the coarea law.  The positive half-density
+character $\delta_n(s)=\exp((2\operatorname{Re}s-1)\log n)$ therefore gives a pre-divisor
+arithmetic central local system.  At a zero of the completed Riemann function, holonomy minus
+identity on the first nonzero jet is the rational-adelic cyclic transgression
+$(\delta_n(\rho)-1)c_\rho$.  This realizes the obstruction in the unique rank port but does not
+assert its global vanishing.
 \end{abstract}
 \maketitle
 
@@ -155,11 +162,23 @@ phase and prove their cyclic incidence explicitly.  For broader realizations we 
 transport theorem: any exact realization equivalence identifying this incidence diagram preserves
 the quotient microstalk and every term of the coarea identity.
 
+There is also a canonical arithmetic meaning of the rank line.  A scalar twist on each Stokes
+circle acts on a mixed Hom channel by the quotient of the two scalars.  Since distinct
+coefficient-generated circles have positive mixed irregularity, invisibility on all local channels
+forces one common central scalar.  Its action on the determinant line of a dimension vector $x$ is
+the scalar raised to $M(x)$.  Thus $M$ is simultaneously the unique nonpositive metric port and the
+unique determinant weight invisible to relative Stokes data.  Section~\ref{sec:arithmetic}
+constructs the half-density character in that center and identifies its holonomy defect on the
+leading completed-Riemann jet with an explicit trace-one rational-adelic cyclic residue.  The
+construction is unconditional; annihilation at every divisor point remains equivalent to the
+Riemann hypothesis and is not claimed.
+
 Sections~\ref{sec:coefficients}--\ref{sec:global} prove coefficient and global laws.
 Sections~\ref{sec:cellular}--\ref{sec:transport} construct categorical microlocal realization.
 Sections~\ref{sec:rees}--\ref{sec:corona} treat Rees, capacity, and corona.
-Section~\ref{sec:deformation} derives reduction dimension.  Final sections give marking legs,
-spectral consequences, novelty boundaries, and falsifiers.
+Section~\ref{sec:arithmetic} constructs the arithmetic central port.  Section~\ref{sec:deformation}
+derives reduction dimension.  Final sections give marking legs, spectral consequences, novelty
+boundaries, and falsifiers.
 
 \section{Finite Puiseux spectra and canonical cuts}\label{sec:coefficients}
 

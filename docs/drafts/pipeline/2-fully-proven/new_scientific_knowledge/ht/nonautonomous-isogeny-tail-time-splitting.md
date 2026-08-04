@@ -1233,3 +1233,31 @@ over the velocity field `L`, and then torus-invariant theory of a rational funct
 the tail of a protocol is `C<x^(Λ_∞), velocities>`, which specialises to the rank-one dichotomy:
 `Λ_∞ = Nℤ` gives the stabilizing case `C<g^N>` and `Λ_∞ = 0` gives the purely expanding case
 `C<g'/g>`.
+
+## The rank-`r` torsor — PROVED
+
+    TorusVelocityField.lean
+      torusVelocityField C x                 the differential field of the logarithmic derivatives
+      torusScaleEquiv_logDeriv, torusScaleEquiv_fixes_velocityField :
+        constant rescalings fix the velocity field pointwise
+      derivationClosed_adjoin_velocity, adjoin_velocity_palette_eq_top :
+        E = L(x_1, ..., x_r) as an ordinary field, L the velocity field
+      torusCharacter C E e, torusCharacter_injective
+      torusScaleEquivVelocity                the rescaling as an L-automorphism
+      algebraicIndependent_palette_over_velocityField :
+        the palette is algebraically independent over its velocity field
+
+So the ambient differential field is exactly the rational function field `L(x_1, ..., x_r)` over the
+velocity field: the rank-`r` multiplicative torsor.  The corpus had this only for `r = 1`
+(`ScalarDifferentialTorsor`), and by a Picard--Vessiot-style argument specific to one variable.
+
+The rank-`r` transcendence proof is different and simpler: a polynomial relation over `L` is carried
+by every constant rescaling `x_i ↦ u_i x_i` — these fix `L` pointwise because a constant has
+vanishing logarithmic derivative — so the relation holds with every monomial multiplied by the
+corresponding character `u ↦ ∏ u_i^{e_i}` of the constant torus.  Distinct exponent vectors give
+distinct characters (test on `u = (2, 1, ..., 1)`), so Dedekind's independence of characters
+(`linearIndependent_monoidHom`) forces every coefficient to vanish.
+
+This is the input for the remaining invariant theory: with `E = L(x)` and the deck action diagonal,
+the fixed field of a subgroup `S` of the constant torus is `L` adjoined the monomials whose exponent
+vectors annihilate `S`, which will give items (6) and (7) for `G_m^r`.

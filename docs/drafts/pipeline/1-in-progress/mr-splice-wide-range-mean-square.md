@@ -185,3 +185,35 @@ frequency) — exactly the regime that layer was built for.
 - 2026-08-04 — stage 2b closed: ℓ¹-tail identified as the false wall; weighted dyadic tail
   certified power-clean; corridor `θ ∈ (1/4, 1)` certified free of `N`-power obstructions;
   stage 3a/3b frozen.  Stage-1 module built (`lake build` 8801 jobs) and axiom-audited clean.
+
+## 2026-08-04 stage 3a closed: the dyadic far tail is formalized
+
+`RHTower/Sieve/GallagherDyadicTail.lean` (wired into `RHTower.lean`; targeted build pass; axioms
+only `propext, Classical.choice, Quot.sound`):
+
+- `dyadicAnnulus`, `exists_dyadic_scale`, `iUnion_dyadicAnnulus`,
+  `pairwise_disjoint_dyadicAnnulus` — the annuli `{2^k W ≤ |w| < 2^{k+1} W}` tile `{|w| ≥ W}`;
+- `gallagher_split_integral_dyadic` — **the ℓ¹ tail is gone**: for ANY real `α, β` (no sign
+  hypotheses; the linter proved them unnecessary) with
+  `∫_{|w|≤T} ‖F‖² ≤ αT + β` for all `T ≥ W`,
+
+  ```text
+  ∫_ℝ ‖window sums‖² du ≤ 2δ²(αW + β) + 4α/(π²W) + 4β/(3π²W²),
+  ```
+
+  each annulus paid through the sharp weight decay `1/(π²w²)` (`GallagherTail.lean`, constant 1 —
+  found in-tree during the build, halving the certified constants) and summed by the geometric
+  series;
+- `gallagher_meanValue_dyadic_le` — instantiated with the mean value theorem
+  (`α = 2Σ₂`, `β = 4N(1+log N)Σ₂/π`): the far tail carries the mean-square mass `Σ₂ = ∑‖aₙ‖²`,
+  never the ℓ¹ mass `(∑‖aₙ‖)²`.
+
+With `W ≍ N/L` and `Σ₂ ≍ N` this is the `O(L² log N)`-tail bound certified by the stage-2b sweep,
+now unconditional in Lean.  The frequency budget for the arithmetic input is henceforth `N/L`,
+not `(N/L)²`.
+
+**Next (stage 3b, unchanged):** the log-power fight — product split at `W = N/L` with the
+prime-support sixth moment (fibre 9) on the exceptional set and the Halász uniform-frequency
+saving on the good set; pre-certify the log bookkeeping numerically before Lean.
+
+- 2026-08-04 — stage 3a built and verified.

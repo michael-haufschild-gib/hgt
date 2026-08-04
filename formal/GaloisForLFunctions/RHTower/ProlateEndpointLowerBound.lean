@@ -113,6 +113,70 @@ theorem deriv_nonpos_of_turning {c χ y₀ : ℝ} {Φ : ℝ → ℝ}
   rw [prolateFlux] at hfluxle
   exact nonpos_of_mul_nonpos_right hfluxle hwpos
 
+/-! ## Monotonicity and the differential inequality, as standalone facts -/
+
+/-- Beyond the turning point a nonnegative solution is antitone on the band. -/
+theorem antitoneOn_of_turning {c χ y₀ : ℝ} {Φ : ℝ → ℝ}
+    (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = χ * Φ y)
+    (hy₀ : -1 < y₀) (hpos : ∀ t ∈ Icc y₀ 1, 0 ≤ Φ t)
+    (hturn : ∀ t ∈ Icc y₀ 1, 0 ≤ χ + c ^ 2 * t ^ 2) :
+    AntitoneOn Φ (Icc y₀ 1) := by
+  have hd1 : Differentiable ℝ Φ := (contDiff_infty_iff_deriv.mp hsm).1
+  refine antitoneOn_of_deriv_nonpos (convex_Icc _ _) hd1.continuous.continuousOn
+    hd1.differentiableOn fun y hy => ?_
+  rw [interior_Icc] at hy
+  exact deriv_nonpos_of_turning hsm heig hy₀ hpos hturn ⟨le_of_lt hy.1, hy.2⟩
+
+/-- **The differential inequality behind the endpoint bound.**  Bounding the flux integrand by its value
+at the left endpoint gives `(1+y) psi'(y) >= -(chi + c²) psi(y)`. -/
+theorem prolate_deriv_lower_bound {c χ y₀ : ℝ} {Φ : ℝ → ℝ}
+    (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = χ * Φ y)
+    (hy₀ : -1 < y₀) (hpos : ∀ t ∈ Icc y₀ 1, 0 ≤ Φ t)
+    (hturn : ∀ t ∈ Icc y₀ 1, 0 ≤ χ + c ^ 2 * t ^ 2)
+    (hA : 0 ≤ χ + c ^ 2) {y : ℝ} (hy : y ∈ Ioo y₀ 1) :
+    -((χ + c ^ 2) * Φ y) ≤ (1 + y) * deriv Φ y := by
+  have hd1 : Differentiable ℝ Φ := (contDiff_infty_iff_deriv.mp hsm).1
+  have hanti : AntitoneOn Φ (Icc y₀ 1) := antitoneOn_of_turning hsm heig hy₀ hpos hturn
+  have hyband : y ∈ Icc (-1 : ℝ) 1 := ⟨by linarith [hy.1], le_of_lt hy.2⟩
+  have hymem : y ∈ Icc y₀ 1 := ⟨le_of_lt hy.1, le_of_lt hy.2⟩
+  have hrep := prolateFlux_eq_neg_integral hsm heig hyband
+  have hbound : (∫ t in y..1, (χ + c ^ 2 * t ^ 2) * Φ t)
+      ≤ ∫ _t in y..1, (χ + c ^ 2) * Φ y := by
+    refine intervalIntegral.integral_mono_on (le_of_lt hy.2) ?_ ?_ fun t ht => ?_
+    · apply Continuous.intervalIntegrable
+      exact (continuous_const.add (continuous_const.mul (continuous_id.pow 2))).mul
+        hd1.continuous
+    · exact intervalIntegrable_const
+    · have htmem : t ∈ Icc y₀ 1 := ⟨le_trans (le_of_lt hy.1) ht.1, ht.2⟩
+      have htsq : χ + c ^ 2 * t ^ 2 ≤ χ + c ^ 2 := by
+        have h1 : t ^ 2 ≤ 1 := by
+          have h2 : -1 ≤ t := by linarith [htmem.1]
+          have h3 : t ≤ 1 := htmem.2
+          nlinarith
+        have h4 : (0 : ℝ) ≤ c ^ 2 := by positivity
+        nlinarith
+      have hΦle : Φ t ≤ Φ y := hanti hymem htmem ht.1
+      have hΦnn : 0 ≤ Φ t := hpos t htmem
+      have hnn : 0 ≤ χ + c ^ 2 * t ^ 2 := hturn t htmem
+      calc (χ + c ^ 2 * t ^ 2) * Φ t ≤ (χ + c ^ 2) * Φ t := mul_le_mul_of_nonneg_right htsq hΦnn
+        _ ≤ (χ + c ^ 2) * Φ y := mul_le_mul_of_nonneg_left hΦle hA
+  have hconst : (∫ _t in y..1, (χ + c ^ 2) * Φ y) = (1 - y) * ((χ + c ^ 2) * Φ y) := by
+    rw [intervalIntegral.integral_const, smul_eq_mul]
+  rw [hconst] at hbound
+  have hflux : (1 - y ^ 2) * deriv Φ y = -∫ t in y..1, (χ + c ^ 2 * t ^ 2) * Φ t := by
+    rw [← prolateFlux]
+    exact hrep
+  have hylt : 0 < 1 - y := by linarith [hy.2]
+  have hstep : -((1 - y) * ((χ + c ^ 2) * Φ y)) ≤ (1 - y ^ 2) * deriv Φ y := by
+    rw [hflux]
+    linarith
+  have hfac : (1 - y ^ 2) = (1 - y) * (1 + y) := by ring
+  rw [hfac] at hstep
+  exact (mul_le_mul_iff_of_pos_left hylt).mp (by linarith [hstep] :
+    (1 - y) * (-((χ + c ^ 2) * Φ y)) ≤ (1 - y) * ((1 + y) * deriv Φ y))
+
 /-! ## The endpoint lower bound -/
 
 /-- **The prolate endpoint lower bound.**  Beyond the turning point a positive solution decays at most
@@ -128,59 +192,8 @@ theorem endpoint_lower_bound {c χ y₀ : ℝ} {Φ : ℝ → ℝ}
   set A : ℝ := χ + c ^ 2 with hAdef
   have hd1 : Differentiable ℝ Φ := (contDiff_infty_iff_deriv.mp hsm).1
   have hy₀pos : 0 < 1 + y₀ := by linarith
-  -- the solution is decreasing beyond the turning point
-  have hderivnonpos : ∀ y ∈ Ico y₀ 1, deriv Φ y ≤ 0 := fun y hy =>
-    deriv_nonpos_of_turning hsm heig hy₀ hpos hturn hy
-  have hanti : AntitoneOn Φ (Icc y₀ 1) := by
-    refine antitoneOn_of_deriv_nonpos (convex_Icc _ _) hd1.continuous.continuousOn
-      hd1.differentiableOn fun y hy => ?_
-    rw [interior_Icc] at hy
-    exact hderivnonpos y ⟨le_of_lt hy.1, hy.2⟩
-  -- the differential inequality with the pure-power integrating factor
-  have hdiff : ∀ y ∈ Ioo y₀ 1, -(A * Φ y) ≤ (1 + y) * deriv Φ y := by
-    intro y hy
-    have hyband : y ∈ Icc (-1 : ℝ) 1 := ⟨by linarith [hy.1], le_of_lt hy.2⟩
-    have hymem : y ∈ Icc y₀ 1 := ⟨le_of_lt hy.1, le_of_lt hy.2⟩
-    have hrep := prolateFlux_eq_neg_integral hsm heig hyband
-    -- the integrand is dominated by its value at the left endpoint
-    have hbound : (∫ t in y..1, (χ + c ^ 2 * t ^ 2) * Φ t) ≤ ∫ _t in y..1, A * Φ y := by
-      refine intervalIntegral.integral_mono_on (le_of_lt hy.2) ?_ ?_ fun t ht => ?_
-      · apply Continuous.intervalIntegrable
-        exact (continuous_const.add (continuous_const.mul (continuous_id.pow 2))).mul
-          hd1.continuous
-      · exact intervalIntegrable_const
-      · have htmem : t ∈ Icc y₀ 1 := ⟨le_trans (le_of_lt hy.1) ht.1, ht.2⟩
-        have htsq : χ + c ^ 2 * t ^ 2 ≤ A := by
-          have h1 : t ^ 2 ≤ 1 := by
-            have h2 : -1 ≤ t := by linarith [htmem.1]
-            have h3 : t ≤ 1 := htmem.2
-            nlinarith
-          have h4 : (0 : ℝ) ≤ c ^ 2 := by positivity
-          rw [hAdef]
-          nlinarith
-        have hΦle : Φ t ≤ Φ y := hanti hymem htmem ht.1
-        have hΦnn : 0 ≤ Φ t := hpos t htmem
-        have hnn : 0 ≤ χ + c ^ 2 * t ^ 2 := hturn t htmem
-        calc (χ + c ^ 2 * t ^ 2) * Φ t ≤ A * Φ t := mul_le_mul_of_nonneg_right htsq hΦnn
-          _ ≤ A * Φ y := mul_le_mul_of_nonneg_left hΦle hA
-    have hconst : (∫ _t in y..1, A * Φ y) = (1 - y) * (A * Φ y) := by
-      rw [intervalIntegral.integral_const, smul_eq_mul]
-    rw [hconst] at hbound
-    -- convert to the derivative inequality
-    have hflux : (1 - y ^ 2) * deriv Φ y = -∫ t in y..1, (χ + c ^ 2 * t ^ 2) * Φ t := by
-      rw [← prolateFlux]
-      exact hrep
-    have hylt : 0 < 1 - y := by linarith [hy.2]
-    have hstep : -((1 - y) * (A * Φ y)) ≤ (1 - y ^ 2) * deriv Φ y := by
-      rw [hflux]
-      linarith
-    have hfac : (1 - y ^ 2) = (1 - y) * (1 + y) := by ring
-    rw [hfac] at hstep
-    have hcancel : -(A * Φ y) ≤ (1 + y) * deriv Φ y := by
-      have h := (mul_le_mul_iff_of_pos_left hylt).mp (by linarith [hstep] :
-        (1 - y) * (-(A * Φ y)) ≤ (1 - y) * ((1 + y) * deriv Φ y))
-      exact h
-    exact hcancel
+  have hdiff : ∀ y ∈ Ioo y₀ 1, -(A * Φ y) ≤ (1 + y) * deriv Φ y := fun y hy =>
+    prolate_deriv_lower_bound hsm heig hy₀ hpos hturn hA hy
   -- the integrating factor is monotone
   set g : ℝ → ℝ := fun y => Φ y * (1 + y) ^ A with hg
   have hgderiv : ∀ y ∈ Ioo y₀ 1,

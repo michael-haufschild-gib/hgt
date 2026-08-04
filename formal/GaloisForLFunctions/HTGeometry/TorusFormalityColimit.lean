@@ -13,6 +13,8 @@ colimit algebras is a quasi-isomorphism.
 
 * `exteriorPullbackHom` : the transition morphism of the exterior algebras.
 * `torusFormalityColimit_isQuasiIso` : the comparison of the colimits is a quasi-isomorphism.
+* `exteriorColimEquiv` : the source of that comparison is the exterior power of the colimit of the
+  duals of the covering spaces.
 -/
 
 set_option maxSynthPendingDepth 3
@@ -89,9 +91,14 @@ theorem exteriorSystem_directed : CDGADirectedSystem (fun i => exteriorCDGA 𝕜
       LinearMap.dualMap_id, exteriorPower.map_id]
     rfl
   map_map i j k hij hjk n y := by
+    have hcoe : ((S.map i j hij ∘SL S.map j k hjk :
+          (Fin (S.dim k) → 𝕜) →L[𝕜] (Fin (S.dim i) → 𝕜)) :
+        (Fin (S.dim k) → 𝕜) →ₗ[𝕜] (Fin (S.dim i) → 𝕜)) =
+      ((S.map i j hij : (Fin (S.dim j) → 𝕜) →ₗ[𝕜] (Fin (S.dim i) → 𝕜)).comp
+        (S.map j k hjk : (Fin (S.dim k) → 𝕜) →ₗ[𝕜] (Fin (S.dim j) → 𝕜))) := rfl
     rw [exteriorSystemHom_toFun, exteriorSystemHom_toFun, exteriorSystemHom_toFun,
-      ← S.map_trans i j k hij hjk, ContinuousLinearMap.coe_comp,
-      LinearMap.dualMap_comp_dualMap, exteriorPower.map_comp]
+      ← S.map_trans i j k hij hjk, hcoe, ← LinearMap.dualMap_comp_dualMap,
+      exteriorPower.map_comp]
     rfl
 
 end System
@@ -134,5 +141,43 @@ theorem torusFormalityColimit_isQuasiIso (hp : p ≠ 0) :
     (fun i => torusFormality_isQuasiIso hp (S.dim i))
 
 end Formality
+
+section Source
+
+variable {𝕜 : Type u} [RCLike 𝕜] {p : 𝕜} {ι : Type v} [Preorder ι] [IsDirectedOrder ι] [Nonempty ι]
+  [DecidableEq ι] (S : TorusCoverSystem 𝕜 p ι)
+
+omit [IsDirectedOrder ι] [Nonempty ι] [DecidableEq ι] in
+theorem degTransition_exteriorSystemHom (n : ℕ) (i j : ι) (h : i ≤ j) :
+    degTransition (exteriorSystemHom S) n i j h =
+      exteriorPowerSystem (fun i => Module.Dual 𝕜 (Fin (S.dim i) → 𝕜))
+        (fun i j h => ((S.map i j h : (Fin (S.dim j) → 𝕜) →ₗ[𝕜] (Fin (S.dim i) → 𝕜)).dualMap))
+        n i j h :=
+  LinearMap.ext fun _ => rfl
+
+/-- The directed system of the exterior algebras is the system of exterior powers of the duals. -/
+noncomputable def colimDegExteriorEquiv (n : ℕ) :
+    colimDeg (exteriorSystemHom S) n ≃ₗ[𝕜]
+      Module.DirectLimit (fun i => ⋀[𝕜]^n (Module.Dual 𝕜 (Fin (S.dim i) → 𝕜)))
+        (exteriorPowerSystem (fun i => Module.Dual 𝕜 (Fin (S.dim i) → 𝕜))
+          (fun i j h => ((S.map i j h : (Fin (S.dim j) → 𝕜) →ₗ[𝕜] (Fin (S.dim i) → 𝕜)).dualMap))
+          n) :=
+  Module.DirectLimit.congr (fun _ => LinearEquiv.refl 𝕜 _)
+    (fun _ _ _ => LinearMap.ext fun _ => rfl)
+
+/-- **The source of the formality comparison is the exterior power of the colimit of the duals of
+the covering spaces.**  For the lattice filtration of a unit space this is `Λ^n(V_F ⊗ ℝ)`. -/
+noncomputable def exteriorColimEquiv
+    (hsurj : ∀ i j (h : i ≤ j), Function.Surjective (S.map i j h)) (n : ℕ) :
+    colimDeg (exteriorSystemHom S) n ≃ₗ[𝕜]
+      ⋀[𝕜]^n (Module.DirectLimit (fun i => Module.Dual 𝕜 (Fin (S.dim i) → 𝕜))
+        (fun i j h =>
+          ((S.map i j h : (Fin (S.dim j) → 𝕜) →ₗ[𝕜] (Fin (S.dim i) → 𝕜)).dualMap))) :=
+  (colimDegExteriorEquiv S n).trans
+    (exteriorPowerDirectLimitEquiv (fun i => Module.Dual 𝕜 (Fin (S.dim i) → 𝕜))
+      (fun i j h => ((S.map i j h : (Fin (S.dim j) → 𝕜) →ₗ[𝕜] (Fin (S.dim i) → 𝕜)).dualMap)) n
+      (fun i j h => LinearMap.dualMap_injective_of_surjective (hsurj i j h)))
+
+end Source
 
 end GaloisForLFunctions.HTGeometry
