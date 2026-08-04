@@ -1169,3 +1169,9 @@ argument over a field.
 All three rank coordinates -- order, leader degree, total degree -- are now known to survive
 normalization and descent, so the descended normalized characteristic is a relation over the ratio
 field of exactly the characteristic's rank.
+
+`minimalTotalDegree_ratioField_eq` closes the lexicographic comparison: the minimal relation over the
+ratio field and the minimal relation over the intermediate field agree in all three rank coordinates.
+Proof shape identical to the leader-degree case -- the two inequalities come from feeding each
+minimality predicate the other side's relation, with the first two coordinates already known equal so
+the third clause of the predicate applies.

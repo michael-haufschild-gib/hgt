@@ -749,8 +749,9 @@ rather than with a trigonometric function.
 
 The PSWF-specific input of `(14)` is now formalized too, and it needs no asymptotics of the eigenvalue:
 the defect is independent of the aperture `c` (it cancels identically) and the separation law `(2)` enters
-only through the range `0 <= s <= 1/2`.  What remains of `(14)` is the estimate on the deviation integral,
-i.e. the total Liouville mass of `a`.
+only through the range `0 <= s <= 1/2`.  Its deviation integral is bounded as well — the Liouville measure
+`dx/xi'` vanishes like `sqrt(x²-1)`, so the simple pole has finite mass and the Volterra exponent is
+`O(1/c)`.
 
 **Why the Bessel comparison cannot be replaced by a harmonic one.**  It is tempting to avoid the second
 Bessel solution by comparing with the harmonic oscillator instead, using the corpus interaction picture
@@ -819,6 +820,28 @@ separation constant `chi = s c²` in the range the separation law `(2)` provides
   `U = sqrt(x²-1) R / g` satisfies the comparison equation with a defect obeying `|a| <= 40/(x²-1)`,
   uniformly in `c`.
 
+The deviation integral of `(14)` is now bounded too, in the same module: a simple pole has finite
+Liouville mass, and that is the whole content of the `O(c^{-1})`.
+
+- `defectMassIntegrand`, `continuousOn_phaseLogDefect`, `continuousOn_prolateDefectAlg`,
+  **`continuousOn_lgNormalFormDefect_radialProlate`**, `continuousOn_defectMassIntegrand`,
+  `intervalIntegrable_defectMassIntegrand` — interior regularity of the defect.  It is read off the
+  *algebraic* form of the defect, not from its definition: the third derivative of the phase never has to
+  be shown continuous, because the identity replaces it by a rational function and `xi'/xi`.
+- **`defectMassIntegrand_le_near`** — near the endpoint `|a|/xi' <= 40 sqrt 2 / sqrt(x²-1)`.  This is the
+  inequality the whole pole-uniform mechanism turns on: the Liouville measure `1/xi' = sqrt((x²-1)/(x²-s))`
+  vanishes like `sqrt(x²-1)`, so it converts the simple pole into an integrable `(x²-1)^{-1/2}`.  A double
+  pole would have given `(x²-1)^{-3/2}`, which is not integrable — this is exactly the accounting that
+  fails for the WKB comparison.
+- **`defectMassIntegrand_le_far`** — beyond `x = 2` the speed is at least `1` and `|a|/xi' <= (160/3)x^{-2}`.
+- `integral_defectMassIntegrand_near_le`, `integral_defectMassIntegrand_far_le`,
+  **`integral_defectMassIntegrand_le`** — the two blocks and their sum: `int_A^B |a|/xi' <= 127` for every
+  `1 < A <= B`, with both primitives exact (`endpointLog` on the endpoint block, `-1/x` on the far block).
+- **`integral_volterra_exponent_le`** — the Volterra exponent of `abs_perturbed_le_lgEnvelope_mul_exp` is
+  exactly `(2C²/(cW)) int |a|/xi'` because `m = xi/xi'` cancels the envelope's `1/xi`, hence at most
+  `254 C²/(c W)`.  So the exponential factor of the pole-uniform estimate is `1 + O(c^{-1})`: the relative
+  error of Dunster's expansion `(14)` is now an unconditional consequence of objects in this tree.
+
 ## Lean gates
 
 - [x] Lean: exact reduction of the stationary equation to the quadratic `(7)`
@@ -854,8 +877,8 @@ separation constant `chi = s c²` in the range the separation law `(2)` provides
 - [x] Lean: the PSWF-specific input of `(14)` — the actual radial prolate mode solves the comparison
   equation with a defect that has only a **simple** pole, `|a| <= 40/(x²-1)`, uniformly in the aperture
   and in `0 <= s <= 1/2`; the eigenvalue enters only through that range, so nothing is imported
-- [ ] Lean: the total Liouville mass `int m |a| E² = O(1/c)` of that defect, which is the exponential
-  factor of the Volterra estimate
+- [x] Lean: the total Liouville mass of that defect — `int_A^B |a|/xi' <= 127` unconditionally, hence a
+  Volterra exponent `<= 254 C²/(cW)`: the relative error of `(14)` is `1 + O(c^{-1})`
 
 ## Gates
 

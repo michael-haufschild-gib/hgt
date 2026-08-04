@@ -51,6 +51,59 @@ def hiddenMinimizer (B : Matrix m n ℝ) (D : Matrix n n ℝ)
     (x : m → ℝ) : n → ℝ :=
   -((D⁻¹ * Bᴴ) *ᵥ x)
 
+/-- Harmonic graph embedding of boundary data into boundary-plus-hidden data. -/
+noncomputable def harmonicGraph (B : Matrix m n ℝ) (D : Matrix n n ℝ) :
+    (m → ℝ) →ₗ[ℝ] ((m → ℝ) × (n → ℝ)) where
+  toFun x := (x, hiddenMinimizer B D x)
+  map_add' x y := by
+    ext a <;> simp [hiddenMinimizer, Matrix.mulVec_add] <;> ring
+  map_smul' c x := by
+    ext a <;> simp [hiddenMinimizer, Matrix.mulVec_smul] <;> ring
+
+/-- Relative vanishing quotient: hidden data modulo harmonic extension from the boundary. -/
+noncomputable def relativeVanishingMap (B : Matrix m n ℝ) (D : Matrix n n ℝ) :
+    ((m → ℝ) × (n → ℝ)) →ₗ[ℝ] (n → ℝ) where
+  toFun xy := coronaShift B D xy.1 xy.2
+  map_add' x y := by
+    ext a
+    simp [coronaShift, Matrix.mulVec_add]
+    ring
+  map_smul' c x := by
+    ext a
+    simp [coronaShift, Matrix.mulVec_smul]
+    ring
+
+/-- Boundary-to-total-to-relative-vanishing is an exact linear sequence. -/
+theorem harmonicGraph_relativeVanishing_exact
+    (B : Matrix m n ℝ) (D : Matrix n n ℝ) :
+    Function.Exact (harmonicGraph B D) (relativeVanishingMap B D) := by
+  rw [LinearMap.exact_iff]
+  ext xy
+  constructor
+  · intro hxy
+    change relativeVanishingMap B D xy = 0 at hxy
+    refine ⟨xy.1, ?_⟩
+    apply Prod.ext
+    · rfl
+    · funext a
+      have ha := congrFun hxy a
+      change (((D⁻¹ * Bᴴ) *ᵥ xy.1) a + xy.2 a) = 0 at ha
+      change -(((D⁻¹ * Bᴴ) *ᵥ xy.1) a) = xy.2 a
+      linarith
+  · rintro ⟨x, rfl⟩
+    change relativeVanishingMap B D (harmonicGraph B D x) = 0
+    ext a
+    simp [harmonicGraph, relativeVanishingMap, coronaShift, hiddenMinimizer]
+
+/-- Every relative vanishing coordinate has a representative with zero boundary value. -/
+theorem relativeVanishingMap_surjective
+    (B : Matrix m n ℝ) (D : Matrix n n ℝ) :
+    Function.Surjective (relativeVanishingMap B D) := by
+  intro y
+  refine ⟨(0, y), ?_⟩
+  ext a
+  simp [relativeVanishingMap, coronaShift]
+
 /-- Exact elimination means every boundary value has a minimizer and the stated effective energy
 is a lower bound for every hidden extension. -/
 def IsExactElimination {X Y : Type*} (energy : X → Y → ℝ)

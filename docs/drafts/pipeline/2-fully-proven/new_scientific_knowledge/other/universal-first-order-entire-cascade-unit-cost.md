@@ -5525,3 +5525,123 @@ Lean note: `Finset.single_le_sum` needs its `f` given explicitly (`(f := …)`) 
 reconstructed from the goal; otherwise the summand stays a metavariable and the `AddLeftMono`
 instance search stalls with the same "typeclass instance problem is stuck" message seen earlier for
 `add_le_add_left`. Both failures have the same cause and the same fix.
+
+### Bridging the two currencies: `T ≤ log⁺ M`
+
+`characteristic_le_posLog_of_forall_sphere` — for entire `f`, any bound `‖f‖ ≤ M` on the circle of
+radius `|r|` gives `T(r, f) ≤ log⁺ M`. Unconditional, axiom-clean. Immediate once
+`characteristic = proximity` for entire functions is available, since the proximity is a circle
+average and `circleAverage_mono` compares it with the constant.
+
+This is the easy half of the standard comparison `T(r,f) ≤ log⁺M(r,f) ≤ 3·T(2r,f)`, and it is the
+half the lower bound consumes: the corpus's composition-growth results (`PolyaCompositionGrowth`,
+`exists_le_norm_comp_of_analytic`) are stated in maximum modulus, so a *lower* bound on `M` must be
+converted into a lower bound on `T` — which is the direction *not* covered here, and is the reason
+Clunie's theorem is stated for `T` in the literature rather than derived from Pólya's `M`-inequality.
+
+Recording the obstruction precisely, since it decides how the remaining work must be organised: for
+fast-growing `F_1` no `M`-inequality at shifted radii (`r/2`, `r/4`) can be traded for the `T`-form,
+because `log M(r)` may dominate `log M(r/4)` by an arbitrary factor. The radius shift must be absorbed
+by a Borel-type selection (`borel_growth`, `exists_ge_lt_two_mul`, both already in the corpus) rather
+than by a pointwise comparison. That is the shape of the remaining task.
+
+### The pointwise counterpart: a floor instead of nonvanishing
+
+`posLog_norm_le_of_root_floor`: if `ε ≤ ‖c_n‖` with `ε > 0` and `∑_{i ≤ n} c_i g^i = 0`, then
+
+`log⁺‖g‖ ≤ log n + ∑_{i<n} ( log⁺‖c_i‖ + log⁺ε⁻¹ )`.
+
+Unconditional, axiom-clean.
+
+Reason for the shape. The corpus's composition-growth layer
+(`RHTower/PolyaCompositionGrowth.exists_posLog_separation_of_analytic`) is **pointwise**: it produces a
+single `z` with `C·log⁺‖g z‖ < log⁺‖f (g z)‖` for a prescribed multiple `C`. To contradict that with
+an algebraic relation, the algebraic estimate has to hold at that same, uncontrolled point — so the
+top coefficient must be bounded *below* there. A nonvanishing hypothesis is useless pointwise;
+a floor is exactly what the corpus's `EntireMinimumModulusAt` layer and
+`exists_radius_floor_and_maxTerm` produce.
+
+This means the lower bound has two viable routes, and both are now supplied on the algebraic side:
+
+* **Nevanlinna route** — `exists_bound_proximity_of_two_var_relation`; needs Clunie's theorem in `T`
+  form, whose obstruction (the radius shift) was recorded in the previous entry.
+* **Pointwise route** — this lemma with `posLog_norm_eval_le` for the coefficients; needs the corpus's
+  own `exists_posLog_separation_of_analytic` together with a minimum-modulus floor for
+  `A_D(·, F_1)` on the selected circle. No radius-shift problem arises, because the separation and the
+  floor are produced on the *same* circle by `exists_radius_floor_maxTerm_block`.
+
+The pointwise route is the better bet: every one of its ingredients already exists in the corpus, and
+the `M`-versus-`T` conversion that blocks the other route never appears.
+
+### The pointwise contradictand, assembled
+
+`exists_bound_posLog_of_two_var_relation`:
+
+```
+∃ c ≥ 0, ∀ g z ε, 0 < ε → ε ≤ ‖A_D(z, G z)‖ → (∑_{i ≤ D} A_i(z, G z) · g(z)^i = 0) →
+  log⁺‖g z‖ ≤ c · ( 1 + log⁺‖z‖ + log⁺‖G z‖ + log⁺ε⁻¹ )
+```
+
+Unconditional, axiom-clean; `c` is explicit — `max (log D + D·K + 2·D·Dg·log 2) (D·Dg) D` with
+`K = ∑ log⁺‖A_i‖₁` and `Dg = ∑ deg A_i` — and depends only on the coefficient polynomials, not on
+`g`, `z` or `ε`.
+
+This is the exact negation-partner of `exists_posLog_separation_of_analytic`, which supplies a point
+with `C·log⁺‖G z‖ < log⁺‖f (G z)‖` for any prescribed `C`. Setting `g = f ∘ G` and taking `C > c`
+gives the contradiction, provided the point can be chosen so that `log⁺‖z‖` and `log⁺ε⁻¹` stay
+`O(log⁺‖G z‖)` — which is what the corpus's combined selection
+`exists_radius_floor_maxTerm_block` was built to deliver, on one circle.
+
+The algebraic side of the lower bound is therefore complete on both routes. Everything that remains
+is selection: choosing a radius carrying simultaneously a floor for `A_D(·, F_1)`, the Pólya
+separation, and control of `log r` against `log⁺‖F_1‖`.
+
+### The lower-bound interface: one hypothesis, entirely analytic
+
+`not_two_var_relation_of_separation`:
+
+```
+(∀ c ≥ 0, ∃ z ε, 0 < ε ∧ ε ≤ ‖A_D(z, G z)‖ ∧
+    c · (1 + log⁺‖z‖ + log⁺‖G z‖ + log⁺ε⁻¹) < log⁺‖g z‖)
+  →  ¬ (∀ z, ∑_{i ≤ D} A_i(z, G z) · g(z)^i = 0)
+```
+
+Unconditional, axiom-clean. Two lines, because both sides were already built: the algebraic bound
+supplies a `c` valid at *every* point, the hypothesis supplies a point beating that same `c`.
+
+This is the whole remaining content of the lower bound, isolated as one hypothesis and stated in
+purely analytic terms — no differential algebra, no field theory, no jets. Discharging it for
+`g = f_1 ∘ F_1`, `G = F_1` is a selection problem: find radii carrying simultaneously
+
+1. a minimum-modulus floor `ε` for `A_D(·, F_1)` (corpus: `EntireMinimumModulusAt`,
+   `norm_lower_bound_of_anchor`),
+2. the Pólya separation `C·log⁺‖F_1 z‖ < log⁺‖f_1 (F_1 z)‖` (corpus:
+   `exists_posLog_separation_of_analytic`),
+3. `log⁺|z|` and `log⁺ε⁻¹` bounded by a multiple of `log⁺‖F_1 z‖`.
+
+Item 3 is the only genuinely new demand, and it is what the corpus's combined selections
+(`exists_radius_floor_and_maxTerm`, `exists_radius_floor_maxTerm_block`) were designed to produce on
+one circle.
+
+**Card status.** Upper bound: proved unconditionally, with no independence hypothesis
+(`differentiallyAlgebraicOfOrder_entireCascade_of_transcendental`). Lower bound: reduced to the single
+analytic selection above; every algebraic and value-distribution step around it is formal and
+axiom-clean.
+
+### `HTGeometry/ThreeVarTopRelation.lean` — reading a state relation in its last variable
+
+`exists_top_two_var_relation`: if `F₁` is transcendental entire and `P(z, F₁, F₂) = 0` for a nonzero
+`P ∈ ℂ[X₀,X₁,X₂]`, then
+
+`∑_{i ≤ D} A_i(z, F₁) · F₂^i = 0`  with `D ≥ 1` and `A_D ≠ 0` in `ℂ[U,V]`.
+
+Unconditional, axiom-clean. Same mechanism as `exists_deriv_top_relation_of_order_one` — move the last
+variable to the head by `rename derivHead` and split it off with `MvPolynomial.finSuccEquiv` — and the
+same reason for `D ≥ 1`: degree zero is a two-variable relation `A_0(z, F₁) = 0`, i.e. an order-zero
+equation for `F₁`, which its transcendence forbids. The renaming `derivHead = ![1,2,0]` built for the
+derivative variable is reused verbatim; nothing about it was specific to derivatives.
+
+This is the entry point of the lower-bound chain from the algebraic side. Composed with
+`not_two_var_relation_of_separation`, a state relation over `ℂ` between `F₁` and `F₂` is refuted as
+soon as the analytic selection is available for the polynomial `A_D` produced here — and `A_D ≠ 0` is
+exactly what makes a minimum-modulus floor for `A_D(·, F₁)` meaningful.

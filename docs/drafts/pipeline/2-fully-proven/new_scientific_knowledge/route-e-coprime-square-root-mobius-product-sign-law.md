@@ -8355,3 +8355,90 @@ only a bounded constant.**  That is the first of the two comparisons separating
 The second is the tail `∑_{p > z} p^{−σ}` at the same `σ`, which is likewise bounded — that is the
 next target.  With both in hand, `D(μ, χ_t; p ≤ z)² ≥ ∑_{p≤z} 1/p − O(log log|t|)` follows from
 `le_tsum_re_prime_cpow_strip`, and `MoebiusDistance`'s missing lower bound is supplied.
+
+#### The remaining piece, stated exactly
+
+The Möbius distance lower bound now reduces to a single unproved estimate:
+
+    ∑_{p > z} p^{−σ}  =  O(1)   at   σ = 1 + 1/log z.                          (T)
+
+Given `(T)`, the chain closes:
+
+    ∑_{p ≤ z} cos(t log p)/p
+      ≥ ∑_{p ≤ z} cos(t log p)·p^{−σ}  −  (σ−1)(log z + log 4)     [PrimeSigmaShift]
+      ≥ ∑'_p cos(t log p)·p^{−σ}  −  ∑_{p>z} p^{−σ}  −  (1 + log 4/log z)
+      ≥ −log((20/A)·log⁷|t|) − π²/6 − O(1),                        [ZetaStripPrimeSum]
+
+whence `D(μ, χ_t; p ≤ z)² = ∑_{p≤z}(1 + cos(t log p))/p ≥ ∑_{p≤z} 1/p − O(log log|t|)`, and
+`MoebiusDistance.lean`'s missing lower bound is supplied.
+
+**`(T)` is not available in the corpus and is not elementary.**  Checked: there is no prime-tail
+bound of this shape, and no Chebyshev `π(x) ≪ x/log x`.  The naive comparison fails —
+`∑_{n>z} n^{−σ} ≤ z^{1−σ}/(σ−1) = e^{−1} log z`, a full logarithm too large — so the prime density
+is essential.  Nor does rescaling help: `σ − 1 = c/log z` is forced, since a smaller exponent makes
+the tail grow and a larger one makes the shift cost exceed the `o(log log z)` budget.
+
+The route is summation by parts against Mertens' second theorem (`MertensSecond.mertensS_le`,
+`le_mertensS`, both in the corpus, and `AbelInequality`/`AbelTail` for the machinery):
+
+    ∑_{z<p≤Y} p^{−1}·x^{−(σ−1)}  =  A(Y)g(Y) + ∫_z^Y A(x)(σ−1)x^{−σ} dx,
+    A(x) = ∑_{z<p≤x} 1/p = log log x − log log z + O(1/log z),
+
+and the substitution `x = z^u` turns the integral into `∫_1^∞ (log u + C)e^{−u} du = O(1)`.  Note the
+corpus's Abel *inequality* (bounded partial sums against a monotone weight) does **not** apply here:
+`A(x)` is unbounded.  The full summation-by-parts identity is needed.
+
+That is the next target, and it is the last analytic step before the Möbius distance bound.
+
+### Toward `(T)`: the dyadic prime window
+
+`RHTower/Sieve/PrimeWindowDyadic.lean`, unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+- `one_sub_exp_neg_ge` — `u/2 ≤ 1 − e^{−u}` on `[0,1]`, via `e^{−u} ≤ 1/(1+u)`.  This controls the
+  ratio `2^{−(σ−1)}` of the geometric series in the dyadic sum: it gives
+  `1 − 2^{−(σ−1)} ≥ (σ−1)log 2/2`, hence `∑_k 2^{−k(σ−1)} ≤ 2/((σ−1)log 2) = 2 log z/log 2`.
+- `logLog_two_mul_sub_le` — `logLog(2y) − logLog y ≤ log 2/log y`, i.e. `log(1 + log2/log y) ≤ log2/log y`.
+- **`sum_inv_dyadic_window_le`** —
+
+      ∑_{y < p ≤ 2y} 1/p  ≤  (log 2 + 2C)/log y,     C = 2·mertensFirstConst + 1/2.
+
+The last is the pivotal estimate and it is why `MertensWindowSharp.lean` had to exist.  A one-sided
+Mertens bound gives only `O(1)` per dyadic block, and there are `≍ log z` blocks below the point
+where the geometric factor takes over — that route yields `O(log z)` and fails.  The **decaying**
+error of the sharp form gives `O(1/log y)` per block, and the product with the geometric factor sums
+to `O(1)`.  This is exactly the trap the corpus's own `MertensWindowSharp` header warns about
+("subtracting two one-sided Mertens bounds adds their additive constants, which is fatal for a
+window of bounded ratio").
+
+Remaining for `(T)`: assemble the blocks — partition the primes above `z` into the dyadic windows
+`(2^k z, 2^{k+1} z]`, apply `sum_inv_dyadic_window_le` and `p^{−(σ−1)} ≤ (2^k z)^{−(σ−1)}` on each,
+and sum the resulting geometric series with `one_sub_exp_neg_ge`.  Both ingredients of that final
+step are now in place; what is left is the partition bookkeeping.
+
+### The dyadic tower is assembled
+
+`RHTower/Sieve/PrimeTailBound.lean`, unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+- `bigPrimeSet_split`, `bigPrimeSet_split_disjoint` — a prime window splits at any interior point,
+  disjointly.
+- **`sum_rpow_dyadic_block_le`** — on one dyadic window, for `σ > 1`:
+
+      ∑_{y < p ≤ 2y} p^{−σ}  ≤  y^{−(σ−1)}·(log 2 + 2C)/log y,
+
+  since `p^{−σ} = p^{−(σ−1)}·p^{−1} ≤ y^{−(σ−1)}·p^{−1}` and the window's reciprocal sum is the
+  previous section's estimate.
+- **`sum_rpow_bigPrimeSet_pow_le`** — the tower, by induction on `K`:
+
+      ∑_{z < p ≤ 2^K z} p^{−σ}  ≤  ∑_{k < K} (2^k z)^{−(σ−1)}·(log 2 + 2C)/log(2^k z).
+
+The induction is clean because the split is exact: `bigPrimeSet z (2^{K+1}z)` is the disjoint union
+of `bigPrimeSet z (2^K z)` and `bigPrimeSet (2^K z) (2·2^K z)`, so the inductive hypothesis and one
+block bound add with no loss.
+
+What remains for `(T)` is to collapse the right-hand side: bound `1/log(2^k z) ≤ 1/log z` and
+`(2^k z)^{−(σ−1)} = z^{−(σ−1)}·(2^{−(σ−1)})^k ≤ (2^{−(σ−1)})^k`, then sum the geometric series with
+`one_sub_exp_neg_ge`, giving `2(log 2 + 2C)/((σ−1)·log z·log 2)` — the constant
+`2(log 2 + 2C)/log 2` at `σ = 1 + 1/log z`.  Every ingredient of that collapse is now a theorem;
+only the arithmetic remains.

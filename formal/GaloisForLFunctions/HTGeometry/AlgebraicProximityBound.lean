@@ -353,4 +353,148 @@ theorem exists_bound_proximity_of_two_var_relation {n : ℕ} (hn : 1 ≤ n)
     rw [hexp]
     linarith [hmain, hsum, hc1, hP, hT]
 
+/-! ## Comparison with the maximum modulus -/
+
+/-- **The characteristic is at most the logarithm of the maximum modulus.**  For an entire function
+the characteristic is a circle average of `log⁺‖f‖`, hence bounded by any bound on the circle. -/
+theorem characteristic_le_posLog_of_forall_sphere {f : ℂ → ℂ}
+    (hf : AnalyticOnNhd ℂ f (Set.univ : Set ℂ)) {r M : ℝ}
+    (hM : ∀ z ∈ Metric.sphere (0 : ℂ) |r|, ‖f z‖ ≤ M) :
+    characteristic f ⊤ r ≤ Real.posLog M := by
+  have hfm : Meromorphic f := fun x => (hf x (Set.mem_univ x)).meromorphicAt
+  have hint : CircleIntegrable (Real.posLog ‖f ·‖) 0 r :=
+    MeromorphicOn.circleIntegrable_posLog_norm (fun x _ => hfm x)
+  have hbound : circleAverage (Real.posLog ‖f ·‖) 0 r
+      ≤ circleAverage (fun _ : ℂ => Real.posLog M) 0 r := by
+    refine circleAverage_mono hint (circleIntegrable_const _ _ _) ?_
+    intro x hx
+    exact Real.monotoneOn_posLog (Set.mem_Ici.mpr (norm_nonneg _))
+      (Set.mem_Ici.mpr (le_trans (norm_nonneg _) (hM x hx))) (hM x hx)
+  rw [circleAverage_const] at hbound
+  rw [characteristic_top_eq_proximity_of_analyticOnNhd hf, proximity_top]
+  exact hbound
+
+/-! ## The pointwise form with an explicit floor
+
+The composition-growth results of the corpus are pointwise: they produce a single point at which the
+composition outgrows a prescribed multiple of the inner function.  The algebraic estimate has to be
+available at that same point, which means the top coefficient must be bounded below there — a floor,
+not a nonvanishing hypothesis. -/
+
+/-- **The root estimate under a floor on the top coefficient.** -/
+theorem posLog_norm_le_of_root_floor {n : ℕ} (hn : 1 ≤ n) {g : ℂ} {c : ℕ → ℂ} {ε : ℝ}
+    (hε : 0 < ε) (hfloor : ε ≤ ‖c n‖)
+    (hrel : ∑ i ∈ Finset.range (n + 1), c i * g ^ i = 0) :
+    Real.posLog ‖g‖
+      ≤ Real.log n + ∑ i ∈ Finset.range n,
+          (Real.posLog ‖c i‖ + Real.posLog ε⁻¹) := by
+  have hcn : c n ≠ 0 := by
+    intro h
+    rw [h, norm_zero] at hfloor
+    linarith
+  have hcn0 : 0 < ‖c n‖ := lt_of_lt_of_le hε hfloor
+  have hstep : ∑ i ∈ Finset.range n, Real.posLog ‖c i / c n‖
+      ≤ ∑ i ∈ Finset.range n, (Real.posLog ‖c i‖ + Real.posLog ε⁻¹) := by
+    refine Finset.sum_le_sum ?_
+    intro i _
+    have hnorm : ‖c i / c n‖ = ‖c i‖ * ‖c n‖⁻¹ := by
+      rw [norm_div, div_eq_mul_inv]
+    have hinv : ‖c n‖⁻¹ ≤ ε⁻¹ := by
+      exact inv_anti₀ hε hfloor
+    have hinvpos : (0 : ℝ) ≤ ‖c n‖⁻¹ := by positivity
+    have hmono : Real.posLog ‖c n‖⁻¹ ≤ Real.posLog ε⁻¹ :=
+      Real.monotoneOn_posLog (Set.mem_Ici.mpr hinvpos)
+        (Set.mem_Ici.mpr (by positivity)) hinv
+    rw [hnorm]
+    exact le_trans Real.posLog_mul (by linarith [hmono])
+  linarith [posLog_norm_le_of_root_sum hn hcn hrel, hstep]
+
+/-- **The pointwise algebraic bound, in the shape the separation contradicts.**  An element
+satisfying a two-variable relation over `(z, G)` with a floor `ε` on the top coefficient is bounded
+by a fixed multiple of `1 + log⁺‖z‖ + log⁺‖G z‖ + log⁺ε⁻¹`.  The constant depends only on the
+coefficient polynomials. -/
+theorem exists_bound_posLog_of_two_var_relation {D : ℕ} (hD : 1 ≤ D)
+    {G : ℂ → ℂ} {A : ℕ → MvPolynomial (Fin 2) ℂ} :
+    ∃ c : ℝ, 0 ≤ c ∧ ∀ (g : ℂ → ℂ) (z : ℂ) (ε : ℝ), 0 < ε →
+      ε ≤ ‖MvPolynomial.eval ![z, G z] (A D)‖ →
+      (∑ i ∈ Finset.range (D + 1),
+        MvPolynomial.eval ![z, G z] (A i) * (g z) ^ i = 0) →
+      Real.posLog ‖g z‖
+        ≤ c * (1 + Real.posLog ‖z‖ + Real.posLog ‖G z‖ + Real.posLog ε⁻¹) := by
+  classical
+  set K : ℝ := ∑ i ∈ Finset.range D, Real.posLog (mvCoeffNormSum (A i)) with hK
+  set Dg : ℝ := ∑ i ∈ Finset.range D, ((A i).totalDegree : ℝ) with hDg
+  have hK0 : 0 ≤ K := Finset.sum_nonneg fun _ _ => Real.posLog_nonneg
+  have hDg0 : 0 ≤ Dg := Finset.sum_nonneg fun _ _ => Nat.cast_nonneg _
+  have hlog2 : (0 : ℝ) ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+  have hDpos : (0 : ℝ) ≤ (D : ℝ) := Nat.cast_nonneg _
+  refine ⟨max (max (Real.log D + D * K + 2 * D * Dg * Real.log 2) (D * Dg)) D, ?_, ?_⟩
+  · exact le_trans hDpos (le_max_right _ _)
+  · intro g z ε hε hfloor hrel
+    have hz0 : (0 : ℝ) ≤ Real.posLog ‖z‖ := Real.posLog_nonneg
+    have hGz0 : (0 : ℝ) ≤ Real.posLog ‖G z‖ := Real.posLog_nonneg
+    have hε0 : (0 : ℝ) ≤ Real.posLog ε⁻¹ := Real.posLog_nonneg
+    have hbase := posLog_norm_le_of_root_floor hD hε hfloor hrel
+    have hterm : ∀ i ∈ Finset.range D,
+        Real.posLog ‖MvPolynomial.eval ![z, G z] (A i)‖ + Real.posLog ε⁻¹
+        ≤ (K + Dg * (Real.log 2 + Real.posLog ‖z‖)
+            + Dg * (Real.log 2 + Real.posLog ‖G z‖)) + Real.posLog ε⁻¹ := by
+      intro i hi
+      have h0 := posLog_norm_eval_le (A i) z (G z)
+      have h1 : Real.posLog (mvCoeffNormSum (A i)) ≤ K := by
+        rw [hK]
+        exact Finset.single_le_sum
+          (f := fun j => Real.posLog (mvCoeffNormSum (A j)))
+          (fun _ _ => Real.posLog_nonneg) hi
+      have h2 : ((A i).totalDegree : ℝ) ≤ Dg := by
+        rw [hDg]
+        exact Finset.single_le_sum (f := fun j => ((A j).totalDegree : ℝ))
+          (fun _ _ => Nat.cast_nonneg _) hi
+      have h3 : ((A i).totalDegree : ℝ) * (Real.log 2 + Real.posLog ‖z‖)
+          ≤ Dg * (Real.log 2 + Real.posLog ‖z‖) :=
+        mul_le_mul_of_nonneg_right h2 (by linarith)
+      have h4 : ((A i).totalDegree : ℝ) * (Real.log 2 + Real.posLog ‖G z‖)
+          ≤ Dg * (Real.log 2 + Real.posLog ‖G z‖) :=
+        mul_le_mul_of_nonneg_right h2 (by linarith)
+      linarith
+    have hsum := Finset.sum_le_sum hterm
+    rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul] at hsum
+    have hexp : (D : ℝ) * ((K + Dg * (Real.log 2 + Real.posLog ‖z‖)
+          + Dg * (Real.log 2 + Real.posLog ‖G z‖)) + Real.posLog ε⁻¹)
+        = (D * K + 2 * D * Dg * Real.log 2) + D * Dg * Real.posLog ‖z‖
+          + D * Dg * Real.posLog ‖G z‖ + D * Real.posLog ε⁻¹ := by ring
+    rw [hexp] at hsum
+    set c : ℝ := max (max (Real.log D + D * K + 2 * D * Dg * Real.log 2) (D * Dg)) D with hc
+    have hc1 : Real.log D + D * K + 2 * D * Dg * Real.log 2 ≤ c :=
+      le_trans (le_max_left _ _) (le_max_left _ _)
+    have hc2 : D * Dg ≤ c := le_trans (le_max_right _ _) (le_max_left _ _)
+    have hc3 : (D : ℝ) ≤ c := le_max_right _ _
+    have hp1 : D * Dg * Real.posLog ‖z‖ ≤ c * Real.posLog ‖z‖ :=
+      mul_le_mul_of_nonneg_right hc2 hz0
+    have hp2 : D * Dg * Real.posLog ‖G z‖ ≤ c * Real.posLog ‖G z‖ :=
+      mul_le_mul_of_nonneg_right hc2 hGz0
+    have hp3 : (D : ℝ) * Real.posLog ε⁻¹ ≤ c * Real.posLog ε⁻¹ :=
+      mul_le_mul_of_nonneg_right hc3 hε0
+    have hgoal : c * (1 + Real.posLog ‖z‖ + Real.posLog ‖G z‖ + Real.posLog ε⁻¹)
+        = c + c * Real.posLog ‖z‖ + c * Real.posLog ‖G z‖ + c * Real.posLog ε⁻¹ := by ring
+    rw [hgoal]
+    linarith [hbase, hsum, hc1, hp1, hp2, hp3]
+
+/-- **The separation forbids an algebraic relation.**  If for every level `c` there is a point at
+which the top coefficient is bounded below and `g` outgrows `c` times the joint scale of the point
+and of `G`, then `g` satisfies no two-variable polynomial relation over `(z, G)` of degree `D`. -/
+theorem not_two_var_relation_of_separation {D : ℕ} (hD : 1 ≤ D)
+    {G g : ℂ → ℂ} {A : ℕ → MvPolynomial (Fin 2) ℂ}
+    (hsel : ∀ c : ℝ, 0 ≤ c → ∃ (z : ℂ) (ε : ℝ), 0 < ε ∧
+      ε ≤ ‖MvPolynomial.eval ![z, G z] (A D)‖ ∧
+      c * (1 + Real.posLog ‖z‖ + Real.posLog ‖G z‖ + Real.posLog ε⁻¹)
+        < Real.posLog ‖g z‖) :
+    ¬ (∀ z : ℂ, ∑ i ∈ Finset.range (D + 1),
+        MvPolynomial.eval ![z, G z] (A i) * (g z) ^ i = 0) := by
+  intro hrel
+  obtain ⟨c, hc0, hbound⟩ :=
+    exists_bound_posLog_of_two_var_relation (D := D) (G := G) (A := A) hD
+  obtain ⟨z, ε, hε, hfloor, hsep⟩ := hsel c hc0
+  exact absurd (hbound g z ε hε hfloor (hrel z)) (not_le.mpr hsep)
+
 end GaloisForLFunctions.HTGeometry

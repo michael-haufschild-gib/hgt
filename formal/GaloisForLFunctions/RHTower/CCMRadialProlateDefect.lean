@@ -728,6 +728,321 @@ theorem radialProlate_comparison_pole_uniform {s c x : ℝ} {R DR DDR : ℝ → 
     abs_lgNormalFormDefect_radialProlate_le hs0 hs1 hx⟩
 
 
+
+/-! ## The Liouville mass of the defect
+
+The exponential factor of the Volterra estimate is the total mass of `m |a| E²`, and since
+`m = xi/xi'` and `E² = C²/(c xi)` that mass is `(C²/c) int |a|/xi'`.  A simple pole has finite mass
+against `dx/xi'` because `1/xi' = sqrt((x²-1)/(x²-s))` vanishes like `sqrt(x²-1)` at the endpoint; a
+double pole would not.  Both blocks are exact: the endpoint block integrates `1/sqrt(x²-1)` and the far
+block integrates `x^{-2}`. -/
+
+/-- The integrand of the Liouville mass. -/
+def defectMassIntegrand (s c t : ℝ) : ℝ :=
+  |lgNormalFormDefect s c (radialProlateQ s c) t| / xiSpeed s t
+
+theorem continuousOn_phaseLogDefect {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
+    ContinuousOn (phaseLogDefect s) (Set.Ioi 1) := by
+  have hfun : phaseLogDefect s
+      = fun t : ℝ => xiSpeed s t / xiEndpointPhase s t - t / (t ^ 2 - 1) := by
+    funext t
+    rw [phaseLogDefect]
+  have h1 : ContinuousOn (fun t : ℝ => xiSpeed s t / xiEndpointPhase s t) (Set.Ioi 1) :=
+    (continuousOn_xiSpeed s).div (continuousOn_xiEndpointPhase hs0)
+      (fun t ht => (xiEndpointPhase_pos hs0 hs1 ht).ne')
+  have h2 : ContinuousOn (fun t : ℝ => t / (t ^ 2 - 1)) (Set.Ioi 1) := by
+    refine ContinuousOn.div (by fun_prop) (by fun_prop) ?_
+    intro t ht
+    have ht1 : (1 : ℝ) < t := ht
+    have : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+    exact this.ne'
+  rw [hfun]
+  exact h1.sub h2
+
+theorem continuousOn_prolateDefectAlg {s : ℝ} (hs1 : s ≤ 1 / 2) :
+    ContinuousOn (prolateDefectAlg s) (Set.Ioi 1) := by
+  have hfun : prolateDefectAlg s
+      = fun t : ℝ => (-(t ^ 4) + (8 * s - 3) * t ^ 2 - 2 * s * (s + 1))
+          / (4 * (t ^ 2 - s) ^ 2 * (t ^ 2 - 1)) := by
+    funext t
+    rw [prolateDefectAlg]
+  rw [hfun]
+  refine ContinuousOn.div (by fun_prop) (by fun_prop) ?_
+  intro t ht
+  have ht1 : (1 : ℝ) < t := ht
+  have h1 : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+  have h2 : (0 : ℝ) < t ^ 2 - s := by nlinarith
+  have : (0 : ℝ) < 4 * (t ^ 2 - s) ^ 2 * (t ^ 2 - 1) := by positivity
+  exact this.ne'
+
+theorem continuousOn_lgNormalFormDefect_radialProlate {s c : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
+    ContinuousOn (fun t : ℝ => lgNormalFormDefect s c (radialProlateQ s c) t) (Set.Ioi 1) := by
+  have hcont : ContinuousOn (fun t : ℝ => prolateDefectAlg s t
+      - t * phaseLogDefect s t / (2 * (t ^ 2 - 1)) - phaseLogDefect s t ^ 2 / 4) (Set.Ioi 1) := by
+    have hP := continuousOn_phaseLogDefect hs0 hs1
+    have h2 : ContinuousOn (fun t : ℝ => t * phaseLogDefect s t / (2 * (t ^ 2 - 1)))
+        (Set.Ioi 1) := by
+      refine ContinuousOn.div ((by fun_prop : ContinuousOn (fun t : ℝ => t) (Set.Ioi 1)).mul hP)
+        (by fun_prop) ?_
+      intro t ht
+      have ht1 : (1 : ℝ) < t := ht
+      have h1 : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+      have : (0 : ℝ) < 2 * (t ^ 2 - 1) := by linarith
+      exact this.ne'
+    have h3 : ContinuousOn (fun t : ℝ => phaseLogDefect s t ^ 2 / 4) (Set.Ioi 1) :=
+      (hP.pow 2).div_const 4
+    exact ((continuousOn_prolateDefectAlg hs1).sub h2).sub h3
+  refine hcont.congr ?_
+  intro t ht
+  exact lgNormalFormDefect_radialProlate_eq_alg hs0 hs1 ht
+
+theorem continuousOn_defectMassIntegrand {s c : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
+    ContinuousOn (defectMassIntegrand s c) (Set.Ioi 1) := by
+  have hfun : defectMassIntegrand s c
+      = fun t : ℝ => |lgNormalFormDefect s c (radialProlateQ s c) t| / xiSpeed s t := by
+    funext t
+    rw [defectMassIntegrand]
+  rw [hfun]
+  refine ContinuousOn.div ?_ (continuousOn_xiSpeed s) (fun t ht => (xiSpeed_pos hs1 ht).ne')
+  exact (continuousOn_lgNormalFormDefect_radialProlate hs0 hs1).abs
+
+/-- Near the endpoint the mass integrand is at most `40 sqrt 2 / sqrt(x²-1)`: the simple pole of the
+defect meets the vanishing Liouville measure `1/xi' <= sqrt 2 sqrt(x²-1)`. -/
+theorem defectMassIntegrand_le_near {s c t : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (ht : 1 < t) :
+    defectMassIntegrand s c t ≤ 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ 2 - 1)) := by
+  have ht0 : (0 : ℝ) < t := lt_trans zero_lt_one ht
+  have hd : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+  have hn : (0 : ℝ) < t ^ 2 - s := by nlinarith
+  have hr : (0 : ℝ) < Real.sqrt (t ^ 2 - 1) := Real.sqrt_pos.mpr hd
+  have hV : 0 < xiSpeed s t := xiSpeed_pos hs1 ht
+  have ha := abs_lgNormalFormDefect_radialProlate_le (s := s) (c := c) hs0 hs1 ht
+  -- `1/xi' <= sqrt 2 sqrt(t²-1)`
+  have hinv : 1 / xiSpeed s t ≤ Real.sqrt 2 * Real.sqrt (t ^ 2 - 1) := by
+    have hsq : (Real.sqrt 2 * Real.sqrt (t ^ 2 - 1)) * xiSpeed s t
+        = Real.sqrt (2 * (t ^ 2 - 1) * ((t ^ 2 - s) / (t ^ 2 - 1))) := by
+      rw [xiSpeed, ← Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 2),
+        ← Real.sqrt_mul (by positivity)]
+    have hge : (1 : ℝ) ≤ Real.sqrt (2 * (t ^ 2 - 1) * ((t ^ 2 - s) / (t ^ 2 - 1))) := by
+      rw [show 2 * (t ^ 2 - 1) * ((t ^ 2 - s) / (t ^ 2 - 1)) = 2 * (t ^ 2 - s) by field_simp]
+      have : (1 : ℝ) ≤ 2 * (t ^ 2 - s) := by nlinarith
+      calc (1 : ℝ) = Real.sqrt 1 := by rw [Real.sqrt_one]
+        _ ≤ _ := Real.sqrt_le_sqrt this
+    rw [div_le_iff₀ hV]
+    linarith [hsq.le, hsq.ge, hge]
+  calc defectMassIntegrand s c t
+      = |lgNormalFormDefect s c (radialProlateQ s c) t| * (1 / xiSpeed s t) := by
+        rw [defectMassIntegrand]
+        ring
+    _ ≤ (40 / (t ^ 2 - 1)) * (Real.sqrt 2 * Real.sqrt (t ^ 2 - 1)) := by
+        apply mul_le_mul ha hinv (by positivity) (by positivity)
+    _ = 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ 2 - 1)) := by
+        obtain ⟨R, hR0, hRsq, hReq⟩ : ∃ R : ℝ, 0 < R ∧ R * R = t ^ 2 - 1
+            ∧ Real.sqrt (t ^ 2 - 1) = R := ⟨Real.sqrt (t ^ 2 - 1), hr, Real.mul_self_sqrt hd.le, rfl⟩
+        rw [hReq, ← hRsq]
+        field_simp
+
+/-- Away from the endpoint the mass integrand is at most `(160/3) x^{-2}`, because `xi' >= 1` there and
+`1/(x²-1) <= (4/3)/x²` for `x >= 2`. -/
+theorem defectMassIntegrand_le_far {s c t : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (ht : 2 ≤ t) :
+    defectMassIntegrand s c t ≤ 160 / 3 * (1 / t ^ 2) := by
+  have ht1 : (1 : ℝ) < t := by linarith
+  have ht0 : (0 : ℝ) < t := by linarith
+  have hd : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+  have hV : 1 ≤ xiSpeed s t := one_le_xiSpeed (by linarith) ht1
+  have ha := abs_lgNormalFormDefect_radialProlate_le (s := s) (c := c) hs0 hs1 ht1
+  have habs : (0 : ℝ) ≤ |lgNormalFormDefect s c (radialProlateQ s c) t| := abs_nonneg _
+  have hstep : defectMassIntegrand s c t ≤ |lgNormalFormDefect s c (radialProlateQ s c) t| := by
+    rw [defectMassIntegrand, div_le_iff₀ (lt_of_lt_of_le zero_lt_one hV)]
+    nlinarith
+  have hfar : (40 : ℝ) / (t ^ 2 - 1) ≤ 160 / 3 * (1 / t ^ 2) := by
+    rw [div_le_iff₀ hd]
+    rw [show (160 : ℝ) / 3 * (1 / t ^ 2) = 160 / (3 * t ^ 2) by ring,
+      div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
+    nlinarith
+  linarith [hstep, ha, hfar]
+
+
+
+theorem intervalIntegrable_defectMassIntegrand {s c A B : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hA : 1 < A) (hAB : A ≤ B) :
+    IntervalIntegrable (defectMassIntegrand s c) MeasureTheory.volume A B := by
+  have hsub : Set.uIcc A B ⊆ Set.Ioi 1 := by
+    rw [Set.uIcc_of_le hAB]
+    intro t ht
+    exact lt_of_lt_of_le hA ht.1
+  exact ((continuousOn_defectMassIntegrand hs0 hs1).mono hsub).intervalIntegrable
+
+/-- **The endpoint block of the Liouville mass.**  On any interval inside `(1, 2]` the mass is at most
+`100`, from the exact primitive `int 1/sqrt(t²-1) = log(t + sqrt(t²-1))` and `log(2 + sqrt 3) <= sqrt 3`. -/
+theorem integral_defectMassIntegrand_near_le {s c A B : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hA : 1 < A) (hAB : A ≤ B) (hB : B ≤ 2) :
+    (∫ t in A..B, defectMassIntegrand s c t) ≤ 100 := by
+  have hsub : Set.uIcc A B ⊆ Set.Ioi 1 := by
+    rw [Set.uIcc_of_le hAB]
+    intro t ht
+    exact lt_of_lt_of_le hA ht.1
+  have hmaj : ContinuousOn
+      (fun t : ℝ => 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ 2 - 1))) (Set.Ioi 1) := by
+    refine ContinuousOn.mul continuousOn_const (ContinuousOn.div continuousOn_const ?_ ?_)
+    · exact Real.continuous_sqrt.comp_continuousOn (by fun_prop)
+    · intro t ht
+      have ht1 : (1 : ℝ) < t := ht
+      have hd : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+      exact (Real.sqrt_pos.mpr hd).ne'
+  have hgint : IntervalIntegrable (fun t : ℝ => 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ 2 - 1)))
+      MeasureTheory.volume A B := (hmaj.mono hsub).intervalIntegrable
+  have hmono : (∫ t in A..B, defectMassIntegrand s c t)
+      ≤ ∫ t in A..B, 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ 2 - 1)) := by
+    refine intervalIntegral.integral_mono_on hAB
+      (intervalIntegrable_defectMassIntegrand hs0 hs1 hA hAB) hgint ?_
+    intro t ht
+    exact defectMassIntegrand_le_near hs0 hs1 (lt_of_lt_of_le hA ht.1)
+  have hFTC : (∫ t in A..B, 40 * Real.sqrt 2 * (1 / Real.sqrt (t ^ 2 - 1)))
+      = 40 * Real.sqrt 2 * GaloisForLFunctions.HTGeometry.endpointLog B
+        - 40 * Real.sqrt 2 * GaloisForLFunctions.HTGeometry.endpointLog A := by
+    refine intervalIntegral.integral_eq_sub_of_hasDerivAt (f := fun t : ℝ =>
+      40 * Real.sqrt 2 * GaloisForLFunctions.HTGeometry.endpointLog t) ?_ hgint
+    intro t ht
+    have ht1 : (1 : ℝ) < t := hsub ht
+    exact (GaloisForLFunctions.HTGeometry.hasDerivAt_endpointLog ht1).const_mul _
+  have hLB : GaloisForLFunctions.HTGeometry.endpointLog B ≤ Real.sqrt 3 := by
+    refine le_trans (GaloisForLFunctions.HTGeometry.endpointLog_le_sqrt (by linarith)) ?_
+    exact Real.sqrt_le_sqrt (by nlinarith)
+  have hLA : 0 ≤ GaloisForLFunctions.HTGeometry.endpointLog A := by
+    have h := GaloisForLFunctions.HTGeometry.sqrt_mul_one_sub_le_endpointLog (x := A) (by linarith)
+    have hd : (0 : ℝ) < A ^ 2 - 1 := by nlinarith
+    have hd3 : A ^ 2 - 1 ≤ 3 := by nlinarith
+    have hr : 0 < Real.sqrt (A ^ 2 - 1) := Real.sqrt_pos.mpr hd
+    nlinarith [h, hr]
+  have h6 : Real.sqrt 2 * Real.sqrt 3 ≤ 5 / 2 := by
+    rw [← Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 2)]
+    rw [show (5 : ℝ) / 2 = Real.sqrt ((5 / 2) ^ 2) from (Real.sqrt_sq (by norm_num)).symm]
+    exact Real.sqrt_le_sqrt (by norm_num)
+  have h2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  have hfin : 40 * Real.sqrt 2 * GaloisForLFunctions.HTGeometry.endpointLog B
+      - 40 * Real.sqrt 2 * GaloisForLFunctions.HTGeometry.endpointLog A ≤ 100 := by
+    have h1 : 40 * Real.sqrt 2 * GaloisForLFunctions.HTGeometry.endpointLog B
+        ≤ 40 * (Real.sqrt 2 * Real.sqrt 3) := by
+      have := mul_le_mul_of_nonneg_left hLB (by positivity : (0 : ℝ) ≤ 40 * Real.sqrt 2)
+      nlinarith [this]
+    have h3 : 0 ≤ 40 * Real.sqrt 2 * GaloisForLFunctions.HTGeometry.endpointLog A := by
+      positivity
+    nlinarith [h1, h3, h6]
+  linarith [hmono, hFTC.le, hFTC.ge, hfin]
+
+/-- **The far block of the Liouville mass.**  Beyond `x = 2` the speed is at least `1` and the pole is
+harmless: the mass is at most `27`, from `int_A^B x^{-2} = 1/A - 1/B <= 1/2`. -/
+theorem integral_defectMassIntegrand_far_le {s c A B : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hA : 2 ≤ A) (hAB : A ≤ B) :
+    (∫ t in A..B, defectMassIntegrand s c t) ≤ 27 := by
+  have hA1 : (1 : ℝ) < A := by linarith
+  have hsub : Set.uIcc A B ⊆ Set.Ici 2 := by
+    rw [Set.uIcc_of_le hAB]
+    intro t ht
+    exact le_trans hA ht.1
+  have hmaj : ContinuousOn (fun t : ℝ => 160 / 3 * (1 / t ^ 2)) (Set.Ici 2) := by
+    refine ContinuousOn.mul continuousOn_const (ContinuousOn.div continuousOn_const (by fun_prop) ?_)
+    intro t ht
+    have ht2 : (2 : ℝ) ≤ t := ht
+    have : (0 : ℝ) < t ^ 2 := by nlinarith
+    exact this.ne'
+  have hgint : IntervalIntegrable (fun t : ℝ => 160 / 3 * (1 / t ^ 2))
+      MeasureTheory.volume A B := (hmaj.mono hsub).intervalIntegrable
+  have hmono : (∫ t in A..B, defectMassIntegrand s c t)
+      ≤ ∫ t in A..B, 160 / 3 * (1 / t ^ 2) := by
+    refine intervalIntegral.integral_mono_on hAB
+      (intervalIntegrable_defectMassIntegrand hs0 hs1 hA1 hAB) hgint ?_
+    intro t ht
+    exact defectMassIntegrand_le_far hs0 hs1 (le_trans hA ht.1)
+  have hFTC : (∫ t in A..B, 160 / 3 * (1 / t ^ 2)) = -(160 / 3 * (1 / B)) - -(160 / 3 * (1 / A)) := by
+    refine intervalIntegral.integral_eq_sub_of_hasDerivAt
+      (f := fun t : ℝ => -(160 / 3 * (1 / t))) ?_ hgint
+    intro t ht
+    have ht2 : (2 : ℝ) ≤ t := hsub ht
+    have ht0 : t ≠ 0 := by
+      intro h
+      rw [h] at ht2
+      norm_num at ht2
+    have h := ((hasDerivAt_inv ht0).const_mul (160 / 3 : ℝ)).neg
+    have hval : -(160 / 3 * -(t ^ 2)⁻¹) = 160 / 3 * (1 / t ^ 2) := by
+      field_simp
+    rw [← hval]
+    have hfun : (fun t : ℝ => -(160 / 3 * (1 / t))) = fun t : ℝ => -(160 / 3 * t⁻¹) := by
+      funext u
+      rw [one_div]
+    rw [hfun]
+    exact h
+  have hB0 : (0 : ℝ) < B := by linarith
+  have hA0 : (0 : ℝ) < A := by linarith
+  have hinvA : 1 / A ≤ 1 / 2 := by
+    apply div_le_div_of_nonneg_left (by norm_num) (by norm_num) hA
+  have hinvB : 0 ≤ 1 / B := by positivity
+  have hfin : -(160 / 3 * (1 / B)) - -(160 / 3 * (1 / A)) ≤ 27 := by
+    nlinarith [hinvA, hinvB]
+  linarith [hmono, hFTC.le, hFTC.ge, hfin]
+
+/-- **The Liouville mass of the defect is bounded, uniformly in every parameter.**  For every
+`1 < A <= B`,
+
+```text
+int_A^B |a|/xi' <= 127.
+```
+
+Since the transport-law integrand of the Volterra estimate is
+`2 m |a| (C/sqrt(c xi))² / W = (2C²/(cW)) |a|/xi'`, this makes the exponential factor of the pole-uniform
+estimate `exp(O(1/c))`, i.e. a relative error `1 + O(c^{-1})` — the `O(c^{-1})` of Dunster's expansion
+`(14)`.  The endpoint block is where the simple pole meets the vanishing Liouville measure; the far block
+is where the pole decays like `x^{-2}`. -/
+theorem integral_defectMassIntegrand_le {s c A B : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hA : 1 < A) (hAB : A ≤ B) :
+    (∫ t in A..B, defectMassIntegrand s c t) ≤ 127 := by
+  rcases le_or_gt B 2 with hB | hB
+  · linarith [integral_defectMassIntegrand_near_le (s := s) (c := c) hs0 hs1 hA hAB hB]
+  rcases le_or_gt 2 A with hA2 | hA2
+  · linarith [integral_defectMassIntegrand_far_le (s := s) (c := c) hs0 hs1 hA2 hAB]
+  · have h1 := intervalIntegrable_defectMassIntegrand (s := s) (c := c) hs0 hs1 hA hA2.le
+    have h2 := intervalIntegrable_defectMassIntegrand (s := s) (c := c) hs0 hs1
+      (by norm_num : (1 : ℝ) < 2) hB.le
+    have hsplit : (∫ t in A..(2 : ℝ), defectMassIntegrand s c t)
+        + (∫ t in (2 : ℝ)..B, defectMassIntegrand s c t)
+        = ∫ t in A..B, defectMassIntegrand s c t :=
+      intervalIntegral.integral_add_adjacent_intervals h1 h2
+    have hnear := integral_defectMassIntegrand_near_le (s := s) (c := c) hs0 hs1 hA hA2.le
+      (le_refl 2)
+    have hfar := integral_defectMassIntegrand_far_le (s := s) (c := c) hs0 hs1 (le_refl 2) hB.le
+    linarith [hsplit, hnear, hfar]
+
+
+
+/-- **The exponential factor of the pole-uniform estimate is `exp(O(1/c))`.**  The Volterra exponent of
+`abs_perturbed_le_lgEnvelope_mul_exp` is the mass of `2 m |a| E² / W`, and with `m = xi/xi'` and
+`E = C/sqrt(c xi)` that integrand is exactly `(2C²/(cW)) |a|/xi'`.  So the whole exponent is at most
+`254 C²/(c W)` — the relative error of the pole-uniform expansion `(14)` is `1 + O(c^{-1})`. -/
+theorem integral_volterra_exponent_le {s c A B C W : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hc : 0 < c) (hW : 0 < W) (hA : 1 < A) (hAB : A ≤ B) :
+    (∫ t in A..B, 2 * (lgWeight s t * |lgNormalFormDefect s c (radialProlateQ s c) t|)
+        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2 / W)
+      ≤ 2 * C ^ 2 / (c * W) * 127 := by
+  have hsub : Set.uIcc A B ⊆ Set.Ioi 1 := by
+    rw [Set.uIcc_of_le hAB]
+    intro t ht
+    exact lt_of_lt_of_le hA ht.1
+  have heq : Set.EqOn (fun t : ℝ => 2 * (lgWeight s t * |lgNormalFormDefect s c (radialProlateQ s c) t|)
+        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2 / W)
+      (fun t : ℝ => 2 * C ^ 2 / (c * W) * defectMassIntegrand s c t) (Set.uIcc A B) := by
+    intro t ht
+    have ht1 : (1 : ℝ) < t := hsub ht
+    have hxi : 0 < xiEndpointPhase s t := xiEndpointPhase_pos hs0 hs1 ht1
+    have hV : 0 < xiSpeed s t := xiSpeed_pos hs1 ht1
+    have hsq : Real.sqrt (c * xiEndpointPhase s t) ^ 2 = c * xiEndpointPhase s t :=
+      Real.sq_sqrt (by positivity)
+    simp only [defectMassIntegrand, lgWeight, div_pow, hsq]
+    field_simp
+  rw [intervalIntegral.integral_congr heq, intervalIntegral.integral_const_mul]
+  exact mul_le_mul_of_nonneg_left (integral_defectMassIntegrand_le (s := s) (c := c) hs0 hs1 hA hAB)
+    (by positivity)
+
+
 end GaloisForLFunctions.RHTower
 
 end

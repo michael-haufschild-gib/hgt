@@ -49,12 +49,12 @@
 
 \begin{document}
 
-\title[The Euler--capacity law]{The Euler--capacity law for wild character varieties}
+\title[The Stokes--microlocal Witt law]{The polarized Stokes--microlocal Witt law}
 
 \author{M.~Haufschild}
 \address{Independent researcher}
 \email{haufschildmichael@gmail.com}
-\date{3 August 2026}
+\date{4 August 2026}
 
 \subjclass[2020]{Primary 34M40, 14D24; Secondary 15A18, 32G34, 14H60, 16G20}
 \keywords{irregular Riemann--Hilbert correspondence, wild nonabelian Hodge theory,
@@ -62,44 +62,172 @@ Stokes data, quasi-Hamiltonian fusion, rigidity index, fission tree, generalized
 inertia, effective resistance, principal conormal, Rees degeneration}
 
 \begin{abstract}
-Let $X$ be a compact curve of genus $g$ with a nonempty set $D$ of $m$ marked points carrying
-type-$A$ irregular data for general linear groups.  The dimension of the corresponding wild character
-variety determines a quadratic index $Q_{X,D}$ on the real marked multiplicity lattice.  We prove
-the fusion identity
+Let $A$ be a finite Galois-stable family of ramified exponential factors on a common cover
+$w^N=z$, and let $I=A/\mu_N$.  For branches $a,b\in A$, write $k(a,b)$ for the largest exponent at
+which their Puiseux coefficients differ.  We prove that the threshold relations of $k$ form a
+canonical dendrogram, with no tree among the hypotheses, and that the polarized Stokes index on
+orbit charges $x\in\RR^I$ satisfies
 \[
- Q_{X,D}=\sum_{a\in D}Q_a+2(1-g-m)M^2,
+ Q(x)=\sum_{i\in I}x_i^2+
+      \sum_e\ell_e\Bigl(\sum_{a\in A_e}x_{[a]}\Bigr)^2
+      -(H-1)\Bigl(\sum_{a\in A}x_{[a]}\Bigr)^2.                 \tag{W}
 \]
-where $Q_a$ is the one-puncture index and $M$ is the common total rank.  Each local index has a
-canonical capacity completion $Q_a=P_a(z_a)+\Omega_aM^2$, with $P_a$ positive definite.  Hence
-\[
- \boxed{\quad Q_{X,D}=\sum_{a\in D}P_a(z_a)
-       +\left(\chi(X)-\sum_{a\in D}\delta_a\right)M^2,\qquad
-       \delta_a=2-\Omega_a.\quad}
-\]
-We call this the Euler--capacity law: Euler topology minus local capacity defects.  It is a
-quadratic refinement of scalar rigidity-index and
-Euler-characteristic formulae: topology and all punctures couple only through one physical-rank
-coordinate, while every centered Stokes direction has strictly positive energy.  It follows that
-the negative index and nullity are at most one, in every genus, and that the sign of the displayed
-coefficient gives the finite/affine/Lorentz trichotomy.  The coefficient is intrinsically the
-minimum of $Q_{X,D}$ at unit common rank.
+Thus every threshold channel is positive and physical rank is the sole possible negative channel.
 
-The local theorem making the formula effective is a Stokes contact-tree factorization
-\[
- C=I+\sum_e\ell_eu_eu_e^T-(H-1)rr^T.
-\]
-Its positive squares are principal conormals of fission clusters.  The reciprocal local capacity
-is the effective resistance of the contact tree; corona pruning is exact series--parallel
-reduction; type-$A$ legs only change terminal resistances; and Rees scaling preserves the unique
-rank defect.  In genus zero with one puncture the Euler--capacity law recovers the complete
-Stokes--Cartan theorem, including the determinant wall and the graph obstruction
-$\lambda_2(B)\leq2$.  We state exact hypotheses and falsifiers: arbitrary covectors need not be
-rank-like, and no categorical equality with vanishing-cycle multiplicities is asserted.
+We construct the finite cellular Stokes category on the boundary circle.  Microlocalization is a
+quotient functor, the nearby-to-vanishing map is onto with kernel the adjacent-arc image, and a
+degree-$k$ exponential Hom germ has one nonzero oriented microstalk at every wall.  Its directed
+microlocal mass is $k$.  After Galois descent and division by $N$, this mass is exactly mixed Hom
+irregularity.  Consequently (W) is simultaneously a coefficient coarea identity, a microlocal
+index formula, and a Witt decomposition.
+
+For a nonempty family of marked points on a genus-$g$ curve, physical-rank fusion leaves the
+orthogonal sum of all local positive channels plus one common-rank square.  The fused form therefore
+has negative index at most one, for arbitrary ramification, genus, and puncture count.  This remains
+true throughout the full nonnegative multi-Rees cone.  Capacity completion gives the exact
+finite/affine/Lorentz trichotomy; corona elimination is positive Schur complementation and is
+order-independent.  Finally, an explicit three-term Stokes deformation complex derives the
+smooth-reduction dimension and Euler formulas by rank--nullity.  The result is a polarized
+refinement of scalar irregular rigidity formulae: all local microlocal channels split positively,
+whereas topology can act only through one global rank line.
 \end{abstract}
 
 \maketitle
 
 \section{Introduction}
+
+Stokes data are local but their deformation theory is not.  Ramified exponential factors split
+into branches on finite covers; dominance changes on boundary circles; formal monodromy regroups
+branches into Galois orbits; fusion identifies total rank at all punctures; and surface topology
+contributes through that same common rank.  Main result: these operations obey one quadratic
+conservation law.
+
+Nearest scalar predecessor is Hiroe's theorem identifying, under multiplicity-free, regularity,
+and spectral-curve hypotheses, rigidity index with Euler characteristic of normalized irregular
+spectral curve \cite{Hiroe2019Rigidity}.  His local formulas relate irregularity to plane-curve
+intersection and Milnor data \cite{Hiroe2017Ramified}.  Result below is not another scalar Euler
+formula.  It polarizes the index on arbitrary independent orbit charges, determines its inertia,
+and identifies every mixed $\operatorname{Irr}\!\operatorname{Hom}$ coefficient with directed
+microstalk mass.
+
+Fix common cover $w^N=z$ at one puncture.  Let $A$ be finite $\mu_N$-stable set of distinct
+Laurent polynomials
+\[
+                       q_a(w)=\sum_{k=1}^{K}c_{a,k}w^{-k}.
+\]
+For $a\ne b$ set
+\[
+ k(a,b)=\max\{k:c_{a,k}\ne c_{b,k}\},\qquad h(a,b)=k(a,b)/N,
+\]
+and put $h(a,a)=0$.  Write $I=A/\mu_N$, let $r_i$ be size of orbit $i$, and define
+\begin{equation}\label{eq:intro-mixed-irregularity}
+ s_{ij}=\sum_{a\in i}\sum_{b\in j}h(a,b),\qquad
+ M(x)=\sum_{i\in I}r_ix_i=\sum_{a\in A}x_{[a]}.
+\end{equation}
+Cyclic symmetry makes $s_{ij}$ integral; Section~\ref{sec:microlocal} proves this by decomposition
+into integer directed microstalks.  Local polarized Stokes index is
+\begin{equation}\label{eq:intro-local-index}
+ Q_A(x)=\sum_i x_i^2+M(x)^2-\sum_{i,j}s_{ij}x_ix_j.
+\end{equation}
+
+Highest coefficient difference satisfies strong three-point law
+\begin{equation}\label{eq:intro-ultrametric}
+                         h(a,b)\le\max\{h(a,c),h(c,b)\}.
+\end{equation}
+Threshold equivalence classes form canonical finite dendrogram.  Choose
+$H>\max h(a,b)$.  Write $A_e$ for nontrivial threshold blocks and $\ell_e>0$ for persistence
+lengths.  Coefficient coarea identity is
+\begin{equation}\label{eq:intro-factor}
+ \boxed{\quad Q_A(x)=\sum_i x_i^2+
+ \sum_e\ell_e\left(\sum_{a\in A_e}x_{[a]}\right)^2
+ -(H-1)M(x)^2.\quad}                                      \tag{W}
+\end{equation}
+No contact matrix or rooted tree is supplied to this theorem.  Both are outputs of coefficient
+family.  Extending $H$ adds same square to positive coarea energy and rank defect, so identity is
+intrinsic.
+
+Formula \eqref{eq:intro-factor} is local Stokes--microlocal Witt law.  It canonically identifies
+positive coordinates.  They admit five readings developed below.
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item threshold-persistence charges in coefficient dendrogram;
+\item principal conormals of corresponding cluster hyperplanes;
+\item directed microstalk, cellular characteristic-cycle, and vanishing-cycle ranks of
+exponential Hom germs;
+\item associated-graded Stokes channels scaled independently by Rees parameters;
+\item corona Schur residuals carrying positive relative vanishing norm.
+\end{enumerate}
+
+Categorical statement is finite and explicit.  On one-wall germ let
+$L\to W\leftarrow R$ be cellular entrance diagram.  Its rational representation category is
+abelian.  For $S\in\{L,R\}$ set
+\[
+                         \mu_S(F)=F(W)/\operatorname{im}(F(S)\to F(W)).
+\]
+Naturality makes $\mu_S$ a functor, and quotient map gives exact sequence
+\[
+                 F(S)\longrightarrow F(W)\longrightarrow\mu_S(F)\longrightarrow0.
+\]
+For exponential germ, precisely one oriented microstalk has full fiber rank.  Degree-$k$
+difference has $2k$ labelled walls, $k$ with ordered decay orientation.  Directed mass is
+therefore $k$ times Hom-fiber dimension.  Galois normalization turns this integer mass into
+$s_{ij}$, and microlocal polarization is exactly \eqref{eq:intro-local-index}.  This closes contact,
+microsupport, characteristic-cycle, and vanishing-cycle questions inside finite Stokes category.
+
+Let $X$ have genus $g$ and nonempty marked set $D=\{p_1,\ldots,p_m\}$.  At $p_a$ take coefficient
+family $A_a$ and local form $Q_a$.  On physical-rank fibre product
+\begin{equation}\label{eq:intro-fibre-product}
+ V_{X,D}=\{(x_a):M_1(x_1)=\cdots=M_m(x_m)\},\qquad M=M_a(x_a),
+\end{equation}
+define fused Stokes form
+\begin{equation}\label{eq:intro-fusion}
+ Q_{X,D}(x)=\sum_{a=1}^{m}Q_a(x_a)+2(1-g-m)M^2.
+\end{equation}
+Correction is also derived from three-term deformation complex in Section~\ref{sec:dimension}; it
+is not imported as dimension polynomial.  Substitution of \eqref{eq:intro-factor} gives
+\begin{equation}\label{eq:intro-global-witt}
+ Q_{X,D}=P_{X,D}+\Gamma_{X,D}M^2,
+ \qquad P_{X,D}=\sum_a\left(\sum_i x_{a,i}^2+sum_e\ell_{a,e}\nu_{a,e}^2\right)>0,
+\end{equation}
+where $\Gamma_{X,D}=2(1-g-m)-\sum_a(H_a-1)$.  Hence $Q_{X,D}$ is positive on
+$\ker M$ and
+\begin{equation}\label{eq:intro-witt-index}
+                              \indm(Q_{X,D})\le1.
+\end{equation}
+This is global Witt-index law.  Arbitrary genus, all punctures, ramified orbit descent, loops, and
+signed diagram entries still leave only one possible negative line.
+
+Capacity completion sharpens this decomposition.  If $c_a$ is squared dual norm of local rank in
+positive metric and $\Omega_a=c_a^{-1}-(H_a-1)$, then
+\begin{equation}\label{eq:intro-euler-capacity}
+ Q_{X,D}(x)=\sum_aP_a(z_a)+\Omega_{X,D}M^2,
+ \quad \Omega_{X,D}=\chi(X)+\sum_a(\Omega_a-2)
+ =\chi(X)-\sum_a\delta_a.                                  \tag{EC}
+\end{equation}
+Finite, affine, and Lorentz phases are separated by one intrinsic scalar.  Each handle subtracts
+two.  Reciprocal local capacity is effective resistance; corona pruning computes it by exact
+series--parallel reduction.  Ordinary type-$A$ marking legs merely replace terminal resistances.
+
+Full nonnegative multi-Rees family scales every threshold term independently.  Unit point is
+\eqref{eq:intro-global-witt}; setting selected parameters to zero contracts precisely those graded
+channels.  Terminal squares remain positive and common-rank coefficient is fixed, so every
+specialization still satisfies \eqref{eq:intro-witt-index}.
+
+For honest genus-zero Stokes graph with adjacency matrix $B$, theorem implies
+$\lambda_2(B)\le2$.  Thus higher-negative-index symmetric Kac--Moody forms do not occur in this
+class.  Hyperbolic examples show sharpness.  Classical ultrametric-matrix theory supplies matrix
+ancestors \cite{MartinezMichonSanMartin1994,McDonaldEtAl1995,NabbenVarga1995}, but it neither
+produces Galois-normalized Hom microstalk pairing nor proves fused arbitrary-genus one-port law.
+Hiroe's scalar spectral-curve theorem is likewise a true ancestor, but evaluates diagonal rigidity
+index rather than mixed polarization.  These are novelty boundaries.
+
+Sections~\ref{sec:geometry}--\ref{sec:factor} derive dendrogram and coarea law from coefficients.
+Sections~\ref{sec:capacity}--\ref{sec:legs} prove capacity, corona, and marking results.
+Section~\ref{sec:microlocal} constructs cellular Stokes category and microlocal index.
+Section~\ref{sec:dimension} derives reduction dimension from deformation complex.
+Section~\ref{sec:global} proves fused Witt and Euler--capacity laws, and
+Section~\ref{sec:spectral} gives spectral consequences and sharpness.
+
+\iffalse
 
 Wild nonabelian Hodge theory relates meromorphic connections, irregular Higgs bundles, and Stokes
 local systems on curves \cite{BiquardBoalch2004}.  Their Betti moduli spaces are assembled by
@@ -244,6 +372,8 @@ Section~\ref{sec:global} proves the arbitrary-genus Euler--capacity law by quasi
 fusion, and
 Section~\ref{sec:spectral} derives graph-theoretic consequences and examples.  The final section
 records exact scope and falsifiers.
+
+\fi
 
 \section{Stokes contact and rooted fission data}\label{sec:geometry}
 
