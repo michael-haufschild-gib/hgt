@@ -301,6 +301,17 @@ equation in Liouville normal form, and the pole-uniform comparison estimate with
   this is `xi = sqrt(x²-1) - sigma² theta/2 + O(sigma⁴)`, uniformly on compacts — and the two leading terms
   are exact primitives, not approximations.
 
+**The amplitude half of `(7)`:**
+
+- **`xiAmplitude_pow_four`** — the fourth power of the Liouville–Green amplitude is the elementary rational
+  expression `xi²/((x²-1)(x²-s))`; no root survives.
+- `xiAmplitude_pos`, **`abs_xiEndpointPhase_sq_sub_le`** — the endpoint bracket `(4)` pins `xi²` to relative
+  accuracy `s`: `|xi_s(x)² - (x²-1)| <= s (x²-1)`.
+- **`abs_xiAmplitude_sub_inv_sqrt_le`** — `|A_s(x) - x^{-1/2}| <= 4 s` for every `x > 1` and
+  `0 <= s <= 1/2`.  The passage from fourth powers to the amplitude is the factorisation
+  `A⁴ - B⁴ = (A-B)(A+B)(A²+B²)` with `(A+B)(A²+B²) >= B³ = x^{-3/2}`, so the bound is global rather than
+  compact-dependent — stronger than the card's `O(c^{-1})` on compacts.
+
 What remains for `(8)` is the *constant* in the large-argument Bessel asymptotic: the tree has
 `exists_besselJ0_phase_asymptotic` in the form `sqrt(u) J_0(u) = p cos u + q sin u + O(1/u)` with `p, q`
 deliberately unidentified, whereas `(8)` needs `p = q = 1/sqrt(pi)`, i.e.
@@ -313,7 +324,7 @@ plus the exact leakage identities `(13)`, which belong to the endpoint-response 
 - [x] Lean: the radial angle and its derivative law
 - [x] Lean: equation `(17)` — the limiting density has total mass exactly `1/2`
 - [x] Lean: equation `(7)`, phase half — the second-order expansion of `xi_sigma` with explicit error
-- [ ] Lean: the amplitude half of `(7)`, `A_sigma(x) = x^{-1/2} + O(c^{-1})`
+- [x] Lean: the amplitude half of `(7)` — `|A_sigma(x) - x^{-1/2}| <= 4 sigma²`, globally on the ray
 - [ ] Lean: the constant in the Bessel large-argument asymptotic (`p = q = 1/sqrt(pi)`)
 - [ ] Lean: equation `(8)`, the fixed-degree radial profile
 - [ ] Lean: equation `(10)`, the weak squared-profile law

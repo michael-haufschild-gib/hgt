@@ -12,7 +12,8 @@ separation inequality `(t-u)² ∑_{p ∈ P}(log p)²/p ≤ 2π²δ²` gives
 so once the weight is positive the two frequencies satisfy `|t - u| = O(δ / log N)`.
 
 Every constant is explicit and the input is Mertens-level: no prime number theorem, no zero-free
-region.  What is still missing is any lower bound on `δ` itself.
+region.  A lower bound on `δ` itself is where the analysis enters; for the Möbius function
+`MoebiusUniformFrequency.lean` proves one, uniformly over a frequency range.
 -/
 
 namespace RHTower.Sieve

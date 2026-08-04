@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.BesselOrderIntensity
 import GaloisForLFunctions.HTGeometry.AnalyticJetFieldBridge
 import GaloisForLFunctions.HTGeometry.MeromorphicFieldRealization
+import GaloisForLFunctions.HTGeometry.AnalyticMeroPolynomialEval
 import GaloisForLFunctions.HTGeometry.TranslationStableDifferentialAlgebraicity
 import GaloisForLFunctions.HTGeometry.DifferentialAlgebraicFiniteTransitivity
 
@@ -25,13 +26,6 @@ theorem addTranslationMeroEquiv_analyticMeroElement
         (analyticOnNhd_comp_addTranslation hf q) := by
   rw [analyticMeroElement, addTranslationMeroEquiv_algebraMap, analyticMeroElement]
   congr 1
-
-theorem analyticMeroElement_congr
-    {f g : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f (Set.univ : Set ℂ))
-    (hg : AnalyticOnNhd ℂ g (Set.univ : Set ℂ)) (hfg : f = g) :
-    analyticMeroElement f hf = analyticMeroElement g hg := by
-  subst g
-  rfl
 
 def modifiedBesselKOrderMero (s : ℝ) (hs : 0 < s) :
     meroField (Set.univ : Set ℂ) :=

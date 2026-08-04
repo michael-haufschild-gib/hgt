@@ -20,8 +20,9 @@ phase-connection defect, and arbitrary aperture-dependent positive Markov orient
 exactly when the original source scalar is nonnegative; universal completed feasibility is RH.
 Routes B, C2, D, F, G2, H, I, J, and K are retired as independent mechanisms. Route M is
 terminalized at an explicit source-faithful reader whose remaining flatness statement is exactly
-RH. The live independent routes are C1, D2, E, G, L, N, O, P, Q, and R, with S retained as an
-upstream algebraic/dynamical program.
+RH. The live independent routes are C1, D2, E, G, L, N, O, P, Q, and R. A separate unlettered
+CCM four-unit source-codiagonal lane is also live; it is neither Route A nor the C1 class-space
+branch. Route S is retained as an upstream algebraic/dynamical program.
 
 Source formation is substantially complete. Wold activation gives `ζ(s)/ζ(s+h)` and first
 normal jet `-ζ'/ζ`; its squarefree diagonal disintegrates into Bernoulli occupancy and geometric
@@ -39,8 +40,11 @@ family in `ω(n)` is Möbius-parity blind. The formal sieve layer supplies inter
 Selberg bounds, explicit Mertens prime-sum estimates, Hardy--Ramanujan tail machinery, and
 large-sieve/Farey infrastructure. It now also gives a sharp dyadic reciprocal-prime window bound
 and an absolute uniform bound for `∑_{p>z}p^{-(1+1/log z)}` over every finite truncation. None
-supplies critical low-frequency Möbius cancellation,
-central normal-breadth seam control, exceptional Carleson control, or co-moving signed flux.
+supplies the source-predeclared physical adjacency now required at the central normal-breadth
+face. The immediate open object is an explicit relation `R_X` on squarefree ordinary integers,
+fixed independently of partial-sum imbalance, together with one joint interval-Hall and
+co-moving-cutoff flux theorem for that relation. Exceptional Carleson is a specialization of this
+full interval expansion, not a separate open mechanism.
 
 Route J closes negatively as an independent Julia-energy mechanism. Uniform unrenormalized
 coherent energy is impossible, bounded polarizations have insufficient capacity, post hoc
@@ -59,11 +63,14 @@ polarization. Finite Tate shifts realize it as `(1-χ_s(n))β_m`; reflection giv
 that coefficient exactly. Meyer and Calderón--Witt comparisons prove non-erasure, not vanishing.
 The completed Xi Green operator and nonzero primitive, coefficient-faithful Green-to-
 Calderón--Witt incidence, ordinary-integer BV boundary, actual Burnol/Deninger conormal, and strict
-resolved Route-R chain provenance are constructed. The open core is no longer “construct some
-chain map.” It is a source-derived singular comparison identifying resolved boundary flatness with
-the existing coefficient-faithful scalar Burnol/Deninger physical landing before divisor
-specialization, while retaining multiplicity and ordinary-prime provenance and without assuming
-the RH-bearing coefficient `K_n(s)` vanishes.
+resolved Route-R chain provenance are constructed. A literal rational-adelic degree-one cyclic
+source now also maps before divisor specialization to the ordered physical two-leg landing; its
+ordinary-prime cycle has trace one, multiplicity remains filtered, and the physical paracyclic
+defect has exact residue `(delta_n(rho)-1)c_rho`. The open core is therefore no longer “construct
+some chain map” or even “construct a pre-divisor physical comparison.” It is the source theorem
+making this measured physical defect null-homologous in the literal arithmetic cyclic complex—or
+equivalently the singular boundary side of the strict Green--BV comparison whose fixed physical
+reader kills target boundaries—without erasing the prime detector or assuming `K_n(s)=0`.
 
 Route R's source, joint-depth Hilbert/Krein carrier, Gamma completion, and regular and singular
 source-to-Xi landings are closed. Positive or nonnegative Gamma shorting cannot annihilate an
@@ -90,13 +97,17 @@ essential-edge sectors throughout the full critical strip. Ordinary Cartier exac
 determinant-one reflection balance, indefinite Stokes conservation, transported positivity, and
 bare associated-grade preservation are all constructed and explicitly nonselective.
 
-CCM now supplies two distinct advances. Its exact closed nonunital strong cyclic quotient,
+CCM now supplies three distinct advances. Its exact closed nonunital strong cyclic quotient,
 descended Lefschetz action, Real structure, Clifford transgression, and nonzero Haar--Mellin
 separator give a concrete class-space branch of Route C1. The untwisted Lefschetz operator is
 Real-even and cannot equal the required anti-Real orientation character; multiplication by `i` is
 the canonical surviving anti-Real transgression. Separately, the rational-adelic prime-isotropy
-mapping cone feeds Route R as above. Neither result proves the missing Weil trace-pairing
-positivity or the singular Cartier comparison.
+mapping cone feeds Route R as above. Third, the squarefree Fisher lower cutoff corner has exact
+critical energy four, the critical source escapes every fixed compact synthesis, and every
+internal Xi jet has a source-defined square-summable physical horizon. This leaves one precise
+prelimit, cofinal, noncompact Gamma/Sonin/Hodge incidence problem to the continued Xi Ward column.
+None of these results proves the missing Weil trace-pairing positivity, singular Cartier
+comparison, or Ward incidence.
 
 Route O has moved past seed construction at paper level. The literal radial prolate equation has
 an exact Liouville normal form in which aperture dependence cancels from the comparison defect,
@@ -132,13 +143,19 @@ The shortest current chains are:
   carrying the retained rational-adelic prime-isotropy boundary from the positive resolved frame
   to the fixed same-fibre physical Xi conormal; transported positivity, Stokes flatness, strict
   resolved chain provenance, and the source-pure norm-conservative selection theorem already hold;
-- Route L: construct the singular source-to-physical specialization square identifying the
-  already-built resolved boundary with the existing Burnol/Deninger landing before divisor
-  specialization;
-- Route E: prove critical low-frequency Möbius cancellation and co-moving central-breadth flux
-  after the formal sieve, Hall-capacity, and off-normal-tail gates;
-- Route C1: either construct the singular Hedenmalm boundary form or construct and identify the
-  positive bivariant/intersection trace pairing on the exact closed CCM quotient;
+- Route L: prove source-null-homology of the now explicitly measured physical paracyclic defect,
+  equivalently construct the singular boundary side of the Green--BV square so the existing
+  Burnol/Deninger reader annihilates it without erasing the ordinary-prime detector;
+- Route E: define an explicit source-predeclared physical relation `R_X` on the squarefree central
+  normal Wold face, then prove its joint interval-Hall expansion and co-moving zero/one-large-prime
+  cutoff flux at square-root scale;
+- Route C1: either construct the singular Hedenmalm common-domain/boundary transgression that
+  realizes the already identified source Weil form faithfully without assuming its sign, or
+  construct and identify the positive bivariant/intersection trace pairing on the exact closed
+  CCM quotient;
+- CCM four-unit lane: construct the finite-parameter, cofinal noncompact incidence carrying the
+  joined one-sided Fisher corner and admitted all-jet horizon to the continued Xi Ward column
+  without increasing its exact four-unit energy;
 - Routes D2, G, N, O, P, and Q: supply their stated high-frequency, meromorphic producer,
   prime-normal, whole-ground profile-exhaustion, compact moment, or saturation theorem. Route O's
   complete exterior seed law is provisionally closed on paper; its concrete PSWF realization is
@@ -185,11 +202,12 @@ marked explicitly; all others remain live at their stated open core.
 |---|---|---|
 | A | terminalized coordinate | none below its RH-equivalent source sign |
 | B | retired | no independent premise; fixed-width scalar mechanism is closed |
-| C1 | open; Hedenmalm and exact CCM class-space branches | singular source-defined Hedenmalm positivity, or positive bivariant/intersection trace pairing on the exact closed CCM quotient identified with the Weil pairing |
+| C1 | open; Hedenmalm and exact CCM class-space branches | Hedenmalm: a source-derived singular common-domain/boundary transgression making the already identified Weil form into a faithful boundary graph without assuming its RH-equivalent sign; CCM: a positive bivariant/intersection trace pairing on the exact closed quotient identified with the Weil pairing |
+| CCM-FU | open; unlettered four-unit source-codiagonal lane | prelimit cofinal noncompact incidence from the joined lower Fisher corner and physical all-jet horizon to the continued Xi Ward column, preserving the four-unit energy |
 | C2 | retired | no live source premise inside the saturated detector |
 | D | retired | any global signed prime--Gamma boundary is a new route |
 | D2 | open | one finite literal-source upper ceiling, or the stronger source sign, on the positive high-frequency prime--Gamma tail |
-| E | open | central normal-breadth, low-frequency Möbius cancellation and co-moving flux |
+| E | open | explicit physical relation `R_X` on squarefree central normal breadth, then `SOURCE-POINTED-BIFILTERED-CENTRAL-HALL`: normalized load/co-degree, full interval Hall expansion, co-moving friable/one-large-prime flux, and square-root Gibbs cost for that fixed relation |
 | F | retired | order-one/pre-Gamma successor is a new route |
 | G | open | source-selected pole-compatible two-angle meromorphic limit and Xi identification |
 | G2 | retired | required analytic germ is already RH-equivalent |
@@ -197,12 +215,12 @@ marked explicitly; all others remain live at their stated open core.
 | I | retired | exact collision with Route C2 width |
 | J | retired | unrenormalized and residual Julia-capacity mechanisms are closed; successor changes primitive |
 | K | retired | all-order continuation is Route P |
-| L | open | singular source-to-physical specialization identifying resolved boundary flatness with the coefficient-faithful Burnol/Deninger landing before divisor specialization (`XI_BV_GREEN_STOKES_STRICT_DESCENT`) |
+| L | open | source-null-homology of the measured physical paracyclic defect, equivalently the singular boundary compatibility in `XI_BV_GREEN_STOKES_STRICT_DESCENT`; pre-divisor physical comparison, residue, and strict resolved provenance are already constructed |
 | M | terminalized coordinate | anchored cofinal flatness is exactly RH |
 | N | open | uniform source-domain prime-normal sub-log-square bound |
 | O | open | source-derived low-energy profile exhaustion/reduced-resolvent control of the entire restricted-Weil ground space; then orient the surviving boundary channel or prove the true floor nonnegative |
 | P | open | source-built unique compact completed-seam Thorin/Markov carrier after coupled pole--zeta--Gamma completion |
-| Q | open/secondary | all-degree control of the source-selected theta carrier or direct Cassini--Jensen boundary saturation; its fixed-Markov branch is Route P |
+| Q | open/secondary | decide the forced source ratio `m_2<m_1/81` for the unique selected `alpha_*>4` carrier, then all-degree control if it survives, or prove direct Cassini--Jensen boundary saturation; its fixed-Markov branch is Route P |
 | R | open; positive resolved polarization, source Stokes regulator with period one, retained rational-adelic prime-isotropy class with strict resolved-Xi chain map, asymptotic/associated-grade blindness, and fixed-Hilbert Fisher-completion no-go constructed | graded variable-ideal, coefficient-faithful source-pointed singular Cartier comparison carrying resolved boundary flatness to the scalar physical fibre on the actual Xi conormal |
 | S | upstream/secondary | independent source algebraicity or divisor-preserving dynamics |
 
@@ -217,6 +235,7 @@ zero-fed spectra, or determinant limits:
 | pre-projection principal-relative current | Route-J energy divergence, diagonal-retention, and endpoint-completeness theorems exclude every advertised post-projection capacity repair | positive survivor of retired J; a new route if constructed |
 | nonseparable prime/depth--divisor arithmetic differential | `θ(i,j)=m_iλ_j-m_jλ_i` has exact curvature `-log(2)/8`, no vertex potential, and no clock-difference representation; crossed BV/clock occupation legs produce an independent equal-grade graded-`det2` counterboundary; resolved frames carry a positive definite parallel Hermitian metric; its fixed-source excess is the exact square `a²θ(i,j)²|c|²/(λ_i²λ_j²)` | constructed Route R corrected square, positive resolved Stokes polarization, and sharp fixed-Cartier descent obstruction; source rigidity of the two metrics remains open |
 | source-first chain descent rather than post hoc cohomology | the ordinary Wold/BV Hochschild boundary exists, but physical landing reads exactly the nonzero Burnol/Deninger radial defect | live Route L open core |
+| prelimit noncompact one-corner incidence | the lower Fisher cutoff corner carries exactly four critical energy units, the critical channel converges weakly but not strongly, every fixed compact synthesis kills it, and every internal Xi jet has a physical `ell2` horizon | live unlettered CCM-FU lane; construct the moving Gamma/Sonin/Hodge incidence and identify its Ward column |
 | exact closed CCM class-space quotient with Real/Clifford structure | the literal nonunital strong cyclic target, closed restriction quotient, descended invertible Lefschetz action, even Real structure, nonzero Haar--Mellin separator, exact Real-parity no-go, and canonical anti-Real `iL` survivor are constructed | concrete C1-CCM carrier; bivariant/intersection pairing, Hodge sign, and Weil-form identification remain open |
 | moving, all-order, provenance-preserving carrier | finite Möbius/Wold moments are parity-blind and fixed finite selectors are saturated | live Routes E and P at distinct source laws |
 | source algebraicity or divisor-preserving dynamics | HTGeometry supplies independent rigidity and transversality but no Xi-source handoff | upstream Route S; not yet a proof route |
@@ -330,6 +349,71 @@ route, not an unfinished Route-A connector.
 advertised positive-factorization predecessors are formally falsified, identity-rigid, or exactly
 target-equivalent. Strongest survivor is explicit phase-connection defect plus canonical
 barycentric certificate after source sign is known.
+
+### CCM-FU — four-unit source-codiagonal incidence `[OPEN — UNLETTERED LIVE LANE]`
+
+This lane is not Route A. It does not orient the published scalar first clock by a positive
+transport. It begins before scalarization with the squarefree self-adjoint Fisher connection and
+one directed cutoff corner
+
+```text
+L_(sigma,u)=(1-Q_(sigma,u)) F_sigma Q_(sigma,u).
+```
+
+**Endpoint.** A source-defined completed incidence carrying this corner to the continued Xi Ward
+column `r_P` without increasing Hilbert--Schmidt energy produces
+
+```text
+4 G_P-r_P r_P^* >= 0,
+```
+
+and the existing Ward completeness theorem then proves RH.
+
+**Lean-proved moving parts.** The two-sided cutoff commutator splits exactly into its two directed
+corners, so the lower-corner energy is half the total. At the critical limit,
+
+```text
+E_lower(u)=E_W(u)/2,
+0 <= E_lower(u) <= 4(1-exp(-u)),
+E_lower(u)/u -> 4,
+integral_0^infinity E_lower(u) du=4.
+```
+
+The corner is a genuine joined sum of the Fisher-tangent and moving-base rank-one terms; neither
+may be scalarized before completion. Independently, the normalized critical Möbius channel tends
+weakly to zero but not strongly, and every fixed compact synthesis sends it to zero in norm.
+Therefore no fixed compact critical operator can be the incidence. Finally, every internal Xi jet
+has a literal physical coface horizon `Delta_k(j)` with summable norms and square norms, whose
+`ell2(N;L2)` sum is the theta jet source and whose Fourier transform is `XiC^(k)`. Countable
+source admission and multiplicity retention are closed.
+
+**Exact open core.** Construct at finite `sigma>1` a source-defined moving family `C_sigma` such
+that
+
+```text
+sup_sigma ||C_sigma|| <= 1,
+LaplaceColumn(C_sigma L_sigma)(w) -> r_P(w),
+integral ||C_sigma L_sigma(u)||^2 du
+  <= integral ||L_sigma(u)||_HS^2 du.
+```
+
+The family must be cofinal and noncompact in the escaping divisor coordinate, transport the
+admitted all-jet horizon through polarized Gamma/co-Poisson/Hodge descent to the resolved Green
+antidiagonal, and identify its boundary column with `continuedXiAntiCausalWardResponse`. Exact
+four-unit saturation forces isometry on the complete critical coarea field, leaving no positive
+measure of causal, polar, or denominator-model-space remainder. This equality case is the first
+hostile test.
+
+**Dead subclasses.** A fixed compact synthesis; a fixed critical source vector; one-sided scalar
+factorization followed by completion; adding an orthogonal four-unit copy; homogeneous tensor or
+power amplification; first-order Pick positivity; and post-divisor model-space projection. These
+either annihilate the escaping source or leave the Ward column zero.
+
+Formal anchors: `MobiusCriticalFisherLowerBoundaryBudget.lean`,
+`MobiusChannelCriticalMassEscape.lean`,
+`FisherOneCornerCoareaTransform.lean`,
+`MobiusThetaInternalJetPhysicalHorizonAdmission.lean`, and the endpoint Ward Gram modules. The
+authoritative attack ledger is `ccm-four-unit-source-codiagonal-attack.md`, Sections C48--C51.
 
 ### Route B — fixed-width rectangular Weil floor [RETIRED]
 
@@ -451,14 +535,33 @@ discontinuous boundary form constructed before divisor enumeration, is outside t
 faithfulness/conservativity is RH-bearing, but that makes it the hard open construction rather than
 a reason to erase it.
 
-**Hedenmalm-branch open core.** Construct a positive singular boundary form on a source-defined completion of
-Burnol's critical Sonine/co-Poisson carrier such that the completed common source is null, every
-first divided-zero vector has positive norm, the second divided level is retained, and centered
-coordinate multiplication is symmetric and graph-closed on those levels. The construction must
-precede Xi-divisor enumeration and cannot extend to a nonzero closable ordinary-`L²` Hilbert-Gram
-map on the full Schwartz source core. This survivor is owned here, not by Route N: Route N asks for
-a uniform prime-normal energy estimate on a closed theta Grushin domain and does not supply this
-boundary form, divided-family faithfulness, or coordinate symmetry.
+**Hedenmalm-branch frontier correction.** The canonical source form is no longer unknown. The
+polarized Weil distribution defines an unconditional source-side sesquilinear form on the theta
+quotient, kills the common source, and makes the Hedenmalm differential pair formally symmetric.
+Its nonnegativity is exactly Weil's RH criterion, so declaring this form positive is an endpoint,
+not a producer.
+
+The remaining producer is a source-derived singular boundary realization of that form. It must
+retain every first divided-zero vector and the second divided level, make centered coordinate
+multiplication graph-closed, and derive faithfulness and boundary sign before divisor
+enumeration. Three proved refinements constrain the object:
+
+1. reflection folding reduces the inhomogeneous pencil to one rank-one affine Dirac source defect;
+   any positive dilation must be infinite or relation-valued and have the **unsquared**
+   Euler--Poisson--Gamma transfer as Weyl function;
+2. the flat theta tail already has a fixed positive self-adjoint Borel generator, but the reflected
+   holonomies are simultaneously bounded only if the ordinary-integer source supplies one common
+   boundary domain compatible with the Burnol--Sonin aperture maps
+   (`THETA_BOREL_REFLECTED_COMMON_DOMAIN`); and
+3. every nonzero full-source ordinary-`L²` Hilbert-Gram realization is nonclosable, so neither a
+   regular positive density nor an abstract de Branges extension can provide the missing domain.
+
+Equivalently, the active Burnol formulation asks for one critical-aperture source trace producing
+a boundary-null graph whose radical contains the common source but no first divided vector. The
+construction must precede Xi-divisor enumeration and cannot extend to a nonzero closable
+ordinary-`L²` map on the full Schwartz core. This survivor is owned here, not by Route N: Route N
+asks for a uniform prime-normal energy estimate on a closed theta Grushin domain and supplies none
+of this boundary transgression, divided-family faithfulness, or common-domain compatibility.
 
 **CCM-branch open core.** Construct on the exact closed nonunital strong cyclic quotient a
 source-selected bivariant or intersection trace pairing compatible with the Real/Clifford
@@ -470,7 +573,9 @@ more quotient topology, Lefschetz functoriality, or parity packaging alone does 
 singular real-Xi-divisor Fourier rigging. Its eigenprofile samples are
 `c_gamma |Xi'(gamma)|²`; off-real profiles lie in its radical. This classification,
 dense-nonclosed-radical law, and arbitrary-target closed-graph no-go are unconditional and
-formalized. They force the open construction into the singular source-boundary category above.
+formalized. The source Weil polarization, folded rank-one defect, and positive Borel holonomy are
+also constructed. They force the open construction into the singular source-boundary category
+above; none proves the RH-equivalent sign or faithful common domain.
 
 **Lean surface.** `riemannHypothesis_iff_xiWeilPolarization_nonneg`,
 `universalPositiveForm_thetaNull_iff_canonicalMeasure_support_realDivisor`,
@@ -1039,10 +1144,10 @@ integer intervals.  A forward matching with radius
 \frac{U^{1/2+\eta}}{(\log U)^{0.45}}
 +\frac{|I|}{(\log U)^2}.
 \]
-Hence Route E's remaining capacity input is the explicit
-`MOBIUS-EXCEPTIONAL-CARLESON` bound with this right side, for both signs and in weighted
-sectorwise co-moving form.  Arbitrary-subset co-degree, global exception count, and row supply
-are no longer separate unknowns.
+This formerly isolated `MOBIUS-EXCEPTIONAL-CARLESON` bound is no longer an independent frontier.
+It is one required specialization of full interval Hall expansion for a fixed physical relation
+`R_X`. Arbitrary-subset co-degree, global exception count, and row supply do not define a producer
+until adjacency is fixed source-first.
 
 Global exceptional cardinality can imply this interval criterion only across a sharp phase
 boundary.  Padding has exponent \(1/2+\eta\), so it reaches a possible cluster of size
@@ -1058,11 +1163,11 @@ window \(B_j\), optimal complete-bipartite opposite-sign transport leaves exactl
 |d_j|,\qquad d_j=\sum_{n\in B_j}\mu(n),
 \]
 as proved by the existing complete-bipartite Lean theorems.  Fixed-accuracy almost-all input gives
-only \(\sum_{\rm ordinary}|d_j|\le\delta U\), a linear bound.  Cofactor tokens handle a genuine
-hard-window fallback but do not orient this ordinary defect current.  Route E therefore still
-requires both `MOBIUS-EXCEPTIONAL-CARLESON` and a strict-half Gibbs cancellation law for the
-signed \(d_j\) sequence, including its sectorwise co-moving flux.  Claiming that exceptional
-window count alone closes ordinary capacity is retired.
+only \(\sum_{\rm ordinary}|d_j|\le\delta U\), a linear bound. Cofactor tokens handle a genuine
+hard-window fallback but do not orient this ordinary defect current. Treating exceptional
+Carleson and ordinary strict-half cancellation as two independent inputs is retired: both must
+arise from one source-predeclared relation's interval-Hall and co-moving-flux theorem. Claiming
+that exceptional-window count alone closes ordinary capacity is also retired.
 
 The ordinary source is now compressed exactly rather than heuristically.  Replacing each Möbius
 atom in a block of width \(h\) by the block's left representative changes the dyadic Gibbs sum
@@ -1083,9 +1188,9 @@ arithmetic producer. `MobiusBlockDefectCompression.lean` and
 `MobiusBlockDefectEnergy.lean` formalize the finite reduction unconditionally.  Published
 almost-all results control increments \(d_j\), not this accumulated low-frequency energy; the
 two-phase countermodel has small increments and zero total but violates the energy law.
-The ordinary hard core remains zero/near-zero Möbius-mode suppression; the named
-`MOBIUS-CRITICAL-MESH-ENERGY` is one exact normalization of it, plus its co-moving sector flux,
-while exceptional fallback retains `MOBIUS-EXCEPTIONAL-CARLESON`.
+`MOBIUS-CRITICAL-MESH-ENERGY` is an exact RH-bearing Mertens mean-square restatement, not a source
+producer. The live hard core is construction of `R_X` and its physical expansion/flux theorem;
+the exceptional bound is a specialization of that same theorem.
 
 Co-moving flux now shares the same exact analytic coordinate.  Static rectangle
 sector-marginal conservation makes every extended sector current zero-total.  Discrete Abel
@@ -1163,11 +1268,12 @@ separate local supply from the missing global cancellation:
   parities.
 
 The first theorem closes Boolean collision normalization but leaves the physical Hall map and
-co-moving flux. The second closes the prime-anchor Hall gate but not positive-density composite
-cube capacity, exceptional Carleson control, or co-moving signed flux. The third removes every
-fixed off-normal breadth tail; the survivor is the exact normal-order seam. The fourth proves that
-no fixed finite collection of Wold-breadth moments can orient Möbius parity. Growing overlapping
-patches remain possible, but one global interpolation fails at adjacent seams.
+co-moving flux. The second closes the prime-anchor Hall gate. The third removes every fixed
+off-normal breadth tail; the survivor is the exact normal-order seam. The fourth proves that no
+fixed finite collection of Wold-breadth moments can orient Möbius parity. The formalized patch-seam
+theorem further proves that internal polynomial seams telescope as an exact coboundary. Growing
+overlapping patches remain possible; their remaining issue is physical ordinary-integer
+adjacency, not scalar seam gluing.
 
 The formal `RHTower/Sieve` layer supplies interval-multiple counts, truncated Möbius and
 Bonferroni inequalities, Brun/Selberg coprime upper bounds, explicit Mertens first and second
@@ -1181,9 +1287,8 @@ counting and energy inputs. The finite localization bridge is also exact: an arb
 kernel pairs termwise with a finite Dirichlet polynomial, the symmetric phase integral is
 `2 sin(TL)/L` away from `L=0` and `2T` at zero, and its norm is bounded by both `2T` and
 `2/|L|`. Thus the corpus can isolate finite logarithmic-frequency packets without a convergence
-assumption. This bridge remains unsigned and finite; it does **not** estimate the Mertens function
-at critical strength, suppress the zero or near-zero Möbius frequency, prove exceptional Carleson
-control, or construct the co-moving central-breadth flux.
+assumption. This bridge remains unsigned and finite; it does **not** define the physical relation
+`R_X`, prove full interval Hall expansion for it, or construct the co-moving central-breadth flux.
 
 **Endpoints.**
 
@@ -1257,14 +1362,25 @@ orders, are equivalent to RH. Its unconditional moment-to-point inequality conve
 `L^q` control into a bound for `M(N)`, but supplies no Möbius local-moment estimate. It is
 therefore an upstream Route E connector, not a new source producer, and is not formalized.
 
-**Open core.** Prove cofinal upper bounded returns of the actual upper-signed Möbius
-Gamma–Hankel covariance, or an equivalent critical low-frequency Möbius estimate, from a
-genuinely nonlocal all-prime law acting before finite-aperture stabilization. In the Wold
-coordinate this means controlling the exact normal-order breadth seam and its co-moving signed
-flux after the now-closed off-normal tails and prime-anchor Hall capacity. In the Gibbs coordinate
-it is the zero-versus-one-large-prime comparison. Existing sieve counts, finite Euler data, local
-positivity, aperture selection, fixed moment families, and smoothing do not supply this theorem.
-Through the proved consumer, the missing estimate proves RH.
+**Open core.** First define, independently of every observed Möbius partial-sum imbalance, one
+explicit source-predeclared physical relation `R_X` on squarefree integers in the central normal
+Wold sector `omega(n)=(1+o(1)) log log X`. Then prove at `H=X^(1/2+o(1))`, simultaneously:
+
+1. normalized row load and physical incoming co-degree at most one;
+2. interval Hall expansion for every subinterval using distinct opposite-parity integers, not
+   incidence labels;
+3. crossing of the moving zero/one-large-prime cutoff with friable charge `-1` transported against
+   one-large-prime charge `+1`; and
+4. total mixed-difference Gibbs cost `X^(1/2+o(1))`.
+
+This is `SOURCE-POINTED-BIFILTERED-CENTRAL-HALL`. Its current card is not fully frozen because
+`R_X` has no formula: “construct from factorization/additive/co-Poisson data” is only an
+admissibility condition. Existential Hall transport risks collapsing to complete-bipartite flow,
+whose defect is exactly the original Möbius imbalance. On literal squarefree hard support
+`M(n)=max_p v_p(n)=1`, so paired `(omega,M)` retention is provenance, not a second hard arithmetic
+axis; positive valuation depth is already inside the permitted tail. Existing sieve counts,
+finite Euler data, local positivity, aperture selection, fixed moment families, patch seams, and
+smoothing do not define or prove this theorem. Through the proved consumer, it closes Route E.
 
 **Killed mechanisms.**
 
@@ -2033,6 +2149,31 @@ Hence the first nonlinear Suzuki wall is no longer an opaque target minor:
 AC-B^2>=0 iff Q_Xi<=H_Xi.                                (G.2c)
 ```
 
+The source side of this wall is now closed up to one sharp inequality. Lean proves boundary
+integrability of every polynomially weighted unit-tilted theta moment, identifies the Xi jets with
+the literal probability law proportional to
+
+```text
+exp(x) thetaCuspFullSource(x) dx,
+```
+
+and, writing its mean, variance, and third cumulant as `mu`, `v`, and `kappa_3`, proves
+
+```text
+8(AC-B^2)=mu*kappa_3+(mu-v)(mu+2v),
+AC-B^2>=0
+  iff -mu*kappa_3 <= (mu-v)(mu+2v).                       (G.2d)
+```
+
+It also proves `mu>0`, `v>0`, `kappa_3<0`, `v<mu`, and strict positive definiteness of every
+finite raw-moment Hankel block of this full-support endpoint law. Thus boundary completion,
+moment identification, and the sign chamber are no longer open. The sole source inequality at
+this subgate is the theta-specific skewness budget in `(G.2d)`. Generic Hankel positivity does not
+imply it because the safe minor is a nonlinear combination of cumulants rather than a raw moment
+minor. Even proving it would close only this necessary safe wall, not the cofinal two-angle
+producer, source selection, or Xi identification. Formal anchor:
+`SuzukiSafeBoundaryThetaCumulantWall.lean`.
+
 Every genuinely off-line atom pays strictly positive transverse charge; only cross-orbit shifted
 response dispersion can cancel it. This is not a proof of `(G.2c)`: neither sector positivity nor
 positivity of all individual low powers controls that competition. It is the sharp target
@@ -2315,6 +2456,9 @@ relative-tilt window `0<g<=1`; reciprocal-radial concavity calibration; the exac
 safe-shift response-dispersion/transverse-charge cancellation with RH-exact charge radical; the
 strict centered-response law and exact safe-shift charge cap
 `Q_Xi<116/7,968,750,000`;
+the literal safe-boundary theta law with all finite raw Hankel blocks positive definite, exact
+mean/variance/third-cumulant identification, sign chamber `mu>v>0>kappa_3`, and reduction of the
+safe minor to one sharp theta skewness budget;
 the exact positive exponential spectral-response countermodel; infinite-rank archimedean
 parity-Hankel carrier on
 every aperture, sharpened to finite-Gram signature `(positive index <=1, negative index=infinity)`;
@@ -4218,15 +4362,20 @@ baseline nonnegativity.
   law;
 - the boundary germ has unique analytic continuation through the zero-free Cassini tube to the
   centered seam;
-- there is a unique source-selected exponent `alpha_* > 1` whose compact calibrated reciprocal
-  pushforward matches normalized degrees zero and one exactly and is supported in `(0,1/3)`;
+- there is a unique source-selected exponent `alpha_* > 4` whose compact calibrated reciprocal
+  pushforward matches normalized degrees zero and one exactly and is supported in `(0,1/81)`;
+- every adjacent moment of that selected carrier contracts strictly by the factor `1/81`; in
+  particular, exact degree-two matching would force
+  `normalizedPrimeArchMoment 2 < (1/81) normalizedPrimeArchMoment 1`;
 - a fixed compact Markov identity at the boundary is equivalent to Route P's centered Markov germ
   and hence to RH.
 
 **Independent Q open core.**
 
-1. prove analytically, without numerical computation, the degree-two comparison for the selected
-   `alpha_*`; if it survives, establish all-degree moment matching/positivity by a genuine closure
+1. prove analytically, without numerical computation, whether the literal source moments satisfy
+   the forced degree-two contraction
+   `normalizedPrimeArchMoment 2 < (1/81) normalizedPrimeArchMoment 1`; failure retires the selected
+   power-reciprocal carrier, while success still requires all-degree matching by a genuine closure
    theorem; or
 2. prove the Cassini--Jensen/jet saturation inequality directly from the theta source.
 
@@ -4238,8 +4387,9 @@ is Route P's carrier problem rather than an independent Q endpoint.
 the global linear Markov response: analytic transport exposes the wrong total mass. Its calibrated
 `alpha=1` version fails already at degree one by an explicit positive gap. One-particle infinite
 divisibility fails by atomic support, and positivity of every moving carrier/Hankel block does not
-remove aperture dependence. The unique `alpha_*>1` two-moment carrier is the strongest literal
-positive survivor; degree two is its next falsification gate. A two-particle infinitely-divisible
+remove aperture dependence. The unique `alpha_*>4` two-moment carrier, its `(0,1/81)` support, and
+its strict adjacent-moment contraction are the strongest literal positive survivor; the source
+degree-two ratio is its next falsification gate. A two-particle infinitely-divisible
 completion also survives algebraically but has no source-transform identification.
 
 ### Route R — primitive-current singular continuation `[OPEN — STRICT RESOLVED SOURCE CHAIN AND POSITIVE FRAME BUILT; SINGULAR CARTIER COMPARISON OPEN]`
@@ -5149,9 +5299,10 @@ equivalent wrapper around one of them does not advance source acquisition.
    completed Green `tensor BV` into the resolved target with `F_0` exactly the existing
    Burnol/Deninger physical landing, boundary-blind physical reader, and retained multiplicity/
    prime provenance, without assuming its radial coefficient vanishes.
-4. **Route E central-breadth Möbius cancellation.** Control the zero/near-zero Möbius frequency
-   and co-moving signed flux on the exact normal Wold seam after the proved sieve,
-   off-normal-tail, coprime-pair, and prime-anchor Hall inputs.
+4. **Route E source-pointed physical Hall relation.** Give an exact source-predeclared formula for
+   `R_X` on the squarefree central normal Wold face, then prove normalized load/co-degree, full
+   interval Hall expansion, co-moving friable/one-large-prime flux, and square-root Gibbs cost for
+   that fixed relation.
 5. **Route C1 singular Xi--Weil boundary.** Either extend positivity from the regular full-source
    subroute to the actual singular Hedenmalm relation/domain, or construct the bivariant/
    intersection trace pairing on the exact closed CCM quotient, prove its Hodge sign, and identify
@@ -5335,7 +5486,7 @@ The cited primary sources close no Tier-1 or Tier-2 open core above.
    obstruction;
 4. post-J pre-projection principal-relative current as a separately owned route, unless its exact
    construction is the existing Route-R source;
-5. Route E central normal-breadth Möbius cancellation and co-moving seam flux;
+5. Route E explicit central physical relation and its joint interval-Hall/co-moving-flux theorem;
 6. Hedenmalm singular completion or prime-normal domain theorem;
 7. corrected pole-compatible two-angle Suzuki source-selected full jump kernel;
 8. a literal prime--archimedean high-frequency ceiling.
@@ -5406,9 +5557,10 @@ The first unresolved theorem is therefore route-dependent but consistently pre-s
   Burnol/Deninger comparison, and coefficient-faithful landing exist; the missing square must
   identify resolved boundary flatness with that fixed physical landing before divisor
   specialization, where failure is exactly the RH-bearing radial coefficient.
-- Route E needs critical low-frequency Möbius cancellation on the central normal-breadth seam.
-  Sieve counts, coprime opposite-sign supply, prime-anchor Hall capacity, and off-normal tail
-  control do not orient that seam.
+- Route E needs an exact source-predeclared physical relation `R_X`, then its joint central
+  interval-Hall/co-moving-cutoff theorem. Sieve counts, coprime opposite-sign supply, prime-anchor
+  capacity, off-normal tails, finite moments, and telescoping polynomial seams do not define that
+  adjacency or orient the squarefree breadth face.
 - Route C1 now has an exact nonzero closed CCM class-space recipient with descended Lefschetz and
   Real/Clifford structure. It still needs either the singular Hedenmalm form or the CCM
   bivariant/intersection trace pairing, Hodge sign, and Weil identification.
@@ -5431,8 +5583,8 @@ sieve, Hedenmalm, Suzuki, Möbius-moment, and Deninger/Connes infrastructure. Wh
 both unconditional and useful, the corpus has formalized or scheduled its precise reusable
 content. No located primary source supplies Route R's singular Cartier comparison, C1-CCM's
 positive bivariant/intersection pairing on the exact recipient, the post-J pre-projection current,
-Route L's singular resolved-to-physical Burnol/Deninger specialization, Route E's critical Möbius
-cancellation, or another live route's first open premise.
+Route L's singular resolved-to-physical Burnol/Deninger specialization, Route E's explicit
+physical `R_X` and central-Hall/co-moving-flux theorem, or another live route's first open premise.
 
 The disproof map is equally closed at the connector level: one certified off-line Xi zero or an
 equivalent finite negative witness suffices, but none is present. Growing-order squared-Xi radial

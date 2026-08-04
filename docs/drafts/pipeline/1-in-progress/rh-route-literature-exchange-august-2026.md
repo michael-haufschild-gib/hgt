@@ -192,7 +192,10 @@ source-specific boundaries not found as one external package:
 - reciprocal prime markers give `≫H/log X` physical prime-anchor Hall targets of each sign;
 - growing markers transport every fixed deviation from normal Wold breadth with explicit
   exponential tail rate;
-- every fixed finite polynomial moment family in `ω(n)` is blind to Möbius parity.
+- every fixed finite polynomial moment family in `ω(n)` is blind to Möbius parity;
+- adjacent central Wold polynomial patch seams telescope as an exact coboundary; and
+- the canonical depth-zero all-prime source has a free infinite prime-clock orbit modulo finite
+  Euler support, excluding every finite differential-algebraic Euler construction.
 
 The formal `RHTower/Sieve` layer further contains unconditional interval Bonferroni and
 Brun/Selberg bounds, explicit Mertens prime-sum estimates, smooth/rough and
@@ -201,9 +204,9 @@ Montgomery omitted-class inequality, and Dirichlet mean-value/Gallagher/large-va
 estimates. The Dirichlet row-sum branch explicitly retains its logarithmic loss and does not claim
 the sharp Montgomery--Vaughan form. Exact finite kernel pairing and the symmetric Dirichlet-kernel
 formula now supply the classical localization bridge, including the bounds `2T` and `2/|L|`.
-These results close local counting, off-normal breadth, finite-frequency localization, and
-prime-anchor capacity gates. They do not estimate the Mertens function at critical strength or
-control the central co-moving signed seam.
+These results close local counting, positive valuation depth, off-normal breadth,
+finite-frequency localization, prime-anchor capacity, and scalar patch-seam gates. They do not
+define the source-predeclared physical ordinary-integer adjacency required at central breadth.
 
 **External contribution.** Liflandsky's
 [discrete Möbius--Laplace criterion](https://arxiv.org/abs/2607.09797) proves that a half-power
@@ -213,15 +216,18 @@ local moments for every finite order, or an unbounded admissible order set, and 
 unconditional moment-to-point inequality; it proves no local-moment estimate. Matomäki--Radziwiłł
 short-interval theory, Matomäki--Teräväinen correlation results, Menon's identity, Shiu-type
 bounds, and classical sieve/Hardy--Ramanujan estimates supply counting and almost-all control.
-No located theorem gives the required every-scale zero/near-zero Möbius frequency suppression,
-exceptional Carleson control, or co-moving central-breadth flux.
+No located theorem defines or proves the required fixed physical relation's every-interval Hall
+expansion and co-moving zero/one-large-prime flux at square-root scale. Exceptional Carleson is a
+specialization of that theorem, not a separate external premise.
 
-**Exchange verdict and Lean action.** The reusable unconditional sieve/counting content is already
-represented at the level needed by the current local gates. Further generic sieve imports should
-be selected only when they discharge a named composite-cube or exceptional-set premise. No
-external theorem currently advances `OPEN-SOURCE-001`; no new formalization is selected merely
-to add another RH-equivalent Möbius criterion. Route E remains open at critical signed
-cancellation on the exact normal Wold seam.
+**Exchange verdict and Lean action.** Reusable unconditional sieve/counting content is already
+represented at the level needed by current local gates. Immediate frontier is mathematical
+formation, not Lean: give an exact source-predeclared formula for a physical relation `R_X` on
+squarefree integers with `omega(n)=(1+o(1)) log log X`, independently of observed imbalance. Then
+prove normalized row/co-degree, every-interval Hall expansion, co-moving friable/one-large-prime
+flux, and square-root Gibbs cost for that fixed relation. The active conjecture is not fully frozen
+until adjacency is defined. No external theorem currently supplies this object or theorem; no new
+formalization is selected merely to add another RH-equivalent Möbius criterion.
 
 ### Route F — all-prime Sonin transfer [RETIRED]
 

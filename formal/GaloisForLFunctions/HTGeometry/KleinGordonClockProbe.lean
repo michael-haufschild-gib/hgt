@@ -89,7 +89,7 @@ theorem deriv_deriv_kgRealField_time_eq
       (hasDerivAt_kgFlowField hN a G₀ x r).deriv]
     rfl
   rw [hfirst]
-  exact (hasDerivAt_re (hasDerivAt_kgSynthesis_flowDensityDeriv a G₀ hN x t)).deriv
+  exact (hasDerivAt_reOfComplex (hasDerivAt_kgSynthesis_flowDensityDeriv a G₀ hN x t)).deriv
 
 theorem deriv_deriv_kgRealField_dir_eq
     (hN : (Module.finrank ℝ (EuclideanSpace ℝ (Fin d)) : ℝ) + 2 < N) (t : ℝ)
@@ -109,7 +109,7 @@ theorem deriv_deriv_kgRealField_dir_eq
     rw [deriv_re_eq (fun q => differentiableAt_kgFlowField_dir a G₀ hN t x v q) s,
       deriv_kgFlowField_dir_eq a G₀ hN t x v s]
   rw [hfirst]
-  have hsecond := hasDerivAt_re (hasDerivAt_kgSynthesis_dir_dir hmeas h1 h2 x v v 0)
+  have hsecond := hasDerivAt_reOfComplex (hasDerivAt_kgSynthesis_dir_dir hmeas h1 h2 x v v 0)
   rw [hsecond.deriv]
   congr 2
   rw [zero_smul, add_zero]

@@ -131,19 +131,19 @@ theorem minimalRank_ratioField_eq (G : IntermediateField F E) (hGclosed : Deriva
     hQmin.1 hQmin.2.1 hQmin.2.2.1 hPmin
 
 /-- Normalizing preserves the support. -/
-theorem support_C_mul_eq {K σ : Type*} [Field K] {c : K} (hc : c ≠ 0) (P : MvPolynomial σ K) :
+theorem mvPolynomial_support_C_mul_eq {K σ : Type*} [Field K] {c : K} (hc : c ≠ 0) (P : MvPolynomial σ K) :
     (MvPolynomial.C c * P).support = P.support := by
   classical
   ext m
   simp [MvPolynomial.coeff_C_mul, MvPolynomial.mem_support_iff, hc]
 
 /-- Normalizing preserves the total degree. -/
-theorem totalDegree_C_mul_eq {K σ : Type*} [Field K] {c : K} (hc : c ≠ 0)
+theorem mvPolynomial_totalDegree_C_mul_eq {K σ : Type*} [Field K] {c : K} (hc : c ≠ 0)
     (P : MvPolynomial σ K) : (MvPolynomial.C c * P).totalDegree = P.totalDegree := by
-  rw [MvPolynomial.totalDegree, MvPolynomial.totalDegree, support_C_mul_eq hc]
+  rw [MvPolynomial.totalDegree, MvPolynomial.totalDegree, mvPolynomial_support_C_mul_eq hc]
 
 /-- An injective coefficient map preserves the total degree. -/
-theorem totalDegree_map_eq {K L σ : Type*} [CommRing K] [CommRing L] {f : K →+* L}
+theorem mvPolynomial_totalDegree_map_eq {K L σ : Type*} [CommRing K] [CommRing L] {f : K →+* L}
     (hf : Function.Injective f) (P : MvPolynomial σ K) :
     (MvPolynomial.map f P).totalDegree = P.totalDegree := by
   rw [MvPolynomial.totalDegree, MvPolynomial.totalDegree,
@@ -241,11 +241,11 @@ theorem minimalTotalDegree_ratioField_eq (G : IntermediateField F E)
   have hdescTotal : (HTGeometry.descendCoefficients hle
       (MvPolynomial.C (P.coeff n)⁻¹ * P)
       (coeff_normalized_mem_differentialRatioField G P n)).totalDegree = P.totalDegree := by
-    have hmap := totalDegree_map_eq hinj (HTGeometry.descendCoefficients hle
+    have hmap := mvPolynomial_totalDegree_map_eq hinj (HTGeometry.descendCoefficients hle
       (MvPolynomial.C (P.coeff n)⁻¹ * P)
       (coeff_normalized_mem_differentialRatioField G P n))
     rw [HTGeometry.map_descendCoefficients] at hmap
-    rw [← hmap, totalDegree_C_mul_eq (inv_ne_zero hn)]
+    rw [← hmap, mvPolynomial_totalDegree_C_mul_eq (inv_ne_zero hn)]
   have hmem := descend_normalized_mem_relationIdeal G hGclosed P hPmin.1 n
   have hle1 : Q.totalDegree ≤ P.totalDegree := by
     rw [← hdescTotal]
@@ -264,7 +264,7 @@ theorem minimalTotalDegree_ratioField_eq (G : IntermediateField F E)
     rw [MvPolynomial.vars_map_of_injective _ hinj]
     exact hQmin.2.2.1
   have hle2 : P.totalDegree ≤ Q.totalDegree := by
-    rw [← totalDegree_map_eq hinj Q]
+    rw [← mvPolynomial_totalDegree_map_eq hinj Q]
     refine (hPmin.2.2.2 hmapmem hmapne hmapvars).2.2 ?_ ?_
     · rw [scalarDifferentialPolynomialOrder_map hinj Q, horder]
     · rw [scalarDifferentialPolynomialLeaderDegree_map hinj Q, hleader]

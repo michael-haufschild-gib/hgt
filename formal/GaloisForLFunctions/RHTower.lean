@@ -3662,6 +3662,9 @@ import GaloisForLFunctions.RHTower.Sieve.PrimeCosineSum
 import GaloisForLFunctions.RHTower.Sieve.MoebiusFrequencyDistance
 import GaloisForLFunctions.RHTower.Sieve.ZetaPoleBoxLowerBound
 import GaloisForLFunctions.RHTower.Sieve.MoebiusUniformFrequency
+import GaloisForLFunctions.RHTower.Sieve.HarmonicDyadicBlock
+import GaloisForLFunctions.RHTower.Sieve.PairFibre
+import GaloisForLFunctions.RHTower.Sieve.MRFibreReduction
 import GaloisForLFunctions.RHTower.Sieve.RouteEMain
 import GaloisForLFunctions.RHTower.SigmaBlockContraction
 import GaloisForLFunctions.RHTower.SigmaContractionCorollary
@@ -5503,3 +5506,5 @@ import GaloisForLFunctions.RHTower.DeningerClosedOneForm
 import GaloisForLFunctions.RHTower.DeningerExpCover
 import GaloisForLFunctions.RHTower.DeningerStageOneFormExact
 import GaloisForLFunctions.RHTower.DeningerStagePowerPermutation
+import GaloisForLFunctions.RHTower.DeningerStageZeroCohomology
+import GaloisForLFunctions.RHTower.DeningerContractionIdentity

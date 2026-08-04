@@ -95,4 +95,36 @@ theorem exactDifferentialOrder_entireCascade_one_of_cascade
         exact h1))
     (polyIndependent_cascadeFamily_one (hall 0)) (helim_one (hall 0))
 
+/-! ## Analyticity is not a separate hypothesis
+
+`TranscendentalEntire` already carries differentiability, and an entire function is analytic, so the
+analyticity hypothesis of the statements above is redundant. -/
+
+/-- A transcendental entire function is analytic on the whole plane. -/
+theorem analyticOnNhd_of_transcendentalEntire {g : ℂ → ℂ} (hg : TranscendentalEntire g) :
+    AnalyticOnNhd ℂ g (Set.univ : Set ℂ) :=
+  DifferentiableOn.analyticOnNhd (fun z _ => (hg.1 z).differentiableWithinAt) isOpen_univ
+
+/-- **The upper bound, with analyticity absorbed.** -/
+theorem differentiallyAlgebraicOfOrder_entireCascade_of_transcendental' {n : ℕ}
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i))
+    (h1 : ∀ k, k < n → DifferentiallyAlgebraicOfOrder (f k) 1) :
+    DifferentiallyAlgebraicOfOrder (entireCascade f n) n :=
+  differentiallyAlgebraicOfOrder_entireCascade_of_transcendental
+    (fun i => analyticOnNhd_of_transcendentalEntire (hall i)) hall h1
+
+/-- **The unit-cost law, in its minimal hypothesis form.**  The paper's hypotheses, plus the growth
+separation and the elimination step. -/
+theorem exactDifferentialOrder_entireCascade_of_separation' {n : ℕ}
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i))
+    (h1 : ∀ k, k < n → DifferentiallyAlgebraicOfOrder (f k) 1)
+    (hsep : ∀ m : ℕ,
+      StepSeparation (prefixFamily (entireCascade f) m) (entireCascade f m))
+    (helim : ∀ m, m < n → DifferentiallyAlgebraicOfOrder (entireCascade f n) m →
+      ∃ P : MvPolynomial (Fin n) (Polynomial ℂ), P ≠ 0 ∧
+        ∀ z : ℂ, statePoly (cascadeFamily f n) P z = 0) :
+    ExactDifferentialOrder (entireCascade f n) n :=
+  exactDifferentialOrder_entireCascade_of_separation
+    (fun i => analyticOnNhd_of_transcendentalEntire (hall i)) hall h1 hsep helim
+
 end GaloisForLFunctions.HTGeometry

@@ -4,11 +4,13 @@
 - **Stage:** 1-in-progress
 - **Type:** CONSTRUCTION / HYPERBOLIC PDE / CLOCKS
 - **Parent:** `../2-fully-proven/new_scientific_knowledge/clocks/two-species-conformal-clock-scale-law.md`
-- **Status:** open. The probe layer of the parent card covers the conformal orbit of the flat chart
-  and the conformal orbit of every foliated chart. This card attacks the next class: charts whose
-  principal part depends on the time coordinate but not on the point, with an **arbitrary** smooth
-  potential — which the foliation route does not reach, because its probes are constant along the
-  leaves and therefore only see potentials that are functions of the leaf label.
+- **Status:** closed for the mass potential. The construction is complete and formalized: the chart
+  whose propagation speed depends on the time coordinate carries a clock probe at **every** event,
+  the probe is regular, the operator is the divergence-form d'Alembertian of an explicit smooth
+  chart, and the two-species scale law holds on the whole conformal orbit of that chart. What is
+  *not* covered by this card is an arbitrary smooth potential on such a chart: the probes built here
+  solve the equation for the constant potential `-m²` (one per mass), which is what the two-species
+  law consumes. See **Landed** below.
 
 ## The construction
 
@@ -297,3 +299,135 @@ The class attacked here is still special: the principal part must not depend on 
 that is neither conformally flat nor foliated and whose principal part varies in space needs genuine
 variable-coefficient hyperbolic theory — energy estimates in Sobolev spaces with commutator terms —
 of which mathlib has none. That is the next barrier after this card, not this card.
+
+## Landed
+
+The chart layer, the second-order calculus, the wave operator and the probe interfaces are formalized
+and unconditional. Axioms of every theorem named below: `[propext, Classical.choice, Quot.sound]`.
+
+**The coordinate derivatives.**
+`formal/GaloisForLFunctions/HTGeometry/HillChartPartials.lean`:
+
+- `hillChartField_update_zero`, `hillChartField_update_succ` — moving the time coordinate moves only
+  the time argument; moving a spatial coordinate moves the point by `(2π)⁻¹` in that direction;
+- **`hasDerivAt_hillEvolutionField_dir_all`**, **`hasDerivAt_hillRealField_dir_all`** — the spatial
+  directional derivatives at *every* time, as syntheses of the derived density;
+- `hillChartTimePartial`, `hillChartSpacePartial`, `hillChartPartial` and
+  **`hasDerivAt_hillChartField_update`** — the chart field has all coordinate derivatives, each the
+  real part of a synthesis.
+
+**Continuity of the partials, and differentiability.**
+`formal/GaloisForLFunctions/HTGeometry/HillChartC1.lean`:
+
+- `continuous_hillDensityDeriv_all`, `continuous_hillDensityDeriv_time` — the velocity density in the
+  frequency and in the time;
+- **`continuous_hillSynthesisDeriv_event`**, **`continuous_hillDirSynthesis_event`** — both syntheses
+  are continuous in the event, by dominated convergence with a bound uniform on a unit ball of times;
+- **`isC1OnPi_hillChartField`**, **`hasFDerivAt_hillChartField`**, **`coordPartial_hillChartField`** —
+  hence the chart field is differentiable with the expected differential, and its `coordPartial`s are
+  the computed partials.
+
+**One weight carries the whole calculus.**
+`formal/GaloisForLFunctions/HTGeometry/HillWeightedSynthesis.lean`,
+`formal/GaloisForLFunctions/HTGeometry/HillWeightTransfers.lean`,
+`formal/GaloisForLFunctions/HTGeometry/HillEventContinuity.lean`:
+
+- **`hasDerivAt_hillSynthesis_weighted_all`**, **`hasDerivAt_hillSynthesisDeriv_weighted_all`** — both
+  time derivatives of a synthesis against an arbitrary *weight-dominated* multiplier, at every time.
+  The spatial derivatives multiply the character by the frequency, so the `‖χ‖ ≤ 1` hypothesis of the
+  first-order layer is not enough one level up;
+- `norm_hillDensitySecond_le_abs`, `continuous_hillDensitySecond_all`,
+  `continuous_hillDensitySecond_time` — the acceleration density at every time;
+- `massWeight_le_kgFreq`, `massWeightSq_le_kgFreq_sq`, `integrable_massWeight`,
+  `integrable_kgFreq_mul_massWeight`, `integrable_massWeightSq`, `integrable_of_kgFreq_mul`,
+  `integrable_kgFreq_mul_of_sq` — **two powers of the frequency against the initial datum dominate
+  every weight the construction uses**, so the whole second-order layer runs on the single hypothesis
+  `Integrable (fun ξ => ⟨ξ⟩² ‖G ξ‖)`;
+- **`continuous_kgSynthesis_event`** — a time-dependent density family, continuous in time and
+  dominated uniformly on time windows, has a synthesis continuous in the event. This one instrument
+  covers all three second-order families.
+
+**The second-order chart calculus.**
+`formal/GaloisForLFunctions/HTGeometry/HillChartSecond.lean`:
+
+- `kgDirChar`, `hillSynthesis_kgDirChar`, `hillSynthesisDeriv_kgDirChar` — a spatial derivative is a
+  synthesis against the character times the frequency factor, which is what lets the *time*
+  differentiation theorems act on a spatial partial;
+- `hillChartTimeSecond`, `hillChartSpaceSecond` and
+  **`hasDerivAt_hillChartTimePartial_zero`**, **`hasDerivAt_hillChartTimePartial_succ`**,
+  **`hasDerivAt_hillChartSpacePartial_zero`**, **`hasDerivAt_hillChartSpacePartial_succ`** — the four
+  second-order objects; the two mixed ones are *the same expression*, so the mixed partials commute
+  by construction;
+- **`isC1OnPi_hillChartTimePartial`**, **`isC1OnPi_hillChartSpacePartial`**,
+  **`differentiableAt_coordPartial_hillChartField`** — every first partial is differentiable, which is
+  the hypothesis of the corpus's divergence-form d'Alembertian.
+
+**The wave equation on the chart.**
+`formal/GaloisForLFunctions/HTGeometry/HillChartWave.lean`:
+
+- **`hillSynthesisSecond_eq_all`** — the field equation at every time (the interval restriction of
+  `hillSynthesisSecond_eq` removed);
+- `kgSynthesis_dirSq_smul`, **`hillSynthesisSecond_eq_chart`** — the equation in the chart
+  directions: the `(2π)⁻²` of the chart rescaling is exactly the factor the equation carries, so the
+  spatial term is `c(t)²` times the chart Laplacian, with no leftover constant;
+- **`hillChartField_wave_identity`** — the literal coordinate identity
+  `∂₀²u = c(y₀)² ∑ᵢ ∂ᵢ²u - m²u`.
+
+**The probe interfaces.**
+`formal/GaloisForLFunctions/HTGeometry/HillClockProbe.lean`,
+`formal/GaloisForLFunctions/HTGeometry/HillProbeAnywhere.lean`:
+
+- `hillWaveOp` — the wave operator of a speed on the chart;
+- **`solvesPotentialWave_hillChartField`** — the chart field solves the dressed equation for the
+  constant potential `-m²`, at every event;
+- `hillProbeDatum`, `integrable_kgFreq_pow_mul_hillProbeDatum`,
+  **`re_kgSynthesis_hillProbeDatum_ne_zero`** — the corpus's symmetrised bump, modulated by the
+  conjugate character, is a compactly supported datum whose synthesis at the prescribed point is
+  positive;
+- **`exists_localProbesOn_hillWaveOp`** — probes near any event of the initial slice;
+- `hillSpeedShift`, **`hillWaveOp_comp_add_const`** — restarting the speed at a prescribed time and
+  translating the field back carries the wave operator of the shifted speed to the wave operator of
+  the original one. This is what moves the initial slice to an arbitrary event;
+- **`exists_hillProbe_at`**, **`openProbes_hillWaveOp`**, **`regularOpenProbes_hillWaveOp`** — a
+  regular, nonvanishing probe on an open neighbourhood of *every* event.
+
+**The chart is a metric chart, and the scale law.**
+`formal/GaloisForLFunctions/HTGeometry/HillSpeedChart.lean`,
+`formal/GaloisForLFunctions/HTGeometry/HillRegularProbes.lean`:
+
+- `coordPartial_time_only` — a function of the time coordinate has no spatial partials;
+- `hillSpeedChart` — the chart with diagonal inverse metric `(-1, c(t)², …, c(t)²)` and constant
+  density, its fluxes computed;
+- **`hillSpeedChart_dalembert`** — its divergence-form operator *is* `hillWaveOp`: the spatial fluxes
+  differentiate the field alone, because the speed does not depend on the point;
+- **`regularOpenProbes_hillSpeedChart`** — the speed chart carries a regular probe at every event;
+- **`potential_eq_of_hillSpeedChart_probes`** — the mass is determined by the probes;
+- **`regularOpenProbes_conformalRescale_hillSpeedChart`** — every conformal rescaling of the speed
+  chart carries them, for the transferred potential;
+- `conformalTransferPotential_sub` and
+  **`twoSpecies_scale_law_hillSpeedChart`** — two species of different mass reconstruct the conformal
+  factor pointwise:
+
+  ```
+  (V₁(x) - V₂(x)) / (m₂² - m₁²) = e^{-2σ(x)}
+  ```
+
+  on the conformal orbit of a chart whose propagation speed varies in time.
+
+## Novelty
+
+The analytic ingredients are classical: Hill's equation with a Grönwall energy estimate, and Fourier
+synthesis of the fibrewise solutions. What is new relative to the corpus is the *class of charts*
+that now carries clock probes. Before this card the probe classes were the conformal orbit of the
+flat chart and the conformal orbit of a foliated chart; a chart with a time-dependent propagation
+speed is in neither (its inverse metric is not a multiple of the flat one), and the foliation route
+cannot see it. The frequency-uniformity of the Grönwall constant — the mass and the spatial frequency
+drop out of `ω'/ω` — is what makes the synthesis converge, and it is the only reason the classical
+fibrewise theory assembles into a field here.
+
+## Remaining, for a later card
+
+An **arbitrary** smooth potential on a variable-speed chart. The corpus reaches arbitrary smooth
+potentials on the flat chart by solving a spacetime-dependent Wiener family; the same route here
+needs the Hill layer for a family whose density moves with time, which is a strictly larger
+construction than the one closed above.

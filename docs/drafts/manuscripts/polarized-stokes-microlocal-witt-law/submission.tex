@@ -23,6 +23,7 @@
 \newcommand{\Hom}{\operatorname{Hom}}
 \newcommand{\im}{\operatorname{im}}
 \newcommand{\indm}{\operatorname{ind}_{-}}
+\newcommand{\Rad}{\operatorname{rad}}
 \newcommand{\Sh}{\operatorname{Sh}}
 \newcommand{\Vect}{\operatorname{Vect}}
 \newcommand{\Hess}{\operatorname{Hess}}
@@ -45,11 +46,14 @@ irregularity.  We prove that its threshold partitions form a canonical dendrogra
 exact coarea decomposition of the full polarized Stokes index.  Every threshold term is a positive
 square; physical rank is the sole potentially negative channel.
 
-We construct the finite cellular Stokes category on the boundary circle.  Microlocalization is a
-quotient functor, nearby-to-vanishing is an exact quotient, and the cellular characteristic cycle
-of a degree-$k$ exponential Hom germ has $2k$ oriented rays of unit multiplicity, exactly $k$ in
-the ordered decay orientation.  Galois-normalized directed microstalk mass equals mixed Hom
-irregularity.  Thus the coarea decomposition is also a categorical microlocal index formula.
+For every nonzero leading coefficient, we classify the zero directions of the actual exponential
+phase $\operatorname{Re}(ce^{-ik\theta})$: they are $2k$ simple analytic walls, canonically split
+into two transverse-sign fibers of size $k$.  On their induced finite stratification we construct
+the cellular Stokes category.  Microlocalization is a quotient functor, nearby-to-vanishing is an
+exact quotient, and the characteristic cycle of a degree-$k$ exponential Hom germ has $2k$
+oriented rays of unit multiplicity, exactly $k$ in the ordered decay orientation.
+Galois-normalized directed microstalk mass equals mixed Hom irregularity.  Thus the coarea
+decomposition is also a categorical microlocal index formula.
 
 After physical-rank fusion over an arbitrary marked curve, all local channels remain positive and
 topology changes only one common-rank square.  The global form has negative index plus nullity at
@@ -114,9 +118,11 @@ Substituting \eqref{eq:intro-law} gives a positive-definite form plus one multip
 Consequently
 \begin{equation}\label{eq:intro-inertia}
  Q_{X,D}>0\ \text{on }\ker M\setminus\{0\},\qquad
- \indm(Q_{X,D})+\dim\ker(Q_{X,D})\leq1.
+ \indm(Q_{X,D})+\dim\Rad(Q_{X,D})\leq1.
 \end{equation}
-This is the global Stokes--microlocal Witt law.  Capacity completion replaces the auxiliary rank
+Here $\Rad(Q)$ is the radical of the polar bilinear form of $Q$; its dimension is the nullity of
+$Q$.  Thus \eqref{eq:intro-inertia} is one joint bound, not two independent estimates.  This is
+the global Stokes--microlocal Witt law.  Capacity completion replaces the auxiliary rank
 coefficient by the intrinsic constrained minimum at $M=1$ and yields an exact
 finite/affine/Lorentz trichotomy.  Every handle changes only this coefficient, by $-2$.
 
@@ -289,7 +295,7 @@ On $V_{X,D}$,
 The form $P_{X,D}$ is positive definite, and
 \begin{equation}\label{eq:global-inertia}
  Q_{X,D}>0\ \text{on }\ker M\setminus\{0\},\qquad
- \indm(Q_{X,D})+\dim\ker(Q_{X,D})\leq1.
+ \indm(Q_{X,D})+\dim\Rad(Q_{X,D})\leq1.
 \end{equation}
 \end{theorem}
 
@@ -356,7 +362,43 @@ $\mu_R(E(V,\varepsilon))$ is zero; the other is canonically $V$.
 The cokernel of $V\xrightarrow{1}V$ is zero; the cokernel of $0\to V$ is $V$.
 \end{proof}
 
-For $k>0$, label the $2k$ walls of the degree-$k$ cellular Stokes circle by
+Fix $c\in\CC^\times$ and $k>0$.  On the oriented boundary circle
+$\RR/2\pi\mathbb Z$, use the dominance-wall convention
+\begin{equation}\label{eq:analytic-phase}
+ f_{c,k}(\theta)=\operatorname{Re}(ce^{-ik\theta})
+  =|c|\cos(\arg c-k\theta).
+\end{equation}
+These are the analytic walls separating the two signs of exponential dominance.
+
+\begin{proposition}[Complete analytic wall classification]\label{prop:analytic-walls}
+Put $\tau_+=\pi/2$ and $\tau_-=-\pi/2$.  The zero set of \eqref{eq:analytic-phase} is
+\begin{equation}\label{eq:analytic-wall-labels}
+ \mathsf W_k(c)=\left\{
+ \theta_{j,\varepsilon}=
+ \frac{\arg c-\tau_\varepsilon}{k}+\frac{2\pi j}{k}\quad(\bmod\,2\pi):
+ 0\leq j<k,\ \varepsilon\in\{+,-\}\right\}.
+\end{equation}
+All $2k$ classes in \eqref{eq:analytic-wall-labels} are distinct and exhaust the zero set.  Every
+wall is simple, with
+\[
+ f'_{c,k}(\theta_{j,+})=k|c|,
+ \qquad f'_{c,k}(\theta_{j,-})=-k|c|.
+\]
+Consequently $\{0,\ldots,k-1\}\times\{+,-\}$ is canonically bijective with the analytic Stokes
+walls, and its sign coordinate is their transverse orientation.
+\end{proposition}
+
+\begin{proof}
+The equality $f_{c,k}(\theta)=0$ is equivalent on the angle circle to
+$\arg c-k\theta=\pi/2$ or $-\pi/2$.  Multiplication by $k$ on
+$\RR/2\pi\mathbb Z$ has, over each target, the $k$ distinct inverse images displayed in
+\eqref{eq:analytic-wall-labels}.  The two fibers are disjoint because sine takes the values $1$
+and $-1$ at their respective targets.  Finally
+$f'_{c,k}(\theta)=k|c|\sin(\arg c-k\theta)$, which gives the asserted nonzero derivatives and
+orientations.
+\end{proof}
+
+Use Proposition~\ref{prop:analytic-walls} to label the actual analytic walls by
 $\mathsf W_k=\{0,\ldots,k-1\}\times\{+,-\}$.  Place one arc between consecutive walls.  Its
 entrance quiver has two arrows from each arc to its endpoints.  No two nonidentity arrows compose,
 so the path category contains only identities and incidence arrows.  Define
@@ -459,9 +501,11 @@ isomorphism of realization functors identifies stalk maps and therefore their co
 \begin{remark}[Analytic scope]
 Irregular Riemann--Hilbert theory realizes analytic Stokes objects in enhanced or Stokes-sheaf
 categories \cite{Sabbah,DKRH}; enhanced nearby and vanishing cycles in dimension one are treated
-in \cite{DKVanishing}.  Theorem~\ref{thm:transport} proves the implication used here once a
-realization identifies the local incidence diagram.  We do not infer an analytic connection or an
-equivalence from the quadratic form alone.
+in \cite{DKVanishing}.  Proposition~\ref{prop:analytic-walls} proves that the finite incidence
+diagram is the stratification by the genuine leading exponential phase, not an abstract polygon.
+Theorem~\ref{thm:transport} proves the implication used here once a realization identifies this
+diagram.  We do not infer a meromorphic connection or a realization equivalence from the
+quadratic form alone.
 \end{remark}
 
 \section{Principal conormals and the multi-Rees law}\label{sec:rees}
@@ -495,7 +539,7 @@ Choose independent $t_{a,e}$ at all marked points and fuse as in \eqref{eq:fused
 If all $t_{a,e}\geq0$, the fused Rees form is a positive-definite terminal-plus-graded form plus
 the same common-rank square as in Theorem~\ref{thm:global-witt}.  Thus
 \[
- \indm(Q_{X,D,\boldsymbol t})+\dim\ker(Q_{X,D,\boldsymbol t})\leq1,
+ \indm(Q_{X,D,\boldsymbol t})+\dim\Rad(Q_{X,D,\boldsymbol t})\leq1,
  \qquad Q_{X,D,\boldsymbol t}>0\quad\text{on }\ker M\setminus\{0\}.
 \]
 The rank coefficient is independent of all Rees parameters.
@@ -756,9 +800,11 @@ Any of the following would falsify the theorem as stated.
 \begin{enumerate}[label=(\arabic*),leftmargin=2.2em]
 \item an equivariant spectrum violating Lemma~\ref{lem:three-point};
 \item failure of finite coarea identity \eqref{eq:coarea};
+\item a zero of $\operatorname{Re}(ce^{-ik\theta})$ outside
+      \eqref{eq:analytic-wall-labels}, a repeated wall, or failure of the transverse-sign law;
 \item a directed exponential germ whose quotient microstalk mass differs from its degree;
 \item a nonzero compatible rank-zero charge of nonpositive fused energy;
-\item a nonnegative Rees specialization with two independent negative directions;
+\item a nonnegative Rees specialization whose negative index plus nullity exceeds one;
 \item a positive corona block violating \eqref{eq:schur} or \eqref{eq:corona-exact}.
 \end{enumerate}
 Conversely, this is not an analytic existence criterion: a quadratic form satisfying the Witt law
@@ -772,7 +818,8 @@ quotients, Rees graded channels, corona residuals, marking legs, and local terms
 complex are positive coordinates of that same space.  Fusion and topology cannot create another
 defect because they see local data only through common physical rank.
 
-This single structure explains local Lorentz bounds, affine simplicity, capacity walls, handle
+This single structure explains analytic wall count and orientation, local Lorentz bounds, affine
+simplicity, capacity walls, handle
 monotonicity, Rees stability, Schur order independence, and the adjacency bound
 $\lambda_2\leq2$.  It also replaces the former interface between coefficient contacts and
 microlocal multiplicities by an exact categorical quotient calculation.

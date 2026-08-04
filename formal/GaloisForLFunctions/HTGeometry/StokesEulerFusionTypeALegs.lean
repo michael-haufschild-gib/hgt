@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.StokesEulerFusionCapacity
 import GaloisForLFunctions.HTGeometry.StokesCartanTypeALegs
+import GaloisForLFunctions.HTGeometry.StokesGlobalPuiseuxWittLaw
 
 /-!
 # Euler fusion with arbitrary type-A legs
@@ -251,6 +252,36 @@ theorem globalFullPositiveForm_nonneg {m : ℕ}
   intro a _
   exact fullPositiveForm_nonneg (datum a) (legLength a) (d.1 a)
 
+theorem globalFullPositiveForm_pos {m : ℕ}
+    {n : Fin (m + 1) → ℕ}
+    (datum : (a : Fin (m + 1)) → CertifiedFissionDatum (n a))
+    (legLength : (a : Fin (m + 1)) → Fin (n a) → ℕ)
+    {d : compatibleFullModes datum legLength} (hd : d ≠ 0) :
+    0 < globalFullPositiveForm datum legLength d := by
+  have hlocal : ∃ a, d.1 a ≠ 0 := by
+    by_contra h
+    push Not at h
+    apply hd
+    apply Subtype.ext
+    funext a i k
+    exact congrFun (congrFun (h a) i) k
+  obtain ⟨a, ha⟩ := hlocal
+  rw [globalFullPositiveForm, QuadraticMap.sum_apply]
+  apply Finset.sum_pos'
+  · intro b _
+    exact fullPositiveForm_nonneg (datum b) (legLength b) (d.1 b)
+  · exact ⟨a, Finset.mem_univ _, fullPositiveForm_pos (datum a) (legLength a) (d.1 a) ha⟩
+
+theorem fullFusionForm_pos_of_fullCommonRank_eq_zero {m : ℕ}
+    {n : Fin (m + 1) → ℕ} (genus : ℕ)
+    (datum : (a : Fin (m + 1)) → CertifiedFissionDatum (n a))
+    (legLength : (a : Fin (m + 1)) → Fin (n a) → ℕ)
+    {d : compatibleFullModes datum legLength}
+    (hrank : fullCommonRank datum legLength d = 0) (hd : d ≠ 0) :
+    0 < fullFusionForm genus datum legLength d := by
+  rw [fullFusionForm_eq_positive_add_rank, hrank]
+  simpa using globalFullPositiveForm_pos datum legLength hd
+
 /-- **Full marked Euler--fusion index theorem.** Arbitrary finite type-A legs and arbitrary genus
 still leave at most one negative direction on the physical-rank fibre product. -/
 theorem fullFusionForm_sigNeg_le_one {m : ℕ} {n : Fin (m + 1) → ℕ} (genus : ℕ)
@@ -274,6 +305,20 @@ theorem fullFusionForm_sigNeg_le_one {m : ℕ} {n : Fin (m + 1) → ℕ} (genus 
       mul_nonneg hcoeff (sq_nonneg (fullCommonRank datum legLength d))]
   · rw [max_eq_right (neg_nonneg.mpr (le_of_not_ge hcoeff))]
     nlinarith [globalFullPositiveForm_nonneg datum legLength d]
+
+/-- Arbitrary finite type-A legs preserve the single global nonpositive channel, including the
+joint affine boundary: negative inertia plus radical dimension is at most one. -/
+theorem fullFusionForm_sigNeg_add_radical_finrank_le_one
+    {m : ℕ} {n : Fin (m + 1) → ℕ} (genus : ℕ)
+    (datum : (a : Fin (m + 1)) → CertifiedFissionDatum (n a))
+    (legLength : (a : Fin (m + 1)) → Fin (n a) → ℕ) :
+    sigNeg (fullFusionForm genus datum legLength) +
+      Module.finrank ℝ (fullFusionForm genus datum legLength).radical ≤ 1 := by
+  apply GlobalPuiseuxWitt.sigNeg_add_radical_finrank_le_one_of_pos_on_ker
+    (fullFusionForm genus datum legLength) (fullCommonRank datum legLength)
+  intro d hrank hd
+  exact fullFusionForm_pos_of_fullCommonRank_eq_zero
+    genus datum legLength hrank hd
 
 end EulerFusionTypeALegs
 end IrregularStokes

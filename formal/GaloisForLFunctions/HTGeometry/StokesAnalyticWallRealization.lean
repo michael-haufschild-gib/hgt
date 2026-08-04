@@ -42,7 +42,7 @@ def branchTarget : Bool → ℝ
   | true => -Real.pi / 2
 
 /-- The root with index `j` in one of the two cosine-zero fibers. -/
-def labelledWallAngle (c : ℂ) {k : ℕ} (hk : 0 < k)
+def labelledWallAngle (c : ℂ) {k : ℕ} (_hk : 0 < k)
     (w : StokesWall k) : Real.Angle :=
   ((((Complex.arg c - branchTarget w.2) / (k : ℝ)) : ℝ) : Real.Angle) +
     (w.1 : ℕ) • (((2 * Real.pi / (k : ℝ)) : ℝ) : Real.Angle)

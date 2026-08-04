@@ -2468,3 +2468,27 @@ both the probes and the experiments to one region:
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
 Axioms of all the above: `[propext, Classical.choice, Quot.sound]`.
+
+## Status update: a third class of charts — time-dependent propagation speed
+
+The probe classes of this card are the conformal orbit of the flat chart and the conformal orbit of
+a foliated chart. A chart whose propagation speed varies in time,
+
+```
+□u = -∂₀²u + c(t)² ∑ᵢ ∂ᵢ²u,
+```
+
+is in neither: its inverse metric is not a multiple of the flat one, and the foliation route only
+sees potentials that are functions of the leaf label. That class is now closed for the mass
+potential, in the child card
+`../../../3-formalized/new_scientific_knowledge/time-dependent-principal-part-clock-probes.md`:
+
+- **`regularOpenProbes_hillSpeedChart`** — the speed chart carries a regular clock probe at every
+  event, built by Fourier synthesis of Hill oscillators whose Grönwall constant is uniform in the
+  frequency;
+- **`hillSpeedChart_dalembert`** — the operator is the divergence-form d'Alembertian of an explicit
+  smooth chart, so the corpus's conformal machinery applies to it verbatim;
+- **`twoSpecies_scale_law_hillSpeedChart`** — hence the two-species scale law on the whole conformal
+  orbit of a variable-speed chart.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.

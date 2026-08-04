@@ -189,6 +189,10 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized the contraction identity behind the Poincaré lemma
+  in every degree.
+- 2026-08-04 — Formalized the zeroth cohomology of a character stage: the
+  stage is connected and a closed holomorphic zero-form on it is constant.
 - 2026-08-04 — Formalized `(4)` at the level of forms — stability of the
   cylinder de Rham complex under power maps and Galois permutations, with the
   action on the generators — and the locality that gives the sheaf condition.
@@ -509,13 +513,40 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
   local**, which is the sheaf-gluing sentence of the card's proof: a function or form glued from
   cylinder ones agreeing on overlaps is near each point one of them.
 
+### `(5)` in degree zero landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerStageZeroCohomology.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerStageTorus_isPreconnected` — **a character stage is connected**, as a product of
+  punctured planes.
+- `deningerZeroFormValue`, `deningerZeroForm_eq`, `deningerZeroFormValue_fderiv_eq_zero` — the
+  function underlying a zero-form and the vanishing of its derivative when the form is closed.
+- `deningerStage_closed_zero_form_const` — **a closed holomorphic zero-form is constant on the
+  stage**: `H^0 = ℂ = Λ^0(L ⊗ ℂ)`, the case `k = 0` of `(5)`.  The proof is local constancy on
+  balls plus the identity theorem on the connected stage.
+
+### The contraction identity for higher degrees landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerContractionIdentity.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerRemoveNth_succ_cons` — removing a later entry of a tuple with a prepended entry.
+- `deningerContractCLM` — contraction of an alternating form against a vector, as a continuous
+  linear map in the form.
+- `deningerAlternatize_contract` — **the antisymmetrized contraction of the derivative of a closed
+  form is the derivative at the base point.**  Applying closedness to the tuple with the base point
+  prepended splits the alternating sum into the base-point term and the contraction, which is the
+  algebraic identity that makes the homotopy operator invert the exterior derivative in every
+  degree.
+
 ### Remaining
 
 1. **`(5)`--`(6)`**, the de Rham cohomology `H^k((ℂ^×)^r, ℂ) ≅ Λ^k(L ⊗ ℂ)` and its colimit; mathlib
    has no de Rham cohomology of a complex manifold.  The generators are built in every degree,
    proved holomorphic, closed, nowhere zero and equivariant for the transitions; the map
    `L ⊗ ℂ → H^1` is proved injective for every `r`; and the comparison is closed for `r = k = 1`.
-   Degree one is now closed in every dimension: the classes of the logarithmic differentials are
+   Degrees zero and one are now closed in every dimension: the classes of the logarithmic differentials are
    independent and every closed holomorphic one-form is a combination of them plus an exact one.
    Two gaps remain.  The primitive produced by the descent is known to be differentiable, and
    upgrading it to analytic needs "complex differentiable implies analytic" in several variables,

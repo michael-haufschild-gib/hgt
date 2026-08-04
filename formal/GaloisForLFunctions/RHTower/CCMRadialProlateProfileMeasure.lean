@@ -303,6 +303,140 @@ theorem abs_xiEndpointPhase_sub_second_order_le {s x : ℝ} (hs0 : 0 ≤ s) (hs1
   linarith [habs, hmono, hval.le, hval.ge]
 
 
+
+/-! ## The amplitude expansion
+
+The card's `A_sigma(x) = x^{-1/2} + O(c^{-1})` holds globally, not only on compacts, and with an explicit
+constant.  The mechanism is that the fourth power of the amplitude is an elementary rational expression in
+the phase, and the phase bracket `(4)` already pins `xi²` to relative accuracy `s`; the passage from fourth
+powers to the amplitude itself is the factorisation `A⁴ - B⁴ = (A-B)(A+B)(A²+B²)`, whose second factor is
+bounded below by `B³`. -/
+
+/-- The fourth power of the Liouville–Green amplitude is elementary. -/
+theorem xiAmplitude_pow_four {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
+    xiAmplitude s x ^ 4 = xiEndpointPhase s x ^ 2 / ((x ^ 2 - 1) * (x ^ 2 - s)) := by
+  have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
+  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have hD : (0 : ℝ) < (x ^ 2 - 1) * (x ^ 2 - s) := mul_pos hd hn
+  have hph : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
+  have hsD : (0 : ℝ) < Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) := Real.sqrt_pos.mpr hD
+  have h1 : Real.sqrt (xiEndpointPhase s x) ^ 2 = xiEndpointPhase s x := Real.sq_sqrt hph.le
+  have h2 : Real.sqrt (Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s))) ^ 2
+      = Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) := Real.sq_sqrt hsD.le
+  have h3 : Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) ^ 2 = (x ^ 2 - 1) * (x ^ 2 - s) :=
+    Real.sq_sqrt hD.le
+  rw [xiAmplitude, div_pow, show (4 : ℕ) = 2 * 2 from rfl, pow_mul, pow_mul, h1, h2, h3]
+
+theorem xiAmplitude_pos {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
+    0 < xiAmplitude s x := by
+  have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
+  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have hph : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
+  rw [xiAmplitude]
+  have hnum : 0 < Real.sqrt (xiEndpointPhase s x) := Real.sqrt_pos.mpr hph
+  have hden : 0 < Real.sqrt (Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s))) :=
+    Real.sqrt_pos.mpr (Real.sqrt_pos.mpr (mul_pos hd hn))
+  exact div_pos hnum hden
+
+/-- The phase squared is pinned to relative accuracy `s` by the endpoint bracket `(4)`. -/
+theorem abs_xiEndpointPhase_sq_sub_le {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
+    |xiEndpointPhase s x ^ 2 - (x ^ 2 - 1)| ≤ s * (x ^ 2 - 1) := by
+  have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
+  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hb := xiEndpointPhase_bounds hs0 (by linarith : s ≤ 1) hx.le
+  have hph : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
+  have hrsq : Real.sqrt (x ^ 2 - 1) ^ 2 = x ^ 2 - 1 := Real.sq_sqrt hd.le
+  have hssq : Real.sqrt (1 - s) ^ 2 = 1 - s := Real.sq_sqrt (by linarith)
+  have hupper : xiEndpointPhase s x ^ 2 ≤ x ^ 2 - 1 := by
+    have h := hb.2
+    nlinarith [hph.le, Real.sqrt_nonneg (x ^ 2 - 1), hrsq]
+  have hlower : (1 - s) * (x ^ 2 - 1) ≤ xiEndpointPhase s x ^ 2 := by
+    have h := hb.1
+    have h0 : 0 ≤ Real.sqrt (1 - s) * Real.sqrt (x ^ 2 - 1) := by positivity
+    nlinarith [h, h0, hrsq, hssq]
+  rw [abs_le]
+  constructor <;> nlinarith
+
+/-- **The amplitude expansion, with a global explicit constant.**
+`|A_s(x) - x^{-1/2}| <= 4 s` for every `x > 1` and `0 <= s <= 1/2`.  With `s = sigma²` and the separation
+law this is the card's `A_sigma(x) = x^{-1/2} + O(c^{-1})`, uniformly on the whole ray rather than only on
+compacts. -/
+theorem abs_xiAmplitude_sub_inv_sqrt_le {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
+    |xiAmplitude s x - 1 / Real.sqrt x| ≤ 4 * s := by
+  have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
+  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  obtain ⟨r, hr0, hrsq, hreq⟩ : ∃ r : ℝ, 0 < r ∧ r * r = x ∧ Real.sqrt x = r :=
+    ⟨Real.sqrt x, Real.sqrt_pos.mpr hx0, Real.mul_self_sqrt hx0.le, rfl⟩
+  have hr1 : 1 < r := by nlinarith
+  have hA0 : 0 < xiAmplitude s x := xiAmplitude_pos hs0 hs1 hx
+  have hB0 : 0 < 1 / r := by positivity
+  have hA4 := xiAmplitude_pow_four hs0 hs1 hx
+  have hB4 : (1 / r) ^ 4 = 1 / x ^ 2 := by
+    rw [← hrsq]
+    field_simp
+  have hxi2 := abs_xiEndpointPhase_sq_sub_le hs0 hs1 hx
+  have hnum : |xiAmplitude s x ^ 4 - (1 / r) ^ 4| ≤ 2 * s * (x ^ 2 + 1) / x ^ 4 := by
+    rw [hA4, hB4]
+    have hden0 : (0 : ℝ) < x ^ 2 * ((x ^ 2 - 1) * (x ^ 2 - s)) := by positivity
+    have hfrac : xiEndpointPhase s x ^ 2 / ((x ^ 2 - 1) * (x ^ 2 - s)) - 1 / x ^ 2
+        = (x ^ 2 * xiEndpointPhase s x ^ 2 - (x ^ 2 - 1) * (x ^ 2 - s))
+          / (x ^ 2 * ((x ^ 2 - 1) * (x ^ 2 - s))) := by
+      field_simp
+    rw [hfrac, abs_div, abs_of_pos hden0, div_le_div_iff₀ hden0 (by positivity)]
+    have htop : |x ^ 2 * xiEndpointPhase s x ^ 2 - (x ^ 2 - 1) * (x ^ 2 - s)|
+        ≤ s * (x ^ 2 - 1) * (x ^ 2 + 1) := by
+      have hsplit : x ^ 2 * xiEndpointPhase s x ^ 2 - (x ^ 2 - 1) * (x ^ 2 - s)
+          = x ^ 2 * (xiEndpointPhase s x ^ 2 - (x ^ 2 - 1)) + s * (x ^ 2 - 1) := by ring
+      rw [hsplit]
+      have h1 : |x ^ 2 * (xiEndpointPhase s x ^ 2 - (x ^ 2 - 1))| ≤ x ^ 2 * (s * (x ^ 2 - 1)) := by
+        rw [abs_mul, abs_of_pos (by positivity : (0 : ℝ) < x ^ 2)]
+        exact mul_le_mul_of_nonneg_left hxi2 (by positivity)
+      have h2 : |s * (x ^ 2 - 1)| = s * (x ^ 2 - 1) := abs_of_nonneg (by positivity)
+      have h3 := abs_add_le (x ^ 2 * (xiEndpointPhase s x ^ 2 - (x ^ 2 - 1))) (s * (x ^ 2 - 1))
+      nlinarith [h1, h2, h3]
+    have hcross : s * (x ^ 2 - 1) * (x ^ 2 + 1) * x ^ 4
+        ≤ 2 * s * (x ^ 2 + 1) * (x ^ 2 * ((x ^ 2 - 1) * (x ^ 2 - s))) := by
+      nlinarith [mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg hs0 hd.le)
+        (by positivity : (0 : ℝ) ≤ x ^ 2 + 1)) (by positivity : (0 : ℝ) ≤ x ^ 2))
+        (by nlinarith : (0 : ℝ) ≤ x ^ 2 - 2 * s)]
+    have hmul := mul_le_mul_of_nonneg_right htop (by positivity : (0 : ℝ) ≤ x ^ 4)
+    linarith [hmul, hcross]
+  have hDpos : (0 : ℝ) < (xiAmplitude s x + 1 / r) * (xiAmplitude s x ^ 2 + (1 / r) ^ 2) := by
+    have h1 : 0 < xiAmplitude s x + 1 / r := by linarith
+    have h2 : 0 < xiAmplitude s x ^ 2 + (1 / r) ^ 2 := by positivity
+    exact mul_pos h1 h2
+  have hden : (1 / r) ^ 3 ≤ (xiAmplitude s x + 1 / r) * (xiAmplitude s x ^ 2 + (1 / r) ^ 2) := by
+    have h1 : (1 / r) ≤ xiAmplitude s x + 1 / r := by linarith
+    have h2 : (1 / r) ^ 2 ≤ xiAmplitude s x ^ 2 + (1 / r) ^ 2 := by
+      nlinarith [sq_nonneg (xiAmplitude s x)]
+    calc (1 / r) ^ 3 = (1 / r) * (1 / r) ^ 2 := by ring
+      _ ≤ (xiAmplitude s x + 1 / r) * (xiAmplitude s x ^ 2 + (1 / r) ^ 2) :=
+          mul_le_mul h1 h2 (by positivity) (by linarith)
+  have hfin : 2 * s * (x ^ 2 + 1) / x ^ 4 ≤ 4 * s * (1 / r) ^ 3 := by
+    rw [← hrsq, div_le_iff₀ (by positivity)]
+    have hval : 4 * s * (1 / r) ^ 3 * ((r * r) ^ 4) = 4 * s * r ^ 5 := by
+      field_simp
+    rw [hval]
+    have e1 : r ^ 4 ≤ r ^ 5 := by
+      nlinarith [mul_nonneg (pow_nonneg hr0.le 4) (by linarith : (0 : ℝ) ≤ r - 1)]
+    have e2 : (1 : ℝ) ≤ r ^ 5 := by
+      have h := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 1) hr1.le 5
+      simpa using h
+    nlinarith [mul_nonneg hs0 (show (0 : ℝ) ≤ 2 * r ^ 5 - r ^ 4 - 1 by linarith)]
+  have hid : xiAmplitude s x - 1 / r
+      = (xiAmplitude s x ^ 4 - (1 / r) ^ 4)
+        / ((xiAmplitude s x + 1 / r) * (xiAmplitude s x ^ 2 + (1 / r) ^ 2)) := by
+    rw [eq_div_iff (ne_of_gt hDpos)]
+    ring
+  have hscale : 4 * s * (1 / r) ^ 3
+      ≤ 4 * s * ((xiAmplitude s x + 1 / r) * (xiAmplitude s x ^ 2 + (1 / r) ^ 2)) :=
+    mul_le_mul_of_nonneg_left hden (by positivity)
+  rw [hreq, hid, abs_div, abs_of_pos hDpos, div_le_iff₀ hDpos]
+  linarith [hnum, hfin, hscale]
+
 end GaloisForLFunctions.RHTower
 
 end

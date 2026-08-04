@@ -24,12 +24,12 @@ variable (a : WienerFamily E N) (G₀ : E →ᵇ ℂ)
 
 theorem differentiableAt_kgRealField_time (hN : (Module.finrank ℝ E : ℝ) + 2 < N) (x : E)
     (t : ℝ) : DifferentiableAt ℝ (fun r : ℝ => kgRealField a G₀ r x) t :=
-  (hasDerivAt_re (hasDerivAt_kgFlowField hN a G₀ x t)).differentiableAt
+  (hasDerivAt_reOfComplex (hasDerivAt_kgFlowField hN a G₀ x t)).differentiableAt
 
 theorem differentiableAt_kgRealField_dir (hN : (Module.finrank ℝ E : ℝ) + 2 < N) (t : ℝ)
     (x v : E) (s : ℝ) :
     DifferentiableAt ℝ (fun q : ℝ => kgRealField a G₀ t (x + q • v)) s :=
-  (hasDerivAt_re
+  (hasDerivAt_reOfComplex
     ((hasDerivAt_kgSynthesis_dir_synthesis
       ((continuous_kgFlowDensity a G₀ t).aestronglyMeasurable)
       (integrable_kgFlowDensity a G₀ hN t)

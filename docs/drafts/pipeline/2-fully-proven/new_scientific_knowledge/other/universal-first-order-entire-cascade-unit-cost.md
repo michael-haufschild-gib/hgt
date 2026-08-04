@@ -433,8 +433,36 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - [x] Lean: the order lower bound `ord_DA >= n` from `n` algebraically independent jets
 - [x] Lean: the matching upper bound `ord_DA <= n` from a bounded-transcendence state field
 - [x] Lean: `IsLeast`, the exact minimal order, given the two analytic inputs as hypotheses
+- [x] Lean: the upper bound `ord_DA <= n` on the *actual entire composition*, with no independence
+      hypothesis (`differentiallyAlgebraicOfOrder_entireCascade_of_transcendental`)
+- [x] Lean: consecutive states are automatically independent, so Clunie--Steinmetz is not needed for
+      the upper half (`pairAlgIndep_of_transcendental`)
+- [x] Lean: an entire function has order zero exactly when it is a polynomial
+- [x] Lean: length one closed unconditionally by three independent routes, with `Complex.exp` as an
+      explicit instance
+- [x] Lean: sharpness -- polynomial constituents give order `0`, so transcendence cannot be weakened
+- [x] Lean: the Poincare recession consequence, and the charge-count identity
+- [ ] Lean: the growth separation `StepSeparation` -- the one analytic input still open
+- [ ] Lean: observability (`helim`) on the analytic objects -- Reduction III
 
 ### Lean status
+
+> **Superseded — read the log entries at the end of this card.**  The module list and principal
+> declarations below describe the state before the analytic/field layer was built.  Current summary:
+>
+> * **Upper bound `ord_DA ≤ n`: proved unconditionally**, with exactly the paper's hypotheses
+>   (`differentiallyAlgebraicOfOrder_entireCascade_of_transcendental`).  No independence assumption is
+>   used: consecutive states are automatically independent (`pairAlgIndep_of_transcendental`).
+> * **Lower bound**: reduced to a single analytic predicate `StepSeparation`, plus observability
+>   (`helim`).  All algebra, value distribution and field theory around them is formal and axiom-clean.
+> * **Length one: closed unconditionally, three independent ways**; `Complex.exp` is an explicit
+>   instance, so nothing in the chain is vacuous.
+> * **Sharpness**: the transcendence hypothesis cannot be dropped
+>   (`not_exactDifferentialOrder_entireCascade_of_polynomial`), and the entire functions of order zero
+>   are exactly the polynomials.
+> * **Consequences formalized**: Poincaré recession (`exactDifferentialOrder_poincareApprox`) and the
+>   charge-count identity (`exactDifferentialOrder_eq_chargeCount`).
+
 
 Reduction III — the terminal-linear Bell induction, which is the step that closed the card's open
 core — is **formalized unconditionally and axiom-clean**
@@ -5953,3 +5981,124 @@ through the field-theoretic route) and `exactDifferentialOrder_expCascade_one`, 
 the card is now established three independent ways — the direct argument, the transcendence-degree
 route, and the corpus's own cascade interface. That is a genuine cross-check of the whole layer: the
 three proofs share only the order-zero theorem.
+
+### `HTGeometry/ExactOrderIsLeast.lean` — the minimality claim in its usual form
+
+`exactDifferentialOrder_iff_isLeast`:
+
+`ExactDifferentialOrder g n  ↔  IsLeast {k | DifferentiallyAlgebraicOfOrder g k} n`
+
+Unconditional, axiom-clean. The card states its theorem as "minimal ADE order equals `n`", and the
+corpus's abstract half is phrased with `IsLeast` (`isLeast_scalarDifferentialOrder`), while the
+analytic side is phrased with `ExactDifferentialOrder`. The two agree, so the abstract and analytic
+statements are now literally the same claim rather than two conventions.
+
+Also updated in this pass: the card's **Lean status** block is marked superseded (it predates the
+whole analytic/field layer) and the gate list gained the current items — upper bound on the actual
+composition with no independence hypothesis, automatic state independence, order zero ⟺ polynomial,
+length one by three routes, sharpness, and the two consequences — together with the two gates that
+remain open, `StepSeparation` and observability.
+
+### `HTGeometry/TranscendentalEntireClosure.lean` — the class is closed under the order-preserving operations
+
+`transcendentalEntire_add_polynomial`, `transcendentalEntire_const_smul`,
+`transcendentalEntire_affine_precomp` — adding a polynomial, scaling by a nonzero constant, and
+precomposing with an invertible affine map all preserve transcendence. Unconditional, axiom-clean;
+each is the observation that the inverse operation carries a polynomial value back to a polynomial.
+
+These are exactly the operations under which the differential order is already known to be invariant
+(`exactDifferentialOrder_affine_precomp` and its companions), so the hypothesis class of the
+unit-cost law and its conclusion are now closed under the same group. In particular the Poincaré
+approximants of the previous entry stay inside the class, which is what makes the recession statement
+a statement about the class rather than about one function.
+
+Lean note: `hq (a⁻¹ * (w - b))` produces a beta-redex, so `rw [hval]` cannot see the pattern
+`a * (a⁻¹ * (w - b)) + b`; ascribing the type of `hz` explicitly (the statement is defeq) beta-reduces
+it and the rewrite fires. Same trap as the `(f - fun _ => a₀) 0` elaboration failure recorded earlier
+on this card — an unreduced application hiding a pattern from `rw`.
+
+### `HTGeometry/SeparationImpliesTranscendence.lean` — the separation already contains transcendence
+
+`transcendentalEntire_of_stepSeparation`: if the coordinate is among the earlier states, then
+`StepSeparation X F` forces `F` to be transcendental. Unconditional, axiom-clean.
+
+The argument is a direct comparison of constants. The separation gives, for every level `c`, a point
+where
+
+`c · (1 + ∑_j log⁺‖X_j z‖ + log⁺ε⁻¹) < log⁺‖F z‖`,
+
+and the coordinate term alone gives `∑_j log⁺‖X_j z‖ ≥ log⁺‖z‖`. If `F` were a polynomial `q`, then
+`log⁺‖F z‖ ≤ K + d·log⁺‖z‖` with `K, d` fixed (`posLog_norm_eval_poly_le`, the one-variable companion of
+the bounds built earlier). Taking `c > max(d, K)` gives `c + (c − d)·log⁺‖z‖ < K`, hence `c < K` —
+false by choice of `c`. Note the point `z` is not controlled and does not need to be: the contradiction
+is between two constants, and the unbounded quantity `log⁺‖z‖` carries a nonnegative coefficient.
+
+Consequence for the card: `StepSeparation` is a *single* hypothesis that supplies both the state
+independence and the transcendence of the composite. The remaining analytic obligation is therefore
+one predicate, not a predicate plus side conditions.
+
+### The card's theorem in minimal-hypothesis form
+
+`exactDifferentialOrder_entireCascade_of_separation'`:
+
+```
+(∀ i, TranscendentalEntire (f i)) →
+(∀ k < n, DifferentiallyAlgebraicOfOrder (f k) 1) →
+(∀ m, StepSeparation (prefixFamily (entireCascade f) m) (entireCascade f m)) →
+helim →
+ExactDifferentialOrder (entireCascade f n) n
+```
+
+with `differentiallyAlgebraicOfOrder_entireCascade_of_transcendental'` the corresponding upper bound.
+Unconditional, axiom-clean.
+
+Analyticity is gone as a separate hypothesis: `TranscendentalEntire` already carries
+`Differentiable ℂ`, and `analyticOnNhd_of_transcendentalEntire` supplies the rest. So the first two
+hypotheses are now *exactly* the paper's ("transcendental entire, satisfying a first-order algebraic
+differential equation"), and the last two are the two named obligations.
+
+This is the statement the card should be read against. Nothing between those hypotheses and the
+conclusion is assumed anywhere in the corpus.
+
+### `HTGeometry/ClunieWeightFloor.lean` — where the two separation interfaces meet
+
+`clunieWeight_le_of_floor` and `posLog_norm_last_le_of_floor`: a lower bound `ε` on the grouped
+coefficient replaces the only term of `clunieWeight` that mentions it,
+`N·log⁺(1/‖groupedCoeff‖)`, by `N·log⁺ε⁻¹`. Unconditional, axiom-clean.
+
+This identifies the exact point of contact between the corpus's older Clunie interface
+(`SeparatesLast`, whose conclusion is `clunieWeight < log⁺‖F_last‖`) and the `StepSeparation`
+predicate built here (whose left side is `c·(1 + ∑ log⁺‖X_j‖ + log⁺ε⁻¹)`). After the substitution the
+Clunie weight is bounded by
+
+`∑_e ( log⁺‖A_e‖ + ∑_i e_i log⁺‖x_i‖ ) + N·log⁺ε⁻¹ + (N·|S| + N)·log 2`,
+
+every term of which is of the form `StepSeparation` dominates once its level `c` is chosen after `S`,
+`A` and `N` — which it may be, since `c` is universally quantified. So `StepSeparation → SeparatesLast`
+is a bounded amount of bookkeeping away, and any future analytic work discharging the one predicate
+would discharge both interfaces.
+
+Recording this because it settles a design question: the two separation notions are not competitors.
+`StepSeparation` is the stronger, simpler one (a single level parameter instead of a monomial-indexed
+weight), and the corpus's Clunie induction remains available as a consumer of it.
+
+### `HTGeometry/OneVariableMvPolynomial.lean` — the first edge's coefficients are univariate
+
+`toPoly`, `eval_toPoly`, `toPoly_ne_zero` — the identification `MvPolynomial (Fin 1) ℂ ≅ Polynomial ℂ`,
+compatible with evaluation and preserving nonvanishing. Unconditional, axiom-clean.
+
+Needed because at the first edge of a cascade the only earlier state is the coordinate, so the
+coefficient polynomial `A` in `StepSeparation` is a polynomial *in `z` alone* — and to feed it to the
+univariate estimates (`norm_eval_ge_of_large` for the floor, `posLog_norm_eval_poly_le` for the
+growth) it must first be seen as one.
+
+`eval_empty_eq` is the reusable piece: on the empty variable set, `MvPolynomial.eval` *is*
+`MvPolynomial.isEmptyRingEquiv`. That identity already appeared inside the base case of
+`noRelation_prefixFamily`; it is now a named lemma, since every reduction of `Fin (m+1)` down to
+`Fin 0` needs it at the bottom.
+
+This sets up the next step: `StepSeparation` at the first edge should be provable outright from
+transcendence, since a nonzero univariate `A` has an explicit floor beyond `growthRadius A`
+(`norm_eval_ge_of_large`), the reciprocal of that floor is bounded there, and a transcendental entire
+function exceeds every polynomial bound (`exists_norm_gt_of_not_polynomial`) — necessarily at a point
+outside any fixed disc, since it is bounded on compacts.

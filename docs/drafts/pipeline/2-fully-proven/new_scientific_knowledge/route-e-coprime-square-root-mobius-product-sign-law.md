@@ -8557,3 +8557,61 @@ supplies `9 log log|t|` of Mertens mass while the strip loses only `7 log log|t|
 `2 log log|t|` is the content: **the Möbius function is quantitatively far from every character
 `χ_t` in the range, not merely from the trivial one.**  This closes the input that
 `HalaszDichotomy`/`HalaszWindow` needs on its distance side.
+
+### The frequency range is now covered without a gap
+
+The distance bound above holds at `|t| ≥ 9`.  Halász's mechanism needs the *minimum* over a whole
+range `|t| ≤ T`, so the segment `|t| ≤ 9` — which contains the pole of `ζ` — had to be closed too.
+
+**`RHTower/Sieve/ZetaPoleBoxLowerBound.lean`.**  `ZetaBoxLowerBound.lean` minimises `‖ζ‖` on a
+compact box, and that argument breaks at `t = 0`, where `ζ` is unbounded.  The repair is to minimise
+the *entire* function `zetaEntire s = (s−1)ζ(s)` (already in the corpus, in
+`RHTower/BoundedExponentPoissonNonlanding.lean`) instead.
+
+- **`zetaEntire_ne_zero_of_one_le_re`** — `zetaEntire` does not vanish on `re s ≥ 1`: off the pole
+  because `ζ` does not, and at `s = 1` because its value there is the residue, `(Γ_ℝ 1)⁻¹ ≠ 0`.
+- `norm_sub_one_le_box` — the distance to the pole across the box is at most `η + T₀ + 1`.
+- **`exists_pos_lower_bound_zeta_pole_box`** — for every `η, T₀ ≥ 0` there is `c > 0` with
+  `c ≤ ‖ζ(σ+it)‖` for all `σ ∈ (1, 1+η]` and `|t| ≤ T₀`.  **The pole helps rather than hinders:**
+  `ζ` is *large* near `s = 1`, and dividing the compactness minimum of `|zetaEntire|` by the bounded
+  factor `|s−1|` is all that is needed.
+- **`exists_sum_cos_div_prime_ge_small`** — hence `∑_{p ≤ z} cos(t log p)/p ≥ −C` for every `z ≥ 3`
+  and every `|t| ≤ 9`, with `C` absolute.
+
+To make both branches instances of one statement, `PrimeCosineSum.lean` was refactored: the
+truncation and abscissa-shift passage is now the strip-agnostic
+**`sum_cos_div_prime_ge_of_le`**, which converts *any* lower bound for `∑'_p Re(p^{−(σ+it)})` at
+`σ = 1 + 1/log z` into one for `∑_{p ≤ z} cos(t log p)/p`.  The strip and the pole box are its two
+instantiations.
+
+**`RHTower/Sieve/MoebiusUniformFrequency.lean` — the uniform statements.**
+
+- `log_strip_bound_range`, `log_log_range_pos`, `sum_cos_div_prime_ge_range` — the strip bound keyed
+  on the range bound `T` rather than on the frequency, by monotonicity of `log`.
+- **`exists_sum_cos_div_prime_ge_uniform`** — an absolute `C` with
+
+      ∑_{p ≤ z} cos(t log p)/p  ≥  −7 log log T − C     for **every** `|t| ≤ T`,
+
+  whenever `z ≥ 3`, `T ≥ 9` and `1/log z ≤ A/log⁹T`.  No frequency is excluded.
+- **`exists_mulDistSqPair_ge_uniform`** — hence, for `f ≡ −1` on the primes up to `z`,
+
+      min_{|t| ≤ T} D(f, χ_t; p ≤ z)²  ≥  log log z − 7 log log T − C.
+
+- `sum_inv_sq_primesLE_le` — `∑_{p ≤ z} 1/p² ≤ π²/6`, from `hasSum_zeta_two`.
+- **`exists_norm_sum_moebius_smooth_le_uniform`** and
+  **`exists_norm_sum_moebius_smooth_le_absolute`** — feeding the distance minimum into the corpus's
+  damped Euler bound `norm_sum_moebius_smooth_le_exp`,
+
+      ‖∑_{n squarefree, z-smooth} μ(n) n^{−it}/n‖  ≤  C·(log T)⁷      for all `|t| ≤ T`,
+
+  with `C` absolute and the bound **independent of the smoothness parameter `z`**, whereas the
+  trivial bound for that sum grows like `log z`.  Under the coupling `log z ≥ log⁹T/A` forced by the
+  strip this is a power saving: `(log T)⁷ ≍ (log z)^{7/9}` against the trivial `log z`.
+
+This is the unconditional Halász saving for the Möbius function, and it closes the item that
+`HalaszDichotomy.lean` records in its own header as the analytic content the elementary theory does
+not supply ("nothing here … bounds `δ` from below").  The remaining step on the Matomäki–Radziwiłł
+path is the *mean-value* form of Halász's argument — averaging over `t` rather than bounding
+pointwise — since the pointwise Euler estimate cannot decay: it needs `D² > ∑1/p + ∑1/p²`, and the
+true `D² = ∑1/p + ∑cos(t log p)/p` leaves `∑1/p² − ∑cos(t log p)/p`, which the bound above makes
+`O(log log T)` but never negative.

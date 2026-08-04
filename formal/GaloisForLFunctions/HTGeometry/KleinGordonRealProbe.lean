@@ -54,13 +54,13 @@ theorem kgPotential_im {a : WienerDensity E N} (h : IsRealDensity a) (x : E) :
 
 /-! ## Real parts of derivatives -/
 
-private theorem hasDerivAt_re {f : ℝ → ℂ} {f' : ℂ} {t : ℝ} (h : HasDerivAt f f' t) :
+theorem hasDerivAt_reOfComplex {f : ℝ → ℂ} {f' : ℂ} {t : ℝ} (h : HasDerivAt f f' t) :
     HasDerivAt (fun r : ℝ => (f r).re) f'.re t :=
   Complex.reCLM.hasFDerivAt.comp_hasDerivAt t h
 
 theorem deriv_re_eq {f : ℝ → ℂ} (hf : ∀ t : ℝ, DifferentiableAt ℝ f t) (t : ℝ) :
     deriv (fun r : ℝ => (f r).re) t = (deriv f t).re :=
-  (hasDerivAt_re (hf t).hasDerivAt).deriv
+  (hasDerivAt_reOfComplex (hf t).hasDerivAt).deriv
 
 theorem deriv_deriv_re_eq {f : ℝ → ℂ} (hf : ∀ t : ℝ, DifferentiableAt ℝ f t)
     (hf2 : ∀ t : ℝ, DifferentiableAt ℝ (deriv f) t) (t : ℝ) :
@@ -69,7 +69,7 @@ theorem deriv_deriv_re_eq {f : ℝ → ℂ} (hf : ∀ t : ℝ, DifferentiableAt 
     funext r
     exact deriv_re_eq hf r
   rw [hfun]
-  exact (hasDerivAt_re (hf2 t).hasDerivAt).deriv
+  exact (hasDerivAt_reOfComplex (hf2 t).hasDerivAt).deriv
 
 /-! ## The real field -/
 

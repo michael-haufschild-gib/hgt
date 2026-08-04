@@ -17,8 +17,9 @@ proved unconditionally.
 ## Gates
 
 - [x] 0 → 1 in-progress: exact well-posed source law and attack identified
-- [ ] 1 → 2 fully-proven: boundary source jets and skewness inequality proved with no open premise
-- [ ] 2 → 3 formalized: unconditional Lean theorem, targeted build and axiom audit green
+- [ ] 1 → 2 fully-proven: skewness inequality proved with no open premise
+- [x] Partial Lean closure: boundary integrability, source-jet/cumulant bridge, all finite raw
+      Hankel blocks, and exact cumulant sign chamber are formalized unconditionally
 - [ ] 3 → 4 publication-ready: theorem, proof, certificate, and specialist novelty audit integrated
 
 ## Exact conjecture
@@ -83,10 +84,11 @@ Solving for `B,C` and expanding proves (SR-63.1).  What remains is not algebra:
 2. identify the normalized boundary raw moments with `mu,v,kappa3`;
 3. prove or falsify (SR-63.2) from theta-specific structure.
 
-The existing open-strip theorem cannot simply be evaluated at the boundary.  Its proof uses only
-the coarse `exp(-|x|)` source bound.  Boundary integrability must be supplied by a genuine argument,
-for example monotone continuation of the positive even source or an explicit Gaussian-atom
-majorant.
+Lean now supplies boundary integrability by an explicit Gaussian-atom argument, identifies all
+three normalized boundary cumulants with the Xi jets, and proves `(SR-63.1)`. It also proves
+`mu>0`, `v>0`, `kappa3<0`, `v<mu`, and strict positivity of every finite raw-moment Hankel block.
+The only remaining step is to prove or falsify `(SR-63.2)` from theta-specific structure. Generic
+moment positivity does not imply this nonlinear cumulant inequality.
 
 ## Anti-theatre checks
 
@@ -101,10 +103,11 @@ majorant.
 
 ## Novelty status
 
-Internal corpus search found no boundary-theta cumulant calibration of Suzuki's safe minor.
-Classical Fourier--Laplace representations and complete-monotonicity results for Xi are prior
-infrastructure, often RH-conditional when derived from real-zero product geometry.  External
-priority for the exact Suzuki-specific identity and skewness wall remains under specialist audit.
+The boundary-theta cumulant calibration is now an internal formal theorem in
+`SuzukiSafeBoundaryThetaCumulantWall.lean`. Classical Fourier--Laplace representations and
+complete-monotonicity results for Xi are prior infrastructure, often RH-conditional when derived
+from real-zero product geometry. External priority for the exact Suzuki-specific identity and the
+still-open skewness wall remains under specialist audit.
 
 ## Log
 

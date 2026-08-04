@@ -284,3 +284,24 @@ mixed cyclic-sheet loss layers sum to `Irr Hom`; exactly half the oriented walls
 Ordinary characteristic-cycle and vanishing-cycle coefficients are integer, while rational contact
 appears only after normalization by cover degree. The remaining analytic comparison is recorded in
 the partially resolved categorical core above, not hidden inside this finite computation.
+
+## Closure update — analytic walls and joint nullity, 2026-08-04
+
+- `[RESOLVED: ANALYTIC WALL REALIZATION]` For every nonzero complex leading coefficient `c` and
+  every integral order `k > 0`, the circle phase `Re(c exp(-ik theta))` is now treated directly.
+  Its zero set is proved complete, finite, and simple: multiplication by `k` on `Real.Angle` has
+  exactly `k` inverse images over each cosine-zero target `+pi/2` and `-pi/2`.
+  `StokesWall k = Fin k × Bool` is bijective with this actual zero set; the Boolean branch equals
+  transverse derivative sign. This closes the gap in which `2k` cellular labels had been supplied
+  without proving that they were analytic Stokes walls. Exact module:
+  `StokesAnalyticWallRealization.lean`.
+- `[RESOLVED: GLOBAL JOINT NULLITY LAW]` Positivity on common-rank kernel now yields sharp joint
+  statement `sigNeg Q + finrank(radical Q) <= 1`, not merely separate upper bounds. Rank kernel is
+  positive definite and therefore contributes to `sigPos`; rank-nullity for common-rank functional
+  and Sylvester signature identity leave at most one dimension for negative plus radical parts.
+  Same theorem holds for every nonnegative global multi-Rees specialization. Exact module:
+  `StokesGlobalPuiseuxWittLaw.lean`.
+- Direct checks of both modules pass. Axiom audit reports only standard `propext`,
+  `Classical.choice`, and `Quot.sound`. Repository-wide formal lint reaches unrelated existing
+  umbrella error: `GaloisForLFunctions.RHTower.DeningerStageZeroCohomology` is unreachable from
+  `RHTower` umbrella; no Stokes-module lint violation was reported before that gate.

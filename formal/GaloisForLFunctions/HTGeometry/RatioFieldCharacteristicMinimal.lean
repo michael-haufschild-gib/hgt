@@ -111,16 +111,16 @@ theorem isMinimal_descend_normalized (G : IntermediateField F E) (hGclosed : Der
   have hQtotal : (MvPolynomial.map (IntermediateField.inclusion hle :
         characteristicDifferentialRatioField G P n →ₐ[F] G).toRingHom Q).totalDegree
       = Q.totalDegree :=
-    totalDegree_map_eq hinj Q
+    mvPolynomial_totalDegree_map_eq hinj Q
   have hP₁order : scalarDifferentialPolynomialOrder P₁ = scalarDifferentialPolynomialOrder P :=
     order_descend_normalized_eq G hGclosed P hn
   have hP₁leader : scalarDifferentialPolynomialLeaderDegree P₁ =
       scalarDifferentialPolynomialLeaderDegree P :=
     leaderDegree_descend_normalized_eq G hGclosed P hn
   have hP₁total : P₁.totalDegree = P.totalDegree := by
-    have hmap := totalDegree_map_eq hinj P₁
+    have hmap := mvPolynomial_totalDegree_map_eq hinj P₁
     rw [hP₁, HTGeometry.map_descendCoefficients] at hmap
-    rw [hP₁, ← hmap, totalDegree_C_mul_eq (inv_ne_zero hn)]
+    rw [hP₁, ← hmap, mvPolynomial_totalDegree_C_mul_eq (inv_ne_zero hn)]
   refine ⟨?_, ?_, ?_⟩
   · rw [hP₁order, ← hQorder]
     exact hcmp.1

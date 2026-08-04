@@ -106,8 +106,7 @@ theorem localPositiveForm_nonneg {r s A B : ℕ}
   by_cases hx : x = 0
   · subst x
     simp [localPositiveForm_apply, OrbitCoareaDatum.terminalEnergy,
-      OrbitCoareaDatum.blockEnergy, OrbitCoareaDatum.cutCharge,
-      OrbitCoareaDatum.liftCharge]
+      OrbitCoareaDatum.blockEnergy, OrbitCoareaDatum.liftCharge]
   · exact (localPositiveForm_pos d hx).le
 
 /-- Local coefficient-generated Cartan form. -/
@@ -286,11 +285,47 @@ theorem radical_finrank_le_one_of_pos_on_ker
   have hdim := f.finrank_le_finrank_of_injective hf
   simpa using hdim
 
+/-- Positivity on one linear hyperplane forces the sum of negative inertia and nullity to be at
+most one.  This is stronger than bounding the two quantities separately: a negative line and a
+radical line cannot coexist. -/
+theorem sigNeg_add_radical_finrank_le_one_of_pos_on_ker
+    {M : Type*} [AddCommGroup M] [Module ℝ M] [FiniteDimensional ℝ M]
+    (Q : QuadraticForm ℝ M) (ell : M →ₗ[ℝ] ℝ)
+    (hpos : ∀ {x : M}, ell x = 0 → x ≠ 0 → 0 < Q x) :
+    sigNeg Q + Module.finrank ℝ Q.radical ≤ 1 := by
+  have hkerPos : (Q.restrict ell.ker).PosDef := by
+    intro x hx
+    exact hpos x.2 (by
+      intro hzero
+      apply hx
+      exact Subtype.ext hzero)
+  have hkerle : Module.finrank ℝ ell.ker ≤ sigPos Q :=
+    le_sigPos_of_posDef Q hkerPos
+  have hrange : Module.finrank ℝ ell.range ≤ 1 := by
+    calc
+      Module.finrank ℝ ell.range ≤ Module.finrank ℝ ℝ := Submodule.finrank_le _
+      _ = 1 := Module.finrank_self ℝ
+  have hrank := LinearMap.finrank_range_add_finrank_ker ell
+  have hsignature := Q.sigPos_add_sigNeg_add_radical
+  omega
+
 /-- The coefficient-generated global form has radical dimension at most one. -/
 theorem globalWittForm_radical_finrank_le_one (genus : ℕ)
     (d : LocalData p n m K N) :
     Module.finrank ℝ (globalWittForm genus d).radical ≤ 1 := by
   apply radical_finrank_le_one_of_pos_on_ker
+    (globalWittForm genus d) (commonRankLinear d)
+  intro x hrank hx
+  exact globalWittForm_pos_of_commonRank_eq_zero genus d hrank hx
+
+/-- **Global coefficient-generated nonpositive-channel law.** Negative inertia plus radical
+dimension is at most one.  Thus the unique physical-rank channel can be negative or null, but the
+two defects cannot occur independently. -/
+theorem globalWittForm_sigNeg_add_radical_finrank_le_one (genus : ℕ)
+    (d : LocalData p n m K N) :
+    sigNeg (globalWittForm genus d) +
+      Module.finrank ℝ (globalWittForm genus d).radical ≤ 1 := by
+  apply sigNeg_add_radical_finrank_le_one_of_pos_on_ker
     (globalWittForm genus d) (commonRankLinear d)
   intro x hrank hx
   exact globalWittForm_pos_of_commonRank_eq_zero genus d hrank hx
@@ -465,6 +500,19 @@ theorem globalReesWittForm_radical_finrank_le_one
     (hparameter : ∀ a edge, 0 ≤ parameter a edge) :
     Module.finrank ℝ (globalReesWittForm genus d parameter).radical ≤ 1 := by
   apply radical_finrank_le_one_of_pos_on_ker
+    (globalReesWittForm genus d parameter) (commonRankLinear d)
+  intro x hrank hx
+  exact globalReesWittForm_pos_of_commonRank_eq_zero
+    genus d parameter hparameter hrank hx
+
+/-- Every nonnegative multi-Rees specialization preserves the single global nonpositive channel:
+negative inertia plus radical dimension remains at most one. -/
+theorem globalReesWittForm_sigNeg_add_radical_finrank_le_one
+    (genus : ℕ) (d : LocalData p n m K N) (parameter : ReesParameter d)
+    (hparameter : ∀ a edge, 0 ≤ parameter a edge) :
+    sigNeg (globalReesWittForm genus d parameter) +
+      Module.finrank ℝ (globalReesWittForm genus d parameter).radical ≤ 1 := by
+  apply sigNeg_add_radical_finrank_le_one_of_pos_on_ker
     (globalReesWittForm genus d parameter) (commonRankLinear d)
   intro x hrank hx
   exact globalReesWittForm_pos_of_commonRank_eq_zero

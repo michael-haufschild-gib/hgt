@@ -12,8 +12,10 @@ and, by the quantitative separation, at most one frequency can be within `δ`.  
 frequency except at most one the sum is damped: the exceptional frequency of Halász's theorem is
 unique, and away from it the bound is uniform.
 
-Nothing here identifies the exceptional frequency or bounds `δ` from below; that is the analytic
-content the elementary theory does not supply.
+Nothing here identifies the exceptional frequency.  A lower bound for `δ` is a separate, analytic
+matter; for the Möbius function `MoebiusUniformFrequency.lean` supplies one that is uniform over a
+whole frequency range, resting on the zero-free strip and on the nonvanishing of `(s − 1)ζ(s)`
+across the pole.
 -/
 
 namespace RHTower.Sieve

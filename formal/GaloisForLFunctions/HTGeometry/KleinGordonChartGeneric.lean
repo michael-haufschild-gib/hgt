@@ -61,7 +61,7 @@ theorem hasDerivAt_kgChartOf_zero {F F' : ℝ → EuclideanSpace ℝ (Fin d) →
     funext r
     rw [kgChartOf, kgSpatial_update_zero, Function.update_self]
   rw [hfun]
-  exact hasDerivAt_re (hasDerivAt_kgSynthesis_time (N := N) hdim hmeas hmeas' hderiv hbound'
+  exact hasDerivAt_reOfComplex (hasDerivAt_kgSynthesis_time (N := N) hdim hmeas hmeas' hderiv hbound'
     (kgSpatial d y) (y 0) (hint (y 0)))
 
 /-! ## A spatial coordinate -/
@@ -85,7 +85,7 @@ theorem hasDerivAt_kgChartOf_succ {F : ℝ → EuclideanSpace ℝ (Fin d) → �
       ((kgSynthesis (kgDirDensity V (F (y 0))) X).re) 0 := by
     have hcomplex := hasDerivAt_kgSynthesis_dir_synthesis (hmeas (y 0)) (hint (y 0))
       (h1 (y 0)) X V 0
-    have hre := hasDerivAt_re hcomplex
+    have hre := hasDerivAt_reOfComplex hcomplex
     refine hre.congr_deriv ?_
     congr 1
     rw [zero_smul, add_zero]
