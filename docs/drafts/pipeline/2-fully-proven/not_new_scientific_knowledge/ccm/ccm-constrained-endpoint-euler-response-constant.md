@@ -821,8 +821,34 @@ with no imported asymptotic.  Gaussian and polynomial trials cannot reach it —
 Kaiser–Bessel window is what makes the in-band mass grow like `e^(2c)/c²` against an aperture-free
 tail.
 
+The trivial half of the envelope — `‖B_c‖ <= 1` — is *not* formal (the kernel is not small) but
+spectral, and it is now proved in `RHTower/BandOperatorContraction.lean`, which also turns the envelope
+into an aperture limit:
+
+- `isFiniteMeasure_intervalVolume`, `compactSpace_interval`, `denseRange_toLp_interval` — the band
+  subtype is a compact space carrying a finite measure, so its measure is automatically weakly regular
+  and the continuous functions are dense in `L²[-1, 1]`.
+- `exists_continuous_bandClass_eq` — every continuous function on the band is the restriction of a
+  continuous function on the line (`IccExtend`), so the corpus's band classes exhaust the range of
+  `toLp` and the density argument reaches all of the lemmas stated for test functions on the line.
+- `forall_of_continuous_of_isClosed` — the transfer principle: a closed property of `L²` classes that
+  holds on the continuous ones holds on all of them.
+- `inner_bandOperatorL2_nonneg`, `inner_bandOperatorL2_le_norm_sq` — hence the band form of *every*
+  `L²` class lies between `0` and its energy.  The upper half is the spectral-tail identity (the
+  deficit is an integral of a square); the lower half is the Fourier-energy reading of the form.
+- **`norm_bandOperatorL2_le_one`** — for a symmetric operator the norm is the supremum of the absolute
+  Rayleigh quotients, so the band operator is a positive contraction: `‖B_c‖ <= 1`.
+- **`abs_one_sub_norm_bandOperatorL2_le`** — combining with the envelope, `|1 - ‖B_c‖| <= 64 c² e^(-2c)`
+  for `c >= 1`.
+- **`tendsto_norm_bandOperatorL2_atTop`** — therefore `‖B_c‖ -> 1` as `c -> infinity`, at the
+  exponential rate: at large aperture the band operator is asymptotically the identity on its own
+  scale.
+
 What the envelope gate still needs is the matching *lower* bound `1 - ‖B_c‖ >= c_0 c^(1/2) e^(-2c)`
-and the antitonicity of the logarithmic derivative of the leakage.
+and the antitonicity of the logarithmic derivative of the leakage.  The lower bound is an upper bound
+on `‖B_c‖` with an exponentially small gap; the exact endpoint ODE `(4)` shows it is equivalent to a
+*lower* bound on the endpoint value `|psi_c(1)|²`, which is the differentiated form of the same
+classical asymptotic.
 
 ## Lean gates
 
@@ -856,6 +882,10 @@ and the antitonicity of the logarithmic derivative of the leakage.
   `1 - ‖B_c‖ <= 64 c² e^(-2c)` for `c >= 1`, from the Kaiser–Bessel trial: aperture-free out-of-band
   mass (shifted Cauchy kernels, folded and integrated) against exponentially growing in-band energy
   (`BandLeakageEnvelope.lean`, `one_sub_norm_bandOperatorL2_le_exp`)
+- [x] Lean: the band operator is a **positive contraction** — the band form of every `L²` class lies
+  between `0` and its energy (by density of the continuous test functions), hence `‖B_c‖ <= 1`; with
+  the envelope this gives `|1 - ‖B_c‖| <= 64 c² e^(-2c)` and `‖B_c‖ -> 1`
+  (`BandOperatorContraction.lean`, `tendsto_norm_bandOperatorL2_atTop`)
 - [ ] Lean: the matching **lower** leakage envelope for the true operator, and antitonicity of its
   logarithmic derivative — the last classical inputs
 - [x] Lean: the constrained ground-state ratio `8/11` derived from the prolate-to-Hermite coefficient

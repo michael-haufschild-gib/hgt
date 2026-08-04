@@ -112,6 +112,7 @@ import GaloisForLFunctions.RHTower.BandEdgePairing
 import GaloisForLFunctions.RHTower.BandEdgePairingConstruction
 import GaloisForLFunctions.RHTower.BandLeakageEnvelope
 import GaloisForLFunctions.RHTower.BandLeakageSpectralTail
+import GaloisForLFunctions.RHTower.BandOperatorContraction
 import GaloisForLFunctions.RHTower.BandFormBridge
 import GaloisForLFunctions.RHTower.BandFrequencyWindow
 import GaloisForLFunctions.RHTower.BandQuadraticFormFourier
@@ -3529,6 +3530,12 @@ import GaloisForLFunctions.RHTower.Sieve.MoebiusMeanSquareExplicit
 import GaloisForLFunctions.RHTower.Sieve.MoebiusMeanSquareNormalized
 import GaloisForLFunctions.RHTower.Sieve.NormalizedBoundLimit
 import GaloisForLFunctions.RHTower.Sieve.CoeffMajorantQuantitative
+import GaloisForLFunctions.RHTower.Sieve.ExpQuadraticQuantitative
+import GaloisForLFunctions.RHTower.Sieve.PolyExpQuantitative
+import GaloisForLFunctions.RHTower.Sieve.CoeffRatioQuantitative
+import GaloisForLFunctions.RHTower.Sieve.CoeffRatioRate
+import GaloisForLFunctions.RHTower.Sieve.MoebiusTwistRate
+import GaloisForLFunctions.RHTower.Sieve.MoebiusTwistSharpRate
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment
@@ -4532,6 +4539,7 @@ import GaloisForLFunctions.RHTower.TwistedMobiusPerronShift
 import GaloisForLFunctions.RHTower.TwistedMobiusPositiveExcursion
 import GaloisForLFunctions.RHTower.TwistedMobiusZeroObstruction
 import GaloisForLFunctions.RHTower.TwistedOrderLawTheta
+import GaloisForLFunctions.RHTower.TwistedMertensLittlewood
 import GaloisForLFunctions.RHTower.TwoBoundaryExteriorArityThreshold
 import GaloisForLFunctions.RHTower.TwoEdgeWindowAutocorrelation
 import GaloisForLFunctions.RHTower.TwoModeFuchsLimit
@@ -5648,3 +5656,4 @@ import GaloisForLFunctions.RHTower.DeningerCohomologyColimit
 import GaloisForLFunctions.RHTower.Sieve.ExpSumBernstein
 import GaloisForLFunctions.RHTower.DeningerResidueSequence
 import GaloisForLFunctions.RHTower.CCMRationalAdelicReflectedGaussianCartierComparison
+import GaloisForLFunctions.RHTower.CCMRationalAdelicCompletedXiFixedCoronaPolarization

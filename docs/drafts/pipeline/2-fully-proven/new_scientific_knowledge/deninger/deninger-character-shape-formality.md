@@ -286,6 +286,44 @@ and the generalisation of `multilinearMap_bound` to an arbitrary nontrivially no
   class of an invariant form to the class of its composition with the map of covers, which is
   exactly the pullback of invariant forms.
 
+**The identification with `Λ^*(L ⊗ ℝ)`, canonically.**
+`formal/GaloisForLFunctions/HTGeometry/ExteriorFormPairing.lean`,
+`.../TorusExteriorComparison.lean`.
+
+Evaluation at the identity is written down without choosing a basis: an element of
+`⋀^n(L ⊗ ℝ)` — the exterior power of the dual of the covering space `Hom(L,ℝ)` — defines an
+invariant `n`-form, on a product of linear forms the determinant of their values.
+
+- `formOfExterior`, `formOfExterior_ιMulti` — the alternating form of an element of the exterior
+  power of the dual, and its determinant formula.
+- `pairingDual_bijective`, `formOfExteriorEquiv` — mathlib builds the pairing
+  `⋀^n(M^∨) → (⋀^n M)^∨` but not its bijectivity; it is proved here for any module with a finite
+  basis, because the exterior products of the dual basis go to the dual basis of the exterior
+  products.
+- `formOfExterior_map_dualMap` — the identification is natural: transport along the exterior power
+  of the transpose is composition with the map.
+- `constantFormOfExterior`, `periodicCohomologyDualEquiv` — `H^{n+1}(T_L) ≅ Λ^{n+1}(L ⊗ ℝ)`,
+  canonically.
+- `periodicCohomologyDualEquiv_naturality` — **the comparison of `(2)` is a map of directed
+  systems**: pullback along a map of lattices on the cohomology side corresponds to the exterior
+  power of the transpose on the `Λ^*` side.
+
+**Differential forms in coordinates, and the wedge with a one-form.**
+`formal/GaloisForLFunctions/HTGeometry/FormWedge.lean`.
+
+- `exteriorConsMul`, `exteriorConsMul_ιMulti` — multiplication of an exterior power by a vector on
+  the left, one degree up, inherited from the exterior algebra.
+- `constantFormOfExterior_consMul` — under the identification with alternating forms this is the
+  cofactor expansion of a determinant along its first column, so it is the wedge with a one-form.
+- `extDeriv_smul_constantForm` — **the Leibniz rule in the case of a degree-zero factor**:
+  `d(f · c) = df ∧ c` for an invariant `c`.
+- `coordForm`, `coordFormBasis`, `constantForm_expansion` — the coordinate forms of the `n`-element
+  sets of coordinates are a basis of the invariant forms, and every invariant form is the sum of its
+  values on the corresponding tuples of basis vectors.
+- `form_coeff_differentiable`, `extDeriv_finset_sum`, `extDeriv_eq_sum_consMul` — **the exterior
+  derivative in coordinates**: the coefficients of a `C^1` form are `C^1`, and the exterior
+  derivative is the sum of the wedges of their differentials with the coordinate forms.
+
 ### What cannot be stated in Lean, and why
 
 - `C^*_sh(T_F;ℝ)` is the filtered colimit over `L` of the complexes `Ω^*(T_L;ℝ)`.  Every ingredient
@@ -293,8 +331,14 @@ and the generalisation of `multilinearMap_bound` to an arbitrary nontrivially no
   comparison in `L`, the exactness of filtered colimits (`directLimit_map_exact`), and the
   commutation of exterior powers with them (`exteriorPowerDirectLimitEquiv`,
   `deningerExterior_iSup_adjoin`).  What is not written down is the colimit of the complexes as a
-  single CDGA together with its multiplicative structure, which is a statement about commutative
-  differential graded algebras rather than about any one torus.
+  single CDGA together with its multiplicative structure.  The multiplicative half needs a wedge
+  product of differential forms and the Leibniz rule for `extDeriv`, neither of which mathlib has;
+  the algebraic side of it is available here, since `constantFormOfExterior` transports the whole
+  graded-algebra structure of `ExteriorAlgebra ℝ (L ⊗ ℝ)` onto the invariant forms, the wedge with a
+  one-form is `exteriorConsMul`, and the exterior derivative of an arbitrary form is expressed
+  through it by `extDeriv_eq_sum_consMul`.  What is left for the general Leibniz rule is moving a
+  one-form past a form of degree `p` (the sign `(-1)^p`) and the bookkeeping of the resulting double
+  sum.
 - `(3)` and `(4)` are statements about free `E_∞` `Hℝ`-algebras.  mathlib has no `E_∞`-algebras and
   no CDGA homotopy theory.  What survives is the algebraic content of "a free commutative algebra
   on generators in odd degree one is the exterior algebra": that is the universal property of
@@ -317,5 +361,9 @@ scalars.
   constant alternating forms, and the identification of those with `Λ^*` of the cover.  The
   statement "mathlib has no de Rham complex of a manifold, so this step cannot be written down" was
   wrong: the covering model needs only `extDeriv` and periodicity.  Also formalized the naturality
-  of the comparison in `L`, so every ingredient of `(2)` except the CDGA structure of the colimit is
-  now a theorem.
+  of the comparison in `L`, and made the identification with `Λ^*(L ⊗ ℝ)` canonical (basis-free)
+  by proving that mathlib's `exteriorPower.pairingDual` is bijective for a finite basis.  Every
+  ingredient of `(2)` except the CDGA structure of the colimit is now a theorem.  Also formalized
+  the wedge with a one-form, the degree-zero Leibniz rule, the coordinate basis of the invariant
+  forms and the exterior derivative in coordinates, which are the inputs of the general Leibniz
+  rule.

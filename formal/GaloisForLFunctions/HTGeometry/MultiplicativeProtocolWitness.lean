@@ -41,6 +41,54 @@ theorem prefixExponent_pos {m : ℕ → ℕ} (hm : ∀ j, 0 < m j) (i n : ℕ) :
   | zero => exact Nat.one_pos
   | succ n ih => exact Nat.mul_pos (hm i) (ih (i + 1))
 
+
+theorem prefixExponent_succ_right {m : ℕ → ℕ} (i n : ℕ) :
+    prefixExponent m i (n + 1) = prefixExponent m i n * m (i + n) := by
+  induction n generalizing i with
+  | zero => simp [prefixExponent]
+  | succ n ih =>
+      rw [prefixExponent_succ, ih (i + 1), prefixExponent_succ]
+      rw [show i + 1 + n = i + (n + 1) from by omega]
+      ring
+
+theorem prefixExponent_dvd_succ {m : ℕ → ℕ} (i n : ℕ) :
+    prefixExponent m i n ∣ prefixExponent m i (n + 1) :=
+  ⟨m (i + n), prefixExponent_succ_right i n⟩
+
+theorem prefixExponent_dvd_of_le {m : ℕ → ℕ} (i : ℕ) {n n' : ℕ} (h : n ≤ n') :
+    prefixExponent m i n ∣ prefixExponent m i n' := by
+  induction n' with
+  | zero =>
+      rw [Nat.le_zero] at h
+      rw [h]
+  | succ n' ih =>
+      rcases Nat.lt_or_ge n (n' + 1) with hlt | hge
+      · exact (ih (Nat.lt_succ_iff.mp hlt)).trans (prefixExponent_dvd_succ i n')
+      · rw [Nat.le_antisymm h hge]
+
+theorem prefixExponent_le_of_le {m : ℕ → ℕ} (hm : ∀ j, 0 < m j) (i : ℕ) {n n' : ℕ} (h : n ≤ n') :
+    prefixExponent m i n ≤ prefixExponent m i n' :=
+  Nat.le_of_dvd (prefixExponent_pos hm i n') (prefixExponent_dvd_of_le i h)
+
+/-- **A bounded multiplicative protocol stabilizes.**  The accumulated exponents are monotone, so a
+bounded family is eventually constant at its supremum. -/
+theorem exists_stable_prefixExponent {m : ℕ → ℕ} (hm : ∀ j, 0 < m j) (i : ℕ) {B : ℕ}
+    (hB : ∀ n, prefixExponent m i n ≤ B) :
+    ∃ N k : ℕ, 0 < N ∧ ∀ n, k ≤ n → prefixExponent m i n = N := by
+  classical
+  set s : Set ℕ := Set.range fun n ↦ prefixExponent m i n with hs
+  have hne : s.Nonempty := ⟨prefixExponent m i 0, ⟨0, rfl⟩⟩
+  have hbdd : BddAbove s := by
+    refine ⟨B, ?_⟩
+    rintro _ ⟨n, rfl⟩
+    exact hB n
+  obtain ⟨k, hk⟩ : sSup s ∈ s := Nat.sSup_mem hne hbdd
+  refine ⟨prefixExponent m i k, k, prefixExponent_pos hm i k, fun n hn ↦ ?_⟩
+  have hle : prefixExponent m i k ≤ prefixExponent m i n := prefixExponent_le_of_le hm i hn
+  have hge : prefixExponent m i n ≤ sSup s := le_csSup hbdd ⟨n, rfl⟩
+  have hk' : prefixExponent m i k = sSup s := hk
+  omega
+
 section
 
 variable {g : E} (hg : DifferentialIndependent C (fun _ : Unit ↦ g))

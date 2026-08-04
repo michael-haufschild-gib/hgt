@@ -37,6 +37,18 @@ theorem fact_add (p q : Polynomial ℂ) (j : ℕ) :
     fact (p + q) j = fact p j + fact q j := by
   rw [fact_eq_aeval, fact_eq_aeval, fact_eq_aeval, map_add]
 
+theorem fact_mul (p q : Polynomial ℂ) (j : ℕ) :
+    fact (p * q) j = fact p j * fact q j := by
+  rw [fact_eq_aeval, fact_eq_aeval, fact_eq_aeval, map_mul]
+
+theorem fact_pow (p : Polynomial ℂ) (n j : ℕ) :
+    fact (p ^ n) j = fact p j ^ n := by
+  rw [fact_eq_aeval, fact_eq_aeval, map_pow]
+
+theorem fact_sub (p q : Polynomial ℂ) (j : ℕ) :
+    fact (p - q) j = fact p j - fact q j := by
+  rw [fact_eq_aeval, fact_eq_aeval, fact_eq_aeval, map_sub]
+
 theorem fact_monomial (a : ℂ) (n j : ℕ) :
     fact (Polynomial.C a * Polynomial.X ^ n) j
       = algebraMap ℂ CascadeField a * fx j ^ n := by

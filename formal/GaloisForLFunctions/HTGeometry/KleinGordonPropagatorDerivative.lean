@@ -118,7 +118,7 @@ theorem tendsto_kgCosSlope (t : ℝ) (ξ : E) :
       (-Real.sin (t * kgFreq ξ)) t := by
     have h := (hasDerivAt_cosFreq ξ t).div_const (kgFreq ξ)
     have heq : -(kgFreq ξ * Real.sin (t * kgFreq ξ)) / kgFreq ξ = -Real.sin (t * kgFreq ξ) := by
-      field_simp
+      rw [neg_div, mul_comm, mul_div_assoc, div_self (kgFreq_pos ξ).ne', mul_one]
     rwa [heq] at h
   have hs := hd.tendsto_slope
   have hcongr : ∀ s : ℝ, slope (fun r : ℝ => Real.cos (r * kgFreq ξ) / kgFreq ξ) t s
@@ -126,7 +126,6 @@ theorem tendsto_kgCosSlope (t : ℝ) (ξ : E) :
     intro s
     rw [slope_def_field]
     field_simp
-    ring
   have hreal : Tendsto
       (fun s : ℝ => (s - t)⁻¹ * (Real.cos (s * kgFreq ξ) - Real.cos (t * kgFreq ξ)) / kgFreq ξ)
       (nhdsWithin t {t}ᶜ) (nhds (-Real.sin (t * kgFreq ξ))) := by
@@ -140,7 +139,7 @@ theorem tendsto_kgSinSlope (t : ℝ) (ξ : E) :
       (Real.cos (t * kgFreq ξ)) t := by
     have h := (hasDerivAt_sinFreq ξ t).div_const (kgFreq ξ)
     have heq : kgFreq ξ * Real.cos (t * kgFreq ξ) / kgFreq ξ = Real.cos (t * kgFreq ξ) := by
-      field_simp
+      rw [mul_comm, mul_div_assoc, div_self (kgFreq_pos ξ).ne', mul_one]
     rwa [heq] at h
   have hs := hd.tendsto_slope
   have hcongr : ∀ s : ℝ, slope (fun r : ℝ => Real.sin (r * kgFreq ξ) / kgFreq ξ) t s
@@ -148,7 +147,6 @@ theorem tendsto_kgSinSlope (t : ℝ) (ξ : E) :
     intro s
     rw [slope_def_field]
     field_simp
-    ring
   have hreal : Tendsto
       (fun s : ℝ => (s - t)⁻¹ * (Real.sin (s * kgFreq ξ) - Real.sin (t * kgFreq ξ)) / kgFreq ξ)
       (nhdsWithin t {t}ᶜ) (nhds (Real.cos (t * kgFreq ξ))) := by
@@ -159,10 +157,9 @@ end Symbols
 
 /-! ## The regularised propagators -/
 
-section Operators
+section SymbolsMeasurable
 
 variable {E : Type*} [NormedAddCommGroup E] [MeasurableSpace E] [BorelSpace E]
-  [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
 
 theorem measurable_kgCosOverFreq (t : ℝ) : Measurable (kgCosOverFreq (E := E) t) :=
   (continuous_kgCosOverFreq t).measurable
@@ -175,6 +172,17 @@ theorem measurable_kgCosSlope (t s : ℝ) : Measurable (kgCosSlope (E := E) t s)
 
 theorem measurable_kgSinSlope (t s : ℝ) : Measurable (kgSinSlope (E := E) t s) :=
   (continuous_kgSinSlope t s).measurable
+
+end SymbolsMeasurable
+
+section Operators
+
+variable {E : Type*} [NormedAddCommGroup E] [MeasurableSpace E] [BorelSpace E]
+  [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+
+/-- A real scalar acts on `L²` through its complex image. -/
+private theorem real_smul_lp (r : ℝ) (y : Lp (α := E) ℂ 2) : ((r : ℂ)) • y = r • y := by
+  rw [← Complex.coe_algebraMap, algebraMap_smul]
 
 theorem kgFreqInvOp_eq : kgFreqInvOp (E := E)
     = fourierMulCLM (measurable_kgFreqInv (E := E)) zero_le_one norm_kgFreqInv_le := rfl
@@ -234,10 +242,12 @@ theorem slope_kgCosOp_freqInv (t s : ℝ) (g : Lp (α := E) ℂ 2) :
     rw [← Complex.ofReal_sub, ← Complex.ofReal_mul]
     congr 1
     field_simp
-  rw [hsmul, hsub, slope_def_module, ← Complex.real_smul]
-  simp only [map_sub, ContinuousLinearMap.sub_apply, ContinuousLinearMap.coe_smul', Pi.smul_apply]
-  rw [← kgCosOp_comp_kgFreqInvOp, ← kgCosOp_comp_kgFreqInvOp]
-  rfl
+  have hrw : ∀ r : ℝ, (fourierMulCLM (measurable_kgCosOverFreq (E := E) r) zero_le_one
+      (norm_kgCosOverFreq_le r)) g = kgCosOp r (kgFreqInvOp g) := by
+    intro r
+    rw [← kgCosOp_comp_kgFreqInvOp]
+    rfl
+  rw [hsmul, hsub, slope_def_module, smul_apply, sub_apply, hrw, hrw, real_smul_lp]
 
 /-- The difference quotient of the regularised sine propagator is itself a multiplier. -/
 theorem slope_kgSinOp_freqInv (t s : ℝ) (g : Lp (α := E) ℂ 2) :
@@ -270,10 +280,12 @@ theorem slope_kgSinOp_freqInv (t s : ℝ) (g : Lp (α := E) ℂ 2) :
     rw [← Complex.ofReal_sub, ← Complex.ofReal_mul]
     congr 1
     field_simp
-  rw [hsmul, hsub, slope_def_module, ← Complex.real_smul]
-  simp only [map_sub, ContinuousLinearMap.sub_apply, ContinuousLinearMap.coe_smul', Pi.smul_apply]
-  rw [← kgSinOp_comp_kgFreqInvOp, ← kgSinOp_comp_kgFreqInvOp]
-  rfl
+  have hrw : ∀ r : ℝ, (fourierMulCLM (measurable_kgSinOverFreq (E := E) r) zero_le_one
+      (norm_kgSinOverFreq_le r)) g = kgSinOp r (kgFreqInvOp g) := by
+    intro r
+    rw [← kgSinOp_comp_kgFreqInvOp]
+    rfl
+  rw [hsmul, hsub, slope_def_module, smul_apply, sub_apply, hrw, hrw, real_smul_lp]
 
 /-! ## The derivatives -/
 
@@ -283,9 +295,10 @@ theorem hasDerivAt_kgCosOp_freqInv (t : ℝ) (g : Lp (α := E) ℂ 2) :
     HasDerivAt (fun s : ℝ => kgCosOp s (kgFreqInvOp g)) (-(kgSinOp t g)) t := by
   rw [hasDerivAt_iff_tendsto_slope]
   have hneg : Measurable fun ξ : E => ((-Real.sin (t * kgFreq ξ) : ℝ) : ℂ) := by
-    have : Measurable fun ξ : E => ((Real.sin (t * kgFreq ξ) : ℝ) : ℂ) :=
-      measurable_kgSinPhase (E := E) t
-    exact this.neg
+    have hcont : Continuous fun ξ : E => ((-Real.sin (t * kgFreq ξ) : ℝ) : ℂ) :=
+      Complex.continuous_ofReal.comp
+        ((Real.continuous_sin.comp (continuous_const.mul continuous_kgFreq)).neg)
+    exact hcont.measurable
   have hnegb : ∀ ξ : E, ‖((-Real.sin (t * kgFreq ξ) : ℝ) : ℂ)‖ ≤ 1 := by
     intro ξ
     rw [Complex.norm_real, Real.norm_eq_abs, abs_neg]
@@ -337,6 +350,14 @@ on which the propagator is differentiable. -/
 def kgRegular (g : KGEnergy E) : KGEnergy E :=
   kgPair E (kgFreqInvOp g.fst, kgFreqInvOp g.snd)
 
+theorem kgPropagator_kgRegular (s : ℝ) (g : KGEnergy E) :
+    kgPropagator s (kgRegular g)
+      = kgPair E (kgCosOp s (kgFreqInvOp g.fst) + kgSinOp s (kgFreqInvOp g.snd),
+          -(kgSinOp s (kgFreqInvOp g.fst)) + kgCosOp s (kgFreqInvOp g.snd)) := by
+  rw [kgPropagator_apply, kgRegular]
+  simp only [kgPair_fst, kgPair_snd]
+
+set_option maxHeartbeats 1000000 in
 /-- **The propagator is differentiable on regular data**, with the derivative given by the generator
 evaluated at the regularising vector. -/
 theorem hasDerivAt_kgPropagator_regular (t : ℝ) (g : KGEnergy E) :
@@ -351,9 +372,13 @@ theorem hasDerivAt_kgPropagator_regular (t : ℝ) (g : KGEnergy E) :
       (fun s : ℝ => -(kgSinOp s (kgFreqInvOp g.fst)) + kgCosOp s (kgFreqInvOp g.snd))
       (-(kgCosOp t g.fst) + -(kgSinOp t g.snd)) t :=
     ((hasDerivAt_kgSinOp_freqInv t g.fst).neg).add (hasDerivAt_kgCosOp_freqInv t g.snd)
-  have hpair := (kgPair E).hasFDerivAt.comp_hasDerivAt t (h1.prodMk h2)
-  refine hpair.congr_deriv rfl |>.congr_of_eventuallyEq ?_
-  exact Filter.Eventually.of_forall fun s => rfl
+  have hL : HasFDerivAt (fun w : (Lp (α := E) ℂ 2) × (Lp (α := E) ℂ 2) => kgPair E w)
+      ((kgPair E).restrictScalars ℝ)
+      (kgCosOp t (kgFreqInvOp g.fst) + kgSinOp t (kgFreqInvOp g.snd),
+        -(kgSinOp t (kgFreqInvOp g.fst)) + kgCosOp t (kgFreqInvOp g.snd)) :=
+    ((kgPair E).restrictScalars ℝ).hasFDerivAt
+  simp only [kgPropagator_kgRegular]
+  exact hL.comp_hasDerivAt t (h1.prodMk h2)
 
 end Regular
 

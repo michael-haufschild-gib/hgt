@@ -1033,3 +1033,11 @@ zero-hidden section.  Remaining RH-strength statement is no longer a metric, coe
 comparison: derive from source structure that the Hodge-mate coefficient in the actual resolved
 atom is zero, equivalently that the zero-hidden physical atom itself belongs to the harmonic graph.
 No such annihilation, and therefore no RH proof, is claimed here.
+
+Formal status: `[FORMALISED IN LEAN]` in
+`GaloisForLFunctions/RHTower/CCMRationalAdelicCompletedXiFixedCoronaPolarization.lean`.
+The module proves the fixed-polarization isometry, comparison injectivity, actual completed Hodge
+action on the coordinate line, unique hidden untwisting, zero-hidden physical landing, exact
+resolved-graph landing, retained leading-jet nonerasure, and the rational-adelic atom
+specializations.  Direct Lean check and targeted module build pass.  The axiom audit reports only
+`propext`, `Classical.choice`, and `Quot.sound`.

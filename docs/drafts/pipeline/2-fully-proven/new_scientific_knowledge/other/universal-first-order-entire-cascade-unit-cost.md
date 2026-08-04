@@ -7488,3 +7488,147 @@ degree rather than affine.
 
 With `d ≡ 1` this is the linear-column statement the tower used; the corpus now owns the general form,
 which is what the rational model's induction needs.
+
+### The diagonal of the height induction
+
+The induction's diagonal entry asks whether the multiplier of a coordinate jet really depends on its
+own coordinate.  At the newest coordinate the multiplier is the rational function
+
+`W = Q'·v/Q + α·Q`,
+
+and it is constant in that coordinate exactly when the polynomial Wronskian of the cleared numerator
+`N = Q'·v + α·Q²` against `Q` vanishes.  `HTGeometry/TerminalWronskian.lean` (axiom-clean) settles it:
+
+`N'·Q − N·Q' = α·Q²·Q' + ((Q'v)'·Q − (Q')²·v)`  (`terminalWronskian_expand`),
+
+where for `deg Q ≥ 1`, linear `v` and `α ≠ 0` the first term has degree exactly `3·deg Q − 1` and the
+rest at most `2·deg Q − 1`, so the Wronskian is nonzero (`terminalWronskian_ne_zero`).
+
+Two things worth recording.  The hypothesis `deg Q ≥ 1` is **necessary**, not an artefact: for constant
+`Q` the multiplier is genuinely independent of the coordinate and the induction's diagonal really
+vanishes.  In the cascade of first-order linear maps this is automatic, since `Q_j = a_j·(X − d_(j−1))`
+always carries the linear factor — the same reason the analytic states are transcendental.  And the
+exponential tower is the case `Q = v = X`, where the Wronskian is `α·X²`: the tower sat at the
+simplest point of a family whose general member needs this degree computation.
+
+This was checked by hand at the first nontrivial height before formalising — for a two-map cascade the
+condition reduces to `(X − d)(a'/a + a) ≢ const`, which fails only for `a ≡ 0`.
+
+### The diagonal, in the model
+
+`HTGeometry/ProductLawDiagonal.lean` (axiom-clean) carries the polynomial Wronskian statement into the
+rational model.
+
+* `totalLog_split` — the multiplier at level `m+2` is `logSum_(m+1) + (∏_(j≤m)Q_j)·(bracket)`, with the
+  first two factors free of the coordinate `m+1`;
+* `terminal_bracket_eq` — the bracket is the quotient `N(X_(m+1))/Q_(m+1)(X_(m+1))` of the cleared
+  numerator by the denominator (needing `fact_mul`, `fact_pow`, `fact_sub`, added to the model layer);
+* `fpderiv_terminal_bracket` — its coordinate derivative is the Wronskian over the square, by the
+  quotient rule in the field;
+* `fpderiv_totalLog_ne_zero` — hence
+
+  `∂_(m+1) (multiplier at level m+2) = (∏_(j≤m)Q_j) · W(X_(m+1)) / Q_(m+1)(X_(m+1))² ≠ 0`
+
+  whenever `Q_(m+1)` is nonconstant, `v_(m+1)` has degree at most one, and the terminal slope above is
+  nonzero.
+
+That is the induction's diagonal in the form the determinant argument consumes — the analogue of the
+tower's `sumJacobian 1 0 0 = 1`, where the general case needs the Wronskian and the tower's needs
+nothing.
+
+### The chain assembled, and the exact point of departure from the tower
+
+`HTGeometry/ProductLawAssembly.lean` (axiom-clean) chains the top reduction with the Bell
+identification and machine-checks that the bricks compose:
+
+`prodOutput_det_ne_zero_of_headJetJacobian` — the output-jet Jacobian of the newest coordinate of a
+linear-terminal product law is nonzero as soon as the jet Jacobian of the **head product**
+`∏_(j≤m) Q_j(X_j)` is.  (Scalars pass through the jets, `iterate_prodDerivation_algebraMap_mul`, so
+the slope `α` only contributes `α^m` to the determinant.)
+
+Assembling it made the remaining gap precise, and it is not where the earlier notes guessed.  The
+tower's chain is `X_(m+1) → M_m → S_(m−1)`: the driver's multiplier is free of the coordinate being
+eliminated, because `δM_m/M_m = ∑_(i≤m) M_i/X_i` and **each term cancels**, `M_i/X_i = M_(i−1)`.  For a
+general product law the corresponding multiplier is
+
+`δ(∏_(j≤m)Q_j)/∏_(j≤m)Q_j = ∑_(j≤m) (Q_j'/Q_j)(X_j)·δX_j`,
+
+whose top term `(Q_m'/Q_m)(X_m)·∏_(j<m)Q_j·v_m(X_m)` does **not** cancel unless `Q_m = v_m` — which is
+exactly the tower's case.  So the terminal-scaled Bell reduction cannot be applied a second time, and
+the head-product Jacobian has to be handled by a leading-term analysis in the eliminated coordinate,
+using the column-degree extraction built earlier.
+
+That single statement — `headJetJacobian Q v m ≠ 0` — is now the only thing between the corpus and
+`ord = n` for every cascade of first-order **linear** entire maps with polynomial coefficients, the
+family that contains all compositions of `d + c·exp(A(w))`.
+
+### Row reduction when no column is distinguished
+
+The corpus's terminal-scaled reduction assumes the last derivation kills the multiplier's jets, which
+puts the whole `H`-dependence of the last column into a single factor.  A general product law does not
+satisfy that, so `HTGeometry/UniformScaledDeterminant.lean` (axiom-clean) provides the reduction that
+survives without it.
+
+For jets `δ^i H = H·B_i` of a logarithmically linear element, the Jacobian has rows
+
+`∂_j(δ^i H) = H·∂_j B_i + B_i·∂_j H`,
+
+with first row `∂_j H` because `B_0 = 1`.  Subtracting `B_i` times that row from every later row leaves
+`H·∂_j B_i` (`uniformScaledMatrix_det_eq_reduced`), and scaling the `n` rows out gives
+
+`det = H^n · det(bordered)`,   `bordered = (first row `∂_j H`, later rows `∂_j B_i`)`
+
+(`uniformScaledMatrix_det`).  No column is distinguished, so the result is a *bordered* determinant
+rather than a product of a cofactor with a smaller determinant — and that is the honest shape of the
+general case: expanding along the first row gives `∑_j ±(∂_j H)·(maximal minor of the Bell Jacobian)`,
+a combination that has to be shown nonzero rather than a single surviving term.
+
+Where the tower gets one term, the general law gets a sum; whether it cancels is exactly the remaining
+question, and it is now a finite, explicit determinant identity rather than an analytic one.
+
+### The head Jacobian is a bordered determinant
+
+`HTGeometry/ProductLawHeadReduction.lean` (axiom-clean) applies the uniform reduction to the object the
+assembly left open.
+
+The head product is logarithmically linear, so `headJetJacobian_eq_uniform` identifies its Jacobian
+with `uniformScaledMatrix`, and
+
+`headJetJacobian_det_eq` :  `det = (∏_(j≤m)Q_j)^n · det(bordered)`,
+
+where the bordered matrix has first row the gradient of the head product and later rows the gradients
+of the Bell values of its multiplier (`headJetJacobian_det_ne_zero_of_bordered`).
+
+So the whole chain for a linear-coefficient cascade is now:
+
+`output-jet Jacobian of X_(m+1)`
+  → (affine top reduction) `Jacobian of the coefficients of α·∏Q_j`
+  → (Bell unitriangularity) `Jacobian of the jets of ∏Q_j`
+  → (uniform row reduction) `(∏Q_j)^n · det(bordered Bell Jacobian)`,
+
+each step machine-checked, with one explicit finite determinant left.  Every analytic ingredient is
+discharged; what remains is an identity about gradients of Bell polynomials in the rational model.
+
+### The Bell rows factor through the universal unit matrix
+
+`HTGeometry/ProductLawBellFactorization.lean` (axiom-clean):
+
+* `prodBell_eq_genJetA` — the product law's Bell iterates are the general affine jet coefficients, so
+  the whole generic Bell layer applies to them;
+* `fpderiv_prodBell_succ` — the gradient of a Bell value is a **universal** combination of the
+  gradients of the jets of the multiplier,
+
+  `∂_j B_(r+1) = ∑_k  c_(k,r) · ∂_j (δ^k U)`,   `c = bellCoordinateJacobian` evaluated at the jets,
+
+  with coefficients independent of which derivation `∂_j` is applied.
+
+That last independence is what makes the bordered case work.  The corpus's Bell-Jacobian identity is
+stated for a square block of derivations; here the Bell block is rectangular — `n` Bell rows against
+`n+1` derivations — and the identity survives because it holds entrywise in the derivation.  Since the
+coefficient matrix is unitriangular with determinant one, replacing the Bell rows by jet rows changes
+no determinant, and the border row is untouched.
+
+The remaining step is that determinant bookkeeping: `bordered(Bell) = D · bordered(jets)` with
+`det D = 1`, after which the open question is a bordered determinant of gradients of jets of the
+logarithmic sum — with the border row being the sum's own coefficient vector
+`(Q_j'/Q_j)(X_j)`, a coincidence the final argument should exploit.

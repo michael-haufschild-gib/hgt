@@ -405,11 +405,14 @@ Built, wired into `GaloisForLFunctions/RHTower.lean`, axiom-clean (nineteen theo
 
 ### What remains
 
-**Superseded — see "The mean square, unconditionally" and "Step 1 of the Hall-law argument,
-unconditionally" below.** `(15)`–`(18)` no longer rest on a cited result: the mean square is derived
-in this corpus from the zero-free region, through the twisted contour argument and Gallagher's
-reduction, and step 1 consumes it with no analytic hypothesis. The paragraph below records the state
-before that work.
+**Partially superseded — see "The mean square, unconditionally", "Step 1 of the Hall-law argument,
+unconditionally" and, for the correct scope of that work, "Window range of the derived mean square"
+at the end of this card.** A mean square of the shape `(15)` *is* now derived in this corpus from the
+zero-free region, through the twisted contour argument and Gallagher's reduction, and step 1 consumes
+it with no analytic hypothesis. But the derivation is only nontrivial for **long** windows,
+`L ≳ N·exp(−c(log N)^{1/10})`, whereas `(15)` is applied here at `L_k/A_k ≍ h/√X = X^{−1/2+o(1)}`.
+So `(15)`–`(18)` at the parameters this card needs still rest on the cited theorem; the paragraph
+below remains the accurate description of that dependency.
 
 `(15)`–`(18)` rest on Menon's 2026 mean-square theorem for Möbius in short intervals, a cited
 published analytic result; nothing in mathlib or the corpus approaches it, and `(18)` is its Markov
@@ -450,8 +453,10 @@ Built, wired, axiom-clean (seven theorems; `markerBlock_start_ge` needs only
 
 ### Status
 
-**Superseded.** `(15)`–`(17)` are now derived in-corpus; see the sections at the end of this card.
-The paragraph below records the state before that work.
+**Partially superseded.** A `(15)`-shaped mean square is now derived in-corpus from the zero-free
+region (see the sections at the end of this card), but only in the long-window range
+`L ≳ N·exp(−c(log N)^{1/10})`, which does not contain this card's parameters. The paragraph below
+remains accurate for `(15)`–`(17)` as used here.
 
 Everything this card proves is now an unconditional Lean theorem except `(15)`–`(17)`, which are
 Menon's 2026 mean-square theorem for Möbius in short intervals — a cited published analytic result.
@@ -5159,3 +5164,204 @@ This is the enabling step for the rate identified in the previous section: with
 which is `B(N) ≪ exp(−c(log N)^{1/10})` — far more than the `B(N)²N^{1−θ} → 0` that short windows
 need. What remains is to thread it through `MoebiusTwistMajorantRatio` and
 `MoebiusTwistSharpLittleO` in place of their `o(1)` conclusions.
+
+### The quadratic beats the linear, explicitly
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/ExpQuadraticQuantitative.lean`.
+
+- `two_mul_le_half_sq` — for `v ≥ 4/κ`, `2v ≤ κv²/2`;
+- **`exp_two_sub_sq_le`** — hence `exp(2v − κv²) ≤ exp(−κv²/2)` past that explicit threshold;
+- `eventually_exp_two_sub_sq_le` — the eventual form.
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+`ExpQuadraticDecay` proves `exp(2v − κv²) → 0` and uses it only qualitatively. The comparison is in
+fact explicit, and with `v = (log N)^{1/20}`, `κ = c₀/8192` this is the contour saving surviving the
+price of narrow smoothing **with a rate**: `exp(−c₀(log N)^{1/10}/16384)`.
+
+Together with `eventually_coeffMajorant_mul_exp_le` (half the exponent absorbs the majorant), the two
+places where the corpus discards its exponent now both have quantitative replacements.
+
+Audit note: while preparing this I started to write a monotonicity lemma for `coeffMajorant` in its
+coefficient arguments — it already exists as `CoeffMajorantScale.coeffMajorant_mono_const`, alongside
+`CoeffMajorantMono.coeffMajorant_mono_t` and `CoeffMajorantProd.coeffMajorant_le_prod`, and
+`CoeffRatioBound` already assembles all three. The duplicate was caught by the editor refusing to
+overwrite an existing file of the same name, not by a name scan.
+
+### The ratio-form majorant, with a rate
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/PolyExpQuantitative.lean`.
+
+**`eventually_poly_exp_two_sub_sq_le`** — for `κ > 0` and all large `v`,
+
+    (1 + a(v²)⁹)(b + cv²)·exp(2v)·exp(−κv²) ≤ exp(−κv²/2) .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+`CoeffRatioBound.coeffMajorant_ratio_le` reduces the majorant at the chosen smoothing width to
+exactly that shape, and `ExpQuadraticDecay` shows it tends to zero — qualitatively. Splitting the
+exponential and applying the limit at `κ/2` keeps half the exponent.
+
+**All three discard points now have quantitative replacements:**
+
+* `eventually_coeffMajorant_mul_exp_le` — the diagonal majorant;
+* `exp_two_sub_sq_le` — the linear-versus-quadratic comparison, with the explicit threshold `4/κ`;
+* `eventually_poly_exp_two_sub_sq_le` — the ratio-form majorant.
+
+Composing them with `coeffMajorant_ratio_le` and the twisted contour bound gives
+`B(N) ≪ exp(−c(log N)^{1/10})`, which is the rate the short-window case of `(15)` needs. That
+composition — rerunning `MoebiusTwistMajorantRatio` and `MoebiusTwistSharpLittleO` against these
+three in place of their `squeeze`s — is what remains.
+
+### The majorant at the chosen width, with a rate
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/CoeffRatioQuantitative.lean`.
+
+**`eventually_coeffMajorant_ratio_le_exp`** — for all large `v`, whenever `v² ≤ t ≤ 2v²` and
+`L + 2 ≤ 3e^v` (the relations the chosen smoothing width satisfies),
+
+    coeffMajorant (C(L+2)²) (C'(L+2)) M₀ a t · exp(−κt) ≤ exp(−κv²/2) .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+This composes `CoeffRatioBound.coeffMajorant_ratio_le` — which already reduces the ratio-form
+majorant to the `(1+a(v²)⁹)(b+cv²)exp(2v)exp(−κv²)` shape with explicit `b`, `c` — with the
+quantitative decay of the previous section. With `v = (log N)^{1/20}` and `t = (log(N+H))^{1/10}` the
+right-hand side is `exp(−κ(log N)^{1/10}/2)`.
+
+**The rate is now available where the contour argument needs it.** What is left is to use this in
+place of the `squeeze_zero'` inside `MoebiusTwistMajorantRatio`/`MoebiusTwistSharpLittleO`, which
+turns their `B → 0` into `B(N) ≪ exp(−c(log N)^{1/10})`.
+
+### The majorant at the chosen width, as a rate in `N`
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/CoeffRatioRate.lean`.
+
+**`eventually_coeffMajorant_ratio_rate`** — at the contour argument's own smoothing width
+`H = N/exp((log N)^{1/20})`, for all large `N`,
+
+    coeffMajorant (C(smoothRatio+2)²) (C'(smoothRatio+2)) M₀ a t · exp(−κt)
+      ≤ exp(−κ(log N)^{1/10}/2) ,   t = (log(N+H))^{1/10} .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+`CoeffRatioLimit.tendsto_coeffMajorant_ratio` proves the same expression tends to zero, using three
+geometric facts — `v² ≤ t` (`LogComparison.sq_le_logRpow`), `t ≤ 2v²`
+(`LogComparison.logRpow_le_two_sq`) and `smoothRatio + 2 ≤ 3e^v` — all of which are exported. Feeding
+them to the quantitative bound instead of to a `squeeze_zero'` turns the `o(1)` into a rate, with no
+new estimate anywhere.
+
+**The rate now exists at the width the contour argument actually uses.** Substituting it in
+`MoebiusTwistMajorantRatio` in place of `tendsto_coeffMajorant_ratio` yields
+
+    ‖∑_{n ≤ N} μ(n)n^{-iτ}‖ ≪ N·exp(−c(log N)^{1/10})   uniformly over the admissible twists,
+
+i.e. `B(N) ≪ exp(−c(log N)^{1/10})`, which covers the short-window case of `(15)` for every window
+length `L = N^θ`, `θ < 1`.
+
+### The twisted smoothed sum, with a rate
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusTwistRate.lean`.
+
+**`exists_norm_tsum_moebiusTwist_smoothWeight_rate`** — for all large `N` and every admissible twist,
+
+    ‖2π·∑' μ(n)n^{-iτ}·w(n)‖ ≤ 2(N + H + 1)·exp(−(c₀/8192)·(log N)^{1/10}/2) ,
+
+at the contour argument's own smoothing width `H = N/exp((log N)^{1/20})`.
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+`MoebiusTwistMajorantRatio` already proves the bound with the majorant in place; substituting
+`CoeffRatioRate.eventually_coeffMajorant_ratio_rate` for the limit that
+`MoebiusTwistSharpLittleO` feeds it to replaces the `o(1)` by
+
+    exp(−c(log N)^{1/10}) ,   c = c₀/16384 .
+
+**This is the rate.** Comparing the sharp and smoothed sums (`SmoothVsSharp`, already generalised to
+unimodular coefficients) then gives
+
+    ‖∑_{n ≤ N} μ(n)n^{-iτ}‖ ≪ N·exp(−c(log N)^{1/10}) + smoothWidth N + 1 ,
+
+and `smoothWidth N = N/exp((log N)^{1/20})` is itself of that shape, so
+`B(N) ≪ exp(−c'(log N)^{1/20})`. Since `B(N)²N^{1−θ} → 0` for every `θ < 1`, the short-window
+restriction recorded above is removed: `(15)` holds for windows of every length `L = N^θ`.
+
+### The sharp twisted sum, with a rate — `Sieve/MoebiusTwistSharpRate.lean`
+
+Comparing the smoothed sum with the sharp one costs `H + 1`, so the rate of `MoebiusTwistRate`
+transfers to the sharp sum:
+
+- **`exists_norm_sum_moebiusTwist_rate`** :
+
+      ‖∑_{n ≤ N} μ(n)n^{−iτ}‖ ≤ 3N·exp(−κ(log N)^{1/10}/2)/π + N·exp(−(log N)^{1/20}) + 1 ,
+
+  `κ = zeroFreeConst/8192`, uniformly over every twist the contour admits.
+
+Both terms are `N` times an explicit saving, so this is the quantitative form of
+`MoebiusTwistSharpLittleO.exists_bound_norm_sum_moebiusTwist_div`: the admissible bound function is
+`B(N) ≪ exp(−(log N)^{1/20})`. Built, wired, axiom-clean.
+
+### Window range of the derived mean square — correction
+
+An earlier section of this card claimed that the derived mean square supersedes `(15)`. It does not,
+and the claim is withdrawn. What is derived is a genuine unconditional theorem, but in a different
+parameter range, and the arithmetic is worth recording exactly.
+
+The normalized bound `MoebiusMeanSquareNormalized.exists_normalized_mean_square_le` reads
+
+    (1/(YL²))·∑_{Y ≤ t < 2Y} (∑_{t<n≤t+L} μ(n))²
+      ≤ 2log2·((1+ε)/ε)·( 2(B(N)N)²/(YL) + 4M²/(π²WL²) + 2(εL+1)²ε/L² ) ,
+
+with `M ≍ N`, `Y ≍ N`, and the frequency range `W` constrained by
+
+    8πW + 5 ≤ contourParam(N + smoothWidth N) = ⌈exp((log(N+H))^{1/10})⌉ .
+
+So `W ≤ exp((log N)^{1/10})` up to a constant, and this is forced: `W` is the range over which the
+*pointwise* twisted bound is available, and the twisted contour argument has that bound exactly as
+far as the zero-free region reaches.
+
+Reading the three terms:
+
+1. **cancellation** `2(B(N)N)²/(YL) ≍ B(N)²N/L`, harmless once `L ≫ N·exp(−2(log N)^{1/20})`;
+2. **frequency tail** `4M²/(π²WL²) ≍ N²/(WL²)`, which needs `L ≫ N/√W = N·exp(−(log N)^{1/10}/2)`;
+3. **excess** `2(εL+1)²ε/L² ≍ ε³`, harmless.
+
+Term 2 is the binding constraint, and it does not improve much under a better tail estimate: with the
+Dirichlet mean-value theorem in place of the trivial `|S(τ)|² ≤ M²`, the dyadic tail is
+`≪ M/W + M²/W²` instead of `M²/W`, and the requirement becomes `L ≫ N/W = N·exp(−(log N)^{1/10})` —
+the same shape.
+
+Hence the derived estimate is a **long-window** Möbius variance bound,
+
+    L ≥ N·exp(−c(log N)^{1/10}) ,
+
+unconditional and with explicit constants, resting only on the classical zero-free region.
+
+This card applies `(15)` at `A_k ≍ √X/2^k` and `L_k = ⌊h/2^{k+2}⌋`, so uniformly in `k`
+
+    L_k/A_k ≍ h/√X = X^{−1/2+o(1)} ,
+
+with the schedule `(6)` giving `log L_k ≍ log h = log X/log log X ≍ 2·log A_k/log log A_k`, i.e.
+`L_k = A_k^{2/log log A_k}`. That is `A_k^{o(1)}`, incomparably shorter than
+`A_k·exp(−c(log A_k)^{1/10})`. The derived estimate is therefore vacuous at this card's parameters,
+and `(15)`–`(18)` continue to rest on Matomäki–Radziwiłł 2016 Theorem 2 / Menon 2026.
+
+The obstruction is structural, not an artefact of the assembly. Reaching `L = N^{o(1)}` through
+Gallagher's reduction requires control of the Dirichlet polynomial over a frequency range
+`W ≳ N/L = N^{1−o(1)}`, and no pointwise bound is available there at any zero-free region: the range
+is far beyond where contour shifting says anything. Matomäki–Radziwiłł replace the pointwise bound by
+a *mean-square* bound over the whole range, obtained by multiplicative factorization and Halász,
+which is why that theorem is genuinely deeper than the zero-free region. The corpus's route to it is
+the Ramaré/factorization/Halász layer (`Sieve/RamareWeight.lean` and the modules named in
+`MR reduction`), not the contour layer built above.
+
+What the contour layer does buy, and keeps:
+
+- an unconditional, frequency-uniform cancellation bound for `∑_{n ≤ N} μ(n)n^{−iτ}` with an explicit
+  saving `exp(−c(log N)^{1/10})` (`MoebiusTwistSharpRate`);
+- Gallagher's reduction in exact form, with no hypotheses (`GallagherLemma` and the linear-window
+  passage), which is the same reduction the Matomäki–Radziwiłł argument uses;
+- the block/range summation and the passage to the discrete real-form variance, which are parametric
+  in the mean-square input and so accept the Matomäki–Radziwiłł bound unchanged when it arrives.
+
+Only the *input* to Gallagher's frequency integral has to be replaced. That is the open work.
