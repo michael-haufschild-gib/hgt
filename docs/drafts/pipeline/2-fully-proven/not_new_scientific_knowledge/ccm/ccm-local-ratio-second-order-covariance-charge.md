@@ -233,7 +233,136 @@ formulas. It is useful because it identifies the exact canonical covariance carr
 not introduce a scientifically new parent mechanism. It is classified as a bridge rather than new
 scientific knowledge.
 
-## 7. Lean decision
+## 7. Lean status
+
+**Formalized unconditionally, 2026-08-04.**  The previous decision ("formalizing only the commutative product
+identity would be a routine wrapper") was wrong about what the card's proved content is.  Sections 2
+and 3 are not a product identity: they are a jet computation plus an arithmetic divergence, and both
+are now formalized unconditionally.
+
+`formal/GaloisForLFunctions/RHTower/CCMLocalRatioAnomaly.lean` — the place-independent layer:
+
+- `multiplierDefectSum`, **`covarianceAnomaly`** — the objects of `(6)`.
+- **`prod_one_add_sub_one_sub_sum`**, **`covarianceAnomaly_eq_sum_powerset`** — equation `(7)`, the
+  factorization independence, by the elementary subset expansion.  The powerset is split by
+  cardinality, with the `|I| <= 1` part identified as `insert ∅ (image singleton)`.
+- **`covarianceAnomaly_insert`** — the recursion `C_(insert x s) = u_x C_s + (u_x - 1) D_s`.  This is
+  the device that carries both jet computations and keeps them free of subset combinatorics.
+- **`covarianceAnomaly_zero`**, **`hasDerivAt_covarianceAnomaly`** — equation `(8)`.
+- **`tendsto_covarianceAnomaly_div_sq`** — equation `(9)`: the quadratic jet is
+  `((sum c_v)^2 - sum c_v^2)/2`, i.e. `sum_(v<w) c_v c_w`, so `C_s''(0) = 2 sum_(v<w) c_v c_w`.
+
+  Worth recording: **only first derivatives are used**, even for the quadratic jet.  The card's
+  "differentiating twice leaves only the two-element subsets" is exactly the statement that the
+  second-order data of each place cancels between the product and the sum of increments; formalizing
+  the jet as the limit of `C_s(t)/t^2` makes that cancellation automatic and avoids any second-derivative
+  machinery for finite products.
+- **`offDiagCharge_eq_sum_offDiag`**, `sum_offDiag_le_sum_offDiag` — the identity
+  `(sum b)^2 - sum b^2 = sum_(v != w) b_v b_w` and its termwise comparison.  The off-diagonal form is
+  needed because the `(sum)^2 - sum^2` form admits **no** termwise lower bound: the diagonal correction
+  has the wrong sign, and `sum_p b_p^2` in fact diverges.  This is a real subtlety in `(13)`.
+
+`formal/GaloisForLFunctions/RHTower/CCMLocalRatioPlaces.lean` — the finite places:
+
+- **`primeLocalRatio`**, `primeLocalRatio_den_ne_zero`, `primeLocalRatio_num_ne_zero`,
+  `primeLocalRatio_zero` — the multiplier `(1 - r e^(iLt))/(1 - r e^(-iLt))` for `|r| < 1`, and
+  `u(0) = 1`.
+- `hasDerivAt_linPhase`, `hasDerivAt_expFreq`, `hasDerivAt_expFreq_neg`,
+  **`hasDerivAt_primeLocalRatio`** — equation `(2)`: `u'(0) = -i (2 r L/(1 - r))`.
+- `primeRadius`, `primeRatioCharge`, `primeRatio`, `primeRatio_zero`, **`hasDerivAt_primeRatio`** —
+  the arithmetic instance `r_p = p^(-1/2)`, `L_p = log p`, giving `b_p = 2 log p/(sqrt p - 1)`.  Both
+  are extended by the trivial value at `p <= 1`, so the family is defined and equal to one at *every*
+  index; that is what lets the generic theorems apply with no side conditions.
+- **`primeRatioCharge_pos`**, **`two_div_le_primeRatioCharge`** — positivity and equation `(12)`,
+  `b_p >= 2/p`, from `log x >= 1 - 1/x` and `p - 1 = (sqrt p - 1)(sqrt p + 1)`.
+- **`tendsto_primeCovarianceAnomaly_div_sq`** — equations `(9)`–`(10)` at the finite places: the
+  quadratic jet of the prime-only anomaly is `-((sum b)^2 - sum b^2)/2`, strictly negative once two
+  places are present.
+- **`primeRatioCharge_mul`**, **`primeQuadraticCharge_eq_sum_offDiag`** — equation `(11)`: the pairwise
+  contribution is `4 log p log q/((sqrt p - 1)(sqrt q - 1))`, and the total curvature is the
+  off-diagonal sum (which is twice the `p < q` sum, whence the card's factor `8`).
+- `summable_inv_sq`, **`tendsto_primeOffDiagCharge_atTop`** — equations `(13)`–`(14)`: the charge
+  diverges along the exhaustion of the primes.  The arithmetic input is Euler's divergence, reused from
+  `CCMCoherentSquareExclusion.lean` (`tendsto_primeReciprocalSum_atTop`), against the convergence of
+  `sum 1/p^2`.
+
+`formal/GaloisForLFunctions/RHTower/DigammaQuarter.lean` — the archimedean constant:
+
+- `quarter_ne_intCast`, `half_ne_negNatCast`, `digamma_quarter_add_three_quarter`,
+  `digamma_quarter_sub_three_quarter`, **`digamma_quarter`** — Gauss's value
+  `psi(1/4) = -gamma - pi/2 - 3 log 2`.  The two functional equations were already in the corpus:
+  `HTGeometry.digamma_duplication` at `s = 1/4` gives `psi(1/4) + psi(3/4) = 2 psi(1/2) - 2 log 2`, and
+  `RHTower.digamma_reflection` at `z = 1/4` gives `psi(1/4) - psi(3/4) = -pi` because
+  `cos(pi/4) = sin(pi/4)`.  Adding them eliminates `psi(3/4)`; mathlib's `Complex.digamma_one_half`
+  supplies the rest.
+- `archRatioCharge`, `ofReal_archRatioCharge`, **`archRatioCharge_pos`** — equation `(4)`'s
+  positivity.  Every term of the closed value is positive, so **no monotonicity of `psi` is needed**;
+  `Real.one_half_lt_eulerMascheroniConstant` finishes it.
+
+`formal/GaloisForLFunctions/RHTower/CCMLocalRatioArchimedean.lean` — the archimedean place:
+
+- `gammaArch`, **`gammaArch_eq_cpow`** — `gamma_infinity(s) = pi^(-s/2) Gamma(s/2)`, defined through
+  `exp` so the differentiation is elementary, with the bridge to the `cpow` form.
+- `hasDerivAt_gammaHalf`, `hasDerivAt_expArch`, **`hasDerivAt_gammaArch_half`** — the log-derivative at
+  the seam is `(psi(1/4) - log pi)/2 = -b_infinity/2`.  The factor `1/2` is the chain rule from
+  `Gamma(s/2)`; the two halves of `b_infinity` come from the two factors of `gamma_infinity`.
+- `hasDerivAt_linePlusC`, `hasDerivAt_lineMinusC`, `hasDerivAt_archPlus`, `hasDerivAt_archMinus`,
+  `archRatio_zero`, **`hasDerivAt_archRatio`** — equation `(4)`.  Note the route: differentiate
+  `gammaArch` **inside `ℂ`** and only then compose with `t ↦ (t : ℂ)` via `HasDerivAt.comp_ofReal`.
+  Going straight from `ℝ` to `ℂ` with `HasDerivAt.scomp` produces a `HasDerivAt` whose `ℂ`-module
+  instance path does not match the goal's, and `simpa` cannot cross it.
+
+`formal/GaloisForLFunctions/RHTower/CCMLocalRatioCompleted.lean` — the completed product and the
+kernel:
+
+- `placeRatio`, `placeCharge`, `placeRatio_zero`, **`hasDerivAt_placeRatio`**, `placeCharge_pos` — the
+  places indexed by `Option ℕ`, with `none` archimedean.  Both kinds of multiplier have value one and
+  purely imaginary first jet, so the generic theorems apply to the completed family with no side
+  conditions.
+- **`tendsto_covarianceAnomaly_div_sq_of_imaginary`**,
+  **`tendsto_completedCovarianceAnomaly_div_sq`** — equations `(6)`–`(9)` for `V = {infinity} ∪ F`.
+- **`completedCharge_pos`** — the jet is *strictly* negative as soon as two places are present: the
+  off-diagonal charge is then a nonempty sum of positive terms.
+- `norm_div_conj`, `conj_primeLocalRatio_num`, **`norm_primeLocalRatio`**, `gammaArch_conj`,
+  `gammaArch_line_ne_zero`, **`norm_archRatio`**, **`norm_placeRatio`** — `|u_v| = 1` on the critical
+  line, at every place.  The reason is structural and the same in both cases: numerator and denominator
+  are complex conjugates of each other — at a finite place because `r_p` is real, at the archimedean
+  place because `Gamma` commutes with conjugation and `log pi` is real.
+- `placePairKernel`, **`placePairKernel_diag`**, **`quantizedDifferentialAnomaly`**,
+  **`quantizedDifferentialAnomaly_diag`**, **`norm_kernelAnomaly_le`** — section 4.  Equation `(18)` is
+  the *same* algebraic identity as `(7)`, applied to `a_v = r_v(x,y) - 1`; unimodularity gives
+  `r_v(x,x) = 1`, hence the diagonal vanishing; and `norm_kernelAnomaly_le` is the quantitative form —
+  if every one-place increment is at most `D <= 1` then the anomaly is at most `card · D²`, because
+  every surviving product has at least two factors.  With `D = O(|y - x|)` that is the card's "at least
+  quadratic diagonal vanishing", and it is exactly what makes the product against a first-order
+  singular kernel vanish on the diagonal.
+
+Section 5 is a requirements list, not a theorem: `(19)` records what a successful construction must
+carry, and the four items after it (Gauss-paired Hardy representative, principal-relative Schur block,
+cofinal renormalization, index-faithful transport) are open research, as the card says.
+
+## Gates
+
+- [x] factorization-independent anomaly `(6)`–`(7)` proved
+- [x] exact central curvature `(9)`–`(11)` proved
+- [x] harmonic lower bound `(13)` and cofinal divergence `(14)` proved
+- [x] quadratic diagonal vanishing of the kernel `(18)` proved
+- [x] Lean: place-independent anomaly, factorization independence `(7)`
+- [x] Lean: vanishing constant and linear jets `(8)`
+- [x] Lean: quadratic jet `(9)`, from first derivatives only
+- [x] Lean: finite-place local ratio and its jet `(1)`–`(2)`
+- [x] Lean: archimedean local ratio and its jet `(3)`–`(4)`, with Gauss's `psi(1/4)`
+- [x] Lean: prime curvature `(10)`–`(11)`
+- [x] Lean: harmonic bound `(12)` and cofinal divergence `(13)`–`(14)`
+- [x] Lean: unimodularity of every local ratio on the critical line
+- [x] Lean: kernel anomaly `(18)`, diagonal vanishing, and its second-order bound
+- [ ] Gauss-descent theorem: analytically compact Gauss-paired representatives descend to `(18)`
+      modulo trace-zero conjugation coboundaries
+- [ ] Sonin relative grade as a positive Schur lift with a bound uniform in the prime cutoff
+
+## 8. Original Lean decision (superseded)
+
+
 
 The exact finite-product and second-jet identities are formalizable, but the present Lean tree has
 no critical-line local-ratio multiplier or Hardy singular-kernel realization. Formalizing only the

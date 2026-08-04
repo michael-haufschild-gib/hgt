@@ -16,9 +16,11 @@
   the squarefree identity `(7)`, the sign-count identity `(14)` and its conclusion, and the
   exceptional-set bound `(13)` for the *true* squarefree count are formalized in
   `Sieve/SquarefreeIndicator*.lean`, `Sieve/MoebiusSignCount.lean`, `Sieve/MoebiusSignLower.lean`,
-  `Sieve/SquarefreeTruncationDefect.lean`, `Sieve/SquarefreeExceptional.lean`; step 1 of the proof is
-  the single theorem `Sieve.card_le_good_add_explicit`, whose only non-elementary hypothesis is the
-  mean-square input; the short-interval variance layer
+  `Sieve/SquarefreeTruncationDefect.lean`, `Sieve/SquarefreeExceptional.lean`; step 1 of the proof is the single theorem
+  `Sieve.card_le_good_add_correlation`, whose only non-elementary hypothesis is a bound on the
+  `L-1` shifted Moebius correlations `sum_n mu(n)mu(n+h)` — the mean-square input `(6)` is
+  *derived*, not assumed, and the prime number theorem is not used at all (the marker supply
+  comes from Mertens via `Sieve/PrimeWindow.lean`); the short-interval variance layer
   (`Sieve/Window*.lean`, `Sieve/RealWindow*.lean`, `Sieve/CorrelationToVariance.lean`) proves `(6)`
   *equivalent* to cancellation in the shifted Moebius correlations at the `L-1` shifts `h < L`, and
   rules out both non-arithmetic routes to it; the two-variable squarefree sieve
@@ -3667,3 +3669,436 @@ literature-form bound.
 Recorded because the two objects are genuinely different and the difference was previously
 unexamined — the weighted form is what the identity produces, the unweighted form is what any
 citable estimate would supply.
+
+### Formal layer — the variance from an unweighted correlation bound
+
+`formal/GaloisForLFunctions/RHTower/Sieve/UnweightedCorrelation.lean`.
+
+- `sum_normSq_window_le_of_unweighted` — **`∑_{x<X}‖∑_{x<n≤x+L} a_n‖² ≤ L∑_n‖a_n‖² + 2L(Lε + (2L+1)L)`**
+  from `|∑_{n ∈ bulk} a_n conj a_{n+h}| ≤ ε` at the shifts `1 ≤ h < L`, and nothing else.
+
+Unconditional as an implication (axioms `[propext, Classical.choice, Quot.sound]`).
+
+This is the reduction in the form a citable theorem can actually discharge. Earlier versions stated
+the hypothesis in the kernel-weighted form the exact identity produces; no result in the literature is
+phrased that way. Here the hypothesis is the plain correlation sum — what a Chowla/Elliott-type
+estimate bounds — with the conversion cost `(2L+1)L` per shift carried explicitly rather than hidden.
+
+The mean-square input `(6)`/`(15)` is therefore reduced, unconditionally and with explicit constants,
+to a bound on the `L−1` unweighted shifted Möbius correlations.
+
+### Formal layer — the Möbius mean square from a correlation bound
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MoebiusUnweighted.lean`.
+
+- `re_moebiusC_mul_conj` — for the real-valued μ the Hermitian pair weight is the plain product
+  `μ(n)μ(n+h)`.
+- `sum_normSq_window_moebius_le_of_correlation` — **`∑_{x<X}‖∑_{x<n≤x+L} μ(n)‖² ≤
+  L·#{n < X+L+1 : squarefree} + 2L(Lε + (2L+1)L)`** whenever `|∑_{n∈bulk} μ(n)μ(n+h)| ≤ ε` at the
+  shifts `1 ≤ h < L`.
+
+Unconditional as an implication.
+
+This is the cards' mean-square input `(6)`/`(15)` stated for μ itself, reduced with explicit
+constants to a bound on `L−1` shifted Möbius correlations — the exact statement a Chowla/Elliott-type
+theorem provides. The diagonal is the squarefree count, already estimated elementarily.
+
+The reduction is complete: no step between "correlations cancel" and "the mean square is small"
+remains unproved.
+
+### Formal layer — the mean square in the shape step 1 consumes
+
+Added to `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusUnweighted.lean`.
+
+- `normSq_sum_moebiusC_eq` — the complex window sum of μ has the real window sum as its modulus.
+- `sum_sq_moebius_le_of_correlation` — **`∑_{t<X} M(t,L)² ≤ L·Q + 2L(Lε + (2L+1)L)`** from the
+  correlation bound.
+
+Unconditional as an implication.
+
+The left side is exactly the hypothesis `hms` of `card_le_good_add_explicit`, so the two halves now
+compose: a bound on the `L−1` shifted Möbius correlations gives step 1 of the Hall-law argument
+directly, with no mean-square theorem cited in between.
+
+The bridge lemma is needed because the variance layer works with `‖·‖²` of a complex window sum while
+step 1 is stated for the real sum `M(t,L)`; they agree because μ is real-valued, but that had to be
+proved rather than assumed.
+
+### Formal layer — step 1 from a correlation bound
+
+`formal/GaloisForLFunctions/RHTower/Sieve/Step1FromCorrelation.lean`.
+
+- `card_le_good_add_correlation` — **`X ≤ #{good starts} + (L·Q + 2L(Lε + (2L+1)L))/(DL/8)² + W/θ`**,
+  `θ = ½DL − (R + L/R)`, from a bound `ε` on the `L−1` shifted Möbius correlations and the elementary
+  truncation-tail bound `W`.
+
+Unconditional as an implication.
+
+**No mean-square theorem is cited anywhere in this chain.** Step 1 of the Hall-law argument now
+follows from a bound on `∑_n μ(n)μ(n+h)` alone, with every intermediate step proved and every
+constant explicit.
+
+This is a strictly better dependency than the card's prose: the prose invokes Menon's mean-square
+theorem `(6)` and the prime number theorem; the formalization uses neither — the marker supply comes
+from Mertens (`Sieve/PrimeWindow`), and the mean square is *derived* from the correlations rather
+than assumed.
+
+### Formal layer — the Hall injection as an actual map
+
+`RHTower/Sieve/HallInjection.lean` closes step 4 as a statement about a *function*, not a
+cardinality comparison:
+
+`exists_hall_injection` — given a marker set `P` of primes, cofactor cells `C p` all of whose
+members are positive and smaller than every marker, a uniform lower bound `c ≤ #(C p)`, a source
+set with `#sources ≤ #P · c`, and both source and target sets inside the window `(X, X + H]`, there
+exists `f` with
+
+- `Set.InjOn f sources`,
+- `f x ∈ markerBlockTargets P C` for every source `x`,
+- `|f x − x| ≤ H` for every source `x`.
+
+The proof composes `card_markerBlockTargets_ge` (unique marker decoding turns the block into a
+disjoint union, so the target count is exactly `∑_p #(C p) ≥ #P · c`) with
+`exists_injOn_displacement_le` (any injection between two subsets of a common window of length `H`
+moves nothing further than `H`).  Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+The two numerical inputs are supplied from opposite ends: `hsrc` is what Brun–Titchmarsh bounds
+from above, and `c` is what the sign-count lower bound supplies from below.  Both are hypotheses
+here, so the module is unconditional and the arithmetic content stays isolated in its own
+statements.
+
+### Formal layer — both sides of the matching are sieve statements
+
+The source side was previously an abstract hypothesis.  It is now proved from the corpus's own
+Selberg sieve.
+
+`RHTower/Sieve/PrimeWindowUpper.lean`:
+
+- `coprime_primorial_of_prime` — a prime exceeding `z` is coprime to `z#` (if a prime `q ≤ z`
+  divided it, primality forces `q = p > z`).
+- `card_primes_Ioc_le_rough` — the primes of a window above `z` inject into its rough integers.
+- `card_primes_Ioc_le_log` — hence
+  `#{p ∈ (a,b] : p prime, p > z} ≤ 2(b − a)/log Y + ∑_{d ∣ z#} |λ²(d)|`,
+  the Brun–Titchmarsh shape transferred from `card_coprime_Ioc_le_log` at no cost.
+
+`RHTower/Sieve/WindowMatching.lean` then joins the two ends:
+
+`exists_hall_injection_primes` — with the marker block inside `(X, X+H]` and
+
+`2H/log Y + ∑_{d ∣ z#} |λ²(d)| ≤ #P · c`,
+
+there is an `f` injecting the primes of `(X, X+H]` above `z` into `markerBlockTargets P C` with
+`|f x − x| ≤ H`.
+
+Both modules are axiom-clean (`[propext, Classical.choice, Quot.sound]`).  What remains a
+hypothesis is *only* the numerical comparison between the two bounds — the upper bound on sources
+and the lower bound on targets are each proved outright, on the same window, from the same sieve.
+
+### Formal layer — the matching criterion on construction data alone
+
+Two further reductions remove the last non-elementary hypotheses.
+
+`PrimeWindowUpper.card_primes_Ioc_le_explicit` replaces the divisor error by the corpus's own
+explicit evaluation (`card_coprime_Ioc_le_explicit`, error `Y²·exp(4C)·(log z)⁴` from Mertens):
+
+`#{p ∈ (a,b] : p prime, p > z} ≤ 2(b−a)/log Y + Y²·exp(4C)·(log z)⁴`.
+
+`HallInjection.markerBlockTargets_mem_window` proves the block lies in the window from the
+pointwise condition `X < a·p ≤ X+H` on each cell, so the containment need never be assumed about
+the constructed set.
+
+`WindowMatching.exists_hall_injection_primes_of_cells` is the resulting statement: given only that
+the markers are prime, the cofactors are positive, smaller than every marker, at least `c` in
+number, each product lands in the window, and
+
+`2H/log Y + Y²·exp(4C)·(log z)⁴ ≤ #P · c`,
+
+the primes of `(X, X+H]` above `z` inject into the block with displacement at most `H`.  Every
+hypothesis is now either a property of the construction data `(P, C)` or a comparison of elementary
+functions of `H, Y, z, #P, c`.  Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+### Formal layer — the marker supply supplied internally
+
+`RHTower/Sieve/MarkerSupplyMatching.lean` takes the markers to be *all* primes of a ratio window
+`(M, QM]`, which turns two more hypotheses into theorems:
+
+- the marker count is Mertens' first theorem (`card_bigPrimeSet_ratio_ge`), so `#P` is replaced by
+  the explicit lower bound `(log Q − 2A)·M / log M`;
+- every marker exceeds `M` (`lt_of_mem_bigPrimeSet`), so the cofactor condition "smaller than every
+  marker" follows from the single bound `a ≤ M`.
+
+`exists_hall_injection_bigPrime` — for cells `C` with members positive, at most `M`, at least `c`
+in number, and products in the window, and with
+
+`2H/log Y + Y²·exp(4C)·(log z)⁴ ≤ (log Q − 2A)·M/log M · c`,
+
+the primes of `(X, X+H]` above `z` inject into `markerBlockTargets (bigPrimeSet M (QM)) C` with
+displacement at most `H`.  Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+The matching step is now a single inequality among `H, Y, z, M, Q, c` — no set-theoretic or
+counting hypotheses remain.
+
+### Formal layer — the cofactor cells constructed
+
+`RHTower/Sieve/WindowCell.lean` replaces the abstract cells by an explicit family:
+
+`windowCell X H p = {a : X < a·p ≤ X + H}`,
+
+realised as the multiples of `p` in `(X, X+H]` divided by `p`.  The four properties the matching
+theorem requires are all proved: `mem_windowCell_iff` (membership *is* the window condition),
+`pos_of_mem_windowCell`, `card_windowCell` (the cell has the cardinality of those multiples, with no
+hypothesis on `p`), and `card_windowCell_gt` — the size exceeds `H/p − 1`, from the corpus's own
+`abs_card_filter_dvd_Ioc_sub_lt`.
+
+`RHTower/Sieve/ConstructedMatching.lean` then supplies both families at once.
+`exists_hall_injection_constructed` — for `3 ≤ M`, `1 ≤ Q`, `X + H ≤ M²`, `QM ≤ H`, and
+
+`2H/log Y + Y²·exp(4C)·(log z)⁴ ≤ (log Q − 2A)·M/log M · (H/(QM) − 1)`,
+
+the primes of `(X, X+H]` above `z` inject into
+`markerBlockTargets (bigPrimeSet M (QM)) (windowCell X H)` with displacement at most `H`.
+
+Two facts make the cell conditions automatic: a marker is at most `QM`, so every cell has at least
+`H/(QM) − 1` members; and a marker exceeds `M` while products stay below `M²`, so every cofactor is
+below `M`.  Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+No unspecified data remains in the matching step.  Its single hypothesis is an inequality between
+elementary functions of `X, H, M, Q, Y, z`.
+
+### Formal layer — counting the block by a sum, and why the criterion is still vacuous
+
+Bounding every cell by the smallest one loses a factor of the marker range.  The block count is an
+exact sum over markers, so `RHTower/Sieve/SumCellMatching.lean` states the matching with the sum:
+
+- `exists_hall_injection_sum` — the Hall injection with hypothesis `#sources ≤ ∑_{p ∈ P} #(C p)`,
+  using the *equality* `card_markerBlockTargets`.
+- `sum_card_windowCell_ge` — `H·∑_{p ∈ P} 1/p − #P ≤ ∑_{p ∈ P} #(windowCell X H p)` (the `p = 0`
+  term is handled, so no primality hypothesis is needed).
+- `sum_inv_bigPrimeSet_ge` — `logLog b − logLog z − K ≤ ∑_{z < p ≤ b} 1/p`, where
+  `K = mertensSecondLowerConst + mertensSecondUpperConst`.
+- `exists_hall_injection_mertens` — the matching under
+  `2H/log Y + Y²·exp(4C)·(log z)⁴ ≤ H·(logLog(QM) − logLog M − K) − QM`.
+
+All axiom-clean.  **But the criterion cannot be met, and neither can the earlier `#P · c` form.**
+The reason is worth recording, because it is not a defect of the geometry:
+
+1. Cofactors must satisfy `a ≤ M` (unique decoding), and the smallest markers are `≈ M`, so
+   `X ≤ M²`; markers must not exceed the window, so `QM ≤ X + H`.  Hence `Q ≤ M`, and the available
+   headroom is `logLog(QM) − logLog M = log(1 + log Q/log M) ≤ log 2`.
+2. `K = 4A/log 2 + logLog 3 − logLog 2` with `A = mertensFirstConst`.  This exceeds `log 2` for any
+   explicit constant of Mertens' first theorem within reach — the classical `A = 2`, and even the
+   Rosser–Schoenfeld value, leave `K` an order of magnitude above the headroom.
+
+The loss is structural: `∑_{M < p ≤ QM} 1/p` is being estimated as *(upper bound at `QM`) minus
+(lower bound at `M`)*, so both additive constants accumulate, even though the true difference is
+`log(1 + log Q/log M) + o(1)`.  Sharper constants do not fix this; what fixes it is a Mertens
+statement whose error *decays*:
+
+`|mertensS N − logLog N − B| ≤ C / log N`
+
+with `B` the Meissel–Mertens constant.  Then the two error terms telescope instead of adding, and
+the criterion becomes satisfiable for large `M`.  The corpus currently has only the fixed-additive
+form, so **Mertens' second theorem with a decaying error term is the next formalization target for
+this card**, and it is a finite, classical one.
+
+### Formal layer — Mertens' second theorem with a decaying error, and the criterion it unblocks
+
+The obstruction recorded above was the fixed additive constant `K`.  It is now removed.
+
+`RHTower/Sieve/MertensSecondSharp.lean` proves
+
+`|mertensS N − logLog N − B| ≤ (2·mertensFirstConst + 1/2) / log N`,
+
+with `B = meisselMertensConst` defined as the limit of the two remainder series.  The proof is
+discrete throughout — no integral comparison — and reuses the corpus's summation by parts:
+
+- `invLogVar` is the one-step variation of `1/log`, extended by zero.  `sum_range_invLogVar`,
+  `summable_invLogVar` and `tsum_invLogVar_add` give its partial sums, convergence, and the *exact*
+  tail `∑_{i ≥ N} = 1/log N`.  This is the mechanism: every constant of the classical proof is a
+  partial sum of this series, so bounding it by the tail rather than the total makes the loss decay.
+- `mertensRemTerm` (the Mertens-first remainder against the variation) is dominated by
+  `mertensFirstConst · invLogVar`, hence summable with tail `≤ mertensFirstConst/log N`.
+- `logLogDefect` (the gap between one telescoping step of `logLog` and its discrete model) is
+  nonnegative and dominated by `(1/2)·invLogVar` — using `log(i+1) − log i ≤ 1/i ≤ 1/2` — hence
+  summable with tail `≤ (1/2)/log N`.
+- `mertensS_decomposition` assembles the three, and the theorem follows.
+
+`RHTower/Sieve/MertensWindowSharp.lean` applies it to a window:
+
+`|∑_{z < p ≤ b} 1/p − (logLog b − logLog z)| ≤ C/log b + C/log z`, `C = 2·mertensFirstConst + 1/2`,
+
+and restates the matching with that loss (`exists_hall_injection_sharp`), via the parametrised
+`exists_hall_injection_recip`.  All axiom-clean.
+
+This changes the status of the criterion.  The headroom `logLog(QM) − logLog M` is unchanged, but
+the loss against it is now `C/log(QM) + C/log M`, which **vanishes as `M` grows**, whereas the
+source term `2H/log Y` is a fixed fraction of the headroom.  The criterion is therefore no longer
+vacuous for large `M` — the two earlier forms failed only because they compared a constant against
+a bounded headroom.
+
+Remaining for this card: an asymptotic statement that the inequality *does* hold for all large `M`
+at admissible `Q, Y, z`.  That is a limit argument over the parameters, not new mathematics.
+
+### Formal layer — the marker count, and the criterion with every ingredient supplied
+
+One term still spoiled the asymptotics.  Each cell loses one member to the floor of `H/p`, so the
+block bound carries `−#P`, and `#P` was being bounded by the length `QM` of the marker range.  At
+`Q = M` that loss is `M²`, of the same order as the main term `H·log 2` — it alone would keep the
+criterion vacuous.
+
+The markers are primes, so the sieve bounds them.  `RHTower/Sieve/MarkerCountUpper.lean`:
+
+- `bigPrimeSet_eq_filter_Ioc` — a window of primes is the primes of the window, so the interval
+  prime bound applies verbatim;
+- `card_bigPrimeSet_le_explicit` — `#(bigPrimeSet M b) ≤ 2(b − M)/log W + W²·exp(4C)·(log M)⁴`;
+- `exists_hall_injection_recip_of_card` — the criterion with the marker count as a parameter;
+- `exists_hall_injection_full` — every ingredient supplied: reciprocal sum from the sharp Mertens
+  form, marker count from the sieve, with an independent sieve parameter `W` for the markers and
+  `Y` for the sources.
+
+All axiom-clean.  The floor loss is now smaller than the main term by a factor of `log M` rather
+than comparable to it, which is what the asymptotic argument needs.
+
+At `Q = M` the three quantities to compare are, in order of magnitude:
+main term `H·log 2` (the headroom `logLog M² − logLog M` is *exactly* `log 2`), Mertens loss
+`H·(3C/2)/log M`, source term `2H/log Y`, and floor loss `≈ 2QM/log W`.  With `H ≍ M²`, `Q = M` and
+the sieve parameters a fixed small power of `M`, every term after the first is smaller by a factor
+of `log M`.
+
+### Formal layer — the matching holds at every large scale (criterion discharged)
+
+`RHTower/Sieve/AsymptoticMatching.lean` closes the remaining limit argument, so the matching step is
+now an unconditional theorem with no numerical hypothesis at all.
+
+- `logLog_sq_sub` — at the square ratio the headroom is *exactly* `log 2`:
+  `logLog(M²) − logLog M = log(2 log M) − log(log M) = log 2`.
+- `matchingGap N` collects the three relative losses, and `tendsto_matchingGap` shows it tends to
+  `0` (reciprocal logarithm, plus `(log N)⁴/N² → 0` from `isLittleO_log_rpow_rpow_atTop`).
+- `eventually_matchingGap_le` — since `log 2 > 0`, the loss eventually falls below the headroom.
+- `eventually_exists_hall_injection` — **for every sufficiently large `N`**, taking `M = N²`,
+  marker ratio `Q = M`, window `H = M²` at `X = 0`, and all three sieve parameters equal to `N`,
+  there is an `f` injecting the primes of the window above `N` into
+  `markerBlockTargets (bigPrimeSet M (QM)) (windowCell 0 H)` with `|f x − x| ≤ H`.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+The parameter choice is what makes every loss subcritical: with `M = N²` the headroom is the fixed
+`log 2`, while the Mertens loss is `(3C/4)/log N`, the source term `4/log N` and the floor loss
+`2/log N` — all `O(1/log N)` against a positive constant.  The earlier vacuity was therefore
+entirely an artefact of the fixed additive Mertens constant and of bounding the marker count by the
+length of the marker range; with both replaced the criterion is satisfied at every large scale.
+
+### Formal layer — a genuinely short window
+
+The square-ratio instantiation above has a defect worth stating: with `Q = M` the window is forced
+to be the entire range (`X = 0`, `H = M²`), and a displacement bound of `H` is then automatic for
+*any* map into the window.  The theorem is true but its displacement clause carries no information.
+
+The cause is structural: cofactors must be at most `M` and markers at least `M`, so products live
+at one scale, and `Q = M` pushes the markers up to `M²`, forcing `H ≥ QM = M²`.  Taking the marker
+ratio to be a *power* of the marker scale instead keeps the headroom a positive constant while
+shrinking the window.  `RHTower/Sieve/ShortWindowMatching.lean`, with `M = N²` and `Q = N`:
+
+- `logLog_cube_sub_sq` — the headroom is exactly `log 3 − log 2`, since
+  `logLog(N³) − logLog(N²) = log(3 log N) − log(2 log N)`;
+- `shortMatchingGap` and `tendsto_shortMatchingGap` — the relative loss is `O(1/log N)` again, now
+  against `(log N)⁴/N` rather than `(log N)⁴/N²`;
+- `eventually_exists_hall_injection_short` — **for every sufficiently large `N`**, the primes of the
+  window `(N⁴ − N³, N⁴]` above `N` inject into
+  `markerBlockTargets (bigPrimeSet N² N³) (windowCell (N⁴ − N³) N³)` with `|f x − x| ≤ N³`.
+
+Here `X = N⁴ − N³` and `H = N³`, so `H ≍ X^{3/4}`: each prime moves by less than a fixed power of
+the window height, which is the content the square-ratio case lacks.  Axioms:
+`[propext, Classical.choice, Quot.sound]`.
+
+The exponent is set by the two constraints `X ≤ M²` (cofactors below `M`) and `H ≥ QM` (cells
+nonempty).  With `Q = M^α` these give `H ≍ X^{(1+α)/2}`, so any exponent in `(1/2, 1)` is
+reachable, at headroom `log(1 + α)`.
+
+### Formal layer — the quantitative content, independent of the source set
+
+An injection out of a possibly-empty set proves nothing, and the source set here is the primes of
+`(N⁴ − N³, N⁴]`, whose non-emptiness is a short-interval prime existence statement well beyond what
+is available unconditionally.  The counting content of the argument does not depend on it.
+
+`eventually_card_markerBlockTargets_ge` — for every sufficiently large `N`,
+
+`((log 3 − log 2)/2) · N³ ≤ #(markerBlockTargets (bigPrimeSet N² N³) (windowCell (N⁴−N³) N³))`.
+
+The marker block alone contains a positive proportion of the short window `(N⁴ − N³, N⁴]`.  This is
+unconditional and quantitative: it says that integers of the form (prime in `(N², N³]`) × (cofactor
+below `N²`) occupy at least a fixed fraction of a window of length `X^{3/4}` at height `X = N⁴`.
+
+The proof combines the three estimates already built — `sum_card_windowCell_ge` for the cells,
+`sum_inv_bigPrimeSet_ge_sharp` for the reciprocal sum, `card_bigPrimeSet_le_explicit` for the floor
+loss — and bounds their total by `N³ · shortMatchingGap N`, which tends to `0`.  Axioms:
+`[propext, Classical.choice, Quot.sound]`.
+
+### Formal layer — the marker flips the sign, and where the difficulty actually sits
+
+`RHTower/Sieve/MarkerSignFlip.lean` supplies the Möbius layer of the block, which the density
+statement above deliberately omits.
+
+- `moebius_marker_mul` — a marker is a prime exceeding its cofactor, so it never divides it and
+  `μ(a·p) = μ(a)·μ(p) = −μ(a)`.
+- `moebius_of_mem_markerBlockTargets` — every target factors as `a·p` with `μ(target) = −μ(a)`.
+- `markerBlockTargets_filter_moebius` — the block of the sign-restricted cells *is* the
+  sign-restricted block.
+- `card_markerBlockTargets_moebius` — hence
+
+  `#{n ∈ block : μ(n) = ε} = ∑_{p ∈ P} #{a ∈ C p : μ(a) = −ε}`.
+
+All axiom-clean.  This is an exact identity, not an estimate, and it locates the remaining
+difficulty precisely: the marker construction transports Möbius signs perfectly, so a lower bound
+for integers of prescribed sign in the short window is *equivalent* to a lower bound for prescribed
+sign among the cofactors.
+
+That is not a reduction to something easier.  Each cell `windowCell X H p` is an interval of length
+`H/p`, and for the markers carrying most of the mass `H/p` is a small power of the cofactor range —
+so counting `μ = ε` there is again a short-interval Möbius problem.  The unsigned density is
+unconditional; the signed one is Matomäki–Radziwiłł's theorem, not a corollary of anything built
+here.
+
+### Formal layer — the full exponent range
+
+`RHTower/Sieve/PowerWindowMatching.lean` replaces the single window `X^{3/4}` by the whole family
+the geometry allows.  With marker scale `M = N^k` and ratio `Q = N`:
+
+- `logLog_pow_succ_sub` — the headroom is exactly `log(k+1) − log k`, a positive constant for each
+  fixed `k`;
+- `powerMatchingGap k` and `tendsto_powerMatchingGap` — the relative loss is again `O(1/log N)`;
+- `eventually_card_markerBlockTargets_pow_ge` — **for every `k ≥ 2` and every sufficiently large
+  `N`**,
+
+  `((log(k+1) − log k)/2) · N^{k+1} ≤ #(markerBlockTargets (bigPrimeSet N^k (N·N^k)) (windowCell (N^{2k} − N^{k+1}) N^{k+1}))`.
+
+The window has length `H = N^{k+1}` at height `X = N^{2k} − N^{k+1}`, that is `H ≍ X^{(k+1)/(2k)}`.
+So the unconditional density statement holds for windows of length any fixed power of the height
+strictly above `1/2`; `k = 2` recovers `X^{3/4}` and `k → ∞` approaches `X^{1/2}`.  The exponent
+`1/2` is the true barrier of the construction, not an artefact: cofactors below `M` force `X ≤ M²`
+and nonempty cells force `H ≥ QM`.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.  The declaration needs a raised heartbeat budget;
+the proof keeps `linarith only [...]` everywhere, since the ambient context carries large terms with
+symbolic exponents.
+
+### Formal layer — the square-root barrier is a theorem, not an artefact
+
+The claim that `1/2` is the true exponent limit of the construction is now proved, so the positive
+and negative sides meet.  `RHTower/Sieve/SqrtBarrier.lean`:
+
+- `sq_lt_of_two_mem_cell` — if any cell of a marker block contains two distinct cofactors then
+  `X < H²`.  Two cofactors of the same marker `p` give products differing by at least `p`, so
+  `p ≤ H`; and unique decoding forces `a < p`, so `X < a·p < p² ≤ H²`.
+- `card_cell_le_one_of_sq_le` — contrapositive in the useful direction: if `H² ≤ X` then every cell
+  is a singleton, so each marker contributes at most one target and the block carries no density at
+  all.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+Together with `eventually_card_markerBlockTargets_pow_ge` this settles the range exactly.  For every
+exponent `θ ∈ (1/2, 3/4]` of the form `(k+1)/(2k)` the block fills a positive proportion of a window
+of length `X^θ`; at `θ ≤ 1/2` the cells degenerate to singletons and the method gives nothing.  The
+barrier comes from the unique-decoding requirement `a < p`, which is what makes the sign transport
+`μ(a·p) = −μ(a)` exact — so it cannot be traded away without losing the property the construction
+exists to provide.

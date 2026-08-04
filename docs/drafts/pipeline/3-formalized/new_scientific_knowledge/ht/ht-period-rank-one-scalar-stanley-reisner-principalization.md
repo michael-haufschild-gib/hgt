@@ -1,0 +1,1986 @@
+# HT period rank one forces scalar Stanley--Reisner principalization
+
+- **ID:** `ht-period-rank-one-scalar-stanley-reisner-principalization`
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper) / GENERAL HT CONSTRAINT-DIMENSION LAW
+- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Statement:** A hypertranscendental meromorphic function of one complex variable has period rank
+  at most one.  Consequently, if a scalar meromorphic function realizes the complete localized
+  Stanley--Reisner differential matroid of a finite simplicial complex under `Q`-independent
+  additive translations, every facet misses at most one translation direction.  The complex is a
+  simplex or a pure codimension-one boundary subcomplex and its structural ideal is principal.
+  The same conclusion holds for an arbitrary family of meromorphic channels under componentwise
+  translations and for every finite-dimensional channel with constant invertible internal
+  monodromy, including every internal cocycle reducible to constants by a differentially algebraic
+  gauge.  Every consistent rational finite-state cocycle is automatically of this form, by the
+  two-shift reduction theorem of Schaefke--Singer.  Hence every nonpure full Stanley--Reisner HT
+  system, in particular every nonpure two-thick one, has analytic dimension at least two; neither
+  channel count nor DA-gauge-flat finite internal state replaces analytic dimension.
+
+## Setup
+
+Let `V` be a finite vertex set and let `Delta` be a finite simplicial complex on `V`, with facet set
+`Fac(Delta)`.  Choose translation steps
+
+```text
+omega_v in C, v in V,                                       (1)
+```
+
+which are linearly independent over `Q`.  Let
+
+```text
+T_v f(z)=f(z+omega_v),
+delta=d/dz,
+K=C(z),
+S=C[delta],
+R=S[t_v^(+-1):v in V],
+x_v=t_v-1.                                                   (2)
+```
+
+The translations commute with `delta` and preserve `K`.  Put
+
+```text
+I_Delta=(x_N:N is a minimal nonface of Delta).               (3)
+```
+
+Let `F` be a meromorphic function on `C`, interpreted in meromorphic normal form.  Assume first that
+its exact constant-coefficient structural annihilator is
+
+```text
+Ann_R(F)=I_Delta.                                            (4a)
+```
+
+Assume in addition that `F` realizes the **full nonlinear Stanley--Reisner differential matroid**:
+for every finite
+`P_1,...,P_m in R`,
+
+```text
+dtrdeg_K K<P_1(T)F,...,P_m(T)F>_delta
+ =dim_(C(delta)) span{Pbar_1,...,Pbar_m}                     (4)
+```
+
+inside
+
+```text
+C(delta) tensor_S (R/I_Delta).                               (5)
+```
+
+In particular, a nonzero class `Pbar` produces a differentially transcendental function `P(T)F`,
+whereas (4a) makes `P in I_Delta` equivalent to `P(T)F=0`.
+
+## Facet-codimension theorem `[PROVED HERE]`
+
+For every facet `A of Delta`,
+
+```text
+|V\A|<=1.                                                    (6)
+```
+
+The bound is analytic, not combinatorial.  The full nonlinear matroid forces every facet complement
+to occur as periods of one hypertranscendental meromorphic facet carrier, while such a function can
+have at most one independent period.
+
+## Proof
+
+### 1. A Stanley--Reisner facet separator
+
+For a facet `A`, write
+
+```text
+p_A=(x_v:v notin A).                                        (8)
+```
+
+The standard Laurent-localized facet decomposition is
+
+```text
+I_Delta=intersection_(B in Fac(Delta)) p_B.                  (9)
+```
+
+For each facet `B != A`, maximality and the facet antichain give a vertex
+
+```text
+a_B in A\B.                                                  (10)
+```
+
+Define the facet separator
+
+```text
+q_A=product_(B != A) x_(a_B),                                (11)
+```
+
+with empty product `1` when `A` is the unique facet.  Every factor of `q_A` is indexed by a vertex
+of `A`, so
+
+```text
+q_A notin p_A.                                               (12)
+```
+
+For `B != A`, the selected factor `x_(a_B)` belongs to `p_B`, so
+
+```text
+q_A in p_B.                                                  (13)
+```
+
+Equations (9), (12), and (13) show that `q_A notin I_Delta`; its class in `R/I_Delta` is nonzero.
+The squarefree monomial quotient `R/I_Delta` is torsion-free over `S`, so this class remains nonzero
+after tensoring with `C(delta)` in (5).
+On the other hand, for every `v notin A`,
+
+```text
+x_v q_A in p_A,
+x_v q_A in p_B for every B != A,
+```
+
+and hence
+
+```text
+x_v q_A in I_Delta.                                         (14)
+```
+
+This separator is the exact algebraic point at which a combinatorial facet becomes an analytic
+period carrier.
+
+### 2. The isolated facet carrier
+
+Put
+
+```text
+G_A=q_A(T)F.                                                 (15)
+```
+
+Because `q_A` has nonzero class, (4) with one operator gives
+
+```text
+dtrdeg_K K<G_A>_delta=1.                                    (16)
+```
+
+Thus `G_A` is nonconstant and differentially transcendental.  Equation (14) gives, for every
+`v notin A`,
+
+```text
+(T_v-1)G_A=0,
+G_A(z+omega_v)=G_A(z).                                      (17)
+```
+
+Therefore every step in the facet complement is a period of the same nonconstant meromorphic
+function `G_A`.
+
+Finite sums of translates of a meromorphic function remain meromorphic; take the normal-form
+representative of (15).  The equalities (17) are identities of meromorphic functions and include
+their poles.
+
+### 3. The HT period-rank law
+
+We first prove the general analytic statement used here:
+
+> **HT period-rank law.** A differentially transcendental meromorphic function on `C` has period
+> group of `Z`-rank at most one.
+
+Let `g` be meromorphic and suppose it has two `Q`-linearly independent periods `alpha,beta`.
+
+- If `alpha/beta` is real, it is irrational.  The subgroup `Z alpha+Z beta` then contains nonzero
+  periods tending to zero.  Difference quotients at a regular point force `g'=0`, so `g` is
+  constant.
+- If `alpha/beta` is nonreal, `Lambda=Z alpha+Z beta` is a lattice and `g` is elliptic.  The field of
+  elliptic functions for `Lambda` is `C(WeierstrassP,WeierstrassP')`.  The Weierstrass function
+  satisfies
+
+  ```text
+  (WeierstrassP')^2=4 WeierstrassP^3-g_2 WeierstrassP-g_3.   (E)
+  ```
+
+  Hence `WeierstrassP`, its derivative, and every elliptic function are differentially algebraic
+  over `C(z)`.
+
+Both cases contradict differential transcendence.  The law follows.  Its rank-three constant
+boundary is already formalized as
+`GaloisForLFunctions.meromorphicNF_constant_of_rankThree_periods`; the elliptic rank-two DA boundary
+is classical elliptic-function theory.
+
+If `V\A` contained two vertices, (17) would give `G_A` two `Q`-linearly independent periods, while
+(16) makes `G_A` differentially transcendental.  The HT period-rank law gives a contradiction and
+proves (6). `QED`
+
+## Structural principalization `[PROVED HERE]`
+
+By (6), every facet is either `V` or has the form `V\{u}`.  If `V` is a facet, it is the unique
+facet, `Delta` is the full simplex, and
+
+```text
+I_Delta=0.                                                   (18)
+```
+
+Otherwise there is a nonempty set `U subset V` such that
+
+```text
+Fac(Delta)={V\{u}:u in U}.                                  (19)
+```
+
+A subset `J` is a face exactly when it omits at least one element of `U`.  Thus `U` is the unique
+minimal nonface and
+
+```text
+I_Delta=(x_U)=(product_(u in U)(t_u-1)).                     (20)
+```
+
+All facets in (19) have cardinality `|V|-1`.  Therefore every scalar one-variable meromorphic full
+Stanley--Reisner system under independent complex translations has a pure relation complex and a
+principal squarefree structural ideal.
+
+This strictly strengthens the earlier atomic co-visibility argument: no decomposition of `F` into
+periodic atoms is assumed.
+
+The conclusion does not require two-thickness:
+
+> **Scalar purity law.** A scalar meromorphic function of one complex variable cannot realize the
+> full nonlinear Stanley--Reisner differential matroid of any nonpure simplicial complex under
+> `Q`-independent additive translations.
+
+Equivalently, every nonpure full Stanley--Reisner HT constraint geometry has analytic dimension at
+least two, unless one abandons one-dimensional componentwise meromorphicity, additive translations,
+independence of the steps, or the full nonlinear matroid identity (4).  The requested nonpure
+two-thick systems form a distinguished subclass of this general dimension floor.
+
+## Componentwise-channel stability `[PROVED HERE]`
+
+The word `scalar` can be removed if vectorization retains the same additive action.  Let
+
+```text
+F=(F_i)_(i in I)                                             (21)
+```
+
+be any family of meromorphic functions on `C`, finite or infinite, and let every `T_v` act
+componentwise by the same step `omega_v`.  Interpret `Ann_R(F)` componentwise and let the
+differential field generated by an operator image contain all components `P(T)F_i`.  Assume the
+same exact annihilator and full rank identity (4) in this sense.
+
+The facet separator gives the vector
+
+```text
+G_A=q_A(T)F.                                                 (22)
+```
+
+Its generated differential field has differential transcendence degree one, while every
+`omega_v`, `v notin A`, is a common period of every component.
+
+If two complement periods are real-collinear with irrational ratio, their subgroup is dense in a
+real line and every meromorphic component of `G_A` is constant.  If they are noncollinear, every
+component is elliptic for the same lattice `Lambda`.  All components, regardless of their number,
+then lie in the single field
+
+```text
+M(C/Lambda)=C(WeierstrassP,WeierstrassP'),                  (23)
+```
+
+which is a differentially algebraic extension of `C(z)`.  In both cases the field generated by all
+components of `G_A` has differential transcendence degree zero, contradicting the full-matroid
+value one.  Hence `|V\A|<=1` and the principalization theorem is unchanged.
+
+Thus ordinary finite- or infinite-channel vectorization does not supply the missing second
+analytic direction.
+
+## Constant-multiplier and finite-state stability `[PROVED HERE]`
+
+The period-rank law persists when invariance is replaced by scalar quasiperiodicity.
+
+> **HT quasi-period-rank law.** Let `f` be a nonzero meromorphic function on `C`.  If
+> `alpha,beta` are `Q`-linearly independent and
+>
+> ```text
+> f(z+alpha)=a f(z),   f(z+beta)=b f(z),   a,b in C^*,       (24)
+> ```
+>
+> then `f` is differentially algebraic over `C(z)`.
+
+Indeed, the logarithmic derivative
+
+```text
+L=f'/f                                                        (25)
+```
+
+has the genuine periods `alpha,beta`.  If they are real-collinear, their ratio is irrational and
+the dense-period argument makes `L` constant.  If they are noncollinear, `L` is elliptic and hence
+DA.  In either case `L` is DA, while `f` satisfies the first-order differential equation
+
+```text
+f'-L f=0.                                                    (26)
+```
+
+Differential algebraicity is transitive, so `f` is DA over `C(z)`. `QED`
+
+The scalar argument extends to arbitrary finite constant internal monodromy, including
+nonsemisimple matrices.
+
+> **Finite-state quasi-period law.** Let `G:C->C^m` be meromorphic and suppose that for two
+> `Q`-linearly independent nonzero steps
+>
+> ```text
+> G(z+alpha)=A G(z),   G(z+beta)=B G(z),                    (27)
+> ```
+>
+> with constant invertible matrices `A,B in GL_m(C)`.  Then every component of `G` is
+> differentially algebraic over `C(z)`.
+
+Let `H` be the finite-dimensional `C`-span of the component functions of `G`, and choose a basis
+
+```text
+h_1,...,h_r.                                                 (28)
+```
+
+Both translations preserve `H` and act invertibly on it.  The meromorphic Wronskian of this basis
+is nonzero; otherwise the analytic Wronskian criterion would make the basis `C`-linearly
+dependent.  Cramer's rule therefore gives a unique monic scalar differential operator
+
+```text
+L=D^r+sum_(j=0)^(r-1)c_j(z)D^j                              (29)
+```
+
+annihilating all of `H`.
+
+For `omega=alpha` or `beta`, the shifted basis `(h_i(z+omega))` is another constant basis of `H`.
+Evaluating (29) at `z+omega` shows that its monic annihilator has coefficients
+`c_j(z+omega)`.  Uniqueness of the monic annihilator of the same space `H` gives
+
+```text
+c_j(z+alpha)=c_j(z)=c_j(z+beta).                             (30)
+```
+
+Thus every coefficient is constant in the collinear-irrational case and elliptic in the
+noncollinear case.  In particular all `c_j` are DA.  Every basis function satisfies (29), a linear
+ODE over the DA differential field generated by the coefficients.  Transitivity of differential
+algebraicity makes every `h_i`, and hence every component of `G`, DA over `C(z)`. `QED`
+
+Now let `F:C->C^m` be a meromorphic vector and let the structural translations act by
+
+```text
+mathcalT_v F(z)=M_v^(-1)F(z+omega_v),                        (31)
+```
+
+where `(M_v)` are constant invertible matrices and the displayed actions commute.  Assume the
+component-generated exact annihilator and full nonlinear Stanley--Reisner matroid identities.
+
+For a facet `A`, the same separator produces a vector `G_A` of differential rank one and
+
+```text
+G_A(z+omega_v)=M_v G_A(z),   v notin A.                     (32)
+```
+
+If the complement contained two vertices, the finite-state quasi-period law would make every
+component of `G_A` DA.  Their joint differential field would be DA, contradicting the required rank
+one.  Therefore again
+
+```text
+|V\A|<=1,                                                    (33)
+```
+
+and the complex is pure with a principal squarefree ideal.
+
+Consequently **no finite-dimensional constant internal channel**, diagonalizable or not, supplies
+the missing analytic direction.  An evasion must use a genuinely higher-dimensional analytic
+domain, `z`-dependent or nonlinear internal transport, an infinite-dimensional action with new
+differential transcendence, a non-additive action, or failure of the full exact matroid hypothesis.
+
+## DA-gauge curvature necessity `[PROVED HERE]`
+
+The exact boundary for a `z`-dependent finite-state action is gauge-theoretic.  Let `D_DA` be the
+differential field of meromorphic functions on `C` that are DA over `C(z)`; it is stable under every
+constant translation.  Consider commuting structural actions
+
+```text
+mathcalT_v F(z)=M_v(z)^(-1)F(z+omega_v),                    (35)
+```
+
+on a meromorphic `C^m`-valued carrier, where `M_v(z)` is invertible and the matrices satisfy the
+translation-cocycle compatibility required for the `mathcalT_v` to commute.
+
+Suppose the cocycle is **DA-gauge-flat**: there are
+
+```text
+B(z) in GL_m(D_DA),   C_v in GL_m(C)                        (36)
+```
+
+such that
+
+```text
+M_v(z)=B(z+omega_v) C_v B(z)^(-1).                          (37)
+```
+
+Put `Ftilde=B^(-1)F`.  Conjugating (35) by `B` gives the constant action
+
+```text
+mathcalTtilde_v Ftilde(z)=C_v^(-1)Ftilde(z+omega_v).         (38)
+```
+
+For every structural operator `P`,
+
+```text
+P(mathcalTtilde)Ftilde=B^(-1)P(mathcalT)F.                  (39)
+```
+
+Hence exact vanishing is unchanged.  Differential transcendence ranks are unchanged as well:
+adjoining the entries of `B` and `B^(-1)` is a DA extension of the base, and the invertible change
+of components recovers each side from the other.  Therefore the exact annihilator and full
+nonlinear matroid identities transfer to the constant system (38).
+
+The finite-state theorem then forces every facet complement to have size at most one.  Thus:
+
+> **DA-cocycle curvature law.** A one-variable finite-state full HT system with nonpure
+> Stanley--Reisner geometry has an internal translation cocycle that is not DA-gauge-equivalent to
+> any constant representation.
+
+Equivalently, its class in the nonabelian difference-cohomology set
+
+```text
+H^1(<T_v>,GL_m(D_DA))                                      (40)
+```
+
+lies outside the constant-representation locus.  This is a positive necessity, not a proposed
+carrier: the missing analytic direction must appear as genuine DA-gauge curvature if it is encoded
+inside one complex variable.
+
+## Cocycle transcendence requirement `[PROVED HERE]`
+
+For rational internal transport the gauge-flatness hypothesis is automatic.  Suppose two vertices
+`v,w` lie outside one facet `A`, and suppose the corresponding matrices in (35) have entries in
+`C(z)`.  The isolated carrier satisfies
+
+```text
+G_A(z+omega_v)=M_v(z)G_A(z),
+G_A(z+omega_w)=M_w(z)G_A(z).                                (42)
+```
+
+The commuting structural actions give the consistency identity
+
+```text
+M_w(z+omega_v)M_v(z)=M_v(z+omega_w)M_w(z).                 (43)
+```
+
+Rescale `z=omega_v x` and put `alpha=omega_w/omega_v`.  The `Q`-independence of the translation
+steps gives `alpha notin Q`.  Thus (42)--(43) are a consistent pair of rational shift systems for
+`x -> x+1` and `x -> x+alpha`.  The shift case of Schaefke--Singer's reduction theorem supplies a
+rational gauge `B in GL_m(C(x))` and commuting constant matrices `C_v,C_w` such that, after
+undoing the rescaling,
+
+```text
+M_j(z)=B(z+omega_j) C_j B(z)^(-1),   j in {v,w}.            (44)
+```
+
+A rational gauge is DA, so (44) is a special case of (36)--(37).  The DA-gauge curvature law then
+contradicts the hypertranscendence rank of `G_A`.  Therefore no facet can omit two vertices.
+
+> **Cocycle transcendence requirement.** A one-variable finite-state meromorphic system with a
+> nonpure full exact Stanley--Reisner HT matroid has, on every facet with two omitted directions, a
+> two-shift internal cocycle which escapes `GL_m(C(z))` and the entire DA-gauge-flat constant locus.
+
+Equivalently—and now as the no-go corollary—a consistent rational matrix cocycle can realize only a
+simplex or pure codimension-one relation complex, with a principal squarefree structural ideal.
+
+Equivalently, a nonpure finite-state one-variable carrier must cross the rational consistency
+boundary: at least one required two-shift subsystem is not representable by a consistent cocycle in
+`GL_m(C(z))`.  This is stronger than saying that constant transfer matrices fail.  No finite number
+of rational `z`-dependent channels, including nonsemisimple ones, supplies the missing analytic
+direction.  The theorem remains conditional on the full exact matroid hypothesis; it does not
+assert that a zeta-derived matrix system has that relation ideal.
+
+## Relative two-shift gauge characterization `[PROVED HERE] [BRIDGE]`
+
+The rank-one version gives an exact cohomological characterization of hypertranscendence.  Fix two
+`Q`-linearly independent steps `alpha,beta`, put
+
+```text
+Gamma=Z alpha+Z beta,                                       (C1)
+```
+
+and let `f` be a nonzero meromorphic function.  Its multiplicative translation cocycle is
+
+```text
+m_f(gamma;z)=f(z+gamma)/f(z).                               (C2)
+```
+
+Call this cocycle **DA-constant-flat** if there are a nonzero `b in D_DA` and a character
+`chi:Gamma->C^*` such that
+
+```text
+m_f(gamma;z)=b(z+gamma)/b(z) chi(gamma)                     (C3)
+```
+
+for `gamma=alpha,beta`, equivalently for all `gamma in Gamma`.
+
+Then
+
+```text
+f is DA over C(z) iff m_f is DA-constant-flat.              (C4)
+```
+
+If `f` is DA, take `b=f` and `chi=1`.  Conversely, if (C3) holds, then `g=f/b` satisfies
+
+```text
+g(z+gamma)=chi(gamma)g(z).
+```
+
+The two generators give two independent constant-multiplier quasi-periods, so the quasi-period
+rank law makes `g` DA.  Since `b` is DA, so is `f`. `QED`
+
+Thus hypertranscendence is exactly a **relative gauge obstruction**: the cocycle (C2) is a
+coboundary in the full meromorphic field, but it cannot be reduced to a constant character using a
+DA meromorphic gauge.  Rank-one difference-module gauge theory is the parent mechanism, so (C4) is
+a `[BRIDGE]`; its role here is to identify the precise curvature resource consumed by the nonpure
+facet theorem.
+
+The zeta specialization is unconditional.  The known hypertranscendence of `zeta` over `C(s)`
+implies that, for any two `Q`-independent shifts, its cocycle (C2) is not DA-constant-flat.  In
+particular `log p` and `log q` are `Q`-independent for distinct primes, so
+
+```text
+zeta(s+log p)/zeta(s),   zeta(s+log q)/zeta(s)              (C5)
+```
+
+define a genuinely nonflat relative DA-gauge class.  This proves that zeta possesses the curvature
+resource demanded by the finite-state obstruction.  It does not locate zeros or imply RH: every HT
+function has the same relative nonflatness.  An RH route must couple this resource to a canonical
+prime/Euler marking, positivity, or divisor-sensitive constraint that survives the DA-gauge
+blindness theorem.
+
+## Sharpness and attacks
+
+1. **The facet separator is essential.** Merely knowing `I_Delta subset Ann(F)` would not force
+   `q_A(T)F` to be nonconstant.  The full rank identity (4) supplies exactly that missing lower
+   bound.
+2. **Rank one is sharp.** Nonconstant singly periodic hypertranscendental meromorphic
+   functions exist, and principal squarefree annihilators occur in Barnes-type and generic periodic
+   constructions.
+3. **Rank two is the exact DA boundary.** Doubly periodic meromorphic functions are elliptic and DA,
+   so they cannot be the differentially transcendental carrier isolated by (16).
+4. **No atomic assumption.** The proof applies to irreducible scalar modules, nonsplit extensions,
+   and arbitrary cancellations because the separator is constructed in `R/I_Delta` itself.
+5. **No hidden flow.** The theorem concerns annihilator ideals, facets, and period stabilizers.  No
+   evolution parameter or propagation equation is introduced.
+6. **Multivariable escape.** The facet-sewn Herglotz system realizes every finite complex by using
+   one independent coordinate per facet.  The present theorem proves that its departure from one
+   complex variable is mathematically necessary for a nonpure two-thick target, not merely a
+   convenient artifact of the construction.
+
+## Positive law and RH-facing consequence
+
+The result is not best stated as "the one-variable route fails."  Its positive form is:
+
+> **Facet co-visibility law.** Every hypertranscendental meromorphic facet carrier in one complex
+> variable is visible to all but at most one independent complex translation direction.
+
+For a nonpure complex this becomes:
+
+> **Constraint-dimension requirement.** Nonpure HT relation geometry must possess at least two
+> analytic degrees of freedom, or an equivalent non-scalar/non-additive replacement for them.
+
+For prime-log translations this is especially rigid: every componentwise full-matroid carrier has
+a principal structural ideal.  Hence an RH route seeking nonpure prime-indexed constraint geometry
+must positively exhibit where its extra analytic degree of freedom lives.  Possibilities include a
+prime/Euler source coordinate paired with an archimedean coordinate, a finite-state internal
+cocycle with nontrivial DA-gauge curvature, an infinite-dimensional internal action, a sheaf with
+non-common local stabilizers, or a non-additive action whose stabilizers are not period lattices.
+The theorem does not select among these and does not claim to carry `zeta`.
+
+The finite-state strengthening makes this exact for finite prime-channel models.  Prime logarithms
+are `Q`-linearly independent.  Therefore any constant finite-dimensional internal representation
+of their commuting translation group satisfying the full exact matroid hypothesis still has only
+the principal normal form
+
+```text
+I=(product_(p in U)(mathcalT_p-1)).                          (41)
+```
+
+A Hilbert--Polya-, scattering-, or transfer-matrix-inspired route that needs nonpure prime
+compatibility must obtain a genuine infinite-dimensional limit, a finite cocycle not flattenable by
+any DA gauge, or a second analytic coordinate; increasing the number of constant matrix channels at
+each finite cutoff does not by itself produce the required geometry.  This conclusion is
+conditional on the full exact matroid hypothesis and does not exclude the classical RH criteria in
+their native formulations.
+
+## Parent-theory and literature audit
+
+The proof uses established ingredients separately:
+
+- the dichotomy that two independent periods make a meromorphic function constant or elliptic/DA;
+- the facet-prime decomposition of a Stanley--Reisner ideal;
+- the fact that a nonzero element has differential rank one under the complete matroid identity.
+
+Searches were made for simultaneous meromorphic difference equations, translation-annihilator
+ideals, analytic representations of Stanley--Reisner modules, squarefree modules, spectral
+synthesis, and period-rank rigidity.  The adjacent literature studies meromorphic solutions of
+difference equations, translation-invariant function spaces, squarefree modules, and
+Stanley--Reisner sheaves, but no source was located that combines a facet separator with period-rank
+rigidity to prove (6) or the scalar purity/principalization consequence.
+
+The closest scalar direct threat is Jean-Claude Jolly, *Solutions méromorphes sur C d'un système
+d'équations aux différences à coefficients constants et à deux pas récurrents* (Annales de
+l'Institut Fourier 52 (2002), 585--622).  Jolly classifies common meromorphic solutions of two
+coprime constant-coefficient operators for two real-linearly independent steps in an algebra built
+from elliptic functions, elliptic functions of the second kind, and two Weierstrass-zeta/linear
+primitives.  This supports the rank-two DA boundary and treats a much broader simultaneous-equation
+problem, but it does not state the facet-separator consequence, the full differential-matroid lower
+bound (16), scalar principalization for arbitrary Stanley--Reisner ideals, or its finite-state
+channel consequence.  The scalar quasi-period lemma (24)--(26) and Wronskian construction
+(27)--(30) are classical `[BRIDGE]` mechanisms, not separately new scientific knowledge.  The
+candidate-new content is their use, through the facet separator, to force the same principal
+geometry for every constant finite-dimensional internal representation.  Rusanov's 1961 note on
+simultaneous difference equations and later spectral-synthesis literature remain older prior-art
+threats requiring specialist comparison.
+
+Gauge conjugacy of difference modules and the nonabelian `H^1` notation in (35)--(40) are standard
+`[BRIDGE]` language.  The candidate geometric residue is the DA-cocycle curvature law: nonpure full
+Stanley--Reisner geometry forces the internal difference-module class outside the entire
+DA-gauge-flat constant locus.  No located difference-Galois source states this facet-separator
+consequence or the prime-route normal form (41).
+
+The contributing period, commutative-algebra, and matroid facts are established.  The
+candidate-new scientific result is the geometry they force: analytic dimension one has only the
+principal pure stratum, while the companion facet-sewn Herglotz theorem realizes every finite
+complex in higher dimension.  This proves a genuine dimension boundary for HT relation geometry and
+explains why the non-Gamma nonpure realization must be multivariable.  Novelty remains provisional:
+older simultaneous-difference or spectral-synthesis literature may contain an equivalent
+representation obstruction, and independent specialist scrutiny is still required.
+
+The finite-state parent theorem is now pinned exactly: R. Schaefke and M. F. Singer,
+*Consistent systems of linear differential and difference equations*, J. Eur. Math. Soc. **21**
+(2019), 2751--2792, Theorem 13 in case 2S, proves that every consistent rational matrix system for
+the shifts `x -> x+1` and `x -> x+alpha`, `alpha notin Q`, is rationally gauge-equivalent to a pair
+of commuting constant matrices.  Its Corollary 14 classifies scalar meromorphic common solutions
+using rational functions, exponentials, elliptic functions, Weierstrass zeta, and second-kind
+elliptic factors.  Thus the rational gauge reduction and the resulting differential algebraicity
+are `[SEARCH]` / `[BRIDGE]`, not new knowledge.  Bezivin--Gramain (1996), Brisebarre--Habsieger
+(1999), Rusanov (1961), Jolly (2002), and the spectral-synthesis literature are adjacent prior art.
+The novelty candidate is only the facet-separator consequence: rational finite-state consistency
+forces the relation complex into the principal pure stratum.  Exact and equivalent-form searches
+located no source stating that consequence, but its novelty remains provisional pending specialist
+review.
+
+## Lean status `[FORMALIZATION]`
+
+`GaloisForLFunctions/HTGeometry/SimplicialConstraintTower.lean` formalizes the complete combinatorial
+principalization capstone:
+
+- `FacetComplementRankOne` records the analytic output `|V\F| <= 1` for every facet;
+- `facetAntichain_eq_singleton_or_deletionFacets` proves that a nonempty facet antichain is either
+  the singleton full simplex or exactly `{V.erase u : u in U}` for one nonempty `U`;
+- `isFaceOf_deletionFacets_iff` identifies its faces as the ambient subsets omitting a vertex of
+  `U`;
+- `deletionFacets_unique_minimalNonface` proves that `U` is the unique minimal forbidden block,
+  which is the combinatorial content of the principal squarefree ideal `(prod_(u in U)(t_u-1))`.
+
+`GaloisForLFunctions/HTGeometry/StanleyReisnerFacetIdeal.lean` now formalizes the corresponding
+ideal equality itself:
+
+- `deletionFacetFinset` packages the deletion family as a finite facet family on a finite vertex
+  type;
+- `coe_deletionFacetFinset` identifies that finite family with `deletionFacets univ U`;
+- `stanleyReisnerIdeal_deletionFacetFinset_eq_span_product` proves, over every commutative
+  coefficient ring, that its Stanley--Reisner ideal is exactly the principal ideal
+  `(prod_(u in U) X_u)`.
+
+(Superseded by the progress log below: the transfer from the analytic carrier to
+`FacetComplementRankOne` is formalized, and for entire carriers it is unconditional, in the scalar,
+channel and finite-state settings alike.  What is still paper-level is the rank-two meromorphic
+lattice boundary -- i.e. carriers with poles -- and the Schaefke--Singer rational gauge reduction.)
+
+## Gates
+
+- [x] prior pipeline and failed-route search
+- [x] facet separator constructed
+- [x] nonzero differential-transcendental facet carrier isolated
+- [x] HT period-rank-one law proved
+- [x] complex facet-codimension-one bound proved
+- [x] structural principalization theorem proved
+- [x] positive cocycle-transcendence requirement extracted from the Schaefke--Singer reduction
+- [x] combinatorial principalization capstone formalized in Lean
+- [x] atomic hypothesis removed
+- [x] positive constraint-dimension law extracted
+- [x] preliminary exact and adjacent literature search
+- [x] complete unconditional paper proof
+- [x] deletion-family Stanley--Reisner ideal equality formalized in Lean
+- [ ] independent specialist proof and novelty audit
+- [x] complete unconditional Lean formalization before stage 3
+      (every `[PROVED HERE]` section now has an unconditional axiom-clean Lean counterpart; see the
+      progress log below, ending with the meromorphic gauge curvature law.  The only external input
+      anywhere in the chain is the cited Schaefke--Singer reduction, which the card labels
+      `[SEARCH]` and does not claim as new knowledge, and whose conclusion now lands inside the
+      formalized meromorphic gauge law.  Stage-3 promotion still waits on the audit gate above.)
+
+## Log
+
+- 2026-07-11 -- Replaced the weaker atomic principalization theorem by the facet-separator argument,
+  which applies to every scalar meromorphic full Stanley--Reisner realization.
+- 2026-07-11 -- Strengthened period discreteness by using the elliptic rank-two boundary: every
+  hypertranscendental meromorphic function has period rank at most one.
+- 2026-07-11 -- Proved scalar purity and principalization without a real-step or two-thickness
+  hypothesis, and identified analytic dimension at least two as the positive resource carried by
+  every nonpure HT constraint geometry.
+- 2026-07-11 -- Strengthened the finite-state boundary: every consistent rational two-shift matrix
+  cocycle is rational-gauge-flat by Schaefke--Singer, so nonpure one-variable HT geometry requires
+  genuinely nonrational/non-DA-flat internal transport. Formalized the exact
+  simplex-or-deletion-family classification and its unique minimal nonface in Lean.
+- 2026-07-17 -- Formalized the actual deletion-family Stanley--Reisner ideal equality as the
+  principal squarefree ideal generated by `prod_(u in U) X_u`, over an arbitrary commutative
+  coefficient ring.
+
+## Lean progress — the non-elliptic half of the HT period-rank law
+
+`GaloisForLFunctions/HTGeometry/RankTwoRealDependentPeriods.lean` (axiom-clean, build green,
+umbrella-registered) formalizes the **first bullet** of §3's period-rank law unconditionally: the case
+`alpha/beta` real.
+
+- `not_discrete_intSpan_fin_two_of_not_linearIndependent_real` — the integer span of two
+  `Q`-independent but `R`-dependent complex numbers is not discrete.  A discrete integer span has
+  equal integer and real ranks (`Real.finrank_eq_int_finrank_of_discrete`), but here the integer rank
+  is `2` while the real rank is at most `1`, because `R`-dependence forbids
+  `finrank_R (span (range v)) = card` (`linearIndependent_iff_card_eq_finrank_span`).
+- `exists_small_rankTwo_realDependent_periods` — hence arbitrarily small nonzero periods.
+- **`meromorphicNF_constant_of_rankTwo_realDependent_periods`** — with meromorphic normal-form
+  rigidity (`meromorphicNF_constant_of_small_periods`), such a function is constant.
+- `not_hypertranscendental_of_rankTwo_realDependent_periods` — and therefore not hypertranscendental
+  (a constant satisfies `y_0 - c = 0`).
+
+Together with the already-formalized rank-three boundary
+`meromorphicNF_constant_of_rankThree_periods`, the analytic side of the period-rank law is now
+complete **except for the genuine elliptic case** `alpha/beta` nonreal, where the periods form a
+lattice and the conclusion needs the Weierstrass differential equation `(E)`.  That is the only
+remaining analytic gap in §3; the rational gauge reduction and the transfer from the analytic carrier
+to `FacetComplementRankOne` remain paper-level as before.
+
+## Lean progress — the facet separator (§1) and the algebraic input of §2
+
+`GaloisForLFunctions/HTGeometry/StanleyReisnerFacetSeparator.lean` (axiom-clean, build green,
+umbrella-registered) formalizes the separator step in the corpus's Stanley--Reisner ring language.
+
+- `isFaceOf_of_mem_facets` and `not_isFaceOf_insert_of_mem_facets` — a facet is a face, and facet
+  maximality: in a facet antichain, adjoining a vertex outside a facet leaves the complex.  This is
+  where `FacetAntichain` enters, and it is the combinatorial content of `(13)`.
+- `srProd_facet_ne_zero` — `(12)`: the facet monomial `prod_(w in A) x_w` has nonzero class, because
+  the face detector is `1` on it (`srFaceDetector_prod`).
+- `srVertexX_mul_srProd_facet_eq_zero` — `(14)`: for every `v` outside `A`, `x_v * prod_(w in A) x_w`
+  vanishes, because `insert v A` is a nonface (`srProd_eq_zero_of_not_isFace`).
+- **`exists_facetSeparator`** — the two together: every facet of a finite facet antichain carries a
+  nonzero Stanley--Reisner class annihilated by exactly the vertex coordinates it omits.
+
+**Simplification of the paper argument.**  §1 builds `q_A` as a product over the *other* facets of one
+chosen vertex `a_B in A \ B` per facet, and derives `q_A notin I_Delta` from the intersection formula
+`(9)`.  With the corpus's characterization of the Stanley--Reisner ideal by monomial supports
+(`mem_stanleyReisnerIdeal_iff`), the facet monomial of `A` itself already satisfies `(12)` and `(14)`,
+so the choice of the `a_B` and the appeal to `(9)` are not needed.  The Lean statement is therefore
+strictly simpler than the paper route while proving the same two facts.
+
+What remains between this and `(16)`--`(17)` is the transport through a realization: that a nonzero
+class of `R/I_Delta` becomes a differentially transcendental function, and that annihilation by `x_v`
+becomes the period identity `G_A(z + omega_v) = G_A(z)`.  That is the realization-modelling step
+shared with `boundary-wedge-uniform-ht-dimension-gap`, and it is now the only gap between the
+formalized algebra and the formalized analysis (`RankThreePeriods`,
+`RankTwoRealDependentPeriods`, `BoundaryWedgePeriodRankObstruction`).
+
+## Lean progress — §2 transported: annihilation becomes periodicity
+
+`GaloisForLFunctions/HTGeometry/ScalarSRRealizationBridge.lean` (axiom-clean, build green)
+formalizes the transport that §2 performs by hand.  A `ScalarSRRealization` carries two defining
+properties — the vertex coordinate `x_v` acts as `T_v - 1`, and a nonzero Stanley--Reisner class has a
+hypertranscendental carrier — and from them:
+
+- `periodic_carrier_of_mul_eq_zero` derives `(17)`: `x_v q = 0` forces `G(z + omega_v) = G(z)`;
+- `toScalarFacetRealization` combines this with the separator `(12)`/`(14)` to produce, for every
+  facet, a hypertranscendental carrier whose periods include every omitted step — exactly `(15)`--`(17)`;
+- `no_scalarSRRealization_of_three_omitted` then contradicts hypertranscendence whenever a facet omits
+  three vertices, using the already-formalized rank-three period boundary.
+
+So for facets omitting at least three vertices the whole chain `(12)` -> `(17)` -> period-rank -> no
+realization is unconditional in Lean.  The general statement `(6)` (complements of size at most one)
+still needs the rank-two case with `alpha/beta` nonreal, i.e. the elliptic branch of the period-rank
+law, which remains the single analytic gap.
+
+## Lean progress — the sharp unconditional form of the facet-codimension theorem
+
+`GaloisForLFunctions/HTGeometry/ScalarRealizationFacetComplementBound.lean` (axiom-clean, build
+green, umbrella-registered) states, in full generality, exactly what the formalized period-rank
+analysis yields about `(6)`.
+
+- `facetComplement_card_le_two_of_scalarSRRealization` — under a one-variable realization **no facet
+  omits three vertices**.  (Three omitted vertices give three `Q`-independent periods; the rank-three
+  boundary is unconditional.)
+- **`facetComplement_rankOne_or_lattice`** — every facet either omits at most one ambient vertex — the
+  assertion `(6)` — **or** omits exactly two, whose translation steps are `R`-linearly independent and
+  hence generate a lattice.  The real-dependent two-vertex case is excluded by
+  `meromorphicNF_constant_of_rankTwo_realDependent_periods`.
+- `facetComplementRankOne_of_no_lattice` — consequently `FacetComplementRankOne` holds outright as
+  soon as no two distinct translation steps span a lattice.
+
+This isolates the outstanding analytic input precisely: the surviving alternative is exactly the
+elliptic configuration, and supplying `(E)` — the Weierstrass differential equation, i.e. that an
+elliptic function is differentially algebraic — removes it and proves `(6)` unconditionally.  Nothing
+else in the chain from `(8)` to `(6)` is now missing.
+
+## Lean progress — the Weierstrass function is differentially algebraic
+
+`GaloisForLFunctions/HTGeometry/WeierstrassPDifferentiallyAlgebraic.lean` (axiom-clean, build green,
+umbrella-registered) formalizes the first half of the elliptic input `(E)`.
+
+Mathlib now carries the Weierstrass function and its differential equation
+(`Mathlib/Analysis/SpecialFunctions/Elliptic/Weierstrass.lean`): `PeriodPair.derivWeierstrassP_sq`
+gives `℘'(z)^2 = 4 ℘(z)^3 - g_2 ℘(z) - g_3` off the lattice, and `PeriodPair.deriv_weierstrassP`
+gives `deriv ℘ = ℘'` globally.  Turning that into a statement of `DifferentiallyAlgebraic` requires
+one repair: at lattice points `℘` carries junk values and `(E)` itself fails there.  Multiplying the
+relation by the value slot fixes it, since `℘` takes the junk value `0` exactly at the lattice:
+
+- `weierstrassPRelation` — the order-one differential polynomial
+  `(y_1^2 - 4 y_0^3 + g_2 y_0 + g_3) * y_0`;
+- `weierstrassPRelation_ne_zero` — it is a nonzero polynomial (two evaluations differing by `1`);
+- **`differentiallyAlgebraic_weierstrassP`** — it vanishes on the whole plane: off the lattice by
+  `(E)`, at a lattice point because the value slot is `0`;
+- `not_hypertranscendental_weierstrassP` — hence `℘` is not hypertranscendental.
+
+So `(E)` is now available in Lean in exactly the form the period-rank law needs.  What remains of the
+elliptic branch is the structure statement: every meromorphic function with a lattice of periods lies
+in `C(℘, ℘')` and is therefore differentially algebraic too.  With that, the surviving alternative in
+`facetComplement_rankOne_or_lattice` disappears and `(6)` becomes unconditional.
+
+## Lean progress — `(6)` complete modulo one named analytic input
+
+`GaloisForLFunctions/HTGeometry/EllipticFreeFacetCodimension.lean` (axiom-clean, build green,
+umbrella-registered) closes the facet-codimension theorem down to a single named `Prop`.
+
+`facetComplement_rankOne_or_lattice` leaves exactly one alternative open: a facet omitting two
+vertices whose steps are `R`-independent.  Those two steps are then literally a mathlib `PeriodPair`,
+and the facet carrier is a hypertranscendental meromorphic function invariant under the whole lattice
+they span — a hypertranscendental *elliptic* function.
+
+- `EllipticHypertranscendenceFree` — the named input: no hypertranscendental meromorphic function is
+  invariant under a full lattice (equivalently, every elliptic function is differentially algebraic).
+- **`facetComplementRankOne_of_ellipticFree`** — modulo that input, a one-variable realization forces
+  every facet to omit at most one ambient vertex.  This is `(6)` in full generality: the separator,
+  the transport to periods, the rank-three exclusion and the real-dependent rank-two exclusion are all
+  already unconditional, and the remaining alternative is discharged exactly by the named input.
+
+The half of that input concerning `℘` itself is already proved
+(`differentiallyAlgebraic_weierstrassP`); what the `Prop` still packages is the structure statement,
+that every lattice-periodic meromorphic function lies in `C(℘, ℘')`.  So the card's chain
+`(8) -> (17) -> period rank -> (6)` is now formalized end to end except for that one classical
+statement, which is named, isolated, and consumed at a single point.
+
+## Lean progress — `(6)` UNCONDITIONAL for entire realizations
+
+`GaloisForLFunctions/HTGeometry/EllipticLiouvilleFacetCodimension.lean` (axiom-clean, build green,
+umbrella-registered) removes the named analytic input for the realizations that actually arise.
+
+The alternative left open by `facetComplement_rankOne_or_lattice` is a facet carrier that is
+hypertranscendental and invariant under a full lattice.  For a general meromorphic carrier, excluding
+that is the elliptic structure theorem.  For an **entire** carrier it is Liouville's theorem — and the
+periodic-pencil realization theorem of the parent card produces precisely *entire* systems ("there are
+an entire function `F` on `C^d`, translations ...").
+
+- `const_of_lattice_periodic_differentiable` — **elliptic Liouville**: a lattice-periodic entire
+  function is constant.  Mathlib supplies both halves: `IsZLattice.isCompact_range_of_periodic` makes
+  the range compact, and `Differentiable.apply_eq_apply_of_bounded` is Liouville.
+- `not_hypertranscendental_of_lattice_periodic_differentiable` — hence such a function is
+  differentially algebraic.
+- **`facetComplementRankOne_of_entire`** — for a one-variable realization with entire carriers, every
+  facet omits at most one ambient vertex.  **Unconditional**: no `EllipticHypertranscendenceFree`, no
+  Weierstrass structure theory.
+
+So the facet-codimension theorem `(6)` is now fully unconditional in Lean for entire realizations, and
+the named input `EllipticHypertranscendenceFree` is needed only if one insists on carriers with poles.
+
+## Lean progress — the principalization capstone, unconditional for entire realizations
+
+`GaloisForLFunctions/HTGeometry/EntireRealizationPrincipalization.lean` (axiom-clean, build green,
+umbrella-registered) feeds the unconditional facet-codimension law into the combinatorial
+classification already in the corpus, giving the card's structural conclusion with no analytic input
+left.
+
+- **`principalization_of_entire_realization`** — a finite facet antichain admitting a one-variable
+  realization with entire carriers is either the full simplex `{V}` or exactly the deletion family
+  `{V \ {u} : u in U}` for a nonempty block `U`.  This is
+  `facetAntichain_eq_singleton_or_deletionFacets` discharged by `facetComplementRankOne_of_entire`.
+- **`stanleyReisnerIdeal_principal_of_entire_realization`** — in the non-simplex case the
+  Stanley--Reisner ideal is principal, generated by `prod_(u in U) X u`, via
+  `stanleyReisnerIdeal_deletionFacetFinset_eq_span_product`.
+
+The whole chain is now formalized and unconditional for entire realizations: facet separator `(12)`
+and `(14)`, transport of annihilation to periods `(17)`, period-rank exclusion at rank three and at
+real-dependent rank two, Liouville at the lattice, the classification `facets = {V}` or a deletion
+family, and the principal ideal.  Nothing in it now depends on `EllipticHypertranscendenceFree`, which
+is needed only for carriers with poles.
+
+## Lean progress — the codimension law at the analytic datum, and channel stability
+
+`GaloisForLFunctions/HTGeometry/EntireFacetRealizationCodimension.lean` and
+`GaloisForLFunctions/HTGeometry/ChannelSRRealization.lean` (both axiom-clean, build green,
+umbrella-registered).
+
+- **`no_scalarFacetRealization_of_two_omitted_entire`** — for an entire facet carrier, *two* omitted
+  vertices are already impossible: if the two steps are `R`-dependent the period group is not
+  discrete, and if they are `R`-independent they form a `PeriodPair` and Liouville applies.  One
+  statement covers both cases.
+- **`facetComplementRankOne_of_facetRealization_entire`** — the codimension law stated directly for
+  the analytic datum `ScalarFacetRealization`, which is its most general form.
+  `facetComplementRankOne_of_entire` (ring-level) is now a one-line corollary of it, so the law is
+  proved once rather than twice.
+
+Componentwise-channel stability `(21)`--`(23)` is formalized as a reduction rather than a repetition:
+
+- `ChannelSRRealization` — an arbitrary family `iota` of channels translated componentwise by the same
+  steps, with *some* component hypertranscendental on each nonzero class (the vector form of
+  full-matroid faithfulness);
+- `channel_periodic_of_mul_eq_zero` — annihilation becomes componentwise periodicity;
+- **`ChannelSRRealization.toScalarFacetRealization`** — choosing one hypertranscendental component per
+  facet turns a channel realization into an ordinary analytic datum, so *every* scalar result applies
+  verbatim;
+- **`channel_facetComplementRankOne_of_entire`** — for entire channels every facet omits at most one
+  ambient vertex.  Vectorization supplies no extra analytic direction, exactly as the card asserts.
+
+## Lean progress — constant multipliers: `(24)`--`(26)` and their facet consequence
+
+`GaloisForLFunctions/HTGeometry/QuasiPeriodDifferentialAlgebraicity.lean` and
+`GaloisForLFunctions/HTGeometry/QuasiPeriodRealizationPrincipalization.lean` (axiom-clean, build
+green, umbrella-registered) formalize the scalar half of *Constant-multiplier and finite-state
+stability*, unconditionally for entire nowhere-vanishing carriers.
+
+The paper argument is `(25)`: the multipliers cancel in the logarithmic derivative, which therefore
+has both steps as *genuine* periods, so the period-rank rigidity already formalized applies to it.
+
+- `periodic_logDeriv_of_quasiperiodic` — `(25)`: `f(z+w) = a f(z)` with `a ≠ 0` makes
+  `logDeriv f = f'/f` genuinely `w`-periodic.  (`deriv f (z+w) = a * deriv f z` by differentiating
+  the quasi-period identity, then `mul_div_mul_left`.)
+- `(26)` needs nothing new: the corpus already proves that a first-order ODE with polynomial
+  coefficients is an algebraic differential equation
+  (`ExpPolynomialDA.differentiallyAlgebraic_of_firstOrder_poly_ode`, order-one differential
+  polynomial `Q(X_0) X_2 - P(X_0) X_1`), and `(26)` is its case `Q = 1`, `P = c`.
+- **`differentiallyAlgebraic_of_quasiperiods`** — the **HT quasi-period-rank law** for an entire
+  nowhere-vanishing `f`: for `Q`-independent steps, `logDeriv f` is entire and doubly periodic,
+  hence constant — by non-discreteness of the period group when the steps are `R`-dependent
+  (`meromorphicNF_constant_of_rankTwo_realDependent_periods`) and by Liouville on the lattice when
+  they are `R`-independent (`const_of_lattice_periodic_differentiable`) — so `f' = c f` and `f` is
+  DA.  Note this route needs **no** transitivity of differential algebraicity: the first-order
+  equation `(26)` is produced with a *constant* coefficient, not a merely DA one, so `f` satisfies
+  an algebraic differential equation outright.
+- `QuasiPeriodFacetRealization` — the constant-multiplier facet datum, with
+  `ScalarFacetRealization.toQuasiPeriod` exhibiting the invariant datum as the special case
+  "all multipliers `1`";
+- **`facetComplementRankOne_of_quasiPeriodRealization`** — `(33)` for `m = 1`: every facet still
+  omits at most one ambient vertex;
+- **`stanleyReisnerIdeal_principal_of_quasiPeriodRealization`** — and the capstone is unchanged: the
+  ideal is the principal squarefree `(prod_(u in U) X u)`.
+
+So a scalar constant internal multiplier, the simplest internal state a channel can carry, provably
+buys no new relation geometry.
+
+**What the entire-and-nowhere-vanishing hypothesis costs.**  It is exactly the same boundary as
+everywhere else on this card.  For a carrier with zeros or poles `logDeriv f` is meromorphic rather
+than entire, and the lattice branch then needs the elliptic structure theorem
+(`EllipticHypertranscendenceFree`) instead of Liouville.  The `R`-dependent branch is already
+unconditional for meromorphic normal forms.
+
+**Remaining on this card.**  The matrix case `(27)`--`(30)` (`GL_m` internal monodromy, Wronskian
+and monic-annihilator construction) and everything downstream of it — `(31)`--`(33)` for `m > 1`,
+the DA-gauge curvature law `(35)`--`(40)`, and `(C4)`.  Unlike the scalar case those genuinely need
+transitivity of differential algebraicity over a DA coefficient field.  The corpus already has that
+machinery in abstract differential-field form —
+`GaloisForLFunctions/HTGeometry/DifferentialAlgebraicFiniteTransitivity.lean`
+(`differentialAlgebraicOver_trans_fin_succ_narrow`, `differentialAlgebraicOver_mono`) over
+`DifferentialIndependent` / `DifferentialAlgebraicOver` from
+`HTGeometry/DifferentialIndependence.lean` — so the missing piece is a bridge from the function-level
+predicate `DifferentiallyAlgebraic (f : C -> C)` into that framework, not the transitivity theorem
+itself.
+
+## Lean progress — the nonvanishing hypothesis removed in the real-dependent case
+
+Same module, second pass.  The quasi-period law above assumed the carrier nowhere zero, so that
+`logDeriv f` is entire.  When the two steps are `R`-dependent that hypothesis is **automatic**.
+
+- **`eq_zero_iff_of_mem_span_range`** — a nonzero multiplier can neither create nor destroy a zero,
+  and the property `f(z+p) = 0 <-> f(z) = 0` is stable under sums, negation and integer multiples;
+  so the zero set of a quasi-periodic function is invariant under the whole integer span of the
+  steps.  (The multiplicative analogue of `periodic_of_mem_span_range`; the `zsmul` branch runs by
+  `Int.induction_on` through the additive and negation branches.)
+- **`ne_zero_of_quasiperiods_realDependent`** — for `R`-dependent steps the span is not discrete
+  (`exists_small_rankTwo_realDependent_periods`), so a single zero `z_0` would be an accumulation
+  point of zeros `z_0 + p_n`, and the identity theorem
+  (`AnalyticOnNhd.eqOn_zero_of_preconnected_of_frequently_eq_zero`) would force `f = 0` identically.
+  Hence a not-identically-zero entire quasi-periodic carrier with `R`-dependent steps has **no zeros
+  at all**.
+- **`differentiallyAlgebraic_of_quasiperiods_realDependent`** and
+  `not_hypertranscendental_of_quasiperiods_realDependent` — the law with *no* nonvanishing
+  hypothesis: either `f` vanishes identically, and is constant, or it has no zeros and the general
+  law applies.
+
+So on the `R`-dependent branch `(24)`--`(26)` is now proved in the same generality as the paper
+states it, for entire carriers.  The nonvanishing hypothesis survives only on the lattice branch,
+where it is genuinely needed: there `logDeriv f` would be elliptic rather than entire, which is the
+same `EllipticHypertranscendenceFree` boundary that bounds every other analytic step of this card.
+
+## Lean progress — the FINITE-STATE law `(27)`--`(33)`, without Wronskians
+
+`GaloisForLFunctions/HTGeometry/SmallTranslationDerivInvariance.lean` and
+`GaloisForLFunctions/HTGeometry/MatrixFacetCodimension.lean` (axiom-clean, build green,
+umbrella-registered).  This replaces the paper's route to `(27)`--`(30)` by a shorter one that is
+unconditional.
+
+**The paper route and why it is not the one formalized.**  §"Finite-state quasi-period law" builds
+the monic annihilator `(29)` from a Wronskian, then observes `(30)` that its coefficients are
+periodic, hence elliptic in the lattice case, hence DA, and finally invokes *transitivity* of
+differential algebraicity.  Two of those steps are heavy: the Wronskian nonvanishing criterion, and
+transitivity over a DA coefficient field.  In the lattice case the coefficients are elliptic, so
+that route also needs `EllipticHypertranscendenceFree`.
+
+**The route formalized.**  Let `H` be the `C`-span of the components of the carrier -- finite
+dimensional, and stable under each structural translation because the internal matrix has constant
+entries.  When the integer span of the steps is **not discrete**, `H` is stable under translation by
+arbitrarily small nonzero steps `p_n -> 0`.  The difference quotients `(g(. + p_n) - g)/p_n` then lie
+in `H`, converge *pointwise* to `g'`, and a finite-dimensional subspace is closed in the topology of
+pointwise convergence.  Hence `H` is stable under `d/dz`, and the corpus's finite observable-model
+boundary (`HTGeometry.differentiallyAlgebraic_of_mem_derivInvariantObservableSpace`, from
+`FiniteObservableKoopmanBoundary`) gives every member a nonzero **constant-coefficient** annihilator.
+
+- `derivInvariantObservableSpace_of_small_translations` — the analytic step just described;
+- `translationStable_neg` — a translation mapping a finite-dimensional space into itself is
+  automatically invertible on it (injective endomorphism of a finite-dimensional space), so the
+  internal matrices need **not** be assumed invertible, unlike `(27)`;
+- `translationStable_of_mem_span_range` — the whole step group acts;
+- **`differentiallyAlgebraic_of_translationStable_of_not_discrete`** — the general law, with the two
+  specializations for three `Q`-independent steps and for two `Q`-independent `R`-dependent steps;
+- **`differentiallyAlgebraic_component_of_matrix_monodromy`** — `(27)`--`(30)`: for
+  `G(z+w_k) = M_k G(z)` with constant `M_k` and non-discrete step span, *every component* of `G` is
+  differentially algebraic.  No Wronskian, no transitivity, no elliptic input.
+
+`MatrixFacetCodimension` then repeats the scalar facet chain verbatim for finite internal state:
+
+- `MatrixFacetRealization` — the datum of `(31)`: entire `C^m`-valued facet carriers, each omitted
+  translation reproducing the carrier up to a constant matrix, some component hypertranscendental;
+- `no_matrixFacetRealization_of_three_omitted` and
+  `no_matrixFacetRealization_of_two_omitted_realDependent`;
+- **`matrixFacetComplement_rankOne_or_lattice`** — `(33)` up to the single surviving alternative:
+  every facet omits at most one ambient vertex, or exactly two whose steps are `R`-independent and
+  span a lattice;
+- `matrix_facetComplementRankOne_of_no_lattice`.
+
+So the finite-state section of the card is now formalized to exactly the same frontier as the scalar
+section, and by a strictly weaker hypothesis set.  The surviving gap is the same one everywhere on
+this card: two omitted steps spanning a genuine lattice.
+
+**Deduplication.**  `differentiallyAlgebraic_of_quasiperiods_realDependent` is now the
+one-dimensional case of `differentiallyAlgebraic_of_quasiperiods_of_not_discrete` rather than a
+separate `logDeriv` argument, and in that form it needs neither nonvanishing nor nonzero multipliers.
+The `logDeriv` route is kept only where it yields something the span route does not: the structural
+fact `ne_zero_of_quasiperiods_realDependent` that such a carrier has no zeros at all, and the lattice
+branch of `differentiallyAlgebraic_of_quasiperiods`.
+
+## Lean progress — attacking the lattice branch: exponential type
+
+The one alternative still open everywhere on this card is a facet omitting two vertices whose steps
+are `R`-independent, i.e. span a genuine lattice.  For an **entire** carrier that case is not
+elliptic-function theory at all: it is a growth-versus-zero-counting statement.
+
+If `f` is entire with `f(z+w_1) = a f(z)`, `f(z+w_2) = b f(z)` for a lattice, and `f` has a zero
+`z_0`, then the zero set contains the whole coset `z_0 + Lambda`, whose counting function grows like
+`r^2`.  But the multiplier relations bound `f` by an exponential of `|z|`, and Jensen's inequality
+bounds the zero count of such a function linearly in `r`.  Contradiction: an entire carrier with
+constant multipliers over a lattice has **no zeros**, and then the already-formalized
+`differentiallyAlgebraic_of_quasiperiods` applies.  Mathlib now carries the required inequality
+(`AnalyticOnNhd.sum_divisor_le` in `Mathlib/Analysis/Complex/JensenFormula.lean`).
+
+`GaloisForLFunctions/HTGeometry/QuasiPeriodEntireGrowth.lean` (axiom-clean, build green,
+umbrella-registered) supplies the growth half:
+
+- `quasiPeriodic_zsmul` — a constant-multiplier quasi-period iterates over `Z` (`Int.induction_on`,
+  the backward step using `a != 0`);
+- `quasiPeriodic_lattice` — `f(z + m w_1 + n w_2) = a^m b^n f(z)`;
+- `stepBasis` and `exists_bound_stepBasis_repr` — two `R`-independent complex numbers are an
+  `R`-basis of `C`, and its coordinate functionals are bounded by a multiple of the norm (they are
+  linear maps on a finite-dimensional space, hence continuous);
+- **`exists_exp_growth_bound_of_quasiperiods`** — `||f z|| <= K exp(c ||z||)`: subtract the integer
+  parts of the two coordinates to land in the compact fundamental parallelogram, bound `f` there by
+  compactness, and pay `max(|a|,|a|^-1)` and `max(|b|,|b|^-1)` per lattice step.
+
+Remaining for this branch: the lattice-point count `#{(m,n) : ||z_0 + m w_1 + n w_2 - c|| <= r} >>
+r^2`, and the Jensen comparison that contradicts it.
+
+### The counting half
+
+`GaloisForLFunctions/HTGeometry/QuasiPeriodLatticeZeros.lean` (axiom-clean, build green,
+umbrella-registered) supplies the other estimate.
+
+- `latticeBox z_0 w_1 w_2 N` — the coordinate box `{z_0 + m w_1 + n w_2 : |m|,|n| <= N}` as a
+  `Finset C`;
+- `latticeBox_injOn` and **`card_latticeBox`** — it has exactly `(2N+1)^2` elements, because
+  `R`-independent steps are `Z`-independent (`LinearIndependent.restrict_scalars'`);
+- `norm_sub_le_of_mem_latticeBox` — it lies in the ball of radius
+  `||z_0 - c|| + N(||w_1|| + ||w_2||)` about any centre, so a ball of radius `r` contains a box with
+  `N` proportional to `r`, hence `~ r^2` points;
+- **`eq_zero_of_mem_latticeBox`** — a quasi-periodic function vanishing at `z_0` vanishes on the
+  whole box.
+
+What is left for the lattice branch is only the comparison itself: feed a bound `M` on the sphere of
+radius `2r` from `exists_exp_growth_bound_of_quasiperiods` into `AnalyticOnNhd.sum_divisor_le`, which
+gives `#zeros in the ball of radius r <= log(M/||f c||)/log 2 = O(r)`, and contradict it with the
+`(2N+1)^2` zeros just produced.
+
+## Lean progress — the LATTICE branch is closed: `(24)`--`(26)` fully unconditional
+
+`GaloisForLFunctions/HTGeometry/QuasiPeriodLatticeNoZeros.lean` (axiom-clean, build green,
+umbrella-registered) completes the scalar constant-multiplier law with **no hypothesis beyond
+entirety**.
+
+- **`ne_zero_of_quasiperiods_lattice`** — an entire `f` with `f(z+w_1) = a f(z)`, `f(z+w_2) = b f(z)`
+  and `R`-independent steps has **no zeros**.  A zero would give `(2N+1)^2` zeros in a disc of radius
+  linear in `N` (`card_latticeBox`, `eq_zero_of_mem_latticeBox`), while the multiplier relations make
+  `f` of exponential type (`exists_exp_growth_bound_of_quasiperiods`) and Jensen's inequality bounds
+  the zero count of such a function linearly in the radius.  Quadratic beats linear.
+- **`differentiallyAlgebraic_of_quasiperiods_entire`** — the full law: an entire function reproduced
+  by two `Q`-independent translations up to constant multipliers is differentially algebraic.  No
+  nonvanishing hypothesis, no `a,b != 0` hypothesis, no elliptic input.  `R`-dependent steps go
+  through the non-discrete step group; `R`-independent steps go through the zero-freeness above and
+  Liouville on the lattice.
+
+**Corpus reuse (this is where the search paid).**  The two Jensen-side ingredients already existed:
+`RHTower/ExponentialTypeZeroDensity.exponentialType_zeroCount_linear` (linear zero density at finite
+exponential type) and `card_le_sum_divisor_of_finite_zeros` (a finite injective family of zeros
+contributes its cardinality to the analytic divisor count).  The second was sitting inside
+`RHTower/PrimeLogExponentialTypeUniqueness.lean`; it is generic, so it moved next to the first.
+Nothing was re-proved.
+
+**Consequence for the card.**  `QuasiPeriodFacetRealization` no longer carries `carrier_ne_zero`, and
+its multipliers are no longer required to be nonzero.  Therefore
+
+- **`facetComplementRankOne_of_quasiPeriodRealization`** — `(33)` for `m = 1`, and
+- **`stanleyReisnerIdeal_principal_of_quasiPeriodRealization`** — the principal squarefree ideal
+
+are now unconditional for entire carriers.  The section *Constant-multiplier and finite-state
+stability* is complete in its scalar half.  What remains of the lattice branch is only the matrix
+case `m > 1`, where the finite-dimensional-span argument does not apply because a lattice is
+discrete.
+
+### The scalar normal form
+
+Both branches of the entire quasi-period law in fact produce a *constant-coefficient* first-order
+equation, so the classical normal form is available and not just differential algebraicity.
+
+- **`exists_deriv_eq_const_mul_of_quasiperiods_entire`** — `f' = c f` with `c` constant.  The
+  `R`-dependent branch gets it from the one-dimensional derivation-invariant span
+  (`exists_deriv_eq_const_mul_of_quasiperiods_of_not_discrete`); the lattice branch from the
+  constant logarithmic derivative of a zero-free carrier
+  (`exists_deriv_eq_const_mul_of_quasiperiods`).  `differentiallyAlgebraic_of_quasiperiods_entire` is
+  now a one-line corollary rather than a second case analysis.
+- **`eq_mul_exp_of_quasiperiods_entire`** — hence `f(z) = f(0) exp(c z)`: an entire carrier with two
+  `Q`-independent constant multipliers is a pure exponential.  In particular its multipliers are
+  forced to be `exp(c w_1)` and `exp(c w_2)`, which is the classical compatibility condition: for
+  incompatible `(a,b)` no nonzero entire carrier exists at all.
+
+This is the sharpest possible form of `(24)`--`(26)` for entire data and it is the base case for the
+matrix lattice problem `m > 1`, where the plan is: a common eigenvector of the two commuting shift
+operators on the finite-dimensional span of the components is a scalar carrier of exactly this kind,
+hence a nowhere-zero exponential, and dividing by it drops the dimension.
+
+### Toward the matrix lattice case: closure operations
+
+The lattice case for `m > 1` cannot use the difference-quotient argument, because a lattice is
+discrete.  The plan is an induction on dimension, and `GaloisForLFunctions/HTGeometry/
+DerivInvariantSuperspace.lean` (axiom-clean, build green, umbrella-registered) supplies the closure
+operations it needs.
+
+Induction invariant: *a finite-dimensional shift-stable space `H` of entire functions is contained in
+a finite-dimensional derivation-invariant space* — which by the corpus's finite observable-model
+boundary makes every member differentially algebraic with a constant-coefficient annihilator.
+
+The step: take a common eigenvector `h_0` of the two shift operators on `H`; it is a scalar
+constant-multiplier carrier, hence by `eq_mul_exp_of_quasiperiods_entire` a nowhere-zero exponential
+with `h_0' = nu h_0`.  Divide: `H' = h_0^{-1} H` is shift-stable and contains `1`, so the derivative
+image `K = D(H')` has strictly smaller dimension and the induction applies to it, giving `K <= W_0`
+with `W_0` finite-dimensional and derivation-invariant.  Then `A = H' + W_0` is derivation-invariant,
+and `h_0 A` is a finite-dimensional derivation-invariant space containing `H`.
+
+- `mulByL` — pointwise multiplication by a fixed function, as a linear map, so that `h_0 A` and
+  `h_0^{-1} H` are `Submodule.map`s;
+- **`derivInvariantObservableSpace_sup`** — `V + W` is derivation-invariant when `D(V) <= W` and `W`
+  is derivation-invariant;
+- **`derivInvariantObservableSpace_map_mulBy`** — `h_0 A` is derivation-invariant when `A` is and
+  `h_0' = nu h_0`, since `(h_0 u)' = h_0 (nu u + u')`;
+- `translationStable_map_mulBy_inv` and `map_mulBy_map_mulBy_inv` — dividing by a nowhere-zero
+  quasi-periodic factor preserves shift stability, and multiplying back recovers the space;
+- **`exists_common_eigenvector`** — two commuting endomorphisms of a nonzero finite-dimensional
+  complex space have a common eigenvector (an eigenspace of the first is invariant under the second).
+
+What remains is the induction itself: the dimension drop `dim D(H') < dim H'` via rank-nullity with
+`1` in the kernel, and the assembly.
+
+## Lean progress — the FINITE-STATE section `(27)`--`(33)` is CLOSED, lattice case included
+
+`GaloisForLFunctions/HTGeometry/ShiftStableLatticeStructure.lean` (axiom-clean, build green,
+umbrella-registered) proves the structure theorem that removes the last hypothesis.
+
+> **Structure theorem.**  A finite-dimensional space `H` of entire functions stable under two
+> translations with `Q`-independent steps is contained in a finite-dimensional **derivation-invariant**
+> space.  No discreteness assumption on the step group.
+
+`exists_derivInvariant_superspace`, by induction on `dim H`.  The step: `exists_common_eigenvector`
+gives a common eigenvector `h_0` of the two shift operators; it is a scalar constant-multiplier
+carrier, hence by `eq_mul_exp_of_quasiperiods_entire` a nowhere-zero exponential with
+`h_0' = nu h_0`.  Divide: `H' = h_0^{-1} H` is shift-stable and contains `1`, so the derivative image
+`K = D(H')` has strictly smaller dimension (rank--nullity, `1` in the kernel).  The inductive
+superspace `W_0 >= K` gives the derivation-invariant `H' + W_0`
+(`derivInvariantObservableSpace_sup`), and `h_0 (H' + W_0)` is derivation-invariant
+(`derivInvariantObservableSpace_map_mulBy`) and contains `H`.
+
+Consequences, all unconditional:
+
+- **`differentiallyAlgebraic_of_translationStable`** — every member of such an `H` is differentially
+  algebraic, with a *constant-coefficient* annihilator (the corpus's finite observable-model
+  boundary).  This subsumes the non-discrete case proved earlier.
+- **`differentiallyAlgebraic_component_of_matrix_monodromy_two`** — `(27)`--`(30)` in full: a
+  `C^m`-valued entire `G` with `G(z+w_1) = A G(z)`, `G(z+w_2) = B G(z)` and `Q`-independent steps has
+  every component differentially algebraic.  No invertibility of `A, B`, no Wronskian, no
+  transitivity of differential algebraicity, no elliptic input.
+- **`no_matrixFacetRealization_of_two_omitted`** and **`matrix_facetComplementRankOne`** — `(31)`--`(33)`
+  in full: a finite-state facet datum has **no** facet omitting two vertices, so every facet omits at
+  most one ambient vertex.  `MatrixFacetCodimension` no longer carries the lattice alternative that
+  the scalar meromorphic chain still has; the three weaker statements it used to export
+  (three-omitted, two-omitted-`R`-dependent, rank-one-or-lattice) are subsumed and were removed.
+
+So the card's *Constant-multiplier and finite-state stability* section is now formalized in full for
+entire carriers, in both the `R`-dependent and the lattice configuration, and for every internal
+dimension `m`.
+
+### The finite-state capstone
+
+`GaloisForLFunctions/HTGeometry/MatrixRealizationPrincipalization.lean` (axiom-clean, build green,
+umbrella-registered) carries the unconditional finite-state codimension law through the
+combinatorial classification, exactly as the scalar and constant-multiplier versions do:
+
+- **`principalization_of_matrixRealization`** — a finite facet antichain carrying entire `C^m`-valued
+  carriers with constant internal monodromy and a hypertranscendental component is the full simplex
+  or a single-vertex deletion family;
+- **`stanleyReisnerIdeal_principal_of_matrixRealization`** — and in the non-simplex case its
+  Stanley--Reisner ideal is the principal squarefree `(prod_(u in U) X u)`.
+
+This is the prime-route normal form `(41)` for every finite constant internal representation, now
+proved rather than assumed: *no finite number of constant matrix channels supplies the missing
+analytic direction*, in any internal dimension, under either configuration of the two steps.
+
+### Status of the card's Lean formalization
+
+Formalized and unconditional (entire carriers): the facet separator `(12)`/`(14)`, the transport of
+annihilation to periods `(17)`, the period-rank exclusions, the facet-codimension law `(6)`, the
+structural classification and the principal ideal `(18)`--`(20)`, componentwise-channel stability
+`(21)`--`(23)`, the constant-multiplier law `(24)`--`(26)` together with its normal form
+`f = f(0) exp(c z)`, and the finite-state law `(27)`--`(33)` in every internal dimension with the
+capstone above.
+
+Not yet formalized: the scalar **meromorphic** lattice boundary -- a hypertranscendental carrier with
+poles invariant under a full lattice, i.e. `EllipticHypertranscendenceFree`, which needs the
+Weierstrass structure theorem that every elliptic function lies in `C(P, P')`; and the
+Schaefke--Singer rational gauge reduction feeding the *Cocycle transcendence requirement*, which the
+card itself labels `[SEARCH]`/`[BRIDGE]` rather than new knowledge.
+
+### The last gap, and a contour-integration-free plan for it
+
+The only analytic statement of this card still unformalized is
+`EllipticHypertranscendenceFree`: a hypertranscendental **meromorphic** function is not invariant
+under a full lattice.  (Entire carriers are done; this is only about carriers with poles.)  Mathlib
+supplies the Weierstrass function, its periodicity and its differential equation, but not the
+structure theorem `M(C/Lambda) = C(P, P')`, and building that classically needs the argument
+principle on a fundamental parallelogram.
+
+There is an elementary route that needs no contour integration at all:
+
+1. Fix a finite set of pole representatives and an order bound.  The lattice-periodic meromorphic
+   functions with poles confined to that data form a `C`-subspace.
+2. The map sending such a function to its finitely many principal parts has **kernel exactly the
+   constants**: a difference with no principal part extends analytically and is then constant by
+   Liouville.  Hence that subspace has dimension at most `1 + (total pole order)`.
+3. Apply this to the monomials `f^i (f')^j` with `i + j <= N`.  Their number grows like `N^2/2`,
+   while their total pole order grows like `N`.  For large `N` they are linearly dependent over `C`,
+   which is a nonzero polynomial relation `Q(f, f') = 0` — a first-order algebraic differential
+   equation.  So `f` is DA, i.e. not hypertranscendental.
+
+`GaloisForLFunctions/HTGeometry/EllipticPoleSpace.lean` (axiom-clean, build green,
+umbrella-registered) records step 2's Liouville kernel:
+
+- `const_of_lattice_periodic_analytic` — an everywhere-analytic lattice-periodic function is
+  constant;
+- **`exists_const_sub_of_lattice_periodic`** — two lattice-periodic functions whose difference is
+  everywhere analytic differ by a constant.
+
+What remains to build: the pole-bounded subspace as a `Submodule`, the principal-part linear map
+(from `meromorphicOrderAt` and the analytic extension of `(z-s)^n f`), the resulting dimension bound,
+and the monomial count.
+
+#### Step 2 machinery: the principal-jet linear map
+
+`GaloisForLFunctions/HTGeometry/EllipticPrincipalJet.lean` (axiom-clean, build green,
+umbrella-registered) supplies the *linear* handle on the principal part.
+
+- `poleClear g p d` — the canonical analytic representative of `(. - p)^d g` near `p`, taken as
+  mathlib's normal form `toMeromorphicNFOn`, which agrees with the raw product off the poles
+  (`poleClear_eventuallyEq_nhdsNE`);
+- **`analyticAt_poleClear`** — it is analytic at `p` as soon as the cleared order is nonnegative, via
+  `MeromorphicNFAt.meromorphicOrderAt_nonneg_iff_analyticAt` and
+  `meromorphicOrderAt_toMeromorphicNFOn`;
+- `principalJet g p d k` — its Taylor coefficients at `p`, i.e. the data of the principal part;
+- **`principalJet_add`** and **`principalJet_smul`** — the jets depend linearly on `g`.  The
+  mechanism is `eventuallyEq_nhds_of_nhdsNE_of_continuousAt`: the two canonical representatives agree
+  off `p`, both are continuous there, so they agree near `p` and have the same jets.
+
+The order hypotheses are taken in the already-cleared form `0 <= meromorphicOrderAt ((. - p)^d g) p`,
+so this module carries no order arithmetic; that is done where the concrete carrier is known.
+
+What remains for the last gap: the pole-bounded space as a `Submodule` with the jet map as a
+`LinearMap` into a finite-dimensional target, the dimension bound `dim <= 1 + total pole order` from
+`exists_const_sub_of_lattice_periodic`, and the monomial count.
+
+The jets are also linear in *finite combinations*, which is what the counting argument consumes:
+
+- `analyticAt_finset_sum_apply` and `iteratedDeriv_finset_sum` — a finite sum of functions analytic
+  at a point is analytic there, and its jets are the sum of the jets;
+- **`principalJet_finset_sum`** — `principalJet (sum_i c_i g_i) p d k = sum_i c_i principalJet (g_i) p d k`.
+
+**Why linearity in the coefficient vector is the right form.**  The counting step does not need a
+subspace of *functions* at all — which is fortunate, since two meromorphic functions agreeing off
+their poles need not be equal, so `Submodule`s of `C -> C` do not see the right identifications.
+Instead the linear algebra happens in coordinates: for the monomials `f^i (f')^j` with `i + j <= N`,
+the map
+
+```text
+C^{monomials} -> C^{jets} (+) C,
+  (c_ij) |-> (principal jets of the combination at each pole representative, value at one regular point)
+```
+
+is linear by `principalJet_finset_sum`, its source has dimension `~N^2/2` and its target `~N`, so for
+large `N` it has a nonzero kernel.  A kernel vector gives a combination with no principal part and
+value zero at a regular point, hence — by `exists_const_sub_of_lattice_periodic` — identically zero
+off the poles.  Multiplying the resulting differential polynomial by the value slot `y_0` absorbs the
+poles, exactly as `weierstrassPRelation` does, giving a relation valid at *every* point.
+
+#### Step 1 machinery: finitely many poles modulo the lattice
+
+The principal-jet map can only have a finite-dimensional target if the poles are finite modulo the
+lattice.  Two new modules supply that, and remove a duplication in the process.
+
+`GaloisForLFunctions/HTGeometry/FundamentalParallelogram.lean` (axiom-clean, build green,
+umbrella-registered) extracts what the exponential-type proof had built inline:
+
+- `stepBasis` and `exists_bound_stepBasis_repr` — two `R`-independent complex numbers are an
+  `R`-basis of `C` with coordinate functionals bounded by a multiple of the norm;
+- `fundamentalParallelogram`, `isCompact_fundamentalParallelogram`;
+- **`exists_bounded_intCombination`** — every point differs from a point of the parallelogram by an
+  integer combination of the steps, with coefficients bounded by `C ||z|| + 1`.
+
+`QuasiPeriodEntireGrowth` now *consumes* that lemma instead of re-deriving the covering inside
+`exists_exp_growth_bound_of_quasiperiods`, which also collapses its two coordinate constants into
+one.  (The whole downstream chain -- lattice zeros, no-zeros, the structure theorem, both
+principalization capstones -- rebuilds green after the refactor.)
+
+`GaloisForLFunctions/HTGeometry/EllipticFundamentalPoles.lean` (axiom-clean, build green,
+umbrella-registered):
+
+- **`finite_poles_of_isCompact`** — a meromorphic function has finitely many poles in a compact set,
+  because the analytic divisor has finite support there
+  (`MeromorphicOn.divisor ... |>.finiteSupport`);
+- **`finite_poles_fundamentalParallelogram`** — in particular in the fundamental parallelogram;
+- `exists_pole_representative` — for a function whose order is lattice-invariant, every pole is an
+  integer translate of one in the parallelogram.
+
+So the pole representatives are a finite set, as the counting argument requires.
+
+#### Step 3 machinery: the count and the order bookkeeping
+
+`GaloisForLFunctions/HTGeometry/EllipticCountingTools.lean` (axiom-clean, build green,
+umbrella-registered) supplies the two remaining generic ingredients.
+
+- **`exists_ne_zero_ker_of_finrank_lt`** and **`exists_ne_zero_ker_of_card_lt`** — a linear map into
+  a space of strictly smaller dimension, resp. into a coordinate space with fewer coordinates, kills
+  a nonzero vector.  This is what converts "more monomials than principal-part coefficients" into an
+  actual relation, via `LinearMap.finrank_le_finrank_of_injective`.
+- `meromorphicOrderAt_poleFactor_mul` — the order of `(. - p)^d g` at `p` is `d` plus the order of
+  `g` (`meromorphicOrderAt_mul` and `meromorphicOrderAt_pow_id_sub_const`);
+- **`nonneg_order_poleFactor`** — hence a pole of order at most `d` is cleared, which is exactly the
+  hypothesis the principal-jet machinery consumes.
+
+All the generic pieces of the plan are now in place: the Liouville kernel, the principal-jet linear
+map (binary and n-ary), the finiteness of the pole representatives, the dimension count, and the
+order bookkeeping.  What remains is the assembly for a concrete carrier: bound the pole orders of the
+monomials `f^i (f')^j` in terms of the pole order of `f`, run the count, and multiply the resulting
+differential polynomial by the value slot `y_0` so that the relation also holds at the poles.
+
+Assembly step (a), the pole orders of the monomials, is also done, in the same module:
+
+- `order_pow_ge` — a power multiplies the pole-order bound (induction on the exponent, using only
+  `meromorphicOrderAt_mul`, so no `WithTop` multiplication monotonicity is needed);
+- **`order_monomial_ge`** and `order_monomial_ge_of_le` — if `g_1` and `g_2` both have order at least
+  `-m` at `p`, then `g_1^i g_2^j` has order at least `-m(i+j)`, hence at least `-mN` when
+  `i + j <= N`.
+
+**A simplification worth recording.**  The sharp bound `ord(f') >= ord(f) - 1` is *not* needed, and
+mathlib has no lemma for it.  It suffices to take `m` to be a common bound for the pole orders of `f`
+and of `f'` at the finitely many pole representatives -- no relation between the two is required,
+because the count only needs the total pole order of the monomials to grow linearly in `N`.  Mathlib
+supplies `MeromorphicAt.deriv`, so `f'` is meromorphic wherever `f` is, and the pole set of `f'` is
+contained in that of `f`.
+
+#### Assembly steps (b) and (c): the coefficient-to-data map and the count
+
+`GaloisForLFunctions/HTGeometry/EllipticJetValueMap.lean` (axiom-clean, build green,
+umbrella-registered).
+
+- `diffMonomial f i j` — the monomial `f^i (f')^j`;
+- **`jetValueMap f S d N z_0`** — the linear map sending a coefficient vector indexed by
+  `Fin (N+1) x Fin (N+1)` to the principal-part coefficients of the corresponding combination at each
+  pole representative, together with its value at `z_0`;
+- `card_jetValueSource` and `card_jetValueTarget` — dimensions `(N+1)^2` and `|S| d + 1`;
+- **`exists_degree_gt`** — at `N = 2|S|m + 1` the source outgrows the target;
+- **`exists_ne_zero_jetValueMap_eq_zero`** — hence a *nonzero* coefficient vector whose entire data
+  vector vanishes.
+
+**Two design choices that removed work.**  First, the map is defined as the *combination of the
+jets*, not the *jet of the combination*; that makes it linear with no analytic hypotheses at all, and
+`principalJet_finset_sum` identifies the two later, once, exactly where the pole orders have been
+cleared.  Second, the index set is the full square `i, j <= N` rather than the triangle `i + j <= N`:
+the monomials then have pole order at most `m(i+j) <= 2mN`, the source has `(N+1)^2` coordinates
+against `|S| 2mN + 1`, and the winning degree is the explicit `N = 2|S|m + 1` -- no triangular-number
+arithmetic anywhere.
+
+What is left is the interpretation of that kernel vector: identify the vanishing data with the
+principal parts of the combination itself (`principalJet_finset_sum`, using
+`order_monomial_ge_of_le` and `nonneg_order_poleFactor` to supply the cleared-order hypotheses),
+conclude via `exists_const_sub_of_lattice_periodic` that the combination vanishes off the poles, and
+multiply by the value slot `y_0`.
+
+#### Assembly step (d), first half: vanishing jets mean no pole
+
+`GaloisForLFunctions/HTGeometry/EllipticJetVanishing.lean` (axiom-clean, build green,
+umbrella-registered).
+
+- **`nonneg_order_of_principalJet_eq_zero`** — if the principal-part coefficients of `g` at `p`
+  relative to the clearing exponent `d` all vanish, then `g` has nonnegative order at `p`, i.e. no
+  pole.
+
+The bridge is mathlib's `natCast_le_analyticOrderAt_iff_iteratedDeriv_eq_zero`, the Taylor-coefficient
+characterisation of the order of a zero: vanishing jets give `d <= analyticOrderAt (poleClear g p d) p`,
+and `meromorphicOrderAt_poleFactor_mul` says that order is `d + ord(g)`, so `ord(g) >= 0`.
+
+**A Lean trap worth recording.**  `analyticOrderAt` lives in `ENat` and `meromorphicOrderAt` in
+`WithTop Z`, and the bridge `AnalyticAt.meromorphicOrderAt_eq` is stated with `ENat.map`.  Splitting
+on `WithTop.ne_top_iff_exists` introduces the `WithTop.some` coercion, which does not match the
+`Nat.cast` coercion in the order statement, so neither `simp` nor `exact_mod_cast` can close the gap.
+Pushing the inequality through `ENat.monotone_map_iff` instead avoids the case split and the mismatch
+entirely.
+
+#### Assembly step (e): the monomial relation is an algebraic differential equation
+
+`GaloisForLFunctions/HTGeometry/EllipticMonomialRelation.lean` (axiom-clean, build green,
+umbrella-registered).
+
+- **`differentiallyAlgebraic_of_monomial_relation`** — if a *nonzero* coefficient vector `c` makes
+  `(sum_q c_q f^i (f')^j) * f` vanish identically, then `f` is differentially algebraic.
+
+Note the shape of the hypothesis: the relation is multiplied by the value slot `f`.  That is exactly
+what makes it hold at the poles too, where the normal form gives `f = 0` and `deriv f = 0` -- the
+same device the corpus already uses in `weierstrassPRelation` to repair the junk values of `P` at the
+lattice.  Off the poles the sum itself vanishes, so the product does; at a pole the second factor
+does.
+
+The differential polynomial is `(sum_q c_q y_0^i y_1^j) * y_0`.  It is nonzero because the exponent
+vectors `jetKey i j` are distinct, so the coefficient of the monomial attached to any index with
+`c_q != 0` is exactly `c_q`, and because `MvPolynomial (Fin 3) C` is a domain.
+
+With this, every step of the elliptic plan is now formalized as a standalone lemma.  What remains is
+to chain them for a concrete lattice-periodic meromorphic carrier: feed the kernel vector of
+`jetValueMap` through `principalJet_finset_sum` into `nonneg_order_of_principalJet_eq_zero`, conclude
+that the combination is entire and lattice-periodic hence constant, use the value at the regular
+point to see the constant is zero, and apply the theorem above.
+
+#### Bookkeeping for the chaining, and two deduplications
+
+`GaloisForLFunctions/HTGeometry/EllipticPeriodicMonomial.lean` (axiom-clean, build green,
+umbrella-registered): the monomials and their finite combinations inherit periodicity from `f`
+(`periodic_diffMonomial`, `periodic_monomialCombination`), and are analytic resp. meromorphic wherever
+`f` is (`analyticAt_monomialCombination`, `meromorphicAt_monomialCombination`).
+
+**Two duplications found by searching the corpus before writing, and removed.**
+
+1. `periodic_deriv` — "differentiation preserves an additive period" — existed only for `R -> R`
+   inside a 120-module Gamma cone.  The generic version (any nontrivially normed field, any target)
+   now lives in the low-level `FundamentalParallelogram`, and the Gamma module's real version is a
+   one-line corollary of it.  One proof in the corpus instead of two.
+2. `meromorphic_poles_closedBall_finite` in `CompactEllipticPoleFiniteness` proved pole finiteness in
+   a closed disc, which is the closed-ball case of the `finite_poles_of_isCompact` proved here for an
+   arbitrary compact set.  It is now a one-line corollary of the general statement.
+
+That module also contains `ellipticReduce`, a reduction to a fundamental parallelogram normalised to
+the basis `(1, tau)`; the `exists_bounded_intCombination` used here is the version for a general
+`R`-independent pair with a coefficient bound, which the exponential-type argument needs.  The two are
+kept separate deliberately.
+
+#### Uniform pole-order bounds, and why no finiteness argument is needed
+
+`GaloisForLFunctions/HTGeometry/EllipticOrderBound.lean` (axiom-clean, build green,
+umbrella-registered).
+
+- `orderBound g S` — the largest pole order of `g` over a finite set `S`, read through
+  `WithTop.untopD`; **`neg_orderBound_le`** — it is a lower bound for the order at every point of `S`;
+  `neg_le_meromorphicOrderAt_of_le` — a larger bound is still a bound, so the two carriers `f` and
+  `f'` can share one exponent;
+- **`nonneg_order_finset_sum`** — a finite sum of functions with nonnegative order at a point has
+  nonnegative order there (`meromorphicOrderAt_add` plus induction), which is the hypothesis
+  `principalJet_finset_sum` needs for the *combination*;
+- `meromorphicAt_finset_sum` — extracted from the monomial-specific induction written earlier, which
+  is now a corollary of it.
+
+**An obstacle that dissolved.**  It looked as though the argument would need `ord(f') != top` at each
+pole representative -- i.e. that `f'` does not vanish identically near a pole -- which needs an
+identity-theorem argument on the complement of a discrete set.  It does not: `top` satisfies *every*
+lower bound, so a point where the order is `top` costs nothing.  And a pole representative has
+negative order, so it is automatically not `top`.  The whole finiteness question disappears from the
+proof.
+
+#### A regular point, and the degenerate derivative
+
+`GaloisForLFunctions/HTGeometry/EllipticRegularPoint.lean` (axiom-clean, build green,
+umbrella-registered) supplies the last two inputs of the assembly.
+
+- **`differentiallyAlgebraic_of_deriv_eq_zero`** — a function with identically vanishing derivative
+  satisfies `y_1 = 0`, so the degenerate case where the derivative carries no information is disposed
+  of before the counting argument starts;
+- **`exists_nonneg_meromorphicOrderAt`** — a meromorphic function on `C` has a point of nonnegative
+  order.  Poles are finite on every compact set, while the unit segment of the real axis is an
+  *infinite* compact subset of `C`, so not every point can be a pole.  This is the regular point at
+  which the counting argument reads the value of a combination, and it is what pins the constant to
+  zero;
+- `analyticAt_of_nonneg_meromorphicOrderAt` — for a normal-form function, nonnegative order means
+  analyticity.
+
+Using the unit segment rather than a disc avoids needing an infinitude lemma for balls: the segment is
+the continuous injective image of `Icc 0 1`, hence compact and infinite by construction.
+
+#### Orders are lattice invariants
+
+`GaloisForLFunctions/HTGeometry/EllipticLatticeOrder.lean` (axiom-clean, build green,
+umbrella-registered).
+
+- **`meromorphicOrderAt_sub_latticeCombination`** — for a function periodic under both steps, the
+  meromorphic order is constant along the lattice they generate (via the corpus's
+  `meromorphicOrderAt_add_period` and `Function.Periodic.int_mul`);
+- **`exists_mem_parallelogram_orderEq`** — combined with the covering, every point has a congruent
+  point *inside* the fundamental parallelogram carrying the same order;
+- **`exists_mem_poleFinset_orderEq`** — in particular every pole is congruent to one of the finitely
+  many poles in the parallelogram.
+
+This is what makes the finite pole set `S` sufficient: the argument controls the combination at the
+points of `S`, and the lattice invariance of the order carries that control to *every* pole, without
+any further analysis.
+
+#### Discharging the cleared-order hypotheses
+
+`GaloisForLFunctions/HTGeometry/EllipticClearedOrders.lean` (axiom-clean, build green,
+umbrella-registered) turns a single order bound into the hypotheses the principal-jet machinery
+consumes.
+
+- **`nonneg_order_poleFactor_monomial`** — from one bound `-m` shared by `f` and `f'` at `p`, the
+  uniform exponent `d = 2mN` clears every monomial of bidegree at most `(N, N)`, since
+  `i + j <= 2N`;
+- **`nonneg_order_poleFactor_combination`** — and it clears every finite combination of them, by
+  distributing `(. - p)^d` across the sum and applying `nonneg_order_finset_sum`;
+- `nonneg_order_const_mul` — multiplying by a constant cannot lower an order below zero;
+- **`eq_zero_of_meromorphicOrderAt_neg`** — a normal-form function takes the value `0` at a pole.
+  This is the fact that makes the final `y_0` multiplication work: at a pole the normal form gives
+  `f = 0`, so the relation holds there for free.  It is read off from mathlib's
+  `MeromorphicNFAt.meromorphicOrderAt_eq_zero_iff` (order `0` iff nonzero value), whose contrapositive
+  is exactly the normal-form convention.
+
+#### Liouville for the combination
+
+`GaloisForLFunctions/HTGeometry/EllipticNormalFormConstant.lean` (axiom-clean, build green,
+umbrella-registered).
+
+- **`eq_of_nonneg_order_of_lattice_periodic`** — a lattice-periodic meromorphic function with
+  nonnegative order everywhere takes a single value on its whole regular locus.
+
+The mechanism: its canonical normal form is entire (normal form plus nonnegative order gives
+analyticity at every point), inherits both periods -- for which the corpus already had exactly the
+right transfer lemma, `periodic_toMeromorphicNFOn_of_eventually_punctured` -- hence is constant by
+`const_of_lattice_periodic_analytic`; and wherever the function itself is analytic it agrees with
+that normal form, because the two agree off the point and are both continuous at it.
+
+This is step 6 of the assembly.  With the regular point `z_0` at which the combination vanishes, it
+gives that the combination vanishes on its entire regular locus, which is exactly the hypothesis of
+`differentiallyAlgebraic_of_monomial_relation` once the poles are handled by the `y_0` factor.
+
+## THE LAST ANALYTIC GAP IS CLOSED
+
+`GaloisForLFunctions/HTGeometry/EllipticHypertranscendenceFreeProof.lean` (axiom-clean, build green,
+umbrella-registered) assembles the counting argument and discharges the card's one remaining named
+input.
+
+- **`differentiallyAlgebraic_of_lattice_periodic_meromorphicNF`** — a meromorphic normal-form
+  function invariant under a full lattice is differentially algebraic.
+- **`ellipticHypertranscendenceFree`** — hence `EllipticHypertranscendenceFree` holds.  It is no
+  longer a hypothesis anywhere.
+- **`facetComplementRankOne_of_scalarSRRealization`** — therefore the facet-codimension theorem
+  `(6)` holds for a one-variable **meromorphic** realization, unconditionally: every facet omits at
+  most one ambient vertex.
+- **`principalization_of_scalarSRRealization`** and
+  **`stanleyReisnerIdeal_principal_of_scalarSRRealization`** — and the structural conclusion
+  `(18)`--`(20)` follows: the complex is the full simplex or a deletion family, and its
+  Stanley--Reisner ideal is the principal squarefree `(prod_(u in U) X u)`.
+
+The assembly, for the record: if `f'` vanishes identically then `f` satisfies `y_1 = 0`; otherwise the
+poles of `f` in the fundamental parallelogram form a finite set `S` with a single order bound `m` for
+`f` and `f'`; at the degree `N = 2|S|m + 1` the coefficient space outgrows the principal-part space,
+giving a nonzero `c` whose data all vanish; linearity of the principal jets makes the combination
+`G = sum c_q f^i (f')^j` free of principal parts on `S`, hence pole-free there, hence pole-free
+everywhere by lattice invariance of the order; a pole-free lattice-periodic function is constant on
+its regular locus and `G` vanishes at the regular point, so `G` vanishes wherever it is analytic; and
+at a pole the normal form gives `f = 0`, so `G * f` vanishes identically -- an algebraic differential
+equation of order one.
+
+Nothing in the proof uses contour integration, the argument principle, Riemann--Roch, theta
+functions, or the Weierstrass structure theorem for elliptic functions.
+
+### Gates
+
+- [x] complete unconditional Lean formalization of the analytic chain `(8)`--`(20)`, for meromorphic
+      carriers
+- [ ] independent specialist proof and novelty audit
+
+## Lean progress — the datum-level law and the channel corollary lose the entirety hypothesis
+
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicFacetCodimension.lean`.  With
+`ellipticHypertranscendenceFree` proved, the two earlier statements that had been stated relative to
+it, or proved only for entire carriers, become unconditional theorems about a **meromorphic**
+analytic datum:
+
+- **`no_scalarFacetRealization_of_two_omitted`** — a `ScalarFacetRealization` cannot have a facet
+  omitting two distinct ambient vertices.  The two omitted steps `omega a`, `omega b` are periods of the
+  carrier, and both configurations die: if they are `RR`-dependent the period group of a
+  hypertranscendental function fails to be discrete
+  (`no_scalarFacetRealization_of_two_omitted_realDependent`); if they are `RR`-independent the carrier
+  is a lattice-periodic meromorphic function, hence differentially algebraic by
+  `differentiallyAlgebraic_of_lattice_periodic_meromorphicNF`, contradicting hypertranscendence.
+- **`facetComplementRankOne_of_facetRealization`** — hence `(6)` for the bare analytic datum, with no
+  antichain, simplicial, or entirety hypothesis: `card (V \ F) <= 1` for every facet.
+- **`channel_facetComplementRankOne`** — hence for an arbitrary nonempty family of meromorphic
+  channels under componentwise translations (`ChannelSRRealization`), by selecting one
+  hypertranscendental component per facet.
+
+This is the last place where the entirety hypothesis survived: the analytic chain `(8)`--`(20)` and
+its `(6)` consequence now hold for meromorphic carriers at every level of the tower — datum, scalar
+Stanley--Reisner realization, and channel family.
+
+## Lean progress — the function/field jet bridge, and DA closure for entire functions
+
+`formal/GaloisForLFunctions/HTGeometry/AnalyticJetFieldBridge.lean`.  The relative two-shift gauge
+characterization `(C4)` needs one structural fact the corpus did not have at the level of
+*functions*: that differential algebraicity is closed under the field operations.  The corpus proves
+this at the level of an abstract differential field (`differentialAlgebraicOver_{add,mul,sub,pow,
+inv,div}`), so what was missing is the faithful passage between the function predicate
+`DifferentiallyAlgebraic` and the genuine meromorphic differential field `meroField U` of the
+domain.  This module supplies it, in both directions and with no analytic side condition:
+
+- `analyticJetElement`, `analyticMeroElement` — an analytic function and its ordinary iterated
+  derivatives, as elements of the analytic germ domain over `U`;
+- `differentialJet_analyticMeroElement` — the *algebraic* jets of the realization are exactly the
+  germs of the ordinary derivatives, so the two differentiations agree;
+- `analyticJetRelation_coe` and `eval₂_analyticJetElement_eq_zero_iff` — a polynomial-coefficient
+  jet relation vanishes in the germ domain **iff** it vanishes pointwise on `U`.  Germs along the
+  principal filter of `U` are functions modulo equality on `U` itself, so this needs neither the
+  identity theorem nor any limiting argument, unlike the upper-end germ bridge;
+- **`differentialAlgebraicOver_analyticMeroElement_iff`** — an analytic function satisfies an
+  algebraic differential equation on `U` exactly when its meromorphic realization is differentially
+  algebraic over the embedded `C(z)`.  The backward direction goes through
+  `exists_jet_relation_of_differentialAlgebraicOver` (base-field-general form of the corpus's
+  rational jet extraction) and `clearRatFuncCoefficients`, then inverts the jet reshaping.
+
+The immediate consequence, and the piece `(C4)` consumes:
+
+- **`differentiallyAlgebraic_mul`**, **`differentiallyAlgebraic_add`**,
+  **`differentiallyAlgebraic_sub`**, **`differentiallyAlgebraic_pow`** — the differentially
+  algebraic entire functions form a ring.  Previously the corpus could only add or multiply a
+  *polynomial* (`differentiallyAlgebraic_add_polynomial`, `differentiallyAlgebraic_of_mul_polynomial`).
+
+All axiom-clean, `HTGeometry` umbrella registered.  What remains for `(C4)` is the meromorphic
+carrier: division by a differentially algebraic gauge, and the constant-multiplier two-shift law for
+a meromorphic (rather than entire) `g`.
+
+## Lean progress — realizing a translation-fixed meromorphic germ as a periodic function
+
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicFieldRealization.lean`.  Toward `(C4)` the plan is
+to prove, in the genuine global meromorphic differential field, that **every element of the elliptic
+field `ellipticMeroField tau` (the germs fixed by the translations `1` and `tau`) is differentially
+algebraic over `C(z)`**, and then to reach `(C4)` by the logarithmic-derivative route: a
+constant-multiplier `g` has translation-invariant `g'/g`, so `g'/g` is elliptic hence DA, and `g` is
+DA over `C(z)<g'/g>` by the order-one relation `y_1 - (g'/g) y_0 = 0`, hence DA over `C(z)` by
+differential transitivity; `f = g b` is then DA by `differentialAlgebraicOver_mul`.
+
+This module supplies the passage from the algebra to the analysis:
+
+- **`fraction_eventually_periodic_of_addTranslationMeroEquiv_fixed`** — if `sigma_q x = x` for
+  `x = a/b` in the meromorphic field, then for chosen entire representatives `A, B` the honest
+  function `A/B` satisfies `A(w+q)/B(w+q) = A(w)/B(w)` on a punctured neighbourhood of every point.
+  The algebraic identity cross-multiplies to an identity of entire germs — a genuine pointwise
+  identity — and the corpus's `analyticSubring_fraction_eventuallyEq_of_field_eq` divides back off
+  the isolated zeros of the denominator.  Uses `addTranslationAnalyticEquiv_rep`: the translated
+  germ is represented by the translated function.
+- **`periodic_toMeromorphicNFOn_of_eventually_punctured_meromorphic`** — punctured-local
+  periodicity makes the *canonical normal form* genuinely periodic, with **no analyticity
+  hypothesis**.  Where the normal form is regular the two sides agree by continuity plus the
+  punctured agreement; at a pole both sides are the normal-form value `0`, because meromorphic order
+  ignores the value at the centre (`meromorphicOrderAt_add_eq_of_eventually_periodic`) and so
+  transports along the period.  This strictly generalizes the corpus's entire-carrier version
+  `periodic_toMeromorphicNFOn_of_eventually_punctured` (`EllipticThetaLogComparisonRigidity`), which
+  can be collapsed into it later.
+
+Both axiom-clean, umbrella registered.  Still to build for the elliptic-field theorem: a disc on
+which the denominator does not vanish, the identification of the restricted germ with the analytic
+`A/B` there, and the descent of differential algebraicity along the injective restriction embedding
+(`hypertranscendentalOver_restrictMeroAlgHomRatFunc`, already an iff), combined with the new
+`AnalyticJetFieldBridge`.
+
+## Lean progress — MILESTONE: the elliptic meromorphic field is differentially algebraic
+
+`formal/GaloisForLFunctions/HTGeometry/EllipticMeroFieldDifferentialAlgebraicity.lean`
+(axiom-clean, umbrella registered).
+
+- **`differentialAlgebraicOver_of_translation_fixed`** — let `alpha, beta` be `R`-independent and let
+  `x` be any element of the genuine global meromorphic differential field fixed by both translations
+  `sigma_alpha, sigma_beta`.  Then `x` is differentially algebraic over the embedded rational
+  coordinate field `C(z)`.  No entirety, no growth bound, no theta-function presentation, no
+  Weierstrass structure theorem.
+- **`differentialAlgebraicOver_of_mem_ellipticMeroField`** — hence every element of the corpus's
+  `ellipticMeroField tau` is differentially algebraic when `1, tau` are `R`-independent.
+
+The chain, for the record.  Write `x = a/b` with `a, b` entire germs (`IsFractionRing.div_surjective`)
+and choose entire representatives `A, B`.  The two invariances become punctured-local functional
+periods of `A/B` (`fraction_eventually_periodic_of_addTranslationMeroEquiv_fixed`), hence genuine
+periods of the canonical normal form `F` of `A/B`
+(`periodic_toMeromorphicNFOn_of_eventually_punctured_meromorphic`), hence — by the unconditional
+elliptic theorem `differentiallyAlgebraic_of_lattice_periodic_meromorphicNF` — a nonzero algebraic
+differential relation satisfied by `F` at every point of `C`.  On a disc `V` where `B` does not
+vanish, `A/B` is analytic and equals `F` together with all its jets, so the relation holds pointwise
+there; the jet bridge `differentialAlgebraicOver_analyticMeroElement_of_relation` turns it into
+differential algebraicity of the restricted germ in `meroField V`; and the restriction embedding is
+an injective differential `C(z)`-algebra map, so the corpus's
+`hypertranscendentalOver_restrictMeroAlgHomRatFunc` descends the conclusion back to `x`.
+
+This is exactly the analytic input `(A0)` that `(C4)` consumes.  Remaining for `(C4)`: for a
+constant-multiplier `g` the logarithmic derivative `g'/g` is translation-invariant, hence elliptic,
+hence DA by the theorem above; `g` is then DA over `C(z)<g'/g>` by the order-one relation
+`y_1 - (g'/g) y_0 = 0`, hence DA over `C(z)` by the corpus's differential transitivity; and
+`f = g b` is DA by `differentialAlgebraicOver_mul`.
+
+## Lean progress — `(C4)` IS PROVED: hypertranscendence as a relative gauge obstruction
+
+`formal/GaloisForLFunctions/HTGeometry/RelativeTwoShiftGaugeCharacterization.lean`
+(axiom-clean, umbrella registered).  The card's `(C1)`--`(C4)` are now Lean theorems in the genuine
+global meromorphic differential field, for `R`-independent shifts:
+
+- `translationCocycle q x = sigma_q x / x` — the multiplicative translation cocycle `(C2)`;
+- `DAConstantFlat alpha beta x` — the cocycle is the cocycle of a nonzero differentially algebraic
+  gauge `b` times a constant character `(C3)`, imposed at the two generators;
+- **`differentialAlgebraicOver_iff_daConstantFlat`** — `(C4)`: a nonzero meromorphic germ is
+  differentially algebraic over `C(z)` **iff** its two-shift cocycle is `DA`-constant-flat;
+- **`hypertranscendentalOver_iff_not_daConstantFlat`** — hence hypertranscendence is *exactly* the
+  failure of the cocycle to be reducible to a constant character by a differentially algebraic
+  gauge: a relative gauge obstruction, as the card states.
+
+Proof, as on paper.  Forward: take `b = x`, trivial character.  Converse: `g = x/b` satisfies
+`sigma_q g = c_q g` (`addTranslationMeroEquiv_div_eq_const_mul`); the constants are differential
+constants (`deriv_algebraMap_complex`), so `g'/g` is fixed by both translations
+(`addTranslationMeroEquiv_logDeriv_eq`); the elliptic theorem
+`differentialAlgebraicOver_of_translation_fixed` makes `g'/g` differentially algebraic; the corpus's
+`differentialAlgebraicOver_deriv_div_self_iff` lifts that to `g`; and `x = g b` is differentially
+algebraic by `differentialAlgebraicOver_mul`.
+
+Scope note: the shifts are assumed `R`-independent, which is what the elliptic branch needs.  The
+`R`-dependent but `Q`-independent branch is proved at the level of functions in the corpus (the
+non-discrete period-group argument) and still has to be transported into the field to widen `(C4)`
+from `R`-independence to the card's `Q`-independence.
+
+## Lean progress — `(C4)` at full `Q`-independence: the non-discrete branch closed
+
+`formal/GaloisForLFunctions/HTGeometry/NonDiscreteTranslationDifferentialAlgebraicity.lean`
+(axiom-clean, umbrella registered), plus a refactor of the elliptic module and the widening of the
+`(C4)` module.  The `R`-independence restriction noted in the previous entry is now removed, so
+`(C4)` holds exactly as the card states it, for `Q`-independent shifts.
+
+- **`analyticAt_of_meromorphicNFOn_periodic_of_not_discrete`** — a normal-form meromorphic function
+  whose period group is not discrete has **no poles at all**.  A pole is reproduced at every period
+  (`meromorphicOrderAt_add_eq_of_eventually_periodic`), a non-discrete integer submodule of `C` has
+  nonzero elements arbitrarily close to `0`
+  (`exists_small_nonzero_of_not_discrete_intSubmodule`), and a meromorphic function is analytic on a
+  punctured neighbourhood of every point (`MeromorphicAt.eventually_analyticAt`) — so a pole would
+  have to sit inside its own punctured regular neighbourhood.
+- **`differentiallyAlgebraic_of_meromorphicNFOn_periodic_of_not_discrete`** — hence such a function
+  is entire, and the corpus's small-translation law
+  (`differentiallyAlgebraic_of_quasiperiods_of_not_discrete`, multipliers all `1`) makes it
+  differentially algebraic.
+- **`differentialAlgebraicOver_of_translation_fixed_realDependent`** and
+  **`differentialAlgebraicOver_of_translation_fixed_rat`** — the two-shift law in the global
+  meromorphic differential field for `Q`-independent shifts: `R`-independent shifts give the
+  elliptic branch, `R`-dependent ones the non-discrete branch.
+- The descent half of the elliptic proof was factored out as
+  **`differentialAlgebraicOver_of_differentiallyAlgebraic_toMeromorphicNFOn`** (disc + jet bridge +
+  restriction embedding), so both branches share it; and
+  `differentialAlgebraicOver_iff_daConstantFlat`,
+  `hypertranscendentalOver_iff_not_daConstantFlat` now assume only `LinearIndependent Q ![alpha, beta]`.
+
+`(C1)`--`(C5)` are therefore fully formalized and unconditional.  The only remaining card item is the
+Schaefke--Singer rational gauge reduction, labelled `[SEARCH]` by the card itself, and the gate
+"independent specialist proof and novelty audit".
+
+## Lean progress — the DA-gauge curvature law `(35)`--`(40)` is formalized
+
+`formal/GaloisForLFunctions/HTGeometry/DAGaugeCurvatureNecessity.lean` (axiom-clean, umbrella
+registered).  The last `[PROVED HERE]` section of the card without a Lean counterpart was the
+DA-gauge curvature necessity: a finite-state internal transport that is only *`DA`-gauge-flat*,
+`M_v(z) = B(z + omega_v) C_v B(z)^(-1)` with constant `C_v` and differentially algebraic invertible
+gauge `B`, must still obey the facet-codimension law.
+
+- `DAGaugeFlatFacetRealization` — the datum `(35)`--`(37)`: entire carrier, entire invertible gauge
+  with differentially algebraic entries, gauged constant transport, one hypertranscendental
+  component;
+- `gaugedCarrier_monodromy` — conjugating by the gauge produces the constant action `(38)`
+  (`B^(-1)(z+omega) (B(z+omega) C B^(-1)(z)) = C B^(-1)(z)`);
+- **`gaugedCarrier_hypertranscendental`** — the analytic content `(39)`: the gauge cannot manufacture
+  hypertranscendence.  If every component of `B^(-1)F` were differentially algebraic then every
+  component of `F = B (B^(-1) F)` would be too, because the differentially algebraic entire functions
+  form a ring — this is exactly the new `AnalyticJetFieldBridge` closure, packaged here as
+  `differentiallyAlgebraic_finsetSum` and `differentiallyAlgebraic_mulVec`;
+- **`daGaugeFlat_facetComplementRankOne`** — hence the facet-codimension law, by reduction to the
+  already-formalized constant-transport datum `MatrixFacetRealization`.
+
+Contrapositive, the card's stated law `(40)`: a one-variable finite-state full HT system with
+nonpure Stanley--Reisner geometry has an internal translation cocycle whose class in
+`H^1(<T_v>, GL_m(D_DA))` lies outside the constant-representation locus.  Before the ring closure
+this reduction was not available in Lean at all; the corpus could only move a *polynomial* factor
+through `DifferentiallyAlgebraic`.
+
+### Precise remaining Lean scope (hostile self-audit, 2026-07-27)
+
+Every `[PROVED HERE]` section of this card now has an unconditional axiom-clean Lean counterpart:
+`(6)` facet-codimension (scalar entire, scalar **meromorphic** datum, channel, finite-state, and now
+DA-gauge-flat), `(18)`--`(20)` principalization, `(21)`--`(23)` channel stability, `(24)`--`(33)`
+constant-multiplier and finite-state stability, `(35)`--`(40)` DA-gauge curvature necessity,
+`(C1)`--`(C5)` the relative two-shift gauge characterization at full `Q`-independence.
+
+One scope item is genuinely still open, and it is worth stating exactly rather than hiding: the
+*rational*-transport specialization of the Cocycle transcendence requirement `(42)`--`(44)`.  Its
+external input is Schaefke--Singer (`[SEARCH]`, cited, not claimed as new), but even granting that
+input the conclusion `(44)` produces a **rational** gauge `B in GL_m(C(z))`, which has poles, while
+`DAGaugeFlatFacetRealization` currently demands an *entire* gauge.  Closing this needs the DA-gauge
+curvature law for **meromorphic** gauges.  The natural route is now available in outline: state the
+gauge law inside `meroField univ`, where differential algebraicity is already closed under the field
+operations (`differentialAlgebraicOver_{add,mul,inv,div}`) and translations act by
+`addTranslationMeroEquiv`; the missing transport is the finite-state constant-monodromy theorem
+`differentiallyAlgebraic_component_of_matrix_monodromy_two`, which is currently stated for entire
+vector carriers and has to be moved into the field the same way
+`differentialAlgebraicOver_of_translation_fixed` moved the scalar lattice law.
+
+### Next step for the meromorphic gauge law (base case landed)
+
+`differentialAlgebraicOver_of_constant_multipliers` (in `RelativeTwoShiftGaugeCharacterization`,
+axiom-clean): a nonzero germ of the global meromorphic field reproduced by each of two
+`Q`-independent translations up to a nonzero **constant** is differentially algebraic.  This is the
+scalar base case of the vector transport named above, and it is the field analogue of the corpus's
+entire-carrier constant-multiplier law `(24)`--`(26)`.
+
+The remaining vector step, for the record, is an induction on `dim_C` of the `C`-span `W` of the
+components inside `meroField univ`: the two translations are commuting `C`-linear automorphisms of
+`W`, so `exists_common_eigenvector` (already in `DerivInvariantSuperspace`) produces `y != 0` with
+`sigma_gamma y = lambda_gamma y` and `lambda_gamma != 0`; `y` is differentially algebraic by the base
+case above; and dividing `W` by `y` — a *field* operation here, so no nonvanishing hypothesis is
+needed, unlike the entire-carrier version which had to know the eigenvector was a nowhere-zero
+exponential — gives a shift-stable space containing `1`, on which the derivative image drops
+dimension.  A finite-dimensional `C`-space closed under the derivation makes every member satisfy a
+constant-coefficient linear ODE, hence differentially algebraic.
+
+## Lean progress — the vector two-shift law inside the meromorphic differential field
+
+`formal/GaloisForLFunctions/HTGeometry/MeroFieldShiftStableSpace.lean` (axiom-clean, umbrella
+registered).  This is the transport the previous entry named as the remaining gap.
+
+- **`differentialAlgebraicOver_of_deriv`** — differential algebraicity is closed under
+  *antiderivatives*: `x'` differentially algebraic over `F` implies `x` is.  The relation
+  `y_1 - x' = 0` is a nonzero first-order jet relation over `F<x'>`, and
+  `differentialAlgebraicOver_trans` descends it.  General differential-field statement; the converse
+  of the corpus's `differentialAlgebraicOver_deriv`.
+- `addTranslationMeroEquiv_comm`, `meroDerivL`, `meroShiftL` — the two translations commute, and both
+  the derivation and each translation are `C`-linear (the complex constants being differential
+  constants).
+- **`differentialAlgebraicOver_of_mem_shiftStable`** — *a finite-dimensional complex space of
+  meromorphic germs stable under two `Q`-independent translations consists of differentially
+  algebraic germs.*  Induction on dimension: the two translations are commuting `C`-linear operators,
+  so `exists_common_eigenvector` gives `y != 0` with `sigma_gamma y = lambda_gamma y`, and
+  `lambda_gamma != 0` since the translations are injective; `y` is differentially algebraic by
+  `differentialAlgebraicOver_of_constant_multipliers`; dividing the space by `y` is a **field**
+  operation here, so unlike the entire-carrier argument it needs no nonvanishing hypothesis and no
+  exponential normal form; the quotient space contains `1`, so its derivative image is shift-stable
+  with strictly smaller dimension (rank-nullity), and the induction hypothesis plus
+  `differentialAlgebraicOver_of_deriv` and `differentialAlgebraicOver_mul` close the step.
+- **`differentialAlgebraicOver_of_constant_matrix_monodromy`** — hence the vector two-shift law: a
+  finite family of meromorphic germs reproduced by two `Q`-independent translations up to constant
+  matrices consists of differentially algebraic germs.  This is the meromorphic-carrier counterpart
+  of the corpus's entire-carrier `differentiallyAlgebraic_component_of_matrix_monodromy_two`.
+
+## Lean progress — the gauge curvature law for MEROMORPHIC gauges: the last scope item is closed
+
+`formal/GaloisForLFunctions/HTGeometry/MeroGaugeCurvatureNecessity.lean` (axiom-clean, umbrella
+registered).  The scope item flagged in the hostile self-audit above — the rational-transport case
+`(42)`--`(44)`, whose Schaefke--Singer gauge `B in GL_m(C(z))` has poles and therefore did not fit
+the entire-gauge datum — is now closed, in the strongest available form: the gauge is allowed to be
+an arbitrary **differentially algebraic meromorphic** matrix.
+
+- `differentialAlgebraicOver_finset_sum`, `differentialAlgebraicOver_mulVec` — the field-level ring
+  closure in matrix shape;
+- **`differentialAlgebraicOver_of_gauged_constant_monodromy`** — if two `Q`-independent translations
+  reproduce a vector of meromorphic germs up to `B(z + omega) C B(z)^(-1)` with constant `C` and a
+  differentially algebraic invertible gauge `B`, then every component is differentially algebraic.
+  Proof: `B^(-1)` conjugates the transport to the constant `C` — the computation is
+  `B^(-1)(z+omega) B(z+omega) = (B^(-1) B)(z+omega) = 1` after `Matrix.map_mul`/`Matrix.map_one`,
+  since translation is a ring homomorphism — the vector two-shift law
+  `differentialAlgebraicOver_of_constant_matrix_monodromy` applies to the conjugated vector, and
+  multiplying back by `B` preserves differential algebraicity;
+- `MeroGaugeFacetRealization`, **`no_meroGaugeFacetRealization_of_two_omitted`**,
+  **`meroGauge_facetComplementRankOne`** — hence the facet-codimension law for a meromorphic
+  gauge-flat finite-state datum.
+
+Contrapositive, and this is the sharpest form of the card's law `(40)`: a nonpure one-variable
+finite-state HT geometry has an internal cocycle that is not gauge-equivalent to a constant
+representation by **any** differentially algebraic meromorphic gauge — rational gauges included.  So
+the Schaefke--Singer input `(44)`, which is `[SEARCH]`-labelled and cited rather than claimed, now
+lands inside a formalized law rather than outside it.
+
+## Verification pass before stage-3 promotion
+
+Every capstone the card names was re-checked against the tree, by name, in one
+`import GaloisForLFunctions.HTGeometry` scratch:
+
+    ellipticHypertranscendenceFree
+    differentiallyAlgebraic_of_lattice_periodic_meromorphicNF
+    facetComplementRankOne_of_scalarSRRealization
+    principalization_of_scalarSRRealization
+    stanleyReisnerIdeal_principal_of_scalarSRRealization
+    principalization_of_matrixRealization
+    stanleyReisnerIdeal_principal_of_matrixRealization
+    differentiallyAlgebraic_of_translationStable
+    differentiallyAlgebraic_component_of_matrix_monodromy_two
+    no_matrixFacetRealization_of_two_omitted
+    matrix_facetComplementRankOne
+    meroGauge_facetComplementRankOne
+    no_meroGaugeFacetRealization_of_two_omitted
+    stanleyReisnerIdeal_deletionFacetFinset_eq_span_product
+    facetAntichain_eq_singleton_or_deletionFacets     (namespace GaloisForLFunctions)
+    deletionFacets_unique_minimalNonface              (namespace GaloisForLFunctions)
+
+All resolve and all report exactly `[propext, Classical.choice, Quot.sound]`.
+
+A name-by-name sweep of every backticked identifier on the card found no live gap: the identifiers
+that no longer resolve are (a) mathlib names, (b) module names rather than declarations, or (c) the
+four superseded matrix-case exports -- `no_matrixFacetRealization_of_three_omitted`,
+`no_matrixFacetRealization_of_two_omitted_realDependent`, `matrixFacetComplement_rankOne_or_lattice`,
+`matrix_facetComplementRankOne_of_no_lattice` -- which the card itself records as removed when
+`ShiftStableLatticeStructure` subsumed them with the stronger lattice-inclusive statements.
+
+So the Lean gate is met with nothing outstanding, and the card moves to stage 3.  The remaining gate,
+independent specialist proof and novelty audit, is external and travels with the card.

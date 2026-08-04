@@ -1,9 +1,9 @@
 # Literature and novelty audit
 
 Audit frozen: 2026-08-03. Scope: Stokes/fission contact matrices, generalized Cartan signatures,
-nonabelian Hodge graphs, ultrametric/tree matrices, effective resistance, and type-A leg
-extensions. A negative search is evidence, not a proof that differently worded or unpublished work
-does not exist.
+nonabelian Hodge graphs, quasi-Hamiltonian fusion in arbitrary genus, rigidity-index/spectral-curve
+formulae, ultrametric/tree matrices, effective resistance, and type-A leg extensions. A negative
+search is evidence, not a proof that differently worded or unpublished work does not exist.
 
 ## Primary geometric sources
 
@@ -28,6 +28,28 @@ does not exist.
   automorphisms, including Fourier--Laplace.
 - Search of full HTML found no Cartan signature, inertia, Lorentzian, capacity, effective-resistance,
   or `lambda_2 <= 2` theorem.
+
+### Boalch (2014) and Boalch--Yamakawa (2015)
+
+- P. Boalch, *Geometry and braiding of Stokes data; fission and wild character varieties*, Ann.
+  of Math. 179 (2014), 301--365, DOI 10.4007/annals.2014.179.1.5.
+- P. Boalch and D. Yamakawa, *Twisted wild character varieties*, arXiv:1512.08091.
+- Supply quasi-Hamiltonian fusion, arbitrary-genus handle factors, reduction dimension formula,
+  and ramified/twisted extension. Comparing global formula with one-puncture specializations gives
+  manuscript's exact fusion identity. Neither source states capacity completion,
+  rank-fibre-product inertia theorem, or Euler-minus-capacity-defect law.
+
+### Hiroe (2017, 2019)
+
+- K. Hiroe, *Ramified irregular singularities of meromorphic connections and plane curve
+  singularities*, Josai Math. Monogr. 10 (2017), 161--192.
+- K. Hiroe, *Index of rigidity of differential equations and Euler characteristic of their
+  spectral curves*, arXiv:1907.12846.
+- These are closest scalar/topological antecedents. They relate irregularity to intersection and
+  Milnor numbers, local Fourier transform to blow-up, and---under additional multiplicity and
+  spectral regularity assumptions---rigidity-index value to Euler characteristic. They do not
+  polarize index on a fixed marked lattice, prove positivity on rank kernels, compute capacity
+  defects, or determine inertia.
 
 ### Boalch--Douçot--Rembado (2025)
 
@@ -106,6 +128,10 @@ Exact and near-exact web searches included:
 - `Stokes Cartan capacity effective resistance fission tree`
 - `nonabelian Hodge graph Cartan signature inertia`
 - `generalized ultrametric rank one perturbation Lorentzian`
+- `"Euler capacity" Stokes irregular connections`
+- `"Hodge index" wild character varieties Stokes`
+- `"rigidity index" quadratic form inertia irregular connections`
+- `"wild character" "negative index" Cartan genus`
 
 Results returned the primary diagram/fission papers above and unrelated uses of the terms. No
 direct statement of the manuscript's theorem surface was found.
@@ -114,15 +140,16 @@ direct statement of the manuscript's theorem surface was found.
 
 The abstract linear algebra fact “positive definite matrix minus one rank-one matrix has negative
 index at most one” is classical and is not a publishable novelty claim. The surviving new claim is
-the geometric identity forcing **every** type-A genus-zero Stokes--Cartan matrix into that form,
-together with:
+the geometric identity forcing every type-A local Stokes--Cartan atom into that form and its global
+Euler--capacity refinement on physical-rank fibre product, together with:
 
 1. intrinsic capacity/effective-resistance wall and determinant factorization;
 2. exact corona pruning;
 3. arbitrary type-A leg preservation;
 4. principal-conormal and dimension conservation identities;
-5. global finite/affine/Lorentz trichotomy;
-6. `lambda_2(B) <= 2` and exclusion of higher-signature Kac--Moody diagrams.
+5. arbitrary-genus one-port inertia, exact affine ray, and unit-rank variational principle;
+6. Euler-minus-local-defect, handle monotonicity, and connected-sum sewing laws;
+7. `lambda_2(B) <= 2` and exclusion of higher-signature Kac--Moody diagrams.
 
 This boundary survived source-by-source audit through 2026-08-03. External expert review and normal
 journal priority checks remain necessary; no internal audit can certify absence of unpublished work.

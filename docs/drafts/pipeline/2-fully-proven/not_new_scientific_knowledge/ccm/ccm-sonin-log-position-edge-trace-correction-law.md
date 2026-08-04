@@ -263,6 +263,77 @@ formal Sonin complement. It is not new scientific knowledge. Its earlier identif
 Euler logarithmic source was a coordinate mismatch. The corrected logarithmic scattering theorem
 is formalized in Lean.
 
+## Lean status
+
+**Formalized unconditionally, 2026-08-04**, in
+`formal/GaloisForLFunctions/RHTower/CCMSoninEdgeTrace.lean`.
+
+The card's substantive claim is that the *whole* exact position anomaly factors through one edge
+commutator.  That claim is algebra, and it is now proved as algebra — in an arbitrary ring, from the
+two-projection formula and nothing else.
+
+- `opComm`, **`opComm_mul`**, `opComm_sub`, `opComm_eq_zero_iff_commute` — the commutator as a
+  derivation.
+- **`opComm_inv`** — equation `(6d)`, `[X,V] = V[X,T]V`.  The two-sided inverse relations are used in
+  the form `T V = V T = V - 1`, which is what makes the proof three rewrites instead of an
+  invertibility argument.
+- **`opComm_bab`** — equation `(6e)`, `[X, BAB] = [X,B]AB + BA[X,B]`, using only `[X,A] = 0`.
+- **`opComm_twoProjection`** — equation `(6c)`:
+
+  ```text
+  [X, Q] = -E V ([X,B] A B V B + B A [X,B] V B + [X,B]) E,
+  ```
+
+  from `Q = E - E V B E`, `[X,A] = [X,E] = 0`, `T = BAB`, and `V(1-T) = (1-T)V = 1`.  **No analytic
+  hypothesis appears.**  Every term carries exactly one factor `[X,B]`, which is the exact sense in
+  which the Hilbert--Schmidt correction *dresses* the universal edge bundle rather than adding an
+  independent family of position defects.  The card's `||T|| < 1` is needed only to know that `V`
+  exists; once it does, the identity is unconditional.
+- `edgeTrace`, `edgeSignature`, `edgeTraceForm`, **`edgeTraceForm_eq_signature`** — equations `(4)`
+  and `(11)`: the boundary form is literally the pullback of `diag(1,-1)` along the two-point edge
+  evaluation `Gamma_a`.
+- **`edgeTraceForm_eq_zero_of_even_even`**, **`edgeTraceForm_eq_zero_of_odd_odd`**,
+  **`edgeTraceForm_of_even_odd`** — equation `(12)`.  Both equal-parity cases vanish and the even--odd
+  case is `(1/pi) hat f(a) conj(hat g(a))`, so the form does not disappear under parity: it is
+  *polarized* by it.
+- **`integral_kernel_commutator`** — equation `(6)`: for an integral operator with kernel `K`, the
+  position commutator has kernel `(x - y)K(x,y)`.  Stated with the two integrability hypotheses it
+  actually needs, which is the point: the unweighted kernel being square-integrable gives neither of
+  them.
+- `sharpCutoff`, **`not_continuousAt_sharpCutoff`** — equation `(13)`.  Note the hypothesis that is
+  *not* needed: no regularity of the transform at all.  The cutoff is identically zero immediately to
+  the right of the edge while its value at the edge is `hat f(a) != 0`, so the jump is unconditional.
+
+What is deliberately not formalized, and why:
+
+- equations `(3)`, `(7)`--`(9)`: the distributional identities `F(Xf) = (i/2pi) d_xi hat f` and
+  `d_xi chi_a = delta_(-a) - delta_a`, and hence `(3)` itself.  These are statements about
+  `delta` distributions; `(4)` is their pairing against `hat g`.  Since `[X, B_a]f` is provably not in
+  `L^2` — that is the card's own point — a faithful statement needs the tempered-distribution pairing,
+  and the honest formalizable content is the *form* `(4)` together with its signature and parity
+  structure, which is what `edgeTraceForm` and its three parity theorems give.
+- equation `(6b)`: the two-projection formula for the exact Sonin intersection projection is an
+  imported operator theorem, so it enters `opComm_twoProjection` as the hypothesis `Q = E - E V B E`.
+  This is exactly the card's own logic: "Substitution into `[X,Q_a] = -E[X,VB]E` proves `(6c)`."
+- equation `(14)`: from the jump of `(13)` to `Q_(0,a) f notin D(X)` needs the Sobolev embedding
+  `H^1(R) -> C^0(R)`, which is not in mathlib and is not re-proved here.  The jump itself — the whole
+  computation the card performs — is proved.
+
+## Lean gates
+
+- [x] Lean: commutator derivation calculus (`opComm_mul`, `opComm_sub`)
+- [x] Lean: inverse-commutator identity `(6d)`
+- [x] Lean: alternating-block commutator `(6e)`
+- [x] Lean: exact resolvent-dressed position anomaly `(6c)`, unconditional ring identity
+- [x] Lean: two-edge form as the signature pullback `(11)`
+- [x] Lean: parity polarization `(12)`, all three cases
+- [x] Lean: first-relative-moment kernel of the correction `(6)`
+- [x] Lean: sharp-cutoff edge jump `(13)`
+- [ ] Lean: distributional edge identity `(3)` in a tempered-distribution pairing
+- [ ] Lean: Sobolev embedding step completing `(14)`
+- [ ] rigged Sobolev pair making `(6c)` a bounded-operator identity, and the relative trace after
+      pairing with Euler leakage
+
 ## Gates
 
 - [x] principal position commutator computed as a two-edge distribution

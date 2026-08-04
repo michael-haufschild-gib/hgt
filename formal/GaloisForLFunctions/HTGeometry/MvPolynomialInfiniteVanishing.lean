@@ -97,6 +97,63 @@ theorem mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow_injective {S : Set 
   · exact hp
   · exact absurd hv (vandermondeProduct_ne_zero m)
 
+/-- **A polynomial vanishing on a product of infinite sets is zero.**  Each variable ranges over its
+own infinite set, so the induction peels one variable at a time against its own set. -/
+theorem mvPolynomial_eq_zero_of_eval_eq_zero_on_pi_infinite :
+    ∀ (m : ℕ) (S : Fin m → Set ℂ), (∀ j, (S j).Infinite) → ∀ p : MvPolynomial (Fin m) ℂ,
+      (∀ x : Fin m → ℂ, (∀ j, x j ∈ S j) → MvPolynomial.eval x p = 0) → p = 0 := by
+  intro m
+  induction m with
+  | zero =>
+      intro S _ p h
+      have hval : MvPolynomial.eval (fun _ : Fin 0 => (0 : ℂ)) p = 0 :=
+        h (fun _ => 0) fun j => j.elim0
+      refine MvPolynomial.funext fun x => ?_
+      rw [Subsingleton.elim x (fun _ : Fin 0 => (0 : ℂ)), hval, map_zero]
+  | succ m ih =>
+      intro S hS p h
+      set q : Polynomial (MvPolynomial (Fin m) ℂ) := MvPolynomial.finSuccEquiv ℂ m p with hq
+      have hcoeff : ∀ k : ℕ, q.coeff k = 0 := by
+        intro k
+        refine ih (fun j => S j.succ) (fun j => hS j.succ) (q.coeff k) fun y hy => ?_
+        have hroots : S 0 ⊆ {x : ℂ | (Polynomial.map (MvPolynomial.eval y) q).IsRoot x} := by
+          intro x₀ hx₀
+          show Polynomial.eval x₀ (Polynomial.map (MvPolynomial.eval y) q) = 0
+          rw [hq, ← MvPolynomial.eval_eq_eval_mv_eval' y x₀ p]
+          refine h (Fin.cons x₀ y) fun j => ?_
+          refine Fin.cases ?_ ?_ j
+          · rw [Fin.cons_zero]
+            exact hx₀
+          · intro i
+            rw [Fin.cons_succ]
+            exact hy i
+        have hpoly : Polynomial.map (MvPolynomial.eval y) q = 0 :=
+          Polynomial.eq_zero_of_infinite_isRoot _ ((hS 0).mono hroots)
+        have hck := congrArg (fun r : Polynomial ℂ => r.coeff k) hpoly
+        simpa [Polynomial.coeff_map] using hck
+      have hq0 : q = 0 := Polynomial.ext fun k => by simpa using hcoeff k
+      have hpq : p = (MvPolynomial.finSuccEquiv ℂ m).symm q := by
+        rw [hq]
+        exact ((MvPolynomial.finSuccEquiv ℂ m).symm_apply_apply p).symm
+      rw [hpq, hq0, map_zero]
+
+/-- **A polynomial vanishing at every tuple of distinct values drawn variable by variable from its
+own infinite set is zero.** -/
+theorem mvPolynomial_eq_zero_of_eval_eq_zero_on_pi_infinite_injective {m : ℕ} {S : Fin m → Set ℂ}
+    (hS : ∀ j, (S j).Infinite) (p : MvPolynomial (Fin m) ℂ)
+    (h : ∀ x : Fin m → ℂ, (∀ j, x j ∈ S j) → Function.Injective x →
+      MvPolynomial.eval x p = 0) : p = 0 := by
+  classical
+  have hmul : p * vandermondeProduct m = 0 := by
+    refine mvPolynomial_eq_zero_of_eval_eq_zero_on_pi_infinite m S hS _ fun x hx => ?_
+    rw [map_mul]
+    by_cases hinj : Function.Injective x
+    · rw [h x hx hinj, zero_mul]
+    · rw [eval_vandermondeProduct_eq_zero_of_not_injective hinj, mul_zero]
+  rcases mul_eq_zero.mp hmul with hp | hv
+  · exact hp
+  · exact absurd hv (vandermondeProduct_ne_zero m)
+
 end
 
 end GaloisForLFunctions.HTGeometry

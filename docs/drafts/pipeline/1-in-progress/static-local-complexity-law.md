@@ -658,6 +658,36 @@ time and bounded gaps, but its compactness-produced `L` is not quantitatively
 controlled.  O4 therefore requires `L` at the direct-simulation saturation
 scale, uniformly with high probability in the local-Hamiltonian ensemble.
 
+#### Exact-complexity boundary: algebraic local dynamics jumps instantly
+
+`[PAPER-PROVED] [BRIDGE]`  The new card
+`../2-fully-proven/algebraic-two-local-instant-exact-complexity.md` combines
+the corpus's full two-local spectral monodromy with Hilbert irreducibility,
+finite Lindemann--Weierstrass, and Jia--Wolf's transcendence-degree circuit
+bound.  It produces a rational two-local `n`-qubit Hamiltonian and the fixed
+product input `|0>^tensor n` such that, at every nonzero algebraic time,
+
+\[
+ C_0(e^{-itH_n}|0^n\rangle)\ge {2^n-1\over16}.          \tag{O4.E1}
+\]
+
+For each smaller exact gate budget, semialgebraicity of bounded-gate state
+sets and one-dimensional restricted-analytic o-minimality further imply that
+the exceptional real times are locally finite.  Exact complexity therefore
+jumps from zero to the exponential scale essentially instantly; it does not
+display Brown growth.
+
+This is not an O4 shortcut.  Algebraic vectors are dense, so transcendence
+degree has no fixed-radius stability.  The positive residue is a sharper
+identification of the missing mathematics: O4 is a **quantitative** distance
+lower bound between one algebraic local-Hamiltonian orbit and the
+semialgebraic `s`-gate state set.  Qualitative Lindemann--Weierstrass proves
+only that this distance is nonzero at algebraic times.  A physical theorem
+requires a dimension-independent radius through
+`s=Theta(2^n/poly(n))`.  Exact complexity is forbidden as a substitute in the
+paper because it would manufacture an instantaneous, discontinuous fake of
+the desired arrow of time.
+
 #### Failed circuitwise entropy route and surviving aggregate word escape
 
 An initial candidate was unrestricted worst-target concentration
@@ -1087,6 +1117,291 @@ Bernoulli source occupations.  Its Hodge and Green transports are linear.
 The circuit selector is instead a positive nonlinear infimum over a growing
 word ball.  No map in that paper controls the associated support function,
 shortcut-centre packing, or annular volume.
+
+The updated paper does sharpen two exclusions.  First, its
+uniform-capacity selector is powered by the split factor
+`exp(c (Re rho-1/2))`.  Autonomous Hermitian evolution has only compact
+characters `exp(-it E_j)`, so its split coordinate is identically zero.
+Uniform boundedness of those characters is automatic for every spectrum and
+cannot distinguish a long circuit from a shortcut.  The paper's compact
+recurrence rank and torus-Haar law therefore transfer only to the completed
+time plateau; they contain neither a first-hard-time estimate nor a word
+metric lower bound.
+
+Second, the paper's strict-reduction theorem gives a quantitative obstruction
+to replacing the circuit union by one linear Hilbert reporter.  Let `W` be
+any finite set of `N` distinct circuit labels and let
+
+\[
+             L:\ell^1(W)\longrightarrow \mathcal H
+\]
+
+be bounded, with `\mathcal H` Hilbert.  There is a signed packet `x` supported
+on `W` such that
+
+\[
+ \|x\|_1=N,\qquad \|Lx\|^2\le N\|L\|^2.             \tag{O4.H1}
+\]
+
+Hence every lower modulus `c_W` satisfying
+`c_W\|x\|_1\le\|Lx\|` obeys
+
+\[
+                    c_W\le {\|L\|\over\sqrt N}.      \tag{O4.H2}
+\]
+
+For arbitrary continuous two-qubit gates, finite target subsets have
+unbounded `N`; for a finite alphabet, any exponentially growing family of
+distinct word targets makes `(O4.H2)` exponentially small.  Thus a common
+linear `\ell^1`-to-Hilbert reporter cannot retain the uniform stability needed
+to survive the circuit union.  The finite signed-packet statement is already
+proved in the corpus as `exists_lpOne_signed_packet_hilbert_bound`; the
+infinite no-lower-modulus form is
+`lpOne_to_innerProduct_not_boundedBelow`.  This does not exclude a nonlinear
+selector-aware calibration, but it removes the updated paper's common-Hardy-
+reporter architecture from the O4 frontier.
+
+The positive survivor is a selector-aware use of Hellinger geometry that
+retains the Hamiltonian label.  Let `theta` have probability law `eta`; in
+the intended application `theta=H`.  On an observation space with reference
+measure `mu`, let `p_theta` be the nonnegative endpoint density and let
+`q_(theta,c)` be the nonnegative density associated with circuit target `c`.
+Choose one strictly positive certificate `f_theta`, and put
+
+\[
+ \operatorname{Aff}(\theta,c)
+   =\int\sqrt{p_\theta q_{\theta,c}}\,d\mu,qquad
+ h(\theta)=\int f_\theta p_\theta\,d\mu.                \tag{O4.H3}
+\]
+
+Suppose a nonnegative integrable `r(theta)` controls **every** circuit in the
+same Hamiltonian fibre,
+
+\[
+       \int {q_{\theta,c}\over f_\theta}\,d\mu
+       \le r(\theta)\qquad(c\in C_\theta),               \tag{O4.H4}
+\]
+
+and let `c(theta)` be any Hamiltonian-dependent selector.  If on an event
+`A` of Hamiltonians its selected target has affinity at least `alpha>0`,
+
+\[
+       \theta\in A\quad\Longrightarrow\quad
+       \alpha\le\operatorname{Aff}(\theta,c(\theta)),    \tag{O4.H5}
+\]
+
+then the **resolved Hellinger selector-removal law** is
+
+\[
+ \boxed{\quad
+       \eta(A)\le {\mathbb E_\eta h+\mathbb E_\eta r\over2\alpha}.
+ \quad}                                                   \tag{O4.H6}
+\]
+
+Indeed, pointwise weighted arithmetic--geometric mean gives
+`2 sqrt(p q)<=f p+q/f`.  Integrating first over the observation space gives
+`2 Aff(theta,c)<=h(theta)+r(theta)` uniformly in `c`.  Apply this to the
+selected `c(theta)` on `A`, integrate over `A`, and use nonnegativity to
+enlarge the last integral to the whole Hamiltonian space.
+
+`[PAPER-PROVED, LEAN PENDING]`  In a finite observation space the common
+certificate has an exact minimax classification.  Let `p_i>0` be a
+probability vector, let `(q_(c,i))_(c in C)` be finitely many probability
+vectors, and assume every observation coordinate occurs in at least one
+`q_c`.  Define the optimal common reciprocal-certificate cost
+
+\[
+ \mathcal B(p,Q)=\inf_{f_i>0}\left\{
+   \sum_i p_i f_i+\max_{c\in C}\sum_i{q_{c,i}\over f_i}
+                              \right\}.                \tag{O4.H7}
+\]
+
+If `Delta(C)` is the probability simplex on circuit labels and
+`q_lambda=sum_c lambda_c q_c`, then
+
+\[
+ \boxed{\quad
+ \mathcal B(p,Q)=
+   2\max_{\lambda\in\Delta(C)}\sum_i\sqrt{p_iq_{\lambda,i}}.
+ \quad}                                                \tag{O4.H8}
+\]
+
+To prove this, write the maximum in `(O4.H7)` as a maximum over
+`lambda in Delta(C)`.  The resulting function
+
+\[
+ F(f,\lambda)=\sum_i p_i f_i+\sum_i{q_{\lambda,i}\over f_i}
+\]
+
+is convex and continuous in the positive vector `f` and affine in `lambda`.
+The coordinate-covering assumption and `p_i>0` make its lower envelope
+coercive at both ends of every coordinate, so the minimax theorem applies.
+For fixed `lambda`, coordinatewise arithmetic--geometric mean gives
+
+\[
+ \inf_{f_i>0}F(f,\lambda)
+   =2\sum_i\sqrt{p_iq_{\lambda,i}},
+\]
+
+including the limiting value zero in coordinates where `q_(lambda,i)=0`.
+This proves `(O4.H8)`.
+
+Consequently the resolved Hellinger route is nontrivial only if the endpoint
+observation law is quantitatively separated from the **convex hull** of all
+short-circuit observation laws, not merely from every fixed circuit law.
+Indeed, if `p in conv{q_c}`, the right side of `(O4.H8)` is two: choose
+`q_lambda=p`, while Hellinger affinity of probability vectors is at most
+one.  The event bound `(O4.H6)` is then no better than the trivial probability
+bound.  In particular, a single ordinary projective measurement cannot close
+O4 once its low-complexity target family contains the measurement-basis
+states: their point-mass outcome laws convexly generate every `p`.  A useful
+certificate must therefore retain coherent or replica information for which
+the shortcut convex hull has a proved quantitative deficit.  Establishing
+that deficit at the required linear-in-time rate is again the substantive
+O4 theorem, but `(O4.H8)` rules out hiding it inside a choice of scalar
+Hellinger weight.
+
+`[BRIDGE] [LEAN-PROVED]`  The exact continuum-parameter, continuum-observation
+statement is `resolvedHellinger_selectorRemoval` in
+`HTGeometry/ResolvedHellingerSelectorRemoval.lean`; its only axioms are the
+standard Mathlib foundations `propext`, `Classical.choice`, and `Quot.sound`.
+It does not union-bound circuit words, replace the adaptive selector by a
+fixed target, commute a supremum with ensemble expectation, or force an
+infinite `ell^1` family through a linear Hilbert map.  It turns O4 into the
+construction of one positive nonlinear barrier `f(H,z)` whose reciprocal
+cost is uniform over the entire low-circuit fibre.  The transported-parent/
+dynamical-NLTS route below is one possible source.  No such exponential
+barrier is supplied by the Riemann paper.  Choosing `f` from distance to the
+circuit set would be circular; the certificate must come from independently
+controlled local dynamics and achieve the full linear-in-time rate.
+
+#### Selector-aware Gaussian-process audit: why spin-glass NLTS does not transfer
+
+`[LITERATURE BOUNDARY]`  Al-Ghattas--Gamarnik, *Circuit complexity lower
+bounds for quantum spin glasses*, arXiv:2607.14384v2 (2026), is the first
+audited result here that controls a Gaussian process **after** taking the
+supremum over an ancilla-uniform circuit class.  For a depth-`D` circuit
+state `rho`, they subtract the product of its one-site marginals and write
+
+\[
+ \operatorname{Tr}(H\rho)
+ =\operatorname{Tr}(H m(\rho))
+  +\operatorname{Tr}(H(\rho-m(\rho))).                 \tag{O4.G1}
+\]
+
+Disjoint backward supports kill the residual coefficients.  Pruning the
+remaining backward cones and applying a Gaussian entropy bound controls the
+last term uniformly over all depth-`D` circuits, independently of the number
+of ancillas.  This is a genuine selector-aware advance over a circuitwise
+union bound.
+
+It cannot certify autonomous complexity growth from a simple input.  If
+
+\[
+ \rho_t=e^{-itH}\rho_0e^{itH},
+\]
+
+then cyclicity of trace gives the exact conservation identity
+
+\[
+ \boxed{\quad \operatorname{Tr}(H\rho_t)
+                 =\operatorname{Tr}(H\rho_0)\quad(t\in\mathbb R).\quad}
+                                                               \tag{O4.G2}
+\]
+
+Because `rho_0` belongs to the simple-state class, the evolved endpoint can
+never exceed the simple-state energy optimum used by `(O4.G1)`.  More
+generally, for every observable `A=f(H)` obtained by functional calculus,
+
+\[
+ \operatorname{Tr}(A\rho_t)=\operatorname{Tr}(A\rho_0)
+ \leq\sup_{\sigma\in\mathcal S}\operatorname{Tr}(A\sigma)
+ \qquad(\rho_0\in\mathcal S).                              \tag{O4.G3}
+\]
+
+Thus no conserved spectral observable can separate an autonomous endpoint
+from any comparison class containing its initial state.  Replacing energy by
+a fixed-observable current does not create a persistent signed certificate:
+
+\[
+ j_{H,A}(t):=i\operatorname{Tr}(\rho_t[H,A])
+ ={d\over dt}\operatorname{Tr}(A\rho_t),
+ \qquad
+ \left|\int_a^b j_{H,A}(t)\,dt\right|\leq2\|A\|.        \tag{O4.G4}
+\]
+
+Hence a time-independent positive gap in one signed commutator current can
+last for at most `2||A||/gap`.  This is the conserved/coboundary obstruction
+for disorder-linear dynamical witnesses.
+
+The Hodge--Green viewpoint closes the entire **fixed linear observable**
+version of this loophole in finite dimension.  In an energy basis of `H`,
+let `Pi_H W` retain exactly the zero-gap entries of an arbitrary observable
+`W`, and let
+
+\[
+ (G_H W)_{ab}=\begin{cases}
+ 0,&E_a=E_b,\\
+ W_{ab}/(E_a-E_b),&E_a\ne E_b.
+ \end{cases}
+\]
+
+Then, with `A=-i G_H W`,
+
+\[
+ \boxed{\qquad W=\Pi_H W+i[H,A].\qquad}                 \tag{O4.G5}
+\]
+
+The first term commutes with `H`; the second is an exact Liouvillian
+coboundary.  Therefore every fixed linear signal along the autonomous orbit
+has the normal form
+
+\[
+ \operatorname{Tr}(W\rho_t)
+ =\operatorname{Tr}(\Pi_H W\rho_0)
+   +{d\over dt}\operatorname{Tr}(A\rho_t).
+                                                               \tag{O4.G6}
+\]
+
+For each fixed finite `H` and `W`, its integrated deviation from the
+stationary value is bounded by `2||A||`.  This is not a system-size-uniform
+O4 bound: `||A||` can diverge with inverse spectral gaps.  It is nonetheless
+an exact route classification.  A persistent complexity certificate cannot
+be one fixed linear observable.  It must be time-dependent, nonlinear in the
+state (for example a support function or replica statistic), or carry a
+separately proved uniform inverse-gap estimate strong enough for the intended
+time scale.
+
+`[BRIDGE] [LEAN-PROVED ALGEBRAIC CORE]`  The decomposition `(O4.G5)` is
+`transitionGap_hodgeGreen_decomposition` in
+`HTGeometry/FiniteLiouvillianHodgeGreenLaw.lean`; its only axioms are the
+standard Mathlib foundations `propext`, `Classical.choice`, and `Quot.sound`.
+Equation `(O4.G6)` is the ordinary finite-dimensional Schrödinger derivative
+of `(O4.G5)` and is not used as a final-paper claim until its calculus layer
+is separately formalized.
+
+There is a second scale mismatch.  The Al-Ghattas--Gamarnik variance gain is
+the disjointness of depth-`D` backward supports, whose cardinalities grow as
+`2^D`; it becomes vacuous once `D` reaches order `log n`.  Their theorem
+accordingly proves logarithmic depth, not gate count of order `2^n`.  No
+iteration is available after light cones cover the system.
+
+`[OPEN SURVIVOR]`  A Gaussian-supremum attack on `(O4.3)` would therefore
+need a new observable family `W_(H,t)` satisfying all three properties
+simultaneously:
+
+1. `W_(H,t)` is sufficiently linear in the quenched disorder for a
+   selector-aware Gaussian-process bound to survive;
+2. the autonomous endpoint has a proved positive advantage over the entire
+   `s`-gate class at `s=Theta(t/poly(n))`; and
+3. the advantage is neither a conserved spectral expectation `(O4.G3)` nor
+   a bounded signed coboundary `(O4.G4)`, and its circuit residual continues
+   to contract after every ordinary light cone has saturated.
+
+No such witness is supplied by spin-glass NLTS.  Producing it would be a
+substantive route to `(O4.3)`; merely applying the published energy residual
+to `rho_t(H)` gives exactly the initial product-state benchmark and proves
+nothing about dynamical complexity.
 
 There is also a decisive Hellinger obstruction to importing “Haar-like
 bulk plus one exceptional recurrence component.”  Homogeneity of the full
@@ -3060,6 +3375,235 @@ interaction timescale.  It does not prove long-time decay because vacuum
 compression is not a semigroup; iterating (O4.12z16) would silently replace
 the static Hamiltonian by fresh noise.
 
+`[BRIDGE] [PAPER-PROVED, EXTERNAL MATRIX-SEMICIRCLE INPUT.]`  At one replica,
+the long-time planar problem can now be closed exactly for every bounded-
+weight Pauli ensemble having a common positive variance `v_1` on its
+weight-one words.  Let `V_0` be the traceless Hilbert--Schmidt operator space
+and decompose it by exact nonempty Pauli support,
+
+\[
+                    V_0=\bigoplus_{\varnothing\ne T\subseteq[n]}V_T.
+                                                               \tag{O4.12z17}
+\]
+
+Every one-site commutator `A_p=ad_(P_p)` preserves each `V_T`.  On a Pauli
+word supported on `T`, exactly two one-site letters anticommute at every site
+of `T`, and every nonzero squared commutator contributes four.  Hence
+
+\[
+ \sum_{\operatorname{wt}(p)=1}A_p^2\big|_{V_T}
+ =8|T|I_{V_T}.                                          \tag{O4.12z18}
+\]
+
+For the weight-one covariance
+`eta_1(X)=v_1 sum_(wt(p)=1) A_p X A_p`, put
+
+\[
+ C\big|_{V_T}=(8v_1|T|)^{-1/2}I_{V_T}.
+\]
+
+Equation `(O4.12z18)` gives the exact symmetric operator-scaling equation
+
+\[
+                         \eta_1(C)=C^{-1}.             \tag{O4.12z19}
+\]
+
+`[BRIDGE] [PAPER-PROVED.]`  The scaling mechanism extends to every replica
+order on the complement of the sitewise singlet algebra.  For collective
+one-site commutators `A_(i,a)^(r)`, put
+
+\[
+ \mathcal S_r=\bigcap_{i,a}\ker A_{i,a}^{(r)},\qquad
+ W_r=\mathcal S_r^\perp,\qquad
+ K_{1,r}=\sum_{i,a}(A_{i,a}^{(r)})^2.                 \tag{O4.12z19a}
+\]
+
+The local `su(2)` relations imply
+`[K_(1,r),A_(i,a)^(r)]=0`.  On `W_r`, `K_(1,r)` is positive definite, so
+`R_r=(K_(1,r)|_(W_r))^(-1/2)` exists and the self-adjoint scaled family
+`B_(i,a)^(r)=R_r A_(i,a)^(r)` obeys
+
+\[
+             \sum_{i,a}(B_{i,a}^{(r)})^*B_{i,a}^{(r)}
+ =\sum_{i,a}B_{i,a}^{(r)}(B_{i,a}^{(r)})^*=I_{W_r}.  \tag{O4.12z19b}
+\]
+
+Parseval--Bessel therefore gives, for every `U <= W_r`,
+
+\[
+ \dim\operatorname{span}\{A_{i,a}^{(r)}U:i,a\}
+ \ge\dim U.                                           \tag{O4.12z19c}
+\]
+
+Thus growing-replica Hall expansion is already exact away from the sitewise
+singlets.  The remaining algebraic frontier is confined to the action of
+weight-two generators on `S_r` and its gluing with `(O4.12z19c)` for
+arbitrary mixed subspaces.  The dependency-closed proof is in
+`../2-fully-proven/all-replica-local-casimir-hall-expansion.md`.
+The representation-independent implication “Hermitian family with central
+Casimir and trivial common kernel implies Hall expansion for every subspace”
+is now formalized over both `R` and `C` as
+`centralHermitianMatrixFamily_subspace_finrank_of_commonKernel` in
+`HTGeometry/CentralCasimirHallExpansion.lean`.  Centrality from antisymmetric
+commutator structure constants is formalized as
+`quadraticCasimir_commutes_of_antisymmetric_structure`.  Exact
+collective-Pauli bracket and sitewise-singlet kernel instantiation remain
+before `(O4.12z19c)` itself is Lean-complete.
+
+The scaled covariance is therefore unital and trace-preserving.  Such a
+completely positive map is rank non-decreasing: for a support projection
+`P`, its image is bounded above by the identity and has trace `rank(P)`, so
+its rank is at least `rank(P)`.  Invertible scaling preserves rank
+non-decrease.  Adding the higher-weight positive covariance cannot reduce
+the support of the image of any positive matrix.  Thus the complete
+one-replica commutator pencil is full.
+
+Kargin's 2026 algebraic matrix-semicircle theorem then applies: a full finite
+matrix semicircle has purely absolutely continuous scalar spectral law, with
+only finitely many algebraic density singularities and no singular-continuous
+part.  Faithfulness of the matrix/free trace makes every vector spectral
+measure absolutely continuous.  Riemann--Lebesgue and finite dimensionality
+therefore give
+
+\[
+ \boxed{\qquad
+       \|Q_1U_{0,1}(t)Q_1\|_{\rm op}\longrightarrow0
+       \quad(|t|\to\infty).
+ \qquad}                                                \tag{O4.12z20}
+\]
+
+This is the first all-long-time cavity contraction in the route; `(O4.12z16)`
+was only local in time.  It is not yet circuit anti-concentration.
+
+`[BRIDGE] [PAPER-PROVED]`  At two replicas the local-singlet synchronization
+part can be closed exactly.  On one physical site put
+
+\[
+ u={I\otimes I\over2},\qquad
+ z={1\over2\sqrt3}\sum_{a=1}^3\sigma_a\otimes\sigma_a,
+ \qquad f={u+\sqrt3z\over2}={F\over2}.               \tag{O4.12z21}
+\]
+
+Then `u,z` are an orthonormal basis of the local diagonal-`SU(2)` invariant
+space and `f` is normalized replica swap.  For an interaction edge `{i,j}`
+let
+
+\[
+ K_{ij}=\sum_{a,b=1}^3
+ \operatorname{ad}_{\sigma_a^{(i)}\sigma_b^{(j)},\,\mathrm{coll}}^2.
+\]
+
+On the ordered invariant basis `uu,uz,zu,zz`, direct Pauli reduction gives
+
+\[
+ K_{ij}=
+ \begin{pmatrix}
+ 0&0&0&0\\
+ 0&48&0&-16\sqrt3\\
+ 0&0&48&-16\sqrt3\\
+ 0&-16\sqrt3&-16\sqrt3&32
+ \end{pmatrix},
+ \quad
+ \operatorname{Spec}K_{ij}=\{0,0,48,80\},             \tag{O4.12z22}
+\]
+
+and
+
+\[
+                  \ker K_{ij}=\operatorname{span}\{u_iu_j,f_if_j\}.
+                                                               \tag{O4.12z23}
+\]
+
+For any connected interaction graph positivity and an invertible local
+change of basis `|0> -> u`, `|1> -> f` therefore give
+
+\[
+ \boxed{\quad
+ \ker\sum_{\{i,j\}}K_{ij}
+ =\operatorname{span}\{u^{\otimes n},f^{\otimes n}\}.
+ \quad}                                                        \tag{O4.12z24}
+\]
+
+Indeed every edge kills all bit strings whose endpoint labels disagree, and
+connectedness leaves only the two constant strings.  Thus the entire
+`2^n`-dimensional one-site singlet algebra synchronizes to the identity and
+global-swap modes.
+
+This does **not** make the matrix pencil full.  The implication “positive
+Casimir with correct common kernel implies rank non-decrease” is false: the
+Hermitian matrices `E_13+E_31` and `E_23+E_32` have positive Casimir
+`diag(1,1,2)` and zero common kernel, yet send the plane
+`span{e_1,e_2}` into the line `span{e_3}`.  The exact remaining algebraic
+gate is consequently the stronger Pauli Hall-expansion law
+
+\[
+ \dim\operatorname{span}\{A_p^{(2)}U:\operatorname{wt}(p)\le2\}
+ \ge\dim U                                                   \tag{O4.12z25}
+\]
+
+for every subspace `U` of the global-permutation quotient.  This is precisely
+the rank-nondecreasing condition; common-kernel or spectral-gap arguments do
+not substitute for it.  The dependency-closed synchronization proof and
+hostile counterexample are in
+`../3-formalized/two-replica-local-singlet-synchronization-law.md`.
+
+`[BRIDGE] [PAPER-PROVED.]`  The full Hall quantifier can now be closed on
+the entire two-replica sitewise singlet quotient, not merely on coordinate
+vectors.  Fix one Pauli orientation `(a,b)` and, for every graph edge `e`,
+retain only `A_(e,ab)^(2)`.  In the local identity/swap basis its exact
+single-commutator action is
+
+\[
+\begin{array}{rcl}
+ A_{e,ab}(I\otimes I)&=&A_{e,ab}(F\otimes F)=0,\\
+ A_{e,ab}(I\otimes F)&=&-D_a\otimes FD_b,\\
+ A_{e,ab}(F\otimes I)&=&-FD_a\otimes D_b,
+\end{array}
+\qquad D_a=\sigma_a\otimes I-I\otimes\sigma_a.       \tag{O4.12z25a}
+\]
+
+The two mismatch outputs are nonzero and orthogonal.  Hence each fixed edge
+map is injective on its endpoint-mismatch coordinate sector.  Distinct edges
+land in mutually orthogonal sectors labelled by their two nonsinglet
+endpoints.  If `P_e` retains the bit strings mismatched on edge `e`, graph
+connectedness gives
+
+\[
+ \bigcap_e\ker P_e
+ =\operatorname{span}\{I^{\otimes n},F^{\otimes n}\}. \tag{O4.12z25b}
+\]
+
+For any subspace `U` of the singlet quotient, the stacked mismatch projection
+is therefore injective and the orthogonal edge images add, giving
+
+\[
+ \boxed{\quad
+ \dim\operatorname{span}_{e}A_{e,ab}^{(2)}U
+ =\sum_e\dim P_eU\ge\dim U.
+ \quad}                                               \tag{O4.12z25c}
+\]
+
+Thus `(O4.12z25)` is now proved separately on both canonical layers:
+`(O4.12z19c)` handles the orthogonal complement of sitewise singlets and
+`(O4.12z25c)` handles the singlet quotient.  The unresolved two-replica
+quantifier is only the gluing of arbitrary subspaces crossing those layers;
+separate Hall inequalities do not automatically control overlap of their
+outputs.  Full proof of `(O4.12z25c)` is in
+`../2-fully-proven/two-replica-singlet-pauli-hall-expansion.md`.
+The all-subspaces dimension mechanism is now formalized as
+`resolvedFiberAssembly_subspace_finrank` in
+`HTGeometry/ResolvedFiberHallExpansion.lean`.  Physical completion of
+`(O4.12z25c)` still requires the concrete mismatch projections, fixed-edge
+single commutator, and injective assembly of the distinct edge-defect sectors.
+
+Primary inputs are V. Kargin,
+[*An algebraic characterization of non-singular matrix semicircles*](https://arxiv.org/abs/2604.23089)
+and [*Singularities of matrix semicircles*](https://arxiv.org/abs/2607.26222).
+The support-Casimir and scaling argument is dependency-closed on paper in
+`../2-fully-proven/one-replica-local-pauli-planar-cavity-decay.md`.
+No final-paper use is authorized until the external operator-valued
+semicircle layer is formalized.
+
 `[CONJECTURE — PLANAR-RENORMALIZED REPLICA GENUS LAW.]`  Exactly resum every
 genus-zero component of the full admissible replica ribbon expansion into a
 positive matrix-valued cavity propagator.  In the connected polymer
@@ -3083,10 +3627,15 @@ noncrossing Catalan sector in the reference propagator instead of calling it
 exceptional.  It is stronger than a coefficient estimate: it asserts a
 positive decomposition compatible with the Hamiltonian-dependent circuit
 selector.  Its former first open implication, the multi-backbone
-Schwinger--Dyson loop identity, is now (O4.12z6).  The first open implication
-is therefore a strict normalized cavity/handle contraction in the exact
-Bellman crossnorm (O4.12z7) after exact planar dressing.  The fixed-`q`
-multi-backbone estimate needed at that point is already (O4.12z10).
+Schwinger--Dyson loop identity, is now (O4.12z6).  Two-replica local-singlet
+synchronization is now `(O4.12z21)--(O4.12z24)`.  Its hostile audit exposes
+the genuinely stronger first open implication: prove the Pauli Hall law
+`(O4.12z25)` at every required growing replica order, hence fullness and a
+quantitative operator scaling on the quotient by the global permutation
+algebra.  After that algebraic gate, one still needs strict normalized
+cavity/handle contraction in the exact Bellman crossnorm (O4.12z7) after
+exact planar dressing.  The fixed-`q` multi-backbone estimate needed at that
+point is already (O4.12z10).
 
 This statement does not silently normalize away the number of Wick
 pairings.  If the coefficient dictionary has size `m`, conversion from the
@@ -3656,6 +4205,52 @@ receive a new title and an independent significance audit.
   circuit-test discrepancy or shortcut-locus packing can close O4.  The
   Riemann paper's “Quantum recurrence” row is a two-state Gibbs limit, not a
   unitary-orbit recurrence or complexity theorem.
+- 2026-08-04 -- Audited Al-Ghattas--Gamarnik's July 2026 selector-aware
+  Gaussian-process lower bound for random quantum spin glasses.  Their
+  marginal-subtracted residual and pruned backward-cone entropy genuinely
+  take the supremum over all ancilla-assisted shallow circuits before the
+  probability bound.  The transfer to autonomous growth is nevertheless
+  exactly inert: energy and every spectral function of `H` are conserved, so
+  the evolved endpoint never beats the simple-state benchmark containing its
+  input; fixed-observable commutator currents are bounded signed coboundaries;
+  and the residual variance gain ends when depth-`D` light cones saturate at
+  `D=Theta(log n)`.  Recorded `(O4.G1)--(O4.G4)` and the surviving requirement
+  for a disorder-linear, nonconserved, non-coboundary witness whose circuit
+  residual continues contracting after light-cone saturation.
+- 2026-08-04 -- Converted the Hellinger--Hodge--Green viewpoint into the
+  finite Liouvillian normal form `(O4.G5)`: every fixed linear observable is
+  its zero-gap conserved part plus one exact commutator coboundary.  Formalized
+  the algebraic core as `transitionGap_hodgeGreen_decomposition`, built the
+  module, and audited standard axioms only.  This closes fixed linear
+  witnesses as an indefinite-growth strategy but does not give a uniform
+  growth-scale bound because the Green primitive can diverge with inverse
+  spectral gaps.
+- 2026-08-04 -- Re-audited the updated Hellinger--Hodge--Green paper.  Its
+  positive uniform-capacity separation uses a nonzero real Cartan rate;
+  autonomous Hermitian phases have zero Cartan rate, so that mechanism is
+  inert for quantum circuit growth.  Extracted a sharper formal no-go from
+  its strict-reduction law: every Hilbert reporter of `N` resolved circuit
+  labels loses lower modulus at least as `N^(-1/2)`, and no infinite
+  `ell^1` label reporter has positive lower modulus.  Therefore common linear
+  reporting cannot replace selector-aware annular shortcut packing.
+- 2026-08-04 -- Extracted and formalized the positive Hellinger survivor.
+  The resolved selector-removal law `(O4.H3)--(O4.H6)` retains Hamiltonian as
+  fibre label and bounds any Hamiltonian-dependent circuit selector by one
+  reciprocal positive certificate uniform over all circuits in that fibre.
+  This removes the circuitwise union without commuting `sup` and expectation,
+  but does not close O4: one must still construct a noncircular local-dynamical
+  barrier with exponential linear-in-time rate.  Exact continuum theorem is
+  `resolvedHellinger_selectorRemoval` in
+  `../3-formalized/resolved-hellinger-selector-removal-law.md`.
+- 2026-08-04 -- Proved the finite resolved-Hellinger minimax classification
+  `(O4.H7)--(O4.H8)`: the optimal common reciprocal certificate equals twice
+  the maximal Hellinger affinity between the endpoint observation law and the
+  convex hull of all short-circuit observation laws.  Hence fixed-target
+  separation is insufficient.  If the shortcut convex hull contains the
+  endpoint law, every scalar certificate is trivial; in particular one
+  projective measurement fails once its basis states are within the circuit
+  budget.  Any viable Hellinger attack must retain coherent or replica data
+  and prove a quantitative convex-hull deficit at the full growth rate.
 - 2026-08-02 -- Corrected a fatal plateau semantic overclaim: the existing
   `Omega(2^n/poly(n))` Choi lower bound is on `2n` qubits and is only the
   square-root scale of unrestricted `2n`-qubit state complexity.  Proved two
@@ -3693,3 +4288,70 @@ receive a new title and an independent significance audit.
   spectrum and maximal projective rank almost surely.  The product-vacuum
   Spin/SYK phase-cap estimate therefore transfers to completed physical time,
   rather than remaining an abstract torus statement.
+- 2026-08-04 -- Closed the two-replica local-singlet synchronization theorem
+  on paper.  The full nine-direction two-site Pauli Casimir has exact
+  invariant-sector spectrum `{0,0,48,80}` and kernel “swap neither or swap
+  both.”  On every connected interaction graph, positivity and a local
+  invertible change of basis reduce the common kernel to the two constant bit
+  strings, hence exactly identity and global swap.  A hostile test then
+  falsified the tempting upgrade from correct Casimir kernel to matrix-pencil
+  fullness: two explicit Hermitian star matrices have positive Casimir and
+  zero common kernel while shrinking a plane to a line.  The first remaining
+  replica gate is now the strictly stronger Pauli Hall-expansion inequality
+  `(O4.12z25)` for every subspace, not local-singlet synchronization.  Full
+  proof and counterexample are in
+  `../3-formalized/two-replica-local-singlet-synchronization-law.md`.
+- 2026-08-04 -- Cross-audited `riemann-hellinger-hodge-green-descent` against
+  the sharpened O4 frontier.  Its recurrence section supplies exactly the
+  target-independent first split needed here: at every finite replica order,
+  the finite-window survival moment is the exact resonant collision mass plus
+  one nonresonant remainder, with norm at most
+  `min(1,(T delta)^(-1))` and constant one independent of Hilbert dimension
+  and replica order.  This is already formalized by
+  `finiteSpectralSurvivalFidelityMean_eq_collisionMass_add_remainder` and
+  `norm_fidelityReplicaFiniteWindowRemainder_le`.  On the complement, the
+  already formalized `resolvedHellinger_selectorRemoval` can test the
+  Hamiltonian-dependent best short circuit using one certificate uniform in
+  the circuit target, so recurrence mass is paid once rather than once per
+  circuit.  The paper does not supply the missing certificate: its
+  Hodge--Green and observation-kernel laws control vector kernels and
+  faithful transport, whereas `(O4.12z25)` is an all-subspaces obstruction
+  (equivalently, nonvanishing through every exterior degree).  The exact
+  surviving route is to combine the corpus theorem
+  `tightOperatorFamily_subspace_finrank` with a replica Pauli scaling: a
+  bi-tight scaled Pauli family implies Hall expansion immediately by
+  Parseval--Bessel.  One-replica scaling `(O4.12z19)` is precisely this
+  mechanism.  The all-replica central-Casimir scaling
+  `(O4.12z19a)--(O4.12z19c)` now closes it on the orthogonal complement of
+  the sitewise singlet algebra.  The genuine growing-replica frontier is the
+  singlet-sector Hall law plus a mixed-subspace gluing theorem; a
+  Hodge--Green inverse of a noncentral common-kernel Casimir alone cannot
+  provide either.  Hostile quantifier audit also rejects the source paper's bare
+  prose sentence “connected interaction graph of tensor dimension `D` has
+  temporal rank `D-1`” as a universal Hamiltonian statement.  Its formal
+  source `finiteGraphTemporalRank_of_connected` computes the separately
+  defined *generic component-factorized rank*; actual spectral temporal rank
+  reaches `D-1` only after an independent maximal-projective-rank theorem.
+  None of the O4 argument may infer spectral rank from graph connectedness
+  alone.
+- 2026-08-04 -- Replaced the arbitrary mixed-subspace obstruction by a
+  canonical one. For every finite linear family, deficiency
+  `delta(U)=dim(U)-dim(span_j A_j U)` is supermodular, has a unique largest
+  maximizer, and the full Hall condition is equivalent to the single scalar
+  equation `delta(U_*)=0`. Every invertible input/output symmetry preserving
+  the linear span of the family fixes `U_*`; the formal theorem covers
+  continuous generator mixing, not only index permutations. Consequently a
+  hypothetical local-Pauli Hall obstruction must be local-symmetry invariant
+  and may be resolved into representation/Pauli-character sectors. The
+  exact mixed-layer dimension identity is now also closed: forward Hall
+  expansion from a singlet layer glues to a nonsinglet layer whenever a
+  reverse channel expands the precise forward-image overlap; rank
+  modularity proves that this overlap payment is sufficient. Finally, for
+  any commuting involutions representing one physical Pauli on two replicas,
+  the collective commutator squares to exactly `4I` on the relative-odd
+  sector and is therefore invertible there. Thus every nonzero relative
+  Pauli grade has an exact weight-one inverse. The remaining concrete gate is
+  sharply confined to the grade-zero edge image and reverse-overlap Hall
+  expansion, rather than arbitrary singlet/nonsinglet mixing. Proofs and
+  formal status are recorded in
+  `../2-fully-proven/canonical-symmetry-reduced-hall-gluing-law.md`.

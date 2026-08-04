@@ -26,93 +26,70 @@
 \newcommand{\Div}{\operatorname{Div}}
 \newcommand{\norm}[1]{\lVert #1\rVert}
 
-\title{Cofinal Residue-Jet Universality for Zeta Determinants}
+\title{The Determinant-Defect Completion Law\\
+and Cofinal Residue-Jet Torsion}
 \author{}
-\date{Draft of August 3, 2026}
+\date{Draft of August 4, 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We identify complete cofinal defect of zeta determinants under Schatten convergence.  Let
-$L_n$ be positive operators with $L_n^{-1}\in\mathcal S_p$, with spectral zeta functions having
-at most simple poles at $1,\ldots,p-1$, and suppose $L_n^{-1}\to A$ in $\mathcal S_p$.  Define
-corrected finite-part residue jet
+We prove a determinant-completion law independent of zeta regularization.  Let $H$ be separable
+infinite-dimensional, $V$ finite-dimensional, and $p\geq2$.  Closure of graph of ordinary
+finite-rank determinant pencils in Schatten and compact-open topologies is exactly
+\[
+\begin{aligned}
+ \overline{\{(A,\det(I-A)):A:V\to\operatorname{Fin}(H)\}}
+ =\bigl\{&\left(A,e^P\det{}_p(I-A)\right):\\[-2pt]
+ &A:V\to\mathcal S_p,\quad
+ P\in\textstyle\bigoplus_{k=1}^{p-1}\operatorname{Sym}^k(V^*)\bigr\}.
+\end{aligned}
+\]
+Displayed parametrization is a homeomorphism, natural under pullback and direct sum, and extends
+to continuous and holomorphic families.  Hence Schatten completion preserves regularized core
+and forgets exactly low cyclic trace jet; every forgotten coordinate is realized by finite-rank
+micro-spectra tending to zero.  We prove sharp capacity law
+\[
+ |\Tr(B^k)|\leq\operatorname{rank}(B)^{1-k/p}\norm{B}_p^k,
+ \qquad k<p,
+\]
+with equality, and classify positivity constraints: positive spectra retain only linear defect,
+self-adjoint spectra only linear and nonnegative quadratic defect, while graded positive spectra
+recover full real jet.  For real Schatten exponent $r$, fibre jumps precisely at integer
+summability walls.
+
+Zeta determinants give geometric lifts into this completion.  If $L_n^{-1}\to A$ in
+$\mathcal S_p$, Hartmann--Lesch factorization and a converse logarithmic argument show that
+compact-open cluster set of normalized zeta determinants is homeomorphic to cluster set of
+corrected residue jets
 \[
  b_j(L_n)=-\frac1j\left(\FP_{s=j}\zeta_{L_n}(s)
-       +H_{j-1}\Res_{s=j}\zeta_{L_n}(s)\right),\qquad 1\leq j<p.
+ +H_{j-1}\Res_{s=j}\zeta_{L_n}(s)\right),\qquad 1\leq j<p.
 \]
-The fixed-operator factorization of Hartmann--Lesch writes normalized zeta determinant as an
-exponential polynomial with these coefficients times $\det_p(I-zL_n^{-1})$.  We prove new
-cofinal law: compact-open cluster set of normalized determinants is homeomorphic to cluster set
-of vectors $b(L_n)$, via
-\[
- b\longmapsto \exp\!\left(\sum_{j=1}^{p-1}b_jz^j\right)\det{}_p(I-zA).
-\]
-Every convergent determinant subsequence forces, and is forced by, convergence of entire
-residue jet.  All limits have common divisor; after divisor cancellation relative determinant
-torsion is exactly exponential-polynomial character of jet difference.  Thus residue jet is
-complete invariant of cofinal discontinuity invisible to limiting operator and determinant line.
+All limits share divisor, and divisor-cancelled relative determinant torsion is precisely
+character obtained by exponentiating jet difference.  Explicit graded spectral suspensions show
+all $p-1$ directions occur while Schatten limit, integer residues, and virtual divisor remain
+fixed.
 
-Law is sharp in every Schatten order.  For each $p\geq2$ we construct explicit graded spectral
-suspensions of prime-sieved integer operator.  Finite-difference scale weights cancel lower
-zeta coordinates exactly and leave one independent Mertens finite part in each degree
-$1,\ldots,p-1$.  Constituent inverses converge in $\mathcal S_p$, all integer zeta residues tend
-to zero, and virtual divisor converges, yet Baire-generic corrected-jet cluster set has nonempty
-interior in $\R^{p-1}$.  Generated relative torsion group is full group of real
-exponential-polynomial characters of degree below $p$.
-
-We then prove sharp arithmetic realization at first non-trace-class threshold $p=2$.  For a
-number field $K$ with Dedekind-zeta residue $\rho_K$, and finite set $P$ of prime ideals, let
-\[
- \kappa_K(P)=\rho_K
- \prod_{\mathfrak p\in P}\left(1-\frac1{N\mathfrak p}\right)
- \left(\gamma_K+\sum_{\mathfrak p\in P}
- \frac{\log N\mathfrak p}{N\mathfrak p-1}\right).
-\]
-Here $\gamma_K$ is Euler--Kronecker constant.  Diamond--Ford treated $K=\mathbb Q$; Kandhil--Lunia
-defined number-field finite-set constants.  We impose missing cofinal constraint.  If $P_n$
-consists of first $n$ prime ideals in an arbitrary ordering of all prime ideals, we prove that
-cluster set of $\kappa_K(P_n)$ is a closed interval in $[e^{-\gamma},\infty]$, and that every
-nonempty closed interval in this extended half-line occurs.  Endpoint is universal: Dedekind
-residue cancels field-dependent Mertens constant.  In Polish space of all prime-ideal orderings,
-every prescribed interval fibre is dense, while full interval $[e^{-\gamma},\infty]$ is
-comeagre; cluster-spectrum map is nowhere continuous.  More generally, same interval theorem
-holds for every proper Euler-atom system satisfying two Mertens asymptotics, with endpoint equal
-to its residue-normalized Mertens constant.
-
-On integral ideals coprime to $P$, let
-$D_{K,P}$ have eigenvalues $N\mathfrak a$.  We prove that relative zeta
-determinant
-\[
- \Delta_{K,P}(z)=\frac{\det_\zeta(D_{K,P}-z)}{\det_\zeta D_{K,P}}
- =e^{-\kappa_K(P)z}\det{}_2(I-zD_{K,P}^{-1})
-\]
-is the residue-corrected cutoff product
-\[
- \lim_{X\to\infty}X^{r_K(P)z}
- \prod_{\substack{N\mathfrak a\leq X\\(\mathfrak a,P)=1}}
- \left(1-\frac z{N\mathfrak a}\right),
- \qquad r_K(P)=\Res_{s=1}\Tr(D_{K,P}^{-s}),
-\]
-and satisfies exact prime-ideal excision.  Along every cofinal ordering Hilbert--Schmidt
-operator, primary spectral residue, and limiting divisor are the same, but the determinant
-cluster germs are
-\[
- \Delta_c(z)=e^{(1-c)z}(1-z),\qquad c\in C.
-\]
-Consequently relative torsions are $e^{(d-c)z}$ and group-completed torsion fibre is all of
-$\R$.  This realizes maximal one-dimensional form of universal law: Hilbert--Schmidt limit,
-primary Wodzicki-type residue, limiting divisor, and determinant-line triviality are fixed while
-complete real torsion spectrum survives.
+At threshold $p=2$ we give arithmetic realization over every number field.  For any ordering of
+prime ideals, cluster set of associated finite-part constants is one closed interval in
+$[e^{-\gamma},\infty]$, and every such interval occurs.  Endpoint is field-independent by exact
+cancellation of Dedekind residue with Mertens constant.  Full interval is comeagre among
+orderings, every interval fibre is dense, and cluster-spectrum map is nowhere continuous.
+Corresponding relative zeta determinants satisfy exact prime-ideal excision and converge along a
+finite-part subsequence to $e^{(1-c)z}(1-z)$; their relative torsions $e^{(d-c)z}$ realize full
+real fibre although Hilbert--Schmidt limit, primary residue, divisor, and determinant line are
+fixed.
 \end{abstract}
 
 \noindent\textbf{2020 Mathematics Subject Classification.}
-Primary 58J52, 47B10; Secondary 11M06, 11R42.
+Primary 47B10, 58J52; Secondary 30H50, 11M06, 11R42.
 
 \noindent\textbf{Keywords.}
-Zeta determinant, regularized Fredholm determinant, Wodzicki residue, determinant line,
-relative analytic torsion, Euler--Kronecker constant, Mertens theorem, Schatten ideal.
+Determinant completion, Schatten ideal, regularized Fredholm determinant, zeta determinant,
+residue jet, Wodzicki residue, determinant line, relative analytic torsion,
+Euler--Kronecker constant, Mertens theorem.
 
 \paragraph{Logical status.}
 All numbered results are unconditional.  Hartmann--Lesch factorization, prime number theorem,
@@ -126,7 +103,9 @@ Lean~4 companion supplied with source proves, without axioms or admitted goals, 
 algebra and cleared excision, torsion factorization and cocycle, all-order finite-difference
 cancellation, nonsingularity of factorial suspension moment matrix, injective and surjective
 classification of finite jet polynomials, and forward/converse compact-open convergence
-criterion for factorized determinant characters after zero-free local core cancellation.
+criterion for factorized determinant characters after zero-free local core cancellation.  It
+also proves root-of-unity micro-spectrum cancellation, exact realization of every pure
+homogeneous pencil direction, and summability-transition cocycle.
 Operator-specific Hartmann--Lesch factorization, Schatten determinant continuity, and Mertens
 asymptotics remain cited or paper-proved analytic inputs rather than machine-checked claims.
 
@@ -140,6 +119,166 @@ parts and gluing data~\cite{Quillen1985,BismutFreed1986,PaychaRosenberg2000,Scot
 At the level of pseudodifferential operators, Wodzicki residue produces a local multiplicative
 determinant, whereas zeta determinant is nonlocal and generally nonmultiplicative
 \cite{KontsevichVishik1994,Scott2005}.  Two types of information cannot be interchanged.
+
+Quillen anticipated a principal bundle of determinant trivializations under exponentials of
+bounded-degree polynomial functions.  In a local elliptic setting, Dang proved this picture:
+renormalized determinants obtained from local counterterms form a torsor under local polynomial
+functionals and give holomorphic trivializations of determinant line~\cite{Dang2022}.  Our
+question is orthogonal to locality and precedes choice of renormalization: which polynomial
+ambiguities are forced merely by closing \emph{uncorrected finite-dimensional determinants} in
+Schatten topology?  The answer is exact.  Every low cyclic trace discarded by that topology
+becomes an independent fibre coordinate, and there are no others.  This topological completion
+law supplies common source from which corrected zeta jets, relative torsion characters, and
+graded anomaly coordinates below are obtained by imposing geometric or arithmetic constraints.
+
+Parent law is already visible before zeta regularization.  Let $H$ be separable
+infinite-dimensional Hilbert space, let $V$ be finite-dimensional complex vector space, and
+write $\operatorname{Fin}(H)$ for finite-rank operators.  For linear pencil
+$A:V\to\operatorname{Fin}(H)$ put
+\[
+ D_A(v)=\det(I-A(v)),\qquad D_{p,A}(v)=\det{}_p(I-A(v)).
+\]
+Let $\operatorname{Hol}_1(V)$ carry compact-open topology and consist of entire functions taking
+value one at origin.  Give $\operatorname{Hom}(V,\mathcal S_p)$ any operator norm induced by
+norm on $V$; all choices are equivalent.  Finally put
+\[
+ J_{<p}(V)=\bigoplus_{k=1}^{p-1}\operatorname{Sym}^k(V^*).
+\]
+
+\begin{theorem}[Determinant-defect completion law]
+\label{thm:completion-law}
+For every integer $p\geq2$, closure of finite-rank determinant graph in
+$\operatorname{Hom}(V,\mathcal S_p)\times\operatorname{Hol}_1(V)$ is
+\begin{equation}
+ \overline{\left\{(A,D_A):A\in\operatorname{Hom}(V,\operatorname{Fin}(H))\right\}}
+ =
+ \left\{\left(A,e^P D_{p,A}\right):
+ A\in\operatorname{Hom}(V,\mathcal S_p),\ P\in J_{<p}(V)\right\}.       \tag{DC}
+\end{equation}
+Map
+\begin{equation}
+\Theta_{p,V}:\operatorname{Hom}(V,\mathcal S_p)\times J_{<p}(V)
+ \longrightarrow\overline{\operatorname{Graph}(D)},\qquad
+ (A,P)\longmapsto(A,e^P D_{p,A})                                  \tag{1.D}
+\end{equation}
+is homeomorphism.  It intertwines linear pullback $W\to V$, unitary conjugacy on $H$, and
+orthogonal direct sum; under direct sum, jet coordinates add.  Hence every fibre is principal
+homogeneous space for natural group $\exp J_{<p}(V)$.
+\end{theorem}
+
+\begin{theorem}[Parametrized and holomorphic completion]
+\label{thm:parametrized-completion}
+Let $X$ be compact Hausdorff, and let $C_{\rm fs}$ denote continuous pencils whose operators
+have one common finite-dimensional support.  Take closure in
+$C(X,\operatorname{Hom}(V,\mathcal S_p))\times C(X,\operatorname{Hol}_1(V))$, with uniform
+$\mathcal S_p$ topology in $x$ and compact-open topology in $(x,v)$.  Then
+\begin{align}
+&\overline{\left\{\left(A,(x,v)\mapsto\det(I-A_x(v))\right):
+ A\in C_{\rm fs}\!\left(X,\operatorname{Hom}(V,\operatorname{Fin}(H))\right)\right\}} \notag\\
+&\quad=\left\{\left(A,(x,v)\mapsto e^{P_x(v)}D_{p,A_x}(v)\right):
+ A\in C\!\left(X,\operatorname{Hom}(V,\mathcal S_p)\right),
+ P\in C\!\left(X,J_{<p}(V)\right)\right\}.                 \tag{1.P}
+\end{align}
+Parametrization by $(A,P)$ is homeomorphism from
+\begin{equation*}
+ C\!\left(X,\operatorname{Hom}(V,\mathcal S_p)\right)
+ \times C\!\left(X,J_{<p}(V)\right).
+\end{equation*}
+Same statement holds sheafwise for holomorphic
+families over any complex manifold, with compact-open topology on base.  Construction commutes
+with restriction and holomorphic pullback.  Thus completion fibre over a family is gauge group
+of continuous, respectively holomorphic, sections of $\exp J_{<p}(V)$.
+\end{theorem}
+
+These finite-support families are dense in continuous $\mathcal S_p$ families over compact
+bases.
+
+This is not Hadamard factorization: right side is \emph{closure forced by Schatten completion},
+and every fibre direction is realized by determinants of finite-rank pencils converging to same
+operator pencil.  Nor is it fixed-operator zeta--Fredholm factorization: statement contains no
+zeta function.  It identifies complete nonclosability relation of ordinary determinant.
+
+\begin{theorem}[Sharp micro-spectrum capacity and superization]
+\label{thm:micro-spectrum}
+Let $1\leq k<p$ and let $B$ have finite rank $R$.  Then
+\begin{equation}
+ |\Tr(B^k)|\leq R^{1-k/p}\norm{B}_p^k.                    \tag{1.E}
+\end{equation}
+For every $c\in\C$ equality is attained by a normal root-of-unity block with
+$\Tr(B^q)=0$ for $1\leq q<k$ and $\Tr(B^k)=c$.  Consequently a degree-$k$ defect $c\neq0$
+carried with Schatten energy $\norm{B}_p=\varepsilon$ requires and permits sharp rank scale
+\begin{equation}
+ R=|c|^{p/(p-k)}\varepsilon^{-pk/(p-k)}
+ \quad\text{up to integrality of }R.                      \tag{1.R}
+\end{equation}
+No nonzero degree-$p$ moment survives a perturbation tending to zero in $\mathcal S_p$.
+
+At zero fibre, possible convergent low-moment defects have following exact statistics:
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+allowed finite-rank micro-spectrum & limiting moments $(m_1,\ldots,m_{p-1})$\\
+\midrule
+complex & all of $\C^{p-1}$\\
+positive & $(m_1,0,\ldots,0)$, $m_1\geq0$\\
+self-adjoint & $(m_1,m_2,0,\ldots,0)$, $m_1\in\R$, $m_2\geq0$\\
+graded positive, using supertrace & all of $\R^{p-1}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Rows are truncated when $p=2$ or $3$.  Thus positivity alone loses higher hierarchy, whereas
+standard $\mathbb Z/2$-graded Grothendieck completion recovers every real defect direction.
+\end{theorem}
+
+\begin{corollary}[Summability phase and anomaly filtration]
+\label{cor:summability-phase}
+Let $1\leq r<\infty$ be real and $m=\lceil r\rceil$.  Replace $\mathcal S_p$ by
+$\mathcal S_r$, $\det_p$ by $\det_m$, and $J_{<p}(V)$ by
+\[
+ J_{<r}(V):=\bigoplus_{\substack{k\in\N\\1\leq k<r}}
+ \operatorname{Sym}^k(V^*).
+\]
+Then (DC) and homeomorphism (1.D) remain valid.  Degree-$k$ capacity exponent is
+$r/(r-k)$.  Hence defect fibre changes only when $r$ crosses an integer; passage from
+$\mathcal S_p$ to any $\mathcal S_r$ with $p<r\leq p+1$ adds exactly
+$\operatorname{Sym}^p(V^*)$.
+
+For integers $2\leq p<q$, completions form natural tower.  On
+$A\in\operatorname{Hom}(V,\mathcal S_p)$ put
+\[
+ T_{p,q}(A)(v)=\sum_{j=p}^{q-1}\frac1j\Tr(A(v)^j).
+\]
+Embedding preserving completed determinant character is
+\begin{equation}
+ \iota_{p,q}(A,P)=\bigl(A,P-T_{p,q}(A)\bigr),\qquad
+ e^P D_{p,A}=e^{P-T_{p,q}(A)}D_{q,A}.                    \tag{1.S}
+\end{equation}
+These embeddings satisfy $\iota_{q,r}\iota_{p,q}=\iota_{p,r}$; associated new anomaly layer at
+$p$ is $\operatorname{Sym}^p(V^*)$.
+\end{corollary}
+
+Theorems~\ref{thm:completion-law} and \ref{thm:micro-spectrum} are proved in
+Section~\ref{sec:completion}.  They explain every result below.  Zeta regularization selects
+canonical lift $(L^{-1},P_L)$ in completion relation; residue correction computes its jet
+coordinate; relative torsion is transition character in principal fibre; graded suspension is
+positive realization of full fibre; prime-ideal orderings describe constrained arithmetic
+dynamics inside one real line of fibre.
+
+\begin{center}
+\small
+\begin{tabular}{p{0.28\textwidth}p{0.31\textwidth}p{0.28\textwidth}}
+\toprule
+completion datum & zeta/geometric shadow & arithmetic collateral\\
+\midrule
+$A\in\mathcal S_p$ & inverse $L^{-1}$ & prime-sieved inverse $Q_{K,P}$\\
+$\exp J_{<p}(V)$ & corrected residue jet $b(L)$ & finite parts $\kappa_K(P)$\\
+principal-fibre transition & relative determinant/torsion & $e^{(d-c)z}$\\
+$\operatorname{Sym}^k(V^*)$ layer & order-$k$ residue correction & colored suspension coordinate\\
+graded positive group completion & graded determinant/analytic torsion & signed scale suspension\\
+compact-open graph closure & cofinal determinant clusters & interval spectrum of orderings\\
+\bottomrule
+\end{tabular}
+\end{center}
 
 Write $H_0=0$ and $H_j=1+\cdots+1/j$.  For integer $p\geq2$, call positive invertible
 $L$ an admissible $p$-datum if $L^{-1}\in\mathcal S_p$, its spectral zeta function is regular
@@ -346,6 +485,15 @@ compact subsets is nowhere continuous.  On comeagre full-spectrum fibre, determi
 germs contain every $e^{(1-c)z}(1-z)$ with finite $c\geq e^{-\gamma}$ and relative-torsion slopes
 are all of $\R$.
 \end{theorem}
+
+\paragraph{Organization.}
+Sections~\ref{sec:finite}--\ref{sec:generic} first develop constrained arithmetic and zeta
+models, making visible defects that survive fixed operator, residue, and divisor.  Section
+\ref{sec:geometry} identifies determinant-line and torsion meaning.  Section
+\ref{sec:completion} then proves topology-forced parent law, its family form, sharp capacity,
+positivity classification, and summability filtration.  This concrete-to-structural order also
+keeps classical fixed-operator inputs separate from new graph-closure theorem.  Final sections
+state exact novelty boundary and consequences.
 
 \section{Finite-set identities and extremality}
 \label{sec:finite}
@@ -1282,6 +1430,16 @@ Wodzicki correction:
 Theorem~\ref{thm:universal-law} says entire vector of these mixed coordinates, rather than
 determinant line or residue vector alone, is complete cofinal datum.
 
+This also separates two polynomial-gauge statements.  Dang's elliptic theorem identifies
+renormalized determinant trivializations obtainable from local counterterms; their ambiguity is
+torsor under local polynomial functionals~\cite{Dang2022}.  Restrict such functional to any
+finite-dimensional perturbation pencil whose inverse perturbation lies in $\mathcal S_p$: its
+normalized degree-$<p$ part is a section of gauge group in
+Theorem~\ref{thm:parametrized-completion}.  Our completion theorem identifies ambient
+Schatten-topological gauge group and proves its full realization by raw determinant limits; it
+does not assert that every ambient direction is microlocally local.  In zeta lift above,
+Wodzicki term is local part and finite part is generally nonlocal part of same fibre coordinate.
+
 Paycha--Rosenberg prove regularized first Chern form of an infinite-dimensional bundle differs
 from Bismut--Freed curvature by Wodzicki-residue terms~\cite{PaychaRosenberg2000}.  Scott residue
 determinant is local and multiplicative, in sharp contrast with nonlocal zeta determinant
@@ -1347,12 +1505,230 @@ same argument gives universal relative analytic-torsion character
 This is relative determinant torsion after common degreewise divisors are cancelled.  Formula
 (10.2) is $p=2$ two-term specialization.
 
+\section{Schatten determinant completion and vanishing micro-spectra}
+\label{sec:completion}
+
+We prove parent law.  For finite-rank pencil $A:V\to\operatorname{Fin}(H)$, defining identity
+of regularized determinant is
+\begin{equation}
+ D_A(v)=D_{p,A}(v)
+ \exp\!\left(-\sum_{k=1}^{p-1}\frac1k\Tr(A(v)^k)\right).       \tag{11.1}
+\end{equation}
+Continuity of $A\mapsto D_{p,A}$ from
+$\operatorname{Hom}(V,\mathcal S_p)$ to $\operatorname{Hol}_1(V)$ follows from standard
+continuity estimate for $\det_p$, uniformly for $v$ in compact subsets of $V$
+\cite{Simon2005}.
+
+\subsection*{Necessity and topology of the fibre}
+
+Suppose finite-rank $A_n\to A$ in $\operatorname{Hom}(V,\mathcal S_p)$ and
+$D_{A_n}\to F$ compact-open.  By (11.1),
+\[
+ D_{A_n}=D_{p,A_n}e^{P_n},\qquad
+ P_n(v)=-\sum_{k=1}^{p-1}\frac1k\Tr(A_n(v)^k)\in J_{<p}(V).
+\]
+Since $F(0)=D_{p,A}(0)=1$, choose ball $U$ about origin on which both are nonzero.  On every
+smaller ball,
+\[
+ e^{P_n}=\frac{D_{A_n}}{D_{p,A_n}}\longrightarrow
+ G:=\frac{F}{D_{p,A}}
+\]
+locally uniformly, and $G$ is nonzero.  Normalized holomorphic logarithm on $U$, with value zero
+at origin, is unique.  It follows that $P_n\to\log G$ locally uniformly on $U$.  Equivalently,
+all Taylor coefficients of $P_n$ converge.  Finite-dimensional space $J_{<p}(V)$ is closed, so
+limit is some $P\in J_{<p}(V)$.  Identity theorem gives $F=e^P D_{p,A}$ on $V$.
+
+Same argument proves inverse continuity in (1.D): from $(A_n,e^{P_n}D_{p,A_n})$ recover finite
+jet $P_n$ by normalized logarithm of quotient near origin.  Thus $\Theta_{p,V}$ is
+homeomorphism onto graph closure once sufficiency is proved.
+
+\subsection*{Moment synthesis at vanishing Schatten cost}
+
+We need elementary block.  Let $\ell\in V^*$, $c\in\C$, $1\leq k<p$, $N\geq1$, and choose
+$t\in\C$ with $t^k=c/(kN)$.  If $\omega$ is primitive $k$th root of unity, define diagonal
+pencil $\mathcal B_{k,c,\ell,N}$ with $N$ copies of each eigenvalue functional
+\[
+ t\ell,\ t\omega\ell,\ldots,t\omega^{k-1}\ell .
+\]
+Root-of-unity sum gives for every $q\geq1$
+\begin{equation}
+ \Tr\bigl(\mathcal B_{k,c,\ell,N}(v)^q\bigr)
+ =
+ \begin{cases}
+  kNt^q\ell(v)^q,&k\mid q,\\
+  0,&k\nmid q.
+ \end{cases}                                               \tag{11.2}
+\end{equation}
+In particular all moments below $k$ vanish and $k$th moment is $c\ell^k$.  If
+$\ell=\sum_i\ell_i e_i^*$ in fixed basis of $V$, Schatten cost of $i$th coefficient operator is
+\begin{equation}
+ \norm{\mathcal B_{k,c,\ell,N}(e_i)}_p^p
+ =(kN)^{1-p/k}|c|^{p/k}|\ell_i|^p.                        \tag{11.3}
+\end{equation}
+It tends to zero because $k<p$.
+
+Pure powers span $\operatorname{Sym}^k(V^*)$.  One way to see this is polarization identity:
+coefficient of $t_1\cdots t_k$ in
+$(t_1\ell_1+\cdots+t_k\ell_k)^k$ recovers symmetrization of
+$\ell_1\otimes\cdots\otimes\ell_k$.  Hence every $Q\in\operatorname{Sym}^k(V^*)$ is finite sum
+$Q=\sum_\nu c_\nu\ell_\nu^k$ and (11.2) realizes $Q$ as $k$th moment at arbitrarily small
+$\mathcal S_p$ cost without changing lower moments.
+
+Now let $A\in\operatorname{Hom}(V,\mathcal S_p)$ and
+$P=\sum_{k=1}^{p-1}P_k$, $P_k\in\operatorname{Sym}^k(V^*)$.  Choose finite-dimensional
+projections $E_n\uparrow I$ such that
+\[
+ A_n(v)=E_nA(v)E_n\longrightarrow A(v)
+\]
+in $\mathcal S_p$, uniformly on bounded subsets of $V$.  Construct on $E_n^\perp H$ a diagonal
+pencil $B_n$ degree by degree.  Suppose blocks of degrees below $k$ already chosen and denote
+their direct sum by $B_n^{<k}$.  Define residual homogeneous form
+\[
+ Q_{k,n}(v)
+ =-kP_k(v)-\Tr(A_n(v)^k)-\Tr(B_n^{<k}(v)^k).
+\]
+Decompose $Q_{k,n}$ into pure $k$th powers and realize each summand by (11.2).  Later blocks have
+zero moments of degrees at most $k$, so recursion preserves completed equations.  Multiplicities
+$N$ may be chosen after residual coefficients are known.  By (11.3), choose them so total pencil
+norm satisfies $\norm{B_n}_{\operatorname{Hom}(V,\mathcal S_p)}<1/n$.  At end,
+\begin{equation}
+ \Tr\bigl((A_n\oplus B_n)(v)^k\bigr)=-kP_k(v),
+ \qquad 1\leq k<p.                                      \tag{11.4}
+\end{equation}
+Put $C_n=A_n\oplus B_n$.  Then $C_n\to A$ in
+$\operatorname{Hom}(V,\mathcal S_p)$, while (11.1) and (11.4) give exact identity
+\[
+ D_{C_n}=e^P D_{p,C_n}\longrightarrow e^P D_{p,A}.
+\]
+This proves reverse inclusion in (DC), homeomorphism assertion, and principal fibre.
+Pullback, unitary invariance, and direct-sum naturality follow directly from construction and
+$D_{p,A\oplus B}=D_{p,A}D_{p,B}$.
+
+\subsection*{Families and root-free cyclic blocks}
+
+For Theorem~\ref{thm:parametrized-completion} roots must vary without branch choices.  Replace
+root-of-unity block by weighted cyclic shift.  Given $k\geq1$, coefficient $c$, and linear form
+$\ell$, let $C_{k,c,N}(v)$ act on $\C^k$ by
+\[
+ e_r\longmapsto a_r\ell(v)e_{r+1\ {\rm mod}\ k},\qquad
+ a_0=\cdots=a_{k-2}=\delta,\quad
+ a_{k-1}=\frac{c}{kN\delta^{k-1}},\quad
+ \delta=N^{-1/k}.
+\]
+First string is empty when $k=1$.
+For $0<q<k$, cyclic shift by $q$ has no diagonal entries, while
+\[
+ C_{k,c,N}(v)^k=\frac{c}{kN}\ell(v)^kI_k.
+\]
+Therefore $N$ copies have all lower trace moments zero and $k$th trace exactly
+$c\ell(v)^k$.  No root of $c$ is chosen, and matrix entries depend linearly on $c$.  Singular
+values of weighted cyclic shift are $|a_r\ell(v)|$.  On bounded coefficient set,
+\begin{equation}
+ \norm{\underbrace{C_{k,c,N}\oplus\cdots\oplus C_{k,c,N}}_{N\ {\rm copies}}}_p^p
+ \leq C_{k,\ell,c}\,N^{1-p/k}\longrightarrow0.            \tag{11.5}
+\end{equation}
+
+Let now $c=c(x)$ vary continuously on compact $X$.  It is bounded, cyclic block varies
+continuously, and (11.5) is uniform in $x$.  Choose once for each $k$ pure-power basis
+$\{\ell_{\nu,k}^k\}_\nu$ of $\operatorname{Sym}^k(V^*)$.  Coefficients of every continuous
+$P_k:X\to\operatorname{Sym}^k(V^*)$ in this basis are continuous.  Repeat ascending-degree
+recursion uniformly on $X$.  Finite compressions $E_nA_xE_n$ converge uniformly because image
+of compact $X$ is compact subset of $\operatorname{Hom}(V,\mathcal S_p)$.  This proves
+sufficiency in (1.P).  Necessity and homeomorphism follow from normalized logarithm uniformly
+near zero and continuous recovery of finitely many Taylor coefficients.
+
+If $X$ is complex manifold and coefficients are holomorphic, weighted cyclic blocks are
+holomorphic because entries are linear in $c(x)$.  Exhaust $X$ by compact sets and choose
+multiplicities at stage $n$ large enough on first $n$ compacts.  Same diagonal argument gives
+compact-open holomorphic statement and compatibility with restrictions and pullbacks.
+
+\subsection*{Sharp capacity and statistics}
+
+Let $B$ have rank $R$.  Schatten H\"older inequality and comparison of finite-dimensional
+$\ell^k$ and $\ell^p$ norms give
+\[
+ |\Tr(B^k)|\leq\norm{B^k}_1
+ \leq\norm{B}_k^k
+ \leq R^{1-k/p}\norm{B}_p^k,
+\]
+proving (1.E).  If $R=kN$, diagonal operator with $N$ copies of
+$t,t\omega,\ldots,t\omega^{k-1}$ has lower moments zero,
+$\Tr(B^k)=Rt^k$, and equality throughout.  Solving equality for $R$ proves (1.R), with harmless
+rounding to multiple of $k$.  At threshold $k=p$,
+$|\Tr(B^p)|\leq\norm{B}_p^p$, so no nonzero moment survives $B\to0$ in $\mathcal S_p$.
+
+It remains to prove exact statistics table.  Complex row follows from degree-by-degree blocks
+above with $V=\C$.  If $B_n\geq0$, convergence of first moment makes $\Tr(B_n)$ bounded and
+$\norm{B_n}_\infty\to0$; hence
+\[
+ 0\leq\Tr(B_n^k)\leq\norm{B_n}_\infty^{k-1}\Tr(B_n)\longrightarrow0
+ \quad(k\geq2).
+\]
+Every $m_1\geq0$ is realized by $N$ copies of $m_1/N$.
+
+If $B_n=B_n^*$ and $p\geq3$, convergence of second moment makes $\Tr(B_n^2)$ bounded.  For
+$k\geq3$,
+\[
+ |\Tr(B_n^k)|\leq\Tr|B_n|^k
+ \leq\norm{B_n}_\infty^{k-2}\Tr(B_n^2)\longrightarrow0.
+\]
+Here $m_2\geq0$.  Any $m_1\in\R$ is realized by $N$ copies of $m_1/N$.  Any $m_2\geq0$ is
+realized, without first moment, by $N$ copies each of
+$\pm\sqrt{m_2/(2N)}$; its $\mathcal S_p$ norm tends to zero for $p>2$.  Direct sums give pair
+$(m_1,m_2)$.  For $p=2$ only first coordinate exists.
+
+Finally take positive blocks in even and odd degree and use supertrace.  For target coordinate
+$c$ of degree $k$, put
+\[
+ w_{k,r}=(-1)^{k-r}\binom kr,\qquad 0\leq r\leq k.
+\]
+Use $N|w_{k,r}|$ copies of positive eigenvalue $t(r+1)$, placed in parity sign of $w_{k,r}$.
+Then
+\[
+ \operatorname{Str}(B^q)=Nt^q
+ \sum_{r=0}^k(-1)^{k-r}\binom kr(r+1)^q
+ =
+ \begin{cases}0,&q<k,\\Nt^kk!,&q=k.\end{cases}
+\]
+Choose parity reversal for sign of $c$ and
+$t=(|c|/(Nk!))^{1/k}$.  Total $\mathcal S_p^p$ cost is
+\[
+ Nt^p\sum_{r=0}^k|w_{k,r}|(r+1)^p=O(N^{1-p/k})\longrightarrow0.
+\]
+Ascending-degree recursion realizes arbitrary real jet.  This proves
+Theorem~\ref{thm:micro-spectrum} and completion law.
+
+\begin{proof}[Proof of Corollary~\ref{cor:summability-phase}]
+For real $r\geq1$, integers below $r$ are exactly $1,\ldots,m-1$ where $m=\lceil r\rceil$.
+Finite-rank identity (11.1) holds with $m$ in place of $p$, and $\det_m$ is continuous under
+$\mathcal S_r$ convergence because $\mathcal S_r\hookrightarrow\mathcal S_m$ continuously.
+Block cost (11.3) becomes
+\[
+ (kN)^{1-r/k}|c|^{r/k}|\ell_i|^r,
+\]
+which tends to zero exactly for $k<r$.  Necessity proof is unchanged.  Rank--energy inequality
+uses finite-dimensional norm comparison
+$\norm B_k\leq R^{1/k-1/r}\norm B_r$ and gives exponent $r/(r-k)$.
+
+For integer $p<q$ and $A\in\mathcal S_p$, all $A(v)^j$ with $j\geq p$ are trace class and
+$T_{p,q}(A)$ is continuous polynomial in $A$.  Definitions give
+\[
+ D_{q,A}=D_{p,A}\exp T_{p,q}(A).
+\]
+This proves (1.S).  Identity
+$T_{p,r}=T_{p,q}+T_{q,r}$ proves composition, and new quotient of jet spaces is
+$J_{<p+1}(V)/J_{<p}(V)=\operatorname{Sym}^p(V^*)$.
+\end{proof}
+
 \section{Novelty boundary and significance}
 \label{sec:boundary}
 
 Following ingredients are established and are not claimed as contributions:
 \begin{itemize}
 \setlength{\itemsep}{0.35em}
+\item definition, finite-rank trace formula, Schatten continuity, direct-sum property, and
+      transition identity between $\det_p$ and $\det_{p+1}$ for regularized Fredholm
+      determinants~\cite{Simon2005};
 \item formula (1.1), finite-set density, extremal reduction to initial prime segments, and RH
       equivalence for generalized Euler constants~\cite{DiamondFord2008};
 \item finite-set generalized Euler--Kronecker constants over number fields
@@ -1362,6 +1738,9 @@ Following ingredients are established and are not claimed as contributions:
       residue polynomial and regularized Fredholm determinant~\cite{HartmannLesch2022};
 \item Quillen and Bismut--Freed determinant lines, metrics, and connections
       \cite{Quillen1985,BismutFreed1986};
+\item Quillen's polynomial-gauge picture and Dang's classification of local elliptic
+      renormalized determinants as torsor under local polynomial counterterms
+      \cite{Dang2022};
 \item Wodzicki corrections to regularized Chern forms and determinant-bundle curvature
       \cite{PaychaRosenberg2000};
 \item canonical traces, multiplicative anomalies, and residue determinants
@@ -1369,6 +1748,23 @@ Following ingredients are established and are not claimed as contributions:
 \item relative zeta determinants, analytic torsion, and determinant-line refinements
       \cite{Scott1999,Muller1998,DaiFreed1994,BravermanKappeler2007}.
 \end{itemize}
+
+New parent statement is Theorem~\ref{thm:completion-law}.  It does not claim invention of
+$\det_p$ or identity (11.1).  New content is exact closure of \emph{ordinary finite-rank
+determinant graph} under Schatten completion, coordinate-free multivariable fibre
+$\exp(\bigoplus_{k<p}\operatorname{Sym}^kV^*)$, homeomorphic principal-extension structure, and
+surjectivity by vanishing micro-spectra.  Hadamard factorization says how one entire function
+with prescribed divisor differs from another; it does not prove which exponential factors arise
+as simultaneous limits of finite-dimensional determinants while operator pencil converges in
+$\mathcal S_p$.  Dang's theorem instead fixes elliptic background and classifies determinant-like
+functions obtainable by \emph{local counterterm subtraction}; it neither takes graph closure in
+Schatten topology nor classifies raw finite-rank approximants.  Conversely, our theorem imposes
+no microlocal locality and does not replace Dang's local classification.  It proves that the
+unconstrained Schatten completion already has precisely Quillen's principal polynomial-gauge
+shape, with degree cutoff and every fibre direction forced by topology.
+Theorem~\ref{thm:micro-spectrum} adds optimal rank--energy exponent and exact
+positive/self-adjoint/graded-positive classification.  In particular, it explains why graded
+analytic torsion is required to expose higher real defect directions.
 
 New general statement is Theorem~\ref{thm:universal-law}: under $\mathcal S_p$ convergence,
 corrected finite-part residue jet is complete cofinal discontinuity invariant.  It identifies
@@ -1407,7 +1803,24 @@ cofinal ordering.
 
 \section{Conclusion}
 
-Universal law is
+Parent universal law is determinant completion:
+\[
+ \overline{\operatorname{Graph}(\det_{\rm fin})}^{\,
+   \operatorname{Hom}(V,\mathcal S_p)\times\operatorname{Hol}_1(V)}
+ \cong
+ \operatorname{Hom}(V,\mathcal S_p)\times
+ \exp\!\left(\bigoplus_{k=1}^{p-1}\operatorname{Sym}^k(V^*)\right).
+\]
+Schatten topology preserves regularized core and forgets exactly low trace jet.  Arbitrarily
+small finite-rank micro-spectra realize every forgotten coordinate, with sharp rank cost
+$\varepsilon^{-pk/(p-k)}$ in degree $k$.  Positive spectra collapse hierarchy to degree one;
+self-adjoint spectra to degrees one and two; superdeterminant group completion restores all
+real degrees.  Theorem~\ref{thm:parametrized-completion} shows fibre persists functorially over
+continuous and holomorphic bases, without root choices.  Corollary~\ref{cor:summability-phase}
+identifies integer summability walls and associated graded anomaly layers.  These laws are
+independent of zeta functions.
+
+Zeta-determinant shadow is
 \[
  L_n^{-1}\to A\text{ in }\mathcal S_p
  \quad\Longrightarrow\quad
@@ -1467,6 +1880,12 @@ X.~Dai and D.~S.~Freed,
 \emph{Eta-invariants and determinant lines},
 Journal of Mathematical Physics \textbf{35} (1994), 5155--5194,
 \url{https://arxiv.org/abs/hep-th/9405012}.
+
+\bibitem{Dang2022}
+N.~V.~Dang,
+\emph{Renormalization of determinant lines in quantum field theory},
+Analysis \& PDE \textbf{15} (2022), 1--62,
+\href{https://doi.org/10.2140/apde.2022.15.1}{doi:10.2140/apde.2022.15.1}.
 
 \bibitem{DiamondFord2008}
 H.~G.~Diamond and K.~Ford,

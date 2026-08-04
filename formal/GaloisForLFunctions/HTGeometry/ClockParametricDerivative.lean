@@ -17,14 +17,19 @@ jointly continuous and has a jointly continuous partial derivative in the parame
 interval integral is differentiable and its derivative is the integral of the derivative. mathlib's
 general statement carries measurability and domination hypotheses; for continuous data on a compact
 rectangle they are all automatic.
+
+The integrand takes values in any Banach space over the reals: the same statement serves the real
+Goursat bootstrap and the complex-valued clock iteration.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
 
 open Set MeasureTheory Metric
 
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+
 /-- **Leibniz rule for a parametric interval integral of continuous data.** -/
-theorem hasDerivAt_parametric_intervalIntegral {f f' : ℝ → ℝ → ℝ}
+theorem hasDerivAt_parametric_intervalIntegral {f f' : ℝ → ℝ → E}
     (hf : Continuous fun p : ℝ × ℝ => f p.1 p.2)
     (hf' : Continuous fun p : ℝ × ℝ => f' p.1 p.2)
     (hderiv : ∀ z t : ℝ, HasDerivAt (fun w => f w t) (f' z t) z)
@@ -52,7 +57,7 @@ theorem hasDerivAt_parametric_intervalIntegral {f f' : ℝ → ℝ → ℝ}
 /-- **Leibniz rule with the derivative hypothesis only near the point.** The bootstrap needs this
 form, because the `ξ`-derivative of the Goursat solution is known only on the interval where the
 characteristic equation holds. -/
-theorem hasDerivAt_parametric_intervalIntegral_on {f f' : ℝ → ℝ → ℝ} {s : Set ℝ}
+theorem hasDerivAt_parametric_intervalIntegral_on {f f' : ℝ → ℝ → E} {s : Set ℝ}
     (hs : IsOpen s) {x : ℝ} (hx : x ∈ s)
     (hf : Continuous fun p : ℝ × ℝ => f p.1 p.2)
     (hf' : Continuous fun p : ℝ × ℝ => f' p.1 p.2) (a b : ℝ)

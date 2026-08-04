@@ -82,11 +82,11 @@ theorem Characteristic.slopes_pairwise {R beta : ℕ} (c : Characteristic R beta
   rfl
 
 /-- Finite Puiseux polynomial represented by its ordered slope/coefficient monomials. -/
-abbrev PuiseuxPolynomial := List (ℚ × ℂ)
+abbrev AiryPuiseuxPolynomial := List (ℚ × ℂ)
 
 /-- Canonical Airy polynomial attached to a divisor chain and one common nonzero coefficient. -/
 def StrictDivisorChain.airyPolynomial {R : ℕ} (d : StrictDivisorChain R)
-    (coefficient : ℂ) : PuiseuxPolynomial :=
+    (coefficient : ℂ) : AiryPuiseuxPolynomial :=
   d.toCharacteristic.slopes.map (fun slope => (slope, coefficient))
 
 /-- The polynomial records exactly the slope list of the canonical Airy characteristic. -/
@@ -168,7 +168,7 @@ theorem separatedCoefficient_pow_ne {n a : ℕ} (family : AiryChainFamily n)
 
 /-- Explicit labelled Puiseux polynomial. -/
 def separatedPolynomial {n : ℕ} (family : AiryChainFamily n) (i : Fin n) :
-    PuiseuxPolynomial :=
+    AiryPuiseuxPolynomial :=
   (family.chain i).airyPolynomial (family.separatedCoefficient i)
 
 theorem separatedPolynomial_coefficients_ne_zero {n : ℕ} (family : AiryChainFamily n)
@@ -200,7 +200,7 @@ theorem pairwise_leadingSeparated {n : ℕ} (family : AiryChainFamily n)
 
 /-- Constructive simultaneous realization certificate for a family of strict divisor chains. -/
 structure SeparatedRealization {n : ℕ} (family : AiryChainFamily n) where
-  polynomial : Fin n → PuiseuxPolynomial
+  polynomial : Fin n → AiryPuiseuxPolynomial
   polynomial_eq : ∀ i, polynomial i = family.separatedPolynomial i
   coefficients_nonzero : ∀ i slope c, (slope, c) ∈ polynomial i → c ≠ 0
   leading_power_separated : ∀ i j, i ≠ j → family.firstFactor i = family.firstFactor j →

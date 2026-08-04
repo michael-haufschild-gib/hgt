@@ -94,6 +94,22 @@ Fixed-operator factorization is due to Hartmann--Lesch and is not claimed.
 New statement is converse cofinal completeness and exact transport of cluster
 topology/torsion.
 
+## Parent determinant-completion law
+
+This route is now a canonical zeta-admissible slice of stronger theorem recorded in
+determinant-defect-completion-law.md. Closure of finite-rank determinant-pencil graph over
+Schatten class has full principal fibre
+
+\[
+ \exp\!\left(\bigoplus_{k<p}\operatorname{Sym}^k(V^*)\right).
+\]
+
+Residue-corrected jet is coordinate of zeta determinant in this intrinsic completion fibre.
+Relative torsion is transition character. Graded spectral suspension is positive group-completed
+realization. Prime-ordering interval theorem is constrained arithmetic dynamics on one fibre
+line. Thus original results are no longer presented as isolated universal law but as geometric
+and arithmetic shadows/collaterals of determinant completion.
+
 > **[PROVED ON PAPER] Full-jet sharpness.** For every \(p\ge2\), graded spectral
 > suspensions with weights
 > 

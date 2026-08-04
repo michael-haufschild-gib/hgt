@@ -1,0 +1,1047 @@
+\documentclass[11pt,reqno]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,
+  urlcolor=blue!55!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\N}{\mathbb N}
+\newcommand{\A}{\mathbb A}
+\newcommand{\HC}{\mathrm{HC}}
+\newcommand{\HP}{\mathrm{HP}}
+\newcommand{\Dom}{\operatorname{Dom}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\Str}{\operatorname{Str}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\im}{\operatorname{Im}}
+\newcommand{\re}{\operatorname{Re}}
+\newcommand{\clos}{\operatorname{cl}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\cS}{\mathcal S}
+\newcommand{\cH}{\mathcal H}
+\newcommand{\cA}{\mathcal A}
+\newcommand{\cC}{\mathcal C}
+\newcommand{\cF}{\mathcal F}
+\newcommand{\cO}{\mathcal O}
+\newcommand{\id}{\mathrm{id}}
+
+\title[Smoothness--detectability conservation]{Smoothness--detectability conservation for Real-corona orientations}
+
+\author{Michael M.}
+\address{Independent Researcher}
+\email{}
+
+\subjclass[2020]{Primary 46L87, 58B34; Secondary 11M06, 11M26, 19D55, 46L80}
+\keywords{cyclic homology, spectral triples, adeles class space, local index formula,
+Real structure, automorphic $L$-functions, analytic rank}
+
+\begin{document}
+
+\begin{abstract}
+Let $m$ be an isometric involution preserving the domain of a closed unbounded operator $D$.
+We prove the exact conservation law
+\[
+ D=D_{\mathrm{ev}}+D_{\mathrm{odd}},\qquad
+ [D,m]=2D_{\mathrm{odd}}m,
+\]
+and show that $D$ is bounded precisely when both parity components are bounded.  Consequently,
+for unbounded $D$, boundedness of $[D,m]$ is equivalent to simultaneous boundedness of the
+detecting odd component and unboundedness of the commuting even component.  We apply this law to
+the complete Riemann divisor and to the Connes--Consani--Marcolli cyclic module of the adeles class
+space.
+
+Four consequences resolve natural problems left by the bounded Real-corona construction.  First,
+the canonical complete-divisor realization admits no reflection-compatible local JLO or residue
+expansion detecting its nonzero graded orientation: every positive commutator jet vanishes and the
+degree-zero term cancels orbitwise.  Second, the exact strong CCM target is not multiplicatively
+closed; hence a direct $K_0$ lift is ill-typed.  The nonzero CCM Lefschetz morphisms are Real-even,
+whereas the corona character is anti-Real.  The anti-Real scalar shifts are exactly $zL_c$ with
+$\bar z=-z$; choosing the positive unit imaginary scalar gives $iL_c$, which squares to $-1$ at
+$c=1$.  Third, the corona idempotent is smooth in
+the natural dense endpoint-holomorphic crossed product exactly for finite compactified sectors.
+Positive-degree self-dual completions have infinite sectors, so smoothness never occurs; this is
+proved for the Riemann completion and every nontrivial primitive self-dual Dirichlet completion.
+Fourth, in self-dual analytic families the fixed-sector defect variation equals analytic-rank
+variation plus twice the off-central variation, while ordinary coordinate $K_0$ sees only support.
+
+Every mathematical assertion introduced in the paper is formalized without additional axioms in
+Lean~4 and mathlib; a theorem-by-theorem trace is supplied with the source.
+\end{abstract}
+
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+
+The adeles class space carries two structures which are individually natural and jointly
+in tension.  Scaling produces an unbounded spectral direction, while the functional equation
+exchanges the two members of each nonreal divisor orbit.  In the scalar Hardy globalization, the
+exchange is represented by an involutive orientation $m=2e-1$, where $e$ is the upper-sector
+corona idempotent.  After adjoining functional-equation reflection, $m$ becomes an ordinary
+commutator and remains visible only to a graded trace.  These facts motivate four questions:
+whether $m$ has a local index formula, whether its $K$-class lifts to the full CCM cyclic module,
+when $e$ is smooth in a natural crossed product, and how the fixed real sector compares with
+analytic rank.
+
+The central point of this paper is that the four questions are governed by one law.  If $m^2=1$
+and $m$ preserves $\Dom D$, then conjugation by $m$ splits $D$ into commuting and anticommuting
+parts
+\[
+ D_{\mathrm{ev}}=\frac{D+mDm}{2},\qquad
+ D_{\mathrm{odd}}=\frac{D-mDm}{2}.                 \tag{1.1}
+\]
+The commutator sees exactly the second part:
+\[
+ [D,m]=2D_{\mathrm{odd}}m,qquad
+ \|[D,m]x\|=2\|D_{\mathrm{odd}}x\|.                \tag{1.2}
+\]
+What is less tautological, and essential for the applications, is conservation of boundedness:
+$D$ is bounded on its domain if and only if both terms in (1.1) are bounded.  Thus a smooth
+orientation cannot lose the unbounded spectral direction; it forces that direction into the
+commuting sector, where local commutators do not detect it.
+
+This leads to a two-channel principle.  Free functional-equation orbits carry the odd
+Clifford/cyclic orientation.  Fixed orbits form a collateral sector satisfying
+\[
+                 m_0^2=1-e_{\mathrm{fix}}.           \tag{1.3}
+\]
+The free channel is killed by ordinary crossed-product traces and recovered by a Clifford parity
+shift.  The fixed channel is not shifted: its $K_0$ class records support, while its cyclic rank
+records multiplicity.  The difference is the exact multiplicity excess.
+
+\subsection{Main results}
+
+The first theorem is purely operator-theoretic.  A partially defined operator means a linear map
+$D:\Dom D\to\cH$ on a linear subspace of a normed complex space.  It is bounded on its domain if
+there is $C\ge0$ with $\|Dx\|\le C\|x\|$ for all $x\in\Dom D$.
+
+\begin{theorem}[Smoothness--detectability conservation]\label{thm:conservation}
+Let $m$ be an isometric complex-linear involution of a normed complex space $\cH$, let $D$ be a
+partially defined complex-linear operator, and suppose $m\Dom D\subseteq\Dom D$.  Define
+$D_{\mathrm{ev}}$ and $D_{\mathrm{odd}}$ by \textup{(1.1)} on $\Dom D$.  Then
+\begin{align*}
+ D&=D_{\mathrm{ev}}+D_{\mathrm{odd}},\\
+ D_{\mathrm{ev}}m&=mD_{\mathrm{ev}},\qquad
+ D_{\mathrm{odd}}m=-mD_{\mathrm{odd}},\tag{1.4}\\
+ \|[D,m]x\|&=2\|D_{\mathrm{odd}}x\|,\tag{1.5}\\
+ D\text{ is bounded on }\Dom D
+ &\Longleftrightarrow
+ \begin{gathered}
+ D_{\mathrm{ev}}\text{ is bounded on }\Dom D,\\[-1mm]
+ D_{\mathrm{odd}}\text{ is bounded on }\Dom D.
+ \end{gathered}                                      \tag{1.6}
+\end{align*}
+If $D$ is unbounded, then
+\[
+ [D,m]\text{ is bounded}
+ \Longleftrightarrow
+ \bigl(D_{\mathrm{ev}}\text{ is unbounded and }
+       D_{\mathrm{odd}}\text{ is bounded}\bigr).     \tag{1.7}
+\]
+\end{theorem}
+
+The next result gives the local answer.  The exact class of local formulas is defined in
+Section~\ref{sec:p1}.  It includes arbitrary sums of positive iterated-commutator words, hence the
+algebraic shape of JLO and residue expansions, together with a summable reflection-invariant
+degree-zero spectral term.
+
+\begin{theorem}[Complete-divisor local no-go]\label{thm:p1}
+For the multiplicity-exact complete Riemann divisor and its canonical signed diagonal
+realization, every reflection-compatible local series evaluated on the Real-corona orientation
+is zero.  In particular, no such local series represents the two-dimensional graded orbit charge
+$2$.
+\end{theorem}
+
+For the full adeles class space, let $C_\bullet^{\mathrm{red}}(\cA)$ be the reduced cyclic module
+of the unitized rational adelic crossed product and let
+$C_\bullet^{\mathrm{str}}(C_\Q)$ be the CCM strong target: its diagonal normalized trace is
+locally constant in the profinite coordinate and belongs, with every derivative, to every
+exponentially weighted Schwartz class in the logarithmic radial coordinate.
+
+\begin{theorem}[Full-adeles landing and Clifford comparison]\label{thm:p2}
+The actual reduced rational CCM source maps into $C_\bullet^{\mathrm{str}}(C_\Q)$ in every cyclic
+degree.  Its degree-zero strong subspace is neither multiplicatively closed nor two-sided in the
+ambient trace-norm field algebra.  Therefore the corresponding linear cyclic quotient admits no
+zero-absorbing multiplication preserving products of representatives, and a direct $K_0$ lift of
+the scalar corona idempotent is not defined.
+
+Every CCM Lefschetz translation $L_c$ is a nonzero Real-even cyclic morphism.  No $L_c$ is
+anti-Real.  More exactly, for $z\in\C$,
+\[
+                 zL_c\text{ is anti-Real}\quad\Longleftrightarrow\quad \bar z=-z.
+\]
+For the positive unit imaginary scalar, set
+\[
+                       \mathcal K_c=iL_c             \tag{1.8}
+\]
+is anti-Real in every cyclic degree, and
+\[
+                       \mathcal K_1^2=-\id.          \tag{1.9}
+\]
+\end{theorem}
+
+For smoothness, compactify a self-dual divisor by the centered reciprocal coordinate
+$w=(\rho-\tfrac12)^{-1}$.  The functional equation becomes $w\mapsto-w$, and both height ends
+accumulate at $0$.  The natural smooth coefficient algebra consists of restrictions to the
+compactified divisor of functions holomorphic on a connected neighborhood of the endpoints.
+
+\begin{theorem}[Endpoint smoothness classification]\label{thm:p3}
+Let $Z_+$ and $Z_-$ be nonempty disjoint compactified sectors, exchanged by a holomorphic
+involution.  Suppose every infinite sector accumulates at its endpoint inside one connected
+holomorphic domain.  The upper-sector characteristic idempotent belongs to the endpoint-
+holomorphic coefficient algebra, and equivalently lifts to its reflection crossed product, if and
+only if both $Z_+$ and $Z_-$ are finite.
+
+In particular, let $\Lambda$ be an entire self-dual completion with zeros in $0<\re s<1$, a
+subquadratic exponential envelope, and logarithmic growth on the positive real ray exceeding every
+linear slope.  Then the compactified Real-corona idempotent is not endpoint-holomorphically smooth.
+This applies unconditionally to the Riemann completion and to every nontrivial primitive self-dual
+Dirichlet completion.
+\end{theorem}
+
+Finally, let $F_t$ be a self-dual analytic family with center $c$, and count real zeros in a fixed
+reflection-invariant compact window with analytic multiplicity.  Let $d(t)$ be total fixed-sector
+multiplicity, $r(t)=\ord_c F_t$ analytic rank, and $u(t)$ total multiplicity of real zeros strictly
+above $c$.
+
+\begin{theorem}[Fixed-sector variation]\label{thm:p4}
+For all parameters $t_0,t_1$,
+\[
+ d(t_1)-d(t_0)=r(t_1)-r(t_0)+2\bigl(u(t_1)-u(t_0)\bigr). \tag{1.10}
+\]
+The central coordinate evaluation of the fixed Real-corona $K_0$ class is
+$\mathbf1_{r(t)>0}$.  Hence
+\[
+ r(t_1)-r(t_0)
+ =\mathbf1_{r(t_1)>0}-\mathbf1_{r(t_0)>0}
+  +\bigl(\mu(r(t_1))-\mu(r(t_0))\bigr),              \tag{1.11}
+\]
+where $\mu(n)=n-\mathbf1_{n>0}$ is central multiplicity excess.
+\end{theorem}
+
+\subsection{Relation to prior work and scope}
+
+Connes--Consani--Marcolli formulate the Weil explicit formula as a Lefschetz trace on cyclic
+homology of a cokernel in the abelian category of cyclic modules \cite{CCM}.  Meyer constructs the
+corresponding idele-class representation in a nuclear bornological setting \cite{Meyer}.  Local
+index formulas and JLO characters provide the standard route from spectral triples to cyclic
+cohomology \cite{CM,JLO,Moscovici}.  Our contribution is an obstruction and replacement theorem:
+the complete-divisor orientation cannot be simultaneously locally detecting and smooth in the
+intrinsic realization; the exact CCM target is cyclic-linear rather than multiplicative; and the
+parity-corrected Lefschetz morphism is forced to be Clifford.
+
+The paper does not prove the Riemann hypothesis, Weil positivity, convergence of finite zeta
+spectral triples, or a higher-rank automorphic instance not encoded by the stated analytic
+hypotheses.  The smooth algebra in Theorem~\ref{thm:p3} is the endpoint-holomorphic dense algebra
+defined in Section~\ref{sec:p3}; no claim is made for every possible smooth completion.
+
+\section{The parity conservation law}\label{sec:law}
+
+Let $V$ be a normed complex vector space.  Let $D:\Dom D\to V$ be complex-linear and let
+$m:V\to V$ be complex-linear with
+\[
+ m^2=1,\qquad \|mx\|=\|x\|,\qquad m\Dom D\subseteq\Dom D. \tag{2.1}
+\]
+The second application of domain invariance and $m^2=1$ shows $m\Dom D=\Dom D$.
+
+\begin{definition}
+On $\Dom D$ define
+\[
+ D_{\mathrm{ev}}x=\frac12(Dx+mDmx),\qquad
+ D_{\mathrm{odd}}x=\frac12(Dx-mDmx).                \tag{2.2}
+\]
+\end{definition}
+
+\begin{lemma}[Parity identities]\label{lem:parity}
+The identities \textup{(1.4)} hold, and
+\[
+ [D,m]x=2D_{\mathrm{odd}}(mx).                       \tag{2.3}
+\]
+\end{lemma}
+
+\begin{proof}
+Adding the two formulas in (2.2) gives $D$.  Using $m^2=1$ gives
+\[
+ D_{\mathrm{ev}}mx=\tfrac12(Dmx+mDx)=mD_{\mathrm{ev}}x
+\]
+and similarly $D_{\mathrm{odd}}mx=-mD_{\mathrm{odd}}x$.  Finally,
+\[
+ 2D_{\mathrm{odd}}mx=Dmx-mDm(mx)=Dmx-mDx=[D,m]x.
+\]
+\end{proof}
+
+\begin{lemma}[Norm identity]\label{lem:norm}
+For every $x\in\Dom D$,
+\[
+              \|[D,m]x\|=2\|D_{\mathrm{odd}}x\|.
+\]
+Consequently $[D,m]$ is bounded on $\Dom D$ if and only if $D_{\mathrm{odd}}$ is bounded there.
+\end{lemma}
+
+\begin{proof}
+Equation (2.3), the odd parity relation, and isometry of $m$ give
+\[
+ \|[D,m]x\|=2\|D_{\mathrm{odd}}mx\|
+ =2\|mD_{\mathrm{odd}}x\|=2\|D_{\mathrm{odd}}x\|.
+\]
+The boundedness equivalence follows, with constants changed by a factor of two.
+\end{proof}
+
+\begin{lemma}[Conservation of boundedness]\label{lem:bounded}
+$D$ is bounded on $\Dom D$ if and only if both $D_{\mathrm{ev}}$ and $D_{\mathrm{odd}}$ are
+bounded on $\Dom D$.
+\end{lemma}
+
+\begin{proof}
+If $\|Dx\|\le C\|x\|$, then domain invariance and isometry give
+\[
+ \|Dmx\|\le C\|mx\|=C\|x\|,
+ \qquad \|mDmx\|=\|Dmx\|.
+\]
+The triangle inequality in (2.2) bounds each parity component by $C\|x\|$; the formal proof uses
+the harmless common bound $2C$.  Conversely, if the two components have bounds $C_{\mathrm{ev}}$
+and $C_{\mathrm{odd}}$, then (1.4) bounds $D$ by their sum.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:conservation}]
+Lemmas~\ref{lem:parity}--\ref{lem:bounded} prove (1.4)--(1.6).  If $D$ is unbounded and $[D,m]$
+is bounded, Lemma~\ref{lem:norm} makes $D_{\mathrm{odd}}$ bounded.  Lemma~\ref{lem:bounded} then
+forces $D_{\mathrm{ev}}$ to be unbounded.  The converse in (1.7) again follows from
+Lemma~\ref{lem:norm}.
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:conservation} is independent of self-adjointness and compact resolvent.  Those
+hypotheses become relevant when the law is applied to spectral triples; the obstruction itself is
+already present at the invariant-domain level.
+\end{remark}
+
+\section{The complete divisor and local cyclic blindness}\label{sec:p1}
+
+We now specialize to the complete nontrivial divisor of the Riemann completion.  The formal model
+keeps every zero with its analytic multiplicity.  Let $I$ be this multiplicity-copy index set,
+let $r:I\to I$ be functional-equation reflection, and let
+\[
+ z_i=\rho_i-\tfrac12,\qquad z_{r(i)}=-z_i.            \tag{3.1}
+\]
+There are no fixed copies in the nontrivial Riemann divisor.  Choose an orbit orientation
+$\eps:I\to\{\pm1\}$ satisfying $\eps(r(i))=-\eps(i)$, and put
+\[
+ \cH=\ell^2(I),\qquad
+ (ma)_i=\eps(i)a_i.                                  \tag{3.2}
+\]
+The maximal real diagonal operators relevant here are
+\[
+ (D_{\mathrm{abs}}a)_i=|z_i|a_i,qquad
+ (D_{\mathrm{sgn}}a)_i=\eps(i)|z_i|a_i.              \tag{3.3}
+\]
+Both are self-adjoint and genuinely unbounded.  Reflection $R(a)_i=a_{r(i)}$ commutes with
+$D_{\mathrm{abs}}$ and anticommutes with $D_{\mathrm{sgn}}$.  The diagonal orientation $m$
+commutes with both.
+
+\begin{proposition}[Extremal complete-divisor realizations]\label{prop:extremal}
+Reflection is an all-orders smooth element for $D_{\mathrm{abs}}$.  It has genuinely unbounded
+first commutator for $D_{\mathrm{sgn}}$, so no all-orders smooth representative of the reflection
+generator exists there.  In contrast, $m$ is all-orders smooth for $D_{\mathrm{sgn}}$, but all its
+positive iterated commutators vanish.  Moreover
+\[
+                        RmR=-m.                      \tag{3.4}
+\]
+\end{proposition}
+
+\begin{proof}
+The coordinate identities following (3.3) preserve the maximal domains because reflection and
+$m$ preserve coordinate norms.  Exact commutation promotes the bounded operators to smooth
+elements with zero higher commutators.  For the signed operator,
+$D_{\mathrm{sgn}}R=-RD_{\mathrm{sgn}}$; hence
+\[
+ [D_{\mathrm{sgn}},R]=2D_{\mathrm{sgn}}R.
+\]
+Theorem~\ref{thm:conservation} identifies its norm with twice the unbounded diagonal norm.  Finally
+(3.4) is $\eps(r(i))=-\eps(i)$ coordinatewise.
+\end{proof}
+
+We make the local-formula statement exact.  For a smooth represented element $a$, write
+$\delta^0(a)=a$ and let $\delta^k(a)$, $k>0$, denote any bounded iterated commutator extension used
+by the smooth calculus.  A \emph{positive local word} is a finite product
+\[
+                 \delta^{k_1}(a)\cdots\delta^{k_j}(a) \tag{3.5}
+\]
+with some $k_l>0$.  A positive local series is an arbitrary indexed sum of scalar multiples of
+additive functionals applied to words (3.5).  No convergence hypothesis is needed for the
+vanishing result because every summand is zero.  A complete-divisor local series additionally has
+a degree-zero term
+\[
+        \sum_{i\in I}\eps(i)h(i),                    \tag{3.6}
+\]
+where the summand is absolutely summable and $h(r(i))=h(i)$.
+
+\begin{lemma}[Positive-word extinction]\label{lem:positive}
+Every positive local word and every positive local series for $m$ relative to
+$D_{\mathrm{sgn}}$ is zero.
+\end{lemma}
+
+\begin{proof}
+Exact commutation gives $\delta^k(m)=0$ for every $k>0$.  Every positive word contains one such
+factor.  Therefore every summand in the series is zero.
+\end{proof}
+
+\begin{lemma}[Orbit cancellation]\label{lem:orbitcancel}
+If the family in \textup{(3.6)} is summable and $h\circ r=h$, then (3.6) is zero.
+The same conclusion holds for every finite reflection-invariant packet without a summability
+hypothesis.
+\end{lemma}
+
+\begin{proof}
+Reindexing the sum by $r$ and using $\eps\circ r=-\eps$ gives $S=-S$, hence $S=0$.  On a finite
+packet the same proof is a fixed-point-free involution pairing.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:p1}]
+Every complete local series is the sum of (3.6) and a positive local series.  The two terms vanish
+by Lemmas~\ref{lem:positive} and \ref{lem:orbitcancel}.  The graded two-orbit representation has
+grading matrix $\mathrm{diag}(1,-1)$ and its supertrace on $m$ equals $2$.  Therefore no complete
+local series has the required value.
+\end{proof}
+
+\begin{remark}
+The theorem is a no-go for the canonical, multiplicity-exact, reflection-compatible complete-
+divisor realization.  It does not exclude a different spectral triple whose Dirac operator has a
+nonzero bounded odd component.  Theorem~\ref{thm:conservation} states the necessary price: all
+locally detected orientation data must enter through that bounded odd component.
+\end{remark}
+
+\section{The rational CCM cyclic module}\label{sec:ccm}
+
+We recall only the structures needed for the statement.  Let
+\[
+       \cA=\cS(\A_\Q)\rtimes\Q^\times                \tag{4.1}
+\]
+denote the rational adelic Bruhat crossed product, with its minimal unitization $\cA^+$.  There are
+two cyclic endpoint morphisms $\eps_0^\bullet,\eps_1^\bullet$ induced respectively by zero-adele
+evaluation and the product of Lebesgue and normalized finite-adelic Haar integration.  The reduced
+source is the augmentation kernel inside
+\[
+  \ker\eps_0^\bullet\cap\ker\eps_1^\bullet
+       \subset C_\bullet(\cA^+).                     \tag{4.2}
+\]
+This is the cyclic module used in the CCM construction, rather than the full unitized cyclic bar.
+
+At a nonzero adelic base, the Morita representation maps (4.1) to the minimal unitization of the
+trace-class algebra on $\ell^2(\Q^\times)$.  Varying the base gives a continuous trace-norm field.
+For a cyclic tensor $x_0\otimes\cdots\otimes x_n$, take the normalized trace of the ordered
+pointwise product and restrict to the main diagonal.  In the logarithmic radial coordinate $t$,
+the strong scalar target requires
+\[
+  \sup_t e^{\beta t}\left|\frac{d^k}{dt^k}f(t)\right|<\infty
+  \quad\text{for every }\beta\in\R\text{ and }k\ge0, \tag{4.3}
+\]
+together with local constancy in the profinite-unit coordinate.  The inverse image of this
+condition is a cyclic submodule, denoted $C_\bullet^{\mathrm{str}}(C_\Q)$.
+
+The analytic input to the landing theorem is the following exact periodic statement.  Our Fourier
+transform uses the self-dual additive Haar normalization.
+
+\begin{lemma}[Periodic strong-decay theorem]\label{lem:periodic}
+Let $M\ge1$ and let $g_r\in\cS(\R)$ for $r\in\Z/M\Z$.  Put
+\[
+ \Theta_g(t)=\sum_{r\bmod M}\ \sum_{\substack{n\in\Z\\n\equiv r\bmod M}}
+                         g_r(e^t n).                 \tag{4.4}
+\]
+If
+\[
+                    g_0(0)=0,\qquad
+                    \sum_{r\bmod M}\widehat g_r(0)=0, \tag{4.5}
+\]
+then $\Theta_g$ is smooth and, for every $\beta\in\R$ and $k\ge0$,
+\[
+             \sup_{t\in\R}e^{\beta t}|\Theta_g^{(k)}(t)|<\infty. \tag{4.6}
+\]
+Only the two global cancellations in \textup{(4.5)} are required; the individual Fourier zero
+modes need not vanish.
+\end{lemma}
+
+\begin{proof}
+Write $E=x\,d/dx$.  Termwise differentiation is justified by a uniform Schwartz majorant on a
+neighborhood of each $t$, and gives
+\[
+ \Theta_g^{(k)}(t)=\sum_{r}\sum_{n\equiv r(M)}(E^kg_r)(e^tn). \tag{4.7}
+\]
+At $t\to+\infty$, the only stationary lattice term is $g_0(0)$; it vanishes by (4.5), while an
+arbitrarily high Schwartz seminorm bounds all $n\ne0$.  This proves every positive exponential
+weight at that end.
+
+For the opposite end, periodic Poisson summation gives, first for a rank-one family
+$g_r=w_r g$,
+\[
+ \sum_n w_{n\bmod M}g(e^tn)
+ =\frac{e^{-t}}{M}\sum_{m\in\Z}\widehat w_m\,widehat g(e^{-t}m/M). \tag{4.8}
+\]
+Conjugating $E$ through (4.8) replaces it by $A=-(1+E)$ on the Fourier side.  Hence every
+derivative is again a weighted lattice sum of a Schwartz function.  Its stationary term vanishes
+when $(\sum_rw_r)\widehat g(0)=0$, and Schwartz seminorms give arbitrary negative-end weights.
+
+For a general family, if $\widehat g_0(0)\ne0$ choose $r_0=0$; otherwise choose any index
+$r_0$ with $\widehat g_{r_0}(0)\ne0$, if one exists.  Set
+\[
+ c_r=\frac{\widehat g_r(0)}{\widehat g_{r_0}(0)},\qquad
+ h_r=g_r-c_rg_{r_0}.                                \tag{4.9}
+\]
+Every $h_r$ has Fourier zero mode zero, while $\sum_rc_r=0$ by (4.5).  The stated choice also gives
+$h_0(0)=0$: either $h_0=0$, or $c_0=0$ and (4.5) applies.  Thus the $h$-part is a sum
+of pointwise-cancelled traces and the rank-one correction satisfies the rank-one hypothesis.
+The case in which every Fourier zero mode vanishes is immediate.  This proves (4.6).
+\end{proof}
+
+We next record the finite-ad\`elic step in a form which retains cancellation between tensor
+summands.  For an algebraic Bruhat tensor
+$x\in\cS(\R)\otimes\cS(\A_{\Q,f})$, a profinite unit $b$, and $q\in\Q$, let
+$\Phi_x(a,b;q)$ denote evaluation at the rational translate $(aq,qb)$.
+
+\begin{lemma}[Common-period adelic packet]\label{lem:packet}
+For every $x$ and $b$ there are $M\ge1$ and a family
+$g_r\in\cS(\R)$, $r\in\Z/M\Z$, such that
+\begin{align}
+ \sum_{q\in\Q}\Phi_x(e^t,b;q)&=\Theta_g(t),                 \tag{4.10}\\
+ g_0(0)&=\eps_0(x),                                         \tag{4.11}\\
+ \sum_{r\bmod M}\widehat g_r(0)&=M\eps_1(x).               \tag{4.12}
+\end{align}
+If $\eps_0(x)=0$, the sum in \textup{(4.10)} may be reindexed by $\Q^\times$.
+Moreover $b\mapsto(t\mapsto\sum_{q\in\Q^\times}\Phi_x(e^t,b;q))$ is locally constant as a map
+to the full function space $\C^\R$.
+\end{lemma}
+
+\begin{proof}
+For $x=f\otimes\phi$, compact support and local constancy of $\phi$ give a positive denominator
+$D$ and an open subgroup $M\widehat\Z$ on which all relevant translates are constant.  Exact Haar
+quadrature on
+\[
+                         \widehat\Z/M\widehat\Z\simeq\Z/M\Z \tag{4.13}
+\]
+produces residue weights $w_r$ with
+\[
+ \sum_rw_r=M D^{-1}\!\int_{\A_{\Q,f}}\phi,
+ \qquad
+ g_r=w_r\,f(D^{-1}\,\cdot).                         \tag{4.14}
+\]
+The rational orbit decomposes into these residue classes, giving (4.10).  Evaluation at the zero
+orbit gives (4.11), and Fourier scaling together with (4.14) gives (4.12), including the normalized
+finite-ad\`elic Haar factor $|q|_\infty^{-1}$.
+
+An arbitrary $x$ is a finite sum of pure tensors.  Replace all periods by their product.  Period
+refinement repeats each residue statistic by the exact refinement factor, so both sides of
+(4.11)--(4.12) remain additive.  This is why endpoint cancellation is imposed only after the
+summands have been assembled.  If (4.11) is zero, the $q=0$ term vanishes identically and the
+injective inclusion $\Q^\times\hookrightarrow\Q$ gives the stated reindexing.
+
+Finally, the compact fractional-integral support of the finitely many finite-ad\`elic factors has
+one open profinite-unit stabilizer.  Right multiplication by that stabilizer fixes every orbit
+coefficient simultaneously for all $t$; hence the whole radial profile is locally constant.
+\end{proof}
+
+The last reduction is operator-theoretic rather than asymptotic.
+
+\begin{lemma}[Morita trace and cyclic-degree reduction]\label{lem:morita}
+For $a\in\ell^1(\Q^\times)$ and $k\in\Q^\times$, let
+\[
+                 (W_{a,k}\xi)(q)=a(q)\xi(k^{-1}q).   \tag{4.15}
+\]
+Then $W_{a,k}$ is trace class and
+\[
+     \|W_{a,k}\|_1=\sum_q|a(q)|,\qquad
+     \Tr(W_{a,k})=\mathbf1_{k=1}\sum_q a(q).         \tag{4.16}
+\]
+The resulting Morita representation of $\cA^+$ is a continuous trace-norm field and is
+multiplicative.  If $x=x_0\otimes\cdots\otimes x_n$, its strong diagonal trace and both cyclic
+endpoints are respectively
+\begin{align}
+ \Tr^\natural_n(\rho^{\otimes n+1}x)&=\Tr^\natural_0(\rho(x_0\cdots x_n)),\tag{4.17}\\
+ \eps_j^n(x)&=\eps_j(x_0\cdots x_n),\qquad j=0,1.    \tag{4.18}
+\end{align}
+\end{lemma}
+
+\begin{proof}
+The upper bound in (4.16) factors $W_{a,k}$ as a product of two Hilbert--Schmidt weighted shifts
+with coefficients $|a|^{1/2}$ and the phase times $|a|^{1/2}$.  For the reverse inequality, pair
+the operator against the two orthonormal bases $(\delta_q)_q$ and $(\delta_{kq})_q$ in the trace-
+norm dual estimate; the resulting sum is exactly $\sum_q|a(q)|$.  The diagonal matrix coefficient
+is zero unless $k=1$, proving the trace formula.  Orbit summability of Bruhat functions puts each
+crossed-product monomial in this $\ell^1$ model, and the identity
+\[
+ W_{a,k}W_{d,l}=W_{q\mapsto a(q)d(k^{-1}q),kl}        \tag{4.19}
+\]
+is the crossed-product multiplication law.  The exact norm identity plus dominated convergence
+gives trace-norm continuity in the class-space base.
+
+Equations (4.17)--(4.18) follow from multiplicativity: ordered tensor multiplication commutes with
+the representation and with both algebra characters.  Taking normalized trace yields (4.17).
+Linearity extends the argument from pure tensors to every cyclic chain.
+\end{proof}
+
+\subsection{The exact strong landing}
+
+\begin{proposition}[All-degree source landing]\label{prop:landing}
+The class-space restriction of every chain in the reduced source \textup{(4.2)} belongs to
+$C_\bullet^{\mathrm{str}}(C_\Q)$ in every degree.
+\end{proposition}
+
+\begin{proof}
+Let $X$ be a reduced chain and let $y$ be its ordered total product.  The augmentation-kernel
+condition gives zero scalar part for $y$, while (4.18) gives
+$\eps_0(y)=\eps_1(y)=0$.  Let $x$ be the identity-scaling Bruhat coefficient of $y$.  The exact
+unitized trace formula (4.16) identifies the class-space trace of $y$ with
+\[
+              (b,t)\longmapsto
+              \sum_{q\in\Q^\times}\Phi_x(e^t,b;q).   \tag{4.20}
+\]
+By Lemma~\ref{lem:packet}, this is $\Theta_g$ for a common-period packet satisfying (4.5).
+Lemma~\ref{lem:periodic} proves every estimate (4.3), and the last assertion of
+Lemma~\ref{lem:packet} supplies local constancy in $b$.  Thus the degree-zero trace belongs to the
+literal strong class-space target.  Equations (4.17)--(4.18) now reduce every cyclic degree to this
+same $y$, proving the proposition.
+\end{proof}
+
+\subsection{Multiplication fracture}
+
+Let $F$ be the degree-zero ambient algebra of continuous trace-norm fields and let
+$S\subset F$ be the exact strong degree-zero subspace.  The next two matrix units live in the
+actual Schatten-$1$ Morita fibre.  In the $\Q^\times$ basis, write
+\[
+                  E_+=E_{1,-1},\qquad E_-=E_{-1,1}.  \tag{4.21}
+\]
+They are implemented by $\ell^1$-weighted shifts, hence are trace class.
+
+\begin{proposition}[Strong multiplication fracture]\label{prop:fracture}
+The constant fields $E_+$ and $E_-$ belong to $S$, but $E_+E_-$ does not.  More precisely,
+\[
+ \Tr(E_+)=\Tr(E_-)=0,
+ \qquad \Tr(E_+E_-)=1.                               \tag{4.22}
+\]
+Consequently $S$ is neither multiplicatively closed nor two-sided.  There is no multiplication
+on $F/S$ which absorbs zero on both sides and sends classes of representatives to the class of
+their ambient product.
+\end{proposition}
+
+\begin{proof}
+The weighted-shift trace is supported on identity scaling.  Each operator in (4.21) has scaling
+$-1$, so its trace is zero.  Their product has identity scaling and coefficient sum one, proving
+(4.22).  A constant scalar function satisfies all two-ended bounds (4.3) if and only if it is zero:
+using any positive exponential weight at $+\infty$ forces a nonzero constant out of the target.
+Thus the first two constant fields lie in $S$, while their product does not.
+
+If $S$ were two-sided, the product of its two displayed members would belong to $S$, a
+contradiction.  If multiplication descended to $F/S$ with the stated properties, the zero classes
+of $E_+$ and $E_-$ would have zero product, while representative multiplication would give the
+nonzero class of $E_+E_-$.
+\end{proof}
+
+\subsection{Real parity and the Lefschetz correspondence}
+
+The exact strong cyclic module has an even conjugate-linear Real structure $\sigma$.  A cyclic
+morphism $T$ is Real-even if $\sigma T=T\sigma$ and anti-Real if
+$\sigma T=-T\sigma$.  CCM class-space translation by $c\in C_\Q$ gives an invertible Real-even
+cyclic morphism $L_c$.
+
+\begin{lemma}[Parity intersection]\label{lem:parityintersection}
+A cyclic morphism which is both Real-even and anti-Real is zero in every degree.
+\end{lemma}
+
+\begin{proof}
+For every chain $x$, the two parity identities give
+$\sigma T x=T\sigma x=-T\sigma x$.  Since $\sigma$ is invertible and $2$ is invertible in $\C$,
+$Tx=0$.
+\end{proof}
+
+\begin{proposition}[Clifford Lefschetz transgression]\label{prop:clifford}
+Every $L_c$ is nonzero and is not anti-Real.  For every scalar $z$, the morphism $zL_c$ is
+anti-Real if and only if $\bar z=-z$.  In particular, the morphism
+\[
+                         \mathcal K_c=iL_c            \tag{4.23}
+\]
+is anti-Real.  At $c=1$, $\mathcal K_1^2=-\id$ in every cyclic degree.
+\end{proposition}
+
+\begin{proof}
+An explicit nonzero degree-zero chain is furnished by the first matrix unit in (4.21).  Applying
+translation by $c^{-1}$ recovers it from its $L_c$ image, so $L_c$ is nonzero.  Lemma
+\ref{lem:parityintersection} excludes anti-Real parity.  If $zL_c$ is anti-Real, evaluate its
+parity identity on a Real conjugate of a nonzero chain.  Real-evenness of $L_c$ reduces the identity
+to $\bar zL_cx=-zL_cx$, and nonvanishing gives $\bar z=-z$.  Conversely this scalar identity and
+conjugate linearity of $\sigma$ make $zL_c$ anti-Real.  Taking $z=i$ proves (4.23).  Finally
+$L_1=\id$ and $i^2=-1$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:p2}]
+Proposition~\ref{prop:landing} proves the genuine full-adeles landing.  Proposition
+\ref{prop:fracture} shows that its degree-zero quotient is a cyclic-linear object, not an algebra
+quotient; a direct $K_0$ idempotent lift is therefore ill-typed.  The scalar Real-corona Chern
+character has anti-Real parity, whereas the CCM Lefschetz correspondence is Real-even and nonzero.
+Proposition~\ref{prop:clifford} gives a canonical scalar parity shift and its square law.
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:p2} is not an equality between a $K_0$ class and a cyclic morphism.  It proves
+that such an equality has no type in the exact CCM cokernel and classifies every scalar cyclic
+comparison with the required parity: it is $zL_c$ with $\bar z=-z$.  The positive unit choice is
+the Clifford suspension $iL_c$.
+\end{remark}
+
+\section{Endpoint-holomorphic smoothness}\label{sec:p3}
+
+Let $Z=Z_+\sqcup Z_-\subset\C$ and let $U$ be a connected set containing $Z$ and the relevant
+compactifying endpoints.  Define
+\[
+ \cO_U(Z)=\{f:Z\to\C:\exists h\text{ holomorphic on a neighborhood of }U,
+                         \ h|_Z=f\}.                  \tag{5.1}
+\]
+It is a subalgebra of the full function algebra $\C^Z$.  Give $\C^Z$ the product topology.
+
+\begin{lemma}[Density]\label{lem:density}
+$\cO_U(Z)$ is dense in $\C^Z$.
+\end{lemma}
+
+\begin{proof}
+A basic product neighborhood specifies conditions at finitely many points.  Lagrange interpolation
+produces a polynomial agreeing with the prescribed function at those points.  Its restriction lies
+in (5.1) and meets the neighborhood exactly.
+\end{proof}
+
+Let $e_Z$ be the characteristic function of $Z_+$.  It is an idempotent in $\C^Z$.  Suppose a
+holomorphic involution $\rho:U\to U$ preserves $Z$ and exchanges $Z_+$ and $Z_-$.  It induces the
+order-two skew crossed products of both $\cO_U(Z)$ and $\C^Z$, and sends $e_Z$ to $1-e_Z$.
+
+\begin{proposition}[Endpoint identity-theorem classification]\label{prop:endpoint}
+Assume $Z_+$ and $Z_-$ are nonempty and disjoint.  Suppose that, whenever $Z_\pm$ is infinite, it
+accumulates at a point $z_\pm\in U$.  Then
+\[
+ e_Z\in\cO_U(Z)\quad\Longleftrightarrow\quad
+ Z_+\text{ and }Z_-\text{ are finite}.               \tag{5.2}
+\]
+The equivalent statement holds for the degree-zero element in the reflection crossed product.
+\end{proposition}
+
+\begin{proof}
+If $Z_+$ is infinite and $h$ represents $e_Z$, then $h-1$ vanishes on a set accumulating inside
+the connected holomorphic domain.  The identity theorem gives $h=1$ throughout $U$, contradicting
+$h=0$ on nonempty $Z_-$.  The lower-sector argument is identical.  Conversely, for two finite
+disjoint sets, Lagrange interpolation gives an entire polynomial taking value one on $Z_+$ and
+zero on $Z_-$.  In the skew crossed product, injectivity of the single group coefficient reduces
+membership to (5.2).
+\end{proof}
+
+We now derive the endpoint hypotheses from completed-function data rather than assuming zero
+counting.  Call an entire function $\Lambda$ a \emph{positive-degree self-dual analytic
+completion} if there are $C\ge0$ and $0\le a<2$ such that
+\begin{align}
+ \|\Lambda(z)\|&\le \exp\bigl(C(1+\|z\|)^a\bigr),       \tag{5.3}\\
+ \forall A\in\R\quad\exists\sigma\ge1:
+ \quad A\sigma&<\log\|\Lambda(\sigma)\|,               \tag{5.4}
+\end{align}
+every zero lies in $0<\re z<1$, and
+\[
+             \Lambda(z)=0\Longrightarrow\Lambda(1-z)=0. \tag{5.5}
+\]
+Condition (5.4) is the only positive-degree input used below.
+
+\begin{lemma}[Finite-zero rigidity]\label{lem:rigidity}
+Let $f$ be entire and satisfy \textup{(5.3)}.  If its zero set is finite, then there are a finite
+set $T$, multiplicities $m_t$, a constant $c\ne0$, and $B\in\C$ such that
+\[
+        f(z)=\prod_{t\in T}(z-t)^{m_t}\,c e^{Bz}.     \tag{5.6}
+\]
+Consequently (5.3) and (5.4) imply that the zero set is infinite.
+\end{lemma}
+
+\begin{proof}
+Peel the finitely many zeros with their analytic orders.  Outside a ball containing $T$, every
+linear factor has norm at least one, so the zero-free quotient inherits (5.3); compactness supplies
+the missing bound inside the ball.  An entire logarithm of the quotient has subquadratic real
+part, hence is affine, giving (5.6).  Along the positive real ray, the finite product contributes
+only logarithmic growth and $e^{Bz}$ only linear logarithmic growth, contradicting (5.4) for a
+sufficiently large slope $A$.
+\end{proof}
+
+For a completion $\Lambda$, define the centered reciprocal coordinate
+\[
+               w(\rho)=(\rho-\tfrac12)^{-1}.         \tag{5.7}
+\]
+Let $Z_+$ and $Z_-$ be images of zeros with positive and negative imaginary part.  Central real
+zeros are not placed in either sector; they belong to the fixed channel of Section~\ref{sec:p4}.
+
+\begin{proposition}[Universal compactification]\label{prop:compactification}
+For every positive-degree self-dual analytic completion, $Z_+$ and $Z_-$ are infinite, disjoint,
+and both accumulate at $0$.  Negation exchanges them.  Therefore $e_Z$ is not smooth in the dense
+endpoint-entire coefficient algebra or its order-two reflection crossed product.
+\end{proposition}
+
+\begin{proof}
+Finite-zero rigidity gives infinitely many zeros.  Entire nontriviality and isolated-zero
+theory make the zeros finite in each closed disc.  Strip confinement forces unbounded imaginary
+parts.  Reflection (5.5) converts an unbounded sequence of either sign into one of the opposite
+sign.  Formula (5.7) tends to zero along both sequences and satisfies
+$w(1-\rho)=-w(\rho)$.  Injectivity of reciprocal away from the center proves disjointness.
+Proposition~\ref{prop:endpoint} completes the proof.
+\end{proof}
+
+\begin{corollary}[Actual completed instances]\label{cor:actual}
+The Riemann Xi compactified Real-corona idempotent is not endpoint-holomorphically smooth.  The same
+holds for every nontrivial primitive self-dual Dirichlet completion.
+\end{corollary}
+
+\begin{proof}
+For Xi, infinitude and local finiteness of the complete zero divisor, strip confinement, and the
+functional equation instantiate Proposition~\ref{prop:compactification}.  For a nontrivial
+primitive Dirichlet character, the completed $L$-function is entire of order at most one and its
+positive-real ray growth satisfies (5.4).  Lemma~\ref{lem:rigidity} supplies infinitely many zeros.
+The Euler zero-free half-plane and the functional equation confine them to the open unit strip;
+self-duality gives (5.5).  Isolated-zero theory supplies local finiteness.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:p3}]
+The abstract classification is Proposition~\ref{prop:endpoint}.  Proposition
+\ref{prop:compactification} proves the positive-degree statement without assuming zero infinitude,
+and Corollary~\ref{cor:actual} gives the actual completed examples.
+\end{proof}
+
+\section{Fixed sectors and analytic rank}\label{sec:p4}
+
+Let $T$ be a parameter set.  A completed self-dual analytic family consists of entire nonzero
+functions $F_t$, a real center $c$, a nonzero root number $\omega_t$, and the functional equation
+\[
+                    F_t(2c-z)=\omega_tF_t(z).        \tag{6.1}
+\]
+Fix $R\ge0$ and count real zeros in $[c-R,c+R]$ with analytic multiplicity.  Isolated-zero theory
+makes this a finite multiplicity function $q_t:\R\to_0\N$.  Equation (6.1) preserves analytic
+orders, so
+\[
+                    q_t(2c-x)=q_t(x).                \tag{6.2}
+\]
+Define
+\[
+ d(t)=\sum_xq_t(x),\qquad r(t)=q_t(c),\qquad
+ u(t)=\sum_{x>c}q_t(x).                              \tag{6.3}
+\]
+
+\begin{proposition}[Pointwise defect decomposition]\label{prop:defect}
+For every $t$,
+\[
+                       d(t)=r(t)+2u(t).              \tag{6.4}
+\]
+Moreover $(-1)^{r(t)}=\omega_t$.
+\end{proposition}
+
+\begin{proof}
+Reflection (6.2) pairs every $x<c$ with one $x'>c$ of equal multiplicity; the center is the only
+fixed point.  This gives (6.4).  Applying (6.1) twice gives $\omega_t^2=1$.  Comparing the first
+nonzero Taylor coefficient at $c$ gives $(-1)^{r(t)}=\omega_t$.
+\end{proof}
+
+The coordinate $K_0$ model of a finite fixed divisor is the Grothendieck group of finite-support
+coordinate idempotents.  The idempotent attached to $q_t$ has value one at $x$ precisely when
+$q_t(x)>0$.  Thus its rank is support cardinality, not total multiplicity.
+
+\begin{proposition}[Support--multiplicity fracture]\label{prop:support}
+Let $k(t)$ be the central coordinate evaluation of the fixed idempotent.  Then
+\[
+                       k(t)=\mathbf1_{r(t)>0}.        \tag{6.5}
+\]
+If $\mu(n)=n-\mathbf1_{n>0}$, then
+\[
+                       r(t)=k(t)+\mu(r(t)).           \tag{6.6}
+\]
+The total cyclic fixed-sector rank is the ordinary coordinate $K_0$ rank plus the total
+multiplicity excess.
+\end{proposition}
+
+\begin{proof}
+Coordinate evaluation of an idempotent has rank zero or one according as that coordinate is absent
+or present.  This is (6.5); (6.6) is the defining decomposition of a natural number into support
+and excess.  Summing it over the finite support gives the final statement.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:p4}]
+Subtract (6.4) at $t_0$ from (6.4) at $t_1$ to obtain (1.10).  Subtract (6.6) at the two parameters
+and use (6.5) to obtain (1.11).
+\end{proof}
+
+The result applies to actual nontrivial primitive self-dual Dirichlet completions: their analytic
+orders, root numbers, and real zero packets instantiate (6.1)--(6.3).  No constancy of analytic
+rank and no simplicity of central zeros is assumed.
+
+\section{One law, four shadows}\label{sec:synthesis}
+
+We summarize the common mechanism.  Three orthogonal idempotent sectors
+\[
+              1=e_++e_{\mathrm{fix}}+e_-            \tag{7.1}
+\]
+are exchanged by the Real involution on $e_\pm$ and fixed on $e_{\mathrm{fix}}$.  The orientation
+$m_0=e_+-e_-$ obeys
+\[
+       m_0^2=1-e_{\mathrm{fix}},\qquad \sigma(m_0)=-m_0. \tag{7.2}
+\]
+On the free channel, $m_0$ is Clifford: combined with conjugation it squares to $-1$.  On the fixed
+channel, (7.2) is the exact square defect.
+
+Theorem~\ref{thm:conservation} supplies the analytic conservation principle.  P1 is its local
+extreme: the complete spectral energy is entirely even, so $m_0$ is smooth but its commutator jets
+vanish.  P2 is its categorical extreme: after full-adeles descent, the relevant object is a cyclic
+module rather than an algebra; Real parity survives only after multiplication by $i$.  P3 is the
+holomorphic extreme: an infinite free-orbit sign cannot extend across its accumulation endpoint.
+P4 is the fixed collateral: support survives in ordinary $K_0$, while multiplicity survives in the
+cyclic rank.
+
+This can be expressed as a conservation table.
+\begin{center}
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.24\linewidth}
+  >{\raggedright\arraybackslash}p{0.25\linewidth}
+  >{\raggedright\arraybackslash}p{0.42\linewidth}@{}}
+\toprule
+Channel & Visible invariant & Forced loss \\
+\midrule
+Unbounded even & Global spectrum & First local commutator \\
+Bounded odd & Local cyclic parity & Unbounded detection \\
+Free crossed-product orbit & $iL_c$ & Ordinary trace and direct $K_0$ lift \\
+Fixed orbit & Cyclic multiplicity & Multiplicity in coordinate $K_0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+No third parity sector exists because conjugation by an involution has exactly the $\pm1$
+eigensplitting (1.1).  The fixed idempotent is not a third operator parity; it is the failure of
+the free orientation to square to the unit.
+
+\section{Formal verification}\label{sec:formal}
+
+All introduced mathematical results are formalized in Lean~4 against the repository's pinned
+mathlib toolchain.  The facade module is
+\begin{center}
+\texttt{GaloisForLFunctions.RHTower.RealCoronaFourProblemsResolution}.
+\end{center}
+It imports the complete dependency graph and exposes stable declarations for Theorems
+\ref{thm:conservation}--\ref{thm:p4}.  The formal development includes:
+\begin{enumerate}[leftmargin=2.2em]
+\item partially defined operators on exact invariant domains, maximal self-adjoint diagonal
+operators, and all-orders smooth elements;
+\item actual Riemann zero copies with analytic multiplicity and functional-equation reflection;
+\item the rational finite-adele topology, normalized Haar character, Bruhat crossed product,
+unitization, endpoint cyclic morphisms, Schatten-$1$ Morita fields, strong class-space cyclic
+target, and all-degree landing;
+\item the honest order-two reflection crossed product of the dense endpoint-holomorphic algebra;
+\item analytic orders and finite real-zero packets for self-dual entire families and actual
+primitive Dirichlet completions.
+\end{enumerate}
+
+No declaration in the paper dependency cone uses \texttt{sorry}, \texttt{admit}, a new axiom,
+\texttt{opaque}, or \texttt{unsafe}.  The accompanying \texttt{CLAIM\_TRACE.md} maps every named
+result and every substantive displayed identity to exact Lean declarations.  Reproduction uses
+targeted commands only:
+\begingroup
+\scriptsize
+\begin{verbatim}
+cd formal
+lake env lean GaloisForLFunctions/RHTower/RealCoronaFourProblemsResolution.lean
+lake build GaloisForLFunctions.RHTower.RealCoronaFourProblemsResolution
+python3 scripts/formal_tools.py lint
+\end{verbatim}
+\endgroup
+The final build and lint outputs are recorded in the hostile-review artifact.
+
+\section{Limitations and further structure}
+
+The negative conclusions are classification results for specified natural structures, not
+universal impossibility claims about all conceivable models.  Theorem~\ref{thm:p1} concerns the
+canonical complete-divisor diagonal and reflection-compatible local series.  A doubled or
+non-diagonal spectral triple may introduce a bounded odd component, but Theorem
+\ref{thm:conservation} then identifies precisely where the new local information enters.
+
+Theorem~\ref{thm:p2} does not construct an algebra structure on a cyclic cokernel; it proves that
+the representative product cannot descend and classifies the surviving scalar cyclic-module
+morphisms.  Passage from such a morphism to a fully developed entire bivariant Chern character
+would require a chosen bornological completion and its homotopy theory.  The parity classification
+and square law proved here are independent of that choice.
+
+The endpoint algebra of Theorem~\ref{thm:p3} is natural because it simultaneously contains all
+polynomial restrictions, is dense for pointwise convergence, is preserved by the holomorphic
+functional-equation involution, and tests analytic continuation through the compactifying
+endpoint.  Other smooth structures may be studied, but they answer a different regularity
+question.  Higher-rank automorphic completions fall under Proposition~\ref{prop:compactification}
+once (5.3)--(5.5) are supplied; actual higher-rank automorphic representation theory is not yet
+part of the Lean library used here.
+
+Finally, the fixed $K_0$ class cannot recover analytic rank beyond support without enrichment.
+Proposition~\ref{prop:support} suggests the minimal enrichment: retain the local primary length, or
+equivalently pair the idempotent with the multiplicity-sensitive cyclic trace.  This is exactly the
+collateral channel predicted by (7.2).
+
+\begin{thebibliography}{99}
+
+\bibitem{Carboni}
+G.~Carboni, J.~A.~Guccione, and J.~J.~Guccione,
+\emph{Cyclic homology of crossed products},
+J. Algebra \textbf{321} (2009), 2827--2860.
+
+\bibitem{CM}
+A.~Connes and H.~Moscovici,
+\emph{The local index formula in noncommutative geometry},
+Geom. Funct. Anal. \textbf{5} (1995), 174--243.
+
+\bibitem{CCM}
+A.~Connes, C.~Consani, and M.~Marcolli,
+\emph{The Weil proof and the geometry of the adeles class space},
+in \emph{Noncommutative Geometry, Arithmetic, and Related Topics},
+Johns Hopkins Univ. Press, 2011, 339--405;
+\href{https://arxiv.org/abs/math/0703392}{arXiv:math/0703392}.
+
+\bibitem{CCMZeta}
+A.~Connes, C.~Consani, and H.~Moscovici,
+\emph{Zeta spectral triples},
+preprint (2025),
+\href{https://arxiv.org/abs/2511.22755}{arXiv:2511.22755}.
+
+\bibitem{CuntzQuillen}
+J.~Cuntz and D.~Quillen,
+\emph{Excision in bivariant periodic cyclic cohomology},
+Invent. Math. \textbf{127} (1997), 67--98.
+
+\bibitem{JLO}
+A.~Jaffe, A.~Lesniewski, and K.~Osterwalder,
+\emph{Quantum $K$-theory. I. The Chern character},
+Comm. Math. Phys. \textbf{118} (1988), 1--14.
+
+\bibitem{Meyer}
+R.~Meyer,
+\emph{On a representation of the idele class group related to primes and zeros of
+$L$-functions},
+Duke Math. J. \textbf{127} (2005), 519--595.
+
+\bibitem{Moscovici}
+H.~Moscovici,
+\emph{Local index formula and twisted spectral triples},
+Quanta of Maths, Clay Math. Proc. \textbf{11}, Amer. Math. Soc., 2010, 465--500;
+\href{https://arxiv.org/abs/0902.0835}{arXiv:0902.0835}.
+
+\bibitem{Paugam}
+F.~Paugam,
+\emph{Sym\'etries spectrales des fonctions z\^etas},
+J. Th\'eor. Nombres Bordeaux \textbf{21} (2009), 713--720.
+
+\end{thebibliography}
+
+\end{document}

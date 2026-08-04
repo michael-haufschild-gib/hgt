@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.ExponentialCarrierHypertranscendence
 import GaloisForLFunctions.HTGeometry.LocalPolynomialGauge
 import GaloisForLFunctions.HTGeometry.BohrHullContinuity
+import GaloisForLFunctions.HTGeometry.FamilyPowerGauge
 
 /-!
 # The boundary functions of a perturbed outer orbit are hypertranscendental
@@ -41,6 +42,23 @@ theorem not_differentiallyAlgebraicOn_perturbedBoundaryFun {a : ι → ℂ} {ome
     (fun z _ => by simp) (fun z _ => ?_)
     (not_differentiallyAlgebraicOn_bohrHullMap hom h hinf lam hU hUne)
   exact (analyticAt_cexpSeriesCarrier hsum z).contDiffAt
+
+/-- **Every power of every boundary function of the perturbed outer orbit is hypertranscendental.**
+A function is algebraic over its own power, so passing to powers cannot create a differential
+relation. -/
+theorem not_differentiallyAlgebraicOn_perturbedBoundaryFun_pow {a : ι → ℂ} {omega : ι → ℝ}
+    (hom : RationallyIndependentSequence omega) (h : ExpSeriesNormallySummable a omega)
+    (hinf : {i : ι | a i ≠ 0}.Infinite) (lam : ι → Circle) {c eps : ℂ} (heps : eps ≠ 0)
+    {n : ℕ} (hn : n ≠ 0) {U : Set ℂ} (hU : IsOpen U) (hUne : U.Nonempty) :
+    ¬ DifferentiallyAlgebraicOn
+      (fun z => (c + eps * bohrHullMap a omega h lam z) ^ n) U := by
+  have hsum : ExpSeriesNormallySummable (fun i => a i * (lam i : ℂ)) omega := by
+    intro R
+    refine (h R).congr fun i => ?_
+    rw [norm_mul, Circle.norm_coe, mul_one]
+  refine not_differentiallyAlgebraicOn_pow hn (fun z _ => ?_)
+    (not_differentiallyAlgebraicOn_perturbedBoundaryFun hom h hinf lam heps hU hUne)
+  exact contDiffAt_const.add (contDiffAt_const.mul (analyticAt_cexpSeriesCarrier hsum z).contDiffAt)
 
 end
 

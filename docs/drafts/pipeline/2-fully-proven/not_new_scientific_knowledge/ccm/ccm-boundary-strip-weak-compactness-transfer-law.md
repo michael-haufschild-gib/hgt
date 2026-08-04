@@ -134,6 +134,58 @@ Consequently the boundary-strip theorem remains useful for identifying the minim
 but it does not weaken either primary CCM completion: divisor-preserving determinant convergence or
 cofinal Weil spectral-floor convergence.
 
+## Lean status
+
+**Formalized unconditionally, 2026-08-04**, in
+`formal/GaloisForLFunctions/RHTower/CCMBoundaryStripTransfer.lean`, together with the kernel-model half
+that the tree already owned.
+
+- **`norm_le_of_weak_limit`** — the weak lower semicontinuity step of the proof of `(3)`, in the shape
+  the card actually consumes: a weak limit inherits every *eventual* norm bound.  Proof: Cauchy--Schwarz
+  against the limit itself, `‖x‖² = lim <x, A n> ≤ ‖x‖ c`.  Stated with an eventual bound rather than a
+  `liminf`, because hypothesis `(7)` is a `limsup` bound, and this form composes with it directly.
+- **`eq_of_graphCore`** — equations `(4)`–`(5)`.  A continuous map agreeing with `Q ∘ D` on a graph core
+  agrees with it on the whole domain.  What the formal statement makes precise is that **only** the
+  approximation property is used: for each `f`, approximants in `C` converging to `f` *together with*
+  their `D`-images.  No closedness of `D`, no density of the domain, and no linearity enter.
+- `fourMulCDF_pos`, **`tendsto_one_sub_exp_neg_div`**, **`tendsto_div_fourMulCDF`**,
+  **`eventually_div_le_one_add_of_le_fourMulCDF`** — equations `(8)`–`(9)`.  A profile with
+  `Delta(u) <= 4(1 - e^{-u}) + r(u)` and `r(u) = o(u)` satisfies
+  `limsup_(u -> 0+) Delta(u)/(4(1 - e^{-u})) <= 1`, stated in its epsilon form to avoid extended-real
+  junk values.  The two analytic inputs are the slope of `1 - e^{-u}` at the origin and the resulting
+  `u/(4(1-e^{-u})) -> 1/4`; both are proved here.
+
+The **kernel-model half of `(3)`** was already in the tree and is not re-proved:
+`RHTower.hsNormSq_le_of_tendsto_entries` in `MobiusFisherContactWardBudget.lean` is exactly entrywise
+(weak) lower semicontinuity of the Hilbert--Schmidt energy, and `RHTower.completedSourceWardBudget` is
+the budget transfer it feeds.  Together with `norm_le_of_weak_limit` and `eq_of_graphCore` the card's
+section 1 is covered: the corpus's Hilbert--Schmidt layer (`HTGeometry/HilbertSchmidt.lean`) realises
+`S_2` inside `lp 2`, which is where the abstract weak-limit lemma applies.
+
+- **`norm_le_of_weak_limit_complex`**, **`hsNormSq_le_of_weak_limit`** — equation `(3)` itself,
+  assembled in the corpus's `lp 2` realisation of `S_2`: a family of Hilbert--Schmidt kernels whose
+  pairings against the limit converge, with energies eventually at most `B`, has a limit of energy at
+  most `B`.  This is the card's conclusion with **no weak compactness, no norm convergence of the
+  operators, and no trace-class property**.  The complex form takes real parts of the pairing rather
+  than its norm, because the `RCLike` cast of `‖x‖²` produced by `inner_self_eq_norm_sq_to_K` matches
+  neither `Complex.norm_real` nor `RCLike.norm_ofReal`.
+
+What is **not** formalized, deliberately: the weak-compactness extraction of the card's own proof.  The
+formalization does not need it — the standard argument extracts a weakly convergent subsequence from a
+bounded family in `S_2`, which in Lean would require Eberlein--Smulian or separability, neither of which
+is in mathlib.  The route taken instead bounds each finite piece directly, so the conclusion `(3)` is
+reached with no compactness at all.  This is a strictly weaker hypothesis set than the card's, not a
+gap.
+
+## Lean gates
+
+- [x] Lean: weak lower semicontinuity of the norm, in eventual-bound form
+- [x] Lean: graph-core extension `(4)`–`(5)`, using only the approximation property
+- [x] Lean: four-unit asymptotics `(8)`–`(9)` with an `o(u)` remainder
+- [x] Lean: entrywise lower semicontinuity of the Hilbert--Schmidt energy (pre-existing)
+- [x] Lean: the `S_2`-valued weak-limit statement `(3)` assembled against the corpus
+      Hilbert--Schmidt realisation
+
 ## Gates
 
 - [x] abstract graph-core lower-semicontinuity theorem proved

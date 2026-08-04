@@ -4,7 +4,9 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / CONTINUUM GRAVITY / CLOCKS / CONFORMAL GEOMETRY
 - **Parent:** `two-species-conformal-clock-scale-law.md`
-- **Status:** paper-proved and algebraic continuum core formalized unconditionally in Lean.
+- **Status:** paper-proved and formalized unconditionally in Lean, algebraic core *and* Lorentzian
+  instantiation: the conjugation law, the massive law and the two-species scale recovery all hold
+  literally for the d'Alembertian of a smooth metric chart.
 
 ## Headline
 
@@ -147,9 +149,33 @@ Proof uses only:
 3. second-order product rule `(5)`;
 4. first-order Leibniz rules for \(\Gamma\).
 
-Those hypotheses isolate algebraic continuum machinery now formalized unconditionally in Lean. A
-Lorentzian application must separately instantiate \(L=\Box_g\),
-\(\Gamma(f,h)=g^{-1}(df,dh)\), and prove conformal transformation law `(1)`.
+Those hypotheses isolate algebraic continuum machinery, formalized unconditionally in Lean. The
+Lorentzian instantiation is formalized as well, in
+`formal/GaloisForLFunctions/HTGeometry/ConformalMetricDiffusionIdentity.lean`, on top of the
+divergence-form d'Alembertian `L = □_g` of a smooth metric chart, its carré du champ
+`Γ(f,h) = Gⁱʲ∂ᵢf∂ⱼh`, and the literal conformal rescaling `g ↦ e^{2σ}g`:
+
+- `SmoothMetricChart.dalembert_conformalRescale_conjugation` — the conjugation law `(2)` in every
+  dimension, at the conformal weight `a = (d-2)/2`, obtained from the realized clock calculus
+  (`conformalWaveSigma_eq_dalembert_conformalRescale`) — transformation law `(1)` is the corpus's
+  `dalembert_conformalRescale`, proved rather than assumed;
+- `SmoothMetricChart.dalembert_exp` — `□w = w(□σ + Γ(σ,σ))` for `w = e^σ`, which turns the defect
+  into the card's `w⁻¹□w`;
+- **`SmoothMetricChart.dalembert_conformalRescale_conjugation_four`** — equation `(2)` verbatim:
+
+  ```
+  w³ □_{w²g}(w⁻¹u) = □_g u - (w⁻¹ □_g w) u
+  ```
+
+- **`SmoothMetricChart.dalembert_conformalKleinGordon_four`** — equation `(3)`, with
+  `SmoothMetricChart.conformalClockPotential` the potential `V_μ = μw² - w⁻¹□w`;
+- **`SmoothMetricChart.twoSpecies_scale_of_conformalClockPotential`** — equation `(9)`:
+  `(V_{μ₁} - V_{μ₂})/(μ₁ - μ₂) = w²`, in every dimension;
+- `ExponentialSecondOrderClockCalculus.conformalKleinGordonSigma_potential_difference` — the same
+  cancellation in the abstract calculus, where division is unavailable: the potential difference is
+  the mass difference times the conformal scale.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
 
 This theorem does **not** yet prove that a restricted laboratory clock experiment reconstructs
 the potentials \(V_{\mu_i}\). That inverse-data bridge remains the main physical open core.

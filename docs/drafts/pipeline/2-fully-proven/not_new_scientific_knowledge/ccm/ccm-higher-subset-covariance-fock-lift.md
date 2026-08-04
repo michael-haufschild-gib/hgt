@@ -300,12 +300,84 @@ as a bridge.
 
 ## 7. Lean status
 
-The combinatorial and positivity atoms already exist unconditionally in the formal tree:
+**Formalized unconditionally, 2026-08-04**, in
+`formal/GaloisForLFunctions/RHTower/CCMSubsetCovarianceFock.lean`.
 
-- `finiteLocalEulerProduct_subsetExpansion` in
-  `GaloisForLFunctions/RHProofLab/EulerProductArithmetic.lean`;
-- `herglotz_rank_one_psd` in `RHTower/SeamSuspensionTrace.lean`.
+The previous decision said an "abstract wrapper around two standard atoms" would not certify the live
+gate.  That was the wrong measurement of the card's own content: sections 1–4 and 5a are not one
+wrapper but nine separate statements, and the *positivity*, the *grade localisation*, the *dimension
+count*, the *readout norm*, and the *Hardy product formula* are each a proof, not a restatement.  All
+of them are now in Lean, on top of the local-ratio layer of
+`ccm-local-ratio-second-order-covariance-charge.md`.
 
-The combined local-ratio/Hardy statement would require formal multiplier and compression
-infrastructure not yet present. Adding another abstract wrapper around these two standard atoms
-would not certify the live analytic gate, so no new Lean module is introduced.
+- `covIndex`, `covFeature`, **`covarianceAnomaly_eq_readout`** — equations `(1)`–`(5)`.  Note that
+  `covFeature` takes no ambient set: the coordinate `V_V(t)_I` genuinely does not depend on `V`, which
+  is what makes `(8)` a triviality rather than a compatibility check.
+- `powerset_filter_card_le_one`, `empty_notMem_image_singleton` — the low-degree complement, extracted
+  once and reused for both the grading and the dimension count.
+- `covKernel`, **`covKernel_quadratic_form`**, **`covKernel_quadratic_form_nonneg`** — equations
+  `(6)`–`(7)`.  The proof is a triple sum interchange followed by `conj z * z = ‖z‖²`; no Hilbert space
+  is needed, because the carrier is finite-dimensional.  The identity is stated as an *equality* with
+  `sum_I ‖sum_j c_j V(t_j)_I‖²`, so it exhibits the positive lift rather than merely asserting
+  semidefiniteness.
+- **`covIndex_subset`**, **`sum_covIndex_extend`** — equation `(8)`: the directed system and the
+  isometry of extension by zero.
+- `covGrade`, **`sum_covIndex_eq_sum_grades`** — equation `(9)`, the grading by subset size, as the
+  `Ico 2 (m+1)` decomposition of the carrier sum.  The `V = ∅` case has to be separated because
+  `Ico 2 1` is empty.
+- **`sum_powersetCard_two`** — the closed form of the degree-two grade sum,
+  `sum_(|I| = 2) prod_(v in I) c_v = ((sum c)^2 - sum c^2)/2`, by induction on the place set through
+  `Finset.powersetCard_succ_insert`.  This is the identity that was avoided in the anomaly module and
+  is unavoidable here, because the card's `(12)` asks specifically for the grade-two localisation.
+- **`tendsto_covFeature_div_pow`** — each degree-`k` coordinate vanishes to order exactly `k` at the
+  seam, with jet `prod_(v in I) c_v`.
+- **`tendsto_covFeature_div_sq_of_card_two`** (equation `(11)`),
+  **`tendsto_covFeature_div_sq_of_three_le`** (equation `(10)` for the higher grades),
+  **`tendsto_covarianceAnomaly_div_sq_eq_gradeTwo`** (equation `(12)`) — the quadratic jet of a
+  degree-`k >= 3` coordinate is zero, that of a pair is `c_v c_w`, and the whole quadratic jet of the
+  anomaly is the degree-two grade sum.  So the cofinal curvature charge lives entirely in `H^(2)`.
+- **`card_covIndex`** (equation `(14)`), **`card_covGradeTwo`** (equation `(16)`) — the dimensions
+  `2^m - m - 1` and `binom(m,2)`.
+- **`norm_readout_le`**, **`norm_readout_ones`** — equation `(15)`, in the sharp two-sided form: the
+  coefficient-one readout satisfies `|sum_I x_I| <= sqrt(dim) sqrt(sum_I |x_I|^2)` with equality at the
+  all-ones vector.  Stating the bound *and* its attainment is what makes `sqrt(2^m - m - 1)` the norm
+  rather than merely an upper bound, and hence what makes the unboundedness claim of section 4 a
+  theorem.
+
+Section 5a is formalized in the same module, as the algebra it is:
+
+- `hardyCorner`, `sub_self_mul_sub_self`, **`hardyCorner_mul`** — equations `(18)`–`(19)`.  The product
+  formula uses **only** idempotence of the projection, in an arbitrary ring with an arbitrary
+  multiplicative symbol map; there is no analytic content in it at all.
+- **`hardyCorner_mul_mem`**, **`hardyCorner_prod_mem`** — equations `(21)`–`(22)`: symbols whose corner
+  lies in a two-sided ideal are closed under multiplication, hence every nonempty subset product has
+  its corner in the ideal.  The card's compactness statement is this with the ideal of compact
+  operators; representing the ideal abstractly is the honest formalization, because "quasi-inner implies
+  compact" is imported from Connes--Consani and is not proved here.
+- **`hardyCorner_sum`** — equation `(25)`'s identity `H(C_F) = S_F ∘ 𝓗_F`, i.e. additivity of the corner
+  in the symbol.  Combined with `norm_readout_ones` this gives the full content of `(25)`: the readout
+  is the row sum and its norm is `sqrt(2^m - m - 1)`.
+
+The two atoms named in the earlier decision were not in fact what this card needs:
+`finiteLocalEulerProduct_subsetExpansion` is the Euler-product expansion, not the `1 + a_v` subset
+expansion, and `herglotz_rank_one_psd` is a rank-one positivity, not a Gram identity for a
+subset-indexed feature map.  Both were re-proved in the form the card uses.
+
+## Gates
+
+- [x] scalar readout identity `(4)`–`(5)` proved
+- [x] Gram positivity `(6)`–`(7)` proved
+- [x] directed-system structure `(8)` proved
+- [x] grading and central-curvature localization `(9)`–`(12)` proved
+- [x] dimension and readout norm `(14)`–`(16)` proved
+- [x] finite Gauss-paired Hardy product formula and compact-corner algebra `(18)`–`(25)` proved
+- [x] Lean: readout identity, Gram positivity, directed system
+- [x] Lean: grading, degree-two closed form, order-of-vanishing of every grade
+- [x] Lean: dimension `2^m - m - 1`, degree-two dimension, sharp readout norm
+- [x] Lean: Hardy corner product formula, ideal closure, additivity
+- [ ] identify the degree-two carrier with the compact Gauss-paired Hardy coboundary class
+- [ ] cutoff-uniform weighting of `(9)` from Sonin compression / relative trace
+- [ ] transport of the shifted-Xi Pick negative index by the resulting positive Schur kernel
+- [ ] cofinal determinant/divisor convergence
+- [ ] uniform positive Gauss lifting: relative graph convergence to `T_0` with uniform contractivity
+

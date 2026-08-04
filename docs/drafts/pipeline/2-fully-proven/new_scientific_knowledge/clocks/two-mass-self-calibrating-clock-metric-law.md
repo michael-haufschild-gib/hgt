@@ -8,7 +8,8 @@
   `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockCalibrationFailureModes.lean`,
-  `formal/GaloisForLFunctions/HTGeometry/ClockCalibrationIdentifiabilityBoundary.lean`
+  `formal/GaloisForLFunctions/HTGeometry/ClockCalibrationIdentifiabilityBoundary.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockResponseIdentifiability.lean`
 - **Status:** operator and principal-symbol reconstruction paper-proved and formalized
   unconditionally in Lean; physical recovery of complete dressed Green operators remains open.
 
@@ -281,7 +282,12 @@ not proof that no collision exists.
 
 The theorem does not yet prove that a backreacting finite laboratory implements complete
 \(\widehat G_{\mu_i}\). It closes the exact calibration and conformal-scale obstruction once those
-responses are reconstructed.
+responses are reconstructed. The *identifiability* step of that reconstruction is formalized in
+`formal/GaloisForLFunctions/HTGeometry/ClockResponseIdentifiability.lean`
+(`responseOperator_eq_of_data`, `hiddenResponse_eq_of_data`): a complete family of probe drives with
+dense span and a separating family of readouts determines the measured response, and with an
+injective receiver and surjective source the hidden response as well. What remains is quantitative:
+finite data, noise, and stability.
 
 ## Gates
 

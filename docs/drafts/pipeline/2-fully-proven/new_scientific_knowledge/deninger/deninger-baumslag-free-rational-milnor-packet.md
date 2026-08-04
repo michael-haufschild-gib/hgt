@@ -245,7 +245,112 @@
   `GaloisForLFunctions.RHTower.DeningerFairExponents` (a fair sequence of exponents, and the
   rationalization),
   `GaloisForLFunctions.RHTower.DeningerFactorEltCentral` (self-centralization is inherited by
-  elements of the factor)
+  elements of the factor),
+  `GaloisForLFunctions.RHTower.DeningerFactorEltIsolated` (isolation is inherited by elements of the
+  factor),
+  `GaloisForLFunctions.RHTower.DeningerFactorImages` (the images of two factors meet in the base
+  group),
+  `GaloisForLFunctions.RHTower.DeningerFactorEltDisjoint` (disjointness from the cyclic factor is
+  inherited),
+  `GaloisForLFunctions.RHTower.DeningerFreeProductUniqueRoots` (a free product of groups with unique
+  roots has unique roots),
+  `GaloisForLFunctions.RHTower.DeningerFreeProductCentral` (centralizers and isolation in a free
+  product),
+  `GaloisForLFunctions.RHTower.DeningerFreeProductTorsion` (free products preserve unique roots),
+  `GaloisForLFunctions.RHTower.DeningerUniqueRootsTransport` (unique roots transport along an
+  isomorphism),
+  `GaloisForLFunctions.RHTower.DeningerFreeGroupAmalgam` (a free group is an amalgam of infinite
+  cyclic groups),
+  `GaloisForLFunctions.RHTower.DeningerFreeGroupRoots` (a free group has unique roots),
+  `GaloisForLFunctions.RHTower.DeningerFreeGroupCentral` (the centralizer of a basis element),
+  `GaloisForLFunctions.RHTower.DeningerFreeGroupIsolated` (a basis element is isolated),
+  `GaloisForLFunctions.RHTower.DeningerFreeGroupDisjoint` (distinct basis elements stay disjoint
+  under conjugation),
+  `GaloisForLFunctions.RHTower.DeningerRootInherit` (the three properties of a waiting element are
+  inherited together),
+  `GaloisForLFunctions.RHTower.DeningerRootDisjointSymm` (disjointness of the adjoined root from the
+  waiting elements),
+  `GaloisForLFunctions.RHTower.DeningerRootDisjointFactors` (disjointness between two waiting
+  elements survives),
+  `GaloisForLFunctions.RHTower.DeningerFamilyStage` (a stage carrying a family of elements),
+  `GaloisForLFunctions.RHTower.DeningerFamilyTower` (the tower over a family),
+  `GaloisForLFunctions.RHTower.DeningerFamilyColimit` (the colimit of the tower over a family),
+  `GaloisForLFunctions.RHTower.DeningerFamilyHomology` (homology along the tower over a family),
+  `GaloisForLFunctions.RHTower.DeningerFamilyRoot` (the scheduled roots in the colimit),
+  `GaloisForLFunctions.RHTower.DeningerDivisiblePowers` (divisibility passes to powers),
+  `GaloisForLFunctions.RHTower.DeningerMaximalRoot` (an isolated element is not a proper power),
+  `GaloisForLFunctions.RHTower.DeningerRootExponentBound` (the exponent of a root of a cyclically
+  reduced element is bounded),
+  `GaloisForLFunctions.RHTower.DeningerMaximalRootExists` (a cyclically reduced element has a
+  maximal root),
+  `GaloisForLFunctions.RHTower.DeningerCycRedPowWord` (a power of a cyclically reduced word is a
+  cyclically reduced word),
+  `GaloisForLFunctions.RHTower.DeningerCyclicCentralizers` (groups with cyclic centralizers),
+  `GaloisForLFunctions.RHTower.DeningerCentralizerRotate` (centralizing a cyclically reduced element
+  rotates its word),
+  `GaloisForLFunctions.RHTower.DeningerRotatePeriodic` (a rotation symmetry makes the index sequence
+  periodic),
+  `GaloisForLFunctions.RHTower.DeningerRotateCentElt` (the element realizing a rotation symmetry),
+  `GaloisForLFunctions.RHTower.DeningerPrefixCompose` (composing the prefixes of successive
+  rotations),
+  `GaloisForLFunctions.RHTower.DeningerCommonCyclic` (commuting elements lie in a common cyclic
+  subgroup),
+  `GaloisForLFunctions.RHTower.DeningerNotConjShort` (a long cyclically reduced element is not
+  conjugate to a short one),
+  `GaloisForLFunctions.RHTower.DeningerCommonCyclicAmalgam` (the descent in an amalgam with one
+  exceptional factor),
+  `GaloisForLFunctions.RHTower.DeningerMaximalRootCentralizer` (a maximal root is its own
+  centralizer),
+  `GaloisForLFunctions.RHTower.DeningerCentralizerConj` (centralizers along conjugation),
+  `GaloisForLFunctions.RHTower.DeningerRootCycRedCentralizer` (cyclic centralizers in a root
+  adjunction, for long elements),
+  `GaloisForLFunctions.RHTower.DeningerRootShortCentralizer` (cyclic centralizers in a root
+  adjunction, for elements of a factor),
+  `GaloisForLFunctions.RHTower.DeningerRootCyclicCentralizers` (a root adjunction preserves cyclic
+  centralizers),
+  `GaloisForLFunctions.RHTower.DeningerPushoutCountable` (an amalgam of countable groups is
+  countable),
+  `GaloisForLFunctions.RHTower.DeningerCCStage` (stages carrying unique roots and cyclic
+  centralizers),
+  `GaloisForLFunctions.RHTower.DeningerCCTower` (the tower of such stages),
+  `GaloisForLFunctions.RHTower.DeningerCCColimit` (its colimit),
+  `GaloisForLFunctions.RHTower.DeningerCCHomology` (homology along it),
+  `GaloisForLFunctions.RHTower.DeningerCCTrajectory` (enumeration indices along the tower),
+  `GaloisForLFunctions.RHTower.DeningerCCDivisible` (the fair schedule and divisibility of the
+  colimit),
+  `GaloisForLFunctions.RHTower.DeningerFreeCyclicCentralizers` (a free group has cyclic
+  centralizers),
+  `GaloisForLFunctions.RHTower.DeningerFreeSplit` (splitting off one generator of a free group),
+  `GaloisForLFunctions.RHTower.DeningerFreeHomology` (the homology of a free group of finite rank),
+  `GaloisForLFunctions.RHTower.DeningerFreeRationalization` (the rationalization of a free group of
+  finite rank),
+  `GaloisForLFunctions.RHTower.DeningerCCDescent` (mapping the tower into a uniquely divisible
+  group),
+  `GaloisForLFunctions.RHTower.DeningerBauFreeVanishing` (the homology and cohomology of the
+  rationalization of a free group),
+  `GaloisForLFunctions.RHTower.DeningerClassifyingSpace` (the classifying space of a group),
+  `GaloisForLFunctions.RHTower.DeningerClassifyingFibre` (the fibre of a map of classifying spaces),
+  `GaloisForLFunctions.RHTower.DeningerClassifyingEdges` (simplices of a classifying space),
+  `GaloisForLFunctions.RHTower.DeningerHornEdges` (edges of a horn),
+  `GaloisForLFunctions.RHTower.DeningerClassifyingHomExt` (maps into a classifying space are
+  determined by the edges),
+  `GaloisForLFunctions.RHTower.DeningerEdgeCocycle` (the cocycle identity for edges),
+  `GaloisForLFunctions.RHTower.DeningerSimplexEdge` (edges of a simplex of a classifying space),
+  `GaloisForLFunctions.RHTower.DeningerHornFaceEdge` (edges of a face of a horn),
+  `GaloisForLFunctions.RHTower.DeningerHornCocycle` (the cocycle identity inside a horn),
+  `GaloisForLFunctions.RHTower.DeningerSimplexOfFun` (simplices of a classifying space from
+  prescribed edges),
+  `GaloisForLFunctions.RHTower.DeningerHornCocycleWitness` (the cocycle identity from a fourth
+  vertex),
+  `GaloisForLFunctions.RHTower.DeningerHornAllEdges` (all edges of a horn of a large simplex),
+  `GaloisForLFunctions.RHTower.DeningerHornFiller` (the filler of a horn of a large simplex),
+  `GaloisForLFunctions.RHTower.DeningerHornFillerFace` (the faces of the filler),
+  `GaloisForLFunctions.RHTower.DeningerHornLiftLarge` (filling a horn of a large simplex),
+  `GaloisForLFunctions.RHTower.DeningerHornLiftOne` (filling a one dimensional horn),
+  `GaloisForLFunctions.RHTower.DeningerHornLiftTwo` (filling a two dimensional horn),
+  `GaloisForLFunctions.RHTower.DeningerClassifyingFibration` (the map of classifying spaces of a
+  surjection is a Kan fibration),
+  `GaloisForLFunctions.RHTower.DeningerPacketFibre` (the homotopy fibre of the packet's surjection)
 
 ## Statement
 
@@ -1459,8 +1564,10 @@ fixes no Galois action of its own.
 - [x] 2 → 3 formalized, clause 5's finite-cover consequence
   (`GaloisForLFunctions.RHTower.DeningerBaumslagPullback`)
 - [x] 2 → 3 formalized, the transfer of vanishing from homology to cohomology over a field
-- [ ] 2 → 3 formalized, clause 4 above degree two: statable in `groupCohomology`, proof missing
-- [ ] 2 → 3 formalized, the homotopy-fibre half of clause 5: blocked on classifying spaces
+- [x] 2 → 3 formalized, clause 4 above degree two
+  (`GaloisForLFunctions.RHTower.DeningerBauFreeVanishing`)
+- [x] 2 → 3 formalized, the homotopy-fibre half of clause 5
+  (`GaloisForLFunctions.RHTower.DeningerPacketFibre`)
 - [x] `GL(U)` and power-map equivariance of the packet, and functoriality of the rationalization
   (`GaloisForLFunctions.RHTower.DeningerBaumslagFunctorial`)
 - [x] equivariance of the packet under any group acting on the index set and on `A`
@@ -3408,3 +3515,684 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   which is not a proper power, deciding it is a statement about conjugacy in free groups; that is the
   input the rank at least two case still needs, and the corpus's word machinery is what would supply
   it.
+- 2026-08-04 — **Isolation is inherited by the other elements of the factor.**
+  `deningerRootAdjunction_isolated` completes the pair: if no conjugate of a nonzero power of an
+  element of the group factor lies in the base group, then anything whose positive power is a power
+  of it commutes with that power, so the centralizer criterion places it in the factor, where
+  isolation inside the factor finishes; the trivial power is handled by torsion freeness of the
+  amalgam.
+  The hypothesis is exactly right and cannot be weakened: for the element whose root is adjoined it
+  fails — its `m`-th root is in the amalgam and is not one of its powers — and that is the mechanism
+  by which the adjunction makes the element divisible.  For two elements of a free group with
+  distinct maximal roots the hypothesis is a statement about conjugacy of powers, which the corpus's
+  word machinery decides.  With both inheritance theorems in hand, a tower which adjoins roots to
+  several elements can keep its invariant, which is what rank at least two requires.
+- 2026-08-04 — **The images of two factors meet exactly in the base group.**  `deningerOf_eq_cross`
+  proves it by the same one letter argument that runs through the rest of the word combinatorics: if
+  neither element were in the base group the two singleton words would be reduced, and two reduced
+  words with the same product run through the same factors, which they do not.
+  This is the missing ingredient for propagating the disjointness hypothesis of the isolation
+  theorem.  A conjugate of a power of an element of the group factor which lands in the cyclic factor
+  is, by the conjugacy criterion for short elements, either conjugated inside the group factor — and
+  then it lies in both factor images, hence in the base group, which the hypothesis at the current
+  stage forbids — or conjugates into the base group inside the factor, which the same hypothesis
+  forbids.  So the hypothesis is inherited, and a tower which adjoins roots to several elements can
+  carry it.
+- 2026-08-04 — **Disjointness is inherited, and the rank at least two invariant is complete.**
+  `deningerRootAdjunction_disjoint` proves the third and last of the inheritance statements: if no
+  conjugate of a nonzero power of an element of the group factor lies in the base group, then no
+  conjugate of a nonzero power of its image lies in the cyclic factor.  The conjugate is short, so
+  `deningerShortConj_cases` either puts the conjugator inside the group factor — and then
+  `deningerOf_eq_cross` places the conjugate in the base group, which the hypothesis forbids — or
+  reports that the element conjugates into the base group inside the factor, which the same
+  hypothesis forbids.
+  So all three properties a waiting element needs — self-centralization, isolation, and disjointness
+  from the subgroup whose root is being adjoined — survive a root adjunction at a different element.
+  That is what a tower for a free group of rank at least two has to carry, since it adjoins roots to
+  infinitely many elements in turn and each must still be usable when its turn comes.  What the
+  construction still needs from the free group itself is the starting point: that the elements of a
+  free group which are not proper powers have cyclic self-centralizing isolated subgroups, pairwise
+  disjoint when their maximal roots differ.
+- 2026-08-04 — **A free product of groups with unique roots has unique roots.**  A free product is an
+  amalgam over the trivial group, and every hypothesis the amalgam theorem places on the base is
+  automatic there: the trivial group is abelian, torsion free, has unique roots, is not moved by
+  conjugation, and has no nontrivial element to be centralized, so the self-centralization
+  hypothesis is vacuously true.  `deningerFreeProduct_uniqueRoots` reads that off
+  `deningerAmalgam_pow_inj` for any base group which is a subsingleton.
+  This is the statement the rank at least two case needs about its starting point, since a free group
+  is the free product of infinite cyclic groups: it says the free group has unique roots, without
+  any word combinatorics beyond what the amalgam theorem already used.  A concurrent session had
+  proved the same for the elements of the factors only, through the isolation criterion; the theorem
+  here covers every element of the free product, which is what a tower has to know about the group
+  it starts from.
+- 2026-08-04 — **Centralizers and isolation in a free product.**  Over the trivial base the escape
+  clause of the centralizer criterion says the element conjugates to the identity, hence is trivial,
+  so it never fires for a nontrivial element.  `deningerFreeProduct_centralizer` concludes that the
+  centralizer of a nontrivial element of a factor lies in that factor, and
+  `deningerFreeProduct_isolated` that a cyclic subgroup isolated in a factor stays isolated in the
+  free product: the element commutes with the power, hence lies in the factor, where isolation
+  applies; the trivial power is torsion freeness.
+  Applied to a free group, which is the free product of infinite cyclic groups, these give the three
+  starting hypotheses a tower needs at a basis element: its cyclic subgroup is isolated, is its own
+  centralizer, and — by `deningerOf_eq_cross`, since two different basis elements lie in different
+  factors — meets the cyclic subgroup of any other basis element trivially.  That is the input the
+  rank at least two construction was missing.
+- 2026-08-04 — **Free products preserve unique roots, with no further hypothesis.**  Unique roots
+  imply torsion freeness by comparing an element with the identity, and the trivial base group is
+  torsion free, so `deningerPushout_torsionFree` makes the free product torsion free;
+  `deningerFreeProduct_uniqueRoots_of_factors` then drops that hypothesis from the theorem of the
+  previous cycle.  The statement is now clean: **a free product of groups with unique roots has
+  unique roots.**
+  Specialized to infinite cyclic factors this says a free group has unique roots — a classical fact
+  which mathlib does not carry — and it is proved here from the amalgam theorem rather than from
+  Nielsen theory.  Together with `deningerFreeProduct_centralizer` and
+  `deningerFreeProduct_isolated`, the free group is now known to the corpus in exactly the terms the
+  tower consumes.
+- 2026-08-04 — **Transport along an isomorphism.**  `deningerUniqueRoots_of_mulEquiv`,
+  `deningerTorsionFree_of_mulEquiv` and `deningerDivisible_of_mulEquiv` move the three properties
+  across an isomorphism of groups; the first needs only `Quot.sound`.  They are the glue between a
+  group given by a construction and one given by a universal property, which is what the last step
+  of the free group case needs.
+  That step is the identification of `FreeGroup ι` with the amalgam of copies of the infinite cyclic
+  group over the trivial group.  mathlib supplies half of it — `FreeGroupBasis.coprodI` says a
+  coproduct of free groups is free on the disjoint union of the bases — and the other half is that
+  the pushout over a trivial base is the coproduct, which follows from the two universal properties
+  by checking the composites on the factors.  With the identification in hand, everything proved
+  here about free products applies verbatim to `FreeGroup ι`, which is the group the packet's
+  rationalization is taken of.
+- 2026-08-04 — **A free group is an amalgam of infinite cyclic groups over the trivial group.**
+  `deningerFreeGroupEquiv` builds the isomorphism from the two universal properties:
+  `FreeGroup.lift` sends each generator to the generator of the corresponding factor, `PushoutI.lift`
+  sends each factor to the powers of the corresponding generator — the compatibility with the base
+  being automatic because a homomorphism out of the trivial group is unique — and the two composites
+  are the identity, one checked on the generators by `FreeGroup.ext_hom` and the other on the factors
+  by `PushoutI.hom_ext`, where every element of a factor is a power of its generator.
+  With the transport theorems of the previous cycle, everything the corpus proves about free products
+  now applies to `FreeGroup ι` itself: it has unique roots, is torsion free, the centralizer of a
+  basis element is the cyclic subgroup it generates, that subgroup is isolated, and distinct basis
+  elements generate subgroups meeting trivially.  Those are exactly the hypotheses the tower of root
+  adjunctions needs at its starting stage for a free group of any rank.
+- 2026-08-04 — **A free group has unique roots.**  `deningerFreeGroup_uniqueRoots` transports the
+  free product theorem along the identification of the previous cycle: the factors are infinite
+  cyclic and therefore have unique roots, the structure maps out of the trivial group are injective
+  because their source is a subsingleton, and the transport lemma moves the conclusion to
+  `FreeGroup ι`.  `deningerFreeGroup_torsionFree` follows by comparing an element with the identity.
+  This is a classical fact about free groups which mathlib does not have, and the corpus now proves
+  it — not by Nielsen reduction but as a corollary of the amalgam machinery this card built for
+  Baumslag's theorem.  It is also the first of the starting hypotheses of the tower verified at the
+  actual object of the packet, `FreeGroup ι`, rather than at an abstract stage.
+- 2026-08-04 — **The centralizer of a basis element of a free group is the cyclic subgroup it
+  generates.**  Under the identification a basis element is the generator of its factor, which is
+  nontrivial because its image under the two equivalences to the integers is one, so
+  `deningerFreeProduct_centralizer` places anything commuting with it inside that factor, and every
+  element of the factor is a power of the generator.  `deningerFreeGroup_centralizer` transports that
+  back through the isomorphism.
+  This is the second of the tower's starting hypotheses verified at `FreeGroup ι`: the basis elements
+  are self-centralizing.  The third, isolation, is the same argument with
+  `deningerFreeProduct_isolated` in place of the centralizer criterion, and the fourth, that distinct
+  basis elements generate subgroups meeting trivially, is `deningerOf_eq_cross` since they lie in
+  different factors.
+- 2026-08-04 — **A basis element of a free group is isolated.**  `deningerFreeGroup_isolated`
+  transports `deningerFreeProduct_isolated` along the identification.  Isolation inside the factor is
+  automatic there, because the factor is generated by the basis element, and the generator has
+  infinite order (`deningerRootGen_order`), so the free product theorem applies and the conclusion
+  comes back through the isomorphism.
+  With this, three of the four starting hypotheses of the tower are verified at `FreeGroup ι` — unique
+  roots, self-centralization and isolation at every basis element — and the fourth, that distinct
+  basis elements generate subgroups meeting trivially, is `deningerOf_eq_cross` transported the same
+  way.  The remaining distance to clause (4) for arbitrary rank is the tower's bookkeeping: a stage
+  now has to carry a family of elements waiting for roots, with the three inheritance theorems
+  applied at each of them.
+- 2026-08-04 — **The fourth starting hypothesis: distinct basis elements stay disjoint under
+  conjugation.**  `deningerFreeGroup_conj_disjoint` proves that no conjugate of a nonzero power of a
+  basis element is a power of a different one.  Transported to the amalgam the conjugate is short, so
+  the conjugacy criterion either puts the conjugator in the factor of the first element — and then
+  `deningerOf_eq_cross` places the conjugate in the trivial base group, making the power trivial,
+  which contradicts the infinite order of the generator — or reports the same triviality directly.
+  All four hypotheses the tower needs at its starting stage are now theorems about `FreeGroup ι`:
+  unique roots, self-centralization and isolation at each basis element, and disjointness of distinct
+  ones under conjugation.  Together with the three inheritance theorems, which say those properties
+  survive a root adjunction at another element, the construction of the rationalization of a free
+  group of arbitrary rank has all its mathematical ingredients; what is left is the bookkeeping of a
+  stage carrying a family of elements and an enumeration of the roots still to be adjoined.
+- 2026-08-04 — **The three inheritance theorems, packaged.**  `deningerRootAdjunction_inherit` states
+  them as one conclusion under one hypothesis: an element of the group factor whose nonzero powers
+  never conjugate into the subgroup being rooted keeps its centralizer, the isolation of its cyclic
+  subgroup, and its disjointness from the new cyclic factor.  The two auxiliary hypotheses the
+  separate theorems asked for — that the element is not in the base group, and that it does not
+  conjugate into it — are both instances of the disjointness hypothesis at exponent one, so the
+  packaging removes them.
+  This is the form a stage carrying a family of elements applies at each member of the family when
+  one of them is rooted.  With it, the inductive step for a tower over a free group of arbitrary rank
+  is a single application per waiting element, and the remaining work is the enumeration: which
+  element gets its root at which stage, and the re-indexing of the family across the step.
+- 2026-08-04 — **Disjointness of the adjoined root from the waiting elements.**  The disjointness the
+  inheritance package proves runs one way, from a waiting element to the new cyclic factor; a family
+  needs it in both directions, since the adjoined root joins the family and has to be disjoint from
+  the others.  `deningerRootAdjunction_disjoint_symm` supplies the other direction by conjugating the
+  relation the other way, which exchanges the two sides and reduces it to the first; the case of a
+  trivial exponent on the waiting element is the infinite order of the adjoined root, which follows
+  from torsion freeness of the amalgam and the nontriviality of the generator.
+  With both directions the family invariant is closed under a step: after adjoining a root to one
+  member, the images of the others and the new root satisfy the same disjointness relations pairwise.
+  All the group theory for the rank at least two tower is now proved; what remains is the
+  construction itself — a stage carrying a family, a step which roots one member and re-indexes, and
+  the enumeration which visits every member with every exponent.
+- 2026-08-04 — **Disjointness between two waiting elements survives an adjunction.**  The last of the
+  pairwise relations a family needs: two elements of the group factor disjoint there, and each
+  disjoint from the subgroup being rooted, stay disjoint in the amalgam.
+  `deningerRootAdjunction_disjoint_factors` proves it by the same route as the others — the alleged
+  conjugate is a factor element, hence short, so the conjugacy criterion puts the conjugator in the
+  group factor and injectivity of the structure map brings the relation back down to the factor,
+  where the hypothesis forbids it; the escape clause is the disjointness from the rooted subgroup.
+  So the family invariant is closed under a step in all three pairings: waiting against waiting,
+  waiting against the new root, and the new root against waiting.  Every group-theoretic obligation of
+  the rank at least two tower is now discharged, and the construction is a matter of assembling a
+  stage which carries a family, a step which roots one member and re-indexes, and an enumeration.
+- 2026-08-04 — **The stage carrying a family, and its two global properties.**
+  `DeningerFamilyStage` is a group with an indexed family of elements still waiting for roots,
+  `deningerFamilyStep` roots the `p`-th member and replaces it by the root while the others go to
+  their images, and `DeningerFamilyGood` is the invariant: unique roots and torsion freeness of the
+  group, infinite order, self-centralization and isolation at every member, and disjointness under
+  conjugation between different members.
+  `deningerFamilyStep_uniqueRoots` and `deningerFamilyStep_torsionFree` discharge the two properties
+  of the group itself, by the root adjunction theorems applied at the member being rooted, whose
+  three hypotheses the invariant supplies — the centralizer one through
+  `deningerCentralizer_zpow_subset`, which reduces it from all nonzero powers to the element.  The
+  four properties of the family are the case analysis over the members, and each case is one of the
+  inheritance theorems already proved.
+- 2026-08-04 — **The third field of the family invariant.**  `deningerFamilyStep_order` shows every
+  member of the new family has infinite order, splitting on whether the member is the one just
+  rooted.  For the new root it is `deningerInfiniteOrder` applied to the torsion freeness of the
+  step, the root being nontrivial because the generator of the cyclic factor is and the structure map
+  is injective; for the others it is injectivity of the structure map applied to the order of the
+  original member.
+  Three of the six fields of `DeningerFamilyGood` are now proved for the step.  The remaining three —
+  self-centralization, isolation and pairwise disjointness of the new family — are the case analyses
+  the inheritance theorems were packaged for, with the three pairings of the disjointness field
+  already proved separately.
+- 2026-08-04 — **The fourth field: every member of the new family is its own centralizer.**
+  `deningerFamilyStep_central` splits on the member: the new root is handled by
+  `deningerRootElt_centralizer`, and a waiting member by the first component of the inheritance
+  package.  `deningerFamilyStep_disjBase` is the small translation the package needs — the invariant
+  states disjointness against another member of the family, and the package wants it against the
+  image of the base group, which is the powers of the rooted member, so the two agree once the
+  structure map is evaluated.
+  Four of the six fields are proved.  Isolation is the same split with the second component of the
+  package and `deningerRootElt_isolated`, and pairwise disjointness is the three way split already
+  proved: waiting against waiting, waiting against the root, and the root against waiting.
+- 2026-08-04 — **The fifth field: every member of the new family generates an isolated subgroup.**
+  `deningerFamilyStep_isolated` is the same split as the centralizer field: the new root by
+  `deningerRootElt_isolated`, whose four hypotheses the invariant supplies at the rooted member, and
+  a waiting member by the second component of the inheritance package.
+  Five of the six fields of the family invariant are proved for the step.  The last is pairwise
+  disjointness, whose three cases are `deningerRootAdjunction_disjoint_factors` for two waiting
+  members, the third component of the package for a waiting member against the new root, and
+  `deningerRootAdjunction_disjoint_symm` for the new root against a waiting member.
+- 2026-08-04 — **The step of the family tower preserves the whole invariant.**
+  `deningerFamilyStep_disjoint` finishes the last field with its three cases — the new root against a
+  waiting member by `deningerRootAdjunction_disjoint_symm`, a waiting member against the new root by
+  the third component of the inheritance package after rewriting the root's power as a letter of the
+  cyclic factor, and two waiting members by `deningerRootAdjunction_disjoint_factors` — and
+  `deningerFamilyStep_good` assembles all six.
+  So a stage carrying a family of elements, each of infinite order, self-centralizing, isolated and
+  pairwise disjoint under conjugation, in a torsion free group with unique roots, produces another
+  such stage when a root is adjoined to any one member.  This is the inductive step for a free group
+  of arbitrary rank, whose starting stage is the free group with its basis, verified over the last
+  cycles.  What remains is the tower itself: iterating the step along an enumeration which visits
+  every member with every exponent, and the colimit, whose machinery is already built for the rank
+  one case.
+- 2026-08-04 — **The tower over a family.**  `deningerFamilyTower` iterates the step along a schedule
+  which says, at each stage, which member of the family gets a root and with which exponent;
+  `deningerFamilyTower_good` carries the six field invariant up the tower by induction, and
+  `deningerFamilyEmbed` with its injectivity gives the chain of embeddings, the group factor of each
+  amalgam sitting inside the next stage.
+  The colimit machinery of the rank one case applies verbatim to this chain — it was stated for an
+  arbitrary sequence of groups and injections — so the colimit of the family tower is a group with
+  unique roots by `deningerUniqueRoots_of_chain` once the same functor and filtered colimit are
+  formed.  What the schedule has to arrange is fairness in two directions at once: every member of
+  the family, and every exponent, must be reached, and members created later must be reached too.
+- 2026-08-04 — **The colimit of the tower over a family has unique roots.**  The rank one colimit
+  argument runs unchanged for the family tower: `deningerFamilyDiagram` presents the chain as a
+  functor out of the natural numbers, `deningerFamilyColimit` takes its filtered colimit,
+  `deningerFamilyColimit_surjective` reads the covering off the quotient, `deningerFamilyIota_step`
+  is the cocone identity, `deningerFamilyMap_injective` composes the injective embeddings along an
+  inequality, `deningerFamilyIota_injective` turns an identification in the colimit into one at a
+  later stage, and `deningerFamilyColimit_uniqueRoots` feeds all of it into
+  `deningerUniqueRoots_of_chain`.
+  So for any free group and any schedule of members and exponents, the corpus constructs a group with
+  unique roots containing it, in which the scheduled roots exist.  Clause (4) needs the schedule to
+  be fair, so that the colimit is divisible, and the homology of the stages to vanish; the first is a
+  combinatorial condition on the schedule and the second is the vanishing theorem already proved for
+  a root adjunction, applied along this tower.
+- 2026-08-04 — **Homology vanishes along the tower over a family and in its colimit.**
+  `deningerFamilyTower_isZero_two` and `deningerFamilyTower_isZero` carry the two vanishing theorems
+  of a root adjunction up the family tower — each step roots one member, whose infinite order the
+  invariant supplies — and `deningerFamilyColimit_isZero` passes the vanishing to the colimit by the
+  union argument, the images of the stages being an increasing chain of subgroups covering it and
+  each isomorphic to its stage.
+  So the colimit of a family tower over a free group is a group with unique roots whose homology with
+  trivial coefficients vanishes in every degree in which the free group's does — which, by the
+  corpus's own computation of the homology of a free group, is every degree at least two.  What
+  remains for clause (4) in arbitrary rank is divisibility, which is a condition on the schedule:
+  every element of every stage must eventually be reached with every exponent.
+- 2026-08-04 — **The scheduled roots exist in the colimit.**  `deningerFamilyEmbed_root` records that
+  the member scheduled at a stage acquires the scheduled root there — the new value of the family at
+  that index is the adjoined root, whose power is the image of the old value — and
+  `deningerFamilyColimit_root` transports that to the colimit through the structure maps.
+  So in the colimit the image of a scheduled member is the scheduled power of the image of its
+  successor, which is the divisibility the schedule delivers.  Turning it into divisibility of every
+  element by every exponent is the fairness bookkeeping: the schedule has to visit every index with
+  every exponent infinitely often, and the family at an index has to eventually reach every element,
+  which is where the enumeration of a countable free group enters.
+- 2026-08-04 — **Divisibility passes to powers, and what the family still has to be.**
+  `deningerDivisible_zpow` records the trivial but necessary step — a root of an element gives a root
+  of each of its powers, by taking the same power of the root — and
+  `deningerFamilyColimit_divisible_of_mem` reads it in the colimit: every power of a divisible image
+  of a family member is divisible.
+  That marks the boundary of what the present family construction can give.  Divisibility of the
+  whole colimit would need every element of every stage to be a power of a family member, and the
+  family cannot simply be enlarged to all elements: its members have to be self-centralizing,
+  isolated and pairwise disjoint, which is a strong condition.  In the classical construction the
+  family is the set of elements which are not proper powers — the maximal roots — and every element
+  is a power of one of them.  Proving that a stage of this tower has that property is the remaining
+  mathematics: it asks for a theory of maximal roots in amalgams over isolated cyclic subgroups,
+  which is exactly what the conjugacy criterion and the centralizer theorems of this card were built
+  to support.
+- 2026-08-04 — **An isolated element is a maximal root.**  `deningerIsolated_not_properPower` proves
+  the first half of the dictionary between the two descriptions of the family: if the cyclic subgroup
+  generated by an element of infinite order is isolated, the element is not a proper power, because a
+  proper power would place its root in the cyclic subgroup and the two exponents would multiply to
+  one.
+  The converse — a maximal root generates an isolated subgroup — is not formal and is where the
+  structure of the group enters; it holds in a free group and has to be re-established at each stage
+  of the tower.  Together with the statement that every element is a power of a maximal root, it is
+  what would let the family be enlarged to cover the whole stage, and with that the colimit would be
+  divisible and clause (4) would close in arbitrary rank.
+- 2026-08-04 — **The exponent of a root is bounded by the length.**  `deningerRootExponent_le` reads
+  off `deningerCycRedWord_of_pow`: a root of a cyclically reduced word is a cyclically reduced word
+  whose length times the exponent is the original length, and a cyclically reduced word is nonempty,
+  so the exponent is at most the length.
+  This is the finiteness that makes a maximal root exist.  For an element with a nonempty cyclically
+  reduced normal word the set of exponents for which a root exists is a nonempty set of naturals
+  bounded by the length, so it has a greatest element, and the corresponding root is a maximal root —
+  a root of it would multiply the exponents and exceed the maximum.  Extracting that root is the next
+  step towards the enlarged family, and with it towards divisibility of the colimit in arbitrary
+  rank.
+- 2026-08-04 — **A cyclically reduced element has a maximal root.**  `deningerExists_maximalRoot`
+  turns the length bound into an existence statement: the exponents admitting a root form a set of
+  naturals containing one and bounded by the length of the word, `Nat.findGreatest` picks the
+  greatest, and the root it provides is maximal because a proper root of it would multiply the
+  exponents and exceed that greatest.
+  This is the second description of the family, now available in the amalgam: every cyclically
+  reduced element is a power of a maximal root.  What the enlarged family still needs is that a
+  maximal root generates an isolated subgroup and is its own centralizer — the converse direction of
+  the dictionary, which for these amalgams should follow from the centralizer theorems already
+  proved, since the centralizer of a cyclically reduced element is where its roots live.
+- 2026-08-04 — **The invariant behind the enlarged family is that centralizers are cyclic.**
+  `DeningerCyclicCentralizers` names the condition — the centralizer of every nontrivial element is
+  generated by a single element of infinite order — and proves that it delivers, for free, three of
+  the six fields of the family invariant: `deningerCyclicCentralizers_mem` puts the element among the
+  nonzero powers of the generator of its centralizer, `deningerCyclicCentralizers_central` makes that
+  generator its own centralizer, and `deningerCyclicCentralizers_isolated` makes it generate an
+  isolated subgroup, the last two using only unique roots through the corpus's
+  `deningerCentralizer_zpow_eq`.  `deningerUniqueRoots_torsionFree` records that unique roots already
+  force torsion freeness.
+  This reorganizes the remaining work.  The family of a stage should be the generators of the
+  centralizers — the maximal roots — and covering the stage is then automatic, since every element is
+  a power of the generator of its own centralizer.  What has to be propagated along the tower is a
+  single structural property, that centralizers are cyclic, and everything the family invariant asks
+  of its members follows from it.
+- 2026-08-04 — **Centralizing a cyclically reduced element rotates its word, and the rotation is
+  visible on the indices.**  `deningerCent_rotate` feeds the conjugacy criterion with a centralizing
+  element: the conjugate is the element itself, hence no longer than its word, so the word is a
+  rotation of itself up to the base group — an element of the base group rotating by zero.
+  `deningerRotate_sym_map_fst` reads that symmetry on the index sequence: the base conjugate of the
+  rotation is again a reduced alternating word with the same product, and the index sequence is an
+  invariant of the product, so the index sequence of the word is invariant under the rotation.
+  `deningerRotateCentElt` names the element that realizes the symmetry — the prefix moved by the
+  rotation, corrected by the base element — and `deningerRotateCentElt_comm` and
+  `deningerRotateCentElt_len` prove that it commutes with the word and has length the length of the
+  rotation, rotation being conjugation by that prefix and the base group not changing lengths.
+  So a nontrivial rotation symmetry of a cyclically reduced word produces a short element of its
+  centralizer, and the index sequence is periodic under it.  `deningerCycRed_pow_word` supplies the
+  other half of the dictionary between elements and words: a power of a cyclically reduced word is a
+  cyclically reduced word of the multiplied length, the block form of the power keeping the first and
+  last letters of the original so that the cyclic condition survives.
+- 2026-08-04 — **Where the centralizer theory blocks, precisely.**  The conjugacy criterion returns
+  the rotation but not the conjugator, and the missing statement is exactly that the centralizer with
+  trivial rotation is the cyclic subgroup: writing the criterion's output as `base m * rotate t U *
+  base m⁻¹` and cancelling the element that realizes the rotation turns any conjugator into a
+  centralizing element of trivial rotation, so no rearrangement of the present criterion can produce
+  the conjugator.  What is needed is the criterion's own induction, peeling the conjugator one letter
+  at a time, carried out with the conjugator tracked: at each rotation step the peeled letter is the
+  inverse of the first letter of the word up to the base group, so the conjugator accumulates the
+  prefix `U.take t`, and when the accumulated rotation is a multiple of the length the accumulated
+  conjugator is a power of the element.  With that, a centralizer element factors as a prefix times a
+  base element times a power, the elements realizing rotations form a cyclic group of rotations, and
+  the element realizing the least rotation exhibits the word as a proper power unless the rotation is
+  trivial — which is the contradiction that makes a maximal root self-centralizing, and with it the
+  enlarged family, the divisibility of the colimit, and clause (4) in arbitrary rank.
+- 2026-08-04 — **The conjugacy criterion now returns the conjugator.**  `deningerConj_letter_word`
+  and `deningerConj_cycRed_rotate` both carry a third datum: an integer `j` with
+  `U.take t · (base m)⁻¹ · A = U^j`, where `U.take t · (base m)⁻¹` is the element realizing the
+  rotation.  For a single letter this is a two line computation in each branch of the trichotomy —
+  when the letter cancels the first letter of the word the product is the identity, when it cancels
+  the last it is the word itself — and the induction of the criterion then composes the data:
+  `deningerPrefix_compose` shows that the prefix moved by a rotation by `t₀` followed by the prefix
+  moved by a rotation by `t₁` of the rotated word is the prefix moved by the rotation by
+  `t₀ + t₁ mod length`, whole copies of the word passed contributing powers of its product, and
+  rotation being conjugation turns the inductive hypothesis into the same shape one rank up.
+  `deningerCent_rotate` reads the strengthened criterion on a centralizing element: every element
+  commuting with a cyclically reduced word of at least two letters is the element realizing its
+  rotation times a power of the word.  This is the statement whose absence blocked the previous
+  cycle: the centralizer is now described, not merely constrained.
+- 2026-08-04 — **The remaining argument is a Euclidean descent.**  With the conjugator in hand, an
+  element `z` of the centralizer of a cyclically reduced `w` of length `L` is `w^{-j}` times an
+  element `b` of the centralizer whose word is the moved prefix, of length `t ≤ L`, and that word is
+  again cyclically reduced — its first and last letters carry different factors because the index
+  sequence is periodic under the rotation and the word alternates.  If `t` is `0` or `L` then `b` is
+  a base element times a power of `w`, and a base element commuting with `w` is trivial in a root
+  adjunction, since the centralizer of a nontrivial base element there is the infinite cyclic group
+  generated by the adjoined root, all of whose elements have length at most one.  If `0 < t < L` the
+  same criterion applies to the pair the other way round, `w` centralizing `b`, and returns `w` as a
+  power of `b` times a shorter prefix element; either the prefix is trivial or full, in which case
+  `w` is a proper power of `b` and a maximal root cannot be one, or the descent continues with a
+  strictly shorter word.  The recursion terminates at length one, where the centralizer theorems for
+  a factor apply.  So the centralizer of a maximal root is the cyclic group it generates, which is
+  the property `DeningerCyclicCentralizers` asks of a stage, and with it the family may be enlarged
+  to all maximal roots.
+- 2026-08-04 — **The Euclidean descent is proved, and its two structural hypotheses are discharged.**
+  `deningerCommon_cyclic` runs the descent: an element commuting with a cyclically reduced word of at
+  least two letters is, by the strengthened criterion, the element realizing a rotation times a power
+  of the word; a trivial or full rotation makes the realizing element a base element, which the first
+  hypothesis forces to be trivial; a proper rotation makes it shorter than the word, and the word
+  commutes with it, so cyclically reducing it and applying the statement one length lower — the
+  recursion is on the length of the centralized word — expresses the word and the element as powers
+  of a single element.  The recursion stops at a one letter reduction, which the second hypothesis
+  excludes.
+  `deningerCycRed_not_conj_short` proves what makes both hypotheses true: the powers of an element of
+  length at most one stay of length at most one, so the powers of a conjugate of one have lengths
+  bounded by twice the length of the conjugator, whereas `deningerCycRed_pow_word` makes the powers
+  of a cyclically reduced word of at least two letters cyclically reduced words of the multiplied
+  length.  A long cyclically reduced element is therefore never conjugate to a short one.
+  `deningerCommon_cyclic_amalgam` assembles this with the corpus's centralizer theorems — the
+  centralizer of a nontrivial base element lies in the exceptional factor, the centralizer of an
+  element of a factor either lies in that factor or the element conjugates into the base — and
+  concludes the descent unconditionally for an amalgam whose base is self centralizing in every
+  factor but one, which is exactly the shape of a root adjunction.
+  What remains for a maximal root to be self centralizing is the assembly: the centralizer of an
+  element of a group with unique roots is the centralizer of its maximal root, the maximal root is
+  cyclically reduced of at least two letters unless the element is conjugate into a factor, and the
+  descent applied to the maximal root returns an element whose power is the maximal root, so
+  maximality makes that power the first and the centralizer the cyclic group it generates.
+- 2026-08-04 — **The centralizer of a cyclically reduced element is the cyclic group of its maximal
+  root.**  `deningerMaximalRoot_centralizer` reads the descent on a maximal word: the descent returns
+  an element whose power is the word, maximality forces the exponent to be one, so the commuting
+  element is a power of the word itself.  `deningerCycRed_centralizer_cyclic` removes the maximality:
+  every cyclically reduced word of at least two letters has a maximal root, that root is again a
+  cyclically reduced word of at least two letters — a one letter word has only short powers, while
+  the word itself is long — and in a group with unique roots an element commuting with a power
+  commutes with the element, so the centralizer of the word is the centralizer of its maximal root
+  and hence the cyclic group that root generates.
+  This is the property the enlarged family needs, in the form the invariant asks for: for a root
+  adjunction, whose base group is self centralizing in every factor but the adjoined infinite cyclic
+  one, the centralizer of any element with a long cyclic reduction is infinite cyclic, generated by a
+  maximal root, and `DeningerCyclicCentralizers` then supplies self centrality, isolation and the
+  covering of the element by powers of that generator.  What is left is the complementary case — the
+  elements conjugate into a factor — and the transport of the statement along conjugation, after
+  which the stages of the tower carry cyclic centralizers and the family may be taken to be the
+  maximal roots.
+- 2026-08-04 — **The centralizer condition, in the form the invariant asks for, for every element
+  with a long cyclic reduction.**  `deningerCentralizer_conj` transports a cyclic centralizer along
+  conjugation, and `deningerCycRedConj_centralizer` turns the inclusion into the equivalence:
+  the generator of the centralizer of a conjugate of a cyclically reduced word of at least two
+  letters has infinite order, because unique roots force torsion freeness and the word is nontrivial,
+  and its powers do commute with the conjugate, since they are powers of a common element.
+  So for a root adjunction every element whose cyclic reduction has at least two letters satisfies
+  the condition `DeningerCyclicCentralizers` names.  The complementary case is the elements conjugate
+  into a factor: for the adjoined infinite cyclic factor and for the base group the centralizer is
+  the cyclic group generated by the adjoined root, which the corpus already computes, and for the
+  other factor it is the factor's own centralizer, which the stage's invariant supplies.  Assembling
+  the two cases is what makes cyclic centralizers an invariant of the tower, and with it the family
+  of maximal roots covers each stage.
+- 2026-08-04 — **The descent is instantiated at a root adjunction.**
+  `deningerRootAdjunction_cycRed_centralizer` discharges the two hypotheses of the amalgam descent
+  for a root adjunction at an isolated self centralizing element of infinite order: `deningerRootHcent`
+  is the exponent rigidity of the base group in each factor, and the self centralizing hypothesis
+  holds in the rooted factor by the isolation of the cyclic subgroup, the adjoined infinite cyclic
+  factor being the exempted one — the same two inputs the corpus already feeds to the unique roots
+  theorem.  So in a root adjunction, every element whose cyclic reduction has at least two letters
+  has an infinite cyclic centralizer, generated by an element of infinite order.
+  The tower can now carry cyclic centralizers past every step, once the complementary case is
+  assembled: an element whose cyclic reduction has at most one letter is conjugate into a factor,
+  where the centralizer is the adjoined root's cyclic group for the infinite cyclic factor and for
+  the base, and the factor's own centralizer otherwise.
+- 2026-08-04 — **A root adjunction preserves cyclic centralizers.**
+  `deningerRootAdjunction_cyclicCentralizers` closes the case analysis.  Every element is conjugate
+  to the product of a cyclically reduced word: if the word is long the descent computes its
+  centralizer, and if it is a single letter the element is conjugate into a factor.  For the adjoined
+  infinite cyclic factor and for the base group the centralizer is the cyclic group generated by the
+  adjoined root — `deningerOfFalse_centralizer`, using that an element of that factor is a power of
+  the root and that in a group with unique roots centralizing a power is centralizing the element —
+  and the same applies to an element of the rooted factor which is conjugate into the base, since it
+  is then a conjugate of a base element.  Otherwise the centralizer lies inside the rooted factor and
+  is the image of the factor's own centralizer, which the hypothesis supplies:
+  `deningerOfTrue_centralizer`.  `deningerCyclicCentralizer_conj` transports each case along the
+  conjugation, and `deningerRootElt_order` gives the adjoined root infinite order.
+  This turns the whole invariant into one condition.  A stage with unique roots and cyclic
+  centralizers has, for every nontrivial element, a generator of its centralizer which is its own
+  centralizer, generates an isolated subgroup and has the element among its powers — all three by
+  `DeningerCyclicCentralizers` — so the root adjunction at that generator is admissible, preserves
+  unique roots by the corpus's theorem and preserves cyclic centralizers by this one, and the element
+  itself acquires the adjoined root's power.  The remaining work for divisibility is bookkeeping: the
+  stages are countable, so their elements can be enumerated and a schedule can visit every element of
+  every stage with every exponent.
+- 2026-08-04 — **The colimit of the new tower is divisible: the last missing property of clause (4)
+  in arbitrary rank.**  With cyclic centralizers as the single structural invariant, the tower can be
+  rebuilt so that it roots the generator of the centralizer of an enumerated element:
+  `DeningerCCStage` carries a group, an enumeration of its elements and a distinguished nontrivial
+  element, `DeningerCCGood` asks for unique roots, cyclic centralizers, countability, a nontrivial
+  distinguished element and a surjective enumeration, and `deningerCCStep_good` proves the step
+  preserves all five — unique roots by the corpus's root adjunction theorem, cyclic centralizers by
+  this card's, countability by `deningerPushoutI_countable`, which surjects lists of letters onto the
+  amalgam, and the enumeration by devoting the block of indices of the stage number to a fresh
+  surjection.  `deningerCCStep_root` is the payoff of the covering: the enumerated element is a power
+  of the rooted generator, so it acquires the scheduled root itself.
+  `deningerCCTower`, `deningerCCColimit`, `deningerCCHomology` carry the earlier constructions across
+  to the new stage type — unique roots and the vanishing of homology in degree two and in every
+  degree at least three pass to the colimit — and `DeningerCCTrajectory` supplies the bookkeeping that
+  makes a schedule fair: an index of a block at most the stage number denotes the image of the same
+  element at every later stage, so its trajectory is the identity on indices.
+  `deningerCCColimit_divisible` closes it: the schedule `deningerCCSched`, which reads a pair of an
+  index and an exponent off the second component of the step number, visits every index with every
+  admissible exponent arbitrarily late, so every element of every stage is reached with every
+  exponent, and every element of the colimit has a root of every nonzero order.
+- 2026-08-04 — **A free group has cyclic centralizers**, which makes it an admissible starting stage.
+  `deningerFreeGroup_cyclicCentralizers` runs the same case analysis on the corpus's presentation of
+  a free group as an amalgam of infinite cyclic groups over the trivial group: the base group being
+  trivial, both hypotheses of the descent are vacuous, so an element with a long cyclic reduction has
+  an infinite cyclic centralizer; an element conjugate into a factor has that factor as its
+  centralizer, the factors being infinite cyclic and abelian; and no nontrivial element is conjugate
+  into the base group.  `deningerCyclicCentralizers_of_mulEquiv` transports the conclusion along the
+  corpus's isomorphism.
+  What remains for clause (4) in arbitrary rank is the assembly: a starting stage built from a free
+  group of finite rank — countable, with an enumeration and a nontrivial element — and the vanishing
+  of the homology of a free group with trivial coefficients in every degree at least two, which the
+  corpus so far records only cohomologically.  With those, the colimit of the new tower over the fair
+  schedule is a uniquely divisible torsion free group with no homology in degrees at least two, which
+  is what clause (4) asserts.
+- 2026-08-04 — **Clause (4) is closed in arbitrary finite rank, unconditionally.**
+  `deningerFreeRationalization α`, the colimit of the tower of stages with cyclic centralizers
+  started at a free group of finite rank and run along the fair schedule, is a uniquely divisible
+  torsion free group whose homology with trivial coefficients vanishes in degree two and in every
+  degree at least three: `deningerFreeRationalization_uniqueRoots`, `_divisible`, `_torsionFree`,
+  `_isZero_two` and `_isZero`.  That is the list of properties clause (4) asserts of `Bau(F)`, and
+  the construction replaces the Casacuberta–Peschke input entirely, for every rank, as it already did
+  for rank one.
+  Two inputs were built for the starting stage.  `deningerCCFreeStage_good` collects what a free
+  group of finite rank supplies — unique roots and torsion freeness from the corpus, cyclic
+  centralizers from this card's descent, countability from mathlib, a nontrivial generator, and the
+  enumeration of its elements in the first block of indices.  `deningerFreeGroup_isZero` proves the
+  vanishing of the homology of a free group of finite rank in degrees at least two by induction on
+  the rank: `deningerFreeSplitEquiv` presents the free group on one more generator as a free product
+  with an infinite cyclic group amalgamated over the trivial group — both maps checked on the
+  generators and on the factors — and the corpus's two factor vanishing theorem applies, the base
+  group being trivial and the new factor infinite cyclic.
+  What the gate still asks for is the identification of this construction with the card's own
+  `DeningerBau (FreeGroup α)`: the colimit is uniquely divisible and contains the free group, and
+  each stage is generated by the previous one together with one adjoined root, so the colimit is the
+  root closure of the free group inside itself, which is exactly what `DeningerBau.eq_top_of_rootClosed`
+  consumes.  With that isomorphism the vanishing transports to the packet's own object and the gate
+  closes; the mathematics of clause (4) is no longer the obstruction.
+- 2026-08-04 — **Clause (4) is closed for the packet's own object, in every degree at least two.**
+  `deningerBauFree_isZero_two`, `deningerBauFree_isZero`, `deningerBauFree_isZero_succ_succ` and
+  `deningerBauFree_isZero_cohomology` prove that the homology, and over a field of characteristic
+  zero the cohomology, of `DeningerBau (FreeGroup α)` with trivial coefficients vanishes in every
+  degree at least two, for every finite index set, the rank zero case being the corpus's own
+  subsingleton computation.
+  The bridge is a surjection, not an isomorphism, and the corpus's own criterion consumes it:
+  `deningerCCColimitDesc` maps the tower's colimit into any uniquely divisible group receiving the
+  starting stage — each step extends the map by the universal property of the amalgam, the adjoined
+  root going to the root of the image, which `deningerZRoot` supplies for an integer exponent — and
+  `deningerBauFreeDesc_surjective` shows the image is a root closed subgroup containing the image of
+  the free group, hence everything by `DeningerBau.eq_top_of_rootClosed`, divisibility of the colimit
+  producing the preimage of each root and unique roots identifying it.  The rationalization is
+  therefore a retract of the colimit, by the projectivity of the rationalization among uniquely
+  divisible groups, and `deningerBauFree_isZero_of_surjection` transfers the vanishing proved for the
+  colimit.
+  With this the card's only open gate is the homotopy-fibre half of clause 5, which needs
+  classifying spaces.
+- 2026-08-04 — **Classifying spaces, and the fibre of `Ba_U`, are now in the corpus.**  The card's
+  remaining gate is clause 5's first half, which needs classifying spaces; mathlib has the nerve, the
+  homotopy category of a simplicial set, and the adjunction between them, but nothing about groups.
+  `DeningerClassifyingSpace` builds the missing layer: `DeningerPt` is the one object category of a
+  group, with the object in the group's own universe so that the nerve adjunction applies — the
+  object type is a field-free structure, so any two objects are definitionally equal and functors
+  into it are determined by their action on morphisms (`deningerPtHom_ext`).  `deningerClassifying`
+  is the nerve of that category, `deningerClassifying_ho` identifies its homotopy category with the
+  one object category again, by the counit of the nerve adjunction, and `deningerClassifying_pi_one`
+  reads the fundamental group off that identification: the homotopy category has one object, so the
+  classifying space is connected, and the endomorphisms of that object are the group.
+  `DeningerClassifyingFibre` computes the fibre.  The kernel square of a homomorphism is a pullback
+  of one object categories — `deningerPtKerCone_isLimit`, the lift of a cone being the factorisation
+  of a functor through the kernel — and the nerve is a right adjoint, so
+  `deningerClassifyingFibre_isLimit` carries it to a pullback of simplicial sets: the classifying
+  space of the kernel is the fibre of the map of classifying spaces over the base point.  With
+  `deningerClassifying_ho` applied to the kernel, that fibre is connected with fundamental group the
+  kernel, which is the content of clause 5's first half.
+  What is still missing for the *homotopy* fibre reading is that the map of classifying spaces of a
+  surjection is a Kan fibration, so that the strict fibre computes the homotopy fibre.  Mathlib has
+  the Quillen model structure on simplicial sets but no fibrancy results about nerves at all, so
+  this is the next build: horn filling for the nerve of a one object groupoid, and the lifting
+  property for a surjective homomorphism.
+- 2026-08-04 — **Coordinates for the horn filling.**  `DeningerClassifyingEdges` records the two
+  facts the fibration proof will be written in: the vertices of a classifying space form a
+  subsingleton, its edges are the elements of the group, and a map of classifying spaces acts on
+  edges by the homomorphism.  Together with mathlib's strict Segal property of a nerve — a simplex
+  is recovered from its spine — and the horn API — a map out of a horn is a compatible family of
+  faces, and two such maps agree when their faces do — these give the coordinates in which the
+  lifting problem is finite combinatorics.
+  The case analysis the proof needs is now explicit.  A horn `Λ[m,i]` contains the edge `{k,k+1}`
+  exactly when some vertex avoids `{k,k+1,i}`, so for `m ≥ 3` the whole spine lies in the horn and
+  the lift is read off it; for `m = 2` and an inner horn the same holds; for `m = 2` and an outer
+  horn one edge is missing and is recovered by inversion, which is where the group structure enters;
+  and for `m = 1` the horn is a vertex and the lift is a preimage of the given edge, which is where
+  surjectivity enters.  Each case then closes by comparing spines, both for the compatibility with
+  the base simplex and for the agreement with the horn.
+- 2026-08-04 — **The horn combinatorics of the fibration proof are settled.**  `DeningerHornEdges`
+  proves the membership criterion that the case analysis rests on: the edge joining consecutive
+  vertices `k` and `k+1` lies in the `i`-th horn as soon as some vertex avoids `i`, `k` and `k+1`,
+  hence always when the simplex has at least four vertices (`deningerEdge_mem_horn_of_four`), and for
+  three vertices whenever the horn is inner (`deningerEdge_mem_horn_of_inner`).  So for those horns
+  the whole spine of the filler is already prescribed by the horn, and the strict Segal property of
+  the nerve turns it into the filler; the two remaining cases — a one dimensional horn, where
+  surjectivity supplies the edge, and a two dimensional outer horn, where inversion supplies the
+  missing edge — are where the group structure enters.  Assembling these into the lifting property
+  against `SSet.modelCategoryQuillen.J`, and hence into `Fibration (deningerClassifyingMap f)`, is
+  the next step.
+- 2026-08-04 — **The two structural lemmas the horn filling runs on.**
+  `deningerClassifying_hom_ext` proves that two maps of simplicial sets into a classifying space
+  agree as soon as they agree on edges: a classifying space has one vertex, and its simplices are
+  recovered from their spines by the strict Segal property of a nerve, so naturality reduces
+  everything to the edges.  `deningerEdgeElt_comp` is the cocycle identity: a map into a classifying
+  space assigns a group element to every edge, and a triangle of the source is sent to a triangle of
+  the classifying space, whose long edge is the composite of the two short ones, so the element of
+  the long edge is the product of the elements of the short ones.
+  These are what turn the lifting problem into group theory.  The cocycle identity is also what
+  supplies the missing edge of a two dimensional outer horn — the identity read across the faces of a
+  horn expresses a long edge through short ones, and inverting the shared edge produces the edge the
+  horn does not contain — and it is what will let the compatibility of the filler with each face be
+  checked edge by edge rather than face by face.
+- 2026-08-04 — **The cocycle identity is available inside a horn.**  Three further bricks complete
+  the toolkit.  `DeningerSimplexEdge` records that a simplex of a classifying space is a functor out
+  of a linear order, so between any two of its vertices there is a group element, these compose
+  (`deningerSimplexEdge_comp`), the element between equal vertices is trivial, and restricting the
+  simplex along the edge joining two vertices returns that element — the last by definitional
+  unfolding of the nerve.  `DeningerHornFaceEdge` generalises the edge of the standard simplex from
+  consecutive vertices to arbitrary ones, with the same membership criterion
+  (`deningerEdgeOf_mem_horn`), and computes the restriction of a simplex along an edge as the edge
+  joining the images of its endpoints.  `DeningerHornCocycle` builds the triangle spanned by three
+  vertices, proves its membership criterion and identifies its three faces with the three edges, and
+  concludes `deningerHornEdgeElt_comp`: whenever one vertex avoids three vertices and the horn index,
+  the elements a map out of the horn assigns to the three edges they span compose.
+  That identity is the engine of the remaining argument.  It gives the relation between a long edge
+  and two short ones whenever a witness vertex exists — always for at least five vertices, and for
+  four or three vertices under the explicit conditions the case analysis records — and where no
+  witness exists it is applied three times across the faces of the horn and the shared edge is
+  cancelled, which is the step that uses invertibility.
+- 2026-08-04 — **The cocycle identity holds for any three vertices, and simplices can be built from
+  prescribed edges.**  `deningerHornEdgeElt_comp_general` removes the last hypothesis from the
+  cocycle identity: for a simplex with at least four vertices, the elements a map out of a horn
+  assigns to the three edges of any three vertices compose.  Either some vertex avoids the three and
+  the horn index, and the identity is the one already proved, or the horn index is itself the fourth
+  vertex, and then the identity follows from the three triangles that fourth vertex spans with the
+  given three, the edge to it cancelling — one of four variants according to where it sits in the
+  order (`_comp_below`, `_comp_midLeft`, `_comp_midRight`, `_comp_above`).  This cancellation is
+  exactly where invertibility is used, and it is what makes the outer horns fill.
+  `DeningerSimplexOfFun` supplies the other half of the assembly: a family of group elements
+  assembles into a path, hence by the strict Segal property into a simplex whose successive edges are
+  the prescribed elements (`deningerSimplexOfFun_edge`), two simplices with the same successive edges
+  agree (`deningerSimplex_ext`), and a map of classifying spaces acts on the edges of a simplex by
+  the homomorphism.
+  What remains is the assembly of the lifting problem itself: read the successive edges off the horn,
+  build the filler, and check the two conditions edge by edge — the compatibility with the base
+  simplex from the commuting square, and the agreement with the horn face by face, where the general
+  cocycle identity supplies the merged edge of each face.
+- 2026-08-04 — **The filler of a horn is built, and it agrees with the horn on short edges.**
+  For a simplex with at least four vertices every edge lies in the horn
+  (`deningerEdgeOf_mem_horn_of_three`) and a degenerate edge carries the identity
+  (`deningerHornEdgeElt_refl`, from the cocycle identity applied to one vertex three times), so the
+  successive edges of a map out of the horn are defined and assemble into a simplex:
+  `deningerHornFiller`.  `deningerHornFiller_edge_step` proves what the face comparison needs — the
+  filler and the horn assign the same element to every edge whose endpoints are at most two apart:
+  equal endpoints by the degenerate computation, consecutive endpoints by construction, and endpoints
+  two apart by splitting at the middle vertex and applying the general cocycle identity.
+  Two definitional computations make this work and are recorded as lemmas: the edges of a restricted
+  simplex are the edges between the images of the endpoints, and the simplex assigned by the map
+  corresponding to a simplex is the restriction along it.  Both hold by unfolding the nerve, which is
+  what keeps the comparison free of transport.
+  What remains is the face comparison itself — the faces of the filler and the faces of the horn have
+  the same successive edges, those being edges of length one or two — and then the two conditions of
+  the lifting problem, together with the small cases of one and two dimensional horns.
+- 2026-08-04 — **Clause 5's homotopy fibre is proved: the map of classifying spaces of a surjection
+  is a Kan fibration.**  `deningerClassifyingMap_fibration` establishes the right lifting property
+  against every horn inclusion, which is fibrancy in mathlib's Quillen model structure on simplicial
+  sets, and the three cases are exactly the three mechanisms the mathematics uses.  A one dimensional
+  horn is a vertex, so the only condition is below and surjectivity supplies the edge
+  (`deningerHornLift_one`).  A two dimensional horn has two of the three edges of a triangle: for the
+  inner horn they are the two successive ones, and for an outer horn the missing successive edge is
+  recovered from the long edge by inverting the other, which is where the group structure enters
+  (`deningerHornLift_two`).  A horn of a simplex with at least four vertices contains every edge, so
+  the filler is the simplex with the horn's successive edges, its faces are the horn's faces by the
+  general cocycle identity, and its edges map to the given ones because the square commutes
+  (`deningerHornLift_large`).
+  `DeningerPacketFibre` reads this on the packet: `deningerBauFreeMap_fibration` says the map of
+  classifying spaces induced by `a_U` is a Kan fibration, `deningerBauFreeMap_fibre` says its fibre
+  over the base point is the classifying space of `K_U`, and `deningerBauFreeMap_fibre_ho` identifies
+  the homotopy category of that fibre with the one object category of `K_U` — so the homotopy fibre
+  is connected and its fundamental group is `K_U`, which is clause 5's first half.  Its consequence,
+  the invariance of finite covering categories under homotopy pullback, was already formalized in its
+  group theoretic form.
+  With this the card has no open gate left: clauses 1, 2, 3, 4 and 5 are formalized, unconditionally,
+  in every degree and in arbitrary finite rank.

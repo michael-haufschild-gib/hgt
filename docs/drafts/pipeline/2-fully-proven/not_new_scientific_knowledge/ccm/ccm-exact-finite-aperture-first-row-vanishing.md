@@ -195,6 +195,429 @@ Weil even-gap lower bound remain later gates.
   approximation `(3.6)` / summary formula `(6.5)` in the published numbering.
 - NIST Digital Library of Mathematical Functions, Bessel envelopes and large-argument symbols.
 
+## Lean status
+
+**Partially formalized, 2026-08-04**, in
+`formal/GaloisForLFunctions/RHTower/CCMFirstRowStationaryPhase.lean`.  Two of the card's proved gates
+need no asymptotic input at all and are now unconditional.
+
+**The exact stationary point, equations `(6)`–`(9)`:**
+
+- **`stationary_equation_reduce`** — the reduction of `(6)` to `(7)`, as a *ring identity*:
+
+  ```text
+  (y-s)(k²y-1) - k²(k²y-s)(y-1) = (k²-1)(-(k²y²) + (k²+1)y - s).
+  ```
+
+  Displaying the factor `k² - 1` is the point: it shows that `k = 1` is the **only** excluded case, and
+  that the reduction is exact rather than asymptotic.
+- `stationaryDisc`, `stationaryRoot`, `stationaryDisc_nonneg`, `sq_le_sqrt_stationaryDisc`,
+  `sqrt_stationaryDisc_le` — the discriminant, the root of `(8)`, and the two-sided discriminant
+  bracket `k² <= sqrt(disc) <= k² + 1`.  Note that the lower bracket uses only `s <= 1/2` and the upper
+  only `s >= 0`.
+- **`stationaryRoot_isRoot`** — `(8)` is a root of `(7)`.
+- **`stationaryRoot_sub_one`** — equation `(9)`, the exact rationalised form
+  `y - 1 = 2(1-s)/(sqrt(disc) + k² - 1)`.
+- **`stationaryRoot_sub_one_bounds`** — the card's `y - 1 ≍ k^{-2}`, with explicit absolute constants:
+  `1/(2k²) <= y - 1 <= 2/k²` for `k >= 1`, `0 <= s <= 1/2`.
+
+**The arithmetic conclusion, equation `(18)`:**
+
+- `logLinTailSum`, `sum_logLin_div_sq_le`, **`weighted_firstRow_sum_le`** — given the pointwise
+  two-term bound, the logarithmically weighted sum over the exact aperture satisfies
+
+  ```text
+  sum_(2<=k<=N) log k |G k| <= A * sum_k log k / k² + B * (log²N/2 + 1).
+  ```
+
+  Both arithmetic inputs were **already in the tree** and are reused rather than reproved:
+  `HTGeometry.summable_logLin_div_sq` for the convergent weight and `RHTower.sum_log_div_le` for the
+  harmonic weight.
+- **`tendsto_firstRowBound_atTop`** — the `o(1)`: with `A = C c^{-1/2}` and `B = C/c` both terms vanish
+  as the aperture grows, from `Real.tendsto_pow_log_div_mul_add_atTop` at exponent two.
+
+Not formalized, because it genuinely imports external asymptotics rather than being derivable here:
+Dunster's pole-uniform expansion `(14)`, the Bessel symbol branches and envelope bound, the
+one-dimensional stationary-phase estimate behind `(13)`, the endpoint-layer split `(12)`, the envelope
+integral `(15)`–`(16)`, and hence `(17)`.  Those supply exactly the *hypothesis* of
+`weighted_firstRow_sum_le`; everything downstream of it is now unconditional.
+
+The endpoint bracket `(4)` is now proved:
+
+- `xiSpeed`, `xiCompSpeed`, `xiEndpointPhase` — the Liouville speed, the `s = 0` comparison speed and
+  the endpoint-normalised phase.
+- `sqrt_two_mul_sqrt_sub_one_le`, `xiCompSpeed_le`, `intervalIntegrable_rpow_sub_one`,
+  `intervalIntegrable_xiCompSpeed`, `intervalIntegrable_xiSpeed` — the integrand is singular at the
+  endpoint, so integrability is obtained by domination: `sqrt(t²-1) >= sqrt 2 sqrt(t-1)` gives
+  `t/sqrt(t²-1) <= (x/sqrt 2)(t-1)^(-1/2)`, and `(t-1)^(-1/2)` is interval integrable because
+  `-1/2 > -1`.
+- **`integral_xiCompSpeed`** — the exact improper endpoint integral
+  `int_1^x t/sqrt(t²-1) dt = sqrt(x²-1)`, from the one-sided fundamental theorem with antiderivative
+  `sqrt(t²-1)`, continuous up to the endpoint and differentiable on the interior.
+- `xiSpeed_le_xiCompSpeed`, `sqrt_one_sub_mul_xiCompSpeed_le` — the pointwise two-sided integrand
+  comparison; the lower half is `(1-s)t² <= t²-s` for `t > 1`, which is where `s <= 1` enters.
+- **`xiEndpointPhase_bounds`** — equation `(4)`:
+  `sqrt(1-s) sqrt(x²-1) <= xi_s(x) <= sqrt(x²-1)` for `0 <= s <= 1` and `x >= 1`.  The Lean junk value
+  of both integrands at the endpoint is `0`, so the closed-interval comparison needed by
+  `integral_mono_on` holds there as well.
+
+The amplitude half of `(4)`, the differentiation law `(10)` and the `k³` law `(11)` are now proved as
+well:
+
+- `xiAmplitude`, **`xiAmplitude_le`** — `A_s(x) <= 2^{1/4} x^{-1/2}` on `0 <= s <= 1/2`, `x > 1`.  Both
+  inputs are exact: the phase bound `xi_s(x) <= sqrt(x²-1)` cancels the first factor of the fourth
+  root, and `x² - s >= x²/2` converts the second.
+- `continuousAt_xiSpeed`, `continuousOn_xiSpeed`, **`hasDerivAt_xiEndpointPhase`**,
+  **`hasDerivAt_xiEndpointPhase_dilate`** — equation `(10)`.  The integrand is singular at the
+  endpoint, so the interior derivative comes from the one-sided fundamental theorem at an interior
+  point with the integrability of the bracket as input; the dilation is the chain rule.
+- **`hasDerivAt_xiSpeed`** — the closed-form speed derivative
+  `x(s-1) / [(x²-1)² xi_s'(x)]`, whose negative sign is what makes the difference phase concave.
+- `xiDiffPhase`, `xiDiffSpeed`, `hasDerivAt_xiDiffPhase`, `hasDerivAt_xiDiffSpeed` — the difference
+  phase and its first two derivatives.
+- `stationaryPoint`, `one_lt_stationaryRoot`, `stationaryPoint_sq`, `one_lt_stationaryPoint`,
+  **`stationaryRoot_mul_identity`**, `zero_lt_stationaryRoot_far` — the root equation in the form
+  `(k² y - 1)(y - 1) = 1 - s`, which is what makes the far Bessel argument explicit.
+- **`xiSpeed_stationaryPoint`**, **`xiSpeed_far_stationaryPoint`** — at the stationary point the two
+  Liouville speeds collapse to the exact algebraic values `k x` and `x`.  This is an identity, not an
+  estimate, and it is what reduces `(11)` to rational arithmetic.
+- **`xiDiffSecond_stationaryPoint_eq`** — the resulting closed form
+  `phi''(x) = (s-1)[1/(k (y-1)²) - k³ (y-1)²/(1-s)²]`.
+- `stationaryRoot_sub_one_le_sharp` — the sharpened bound `y - 1 <= (8/7) k^{-2}` for `k >= 2`, from
+  the discriminant bound `k² <= sqrt(disc)`.  The crude `2 k^{-2}` does not separate the two blocks of
+  `phi''` at `k = 2`; this one does.
+- **`abs_xiDiffSecond_stationaryPoint_bounds`** — equation `(11)` with absolute constants:
+  `k³/20 <= |phi_(s,k)''(x_(s,k))| <= 4 k³` for `k >= 2`, `0 <= s <= 1/2`.
+
+The Bessel envelope of `(14)`–`(15)` is also now a proved object of the tree, in
+`formal/GaloisForLFunctions/RHTower/BesselJZeroEnvelope.lean`:
+
+- `besselJ0` — Bessel's integral representation `J_0(u) = (1/pi) int_0^pi cos(u sin θ) dθ`.
+- `abs_besselJ0_le_one`, `besselJ0_eq_two_div_pi_mul` — the trivial bound and the reflection
+  `θ ↦ pi - θ` folding the representation onto a quarter period.
+- `besselPhase` and its two derivatives, `integral_cos_eq_re_phase` — the phase objects and the
+  passage to the complex oscillatory integral.
+- `norm_integral_besselPhase_first`, `norm_integral_besselPhase_second` — the two van der Corput
+  blocks: on `[0, pi/4]` the phase derivative `u cos θ` is bounded below and the first-derivative test
+  gives `O(1/u)`; on `[pi/4, pi/2]` the second derivative `u sin θ` is bounded below and the
+  second-derivative test gives `O(u^{-1/2})`.
+- **`abs_besselJ0_le_envelope`**, `abs_besselJ0_le_min` — the envelope
+  `|J_0(u)| <= 72 sqrt 2 / sqrt u` for `u >= 1`, so `|J_0| <= min(1, C u^{-1/2})`.  The exponent is the
+  square-root loss of the single nondegenerate stationary point at `θ = pi/2`.  The corpus van der
+  Corput layer (`RHTower.firstDerivTest`, `RHTower.secondDerivTest`) supplies both blocks; mathlib has
+  no Bessel functions.
+
+The envelope tail integral `(16)` is proved in
+`formal/GaloisForLFunctions/RHTower/CCMFirstRowEnvelopeTail.lean`:
+
+- `invPow32`, `hasDerivAt_negTwoDivSqrt`, `integrableOn_invPow32`, **`integral_Ioi_invPow32`** — the
+  exact tail mass `int_a^infinity x^(-3/2) dx = 2 a^(-1/2)`, from the antiderivative `-2 x^(-1/2)`;
+  integrability comes with the improper fundamental theorem rather than being assumed.
+- `intervalIntegrable_rpow_sub_one_gen`, `rpow_neg_quarter`, **`integral_Ioc_rpow_sub_one`** — the
+  exact endpoint mass `int_1^2 (x-1)^(-1/4) dx = 4/3`.
+- `envelopeTail`, `envelopeTail_le_invPow32`, `integrableOn_envelopeTail` — the integrand and its
+  domination by the pure power, which is what makes it integrable on the whole ray.
+- `integral_Ioi_two_envelopeTail_le`, `integral_Ioc_envelopeTail_le` — the two blocks: `sqrt 2 c^(-1/2)`
+  on `x >= 2` and `(4/3) c^(-1/2)` on `1 < x <= 2`, the latter through
+  `sqrt(x²-1) >= sqrt(x-1)`.
+- **`integral_Ioi_envelopeTail_le`** — equation `(16)` with an explicit constant:
+  `int_1^infinity x^(-3/2)(1 + c sqrt(x²-1))^(-1/2) dx <= 3 c^(-1/2)` for `c >= 1`.
+
+Equation `(15)` is now proved as well, in the same module:
+
+- `envelopeProduct` — the majorant of the whole remainder layer: the two Liouville–Green amplitudes
+  against the two Bessel envelopes `(1 + c xi)^{-1/2}`.
+- `xiEndpointPhase_nonneg`, `continuousOn_xiEndpointPhase`, `continuousOn_xiAmplitude`,
+  `continuousOn_envelopeProduct` — interior regularity, which is what makes the majorant measurable on
+  the open ray; the phase is continuous because it is differentiable there.
+- `sqrt_div_sqrt_two_le_xiEndpointPhase`, `half_mul_le_xiEndpointPhase_far` — the two phase lower
+  bounds `xi_s(x) >= sqrt(x²-1)/sqrt 2` and `xi_s(u) >= u/2` for `u > 2`.  Both come from the bracket
+  `(4)` after absorbing `sqrt(1-s)` into the radical.
+- **`envelopeProduct_le`** — the pointwise majorant
+  `envelopeProduct <= 2 (k sqrt c)^{-1} envelopeTail(c/sqrt 2)`: the two amplitudes and the far
+  envelope contribute `2 c^{-1/2} k^{-1} x^{-3/2}`, and the near envelope is exactly the integrand of
+  `(16)` at the rescaled aperture.
+- `integrableOn_envelopeProduct`, **`integral_Ioi_envelopeProduct_le`** — equation `(15)` with an
+  explicit constant: `int_1^infinity envelopeProduct <= 8/(c k)` for `k >= 2`, `c >= 2`,
+  `0 <= s <= 1/2`.
+
+The Bessel symbol input of `(13)`–`(14)` is now a proved object of the tree as well, in
+`formal/GaloisForLFunctions/RHTower/BesselJZeroODE.lean` and
+`formal/GaloisForLFunctions/RHTower/BesselJZeroPhase.lean`.  Neither the equation nor the asymptotic
+exists in mathlib.
+
+- `besselJ0Deriv`, `besselJ0SecondDeriv`, `hasDerivAt_besselJ0`, `hasDerivAt_besselJ0Deriv` —
+  differentiation under the integral sign, with the constant `1` as dominating function.
+- `integral_sin_mul_sin_eq` — the integration by parts `cos θ cos(u sin θ) = (1/u) d/dθ sin(u sin θ)`,
+  whose boundary terms vanish.
+- **`besselJ0_ode`** — Bessel's equation `J_0'' + J_0'/u + J_0 = 0`.  The integral representation is a
+  genuine solution, so the whole Liouville–Green theory applies to it.
+- `sinAmp`, `sinAmp_budget_le`, `besselJ0Deriv_eq_two_div_pi_mul`, `integral_sin_mul_sin_eq_neg_im`,
+  `norm_integral_sinAmp_besselPhase_first`, `norm_integral_sinAmp_besselPhase_second`,
+  **`abs_besselJ0Deriv_le_envelope`** — the derivative envelope `|J_0'(u)| <= 144 sqrt 2 / sqrt u`, by
+  the same two-block van der Corput split with amplitude `sin θ`.
+- `besselV`, `besselVDeriv`, **`hasDerivAt_besselVDeriv`** — the Liouville–Green normalisation
+  `v = sqrt x J_0`, which satisfies the harmonic equation with the integrable perturbation
+  `v'' = -(1 + 1/(4x²)) v`.
+- `abs_besselV_le`, `abs_besselVDeriv_le` — `v` and `v'` are bounded, from the two envelopes.  This is
+  what replaces a Grönwall argument.
+- `invSq`, `integrableOn_invSq`, `integral_Ioi_invSq` — the exact tail `int_a^infinity t^(-2) = 1/a`.
+- `besselW`, `besselWDeriv`, **`hasDerivAt_besselW`** — the rotating frame `w = (v + i v') e^{ix}`.
+  The harmonic part cancels exactly and `w' = -i q v e^{ix}` with `q = 1/(4x²)`: the entire motion of
+  the frame is the perturbation.
+- `norm_besselWDeriv_le`, `integrableOn_besselWDeriv`, **`exists_besselW_limit`** — the frame has a
+  limit, with the explicit tail bound `‖w(x) - L‖ <= 18 sqrt 2 / x`.
+- **`exists_besselJ0_phase_asymptotic`** — the large-argument asymptotic
+  `|sqrt x J_0(x) - (p cos x + q sin x)| <= 18 sqrt 2 / x`, i.e.
+  `J_0(x) = A x^(-1/2) cos(x - delta) + O(x^(-3/2))` with `A = sqrt(p²+q²)`.  The constants are the
+  real and imaginary parts of `L`; their values are deliberately not identified, since every estimate
+  in `(13)` uses only their finiteness.
+
+The three-region decomposition that `(13)` runs on is now proved, in
+`formal/GaloisForLFunctions/RHTower/CCMFirstRowVanDerCorputBlocks.lean` (split off from the
+stationary-phase module, which keeps the exact stationary point, the bracket `(4)`, the differentiation
+laws `(10)` and the weighted first-row sum `(18)`):
+
+- `xiSpeedDeriv_eq` — the speed derivative in root coordinates,
+  `t(s-1)/[(t²-1)^{3/2}(t²-s)^{1/2}]`.  Both roots have polynomial squares, which is what turns every
+  window estimate into a rational inequality.
+- **`abs_xiDiffSecond_window_bounds`** — on the window `k^{-2}/4 <= x²-1 <= 2k^{-2}`, which contains the
+  stationary point, `k³/16 <= |phi_(s,k)''(x)| <= 15 k³` for all `k >= 2`, `0 <= s <= 1/2`.  This is the
+  uniform form of `(11)`; the mechanism is that the far block is smaller than the near one by `k^{-4}`,
+  which after squaring is a polynomial comparison.
+- `one_le_xiSpeed` — the dilated Liouville ratio never drops below `1`.
+- **`xiDiffSpeed_ge_of_inner`** — below the window, `phi_(s,k)'(x) >= k/5`: the near speed is at
+  least `1.41 k` there and the far speed at most `1.2 k`, so no cancellation is possible.  The signed
+  form is what the first-derivative test needs; the absolute-value form is the second component.
+- **`xiDiffSpeed_le_of_outer`** — above the window, `phi_(s,k)'(x) <= -k/8`: the far speed
+  contributes at least `k` and the near speed at most `(7/8) k`.
+
+Together these are exactly the hypotheses of a second-derivative test on the window and a
+first-derivative test on each of the two complementary regions.
+
+The leading Bessel term of `(13)` is now an unconditional estimate on the stationary window.  The key
+structural discovery is that **the endpoint phases cancel**: the two Liouville–Green amplitudes
+`A_s(x) A_s(k x)` multiplied by the two Bessel symbol prefactors `(c xi_s(x))^{-1/2}(c xi_s(k x))^{-1/2}`
+leave the elementary algebraic fourth root
+
+```text
+c^(-1) * [(x²-1)(x²-s)(k²x²-1)(k²x²-s)]^(-1/4),
+```
+
+with no integral in it at all, and the prefactor `c` of `(5)` cancels the `c^{-1}`.
+
+- `ampPoly`, `ampPolyDeriv`, `ampPoly_pos`, `ampPolyDeriv_pos`, `hasDerivAt_ampPoly` — the polynomial
+  under the fourth root and its derivative, both positive on the ray.
+- **`xiAmplitude_mul_eq`** — the cancellation identity itself.
+- `ampFourthRoot`, `ampFourthRoot_pos`, **`ampFourthRoot_le`** — the amplitude and its bound
+  `2 k^{-1/2}` from the window on.
+- `ampFourthRootDeriv`, `hasDerivAt_ampFourthRoot`, **`ampFourthRootDeriv_nonpos`**,
+  `continuousOn_ampFourthRootDeriv` — the amplitude is decreasing with a continuous derivative, which
+  is exactly the weight hypothesis of the weighted van der Corput tests.
+- **`xiDiffSecond_neg`** — the difference phase is strictly concave on the *whole* ray, for a
+  structural reason: `sqrt(k²x²-1) > k sqrt(x²-1)` and `sqrt(k²x²-s) > sqrt(x²-s)`, so the far block
+  loses to the factor `k³` outright.  No window is needed for the sign.
+- `continuousOn_xiSpeedDeriv` — interior continuity of the second derivative.
+- **`norm_integral_window_block_le`** — the window block of `(13)`:
+
+  ```text
+  ‖int_a^b amp(x) exp(-i c phi_(s,k)(x)) dx‖ <= 80 / (sqrt c * k²)
+  ```
+
+  for every subinterval of the stationary window, `k >= 2`, `c > 0`, `0 <= s <= 1/2`.  This is exactly
+  the `O(c^{-1/2} k^{-2})` of `(13)`, with an explicit constant.  The estimate is the corpus weighted
+  second-derivative van der Corput bound `RHTower.norm_integral_weight_cexp_secondDeriv`, whose
+  right-hand side involves only the amplitude at the left endpoint — which is why the decreasing
+  fourth root is all the amplitude regularity that is needed.
+
+The two off-window blocks and the endpoint layer are now proved as well:
+
+- **`norm_integral_outer_block_le`** — above the window,
+  `‖int_a^b amp exp(-i c phi)‖ <= 64/(c k sqrt k)`, uniformly in the length of the block.  One
+  integration by parts: the derivative is at most `-k/8` and the second derivative keeps a fixed sign,
+  so the corpus weighted first-derivative test (`RHTower.norm_integral_weight_cexp_le`) applies.
+- **`norm_integral_inner_block_le`** — below the window,
+  `‖int_a^b amp exp(i c phi)‖ <= 20 amp(a)/(c k)`, from the nonincreasing-derivative companion
+  (`RHTower.norm_integral_weight_cexp_le_anti`).  The amplitude at the left end is unbounded as the
+  block reaches the endpoint, which is exactly why `(12)` is split off first.
+- `continuousOn_ampFourthRoot`, **`ampFourthRoot_le_endpoint`** — the exact endpoint singularity
+  `amp(x) <= 2^{1/4} k^{-1} (x-1)^{-1/4}`: the two far factors contribute `k^{-1}` and the near factor
+  the fourth-root singularity.
+- `integral_Ioc_rpow_sub_one_gen` — the exact mass `int_1^X (x-1)^{-1/4} dx = (4/3)(X-1)^{3/4}`.
+- **`integral_Ioc_ampFourthRoot_le`** — equation `(12)`: the amplitude is integrable up to the endpoint
+  and `int_1^X amp <= (4/3) 2^{1/4} k^{-1} (X-1)^{3/4}`.  At the Bessel endpoint scale `X - 1 = c^{-2}`
+  this is `O(c^{-3/2} k^{-1})`, below the window contribution whenever `k <= c`.
+
+All four blocks of `(13)` are therefore proved.  What remains is the bookkeeping that adds them: the
+four-way split of the ray at the endpoint cut `1 + c^{-2}`, the two window edges
+`x² - 1 = k^{-2}/4` and `x² - 1 = 2k^{-2}`, and the passage from the complex oscillatory integrals to
+the real `cos`/`sin` ones.  With the aperture hypothesis `3k <= c` (implied by the card's
+`k <= c/(2 pi)`) the endpoint cut does sit below the window, and the four constants add to
+`O(c^{-1/2} k^{-2})`.
+
+**Equation `(13)` is now assembled.**  In the same module:
+
+- **`abs_integral_mul_cos_le_norm`** — the real cosine integral is dominated by the complex oscillatory
+  integral, for *either* sign of the phase (`cos` is even).  This is what lets the three block
+  estimates, each carrying the phase sign its van der Corput test demands, all bound the same real
+  quantity.
+- `continuousOn_xiDiffPhase`, `intervalIntegrable_ampCexp`, `integrableOn_ampFourthRoot` — the
+  integrability bookkeeping: both factors are continuous on the open ray, and the amplitude is
+  integrable up to the endpoint.
+- **`abs_integral_firstRow_leading_le_of_cuts`** — the four-block assembly at arbitrary cut points: the
+  split of `[1, R]` at the endpoint cut and the two window edges, bounded by the sum of the four block
+  estimates with no arithmetic between them.
+- `endpoint_cut_le`, `endpoint_term_le`, `inner_term_le`, `outer_term_le`, `four_terms_sum_le`,
+  `sqrt_sqrt_two_le` — the numeric comparisons, isolated so each runs in a small context.
+- **`abs_integral_firstRow_leading_le`** — equation `(13)`:
+
+  ```text
+  |int_1^R amp(x) cos(c phi_(s,k)(x)) dx| <= 170 / (sqrt c * k²)
+  ```
+
+  for every `R` beyond the stationary window, `k >= 2` and every aperture with `3k <= c` — which the
+  card's range `k <= c/(2 pi)` implies.  The endpoint cut is `1 + c^{-2}` and the window edges are
+  `x² - 1 = k^{-2}/4` and `x² - 1 = 2 k^{-2}`; the aperture hypothesis is exactly what puts the endpoint
+  layer `O(c^{-3/2}k^{-1})` and the outer block `O(c^{-1}k^{-3/2})` below the two middle blocks, both of
+  which are `O(c^{-1/2}k^{-2})`.
+
+The first step of `(14)` is proved, in
+`formal/GaloisForLFunctions/RHTower/CCMFirstRowDunsterModel.lean`.  Dunster's pole-uniform
+approximation compares the radial prolate equation with a Bessel equation in the Liouville–Green
+variable, and the comparison equation itself is an exact identity, not an asymptotic one:
+
+- `lgBesselModel`, `lgBesselModelDeriv`, `lgBesselModelSecondDeriv`, `hasDerivAt_lgBesselModel`,
+  `hasDerivAt_lgBesselModelDeriv` — the model `V(x) = J_0(c xi_s(x))` and its two derivatives.
+- **`lgBesselModel_ode`** — the comparison equation, exactly:
+
+  ```text
+  V'' + (xi'/xi - xi''/xi') V' + c² (xi')² V = 0,     x > 1,
+  ```
+
+  for every `c > 0` and every admissible `s`.  The proof is the chain rule plus Bessel's equation: the
+  `J_0'` term produced by the second derivative cancels against the first-order coefficient and the
+  `J_0` terms cancel against `c²(xi')²`.  This is the equation the true radial equation is compared
+  *with*; the two differ by a potential of size `O(1)` rather than `O(c²)`, which is the source of the
+  relative error `O(c^{-1})` in `(14)`.
+
+The exact skeleton of the comparison estimate is proved as well:
+
+- `lgFirstOrderCoeff`, `lgWeight`, `xiSpeed_pos`, `xiEndpointPhase_pos`, **`hasDerivAt_lgWeight`** —
+  the first-order coefficient `xi'/xi - xi''/xi'` and its exact integrating factor `m = xi/xi'`.
+- **`hasDerivAt_weightedWronskian`** — the transport law: two solutions of the comparison equation whose
+  potentials differ by `a - b` have weighted Wronskian with derivative exactly `m (a - b) U V`.  Every
+  hypothesis is at a single point and the identity is exact.
+- `hasDerivAt_lgBesselModelDeriv_ode` — the model as a solution with zero potential defect.
+- **`hasDerivAt_lgBesselWronskian`** — the exact deviation law: for any solution `U` of the true equation
+  the weighted Wronskian against the Bessel model has derivative `m a U V`, where `a` is the potential
+  defect.  Integrating this *is* the Volterra equation of the pole-uniform expansion, and the `O(c^{-1})`
+  of `(14)` is the size of that integral.
+- **`hasDerivAt_lgWronskian_const`** — Abel's identity for the comparison equation, the normalisation the
+  Green kernel is built from.
+
+The second solution needed for the Green kernel is under construction in
+`formal/GaloisForLFunctions/RHTower/BesselJZeroSecondSolution.lean`.  Rather than importing the
+classical `Y_0` — whose definitions are a Frobenius series or a conditionally convergent integral — the
+second solution is built from absolutely convergent data,
+
+```text
+K(u) = (pi/4) log u J_0(u) + M(u),      M(u) = int_0^(pi/2) cos(u cos θ) log(sin θ) dθ,
+```
+
+using that `log (sin θ)` is integrable (mathlib's `intervalIntegrable_log_sin`), so `M` is an honest
+Bochner integral and differentiation under the integral sign applies with the dominating function
+`|log (sin θ)|`:
+
+- `besselJ0_cos_form`, `besselJ0Deriv_cos_form` — the cosine forms of `J_0` and `J_0'`, from the sine
+  forms by the reflection `θ ↦ pi/2 - θ`.
+- `besselM`, `besselMDeriv`, `besselMSecondDeriv`, `intervalIntegrable_besselMIntegrand`,
+  **`hasDerivAt_besselM`**, **`hasDerivAt_besselMDeriv`** — the log-weighted integral and its two
+  derivatives, both by differentiation under the integral sign.
+
+The second solution is now complete:
+
+- `besselMPrimitive`, `besselMPrimitiveDeriv`, `continuous_besselMPrimitive`,
+  `hasDerivAt_besselMPrimitive`, `intervalIntegrable_besselMPrimitiveDeriv`,
+  **`integral_besselMPrimitiveDeriv`** — the integration by parts, run as a one-sided fundamental
+  theorem: the primitive `sin θ log (sin θ) · sin(u cos θ)` is continuous on the closed quarter period
+  (because `x log x` is continuous, mathlib's `Real.continuous_mul_log`), differentiable on the open one,
+  and vanishes at both ends — at `pi/2` because `log 1 = 0`, at `0` because `sin θ log (sin θ) → 0`.  So
+  its derivative integrates to zero.
+- `besselMSecondDeriv_add_besselM` — the `sin²`-weighted form of `M'' + M`.
+- **`besselM_defect`** — the defect identity `u(M'' + M) + M' = -(pi/2) J_0'(u)`.
+- `besselK`, `besselKDeriv`, `besselKSecondDeriv`, `hasDerivAt_besselK`, `hasDerivAt_besselKDeriv`,
+  **`besselK_ode`** — Bessel's equation for the second solution, in the division-free self-adjoint form
+  `u K'' + K' + u K = 0`.  The `log u` terms cancel through Bessel's equation for `J_0`, and the
+  inhomogeneous defect cancels the `2 J_0'/u` produced by differentiating `log u · J_0` twice.
+
+The Wronskian normalisation of the pair is proved too:
+
+- `integral_abs_log_sin_quarter` — the exact mass `int_0^(pi/2) |log (sin θ)| = (pi/2) log 2`, from
+  mathlib's `integral_log_sin_zero_pi_div_two` and `log (sin θ) <= 0` on the quarter period.
+- `abs_besselM_le`, `abs_besselMDeriv_le` — both log-weighted integrals are bounded by `(pi/2) log 2`
+  *uniformly in `u`*.
+- `abs_besselJ0Deriv_le_one`, **`one_sub_sq_div_two_le_besselJ0`** — the elementary bounds
+  `|J_0'| <= 1` and `J_0(u) >= 1 - u²/2` (the latter from `1 - x²/2 <= cos x` under the integral).
+- `besselWronskian`, **`besselWronskian_eq`** — the log terms cancel:
+  `u(J_0 K' - J_0' K) = (pi/4) J_0² + u(J_0 M' - J_0' M)`.
+- `besselJ0_ode_cleared`, **`hasDerivAt_besselWronskian`** — Abel's identity: the weighted Wronskian has
+  zero derivative, by `linear_combination J_0 · (K-ode) - K · (J_0-ode)`.
+- `besselWronskian_const`, **`besselWronskian_pos`**, `besselWronskian_ne_zero` — it is a *positive*
+  constant.  Evaluated at `u = 1/10` the `(pi/4) J_0²` term is at least `(3/4)(199/200)²` while the
+  remainder is at most `2 (1/10)(pi/2) log 2 <= 0.278`, so the constant is positive; constancy then
+  transports that to the whole ray.  No numerical evaluation of `J_0` is used — only `J_0 >= 1 - u²/2`,
+  `pi > 3`, `pi <= 4` and `log 2 < 0.6931471808`.
+
+What is still needed of `K` for the Green kernel: the envelope `|K(u)| <= C u^{-1/2}`, which follows from
+the rotating-frame argument of `BesselJZeroPhase` together with Grönwall (no a priori bound is needed —
+the frame satisfies `|w'| <= |q| |w|`).
+
+What remains of `(14)` after that is the estimate on the deviation integral.
+
+**Why the Bessel comparison cannot be replaced by a harmonic one.**  It is tempting to avoid the second
+Bessel solution by comparing with the harmonic oscillator instead, using the corpus interaction picture
+for `W'' + c² W = psi W` (`RHTower.radialInteractionPlus/Minus`) and converting back with the phase
+asymptotic `exists_besselJ0_phase_asymptotic`.  That fails at the required scale: the WKB error control
+function for this Liouville datum is `(1/c) int |q^(-1/4) (q^(-1/4))''|` with `q = (xi')² ~ (x-1)^(-1)`,
+whose integrand is `~ (x-1)^(-3/2)`, so the error accumulated from `x - 1 = delta` on is
+`~ 1/(c sqrt delta)`.  At the endpoint scale `delta = c^(-2)` that is `O(1)`, not `O(c^(-1))`.
+Uniformity through the pole is exactly what the Bessel comparison buys, so the second Bessel solution is
+genuinely needed.
+
+Note: the same Liouville speed already exists in the tree as
+`RHTower.radialPSWFExteriorSpeed sigma z` with `s = sigma²`, normalised at `z = 2` instead of the
+endpoint; the endpoint normalisation is what the bracket `(4)` needs, so the two coexist.
+
+## Lean gates
+
+- [x] Lean: exact reduction of the stationary equation to the quadratic `(7)`
+- [x] Lean: the root `(8)` verified, and `(9)` in exact rationalised form
+- [x] Lean: `y - 1 ≍ k^{-2}` with explicit absolute constants
+- [x] Lean: weighted first-row sum bound `(18)` from the pointwise two-term bound
+- [x] Lean: the `o(1)` conclusion of `(18)`
+- [x] Lean: the `xi_s` two-sided bracket `(4)` (improper endpoint integral)
+- [x] Lean: amplitude half of `(4)`, `|A_s(x)| <= 2^{1/4} x^{-1/2}`
+- [x] Lean: the differentiation law `(10)` for the dilated phase
+- [x] Lean: the exact speed collapse at the stationary point and the closed form of `phi''`
+- [x] Lean: the `k³` law `(11)` with absolute constants
+- [x] Lean: the Bessel envelope `|J_0(u)| <= C u^{-1/2}` (own module, van der Corput)
+- [x] Lean: the envelope tail integral `(16)`, with the explicit constant `3`
+- [x] Lean: the full envelope product bound `(15)`, with the explicit constant `8`
+- [x] Lean: Bessel's equation for the integral representation
+- [x] Lean: the derivative envelope `|J_0'(u)| <= C u^{-1/2}`
+- [x] Lean: the large-argument phase asymptotic `J_0(x) = A x^{-1/2} cos(x - delta) + O(x^{-3/2})`
+- [x] Lean: the uniform window bound `|phi''| ≍ k³` and the two off-window bounds `|phi'| ≳ k`
+- [x] Lean: the exact amplitude of the leading term (endpoint phases cancel) and its monotonicity
+- [x] Lean: strict concavity of the difference phase on the whole ray
+- [x] Lean: the **window block** of `(13)`: `O(c^{-1/2} k^{-2})` with the constant `80`
+- [x] Lean: the two off-window blocks of `(13)` (weighted first-derivative tests)
+- [x] Lean: the endpoint layer `(12)`, with the exact `(x-1)^{-1/4}` singularity
+- [x] Lean: the four-way assembly of `(13)`, with the explicit constant `170`
+- [x] Lean: the exact pole-uniform **comparison equation** of `(14)`, solved by `J_0(c xi_s(x))`
+- [x] Lean: the exact **deviation law** of `(14)` (weighted Wronskian transport, Abel identity)
+- [ ] Lean: the **size** of the deviation integral — the bounded-variation estimate on the Liouville
+  potential defect, run against the harmonic interaction picture where `c xi >= 1`
+
 ## Gates
 
 - [x] exact low radial index range established before asymptotics

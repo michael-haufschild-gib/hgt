@@ -49,49 +49,52 @@
 
 \begin{document}
 
-\title[The Stokes--Cartan one-defect law]{At most Lorentzian:\
-a universal Stokes--Cartan signature law in genus zero}
+\title[The Euler--capacity law]{The Euler--capacity law for wild character varieties}
 
 \author{M.~Haufschild}
 \address{Independent researcher}
 \email{haufschildmichael@gmail.com}
 \date{3 August 2026}
 
-\subjclass[2020]{Primary 34M40, 14D24; Secondary 15A18, 32G34, 16G20}
+\subjclass[2020]{Primary 34M40, 14D24; Secondary 15A18, 32G34, 14H60, 16G20}
 \keywords{irregular Riemann--Hilbert correspondence, wild nonabelian Hodge theory,
-Stokes data, fission tree, generalized Cartan matrix, Lorentzian signature, effective resistance,
-principal conormal, Rees degeneration}
+Stokes data, quasi-Hamiltonian fusion, rigidity index, fission tree, generalized Cartan matrix,
+inertia, effective resistance, principal conormal, Rees degeneration}
 
 \begin{abstract}
-Genus-zero wild nonabelian Hodge spaces carry symmetric Cartan forms assembled from local Stokes
-contacts and ordinary type-$A$ legs.  We prove that every such form has negative index at most one.
-More precisely, for ramification vector $r$, a rooted fission-contact tree with positive edge
-lengths $\ell_e$, descendant clusters $A_e$, and an auxiliary root height $H>1$, the core Cartan
-matrix admits the canonical factorization
+Let $X$ be a compact curve of genus $g$ with a nonempty set $D$ of $m$ marked points carrying
+type-$A$ irregular data for general linear groups.  The dimension of the corresponding wild character
+variety determines a quadratic index $Q_{X,D}$ on the real marked multiplicity lattice.  We prove
+the fusion identity
 \[
- C=I+\sum_e\ell_e u_eu_e^T-(H-1)rr^T,
- \qquad u_e=(r_i\one_{A_e}(i))_i.
+ Q_{X,D}=\sum_{a\in D}Q_a+2(1-g-m)M^2,
 \]
-Thus every local fission channel is a positive principal-conormal square and total ramified rank is
-the unique possible negative channel.  If
+where $Q_a$ is the one-puncture index and $M$ is the common total rank.  Each local index has a
+canonical capacity completion $Q_a=P_a(z_a)+\Omega_aM^2$, with $P_a$ positive definite.  Hence
 \[
- P=I+\sum_e\ell_eu_eu_e^T,\qquad
- c=r^TP^{-1}r,\qquad \Omega=c^{-1}-(H-1),
+ \boxed{\quad Q_{X,D}=\sum_{a\in D}P_a(z_a)
+       +\left(\chi(X)-\sum_{a\in D}\delta_a\right)M^2,\qquad
+       \delta_a=2-\Omega_a.\quad}
 \]
-then $\Omega$ is independent of the artificial root extension and completely determines inertia:
-$C$ is positive definite, affine of corank one, or Lorentzian according as $\Omega$ is positive,
-zero, or negative.  We also prove $\det C=\det(P)c\Omega$.
+We call this the Euler--capacity law: Euler topology minus local capacity defects.  It is a
+quadratic refinement of scalar rigidity-index and
+Euler-characteristic formulae: topology and all punctures couple only through one physical-rank
+coordinate, while every centered Stokes direction has strictly positive energy.  It follows that
+the negative index and nullity are at most one, in every genus, and that the sign of the displayed
+coefficient gives the finite/affine/Lorentz trichotomy.  The coefficient is intrinsically the
+minimum of $Q_{X,D}$ at unit common rank.
 
-The reciprocal capacity $c^{-1}$ is the effective resistance of the contact tree.  Series and
-parallel reduction gives an exact corona-pruning recursion, and turns root independence into the
-cancellation of two equal series increments.  Attaching arbitrary finite type-$A$ legs changes
-the positive diagonal from $1$ to $1/(l_i+1)$ and cannot create another defect.  Consequently every
-full type-$A$ genus-zero diagram obeys the same trichotomy.  For an adjacency diagram $B$ this is
-the spectral obstruction $\lambda_2(B)\leq2$; hence higher-signature Kac--Moody diagrams do not
-occur in this class.  Finally, the wild-character-variety dimension becomes one global rank-square
-budget minus explicit positive leg and conormal energies.  The result is a diagram-level law: it
-does not identify the conormal coefficients with characteristic-cycle or vanishing-cycle
-multiplicities.
+The local theorem making the formula effective is a Stokes contact-tree factorization
+\[
+ C=I+\sum_e\ell_eu_eu_e^T-(H-1)rr^T.
+\]
+Its positive squares are principal conormals of fission clusters.  The reciprocal local capacity
+is the effective resistance of the contact tree; corona pruning is exact series--parallel
+reduction; type-$A$ legs only change terminal resistances; and Rees scaling preserves the unique
+rank defect.  In genus zero with one puncture the Euler--capacity law recovers the complete
+Stokes--Cartan theorem, including the determinant wall and the graph obstruction
+$\lambda_2(B)\leq2$.  We state exact hypotheses and falsifiers: arbitrary covectors need not be
+rank-like, and no categorical equality with vanishing-cycle multiplicities is asserted.
 \end{abstract}
 
 \maketitle
@@ -99,23 +102,44 @@ multiplicities.
 \section{Introduction}
 
 Wild nonabelian Hodge theory relates meromorphic connections, irregular Higgs bundles, and Stokes
-local systems on curves \cite{BiquardBoalch2004}.  In genus zero, the formal data determine a finite
-diagram with a symmetric generalized Cartan matrix.  This matrix controls the quadratic dimension
-formula for the associated wild character variety \cite{BoalchYamakawa2020,Doucot2021Diagrams}.
-The diagram is invariant under the symplectic automorphisms of the Weyl algebra, including
-Fourier--Laplace transformation \cite{Doucot2021Diagrams}.  Fission trees record how the formal
-structure group breaks at an irregular pole and classify admissible deformation data
-\cite{Boalch2008Kac,BoalchDoucotRembado2025,Boalch2025Counting}.
+local systems on curves \cite{BiquardBoalch2004}.  Their Betti moduli spaces are assembled by
+quasi-Hamiltonian fusion from local Stokes spaces and surface handles
+\cite{Boalch2014Geometry,BoalchYamakawa2015Twisted}.  In genus zero, marked formal data also determine a finite diagram with
+a symmetric generalized Cartan matrix, whose quadratic form computes the dimension of the wild
+character variety \cite{BoalchYamakawa2020,Doucot2021Diagrams}.  The diagram is invariant under
+symplectic automorphisms of the Weyl algebra, including Fourier--Laplace transformation
+\cite{Doucot2021Diagrams}.
 
-The resulting graphs range beyond finite and affine Dynkin diagrams.  Hyperbolic examples are
-known, and the question of which Kac--Moody root systems can arise is part of the current
-classification problem \cite{Boalch2012Simply,Boalch2025Counting}.  Ramification makes that problem
-sharper: core diagrams may have loops or signed entries, while some twisted irregular classes
-nevertheless yield honest graphs that are not fission graphs \cite{Doucot2025Graphs}.  Ultrametric
-inequalities constrain their rescaled edge multiplicities, but those inequalities alone do not
-state the inertia of the Cartan form.
+There is a scalar topological precedent.  Under multiplicity-free and spectral regularity
+hypotheses, the rigidity index of an irregular connection equals the Euler characteristic of the
+normalization of its irregular spectral curve \cite{Hiroe2019Rigidity}.  Locally, irregularity,
+intersection numbers, Milnor numbers, Fourier transform, and blow-up are linked by a plane-curve
+dictionary \cite{Hiroe2017Ramified}.  These results suggest that the scalar index is the shadow of
+a polarized law.  They do not determine the inertia of the full marked lattice, nor identify which
+deformation directions can carry negative energy.
 
-This paper proves a universal one-defect law.  Its shortest form is
+Our main result supplies that missing polarization.  Let $D=\{p_1,\dots,p_m\}$ be nonempty, and
+at each $p_a$ fix a marked type-$A$ irregular datum of total rank $M$.  Denote its real marked
+multiplicity space by $V_a$, its rank functional by $R_a$, and its one-puncture index by $Q_a$.
+The global multiplicity space is the rank fibre product
+\begin{equation}\label{eq:intro-fibre-product}
+ V_{X,D}=\{(x_a)\in\textstyle\bigoplus_aV_a:R_1(x_1)=\cdots=R_m(x_m)\},
+ \qquad M=R_a(x_a).
+\end{equation}
+The first universal identity is
+\begin{equation}\label{eq:intro-fusion}
+ \boxed{\quad Q_{X,D}(x)=\sum_{a=1}^mQ_a(x_a)+2(1-g-m)M^2.\quad}
+\end{equation}
+It follows by comparing the exact dimensions of the global quasi-Hamiltonian reduction and the
+$m$ one-puncture reductions.  No stability inequality or asymptotic approximation enters it.
+
+The second input is local and constructive.  Fission trees record how the formal structure group
+breaks at an irregular pole and classify admissible deformation data
+\cite{Boalch2008Kac,BoalchDoucotRembado2025,Boalch2025Counting}.  The resulting one-puncture graphs
+range beyond finite and affine Dynkin diagrams; hyperbolic examples occur
+\cite{Boalch2012Simply,Boalch2025Counting}.  Ramification allows loops or signed entries, and some
+twisted irregular classes yield honest graphs that are not fission graphs
+\cite{Doucot2025Graphs}.  Their universal local law has the short form
 \begin{equation}\label{eq:intro-law}
  \boxed{\quad C=P-\lambda rr^T,\qquad P>0.\quad}
 \end{equation}
@@ -146,10 +170,10 @@ Set
  c=r^TP^{-1}r,\qquad
  \Omega=c^{-1}-(H-1).
 \end{equation}
-Then $c>0$, and every $x$ splits uniquely into a vector of zero total ramified rank and a multiple
-of $P^{-1}r$.  In these coordinates,
+Then $c>0$, and every $x$ splits uniquely into a vector $z$ of zero total ramified rank and a
+multiple of $P^{-1}r$.  In these coordinates,
 \begin{equation}\label{eq:intro-centered}
- x^TCx=z^TPz+\frac{(r^Tx)^2}{c^2}\,c^2\Omega.
+ x^TCx=z^TPz+(r^Tx)^2\Omega.
 \end{equation}
 Consequently $C$ is positive definite for $\Omega>0$, positive semidefinite with a one-dimensional
 kernel for $\Omega=0$, and nonsingular with exactly one negative eigenvalue for $\Omega<0$.
@@ -158,7 +182,20 @@ Throughout, ``Lorentzian'' means signature $(N-1,1)$ for a nonsingular real symm
 $N$-dimensional space; no stronger condition on all proper principal submatrices is built into the
 term.
 
-There are four reasons the factorization is geometric rather than merely a rank-one perturbation
+Applying this completion at every puncture in \eqref{eq:intro-fusion} yields the headline law
+\begin{equation}\label{eq:intro-euler-capacity}
+ \boxed{\quad Q_{X,D}(x)=\sum_{a=1}^mP_a(z_a)+\Omega_{X,D}M^2,
+ \qquad
+ \Omega_{X,D}=\chi(X)-\sum_{a=1}^m\delta_a,qquad
+ \delta_a=2-\Omega_a.\quad}
+\end{equation}
+This is the one-port index theorem: $Q_{X,D}$ is positive definite on the hyperplane $M=0$,
+so its entire nonpositive inertia is confined to the one-dimensional quotient detected by physical
+rank.  Thus $\indm Q_{X,D}+\dim\ker Q_{X,D}\le1$, and the sign of $\Omega_{X,D}$ gives the exact
+trichotomy.  Each handle subtracts $2$ from the same scalar channel.  Fusion adds inverse local
+capacities; no new spatial defect is created.
+
+There are five reasons the factorization is geometric rather than merely a rank-one perturbation
 observation.
 \begin{enumerate}[label=(\roman*),leftmargin=2.2em]
 \item Each positive summand is the square of the principal conormal
@@ -167,8 +204,10 @@ $\nu_e(x)=\sum_{i\in A_e}r_ix_i$ of a canonical cluster hyperplane.
 with leaf resistance $r_i^{-2}$.  Corona pruning is therefore exact series--parallel reduction.
 \item Ordinary type-$A$ legs admit an exact path completion.  Their Schur complement replaces the
 unit leaf resistance by $((l_i+1)r_i^2)^{-1}$ and preserves the one-defect law.
-\item The global dimension formula becomes an exact conservation law: one total-rank gain minus
-positive leg fluctuations and positive fission-conormal losses.
+\item Quasi-Hamiltonian fusion and surface topology change only the coefficient of common rank,
+producing the Euler term in \eqref{eq:intro-euler-capacity}.
+\item The global dimension formula becomes an exact conservation law: one topological rank budget
+minus positive leg fluctuations and positive fission-conormal losses.
 \end{enumerate}
 
 For honest graphs the theorem has a concise spectral consequence.  If $B$ is the adjacency matrix
@@ -187,16 +226,20 @@ $M$-matrix properties of ultrametric and generalized ultrametric matrices
 generalized ultrametric matrices and tree-structured inverses is \cite{Nabben2026Acyclic}.  Those
 works concern matrix recognition and inverses.  The new content here is the exact conversion from
 Stokes contact to the Cartan factorization \eqref{eq:intro-factor}, the intrinsic capacity wall,
-the full-leg and global genus-zero passage, the conormal/dimension law, and the spectral exclusion
-for nonabelian Hodge diagrams.  We state the distinction because a tree Gram decomposition by
-itself is classical and would not constitute the claimed result.
+the full-leg passage, and---most importantly---the Euler--capacity identity
+\eqref{eq:euler-capacity-law}, which promotes the scalar rigidity index to a polarized form and
+proves its one-port inertia property in every genus.  Neither the classical tree Gram decomposition nor
+the known scalar Euler-characteristic identity implies this inertia statement.  The conormal/Rees
+law and the spectral exclusion are consequences.  We state these distinctions because merely
+renaming either antecedent would not constitute a new result.
 
 The paper is organized as follows.  Section~\ref{sec:geometry} isolates the precise geometric
 input.  Section~\ref{sec:factor} proves the one-defect factorization.  Section~\ref{sec:capacity}
 proves the capacity trichotomy and root invariance.  Section~\ref{sec:corona} gives the electrical
 corona recursion.  Section~\ref{sec:legs} treats arbitrary type-$A$ legs.  Sections
 \ref{sec:conormal} and \ref{sec:dimension} give conormal/Rees and dimension formulations.
-Section~\ref{sec:global} passes to global genus-zero diagrams, and
+Section~\ref{sec:global} proves the arbitrary-genus Euler--capacity law by quasi-Hamiltonian
+fusion, and
 Section~\ref{sec:spectral} derives graph-theoretic consequences and examples.  The final section
 records exact scope and falsifiers.
 
@@ -332,7 +375,7 @@ drops along this common path gives $H-\kappa(i\wedge j)=H-K_{ij}$, proving
 $\sum_e\ell_e a_ea_e^T$ with $a_e=(\one_{A_e}(i))_i$.
 \end{proof}
 
-\begin{theorem}[Universal one-defect law]\label{thm:one-defect}
+\begin{theorem}[Local Stokes one-port factorization]\label{thm:one-defect}
 For every rooted decorated Stokes core,
 \begin{equation}\label{eq:one-defect-matrix}
  \boxed{\quad C=I+\sum_e\ell_eu_eu_e^T-\lambda rr^T.\quad}
@@ -775,53 +818,221 @@ This corollary is a useful distinction between the universal law and a sign esti
 does not merely say that certain terms are nonnegative; it locates every loss channel and gives its
 equality condition.
 
-\section{Global genus-zero and irregular Riemann--Hilbert invariance}\label{sec:global}
+\section{The Euler--capacity law on a punctured curve}\label{sec:global}
 
-We now formulate the global result.  A \emph{type-$A$ genus-zero nonabelian Hodge diagram} means a
-diagram arising from algebraic connection data on a Zariski-open subset of $\mathbb P^1$ through
-the standard genus-zero diagram construction, with its ordinary type-$A$ conjugacy-class legs.
-This includes ramified and multi-pole formal types covered by the general diagram construction of
-\cite{Doucot2021Diagrams}.
+We now pass from one-puncture atoms to a connected curve of arbitrary genus.  This step uses only
+the quasi-Hamiltonian dimension formula, but it changes the scope of the result: the genus-zero
+Cartan theorem becomes one boundary case of a topological index law.
 
-\begin{theorem}[Global Stokes--Cartan signature law]\label{thm:global}
-Let $\widehat C$ be the symmetric Cartan matrix of a type-$A$ genus-zero nonabelian Hodge diagram.
-Then
-\begin{equation}\label{eq:global-index}
-        \indm(\widehat C)\le1,
- \qquad \dim\ker\widehat C\le1,
- \qquad \indm(\widehat C)+\dim\ker\widehat C\le1.
+Let $X$ be a compact connected curve of genus $g$, let
+$D=\{p_1,\ldots,p_m\}$ with $m\ge1$, and put $G=\mathrm{GL}_M(\CC)$.  At $p_a$ choose an irregular
+type $\mathcal Q_a$, with formal centralizer $H_a$, and a conjugacy class
+$\mathcal C_a\subset H_a$, and let $\mathcal A_a$ be its local fission/Stokes space.  Fixing the
+combinatorial marking makes the following dimensions quadratic functions of the marked
+multiplicities:
+\[
+ h_a=\dim H_a,\qquad k_a=\dim\mathcal C_a,\qquad
+ s_a=\dim\mathcal A_a-M^2-h_a.
+\]
+For an unramified irregular type in a Cartan subalgebra,
+$s_a=\sum_{\alpha\in\mathcal R(G)}\deg(\alpha\circ\mathcal Q_a)$; the intrinsic definition above
+also covers the ramified local Stokes spaces used here.  Thus the local space has dimension
+$M^2+h_a+s_a$ \cite{Boalch2014Geometry,BoalchYamakawa2015Twisted}.  Define the global numerical index by
+\begin{equation}\label{eq:global-index-definition}
+ Q_{X,D}:=2-\dim\Mcal_{X,D}
 \end{equation}
-Equivalently, every such Cartan form is finite, affine, or Lorentzian.  Its phase, affine null line,
-determinant wall, and dimension are given by Theorems
-\ref{thm:trichotomy}, \ref{thm:determinant}, and \ref{thm:dimension-law} in any generic one-pole
-reading.
+whenever the stable reduction is nonempty, and otherwise by the same quadratic dimension
+polynomial.  Define the one-puncture atom
+\begin{equation}\label{eq:local-index-atom}
+                         Q_a:=M^2+h_a-s_a-k_a.
+\end{equation}
+The marked type-$A$ diagram construction identifies \eqref{eq:local-index-atom} with the full local
+Cartan quadratic form, including its conjugacy legs
+\cite{BoalchYamakawa2020,Doucot2021Diagrams}.
+
+\begin{proposition}[Exact fusion identity]\label{prop:fusion-identity}
+On the rank fibre product \eqref{eq:intro-fibre-product},
+\begin{equation}\label{eq:fusion-identity}
+             \boxed{Q_{X,D}=\sum_{a=1}^mQ_a+2(1-g-m)M^2.}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The quasi-Hamiltonian Stokes representation space has dimension
+\[
+ \dim\operatorname{Hom}_{\mathbb S}
+ =(2g-2)M^2+\sum_a(M^2+h_a+s_a).
+\]
+Reduction at $\prod_a\mathcal C_a$ subtracts
+$2(\sum_ah_a-\dim Z(G))$ and adds $\sum_ak_a$.  Since
+$\dim Z(\mathrm{GL}_M)=1$,
+\begin{equation}\label{eq:global-dimension-expanded}
+ \dim\Mcal_{X,D}
+ =2+(2g-2+m)M^2+\sum_a(s_a+k_a-h_a).
+\end{equation}
+Therefore
+\[
+ Q_{X,D}=(2-2g-m)M^2+\sum_a(h_a-s_a-k_a).
+\]
+Subtracting the sum of \eqref{eq:local-index-atom} gives
+$2(1-g-m)M^2$, proving \eqref{eq:fusion-identity}.  Because every term is a quadratic polynomial
+in the marking, equality on integral multiplicities polarizes to the real marked lattice.
+\end{proof}
+
+For each $a$, apply the local full-leg theorem.  Write $R_a:V_a\to\RR$ for total ramified rank.
+There is a positive-definite form $P_a$, a capacity vector $v_a$ normalized by $R_a(v_a)=1$, and
+an intrinsic scalar $\Omega_a$ such that every $x_a\in V_a$ decomposes uniquely as
+\begin{equation}\label{eq:local-capacity-splitting}
+ x_a=z_a+R_a(x_a)v_a,qquad R_a(z_a)=0,qquad
+ Q_a(x_a)=P_a(z_a)+\Omega_aR_a(x_a)^2.
+\end{equation}
+Concretely, $P_a$ is the positive Schur form in Theorem~\ref{thm:full-leg},
+$v_a=P_a^{-1}R_a^*/c_a$, $c_a=R_aP_a^{-1}R_a^*$, and
+$\Omega_a=c_a^{-1}-\lambda_a$.  Put
+\begin{equation}\label{eq:local-capacity-defect}
+                         \delta_a:=2-\Omega_a.
+\end{equation}
+This normalization is forced by gluing: a one-puncture sphere has Euler characteristic two, so its
+global coefficient is $2-\delta_a=\Omega_a$.
+
+\begin{theorem}[Euler--capacity and one-port index law]\label{thm:stokes-hodge}
+For every $x=(x_a)\in V_{X,D}$ of common rank $M$, one has the orthogonal conservation law
+\begin{equation}\label{eq:euler-capacity-law}
+ \boxed{\quad Q_{X,D}(x)=\sum_{a=1}^mP_a(z_a)+\Omega_{X,D}M^2,\qquad
+ \Omega_{X,D}=\chi(X)-\sum_{a=1}^m\delta_a
+ =\chi(X)+\sum_{a=1}^m(\Omega_a-2).\quad}
+\end{equation}
+Thus the sole scalar channel obeys a Gauss--Bonnet form: global Euler characteristic minus the sum
+of renormalized local capacity defects.
+Consequently:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item $Q_{X,D}$ is positive definite on the physical rank-zero hyperplane;
+\item $\indm(Q_{X,D})+\dim\ker(Q_{X,D})\le1$;
+\item $Q_{X,D}$ is positive definite, positive semidefinite with a one-dimensional kernel, or
+Lorentzian according as $\Omega_{X,D}>0$, $=0$, or $<0$;
+\item in the affine case the null line is spanned by the simultaneous capacity ray
+$(v_1,\ldots,v_m)$.
+\end{enumerate}
 \end{theorem}
 
 \begin{proof}
-The diagram invariance theorem permits a generic symplectic reading of the same core at infinity
-\cite{Doucot2021Diagrams}.  Proposition~\ref{prop:geometric-input} supplies the rooted fission-contact
-realization.  Theorem~\ref{thm:one-defect} applies to the core and
-Theorem~\ref{thm:full-leg} to all attached type-$A$ legs.  The resulting matrix is the original
-diagram Cartan matrix because the diagram, not an asserted analytic isomorphism between all
-representations, is the invariant being transported.  The remaining statements follow from the
-capacity and dimension theorems.
+Insert \eqref{eq:local-capacity-splitting} into Proposition~\ref{prop:fusion-identity}.  The common
+rank condition gives
+\[
+ Q_{X,D}(x)=\sum_aP_a(z_a)
+ +\left(\sum_a\Omega_a+2(1-g-m)\right)M^2.
+\]
+Since $\chi(X)=2-2g$, the coefficient is
+$\chi(X)+\sum_a(\Omega_a-2)$.  The first summand is positive definite in all centered variables.
+Thus the displayed splitting is an orthogonal sum of a positive-definite space and one scalar
+line, which proves all inertia statements and identifies the null line.
 \end{proof}
 
-\begin{corollary}[Fourier invariance of the wall]\label{cor:Fourier-wall}
-The sign of $\Omega$ and the finite/affine/Lorentz phase are invariant under Fourier--Laplace and
-the symplectic Weyl-algebra transformations preserving the genus-zero diagram.
+\begin{corollary}[Variational characterization]\label{cor:variational-gap}
+The Euler--capacity coefficient is intrinsic and is the constrained ground-state energy
+\begin{equation}\label{eq:global-variational-gap}
+ \boxed{\quad \Omega_{X,D}=min\{Q_{X,D}(x):x\in V_{X,D},\ M(x)=1\}.\quad}
+\end{equation}
+The minimum is attained uniquely at the simultaneous capacity ray $(v_1,\ldots,v_m)$.  More
+generally, the minimum at common rank $M$ is $\Omega_{X,D}M^2$.  Locally,
+\begin{equation}\label{eq:local-defect-variational}
+ \Omega_a=\min_{R_a(x)=1}Q_a(x),\qquad
+ \delta_a=2-\min_{R_a(x)=1}Q_a(x).
+\end{equation}
 \end{corollary}
 
 \begin{proof}
-The sign is the inertia of the invariant Cartan matrix by Theorem~\ref{thm:trichotomy}.
+In \eqref{eq:euler-capacity-law}, the positive sum is minimized uniquely by $z_a=0$ for every $a$.
+The stated values and minimizers follow.  The local assertion is the case $g=0,m=1$.
 \end{proof}
 
-\begin{remark}[Irregular Riemann--Hilbert scope]
-Through the irregular Riemann--Hilbert correspondence, the same wild character variety is described
-by generalized monodromy and Stokes data on the Betti side.  Theorem~\ref{thm:global} therefore
-constrains the Cartan shadow common to these descriptions.  It is not a new proof of the irregular
-Riemann--Hilbert equivalence and does not assert that the full Stokes local system can be recovered
-from the scalar capacity $\Omega$.
+\begin{corollary}[Physical-rank covectors]\label{cor:physical-rank}
+Let a fixed genus-zero nonabelian Hodge quadratic form $q$ be presented by any admissible
+type-$A$ Stokes reading $\alpha$, and let $R_\alpha$ be rank in that reading.  Then
+\begin{equation}\label{eq:rank-kernel-positive}
+                  q(x)>0\qquad(0\ne x\in\ker R_\alpha).
+\end{equation}
+If $q$ is nonsingular Lorentzian, this is equivalently
+\begin{equation}\label{eq:dual-timelike-rank}
+                         R_\alpha q^{-1}R_\alpha^T<0.
+\end{equation}
+Thus Fourier--Laplace or another basic diagram-preserving transformation may change numerical
+rank, but every geometric rank covector remains dual-timelike for the invariant form.  No such
+statement holds for arbitrary positive covectors.
+\end{corollary}
+
+\begin{proof}
+Apply Theorem~\ref{thm:stokes-hodge} to the local atoms in reading $\alpha$; common rank zero removes
+the sole scalar term in \eqref{eq:euler-capacity-law}, leaving a nonzero sum of positive-definite
+forms.  In the Lorentz case, the equivalence with \eqref{eq:dual-timelike-rank} is the standard
+one-codimensional Schur-complement criterion, obtained by centering along $q^{-1}R_\alpha^T$.
+\end{proof}
+
+\begin{corollary}[Fusion and handle laws]\label{cor:fusion-handles}
+If the positive local atoms are first fused before the global rank defect is inserted, their
+effective capacities satisfy
+\begin{equation}\label{eq:fused-capacity}
+                         c_{\mathrm{fus}}^{-1}=\sum_{a=1}^m c_a^{-1}.
+\end{equation}
+Increasing the genus by one changes no centered term and sends
+$\Omega_{X,D}$ to $\Omega_{X,D}-2$.
+\end{corollary}
+
+\begin{proof}
+At common rank $M$, minimization of $\sum_aP_a$ gives
+$M^2\sum_ac_a^{-1}$, proving \eqref{eq:fused-capacity}.  The handle statement follows immediately
+from $\chi(X)=2-2g$.
+\end{proof}
+
+\begin{corollary}[Topological monotonicity and sewing]\label{cor:topological-monotonicity}
+For fixed local data, increasing genus moves the phase monotonically through the ordered sequence
+finite, affine, Lorentz, and the affine phase can occur at at most one integer genus.  If two
+punctured curves are joined by connected sum away from their marked points, then
+\begin{equation}\label{eq:connected-sum-gap}
+ \Omega_{X\mathbin\#Y,D\sqcup E}=\Omega_{X,D}+\Omega_{Y,E}-2.
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+The genus step is $\Omega\mapsto\Omega-2$ by Corollary~\ref{cor:fusion-handles}.  For connected sum,
+use $\chi(X\#Y)=\chi(X)+\chi(Y)-2$ and add the two disjoint sets of local capacity defects in
+Theorem~\ref{thm:stokes-hodge}.
+\end{proof}
+
+\begin{corollary}[Genus-zero diagram law]\label{thm:global}
+Let $\widehat C$ be the symmetric Cartan matrix of a type-$A$ genus-zero nonabelian Hodge diagram.
+Then
+\begin{equation}\label{eq:global-index}
+ \indm(\widehat C)+\dim\ker\widehat C\le1.
+\end{equation}
+Its phase, affine null line, determinant wall, and dimension may be computed in any generic
+one-puncture reading.
+\end{corollary}
+
+\begin{proof}
+Diagram invariance permits a generic symplectic reading of the same core at infinity
+\cite{Doucot2021Diagrams,Doucot2026Basic}.  Proposition~\ref{prop:geometric-input} supplies its
+rooted fission-contact realization, and Theorem~\ref{thm:full-leg} gives
+\eqref{eq:local-capacity-splitting}.  Apply Theorem~\ref{thm:stokes-hodge} with $g=0,m=1$.
+\end{proof}
+
+\begin{corollary}[Fourier invariance of the wall]\label{cor:Fourier-wall}
+The sign of the one-puncture capacity gap and the finite/affine/Lorentz phase are invariant under
+Fourier--Laplace and symplectic Weyl-algebra transformations preserving the genus-zero diagram.
+\end{corollary}
+
+\begin{proof}
+The sign is the inertia of the invariant Cartan matrix by Theorem~\ref{thm:stokes-hodge}.
+\end{proof}
+
+\begin{remark}[Irregular Riemann--Hilbert and spectral-curve scope]
+The irregular Riemann--Hilbert correspondence transports the same numerical index to generalized
+monodromy and Stokes data.  Under Hiroe's additional hypotheses, its value at an integral
+multiplicity vector also equals the Euler characteristic of the normalized irregular spectral
+curve \cite{Hiroe2019Rigidity}.  Equation~\eqref{eq:euler-capacity-law} is a quadratic refinement:
+it determines the whole real polarization and its unique possible negative channel.  It is not a
+new proof of irregular Riemann--Hilbert, and it neither reconstructs a Stokes local system from
+$\Omega_{X,D}$ nor identifies the positive squares with sheaf-theoretic vanishing cycles.
 \end{remark}
 
 \section{Graph spectra and Kac--Moody exclusion}\label{sec:spectral}
@@ -906,21 +1117,37 @@ Example~\ref{ex:twisted-triangle}.  The correct boundary is negative index one. 
 rules out a weaker but previously plausible phenomenon: a Lorentz direction together with an
 independent affine direction.  Capacity completion shows that this cannot occur.
 
+The statement ``every positive covector is a physical rank port'' is also false.  For the twisted
+triangle of Example~\ref{ex:twisted-triangle}, direct inversion gives
+\[
+ \begin{aligned}
+ e_1^TC^{-1}e_1&=\frac5{258}>0,\\
+ (3,2,3)C^{-1}(3,2,3)^T&=-\frac{245}{86}<0,\\
+ (2,1,4)C^{-1}(2,1,4)^T&=-\frac{104}{129}<0.
+ \end{aligned}
+\]
+The latter two covectors are physical ranks in two symplectic readings; $e_1$ is not.  Thus the
+rank fibre product in \eqref{eq:intro-fibre-product} is geometric content, not replaceable by an
+arbitrary choice of a positive linear functional.
+
 \subsection{Direct falsifiers}
 
-Any one of the following would invalidate the stated global scope.
+Any one of the following would invalidate the stated scope.
 \begin{enumerate}[label=(\arabic*),leftmargin=2.2em]
-\item A realized type-$A$ genus-zero diagram whose Cartan matrix has two negative eigenvalues.
-\item A realized diagram whose complementary contacts fail to admit one simultaneous rooted
-realization, even though its pairwise inequalities hold.
-\item A standard genus-zero diagram containing a leg not obtainable by the ordinary one-ended
-type-$A$ attachment used in Section~\ref{sec:legs}.
-\item Failure of diagram preservation under the generic symplectic reading used in
-Theorem~\ref{thm:global}.
+\item A marked type-$A$ local Stokes atom whose complementary contacts do not admit the asserted
+simultaneous rooted realization, or whose completed local index has two negative directions.
+\item A quasi-Hamiltonian wild character variety for $\mathrm{GL}_M$ whose dimension violates
+\eqref{eq:global-dimension-expanded}; equivalently, a handle or fusion operation that changes a
+centered local mode rather than only common rank.
+\item A nonzero compatible deformation of common rank zero with
+$Q_{X,D}\le0$.
+\item A failure of diagram preservation under the generic symplectic reading used in
+Corollary~\ref{thm:global}.
 \end{enumerate}
-No such example appears in the primary diagram and fission-tree sources cited above.  Conversely,
-the theorem is not an analytic existence criterion: a matrix satisfying the one-defect law need
-not come from an irregular connection.
+The first and fourth items are the local geometric inputs; the second is the published
+quasi-Hamiltonian dimension formula; the third is a direct consequence and a concrete falsification
+test.  Conversely, the theorem is not an analytic existence criterion: a quadratic form satisfying
+the one-defect law need not come from an irregular connection.
 
 \subsection{Boundaries of interpretation}
 
@@ -935,26 +1162,42 @@ local fission channels positively.
 \subsection{Novelty boundary}
 
 Weighted-tree Gram formulae, ultrametric matrices, inverse $M$-matrices, the Stokes diagram, and its
-dimension formula are prior results.  The claim of this paper is their previously unstated
-intersection: the Stokes normalization \eqref{eq:intro-K} changes $2I-B$ into a positive laminar
-Gram form minus exactly one total-rank square; capacity then propagates this identity through
-corona pruning, type-$A$ legs, global diagram readings, and the Kac--Moody spectrum.  Removing the
-Stokes normalization or the one-pole rooted realization destroys that conclusion.
+dimension formula are prior results.  So are quasi-Hamiltonian fusion and, under additional
+hypotheses, equality of the scalar rigidity index with a spectral-curve Euler characteristic.
+The claim here is the previously unstated quadratic refinement: the Stokes normalization
+\eqref{eq:intro-K} makes every local centered direction positive, while the exact fusion identity
+shows that Euler topology and all local capacities meet in one common-rank coefficient
+\eqref{eq:euler-capacity-law}.  This determines full inertia, not merely the value at one dimension
+vector.  Corona pruning, type-$A$ legs, Rees scaling, Fourier readings, and the Kac--Moody spectrum
+are controlled shadows of that law.  Removing the rooted Stokes realization or the physical-rank
+compatibility condition destroys the conclusion.
+
+\subsection{Formal-verification boundary}
+
+An accompanying Lean~4 development checks the finite algebra unconditionally: rooted-cut
+factorization, capacity completion and determinant, corona reduction, arbitrary type-$A$ path
+completion, the dependent physical-rank fibre product, formula \eqref{eq:euler-capacity-law},
+negative index at most one, exact Lorentz index, affine null-ray classification, and the fused
+full-leg index bound.  Its principal theorems use only Lean's standard logical quotient and choice
+axioms.  The formalization takes the certified rooted Stokes realization and the published
+quasi-Hamiltonian dimension formula as interfaces; it does not purport to re-formalize the analytic
+irregular Riemann--Hilbert correspondence.
 
 \section{Conclusion}
 
-The Cartan geometry of a type-$A$ genus-zero wild nonabelian Hodge diagram is at most Lorentzian.
-The reason is structural: local irregularity separates along a laminar fission tree and contributes
-positive principal-conormal squares, whereas compact genus-zero coupling contributes one square of
-total ramified rank with the opposite sign.  Effective resistance compresses the entire tree to a
-single intrinsic wall $\Omega$; type-$A$ legs and corona elimination preserve the defect count.
+The universal law is \eqref{eq:euler-capacity-law}.  A connected irregular curve has many local
+Stokes channels but only one common physical-rank channel.  Fission contacts, type-$A$ markings,
+corona elimination, and Rees deformation contribute positive centered energy.  Fusion and handles
+cannot create a second defect; they alter only the coefficient of rank, by the Euler correction.
+That is why the full index is at most Lorentzian in every genus.
 
-This law supplies a global restriction on the Kac--Moody systems visible in wild nonabelian Hodge
-theory and a quantitative decomposition of the dimension formula.  It also isolates a concrete
-microlocal problem: construct a categorical irregular Riemann--Hilbert/Rees comparison whose
-associated quadratic shadow is the principal-conormal decomposition
-\eqref{eq:Hessian-law}.  The theorem proved here is the numerical constraint that any such
-comparison must satisfy.
+The genus-zero Stokes--Cartan factorization, determinant wall, effective-resistance recursion,
+Fourier wall, dimension conservation law, and adjacency bound $\lambda_2\le2$ are therefore
+collateral manifestations of one Euler--capacity index law.  The remaining hard problem is
+categorical: construct an irregular Riemann--Hilbert/Rees comparison whose vanishing-cycle or
+characteristic-cycle pairing realizes the positive principal-conormal summands.  The theorem here
+gives the exact numerical polarization, sign constraint, and fusion law that such a comparison must
+recover.
 
 \begin{thebibliography}{99}
 
@@ -976,6 +1219,12 @@ P.~Boalch,
 Publ. Math. Inst. Hautes \'{E}tudes Sci. \textbf{116} (2012), 1--68.
 \href{https://doi.org/10.1007/s10240-012-0040-2}{doi:10.1007/s10240-012-0040-2}.
 
+\bibitem{Boalch2014Geometry}
+P.~Boalch,
+\emph{Geometry and braiding of Stokes data; fission and wild character varieties},
+Ann. of Math. (2) \textbf{179} (2014), no.~1, 301--365.
+\href{https://doi.org/10.4007/annals.2014.179.1.5}{doi:10.4007/annals.2014.179.1.5}.
+
 \bibitem{Boalch2025Counting}
 P.~Boalch,
 \emph{Counting the fission trees and nonabelian Hodge graphs (untwisted case)},
@@ -995,6 +1244,12 @@ P.~Boalch and D.~Yamakawa,
 C. R. Math. \textbf{358} (2020), no.~1, 59--65.
 \href{https://doi.org/10.5802/crmath.11}{doi:10.5802/crmath.11}.
 
+\bibitem{BoalchYamakawa2015Twisted}
+P.~Boalch and D.~Yamakawa,
+\emph{Twisted wild character varieties},
+arXiv:1512.08091 (2015).
+\href{https://arxiv.org/abs/1512.08091}{arXiv:1512.08091}.
+
 \bibitem{Doucot2021Diagrams}
 J.~Dou\c cot,
 \emph{Diagrams and irregular connections on the Riemann sphere},
@@ -1012,6 +1267,19 @@ J.~Dou\c cot,
 \emph{Basic representations of genus zero nonabelian Hodge spaces},
 SIGMA \textbf{22} (2026), 027, 43 pp.
 \href{https://doi.org/10.3842/SIGMA.2026.027}{doi:10.3842/SIGMA.2026.027}.
+
+\bibitem{Hiroe2017Ramified}
+K.~Hiroe,
+\emph{Ramified irregular singularities of meromorphic connections and plane curve singularities},
+Josai Math. Monogr. \textbf{10} (2017), 161--192.
+\href{https://libir.josai.ac.jp/il/user_contents/02/G0000284repository/pdf/JOS-13447777-1011.pdf}{publisher PDF}.
+
+\bibitem{Hiroe2019Rigidity}
+K.~Hiroe,
+\emph{Index of rigidity of differential equations and Euler characteristic of their spectral
+curves},
+arXiv:1907.12846 (2019).
+\href{https://arxiv.org/abs/1907.12846}{arXiv:1907.12846}.
 
 \bibitem{MartinezMichonSanMartin1994}
 S.~Mart\'{i}nez, G.~Michon and J.~San Mart\'{i}n,

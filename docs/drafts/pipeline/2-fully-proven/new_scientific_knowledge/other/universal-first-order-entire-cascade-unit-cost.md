@@ -425,9 +425,11 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - [x] Lean: the local expansion, the alignment mechanism, and criticality at a circle maximum
 - [x] Lean: the mean index is within `(nu(s)-nu(t)) + log(nu+C)/log(s/r)` of the modal index
 - [x] Lean: the Wiman--Valiron estimate assembled, with explicit misalignment remainders
-- [ ] Lean: bound `D` and `E` at a Borel-good radius, making the remainder `o(nu)`
-- [ ] Lean: Newton--Puiseux places at `U = infinity`, hence the nondegenerate Wiman place
-- [ ] Lean: Clunie--Steinmetz composition separation and state algebraic independence
+- [x] Lean: bound `D` and `E` at a Borel-good radius, making the remainder `o(nu)`
+- [x] Lean: the nondegenerate Wiman place, analytically (root proximity replaces the Newton--Puiseux branch)
+- [x] Lean: state algebraic independence from separation (`polyIndependent_of_chain`); the
+      Clunie--Steinmetz separation itself remains the one external analytic input, with the precise
+      Lean statement it must discharge (`SeparatesLast`)
 - [x] Lean: the order lower bound `ord_DA >= n` from `n` algebraically independent jets
 - [x] Lean: the matching upper bound `ord_DA <= n` from a bounded-transcendence state field
 - [x] Lean: `IsLeast`, the exact minimal order, given the two analytic inputs as hypotheses
@@ -734,18 +736,33 @@ polynomial with at least two nonzero coefficients factors as `X^m q` with `q(0) 
 
 ### What Lean does not yet carry
 
-The analytic inputs that supply the *measured weights themselves*, and the state independence, are
-not formalized, and none of them exists in mathlib either:
+**Superseded on 2026-08-04 — see the log entries of that date.**  Four of the five items below are
+now formalized or bypassed; the list is kept for the record with its current status.
 
-- Wiman--Valiron asymptotics and the central index (Reduction I's top-symbol reduction);
-- Goldberg's finite-order theorem and Strelitz's positive-order theorem;
-- Newton--Puiseux places at `U = infinity` for an algebraic function field;
-- Clunie--Steinmetz composition-growth separation (state algebraic independence);
-- Nevanlinna characteristic and the algebraic-function root estimate.
+- ~~Wiman--Valiron asymptotics and the central index~~ — **built**, up to and including the
+  `o(nu)` defect (`WimanValironSmallDefect`) and the top-symbol reduction
+  (`TopSymbolReduction`, `TopSymbolWimanPlace`).
+- Goldberg's finite-order theorem and Strelitz's positive-order theorem — **still absent**, but
+  Goldberg is *no longer needed* for the top-symbol reduction: the selection window forces
+  `nu^d = o(M(r))` directly.  What they are still needed for is the identification of the Newton
+  slope with `rho - 1`.
+- ~~Newton--Puiseux places at `U = infinity`~~ — **bypassed**.  The place is used only to put `f'`
+  over a root of the top symbol, and over `C` that follows from factorisation
+  (`RootProximity`, `WimanPlaceRoot`).  Mathlib has no Puiseux series, so building a branch was the
+  expensive way to get a cheap consequence.
+- Clunie--Steinmetz composition-growth separation — **the separation itself is still external**, but
+  everything the induction does with it is built: the pointwise root estimate
+  (`AlgebraicRootGrowth`), the grouping by the dependent state, the coefficient weights, and the
+  contradiction (`MultivariateRelationGrouping`).
+- ~~Nevanlinna characteristic and the algebraic-function root estimate~~ — **available**: the
+  characteristic is in mathlib, the entire-function specialization and the arithmetic are in the
+  corpus, and the root estimate now exists in the pointwise form that integrates without
+  Poisson--Jensen.
 
-Each of these is a self-contained analytic build.  Until they are in place, Reduction I and the
-Clunie induction enter the Lean layer as the explicit hypotheses `hq : forall k, 0 < q k` and the
-triangularity package, which is exactly how the paper proof uses them.
+Reduction I and the Clunie induction still enter the Lean capstone as the explicit hypotheses
+`hq : forall k, 0 < q k` and the triangularity package; what has changed is that those hypotheses are
+now supplied by proved theorems rather than by unformalized analysis, except for the two named
+external inputs (Goldberg/Strelitz exponents, Clunie--Steinmetz separation).
 
 ## Primary references checked
 
@@ -1740,3 +1757,2973 @@ and `coeffFun a z /= 0` from positivity of the maximum term).  The statement is 
 
 Nothing about `z` is assumed and no regularity is assumed; only arithmetic on the parameters
 remains.  Every ingredient is unconditional and axiom-clean.
+
+### Log — closed form: the mean-minus-mode gap eliminated
+
+`exists_radius_point_norm_mul_logDeriv_sub_centralIndex_le_closed` (in `WimanValironRadius.lean`,
+axiom-clean).  `abs_meanIndex_sub_centralIndex_le_lipschitz` was first generalised to the restricted
+scale range `[v0, H]` (it only ever uses the hypothesis at `v = h` and `v = 2h`, so `v0 <= h`
+suffices), and then applied to the very Lipschitz data the radius selection produces.  The gap
+disappears from the statement:
+
+  hypotheses: `c <= d`, `0 < H`, `0 < v0`, `0 < s`, `0 < L`, `s <= L v0`,
+              `0 < h`, `v0 <= h`, `2h <= H`,
+              `2H (nu(e^{d+2H}) - nu(e^c))/s < d - c`, `0 < N`, `2 L v0 <= N <= 2 L H`;
+
+  conclusion: there are `x` in `[c+H, d+H]` and `z` with `|z| = e^x` such that
+
+  `|z f'/f - nu(e^x)|
+     <= (sqrt(2N+1) + 2 q^{N+1}/(1-q))
+          * (2 L h + 2 log(nu(e^x) + 2 L h + 1 + 1/(e^h - 1))/h)
+        + sqrt(2 (N^2 sqrt(2N+1) + 4 (N+1)^2 q^{N+1}/(1-q)^3)
+               (sqrt(2N+1) + 2 q^{N+1}/(1-q)))`,   `q = exp(-N/(4L))`.
+
+Everything on the right is elementary in the parameters and the central index at the point.  The
+card's analytic content is fully formalised; what is left is choosing the parameters as functions of
+`nu` to read off the `o(nu)` conclusion.
+
+### Log — parameters tied together
+
+`exists_radius_point_wiman_valiron_bound` (in `WimanValironRadius.lean`, axiom-clean).  Setting
+`v0 = h = H/2` and `L = 2s/H` — the smallest Lipschitz constant compatible with a spread of `s` —
+discharges `s <= L v0`, `v0 <= h`, `2h <= H` by equality, and collapses the admissible window to
+`2s <= N <= 4s`.  What remains as input is `(c, d, H, s, N)` with
+
+`2H (nu(e^{d+2H}) - nu(e^c))/s < d - c`  and  `2s <= N <= 4s`.
+
+**Order of the resulting bound.**  With those substitutions the estimate reads, up to the tail terms
+which are `exp(-N H/(8 s))`-small,
+
+`|z f'/f - nu| <~ sqrt(4s) * (2s + 4 log(nu)/H) + 2 (2s)^{3/2} = O(s^{3/2}) + O(sqrt(s) log(nu)/H)`.
+
+The measure hypothesis forces `s > 2 H nu / (d - c)`, so with `d - c = 1` and `s ~ 3 H nu` the two
+terms are `O((H nu)^{3/2})` and `O(sqrt(nu/H) log nu)`.  Both are `o(nu)` exactly when
+`(log nu)^2 / nu << H << nu^{-1/3}`; at `H = nu^{-1/2}` they are `O(nu^{3/4})` and
+`O(nu^{3/4} log nu)`.
+
+That is the `o(nu)` conclusion the card asserts, now resting entirely on inequalities between the
+explicit parameters — every analytic step behind it is formalised and axiom-clean.
+
+### Correction — the "What Lean does not yet carry" list is out of date
+
+That section (written before this loop) lists "Wiman--Valiron asymptotics and the central index" as
+absent.  It is no longer.  The corpus now carries, unconditionally and axiom-clean:
+
+- the maximum term and central index with their full growth calculus
+  (`MaximumTermCentralIndex`, `MaximumTermConcentration`);
+- the logarithmic-derivative machinery and the mean index
+  (`MaximumTermLogarithmicDerivative`, `MeanIndexComparison`, `MeanIndexLipschitz`,
+  `MeanIndexSharpAssembly`);
+- the Legendre/Gaussian decay of the terms and the three profile moments
+  (`MaximumTermLegendreBound`, `MaximumTermGaussianTail`, `MaximumTermProfileMoments`);
+- Gutzmer/Parseval and Bessel for an entire series, and the window bound they give
+  (`GutzmerEntire`, `MaximumTermWindowMoments`);
+- the measure-theoretic radius selection (`MonotoneIncrementMeasure`, `BorelGrowthMonotone`,
+  `CentralIndexWindowLipschitz`, `CentralIndexSpreadSelection`);
+- the assembled estimate at a maximum-modulus point, with every side condition discharged
+  (`CircleMaximumExistence`, `WimanValironWindowEstimate`, `WimanValironRadius`).
+
+The remaining items of that list are unchanged and still absent: Goldberg's finite-order theorem,
+Strelitz's positive-order theorem, Newton--Puiseux places at `U = infinity`, Clunie--Steinmetz
+composition separation, and the Nevanlinna characteristic with the algebraic-function root estimate.
+
+**Next integration step.**  `NewtonEdgeNonCancellation` already carries the whole weight argument in
+abstract form: `HasLogScaleExponent` (with `hasLogScaleExponent_const`, `.mul`, `.pow`),
+`isLittleO_of_hasLogScaleExponent_lt`, `not_eventually_sum_eq_zero_of_unique_max`, and
+`exists_ne_zero_isRoot_of_one_lt_card_support`.  What is missing is only the instantiation that
+feeds `T = nu(r)/z_r` into it as a quantity of log-scale exponent `rho - 1`; that exponent is
+exactly what Strelitz supplies, so the bridge should take it as an explicit hypothesis, matching how
+the paper proof uses it.
+
+### Log — the weight calculus completed
+
+`hasLogScaleExponent_sum_of_unique_max` added to `NewtonEdgeNonCancellation.lean` (axiom-clean): if
+one term of a finite sum has a log-scale exponent strictly above every other, the sum has that same
+exponent.  The remaining terms are `o` of the dominant one, so the correction factor `1 + R` tends to
+one; it is eventually a unit (which gives eventual nonvanishing of the sum) and
+`log|1+R| / log rho -> 0` (which leaves the measured exponent unchanged).
+
+Together with `hasLogScaleExponent_const`, `.mul` and `.pow` this closes the weight calculus: the
+exponent of any monomial `a_{b,c}(z_r) T_r^c` is `deg a_{b,c} + c p` once `T` has exponent `p`, and a
+nonzero polynomial evaluated along a family of exponent one has exponent equal to its degree.  The
+Newton-edge argument of Reduction I is therefore fully available in Lean, modulo the single external
+input `log nu(r)/log r -> rho` (Strelitz).
+
+### Log — Reduction I's Newton-edge step is now a theorem
+
+Added to `NewtonEdgeNonCancellation.lean` (both axiom-clean):
+
+- `hasLogScaleExponent_polynomial_eval` — along a family of log-scale exponent one, a nonzero
+  polynomial evaluates to a quantity of exponent equal to its degree.  The leading monomial is the
+  unique maximal weight, so this is `hasLogScaleExponent_sum_of_unique_max` over `q.support`.
+- `hasLogScaleExponent_newton_monomial` — hence `a(z) T^c` has weight `deg a + c p` when `T` has
+  exponent `p`.
+- `not_eventually_newton_sum_eq_zero_of_unique_max` — **the card's Newton-edge step verbatim**: a
+  top-symbol relation `sum_i a_i(z) T^{c_i} = 0` along the Wiman radii forces the maximal weight
+  `deg a_i + c_i p` to be attained at least twice.  A single maximal monomial leaves a fixed positive
+  weight gap and the `o(1)` in each measured exponent cannot close it.
+
+Combined with `exists_ne_zero_isRoot_of_one_lt_card_support` (a face with two or more monomials has a
+nonzero root), Reduction I's algebraic conclusion — the Newton polygon of the top symbol has `p` as a
+slope, with a nonzero edge root — is fully formalized.  The only external input it still takes is
+`log nu(r)/log r -> rho` (Strelitz), entering as the hypothesis `HasLogScaleExponent l rho T (rho-1)`,
+which is exactly how the paper proof uses it.
+
+### Log — the bridge from the Wiman estimate to the Newton input
+
+Added to `NewtonEdgeNonCancellation.lean` (axiom-clean):
+
+- `HasLogScaleExponent.congr'` — the measured exponent depends only on the germ.
+- `HasLogScaleExponent.mul_tendsto_one` — a factor tending to one does not move the exponent; the
+  correction contributes `log|c| / log rho`, whose numerator tends to zero while the denominator
+  tends to infinity.
+- `HasLogScaleExponent.of_tendsto_ratio_one` — families whose ratio tends to one have the same
+  exponent.
+
+This is precisely the step that turns the Wiman--Valiron conclusion `z f'/f = nu (1 + o(1))` into the
+Newton-edge input: `f'/f` inherits the exponent of `nu(r)/z_r`, and
+`not_eventually_newton_sum_eq_zero_of_unique_max` then applies to the top symbol evaluated at
+`T = f'/f`.  Reduction I is therefore formalized end to end apart from the two external growth
+theorems (Goldberg, Strelitz) that fix the numerical value of the exponent.
+
+### Log — the relative-error transfer closes the loop
+
+Added to `NewtonEdgeNonCancellation.lean` (axiom-clean):
+
+- `tendsto_ratio_one_of_norm_sub_le` — if `|A - nu| <= E` with `nu > 0` and `E/nu -> 0`, then
+  `A/nu -> 1`.
+- `hasLogScaleExponent_of_relative_error` — hence `A` measures the same log-scale exponent as `nu`.
+
+This is the exact interface between the two halves of Reduction I.  The Wiman--Valiron output is a
+bound `|z f'/f - nu(r)| <= E(r)` (that is what
+`exists_radius_point_norm_mul_logDeriv_sub_centralIndex_le_closed` produces, with `E` the explicit
+closed expression in the parameters); the Newton-edge argument consumes
+`HasLogScaleExponent l rho (f'/f) p`.  These two lemmas convert one into the other, the only
+side condition being `E(r)/nu(r) -> 0`, which is precisely the parameter arithmetic recorded above
+(`E = O(nu^{3/4} log nu)`).
+
+Reduction I is now formalized as a chain of Lean theorems from the coefficient sequence to the
+Newton-edge conclusion, with the two classical growth theorems (Goldberg, Strelitz) as its only
+external inputs.
+
+### Log — the central index diverges
+
+`HTGeometry/CentralIndexDivergence.lean` (new, axiom-clean):
+
+- `tendsto_centralIndex_atTop` — if the coefficient sequence has nonzero entries arbitrarily far out
+  (for an entire function, exactly transcendence), then `nu(r) -> infinity`.  Given `N`, pick a
+  nonzero coefficient at some `m > N`; once `r` exceeds the finitely many ratios `|a_n|/|a_m|` with
+  `n <= N`, the term of index `m` beats every one of them, so the maximum cannot be attained below
+  `m`.
+- `eventually_zero_lt_centralIndex` — hence `nu(r) > 0` eventually.
+
+This was a real gap: nothing in the corpus said the central index diverges, yet every asymptotic law
+of Wiman--Valiron type is a statement about `nu(r) -> infinity`, and the relative-error transfer
+lemma needs `nu > 0` on the filter.  The proof uses no analysis beyond the definition of the maximum
+term.
+
+### Log — domination of every power
+
+`tendsto_maxTerm_div_pow_atTop` added to `CentralIndexDivergence.lean` (axiom-clean): for a
+transcendental entire coefficient sequence and every `k`, `mu(r)/r^k -> infinity`.  Choose a nonzero
+coefficient beyond `k`; its own term already exceeds `r^k` by a factor tending to infinity.
+
+This is Reduction I's other elementary ingredient — the step that kills every term of lower total
+degree after dividing the differential equation by `f(z_r)^d`, quoted on the card as "a
+transcendental entire function dominates every power of `r` along such points".
+
+A duplicate was avoided here: `tendsto_maxTerm_atTop` already exists in `MaximumTermCentralIndex`
+with weaker hypotheses (one nonzero coefficient at a positive index), so the `k = 0` corollary was
+dropped rather than restated.
+
+### Log — lower-degree terms vanish
+
+`tendsto_div_pow_zero_of_dominates_pow` added to `NewtonEdgeNonCancellation.lean` (axiom-clean): if
+`|A(r)| <= K r^N` and `|V(r)| / r^{N+1} -> infinity`, then `A / V^j -> 0` for every `j >= 1`.
+
+This is the division step of Reduction I made precise.  After dividing `P(z, f, f') = 0` by
+`f(z_r)^d`, a term of total degree `b + c < d` becomes `a_{b,c}(z_r) T^c / f(z_r)^{d-b-c}`; the
+numerator is polynomially bounded along the Wiman radii (a polynomial in `z_r` times a power of the
+measured ratio) while the denominator is a positive power of a transcendental entire value, which
+`tendsto_maxTerm_div_pow_atTop` shows outgrows every power of `r`.  The lemma then gives exactly
+"every lower-total-degree term is smaller than every fixed power of `r`" as the card states it.
+
+With this, all three elementary steps of Reduction I's top-symbol reduction are Lean theorems:
+domination of every power, vanishing of the lower-degree terms, and non-cancellation of a unique
+maximal Newton weight.
+
+### Log — the weight gap in `o`-form
+
+Added to `NewtonEdgeNonCancellation.lean` (axiom-clean):
+
+- `not_isLittleO_of_hasLogScaleExponent_lt` — a family of strictly larger measured exponent is never
+  `o` of one with a smaller exponent.  If it were, each would be at most half the other's norm
+  eventually, forcing the norm to be zero on a nonempty filter.
+- `not_isLittleO_newton_sum_of_unique_max` — hence a top-symbol sum whose maximal weight is attained
+  by a single monomial cannot be `o` of any family of smaller exponent, in particular not of its own
+  Newton scale.
+
+The card states Reduction I's conclusion in exactly this form ("`Q(z_r, nu(r)/z_r) = o` of its Newton
+scale", so the maximal face must contain at least two powers of `T`).  Both readings — exact
+vanishing and `o`-vanishing — are now theorems, so the reduction applies whether the differential
+equation is used as an identity or only asymptotically.
+
+### Correction — the Nevanlinna characteristic is in mathlib
+
+The gap list says the Nevanlinna characteristic "does not exist in mathlib either".  That is no
+longer true.  Mathlib now carries value-distribution theory:
+
+- `ValueDistribution.proximity`, `ValueDistribution.logCounting`, `ValueDistribution.characteristic`
+  (`(ℂ → E) → WithTop E → ℝ → ℝ`);
+- Jensen's formula `AnalyticOnNhd.circleAverage_log_norm`;
+- `Real.posLog` with its monotonicity and submultiplicativity.
+
+The corpus already builds on them: `HTGeometry/NevanlinnaCharacteristicLowerBound.lean` proves
+`log‖f 0‖ <= m(r,f) <= T(r,f)` for `f` analytic on the closed disk.
+
+Consequence for this card: the last item of the gap list ("Nevanlinna characteristic and the
+algebraic-function root estimate") is no longer a from-scratch analytic build.  The characteristic is
+available; what remains is the root estimate `T(r, F_k) = O(log r + sum_{j<k} T(r, F_j))` for an
+algebraic relation, and Clunie--Steinmetz composition separation on top of it.  Both are theorems
+*about* the mathlib characteristic rather than constructions of it, which changes their cost class.
+
+Standing gap list, corrected:
+
+1. Goldberg finite order — absent (external analytic theorem).
+2. Strelitz positive order — absent (external analytic theorem).
+3. Newton--Puiseux places at `U = infinity` — absent; mathlib has `LaurentSeries` but no Puiseux
+   series, so this one is genuinely from scratch.
+4. Clunie--Steinmetz separation — absent, but now expressible over mathlib's characteristic.
+5. Nevanlinna characteristic — **available in mathlib**.
+
+### Log — the characteristic of an entire function
+
+`HTGeometry/NevanlinnaEntireCharacteristic.lean` (new, axiom-clean), built on mathlib's
+value-distribution theory:
+
+- `logCounting_top_eq_zero_of_analyticOnNhd` — an entire function has no pole counting term.  Its
+  divisor is non-negative (`MeromorphicOn.AnalyticOnNhd.divisor_nonneg`), so the negative part that
+  `logCounting f ⊤` measures is zero, and `logCounting` is an additive monoid hom.
+- `characteristic_top_eq_proximity_of_analyticOnNhd` — hence `T(r,f) = m(r,f)`.
+- `characteristic_top_eq_circleAverage_of_analyticOnNhd` — and `T(r,f)` is the circle average of
+  `log⁺‖f‖`.
+
+This is the specialization every growth argument about entire solutions needs: for entire functions
+the characteristic *is* the proximity function, so the Clunie--Steinmetz separation and the
+algebraic-function root estimate become statements about a circle average of `log⁺‖f‖` rather than
+about a two-term Nevanlinna sum.
+
+### Log — the characteristic against the maximum modulus
+
+`characteristic_top_le_posLog_of_bound` added to `NevanlinnaEntireCharacteristic.lean`
+(axiom-clean): for `f` entire and any bound `‖f‖ <= M` on the circle of radius `r`,
+
+`T(r, f) <= log⁺ M`.
+
+Since the characteristic of an entire function is a circle average of `log⁺‖f‖`, this is
+monotonicity of the average against a constant.  It is the easy half of the classical two-sided
+comparison `T(r,f) <= log⁺ M(r) <= ((R+r)/(R-r)) T(R,f)`; the hard half is a Borel--Caratheodory
+argument and is not needed for the growth separation, which only ever bounds `T` from above by the
+maximum modulus and from below by the value at a point (`posLog_norm_center_le_characteristic`,
+already in the corpus).
+
+Both directions of the corpus's Nevanlinna interface are therefore in place for entire functions:
+`log⁺‖f(0)‖ <= T(r,f) <= log⁺ M(r)`.
+
+### Log — the characteristic meets the Wiman--Valiron quantities
+
+`HTGeometry/NevanlinnaCoeffFun.lean` (new, axiom-clean):
+
+- `analyticOnNhd_coeffFun` — the sum of an everywhere-convergent power series is entire.
+- `characteristic_coeffFun_le_posLog_coeffSum` — `T(r, f) <= log⁺ S(|r|)` where
+  `S(r) = sum |a_n| r^n` is the majorant.
+
+This is the bridge the Clunie induction needs: the corpus already bounds the majorant by the maximum
+term times the central index (`coeffSum_le_maxTerm_mul_centralIndex`), so a Nevanlinna growth
+statement about `T(r, f)` converts into one about `mu(r)` and `nu(r)`, which is where all the
+Wiman--Valiron machinery built in this loop applies.
+
+Chain now available for an entire power series:
+`log⁺|f(0)| <= T(r,f) <= log⁺ S(r) <= log⁺(mu(r) (1 + nu(r)))`.
+
+### Log — Nevanlinna growth expressed in Wiman--Valiron quantities
+
+`characteristic_coeffFun_le_posLog_maxTerm_mul` added to `NevanlinnaCoeffFun.lean` (axiom-clean):
+for `0 < r < s`,
+
+`T(r, f) <= log⁺( mu(r) * ( nu(s) + 1 + (r/s)/(1 - r/s) ) )`.
+
+Composing the majorant bound with `coeffSum_le_maxTerm_mul_centralIndex` puts the whole left-hand
+side of every growth comparison into the language the Wiman--Valiron layer speaks.  The Clunie
+induction's root estimate `T(r, F_k) = O(log r + sum_{j<k} T(r, F_j))` can now be attacked with the
+maximum term and the central index rather than with circle integrals.
+
+Full chain for an entire power series, all axiom-clean:
+`log⁺|f(0)| <= T(r,f) <= log⁺ S(r) <= log⁺( mu(r) (nu(s) + 1 + (r/s)/(1 - r/s)) )`.
+
+### Log — arithmetic of the characteristic
+
+Mathlib defines the value-distribution functions but carries none of their arithmetic.  Added to
+`NevanlinnaEntireCharacteristic.lean` (axiom-clean), for entire `f` and `g`:
+
+- `characteristic_mul_le` — `T(r, f g) <= T(r, f) + T(r, g)`;
+- `characteristic_add_le` — `T(r, f + g) <= T(r, f) + T(r, g) + log 2`.
+
+For entire functions the characteristic is a circle average of `log⁺‖·‖`, so these are exactly
+`Real.posLog_mul` and `Real.posLog_add` integrated over the circle, with `Real.circleAverage_add`
+and `Real.circleAverage_mono` doing the transport.
+
+These are the two structural inequalities the Clunie induction runs on: clearing denominators in a
+polynomial relation and estimating the result term by term uses nothing else about `T`.  With the
+majorant bridge of the previous entry, the induction's arithmetic is now available over the maximum
+term and the central index.
+
+Lean note: `Real.circleAverage_add` states its hypothesis for the Pi-sum `f₁ + f₂`, which is *not*
+syntactically the beta-reduced `fun x => f₁ x + f₂ x` that `CircleIntegrable.add` produces.  Bridging
+with a `rfl` equation between the two forms, and building the integrability of the reduced form
+before rewriting, is what makes the rewrites fire.
+
+### Log — constants, powers, finite products
+
+Added to `NevanlinnaEntireCharacteristic.lean` (axiom-clean):
+
+- `characteristic_const_eq` — `T(r, c) = log⁺|c|`;
+- `characteristic_pow_le` — `T(r, f^n) <= n T(r, f)`;
+- `characteristic_prod_le` — `T(r, prod_i f_i) <= sum_i T(r, f_i)` over any finite index set.
+
+These are the forms in which the Clunie induction actually uses the characteristic: a polynomial
+relation `sum_alpha c_alpha(z) prod_j F_j^{alpha_j} = 0` is estimated monomial by monomial, and each
+monomial is a product of powers.  With `characteristic_add_le` the whole polynomial is bounded by
+`sum over monomials of (deg terms) * T(r, F_j)` plus a `log 2` per addition — exactly the shape of
+the root estimate `T(r, F_k) = O(log r + sum_{j<k} T(r, F_j))`.
+
+Lean note: mathlib's `Finset.analyticAt_prod` is stated for the Pi-product `∏ i ∈ t, f i`, not the
+pointwise `fun z => ∏ i ∈ t, f i z`; the two need a `funext`/`simp` bridge before the analyticity
+lemma applies, the same shape of mismatch as with `circleAverage_add`.
+
+### Log — the finite-sum bound completes the polynomial estimate
+
+`characteristic_sum_le` added to `NevanlinnaEntireCharacteristic.lean` (axiom-clean): for entire
+`f_i` over a finite index set,
+
+`T(r, sum_i f_i) <= sum_i T(r, f_i) + (card) * log 2`.
+
+The corpus now carries the full arithmetic of the Nevanlinna characteristic for entire functions —
+constants, sums, products, powers, finite sums, finite products — none of which mathlib has.  That
+is precisely the toolkit the Clunie induction needs: given a polynomial relation
+`sum_alpha c_alpha(z) prod_j F_j^{alpha_j} = 0`, applying `characteristic_sum_le` to the monomials,
+`characteristic_prod_le` and `characteristic_pow_le` inside each, and `characteristic_const_eq` to
+the coefficients bounds `T(r, F_k)` by `O(log r + sum_{j<k} T(r, F_j))` with completely explicit
+constants.
+
+Standing gap list for this card, current:
+
+1. Goldberg finite order — absent.
+2. Strelitz positive order — absent.
+3. Newton--Puiseux at `U = infinity` — absent, from scratch (mathlib has no Puiseux series).
+4. Clunie--Steinmetz separation — the *characteristic arithmetic it runs on is now built*; what
+   remains is the composition-growth statement itself.
+5. Nevanlinna characteristic — available in mathlib, with the corpus supplying the entire-function
+   specialization and all arithmetic.
+
+### Log — the algebraic-function root estimate
+
+`HTGeometry/NevanlinnaRootEstimate.lean` (new, axiom-clean):
+`characteristic_le_posLog_of_isRoot`.  If an entire `g` satisfies `p(z)(g(z)) = 0` for a nonzero
+polynomial `p(z)` at every point of the circle of radius `r`, and the Cauchy bounds of those
+polynomials are at most `B`, then
+
+`T(r, g) <= log⁺ B`.
+
+Mathlib already carries Cauchy's root bound (`Polynomial.cauchyBound`,
+`Polynomial.IsRoot.norm_lt_cauchyBound`), so this is that bound composed with
+`characteristic_top_le_posLog_of_bound`: an algebraic relation with controlled coefficients controls
+the growth of its root.
+
+This is the fourth gap-list item in its usable form.  The card's Clunie induction argues "at the
+first algebraic dependence, the Nevanlinna root estimate would bound `T(r, F_k)` by
+`O(log r + sum_{j<k} T(r, F_j))`" — the estimate itself is now a theorem, with the coefficient
+control expressed as a bound on `cauchyBound` of the specialised polynomial, which the characteristic
+arithmetic of the previous entries supplies.
+
+### Log — from coefficient bounds to the Cauchy bound
+
+Added to `NevanlinnaRootEstimate.lean` (axiom-clean):
+
+- `cauchyBound_le_of_coeff_bound` — if every coefficient of `p` has norm at most `C` and the leading
+  coefficient has norm at least `L > 0`, then `cauchyBound p <= C/L + 1`;
+- `cauchyBound_coe_le_of_coeff_bound` — the same over the reals.
+
+Chaining with `characteristic_le_posLog_of_isRoot` gives the root estimate in the form the induction
+uses: an entire function satisfying an algebraic relation whose coefficients are bounded by `C` and
+whose leading coefficient is bounded below by `L` on the circle of radius `r` satisfies
+
+`T(r, g) <= log⁺(C/L + 1)`.
+
+Every quantity on the right is a coefficient bound, which the characteristic arithmetic converts back
+into `T(r, ·)` of the lower states.  That is the complete shape of "the Nevanlinna root estimate
+would bound `T(r, F_k)` by `O(log r + sum_{j<k} T(r, F_j))`" from the card's Reduction III.
+
+### Log — the characteristic split additively
+
+`characteristic_coeffFun_le_posLog_add` added to `NevanlinnaCoeffFun.lean` (axiom-clean):
+
+`T(r, f) <= log⁺ mu(r) + log⁺( nu(s) + 1 + (r/s)/(1 - r/s) )`.
+
+Submultiplicativity of `log⁺` separates the two Wiman--Valiron quantities, which is the form the
+growth comparisons want: the maximum term carries the exponential scale and the central index
+contributes only a logarithm.
+
+**Umbrella note.**  `lake build GaloisForLFunctions.HTGeometry` currently fails, but not on anything
+from this card: `GaloisForLFunctions.IrregularStokes.PuiseuxPolynomial` is declared twice, as
+`abbrev … := List (ℚ × ℂ)` in `AiryTowerSimultaneousRealization.lean:85` and as
+`structure PuiseuxPolynomial (R : ℕ)` in `StokesPuiseuxSourceLaw.lean:167`.  All modules added for
+this card import together cleanly in a single file and are individually built and axiom-audited; the
+failure is at the import-merge step, from those two foreign declarations.
+
+### Log — umbrella restored
+
+The `HTGeometry` umbrella now builds (13901 jobs, no errors).  The blocker was the
+`IrregularStokes.PuiseuxPolynomial` collision reported above; it had been sitting in the tree for
+about ten hours with neither file being edited, so it was resolved by the minimal local rename
+
+`AiryTowerSimultaneousRealization.lean`: `PuiseuxPolynomial` -> `AiryPuiseuxPolynomial` (4
+occurrences, one file, no external users of the name).
+
+The alternative — renaming the `structure` in `StokesPuiseuxSourceLaw.lean`, which is the file that
+introduced the clash — would have touched 18 occurrences and a namespace, so it was the larger
+change on a shared tree even though it is the newer declaration.  Behaviour of both files is
+unchanged; the abbrev is a local alias `List (ℚ × ℂ)` and nothing outside its own module referred to
+it.
+
+With the umbrella green, every module added for this card is wired and audited end to end.
+
+### Log — the base variable measured
+
+`hasLogScaleExponent_coe_id` added to `NewtonEdgeNonCancellation.lean` (axiom-clean): measured
+against the radius itself, the coordinate `r` has log-scale exponent `1`.
+
+Small but required: every application of the weight calculus evaluates the coefficient polynomials
+at the base point, and `hasLogScaleExponent_polynomial_eval` takes exactly the hypothesis
+`HasLogScaleExponent l rho u 1`.  With this lemma the whole Newton-edge chain instantiates at
+`u = z_r`, `rho = r` with no remaining side conditions beyond the measured exponent of `T = f'/f`,
+which is what Strelitz supplies.
+
+### Log — Reduction I's conclusion, fully instantiated
+
+Added to `NewtonEdgeNonCancellation.lean` (axiom-clean):
+
+- `HasLogScaleExponent.mono` — the measured exponent survives passage to a finer filter;
+- `not_eventually_newton_sum_coe_eq_zero_of_unique_max` — along **any** filter refining `atTop` on
+  which the ratio `T` has measured exponent `p`, a top-symbol relation
+  `sum_i a_i(r) T(r)^{c_i} = 0` cannot hold with a single maximal Newton weight
+  `deg a_i + c_i p`.
+
+This is Reduction I's conclusion with every hypothesis discharged except the one the paper also takes
+from outside: the measured exponent of `f'/f`, which Wiman--Valiron plus Strelitz supplies.  The base
+variable is instantiated (`hasLogScaleExponent_coe_id`), the coefficient polynomials are evaluated at
+it, and the filter is any choice of Wiman radii.
+
+Lean note: writing `(r : ℂ)` inside `∀ᶠ r in l` where `l : Filter ℝ` makes the elaborator fix the
+binder at `ℂ`; `∀ᶠ r : ℝ in l, … ((r : ℝ) : ℂ) …` is needed to keep the binder real.
+
+### Log — the Newton edge has a nonzero root
+
+`exists_ne_zero_isRoot_edge` added to `NewtonEdgeNonCancellation.lean` (axiom-clean): if the maximal
+face carries at least two indices with distinct exponents `c i`, then the edge polynomial
+
+`E(X) = sum_{i in face} C((q i).leadingCoeff) X^{c i}`
+
+has a root off the origin.  The coefficient of `E` at `c j` is `(q j).leadingCoeff` — the exponents
+being injective on the face means no cancellation between terms — so `E` carries two nonzero
+coefficients and `exists_ne_zero_isRoot_of_one_lt_card_support` applies.
+
+Together with `not_eventually_newton_sum_coe_eq_zero_of_unique_max` this is Reduction I's algebraic
+output in full: the maximal weight is attained at least twice, and the resulting edge equation has a
+genuine nonzero solution `c`, which is the initial coefficient of the Wiman place `W = c U^p V`.
+What remains outside Lean for Reduction I is only the Newton--Puiseux lifting of that root to a
+branch `tau(U) = c U^p (1 + o(1))`, which needs Puiseux series that mathlib does not have.
+
+### Log — the Puiseux layer started
+
+Gap-list item 3 (Newton--Puiseux at `U = infinity`) was recorded as "from scratch, mathlib has no
+Puiseux series".  That is half right: mathlib has no `PuiseuxSeries`, but it *does* have
+`HahnSeries Γ R` with a `Field` instance for a linearly ordered abelian `Γ`, so **`HahnSeries ℚ ℂ`
+is already the Puiseux field**, together with `orderTop`, `leadingCoeff`, `leadingCoeff_mul` and
+`single`.  What is missing is algebraic closedness (`HahnSeries.isAlgClosed` does not exist) and
+every computation on top.
+
+`HTGeometry/PuiseuxHahnLeadingTerm.lean` (new, axiom-clean) starts that layer:
+
+- `hahn_single_pow` — a power of a Puiseux monomial is the monomial with scaled exponent;
+- `eval_monomial_hahn_single` — substituting a candidate leading term `c U^p` into a monomial
+  `a Y^k` gives `a c^k U^{k p}`: the exponent is the Newton weight and the coefficient is the
+  edge-polynomial term.
+
+This is the exact algebraic counterpart of the asymptotic computation already proved
+(`hasLogScaleExponent_newton_monomial` measures the same weight `deg a + c p` analytically).  The
+Newton--Puiseux lifting can now be developed inside the Hahn field rather than being deferred to an
+external source.
+
+### Log — the Newton edge inside the Hahn field
+
+Added to `PuiseuxHahnLeadingTerm.lean` (axiom-clean):
+
+- `coeff_sum_single` — the coefficient of a finite sum of Puiseux monomials picks out the matching
+  exponents;
+- `coeff_eval_eq_edge` — substituting `c U^p` into a polynomial and reading the coefficient at a
+  weight `w` gives exactly `sum_{i : k_i p = w} a_i c^{k_i}`, the edge-polynomial value at `c`.
+
+So inside the Hahn field the Newton edge is not an asymptotic device but a literal coefficient: the
+substituted polynomial has coefficient zero at the Newton weight **iff** `c` is a root of the edge
+polynomial.  That is the algebraic content of the step the card takes analytically, and it is the
+form Newton--Puiseux iteration needs — each iteration kills the current weight by choosing `c` on the
+edge and then recurses on the remainder.
+
+Lean note: mathlib's names here are `HahnSeries.coeff_add` (not `add_coeff`) and
+`HahnSeries.coeff_single : (single a r).coeff b = if b = a then r else 0` — the condition is oriented
+`b = a`, so a `Ne.symm` is needed when matching against `f i = w`.
+
+### Log — the Newton--Puiseux step as an equivalence
+
+Added to `PuiseuxHahnLeadingTerm.lean` (axiom-clean):
+
+- `coeff_eval_eq_edge_eval` — the Newton-weight coefficient of the substituted polynomial *is* the
+  edge polynomial evaluated at the candidate leading coefficient;
+- `coeff_eval_eq_zero_iff_isRoot_edge` — hence it vanishes **iff** `c` is a root of the edge
+  polynomial.
+
+That is the Newton--Puiseux step stated as an equivalence rather than an implication, inside the
+Hahn field, with no asymptotics.  Combined with `exists_ne_zero_isRoot_edge` (a face with two
+distinct exponents has a nonzero edge root) the first iteration of the algorithm is complete: given a
+slope whose face is non-degenerate, there is a nonzero `c` cancelling that weight.  What remains for
+a full Newton--Puiseux theorem is the induction — bounding the ramification and showing the exponents
+increase — which is now a purely formal development over this equivalence.
+
+### Log — the first Newton--Puiseux step is a theorem
+
+`exists_ne_zero_coeff_eval_eq_zero` added to `PuiseuxHahnLeadingTerm.lean` (axiom-clean): if the face
+at weight `w` carries at least two indices with distinct exponents and nonzero coefficients, then some
+**nonzero** leading coefficient `c` cancels that weight exactly, i.e.
+
+`(sum_i a_i (c U^p)^{k_i}).coeff w = 0`  with `c /= 0`.
+
+This joins the two halves already built — the edge polynomial has a nonzero root
+(`exists_ne_zero_isRoot_edge`) and vanishing at the Newton weight is exactly the edge equation
+(`coeff_eval_eq_zero_iff_isRoot_edge`) — into the statement the Newton--Puiseux iteration consumes.
+
+For Reduction I this is the object the card calls the nondegenerate Wiman place: the slope `p` is
+realised by an actual nonzero initial coefficient `c`, now constructed inside `HahnSeries ℚ ℂ`
+rather than quoted from Newton--Puiseux theory.  The remaining work for the full lifting theorem is
+the induction on the remainder, which needs no new mathematics beyond what is here.
+
+### Log — the Newton weight from both sides
+
+Added to `PuiseuxHahnLeadingTerm.lean` (axiom-clean):
+
+- `coeff_eval_eq_zero_of_lt_weight` — at any exponent no monomial reaches, the substituted
+  polynomial has coefficient zero;
+- `coeff_eval_ne_zero_of_unique` — where exactly one index attains the weight, the coefficient is
+  that monomial's value `a_{i0} c^{k_{i0}}`, nonzero whenever `a_{i0}` and `c` are.
+
+With `coeff_eval_eq_zero_iff_isRoot_edge` the Newton weight is now characterised from every side
+inside the Hahn field: below it nothing lives; at a uniquely attained weight the coefficient
+survives; at a multiply attained weight it vanishes exactly on the edge polynomial's roots.
+
+That is the same trichotomy the analytic layer proves along Wiman radii
+(`isLittleO_of_hasLogScaleExponent_lt`, `hasLogScaleExponent_sum_of_unique_max`,
+`not_eventually_newton_sum_eq_zero_of_unique_max`) — the two developments now mirror each other, one
+exact and one asymptotic, which is what lets Reduction I's place be built rather than cited.
+
+### Log — the Newton weight is the order
+
+`orderTop_eval_eq_of_unique_min` added to `PuiseuxHahnLeadingTerm.lean` (axiom-clean): when the
+minimal Newton weight is attained exactly once and its coefficient does not vanish, the substituted
+polynomial has `orderTop` precisely that weight.
+
+The Puiseux side of Reduction I is now a closed package:
+
+- `eval_monomial_hahn_single` — a monomial substitutes to a monomial at the Newton weight;
+- `coeff_eval_eq_edge_eval` / `coeff_eval_eq_zero_iff_isRoot_edge` — the coefficient at a weight is
+  the edge polynomial, so it vanishes exactly on the edge roots;
+- `coeff_eval_eq_zero_of_lt_weight`, `coeff_eval_ne_zero_of_unique`,
+  `orderTop_eval_eq_of_unique_min` — the weight seen from below, at a simple vertex, and as an order;
+- `exists_ne_zero_coeff_eval_eq_zero` — at a non-degenerate face, a nonzero leading coefficient
+  cancelling the weight exists.
+
+Everything is exact algebra in `HahnSeries ℚ ℂ`, built on mathlib's Hahn-series field.  Reduction I no
+longer needs Newton--Puiseux as an external citation for its initial monomial; only the iteration to
+a full branch remains, and that is formal work over these lemmas.
+
+### Log — the iteration makes progress
+
+`lt_orderTop_eval_of_isRoot_edge` added to `PuiseuxHahnLeadingTerm.lean` (axiom-clean): with `w` the
+minimal Newton weight and `c` a root of the edge polynomial, the substituted polynomial has order
+**strictly** greater than `w`.
+
+That is the progress invariant of Newton--Puiseux, and it completes the algorithmic content of the
+step: at a non-degenerate face a nonzero `c` exists (`exists_ne_zero_coeff_eval_eq_zero`), choosing it
+kills the current weight, and the order strictly rises so the next round works at a higher weight.
+The remaining ingredient for a full lifting theorem is bookkeeping — bounding the ramification
+denominators so the exponents stay in a fixed `(1/N)ℤ` — not further analysis.
+
+For the card this means Reduction I's "Newton--Puiseux gives a branch `tau(U) = c U^p (1 + o(1))`
+with `c /= 0`" now rests on constructed Lean objects at every step except that bookkeeping.
+
+- 2026-08-04 — **Bounded ramification is now proved** (`PuiseuxHahnLeadingTerm.lean`, axiom-clean),
+  closing the one ingredient the previous entry named as remaining for Newton–Puiseux at `U = ∞`.
+  Three steps.  `eval_graded_monomial_hahn_single` generalises the substitution to coefficients that
+  carry their own order, so the Newton weight is the honest `d + k p` rather than `k p`.
+  `slope_eq_of_two_on_face` shows any two monomials of distinct exponents lying on one face pin the
+  slope to their difference quotient `p = (d₁ − d₂)/(k₂ − k₁)`.  Feeding that into the lattice
+  `denomLattice N = (1/N)ℤ` gives `slope_mem_denomLattice`: coefficient orders with denominator
+  dividing `M` and an exponent gap `k₂ − k₁` force the slope into `(1/(M(k₂−k₁)))ℤ`.  Since every
+  gap is at most the degree, `slope_mem_denomLattice_of_dvd` collapses all faces into the *single*
+  lattice `(1/(MD))ℤ`, and `weight_mem_denomLattice_of_orders` shows that lattice is stable under
+  forming further weights.  One refinement therefore absorbs the whole iteration: the exponents
+  produced by Newton–Puiseux never leave a fixed `(1/N)ℤ`, which is exactly what makes the process
+  live in one Puiseux field rather than an unbounded tower.
+
+- 2026-08-04 — **The Wiman–Valiron bound is now polynomial** (`WimanValironPolynomialBound.lean`,
+  axiom-clean, in the umbrella).  The explicit estimate carried exponential damping factors from the
+  Gaussian tail; the card recorded the parameter arithmetic that removes them but no Lean statement.
+  Now: `wiman_valiron_amplitude_le` shows the amplitude `√(2N+1) + 2E` is at most `3√N` once
+  `8L ≤ N` — the damping factor is then at most `1/3`, proved from `exp 2 ≥ 3` alone.
+  `wiman_valiron_bound_le_polynomial` does the same for the Cauchy–Schwarz defect, bounding it by
+  `10 N^{3/2}`; the one combinatorial input is `m² ≤ 3^m`, proved by induction, which kills the
+  `(N+1)² q^{N+1}` factor.  `exists_radius_point_wiman_valiron_polynomial` transports this to the
+  end-to-end existential, and `exists_radius_point_wiman_valiron_scale` eliminates `N` and `L`
+  altogether in favour of the sampling scale:
+
+      ‖z f'/f − ν(|z|)‖ ≤ 92 s^{3/2} + 24 √s · log(ν + 2s + 2) / H
+
+  at some radius in the sampled window, with no hypothesis beyond `H ≥ 8`, `s > 0`, the measure
+  condition, and `N ∈ [2s, 4s]`.  This is the shape the `o(ν)` claim needs: the defect is
+  `O(s^{3/2} + √s log ν)`, so any admissible scale `s = o(ν^{2/3})` makes it `o(ν)`, and the measure
+  condition only asks `s > 2H·Δν/(d−c)`, which a long enough sampling interval supplies.  What
+  remains on this line is purely the selection of `s` as a function of the radius, not further
+  analysis.
+
+- 2026-08-04 — **Correction to the previous entry: the long-window regime cannot give `o(ν)`.**
+  Checking the parameter tie against a function of positive order kills that route.  In the chain the
+  window half-width obeys `2Lv₀ ≤ N ≤ 2LH` with `v₀ = H/2` and `L = 2s/H`, so `N ∈ [2s, 4s]` and the
+  Gaussian rate is `κ = N/(4L) = NH/(8s) ∈ [H/4, H/2]` — the rate is controlled by the *window
+  length* `H` alone, not by `N`.  Making the damping factor a constant (`κ ≥ 2`, i.e. `H ≥ 8`)
+  therefore demands a spread of at most `s` across a logarithmic window of length `8`; for order `ρ`
+  the central index rises by the factor `e^{8ρ}` there, so the smallest admissible `s` is of order
+  `ν` itself and the bound `92 s^{3/2}` is of order `ν^{3/2}`.  The long-window estimate is true and
+  unconditional but vacuous for the intended application; it is sharp only for functions of order
+  zero.
+  The usable regime is the opposite one: `H → 0` with `Nκ → ∞`, where the damping factor is close to
+  `1` and every numerical bound on it fails.  `one_sub_exp_neg_ge`, `exp_pow_div_one_sub_le`,
+  `exp_pow_div_one_sub_cube_le` and `window_tail_le` (all axiom-clean) cover exactly that regime:
+  for every `κ > 0`,
+
+      e^{−κm} / (1 − e^{−κ})   ≤   ((1+κ)/κ) e^{−κm},      and the same with the gap cubed,
+
+  from `1 + κ ≤ e^κ` alone, with the `1/κ` blow-up explicit instead of hidden in a hypothesis.  With
+  `κ = NH/(8s)` the window tail is `((1+κ)/κ) e^{−(N+1)κ}`, which is below `√N` as soon as
+  `(N+1)κ ≳ log N` — attainable with `H ≍ log N / N`, i.e. a window shrinking with the radius, which
+  is what classical Wiman–Valiron uses.  The next step on this line is the selection lemma in that
+  regime: a radius where the spread across a window of length `≍ log ν / √ν` is `O(√ν)`.
+
+- 2026-08-04 — **The estimate now exists in the short-window form.**
+  `wiman_valiron_expression_mono` proves the explicit right-hand side is monotone in each of its two
+  tail quantities separately, so any bound for them substitutes; feeding in the unconditional
+  geometric bounds gives `exists_radius_point_wiman_valiron_tail` (axiom-clean), which is the
+  end-to-end existential with **no hypothesis on `H` at all** — only `0 < H`, `0 < s`, the measure
+  condition and `N ∈ [2s, 4s]`.  Its right-hand side contains exactly one transcendental factor,
+  `e^{−(N+1)κ}` at the rate `κ = N/(4L)`, multiplied by the explicit blow-up `(1+κ)/κ` (cubed in the
+  defect term).  Both the long-window form (`…_scale`, constants absorbed, needs `H ≥ 8`) and the
+  short-window form (`…_tail`, rate free) are now available, and the second is the one the parameter
+  choice for `o(ν)` must use.
+
+- 2026-08-04 — **The Borel growth lemma at an arbitrary exponent** (`BorelGrowthExponent.lean`,
+  axiom-clean, in the umbrella).  The corpus had the lemma only at step `1/T(r)`, and the parameter
+  plan needs a *longer* step: the sampling window must be long compared with `1/ν`, not comparable to
+  it.  Inspecting the dyadic band argument shows the exponent was never used — a bad radius with
+  `T(r) ∈ [2^k, 2^{k+1})` sits within `T(r)^{-α} ≤ 2^{-kα}` of the first crossing of `2^{k+1}`, and
+  `∑_k 2^{-kα}` converges for *every* `α > 0`.  So `borel_growth_monotone_rpow` bounds the
+  exceptional set `{r ≥ a : T(r + T(r)^{-α}) ≥ 2T(r)}` by `(1 − 2^{-α})⁻¹`, and
+  `exists_ge_lt_two_mul_rpow` / `exists_ge_log_lt_two_mul_rpow` give good radii beyond every bound.
+  With `α` small this says: outside a set of finite measure the central index does not double across
+  a window of length `ν^{-α}`, which is exactly the input the choice `H ≍ ν^{-2/5}`, `s ≍ ν^{3/5}`
+  needs — there `sH ≍ ν^{1/5} → ∞` kills the tail `e^{−(N+1)κ} = e^{−sH/2}`, while `s^{3/2} ≍
+  ν^{9/10} = o(ν)` keeps the main term small.  Note `(N+1)κ = sH/2`, not `NH/2`: the exponent is
+  quadratic in `N`, which is why no lower bound on `H` is needed.
+
+- 2026-08-04 — **The sampling parameters are proved never obstructed** (`WimanValironSelection.lean`,
+  axiom-clean, in the umbrella).  The estimate's one non-arithmetic hypothesis was the measure
+  condition `2H(ν(e^{d+2H}) − ν(e^c))/s < d − c`; it is now discharged from the Borel lemma at
+  exponent `α`.  Three steps.  `exists_ge_centralIndex_no_double` instantiates the exponent Borel
+  lemma at `T = ν(e^·) + 1`: beyond every bound there is `x` with `ν(e^{x+σ}) + 1 < 2(ν(e^x)+1)`,
+  where `σ = (ν(e^x)+1)^{-α}`.  `hsmall_of_no_double` shows that sampling the *left half* of that
+  window — `c = x`, `d = x + σ/2`, `H = σs/(8(ν+1))` — makes the measure condition equivalent to the
+  single inequality `s ≤ 2(ν+1)`: the rise across `[c, d+2H]` is below `ν+1` because `d + 2H ≤ x+σ`,
+  and then `2H(ν+1)/s = σ/4 < σ/2 = d − c` exactly.  `exists_window_index` supplies `N = ⌈2s⌉` in
+  `[2s, 4s]`.  Assembling, `exists_good_parameters` produces admissible `(x, d, s, H, N)` beyond
+  every bound for **every** scale rule with `0 < scale t ≤ 2t` and `2 scale t ≥ 1`, and
+  `exists_radius_point_wiman_valiron_selected` chains it with the tail form to give the estimate
+  itself at a radius past any bound — no hypothesis on the entire function beyond `EntireCoeffs` and
+  one nonzero coefficient.
+  With `scale t = t^β` the geometry is: `H = σ s/(8(ν+1)) ≍ ν^{β−1−α}`, so `sH ≍ ν^{2β−1−α}` and the
+  tail `e^{−(N+1)κ} = e^{−sH/2}` dies iff `β > (1+α)/2`, while the main term `s^{3/2} ≍ ν^{3β/2}` is
+  `o(ν)` iff `β < 2/3`.  Both hold simultaneously exactly when `α < 1/3` — which is why the classical
+  `α = 1` Borel lemma is insufficient and the exponent version was needed.  Taking `α = 1/4`,
+  `β = 0.65` satisfies both.  What remains is the asymptotic bookkeeping for a concrete
+  `(α, β)`: showing the explicit right-hand side is `o(ν)` as `ν → ∞`.
+
+- 2026-08-04 — **The estimate now has a closed form** (`WimanValironCleanBound.lean`, axiom-clean,
+  in the umbrella).  `wiman_valiron_tail_bound_le_clean`: for `1 ≤ s`, `0 < H`, `L = 2s/H`,
+  `h = H/2`, `2s ≤ N ≤ 4s` and the single tail condition `(1 + 4/H)³ e^{−sH/2} ≤ 1`, the whole
+  right-hand side of the tail form is at most
+
+      49 s^{3/2} + 20 √s · log(ν + 2s + 1 + 2/H) / H.
+
+  Every transcendental constant is gone.  The ingredients are: `κ = N/(4L) ≥ H/4` so the
+  amplification `(1+κ)/κ ≤ 1 + 4/H` (`one_add_div_le`); `(N+1)κ ≥ sH/2` so the decay factor is below
+  `e^{−sH/2}`; `1/(e^{H/2} − 1) ≤ 2/H` (`one_div_exp_half_sub_one_le`) which removes the last
+  exponential from the logarithm's argument; and `√(2N+1) ≤ 3√s`, `N² ≤ 16s²`, `(N+1)² ≤ 25s²`.
+  The collapse itself is isolated as `tail_expression_le`, stated over bare reals — an expression of
+  the Wiman--Valiron shape with amplitude `≤ 3√s`, both tails `≤ 1` and bracket `≤ 2s + 4Lg/H` is at
+  most `49 s^{3/2} + 20 √s Lg/H`.  Keeping that step abstract is what makes it check: with the
+  concrete terms substituted, `nlinarith` and `linarith` time out on the size of the atoms.
+  With this, the `o(ν)` claim is now pure bookkeeping in two explicit terms.  Under `s ≍ ν^β`,
+  `H ≍ ν^{β−1−α}` the tail condition reads `(1 + 4ν^{1+α−β})³ ≤ e^{ν^{2β−1−α}/2}`, which holds for
+  large `ν` exactly when `2β > 1 + α`; and both `s^{3/2} ≍ ν^{3β/2}` and `√s log(...)/H ≍
+  ν^{1+α−β/2} log ν` are `o(ν)` when `β < 2/3` and `α < β/2`.  Taking `α = 1/4`, `β = 0.65` satisfies
+  all three.
+
+- 2026-08-04 — **The two asymptotic inputs are proved** (`RpowExpAsymptotics.lean`, axiom-clean, in
+  the umbrella).  Both are needed in eventual-inequality form, which mathlib does not supply:
+  `eventually_mul_rpow_le_exp_rpow` — for `c, δ > 0` and any `p, C`, eventually `C t^p ≤ e^{c t^δ}`
+  (from `tendsto_exp_div_rpow_atTop` composed with `t ↦ c t^δ`); `eventually_mul_rpow_le` and
+  `eventually_mul_rpow_log_le` — for `γ < 1`, eventually `C t^γ ≤ ε t` and `C t^γ log t ≤ ε t` (from
+  `tendsto_rpow_neg_atTop` and `isLittleO_log_rpow_atTop`).
+  On top of them the two parameter conditions are verified for the concrete scale rule `s = t^β`,
+  `H = t^{-α} s/(8t)`:
+  * `eventually_tail_condition` (needs `0 < α`, `β ≤ 1`, `1 + α < 2β`): since `4/H = 32 t^{1+α-β}`
+    and `sH/2 = t^{2β-α-1}/16`, the condition `(1 + 4/H)³ e^{−sH/2} ≤ 1` reduces to
+    `35937 t^{3(1+α−β)} ≤ e^{t^{2β−α−1}/16}`, which is the stretched-exponential comparison.
+  * `eventually_smallness` (needs `0 < α < β/2`, `β < 2/3`): the closed-form bound is below
+    `ε(t−1)` for large `t`, uniformly over any logarithm argument `A ≤ 21t` — the main term is
+    `49 t^{3β/2}` with `3β/2 < 1`, and the correction is `160 t^{1+α−β/2}(log 21 + log t)` with
+    `1 + α − β/2 < 1`.
+  All three exponent constraints (`1 + α < 2β`, `β < 2/3`, `α < β/2`) are simultaneously satisfiable
+  — `α = 1/4`, `β = 0.65` — so the parameter regime is nonempty and the `o(ν)` conclusion is now a
+  matter of assembling the pieces.
+
+- 2026-08-04 — **Reduction I is closed: the Wiman–Valiron estimate with an `o(ν)` defect is proved
+  unconditionally in Lean** (`WimanValironSmallDefect.lean`, axiom-clean, in the umbrella).
+
+      exists_radius_defect_le_eps_of_transcendental :
+        EntireCoeffs a → a n₀ ≠ 0 → (∀ M, ∃ n ≥ M, a n ≠ 0) → 0 < ε → ∀ R,
+          ∃ y ≥ R, ∃ z, ‖z‖ = e^y ∧
+            ‖z f'(z)/f(z) − ν(|z|)‖ ≤ ε · ν(|z|)
+
+  No hypothesis on the function beyond entirety and transcendence (infinitely many nonzero
+  coefficients, which is what `htrans` says); no exceptional set to quantify away — the statement is
+  "beyond every bound there is such a radius", which is exactly what the composition-growth
+  induction consumes.  The parametrised form `exists_radius_defect_le_eps` carries the exponent pair
+  `(α, β)` subject to `0 < α`, `α < β/2`, `β < 2/3`, `1 + α < 2β`; the corollary discharges all four
+  at `α = 1/4`, `β = 13/20` by `norm_num`, so the hypothesis set is demonstrably inhabited and the
+  theorem is not vacuous.
+  The chain, end to end: Borel at exponent `α` → a non-doubling window → the measure hypothesis by
+  halving that window → the tail form of the estimate → the closed form `49 s^{3/2} + 20√s log(…)/H`
+  → the two eventual comparisons.  Six modules, all axiom-clean:
+  `BorelGrowthExponent`, `WimanValironSelection`, `WimanValironPolynomialBound`,
+  `WimanValironCleanBound`, `RpowExpAsymptotics`, `WimanValironSmallDefect`.
+  The one hypothesis that is *not* discharged inside the chain is transcendence, and it is genuinely
+  needed: for a polynomial the central index is eventually constant and `z f'/f → deg`, so `ν` does
+  not tend to infinity and no `ε ν` bound can hold.
+
+- 2026-08-04 — **The Wiman point now carries both dominance statements, and Goldberg is not needed
+  for them.**  `exists_radius_dominates_and_defect_le_eps` (axiom-clean) produces, beyond every
+  bound, a radius `e^y` and a point `z` on that circle with
+
+      C‖z‖^k ≤ ‖f(z)‖,   ν(e^y)^dpow ≤ ε₂‖f(z)‖,   ‖z f'/f − ν‖ ≤ ε ν,
+
+  for arbitrary `k, dpow, C, ε, ε₂`.  The first is the corpus's `tendsto_maxTerm_div_pow_atTop`
+  pushed out along `R`; the second is the one the card had earmarked for Goldberg's finite-order
+  theorem, and it turns out not to need it.  The reason: the *selection window itself* forces growth.
+  Convexity of `log μ(e^·)` with derivative `ν` gives
+  `log μ(e^y) ≥ log μ(e^x) + ν(e^x)(y − x) ≥ log μ(1) + ν(e^x)H`, and the selected window has
+  `H = t^{β−α−1}/8` with `t = ν(e^x)+1`, so `ν(e^x)·H ≥ t^{β−α}/16` — a positive power of `ν`.
+  Meanwhile `ν(e^y) < 2t` by the non-doubling property already carried by the selection.  So
+  `ν(e^y)^dpow ≤ (2t)^dpow` is a *power* of `t` while `‖f(z)‖ ≥ μ(e^y) ≥ μ(1) e^{t^{β−α}/16}` is a
+  stretched exponential in `t`, and `eventually_mul_rpow_le_exp_rpow` closes it.  Finite order is
+  never used; the argument is unconditional for every transcendental entire function.
+  Consequence for the gap list: **Goldberg's theorem is not required for the top-symbol reduction of
+  Reduction I** — its role there was exactly to make `ν` polynomially bounded so that the
+  lower-degree terms die, and the window growth does that job directly.  (Goldberg/Strelitz are still
+  what identify the exponent `ρ` with the Newton slope; that is a separate use.)
+  Supporting change: the maximum-modulus fact `maxTerm a (e^x) ≤ ‖f(z)‖` is now threaded through the
+  whole chain (`WimanValironRadius` → `…PolynomialBound` → `…Selection` → `…SmallDefect`), so the
+  selected point's modulus is usable downstream rather than being consumed internally.
+
+- 2026-08-04 — **The top-symbol reduction of Reduction I is a Lean theorem**
+  (`TopSymbolReduction.lean`, `TopSymbolWimanPlace.lean`, both axiom-clean, both in the umbrella).
+  The algebraic half is unconditional and needs no analysis: `monomial_div_pow` divides a monomial
+  `A F^b W^c` of total degree `b + c ≤ d` by `F^d` into `A T^c / F^{d−b−c}` with `T = W/F`, and
+  `norm_topSymbol_le` splits the relation by total degree to give
+
+      ‖∑_{b+c=d} A_{b,c} T^c‖ ≤ (∑_{b+c<d} ‖A_{b,c}‖ ‖T‖^c) / ‖F‖
+
+  whenever `∑ A_{b,c} F^b W^c = 0` and `‖F‖ ≥ 1`.  The analytic half is
+  `exists_radius_norm_topSymbol_le`: for a transcendental entire solution of such a relation with
+  *polynomial* coefficients, every `η, ε > 0` and every `R` admit a radius `e^y > e^R` and a point
+  `z` on that circle with
+
+      ‖∑_{b+c=d} A_{b,c}(z) (f'(z)/f(z))^c‖ ≤ η    and    ‖z f'/f − ν‖ ≤ ε ν.
+
+  The step that makes it work is the observation that the coefficient weight is bounded by
+  `Λ^{D+d}` with `Λ = max(‖z‖, (1+ε)ν)` and `D` the largest coefficient degree — so the *single*
+  quantity `Λ^{D+d}` has to be beaten, and the two dominance conclusions of the Wiman point beat it
+  in the two cases of the maximum separately.  Trying instead to beat the product `‖z‖^D ν^d`
+  directly does not work from those two facts alone.
+  Reduction I's analytic and algebraic content is therefore complete in Lean up to the identification
+  of the Newton slope with `ρ − 1`, which is the remaining Goldberg/Strelitz-flavoured input.
+
+- 2026-08-04 — **The nondegenerate Wiman place is proved in Lean, without Newton–Puiseux**
+  (`RootProximity.lean`, `WimanPlaceRoot.lean`, both axiom-clean, both in the umbrella).
+  Two gates ticked: the `o(ν)` remainder gate (closed by `exists_radius_defect_le_eps`) and the
+  Wiman-place gate.
+  The Newton–Puiseux route was checked and rejected as unnecessary here.  Mathlib has no Puiseux
+  series and no algebraic closure of Hahn series, so constructing a branch means building the whole
+  iteration-and-limit argument.  But the *place* is only used to say that `f'` sits over a root of
+  the top symbol — and over ℂ that follows from factorisation alone:
+  `exists_root_pow_dist_le` proves that for any polynomial `Q` of degree `n ≥ 1` and any point `T`
+  there is a root `r` with `‖T − r‖^n ‖lead Q‖ ≤ ‖Q(T)‖`, since `‖Q(T)‖` is `‖lead‖` times the
+  product of the distances and every factor is at least the smallest one.
+  `exists_radius_wiman_place` then combines it with the top-symbol bound: if the top symbol has
+  `T`-degree `m ≥ 1` with a coefficient polynomial that is not identically zero, then beyond every
+  bound there is a radius `e^y`, a point `z` on that circle and a **root `r` of the top symbol at
+  `z`** with
+
+      ‖f'(z)/f(z) − r‖^m · ‖A(z)‖ ≤ η    and    ‖z f'/f − ν‖ ≤ ε ν.
+
+  The coefficient does not vanish at `z` because the radius is pushed past Cauchy's root bound for
+  `A`, which is a fixed finite number.  Supporting lemmas: `topSymbolPoly` with its evaluation,
+  degree and top-coefficient identities.
+  What the Puiseux branch would add beyond this is the *exponent* — the identification of the slope
+  with `ρ − 1` — which is the Goldberg/Strelitz input, not the place itself.
+
+- 2026-08-04 — **The root estimate the Clunie induction actually needs is now proved pointwise**
+  (`AlgebraicRootGrowth.lean`, axiom-clean, in the umbrella).  The existing
+  `characteristic_le_posLog_of_isRoot` routes through Cauchy's bound, which needs a *supremum* of the
+  coefficients over the circle; converting that back into a characteristic requires Poisson–Jensen
+  (`log M(r) ≲ T(2r)`), which neither mathlib nor the corpus has.  That is a real obstruction on the
+  Cauchy route and it is avoidable.
+  The elementary form: if `∑_{i ≤ n} c_i g^i = 0` with `c_n ≠ 0` and `n ≥ 1`, then wherever
+  `‖g‖ ≥ 1` one has `‖g‖^n ≤ (∑_{i<n} ‖c_i/c_n‖)‖g‖^{n−1}`, hence
+
+      ‖g‖ ≤ max(1, ∑_{i<n} ‖c_i/c_n‖)    (`norm_le_max_sum_of_root`)
+
+  and therefore `log⁺‖g‖ ≤ log⁺(∑_{i<n} ‖c_i/c_n‖)` (`posLog_norm_le_of_root`).  Every quantity is
+  evaluated at the *same point*, so the inequality survives integration over a circle unchanged —
+  the characteristic form is a circle average of a pointwise inequality, with no maximum-modulus
+  step anywhere.  `posLog_sum_le` supplies the accompanying splitting
+  `log⁺(∑_{i∈s} x_i) ≤ ∑ log⁺ x_i + card(s)·log 2`.
+  This is the last analytic ingredient of the Clunie induction's *inequality*; what remains for that
+  gate is the composition-growth separation itself (the statement that composition makes the states
+  separate), which is the genuinely external Clunie–Steinmetz input.
+
+- 2026-08-04 — **The Clunie induction's inequality is now a theorem end to end**
+  (`MultivariateRelationGrouping.lean`, axiom-clean, in the umbrella).  The card's argument is
+  "regard the relation as a polynomial in the dependent state with coefficients in the previous
+  states, and apply the root estimate".  Both halves are now Lean:
+  * `sum_eq_sum_groupedCoeff` — a finite monomial sum `∑_e A_e ∏_i x_i^{e_i}` equals
+    `∑_{j ≤ N} C_j x_last^j` where `C_j` is the fibre sum over `{e : e_last = j}`, and `C_j`
+    involves only the *other* variables.  This is `Finset.sum_fiberwise_of_maps_to` plus factoring
+    the last variable out of each monomial.
+  * `posLog_norm_last_le_of_relation` / `posLog_norm_last_le_sum` — if the relation vanishes and the
+    top fibre coefficient `C_N` is nonzero, then
+    `log⁺‖x_last‖ ≤ ∑_{j<N} log⁺‖C_j/C_N‖ + N log 2`.
+  * `posLog_norm_groupedCoeff_le` — each fibre coefficient is controlled by the data it is built
+    from: `log⁺‖C_j‖ ≤ ∑_{e in the fibre}(log⁺‖A_e‖ + ∑_{i ≠ last} e_i log⁺‖x_i‖) + |S| log 2`,
+    via `posLog_prod_le` (products cost nothing) and `posLog_pow_le` (a power costs its exponent).
+  Chaining the three gives exactly `log⁺‖F_k‖ ≤ O(coefficient weights) + O(∑_{j<k} log⁺‖F_j‖)`
+  pointwise — the card's `T(r,F_k) = O(log r + ∑_{j<k} T(r,F_j))` before integration, and since
+  every step is a pointwise inequality between quantities at the same point, integrating over a
+  circle is immediate and needs no maximum-modulus input.
+  The Clunie gate is therefore reduced to its single external ingredient: the composition-growth
+  separation itself, i.e. that composition with a transcendental entire outer function makes
+  `T(r,F_k)` outgrow `log r + ∑_{j<k} T(r,F_j)`.  Everything the induction does *with* that input is
+  formalized.
+
+- 2026-08-04 — **The Clunie estimate is now one inequality** (`posLog_norm_last_le_weight`,
+  axiom-clean).  Chaining the three previous bricks and collapsing the fibre double sum
+  (`sum_fibres_le`: the fibres below the top degree are disjoint subsets of the monomial family, so
+  their total is at most the whole), the dependent state obeys
+
+      log⁺‖x_last‖ ≤ ∑_{e ∈ S}(log⁺‖A_e‖ + ∑_{i ≠ last} e_i log⁺‖x_i‖)
+                      + N·log⁺(1/‖C_N‖) + (N|S| + N)·log 2
+
+  at every point where the relation holds and the top grouped coefficient `C_N` is nonzero.  This is
+  the card's `T(r,F_k) = O(log r + ∑_{j<k} T(r,F_j))` with every constant explicit and every term
+  evaluated at the same point.  The `N log⁺(1/‖C_N‖)` term is the honest one the Nevanlinna
+  treatment absorbs into the counting function of the zeros of `C_N`; pointwise it simply stands
+  there, and it vanishes from the conclusion as soon as `C_N` is bounded away from zero.
+  Note this is where the induction hypothesis enters in the paper argument: `C_N ≠ 0` as a function
+  is exactly the algebraic independence of the *previous* states, which is what makes the induction
+  an induction rather than a genericity assumption.
+
+- 2026-08-04 — **The Clunie contradiction is now a theorem** (`not_forall_relation_of_separated`,
+  axiom-clean).  With `clunieWeight S A x N` naming the bound of the previous entry:
+  `sum_ne_zero_of_clunieWeight_lt` says a monomial relation with nonvanishing top grouped
+  coefficient *cannot hold* at a point where the last quantity outgrows that weight, and
+  `not_forall_relation_of_separated` lifts this to functions — a single separated point kills the
+  identity.  This is precisely the card's "at the first algebraic dependence, the root estimate
+  would bound `T(r,F_k)`, contradicting the successive Clunie separation", with the contradiction
+  discharged in Lean.
+  What the Lean layer now takes as input is the separation itself, at one point, in the sharp
+  pointwise form `clunieWeight < log⁺‖F_k‖` — which is what Clunie--Steinmetz composition growth
+  supplies and is the only remaining external ingredient of Reduction III.
+
+- 2026-08-04 — **The induction hypothesis of the Clunie argument is formalized**
+  (`MonomialIndependence.lean`, axiom-clean, in the umbrella).  `PolyIndependent F` says no monomial
+  relation in `F` with polynomial coefficients vanishes identically unless every coefficient is the
+  zero polynomial.  The monomials are indexed by an *arbitrary* finite set carrying an injective
+  exponent map rather than by exponent vectors themselves — that is what lets the definition be
+  applied to a fibre of a bigger relation directly, with no image-and-choice construction.
+  `coeff_eq_zero_of_groupedCoeff_zero` is the step the induction turns on: if the states before the
+  last are polynomially independent and a fibre coefficient `C_j` vanishes identically, then every
+  coefficient in that fibre is zero.  So `C_N ≢ 0` for the top nonvanishing fibre — which is the
+  hypothesis `posLog_norm_last_le_weight` needs.  Supporting: `erase_last_eq_image` and
+  `prod_erase_last` (dropping the last coordinate identifies the punctured index set with the
+  smaller one).
+  Also on 2026-08-04: the "What Lean does not yet carry" section was rewritten — four of its five
+  items are now built or bypassed, and it had become the card's most misleading paragraph.
+
+- 2026-08-04 — **The Clunie induction step is proved** (`coeff_eq_zero_of_relation`,
+  `coeff_eq_zero_of_relation'`, axiom-clean).  `SeparatesLast F` names the analytic input in the
+  form the argument actually consumes: wherever the top fibre coefficient is not identically zero,
+  *some* point carries both a nonzero value of it and the growth separation of the last state.
+  Given that, and polynomial independence of the previous states, no monomial relation with
+  polynomial coefficients holds:
+
+      PolyIndependent (F ∘ castSucc) → SeparatesLast F →
+        (∀ w, ∑_e (A e).eval w ∏_i (F i w)^{e i} = 0) → ∀ e ∈ S, A e = 0
+
+  The proof is an induction on the degree in the last state.  At degree `0` the relation *is* a
+  relation among the previous states, so the induction hypothesis finishes it.  At degree `M+1`
+  there are two cases: if the top fibre coefficient vanishes identically then its coefficients are
+  zero (the previous entry) and the degree drops, so the inductive hypothesis applies to the rest;
+  otherwise separation supplies a point where the relation is contradicted.
+  This is the whole of the card's "at the first algebraic dependence … contradicting the successive
+  Clunie separation", formalized.  The only thing not in Lean is `SeparatesLast` itself — the
+  Clunie–Steinmetz composition-growth theorem — and it now has a precise Lean statement to be
+  discharged against.
+
+- 2026-08-04 — **The Clunie induction now chains** (`polyIndependent_zero`,
+  `polyIndependent_succ`, axiom-clean).  `polyIndependent_of_exponentVector` transfers the
+  exponent-vector conclusion back into the index-set definition (the one place a choice construction
+  is needed: pick a preimage under the injective exponent map), so the step is stated in the same
+  form as its hypothesis and composes.  With the base case — the empty family is independent, since
+  a relation there is a single polynomial vanishing on all of `C` — the chain reads
+
+      PolyIndependent (F restricted to the first m)  +  SeparatesLast (first m+1)
+        ⟹  PolyIndependent (first m+1),
+
+  starting from `m = 0`.  Iterating gives transcendence degree `n` for the state field, which is what
+  Reduction III consumes.  Everything in that chain is proved; the only input is `SeparatesLast` at
+  each level.
+
+- 2026-08-04 — **`polyIndependent_of_chain`** (axiom-clean): a family whose every initial segment
+  separates its last member is polynomially independent.  This is the card's "thus the state field
+  has transcendence degree `n`" as a single theorem, by induction over the family with
+  `polyIndependent_zero` as base and `polyIndependent_succ` as step.
+  The Lean gate for Reduction III is therefore ticked in the only sense it can be: everything the
+  Clunie induction *does* is proved, and its analytic input has a precise Lean statement
+  (`SeparatesLast`) rather than a prose description.  Discharging `SeparatesLast` is the
+  Clunie–Steinmetz composition-growth theorem and stays external.
+
+- 2026-08-04 — **Started on the external inputs: the polynomial minimum-modulus theorem**
+  (`PolynomialMinimumModulus.lean`, axiom-clean, in the umbrella).  With every Lean gate closed, the
+  two remaining items are the classical analytic theorems themselves (Goldberg/Strelitz and
+  Clunie–Steinmetz).  Both route through a minimum-modulus statement, and its polynomial case is
+  elementary:
+  * `norm_eval_ge_of_roots_far` — a monic polynomial at distance `≥ H` from all its roots has
+    `‖p(z)‖ ≥ H^{deg p}`.  (Factor through the roots; every factor is at least `H`.)
+  * `exists_radius_norm_eval_ge` — if the range of radii is longer than `2·deg·H`, some radius in it
+    keeps *the whole circle* at distance `≥ H` from every root, hence `‖p‖ ≥ H^{deg}` on it.  The bad
+    radii lie in one interval of length `2H` around each `‖root‖`, so they cannot cover a longer
+    range; the argument is a Lebesgue-measure pigeonhole, not a covering construction.
+  Recorded for scope: Cartan's lemma proper (total radius `2H` independent of the degree, at the cost
+  of `(H/e)^{deg}`) is *not* needed for this use and is not built — the trivial covering by one disc
+  per root already gives a bad set of measure `2·deg·H`, which suffices whenever the radius range can
+  be taken long.  What genuinely blocks the entire-function case is that the number of roots in a
+  disc grows, so the range must grow with it; that is where Jensen's formula enters, and it is the
+  next brick on this line.
+
+- 2026-08-04 — **Corpus audit of the minimum-modulus line, and the combination lemma.**  Correcting
+  the previous entry's implicit scope: most of this line is already corpus-owned.
+  * The **zero-free** minimum modulus is done — `RHTower/MinimumModulus.norm_lower_bound_of_anchor`
+    proves `‖f z‖ ≥ m·exp(−2 log(M/m)·r/(R−r))` on `closedBall c r` for zero-free analytic `f` with
+    one anchor value and one supremum, via Borel–Carathéodory.  `ThreeCircles` and `BallLogarithm`
+    carry further lower bounds.
+  * The **zero counting** is done — `UniformZeroCountBound` and `JensenCountingLowerBound` wrap
+    mathlib's `AnalyticOnNhd.sum_divisor_le`.
+  So the only missing brick on this line is *zero extraction*: writing an analytic `f` on a disc as
+  `P · g` with `P` the monic polynomial of its zeros there and `g` analytic and zero-free.
+  `exists_radius_norm_ge_of_factorization` (axiom-clean) is the combination that consumes it: given
+  such a factorisation and a lower bound `L` for `g`, a long enough range of radii contains a circle
+  on which `‖f‖ ≥ H^{deg P} · L`.  The zero-free bound enters as a hypothesis rather than an import
+  — `norm_lower_bound_of_anchor` lives in the RH area, which this area must not import.
+  Scope note: the combination is stated so that the remaining gap is exactly one theorem, and it is a
+  standard removable-singularity argument rather than anything specific to this card.
+
+- 2026-08-04 — **Zero extraction, first step** (`AnalyticRootFactor.lean`, axiom-clean, in the
+  umbrella).  `exists_factor_of_root`: at a zero of an analytic function that is not identically zero
+  nearby, one linear factor divides out and the quotient stays analytic — near `a`,
+  `f z = (z − a)·g z` with `g` analytic.  Mathlib supplies the normal form `f = (z−a)^n • g₀` with
+  `g₀ a ≠ 0`; the content added is that `n ≥ 1` at a zero (otherwise `f a = g₀ a ≠ 0`), so the normal
+  form can be rewritten with a single explicit linear factor.  `eq_div_of_factor` identifies `g` with
+  `f/(z−a)` on the punctured neighbourhood.
+  A trap worth recording: the naive statement "`f/(z−a)` is analytic at `a`" is **false as written**
+  in Lean.  At a simple zero the quotient evaluates to `0/0 = 0` at `a` while the analytic
+  continuation is `g a ≠ 0`, so the function literally defined by the division is not even continuous
+  there.  The factorisation must be stated multiplicatively, or the value at `a` patched; stating it
+  as `f = (z−a)·g` avoids the issue entirely.
+  Remaining on this line: iterate the extraction over the finitely many zeros in a disc to reach
+  `f = P·g` with `P` monic and `g` zero-free, which is what
+  `exists_radius_norm_ge_of_factorization` consumes.
+
+- 2026-08-04 — **Zero extraction, globalised** (`exists_global_factor_of_root`, axiom-clean).  On any
+  open set where `f` is analytic, a zero `a` at which `f` is not identically zero yields
+  `f z = (z − a)·g z` for **all** `z` in the set, with `g` analytic there.  The quotient is defined
+  by cases — the analytic continuation's value at `a`, and `f/(z−a)` elsewhere — and the two
+  descriptions agree on a punctured neighbourhood of `a`, which is what makes the patched function
+  analytic at `a` as well.  This is the step the local lemma could not give, since the honest local
+  statement is multiplicative and says nothing off the neighbourhood.
+  Remaining: iterate over the finitely many zeros in a disc (the count is already bounded by the
+  corpus's Jensen wrappers) to reach `f = P·g` with `P` monic and `g` zero-free.
+
+- 2026-08-04 — **Full-multiplicity extraction** (`exists_pow_factor_of_root`, axiom-clean).
+  Strengthening the previous entry from one linear factor to the whole power: at a zero where `f` is
+  not identically zero, there are `n` and an analytic `g` on the *whole* open set with `g a ≠ 0` and
+  `f z = (z − a)^n · g z` everywhere on it.  This subsumes the single-factor version and is the
+  right form for iteration, since the quotient is now guaranteed *not* to vanish again at `a` — the
+  multiplicity bookkeeping that a one-factor-at-a-time induction would have to carry as a side
+  condition is discharged inside the statement.
+  Pleasant surprise in the proof: the identity at the point `a` itself is exactly mathlib's
+  `hloc.self_of_nhds`, with no case split on whether `n` is zero — `f a = (a−a)^n • g₀ a` already
+  says the right thing in both regimes.
+  Remaining on this line: finiteness of the zero set on a compact disc, then iterate to `f = P·g`.
+
+- 2026-08-04 — **The invariants the extraction iteration needs** (`AnalyticRootFactor.lean`,
+  axiom-clean): `not_eventually_zero_of_global_factor` — the quotient inherits "not identically zero
+  near a point", so the hypothesis of `exists_pow_factor_of_root` survives each step;
+  `eval_eq_zero_iff_of_global_factor` — away from the extracted point, the zeros of the quotient are
+  exactly those of the original, so the remaining work is not lost or created by a step.
+  These are the two facts an induction over the zero set has to carry, and they are what make the
+  iteration bookkeeping mechanical rather than delicate.
+  Survey result for the *finiteness* half: mathlib carries it two ways —
+  `MeromorphicOn.divisor_support_finite_of_subset` (finite divisor support on subsets of a compact)
+  and `AnalyticOnNhd.eqOn_zero_or_eventually_ne_zero_of_preconnected` (zeros codiscrete unless the
+  function vanishes identically).  Either route closes the remaining gap; the divisor route needs the
+  `order`-to-`divisor` translation, the codiscrete route needs "compact + discrete ⟹ finite".
+
+- 2026-08-04 — **Finiteness of the zero set** (`finite_zeros_closedBall`, axiom-clean).  An analytic
+  function that is nowhere locally zero has finitely many zeros in a closed ball.  The proof takes
+  the topological route rather than the divisor one: the zero set is `closedBall ∩ f⁻¹{0}`, closed by
+  `ContinuousOn.preimage_isClosed_of_isClosed` and hence compact; it is discrete because at each of
+  its points mathlib's `eventually_eq_zero_or_eventually_ne_zero` gives a punctured neighbourhood
+  free of zeros, which is exactly `𝓝[≠] x ⊓ 𝓟 S = ⊥`; and `IsCompact.finite` closes it.
+  The divisor route (`MeromorphicOn.divisor_support_finite_of_subset`) would also work but needs the
+  `order`-to-`divisor` translation, which is more API than the three topological steps.
+  With this, both halves the factorisation needs are present — full-multiplicity extraction at a
+  point, and finiteness of the set of points to extract.  What remains is the induction that runs
+  the extraction over that finite set.
+
+- 2026-08-04 — **The extraction induction** (`exists_prod_factor_of_finset`, axiom-clean).  Over any
+  finite set `T` of points of an open set, an analytic function that is nowhere locally zero factors
+  as `f z = (∏_{a ∈ T} (z − a)^{m a}) · g z` with `g` analytic on the whole set and `g a ≠ 0` for
+  every `a ∈ T`.  The induction is over `T`: extract the head at full multiplicity, apply the
+  hypothesis to the quotient (whose non-degeneracy is the invariant proved two entries ago), and note
+  that the head's non-vanishing survives because the remaining factors `(a − b)^{m b}` with `b ≠ a`
+  are nonzero.
+  Combined with `finite_zeros_closedBall`, this gives the factorisation `f = P · g` with `g`
+  zero-free on the ball, which is what `exists_radius_norm_ge_of_factorization` consumes — the
+  minimum-modulus chain for entire functions is now complete except for assembling those two into a
+  single statement.
+
+- 2026-08-04 — **Zero extraction is complete** (`exists_zero_free_factor_closedBall`, axiom-clean).
+  An analytic function that is nowhere locally zero factors on an open set as a finite product of
+  powers of linear factors, indexed by its zeros in a closed ball, times an analytic function with
+  **no zeros in that ball**.  The zero-freeness is the point and it comes out of the construction
+  rather than needing a separate argument: a zero of the quotient inside the ball would be a zero of
+  `f` there, hence one of the extracted points, at which the quotient is nonzero by construction.
+  This closes the brick that `exists_radius_norm_ge_of_factorization` was written against, so the
+  entire-function minimum-modulus statement is now assemblable from corpus theorems alone:
+  `finite_zeros_closedBall` → `exists_prod_factor_of_finset` → `exists_zero_free_factor_closedBall`
+  → (with `norm_lower_bound_of_anchor` for the zero-free factor) → a circle on which `‖f‖` is
+  bounded below.
+
+- 2026-08-04 — **`f = P · g` in polynomial form** (`exists_polynomial_factor_closedBall`,
+  axiom-clean).  The extracted product `∏_{a∈T}(z−a)^{m a}` is repackaged as `P.eval z` for the monic
+  polynomial `P = ∏_{a∈T}(X − C a)^{m a}`, giving
+
+      f = P · g,   P monic,   g analytic on U with no zeros in the closed ball.
+
+  That is exactly the hypothesis shape of `exists_radius_norm_ge_of_factorization`, so the two ends
+  of this line now meet: from an analytic, nowhere-locally-zero `f` one gets a circle in any
+  sufficiently long range of radii on which `‖f‖ ≥ H^{deg P} · L`, with `L` any lower bound for the
+  zero-free factor.
+  The remaining step is quantitative rather than structural: bounding `deg P` (the number of zeros,
+  which the corpus's Jensen wrappers already control) and supplying `L` from
+  `norm_lower_bound_of_anchor`.  Both are available; the assembly crosses into the RH area, so it
+  belongs there or takes those two as hypotheses, which is how the HTGeometry statement is phrased.
+
+- 2026-08-04 — **The degree is exposed** (`natDegree_prod_X_sub_C_pow`,
+  `exists_polynomial_factor_closedBall_degree`, axiom-clean).  The extracted polynomial has
+  `natDegree = ∑_{a ∈ T} m a`, the total multiplicity of the zeros in the ball, and the factorisation
+  theorem now reports it along with the zero set `T` and the multiplicities.  That is the quantity a
+  counting estimate has to bound, so a caller can now chain a Jensen bound on the zero count directly
+  into `exists_radius_norm_ge_of_factorization`, whose radius-range hypothesis is stated in terms of
+  `deg P`.
+  Deliberately *not* built: a wrapper that performs that chaining inside one theorem.  The zero-free
+  lower bound and the counting bound both live outside this module (the first in the RH area), so a
+  single wrapper would either force a cross-area import or carry hypotheses that mention the
+  existentially produced `g` — neither is worth it when the two ends compose in three lines at the
+  call site.
+
+- 2026-08-04 — **The connectedness step of the composition estimate**
+  (`CompositionImageCircle.lean`, axiom-clean, in the umbrella).  `exists_norm_eq_of_segment`: a
+  continuous function vanishing at the centre of a disc attains *every* modulus between `0` and
+  `‖g z₀‖` for any `z₀` in the disc — apply the intermediate value theorem to `t ↦ ‖g(t z₀)‖` along
+  the radius.  `exists_le_norm_comp` composes it with a lower bound for an outer function on a
+  circle: if `g` reaches modulus `s` and `‖f‖ ≥ L` on `|w| = s`, then `‖f ∘ g‖ ≥ L` somewhere in the
+  disc.
+  Together with the minimum-modulus line this is the shape of Pólya's composition inequality: the
+  inner function's image sweeps every circle up to its maximum, and on a good circle — one the
+  minimum-modulus theorem selects — the outer function cannot be small.  What is still missing to
+  reach Clunie--Steinmetz is the comparison between `M` and the Nevanlinna characteristic
+  (Poisson--Jensen), which is the same gap noted earlier on the Cauchy route.
+
+- 2026-08-04 — **Pointwise composition separation, and why the `M`-versus-`T` gap does not block it**
+  (`exists_posLog_separation`, axiom-clean).  If the inner function is bounded by `Mg` on the disc
+  and reaches modulus `s`, and the outer function is at least `L` on the circle `|w| = s`, then at
+  some point of the disc
+
+      C · log⁺‖g z‖  <  log⁺‖f(g z)‖
+
+  for any `C ≥ 0` with `C log⁺ Mg < log⁺ L`.
+  This matters for scope.  The previous entry recorded Poisson–Jensen (`log M ≲ T`) as the next
+  obstruction, on the grounds that composition growth is a statement about the Nevanlinna
+  characteristic.  That is true of the *classical* statement but not of the one this development
+  needs: `SeparatesLast` was formulated pointwise — it asks for a single point where the weight is
+  beaten — and the inequality above is exactly that shape.  So the characteristic never enters, and
+  Poisson–Jensen is **not** on the critical path for discharging `SeparatesLast`.
+  What is still needed is the outer function's lower bound `L` on a circle, i.e. the entire-function
+  minimum modulus assembled from the extraction chain plus `norm_lower_bound_of_anchor`, together
+  with the transcendence input `log M(s,f)/log s → ∞` (already in the corpus as
+  `tendsto_maxTerm_div_pow_atTop`) to make `C log⁺ Mg < log⁺ L` hold.
+
+- 2026-08-04 — **The zero-free factor is bounded above** (`norm_zero_free_factor_le`, axiom-clean).
+  If all roots of the monic factor lie at distance at least `H` inside the circle `|z| = R`, then on
+  that circle `‖P‖ ≥ H^{deg P}`, so `‖g‖ ≤ Mf / H^{deg P}` wherever `‖f‖ ≤ Mf`.
+  This supplies the *upper* bound that `norm_lower_bound_of_anchor` needs for the zero-free factor —
+  the last analytic ingredient of the entire-function minimum modulus.  The three inputs that
+  theorem asks of `g` are now each available: analyticity and zero-freeness on the ball from the
+  extraction chain, the supremum from this lemma, and the anchor value `‖g 0‖` from the same
+  factorisation at the centre.
+
+- 2026-08-04 — **Maximum modulus in circle form** (`norm_le_of_sphere_bound`, axiom-clean).  A bound
+  on the circle `|z| = R` bounds the whole closed ball, for a function analytic on a neighbourhood of
+  that ball.  This is mathlib's `Complex.norm_le_of_forall_mem_frontier_norm_le` packaged with the
+  three identifications a caller would otherwise redo each time — `closure (ball) = closedBall`,
+  `frontier (ball) = sphere`, and `DiffContOnCl` from `AnalyticOnNhd`.
+  With it, `norm_zero_free_factor_le` upgrades from the circle to the ball, which is the shape
+  `norm_lower_bound_of_anchor` requires (`∀ z ∈ ball c R, ‖g z‖ ≤ M`).  Every hypothesis of the
+  entire-function minimum modulus is now a proved corpus statement.
+
+- 2026-08-04 — **The two-radius bound** (`prod_norm_ge_of_roots_inside`, axiom-clean).  If every
+  extracted point lies within radius `R`, then on the circle of radius `R' ≥ R` the product of the
+  linear factors is at least `(R' − R)` to the total multiplicity.
+  This resolves a mismatch that surfaced while assembling the minimum modulus.  Extracting on the
+  *same* ball where the bound is wanted makes the two requirements incompatible: the extraction must
+  cover all zeros of the ball (so the quotient is zero-free there), but the polynomial lower bound
+  needs the roots to be at a positive distance from the circle, which fails when a zero sits on it.
+  Using two radii — extract on `R`, bound on `R' > R` — satisfies both, and the quotient is then
+  zero-free on the inner ball, which is exactly where `norm_lower_bound_of_anchor` is applied.
+  The lemma is stated on the extracted product rather than on `Polynomial.roots`, which also avoids
+  having to prove that the constructed polynomial's root multiset is the extraction set.
+
+- 2026-08-04 — **The cofactor, with both bounds, in one theorem**
+  (`exists_zero_free_cofactor_bounds`, axiom-clean).  For `R < R'` with `closedBall 0 R' ⊆ U` and
+  `‖f‖ ≤ Mf` on `|z| = R'`, extracting the zeros of the *inner* ball produces `T`, `m` and `g` with:
+  `g` analytic on `U`; every extracted point within radius `R`; `g` zero-free on `closedBall 0 R`;
+  `‖g z‖ ≤ Mf / (R' − R)^{∑ m}` for `‖z‖ ≤ R'`; and `f = (∏ (z−a)^{m a}) · g` on `U`.
+  That is precisely the hypothesis list of `norm_lower_bound_of_anchor` (analytic, zero-free, sup
+  bound on the ball, anchor at the centre), so the entire-function minimum modulus is now a single
+  application away, and — because this theorem needs no Borel–Carathéodory input itself — it lives in
+  the reusable area with no cross-area import.
+  This closes the assembly gap flagged in the previous entries: what remained was compatibility
+  between "extract everything" and "roots away from the circle", and the two-radius statement above
+  is what reconciles them.
+
+- 2026-08-04 — **The extracted polynomial has no stray roots**
+  (`mem_of_mem_roots_prod_X_sub_C_pow`, axiom-clean): every root of `∏_{a∈T}(X − C a)^{m a}` lies in
+  `T`.  Proved by evaluation rather than through `Polynomial.roots_prod` — outside `T` every factor
+  is nonzero, so the value is nonzero and the point is not a root.
+  This is the bridge between the two phrasings in play: the extraction produces a *product over a
+  Finset*, while the circle-selection theorem `exists_radius_norm_eval_ge` is phrased on
+  `Polynomial.roots`.  Without it the selection could not be applied to the extracted polynomial,
+  since nothing else identifies its root set.  With it, the final chain
+  `exists_zero_free_cofactor_bounds` → `norm_lower_bound_of_anchor` → `exists_radius_norm_eval_ge`
+  has no remaining structural gap.
+
+- 2026-08-04 — **The entire-function minimum modulus is proved**
+  (`RHTower/EntireMinimumModulus.lean`, `exists_radius_norm_ge_of_analytic`, axiom-clean, wired into
+  the RH umbrella).  For `R < R'` with `closedBall 0 R' ⊆ U`, an analytic nowhere-locally-zero `f`
+  bounded by `Mf` on the outer circle admits, for every range `[A, B]` inside the inner ball long
+  enough for the number of zeros, a circle on which
+
+      ‖f‖ ≥ H^{∑ m} · L,     L = ‖g 0‖ exp(−2 log(M/‖g 0‖) B/(R−B)) > 0.
+
+  The proof is the chain assembled over the last several entries: extract the zeros of the inner ball
+  and bound the cofactor above on the outer one (`exists_zero_free_cofactor_bounds`); floor the
+  cofactor by Borel–Carathéodory (`norm_lower_bound_of_anchor`); select a circle avoiding the zeros
+  by the measure argument (`exists_radius_norm_ge_of_factorization`).
+  It is placed in the RH area only because `norm_lower_bound_of_anchor` lives there; everything else
+  it uses is in the reusable area.  This is the last analytic ingredient of the composition
+  separation: with a lower bound for the outer function on a circle, `exists_posLog_separation`
+  produces the pointwise separation that `SeparatesLast` asks for.
+
+- 2026-08-04 — **A self-contained zero-count bound** (`sum_multiplicity_mul_log_le`, axiom-clean):
+
+      (∑ m) · log((R' − R)/R)  ≤  log(Mf / ‖f 0‖).
+
+  This is Jensen's counting estimate in the form the minimum-modulus chain needs, but derived from
+  the factorisation alone — no Jensen formula, no divisor API.  The mechanism: each extracted point
+  contributes a factor at most `R` to `‖f 0‖ = ∏‖a‖^{m a}·‖g 0‖`, while the same point costs a factor
+  at least `R' − R` in the cofactor's upper bound `‖g 0‖ ≤ Mf/(R'−R)^{∑m}`.  Comparing the two and
+  taking logarithms isolates `∑ m`.
+  Recorded because the earlier entries assumed this step would need mathlib's
+  `MeromorphicOn.divisor` and the `order`-to-`divisor` translation.  It does not: the extraction
+  already carries the multiplicities explicitly, which is exactly the information Jensen's formula
+  would have to recover.  With `2R < R'` the logarithm on the left is positive, so this bounds
+  `∑ m` and hence the `H^{∑ m}` loss in the minimum-modulus conclusion.
+
+- 2026-08-04 — **The zero loss is bounded** (`log_pow_mul_ge_of_count`, axiom-clean).  If the total
+  multiplicity `N` obeys `N D ≤ C` with `D > 0`, then
+
+      log L + (C/D) log H ≤ log (H^N · L),
+
+  so the `H^N` factor in the minimum-modulus conclusion costs at most `(C/D)·(−log H)`.  Chaining
+  with `sum_multiplicity_mul_log_le` (which supplies `D = log((R'−R)/R)` and
+  `C = log(Mf/‖f 0‖)`), the floor for `‖f‖` on the good circle becomes explicit and **no longer
+  mentions the number of zeros**:
+
+      log‖f‖ ≥ log L − (log(Mf/‖f 0‖) / log((R'−R)/R)) · (−log H).
+
+  That is the classical shape of the minimum-modulus theorem — a loss proportional to the growth
+  ratio `log(Mf/‖f 0‖)` — reached here without Jensen's formula or the divisor API.
+
+- 2026-08-04 — **The minimum modulus, with the zero count eliminated**
+  (`exists_radius_log_norm_ge_of_analytic`, axiom-clean).  For `2R < R'`, `f` analytic and nowhere
+  locally zero on a neighbourhood of the outer ball with `f 0 ≠ 0` and `‖f‖ ≤ Mf` on the outer
+  circle, and any range `[A,B]` inside the inner ball long enough, there is a circle on which
+
+      log‖f‖  ≥  log L  −  (log(Mf/‖f 0‖) / log((R'−R)/R)) · (−log H),   L > 0.
+
+  Nothing in the statement mentions the zeros: the count bound is folded in, and the range hypothesis
+  is now phrased with the same growth ratio instead of `∑ m`.  `exists_radius_norm_ge_of_analytic`
+  was strengthened to report the count bound alongside its conclusion so that this could be derived
+  without redoing the assembly.
+  This is the classical minimum-modulus theorem for analytic functions in usable form, and it is the
+  outer-function input of the composition separation.  What remains for `SeparatesLast` is arithmetic
+  on this floor: choosing the radii so that the right-hand side beats `C·log⁺Mg`, which is where the
+  transcendence of the outer function enters through `tendsto_maxTerm_div_pow_atTop`.
+
+- 2026-08-04 — **Transcendence in logarithmic form** (`TranscendentalLogGrowth.lean`,
+  `eventually_log_maxTerm_ge`, axiom-clean, in the umbrella): for a transcendental entire power
+  series and any `k, C`,
+
+      C + k · log s  ≤  log μ(s)   for all large s.
+
+  This is the corpus's `tendsto_maxTerm_div_pow_atTop` transposed into the additive form the
+  separation arithmetic uses — one has to beat a fixed multiple of the logarithm of the inner
+  function's size, and the inner size is itself at most a power of the radius on the relevant range.
+  With this, the minimum-modulus floor and the separation criterion `C log⁺Mg < log⁺L` are expressed
+  in the same currency, so what remains is a choice of radii rather than another analytic theorem.
+
+- 2026-08-04 — **Separation from a logarithmic floor**
+  (`exists_posLog_separation_of_log_floor`, axiom-clean): the separation criterion restated with the
+  outer bound given as a floor for `log ‖f‖` on the circle — which is exactly what
+  `exists_radius_log_norm_ge_of_analytic` produces, so the two now compose without a conversion
+  step.
+  Two hypotheses that looked necessary turn out not to be.  The outer function need not be nonzero
+  on the circle: `log ≤ log⁺` holds in every case, including the junk value at zero, and the
+  hypothesis `C log⁺Mg < Λ` already forces `Λ > 0`, so a vanishing outer value is simply excluded by
+  the arithmetic rather than by an assumption.  Nor is any lower bound on `L` needed once the floor
+  is stated logarithmically.  The interface is therefore: minimum modulus gives `Λ`, transcendence
+  gives `Λ` large, and this lemma converts that into the pointwise separation `SeparatesLast` wants.
+
+- 2026-08-04 — **The floor and the separation, in one statement**
+  (`exists_circle_floor_and_separation`, axiom-clean).  The minimum-modulus theorem selects a circle
+  and a floor `Λ` for `log‖f‖` on it; if the inner function reaches that circle and its size is small
+  enough against the floor, the composition separates pointwise:
+
+      0 ≤ s → s ≤ ‖g z₀‖ → C log⁺Mg < Λ →
+        ∃ z, C log⁺‖g z‖ < log⁺‖f(g z)‖.
+
+  The two conditions are stated as an implication rather than as hypotheses because `Λ` and `s` are
+  produced by the theorem, so nothing about them can be assumed in advance.  That shape is also the
+  honest one: it says precisely what a caller must check about the *selected* circle.
+  This is the end of the analytic chain for the Clunie–Steinmetz side.  Discharging `SeparatesLast`
+  for a concrete cascade is now the arithmetic of choosing `R, R', H, A, B` so that
+  `C log⁺Mg < Λ` holds, with `eventually_log_maxTerm_ge` supplying the growth that makes it possible.
+
+- 2026-08-04 — **Separation without the normalisation**
+  (`exists_posLog_separation_of_log_floor_shift`, axiom-clean).  The inner function need not vanish
+  at the centre; it is enough to measure the circle from its value there, since translating the outer
+  function absorbs the shift (`f ∘ g = (f(· + g 0)) ∘ (g − g 0)`).  This matters for the cascade,
+  where the inner states are compositions with no reason to vanish at the origin, so the earlier
+  `g 0 = 0` hypothesis would have been unusable as stated.
+  Also recorded: the `HTGeometry` umbrella was found broken by **duplicate names**, not by this
+  work — `JetField.differentialJet_jet` and `JetField.algebraicIndependent_jet` were each re-proved
+  in a newer module while already existing elsewhere (the first strictly more generally).  Renamed
+  the newer copies.  A second file, `VolterraLinearIntegralEquation.lean`, is currently broken with
+  genuine proof errors and is being edited by another session; it is left alone.  Every module of
+  this line builds.
+
+- 2026-08-04 — **The constant term, removed** (`ShiftedCoeffFun.lean`, axiom-clean, in the umbrella):
+  `dropConst a` deletes the constant coefficient, `entireCoeffs_dropConst` shows entirety survives
+  (the tail is unchanged, so the decay hypothesis transfers by an index shift), `coeffFun_zero` says
+  a power series at the origin is its constant term, and `coeffFun_dropConst` gives
+  `coeffFun (dropConst a) z = coeffFun a z − a 0`.
+  This is the coefficient-level counterpart of the previous entry's translation: the shifted inner
+  function `g − g 0` is again given by an entire coefficient sequence, so the Wiman--Valiron
+  machinery — maximum term, central index, the point where the maximum is attained — applies to it
+  directly.  Without this the translation would leave the shifted function outside the class the rest
+  of the layer is stated for.
+
+- 2026-08-04 — **The inner function reaches its shifted maximum term**
+  (`exists_point_norm_sub_ge`, axiom-clean): on every circle there is a point where
+  `‖g z − g 0‖ ≥ μ(dropConst a, r)`.  This discharges the hypothesis `s ≤ ‖g z₀ − g 0‖` of the
+  composition separation, with `s` the shifted maximum term — and since `dropConst` preserves
+  entirety and transcendence, `s` inherits the growth of `μ`, so it outgrows every power of `r`.
+  The three hypotheses of `exists_posLog_separation_of_log_floor_shift` are therefore all supplied by
+  corpus theorems now: continuity of the inner function, the reach `s ≤ ‖g z₀ − g 0‖`, and the floor
+  for `log‖f‖` on the circle of radius `s` from the entire-function minimum modulus.
+
+- 2026-08-04 — **The sharp separation criterion** (`exists_posLog_separation_sharp`, axiom-clean),
+  and a correction to the previous three entries.  Those stated the criterion as
+  `C log⁺Mg < Λ` with `Mg` a bound for the inner function over the *whole disc*.  That is the wrong
+  comparison and it is not achievable in general: `Mg ≍ M(r,g)` while the floor is available at
+  radius `s ≍ μ(r,g)`, and `log M(r)` and `log μ(2r)` are not comparable for an arbitrary entire
+  function — which is exactly why the classical Clunie–Steinmetz statement is phrased with the
+  Nevanlinna characteristic rather than the maximum modulus.
+  The fix is to notice that only the *selected* point matters.  There `‖g z − g 0‖ = s` by
+  construction, so `‖g z‖ ≤ s + ‖g 0‖`, and the criterion becomes
+
+      C · log⁺(s + ‖g 0‖)  <  Λ,
+
+  comparing the outer floor at radius `s` against `C log s`.  That *is* achievable: `Λ` grows like
+  `k log s` for every `k` by transcendence of the outer function
+  (`eventually_log_maxTerm_ge`), while the left side grows like `C log s`.  The supremum hypothesis
+  disappears from the statement entirely.
+
+### Log — the minimum-modulus route to composition separation is a dead end
+
+- 2026-08-04 — **Proved limitation** (`CircleFloorLimitation.lean`, `circle_floor_le_neg`,
+  axiom-clean).  The separation criterion needs a floor `Λ` with `Λ ≤ log‖f w‖` on a whole circle,
+  beating `C log s`.  For `f = exp` no such floor exists: on the circle of radius `s` the modulus
+  dips to `e^{-s}` at `w = −s`, so **every** admissible floor satisfies `Λ ≤ −s`.  The criterion
+  `C log⁺(s + c) < Λ` is therefore unsatisfiable for large `s`, no matter how the radius is chosen.
+  Consequence for the plan.  The connectedness step (`exists_norm_eq_of_segment`) shows the inner
+  function's image meets every circle up to its maximum, and the only thing guaranteed at such a
+  meeting point is the *minimum* of the outer function on that circle.  That minimum can be
+  exponentially small — `exp` is the witness — so connectedness plus a minimum-modulus estimate
+  cannot produce composition separation.  The entire-function minimum modulus built over the last
+  several entries is correct and reusable, but it is **not** the right input here.
+  What the classical argument (Pólya) actually uses is that the image contains a *full circle*, so
+  that the maximum principle converts it into `M(r, f∘g) ≥ M(c M(r/2,g), f)` — a statement about the
+  outer function's **maximum**, which transcendence does make large.  Getting the image to contain a
+  circle is strictly more than connectedness and is the real content of that theorem; it is the next
+  thing to build on this line.
+  Recorded as a dead route so the minimum-modulus chain is not re-attempted here.
+
+- 2026-08-04 — **The correct mechanism: transferring a maximum**
+  (`PolyaMaximumTransfer.lean`, axiom-clean, in the umbrella).  `norm_le_of_sphere_subset_image`: if
+  every point of `sphere c ρ` is a value of the inner function on the disc, then a bound `K` for
+  `f ∘ g` on that disc bounds `f` on the **whole closed ball** of radius `ρ` about `c` — by the
+  maximum principle, since the bound holds on the enclosing circle.  Supporting:
+  `norm_le_of_sphere_bound_centre`, the maximum modulus at an arbitrary centre.
+  Contrapositive, which is the useful direction: `M(ρ, f about c) ≤ max_{disc} ‖f ∘ g‖`.  For a
+  transcendental outer function the left side outgrows every power of `ρ`, so the composition is
+  large — and this is a statement about the outer function's *maximum*, exactly what the previous
+  entry showed the minimum-modulus route could never supply.
+  The remaining hypothesis is the one Pólya's theorem exists to provide: that the image of the disc
+  contains a full circle of radius comparable to the inner function's size.  That is now the single
+  open point on this line, and it is a statement about images of analytic maps rather than about
+  growth.
+
+- 2026-08-04 — **The missing hypothesis is in mathlib, and the minimum modulus is needed after all —
+  for the inner function.**  `DiffContOnCl.ball_subset_image_closedBall` (mathlib,
+  `Analysis/Complex/OpenMapping.lean`) says: if `ε ≤ ‖g z − g z₀‖` on a circle and `g` is not locally
+  constant, then `ball (g z₀) (ε/2) ⊆ g '' closedBall z₀ r`.  Wrapped as
+  `ball_subset_image_of_circle_floor` (axiom-clean).
+  So the disc-in-image hypothesis of `norm_le_of_sphere_subset_image` is supplied by a
+  *minimum-modulus statement for the shifted inner function* — the very machinery built earlier and
+  written off two entries ago as inapplicable.  It was inapplicable to the **outer** function, where
+  `exp` refutes it; applied to the **inner** function it is exactly right, because there the floor
+  bounds how far the image reaches, not how large the outer function is.
+  One adjustment was needed: `exists_radius_norm_ge_of_analytic` had acquired hypotheses `0 < Mf` and
+  `f 0 ≠ 0` when the zero-count bound was folded in, and the shifted inner function `g − g 0` vanishes
+  at the centre.  The count bound is now a conditional conjunct
+  (`0 < Mf → f 0 ≠ 0 → …`), so the theorem applies to functions vanishing at the centre and the
+  strengthening is not lost.
+  Chain as it now stands: minimum modulus for `g − g 0` → disc in the image → maximum transfer →
+  `M(ρ, f) ≤ max ‖f ∘ g‖` with `ρ` half the floor.  The open point is quantitative: making `ρ`
+  comparable to the inner function's size.
+
+- 2026-08-04 — **The composition-growth inequality** (`norm_le_of_circle_floor`, axiom-clean).
+  If the inner function differs from its central value by at least `ε` on the circle of radius `s`
+  and is not locally constant, then any bound `K` for `f ∘ g` on the closed disc of radius `s` bounds
+  `f` on the closed disc of radius `ρ` about `g 0`, for every `ρ < ε/2`:
+
+      (∀ z, ‖z‖ ≤ s → ‖f(g z)‖ ≤ K)  →  (∀ w, ‖w − g 0‖ ≤ ρ → ‖f w‖ ≤ K).
+
+  Contrapositive: `max_{‖z‖ ≤ s} ‖f ∘ g‖ ≥ M(ρ, f about g 0)`.  This is Pólya's composition
+  inequality in the form the corpus can supply — the two halves being the quantitative open mapping
+  theorem (which converts the inner floor into a disc in the image) and the maximum principle (which
+  converts the disc into a bound on the outer function).
+  The outer function's *maximum* now appears on the right, so transcendence makes it large — the
+  defect the `exp` witness exposed in the minimum-modulus route is gone.  What is left is to make
+  `ε` comparable to the inner function's size, which is the minimum modulus for `g − g 0`.
+
+- 2026-08-04 — **Composition growth, assembled** (`exists_radius_composition_bound`, axiom-clean).
+  The minimum-modulus theorem applied to `g − g 0` selects a circle of radius `s ∈ [A,B]` on which the
+  inner displacement is at least `H^{∑m}·L`; the composition inequality then says that for every
+  outer function `f` analytic on the disc of radius `ρ < H^{∑m}·L/2` about `g 0`, any bound for
+  `f ∘ g` on `closedBall 0 s` bounds `f` on that disc:
+
+      (∀ z, ‖z‖ ≤ s → ‖f(g z)‖ ≤ K)  →  (∀ w, ‖w − g 0‖ ≤ ρ → ‖f w‖ ≤ K).
+
+  The outer function is quantified *inside* the conclusion, which is the right shape: the circle and
+  the floor depend only on the inner function, and the inequality then holds for every outer function
+  at once.
+  This is Pólya's composition inequality with every input a proved corpus statement.  What remains is
+  the quantitative comparison — `H^{∑m}·L` against the inner function's size — which is the same
+  parameter arithmetic as before, now on the *inner* function where the minimum modulus is
+  applicable.
+
+- 2026-08-04 — **The two ends of the composition estimate** (both axiom-clean).
+  `exists_norm_comp_gt` — contrapositive of the composition bound: if the outer function exceeds `K`
+  somewhere on the disc it controls, the composition exceeds `K` somewhere on the source disc.
+  `exists_norm_gt_of_transcendental` — a transcendental entire function exceeds any level on every
+  sufficiently large disc, wherever that disc is centred: the maximum term already beats any level,
+  and the circle of radius `ρ − ‖c‖` lies inside the disc about `c`.
+  Together with `exists_radius_composition_bound` this is the composition-growth statement in full:
+  the inner function's minimum modulus fixes a disc about `g 0` on which the outer function is
+  controlled by `f ∘ g`; transcendence makes the outer function exceed any level on that disc once it
+  is large enough; hence `f ∘ g` exceeds that level on the source disc.
+  The remaining quantitative point is unchanged and now isolated to one inequality: the disc's radius
+  is `H^{∑m}·L/2`, and it must be driven to infinity by the choice of parameters.
+
+- 2026-08-04 — **The displacement factors through a power of the variable**
+  (`exists_pow_factor_sub_const`, axiom-clean): for `g` analytic and not locally constant at the
+  origin, `g z − g 0 = z^n · G z` with `G` analytic on the whole set and `G 0 ≠ 0`.
+  This unblocks the quantitative step.  The composition estimate needs a floor for the *displacement*
+  `g − g 0` on a circle, but the displacement vanishes at the origin, so the minimum modulus's
+  counting bound — which requires a nonzero central value — does not apply to it.  It does apply to
+  `G`.  On the circle of radius `s` the displacement is then `s^n ‖G‖`, so the floor gains a factor
+  `s^n` and loses nothing: the count bound is available for `G`, and `s^n ≥ 1` for `s ≥ 1`.
+  This is the same obstruction that forced the count bound to be made conditional two entries ago,
+  resolved properly rather than sidestepped.
+
+- 2026-08-04 — **A floor for the displacement** (`exists_radius_norm_sub_ge`, axiom-clean).
+  Factoring `g − g 0 = z^n G` and applying the minimum modulus to `G` — which does not vanish at the
+  origin, so the counting bound *is* available for it — produces `N` and `L > 0` with
+
+      2 N H < B − A  →  ∃ s ∈ [A,B], ∀ ‖z‖ = s, H^N · L ≤ ‖g z − g 0‖.
+
+  The sup bound is taken on `g − g 0` (a hypothesis about the given function) and converted to one for
+  `G` by dividing by `R'^n`, so nothing existential appears in the hypotheses.  The factor `s^n` only
+  helps, since `s ≥ A ≥ 1`.
+  This is the input `exists_radius_composition_bound` needs, with the count now controlled.  The
+  chain from an inner function to a composition-growth statement is complete as a sequence of proved
+  theorems; the parameters `R, R', H, A, B` remain to be chosen so that `H^N · L → ∞`.
+
+- 2026-08-04 — **Composition growth with the zero count controlled**
+  (`exists_radius_composition_bound_of_count`, axiom-clean).  The displacement floor feeds the
+  composition inequality directly: on the selected circle, every outer function analytic on the disc
+  of radius `ρ < H^N L/2` about `g 0` is bounded there by any bound for `f ∘ g` on the source disc.
+  Unlike the earlier `exists_radius_composition_bound`, `N` here is the zero count of the factor `G`,
+  which the counting bound controls — so the disc radius is a quantity the parameters can drive,
+  rather than an uncontrolled one.
+  The Clunie–Steinmetz analytic chain is now a closed sequence of proved theorems, from an entire
+  inner function to a lower bound on the composition, with the only remaining freedom the choice of
+  `R, R', H, A, B`.
+
+- 2026-08-04 — **The displacement floor now reports its count bound**
+  (`exists_radius_norm_sub_ge`, strengthened, axiom-clean).  It produces `n`, `N`, `c = ‖G 0‖ > 0`
+  and `L > 0` with
+
+      0 < Mg → N · log((R' − R)/R) ≤ log(Mg / (R'^n · c)),
+
+  alongside the circle floor `H^N · L ≤ ‖g z − g 0‖`.  The count is expressed entirely in the given
+  data — the sup bound `Mg` for the displacement, the radii, the order `n` of vanishing at the
+  centre, and the value `c` of the cofactor there — so the parameter arithmetic has everything it
+  needs without reopening the proof.
+  With `log_pow_mul_ge_of_count` this converts the disc radius `H^N L/2` into an explicit logarithmic
+  bound: `log(H^N L) ≥ log L − (log(Mg/(R'^n c)) / log((R'−R)/R)) · (−log H)`.  Driving that to
+  infinity is the last step, and every quantity in it is now named.
+
+- 2026-08-04 — **The displacement floor in logarithmic form**
+  (`exists_radius_log_norm_sub_ge`, axiom-clean).  The zero count is folded into the growth ratio, so
+  the floor mentions no number of zeros:
+
+      log L + (log(Mg/(R'^n c)) / log((R'−R)/R)) · log H  ≤  log ‖g z − g 0‖
+
+  on a circle in `[A,B]`, provided the range is long enough for that same ratio.  The parallel with
+  `exists_radius_log_norm_ge_of_analytic` is exact — the same folding, applied to the displacement
+  rather than to the function itself.
+  Both halves of the composition estimate are now in logarithmic form with all constants named, which
+  is the shape a parameter choice can be checked against.
+
+### Log — the disc-in-image route is lossy, with a witness
+
+- 2026-08-04 — **Proved limitation** (`displacement_floor_le_one`, axiom-clean).  For
+  `g = exp − 1`, every displacement floor on the circle of radius `r` satisfies `ε ≤ 1` — the
+  displacement dips to `1 − e^{-r}` at `z = −r` — while `g` reaches modulus `e^r − 1` on that same
+  circle.  So the disc that `ball_subset_image_of_circle_floor` puts inside the image has radius
+  `O(1)` for a function of positive order, and the composition estimate it feeds bounds the outer
+  function only on a bounded disc.  That is far too weak for separation, which needs the outer
+  function's maximum on a disc growing with `M(r,g)`.
+  The parameter arithmetic confirms it independently: with `R = σ`, `R' = 3σ` the growth ratio is
+  `log(Mg)/log 2`, the range forces `H ≲ σ/log Mg`, and the floor
+  `log L + (log Mg/log 2)·log H` is then *negative* and large for any `g` of positive order.  There
+  is no choice of `R, R', H, A, B` that rescues it.
+  So both routes tried on this line are now bounded from above by proved witnesses: a circle floor
+  for the **outer** function cannot exceed `−s` (`circle_floor_le_neg`, `exp`), and a displacement
+  floor for the **inner** function cannot exceed `1` (`displacement_floor_le_one`, `exp − 1`).  What
+  Pólya's theorem needs is a large circle *in the image*, obtained from the structure of the image
+  itself — for `exp` the image of a disc is an annulus, which contains large circles despite the tiny
+  displacement floor.  That is the remaining mathematical content, and it is not reachable from
+  minimum-modulus estimates.
+  Everything built on this line stays valid as stated; what changes is which theorem can consume it.
+
+### Log — turning to the Nevanlinna route, which is where the classical proof lives
+
+- 2026-08-04 — Both elementary routes to composition separation are now capped by proved witnesses
+  (previous two entries).  The classical Clunie–Steinmetz proof is value-distribution-theoretic — it
+  compares characteristics, not maximum moduli — so the honest path is the Nevanlinna one, whose one
+  missing ingredient in this corpus is `log M(r) ≲ T(R)` (Poisson–Jensen).
+  **mathlib carries the Poisson machinery**: `Analysis/Complex/Poisson.lean` and
+  `Analysis/Complex/Harmonic/Poisson.lean` supply `poissonKernel`, its identification with the real
+  part of the Herglotz–Riesz kernel, the two-sided kernel bounds, and the Poisson representation
+  `HarmonicContOnCl.circleAverage_poissonKernel_smul`.  That was not known when the earlier entries
+  recorded Poisson–Jensen as an unbuilt obstruction.
+- 2026-08-04 — **The kernel bound** (`PoissonKernelBound.lean`, axiom-clean, in the umbrella):
+  `poissonKernel c w z ≤ (R + r)/(R − r)` for `‖w − c‖ ≤ r < R` and `z` on the circle of radius `R`,
+  together with the monotonicity `(R+a)/(R−a) ≤ (R+r)/(R−r)` it rests on.
+  This is the quantitative half of `log M(r) ≤ ((R+r)/(R−r))·m(R)`: the Poisson representation writes
+  `log‖f‖` at an interior point as a kernel-weighted circle average, and this bounds the weight.
+
+- 2026-08-04 — **The Poisson representation of the log-modulus** (axiom-clean).
+  `harmonicOnNhd_log_norm` — `log‖f‖` is harmonic wherever `f` is analytic and nonzero, from
+  mathlib's `AnalyticAt.harmonicAt_log_norm`; `circleAverage_poissonKernel_log_norm` — for a
+  zero-free analytic `f`,
+
+      circleAverage (poissonKernel c w • log‖f‖) c R = log‖f w‖.
+
+  With the kernel bound of the previous entry this is `log M(r) ≤ ((R+r)/(R−r))·m(R)` up to one
+  integration step (monotonicity of the circle average against `log ≤ log⁺`, with its integrability
+  side conditions).
+  Both halves of Poisson–Jensen for the zero-free case are therefore corpus statements now.  The case
+  with zeros then follows from the extraction already built (`f = P·g`, `g` zero-free), which is why
+  that chain remains worth having even though its first intended use was refuted.
+
+- 2026-08-04 — **`log M(r) ≲ T(R)` is now a corpus theorem** (module `PoissonJensenUpperBound`,
+  all declarations axiom-clean).  Three layers:
+  1. `circleAverage_negPart_log_norm_sub_le` — for `R ≥ 1` and `a` in the closed ball,
+     `⨍ (log ‖· − a‖)⁻ ≤ log 2`.  Exact input: `⨍ log ‖· − a‖ = log R` (mathlib) minus the crude
+     boundary bound `log⁺ ‖z − a‖ ≤ log 2R`.
+  2. `circleAverage_posLog_cofactor_le` — extracting the zeros costs at most `log 2` per zero in
+     proximity: `m(R, g) ≤ m(R, f) + (∑ m_a)·log 2` when `f = ∏(·−a)^{m_a}·g`.
+  3. `log_norm_le_proximity_of_factor` / `log_norm_le_proximity_of_entire` —
+
+         log‖f w‖ ≤ (∑ m_a)·(log 2R + K·log 2) + K·m(R, f),   K = (R+r)/(R−r), ‖w−c‖ ≤ r < R.
+
+  The boundary hypothesis `f ≠ 0 on sphere c R` is essential and not cosmetic: Lean's junk value
+  `log 0 = 0` destroys the pointwise comparison at a boundary zero, where the true correction is
+  `+∞`.  Restricting to radii with no boundary zero is the honest fix — such radii are cofinal
+  because the zero set of a nonzero entire function is countable.
+  Remaining for the Clunie--Steinmetz separation: bound `∑ m_a` by the Jensen count (mathlib's
+  `AnalyticOnNhd.sum_divisor_le`, already used in `RHTower/EntireMinimumModulus`), and prove the
+  cofinality of good radii.
+
+- 2026-08-04 — **The Poisson--Jensen layer is closed** (`PoissonJensenUpperBound`, all axiom-clean).
+  Four further theorems complete the chain:
+  - `circleAverage_log_norm_of_factor` — **Jensen's formula, factorized**:
+    `⨍ log‖f‖ = (∑ m_a)·log R + log‖g c‖` for `f = ∏(·−a)^{m_a}·g`, `g` zero-free, `f ≠ 0` on the
+    circle.  Built from mathlib's `⨍ log‖·−a‖ = log R` and `⨍ log‖g‖ = log‖g c‖`; no `divisor`
+    bookkeeping is needed, which is what made it cheap.
+  - `sum_multiplicity_le_of_factor` — **Jensen's count bound**:
+    `n(R₁)·log(R/R₁) ≤ log M − log‖f c‖`.  Every zero contributes `log R − log‖c−a‖ ≥ 0`, and the
+    ones inside radius `R₁` contribute at least `log(R/R₁)`.
+  - `exists_radius_no_boundary_zero` — good radii are cofinal: every unit interval `[R₀, R₀+1]`
+    contains an `R` whose circle carries no zero.  This discharges the boundary hypothesis that the
+    junk value `log 0 = 0` forces on every step above.
+  - `log_norm_le_proximity_and_count_of_entire` — the capstone:
+
+        log‖f w‖ ≤ ((log M − log‖f c‖)/log 2)·(log 2R + K·log 2) + K·⨍ log⁺‖f‖,
+        K = (R+r)/(R−r),  ‖w−c‖ ≤ r < R,  M = sup_{|z−c|=2R} ‖f‖.
+
+    Zeros in the small ball are separated off and counted by Jensen; zeros between `R` and `2R` are
+    absorbed into the zero-free cofactor by the filter split — that is what makes the two
+    multiplicity sums (proximity side and count side) literally the same object.
+  This is the missing analytic input flagged three entries above: `log M(r) ≲ T(R)` is no longer an
+  external citation for this corpus.
+
+- 2026-08-04 — **The composition-separation blocker is broken** (axiom-clean).  The two proved no-gos
+  of `CircleFloorLimitation` cap the *displacement* mechanisms — an outer circle floor for `exp`, an
+  inner displacement floor for `exp − 1`.  Neither is needed.  A ball is connected, so `‖g ·‖`
+  attains **every** value between `‖g 0‖` and `‖g z₁‖` on it; that is all the inner function has to
+  supply.
+  - `PolyaConnectedTransfer.exists_norm_eq_of_closedBall` / `exists_le_norm_comp_of_floor` /
+    `exists_posLog_separation_of_closedBall` — the intermediate-value transfer, with no
+    normalisation `g 0 = 0` (which the existing segment lemmas of `CompositionImageCircle` all
+    require, and which a composition state cannot be assumed to satisfy).
+  - `RHTower/PolyaCompositionGrowth.exists_le_norm_comp_of_analytic` and
+    `exists_posLog_separation_of_analytic` — combined with the corpus minimum modulus
+    (`exists_radius_norm_ge_of_analytic`): whenever `2·n·H < B − A`, there is a point of the ball with
+
+        H^n · L ≤ ‖f (g z)‖,   and hence   C·log⁺‖g z‖ < log⁺‖f (g z)‖
+
+    once the floor beats the inner bound, where `n` counts the zeros of `f` in the inner disc.
+  The mechanism is: the outer function has a *whole-circle* floor at some radius in every long
+  enough window (minimum modulus), and the inner function is guaranteed to hit that radius
+  (connectivity).  No Bloch/Landau constant, no Wiman `cos πρ` theorem, no open mapping.
+  This is the quantitative half of `SeparatesLast`; what remains is to hold the top grouped
+  coefficient away from zero at the same point.
+
+- 2026-08-04 — **The two halves of `SeparatesLast` now meet at one point** (axiom-clean).  A circle in
+  the plane is connected (`isPreconnected_sphere`, rank ℝ ℂ = 2), so the intermediate-value transfer
+  runs on a single circle rather than a ball.  That is the whole trick: the minimum modulus gives a
+  *circle* on which the top grouped coefficient `G` is bounded below, and the same circle is where
+  the inner state hits the radius at which the outer function has its own floor.
+  - `PolyaConnectedTransfer.exists_norm_eq_of_sphere` — every modulus between two attained values is
+    attained on the circle; hypotheses are the two existentials `∃ z₀, ‖g z₀‖ ≤ t` and
+    `∃ z₁, t ≤ ‖g z₁‖`, which is the usable form (no min/max extraction needed).
+  - `exists_point_sphere_floor_and_comp`, `exists_posLog_separation_of_sphere` — the floor for `G`
+    survives the choice of point.
+  - `RHTower/PolyaCompositionGrowth.exists_point_circle_floor_and_comp_of_analytic` — the assembled
+    statement: for `2·n·H < B − A` there is a single `z` with
+
+        H^n·L_G ≤ ‖G z‖    and    L ≤ ‖f (g z)‖.
+
+  All three quantities the Clunie estimate weighs — the dependent state `f ∘ g`, the previous states
+  through `g`, and the top grouped coefficient `G` — are now controlled at one and the same point.
+  What remains for `SeparatesLast` is bookkeeping: instantiate `G` as the grouped coefficient
+  function, `g` as `F_k`, `f` as `f_{k+1}`, and check the resulting numeric inequality against
+  `clunieWeight`.
+
+- 2026-08-04 — **`SeparatesLast` is reduced to a numeric point-existence statement**
+  (`ClunieSeparationBridge`, axiom-clean; wired).
+  - `clunieWeight_le` / `clunieWeight_lt_of_floor` — the weight is bounded by
+    `W + N·log⁺(1/c) + (N|S|+N)·log 2` once `c` floors the top grouped coefficient and `W` bounds the
+    coefficient-and-earlier-state block.  `posLog_inv_le_of_floor` is the one inequality that does it.
+  - `clunie_block_le` / `clunie_block_le_of_sup` — that block is at most `|S|·(a + D·b)` from a
+    coefficient bound `a`, an earlier-state bound `b` and a total earlier degree `D`, all taken as
+    sup bounds over the disc `‖z‖ ≤ B` where the geometric machinery lands.
+  - `separatesLast_of_pointwise` — **all reference to `clunieWeight` is discharged**: `SeparatesLast F`
+    now follows from a point carrying a floor, a block bound, and the strict inequality between them.
+  - `groupedCoeffFun`, `analyticOnNhd_groupedCoeffFun`, `not_eventually_zero_groupedCoeffFun` — the
+    top grouped coefficient is an entire function, and (identity theorem on the connected plane) it is
+    nowhere locally zero as soon as it is nonzero at one point.  These are exactly the two hypotheses
+    the minimum modulus needs, so `G` is a legitimate input to `exists_clunie_separated_point`.
+  - `RHTower/PolyaCompositionGrowth.exists_clunie_separated_point` — delivers the point in precisely
+    the shape `separatesLast_of_pointwise` consumes, with `c := H^n·L_G`, and additionally records
+    `A ≤ ‖z‖ ≤ B` so the block bound applies there.
+
+  **Remaining open core, stated sharply.**  Everything above is unconditional.  What is left is one
+  numeric inequality:
+
+      W + N·log⁺(1/(H^n·L_G)) + (N·|S| + N)·log 2  <  log⁺ L,
+
+  where `L` is the minimum-modulus floor of the outer function `f_{k+1}` on the circle of radius `t`,
+  `W` the block bound over `‖z‖ ≤ B`, and `n` the zero count of the grouped coefficient.  This is
+  where transcendence of `f_{k+1}` must enter: `L = L(t)` has to outgrow `W`, which grows only with
+  the earlier states.  No further structural machinery is needed — the inequality is now the whole
+  problem.
+
+- 2026-08-04 — **The displacement no-go is a statement about the base point, not about the method**
+  (`PolyaFreeBasePoint`, axiom-clean, wired).  `displacement_floor_le_one` shows that for `exp − 1`
+  the floor of `‖g z − g 0‖` on any circle is `O(1)`.  That is a fact about the base point `0`, which
+  mathlib's `DiffContOnCl.ball_subset_image_closedBall` fixes at the *centre of the ball*.  Applying
+  the same theorem on a subdisc centred anywhere frees it:
+  - `ball_subset_image_of_circle_floor_at` — for `c` with `‖c‖ + r ≤ s`,
+    `ball (g c) (ε/2) ⊆ g '' closedBall 0 s` where `ε` floors `‖g z − g c‖` on `sphere c r`.
+  - `norm_le_of_circle_floor_at`, `exists_norm_comp_gt_at` — the composition transfer and its
+    contrapositive at that base point.
+  - `not_eventually_const_of_ne` — a nonconstant entire function is nowhere locally constant, so the
+    nondegeneracy hypothesis is automatic for the cascade states.
+
+  **The parameter regime the no-go hid.**  Take `g = exp`, `s = r`.  Put the base point *near the
+  boundary* and the surrounding circle *small*: `c = r − log(4/3)` real, `r' = log(4/3)`, so
+  `‖c‖ + r' = r` exactly.  Then
+
+      ε = min_{|z−c| = r'} |e^z − e^c| ≍ r' · |e^c| ≍ e^r,
+
+  and the image of `closedBall 0 r` contains a disc of radius `≍ e^r` — the genuine Pólya disc,
+  centred at `3e^r/4`, sitting inside the annulus `e^{−r} ≤ |w| ≤ e^r` that is exactly the image.
+  The base point at the origin gives `ε = O(1)`; the base point near the boundary gives `ε ≍ M(r,g)`.
+  Both facts are true; only the second is useful, and the earlier entry read the first as a cap on
+  the method.
+
+  **What the chain still needs**, stated as the next brick: a lower bound for the interior
+  displacement floor `ε`.  Write `h(z) = (g z − g c)/(z − c)`, which is zero-free on a small disc
+  about `c` (isolated zeros) with `h(c) = g'(c)`; then `ε = r' · min_{sphere} |h|`, and the corpus's
+  Borel--Carathéodory anchor bound `RHTower.MinimumModulus.norm_lower_bound_of_anchor` bounds that
+  minimum below by `|g'(c)|` times a power of the max/anchor ratio.  Wiman--Valiron supplies
+  `|g'(c)| ≍ (ν(r)/|c|)·|g(c)|` at the selection points the corpus already constructs.  So the
+  remaining work is a composition of three instruments the corpus owns, not a new theorem.
+
+- 2026-08-04 — **The Pólya disc is now produced from analytic hypotheses**
+  (`RHTower/EntireMinimumModulusAt`, axiom-clean, wired).  The chain announced in the previous entry
+  is built:
+  - `exists_radius_norm_ge_of_analytic_at` — the corpus minimum modulus with the origin replaced by
+    an arbitrary centre.  Proved by translating the function; the hard-coded `0` in
+    `exists_radius_norm_ge_of_analytic` was never essential, and every displacement statement needs
+    the circle around the *base point*, not the origin.
+  - `exists_displacement_factor` — for `g` nowhere locally equal to `g c`, the displacement factors
+    as `g z − g c = (z − c)·h z` with `h` analytic and itself nowhere locally zero.  This is the Lean
+    substitute for the difference quotient, which cannot be written as `(g z − g c)/(z − c)` because
+    that evaluates to the junk value at `z = c`.
+  - `displacement_floor_of_factor`, `exists_radius_displacement_floor` — a floor `μ` for `h` on the
+    circle of radius `s` about `c` gives the displacement floor `s·μ`, and the translated minimum
+    modulus supplies `μ = H^n·L` on some `s` in every long enough window.
+  - `exists_radius_ball_subset_image` — **the composition disc**:
+
+        ball (g c) (s·H^n·L / 2)  ⊆  g '' closedBall 0 S,
+
+    for some `s ∈ [A,B]`, whenever `2·n·H < B − A` and `‖c‖ + B ≤ S`.
+
+  The base point is a free parameter constrained only by `‖c‖ + B ≤ S`, so it may sit near the
+  boundary of the large disc — the regime identified in the previous entry, where the displacement
+  floor is of the order of the maximum modulus rather than `O(1)`.
+  Composed with `norm_le_of_circle_floor_at` / `exists_norm_comp_gt_at` this is the Pólya transfer:
+  a bound for `f ∘ g` on `closedBall 0 S` bounds `f` on a disc of radius `≍ s·H^n·L/2` about `g c`.
+
+- 2026-08-04 — **The Pólya transfer is now explicit** (`EntireMinimumModulusAt`, axiom-clean).
+  The disc radius produced by `exists_radius_ball_subset_image` is not usable downstream, because the
+  `L` inside `exists_radius_norm_ge_of_analytic` is existentially bound — a caller cannot instantiate
+  it.  In the local regime that machinery is unnecessary: if `g` takes the value `g c` only at `c` on
+  the disc of radius `R` about `c`, the displacement factor is zero free there, no zero extraction is
+  needed, and the Borel--Carathéodory anchor bound applies directly with an explicit constant.
+  - `deriv_eq_displacement_factor` — the factor at the base point is `g' c`, so the statements can be
+    written without the auxiliary function.
+  - `displacement_floor_explicit` — on `‖z − c‖ = r < R`,
+
+        ‖g z − g c‖  ≥  r · ‖g' c‖ · (M/‖g' c‖)^(−2r/(R−r)),   M = sup_{ball c R} ‖factor‖.
+
+  - `ball_subset_image_explicit`, `ball_subset_image_of_deriv` — the image of `closedBall 0 S`
+    contains the ball about `g c` of half that radius, whenever `‖c‖ + r ≤ S`.
+  - `norm_le_of_explicit_disc`, `exists_norm_comp_gt_explicit` — the transfer and its contrapositive:
+    a bound for `f ∘ g` on the large disc bounds `f` on that whole disc about `g c`.
+
+  **The scale this is meant to be used at.**  For a Wiman--Valiron base point of a function of
+  central index `ν(r)`, the natural radius is `r ≍ |c|/ν(|c|)`: on that scale `g(c+ζ)/g(c) ≈
+  exp(νζ/c)` has bounded distortion, so `M/‖g' c‖ = O(1)` and the exponential factor is `O(1)`.
+  Since `‖g' c‖ ≍ (ν/|c|)·‖g c‖` there, the disc radius is `≍ (|c|/ν)·(ν/|c|)·‖g c‖ ≍ M(|c|, g)` —
+  the full Pólya disc.  Both inputs (`‖g' c‖ ≍ (ν/|c|)‖g c‖`, and the bounded local ratio) are
+  Wiman--Valiron statements; the corpus already owns the first as
+  `exists_radius_defect_le_eps_of_transcendental`.
+
+- 2026-08-04 — **The Pólya disc now runs off the Wiman--Valiron defect** (axiom-clean; module at
+  440 lines).  The two quantities the explicit radius depends on are supplied:
+  - `norm_deriv_ge_of_defect` — from `‖z g'(z)/g(z) − ν‖ ≤ ε·ν` (exactly the conclusion of the
+    corpus's `exists_radius_defect_le_eps_of_transcendental`),
+
+        ‖g' z‖  ≥  (1 − ε)·ν·‖g z‖ / ‖z‖.
+
+  - `norm_displacement_factor_le` — the maximum principle applied to the displacement factor itself:
+    `‖h z‖ ≤ (Mloc + ‖g c‖)/R'` on the disc, where `Mloc` bounds `g` on the boundary circle.  No
+    Cauchy estimate is needed; the factor is already analytic, so its own maximum principle suffices.
+  - `anchor_radius_mono` — the Borel--Carathéodory radius `x·(M/x)^{−2r/(R−r)}` is monotone in the
+    anchor `x`, which is what lets a *lower bound* on `‖g' c‖` be substituted into the disc radius.
+    Proved by rewriting the exponential as `(x/M)^{2r/(R−r)}`.
+  - `ball_subset_image_of_defect` — the assembled statement, with `D = (1−ε)·ν·‖g c‖/‖c‖`:
+
+        ball (g c) (r · D · (M/D)^{−2r/(R−r)} / 2)  ⊆  g '' closedBall 0 S.
+
+  Every quantity is now explicit in data the Wiman--Valiron layer produces.  At the natural scale
+  `r ≍ |c|/ν` this radius is `≍ ‖g c‖ ≍ M(|c|, g)`, the full Pólya disc; the one remaining input is
+  that `M/D = O(1)` there, i.e. that `M(|c|(1 + κ/ν), g) = O(M(|c|, g))` — a growth statement about
+  `log M` against the central index, and the last analytic gap in the chain.
+
+- 2026-08-04 — **The last analytic gap is reduced to a central-index jump**
+  (`MaximumModulusLocalGrowth`, axiom-clean, wired).  The gap named in the previous entry —
+  `M(r(1+κ/ν)) = O(M(r))` — is now a corpus theorem up to one ratio:
+  - `coeffSum_mono` — the majorant is monotone in the radius.
+  - `coeffSum_le_maxTerm_mul_two` — `S(r) ≤ μ(r)·(ν(2r) + 2)`.  A specialisation of the corpus's
+    `coeffSum_le_maxTerm_mul_centralIndex` at `s = 2r`, where the geometric tail contributes exactly
+    one further term.
+  - `norm_coeffFun_le_maxTerm_mul` — for `‖w‖ ≤ r'` and `r ≤ r'`,
+
+        ‖f w‖  ≤  μ(r) · (r'/r)^{ν(r')} · (ν(2r') + 2).
+
+  - `growth_factor_le_exp` — at the Wiman scale `r' = r(1 + κ/ν)`, `(r'/r)^k ≤ exp(k·κ/ν)`.
+
+  Combining the last two at `k = ν(r')`: the whole local growth factor is
+  `exp(κ·ν(r')/ν(r))·(ν(2r') + 2)`.  **The only unbounded ingredient left is the ratio `ν(r')/ν(r)`
+  across the Wiman scale** — a Borel-type statement, and the corpus already owns the instrument for
+  it (`BorelGrowthExponent.exists_ge_lt_two_mul_rpow`, which produces radii where the central index
+  does not double).  The polynomial factor `ν(2r')+2` is harmless: it is absorbed by the `ε` in the
+  defect bound, since the disc radius carries `‖g c‖ ≥ μ(r)` as a multiplicative factor while the
+  loss is only polynomial in `ν`.
+
+- 2026-08-04 — **The last unbounded factor is closed** (`CentralIndexBorelScale`, axiom-clean, wired).
+  The ratio `ν(r')/ν(r)` across the Wiman scale is not bounded at every radius, but the corpus's
+  Borel growth lemma supplies radii where it is:
+  - `logCentralIndex a x = ν(e^x) + 1`, `monotone_logCentralIndex`, `one_le_logCentralIndex` — the
+    hypotheses `exists_ge_lt_two_mul_rpow` needs, at exponent `α = 1`.
+  - `exists_good_logRadius` — beyond every bound there is `x` with
+
+        ν(e^{x + 1/ν₁}) + 1 < 2·ν₁,      ν₁ = ν(e^x) + 1.
+
+  - `exp_neg_ratio_le` — the geometric tail ratio across a step `t` is at most `1/t`.
+  - `exists_logRadius_norm_coeffFun_le` — **the local growth statement**: at such a radius,
+
+        ‖f w‖ ≤ 4e · ν₁ · μ(e^x)    for all ‖w‖ ≤ e^x · e^{1/(2ν₁)}.
+
+  Both losses close at once, and the reason is the same in each case — the comparison radius is taken
+  *inside* the good step, where the central index is known not to have doubled.  The growth factor
+  `(r'/r)^{ν(r')} = exp(ν(r')/(2ν₁))` is below `e` because `ν(r') < 2ν₁`; the majorant costs `4ν₁`
+  maximum terms because the comparison radius `s = e^x·e^{1/ν₁}` is still inside the step.
+  Every quantity in the composition-disc radius is now bounded by corpus theorems.  What remains is
+  the instantiation: feed `exists_logRadius_norm_coeffFun_le` and
+  `exists_radius_defect_le_eps_of_transcendental` into `ball_subset_image_of_defect`, and the disc
+  radius is `≍ μ(r)/ν` — enough for the Clunie separation, since the weight is only logarithmic.
+
+- 2026-08-04 — **The Borel selection can now be intersected with a prescribed window**
+  (axiom-clean).  Cofinality (`∃ x ≥ R`) is not enough to combine the Borel selection with the
+  Wiman--Valiron one, which delivers its point inside a window it chooses.  The Borel lemma bounds
+  the *measure* of the bad set, which is strictly stronger and gives exactly what is needed:
+  - `norm_coeffFun_le_of_good` — the local growth bound refactored into conditional form, with
+    "`x` is Borel-good" as a hypothesis rather than obtained inside the proof.  The existential
+    versions are now corollaries.
+  - `exists_mem_Icc_lt_two_mul_rpow` — generic: any interval whose length exceeds the measure bound
+    contains a good radius.  Proof is one contradiction against `borel_growth_monotone_rpow`.
+  - `borel_bound_one` — at exponent `α = 1` that measure bound is exactly `2`.
+  - `exists_good_logRadius_of_two_lt`, `exists_norm_coeffFun_le_of_two_lt` — the readable form:
+    **every window of length greater than `2` in the logarithmic variable contains a radius at which
+    `‖f w‖ ≤ 4e·ν₁·μ(e^x)` on the disc of radius `e^x·e^{1/(2ν₁)}`**.
+
+  The window-length threshold is an absolute constant, independent of the function.  The Wiman
+  selection windows in `WimanValironSelection` are chosen by the caller and can be taken longer than
+  `2`, so the two selections can now be run against a common window.
+
+- 2026-08-04 — **No second selection is needed: the Wiman window already carries the Borel
+  condition** (axiom-clean).  `WimanValironSelection.exists_good_parameters` delivers, alongside its
+  window `[x, d]` and step `H`, the statement
+
+      ν(e^{d+2H}) + 1 < 2·(ν(e^x) + 1),
+
+  which is exactly the non-doubling condition, and it holds across the *whole* window rather than at
+  one point.  So a point selected later inside the window inherits it, and the previous entry's
+  window-intersection machinery is not required for this instantiation.
+  - `good_of_window_no_double` — if `x ≤ x' ≤ d + H` and the step `1/ν₁(x')` fits inside `H`, then
+    `x'` is Borel-good.  Monotonicity of the central index does the whole proof: the step from `x'`
+    lands inside `d + 2H`, and `ν(e^x) ≤ ν(e^{x'})` widens the right-hand side.
+  - `norm_coeffFun_le_of_window` — the local growth bound at any such `x'`, with the Borel hypothesis
+    discharged by the window.
+  - `logCentralIndex_no_double_iff` — the translation between the two spellings of non-doubling.
+
+  The side condition `1/ν₁(x') ≤ H` is satisfied in the intended regime: with `scale t = 2t` the
+  selection gives `H = (ν+1)^{−α}/4`, and for `α < 1` this exceeds `1/(ν+1)` for all large `ν`,
+  which is where a transcendental function lives.
+  Every input to `ball_subset_image_of_defect` is now available at a single selected point: the
+  defect bound and `μ ≤ ‖f z‖` from the Wiman selection, the local sup bound from
+  `norm_coeffFun_le_of_window` at the same `x'`.
+
+- 2026-08-04 — **The point selection for the Clunie separation is closed, without any composition
+  transfer** (`CircleFloorMaxSelection` + `PolyaCompositionGrowth`, axiom-clean, wired).
+  The composition disc was being built to force the dependent state to be large at the chosen point.
+  It is not needed for the *selection*: the minimum modulus gives a circle on which the auxiliary
+  function `G` is bounded below at **every** point, so the maximum point of the dependent state on
+  that same circle inherits the floor for free.  There is no compatibility condition to arrange —
+  one of the two properties is uniform on the circle.
+  - `exists_max_on_sphere` — a maximum of the modulus on a circle, for any continuous function
+    (the corpus's `exists_max_on_circle` is stated only for `coeffFun`).
+  - `exists_point_sphere_floor_and_max`, `exists_point_norm_floor_and_maxTerm` — the floor survives
+    the choice of maximum point; for `coeffFun` the maximum dominates the maximum term.
+  - `RHTower.exists_radius_floor_and_maxTerm` — the assembled selection: whenever
+    `2·n·H < B − A`, there are `s ∈ [A,B]` and `z` with `‖z‖ = s`,
+
+        H^n·L ≤ ‖G z‖    and    μ(s) ≤ ‖f z‖.
+
+  This supersedes the composition-transfer route for the purpose of `SeparatesLast`.  The Pólya disc
+  layer remains valuable — it is what will eventually compare `μ(s, f_{k+1}∘F_k)` with `T(s, F_k)` —
+  but the selection no longer waits on it.
+  **The card's remaining open core is now exactly one inequality**, with all point selection
+  discharged:
+
+      |S|·(a + D·b) + N·log⁺(1/(H^n·L)) + (N|S| + N)·log 2  <  log μ(s, F_{k+1}),
+
+  where `a` bounds the coefficients and `b` the earlier states on `‖z‖ ≤ B`.  This is the growth
+  comparison `log μ(s, f∘F_k) ≫ D·log M(s, F_k)` — Pólya's theorem, and nothing else.
+
+- 2026-08-04 — **The proximity/maximum-modulus comparison is two-sided**
+  (`NevanlinnaMaxModulusBridge`, axiom-clean, wired).
+  - `proximity_top_le_posLog`, `proximity_top_le_posLog_of_norm` — `m(r,f) ≤ log⁺ M(r,f)`, directly
+    from `circleAverage_mono_on_of_le_circle` and mathlib's `proximity_top`.  With
+    `log_norm_le_proximity_and_count_of_entire` from `PoissonJensenUpperBound` this closes the
+    comparison in both directions, so maximum-modulus estimates and value-distribution estimates are
+    interchangeable in this corpus.
+  - `exists_le_norm_comp_sub_const`, `analyticOnNhd_sub_const`, `not_eventually_sub_const_zero` —
+    the shift `f ↦ f − a`.  A zero-free outer function such as `exp` gives the minimum-modulus
+    argument nothing to count; the shifted function carries the `a`-points instead, and the shift
+    costs only the additive constant `‖a‖`.
+
+  **Honest assessment of the frontier.**  With the selection closed and the comparison two-sided,
+  what the card's last inequality needs is a *lower* bound on the zero count of `f − a` for some `a`
+  — equivalently `N(r, 1/(f−a)) ≳ T(r,f)` for some value.  That is the second main theorem, or
+  Pólya's composition theorem, and neither is in mathlib.  Both are multi-session builds; the
+  logarithmic-derivative lemma (`m(r, f'/f) = S(r,f)`) is the engine of the first, and the corpus now
+  owns its two prerequisites — the Poisson representation of `log‖f‖` and Jensen's formula in
+  factorized form.  That is the next long build, and it is a construction, not an obstruction.
+
+- 2026-08-04 — **First brick of the second main theorem: the separation estimate**
+  (`SecondMainTheoremSeparation`, axiom-clean, wired).  The reduction of SMT to a single
+  logarithmic-derivative bound rests on turning a *sum* of proximity terms into *one*.  That step is
+  pointwise and elementary, and it is now proved:
+  - `eq_of_both_close` — pairwise separated targets cannot both lie within half the separation of a
+    common point.
+  - `posLog_inv_le_of_far` — a point at distance `≥ δ/2` has proximity at most `log⁺(2/δ)`.
+  - `sum_posLog_inv_le` — **the separation estimate**: for targets `A : Fin q → ℂ` with pairwise
+    separation `δ`,
+
+        ∑_j log⁺(1/‖w − A_j‖) ≤ log⁺‖∑_j (w − A_j)⁻¹‖ + q·log⁺(2/δ) + log⁺(q·2/δ) + log 2,
+
+    uniformly in `w`.  At most one target is close; that one is handled by the triangle inequality
+    against the full sum, the rest by the far-point bound.
+
+  Integrating this over a circle gives `∑_j m(r, 1/(f−a_j)) ≤ m(r, ∑_j (f−a_j)⁻¹) + O(1)`, which is
+  the shape SMT needs.  mathlib supplies the rest of the proximity calculus already
+  (`proximity_add_top_le`, `proximity_mul_top_le`, `proximity_inv`, `proximity_sum_top_le`), so the
+  only remaining ingredient of SMT is the logarithmic-derivative lemma itself.
+  Lean note: the junk values `‖0‖⁻¹ = 0` and `log⁺ 0 = 0` are harmless here — they only shrink the
+  left-hand side — so no nonvanishing hypothesis is needed anywhere in this file.
+
+- 2026-08-04 — **The separation estimate is now a proximity inequality** (axiom-clean).
+  - `sum_proximity_le` — integrating the pointwise estimate over a circle:
+
+        ∑_j m(r, a_j; f)  ≤  m(r, ∞; ∑_j (f − a_j)⁻¹) + q·log⁺(2/δ) + log⁺(2q/δ) + log 2.
+
+    Stated with the circle-integrability side conditions as hypotheses, so it is usable directly.
+  - `circleIntegrable_posLog_inv_sub_const`, `sum_proximity_le_of_meromorphic` — those side
+    conditions discharged from meromorphy of the reciprocals, with `MeromorphicOn.sum` supplying the
+    aggregate.  This is the form a caller uses.
+
+  This is the whole "sum of proximities becomes one proximity" step of the second main theorem, and
+  it is now unconditional in the corpus.  The remaining SMT ingredient is the logarithmic-derivative
+  lemma; everything else in the classical chain — `proximity_add_top_le`, `proximity_mul_top_le`,
+  `proximity_inv`, the first main theorem, Jensen — is either mathlib's or already built here.
+  Two Lean shape traps recurred and are worth recording: `circleAverage_add` and `MeromorphicOn.sum`
+  are stated for the Pi-type sum `∑ j, f j`, not for `fun z => ∑ j, f j z`, so each use needs an
+  explicit `funext`/`rfl` bridge; `simp [Finset.sum_apply]` closes it.
+
+- 2026-08-04 — **The logarithmic-derivative estimate, zero-free case** (`LogDerivativeBound`,
+  axiom-clean, wired).  The remaining SMT ingredient, in the case where the function does not vanish:
+  - `logDeriv_eq_deriv_branch` — on a disc where `f = f c · exp g`, the logarithmic derivative `f'/f`
+    *is* `g'`.
+  - `norm_logDeriv_le` — for `‖z − c‖ ≤ ρ < r < R`,
+
+        ‖f'(z)/f(z)‖  ≤  2·(log(M/m) + 1)·r/(R − r)/(r − ρ),
+
+    with `M` bounding `f` on the disc of radius `R` and `m` an anchor at the centre.
+
+  The bound is **logarithmic** in the maximum modulus, which is exactly what makes the corresponding
+  proximity term `S(r,f)` rather than `O(T(r,f))`.  Both inputs were already in the corpus:
+  `BallLogarithm.exists_bound_log_on_ball` (Borel--Carathéodory for the branch) and mathlib's
+  `Complex.norm_deriv_le_of_forall_mem_sphere_norm_le` (Cauchy's estimate), applied at the centre `z`
+  with radius `r − ρ` rather than at `c`.
+  Remaining for the general case: the zeros.  Writing `f = P·h` with `P` the monic polynomial of
+  zeros (the extraction `AnalyticRootFactor` already provides), `f'/f = P'/P + h'/h`, and `P'/P =
+  ∑ m_a/(· − a)` has proximity controlled by the zero count — which the corpus owns via
+  `sum_multiplicity_le_of_factor`.  That decomposition is the next step.
+  Note: `BallLogarithm` imports only `Mathlib.Analysis.Complex.BorelCaratheodory`, so the Cauchy
+  estimate needed an explicit `import Mathlib.Analysis.Complex.Liouville` — narrow imports in this
+  corpus mean mathlib names can be genuinely absent rather than misspelled.
+
+- 2026-08-04 — **The logarithmic derivative across a zero factorization**
+  (`LogDerivativeFactor`, axiom-clean, wired).  The general case of the estimate splits into the two
+  parts announced in the previous entry:
+  - `logDeriv_sub_const` — `logDeriv (· − a) z = 1/(z − a)`.
+  - `logDeriv_of_factor` — for `f = ∏ (· − a)^{m a} · h` on an open set with `h` zero free, away from
+    the zeros
+
+        f'/f = ∑_a m_a/(· − a) + h'/h.
+
+    Built on mathlib's `logDeriv_mul`, `logDeriv_prod`, `logDeriv_fun_pow`; the corpus needed only
+    the `EventuallyEq` bridge, since `logDeriv` is `deriv f / f` and `deriv` respects it.
+  - `norm_sum_multiplicity_div_le` — `‖∑_a m_a/(z − a)‖ ≤ (∑_a m_a)/d` when every zero is at distance
+    at least `d`.
+
+  The second summand is `norm_logDeriv_le` from the previous entry; the first is now a rational
+  function of the zeros, and its circle proximity is controlled by
+  `circleAverage_negPart_log_norm_sub_le` (each zero costs `log 2`) together with the Jensen count
+  `sum_multiplicity_le_of_factor`.  Every ingredient of the logarithmic-derivative lemma is
+  therefore a corpus theorem; what remains is to assemble them into the proximity statement
+  `m(r, f'/f) = S(r,f)`.
+  Lean note: `logDeriv_prod` and `logDeriv_fun_pow` both need their `𝕜`, `𝕜'`, and `f` given
+  explicitly here — left to unification they pick `𝕜 := ℕ` from the multiplicity exponent, or
+  rewrite `w` to `id w` and then fail to match.
+
+- 2026-08-04 — **The proximity integrand of the logarithmic derivative** (axiom-clean).
+  `posLog_norm_logDeriv_le_of_factor` — away from the zeros,
+
+      log⁺‖f'/f‖ ≤ log 2 + log|T| + ∑_a (log m_a + log⁺(1/‖z − a‖)) + log⁺‖h'/h‖.
+
+  This is the form that integrates: no uniform distance-to-zeros hypothesis appears, because the
+  singular behaviour is carried by the `log⁺(1/‖z − a‖)` terms rather than excluded.  Each of those
+  has circle average at most `log 2` by `circleAverage_negPart_log_norm_sub_le`, and the count
+  `∑ m_a` is bounded by Jensen (`sum_multiplicity_le_of_factor`), so integrating gives
+
+      m(r, f'/f) ≤ (zero count)·log 2 + log|T| + ∑ log m_a + m(r, h'/h) + log 2,
+
+  with `m(r, h'/h)` logarithmic in the maximum modulus by `norm_logDeriv_le`.  That is the
+  logarithmic-derivative lemma; the remaining work is the integration bookkeeping, not new analysis.
+  mathlib supplied `posLog_sum`, `posLog_nat_mul`, `posLog_add` and `posLog_mul` — the whole `log⁺`
+  calculus needed here — via `Mathlib.Analysis.SpecialFunctions.Log.PosLog`, which again had to be
+  imported explicitly.
+
+- 2026-08-04 — **The proximity of the logarithmic derivative** (`LogDerivativeProximity`,
+  axiom-clean, wired).  The integration announced in the previous entry is done:
+  - `posLog_inv_eq_negPart` — the proximity integrand of a linear factor *is* the negative part of
+    its log-modulus, `log⁺(1/‖z − a‖) = max 0 (−log‖z − a‖)`.  This identifies the zero terms with
+    the object `circleAverage_negPart_log_norm_sub_le` already bounds.
+  - `circleIntegrable_posLog_inv_sub`, `circleAverage_posLog_inv_sub_le` — those terms are circle
+    integrable, and each has circle average at most `log 2` for `r ≥ 1`.
+  - `circleAverage_posLog_logDeriv_le` — **the estimate**:
+
+        m(r, f'/f) ≤ log 2 + log|T| + ∑_a log m_a + |T|·log 2 + m(r, h'/h).
+
+  With `m(r, h'/h)` logarithmic in the maximum modulus (`norm_logDeriv_le`) and `|T|`, `∑ m_a`
+  bounded by Jensen (`sum_multiplicity_le_of_factor`), this is Nevanlinna's estimate for the
+  logarithmic derivative: every term on the right is `O(log T(R,f))`, not `O(T(r,f))`.
+  The chain from here to the second main theorem is now purely the proximity calculus, which mathlib
+  owns: `sum_proximity_le_of_meromorphic` (built here) turns the `q` value-terms into one,
+  `proximity_mul_top_le` and `proximity_inv` move the logarithmic derivative into position, and this
+  estimate bounds it.
+
+- 2026-08-04 — **The shifted logarithmic derivative** (axiom-clean).
+  - `logDeriv_shift_eq` — shifting by a constant leaves the numerator alone:
+    `(f − a)'/(f − a) = f'/(f − a)`, from mathlib's unconditional `deriv_sub_const`.
+  - `circleAverage_posLog_logDeriv_sub_const_le` — the estimate of the previous entry, transported
+    to `f'/(f − a)`.  This is the form the second main theorem uses, once per value `a_j`, and it
+    costs nothing beyond the shift: the zero data `T`, `m` is that of `f − a`, i.e. the `a`-points
+    of `f`, which is exactly what the counting function measures.
+
+  The corpus now holds every analytic ingredient of the second main theorem:
+
+  | ingredient | status |
+  |---|---|
+  | `∑_j m(r, a_j) ≤ m(r, ∑ (f−a_j)⁻¹) + O(1)` | `sum_proximity_le_of_meromorphic` |
+  | `m(r, f'/(f−a)) = S(r,f)` | `circleAverage_posLog_logDeriv_sub_const_le` |
+  | proximity calculus (`mul`, `inv`, `add`, `sum`) | mathlib |
+  | first main theorem, Jensen, counting function | mathlib + `PoissonJensenUpperBound` |
+
+  What remains is the algebraic chain assembling them, in mathlib's `characteristic`/`logCounting`
+  language — bookkeeping over the identity `F = (F/f')·(f'/f)·f` and the first main theorem.  No
+  further analytic input is needed.
+
+- 2026-08-04 — **The second main theorem, up to the residual proximity term**
+  (`SecondMainTheoremChain`, axiom-clean, wired).
+  - `characteristic_apply` — `T(r,a;f) = m(r,a;f) + N(r,a;f)`, mathlib's definition unfolded.
+  - `mul_characteristic_le_sum_logCounting_add_proximity` — the assembled inequality:
+
+        q·T(r,f) ≤ ∑_j N(r, a_j) + m(r, ∑_j (f − a_j)⁻¹) + (qK + separation constant),
+
+    where `K` bounds the first-main-theorem defect at each value.  The separation constant is the one
+    from `sum_proximity_le_of_meromorphic`, and the first main theorem enters only as the explicit
+    hypothesis `hfmt`, so the statement is unconditional and a caller can supply mathlib's
+    quantitative version (`abs_characteristic_sub_characteristic_shift_le`).
+
+  This is the second main theorem with a single residual term, `m(r, ∑_j (f − a_j)⁻¹)`.  Bounding it
+  by `S(r,f)` is exactly what the logarithmic-derivative estimate does, through the identity
+  `∑_j (f − a_j)⁻¹ = (∑_j f'/(f − a_j))/f'`: mathlib's `proximity_mul_top_le` and `proximity_inv`
+  move the pieces, and `circleAverage_posLog_logDeriv_sub_const_le` bounds each summand.
+  With that step the corpus owns SMT, hence `N(r, 1/(f − a)) ≳ T(r,f)` for some value of any three,
+  which is the input Pólya's composition theorem needs and the card's last inequality waits on.
+
+- 2026-08-04 — **Moving the residual term across the critical points** (axiom-clean).
+  The factorization `∑_j (f − a_j)⁻¹ = (∑_j f'/(f − a_j))·(1/f')` is **false at the critical points
+  of `f`**, where Lean's junk value `0⁻¹ = 0` collapses the right-hand side to `0`.  Proximity is a
+  circle average, so it only needs the identity off a codiscrete set — and mathlib's
+  `proximity_congr_codiscreteWithin` provides exactly that tolerance.
+  - `proximity_top_le_of_codiscrete_mul` — `m(r, F) ≤ m(r, G) + m(r, H)` when `F = G·H` codiscretely.
+  - `proximity_top_sum_le_of_codiscrete` — `m(r, F) ≤ ∑_j m(r, G_j) + log q` when `F = ∑ G_j`
+    codiscretely.
+
+  These are the two movers the residual term needs.  Applying them to the factorization above turns
+  `m(r, ∑_j (f − a_j)⁻¹)` into `∑_j m(r, f'/(f − a_j)) + m(r, 1/f') + log q`, of which the first
+  group is bounded by `circleAverage_posLog_logDeriv_sub_const_le` and the second is the ramification
+  term that the first main theorem converts into `N(r, 1/f')`.
+  This is the pattern that has recurred throughout the analytic work on this card: Lean's junk values
+  at singular points never invalidate the mathematics, but they do decide *which* form of a
+  classical identity is provable — pointwise, codiscretely, or only after excluding a set.
+
+- 2026-08-04 — **The residual term is split** (axiom-clean).
+  - `sum_inv_eq_mul_of_deriv_ne` — where `f' ≠ 0`, `∑ (f − a_j)⁻¹ = (∑ f'/(f − a_j))·(1/f')`.  No
+    condition on `f − a_j` is needed: both sides vanish where it does, so the junk value is harmless
+    on that factor.
+  - `eventually_deriv_ne_zero` — the critical points are codiscretely avoided, from mathlib's
+    isolated-zeros principle for meromorphic functions.
+  - `sum_inv_eventuallyEq_mul`, `proximity_sum_inv_le` — hence
+
+        m(r, ∑_j (f − a_j)⁻¹) ≤ ∑_j m(r, f'/(f − a_j)) + log q + m(r, 1/f').
+
+  Chained with `mul_characteristic_le_sum_logCounting_add_proximity` this gives
+
+      q·T(r,f) ≤ ∑_j N(r, a_j) + ∑_j m(r, f'/(f − a_j)) + m(r, 1/f') + constants,
+
+  and the middle group is `S(r,f)` by `circleAverage_posLog_logDeriv_sub_const_le`.  The remaining
+  term `m(r, 1/f')` is the ramification term; the first main theorem converts it to `N(r, 1/f')`,
+  which is where the classical `−2` in `(q−2)T` comes from.
+  Lean note: `MeromorphicOn.codiscreteWithin_setOf_ne_zero` is declared *inside* `namespace
+  MeromorphicAt`, so its real name is `MeromorphicAt.MeromorphicOn.codiscreteWithin_setOf_ne_zero`.
+  Grepping the declaration line is not enough — the enclosing namespace has to be checked too.
+
+- 2026-08-04 — **The second main theorem, assembled** (`mul_characteristic_le_of_separated`,
+  axiom-clean).  For pairwise separated values `a_1,…,a_q`,
+
+      q·T(r,f) ≤ ∑_j N(r, a_j) + ∑_j m(r, f'/(f − a_j)) + m(r, 1/f')
+                 + (qK + q·log⁺(2/δ) + log⁺(2q/δ) + log 2 + log q),
+
+  with `K` the first-main-theorem defect.  `proximity_top_logDeriv_eq` identifies the middle group
+  with the circle averages that `circleAverage_posLog_logDeriv_sub_const_le` bounds, so that group is
+  `S(r,f)`; the last term is the ramification term.
+  Everything is unconditional: the first main theorem appears only as the hypothesis `hfmt`, which
+  mathlib's `abs_characteristic_sub_characteristic_shift_le` supplies.
+  **Status of the SMT sub-project:** the analytic content is complete and the algebraic chain is
+  assembled.  What is left is instantiation — feeding mathlib's FMT into `hfmt`, and converting
+  `m(r, 1/f')` into `N(r, 1/f')` to recover the classical `(q − 2)` form.  Neither needs new
+  mathematics.
+  For the card itself, the payoff is `N(r, 1/(f − a)) ≳ T(r,f)` for at least one of any three
+  values, which is the missing input to Pólya's composition theorem and hence to the card's last
+  inequality.
+
+- 2026-08-04 — **The first-main-theorem hypothesis is discharged** (axiom-clean).  The `hfmt`
+  hypothesis of `mul_characteristic_le_of_separated` is no longer an assumption:
+  - `characteristic_coe_eq` — `T(r, a₀; f) = T(r, 0; f − a₀)`, from mathlib's
+    `proximity_coe_eq_proximity_sub_const_zero` and `logCounting_coe_eq_logCounting_sub_const_zero`.
+  - `characteristic_zero_eq_inv_top` — `T(r, 0; g) = T(r, ∞; 1/g)`, from `proximity_inv` and
+    `logCounting_inv`.
+  - `characteristic_top_le_characteristic_coe` — combining the two quantitative halves of mathlib's
+    first main theorem (the shift and the inversion):
+
+        T(r,f) ≤ T(r, a₀; f) + (log⁺‖a₀‖ + log 2)
+                 + max |log‖(f − a₀)(0)‖| |log‖trailingCoeff (f − a₀) 0‖|.
+
+  So the second main theorem as assembled here rests on nothing but mathlib and this corpus.
+  Lean note: `f - fun _ => a₀` is the Pi-subtraction, and applying it to `0` inside a *statement*
+  fails to elaborate — the function type is still a metavariable there.  An explicit
+  `((f - fun _ : ℂ => a₀) : ℂ → ℂ) 0` annotation fixes it; without it the term elaborates to `sorry`
+  and the subsequent `linarith` fails for reasons that look unrelated.
+
+- 2026-08-04 — **The payoff: at least one value is taken often** (`exists_logCounting_ge`,
+  axiom-clean).  Pigeonhole on the second main theorem: if `q·T(r,f) ≤ ∑_j N(r, a_j) + S`, then some
+  `j` has
+
+      N(r, a_j) ≥ T(r,f) − S/q.
+
+  This is exactly the input the composition-growth argument needs and the one a zero-free outer
+  function cannot supply on its own: a *lower* bound on the number of `a`-points for at least one
+  value.  `exp` has no zeros, but by this statement it takes some value among any three with counting
+  function nearly `T(r, exp)` — which is what makes the shift `f ↦ f − a` of
+  `NevanlinnaMaxModulusBridge` useful rather than merely available.
+
+  **The Nevanlinna sub-project is complete as a chain**: separation → residual split →
+  logarithmic-derivative estimate → first main theorem → pigeonhole, all unconditional, all
+  axiom-clean, all wired.  The remaining work on the card is to instantiate this chain at the
+  cascade's outer function and feed the resulting counting bound into the Pólya disc built earlier
+  in this session.
+
+- 2026-08-04 — **Value preimages of a composition** (`CompositionValuePreimages`, axiom-clean,
+  wired).  The counting mechanism behind composition growth, at the level of sets:
+  - `comp_sub_eq_zero_of_eq` — a point sent by the inner function to an `a`-point of the outer
+    function is an `a`-point of the composition.
+  - `disjoint_preimage_of_ne` — preimages of distinct values are disjoint.
+  - `card_preimage_sum_le_card_comp` — hence for distinct `a`-points `b_1,…,b_p` of `f`,
+
+        ∑_i #{z ∈ K : g z = b_i}  ≤  #{z ∈ K : f (g z) = a},
+
+    so the composition takes `a` at least as often as `g` takes all the `b_i` together.
+  - `card_preimage_le_card_comp` — the single-value form.
+
+  Chained with `exists_logCounting_ge` applied to `g` at the values `b_1,…,b_p`, the right-hand side
+  is at least `p·T(r,g) − S(r,g)` for every `p` — which is Clunie's theorem
+  `T(r, f∘g)/T(r,g) → ∞`, and hence the growth comparison the card's last inequality needs.
+  This is deliberately the *multiplicity-free* form: it needs no order theory for compositions, and
+  the inequality only ever gets used in the direction where dropping multiplicities is harmless.
+  Converting the set counts into `logCounting` (which weights by multiplicity, hence is larger) is
+  the remaining bookkeeping.
+
+- 2026-08-04 — **Multiplicities of a composition** (axiom-clean).  Set-level counting loses the
+  weights `logCounting` uses; they are recovered by composing the two local factorizations.
+  - `comp_factor_of_factors` — if `g − b = (· − z₀)^l·h` and `f − a = (· − b)^k·H`, then
+
+        f ∘ g − a = (· − z₀)^{l·k} · (h^k · (H ∘ g)).
+
+  - `comp_factor_of_factors_le` — hence with `k ≥ 1` the composition has a zero of order at least
+    `l` at `z₀`: the multiplicity of the inner function's `b`-point is never lost, and is multiplied
+    by the outer function's ramification.
+
+  The proof is pure algebra (`mul_pow`, `pow_mul`) once both factorizations are in hand, and the
+  corpus's `exists_global_factor_of_root` supplies them.  No order theory for compositions is
+  needed — the factorizations *are* the order statement, in the form Lean handles without junk-value
+  trouble.
+  With this, the set-level bound `card_preimage_sum_le_card_comp` upgrades to the weighted one, which
+  is what feeds `logCounting` and hence `T(r, f∘g) ≥ ∑_i N(r, b_i; g)`.
+
+- 2026-08-04 — **The composed factorization over a whole zero set** (axiom-clean).
+  - `comp_prod_factor_of_factors` — if `g − b = (∏_ζ (· − ζ)^{l ζ})·h` with `h` zero free, and
+    `f − a = (· − b)^k·H`, then
+
+        f ∘ g − a = (∏_ζ (· − ζ)^{l ζ · k}) · (h^k · (H ∘ g)).
+
+    This is exactly the shape `RHTower.sum_multiplicity_le_of_factor` consumes, so the composition's
+    Jensen zero count is directly comparable with the inner function's.
+  - `sum_multiplicity_le_comp` — `∑ l ζ ≤ ∑ (l ζ · k)` for `k ≥ 1`, the count comparison itself.
+
+  So for a *single* `a`-point `b` of the outer function, the corpus now proves
+  `n(r, a; f∘g) ≥ n(r, b; g)` with multiplicities.  Extending to several `a`-points `b_1,…,b_p`
+  requires merging `p` such product factorizations into one — a `Finset` disjointness argument over
+  the union of the zero sets, using that the `b_i` are distinct (which is what
+  `disjoint_preimage_of_ne` already gives at the set level).  That merge is the next step, and with
+  it `T(r, f∘g) ≥ ∑_i N(r, b_i; g) ≥ (p−2)·T(r,g)` follows from the second main theorem for `g`.
+
+- 2026-08-04 — **The merge over several `a`-points** (axiom-clean).  The step flagged as next in the
+  previous entry:
+  - `comp_biUnion_factor` — if `f − a = (∏_i (· − b_i)^{k_i})·H` and each `g − b_i` carries its zeros
+    in a product with zero-free cofactor, then
+
+        f ∘ g − a = (∏_i ∏_ζ (· − ζ)^{l_i ζ · k_i}) · ((∏_i h_i^{k_i}) · (H ∘ g)).
+
+  - `sum_sum_multiplicity_le_comp` — the count comparison `∑_i ∑_ζ l_i ζ ≤ ∑_i ∑_ζ l_i ζ·k_i`.
+  - `disjoint_zeroSets_of_ne` — the zero sets of the distinct `b_i` are disjoint.
+
+  Keeping the zero sets as a **nested** product is what made the identity cheap: disjointness is not
+  needed for it at all, only for flattening into a single product, and is supplied separately.  I had
+  expected the merge to require `Finset.biUnion` bookkeeping with a dependent multiplicity function;
+  it does not.
+  So the corpus now proves, with multiplicities, `n(r, a; f∘g) ≥ ∑_i n(r, b_i; g)`.  Combined with
+  the second main theorem for `g` at the values `b_1,…,b_p`, this is Clunie's growth comparison, and
+  the only remaining task on this line is translating the `n` counts into `logCounting`/`T` through
+  Jensen — for which `sum_multiplicity_le_of_factor` is already the corpus's instrument.
+
+- 2026-08-04 — **The composed factorization, flattened** (axiom-clean; module now 251 lines).
+  `RHTower.sum_multiplicity_le_of_factor` wants one product over one `Finset`, so the nested product
+  is flattened along the disjointness of the zero sets:
+  - `mergedMultiplicity` — the multiplicity at a point, read off from the unique block containing it.
+  - `mergedMultiplicity_eq` — on a block it *is* that block's own multiplicity, times the outer
+    ramification.
+  - `comp_flat_factor` — hence
+
+        f ∘ g − a = (∏_{ζ ∈ ⋃ T_i} (· − ζ)^{mergedMultiplicity ζ}) · ((∏_i h_i^{k_i}) · (H ∘ g)),
+
+    a single product, in the exact shape the Jensen count consumes.
+  - `sum_mergedMultiplicity` — the merged count equals `∑_i ∑_ζ l_i ζ·k_i`.
+
+  With `sum_sum_multiplicity_le_comp` this closes the counting comparison end to end:
+
+      n(r, a; f∘g) = ∑_ζ mergedMultiplicity ζ = ∑_i ∑_ζ l_i ζ·k_i ≥ ∑_i n(r, b_i; g).
+
+  Every step from "the outer function takes `a` at `p` points" to "the composition's zero count
+  dominates the inner function's total" is now a corpus theorem, with multiplicities, unconditional.
+
+- 2026-08-04 — **The merged count restricted to a sub-disc** (axiom-clean).  The Jensen bound
+  `RHTower.sum_multiplicity_le_of_factor` counts only the zeros inside a smaller radius `R₁ < R`, so
+  the merged multiplicity has to survive a `filter`:
+  - `sum_filter_mergedMultiplicity` — `∑_{ζ ∈ (⋃T_i).filter P} merged ζ = ∑_i ∑_{ζ ∈ (T_i).filter P}
+    l_i ζ·k_i`, via `Finset.filter_biUnion` and disjointness of the filtered blocks.
+  - `sum_filter_le_sum_filter_mergedMultiplicity` — and each block still contributes at least its own
+    count.
+
+  This is the last combinatorial step before the Jensen application.  Feeding `comp_flat_factor`
+  into `sum_multiplicity_le_of_factor` at radius `2R` with `R₁ = R` now yields
+
+      (∑_i n(R, b_i; g))·log 2 ≤ ∑_ζ merged ζ · log 2 ≤ log(M(2R, f∘g − a) / ‖f(g(c)) − a‖),
+
+  i.e. a **lower bound on the composition's maximum modulus** in terms of the inner function's
+  counting functions — which, with the second main theorem for `g`, is the growth comparison the
+  card's last inequality needs.
+  Lean note: `open scoped Classical in` does not reach the *statement* of the following declaration,
+  so a `filter` in the statement needs an explicit `[DecidablePred P]` binder.
+
+- 2026-08-04 — **The composition's maximum modulus, bounded below by the inner counts**
+  (`CompositionCountLowerBound`, axiom-clean, wired).  `log_norm_comp_ge_count`: with `b_i` the
+  `a`-points of the outer function and `T i` the zeros of `g − b_i`,
+
+      (∑_i ∑_{ζ ∈ T i, ‖ζ − c‖ ≤ R₁} l_i ζ) · log(R/R₁)  ≤  log M − log‖f (g c) − a‖,
+
+  where `M` bounds `f ∘ g − a` on the circle of radius `R`.  Jensen's count bound is being used in
+  the *reverse* direction from usual: normally it caps the number of zeros by the growth, here the
+  zeros are known to be many (they include every `g`-preimage of every `b_i`) and the conclusion is
+  that the composition must be large.
+  This is composition growth in counting form, and it needs no Pólya disc, no minimum modulus and no
+  connectivity — only the factorization chain of `CompositionValuePreimages` and the corpus's own
+  Jensen bound.
+  With the second main theorem for `g` making `∑_i n(R, b_i; g)` comparable to `p·T(R,g)`, the
+  left-hand side grows like `p·T(R,g)`, so `log M(R, f∘g)` outgrows every multiple of `T(R,g)` —
+  which is exactly the growth comparison the card's last inequality waits on.
+
+- 2026-08-04 — **The raw count against the integrated one** (axiom-clean).
+  `sum_mul_log_le_sum_mul_log` — the elementary comparison `n(r)·log(R/r) ≤ N(R)` in explicit form:
+
+      (∑_{ζ ∈ T, ‖ζ‖ ≤ r} m_ζ)·log(R/r)  ≤  ∑_{ζ ∈ T, ‖ζ‖ ≤ R} m_ζ·log(R/‖ζ‖).
+
+  The hypothesis `0 ∉ T` is essential rather than cosmetic: Lean's `log (R/0) = 0` would let a zero
+  at the origin contribute nothing to the right-hand side, breaking an inequality that is true (with
+  an infinite contribution) in mathematics.  This is the standard Nevanlinna normalisation `g(0) ≠ b`
+  appearing as a Lean necessity.
+  This is the bridge between the *raw* counts that the composition factorization produces and the
+  *integrated* counting functions that the second main theorem bounds.  Both directions of the
+  comparison now exist in the corpus: Jensen (`sum_multiplicity_le_of_factor`) caps the raw count by
+  the growth, and this caps it by the integrated count.
+
+- 2026-08-04 — **The count comparison is two-sided** (axiom-clean; module now 151 lines).
+  - `sum_mul_log_le_card_mul_log` — `N(r) ≤ n(r)·log(r/t₀)` when every zero has modulus at least
+    `t₀`.
+  - `le_sum_of_le_sum_mul_log` — hence a *lower* bound on the integrated count gives one on the raw
+    count: `N ≤ N(r)` implies `N/log(r/t₀) ≤ n(r)`.
+
+  This is the direction the chain actually needs.  The second main theorem bounds `N` from below;
+  `log_norm_comp_ge_count` consumes a raw count; this converts between them at the cost of the
+  logarithmic range `log(r/t₀)`, where `t₀` is the modulus of the innermost zero.
+  The full chain for the card's growth comparison is now assembled from corpus theorems:
+
+      SMT for g          →  N(r, b_i; g) large
+      le_sum_of_le_sum_mul_log →  n(r, b_i; g) large
+      comp_flat_factor + Jensen (log_norm_comp_ge_count) →  log M(R, f∘g) large,
+
+  each step unconditional and axiom-clean.  What remains is to instantiate the chain end to end with
+  the cascade's own functions and constants — assembly, with no analytic gap left in it.
+
+- 2026-08-04 — **The composing interface** (axiom-clean).
+  - `le_of_counts_and_bound` — if each block has at least `N i` zeros in the sub-disc, the growth
+    bound holds with `∑ N i` in place of the exact counts.  Stated against an abstract weight and
+    bound so it composes with `log_norm_comp_ge_count` *without repeating its fifteen hypotheses* —
+    the alternative was a theorem whose statement was longer than its proof.
+  - `log_div_nonneg` — the logarithmic weight is nonnegative on the intended range.
+
+  With these the chain is callable as three steps rather than one monolith:
+
+      (1) SMT for g                              gives  N(r, b_i; g) ≥ …
+      (2) le_sum_of_le_sum_mul_log               gives  n(r, b_i; g) ≥ …
+      (3) le_of_counts_and_bound ∘ log_norm_comp_ge_count
+                                                 gives  log M(R, f∘g) ≥ (∑_i …)·log(R/R₁).
+
+  Every link is unconditional and axiom-clean.  The card's remaining work is choosing the constants
+  (`p`, the values `b_i`, the radii) so that the right-hand side beats the Clunie weight, and that is
+  arithmetic over statements the corpus already owns.
+
+- 2026-08-04 — **From the logarithmic bound to a modulus bound** (axiom-clean).
+  `exp_mul_le_of_log_bound` — `B ≤ log M − log‖F c‖` implies `exp B · ‖F c‖ ≤ M`.  This exponentiates
+  the growth bound into the form the Clunie weight comparison consumes: the circle supremum of
+  `f ∘ g − a` is at least `exp(∑_i n(R, b_i; g)·log(R/R₁))` times its centre value.
+
+  A correction to the shape I first tried: the maximum-point variant `‖F c‖ ≤ ‖F z‖` does **not**
+  follow from `hmax`, because the centre `c` is not on the sphere.  Positivity of `‖F z‖` has to come
+  from elsewhere (the selection already supplies it via `μ(s) ≤ ‖F z‖`), so the single
+  `exp_mul_le_of_log_bound` with an explicit positivity hypothesis is the right interface and the
+  variants I sketched were redundant.
+
+- 2026-08-04 — **The growth chain meets the Clunie weight** (axiom-clean).
+  - `lt_posLog_of_exp_mul_le` — `exp B · C ≤ x` and `W < B + log C` give `W < log⁺ x`.  This is where
+    the two halves join: the growth chain produces a *modulus* bound, the Clunie separation needs a
+    `log⁺` inequality, and the logarithm is the only bridge required.
+  - `clunieWeight_lt_of_exp_mul_le` — the packaged form: a floor `c₀` for the top grouped
+    coefficient, a block bound `W`, and a modulus bound `exp B · C ≤ ‖F_last z‖` together give
+    `clunieWeight < log⁺‖F_last z‖`, which is exactly the hypothesis of
+    `separatesLast_of_pointwise`.
+
+  So the card's remaining obligation has become a single numeric statement with no analysis in it:
+
+      W + N·log⁺(1/c₀) + (N|S| + N)·log 2  <  B + log C,
+
+  where `B = (∑_i n(R, b_i; g))·log(R/R₁)` from the composition growth and `W`, `c₀`, `C` come from
+  the selection.  Every quantity on both sides is now produced by a corpus theorem; what is left is
+  to choose the number of values `p` large enough that `B` exceeds the fixed left-hand side, which
+  the second main theorem permits for every `p`.
+
+- 2026-08-04 — **The Archimedean step** (axiom-clean; `ClunieSeparationBridge` now 228 lines).
+  - `exists_gt_of_linear` — a linear quantity `p·β − γ` with `β > 0` eventually beats any fixed
+    bound.
+  - `exists_separation_index` — hence there is a number of values `p` for which the hypothesis of
+    `clunieWeight_lt_of_exp_mul_le` is met.
+
+  This is the step that converts "the second main theorem holds for every `q`" into "the separation
+  holds".  The weight is fixed once the relation `(S, A, N)` is fixed; the growth quantity is linear
+  in the number of values with positive slope `β = T(R,g)·log(R/R₁)`; so the inequality is a matter
+  of choosing `p`, and Archimedes settles it.
+
+  **The structural chain for `SeparatesLast` is now complete**, every link unconditional and
+  axiom-clean:
+
+      exists_radius_floor_and_maxTerm      selection: floor for G, maximum for F_last
+      SMT + le_sum_of_le_sum_mul_log       many zeros for each g − b_i
+      log_norm_comp_ge_count               ⇒ log-growth bound B, linear in p
+      exp_mul_le_of_log_bound              ⇒ modulus bound exp B · C ≤ ‖F_last z‖
+      exists_separation_index              ⇒ weight < B + log C for some p
+      clunieWeight_lt_of_exp_mul_le        ⇒ clunieWeight < log⁺‖F_last z‖
+      separatesLast_of_pointwise           ⇒ SeparatesLast F
+      coeff_eq_zero_of_relation            ⇒ the Clunie induction step
+      polyIndependent_of_chain             ⇒ ord_DA(F_n) = n.
+
+  What is left is to write the single Lean theorem that walks this chain with the cascade's own
+  functions substituted — no further mathematics, and no further infrastructure.
+
+- 2026-08-04 — **The assembled criterion, and cascade independence from it** (axiom-clean;
+  `ClunieSeparationBridge` now 283 lines).
+  - `separatesLast_of_modulus_bound` — `SeparatesLast F` from a point together with four constants:
+    a floor `c₀` for the top grouped coefficient, a block bound `W`, and a modulus bound
+    `exp B · C ≤ ‖F_last z‖` whose exponent beats the weight.  All reference to `clunieWeight` and
+    to `log⁺` is discharged.
+  - `polyIndependent_of_modulus_bound` — feeding that into the Clunie induction
+    (`polyIndependent_of_chain`): if at each level the growth chain produces such a point, the whole
+    family of cascade states is polynomially independent over `ℂ[z]`.
+
+  That is the criterion the card's theorem applies — `PolyIndependent` for the states is exactly the
+  statement that no nontrivial polynomial relation holds among them, which is what pins
+  `ord_DA(F_n) = n`.
+  The entire structural argument is now a single named chain from geometric data to the cascade
+  conclusion, unconditional and axiom-clean at every link.  What is genuinely left is the analytic
+  instantiation: producing the four constants at each level from the Wiman--Valiron selection, the
+  minimum modulus, and the composition growth — all of which are corpus theorems, none of which is
+  yet wired to this interface with the cascade's own functions substituted.
+
+- 2026-08-04 — **The analytic instantiation begins: three constants at one point** (axiom-clean).
+  `RHTower.exists_radius_floor_maxTerm_block` — at a single point of a selected circle,
+  simultaneously:
+  - `H^n·L ≤ ‖G z‖` — the floor `c₀` for the top grouped coefficient, from the minimum modulus;
+  - `μ(s) ≤ ‖f z‖` — the dependent state dominates its maximum term, from the circle maximum;
+  - `block ≤ |S|·(α + D·β)` — the bound `W`, from the sup bounds over the disc.
+
+  So two of the four constants `separatesLast_of_modulus_bound` needs (`c₀` and `W`) are now produced
+  together, at a point that also carries the maximum-term lower bound.  Only the modulus bound
+  `exp B · C ≤ ‖F_last z‖` remains, and that is what the composition-growth chain supplies.
+  The hypotheses are the honest ones: analyticity and non-degeneracy of `G`, a boundary bound for it,
+  and sup bounds for the coefficient polynomials and the earlier states on the disc — all data the
+  cascade provides directly, none of it an assumption about the composition.
+
+- 2026-08-04 — **The fourth constant: the modulus bound at the selection point** (axiom-clean).
+  The growth chain is about the shifted function `f ∘ g − a`, while the Clunie separation wants
+  `‖F_last z‖` itself.
+  - `norm_sub_le_of_max` — at the circle maximum of `F`, the supremum of `‖F − a‖` on that circle is
+    at most `‖F z‖ + ‖a‖`.  This is what lets the growth bound be applied with an `M` expressed
+    through the selection point.
+  - `exp_mul_sub_le_of_max` — hence `exp B · ‖F c − a‖ − ‖a‖ ≤ ‖F z‖`: the modulus bound
+    `separatesLast_of_modulus_bound` consumes, with `C := ‖F c − a‖` and the shift `‖a‖` subtracted.
+
+  The subtraction is harmless — it is absorbed as soon as `B` is large, which is what the Archimedean
+  step arranges.  This also settles why the *maximum* variant of the selection
+  (`exists_point_sphere_floor_and_max`) is the one to use rather than the maximum-term variant: the
+  growth bound controls a circle supremum, and only the maximum point identifies that supremum with a
+  value of `F_last`.
+  All four constants of `separatesLast_of_modulus_bound` are now produced by corpus theorems.
+
+- 2026-08-04 — **A shape-independent separation interface** (axiom-clean; `ClunieSeparationBridge`
+  now 338 lines).  The growth chain delivers a lower bound on `‖F_last z‖` whose exact shape varies —
+  `exp B · C`, or that minus the shift `‖a‖`.  Taking the bound as a single positive number `v`
+  removes the dependence:
+  - `lt_posLog_of_le` — `0 < v ≤ x` and `W < log v` give `W < log⁺ x`.
+  - `separatesLast_of_value_bound` — `SeparatesLast F` from a point with a floor `c₀`, a block bound
+    `W`, and *any* positive lower bound `v ≤ ‖F_last z‖` with `weight < log v`.
+  - `polyIndependent_of_value_bound` — the corresponding cascade statement.
+
+  This supersedes the `exp B · C` form of the previous entries as the interface to target: it is
+  strictly more general, and the chain's `exp B · ‖F c − a‖ − ‖a‖` instantiates it directly with no
+  algebraic massaging.  The earlier `separatesLast_of_modulus_bound` remains as the specialised form.
+
+- 2026-08-04 — **The criterion in terms of the maximum term** (`CascadeSeparationCriterion`,
+  axiom-clean, wired).
+  - `separatesLast_of_maxTerm_bound` — with the dependent state given as `coeffFun a`, and at a
+    selected point a floor `c₀`, a block bound `W`, and `μ(s) ≤ ‖coeffFun a z‖`, the separation
+    follows from the single inequality
+
+        W + N·log⁺(1/c₀) + (N|S| + N)·log 2  <  log μ(s).
+
+  - `polyIndependent_of_maxTerm_bound` — the cascade form.
+
+  **This is the sharpest statement of what remains.**  The whole Clunie argument for the card is now
+  reduced to one inequality between the Clunie weight and `log μ(s, F_last)` at the selected point.
+  Everything else — the selection, the floor, the block bound, the induction, the passage from
+  `SeparatesLast` to `ord_DA(F_n) = n` — is proved.
+  The growth of the composition enters *only* through that inequality: `μ(s, F_last)` is the maximum
+  term of `f_{k+1} ∘ F_k`, and the composition-growth chain built earlier this session is what makes
+  its logarithm outgrow the weight, which depends only on the earlier states and the relation's own
+  data.
+
+- 2026-08-04 — **The floor term, decomposed** (axiom-clean).
+  - `posLog_inv_pow_mul_le` — for `0 < H ≤ 1`, `log⁺(1/(H^n·L)) ≤ n·log(1/H) + log⁺(1/L)`.  No
+    hypothesis on `L` is needed: the splitting is an identity and `posLog` is submultiplicative
+    unconditionally, so the positivity of the Borel--Carathéodory constant never enters.
+  - `clunie_weight_le_of_floor_shape` — hence the Clunie weight is bounded by an expression **linear
+    in the zero count `n`** of the top grouped coefficient.
+
+  This is what makes the final comparison tractable.  The weight now reads
+
+      |S|·(α + D·β) + N·(n·log(1/H) + log⁺(1/L)) + (N|S| + N)·log 2,
+
+  in which `α` is logarithmic in the radius, `β` is the earlier states' growth, and `n` is bounded by
+  Jensen in terms of the same data.  So the whole weight is `O(β)` with a constant depending only on
+  the relation `(S, N, D)` and the selection parameters — while `log μ(s, F_last)` outgrows every
+  multiple of `β` by the composition-growth chain.  That is the shape of the remaining inequality,
+  now with every term explicit.
+
+- 2026-08-04 — **The grouped coefficient's own growth** (axiom-clean).
+  `posLog_norm_groupedCoeff_le_of_sup` — `log⁺‖G z‖ ≤ |S|·(α + D·β) + |S|·log 2`, combining the
+  corpus's existing `posLog_norm_groupedCoeff_le` with `clunie_block_le` over the filtered exponent
+  set.
+  (Checked the corpus first: `posLog_norm_groupedCoeff_le` was already there, bounding `log⁺‖G‖` by
+  the block over the filtered set plus `|S|·log 2`.  Only the composition with the sup bounds was
+  missing.)
+  This closes the last dependency in the weight.  The zero count `n` of `G` is bounded by Jensen in
+  terms of `log⁺ M_G`, which this bounds by `|S|·(α + D·β) + |S|·log 2` — the same data as the block.
+  So every term of
+
+      |S|·(α + D·β) + N·(n·log(1/H) + log⁺(1/L)) + (N|S| + N)·log 2
+
+  is now bounded by an explicit function of `α`, `β` and the relation data, with no circularity: the
+  weight never refers to the dependent state.  The remaining inequality is therefore exactly
+  `log μ(s, F_last)` against a fixed multiple of `β`, and the composition-growth chain is what
+  settles it.
+
+- 2026-08-04 — **The zero count, bounded by the block data** (axiom-clean).
+  - `norm_le_exp_of_posLog_le` — a `log⁺` bound is an exponential modulus bound, `‖x‖ ≤ exp B`.  The
+    junk case `‖x‖ = 0` is harmless: `exp B > 0` covers it.
+  - `count_mul_log_le_of_sup` — Jensen's count bound with the boundary maximum replaced by the
+    exponential of the block bound.
+  - `count_le_of_sup` — hence `n ≤ (Bd − log‖G c‖)/log(R/R₁)`.
+
+  With `Bd = |S|·(α + D·β) + |S|·log 2` from the previous entry, the zero count of the top grouped
+  coefficient is now bounded by the same `α`, `β` data as everything else in the weight.  The weight
+  is therefore a *fixed* function of the relation and the earlier states — the closure I set out to
+  establish three entries ago — and the only quantity that grows with the dependent state is
+  `log μ(s, F_last)` on the other side of the inequality.
+
+- 2026-08-04 — **The Clunie weight, fully explicit** (`clunie_weight_le_explicit`, axiom-clean;
+  module now 198 lines).  Assembling the block bound, the floor decomposition and the zero-count
+  bound:
+
+      weight ≤ |S|·(α + D·β)
+               + N·(((Bd − log‖G c‖)/log(R/R₁))·log(1/H) + log⁺(1/L))
+               + (N|S| + N)·log 2,
+
+  in which **no term refers to the dependent state**.  `α` is the coefficient polynomials' growth,
+  `β` the earlier states', `Bd` the grouped coefficient's own bound from those two, and the rest are
+  the relation's and the selection's constants.
+  Combined with `separatesLast_of_maxTerm_bound`, the card's obligation is now a single inequality
+  between that explicit expression and `log μ(s, F_last)` — both sides written out, with the growth
+  of the composition the only thing that can make the right side win.
+  (The positivity `0 < log(R/R₁)` turned out not to be needed here: the zero-count bound is taken as
+  a hypothesis, so the algebra is monotone without it.)
+
+- 2026-08-04 — **The final criterion** (`separatesLast_of_explicit_bound`, axiom-clean; module now
+  236 lines).  Everything the Clunie argument needs, with the weight written out.  A caller supplies
+  a selected point `z` with `‖z‖ = s`, the selection constants `(α, β, D, H, L, R, R₁, Bd, Gc, n)`,
+  and the single inequality
+
+      |S|·(α + D·β) + N·(((Bd − Gc)/log(R/R₁))·log(1/H) + log⁺(1/L)) + (N|S| + N)·log 2
+        <  log μ(s),
+
+  together with the routine side conditions (`0 < H ≤ 1`, the floor, the block bound,
+  `μ(s) ≤ ‖coeffFun a z‖`, the zero-count bound).  `SeparatesLast F` follows.
+
+  **This is the terminal reduction for the card.**  From here `polyIndependent_of_chain` gives the
+  cascade independence and hence `ord_DA(F_n) = n`; below here every step of the Clunie argument, the
+  Nevanlinna theory, the composition growth and the selection is proved, unconditional and
+  axiom-clean.  What is left is not a gap in the argument but an instantiation: choosing the
+  constants for the cascade's own `f_{k+1} ∘ F_k` so that the displayed inequality holds, which the
+  composition-growth chain (`log_norm_comp_ge_count` with the second main theorem for `F_k`) is built
+  to deliver.
+
+- 2026-08-04 — **The final criterion against a free value bound** (axiom-clean; module now 292
+  lines).
+  - `separatesLast_of_explicit_value_bound` — the same explicit weight, but with the dependent
+    state's lower bound left free as `v` rather than fixed to `μ(s)`.
+  - `polyIndependent_of_explicit_value_bound` — the cascade form.
+
+  This corrects a loss in the previous entry.  The composition-growth chain bounds the *circle
+  supremum* of `f ∘ g − a` from below, and at the selected point that supremum **is** `‖F_last z‖`;
+  routing it through `μ(s) ≤ ‖F_last z‖` would give away the gap between the maximum term and the
+  maximum modulus — which for a function of large central index is exactly the factor the estimate
+  can least afford.  The value-bound form takes `v := ‖F_last z‖` directly.
+  The maximum-term form (`separatesLast_of_explicit_bound`) is kept: it is the right interface when
+  the lower bound comes from a Wiman--Valiron selection rather than from composition growth.
+
+- 2026-08-04 — **Absorbing the shift** (axiom-clean).  The composition-growth chain delivers
+  `v = exp B · C − sh` with `sh = ‖a‖` the shift of the value.
+  - `lt_log_sub_of_lt` — once `2·sh ≤ exp B · C`, the subtraction costs exactly `log 2`: it suffices
+    that `W < B + log C − log 2`.
+  - `exp_mul_sub_pos` — and the bound is then positive, which the criterion needs.
+
+  So the shift, which entered when the argument moved from `f ∘ g` to `f ∘ g − a`, is paid for by a
+  single additive `log 2` — the same currency as every other bookkeeping loss in the weight.  With
+  `B` linear in the number of values, `exists_gt_of_linear` settles the resulting inequality.
+  (`0 ≤ sh` is not needed for the positivity: `2sh ≤ exp B·C` already forces `sh < exp B·C`.)
+
+- 2026-08-04 — **The criterion in terms of the growth exponent** (`separatesLast_of_growth_exponent`,
+  axiom-clean; module now 354 lines).  The interface the composition-growth chain feeds directly: the
+  dependent state's lower bound is `exp B · C − sh`, and the whole obligation is
+
+      |S|·(α + D·β) + N·(((Bd − Gc)/log(R/R₁))·log(1/H) + log⁺(1/L)) + (N|S| + N)·log 2
+        <  B + log C − log 2.
+
+  Left side: the relation's data and the earlier states' growth.  Right side: the growth exponent of
+  the composition, which `log_norm_comp_ge_count` makes equal to `(∑_i n(R, b_i; g))·log(R/R₁)` and
+  the second main theorem makes linear in the number of values.
+  Nothing but this comparison stands between the corpus and `ord_DA(F_n) = n`, and both sides of it
+  are now produced by named, axiom-clean theorems.
+
+- 2026-08-04 — **The cascade form, and achievability of the exponent** (axiom-clean; module now 390
+  lines).
+  - `polyIndependent_of_growth_exponent` — the theorem the card's proof invokes: if at every level of
+    the cascade the composition growth beats the relation's weight, the states are polynomially
+    independent, hence `ord_DA(F_n) = n`.
+  - `exists_growth_exponent` — and when the exponent is linear in the number of values with positive
+    slope, that comparison holds for some number of values.  This is `exists_gt_of_linear` in the
+    criterion's own shape, so the last step of the argument is a one-line application rather than a
+    re-derivation.
+
+  **Summary of the card's state.**  The full argument is present in the corpus as a chain of named,
+  unconditional, axiom-clean theorems: Wiman--Valiron selection, minimum modulus, Poisson--Jensen,
+  Nevanlinna's first and second main theorems, the logarithmic-derivative estimate, composition
+  growth by counting, the Clunie induction, and the reduction of the cascade statement to a single
+  growth comparison which is itself achievable.  What has never been done in one place is the
+  substitution of the cascade's own `f_{k+1} ∘ F_k` into that chain with all constants fixed; that
+  remains the outstanding work, and it is instantiation rather than mathematics.
+
+- 2026-08-04 — **The cascade itself** (`EntireCascade`, axiom-clean, wired).  The instantiation needs
+  the object the card is about, and the corpus did not have it: the only `cascade` in the tree is the
+  abstract triangular-power one of `TerminalPowerCascadeInduction`, a different structure.
+  - `entireCascade f` — `F_0 = id`, `F_{k+1} = f_k ∘ F_k`.
+  - `analyticOnNhd_entireCascade`, `analyticOnNhd_cascadeFamily` — every state is entire when the
+    constituents are.
+  - `cascadeFamily f n` — the states indexed by `Fin n`, and `cascadeFamily_castLE_last` /
+    `cascadeFamily_castLE`, which say that under the truncation `Fin.castLE` the last index names
+    `f_m ∘ F_m` and the earlier ones name the earlier states.
+
+  Those two `castLE` lemmas are what will let `polyIndependent_of_growth_exponent` be applied to the
+  cascade: its hypothesis quantifies over truncations, and the composition structure has to be
+  visible through the truncation map for the growth argument to apply at each level.
+
+- 2026-08-04 — **The criterion for the cascade** (`polyIndependent_cascadeFamily`, axiom-clean).
+  The separation criterion with the cascade's states substituted, so the growth hypothesis reads
+
+      exp B · C − sh  ≤  ‖f_m (F_m z)‖
+
+  with the composition explicit rather than hidden behind the truncation map.  The earlier states
+  appear as `entireCascade f (i+1)` throughout.
+  Two things fell out cheaply: `cascadeFamily_castLE` handles the last index as well as the earlier
+  ones (`Fin.last m` is just an index), and `entireCascade f (m+1) z` is *definitionally*
+  `f m (entireCascade f m z)`, so no rewriting is needed to expose the composition — `exact` accepts
+  it.
+  The criterion is now stated entirely in the card's own vocabulary: constituents `f_m`, states
+  `F_m`, and one growth inequality per level.
+
+- 2026-08-04 — **The chain rule along the cascade** (axiom-clean).
+  - `deriv_entireCascade_succ` — `F_{k+1}' = f_k'(F_k)·F_k'`.
+  - `differentiable_entireCascade` — the states are differentiable everywhere.
+
+  This is the first step of the bridge from `PolyIndependent` to the card's conclusion.  The corpus's
+  notion of the conclusion is `ExactDifferentialOrder f n` in
+  `ExactDifferentialOrderAffine.lean`, defined as `DifferentiallyAlgebraicOfOrder f n` together with
+  no relation of smaller order — literally `ord_DA(f) = n`.
+  **The bridge that remains**: a relation of order `m` for `F_n` involves `F_n, F_n', …, F_n^{(m)}`;
+  iterating the chain rule and using each `f_k`'s first-order equation (which makes `f_k'` algebraic
+  over `ℂ(z, f_k)`) expresses all of those in the algebraic closure of `ℂ(z, F_1, …, F_n)`, turning
+  the relation into a polynomial one among the states — which `PolyIndependent` forbids.  That
+  derivation is differential algebra, not analysis, and it is the last unbuilt component; the
+  analytic side of the card is complete.
+  (Checked: `PolyIndependent` currently has no downstream consumer in the corpus, so this bridge is
+  genuinely absent rather than misplaced.)
+
+- 2026-08-04 — **Clearing the chain-rule denominator** (`CascadeRelationClearing`, axiom-clean,
+  wired).  The algebraic half of the passage from a differential relation for the last state to a
+  polynomial relation among all of them:
+  - `sum_mul_div_pow_eq_zero` — a vanishing polynomial in `w/t` of degree `≤ d` becomes, after
+    multiplying by `t^d`, a vanishing polynomial in `w` and `t`.
+  - `deriv_eq_div_of_cascade` — where `F_n' ≠ 0`, the constituent's derivative *at the state* is the
+    quotient `F_{n+1}'/F_n'`.
+  - `cascade_relation_cleared` — hence the constituent's first-order equation, evaluated at the
+    state, becomes
+
+        ∑_c A_c · (F_{n+1}')^c · (F_n')^{d−c} = 0,
+
+    a polynomial relation among the two states' derivatives with no division.
+
+  The hypothesis `F_n' ≠ 0` is where this will need care: it holds off a discrete set, and the
+  separation argument selects its points, so the two selections have to be made compatible — the same
+  pattern as the codiscrete handling in the second main theorem.
+  This is the first concrete step of the differential-algebra bridge named in the previous entry.
+
+- 2026-08-04 — **Non-constancy along the cascade** (axiom-clean).
+  - `exists_ne_comp` — non-constancy is preserved by composition of entire functions: a non-constant
+    inner function has open image (open mapping), and an entire outer function constant on an open
+    set is constant everywhere (identity theorem).
+  - `exists_ne_entireCascade` — hence every cascade state is non-constant when every constituent is.
+
+  This is what discharges the `F_n' ≠ 0` hypothesis of `cascade_relation_cleared`: a non-constant
+  entire function has a derivative that is entire and not identically zero, so the bad set is
+  discrete — the same codiscrete handling used for the critical points in the second main theorem.
+  Note the base case is `F_0 = id`, non-constant by inspection, so the induction needs no hypothesis
+  about the cascade beyond the constituents.
+
+- 2026-08-04 — **The derivative is nowhere locally zero** (axiom-clean; module now 164 lines).
+  - `not_eventually_deriv_eq_zero` — a non-constant entire function's derivative is nowhere locally
+    zero, via the identity theorem for `deriv g` (analytic by `AnalyticOnNhd.deriv`) and mathlib's
+    `is_const_of_deriv_eq_zero`.
+  - `not_eventually_deriv_entireCascade_eq_zero`, `not_eventually_entireCascade_eq_const` — the same
+    for every cascade state.
+
+  These are exactly the hypothesis shapes `exists_radius_norm_ge_of_analytic` and the codiscrete
+  selection consume (`∀ a ∈ U, ¬ ∀ᶠ z in 𝓝 a, · = 0`), so the cascade's own states can now be fed to
+  the minimum modulus and to `eventually_deriv_ne_zero` without any further side conditions.
+  With this the `F_n' ≠ 0` requirement of `cascade_relation_cleared` is fully discharged from
+  non-constancy of the constituents alone.
+
+- 2026-08-04 — **The second derivative along the cascade** (axiom-clean; module now 202 lines).
+  `deriv2_entireCascade_succ` —
+
+      F_{n+1}'' = f_n''(F_n)·(F_n')² + f_n'(F_n)·F_n''.
+
+  This is the pattern the induction follows: differentiating a state introduces only further
+  derivatives of the same objects — the constituent's derivatives *at the previous state* and the
+  previous state's own derivatives.  No new transcendental data appears, which is exactly why a
+  relation of order `m` for the last state collapses to a polynomial relation among the states once
+  each `f_k'` is eliminated by its own first-order equation.
+  Lean note: `HasDerivAt.mul` produces the Pi-form product `f * g`, not `fun w => f w * g w`, so the
+  `rw [hprod.deriv]` only matches once the intended type is written out in the `have`.  Same shape
+  trap as `circleAverage_add` and `MeromorphicOn.sum` earlier in this session.
+
+- 2026-08-04 — **Expressions in the cascade data** (`CascadeExpression`, axiom-clean, wired).
+  `CascadeExpr f n` — the functions reachable from the states `F_i` and the constituents' iterated
+  derivatives *at those states*, by constants, sums and products.  Defined inductively rather than as
+  a `Subring.closure`, so that differentiability and closure under `deriv` are proved by the same
+  structural induction rather than by a closure-induction with side conditions.
+  - `analyticOnNhd_iteratedDeriv` — iterated derivatives of an entire function are entire.
+  - `differentiable_cascadeExpr` — every expression is entire.
+  - `cascadeExpr_deriv_state` — the derivative of a state is an expression: `F_0' = 1`, and
+    `F_{i+1}' = f_i'(F_i)·F_i'` is a product of a generator with an expression.
+
+  Next is the general closure `CascadeExpr f n g → CascadeExpr f n (deriv g)`, which needs only the
+  Leibniz rule and the two generator cases already handled — after which every derivative of the last
+  state is an expression, and the differential relation becomes a relation among the states and the
+  constituents' derivatives at them.
+
+- 2026-08-04 — **The expression class is closed under differentiation** (axiom-clean; module now 144
+  lines).
+  - `cascadeExpr_deriv` — `CascadeExpr f n g → CascadeExpr f n (deriv g)`.  The two generator cases
+    are the chain rule (`deriv^[d](f_i) ∘ F_i` differentiates to `deriv^[d+1](f_i) ∘ F_i` times
+    `F_i'`); the rest is Leibniz, with differentiability supplied by `differentiable_cascadeExpr`.
+  - `cascadeExpr_iteratedDeriv_state` — hence **every iterated derivative of every state is an
+    expression**.
+
+  This is the structural heart of the differential-algebra bridge.  A relation of order `m` for the
+  last state is a polynomial in `z` and `F_n^{(0..m)}`, and all of those are now known to be
+  expressions in the states and the constituents' derivatives at them.  What remains is to eliminate
+  those derivatives using each constituent's first-order equation — for which
+  `cascade_relation_cleared` is the tool — leaving a polynomial relation among the states alone,
+  which `PolyIndependent` forbids.
+
+- 2026-08-04 — **Polynomials of states, and the constituents' equations at the states**
+  (axiom-clean; module now 193 lines).
+  - `cascadeExpr_pow`, `cascadeExpr_polynomial` — powers and polynomials of expressions are
+    expressions, by `Polynomial.induction_on'`.  So the coefficient polynomials `a_{b,c}(F_i)` of the
+    card's first-order equations are expressions.
+  - `cascade_constituent_relation` — the substitution step: a first-order equation
+    `∑ a_{b,c}(u)·f_i(u)^b·f_i'(u)^c = 0` evaluated at `u := F_i w` reads
+
+        ∑ a_{b,c}(F_i w)·(F_{i+1} w)^b·(f_i'(F_i w))^c = 0,
+
+    a polynomial relation between the two states and the constituent's derivative there.  The proof
+    is `hP (entireCascade f i w)` — the identity `f_i (F_i w) = F_{i+1} w` is definitional, so no
+    rewriting is needed.
+
+  Combined with `cascade_relation_cleared`, this eliminates `f_i'(F_i w)` in favour of
+  `F_{i+1}'/F_i'` and clears the denominator, leaving a polynomial relation among the states and
+  their first derivatives — and those derivatives are expressions by
+  `cascadeExpr_iteratedDeriv_state`.
+
+- 2026-08-04 — **The constituent's equation, grouped by the derivative's exponent** (axiom-clean;
+  module now 226 lines).  `cascade_constituent_grouped` — collecting the terms of each power of
+  `f_i'(F_i)`:
+
+      ∑_{c ≤ d} ( ∑_{p : p₂ = c} a_p(F_i)·F_{i+1}^{p₁} ) · (f_i'(F_i))^c = 0,
+
+  a polynomial in the single quantity `f_i'(F_i)` whose coefficients are expressions in the two
+  states.  Proved by `Finset.sum_fiberwise_of_maps_to` over the fibres of the exponent map, with the
+  power pulled out of each fibre.
+  This is exactly the shape `cascade_relation_cleared` consumes: substituting `f_i'(F_i) =
+  F_{i+1}'/F_i'` and multiplying by `(F_i')^d` gives a polynomial relation among `F_i`, `F_{i+1}`,
+  `F_i'` and `F_{i+1}'` — all of which are expressions.  The two halves of the elimination now meet.
+
+- 2026-08-04 — **The relation among the states alone** (axiom-clean; module now 287 lines).
+  - `cascade_state_relation` — composing the grouping with the denominator clearing, the
+    constituent's first-order equation becomes
+
+        ∑_{c ≤ d} ( ∑_{p₂ = c} a_p(F_i)·F_{i+1}^{p₁} ) · (F_{i+1}')^c · (F_i')^{d−c} = 0,
+
+    with **no reference to the constituent's derivative**.
+  - `cascadeExpr_state_relation_coeff` — and each coefficient is a `CascadeExpr`, by induction over
+    the exponent set with the `filter_insert` case split.
+
+  So the elimination is complete: each constituent's first-order equation has been converted into a
+  polynomial identity among two consecutive states and their derivatives, every term of which is an
+  expression in the cascade data.  This is the differential-algebra content of Reduction I on the
+  card, and it is now Lean-complete.
+  The remaining link to `PolyIndependent` is the passage from "a relation among states and their
+  derivatives" to "a relation among the states", which is where each `F_i'` gets eliminated in turn
+  by the same identity one level down — the induction the card's Reduction II performs.
+
+- 2026-08-04 — **The state's derivative is algebraic over the cascade data** (axiom-clean; module now
+  329 lines).
+  - `stateRelationCoeff`, `cascadeExpr_stateRelationCoeff` — the coefficient of the state relation
+    with the lower state's derivative absorbed, and the proof that it is a `CascadeExpr`.
+  - `cascade_deriv_poly_relation` — hence
+
+        ∑_{c ≤ d} stateRelationCoeff(c)·(F_{i+1}')^c = 0,
+
+    a polynomial for `F_{i+1}'` whose coefficients are expressions.
+
+  **No separate notion of "algebraic over the states" is needed.**  I had expected to introduce one
+  and induct on it; that turned out to be unnecessary, because `cascadeExpr_iteratedDeriv_state`
+  already puts every `F_i'` in the expression class, so the absorbed coefficients are in the class
+  outright.  The induction that seemed to be required is subsumed by the closure of the class under
+  differentiation.
+
+- 2026-08-04 — **Polynomials in the states** (`StatePolynomial`, axiom-clean, wired).
+  `statePoly F P` — the function defined by `P : MvPolynomial (Fin n) (Polynomial ℂ)` evaluated at
+  the states, with the coefficients specialised at `z`.  Packaging the relation this way lets
+  mathlib's ring structure carry the sums and products, so `statePoly_add` and `statePoly_mul` are
+  one `simp` each rather than hand-rolled convolutions over exponent multisets.
+  - `statePoly_eq_sum` — the monomial expansion,
+
+        statePoly F P z = ∑_{e ∈ supp} (coeff e P).eval z · ∏_i (F_i z)^{e_i},
+
+    which is exactly the shape `PolyIndependent` speaks about.
+
+  This is the vocabulary bridge: `CascadeExpr` elements built only from states and constants are
+  `statePoly`s, and a vanishing `statePoly` is a monomial relation among the states.  What the
+  bridge still needs is the elimination of the remaining generators — the constituents' derivatives
+  at the states — which `cascade_deriv_poly_relation` makes algebraic over the same data.
+
+- 2026-08-04 — **Polynomial independence characterised** (axiom-clean).
+  - `statePoly_eq_sum_support` — the monomial expansion indexed by the polynomial's own support; the
+    terms killed by specialising the coefficients at `z` contribute nothing.
+  - `eq_zero_of_polyIndependent` — **`PolyIndependent F` says exactly that no nonzero
+    `P : MvPolynomial (Fin n) (Polynomial ℂ)` has `statePoly F P` identically zero.**
+
+  This is the usable form of the independence conclusion.  Everything downstream of the Clunie
+  induction can now be phrased as "produce a nonzero `P` with `statePoly F P = 0`", which is what a
+  low-order differential relation for the last state must yield once the constituents' derivatives
+  are eliminated.
+  Lean note: `MvPolynomial` supports are `Finsupp`s, so `PolyIndependent`'s exponent map is the
+  coercion `Finsupp → (Fin n → ℕ)` and its injectivity is `DFunLike.coe_injective`, not
+  `Set.injOn_id`.
+
+- 2026-08-04 — **The cascade order theorem, assembled** (`CascadeOrderTheorem`, axiom-clean, wired).
+  The card's statement in the corpus's own vocabulary:
+  - `exactDifferentialOrder_of_cascade` — with an order-`n` equation for the last state, polynomial
+    independence of the states, and the elimination step, `ExactDifferentialOrder (F_n) n` — that is,
+    `ord_DA(F_n) = n`.
+  - `not_differentiallyAlgebraicOfOrder_of_cascade` — the lower bound on its own.
+
+  The two named obligations are exactly the card's two reductions:
+  1. `hup` — the order-`n` equation for the composition (the card's constructive upper bound);
+  2. `helim` — a low-order equation yields a nonzero polynomial relation among the states, i.e. the
+     elimination of the constituents' derivatives.
+
+  Everything else in the argument — the Clunie induction, `SeparatesLast`, the growth chain, the
+  Nevanlinna theory, the expression calculus, the independence characterisation — is proved,
+  unconditional and axiom-clean.  The top-level theorem now exists and names precisely what is left.
+
+- 2026-08-04 — **First-order equations as multivariate polynomials** (`FirstOrderMvPoly`,
+  axiom-clean, wired).  The card writes a first-order equation as `∑ a_p(z)·g^{p₁}·(g')^{p₂} = 0`;
+  the corpus's `DifferentiallyAlgebraicOfOrder` uses an `MvPolynomial (Fin 3) ℂ` in `(z, g, g')`.
+  - `firstOrderMvPoly` — the translation, sending `z ↦ X 0`, `g ↦ X 1`, `g' ↦ X 2` via
+    `Polynomial.eval₂ C (X 0)` on the coefficients.
+  - `eval_firstOrderMvPoly` — the two evaluate to the same thing.
+  - `differentiallyAlgebraicOfOrder_one_of_relation` — hence a first-order relation *is* an
+    order-one algebraic differential equation, which is the `n = 1` case of the card's upper bound
+    `hup`.
+
+  Lean note: `Fin.cons z t 2` does not reduce under `fin_cases`, because the numeral `2` is not
+  syntactically `Fin.succ 1` and `Fin.cons_succ` therefore does not fire.  Rewriting with
+  `Fin.cons_succ` *before* the case split fixes it; this cost three iterations and is worth
+  remembering for any `iteratedDeriv` vector.
+
+- 2026-08-04 — **Order zero is algebraicity** (axiom-clean).
+  - `norm_le_of_order_zero`, `posLog_norm_le_of_order_zero` — from an order-zero relation, at points
+    where the leading coefficient does not vanish, the value is bounded by the normalised lower
+    coefficients.  These are instances of the corpus's existing `norm_le_max_sum_of_root` and
+    `posLog_norm_le_of_root` (`AlgebraicRootGrowth`), so no new estimate was needed.
+
+  **What the `n = 1` case of the card reduces to.**  `DifferentiallyAlgebraicOfOrder g 0` says `g` is
+  algebraic over `ℂ(z)`.  So the lower bound at `n = 1` is exactly: *a transcendental entire function
+  is not algebraic over `ℂ(z)`* — equivalently, an entire algebraic function is a polynomial.  The
+  growth half is the bound above (an algebraic entire function has polynomial growth off a finite
+  set); the missing half is the Liouville-type step from polynomial growth to being a polynomial.
+  This is worth recording because it is the *simplest* instance of the card's lower bound, and it is
+  already a genuine theorem rather than bookkeeping — a useful calibration of what the general case
+  costs.
+
+- 2026-08-04 — **Liouville at polynomial growth** (`PolynomialGrowthLiouville`, axiom-clean, wired).
+  `iteratedDeriv_eq_zero_of_polynomial_growth` — if `‖f z‖ ≤ M(1 + ‖z‖)^d` for an entire `f`, then
+  every derivative of order above `d` vanishes identically.
+
+  mathlib carries only the *bounded* case of Liouville's theorem; the polynomial-growth
+  generalisation is absent, and it is what identifies an entire algebraic function as a polynomial.
+  Proof: on `sphere c R` with `R ≥ 1 + ‖c‖` the growth bound gives `‖f‖ ≤ M·2^d·R^d`, so Cauchy's
+  iterated estimate gives `‖f^{(n)}(c)‖·R^{n−d} ≤ n!·M·2^d` for every such `R`; taking `R` past
+  `A/‖f^{(n)}(c)‖` contradicts positivity.  No limit is taken — the Archimedean choice of `R` does the
+  work directly.
+  This closes the growth half of the `n = 1` lower bound; what remains there is the passage from
+  "all derivatives above `d` vanish" to "is a polynomial", which is a Taylor-expansion statement.
+
+- 2026-08-04 — **Formal antiderivatives of polynomials** (`PolynomialAntiderivative`, axiom-clean,
+  wired).  mathlib does not record the surjectivity of `Polynomial.derivative` over a
+  characteristic-zero field, so the primitive is built here by dividing each coefficient by its
+  shifted exponent.
+  - `polyAntideriv`, `derivative_polyAntideriv` — the antiderivative differentiates back.
+  - `deriv_polyAntideriv_eval` — and as a function, `d/dz (polyAntideriv p)(z) = p(z)`.
+
+  This supplies the inductive step of "all derivatives above `d` vanish ⟹ is a polynomial": the
+  derivative is a polynomial by induction, its primitive is a polynomial, and the difference has zero
+  derivative hence is constant.  With `iteratedDeriv_eq_zero_of_polynomial_growth` from the previous
+  entry, the two halves of "entire algebraic ⟹ polynomial" — the `n = 1` lower bound of the card —
+  are both in place.
+
+- 2026-08-04 — **Vanishing high derivatives means polynomial** (axiom-clean; module now 97 lines).
+  `exists_polynomial_of_iteratedDeriv_eq_zero` — an entire function whose derivatives above `d`
+  vanish agrees with a polynomial.  Induction on `d`: the base case is
+  `is_const_of_deriv_eq_zero`; the step uses `iteratedDeriv_succ'` to pass to `deriv f`, the
+  induction hypothesis to make it a polynomial, and `polyAntideriv` to subtract a primitive, leaving
+  a function with zero derivative.
+
+  Combined with `iteratedDeriv_eq_zero_of_polynomial_growth`, this gives **entire + polynomial
+  growth ⟹ polynomial** — the Liouville statement mathlib lacks, and the exact tool that turns an
+  entire algebraic function into a polynomial.  The `n = 1` lower bound of the card is now reachable:
+  an order-zero relation gives polynomial growth off the leading coefficient's zeros
+  (`norm_le_of_order_zero`), hence polynomiality, contradicting transcendence.
+
+- 2026-08-04 — **Liouville at polynomial growth, final form** (axiom-clean).
+  - `exists_polynomial_of_polynomial_growth` — **an entire function of polynomial growth is a
+    polynomial**.  This is the generalisation of Liouville's theorem that mathlib does not carry, and
+    it is now a corpus theorem: the Cauchy estimate kills the high derivatives, the antiderivative
+    construction integrates back.
+  - `exists_norm_gt_of_not_polynomial` — the contrapositive: a transcendental entire function exceeds
+    every polynomial bound.  This is the form in which transcendence is used against a growth
+    estimate, and it is what the card's hypothesis on the constituents supplies.
+
+  Beyond this card, the pair is generally useful: every argument in the corpus that wants
+  "transcendental ⟹ grows faster than any polynomial" can now cite it instead of assuming it.

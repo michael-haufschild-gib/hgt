@@ -24,11 +24,13 @@ theorem deningerConj_letter_word (U : List (Σ i, G i)) (hlen2 : 2 ≤ U.length)
     (halt : List.IsChain (fun p q : Σ i, G i => p.1 ≠ q.1) U)
     (hcyc : ∀ p ∈ U.getLast?, ∀ q ∈ U.head?, p.1 ≠ q.1)
     (i : ι) (x : G i) (hx : x ∉ (φ i).range) :
-    (∃ (t : ℕ) (m : H), t ≤ U.length ∧
+    (∃ (t : ℕ) (m : H) (e : ℤ), t ≤ U.length ∧
       PushoutI.of (φ := φ) i x * deningerLetterProd (φ := φ) U *
           (PushoutI.of (φ := φ) i x)⁻¹ =
         PushoutI.base φ m * deningerLetterProd (φ := φ) (U.rotate t) *
-          (PushoutI.base φ m)⁻¹) ∨
+          (PushoutI.base φ m)⁻¹ ∧
+      deningerLetterProd (φ := φ) (U.take t) * (PushoutI.base φ m)⁻¹ *
+          PushoutI.of (φ := φ) i x = deningerLetterProd (φ := φ) U ^ e) ∨
     (∃ W : List (Σ i, G i),
       PushoutI.of (φ := φ) i x * deningerLetterProd (φ := φ) U *
           (PushoutI.of (φ := φ) i x)⁻¹ = deningerLetterProd (φ := φ) W ∧
@@ -67,11 +69,18 @@ theorem deningerConj_letter_word (U : List (Σ i, G i)) (hlen2 : 2 ≤ U.length)
     have hqeta : (⟨q.1, q.2⟩ : Σ i, G i) = q := rfl
     by_cases hmem : x * q.2 ∈ (φ q.1).range
     · obtain ⟨k, hk⟩ := hmem
-      refine Or.inl ⟨1, k, by omega, ?_⟩
-      have := deningerConj_head_merge (φ := φ) q.1 q.2 rest x k hk.symm
-      rw [hqeta] at this
-      rw [hU]
-      exact this
+      refine Or.inl ⟨1, k, 0, by omega, ?_, ?_⟩
+      · have := deningerConj_head_merge (φ := φ) q.1 q.2 rest x k hk.symm
+        rw [hqeta] at this
+        rw [hU]
+        exact this
+      · have hbase : PushoutI.base φ k = PushoutI.of (φ := φ) q.1 (x * q.2) := by
+          rw [← hk, PushoutI.of_apply_eq_base]
+        have htake : U.take 1 = [q] := by rw [hU, List.take_succ_cons, List.take_zero]
+        rw [htake, hbase, zpow_zero, deningerLetterProd_cons, deningerLetterProd_nil, mul_one,
+          ← map_inv, ← map_mul, ← map_mul]
+        show PushoutI.of (φ := φ) q.1 (q.2 * (x * q.2)⁻¹ * x) = 1
+        rw [show q.2 * (x * q.2)⁻¹ * x = 1 by group, map_one]
     · refine Or.inr ⟨(⟨q.1, x * q.2⟩ : Σ i, G i) ::
         (rest ++ [(⟨q.1, (x : G q.1)⁻¹⟩ : Σ i, G i)]), ?_, ?_, ?_, ?_, ?_, ?_⟩
       · rw [hU, deningerLetterProd_cons, deningerLetterProd_cons, deningerLetterProd_append,
@@ -126,11 +135,19 @@ theorem deningerConj_letter_word (U : List (Σ i, G i)) (hlen2 : 2 ≤ U.length)
         exact hr
       by_cases hmem : p.2 * (x : G p.1)⁻¹ ∈ (φ p.1).range
       · obtain ⟨k, hk⟩ := hmem
-        refine Or.inl ⟨U₀.length, k⁻¹, by rw [hUp]; simp, ?_⟩
-        have := deningerConj_last_merge (φ := φ) p.1 p.2 U₀ x k hk.symm
-        rw [hpeta] at this
-        rw [hUp]
-        exact this
+        refine Or.inl ⟨U₀.length, k⁻¹, 1, by rw [hUp]; simp, ?_, ?_⟩
+        · have := deningerConj_last_merge (φ := φ) p.1 p.2 U₀ x k hk.symm
+          rw [hpeta] at this
+          rw [hUp]
+          exact this
+        · have hbase : (PushoutI.base φ k⁻¹)⁻¹ = PushoutI.of (φ := φ) p.1 (p.2 * (x : G p.1)⁻¹) := by
+            rw [← hk, PushoutI.of_apply_eq_base, ← map_inv, inv_inv]
+          have htake : U.take U₀.length = U₀ := by rw [hUp, List.take_left]
+          rw [htake, hbase, zpow_one, hUp, deningerLetterProd_snoc, mul_assoc, ← map_mul]
+          show deningerLetterProd (φ := φ) U₀ *
+              PushoutI.of (φ := φ) p.1 (p.2 * (x : G p.1)⁻¹ * x) =
+            deningerLetterProd (φ := φ) U₀ * PushoutI.of (φ := φ) p.1 p.2
+          rw [show p.2 * (x : G p.1)⁻¹ * x = p.2 by group]
       · refine Or.inr ⟨(⟨p.1, x⟩ : Σ i, G i) ::
           (U₀ ++ [(⟨p.1, p.2 * (x : G p.1)⁻¹⟩ : Σ i, G i)]), ?_, ?_, ?_, ?_, ?_, ?_⟩
         · rw [hUp, deningerLetterProd_cons, deningerLetterProd_append, deningerLetterProd_snoc,

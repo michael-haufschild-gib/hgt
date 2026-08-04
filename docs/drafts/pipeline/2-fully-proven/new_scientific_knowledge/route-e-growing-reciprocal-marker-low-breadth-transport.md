@@ -21,7 +21,10 @@
   Moebius correlations at the `L-1` shifts `h < L`, and rules out both non-arithmetic routes to it; the two-variable squarefree sieve
   (`Sieve/ShiftedCongruenceCount.lean`, `Sieve/JointCongruence*.lean`,
   `Sieve/TruncatedPair*.lean`) evaluates the shifted `mu^2` correlation unconditionally;
-  Menon's mean-square input `(15)` remains the cited published theorem
+  step 1 is the single theorem `Sieve.card_le_good_add_correlation`, whose only non-elementary
+  hypothesis is a bound on the `L-1` shifted Moebius correlations `sum_n mu(n)mu(n+h)`; the
+  mean-square input `(15)` is *derived* from it, not assumed, and the prime number theorem is not
+  used at all (the marker supply comes from Mertens via `Sieve/PrimeWindow.lean`)
 
 ## Result
 
@@ -3756,3 +3759,76 @@ literature-form bound.
 Recorded because the two objects are genuinely different and the difference was previously
 unexamined — the weighted form is what the identity produces, the unweighted form is what any
 citable estimate would supply.
+
+### Formal layer — the variance from an unweighted correlation bound
+
+`formal/GaloisForLFunctions/RHTower/Sieve/UnweightedCorrelation.lean`.
+
+- `sum_normSq_window_le_of_unweighted` — **`∑_{x<X}‖∑_{x<n≤x+L} a_n‖² ≤ L∑_n‖a_n‖² + 2L(Lε + (2L+1)L)`**
+  from `|∑_{n ∈ bulk} a_n conj a_{n+h}| ≤ ε` at the shifts `1 ≤ h < L`, and nothing else.
+
+Unconditional as an implication (axioms `[propext, Classical.choice, Quot.sound]`).
+
+This is the reduction in the form a citable theorem can actually discharge. Earlier versions stated
+the hypothesis in the kernel-weighted form the exact identity produces; no result in the literature is
+phrased that way. Here the hypothesis is the plain correlation sum — what a Chowla/Elliott-type
+estimate bounds — with the conversion cost `(2L+1)L` per shift carried explicitly rather than hidden.
+
+The mean-square input `(6)`/`(15)` is therefore reduced, unconditionally and with explicit constants,
+to a bound on the `L−1` unweighted shifted Möbius correlations.
+
+### Formal layer — the Möbius mean square from a correlation bound
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MoebiusUnweighted.lean`.
+
+- `re_moebiusC_mul_conj` — for the real-valued μ the Hermitian pair weight is the plain product
+  `μ(n)μ(n+h)`.
+- `sum_normSq_window_moebius_le_of_correlation` — **`∑_{x<X}‖∑_{x<n≤x+L} μ(n)‖² ≤
+  L·#{n < X+L+1 : squarefree} + 2L(Lε + (2L+1)L)`** whenever `|∑_{n∈bulk} μ(n)μ(n+h)| ≤ ε` at the
+  shifts `1 ≤ h < L`.
+
+Unconditional as an implication.
+
+This is the cards' mean-square input `(6)`/`(15)` stated for μ itself, reduced with explicit
+constants to a bound on `L−1` shifted Möbius correlations — the exact statement a Chowla/Elliott-type
+theorem provides. The diagonal is the squarefree count, already estimated elementarily.
+
+The reduction is complete: no step between "correlations cancel" and "the mean square is small"
+remains unproved.
+
+### Formal layer — the mean square in the shape step 1 consumes
+
+Added to `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusUnweighted.lean`.
+
+- `normSq_sum_moebiusC_eq` — the complex window sum of μ has the real window sum as its modulus.
+- `sum_sq_moebius_le_of_correlation` — **`∑_{t<X} M(t,L)² ≤ L·Q + 2L(Lε + (2L+1)L)`** from the
+  correlation bound.
+
+Unconditional as an implication.
+
+The left side is exactly the hypothesis `hms` of `card_le_good_add_explicit`, so the two halves now
+compose: a bound on the `L−1` shifted Möbius correlations gives step 1 of the Hall-law argument
+directly, with no mean-square theorem cited in between.
+
+The bridge lemma is needed because the variance layer works with `‖·‖²` of a complex window sum while
+step 1 is stated for the real sum `M(t,L)`; they agree because μ is real-valued, but that had to be
+proved rather than assumed.
+
+### Formal layer — step 1 from a correlation bound
+
+`formal/GaloisForLFunctions/RHTower/Sieve/Step1FromCorrelation.lean`.
+
+- `card_le_good_add_correlation` — **`X ≤ #{good starts} + (L·Q + 2L(Lε + (2L+1)L))/(DL/8)² + W/θ`**,
+  `θ = ½DL − (R + L/R)`, from a bound `ε` on the `L−1` shifted Möbius correlations and the elementary
+  truncation-tail bound `W`.
+
+Unconditional as an implication.
+
+**No mean-square theorem is cited anywhere in this chain.** Step 1 of the Hall-law argument now
+follows from a bound on `∑_n μ(n)μ(n+h)` alone, with every intermediate step proved and every
+constant explicit.
+
+This is a strictly better dependency than the card's prose: the prose invokes Menon's mean-square
+theorem `(6)` and the prime number theorem; the formalization uses neither — the marker supply comes
+from Mertens (`Sieve/PrimeWindow`), and the mean square is *derived* from the correlations rather
+than assumed.

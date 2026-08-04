@@ -464,3 +464,139 @@ stabilization or a different Dirac parity.
   preserves the Fourier zero mode. Module compiles unconditionally. Remaining analytic gate is
   finite-adèlic: every actual Bruhat factor must furnish a period and locally constant profinite
   dependence, after which this theorem supplies the full strong radial landing.
+- 2026-08-03 — Finite-adèlic gate advanced from sampled periodicity to exact Haar conservation.
+  `CCMRationalProfiniteIntegerCyclicQuotient.lean` and
+  `CCMRationalIntegralFiniteAdeleCyclicQuotient.lean` prove the literal cyclic quotient laws
+  `Ẑ/NẐ ≃ ZMod N` first in product form and then on the actual integral finite-adele subgroup,
+  induced by diagonal integers rather than cardinality.  The opaque surjectivity boundary avoids
+  replaying the quotient-cardinality construction downstream.
+  `CCMRationalIntegralFiniteAdeleDiagonalDensity.lean` proves every open-subgroup coset contains a
+  literal diagonal integer and hence `DenseRange (ℤ → Ẑ)`.  A generic nonarchimedean coset-density
+  theorem reduced kernel checking from a deterministic timeout to seconds.
+  `CCMRationalIntegralFiniteAdeleCyclicHaarAverage.lean` proves exact quadrature
+  `Σ_{r mod N} ψ(r)=N∫_Ẑ ψ` for every function constant modulo `NẐ`.
+  `CCMRationalFiniteBruhatProfiniteHaarTransport.lean` proves profinite-unit Haar character one and
+  a positive denominator controlling the full translated support, not merely rational samples.
+  `CCMRationalFiniteBruhatCyclicHaarPacket.lean` consequently constructs actual residue weights
+  with the exact identity
+  `Σ_r w(r)=N·(D⁻¹∫φ)`.
+  Finally `CCMRationalAdelicPureTensorHaarDualCancellation.lean` proves the denominator-free
+  conservation law
+  `(Σ_r w(r))·Fourier(f(x/D))(0)=N·ε₁(f⊗φ)`
+  and the exact actual-orbit/periodic-trace equality. Together with literal `ε₀`, every genuine
+  profinite class-space pure tensor in both endpoint kernels has all-derivative, all-exponential
+  strong logarithmic decay. Remaining analytic landing gate is finite algebraic sums: construct a
+  common full-support denominator and common cyclic quotient, then prove the residue-Schwartz
+  family strong theorem so endpoint cancellations between tensor summands are retained. Only after
+  that may all-degree strong landing and P2 be claimed.
+- 2026-08-03 — The full analytic landing gate is closed without a pure-tensor or fiberwise
+  surrogate. `CCMRationalPeriodicResidueSchwartzPeriodRefinement.lean` proves that every periodic
+  residue-Schwartz trace refines unchanged to a product period while every residue statistic is
+  repeated by the exact period factor. `CCMRationalAdelicTensorPeriodicTracePacket.lean` then
+  constructs, by algebraic tensor induction, one exact packet for every finite tensor sum and proves
+  the conservation identities
+  `g_0(0)=epsilon_0(x)` and `sum_r Fourier(g_r)(0)=M epsilon_1(x)`. Thus cancellations between
+  distinct tensor summands survive Poisson summation. `CCMRationalFiniteBruhatProfiniteLocalConstancy.lean`
+  proves a uniform open profinite-unit stabilizer from compact fractional-integral support and the
+  tube lemma; hence the entire radial trace profile is locally constant in `Zhat^times`, not merely
+  pointwise continuous. Finally `CCMRationalAdelicTensorStrongClassSpaceLanding.lean` bundles those
+  profiles in the literal all-derivative/all-exponential-weight class-space target and proves the
+  actual reduced augmentation-kernel source lands in the strong cyclic object in every degree.
+  All modules compile unconditionally. P2's analytic landing obligation is complete. Remaining P2
+  issue is structural: the closed cyclic cokernel is not an algebra quotient, so a claimed
+  "idempotent in the cokernel cyclic module" requires a separate two-sidedness/algebra-object proof
+  or must be replaced by the correct bivariant cyclic class; this gate will be decided before any
+  kappa/Chern/Lefschetz claim.
+- 2026-08-03 — P2's structural gate has a sharp negative answer and a positive survivor.
+  `CCMRationalStrongTraceMultiplicationFracture.lean` constructs two literal Schatten-`1` matrix
+  units on `ell^2(Q^times)` as weighted shifts. Their normalized traces are `0` and `0`, while the
+  trace of their product is exactly `1`. As constant class-space fields, the first two lie in the
+  exact degree-zero strong target, but their product does not: the module proves that a constant has
+  Meyer's all-exponential-weight logarithmic decay iff it is zero. The proof is connected to the
+  literal degree-zero component of `CCMRationalStrongCyclicTarget` through the canonical one-tensor
+  presentation. Consequently the strong degree-zero submodule is neither multiplicatively closed
+  nor two-sided, and no zero-absorbing multiplication preserving representatives descends to its
+  linear quotient. Therefore a `K_0` idempotent in the closed cyclic cokernel is not merely
+  unconstructed; it is ill-typed for the exact CCM target. Positive survivor: lift `kappa` as a
+  bivariant cyclic endomorphism/Lefschetz correspondence, the categorical structure the target does
+  possess, and compare its degree-zero character after scalar Hardy realization. Module compiles
+  unconditionally; bivariant construction and realization comparison remain open.
+- 2026-08-03 — P2 comparison is now decided by a second, independent obstruction and a canonical
+  replacement. `KRealCyclicCliffordTransgression.lean` defines anti-Real morphisms of even Real
+  cyclic modules and proves the universal parity law: a cyclic morphism that is simultaneously
+  Real-even and anti-Real vanishes degreewise; multiplication of any Real-even cyclic morphism by
+  `i` produces an anti-Real cyclic morphism. `CCMRationalKappaLefschetzParityNoGo.lean` constructs a
+  concrete nonzero degree-zero strong CCM chain, proves every class-space Lefschetz translation is
+  nonzero by inverse translation, and concludes that no CCM Lefschetz correspondence can itself
+  have the anti-Real parity of `ch_0(kappa)=2e-1`. Thus direct untwisted comparison is impossible
+  even apart from multiplication fracture. The correct full-adeles bivariant cyclic survivor is
+  the Clifford transgression `i L_c`; it is anti-Real in every degree and at `c=1` squares exactly
+  to `-1`. This comparison with the CCM Lefschetz correspondence is equality on representatives,
+  not analogy. Both modules compile unconditionally. P2 is therefore solved negatively as stated,
+  with its maximal type-correct parity-shifted replacement formalized.
+- 2026-08-03 — The governing law has been strengthened from one-way fracture to an exact
+  conservation theorem. `RealCoronaLocalDetectabilityFracture.lean` now proves that a partially
+  defined operator is bounded on its invariant domain iff both involution-parity components are
+  bounded; equivalently, unboundedness occurs in at least one parity channel. The first commutator
+  is unbounded iff the odd component is unbounded. For an unbounded operator, bounded orientation
+  commutator is therefore equivalent to the exact allocation `unbounded even + bounded odd`.
+  This is the universal law behind the four problem resolutions, not a slogan extracted after the
+  applications. The strengthened module compiles to a direct olean.
+- 2026-08-03 — P1 has been closed for arbitrary local expansions rather than finite words only.
+  `PositiveLocalJetSeriesFormula` permits an arbitrary term type and a `tsum` of positive
+  commutator-jet words. Exact commutation kills every term before convergence is invoked.
+  `CompleteDivisorLocalSeriesFormula` adds every summable reflection-invariant degree-zero spectral
+  term; functional-equation pairing kills that term. Consequently no JLO/residue-shaped complete
+  local series has graded charge `2`. This is strictly stronger than the earlier finite-formula
+  no-go and compiles unconditionally.
+- 2026-08-03 — P3 is dependency-closed at universal, analytic-automorphic, and actual levels.
+  `CompleteStripRealCoronaCompactification.lean` proves that any infinite locally finite divisor in
+  the open unit strip, stable under `rho -> 1-rho`, has two infinite centered-reciprocal sectors
+  accumulating at zero, exchanged by holomorphic negation; the endpoint-entire corona is therefore
+  nonsmooth. `PositiveDegreeAutomorphicRealCoronaSmoothness.lean` removes infinitude from the
+  input: entire subquadratic growth plus a ray beating every linear slope implies infinitely many
+  zeros by the new finite-zero Hadamard rigidity theorem, while isolated-zero theory gives local
+  finiteness. `XiAutomorphicRealCoronaSmoothness.lean` and
+  `SelfDualDirichletRealCoronaSmoothness.lean` give the actual Riemann and all nontrivial primitive
+  self-dual Dirichlet instances. Every module compiles directly.
+- 2026-08-03 — `RealCoronaFourProblemsResolution.lean` is the stable, unconditional facade for the
+  governing theorem and P1--P4. It imports the actual CCM landing/multiplication/parity modules,
+  universal and actual P3 modules, and self-dual P4 variation modules. It is wired into
+  `GaloisForLFunctions.RHTower` and compiles to an olean. A theoretical manuscript has been opened
+  at `docs/drafts/manuscripts/real-corona-smoothness-detectability/main.tex`, with an exhaustive
+  `CLAIM_TRACE.md` and primary-source `LITERATURE_AUDIT.md`. Publication and hostile-review gates
+  remain open until TeX/PDF, trace-symbol, lint, axiom, and targeted-build audits pass.
+- 2026-08-03 — First hostile paper review rejected the P2 package as a recipient mismatch. The
+  existing Real-even action and Clifford transgression live on `CCMRationalStrongCyclicTarget`,
+  explicitly the unquotiented strong cyclic submodule. The actual CCM relative recipient is
+  `CCMRationalAdelicClosedRelativeCyclicModule`, quotient by closure of the reduced-source range.
+  Non-two-sidedness of the larger strong-condition submodule does not imply non-two-sidedness of
+  that closed range. Therefore the manuscript may not call the current prequotient action the CCM
+  Lefschetz correspondence or infer a closed-cokernel `K₀` obstruction from the matrix units.
+  Required open core: source translation, restriction equivariance, continuous closed-range
+  descent, descended Real structure, and a nonzero quotient witness. Full findings and the other
+  paper-scope gaps are recorded in
+  `docs/drafts/manuscripts/real-corona-smoothness-detectability/HOSTILE_REVIEW.md`.
+- 2026-08-03 — Review repair work produced two stronger unconditional results rather than hiding
+  overclaims. `KRealHom.smul_isAnti_iff_star_eq_neg` classifies every scalar Real-parity shift of a
+  nonzero Real-even cyclic morphism: `zT` is anti-Real iff `conj z = -z`. The CCM strong-target
+  specialization and facade declaration compile. Separately,
+  `DeningerMeyerStrongLogDecay.weighted_iteratedDeriv_isBounded` glues the two asymptotic halves of
+  Meyer's target into the literal global exponential-weight bound used in the paper. The human CCM
+  landing proof now includes exact periodic Poisson reflection, common-period Haar packets,
+  Schatten-1 norm transport, and all-degree total-product reduction. Manuscript remains
+  in-progress because the closed relative P2 gate is fatal.
+- 2026-08-03 — Primary-source re-audit found a deeper target error before a spurious quotient
+  witness was accepted. CCM Definition 4.9 uses the cyclic module of the **nonunital** algebra
+  `C(C_Q, L¹(H_x))`; Definition 4.10 quotients its strong cyclic submodule by the closed restriction
+  range. The provisional Lean target instead used the full cyclic bar of
+  `C(C_Q, (L¹(H_x))⁺)`. These are not the same: the latter admits class-space-dependent scalar
+  fields, so a decaying scalar Gaussian would give a nonzero cokernel class solely from a
+  unitization mismatch. That is not an arithmetic CCM class. All provisional closed-quotient
+  Real/Lefschetz theorems remain internally valid but may not be cited as Definition 4.10.
+  Required correction is now explicit: construct the global ideal-field algebra
+  `C(C_Q,L¹(H_x))`, form its single global unitization, take the augmentation-kernel cyclic
+  module, intersect it with the kernel of diagonal trace modulo `S(C_Q)`, rebuild the exact
+  restriction and graph topology, and only then descend Real/Lefschetz structure and seek an
+  arithmetic nonzero witness. A reusable module-valued trace-kernel construction will encode this
+  intersection without weakening the target.

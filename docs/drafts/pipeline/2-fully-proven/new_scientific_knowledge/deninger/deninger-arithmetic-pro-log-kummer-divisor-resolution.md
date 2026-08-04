@@ -243,8 +243,8 @@ Cartier function.”  It is:
 - [x] 1 → 2 fully-proven: stalk, colimit, pullback, and power proof
 - [x] finite-support valuation resolution encoded in Lean
 - [x] Tate-normalized power compatibility encoded in Lean
-- [ ] 2 → 3 formalized: blocked only by the log-geometric layer, which
-  mathlib cannot yet express (see Lean status)
+- [x] 2 → 3 formalized: the log-geometric layer is built from scratch and
+  the whole theorem is encoded in Lean (see Lean status)
 - [ ] 3 → 4 publication-ready: integrate with source analytic purity
 
 ## References
@@ -327,11 +327,69 @@ equations `(10)`--`(11)`.  Axiom audit for all 23 declarations:
   the Kummer boundary invariant for every nonzero exponent *exactly when* `χ(q) = q^{-1}`.  So the
   Tate normalization is forced, not chosen; multiplicity one at the prime supplies the test vector.
 
-### What cannot be stated in Lean, and why
+### The log-geometric layer landed
 
-The log-geometric layer: log structures on `Spec ℤ` and their characteristic monoids `(2)`--`(3)`,
-sheaf inverse image and the pullback `(7)`--`(8)` along Deninger's projection, and Proposition 11.7
-of Deninger's paper used for `(9)`.  mathlib has no logarithmic geometry and no inverse-image
-functor for abelian sheaves along a map of arbitrary spaces in usable form.  What is formalized is
-the arithmetic core those steps are built on — the divisor sequence and its cofinite splitting —
-so the card stays at stage 2.
+mathlib has no logarithmic geometry, so it is built from scratch here.  Axiom audit for every
+declaration below: `propext, Classical.choice, Quot.sound`.
+
+- `DeningerLogStructure.lean`, `DeningerLogTrivial.lean`, `DeningerLogDVR.lean` — prelog and log
+  structures on a commutative ring, and `DeningerLogChar`, a presentation of the characteristic
+  monoid by a monoid map whose kernel is the part lying over the units and whose fibres are its
+  orbits.  The trivial log structure has trivial characteristic monoid, and conversely; the
+  divisorial log structure of a discrete valuation ring has characteristic monoid `ℕ`, which is
+  `(12)` in its local form.
+- `DeningerGenericPointSheaf.lean` — the sheaf mechanism for an integral base: on a space with a
+  point lying in every nonempty open set, constant sections subject to a pointwise closure-stable
+  condition glue, giving sheaves of commutative monoids and of abelian groups.
+- `DeningerArithCurvePoints.lean` — the points of `Spec ℤ`: every point is the generic point or a
+  closed point, the generic point lies in every nonempty open set, and the closed points are
+  pairwise distinct, which is `(1)` (`deningerClosedPt_disjoint`).
+- `DeningerArithStructureRing.lean` — the ring of regular functions on an open set, and its units.
+- `DeningerArithDivisorialLog.lean` — `(2)`, `(3)`, `(12)`: the divisorial log structure
+  `deningerLogSub P U` of a finite set `P` of primes, `deningerArithIsLog` that it is a log
+  structure over the structure ring, and `deningerArithLogChar` that its characteristic monoid is
+  the free commutative monoid on the primes of `P` in the open set.  Surjectivity is unique
+  factorization; the fibre condition is the unique decomposition `u p^n`.
+- `DeningerArithLogSheaves.lean`, `DeningerPrimeResidueSheaf.lean`,
+  `DeningerLogCharacteristicSheaf.lean` — the divisorial log structure and the sheaf of units as
+  sheaves on `Spec ℤ`, the sheaf `⨁_{p ∈ P} i_{p,*} A`, and the characteristic morphism of
+  sheaves, proved onto over every open set with kernel the units and fibres their orbits: this is
+  `(3)`.
+- `DeningerSkyscraperComparison.lean` — `deningerResidueSkyscraperIso`: for a single prime the
+  residue sheaf really is mathlib's `skyscraperPresheaf` at that prime's closed point, so the
+  target of the residue map is the direct sum of skyscrapers and not merely a sheaf with the same
+  sections.
+- `DeningerLogGroupSequence.lean`, `DeningerSheafShortExact.lean`,
+  `DeningerLogKummerSequence.lean` — `(4)`: `deningerLogKummerComplex` is the sequence
+  `0 → 𝒪ˣ → M_P^{gp} → ⨁_{p ∈ P} i_{p,*} ℤ → 0` as a `ShortComplex` of sheaves of abelian groups,
+  and `deningerLogKummerComplex_shortExact` proves it short exact.  The reusable bridge
+  `deningerPresheafShortExact_of_app` turns objectwise short exactness into short exactness of
+  presheaves and then of sheaves.
+- `DeningerProLogLimit.lean` — the filtered structure behind `(5)`--`(6)`: the finite stages
+  increase with `P`, and every rational unit lies in one of them because its divisor has finite
+  support.  The exactness of `(5)`--`(6)` itself is the divisor sequence recorded above.
+- `DeningerSheafPullbackExact.lean` — `(7)`: inverse image of abelian sheaves preserves finite
+  limits, hence is exact, so `deningerPulledBackKummerComplex_shortExact` pulls the Kummer sequence
+  back along an arbitrary continuous map to the arithmetic curve.
+- `DeningerResidueStalk.lean`, `DeningerPullbackStalk.lean` — `(8)`: the stalk of an inverse image
+  is the stalk at the image point, the residue sheaf has stalk `ℤ` at each prime of `P` and zero
+  elsewhere, so the pulled back `p`-summand is `ℤ` on `a^{-1}V(p)` and zero off it — the extension
+  by zero from `a^{-1}V(p)` — and `deningerPullbackSupport_disjoint` gives the disjointness of the
+  supports.
+- `DeningerGeneralizedDivisorSupport.lean` — `(9)`: the divisor of a rational unit as a set of
+  points, the theorem that the divisor of a prime is its closed point, Deninger's Proposition 11.7
+  as the interface `DeningerGeneralizedDivisorLaw` (the card cites it rather than proving it), and
+  `gdiv_eq_stalkSupport`, that the generalized divisor of `[p]` is exactly the support of the
+  `p`-summand of `(7)`.
+
+Deninger's arithmetic projection itself is not constructed: `(7)`--`(9)` are formalized for an
+arbitrary continuous map to the arithmetic curve, which is what their proofs use.
+
+- 2026-08-04 — `2 → 3` closed.  The log-geometric layer is built unconditionally in Lean:
+  `(1)`--`(4)`, `(7)`--`(9)` and `(12)`, with the direct sum of skyscrapers identified with
+  mathlib's skyscraper sheaf and the Kummer sequence proved short exact as a `ShortComplex` of
+  sheaves of abelian groups.  Nineteen new modules, 178 declarations, all wired into
+  `GaloisForLFunctions.RHTower` and audited to `propext, Classical.choice, Quot.sound`.  The only
+  external input is Deninger's Proposition 11.7, which the card cites and which is represented by
+  the explicit interface `DeningerGeneralizedDivisorLaw`.  The remaining gate is `3 → 4`, which is
+  the open geometric comparison with source analytic purity.

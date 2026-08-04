@@ -21,7 +21,21 @@ product bound: it maps radius `ρ'` to radius `ρ` with norm at most `4/(ρ'-ρ)
 
 namespace GaloisForLFunctions.HTGeometry
 
-open Complex Metric
+open Set Complex Metric
+
+/-- A potential of the clock equation: a family of functions of the transverse variable, indexed by
+the two null coordinates, jointly continuous and holomorphic in the transverse variable on the
+strip. No regularity in the null coordinates is asked here. -/
+structure StripPotential (V : ℝ → ℝ → ℂ → ℂ) (ρ : ℝ) : Prop where
+  cont : ContinuousOn (fun q : (ℝ × ℝ) × ℂ => V q.1.1 q.1.2 q.2) (univ ×ˢ imStrip ρ)
+  holo : ∀ s t : ℝ, DifferentiableOn ℂ (V s t) (imStrip ρ)
+
+/-- A potential independent of the null coordinates. -/
+theorem stripPotential_const {ρ : ℝ} {V : ℂ → ℂ} (hVc : ContinuousOn V (imStrip ρ))
+    (hVd : DifferentiableOn ℂ V (imStrip ρ)) : StripPotential (fun _ _ => V) ρ where
+  cont := fun _ hq => (hVc.continuousAt ((isOpen_imStrip ρ).mem_nhds hq.2)).continuousWithinAt.comp
+    continuousWithinAt_snd (fun _ hq' => hq'.2)
+  holo := fun _ _ => hVd
 
 /-- The right-hand side of the characteristic clock equation, on a strip. -/
 noncomputable def clockStripStep (V w : ℂ → ℂ) : ℂ → ℂ :=

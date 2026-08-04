@@ -107,11 +107,12 @@ theorem monomialFrequency_single [DecidableEq ι] (omega : ι → ℝ) (i : ι) 
   simp
 
 /-- The multiset of indices a tuple uses. -/
-def tupleCount [DecidableEq ι] {m : ℕ} (n : Fin m → ι) : ι →₀ ℕ :=
+def tupleCount [DecidableEq ι] {β : Type*} [Fintype β] (n : β → ι) : ι →₀ ℕ :=
   ∑ j, Finsupp.single (n j) 1
 
 /-- **A tuple's frequency is the frequency of the multiset it uses.** -/
-theorem monomialFrequency_tupleCount [DecidableEq ι] (omega : ι → ℝ) {m : ℕ} (n : Fin m → ι) :
+theorem monomialFrequency_tupleCount [DecidableEq ι] (omega : ι → ℝ) {β : Type*} [Fintype β]
+    (n : β → ι) :
     monomialFrequency omega (tupleCount n) = ∑ j, omega (n j) := by
   classical
   have hhom : monomialFrequency omega (tupleCount n)

@@ -326,11 +326,13 @@ not new scientific knowledge.
 
 ## Lean status
 
-**Superseded, 2026-08-03.**  Being formalized unconditionally in
+**Superseded, 2026-08-04.**  Formalized unconditionally in
 `formal/GaloisForLFunctions/RHTower/CCMSawtoothDilationMean.lean` (the sawtooth, the mean, the bounded
-primitive and the integration by parts) and
+primitive and the integration by parts),
 `formal/GaloisForLFunctions/RHTower/CCMSawtoothDilationIncidence.lean` (the arithmetic weight, the
-coordinate change, the synthesis and the exterior window).  The previous decision said no
+coordinate change, the synthesis and the limit) and
+`formal/GaloisForLFunctions/RHTower/CCMSawtoothExteriorTail.lean` (the exterior half-line and the full
+prime series).  Every theorem the card marks `[PROVED HERE]` is now proved in Lean.  The previous decision said no
 periodic `L²` Fourier interface exists in the tree, so nothing could be certified.  That was the wrong
 frame: `S` is the `2π`-periodic extension of a linear ramp, so taking
 
@@ -346,7 +348,10 @@ Proved so far, all unconditional (`#print axioms` returns only
 `[propext, Classical.choice, Quot.sound]`):
 
 - `sawUnit`, `sawWave`, **`sawWave_eq_of_mem_Ioo`**, **`abs_sawWave_le`**, `sawWave_add_two_pi` —
-  equation `(1)`, in closed form, with the sup bound and the period.
+  equation `(1)`, in closed form, with the sup bound and the period.  The closed form is no longer only
+  a definitional choice: `RHTower/SawtoothFourierSeries.lean` proves
+  **`tendsto_sum_sawtoothSine`**, that the card's series `∑_{k ≥ 1} sin(kθ)/k` really does converge to
+  `sawWave θ` on `(0, 2π)`, so the two definitions of `S` agree.
 - **`integral_sawUnit_dilate_piece`**, **`integral_sawUnit_dilate`**, **`integral_sawWave_dilate`** —
   equation `(2)`.  The `j`-th period of the fast factor contributes exactly `1/(12 n²)`, uniformly in
   `j`, and there are `n` of them.  The card's `(7)` uses Parseval on the sine series; the Lean proof
@@ -432,18 +437,47 @@ Proved so far, all unconditional (`#print axioms` returns only
   `L x^{-2}`, whose total variation on the window is exactly `1/L - L/T²`.  The card's `A_n(L)/L`
   boundary term is the `invSqWeight L T · (A_n(T) - A_n(L))` term here.
 
-Still to formalize:
+- `sawUnit_eq_of_mem_Ico_int`, `abs_integral_sawUnit_comp_mul_le` — equation `(24)` in the form the
+  tail bound needs: the sawtooth is affine on each period, and the primitive of its `n`-fold dilate is
+  bounded by `1/(4n)` on the whole line, over all base points.
+- `exteriorPiece`, `exteriorPieceDeriv`, `hasDerivAt_exteriorPiece`,
+  `invSqWeight_mul_sawDilate_eq_exteriorPiece`, **`abs_integral_exteriorPiece_mul_le`**,
+  `hasDerivAt_invPowPrimitive`, `integral_invPow`, **`abs_integral_exteriorPiece_period_le`**,
+  **`abs_integral_invSqWeight_mul_sawDilate_int_window_le`** — equation `(21)` over any whole number of
+  periods beyond `L`, with the absolute constant `5/8`:
 
-- the passage from the finite window of `(18)` to the improper integral `∫_0^∞`, which is a limit in
-  the outer endpoint of an estimate already uniform in it.
-- equations `(20)`--`(23)`: the full exterior series.  `(21)` is the one place a genuinely finer
-  argument is needed: the bound must be `C₁/n`, uniformly in `L ≥ 1`, which the present `4/(3L)`
-  estimate does not give.  The card obtains it by Stieltjes integration by parts against the bounded
-  variation of `L x^{-2} S(x)`; the elementary route is to split `[L, ∞)` into periods of the sawtooth,
-  on each of which `L x^{-2} S(x)` is smooth, and apply the same distributional integration by parts
-  against the dilated primitive `B_n`, whose sup norm `1/(8n)` is already proved
-  (`integral_sawUnit_comp_mul`, `abs_integral_sawUnit_le`).  Then `(23)` is dominated convergence over
-  the weight `Λ(n)/n²` already shown summable.
+  ```text
+  | int_m^M L x^(-2) S(x) S(nx) dx | <= 5/(8n),   1 <= m <= M,  L <= m.
+  ```
+
+  The card obtains `(21)` from Stieltjes integration by parts against the bounded variation `(25)` of
+  `L x^{-2} S(x)`.  No bounded-variation theory is needed here: on each period the slow factor
+  `L x^{-2}(k + 1/2 - x)` is smooth, so the same distributional integration by parts applies, paired
+  against the dilated primitive of `(24)`.  The boundary term of each period is absorbed by widening
+  the comparison weight from `L x^{-3} + L x^{-2}` to `L x^{-3} + 2 L x^{-2}`, because over a full
+  period `∫ L x^{-2} = L/(k(k+1))` already dominates `L/(2(k+1)²)`; the whole estimate then telescopes
+  into a single explicit integral, so no harmonic-sum tail bound is needed either.
+
+- `abs_integral_invSqWeight_mul_sawDilate_partial_le`,
+  **`abs_integral_invSqWeight_mul_sawDilate_window_le`** — `(21)` for an arbitrary window: the two
+  partial end periods are one application each of the per-period estimate, and the interior is the
+  integer-window bound, giving the absolute constant `13/8`.
+- `integrableOn_invSqWeight_mul_sawDilate`, `tendsto_integral_invSqWeight_mul_sawDilate`,
+  **`abs_integral_Ioi_invSqWeight_mul_sawDilate_le`**,
+  **`abs_integral_Ioi_invSqWeight_mul_sawDilate_sub_mean_le`** — both estimates on the half-line
+  `(0, ∞)`.  Integrability comes from the uniform bound `∫_L^T ‖·‖ ≤ 1/4`, and the two estimates pass to
+  the limit because they were already uniform in the outer endpoint.
+- `image_Ioi_exp_scale`, `integral_comp_exp_scale_Ioi`,
+  **`integral_expWeight_Ioi_eq_invSqWeight`** — equation `(20)`: the additive and multiplicative
+  readings of the full exterior integral agree.
+- **`summable_fullPrimeResponse`**, `tendsto_integral_Ioi_invSqWeight_mul_sawDilate`,
+  **`tendsto_fullPrimeResponse`** — equations `(22)`--`(23)`.  The series converges absolutely,
+  uniformly in `L ≥ 1`, dominated by `(13/8) Λ(n) n^{-2}`; the termwise limit is `(18)`; and Tannery's
+  theorem gives `P_L^full → (1/12) ∑ Λ(n) n^{-2}`, which by `(17)` is `-(π²/12) ζ'(2)/ζ(2)` in the
+  card's normalization.
+
+Nothing the card proves is left unformalized.  The remaining open gates below are the card's own
+research items, which it does not claim.
 
 ## Gates
 
@@ -466,8 +500,9 @@ Still to formalize:
 - [x] Lean: averaging estimate and synthesis in the card's own coordinates `(5)`--`(6)`, `(12)`--`(13)`
 - [x] Lean: the limit form `(14)` unconditional
 - [x] Lean: exterior finite-window estimate `(18)` unconditional, with an explicit constant
-- [ ] Lean: improper-integral form of `(18)`
-- [ ] Lean: full exterior bound and limit `(20)`--`(23)` unconditional
+- [x] Lean: exterior `O(1/n)` bound `(21)` unconditional, without bounded-variation theory
+- [x] Lean: improper-integral forms of `(18)` and `(20)` unconditional
+- [x] Lean: full exterior series and limit `(22)`--`(23)` unconditional
 - [ ] actual constrained-prolate endpoint amplitude asymptotics
 - [ ] subleading/interior incidence estimate beyond the one-moment leading layer
 - [ ] true Weil Rayleigh-excess or parity-margin transfer

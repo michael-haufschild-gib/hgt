@@ -219,3 +219,325 @@ here, so there is no direct RH consequence.
 - 2026-07-15 -- [PROVED HERE] Nonautonomous deck closure, position--velocity generators,
   canonical quotient transport, Lie-velocity flatness, and periodic holonomy proved; formal
   fixed-field core targeted-build verified.
+
+## Lean progress — `(3)`, `(4)`, `(5)` and the Floquet holonomy
+
+Two new modules, wired and axiom-clean.
+
+`GaloisForLFunctions/HTGeometry/NonautonomousIsogenyTransport.lean` -- the erased sector and the
+reversible position:
+
+    prefixIndex, prefixHom              -- the prefix composite, peeled from the near end
+    prefixKernel_succ                   -- Gamma_(i,n+1) = a_i^(-1) Gamma_(i+1,n)
+    prefixKernel_monotone
+    erasedSector, mem_erasedSector_iff
+    erasedSector_comap                  -- union_n Gamma_(i,n) = a_i^(-1) union_n Gamma_(i+1,n)
+    erasedClosure, erasedClosure_comap  -- (3): H_i = a_i^(-1) H_(i+1), for an open continuous step
+    reversibleStep, reversibleStepEquiv -- (4): q_i : Q_i -> Q_(i+1) is an isomorphism
+    reversibleTransport                 -- flat transport across any number of phases
+    reversibleHolonomy                  -- the periodic circuit's automorphism of Q_i
+
+`GaloisForLFunctions/HTGeometry/NonautonomousJetVelocityTransport.lean` -- the velocity:
+
+    SplitJetMorphism                    -- a protocol step on split jet evaluations
+    velocity, normalize_comm            -- (5): the velocity of a transported jet is the transported
+                                        --      velocity (Maurer-Cartan normalization is natural)
+    velocityEquiv                       -- d a_i is an isomorphism when the step is
+    position, positionEquiv
+    positionVelocityHom_comm            -- position-velocity coordinates are natural
+    protocolPositionVelocityEquiv, protocolPositionVelocityTransport
+                                        -- the persistent position-velocity system is FLAT over
+                                        --   discrete time
+
+The card's `(3)`, `(4)`, `(5)` and the Floquet corollary are now formal and unconditional, in the
+topological-group model for the erased sector and in the corpus's functor-of-points model for the
+jets.  The remaining paper-level statements are `(2)`, `(6)`, `(7)` -- the differential-rational
+quotient theorem identifying the tail with `C<pi_i(g_i), ell_i(g_i)>` and its transcendence count.
+
+### The index trick that made the nonautonomous prefix work
+
+A prefix composite of a *time-dependent* protocol lands in a phase whose index is arithmetic
+(`i + n`), and the two natural recursions -- append at the far end, peel at the near end -- disagree
+on the index expression (`(i + n) + 1` versus `(i + 1) + n`).  Only the first is definitional, so the
+peeling identity, which is the whole content of `(3)`, would be a dependent cast.
+
+Carry the index by the *same* recursion as the composite: `prefixIndex i 0 = i`,
+`prefixIndex i (n+1) = prefixIndex (i+1) n`.  Then peeling is definitional and the kernel identity is
+one application of `AddMonoidHom.comap_ker`.  Nothing else in the file mentions the target index at
+all -- kernels live in the source group -- so no arithmetic on indices ever enters a type.
+Monotonicity of the kernels, which naively needs the far-end decomposition, follows instead by
+induction on the depth with the phase generalized.
+
+## Lean progress — `(2)`, `(6)` and the whole flat system, with nothing left to assume
+
+`GaloisForLFunctions/HTGeometry/NonautonomousProtocolFlatSystem.lean` (wired, axiom-clean):
+
+    erasedQuotientEquivPositionVelocity :
+      at every phase, the jets modulo translation by the erased sector are exactly
+      (reversible position, Maurer-Cartan velocity)                        -- (2)
+    expandingPositionVelocityEquiv, expandingErasedQuotientEquivVelocity :
+      when the erased sector is everything, the invariants are the velocity alone  -- (6)
+    protocolErasedPositionVelocityTransport :
+      the persistent position-velocity data at any two phases are canonically isomorphic,
+      with the position subgroups taken to be the protocol's OWN erased sectors
+    protocolPositionVelocityHolonomy
+
+The transport theorem of the previous section carried the subgroup correspondence as a hypothesis.
+Here it is discharged: the position subgroups are the erased closures of the protocol itself, and
+their correspondence is `erasedClosure_comap`.  So the card's consequence -- "the persistent positions
+`Q_i` and the persistent Maurer-Cartan velocities form a flat local system over discrete time" -- is
+now one theorem with no hypotheses beyond the protocol being open, continuous and bijective.
+
+What remains paper-level is `(7)`: `dtrdeg_C T_i = dim G_i`, which needs differential transcendence
+degree of the generated differential field, and the identification of the field-level deck group with
+the group-level kernel translations.  The companion assertion `T_i intersect C(G_i) = C` is already
+the corpus's `normalize_ker`: the constants are exactly what Maurer-Cartan normalization kills.
+
+### Multiplicative, not additive
+
+The first draft of the erased-sector layer was additive, matching the autonomous
+`IsogenyKernelClosure`.  That made it impossible to feed into the corpus's jet layer, which is
+multiplicative (`SplitJetEvaluation`), so the flat-system statement could not be assembled at all.
+`to_additive` does not bridge the gap in one step either -- it refuses on the prefix composite,
+because a definition by recursion on the depth generates a different number of equation lemmas than
+its additive image.  Writing the layer multiplicatively, under the same names, makes the two halves
+compose directly.
+
+## Lean progress — `(1)`: the field tail sees exactly the erased sector
+
+`GaloisForLFunctions/HTGeometry/NonautonomousErasedDeckBridge.lean` (wired, axiom-clean):
+
+    nonautonomousTail_eq_fixedField_erasedSector :
+      depthwise deck description  ==>  T_i = fixed field of the image of union_n Gamma_(i,n)
+    mem_nonautonomousTail_iff_fixedBy_erasedSector
+    fixedField_map_erasedClosure :
+      for an ALGEBRAIC action (every stabilizer closed), the invariants of the erased sector and of
+      its closure coincide
+    nonautonomousTail_eq_fixedField_erasedClosure :
+      T_i = K_i^(H_i)                                                      -- (1)
+
+This is the join of the two halves: the group-level object built from the protocol
+(`erasedSector`, `erasedClosure`) and the field-level tail (`nonautonomousTail`) are the same object
+read twice.  The step "invariance under the union is invariance under its Zariski closure" is exactly
+`closure_minimal` against a closed stabilizer -- no Galois topology is involved, and none would work:
+in the Krull topology the stabilizer of a *transcendental* element is not open, so the argument has to
+run in the acting group, not in the Galois group.
+
+### What is left, precisely
+
+Every numbered statement except `(7)` is now formal:
+
+| statement | Lean |
+|---|---|
+| `(1)` `T_i = K_i^(H_i)` | `nonautonomousTail_eq_fixedField_erasedClosure` |
+| `(2)` position-velocity generators | `erasedQuotientEquivPositionVelocity` |
+| `(3)` `a_i^(-1) H_(i+1) = H_i` | `erasedClosure_comap` |
+| `(4)` `q_i : Q_i -> Q_(i+1)` iso | `reversibleStepEquiv` |
+| `(5)` flat velocity transport | `SplitJetMorphism.normalize_comm`, `velocityEquiv` |
+| `(6)` expanding case | `expandingErasedQuotientEquivVelocity` |
+| Floquet holonomies | `reversibleHolonomy`, `protocolPositionVelocityHolonomy` |
+
+Two geometric inputs remain, each isolated as one explicit hypothesis rather than spread through the
+development:
+
+1. `hdeck` -- at every depth the prefix image is the fixed field of the translations by that depth's
+   kernel.  This is Galois descent for a finite etale isogeny, and needs quotients of group schemes by
+   finite subgroup schemes, which mathlib does not have.
+2. `hclosed` -- the action is algebraic: each element's stabilizer is Zariski closed.
+
+`(7)` `dtrdeg_C T_i = dim G_i` reduces, via the corpus's
+`differentialTranscendenceDegree_eq_cardinalMk_of_differentialIndependent_of_adjoin_eq_top`, to
+exhibiting a differentially independent generating family of size `dim G_i` -- that is, to genericity
+of the point together with a coordinate description of the Lie algebra.  Both sit behind the same
+missing scheme-level layer, so `(7)` is not a separate obstruction.
+
+## Lean progress — the deck hypothesis reduced to a degree count
+
+`GaloisForLFunctions/HTGeometry/DeckDegreeCriterion.lean` (wired, axiom-clean):
+
+    finrank_fixedField_eq_card_of_finite :
+      Artin's degree formula with NO ambient finiteness -- [F : K^H] = |H| for any finite H
+    eq_fixedField_of_le_of_finrank_eq :
+      a subfield fixed by H and of degree |H| below F IS the fixed field
+    prefixImage_eq_fixedField_of_finrank_eq :
+      the depthwise deck description, from "kernel translations fix the image" plus
+      "degree = order of the kernel"
+
+and in `NonautonomousErasedDeckBridge.lean`:
+
+    nonautonomousTail_eq_fixedField_erasedClosure_of_finrank :
+      `(1)` from numerical data alone
+
+The residual input recorded in the previous section as "Galois descent for a finite etale isogeny,
+needing quotients of group schemes by finite subgroup schemes" is now much smaller.  What the tail
+theorem consumes is only:
+
+* the kernel translations fix the prefix image -- immediate, since translation by a kernel element
+  commutes with the isogeny;
+* `[K_i : A*K_(i+n)] = |Gamma_(i,n)|` -- the degree of an isogeny is the order of its kernel.
+
+No descent theory is used: Artin's theorem does the identification at each depth, and the two
+subfields are then nested and equidimensional.
+
+### mathlib's Artin lemma is stated too weakly for a differential field
+
+`IntermediateField.finrank_fixedField_eq_card` carries `[FiniteDimensional F E]` -- the *ambient*
+extension must be finite.  That hypothesis is unusable here: `K_i` is a differential field of infinite
+transcendence degree over the constants, and only the prefix extensions are finite.  The hypothesis is
+not needed for the proof, which is `FixedPoints.finrank_eq_card` and only wants the group to be
+finite; the ambient assumption enters mathlib's version solely to produce that finiteness.  The corpus
+now owns the version with the honest hypothesis.
+
+## Lean progress — one geometric input left for `(1)`
+
+Added to `DeckDegreeCriterion.lean` and `NonautonomousErasedDeckBridge.lean` (wired, axiom-clean):
+
+    prefixImage_le_fixedField_of_equivariant :
+      kernel translations fix the prefix image -- FREE, from equivariance alone
+    prefixImage_eq_fixedField_of_equivariant_of_finrank_eq
+    nonautonomousTail_eq_fixedField_erasedClosure_of_equivariant :
+      `(1)` from equivariance + finiteness + finite degree + algebraic action + ONE geometric input
+
+The half of the deck description that says the kernel translations fix the image costs nothing: if
+translation on the source pulls back to translation by the image -- which is what it *means* for the
+field protocol to be the pullback of the group protocol -- then a direction killed by a prefix acts
+trivially on that prefix's image.  It is an equivariance calculation, not geometry.
+
+So the card's `(1)` now rests on exactly one unformalized fact:
+
+> `[K_i : A_(i,n)^* K_(i+n)] = |Gamma_(i,n)|` -- the degree of an isogeny is the order of its kernel.
+
+Everything else in the chain is a theorem in the tree.  `(7)` remains the genericity statement
+(`dtrdeg_C T_i = dim G_i`), which the corpus's
+`differentialTranscendenceDegree_eq_cardinalMk_of_differentialIndependent_of_adjoin_eq_top` turns into
+"the velocity coordinates are differentially independent and generate" -- restating that as a Lean
+hypothesis would add nothing, so it stays on the paper side until the coordinate description of the
+Lie algebra exists.
+
+## Lean progress — invariants pass to fraction fields (mathlib does not have this)
+
+`GaloisForLFunctions/HTGeometry/InvariantFractionRing.lean` (wired, axiom-clean):
+
+    actionNorm, smul_actionNorm, actionNorm_ne_zero, actionNorm_eq_mul
+    exists_invariant_ratio_of_isInvariant :
+      an invariant element of the fraction field is a ratio of invariant ring elements
+    mem_of_invariant_of_invariant_ring_le
+    eq_fixedPoints_of_invariant_ring :
+      a subfield through which every invariant ring element factors IS the invariant field
+
+This replaces the degree count with something strictly cheaper.  The remaining input for `(1)` was
+`[K_i : A^* K_(i+n)] = |Gamma_(i,n)|`.  The classical route to that is "the function field of a
+quotient by a finite group is the invariant field", whose actual content is purely algebraic:
+multiply numerator and denominator by the remaining translates of the denominator, the denominator
+becomes a norm and so is invariant, and then the numerator is invariant because the fraction is.
+
+mathlib has `Algebra.IsInvariant A B G` for rings and Artin's theorem for fields, but nothing
+connecting them across a fraction field -- there is no statement that invariants pass to fraction
+fields.  The corpus now owns it, for any domain with a finite group of ring automorphisms.
+
+So the geometric input for `(1)` is now **ring-level**: that invariant regular functions on `G_i` come
+from `G_(i+n)`, i.e. `O(G_(i+n)) = O(G_i)^(Gamma_(i,n))`.  No degrees, no descent, no Galois theory.
+
+## Lean progress — `(1)` assembled from the ring-level statement
+
+`GaloisForLFunctions/HTGeometry/PrefixDeckFromInvariantRing.lean` and the bridge (wired,
+axiom-clean):
+
+    prefixImage_eq_fixedField_of_invariant_ring :
+      equivariance + "invariant regular functions are pulled back" ==> the depthwise deck description
+    nonautonomousTail_eq_fixedField_erasedClosure_of_invariant_ring :
+      `(1)` from a single ring-level hypothesis
+
+One coordinate ring serves every depth: the field is `K_i = Frac O(G_i)` at all depths, and only the
+acting subgroup `Gamma_(i,n)` varies.  So the assembled theorem takes ONE ring `B` with an action of
+`G_i`, and the subgroup actions are inherited.  Its geometric hypothesis is
+
+    hring : an invariant element of B lies in the image of the depth-n prefix
+
+which is the definition of the isogeny being the quotient by its kernel, not a theorem about it.
+Everything else -- the fraction-field step, the closure step, the depthwise assembly, the passage to
+the whole erased sector -- is proved.
+
+Chain of reductions this card went through, for the record: Galois descent for finite etale isogenies
+-> degree of an isogeny equals the order of its kernel -> invariant functions come from the quotient
+(ring level).  Each step removed a layer that looked essential and was not.
+
+## Lean progress — the algebraicity hypothesis is removable
+
+`NonautonomousIsogenyTransport.lean` and the bridge (wired, axiom-clean):
+
+    erasedSector_eq_prefixKernel_of_stabilizes :
+      if no depth beyond N erases anything new, the erased sector IS that kernel
+    erasedClosure_eq_of_isClosed, erasedClosure_eq_prefixKernel_of_stabilizes
+    nonautonomousTail_eq_fixedField_erasedClosure_of_stabilizes :
+      `(1)` with NO algebraicity hypothesis
+    nonautonomousTail_eq_fixedField_of_stabilizes_of_invariant_ring :
+      `(1)` from the ring-level quotient statement alone
+
+The `hclosed` hypothesis -- every stabilizer Zariski closed -- was carried only to justify replacing
+the union of the prefix kernels by its closure.  When the protocol *stabilizes* -- some depth `N`
+after which nothing new is erased -- the union is already a subgroup of the chain, so the closure step
+is vacuous and the hypothesis is not needed at all.  Stabilization is exactly the case the card's own
+`(6)`/`(7)` live in: in the purely expanding regime `H_i = G_i`, reached at a finite depth.
+
+So for a stabilizing protocol the card's `(1)` now needs **only** the ring-level statement that an
+invariant regular function is pulled back from the quotient.  For a genuinely non-stabilizing protocol
+the closure step returns, and with it the algebraicity of the action.
+
+## Lean progress — the missing half of `(7)`: spanning + size = basis
+
+`GaloisForLFunctions/HTGeometry/DifferentialSpanningBasis.lean` (wired, axiom-clean):
+
+    differentialAlgebraicOver_differentialAdjoin_adjoin :
+      differential algebraicity survives enlarging the coefficient field
+    diffIndepOn_of_finite_spanning_of_cardinalMk_le :
+      a finite set over which everything is differentially algebraic, of no more elements than the
+      differential transcendence degree, is differentially INDEPENDENT
+    differentialIndependent_of_spanning_of_cardinalMk_le :
+      the indexed form
+
+`(7)` was recorded twice above as "genericity, restating it as a hypothesis would add nothing".  That
+was wrong about where the content sits.  The card's own hypotheses are that `g_i` is differential
+generic -- `dtrdeg_C K_i = dim G_i` -- and that `K_i` is differentially algebraic over
+`T_i = C<ell_i(g_i)>`, the latter because `g' = ell(g) . g` is a first-order equation.  Independence of
+the velocity coordinates is *not* a hypothesis: it follows, and this module proves the step.
+
+The argument is matroid-theoretic and needs no differential geometry.  Take a basis `I` of the
+spanning set inside the differential matroid.  Every generator is differentially algebraic over `I`;
+by finite transitivity so is everything, so `I` spans the whole matroid and is therefore a base, with
+as many elements as the differential transcendence degree.  A subset of a set of that size with that
+many elements is the whole set, so the spanning family was independent to begin with.
+
+What `(7)` still needs is the *statement* that `dtrdeg` of the generated subfield equals `dtrdeg` of
+its own matroid -- independence computed in `T_i` versus in `K_i` -- plus the coordinate description
+of the Lie algebra that says the velocity has `dim G_i` coordinates.
+
+## Lean progress — `(7)` IS PROVED (the dimension count of the persistent sector)
+
+`GaloisForLFunctions/HTGeometry/DifferentialSubfieldTransfer.lean` (wired, axiom-clean):
+
+    differentialJet_coe                -- the jets of a derivation-closed subfield are the ambient jets
+    differentialIndependent_subfield   -- independence does not depend on where it is computed
+    adjoinLift, differentialAdjoin_adjoinLift_eq_top
+                                       -- a family generates its own differential field
+    differentialTranscendenceDegree_differentialAdjoin_eq :
+      an injective family of at most dtrdeg-many elements over which the whole field is
+      differentially algebraic generates a subfield of differential transcendence degree exactly
+      its own size
+
+Combined with the previous section this is `(7)`.  Given the card's own setup -- `g_i` differential
+generic, so `dtrdeg_C K_i = dim G_i`, and `K_i` differentially algebraic over `T_i = C<ell_i(g_i)>`
+because `g' = ell(g) . g` is first order -- the velocity coordinates are forced to be a differential
+transcendence basis, and the field they generate has
+
+    dtrdeg_C T_i = dim G_i.
+
+Nothing about algebraic groups enters: the whole argument is the differential matroid plus the fact
+that a derivation-closed subfield computes the same jets.  The card's `T_i intersect C(G_i) = C` is
+the corpus's `normalize_ker`, already noted.
+
+### The last Lean-side item on this card
+
+Only the identification of the velocity with a `dim G_i`-tuple remains -- the coordinate description
+of the Lie algebra.  That is a statement about algebraic groups, not about differential algebra, and
+it is the single remaining scheme-level input, alongside `hring` for `(1)`.

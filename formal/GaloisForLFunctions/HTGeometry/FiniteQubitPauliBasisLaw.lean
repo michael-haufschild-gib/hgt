@@ -186,6 +186,78 @@ theorem finitePauliMatrix_isHermitian
       intro s _hs
       exact star_boolPauliOptionEntry_swap (P s) (x s) (y s)
 
+/-- Every single-qubit Pauli label, including the identity, squares to the
+identity matrix. -/
+theorem boolPauliOption_mul_self
+    (p : Option (Fin 3)) :
+    boolPauliOption p * boolPauliOption p = 1 := by
+  ext x y
+  fin_cases p <;> fin_cases x <;> fin_cases y <;>
+    norm_num [boolPauliOption, finiteQubitPauli,
+      Matrix.mul_apply, Fintype.sum_bool, Matrix.one_apply]
+
+/-- Every finite Pauli string is a Hermitian involution. -/
+theorem finitePauliMatrix_mul_self
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (P : σ → Option (Fin 3)) :
+    finitePauliMatrix P * finitePauliMatrix P = 1 := by
+  ext x z
+  rw [Matrix.mul_apply]
+  change
+    (∑ y : σ → Bool,
+      (∏ s, boolPauliOptionEntry (P s) (x s, y s)) *
+        ∏ s, boolPauliOptionEntry (P s) (y s, z s)) =
+      if x = z then 1 else 0
+  simp_rw [← Finset.prod_mul_distrib]
+  rw [← Fintype.prod_sum (fun s (b : Bool) =>
+    boolPauliOptionEntry (P s) (x s, b) *
+      boolPauliOptionEntry (P s) (b, z s))]
+  by_cases hxz : x = z
+  · subst z
+    rw [if_pos rfl]
+    apply Finset.prod_eq_one
+    intro s _hs
+    have h := congrFun
+      (congrFun (boolPauliOption_mul_self (P s)) (x s)) (x s)
+    simpa [Matrix.mul_apply, boolPauliOptionEntry,
+      Matrix.one_apply] using h
+  · rw [if_neg hxz]
+    obtain ⟨s, hs⟩ : ∃ s, x s ≠ z s := by
+      simpa only [Function.ne_iff] using hxz
+    apply Finset.prod_eq_zero (Finset.mem_univ s)
+    have h := congrFun
+      (congrFun (boolPauliOption_mul_self (P s)) (x s)) (z s)
+    simpa [Matrix.mul_apply, boolPauliOptionEntry,
+      Matrix.one_apply, hs] using h
+
+/-- Local trace of a single-qubit Pauli label: two for the identity and zero
+for every nonidentity axis. -/
+theorem sum_boolPauliOption_diagonal
+    (p : Option (Fin 3)) :
+    (∑ x : Bool, boolPauliOption p x x) =
+      if p = none then 2 else 0 := by
+  fin_cases p <;>
+    norm_num [boolPauliOption, finiteQubitPauli,
+      Fintype.sum_bool] <;> simp
+
+/-- Every nonidentity finite Pauli string is traceless. -/
+theorem finitePauliMatrix_trace_eq_zero_of_ne_identity
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (P : σ → Option (Fin 3))
+    (hP : P ≠ fun _ => none) :
+    (finitePauliMatrix P).trace = 0 := by
+  rw [Matrix.trace]
+  change (∑ x : σ → Bool,
+    ∏ s, boolPauliOptionEntry (P s) (x s, x s)) = 0
+  rw [← Fintype.prod_sum (fun s (b : Bool) =>
+    boolPauliOptionEntry (P s) (b, b))]
+  change (∏ s, ∑ b : Bool, boolPauliOption (P s) b b) = 0
+  simp_rw [sum_boolPauliOption_diagonal]
+  obtain ⟨s, hs⟩ : ∃ s, P s ≠ none := by
+    simpa only [Function.ne_iff] using hP
+  apply Finset.prod_eq_zero (Finset.mem_univ s)
+  simp [hs]
+
 /-- A Pauli string as a literal self-adjoint matrix. -/
 def finitePauliSelfAdjoint
     {σ : Type*} [Fintype σ] [DecidableEq σ]

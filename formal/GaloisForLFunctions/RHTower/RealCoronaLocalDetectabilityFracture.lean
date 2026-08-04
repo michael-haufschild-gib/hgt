@@ -143,6 +143,82 @@ theorem hasLinearPMapBoundOnDomain_orientationCommutator_iff_odd
     rw [norm_linearPMapOrientationCommutator_eq_two_odd D m hdomm hm hiso x]
     nlinarith [hbound x, norm_nonneg (x : V)]
 
+/-- **Parity conservation of boundedness.**  An operator is bounded on its invariant domain
+exactly when both orientation-parity components are bounded there.  This is the missing converse
+behind the detectability fracture: unboundedness cannot disappear under the even/odd splitting. -/
+theorem hasLinearPMapBoundOnDomain_iff_even_and_odd
+    (D : V →ₗ.[ℂ] V) (m : Module.End ℂ V)
+    (hdomm : ∀ x : D.domain, m x ∈ D.domain)
+    (hiso : ∀ y : V, ‖m y‖ = ‖y‖) :
+    HasLinearPMapBoundOnDomain D ↔
+      HasLinearPMapBoundOnDomain (linearPMapOrientationEven D m hdomm) ∧
+        HasLinearPMapBoundOnDomain (linearPMapOrientationOdd D m hdomm) := by
+  constructor
+  · rintro ⟨C, hC, hbound⟩
+    constructor
+    · refine ⟨2 * C, mul_nonneg (by norm_num) hC, fun x => ?_⟩
+      rw [linearPMapOrientationEven_apply, norm_smul]
+      calc
+        ‖(2 : ℂ)⁻¹‖ * ‖D x + m (D ⟨m x, hdomm x⟩)‖
+            ≤ ‖D x + m (D ⟨m x, hdomm x⟩)‖ := by
+              rw [norm_inv, Complex.norm_ofNat]
+              norm_num
+              nlinarith [norm_nonneg (D x + m (D ⟨m x, hdomm x⟩))]
+        _ ≤ ‖D x‖ + ‖m (D ⟨m x, hdomm x⟩)‖ := norm_add_le _ _
+        _ = ‖D x‖ + ‖D ⟨m x, hdomm x⟩‖ := by rw [hiso]
+        _ ≤ C * ‖(x : V)‖ + C * ‖m (x : V)‖ :=
+          add_le_add (hbound x) (hbound ⟨m x, hdomm x⟩)
+        _ = 2 * C * ‖(x : V)‖ := by rw [hiso]; ring
+    · refine ⟨2 * C, mul_nonneg (by norm_num) hC, fun x => ?_⟩
+      rw [linearPMapOrientationOdd_apply, norm_smul]
+      calc
+        ‖(2 : ℂ)⁻¹‖ * ‖D x - m (D ⟨m x, hdomm x⟩)‖
+            ≤ ‖D x - m (D ⟨m x, hdomm x⟩)‖ := by
+              rw [norm_inv, Complex.norm_ofNat]
+              norm_num
+              nlinarith [norm_nonneg (D x - m (D ⟨m x, hdomm x⟩))]
+        _ ≤ ‖D x‖ + ‖m (D ⟨m x, hdomm x⟩)‖ := norm_sub_le _ _
+        _ = ‖D x‖ + ‖D ⟨m x, hdomm x⟩‖ := by rw [hiso]
+        _ ≤ C * ‖(x : V)‖ + C * ‖m (x : V)‖ :=
+          add_le_add (hbound x) (hbound ⟨m x, hdomm x⟩)
+        _ = 2 * C * ‖(x : V)‖ := by rw [hiso]; ring
+  · rintro ⟨⟨Ce, hCe, heven⟩, ⟨Co, hCo, hodd⟩⟩
+    refine ⟨Ce + Co, add_nonneg hCe hCo, fun x => ?_⟩
+    rw [← linearPMapOrientation_even_add_odd D m hdomm x]
+    calc
+      ‖linearPMapOrientationEven D m hdomm x +
+          linearPMapOrientationOdd D m hdomm x‖
+          ≤ ‖linearPMapOrientationEven D m hdomm x‖ +
+            ‖linearPMapOrientationOdd D m hdomm x‖ := norm_add_le _ _
+      _ ≤ Ce * ‖(x : V)‖ + Co * ‖(x : V)‖ :=
+        add_le_add (heven x) (hodd x)
+      _ = (Ce + Co) * ‖(x : V)‖ := by ring
+
+/-- Unboundedness is conserved as the disjunction of its two parity channels. -/
+theorem genuinelyUnboundedLinearPMap_iff_even_or_odd
+    (D : V →ₗ.[ℂ] V) (m : Module.End ℂ V)
+    (hdomm : ∀ x : D.domain, m x ∈ D.domain)
+    (hiso : ∀ y : V, ‖m y‖ = ‖y‖) :
+    IsGenuinelyUnboundedLinearPMap D ↔
+      IsGenuinelyUnboundedLinearPMap (linearPMapOrientationEven D m hdomm) ∨
+        IsGenuinelyUnboundedLinearPMap (linearPMapOrientationOdd D m hdomm) := by
+  simp only [IsGenuinelyUnboundedLinearPMap]
+  rw [hasLinearPMapBoundOnDomain_iff_even_and_odd D m hdomm hiso]
+  tauto
+
+/-- Local commutators detect precisely unboundedness of the odd parity channel. -/
+theorem genuinelyUnboundedLinearPMap_orientationCommutator_iff_odd
+    (D : V →ₗ.[ℂ] V) (m : Module.End ℂ V)
+    (hdomm : ∀ x : D.domain, m x ∈ D.domain)
+    (hm : m * m = 1) (hiso : ∀ y : V, ‖m y‖ = ‖y‖) :
+    IsGenuinelyUnboundedLinearPMap
+        (linearPMapOrientationCommutator D m hdomm) ↔
+      IsGenuinelyUnboundedLinearPMap
+        (linearPMapOrientationOdd D m hdomm) := by
+  exact not_congr
+    (hasLinearPMapBoundOnDomain_orientationCommutator_iff_odd
+      D m hdomm hm hiso)
+
 /-- If an unbounded operator has bounded commutator with its orientation, all unboundedness lies in
 the commuting even component; the detecting odd component is only bounded. -/
 theorem genuinelyUnbounded_even_of_bounded_orientationCommutator
@@ -168,6 +244,30 @@ theorem genuinelyUnbounded_even_of_bounded_orientationCommutator
     _ ≤ Ce * ‖(x : V)‖ + Co * ‖(x : V)‖ := add_le_add (heven x) (hodd x)
     _ = (Ce + Co) * ‖(x : V)‖ := by ring
 
+/-- **Smoothness--detectability conservation law.**  For an unbounded operator, bounded first
+commutator is equivalent to the exact allocation of boundedness to the detecting odd channel and
+all unboundedness to the commuting even channel. -/
+theorem bounded_orientationCommutator_iff_unbounded_even_and_bounded_odd
+    (D : V →ₗ.[ℂ] V) (m : Module.End ℂ V)
+    (hdomm : ∀ x : D.domain, m x ∈ D.domain)
+    (hm : m * m = 1) (hiso : ∀ y : V, ‖m y‖ = ‖y‖)
+    (hD : IsGenuinelyUnboundedLinearPMap D) :
+    HasLinearPMapBoundOnDomain
+        (linearPMapOrientationCommutator D m hdomm) ↔
+      IsGenuinelyUnboundedLinearPMap
+          (linearPMapOrientationEven D m hdomm) ∧
+        HasLinearPMapBoundOnDomain
+          (linearPMapOrientationOdd D m hdomm) := by
+  constructor
+  · intro hcomm
+    exact ⟨genuinelyUnbounded_even_of_bounded_orientationCommutator
+        D m hdomm hm hiso hD hcomm,
+      (hasLinearPMapBoundOnDomain_orientationCommutator_iff_odd
+        D m hdomm hm hiso).mp hcomm⟩
+  · rintro ⟨_, hodd⟩
+    exact (hasLinearPMapBoundOnDomain_orientationCommutator_iff_odd
+      D m hdomm hm hiso).mpr hodd
+
 /-- Universal local-detectability fracture: Lipschitz regularity and an unbounded detecting odd
 component are mutually exclusive. -/
 theorem not_boundedCommutator_and_genuinelyUnbounded_odd
@@ -183,4 +283,3 @@ theorem not_boundedCommutator_and_genuinelyUnbounded_odd
 end LocalDetectabilityFracture
 
 end GaloisForLFunctions.RHTower
-

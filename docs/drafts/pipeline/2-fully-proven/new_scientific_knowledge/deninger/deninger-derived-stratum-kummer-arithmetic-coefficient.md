@@ -389,10 +389,79 @@ square-zero lift), `DeningerRationalDivisorSequence.lean` (the divisor normaliza
 `DeningerArithmeticCofiniteOpenBaseChange.lean` and `DeningerInvariantRestriction.lean` (the source
 locality of clause 1).
 
-### What cannot be stated in Lean, and why
+### The totalization and the operations landed
 
-The sheaf morphism `(5)` and the fibre `(6)` live in a derived category of complete locally convex
-sheaves; mathlib has neither.  Clause 5's amplitude statements need pro-Stein and profinite leaf
-analysis, and clause 7's operations need the equivariant sheaf structure.  What is formalized is
-the algebraic skeleton those clauses produce — the three-term complex, its cohomology in the three
-degrees, and the orientation-line endpoint — so the card stays at stage 2.
+`DeningerThreeTermTotalization.lean` realizes `(9)` as a genuine cochain complex of modules and
+proves `(10)` — vanishing of homology in every degree above two — as a theorem about all degrees,
+together with the identification of the three surviving groups with the arithmetic `H⁰`, `H¹`,
+`H²`.  `DeningerThreeTermOperations.lean` and `DeningerThreeTermCupProduct.lean` encode **clause
+7**: morphisms of three-term complexes with functorial and additive induced maps in all three
+degrees (so Galois maps, Frobenius, Verschiebung and finite correspondences descend), the trace on
+the top group, and the cup product in every bidegree of total degree at most two.
+`DeningerThreeTermEndpointsHausdorff.lean` adds the missing half of **clause 6** — `H⁰` is the
+coefficient ring as soon as the kernel of the generic differential is the line spanned by the unit
+— and the intrinsic middle group `ker ∂ / closure(im d)`, proved Hausdorff.
+
+### What is still missing, and the route to it
+
+Two things remain before the `2 → 3` gate can close.
+
+- **Clause 5's amplitude** is now **proved** in the abstract form its justification uses: a fine
+  (flasque) sheaf has amplitude `[0,0]`, and a sheaf with a length-one flasque resolution has
+  amplitude `[0,1]`.  See below.
+- **The sheaf-level coefficient `(5)`--`(6)`.**  The residue morphism and its fibre live in a
+  derived category of complete locally convex sheaves.  What is formalized is the totalization that
+  fibre produces, in all degrees, with all of its operations.
+
+
+- 2026-08-04 — clause 7 and the totalization encoded unconditionally.  New modules, all wired into
+  `GaloisForLFunctions.RHTower` and audited to `propext, Classical.choice, Quot.sound`:
+  - `DeningerThreeTermOperations.lean` — **clause 7**: `DeningerThreeTermHom`, a morphism of
+    three-term complexes, and the maps `H0map`, `H1map`, `H2map` it induces; `H0map_id`,
+    `H0map_comp`, `H0map_add`, `H0map_smul` and their degree one and two analogues, so the
+    assignment is functorial and additive.  Galois maps, Frobenius, Verschiebung and finite
+    correspondences — integral combinations of morphisms — therefore descend, and the transverse
+    flow is recovered as `DeningerArithmeticThreeTermFlow.toHom`, whose induced maps are the
+    already-defined `thetaH0`, `thetaH1`, `thetaH2`.  `DeningerThreeTermTrace.H2map` is the trace on
+    the top group.
+  - `DeningerThreeTermCupProduct.lean` — **clause 7's cup product**: `DeningerThreeTermCup`, the
+    chain-level products in every bidegree of total degree at most two subject to the
+    Koszul--Leibniz rules, and the descended products `cupH00`, `cupH01`, `cupH10`, `cupH11`,
+    `cupH02`, `cupH20` on cohomology.
+  - `DeningerThreeTermTotalization.lean` — **the totalization `(9)` and the vanishing `(10)`**:
+    `deningerThreeTermCochain` realizes the three-term complex as a genuine cochain complex of
+    modules, `deningerThreeTermCochain_isZero_X` and `_isZero_homology` prove that it and its
+    homology vanish in every degree above two, and `deningerThreeTermCochain_homologyIso0/1/2`
+    identify the three surviving groups with the arithmetic `H⁰`, `H¹`, `H²`.  So `(10)` is now a
+    theorem about all degrees rather than a consequence of only defining three groups.
+
+- 2026-08-04 — the corepresenting free abelian sheaf on an open set and `injective ⟹ flasque`, both
+  absent from mathlib, landed unconditionally.  Axiom audit `propext, Classical.choice, Quot.sound`.
+  - `DeningerOpenSubterminalSheaf.lean` — the sheaf of types represented by an open set (its values
+    are subsingletons and opens contained in `U` have union contained in `U`), and
+    `deningerOpenTypeHomEquiv`, the Yoneda statement that maps out of it are sections over `U`.
+  - `DeningerOpenFreeSheaf.lean` — `deningerOpenFree U`, the free abelian sheaf on an open set,
+    obtained by applying the free abelian group functor and sheafifying; `deningerOpenFreeHomEquiv`,
+    the corepresentation `Hom(ℤ_U, F) ≅ F(U)`, with its naturality in the open set and in the
+    sheaf; `deningerOpenFreeIncl_mono`, that an inclusion of opens gives a monomorphism of free
+    abelian sheaves; and `deningerInjective_isFlasque`, **an injective abelian sheaf is flasque** —
+    restriction is precomposition with that monomorphism, which an injective object turns into a
+    surjection.  This is the step mathlib lacks and the one the amplitude clause needs.
+
+- 2026-08-04 — **clause 5 encoded**: sheaf cohomology and the acyclicity of fine sheaves, both
+  absent from mathlib, landed unconditionally in `DeningerFlasqueAcyclic.lean`.  Axiom audit
+  `propext, Classical.choice, Quot.sound`.
+  - `deningerSheafCohomology U F n := Ext (ℤ_U) F n`, with `deningerSheafCohomologyZeroEquiv`
+    proving that degree zero is sections — this is what makes the definition sheaf cohomology.
+  - `deningerFlasque_ext_eq_zero`, `deningerFlasque_subsingleton_cohomology` — **a flasque sheaf has
+    no higher cohomology**, hence amplitude `[0,0]`.  The proof is the classical dimension shift:
+    embed the sheaf in an injective one, which is flasque by `deningerInjective_isFlasque`, so the
+    quotient is flasque and sections of the injective surject onto sections of the quotient; the
+    covariant long exact sequence of `Ext` then kills degree one, and shifts degree `n+1` of the
+    sheaf to degree `n` of the flasque quotient.
+  - `deningerLengthOneFlasque_ext_eq_zero`, `deningerLengthOneFlasque_subsingleton` — **a sheaf with
+    a length-one flasque resolution has amplitude `[0,1]`**, the generic half of clause 5.
+  What remains for the `2 → 3` gate is the sheaf-level residue morphism `(5)` and its fibre `(6)`,
+  which live in a derived category of complete locally convex sheaves — a quasi-abelian ambient
+  mathlib does not have.  Everything the fibre produces — the totalization, its cohomology in all
+  degrees, its endpoints and all of its operations — is encoded.

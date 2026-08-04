@@ -121,6 +121,59 @@ Equivalently, a proof must control the lower tail
 which Poisson identifies with the inverted upper tail of `E(Fourier(f))`. That arithmetic summation
 tail, not the point constraint, is the first genuine Weil--prolate transfer operator.
 
+## Lean status
+
+**Formalized unconditionally, 2026-08-04**, in
+`formal/GaloisForLFunctions/RHTower/CCMApertureGauge.lean`.
+
+- **`summationMap`** — `E(f)(u) = sqrt u * sum_(n>=1) f(nu)`, as a `tsum` over `n >= 1`.
+- **`ApertureCorrector`** — the class `K_lambda`: smooth, even, vanishing for `lambda^(-1) <= |x|`,
+  total integral zero.
+- **`summationMap_eq_zero_of_vanishing`**, **`apertureCorrector_mem_kernel`** — part `1`,
+  `K_lambda ⊆ ker(R_lambda E)`.  The proof is the card's: on the aperture the *first* sampling point
+  already satisfies `nu >= u >= lambda^(-1)`, so every term vanishes.
+- **`summationMap_sub_of_vanishing`** — the correction is invisible **termwise**.  This is worth
+  isolating: no summability hypothesis appears anywhere in this module, because the two series have
+  equal terms on the aperture whether or not either converges.  The card's linear class `C_even` "on
+  which the displayed sums are defined" is therefore not needed for parts `1` and `3`; it is needed
+  only to make `E(f)` itself meaningful off the aperture.
+- **`exists_centralCorrector`** — the corrector `b`, with `b(0) = 1`, `integral b = 0`, even, smooth,
+  supported in `(-a, a)` for arbitrary `a > 0`.  The construction differs from the card's: instead of a
+  second bump placed off centre (which then has to be symmetrised to stay even), take
+  `b = phi - c x^2 phi` for a single bump `phi` centred at the origin.  The factor `x^2` is even and
+  vanishes at the origin, which are exactly the two properties the card's `psi` was chosen for, and
+  `integral x^2 phi > 0` because `phi > 0` on its open support ball.
+- **`exists_apertureCorrector_apply_zero`** — part `2`, surjectivity of `ev_0` on `K_lambda`, by
+  scaling `b`.
+- **`exists_zero_center_representative`** — part `3`: for an even integrable `f` of zero integral,
+  `f_0 = f - f(0) b` satisfies `f_0(0) = 0`, `integral f_0 = 0`, `f_0` even, and
+  `R_lambda E(f_0) = R_lambda E(f)`.  The two scalar conditions of the global-radical source space
+  `S_0^even` are thus both enforced on the same representative, which is the CCM consequence the card
+  draws.
+- **`summationMap_eq_of_sub_apertureCorrector`** — the gauge statement itself: `R_lambda E` depends
+  only on the class of the source modulo `K_lambda`.
+
+Two remarks matching the card's own limitation.  The representative differs from `f` by a globally
+smooth compactly supported function, so it has exactly the endpoint regularity of `f` and is *not*
+Schwartz — the module proves `HasCompactSupport b` and smoothness of `b`, never smoothness of `f_0`.
+And the lower tail `1_(0,lambda^(-1)) E(f)` is untouched by this module; that object is the subject of
+`ccm-poisson-tail-l2-unboundedness.md`, whose `sqrt N` lower bound and coherent extremal packet are
+formalized in `CCMArithmeticTailUnbounded.lean`.
+
+## Gates
+
+- [x] `K_lambda` contained in the kernel of the restricted summation map
+- [x] central evaluation surjective on `K_lambda`
+- [x] zero-centre representative with both scalar conditions
+- [x] Lean: the corrector constructed (even, smooth, arbitrarily small support, unit central value,
+      zero integral)
+- [x] Lean: part `1` unconditional
+- [x] Lean: part `2` unconditional
+- [x] Lean: part `3` unconditional
+- [x] Lean: gauge invariance of the finite-aperture image
+- [ ] closability of the global-radical/Poisson argument on zero-extended prolate sources at the
+      exponentially small leakage scale
+
 ## Novelty verdict
 
 The support argument is elementary once the restricted summation map is written down. It usefully

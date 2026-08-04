@@ -61,7 +61,7 @@ theorem deningerConj_pow_cycRed (V A : List (Σ i, G i)) (hV2 : 2 ≤ V.length)
   have hU2 : 2 ≤ U.length := by
     rw [hUlen]
     nlinarith
-  obtain ⟨t, m, ht, heq⟩ := deningerConj_cycRed_rotate (d := d) A U hAred hAalt hU2 hUred hUalt
+  obtain ⟨t, m, -, ht, heq, -⟩ := deningerConj_cycRed_rotate (d := d) A U hAred hAalt hU2 hUred hUalt
     hUcyc (by rw [hUprod]; rw [hUlen] at *; exact hshort)
   obtain ⟨q, r, hrle, hqlt, hqr⟩ : ∃ q r, r ≤ V.length ∧ q < n' + 1 ∧
       U.rotate t = U.rotate (q * V.length + r) := by

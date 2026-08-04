@@ -86,10 +86,10 @@ theorem ccmRationalIntegralFiniteAdele_cyclicAverage_eq
       _ = q (ccmRationalIntegralFiniteAdeleDiagonal ((r + s).val : ℤ)) :=
         ccmRationalZModToIntegralFiniteAdeleQuotient_val N (r + s)
 
-/-- **Finite Haar quadrature, vanishing form.** A quotient-class function of
-zero normalized Haar integral has zero sum on all literal diagonal residue
-representatives. -/
-theorem ccmRationalIntegralFiniteAdele_cyclicSampleSum_eq_zero_of_integral_eq_zero
+/-- **Exact finite cyclic Haar quadrature.** Sum over all literal diagonal
+residue representatives equals quotient cardinality times normalized Haar
+integral. -/
+theorem ccmRationalIntegralFiniteAdele_cyclicSampleSum_eq_nsmul_integral
     (N : ℕ) [NeZero N] (ψ : IntegralFiniteAdeles → ℂ)
     (hψ : Integrable ψ ccmRationalIntegralFiniteAdelesHaar)
     (hclass : ∀ {x y : IntegralFiniteAdeles},
@@ -97,10 +97,10 @@ theorem ccmRationalIntegralFiniteAdele_cyclicSampleSum_eq_zero_of_integral_eq_ze
           (nsmulAddMonoidHom (α := IntegralFiniteAdeles) N).range x =
         QuotientAddGroup.mk'
           (nsmulAddMonoidHom (α := IntegralFiniteAdeles) N).range y →
-      ψ x = ψ y)
-    (hzero : ∫ x, ψ x ∂ccmRationalIntegralFiniteAdelesHaar = 0) :
+      ψ x = ψ y) :
     ∑ r : ZMod N,
-      ψ (ccmRationalIntegralFiniteAdeleDiagonal (r.val : ℤ)) = 0 := by
+      ψ (ccmRationalIntegralFiniteAdeleDiagonal (r.val : ℤ)) =
+        N • (∫ x, ψ x ∂ccmRationalIntegralFiniteAdelesHaar) := by
   calc
     ∑ r : ZMod N,
         ψ (ccmRationalIntegralFiniteAdeleDiagonal (r.val : ℤ)) =
@@ -131,7 +131,24 @@ theorem ccmRationalIntegralFiniteAdele_cyclicSampleSum_eq_zero_of_integral_eq_ze
         apply Finset.sum_congr rfl
         intro r hr
         exact integral_add_left_eq_self ψ _
-    _ = 0 := by simp [hzero]
+    _ = N • (∫ x, ψ x ∂ccmRationalIntegralFiniteAdelesHaar) := by
+      rw [Finset.sum_const, Finset.card_univ, ZMod.card]
+
+/-- Vanishing corollary of exact finite cyclic Haar quadrature. -/
+theorem ccmRationalIntegralFiniteAdele_cyclicSampleSum_eq_zero_of_integral_eq_zero
+    (N : ℕ) [NeZero N] (ψ : IntegralFiniteAdeles → ℂ)
+    (hψ : Integrable ψ ccmRationalIntegralFiniteAdelesHaar)
+    (hclass : ∀ {x y : IntegralFiniteAdeles},
+      QuotientAddGroup.mk'
+          (nsmulAddMonoidHom (α := IntegralFiniteAdeles) N).range x =
+        QuotientAddGroup.mk'
+          (nsmulAddMonoidHom (α := IntegralFiniteAdeles) N).range y →
+      ψ x = ψ y)
+    (hzero : ∫ x, ψ x ∂ccmRationalIntegralFiniteAdelesHaar = 0) :
+    ∑ r : ZMod N,
+      ψ (ccmRationalIntegralFiniteAdeleDiagonal (r.val : ℤ)) = 0 := by
+  rw [ccmRationalIntegralFiniteAdele_cyclicSampleSum_eq_nsmul_integral
+    N ψ hψ hclass, hzero, nsmul_zero]
 
 end RHTower
 end GaloisForLFunctions

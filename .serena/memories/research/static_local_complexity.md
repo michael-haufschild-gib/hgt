@@ -35,6 +35,28 @@
   paper still supplies no nonlinear selector/shortcut packing bound; its
   “Quantum recurrence” entry is a two-state Gibbs purity limit, not an orbit
   recurrence theorem.
+- Updated Hellinger-Hodge-Green re-audit: its uniform-capacity selector uses
+  real Cartan growth `exp(c(Re rho-1/2))`; Hermitian quantum evolution has
+  only unit-modulus compact characters, so this mechanism cannot detect
+  shortcuts.  Its strict-reduction law does transfer as a quantum no-go: for
+  any bounded `L : ell^1(W) -> Hilbert` on `N` circuit labels, some signed
+  packet has input norm `N` and output norm at most `sqrt(N)||L||`; hence any
+  lower modulus is at most `||L||/sqrt(N)`.  Existing Lean theorems:
+  `exists_lpOne_signed_packet_hilbert_bound` and
+  `lpOne_to_innerProduct_not_boundedBelow`.  Common linear reporting cannot
+  replace O4's nonlinear aggregate shortcut-packing bound.
+- Lean-proved Hellinger survivor: retain `H` as resolved base label.  For
+  endpoint density `p_H`, circuit density `q_(H,C)`, and positive `f_H`, a
+  fibrewise bound `int q_(H,C)/f_H <= r(H)` for every circuit plus selected
+  affinity `>=alpha` on event `A` implies
+  `P(A) <= (E int f_H p_H + E r)/(2 alpha)`.  Exact continuum theorem:
+  `resolvedHellinger_selectorRemoval` in
+  `formal/GaloisForLFunctions/HTGeometry/ResolvedHellingerSelectorRemoval.lean`;
+  standard axioms only, wired into `HTGeometry`.  It absorbs selector without
+  circuit union or `sup`/expectation swap and permits `f(H,z)` from a
+  transported-parent energy barrier.  It does not prove O4; missing knowledge
+  remains an independently controlled exponential-rate barrier.  Card:
+  `docs/drafts/pipeline/3-formalized/resolved-hellinger-selector-removal-law.md`.
 - O3 semantic correction: the existing `Omega(2^n/poly)` Choi lower bound is
   on 2n qubits, hence not near-maximal unrestricted state complexity there.
   New paper proof repairs this.  Stabilizer 2-design averaging selects one
@@ -62,4 +84,44 @@
   makes all projective rational gap relations measure-zero for the
   full-density Gaussian law.  Thus the Spin product-vacuum cap bound transfers
   to completed physical time.
+- New paper-proved exact-complexity boundary:
+  `docs/drafts/pipeline/2-fully-proven/algebraic-two-local-instant-exact-complexity.md`.
+  Full two-local monodromy plus Hilbert irreducibility yields a rational
+  two-local H with `S_D` Galois group and cyclic product input.  Its spectral
+  Q-rank is `D-1`; the already Lean-proved finite Lindemann--Weierstrass
+  theorem and Jia--Wolf's trdeg circuit bound give exact state complexity
+  at least `(D-1)/16` at every nonzero algebraic time.  Semialgebraicity of
+  bounded-gate states plus one-dimensional `R_an` implies subthreshold exact
+  times are locally finite.  This proves exact complexity jumps instantly
+  and is physically invalid as Brown growth.  It sharpens O4 to quantitative,
+  fixed-radius separation from low-gate semialgebraic sets; qualitative
+  transcendence cannot supply that radius.
 - No Lean processes were started in this route.
+- Finite Hellinger minimax wall (paper-proved, Lean pending): for positive endpoint probability `p` and finite shortcut observation laws `q_c`, the optimal common reciprocal certificate satisfies `inf_(f>0) [sum p_i f_i + max_c sum q_(c,i)/f_i] = 2 max_(lambda in Delta(C)) Aff(p, sum_c lambda_c q_c)`. Therefore the certificate is useful only against the convex hull of all shortcut laws. If that convex hull contains `p`—in particular for one projective measurement once basis-state targets are within budget—the bound is trivial. Any viable route needs coherent/replica observations with a quantitative shortcut-convex-hull deficit at the full growth rate. Recorded as (O4.H7)–(O4.H8) in master card.
+- July-2026 SOTA audit: Al-Ghattas--Gamarnik arXiv:2607.14384 controls a Gaussian residual uniformly after the ancilla-assisted shallow-circuit supremum, using marginal subtraction and pruned backward cones. It does not transfer to autonomous growth: `Tr(H rho_t)=Tr(H rho_0)`, every `f(H)` witness is conserved, a fixed commutator current is a bounded signed coboundary, and backward-support variance reduction ends at depth `Theta(log n)`. Master card records (O4.G1)--(O4.G4). Positive survivor: any Gaussian-supremum O4 route needs a disorder-linear, nonconserved, non-coboundary endpoint witness whose residual keeps contracting after light-cone saturation.
+- Finite Liouvillian Hodge--Green bridge: every transition vector is its zero-gap stationary part plus an exact spectral-Liouvillian coboundary. Lean capstone `transitionGap_hodgeGreen_decomposition` in `formal/GaloisForLFunctions/HTGeometry/FiniteLiouvillianHodgeGreenLaw.lean`, wired and axiom-audited. For observables this gives `W=Pi_H W+i[H,A]`; hence every fixed linear autonomous signal is conserved plus a time coboundary. This closes fixed linear witnesses only; `||A||` may blow up with inverse gaps, and O4 still needs time-dependent/nonlinear/replica shortcut control.
+- Two-replica local-singlet synchronization is paper-closed.  For one edge,
+  the nine two-body Pauli collective commutators have Casimir spectrum
+  `{0,0,48,80}` on the local invariant basis and kernel `span{uu,ff}`.  On a
+  connected graph, the global local-singlet kernel is exactly identity/global
+  swap.  This does not imply pencil fullness: the Hermitian matrices
+  `E13+E31,E23+E32` have positive Casimir and common kernel zero but shrink a
+  plane to a line.  Exact next gate is Pauli Hall expansion for every subspace
+  on the global-permutation quotient.  Card:
+  `docs/drafts/pipeline/3-formalized/two-replica-local-singlet-synchronization-law.md`.
+- Hellinger--Hodge--Green cross-audit against sharpened O4: its recurrence
+  section is genuinely useful for the required target-independent split.
+  `finiteSpectralSurvivalFidelityMean_eq_collisionMass_add_remainder` isolates
+  exact replica collision mass, and
+  `norm_fidelityReplicaFiniteWindowRemainder_le` bounds the complement by
+  `min(1,(T delta)^(-1))` with constant one independent of dimension/order.
+  Then `resolvedHellinger_selectorRemoval` can absorb the adaptive best
+  short-circuit target on the complement, so recurrence mass is paid once.
+  Missing input remains a target-uniform reciprocal certificate at the full
+  growth rate.  Hodge--Green/common-kernel control cannot prove Hall expansion,
+  an all-subspaces/exterior-degree property.  Promising exact algebraic route:
+  combine `tightOperatorFamily_subspace_finrank` with a bi-tight replica-Pauli
+  scaling; Parseval--Bessel then implies Hall immediately.  One-replica
+  scaling already realizes this.  Growing-replica scaling/rank-nondecrease is
+  still open.
+- 2026-08-04 two-replica synchronization is fully formalized and moved to Stage 3.  The wired module `formal/GaloisForLFunctions/HTGeometry/TwoReplicaLocalSingletSynchronization.lean` now proves the physical identity/swap change of coordinates, exact intertwining with the nine-generator edge double-commutator Casimir, slice-wise tensor edge action, mismatch kernel, and the finite positive master-constraint capstone `physicalState_twoReplicaGraphMasterConstraint_iff`: on every finite nonempty preconnected graph only all-identity/all-swap Hilbert coefficient modes survive.  The module passes `lake env lean` without warnings, contains no forbidden declarations, and all three new capstones use only `propext/Classical.choice/Quot.sound`.  Synchronization is closed; growing-replica Pauli Hall expansion/bi-tight scaling remains the first algebraic frontier.

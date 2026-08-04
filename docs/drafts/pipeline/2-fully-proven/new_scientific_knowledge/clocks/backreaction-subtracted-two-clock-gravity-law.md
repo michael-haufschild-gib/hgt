@@ -8,7 +8,9 @@
 - **Lean modules:**
   `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`,
-  `formal/GaloisForLFunctions/HTGeometry/ClockLocalityDistributionKernel.lean`
+  `formal/GaloisForLFunctions/HTGeometry/ClockLocalityDistributionKernel.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockBackreactionTwoMass.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockResponseIdentifiability.lean`
 
 ## Headline
 
@@ -175,6 +177,22 @@ metric. Polarization recovers all off-diagonal metric components. Equality of th
 complete source/metric graphs is equivalent to equality of an arbitrary nonlinear continuum
 gravity law by the already proved self-calibrating continuum rigidity theorem.
 
+### Lean status of the corollary
+
+`formal/GaloisForLFunctions/HTGeometry/ClockBackreactionTwoMass.lean` composes the chain
+`(11)`--`(13)` into one theorem, so the corollary is proved rather than assembled by the reader:
+
+- `measuredClockInverse_eq_endpointDressedInverse` — the measured inverse of a species *is* the
+  endpoint-dressed mass-shifted operator, so `(12)` is a definitional identity once the dressings
+  are named;
+- `measuredClockInverse_isTwoSided_backreactionSubtracted` — that element is the two-sided inverse
+  of the coupling-off/coupling-on contrast `(8)` of the same species, at finite coupling;
+- **`backreactionSubtracted_twoMass_calibration`** — both species' contrasts are inverted, and the
+  difference of the inverses, divided by the calibrated mass difference, is exactly the
+  endpoint-calibration product `V⁻¹U⁻¹` of `(13)`.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
 ## Operational bridge
 
 Bär's Green-hyperbolic support theorem gives uniqueness of retarded/advanced Green operators in
@@ -188,6 +206,24 @@ A complete family of compact probe drives and separating clock readouts determin
 kernel of \(\widehat H\). Continuous Ramsey phase germs remove the \(2\pi\) branch ambiguity.
 Equations `(8)`--`(13)` then turn clock-only probe data into the hidden clock propagators required
 by the two-mass metric theorem.
+
+### Lean status of the operational bridge
+
+The identifiability half of the bridge — that a complete family of probe drives and a separating
+family of clock readouts determines the measured response operator, and with invertible endpoints
+the hidden one — is formalized in
+`formal/GaloisForLFunctions/HTGeometry/ClockResponseIdentifiability.lean`:
+
+- `SeparatingReadouts`, `eq_of_separatingReadouts`, `separatingReadouts_dual` — a readout family
+  separates responses when only the zero response is invisible to all of it; the full continuous
+  dual always does, by Hahn--Banach;
+- **`responseOperator_eq_of_data`** — two response operators agreeing on every (drive, readout)
+  pair are equal, provided the drives span a dense subspace;
+- **`hiddenResponse_eq_of_data`** — the same for the hidden response behind unknown endpoint gains:
+  an injective receiver and a surjective source suffice, with no calibration of either.
+
+This is exact identifiability, not stability: it says complete data determine the response, not that
+approximate data determine it approximately. Axioms: `[propext, Classical.choice, Quot.sound]`.
 
 ## Hostile novelty audit
 
@@ -226,7 +262,8 @@ single-metric propagation, common coupling, common calibration, or minimal mass 
 Paper proof of exact algebra is complete. Remaining physical core:
 
 1. recover complete \(\widehat H_\mu\) from finite compact clock interventions with quantified
-   stability;
+   stability — the *identifiability* half is now proved (`hiddenResponse_eq_of_data`); what remains
+   is the quantitative half, finite data and noise;
 2. replace invertible compact couplings by a realistic separating family;
 3. incorporate conservation-constrained gauge-invariant sources;
 4. control genuine nonlinear gravitational backreaction of probe apparatus;

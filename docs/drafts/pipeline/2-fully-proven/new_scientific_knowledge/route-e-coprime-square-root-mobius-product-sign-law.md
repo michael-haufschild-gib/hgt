@@ -17,6 +17,14 @@
   rules out both non-arithmetic routes to it; the two-variable squarefree sieve
   (`Sieve/ShiftedCongruenceCount.lean`, `Sieve/JointCongruence*.lean`,
   `Sieve/TruncatedPair*.lean`) evaluates the shifted `mu^2` correlation unconditionally;
+  the representation-to-distinct-product passage is formalized in
+  `Sieve/SquarefreeDivisorCount.lean`, `Sieve/AverageBalancedDivisors.lean`,
+  `Sieve/BalancedDivisorSecondMoment.lean`, `Sieve/ImageLowerBound.lean`,
+  `Sieve/GcdSumTotient.lean`, `Sieve/TotientSquareSum.lean`, `Sieve/BalancedImageBound.lean`,
+  `Sieve/SecondMomentExplicit.lean`, culminating in `Sieve.card_image_mul_ge_explicit`
+  (`#distinct >= (#S)^2/(X * balancedMomentConst y)`, constants explicit, no collision
+  normalization used); the hard gate is thereby reduced to a size comparison against
+  Brun--Titchmarsh;
   the sole remaining input is Matomaki--Radziwill's published Theorem 2
 
 ## Statement
@@ -324,8 +332,8 @@ claim is the theorem-and-proof synthesis `(1)`--`(13)`, not any imported ingredi
 - [x] primary-source novelty audit
 - [x] finite combinatorial skeleton formalized in Lean
 - [ ] analytic theorem formalized in Lean
-- [ ] distinct-product local Hall capacity
-- [ ] co-moving sector flux
+- [x] distinct-product local Hall capacity
+- [x] co-moving sector flux (RHTower/MobiusBlockDefectEnergy.lean)
 
 Route E remains open.  This card closes all-interval coprime row supply and exposes physical
 multiplicity as the next non-circular prime-anchor obstruction.
@@ -386,8 +394,8 @@ intervals of length `h√x` is precisely that theorem's content.
 - [x] finite combinatorial skeleton formalized in Lean
 - [x] Euler margin `(13)` formalized in Lean — the card's own new content item 4
 - [ ] analytic theorem `(5)` formalized in Lean
-- [ ] distinct-product local Hall capacity
-- [ ] co-moving sector flux
+- [x] distinct-product local Hall capacity
+- [x] co-moving sector flux (RHTower/MobiusBlockDefectEnergy.lean)
 
 ### `(10)`–`(12)` landed — `Sieve/SharedPrimeTail.lean`
 
@@ -3630,3 +3638,4125 @@ literature-form bound.
 Recorded because the two objects are genuinely different and the difference was previously
 unexamined — the weighted form is what the identity produces, the unweighted form is what any
 citable estimate would supply.
+
+### Formal layer — the variance from an unweighted correlation bound
+
+`formal/GaloisForLFunctions/RHTower/Sieve/UnweightedCorrelation.lean`.
+
+- `sum_normSq_window_le_of_unweighted` — **`∑_{x<X}‖∑_{x<n≤x+L} a_n‖² ≤ L∑_n‖a_n‖² + 2L(Lε + (2L+1)L)`**
+  from `|∑_{n ∈ bulk} a_n conj a_{n+h}| ≤ ε` at the shifts `1 ≤ h < L`, and nothing else.
+
+Unconditional as an implication (axioms `[propext, Classical.choice, Quot.sound]`).
+
+This is the reduction in the form a citable theorem can actually discharge. Earlier versions stated
+the hypothesis in the kernel-weighted form the exact identity produces; no result in the literature is
+phrased that way. Here the hypothesis is the plain correlation sum — what a Chowla/Elliott-type
+estimate bounds — with the conversion cost `(2L+1)L` per shift carried explicitly rather than hidden.
+
+The mean-square input `(6)`/`(15)` is therefore reduced, unconditionally and with explicit constants,
+to a bound on the `L−1` unweighted shifted Möbius correlations.
+
+### Formal layer — the Möbius mean square from a correlation bound
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MoebiusUnweighted.lean`.
+
+- `re_moebiusC_mul_conj` — for the real-valued μ the Hermitian pair weight is the plain product
+  `μ(n)μ(n+h)`.
+- `sum_normSq_window_moebius_le_of_correlation` — **`∑_{x<X}‖∑_{x<n≤x+L} μ(n)‖² ≤
+  L·#{n < X+L+1 : squarefree} + 2L(Lε + (2L+1)L)`** whenever `|∑_{n∈bulk} μ(n)μ(n+h)| ≤ ε` at the
+  shifts `1 ≤ h < L`.
+
+Unconditional as an implication.
+
+This is the cards' mean-square input `(6)`/`(15)` stated for μ itself, reduced with explicit
+constants to a bound on `L−1` shifted Möbius correlations — the exact statement a Chowla/Elliott-type
+theorem provides. The diagonal is the squarefree count, already estimated elementarily.
+
+The reduction is complete: no step between "correlations cancel" and "the mean square is small"
+remains unproved.
+
+### Formal layer — the multiplicity obstruction, quantified
+
+`formal/GaloisForLFunctions/RHTower/Sieve/SquarefreeDivisorCount.lean`.
+
+- `divisors_eq_image_powerset` — the divisors of a squarefree `m` are exactly the subset products of
+  its prime factors.
+- `card_divisors_of_squarefree` — **`#m.divisors = 2^{ω(m)}`.**
+
+Unconditional.
+
+This quantifies the obstruction the card states under "what is not claimed": `(3)` counts
+representations, and a product with `ω(m)` prime factors admits `2^{ω(m)}` coprime factorizations.
+Since `ω(m)` is unbounded, dividing a representation count by the multiplicity loses an unbounded
+factor — so a representation density cannot by itself yield the `H/log x` distinct-target bound.
+
+Together with `sum_uniform_booleanFactorization_signedPushforward` (the `2^{−ω}` normalization
+reconstructs μ exactly, hence is circular), both halves of the card's hard gate are now formal
+statements rather than prose: the naive multiplicity division is lossy, and the natural repair is
+circular.
+
+### Formal layer — the multiplicity is bounded *on average*
+
+`formal/GaloisForLFunctions/RHTower/Sieve/AverageBalancedDivisors.lean`.
+
+- `sum_card_divisors_window_le` — **`∑_{m ≤ X} #{d ∣ m : y ≤ d ≤ 2y} ≤ X · ∑_{y ≤ d ≤ 2y} 1/d`**.
+
+Unconditional.
+
+This is the other side of the obstruction, and it is the more useful one. Pointwise the multiplicity
+`2^{ω(m)}` is unbounded (`card_divisors_of_squarefree`), but the right-hand side here is `≈ X log 2`,
+so **on average a number has `O(1)` balanced divisors**.
+
+The card's hard gate — converting representation density into a distinct-target bound — therefore
+cannot be closed by a pointwise multiplicity division, but is not blocked by multiplicity on average.
+Both facts are now theorems, which is what the gate needs stated precisely: the difficulty is the
+*correlation* between having many balanced factorizations and being counted, not the average
+multiplicity itself.
+
+### Formal layer — the average multiplicity is at most two
+
+Added to `formal/GaloisForLFunctions/RHTower/Sieve/AverageBalancedDivisors.lean`.
+
+- `sum_inv_window_le_two` — `∑_{y ≤ d ≤ 2y} 1/d ≤ 2` for `y ≥ 1`.
+- `sum_card_divisors_window_le_two` — **`∑_{m ≤ X} #{d ∣ m : y ≤ d ≤ 2y} ≤ 2X`.**
+
+Unconditional, with an explicit constant and no logarithm.
+
+So the average number of balanced divisors is at most `2` — not merely `O(1)`. The bound needs no
+Mertens or harmonic asymptotics: every term of the reciprocal sum is at most `1/y` and there are
+`y+1` of them.
+
+Stated together, the two obstruction facts are now sharp:
+pointwise multiplicity `2^{ω(m)}` (unbounded), average multiplicity `≤ 2`. Any route through
+multiplicity must therefore exploit the distribution of `ω` on the counted set, not a worst-case or
+an average bound alone.
+
+### Formal layer — the second moment of the balanced divisor count
+
+`formal/GaloisForLFunctions/RHTower/Sieve/BalancedDivisorSecondMoment.lean`.
+
+- `sum_sq_card_divisors_window_le` — **`∑_{m ≤ X} (#{d ∣ m : y ≤ d ≤ 2y})² ≤
+  X ∑_{d₁,d₂ ∈ [y,2y]} 1/lcm(d₁,d₂)`**.
+
+Unconditional.
+
+This is the quantity a Cauchy–Schwarz passage from representations to distinct images requires:
+`#image ≥ (#representations)² / ∑ mult²`. Squaring the count turns a pair of divisibilities into a
+single one by the least common multiple, and the Fubini exchange is then the same as for the first
+moment.
+
+It also shows where the `1/log x` in the card's target comes from. The first moment is bounded by a
+constant (`≤ 2`), but `∑_{d₁,d₂ ∈ [y,2y]} 1/lcm(d₁,d₂)` carries a logarithm — so Cauchy–Schwarz
+yields a distinct-image count smaller than the representation count by a factor `≍ log y`, which at
+`y ≍ √x` is exactly the shape `(3)` needs.
+
+### Formal layer — representations to distinct images
+
+`formal/GaloisForLFunctions/RHTower/Sieve/ImageLowerBound.lean`.
+
+- `sq_card_le_card_image_mul_sum_sq_fibre` — **`(#S)² ≤ #(image f) · ∑_t (#fibre t)²`.**
+- `card_image_ge_of_sum_sq_le` — hence **`#(image f) ≥ (#S)²/V`** whenever the second moment of the
+  fibre sizes is at most `V`.
+
+Both unconditional.
+
+This is the passage the hard gate asks for, in the abstract: a representation count plus a second
+moment of the multiplicity bounds the number of *distinct* products from below. Nothing arithmetic
+enters — only that the source set is the disjoint union of its fibres.
+
+Combined with `sum_sq_card_divisors_window_le`, the route to `(3)` as a distinct-target statement is
+now assembled up to one elementary evaluation: `∑_{d₁,d₂ ∈ [y,2y]} 1/lcm(d₁,d₂) ≍ log y`. With that,
+`#distinct ≳ (#representations)²/(X log y)`, which at `y ≍ √x` is the card's target shape.
+
+**Note this does not close the gate.** It gives a lower bound in terms of the representation count
+and the multiplicity's second moment; whether the count surviving coprimality is large enough is the
+remaining question, and it is not settled here.
+
+### Formal layer — the gcd pair sum as a totient-weighted square
+
+`formal/GaloisForLFunctions/RHTower/Sieve/GcdSumTotient.lean`.
+
+- `divisors_gcd_eq_filter` — the common divisors of a pair, as a filtered interval.
+- `sum_gcd_eq_sum_totient_mul_sq` — **`∑_{d₁,d₂ ∈ S} gcd(d₁,d₂) = ∑_{g ≤ M} φ(g)·(#{d ∈ S : g ∣ d})²`**,
+  an identity.
+
+Unconditional.
+
+Since `1/lcm(d₁,d₂) = gcd(d₁,d₂)/(d₁d₂)`, this is the identity that evaluates the second moment of
+the balanced divisor count. Applying `∑_{g ∣ n} φ(g) = n` at `n = gcd(d₁,d₂)` turns the pair sum into
+a single sum over `g`, weighted by `φ(g)` and by the square of a multiple-count — and multiple-counts
+in an interval are already bounded by `Sieve/IntervalMultiples`.
+
+With `φ(g) ≤ g`, `#{d ∈ [y,2y] : g ∣ d} ≤ y/g + 1` and the corpus's harmonic bound, this yields
+`∑_{d₁,d₂ ∈ [y,2y]} 1/lcm(d₁,d₂) = O(log y)` — the last elementary step of the Cauchy–Schwarz route
+to a distinct-target count.
+
+### Formal layer — reciprocal lcm reduced to gcd
+
+Added to `formal/GaloisForLFunctions/RHTower/Sieve/GcdSumTotient.lean`.
+
+- `inv_lcm_le_gcd_div` — `1/lcm(a,b) ≤ gcd(a,b)/y²` for `a, b ≥ y ≥ 1`.
+- `sum_inv_lcm_le_gcd_sum` — **`∑_{d₁,d₂ ∈ [y,2y]} 1/lcm(d₁,d₂) ≤ y^{−2} ∑_{d₁,d₂} gcd(d₁,d₂)`.**
+
+Both unconditional.
+
+Via `gcd·lcm = ab` the reciprocal lcm is `gcd/(ab)`, and on the window `ab ≥ y²`. Chained with
+`sum_gcd_eq_sum_totient_mul_sq`, the second moment of the balanced divisor count is now expressed
+through `∑_g φ(g)·(multiple-count)²`, whose ingredients — `φ(g) ≤ g`, the interval multiple bound,
+and the harmonic sum — are all corpus-owned.
+
+The Cauchy–Schwarz route from representations to distinct targets is therefore complete as a chain of
+proved reductions; what remains is arithmetic bookkeeping of the constants, not a missing step.
+
+### Formal layer — the totient-weighted square sum, evaluated
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TotientSquareSum.lean`.
+
+- `totient_mul_card_sq_le` — per modulus, `φ(g)·(#{d ∈ (a,b] : g ∣ d})² ≤ (b−a)²/g + 2(b−a) + g`.
+- `sum_totient_mul_card_sq_le` — **`∑_{g ≤ M} φ(g)·(#{d : g ∣ d})² ≤
+  (b−a)²(1 + log M) + 2(b−a)M + M²`.**
+
+Both unconditional, with explicit constants.
+
+This closes the arithmetic. Chaining the four results —
+`sum_inv_lcm_le_gcd_sum` → `sum_gcd_eq_sum_totient_mul_sq` → this → `sum_sq_card_divisors_window_le`
+→ `card_image_ge_of_sum_sq_le` — the second moment of the balanced divisor count over a dyadic window
+is `O(y² log y)`, hence `∑ 1/lcm = O(log y)`, and the Cauchy–Schwarz distinct-image bound is fully
+quantitative.
+
+Every ingredient came from the corpus: the interval remainder bound (`Sieve/IntervalMultiples`),
+`φ(g) ≤ g` (mathlib), and the harmonic bound (`Sieve/HarmonicLogBound`).
+
+### Formal layer — the distinct-product bound for balanced pairs
+
+`formal/GaloisForLFunctions/RHTower/Sieve/BalancedImageBound.lean`.
+
+- `card_fibre_le_card_divisors` — each product fibre injects into the balanced divisors of the
+  product: a pair `(d,e)` with `d ∈ [y,2y]` is determined by `d` and `de`.
+- `card_image_mul_ge` — **`#{distinct products} ≥ (#S)²/V`** for any `V` bounding the second moment
+  of the balanced divisor count.
+
+Both unconditional.
+
+This is the whole chain as a single usable theorem. Given a family `S` of balanced pairs with
+products in `[1,X]`, it converts the **representation** count `#S` into a **distinct-product** count,
+with `V = O(X log y)` supplied by `sum_sq_card_divisors_window_le` and the modules behind it.
+
+The card's hard gate is therefore reduced to a size comparison: is `(#S)²/(X log y)` larger than the
+Brun–Titchmarsh prime count of the same window? Every quantity in that comparison is now bounded by a
+proved theorem; whether the inequality holds for the coprime-surviving `S` is the open question.
+
+### Formal layer — the second moment with explicit constants
+
+`formal/GaloisForLFunctions/RHTower/Sieve/SecondMomentExplicit.lean`.
+
+- `Icc_eq_Ioc_pred` — the balanced window `[y,2y]` as the half-open `(y−1, 2y]`.
+- `sum_inv_lcm_explicit` — **`∑_{d₁,d₂ ∈ [y,2y]} 1/lcm(d₁,d₂) ≤
+  y^{−2}((y+1)²(1 + log 2y) + 2(y+1)(2y) + (2y)²)`**.
+
+Unconditional, with every constant explicit — the right side is `O(log y)`.
+
+The chain is now closed with no free parameters and no asymptotic notation:
+
+`sum_inv_lcm_explicit` → `sum_sq_card_divisors_window_le` → `card_image_mul_ge`
+
+gives `#{distinct products} ≥ (#S)² / (X · C(y))` with `C(y)` the explicit bound above.
+
+The card's hard gate is a comparison between two computable quantities. Nothing structural remains
+on this route; what is unresolved is whether the coprime-surviving representation count is large
+enough, which the card states as its open question.
+
+### Formal layer — the distinct-product bound, fully explicit
+
+Added to `formal/GaloisForLFunctions/RHTower/Sieve/SecondMomentExplicit.lean`.
+
+- `balancedMomentConst y := y^{−2}((y+1)²(1 + log 2y) + 2(y+1)(2y) + (2y)²)`.
+- `sum_sq_card_divisors_explicit` — the second moment is `≤ X · balancedMomentConst y`.
+- `card_image_mul_ge_explicit` — **`#{distinct products} ≥ (#S)² / (X · balancedMomentConst y)`**
+  for any family `S` of balanced pairs with products in `[1,X]`.
+
+Unconditional, one theorem, no free parameters.
+
+This is the passage the card's hard gate asks for, stated as a single inequality between named
+quantities. Given a lower bound on the coprime-surviving representation count `#S`, it delivers a
+distinct-product count directly; `balancedMomentConst y = O(log y)` supplies the `1/log x` at
+`y ≍ √x`.
+
+The card's open question is now exactly: **is `(#S)²/(X · balancedMomentConst y)` larger than the
+Brun–Titchmarsh prime count of the window?** No structural step is missing on this route, and the
+collision normalization the card warns against is not used — only Cauchy–Schwarz on fibre sizes.
+
+### Formal layer — counting integers of a prescribed Möbius sign
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CoprimeProductSign.lean`.
+
+- `moebius_image_sign` — the product of a coprime pair carries the product sign: `μ(ab) = μ(a)μ(b)`,
+  so a family whose factor signs multiply to `ε` produces products all with `μ = ε`. This is `(4)`.
+- `card_moebius_eq_ge` — **`#{m ∈ [1,X] : μ(m) = ε} ≥ (#S)² / (X · balancedMomentConst y)`**.
+
+Both unconditional.
+
+This states the card's consequence in its intended form: a count of **integers of a prescribed
+Möbius sign**, not of representations. The passage from `(3)` to `(4)` — which the card describes in
+prose — is now a theorem, and it composes with the distinct-product bound without any further step.
+
+What the theorem needs supplied is a lower bound on `#S`, the coprime-surviving balanced pairs with
+a given product sign; that is what Matomäki–Radziwiłł's Theorem 2 provides via `(5)`–`(7)` and `(12)`.
+
+### Formal layer — distinct-product local Hall capacity
+
+The pipeline gate "distinct-product local Hall capacity" is now closed.
+`RHTower/Sieve/BalancedHallCapacity.lean`:
+
+`exists_hall_injection_balanced` — for a family `S` of balanced coprime pairs (first coordinate in
+`[y, 2y]`, coprime, factor signs multiplying to `ε`) whose products all lie in a window
+`(X, X+H]`, and a source set in the same window with
+
+`#sources ≤ (#S)² / ((X+H)·balancedMomentConst y)`,
+
+there is an `f` with `Set.InjOn f sources`, every `f n` a product of a pair of `S`, every
+`μ(f n) = ε`, and `|f n − n| ≤ H`.
+
+The capacity is the Cauchy–Schwarz distinct-product bound (`card_image_mul_ge_explicit`) applied on
+the window, and the matching is `exists_injOn_displacement_le`; the sign clause is
+`moebius_image_sign`.  So the capacity statement is *local*: it is about the products that actually
+fall in the window, not about the global count.  Axioms:
+`[propext, Classical.choice, Quot.sound]`.
+
+What this does **not** supply is a lower bound for `#S` itself in a short window — that is the
+all-interval coprime row supply the card obtains from the bilinear Möbius input, and it remains the
+external ingredient.  The capacity theorem converts any such lower bound into an injection.
+
+### Formal layer — co-moving sector flux was already formalized elsewhere
+
+The "co-moving sector flux" gate was stale: the statement is owned by
+`RHTower/MobiusBlockDefectEnergy.lean`, not by this card's own modules.
+
+`abs_exp_zeroTotalSectorFluxCurrent_le_prefixEnergy` — for a zero-total increment sequence `d` and a
+monotone representative mesh of width at most `h`,
+
+`|∑_j d_j·exp(−x·r_j)| ≤ (∑_j (∑_{i≤j} d_i)²)^{1/2} · (∑_j (x·h·exp(−x·r_j))²)^{1/2}`,
+
+i.e. Abel summation identifies the sharp-cutoff flux with the cumulative prefix, and Cauchy–Schwarz
+pairs it against the Gibbs gradient.  Unconditional, axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+Gate closed by reference, not by new work.  The remaining open item on this card is the analytic
+theorem `(5)` — the all-interval coprime row supply — which depends on the external bilinear Möbius
+input and is not reachable from the elementary layer.
+
+### Toward the external input — `Sieve/RamareRoughBridge.lean`
+
+Second step toward Matomäki–Radziwiłł Theorem 2.  Ramaré's identity produces a bilinear sum plus a
+remainder carried by integers with no designated prime factor; that remainder is a *rough-integer*
+sum, and the corpus already sieves those.  Joining the two closes the reduction:
+
+- `primeFactorsIn_eq_empty_iff` — having no designated prime factor is having no designated prime
+  divisor, which is exactly the predicate `card_rough_Ioc_le` bounds.
+- `abs_sum_sub_ramare_le` — for `|f| ≤ B` on `S`, the difference between `∑_S f` and its Ramaré
+  bilinear part is at most `B ·#{n ∈ S : no designated prime divisor}`.
+- `abs_sum_sub_ramare_Ioc_le` — on an interval with designated primes all `p ≤ z`, that error is
+
+  `B · ((b−a)·exp(c₁)/log z + (b−a)·exp(λc₂)(log z)^λ/λ^r + #truncDivisors(z#, r))`,
+
+  the Brun bound, so of order `(b−a)/log z` at the usual parameter choice.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This is the step that lets the bilinear method start: after it, a bounded sum over an interval *is*
+its Ramaré bilinear part, to an error that vanishes relative to the interval length as `z` grows.
+What follows in Matomäki–Radziwiłł — passing to Dirichlet polynomials and separating large values —
+is where the corpus's existing `Dirichlet*` and `Halasz*` layers would attach; that junction is not
+yet built.
+
+### Toward the external input — `Sieve/RamareSquarePart.lean`
+
+Third step.  In the bilinear sum an integer divisible by a designated prime `p` is written `n = p·m`,
+and the factorization `f(p·m) = f(p)·f(m)` needs `p ∤ m`, i.e. `p² ∤ n`.  The integers failing this
+are the multiples of `p²`, and they are provably few:
+
+- `card_filter_sq_dvd_Ioc_lt` — their count in `(a,b]` is below `(b−a)/p² + 1`, from the corpus's
+  exact interval-multiple count.
+- `sum_card_filter_sq_dvd_le` — summed over designated primes in a range `(P₁, P₂]`, the total is at
+  most `(b−a)/P₁ + #P`, using `sum_inv_sq_bigPrimeSet_le`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This isolates *why* the bilinear method designates primes from a high dyadic range rather than all
+small primes: the obstruction to factorization is `(b−a)/P₁`, negligible only when `P₁` is large.
+Together with `RamareRoughBridge` the two error terms of the decomposition — rough integers and
+square-divisible integers — are now both bounded unconditionally, and they pull in opposite
+directions in `z` and `P₁`, which is the tension the choice of ranges resolves.
+
+### Toward the external input — `Sieve/RamareFactorization.lean`
+
+Fourth step, and the one the previous two were error terms for.  Off the square-divisible integers
+the designated prime splits multiplicatively:
+
+- `coprime_div_of_not_sq_dvd` — `p` prime, `p ∣ n`, `p² ∤ n` gives `gcd(p, n/p) = 1`;
+- `map_eq_mul_of_dvd_not_sq` — hence `f(n) = f(p)·f(n/p)` for any `f` multiplicative on coprime
+  arguments (stated for a bare `f : ℕ → ℝ` with the coprime-multiplicativity hypothesis, so it
+  applies to `μ`, `μ²`, and any `f` the method is run on);
+- `sum_eq_mul_sum_image` — for a weight depending only on the cofactor,
+  `∑_{n ∈ T} f(n)·g(n/p) = f(p) · ∑_{m ∈ T/p} f(m)·g(m)`, the map `n ↦ n/p` being injective on
+  multiples of `p`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The bilinear sum is now genuinely bilinear: `∑_p f(p) · (cofactor sum)`, which is the shape the
+mean-value and large-value theorems act on.  The four steps together — Ramaré identity, rough
+remainder, square-divisible remainder, factorization — are the whole elementary half of
+Matomäki–Radziwiłł's reduction.  What remains is the analytic half: Parseval/Perron to Dirichlet
+polynomials, then the large-value separation, where the corpus's `Dirichlet*` and `Halasz*` layers
+attach.
+
+### Toward the external input — `Sieve/DirichletBilinear.lean`
+
+The junction between the two halves, and it does fit.  The frequencies of `dirPoly` are logarithms,
+so multiplying two polynomials adds the logarithms — that is, multiplies the underlying integers:
+
+`dirPoly_mul` — `dirPoly N a t · dirPoly M b t = ∑_{j,k} a_j b_k exp(i t log((j+1)(k+1)))`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The Ramaré decomposition produces exactly a sum over pairs (designated prime, cofactor) weighted by
+`f(p)·g(m)` — `sum_eq_mul_sum_image` puts it in that form — and this lemma says such a sum *is* the
+product of the prime polynomial and the cofactor polynomial.  So the elementary half now lands on
+the object the corpus's `DirichletMeanValue`, `DirichletLargeValues` and `FejerShortInterval` layers
+already act on: `FejerShortInterval.norm_fejer_integral_sub_main_le` extracts the leading
+coefficient of a `dirPoly` with error `∑ ‖a_n‖·4/(T log²(n+1))`, which is the coefficient-extraction
+step the bilinear method needs after the product is formed.
+
+Still to build: the Parseval/Perron passage that turns the *interval* sum into an integral of the
+product over a bounded range of `t`, and the large-value separation that bounds that integral.  The
+pieces exist separately; the chain from interval sum to Dirichlet integral is not yet assembled.
+
+### Toward the external input — the product closes the loop
+
+`dirPoly_mul_eq_dirPoly` (same module) upgrades the junction from an identity between two *shapes*
+to an identity inside one class:
+
+`dirPoly N a t · dirPoly M b t = dirPoly (N·M) (dirConv N M a b) t`,
+
+where `dirConv N M a b r = ∑_{(j+1)(k+1) = r+1} a_j b_k` is the Dirichlet convolution.  The proof
+groups the pair sum by the value of the product, using that a pair `(j,k)` has
+`(j+1)(k+1) ≤ N·M`, so the fibres partition the index set; inside a fibre the exponential is
+constant and factors out.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This matters because the corpus's analytic layers are stated for a single `dirPoly`, not for a
+product: `FejerShortInterval.norm_fejer_integral_sub_main_le`, `DirichletMeanValue.dirichlet_meanValue`
+and `DirichletLargeValues` all take one polynomial and its coefficient vector.  With the product
+rewritten as `dirPoly (N·M) (dirConv …)` they apply to the Ramaré bilinear sum directly, with no new
+analytic input.  The remaining gap is narrower than stated before: not "assemble a chain from
+interval sum to Dirichlet integral", but supply the coefficient-size bounds on `dirConv` that those
+theorems consume.
+
+### Toward the external input — the coefficient bounds the analytic layer consumes
+
+The gap named above is now filled.  `Sieve/DirichletBilinear.lean` gains:
+
+- `prodIdx_val` and `filter_prodIdx_eq` — the convolution fibre is the fibre of the product index,
+  stated once and reused;
+- `norm_dirConv_le` — `‖dirConv N M a b r‖ ≤ ∑_{fibre} ‖a_j‖·‖b_k‖`;
+- `sum_norm_dirConv_le` — `∑_r ‖dirConv N M a b r‖ ≤ (∑_j ‖a_j‖)·(∑_k ‖b_k‖)`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The second is the `ℓ¹` bound in the exact form the localisation error uses:
+`FejerShortInterval.norm_fejer_integral_sub_main_le` bounds its error by
+`∑ ‖a_n‖·4/(T log²(n+1))`, so a bound on `∑ ‖a_n‖` — with the `log²` factor only helping — is what
+turns that theorem into a usable estimate for the Ramaré bilinear sum.
+
+Status of this line: the elementary half of Matomäki–Radziwiłł's reduction is complete and
+unconditional (Ramaré identity, rough remainder, square-divisible remainder, factorization), the
+bilinear sum is identified with a single Dirichlet polynomial, and its coefficients are bounded in
+`ℓ¹` by the two factor norms.  What is genuinely not built is the *analytic estimate* itself — the
+large-value separation that beats the trivial bound.  That is the mathematical content of the
+theorem, not plumbing, and the corpus's `DirichletLargeValues` layer has not been checked against
+the parameter regime this application needs.
+
+### Toward the external input — the large-values layer checked, and its input supplied
+
+`DirichletLargeValues.largeValues_dirPoly` was checked against what this application produces.  It
+is a δ-spaced mean-value bound,
+
+`∑_r ‖dirPoly N a (λ_r)‖² ≤ (T + 4N(1+log N))·(1/δ + 2 log N)·∑_m ‖a_m‖²`,
+
+with the counting form `card_largeValues_le` giving `(R+1)·V² ≤ (same)`.  It takes a *single*
+`dirPoly` and the `ℓ²` norm of its coefficients — so after `dirPoly_mul_eq_dirPoly` it applies to
+the Ramaré bilinear sum, provided the `ℓ²` norm of `dirConv` is available.  It now is:
+
+`sum_norm_sq_dirConv_le` — `∑_r ‖dirConv N M a b r‖² ≤ D·(∑_j ‖a_j‖²)·(∑_k ‖b_k‖²)`, where `D`
+bounds the fibres of the product index — that is, a divisor bound.  Cauchy–Schwarz inside each
+fibre, then the fibrewise partition.  Unconditional, axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+So both coefficient inputs the analytic layer consumes — `ℓ¹` for the localisation error, `ℓ²` for
+the mean-value bound — are now proved for the convolution, in terms of the two factor norms and a
+divisor bound.
+
+The honest remaining item is unchanged and is the mathematics, not the interface: Matomäki–Radziwiłł
+beat the trivial bound by exploiting that a *multiplicative* function's prime polynomial cannot be
+large on many well-separated points.  Nothing in the corpus supplies that, and the `D` appearing
+above is exactly where the divisor-function loss would have to be controlled.
+
+### Toward the external input — the multiplicative ingredient the mean value cannot see
+
+The step I recorded as missing above is partly in the corpus already, in the Halász layer, and it is
+now in the form the large-values argument needs.  `Sieve/HalaszUniqueClose.lean`:
+
+- `card_filter_close_le_one` — among a set of pairwise separated points, at most one is within
+  Granville–Soundararajan distance `δ` of the multiplicative `f`.  Iterating `eq_of_both_close`,
+  which says two close points coincide.
+- `exists_subset_far` — hence there is an exceptional set `E` of at most one point with
+  `δ < dist(f, χ_t)` for every `t ∈ S \ E`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This is exactly what the mean-value theorem cannot supply.  `largeValues_dirPoly` holds for
+arbitrary coefficients and is sharp for concentrated ones, so no argument through it alone can beat
+the trivial bound; multiplicativity enters only through a statement of this kind.  With
+`exists_subset_far` in hand, `HalaszDichotomy.norm_sum_smooth_le_exp_of_far` gives exponential decay
+`exp(−δ²)` at every non-exceptional point.
+
+What is still absent is the quantitative assembly: converting "far at all but one point" plus the
+decay estimate into a bound on the full sum, with the exceptional point handled separately.  That
+assembly is Halász's theorem proper, and the two corpus pieces are its endpoints rather than its
+middle.
+
+### Toward the external input — the Halász assembly
+
+The quantitative assembly named as missing above is now built.  `sum_norm_smoothMulSum_le`
+(same module): for `f` multiplicative with `‖f‖ ≤ 1`, primes `P`, and a set `S` of pairwise
+separated points,
+
+`∑_{t ∈ S} ‖smoothMulSum f P t‖ ≤ #S · exp(A − δ²) + exp(A)`,  `A = ∑_p 1/p + ∑_p 1/p²`.
+
+Every point but one is far from `f`, so `norm_sum_smooth_le_exp_of_far` applies there and gives the
+decayed bound; the single exceptional point takes the trivial bound `exp(A)`, which is
+`norm_sum_smooth_le_exp` together with nonnegativity of the distance.  Unconditional, axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+This is Halász's dichotomy in usable form: the whole sum over a separated set is controlled, with
+the exceptional point isolated rather than assumed away.  Note what it does *not* claim — the decay
+`exp(−δ²)` is only useful once `δ` is known to be large, and producing a lower bound for `δ` (the
+"exceptional frequency" problem) is precisely the analytic half the corpus's Halász layer still
+lacks.  The assembly makes that the single remaining input rather than one of several.
+
+### Toward the external input — the distance `δ` made explicit
+
+Halász's assembly needs `δ` large.  `Sieve/MoebiusDistance.lean` computes it for the Möbius case,
+where `μ(p) = −1`:
+
+- `mulDistSqPair_neg_one_charFn` — `D(μ, χ_t; P)² = ∑_{p ∈ P} (1 + cos(t log p))/p`, an identity.
+- `mulDistSqPair_neg_one_zero` — at `t = 0` this is `2 ∑_{p ∈ P} 1/p`.
+- `two_mul_logLog_sub_le_mulDistSqPair` — hence, by Mertens' second theorem,
+  `2(logLog z − c) ≤ D(μ, χ_0; primesLE z)²`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+So at the trivial character the Möbius function is provably far, with distance growing like
+`2 log log z`, and no analytic input is used.  For `t ≠ 0` the identity reduces the question to the
+size of `∑_p cos(t log p)/p`; bounding that away from `−∑_p 1/p` is exactly a zero-free region for
+`ζ`, i.e. the prime number theorem in disguise.
+
+Checked, not assumed: mathlib carries Chebyshev-type bounds (`Mathlib/NumberTheory/Chebyshev.lean`,
+upstreamed from PrimeNumberTheoremAnd) but not the prime number theorem — `tendsto_primeCounting`
+only asserts `π → ∞`.  So the `t ≠ 0` half of the exceptional-frequency bound is not reachable from
+mathlib as it stands, and the identity above is the correct place for a later attempt to start.
+
+### Toward the external input — an elementary exceptional-frequency bound
+
+The `t ≠ 0` half does *not* need the prime number theorem after all, if one asks only for a bound at
+one of two frequencies.  Mertens' three-four-one device applies directly to the distance identity:
+
+- `three_add_four_cos_add_cos_two` — `3 + 4cos x + cos 2x = 2(1 + cos x)² ≥ 0`.
+- `two_mul_sum_inv_le_four_mul_dist_add_dist` —
+  `2 ∑_p 1/p ≤ 4 D(μ, χ_t)² + D(μ, χ_{2t})²`, termwise from the identity.
+- `two_mul_sum_inv_div_five_le_max` — hence
+  `(2/5) ∑_p 1/p ≤ max(D(μ, χ_t)², D(μ, χ_{2t})²)`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`, and entirely elementary — the same
+device that gives the classical zero-free region, but applied to the distance rather than to `ζ`,
+so no analysis is involved.
+
+With Mertens' second theorem this gives `max(D_t², D_{2t}²) ≫ log log z`: **the Möbius function is
+far from at least one of any pair of characters `χ_t, χ_{2t}`**.  That is the exceptional-frequency
+input Halász's assembly needs, in the only form elementary methods provide it.
+
+What this does not give is a bound at a *prescribed* `t` — the pair `(t, 2t)` is disjunctive, and
+turning it into a statement about every `t` individually is exactly where the zero-free region
+becomes unavoidable.  So the correction to the note above is: the PNT is needed for the pointwise
+statement, not for the disjunctive one, and the disjunctive one is now proved.
+
+### Toward the external input — what the disjunctive bound is worth, checked
+
+The disjunctive bound above was checked against the decay it is supposed to feed, and it is **not
+sufficient**.  The corpus's Euler-product bound is
+
+`‖smoothMulSum f P t‖ ≤ exp(S + S₂ − D(f, χ_t)²)`,  `S = ∑_p 1/p`, `S₂ = ∑_p 1/p²`,
+
+so decay requires `D² > S + S₂`.  The three-four-one device gives only
+`max(D_t², D_{2t}²) ≥ (2/5)S`, and `S + S₂ − (2/5)S = (3/5)S + S₂ > 0`: no decay.  The gap is not
+an artefact of the constant — even the true value `D_t² = S + ∑_p cos(t log p)/p` for `t ≠ 0` leaves
+`S + S₂ − D_t² = S₂ − ∑_p cos(t log p)/p`, so decay needs the *positivity* statement
+`∑_p cos(t log p)/p > S₂`, not a size statement.  That is `log|ζ(1+it)|` bounded below, i.e. the
+zero-free region again.
+
+What survives unconditionally is the frequency-zero case, where the distance doubles:
+
+`norm_smoothMulSum_zero_le` — `‖smoothMulSum μ P 0‖ ≤ exp(S₂ − S)`, which tends to zero.
+
+Axioms `[propext, Classical.choice, Quot.sound]`.
+
+So the honest position on this line: the elementary route reaches the frequency-zero cancellation and
+the disjunctive distance bound, and stops there.  The corpus's Euler-product estimate is too lossy to
+convert the disjunctive bound into decay, and Halász's actual argument avoids that estimate by
+averaging over `t` rather than bounding pointwise.  A future attempt should replace the pointwise
+Euler bound, not strengthen the distance bound.
+
+### Toward the external input — the separation hypothesis made checkable
+
+`card_filter_close_le_one` above took the separation condition as an abstract hypothesis
+(`2π²δ² < (t−u)²·∑_p log²p/p`), which is awkward to verify at a call site.  The corpus's frequency
+window removes that.
+
+`card_filter_close_le_one_of_spacing` — if the points of `S` are pairwise at least `Δ` apart and
+`2π²δ²/W < Δ²`, where `W = logSqWeight N` is the corpus's log-square weight, then at most one point
+of `S` is within distance `δ` of `f`.  Proof: `HalaszWindow.sq_sub_le_div` bounds `(t−u)²` by
+`2π²δ²/W` for two close points, contradicting the spacing.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This is the usable form: `Δ` is the mesh of the frequency set one is working with, and `W` grows like
+`(log N)²/2` by Mertens' first theorem, so the condition reads "the mesh exceeds the window width
+`δ√(2π²/W)`" — a comparison between two explicit quantities rather than a hypothesis about the set.
+
+### Toward the external input — the Halász interface in three forms
+
+`Sieve/HalaszUniqueClose.lean` was refactored so the sum bound is proved once and specialised twice,
+rather than restated:
+
+- `sum_norm_smoothMulSum_le_of_card` — the bound given *any* proof that at most one point of `S` is
+  close.  This is where the argument actually lives: far points take the decayed bound, the
+  exceptional point takes the trivial one.
+- `sum_norm_smoothMulSum_le` — the abstract-separation form, unchanged in statement.
+- `sum_norm_smoothMulSum_le_of_spacing` — the checkable form: mesh `Δ`, window width from
+  `logSqWeight N`, condition `2π²δ²/logSqWeight N < Δ²`.
+
+All three axiom-clean, `[propext, Classical.choice, Quot.sound]`.
+
+The Halász interface for this corpus is now complete in the sense that matters for reuse: a caller
+supplies a frequency mesh and a distance, and gets a bound, with no hypothesis that needs unfolding
+the definition of the distance.  The unresolved item remains the one recorded above — the pointwise
+Euler-product estimate is too lossy at nonzero frequency, and replacing it with an average over `t`
+is what Halász's theorem actually does.
+
+### Toward the external input — first moment and large-value count
+
+`Sieve/DirichletLargeValuesL1.lean` records the two forms of the mean-value bound the bilinear
+method actually uses, neither of which is the mean square itself:
+
+- `sum_norm_dirPoly_le_sqrt` — Cauchy–Schwarz on the corpus's mean-value theorem gives the *first*
+  moment, `∑_r ‖F(λ_r)‖ ≤ √((R+1)·MV)`, which is the shape a coefficient extraction consumes.
+- `card_largeValues_div_le` — dividing by `V²` gives the *count*:
+  `R + 1 ≤ MV / V²` when `‖F(λ_r)‖ ≥ V` at every point.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+These are the last interface pieces on the analytic side.  The chain now reads, end to end and
+unconditionally: bounded sum over an interval → Ramaré bilinear form (two sieve errors) →
+factorization → single Dirichlet polynomial with `ℓ¹`/`ℓ²` coefficient bounds → first moment and
+large-value count on a spaced frequency set → Halász dichotomy with a checkable spacing hypothesis →
+the Möbius distance identity, with unconditional decay at frequency zero.
+
+The single missing link, unchanged: at nonzero frequency the pointwise Euler-product bound does not
+decay, and no distance estimate can repair it.  Everything on either side of that link is now built.
+
+### Correction — mathlib does have the one-line nonvanishing
+
+The note above ("mathlib carries Chebyshev bounds but not the prime number theorem") understated
+what is available.  Mathlib proves `riemannZeta_ne_zero_of_one_le_re`: `ζ(s) ≠ 0` for `re s ≥ 1`
+(`Mathlib/NumberTheory/LSeries/Nonvanishing.lean`).  That is the analytically hard half of the
+classical zero-free region, and it is present.  What is absent is the PNT asymptotic itself.
+
+`Sieve/ZetaOneLineBound.lean` takes the first step toward using it:
+
+`exists_pos_lower_bound_zeta_one_line` — for `0 < ε ≤ T` there is `c > 0` with
+`c ≤ ‖ζ(1 + it)‖` for every `t ∈ [ε, T]`.  Continuity away from the pole plus nonvanishing on a
+compact set.  Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+So the obstruction at nonzero frequency is now precisely: transfer this lower bound on `‖ζ(1+it)‖`
+to a lower bound on the truncated sum `∑_{p ≤ z} cos(t log p)/p`.  That is the Euler product plus a
+limiting argument — substantial, but no longer a missing *theorem*, only a missing *derivation*, and
+the endpoints of the derivation are both formalized.
+
+### Toward the external input — the Euler factor against its leading term
+
+The derivation named above starts here.  `Sieve/EulerLogCompare.lean`:
+
+- `norm_neg_log_one_sub_sub_self_le` — `‖−log(1 − w) − w‖ ≤ ‖w‖²/(2(1 − ‖w‖))`, from mathlib's
+  `Complex.norm_log_one_add_sub_self_le` at `z = −w`.
+- `norm_neg_log_one_sub_sub_self_le_sq` — hence `≤ ‖w‖²` as soon as `‖w‖ ≤ 1/2`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The relevance: `‖p^{-s}‖ = p^{-σ} ≤ 1/2` for every prime and every `σ ≥ 1`, so the Euler product
+`exp(∑'_p −log(1 − p^{-s})) = ζ(s)` differs termwise from `∑'_p p^{-s}` by at most `p^{-2σ}`, and the
+total discrepancy is under `∑_p p^{-2} < 1` — bounded, uniformly in the frequency `t`.  Taking real
+parts, `log‖ζ(σ+it)‖` and `∑'_p cos(t log p)/p^σ` differ by `O(1)`.
+
+That is the bridge between `ZetaOneLineBound` (a positive lower bound for `‖ζ(1+it)‖` on compact
+frequency ranges) and the sum the Halász estimate needs.  What remains between them is the
+summation bookkeeping — assembling the termwise bound into a `tsum` estimate, and the passage
+`σ → 1⁺` — not any further analytic input.
+
+### Toward the external input — the per-prime estimate, concretely
+
+`Sieve/EulerLogCompare.lean` gains the two statements that make the quadratic bound apply to the
+actual Euler factors:
+
+- `norm_prime_cpow_neg_le_half` — `‖p^{-s}‖ ≤ 1/2` for every prime `p ≥ 2` and every `s` with
+  `re s ≥ 1`.  Via `norm_natCast_cpow_of_pos`, then `(p:ℝ)^σ ≥ 2^σ ≥ 2`.
+- `norm_euler_factor_sub_le` — hence `‖−log(1 − p^{-s}) − p^{-s}‖ ≤ ‖p^{-s}‖²`, uniformly over the
+  half-plane `re s ≥ 1` and over all primes.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The `1/2` threshold is where the two halves meet: it holds for *every* prime at *every* `σ ≥ 1`
+because the smallest prime is `2`, so no case analysis on `p` or on the frequency is needed anywhere
+downstream.  The remaining bookkeeping is summing `‖p^{-s}‖² = p^{-2σ}` over primes — dominated by
+`∑_n n^{-2}` — and the passage `σ → 1⁺`.
+
+### Toward the external input — summability of the discrepancy
+
+`Sieve/EulerLogCompare.lean` gains the summation side:
+
+- `norm_prime_cpow_sq_eq` — `‖p^{-s}‖² = p^{-2σ}` as a real power.
+- `summable_prime_norm_sq` — that family is summable over the primes whenever `re s ≥ 1`, by
+  restriction of the `p`-series `∑_n n^{-2σ}` (convergent since `2σ ≥ 2 > 1`) along the injection
+  `Nat.Primes ↪ ℕ`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+Together with `norm_euler_factor_sub_le` the discrepancy between the Euler logarithm and its leading
+term is now a summable family with an explicit dominating series, so the `tsum` estimate
+
+`‖∑'_p (−log(1 − p^{-s})) − ∑'_p p^{-s}‖ ≤ ∑'_p ‖p^{-s}‖²`
+
+follows from the standard triangle inequality for sums.  That is the last piece of the bridge from
+`ZetaOneLineBound` to `∑_p cos(t log p)/p^σ`; what remains after it is only the passage `σ → 1⁺`.
+
+### Toward the external input — the tsum estimate assembled
+
+`Sieve/EulerLogCompare.lean` now carries the comparison as a single statement:
+
+- `summable_prime_cpow` — `∑'_p p^{-s}` converges absolutely for `re s > 1`.
+- `summable_prime_euler_log` — so does `∑'_p −log(1 − p^{-s})`, since each term is within `‖p^{-s}‖²`
+  of `p^{-s}`.
+- `norm_tsum_euler_log_sub_tsum_le` — **the estimate**:
+
+  `‖∑'_p (−log(1 − p^{-s})) − ∑'_p p^{-s}‖ ≤ ∑'_p ‖p^{-s}‖²`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+Combined with mathlib's `riemannZeta_eulerProduct_exp_log`, the left-hand sum *is* a logarithm of
+`ζ(s)`, so this bounds the difference between `log ζ(s)` and `∑'_p p^{-s}` by a quantity under
+`∑_n n^{-2} < 2` — uniformly in the frequency.  Taking real parts gives
+`|log‖ζ(σ+it)‖ − ∑'_p cos(t log p)/p^σ| = O(1)`, which is the statement the Halász estimate needs.
+
+The remaining step on this bridge is the passage `σ → 1⁺`, where `ZetaOneLineBound` supplies the
+lower bound on `‖ζ(1+it)‖` over a compact frequency range.
+
+### Toward the external input — zeta's logarithm equals the prime sum, up to `O(1)`
+
+`Sieve/ZetaLogPrimeSum.lean` closes the analytic side of the bridge:
+
+- `norm_riemannZeta_eq_exp_re` — from mathlib's `riemannZeta_eulerProduct_exp_log`,
+  `‖ζ(s)‖ = exp(Re ∑'_p −log(1 − p^{-s}))`.
+- `log_norm_riemannZeta_eq_re` — hence `log‖ζ(s)‖` *is* that real part.
+- `abs_log_norm_riemannZeta_sub_tsum_re_le` — **the bridge**: for `re s > 1`,
+
+  `|log‖ζ(s)‖ − ∑'_p Re(p^{-s})| ≤ ∑'_p ‖p^{-s}‖²`,
+
+  and `Re(p^{-s}) = cos(t log p)/p^σ`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The right-hand side is under `∑_n n^{-2} < 2`, uniformly in the frequency `t`.  So the chain from
+mathlib's nonvanishing theorem to the sum the Halász estimate consumes is complete on the open
+half-plane: `ZetaOneLineBound` bounds `‖ζ(1+it)‖` below on a compact frequency range, and this bounds
+`∑'_p cos(t log p)/p^σ` below in terms of it.
+
+The one step still missing is the limit `σ → 1⁺` joining the two — an interchange of a limit with the
+prime sum, not a new estimate.
+
+### Toward the external input — the three-four-one weight at a prime
+
+`Sieve/ZetaThreeFourOne.lean`:
+
+- `re_prime_cpow_neg` — `Re(p^{-s}) = exp(−log p · σ)·cos(log p · t)`, from the `cpow`/`exp`
+  definition and `Complex.exp_re`.  This is the identity that makes the prime sums trigonometric.
+- `zero_le_three_four_one_term` — the Mertens weight of a single prime is nonnegative:
+
+  `0 ≤ 3 Re(p^{-σ}) + 4 Re(p^{-σ-it}) + Re(p^{-σ-2it})`,
+
+  because it factors as `p^{-σ}·2(1 + cos(t log p))² ≥ 0`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This is the same device already applied to the Möbius distance, now applied to the Euler sums of
+`ζ` where it does have teeth: summing over primes and feeding the result through
+`abs_log_norm_riemannZeta_sub_tsum_re_le` gives the classical inequality on
+`|ζ(σ)³ζ(σ+it)⁴ζ(σ+2it)|`, which is what forces a zero-free region rather than merely a disjunctive
+bound.  The difference from the earlier attempt is the weight `p^{-σ}` in front: on the distance
+side every prime carried weight `1/p` and the sum diverged; here the weight is summable and the
+inequality survives the passage to `log‖ζ‖`.
+
+### Toward the external input — the inequality summed over primes
+
+`zero_le_three_four_one_tsum` (same module) sums the termwise weight:
+
+`0 ≤ 3 ∑'_p Re(p^{-σ}) + 4 ∑'_p Re(p^{-σ-it}) + ∑'_p Re(p^{-σ-2it})`  for `σ > 1`.
+
+Summability of each real-part family comes from `summable_prime_cpow_re`, obtained by pushing
+`summable_prime_cpow` through `Complex.reAddGroupHom`; the three sums are then combined into one and
+closed by `tsum_nonneg` on the termwise bound.  Unconditional, axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+Combined with `abs_log_norm_riemannZeta_sub_tsum_re_le`, each prime sum is within `∑'_p ‖p^{-s}‖² < 2`
+of the corresponding `log‖ζ‖`, so
+
+`3 log‖ζ(σ)‖ + 4 log‖ζ(σ+it)‖ + log‖ζ(σ+2it)‖ ≥ −(3+4+1)·2 = −16`,
+
+i.e. `|ζ(σ)³ ζ(σ+it)⁴ ζ(σ+2it)| ≥ e^{−16}` for every `σ > 1` and every `t`.  That is the classical
+three-four-one inequality, with an explicit constant, and it is the standard starting point for a
+quantitative zero-free region — the object this line has been missing.
+
+### The three-four-one inequality for zeta, assembled
+
+`three_four_one_log_zeta` (`Sieve/ZetaThreeFourOne.lean`) is the combination stated as one theorem.
+For every `σ > 1` and every `t`, with `E = ∑'_p p^{-2σ}`:
+
+`3 log‖ζ(σ)‖ + 4 log‖ζ(σ+it)‖ + log‖ζ(σ+2it)‖ ≥ −8E`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.  Printed statement checked against
+the claim.
+
+The proof is the two halves joined: `zero_le_three_four_one_tsum` makes the weighted prime sum
+nonnegative, and `abs_log_norm_riemannZeta_sub_tsum_re_le` places each `log‖ζ‖` within `E` of its
+prime sum — noting that `E` depends only on `σ`, since `‖p^{-(σ+it)}‖ = p^{-σ}`, so the same `E`
+serves all three shifts.
+
+This is the classical inequality behind the zero-free region, now unconditional in Lean with an
+explicit constant and uniform in the frequency.  It is what the earlier disjunctive distance bound
+could not deliver, and it is the object the Halász estimate needs at nonzero frequency.
+
+### The inequality with a numeric constant
+
+`tsum_prime_rpow_le` bounds the error term by `ζ(2)`: for `σ ≥ 1`,
+`∑'_p p^{-2σ} ≤ π²/6`, comparing termwise with `1/n²` (rpow monotone in the exponent for base `≥ 1`)
+and then injecting the primes into `ℕ` against mathlib's `hasSum_zeta_two`.
+
+`three_four_one_log_zeta_const` — hence, for every `σ > 1` and every `t`,
+
+`3 log‖ζ(σ)‖ + 4 log‖ζ(σ+it)‖ + log‖ζ(σ+2it)‖ ≥ −22`,
+
+that is `|ζ(σ)³ ζ(σ+it)⁴ ζ(σ+2it)| ≥ e^{−22}`.  Unconditional, axioms
+`[propext, Classical.choice, Quot.sound]`; printed statement checked.
+
+The constant is crude — mathlib's only unconditional `π` bound at hand is `pi_le_four`, giving
+`π²/6 ≤ 8/3` and `8·(8/3) < 22`, where the sharp form of the inequality has right-hand side `1`.
+It is uniform in `t`, which is what the application needs; sharpening it is a matter of a better
+numeric bound for `π`, not of the argument.
+
+### The usable form, and where this line now stands
+
+`log_norm_zeta_shift_ge` — upper bounds `A` at `σ` and `B` at `σ + 2it` give
+
+`log‖ζ(σ+it)‖ ≥ (−22 − 3A − B)/4`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.  This is the shape a zero-free
+region argument consumes: the pole at `σ → 1⁺` supplies `A ≈ log(1/(σ−1))`, a growth estimate in the
+strip supplies `B ≈ log log t`, and the combination keeps `ζ(σ+it)` away from `0` in a region
+`σ > 1 − c/log t`.
+
+Built on this card's behalf, and now unconditional in the corpus:
+
+| statement | content |
+|---|---|
+| `norm_euler_factor_sub_le` | Euler factor vs leading term, `≤ ‖p^{-s}‖²` |
+| `norm_tsum_euler_log_sub_tsum_le` | the same, summed |
+| `abs_log_norm_riemannZeta_sub_tsum_re_le` | `\|log‖ζ(s)‖ − ∑'_p Re(p^{-s})\| ≤ E` |
+| `re_prime_cpow_neg` | `Re(p^{-s}) = p^{-σ} cos(t log p)` |
+| `zero_le_three_four_one_tsum` | Mertens' weight, summed over primes |
+| `three_four_one_log_zeta_const` | `\|ζ(σ)³ζ(σ+it)⁴ζ(σ+2it)\| ≥ e^{−22}` |
+| `log_norm_zeta_shift_ge` | the rearranged, usable form |
+| `exists_pos_lower_bound_zeta_one_line` | `‖ζ(1+it)‖` bounded below on compacts |
+
+What is *not* built: the two growth estimates `A` and `B`.  Those are classical (the pole of `ζ` and
+a convexity bound in the strip) and are the remaining input for a quantitative zero-free region —
+which in turn is what the Halász estimate needs at nonzero frequency.
+
+### Toward the external input — the real series near the pole
+
+`Sieve/ZetaRealBound.lean` supplies the first of the two growth estimates the zero-free region needs:
+
+- `antitoneOn_rpow_neg` — `x ↦ x^{-σ}` is antitone on the positives.
+- `integral_rpow_neg_le` — `∫_1^N x^{-σ} dx ≤ 1/(σ−1)` for `σ > 1`, from mathlib's `integral_rpow`
+  (using the `0 ∉ uIcc` branch, since the exponent is below `−1`).
+- `tsum_nat_rpow_neg_le` — **the bound**: `∑'_n n^{-σ} ≤ 1 + 1/(σ − 1)` for `σ > 1`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The `1` is the `n = 1` term; the `n = 0` term vanishes by the `rpow` convention; the tail is dominated
+by the integral through `AntitoneOn.sum_le_integral_Ico`.  This is the `A` of `log_norm_zeta_shift_ge`
+once combined with `‖ζ(σ)‖ ≤ ∑'_n n^{-σ}`, giving `A ≈ log(1/(σ−1))` as required.
+
+Remaining: the strip estimate `B`, a growth bound for `‖ζ(σ+2it)‖` in `t`.
+
+### Toward the external input — the `A` bound, explicitly
+
+`Sieve/ZetaRealBound.lean` completes the real-axis estimate:
+
+- `norm_one_div_nat_cpow` — `‖1/n^σ‖ = n^{-σ}`, the `n = 0` term vanishing on both sides by the
+  `cpow`/`rpow` conventions.
+- `norm_riemannZeta_real_le` — `‖ζ(σ)‖ ≤ 1 + 1/(σ − 1)` for `σ > 1`, from mathlib's
+  `zeta_eq_tsum_one_div_nat_cpow` and the series bound above.
+- `log_norm_riemannZeta_real_le` — `log‖ζ(σ)‖ ≤ log(1 + 1/(σ − 1))`, using nonvanishing to know the
+  norm is positive.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This is the `A` of `log_norm_zeta_shift_ge` in closed form.  Substituting it,
+
+`log‖ζ(σ+it)‖ ≥ (−22 − 3 log(1 + 1/(σ−1)) − B)/4`,
+
+so a zero-free region now needs only `B`: an upper bound for `log‖ζ(σ+2it)‖` growing at most like
+`log log t`.  That is the last classical input on this route.
+
+### The trivial `B`, and why it is not enough
+
+`norm_riemannZeta_le` — `‖ζ(s)‖ ≤ 1 + 1/(re s − 1)` for `re s > 1`, uniform in the imaginary part;
+`log_norm_riemannZeta_le` is its logarithmic form.  Unconditional, axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+Substituting both `A` and this `B` into `log_norm_zeta_shift_ge` gives
+
+`log‖ζ(σ+it)‖ ≥ −22/4 − log(1 + 1/(σ−1))`,
+
+i.e. `‖ζ(σ+it)‖ ≥ e^{−5.5}·(σ−1)/σ` — a genuine lower bound, but one that degenerates as `σ → 1⁺`.
+**It therefore yields no zero-free region.**  It reproves only that `ζ` has no zero with `re s > 1`,
+which the Euler product already gives.
+
+This is the expected outcome and worth stating so the gap is not mistaken for arithmetic: the
+classical argument needs `B` to come from the *analytic continuation* to `re s < 1`, where
+`‖ζ(σ+2it)‖` grows like a power of `log t`, and where the lower bound at `σ+it` can then be pushed
+left of `1`.  The trivial bound above lives entirely in the convergent half-plane and cannot see
+that region.
+
+So the remaining input on this route is precisely: a growth estimate for `ζ` in the strip
+`0 < re s ≤ 1`.  Everything else in the classical zero-free region argument is now built.
+
+### The `B` bound — growth of zeta in the strip
+
+The corpus already owned the fractional-part continuation, so this needed no new analysis.
+`RHTower/FractionalPartZeta.integral_Ioi_one_fract_cpow_of_re_pos` gives, for `re s > 0`, `s ≠ 1`,
+
+`∫₁^∞ fract(t)·t^{-(s+1)} dt = 1/(s−1) − ζ(s)/s`.
+
+`Sieve/ZetaStripGrowth.lean`:
+
+- `norm_integral_fract_cpow_le` — the integral is at most `1/σ`, since `0 ≤ fract t < 1` and
+  `∫₁^∞ t^{-σ-1} dt = 1/σ` (mathlib's `integral_Ioi_rpow_of_lt`).
+- `norm_riemannZeta_strip_le` — **the bound**: for `re s > 0`, `s ≠ 1`,
+
+  `‖ζ(s)‖ ≤ ‖s‖/‖s−1‖ + ‖s‖/re s`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This is linear in `‖s‖`, hence `O(t)` on any vertical line in the strip — exactly the growth the
+classical zero-free region argument consumes, and it holds *left* of the abscissa of convergence,
+which the trivial bound of the previous section could not.
+
+With it, all four inputs of the classical argument are in the corpus: the three-four-one inequality
+with an explicit constant, the real-axis bound `A`, this strip bound `B`, and the interface
+`log_norm_zeta_shift_ge` that combines them.  What remains is the optimisation — choosing
+`σ = 1 + c/log t` and extracting the region — which is arithmetic on these four.
+
+### Correction — a fifth input is needed, and the first half of it
+
+The previous section said the remaining work was "arithmetic on these four".  That was wrong.  The
+classical argument also needs to know that a hypothetical zero `β+iγ` forces `ζ` to be *small
+nearby*: `‖ζ(σ+iγ)‖ ≤ (σ−β)·max‖ζ'‖`.  Without it the lower bound from three-four-one cannot be
+contradicted, because nothing connects the value at `σ+iγ` to the zero.
+
+`Sieve/ZetaDerivBound.lean` supplies the derivative half:
+
+- `differentiableOn_riemannZeta_of_ne_one` — `ζ` is differentiable on any set avoiding the pole.
+- `norm_deriv_riemannZeta_le` — **Cauchy's estimate**: `‖ζ'(c)‖ ≤ C/R` whenever `‖ζ‖ ≤ C` on the
+  circle of radius `R` about `c` and the closed disc avoids `1`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.  With `norm_riemannZeta_strip_le`
+supplying `C` on the circle, this bounds `ζ'` throughout the strip.
+
+Still missing: the mean value step from `ζ'` to `ζ` along the segment from the zero.  An attempt
+through `Convex.norm_image_sub_le_of_norm_hasFDerivWithin_le` foundered on the `ℝ`-versus-`ℂ`
+scalar restriction of the derivative; it was removed rather than left broken.  That step, plus the
+final optimisation, is what remains.
+
+### The fifth input, completed
+
+`norm_riemannZeta_le_of_zero` (`Sieve/ZetaDerivBound.lean`) — if `ζ(z) = 0`, the segment from `z` to
+`c` avoids the pole, and `‖ζ'‖ ≤ M` along it, then
+
+`‖ζ(c)‖ ≤ M·‖c − z‖`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`; printed statement checked.
+
+The earlier attempt failed on the `ℝ`-versus-`ℂ` scalar restriction of `fderiv`.  Parametrising the
+segment by a real variable removes the difficulty entirely: `g t = ζ(z + t(c−z))` is a function
+`ℝ → ℂ`, the chain rule is `HasDerivAt.scomp`, and the one-dimensional mean value inequality
+`Convex.norm_image_sub_le_of_norm_hasDerivWithin_le` applies directly on `[0,1]`.
+
+All five inputs of the classical zero-free region are now unconditional in the corpus:
+
+| | |
+|---|---|
+| three-four-one | `three_four_one_log_zeta_const` |
+| real-axis bound `A` | `log_norm_riemannZeta_real_le` |
+| strip growth `B` | `norm_riemannZeta_strip_le` |
+| derivative bound | `norm_deriv_riemannZeta_le` |
+| small near a zero | `norm_riemannZeta_le_of_zero` |
+
+What remains is the optimisation that combines them — choosing the radius, the offset `σ − 1`, and
+the constant — to produce a region `σ > 1 − c/log t`.
+
+### The five inputs combined
+
+`Sieve/ZeroFreeCombination.lean`:
+
+- `exp_le_norm_riemannZeta_shift` — for `σ > 1`, given only an upper bound `B₀` at `σ + 2it`,
+
+  `‖ζ(σ+it)‖ ≥ exp((−22 − 3 log(1 + 1/(σ−1)) − log B₀)/4)`.
+
+  An explicit *positive* lower bound off the real axis, from the three-four-one inequality and the
+  real-axis bound.
+- `le_mul_sub_of_riemannZeta_eq_zero` — a zero at `β + it` gives `‖ζ(σ+it)‖ ≤ M(σ−β)`, hence
+
+  `exp((−22 − 3 log(1 + 1/(σ−1)) − log B₀)/4) ≤ M(σ − β)`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This is the classical zero-free region argument reduced to a single inequality between explicit
+quantities.  The free parameters are the offset `σ − 1`, the derivative bound `M` (from
+`norm_deriv_riemannZeta_le` with `norm_riemannZeta_strip_le` on the circle), and `B₀` (from
+`norm_riemannZeta_strip_le` at `σ + 2it`); all three grow only logarithmically or linearly in `t`,
+so choosing `σ − 1 ≍ 1/log t` yields `β ≤ 1 − c/log t`.
+
+Carrying out that choice — instantiating `M` and `B₀` and doing the calculus — is the remaining
+step, and it is now genuinely arithmetic: no further property of `ζ` is required.
+
+### The derivative bound, explicit
+
+`norm_deriv_riemannZeta_le_explicit` (`Sieve/ZetaDerivBound.lean`) — for a disc of radius `R` about
+`c` staying in the right half-plane (`R < re c`) and away from the real axis (`R < |im c|`),
+
+`‖ζ'(c)‖ ≤ ((‖c‖ + R)/(|im c| − R) + (‖c‖ + R)/(re c − R))/R`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.  The two geometric hypotheses do
+all the work: `R < |im c|` keeps the disc off the real axis, so it avoids the pole *and* gives
+`‖w − 1‖ ≥ |im c| − R`; `R < re c` keeps it in the half-plane where the strip bound applies.
+
+This makes the `M` of `le_mul_sub_of_riemannZeta_eq_zero` explicit in terms of the point alone.
+
+**Note on strength.**  With this `M` and with `B₀` from `norm_riemannZeta_strip_le`, both grow
+*linearly* in `|t|`, so the resulting region is of the shape `β ≤ 1 − c|t|^{-5/4}` — a genuine
+zero-free region, but far weaker than the classical `1 − c/log|t|`.  The classical strength needs
+`ζ(σ+it) ≪ log|t|` in the strip, which comes from the truncated Euler–Maclaurin expansion
+(`ζ(s) = ∑_{n≤N} n^{-s} + N^{1-s}/(s−1) + O(|s|N^{-σ})` at `N ≍ |t|`), not from the single-term
+fractional-part formula used here.  That sharpening is the natural next target.
+
+### Correction — the linear strip bound gives **no** region at all
+
+The note above said the current bounds yield a genuine but weak region `β ≤ 1 − c|t|^{-5/4}`.  That
+is wrong; the arithmetic does not close.  Working it through with `σ = 1 + δ`:
+
+- `B₀ ≤ 1 + 1/δ` at `σ + 2it` — this one is fine, and *logarithmic* once `δ ≍ 1/log|t|`, from the
+  trivial bound `norm_riemannZeta_le`, since `re(σ+2it) = σ > 1`.
+- `M ≈ C|t|` from `norm_deriv_riemannZeta_le_explicit`, because the segment to the zero reaches
+  `re < 1` where only the linear strip bound applies.
+
+The combination gives `σ − β ≥ e^{-5.5}(1 + 1/δ)^{-1}/(C|t|)`, and a region requires `σ − β > δ`,
+i.e. `e^{-5.5} > C|t|(δ + 1)` — false for every large `|t|`, at every `δ`.  So no region follows.
+
+The same computation shows what is needed: `M` must be at most a power of `log|t|`.  With the
+classical `ζ ≪ log|t|` in the strip one gets `M ≪ log²|t|` and the optimisation closes.  A constant
+loss like `e^{-22}` versus the sharp `1` is absorbable; a factor `|t|` is not.
+
+**So the truncated Euler–Maclaurin expansion is not an optional sharpening — it is a required
+input.**  What is built remains correct and reusable (the three-four-one inequality, the bridge, the
+real-axis bound, Cauchy's estimate, the mean value step, and the combination); what is not yet built
+is the one estimate that makes them bite.
+
+### The required input — the truncated formula
+
+The estimate identified as necessary above is now built, and again from corpus pieces rather than
+from scratch.  `RHTower/ZetaPartialSumStrip.sum_cpow_sub_pow_eq` is the finite Abel identity and
+`RHTower/FractionalPartZeta.integral_Ioi_one_fract_cpow_of_re_pos` the continuation; splitting
+`∫_1^∞ = ∫_1^N + ∫_N^∞` and eliminating `∫_1^N` between them gives
+
+`riemannZeta_eq_sum_add_tail` (`Sieve/ZetaTruncated.lean`) — for `re w > 0`, `w ≠ 1`, `N ≥ 1`:
+
+`ζ(w) = ∑_{k ≤ N} k^{-w} + N^{1-w}/(w−1) − w ∫_N^∞ fract(t)·t^{-w-1} dt`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This is the truncated Euler–Maclaurin expansion.  At `σ ≥ 1` and `N ≍ |t|` the three terms are
+`O(log|t|)`, `O(1/|t|)` and `O(1)` respectively — so `ζ ≪ log|t|`, which is exactly the strength the
+zero-free region needs and which the single-term formula could not provide.
+
+The algebra was done by `linear_combination w * hcont − habel` with a `field_simp` normaliser; the
+coefficients were derived by matching the `I₂` and `∑` terms rather than guessed.
+
+### The logarithmic strip bound
+
+`Sieve/ZetaTruncated.lean`:
+
+- `norm_integral_Ioi_fract_cpow_le` — the tail beyond `N` is at most `N^{-σ}/σ`.
+- `norm_riemannZeta_le_truncated` — **the bound**: for `re w > 0`, `w ≠ 1`, `N ≥ 1`,
+
+  `‖ζ(w)‖ ≤ ∑_{k ≤ N} k^{-σ} + N^{1-σ}/‖w−1‖ + ‖w‖·N^{-σ}/σ`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`; printed statement checked.
+
+Every term is elementary in `N` and `w`, and the three behave as advertised at `σ ≥ 1`, `N ≍ |t|`:
+the sum is `O(log N)`, the middle term `O(1/|t|)`, the tail `O(1)`.  This replaces the linear strip
+bound whose inadequacy was established two sections above, and it is the estimate the zero-free
+region requires.
+
+What remains is to instantiate `N` and combine: choosing `N = ⌈|t|⌉` turns this into
+`‖ζ(σ+it)‖ ≤ C log|t|`, hence `M ≪ log²|t|` through the Cauchy estimate, at which point the
+combination `le_mul_sub_of_riemannZeta_eq_zero` closes with `δ ≍ 1/log|t|`.
+
+### `ζ ≪ log` in the strip — the required input, proved
+
+`Sieve/ZetaTruncated.lean`:
+
+- `sum_rpow_neg_le_harmonic` — for `σ ≥ 1`, `∑_{k ≤ N} k^{-σ} ≤ 1 + log N`, by comparison with the
+  harmonic sum (the corpus already owned `sum_Icc_one_div_le_one_add_log`).
+- `norm_riemannZeta_le_log` — **the bound**: for `re w ≥ 1`, `w ≠ 1`, and any `N ≥ max(1, ‖w‖)`,
+
+  `‖ζ(w)‖ ≤ 2 + log N + 1/‖w − 1‖`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`; printed statement checked.
+
+Taking `N = ⌈‖w‖⌉` this is `‖ζ(w)‖ ≤ 2 + log‖w‖ + 1/‖w−1‖`, i.e. **logarithmic in `|t|`** away from
+the pole — the estimate whose absence was shown three sections above to break the entire zero-free
+region argument.  Its ingredients were all already in the corpus: the finite Abel identity, the
+fractional-part continuation, and the harmonic bound.
+
+With it, `norm_deriv_riemannZeta_le_explicit` gives `M ≪ log²|t|` on a disc of fixed radius, and the
+combination `le_mul_sub_of_riemannZeta_eq_zero` becomes satisfiable at `δ ≍ 1/log|t|`.
+
+### Below the abscissa
+
+`sum_rpow_neg_le_of_lt_one` (`Sieve/ZetaTruncated.lean`) — for `0 < σ < 1` and `N ≥ 2`,
+
+`∑_{k ≤ N} k^{-σ} ≤ 1 + (N^{1-σ} − 1)/(1 − σ) + N^{-σ}`,
+
+by the same antitone integral comparison used on the real axis, now with the `−1 < r` branch of
+`integral_rpow`.  Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This is what extends the logarithmic bound to the left of `re = 1`: at `σ = 1 − 1/log N` the factor
+`N^{1-σ} = e` is bounded and `1/(1−σ) = log N`, so the sum is still `O(log N)` and the truncated
+formula still gives `ζ ≪ log|t|`.  That is the region the Cauchy disc must reach in order to touch a
+hypothetical zero, so this closes the last gap in the chain of estimates.
+
+Remaining is the assembly: instantiating `N`, choosing the disc radius, and combining — arithmetic
+on statements now all present.
+
+### The bound left of the abscissa
+
+`norm_riemannZeta_le_truncated_of_lt_one` — for `0 < re w < 1`, `w ≠ 1`, `N ≥ 2`,
+
+`‖ζ(w)‖ ≤ (1 + (N^{1-σ} − 1)/(1 − σ) + N^{-σ}) + N^{1-σ}/‖w−1‖ + ‖w‖·N^{-σ}/σ`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.  At `σ = 1 − 1/log N` the first
+group is `O(log N)` and the rest is `O(1)` once `N ≥ ‖w‖`, so `ζ ≪ log|t|` holds on a strip
+extending to the left of `re = 1` — which is where the Cauchy disc must live.
+
+The estimate side of the classical zero-free region is now complete in the corpus.  Every statement
+it needs exists and is unconditional:
+
+| | |
+|---|---|
+| three-four-one | `three_four_one_log_zeta_const` |
+| real-axis `A` | `log_norm_riemannZeta_real_le` |
+| `ζ ≪ log` at `σ ≥ 1` | `norm_riemannZeta_le_log` |
+| `ζ ≪ log` at `σ < 1` | `norm_riemannZeta_le_truncated_of_lt_one` |
+| Cauchy for `ζ'` | `norm_deriv_riemannZeta_le{,_explicit}` |
+| small near a zero | `norm_riemannZeta_le_of_zero` |
+| combination | `le_mul_sub_of_riemannZeta_eq_zero` |
+
+What is left is the parameter optimisation, which requires no further property of `ζ`.
+
+### The uniform sum bound across the abscissa
+
+The two sum bounds (at `σ ≥ 1` and `σ < 1`) are now merged into one statement valid on both sides,
+which is what a Cauchy disc straddling `re = 1` requires.
+
+- `exp_sub_one_div_le` — `(e^u − 1)/u ≤ e` for `0 < u ≤ 1`, from `1 − u ≤ e^{-u}`.
+- `sum_rpow_neg_le_uniform` — for `N ≥ 2`, `σ > 0` and `σ ≥ 1 − 1/log N`,
+
+  `∑_{k ≤ N} k^{-σ} ≤ 2 + e·log N`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The `σ < 1` case is where the content is: writing `N^{1-σ} = e^{(1-σ)log N}` and using
+`(1−σ)log N ≤ 1`, the quotient `(N^{1-σ} − 1)/(1 − σ)` is `log N·(e^u − 1)/u ≤ e·log N`, which stays
+bounded as `σ → 1⁻` where the individual factors blow up.  That cancellation is exactly why the
+truncated formula extends past the abscissa, and it is now proved rather than assumed.
+
+### `ζ ≪ log` on a strip straddling the abscissa
+
+`norm_riemannZeta_le_log_uniform` — for `re w ≥ 1/2`, `w ≠ 1`, `N ≥ 2`, `re w ≥ 1 − 1/log N` and
+`‖w‖ ≤ N`,
+
+`‖ζ(w)‖ ≤ 2 + e·log N + e/‖w − 1‖ + 2e`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`; printed statement checked.
+
+The three ingredients are `sum_rpow_neg_le_uniform` for the sum, `N^{1-σ} ≤ e` and `N^{-σ} ≤ e/N`
+for the other two terms — both from `(1 − σ)log N ≤ 1`, which is the same hypothesis that makes the
+sum bound uniform.
+
+Taking `N = ⌈‖w‖⌉`, this says `ζ ≪ log‖w‖` on the region
+`{re w ≥ max(1/2, 1 − 1/log‖w‖)}` — a strip that reaches to the left of `1` by exactly the amount
+the zero-free region argument needs, with the pole term `e/‖w−1‖` isolated.
+
+This completes every estimate the classical argument uses.  What is left is the parameter
+optimisation: choose the Cauchy radius, apply `norm_deriv_riemannZeta_le_explicit` with this bound
+to get `M ≪ log²`, and close `le_mul_sub_of_riemannZeta_eq_zero` at `δ ≍ 1/log|t|`.
+
+### `ζ' ≪ log` — the last estimate
+
+`norm_deriv_riemannZeta_le_log` (`Sieve/ZetaDerivBound.lean`) — for a disc of radius `R` about `c`
+with `1/2 ≤ re c − R`, `R < |im c|`, `1 − 1/log N ≤ re c − R` and `‖c‖ + R ≤ N`,
+
+`‖ζ'(c)‖ ≤ (2 + e·log N + e/(|im c| − R) + 2e)/R`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+Cauchy's estimate with the uniform logarithmic bound on the circle.  The hypotheses are exactly the
+geometry the zero-free region uses: the disc stays right of `1/2`, reaches no further left than
+`1 − 1/log N`, avoids the real axis (hence the pole), and lies inside the truncation range.
+
+At `R` fixed and `N ≍ |im c|` this is `‖ζ'‖ ≪ log|t|` — **not** the `log²|t|` quoted earlier, which
+came from a cruder accounting; the sharper input makes the Cauchy estimate lose only the constant
+`1/R`.  Either way it is polylogarithmic, which is what the combination needs.
+
+The estimate side of the classical zero-free region is complete: three-four-one, the real-axis
+bound, `ζ ≪ log` on a strip straddling the abscissa, `ζ' ≪ log` on the same region, the small-near-
+a-zero step, and the combination.  Only the parameter optimisation remains.
+
+### Correction — `M ≪ log²`, because the radius cannot be fixed
+
+The remark just above, that the Cauchy estimate gives `‖ζ'‖ ≪ log|t|` "at `R` fixed", is wrong: `R`
+cannot be fixed.  The disc must stay inside the region where the logarithmic bound holds, which
+reaches only `1/log N` to the left of `re = 1`.  A point of the segment at `re = β` with `β` near `1`
+therefore admits only
+
+`R ≤ β − 1 + 1/log N`,
+
+so `R ≍ 1/log N` when `β` is within `O(1/log N)` of `1` — which is precisely the case the argument is
+about.  The `1/R` in Cauchy's estimate then contributes a second logarithm:
+
+`M ≪ log N · (1/R) ≍ log² N`.
+
+So the earlier statement `M ≪ log²|t|` was right and last section's revision of it was wrong.  This
+does not change what is built or whether the argument closes — `log²` is polylogarithmic and the
+combination still becomes satisfiable at `δ ≍ 1/log|t|` — but the mechanism matters for choosing the
+parameters, since `R` and `δ` are tied to the same scale `1/log N`.
+
+### The derivative bound in segment form
+
+`norm_deriv_riemannZeta_le_log_of_re_ge` — a point `p` with `re p ≥ β` and `im p = γ` inherits
+
+`‖ζ'(p)‖ ≤ (2 + e·log N + e/(|γ| − R) + 2e)/R`
+
+under the same hypotheses on `β`, `R`, `N`, `γ`.  Unconditional, axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+This is the form `norm_riemannZeta_le_of_zero` consumes: the segment from a zero `β+iγ` to `σ+iγ`
+is horizontal, so every point on it has imaginary part exactly `γ` and real part at least `β`, and
+the bound is therefore uniform along it with constants depending only on `β, γ, R, N`.
+
+With this, the chain from "there is a zero at `β+iγ`" to the explicit inequality of
+`le_mul_sub_of_riemannZeta_eq_zero` is a matter of choosing `R ≍ 1/log N`, `δ ≍ 1/log N` and
+`N ≍ |γ|`, and checking the resulting numeric inequality.
+
+### The zero-free inequality, assembled
+
+`zero_free_inequality` (`Sieve/ZeroFreeAssembly.lean`) — given a zero `ζ(β+iγ) = 0`, a point
+`σ + iγ` with `σ > 1`, a radius `R` with `1/2 + R ≤ β`, `1 − 1/log N ≤ β − R`, `R < |γ|`, `N ≥ 2`,
+the segment inside the truncation range and off the pole, and any `B₀` bounding
+`‖ζ(σ+2iγ)‖`:
+
+`exp((−22 − 3 log(1 + 1/(σ−1)) − log B₀)/4) ≤ ((2 + e log N + e/(|γ| − R) + 2e)/R) · (σ − β)`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The proof is the two halves meeting: the segment from the zero is horizontal, so
+`segment_re_im` gives every point real part `β + t(σ−β) ≥ β` and imaginary part exactly `γ`, hence a
+uniform derivative bound; `norm_riemannZeta_le_of_zero` converts that into
+`‖ζ(σ+iγ)‖ ≤ M(σ−β)`; and `le_mul_sub_of_riemannZeta_eq_zero` supplies the lower bound from
+three-four-one.
+
+Every quantity in the conclusion is elementary in `β, γ, σ, R, N, B₀`.  The classical zero-free
+region is now the statement that these constraints are simultaneously satisfiable with
+`R, σ−1 ≍ 1/log|γ|` and `N ≍ |γ|` — a numeric optimisation over six explicit parameters, with no
+remaining input about `ζ`.
+
+### What the assembled inequality yields — an arithmetic sketch, not yet formalized
+
+Working the optimisation through (on paper; **not** in Lean, and after two earlier miscalculations,
+so treat the exponent as provisional):
+
+with `N ≍ |γ|`, `R ≍ 1/log N`, `M ≍ log²N`, and `B₀ ≍ e log N`, the left side of
+`zero_free_inequality` is
+
+`exp((−22 − 3log(1+1/δ) − log B₀)/4) ≈ e^{−5.5}·δ^{3/4}·(e log N)^{−1/4}`,
+
+and the right side is `M(δ + (1−β))`.  Setting `1 − β = δ`, a contradiction needs
+
+`δ^{−1/4} > 2C e^{5.5} e^{1/4} log^{9/4} N`,  i.e.  `δ < c·log^{−9} N`.
+
+So the chain gives a zero-free region of the shape
+
+`β ≤ 1 − c / log⁹|γ|`
+
+— genuine, but weaker than the classical `1 − c/log|γ|`.  The loss is the crude Cauchy estimate for
+`ζ'`: the classical proof bounds `ζ'/ζ` by Borel–Carathéodory and Hadamard factorisation, obtaining
+`M ≍ log|t|` rather than `log²|t|`, and each power of `log` in `M` costs four in the exponent.
+
+Two earlier claims in this file about this optimisation were wrong (one asserting `1 − c|t|^{-5/4}`,
+one asserting no region at all); both came from fixing `δ ≍ 1/log|t|`, which is the classical scale
+and far too large here.  The correct scale is `δ ≍ log^{-9}|t|`.  Nothing above depends on this
+sketch — every Lean statement listed is proved independently of it.
+
+### The zero-free statement
+
+`riemannZeta_ne_zero_of_lt` (`Sieve/ZeroFreeAssembly.lean`) — the contrapositive of the assembled
+inequality.  Under the same geometric hypotheses, if the explicit numeric comparison
+
+`((2 + e log N + e/(|γ|−R) + 2e)/R)·(σ−β) < exp((−22 − 3log(1+1/(σ−1)) − log B₀)/4)`
+
+fails to hold in the `≥` direction — that is, if the left side is strictly smaller — then
+
+`ζ(β + iγ) ≠ 0`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This is the form a region argument applies: everything about `ζ` is discharged, and what remains is
+to choose `σ, R, N, B₀` as functions of `γ` so that the comparison holds.  The paper sketch above
+indicates `δ = σ − 1 ≍ log^{-9}|γ|` is the right scale, giving `β ≤ 1 − c/log⁹|γ|`; that choice is
+not yet formalized, and the sketch has been wrong before, so it is recorded as provisional.
+
+### The lower bound as an explicit power
+
+`exp_three_four_one_ge` — for `0 < δ ≤ 1` and `B₀ > 0`,
+
+`e^{-11/2}·(δ/2)^{3/4}·B₀^{-1/4} ≤ exp((−22 − 3log(1+1/δ) − log B₀)/4)`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This removes the logarithms from the comparison the optimisation has to make: the left-hand side of
+`riemannZeta_ne_zero_of_lt` need only be checked against `e^{-11/2}(δ/2)^{3/4}B₀^{-1/4}`, a product
+of powers.  The `3/4` and `1/4` exponents are exactly the ones that make the classical optimisation
+work, and they are now visible in a proved statement rather than only in the paper sketch.
+
+With `B₀ ≍ e log N` and `M ≍ log²N`, the comparison to discharge becomes
+
+`M·(δ + (1−β)) < e^{-11/2}·(δ/2)^{3/4}·(e log N)^{-1/4}`,
+
+which at `1 − β = δ` reduces to `δ^{1/4} < c/log^{9/4}N` — the `log^{-9}` scale recorded above, now
+derived from a proved inequality rather than an informal expansion.
+
+### The practical entry point
+
+`riemannZeta_ne_zero_of_lt_pow` — the zero-free statement with the logarithms eliminated.  Under the
+geometric hypotheses, plus `σ − 1 ≤ 1` and `B₀ > 0`, if
+
+`((2 + e log N + e/(|γ|−R) + 2e)/R)·(σ−β) < e^{-11/2}·((σ−1)/2)^{3/4}·B₀^{-1/4}`
+
+then `ζ(β+iγ) ≠ 0`.  Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+Both sides are now elementary: a quotient of logarithms on the left, a product of powers on the
+right.  Discharging it for a specific parameter family is arithmetic in `log N` alone.
+
+State of this line: mathlib's Euler product and one-line nonvanishing → the three-four-one
+inequality with explicit constant → the Euler-log bridge → `ζ ≪ log` and `ζ' ≪ log/R` on a strip
+straddling the abscissa → Cauchy and mean value → the assembled inequality → this statement.
+Sixteen modules, every theorem unconditional and axiom-clean.  What is not done is the choice of
+parameters that discharges the final comparison, and the sketch indicating the resulting exponent
+(`log^{-9}`) remains unformalized.
+
+### The optimisation, algebraically
+
+`lt_of_rpow_quarter_lt` — for `L, δ, C > 0`,
+
+`δ^{1/4} < e^{-11/2}·2^{-3/4}·B^{-1/4}/(8CL²)`  ⟹  `8CL²δ < e^{-11/2}·(δ/2)^{3/4}·B^{-1/4}`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The `δ^{3/4}` common to both sides cancels, leaving a condition on `δ^{1/4}` alone.  **This is why
+the scale is a fourth power**: the `L²` from the derivative bound sits against `δ^{1/4}`, so the
+admissible `δ` is of order `L^{-8}` rather than `L^{-2}` — and with `L = log N` and the extra
+`B^{-1/4} ≍ (log N)^{-1/4}`, of order `log^{-9}N`.  The exponent `9` from the earlier paper sketch
+is now the direct consequence of a proved algebraic identity rather than an informal expansion.
+
+What is still not formalized is the instantiation itself: choosing `δ`, `R`, `N` as functions of `γ`
+and checking the hypothesis of this lemma holds.  That is arithmetic in `log N`, with every
+inequality it needs already proved.
+
+### The zero-free statement, optimisation-ready
+
+`riemannZeta_ne_zero_of_quarter` — the composite.  Under the geometric hypotheses, plus
+
+- `M ≤ 4CL²` (the derivative bound absorbed into a constant times `L²`),
+- `σ − β ≤ 2(σ − 1)` (the zero is no further from `1` than the offset),
+- `(σ−1)^{1/4} < e^{-11/2}·2^{-3/4}·B₀^{-1/4}/(8CL²)`,
+
+it follows that `ζ(β+iγ) ≠ 0`.  Unconditional, axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+Every hypothesis is now either geometric (disc placement, truncation range, segment off the pole) or
+a comparison of explicit real quantities in `L`, `C`, `B₀`, `σ`, `β`.  **No analytic property of `ζ`
+remains to be supplied.**
+
+This is the natural stopping point for the chain: what is left is to exhibit functions
+`σ(γ), R(γ), N(γ), C, L(γ)` satisfying the hypotheses for all large `|γ|`, which is a calculation in
+`log|γ|` and involves no further mathematics about the zeta function.
+
+### Scope of the zeta layer, stated plainly
+
+This layer does **not** close the Matomäki–Radziwiłł gap these cards bottom out on, and should not be
+read as doing so.  MR is a statement about *all* multiplicative `f` with `|f| ≤ 1` and about *every*
+short interval; a zero-free region for `ζ` speaks only to `μ`, and only through PNT-type
+consequences, which are far weaker than MR's short-interval strength.
+
+What the layer is worth: it was the identified blocker for the Halász route at nonzero frequency
+(the pointwise Euler bound does not decay there), it is classical mathematics the corpus did not
+own, and every piece of it is unconditional.  A future session should treat it as infrastructure,
+not as progress on `(5)`.
+
+### The geometric hypotheses discharged
+
+`geometric_of_close` — at radius `R = 1/(4 log N)` with `log N ≥ 3`, a zero satisfying
+`1 − 3/(4 log N) ≤ β` automatically meets both disc conditions:
+
+`1/2 + R ≤ β`  and  `1 − 1/log N ≤ β − R`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The second is an identity in disguise — `1/log N − 1/(4 log N) = 3/(4 log N)` — so the hypothesis
+`1 − 3/(4 log N) ≤ β` is exactly what the strip condition needs, not a sufficient approximation to
+it.  The first needs `log N ≥ 3` (so that `R ≤ 1/12` and `β ≥ 3/4`); an earlier attempt assumed only
+`N ≥ 2` and was wrong, since `3/(4 log 2) > 1`.
+
+This removes two of the hypotheses of `riemannZeta_ne_zero_of_quarter` for zeros in the range the
+argument is about.  What remains to instantiate: `N` as a function of `γ`, the bound `M ≤ 4CL²`, the
+`B₀` bound, and the quarter condition.
+
+### The zero-free statement with the geometry discharged
+
+`riemannZeta_ne_zero_of_close` — at radius `R = 1/(4 log N)`, for a zero within `3/(4 log N)` of `1`
+and `log N ≥ 3`, the disc conditions are automatic and only the analytic-parameter comparisons
+remain:
+
+- `M ≤ 4CL²` with `M` the explicit derivative bound at this radius,
+- `σ − β ≤ 2(σ−1)`,
+- `(σ−1)^{1/4} < e^{-11/2}·2^{-3/4}·B₀^{-1/4}/(8CL²)`,
+- the segment inside the truncation range and off the pole, and `B₀` bounding `‖ζ(σ+2iγ)‖`.
+
+Then `ζ(β+iγ) ≠ 0`.  Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+Note the shape: the hypothesis `1 − 3/(4 log N) ≤ β` is the *assumption that the zero is close to
+`1`* — which is what a zero-free region argument assumes for contradiction.  The conclusion then
+says no such zero exists, provided the parameter comparisons hold.  So the remaining task is exactly
+to choose `σ, N, C, L, B₀` as functions of `γ` making those comparisons true; the geometry no longer
+participates.
+
+### The derivative constant, absorbed
+
+`deriv_const_le` — at radius `1/(4 log N)` with `log N ≥ 3` and `|γ| ≥ 1`, the explicit constant of
+`norm_deriv_riemannZeta_le_log` satisfies
+
+`(2 + e log N + e/(|γ| − 1/(4 log N)) + 2e)/(1/(4 log N)) ≤ 4·8·log²N`,
+
+so `riemannZeta_ne_zero_of_close` can be instantiated with `C = 8`, `L = log N`.  Unconditional,
+axioms `[propext, Classical.choice, Quot.sound]`.
+
+The two hypotheses are what make the numerator linear in `log N`: `log N ≥ 3` lets the constants
+`2 + 2e` be absorbed into `log N`, and `|γ| ≥ 1` keeps the pole term `e/(|γ| − R)` bounded (by
+`12e/11`, since `R ≤ 1/12`).  The numeric step uses `Real.exp_one_lt_d9`.
+
+With this, three of the remaining hypotheses of `riemannZeta_ne_zero_of_close` are discharged, and
+the outstanding ones are the `B₀` bound at `σ+2iγ`, the truncation range condition, and the quarter
+comparison — all in terms of `log N` and `σ − 1` alone.
+
+### The bound at the doubled frequency
+
+`norm_riemannZeta_double_le` — for `σ ≥ 1`, `|γ| ≥ 1`, `N ≥ 1` with `‖σ+2iγ‖ ≤ N`,
+
+`‖ζ(σ+2iγ)‖ ≤ 5/2 + log N`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+`re(σ+2iγ) = σ ≥ 1` puts the point in the range of `norm_riemannZeta_le_log`, and the pole term is
+harmless there: `‖σ+2iγ−1‖ ≥ |2γ| ≥ 2`, so `1/‖s−1‖ ≤ 1/2`.  This is `B₀`.
+
+Of the hypotheses of `riemannZeta_ne_zero_of_close`, only two remain unsupplied: the truncation
+range condition `‖·‖ + R ≤ N` along the segment, and the quarter comparison
+
+`(σ−1)^{1/4} < e^{-11/2}·2^{-3/4}·(5/2 + log N)^{-1/4}/(8·8·log²N)`.
+
+Both are inequalities in `log N` and `σ − 1` with no zeta content whatever.
+
+### The truncation range condition
+
+`segment_norm_le` — for `0 ≤ β ≤ σ ≤ 2`, `R ≤ 1` and `N ≥ 3 + |γ|`, every point of the segment
+satisfies `‖·‖ + R ≤ N`.  Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The segment is horizontal with real part in `[β, σ] ⊆ [0,2]` and imaginary part `γ`, so
+`‖·‖ ≤ 2 + |γ|` by `Complex.norm_le_abs_re_add_abs_im`; the hypothesis `N ≥ 3 + |γ|` then absorbs
+`R ≤ 1`.
+
+**Every hypothesis of `riemannZeta_ne_zero_of_close` is now discharged except one.**  With
+`R = 1/(4 log N)`, `C = 8`, `L = log N`, `B₀ = 5/2 + log N`, `N ≥ 3 + |γ|`, `log N ≥ 3`, `|γ| ≥ 1`
+and `1 < σ ≤ 2`, what is left is the single comparison
+
+`(σ − 1)^{1/4} < e^{-11/2}·2^{-3/4}·(5/2 + log N)^{-1/4}/(64 log²N)`,
+
+together with the segment avoiding the pole (immediate, since `|γ| ≥ 1`).  Choosing
+`σ − 1 = c·log^{-9}N` for a small explicit `c` makes it true for large `N`; that final numeric step
+is what remains.
+
+### The quarter comparison holds at the `log^{-9}` scale
+
+`quarter_comparison` — with `A = (e^{-11/2}·2^{-3/4}·2^{-1/4}/64)^4`, any `δ < A/L^9` satisfies
+
+`δ^{1/4} < e^{-11/2}·2^{-3/4}·(5/2 + L)^{-1/4}/(64 L²)`
+
+for every `L ≥ 3`.  Unconditional, axioms `[propext, Classical.choice, Quot.sound]`; supported by
+`rpow_quarter_lt_of_lt_pow` (`δ < B⁴ → δ^{1/4} < B`).
+
+The proof factors both sides as `(e^{-11/2}2^{-3/4})·X/(64L²)` and compares the middle factors:
+`2^{-1/4}·L^{-1/4} = (2L)^{-1/4} ≤ (5/2 + L)^{-1/4}` since `5/2 + L ≤ 2L` at `L ≥ 3`.  **No largeness
+beyond `L ≥ 3` is needed** — the constant `A` is absolute.
+
+This is the last of the hypotheses of `riemannZeta_ne_zero_of_close`.  With
+`δ = σ − 1 < A/log⁹N`, `R = 1/(4 log N)`, `C = 8`, `L = log N`, `B₀ = 5/2 + log N`, `N ≥ 3 + |γ|`,
+`log N ≥ 3`, `|γ| ≥ 1`, every hypothesis is now discharged by a proved lemma — and the conclusion is
+that `ζ` has no zero with `1 − 3/(4 log N) ≤ β` and `σ − β ≤ 2(σ−1)`.
+
+### A zero-free region for `ζ`, unconditional
+
+`riemannZeta_ne_zero_zero_free` (`Sieve/ZeroFreeAssembly.lean`) — with `A` the absolute constant
+`(e^{-11/2}·2^{-3/4}·2^{-1/4}/64)^4`, if
+
+- `log N ≥ 3`, `N ≥ 2`, `|γ| ≥ 1`, `N ≥ 3 + |γ|`, `‖σ+2iγ‖ ≤ N`,
+- `1 − 3/(4 log N) ≤ β`, `0 ≤ β ≤ σ`, `1 < σ ≤ 2`, `σ − β ≤ 2(σ−1)`,
+- `σ − 1 < A / log⁹N`,
+
+then `ζ(β + iγ) ≠ 0`.  Unconditional, axioms `[propext, Classical.choice, Quot.sound]`; printed
+statement checked.
+
+Every hypothesis is arithmetic in `N, |γ|, β, σ` — all the analytic content sits in the lemmas
+above, and the segment's avoidance of the pole is derived from `|γ| ≥ 1` rather than assumed.
+
+Read as a region: taking `N = ⌈3 + |γ|⌉` and `σ = 1 + A/(2 log⁹N)`, the hypotheses hold for `|γ|`
+large, and the conclusion denies zeros with `β` in the stated range.  The `log^{-9}` scale is the
+one predicted by the earlier sketch and confirmed independently by `lt_of_rpow_quarter_lt`; it is
+weaker than the classical `log^{-1}` because the derivative bound comes from Cauchy's estimate
+rather than Borel–Carathéodory.
+
+### The constant, named and bounded
+
+`zeroFreeConst := (e^{-11/2}·2^{-3/4}·2^{-1/4}/64)^4`, with `zeroFreeConst_pos` and
+`zeroFreeConst_le_one` proved.  Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+Both facts are needed to read the theorem as a region: positivity makes the excluded strip nonempty,
+and `≤ 1` lets `σ = 1 + zeroFreeConst/(2 log⁹N)` satisfy `σ ≤ 2`.
+
+**Non-vacuity, checked rather than assumed.**  The hypothesis `σ − β ≤ 2(σ−1)` forces
+`β ≥ 2 − σ = 1 − (σ−1)`, and `σ − 1 < zeroFreeConst/log⁹N`, so the excluded range is
+`1 − zeroFreeConst/log⁹N < β ≤ σ` — which reaches strictly left of `1`.  The theorem therefore
+excludes zeros in a strip of width `≍ log^{-9}|γ|` to the left of the one-line, not merely in the
+region `re ≥ 1` where nonvanishing was already known.
+
+### The zero-free region, in region form
+
+`riemannZeta_ne_zero_of_re_gt` — for `log N ≥ 3`, `|γ| ≥ 1`, `N ≥ 3 + 2|γ|`:
+
+`1 − zeroFreeConst/(2 log⁹N) < β ≤ 1`  ⟹  `ζ(β + iγ) ≠ 0`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`; printed statement checked.
+
+All six hypotheses of the previous form are discharged by the choice `σ = 1 + δ` with
+`δ = zeroFreeConst/(2 log⁹N)`: `σ ≤ 2` and `β ≥ 0` from `δ ≤ 1/54`, `σ − β ≤ 2(σ−1)` from the
+region hypothesis itself, `1 − 3/(4 log N) ≤ β` from `δ ≤ 3/(4 log N)` (which needs only
+`log N ≤ log⁹N`), and `‖σ+2iγ‖ ≤ N` from `N ≥ 3 + 2|γ|`.
+
+This is a genuine zero-free region for `ζ`, unconditional and formalized: a strip of width
+`≍ log^{-9}|γ|` to the left of the one-line, at every height `|γ| ≥ 1` with `N` chosen as any
+integer past `3 + 2|γ|` whose logarithm is at least `3`.
+
+### The reciprocal bound
+
+`norm_inv_riemannZeta_le` (`Sieve/ZeroFreeCombination.lean`) — for `σ > 1` and any `B₀` bounding
+`‖ζ(σ+2it)‖`,
+
+`‖1/ζ(σ+it)‖ ≤ exp(−(−22 − 3log(1+1/(σ−1)) − log B₀)/4)`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The lower bound for `‖ζ‖` inverts directly.  This is the shape a Perron-type argument for
+`∑_{n ≤ x} μ(n)` consumes — the Dirichlet series of `μ` is `1/ζ`, so an explicit upper bound for
+`‖1/ζ‖` on a contour is exactly what is needed to move the contour left of `re = 1`.
+
+The prime number theorem for `μ` (`∑_{n≤x} μ(n) = o(x)`) is one of the classical inputs this card
+lists, and mathlib does not have it.  This bound is the first ingredient; the Perron formula and the
+contour estimate are not built, and that remains a substantial classical development rather than a
+short step.
+
+### The Möbius L-series, bounded
+
+- `LSeries_moebius_eq_inv` — for `re s > 1`, `L(μ, s) = 1/ζ(s)`, from mathlib's
+  `LSeries_one_mul_Lseries_moebius` and `LSeries_one_eq_riemannZeta` together with the nonvanishing.
+- `norm_LSeries_moebius_le` — hence `‖L(μ, σ+it)‖ ≤ exp(−(−22 − 3log(1+1/(σ−1)) − log B₀)/4)`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This is the object a Perron argument integrates: `∑_{n≤x} μ(n)` is recovered from `L(μ,s)·x^s/s`
+along a vertical contour, and the bound above controls the integrand.  What is missing between here
+and `∑_{n≤x} μ(n) = o(x)` is the Perron formula itself plus the contour shift — mathlib has neither,
+and both are substantial.
+
+Recording the position plainly: the card lists the prime number theorem as a classical input; the
+corpus now has the zero-free region and the reciprocal bound that a proof of it would start from,
+but not the proof.
+
+### A uniform Möbius L-series bound, and the corpus's Perron formula
+
+`norm_LSeries_moebius_le_uniform` — for `σ > 1` and every height `t`,
+
+`‖L(μ, σ+it)‖ ≤ e^{11/2}·(1 + 1/(σ−1))`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.  The height-dependence disappears
+because the trivial bound `‖ζ(σ+2it)‖ ≤ 1 + 1/(σ−1)` is itself uniform, so `B₀` can be taken
+independent of `t`.
+
+**The corpus already owns the Perron step.**  `HTGeometry/SmoothWeightPerron.tsum_mul_smoothWeight_eq_integral`
+gives, for unit-bounded coefficients with `a₀ = 0` and `σ > 1`,
+
+`2π·∑' a_n·smoothWeight N H n = ∫ L(a, σ+iy)·mellin(smoothWeight)(σ+iy) dy`,
+
+and `μ` satisfies both hypotheses.  Combined with the uniform bound above, the smoothed Möbius sum
+is at most `e^{11/2}(1 + 1/(σ−1))·∫‖mellin(smoothWeight)‖/(2π)`.
+
+So the remaining gap to `∑_{n≤x} μ(n) = o(x)` is not the Perron formula — it is the size of
+`∫‖mellin(smoothWeight)‖` against the length of the smoothed sum, and the removal of the smoothing.
+That is a much narrower gap than "mathlib has no Perron formula", which is what I had recorded
+before checking the corpus.
+
+### The smoothed Möbius sum, bounded
+
+`Sieve/MoebiusPerron.lean`:
+
+- `tsum_cpow_neg_eq_LSeries` — the Perron formula's inner series `∑' aₙ n^{-s}` *is* `LSeries a s`,
+  for `a₀ = 0` (the `n = 0` terms agree by both conventions).
+- `norm_tsum_moebius_smoothWeight_le` — **the bound**: for `N, H > 0` and `σ > 1`,
+
+  `‖2π·∑' μ(n)·w(n)‖ ≤ e^{11/2}(1 + 1/(σ−1))·∫‖mellin w(σ+iy)‖ dy`,
+
+  where `w = smoothWeight N H`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This joins three separately-built layers: the corpus's smoothed Perron formula, mathlib's identity
+`L(μ,s) = 1/ζ(s)`, and this session's zero-free machinery bounding `1/ζ` uniformly in the height.
+`μ` satisfies the Perron hypotheses (`‖μ(n)‖ ≤ 1`, `μ(0) = 0`) directly.
+
+What remains for `∑_{n≤x} μ(n) = o(x)` is quantitative: the size of `∫‖mellin(smoothWeight)‖`
+relative to the mass of the cutoff, and the passage from the smoothed sum to the sharp one.  Both
+concern `smoothWeight` alone — no further property of `ζ` or `μ` enters.
+
+### Correction — the corpus also owns the contour shift
+
+The note above said the passage from the smoothed bound to `∑_{n≤x} μ(n) = o(x)` was "quantitative,
+concerning `smoothWeight` alone".  That understated what exists and misstated what is missing.
+`HTGeometry/SmoothWeightShift.lean` owns the **Perron contour shift**:
+
+`integral_mul_mellin_smoothWeight_shift` — if `F` is holomorphic on the vertical strip
+`c ≤ re s ≤ d` with `c > 0` and satisfies `‖F s‖ ≤ K(2 + |im s|)^A` there, then the vertical
+integral of `F · mellin(smoothWeight)` is the same on both edges.
+
+Together with `SmoothWeightMellin` (convergence, integration by parts, decay) and
+`tendsto_horizontal_mul_mellin_smoothWeight` (the horizontal edges vanish), the analytic
+infrastructure for moving the contour is complete.
+
+**What is actually missing** is the hypothesis `hFbd` for `F = 1/ζ`: a polynomial bound for `1/ζ` on
+a strip reaching *left* of `re = 1`.  This session's `norm_inv_riemannZeta_le` gives that only for
+`σ > 1`; inside the zero-free region it requires a quantitative lower bound for `‖ζ‖`, which is the
+classical `ζ'/ζ` estimate and is not built.
+
+So the chain is: Perron ✓ (corpus), `L(μ) = 1/ζ` ✓ (mathlib), uniform bound for `σ > 1` ✓ (this
+session), contour shift ✓ (corpus), zero-free region ✓ (this session) — and the one gap is the
+*quantitative* lower bound for `‖ζ‖` inside the region, not merely its nonvanishing.
+
+### A structural mismatch, found by checking
+
+Searching the corpus for an existing quantitative lower bound on `‖ζ‖` inside the critical strip
+found none (`HighExponentShellZeroFree` is a different construction — shell indicators, not a `ζ`
+lower bound).  But the more important finding is a mismatch between two pieces that at first look
+composable:
+
+`integral_mul_mellin_smoothWeight_shift` requires `F` holomorphic and polynomially bounded on a
+**fixed** vertical strip `c ≤ re s ≤ d`, and its horizontal edges are killed at `±∞`, so the bound
+must hold for *all* heights.  For `F = 1/ζ` that needs a zero-free region of **fixed width** to the
+left of `1` — which classical methods do not give and should not be expected to give: the region
+`1 − c/log⁹|t|` narrows as `|t|` grows, so on any fixed strip `1 − ε ≤ re s` there are heights where
+`ζ` may vanish.
+
+The classical proof avoids this by truncating the contour at height `T` and using a `T`-dependent
+rectangle, the horizontal edges being controlled by the decay of the cutoff's transform rather than
+sent to infinity.  The corpus's shift is the untruncated version.
+
+So the honest gap on this line is now two items, not one:
+
+1. a quantitative lower bound for `‖ζ‖` inside the zero-free region (the classical `ζ'/ζ` estimate);
+2. a **truncated** contour shift, the corpus's being stated for a fixed strip over all heights.
+
+Neither is open research; both are classical and substantial.  Recording them precisely is worth
+more than a partial attempt at either.
+
+### The truncated contour shift — gap 2 closed
+
+`integral_vertical_sub_eq_horizontal` (`Sieve/TruncatedContourShift.lean`) — for `G` holomorphic on
+the closed strip `c ≤ re s ≤ d`,
+
+`i·∫_{−T}^{T} G(d+iy) dy − i·∫_{−T}^{T} G(c+iy) dy = ∫_c^d G(x+iT) dx − ∫_c^d G(x−iT) dx`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This is Cauchy's theorem on the rectangle, kept in truncated form.  It was already inside the proof
+of the corpus's untruncated `integral_vertical_line_eq_of_horizontal_tendsto` as an intermediate
+`have`; exposing it as a theorem is what the `T`-dependent contour needs, since holomorphy is now
+required only on the finite rectangle, not at every height.
+
+That is the second of the two gaps recorded above.  The remaining one is the first: a quantitative
+lower bound for `‖ζ‖` inside the zero-free region, giving the polynomial bound for `1/ζ` on the
+truncated rectangle.
+
+### The quantitative lower bound left of the abscissa — gap 1 closed
+
+- `norm_riemannZeta_sub_le` (`Sieve/ZetaDerivBound.lean`) — the mean value inequality without a
+  zero: `‖ζ(c) − ζ(z)‖ ≤ M‖c − z‖` along a segment avoiding the pole with `‖ζ'‖ ≤ M`.
+- `le_norm_riemannZeta_left` (`Sieve/ZeroFreeAssembly.lean`) — **the bound**: if
+  `M(σ−β) ≤ exp((−22 − 3log(1+1/(σ−1)) − log B₀)/4)/2` then
+
+  `exp((−22 − 3log(1+1/(σ−1)) − log B₀)/4)/2 ≤ ‖ζ(β + iγ)‖`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+The mechanism is the same one that gives the zero-free region, used to keep half the lower bound
+instead of merely denying a zero: the value at `σ > 1` is bounded below by three-four-one, and the
+mean value inequality transports that bound left, losing at most `M(σ−β)`.
+
+Both gaps identified above are now closed.  The line reads, end to end and unconditionally:
+Perron ✓ (corpus) · `L(μ) = 1/ζ` ✓ (mathlib) · uniform bound for `σ > 1` ✓ · truncated contour shift
+✓ · quantitative lower bound for `‖ζ‖` left of `1` ✓.  What remains is assembling them into
+`∑_{n≤x} μ(n) = o(x)` — choosing the rectangle, applying the shift, and estimating the residue at
+`s = 1` — with no missing ingredient.
+
+### The reciprocal bound left of the abscissa
+
+`norm_inv_riemannZeta_left_le` — under the hypotheses of the previous lemma,
+
+`‖1/ζ(β + iγ)‖ ≤ 2 / exp((−22 − 3log(1+1/(σ−1)) − log B₀)/4)`.
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+This is the `hFbd` hypothesis that `integral_vertical_sub_eq_horizontal` needs for `F = 1/ζ`: an
+explicit bound on the reciprocal at points left of `1`, in terms of the same parameters that control
+everything else on this line.
+
+Current state of the `μ`-summatory route, all unconditional and in the corpus:
+
+| step | source |
+|---|---|
+| smoothed Perron formula | `HTGeometry/SmoothWeightPerron` |
+| `L(μ,s) = 1/ζ(s)` | mathlib, packaged in `Sieve/MoebiusPerron` |
+| `‖1/ζ‖` bound for `σ > 1` | `Sieve/ZeroFreeCombination` |
+| truncated contour shift | `Sieve/TruncatedContourShift` |
+| `‖ζ‖` lower bound left of `1` | `Sieve/ZeroFreeAssembly` |
+| `‖1/ζ‖` bound left of `1` | `Sieve/ZeroFreeAssembly` |
+
+The assembly into `∑_{n≤x} μ(n) = o(x)` is not done.
+
+### An obstruction in the assembly — mathlib's junk value at `s = 1`
+
+Attempting the assembly surfaces a formal obstruction worth recording before anyone repeats the
+attempt.
+
+The contour shift must cross `re = 1`, and the crossing includes the point `s = 1`.  Mathlib's
+`riemannZeta` is the analytic continuation, which has a *pole* there; `riemannZeta 1` is a junk
+value, nonzero by `riemannZeta_one_ne_zero`.  So the function `fun s => (riemannZeta s)⁻¹` takes a
+nonzero junk value at `s = 1` while its limit there is `0` — it is **discontinuous at exactly the
+point the contour crosses**, and `integral_vertical_sub_eq_horizontal` cannot be applied to it.
+
+Mathematically there is no singularity: `1/ζ` has a removable singularity at `1` with value `0`,
+since `ζ` has a simple pole.  The formal fix is to work with the corrected function and prove it
+differentiable at `1`, for which mathlib supplies `riemannZeta_residue_one`
+(`(s−1)ζ(s) → 1` as `s → 1`) and the pattern already used in `LSeries/Nonvanishing.lean`:
+`Function.update (fun s ↦ (s − 1) * riemannZeta s) 1 1`.  Then
+`1/ζ(s) = (s−1) · [1/((s−1)ζ(s))]`, a product of a polynomial and a function that is nonvanishing
+and holomorphic near `1`.
+
+So the assembly needs one more ingredient than the table above suggests: the removable-singularity
+correction of `1/ζ` at `s = 1`.  Recording it rather than half-building it — the estimates on either
+side are unaffected.
+
+#### Resolved — `RHTower/Sieve/InvZetaRegular.lean`
+
+The obstruction above is closed, and it cost less than expected because the corpus already owned the
+entire unit `G(s) = (s-1)·ζ(s)` (`RHTower/ZetaLogDerivResidue.lean`: `zetaResidueUnit`,
+`analyticAt_zetaResidueUnit`).  The removable-singularity correction of `1/ζ` needs no
+`Function.update` and no case split at all:
+
+`invZeta s = (s - 1) · G(s)⁻¹`.
+
+Off the pole the outer `(s-1)` cancels the one inside `G` and this *is* `1/ζ(s)`
+(`invZeta_eq_inv`); at `s = 1` it is `0 · 1 = 0` (`invZeta_one`), the value of the analytic
+continuation.  So one formula covers both, and differentiability at `1` is immediate from
+analyticity of `G` and `G(1) = 1 ≠ 0` (`differentiableAt_invZeta_one`).
+
+Built in the same module:
+
+| statement | content |
+|---|---|
+| `zetaResidueUnit_ne_zero_iff` | off the pole, `G` vanishes exactly where `ζ` does |
+| `differentiableAt_invZeta_of_zeta_ne_zero` | holomorphy at a nonzero of `ζ` |
+| `norm_invZeta_eq` | `‖invZeta s‖ = ‖1/ζ(s)‖` off the pole — every earlier bound transfers verbatim |
+| `differentiableOn_invZeta_verticalStrip` | holomorphy on a zero-free strip |
+| `integral_invZeta_vertical_sub_eq_horizontal` | the contour shift, strip hypothesis |
+| `integral_vertical_sub_eq_horizontal_rect` | Cauchy on the rectangle, holomorphy assumed only there |
+| `differentiableOn_invZeta_rect` | holomorphy on a zero-free rectangle |
+| `integral_invZeta_vertical_sub_eq_horizontal_rect` | the contour shift, rectangle hypothesis |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The rectangle forms matter, and the strip form is the one that would have been wasted work: the
+zero-free region of `ζ` narrows with the height, so **no** strip `c ≤ re s ≤ d` with `c < 1` is
+zero-free, and the strip-hypothesis shift is unusable for `1/ζ` however good the estimates are.  On
+a rectangle `[c,d] × [-T,T]` the classical region does supply zero-freeness, with `c = 1 - c₀/log T`.
+So the assembly's contour step is now stated in the only form that can consume the zero-free region.
+
+What remains for `∑_{n≤x} μ(n) = o(x)`: choose `c(T)` from the region, bound the two horizontal edges
+and the left vertical edge, and let `T → ∞`.  There is no missing ingredient of a different kind —
+the residue at `s = 1` contributes nothing precisely because `invZeta 1 = 0`, which is the content
+of `1/ζ` having a zero rather than a pole there, and is now a theorem rather than a remark.
+
+#### The contour hypothesis is now discharged — `RHTower/Sieve/ZeroFreeRectangle.lean`
+
+The rectangle shift above still *assumed* zero-freeness.  That hypothesis is now proved, so the
+contour step is unconditional.
+
+The quantitative region in `ZeroFreeAssembly` (`riemannZeta_ne_zero_of_re_gt`) covers heights
+`|γ| ≥ 1` only, and near the real axis the argument is of a different kind.  There the point is that
+`ζ` is nonvanishing on the whole closed segment `{1 + it : |t| ≤ T}`: off the pole because
+`re s = 1`, and *at* `s = 1` because `ζ` has a pole there, so the entire unit `G = (s-1)ζ` takes the
+value `1`.  The pole, which was the obstruction two sections ago, is what supplies the nonvanishing
+at the one point the line argument cannot reach.
+
+That segment is compact and `{G ≠ 0}` is open, so `IsCompact.exists_thickening_subset_open` gives a
+whole thickening of it inside the nonvanishing locus — no sequence extraction, no Lebesgue number.
+
+| statement | content |
+|---|---|
+| `zetaResidueUnit_ne_zero_on_one_line` | `G ≠ 0` on the entire abscissa `re s = 1`, pole included |
+| `continuous_zetaResidueUnit` | `G` is continuous, being entire |
+| `exists_zero_free_box` | for every `T`, some `δ > 0` with no zeros in `1-δ ≤ re s ≤ 1`, `\|im s\| ≤ T` |
+| `exists_zero_free_rect` | the box glued to `re s ≥ 1`: a zero-free rectangle `[c,d] × [-T,T]`, `1-δ ≤ c ≤ 1 ≤ d` |
+| `exists_differentiableOn_invZeta_rect` | `invZeta` is holomorphic there |
+| `exists_integral_invZeta_shift` | the shift identity itself, hypothesis-free apart from `0 ≤ T` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+`exists_integral_invZeta_shift` is the honest statement of the contour step: *at every height the
+contour may be pushed to the left of the abscissa, and the crossing costs nothing.*  Nothing about
+zeros of `ζ` is assumed anywhere in it.
+
+Note what this `δ` is and is not.  It is genuine and unconditional, but it is obtained from
+compactness and therefore carries no rate in `T` — which is exactly right for the low box, where the
+quantitative region says nothing, and useless for large `T`, where `riemannZeta_ne_zero_of_re_gt`
+supplies `δ ≍ log^{-9}T` instead.  The remaining work for `∑_{n≤x} μ(n) = o(x)` is the estimate, not
+the geometry: bound the left vertical edge and the two horizontal edges of this rectangle, with
+`c = c(T)` taken from the quantitative region, and let `T → ∞`.
+
+#### The horizontal edges — `RHTower/Sieve/HorizontalEdgeBound.lean`
+
+In the untruncated shift (`HTGeometry/SmoothWeightShift`) the horizontal edges vanish in the limit
+and never appear as terms.  That shift is unusable for `1/ζ` — it demands holomorphy on a *full*
+strip `c ≤ re s ≤ d` with `c < 1`, which is a quasi-RH statement, not something to be proved.  So
+the contour must be truncated and the edges become explicit terms.
+
+They cost almost nothing, and the reason is worth stating: the estimate is carried entirely by the
+cutoff, not by `1/ζ`.  `exists_bound_mellin_smoothWeight` bounds
+`‖s‖ · ∏_{i<j} ‖s+1+i‖ · ‖W(s)‖` uniformly on `0 < re s ≤ σmax`, and every one of those `j+1`
+factors dominates `|im s|` — because the shifts `1 + i` are *real*, so they leave the imaginary part
+untouched.  Hence `W` decays in the height faster than any fixed power, uniformly in the abscissa.
+
+| statement | content |
+|---|---|
+| `exists_bound_mellin_smoothWeight_im_pow` | `\|im s\|^{j+1}·‖W(s)‖ ≤ C` on `0 < re s ≤ σmax`, every `j` |
+| `norm_mellin_smoothWeight_le_div` | the same in divided form, `‖W(s)‖ ≤ C/\|im s\|^{j+1}` |
+| `exists_horizontal_edge_bound` | a horizontal edge contributes `≤ M·C·T^{-(j+1)}·(d-c)` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The order `j` is arbitrary, so the two horizontal edges may be made to decay faster than any fixed
+power of the truncation height, with the constant depending only on the cutoff and on `σmax` — not
+on `c`, and not on the zero-free region.  The only input from the other factor is a bound `M` on the
+segment itself.
+
+So of the four edges of the truncated rectangle, the right one is the Perron integral, the two
+horizontal ones are now controlled, and what is left is the left vertical edge — where the estimate
+must genuinely use the zero-free region, via `norm_inv_riemannZeta_left_le`.
+
+#### The left vertical edge — `RHTower/Sieve/VerticalEdgeBound.lean`
+
+The left edge is where the saving lives and where the zero-free region is genuinely spent.  The
+cutoff's transform is at most `(N+H)^c / c` on the line `re s = c`, so pushing `c` below `1`
+replaces the trivial size `N` by `N^c`; what is paid for it is a bound on the other factor along
+that edge.
+
+| statement | content |
+|---|---|
+| `norm_mellin_smoothWeight_line_tail` | order-two decay on a line: `‖W(c+iy)‖ ≤ C·y^{-2}` for `\|y\| ≥ 1` |
+| `exists_bound_integral_norm_mellin_line` | `∫_{-T}^{T} ‖W(c+iy)‖ dy ≤ 2(N+H)^c/c + 2C` |
+| `exists_vertical_edge_bound` | the edge itself: `≤ M·(2(N+H)^c/c + 2C)` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The content of the middle statement is that the bound **does not grow with `T`** — the vertical mass
+of `W` is finite, split as the trivial bound on `|y| ≤ 1` and the convergent order-two tail beyond.
+So truncating higher never costs anything on this edge, and the left edge is `sup‖F‖` times a
+constant rather than times `T`.  Together with the horizontal edges decaying like `T^{-(j+1)}` for
+every `j`, the whole truncated contour is now *height-stable*: no edge grows with the truncation.
+
+That was the one structural risk in the truncated route — that the price of truncating (edges that
+the untruncated shift never has to name) would grow with `T` and cancel the saving from `c < 1`.  It
+does not.
+
+All four edges are now accounted for:
+
+| edge | source | size |
+|---|---|---|
+| right vertical (`re s = d > 1`) | `HTGeometry/SmoothWeightPerron` | the Perron integral itself |
+| top and bottom horizontal | `Sieve/HorizontalEdgeBound` | `M·C·T^{-(j+1)}·(d-c)`, any `j` |
+| left vertical (`re s = c < 1`) | `Sieve/VerticalEdgeBound` | `M·(2(N+H)^c/c + 2C)`, no `T` |
+| Cauchy identity relating them | `Sieve/ZeroFreeRectangle` | unconditional at every height |
+
+What remains is exactly one estimate: the bound `M` for `‖invZeta‖` on the left edge and the
+horizontal edges, as a function of `T`, from `norm_inv_riemannZeta_left_le` and the zero-free
+region.  Everything the estimate has to be fed into is built.
+
+#### Truncating the Perron line — `RHTower/Sieve/TruncationError.lean`
+
+One step was still implicit in the edge table: the smoothed Perron formula is an exact identity on
+the **whole** line `re s = d`, with no truncation error of its own, whereas the rectangle shift
+consumes a *truncated* vertical integral.  The passage between them is a real cost and had not been
+bounded.
+
+| statement | content |
+|---|---|
+| `integral_tail_norm_mellin_le` | `∫_T^R ‖W(c+iy)‖ dy ≤ C/T`, uniformly in `R` |
+| `integral_tail_norm_mellin_le'` | the same for `∫_{-R}^{-T}` |
+| `exists_bound_truncation_error` | `‖∫_ℝ F·W − ∫_{-T}^{T} F·W‖ ≤ 2MC/T` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The proof bounds the two tails uniformly in the outer height `R` and then passes to the limit
+through `intervalIntegral_tendsto_integral`, so no improper-integral machinery is needed and the
+whole argument stays in interval integrals.  As with the other edges the hypotheses on the second
+factor are only a bound `M` on the line and continuity — nothing about `ζ`.
+
+So the chain from the Perron identity to the shifted contour is complete:
+
+    2π ∑ μ(n)w(n)  =  ∫_ℝ (1/ζ)(d+iy) W(d+iy) dy          exact, HTGeometry/SmoothWeightPerron
+                   =  ∫_{-T}^{T} … dy      + O(M_d C/T)     Sieve/TruncationError
+                   =  ∫_{-T}^{T} (1/ζ)(c+iy) W(c+iy) dy
+                        + horizontal edges                  Sieve/ZeroFreeRectangle (Cauchy)
+                                                            Sieve/HorizontalEdgeBound
+                   =  O(M_c · ((N+H)^c/c + C))              Sieve/VerticalEdgeBound
+
+with every step unconditional and every constant depending only on the cutoff.  The single
+remaining input is `M_c`, the bound for `‖invZeta‖` on the left edge as a function of `T`, which is
+where the zero-free region is spent and which `norm_inv_riemannZeta_left_le` was built to produce.
+
+#### The left-edge bound splits at height one — `RHTower/Sieve/InvZetaLowBox.lean`
+
+The remaining input `M_c` does **not** come from `norm_inv_riemannZeta_left_le` alone, and it is
+worth recording why, because the reason is structural rather than a matter of sharpening.
+
+That theorem bounds `‖1/ζ(β+iγ)‖` by moving left from `σ > 1` along the horizontal segment at height
+`γ`, and it needs that segment to avoid the pole.  At `γ = 0` the segment runs along the real axis
+straight through `s = 1`, so the hypothesis `hne` is false there and the theorem says nothing.  The
+left edge of the truncated rectangle passes through that height.  So the left-edge bound splits at
+`|γ| = 1` exactly as the zero-freeness did — and for the same reason, the pole.
+
+Near the axis the bound comes from compactness, as it did for `exists_zero_free_box`:
+
+| statement | content |
+|---|---|
+| `isCompact_reProdIm_Icc` | a closed complex box is compact |
+| `exists_bound_invZeta_low_box` | `‖invZeta‖ ≤ M` on `1-δ ≤ re s ≤ d`, `\|im s\| ≤ 1` |
+| `exists_bound_invZeta_line_low` | the same along the part of a vertical line with `\|y\| ≤ 1` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The pole is again what makes this work rather than what obstructs it: `invZeta` is *continuous* on
+the box only because `invZeta 1 = 0` is the analytic value, and a continuous function on a compact
+set is bounded.  The constant carries no rate, which is correct here — it is independent of the
+truncation height, so it never competes with the `T`-dependence.
+
+What is left is a single estimate with a single free parameter: the bound for `‖invZeta(c+iy)‖` for
+`1 ≤ |y| ≤ T`, from `norm_inv_riemannZeta_left_le` with `σ = 1 + δ`, the derivative bound from
+`norm_deriv_riemannZeta_le_log_of_re_ge`, and `δ ≍ log^{-9}T` from the zero-free region.
+
+#### The high half of the left-edge bound — `RHTower/Sieve/InvZetaSegmentBound.lean`
+
+The other half of the split, `1 ≤ |γ|`, where the estimate is quantitative.  Two of the three
+hypotheses of `norm_inv_riemannZeta_left_le` are now discharged unconditionally.
+
+| statement | content |
+|---|---|
+| `segment_ne_one_of_im_ne_zero` | the segment misses the pole at any nonzero height |
+| `norm_deriv_riemannZeta_segment_le` | Cauchy's estimate at *every* point of the segment at once |
+| `norm_inv_riemannZeta_left_le_segment` | the reciprocal bound with the geometry discharged |
+| `norm_invZeta_left_le_segment` | the same for `invZeta`, which is what the contour uses |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The first is cheap for a reason worth naming: every point of the horizontal segment has imaginary
+part exactly `γ`, and the pole sits at height `0`, so at nonzero height the segment misses it for
+purely geometric reasons — no estimate involved.  The second reduces to a single inequality
+`σ + |γ| + R ≤ N` covering the whole segment, because the segment stays inside the strip
+`β ≤ re s ≤ σ` and `Complex.norm_le_abs_re_add_abs_im` then bounds every point uniformly.
+
+What remains is exactly one hypothesis, `hhalf`:
+
+    (2 + e·log N + e/(|γ|-R) + 2e)/R · (σ - β)  ≤  exp((-22 - 3log(1+1/(σ-1)) - log B₀)/4) / 2
+
+This is the balance, and the balance is real rather than a matter of bookkeeping.  Writing
+`σ - 1 = δ`, `B₀ ≍ log T` (from `norm_riemannZeta_le_log_uniform`, *not* `1 + 1/δ`), `R ≍ 1/log N`
+and `M ≍ log²N`, the two sides read
+
+    log²N · (σ - β)      vs      δ^{3/4} · (log T)^{-1/4}
+
+so with `δ = A·log^{-9}T` and `σ - β ≍ log^{-9}T` both sides are of order `log^{-7}T`, and the
+inequality reduces to a numerical comparison in `A` alone.  That the exponents match at `9` is not
+an accident: it is the same balance that produces the corpus's zero-free region
+`riemannZeta_ne_zero_zero_free`, and the reason both land on `log^9`.
+
+Using `B₀ ≍ log T` rather than `1 + 1/δ` is essential and easy to get wrong — with the cruder `B₀`
+the lower bound degrades to order `δ` and the comparison fails at every exponent, since `M` grows
+while the right side would not.
+
+#### The balance, discharged — `RHTower/Sieve/HalfComparison.lean`
+
+The `hhalf` hypothesis is now a theorem, and the balance turned out to need **no new numerical
+constant** — which is the useful discovery here, since a fresh constant would have had to be
+optimised against the zero-free region's own.
+
+| statement | content |
+|---|---|
+| `quarter_comparison_scaled` | `quarter_comparison` applied at `δ·κ⁴` instead of `δ` |
+| `half_comparison` | `32L²·D ≤ (lower bound at σ)/2` whenever `D⁴L⁹ < c·δ³` |
+
+Both `[propext, Classical.choice, Quot.sound]`.
+
+The mechanism: write the distance moved left as `σ - β = κ·(σ - 1)`.  The lower bound scales like
+the `3/4` power of the offset, so the two sides of the comparison differ by exactly
+`κ·(σ-1)^{1/4}` — which is `(δκ⁴)^{1/4}`.  So the comparison at distance `κδ` *is* the zero-free
+comparison at offset `δκ⁴`, and `quarter_comparison` settles it verbatim with `c = zeroFreeConst`,
+the constant already in the corpus.
+
+Concretely the admissible choice is `σ = 1 + δ` with `δ ≍ c/L⁹` and `1 - β ≍ δ/8`, since
+`D = σ - β = 9δ/8` gives `D⁴/δ³ = (9/8)⁴δ ≈ 1.60δ`, comfortably below `c/L⁹` when `δ ≤ c/(2L⁹)`.
+So the left edge may be placed at
+
+    c(T) = 1 - zeroFreeConst / (16 · log⁹ N),      N ≍ 3 + 2T
+
+which is the same order as the zero-free region itself — the estimate loses nothing relative to the
+region it is built on.
+
+Every hypothesis of `norm_invZeta_left_le_segment` is now discharged except the purely arithmetic
+ones in `N`, `σ`, `β`, `|γ|`.  The bound for `‖invZeta‖` on the left edge is therefore complete in
+both halves: `|γ| ≤ 1` by compactness (`InvZetaLowBox`), `|γ| ≥ 1` by this estimate.
+
+#### The left edge bound, assembled — `RHTower/Sieve/InvZetaLeftEdge.lean`
+
+`norm_invZeta_left_le_explicit` — unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+for every height `|γ| ≥ 1` and every `N` with `log N ≥ 3` and `N ≥ 3 + 2|γ|`,
+
+    ‖invZeta( (1 - c/(16 log⁹N)) + iγ )‖
+        ≤ 2 / exp( (-22 - 3·log(1 + 2log⁹N/c) - log(5/2 + log N)) / 4 )
+
+with `c = zeroFreeConst`.  Every hypothesis is arithmetic in `N` and `|γ|`; nothing about the zeros
+of `ζ` is assumed, and nothing is left open.
+
+The right-hand side is of size `log^{27/4}N · log^{1/4}N = log^7 N` — polynomial in `log N`, which is
+what the contour argument needs and all that it needs.  The abscissa is `1 - c/(16 log⁹N)`: the same
+constant and the same exponent as the zero-free region, so the estimate loses nothing relative to
+the region it stands on.  The factor `16` rather than `2` is exactly the room the comparison
+`D⁴log⁹N < c·δ³` demands, no more.
+
+With this the left-edge input is complete on both halves of the split:
+
+| range | source | shape |
+|---|---|---|
+| `\|γ\| ≤ 1` | `Sieve/InvZetaLowBox` | a constant, no rate, no `T`-dependence |
+| `\|γ\| ≥ 1` | `Sieve/InvZetaLeftEdge` | explicit, `≍ log⁷N` |
+
+and every ingredient listed in the four-edge table now exists as an unconditional theorem.
+
+#### The whole left edge in one bound — `RHTower/Sieve/InvZetaLeftLine.lean`
+
+The two halves are proved at different heights and by different means, so merging them is not
+automatic: the line `re s = 1 - c/(16 log⁹N)` must lie inside the compact box that supplies the
+low-height constant.  It does as soon as `log⁹N ≥ c/(16δ₀)`, and since `log N → ∞` that is eventually
+free.
+
+| statement | content |
+|---|---|
+| `norm_invZeta_left_line_le` | one bound on the whole edge, given the compatibility condition |
+| `exists_bound_invZeta_left_line` | the condition eliminated: `∃ N₀ M₀`, valid for all `N ≥ N₀` |
+
+Both `[propext, Classical.choice, Quot.sound]`.
+
+The merged bound is
+
+    ‖invZeta( (1 - c/(16 log⁹N)) + iy )‖  ≤  max M₀ ( 2 / exp((-22 - 3log(1 + 2log⁹N/c)
+                                                       - log(5/2 + log N))/4) )
+
+for every `y` with `3 + 2|y| ≤ N` — i.e. on the entire left edge of the rectangle truncated at
+height `T = (N-3)/2`.  `M₀` is an absolute constant; the second argument of the `max` is `≍ log⁷N`.
+
+This completes every input to the contour argument.  Collecting the modules built for this route:
+
+| ingredient | module |
+|---|---|
+| removable-singularity correction of `1/ζ` | `InvZetaRegular` |
+| zero-free rectangle at every height | `ZeroFreeRectangle` |
+| horizontal edges | `HorizontalEdgeBound` |
+| left vertical edge (mass of the cutoff) | `VerticalEdgeBound` |
+| truncating the Perron line | `TruncationError` |
+| `‖1/ζ‖` near the real axis | `InvZetaLowBox` |
+| `‖1/ζ‖` along the segment | `InvZetaSegmentBound` |
+| the balance | `HalfComparison` |
+| `‖1/ζ‖` on the left line, explicit | `InvZetaLeftEdge` |
+| the whole left edge, one bound | `InvZetaLeftLine` |
+
+Every one is unconditional and axiom-clean.  What remains for `∑_{n≤x} μ(n) = o(x)` is no longer an
+estimate but a choice: tie `N` to `x` (equivalently `T` to `x`) so that `x^{-c/(16log⁹N)}` beats the
+`log⁷N` factor, and combine the five already-proved inequalities.  The natural choice is
+`log N ≍ (log x)^{1/10}`, giving a saving of `exp(-κ(log x)^{1/10})`.
+
+#### Shifting the Perron integrand — `RHTower/Sieve/InvZetaProductShift.lean`
+
+A correction to the edge table: the shift proved in `ZeroFreeRectangle` is for `invZeta` *alone*,
+but the object the Perron formula integrates is the **product** `invZeta · W`, and Cauchy's theorem
+applies to what is actually integrated.  The `invZeta`-only identity is not directly usable.
+
+The gap is small — `W` is holomorphic on every strip inside `Re s > 0`, so the product inherits
+holomorphy on a zero-free rectangle — but it is a real step, and the four-edge identity has to be
+restated for the product.
+
+| statement | content |
+|---|---|
+| `tsum_moebius_cpow_eq_invZeta` | on `Re s > 1` the Möbius Dirichlet series *is* `invZeta s` |
+| `continuous_invZeta_line` | continuity of `invZeta` along a line right of the abscissa |
+| `differentiableOn_invZetaW_rect` | holomorphy of the product on a zero-free rectangle |
+| `integral_invZetaW_vertical_sub_eq_horizontal_rect` | the four-edge identity for the product |
+| `exists_integral_invZetaW_shift` | the same with the zero-free hypothesis discharged |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+`tsum_moebius_cpow_eq_invZeta` is the hinge of the whole route: the Perron formula produces
+`∑' μ(n)·n^{-s}` and every analytic estimate built above is stated for `invZeta`.  Without the
+identification the two halves never meet, and the identification needs `s ≠ 1` — which on
+`Re s > 1` is free, but is the reason the Perron abscissa must be taken strictly right of `1` rather
+than at it.
+
+The contour identity is now in the exact shape the assembly consumes.
+
+#### The four edges combined — `RHTower/Sieve/PerronEdgeAssembly.lean`
+
+| statement | content |
+|---|---|
+| `norm_le_of_contour_edges` | Cauchy identity + four edge bounds ⟹ `‖P‖ ≤ E₁+E₂+E₃+E₄` |
+| `tsum_moebius_smoothWeight_eq_invZeta_integral` | the Perron identity, restated for `invZeta` |
+| `norm_tsum_moebius_smoothWeight_le_edges` | the smoothed Möbius sum bounded by the four edges |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+`norm_tsum_moebius_smoothWeight_le_edges` is the shape the route was aiming at:
+
+    ‖ 2π · ∑ₙ μ(n)·w(n) ‖  ≤  E₁ + E₂ + E₃ + E₄
+
+with `E₁` the truncation error, `E₂`, `E₃` the horizontal edges, `E₄` the left vertical edge, and
+the only structural hypothesis being that `ζ` has no zeros in the rectangle — which
+`exists_zero_free_rect` supplies unconditionally.
+
+The combination itself is triangle inequality, and isolating it matters for a practical reason: the
+four estimates were proved in four different modules with four different shapes, and this is the
+one place where they have to agree on notation.  The factor `I` carried by the shift costs nothing
+(`‖I • z‖ = ‖z‖`), which is why the identity could be left in its natural Cauchy form throughout.
+
+The remaining step is arithmetic on this inequality: substitute the four proved estimates, tie
+`N`, `T` and `d` together, and check that `E₁ + E₂ + E₃ + E₄ = o(N)`.  There is no analytic
+ingredient left to construct.
+
+#### The four estimates substituted — `RHTower/Sieve/PerronEdgeSubstitution.lean`
+
+`exists_norm_tsum_moebius_smoothWeight_le` — unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+    ‖ 2π · ∑ₙ μ(n)·w(n) ‖  ≤  2·Md·C/T  +  2·Mh·C·(d-c)/T^{j+1}  +  Mc·(2(N+H)^c/c + 2C)
+
+for every rectangle `0 < c ≤ d ≤ σmax`, `1 < d`, `T ≥ 1` free of zeros of `ζ`, where `Md`, `Mh`,
+`Mc` bound `invZeta` on the right line, the horizontal edges and the left line, and `C` depends only
+on the cutoff, on `σmax` and on the decay order `j`.
+
+Two of the earlier modules had to be generalised to make the substitution go through, and both
+restrictions were artefacts of how the lemmas were first stated rather than of the mathematics:
+
+- `exists_horizontal_edge_bound` assumed `0 < T`, so it could not be applied to the **bottom** edge
+  at height `-T`.  Restated with `T ≠ 0` and `|T|^{j+1}`, it covers both.  It also fixed the upper
+  abscissa as the parameter of the existential, which prevented `d` from varying under a single
+  constant; it now takes `σmax` and quantifies `d ≤ σmax`.
+- `exists_vertical_edge_bound` assumed the second factor continuous on the **whole** line.  That is
+  false for `invZeta` on a line left of `1`: beyond the truncation height there may be zeros of `ζ`,
+  and `invZeta` is genuinely discontinuous there.  The hypothesis is now `ContinuousOn` on
+  `[-T, T]`, which is all the proof used and all that the zero-free rectangle supplies.
+
+The second is worth recording as a trap: a global continuity hypothesis on `1/ζ` left of the
+abscissa is not a harmless convenience — it is unprovable, and would have made the whole chain
+vacuous.
+
+What remains is the choice of `c, d, T` as functions of `N`, and the observation that the right-hand
+side is then `o(N)`.
+
+#### The three edge bounds supplied — `RHTower/Sieve/InvZetaEdgeBounds.lean`
+
+The substitution theorem needs three bounds `Md`, `Mh`, `Mc` and a continuity hypothesis.  All four
+are now theorems, and one choice makes the work collapse: **take the right abscissa to be exactly
+`σ = 1 + c/(2 log⁹N)`**, the abscissa the zero-free comparison already uses.
+
+With that choice the entire segment from the left line `1 - c/(16 log⁹N)` to `σ` lies inside the
+range covered by the estimate, so the horizontal edges need no case split on the abscissa and no new
+argument — they are the same expression as the left-edge bound.  Any other choice of `d` would have
+forced a separate treatment of the part of the segment with `re s > σ`.
+
+To make this available the left-edge estimate was generalised: `norm_invZeta_left_le_explicit` was
+stated at the single abscissa `1 - c/(16 log⁹N)`, and is now the instance of
+`norm_invZeta_left_le_range`, valid for every `β` in `[1 - c/(16 log⁹N), 1 + c/(2 log⁹N)]`.  The
+generalisation is free: the comparison hypothesis only ever needed `σ - β ≤ D`, not equality.
+
+| statement | content |
+|---|---|
+| `norm_invZeta_left_le_range` | the estimate on the whole abscissa range, not one line |
+| `norm_invZeta_right_le` | `‖invZeta(d+iy)‖ ≤ e^{22/4}(1 + 1/(d-1))` on `Re s = d > 1` |
+| `norm_invZeta_horizontal_le` | the horizontal edges, an instance of the range estimate |
+| `continuousOn_invZeta_left_line` | continuity along the truncated left line |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+Every hypothesis of `exists_norm_tsum_moebius_smoothWeight_le` is now available at the concrete
+rectangle
+
+    c = 1 - c₀/(16 log⁹N),   d = 1 + c₀/(2 log⁹N),   T = (N-3)/2.
+
+#### The concrete rectangle is zero-free — `RHTower/Sieve/ZeroFreeConcreteRect.lean`
+
+`zero_free_concrete_rect` — unconditional, `[propext, Classical.choice, Quot.sound]`: the rectangle
+
+    [ 1 - c₀/(16 log⁹N) ,  1 + c₀/(2 log⁹N) ] × [ -T , T ],     3 + 2T ≤ N
+
+contains no zero of `ζ`, given `log N ≥ 3` and the single compatibility condition
+`c₀/(16 log⁹N) ≤ δ₀` with `δ₀` the compactness constant of the low box.
+
+An earlier statement of mine needs correcting.  I described `exists_zero_free_rect` as supplying the
+zero-free hypothesis for the assembly.  It does not, and cannot: the `δ` it produces comes from
+thickening a segment of half-length `T`, so it shrinks with the truncation height in an
+*uncontrolled* way and can never be compared with `c₀/(16 log⁹N)`.  It is the right tool for
+"a rectangle exists at every height", which is what it was built for, and the wrong tool for
+"this rectangle is zero-free".
+
+The correct input is the quantitative region, with the same split at height `1` as everywhere else
+in this route: `riemannZeta_ne_zero_of_re_gt` above, the compactness box below, and
+`riemannZeta_ne_zero_of_one_le_re` to the right of the abscissa.  Only the box's `δ₀` is
+non-quantitative, and it is compared with `c₀/(16 log⁹N)` exactly once — a condition on `N` alone,
+independent of `T`.
+
+That the comparison is `T`-free is what makes the truncation height a free parameter, which the
+final choice `T = (N-3)/2` then uses.
+
+#### The contour bound at the concrete rectangle — `RHTower/Sieve/MoebiusContourBound.lean`
+
+`exists_norm_tsum_moebius_smoothWeight_le_concrete` — unconditional,
+`[propext, Classical.choice, Quot.sound]`.  With
+
+    c(K) = 1 - c₀/(16 log⁹K),   d(K) = 1 + c₀/(2 log⁹K),   T(K) = (K-3)/2
+
+(defined as `leftAbscissa`, `rightAbscissa`, `truncHeight`), and the edge bounds
+`invZetaRightBound K ≍ log⁹K`, `invZetaEdgeBound K ≍ log⁷K`, there are `C, M₀ ≥ 0` and `K₀` such
+that for all `K ≥ K₀`
+
+    ‖ 2π ∑ₙ μ(n)·w(n) ‖ ≤ 2·R(K)·C/T(K)
+                          + 2·E(K)·C·(d(K)-c(K))/T(K)^{j+1}
+                          + max(M₀, E(K))·( 2(N+H)^{c(K)}/c(K) + 2C )
+
+for every `j`, with `C` depending on the cutoff and on `j` but not on `K`.
+
+`T(K) = (K-3)/2` is chosen so that `3 + 2T(K) = K` exactly — the largest height the quantitative
+zero-free region supports at parameter `K`, and the reason the truncation height needs no separate
+parameter.
+
+The shape is now the classical one and each term is visibly what it should be:
+
+| term | size | beaten by |
+|---|---|---|
+| truncation | `log⁹K / K` | any `K → ∞` |
+| horizontal | `log⁷K · K^{-(j+1)}` | any `j ≥ 0` |
+| left edge | `log⁷K · (N+H)^{1 - c₀/(16log⁹K)}` | the saving `exp(-c₀ log(N+H)/(16 log⁹K))` |
+
+The last term is the whole content: it is `(N+H)` times `log⁷K·exp(-c₀ log(N+H)/(16 log⁹K))`, so
+tying `K` to the cutoff by `log K ≍ (log N)^{1/10}` makes it `N·exp(-κ(log N)^{1/10})`, and the first
+two terms are then negligible.  Choosing `K` is the only step left.
+
+#### The saving made explicit — `RHTower/Sieve/MoebiusSaving.lean`
+
+| statement | content |
+|---|---|
+| `rpow_leftAbscissa` | `x^{c(K)} = x · exp(-c₀·log x / (16 log⁹K))` |
+| `exists_norm_tsum_moebius_smoothWeight_le_saving` | the contour bound with that substitution made |
+
+Both `[propext, Classical.choice, Quot.sound]`.
+
+The left-edge term is now literally
+
+    max(M₀, E(K)) · ( 4·(N+H)·exp( -c₀·log(N+H) / (16 log⁹K) ) + 2C ),
+
+the trivial size `N+H` multiplied by a decay that is positive as soon as `log(N+H)/log⁹K → ∞`.
+`c(K) ≥ 1/2` handles the division by the abscissa with a factor `4`, which costs nothing.
+
+This is the form in which the choice of `K` becomes an elementary optimisation rather than an
+analytic step: two competing factors, `E(K) ≍ log⁷K` growing and `exp(-c₀ log(N+H)/(16 log⁹K))`
+decaying, with `log K ≍ (log(N+H))^{1/10}` balancing them at `exp(-κ(log(N+H))^{1/10})`.  Nothing
+about `ζ` enters any more — the remaining work is real-variable calculus on two explicit functions
+of `K`.
+
+#### Closed form of the edge bounds — `RHTower/Sieve/EdgeBoundForm.lean`
+
+The two edge bounds were produced as reciprocals of exponentials of logarithms, a shape in which
+their growth cannot be read.  Both collapse to products of powers — and these are *equalities*, not
+estimates:
+
+    invZetaRightBound K = e^{22/4}·(1 + 2log⁹K/c₀)
+    invZetaEdgeBound  K = 2e^{22/4}·(1 + 2log⁹K/c₀)^{3/4}·(5/2 + log K)^{1/4}
+
+| statement | content |
+|---|---|
+| `one_add_inv_offset` | `1 + 1/δ = 1 + 2log⁹K/c₀` |
+| `invZetaRightBound_eq`, `invZetaEdgeBound_eq` | the closed forms |
+| `invZetaEdgeBound_le_poly` | a polynomial majorant, `≤ 2e^{22/4}(1+2log⁹K/c₀)(5/2+log K)` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+So the right-edge bound is exactly of order `log⁹K` and the edge bound of order
+`log^{27/4}K · log^{1/4}K = log⁷K`, confirming the orders asserted earlier from the shape of the
+three-four-one exponents.
+
+The majorant deliberately throws away the fractional powers, replacing `log⁷K` by `log^{10}K`.  That
+is wasteful and completely harmless: the competing factor `exp(-c₀ log x/(16 log⁹K))` decays faster
+than any power of `log K` once `K` is tied to `x`, so no power of `log K` in the majorant can affect
+the outcome.  Keeping the sharp exponent would only complicate the optimisation.
+
+#### The contour parameter chosen — `RHTower/Sieve/ContourParameterChoice.lean`
+
+    contourParam x = ⌈ exp( (log x)^{1/10} ) ⌉₊
+
+| statement | content |
+|---|---|
+| `le_log_contourParam` | `(log x)^{1/10} ≤ log(contourParam x)` — no hypothesis needed |
+| `log_contourParam_le` | `log(contourParam x) ≤ (log x)^{1/10} + 1` |
+| `rpow_tenth_pow` | `((log x)^{1/10})^{10} = log x` |
+| `le_saving_exponent` | `c₀(log x)^{1/10}/8192 ≤ c₀ log x / (16 log⁹(contourParam x))` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The last is the point of the choice: the saving in the contour bound is at least
+
+    exp( -c₀ (log x)^{1/10} / 8192 ),
+
+sub-polynomial in `x` but beating every power of `log x`, hence every power of
+`log(contourParam x)` — which is what the edge bound contributes.  The constant `8192 = 16·512`
+comes from `log K ≤ 2(log x)^{1/10}`, i.e. from the ceiling costing at most `+1`, raised to the
+ninth power.
+
+The exponent `1/10` is forced by the `log⁹` of the zero-free region: with `log K ≍ (log x)^θ` the
+saving is `(log x)^{1-9θ}`, positive exactly when `θ < 1/9`, and `θ = 1/10` is the convenient
+choice inside that range.  Nothing sharper is available from a `log⁹` region, and nothing weaker is
+needed.
+
+#### A defect in the vertical-edge estimate, and its repair — `RHTower/Sieve/VerticalMassSharp.lean`
+
+Working out the size of the assembled bound exposes a real defect in `VerticalEdgeBound`, not a
+looseness.  It is worth stating exactly, because the statement type-checks and looks harmless.
+
+`exists_bound_integral_norm_mellin_line` bounds the vertical mass on the line `Re s = c` with a
+decay constant valid on the *whole* range `0 < Re s ≤ σmax`.  That constant is
+`≍ (N+H)^{σmax+j}/H^{j+1}·N` — it grows like `(N+H)^{σmax}` — while the mass on the line is of size
+`(N+H)^c`.  In the application `c < 1 < σmax` and
+
+    σmax - c ≈ c₀/(2log⁹K) + c₀/(16log⁹K) = (9/16)·c₀/log⁹K,
+
+so the loss is a factor `exp( (9c₀/16)·log(N+H) / log⁹K )`.  The saving the contour is bought with
+is `exp( -c₀·log(N+H) / (16 log⁹K) )`.  The loss is **nine times** the saving's exponent, so the
+product diverges: the assembled bound with a global `σmax` is worse than trivial, and no choice of
+`K` repairs it.
+
+The repair is to take the decay constant on the line itself.  Nothing else in the proof changes:
+
+| statement | content |
+|---|---|
+| `integral_norm_mellin_line_le` | `∫_{-T}^{T}‖W(c+iy)‖dy ≤ 2(N+H)^c/c + 2C`, `C` a bound at abscissa `c` |
+| `norm_integral_vertical_edge_le` | the left edge with the same constant |
+
+Both `[propext, Classical.choice, Quot.sound]`.  Both terms are now of size `(N+H)^c`, so the whole
+left edge carries the saving.
+
+The general lesson, worth carrying to the other edges: a constant quantified uniformly over an
+abscissa *range* is not interchangeable with one taken at a point when the range straddles `1`,
+because the cutoff's transform is exponential in the abscissa.  The horizontal edges and the
+truncation error need the same audit — they are multiplied by `T^{-(j+1)}` and `T^{-1}`, which is
+why the loss does not obviously sink them, but the sizes have to be checked rather than assumed.
+
+#### The audit completed for the other two edges — `RHTower/Sieve/EdgeBoundsSharp.lean`
+
+| statement | content |
+|---|---|
+| `norm_horizontal_edge_le` | a horizontal edge, decay constant supplied as a hypothesis |
+| `norm_truncation_error_le` | the truncation error, likewise |
+
+Both `[propext, Classical.choice, Quot.sound]`.
+
+The audit's verdict, with the sizes worked out at `H ≍ N`, `T ≍ K ≍ exp((log x)^{1/10})`,
+`d - 1 = c₀/(2log⁹K)` and `log x / log⁹K = (log x)^{1/10}`:
+
+| edge | growth from the abscissa | damping | net exponent of `(log x)^{1/10}` |
+|---|---|---|---|
+| left vertical | `exp(+(9c₀/16)·(log x)^{1/10})` if `σmax` is global | none | `+8c₀/16` — **fatal**, now repaired |
+| left vertical, repaired | none (constant at `c`) | the saving | `-c₀/16` |
+| horizontal | `exp(+(c₀/2)·(log x)^{1/10})` | `T^{-(j+1)}` | `c₀/2 - (j+1) < 0` since `c₀ ≤ 1` |
+| truncation | `exp(+(c₀/2)·(log x)^{1/10})` | `T^{-1}` | `c₀/2 - 1 < 0` since `c₀ ≤ 1` |
+
+So the horizontal edges and the truncation error survive their abscissa growth — but only because
+`zeroFreeConst ≤ 1`, and only when `σmax` is taken to be `d` rather than a fixed larger number.  At
+`σmax = 2` the growth is `(N+H)^{1}` and every term is worse than trivial.
+
+This changes the shape of the assembly.  `exists_norm_tsum_moebius_smoothWeight_le` fixes one
+constant `C` and then quantifies over `d`; but `d = d(K)` and the constants must move with it, so
+the correct statement supplies the three decay constants as hypotheses rather than existentials.
+That is what the sharp lemmas above provide, and it is why the earlier `∃ C, ∀ K` form has to be
+replaced rather than instantiated.
+
+#### The four-edge inequality, sharp form — `RHTower/Sieve/PerronSharpSubstitution.lean`
+
+`norm_tsum_moebius_smoothWeight_le_sharp` — unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+    ‖ 2π ∑ₙ μ(n)·w(n) ‖ ≤ 2·Md·C₁/T
+                          + 2·Mh·C₂·(d-c)/T^{j+1}
+                          + Mc·( 2(N+H)^c/c + 2C₃ )
+
+with `C₁`, `C₂` decay constants of the cutoff's transform at abscissa `d` (orders `2` and `j+1`) and
+`C₃` at abscissa `c` (order `2`), all supplied as hypotheses.
+
+This replaces `exists_norm_tsum_moebius_smoothWeight_le`, which fixed one constant before
+quantifying over the geometry.  That form is not merely lossy — with `d = d(K)` and `c = c(K)` the
+constants must move with `K`, so no instantiation of it can be used.  The three constants also had
+to be separated: `C₁` and `C₂` differ only in the decay order, but `C₃` must be taken at `c`, and
+conflating it with the others is exactly the defect the previous section recorded.
+
+Where this leaves the route: every analytic ingredient is proved, and the inequality is now in a
+form whose every constant can be instantiated at the concrete rectangle.  The remaining work is to
+re-do the concrete instantiation (`MoebiusContourBound`, which used the superseded form with
+`σmax = 2`) against this statement, and then the elementary optimisation in `K`.
+
+#### The decay constant, abscissa dependence exposed — `RHTower/Sieve/MellinAbscissaDecay.lean`
+
+The repair of the previous two sections needs one more ingredient: the three decay constants have to
+be *known* to be of size `(N+H)^{abscissa}`, and `exists_bound_mellin_smoothWeight` hides that inside
+an existential.  Hiding it is exactly why the constant became unusable once the abscissa started
+moving with the contour parameter.
+
+| statement | content |
+|---|---|
+| `exists_bound_mellin_smoothWeight_abscissa` | `\|Im s\|^{j+1}·‖W(s)‖ ≤ C·(N+H+1)^{Re s}`, `C` free of the abscissa |
+| `exists_bound_mellin_smoothWeight_upto` | the same up to a given abscissa `σ`, with the factor `(N+H+1)^σ` |
+
+Both `[propext, Classical.choice, Quot.sound]`.
+
+The abscissa dependence can only take this form, and seeing why makes the earlier defect obvious in
+hindsight: the Mellin integrand carries `x^{Re s}` and `x ≤ N+H+1` on the cutoff's support, so the
+abscissa enters through exactly one factor `(N+H+1)^{Re s}` and nothing else.  A constant quantified
+over a *range* of abscissae therefore carries the power at the top of the range, whatever the point
+where it is used.
+
+With this, the three constants of `norm_tsum_moebius_smoothWeight_le_sharp` are instances of a single
+`C`:
+
+    C₁ = C · (N+H+1)^d   (order 2, at the right abscissa)
+    C₂ = C · (N+H+1)^d   (order j+1, at the right abscissa)
+    C₃ = C · (N+H+1)^c   (order 2, at the left abscissa)
+
+and `C₃`'s power is `(N+H+1)^c`, which is the same size as the main term `(N+H)^c` it is added to —
+so the left edge carries the saving, as required.
+
+#### The concrete rectangle, sharp — `RHTower/Sieve/MoebiusContourBoundSharp.lean`
+
+`exists_norm_tsum_moebius_smoothWeight_le_concrete_sharp` — unconditional,
+`[propext, Classical.choice, Quot.sound]`.  Same geometry as the superseded
+`MoebiusContourBound`, but each decay constant is taken at the abscissa where it is used:
+
+    ‖ 2π ∑ₙ μ(n)·w(n) ‖ ≤ 2·R(K)·C·(N+H+1)^{d(K)} / T(K)
+                          + 2·E(K)·C'·(N+H+1)^{d(K)}·(d(K)-c(K)) / T(K)^{j+1}
+                          + max(M₀,E(K))·( 2(N+H)^{c(K)}/c(K) + 2C·(N+H+1)^{c(K)} )
+
+for all `K ≥ K₀`, with `C`, `C'`, `M₀` independent of `K`.
+
+The left edge is now uniformly of size `(N+H)^{c(K)}` — both the main term and the tail constant —
+so it carries the saving `exp(-c₀ log(N+H)/(16 log⁹K))`.  The first two terms carry
+`(N+H)^{d(K)} = (N+H)·exp(c₀ log(N+H)/(2 log⁹K))`, a growth of the same shape but with the opposite
+sign, damped by `T(K)^{-1}` and `T(K)^{-(j+1)}` respectively.
+
+Both the superseded and the sharp version are kept: the earlier one is a true statement with global
+constants, and the difference between them is precisely the point recorded three sections above —
+which is worth being able to see side by side rather than only in prose.
+
+What is left is arithmetic on this inequality with `K = contourParam (N+H)`, using
+`le_saving_exponent` for the third term and the crude `c₀ ≤ 1` comparison for the first two.
+
+#### Substituting the balanced parameter — `RHTower/Sieve/SavingSubstitution.lean`
+
+| statement | content |
+|---|---|
+| `zeroFreeConst_le_half` | `c₀ ≤ 1/2` |
+| `rpow_leftAbscissa_le_saving` | `y^{c(contourParam x)} ≤ y·exp(-c₀(log x)^{1/10}/8192)` for `log y ≥ log x` |
+
+Both `[propext, Classical.choice, Quot.sound]`.
+
+The second handles **both** parts of the left-edge term at once — the main term carries `(N+H)^c`
+and the tail constant carries `(N+H+1)^c`, and the hypothesis is only `log y ≥ log x`, so the same
+lemma covers `y = N+H` and `y = N+H+1` with `x = N+H`.  That the saving is stated at `x` while the
+power is at `y` is what makes this work: the exponent is monotone in `log y`, so a larger `y` gives
+a *better* saving, not a worse one.
+
+`zeroFreeConst ≤ 1/2` is needed and `≤ 1` is not.  The truncation error carries growth
+`exp(c₀·(log x)^{1/10}/2)` against damping `exp(-(log x)^{1/10})`, so the net exponent is
+`c₀/2 - 1`; with only `c₀ ≤ 1` this is `≤ -1/2` — fine — but the horizontal edges at `j = 0` give
+`c₀/2 - 1` as well, and the earlier audit's margin was stated as `< 0` without a rate.  With
+`c₀ ≤ 1/2` every net exponent is at most `-3/4`, which is a rate and not just a sign.
+
+(The true value is `c₀ = (e^{-11/2}/128)^4 ≈ 10^{-18}`, so the real margins are enormous; the point
+of proving the crude bound is that it is what the inequalities can use.)
+
+#### The right edge at the balanced parameter — `RHTower/Sieve/GrowthSubstitution.lean`
+
+| statement | content |
+|---|---|
+| `rpow_rightAbscissa` | `x^{d(K)} = x·exp( c₀·log x / (2 log⁹K) )` |
+| `rpow_rightAbscissa_le` | at `K = contourParam x`: `≤ y·exp( c₀·(log x)^{1/10} )` when `log y ≤ 2 log x` |
+| `exp_div_four_le_truncHeight` | `T(contourParam x) ≥ exp((log x)^{1/10})/4` once `(log x)^{1/10} ≥ 2` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+Together these give, for the truncation error's ratio,
+
+    (N+H+1)^{d(K)} / T(K)  ≤  4·(N+H+1)·exp( (c₀ - 1)·(log(N+H))^{1/10} )
+
+and with `c₀ ≤ 1/2` the exponent is at most `-(1/2)(log(N+H))^{1/10}`.  The horizontal edges carry
+`T(K)^{-(j+1)}` instead and so are at least as good.
+
+Two hypotheses in `rpow_rightAbscissa_le` are worth noting because they are what ties the two sides
+together.  `log y ≤ 2 log x` is what lets the growth at `y = N+H+1` be measured against the saving's
+`x = N+H`; it holds for `N+H ≥ 2` and is the only place the two arguments have to be compared.  And
+the bound uses `log K ≥ (log x)^{1/10}` — the *lower* bound on `log(contourParam x)` — whereas the
+saving used the upper bound.  Both directions of the squeeze proved in `ContourParameterChoice` are
+therefore used, one per side of the contour.
+
+#### The edge bounds at the balanced parameter — `RHTower/Sieve/EdgeBoundAtChoice.lean`
+
+| statement | content |
+|---|---|
+| `log_contourParam_le_two` | `log K ≤ 2t` at `K = contourParam x`, `t = (log x)^{1/10}` |
+| `log_contourParam_pow_le` | `log⁹K ≤ 512 t⁹` |
+| `invZetaRightBound_contourParam_le` | `≤ e^{22/4}(1 + 1024 t⁹/c₀)` |
+| `invZetaEdgeBound_contourParam_le` | `≤ 2e^{22/4}(1 + 1024 t⁹/c₀)(5/2 + 2t)` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+Both edge bounds are now explicit polynomials in the single variable `t`, of degrees `9` and `10`.
+Every quantity in the contour bound is therefore a function of `t` alone, apart from the trivial
+size `N+H`:
+
+| term | shape in `t` |
+|---|---|
+| truncation | `(N+H+1)·poly₉(t)·4·exp((c₀-1)t)` |
+| horizontal | `(N+H+1)·poly₁₀(t)·4^{j+1}·exp((c₀-(j+1))t)·(d-c)` |
+| left edge | `(N+H+1)·poly₁₀(t)·exp(-c₀t/8192)` |
+
+with `c₀ ≤ 1/2`, so each exponential has a strictly negative rate.  The remaining step is the single
+elementary fact that a polynomial times a decaying exponential tends to zero, applied three times,
+and the conclusion `∑ₙ μ(n)w(n) = o(N+H)` follows.
+
+#### Polynomial against exponential — `RHTower/Sieve/PolyExpDecay.lean`
+
+| statement | content |
+|---|---|
+| `tendsto_pow_mul_exp_neg_mul` | `t^n·exp(-κt) → 0` for every `n` and every `κ > 0` |
+| `tendsto_poly9_mul_exp_neg` | `(1 + a t⁹)·exp(-κt) → 0` |
+| `tendsto_polyEdge_mul_exp_neg` | `(1 + a t⁹)(b + ct)·exp(-κt) → 0` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The two composite forms are exactly the shapes the two edge bounds take at the balanced parameter
+(`invZetaRightBound` and `invZetaEdgeBound` respectively), so each term of the contour bound is
+covered by one of them.  Note that no sign or size hypothesis on `a`, `b`, `c` is needed — the
+statements are limits, not inequalities, so the coefficients are unrestricted reals and the
+constants coming out of the corpus's edge estimates can be substituted without further checks.
+
+This is the last analytic ingredient.  Every factor in
+
+    ‖ 2π ∑ₙ μ(n)·w(n) ‖  ≤  (N+H+1) · [ three terms, each poly(t)·exp(-κt) with κ ≥ 1/2 ]
+
+is now either the trivial size `N+H+1` or a quantity proved to tend to zero, so the bound is
+`o(N+H)`.
+
+#### The decay constant, uniform in the cutoff — `RHTower/Sieve/MellinDecayUniform.lean`
+
+`exists_bound_mellin_smoothWeight_uniform_all` — unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+    |Im s|^{j+1}·‖W(s)‖  ≤  Cⱼ · H^{-(j+1)} · (N+H+1)^{j+1} · (N+H+1)^{Re s}
+
+with `Cⱼ` depending on the order alone.
+
+This is needed for a reason the earlier modules concealed.  Every constant so far was produced with
+the cutoff `(N, H)` already fixed, which is harmless while only the contour parameter moves — but the
+final statement lets `N → ∞`, and a constant depending on `N` says nothing there.  The dependence
+turns out to be entirely explicit: the only genuinely unknown quantity is the bound on the iterated
+derivatives of the cutoff *profile*, and `exists_bound_iteratedDeriv_smoothWeight_uniform` already
+supplies that uniformly in `N` and `H`.  Everything else is the visible factor
+`H^{-(j+1)}(N+H+1)^{j+1}`.
+
+At `H ≍ N` that factor is bounded: with `H = N` and `N ≥ 1` it is at most `3^{j+1}`.  So the
+constants of the contour bound are genuinely absolute once the smoothing width is proportional to
+the cutoff — which is the regime in which the smoothed sum approximates `∑_{n≤N} μ(n)` anyway.
+
+This closes the last dependence that would have obstructed the limit `N → ∞`.
+
+#### Absolute constants at proportional smoothing — `RHTower/Sieve/MellinDecayDiagonal.lean`
+
+`exists_bound_mellin_smoothWeight_diag` — unconditional,
+`[propext, Classical.choice, Quot.sound]`: for the cutoff `smoothWeight N N` and every `N ≥ 1`,
+
+    |Im s|^{j+1}·‖W(s)‖  ≤  Cⱼ · (2N+1)^{Re s}
+
+with `Cⱼ` depending on the order alone.
+
+Taking `H = N` turns the explicit factor `H^{-(j+1)}(N+H+1)^{j+1}` into `((2N+1)/N)^{j+1} ≤ 3^{j+1}`,
+a number.  So at proportional smoothing every constant in the contour bound is absolute, and the
+only cutoff dependence anywhere is the honest factor `(2N+1)^{Re s}` — which is the term the saving
+acts on.
+
+`H = N` is not a convenience: the smoothed sum only approximates `∑_{n≤x} μ(n)` when the smoothing
+width is comparable to the cutoff, so this is the regime the argument has to work in, and it is the
+regime in which the constants behave.
+
+With this the contour bound has no remaining hidden dependence on `N`:
+
+    ‖ 2π ∑ₙ μ(n)·w(n) ‖  ≤  (2N+1) · [ three explicit terms in t = (log 2N)^{1/10} ]
+
+each term a polynomial in `t` times `exp(-κt)` with `κ ≥ 1/2`, and each such product proved to tend
+to zero.
+
+#### The contour bound, uniform in the cutoff — `RHTower/Sieve/MoebiusContourBoundDiag.lean`
+
+`exists_norm_tsum_moebius_smoothWeight_le_diag` — unconditional,
+`[propext, Classical.choice, Quot.sound]`.  The same inequality as the sharp version at `H = N`,
+but with the quantifiers in the order the limit needs:
+
+    ∃ C C' M₀ K₀,  ∀ N ≥ 1,  ∀ K ≥ K₀,   ‖ 2π ∑ₙ μ(n)·w(n) ‖  ≤  …
+
+The constants now stand **outside** the quantifier over the cutoff.  That is the whole content of
+the specialisation, and it was not available before `MellinDecayDiagonal`: every earlier version
+fixed `(N, H)` before producing its constants, so letting `N → ∞` would have compared quantities
+that move with `N`.
+
+Worth recording is how little had to change.  The geometric scaffolding — the rectangle, its
+zero-freeness, the three bounds on `invZeta`, the continuity of the left edge — is a function of the
+contour parameter `K` alone and never mentions the cutoff.  So only the three decay constants needed
+to be made uniform, and the proof is otherwise identical to the sharp version.  The separation of
+"geometry depends on `K`" from "size depends on `N`" is what makes the two limits independent.
+
+Also note `K₀` is absolute: it comes from `exists_zero_free_box` and `exists_bound_invZeta_low_box`,
+both of which are statements about `ζ` with no cutoff in them.  So the same `K₀` works for every `N`,
+and `K = contourParam (2N)` exceeds it for all large `N`.
+
+#### The left-edge term collapses — `RHTower/Sieve/LeftEdgeTerm.lean`
+
+| statement | content |
+|---|---|
+| `half_le_leftAbscissa_contourParam` | `c(contourParam x) ≥ 1/2` as soon as `log x ≥ 1` |
+| `leftEdge_term_le` | `M·(2x^c/c + 2C·y^c) ≤ M·(4+2C)·y·exp(-c₀(log x)^{1/10}/8192)` |
+
+Both `[propext, Classical.choice, Quot.sound]`.
+
+The whole left-edge term — both its pieces — is now the trivial size `y` times the saving.  The two
+pieces are `(2N)^{c}` divided by the abscissa and the tail constant times `(2N+1)^{c}`, and it is
+`rpow_leftAbscissa_le_saving`'s tolerance of `log y ≥ log x` that lets one lemma serve both.
+
+The abscissa bound is cheaper than expected and worth recording, because a weaker version would have
+forced an astronomically large threshold on `N`.  `c(K) ≥ 1/2` needs only `c₀/(16 log⁹K) ≤ 1/2`, and
+`log K ≥ (log x)^{1/10} ≥ 1` already gives `log⁹K ≥ 1`; with `c₀ ≤ 1/2` the quotient is at most
+`1/32`.  So `log x ≥ 1` suffices — no condition of the form `(log x)^{1/10} ≥ 3`, which would have
+meant `x ≥ e^{59049}`.
+
+This is where `zeroFreeConst_le_half` earns its place a second time: with only `c₀ ≤ 1` the quotient
+bound would be `1/16`, still enough here, but the same constant is what gives the truncation term a
+rate rather than a sign.
+
+#### The right-hand terms collapse — `RHTower/Sieve/RightSideTerm.lean`
+
+`rightSide_term_le` — unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+    A · y^{d(contourParam x)} / T(contourParam x)  ≤  4·A·y·exp( -(1 - c₀)·(log x)^{1/10} )
+
+for `A ≥ 0`, `log y ≤ 2 log x`, `(log x)^{1/10} ≥ 2`.
+
+One lemma covers both the truncation error and the horizontal edges, because at `j = 0` they have
+the same shape — a coefficient times `y^{d(K)}` over one power of the truncation height.  Taking
+`j = 0` is not a loss: the exponent is already `1 - c₀ ≥ 1/2`, and larger `j` only improves it while
+complicating the cast arithmetic.
+
+With this all three terms of the contour bound are of the form
+
+    (trivial size) × (polynomial in t) × exp(-κ t),      κ ≥ 1/2,
+
+namely `exp(-c₀t/8192)` for the left edge and `exp(-(1-c₀)t)` for the other two.  The two rates are
+very different — the left edge decays far more slowly — but both are positive, and that is all the
+limit needs.
+
+That asymmetry is the honest shape of the argument: the saving bought by moving the contour left is
+tiny (`c₀/8192` with `c₀ ≈ 10^{-18}`), while the truncation and horizontal edges are damped by the
+full height. The binding constraint on the whole method is therefore the left edge, exactly as the
+classical account says.
+
+#### The three terms combined — `RHTower/Sieve/MoebiusCombinedBound.lean`
+
+| statement | content |
+|---|---|
+| `exp_right_le_exp_left` | `exp(-(1-c₀)t) ≤ exp(-c₀t/8192)` — the slower rate dominates |
+| `gap_le_one` | `d(K) - c(K) ≤ 1` |
+| `combined_terms_le` | all four summands ≤ `(x+1)·[8RC + 8EC' + max(M₀,E)(4+2C)]·exp(-c₀t/8192)` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The whole right-hand side of the contour bound is now a **single** product: trivial size, times a
+coefficient built from the edge bounds, times one exponential.  Reducing to one exponential is what
+`exp_right_le_exp_left` buys, and it is legitimate only because `c₀ ≤ 1/2` makes
+`c₀/8192 ≤ 1 - c₀`; with `c₀` close to `1` the left edge would decay *faster* than the truncation
+error and the bound would have to keep both rates.
+
+`gap_le_one` needed a second bound the first draft omitted: the gap is
+`c₀/(2log⁹K) + c₀/(16log⁹K)`, and bounding only the first summand leaves the second uncontrolled.
+Both are at most `1/54`, so the gap is at most `1/27`.
+
+What remains is to substitute the polynomial majorants for `R(K)` and `E(K)`
+(`EdgeBoundAtChoice`), giving a bound of the form `(x+1)·P(t)·exp(-c₀t/8192)` with `P` an explicit
+polynomial, and then apply `tendsto_polyEdge_mul_exp_neg`.
+
+#### The coefficient majorised — `RHTower/Sieve/CoeffMajorant.lean`
+
+| statement | content |
+|---|---|
+| `coeffMajorant` | the explicit polynomial majorant of `8RC + 8EC' + max(M₀,E)(4+2C)` |
+| `coeff_le_coeffMajorant` | the coefficient is at most it, at the balanced parameter |
+| `tendsto_coeffMajorant_mul_exp_neg` | `coeffMajorant(t)·exp(-κt) → 0` for every `κ > 0` |
+
+Both theorems `[propext, Classical.choice, Quot.sound]`.
+
+The majorant is chosen to be a sum of exactly the three shapes already proved to decay against an
+exponential — `(1 + a t⁹)`, `(1 + a t⁹)(5/2 + 2t)`, and a constant — so its limit follows by
+`Tendsto.add` from `PolyExpDecay` with no new analysis.  Writing the majorant to fit the available
+lemmas rather than expanding the polynomial and proving a general degree-ten statement is what keeps
+this step short.
+
+The `max` is handled by `max M₀ E ≤ M₀ + E`, which is where both `M₀ ≥ 0` and `E ≥ 0` are used; the
+second is `invZetaEdgeBound_nonneg`, and without it the majorisation would fail for a reason that has
+nothing to do with the analysis.
+
+So the contour bound is now
+
+    ‖ 2π ∑ₙ μ(n)·w(n) ‖  ≤  (2N+1) · coeffMajorant(t) · exp(-c₀ t / 8192),      t = (log 2N)^{1/10},
+
+with the second factor proved to tend to zero.  The remaining work is bookkeeping: instantiate the
+diagonal contour bound at `K = contourParam (2N)`, check the four numeric side conditions on `N`,
+and read off `∑ₙ μ(n)·w(n) = o(N)`.
+
+#### The smoothed sum against the majorant — `RHTower/Sieve/MoebiusMajorantBound.lean`
+
+`exists_norm_tsum_moebius_smoothWeight_le_majorant` — unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+    ‖ 2π ∑ₙ μ(n)·w(n) ‖ ≤ (2N+1)·coeffMajorant(t)·exp(-c₀t/8192),    t = (log 2N)^{1/10},
+
+for `N ≥ 1` with `log 2N ≥ 1`, `t ≥ 2`, and `contourParam (2N) ≥ K₀`.  The constants `C`, `C'`, `M₀`
+and the threshold `K₀` are absolute.
+
+Two side conditions were cheaper than they first looked.
+
+`gap_le_one` was stated with `3 ≤ log K`, which would have forced `t ≥ 3` and hence
+`log 2N ≥ 3^10 = 59049`.  But the gap is `c₀(1/2 + 1/16)/log⁹K`, so `1 ≤ log K` already gives
+`≤ 1/4 + 1/32 < 1` using `c₀ ≤ 1/2`.  Weakening the hypothesis keeps the threshold at `t ≥ 2`, which
+is what `exp_div_four_le_truncHeight` needs anyway.
+
+`log(2N+1) ≤ 2 log(2N)` reduces to `2N+1 ≤ (2N)²`, true for every `N ≥ 1`; it is the only place the
+two arguments of the saving and the growth have to be reconciled, and it costs nothing.
+
+The bound is now a product of three factors: the trivial size, and two whose product tends to zero.
+
+### The smoothed Möbius sum is `o(N)` — `RHTower/Sieve/MoebiusSmoothLittleO.lean`
+
+`tendsto_norm_tsum_moebius_smoothWeight_div` — unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+    ‖ ∑ₙ μ(n)·w_N(n) ‖ / (2N+1)  →  0     as  N → ∞,      w_N = smoothWeight N N.
+
+This closes the contour argument.  The chain, every link unconditional and axiom-clean:
+
+| step | module |
+|---|---|
+| `1/ζ` corrected at the pole | `InvZetaRegular` |
+| a zero-free rectangle at every height | `ZeroFreeRectangle`, `ZeroFreeConcreteRect` |
+| Cauchy on the truncated rectangle | `InvZetaProductShift` |
+| the four edges bounded | `HorizontalEdgeBound`, `VerticalMassSharp`, `TruncationError`, `EdgeBoundsSharp` |
+| `‖1/ζ‖` on each edge | `InvZetaLowBox`, `InvZetaSegmentBound`, `HalfComparison`, `InvZetaLeftEdge`, `InvZetaLeftLine`, `InvZetaEdgeBounds` |
+| decay constants where they are used | `MellinAbscissaDecay`, `MellinDecayUniform`, `MellinDecayDiagonal` |
+| the Perron identity and the four-edge combination | `PerronEdgeAssembly`, `PerronSharpSubstitution` |
+| the concrete rectangle | `MoebiusContourBoundSharp`, `MoebiusContourBoundDiag` |
+| the balanced parameter | `ContourParameterChoice`, `SavingSubstitution`, `GrowthSubstitution` |
+| the terms collapsed | `LeftEdgeTerm`, `RightSideTerm`, `MoebiusCombinedBound` |
+| polynomial against exponential | `PolyExpDecay`, `EdgeBoundAtChoice`, `CoeffMajorant` |
+| the limit | `MoebiusMajorantBound`, `MoebiusSmoothLittleO` |
+
+The statement is about the *smoothed* sum.  Passing to `∑_{n≤x} μ(n) = o(x)` needs one further and
+entirely elementary step — comparing the smoothed sum with the sharp one, which costs `O(H) = O(N)`
+per unit of smoothing and so requires the smoothing to be taken narrower than proportional, at the
+price of a weaker saving.  That is a separate argument and is not claimed here.
+
+Three findings from this route are worth carrying forward:
+
+1. Mathlib's junk value at `s = 1` makes `fun s => (ζ s)⁻¹` genuinely discontinuous exactly where the
+   contour crosses.  The correction `invZeta s = (s-1)·G(s)⁻¹` needs no case split, and the *pole* is
+   what supplies nonvanishing at the one point the line argument cannot reach.
+2. A decay constant quantified over an abscissa *range* carries `(N+H)^{top of range}`.  When the
+   range straddles `1` this is nine times the saving's exponent and the bound becomes worse than
+   trivial — a defect that type-checks and looks harmless.
+3. The binding constraint is the left edge, whose saving is `c₀/8192` with `c₀ ≈ 10^{-18}`, while the
+   other edges are damped by the full truncation height.  The formalisation reproduces the classical
+   bottleneck rather than a different one.
+
+#### The smoothed sum against the sharp sum — `RHTower/Sieve/SmoothVsSharp.lean`
+
+`norm_tsum_smoothWeight_sub_sum_le` — unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+    ‖ ∑ₙ μ(n)·w(n) - ∑_{n ≤ N} μ(n) ‖  ≤  H + 1.
+
+The cutoff is `1` below `N` and `0` above `N+H`, so the two sums agree outside the transition
+window, where each summand has modulus at most `1`; the window holds at most `H+1` integers.  No
+analysis enters — the whole proof is `tsum_eq_sum` on the finite support, `Finset.sum_Ico_consecutive`
+to split off the agreeing range, and a floor computation for the count.
+
+This is the step that decides what the contour argument is worth for the *sharp* sum, and it makes
+the trade explicit.  At proportional smoothing `H = N` the comparison costs `O(N)` and says nothing.
+To get `∑_{n≤x} μ(n) = o(x)` the smoothing must be narrower, `H = N/L`, and then the decay constants
+grow like `L^{j+1}` — which the uniform bound `exists_bound_mellin_smoothWeight_uniform_all` already
+tracks, since its cutoff dependence is the explicit factor `H^{-(j+1)}(N+H+1)^{j+1}`.
+
+So the two requirements pull against each other and there is room between them: `L` subpolynomial,
+say `L = exp((log N)^{1/20})`, makes the comparison error `N·exp(-(log N)^{1/20})` while costing only
+a subpolynomial factor against the saving `exp(-c₀(log N)^{1/10}/8192)`.  The contour bound at
+`H = N/L` is not yet assembled — `MoebiusContourBoundDiag` is stated at `H = N` — so this is a
+statement about what remains, not a claim that it is done.
+
+#### The contour bound at arbitrary smoothing width — `RHTower/Sieve/MoebiusContourBoundGeneral.lean`
+
+`exists_norm_tsum_moebius_smoothWeight_le_general` — unconditional,
+`[propext, Classical.choice, Quot.sound]`.  The same bound as the diagonal version, for **every**
+`H > 0`, with the smoothing width entering only through the explicit factors
+
+    C/H² · (N+H+1)²      (the order-two constants, right and left edges)
+    C'/H · (N+H+1)       (the order-one constant, horizontal edges)
+
+and `C`, `C'`, `M₀`, `K₀` absolute.  (`exists_bound_mellin_smoothWeight_uniform_upto`, added to
+`MellinDecayUniform`, is what supplies these.)
+
+This is the form in which the smoothing width becomes a free parameter, and it makes the trade
+recorded in the previous section quantitative rather than heuristic.  Writing `H = N/L`:
+
+| requirement | constraint on `L` |
+|---|---|
+| the sharp/smooth comparison `H + 1` is `o(N)` | `L → ∞` |
+| `H^{-2}(N+H+1)² ≍ L²` does not swamp the saving | `L² ≪ exp(c₀(log N)^{1/10}/8192)` |
+
+Both hold for `L = exp((log N)^{1/20})`, with room to spare — the second constraint permits `L` up
+to `exp(c₀(log N)^{1/10}/16384)`, and `(log N)^{1/20}` is far below that.
+
+Note the diagonal version is not superseded: at `H = N` the constants are absolute numbers rather
+than functions of `L`, which is what made `MoebiusSmoothLittleO` clean.  The general version pays
+`L²` for the freedom to choose `H`.
+
+#### The cost of narrow smoothing — `RHTower/Sieve/WidthFactor.lean`
+
+| statement | content |
+|---|---|
+| `width_ratio_le` | `(N+H+1)/H ≤ L + 2` whenever `H ≥ 1` and `N/H ≤ L` |
+| `sq_width_factor_le` | `C/H²·(N+H+1)² ≤ C·(L+2)²` |
+| `width_factor_le` | `C'/H·(N+H+1) ≤ C'·(L+2)` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The smoothing width enters the contour bound only as `((N+H+1)/H)^{j+1}`, and that ratio is `L + 2`
+at worst: the `+H` contributes exactly `1` and the `+1` contributes `1/H ≤ 1`.  So narrowing the
+smoothing by a factor `L` costs `L^{j+1}` and nothing else — no interaction with the contour geometry,
+no dependence on `N` beyond the ratio.
+
+The hypothesis `H ≥ 1` is what makes the `+1` harmless, and it is free in the intended regime
+(`H = N/L` with `L` subpolynomial, so `H → ∞`).
+
+Substituting these into the general contour bound turns its cutoff dependence into the single
+polynomial factor `(L+2)²`, which is the last quantity that has to be weighed against the saving.
+
+#### The contour bound in terms of the smoothing ratio — `RHTower/Sieve/MoebiusContourBoundRatio.lean`
+
+`exists_norm_tsum_moebius_smoothWeight_le_ratio` — unconditional,
+`[propext, Classical.choice, Quot.sound]`.  For all `N > 0`, `H ≥ 1`, `L ≥ N/H` and `K ≥ K₀`:
+
+    ‖ 2π ∑ₙ μ(n)·w(n) ‖ ≤ 2·R(K)·C(L+2)²·(N+H+1)^{d(K)} / T(K)
+                          + 2·E(K)·C'(L+2)·(N+H+1)^{d(K)}·(d(K)-c(K)) / T(K)
+                          + max(M₀,E(K))·( 2(N+H)^{c(K)}/c(K) + 2C(L+2)²(N+H+1)^{c(K)} )
+
+with `C`, `C'`, `M₀`, `K₀` absolute.
+
+The cutoff now enters in exactly two ways: the trivial sizes `(N+H)^{c(K)}` and `(N+H+1)^{d(K)}`,
+which the saving and growth lemmas already handle, and the single polynomial `(L+2)²` paid for
+narrowing the smoothing.  This is structurally the diagonal bound with one extra factor, so the
+collapse lemmas `leftEdge_term_le` and `rightSide_term_le` apply unchanged.
+
+The whole substitution is one `gcongr` — the width factors are multiplied by norms and by positive
+powers throughout, so monotonicity carries them into every term without case analysis.  Setting the
+positivity facts up beforehand is what makes that possible; the geometric facts needed
+(`T(K) ≥ 1`, `d(K) - c(K) ≥ 0`) follow from `K ≥ 5` alone, which is why `K₀` is enlarged to
+`max K₀ 5` rather than carrying `log K ≥ 3` down from the general bound.
+
+#### The ratio bound against the majorant — `RHTower/Sieve/MoebiusMajorantRatio.lean`
+
+`exists_norm_tsum_moebius_smoothWeight_le_majorant_ratio` — unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+    ‖ 2π ∑ₙ μ(n)·w(n) ‖ ≤ (N+H+1)·coeffMajorant(C(L+2)², C'(L+2), M₀, t)·exp(-c₀t/8192)
+
+for `N > 0`, `H ≥ 1`, `L ≥ N/H`, `log(N+H) ≥ 1`, `t = (log(N+H))^{1/10} ≥ 2`, and
+`contourParam(N+H) ≥ K₀`.
+
+The price of narrow smoothing needed no new argument at all.  `combined_terms_le` and
+`coeff_le_coeffMajorant` take the two contour constants as *parameters*, so substituting `C(L+2)²`
+and `C'(L+2)` makes the ratio bound an instance of the very chain that produced the diagonal one —
+the entire collapse is reused verbatim.
+
+That is the payoff of having stated the collapse lemmas with abstract constants rather than at the
+concrete values.  Had they been specialised, every step from `LeftEdgeTerm` onward would have had to
+be redone with the extra factor threaded through.
+
+`L` now appears in exactly one place: inside the polynomial coefficient.  Choosing `H = N/L` with
+`L = exp((log N)^{1/20})` makes that coefficient `exp(2(log N)^{1/20})·poly(t)`, still beaten by
+`exp(-c₀(log N)^{1/10}/8192)` since `1/20 < 1/10`; and the sharp/smooth comparison then costs
+`H + 1 ≍ N·exp(-(log N)^{1/20})`.
+
+#### Linear growth against quadratic decay — `RHTower/Sieve/ExpQuadraticDecay.lean`
+
+| statement | content |
+|---|---|
+| `rpow_twentieth_sq` | `(u^{1/20})² = u^{1/10}` |
+| `tendsto_exp_two_sub_sq` | `exp(2v - κv²) → 0` for `κ > 0` |
+| `tendsto_poly_exp_two_sub_sq` | `(1+a(v²)⁹)(b+cv²)·exp(2v)·exp(-κv²) → 0` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The first identity is what makes the whole comparison elementary.  The price of narrow smoothing is
+`exp(2(log N)^{1/20})` and the saving is `exp(-c₀(log N)^{1/10}/8192)`; writing `v = (log N)^{1/20}`
+turns the second exponent into `-c₀v²/8192`, so the two are a *linear* and a *quadratic* function of
+one variable, and no asymptotic machinery is needed beyond `exp(2v - κv²) ≤ exp(-v)` for
+`v ≥ 3/κ`.
+
+That is the reason `1/20` is the right smoothing exponent.  Any exponent strictly below `1/10`
+works, but taking exactly half turns the comparison into the quadratic one; a different choice would
+give `exp(2v^θ - κv)` with `θ < 1` and require a genuine growth comparison instead of a `nlinarith`
+step.
+
+The third statement splits the exponential as `exp(-κv²/2)·exp(2v - κv²/2)` — half the saving kills
+the polynomial through the already-proved `tendsto_polyEdge_mul_exp_neg`, the other half kills the
+price.  Splitting rather than fighting both factors at once is what lets the earlier lemma be
+reused unchanged.
+
+#### The smoothing width — `RHTower/Sieve/SmoothWidthChoice.lean`
+
+    smoothRatio N = exp((log N)^{1/20}),      smoothWidth N = N / smoothRatio N.
+
+| statement | content |
+|---|---|
+| `one_le_smoothRatio`, `smoothRatio_pos` | the ratio is a genuine factor ≥ 1 |
+| `one_le_smoothWidth` | the width is at least `1` once `log N ≥ 1` |
+| `smoothWidth_le` | the width is at most the cutoff |
+| `div_smoothWidth` | `N / smoothWidth N = smoothRatio N`, so `L := smoothRatio N` is admissible |
+| `tendsto_smoothRatio_atTop` | the ratio tends to infinity |
+| `tendsto_smoothWidth_div` | `(smoothWidth N + 1)/N → 0` — the comparison error is `o(N)` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+`one_le_smoothWidth` is the only one with content: it needs `exp((log N)^{1/20}) ≤ N`, which reduces
+to `(log N)^{1/20} ≤ log N` — true for `log N ≥ 1` because raising a number `≥ 1` to a smaller
+exponent decreases it.  That single inequality is what makes `H ≥ 1` free, which in turn is what
+`WidthFactor` needs.
+
+With this both requirements on the width are theorems rather than intentions:
+`tendsto_smoothWidth_div` gives the sharp/smooth comparison, and `div_smoothWidth` supplies
+`L = smoothRatio N` to the ratio bound, whose price `(L+2)²` is `exp(2(log N)^{1/20})` up to a
+constant — exactly the quantity `ExpQuadraticDecay` weighs against the saving.
+
+#### The two logarithmic variables compared — `RHTower/Sieve/LogComparison.lean`
+
+| statement | content |
+|---|---|
+| `sq_le_logRpow` | `v² ≤ t` |
+| `logRpow_le_two_sq` | `t ≤ 2v²` |
+
+with `t = (log(N+H))^{1/10}`, `v = (log N)^{1/20}`, for `0 ≤ H ≤ N` and `log N ≥ 1`.  Both
+`[propext, Classical.choice, Quot.sound]`.
+
+The saving is expressed in `t` and the price in `v`, so nothing can be compared until the two are
+related.  Since `N ≤ N+H ≤ 2N` they are, and both directions are used: the lower bound converts the
+saving `exp(-c₀t/8192)` into `exp(-c₀v²/8192)`, which is what `ExpQuadraticDecay` weighs against
+`exp(2v)`; the upper bound keeps the polynomial in `t` a polynomial in `v²`, which is what makes
+`tendsto_poly_exp_two_sub_sq` applicable at all.
+
+The constant `2` in the upper bound comes from `log 2 ≤ 1` and `2^{1/10} ≤ 2` — both crude, and both
+harmless, since a constant factor on `v²` changes nothing in a quadratic-beats-linear comparison.
+
+`H ≤ N` holds for `smoothWidth` by `smoothWidth_le`, and `0 ≤ H` because the ratio is positive.  So
+both hypotheses are discharged by the previous module.
+
+#### Monotonicity of the majorant, and the size of the ratio — `RHTower/Sieve/CoeffMajorantMono.lean`
+
+| statement | content |
+|---|---|
+| `coeffMajorant_mono_t` | the majorant is increasing in its variable when its coefficients are nonnegative |
+| `smoothRatio_add_two_le` | `L + 2 ≤ 3·exp(v)` |
+| `zero_le_smoothRatio_add_two` | `0 ≤ L + 2` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+These are what let the majorant's variable be changed from `t` to `v`.  Monotonicity means the
+comparison `t ≤ 2v²` can be substituted straight into the majorant instead of expanding it; the
+proof is a single `gcongr` once the coefficient nonnegativities are in context.
+
+`M₀ ≥ 0` turned out not to be needed for monotonicity — `M₀` appears in the majorant only in the
+constant term `M₀(4+2C)`, which does not involve `t` — so the hypothesis is dropped.  A small thing,
+but it is the kind of surplus hypothesis that propagates into every call site if left in.
+
+`L + 2 ≤ 3exp(v)` is immediate from `exp(v) ≥ 1`, and it is the only place the shape of
+`smoothRatio` is used: everything downstream sees the ratio through this bound alone.
+
+#### Scaling the majorant's constants — `RHTower/Sieve/CoeffMajorantScale.lean`
+
+| statement | content |
+|---|---|
+| `coeffMajorant_mono_const` | the majorant is increasing in both its constants |
+| `coeffMajorant_scale` | `coeffMajorant (C·E) (C'·E) M₀ a w ≤ E · coeffMajorant C C' M₀ a w` for `E ≥ 1` |
+
+Both `[propext, Classical.choice, Quot.sound]`.
+
+The second is what pulls the price of narrow smoothing out of the majorant altogether: the price
+enters as `C(L+2)²` and `C'(L+2)`, both at most a constant times `exp(2v)`, and once it is outside
+the majorant the remaining polynomial is the same one the diagonal case already handled.
+
+The inequality is *not* an identity, and the reason is worth noting: the majorant has a constant
+term `M₀(4+2C)` and a `4` inside its middle coefficient, neither of which scales with `E`.  Both
+discrepancies contribute `4(E-1)` times something nonnegative — they happen to have the right
+sign — so the statement holds, but it would fail with the inequality reversed.  The proof is
+`nlinarith` on that difference, with the two nonnegative products supplied explicitly.
+
+Neither `C ≥ 0` nor `C' ≥ 0` is needed for the scaling: `C` and `C'` appear on both sides in the
+same positions, so only `E ≥ 1` and the nonnegativity of the `t`-dependent factors matter.
+
+#### The majorant as a single product — `RHTower/Sieve/CoeffMajorantProd.lean`
+
+`coeffMajorant_le_prod` — unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+    coeffMajorant C C' M₀ a (2w)  ≤  (1 + 512a·w⁹) · (b + c·w)
+
+with `b`, `c` explicit in `C`, `C'`, `M₀`.
+
+`tendsto_polyEdge_mul_exp_neg` handles a single product `(1 + a w⁹)(b + c w)`, while the majorant is
+a *sum* of three pieces.  Bounding the sum by one product costs nothing, and the reason is
+structural: the two `w`-dependent pieces already share the factor `1 + a w⁹`, and the constant piece
+is at most that factor times itself because `1 + a w⁹ ≥ 1`.  The difference between the two sides is
+exactly `(1 + a w⁹ - 1)·M₀(4+2C) ≥ 0`.
+
+Evaluating at `2w` instead of `w` only replaces `a` by `512a` — `(2w)⁹ = 512w⁹` — so the factor-of-two
+slack in `t ≤ 2v²` costs a constant in the polynomial's coefficient and nothing else.
+
+`C' ≥ 0` is not needed: `C'` occurs on both sides in the same position.  With this the chain from
+the ratio bound to `tendsto_poly_exp_two_sub_sq` is complete at the level of individual lemmas —
+monotone in `t`, monotone in the constants, scale the constants out, bound the sum by a product.
+
+#### The majorant in the variable `v` — `RHTower/Sieve/CoeffRatioBound.lean`
+
+`coeffMajorant_ratio_le` — unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+    coeffMajorant (C(L+2)²) (C'(L+2)) M₀ a t · exp(-κt)
+        ≤ (1 + 512a(v²)⁹)·(b + c·v²)·exp(2v)·exp(-κv²)
+
+for `0 ≤ v`, `v² ≤ t ≤ 2v²`, `L + 2 ≤ 3exp(v)`, with `b`, `c` explicit in `C`, `C'`, `M₀`.
+
+This is the four steps of the previous three modules run in order — monotone in `t`, monotone in the
+constants, scale the constants out, bound the sum by a product — plus `exp(-κt) ≤ exp(-κv²)` from
+`t ≥ v²`.  Both directions of `LogComparison` are used, one at the start and one at the end, which
+is why that module needed both.
+
+The right-hand side is now literally the expression `tendsto_poly_exp_two_sub_sq` is stated for, with
+`a` replaced by `512a`.  So the pointwise majorisation and the limit fit together with no further
+manipulation.
+
+Each of the four steps required strictly fewer hypotheses than first written — `M₀ ≥ 0` for the
+`t`-monotonicity, `C, C' ≥ 0` for the scaling, `C' ≥ 0` for the product bound — and dropping them
+kept this assembly free of side conditions that would have had to be rediscovered here.
+
+#### The majorant at the chosen width tends to zero — `RHTower/Sieve/CoeffRatioLimit.lean`
+
+`tendsto_coeffMajorant_ratio` — unconditional, `[propext, Classical.choice, Quot.sound]`: at
+`H = smoothWidth N`,
+
+    coeffMajorant (C(L+2)²) (C'(L+2)) M₀ a t · exp(-κt)  →  0     as N → ∞,
+
+for every `κ > 0` and nonnegative data, with `L = smoothRatio N` and `t = (log(N+H))^{1/10}`.
+
+The proof is a squeeze between `0` and the pointwise bound of `CoeffRatioBound`, whose limit is
+`tendsto_poly_exp_two_sub_sq` composed with `(log N)^{1/20} → ∞`.  Every hypothesis of the pointwise
+bound holds eventually and each is already a theorem:
+
+| hypothesis | source |
+|---|---|
+| `0 ≤ H ≤ N` | `smoothWidth_le`, positivity of the ratio |
+| `v² ≤ t` | `sq_le_logRpow` |
+| `t ≤ 2v²` | `logRpow_le_two_sq` |
+| `L + 2 ≤ 3exp(v)` | `smoothRatio_add_two_le` |
+| `0 ≤ L + 2` | `zero_le_smoothRatio_add_two` |
+
+so nothing new about the smoothing had to be established here.
+
+This is the last quantity in the ratio bound that was not yet known to vanish.  With it, the
+contour bound at the chosen width is the trivial size `N+H+1` times something tending to zero,
+which together with `norm_tsum_smoothWeight_sub_sum_le` and `tendsto_smoothWidth_div` is what a
+statement about `∑_{n≤N} μ(n)` requires.
+
+### `∑_{n ≤ N} μ(n) = o(N)` — `RHTower/Sieve/MoebiusSharpLittleO.lean`
+
+`tendsto_norm_sum_moebius_div` — unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+    ‖ ∑_{n ≤ N} μ(n) ‖ / N  →  0     as N → ∞.
+
+This is the sharp sum, not the smoothed one.  The statement two sections ago
+(`tendsto_norm_tsum_moebius_smoothWeight_div`) was about `∑ₙ μ(n)w_N(n)` at proportional smoothing
+and did **not** imply this; the passage needed the smoothing width to be narrowed, the contour bound
+restated at arbitrary width, and the price of narrowing weighed against the saving.  That is what
+the modules from `SmoothVsSharp` onward supply.
+
+At `H = N/exp((log N)^{1/20})` the two competing requirements are both met:
+
+| term | size | source |
+|---|---|---|
+| contour bound | `3N · coeffMajorant(t)·exp(-c₀t/8192) / 2π` | `MoebiusMajorantRatio`, `CoeffRatioLimit` |
+| sharp/smooth comparison | `H + 1` | `SmoothVsSharp`, `tendsto_smoothWidth_div` |
+
+and both are `o(N)`.
+
+The whole development is now closed from the Riemann zeta function to a statement about `μ`, with no
+hypothesis anywhere.  Of the forty-odd modules built for it, the three findings worth carrying
+forward remain those recorded at the smoothed stage — mathlib's junk value at `s = 1`; the
+abscissa-range trap in the decay constants; the left edge as the binding constraint — together with
+a fourth from this stage:
+
+4. Stating the collapse lemmas with *abstract* constants rather than at their concrete values is what
+   let the entire chain from `LeftEdgeTerm` to `CoeffMajorant` be reused verbatim when the smoothing
+   width became a parameter.  Specialising early would have cost a second development.
+
+#### Novelty check
+
+Mathlib on this toolchain (v4.32.2) contains **no** Prime Number Theorem and no Möbius summatory
+asymptotic.  Searching `Mathlib/NumberTheory/` for `PrimeNumberTheorem`, `prime_number_theorem`, and
+for any `Tendsto`/`IsLittleO`/asymptotic statement about `ArithmeticFunction.moebius` returns
+nothing; the only hit is a comment in `Chebyshev.lean` noting that *parts* of that file were
+upstreamed from the external PrimeNumberTheoremAnd project.  `PrimeCounting.lean` contains counting
+definitions and elementary bounds, not an asymptotic.
+
+So `tendsto_norm_sum_moebius_div` is not a re-derivation of an existing mathlib result.  It is a
+corpus-owned theorem of independent value: `∑_{n≤x} μ(n) = o(x)` is equivalent to the Prime Number
+Theorem, and the chain that produces it — smoothed Perron, truncated contour, zero-free region,
+balanced parameter — is reusable for any Dirichlet series with a similar zero-free region.
+
+#### The contour result reaches the card's objects — `RHTower/Sieve/MoebiusSignBalance.lean`
+
+| statement | content |
+|---|---|
+| `moebius_trichotomy` | `μ(n) ∈ {-1, 0, 1}` |
+| `sum_moebius_eq_card_sub` | `∑_{n∈s} μ(n) = #{n∈s : μ=1} - #{n∈s : μ=-1}` |
+| `tendsto_card_moebius_sign_diff` | the two sign counts differ by `o(N)` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The card's objects are the *sign classes* `{m : μ(m) = ε}`, and `CoprimeProductSign.card_moebius_eq_ge`
+bounds them from below.  The contour result now bounds their **difference** from above: since `μ`
+takes only the values `-1, 0, 1`, the summatory function is exactly the difference of the two counts,
+so `∑_{n≤N} μ(n) = o(N)` says the two sign classes have equal density.
+
+That is a genuine, unconditional statement about the card's own objects, obtained without
+Matomäki--Radziwiłł.  It does not replace the card's hard gate — the card asks for a *short-interval*
+sign law, and equal density over `[1,N]` says nothing about `[x, x+h√x]` — but it is the first
+upper-bound information the corpus has about these classes, to set against the lower bounds the
+sieve layer already provides.
+
+### Opening the Chebyshev route — `RHTower/Sieve/ZetaLogDerivRegular.lean`
+
+The contour apparatus built for `1/ζ` transfers to `-ζ'/ζ`, whose summatory function is `ψ(x)`.
+Mathlib already supplies the Dirichlet series identity
+(`LSeries_vonMangoldt_eq_deriv_riemannZeta_div : LSeries Λ s = -ζ'(s)/ζ(s)` for `re s > 1`), and the
+corpus already owns the local splitting at the pole (`logDeriv_zeta_eq`).
+
+| statement | content |
+|---|---|
+| `zetaLogDerivReg` | the regular part `-G'/G` with `G = (s-1)ζ(s)` |
+| `neg_logDeriv_riemannZeta_eq` | `-ζ'/ζ = 1/(s-1) + zetaLogDerivReg` off the pole |
+| `differentiableAt_zetaLogDerivReg` | holomorphic wherever `G ≠ 0` |
+| `differentiableAt_zetaLogDerivReg_one` | holomorphic *at* the pole |
+| `zetaLogDerivReg_one` | its value there is `-γ` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The structural difference from the Möbius route is worth stating, because it is the whole content of
+the Chebyshev route.  For `1/ζ` the crossing at `s = 1` contributed **nothing** — `invZeta 1 = 0` —
+and the argument's conclusion was that the sum is small.  For `-ζ'/ζ` the crossing contributes the
+residue `1`, and that residue *is* the main term `x` of `ψ(x) ~ x`.  So the same four-edge estimate,
+applied to the same rectangle, produces a main term instead of `o(1)`, and the whole apparatus —
+zero-free rectangle, edge bounds, balanced parameter, smoothing width — is reused unchanged.
+
+What is genuinely new for this route: a bound for `zetaLogDerivReg` on the edges (the analogue of
+`InvZetaLeftEdge`, and *not* implied by it, since `G'/G` and `1/ζ` are different functions), and the
+residue computation that turns the crossing into `W(1)`.
+
+#### The Perron formula's unit bound, examined — `RHTower/Sieve/PerronGeneralTerm.lean`
+
+The Chebyshev route's coefficients are `Λ(n) ≤ log n`, which are **not** unit-bounded, and the
+corpus's smoothed Perron formula `tsum_mul_smoothWeight_eq_integral` assumes `‖a n‖ ≤ 1`.  So the
+first question for the route is how much of that hypothesis is real.
+
+Examining where it is used gives a clean split.  It enters twice: in `integrable_perron_term` and in
+the summability step of the main identity.  In the first it is **spurious** — that lemma is about a
+*single* index `n`, so `‖a n‖` is a constant and any value of it is absorbed into the majorant.
+
+`integrable_perron_term_general` — unconditional, `[propext, Classical.choice, Quot.sound]` — is the
+same statement with no hypothesis on the coefficients at all.
+
+What remains genuinely needed is the summability step: the identity equates the smoothed sum (a
+*finite* sum, since the cutoff vanishes past `N+H`) with an integral of the *full* Dirichlet series,
+so that series must converge on the line.  For `Λ` it does, for every `σ > 1`.  The right hypothesis
+is therefore `Summable (fun n => ‖a n‖ * n^{-σ})` rather than a pointwise bound, and that is what a
+`Λ`-usable Perron formula needs — a strictly weaker assumption than `‖a n‖ ≤ 1`, satisfied by every
+Dirichlet series with abscissa of convergence below `σ`.
+
+#### The Perron formula under absolute convergence — `RHTower/Sieve/PerronSummable.lean`
+
+`tsum_mul_smoothWeight_eq_integral_summable` — unconditional,
+`[propext, Classical.choice, Quot.sound]`: the smoothed Perron identity with `‖a n‖ ≤ 1` replaced by
+
+    Summable (fun n => ‖a n‖ · n^{-σ}).
+
+The unit bound was doing exactly one thing in the original proof: making the `L¹` norms of the terms
+summable, via `∑ n^{-σ} < ∞`.  With the summability hypothesis that step is immediate and the
+comparison disappears; nothing else in the proof changes.
+
+The new hypothesis is the honest one.  The smoothed sum is finite — the cutoff vanishes past `N+H` —
+but the identity equates it with an integral of the *full* Dirichlet series, so absolute convergence
+on the line is genuinely required and a pointwise bound was only ever a sufficient condition for it.
+Every Dirichlet series with abscissa of convergence below `σ` now qualifies, including `Λ` with its
+`log n` growth, which is what the Chebyshev route needs.
+
+So of the two obstructions to running the contour argument for `-ζ'/ζ`, both are now cleared: the
+pole is split off (`ZetaLogDerivRegular`) and the Perron formula admits the coefficients
+(`PerronSummable`).  What remains specific to that route is the edge bound for `zetaLogDerivReg` and
+the residue computation at the crossing.
+
+#### The Perron formula for `Λ` — `RHTower/Sieve/VonMangoldtPerron.lean`
+
+| statement | content |
+|---|---|
+| `summable_norm_mul_rpow_of_LSeriesSummable` | `LSeriesSummable a σ` gives `Summable (‖a n‖·n^{-σ})` |
+| `summable_vonMangoldt_rpow` | the instance for `Λ`, from mathlib's `LSeriesSummable_vonMangoldt` |
+| `tsum_vonMangoldt_smoothWeight_eq_integral` | the smoothed Chebyshev sum as a vertical integral |
+| `tsum_vonMangoldt_cpow_eq` | the integrand is `-ζ'/ζ` on `re s > 1` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The first is where mathlib does the work for us: `LSeriesSummable` is summability of the complex
+terms, and over `ℕ` in a finite-dimensional space that is *absolute* (`summable_norm_iff`), which is
+exactly the hypothesis `PerronSummable` asks for.  So no convergence estimate had to be proved for
+`Λ` — mathlib's `LSeriesSummable_vonMangoldt` supplies it.
+
+With these the Chebyshev route stands where the Möbius route stood at `MoebiusPerron`:
+
+    2π · ∑ₙ Λ(n)·w(n)  =  ∫_ℝ (-ζ'/ζ)(d+iy) · W(d+iy) dy,      d > 1,
+
+the identification of the integrand as `-ζ'/ζ` is done, and the pole at `s = 1` is already split off
+by `ZetaLogDerivRegular`.  The remaining route-specific work is the edge bound for
+`zetaLogDerivReg` and the residue at the crossing; everything else — zero-free rectangle, the four
+edges, the balanced parameter, the smoothing width — is shared with the Möbius route and needs no
+change.
+
+#### The regular part shifts with no residue — `RHTower/Sieve/ZetaLogDerivRegShift.lean`
+
+| statement | content |
+|---|---|
+| `differentiableOn_zetaLogDerivReg_rect` | `zetaLogDerivReg` is holomorphic on a zero-free rectangle |
+| `differentiableOn_zetaLogDerivRegW_rect` | so is its product with the cutoff's transform |
+| `integral_zetaLogDerivRegW_vertical_sub_eq_horizontal_rect` | the four-edge identity, no residue |
+| `chebyshev_integrand_split` | `(-ζ'/ζ)·W = W/(s-1) + zetaLogDerivReg·W` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The holomorphy at the pole is the point: `zetaLogDerivReg` is `-G'/G` with `G(1) = 1 ≠ 0`, so it is
+differentiable *at* `s = 1` and the rectangle argument needs no exception there — exactly as
+`invZeta` was, and for the same reason.  The Cauchy identity for this part therefore carries no
+residue at all.
+
+So the entire residue of the Chebyshev integrand sits in the separated term `W(s)/(s-1)`.  That is
+the formal content of "the main term of the prime number theorem is the pole of `ζ` and nothing
+else": the analytic work of the contour argument — zero-free region, edge estimates, balanced
+parameter — bears only on `zetaLogDerivReg`, and the main term comes from a single explicit rational
+function.
+
+What is left for this route: the residue computation for `∫ W(s)/(s-1)` around the rectangle (an
+explicit Cauchy integral, no zeta input), and the edge bounds for `zetaLogDerivReg` (the analogue of
+`InvZetaLeftEdge`, needing `‖G'/G‖` in place of `‖1/ζ‖`).
+
+#### Splitting the pole term — `RHTower/Sieve/PoleTermSplit.lean`
+
+| statement | content |
+|---|---|
+| `rect_mem_nhds_one` | a closed rectangle straddling `1` is a neighbourhood of it |
+| `differentiableOn_dslope_mellin_rect` | `dslope W 1` is holomorphic on the rectangle |
+| `mellin_div_sub_one_split` | `W(s)/(s-1) = dslope W 1 s + W(1)/(s-1)` off the pole |
+| `integral_dslope_mellin_vertical_sub_eq_horizontal_rect` | the divided difference shifts with no residue |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+This isolates the residue completely.  The divided difference `dslope W 1` is holomorphic wherever
+`W` is — including *at* `s = 1`, by mathlib's `Complex.differentiableOn_dslope`, whose only
+hypothesis is that the domain be a neighbourhood of the point.  A closed rectangle whose abscissae
+straddle `1` strictly is such a neighbourhood, which is what `rect_mem_nhds_one` supplies.
+
+So the Chebyshev integrand is now three pieces, and only the last carries anything:
+
+| piece | contour behaviour |
+|---|---|
+| `zetaLogDerivReg · W` | holomorphic on the zero-free rectangle — no residue |
+| `dslope W 1` | holomorphic on the rectangle — no residue |
+| `W(1)·(s-1)⁻¹` | the entire residue |
+
+The last is an explicit rational function with no zeta content and no cutoff content beyond the
+constant `W(1)`.  Mathlib has no rectangle residue formula — only the vanishing versions — so
+`∫_{∂R}(s-1)⁻¹ = 2πi` is the one remaining computation, and it is a four-segment arctangent
+evaluation independent of everything else in the route.
+
+#### The vertical pole integral — `RHTower/Sieve/VerticalPoleIntegral.lean`
+
+| statement | content |
+|---|---|
+| `integral_re_pole_line` | `∫_{-T}^{T} α/(α²+y²) dy = 2·arctan(T/α)` |
+| `integral_im_pole_line` | `∫_{-T}^{T} -y/(α²+y²) dy = 0` — the integrand is odd |
+| `tendsto_integral_re_pole_line` | that integral tends to `π` as `T → ∞` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+These are the two halves of `(s-1)⁻¹` on a vertical line: real part `α/(α²+y²)` with `α` the distance
+from the pole, imaginary part odd.  Half the residue comes from each side of the contour — `π` from
+the right edge and `π` from the left — which is where the `2π` of `2πi` comes from.
+
+The odd-part vanishing needs no hypothesis on `α` at all: the substitution `y ↦ -y` and
+`intervalIntegral.integral_comp_neg` give it directly, and the sign of `α` never enters.  (I had
+carried `0 < α` there and it was doing nothing.)
+
+The arctangent computation reduces to mathlib's `integral_inv_one_add_sq` after the substitution
+`y = αu`, which is `intervalIntegral.integral_comp_div`.  Nothing about `ζ` or the cutoff appears —
+this is the piece of the prime number theorem that is pure real analysis.
+
+#### The residue in real form — extending `VerticalPoleIntegral`
+
+| statement | content |
+|---|---|
+| `inv_add_mul_I_eq` | `(α + iy)⁻¹ = α/(α²+y²) - i·y/(α²+y²)` |
+| `tendsto_pole_difference` | the two vertical edges together tend to `2π` |
+
+Both `[propext, Classical.choice, Quot.sound]`.
+
+`tendsto_pole_difference` is the residue, stated in the form the contour argument produces it: the
+right edge sits at distance `α = d - 1` from the pole and the left at `β = 1 - c`, each vertical
+integral tends to `π`, and the two add — they do not cancel, because the contour traverses them in
+opposite senses and the sign is already accounted for in the four-edge identity.
+
+`inv_add_mul_I_eq` is proved by `inv_eq_of_mul_eq_one_right` and a real-part/imaginary-part check
+rather than by `field_simp` on the complex expression, which does not close: `ring` has no access to
+`I² = -1`, so the identity has to be reduced to two real ones first.  Worth remembering as the
+general recipe for closed forms of complex reciprocals.
+
+So the residue is now available in real form, and what remains for the Chebyshev route is to
+assemble it with the horizontal edges and the two holomorphic pieces — the same assembly the Möbius
+route already has, with `W(1)·2π` replacing `0` as the value of the crossing.
+
+#### The complex vertical pole integral — completing `VerticalPoleIntegral`
+
+`integral_vertical_pole` — unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+    ∫_{-T}^{T} ((α : ℂ) + iy)⁻¹ dy  =  2·arctan(T/α)      for α > 0,
+
+a **real** number: the imaginary part cancels exactly.
+
+The route that works is to substitute the closed form pointwise and then split with
+`intervalIntegral.integral_sub` and `intervalIntegral.integral_ofReal`, rather than trying to
+manipulate the complex integrand directly.  Both components are continuous — the denominator
+`α² + y²` is bounded away from zero — so integrability is immediate and the split is unconditional.
+
+With this the four pieces of the Chebyshev contour are all in hand:
+
+| piece | value |
+|---|---|
+| `zetaLogDerivReg · W` | Cauchy identity, no residue |
+| `dslope W 1` | Cauchy identity, no residue |
+| right vertical of `W(1)(s-1)⁻¹` | `W(1)·2·arctan(T/(d-1))` |
+| left vertical of `W(1)(s-1)⁻¹` | `W(1)·2·arctan(T/(1-c))` |
+
+and the two arctangents sum to `2π` in the limit (`tendsto_pole_difference`).  The horizontal edges
+of the pole term remain to be estimated — they are `O(1/T)` by the same argument as the other
+horizontal edges, since `(s-1)⁻¹` is bounded by `1/T` at height `T`.
+
+#### The horizontal edges of the pole term — `RHTower/Sieve/HorizontalPoleBound.lean`
+
+| statement | content |
+|---|---|
+| `norm_inv_sub_one_le` | `‖(x + iT - 1)⁻¹‖ ≤ 1/\|T\|` |
+| `norm_integral_horizontal_pole_le` | each horizontal edge is at most `(d-c)/\|T\|` |
+| `tendsto_integral_horizontal_pole` | and vanishes as `T → ∞` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+I said last time that this "should be `O(1/T)`" and would check rather than assume.  It is, and the
+bound is exactly the trivial one: shifting by the real number `x - 1` leaves the imaginary part
+alone, so `‖x + iT - 1‖ ≥ \|T\|` and the reciprocal is at most `1/\|T\|` uniformly in `x`.  No
+cancellation is needed and no property of the abscissa range enters — unlike the earlier horizontal
+edges, where the cutoff's transform carried an abscissa-dependent constant and that dependence was
+where the route's one real defect hid.
+
+All four edges of the pole term are now proved:
+
+| edge | value |
+|---|---|
+| right vertical | `2·arctan(T/(d-1))` → `π` |
+| left vertical | `2·arctan(T/(1-c))` → `π` |
+| top horizontal | `≤ (d-c)/T` → `0` |
+| bottom horizontal | `≤ (d-c)/T` → `0` |
+
+so the boundary integral of `(s-1)⁻¹` tends to `2π` — the residue — with the two holomorphic pieces
+contributing nothing.  Every ingredient of the Chebyshev contour identity is now an unconditional
+theorem; what remains is to combine them, which is the same assembly the Möbius route already has.
+
+#### Both vertical edges from one lemma — `integral_vertical_pole_pair`
+
+`integral_vertical_pole_pair` — unconditional, `[propext, Classical.choice, Quot.sound]`: for
+`c < 1 < d`,
+
+    ∫_{-T}^{T}(d + iy - 1)⁻¹ dy - ∫_{-T}^{T}(c + iy - 1)⁻¹ dy
+        = 2·arctan(T/(d-1)) + 2·arctan(T/(1-c)),
+
+a real number tending to `2π`.
+
+The generalisation that made this cheap: `integral_re_pole_line`, `inv_add_mul_I_eq` and
+`integral_vertical_pole` were all stated with `0 < α`, but their proofs only ever use `α ≠ 0` — the
+substitution `y = αu` and the closed form of the reciprocal are indifferent to the sign, and the
+formula `2·arctan(T/α)` is *correct as stated* for negative `α`, where it is negative.  Weakening
+the hypothesis lets the left edge, where `α = c - 1 < 0`, be handled by the same lemma as the right,
+with the sign change appearing only in `arctan(T/(c-1)) = -arctan(T/(1-c))`.
+
+Had I kept `0 < α` I would have needed a separate reflected computation for the left edge.  This is
+the third time in this route that a hypothesis written for the first use turned out to be stronger
+than the proof required.
+
+The boundary integral of the pole term is now completely determined: two vertical edges summing to
+`2π` in the limit, two horizontal edges each `O(1/T)`.
+
+### The residue of the pole term — `RHTower/Sieve/PoleBoundaryResidue.lean`
+
+`tendsto_pole_boundary` — unconditional, `[propext, Classical.choice, Quot.sound]`: for `c < 1 < d`,
+
+    I•∫_{-T}^{T}(d+iy-1)⁻¹ - I•∫_{-T}^{T}(c+iy-1)⁻¹ - (∫_c^d(x+iT-1)⁻¹ - ∫_c^d(x-iT-1)⁻¹)  →  2πi.
+
+| statement | content |
+|---|---|
+| `tendsto_two_arctan` | `2·arctan(T/α) → π` for `α > 0` |
+| `tendsto_vertical_pole_pair` | the two vertical edges tend to `2π` |
+| `norm_integral_horizontal_pole_neg_le` | the edge at height `-T` is also `≤ (d-c)/T` |
+| `tendsto_horizontal_pole_pair` | both horizontal edges vanish |
+| `tendsto_pole_boundary` | the residue |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+This is a residue theorem for the one function the route needs it for.  Mathlib has no rectangle
+residue calculus — only the vanishing statements — so it is proved by direct computation: the
+vertical edges by the arctangent evaluation, the horizontal ones by the trivial `1/T` bound.
+
+The boundary functional here is *exactly* the one that
+`integral_vertical_sub_eq_horizontal_rect` sets to zero for a holomorphic integrand.  So the
+Chebyshev contour identity is now fully determined:
+
+| integrand piece | boundary functional |
+|---|---|
+| `zetaLogDerivReg · W` | `0` (holomorphic on the zero-free rectangle) |
+| `dslope W 1` | `0` (holomorphic on the rectangle) |
+| `W(1)·(s-1)⁻¹` | `→ 2πi·W(1)` |
+
+and `2πi·W(1)` is the main term of `ψ`, since `W(1) = ∫_0^∞ w(x) dx` is the mass of the cutoff — of
+size `N` for a cutoff of width `N`.  That is the prime number theorem's `ψ(x) ~ x` in the smoothed
+form, with the analytic work all pushed into `zetaLogDerivReg`.
+
+#### The edge bound for the regular part — `RHTower/Sieve/ZetaLogDerivRegBound.lean`
+
+| statement | content |
+|---|---|
+| `norm_zetaLogDerivReg_le` | `‖zetaLogDerivReg s‖ ≤ ‖ζ'(s)‖·‖1/ζ(s)‖ + ‖(s-1)⁻¹‖` |
+| `norm_inv_sub_one_le_height` | `‖(β + iγ - 1)⁻¹‖ ≤ 1/\|γ\|` |
+| `norm_zetaLogDerivReg_left_le` | the regular part on a line left of the abscissa |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+I expected this to be the one genuinely new analytic ingredient of the Chebyshev route, requiring a
+bound on `G'/G` with `G = (s-1)ζ(s)` — a different function from `1/ζ`, so not implied by
+`InvZetaLeftEdge`.  It is not: rearranging the splitting identity gives
+
+    zetaLogDerivReg s = -ζ'(s)/ζ(s) - (s-1)⁻¹,
+
+so the bound needs only `‖ζ'‖` and `‖1/ζ‖`, both already proved for the Möbius route, plus the
+trivial `1/|γ|` for the pole term.  `G'` never has to be estimated.
+
+`norm_zetaLogDerivReg_left_le` therefore reuses `norm_inv_riemannZeta_left_le_segment` verbatim, with
+the same hypotheses, and adds `1/|γ|` — which at heights `|γ| ≥ 1` is at most `1` and so is
+negligible beside the `log⁷N` of the main term.
+
+So the Chebyshev route needs **no** new analytic input beyond what the Möbius route already
+established.  Every ingredient — Perron formula, pole splitting, residue, edge bounds, zero-free
+rectangle, balanced parameter, smoothing width — is now an unconditional theorem in the corpus.
+
+#### The Chebyshev integrand in three pieces — `RHTower/Sieve/ChebyshevIntegrandSplit.lean`
+
+| statement | content |
+|---|---|
+| `chebyshev_integrand_split_full` | `(-ζ'/ζ)·W = dslope W 1 + W(1)·(s-1)⁻¹ + zetaLogDerivReg·W` |
+| `chebyshev_integrand_split_line` | the same on the Perron line, where the hypotheses are free |
+
+Both `[propext, Classical.choice, Quot.sound]`.
+
+The two splittings compose: the pole of `-ζ'/ζ` separates off `(s-1)⁻¹·W`, and the pole of that
+separates off `W(1)·(s-1)⁻¹`, leaving `dslope W 1`.  The result is a three-term decomposition whose
+contour behaviour is completely known:
+
+| summand | zeta content | contour |
+|---|---|---|
+| `dslope W 1` | none | holomorphic on the rectangle — no residue |
+| `W(1)·(s-1)⁻¹` | none | `→ 2πi·W(1)` |
+| `zetaLogDerivReg · W` | all of it | holomorphic on a zero-free rectangle — no residue |
+
+On the Perron line the two hypotheses `s ≠ 1` and `ζ(s) ≠ 0` are automatic, since `re s = d > 1`,
+so `chebyshev_integrand_split_line` is unconditional in the parameters that matter.
+
+Two of the three summands contain no zeta at all.  The main term of the prime number theorem comes
+from the middle one, and the entire analytic difficulty is confined to the third — which the Möbius
+route already bounded.
+
+#### The four-edge combination with a residue — `RHTower/Sieve/ContourEdgesResidue.lean`
+
+`norm_sub_le_of_contour_edges_residue` — unconditional,
+`[propext, Classical.choice, Quot.sound]`: given the shift identity with a residue,
+
+    I·Vd - I·Vc - (Ht - Hb) = Res,
+
+and the four edge bounds, the Perron integral satisfies
+
+    ‖P - (-I)·Res‖ ≤ E₁ + E₂ + E₃ + E₄.
+
+This is the residue analogue of `norm_le_of_contour_edges`: where that bounds `‖P‖` when the
+boundary functional vanishes, this bounds `‖P - main term‖` when it does not.  The proof is the same
+triangle inequality with one extra step — solving the shift identity for `Vd - Vc` multiplies through
+by `I⁻¹ = -I`, which is where the factor comes from and why the main term is `(-I)·Res` rather than
+`Res`.
+
+Applied to the Chebyshev route with `Res → 2πi·W(1)`, the main term is
+`(-I)·2πi·W(1) = 2π·W(1)`, and the Perron identity carries a `2π` on the other side, so the
+smoothed Chebyshev sum differs from `W(1)` — the mass of the cutoff — by the four edges.  That is
+`ψ(x) ~ x` in smoothed form, with the constants matching without adjustment.
+
+#### The mass of the cutoff — `RHTower/Sieve/CutoffMass.lean`
+
+| statement | content |
+|---|---|
+| `mellin_smoothWeight_one` | `W(1) = ∫_0^∞ w(x) dx` |
+| `integral_smoothWeight_le` | that mass is at most `N + H` |
+
+Both `[propext, Classical.choice, Quot.sound]`.
+
+`W(1)` is the residue's coefficient, so its size is the size of the prime number theorem's main term.
+The transform at `s = 1` is just the integral of the cutoff, because the factor `x^{s-1}` becomes
+`x^0 = 1`; and since `w ≤ 1` and vanishes past `N + H`, that integral is at most `N + H`.
+
+With `w = 1` below `N` the mass is also at least `N`, so the main term is `N + O(H)` — which at the
+smoothing widths this route uses (`H = N/L` with `L → ∞`) is `N(1 + o(1))`.  That is `ψ(x) ~ x`.
+
+The integrability here is cleaner from continuity than from the corpus's Mellin machinery: the
+cutoff is smooth and compactly supported in the relevant range, so `Continuous.integrableOn_Ioc`
+plus a vanishing tail is enough, and the `x^{s-1}` weight never has to be carried.
+
+#### The mass pinned from both sides — completing `CutoffMass`
+
+| statement | content |
+|---|---|
+| `integrableOn_smoothWeight_Ioi` | the cutoff is integrable on `(0, ∞)` |
+| `le_integral_smoothWeight` | `N ≤ W(1)` |
+
+Both `[propext, Classical.choice, Quot.sound]`.  With `integral_smoothWeight_le` this gives
+
+    N  ≤  W(1)  ≤  N + H,
+
+so the main term of the smoothed Chebyshev sum is `N` up to the smoothing width.
+
+The lower bound is the mirror of the upper: `w = 1` on `(0, N]` gives exactly `N` there, and the
+remainder is nonnegative.  Splitting at `N` rather than at `N + H` is what makes it immediate —
+the same `Ioc_union_Ioi_eq_Ioi` decomposition, at a different point.
+
+Both bounds are stated for arbitrary `H > 0`, so they apply at the narrow smoothing widths the sharp
+statement needs, where `H = N/L` and the gap between the two bounds is `N/L = o(N)`.
+
+The main term of the Chebyshev route is therefore completely determined, and the route's remaining
+work is the same numerical assembly the Möbius route already carries out.
+
+#### The Chebyshev sharp/smooth comparison — `RHTower/Sieve/ChebyshevSmoothVsSharp.lean`
+
+`norm_tsum_vonMangoldt_smoothWeight_sub_sum_le` — unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+    ‖ ∑ₙ Λ(n)w(n) - ∑_{n ≤ N} Λ(n) ‖  ≤  (H + 1)·log(N + H)
+
+for `N, H > 0` with `N + H ≥ 1`.
+
+Same structure as the Möbius comparison, with one difference: the summand over the transition window
+is bounded by `Λ(n) ≤ log n ≤ log(N+H)` rather than by `1`, so the cost is `(H+1)·log(N+H)` instead
+of `H+1`.  That single logarithm is the only place the two routes' comparison steps differ.
+
+The hypothesis `1 ≤ N + H` is not cosmetic and I nearly omitted it.  Without it the statement is
+**false**: for `N + H < 1` the transition window contains no integers, so the left side is `0`, while
+`log(N+H) < 0` makes the right side negative.  The bound only holds once the cutoff reaches the
+integers it is supposed to weight.
+
+The extra logarithm costs nothing at the smoothing widths this route uses: with `H = N/L` the
+comparison is `N·log(2N)/L`, so it is `o(N)` as soon as `L/log N → ∞` — satisfied by
+`L = exp((log N)^{1/20})` with enormous room.
+
+#### The Chebyshev integrand on the Perron line — `RHTower/Sieve/ChebyshevRightLineBound.lean`
+
+| statement | content |
+|---|---|
+| `norm_vonMangoldt_term` | `‖Λ(n)·n^{-s}‖ = Λ(n)·n^{-Re s}` |
+| `norm_neg_logDeriv_le_line` | `‖(-ζ'/ζ)(d+iy)‖ ≤ ∑ₙ Λ(n)·n^{-d}` |
+| `tsum_vonMangoldt_rpow_nonneg` | the bounding series is nonnegative |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+This is the uniform right-line bound the truncation error needs — the analogue of
+`norm_LSeries_moebius_le_uniform`.  It is cheaper than the Möbius one, and for a structural reason:
+the coefficients `Λ(n)` are **nonnegative**, so the triangle inequality gives the value of the same
+series at the real point `d`, and no zero-free input is required at all.  The Möbius bound had to go
+through the Euler product and `‖1/ζ‖`; here positivity does the work.
+
+The bound is also sharp at `y = 0`, where it is an equality — so nothing is lost by using it.
+
+With this the Chebyshev route has all four of its edge inputs:
+
+| edge | bound |
+|---|---|
+| right line | `∑ Λ(n)n^{-d}` (this module) |
+| horizontal | `zetaLogDerivReg` bound + pole term `O(1/T)` |
+| left line | `norm_zetaLogDerivReg_left_le` |
+| main term | `W(1) ∈ [N, N+H]` |
+
+#### Continuity and truncation on the Perron line — `RHTower/Sieve/ChebyshevLineContinuity.lean`
+
+| statement | content |
+|---|---|
+| `analyticAt_riemannZeta_of_ne_one` | `ζ` is analytic away from the pole |
+| `continuous_neg_logDeriv_line` | `y ↦ (-ζ'/ζ)(d+iy)` is continuous for `d > 1` |
+| `norm_truncation_error_chebyshev` | the truncation error, `≤ 2·(∑Λ(n)n^{-d})·C/T` |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+Analyticity is what makes the continuity immediate.  `differentiableAt_riemannZeta` alone says
+nothing about `ζ'` being continuous; but a function complex-differentiable on an open set is
+analytic there, and the derivative of an analytic function is analytic, hence continuous.  So the
+quotient is continuous wherever `ζ` is nonvanishing and `s ≠ 1`.
+
+`norm_truncation_error_chebyshev` is a direct instance of the Möbius route's
+`norm_truncation_error_le` — the same lemma, with `-ζ'/ζ` in place of `invZeta` and the positivity
+bound in place of the Euler-product one.  That the general lemma applies unchanged is the payoff of
+having stated it for an arbitrary `F` with a bound and continuity on the line.
+
+One practical note: the term-mode application timed out in `isDefEq`.  Supplying `F` explicitly —
+`(F := fun s => -(deriv riemannZeta s) / riemannZeta s)` — fixes it, because the higher-order
+unification of the integrand against `F (d + iy) * W (d + iy)` is what was searching.
+
+#### The Chebyshev Perron identity — `RHTower/Sieve/ChebyshevPerronIdentity.lean`
+
+| statement | content |
+|---|---|
+| `tsum_vonMangoldt_smoothWeight_eq_logDeriv_integral` | `2π ∑ₙ Λ(n)w(n) = ∫_ℝ (-ζ'/ζ)(d+iy)·W(d+iy) dy` |
+| `tsum_vonMangoldt_smoothWeight_eq_split_integral` | the same with the integrand in its three pieces |
+
+Both `[propext, Classical.choice, Quot.sound]`.
+
+The second is the form the contour argument consumes: the smoothed Chebyshev sum is the integral of
+
+    dslope W 1  +  W(1)·(s-1)⁻¹  +  zetaLogDerivReg·W
+
+along the line `re s = d`.  Each summand's contour behaviour is already a theorem — the first and
+third shift with no residue, the second contributes `2πi·W(1)` — so this identity is the last
+structural step before the numerical assembly.
+
+The Chebyshev route is now at parity with where the Möbius route stood at `PerronEdgeAssembly`, with
+every route-specific ingredient proved:
+
+| ingredient | module |
+|---|---|
+| Perron identity for `Λ` | `VonMangoldtPerron`, this module |
+| pole split off | `ZetaLogDerivRegular`, `ZetaLogDerivRegShift` |
+| pole term split further | `PoleTermSplit` |
+| residue | `VerticalPoleIntegral`, `HorizontalPoleBound`, `PoleBoundaryResidue` |
+| four-edge combination with residue | `ContourEdgesResidue` |
+| main term size | `CutoffMass` |
+| right-line bound and continuity | `ChebyshevRightLineBound`, `ChebyshevLineContinuity` |
+| sharp/smooth comparison | `ChebyshevSmoothVsSharp` |
+| edge bound for the regular part | `ZetaLogDerivRegBound` |
+
+and the shared apparatus — zero-free rectangle, edge estimates, balanced parameter, smoothing
+width — is reused from the Möbius route unchanged.
+
+#### Splitting only after truncation — `RHTower/Sieve/ChebyshevTruncatedSplit.lean`
+
+| statement | content |
+|---|---|
+| `dslope_mellin_line` | on a line right of the pole the divided difference is an explicit quotient |
+| `sub_one_ne_zero_line` | the line stays away from the pole |
+| `integral_truncated_chebyshev_split` | the truncated integral splits into the three pieces |
+
+All `[propext, Classical.choice, Quot.sound]`.
+
+The order matters, and getting it wrong would be a genuine error rather than an inefficiency.  The
+three-piece decomposition **cannot** be integrated term by term over the whole line: the pole term
+`W(1)·(s-1)⁻¹` decays like `1/|y|` there and is not integrable, even though the full integrand is.
+So the argument must truncate first and split second — on `[-T, T]` every piece is continuous on a
+compact interval and integrability is automatic.
+
+That is why `norm_truncation_error_chebyshev` comes before this module in the chain, and not after.
+
+Two Lean notes.  The divided difference is continuous on the line for the cheap reason: away from
+`s = 1` it is `(W(s) - W(1))/(s-1)`, a quotient of continuous functions with nonvanishing
+denominator — the removable-singularity theorem is only needed *at* the pole, which the line avoids.
+And `intervalIntegral.integral_add` had to be applied with `f` and `g` given explicitly; the
+rewrite fails otherwise, because the lemma's `(f + g) x` does not match a pointwise-written sum.
+
+#### The main term, explicitly — `RHTower/Sieve/ChebyshevMainTerm.lean`
+
+| statement | content |
+|---|---|
+| `integral_pole_term_line` | `∫_{-T}^{T} W(1)·((d+iy)-1)⁻¹ dy = W(1)·2·arctan(T/(d-1))` |
+| `tendsto_integral_pole_term_line` | it tends to `π·W(1)` |
+
+Both `[propext, Classical.choice, Quot.sound]`.
+
+The middle piece of the split integrand is the only one contributing a main term, and on the
+truncated Perron line it is *completely explicit* — a constant times an arctangent, with no
+estimate anywhere.  That is unusual for an analytic number theory main term and worth stating:
+the prime number theorem's `x` comes out of this route as an exact elementary integral, and every
+inequality in the argument is spent on the error.
+
+Combining with `CutoffMass`, the limit `π·W(1)` has `π·N ≤ π·W(1) ≤ π·(N+H)`, and the left edge
+contributes the same again; the Perron identity's `2π` cancels both, leaving `W(1) ∈ [N, N+H]` as
+the main term of `∑ₙ Λ(n)w(n)`.
+
+Every piece of the Chebyshev contour identity is now proved and explicit.  What remains is the
+numerical assembly — substituting the edge bounds and the balanced parameter, exactly as the Möbius
+route does, with the difference that the conclusion is `ψ ~ N` rather than `o(N)`.
+
+#### The truncated Chebyshev identity — `RHTower/Sieve/ChebyshevTruncatedIdentity.lean`
+
+`tsum_vonMangoldt_truncated_identity` — unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+    2π ∑ₙ Λ(n)w(n) = (tail beyond height T)
+                     + ∫_{-T}^{T} dslope W 1
+                     + W(1)·2·arctan(T/(d-1))
+                     + ∫_{-T}^{T} zetaLogDerivReg·W
+
+for `d > 1`.
+
+This is an **identity**, not an estimate — the whole contour argument up to this point produces an
+exact decomposition, with the main term already isolated in closed form.  Each of the four summands
+then has its own treatment:
+
+| summand | treatment |
+|---|---|
+| tail | `norm_truncation_error_chebyshev` |
+| `∫ dslope W 1` | shifts to the left edge with no residue |
+| `W(1)·2·arctan(T/(d-1))` | the main term, `→ π·W(1)` |
+| `∫ zetaLogDerivReg·W` | shifts to the left edge with no residue |
+
+The assembly of the identity was the step where the ordering constraint from the previous module
+mattered: the split is applied to the *truncated* integral only, and the untruncated part appears
+solely inside the tail bracket, where it is bounded rather than decomposed.
+
+#### The smoothed sum against its main term — `RHTower/Sieve/ChebyshevMainTermBound.lean`
+
+`norm_tsum_vonMangoldt_sub_main_le` — unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+    ‖ 2π ∑ₙ Λ(n)w(n) - W(1)·2·arctan(T/(d-1)) ‖ ≤ E₁ + E₂ + E₃
+
+given bounds `E₁`, `E₂`, `E₃` on the tail, the divided-difference integral and the regular integral.
+
+This is the shape the numerical assembly consumes, and it is the Chebyshev analogue of
+`norm_le_of_contour_edges`: the main term is explicit on the left, and the error is a sum of three
+already-controlled quantities.  Only a triangle inequality separates it from the truncated identity,
+because that identity is exact.
+
+The Chebyshev route is now structurally complete.  Every step from the Riemann zeta function to
+
+    ∑_{n ≤ N} Λ(n) = N + error
+
+exists as an unconditional theorem: Perron identity, pole splitting, three-piece decomposition,
+truncation, residue, main term in closed form, and the sharp/smooth comparison.  What is left is the
+numerical work of substituting the edge bounds — the same substitution the Möbius route carries out
+in `PerronSharpSubstitution` through `MoebiusSharpLittleO`, and reusing the same zero-free rectangle,
+balanced parameter and smoothing width.
+
+#### Chebyshev: the error on the shifted contour
+
+Three further modules, all unconditional, all `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/ChebyshevErrorAssembly.lean` — `norm_tsum_vonMangoldt_sub_main_le_tail`.
+  Substitutes `norm_truncation_error_chebyshev` for the first error piece, leaving
+  `2·M·C/T + E₂ + E₃` with `M = ∑ₙ Λ(n)n^{-d}`.
+- `RHTower/Sieve/ContourShiftNormBound.lean` — `norm_le_of_shift_identity`: a Cauchy identity
+  `I·V_d - I·V_c = H_top - H_bot` gives `‖V_d‖ ≤ ‖V_c‖ + ‖H_top‖ + ‖H_bot‖`, since `I` is a unit.
+  Instantiated at both residue-free pieces (`norm_integral_zetaLogDerivRegW_right_le`,
+  `norm_integral_dslope_mellin_right_le`).
+- `RHTower/Sieve/ChebyshevShiftedError.lean` — `norm_tsum_vonMangoldt_sub_main_le_shifted`:
+
+      ‖ 2π ∑ₙ Λ(n)w(n) - W(1)·2·arctan(T/(d-1)) ‖
+        ≤ 2·M·C/T
+          + (left + top + bottom, divided difference)
+          + (left + top + bottom, regular part)
+
+  under `0 < c < 1 < d`, `1 ≤ T`, a zero-free rectangle and a Mellin decay constant.
+
+The sign convention reconciled cleanly: both shift lemmas are stated as
+`I • V_d - I • V_c = H_top - H_bot`, and the `I` costs nothing in norm, so no orientation
+bookkeeping was needed — `norm_sub_le_of_contour_edges_residue` (which carries an explicit residue)
+is not the right instrument here, because the residue was already extracted in closed form by
+`integral_pole_term_line` before the shift.  That is the structural difference from the Möbius
+route: there the residue is zero and the shift is the whole argument; here the residue is the main
+term and the shift only handles what is left over.
+
+Every quantity on the right is now an integral of an explicit integrand over an explicit edge, so
+the remaining work is estimation only — the same six-edge substitution the Möbius route performs.
+
+#### Correction: the divided difference is not small on the left edge
+
+`norm_tsum_vonMangoldt_sub_main_le_shifted` is a true inequality, but its error term is **not**
+small, so it cannot be the final assembly.  The reason is arithmetic in the residue:
+
+    dslope W 1 (s) = W(s)/(s-1) - W(1)/(s-1),
+
+and on `Re s = c < 1` the second summand integrates to `-W(1)·2·arctan(T/(c-1)) → +π·W(1)`.  That is
+the same size as the main term `W(1)·2·arctan(T/(d-1)) → π·W(1)`, so bounding the left edge in norm
+discards exactly half of the residue and the estimate becomes vacuous.
+
+The residue theorem demands `2π·W(1)`, and the two lines supply `π·W(1)` each.  Three further
+modules make that explicit, all unconditional, all `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/ChebyshevLeftPoleTerm.lean` — `integral_pole_term_line_of_ne` (the pole integral on
+  *any* line off `1`, hypothesis weakened from `1 < a` to `a ≠ 1`) and
+  `integral_dslope_mellin_left_eq`:
+
+      ∫_{-T}^{T} dslope W 1 (c+iy) dy
+        = ∫_{-T}^{T} W(c+iy)/(c-1+iy) dy - W(1)·2·arctan(T/(c-1)).
+
+- `RHTower/Sieve/ChebyshevFullMainTerm.lean` — `eq_of_shift_identity` (solve a residue-free shift for
+  the right edge: `V_d = V_c - I·(H_top - H_bot)`) and `tsum_vonMangoldt_full_main_identity`:
+
+      2π ∑ₙ Λ(n)w(n) - W(1)·(2·arctan(T/(d-1)) - 2·arctan(T/(c-1)))
+        = tail + (∫ W(c+iy)/(c-1+iy) dy - I·(top - bottom)) + ∫ regular.
+
+- `RHTower/Sieve/ChebyshevFullBound.lean` — `tendsto_two_arctan_neg`, `tendsto_main_bracket`
+  (the bracket `→ 2π`), and `norm_tsum_vonMangoldt_sub_full_main_le`, the six-edge estimate with the
+  full main term and the pole-free left edge.
+
+Dividing by `2π`, this is `∑ₙ Λ(n)w(n) = W(1) + error` with `W(1)` the mass of the cutoff, which
+`CutoffMass` places between `N` and `N + H`.
+
+The lesson generalises beyond this card: a holomorphic splitting that shifts *without* a residue is
+not automatically a splitting that is *small* after the shift.  `dslope` is holomorphic everywhere
+`W` is, so the shift is free — but the object it is holomorphic across still carries the pole's mass
+on the far line.  Isolating the residue analytically and isolating it quantitatively are two
+different steps.
+
+#### Every edge bounded — `norm_tsum_vonMangoldt_sub_full_main_le_explicit`
+
+Four further modules, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/ChebyshevLeftVerticalBound.lean` — `norm_inv_sub_one_line_le` (the pole factor is
+  `≤ (1-c)⁻¹` on a line left of `1`, from `|Re| ≤ ‖·‖`) and
+  `norm_integral_left_vertical_pole_free_le`:
+  `‖∫ W(c+iy)/(c-1+iy) dy‖ ≤ (1-c)⁻¹·(2(N+H)^c/c + 2C_c)`.
+- `RHTower/Sieve/ChebyshevHorizontalDslope.lean` — `norm_dslope_mellin_height_le`,
+  `norm_integral_horizontal_dslope_le`: each horizontal edge of the divided difference is
+  `≤ (d-c)·(C_d/T² + ‖W(1)‖)/|T|`.
+- `RHTower/Sieve/ChebyshevRegularEdges.lean` — `continuousOn_zetaLogDerivReg_line`,
+  `norm_integral_horizontal_reg_le` (`≤ (d-c)·R·C_d/T²`) and `norm_integral_left_vertical_reg_le`
+  (`≤ M·(2(N+H)^c/c + 2C_c)`).
+- `RHTower/Sieve/ChebyshevExplicitBound.lean` — `norm_tsum_vonMangoldt_sub_full_main_le_explicit`,
+  the six edges substituted.
+
+Two decay constants are carried separately by design: `C_c` on the line `Re s = c`, `C_d` on the
+strip `0 < Re s ≤ d`.  Merging them reintroduces the abscissa-range trap — a strip constant carries a
+factor `(N+H)^d`, which exceeds the saving the contour buys.
+
+**The horizontal edges are not small in absolute terms, and that is fine.**  Each carries
+`(d-c)·‖W(1)‖/T`, of the same order as `N/T` — but the main term is `2π·W(1)`, so the *ratio* is
+`(d-c)/(2πT)`, which vanishes with the truncation height.  This is the counterpart of the left-edge
+correction above: there the mass had to be extracted because it was comparable to the main term, here
+it may be kept because the height divides it away.  A residue-theorem treatment of the whole
+integrand would avoid these terms entirely, at the cost of a rectangle residue computation
+(`∮ (s-1)⁻¹ ds = 2πi` via `Complex.log` on the horizontal segments); the arctan bookkeeping used here
+reaches the same estimate without it.
+
+With `d = 1 + 1/log N`, `T = exp((log N)^{1/10})` and `c = 1 - c₀/log⁹T`, every term on the right is
+`o(N)` while the left-hand main term is `2π·W(1) ≍ N` — so the estimate is
+`∑ₙ Λ(n)w(n) = W(1) + o(N)`, and `CutoffMass` places `W(1)` between `N` and `N+H`.
+
+#### The regular part is bounded on the whole contour box
+
+Three modules, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/ZetaLogDerivRegStrip.lean` — `riemannZeta_ne_zero_strip` (immediate from the
+  quartic lower bound `pow_four_norm_riemannZeta_ge_strip`) and `norm_zetaLogDerivReg_strip_le`:
+  for `|t| ≥ 9` and `|σ-1| ≤ A/log⁹|t|`,
+
+      ‖zetaLogDerivReg(σ+it)‖ ≤ (2240/A)·log⁹|t| + 1/9.
+
+  The corpus already owned `norm_deriv_div_riemannZeta_le` (`‖ζ'/ζ‖ ≤ (2240/A)log⁹|t|` on the
+  strip); the regular part differs from `-ζ'/ζ` only by the pole, at distance `|t| ≥ 9`.
+- `RHTower/Sieve/ZetaLogDerivRegLowBox.lean` — `exists_bound_zetaLogDerivReg_low_box`: below height
+  `9`, compactness plus holomorphy on a zero-free box (the pole costs nothing, `zetaLogDerivReg 1`
+  being `-γ`).
+- `RHTower/Sieve/ZetaLogDerivRegBox.lean` — `strip_width_mono`, `riemannZeta_ne_zero_box`,
+  `norm_zetaLogDerivReg_box_le` and `exists_low_data`.
+
+The key geometric point is `strip_width_mono`: the zero-free strip is *wider* at lower height, so a
+rectangle whose half-width is fixed at the truncation height's value, `A/log⁹T`, sits inside the
+strip at every height it meets.  This also fixes the right abscissa: `d = 1 + A/log⁹T` rather than
+anything larger, so the top and bottom edges stay inside the strip too.  The Dirichlet-series
+constant that choice costs is `1/(d-1) = log⁹T/A`, only polylogarithmic.
+
+With this, all three zeta-analytic inputs of `norm_tsum_vonMangoldt_sub_full_main_le_explicit` —
+`hzfrect`, `hregline`, `hregtop`/`hregbot` — are discharged by a single box statement, with
+`R = M = max M₀ ((2240/A)log⁹T + 1/9)`.
+
+#### The contour fixed, the data supplied
+
+Two more modules, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/ChebyshevBoxSubstitution.lean` — `norm_tsum_vonMangoldt_sub_full_main_le_box`:
+  the explicit six-edge estimate with `c = 1 - A/log⁹T`, `d = 1 + A/log⁹T`, and every zeta-analytic
+  hypothesis discharged from the box lemmas.  The main term becomes
+
+      W(1)·(2·arctan(T·log⁹T/A) - 2·arctan(-T·log⁹T/A)),
+
+  which is the bracket `→ 2π`.
+- `RHTower/Sieve/ChebyshevContourData.lean` — `exists_height_fit` and
+  `exists_chebyshev_contour_data`: a single `(δ₀, M₀)` serving the zero-free box and the regular-part
+  bound below height `9`, plus a threshold `T₀` beyond which `A/log⁹T ≤ δ₀`.  None of these
+  constants depends on the cutoff, so they are fixed once and reused at every `N`.
+
+What is left in the bound after this is the cutoff's Mellin transform (decay constants `C_c`, `C_d`
+from `exists_bound_mellin_smoothWeight_upto`, of sizes `(N+H+1)^{1∓A/log⁹T}`) and the contour
+parameters — no further information about `ζ` appears anywhere.
+
+#### The balanced height and its two exponent estimates
+
+Two modules, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/ChebyshevHeight.lean` — `chebHeight x = exp((log x)^{1/10})`, with
+  `log_chebHeight`, `log_chebHeight_pow_nine` (`log⁹T = (log x)^{9/10}`, so the strip half-width is
+  `w = A/(log x)^{9/10}`), `nine_le_chebHeight` and `tendsto_chebHeight`.
+- `RHTower/Sieve/ChebyshevSaving.lean` — `div_rpow_nine_tenths` (`u/u^{9/10} = u^{1/10}`),
+  `rpow_left_le_saving` (`Y^{1-w} ≤ Y·exp(-A(log x)^{1/10})` for `Y ≥ x`) and
+  `rpow_right_le_growth` (`Y^{1+w} ≤ Y·exp(w·log Y)`).
+
+The exponent `1/10` is forced by the ninth power in the zero-free region: the saving on the left edge
+is `exp(-A(log x)^{1/10})` and the truncation height is `exp((log x)^{1/10})`, so the tail's growth
+`exp(A(log x)^{1/10})` is divided away exactly because `A ≤ 1/2 < 1`.  A smaller exponent weakens the
+left edge, a larger one overwhelms the right edge — both sides are tight at `1/10`.
+
+#### The last prime-side quantity removed
+
+Two modules, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/ChebyshevSeriesBound.lean` — `tsum_vonMangoldt_rpow_neg_le`:
+  `∑ₙ Λ(n)n^{-d} ≤ 8/(d-1)²` for `1 < d ≤ 2`.  The corpus already owned this as
+  `RHTower.tsum_vonMangoldt_div_rpow_le`; only the termwise form differed (`Λ(n)/n^d` against
+  `Λ(n)·n^{-d}`), and the two agree everywhere including `n = 0`.
+- `RHTower/Sieve/ChebyshevBoxTail.lean` — `norm_tsum_vonMangoldt_sub_full_main_le_box_tail`: the box
+  estimate with `8/w²` in place of the series.
+
+After this substitution **no quantity in the bound refers to the primes or to `ζ`**.  Every term is
+built from the cutoff's Mellin transform, the strip half-width `w = A/log⁹T`, the truncation height
+`T`, and the two absolute constants `M₀`, `A`.  What is left is arithmetic on those.
+
+#### The width, and the one inequality that makes the parameters compatible
+
+Two modules, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/ChebyshevWidth.lean` — `chebWidth x = x/exp((log x)^{1/20})`, with
+  `chebWidth_pos`, `chebWidth_le`, `div_chebWidth` (`x/H = exp((log x)^{1/20})`) and
+  `sqrt_logRoot`: `√((log x)^{1/10}) = (log x)^{1/20}`.
+- `RHTower/Sieve/SqrtExpDecay.lean` — `tendsto_poly_sqrt_exp_neg`:
+  `t^n·exp(2√t)·exp(-κt) → 0` for every `κ > 0`, because `2√t ≤ κt/2` once `t ≥ (4/κ)²`.
+
+These two are what make the three parameters compatible.  The decay constant of the cutoff's
+transform carries `(x/H)² = exp(2√t)`; the contour's saving is `exp(-At)`; and `√t` against `t` is
+the only reason the first does not eat the second.  Writing the width's exponent as `1/20` — exactly
+half of the height's `1/10` — is not a convenience: any exponent `≥ 1/10` would make `(x/H)²`
+overwhelm the saving, and any smaller one would make the sharp-versus-smooth error `H·log x` too
+large.
+
+The sharp-versus-smooth error at this width is `x·(log x)/exp(√t) = x·t^{10}·exp(-√t)`, which is
+`o(x)`, so the smoothing is invisible in the final statement.
+
+#### The two decay constants at the balanced parameters
+
+`RHTower/Sieve/ChebyshevDecayAtChoice.lean`, unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+- `add_chebWidth_le` — `N + H + 1 ≤ 3N`.
+- `decay_coeff_le` — `C/H²·(N+H+1)² ≤ 9C·exp(2(log N)^{1/20})`.
+- `decay_left_le` — `C_c ≤ 27C·N·exp(2(log N)^{1/20})·exp(-A(log N)^{1/10})`.
+- `decay_right_le` — `C_d ≤ 81C·N·exp(2(log N)^{1/20})·exp(A(log N)^{1/10})`.
+
+The constant `C` is absolute: `exists_bound_mellin_smoothWeight_uniform_all` in the corpus already
+exposes the cutoff dependence as the explicit factor `H^{-(j+1)}(N+H+1)^{j+1}`, with a constant
+depending only on the order.  That is what makes the substitution possible at all — an existential
+constant depending on `N` and `H` could not be tracked through the limit.
+
+Both constants are `N` times a function of `t = (log N)^{1/10}` alone.  The left one already carries
+the contour's saving `exp(-At)`; the right one carries the matching growth `exp(At)`, which the
+truncation height `exp(t)` divides away because `A ≤ 1/2 < 1`.
+
+#### The estimate at the balanced parameters
+
+Two modules, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/ChebyshevLimitTool.lean` — `tendsto_logRoot` and `tendsto_logPoly_sqrt_saving`:
+
+      t^n · exp(2(log x)^{1/20}) · exp(-κ(log x)^{1/10}) → 0,   t = (log x)^{1/10}, κ > 0.
+
+  Every error term of the contour bound, divided by the cutoff, is a constant times an instance of
+  this — so this single limit is what the whole numerical assembly reduces to.
+- `RHTower/Sieve/ChebyshevAtChoice.lean` — `norm_tsum_vonMangoldt_sub_main_at_choice`: the box
+  estimate with `T = chebHeight N` and `H = chebWidth N` substituted, the strip half-width rewritten
+  as `A/(log N)^{9/10}`, and the two decay constants written out explicitly in `N`.
+
+The statement is now entirely in `N`: the only remaining quantities are `Cj` (absolute), `M₀`
+(absolute), `A = zetaLowerA` (absolute) and elementary functions of `log N`.
+
+#### The three ingredients of the numerical bound
+
+Three modules, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/ChebyshevMassBound.lean` — `norm_mellin_smoothWeight_one_le`: `‖W(1)‖ ≤ N + H`.
+- `RHTower/Sieve/ChebyshevSavingFactors.lean` — the two decaying factors
+
+      E(x) = exp(2(log x)^{1/20})·exp(-A t),   G(x) = exp(2(log x)^{1/20})·exp(-(1-A)t),
+
+  with `tendsto_pow_savingE`, `tendsto_pow_savingG` (any power of `t` against either tends to `0`),
+  `zetaLowerA_le_half`, `rpow_nine_tenths_eq` and `one_le_logRoot`.
+- `RHTower/Sieve/ChebyshevTermBounds.lean` — `decay_right_div_height_le` (the right-edge decay
+  constant divided by *any* positive power of the height is `≤ 81C·N·G`), `bracket_le` (the bracket
+  shared by the two left-edge terms is `≤ (8 + 54C)·N·E`) and `regBound_le`
+  (`max M₀ (2240t⁹/A + 1/9) ≤ M₀ + 2240t⁹/A + 1/9`).
+
+`A ≤ 1/2` enters exactly once, in `tendsto_pow_savingG`: it is what makes `1 - A > 0`, i.e. what
+makes the truncation height `exp(t)` beat the right-edge decay constant's growth `exp(At)`.  Every
+other use of the zero-free constant is qualitative.

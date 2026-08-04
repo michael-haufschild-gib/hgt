@@ -36,7 +36,8 @@ theorem coeff_permSum {m : ℕ} (k e : Fin m → ℕ) :
   rw [Finset.sum_boole]
 
 /-- Reindexing a tuple by a permutation does not change the multiset it uses. -/
-theorem tupleCount_comp_perm {m : ℕ} (k : Fin m → ℕ) (σ : Equiv.Perm (Fin m)) :
+theorem tupleCount_comp_perm {β : Type*} [Fintype β] [DecidableEq β] (k : β → ℕ)
+    (σ : Equiv.Perm β) :
     tupleCount (fun j => k (σ j)) = tupleCount k := by
   classical
   rw [tupleCount, tupleCount]

@@ -1,4 +1,4 @@
-# Claim trace: Stokes--Cartan one-defect law
+# Claim trace: Euler--capacity law for wild character varieties
 
 Audit date: 2026-08-03
 
@@ -21,6 +21,10 @@ contact-tomography work is input; it is not relabelled as new.
 | N11 | Principal positive Hessian is `D + sum ell_e dnu_e tensor dnu_e`; multi-Rees nonnegative specializations remain one-defect | **New finite microlocal formulation** | N2/N9 | Gram and hyperplane pieces formalized by `positiveQuadratic_eq_squares`, `fullPositiveQuadratic_eq_completed`; paper proof handles symbolic Rees weights |
 | N12 | Every type-A genus-zero diagram is finite, affine, or Lorentzian | **New global theorem** | G0 and N9; only diagram equality is transported | Core and leg algebra formalized; global geometric transport is cited/paper-level |
 | N13 | For graph adjacency `B`, `lambda_2(B) <= 2`, with simple affine eigenvalue and exactly one eigenvalue above 2 in Lorentz phase | **New spectral/Kac--Moody exclusion** | N12 and spectral mapping `Spec(2I-B)=2-Spec(B)` | N3--N5 formalize inertia premise; finite spectral translation is paper-level |
+| N14 | For a genus-`g`, `m`-puncture curve, `Q_XD = sum_a Q_a + 2(1-g-m)M^2` on the physical-rank fibre product | **New exact fusion comparison** | Boalch 2014 quasi-Hamiltonian dimension formula; Boalch--Yamakawa 2015 twisted construction | `fusionQuadratic`, `fusionForm_apply` in `StokesEulerFusionCapacity.lean` |
+| N15 | `Q_XD = sum_a P_a(z_a) + (chi(X)-sum_a delta_a)M^2`, `delta_a=2-Omega_a` | **New central universal law** and quadratic refinement of scalar rigidity index | N4, N9, N14 | `fusionQuadratic_eq_centered_eulerCapacity`, `eulerCapacityGap_eq_eulerCharacteristic_sub_defects`, `fusionForm_eq_centered_eulerCapacity` |
+| N16 | Arbitrary-genus negative index is at most one; Lorentz phase has exact index one; affine zero modes form the simultaneous capacity ray | **New one-port index theorem** | N15 | `fusionForm_sigNeg_le_one`, `fusionForm_sigNeg_eq_one_of_eulerCapacityGap_neg`, `fusionForm_eq_zero_iff_eq_compatibleCapacityRay`; arbitrary full markings in `StokesEulerFusionTypeALegs.fullFusionForm_sigNeg_le_one` |
+| N17 | Every geometric rank covector is positive-kernel/dual-timelike; global gap is the unique fixed-rank minimum; handles subtract two and connected sum obeys `Omega_(X#Y)=Omega_X+Omega_Y-2` | **New consequences** | N15 plus diagram/readings invariance | `fusionQuadratic_pos_of_commonRank_eq_zero`, `fusionQuadratic_capacityRay_le`, `eulerCapacityGap_succ_genus`; reading transport and connected-sum bookkeeping are paper-level |
 
 ## Formal trust audit
 
@@ -36,4 +40,7 @@ contact-tomography work is input; it is not relabelled as new.
 - No analytic isomorphism theorem for all weak representations.
 - No identification of `ell_e` with characteristic-cycle or vanishing-cycle multiplicities.
 - No converse claiming every one-defect matrix is geometrically realizable.
-- No statement outside type-A genus zero.
+- No categorical identification of capacity defects with Milnor, characteristic-cycle, or
+  vanishing-cycle multiplicities.
+- Arbitrary genus requires a nonempty puncture set, standard `GL_M` quasi-Hamiltonian gluing, and
+  type-A local atoms admitting the rooted fission realization.

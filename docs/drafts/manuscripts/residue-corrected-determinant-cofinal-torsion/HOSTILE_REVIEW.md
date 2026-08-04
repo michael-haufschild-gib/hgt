@@ -1,6 +1,6 @@
 # Hostile referee report
 
-Manuscript: *Cofinal Residue-Jet Universality for Zeta Determinants*  
+Manuscript: *The Determinant-Defect Completion Law and Cofinal Residue-Jet Torsion*
 Review date: 2026-08-04  
 Standard: publishable in a renowned broad mathematical journal comparable in scope and selectivity
 to *Advances in Mathematics* or *Mathematische Annalen*. This report does not claim likely
@@ -8,21 +8,95 @@ acceptance by Annals/JAMS/Inventiones/Acta.
 
 ## Verdict
 
-**PASS AT SUBMISSION-QUALITY BAR, subject to clean final source/formal/PDF audit.**
+**PASS AT SUBMISSION-QUALITY BAR.**
 
-Manuscript contains a genuine universal law, not merely determinant-line language:
-under Schatten convergence, full corrected finite-part residue jet is exact and minimal
-cofinal defect of normalized zeta determinants. Fixed-operator factorization is correctly
-credited to Hartmann--Lesch. New content is converse cofinal completeness, compact-open cluster
-transport, sharp all-order realization by graded superdeterminants, arbitrary-ordering interval
-classification, number-field universality, and Baire-generic maximal torsion.
+Manuscript contains a genuine parent law, not merely determinant-line language or a relabeling
+of regularized determinants. It identifies exact graph closure of raw finite-rank determinant
+pencils under Schatten convergence as principal truncated-jet extension of regularized
+determinant core. It proves every fibre direction by vanishing micro-spectra, family-level
+homeomorphism, sharp rank--energy exponent, positivity trichotomy, and integer summability walls.
+Corrected zeta jets, relative torsion, graded suspension, and arithmetic ordering spectra are
+then explicit constrained sections or slices of this completion.
 
-Result is broad enough for renowned general journal because it links spectral analysis,
-determinant lines, analytic torsion, and arithmetic ordering dynamics through one invariant;
-sharpness is proved in every Schatten order and natural number-field model is not confined to
-one example.
+Result is broad enough for renowned general journal because it gives topology-forced mechanism
+behind Quillen-type polynomial gauge ambiguity, then derives spectral-geometric and arithmetic
+realizations with sharpness in every Schatten order. This report claims submission quality for
+an *Advances in Mathematics*/*Mathematische Annalen*-level broad journal, not likely acceptance
+at Annals/JAMS/Inventiones/Acta.
 
 ## Hostile objections and disposition
+
+### 0A. “Parent theorem is just definition of \(\det_p\)”
+
+**Objection.** Finite-rank identity
+\[
+ \det(I-A)=\det_p(I-A)
+ \exp\left(-\sum_{k<p}\operatorname{Tr}(A^k)/k\right)
+\]
+and continuity of \(\det_p\) are classical. Exact closure may be a dressed-up textbook exercise.
+
+**Disposition: answered.** Classical identity proves only necessity after a nontrivial normalized
+logarithm argument. Sufficiency asks simultaneous inverse moment problem: for every
+multivariable jet \(P\), construct finite-rank pencil \(B_n\to0\) in \(\mathcal S_p\) whose first
+\(p-1\) trace moments correct arbitrary residual forms degree by degree. Root-of-unity blocks,
+pure-power spanning, and ascending recursion solve it exactly. Result is full graph closure,
+homeomorphism, functorial principal fibre, and not merely existence of one regularization.
+Targeted exact-phrase and theorem-shape searches found no source stating this closure theorem;
+absence of search collision is evidence, not proof of priority.
+
+### 0B. “Quillen and Dang already proved polynomial-gauge torsor”
+
+**Objection.** Quillen's 1989 notes predicted principal polynomial gauge bundle. Nguyen Viet
+Dang proved renormalized elliptic determinants form torsor under local polynomial counterterms
+(*Analysis & PDE* 15 (2022), 1--62). Calling polynomial fibre new without this source would be
+unacceptable.
+
+**Disposition: answered after mandatory revision.** Manuscript now cites Dang in introduction,
+geometry section, novelty boundary, and bibliography. Quantifiers differ:
+
+- Dang fixes elliptic background, imposes microlocal locality and determinant-like axioms, and
+  classifies functions obtainable by subtraction of local counterterms.
+- Present theorem closes raw uncorrected finite-dimensional determinants in Schatten topology,
+  imposes no locality, and classifies all simultaneous operator/function limits.
+- Present micro-spectrum construction and rank capacity are absent from Dang; conversely present
+  theorem does not claim to classify which ambient directions are local counterterms.
+
+Thus Quillen--Dang is conceptual ancestor and local subgroup, not theorem collision. Boundary is
+now explicit enough to prevent priority theatre.
+
+### 0C. “Holomorphic-family extension hides branch choices or nonuniform support”
+
+**Objection.** Root blocks require choosing \(k\)th roots of coefficient; no global holomorphic
+choice exists around zeros. Compact family may also fail uniform finite-rank approximation.
+
+**Disposition: answered.** Weighted cyclic block uses weights
+\(\delta,\ldots,\delta,c/(kN\delta^{k-1})\), so entries depend linearly on \(c\), lower traces
+vanish, and \(k\)th trace is exactly \(c\ell^k\). Its \(N\)-copy Schatten cost is uniformly
+\(O(N^{1-p/k})\) on bounded coefficient sets. Fixed compressions converge uniformly on compact
+image of family. Compact exhaustion handles noncompact complex manifolds. Necessity recovers
+finite jet by normalized logarithm on uniform zero-free neighbourhood. No branch remains.
+
+### 0D. “Capacity exponent or positivity table may be only sufficient”
+
+**Disposition: passed.** Rank inequality
+\(|\operatorname{Tr}(B^k)|\le R^{1-k/p}\|B\|_p^k\) follows from Schatten Hölder and finite-rank
+norm comparison; normal root block of rank multiple of \(k\) attains equality. Solving equality
+gives exponent \(pk/(p-k)\), and threshold \(k=p\) forbids survival. Positive and self-adjoint
+necessity follows from bounded first/second moment and vanishing operator norm; explicit blocks
+give converse. Graded positive finite differences realize every real jet. Manuscript no longer
+uses unproved categorical word “minimal” for grading.
+
+### 0E. “Universal law is bolted onto unrelated arithmetic paper”
+
+**Objection.** A late operator-theoretic section plus prime-ordering classification may read as
+two papers joined after fact.
+
+**Disposition: acceptable after structural revision.** Abstract is compressed around completion
+law; introduction states theorem, family version, capacity, summability filtration, and explicit
+shadow table. Roadmap explains concrete-to-structural proof order. Every later result has named
+map into completion fibre: corrected zeta jet is lift, relative torsion is transition character,
+graded suspension is real group completion, prime orderings are one-dimensional constrained
+dynamics. Conclusion repeats these specialization maps. Breadth is synthesis, not juxtaposition.
 
 ### 1. “Universal law is immediate from Hartmann--Lesch”
 
@@ -163,6 +237,8 @@ checks:
 - actual compact-open topology of continuous complex functions;
 - forward and converse determinant-character convergence after zero-free core cancellation;
 - exact “determinant converges iff all corrected coordinates converge” criterion.
+- root-of-unity micro-spectrum cancellation and arbitrary pure homogeneous pencil realization;
+- summability-transition character identity and cocycle.
 
 No admitted goals, custom axioms, opaque declarations, or unsafe declarations are allowed by
 project lint. Paper accurately separates machine-checked core from cited and paper-proved
@@ -172,6 +248,10 @@ analytic inputs.
 
 | Result | Critical dependency | Status |
 |---|---|---|
+| Determinant graph closure | finite-rank trace identity; \(\det_p\) continuity; normalized local log; micro-spectrum synthesis | Closed |
+| Family completion | uniform finite compression; root-free cyclic blocks; compact exhaustion | Closed |
+| Sharp capacity/statistics | Schatten Hölder; root blocks; moment domination; finite differences | Closed |
+| Real summability/tower | \(\mathcal S_r\hookrightarrow\mathcal S_{\lceil r\rceil}\); trace transition cocycle | Closed |
 | Universal cofinal law | Hartmann--Lesch factorization; continuity of \(\det_p\); local log | Closed |
 | Corrected coefficient formula | relative-zeta binomial expansion; simple Laurent pole | Closed |
 | Full-jet sharpness | forward differences; Mertens scalar spectrum; colored Baire argument | Closed |
@@ -183,22 +263,36 @@ analytic inputs.
 
 ## Significance score
 
-- Novelty: **8/10** — fixed factorization old; cofinal completeness, full-jet sharpness, and
-  ordering classification appear new.
-- Depth: **8/10** — combines operator topology, regularized determinants, arithmetic extremality,
-  constructive cluster control, and Baire category.
+- Novelty: **8/10** — polynomial ambiguity and fixed factorization old; exact Schatten graph
+  closure, vanishing micro-spectrum surjectivity/capacity, family completion, cofinal completeness,
+  and ordering classification appear new after Quillen--Dang boundary correction.
+- Depth: **8/10** — combines operator topology, a simultaneous trace-moment synthesis problem,
+  regularized determinants, arithmetic extremality, constructive cluster control, and Baire
+  category.
 - Breadth: **9/10** — functional analysis, spectral geometry, analytic torsion, number theory.
 - Proof completeness: **8/10** — self-contained new arguments with classical inputs clearly cited.
-- Exposition: **8/10** — 23-page focused manuscript; exact novelty boundary; no RH overclaim.
+- Exposition: **8/10** — 29-page manuscript; compressed abstract, specialization table, exact
+  novelty boundary, and no RH overclaim.
 - Formal integrity: **9/10** for stated checked core.
 
-## Required final audit before release
+## Completed release audit
 
-1. Re-run all three target Lean files and targeted umbrella module build.
-2. Run formal lint and print-axiom checks on principal declarations.
-3. Regenerate Lean index after new module.
-4. Re-render final PDF and inspect all pages after latest edits.
-5. Confirm no stale Lean process remains.
-6. Preserve explicit “no collision found is not proof of priority” qualification.
+| Gate | Evidence | Result |
+|---|---|---|
+| Lean source checks | All four determinant/residue-jet files pass `lake env lean` | PASS |
+| Targeted build | `lake build GaloisForLFunctions.RHTower.DeterminantDefectMicroSpectrum` | PASS |
+| Axiom audit | Principal declarations use only `propext`, `Classical.choice`, `Quot.sound` | PASS |
+| Proof-debt audit | Generated `LEAN_GAPS.md` reports no `sorry`, `admit`, custom `axiom`, `opaque`, or `unsafe` declaration; scoped source scan clean | PASS |
+| Wiring/index | New module imported by `RHTower.lean`; every declaration present in `LEAN_API.md` | PASS |
+| PDF/source | Tectonic clean; 29 pages; no box/reference/citation warning; every page visually inspected | PASS |
+| Novelty boundary | Quillen--Dang collision incorporated; no-collision search explicitly not treated as proof of priority | PASS |
+| Process hygiene | No determinant-stack Lean process left running | PASS |
 
-If all six pass, report recommends submission to a renowned broad journal.
+Repository-global umbrella build and global wiring lint were also attempted. They are presently
+red for unrelated concurrent worktree routes: duplicate declaration
+`RHTower.Sieve.card_divisors_of_squarefree` between two sieve modules, plus many unrelated
+unreachable CCM/HTGeometry modules. Determinant-stack top module builds cleanly and its umbrella
+import is present, so these global dirty-worktree failures do not alter manuscript/formal-core
+verdict and were not “fixed” outside scope.
+
+Report recommends submission to a renowned broad journal at stated level.

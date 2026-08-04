@@ -171,9 +171,55 @@ moved to the reconstructed rational-factor residual and anchors.
 ## Scope and classification
 
 The range criterion is standard Hilbert-space duality. Its CCM specialization gives the exact next
-estimate but is a route bridge, not new scientific knowledge. A Lean wrapper would formalize only
-the parent range lemma while leaving the Fourier leakage estimate `(9)` untouched, so no new Lean
-file is added.
+estimate but is a route bridge, not new scientific knowledge.
+
+## Lean status
+
+**Abstract range lemma formalized unconditionally, 2026-08-04**, in
+`formal/GaloisForLFunctions/HTGeometry/RangeObservabilityDuality.lean`.
+
+The earlier decision said "a Lean wrapper would formalize only the parent range lemma", and that is a
+fair description of the *scope* — but it is not a reason to leave it unformalized.  The parent lemma is
+the load-bearing equivalence of this card, it is reusable operator infrastructure that the tree did not
+have, and its hard direction is a genuine three-step construction, not a restatement.
+
+- `ObservableBy` — the observability predicate of `(2)`.
+- **`inner_isSelfAdjoint_left`** — `<D x, y> = <x, D y>`, from `adjoint D = D`.
+- **`observableBy_of_mem_range`** — equation `(3)`: a preimage supplies its own norm as a constant.
+- **`mem_range_of_observableBy`** — equations `(4)`–`(5)`, the hard direction.  Injectivity gives the
+  linear equivalence `H ≃ range D`, which is what makes `D h ↦ <g, h>` well defined **without**
+  choosing a section by hand; the observability bound makes it continuous through
+  `LinearMap.mkContinuous`; Hahn--Banach (`exists_extension_norm_eq`) extends it to `H`; and Riesz
+  (`InnerProductSpace.toDual`) represents it.  Nothing about closedness, compactness, or density of the
+  range is used in this direction.
+- **`observableBy_iff_mem_range`** — equations `(1)`–`(2)`.
+- **`setOf_observableBy_eq_range`** — the admissible set is exactly the range, hence a submodule.  This
+  is the abstract content of `(12)`: linearity of the admissible trace space is not an extra
+  verification, it is the range characterisation.
+- **`norm_le_of_observable_bound`**, **`observable_bound_norm`** — equation `(10)`: `‖x‖` is admissible
+  and every admissible constant dominates it.  Density of the range enters **only** here, and it comes
+  from the corpus's own `denseRange_of_isSelfAdjoint_of_injective`.  The nonnegativity hypothesis on the
+  constant is genuinely needed: on the zero space the bound is vacuous for every constant, so without it
+  the statement is false.
+- **`inner_sandwich_adjoint`** — equation `(11)`: `<Q R P f, h> = <f, P R Q h>` for self-adjoint
+  factors, which is exactly what converts the exterior forcing into an interior pairing.
+
+The module is placed in `HTGeometry` rather than `RHTower` because none of it mentions apertures, `Xi`,
+or primes: it is range duality for an injective self-adjoint operator.
+
+Not formalized, and correctly identified by the earlier decision as the real work: the Fourier leakage
+estimate `(9)` for the concrete screw kernel, the Evans test `(15)`, and the raw-`L2` transformed-trace
+regularity.  Those are the card's own open gates.
+
+## Lean gates
+
+- [x] Lean: dual characterisation of the range `(1)`–`(2)`, `(4)`–`(5)`
+- [x] Lean: minimal preimage norm equals the least observability constant `(10)`
+- [x] Lean: admissible set is a submodule `(12)`
+- [x] Lean: self-adjoint sandwich identity `(11)`
+- [ ] Lean: the concrete screw-kernel leakage estimate `(9)`
+- [ ] Lean: the Evans residual/anchor test `(15)`
+
 
 ## Gates
 

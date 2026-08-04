@@ -24,12 +24,13 @@ namespace GaloisForLFunctions.HTGeometry
 open Set Complex Metric MeasureTheory
 
 /-- Continuity of the step operator applied to an iterate, at a point of the strip. -/
-theorem continuousAt_clockStripStep_clockIterate {ρ : ℝ} {V : ℂ → ℂ}
-    (hVc : ContinuousOn V (imStrip ρ)) (hVd : DifferentiableOn ℂ V (imStrip ρ)) (m : ℕ)
+theorem continuousAt_clockStripStep_clockIterate {ρ : ℝ} {V : ℝ → ℝ → ℂ → ℂ}
+    (hV : StripPotential V ρ) (m : ℕ)
     {q : (ℝ × ℝ) × ℂ} (hq : q.2 ∈ imStrip ρ) :
     ContinuousAt
-      (fun r : (ℝ × ℝ) × ℂ => clockStripStep V (clockIterate V m r.1.1 r.1.2) r.2) q := by
-  obtain ⟨holo, cont⟩ := clockIterate_regular hVc hVd m
+      (fun r : (ℝ × ℝ) × ℂ =>
+        clockStripStep (V r.1.1 r.1.2) (clockIterate V m r.1.1 r.1.2) r.2) q := by
+  obtain ⟨holo, cont⟩ := clockIterate_regular hV m
   have him : |q.2.im| < ρ := mem_imStrip.mp hq
   have h1 : |q.2.im| < (|q.2.im| + ρ) / 2 := by linarith
   have h2 : (|q.2.im| + ρ) / 2 < ρ := by linarith
@@ -39,8 +40,8 @@ theorem continuousAt_clockStripStep_clockIterate {ρ : ℝ} {V : ℂ → ℂ}
     continuousAt_deriv_deriv_of_strip (P := ℝ × ℝ) h2 h0
       (W := fun p : ℝ × ℝ => clockIterate V m p.1 p.2) cont (fun p => holo p.1 p.2)
       (mem_imStrip.mpr h1)
-  have hVat : ContinuousAt (fun q' : (ℝ × ℝ) × ℂ => V q'.2) q :=
-    (hVc.continuousAt ((isOpen_imStrip ρ).mem_nhds hq)).comp continuousAt_snd
+  have hVat : ContinuousAt (fun q' : (ℝ × ℝ) × ℂ => V q'.1.1 q'.1.2 q'.2) q :=
+    hV.cont.continuousAt ((isOpen_univ.prod (isOpen_imStrip ρ)).mem_nhds ⟨mem_univ _, hq⟩)
   have hWat : ContinuousAt
       (fun q' : (ℝ × ℝ) × ℂ => clockIterate V m q'.1.1 q'.1.2 q'.2) q :=
     cont.continuousAt ((isOpen_univ.prod (isOpen_imStrip ρ)).mem_nhds ⟨mem_univ _, hq⟩)
@@ -48,23 +49,24 @@ theorem continuousAt_clockStripStep_clockIterate {ρ : ℝ} {V : ℂ → ℂ}
 
 /-- The step operator applied to an iterate is continuous in the null coordinates, at a fixed
 transverse point of the strip. -/
-theorem continuous_clockStripStep_slice {ρ : ℝ} {V : ℂ → ℂ}
-    (hVc : ContinuousOn V (imStrip ρ)) (hVd : DifferentiableOn ℂ V (imStrip ρ)) (m : ℕ)
-    {z : ℂ} (hz : z ∈ imStrip ρ) :
-    Continuous fun p : ℝ × ℝ => clockStripStep V (clockIterate V m p.1 p.2) z := by
+theorem continuous_clockStripStep_slice {ρ : ℝ} {V : ℝ → ℝ → ℂ → ℂ}
+    (hV : StripPotential V ρ) (m : ℕ) {z : ℂ} (hz : z ∈ imStrip ρ) :
+    Continuous fun p : ℝ × ℝ => clockStripStep (V p.1 p.2) (clockIterate V m p.1 p.2) z := by
   refine continuous_iff_continuousAt.mpr fun p => ?_
   have hmap : ContinuousAt (fun p' : ℝ × ℝ => ((p', z) : (ℝ × ℝ) × ℂ)) p :=
     (continuous_id.prodMk continuous_const).continuousAt
-  have hcomp := (continuousAt_clockStripStep_clockIterate hVc hVd m (q := (p, z)) hz).comp
+  have hcomp := (continuousAt_clockStripStep_clockIterate hV m (q := (p, z)) hz).comp
     (x := p) (f := fun p' : ℝ × ℝ => ((p', z) : (ℝ × ℝ) × ℂ)) hmap
   exact hcomp
 
 set_option maxHeartbeats 1000000 in
 /-- **The Ovsyannikov bound for the clock iterates.** -/
-theorem clockIterate_norm_le {ρ₀ Mv : ℝ} (hρ₀ : 0 < ρ₀) {V : ℂ → ℂ}
-    (hVc : ContinuousOn V (imStrip ρ₀)) (hVd : DifferentiableOn ℂ V (imStrip ρ₀))
-    (hMv0 : 0 ≤ Mv) (hMv : ∀ z ∈ imStrip ρ₀, ‖V z‖ ≤ Mv) :
-    ∀ (m : ℕ) (ρ : ℝ), 0 ≤ ρ → ρ < ρ₀ → ∀ s t : ℝ, ∀ z : ℂ, |z.im| ≤ ρ →
+theorem clockIterate_norm_le {ρ₀ Mv T : ℝ} (hρ₀ : 0 < ρ₀) {V : ℝ → ℝ → ℂ → ℂ}
+    (hV : StripPotential V ρ₀)
+    (hMv0 : 0 ≤ Mv)
+    (hMv : ∀ s t : ℝ, |s| ≤ T → |t| ≤ T → ∀ z ∈ imStrip ρ₀, ‖V s t z‖ ≤ Mv) :
+    ∀ (m : ℕ) (ρ : ℝ), 0 ≤ ρ → ρ < ρ₀ → ∀ s t : ℝ, |s| ≤ T → |t| ≤ T →
+      ∀ z : ℂ, |z.im| ≤ ρ →
       ‖clockIterate V m s t z‖
         ≤ (4 + Mv * ρ₀ ^ 2 / 4) ^ m * (m : ℝ) ^ (2 * m) * (|s| ^ m * |t| ^ m)
           / ((m.factorial : ℝ) ^ 2 * (ρ₀ - ρ) ^ (2 * m)) := by
@@ -73,11 +75,11 @@ theorem clockIterate_norm_le {ρ₀ Mv : ℝ} (hρ₀ : 0 < ρ₀) {V : ℂ → 
   intro m
   induction m with
   | zero =>
-    intro ρ _ _ s t z _
+    intro ρ _ _ s t _ _ z _
     rw [clockIterate_zero]
     norm_num
   | succ m ih =>
-    intro ρ hρ0 hρ s t z hz
+    intro ρ hρ0 hρ s t hsT htT z hz
     have hG : (0 : ℝ) < ρ₀ - ρ := by linarith
     have hm1 : (0 : ℝ) < (m : ℝ) + 1 := by positivity
     have hfrac : (0 : ℝ) < (ρ₀ - ρ) / ((m : ℝ) + 1) := by positivity
@@ -97,9 +99,9 @@ theorem clockIterate_norm_le {ρ₀ Mv : ℝ} (hρ₀ : 0 < ρ₀) {V : ℂ → 
     set c : ℝ := K ^ m * (m : ℝ) ^ (2 * m)
       / ((m.factorial : ℝ) ^ 2 * (ρ₀ - σ) ^ (2 * m)) with hcdef
     have hc0 : (0 : ℝ) ≤ c := by rw [hcdef]; positivity
-    have hprev : ∀ s' t' : ℝ, ∀ w : ℂ, w ∈ imStrip σ →
+    have hprev : ∀ s' t' : ℝ, |s'| ≤ T → |t'| ≤ T → ∀ w : ℂ, w ∈ imStrip σ →
         ‖clockIterate V m s' t' w‖ ≤ c * |s'| ^ m * |t'| ^ m := by
-      intro s' t' w hw
+      intro s' t' hs' ht' w hw
       rcases Nat.eq_zero_or_pos m with hm | hm
       · subst hm
         rw [clockIterate_zero]
@@ -113,7 +115,7 @@ theorem clockIterate_norm_le {ρ₀ Mv : ℝ} (hρ₀ : 0 < ρ₀) {V : ℂ → 
             rw [div_lt_iff₀ hm1]
             nlinarith [hG, hmpos]
           linarith
-        have hbase := ih σ hσ0 hσlt s' t' w (le_of_lt (mem_imStrip.mp hw))
+        have hbase := ih σ hσ0 hσlt s' t' hs' ht' w (le_of_lt (mem_imStrip.mp hw))
         have hpos : (0 : ℝ) < ρ₀ - σ := by rw [hrem]; positivity
         calc ‖clockIterate V m s' t' w‖
             ≤ K ^ m * (m : ℝ) ^ (2 * m) * (|s'| ^ m * |t'| ^ m)
@@ -128,26 +130,30 @@ theorem clockIterate_norm_le {ρ₀ Mv : ℝ} (hρ₀ : 0 < ρ₀) {V : ℂ → 
     have hle : 4 / (σ - ρ) ^ 2 + Mv / 4 ≤ K / (σ - ρ) ^ 2 := by
       rw [le_div_iff₀ hgap2, add_mul, div_mul_cancel₀ _ hg2ne, hKdef]
       nlinarith [hMv0, hsq]
-    have hstepbound : ∀ s' t' : ℝ,
-        ‖clockStripStep V (clockIterate V m s' t') z‖
+    have hstepbound : ∀ s' t' : ℝ, |s'| ≤ T → |t'| ≤ T →
+        ‖clockStripStep (V s' t') (clockIterate V m s' t') z‖
           ≤ K / (σ - ρ) ^ 2 * c * |s'| ^ m * |t'| ^ m := by
-      intro s' t'
-      obtain ⟨holo, _⟩ := clockIterate_regular hVc hVd m
+      intro s' t' hs' ht'
+      obtain ⟨holo, _⟩ := clockIterate_regular hV m
       have hwσ : DifferentiableOn ℂ (clockIterate V m s' t') (imStrip σ) :=
         (holo s' t').mono (imStrip_mono hσρ₀)
-      have hMvσ : ∀ w ∈ imStrip σ, ‖V w‖ ≤ Mv := fun w hw => hMv w (imStrip_mono hσρ₀ hw)
-      have hbase := norm_clockStripStep_le hρσ hMv0 hwσ (hprev s' t') hMvσ hz
+      have hMvσ : ∀ w ∈ imStrip σ, ‖V s' t' w‖ ≤ Mv :=
+        fun w hw => hMv s' t' hs' ht' w (imStrip_mono hσρ₀ hw)
+      have hbase := norm_clockStripStep_le hρσ hMv0 hwσ (hprev s' t' hs' ht') hMvσ hz
       have hMw0 : (0 : ℝ) ≤ c * |s'| ^ m * |t'| ^ m := by positivity
-      calc ‖clockStripStep V (clockIterate V m s' t') z‖
+      calc ‖clockStripStep (V s' t') (clockIterate V m s' t') z‖
           ≤ (4 / (σ - ρ) ^ 2 + Mv / 4) * (c * |s'| ^ m * |t'| ^ m) := hbase
         _ ≤ K / (σ - ρ) ^ 2 * (c * |s'| ^ m * |t'| ^ m) :=
             mul_le_mul_of_nonneg_right hle hMw0
         _ = K / (σ - ρ) ^ 2 * c * |s'| ^ m * |t'| ^ m := by ring
-    have hFc : Continuous fun p : ℝ × ℝ => clockStripStep V (clockIterate V m p.1 p.2) z :=
-      continuous_clockStripStep_slice hVc hVd m (mem_imStrip.mpr (lt_of_le_of_lt hz hρ))
+    have hFc : Continuous fun p : ℝ × ℝ =>
+        clockStripStep (V p.1 p.2) (clockIterate V m p.1 p.2) z :=
+      continuous_clockStripStep_slice hV m (mem_imStrip.mpr (lt_of_le_of_lt hz hρ))
     have hint := norm_iterated_integral_le_abs (m := m) (c := K / (σ - ρ) ^ 2 * c)
       (x := s) (y := t) (mul_nonneg (div_nonneg hK0 (sq_nonneg _)) hc0) hFc
-      (fun s' _ t' _ => hstepbound s' t')
+      (fun s' hs' t' ht' => hstepbound s' t'
+        (le_trans (abs_le_abs_of_mem_uIcc_zero hs') hsT)
+        (le_trans (abs_le_abs_of_mem_uIcc_zero ht') htT))
     have hloss : K / (σ - ρ) ^ 2 = K * ((m : ℝ) + 1) ^ 2 / (ρ₀ - ρ) ^ 2 := by
       rw [hgap]
       field_simp

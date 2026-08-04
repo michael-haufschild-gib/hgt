@@ -18,20 +18,21 @@ namespace GaloisForLFunctions.HTGeometry
 
 open Set Complex Metric MeasureTheory
 
-/-- **The double integral of a globally continuous family is continuous.** -/
-theorem continuous_iteratedIntegral {G : ℝ → ℝ → ℂ → ℂ}
-    (hG : Continuous fun r : (ℝ × ℝ) × ℂ => G r.1.1 r.1.2 r.2) :
-    Continuous fun r : (ℝ × ℝ) × ℂ =>
+/-- **The double integral of a globally continuous family is continuous.** The transverse variable
+ranges over an arbitrary space, so the same statement serves one transverse coordinate and several. -/
+theorem continuous_iteratedIntegral {X : Type*} [TopologicalSpace X] {G : ℝ → ℝ → X → ℂ}
+    (hG : Continuous fun r : (ℝ × ℝ) × X => G r.1.1 r.1.2 r.2) :
+    Continuous fun r : (ℝ × ℝ) × X =>
       ∫ s in (0 : ℝ)..r.1.1, ∫ t in (0 : ℝ)..r.1.2, G s t r.2 := by
-  have hinner : Continuous fun p : ℝ × ((ℝ × ℝ) × ℂ) =>
+  have hinner : Continuous fun p : ℝ × ((ℝ × ℝ) × X) =>
       ∫ t in (0 : ℝ)..p.2.1.2, G p.1 t p.2.2 := by
     refine intervalIntegral.continuous_parametric_intervalIntegral_of_continuous
-      (f := fun (p : ℝ × ((ℝ × ℝ) × ℂ)) (t : ℝ) => G p.1 t p.2.2) ?_ ?_
+      (f := fun (p : ℝ × ((ℝ × ℝ) × X)) (t : ℝ) => G p.1 t p.2.2) ?_ ?_
     · exact hG.comp (((continuous_fst.comp continuous_fst).prodMk continuous_snd).prodMk
         (continuous_snd.comp (continuous_snd.comp continuous_fst)))
     · exact continuous_snd.comp (continuous_fst.comp continuous_snd)
   refine intervalIntegral.continuous_parametric_intervalIntegral_of_continuous
-    (f := fun (r : (ℝ × ℝ) × ℂ) (s : ℝ) => ∫ t in (0 : ℝ)..r.1.2, G s t r.2) ?_ ?_
+    (f := fun (r : (ℝ × ℝ) × X) (s : ℝ) => ∫ t in (0 : ℝ)..r.1.2, G s t r.2) ?_ ?_
   · exact hinner.comp (continuous_snd.prodMk continuous_fst)
   · exact continuous_fst.comp continuous_fst
 
@@ -76,12 +77,16 @@ retracted point, which makes the representation globally continuous, and inside 
 retraction is the identity.
 -/
 
-theorem continuousAt_deriv_deriv_of_strip {P : Type*} [TopologicalSpace P] {ρ ρ' : ℝ}
-    (hρ : ρ < ρ') (hρ0 : 0 ≤ ρ) {W : P → ℂ → ℂ}
+/-- **The iterated derivative of a family holomorphic on a strip is continuous there**, jointly in
+the parameter and the point. The Cauchy representation of the derivative on a disc of fixed radius
+about the retracted point is a continuous function of both, and inside the strip the retraction is
+the identity. -/
+theorem continuousAt_iteratedDeriv_of_strip {P : Type*} [TopologicalSpace P] {ρ ρ' : ℝ}
+    (hρ : ρ < ρ') (hρ0 : 0 ≤ ρ) (n : ℕ) {W : P → ℂ → ℂ}
     (hWc : ContinuousOn (fun q : P × ℂ => W q.1 q.2) (univ ×ˢ imStrip ρ'))
     (hWd : ∀ p : P, DifferentiableOn ℂ (W p) (imStrip ρ'))
     {q : P × ℂ} (hq : q.2 ∈ imStrip ρ) :
-    ContinuousAt (fun q' : P × ℂ => deriv (deriv (W q'.1)) q'.2) q := by
+    ContinuousAt (fun q' : P × ℂ => iteratedDeriv n (W q'.1) q'.2) q := by
   classical
   set R : ℝ := (ρ' - ρ) / 2 with hRdef
   have hRpos : (0 : ℝ) < R := by rw [hRdef]; linarith
@@ -104,16 +109,16 @@ theorem continuousAt_deriv_deriv_of_strip {P : Type*} [TopologicalSpace P] {ρ �
     linarith
   -- the retracted Cauchy representation is globally continuous
   have hcont : Continuous fun q' : P × ℂ =>
-      (2 * Real.pi * Complex.I / ((Nat.factorial 2 : ℕ) : ℂ))⁻¹
-        • ∮ ζ in C(stripRetract ρ q'.2, R), (1 / (ζ - stripRetract ρ q'.2) ^ (2 + 1)) • W q'.1 ζ := by
+      (2 * Real.pi * Complex.I / ((Nat.factorial n : ℕ) : ℂ))⁻¹
+        • ∮ ζ in C(stripRetract ρ q'.2, R), (1 / (ζ - stripRetract ρ q'.2) ^ (n + 1)) • W q'.1 ζ := by
     have hint : Continuous fun r : (P × ℂ) × ℝ =>
         (circleMap 0 R r.2 * Complex.I)
-          • ((1 / (circleMap 0 R r.2) ^ (2 + 1))
+          • ((1 / (circleMap 0 R r.2) ^ (n + 1))
             • W r.1.1 (stripRetract ρ r.1.2 + circleMap 0 R r.2)) := by
       have hc0 : Continuous fun r : (P × ℂ) × ℝ => circleMap 0 R r.2 :=
         (continuous_circleMap 0 R).comp continuous_snd
-      have hden : Continuous fun r : (P × ℂ) × ℝ => 1 / (circleMap 0 R r.2) ^ (2 + 1) := by
-        refine continuous_const.div (hc0.pow (2 + 1)) fun r => ?_
+      have hden : Continuous fun r : (P × ℂ) × ℝ => 1 / (circleMap 0 R r.2) ^ (n + 1) := by
+        refine continuous_const.div (hc0.pow (n + 1)) fun r => ?_
         exact pow_ne_zero _ (circleMap_ne_center hRpos.ne')
       have hmem : ∀ r : (P × ℂ) × ℝ,
           ((r.1.1, stripRetract ρ r.1.2 + circleMap 0 R r.2) : P × ℂ) ∈ univ ×ˢ imStrip ρ' := by
@@ -129,34 +134,34 @@ theorem continuousAt_deriv_deriv_of_strip {P : Type*} [TopologicalSpace P] {ρ �
           hmem
       exact (hc0.mul continuous_const).smul (hden.smul hval)
     have hcirc : Continuous fun q' : P × ℂ =>
-        ∮ ζ in C(stripRetract ρ q'.2, R), (1 / (ζ - stripRetract ρ q'.2) ^ (2 + 1)) • W q'.1 ζ := by
+        ∮ ζ in C(stripRetract ρ q'.2, R), (1 / (ζ - stripRetract ρ q'.2) ^ (n + 1)) • W q'.1 ζ := by
       show Continuous fun q' : P × ℂ =>
         ∫ θ in (0 : ℝ)..(2 * Real.pi), deriv (circleMap (stripRetract ρ q'.2) R) θ
-          • ((1 / (circleMap (stripRetract ρ q'.2) R θ - stripRetract ρ q'.2) ^ (2 + 1))
+          • ((1 / (circleMap (stripRetract ρ q'.2) R θ - stripRetract ρ q'.2) ^ (n + 1))
             • W q'.1 (circleMap (stripRetract ρ q'.2) R θ))
       have hrw : (Function.uncurry fun (q' : P × ℂ) (θ : ℝ) =>
           deriv (circleMap (stripRetract ρ q'.2) R) θ
-            • ((1 / (circleMap (stripRetract ρ q'.2) R θ - stripRetract ρ q'.2) ^ (2 + 1))
+            • ((1 / (circleMap (stripRetract ρ q'.2) R θ - stripRetract ρ q'.2) ^ (n + 1))
               • W q'.1 (circleMap (stripRetract ρ q'.2) R θ)))
           = fun r : (P × ℂ) × ℝ => (circleMap 0 R r.2 * Complex.I)
-            • ((1 / (circleMap 0 R r.2) ^ (2 + 1))
+            • ((1 / (circleMap 0 R r.2) ^ (n + 1))
               • W r.1.1 (stripRetract ρ r.1.2 + circleMap 0 R r.2)) := by
         funext r
         show deriv (circleMap (stripRetract ρ r.1.2) R) r.2
-            • ((1 / (circleMap (stripRetract ρ r.1.2) R r.2 - stripRetract ρ r.1.2) ^ (2 + 1))
+            • ((1 / (circleMap (stripRetract ρ r.1.2) R r.2 - stripRetract ρ r.1.2) ^ (n + 1))
               • W r.1.1 (circleMap (stripRetract ρ r.1.2) R r.2))
           = (circleMap 0 R r.2 * Complex.I)
-            • ((1 / (circleMap 0 R r.2) ^ (2 + 1))
+            • ((1 / (circleMap 0 R r.2) ^ (n + 1))
               • W r.1.1 (stripRetract ρ r.1.2 + circleMap 0 R r.2))
         rw [deriv_circleMap, circleMap_sub_center,
           circleMap_eq_add (stripRetract ρ r.1.2) R r.2]
       exact intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'
         (by rw [hrw]; exact hint) 0 (2 * Real.pi)
-    rw [show (fun q' : P × ℂ => (2 * Real.pi * Complex.I / ((Nat.factorial 2 : ℕ) : ℂ))⁻¹
-        • ∮ ζ in C(stripRetract ρ q'.2, R), (1 / (ζ - stripRetract ρ q'.2) ^ (2 + 1)) • W q'.1 ζ)
-      = ((2 * Real.pi * Complex.I / ((Nat.factorial 2 : ℕ) : ℂ))⁻¹ •
+    rw [show (fun q' : P × ℂ => (2 * Real.pi * Complex.I / ((Nat.factorial n : ℕ) : ℂ))⁻¹
+        • ∮ ζ in C(stripRetract ρ q'.2, R), (1 / (ζ - stripRetract ρ q'.2) ^ (n + 1)) • W q'.1 ζ)
+      = ((2 * Real.pi * Complex.I / ((Nat.factorial n : ℕ) : ℂ))⁻¹ •
         fun q' : P × ℂ => ∮ ζ in C(stripRetract ρ q'.2, R),
-          (1 / (ζ - stripRetract ρ q'.2) ^ (2 + 1)) • W q'.1 ζ) from rfl]
+          (1 / (ζ - stripRetract ρ q'.2) ^ (n + 1)) • W q'.1 ζ) from rfl]
     exact hcirc.const_smul _
   refine (hcont.continuousAt).congr ?_
   refine Filter.eventuallyEq_of_mem
@@ -172,12 +177,39 @@ theorem continuousAt_deriv_deriv_of_strip {P : Type*} [TopologicalSpace P] {ρ �
       fun ζ hζ => ⟨mem_univ _, hsub hζ⟩
   have hd : ∀ ζ ∈ ball q'.2 R, DifferentiableAt ℂ (W q'.1) ζ := fun ζ hζ =>
     (hWd q'.1).differentiableAt ((isOpen_imStrip ρ').mem_nhds (hsub (ball_subset_closedBall hζ)))
-  have hform := iteratedDeriv_eq_circleIntegral hRpos 2 hslice hd
-  rw [iteratedDeriv_two] at hform
-  show (2 * Real.pi * Complex.I / ((Nat.factorial 2 : ℕ) : ℂ))⁻¹
-      • ∮ ζ in C(stripRetract ρ q'.2, R), (1 / (ζ - stripRetract ρ q'.2) ^ (2 + 1)) • W q'.1 ζ
-    = deriv (deriv (W q'.1)) q'.2
+  have hform := iteratedDeriv_eq_circleIntegral hRpos n hslice hd
+  show (2 * Real.pi * Complex.I / ((Nat.factorial n : ℕ) : ℂ))⁻¹
+      • ∮ ζ in C(stripRetract ρ q'.2, R), (1 / (ζ - stripRetract ρ q'.2) ^ (n + 1)) • W q'.1 ζ
+    = iteratedDeriv n (W q'.1) q'.2
   rw [hret, hform]
+
+/-- **The derivative of a family holomorphic on a strip is continuous there**, jointly in the
+parameter and the point. -/
+theorem continuousAt_deriv_of_strip {P : Type*} [TopologicalSpace P] {ρ ρ' : ℝ}
+    (hρ : ρ < ρ') (hρ0 : 0 ≤ ρ) {W : P → ℂ → ℂ}
+    (hWc : ContinuousOn (fun q : P × ℂ => W q.1 q.2) (univ ×ˢ imStrip ρ'))
+    (hWd : ∀ p : P, DifferentiableOn ℂ (W p) (imStrip ρ'))
+    {q : P × ℂ} (hq : q.2 ∈ imStrip ρ) :
+    ContinuousAt (fun q' : P × ℂ => deriv (W q'.1) q'.2) q := by
+  have h := continuousAt_iteratedDeriv_of_strip hρ hρ0 1 hWc hWd hq
+  refine h.congr ?_
+  refine Filter.Eventually.of_forall fun q' => ?_
+  show iteratedDeriv 1 (W q'.1) q'.2 = deriv (W q'.1) q'.2
+  rw [iteratedDeriv_one]
+
+/-- **The second derivative of a family holomorphic on a strip is continuous there**, jointly in
+the parameter and the point. -/
+theorem continuousAt_deriv_deriv_of_strip {P : Type*} [TopologicalSpace P] {ρ ρ' : ℝ}
+    (hρ : ρ < ρ') (hρ0 : 0 ≤ ρ) {W : P → ℂ → ℂ}
+    (hWc : ContinuousOn (fun q : P × ℂ => W q.1 q.2) (univ ×ˢ imStrip ρ'))
+    (hWd : ∀ p : P, DifferentiableOn ℂ (W p) (imStrip ρ'))
+    {q : P × ℂ} (hq : q.2 ∈ imStrip ρ) :
+    ContinuousAt (fun q' : P × ℂ => deriv (deriv (W q'.1)) q'.2) q := by
+  have h := continuousAt_iteratedDeriv_of_strip hρ hρ0 2 hWc hWd hq
+  refine h.congr ?_
+  refine Filter.Eventually.of_forall fun q' => ?_
+  show iteratedDeriv 2 (W q'.1) q'.2 = deriv (deriv (W q'.1)) q'.2
+  rw [iteratedDeriv_two]
 
 /-! ## The single integral
 

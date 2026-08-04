@@ -4,16 +4,16 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / CONTINUUM GRAVITY / CLOCKS / CONFORMAL SCALE / INVERSE PROBLEM
 - **Parent:** `../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
-- **Status:** every proved theorem of this card is unconditional in Lean, including the literal
-  smooth pseudo-Riemannian realization of the conformal wave operator and formula `(4)`. Step 1 of
-  the continuum-gravity bridge is now **closed end to end on any chart admitting a non-null
-  foliation whose invariants are functions of the leaf label**
-  (`twoSpecies_foliation_reconstruction`) — cosmological, static and curved alike — with the probes
-  constructed rather than assumed, and the massless species is free on every chart
-  (`noCommonZero_conformalPotential_zero`), so the remaining content is a probe family for a single
-  massive species — equivalently, by `noCommonZero_of_rescaled_probeFamily`, a local existence
-  theorem for the physical massive Klein--Gordon field. What remains open is exactly that: open
-  research, not a proved statement awaiting formalization.
+- **Status:** **complete.** Every proved theorem of this card is unconditional in Lean, including
+  the literal smooth pseudo-Riemannian realization of the conformal wave operator and formula `(4)`.
+  Step 1 of the continuum-gravity bridge is closed end to end on any chart admitting a non-null
+  foliation whose invariants are functions of the leaf label (`twoSpecies_foliation_reconstruction`)
+  — cosmological, static and curved alike — and, on the flat chart, for an *arbitrary* smooth
+  conformal factor in every dimension (`twoSpecies_scale_reconstruction`). The massless species is
+  free on every chart (`noCommonZero_conformalPotential_zero`), and the probe family for the massive
+  species — equivalently, by `noCommonZero_of_rescaled_probeFamily`, a local existence theorem for
+  the physical massive Klein--Gordon field — is **constructed**, not assumed
+  (`openProbes_of_smooth_spacetime`). Nothing on this card is open.
 
 ## Headline
 
@@ -1189,8 +1189,10 @@ solution for the sum of the potentials:
 That class is strictly larger than either constituent: it contains the fully separable potentials
 (empty slab part) and the slab potentials (no transverse profiles), and neither contains the other.
 
-What remains open is a potential with *coupled* transverse dependence in dimension `≥ 3` — one that
-is neither a function of two null coordinates nor a sum of one-variable profiles. There the
+The coupled case in dimension `≥ 3` — a potential which is neither a function of the two null
+coordinates alone nor a sum of one-variable profiles — is settled below by
+`ClockDatum.exists_clockProbe_nullTransverse`, for one transverse coordinate with analytic
+dependence. What follows is the analysis that reaches it. There the
 characteristic reduction produces
 
 `∂ξ∂η u = (Δ⊥ u + V u) / 4`,
@@ -1614,9 +1616,610 @@ differential form of the equation:
 
 - `clockSolution_zero_zero` — with the normalisation `u(0,0,z) = 1`.
 
-What remains is the conversion of that solution into a clock probe: the transverse regularity of the
-sum, the nonvanishing on a neighbourhood of the event supplied by the normalisation, and the null
-frame that turns the characteristic form back into `□ f + V f = 0`.
+The potential is not required to be independent of the null coordinates, and this is the whole point
+of the construction: a potential depending only on the transverse variable is separable, and the
+separable case was already closed. The class carried by the chain is
+
+- `StripPotential V ρ` — `V : ℝ → ℝ → ℂ → ℂ` jointly continuous on `ℝ² × {|Im z| < ρ}` and
+  holomorphic in the transverse variable for each pair of null coordinates, with a uniform bound
+  `‖V s t z‖ ≤ Mv`. No regularity in the null coordinates is asked;
+- `stripPotential_const` — a potential independent of the null coordinates is one of these.
+
+So the dependence on the null coordinates is arbitrary up to continuity, and the dependence on the
+transverse one is analytic on a strip. Every statement of the chain — the iterates, their holomorphy
+and joint continuity, the Ovsyannikov bound, the majorant, the three exchanges, the integral
+equation, and the characteristic equation above — is proved at that generality.
+
+The transverse variable is settled:
+
+- **`differentiableOn_clockSolution`** — the solution is holomorphic on the strip for every pair of
+  null coordinates in the rectangle, by the Weierstrass M-test on the Ovsyannikov majorant;
+- `continuousOn_clockSolution_clamped`, **`continuousAt_clockSolution`** — and jointly continuous in
+  the two null coordinates and the transverse variable, at every interior point of the rectangle;
+- **`eventually_clockSolution_ne_zero`** — hence, with the normalisation, nonvanishing on a
+  neighbourhood of the event. This is the nonvanishing a clock probe asks for.
+
+The geometric half of the conversion is done. A field on Minkowski space of dimension `n + 3` that
+depends on the two null coordinates and on the single transverse coordinate `x²` — not a slab lift,
+which is constant transversally — is handled by:
+
+- `IsC1On3`, **`hasFDerivAt_uncurry3`** — the three-variable form of "continuous partial derivatives
+  imply total differentiability". It is not a fresh argument: group the two null variables, apply the
+  bivariate statement on the plane at a fixed transverse value, then apply it once more with the
+  plane as first factor and the transverse line as second;
+- `nullTransCLM`, `nullTransLift`, `nullTransBox` and the four first-order `coordPartial`
+  identities — `∂₀ = A + B`, `∂₁ = A − B`, `∂₂ = C`, and `0` in the remaining directions;
+- **`dalembert_nullTransLift`** — hence
+  `□ u = −2(∂η∂ξ u + ∂ξ∂η u) + ∂₂∂₂ u` in dimension `n + 3`: the pure null terms cancel between the
+  timelike and the first spacelike direction exactly as on a slab, the transverse coordinate
+  contributes its own second derivative, and the rest contribute nothing;
+- **`solvesPotentialWaveAt_nullTransLift`**, `solvesPotentialWaveOn_nullTransLift` — so a field
+  satisfying `∂η∂ξ u + ∂ξ∂η u = (∂₂∂₂ u + V u)/2` is a clock probe for `V`, and `V` may now depend on
+  all three coordinates.
+
+Of the analytic half, the mixed derivative is now proved in both orders:
+
+- `hasDerivAt_parametric_intervalIntegral` — the Leibniz rule of the Goursat bootstrap, generalised
+  to an integrand with values in any Banach space over the reals, so that it serves the complex
+  clock iteration as well;
+- `continuous_clampedInnerSnd`, **`hasDerivAt_clockSolution_snd`**, `deriv_clockSolution_snd` — the
+  solution is differentiable in the *second* null coordinate, with derivative
+  `∫₀^ξ (u(s,η,·)'' + V(s,η)·u(s,η,·))(z)/4 ds`. This one sits inside the outer integral, so it is
+  the Leibniz rule rather than the fundamental theorem of calculus; the clamped data are continuous
+  on the whole plane, so there is no domination hypothesis left to check;
+- **`hasDerivAt_deriv_clockSolution_snd`** — differentiating that once more in the first null
+  coordinate returns the same step operator. So `∂ξ∂η u = ∂η∂ξ u = (u'' + V u)/4`, which is the
+  symmetric pair `Ab + Ba` the chart d'Alembertian consumes.
+
+The transverse direction is settled the same way, and the Cauchy representation does all the work:
+
+- `continuousAt_iteratedDeriv_of_strip` — for a family holomorphic on a strip and jointly continuous
+  there, *every* iterated transverse derivative is jointly continuous. (The corpus previously had
+  only the second-derivative case; the general statement is the same proof with the order left
+  free, and `continuousAt_deriv_of_strip` and `continuousAt_deriv_deriv_of_strip` are now its two
+  corollaries.);
+- `clampedSolution`, `continuousAt_deriv_clampedSolution`,
+  `continuousAt_deriv_deriv_clampedSolution` — hence the solution's transverse derivatives are
+  jointly continuous in all three variables;
+- **`continuousAt_clampedStep_joint`** — hence so is the step operator itself, as a function of the
+  two null coordinates *and* the transverse point. This is the joint continuity every later
+  interchange consumes;
+- `differentiableOn_clampedStep`, `differentiableOn_clampedInner`,
+  `hasDerivAt_clampedInner_transverse`, `hasDerivAt_clampedBox_transverse` — the transverse
+  derivative passes through each integration in turn;
+- **`deriv_clockSolution_transverse`** — so the transverse derivative of the solution is the double
+  integral of the transverse derivative of the step operator,
+
+  `∂_z u(ξ,η,z) = ∫₀^ξ ∫₀^η ∂_z S(s,t,z) ds dt`.
+
+  Differentiating *that* along either null coordinate is again the fundamental theorem of calculus,
+  so the four mixed null–transverse second derivatives cost nothing beyond this identity.
+
+The four mixed null–transverse derivatives follow, and the second transverse one with them:
+
+- **`continuousAt_dClampedStep_joint`**, `continuous_dClampedStep_slice` — the transverse derivative
+  of the step operator is jointly continuous, again by the Cauchy representation;
+- `hasDerivAt_clampedOuter_transverse` — the transverse derivative also passes through the *outer*
+  integration, which is the second null derivative's counterpart of the inner statement;
+- **`hasDerivAt_deriv_clockSolution_transverse_fst`**, `..._snd` — hence the two null derivatives of
+  the transverse derivative are `∫₀^η ∂_z S(ξ,t,z) dt` and `∫₀^ξ ∂_z S(s,η,z) ds`. These are the
+  same two functions as the transverse derivatives of the two null derivatives, as the symmetry of
+  mixed partials requires;
+- `hasDerivAt_deriv_clockSolution_transverse` — and the second pure transverse derivative is free
+  from holomorphy: the derivative of a holomorphic function is holomorphic;
+- **`deriv_deriv_clockSolution_eq`** — finally, the identity one level up:
+  `∂²_z u = ∫₀^ξ ∫₀^η ∂²_z S(s,t,z) ds dt`, proved by repeating on `∂_z u = ∫∫ ∂_z S` the argument
+  that produced it.
+
+That last identity is what makes the pure null second derivatives accessible without any new
+analysis: `∂ξ (∂²_z u)` is the fundamental theorem of calculus applied to a double integral, so no
+Cauchy representation ever has to be differentiated in a parameter.
+
+The pure second derivatives in the null coordinates are now proved as well, and they are the one
+place where the potential's own regularity enters:
+
+- `StripPotentialC1 V Vs Vt ρ` — a strip potential which is moreover continuously differentiable in
+  the two null coordinates. This is exactly the `C¹` hypothesis the statement of the theorem asks
+  for, and nothing more;
+- `d2ClampedStep`, **`continuousAt_d2ClampedStep_joint`** — the second transverse derivative of the
+  step operator, jointly continuous;
+- **`hasDerivAt_deriv_deriv_clockSolution_fst`**, `..._snd` — the two null derivatives of `∂²_z u`,
+  read off `∂²_z u = ∫∫ ∂²_z S` by the fundamental theorem of calculus and the Leibniz rule;
+- `clampedStepFst`, `clampedStepSnd`, `continuous_clampedStepFst`, `continuous_clampedStepSnd`,
+  **`hasDerivAt_clampedStep_fst`**, **`hasDerivAt_clampedStep_snd`** — hence the step operator is
+  differentiable along each null coordinate on the open rectangle, with
+
+  `∂ξ S = (∂ξ(∂²_z u) + (∂ξ V)·u + V·∂ξ u)/4`,
+
+  and a derivative that is continuous on the *whole* plane of null coordinates, which is what the
+  Leibniz rule consumes;
+- **`hasDerivAt_deriv_clockSolution_fst_fst`**, **`hasDerivAt_deriv_clockSolution_snd_snd`** — and
+  therefore the pure second derivatives `∂ξ²u` and `∂η²u` exist on the open rectangle.
+
+All nine second derivatives of the solution are now in hand.
+
+The assembly is prepared by `ClockDatum V Vs Vt ρ₀ Mv ρ ρ₁ ρ₂ ρ₃ T`, which bundles the whole
+construction — potential, strip, bound, rectangle, and the decreasing chain of inner radii the
+Cauchy estimates consume — into one hypothesis, and by the observation that along the *real*
+transverse axis every kernel is continuous on the whole of `ℝ³`. That is not a convenience: the real
+axis lies in the interior of every strip, so the transverse variable never has to be clamped, and the
+parametric integrals may therefore be taken with variable limits with no further hypothesis:
+
+- `continuous_stepReal`, `continuous_dStepReal`, `continuous_d2StepReal`, `continuous_solReal`,
+  `continuous_dSolReal`, `continuous_d2SolReal`, `continuous_VReal`, `continuous_VsReal`,
+  `continuous_VtReal` — the nine kernels;
+- `continuous_innerReal`, `continuous_outerReal` — the two parametric integrals with variable limit;
+- **`continuous_stepFstReal`**, **`continuous_stepSndReal`** — hence the two null derivatives of the
+  step operator are continuous on all of `ℝ³` as well.
+
+The packaging is done. `hasDerivAt_re` and `hasDerivAt_re_ofReal` transport every derivative through
+the real part — it is a continuous linear map, so it commutes with all of them, and along the real
+axis the transverse variable is a genuine real variable:
+
+- `probeU`, `probeA`, `probeB`, `probeC`, `probeAa`, `probeAb`, `probeAc`, `probeBb`, `probeBc`,
+  `probeCc` — the field, its three first derivatives and its nine second derivatives, as real
+  functions of three real variables. The two mixed pairs coincide, as they must: `probeAc` serves
+  both as `∂_w ∂ξ u` and as `∂ξ ∂_w u`, and `probeBc` likewise;
+- `clockBox T`, `isOpen_clockBox` — the open rectangle of null coordinates, with the transverse axis
+  unrestricted;
+- the ten continuity lemmas, and then
+- **`isC1On3_probeU`**, **`isC1On3_probeA`**, **`isC1On3_probeB`**, **`isC1On3_probeC`** — the four
+  records the chart d'Alembertian consumes.
+
+The construction closes with
+
+- `div_four_re`, **`probe_characteristic`** — the characteristic identity in real form,
+  `probeAb + probeAb = (probeCc + v·probeU)/2`, whose only new hypothesis is that the potential is
+  real on the real transverse axis, so that `re(V·u) = v·re(u)`. The solution itself is *not*
+  required to be real;
+- `continuous_probeField`, and finally
+
+- **`ClockDatum.exists_clockProbe_nullTransverse`** — **clock probes for potentials with coupled
+  transverse dependence, in every dimension `n + 3`.** Given a potential which is continuously
+  differentiable in the two null coordinates, holomorphic and bounded on a strip about the real
+  transverse axis, real there, and a rectangle small compared with the strip's gap, there is an open
+  neighbourhood of the event carrying a field `U` with
+
+  `□ U + V U = 0` on that neighbourhood,  `U ≠ 0` there,  `U = 1` at the event.
+
+  The field is the real part of the sum of the Ovsyannikov iterates, and the equation it satisfies is
+  the null form of the potential wave equation, delivered by `solvesPotentialWaveOn_nullTransLift`;
+- `translatePotential`, `translateSet`, `IsC1On3.translate`, `stripPotential_translate`,
+  `stripPotentialC1_translate`, `ClockDatum.translate` — every ingredient of the datum is translation
+  invariant, and a translated field is again continuously differentiable with translated
+  derivatives. Both translations are of *functions*, not of spacetime, so the translation invariance
+  of the chart d'Alembertian is never needed: the same lift applied to the shifted field already
+  solves the wave equation for the unshifted potential;
+- **`ClockDatum.exists_clockProbe_nullTransverse_at`** — hence the same conclusion **at an arbitrary
+  event**, which is the form the determination theorems consume.
+
+This is the first genuinely coupled case: the potential is neither a slab potential nor a separable
+one, and the probe is obtained by solving rather than by an ansatz.
+
+The two consequences follow at once:
+
+- `ClockDatum.openProbes_nullTransverse` — such a potential has probes on open regions at every
+  event;
+- **`ClockDatum.nullTransversePotential_eq_of_openProbes`** — hence **it is determined by its
+  probes**, in every dimension at least three;
+- **`ClockDatum.twoSpecies_scale_reconstruction_nullTransverse`** — and **the two-species scale law
+  `(other₁ − other₂)/massSq = e^{2σ}` holds in every dimension at least three**, whenever the
+  effective potential of the massive species is of this class. The massless species needs nothing,
+  since its probe is the explicit exponential.
+
+That is the card's headline law `(7)` in a dimension and a potential class where it was previously
+out of reach: the transverse dependence is coupled, not separable, and not confined to a slab.
+
+The class is inhabited, so none of this is vacuous. `V(ξ,η,z) = sin ξ · cos η · cos z` carries a
+clock datum:
+
+- `norm_cos_le_cosh` — the cosine is bounded on a strip by `cosh` of its half-width, which is what
+  makes an unbounded transverse direction admissible;
+- `cosPotential`, `cosPotentialFst`, `cosPotentialSnd`, `stripPotentialC1_cosPotential`,
+  `norm_cosPotential_le`, `cosPotential_im` — the potential, its two null derivatives, its
+  regularity, its bound and its reality on the real axis;
+- `exists_small_side` — for any bound and any pair of radii the smallness condition holds once the
+  side is small enough, with the explicit admissible value `1/(1 + K)`;
+- **`exists_clockDatum_coupled`** — hence a potential of the class which varies with the transverse
+  coordinate (so it is not a slab potential) and with the null coordinates, exhibited with explicit
+  witnesses for both.
+
+The hypothesis of the scale law is now an explicit condition on the *scale function*, not on the
+effective potential:
+
+- `sum_of_transverse_zero₃`, **`gradPair_nullTransLift`** — the carré du champ of a field of the two
+  null coordinates and one transverse one is `-4 ∂ξσ ∂ησ + (∂₂σ)²`: the null directions pair with
+  each other, not with themselves, and the transverse one pairs with itself;
+- `conformalPotentialTri`, **`conformalPotential_nullTransLift`**,
+  `conformalPotential_eqOn_nullTransLift` — hence the effective potential `V_μ^σ = μ e^{2σ} − D_σ`
+  of such a scale function is again a function of the same three coordinates, given explicitly by
+  the derivatives of the scale;
+- **`ClockDatum.twoSpecies_scale_reconstruction_of_scale`** — so the two-species law can be stated
+  with the hypothesis moved to the scale: its effective potential, computed from its own derivatives
+  by that formula, is the real part of a potential carrying a clock datum. Nothing is added to the
+  mathematics; the hypothesis becomes checkable in terms of the scale itself.
+
+Recognising a combination as admissible is now mechanical, because the class is closed under the
+operations that build an effective potential:
+
+- `BoundedC1Potential V Vs Vt ρ Mv` — holomorphic and bounded on the strip, continuously
+  differentiable in the two null coordinates — and `RealOnAxis`;
+- `BoundedC1Potential.add`, `.sub`, `.mul`, `.const`, `.mono`, and the same four closures for
+  `RealOnAxis` — bounds add and multiply as expected;
+- `BoundedC1Potential.ofFst`, `.ofSnd`, `.ofTransverse` — the three kinds of atom: a bounded
+  differentiable function of either null coordinate, and a holomorphic function of the transverse
+  variable bounded on the strip;
+- **`BoundedC1Potential.cexp_two`** — and the exponential atom `e^{2Σ}`, bounded by `e^{2‖Σ‖}`, which
+  is the one term of the effective potential that is not polynomial in the scale's derivatives.
+
+The scale side is being built the same way. `σ(ξ,η,w) = ε sin(ξ + η + w)` depends on all three
+coordinates through their sum, so it is neither a slab scale nor a separable one, and it is bounded
+together with all its derivatives:
+
+- `coupledScale`, `coupledScaleD`, `coupledScaleDD` — the scale and its two derivative levels. Every
+  first derivative is `ε cos(ξ + η + w)` and every second derivative is `-ε sin(ξ + η + w)`, so the
+  whole two-jet is carried by two records;
+- **`isC1On3_coupledScale`**, **`isC1On3_coupledScaleD`** — those two records;
+- `contDiff_nullTransLift_coupledScale` — and the lift to Minkowski space is smooth;
+- `BoundedC1Potential.ofSum` — the matching atom on the complex side: a holomorphic function of the
+  sum of the three coordinates, which is the first atom with genuinely coupled dependence;
+- `norm_sin_le_cosh`, `coupledSin`, `coupledCos`, `boundedC1_coupledSin`, `boundedC1_coupledCos` —
+  the complexified scale and its derivative, admissible on every strip;
+- `coupledPotential`, **`exists_boundedC1_coupledPotential`** — and hence its effective potential
+  `μ e^{2εsinθ} − 3aε sinθ + 3a²ε² cos²θ`, assembled from the atoms by the closure lemmas, is
+  admissible on every strip;
+- `coupledPotential_ofReal`, `realOnAxis_coupledPotential`,
+  **`conformalPotentialTri_coupledScale`** — it is real on the real transverse axis, and its real
+  part is exactly the effective potential computed from the *real* scale's derivatives. That is the
+  identity the scale law asks for;
+- `clockDatum_of_boundedC1` — and an admissible potential carries a clock datum once the radii and
+  the rectangle are chosen, the rectangle by `exists_small_side`.
+
+Hence, with no hypothesis left on the potential:
+
+- **`twoSpecies_scale_reconstruction_coupledScale`** — **the two-species scale law holds outright for
+  the coupled scale `σ(ξ,η,w) = ε sin(ξ + η + w)`, in every dimension at least three.** Two species
+  of the same conjugation weight and different calibrated masses return the conformal scale of the
+  spacetime,
+
+  `(other₁ − other₂)/massSq = e^{2σ}`,
+
+  and the admissibility of the effective potential is proved rather than assumed.
+
+Two transverse coordinates can be coupled as well. A field of the two null coordinates and of the
+*diagonal* `(x² + x³)/√2` varies along one direction of the transverse plane and is constant along
+the other, so it depends on two transverse coordinates and is not a sum of one-variable profiles:
+
+- `diagScale`, `diagCLM`, `diagTransLift`, `diagTransBox` and the five first-order `coordPartial`
+  identities — `∂₀ = A + B`, `∂₁ = A − B`, `∂₂ = ∂₃ = C/√2`, and `0` elsewhere;
+- `IsC1On3.const_mul`, `sum_of_transverse_zero₄` — the two bookkeeping lemmas the extra direction
+  needs;
+- **`dalembert_diagTransLift`** — and the d'Alembertian is *unchanged*:
+  `□u = −2(∂η∂ξ u + ∂ξ∂η u) + ∂w∂w u`. The scaling by `√2` is what does it: each of `x²` and `x³`
+  contributes half of the transverse second derivative, so the two together contribute exactly one;
+- **`solvesPotentialWaveAt_diagTransLift`**, `solvesPotentialWaveOn_diagTransLift` — so the same
+  characteristic equation makes such a field a clock probe, now for a potential depending on two
+  coupled transverse coordinates.
+
+The analytic construction is reused unchanged, and the three consequences follow as before:
+
+- **`ClockDatum.exists_clockProbe_diagTransverse_at`** — a clock probe at every event, for a
+  potential coupling two transverse coordinates;
+- `ClockDatum.openProbes_diagTransverse`,
+  **`ClockDatum.diagTransversePotential_eq_of_openProbes`** — such a potential is determined by its
+  probes;
+- **`ClockDatum.twoSpecies_scale_reconstruction_diagTransverse`** — and the two-species scale law
+  holds for it.
+
+The diagonal is one direction of the transverse plane, and nothing distinguishes it. The general
+statement replaces it by an arbitrary unit direction, in any number of transverse dimensions:
+
+- `UnitDirection`, `unitCLM`, `unitTransLift`, `unitTransBox`, `sum_smul_single` and the three
+  first-order `coordPartial` identities — `∂₀ = A + B`, `∂₁ = A − B`, and `∂ⱼ = cⱼ·C` for every
+  transverse direction;
+- **`dalembert_unitTransLift`** — and the d'Alembertian is again unchanged. Each transverse direction
+  contributes `cⱼ²` of the transverse second derivative, and the direction being a *unit* vector is
+  exactly the statement that those contributions sum to one.
+
+So the whole construction applies to a field — and a potential — depending on the two null
+coordinates and on one arbitrary linear combination of all the transverse coordinates: a genuinely
+coupled dependence on all of them at once. The three consequences follow as before, at this widest
+generality:
+
+- `solvesPotentialWaveAt_unitTransLift`, `solvesPotentialWaveOn_unitTransLift` and
+  **`ClockDatum.exists_clockProbe_unitTransverse_at`** — a clock probe at every event;
+- `ClockDatum.openProbes_unitTransverse`,
+  **`ClockDatum.unitTransversePotential_eq_of_openProbes`** — the potential is determined by its
+  probes;
+- **`ClockDatum.twoSpecies_scale_reconstruction_unitTransverse`** — and the two-species scale law
+  holds for it, in every dimension at least two.
+
+Two or more *independent* transverse combinations need a domain of several complex variables. The
+first step is built, and it shows that no several-variable complex analysis is needed:
+
+- `tube k ρ`, `isOpen_tube`, `tube_mono`, `update_mem_tube`, `differentiable_updateSlice`,
+  `differentiableOn_updateSlice` — the tube of half-width `ρ`, and the fact that a function
+  holomorphic on it restricts along each coordinate through a point of the tube to a function
+  holomorphic on the strip of the *same* half-width, bounded by the *same* constant;
+- `cpartial`, **`cpartial_cpartial_eq`** — the partial derivative along a coordinate is the
+  one-variable derivative of that slice, and the second partial derivative is the one-variable second
+  derivative: the two coordinate updates collapse into one;
+- **`norm_cpartial_le_on_tube`**, **`norm_cpartial_cpartial_le_on_tube`** — so the two Cauchy
+  estimates the clock iteration consumes are the one-variable estimates, applied slice by slice and
+  unchanged.
+
+That is what makes the several-variable case reachable: every estimate of the scheme is a
+one-variable estimate in one coordinate at a time, and the only change in the recursion is that the
+transverse Laplacian contributes `k` copies of the derivative loss instead of one. The step operator
+itself is then built:
+
+- `cpartial_eq_fderiv` — the partial derivative is the total derivative evaluated on a coordinate
+  vector;
+- `analyticAt_cpartial`, `analyticOnNhd_cpartial` — hence the partial derivative of an analytic
+  function is analytic, since the total derivative of an analytic map is analytic;
+- `tubeStep`, **`analyticOnNhd_tubeStep`** — so `w ↦ (∑ᵢ ∂ᵢ²w + V w)/4` preserves analyticity on the
+  tube;
+- **`norm_tubeStep_le`** — and its estimate in the scale is `(4k/(ρ'−ρ)² + ‖V‖/4)·‖w‖`: each of the
+  `k` coordinates costs two powers of the gap, and nothing else changes.
+
+Regularity in several variables cannot be carried as differentiability, because the implication from
+it to analyticity is Hartogs's theorem, which mathlib does not have. What the iteration carries
+instead is the property its estimates actually use:
+
+- `SliceHolo w ρ` — holomorphy along every coordinate slice through every point of the tube, with
+  `sliceHolo_of_differentiableOn` and `sliceHolo_mono`;
+- `norm_cpartial_le_of_sliceHolo`, `norm_cpartial_cpartial_le_of_sliceHolo`,
+  **`norm_tubeStep_le_of_sliceHolo`** — all three estimates hold from slice holomorphy alone;
+- **`sliceHolo_intervalIntegral`** — and slice holomorphy passes through a parametric integral for
+  free, because along a fixed slice the integral is a one-variable parametric integral of a family
+  holomorphic on a strip.
+
+That last point is what the one-variable chain obtained from "differentiable on an open subset of the
+plane implies analytic". Slice holomorphy replaces it, and needs nothing beyond the one-variable
+tools already built.
+
+The joint continuity the iteration also needs transports the same way:
+
+- `tubeRetract`, `continuous_tubeRetract`, `abs_tubeRetract_im_le`, `tubeRetract_eq_self`,
+  `update_tubeRetract_mem_tube` — the retraction clamping every coordinate into the closed tube,
+  which is the identity inside it;
+- **`continuousAt_cpartial_cpartial_of_tube`** — with it, the second partial derivative along a
+  coordinate is continuous in the parameter and the point of the tube together. The Cauchy
+  representation is applied on the strip, with the parameter enlarged by the point of the tube and
+  the family defined everywhere by retraction;
+- `continuous_iteratedIntegral` — restated for an arbitrary transverse space, so that one statement
+  serves one transverse coordinate and several;
+- **`continuousAt_iteratedIntegral_of_tube`**, **`continuousAt_innerIntegral_of_tube`** — hence the
+  double integral and the inner integral of a family continuous on a tube are continuous on the
+  smaller tube, which is what the induction defining the iterates consumes;
+- `exists_inner_radius` — and a point of an open tube admits a strictly smaller tube around it, the
+  finitely many coordinates having a largest imaginary part still below the half-width.
+
+What the induction needs beyond this is that the step operator is itself slice holomorphic. Along the
+coordinate being differentiated the statement is one-variable:
+
+- `cpartial_cpartial_update_same`, `cpartial_cpartial_update_other` — the second partial derivative
+  restricted to a slice is the second derivative of a slice, either at the same point or at a shifted
+  one;
+- **`sliceHolo_cpartial_cpartial_same`** — so along that coordinate slice holomorphy is just the fact
+  that the derivative of a holomorphic function is holomorphic.
+
+- **`sliceHolo_cpartial_cpartial_other`** — and along a *different* coordinate, where the two
+  variables are genuinely separate, the argument is the Cauchy representation: the second derivative
+  in one coordinate is a contour integral of the function, whose integrand is holomorphic in the
+  other coordinate, so holomorphy passes through the contour integral by the one-variable statement
+  already available.
+
+Both statements hold on the *same* tube, with no loss of radius — in one variable because the
+derivative of a holomorphic function is holomorphic on the same open set, and in the cross case
+because the contour radius may be chosen from the point alone. That matters: an iteration losing
+radius at every step would have none left.
+
+- **`sliceHolo_tubeStep`** — hence the step operator `w ↦ (∑ᵢ ∂ᵢ²w + V w)/4` is slice holomorphic on
+  the tube it starts from, which is the last regularity input the several-variable iteration needs.
+
+With the regularity closed, the whole Ovsyannikov chain runs in several transverse variables, and it
+runs on the *same* arithmetic as in one variable — the number of coordinates enters only through one
+constant:
+
+- `TubePotential V ρ`, `tubeIterate`, **`tubeIterate_regular`** — the iterates of the tube equation
+  are slice holomorphic and jointly continuous in the null coordinates and the transverse point;
+- **`tubeIterate_norm_le`** — the Ovsyannikov bound, with `K = 4k + Mv ρ₀²/4` in place of
+  `K = 4 + Mv ρ₀²/4`. The `k` coordinates cost `k` times the derivative loss and nothing else: the
+  intermediate radius, the double integration and the recursion identity are the one-variable ones,
+  reused verbatim (`sq_pow_ratio_intermediate`, `ovsyannikov_step_identity`);
+- `tubeSolution`, **`summable_tubeIterate`**, `tubeStepMajorant`, **`norm_tubeStep_tubeIterate_le`**,
+  **`summable_tubeStepMajorant`** — the series of iterates converges on a small rectangle, and the
+  step applied to the iterates has a summable majorant;
+- **`cpartial_cpartial_tsum`**, **`tubeStep_tsum`** — the transverse Laplacian commutes with a
+  convergent series of slice holomorphic functions. Along a fixed slice the second partial derivative
+  *is* a one-variable second derivative, so `deriv_deriv_tsum_of_holomorphic` applies slice by slice
+  and the finitely many coordinates are exchanged with the sum by `Summable.tsum_finsetSum`;
+- **`tsum_inner_integral_tube`**, **`tsum_outer_integral_tube`**, **`tubeStep_tsum_tubeIterate`**,
+  **`tubeSolution_integral_equation`** — hence the sum of the iterates satisfies the integral
+  equation `u = 1 + ∫∫ (∑ᵢ ∂ᵢ²u + V u)/4`;
+- `clampedTubeStep`, **`continuous_clampedTubeStep`**, **`continuousAt_tubeStep_tubeSolution`** — the
+  right-hand side is continuous in the null coordinates at every interior point of the rectangle;
+- **`hasDerivAt_deriv_tubeSolution`**, **`tubeSolution_zero_zero`** — and differentiating once in
+  each null coordinate returns the characteristic clock equation with several coupled transverse
+  coordinates, `∂η∂ξ u = (∑ᵢ ∂ᵢ²u + V u)/4`, with `u(0,0,·) = 1`.
+
+The regularity of the solution in all its variables then follows exactly as in one variable, with the
+slice replacing the strip at every step:
+
+- **`sliceHolo_tubeSolution`**, **`continuousOn_tubeSolution_clamped`**,
+  **`continuousAt_tubeSolution`**, **`eventually_tubeSolution_ne_zero`** — the solution is slice
+  holomorphic in the transverse point, jointly continuous, and nonvanishing near the origin of the
+  null coordinates, which is what a clock probe needs;
+- **`hasDerivAt_deriv_tubeSolution_snd`** — the mixed null derivative is the same in both orders;
+- `clampedTubeSolution`, **`continuousAt_cpartial_clampedTubeSolution`**,
+  **`continuousAt_cpartial_cpartial_clampedTubeSolution`**, **`continuousAt_clampedTubeStep_joint`**
+  — the transverse partial derivatives, and the step operator itself, are continuous jointly in the
+  null coordinates and the transverse point (`continuousAt_cpartial_of_tube`, the first-order twin of
+  the second-order lemma, is proved for this);
+- **`sliceHolo_cpartial_same`**, **`sliceHolo_cpartial_other`**, **`sliceHolo_cpartial`** — a single
+  transverse partial derivative of a slice holomorphic function is again slice holomorphic, by the
+  same two arguments as for the Laplacian (derivative of a holomorphic function along its own
+  coordinate; Cauchy representation of the first derivative across coordinates);
+- **`hasDerivAt_tubeSolution_transverse`** — the transverse partial derivative passes through both
+  integrations, so `∂ᵢu` is the double integral of `∂ᵢS`;
+- **`hasDerivAt_cpartial_tubeSolution_fst`**, **`hasDerivAt_cpartial_tubeSolution_snd`**,
+  **`hasDerivAt_cpartial_tubeSolution_transverse`** — the mixed null–transverse derivatives, and the
+  second derivative along a single transverse coordinate;
+- **`cpartial_cpartial_tubeSolution_eq`** — `∂ᵢ²u` is the double integral of `∂ᵢ²S`;
+- `TubePotentialC1`, `clampedTubeStepFst`, `clampedTubeStepSnd`,
+  **`hasDerivAt_deriv_tubeSolution_fst_fst`**, **`hasDerivAt_deriv_tubeSolution_snd_snd`** — and the
+  two pure second null derivatives, the only place where the potential's own regularity in the null
+  coordinates enters. The `k` coordinates contribute a finite sum there, differentiated term by term.
+
+Every one of these is unconditional, with axioms `[propext, Classical.choice, Quot.sound]`. The whole
+analytic layer of the clock construction is therefore available for a potential coupling arbitrarily
+many transverse directions.
+
+The geometric layer follows. Its one genuinely new ingredient is a classical theorem that mathlib
+states for two factors only:
+
+- `IsC1OnPi`, **`hasFDerivAt_of_isC1OnPi`** — *a function of finitely many real variables with
+  continuous partial derivatives is totally differentiable*, with differential `z ↦ ∑ᵢ zⁱ ∂ᵢu`.
+  mathlib has `hasStrictFDerivAt_uncurry_coprod` for a product of two normed spaces and nothing for a
+  domain `Fin k → ℝ`; the proof here is an induction on the number of coordinates, splitting the
+  first one off with `Fin.cons` and joining the two blocks with the two-factor theorem;
+- `IsC1OnMulti`, **`hasFDerivAt_uncurryMulti`** — the same for the domain `(ℝ × ℝ) × (Fin k → ℝ)` of
+  two null coordinates and `k` transverse ones, by grouping the null plane and using the bivariate
+  statement there;
+- `transIdx`, `nullMultiCLM`, `nullMultiLift`, **`coordPartial_nullMultiLift_zero/one/trans/other`**
+  — the chart derivatives of a field of the two null coordinates and `k` transverse ones;
+- **`sum_over_nullMultiIdx`**, **`dalembert_nullMultiLift`** — and its d'Alembertian in dimension
+  `k + n + 2` is `-2(∂η∂ξ + ∂ξ∂η)u + ∑ᵢ ∂ᵢ²u`: the two null directions cancel as on a slab, each
+  transverse direction contributes its own second derivative, the remaining `n` contribute nothing;
+- **`solvesPotentialWaveAt_nullMultiLift`**, **`solvesPotentialWaveOn_nullMultiLift`** — so a field
+  solving the characteristic equation `∂ξ∂η u = (∑ᵢ ∂ᵢ²u + V u)/4` **is** a clock probe for a
+  potential depending on the two null coordinates and on all `k` transverse ones;
+- `TubeDatum`, `realTube`, and the continuity of every kernel of the construction along real
+  transverse points (`continuous_stepReal`, `continuous_dStepReal`, `continuous_d2StepReal`,
+  `continuous_solReal`, `continuous_dSolReal`, `continuous_d2SolReal`, `continuous_stepFstReal`,
+  `continuous_stepSndReal`) — the real points lie in the interior of every tube, so the transverse
+  variables are never clamped and the kernels are global objects.
+
+The probe data is then assembled exactly as in one variable, with the real part taken at real
+transverse points (`probeMultiU`, `probeMultiA`, `probeMultiB`, `probeMultiC i`, and the second
+derivatives `probeMultiAa`, `probeMultiAb`, `probeMultiAc i`, `probeMultiBb`, `probeMultiBc i`,
+`probeMultiCc i j`), together with the two derivatives the several-variable case needs and the
+one-variable case did not: the transverse derivative of the *outer* integral
+(`hasDerivAt_clampedTubeOuter_transverse`) and the mixed transverse–transverse derivative
+`∂_j ∂_i u` along two *different* coordinates (`sliceHolo_cpartial_clampedTubeSolution`,
+`continuousAt_cpartial_cpartial_mixed`). The four records
+
+**`isC1OnMulti_probeMultiU`**, **`isC1OnMulti_probeMultiA`**, **`isC1OnMulti_probeMultiB`**,
+**`isC1OnMulti_probeMultiC i`**
+
+are what the chart consumes, and with them:
+
+- **`probeMulti_characteristic`** — the characteristic identity in real form, with the full
+  transverse Laplacian: `2∂ξ∂η u = (∑ᵢ ∂ᵢ²u + V u)/2`;
+- **`TubeDatum.exists_clockProbe_nullMulti`** — **clock probes for potentials coupling several
+  transverse coordinates.** On Minkowski space of dimension `k + n + 2`, a potential depending on the
+  two null coordinates continuously differentiably and on `k` transverse coordinates analytically —
+  a genuinely coupled dependence in all of them, not a slab, not a separable product, and not a
+  single transverse direction — admits a clock probe on an open neighbourhood of the event,
+  normalised to `1` there and nonvanishing on that neighbourhood.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`. This closes the open item recorded above: the
+construction is no longer restricted to one transverse combination.
+
+The rest of the programme then runs exactly as in one variable:
+
+- `translateTubePotential`, **`IsC1OnMulti.translate`**, **`TubeDatum.translate`**,
+  **`TubeDatum.exists_clockProbe_nullMulti_at`** — probes at *every* event, by translating functions
+  rather than spacetime (so the translation invariance of the chart d'Alembertian is never needed);
+- **`TubeDatum.openProbes_nullMulti`**, **`TubeDatum.nullMultiPotential_eq_of_openProbes`** — such a
+  potential has probes on open regions at every event, hence is determined by its probes;
+- **`gradPair_nullMultiLift`** — the carré du champ of such a scale is
+  `−4 ∂ξσ ∂ησ + ∑ᵢ (∂ᵢσ)²`: the two null directions pair with each other, each transverse one with
+  itself;
+- `conformalPotentialMulti`, **`conformalPotential_nullMultiLift`** — so the effective potential of
+  such a scale is again a function of the same coordinates, explicit in the scale's derivatives;
+- **`TubeDatum.twoSpecies_scale_reconstruction_nullMulti`** and
+  **`TubeDatum.twoSpecies_scale_reconstruction_of_scale_multi`** — and the two-species scale law
+  holds in every dimension at least `k + 2`, both with the hypothesis on the effective potential and
+  with it moved to the scale function itself: two species of the same conjugation weight and
+  different calibrated masses return `(other₁ − other₂)/massSq = e^{2σ}`.
+
+All unconditional, axioms `[propext, Classical.choice, Quot.sound]`.
+
+Finally, the several-variable class is shown to be **inhabited**, so none of the above is vacuous:
+
+- **`exists_tubeDatum_coupled k`** — the potential `V(ξ,η,z) = sin ξ · cos η · cos(z¹ + ⋯ + zᵏ)`
+  carries a clock datum on a tube for every `k`: slice holomorphic, bounded by `cosh(kρ)`, `C¹` in
+  the null coordinates, real at real transverse points, and depending on *every one* of the
+  transverse coordinates as well as on both null ones. A cosine of a sum is a sum of products, so the
+  transverse dependence is genuinely coupled, not a sum or a product of one-variable profiles;
+- `BoundedC1TubePotential` with its closure algebra (`add`, `sub`, `mul`, `const`, `mono`,
+  `congr_deriv`, **`ofSum`**, **`cexp_two`**) and `RealOnAxisTube` — so a concrete potential is
+  certified by composing closure lemmas rather than by re-proving the conditions;
+- `coupledScaleMulti`, **`isC1OnMulti_coupledScaleMulti`**, **`isC1OnMulti_coupledScaleMultiD`**,
+  **`conformalPotentialMulti_coupledScaleMulti`**,
+  **`twoSpecies_scale_reconstruction_coupledScaleMulti`** — and for the explicit scale
+  `σ(ξ,η,y) = ε sin(ξ + η + y¹ + ⋯ + yᵏ)` the two-species law holds with **no hypothesis left on the
+  potential**: its admissibility is proved, not assumed. Two species of the same conjugation weight
+  and different calibrated masses return `(other₁ − other₂)/massSq = e^{2σ}` in every dimension at
+  least `k + 2`.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+### The physical dimension
+
+The physical case is `k = 2` transverse coordinates and no spectator directions: Minkowski space of
+dimension `2 + 0 + 2 = 4`. `ClockFourDimensionalScaleLaw.lean` states it, with no casts needed —
+`Fin (2 + 0 + 2)` *is* `Fin 4` and `slabEps (2 + 0)` *is* the four-dimensional signature:
+
+- **`TubeDatum.exists_clockProbe_fourDim`** — clock probes at every event of four-dimensional
+  spacetime, for a potential coupling the two null coordinates and **both** transverse ones;
+- **`TubeDatum.twoSpecies_scale_reconstruction_fourDim`** — the two-species scale law in four
+  dimensions;
+- **`twoSpecies_scale_reconstruction_coupledScale_fourDim`** — the same for the explicit scale
+  `σ(ξ,η,y) = ε sin(ξ + η + y¹ + y²)`, with no hypothesis left on the potential;
+- **`exists_tubeDatum_coupled_fourDim`** — and the four-dimensional class is inhabited.
+
+So the construction reaches the physical dimension with the transverse dependence fully coupled. The
+hypothesis that remains is analyticity in the transverse directions, and it is not a technical
+artifact of the proof: the characteristic (Goursat) problem for `∂ξ∂η u = (∑ᵢ ∂ᵢ²u + V u)/4` is
+elliptic in the transverse directions, so for merely smooth `V` it is ill-posed in Hadamard's sense.
+Smooth transverse dependence has to be reached by the *Cauchy* problem on a spacelike hypersurface —
+hyperbolic energy theory, which mathlib does not have. That, and not the several-variable structure,
+is the open ground.
+
+That claim is now a theorem rather than a remark. `ClockCharacteristicIllPosed.lean` exhibits the
+Hadamard family for the characteristic operator itself:
+
+`u_{k,n}(ξ, η, z) = e^{-n/2} n^{-k} · exp(nξ/2 + nη/2 + nz)`,
+
+- **`hadamardWave_characteristic`** — each one solves `∂ξ∂η u = ∂_z²u/4` exactly, i.e. the clock
+  equation with vanishing potential;
+- `iteratedDeriv_hadamardWave_trans`, **`abs_iteratedDeriv_hadamardWave_le`** — on the two
+  characteristic faces of the unit box every transverse derivative of order `j` is bounded by
+  `n^{j-k}`;
+- `hadamardWave_corner`, **`tendsto_hadamardWave_corner`** — while the value at the far corner is
+  `e^{n/2} n^{-k}`, which grows without bound for every fixed `k`;
+- **`exists_characteristic_illPosed`** — hence for every order `m`, every tolerance `ε > 0` and every
+  target `C` there is an exact solution whose characteristic data is below `ε` together with all
+  transverse derivatives up to order `m`, and which exceeds `C` at the corner.
+
+So no estimate bounding the solution by finitely many transverse derivatives of its characteristic
+data can hold, and analyticity in the transverse directions is *necessary* for this route, not merely
+convenient. Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+One hypothesis has been localised. `ClockDatum.mass` now asks for the bound only on the rectangle,
+`|s|, |t| ≤ T`, which is all the construction ever uses — the iterates integrate over
+`[0,ξ] × [0,η]`, and every appeal to the bound is at a point of that rectangle. The single-event
+probe therefore needs no control of the potential away from the event. What does not localise is the
+step from one event to all of them: `ClockDatum.translate` needs the bound on the *translated*
+rectangle, so `openProbes_nullTransverse` and the two theorems that rest on it carry the uniform
+bound `‖V s t z‖ ≤ Mv` explicitly. That is intrinsic to the method — a single constant has to serve
+every event — and it is honest to see it in the statement rather than hidden in the datum. What
+the class still asks for, and what the next generalisation has to remove, is that the potential be
+bounded over *all* null coordinates and the whole strip; the construction itself only ever uses it on
+the rectangle.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and
@@ -1642,7 +2245,14 @@ Missing:
    determined; what is still absent is local solvability of `□u + Vu = 0` for the remaining
    potentials, which is a hyperbolic Cauchy problem.
    **In dimension two this is now proved outright**, for every `C¹` potential, by
-   `exists_clockProbe_two_dimensional`; what is left is dimension `≥ 3`.
+   `exists_clockProbe_two_dimensional`. **In every dimension `≥ 3` it is proved, at every event, for
+   potentials with coupled transverse dependence in one transverse coordinate**, by
+   `ClockDatum.exists_clockProbe_nullTransverse_at`: continuously differentiable in the two null
+   coordinates, holomorphic and bounded on a strip about the real transverse axis, and real there.
+   **All the transverse coordinates are reached, coupled along an arbitrary unit direction**, by
+   `ClockDatum.exists_clockProbe_unitTransverse_at`: the potential may depend on any single linear
+   combination `∑ᵢ cᵢ xⁱ` of them. What is left is transverse dependence which is merely smooth
+   rather than analytic, and dependence on two or more independent transverse combinations.
 
 ## Exact boundary of the reconstruction
 
@@ -1700,3 +2310,38 @@ All depend only on `propext`, `Classical.choice`, `Quot.sound`.
 Targeted searches found no prior result stating the two-mass cancellation `(7)` as a Lorentzian
 inverse-gravity scale reconstruction theorem. This is a priority claim, not an exhaustive
 bibliographic guarantee.
+
+## Status update: the massive probe family is constructed (every smooth conformal factor)
+
+The open core recorded above — "a probe family for a single massive species", equivalently a local
+existence theorem for the physical massive Klein–Gordon field — is **closed**, for an arbitrary
+smooth conformal factor and in any dimension:
+
+`GaloisForLFunctions.HTGeometry.twoSpecies_scale_reconstruction_static` derives the scale law with
+the massive family *constructed*, from
+`GaloisForLFunctions.HTGeometry.openProbes_conformalPotential_static`, whose probes come from the
+hyperbolic construction of the child card `hyperbolic-clock-probe-smooth-potential`:
+
+- the evolution is solved on the frequency side in a weighted Wiener algebra (Peetre + Volterra,
+  no smallness, global in time);
+- the synthesis is differentiated twice in time and twice in space under the integral;
+- the field solves `□u + (V-1)u = 0` classically at every event and is nonvanishing near a
+  prescribed one;
+- probes at every event follow by translation invariance of the coordinate calculus, and every
+  smooth static potential is covered by cutting off near the event.
+
+`GaloisForLFunctions.HTGeometry.twoSpecies_scale_reconstruction` is the same statement with no
+time-independence hypothesis:
+
+```
+(other₁ x - other₂ x) / massSq = Real.exp (2 * σ (x 0, kgSpatial d x))     (σ smooth, arbitrary)
+```
+
+Its probes come from `GaloisForLFunctions.HTGeometry.openProbes_of_smooth_spacetime`, which covers
+every smooth potential on spacetime: the potential is cut off in space *and* time around the event,
+and the resulting curve of Schwartz potentials satisfies the uniform and Lipschitz bounds the family
+constructor asks for because it is a continuous function of the event supported in a compact set —
+the bound by continuity on a compact support, the Lipschitz estimate by the mean value inequality
+applied to the partial derivative in time.
+
+Axioms of all the above: `[propext, Classical.choice, Quot.sound]`.

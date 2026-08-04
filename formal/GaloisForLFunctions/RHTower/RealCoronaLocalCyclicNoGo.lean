@@ -87,6 +87,42 @@ theorem PositiveLocalJetFormula.value_eq_zero_of_commutes
   rw [linearPMapSmoothElementOfCommutes_localJetWord_eq_zero
     D a haDomain haCommutes haBounded (F.positive j), map_zero, mul_zero]
 
+/-- Arbitrary (possibly infinite) positive local expansion.  The value is a `tsum`, covering JLO
+and residue expansions after their analytic summability has been established; termwise vanishing
+below is stronger and does not require convergence as an extra hypothesis. -/
+structure PositiveLocalJetSeriesFormula
+    {D : V →ₗ.[ℂ] V} (S : LinearPMapSmoothElement D) where
+  term : Type
+  coefficient : term → ℂ
+  word : term → List ℕ
+  positive : ∀ j, IsPositiveLocalJetWord (word j)
+  functional : (Module.End ℂ V) →+ ℂ
+
+def PositiveLocalJetSeriesFormula.value
+    {D : V →ₗ.[ℂ] V} {S : LinearPMapSmoothElement D}
+    (F : PositiveLocalJetSeriesFormula S) : ℂ :=
+  ∑' j, F.coefficient j * F.functional (S.localJetWord (F.word j))
+
+/-- Every infinite positive local expansion vanishes termwise for an exactly commuting smooth
+element.  This includes every convergent JLO or residue series whose nonconstant terms are built
+from positive commutator jets. -/
+theorem PositiveLocalJetSeriesFormula.value_eq_zero_of_commutes
+    (D : V →ₗ.[ℂ] V) (a : Module.End ℂ V)
+    (haDomain : ∀ x : D.domain, a x ∈ D.domain)
+    (haCommutes : ∀ x : D.domain, D ⟨a x, haDomain x⟩ = a (D x))
+    (haBounded : HasLinearOperatorBound a)
+    (F : PositiveLocalJetSeriesFormula
+      (linearPMapSmoothElementOfCommutes D a haDomain haCommutes haBounded)) :
+    F.value = 0 := by
+  rw [PositiveLocalJetSeriesFormula.value]
+  have hzero (j : F.term) :
+      F.coefficient j * F.functional
+        ((linearPMapSmoothElementOfCommutes D a haDomain haCommutes haBounded).localJetWord
+          (F.word j)) = 0 := by
+    rw [linearPMapSmoothElementOfCommutes_localJetWord_eq_zero
+      D a haDomain haCommutes haBounded (F.positive j), map_zero, mul_zero]
+  simp only [hzero, tsum_zero]
+
 end GaloisForLFunctions.RHTower
 
 namespace RHTower
@@ -187,6 +223,42 @@ theorem CompleteDivisorLocalFormula.value_eq_zero
 plus finite positive local commutator formula can reproduce graded cyclic charge `2`. -/
 theorem not_exists_completeDivisorLocalFormula_value_two :
     ¬∃ F : CompleteDivisorLocalFormula, F.value = 2 := by
+  rintro ⟨F, hF⟩
+  rw [F.value_eq_zero] at hF
+  norm_num at hF
+
+/-- Complete local JLO/residue expansions allow an arbitrary positive-jet series in addition to
+the reflection-compatible degree-zero spectral term. -/
+structure CompleteDivisorLocalSeriesFormula where
+  weight : XiZeroCopy → ℂ
+  weight_invariant : ∀ q, weight (xiZeroCopyReflectEquiv q) = weight q
+  oriented_summable :
+    Summable fun q => deningerArithmeticFEOrientation q * weight q
+  positive : PositiveLocalJetSeriesFormula xiCompleteDivisorSignedOrientationSmooth
+
+def CompleteDivisorLocalSeriesFormula.value
+    (F : CompleteDivisorLocalSeriesFormula) : ℂ :=
+  (∑' q, deningerArithmeticFEOrientation q * F.weight q) + F.positive.value
+
+/-- Every complete-divisor-compatible infinite local expansion vanishes. -/
+theorem CompleteDivisorLocalSeriesFormula.value_eq_zero
+    (F : CompleteDivisorLocalSeriesFormula) : F.value = 0 := by
+  have hpositive : F.positive.value = 0 :=
+    PositiveLocalJetSeriesFormula.value_eq_zero_of_commutes
+      xiCompleteDivisorSignedDirac xiCompleteDivisorOrientation
+      xiCompleteDivisorOrientation_mem_signedDomain
+      xiCompleteDivisorSignedDirac_orientation_commutes
+      xiCompleteDivisorOrientation_bounded F.positive
+  rw [CompleteDivisorLocalSeriesFormula.value,
+    tsum_xiCompleteDivisorOrientation_mul_eq_zero
+      F.weight F.oriented_summable F.weight_invariant,
+    hpositive]
+  exact zero_add 0
+
+/-- **Full P1 local-series no-go.**  No reflection-compatible degree-zero term plus arbitrary
+positive commutator-jet series can reproduce the nonzero graded cyclic charge `2`. -/
+theorem not_exists_completeDivisorLocalSeriesFormula_value_two :
+    ¬∃ F : CompleteDivisorLocalSeriesFormula, F.value = 2 := by
   rintro ⟨F, hF⟩
   rw [F.value_eq_zero] at hF
   norm_num at hF

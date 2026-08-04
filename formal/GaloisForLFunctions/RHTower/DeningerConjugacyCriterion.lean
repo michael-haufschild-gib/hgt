@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerConjWordForm
+import GaloisForLFunctions.RHTower.DeningerPrefixCompose
 
 /-!
 # The conjugacy criterion
@@ -31,11 +32,13 @@ theorem deningerConj_cycRed_rotate (A U : List (Σ i, G i))
     (hcyc : ∀ p ∈ U.getLast?, ∀ q ∈ U.head?, p.1 ≠ q.1)
     (hshort : deningerLen d (deningerLetterProd (φ := φ) A * deningerLetterProd (φ := φ) U *
       (deningerLetterProd (φ := φ) A)⁻¹) ≤ U.length) :
-    ∃ (t : ℕ) (m : H), t ≤ U.length ∧
+    ∃ (t : ℕ) (m : H) (j : ℤ), t ≤ U.length ∧
       deningerLetterProd (φ := φ) A * deningerLetterProd (φ := φ) U *
           (deningerLetterProd (φ := φ) A)⁻¹ =
         PushoutI.base φ m * deningerLetterProd (φ := φ) (U.rotate t) *
-          (PushoutI.base φ m)⁻¹ := by
+          (PushoutI.base φ m)⁻¹ ∧
+      deningerLetterProd (φ := φ) (U.take t) * (PushoutI.base φ m)⁻¹ *
+          deningerLetterProd (φ := φ) A = deningerLetterProd (φ := φ) U ^ j := by
   classical
   suffices Hn : ∀ n : ℕ, ∀ A U : List (Σ i, G i), A.length ≤ n →
       (∀ p ∈ A, p.2 ∉ (φ p.1).range) →
@@ -46,11 +49,13 @@ theorem deningerConj_cycRed_rotate (A U : List (Σ i, G i))
       (∀ p ∈ U.getLast?, ∀ q ∈ U.head?, p.1 ≠ q.1) →
       deningerLen d (deningerLetterProd (φ := φ) A * deningerLetterProd (φ := φ) U *
         (deningerLetterProd (φ := φ) A)⁻¹) ≤ U.length →
-      ∃ (t : ℕ) (m : H), t ≤ U.length ∧
+      ∃ (t : ℕ) (m : H) (j : ℤ), t ≤ U.length ∧
         deningerLetterProd (φ := φ) A * deningerLetterProd (φ := φ) U *
             (deningerLetterProd (φ := φ) A)⁻¹ =
           PushoutI.base φ m * deningerLetterProd (φ := φ) (U.rotate t) *
-            (PushoutI.base φ m)⁻¹ from
+            (PushoutI.base φ m)⁻¹ ∧
+        deningerLetterProd (φ := φ) (U.take t) * (PushoutI.base φ m)⁻¹ *
+            deningerLetterProd (φ := φ) A = deningerLetterProd (φ := φ) U ^ j from
     Hn A.length A U le_rfl hAred hAalt hlen2 hred halt hcyc hshort
   clear hshort hcyc halt hred hlen2 hAalt hAred A U
   intro n
@@ -59,11 +64,11 @@ theorem deningerConj_cycRed_rotate (A U : List (Σ i, G i))
     intro A U hn _ _ hlen2 _ _ _ _
     have hA : A = [] := List.length_eq_zero_iff.1 (by omega)
     subst hA
-    exact ⟨0, 1, by omega, by simp⟩
+    exact ⟨0, 1, 0, by omega, by simp, by simp⟩
   | succ n ih =>
     intro A U hn hAred hAalt hlen2 hred halt hcyc hshort
     rcases eq_or_ne A [] with rfl | hAne
-    · exact ⟨0, 1, by omega, by simp⟩
+    · exact ⟨0, 1, 0, by omega, by simp, by simp⟩
     obtain ⟨A', a, hA⟩ : ∃ A' a, A = A' ++ [a] := by
       obtain ⟨w, hw⟩ : ∃ w, A.getLast? = some w := by
         cases hAg : A.getLast? with
@@ -83,13 +88,16 @@ theorem deningerConj_cycRed_rotate (A U : List (Σ i, G i))
       rw [hA, deningerLetterProd_snoc, mul_inv_rev]
       group
     rcases deningerConj_letter_word (φ := φ) U hlen2 hred halt hcyc a.1 a.2 hared with
-      ⟨t₀, m₀, ht₀, hrot⟩ | ⟨W, hWeq, hWred, hWalt, hWlen, hWhead, hWlast⟩
+      ⟨t₀, m₀, e₀, ht₀, hrot, htrack⟩ | ⟨W, hWeq, hWred, hWalt, hWlen, hWhead, hWlast⟩
     · have hrotcyc := deningerRotate_cycRed (φ := φ) U hred halt hcyc t₀ ht₀
       have hrotlen : (U.rotate t₀).length = U.length := List.length_rotate _ _
       rcases eq_or_ne A' [] with hA'nil | hA'ne
-      · refine ⟨t₀, m₀, ht₀, ?_⟩
-        rw [hsplit, hrot, hA'nil]
-        simp
+      · refine ⟨t₀, m₀, e₀, ht₀, ?_, ?_⟩
+        · rw [hsplit, hrot, hA'nil]
+          simp
+        · rw [hA, hA'nil, List.nil_append, deningerLetterProd_cons, deningerLetterProd_nil,
+            mul_one]
+          exact htrack
       · obtain ⟨A'', b, hA'⟩ : ∃ A'' b, A' = A'' ++ [b] := by
           obtain ⟨w, hw⟩ : ∃ w, A'.getLast? = some w := by
             cases hA'g : A'.getLast? with
@@ -118,10 +126,54 @@ theorem deningerConj_cycRed_rotate (A U : List (Σ i, G i))
               (deningerLetterProd (φ := φ) B)⁻¹ := by
           rw [hsplit, hrot, hBprod, mul_inv_rev]
           group
-        obtain ⟨t₁, m₁, ht₁, heq⟩ := ih B (U.rotate t₀) hBlen hBred hBalt (by omega)
+        obtain ⟨t₁, m₁, j₁, ht₁, heq, htr₁⟩ := ih B (U.rotate t₀) hBlen hBred hBalt (by omega)
           hrotcyc.1 hrotcyc.2.1 hrotcyc.2.2 (by rw [← hconj, hrotlen]; exact hshort)
-        refine ⟨(t₀ + t₁) % U.length, m₁, le_of_lt (Nat.mod_lt _ (by omega)), ?_⟩
-        rw [hconj, heq, List.rotate_rotate, List.rotate_mod]
+        obtain ⟨δ, hδ⟩ := deningerPrefix_compose (φ := φ) U t₀ t₁ ht₀
+          (by rw [hrotlen] at ht₁; exact ht₁)
+        refine ⟨(t₀ + t₁) % U.length, m₁, -(δ : ℤ) + (j₁ + e₀),
+          le_of_lt (Nat.mod_lt _ (by omega)), ?_, ?_⟩
+        · rw [hconj, heq, List.rotate_rotate, List.rotate_mod]
+        · have hconjz : (deningerLetterProd (φ := φ) (U.rotate t₀)) ^ j₁ =
+              (deningerLetterProd (φ := φ) (U.take t₀))⁻¹ * (deningerLetterProd (φ := φ) U) ^ j₁ *
+                deningerLetterProd (φ := φ) (U.take t₀) := by
+            have h := conj_zpow (i := j₁) (a := (deningerLetterProd (φ := φ) (U.take t₀))⁻¹)
+              (b := deningerLetterProd (φ := φ) U)
+            rw [inv_inv] at h
+            rw [deningerLetterProd_rotate U t₀ ht₀, h]
+          rw [hBprod] at htr₁
+          have htr₁' : deningerLetterProd (φ := φ) ((U.rotate t₀).take t₁) *
+              (PushoutI.base φ m₁)⁻¹ * deningerLetterProd (φ := φ) A' =
+              (deningerLetterProd (φ := φ) (U.rotate t₀)) ^ j₁ * (PushoutI.base φ m₀)⁻¹ := by
+            rw [← htr₁]
+            group
+          have main : (deningerLetterProd (φ := φ) U) ^ (δ : ℤ) *
+              (deningerLetterProd (φ := φ) (U.take ((t₀ + t₁) % U.length)) *
+                (PushoutI.base φ m₁)⁻¹ * deningerLetterProd (φ := φ) A) =
+              deningerLetterProd (φ := φ) U ^ (j₁ + e₀) := by
+            rw [zpow_natCast, ← mul_assoc, ← mul_assoc, ← hδ, hA, deningerLetterProd_snoc]
+            calc deningerLetterProd (φ := φ) (U.take t₀) *
+                  deningerLetterProd (φ := φ) ((U.rotate t₀).take t₁) *
+                  (PushoutI.base φ m₁)⁻¹ *
+                  (deningerLetterProd (φ := φ) A' * PushoutI.of (φ := φ) a.1 a.2)
+                = deningerLetterProd (φ := φ) (U.take t₀) *
+                    (deningerLetterProd (φ := φ) ((U.rotate t₀).take t₁) *
+                      (PushoutI.base φ m₁)⁻¹ * deningerLetterProd (φ := φ) A') *
+                    PushoutI.of (φ := φ) a.1 a.2 := by group
+              _ = deningerLetterProd (φ := φ) (U.take t₀) *
+                    ((deningerLetterProd (φ := φ) (U.rotate t₀)) ^ j₁ *
+                      (PushoutI.base φ m₀)⁻¹) * PushoutI.of (φ := φ) a.1 a.2 := by rw [htr₁']
+              _ = deningerLetterProd (φ := φ) (U.take t₀) *
+                    ((deningerLetterProd (φ := φ) (U.take t₀))⁻¹ *
+                      (deningerLetterProd (φ := φ) U) ^ j₁ *
+                      deningerLetterProd (φ := φ) (U.take t₀) *
+                      (PushoutI.base φ m₀)⁻¹) * PushoutI.of (φ := φ) a.1 a.2 := by rw [hconjz]
+              _ = (deningerLetterProd (φ := φ) U) ^ j₁ *
+                    (deningerLetterProd (φ := φ) (U.take t₀) * (PushoutI.base φ m₀)⁻¹ *
+                      PushoutI.of (φ := φ) a.1 a.2) := by group
+              _ = (deningerLetterProd (φ := φ) U) ^ j₁ *
+                    (deningerLetterProd (φ := φ) U) ^ e₀ := by rw [htrack]
+              _ = deningerLetterProd (φ := φ) U ^ (j₁ + e₀) := (zpow_add _ _ _).symm
+          rw [eq_inv_mul_of_mul_eq main, ← zpow_neg, ← zpow_add]
     · exfalso
       have hWne : W ≠ [] := by
         intro hc

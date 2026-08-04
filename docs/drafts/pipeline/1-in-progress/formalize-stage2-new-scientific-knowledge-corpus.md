@@ -339,14 +339,24 @@ DAGs without repeating the audits.
 - [ ] `hedenmalm-pair-weil-polarization-law` — theorem/corollary surface inventory pending
 - [ ] `helson-universal-ht-arbitrary-divisor-orthogonality` — theorem/corollary surface inventory pending
 - [ ] `herglotz-full-translation-ht-krein-index-orthogonality` — theorem/corollary surface inventory pending
-- [ ] `ht-period-rank-one-scalar-stanley-reisner-principalization` — theorem/corollary surface inventory pending
+- [x] `ht-period-rank-one-scalar-stanley-reisner-principalization` — verified Lean-complete: all 16
+  named capstones resolve and are axiom-clean; the only unresolved identifiers on the card are
+  mathlib names, module names, or exports the card itself records as superseded; card moved to
+  `3-formalized/new_scientific_knowledge/ht/`
 - [ ] `ht-tail-no-hair-and-embedded-reconstruction-boundary` — theorem/corollary surface inventory pending
 - [x] `hypertranscendental-clock-incompressibility` — formalized in full (Theorems A and B, the
   right inverse, both chain-rule identities, the dynamical corollary and the conductor length);
   card moved to `3-formalized/new_scientific_knowledge/ht/`
-- [ ] `hypertranscendental-hochster-source-coherence-duality` — theorem/corollary surface inventory pending
+- [x] `hypertranscendental-hochster-source-coherence-duality` — formalized in full; the last open
+  target, the general finite-complex strand equivalence, is now an isomorphism of modules
+  (`hochsterCohomologyEquiv`, `finrank_srStrandTor`) for every finite complex, every multidegree and
+  every degree, over an arbitrary commutative ring; card moved to
+  `3-formalized/new_scientific_knowledge/ht/`
 - [ ] `hypertranscendental-pair-localization-noncompression` — theorem/corollary surface inventory pending
-- [ ] `infinite-bohr-ht-boundary-maximal-ht-outer-orbit` — theorem/corollary surface inventory pending
+- [x] `infinite-bohr-ht-boundary-maximal-ht-outer-orbit` — formalized in full (all five numbered
+  claims at every power, plus the residual transversality and the Haar limiting law); Ostrowski's
+  hypertranscendence theorem is now proved in the corpus rather than imported, and an explicit
+  log-prime carrier inhabits its hypotheses; card moved to `3-formalized/new_scientific_knowledge/ht/`
 - [ ] `irrational-elliptic-gamma-hypertranscendence-matroid` — theorem/corollary surface inventory pending
 - [ ] `irrational-elliptic-gamma-pointed-bi-anomaly-fracture` — theorem/corollary surface inventory pending
 - [ ] `irrational-triptic-source-effectivity-character` — theorem/corollary surface inventory pending

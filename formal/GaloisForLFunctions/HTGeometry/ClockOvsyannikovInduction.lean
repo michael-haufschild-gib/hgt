@@ -93,4 +93,18 @@ theorem summable_ovsyannikov_bound {K G T : ℝ} (hK : 0 ≤ K) (hG : 0 < G) (hT
   refine hgeo.of_nonneg_of_le (fun m => ?_) (fun m => ovsyannikov_bound_le hK hG m)
   positivity
 
+/-- **Halving the gap in the smallness condition.** The condition at the half gap is four times as
+strong as the condition at the full gap. -/
+theorem ovsyannikov_smallness_of_half_const {K G T : ℝ} (hK : 0 ≤ K) (hG : 0 < G)
+    (hsmall : K * T ^ 2 * Real.exp 2 / (G / 2) ^ 2 < 1) :
+    K * T ^ 2 * Real.exp 2 / G ^ 2 < 1 := by
+  have hne : G ≠ 0 := ne_of_gt hG
+  have key : K * T ^ 2 * Real.exp 2 / (G / 2) ^ 2
+      = 4 * (K * T ^ 2 * Real.exp 2 / G ^ 2) := by
+    field_simp
+    ring
+  rw [key] at hsmall
+  have hnn : (0 : ℝ) ≤ K * T ^ 2 * Real.exp 2 / G ^ 2 := by positivity
+  linarith
+
 end GaloisForLFunctions.HTGeometry

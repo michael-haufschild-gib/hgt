@@ -160,16 +160,87 @@ general `L2` Muntz frameworks. This is a useful route reconciliation, not new sc
   arXiv:math/0505453.
 - J.-F. Burnol, *On Fourier and zeta(s)*, Forum Math. 16 (2004), 789--840.
 
-## Lean decision
+## Lean status
 
-The formal tree has no Mellin--Plancherel interface for the CCM summation map, no analytic
-continuation of the zeta multiplier identity, and no closed Weil sampling domain. Formalizing only
-the Riemann-sum inequality would certify a wrapper rather than the route statement. No Lean file is
-added.
+**Superseded, 2026-08-04.**  Formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMBVMuntzSummation.lean`.  The previous decision said the tree has
+no Mellin--Plancherel interface, so only the Riemann-sum inequality could be certified and that would
+be "a wrapper".  That undersells the estimate: `(7)` is the only place the bounded-variation hypothesis
+does any work, and it is what makes the endpoint jump harmless — which is the whole point of the card.
+
+Proved so far, all unconditional (`#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`):
+
+- **`abs_cell_discrepancy_le`** — the one-cell estimate: the right-endpoint Riemann value differs from
+  the cell mean by at most the length times the variation on that cell.  Uses mathlib's
+  `eVariationOn` and `BoundedVariationOn.dist_le`.
+- **`sum_variation_cells_le`** — the variations over a uniform partition add up to at most the total
+  variation, from mathlib's `eVariationOn.sum'`.
+- **`abs_sum_riemann_sub_integral_le`** — the discrepancy bound in the form that carries no hypothesis
+  on the support or the integral:
+
+  ```text
+  | u sum_(n<=N) f(nu) - int_0^(Nu) f | <= u Var(f).
+  ```
+
+  Isolating it this way is what makes the support and zero-integral hypotheses of the card enter only
+  once, at the very end.
+- `integral_trunc_eq_zero` — for a source supported in `(0, L]` with vanishing integral, the truncated
+  integral past `L` still vanishes.
+- **`abs_sum_le_variation`** — equation `(7)`: `|∑_{n ≥ 1} f(nu)| ≤ Var(f)`, uniformly in the sampling
+  scale.
+- `summationVector`, `summationVector_eq_finset`, `summable_summand` — equation `(2)`.  The vector is
+  defined by an unconditional `tsum`; for every scale only finitely many terms are nonzero, so the
+  `tsum` equals the truncated finite sum, and no summability hypothesis is needed anywhere.
+- **`summationVector_eq_zero_of_lt`**, `summationVector_eq_zero_of_nonpos` — the support statement of
+  `(3)`: `E(f)` vanishes past `L`, and on the nonpositive half-line.
+- **`abs_summationVector_le`** — the pointwise bound of `(3)`: `|E(f)(u)| ≤ Var(f) √u`.
+- **`measurable_summationVector`** — measurability of `E(f)`, obtained from the partial sums: for every
+  scale the summand family is finitely supported, hence summable, hence the `tsum` is the pointwise
+  limit of measurable partial sums.
+- **`integral_sq_summationVector_le`**, **`integral_Ioi_sq_summationVector_le`** — the `L²(d*u)` bound
+  of `(3)`, truncated and on the whole half-line: `∫_0^∞ |E(f)(u)|² d*u ≤ Var(f)² L`.  The
+  multiplicative measure makes the pointwise bound `|E(f)(u)|² ≤ Var(f)² u` integrate to a constant, so
+  the estimate needs no Minkowski inequality.
+- `arithmeticSum`, `measurable_arithmeticSum`, `arithmeticSum_eq_zero_of_lt`,
+  **`abs_arithmeticSum_le`** — the unnormalized vector `∑_{n ≥ 1} f(nu)`, bounded by `Var(f)` by `(7)`
+  and vanishing past `L`.  These are exactly the hypotheses the Mellin differentiability criterion
+  consumes.
+- `integrableOn_rpow_mul_abs`, `mellinConvergent_source`, `integral_rpow_mul_abs_comp_mul`,
+  **`mellin_arithmeticSum_eq_zeta_mul`** — equations `(4)`, `(8)`: the Müntz identity on the half-plane
+  of absolute convergence `1 < Re s`, which in the card's variable is `Im z > 1/2`.  The interchange is
+  `hasSum_integral_of_summable_integral_norm`; the substitution `x = nu` is mathlib's
+  `mellin_comp_mul_left`, and the dilation law for the *norm* integrals is proved separately from
+  `integral_comp_mul_left_Ioi`.
+- `locallyIntegrable_ofReal_of_bound`, `isBigO_atTop_of_support`, `isBigO_zero_of_bound`,
+  **`differentiableAt_mellin_of_bound_support`** — both Mellin transforms are holomorphic on the whole
+  right half-plane.  A bounded compactly supported source is `O(t^{-a})` at infinity for every `a`
+  (it is eventually zero) and `O(1)` at the origin, so the criterion applies with `b = 0`, and
+  `0 < Re s` is the only constraint.
+- **`eqOn_mellin_arithmeticSum_zeta`** — equation `(5)`, the continuation.  Stated for an arbitrary open
+  convex region of the right half-plane that avoids `s = 1` and meets `Re s > 1`.  The card removes the
+  apparent pole at `z = i/2` using `Ψ_f(i/2) = 0`; that is not needed, because a convex region avoiding
+  the pole altogether already reaches every point of the critical strip once one uses that a zeta zero
+  in the strip is off the real axis.
+- **`mellin_arithmeticSum_eq_zero_of_zeta_eq_zero`** — equation `(6)`: the Mellin transform of the
+  summation vector vanishes at every zeta zero of the open critical strip, including any hypothetical
+  off-line zero.  The two quadrants `{Re s > 0, Im s > 0}` and `{Re s > 0, Im s < 0}` are convex and
+  avoid `s = 1`, and every strip zero lies in one of them because zeta has no real zero in `(0,1)` —
+  the corpus theorem `RHTower.riemannZeta_ne_zero_of_ofReal_mem_Ioo`.
+
+Nothing the card proves is left unformalized.  The remaining gates below are its own open research
+items.
 
 ## Gates
 
 - [x] exact bounded-variation Riemann-sum discrepancy proved
+- [x] Lean: one-cell and partition variation estimates unconditional
+- [x] Lean: Riemann-sum discrepancy `(7)` unconditional
+- [x] Lean: summation vector `(2)`, its support and pointwise bound `(3)` unconditional
+- [x] Lean: measurability and the `L²(d*u)` bound of `(3)` unconditional
+- [x] Lean: Muntz zeta-multiplier identity `(4)`--`(5)` unconditional, in the convergence region and by
+      convex continuation
+- [x] Lean: vanishing at every nontrivial zeta zero `(6)` unconditional
 - [x] global `L2(d*u)` membership of the zero-extended prolate summation vector proved
 - [x] maximal zeta-multiplier graph-domain membership proved
 - [x] vanishing at every nontrivial zeta zero proved

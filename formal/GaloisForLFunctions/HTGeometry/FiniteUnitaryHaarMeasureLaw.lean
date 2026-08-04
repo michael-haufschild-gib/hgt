@@ -1,4 +1,5 @@
 import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.MeasureTheory.Measure.Haar.Basic
 import Mathlib.MeasureTheory.Measure.Haar.Unique
 
@@ -100,6 +101,54 @@ theorem integral_finiteUnitaryHaar_mul_left
       ∫ U, f U ∂finiteUnitaryHaar ι := by
   unfold finiteUnitaryHaar
   exact integral_mul_left_eq_self f V
+
+/-- Right multiplication preserves normalized Haar measure on every finite
+unitary group. -/
+theorem map_finiteUnitaryHaar_mul_right
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (V : Matrix.unitaryGroup ι ℂ) :
+    Measure.map (fun U : Matrix.unitaryGroup ι ℂ => U * V)
+        (finiteUnitaryHaar ι) = finiteUnitaryHaar ι := by
+  letI : IsHaarMeasure (finiteUnitaryHaar ι) := by
+    unfold finiteUnitaryHaar
+    infer_instance
+  have hprob :
+      Measure.map (fun U : Matrix.unitaryGroup ι ℂ => U * V)
+          (finiteUnitaryHaar ι) Set.univ = 1 := by
+    rw [Measure.map_apply_of_aemeasurable
+      (measurable_mul_const V).aemeasurable MeasurableSet.univ]
+    exact finiteUnitaryHaar_apply_univ ι
+  have hscalar := isMulLeftInvariant_eq_smul_of_regular
+    (Measure.map (fun U : Matrix.unitaryGroup ι ℂ => U * V)
+      (finiteUnitaryHaar ι))
+    (finiteUnitaryHaar ι)
+  have hfactor :
+      haarScalarFactor
+          (Measure.map (fun U : Matrix.unitaryGroup ι ℂ => U * V)
+            (finiteUnitaryHaar ι))
+          (finiteUnitaryHaar ι) = 1 := by
+    have huniv := congrArg (fun μ : Measure (Matrix.unitaryGroup ι ℂ) =>
+      μ Set.univ) hscalar
+    rw [hprob, Measure.smul_apply, finiteUnitaryHaar_apply_univ] at huniv
+    simpa using huniv.symm
+  rw [hfactor] at hscalar
+  simpa using hscalar
+
+/-- Right multiplication preserves every normalized finite-unitary Haar
+integral. -/
+theorem integral_finiteUnitaryHaar_mul_right
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (f : Matrix.unitaryGroup ι ℂ → ℝ)
+    (V : Matrix.unitaryGroup ι ℂ) :
+    (∫ U, f (U * V) ∂finiteUnitaryHaar ι) =
+      ∫ U, f U ∂finiteUnitaryHaar ι := by
+  exact MeasurePreserving.integral_comp
+    (show MeasurePreserving
+      (fun U : Matrix.unitaryGroup ι ℂ => U * V)
+      (finiteUnitaryHaar ι) (finiteUnitaryHaar ι) from
+      ⟨measurable_mul_const V,
+        map_finiteUnitaryHaar_mul_right V⟩)
+    (MeasurableEquiv.mulRight V).measurableEmbedding f
 
 /-- Squared modulus of one entry of a finite unitary. -/
 def finiteUnitaryEntryWeight
@@ -1068,6 +1117,233 @@ theorem finiteUnitaryBalancedDiagonalProbeHaarSignal_eq
     (n + n) (finiteUnitaryBalancedDiagonalSign n) j
     (sum_finiteUnitaryBalancedDiagonalSign_eq_zero n)
     (finiteUnitaryBalancedDiagonalSign_sq n)
+
+/-- Haar mean-square signal of one matrix probe evaluated in a fixed
+coordinate of a Haar-random unitary image. -/
+def finiteUnitaryProbeCoordinateSignal
+    (d : ℕ)
+    (A : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)
+    (j : Fin 2 ⊕ Fin d) : ℝ :=
+  ∫ U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ,
+    (Complex.re
+      ((star (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
+        A * (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ 2
+    ∂finiteUnitaryHaar (Fin 2 ⊕ Fin d)
+
+/-- A real diagonal probe is the weighted sum of the squared coordinate
+moduli in one unitary column. -/
+theorem probeCoordinate_diagonal_eq
+    (d : ℕ) (s : (Fin 2 ⊕ Fin d) → ℝ)
+    (U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ)
+    (j : Fin 2 ⊕ Fin d) :
+    Complex.re
+      ((star (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
+        Matrix.diagonal (fun i => (s i : ℂ)) *
+        (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j) =
+      ∑ i, s i * finiteUnitaryEntryWeight U i j := by
+  have hcomplex :
+      (star (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
+        Matrix.diagonal (fun i => (s i : ℂ)) *
+        (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j =
+      ∑ i, (s i : ℂ) * (star (U i j) * U i j) := by
+    rw [Matrix.mul_apply]
+    apply Finset.sum_congr rfl
+    intro i _hi
+    rw [Matrix.mul_apply, Finset.sum_eq_single i]
+    · simp only [Matrix.star_apply, Matrix.diagonal_apply_eq]
+      ring
+    · intro k _hk hki
+      simp [hki]
+    · simp
+  rw [hcomplex]
+  rw [← Complex.reCLM_apply, _root_.map_sum]
+  simp only [Complex.reCLM_apply]
+  apply Finset.sum_congr rfl
+  intro i _hi
+  simp only [finiteUnitaryEntryWeight, Complex.mul_re,
+    Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero,
+    Complex.star_def, Complex.conj_re, Complex.conj_im,
+    Complex.normSq_apply]
+  ring
+
+/-- The general coordinate-probe signal specializes exactly to the diagonal
+signal used in the explicit Haar moment calculation. -/
+theorem finiteUnitaryProbeCoordinateSignal_diagonal
+    (d : ℕ) (s : (Fin 2 ⊕ Fin d) → ℝ)
+    (j : Fin 2 ⊕ Fin d) :
+    finiteUnitaryProbeCoordinateSignal d
+        (Matrix.diagonal (fun i => (s i : ℂ))) j =
+      finiteUnitaryDiagonalProbeHaarSignal d s j := by
+  rw [finiteUnitaryProbeCoordinateSignal,
+    finiteUnitaryDiagonalProbeHaarSignal]
+  apply integral_congr_ae
+  filter_upwards [] with U
+  rw [probeCoordinate_diagonal_eq]
+
+/-- Changing the eigenbasis of a fixed probe does not change its Haar
+mean-square coordinate signal. -/
+theorem finiteUnitaryProbeCoordinateSignal_conjugate
+    (d : ℕ)
+    (A : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)
+    (K : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ)
+    (j : Fin 2 ⊕ Fin d) :
+    finiteUnitaryProbeCoordinateSignal d
+        ((K : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
+          A * star (K : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j =
+      finiteUnitaryProbeCoordinateSignal d A j := by
+  have h := integral_finiteUnitaryHaar_mul_left
+    (f := fun U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ =>
+      (Complex.re
+        ((star (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
+          A * (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ 2)
+    (star K)
+  rw [finiteUnitaryProbeCoordinateSignal,
+    finiteUnitaryProbeCoordinateSignal]
+  calc
+    (∫ U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ,
+        (Complex.re
+          ((star (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
+            ((K : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
+              A * star (K : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) *
+            (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ 2
+        ∂finiteUnitaryHaar (Fin 2 ⊕ Fin d)) =
+      ∫ U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ,
+        (Complex.re
+          ((star (((star K * U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ)) :
+              Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) * A *
+            (((star K * U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ)) :
+              Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ 2
+        ∂finiteUnitaryHaar (Fin 2 ⊕ Fin d) := by
+          apply integral_congr_ae
+          filter_upwards [] with U
+          congr 2
+          change
+            (star (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
+              ((K : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
+                A * star (K : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) *
+              (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j =
+            (star (star (K : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
+                (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) * A *
+              (star (K : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
+                (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ))) j j
+          rw [star_mul, star_star]
+          noncomm_ring
+    _ = _ := h
+
+/-- Haar mean-square probe signal after preparing a fixed unitary image of
+one coordinate state. -/
+def finiteUnitaryPreparedProbeHaarSignal
+    (d : ℕ)
+    (A : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)
+    (W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ)
+    (j : Fin 2 ⊕ Fin d) : ℝ :=
+  ∫ U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ,
+    (Complex.re
+      ((star ((U * W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ) :
+          Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) * A *
+        ((U * W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ) :
+          Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ 2
+    ∂finiteUnitaryHaar (Fin 2 ⊕ Fin d)
+
+/-- A fixed preparation unitary cannot alter the Haar benchmark. -/
+theorem finiteUnitaryPreparedProbeHaarSignal_eq
+    (d : ℕ)
+    (A : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)
+    (W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ)
+    (j : Fin 2 ⊕ Fin d) :
+    finiteUnitaryPreparedProbeHaarSignal d A W j =
+      finiteUnitaryProbeCoordinateSignal d A j := by
+  rw [finiteUnitaryPreparedProbeHaarSignal,
+    finiteUnitaryProbeCoordinateSignal]
+  exact integral_finiteUnitaryHaar_mul_right
+    (fun U : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ =>
+      (Complex.re
+        ((star (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
+          A * (U : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)) j j)) ^ 2)
+    W
+
+/-- Exact Haar benchmark for every traceless Hermitian involution, expressed
+through its spectral signs. -/
+theorem finiteUnitaryPreparedHermitianSignProbeHaarSignal_eq
+    (d : ℕ)
+    (A : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)
+    (hA : A.IsHermitian)
+    (W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ)
+    (j : Fin 2 ⊕ Fin d)
+    (hsum : ∑ i, hA.eigenvalues i = 0)
+    (hsq : ∀ i, (hA.eigenvalues i) ^ 2 = 1) :
+    finiteUnitaryPreparedProbeHaarSignal d A W j =
+      (d + 3 : ℝ)⁻¹ := by
+  rw [finiteUnitaryPreparedProbeHaarSignal_eq]
+  have hspectral :
+      A =
+        (hA.eigenvectorUnitary :
+          Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) *
+          Matrix.diagonal (fun i => (hA.eigenvalues i : ℂ)) *
+        star (hA.eigenvectorUnitary :
+          Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ) := by
+    convert hA.spectral_theorem using 1
+    rfl
+  rw [hspectral,
+    finiteUnitaryProbeCoordinateSignal_conjugate,
+    finiteUnitaryProbeCoordinateSignal_diagonal]
+  exact finiteUnitaryDiagonalProbeHaarSignal_eq_dimension_succ_inv
+    d hA.eigenvalues j hsum hsq
+
+/-- Trace zero is exactly the balance condition for the real spectral
+coordinates of a Hermitian matrix. -/
+theorem sum_hermitianEigenvalues_eq_zero_of_trace_eq_zero
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    {A : Matrix ι ι ℂ} (hA : A.IsHermitian)
+    (htrace : A.trace = 0) :
+    ∑ i, hA.eigenvalues i = 0 := by
+  have h := hA.trace_eq_sum_eigenvalues
+  rw [htrace] at h
+  have hre := congrArg Complex.re h
+  simp only [Complex.zero_re, Complex.re_sum] at hre
+  norm_num at hre
+  exact hre.symm
+
+/-- Every eigenvalue of a Hermitian involution is a real sign. -/
+theorem hermitianEigenvalues_sq_eq_one_of_mul_self_eq_one
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    {A : Matrix ι ι ℂ} (hA : A.IsHermitian)
+    (hmul : A * A = 1) (i : ι) :
+    (hA.eigenvalues i) ^ 2 = 1 := by
+  let K := hA.eigenvectorUnitary
+  have hdiag := congrArg
+    (fun X : Matrix ι ι ℂ =>
+      ((Unitary.conjStarAlgAut ℂ (Matrix ι ι ℂ)) (star K)) X)
+    hmul
+  rw [map_mul, map_one,
+    hA.conjStarAlgAut_star_eigenvectorUnitary] at hdiag
+  have hii := congrArg (fun M : Matrix ι ι ℂ => M i i) hdiag
+  simp only [Matrix.mul_apply, Matrix.one_apply, if_pos] at hii
+  rw [Finset.sum_eq_single i] at hii
+  · simp [Function.comp_apply] at hii
+    rw [pow_two]
+    exact_mod_cast hii
+  · intro k _hk hki
+    simp [Matrix.diagonal_apply, hki, Function.comp_apply]
+  · simp
+
+/-- Intrinsic form of the exact Haar benchmark: trace zero and involution
+are sufficient; no chosen eigenbasis or preparation state appears in the
+assumptions. -/
+theorem finiteUnitaryPreparedTracelessHermitianInvolutionHaarSignal_eq
+    (d : ℕ)
+    (A : Matrix (Fin 2 ⊕ Fin d) (Fin 2 ⊕ Fin d) ℂ)
+    (hA : A.IsHermitian)
+    (htrace : A.trace = 0)
+    (hmul : A * A = 1)
+    (W : Matrix.unitaryGroup (Fin 2 ⊕ Fin d) ℂ)
+    (j : Fin 2 ⊕ Fin d) :
+    finiteUnitaryPreparedProbeHaarSignal d A W j =
+      (d + 3 : ℝ)⁻¹ := by
+  exact finiteUnitaryPreparedHermitianSignProbeHaarSignal_eq
+    d A hA W j
+    (sum_hermitianEigenvalues_eq_zero_of_trace_eq_zero hA htrace)
+    (hermitianEigenvalues_sq_eq_one_of_mul_self_eq_one hA hmul)
 
 end
 

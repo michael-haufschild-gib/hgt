@@ -104,6 +104,23 @@ noncomputable instance ccmRationalIntegralFiniteAdelesHaarIsAddLeftInvariant :
     (MeasurableEmbedding.subtype_coe
       ccmRationalIntegralFiniteAdeles_isOpen.measurableSet)
 
+/-- Pullback along the open integral-adele embedding retains all Haar
+properties, not merely translation invariance. -/
+noncomputable instance ccmRationalIntegralFiniteAdelesHaarIsAddHaar :
+    ccmRationalIntegralFiniteAdelesHaar.IsAddHaarMeasure := by
+  letI : MeasurableAdd CCMRationalFiniteAdele := ContinuousAdd.measurableAdd
+  unfold ccmRationalIntegralFiniteAdelesHaar
+  exact Measure.IsAddHaarMeasure.comap (mH := this)
+    ccmRationalFiniteAdeleHaar
+    ccmRationalIntegralFiniteAdeles_isOpen.isOpenEmbedding_subtypeVal
+
+/-- The normalized Haar measure on integral finite adeles is regular. -/
+noncomputable instance ccmRationalIntegralFiniteAdelesHaarRegular :
+    ccmRationalIntegralFiniteAdelesHaar.Regular := by
+  unfold ccmRationalIntegralFiniteAdelesHaar
+  exact Measure.Regular.comap' ccmRationalFiniteAdeleHaar
+    ccmRationalIntegralFiniteAdeles_isOpen.isOpenEmbedding_subtypeVal
+
 /-- The multiplication-by-`n` image is closed in the compact integral subgroup. -/
 theorem ccmRationalIntegralFiniteAdelesNSMulRange_isClosed (n : ℕ) :
     IsClosed ((nsmulAddMonoidHom

@@ -199,9 +199,59 @@ of a resolvent.  Equations `(13)`--`(16)` combine already proved Krein--Langer i
 trace-slope laws.  The result is an exact operator dictionary, but it is parent-theory bridge work,
 not new scientific knowledge.
 
-The Lean tree does not contain the analytic Xi logarithmic kernel, half-plane Hardy graph, or
-Krein--Langer minimality needed for the unconditional specialization.  Formalizing only the
-two-by-two algebra would be a wrapper, so no Lean file is added.
+## Lean status
+
+**Formalized unconditionally, 2026-08-04.**  The sentence this section replaced ("no Lean file is
+added") was already false when written: `CCMQuartetResolventPolarization.lean` had existed since
+2026-07-26.  Both halves of the card's proved content are now in the tree.
+
+`formal/GaloisForLFunctions/RHTower/CCMQuartetResolventPolarization.lean` (namespace `RHTower`) —
+the scalar algebra:
+
+- `ccmQuartetPairResolvent`, `ccmCausalResolvent`, `ccmAntiCausalResolvent`, `ccmQuartetCrossPacket`,
+  `ccmQuartetPositiveSquare`, `ccmQuartetNegativeSquare` — the objects of `(2)`–`(4)`.
+- **`ccmQuartetCrossPacket_eq_positive_sub_negative`** — equation `(4)`: one positive square minus one
+  negative square.
+- **`ccmQuartetPairResolvent_kernel_split`** — equation `(9)`.
+- **`ccmQuartetResolvent_eq_crossPackets`** — equations `(5)` and `(10)`: the full quartet quotient is
+  exactly the sum of the `lambda` and `conj lambda` cross packets.
+- **`ccmCausal_sub_antiCausal`**, **`ccmCausal_sub_antiCausal_ne_zero`** — the negative coordinate is
+  the transverse charge `lambda + conj lambda = 2 Re lambda` over the two resolvent denominators, hence
+  nonzero at every real node away from the poles exactly when the zero is off the line.  This is the
+  formal form of the card's "in the critical-line limit the odd mode vanishes; off the line it is
+  nonzero".
+
+`formal/GaloisForLFunctions/RHTower/CCMQuartetPaleyWiener.lean` — the Paley--Wiener half, added now:
+
+- **`integrableOn_Ioi_cexp_neg_mul`**, **`integral_Ioi_cexp_neg_mul`**, **`integral_Ioi_exp_neg_mul`**
+  — the Laplace transform of an exponential ray, `int_0^infinity exp(-b t) dt = 1/b` for `Re b > 0`.
+  Mathlib has the Gaussian and Gamma integrals but **not** this one, so it is proved here from the
+  fundamental theorem of calculus on `Ioi 0` (with the tail limit from
+  `||exp(-b t)|| = exp(-(Re b) t)`).  The real-rate case is read off from
+  `Real.integral_rpow_mul_exp_neg_mul_Ioi` at exponent one.
+- **`ccmCausalResolvent_eq_laplace`**, **`ccmAntiCausalResolvent_eq_laplace`** — equations `(7)` and
+  `(11)`: each resolvent coordinate is the Laplace transform of its shifted ray, on the exact node range
+  the card specifies (`Re lambda < x`, resp. `-Re lambda < x`).
+- `quartetSymCoord`, `quartetAntisymCoord`, **`ccmQuartetPositiveSquare_eq`**,
+  **`ccmQuartetNegativeSquare_eq`** — the two light-cone coordinates `u` and `v` of `(3)`, together with
+  the identification of the existing module's squares as `u(x) conj(u(y))` and `v(x) conj(v(y))`.  This
+  is the bridge that makes `(4)` a statement about coordinates rather than about squares.
+- `cexp_ray_cosh_split`, `cexp_ray_sinh_split`, **`quartetSymCoord_eq_laplace`**,
+  **`quartetAntisymCoord_eq_laplace`** — equations `(6)` and `(12)`: the two coordinates are the `cosh`
+  and `sinh` Laplace transforms, so the horizontal displacement `a` is carried by the odd hyperbolic
+  mode and not by the ordinate phase.
+- `quartetResidueMode`, **`norm_quartetResidueMode`**,
+  **`integral_norm_sq_quartetResidueMode`** — equation `(15)`: the residue mode of `(14)` has squared
+  norm exactly `2 m^2 / a`.
+- **`four_mul_lt_integral_norm_sq_quartetResidueMode`** — equation `(16)`: for `0 < a < 1/2` and
+  multiplicity at least one, the metric reading strictly exceeds four trace units per multiplicity unit.
+  The inequality reduces to `m > 2a`, which is why the hypothesis `a < 1/2` is exactly the right one.
+
+Not formalized, and imported rather than re-proved: the index equality of `(13)`, which is the
+Krein--Langer minimality statement the card cites, and the operator-level identification of `J` — the
+Lean tree still has no analytic Xi logarithmic kernel or half-plane Hardy graph.  Everything in
+`(2)`--`(12)` and `(14)`--`(16)` is now unconditional.
+
 
 ## Gates
 
@@ -210,6 +260,12 @@ two-by-two algebra would be a wrapper, so no Lean file is added.
 - [x] anti-causal half identified with the boundary-trace residue mode
 - [x] index and trace slope proved to read the same graph coordinate
 - [x] diagonal Fock and four-unit endpoints linked source-by-source
+- [x] Lean: cross-packet polarization `(4)` and full quartet split `(5)`, `(9)`, `(10)`
+- [x] Lean: negative coordinate is the transverse charge, nonzero exactly off the line
+- [x] Lean: Laplace transform of an exponential ray (absent from mathlib)
+- [x] Lean: Paley--Wiener form of both coordinates `(6)`, `(7)`, `(11)`, `(12)`
+- [x] Lean: residue-mode squared norm `(15)` and the four-unit inequality `(16)`
+- [ ] Lean: Krein--Langer index equality `(13)` on the analytic Xi kernel
 - [ ] construct the distinguished Sonin bilateral colligation
 - [ ] prove its nonexpansive four-unit budget and cofinal rank preservation
 - [ ] RH

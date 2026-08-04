@@ -189,3 +189,117 @@ checks pass, and axiom reports contain only `propext`, `Classical.choice`, and `
 - [ ] 2 -> 3: phase-tail isomorphism and Schwarzian transport are formalized; differential Luroth
   and generator classification remain paper-level
 - [ ] 3 -> 4: external novelty audit and standalone manuscript
+
+## Lean progress — the scalar dichotomy of part 2, first half
+
+`GaloisForLFunctions/HTGeometry/NonautonomousTailDichotomy.lean` (wired, axiom-clean):
+
+    eq_bot_of_algEquiv_base :
+      an intermediate field isomorphic to the base OVER the base is the base
+    nonautonomousTail_eq_bot_succ_iff :
+      triviality of the tail transports across one step, in both directions
+    nonautonomousTail_eq_bot_of_eq_bot
+    nonautonomousTail_dichotomy :
+      either every phase tail is the constants, or none is
+
+The card's part 2 reads "If one tail is constant, `(2)` makes its neighbour constant; induction
+propagates this through all times."  That half needs nothing beyond the exact phase transport already
+formalized: the transition is a differential `C`-isomorphism of tails, and an intermediate field
+isomorphic to the base over the base is the base, so triviality moves both forward and backward along
+the protocol.  Running the induction down to phase `0` and back up reaches every phase from any one.
+
+What is still paper-level in part 2 is the *other* branch: that a nonconstant tail is `C<u_i>` for a
+single differentially transcendental generator.  That is the Ritt--Kolchin differential Luroth
+theorem, a classical result of real size, and it is the only thing between the present state and
+`(3)`; `(4)`, `(5)`, `(6)` are formalized or immediate once generators exist
+(`schwarzian_transport_of_projective_transition`).
+
+## Lean progress — the generator classification of `(4)`, and where it now stands
+
+`GaloisForLFunctions/HTGeometry/RationalGeneratorMobius.lean` (wired, axiom-clean):
+
+    exists_mobius_of_finrank_eq_one :
+      a rational function that generates the whole rational function field is a Mobius transform of
+      the coordinate -- its numerator and denominator are linear with invertible coefficient matrix
+
+Two discoveries change what is left on this card.
+
+1. **mathlib has Luroth's theorem** (`Mathlib/FieldTheory/RatFunc/Luroth.lean`), together with the
+   degree lemma `RatFunc.finrank_eq_max_natDegree` -- the degree of `K(X)` over `K(f)` is the larger
+   of the degrees of the numerator and denominator of `f`.  That lemma is what makes the Mobius
+   classification a short argument: degree one forces both to be linear, and coprimality forces the
+   coefficient matrix to be invertible.
+2. **The order-zero step is already in the corpus.**  `ScalarDifferentialRationalOrder.lean` proves
+   `differentialAlgEquiv_generator_mem_adjoin_singleton`: a differential automorphism of a scalar free
+   differential field sends the generator into the ORDINARY rational function field `C(y)`, in both
+   directions.  That is exactly the card's "exact differential-order additivity applied in both
+   directions forces both generator changes to have order 0".
+
+So `(4)` is now two known facts away from formal: compose the order-zero membership with the Mobius
+classification.  What is still genuinely missing is `(3)` -- the Ritt--Kolchin *differential* Luroth
+theorem, which is not classical Luroth and is not in mathlib: it concerns intermediate DIFFERENTIAL
+fields of `C<y>`, whose ambient is a rational function field in infinitely many variables
+`y, y', y'', ...`.
+
+## Lean progress — `(4)`'s generator classification, in the abstract setting
+
+Added to `RationalGeneratorMobius.lean` (wired, axiom-clean):
+
+    exists_mobius_of_adjoin_eq_top      -- generation form of the classification
+    exists_mobius_of_mutual_adjoin :
+      if a transcendental `y` and an element `v` generate the same simple extension, then
+      `v` is a Mobius transform of `y` with invertible coefficient matrix
+
+This is the card's generator classification at the level the tail theorems need it: `v in C(y)` and
+`y in C(v)` force `v = (a y + b)/(c y + d)` with `ad - bc /= 0`.  Combined with the corpus's
+`differentialAlgEquiv_generator_mem_adjoin_singleton` -- which puts both `sigma y` and `sigma^(-1) y`
+in the ordinary field `C(y)` -- this gives `(4)` for the differential automorphism transporting one
+phase generator to the next.
+
+The transfer runs through `RatFunc.algEquivOfTranscendental`: the simple extension `C(y)` is the
+rational function field, an intermediate field maps injectively under an `AlgHom`, and the image of a
+simple adjunction is the simple adjunction of the image, so "`v` generates" moves to "`F` adjoins to
+everything" in `RatFunc C`, where `RatFunc.finrank_eq_max_natDegree` converts it into a degree bound.
+
+`(3)` remains: Ritt--Kolchin differential Luroth, which is genuinely absent from mathlib and is not
+implied by the classical Luroth theorem that is present.
+
+## Lean progress — `(4)` AND `(6)` for the scalar automorphism model, unconditionally
+
+`GaloisForLFunctions/HTGeometry/PhaseGeneratorMobius.lean` (wired, axiom-clean):
+
+    exists_mobius_of_differentialAlgEquiv :
+      a differential automorphism of a scalar free differential field sends the generator to a
+      Mobius transform of it, with invertible coefficient matrix over the constants   -- (4)
+    schwarzian_fixed_of_differentialAlgEquiv :
+      hence it fixes the Schwarzian of the generator                                  -- (6)
+
+Both were previously listed as needing the paper-level "differential Luroth and projective-generator
+step".  Only `(3)` needed it.  `(4)` follows from two things already in the tree -- the order-zero
+membership `differentialAlgEquiv_generator_mem_adjoin_singleton` and the new generator classification
+-- and `(6)` then follows from `schwarzian_fixed_of_projective_semiconjugacy`, whose projective
+hypothesis is exactly what `(4)` supplies.
+
+Three side conditions of the transport theorem are discharged from hypertranscendence rather than
+assumed:
+
+* the determinant stays invertible downstairs, by injectivity of the structure map;
+* the denominator `c y + d` cannot vanish -- otherwise `y` satisfies a linear polynomial over the
+  constants, contradicting transcendence, and if `c = 0` then `d = 0` and the determinant dies;
+* `y' /= 0` -- otherwise the order-one jet is `0`, which is algebraic, contradicting
+  hypertranscendence.
+
+### State of this card
+
+| statement | Lean |
+|---|---|
+| `(1)`, `(2)` phase tail and exact transport | `NonautonomousStableCore` |
+| part 2, constant branch | `nonautonomousTail_dichotomy` |
+| part 2, `(3)` generator existence | **Ritt--Kolchin differential Luroth -- absent from mathlib** |
+| `(4)` projective transition | `exists_mobius_of_differentialAlgEquiv` |
+| `(5)` Schwarzian is a generator invariant | `schwarzian_mobius` |
+| `(6)` Schwarzian transport | `schwarzian_fixed_of_differentialAlgEquiv` |
+
+Everything except `(3)` is formal.  `(3)` is the one genuine mathlib-scale gap: classical Luroth is
+present and is not enough, because the ambient of a differential Luroth statement is a rational
+function field in infinitely many variables.

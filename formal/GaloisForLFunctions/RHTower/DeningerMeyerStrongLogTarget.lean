@@ -18,7 +18,7 @@ No Riemann-hypothesis premise, positivity assumption, spectral realization,
 numerical computation, or source-provenance hypothesis occurs.
 -/
 
-open Complex Filter Function Set Topology
+open Asymptotics Complex Filter Function Set Topology
 open scoped ContDiff FourierTransform SchwartzMap
 open GaloisForLFunctions.RHTower
 
@@ -108,6 +108,53 @@ theorem DeningerMeyerStrongLogDecay.smul
         simp only [Pi.smul_apply,
           iteratedDeriv_const_smul_field]
     · rfl
+
+/-- The two asymptotic halves of the strong logarithmic condition glue to one global
+exponential-weight bound.  This is the literal bounded-range form of the seminorms used in the
+paper: every iterated derivative remains bounded after multiplication by any real exponential
+weight. -/
+theorem DeningerMeyerStrongLogDecay.weighted_iteratedDeriv_isBounded
+    {h : ℝ → ℂ} (hh : DeningerMeyerStrongLogDecay h)
+    (n : ℕ) (a : ℝ) :
+    Bornology.IsBounded (Set.range (fun t : ℝ =>
+      ((Real.exp t ^ a : ℝ) : ℂ) * iteratedDeriv n h t)) := by
+  have hweight : Continuous (fun t : ℝ => Real.exp t ^ a) :=
+    Real.continuous_exp.rpow_const (fun t => Or.inl (Real.exp_ne_zero t))
+  have hderiv : Continuous (iteratedDeriv n h) :=
+    hh.smooth.continuous_iteratedDeriv n (by
+      show ((n : ℕ∞) : ℕ∞ω) ≤ ((⊤ : ℕ∞) : ℕ∞ω)
+      exact WithTop.coe_le_coe.mpr (ENat.coe_lt_top n).le)
+  have hcontinuous : Continuous (fun t : ℝ =>
+      ((Real.exp t ^ a : ℝ) : ℂ) * iteratedDeriv n h t) :=
+    (Complex.continuous_ofReal.comp hweight).mul hderiv
+  rw [hcontinuous.isBounded_range_iff_isBigO_atTop_atBot]
+  have hweighted (l : Filter ℝ)
+      (hdecay : iteratedDeriv n h =O[l]
+        fun t : ℝ => Real.exp t ^ (-a)) :
+      (fun t : ℝ => ((Real.exp t ^ a : ℝ) : ℂ) *
+        iteratedDeriv n h t) =O[l] (1 : ℝ → ℝ) := by
+    obtain ⟨C, hC⟩ := hdecay.bound
+    apply IsBigO.of_bound C
+    filter_upwards [hC] with t ht
+    have ht' : ‖iteratedDeriv n h t‖ ≤
+        C * Real.exp t ^ (-a) := by
+      simpa [Real.norm_eq_abs,
+        abs_of_pos (Real.rpow_pos_of_pos (Real.exp_pos t) (-a))] using ht
+    rw [Pi.one_apply, norm_one, norm_mul, Complex.norm_real,
+      Real.norm_eq_abs,
+      abs_of_pos (Real.rpow_pos_of_pos (Real.exp_pos t) a)]
+    calc
+      Real.exp t ^ a * ‖iteratedDeriv n h t‖ ≤
+          Real.exp t ^ a * (C * Real.exp t ^ (-a)) :=
+        mul_le_mul_of_nonneg_left ht'
+          (Real.rpow_nonneg (Real.exp_pos t).le a)
+      _ = C * (Real.exp t ^ a * Real.exp t ^ (-a)) := by ring
+      _ = C := by
+        rw [← Real.rpow_add (Real.exp_pos t), add_neg_cancel,
+          Real.rpow_zero, mul_one]
+      _ = C * 1 := by ring
+  exact ⟨hweighted atTop (hh.decayTop n a),
+    hweighted atBot (hh.decayBot n (-a))⟩
 
 /--
 Exact radial all-weight Meyer target in logarithmic radius.
