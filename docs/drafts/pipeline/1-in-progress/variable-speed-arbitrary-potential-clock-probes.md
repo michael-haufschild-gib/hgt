@@ -250,12 +250,53 @@ continuity in the frequency — the velocity density is only known to be measura
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
+### Phase 6b — the wave operator on the chart: **done**
+
+`formal/GaloisForLFunctions/HTGeometry/HillDrivenChartWave.lean`:
+
+- `hillDrivenChartPotential` — the potential of the convolving family, read on the event;
+- `coordPartial_coordPartial_hillDrivenChartField_zero`, `..._succ` — the coordinate second
+  derivatives are the second-order families;
+- `hillDrivenChartSpaceSecond_eq` — the spatial one is the rescaled directional integral;
+- **`hillDrivenChartField_wave_identity`** —
+
+  ```
+  ∂₀²u = c(y₀)² ∑ᵢ ∂ᵢ²u - m²u + V(y)·u
+  ```
+
+  the real parts costing nothing on the first two terms and the reality of the family
+  (`IsRealFamily`) on the third;
+- **`solvesPotentialWave_hillDrivenChartField`** — hence `□u + (V - m²)u = 0` for the wave operator
+  `hillWaveOp d c` of the predecessor card.
+
+### Phase 6c — the probes: **done** for events of the initial slice
+
+`formal/GaloisForLFunctions/HTGeometry/HillDrivenProbeDatum.lean`:
+
+- `kgBumpReal`, `kgBumpBCF`, `hillDrivenProbeDatum` — the corpus's symmetrised bump, modulated by the
+  conjugate character at the chosen point;
+- `hillDrivenStartWeight` and **`integral_hillDrivenStartWeight_pos`** — the evolution starts at the
+  datum damped by the weight and by one power of the frequency, so the field at time zero is the
+  integral of a nonnegative function which is at least one on a ball: positive (support argument,
+  `integral_pos_iff_support_of_nonneg`);
+- **`hillDrivenField_zero_apply`**, **`hillDrivenChartField_event_pos`**.
+
+`formal/GaloisForLFunctions/HTGeometry/HillDrivenClockProbe.lean`:
+
+- **`exists_localProbesOn_hillDrivenChart`** — the corpus's local-probe interface for the dressed
+  potential of a real family;
+- `potential_eqOn_of_hillDrivenProbes` — those probes determine the potential on their region;
+- **`exists_localProbesOn_hillWaveOp_smooth`** — **clock probes for a variable speed and an
+  arbitrary smooth potential**, on a neighbourhood of any event of the initial slice. The potential
+  is realized as the chart potential of a real convolving family by the corpus's
+  `exists_locally_kgChartPotential_of_smooth_spacetime` — the same realization as in the flat case —
+  and the driven field of that family is the probe.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
 ### What remains
 
-6b. The wave operator on the chart: express the two coordinate second derivatives through the
-    second-order families (as `coordPartial_coordPartial_*` does for the free field), then match
-    against `hillWaveOp d c` using `hillDrivenField_wave_equation` — the potential term becoming
-    the chart potential `kgChartPotential`-style function of the event.
-6c. The real field and its nonvanishing near an event, the probes for an arbitrary smooth potential
-    (realized as in the flat case by `exists_locally_kgChartPotential_of_smooth_spacetime`), and the
-    two-species scale law on the conformal orbit.
+6d. Probes at *every* event, by shifting both the speed and the convolving family in time
+    (`hillSpeedShift` and the corpus's `WienerFamily.timeShift`, whose potential transforms by
+    `kgChartPotential_timeShift`), then `OpenProbes` / `RegularOpenProbes` and the two-species scale
+    law on the conformal orbit of the speed chart with an arbitrary potential.

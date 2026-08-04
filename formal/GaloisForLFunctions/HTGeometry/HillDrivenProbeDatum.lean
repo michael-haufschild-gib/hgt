@@ -100,6 +100,7 @@ theorem integrable_hillDrivenStartWeight (hN : (Module.finrank ℝ (EuclideanSpa
   have hmass : (a.freq ξ 0)⁻¹ ≤ a.mass⁻¹ := by
     refine inv_anti₀ a.mass_pos ?_
     have hsq : a.mass ^ 2 ≤ a.freq ξ 0 ^ 2 := by
+      show a.mass ^ 2 ≤ massiveFreq a.mass a.speed ‖ξ‖ 0 ^ 2
       rw [massiveFreq_sq a.mass_pos]
       nlinarith [sq_nonneg (a.speed 0 * ‖ξ‖)]
     nlinarith [a.freq_pos ξ 0, a.mass_pos]
@@ -130,7 +131,7 @@ theorem integral_hillDrivenStartWeight_pos
       positivity
     exact ne_of_gt hpos
   have hball : 0 < (volume : Measure (EuclideanSpace ℝ (Fin d)))
-      (Metric.ball (0 : EuclideanSpace ℝ (Fin d)) 1) := measure_ball_pos _ _ one_pos
+      (Metric.ball (0 : EuclideanSpace ℝ (Fin d)) 1) := Metric.measure_ball_pos _ _ one_pos
   exact lt_of_lt_of_le hball (measure_mono hsub)
 
 /-- **The field of the driven evolution at the initial time is the integral of the starting
@@ -147,8 +148,8 @@ theorem hillDrivenField_zero_apply (a : HillSpeed)
       = ((a.freq ξ 0 : ℝ) : ℂ)⁻¹ * hillDrivenProbeDatum d x₀ ξ :=
     hillPotentialFlow_zero a b (hillDrivenProbeDatum d x₀) ξ
   have hchar : kgChar x₀ ξ * (starRingEnd ℂ) (kgChar x₀ ξ) = 1 := kgChar_mul_kgConjChar x₀ ξ
-  rw [hillDrivenDensity, kgWeighted, hflow, hillDrivenProbeDatum_apply, hillDrivenStartWeight]
-  push_cast
+  rw [hillDrivenDensity, kgWeighted, hflow, hillDrivenProbeDatum_apply, hillDrivenStartWeight,
+    Complex.ofReal_mul, Complex.ofReal_mul, Complex.ofReal_inv, Complex.ofReal_inv]
   calc kgChar x₀ ξ * (((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹ *
         (((a.freq ξ 0 : ℝ) : ℂ)⁻¹ * ((starRingEnd ℂ) (kgChar x₀ ξ) * ((kgBumpReal d ξ : ℝ) : ℂ))))
       = (kgChar x₀ ξ * (starRingEnd ℂ) (kgChar x₀ ξ)) * (((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹ *

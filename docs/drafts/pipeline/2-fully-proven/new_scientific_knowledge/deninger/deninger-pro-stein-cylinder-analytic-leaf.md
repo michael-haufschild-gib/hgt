@@ -189,6 +189,8 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized the vanishing of the average of a directional
+  derivative along a period.
 - 2026-08-04 — Formalized that the generators of `(5)` pull back to constant
   forms along the exponential covering.
 - 2026-08-04 — Stated and proved the degree-one case of `(5)` at every rank in
@@ -672,6 +674,19 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
   inverse coordinates in the generator exactly cancel the diagonal of the derivative of the
   covering.  Separating the generators in cohomology therefore reduces to separating constant forms
   modulo derivatives of periodic forms.
+
+### Averaging over a period landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPeriodAverage.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerPeriodCurve`, `deningerPeriodCurve_hasDerivAt` — the curve traversing one period in a
+  coordinate direction, with constant derivative the period vector.
+- `deningerPeriodAverage_deriv_eq_zero` — **the average of a directional derivative along a period
+  of a periodic map vanishes**, because the integrand is a total derivative in the segment parameter
+  and the endpoints agree.  This is the mechanism that removes the derivative term from the Cartan
+  formula when a constant form is written as the derivative of a periodic form, which is how the
+  generators are separated in cohomology in every degree.
 
 ### Remaining
 

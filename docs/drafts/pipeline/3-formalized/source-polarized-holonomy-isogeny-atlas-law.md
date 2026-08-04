@@ -69,6 +69,27 @@ readout(k,m,s,w,x)
 Thus Route L/CCM's defect and Route R's anomaly defect have exactly the same radical before Xi
 quantification or any limiting passage.
 
+## Relation-kernel transition
+
+Let `tau_p` be the actual nonzero source-pointed Calderón--Witt commutator calibrator and let
+`D(s)=xiNearbyPoleDualityAdjunctionFracture(s)=2 Re(s)-1`.  Define the positive source scale
+
+```text
+c_(p,e)=(1-p^(-1))^3 p^(-e) log p > 0.
+```
+
+The new logarithmic transition law is
+
+```text
+log A_(p,e)(s) = c_(p,e) D(s),
+c_(p,e) * (D(s) tau_p) = (log A_(p,e)(s)) tau_p,
+D(s) tau_p=0 iff A_(p,e)(s)=1.
+```
+
+Therefore the relation-kernel route contributes a nonzero coefficient-faithful carrier, not a new
+vanishing radical.  Its remaining singular relative arithmetic vanishing law would be genuinely
+new; the already constructed calibrator alone does not raise atlas rank.
+
 ## Proof
 
 Put `q=p`, `b=1-q⁻¹`, `m_e=bq⁻ᵉ`, and `lambda_e=(e+1)log q`.  Direct expansion gives
@@ -97,6 +118,9 @@ power gives the positive CCM amplifier.
 Module:
 `formal/GaloisForLFunctions/RHTower/PrimeDepthBVWoldSourceDaggerAtlasTransition.lean`
 
+Relation-kernel transition module:
+`formal/GaloisForLFunctions/RHTower/PrimeDepthBVWoldRelationKernelAtlasTransition.lean`
+
 Main declarations:
 
 - `primeDepthBVWoldConsecutiveIncrementArea_primeTriangle`
@@ -113,6 +137,10 @@ Main declarations:
 - `primeDepthBVWoldPrimeTwoCyclotomicAmplifier_pos`
 - `primeDepthBVWoldPrimeTwoTriangleAnomaly_pow_sub_one_factor`
 - `ccmMobiusThetaCofinalSourceHomologyLanding_readout_eq_anomalyFactor`
+- `primeDepthBVWoldPrimeConsecutiveTriangleLogScale_pos`
+- `log_primeDepthBVWoldPrimeConsecutiveTriangleAnomaly_eq_greenFracture`
+- `primeDepthBVWold_logAnomaly_sourcePointedTau_transition`
+- `deningerCalderonWittSourcePointedGreenRay_eq_zero_iff_anomaly_eq_one`
 
 Module is imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
@@ -146,6 +174,14 @@ This theorem does not assert RH and does not rename an RH equivalence.  It chang
    already constructed graded anomaly, while its non-torsion clause hid RH.
 5. deeper Wold charts are coherent scalar Kummer roots of the same anomaly, so depth proliferation
    cannot raise primitive atlas rank.
+6. a vector-valued nonzero calibrator can improve coefficient provenance without changing the
+   radical; atlas rank counts independent annihilation laws, not target dimension.
+
+The resulting proof-design invariant is **source-vanishing rank**, not route count or detector
+dimension.  For the presently merged R/L/CCM/relation-kernel family, obstruction rank is one and
+proved source-vanishing rank is zero.  Missing theorem must supply a zero for an independent
+arithmetic reason and compare it coefficient-faithfully to the already constructed horizontal
+carrier.
 
 Remaining viable transverse data are source orientation phase, singular Cartier provenance, and
 noncompact cofinal incidence before scalarization.  This restriction is the theorem's downstream

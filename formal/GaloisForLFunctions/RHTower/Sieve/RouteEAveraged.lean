@@ -4,6 +4,7 @@ import GaloisForLFunctions.RHTower.Sieve.MRFibreDensityAt
 import GaloisForLFunctions.RHTower.Sieve.PairFibreMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.FibreStartSeparation
 import GaloisForLFunctions.RHTower.Sieve.FibreDevSeparation
+import GaloisForLFunctions.RHTower.Sieve.SquarefreeMaximalWindow
 
 /-!
 # The sign law from averaged short-interval estimates
@@ -206,5 +207,22 @@ theorem route_e_signClass_nonempty_of_maximalWindow_all {hh : ℝ → ℝ} {s : 
   have hpsq : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
   exact averagedMeanSquareDensityAt_of_maximal (coprime_block_density_nonneg hp)
     (tendsto_id.atTop_div_const hpsq) (hhtop.atTop_div_const hp0) (hmaxp p hp)
+
+/-- **The card's Theorem `(3)` with the `μ²` input discharged.**  The squarefree equidistribution
+hypothesis is a theorem of this corpus, so only the `μ` cancellation and the deleted-squarefree
+inputs remain. -/
+theorem route_e_sign_density_of_maximalWindow_moebius {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
+    (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
+    (hsmall : ∀ᶠ x in atTop, hh x ≤ Real.sqrt x)
+    (hmax1 : MaximalWindowMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
+    (hmaxp : ∀ p : ℕ, p.Prime → MaximalWindowDevMeanSquareAt (coprimeSquarefreeWeight p)
+      (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
+      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ x in atTop,
+      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+        ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) :=
+  route_e_sign_density_of_maximalWindow_all hs hgrow hmax1
+    (maximalWindowDevMeanSquare_moebius_sq (tendsto_of_growth hgrow) hsmall) hmaxp hε
 
 end RHTower.Sieve

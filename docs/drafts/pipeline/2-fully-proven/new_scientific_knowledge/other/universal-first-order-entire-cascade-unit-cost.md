@@ -6406,3 +6406,69 @@ free at every scale; what is open is only the numeric comparison at that point.
 
 **Card status.** The obligation is one numeric inequality per edge `m ≥ 2`, on a circle whose floor
 and dominating point the corpus supplies, plus observability (`helim`). Edges 0 and 1 are theorems.
+
+### The lower bound is closed: the states are independent for elementary reasons
+
+`noRelation_entireCascade_of_transcendental` (unconditional, axiom-clean):
+
+```
+∀ m (f : ℕ → ℂ → ℂ), (∀ i, TranscendentalEntire (f i)) →
+  ∀ P : MvPolynomial (Fin m) ℂ, P ≠ 0 → ¬ ∀ z, P(z, f₀ z, f₁(f₀ z), …) = 0
+```
+
+**No growth separation, no Nevanlinna theory, no Clunie–Steinmetz, no Pólya.** The whole analytic
+programme of the previous entries — `StepSeparation`, `CircleComparison`, the composition-growth
+chain — is unnecessary for the card's lower bound.
+
+The proof is an induction on the cascade length that peels off the **first** edge, not the last. All
+states but the coordinate factor through `f₀`:
+
+`Y_{k+1} = G_k ∘ f₀`, `G` the state family of the shifted sequence `(f₁, f₂, …)`
+(`entireCascade_succ_shift`).
+
+So on a fibre `f₀^{-1}(u)` the relation collapses to a polynomial *in the coordinate alone*, of degree
+at most `D`, with one root for each preimage. If `u` has more than `D` preimages the polynomial is
+identically zero, and — splitting `P` by `MvPolynomial.finSuccEquiv`, whose coefficients are exactly
+the polynomials in the shifted states — every coefficient `Q_i` satisfies
+
+`Q_i(u, G_1 u, …, G_m u) = 0`.
+
+That holds for every `u` in the value set, which is **open**, so by the identity theorem it holds for
+every `u ∈ ℂ` — a relation among the shifted cascade's states, which the induction hypothesis forbids.
+Hence `Q_i = 0` for all `i`, so `P = 0`.
+
+Two elementary inputs, both built here:
+
+* `EntireValence.exists_open_many_preimages` — for every `k`, a transcendental entire function has a
+  **nonempty open** set of values each taken at `k` distinct points inside a fixed disc.  Openness is
+  the open mapping theorem (disjoint balls around the preimages); the count is built one preimage at a
+  time, each taken so far out that it cannot coincide with the earlier ones.
+* `TranscendentalDenseExterior.exists_norm_gt_and_dist_lt_of_transcendental` — **Casorati–Weierstrass
+  at infinity**: outside every disc a transcendental entire function comes arbitrarily close to every
+  value.  Proved without singularity theory: if a value were avoided by a definite margin outside a
+  disc, all zeros of the shifted function would lie in that disc, and extracting them
+  (`exists_polynomial_factor_closedBall`) leaves a zero-free cofactor whose reciprocal is bounded by a
+  polynomial, hence is a polynomial (`exists_norm_gt_of_not_polynomial`), hence — having no zeros —
+  a constant; the function would be a polynomial.
+
+Consequences, both axiom-clean:
+
+* `polyIndependent_cascadeFamily_of_transcendental` — the corpus's `PolyIndependent` for the cascade
+  states, with no hypothesis beyond transcendence.
+* `exactDifferentialOrder_entireCascade_of_elimination` —
+
+```
+(∀ i, TranscendentalEntire (f i)) →
+(∀ k < n, DifferentiallyAlgebraicOfOrder (f k) 1) →
+helim →
+ExactDifferentialOrder (entireCascade f n) n
+```
+
+**The first two hypotheses are exactly the paper's, and `helim` (the elimination step, Reduction III)
+is the only remaining input.** Everything analytic on this card is now discharged.
+
+Method note worth keeping: the separation programme was trying to prove independence by making the new
+state *outgrow* the old ones, which is Clunie–Steinmetz and genuinely hard. Independence does not need
+growth at all — it needs only that a transcendental entire function is far from injective, and that an
+identity on an open set of values propagates. The card's Reduction III should be re-read with this in
+mind: its analytic half is dispensable, and only the observability half (`helim`) carries content.

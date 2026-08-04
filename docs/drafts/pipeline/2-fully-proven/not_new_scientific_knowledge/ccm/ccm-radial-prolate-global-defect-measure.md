@@ -476,6 +476,23 @@ The `O(s)` passage to the *limiting* density is proved as well, in the same modu
   every term vanishing as `c -> infinity` with `s = O(1/c)`.  The measure on the right is exactly the one
   whose total mass `1/2` is `(17)`.
 
+
+The passage from intervals to test functions needs no approximation argument at all, only the fundamental
+theorem, because the interval bound is uniform in the right endpoint:
+
+- `profileDiff`, `profileSqError`, `continuousOn_profileDiff`, `profileSqError_nonneg`,
+  **`abs_integral_profileDiff_le`** — the interval bound in packaged form: `|int_α^t (P² - density)|` is at
+  most one and the same `profileSqError s c α β` for *every* `t` in `[α, β]`.  So the primitive of the
+  difference is uniformly small.
+- **`abs_integral_testFunction_profileDiff_le`** — one integration by parts against the test function:
+
+  ```text
+  |int_α^β phi (P² - density)| <= (|phi(β)| + int_α^β |phi'|) · profileSqError s c α β.
+  ```
+
+  This is the weak form of `(10)`: for a fixed test function the right-hand side is `O(1/c) + O(c^{-1/4})`.
+  Continuous test functions follow by density of `C¹`, which adds nothing analytic.
+
 ## Lean gates
 
 - [x] Lean: the radial angle and its derivative law
@@ -492,8 +509,8 @@ The `O(s)` passage to the *limiting* density is proved as well, in the same modu
 - [x] Lean: equation `(10)`, the weak squared-profile law — on every interval inside `(1, ∞)`, with both
   error terms explicit; the density is the `s = 0` weight, which is proved equal to the limiting density
 - [x] Lean: the `O(s)` passage from `w_s` to the limiting density `w_0`
-- [ ] Lean: the passage from intervals to test functions (one integration by parts against `phi'` against the
-  uniform interval bound, then density of `C¹` in `C⁰`)
+- [x] Lean: the passage from intervals to test functions — one integration by parts against the uniform
+  interval bound; the weak form of `(10)` holds for every `C¹` test function
 - [ ] Lean: equations `(16)`, `(20)` — total-mass matching and outer-coordinate escape (need `(13)`)
 
 

@@ -8931,3 +8931,29 @@ parameters and taking that limit is the remaining step.
 
 **So the card's second and third inputs are not conditional on any short-interval theorem** — only
 the `μ` one is.
+
+### The `μ²` input is discharged
+
+**`RHTower/Sieve/SquarefreeMaximalWindow.lean` (continued)**, unconditional.
+
+The `+M` in `AveragedSquarefreeTail.sum_tail_divisor_count_le` is lossy: a divisor with `d² > B+L`
+divides no integer of the range at all.  **`count_sq_dvd_eq_zero_of_large`** and
+**`sum_tail_divisor_count_le_sqrt`** cut the divisor range at `⌊√(B+L)⌋`, replacing `M ≍ √x` by
+`≍ x^{1/4}` — and that is exactly what turns the estimate into `o(h²√x)`.  With the uncut bound the
+final ratio tends to `4`, not to `0`.
+
+- **`sum_maxWindowDevSq_moebius_sq_le_sqrt`** — the summed bound with the sharp divisor range;
+- `maximal_bound_arith` — the algebraic core: with `u = √h`, `v = x^{1/4}`, `3 ≤ u ≤ v`, the bound is
+  at most `16u³v² + 8u⁴v`, so divided by `h²√x = u⁴v²` it is at most `16/u + 8/v`;
+- **`maximalWindowDevMeanSquare_moebius_sq`** —
+
+      MaximalWindowDevMeanSquareAt μ² D id hh
+
+  for every window law `hh → ∞` with `hh x ≤ √x` eventually.  **The card's second input is a
+  theorem, not a hypothesis.**
+
+**`RouteEAveraged.route_e_sign_density_of_maximalWindow_moebius`** — the card's `(3)` with `hmax2`
+removed.  Only the `μ` cancellation and the deleted-squarefree inputs remain.
+
+The upper bound `hh x ≤ √x` is not a restriction: the card's window is `h√x ⊆ [x, x + h√x]` and the
+argument is about a window shorter than the range, so `h ≤ √x` throughout.

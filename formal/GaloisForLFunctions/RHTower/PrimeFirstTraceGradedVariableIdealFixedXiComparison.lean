@@ -475,6 +475,112 @@ theorem ccmRationalAdelicPrimeFixedXiStokesComparisonsCoefficientFaithful_iff_ri
       (ccmRationalAdelicPrimeReflectedFixedXiStokesComparisons_class_ne_zero_iff
         p rho).mpr (xi_divisor_support_re_eq_half_of_rh hRH rho)
 
+/-! ## Explicit coefficient-faithful resolved-frame factorization -/
+
+/-- Variable-ideal resolved frame: pullback-ideal coordinate plus an independent complex
+coefficient line. -/
+abbrev PrimeVariableIdealResolvedFrame (t : ℝ) :=
+  primeReflectedCharacterPullbackIdeal t × ℂ
+
+/-- Coefficient reporter retained before physical trace-ideal specialization. -/
+def primeVariableIdealResolvedFrameCoefficient (t : ℝ) :
+    PrimeVariableIdealResolvedFrame t →ₗ[ℂ] ℂ :=
+  LinearMap.snd ℂ _ _
+
+/-- Fixed physical realization of a resolved frame.  Pullback-ideal coordinate vanishes in fixed
+quotient; coefficient multiplies reflected Fisher conormal. -/
+def primeVariableIdealResolvedFramePhysicalComparison (t : ℝ) :
+    PrimeVariableIdealResolvedFrame t →ₗ[ℂ]
+      (PrimeTraceSequence ⧸ primeFirstTraceSummableIdeal) where
+  toFun x := x.2 • primeFixedPhysicalFisherClass (-t)
+  map_add' x y := by rw [Prod.snd_add, add_smul]
+  map_smul' c x := by
+    simp [smul_eq_mul, smul_smul]
+
+/-- Actual source Stokes class in coefficient-faithful variable-ideal resolved frame. -/
+def ccmRationalAdelicPrimeXiResolvedFrameComparison
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    (ccmRationalAdelicPrimeRelativeComplex p).H1 →ₗ[ℂ]
+      PrimeVariableIdealResolvedFrame (2 * (rho : ℂ).re - 1) where
+  toFun x :=
+    (0, ccmRationalAdelicPrimeRelativeH1StokesRegulator p x *
+      iteratedDeriv (xiSupportMultiplicity rho) XiC
+        (xiSpectralPointSupport rho))
+  map_add' x y := by
+    ext
+    · simp
+    · rw [map_add, add_mul, Prod.snd_add]
+  map_smul' c x := by
+    ext
+    · simp
+    · simp only [map_smul, smul_eq_mul, RingHom.id_apply, Prod.smul_snd]
+      ring
+
+/-- Retained rational-adelic class lands on nonzero actual Xi coefficient before physical
+quotienting. -/
+theorem ccmRationalAdelicPrimeXiResolvedFrameComparison_class
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    ccmRationalAdelicPrimeXiResolvedFrameComparison p rho
+        (ccmRationalAdelicPrimeRelativeClass p) =
+      (0, iteratedDeriv (xiSupportMultiplicity rho) XiC
+        (xiSpectralPointSupport rho)) := by
+  ext
+  · rfl
+  · change ccmRationalAdelicPrimeRelativeH1StokesRegulator p
+        (ccmRationalAdelicPrimeRelativeClass p) *
+      iteratedDeriv (xiSupportMultiplicity rho) XiC
+        (xiSpectralPointSupport rho) = _
+    rw [ccmRationalAdelicPrimeRelativeH1StokesRegulator_class, one_mul]
+
+theorem ccmRationalAdelicPrimeXiResolvedFrameComparison_class_ne_zero
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    ccmRationalAdelicPrimeXiResolvedFrameComparison p rho
+        (ccmRationalAdelicPrimeRelativeClass p) ≠ 0 := by
+  rw [ccmRationalAdelicPrimeXiResolvedFrameComparison_class]
+  intro h
+  have hsnd := congrArg Prod.snd h
+  simp only [Prod.snd_zero] at hsnd
+  exact iteratedDeriv_XiC_ne_zero_at_supportMultiplicity rho hsnd
+
+/-- Resolved-frame coefficient reporter equals reporter of existing strict positive resolved Xi
+boundary on retained source class. -/
+theorem ccmRationalAdelicPrimeXiResolvedFrameCoefficient_eq_resolvedBoundary
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    primeVariableIdealResolvedFrameCoefficient (2 * (rho : ℂ).re - 1)
+        (ccmRationalAdelicPrimeXiResolvedFrameComparison p rho
+          (ccmRationalAdelicPrimeRelativeClass p)) =
+      (primeDepthBVWoldXiResolvedCovariantD0
+        (primeDepthBVWoldXiPrimeLocalizedLeadingConormal p)
+        rho (ccmRationalAdelicPrimeRelativeXiCellZero p)
+          (ccmRationalAdelicPrimeRelativeXiCellOne p)).2 := by
+  rw [ccmRationalAdelicPrimeXiResolvedFrameComparison_class,
+    primeVariableIdealResolvedFrameCoefficient,
+    LinearMap.snd_apply,
+    ccmRationalAdelicPrimeRelativeXiComparison_class_landing_snd]
+
+/-- Previously constructed fixed comparison factors through coefficient-faithful resolved frame. -/
+theorem ccmRationalAdelicPrimeFixedXiStokesComparison_factorization
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    (primeVariableIdealResolvedFramePhysicalComparison
+      (2 * (rho : ℂ).re - 1)).comp
+        (ccmRationalAdelicPrimeXiResolvedFrameComparison p rho) =
+      ccmRationalAdelicPrimeFixedXiStokesComparison p rho := by
+  apply LinearMap.ext
+  intro x
+  change (ccmRationalAdelicPrimeRelativeH1StokesRegulator p x *
+      iteratedDeriv (xiSupportMultiplicity rho) XiC
+        (xiSpectralPointSupport rho)) •
+      primeFixedPhysicalFisherClass (-(2 * (rho : ℂ).re - 1)) = _
+  rw [ccmRationalAdelicPrimeFixedXiStokesComparison,
+    LinearMap.comp_apply]
+  change _ = primeVariableIdealFixedComparison (2 * (rho : ℂ).re - 1)
+      ((ccmRationalAdelicPrimeRelativeH1StokesRegulator p x *
+        iteratedDeriv (xiSupportMultiplicity rho) XiC
+          (xiSpectralPointSupport rho)) •
+        primeVariableIdealResolvedCoefficientClass
+          (2 * (rho : ℂ).re - 1))
+  rw [map_smul, primeVariableIdealFixedComparison_coefficientClass]
+
 end
 
 end RHTower

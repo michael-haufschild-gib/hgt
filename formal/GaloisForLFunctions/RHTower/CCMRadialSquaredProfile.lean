@@ -629,6 +629,235 @@ theorem abs_integral_profileSq_sub_density_le {s c α β : ℝ} (hs0 : 0 ≤ s) 
   linarith [htri, hprev, hcmp]
 
 
+
+/-! ## From intervals to test functions
+
+The interval bound holds uniformly in the right endpoint, so the primitive of the difference is uniformly
+small.  One integration by parts against a test function converts that into the weak form of `(10)`: no
+approximation argument is needed, only the fundamental theorem. -/
+
+/-- The difference between the squared profile and the limiting density. -/
+def profileDiff (s c x : ℝ) : ℝ :=
+  (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2 - profileDensity x
+
+/-- The error of the interval form of `(10)`. -/
+def profileSqError (s c α β : ℝ) : ℝ :=
+  2 * profileWeight s α / c
+    + (2 * Real.sqrt (2 / Real.pi) * ampFourth s α
+        + 5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α)))
+      * (5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α))) * (β - α)
+    + 3 * s * profileDensity α / (α ^ 2 - s) * (β - α)
+
+theorem continuousOn_profileDiff {s c : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
+    ContinuousOn (profileDiff s c) (Set.Ioi 1) := by
+  have hxi : ContinuousOn (xiEndpointPhase s) (Set.Ioi 1) := continuousOn_xiEndpointPhase hs0
+  have hP : ContinuousOn
+      (fun x : ℝ => (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2)
+      (Set.Ioi 1) := by
+    refine ContinuousOn.pow ?_ 2
+    refine ContinuousOn.mul (continuousOn_const.mul (continuousOn_xiAmplitude hs0 hs1)) ?_
+    exact continuous_besselJ0.comp_continuousOn (continuousOn_const.mul hxi)
+  have hD : ContinuousOn profileDensity (Set.Ioi 1) := by
+    have heq : ∀ x ∈ Set.Ioi (1 : ℝ), profileDensity x = profileWeight 0 x :=
+      fun x hx => (profileWeight_zero_eq hx).symm
+    refine ContinuousOn.congr ?_ heq
+    exact fun x hx =>
+      ((hasDerivAt_profileWeight (by norm_num) hx).continuousAt).continuousWithinAt
+  rw [show profileDiff s c = fun x : ℝ =>
+      (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2
+        - profileDensity x from by
+    funext x
+    rw [profileDiff]]
+  exact hP.sub hD
+
+theorem profileSqError_nonneg {s c α β : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hα : 1 < α)
+    (hαβ : α ≤ β) (hc : 0 < c) : 0 ≤ profileSqError s c α β := by
+  have hw : 0 < profileWeight s α := profileWeight_pos hs1 hα
+  have hamp : 0 < ampFourth s α := ampFourth_pos hs1 hα
+  have hpd : 0 ≤ profileDensity α := profileDensity_nonneg hα.le
+  have hn : (0 : ℝ) < α ^ 2 - s := by nlinarith
+  have hT : (0 : ℝ) < Real.sqrt (2 / Real.pi) := Real.sqrt_pos.mpr (by positivity)
+  have hs : (0 : ℝ) ≤ Real.sqrt (Real.sqrt (c * xiEndpointPhase s α)) := Real.sqrt_nonneg _
+  have hβα : (0 : ℝ) ≤ β - α := by linarith
+  rw [profileSqError]
+  have h1 : 0 ≤ 2 * profileWeight s α / c := by positivity
+  have h2 : 0 ≤ (2 * Real.sqrt (2 / Real.pi) * ampFourth s α
+      + 5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α)))
+    * (5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α))) * (β - α) := by
+    have hA : 0 ≤ 5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α)) := by
+      positivity
+    have hB : 0 ≤ 2 * Real.sqrt (2 / Real.pi) * ampFourth s α := by positivity
+    have := mul_nonneg (by linarith : (0 : ℝ) ≤ 2 * Real.sqrt (2 / Real.pi) * ampFourth s α
+      + 5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α))) hA
+    exact mul_nonneg this hβα
+  have h3 : 0 ≤ 3 * s * profileDensity α / (α ^ 2 - s) * (β - α) := by
+    have : 0 ≤ 3 * s * profileDensity α / (α ^ 2 - s) := by positivity
+    exact mul_nonneg this hβα
+  linarith
+
+/-- The interval bound, in the packaged form and uniform in the right endpoint. -/
+theorem abs_integral_profileDiff_le {s c α β t : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hα : 1 < α) (hαt : α ≤ t) (htβ : t ≤ β) (hc : 0 < c)
+    (hcxi : 1 ≤ c * xiEndpointPhase s α) :
+    |∫ x in α..t, profileDiff s c x| ≤ profileSqError s c α β := by
+  have hcontD : ContinuousOn (profileDiff s c) (Set.Ioi 1) := continuousOn_profileDiff hs0 hs1
+  have hsub : Set.uIcc α t ⊆ Set.Ioi 1 := by
+    rw [Set.uIcc_of_le hαt]
+    intro x hx
+    exact lt_of_lt_of_le hα hx.1
+  have hint : IntervalIntegrable (profileDiff s c) volume α t :=
+    (hcontD.mono hsub).intervalIntegrable
+  have hcontP : ContinuousOn
+      (fun x : ℝ => (Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) ^ 2)
+      (Set.uIcc α t) := by
+    refine ContinuousOn.pow ?_ 2
+    refine ContinuousOn.mul (continuousOn_const.mul
+      ((continuousOn_xiAmplitude hs0 hs1).mono hsub)) ?_
+    exact continuous_besselJ0.comp_continuousOn
+      (continuousOn_const.mul ((continuousOn_xiEndpointPhase hs0).mono hsub))
+  have hcontDens : ContinuousOn profileDensity (Set.uIcc α t) := by
+    have heq : ∀ x ∈ Set.uIcc α t, profileDensity x = profileWeight 0 x :=
+      fun x hx => (profileWeight_zero_eq (hsub hx)).symm
+    refine ContinuousOn.congr ?_ heq
+    exact fun x hx =>
+      ((hasDerivAt_profileWeight (by norm_num) (hsub hx)).continuousAt).continuousWithinAt
+  have hsplit : (∫ x in α..t, profileDiff s c x)
+      = (∫ x in α..t, (Real.sqrt c * xiAmplitude s x
+          * besselJ0 (c * xiEndpointPhase s x)) ^ 2) - ∫ x in α..t, profileDensity x := by
+    rw [← intervalIntegral.integral_sub hcontP.intervalIntegrable hcontDens.intervalIntegrable]
+    refine intervalIntegral.integral_congr ?_
+    intro x _
+    rw [profileDiff]
+  rw [hsplit]
+  have hmain := abs_integral_profileSq_sub_density_le hs0 hs1 hα hαt hc hcxi
+  refine le_trans hmain ?_
+  rw [profileSqError]
+  have hamp : 0 < ampFourth s α := ampFourth_pos hs1 hα
+  have hpd : 0 ≤ profileDensity α := profileDensity_nonneg hα.le
+  have hn : (0 : ℝ) < α ^ 2 - s := by nlinarith
+  have hT : (0 : ℝ) < Real.sqrt (2 / Real.pi) := Real.sqrt_pos.mpr (by positivity)
+  have hA : 0 ≤ 5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α)) := by
+    positivity
+  have hfac : 0 ≤ (2 * Real.sqrt (2 / Real.pi) * ampFourth s α
+      + 5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α)))
+    * (5 * ampFourth s α / Real.sqrt (Real.sqrt (c * xiEndpointPhase s α))) := by
+    refine mul_nonneg ?_ hA
+    have : 0 ≤ 2 * Real.sqrt (2 / Real.pi) * ampFourth s α := by positivity
+    linarith
+  have hdfac : 0 ≤ 3 * s * profileDensity α / (α ^ 2 - s) := by positivity
+  have h1 : (t - α) ≤ (β - α) := by linarith
+  nlinarith [mul_le_mul_of_nonneg_left h1 hfac, mul_le_mul_of_nonneg_left h1 hdfac]
+
+
+
+/-- **The weak form of `(10)`.**  For any test function with a continuous derivative on `[α, β]`,
+
+```text
+|int_α^β phi(x) (P(x)² - density(x)) dx| <= (|phi(β)| + int_α^β |phi'|) · profileSqError,
+```
+
+so the squared profile converges weakly to the limiting density: the right-hand side is `O(1/c)` plus
+`O(c^{-1/4})` for every fixed test function.  Only the fundamental theorem is used — the interval bound is
+uniform in the right endpoint, so the primitive of the difference is uniformly small and one integration by
+parts transfers that to the test function. -/
+theorem abs_integral_testFunction_profileDiff_le {s c α β : ℝ} {φ φ' : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hα : 1 < α) (hαβ : α ≤ β) (hc : 0 < c)
+    (hcxi : 1 ≤ c * xiEndpointPhase s α)
+    (hφ : ∀ x ∈ Set.uIcc α β, HasDerivAt φ (φ' x) x)
+    (hφ'c : ContinuousOn φ' (Set.uIcc α β)) :
+    |∫ x in α..β, φ x * profileDiff s c x|
+      ≤ (|φ β| + ∫ x in α..β, |φ' x|) * profileSqError s c α β := by
+  have hM : 0 ≤ profileSqError s c α β := profileSqError_nonneg hs0 hs1 hα hαβ hc
+  have hsub : Set.uIcc α β ⊆ Set.Ioi 1 := by
+    rw [Set.uIcc_of_le hαβ]
+    intro x hx
+    exact lt_of_lt_of_le hα hx.1
+  have hcontD : ContinuousOn (profileDiff s c) (Set.Ioi 1) := continuousOn_profileDiff hs0 hs1
+  have hDint : IntervalIntegrable (profileDiff s c) volume α β :=
+    (hcontD.mono hsub).intervalIntegrable
+  -- the primitive
+  have hF : ∀ t ∈ Set.uIcc α β,
+      HasDerivAt (fun u : ℝ => ∫ x in α..u, profileDiff s c x) (profileDiff s c t) t := by
+    intro t ht
+    have htIoi : t ∈ Set.Ioi (1 : ℝ) := hsub ht
+    have hsubt : Set.uIcc α t ⊆ Set.Ioi 1 := by
+      rw [Set.uIcc_of_le (by rw [Set.uIcc_of_le hαβ] at ht; exact ht.1)]
+      intro x hx
+      exact lt_of_lt_of_le hα hx.1
+    have hintt : IntervalIntegrable (profileDiff s c) volume α t :=
+      (hcontD.mono hsubt).intervalIntegrable
+    have hnhds : Set.Ioi (1 : ℝ) ∈ nhds t := isOpen_Ioi.mem_nhds htIoi
+    have hmeas : StronglyMeasurableAtFilter (profileDiff s c) (nhds t) :=
+      hcontD.stronglyMeasurableAtFilter isOpen_Ioi t htIoi
+    exact intervalIntegral.integral_hasDerivAt_right hintt hmeas (hcontD.continuousAt hnhds)
+  have hFcont : ContinuousOn (fun u : ℝ => ∫ x in α..u, profileDiff s c x) (Set.uIcc α β) :=
+    fun t ht => ((hF t ht).continuousAt).continuousWithinAt
+  have hφ'int : IntervalIntegrable φ' volume α β := hφ'c.intervalIntegrable
+  -- integration by parts
+  have hIBP := intervalIntegral.integral_mul_deriv_eq_deriv_mul (u := φ) (u' := φ')
+    (v := fun u : ℝ => ∫ x in α..u, profileDiff s c x) (v' := profileDiff s c)
+    (a := α) (b := β) hφ hF hφ'int hDint
+  have hzero : (∫ x in α..α, profileDiff s c x) = 0 := intervalIntegral.integral_same
+  rw [hzero, mul_zero, sub_zero] at hIBP
+  rw [hIBP]
+  -- bound the two pieces
+  have hFβ : |∫ x in α..β, profileDiff s c x| ≤ profileSqError s c α β :=
+    abs_integral_profileDiff_le hs0 hs1 hα hαβ (le_refl β) hc hcxi
+  have hb1 : |φ β * ∫ x in α..β, profileDiff s c x| ≤ |φ β| * profileSqError s c α β := by
+    rw [abs_mul]
+    exact mul_le_mul_of_nonneg_left hFβ (abs_nonneg _)
+  have hprodint : IntervalIntegrable
+      (fun x : ℝ => φ' x * ∫ y in α..x, profileDiff s c y) volume α β := by
+    refine ContinuousOn.intervalIntegrable ?_
+    exact hφ'c.mul hFcont
+  have habsint : IntervalIntegrable (fun x : ℝ => |φ' x| * profileSqError s c α β) volume α β := by
+    refine ContinuousOn.intervalIntegrable ?_
+    exact (hφ'c.abs).mul continuousOn_const
+  have hb2 : |∫ x in α..β, φ' x * ∫ y in α..x, profileDiff s c y|
+      ≤ (∫ x in α..β, |φ' x|) * profileSqError s c α β := by
+    have hstep : |∫ x in α..β, φ' x * ∫ y in α..x, profileDiff s c y|
+        ≤ ∫ x in α..β, |φ' x| * profileSqError s c α β := by
+      have h1 : |∫ x in α..β, φ' x * ∫ y in α..x, profileDiff s c y|
+          ≤ ∫ x in α..β, |φ' x * ∫ y in α..x, profileDiff s c y| := by
+        have h := intervalIntegral.norm_integral_le_integral_norm (μ := volume)
+          (f := fun x : ℝ => φ' x * ∫ y in α..x, profileDiff s c y) hαβ
+        simpa [Real.norm_eq_abs] using h
+      have h2 : (∫ x in α..β, |φ' x * ∫ y in α..x, profileDiff s c y|)
+          ≤ ∫ x in α..β, |φ' x| * profileSqError s c α β := by
+        refine intervalIntegral.integral_mono_on hαβ hprodint.abs habsint ?_
+        intro x hx
+        have hxmem : x ∈ Set.uIcc α β := by
+          rw [Set.uIcc_of_le hαβ]
+          exact hx
+        have hFx : |∫ y in α..x, profileDiff s c y| ≤ profileSqError s c α β :=
+          abs_integral_profileDiff_le hs0 hs1 hα hx.1 hx.2 hc hcxi
+        rw [abs_mul]
+        exact mul_le_mul_of_nonneg_left hFx (abs_nonneg _)
+      linarith
+    have hconstmul : (∫ x in α..β, |φ' x| * profileSqError s c α β)
+        = (∫ x in α..β, |φ' x|) * profileSqError s c α β := by
+      rw [intervalIntegral.integral_mul_const]
+    linarith [hstep, hconstmul.le, hconstmul.ge]
+  have htri : |φ β * (∫ x in α..β, profileDiff s c x)
+      - ∫ x in α..β, φ' x * ∫ y in α..x, profileDiff s c y|
+      ≤ |φ β * ∫ x in α..β, profileDiff s c x|
+        + |∫ x in α..β, φ' x * ∫ y in α..x, profileDiff s c y| := by
+    have := abs_add_le (φ β * (∫ x in α..β, profileDiff s c x))
+      (-(∫ x in α..β, φ' x * ∫ y in α..x, profileDiff s c y))
+    rw [abs_neg] at this
+    calc |φ β * (∫ x in α..β, profileDiff s c x)
+        - ∫ x in α..β, φ' x * ∫ y in α..x, profileDiff s c y|
+        = |φ β * (∫ x in α..β, profileDiff s c x)
+          + -(∫ x in α..β, φ' x * ∫ y in α..x, profileDiff s c y)| := by
+          rw [sub_eq_add_neg]
+      _ ≤ _ := this
+  have hexp : (|φ β| + ∫ x in α..β, |φ' x|) * profileSqError s c α β
+      = |φ β| * profileSqError s c α β
+        + (∫ x in α..β, |φ' x|) * profileSqError s c α β := by ring
+  rw [hexp]
+  linarith [htri, hb1, hb2]
+
+
 end GaloisForLFunctions.RHTower
 
 end

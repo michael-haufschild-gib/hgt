@@ -241,6 +241,37 @@ It also cannot supply the non-scalar class conjectured by
 identically.  A transverse Frobenius class must retain the failure of local homotopies to glue
 across source charts, not merely their scalar anomaly values.
 
+The source-pointed Calderón--Witt relation-kernel calibrator also does not create a second radical.
+It is nonzero and vector-valued, but its completed Green ray is `D(s) tau_p`, and the exact
+logarithmic transition is
+
+```text
+c_(p,e)=(1-p^(-1))^3 p^(-e) log p > 0,
+c_(p,e) D(s) tau_p = log(A_(p,e)(s)) tau_p.
+```
+
+Hence `D(s)tau_p=0 iff A_(p,e)(s)=1`.  Relation-kernel transgression supplies a
+coefficient-faithful **carrier** for the horizontal class, not an independent **annihilation
+law**.  Atlas rank must count the latter.  Its open singular relative arithmetic vanishing theorem
+would be a genuinely new law; the calibrator and comparison already constructed do not imply it.
+
+This forces a typed, rather than route-labelled, Frankenstein architecture:
+
+| Proof role | Corpus organs | Status |
+|---|---|---|
+| horizontal carrier / detector | R anomaly and Green provenance; L monodromy; CCM Bockstein; Calderón--Witt `tau_p`; singular Gamma sector | many coefficient-faithful realizations closed; one source-isogeny radical |
+| unconditional source-zero producer | singular relative relation-kernel boundary, Route E central relation/flux, CCM-FU Ward incidence, or source-exact C1 comparison | **none closed** |
+| singular admission / domain | R variable ideal, L Hellinger--Hodge graph domain, C1 common domain, N prime-normal domain | route-specific open cores |
+| non-erasure / joint faithfulness | ordinary-prime pointings, resolved provenance, trace-one atoms, moment/sector detectors | substantial closed infrastructure |
+| completion / exhaustion | D2, G, O, P, Q and cofinal parts of CCM-FU | mixed; several exact open tails |
+
+Current atlas therefore has obstruction rank one and proved source-vanishing rank zero.  Adding
+another detector, target dimension, Kummer depth, positive metric, or equivalent radical cannot
+change that.  A proof needs one source identity `z_src=0` and a singular coefficient-faithful map
+`z_src |-> D_rho tau_p` (or a jointly faithful equivalent carrier).  This is the precise sense in
+which the final route can be Frankenstein: different routes provide different proof roles, not a
+serial chain or a bag of parallel RH criteria.
+
 The corrected atlas census is:
 
 - one **horizontal-character class** contains Route R's nonseparable prime/depth anomaly and
@@ -5628,8 +5659,9 @@ The cited primary sources close no Tier-1 or Tier-2 open core above.
 
 ### Highest expected leverage
 
-1. Route R graded variable-ideal singular Cartier comparison from the strict rational-adelic
-   prime-isotropy boundary and positive resolved frame to the fixed physical Xi fibre;
+1. Route R source-derived global nonerasure for both Gamma orientations of the now-constructed
+   graded variable-ideal comparison from retained rational-adelic prime-isotropy boundary through
+   positive resolved frame to fixed physical Xi trace quotient;
 2. C1-CCM bivariant/intersection trace pairing, Hodge sign, and Weil-form identification on the
    now-exact closed nonunital strong cyclic quotient;
 3. Route L singular source-to-physical specialization through the exact Burnol/Deninger radial
@@ -5695,10 +5727,13 @@ The first unresolved theorem is therefore route-dependent but consistently pre-s
 - Route R has a source-derived, sign-indefinite, nonseparable arithmetic differential before
   vertex gauge and frequency separation, plus a genuine rational-adelic relative complex,
   retained ordinary-prime `H1` class, normalized source Stokes period, and strict resolved-Xi
-  chain map with unconditional `D1 D0=0`.  The strict image is a target boundary.  It now needs a
-  graded variable-ideal, coefficient-faithful singular Cartier comparison retaining that chosen
-  Xi primitive and the graded `ell1` subobject and identifying the positive resolved frame with
-  the fixed physical fibre; an ordinary cohomology chain map or fixed Hilbert ideal cannot do so.
+  chain map with unconditional `D1 D0=0`.  The strict image is a target boundary.  The maximal
+  pullback ideal, quotient isomorphism to fixed `ell1`, full complex resolved coefficient line,
+  actual Stokes-to-Xi map, leading-jet reporter square, physical specialization, and Gamma-reflected
+  specialization are now constructed and formalized.  Resolved coefficient is unconditionally
+  nonzero.  Physical nonerasure has exact walls `t<=0` and `0<=t`, so simultaneous nonerasure is
+  RH.  First open theorem is now source-derived global nonerasure in both orientations; it may not
+  be asserted as coefficient faithfulness or obtained by pulling back the target norm.
 - Retired Route J has no open premise. A different pre-projection principal-relative current is a
   corpus-native new-route candidate; it belongs to Route R only if its literal source and handoff
   are the existing Route-R construction.
@@ -5740,7 +5775,8 @@ unfinished connector whose completion would prove RH.
 The external literature audited through 4 August 2026 contributes useful finite spectral,
 sieve, Hedenmalm, Suzuki, Möbius-moment, and Deninger/Connes infrastructure. Where a theorem was
 both unconditional and useful, the corpus has formalized or scheduled its precise reusable
-content. No located primary source supplies Route R's singular Cartier comparison, C1-CCM's
+content. No located primary source supplies Route R's global two-orientation source nonerasure
+law, C1-CCM's
 positive bivariant/intersection pairing on the exact recipient, the post-J pre-projection current,
 Route L's physical source-null-homology, CCM-FU's prelimit noncompact Ward incidence, Route E's
 explicit physical `R_X` and central-Hall/co-moving-flux theorem, or another live route's first open
@@ -5754,7 +5790,8 @@ the moving-prime comparison for `n≥19` is open.
 > **Current frontier:** source, resolved landing, positive transported geometry, strict
 > prime-isotropy provenance, literal physical comparison, and nonzero source detectors are largely
 > built. What is not built is an arithmetic law forcing the retained reflection-odd horizontal
-> class to vanish before scalarization. Route R asks for variable-ideal singular Cartier descent;
+> class to vanish before scalarization. Route R asks for source-derived global nonerasure of both
+> constructed variable-ideal physical specializations;
 > Route L for physical source-null-homology; CCM-FU for a moving noncompact four-unit Ward
 > incidence; C1-CCM for the positive intersection pairing. These are distinct realizations of one
 > polarized-conservativity problem, not interchangeable routine lemmas.

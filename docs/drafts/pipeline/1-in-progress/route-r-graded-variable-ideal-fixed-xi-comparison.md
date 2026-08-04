@@ -3,7 +3,7 @@
 - **ID:** `route-r-graded-variable-ideal-fixed-xi-comparison`
 - **Stage:** 1 — in progress
 - **Type:** CONJECTURE RESEARCH / RH-BEARING SOURCE PRODUCER
-- **Status:** `[RAW COMPARISON PROVED ON PAPER] [COEFFICIENT-FAITHFULNESS CLASSIFIED] [OPEN SOURCE NONERASURE] [NOT RH]`
+- **Status:** `[RAW COMPARISON FORMALIZED] [RESOLVED COEFFICIENT LANDING FORMALIZED] [PHYSICAL NONERASURE CLASSIFIED] [OPEN GLOBAL NONERASURE] [NOT RH]`
 - **Parents:**
   - `route-r-source-positive-polarization-stokes-flatness.md`;
   - `../3-formalized/new_scientific_knowledge/ccm/rational-adelic-prime-isotropy-relative-xi-chain-map.md`;
@@ -32,9 +32,11 @@ orientations as the sole RH-bearing theorem left after the construction.
 - [x] 0 → 1 in-progress: exact source-pure target, construction, and generalized-prime falsifier
 - [x] internal Route-R and failed-mechanism audit
 - [x] raw variable-ideal comparison and coefficient classification proved on paper
-- [ ] formalize the dependency-closed comparison and classification in Lean
-- [ ] construct source-derived nonerasure of the retained rational-adelic class in both
-  orientations
+- [x] formalize the dependency-closed comparison and classification in Lean
+- [x] construct coefficient-faithful source Stokes landing in explicit variable-ideal resolved
+  frame and prove strict resolved-boundary reporter square
+- [x] construct both fixed physical orientation maps and classify exact nonerasure half-grades
+- [ ] prove global physical nonerasure of the retained rational-adelic class in both orientations
 - [ ] deduce the fixed same-fibre Xi comparison and RH
 
 ## Fixed physical ideal and raw reflected character
@@ -146,6 +148,53 @@ conjunction is `t=0`.
 No Xi zero, critical-line hypothesis, norm-conservative action, or post-selected topology occurs
 in this proof.
 
+## Constructed source and physical comparisons
+
+For every ordinary prime `p` and actual Xi divisor copy `rho`, let
+
+```text
+c_rho = XiC^(m_rho)(rho) != 0,
+t_rho = 2 Re(rho)-1.
+```
+
+The period-one Stokes regulator `Reg_p : H1_p -> C` now gives the explicit variable-ideal resolved
+frame map
+
+```text
+S_(p,rho) : H1_p -> J_(t_rho) x C,
+S_(p,rho)(x) = (0, Reg_p(x) c_rho).                        (GV6)
+```
+
+On the retained rational-adelic class `eta_p`, `Reg_p(eta_p)=1`, so
+
+```text
+S_(p,rho)(eta_p) = (0,c_rho) != 0.                         (GV7)
+```
+
+This is unconditional coefficient faithfulness before physical quotienting.  Its coefficient
+reporter equals the second coordinate of the already constructed strict positive-resolved Xi
+boundary at the depth-zero/depth-one cells over `p`; hence `(GV6)` is not a detached scalar model.
+It carries the exact prime-localized, multiplicity-leading Xi conormal coefficient.
+
+Physical specialization is
+
+```text
+P_t(a,c) = c [F_(-t)] in S/I.                              (GV8)
+```
+
+The composite `P_(t_rho) S_(p,rho)` is the constructed fixed same-fibre physical comparison.  It
+sends the retained class to
+
+```text
+c_rho [F_(-t_rho)].                                        (GV9)
+```
+
+The Gamma-reflected construction sends it to `c_rho [F_(t_rho)]`.  Since `c_rho!=0`, the first
+physical landing is nonzero exactly when `t_rho<=0`, and the reflected landing is nonzero exactly
+when `0<=t_rho`.  Both are nonzero exactly when `Re(rho)=1/2`.  Globally, simultaneous physical
+coefficient faithfulness is formally proved equivalent to RH.  Crucially, neither map nor the
+resolved nonzero landing assumes that global property.
+
 ## Actual Xi consequence and exact open core
 
 For an actual divisor copy `rho`, put
@@ -159,16 +208,14 @@ copy with grade `-t_rho`.  Hence a source-first theorem carrying the two retaine
 rational-adelic classes through `(GV2)` without coefficient erasure forces `t_rho<=0` and
 `-t_rho<=0`, so `t_rho=0`.
 
-`[OPEN CORE] [RATIONAL_ADELIC_STOKES_FIXED_IDEAL_NONERASURE]`
+`[OPEN CORE] [RATIONAL_ADELIC_STOKES_FIXED_IDEAL_GLOBAL_NONERASURE]`
 
-> Construct before divisor specialization a morphism from the actual relative prime-isotropy
-> complex, equipped with its bilateral period-one Stokes regulator, to the family `E_t` such that:
-> (1) the retained class maps to `e_t`; (2) the existing strict resolved Xi chain map is recovered
-> before physical quotienting; (3) the coefficient map is exactly the source Stokes regulator;
-> (4) singular Cartier base change is natural under Gamma reflection; and (5) the realization
-> `q_t` is nonerasing on that class.  Clauses (1)--(4) must be proved for the full real grade family.
-> Clause (5) may not be inserted as a target axiom or inferred from criticality; it must follow
-> from a source theorem that fails on off-line generalized-prime carriers.
+> Prove from pre-divisor rational-adelic/Gamma source structure that both constructed physical
+> maps `(GV8)` retain `(GV7)` at every actual Xi divisor.  Map construction, exact leading-jet
+> landing, strict resolved reporter compatibility, both Gamma orientations, and their complete
+> nonerasure classification are finished.  Global nonerasure may not be inserted as a target
+> axiom, inferred from criticality, or obtained by pulling a norm back through `(GV8)`; it must be
+> a source theorem that fails on off-line generalized-prime carriers.
 
 The existing norm-conservative source-character selector is the consumer after this theorem, not
 the producer.  Calling `q_t` norm-conservative or coefficient-faithful by definition would assume
@@ -203,7 +250,11 @@ the conclusion.
   grade-dependent pullback ideal throughout the Xi strip.  Missing scientific knowledge is the
   source-derived theorem identifying the retained period-one Stokes coefficient with a nonzero
   class in the fixed physical ideal quotient in both Gamma orientations.
-- **Status:** raw theorem paper-proved; Lean formalization pending; source nonerasure open.
+- **Status:** raw quotient equivalence, actual source Stokes map, resolved-frame coefficient
+  faithfulness, strict reporter square, fixed physical specialization, reflection, local sign
+  classification, and global RH equivalence are formalized unconditionally in
+  `PrimeFirstTraceGradedVariableIdealFixedXiComparison.lean`; global source-derived physical
+  nonerasure remains open.
 
 ## Log
 
