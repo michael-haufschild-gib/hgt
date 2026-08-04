@@ -2955,6 +2955,7 @@ import GaloisForLFunctions.RHTower.ProjectiveWeightedBoundedDensityQuantile
 import GaloisForLFunctions.RHTower.ProjectiveWeightedTargetVolumeLower
 import GaloisForLFunctions.RHTower.ProlateBandSymmetric
 import GaloisForLFunctions.RHTower.ProlateDiagonalization
+import GaloisForLFunctions.RHTower.ProlateL2Family
 import GaloisForLFunctions.RHTower.ProlateL2Operator
 import GaloisForLFunctions.RHTower.ProlateOneTurningVariation
 import GaloisForLFunctions.RHTower.ProlateParityWeightUniform
@@ -3469,6 +3470,7 @@ import GaloisForLFunctions.RHTower.Sieve.UnweightedCorrelation
 import GaloisForLFunctions.RHTower.Sieve.MoebiusUnweighted
 import GaloisForLFunctions.RHTower.Sieve.Step1FromCorrelation
 import GaloisForLFunctions.RHTower.Sieve.Step1Explicit
+import GaloisForLFunctions.RHTower.Sieve.DirichletMeasureLargeValues
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment

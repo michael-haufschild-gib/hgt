@@ -4846,3 +4846,4 @@ import GaloisForLFunctions.HTGeometry.FiniteRegularityConformalProbe
 import GaloisForLFunctions.HTGeometry.WaveEnergyGreenIdentity
 import GaloisForLFunctions.HTGeometry.WaveDirectionalCalculus
 import GaloisForLFunctions.HTGeometry.WaveEnergyFlux
+import GaloisForLFunctions.HTGeometry.WaveEnergyDerivative

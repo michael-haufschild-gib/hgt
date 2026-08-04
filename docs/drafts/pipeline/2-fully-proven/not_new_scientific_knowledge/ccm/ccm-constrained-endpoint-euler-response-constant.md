@@ -437,11 +437,35 @@ compact symmetric family, which mathlib does not have.  Three new modules:
   operator with a simple nonzero eigenvalue, perturbed differentiably, has a differentiable branch with a
   normalized eigenvector and `nu'(c_0) = ⟪psi_0, w⟫`.
 
-All of it is unconditional and axiom-clean (`propext, Classical.choice, Quot.sound`).  What the card still
-imports is therefore only the classical asymptotic input — the differentiated fixed-mode (Fuchs) expansion
-`(9)` and the constrained limit `(12)` — together with the Hilbert-space realisation of the concrete band
-operator `bandTransform` as a compact symmetric operator on `L²[-1, 1]`, which is what would let the abstract
-branch theorem be instantiated on the prolate family rather than merely applied to it.
+All of it is unconditional and axiom-clean (`propext, Classical.choice, Quot.sound`).
+
+**The abstract branch theorem is now instantiated on the actual band operator**, in two further modules:
+
+- `RHTower/ProlateL2Operator.lean` — the band operator as a bounded operator on the *real* Hilbert space
+  `L²[-1, 1]`.  `continuousKernelOperator` sends a continuous kernel on the square to an operator, by way of
+  the field form of the Hilbert–Schmidt kernel theorem (generalised in `FiniteTimeBandFourierCompact` from `ℂ`
+  to any `RCLike` field for this purpose), so `isCompactOperator_continuousKernelOperator` is immediate and
+  `continuousKernelOperator_symmetric` is Fubini for a bounded kernel against two `L¹` functions.  Also proved
+  here: the values are the inner products against the kernel rows (`continuousKernelOperator_coeFn_inner`),
+  whence `norm_le_of_kernel_repr : ‖B‖ ≤ (b-a)‖G‖` for any operator represented by a continuous kernel `G`
+  — Cauchy–Schwarz pointwise, then one factor `√(b-a)` for each of the row norm and the output `L²` norm.
+  Specialised to the smoothed sinc kernel: `isCompactOperator_bandOperatorL2`, `bandOperatorL2_symmetric`.
+
+- `RHTower/ProlateL2Family.lean` — the aperture dependence.  The uniform second-order kernel bound
+  `abs_sincSmooth_taylor_le` transfers to operator norm through `norm_le_of_kernel_repr` (a linear combination
+  of kernel operators is the kernel operator of the combination, `coeFn_comb_inner`), giving
+  `‖B(c+h) - B(c) - h · Cos_c‖ ≤ 4h²/pi`; hence `hasDerivAt_bandOperatorL2`, and with the Lipschitz bound
+  `‖Cos_{c₁} - Cos_{c₂}‖ ≤ (4/pi)|c₁ - c₂|` the family is `C¹`, hence strictly differentiable, hence — via
+  `HasStrictFDerivAt.clm_apply` — jointly strictly differentiable in `(c, phi)` in exactly the split form the
+  branch theorem consumes.  The capstone `exists_bandOperatorL2_branch` reads: *a simple nonzero eigenvalue of
+  the band operator, with normalized eigenfunction, extends to a differentiable branch of normalized
+  eigenpairs with* `nu'(c_0) = ⟪psi_0, Cos_{c_0} psi_0⟫`.
+
+So the spectral half of `(4)`–`(5)` is now proved for the operator itself, not assumed.  What the card still
+imports is the classical asymptotic input — the differentiated fixed-mode (Fuchs) expansion `(9)` and the
+constrained limit `(12)` — plus one dictionary entry: that an `L²` eigenfunction of `bandOperatorL2` has a
+continuous representative satisfying the pointwise `bandTransform` eigenrelation (kernel-smoothing regularity),
+which is what would carry the branch statement over to the classical prolate functions.
 
 ## Lean gates
 
@@ -459,8 +483,11 @@ branch theorem be instantiated on the prolate family rather than merely applied 
 - [x] Lean: existence of a differentiable simple branch with normalized eigenfunction — Kato-type
   perturbation theory for a compact symmetric family, absent from mathlib: bordered system, implicit function
   theorem for the eigen-residual, and the Fredholm construction of the pseudo-inverse
-- [ ] Lean: the concrete band operator `bandTransform` realised as a compact symmetric operator on
-  `L²[-1, 1]`, which instantiates the branch theorem on the prolate family
+- [x] Lean: the concrete band operator realised as a compact symmetric operator on real `L²[-1, 1]`,
+  differentiable in the aperture, with the branch theorem instantiated on it
+  (`exists_bandOperatorL2_branch`)
+- [ ] Lean: the regularity dictionary — an `L²` eigenfunction of the band operator has a continuous
+  representative satisfying the pointwise `bandTransform` eigenrelation
 - [ ] Lean: the differentiated fixed-mode (Fuchs) expansion `(9)` — imported classical asymptotics
 - [ ] Lean: the constrained limit `(12)` and the response constants `(13)`–`(18)`
 

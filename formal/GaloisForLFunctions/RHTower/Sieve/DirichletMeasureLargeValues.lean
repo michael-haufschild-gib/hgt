@@ -89,4 +89,72 @@ theorem volume_largeValues_Icc_le (N : ℕ) (a : Fin N → ℂ) {T V : ℝ} (hT 
   have hVsq : (0 : ℝ) ≤ V ^ 2 := by positivity
   exact le_trans (mul_le_mul_of_nonneg_left hreal hVsq) (volume_largeValues_le N a hT hV)
 
+/-- **The small values are handled by the threshold, the large ones by the sup.**  Splitting the
+frequency range at `V` costs `V·T` on the small side and `M` times the measure of the level set on
+the large one. -/
+theorem integral_norm_dirPoly_le_of_sup (N : ℕ) (a : Fin N → ℂ) {T V M : ℝ} (hT : 0 ≤ T)
+    (hV : 0 ≤ V) (hM : ∀ t : ℝ, ‖dirPoly N a t‖ ≤ M) :
+    ∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖
+      ≤ V * T + M * volume.real {t ∈ Set.Ioc (0 : ℝ) T | V ≤ ‖dirPoly N a t‖} := by
+  classical
+  have hFc : Continuous fun t : ℝ => ‖dirPoly N a t‖ := (continuous_dirPoly N a).norm
+  have hlev : MeasurableSet {t : ℝ | V ≤ ‖dirPoly N a t‖} :=
+    measurableSet_le measurable_const hFc.measurable
+  have hIocm : MeasurableSet (Set.Ioc (0 : ℝ) T) := measurableSet_Ioc
+  have hIocfin : volume (Set.Ioc (0 : ℝ) T) ≠ ⊤ := by simp
+  have hconst : IntegrableOn (fun _ : ℝ => V) (Set.Ioc (0 : ℝ) T) :=
+    integrableOn_const hIocfin (by simp)
+  have hindint : IntegrableOn (Set.indicator {t : ℝ | V ≤ ‖dirPoly N a t‖} fun _ : ℝ => M)
+      (Set.Ioc (0 : ℝ) T) :=
+    (integrableOn_const (s := Set.Ioc (0 : ℝ) T) (μ := volume) (C := M) hIocfin
+      (by simp)).indicator hlev
+  have hbound : ∀ t ∈ Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖
+      ≤ ((fun _ : ℝ => V) + Set.indicator {t : ℝ | V ≤ ‖dirPoly N a t‖} fun _ : ℝ => M) t := by
+    intro t _
+    simp only [Pi.add_apply]
+    by_cases h : V ≤ ‖dirPoly N a t‖
+    · rw [Set.indicator_of_mem (show t ∈ {t : ℝ | V ≤ ‖dirPoly N a t‖} from h)]
+      have := hM t
+      linarith
+    · rw [Set.indicator_of_notMem (show t ∉ {t : ℝ | V ≤ ‖dirPoly N a t‖} from h)]
+      simp only [add_zero]
+      exact le_of_lt (not_le.1 h)
+  have hstep := setIntegral_mono_on hFc.integrableOn_Ioc (hconst.add hindint) hIocm hbound
+  simp only [Pi.add_apply] at hstep
+  rw [MeasureTheory.integral_add hconst hindint, setIntegral_const,
+    setIntegral_indicator hlev, setIntegral_const] at hstep
+  have hvol : volume.real (Set.Ioc (0 : ℝ) T) = T := by
+    rw [measureReal_def, Real.volume_Ioc, ENNReal.toReal_ofReal (by linarith)]
+    ring
+  have hinter : Set.Ioc (0 : ℝ) T ∩ {t : ℝ | V ≤ ‖dirPoly N a t‖}
+      = {t ∈ Set.Ioc (0 : ℝ) T | V ≤ ‖dirPoly N a t‖} := rfl
+  rw [hvol, hinter, smul_eq_mul, smul_eq_mul, mul_comm T V, mul_comm _ M] at hstep
+  exact hstep
+
+/-- **The mean-value form of the Halász bound.**  A uniform sup `M` on a Dirichlet polynomial and the
+mean value theorem together bound its first moment: for every threshold `V > 0`,
+
+    ∫₀^T |F| ≤ V·T + M·(T + 4N(1 + log N))·∑|a_n|² / V².
+
+Only the *measure* of the large-value set is used, so no spacing hypothesis and no pointwise decay
+at an individual frequency is needed. -/
+theorem integral_norm_dirPoly_halasz (N : ℕ) (a : Fin N → ℂ) {T V M : ℝ} (hT : 0 ≤ T) (hV : 0 < V)
+    (hM : ∀ t : ℝ, ‖dirPoly N a t‖ ≤ M) :
+    ∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖
+      ≤ V * T
+        + M * ((T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖a m‖ ^ 2) / V ^ 2 := by
+  have hM0 : 0 ≤ M := le_trans (norm_nonneg _) (hM 0)
+  have hV2 : (0 : ℝ) < V ^ 2 := by positivity
+  have hlev := volume_largeValues_le N a hT hV.le
+  have hmeas : volume.real {t ∈ Set.Ioc (0 : ℝ) T | V ≤ ‖dirPoly N a t‖}
+      ≤ ((T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖a m‖ ^ 2) / V ^ 2 := by
+    rw [le_div_iff₀ hV2]
+    linarith [hlev]
+  refine le_trans (integral_norm_dirPoly_le_of_sup N a hT hV.le hM) ?_
+  have := mul_le_mul_of_nonneg_left hmeas hM0
+  have hdiv : M * (((T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖a m‖ ^ 2) / V ^ 2)
+      = M * ((T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖a m‖ ^ 2) / V ^ 2 := by
+    ring
+  linarith [hdiv ▸ this]
+
 end RHTower.Sieve

@@ -69,29 +69,45 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 6 | the clock equation and the energy density | `SolvesWaveEq`, `energyDensity` | **built** |
 | 7 | product/sum rules for a directional derivative | `dirDeriv_mul`, `dirDeriv_sq`, `dirDeriv_add`, `dirDeriv_sum` | **built** |
 | 8 | the pointwise expansion of `∂ₜ(energy density)` | `dirDeriv_energyDensity` | **built** |
-| 9 | the flux identity `∫∂ₜ(energy density) = 2∫(V+1)·u·∂ₜu` | — | next |
-| 10 | differentiation under the integral: `HasDerivAt (waveEnergy u) …` | — | next |
+| 9 | the flux identity `∫∂ₜ(energy density) = 2∫(V+1)·u·∂ₜu` | `integral_dirDeriv_energyDensity` (with `slice`, `contDiff_slice`, `hasCompactSupport_slice`, `dirDeriv_zero_of_notMem`) | **built** |
+| 10 | differentiation under the integral | `waveEnergy`, `hasDerivAt_waveEnergy` (with `hasDerivAt_timeSlice`, `contDiff_energyDensity`, `energyDensity_zero_of_notMem`, `hasCompactSupport_energyDensity_slice`) | **built** |
 | 11 | the Grönwall estimate | — | next |
 | 12 | uniqueness for the Cauchy problem | — | next |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
-`WaveEnergyFlux.lean` (6–8). All wired into the umbrella; axioms
+`WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10). All wired into the umbrella; axioms
 `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
 
-Statements 1–8 are complete: the Green identity, the whole directional calculus on time-space
-including the symmetry of mixed partials, and the pointwise expansion
+Statements 1–9 are complete, and 9 is the mathematical heart:
 
-`∂ₜ(energy density) = 2∂ₜu·∂ₜ²u + ∑ᵢ2∂ᵢu·∂ₜ∂ᵢu + 2u·∂ₜu`.
+`∫ ∂ₜ(energy density) = 2 ∫ (V+1)·u·∂ₜu`
 
-What remains is bookkeeping of a known shape: substitute the equation into the first term, move the
-`∂ₜ` past the `∂ᵢ` by `dirDeriv_comm` in the second, apply `integral_laplacian_mul` to cancel the
-two, then differentiate under the integral (`hasDerivAt_integral_of_dominated_loc_of_deriv_le`, the
-dominating function being the supremum of the continuous integrand on `Icc (t-1) (t+1) ×ˢ K` times
-the indicator of `K`) and close with `norm_le_gronwallBound_of_norm_deriv_right_le`.
+for a smooth field with spatial support in a fixed compact set solving `∂ₜ²u = Δu + Vu`. The two
+derivative terms cancel exactly — the equation turns `∂ₜu·∂ₜ²u` into `∂ₜu·(Δu+Vu)`, `dirDeriv_comm`
+turns `∑ᵢ∂ᵢu·∂ₜ∂ᵢu` into `∑ᵢ∂ᵢu·∂ᵢ∂ₜu`, and `integral_laplacian_mul` identifies the latter with
+`-∫Δu·∂ₜu`. No derivative of `u` survives on the right, which is exactly what makes the estimate
+closed.
+
+Statement 10 is also complete: `hasDerivAt_waveEnergy` differentiates the energy under the integral
+sign, the domination being `Set.indicator K (fun _ => C)` with `C` the supremum of the continuous
+time derivative of the energy density on the compact `Icc (t-1) (t+1) ×ˢ K`.
+
+What remains (11–12):
+
+* combine 9 and 10 into `E'(t) = 2∫(V+1)·u·∂ₜu`, bound it pointwise by
+  `2|(V+1)·u·∂ₜu| ≤ (M+1)·(u² + (∂ₜu)²) ≤ (M+1)·(energy density)` for `|V| ≤ M`, integrate
+  (`norm_integral_le_integral_norm` and monotonicity), and apply
+  `norm_le_gronwallBound_of_norm_deriv_right_le` with `ε = 0` to get
+  `E(t) ≤ E(0)·exp((M+1)t)` for `t ≥ 0`;
+* uniqueness: the difference of two solutions solves the same linear equation, has zero energy at
+  `t = 0`, hence zero energy for all `t ≥ 0`; a nonnegative continuous integrand with zero integral
+  vanishes, and the energy density dominates `u²`.
 
 ## Log
+- 2026-08-04 — statement 10 (differentiation under the integral) formalized; 11–12 remain.
+- 2026-08-04 — statement 9 (the flux identity) formalized; 10–12 remain.
 - 2026-08-04 — statements 1–8 formalized in three modules (Green identity, directional calculus,
   pointwise flux expansion); 9–12 remain.
 - 2026-08-04 — created in 1-in-progress; mathlib inputs verified present

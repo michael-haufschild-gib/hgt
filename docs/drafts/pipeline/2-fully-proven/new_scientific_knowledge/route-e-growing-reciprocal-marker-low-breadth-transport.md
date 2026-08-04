@@ -4069,3 +4069,30 @@ Both are unconditional as implications: `#print axioms` gives
 Step 1 of the Hall-law argument is therefore a single theorem with exactly one hypothesis, in each
 of the two shapes the published input can take. `card_le_good_add_correlation` and
 `card_le_good_add_explicit` are no longer leaves.
+
+### Toward the external input — the measure of large values, and the mean-value form of Halász
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/DirichletMeasureLargeValues.lean`.
+
+The card's one remaining input is a short-interval mean square for Möbius. The corpus's route to it
+runs through Halász's method, and the pointwise Euler estimate is proved unable to decay: it needs
+`D² > ∑1/p + ∑1/p²`, while `D² = ∑1/p + ∑cos(t log p)/p` leaves `∑1/p² − ∑cos(t log p)/p`, which the
+uniform frequency bound makes `O(log log T)` but never negative. Halász's actual argument averages
+over `t` instead. These are the first bricks of that average.
+
+- `volume_largeValues_le` — **`V²·|{t ∈ (0,T] : |F(t)| ≥ V}| ≤ (T + 4N(1 + log N))∑|a_n|²`**:
+  Chebyshev's inequality applied to the corpus's integral mean value theorem. Unlike
+  `DirichletLargeValuesCount.card_largeValues_le`, no spacing hypothesis and no choice of test points
+  enters — the level set is measured directly, which is what an averaging argument needs.
+- `volume_largeValues_Icc_le` — the same on the closed interval.
+- `integral_norm_dirPoly_le_of_sup` — splitting the frequency range at `V`:
+  `∫₀^T |F| ≤ V·T + M·|{|F| ≥ V}|` for any uniform sup `M`.
+- `integral_norm_dirPoly_halasz` — the two combined:
+
+      ∫₀^T |F| ≤ V·T + M·(T + 4N(1 + log N))·∑|a_n|² / V².
+
+  This is the mean-value shape: the small frequencies are paid for by the threshold and the large
+  ones by their measure, so no pointwise decay at any individual frequency is required.
+
+All four are unconditional (`[propext, Classical.choice, Quot.sound]`) and wired into
+`GaloisForLFunctions.RHTower`.

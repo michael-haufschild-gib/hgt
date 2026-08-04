@@ -72,7 +72,7 @@ theorem scaleHom_towerMonomial (a : ℕ → ℂ) (k : ℕ) :
   | succ k ih =>
       rw [towerMonomial_succ, map_mul, ih, scaleHom_X,
         Finset.prod_Icc_succ_top (by omega : 1 ≤ k + 1)]
-      simp only [map_mul, towerMonomial_succ]
+      simp only [map_mul]
       ring
 
 /-- The weight identity behind the conjugation. -/
@@ -89,7 +89,8 @@ theorem scale_weight_identity (a : ℕ → ℂ) (k : ℕ) :
 
 theorem scaledDerivation_C_mul (a : ℕ → ℂ) (c : ℂ) (P : MvPolynomial ℕ ℂ) :
     scaledDerivation a (MvPolynomial.C c * P) = MvPolynomial.C c * scaledDerivation a P := by
-  rw [← MvPolynomial.smul_eq_C_mul, ← MvPolynomial.smul_eq_C_mul, map_smul]
+  rw [← MvPolynomial.smul_eq_C_mul, ← MvPolynomial.smul_eq_C_mul]
+  simp
 
 /-- **The conjugation identity.**  The scaled model derivation is the tower's, conjugated by the
 scaling automorphism and rescaled by `a 0`. -/
@@ -120,13 +121,63 @@ theorem scaledDerivation_scaleHom (a : ℕ → ℂ) (P : MvPolynomial ℕ ℂ) :
       have hR : scaleHom a (towerDerivation (p * MvPolynomial.X k))
           = scaleHom a p * (MvPolynomial.C (∏ j ∈ Finset.Icc 1 k, a j) * towerMonomial k)
             + (MvPolynomial.C (a k) * MvPolynomial.X k) * scaleHom a (towerDerivation p) := by
-        rw [Derivation.leibniz, towerDerivation_X, map_add, map_mul, map_mul, scaleHom_X,
-          scaleHom_towerMonomial]
-        simp only [smul_eq_mul]
-      have hw : MvPolynomial.C (a k) * MvPolynomial.C (scaleWeight a k)
+        rw [Derivation.leibniz, towerDerivation_X]
+        simp only [smul_eq_mul, map_add, map_mul, scaleHom_X, scaleHom_towerMonomial]
+      have hw : (MvPolynomial.C (a k) : MvPolynomial ℕ ℂ) * MvPolynomial.C (scaleWeight a k)
           = MvPolynomial.C (a 0) * MvPolynomial.C (∏ j ∈ Finset.Icc 1 k, a j) := by
         rw [← map_mul, ← map_mul, scale_weight_identity]
       rw [hL, hR]
       linear_combination (scaleHom a p * towerMonomial k) * hw
+
+
+/-- **The conjugation identity on jets.** -/
+theorem iterate_scaledDerivation_scaleHom (a : ℕ → ℂ) (P : MvPolynomial ℕ ℂ) (i : ℕ) :
+    ((scaledDerivation a : MvPolynomial ℕ ℂ → MvPolynomial ℕ ℂ)^[i]) (scaleHom a P)
+      = MvPolynomial.C (a 0) ^ i *
+        scaleHom a (((towerDerivation : MvPolynomial ℕ ℂ → MvPolynomial ℕ ℂ)^[i]) P) := by
+  induction i with
+  | zero => simp
+  | succ i ih =>
+      rw [Function.iterate_succ_apply', ih, ← map_pow, scaledDerivation_C_mul,
+        scaledDerivation_scaleHom, Function.iterate_succ_apply', map_pow]
+      ring
+
+theorem pderiv_C_mul (k : ℕ) (c : ℂ) (P : MvPolynomial ℕ ℂ) :
+    (MvPolynomial.pderiv k) (MvPolynomial.C c * P)
+      = MvPolynomial.C c * (MvPolynomial.pderiv k) P := by
+  rw [← MvPolynomial.smul_eq_C_mul, ← MvPolynomial.smul_eq_C_mul]
+  simp
+
+/-- **The scaling automorphism transports partial derivatives.** -/
+theorem pderiv_scaleHom (a : ℕ → ℂ) (k : ℕ) (P : MvPolynomial ℕ ℂ) :
+    (MvPolynomial.pderiv k) (scaleHom a P)
+      = MvPolynomial.C (a k) * scaleHom a ((MvPolynomial.pderiv k) P) := by
+  induction P using MvPolynomial.induction_on with
+  | C c =>
+      rw [scaleHom_C, MvPolynomial.pderiv_C]
+      simp
+  | add p q hp hq =>
+      rw [map_add, map_add, hp, hq, map_add, map_add, mul_add]
+  | mul_X p j hp =>
+      have hL : (MvPolynomial.pderiv k) (scaleHom a (p * MvPolynomial.X j))
+          = scaleHom a p * (MvPolynomial.C (a j) * (MvPolynomial.pderiv k) (MvPolynomial.X j))
+            + MvPolynomial.C (a j) * MvPolynomial.X j *
+              (MvPolynomial.C (a k) * scaleHom a ((MvPolynomial.pderiv k) p)) := by
+        rw [map_mul, scaleHom_X, Derivation.leibniz, pderiv_C_mul, hp]
+        simp only [smul_eq_mul]
+        ring
+      have hR : scaleHom a ((MvPolynomial.pderiv k) (p * MvPolynomial.X j))
+          = scaleHom a p * scaleHom a ((MvPolynomial.pderiv k) (MvPolynomial.X j))
+            + MvPolynomial.C (a j) * MvPolynomial.X j * scaleHom a ((MvPolynomial.pderiv k) p) := by
+        rw [Derivation.leibniz]
+        simp only [smul_eq_mul, map_add, map_mul, scaleHom_X]
+        ring
+      rw [hL, hR]
+      by_cases hkj : k = j
+      · subst hkj
+        rw [MvPolynomial.pderiv_X_self, scaleHom_C]
+        ring
+      · rw [MvPolynomial.pderiv_X_of_ne (Ne.symm hkj), map_zero]
+        ring
 
 end GaloisForLFunctions.HTGeometry
