@@ -189,6 +189,15 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized the independence of the logarithmic differentials:
+  the map `L ⊗ ℂ → H^1` of a character stage is injective.
+- 2026-08-04 — Formalized the Stein property of the finite character stages:
+  holomorphic convexity through the coordinates and their inverses, and
+  separability.
+- 2026-08-04 — Formalized the cylinder de Rham complex `(3)` and the
+  generators of `(5)`: the higher logarithmic differentials with their
+  closedness, non-vanishing and transition law, and the non-exactness of
+  `d log z` through its period `2πi`.
 - 2026-08-04 — Formalized the differential layer: the several-variable
   holomorphic de Rham complex of a finite character stage, the pullback of
   forms along the monomial transition maps, and the derivative of a cylinder
@@ -303,11 +312,97 @@ the analytic level.
   maps are maps of holomorphic de Rham complexes**, which is what makes the colimit in `(3)` a
   colimit of complexes.
 
+### The cylinder de Rham complex `(3)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerCylinderForm.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerSelectMatrix`, `deningerMonomialMap_select` — the coordinate projections are monomial
+  maps, so the concatenation of two stages sits over both.
+- `DeningerCylinderForm` — **`(3)`**: a cylinder form is a holomorphic form at a finite stage,
+  presented through its evaluation coordinates; the complex `Ω^•_{cyl,F}` is the colimit of these
+  along the transitions.
+- `DeningerCylinderForm.extDeriv`, `extDeriv_extDeriv` — the exterior derivative is computed at the
+  stage, stays cylinder and squares to zero.
+- `DeningerCylinderForm.transition`, `transition_extDeriv`, `transition_value` — the transition of a
+  cylinder form to a finer stage, the commutation of `d` with it, and the agreement of values when
+  the coarse coordinates of a character are the monomials of its fine coordinates.
+- `DeningerCylinderForm.add` — **sums are cylinder**: both summands are pulled back to the
+  concatenated stage along the coordinate projections.
+
+### The period of the logarithmic differential landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerDlogPeriod.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerCircleDeriv` — a primitive of `z⁻¹` has constant derivative `i` along the unit circle.
+- `deningerDlog_not_exact` — **no holomorphic function on `ℂ^×` has derivative `z⁻¹`**: a primitive
+  would grow by the period `2πi` on a closed loop.
+- `deningerDlogForm_not_exact` — the same in the language of forms: `d log z` is closed but not
+  exact on a one-dimensional character stage, so `H^1` of a stage does not vanish and the class of
+  `d log P(a)` in `(5)` is nonzero.
+
+### The generators of `(5)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerDlogWedge.lean` and
+`formal/GaloisForLFunctions/RHTower/DeningerDlogTransition.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerDetForm` — the determinant in a chosen tuple of coordinates, as a continuous alternating
+  form; mathlib has the determinant as an alternating map but not as a bounded one, and the bound is
+  `k!` by the permutation expansion.
+- `deningerDetForm_expansion` — the cofactor expansion of a determinant with a repeated column,
+  which is the identity behind closedness.
+- `deningerDlogWedge` — **the generator `d log z_{σ 1} ∧ ⋯ ∧ d log z_{σ k}`** of `(5)` in degree
+  `k`.
+- `deningerDlogWedge_holomorphic`, `deningerDlogWedge_closed` — it is holomorphic on the stage and
+  closed: its coefficient depends only on the chosen coordinates, so the derivative pairs each of
+  them against a determinant in which that coordinate already occurs.
+- `deningerDetForm_stdBasis`, `deningerDlogWedge_ne_zero` — the generator is nowhere zero, so the
+  closed classes are not the zero form.
+- `deningerMonomialRowDeriv`, `deningerMonomialCoord_hasFDerivAt`,
+  `deningerMonomialMap_hasFDerivAt` — the logarithmic derivative of a monomial and the derivative of
+  a transition map.
+- `deningerDlogForm_pullback` — **the transition law** `π^* d log z_i = ∑_j m_{ij} d log w_j`: the
+  generators transform exactly like the lattice of exponents, which is what rationalizes the lattice
+  in the colimit `(6)`.
+
+### The Stein property landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerStageStein.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.  mathlib has no Stein theory, so the definitions are built
+here.
+
+- `deningerHolHull`, `DeningerIsHolomorphicallyConvex`, `DeningerIsHolomorphicallySeparable`,
+  `DeningerIsStein` — the holomorphically convex hull of a compact set inside a domain and the two
+  conditions defining a Stein domain in `ℂ^r`.
+- `deningerStageTorus_holomorphicallyConvex` — **the stage is holomorphically convex**: on the hull
+  of a compact set the coordinates are bounded and their inverses are bounded, so the hull is a
+  closed subset of a compact polyannulus that still lies in the stage.
+- `deningerStageTorus_holomorphicallySeparable` — the coordinates separate points.
+- `deningerStageTorus_isStein` — **`Z_{W,L} = (ℂ^×)^r` is Stein**, which is the first sentence of the
+  card's proof.
+
+### The independence half of `(5)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerDlogIndependence.lean` and the generalized period in
+`formal/GaloisForLFunctions/RHTower/DeningerDlogPeriod.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerDlogScalar_not_exact` — a multiple of the logarithmic differential is exact only if the
+  multiple vanishes; the period `2πi` is the obstruction.
+- `deningerCoordLoop`, `deningerCoordLoop_hasDerivAt` — the loop through one coordinate of the
+  stage, with the others equal to one.
+- `deningerDlogForm_independent` — **a combination `∑_j c_j d log z_j` is exact only if every
+  coefficient vanishes**, so the classes `d log P(a)` are linearly independent in `H^1` of a stage:
+  the injectivity half of `L ⊗ ℂ ≅ H^1` in `(5)`.
+
 ### Remaining
 
-1. **The Stein property.**  That each `Z_{W,L} = (ℂ^×)^r` is Stein.  mathlib has no Stein theory.
-2. **`(5)`--`(6)`**, the de Rham cohomology `H^k((ℂ^×)^r, ℂ) ≅ Λ^k(L ⊗ ℂ)` and its colimit; mathlib
-   has no de Rham cohomology of a complex manifold.  The generators are built and proved closed; the
-   missing half is the comparison isomorphism.
-3. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
+1. **`(5)`--`(6)`**, the de Rham cohomology `H^k((ℂ^×)^r, ℂ) ≅ Λ^k(L ⊗ ℂ)` and its colimit; mathlib
+   has no de Rham cohomology of a complex manifold.  The generators are built in every degree,
+   proved holomorphic, closed, nowhere zero and equivariant for the transitions, and in degree one
+   the map `L ⊗ ℂ → H^1` is proved injective.  What is left is surjectivity in degree one and the
+   comparison in higher degrees.
+2. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
    mathlib — and the pro-Ind global-section formalism.

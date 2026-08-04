@@ -140,6 +140,30 @@ theorem analyticMeroElement_finsetSum {ι : Type*} (s : Finset ι) (g : ι → �
         ← analyticMeroElement_add (hg j) hrest]
       exact analyticMeroElement_congr _ _ hfun
 
+/-! ## Faithfulness -/
+
+/-- **The realization is faithful.**  A germ vanishes in the meromorphic field exactly when the
+function vanishes on the set. -/
+theorem analyticMeroElement_eq_zero_iff {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g U)
+    [IsDomain (analyticSubring U)] :
+    analyticMeroElement g hg = 0 ↔ ∀ z ∈ U, g z = 0 := by
+  constructor
+  · intro h
+    have hsub : analyticFunctionElement g hg = 0 :=
+      IsFractionRing.injective (analyticSubring U) (meroField U) (by simpa [analyticMeroElement]
+        using h)
+    have hgerm : ((g : ℂ → ℂ) : Germ (Filter.principal U) ℂ) = 0 :=
+      congrArg Subtype.val hsub
+    rw [← Germ.coe_zero, Germ.coe_eq] at hgerm
+    intro z hz
+    exact Filter.eventually_principal.mp hgerm z hz
+  · intro h
+    have hgerm : ((g : ℂ → ℂ) : Germ (Filter.principal U) ℂ) = 0 := by
+      rw [← Germ.coe_zero, Germ.coe_eq]
+      exact Filter.eventually_principal.mpr h
+    have hsub : analyticFunctionElement g hg = 0 := Subtype.ext hgerm
+    rw [analyticMeroElement, hsub, map_zero]
+
 /-! ## Constants come from the rational coordinate field -/
 
 /-- The constant embedding factors through the rational coordinate field. -/

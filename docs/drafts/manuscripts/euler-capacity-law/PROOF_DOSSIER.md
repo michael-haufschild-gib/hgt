@@ -227,3 +227,70 @@ self-dual deformation complex: full mixed Euler pairing, not scalar rigidity ind
 microlocal coarea energy plus one boundary-rank line. Falsifier: any published source containing
 this exact mixed pairing or any valid twisted Puiseux spectrum whose form has two negative
 directions.
+
+## 9. Cellular Stokes category and exact vanishing cycles
+
+The local category is not an analogy. Let `C` be the walking cospan with two arrows
+`L -> W <- R`, and set
+
+`Sh_St(C)=Fun(C,Vect_Q)`.
+
+An exponential germ of fiber `V` is the cospan whose wall stalk is `V`, whose two arc stalks are
+complementary choices `V` and `0`, and whose incidence maps are respectively the identity and zero
+inclusions. For a side `s`, define
+
+`mu_s(F)=F(W)/im(F(s)->F(W))`.
+
+Naturality of a cospan morphism preserves the incidence image, so `mu_s` is a functor, not only a
+dimension assignment. The canonical quotient map supplies the exact and right-surjective sequence
+
+`F(s) -> F(W) -> mu_s(F) -> 0`.                                  (VC)
+
+For the exponential germ, one of `mu_L,mu_R` has dimension `dim V` and the other has dimension
+zero. Thus microsupport, characteristic-cycle coefficient, and vanishing-cycle rank are three
+descriptions of the same categorical quotient in this finite model.
+
+For degree `k>0`, let `C_k` be the cyclic incidence quiver with `2k` wall vertices, `2k` arc
+vertices, and two arrows from every arc to its endpoints. No two nonidentity arrows compose, hence
+its path category is exactly the entrance-path category of the cellular boundary stratification;
+there are no unrecorded higher paths or relations. The global cellular Stokes category is
+
+`Sh_St(S^1;k)=Fun(Path(C_k),Vect_Q)`,
+
+an abelian category. The alternating exponential object has wall dimension `d`, active-arc
+dimension `d`, inactive-arc dimension zero, and inclusion incidence maps. Its incidence-quiver
+Euler form is
+
+`sum_w d_w^2 + sum_a d_a^2 - sum_(a->w) d_a d_w = k d^2`.        (CE)
+
+This is the categorical source of one positive local channel. Equation (VC) identifies its
+integer generators with directed vanishing cycles; finite-cover regrouping gives (M), threshold
+coarea gives (W), and the reduction complex gives (EP). The chain
+
+`coefficient difference -> wall -> quotient microstalk -> integer orbit irregularity`
+`-> threshold cut -> positive Euler channel`
+
+is therefore dependency-closed at the finite cellular level.
+
+## 10. Nearest-ancestor audit: Hiroe's scalar spectral-curve theorem
+
+Hiroe proves, for irreducible connections whose local HTL forms are multiplicity-free or regular
+semisimple and whose spectral curve satisfies additional smoothness assumptions, that the scalar
+rigidity index of the endomorphism connection equals the Euler characteristic of the normalized
+irregular spectral curve. Locally, his Milnor formula contains
+`Irr(End(M))` together with branch and intersection corrections.
+
+This is a genuine ancestor and forbids presenting “irregularity equals an Euler characteristic” as
+new. It does not contain the theorem under audit here for four independent reasons:
+
+1. it is scalar and diagonal (`End(M)`), whereas (W) is the polarization on arbitrary independent
+   multiplicity vectors and is determined by every mixed `Irr Hom(I,J)`;
+2. it assumes a restricted spectral-curve regime, whereas the finite Puiseux-orbit construction
+   covers ramified cyclic orbits, loops, and negative diagram multiplicities;
+3. it identifies no threshold dendrogram, positive cut channels, capacity wall, or exact
+   one-negative-line inertia statement;
+4. it supplies no cellular microstalk persistence, Rees-channel law, or corona Schur functoriality.
+
+Accordingly the only defensible novelty target is the **polarized Stokes--microlocal Witt/coarea
+law**, not the existence of a scalar irregular Euler index. Any paper version must cite Hiroe next
+to the first statement of the new law and state this distinction explicitly.

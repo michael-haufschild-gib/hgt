@@ -5132,3 +5132,285 @@ Remaining for `hup`: read the relation as a polynomial in `D_{k+1}` and apply
 `mem_algebraicClosure_of_root`. Its coefficients are `A_c · D_k^{e−c}`, all in the closure once
 `D_k` is (induction on `k`, base `D_0 = 1`), and the top one is `A_e = eval₂ … (B e)` — nonzero
 exactly when the states are algebraically independent, the card's Clunie–Steinmetz input.
+
+### `HTGeometry/CascadeStateAlgebraic.lean` — the derivative step, and the exact analytic input
+
+`cascadeMeroDeriv_succ_mem_algebraicClosure`: with the two consecutive states in `E`, the previous
+derivative in `algebraicClosure E L`, and the pair of states algebraically independent over the
+constants, the next derivative lies in `algebraicClosure E L`. Unconditional, axiom-clean.
+
+`PairAlgIndep X Y := ∀ P : MvPolynomial (Fin 2) ℂ, P ≠ 0 → eval₂ (constToMero) ![X, Y] P ≠ 0`
+
+is the *entire* remaining analytic content of the upper bound, and it is now isolated in one
+definition. It is Clunie–Steinmetz stated in the field: consecutive cascade states satisfy no
+polynomial relation over ℂ.
+
+`mem_algebraicClosure_of_edge_relation` does the algebra: with
+`A_c := eval₂ … (B c) · T^{e−c}`, the relation is `∑ A_c D^c = 0`, each `A_c` is in the closure
+(coefficients by `eval₂_constToMero_mem` and `E ⊆ closure`, the power of `T` by `pow_mem`), and
+`A_e = eval₂ … (B e)` because `T^{e−e} = 1`. Then `mem_algebraicClosure_of_root` applies. Note the
+top coefficient is exactly the *polynomial* top coefficient — the `T`-power that obstructs at every
+lower index disappears at `c = e`, which is why homogenising by `(F_k')^{e−c}` rather than by a
+uniform power was the right normalisation back in the clearing step.
+
+`cascadeMeroDeriv_zero : cascadeMeroDeriv hfan 0 = 1` supplies the induction base — the zeroth state
+is the identity, its derivative the constant `1`, and `analyticMeroElement_const` sends it to `1`.
+
+### `HTGeometry/CascadeUpperBound.lean` — `hup` is closed
+
+```
+differentiallyAlgebraicOfOrder_entireCascade :
+  (∀ i, AnalyticOnNhd ℂ (f i) univ) →
+  (∀ k < n, TranscendentalEntire (f k)) →
+  (∀ k < n, DifferentiallyAlgebraicOfOrder (f k) 1) →
+  (∀ k < n, PairAlgIndep (cascadeMero hfan k) (cascadeMero hfan (k+1))) →
+  DifferentiallyAlgebraicOfOrder (entireCascade f n) n
+```
+
+Unconditional, axiom-clean (`propext, Classical.choice, Quot.sound`). This is the card's `ord_DA ≤ n`
+for the actual composition of actual entire functions — the first half of the unit-cost law, and the
+obligation `hup` of `exactDifferentialOrder_of_cascade`.
+
+The assembly:
+
+- `cascadeMero_zero` — the zeroth state *is* the coordinate: `F_0 = id`, whose germ is
+  `algebraMap (RatFunc ℂ) _ RatFunc.X`. So it is in the base field and needs no generator. This is
+  why `n` states suffice for a length-`n` cascade rather than `n+1`.
+- `cascadeStates hfan n : Fin n → meroField univ`, `i ↦ X_{i+1}`; `cascadeMero_mem_adjoin` puts every
+  `X_j` with `j ≤ n` in the generated field (`j = 0` by the previous point, `j ≥ 1` as a generator).
+- `cascadeMeroDeriv_mem_algebraicClosure` — induction on `j`, base `D_0 = 1`, step
+  `cascadeMeroDeriv_succ_mem_algebraicClosure`.
+- `differentialJet_one_cascadeMero` converts the abstract jet `y′` into the concrete derivative germ,
+  which is what the generator hypothesis of `differentiallyAlgebraicOfOrder_of_algebraic_state_derivatives`
+  consumes.
+
+Lean note: `congr 1` on a `Fin`-indexed family leaves `j = ↑⟨j-1, _⟩ + 1`, and `omega` cannot see
+through the `Fin.val` of an anonymous constructor — it treats it as an opaque atom. Use `show` to
+force the reduction to `j - 1 + 1` before rewriting.
+
+**Status of the card's two obligations.** `hup` — done, above. `helim` — the remaining one: a low-order
+equation must yield a nonzero `statePoly` relation among the states. The analytic input for the whole
+upper bound is now the single predicate `PairAlgIndep`, i.e. Clunie–Steinmetz for consecutive states.
+
+### `HTGeometry/CascadeExactOrder.lean` — the unit-cost law, both halves
+
+```
+exactDifferentialOrder_entireCascade :
+  (∀ i, AnalyticOnNhd ℂ (f i) univ) →
+  (∀ k < n, TranscendentalEntire (f k)) →
+  (∀ k < n, DifferentiallyAlgebraicOfOrder (f k) 1) →
+  (∀ k < n, PairAlgIndep (cascadeMero hfan k) (cascadeMero hfan (k+1))) →
+  AlgebraicIndependent (RatFunc ℂ) (fun j : Fin n => differentialJet j (cascadeMero hfan n)) →
+  ExactDifferentialOrder (entireCascade f n) n
+```
+
+Unconditional, axiom-clean. `ord_DA(f_n ∘ … ∘ f_1) = n` for actual entire functions, with the two
+analytic inputs of the paper isolated as the last two hypotheses.
+
+The lower half needed the *forward* order bridge, added to `AnalyticJetOrderBridge.lean`:
+`exists_jet_relation_of_relation` — a pointwise equation of order ≤ n gives a nonzero
+`Q : MvPolynomial (Fin (n+1)) (RatFunc ℂ)` annihilating the first `n+1` jets. The corpus's existing
+forward direction discards `Q` immediately to state `DifferentialAlgebraicOver`, so the order is lost;
+keeping `Q` is all that was missing. Then
+`not_differentiallyAlgebraicOfOrder_of_algebraicIndependent_jets` is `algebraicIndependent_iff` applied
+to that `Q`.
+
+`not_differentiallyAlgebraicOfOrder_entireCascade_of_jets` covers every `m < n` from a single
+hypothesis by restricting the independent family along `Fin.castLE`, which is injective — one
+independence statement about `n` jets, not `n` separate ones.
+
+**Both obligations of `exactDifferentialOrder_of_cascade` are now discharged on the analytic
+objects**, by a different route than that theorem's `PolyIndependent`/`helim` interface: the
+transcendence-degree count replaces `helim` entirely, and `PolyIndependent` is replaced by the two
+field-level independence statements, which is where Reduction I–III's analytic work now attaches.
+
+### The first edge is free, and the jet hypothesis is exactly the lower bound
+
+`pairAlgIndep_zero` — `PairAlgIndep (cascadeMero 0) (cascadeMero 1)` holds for *every* transcendental
+entire `f_0`, with no extra hypothesis. The zeroth state is the coordinate, so the pair's independence
+says precisely that `f_0` is not algebraic over `ℂ[z]` — which is the order-zero theorem proved
+earlier in this card. So the Clunie–Steinmetz input is needed only from the *second* edge on; the
+first is a theorem. Supporting: `analyticMeroElement_eq_zero_iff`, faithfulness of the realization
+(`IsFractionRing.injective` plus `Germ.coe_eq` on a principal filter — no identity theorem, since
+germs along `𝓟 U` are functions up to equality on `U`).
+
+`algebraicIndependent_jets_iff` — the first `n+1` jets are independent over `ℂ(z)` **iff** no algebraic
+differential equation of order at most `n` holds. Both directions are now available (forward and
+backward order bridges), so this is an equivalence, not a sufficient condition.
+
+That settles what the remaining hypothesis of the capstone *is*: `hjets` is not a convenient
+sufficient condition that might be weakened — it is a restatement of the lower bound itself. Any
+further progress on `ord_DA ≥ n` must come from the analytic side (Reductions I–III), not from
+rearranging the algebra. Conversely `PairAlgIndep` at edges `k ≥ 1` is a genuinely weaker, purely
+two-variable statement, and is the one place where a partial result would buy something.
+
+### The Clunie–Steinmetz input is not needed for the upper bound — it is a theorem
+
+`pairAlgIndep_of_transcendental` : for **every** `k`, consecutive states of a cascade of
+transcendental entire constituents are algebraically independent over the constants. Unconditional,
+axiom-clean.
+
+The argument is short and does not use Clunie–Steinmetz at all. A relation `P(F_k, F_{k+1}) = 0`
+with `F_{k+1} = f_k ∘ F_k` says the entire function `G(w) := P(w, f_k(w))` vanishes on `range F_k`.
+The state `F_k` is a nonconstant entire function (`exists_ne_entireCascade`, plus a constant function
+is a polynomial so a transcendental entire function is nonconstant), hence an open map, so `range F_k`
+contains a nonempty open set; the identity theorem then gives `G ≡ 0`, i.e. `P(w, f_k(w)) = 0` for
+every `w` — an order-zero equation for `f_k`, impossible.
+
+This changes the card's accounting. The upper bound now reads
+
+```
+differentiallyAlgebraicOfOrder_entireCascade_of_transcendental :
+  (∀ i, AnalyticOnNhd ℂ (f i) univ) → (∀ i, TranscendentalEntire (f i)) →
+  (∀ k < n, DifferentiallyAlgebraicOfOrder (f k) 1) →
+  DifferentiallyAlgebraicOfOrder (entireCascade f n) n
+```
+
+with **no independence hypothesis whatsoever** — exactly the hypotheses of the paper's statement.
+`ord_DA(f_n ∘ … ∘ f_1) ≤ n` is therefore fully proved, unconditionally, in Lean.
+
+Correspondingly `exactDifferentialOrder_entireCascade_of_transcendental` carries a single remaining
+hypothesis, `hjets`, and by `algebraicIndependent_jets_iff` that hypothesis *is* the lower bound
+`ord_DA ≥ n`. So the card's Lean state is now sharp: the upper half is closed outright, and the lower
+half is isolated in one equivalent statement with no algebraic slack left in it.
+
+Method note: the earlier reading — that the top coefficient's nonvanishing needs Clunie–Steinmetz —
+was over-cautious. What is needed is only nonvanishing of a *two-variable* polynomial on the graph of
+`f_k` over the image of `F_k`, and an open image plus the identity theorem reduces that to the
+constituent's own transcendence. Full state independence over `ℂ(z)` is a strictly stronger statement,
+and it is needed only for the lower bound.
+
+### Non-vacuity of the capstone: the length-one law is hypothesis-free
+
+`exactDifferentialOrder_entireCascade_one` — for a cascade of length one there is **no** residual
+hypothesis: `hjets` at `n = 1` is `AlgebraicIndependent (RatFunc ℂ)` of a single jet, which by
+`algebraicIndependent_jets_iff` at `n = 0` is exactly `¬ DifferentiallyAlgebraicOfOrder (f 0) 0` — the
+order-zero theorem. So transcendence plus a first-order equation already gives exact order one through
+the full field-theoretic route, not only through the earlier direct argument.
+
+`exactDifferentialOrder_expCascade_one : ExactDifferentialOrder (entireCascade (fun _ => Complex.exp) 1) 1`
+instantiates it, so the whole chain — edge relation, transfer to `meroField`, algebraic closure,
+transcendence-degree count, both order bridges — is exercised on a concrete object and is not vacuous.
+
+Lean note: `rw` could not fire `algebraicIndependent_jets_iff` here because the goal carries `Fin 1`
+and `cascadeMero hfan 1` while the lemma produces `Fin (0+1)` and `analyticMeroElement …`, and the
+algebra instance appears as the module's `local instance` rather than the lemma's inlined `letI`. All
+four differences are definitional, so `exact (…).mpr …` succeeds where `rw` fails — the usual rule
+that `rw` needs syntactic agreement and `exact` needs only defeq, but here it is the *instance* term
+that differs, which is easy to misread as a real mismatch.
+
+### The lower bound: route fixed, and the first brick
+
+With the upper half closed, the only open statement is `hjets`, equivalently
+`¬ DifferentiallyAlgebraicOfOrder F_n (n−1)`. The route that the new machinery makes available, for
+`n = 2` and then by induction:
+
+1. A relation `R(z, F_2, F_2') = 0` plus `F_1` algebraic over `ℂ(z)(F_2, F_2')` would force
+   `trdeg_{ℂ(z)} ℂ(z)(F_1,F_2) ≤ 1`.
+2. So it suffices to prove `F_1, F_2` algebraically independent **over `ℂ(z)`** — strictly stronger
+   than the `PairAlgIndep` now proved, which is independence over the constants only.
+3. Reading a relation `∑_c A_c(z, F_1) F_2^c = 0` in its top variable, the largest `c` with
+   `A_c ≠ 0` is `≥ 1` (else `F_1` is algebraic over `ℂ(z)`, impossible), so `F_2 = f_1 ∘ F_1` would be
+   *algebraic over* `ℂ(z, F_1)` of degree `D`.
+4. That contradicts composition growth: an algebraic element of degree `D` over `ℂ(z, F_1)` has
+   characteristic `O(D·(T(r,F_1) + log r))`, while Pólya/Clunie give
+   `T(r, f_1 ∘ F_1)/T(r, F_1) → ∞`. The corpus already owns the growth side
+   (`PolyaCompositionGrowth`, `EntireMinimumModulusAt`, the Nevanlinna layer).
+
+So the missing analytic content is *one* comparison: an element algebraic over `ℂ(z, F_1)` cannot
+outgrow `F_1`. Note this is weaker than the card's Reduction I–III programme — no Wiman place, no
+Newton–Puiseux — because the upper bound no longer needs them.
+
+**First brick: `MvPolynomialGrowthBound.lean`.**
+`norm_eval_le_mvCoeffNormSum : ‖P(z,w)‖ ≤ mvCoeffNormSum P · (1+‖z‖)^{totalDegree} · (1+‖w‖)^{totalDegree}`,
+the two-variable analogue of `norm_eval_le_coeffNormSum`. This is the numerator half of step 4: the
+coefficients `A_k(z, F_1(z))` of the algebraic relation grow at most like a power of
+`(1 + M(r, F_1))`. Supporting `exponent_le_totalDegree` — each single exponent is at most the total
+degree, via `MvPolynomial.le_totalDegree` and `Finset.single_le_sum`, with the off-support case
+handled separately since `Finset.single_le_sum` needs membership.
+
+The denominator half is the open point: a lower bound for `‖A_D(z, F_1(z))‖`, i.e. a minimum-modulus
+estimate for a nonzero entire function — which is exactly what the corpus's Borel–Carathéodory /
+`EntireMinimumModulusAt` layer was built for.
+
+### `HTGeometry/AlgebraicProximityBound.lean` — an algebraic element cannot outgrow its coefficients
+
+`proximity_le_of_root`: for meromorphic `g` and `a_0..a_n` with `∑_{i ≤ n} a_i g^i = 0` and `a_n`
+nonvanishing on the circle of radius `|r|`,
+
+`m(r, g) ≤ log n + ∑_{i < n} m(r, a_i / a_n)`.
+
+Unconditional, axiom-clean. This is the value-distribution half of the lower-bound route: it is the
+precise sense in which "algebraic over a field does not outgrow the field".
+
+Two steps. `posLog_norm_le_of_root_sum` upgrades the corpus's pointwise root estimate
+`posLog_norm_le_of_root` (which bounds by `log⁺` of a *sum*) into a bound by a *sum of* `log⁺`s, via
+mathlib's `Real.posLog_sum` — the `log n` is the price of that exchange. Then `circleAverage_mono`
+with `MeromorphicOn.circleIntegrable_posLog_norm` on both sides averages it, and `circleAverage_sum`
+/`circleAverage_add`/`circleAverage_const` split the right side into proximities.
+
+The nonvanishing hypothesis is on one circle only, which is the honest form: the top coefficient of a
+relation among entire functions has isolated zeros, so all but countably many radii qualify. Upgrading
+to "for almost every `r`" is a separate a.e. step and is not needed to run the growth comparison,
+which only ever needs a sequence of admissible radii tending to infinity.
+
+Combined with `norm_eval_le_mvCoeffNormSum` from the previous entry, the two sides of the intended
+contradiction are now in place in the same currency: the coefficients `A_k(z, F_1)` have proximity
+`O(deg · (m(r,F_1) + log r))`, while composition growth must make `m(r, f_1 ∘ F_1)/m(r, F_1) → ∞`.
+What remains is that last composition-growth statement (Clunie's theorem in characteristic form); the
+corpus's `PolyaCompositionGrowth` gives it in maximum-modulus form, and the conversion is the
+`log M` versus `T` comparison, for which the corpus's Borel radius-selection lemmas
+(`borel_growth`, `exists_ge_lt_two_mul`) are the intended tool.
+
+### The proximity bound in coefficient form
+
+`proximity_le_of_root_coeff`:
+
+`m(r, g) ≤ log n + ∑_{i < n} ( m(r, a_i) + m(r, 1/a_n) )`
+
+Unconditional, axiom-clean. Splitting `a_i/a_n = a_i · a_n⁻¹` by mathlib's `proximity_mul_top_le`
+and rewriting `m(r, a_n⁻¹)` as `m(r, a_n; 0)` by `proximity_inv` puts the estimate entirely in terms
+of the coefficients of the relation, with the reciprocal appearing only as a proximity *to zero* — the
+quantity the first main theorem controls by `T(r, a_n)`.
+
+Lean note: `add_le_add_left` stalls here with "typeclass instance problem is stuck / `AddLeftMono ?m`",
+because the summand's type is still a metavariable when the instance is sought. Proving the sum
+inequality as a standalone `have` and closing with `linarith` sidesteps it entirely — worth preferring
+whenever the congruence step sits under an unelaborated `∑`.
+
+### The algebraic bound in characteristic form
+
+`proximity_le_of_root_characteristic`: for `1 ≤ r`,
+
+`m(r, g) ≤ log n + ∑_{i < n} ( T(r, a_i) + T(r, a_n; 0) )`.
+
+Unconditional, axiom-clean. Supporting `proximity_le_characteristic` — `m ≤ T` on `[1,∞)`, which is
+just `characteristic = proximity + logCounting` together with `logCounting_nonneg`, but is not stated
+in mathlib in applied form.
+
+This is the layer's terminus in the direction "algebraic ⇒ slow": everything on the right is a
+characteristic of a coefficient of the relation, and for coefficients of the form `A_k(z, F_1)` those
+are `O(deg · (T(r,F_1) + log r))` by the two-variable growth bound. The remaining gap to a lower-bound
+proof is one inequality in the opposite direction — composition growth
+`T(r, f_1 ∘ F_1)/T(r, F_1) → ∞` — plus the first main theorem to convert `T(r, a_n; 0)` into
+`T(r, a_n; ⊤)` (mathlib's `characteristic_sub_characteristic_inv_le`).
+
+### The two-variable bound in logarithmic form
+
+`posLog_norm_eval_le`:
+
+`log⁺‖A(z,w)‖ ≤ log⁺(mvCoeffNormSum A) + deg·(log 2 + log⁺‖z‖) + deg·(log 2 + log⁺‖w‖)`
+
+Unconditional, axiom-clean. This is the shape a proximity estimate consumes — averaging it over a
+circle turns the two-variable growth bound directly into
+
+`m(r, A(·, F_1)) ≤ C_A + deg·(log 2 + log r) + deg·(log 2 + m(r, F_1))`,
+
+which is exactly the coefficient input required by `proximity_le_of_root_characteristic`. Every step is
+a mathlib `posLog` identity: `posLog_mul` twice for the product, `posLog_pow` (an *equality*,
+unconditional in `x`) for the degree, and `posLog_add` with `posLog_one` for `1 + t`.
+
+Lean note: `Real.posLog` was reported as an unknown constant even though `Real.posLog_mul` resolved in
+a scratch file — the module's import cone lacked
+`Mathlib.Analysis.SpecialFunctions.Log.PosLog`. Same narrow-cone trap as earlier in this card; the
+misleading part is that the *error* names the definition, not the missing lemma file.

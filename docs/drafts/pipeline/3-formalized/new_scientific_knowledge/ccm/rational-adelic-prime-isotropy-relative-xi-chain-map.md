@@ -1,8 +1,8 @@
 # Rational-adelic prime-isotropy relative complex and strict Xi comparison
 
 - **ID:** RA-PRIME-ISOTROPY-XI
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean)
 - **Source:** `rh-current-frontier-map.md` strict cyclic-provenance audit; shared Route-R/Bockstein producer
 - **Statement:** The zero-adele fixed-point comparison for one ordinary-prime scaling has a genuine three-term relative complex with a retained prime-isotropy `H¹` class, and that complex admits a strict prime-faithful comparison to the resolved actual-Xi cochain complex.
 
@@ -17,8 +17,8 @@ does not prove RH.
 ## Gates
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea, Door passport sketch
-- [ ] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem names below, targeted build green, axiom audit PASS
+- [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3 formalized: Lean theorem names below, targeted build green, axiom audit PASS
 - [ ] 3 → 4 publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Exact construction
@@ -216,9 +216,9 @@ fixed-vector proof, or the prime-faithful strict comparison to the project-speci
 complex.  Novelty claim is therefore scoped to this concrete arithmetic bridge, not to mapping
 cones or fixed-point localization themselves.
 
-## Lean target
+## Lean certificate
 
-Planned module:
+Formalized module:
 
 ```text
 GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyRelativeXiChainMap
@@ -246,9 +246,26 @@ ccmRationalAdelicPrimeRelativeXiComparison_commutes_d1
 ccmRationalAdelicPrimeRelativeXiComparison_class_landing
 ccmRationalAdelicPrimeRelativeXiComparison_class_landing_ne_zero
 ccmRationalAdelicPrimeRelativeXiComparison_class_annihilated
+ccmRationalAdelicPrimeRelativeXiChainMap_H1_class_eq_zero
 ```
+
+Verification on 2026-08-04:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean
+lake build GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyRelativeXiChainMap
+```
+
+Both pass.  `#print axioms` for the fixed-vector theorem, complex law, retained-class theorem,
+both chain-map squares, nonzero landing, annihilation, and induced-`H¹` classification reports
+only `propext`, `Classical.choice`, and `Quot.sound`.  The module contains no `sorry`, `admit`,
+`axiom`, `opaque`, or `unsafe` declaration and is imported by `GaloisForLFunctions.RHTower`.
 
 ## Log
 
 - 2026-08-04 — strict-provenance gap isolated after rejecting product trace as Hochschild-homology reader.
 - 2026-08-04 — zero-adele prime-isotropy mapping cone frozen; complete paper proof and hostile scalar-descent audit recorded.
+- 2026-08-04 — formalized the complex, analytic retention theorem, strict resolved-Xi comparison,
+  nonzero chain landing, unconditional annihilation, and exact classification of the image as a
+  target boundary.  Strict rational-adelic provenance is closed; singular scalar Cartier descent
+  remains open.

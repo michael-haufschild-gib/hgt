@@ -165,7 +165,7 @@ marked explicitly; all others remain live at their stated open core.
 | O | open | literal cofinal restricted-Weil floor convergence/nonnegativity |
 | P | open | source-built compact completed-seam moment/Markov carrier |
 | Q | open/secondary | source boundary Jensen/jet saturation |
-| R | open; positive resolved polarization, asymptotic gauge-modulus no-go, associated-grade blindness, and rational-Witt pointed section constructed | coefficient-faithful source-pointed singular Cartier comparison whose Route-R edge square commutes on the actual Xi conormal |
+| R | open; positive resolved polarization, asymptotic gauge-modulus no-go, associated-grade blindness, rational-Witt pointed section, and retained rational-adelic prime-isotropy class with strict resolved-Xi chain map constructed | coefficient-faithful source-pointed singular Cartier comparison carrying resolved boundary flatness to the scalar physical fibre on the actual Xi conormal |
 | S | upstream/secondary | independent source algebraicity or divisor-preserving dynamics |
 
 ### Corpus-native route space beyond classical templates
@@ -185,6 +185,8 @@ zero-fed spectra, or determinant limits:
 This table mixes constructed routes with exact design constraints. Route R's differential,
 independent equal-grade corrected square, reflection-hyperbolic Cartier trivialization, and
 positive resolved Hermitian polarization with unconditional Stokes parallelism exist in Lean.
+So do its genuine prime zero-isotropy relative complex, retained ordinary-prime class, and strict
+prime/depth/divisor-faithful comparison to the resolved actual-Xi complex.
 The fixed source/Cartier metric differs on the literal vertical conormal by one explicit
 nonnegative BV--Wold square; global vanishing of that square is RH. What does not exist is source
 rigidity identifying the transported metric field with that fixed same-fibre metric. Route L
@@ -3742,15 +3744,18 @@ survival, vanishing in this cofinal quotient, and annihilation by the source rep
 pointwise equivalent to `Re(ρ)=1/2`, and their global forms are RH-equivalent.
 
 The 2026-08-04 strict-chain audit retracts the stronger vocabulary “literal cyclic cycle/class”
-for the current comparison. `ccmRationalAdelicDegreeOneTrace` is invariant under cyclic rotation,
-but `MobiusThetaPhysicalParacyclicSourceNullHomology.lean` proves that its product reporter does
-not annihilate all degree-two Hochschild boundaries when the unit has nonzero trace. No theorem
-places the ordinary-prime tensor in `ker b₁`, and the cofinal landing is not yet proved to factor
-through a cyclic/Hochschild quotient or arise from a chain map. Thus the exact missing
-infrastructure is a genuine mixed/relative rational-adelic complex, a retained prime-cycle class,
-and a strict source-to-cofinal comparison commuting with its differentials. Only after those are
-constructed does “source-null-homology” name an independent source theorem; without them it is a
-terminal coordinate equivalent to the desired critical-line conclusion.
+for the old product-trace comparison. `ccmRationalAdelicDegreeOneTrace` is invariant under cyclic
+rotation, but `MobiusThetaPhysicalParacyclicSourceNullHomology.lean` proves that its product
+reporter does not annihilate all degree-two Hochschild boundaries when the unit has nonzero trace.
+The replacement is now formalized in
+`CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean`: the zero-adele fixed-point cone has
+`D₁D₀=0`, its ordinary-prime isotropy cocycle is retained because every prime-scaling-fixed
+rational-adelic Schwartz vector has zero zero-adele value, and a strict prime/depth/divisor-
+faithful comparison lands it nontrivially in the resolved actual-Xi complex.  The image is exactly
+a resolved target boundary, so its unconditional annihilation closes chain provenance but does
+not descend to the scalar Cartier obstruction.  The remaining theorem is no longer “construct a
+complex”; it is a source-derived singular comparison identifying resolved boundary flatness with
+the coefficient-faithful scalar physical landing without assuming critical-line location.
 
 The algebraic Deninger layer also proves homology/cohomology vanishing for cyclic rationalizations,
 one-generator free packets, individual root adjunctions, and finite root-adjunction towers under

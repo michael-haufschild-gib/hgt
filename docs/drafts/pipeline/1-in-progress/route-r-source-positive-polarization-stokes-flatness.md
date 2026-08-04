@@ -230,3 +230,12 @@ unproved arithmetic selection step.
   singular-Gelfand dichotomy separately rules out assembling countably many noncoercive completed
   observers as a substitute, while Real-corona and new Airy/Stokes laws preserve unrelated
   upper/lower or contact-tree gradings.
+- 2026-08-04 — Closed the intermediate strict-provenance gap in
+  `CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean`.  A genuine prime zero-isotropy
+  rational-adelic relative complex has unconditional `D₁D₀=0`; its ordinary-prime class survives
+  by Schwartz decay and continuity; and its strict comparison lands nontrivially, with full
+  prime/depth/divisor/leading-Xi-jet provenance, in the resolved Route-R complex.  The landing is
+  exactly a resolved target boundary.  Consequently this does not supply the singular Cartier
+  law: exact open core remains the source-derived, coefficient-faithful comparison carrying that
+  resolved boundary to the fixed scalar physical fibre without assuming its RH-equivalent
+  vanishing.

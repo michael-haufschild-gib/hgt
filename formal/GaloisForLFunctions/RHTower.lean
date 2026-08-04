@@ -3647,6 +3647,14 @@ import GaloisForLFunctions.RHTower.Sieve.BalancedPairsRescale
 import GaloisForLFunctions.RHTower.Sieve.SharedSectorLimit
 import GaloisForLFunctions.RHTower.Sieve.NoncoprimeUnionBound
 import GaloisForLFunctions.RHTower.Sieve.PrimeRangeSplit
+import GaloisForLFunctions.RHTower.Sieve.BalancedPairsNested
+import GaloisForLFunctions.RHTower.Sieve.SharedSectorBound
+import GaloisForLFunctions.RHTower.Sieve.SharedSectorTail
+import GaloisForLFunctions.RHTower.Sieve.NoncoprimeDensity
+import GaloisForLFunctions.RHTower.Sieve.CoprimeSignDensity
+import GaloisForLFunctions.RHTower.Sieve.DirichletIntegralMeanValue
+import GaloisForLFunctions.RHTower.Sieve.DirichletRowBound
+import GaloisForLFunctions.RHTower.Sieve.RouteEMain
 import GaloisForLFunctions.RHTower.SigmaBlockContraction
 import GaloisForLFunctions.RHTower.SigmaContractionCorollary
 import GaloisForLFunctions.RHTower.SigmaDivisorExhaustion
@@ -5451,6 +5459,7 @@ import GaloisForLFunctions.RHTower.DeningerTopThreeTermComplex
 import GaloisForLFunctions.RHTower.DeningerCompleteLCSCategory
 import GaloisForLFunctions.RHTower.DeningerPushforwardLeray
 import GaloisForLFunctions.RHTower.CCMRationalAdelicClassSpaceCyclicContinuity
+import GaloisForLFunctions.RHTower.CCMRadialProlateDefect
 import GaloisForLFunctions.RHTower.CCMRationalAdelicClassSpaceCyclicModule
 import GaloisForLFunctions.RHTower.CCMRationalAdelicClassSpaceProjectiveTopology
 import GaloisForLFunctions.RHTower.CCMRationalAdelicClosedRelativeCyclicModule
@@ -5472,3 +5481,7 @@ import GaloisForLFunctions.RHTower.DeningerFormPullback
 import GaloisForLFunctions.RHTower.DeningerStageTransition
 import GaloisForLFunctions.RHTower.DeningerCylinderForm
 import GaloisForLFunctions.RHTower.DeningerDlogPeriod
+import GaloisForLFunctions.RHTower.DeningerDlogWedge
+import GaloisForLFunctions.RHTower.DeningerDlogTransition
+import GaloisForLFunctions.RHTower.DeningerStageStein
+import GaloisForLFunctions.RHTower.DeningerDlogIndependence

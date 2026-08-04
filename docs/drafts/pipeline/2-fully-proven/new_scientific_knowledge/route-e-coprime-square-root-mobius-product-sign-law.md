@@ -32,6 +32,11 @@
   squarefree density `(1/y)∑_{y<m<=2y} mu^2(m)1_{p!|m} -> D p/(p+1)`, i.e. equation `(8)`
   analytically (`Sieve/CoprimeMoebiusSeries.lean`, `Sieve/CoprimeSquarefreeWindow.lean`,
   `Sieve/CoprimeSquarefreeDyadic.lean`);
+  **the card is now formalized end to end**: the capstone `Sieve/RouteEMain.lean` proves
+  `route_e_sign_density` (equation `(3)`) and `route_e_signClass_nonempty` (its stated consequence)
+  from three instances of Matomaki--Radziwill's Theorem 2 alone, recorded as the named Props
+  `MRBilinear` / `MRBilinearAt`; the whole chain `(5)=>(6)=>(7)`, `(8)=>(9)`, `(10)+(11)=>(12)`,
+  `(7)+(12)+(13)=>(3)` is machine-checked and every other step is unconditional;
   the sole remaining input is Matomaki--Radziwill's published Theorem 2
 
 ## Statement
@@ -8065,3 +8070,174 @@ missing step is the nested-sum decomposition of `balancedPairs` — writing it a
 an inner interval count — after which `card_pair_dvd_le`'s inner estimate applies with the uniform
 length bound `h`.  That is the next unconditional target; everything downstream of it is already
 built.
+
+### The nested decomposition, and the inner interval count
+
+`RHTower/Sieve/BalancedPairsNested.lean`, unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+- `Icc_eq_Ioc_pred` (`Icc a b = Ioc (a-1) b` for `a ≥ 1`) and `card_filter_dvd_Icc_le`:
+
+      #{n ∈ [a,b] : p ∣ n}  ≤  (b - a + 1)/p + 1,
+
+  the corpus's `Ioc` estimate transported to a closed interval.
+- `sum_balancedPairs_filter_nested` — a sum over the balanced pair set, further filtered by any
+  predicate, is a sum over the first entry of a sum over the second.  This is the decomposition the
+  card's `(10)` needs; the pair set is a filter of a product, so it is `Finset.sum_product` plus
+  `Finset.sum_filter`.
+- **`inner_count_le`** — for `x ≥ 4`, `h ≥ 0` and `√x ≤ n₁ ≤ 2√x`,
+
+      #{n₂ : x ≤ n₁n₂ ≤ x + h√x, p ∣ n₂}  ≤  (h + 2)/p + 1.
+
+  The point is the length estimate: the `n₂`-interval is `[x/n₁, (x+h√x)/n₁]`, of length
+  `h√x/n₁ ≤ h` **because `n₁ ≥ √x`** — the hypothesis that makes the balanced range balanced.  The
+  `+2` comes from the two floors (`⌊x/n₁⌋` can undershoot by `1`, and a closed interval carries a
+  `+1`); it is harmless because the tail estimate `sum_pair_tail_le` accepts arbitrary
+  `l₁, l₂ ≥ 0`, so it will be instantiated at `l₁ = √x + 2`, `l₂ = h + 2` instead of `√x`, `h`, and
+  `(√x+2)(h+2)/(h√x) → 1` leaves the limit unchanged.
+
+Remaining for `(12)`: the outer count `#{n₁ ∈ [√x, 2√x] : p ∣ n₁} ≤ (√x+2)/p + 1` (the same
+`card_filter_dvd_Icc_le` at the outer interval), assembling the two into
+`C_p ≤ ((√x+2)/p + 1)((h+2)/p + 1)`, and re-instantiating the `(11)` limit at `(√x+2, h+2)`.
+
+### `(10)` and `(11)` are fully proved — the MR-free part of the card is complete
+
+Two modules close the gap flagged in the previous section, both unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/SharedSectorBound.lean` — `moebius_pair_weight_le_one`, `outer_count_le`
+  (`#{n₁ ∈ [√x,2√x] : p ∣ n₁} ≤ (√x+2)/p + 1`), and **`sharedSectorCount_le_product`**:
+
+      C_p(x,h) ≤ ((√x + 2)/p + 1)·((h + 2)/p + 1).
+
+  This is the card's `(10)`.  The proof is the nested decomposition, the outer interval count, and
+  `inner_count_le` — whose length bound `h√x/n₁ ≤ h` is exactly where `n₁ ≥ √x` is used.
+- `RHTower/Sieve/SharedSectorTail.lean` — `sharedSector_tail_le`,
+  `sharedSector_tail_normalized_le`, and **`exists_sharedSector_tail_small`**:
+
+      ∀ ε > 0, ∃ P ≥ 1, eventually  (∑_{P < p ≤ 2√x} C_p)/(h√x) ≤ ε.
+
+The tail step reuses the earlier excess limit *verbatim*: bounding `√x + 2 ≤ 3√x` and `h + 2 ≤ 3h`
+turns the normalised tail into `9/P + 3·E(x)` with `E` the quantity already proved to vanish.  The
+constant degrades from `1/P` to `9/P`, which `(11)` does not care about — it only needs the tail to
+vanish as the cut-off grows.  The sharp `D²A` of `(12)` comes from the *small* primes via `(9)`, not
+from here.
+
+#### The card's numbered equations, final status
+
+| eq | content | Lean |
+|----|---------|------|
+| (5) | Matomäki–Radziwiłł Theorem 2 | `MRBilinear` / `MRBilinearAt` — **the sole gate** |
+| (6),(7) | densities → signed/absolute pair counts | `tendsto_signClass_of_MR`, from (5) |
+| (8) | `p`-deleted squarefree density | **proved** |
+| (9) | shared-prime sector density | bijection **proved**; limit `tendsto_sharedSector_of_MR`, from (5) |
+| (10) | sector ≤ product of interval counts | **proved** |
+| (11) | uniform large-prime tail | **proved** |
+| (12) | noncoprime pairs `≤ D²A` | union bound + split **proved**; limit needs (9) |
+| (13) | `A ≤ 13/36 < 1/2` | **proved** |
+| step 1 | `∑μ = o`, `∑μ² ~ D` over `[√x,2√x]` | **proved** |
+
+**Every statement in the card that does not pass through `(5)` is now an unconditional Lean
+theorem.**  What remains is the limsup assembly of `(12)` from `(9)`+`(11)` and of `(3)` from
+`(7)`+`(12)`+`(13)`, both of which consume `(5)` through `(9)` and are pure limit bookkeeping over
+pieces that are all in Lean (`le_liminf_after_deletion` is already there for the last step).
+
+## The card is formalized end to end
+
+Three modules complete the chain, all unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/NoncoprimeDensity.lean` — `sum_sector_density_le` (every partial sum of the sector
+  densities is `≤ D²A`, from `summable_primeSuccInvSq.sum_le_tsum`) and **`eventually_noncoprime_le`**,
+  the card's `(12)`:
+
+      ∀ ε > 0, eventually  B(x,h)/(h√x log 2) ≤ D²·A + ε.
+
+- `RHTower/Sieve/CoprimeSignDensity.lean` — `coprimeSignClass`, `weight_eq_one_of_sign`,
+  **`signClassCount_sub_le`** (deleting the noncoprime pairs from a sign class costs at most `B` —
+  an exact Finset split, using that a pair of product sign `±1` has squarefree weight exactly one),
+  `squarefreeDensity_pos`, **`eventually_coprimeSignClass_ge`** and `coprime_margin_pos`.
+
+- `RHTower/Sieve/RouteEMain.lean` — the capstone:
+
+      route_e_sign_density :
+        MRBilinear μ hh → MRBilinear μ² hh → (∀ p prime, MRBilinearAt (μ²·1_{p∤·}) …) →
+          ∀ ε > 0, eventually
+            D²/2 - D²·A - ε ≤ R_ε(x,h)/(h√x log 2)
+
+      route_e_margin_pos :  0 < D²/2 - D²·A
+
+      route_e_signClass_nonempty :
+        … → eventually (coprimeSignClass x (h x) ε).Nonempty
+
+`route_e_sign_density` **is** the card's equation `(3)`, and `route_e_signClass_nonempty` is its
+stated consequence: every sufficiently large balanced window carries a coprime squarefree pair of
+each product sign.
+
+### Status
+
+The card is formalized end to end.  Its entire logical chain — `(5) ⟹ (6) ⟹ (7)`,
+`(8) ⟹ (9)`, `(10) + (11) ⟹ (12)`, `(7) + (12) + (13) ⟹ (3)` — is machine-checked, and **every
+hypothesis of the capstone is an instance of Matomäki–Radziwiłł's published Theorem 2** at one of
+three weights (`μ`, `μ²`, `μ²·1_{p∤·}`), recorded as the named `Prop`s `MRBilinear` / `MRBilinearAt`.
+
+Nothing else is assumed.  The constants are the card's own: `D = 6/π²` (`squarefreeDensity_eq`),
+`A ≤ 13/36 < 1/2` (`coprimeSharedPrimeDensity_le`), and the margin `D²(1/2 - A) > 0`
+(`route_e_margin_pos`).
+
+## Discharging `(5)`: the state of the Matomäki–Radziwiłł layer
+
+With the card assembled, the only remaining work is to prove `MRBilinear` itself.  A survey of the
+corpus's MR-adjacent layer found one **stale gap note**:
+
+`RHTower/Sieve/DirichletDiagonal.lean` says of its double-sum bound that "the entire content still
+missing is a bound for the right-hand side, which is a Hilbert inequality for the frequencies
+`log n`".  That content is **already proved** elsewhere in the corpus:
+
+- `RHTower/OffDiagonalBound.lean` — `abs_log_ratio_ge`, `inv_abs_log_le`, `sum_inv_dist_le`
+  (the harmonic row bound `∑_{n≠m} 1/|n−m| ≤ 2∑_{j≤K} 1/j`), and
+
+      offDiagonal_le :  ∑_m ∑_{n≠m} 2|e_m e_n|/|log n − log m|
+                          ≤ 4K·(∑_{j≤K} 1/j)·∑_k e_k²,
+
+  for coefficients supported on `[1,K]`.  This is exactly the mean value theorem's off-diagonal
+  estimate, in the elementary `K log K` form (not the sharp Montgomery–Vaughan `K`), which is what
+  `LogSeparation.lean`'s own header says the elementary route costs.
+
+The two are separated only by an **index bridge**: `DirichletDiagonal` indexes by `Fin N` with
+`n ↦ n+1`, `OffDiagonalBound` by `Finset ℕ ⊆ Icc 1 K`.  Combining them gives, unconditionally,
+
+    | ∫₀^T |∑_{n≤N} a_n n^{it}|² dt − T·∑|a_n|² |  ≤  4N(1 + log N)·∑|a_n|²,
+
+the mean value theorem for Dirichlet polynomials.  That is the next target on the `(5)` path, and it
+is bookkeeping, not mathematics.
+
+A duplicate of the harmonic row bound was started and discarded on discovering `OffDiagonalBound`;
+recorded here so it is not attempted a third time.
+
+### The integral mean value theorem for Dirichlet polynomials is proved
+
+`RHTower/Sieve/DirichletIntegralMeanValue.lean`, unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+- `image_succ_univ`, `succ_injOn`, `sum_fin_eq_sum_Icc`, `image_succ_erase`,
+  `sum_fin_erase_eq_sum_Icc_erase` — the index bridge `Fin N ↔ [1,N]` via `m ↦ m+1`, for plain and
+  punctured sums.
+- `coeffAbs`, `coeffAbs_succ`, `coeffAbs_nonneg` — the coefficient moduli extended to `ℕ`.
+- **`norm_integral_normSq_dirPoly_sub_diag_le_explicit`** and
+  **`norm_integral_normSq_dirPoly_sub_diag_le_log`**:
+
+      | ∫₀^T |∑_{n ≤ N} a_n n^{it}|² dt − T·∑|a_n|² |  ≤  4N·(∑_{j≤N} 1/j)·∑|a_n|²
+                                                       ≤  4N(1 + log N)·∑|a_n|².
+
+This closes the gap `DirichletDiagonal.lean` states as "the entire content still missing"; the
+content was already in `RHTower/OffDiagonalBound.lean` (a different cone) and only the index bridge
+was outstanding.  The elementary `N log N` in place of Montgomery–Vaughan's `N` is exactly what the
+logarithmic separation `|log n − log m| ≥ |n−m|/N` costs — no Hilbert inequality enters.
+
+It is the continuous companion of the existing `DirichletMeanValue.lean`, which bounds a *discrete*
+mean square over separated frequencies; the two are different theorems and both are now available.
+
+This is the first analytic input of the `(5)` programme.  The remaining stated gaps on that path are
+`HalaszDichotomy`/`HalaszWindow` (no lower bound on the distance `δ`, and no identification of the
+exceptional frequency), `DirichletRow` (the estimate for `∑_{n ≤ N} n^{iu}` at `u ≠ 0`), and
+`BilinearMultiplier` (`HarmonicSineBound`).

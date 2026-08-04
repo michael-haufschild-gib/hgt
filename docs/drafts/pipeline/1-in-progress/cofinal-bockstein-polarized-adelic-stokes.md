@@ -292,8 +292,14 @@ yet construct the chain-level source claimed by the phrase “source-null-homolo
   component of a strict chain map.
 
 Therefore the current one-dimensional Tate cokernel is a correct retained obstruction quotient,
-but calling its input a cyclic homology class would be theatre.  Before attempting polarized
-annihilation, construct a genuine mixed/relative rational-adelic complex and maps `D_0,D_1` such
-that `D_1 D_0=0` unconditionally, prove a retained ordinary-prime class, and prove the physical
-Xi landing is induced by a strict comparison.  This strengthened producer is now shared by the
-Bockstein and Route-R singular Cartier frontiers.
+but calling its old product-trace input a cyclic homology class would be theatre.
+
+The missing chain producer is now constructed and formalized in
+`CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean`.  The prime zero-isotropy relative complex
+has unconditional `D_1 D_0=0`; its ordinary-prime class is retained by a Schwartz fixed-vector
+theorem; and a strict prime-faithful chain map sends it nontrivially to the resolved actual-Xi
+complex, where it is annihilated.  The formal classification also proves that this image is a
+target boundary.  Thus strict rational-adelic provenance is closed, but the physical/scalar
+cofinal landing is not: the open Bockstein/Route-R theorem must compare this resolved boundary to
+the singular coefficient-faithful Cartier quotient without replacing the comparison by the
+RH-equivalent statement that the physical coefficient vanishes.

@@ -50,21 +50,24 @@ theorem deningerCircle_hasDerivAt (θ : ℝ) :
     exact h
   exact HasDerivAt.cexp h2
 
-/-- **A primitive of the logarithmic differential has constant derivative `i` along the unit
-circle.** -/
-theorem deningerCircleDeriv {f : ℂ → ℂ} (hf : ∀ z : ℂ, z ≠ 0 → HasDerivAt f z⁻¹ z) (θ : ℝ) :
-    HasDerivAt (fun t : ℝ => f (deningerCircle t)) Complex.I θ := by
+/-- **A primitive of a multiple of the logarithmic differential has constant derivative along the
+unit circle.** -/
+theorem deningerCircleDeriv {f : ℂ → ℂ} {c : ℂ}
+    (hf : ∀ z : ℂ, z ≠ 0 → HasDerivAt f (c * z⁻¹) z) (θ : ℝ) :
+    HasDerivAt (fun t : ℝ => f (deningerCircle t)) (c * Complex.I) θ := by
   have hcurve := deningerCircle_hasDerivAt θ
   have hfd : HasFDerivAt f
-      (ContinuousLinearMap.smulRight (1 : ℂ →L[ℂ] ℂ) (deningerCircle θ)⁻¹) (deningerCircle θ) :=
+      (ContinuousLinearMap.smulRight (1 : ℂ →L[ℂ] ℂ) (c * (deningerCircle θ)⁻¹))
+      (deningerCircle θ) :=
     (hf _ (deningerCircle_ne_zero θ)).hasFDerivAt
   have hcomp := (hfd.restrictScalars ℝ).comp_hasDerivAt θ hcurve
   have hval : (ContinuousLinearMap.restrictScalars ℝ
-      (ContinuousLinearMap.smulRight (1 : ℂ →L[ℂ] ℂ) (deningerCircle θ)⁻¹))
-        (deningerCircle θ * Complex.I) = Complex.I := by
-    show (deningerCircle θ * Complex.I) * (deningerCircle θ)⁻¹ = Complex.I
-    field_simp
-    exact div_self (deningerCircle_ne_zero θ)
+      (ContinuousLinearMap.smulRight (1 : ℂ →L[ℂ] ℂ) (c * (deningerCircle θ)⁻¹)))
+        (deningerCircle θ * Complex.I) = c * Complex.I := by
+    show (deningerCircle θ * Complex.I) * (c * (deningerCircle θ)⁻¹) = c * Complex.I
+    have hrearrange : (deningerCircle θ * Complex.I) * (c * (deningerCircle θ)⁻¹) =
+        c * Complex.I * (deningerCircle θ * (deningerCircle θ)⁻¹) := by ring
+    rw [hrearrange, mul_inv_cancel₀ (deningerCircle_ne_zero θ), mul_one]
   rw [hval] at hcomp
   exact hcomp
 
@@ -77,27 +80,47 @@ theorem deningerLinearI_hasDerivAt (t : ℝ) :
   rw [mul_one] at h2
   exact h2
 
-/-- **The logarithmic differential is not exact**: no holomorphic function on the punctured plane
-has derivative `z⁻¹`, because a primitive would grow by the period `2πi` along the unit circle. -/
-theorem deningerDlog_not_exact : ¬ ∃ f : ℂ → ℂ, ∀ z : ℂ, z ≠ 0 → HasDerivAt f z⁻¹ z := by
-  rintro ⟨f, hf⟩
-  have hderiv : ∀ t : ℝ,
-      HasDerivAt (fun t : ℝ => f (deningerCircle t) - Complex.I * (t : ℂ)) 0 t := by
+/-- **A multiple of the logarithmic differential is exact only if the multiple vanishes**: a
+primitive would grow by `c · 2πi` along the unit circle. -/
+theorem deningerDlogScalar_not_exact {f : ℂ → ℂ} {c : ℂ}
+    (hf : ∀ z : ℂ, z ≠ 0 → HasDerivAt f (c * z⁻¹) z) : c = 0 := by
+  have hlin : ∀ t : ℝ, HasDerivAt (fun t : ℝ => c * Complex.I * (t : ℂ)) (c * Complex.I) t := by
     intro t
-    have h := (deningerCircleDeriv hf t).sub (deningerLinearI_hasDerivAt t)
+    have h := deningerOfReal_hasDerivAt t
+    have h2 := h.const_mul (c * Complex.I)
+    rw [mul_one] at h2
+    exact h2
+  have hderiv : ∀ t : ℝ,
+      HasDerivAt (fun t : ℝ => f (deningerCircle t) - c * Complex.I * (t : ℂ)) 0 t := by
+    intro t
+    have h := (deningerCircleDeriv hf t).sub (hlin t)
     rw [sub_self] at h
     exact h
   have hconst := is_const_of_deriv_eq_zero (f := fun t : ℝ =>
-      f (deningerCircle t) - Complex.I * (t : ℂ))
+      f (deningerCircle t) - c * Complex.I * (t : ℂ))
     (fun t => (hderiv t).differentiableAt) (fun t => (hderiv t).deriv) (2 * Real.pi) 0
   have hper : deningerCircle (2 * Real.pi) = deningerCircle 0 := by
     rw [deningerCircle_two_pi, deningerCircle_zero]
   rw [hper] at hconst
   simp only [Complex.ofReal_zero, mul_zero, sub_zero] at hconst
-  have hzero : Complex.I * ((2 * Real.pi : ℝ) : ℂ) = 0 := sub_eq_self.mp hconst
+  have hzero : c * Complex.I * ((2 * Real.pi : ℝ) : ℂ) = 0 := sub_eq_self.mp hconst
   have hpi : ((2 * Real.pi : ℝ) : ℂ) ≠ 0 := by
     simp [Real.pi_ne_zero]
-  exact (mul_ne_zero Complex.I_ne_zero hpi) hzero
+  rcases mul_eq_zero.1 hzero with h | h
+  · rcases mul_eq_zero.1 h with h' | h'
+    · exact h'
+    · exact absurd h' Complex.I_ne_zero
+  · exact absurd h hpi
+
+/-- **The logarithmic differential is not exact**: no holomorphic function on the punctured plane
+has derivative `z⁻¹`, because a primitive would grow by the period `2πi` along the unit circle. -/
+theorem deningerDlog_not_exact : ¬ ∃ f : ℂ → ℂ, ∀ z : ℂ, z ≠ 0 → HasDerivAt f z⁻¹ z := by
+  rintro ⟨f, hf⟩
+  have hf' : ∀ z : ℂ, z ≠ 0 → HasDerivAt f (1 * z⁻¹) z := by
+    intro z hz
+    rw [one_mul]
+    exact hf z hz
+  exact one_ne_zero (deningerDlogScalar_not_exact hf')
 
 end Period
 
