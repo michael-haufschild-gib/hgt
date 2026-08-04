@@ -762,9 +762,21 @@ bounds, the tail integral, the leakage-as-spectral-tail identity, and the variat
 
 So the leakage of the true band operator is now bounded by a completely explicit function-level
 quantity, and the Kaiser–Bessel trial supplies the numerator and denominator estimates
-(`sq_integral_kaiserTrial_cos_le`, `integral_Ioi_cauchy_envelope`, `integral_kaiserTrial_cos_ge`).  What
-remains is the numerical assembly: expressing the trial's deficit through
-`leakage_eq_spectral_tail` — the trial's own spectral tail — and combining the two mass estimates.
+(`sq_integral_kaiserTrial_cos_le`, `integral_Ioi_cauchy_envelope`, `integral_kaiserTrial_cos_ge`).  `RHTower/BandKaiserContinuity.lean` adds what the assembly needs on the trial side:
+
+- `kaiserSeries`, `continuousOn_kaiserSeries`, `continuous_kaiserSeries`, `continuous_kaiserTrial` —
+  the trial is the entire series `sum_k u^k/(k!)²` at `u = c²(1-x²)/4`; on each ball the series is
+  uniformly dominated, so the sum is continuous there, hence everywhere, hence so is the trial.  This
+  makes the trial a legitimate test function for the variational bound.
+- `norm_sq_fourier_bandTrunc_of_even` — for an even test function the spectral density is the square of
+  the cosine transform, `‖𝓕 (trunc Phi) xi‖² = (∫ Phi(x) cos(2 pi xi x) dx)²` (the Fourier
+  normalisation plus the even-test bridge).
+- `norm_sq_fourier_bandTrunc_kaiser_le` — hence the trial's spectral density beyond the band edge obeys
+  the Cauchy envelope `8/(1 + (|2 pi xi| - c)²)` in the Fourier variable.
+
+What remains is the numerical assembly: integrating that envelope over the complement of the window
+(the change of variables `omega = 2 pi xi` turning `4 pi` into the tail constant), bounding the total
+energy below by the inner-band mass, and combining.
 
 ## Lean gates
 

@@ -116,6 +116,7 @@ import GaloisForLFunctions.RHTower.BandFrequencyWindow
 import GaloisForLFunctions.RHTower.BandQuadraticFormFourier
 import GaloisForLFunctions.RHTower.BandTrialMoments
 import GaloisForLFunctions.RHTower.BandKaiserBounds
+import GaloisForLFunctions.RHTower.BandKaiserContinuity
 import GaloisForLFunctions.RHTower.BandKaiserTail
 import GaloisForLFunctions.RHTower.BandKaiserTrial
 import GaloisForLFunctions.RHTower.BandTrialSeries
@@ -3515,6 +3516,9 @@ import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareCapstone
 import GaloisForLFunctions.RHTower.Sieve.LogPolyMoebius
 import GaloisForLFunctions.RHTower.Sieve.MoebiusMeanSquareRange
 import GaloisForLFunctions.RHTower.Sieve.DiscreteWindowBridge
+import GaloisForLFunctions.RHTower.Sieve.MoebiusDiscreteMeanSquare
+import GaloisForLFunctions.RHTower.Sieve.MoebiusFrequencyBound
+import GaloisForLFunctions.RHTower.Sieve.MoebiusMeanSquareFinal
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment

@@ -4809,3 +4809,86 @@ the same filter independently. No conversion is needed, only the interval-to-set
 `Y(1+ε)^K` matched to `Y + K'`, `integral_Ioc_normSq_moebius_range_le` bounds it in terms of the
 frequency-restricted Möbius bound and the trivial size — completing the passage from the card's
 `(15)`–`(17)` to the twisted contour argument.
+
+### The discrete Möbius short-interval mean square — the input, assembled
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusDiscreteMeanSquare.lean`.
+
+- `linSum_erase_eq_realWindow` — for nonnegative starting points, deleting `0` from the index set
+  changes no window (`n = 0` can only enter a window with a negative start), so the index set may be
+  taken positive as the logarithmic machinery requires;
+- **`sum_normSq_moebius_window_le`** —
+
+      ∑_{k < K} |∑_{Y+k < n ≤ Y+k+L} μ(n)|²
+        ≤ Y(1+ε)^J · J · ( 2(M₁·log(1+L/Y) + (#s)²·2/(π²W)) + 2(εL+1)²·log(1+ε) )
+
+  whenever `(Y:ℝ) + K = Y(1+ε)^J`, with the single arithmetic hypothesis
+
+      ∀ |w| ≤ W,  ‖∑_{n ∈ s} μ(n)n^{-i(−2πw)}‖² ≤ M₁ .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+**This is the card's `(15)`–`(17)` mean square, reduced to the twisted contour bound.** The exact
+range condition `(Y:ℝ) + K = Y(1+ε)^J` is no restriction: given `Y, K, J` it determines
+`ε = ((Y+K)/Y)^{1/J} − 1`, and `J` is free.
+
+The chain, entirely within this corpus and entirely unconditional:
+
+    discrete mean square over integer starts        (DiscreteWindowBridge)
+      = a set integral of the linear window sum
+      = an integral in the logarithmic variable     (LinearRangeVariable)
+      ≤ blocks × block cost                         (LinearBlockEstimate, LinearRangeEstimate)
+      ≤ Gallagher's split                           (GallagherLemma, GallagherSplit, GallagherTail)
+      = a bound on the twisted Möbius polynomial    (LogPolyMoebius)
+      ← the twisted contour argument                (MoebiusTwist* layer)
+
+No step assumes an external analytic result; the only analytic input anywhere is the zero-free region
+already owned by the corpus.
+
+### Discharging the frequency hypothesis
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusFrequencyBound.lean`.
+
+- `sum_moebiusTwist_erase` — deleting `0` from the index set changes nothing, the twisted coefficient
+  vanishing there;
+- `admissible_of_abs_le` — the two frequency ranges match under `τ = −2πw`: since `|τ| = 2π|w|`,
+  the contour's condition `5 + 4|τ| ≤ C` is `5 + 8π|w| ≤ C`, so `W = (C − 5)/(8π)` is admissible;
+- **`normSq_sum_moebiusTwist_le`** — hence, from the twisted contour bound
+  `‖∑_{n<M} μ(n)n^{-iτ}‖/N ≤ B` valid for `5 + 4|τ| ≤ C`,
+
+      ∀ |w| ≤ W,  ‖∑_{n ∈ (range M).erase 0} μ(n)n^{-i(−2πw)}‖² ≤ (B·N)² ,
+
+  which is exactly the hypothesis `sum_normSq_moebius_window_le` requires, with `M₁ = (B·N)²`.
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+**The card's analytic input is closed.** `exists_bound_norm_sum_moebiusTwist_div` supplies `B` with
+`B → 0`, at `C = contourParam(N + smoothWidth N)` — so `W = (contourParam − 5)/(8π)` grows faster than
+any power of `log N`, and `M₁ = (B(N)·N)² = o(N²)`. Substituted into the mean-square bound, the two
+error terms are as recorded above, and the `ε`-balance makes both `o(L²)` per start.
+
+### The mean square from the twisted contour bound alone
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusMeanSquareFinal.lean`.
+
+- `blockCost_mono_right` — the block cost is monotone in the global bound;
+- **`sum_normSq_moebius_window_le_of_twist`** —
+
+      ∑_{k < K} |∑_{Y+k < n ≤ Y+k+L} μ(n)|²
+        ≤ Y(1+ε)^J · J · ( 2((BN)²·log(1+L/Y) + M²·2/(π²W)) + 2(εL+1)²·log(1+ε) )
+
+  whose **only** hypotheses are the geometry (`Y+K = Y(1+ε)^J`, `8πW + 5 ≤ C`, positivity) and the
+  twisted contour bound in its own statement:
+
+      ∀ τ,  5 + 4|τ| ≤ C  →  ‖∑_{n < M} μ(n)n^{-iτ}‖ / N ≤ B .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+**This closes the route.** `exists_bound_norm_sum_moebiusTwist_div` provides exactly that hypothesis
+with `B → 0` and `C = contourParam(N + smoothWidth N)`; substituting gives the card's `(15)`–`(17)`
+mean square with both error terms `o(L²)` at the recorded `ε`-balance.
+
+Status of the card's external dependency: `(15)`–`(17)` were cited to Menon's 2026 short-interval
+mean-square theorem. That citation is no longer needed for this route — the estimate is derived here
+from the corpus's own zero-free region, through the twisted contour argument and Gallagher's
+reduction, with no external analytic input at any step.

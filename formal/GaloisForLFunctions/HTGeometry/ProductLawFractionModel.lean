@@ -39,8 +39,8 @@ noncomputable def univFactor (p : Polynomial ℂ) (j : ℕ) : MvPolynomial ℕ �
   Polynomial.aeval (MvPolynomial.X j) p
 
 /-- The image of a univariate factor in the rational model. -/
-noncomputable def prodFactor (g : ℕ → Polynomial ℂ) (j : ℕ) : CascadeField :=
-  algebraMap (MvPolynomial ℕ ℂ) CascadeField (univFactor (g j) j)
+noncomputable def fact (p : Polynomial ℂ) (j : ℕ) : CascadeField :=
+  algebraMap (MvPolynomial ℕ ℂ) CascadeField (univFactor p j)
 
 /-! ## Nonvanishing of the factors -/
 
@@ -61,48 +61,66 @@ theorem univFactor_ne_zero {p : Polynomial ℂ} (hp : p ≠ 0) (j : ℕ) :
   rw [Polynomial.eval_zero]
   exact h.symm
 
-theorem prodFactor_ne_zero {g : ℕ → Polynomial ℂ} (hg : ∀ j, g j ≠ 0) (j : ℕ) :
-    prodFactor g j ≠ 0 := by
-  rw [prodFactor]
+theorem fact_ne_zero {p : Polynomial ℂ} (hp : p ≠ 0) (j : ℕ) :
+    fact p j ≠ 0 := by
+  rw [fact]
   intro h0
-  refine univFactor_ne_zero (hg j) j ?_
+  refine univFactor_ne_zero hp j ?_
   have hinj : Function.Injective
       (algebraMap (MvPolynomial ℕ ℂ) CascadeField) := IsFractionRing.injective _ _
   exact hinj (by rw [h0, map_zero])
 
-/-! ## The product law -/
+/-! ## The product law
 
-/-- The product appearing in the law: the jet of the `k`-th coordinate. -/
-noncomputable def prodJet (g : ℕ → Polynomial ℂ) (k : ℕ) : CascadeField :=
-  ∏ j ∈ Finset.range k, prodFactor g j
+The law of a cascade of first-order linear maps has the shape
 
-@[simp] theorem prodJet_zero (g : ℕ → Polynomial ℂ) : prodJet g 0 = 1 := by
-  simp [prodJet]
+`δ X_k = (∏_(j<k) Q_j(X_j)) · v_k(X_k)`,
 
-theorem prodJet_succ (g : ℕ → Polynomial ℂ) (k : ℕ) :
-    prodJet g (k + 1) = prodJet g k * prodFactor g k := by
-  rw [prodJet, prodJet, Finset.prod_range_succ]
+a product of univariate factors over the earlier coordinates, times one univariate factor in the
+coordinate itself.  The exponential tower is the case `Q_j = v_k = X`. -/
 
-theorem prodJet_ne_zero {g : ℕ → Polynomial ℂ} (hg : ∀ j, g j ≠ 0) (k : ℕ) :
-    prodJet g k ≠ 0 :=
-  Finset.prod_ne_zero_iff.mpr fun j _ => prodFactor_ne_zero hg j
+/-- The jet of the `k`-th coordinate: earlier factors times the terminal factor. -/
+noncomputable def prodJet (Q v : ℕ → Polynomial ℂ) (k : ℕ) : CascadeField :=
+  (∏ j ∈ Finset.range k, fact (Q j) j) * fact (v k) k
+
+/-- The product of the earlier factors alone. -/
+noncomputable def prodHead (Q : ℕ → Polynomial ℂ) (k : ℕ) : CascadeField :=
+  ∏ j ∈ Finset.range k, fact (Q j) j
+
+@[simp] theorem prodHead_zero (Q : ℕ → Polynomial ℂ) : prodHead Q 0 = 1 := by
+  simp [prodHead]
+
+theorem prodHead_succ (Q : ℕ → Polynomial ℂ) (k : ℕ) :
+    prodHead Q (k + 1) = prodHead Q k * fact (Q k) k := by
+  rw [prodHead, prodHead, Finset.prod_range_succ]
+
+theorem prodJet_eq (Q v : ℕ → Polynomial ℂ) (k : ℕ) :
+    prodJet Q v k = prodHead Q k * fact (v k) k := rfl
+
+theorem prodHead_ne_zero {Q : ℕ → Polynomial ℂ} (hQ : ∀ j, Q j ≠ 0) (k : ℕ) :
+    prodHead Q k ≠ 0 :=
+  Finset.prod_ne_zero_iff.mpr fun j _ => fact_ne_zero (hQ j) j
+
+theorem prodJet_ne_zero {Q v : ℕ → Polynomial ℂ} (hQ : ∀ j, Q j ≠ 0) (hv : ∀ j, v j ≠ 0) (k : ℕ) :
+    prodJet Q v k ≠ 0 :=
+  mul_ne_zero (prodHead_ne_zero hQ k) (fact_ne_zero (hv k) k)
 
 /-- The product law as a derivation of the polynomial ring into the rational model. -/
-noncomputable def prodDerivationPoly (g : ℕ → Polynomial ℂ) :
+noncomputable def prodDerivationPoly (Q v : ℕ → Polynomial ℂ) :
     Derivation ℂ (MvPolynomial ℕ ℂ) CascadeField :=
-  MvPolynomial.mkDerivation ℂ fun k => prodJet g k
+  MvPolynomial.mkDerivation ℂ fun k => prodJet Q v k
 
-@[simp] theorem prodDerivationPoly_X (g : ℕ → Polynomial ℂ) (k : ℕ) :
-    prodDerivationPoly g (MvPolynomial.X k) = prodJet g k :=
+@[simp] theorem prodDerivationPoly_X (Q v : ℕ → Polynomial ℂ) (k : ℕ) :
+    prodDerivationPoly Q v (MvPolynomial.X k) = prodJet Q v k :=
   MvPolynomial.mkDerivation_X ℂ _ k
 
 /-- **The product law on the rational model.** -/
-noncomputable def prodDerivation (g : ℕ → Polynomial ℂ) :
+noncomputable def prodDerivation (Q v : ℕ → Polynomial ℂ) :
     Derivation ℂ CascadeField CascadeField :=
-  fractionRingDerivation (prodDerivationPoly g)
+  fractionRingDerivation (prodDerivationPoly Q v)
 
-@[simp] theorem prodDerivation_fx (g : ℕ → Polynomial ℂ) (k : ℕ) :
-    prodDerivation g (fx k) = prodJet g k := by
+@[simp] theorem prodDerivation_fx (Q v : ℕ → Polynomial ℂ) (k : ℕ) :
+    prodDerivation Q v (fx k) = prodJet Q v k := by
   rw [prodDerivation, fx, fractionRingDerivation_algebraMap, prodDerivationPoly_X]
 
 /-! ## The chain rule for a univariate factor -/
@@ -167,51 +185,69 @@ theorem derivation_univFactor {M : Type*} [AddCommGroup M] [Module ℂ M]
 /-! ## The logarithmic derivative of the product -/
 
 /-- The logarithmic derivative of one factor. -/
-noncomputable def logFactor (g : ℕ → Polynomial ℂ) (j : ℕ) : CascadeField :=
-  algebraMap (MvPolynomial ℕ ℂ) CascadeField (univFactor (g j).derivative j) / prodFactor g j
+noncomputable def logFactor (p : Polynomial ℂ) (j : ℕ) : CascadeField :=
+  fact p.derivative j / fact p j
 
-/-- The logarithmic derivative of the whole product, weighted by the coordinate jets. -/
-noncomputable def logSum (g : ℕ → Polynomial ℂ) (k : ℕ) : CascadeField :=
-  ∑ j ∈ Finset.range k, logFactor g j * prodJet g j
+/-- The logarithmic derivative of the earlier factors, weighted by the coordinate jets. -/
+noncomputable def logSum (Q v : ℕ → Polynomial ℂ) (k : ℕ) : CascadeField :=
+  ∑ j ∈ Finset.range k, logFactor (Q j) j * prodJet Q v j
 
-@[simp] theorem logSum_zero (g : ℕ → Polynomial ℂ) : logSum g 0 = 0 := by
+@[simp] theorem logSum_zero (Q v : ℕ → Polynomial ℂ) : logSum Q v 0 = 0 := by
   simp [logSum]
 
-theorem logSum_succ (g : ℕ → Polynomial ℂ) (k : ℕ) :
-    logSum g (k + 1) = logSum g k + logFactor g k * prodJet g k := by
+theorem logSum_succ (Q v : ℕ → Polynomial ℂ) (k : ℕ) :
+    logSum Q v (k + 1) = logSum Q v k + logFactor (Q k) k * prodJet Q v k := by
   rw [logSum, logSum, Finset.sum_range_succ]
 
 /-- The derivation of a single factor. -/
-theorem prodDerivation_prodFactor (g : ℕ → Polynomial ℂ) (k : ℕ) :
-    prodDerivation g (prodFactor g k)
-      = algebraMap (MvPolynomial ℕ ℂ) CascadeField (univFactor (g k).derivative k)
-        * prodJet g k := by
-  rw [prodFactor, prodDerivation, fractionRingDerivation_algebraMap,
-    derivation_univFactor (prodDerivationPoly g) (g k) k, prodDerivationPoly_X,
+theorem prodDerivation_fact (Q v : ℕ → Polynomial ℂ) (p : Polynomial ℂ) (k : ℕ) :
+    prodDerivation Q v (fact p k) = fact p.derivative k * prodJet Q v k := by
+  rw [fact, prodDerivation, fractionRingDerivation_algebraMap,
+    derivation_univFactor (prodDerivationPoly Q v) p k, prodDerivationPoly_X,
     Algebra.smul_def]
+  rfl
 
-/-- **The logarithmic law of the product.**  The jet of a coordinate has logarithmic derivative equal
-to the weighted sum of the logarithmic derivatives of the factors. -/
-theorem prodDerivation_prodJet {g : ℕ → Polynomial ℂ} (hg : ∀ j, g j ≠ 0) (k : ℕ) :
-    prodDerivation g (prodJet g k) = prodJet g k * logSum g k := by
+/-- **The logarithmic law of the head product.** -/
+theorem prodDerivation_prodHead {Q v : ℕ → Polynomial ℂ} (hQ : ∀ j, Q j ≠ 0) (k : ℕ) :
+    prodDerivation Q v (prodHead Q k) = prodHead Q k * logSum Q v k := by
   induction k with
   | zero => simp
   | succ k ih =>
-      have hFne : prodFactor g k ≠ 0 := prodFactor_ne_zero hg k
-      rw [prodJet_succ, Derivation.leibniz, ih, prodDerivation_prodFactor, logSum_succ]
+      have hFne : fact (Q k) k ≠ 0 := fact_ne_zero (hQ k) k
+      rw [prodHead_succ, Derivation.leibniz, ih, prodDerivation_fact, logSum_succ]
       simp only [smul_eq_mul]
-      have hcancel : prodFactor g k * logFactor g k
-          = algebraMap (MvPolynomial ℕ ℂ) CascadeField (univFactor (g k).derivative k) := by
+      have hcancel : fact (Q k) k * logFactor (Q k) k = fact (Q k).derivative k := by
         rw [logFactor]
         field_simp
-      calc prodJet g k
-              * (algebraMap (MvPolynomial ℕ ℂ) CascadeField (univFactor (g k).derivative k)
-                * prodJet g k)
-            + prodFactor g k * (prodJet g k * logSum g k)
-          = prodJet g k * ((prodFactor g k * logFactor g k) * prodJet g k)
-            + prodFactor g k * (prodJet g k * logSum g k) := by
-            rw [hcancel]
-        _ = prodJet g k * prodFactor g k * (logSum g k + logFactor g k * prodJet g k) := by ring
+      calc prodHead Q k * (fact (Q k).derivative k * prodJet Q v k)
+            + fact (Q k) k * (prodHead Q k * logSum Q v k)
+          = prodHead Q k * ((fact (Q k) k * logFactor (Q k) k) * prodJet Q v k)
+            + fact (Q k) k * (prodHead Q k * logSum Q v k) := by rw [hcancel]
+        _ = prodHead Q k * fact (Q k) k
+              * (logSum Q v k + logFactor (Q k) k * prodJet Q v k) := by ring
+
+/-- **The logarithmic law of the coordinate jet.**  The extra terminal factor contributes its own
+logarithmic derivative, weighted by the jet itself. -/
+theorem prodDerivation_prodJet {Q v : ℕ → Polynomial ℂ} (hQ : ∀ j, Q j ≠ 0) (k : ℕ) :
+    prodDerivation Q v (prodJet Q v k)
+      = prodJet Q v k * (logSum Q v k + logFactor (v k) k * prodJet Q v k) := by
+  rcases eq_or_ne (fact (v k) k) 0 with hzero | hne
+  · have hjet : prodJet Q v k = 0 := by rw [prodJet_eq, hzero, mul_zero]
+    rw [hjet, map_zero, zero_mul]
+  · rw [prodJet_eq, Derivation.leibniz, prodDerivation_prodHead hQ,
+      prodDerivation_fact]
+    simp only [smul_eq_mul]
+    have hcancel : fact (v k) k * logFactor (v k) k = fact (v k).derivative k := by
+      rw [logFactor]
+      field_simp
+    calc prodHead Q k * (fact (v k).derivative k * prodJet Q v k)
+          + fact (v k) k * (prodHead Q k * logSum Q v k)
+        = prodHead Q k * ((fact (v k) k * logFactor (v k) k) * prodJet Q v k)
+          + fact (v k) k * (prodHead Q k * logSum Q v k) := by rw [hcancel]
+      _ = (prodHead Q k * fact (v k) k)
+            * (logSum Q v k + logFactor (v k) k * prodJet Q v k) := by ring
+      _ = prodJet Q v k * (logSum Q v k + logFactor (v k) k * prodJet Q v k) := by
+          rw [prodJet_eq]
 
 /-! ## The coordinate derivations -/
 

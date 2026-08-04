@@ -121,6 +121,31 @@ theorem continuous_kgSinPhase_time (ξ : E) : Continuous fun t : ℝ => kgSinPha
   exact Complex.continuous_ofReal.comp
     (Real.continuous_sin.comp (continuous_id.mul continuous_const))
 
+private theorem norm_cosMulCos_le (t s : ℝ) (ξ : E) :
+    ‖kgCosSymbol t ξ * kgCosSymbol s ξ‖ ≤ 1 := by
+  rw [norm_mul]
+  exact mul_le_one₀ (norm_kgCosSymbol_le t ξ) (norm_nonneg _) (norm_kgCosSymbol_le s ξ)
+
+private theorem norm_sinMulSin_le (t s : ℝ) (ξ : E) :
+    ‖kgSinPhase t ξ * kgSinPhase s ξ‖ ≤ 1 := by
+  rw [norm_mul]
+  exact mul_le_one₀ (norm_kgSinPhase_le t ξ) (norm_nonneg _) (norm_kgSinPhase_le s ξ)
+
+private theorem norm_cosMulSin_le (t s : ℝ) (ξ : E) :
+    ‖kgCosSymbol t ξ * kgSinPhase s ξ‖ ≤ 1 := by
+  rw [norm_mul]
+  exact mul_le_one₀ (norm_kgCosSymbol_le t ξ) (norm_nonneg _) (norm_kgSinPhase_le s ξ)
+
+private theorem norm_sinMulCos_le (t s : ℝ) (ξ : E) :
+    ‖kgSinPhase t ξ * kgCosSymbol s ξ‖ ≤ 1 := by
+  rw [norm_mul]
+  exact mul_le_one₀ (norm_kgSinPhase_le t ξ) (norm_nonneg _) (norm_kgCosSymbol_le s ξ)
+
+private theorem norm_negSinMulSin_le (t s : ℝ) (ξ : E) :
+    ‖-(kgSinPhase t ξ * kgSinPhase s ξ)‖ ≤ 1 := by
+  rw [norm_neg]
+  exact norm_sinMulSin_le t s ξ
+
 end SymbolBasics
 
 section SymbolMeasurable
@@ -136,6 +161,22 @@ theorem measurable_kgSinPhase (t : ℝ) : Measurable (kgSinPhase (E := E) t) :=
   (continuous_kgSinPhase t).measurable
 
 theorem measurable_kgFreqInv : Measurable (kgFreqInv (E := E)) := continuous_kgFreqInv.measurable
+
+private theorem measurable_cosMulCos (t s : ℝ) :
+    Measurable fun ξ : E => kgCosSymbol t ξ * kgCosSymbol s ξ :=
+  (measurable_kgCosSymbol t).mul (measurable_kgCosSymbol s)
+
+private theorem measurable_sinMulSin (t s : ℝ) :
+    Measurable fun ξ : E => kgSinPhase t ξ * kgSinPhase s ξ :=
+  (measurable_kgSinPhase t).mul (measurable_kgSinPhase s)
+
+private theorem measurable_cosMulSin (t s : ℝ) :
+    Measurable fun ξ : E => kgCosSymbol t ξ * kgSinPhase s ξ :=
+  (measurable_kgCosSymbol t).mul (measurable_kgSinPhase s)
+
+private theorem measurable_sinMulCos (t s : ℝ) :
+    Measurable fun ξ : E => kgSinPhase t ξ * kgCosSymbol s ξ :=
+  (measurable_kgSinPhase t).mul (measurable_kgCosSymbol s)
 
 end SymbolMeasurable
 
@@ -214,42 +255,6 @@ theorem kgSinOp_eq (t : ℝ) : kgSinOp (E := E) t
 section Addition
 
 variable (t s : ℝ)
-
-private theorem measurable_cosMulCos :
-    Measurable fun ξ : E => kgCosSymbol t ξ * kgCosSymbol s ξ :=
-  (measurable_kgCosSymbol t).mul (measurable_kgCosSymbol s)
-
-private theorem measurable_sinMulSin :
-    Measurable fun ξ : E => kgSinPhase t ξ * kgSinPhase s ξ :=
-  (measurable_kgSinPhase t).mul (measurable_kgSinPhase s)
-
-private theorem measurable_cosMulSin :
-    Measurable fun ξ : E => kgCosSymbol t ξ * kgSinPhase s ξ :=
-  (measurable_kgCosSymbol t).mul (measurable_kgSinPhase s)
-
-private theorem measurable_sinMulCos :
-    Measurable fun ξ : E => kgSinPhase t ξ * kgCosSymbol s ξ :=
-  (measurable_kgSinPhase t).mul (measurable_kgCosSymbol s)
-
-private theorem norm_cosMulCos_le (ξ : E) : ‖kgCosSymbol t ξ * kgCosSymbol s ξ‖ ≤ 1 := by
-  rw [norm_mul]
-  exact mul_le_one₀ (norm_kgCosSymbol_le t ξ) (norm_nonneg _) (norm_kgCosSymbol_le s ξ)
-
-private theorem norm_sinMulSin_le (ξ : E) : ‖kgSinPhase t ξ * kgSinPhase s ξ‖ ≤ 1 := by
-  rw [norm_mul]
-  exact mul_le_one₀ (norm_kgSinPhase_le t ξ) (norm_nonneg _) (norm_kgSinPhase_le s ξ)
-
-private theorem norm_cosMulSin_le (ξ : E) : ‖kgCosSymbol t ξ * kgSinPhase s ξ‖ ≤ 1 := by
-  rw [norm_mul]
-  exact mul_le_one₀ (norm_kgCosSymbol_le t ξ) (norm_nonneg _) (norm_kgSinPhase_le s ξ)
-
-private theorem norm_sinMulCos_le (ξ : E) : ‖kgSinPhase t ξ * kgCosSymbol s ξ‖ ≤ 1 := by
-  rw [norm_mul]
-  exact mul_le_one₀ (norm_kgSinPhase_le t ξ) (norm_nonneg _) (norm_kgCosSymbol_le s ξ)
-
-private theorem norm_negSinMulSin_le (ξ : E) : ‖-(kgSinPhase t ξ * kgSinPhase s ξ)‖ ≤ 1 := by
-  rw [norm_neg]
-  exact norm_sinMulSin_le t s ξ
 
 /-- **The addition law for the cosine propagator.** -/
 theorem kgCosOp_add :
@@ -383,25 +388,9 @@ theorem continuous_kgPropagator_comp {ι : Type*} [TopologicalSpace ι] {r : ι 
 theorem kgPropagator_add (t s : ℝ) :
     kgPropagator (E := E) (t + s) = (kgPropagator t).comp (kgPropagator s) := by
   refine ContinuousLinearMap.ext fun v => ?_
-  have hcos := kgCosOp_add (E := E) t s
-  have hsin := kgSinOp_add (E := E) t s
-  rw [ContinuousLinearMap.comp_apply, kgPropagator_apply, kgPropagator_apply, kgPropagator_apply,
-    hcos, hsin]
-  refine Prod.ext ?_ ?_
-  · show (((kgCosOp (E := E) t).comp (kgCosOp s) - (kgSinOp t).comp (kgSinOp s)) v.1
-        + ((kgCosOp (E := E) t).comp (kgSinOp s) + (kgSinOp t).comp (kgCosOp s)) v.2)
-      = kgCosOp t (kgCosOp s v.1 + kgSinOp s v.2)
-        + kgSinOp t (-(kgSinOp s v.1) + kgCosOp s v.2)
-    simp only [ContinuousLinearMap.sub_apply, add_apply, ContinuousLinearMap.comp_apply, map_add,
-      map_neg]
-    abel
-  · show (-((((kgCosOp (E := E) t).comp (kgSinOp s) + (kgSinOp t).comp (kgCosOp s))) v.1)
-        + ((kgCosOp (E := E) t).comp (kgCosOp s) - (kgSinOp t).comp (kgSinOp s)) v.2)
-      = -(kgSinOp t (kgCosOp s v.1 + kgSinOp s v.2))
-        + kgCosOp t (-(kgSinOp s v.1) + kgCosOp s v.2)
-    simp only [ContinuousLinearMap.sub_apply, add_apply, ContinuousLinearMap.comp_apply, map_add,
-      map_neg]
-    abel
+  simp only [ContinuousLinearMap.comp_apply, kgPropagator_apply, kgCosOp_add, kgSinOp_add,
+    sub_apply, add_apply, map_add, map_neg, Prod.mk.injEq]
+  constructor <;> abel
 
 /-- **The propagator starts at the identity.** -/
 theorem kgPropagator_zero_apply (v : KGEnergy E) : kgPropagator 0 v = v := by

@@ -7269,7 +7269,16 @@ of that product, and `g_j'/g_j` is not a polynomial: the model has to be the **f
 state polynomial ring.  That is legitimate for the card's purpose, because algebraic independence over
 `ℂ` transfers back along the inclusion, and the Jacobian criterion only needs a domain.
 
-`HTGeometry/ProductLawFractionModel.lean` builds that model (axiom-clean):
+The law's exact shape matters, and the first attempt got it wrong.  Since `δ X_(k+1)` contains the
+factor `(X_(k+1) − d_k)`, the jet is *not* a product over the earlier coordinates only; it is
+
+`δ X_k = (∏_(j<k) Q_j(X_j)) · v_k(X_k)`,
+
+earlier factors times one terminal factor in the coordinate itself.  The exponential tower is the
+case `Q_j = v_k = X` (its law `δ X_k = ∏_(i=1)^k X_i` includes `X_k`), and the linear-coefficient
+cascade is `Q_j = a_j·(X − d_(j−1))`, `v_k = X − d_(k−1)`.  The module is built on that shape.
+
+`HTGeometry/ProductLawFractionModel.lean` (axiom-clean):
 
 * `CascadeField = FractionRing (MvPolynomial ℕ ℂ)`, coordinates `fx k`, coordinate derivations
   `fpderiv k`;
@@ -7280,9 +7289,14 @@ state polynomial ring.  That is legitimate for the card's purpose, because algeb
   by induction on `p`; mathlib has no such lemma;
 * `prodDerivation` — the product law as a derivation of the fraction field, obtained from the corpus's
   `fractionRingDerivation`;
-* `prodDerivation_prodJet` — the identity the whole induction will run on:
+* `prodDerivation_prodHead` and `prodDerivation_prodJet` — the identity the whole induction will run
+  on:
 
-  `δ(δ X_k) = δ X_k · ∑_(j<k) (g_j'(X_j)/g_j(X_j))·δ X_j`.
+  `δ(δ X_k) = δ X_k · (∑_(j<k) (Q_j'/Q_j)(X_j)·δ X_j + (v_k'/v_k)(X_k)·δ X_k)`.
+
+  In the tower the terminal term collapses — `(v_k'/v_k)(X_k)·δX_k = δX_(k−1)` — which is why the
+  tower's logarithmic law stayed inside the polynomial ring.  In general it does not, and that term is
+  exactly what the fraction field is for.
 
 The corpus already owned the extension of a derivation to a fraction field (`FractionRingDerivation`,
 via the square-zero graph homomorphism), so none of that had to be rebuilt.  What remains for this

@@ -133,6 +133,20 @@ theorem powerEndo_comp {M N : ℕ} (hM : 0 < M) (hN : 0 < N) :
     rw [powerEndo_gen, powerEndo_gen, map_pow, powerEndo_gen, ← pow_mul]
     ring
 
+
+/-- Power endomorphisms with equal exponents agree. -/
+theorem powerEndo_congr {M N : ℕ} (hM : 0 < M) (hN : 0 < N) (h : M = N) :
+    powerEndo hg hgen hM = powerEndo hg hgen hN := by
+  subst h
+  rfl
+
+/-- The first power endomorphism is the identity. -/
+theorem powerEndo_one (h1 : 0 < 1) : powerEndo hg hgen h1 = AlgHom.id C E := by
+  refine differentialAlgHom_ext_of_differentialAdjoin_eq_top (fun _ : Unit ↦ g) hgen _ _
+    (fun z ↦ powerEndo_deriv hg hgen h1 z) (fun z ↦ rfl) (fun _ ↦ ?_)
+  change powerEndo hg hgen h1 g = g
+  rw [powerEndo_gen, pow_one]
+
 end
 
 end

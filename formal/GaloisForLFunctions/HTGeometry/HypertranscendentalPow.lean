@@ -18,14 +18,12 @@ open scoped Differential
 
 noncomputable section
 
-/-- **An algebraic element is differentially algebraic.**  Its jet family contains the element
+/-- **A differentially independent element is transcendental.**  Its jet family contains the element
 itself, and an algebraically independent family has transcendental members. -/
-theorem differentialAlgebraicOver_of_isAlgebraic
-    {A R : Type*} [Field A] [Field R] [Algebra A R]
-    [Differential A] [Differential R] [DifferentialAlgebra A R] [CharZero A] {x : R}
-    (hx : IsAlgebraic A x) :
-    DifferentialAlgebraicOver A x := by
-  intro hind
+theorem transcendental_of_differentialIndependent
+    {A R : Type*} [CommRing A] [CommRing R] [Algebra A R] [Differential R] {x : R}
+    (hind : DifferentialIndependent A (fun _ : Unit ↦ x)) :
+    Transcendental A x := by
   have hind' : AlgebraicIndependent A (fun p : Unit × ℕ ↦ differentialJet p.2 x) := hind
   have hcomp := hind'.comp (fun _ : Fin 1 ↦ ((), 0)) (fun a b _ ↦ Subsingleton.elim a b)
   have hfun : ((fun p : Unit × ℕ ↦ differentialJet p.2 x) ∘ fun _ : Fin 1 ↦ ((), 0)) = ![x] := by
@@ -33,7 +31,14 @@ theorem differentialAlgebraicOver_of_isAlgebraic
     fin_cases i
     simp
   rw [hfun] at hcomp
-  exact (algebraicIndependent_iff_transcendental.mp hcomp) hx
+  exact algebraicIndependent_iff_transcendental.mp hcomp
+
+/-- **An algebraic element is differentially algebraic.** -/
+theorem differentialAlgebraicOver_of_isAlgebraic
+    {A R : Type*} [CommRing A] [CommRing R] [Algebra A R] [Differential R] {x : R}
+    (hx : IsAlgebraic A x) :
+    DifferentialAlgebraicOver A x :=
+  fun hind ↦ transcendental_of_differentialIndependent hind hx
 
 variable {C E : Type*} [Field C] [Field E] [Algebra C E] [Differential C] [Differential E]
   [DifferentialAlgebra C E] [CharZero E]
