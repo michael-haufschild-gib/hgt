@@ -2492,3 +2492,25 @@ potential, in the child card
   orbit of a variable-speed chart.
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+## Status update: the variable-speed class, with an arbitrary potential
+
+The child card
+`../../../3-formalized/new_scientific_knowledge/variable-speed-arbitrary-potential-clock-probes.md`
+removes the restriction its predecessor left. A chart whose propagation speed varies in time now
+carries clock probes for an **arbitrary smooth potential**, at every event:
+
+- **`openProbes_hillWaveOp_smooth`** — the corpus's `OpenProbes` interface for `hillWaveOp d c` and
+  any smooth spacetime potential, the potential realized as the chart potential of a real convolving
+  family exactly as in the flat case;
+- **`regularOpenProbes_hillSpeedChart_driven`** — those probes are probes of the divergence-form
+  d'Alembertian of an explicit smooth chart;
+- **`twoSpecies_scale_law_hillDriven`** — hence the two-species scale law on the whole conformal
+  orbit of a variable-speed chart, with a shared potential that cancels in the difference.
+
+Two pieces of infrastructure the corpus lacked were built for it and are reusable: a Volterra theory
+with **locally bounded** data (`VolterraWindowedEquation.lean`) and a Duhamel calculus with an
+**abstract fundamental pair** (`DuhamelVariableOscillator.lean`), the latter because a variable
+frequency has no addition formula.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.

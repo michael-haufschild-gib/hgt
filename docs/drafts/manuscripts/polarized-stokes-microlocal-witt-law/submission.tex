@@ -31,7 +31,7 @@
 \newcommand{\Pcal}{\mathcal P}
 \newcommand{\Mcal}{\mathcal M}
 \begin{document}
-\title[The Stokes--microlocal Witt law]{The polarized Stokes--microlocal Witt law}
+\title[The Lorentzian Stokes coarea law]{The Lorentzian Stokes coarea law for nonabelian Hodge diagrams}
 \author{M.~Haufschild}
 \address{Independent researcher}
 \email{haufschildmichael@gmail.com}
@@ -41,46 +41,66 @@
 vanishing cycle, characteristic cycle, Rees construction, wild character variety, Witt index}
 
 \begin{abstract}
-For a finite Galois-stable Puiseux spectrum, highest coefficient difference determines mixed Hom
-irregularity.  We prove that its threshold partitions form a canonical dendrogram and give an
-exact coarea decomposition of the full polarized Stokes index.  Every threshold term is a positive
-square; physical rank is the sole potentially negative channel.
+Let $B$ be the core adjacency matrix attached by Boalch--Yamakawa and Dou\c{c}ot to a finite
+ramified Stokes spectrum, and let $C=2I-B$.  We prove that its full quadratic form is a positive
+coarea energy minus one square of physical rank.  More precisely, finite Puiseux coefficients
+generate canonical threshold blocks $A_e$ and
+\[
+ x^TCx=\sum_i x_i^2+\sum_e\ell_e\Bigl(\sum_i|A_e\cap i|x_i\Bigr)^2
+              -(H-1)\Bigl(\sum_i r_ix_i\Bigr)^2.
+\]
+Consequently every coefficient-realized nonabelian Hodge core, and every type-$A$ marking of it,
+is finite, affine, or Lorentzian: negative index plus nullity is at most one.  For an honest graph
+this is equivalent to the spectral obstruction $\lambda_2(B)\leq2$, with simple affine boundary.
 
-For every nonzero leading coefficient, we classify the zero directions of the actual exponential
-phase $\operatorname{Re}(ce^{-ik\theta})$: they are $2k$ simple analytic walls, canonically split
-into two transverse-sign fibers of size $k$.  On their induced finite stratification we construct
-the cellular Stokes category.  Microlocalization is a quotient functor, nearby-to-vanishing is an
-exact quotient, and the characteristic cycle of a degree-$k$ exponential Hom germ has $2k$
-oriented rays of unit multiplicity, exactly $k$ in the ordered decay orientation.
-Galois-normalized directed microstalk mass equals mixed Hom irregularity.  Thus the coarea
-decomposition is also a categorical microlocal index formula.
+The same factorization survives physical-rank fusion over an arbitrary marked curve.  All local
+channels remain positive and topology changes only the single common-rank square, so the joint
+negative-index--nullity bound remains one for every genus and every nonnegative multi-Rees
+specialization.  Capacity completion gives the exact finite/affine/Lorentz trichotomy, while
+corona reduction is its Schur-complement recursion.
 
-After physical-rank fusion over an arbitrary marked curve, all local channels remain positive and
-topology changes only one common-rank square.  The global form has negative index plus nullity at
-most one for every genus, puncture count, ramification pattern, and nonnegative multi-Rees
-specialization.  Capacity completion gives the sharp finite/affine/Lorentz trichotomy.  Corona
-reduction is an exact positive Schur complement; its residual is the quotient in an exact
-boundary--total--relative-vanishing sequence, and successive eliminations are order-independent.
-An explicit three-term deformation complex derives the smooth-reduction dimension and Euler
-formulas by rank--nullity.  These results give a mixed, polarized refinement of scalar irregular
-rigidity formulas.
+We also identify the finite wall labels analytically.  For every actual leading coefficient
+$c\ne0$ and pole numerator $k>0$, the zero directions of
+$\operatorname{Re}(ce^{-ik\theta})$ are exactly $2k$ simple walls.  Their explicit labels preserve
+cyclic order by rotation through $\pi/k$ and record transverse orientation.  The induced
+constructible boundary germ has one directed microstalk over each wall; normalized directed
+microstalk mass equals mixed Hom irregularity.  Thus published Cartan polarization, analytic
+Stokes walls, microlocal Morse groups, Rees channels, and corona elimination are shadows of one
+Lorentzian coarea law.
 \end{abstract}
 \maketitle
 
 \section{Introduction}
 
 Ramified Stokes geometry contains two gluing mechanisms.  Locally, exponential factors split into
-branches on a finite cover and are regrouped by formal monodromy.  Globally, local Stokes spaces
-are fused after physical ranks have been identified.  Main result: both mechanisms obey one
-quadratic conservation law.  All local deformation channels form a positive coarea energy;
-every possible negative contribution factors through total physical rank.
+branches on a finite cover and are regrouped into Stokes circles by analytic continuation.
+Globally, local Stokes spaces are fused after physical ranks have been identified.  Main result is
+that both mechanisms obey one quadratic conservation law: all centered deformation channels form
+a positive coarea energy, while every nonpositive contribution factors through physical rank.
 
-The scalar ancestry matters.  Hiroe proves, under multiplicity-free, regularity, and spectral
+This law applies directly to the established nonabelian Hodge diagram, not to a newly named
+contact matrix.  For Stokes circles $i,j$, let $r_i$ be ramification degree and
+$A_{ij}=\Irr\Hom(i,j)$.  Boalch--Yamakawa's core formula, in Dou\c{c}ot's normalization, is
+\begin{equation}\label{eq:published-B}
+ B_{ij}=A_{ij}-r_ir_j+\delta_{ij},\qquad C=2I-B,
+\end{equation}
+where the diagonal formula includes the correction $+1$
+\cite{BoalchYamakawa2020,Doucot2021}.  We identify the quadratic form of this published matrix
+$C$ with coefficient coarea and determine its complete inertia.  This identification is the
+geometric content; the ensuing rank-one linear algebra is elementary.
+
+Scalar ancestry also matters.  Hiroe proves, under multiplicity-free, regularity, and spectral
 curve hypotheses, that an irregular rigidity index equals an Euler characteristic
 \cite{Hiroe2019}; related local formulas involve Milnor numbers and intersection multiplicities
 \cite{Hiroe2017}.  We do not present that scalar identity as new.  Our invariant is the entire
 polarization on independent orbit charges.  Its coefficients are mixed $\Irr\Hom$ terms, and its
 conclusion is an inertia law rather than one numerical evaluation.
+
+Nor do we claim discovery of fission trees or their ultrametric contact law.  Fission trees classify
+admissible deformation data, and the ultrametric constraints on nonabelian Hodge graphs are known
+\cite{Boalch2025,Doucot2025}.  New point is that coefficient coarea turns those data into a
+positive Gram form with exactly one subtractive rank channel, and that the matrix so obtained is
+precisely \eqref{eq:published-B}.
 
 Let $w^N=z$ be a common local cover and let
 \[
@@ -103,11 +123,14 @@ No tree, cut family, or contact matrix appears among the hypotheses.  Branch blo
 unions of Galois orbits.  Their exact descended vector is
 $u_{e,i}=|A_e\cap i|$; assuming orbit saturation would lose ramified examples.
 
-Formula \eqref{eq:intro-law} has four other readings.  Its positive linear forms are principal
-conormals of cluster hyperplanes.  Their normalized coefficients are directed quotient
-microstalks of exponential Hom germs.  They are associated-graded coordinates of a multi-Rees
-family.  Their exact elimination is a corona Schur complement whose residual is a
-relative-vanishing quotient.
+Formula \eqref{eq:intro-law} has four exact finite-dimensional readings.  Its positive linear
+forms are principal conormals of cluster hyperplanes in charge space.  Their normalized
+coefficients are directed microlocal Morse groups of the closed dominance germ on the analytic
+boundary stratification.  They are graded coordinates of a multi-parameter filtered quadratic
+family.  Their elimination is a corona Schur complement whose residual is an explicit linear
+quotient.  These assertions do not identify the family with a Rees module of holonomic
+$\mathcal D$-modules or the corona quotient with arbitrary sheaf-theoretic vanishing cycles; their
+precise scope is stated in the corresponding sections.
 
 For a genus-$g$ curve with $m\geq1$ marked points, identify local physical ranks and denote the
 common value by $M$.  Define
@@ -126,10 +149,11 @@ the global Stokes--microlocal Witt law.  Capacity completion replaces the auxili
 coefficient by the intrinsic constrained minimum at $M=1$ and yields an exact
 finite/affine/Lorentz trichotomy.  Every handle changes only this coefficient, by $-2$.
 
-The argument uses finite coefficient, cellular Stokes, and tangent-reduction objects.  Analytic
-irregular Riemann--Hilbert theory supplies surrounding realizations \cite{Sabbah,DKRH}; it is not
-a proof interface.  We prove the exact transport statement: any exact realization equivalence
-identifying the local incidence diagram preserves the quotient microstalk and all terms in (W).
+Analytic irregular Riemann--Hilbert theory supplies the surrounding realization theory
+\cite{Sabbah,DKRH}.  It is not needed to count the boundary walls: we derive them from the actual
+phase and prove their cyclic incidence explicitly.  For broader realizations we state a precise
+transport theorem: any exact realization equivalence identifying this incidence diagram preserves
+the quotient microstalk and every term of the coarea identity.
 
 Sections~\ref{sec:coefficients}--\ref{sec:global} prove coefficient and global laws.
 Sections~\ref{sec:cellular}--\ref{sec:transport} construct categorical microlocal realization.
@@ -238,6 +262,33 @@ $Lk$.  The pair orbit contributes $Lk/N\in\NN$.  Sum over pair orbits.
 \end{equation}
 \end{definition}
 
+\begin{proposition}[Published Cartan identification]\label{prop:published-Cartan}
+Let $A_{ij}=\Irr\Hom(i,j)=s_{ij}$ and define the published core adjacency by
+\begin{equation}\label{eq:core-adjacency}
+                 B_{ij}=A_{ij}-r_ir_j+\delta_{ij},\qquad C=2I-B.
+\end{equation}
+Then, entrywise,
+\begin{equation}\label{eq:core-Cartan-entry}
+                    C_{ij}=\delta_{ij}+r_ir_j-s_{ij},
+\end{equation}
+and its quadratic form is exactly
+\begin{equation}\label{eq:published-Cartan-identification}
+                              x^TCx=Q_A(x).
+\end{equation}
+Thus $Q_A$ is the Boalch--Yamakawa--Dou\c{c}ot Cartan polarization of the actual
+analytic-continuation orbits of the Puiseux spectrum.
+\end{proposition}
+
+\begin{proof}
+The equality $A_{ij}=s_{ij}$ is the definition of irregularity of the Hom Stokes circle: on the
+common cover it is the normalized sum of the highest pole orders over all ordered branch pairs.
+Substitution of \eqref{eq:core-adjacency} into $C=2I-B$ gives
+\eqref{eq:core-Cartan-entry}.  Summing against $x_ix_j$ gives
+$\sum_i x_i^2+(\sum_i r_ix_i)^2-\sum_{i,j}s_{ij}x_ix_j$, which is
+Definition~\ref{def:local-index}.  Formula \eqref{eq:core-adjacency} is precisely the published
+core convention \cite{BoalchYamakawa2020,Doucot2021}.
+\end{proof}
+
 For a block $A_e$, define exact descended incidence and charge
 \begin{equation}\label{eq:descended-cut}
         u_{e,i}=|A_e\cap i|,\qquad
@@ -249,7 +300,10 @@ For every orbit charge $x$,
 \begin{equation}\label{eq:local-witt}
  \boxed{Q_A(x)=\sum_i x_i^2+\sum_e\ell_e\nu_e(x)^2-(H-1)M(x)^2.}
 \end{equation}
-Hence $Q_A$ is positive definite on $\ker M$ and $\indm(Q_A)\leq1$.
+Hence $Q_A$ is positive definite on $\ker M$ and
+\begin{equation}\label{eq:local-joint-inertia}
+                 \indm(Q_A)+\dim\Rad(Q_A)\leq1.
+\end{equation}
 \end{theorem}
 
 \begin{proof}
@@ -260,7 +314,21 @@ Lift $x$ to $y_a=x_{[a]}$.  Then
 \]
 Insert Theorem~\ref{thm:coarea} into Definition~\ref{def:local-index}.  On $\ker M$, the final
 square vanishes and $\sum_i x_i^2$ is strictly positive.  A two-dimensional negative subspace
-would meet this codimension-one hyperplane nontrivially.
+would meet this codimension-one hyperplane nontrivially.  The radical meets $\ker M$ trivially,
+so it has dimension at most one.  Finally, a negative vector and a nonzero radical vector cannot
+coexist: a nonzero linear combination with rank zero would retain negative energy because the
+radical is orthogonal to every vector, contradicting positivity on $\ker M$.
+\end{proof}
+
+\begin{corollary}[Core Lorentz law]\label{cor:core-lorentz}
+The generalized Cartan form of every core generated by a finite equivariant Puiseux spectrum is
+positive definite, positive semidefinite of corank one, or Lorentzian.  In particular it has no
+negative direction at affine boundary and no second negative or null channel.
+\end{corollary}
+
+\begin{proof}
+Combine Proposition~\ref{prop:published-Cartan} with
+\eqref{eq:local-joint-inertia}.
 \end{proof}
 
 \begin{remark}[Ramified descent]
@@ -280,6 +348,33 @@ Write $M$ for common rank and, for genus $g$, define
 \begin{equation}\label{eq:fused-form}
              Q_{X,D}(x)=\sum_{a=1}^{m}Q_a(x_a)+2(1-g-m)M^2.
 \end{equation}
+
+\begin{proposition}[Quasi-Hamiltonian origin of fusion]\label{prop:qh-fusion}
+Equation \eqref{eq:fused-form} is the polarization of the wild-character-variety index
+$2-\dim\Mcal_{X,D}$.  More explicitly, for $G=\mathrm{GL}_M$, let $h_a$ be formal-centralizer
+dimension, $s_a$ directed Stokes-root dimension, and $k_a$ prescribed conjugacy-class dimension.
+Then
+\begin{align}\label{eq:qh-dimension}
+ \dim\Mcal_{X,D}
+ &=2+(2g-2+m)M^2+\sum_a(s_a+k_a-h_a),\\
+ Q_a&=M^2+h_a-s_a-k_a,
+\end{align}
+and therefore
+\begin{equation}\label{eq:qh-fusion-identity}
+       2-\dim\Mcal_{X,D}=\sum_aQ_a+2(1-g-m)M^2.
+\end{equation}
+For genus zero, $Q_a$ is the full Cartan quadratic form of the core and its type-$A$ marking
+legs \cite{BoalchYamakawa2020,Doucot2021}.
+\end{proposition}
+
+\begin{proof}
+The local fission/Stokes factor has dimension $M^2+h_a+s_a$.  Fusion over a genus-$g$ surface,
+reduction by the formal centralizers, insertion of the conjugacy classes, and restoration of the
+two-dimensional scalar center give the first line of \eqref{eq:qh-dimension}
+\cite{Boalch2014,BoalchYamakawa2015}.  The remaining equalities are algebraic rearrangements.
+The type-$A$ Cartan identification is the diagram dimension formula.
+\end{proof}
+
 Choose local root heights $H_a$ and set
 \begin{align}\label{eq:global-positive}
  P_{X,D}(x)&=\sum_a\left(\sum_{i\in I_a}x_{a,i}^2+
@@ -385,7 +480,16 @@ wall is simple, with
  \qquad f'_{c,k}(\theta_{j,-})=-k|c|.
 \]
 Consequently $\{0,\ldots,k-1\}\times\{+,-\}$ is canonically bijective with the analytic Stokes
-walls, and its sign coordinate is their transverse orientation.
+walls, and its sign coordinate is their transverse orientation.  If
+\[
+ (j,+)^+=(j,-),\qquad (j,-)^+=(j+1\bmod k,+),
+\]
+then
+\begin{equation}\label{eq:analytic-successor}
+                       \theta_{w^+}=\theta_w+\frac{\pi}{k}quad(\bmod,2\pi).
+\end{equation}
+Thus finite successor is the genuine positive cyclic successor, not an independently imposed
+cellular order.
 \end{proposition}
 
 \begin{proof}
@@ -395,8 +499,15 @@ $\RR/2\pi\mathbb Z$ has, over each target, the $k$ distinct inverse images displ
 \eqref{eq:analytic-wall-labels}.  The two fibers are disjoint because sine takes the values $1$
 and $-1$ at their respective targets.  Finally
 $f'_{c,k}(\theta)=k|c|\sin(\arg c-k\theta)$, which gives the asserted nonzero derivatives and
-orientations.
+orientations.  Direct substitution in \eqref{eq:analytic-wall-labels} gives
+\eqref{eq:analytic-successor}; at $j=k-1$ the added $2\pi$ vanishes on the angle circle.
 \end{proof}
+
+For two distinct coefficient branches $a,b$, put $k=k(a,b)$ and
+$c=c_{a,k}-c_{b,k}$.  Highest-difference definition gives $k>0$ and $c\ne0$.  Proposition
+\ref{prop:analytic-walls} therefore applies to every branch pair with no additional analytic-wall
+hypothesis.  In particular, wall cardinality, cyclic incidence, and transverse orientation are
+coefficient-derived.
 
 Use Proposition~\ref{prop:analytic-walls} to label the actual analytic walls by
 $\mathsf W_k=\{0,\ldots,k-1\}\times\{+,-\}$.  Place one arc between consecutive walls.  Its
@@ -717,7 +828,8 @@ $H^2$.  Alternate dimensions and use Theorem~\ref{thm:tangent}.
 
 By Theorem~\ref{thm:micro-index}, $s_a$ is an integer directed microstalk sum.  Thus (M), (D), and
 (E) give a closed chain from coefficient differences through vanishing quotients to tangent
-dimension; a published dimension polynomial is not an input to this deduction.
+dimension.  The rank--nullity calculation independently recovers the quasi-Hamiltonian polynomial
+in Proposition~\ref{prop:qh-fusion}; agreement is a compatibility check, not a second definition.
 
 \section{Type-A marking legs}\label{sec:legs}
 
@@ -753,11 +865,27 @@ remaining positive matrix has diagonal $\operatorname{diag}((l_i+1)^{-1})>0$ plu
 matrix and is perturbed by the same one rank square.  Repeat Theorem~\ref{thm:global-witt}.
 \end{proof}
 
+\begin{corollary}[Nonabelian Hodge diagram law]\label{cor:nah-diagram}
+Let $\widehat C$ be the symmetric generalized Cartan matrix of a genus-zero nonabelian Hodge
+diagram obtained from finite ramified Stokes data with its type-$A$ marking legs.  Then
+\begin{equation}\label{eq:nah-diagram-law}
+                  \indm(\widehat C)+\dim\ker\widehat C\leq1.
+\end{equation}
+Thus every such diagram is finite, affine of corank one, or Lorentzian.  The assertion is invariant
+under Fourier--Laplace and the diagram-preserving symplectic Weyl-algebra transformations.
+\end{corollary}
+
+\begin{proof}
+Use a reading with the finite Puiseux Stokes circles at infinity, apply
+Proposition~\ref{prop:published-Cartan} to its core and Theorem~\ref{thm:legs} to the marking
+legs.  Dou\c{c}ot's diagram is invariant under the stated transformations
+\cite{Doucot2021}.
+\end{proof}
+
 \section{Spectral consequence and sharpness}\label{sec:spectral}
 
-Suppose an honest finite Stokes graph has symmetric adjacency matrix $B$ and its Cartan
-polarization $C=2I-B$ is a form covered by Theorem~\ref{thm:global-witt}, including its marking
-legs.  Let $\lambda_1(B)\geq\cdots\geq\lambda_n(B)$.
+Suppose a nonabelian Hodge diagram is an honest finite graph with symmetric adjacency matrix $B$,
+and let $\lambda_1(B)\geq\cdots\geq\lambda_n(B)$.
 
 \begin{theorem}[Second-eigenvalue obstruction]\label{thm:lambda-two}
 If $n\geq2$, then $\lambda_2(B)\leq2$.  If $\lambda_1(B)=2$, eigenvalue $2$ is simple.  If
@@ -768,8 +896,11 @@ $\lambda_1(B)>2$, exactly one eigenvalue exceeds $2$ and none equals $2$.
 Eigenvalues of $C$ are $2-\lambda_i(B)$.  Apply \eqref{eq:global-inertia}.
 \end{proof}
 
-\begin{example}[Sharp Lorentz phase]\label{ex:triangle}
-For
+\begin{example}[Dou\c{c}ot's twisted triangle; sharpness]\label{ex:triangle}
+Dou\c{c}ot obtains the graph below from the three Stokes circles
+$\langle z^3\rangle$, $\langle z^{4/3}\rangle$, and $\langle z^{3/2}\rangle$
+\cite[Proposition~3.3]{Doucot2025}.  The example and its edge multiplicities are his; the point
+here is the sharp inertia consequence of the coarea law.  For
 \[
  B=\begin{pmatrix}0&6&4\\6&0&3\\4&3&0\end{pmatrix},\qquad C=2I-B,
 \]
@@ -788,19 +919,25 @@ One negative direction is sharp.
 Finite Stokes filtrations and categorical forms are classical \cite{Sabbah}; irregular
 Riemann--Hilbert theory supplies analytic realizations \cite{DKRH}; ultrametric matrices have tree
 and inverse $M$-matrix theories \cite{Martinez1994,McDonald1995,Nabben1995}; fission and wild
-character spaces are developed in \cite{Boalch2014}; Hiroe gives a scalar spectral-curve Euler
-identity \cite{Hiroe2019}.  These are genuine ancestors.
+character spaces are developed in \cite{Boalch2014}; fission trees and ultrametric graph constraints
+appear in \cite{Boalch2025,Doucot2025}; and Hiroe gives a scalar spectral-curve Euler identity
+\cite{Hiroe2019}.  The diagram formula \eqref{eq:published-B} and the dimension identity
+$\dim\Mcal_B=2-(d,d)$ are due to Boalch--Yamakawa and Dou\c{c}ot
+\cite{BoalchYamakawa2020,Doucot2021}.  These are inputs, not novelty claims.
 
-New claim is their mixed dependency-closed polarization:
+New claim is the complete polarization and its consequences:
 \begin{align*}
  \text{Puiseux coefficients}&\Longrightarrow\text{canonical cuts}
- \Longrightarrow\text{quotient microstalk masses}\\
- &\Longrightarrow\text{mixed Hom index}
- \Longrightarrow\text{positive coarea plus one rank line}.
+ \Longrightarrow\text{positive coarea minus one rank line}\\
+ &\Longleftrightarrow\text{published Cartan form}
+ \Longrightarrow \indm+\dim\Rad\leq1.
 \end{align*}
-Global content is not a scalar rigidity identity: all punctures and handles share the same one
-rank port, forcing the Witt bound in arbitrary genus.  Global multi-Rees stability and exact
-corona relative-vanishing describe how collateral constructions preserve that port.
+This does not follow from one scalar evaluation at a dimension vector.  It controls the entire
+real marked lattice, identifies its positive hyperplane and affine ray, and excludes all
+higher-signature Kac--Moody types among realized diagrams.  Globally, all punctures and handles
+share the same rank port, yielding the arbitrary-genus Euler--capacity law.  Analytic wall and
+microstalk calculations explain why mixed Hom irregularity is the directed local multiplicity
+entering that polarization.
 
 Any of the following would falsify the theorem as stated.
 \begin{enumerate}[label=(\arabic*),leftmargin=2.2em]
@@ -812,17 +949,18 @@ Any of the following would falsify the theorem as stated.
 \item a nonzero compatible rank-zero charge of nonpositive fused energy;
 \item a nonnegative Rees specialization whose negative index plus nullity exceeds one;
 \item a positive corona block violating \eqref{eq:schur} or \eqref{eq:corona-exact}.
+\item a realized nonabelian Hodge graph with $\lambda_2(B)>2$.
 \end{enumerate}
 Conversely, this is not an analytic existence criterion: a quadratic form satisfying the Witt law
 need not arise from a meromorphic connection.
 
 \section{Conclusion}
 
-The universal law factors the full mixed Stokes index through a positive microlocal coarea space
-and one physical-rank line.  Principal conormals, cellular characteristic coefficients, vanishing
-quotients, Rees graded channels, corona residuals, marking legs, and local terms of the deformation
-complex are positive coordinates of that same space.  Fusion and topology cannot create another
-defect because they see local data only through common physical rank.
+The universal law identifies the published generalized Cartan polarization with a positive Stokes
+coarea space and one physical-rank line.  Principal conormals, directed microlocal Morse ranks,
+filtered graded channels, corona residuals, marking legs, and local terms of the deformation
+complex are exact finite presentations of its positive part.  Fusion and topology cannot create
+another defect because they see local data only through common physical rank.
 
 This single structure explains analytic wall count and orientation, local Lorentz bounds, affine
 simplicity, capacity walls, handle

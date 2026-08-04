@@ -337,8 +337,8 @@ theorem maximal_bound_arith {u v HH RR cardv Bv sqv : ℝ}
     (hcard0 : 0 ≤ cardv) (hcard : cardv ≤ v ^ 2)
     (hrange0 : 0 ≤ Bv) (hrange : Bv ≤ 2 * v ^ 2)
     (hsq0 : 0 ≤ sqv) (hsq : sqv ≤ 2 * v) :
-    HH * (RR + HH / RR) * cardv + HH * (HH * (Bv / RR + sqv))
-      ≤ 16 * u ^ 3 * v ^ 2 + 8 * u ^ 4 * v := by
+    HH * (2 * RR + HH / RR) * cardv + HH * (HH * (Bv / RR + sqv))
+      ≤ 20 * u ^ 3 * v ^ 2 + 8 * u ^ 4 * v := by
   have hu0 : (0 : ℝ) < u := by linarith
   have hv0 : (0 : ℝ) < v := by linarith
   have hR0 : (0 : ℝ) < RR := by linarith
@@ -348,13 +348,13 @@ theorem maximal_bound_arith {u v HH RR cardv Bv sqv : ℝ}
   have hdiv2 : Bv / RR ≤ 2 * v ^ 2 / u := by
     rw [div_le_div_iff₀ hR0 hu0]
     nlinarith
-  have hfirst : HH * (RR + HH / RR) * cardv ≤ 8 * u ^ 3 * v ^ 2 := by
-    have hsum : RR + HH / RR ≤ 4 * u := by linarith
-    have h1 : HH * (RR + HH / RR) ≤ 2 * u ^ 2 * (4 * u) := by
+  have hfirst : HH * (2 * RR + HH / RR) * cardv ≤ 12 * u ^ 3 * v ^ 2 := by
+    have hsum : 2 * RR + HH / RR ≤ 6 * u := by linarith
+    have h1 : HH * (2 * RR + HH / RR) ≤ 2 * u ^ 2 * (6 * u) := by
       refine mul_le_mul hHH hsum ?_ (by positivity)
       have : (0 : ℝ) ≤ HH / RR := by positivity
       linarith
-    have h2 : HH * (RR + HH / RR) * cardv ≤ (2 * u ^ 2 * (4 * u)) * v ^ 2 := by
+    have h2 : HH * (2 * RR + HH / RR) * cardv ≤ (2 * u ^ 2 * (6 * u)) * v ^ 2 := by
       refine mul_le_mul h1 hcard hcard0 (by positivity)
     nlinarith [h2]
   have hsecond : HH * (HH * (Bv / RR + sqv)) ≤ 8 * u ^ 3 * v ^ 2 + 8 * u ^ 4 * v := by
@@ -374,31 +374,39 @@ theorem maximal_bound_arith {u v HH RR cardv Bv sqv : ℝ}
   linarith
 
 open Filter Topology in
-/-- **The `μ²` maximal window mean square, unconditionally.**  The card's second input is a theorem,
-not a hypothesis: it needs no short-interval theorem, only the truncation machinery. -/
-theorem maximalWindowDevMeanSquare_moebius_sq {hh : ℝ → ℝ}
-    (hgrow : Tendsto hh atTop atTop) (hsmall : ∀ᶠ x in atTop, hh x ≤ Real.sqrt x) :
-    MaximalWindowDevMeanSquareAt (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2)
-      squarefreeDensity id hh := by
+/-- **The limit, from a summed pointwise bound.**  Any weight whose maximal centred window
+deviations obey the standard summed estimate has vanishing maximal mean square, at any moving pair
+of parameters with `hh ≤ √X`. -/
+theorem maximalWindowDevMeanSquareAt_of_sum_bound {f : ℕ → ℝ} {c : ℝ} {X hh : ℝ → ℝ}
+    (hXtop : Tendsto X atTop atTop) (hgrow : Tendsto hh atTop atTop)
+    (hsmall : ∀ᶠ x in atTop, hh x ≤ Real.sqrt (X x))
+    (hbound : ∀ A B H R : ℕ, 1 ≤ A → 1 ≤ R → A - 1 ≤ B + (H + 1) →
+      ∑ y ∈ Finset.Icc A B, maxWindowDevSq f c H y
+        ≤ ((H : ℝ) + 1) * (2 * (R : ℝ) + ((H : ℝ) + 1) / (R : ℝ)) * ((Finset.Icc A B).card : ℝ)
+          + ((H : ℝ) + 1) * (((H : ℝ) + 1)
+              * (((B : ℝ) + ((H : ℝ) + 1) - ((A - 1 : ℕ) : ℝ)) / (R : ℝ)
+                + ((Nat.sqrt (B + (H + 1)) : ℕ) : ℝ)))) :
+    MaximalWindowDevMeanSquareAt f c X hh := by
   classical
-  have hmaj : Tendsto (fun x : ℝ => 16 / Real.sqrt (hh x) + 8 / Real.sqrt (Real.sqrt x))
+  have hmaj : Tendsto (fun x : ℝ => 20 / Real.sqrt (hh x) + 8 / Real.sqrt (Real.sqrt (X x)))
       atTop (𝓝 0) := by
     have h1 : Tendsto (fun x : ℝ => 1 / Real.sqrt (hh x)) atTop (𝓝 0) :=
       tendsto_one_div_atTop.comp (Real.tendsto_sqrt_atTop.comp hgrow)
-    have h2 : Tendsto (fun x : ℝ => 1 / Real.sqrt (Real.sqrt x)) atTop (𝓝 0) :=
-      tendsto_one_div_atTop.comp (Real.tendsto_sqrt_atTop.comp Real.tendsto_sqrt_atTop)
-    have h3 := (h1.const_mul (16 : ℝ)).add (h2.const_mul (8 : ℝ))
+    have h2 : Tendsto (fun x : ℝ => 1 / Real.sqrt (Real.sqrt (X x))) atTop (𝓝 0) :=
+      tendsto_one_div_atTop.comp
+        (Real.tendsto_sqrt_atTop.comp (Real.tendsto_sqrt_atTop.comp hXtop))
+    have h3 := (h1.const_mul (20 : ℝ)).add (h2.const_mul (8 : ℝ))
     rw [mul_zero, mul_zero, add_zero] at h3
     refine h3.congr fun x => ?_
     rw [mul_one_div, mul_one_div]
   refine squeeze_zero_norm' ?_ hmaj
-  filter_upwards [eventually_ge_atTop (81 : ℝ), hgrow.eventually_ge_atTop 9, hsmall]
+  filter_upwards [hXtop.eventually_ge_atTop 81, hgrow.eventually_ge_atTop 9, hsmall]
     with x hx hhx hle
-  set s : ℝ := Real.sqrt x with hsdef
+  set s : ℝ := Real.sqrt (X x) with hsdef
   set h : ℝ := hh x with hhdef
-  have hx0 : (0 : ℝ) ≤ x := by linarith
+  have hx0 : (0 : ℝ) ≤ X x := by linarith
   have hs9 : (9 : ℝ) ≤ s := by
-    have : Real.sqrt 81 ≤ Real.sqrt x := Real.sqrt_le_sqrt hx
+    have : Real.sqrt 81 ≤ Real.sqrt (X x) := Real.sqrt_le_sqrt hx
     rwa [show Real.sqrt 81 = 9 by
       rw [show (81 : ℝ) = 9 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]] at this
   have hh9 : (9 : ℝ) ≤ h := hhx
@@ -425,12 +433,9 @@ theorem maximalWindowDevMeanSquare_moebius_sq {hh : ℝ → ℝ}
   have hR1 : 1 ≤ R := Nat.one_le_ceil_iff.2 hu0
   have hABle : A ≤ B := Nat.ceil_le_ceil (by linarith)
   have hABn : A - 1 ≤ B + (H + 1) := by omega
-  have hbase := sum_maxWindowDevSq_moebius_sq_le_sqrt (A := A) (B := B) (H := H) (R := R)
-    hA1 hR1 hABn
-  -- real bounds on the discrete data
+  have hbase := hbound A B H R hA1 hR1 hABn
   have hAlow : s / 2 ≤ (A : ℝ) := Nat.le_ceil _
   have hBup : (B : ℝ) ≤ s + 1 := (Nat.ceil_lt_add_one (by linarith)).le
-  have hBlow : s ≤ (B : ℝ) := Nat.le_ceil _
   have hHup : (H : ℝ) ≤ h + 1 := (Nat.ceil_lt_add_one (by linarith)).le
   have hRlow : u ≤ (R : ℝ) := Nat.le_ceil _
   have hRup : (R : ℝ) ≤ u + 1 := (Nat.ceil_lt_add_one hu0.le).le
@@ -467,21 +472,41 @@ theorem maximalWindowDevMeanSquare_moebius_sq {hh : ℝ → ℝ}
     hu3 hv3 (by positivity) (by rw [hu2]; linarith) hRlow (by linarith)
     (by positivity) hcardv (by linarith) (by rw [hv2]; linarith) (by positivity) hsqv
   have hden : (0 : ℝ) < h ^ 2 * s := by positivity
-  have hnum0 : (0 : ℝ) ≤ ∑ y ∈ Finset.Icc A B,
-      maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2) squarefreeDensity H y := by
+  have hnum0 : (0 : ℝ) ≤ ∑ y ∈ Finset.Icc A B, maxWindowDevSq f c H y := by
     refine Finset.sum_nonneg ?_
     intro y _
     exact maxWindowDevSq_nonneg _ _ _ _
-  have hchain : ∑ y ∈ Finset.Icc A B,
-      maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2) squarefreeDensity H y
-      ≤ 16 * u ^ 3 * v ^ 2 + 8 * u ^ 4 * v := le_trans hbase harith
-  have hfinal : (∑ y ∈ Finset.Icc A B,
-      maxWindowDevSq (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2) squarefreeDensity H y)
-      / (h ^ 2 * s) ≤ 16 / u + 8 / v := by
+  have hchain : ∑ y ∈ Finset.Icc A B, maxWindowDevSq f c H y
+      ≤ 20 * u ^ 3 * v ^ 2 + 8 * u ^ 4 * v := le_trans hbase harith
+  have hfinal : (∑ y ∈ Finset.Icc A B, maxWindowDevSq f c H y) / (h ^ 2 * s)
+      ≤ 20 / u + 8 / v := by
     refine le_trans (div_le_div_of_nonneg_right hchain hden.le) (le_of_eq ?_)
     rw [← hu2, ← hv2]
     field_simp
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   exact hfinal
+
+open Filter Topology in
+/-- **The `μ²` maximal window mean square, unconditionally.**  The card's second input is a theorem,
+not a hypothesis: it needs no short-interval theorem, only the truncation machinery. -/
+theorem maximalWindowDevMeanSquare_moebius_sq {hh : ℝ → ℝ}
+    (hgrow : Tendsto hh atTop atTop) (hsmall : ∀ᶠ x in atTop, hh x ≤ Real.sqrt x) :
+    MaximalWindowDevMeanSquareAt (fun n : ℕ => ((moebius n : ℤ) : ℝ) ^ 2)
+      squarefreeDensity id hh := by
+  refine maximalWindowDevMeanSquareAt_of_sum_bound tendsto_id hgrow hsmall ?_
+  intro A B H R hA hR hAB
+  refine le_trans (sum_maxWindowDevSq_moebius_sq_le_sqrt hA hR hAB) ?_
+  have hR0 : (0 : ℝ) ≤ (R : ℝ) := Nat.cast_nonneg R
+  have hH0 : (0 : ℝ) ≤ (H : ℝ) + 1 := by positivity
+  have hcard0 : (0 : ℝ) ≤ (((Finset.Icc A B).card : ℕ) : ℝ) := Nat.cast_nonneg _
+  have hmul : ((H : ℝ) + 1) * ((R : ℝ) + ((H : ℝ) + 1) / (R : ℝ))
+      ≤ ((H : ℝ) + 1) * (2 * (R : ℝ) + ((H : ℝ) + 1) / (R : ℝ)) :=
+    mul_le_mul_of_nonneg_left (by linarith) hH0
+  have hstep : ((H : ℝ) + 1) * ((R : ℝ) + ((H : ℝ) + 1) / (R : ℝ))
+        * (((Finset.Icc A B).card : ℕ) : ℝ)
+      ≤ ((H : ℝ) + 1) * (2 * (R : ℝ) + ((H : ℝ) + 1) / (R : ℝ))
+        * (((Finset.Icc A B).card : ℕ) : ℝ) :=
+    mul_le_mul_of_nonneg_right hmul hcard0
+  linarith
 
 end RHTower.Sieve

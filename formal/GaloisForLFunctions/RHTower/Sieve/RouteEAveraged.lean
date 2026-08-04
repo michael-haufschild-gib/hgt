@@ -5,6 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.PairFibreMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.FibreStartSeparation
 import GaloisForLFunctions.RHTower.Sieve.FibreDevSeparation
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeMaximalWindow
+import GaloisForLFunctions.RHTower.Sieve.CoprimeMaximalWindow
 
 /-!
 # The sign law from averaged short-interval estimates
@@ -224,5 +225,27 @@ theorem route_e_sign_density_of_maximalWindow_moebius {hh : ℝ → ℝ} {s : �
         ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) :=
   route_e_sign_density_of_maximalWindow_all hs hgrow hmax1
     (maximalWindowDevMeanSquare_moebius_sq (tendsto_of_growth hgrow) hsmall) hmaxp hε
+
+/-- **The card's Theorem `(3)` on the Möbius input alone.**  Both squarefree inputs are theorems of
+this corpus, so the whole argument now rests on a single short-interval estimate: the mean square of
+`μ` over short intervals, which is Matomäki–Radziwiłł's theorem. -/
+theorem route_e_sign_density_of_moebius_maximal {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
+    (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
+    (hsmall : ∀ᶠ x in atTop, hh x ≤ Real.sqrt x)
+    (hmax1 : MaximalWindowMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ x in atTop,
+      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+        ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) := by
+  have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
+  refine route_e_sign_density_of_maximalWindow_moebius hs hgrow hsmall hmax1 ?_ hε
+  intro p hp
+  have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
+  have hpsq : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
+  refine maximalWindowDevMeanSquareAt_coprime hp (tendsto_id.atTop_div_const hpsq)
+    (hhtop.atTop_div_const hp0) ?_
+  filter_upwards [hsmall, eventually_ge_atTop (0 : ℝ)] with x hx hx0
+  rw [sqrt_div_sq hx0 hp.pos]
+  exact div_le_div_of_nonneg_right hx hp0.le
 
 end RHTower.Sieve

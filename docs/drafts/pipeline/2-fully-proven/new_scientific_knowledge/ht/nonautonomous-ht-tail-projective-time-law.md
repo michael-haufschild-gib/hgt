@@ -1751,3 +1751,106 @@ Added to the same module:
 `ordJet_iterate` is the exact statement used informally three times in this card to destroy candidate
 counterexamples ("a differential automorphism with `sigma(y) = y''` would force `sigma(y'') = y^(4)`,
 not `y`"), and it is the induction step of the literature's order bound.  It is now a theorem.
+
+### Correction to the open core: uniformity is probably FALSE, and the real gap is a known theorem
+
+Re-reading the peeling in the partial-differential paper (arXiv:2210.05469, Theorem 3.1) settles the
+status of the "left-block uniformity" question posed above.  The experts organise the proof to handle
+factors with DIFFERENT top left-block derivatives -- they enumerate
+`theta_1(u_{e_1}) < ... < theta_r(u_{e_r})` and peel by decreasing `theta_i` -- so non-uniformity is
+expected, not excluded.  The card should stop trying to prove uniformity.
+
+What their peeling actually uses is a two-ranking argument about ONE ideal:
+
+* `B_j not in sat(B_1)` is justified in the `z`-ranking, where ALL factors share the leader by
+  equation (78), so a factor in the component would have to be divisible by `B_1` -- impossible for
+  distinct irreducibles;
+* the divisibility `B_1 | D` is concluded in the reversed ranking, where the order bound on the
+  cross-difference holds.
+
+Both statements are about the same prime `sat(B_1)`.  So the missing ingredient is not a new theorem
+about characteristics but the classical fact that
+
+    an irreducible differential polynomial's general component is a characteristic-set ideal in
+    EVERY ranking (Wu-Ritt; [18, Lemma 2.6] of that paper),
+
+i.e. the component is ranking-independent.  The corpus is unusually well placed for it: its
+`differentialPolynomialGeneralComponentJets` evaluation lands in a FIELD, so the component is
+automatically prime, and the corpus's bridge already proves the `Y`-ranking half
+("in the component and of order at most `ord A` implies divisible by `A`").  What must be added is the
+same statement in the `U`-ranking for the same ideal.
+
+This is a reclassification, not a retreat: the remaining work on `(3)` is the formalisation of a known
+theorem with the corpus's own generic-point machinery, not the solution of an open problem.
+
+## Lean progress — the general component as an ideal
+
+`GaloisForLFunctions/HTGeometry/GeneralComponentIdeal.lean` (wired, axiom-clean):
+
+    generalComponentPoint                       the LIMIT of the corpus's general-component jets
+    generalComponentJets_stabilizes             each coordinate is eventually constant, because step
+                                                  `n` only updates the jet of order `ord A + n + 1`
+    generalComponentPoint_apply_of_le_order      below `ord A` the limit is the base point
+    eval₂_generalComponentPoint_eq               evaluation at the limit equals evaluation at any
+                                                  sufficiently late stage
+    generalComponent                             the vanishing ideal of the limit point
+    generalComponent_isPrime                     PRIME, being a kernel into a field
+    iterateIdeal_le_generalComponent             the differential ideal sits inside it
+    dvd_of_mem_generalComponent_of_order_le      a member of low order is a multiple of `A`
+
+The corpus's bridge built these objects inside one proof and threw them away; this module makes the
+component a first-class ideal.  The novelty over the corpus is the LIMIT point: the corpus only had
+the truncated jets `differentialPolynomialGeneralComponentJets f A x0 N`, which depend on `N`, so
+there was no single ideal to speak of.  The stabilization lemma removes the truncation.
+
+That is the first half of the ranking-independence the peeling needs: primality of the component is
+now available (`Q1*Q2` in the component gives `Q1` or `Q2` in it), and so is the low-order converse.
+What remains is to see the SAME ideal from the swapped block.
+
+Added to the same module, completing the peeling toolkit in one ranking:
+
+    mem_generalComponent_of_mul_mem            a factor outside the component can be CANCELLED from
+                                                 a product lying in it
+    not_mem_generalComponent_of_irreducible    a distinct irreducible of no larger order is outside
+                                                 the component
+
+These are the two steps Ritt's peeling performs at each stage: the already-divided factors are
+distinct irreducibles of the same order (equation (78)), hence outside the component of the current
+factor, hence cancellable from the certificate.  Both are now theorems.
+
+The peeling is therefore complete WITHIN ONE RANKING.  What is still missing is only the passage
+between the two rankings: the non-membership steps have uniform orders in the `Y`-view, while the
+final divisibility needs the `U`-view bound.  In ideal terms the remaining statement is
+
+    Q in generalComponent(A) with ord_U Q <= ord_U A  implies  A | Q,
+
+for the component built in the `Y`-view -- Ritt's ranking-independence, now expressible because the
+component is a single ideal rather than a truncation-dependent construction.
+
+## Lean progress — RANKING INDEPENDENCE, via minimality of the general component
+
+Added to `GeneralComponentIdeal.lean` (wired, axiom-clean):
+
+    not_rank_lt_of_dvd                        a nonzero multiple of `A` has no smaller Ritt rank
+    generalComponent_le_of_iterateIdeal_le    THE GENERAL COMPONENT IS THE SMALLEST prime differential
+                                                ideal containing `A` and avoiding its initial and
+                                                separant
+
+This is the theorem that settles the two-ranking problem, and its proof needs nothing new: Ritt
+reduction (`characteristicPseudoReduction`, already in the corpus for an arbitrary nonconstant
+divisor) sends a member `Q` of the component to a remainder of strictly smaller rank; the remainder
+is still in the component, so `dvd_of_mem_generalComponent_of_order_le` makes it a multiple of `A`,
+which `not_rank_lt_of_dvd` forbids unless it vanishes; hence `I^a S^b Q` lies in the differential
+ideal, and any prime containing that ideal and avoiding `I` and `S` absorbs `Q`.
+
+**Consequence -- ranking independence.**  Let `P_Y` be the component built with the right block as
+polynomial variables and `P_U` the one built with the left block.  Each contains the differential
+ideal of `A` and each avoids the OTHER's initial and separant, because divisibility by `A` would
+raise the corresponding order or degree past the initial's and separant's (the initial has strictly
+smaller order in its own ranking, the separant strictly smaller leader degree).  Minimality applied
+twice gives `P_Y <= P_U <= P_Y`, i.e. the two rankings define the SAME prime.
+
+That is exactly the missing passage in Ritt's peeling: the non-membership and cancellation steps may
+be run in the `Y`-ranking, where equation (78) makes all factors have the same order, and the final
+divisibility in the `U`-ranking, where the cross-difference's order is bounded -- both about one
+ideal.

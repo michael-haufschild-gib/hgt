@@ -8957,3 +8957,38 @@ removed.  Only the `μ` cancellation and the deleted-squarefree inputs remain.
 
 The upper bound `hh x ≤ √x` is not a restriction: the card's window is `h√x ⊆ [x, x + h√x]` and the
 argument is about a window shorter than the range, so `h ≤ √x` throughout.
+
+### Both squarefree inputs discharged; the card rests on one estimate
+
+**`RHTower/Sieve/CoprimeSquarefreeWindow.lean` (refactored).**  The proof of
+`abs_window_coprime_squarefree_sub_le` used its hypothesis `t + L ≤ R²` only in the pointwise
+identity.  It is now split: **`abs_trunc_coprime_squarefree_sub_le`** is the same estimate for the
+*truncated* sum with no relation between `R` and the range, and the original theorem is that plus
+the identity.  The statement of the original is unchanged.
+
+**`RHTower/Sieve/CoprimeMaximalWindow.lean`**, unconditional.  The `μ²` argument, run on
+`μ²·1_{p∤·}`.  The only new ingredient is `abs_coprime_sub_trunc_le`: at a multiple of `p` both the
+weight and its truncation vanish, and away from the multiples of `p` the condition `¬ p ∣ n` is
+inert, so the defect is the squarefree one.  Then `sum_card_swap`,
+`abs_window_coprime_sub_trunc_le`, `abs_window_coprime_sub_le_defect`,
+`abs_window_coprime_sub_le_len`, `maxWindowDevSq_coprime_le`,
+`sum_maxWindowDevSq_coprime_le_sqrt`, and
+
+    **`maximalWindowDevMeanSquareAt_coprime`** :  MaximalWindowDevMeanSquareAt (μ²·1_{p∤·}) D_p X hh
+
+for every moving scale with `hh ≤ √X`.
+
+**`SquarefreeMaximalWindow.maximalWindowDevMeanSquareAt_of_sum_bound`** — the limit computation is
+now stated once, for an arbitrary weight obeying the standard summed estimate at an arbitrary moving
+pair of parameters; both squarefree instances go through it.
+
+**`RouteEAveraged.route_e_sign_density_of_moebius_maximal`** — the card's `(3)` from
+
+    ∑_{√x/2 ≤ y ≤ √x}  max_{m ≤ h} (∑_{y ≤ n ≤ y+m} μ(n))²  =  o(h²√x)
+
+**and nothing else** (beyond the window law `hh → ∞`, `hh ≤ √x`).  Both squarefree inputs are
+theorems of this corpus.
+
+**So the card's entire content is now reduced to a single short-interval estimate for `μ`** — the
+mean square that Matomäki–Radziwiłł's theorem bounds.  Everything else in the argument, including
+the two equidistribution inputs and all three constants, is proved here.

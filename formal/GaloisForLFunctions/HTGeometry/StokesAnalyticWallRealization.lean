@@ -1,4 +1,5 @@
-import GaloisForLFunctions.HTGeometry.StokesCellularMicrolocalSheaf
+import GaloisForLFunctions.HTGeometry.StokesCellularCategory
+import GaloisForLFunctions.HTGeometry.StokesEquivariantSpectrumIntegrality
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 
@@ -21,6 +22,7 @@ namespace IrregularStokes
 namespace AnalyticWall
 
 open CellularMicrolocal
+open CellularStokesCategory
 
 noncomputable section
 
@@ -46,6 +48,66 @@ def labelledWallAngle (c : ℂ) {k : ℕ} (_hk : 0 < k)
     (w : StokesWall k) : Real.Angle :=
   ((((Complex.arg c - branchTarget w.2) / (k : ℝ)) : ℝ) : Real.Angle) +
     (w.1 : ℕ) • (((2 * Real.pi / (k : ℝ)) : ℝ) : Real.Angle)
+
+/-- The combinatorial successor is the actual positive cyclic successor: consecutive labels are
+separated by the analytic half-step `π / k` on the oriented boundary circle. -/
+theorem labelledWallAngle_nextWall (c : ℂ) {k : ℕ} (hk : 0 < k)
+    (w : StokesWall k) :
+    labelledWallAngle c hk (nextWall hk w) =
+      labelledWallAngle c hk w +
+        (((Real.pi / (k : ℝ) : ℝ)) : Real.Angle) := by
+  let halfStep : Real.Angle := (((Real.pi / (k : ℝ) : ℝ)) : Real.Angle)
+  let step : Real.Angle := (((2 * Real.pi / (k : ℝ) : ℝ)) : Real.Angle)
+  let baseFalse : Real.Angle :=
+    ((((Complex.arg c - branchTarget false) / (k : ℝ) : ℝ)) : Real.Angle)
+  let baseTrue : Real.Angle :=
+    ((((Complex.arg c - branchTarget true) / (k : ℝ) : ℝ)) : Real.Angle)
+  have hk0 : (k : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hk.ne'
+  have hbaseFalse : baseFalse + halfStep = baseTrue := by
+    rw [show baseFalse =
+        ((((Complex.arg c - branchTarget false) / (k : ℝ) : ℝ)) : Real.Angle) by rfl,
+      show halfStep = (((Real.pi / (k : ℝ) : ℝ)) : Real.Angle) by rfl,
+      ← Real.Angle.coe_add]
+    apply congrArg ((↑) : ℝ → Real.Angle)
+    simp only [branchTarget]
+    field_simp
+    ring
+  have hbaseTrue : baseTrue + halfStep = baseFalse + step := by
+    rw [show baseTrue =
+        ((((Complex.arg c - branchTarget true) / (k : ℝ) : ℝ)) : Real.Angle) by rfl,
+      show halfStep = (((Real.pi / (k : ℝ) : ℝ)) : Real.Angle) by rfl,
+      show baseFalse =
+        ((((Complex.arg c - branchTarget false) / (k : ℝ) : ℝ)) : Real.Angle) by rfl,
+      show step = (((2 * Real.pi / (k : ℝ) : ℝ)) : Real.Angle) by rfl,
+      ← Real.Angle.coe_add, ← Real.Angle.coe_add]
+    apply congrArg ((↑) : ℝ → Real.Angle)
+    simp only [branchTarget]
+    field_simp
+    ring
+  have hstepZero : k • step = 0 := by
+    rw [show step = (((2 * Real.pi / (k : ℝ) : ℝ)) : Real.Angle) by rfl,
+      ← Real.Angle.coe_nsmul]
+    simp only [nsmul_eq_mul]
+    rw [mul_div_cancel₀ _ hk0, Real.Angle.coe_two_pi]
+  rcases w with ⟨j, b⟩
+  cases b
+  · change baseTrue + (j : ℕ) • step =
+      (baseFalse + (j : ℕ) • step) + halfStep
+    rw [show (baseFalse + (j : ℕ) • step) + halfStep =
+        (baseFalse + halfStep) + (j : ℕ) • step by abel,
+      hbaseFalse]
+  · change baseFalse + (succFin hk j : ℕ) • step =
+      (baseTrue + (j : ℕ) • step) + halfStep
+    have hmod : (j.val + 1) • step = ((j.val + 1) % k) • step :=
+      nsmul_eq_mod_nsmul (j.val + 1) hstepZero
+    rw [show (baseTrue + (j : ℕ) • step) + halfStep =
+        (baseTrue + halfStep) + (j : ℕ) • step by abel,
+      hbaseTrue]
+    change baseFalse + ((j.val + 1) % k) • step =
+      (baseFalse + step) + j.val • step
+    rw [← hmod]
+    simp only [add_nsmul, one_nsmul]
+    abel
 
 theorem liftedStokesPhase_eq_norm_mul_cos (c : ℂ) (k : ℕ) (θ : ℝ) :
     liftedStokesPhase c k θ = ‖c‖ * Real.cos (Complex.arg c - (k : ℝ) * θ) := by
@@ -219,6 +281,31 @@ theorem analyticStokesWall_card (c : ℂ) {k : ℕ} (hk : 0 < k) (hc : c ≠ 0) 
     Nat.card (AnalyticStokesWall c k) = 2 * k := by
   rw [Nat.card_congr (cellularWallEquivAnalytic c hk hc).symm]
   simpa [Nat.card_eq_fintype_card] using stokesWall_card k
+
+/-! ## Actual leading phases of coefficient pairs -/
+
+/-- Leading coefficient of the exponential difference between two distinct finite Puiseux
+branches, taken at their coefficient-generated highest contact. -/
+def branchPairLeadingCoefficient {m K N : ℕ} (p : FinitePuiseuxFamily m K N)
+    {i j : Fin m} (_hij : i ≠ j) : ℂ :=
+  p.coeff i ⟨p.contactNumerator i j, Nat.lt_succ_of_le (p.contactNumerator_le i j)⟩ -
+    p.coeff j ⟨p.contactNumerator i j, Nat.lt_succ_of_le (p.contactNumerator_le i j)⟩
+
+theorem branchPairLeadingCoefficient_ne_zero {m K N : ℕ}
+    (p : FinitePuiseuxFamily m K N) {i j : Fin m} (hij : i ≠ j) :
+    branchPairLeadingCoefficient p hij ≠ 0 := by
+  exact sub_ne_zero.mpr (p.coeff_ne_at_contact hij)
+
+/-- Every distinct pair of coefficient-generated Puiseux branches has its finite wall labels
+canonically equivalent to the analytic Stokes walls of its actual leading exponential
+difference. -/
+noncomputable def branchPairWallEquivAnalytic {m K N : ℕ}
+    (p : FinitePuiseuxFamily m K N) {i j : Fin m} (hij : i ≠ j) :
+    StokesWall (p.contactNumerator i j) ≃
+      AnalyticStokesWall (branchPairLeadingCoefficient p hij)
+        (p.contactNumerator i j) :=
+  cellularWallEquivAnalytic (branchPairLeadingCoefficient p hij)
+    (p.contactNumerator_pos_of_ne hij) (branchPairLeadingCoefficient_ne_zero p hij)
 
 theorem hasDerivAt_liftedStokesPhase (c : ℂ) (k : ℕ) (θ : ℝ) :
     HasDerivAt (liftedStokesPhase c k)

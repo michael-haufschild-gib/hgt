@@ -7,7 +7,9 @@
 - **Predecessor:** `../3-formalized/new_scientific_knowledge/time-dependent-principal-part-clock-probes.md`
   (closed: the variable-speed chart carries probes for the **constant** potential `-m²`, at every
   event, and the two-species scale law holds on its conformal orbit)
-- **Status:** open. Target: probes for an **arbitrary** smooth potential on the chart
+- **Status:** **closed.** Probes for an arbitrary smooth potential on the chart are constructed at
+  every event, the operator is the divergence-form d'Alembertian of an explicit smooth chart, and
+  the two-species scale law holds on its whole conformal orbit. Target was
 
   ```
   □u = -∂₀²u + c(t)² ∑ᵢ ∂ᵢ²u,      □u + V u = 0.
@@ -294,9 +296,64 @@ Axioms: `[propext, Classical.choice, Quot.sound]`.
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
-### What remains
+### Phase 6d — probes at every event, and the scale law: **done**
 
-6d. Probes at *every* event, by shifting both the speed and the convolving family in time
-    (`hillSpeedShift` and the corpus's `WienerFamily.timeShift`, whose potential transforms by
-    `kgChartPotential_timeShift`), then `OpenProbes` / `RegularOpenProbes` and the two-species scale
-    law on the conformal orbit of the speed chart with an arbitrary potential.
+`formal/GaloisForLFunctions/HTGeometry/HillDrivenProbeAnywhere.lean`:
+
+- `HillSpeed.shift` — the speed datum restarted at a prescribed time, all four estimates shifting
+  with it;
+- **`hillWaveOp_comp_timeShift`** — the wave operator of a speed is the wave operator of the shifted
+  speed, translated (stated for an arbitrary field with differentiable partials, so it serves both
+  the free and the driven construction);
+- `hillDrivenChartPotential_timeShift`, `hillDrivenChartField_pos_of_time_zero`;
+- **`exists_hillDrivenProbe_at`** — a regular, nonvanishing probe on a neighbourhood of *every*
+  event, obtained by restarting **both** data — the speed and the convolving family — at that
+  event's time and translating back;
+- **`openProbes_hillWaveOp_driven`**, **`regularOpenProbes_hillWaveOp_driven`**;
+- **`openProbes_hillWaveOp_smooth`** — **clock probes for a variable propagation speed and an
+  arbitrary smooth potential, at every event**.
+
+`formal/GaloisForLFunctions/HTGeometry/HillDrivenScaleLaw.lean`:
+
+- `HillSpeed.withMass` — the same speed with another mass;
+- **`regularOpenProbes_hillSpeedChart_driven`** — the probes are probes of the divergence-form
+  operator of the speed chart;
+- **`regularOpenProbes_conformalRescale_hillSpeedChart_driven`** — and of every conformal rescaling
+  of it, for the transferred potential;
+- **`twoSpecies_scale_law_hillDriven`** — two species of different mass, propagating with the same
+  speed and feeling the *same* potential, reconstruct the conformal factor pointwise:
+
+  ```
+  (V₁(x) - V₂(x)) / (m₂² - m₁²) = e^{-2σ(x)}
+  ```
+
+  The shared potential cancels in the difference; the masses do not.
+
+Axioms of every theorem of this card: `[propext, Classical.choice, Quot.sound]`.
+
+## Novelty
+
+The ingredients are classical — Hill's equation with a Grönwall energy estimate, the Duhamel formula
+with a fundamental pair, and a Volterra perturbation series — but the *class of charts carrying clock
+probes* is what grows. Before the predecessor card the classes were the conformal orbit of the flat
+chart and the conformal orbit of a foliated chart; the predecessor added a chart with a
+time-dependent propagation speed, for the mass potential only; this card removes that restriction,
+so a variable-speed chart now carries probes for an arbitrary smooth potential, at every event.
+
+Two things had to be built that the corpus did not have:
+
+1. **A Volterra theory with locally bounded data.** The corpus's perturbation series assumes one
+   bound on the kernel valid for all times, which a propagator with growing energy does not have.
+   Clamping the data to a window leaves the Picard iterates inside it unchanged, so every conclusion
+   transports — no part of the global development had to be reproved.
+2. **A Duhamel calculus with an abstract fundamental pair.** A variable frequency has no addition
+   formula, so the corpus's constant-frequency separation of the two time variables does not apply.
+   The propagator `S(t)C(s) - C(t)S(s)` is separated for *any* fundamental pair, and the Wronskian —
+   constant along the equation, one at the initial time — is exactly the factor with which the source
+   reappears in the second derivative.
+
+## Remaining, for a later card
+
+The principal part must still be independent of the point. A chart whose principal part varies in
+space needs genuine variable-coefficient hyperbolic theory — energy estimates in Sobolev spaces with
+commutator terms — of which mathlib has none.

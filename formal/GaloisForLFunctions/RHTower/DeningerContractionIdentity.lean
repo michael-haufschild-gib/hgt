@@ -85,3 +85,49 @@ theorem deningerAlternatize_contract (B : E →L[ℂ] (E [⋀^Fin (n + 1)]→L[�
 end Contraction
 
 end RHTower
+
+namespace RHTower
+
+section CartanFormula
+
+open ContinuousAlternatingMap
+
+variable {n : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
+
+/-- **The Cartan formula for a constant direction**: antisymmetrizing the contraction of a
+derivative is the derivative in that direction minus the contraction of the antisymmetrization.  For
+a closed form the last term vanishes, which is the contraction identity used by the homotopy
+operator; in general it is the identity that lets a period average remove the derivative term. -/
+theorem deningerCartan_contract (B : E →L[ℂ] (E [⋀^Fin (n + 1)]→L[ℂ] ℂ)) (x : E) :
+    alternatizeUncurryFin ((deningerContractCLM x).comp B) =
+      B x - deningerContractCLM x (alternatizeUncurryFin B) := by
+  ext v
+  have hsplit : alternatizeUncurryFin B (Fin.cons x v) =
+      B x v - alternatizeUncurryFin ((deningerContractCLM x).comp B) v := by
+    rw [alternatizeUncurryFin_apply, Fin.sum_univ_succ]
+    have hfirst : (-1 : ℤ) ^ ((0 : Fin (n + 2)) : ℕ) •
+        (B ((Fin.cons x v : Fin (n + 2) → E) 0))
+          (Fin.removeNth 0 (Fin.cons x v : Fin (n + 2) → E)) = B x v := by
+      rw [Fin.removeNth_zero]
+      simp
+    have hrest : ∀ j : Fin (n + 1),
+        (-1 : ℤ) ^ ((j.succ : Fin (n + 2)) : ℕ) •
+          (B ((Fin.cons x v : Fin (n + 2) → E) j.succ))
+            (Fin.removeNth j.succ (Fin.cons x v : Fin (n + 2) → E)) =
+          -((-1 : ℤ) ^ (j : ℕ) • ((deningerContractCLM x).comp B) (v j) (Fin.removeNth j v)) := by
+      intro j
+      rw [deningerRemoveNth_succ_cons, Fin.cons_succ]
+      show (-1 : ℤ) ^ ((j : ℕ) + 1) • (B (v j)) (Fin.cons x (Fin.removeNth j v)) =
+        -((-1 : ℤ) ^ (j : ℕ) • (B (v j)) (Fin.cons x (Fin.removeNth j v)))
+      rw [pow_succ, mul_comm, neg_mul, one_mul, neg_smul]
+    rw [hfirst, Finset.sum_congr rfl fun j _ => hrest j, Finset.sum_neg_distrib,
+      alternatizeUncurryFin_apply]
+    ring
+  show alternatizeUncurryFin ((deningerContractCLM x).comp B) v =
+    B x v - (alternatizeUncurryFin B) (Fin.cons x v)
+  rw [hsplit]
+  ring
+
+end CartanFormula
+
+end RHTower

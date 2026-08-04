@@ -81,3 +81,60 @@ theorem deningerPeriodAverage_deriv_eq_zero {β : (Fin r → ℂ) → X} (hdiff 
 end PeriodAverage
 
 end RHTower
+
+namespace RHTower
+
+section ConstantExact
+
+variable {r : ℕ}
+
+/-- A functional vanishing on the coordinate vectors vanishes. -/
+theorem deningerFunctional_eq_zero_of_single {α : (Fin r → ℂ) →L[ℂ] ℂ}
+    (h : ∀ j : Fin r, α (Pi.single j (1 : ℂ) : Fin r → ℂ) = 0) : α = 0 := by
+  classical
+  refine ContinuousLinearMap.ext fun u => ?_
+  have hbasis : ∀ j : Fin r,
+      (fun l => if j = l then (1 : ℂ) else 0) = (Pi.single j (1 : ℂ) : Fin r → ℂ) := by
+    intro j
+    funext l
+    rw [Pi.single_apply]
+    by_cases hl : j = l
+    · rw [if_pos hl, if_pos hl.symm]
+    · rw [if_neg hl, if_neg (Ne.symm hl)]
+  conv_lhs => rw [show u = ∑ j, u j • (fun l => if j = l then (1 : ℂ) else 0) from pi_eq_sum_univ u]
+  rw [map_sum]
+  refine Finset.sum_eq_zero fun j _ => ?_
+  rw [map_smul, hbasis j, h j, smul_zero]
+
+/-- **A constant one-form that is the derivative of a periodic function vanishes.**  This is the
+base case of the separation of the generators in cohomology: on the covering space the classes of
+the generators are constant forms, and a constant form killed by a periodic primitive is zero. -/
+theorem deningerConstant_functional_eq_zero {β : (Fin r → ℂ) → ℂ} {α : (Fin r → ℂ) →L[ℂ] ℂ}
+    (hderiv : ∀ w : Fin r → ℂ, HasFDerivAt β α w)
+    (hper : ∀ (j : Fin r) (w : Fin r → ℂ),
+      β (w + (2 * Real.pi * Complex.I) • (Pi.single j (1 : ℂ) : Fin r → ℂ)) = β w) :
+    α = 0 := by
+  have hfd : fderiv ℂ β = fun _ => α := by
+    funext w
+    exact (hderiv w).fderiv
+  have hdiff : Differentiable ℂ β := fun w => (hderiv w).differentiableAt
+  have hcont : Continuous (fderiv ℂ β) := by
+    rw [hfd]
+    exact continuous_const
+  refine deningerFunctional_eq_zero_of_single fun j => ?_
+  have hzero := deningerPeriodAverage_deriv_eq_zero hdiff hcont j (hper j) (0 : Fin r → ℂ)
+  rw [hfd] at hzero
+  simp only [intervalIntegral.integral_const, sub_zero, one_smul] at hzero
+  have hsmul : α ((2 * Real.pi * Complex.I) • (Pi.single j (1 : ℂ) : Fin r → ℂ)) =
+      (2 * Real.pi * Complex.I) * α (Pi.single j (1 : ℂ) : Fin r → ℂ) := by
+    rw [map_smul, smul_eq_mul]
+  rw [hsmul] at hzero
+  have htwopi : (2 * Real.pi * Complex.I) ≠ 0 := by
+    simp [Real.pi_ne_zero, Complex.I_ne_zero]
+  rcases mul_eq_zero.1 hzero with h | h
+  · exact absurd h htwopi
+  · exact h
+
+end ConstantExact
+
+end RHTower

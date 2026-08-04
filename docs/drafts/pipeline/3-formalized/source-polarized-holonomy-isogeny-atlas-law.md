@@ -144,6 +144,18 @@ Main declarations:
 
 Module is imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
+## Verification
+
+- both modules pass direct `lake env lean <file>` checks;
+- targeted builds pass for both modules, including the downstream relation-kernel transition;
+- `#print axioms` on the area, Kummer coherence, finite-isogeny, radical, CCM readout,
+  logarithmic Green, vector transition, and zero-radical theorems reports only `propext`,
+  `Classical.choice`, and `Quot.sound`;
+- authoritative `scripts/formal_tools.py lint` reaches both new modules and reports no forbidden
+  declarations in them.  Repository-wide exit remains nonzero in the concurrently changing
+  worktree: final audit reported unrelated new owned modules `RHTower.Sieve.CoprimeMaximalWindow`
+  and `HTGeometry.StokesEquivariantGlobalWittLaw` missing from their respective umbrellas.
+
 ## Novelty audit
 
 ### Internal

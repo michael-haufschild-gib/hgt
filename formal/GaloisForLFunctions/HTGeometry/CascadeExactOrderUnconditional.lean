@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.CascadeStateIndependence
+import GaloisForLFunctions.HTGeometry.CascadeTranscendence
 import GaloisForLFunctions.HTGeometry.CascadeExactOrderFromSeparation
 
 /-!
@@ -36,5 +36,22 @@ theorem exactDifferentialOrder_entireCascade_of_elimination {n : ℕ}
   exactDifferentialOrder_of_cascade
     (differentiallyAlgebraicOfOrder_entireCascade_of_transcendental' hall h1)
     (polyIndependent_cascadeFamily_of_transcendental hall) helim
+
+
+/-- **The elimination step is only ever needed at positive order.**  A cascade state is
+transcendental, so it satisfies no order-zero equation and that case of the elimination hypothesis is
+automatic. -/
+theorem exactDifferentialOrder_entireCascade_of_elimination_pos {n : ℕ} (hn : 0 < n)
+    (hall : ∀ i : ℕ, TranscendentalEntire (f i))
+    (h1 : ∀ k, k < n → DifferentiallyAlgebraicOfOrder (f k) 1)
+    (helim : ∀ m, 0 < m → m < n → DifferentiallyAlgebraicOfOrder (entireCascade f n) m →
+      ∃ P : MvPolynomial (Fin n) (Polynomial ℂ), P ≠ 0 ∧
+        ∀ z : ℂ, statePoly (cascadeFamily f n) P z = 0) :
+    ExactDifferentialOrder (entireCascade f n) n := by
+  refine exactDifferentialOrder_entireCascade_of_elimination hall h1 ?_
+  intro m hm hDA
+  rcases Nat.eq_zero_or_pos m with rfl | hpos
+  · exact absurd hDA (not_differentiallyAlgebraicOfOrder_zero_entireCascade hall hn)
+  · exact helim m hpos hm hDA
 
 end GaloisForLFunctions.HTGeometry

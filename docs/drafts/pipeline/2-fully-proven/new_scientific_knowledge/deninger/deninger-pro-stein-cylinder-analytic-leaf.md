@@ -553,6 +553,10 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 - `deningerRemoveNth_succ_cons` — removing a later entry of a tuple with a prepended entry.
 - `deningerContractCLM` — contraction of an alternating form against a vector, as a continuous
   linear map in the form.
+- `deningerCartan_contract` — **the Cartan formula for a constant direction**: antisymmetrizing the
+  contraction of a derivative is the derivative in that direction minus the contraction of the
+  antisymmetrization.  With a period average the first term drops out, which is how the degree of
+  the separation argument is lowered.
 - `deningerAlternatize_contract` — **the antisymmetrized contraction of the derivative of a closed
   form is the derivative at the base point.**  Applying closedness to the tuple with the base point
   prepended splits the alternating sum into the base-point term and the contraction, which is the
@@ -687,6 +691,9 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
   and the endpoints agree.  This is the mechanism that removes the derivative term from the Cartan
   formula when a constant form is written as the derivative of a periodic form, which is how the
   generators are separated in cohomology in every degree.
+- `deningerFunctional_eq_zero_of_single`, `deningerConstant_functional_eq_zero` — **a constant
+  one-form that is the derivative of a periodic function vanishes**: the base case of that
+  separation.
 
 ### Remaining
 

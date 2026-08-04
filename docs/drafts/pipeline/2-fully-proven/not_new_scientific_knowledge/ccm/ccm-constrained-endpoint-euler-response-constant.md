@@ -292,11 +292,55 @@ renormalized exact-tail remainder theorem.
   (1965), 99--140.
 - A. Connes, C. Consani, H. Moscovici, *Zeta Spectral Triples*, arXiv:2511.22755.
 
-## Lean decision
+## Lean status
 
-The formal tree has no sinc-kernel operator, parameter derivative, normalized prolate branch, or
-Fuchs asymptotic. Formalizing Hellmann--Feynman in isolation would not certify `(18)`. No Lean file
-is added.
+**Partially formalized, 2026-08-04.**  The decision recorded here earlier ("the formal tree has no
+sinc-kernel operator, parameter derivative, normalized prolate branch, or Fuchs asymptotic.  No Lean file is
+added") is out of date on its first count: the tree owns the sinc kernel and the finite-Fourier layer, in
+`formal/GaloisForLFunctions/RHTower/SlepianKernelFourier.lean`,
+`SlepianKernelFubini.lean` and `SlepianBandCommutation.lean`:
+
+- `sincSmooth`, `sincSmooth_zero`, **`sincSmooth_eq_integral`**, **`sincKernelSmooth_eq_integral`** — the sinc
+  kernel with its removable singularity resolved, *equal* to the character integral.  This is equation `(6)`,
+  `Q_c = (c/2 pi) F_c^* F_c`, at the level of kernels.
+- **`double_integral_fourierChar_eq_sincKernel`** — the same identity in integrated form, so the band operator
+  really is the Gram operator of the finite Fourier transform.
+- `differentiable_sincSmooth`, `deriv_sincKernelSmooth_fst`, **`slepian_commutation`** — the kernel's
+  smoothness and the commutation with the prolate operator.
+
+Equation `(7)` is now proved as well, in
+`formal/GaloisForLFunctions/RHTower/CCMEndpointResponseIdentity.lean`:
+
+- `bandFourier`, `intervalIntegrable_bandFourier_integrand`, **`conj_bandFourier`** — the finite Fourier
+  transform of a real function on the band, and the fact that conjugating it flips the frequency.
+- **`double_integral_cos_eq_norm_sq`** — the cosine factorisation
+
+  ```text
+  int_(-1)^1 int_(-1)^1 psi(x) psi(y) cos(c(x-y)) dx dy = |int_(-1)^1 psi(x) exp(i c x) dx|²,
+  ```
+
+  for every real continuous `psi`.  This is exactly the second equality of `(7)`, and it is what converts the
+  Hellmann–Feynman derivative of the sinc kernel — whose `c`-derivative is the *smooth* kernel
+  `cos(c(x-y))/pi`, with no singularity — into a squared modulus.  No Fubini theorem is used: the product of
+  the two single integrals is the double integral because each factor is constant in the other variable, and
+  the real part passes through both integrals by the `RCLike` interchange.
+
+What remains for `(4)` is the branch input: a differentiable eigenvalue branch with a normalized
+eigenfunction, i.e. the Hellmann–Feynman step `nu_m'(c) = <psi, (d/dc Q_c) psi>` and the finite-Fourier
+eigenrelation `F_c psi = mu_m(c) psi`.  Given those two, `(4)` is arithmetic: the factorisation above turns the
+derivative into `|F_c psi(1)|²/pi = |mu|²|psi(1)|²/pi`, and `(6)` gives `|mu|² = 2 pi nu/c`.  The Fuchs
+asymptotic `(9)` and the constrained-prolate limit `(12)` remain imported.
+
+
+## Lean gates
+
+- [x] Lean: the sinc kernel equals the finite-Fourier character integral — equation `(6)` (already in the
+  tree)
+- [x] Lean: the cosine factorisation of equation `(7)`
+- [ ] Lean: the Hellmann–Feynman step and the finite-Fourier eigenrelation for a normalized branch, hence
+  `(4)` and `(5)`
+- [ ] Lean: the differentiated fixed-mode (Fuchs) expansion `(9)` — imported classical asymptotics
+- [ ] Lean: the constrained limit `(12)` and the response constants `(13)`–`(18)`
 
 ## Gates
 

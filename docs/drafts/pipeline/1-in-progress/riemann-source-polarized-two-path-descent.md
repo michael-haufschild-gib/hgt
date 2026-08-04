@@ -414,8 +414,8 @@ implementation suffices; closing every route is unnecessary.
 - [x] positive survivor dependency-closed on paper
 - [x] all-prime theorem and dyadic same-radical consequence isolated
 - [x] all-depth scalar Kummer coherence and zero-associator no-go isolated
-- [ ] formalize survivor unconditionally and wire umbrella
-- [ ] re-audit exact external/internal novelty after formalization
+- [x] formalize survivor unconditionally and wire umbrella
+- [x] re-audit exact external/internal novelty after formalization
 
 - 2026-08-04 — retired `SOURCE-POLARIZED-PARA-S-DESCENT`: its missing periodicity leg is the
   existing graded-`det_2` anomaly, while its non-torsion clause is RH-bearing.  Extracted the

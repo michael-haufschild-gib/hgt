@@ -110,10 +110,11 @@ theorem filter_coprime_eq_empty_of_dvd {p d t L : ℕ} (hpd : p ∣ d) :
   rintro n - ⟨hdvd, hnp⟩
   exact hnp (dvd_trans (dvd_trans hpd ⟨d, by ring⟩) hdvd)
 
-/-- **The coprime squarefree count of a window.** -/
-theorem abs_window_coprime_squarefree_sub_le {p t L R : ℕ} (hp : p.Prime) (hR : 1 ≤ R)
-    (hRM : t + L ≤ R ^ 2) :
-    |∑ n ∈ Finset.Ioc t (t + L), (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2)
+/-- **The truncated coprime squarefree count of a window.**  Separating the truncation defect
+removes the constraint between `R` and the range, which is what an averaged argument needs. -/
+theorem abs_trunc_coprime_squarefree_sub_le {p t L R : ℕ} (hp : p.Prime) (hR : 1 ≤ R) :
+    |∑ n ∈ Finset.Ioc t (t + L),
+        (∑ d ∈ Finset.Icc 1 R, (if d ^ 2 ∣ n ∧ ¬ p ∣ n then ((μ d : ℤ) : ℝ) else 0))
         - (L : ℝ) * ((1 - 1 / (p : ℝ)) * coprimeSquarefreeSum p)|
       ≤ 2 * (R : ℝ) + (L : ℝ) / (R : ℝ) := by
   classical
@@ -126,26 +127,7 @@ theorem abs_window_coprime_squarefree_sub_le {p t L R : ℕ} (hp : p.Prime) (hR 
   have hfac1 : 1 - 1 / (p : ℝ) ≤ 1 := by
     have : (0 : ℝ) < 1 / (p : ℝ) := by positivity
     linarith
-  -- the pointwise identity
-  have hpt : ∀ n ∈ Finset.Ioc t (t + L),
-      (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2)
-        = ∑ d ∈ Finset.Icc 1 R, (if d ^ 2 ∣ n ∧ ¬ p ∣ n then ((μ d : ℤ) : ℝ) else 0) := by
-    intro n hn
-    rw [Finset.mem_Ioc] at hn
-    have hn0 : 0 < n := lt_of_le_of_lt (Nat.zero_le t) hn.1
-    have hnR : n ≤ R ^ 2 := le_trans hn.2 hRM
-    by_cases hpn : p ∣ n
-    · rw [if_pos hpn]
-      refine (Finset.sum_eq_zero ?_).symm
-      intro d _
-      rw [if_neg (by tauto)]
-    · rw [if_neg hpn, moebius_sq_eq_sum_trunc hn0 hnR, Finset.sum_filter]
-      refine Finset.sum_congr rfl ?_
-      intro d _
-      by_cases hdn : d ^ 2 ∣ n
-      · rw [if_pos hdn, if_pos ⟨hdn, hpn⟩]
-      · rw [if_neg hdn, if_neg (by tauto)]
-  rw [Finset.sum_congr rfl hpt, Finset.sum_comm]
+  rw [Finset.sum_comm]
   have hinner : ∀ d ∈ Finset.Icc 1 R,
       (∑ n ∈ Finset.Ioc t (t + L), (if d ^ 2 ∣ n ∧ ¬ p ∣ n then ((μ d : ℤ) : ℝ) else 0))
         = ((μ d : ℤ) : ℝ)
@@ -218,5 +200,35 @@ theorem abs_window_coprime_squarefree_sub_le {p t L R : ℕ} (hp : p.Prime) (hR 
       ≤ |A - B| + |B - (L : ℝ) * ((1 - 1 / (p : ℝ)) * coprimeSquarefreeSum p)| :=
         abs_sub_le _ _ _
     _ ≤ 2 * (R : ℝ) + (L : ℝ) / (R : ℝ) := by linarith
+
+
+/-- **The coprime squarefree count of a window.** -/
+theorem abs_window_coprime_squarefree_sub_le {p t L R : ℕ} (hp : p.Prime) (hR : 1 ≤ R)
+    (hRM : t + L ≤ R ^ 2) :
+    |∑ n ∈ Finset.Ioc t (t + L), (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2)
+        - (L : ℝ) * ((1 - 1 / (p : ℝ)) * coprimeSquarefreeSum p)|
+      ≤ 2 * (R : ℝ) + (L : ℝ) / (R : ℝ) := by
+  classical
+  -- the pointwise identity
+  have hpt : ∀ n ∈ Finset.Ioc t (t + L),
+      (if p ∣ n then 0 else ((μ n : ℤ) : ℝ) ^ 2)
+        = ∑ d ∈ Finset.Icc 1 R, (if d ^ 2 ∣ n ∧ ¬ p ∣ n then ((μ d : ℤ) : ℝ) else 0) := by
+    intro n hn
+    rw [Finset.mem_Ioc] at hn
+    have hn0 : 0 < n := lt_of_le_of_lt (Nat.zero_le t) hn.1
+    have hnR : n ≤ R ^ 2 := le_trans hn.2 hRM
+    by_cases hpn : p ∣ n
+    · rw [if_pos hpn]
+      refine (Finset.sum_eq_zero ?_).symm
+      intro d _
+      rw [if_neg (by tauto)]
+    · rw [if_neg hpn, moebius_sq_eq_sum_trunc hn0 hnR, Finset.sum_filter]
+      refine Finset.sum_congr rfl ?_
+      intro d _
+      by_cases hdn : d ^ 2 ∣ n
+      · rw [if_pos hdn, if_pos ⟨hdn, hpn⟩]
+      · rw [if_neg hdn, if_neg (by tauto)]
+  rw [Finset.sum_congr rfl hpt]
+  exact abs_trunc_coprime_squarefree_sub_le hp hR
 
 end RHTower.Sieve

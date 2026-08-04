@@ -493,6 +493,29 @@ theorem, because the interval bound is uniform in the right endpoint:
   This is the weak form of `(10)`: for a fixed test function the right-hand side is `O(1/c) + O(c^{-1/4})`.
   Continuous test functions follow by density of `C¹`, which adds nothing analytic.
 
+**The limiting measure is the corpus's arcsine leakage measure**, bridged in
+`formal/GaloisForLFunctions/RHTower/CCMRadialDensityBridge.lean`.  The profile side of this card and the
+leakage side of the exterior-mass cards had been producing the same measure in two normalisations; the bridge
+makes that a theorem.
+
+- **`profileDensity_eq_radialLeakageDensity_div_pi`** — `1/(pi x sqrt(x²-1)) = radialLeakageDensity(x)/pi`,
+  where `RHTower.radialLeakageDensity x = 1/(x sqrt(x²-1))` is the density of the tree's arcsine leakage
+  measure.  So `(17)`'s mass `1/2` is exactly `(1/pi)` times the corpus's `int_1^infinity = pi/2`.
+- **`integral_Ioi_profileDensity_eq`** — the tail mass for every left endpoint:
+  `int_a^infinity profileDensity = 1/2 - theta(a)/pi`.
+- **`radialAngle_eq_pi_div_two_sub_arcsin`** — the two primitives agree:
+  `arctan(sqrt(x²-1)) = pi/2 - arcsin(1/x)`.  Proved *from the two tail laws* rather than by
+  differentiating: both sides are the tail mass of one density computed with two different primitives, so the
+  identity is a corollary of the bridge rather than a new trigonometric computation.
+
+This also settles what `(16)` and `(20)` still need.  The measure-theoretic upgrade they ask for — vague plus
+total-mass convergence implies weak convergence, and the outer-coordinate escape — is already in the tree, in
+`RadialLeakageArcsineMeasure`, `RadialLeakageWeakConvergence` and `RadialLeakageMassNormalization` (Scheffé
+transfer with the total mass discharged from evenness and the normalised exterior ratio).  Those theorems take
+the exterior-ratio input as a hypothesis, which is exactly the card's `(13)`.  So `(16)` and `(20)` are not
+blocked by missing analysis: they are blocked only by `(13)`, the exact constrained leakage and endpoint
+response, which this card imports from the endpoint-response cards.
+
 ## Lean gates
 
 - [x] Lean: the radial angle and its derivative law
@@ -511,7 +534,10 @@ theorem, because the interval bound is uniform in the right endpoint:
 - [x] Lean: the `O(s)` passage from `w_s` to the limiting density `w_0`
 - [x] Lean: the passage from intervals to test functions — one integration by parts against the uniform
   interval bound; the weak form of `(10)` holds for every `C¹` test function
-- [ ] Lean: equations `(16)`, `(20)` — total-mass matching and outer-coordinate escape (need `(13)`)
+- [x] Lean: the limiting measure is the tree's arcsine leakage measure (bridge + shared tail law), so the
+  measure-theoretic upgrade of `(16)`/`(20)` is the existing Scheffé/total-mass transfer
+- [ ] Lean: equations `(16)`, `(20)` themselves — they need only `(13)`, the exact constrained leakage and
+  endpoint response, which this card imports from the endpoint-response cards
 
 
 ## Gates
