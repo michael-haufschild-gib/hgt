@@ -1,27 +1,35 @@
 import GaloisForLFunctions.HTGeometry.AffineJetRepresentability
+import GaloisForLFunctions.HTGeometry.AbelianVarietyIsogenyTail
 import GaloisForLFunctions.HTGeometry.FiniteInvariantFunctionField
 import GaloisForLFunctions.HTGeometry.FormalEtaleJetCompatibility
 import GaloisForLFunctions.HTGeometry.DifferentialHorizonInterface
 import GaloisForLFunctions.HTGeometry.DifferentialTranscendenceDegree
 import GaloisForLFunctions.HTGeometry.FixedFieldStableCoreRestriction
+import GaloisForLFunctions.HTGeometry.FiniteDeckFixedField
 import GaloisForLFunctions.HTGeometry.IsogenyKernelClosure
 import GaloisForLFunctions.HTGeometry.AlgebraicGroupInfiniteJet
+import GaloisForLFunctions.HTGeometry.MultiplicativeIsogenyTailHolography
 import GaloisForLFunctions.HTGeometry.NonAffineQuotientGluing
 import GaloisForLFunctions.HTGeometry.PositiveDimensionalInvariantGeneration
 import GaloisForLFunctions.HTGeometry.SchemeFunctorFunctionField
 import GaloisForLFunctions.HTGeometry.SchemeQuotientDescent
 import GaloisForLFunctions.HTGeometry.SmoothEtaleJetLieCoordinates
+import GaloisForLFunctions.HTGeometry.TorusIsogenyTail
 
 /-!
 # Isogeny-tail Maurer–Cartan holography foundations
 
-This module proves three unconditional pieces of the general isogeny-tail theorem:
+This module assembles unconditional pieces of the general isogeny-tail theorem:
 
 * topologically dense translation families and their closures have the same fixed field whenever
   field-element stabilizers are closed;
+* finite-depth image/fixed-field equalities follow from deck invariance and the exact cover degree;
 * the iterated isogeny-kernel union therefore has the same fixed field as its closed envelope;
 * an open continuous surjective isogeny descends to an automorphism after quotienting by that
-  envelope.
+  envelope;
+* nonsingular monomial isogenies of split tori have the exact stable deck fixed field;
+* purely expanding power isogenies of the rank-one split torus have precisely the
+  Maurer--Cartan current field as stable tail.
 
 The differential-transcendence cardinal used by the Maurer–Cartan dimension statement is supplied
 by `DifferentialTranscendenceDegree`.
@@ -93,6 +101,42 @@ theorem stableRangeCore_eq_fixedField_of_topologicalDeckClosure
     _ = IntermediateField.fixedField closedDeck :=
       differentialTranslationFixedField_eq_fixedField_of_image_eq
         translation closedDeckPoints closedDeck hclosedDeckImage
+
+/-- Stable-range tail equals the fixed field of the closed deck envelope from finite quotient
+invariance and degree data.  In particular, finite-depth image/fixed-field equalities are derived
+rather than supplied as hypotheses. -/
+theorem stableRangeCore_eq_fixedField_of_finiteDeckDegree_and_topologicalClosure
+    {K L A : Type*} [Field K] [Field L] [Algebra K L]
+    [Differential K] [Differential L] [DifferentialAlgebra K L]
+    [TopologicalSpace A]
+    (phi : L →ₐ[K] L)
+    (deck : ℕ → Subgroup (L ≃ₐ[K] L))
+    (hfinite : ∀ n, Finite (deck n))
+    (hfiniteDimensional : ∀ n,
+      FiniteDimensional (IntermediateField.map (phi ^ n) ⊤) L)
+    (hfixed : ∀ n (sigma : L ≃ₐ[K] L), sigma ∈ deck n → ∀ x : L,
+      sigma ((phi ^ n) x) = (phi ^ n) x)
+    (hdegree : ∀ n,
+      Module.finrank (IntermediateField.map (phi ^ n) ⊤) L = Nat.card (deck n))
+    (translation : A → DifferentialAlgEquiv K L)
+    (finiteDeckPoints closedDeckPoints : Set A)
+    (closedDeck : Subgroup (L ≃ₐ[K] L))
+    (hfiniteDeckImage :
+      (fun a => (translation a).toAlgEquiv) '' finiteDeckPoints =
+        ((⨆ n, deck n) : Subgroup (L ≃ₐ[K] L)))
+    (hclosedDeckImage :
+      (fun a => (translation a).toAlgEquiv) '' closedDeckPoints =
+        (closedDeck : Set (L ≃ₐ[K] L)))
+    (hclosure : closure finiteDeckPoints = closedDeckPoints)
+    (hclosedStabilizer : ∀ z : L,
+      IsClosed {a : A | (translation a).toAlgEquiv z = z}) :
+    stableRangeCore phi = IntermediateField.fixedField closedDeck := by
+  apply stableRangeCore_eq_fixedField_of_topologicalDeckClosure
+    phi deck
+      (iterateImage_eq_fixedField_of_finiteDeckDegree
+        phi deck hfinite hfiniteDimensional hfixed hdegree)
+    translation finiteDeckPoints closedDeckPoints closedDeck
+    hfiniteDeckImage hclosedDeckImage hclosure hclosedStabilizer
 
 variable {G : Type*} [AddCommGroup G] [TopologicalSpace G] [IsTopologicalAddGroup G]
 

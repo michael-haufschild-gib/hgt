@@ -224,4 +224,91 @@ theorem exteriorMulOf_comm {n : ℕ} (h : p + q = n) (h' : q + p = n) (y : ⋀[R
 
 end GradedCommutation
 
+section Functorial
+
+variable {R M N : Type*} [CommRing R] [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
+  {p q n : ℕ}
+
+theorem comp_finAppend (f : M →ₗ[R] N) (ψ : Fin p → M) (χ : Fin q → M) :
+    (f : M → N) ∘ Fin.append ψ χ = Fin.append ((f : M → N) ∘ ψ) ((f : M → N) ∘ χ) := by
+  funext i
+  refine Fin.addCases ?_ ?_ i
+  · intro a
+    show f (Fin.append ψ χ (Fin.castAdd q a)) = Fin.append ((f : M → N) ∘ ψ) _ (Fin.castAdd q a)
+    rw [Fin.append_left, Fin.append_left]
+    rfl
+  · intro a
+    show f (Fin.append ψ χ (Fin.natAdd p a)) = Fin.append _ ((f : M → N) ∘ χ) (Fin.natAdd p a)
+    rw [Fin.append_right, Fin.append_right]
+    rfl
+
+theorem exteriorMulOf_ιMulti (ψ : Fin p → M) (χ : Fin q → M) :
+    exteriorMulOf (rfl : p + q = p + q) (exteriorPower.ιMulti R p ψ)
+        (exteriorPower.ιMulti R q χ) =
+      exteriorPower.ιMulti R (p + q) (Fin.append ψ χ) := by
+  refine Subtype.ext ?_
+  rw [exteriorMulOf_coe]
+  show ExteriorAlgebra.ιMulti R p ψ * ExteriorAlgebra.ιMulti R q χ =
+    ExteriorAlgebra.ιMulti R (p + q) (Fin.append ψ χ)
+  rw [ExteriorAlgebra.ιMulti_mul_ιMulti]
+
+/-- **The product of exterior powers is natural**: the exterior power of a linear map is
+multiplicative. -/
+theorem exteriorMulOf_map (h : p + q = n) (f : M →ₗ[R] N) (y : ⋀[R]^p M) (z : ⋀[R]^q M) :
+    exteriorPower.map n f (exteriorMulOf h y z) =
+      exteriorMulOf h (exteriorPower.map p f y) (exteriorPower.map q f z) := by
+  subst h
+  -- both generators
+  have hgen : ∀ (ψ : Fin p → M) (χ : Fin q → M),
+      exteriorPower.map (p + q) f
+          (exteriorMulOf rfl (exteriorPower.ιMulti R p ψ) (exteriorPower.ιMulti R q χ)) =
+        exteriorMulOf rfl (exteriorPower.map p f (exteriorPower.ιMulti R p ψ))
+          (exteriorPower.map q f (exteriorPower.ιMulti R q χ)) := by
+    intro ψ χ
+    rw [exteriorMulOf_ιMulti, exteriorPower.map_apply_ιMulti, exteriorPower.map_apply_ιMulti,
+      exteriorPower.map_apply_ιMulti, exteriorMulOf_ιMulti, comp_finAppend]
+  -- generator on the left, arbitrary on the right
+  have hleft : ∀ (ψ : Fin p → M) (z : ⋀[R]^q M),
+      exteriorPower.map (p + q) f
+          (exteriorMulOf rfl (exteriorPower.ιMulti R p ψ) z) =
+        exteriorMulOf rfl (exteriorPower.map p f (exteriorPower.ιMulti R p ψ))
+          (exteriorPower.map q f z) := by
+    intro ψ
+    set F : ⋀[R]^q M →ₗ[R] ⋀[R]^(p + q) N :=
+      (exteriorPower.map (p + q) f).comp
+        ({ toFun := fun z => exteriorMulOf rfl (exteriorPower.ιMulti R p ψ) z
+           map_add' := exteriorMulOf_add_right rfl _
+           map_smul' := fun c z => exteriorMulOf_smul_right rfl c _ z } :
+          ⋀[R]^q M →ₗ[R] ⋀[R]^(p + q) M) with hF
+    set G : ⋀[R]^q M →ₗ[R] ⋀[R]^(p + q) N :=
+      ({ toFun := fun w => exteriorMulOf rfl
+           (exteriorPower.map p f (exteriorPower.ιMulti R p ψ)) w
+         map_add' := exteriorMulOf_add_right rfl _
+         map_smul' := fun c w => exteriorMulOf_smul_right rfl c _ w } :
+        ⋀[R]^q N →ₗ[R] ⋀[R]^(p + q) N).comp (exteriorPower.map q f) with hG
+    have hFG : F = G :=
+      LinearMap.ext_on (exteriorPower.ιMulti_span R q M) (by
+        rintro w ⟨χ, rfl⟩
+        exact hgen ψ χ)
+    exact fun z => LinearMap.congr_fun hFG z
+  -- arbitrary on both sides
+  set F : ⋀[R]^p M →ₗ[R] ⋀[R]^(p + q) N :=
+    (exteriorPower.map (p + q) f).comp
+      ({ toFun := fun y => exteriorMulOf rfl y z
+         map_add' := fun y y' => exteriorMulOf_add_left rfl y y' z
+         map_smul' := fun c y => exteriorMulOf_smul_left rfl c y z } :
+        ⋀[R]^p M →ₗ[R] ⋀[R]^(p + q) M) with hF
+  set G : ⋀[R]^p M →ₗ[R] ⋀[R]^(p + q) N :=
+    ({ toFun := fun u => exteriorMulOf rfl u (exteriorPower.map q f z)
+       map_add' := fun u u' => exteriorMulOf_add_left rfl u u' _
+       map_smul' := fun c u => exteriorMulOf_smul_left rfl c u _ } :
+      ⋀[R]^p N →ₗ[R] ⋀[R]^(p + q) N).comp (exteriorPower.map p f) with hG
+  have hFG : F = G :=
+    LinearMap.ext_on (exteriorPower.ιMulti_span R p M) (by
+      rintro u ⟨ψ, rfl⟩
+      exact hleft ψ z)
+  exact LinearMap.congr_fun hFG y
+
+end Functorial
+
 end GaloisForLFunctions.HTGeometry

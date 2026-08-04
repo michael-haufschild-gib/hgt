@@ -1041,3 +1041,66 @@ action on the coordinate line, unique hidden untwisting, zero-hidden physical la
 resolved-graph landing, retained leading-jet nonerasure, and the rational-adelic atom
 specializations.  Direct Lean check and targeted module build pass.  The axiom audit reports only
 `propext`, `Classical.choice`, and `Quot.sound`.
+
+## 2026-08-04 selector-shape no-gos: invariant lines and comparison gauge
+
+### Killed selector shapes `[FORMALIZED NO-GO]`
+
+The demanded producer — a source-defined fixed positive same-fibre dagger/Cartier line,
+constructed before inspecting `rho`, preserved by actual Route-R transport,
+coefficient-faithful on the leading Xi jet, and identifying resolved with zero-hidden
+lifts — is over-determined, and each admissible weakening of its clauses is now classified
+unconditionally in Lean, with no RH-flavoured premise anywhere.
+
+1. **Invariant-line rigidity.** The resolved shear `S_K` is unipotent.  A vector `v` with
+   `v_0 != 0` spans an `S_K`-invariant line exactly when `K = 0`
+   (`completedXiSameFiberResolvedShear_eigenvector_iff`): from `S_K v = lam v`,
+   faithfulness forces `lam = 1`, and unipotence then forces `K w_q v_0 = 0` with
+   `|w_q| = 1`.  Hence transport preservation plus coefficient-faithfulness — clauses
+   (1)+(2) alone, with no positivity, dagger, metric, or lift-identification clause — are
+   already equivalent to the missing annihilation:
+
+   ```text
+   CCMRationalAdelicPrimeXiInvariantFaithfulLine p rho
+     <-> K_(p,rho) = 0  <->  Re(rho) = 1/2
+   ```
+
+   (`ccmRationalAdelicPrimeXiInvariantFaithfulLine_iff_hodgeMateCoefficient_eq_zero`,
+   `..._iff_re_eq_half`).  Clause 5 of `SOURCE_DAGGER_FIXED_POLARIZATION_CARTIER_DESCENT`
+   therefore cannot be weakened to any line-invariance statement: a valid producer must
+   construct the fixed polarization law itself, not a preserved line, eigen-direction, or
+   dagger axis.
+
+2. **Comparison-gauge ceiling.** For every function `Phi` from the coefficient plane to the
+   corona plane preserving the two fixed polarizations — no linearity, continuity, or
+   naturality assumed — the resolved-over-physical energy excess transports unchanged:
+
+   ```text
+   g_cor(Phi(G_K c), Phi(G_K c)) - g_cor(Phi(c,0), Phi(c,0)) = K^2 |c|^2
+   ```
+
+   (`completedXiFixedCorona_comparison_energyGap`), so at nonzero shear and nonzero
+   coefficient the two landings stay separated under every such comparison
+   (`completedXiFixedCorona_comparison_separates`,
+   `ccmRationalAdelicPrimeXi_offLine_no_comparison_identifies`).  Re-choosing the
+   comparison map is not a possible discharge mechanism; the earlier transported-metric
+   kill is the linear special case of this ceiling.
+
+### Route-test verdict for the fixed-corona layer
+
+The layer consumes exactly two divisor-sensitive inputs: nonvanishing of the
+multiplicity-leading Xi jet and strict positivity of the prime/depth clocks and adjacent
+connection.  Both hold verbatim for any entire order-one function with functional-equation
+divisor symmetry and a hypothetical off-line zero, and every layer statement is natural in
+the centered rate `t = 2 Re(rho) - 1`, holding for all real `K`.  No argument factoring
+through this interface can prove `K_(p,rho) = 0`; a proof must consume input that breaks
+rate-naturality (global positivity of Weil type on the full test algebra, bilinear
+short-interval control, or an independent singular all-prime boundary law).  The open core
+`FIXED_POLARIZATION_PRODUCTION` is unchanged and is the entire remaining content of this
+layer; it is now exactly isolated, with line-invariance and comparison-gauge weakenings
+both closed.
+
+Formal status: appended to
+`GaloisForLFunctions/RHTower/CCMRationalAdelicCompletedXiFixedCoronaPolarization.lean`.
+Direct check, targeted build, and axiom audit (only `propext`, `Classical.choice`,
+`Quot.sound`) pass.

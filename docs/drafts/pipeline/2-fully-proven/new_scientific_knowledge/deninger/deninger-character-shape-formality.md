@@ -439,8 +439,52 @@ definitional unfolding that the coercions of a concrete algebra need.)
 
 - `CDGADirectedSystem` — the functoriality of a directed family of morphisms.
 - `degTransition`, `colimDeg`, `directedSystem_deg` — the direct limit in each degree.
-- `colimD`, `colimD_of`, `colimD_comp` — the differential on the limit and that it squares to zero,
-  so the colimit of a directed system of algebras is a differential graded module.
+- `colimD`, `colimD_of`, `colimD_comp` — the differential on the limit and that it squares to zero.
+- `mulFamily`, `mulFamily_compat`, `colimMul`, `colimMul_of` — the product on the limit, obtained
+  from the bilinear lifting principle below.
+- `exists_common₂`, `exists_common₃` — two or three elements of the limits in different degrees come
+  from a common stage.
+- `colimCDGA` — **the colimit of a directed system of commutative differential graded algebras**:
+  associativity, graded commutativity and the Leibniz rule are checked by reducing to a common
+  stage.
+- `colimHomFun`, `colimHomFun_of`, `colimHom` — **a compatible family of morphisms induces a
+  morphism of the colimit algebras**, again checked by reducing to a common stage.
+
+**Cohomology commutes with filtered colimits of these algebras.**
+`formal/GaloisForLFunctions/HTGeometry/CDGAColimitQuasiIso.lean`.
+
+- `cocycle_at_stage` — a cocycle of the colimit is already a cocycle at some stage, by
+  `Module.DirectLimit.of.zero_exact` applied to its differential.
+- `colimHom_isQuasiIso` — **a family of morphisms that is a quasi-isomorphism at every stage induces
+  a quasi-isomorphism of the colimits**.  Injectivity: a class killed in the colimit becomes, at a
+  far enough stage, a class killed there, hence zero there, hence zero in the colimit.  Surjectivity:
+  a class of the colimit comes from a cocycle at a stage, where the stagewise surjectivity applies.
+
+**Bilinear maps out of a direct limit.**
+`formal/GaloisForLFunctions/HTGeometry/DirectLimitBilinear.lean`.  Mathlib lifts linear maps out of
+a direct limit but not bilinear ones; this is what the product on a colimit algebra needs.
+
+- `ubOf`, `le_ubOf_left`, `le_ubOf_right` — a chosen upper bound of two indices.
+- `directLimit_b_stage_eq` — **the value of a compatible family of bilinear maps at a common stage
+  does not depend on the stage**: move both stages into a common upper bound and use the
+  compatibility.
+- `rightLift`, `rightLift_of`, `rightLift_of_stage`, `leftFamily` — the map on the second limit
+  determined by an element of a stage of the first, and its linearity in that element.
+- `directLimitBilinear`, `directLimitBilinear_of_of`, `directLimitBilinear_of_of_same` — **the
+  induced bilinear map on the direct limits**, with its value on elements from a common stage.
+
+**Pullback as a morphism of de Rham algebras.**
+`formal/GaloisForLFunctions/HTGeometry/ExteriorGradedMul.lean` (extended),
+`.../TorusPullbackDGA.lean`.
+
+- `comp_finAppend`, `exteriorMulOf_ιMulti`, `exteriorMulOf_map` — **the exterior power of a linear
+  map is multiplicative**, proved on products of vectors and extended by linearity in each factor.
+- `wedgeForm_compContinuousLinearMap` — **the wedge product is natural under pullback**.
+- `linearPullback_contDiff`, `linearPullback_mem_smoothPeriodicForms` — pullback preserves
+  smoothness and periodicity.
+- `torusPullbackHom` — **pullback along a map of lattices as a morphism of the de Rham algebras of
+  the two tori**, so the tori of a `TorusCoverSystem` form a directed system of commutative
+  differential graded algebras.
 
 ### What cannot be stated in Lean, and why
 
@@ -455,9 +499,15 @@ definitional unfolding that the coercions of a concrete algebra need.)
   a single morphism `torusFormalityHom` of such algebras, and `torusFormality_isQuasiIso` says it is
   a quasi-isomorphism.  For a single torus, `(2)` is therefore completely formalized.  Of the
   filtered colimit of these algebras, the underlying differential graded module is built
-  (`colimDeg`, `colimD`, `colimD_comp`); what is still missing is the product on the colimit, which
-  needs a bilinear map out of a direct limit — for two elements one must descend to a common stage,
-  and neither mathlib's `Module.DirectLimit` nor the corpus yet has that lifting principle.
+  (`colimCDGA`), a compatible family of morphisms induces a morphism of the colimits (`colimHom`),
+  and a stagewise quasi-isomorphism has quasi-isomorphic colimit (`colimHom_isQuasiIso`).  So the
+  whole shape of `(2)` — the two objects, the morphism, the quasi-isomorphism, and their behaviour
+  under the filtered colimit — is formalized, unconditionally, in complete generality.  What is left
+  is only to instantiate it: the transition morphisms of the tower are built (`torusPullbackHom`),
+  the compatibility of `torusFormalityHom` with them is `constantFormOfExterior_map_dualMap`, and the
+  colimit of the sources is `Λ^*(V_F ⊗ ℝ)` by `exteriorPowerDirectLimitEquiv` and
+  `deningerExterior_iSup_adjoin`.  What is left is to package a `TorusCoverSystem` as a
+  `CDGADirectedSystem` and read off `colimHom_isQuasiIso`.
 - `(3)` and `(4)` are statements about free `E_∞` `Hℝ`-algebras.  mathlib has no `E_∞`-algebras and
   no CDGA homotopy theory.  What survives is the algebraic content of "a free commutative algebra
   on generators in odd degree one is the exterior algebra": that is the universal property of
@@ -495,4 +545,7 @@ scalars.
   its cohomology, morphisms and quasi-isomorphisms — mathlib has none — and `(2)` as a single
   morphism `torusFormalityHom : exteriorCDGA ⟶ torusDeRhamCDGA`, and proved
   `torusFormality_isQuasiIso`.  For a single torus, statement `(2)` is now fully formalized.  Also
-  built the degreewise colimit of a directed system of such algebras with its differential.
+  built the degreewise colimit of a directed system of such algebras with its differential, and the
+  bilinear lifting principle for direct limits, the colimit algebra `colimCDGA` itself, and the
+  induced morphism of colimits `colimHom`, and proved that a stagewise quasi-isomorphism has
+  quasi-isomorphic colimit (`colimHom_isQuasiIso`).

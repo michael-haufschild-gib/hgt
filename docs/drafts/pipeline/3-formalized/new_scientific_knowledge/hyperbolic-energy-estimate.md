@@ -168,6 +168,21 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 104 | the solution, its velocity and its acceleration | `kgSmoothMild`, `kgSmoothVel`, `kgSmoothAcc`, **`hasDerivAt_kgSmoothMild`**, **`hasDerivAt_kgSmoothVel`** | **built** |
 | 105 | the solution is doubly regular, with explicit regularising vector | **`kgSmoothMild_eq`** | **built** |
 | 106 | **a smoothing perturbation makes the mild solution strong** | **`solvesKGSource_kgSmoothMild`**, **`kgStrongEnergy_kgSmoothMild_le`** | **built** |
+| 107 | the constructed solution starts at the prescribed data | `kgSmoothMild_at_zero`, `kgSmoothVel_at_zero` | **built** |
+| 108 | **well-posedness of the strong problem with a smoothing perturbation** | **`eq_kgSmoothMild_of_solvesKGSource`**, **`wellPosed_solvesKGSource_smoothing`** | **built** |
+| 109 | **the clock equation with a smoothed bounded measurable potential** | **`solvesKGSource_kgSmoothMild_potential`**, **`kgStrongEnergy_kgSmoothMild_potential_le`** | **built** |
+| 110 | the initial energy, and the estimate in terms of the data | `kgStrongEnergy_kgSmoothMild_zero`, **`kgStrongEnergy_kgSmoothMild_le_data`**, **`norm_kgSmoothMild_le`** | **built** |
+| 111 | **linearity in the data and continuous dependence for the constructed solution** | **`kgSmoothMild_sub`**, **`norm_kgSmoothMild_sub_le`** | **built** |
+| 112 | a multiplier with a nowhere vanishing symbol is injective | **`lpBoundedMulCLM_injective`**, `kgFreqInv_ne_zero`, `fourierL2_injective`, **`kgFreqInvOp_injective`** | **built** |
+| 113 | **the regularity hypotheses are not restrictive: the regular data are dense** | `denseRange_of_inner_eq_zero`, **`denseRange_kgFreqInvOp`**, **`denseRange_kgFreqInvOp_two`** | **built** |
+| 114 | a pointwise bound valid only on the support still bounds the multiplier | **`norm_lpBoundedMulCLM_apply_le_of_ae`** | **built** |
+| 115 | the high-frequency test function | `kgBallFun`, `kgBallFun_ne_zero`, **`norm_kgFreqInvOp_kgBallFun_le`**, `exists_norm_eq` | **built** |
+| 116 | **the regularity restriction is genuine: `⟨D⟩⁻¹` is not surjective** | **`not_surjective_kgFreqInvOp`** | **built** |
+| 117 | the sinc symbol and its limit | `kgSinc`, `norm_kgSinc_le`, **`tendsto_kgSinc`**, `continuous_kgSinc` | **built** |
+| 118 | the regularised difference quotient is the sinc multiplier | **`kgFreqInvOp_slope_kgSinOp`** | **built** |
+| 119 | **the regularity hypothesis is exactly the domain of differentiability** | **`mem_range_kgFreqInvOp_of_hasDerivAt`**, **`hasDerivAt_kgSinOp_iff`** | **built** |
+| 120 | the addition law for the half-order propagator | **`kgSinFreqOp_add`** | **built** |
+| 121 | **the free field evolution is a flow** | `kgFieldFreeVel`, `hasDerivAt_kgFieldFree'`, **`kgFieldFree_flow`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
@@ -181,8 +196,11 @@ Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` 
 `KleinGordonFieldMild.lean` (83–86), `KleinGordonFieldRegularity.lean` (87–88),
 `KleinGordonDuhamelSeparation.lean` (89–90), `KleinGordonDuhamelDerivative.lean` (91–93),
 `KleinGordonDuhamelFirstDerivative.lean` (94–96), `KleinGordonFieldVelocity.lean` (97–98),
-`KleinGordonDuhamelSecondDerivative.lean` (99–102), `KleinGordonSmoothingStrong.lean` (103–106).
-All wired into the umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
+`KleinGordonDuhamelSecondDerivative.lean` (99–102), `KleinGordonSmoothingStrong.lean` (103–106),
+`KleinGordonSmoothingWellPosed.lean` (107–109), `KleinGordonSmoothingData.lean` (110–111),
+`KleinGordonRegularDense.lean` (112–113), `KleinGordonFreqInvNotSurjective.lean` (114–116), `KleinGordonRegularitySharp.lean` (117–119),
+`KleinGordonFieldFlow.lean` (120–121). All wired into the umbrella; axioms
+`[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
 
@@ -965,6 +983,133 @@ uniqueness (78) and its stability (80) now apply to an object the corpus builds,
 the perturbed second-order equation — which is what the card set out to prove, in the one regularity
 class where all three are true.
 
+
+### The three theorems, about one object
+
+Statements 107–109 state the conclusion in one place. The constructed solution starts at the
+prescribed Cauchy data (`kgSmoothMild_at_zero`, `kgSmoothVel_at_zero`), so the uniqueness of the
+perturbed strong theory identifies it: every strong solution with those data *is* it
+(**`eq_kgSmoothMild_of_solvesKGSource`**). Collecting existence, the estimate and uniqueness:
+
+**`wellPosed_solvesKGSource_smoothing`**: *for `W = ⟨D⟩⁻¹W₀` with `W₀` bounded by `b`, and every
+`g₀, h₀ ∈ L²`, there are `u, v, a` with `SolvesKGSource W u v a`, `u(0) = ⟨D⟩⁻²g₀`,
+`v(0) = ⟨D⟩⁻¹h₀`, `F(t) ≤ F(0)e^{b|t|}`, and every strong solution with those data equals `u`.*
+
+Statement 109 instantiates it at the case the clock programme cares about: `W₀` = multiplication by a
+bounded **measurable** potential, so `W = ⟨D⟩⁻¹M_V`. No continuity, decay or smoothness of `V` is
+used anywhere — one power of `⟨D⟩⁻¹` is the entire price of passing from the mild theory, where
+nothing is assumed, to the strong theory, where the equation holds pointwise in time as an identity
+in `L²`.
+
+This is the card's original sentence — *the energy is controlled by the data, and the Cauchy problem
+has at most one such solution* — with the missing third clause supplied: **and it has one**.
+
+
+### Stated in the data one prescribes
+
+Statements 110–111 finish the arc by removing the last place where a theorem referred to the solution
+rather than to the data. The energy at time zero is explicit,
+`F(0) = ‖⟨D⟩⁻²h₀‖² + ‖⟨D⟩⁻²g₀‖²`, so the Grönwall estimate becomes
+
+**`kgStrongEnergy_kgSmoothMild_le_data`**: `F(t) ≤ (‖⟨D⟩⁻²h₀‖² + ‖⟨D⟩⁻²g₀‖²)e^{b|t|}`,
+
+a bound by the prescribed Cauchy data alone, and `norm_kgSmoothMild_le` does the same for the field.
+The construction is linear in the data (**`kgSmoothMild_sub`**: the difference of two solutions is the
+solution of the difference), so the same bound applied to a difference is
+
+**`norm_kgSmoothMild_sub_le`**: `‖u₁(t) - u₂(t)‖ ≤ (‖⟨D⟩⁻²(g₁-g₂)‖ + ‖⟨D⟩⁻¹(h₁-h₂)‖)e^{b|t|}`.
+
+With that the card carries the classical local theory of the clock equation in full, in every
+register it can be stated in, with existence, the exponential energy estimate, uniqueness and
+continuous dependence proved for each — and with the one honest limit (a rough, unsmoothed potential
+gives a mild solution that need not be strong) recorded as the mathematical fact it is.
+
+
+### How large the regular class is
+
+Every strong statement here asks the Cauchy data to lie in the range of `⟨D⟩⁻¹` or `⟨D⟩⁻²`. That is a
+genuine restriction — `⟨D⟩⁻¹` is not surjective — and a development that never measured it would be
+open to the charge that its hypothesis class is thin. Statements 112–113 measure it.
+
+The argument is the one running through the whole card, used a third time. The symbol `⟨ξ⟩⁻¹` is
+**nowhere vanishing**, which makes the multiplier injective (**`kgFreqInvOp_injective`**), and it is
+**real**, which makes the multiplier self-adjoint (statement 70). An injective self-adjoint operator
+on a Hilbert space has dense range: a vector orthogonal to the range satisfies `⟪f, Ag⟫ = 0` for every
+`f`, hence `Ag = 0`, hence `g = 0`. So
+
+**`denseRange_kgFreqInvOp`**, and by composition **`denseRange_kgFreqInvOp_two`**: the singly and
+doubly regular vectors are **dense** in `L²`.
+
+The strong solutions of statements 68 and 106 are therefore constructed on a dense set of Cauchy data,
+and the continuous dependence of statement 111 propagates them from there as far as any solution
+concept allows. The hypothesis class is not thin; it is dense, and the mild theory — which assumes
+nothing — is what covers the rest.
+
+
+### The restriction is genuine, not just non-trivial
+
+Statement 113 says the regular data are dense. That leaves the opposite question, and a docstring
+claiming `⟨D⟩⁻¹` is not surjective would be an unproved assertion sitting inside a formalisation.
+Statements 114–116 prove it.
+
+Were `⟨D⟩⁻¹` surjective it would be bijective — injectivity is statement 112 — and the open mapping
+theorem would give a bounded inverse, hence `‖x‖ ≤ K‖⟨D⟩⁻¹x‖` for all `x`. But the multiplier shrinks
+by `⟨R⟩⁻¹` anything living at frequencies of size at least `R`: the witness is the indicator of the
+unit ball around a frequency of norm `K+1`, which has positive finite measure and is therefore a
+nonzero element of `L²` (**`kgBallFun_ne_zero`**), pulled back through Plancherel. Taking `R = K`
+gives `K < √(1+K²)`, and the two inequalities contradict each other.
+
+**`not_surjective_kgFreqInvOp`**: *on a space of positive dimension, `⟨D⟩⁻¹` is not surjective.*
+
+The hypothesis `0 < dim` is not decoration: in dimension zero `⟨ξ⟩ ≡ 1` and the operator *is* the
+identity. So the strong theory is strictly narrower than the mild one, exactly as the mild-versus-
+strong discussion of statement 82 requires — and the dense-range statement 113 says how much
+narrower: not much, but not nothing.
+
+
+### The hypothesis is the domain, not a convenience
+
+Statement 65 differentiates `t ↦ sin(t⟨D⟩)x` for `x` in the range of `⟨D⟩⁻¹`, and every regularity
+hypothesis downstream descends from it. Statements 117–119 show that hypothesis is not an artifact of
+the proof: it is *exactly* the set on which the curve is differentiable.
+
+The mechanism is the sinc function. The difference quotient of `sin(t⟨ξ⟩)` at the origin is
+`sin(t⟨ξ⟩)/t`, unbounded in `ξ` — which is why the derivative can fail to exist. But one power of
+`⟨D⟩⁻¹` turns it into `sin(t⟨ξ⟩)/(t⟨ξ⟩)`, bounded by **one** and converging pointwise to **one**
+(**`tendsto_kgSinc`**). So statement 48 makes `⟨D⟩⁻¹` applied to the difference quotient converge to
+the datum itself; and if a derivative `L` exists, continuity of `⟨D⟩⁻¹` makes it converge to
+`⟨D⟩⁻¹L`. Uniqueness of limits gives
+
+**`mem_range_kgFreqInvOp_of_hasDerivAt`**: `⟨D⟩⁻¹L = k` — the datum is regular, and the derivative is
+its regularising vector,
+
+and with statement 65 for the converse, **`hasDerivAt_kgSinOp_iff`**: *the curve `t ↦ sin(t⟨D⟩)k` is
+differentiable at the origin if and only if `k` lies in the range of `⟨D⟩⁻¹`.*
+
+Together with statements 113 and 116 the regular class is now completely described: it is dense
+(113), it is not everything (116), and it is precisely the domain of the derivative the whole strong
+theory is built on (119).
+
+
+### The evolution is a flow
+
+The equation is autonomous, so a solution restarted from its own state at an intermediate time should
+continue the same solution. Statements 120–121 prove that for the free field, and the proof is again
+the addition laws — this time all three of them at once.
+
+Expanding `kgFieldFree (⟨D⟩⁻¹g) h (t+s)` and the restarted solution
+`kgFieldFree (u(s)) (∂ₜu(s)) t`, the position datum is moved by the cosine addition law
+(`kgCosOp_add`), the velocity datum by the **half-order** sine addition law
+(**`kgSinFreqOp_add`**, new here), and the two cross terms match because
+`(sin(t⟨D⟩)/⟨D⟩)sin(s⟨D⟩)g = sin(t⟨D⟩)sin(s⟨D⟩)⟨D⟩⁻¹g` — the commutation of the multipliers, which is
+what lets the `⟨D⟩⁻¹` migrate from the propagator to the datum. Hence
+
+**`kgFieldFree_flow`**: `u(t+s) = [the solution with data (u(s), ∂ₜu(s))](t)`.
+
+The position datum must carry one power of `⟨D⟩⁻¹` — not for the identity itself but because the
+velocity at the intermediate time is only defined there (statement 119 shows that is exactly the
+domain); the velocity datum is arbitrary.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -985,6 +1130,20 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-04 — statements 120–121: the half-order addition law, and the flow property of the free
+  field evolution.
+- 2026-08-04 — statements 117–119: the regularity hypothesis of statement 65 is **exactly** the
+  domain of differentiability, by the sinc limit. The regular class is now fully described.
+- 2026-08-04 — statements 114–116: `⟨D⟩⁻¹` is **not** surjective in positive dimension, so the
+  strong theory's regularity restriction is genuine. The card's prose claim is now a theorem.
+- 2026-08-04 — statements 112–113: the regular Cauchy data are **dense**, so the strong theory's
+  hypothesis class is measured, not merely inhabited.
+- 2026-08-04 — audit: every corpus identifier named on the eight clocks cards (1146 distinct)
+  resolves to a declaration in `formal/`; the only unresolved names are mathlib's.
+- 2026-08-04 — statements 110–111: the estimates restated in the prescribed data, and continuous
+  dependence for the constructed strong solution. The arc is complete.
+- 2026-08-04 — statements 107–109: well-posedness of the smoothed strong problem in one theorem,
+  and its instantiation at a bounded measurable potential smoothed by `⟨D⟩⁻¹`.
 - 2026-08-04 — statements 103–106: **mild becomes strong** for a smoothing perturbation. The
   perturbed strong theory now has a constructed solution; existence, estimate and uniqueness meet.
 - 2026-08-04 — statements 99–102: the second differentiation of the Duhamel term, for a regular

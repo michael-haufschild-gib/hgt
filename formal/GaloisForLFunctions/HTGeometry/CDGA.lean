@@ -58,6 +58,19 @@ namespace CDGAStructure
 variable {R : Type u} [CommRing R] {X : ℕ → Type v} [∀ n, AddCommGroup (X n)]
   [∀ n, Module R (X n)] (A : CDGAStructure R X)
 
+/-- The product as a bilinear map. -/
+def mulₗ {a b n : ℕ} (h : a + b = n) : X a →ₗ[R] X b →ₗ[R] X n where
+  toFun x :=
+    { toFun := fun y => A.mul h x y
+      map_add' := A.mul_add_right h x
+      map_smul' := fun c y => A.mul_smul_right h c x y }
+  map_add' x x' := LinearMap.ext fun y => A.mul_add_left h x x' y
+  map_smul' c x := LinearMap.ext fun y => A.mul_smul_left h c x y
+
+@[simp]
+theorem mulₗ_apply {a b n : ℕ} (h : a + b = n) (x : X a) (y : X b) :
+    A.mulₗ h x y = A.mul h x y := rfl
+
 /-- The differential as a linear map. -/
 def dₗ (n : ℕ) : X n →ₗ[R] X (n + 1) where
   toFun := A.d n

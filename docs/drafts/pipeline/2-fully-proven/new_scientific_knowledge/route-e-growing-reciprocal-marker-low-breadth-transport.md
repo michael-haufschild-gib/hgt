@@ -5568,3 +5568,52 @@ against the trivial `δN²`. So the corpus now proves an unconditional power sav
 short-interval mean square using **neither** a zero-free region **nor** any cancellation estimate —
 the entire gain is the diagonal of the mean value theorem. That is the baseline every arithmetic
 input in this chain has to beat, and it is the right place to measure the large-values layer against.
+
+### The factorized mean square — `Sieve/DirichletSymmSplit.lean`, `Sieve/DirichletConvSplit.lean`
+
+Gallagher's identity integrates over a symmetric frequency range, so the large-values estimates were
+moved there, and the threshold split was applied to a polynomial that factors.
+
+`DirichletSymmSplit`:
+- **`volume_largeValues_symm_le`** : `V²·|{t ∈ [−T,T] : |F(t)| ≥ V}| ≤ 2(T + 4N(1+log N))∑|c_n|²`,
+  Chebyshev against the symmetric mean value theorem;
+- **`volume_largeValues_sixth_symm_le`** : the same with `V⁶`, by running it on the cube
+  (`largeValues_cube_setOf` was generalised in place from `(0,T]` to an arbitrary set);
+- **`integral_normSq_mul_split_symm`** : the threshold split on `[−T,T]`.
+
+`DirichletConvSplit`:
+- **`integral_Icc_normSq_dirConv_split`** : the split for `dirPoly (N₁N₂) (p ∗ q)`, using the corpus's
+  own `dirPoly_mul_eq_dirPoly` to factor the polynomial;
+- **`integral_Icc_normSq_dirConv_le`** :
+
+      V⁶∫_{|t| ≤ T}|(p∗q)^(t)|²
+        ≤ 2V⁸(T + 4N₁(1+log N₁))∑_j|p_j|²
+          + 2(sup|P|)²(sup|Q|)²(T + 4N₂³(1+log N₂³))·D·(∑_k|q_k|²)³ .
+
+Built, wired, axiom-clean (five theorems).
+
+Only the **second** factor is ever raised to the sixth power. So a short second factor with spread-out
+coefficients — a prime-supported polynomial over a dyadic range — makes the exceptional term small
+while the first term keeps only the diagonal of the mean value theorem. That asymmetry is the entire
+point of factorizing before estimating, and it is now available as a single inequality with explicit
+constants and no hypotheses beyond the two trivial sup bounds.
+
+### Where this leaves the card
+
+`(15)`–`(18)` still rest on Matomäki–Radziwiłł 2016 Theorem 2 / Menon 2026. What has changed is that
+the corpus now owns, unconditionally, every structural ingredient of the proof of that theorem except
+the choice of factorization ranges and the Halász input on the exceptional frequency:
+
+1. Gallagher's reduction, exact, in both the pointwise-split and mean-square-split forms;
+2. the mean value theorem in the frequency variable, on symmetric ranges, with the `logPoly`↔`dirPoly`
+   dictionary;
+3. the large-values estimates at the sixth power — sum, count, measure and integral forms — with the
+   divisor bound discharged so nothing is hypothetical;
+4. the threshold split combining a mean square with a level-set measure;
+5. the same for a factorized polynomial, which is the shape the multiplicative decomposition
+   produces;
+6. the bilinear coefficient bound `∑|(a∗b)_r|² ≤ C_ε(NM)^ε(∑|a_j|²)(∑|b_k|²)`, previously hypothetical.
+
+The remaining work is arithmetic, not structural: choosing the ranges (`RamareFactorization` supplies
+the decomposition) and supplying the Halász bound at the exceptional frequency
+(`HalaszDichotomy`/`HalaszWindow`, whose distance side is already closed).

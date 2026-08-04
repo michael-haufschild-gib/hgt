@@ -155,6 +155,46 @@ theorem finrank_diagonal_le_prod (hgen : differentialAdjoin C (Set.range x) = �
   rw [← hrange, adjoin_diagonal_eq_top hx hgen hd] at hbound
   rwa [IntermediateField.finrank_top'] at hbound
 
+
+include hx in
+/-- **The diagonal substitution has finite degree.**  Each palette coordinate is integral over the
+differential field of the coordinatewise powers, and together they generate the ambient field. -/
+theorem finiteDimensional_diagonal (hgen : differentialAdjoin C (Set.range x) = ⊤)
+    {d : Fin r → ℤ} (hd : ∀ i, d i ≠ 0) :
+    FiniteDimensional
+      (↥(differentialAdjoin C (Set.range (monomialFamily (Matrix.diagonal d) x)))) E := by
+  classical
+  have hpowmem : ∀ i, x i ^ d i
+      ∈ differentialAdjoin C (Set.range (monomialFamily (Matrix.diagonal d) x)) := by
+    intro i
+    rw [← monomialFamily_diagonal_apply d i]
+    exact subset_differentialAdjoin C _ (Set.mem_range_self i)
+  have hint : ∀ z ∈ Set.range x, IsIntegral
+      (↥(differentialAdjoin C (Set.range (monomialFamily (Matrix.diagonal d) x)))) z := by
+    rintro _ ⟨i, rfl⟩
+    have hz : x i ^ ((d i).natAbs)
+        ∈ differentialAdjoin C (Set.range (monomialFamily (Matrix.diagonal d) x)) := by
+      have hzz : x i ^ (((d i).natAbs : ℕ) : ℤ)
+          ∈ differentialAdjoin C (Set.range (monomialFamily (Matrix.diagonal d) x)) := by
+        rcases le_or_gt 0 (d i) with hpos | hneg
+        · rw [show ((((d i).natAbs : ℕ)) : ℤ) = d i by omega]
+          exact hpowmem i
+        · rw [show ((((d i).natAbs : ℕ)) : ℤ) = -(d i) by omega, zpow_neg]
+          exact inv_mem (hpowmem i)
+      rwa [zpow_natCast] at hzz
+    exact isIntegral_of_pow_mem (α := x i)
+      (c := (⟨x i ^ ((d i).natAbs), hz⟩ :
+        ↥(differentialAdjoin C (Set.range (monomialFamily (Matrix.diagonal d) x)))))
+      (Int.natAbs_pos.mpr (hd i)) rfl
+  haveI : Finite (Set.range x) := Set.finite_range x
+  haveI hfd0 : FiniteDimensional
+      (↥(differentialAdjoin C (Set.range (monomialFamily (Matrix.diagonal d) x))))
+      ↥(IntermediateField.adjoin
+        (↥(differentialAdjoin C (Set.range (monomialFamily (Matrix.diagonal d) x))))
+        (Set.range x)) := IntermediateField.finiteDimensional_adjoin hint
+  rw [adjoin_diagonal_eq_top hx hgen hd] at hfd0
+  exact (IntermediateField.topEquiv.toLinearEquiv).finiteDimensional
+
 end
 
 end

@@ -1136,3 +1136,100 @@ which is again Smith -- `u ↦ monomialFamily V u` is an automorphism of the con
 conjugates `ker(M)` onto `ker(D)`, whose order `card_ker_torusPowerHom` already computes.  The
 fixed-field containment `differentialAdjoin_monomialFamily_le_fixedField` is stated for an arbitrary
 matrix, so with the order in hand, Artin closes the general case exactly as in the diagonal one.
+
+## The torus case is closed — PROVED
+
+    TorusDiagonal.lean   (extended)
+      finiteDimensional_diagonal
+
+    TorusGeneralDeck.lean
+      torusMonomialHom C M                  the monomial action of an integer matrix on the
+                                            constant torus
+      coe_torusMonomialHom, torusMonomialHom_diagonal, torusMonomialHom_mul
+      torusMonomialHom_bijective_of_isUnit_det
+      card_ker_torusMonomialHom :           Nat.card (ker M on (C^×)^r) = |det M|
+      differentialAdjoin_monomialFamily_eq_fixedField :
+        C<x^M> = fixedField (ker(M) mapped by the scaling action)
+
+This closes the split torus.  For any nonsingular integer matrix `M`, an algebraically closed
+constant field of characteristic zero and a freely generating palette, the prefix image of the
+isogeny is exactly the fixed field of its deck group, with no hypothesis left over.
+
+Both halves are Smith normal form used in different categories:
+
+* on the **field** side (`TorusGeneralDegree`) the unimodular factors act by automorphisms of the
+  palette, so `[E : C<x^M>] <= |det M|` reduces to the diagonal bound;
+* on the **group** side (here) the same factorization conjugates `ker(M)` onto `ker(D)` inside the
+  constant torus -- `torusMonomialHom U` is injective so it does not change the kernel, and
+  `torusMonomialHom V` is bijective so it transports it -- giving `|det M|` for the order.
+
+Artin then turns the estimate into the identity, exactly as in rank one.
+
+### Card status by item, updated
+
+| item | general `G` | `G_m` | `G_m^r` |
+|---|---|---|---|
+| (1) deck closure | bridge, conditional on one degree bound | proved | **proved** |
+| (2) position + velocity | needs the Lie functor | proved | prefix identity proved |
+| (3) `a^{-1}(H_(i+1)) = H_i` | proved | proved | proved |
+| (4) `q_i : Q_i ≅ Q_(i+1)` | proved | instantiated | instantiated |
+| (5) velocity transport | needs the Lie functor | proved | **proved** (`logDeriv_monomialFamily`) |
+| (6) purely expanding | needs the Lie functor | proved | open (needs the tail limit) |
+| (7) dtrdeg and `T ∩ C(G) = C` | needs the Lie functor | proved | open |
+
+What is left on this card is therefore: the torus **protocol** (a sequence of matrices, its tail, and
+the analogue of the bounded/unbounded dichotomy), and then only abelian varieties -- in
+characteristic zero `G_a` has no nontrivial isogenies, so tori settle every connected commutative
+linear group.
+
+## The torus protocol tail — PROVED
+
+    TorusProtocol.lean
+      prefixMatrix m i n                    the accumulated matrix of the protocol
+      det_prefixMatrix_ne_zero
+      torusProtocol / forwardPrefix_torusProtocol / map_forwardPrefix_torusProtocol
+      torusProtocolGroup C m                the same protocol on the constant torus
+      prefixHom_torusProtocolGroup, prefixKernel_torusProtocolGroup
+      torusProtocol_nonautonomousTail_eq_fixedField :
+        nonautonomousTail (torusProtocol ...) i
+          = fixedField ((erasedClosure (torusProtocolGroup C m) i).map (torusScaleRep ...))
+
+This is the card's (1) for `G_m^r`, unconditional: no degree hypothesis, no finiteness hypothesis,
+no primitive-root hypothesis -- only `det (m j) ≠ 0` at each phase, `C` algebraically closed of
+characteristic zero, and a freely generating palette.
+
+The proof uses the *strong* bridge `nonautonomousTail_eq_fixedField_erasedClosure`, which asks for
+the depthwise identity rather than for degrees, because
+`differentialAdjoin_monomialFamily_eq_fixedField` supplies exactly that at every depth.  The rank-one
+witness had to go through the weaker degree form; here the general deck identity makes the depthwise
+statement available directly.
+
+Both protocol layers now match: prefixes multiply matrices in the same order on the field side
+(`torusEndo_comp`) and on the group side (`torusMonomialHom_mul`), so `prefixMatrix` describes both.
+
+### Substitution monotonicity, extracted
+
+    TorusUnimodular.lean   (extended)
+      differentialAdjoin_monomialFamily_le :
+        a substitution can only shrink the generated differential field
+      differentialAdjoin_monomialFamily_le_of_factor :
+        if the rows of Q are integer combinations of the rows of P then C<x^Q> <= C<x^P>
+
+These are the lattice-monotonicity facts the next step needs: the differential field of a
+substitution depends only on the **row lattice** of the matrix, so the tail of a torus protocol is
+governed by the decreasing chain of row lattices `Λ_n` and its intersection `Λ_∞`.
+
+### The remaining torus statement
+
+Items (6) and (7) for `G_m^r` reduce to one piece of invariant theory:
+
+    the fixed field of a subgroup S of the constant torus, acting by scaling on C<x>,
+    is generated over the velocity field C<x_1'/x_1, ..., x_r'/x_r> by the monomials whose
+    exponent vectors annihilate S.
+
+For `r = 1` this is the corpus's scalar torsor plus `RatFuncScaleInfiniteStabilizer`; for general `r`
+it needs the multivariable torsor `C<x> = L(x_1, ..., x_r)` with the `x_i` algebraically independent
+over the velocity field `L`, and then torus-invariant theory of a rational function field.  With it,
+the tail of a protocol is `C<x^(Λ_∞), velocities>`, which specialises to the rank-one dichotomy:
+`Λ_∞ = Nℤ` gives the stabilizing case `C<g^N>` and `Λ_∞ = 0` gives the purely expanding case
+`C<g'/g>`.

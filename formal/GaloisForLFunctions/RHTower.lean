@@ -114,7 +114,11 @@ import GaloisForLFunctions.RHTower.BandLeakageEnvelope
 import GaloisForLFunctions.RHTower.BandLimitedExtension
 import GaloisForLFunctions.RHTower.BandTransformEnergy
 import GaloisForLFunctions.RHTower.PaleyWienerNorms
+import GaloisForLFunctions.RHTower.ProlateEndpointLowerBound
+import GaloisForLFunctions.RHTower.ProlateRiccati
+import GaloisForLFunctions.RHTower.ProlateWKBSubsolution
 import GaloisForLFunctions.RHTower.ProlateJointEigen
+import GaloisForLFunctions.RHTower.ProlateJointEigenExistence
 import GaloisForLFunctions.RHTower.FourierPlancherelIntegral
 import GaloisForLFunctions.RHTower.BandLeakageSpectralTail
 import GaloisForLFunctions.RHTower.BandOperatorContraction
@@ -3560,6 +3564,7 @@ import GaloisForLFunctions.RHTower.Sieve.LogPolyDirPoly
 import GaloisForLFunctions.RHTower.Sieve.GallagherMeanValue
 import GaloisForLFunctions.RHTower.Sieve.DirichletSymmSplit
 import GaloisForLFunctions.RHTower.Sieve.DirichletConvSplit
+import GaloisForLFunctions.RHTower.Sieve.PrimeCubeSupport
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment

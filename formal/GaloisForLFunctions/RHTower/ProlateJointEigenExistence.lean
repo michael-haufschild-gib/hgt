@@ -328,6 +328,10 @@ theorem continuous_deriv2_eigenRep {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0)
   ((contDiff_infty_iff_deriv.mp
     ((contDiff_infty_iff_deriv.mp (contDiff_eigenRep hc hlam f)).2)).2).continuous
 
+theorem continuous_prolateSLAction_eigenRep {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0)
+    (f : bandEigenspace c lam) : Continuous (prolateSLAction c (eigenRep c lam f)) :=
+  (contDiff_prolateSLAction (contDiff_eigenRep hc hlam f)).continuous
+
 /-- The prolate action of a band eigenfunction is again a band eigenfunction. -/
 theorem prolate_bandClass_mem {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0)
     (f : bandEigenspace c lam) :
@@ -339,12 +343,12 @@ theorem prolate_bandClass_mem {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0)
     bandTransform_prolateSLAction (contDiff_eigenRep hc hlam f) (bandTransform_eigenRep hlam f)
   have hfun : bandTransform c (prolateSLAction c (eigenRep c lam f))
       = fun x => lam * prolateSLAction c (eigenRep c lam f) x := funext hbt
+  have hmulcont : Continuous fun x => lam * prolateSLAction c (eigenRep c lam f) x :=
+    continuous_const.mul (continuous_prolateSLAction_eigenRep hc hlam f)
   rw [mem_bandEigenspace_iff, bandOperatorL2_bandClass,
     bandClass_congr (continuous_bandTransform c
-      ((contDiff_prolateSLAction (contDiff_eigenRep hc hlam f)).continuous))
-      (by fun_prop) hfun,
-    bandClass_smul ((contDiff_prolateSLAction (contDiff_eigenRep hc hlam f)).continuous) lam
-      (by fun_prop)]
+      (continuous_prolateSLAction_eigenRep hc hlam f)) hmulcont hfun,
+    bandClass_smul (continuous_prolateSLAction_eigenRep hc hlam f) lam hmulcont]
 
 /-- **The prolate action as an operator on the band eigenspace.** -/
 def prolateOnEigenspace {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0) :
@@ -369,7 +373,8 @@ def prolateOnEigenspace {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0) :
     show bandClass (prolateSLAction c (eigenRep c lam (f + g))) _
         = bandClass (prolateSLAction c (eigenRep c lam f)) _
           + bandClass (prolateSLAction c (eigenRep c lam g)) _
-    rw [bandClass_congr _ (by fun_prop) hP]
+    rw [bandClass_congr _ ((continuous_prolateSLAction_eigenRep hc hlam f).add
+      (continuous_prolateSLAction_eigenRep hc hlam g)) hP]
     exact bandClass_add _ _ _
   map_smul' r f := by
     refine Subtype.ext ?_
@@ -384,7 +389,8 @@ def prolateOnEigenspace {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0) :
         (differentiable_deriv_eigenRep hc hlam f) x
     show bandClass (prolateSLAction c (eigenRep c lam (r • f))) _
         = r • bandClass (prolateSLAction c (eigenRep c lam f)) _
-    rw [bandClass_congr _ (by fun_prop) hP]
+    rw [bandClass_congr _ (continuous_const.mul
+      (continuous_prolateSLAction_eigenRep hc hlam f)) hP]
     exact bandClass_smul _ _ _
 
 /-- **The prolate action is symmetric on the band eigenspace.**  The Sturm–Liouville flux vanishes at
@@ -396,8 +402,11 @@ theorem isSymmetric_prolateOnEigenspace {c lam : ℝ} (hc : 0 < c) (hlam : lam �
       ((prolateOnEigenspace hc hlam h : bandEigenspace c lam) : RealIntervalL2 (-1 : ℝ) 1)
         = bandClass (prolateSLAction c (eigenRep c lam h))
             ((contDiff_prolateSLAction (contDiff_eigenRep hc hlam h)).continuous) := fun _ => rfl
-  rw [← Submodule.coe_inner, ← Submodule.coe_inner, hval f, hval g,
-    ← bandClass_eigenRep hlam f, ← bandClass_eigenRep hlam g,
+  show (inner ℝ ((prolateOnEigenspace hc hlam f : bandEigenspace c lam) :
+      RealIntervalL2 (-1 : ℝ) 1) ((g : bandEigenspace c lam) : RealIntervalL2 (-1 : ℝ) 1) : ℝ)
+      = (inner ℝ ((f : bandEigenspace c lam) : RealIntervalL2 (-1 : ℝ) 1)
+        ((prolateOnEigenspace hc hlam g : bandEigenspace c lam) : RealIntervalL2 (-1 : ℝ) 1) : ℝ)
+  rw [hval f, hval g, ← bandClass_eigenRep hlam f, ← bandClass_eigenRep hlam g,
     inner_bandClass_eq, inner_bandClass_eq]
   have hsymm := _root_.RHTower.prolateSLAction_band_symmetric
     (differentiable_eigenRep hc hlam f) (differentiable_deriv_eigenRep hc hlam f)
@@ -434,23 +443,27 @@ theorem exists_joint_prolate_band_eigen {c lam : ℝ} (hc : 0 < c) (hlam : lam �
   · -- the representative is nonzero because its band class is `v`
     intro h0
     have hclass := bandClass_eigenRep hlam v
-    rw [h0] at hclass
-    have hzero : bandClass (fun _ : ℝ => (0 : ℝ)) (continuous_eigenRep c lam v) = 0 :=
-      bandClass_zero _
-    have : (v : RealIntervalL2 (-1 : ℝ) 1) = 0 := by
+    have hzero : bandClass (eigenRep c lam v) (continuous_eigenRep c lam v) = 0 := by
+      have hstep : bandClass (eigenRep c lam v) (continuous_eigenRep c lam v)
+          = bandClass (fun _ : ℝ => (0 : ℝ)) continuous_const :=
+        bandClass_congr _ _ h0
+      rw [hstep]
+      exact bandClass_zero _
+    have hv0 : (v : RealIntervalL2 (-1 : ℝ) 1) = 0 := by
       rw [← hclass]
       exact hzero
-    exact hvne (Subtype.ext this)
+    exact hvne (Subtype.ext hv0)
   · -- the eigenrelation of the symmetric operator is the prolate equation on the band
+    have hmulcont : Continuous fun x => χ * eigenRep c lam v x :=
+      continuous_const.mul (continuous_eigenRep c lam v)
     have hcoe : bandClass (prolateSLAction c (eigenRep c lam v))
-        ((contDiff_prolateSLAction (contDiff_eigenRep hc hlam v)).continuous)
-        = χ • (v : RealIntervalL2 (-1 : ℝ) 1) := by
-      have := congrArg (fun w : bandEigenspace c lam => (w : RealIntervalL2 (-1 : ℝ) 1)) hveq
-      simpa using this
+        (continuous_prolateSLAction_eigenRep hc hlam v)
+        = χ • (v : RealIntervalL2 (-1 : ℝ) 1) :=
+      congrArg (fun w : bandEigenspace c lam => (w : RealIntervalL2 (-1 : ℝ) 1)) hveq
     have hsmul : χ • (v : RealIntervalL2 (-1 : ℝ) 1)
-        = bandClass (fun x => χ * eigenRep c lam v x) (by fun_prop) := by
+        = bandClass (fun x => χ * eigenRep c lam v x) hmulcont := by
       rw [← bandClass_eigenRep hlam v,
-        bandClass_smul (continuous_eigenRep c lam v) χ (by fun_prop)]
+        bandClass_smul (continuous_eigenRep c lam v) χ hmulcont]
     rw [hsmul] at hcoe
     exact eqOn_of_bandClass_eq _ _ hcoe
 

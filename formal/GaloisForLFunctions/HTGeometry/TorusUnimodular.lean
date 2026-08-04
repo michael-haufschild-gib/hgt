@@ -93,12 +93,34 @@ theorem differentialAdjoin_monomialFamily_eq_top_of_isUnit_det
 
 
 omit [CharZero E] in
+/-- **A substitution can only shrink the generated differential field.** -/
+theorem differentialAdjoin_monomialFamily_le (A : Matrix (Fin r) (Fin r) ℤ) (z : Fin r → E) :
+    differentialAdjoin C (Set.range (monomialFamily A z))
+      ≤ differentialAdjoin C (Set.range z) := by
+  refine differentialAdjoin_le C ?_ (derivationClosed_differentialAdjoin C _)
+  rintro _ ⟨i, rfl⟩
+  rw [monomialFamily_apply]
+  exact prod_mem fun j _ ↦ zpow_mem
+    (subset_differentialAdjoin C _ (Set.mem_range_self j)) _
+
+omit [CharZero E] in
+/-- **Factoring a substitution shrinks its differential field.**  If the rows of `Q` are integer
+combinations of the rows of `P`, the field of `Q` is contained in the field of `P`. -/
+theorem differentialAdjoin_monomialFamily_le_of_factor {P Q : Matrix (Fin r) (Fin r) ℤ}
+    (A : Matrix (Fin r) (Fin r) ℤ) (hQ : Q = A * P) (z : Fin r → E) (hz0 : ∀ i, z i ≠ 0) :
+    differentialAdjoin C (Set.range (monomialFamily Q z))
+      ≤ differentialAdjoin C (Set.range (monomialFamily P z)) := by
+  rw [hQ, monomialFamily_mul _ _ hz0]
+  exact differentialAdjoin_monomialFamily_le A (monomialFamily P z)
+
+omit [CharZero E] in
 /-- **A unimodular substitution does not change the generated differential field.**  This holds for
 an arbitrary nonzero family, not only for a generating palette: the inverse substitution is again
 integral. -/
 theorem differentialAdjoin_monomialFamily_unimodular_eq {M : Matrix (Fin r) (Fin r) ℤ}
     (hu : IsUnit M.det) (z : Fin r → E) (hz0 : ∀ i, z i ≠ 0) :
-    differentialAdjoin C (Set.range (monomialFamily M z)) = differentialAdjoin C (Set.range z) := by
+    differentialAdjoin C (Set.range (monomialFamily M z))
+      = differentialAdjoin C (Set.range z) := by
   classical
   obtain ⟨v, hv⟩ := (Matrix.isUnit_iff_isUnit_det M).mpr hu
   have hNM : (↑v⁻¹ : Matrix (Fin r) (Fin r) ℤ) * M = 1 := by
@@ -106,15 +128,11 @@ theorem differentialAdjoin_monomialFamily_unimodular_eq {M : Matrix (Fin r) (Fin
     exact v.inv_mul
   have hmono : ∀ (A : Matrix (Fin r) (Fin r) ℤ) (w : Fin r → E), (∀ i, w i ≠ 0) →
       differentialAdjoin C (Set.range (monomialFamily A w))
-        ≤ differentialAdjoin C (Set.range w) := by
-    intro A w _
-    refine differentialAdjoin_le C ?_ (derivationClosed_differentialAdjoin C _)
-    rintro _ ⟨i, rfl⟩
-    rw [monomialFamily_apply]
-    exact prod_mem fun j _ ↦ zpow_mem
-      (subset_differentialAdjoin C _ (Set.mem_range_self j)) _
+        ≤ differentialAdjoin C (Set.range w) := fun A w _ ↦
+    differentialAdjoin_monomialFamily_le A w
   refine le_antisymm (hmono M z hz0) ?_
-  have hback : monomialFamily (↑v⁻¹ : Matrix (Fin r) (Fin r) ℤ) (monomialFamily M z) = z := by
+  have hback : monomialFamily (↑v⁻¹ : Matrix (Fin r) (Fin r) ℤ)
+      (monomialFamily M z) = z := by
     rw [← monomialFamily_mul _ _ hz0, hNM, monomialFamily_one]
   have := hmono (↑v⁻¹ : Matrix (Fin r) (Fin r) ℤ) (monomialFamily M z)
     (fun i ↦ monomialFamily_ne_zero M hz0 i)

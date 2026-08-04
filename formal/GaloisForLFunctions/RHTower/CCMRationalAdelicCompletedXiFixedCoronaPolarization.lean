@@ -859,3 +859,178 @@ theorem ccmRationalAdelicPrimeXiCompletedResolved_class
 end
 
 end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-! ## Selector no-gos: invariant lines and comparison gauge
+
+A candidate source selector for vanishing of the Hodge-mate coefficient would
+supply, at each divisor copy, a coefficient-faithful line preserved by the
+resolved shear, or a comparison identifying the resolved and zero-hidden
+landings.  Both shapes are classified unconditionally.  The resolved shear is
+unipotent, so a shear-invariant line that retains the boundary coefficient
+exists exactly at zero shear; and every polarization-preserving comparison
+transports one and the same strictly positive energy gap, so no choice of
+comparison can identify the two landings away from zero shear.  Neither
+structure can therefore produce the vanishing; each re-encodes it. -/
+
+/-- Unipotent rigidity of the resolved shear: a coefficient-faithful vector
+spans a shear-invariant line exactly at zero Hodge-mate shear.  No metric,
+positivity, or Hodge-rotation datum enters. -/
+theorem completedXiSameFiberResolvedShear_eigenvector_iff
+    (q : XiZeroCopy) (K : ℝ) (v : CompletedXiSameFiberHodgePlane)
+    (hv : v.1 ≠ 0) :
+    (∃ lam : ℂ, completedXiSameFiberResolvedShear q K v = lam • v) ↔
+      K = 0 := by
+  constructor
+  · rintro ⟨lam, hlam⟩
+    have hw : deningerXiHarmonicHodgeWeight q ≠ 0 := by
+      intro hzero
+      have hn := norm_deningerXiHarmonicHodgeWeight q
+      rw [hzero, norm_zero] at hn
+      norm_num at hn
+    have hfst : v.1 = lam * v.1 := by
+      have h := congrArg Prod.fst hlam
+      simp only [completedXiSameFiberResolvedShear, Prod.smul_fst,
+        smul_eq_mul] at h
+      exact h
+    have hlam1 : lam = 1 := by
+      have h1 : lam * v.1 = 1 * v.1 := by rw [← hfst, one_mul]
+      exact mul_right_cancel₀ hv h1
+    have hsnd :
+        v.2 - (K : ℂ) * deningerXiHarmonicHodgeWeight q * v.1 = v.2 := by
+      have h := congrArg Prod.snd hlam
+      simp only [completedXiSameFiberResolvedShear, Prod.smul_snd,
+        smul_eq_mul, hlam1, one_mul] at h
+      exact h
+    have hzero :
+        (K : ℂ) * deningerXiHarmonicHodgeWeight q * v.1 = 0 :=
+      sub_eq_self.mp hsnd
+    have hKC : (K : ℂ) = 0 := by
+      rcases mul_eq_zero.mp hzero with h | h
+      · rcases mul_eq_zero.mp h with h' | h'
+        · exact h'
+        · exact absurd h' hw
+      · exact absurd h hv
+    exact_mod_cast hKC
+  · intro hK
+    subst hK
+    refine ⟨1, ?_⟩
+    simp [completedXiSameFiberResolvedShear]
+
+/-- Existence of a shear-invariant coefficient-faithful line at the retained
+rational-adelic atom.  This is the transport-preservation-plus-faithfulness
+part of any candidate source selector, with no lift-identification clause. -/
+def CCMRationalAdelicPrimeXiInvariantFaithfulLine
+    (p : Nat.Primes) (rho : XiDivisorSupport) : Prop :=
+  ∃ v : CompletedXiSameFiberHodgePlane, v.1 ≠ 0 ∧
+    ∃ lam : ℂ,
+      completedXiSameFiberResolvedShear
+          (ccmRationalAdelicPrimeXiLeadingZeroCopy rho)
+          (ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho) v =
+        lam • v
+
+/-- The invariant-faithful-line interface is exactly vanishing of the
+Hodge-mate coefficient: the two selector clauses alone already carry the whole
+annihilation content, so the lift-identification clause is redundant. -/
+theorem ccmRationalAdelicPrimeXiInvariantFaithfulLine_iff_hodgeMateCoefficient_eq_zero
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    CCMRationalAdelicPrimeXiInvariantFaithfulLine p rho ↔
+      ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho = 0 := by
+  constructor
+  · rintro ⟨v, hv, hlam⟩
+    exact (completedXiSameFiberResolvedShear_eigenvector_iff
+      (ccmRationalAdelicPrimeXiLeadingZeroCopy rho)
+      (ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho) v hv).mp hlam
+  · intro hK
+    refine ⟨(1, 0), one_ne_zero, ?_⟩
+    exact (completedXiSameFiberResolvedShear_eigenvector_iff
+      (ccmRationalAdelicPrimeXiLeadingZeroCopy rho)
+      (ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho) (1, 0)
+      one_ne_zero).mpr hK
+
+/-- A shear-invariant coefficient-faithful line exists at the retained atom
+exactly at critical-line support. -/
+theorem ccmRationalAdelicPrimeXiInvariantFaithfulLine_iff_re_eq_half
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    CCMRationalAdelicPrimeXiInvariantFaithfulLine p rho ↔
+      (rho : ℂ).re = 1 / 2 :=
+  (ccmRationalAdelicPrimeXiInvariantFaithfulLine_iff_hodgeMateCoefficient_eq_zero
+    p rho).trans
+    (ccmRationalAdelicPrimeXiHodgeMateCoefficient_eq_zero_iff_re_eq_half p rho)
+
+/-- Energy-gap invariance: every polarization-preserving comparison, with no
+linearity or continuity assumption, transports the same resolved-over-physical
+energy excess `K^2 * normSq c`. -/
+theorem completedXiFixedCorona_comparison_energyGap
+    (q : XiZeroCopy) (K : ℝ) (c : ℂ)
+    (Phi : CompletedXiSameFiberHodgePlane → PrimeDepthBVWoldFixedCoronaPlane)
+    (hPhi : ∀ z u : CompletedXiSameFiberHodgePlane,
+      primeDepthBVWoldFixedCoronaPolarization (Phi z) (Phi u) =
+        completedXiSameFiberHodgePlanePolarization q z u) :
+    primeDepthBVWoldFixedCoronaPolarization
+        (Phi (completedXiResolvedCoefficientLift q K c))
+        (Phi (completedXiResolvedCoefficientLift q K c)) -
+      primeDepthBVWoldFixedCoronaPolarization (Phi (c, 0)) (Phi (c, 0)) =
+      K ^ 2 * Complex.normSq c := by
+  have hphys :
+      completedXiSameFiberHodgePlanePolarization q (c, 0) (c, 0) =
+        Complex.normSq c := by
+    rw [completedXiSameFiberHodgePlanePolarization,
+      completedXiSameFiberPolarization_self,
+      completedXiSameFiberPolarization_self]
+    simp
+  rw [hPhi, hPhi, completedXiResolvedCoefficientLift_fixedPolarization,
+    hphys, completedXiSameFiberPolarization_self]
+  ring
+
+/-- No polarization-preserving comparison identifies the resolved landing with
+the physical landing at nonzero shear on a nonzero retained coefficient: the
+energy gap is a gauge invariant of the polarization class. -/
+theorem completedXiFixedCorona_comparison_separates
+    (q : XiZeroCopy) (K : ℝ) (c : ℂ) (hK : K ≠ 0) (hc : c ≠ 0)
+    (Phi : CompletedXiSameFiberHodgePlane → PrimeDepthBVWoldFixedCoronaPlane)
+    (hPhi : ∀ z u : CompletedXiSameFiberHodgePlane,
+      primeDepthBVWoldFixedCoronaPolarization (Phi z) (Phi u) =
+        completedXiSameFiberHodgePlanePolarization q z u) :
+    Phi (completedXiResolvedCoefficientLift q K c) ≠ Phi (c, 0) := by
+  intro heq
+  have hgap := completedXiFixedCorona_comparison_energyGap q K c Phi hPhi
+  rw [heq, sub_self] at hgap
+  exact (mul_ne_zero (pow_ne_zero 2 hK)
+    ((Complex.normSq_pos.mpr hc).ne')) hgap.symm
+
+/-- Off critical-line support, the retained atom's resolved and physical
+landings stay separated under every polarization-preserving comparison, so
+re-choosing the comparison cannot produce the missing annihilation. -/
+theorem ccmRationalAdelicPrimeXi_offLine_no_comparison_identifies
+    (p : Nat.Primes) (rho : XiDivisorSupport)
+    (hoff : (rho : ℂ).re ≠ 1 / 2)
+    (Phi : CompletedXiSameFiberHodgePlane → PrimeDepthBVWoldFixedCoronaPlane)
+    (hPhi : ∀ z u : CompletedXiSameFiberHodgePlane,
+      primeDepthBVWoldFixedCoronaPolarization (Phi z) (Phi u) =
+        completedXiSameFiberHodgePlanePolarization
+          (ccmRationalAdelicPrimeXiLeadingZeroCopy rho) z u) :
+    Phi (completedXiResolvedCoefficientLift
+          (ccmRationalAdelicPrimeXiLeadingZeroCopy rho)
+          (ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho)
+          (iteratedDeriv (xiSupportMultiplicity rho) XiC
+            (xiSpectralPointSupport rho))) ≠
+      Phi (iteratedDeriv (xiSupportMultiplicity rho) XiC
+          (xiSpectralPointSupport rho), 0) :=
+  completedXiFixedCorona_comparison_separates
+    (ccmRationalAdelicPrimeXiLeadingZeroCopy rho)
+    (ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho)
+    (iteratedDeriv (xiSupportMultiplicity rho) XiC
+      (xiSpectralPointSupport rho))
+    (fun h => hoff
+      ((ccmRationalAdelicPrimeXiHodgeMateCoefficient_eq_zero_iff_re_eq_half
+        p rho).mp h))
+    (iteratedDeriv_XiC_ne_zero_at_supportMultiplicity rho)
+    Phi hPhi
+
+end
+
+end RHTower

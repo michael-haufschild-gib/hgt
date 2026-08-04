@@ -1004,12 +1004,133 @@ in the spectral direction is now built, in `RHTower/ProlateJointEigen.lean`:
   band class of a continuous function transports the inner product to the interval pairing and the band
   operator to the band transform.
 
-What remains to reach a *joint* eigenfunction — a band eigenfunction that also solves the prolate
-equation, which is what the WKB/Wronskian machinery can then be pointed at — is the finite-dimensional
-spectral step: the `lambda`-eigenspace of a compact operator is finite dimensional, the prolate action is
-symmetric on it (`prolateSLAction_band_symmetric`, whose boundary terms vanish because `1 - y²` does), and
-a symmetric operator on a finite-dimensional inner-product space has an eigenvector.  No simplicity
-hypothesis is needed for that route.
+The spectral step is now carried out, in `RHTower/ProlateJointEigenExistence.lean`, and it produces the
+joint eigenfunction with **no simplicity hypothesis**:
+
+- `finiteDimensional_of_isCompactOperator_smul` — Riesz, in the form the eigenspace needs: if
+  multiplication by a nonzero scalar is a compact operator then the space is finite dimensional.
+- `bandEigenCLM`, `bandEigenspace`, `mem_bandEigenspace_iff`, `completeSpace_bandEigenspace`,
+  **`finiteDimensional_bandEigenspace`** — the `lambda`-eigenspace is a closed (hence complete) subspace
+  on which the compact band operator acts as `lambda · id`, so it is finite dimensional.
+- `integrable_sincKernel_mul`, `eigenExtension_add`, `eigenExtension_smul`, `contDiff_prolateSLAction`,
+  `prolateSLAction_add`, `bandClass_add`, `bandClass_smul`, `bandClass_congr` — the linearity plumbing:
+  the smooth representative depends linearly on the eigenvector, the prolate action is linear on smooth
+  functions, and the band class is linear on continuous test functions.
+- `eqOn_of_bandClass_eq` — two continuous test functions with the same band class agree on `[-1,1]`
+  (vanishing band energy, then openness of the nonvanishing set inside the band and continuity).
+- **`prolateOnEigenspace`**, **`isSymmetric_prolateOnEigenspace`** — the prolate action *is* a symmetric
+  linear operator on the eigenspace; symmetry is `prolateSLAction_band_symmetric`, whose boundary terms
+  vanish because `1 - y²` does at the endpoints.
+- **`exists_joint_prolate_band_eigen`** — hence for every band eigenvalue `lambda ≠ 0` with a nonzero
+  eigenvector there are `Phi ≠ 0` smooth and `chi` with
+
+  ```text
+  ∀ x,  (B_c Phi)(x) = lambda Phi(x),        ∀ x ∈ [-1,1],  P_c Phi (x) = chi Phi (x).
+  ```
+
+  **The actual concentration operator's eigenfunctions solve the prolate differential equation.**
+
+The corpus's ODE layer therefore now applies to the real object: the conserved Wronskian and its endpoint
+collapse, the one-turning-point variation mechanism, and the Hermite rescaling identity all take
+`prolateSLAction c Phi = chi Phi` as their hypothesis.  That is the entry point for the extremal analysis
+the remaining rate needs, and equally for the Hermite-limit gate.
+
+The first quantitative endpoint estimate along that route is in `RHTower/ProlateEndpointLowerBound.lean`:
+
+- `prolateFlux`, `prolateFlux_one`, `hasDerivAt_prolateFlux`, **`prolateFlux_eq_neg_integral`** — the
+  Sturm–Liouville flux `(1-y²) psi'` vanishes at `y = 1` because the weight does, so integrating the
+  equation from `y` to the endpoint gives the exact representation
+
+  ```text
+  (1-y²) psi'(y) = -∫_y^1 (chi + c² t²) psi(t) dt.
+  ```
+
+- **`deriv_nonpos_of_turning`** — beyond the turning point (`chi + c² y² >= 0`) a nonnegative solution has
+  nonpositive flux, hence is *decreasing*: the singular endpoint imposes monotonicity with no boundary
+  condition.
+- **`endpoint_lower_bound`** — bounding the integrand by its value at the left endpoint gives the
+  differential inequality `(1+y) psi'(y) >= -(chi + c²) psi(y)`, whose integrating factor is the pure
+  power `(1+y)^(chi+c²)`.  Hence
+
+  ```text
+  psi(1) >= psi(y_0) · ((1+y_0)/2)^(chi + c²).
+  ```
+
+  **A positive prolate solution has an explicit lower bound at its singular endpoint.**
+
+This is the elementary form of the endpoint control the sharp asymptotic refines, and it is the mechanism
+a WKB estimate sharpens (same flux representation, same monotonicity, sharper comparison function).  It
+does not yet close the rate gate: the exponent `chi + c²` is larger than the true one by a factor of order
+`c` — the crude step is bounding `psi(t)` by `psi(y_0)` over the whole remaining interval instead of by its
+own exponential decay — so the leakage bound it produces through the exact endpoint ODE is
+`e^(-O(c²))` rather than `e^(-2c)`.  Sharpening that one comparison is the remaining analytic content.
+
+The machinery that sharpening runs on is now in place, and it is mathlib-missing on both counts.
+`HTGeometry/DifferentialInequalityComparison.lean`:
+
+- **`nonpos_of_hasDerivAt_le_mul`** — comparison for a linear differential inequality with *variable*
+  coefficient: `d(a) <= 0` and `d' <= K d` on `(a,b)` with `K` merely continuous on `[a,b]` force `d <= 0`
+  there.  The proof is the integrating factor `exp(-∫ K)`; mathlib has only the constant-coefficient
+  Grönwall inequality.
+- **`riccati_le_of_le_of_supersolution`** — hence the Riccati comparison: a subsolution of
+  `u' = u² + b u - q` starting below a supersolution stays below it, the difference satisfying the linear
+  inequality with coefficient `u₁ + u₂ + b`.
+
+`RHTower/ProlateRiccati.lean` instantiates this on the prolate equation:
+
+- `prolateLogDeriv`, **`hasDerivAt_prolateLogDeriv`** — the logarithmic derivative `v = -psi'/psi` of a
+  nonvanishing solution satisfies exactly
+
+  ```text
+  v' = v² + (2y/(1-y²)) v - (chi + c² y²)/(1-y²).
+  ```
+
+- **`le_endpoint_of_logDeriv_le`** — any upper bound `v <= V` on the logarithmic derivative converts into
+  the endpoint bound `psi(y_1) >= psi(y_0) exp(-∫_(y_0)^(y_1) V)`, by monotonicity of `psi · exp(∫ V)`.
+
+The next step turned out to need the *other* comparison direction, and that direction is sharp with no
+error term.  `DifferentialInequalityComparison.lean` gained the backward pair:
+
+- **`nonpos_of_hasDerivAt_ge_mul`** — if `d(b) <= 0` and `d' >= K d` then `d <= 0` on `[a,b]`: the same
+  integrating factor, now making `d exp(-∫ K)` increasing, so it is controlled by its *right*-endpoint value.
+- **`riccati_le_of_le_of_subsolution`** — hence a Riccati **sub**solution that dominates the solution at the
+  right endpoint dominates it on the whole interval, propagating the bound leftwards.
+
+`RHTower/ProlateWKBSubsolution.lean` then supplies the profile:
+
+- `prolateWKB`, `hasDerivAt_prolatePotential`, `hasDerivAt_prolateWKB` — the WKB profile
+  `V = sqrt((chi + c² y²)/(1-y²))` and its derivative.
+- **`prolateWKB_subsolution`** — since `V² = q` exactly, the Riccati defect of `V` collapses to `V' - b V`,
+  and that is nonpositive precisely where
+
+  ```text
+  c² (1 - 2y²) <= chi,
+  ```
+
+  i.e. on the outer part of the band.  **There the WKB profile is a Riccati subsolution** — the sharp
+  direction, with no error term.
+
+That combination is now assembled, in the same module:
+
+- `continuousOn_prolateWKB`, `continuousOn_prolateLogDeriv` — the two continuity inputs of the comparison.
+- **`prolateLogDeriv_le_prolateWKB`** — on the outer band the logarithmic derivative of a positive solution
+  is bounded by the WKB profile, given only that it is bounded by it at the right endpoint (the backward
+  comparison propagates it leftwards).
+- **`le_endpoint_prolateWKB`** — hence
+
+  ```text
+  Phi(a) · exp (-∫_a^b sqrt((chi + c² y²)/(1 - y²))) <= Phi(b)
+  ```
+
+  on the outer band: **the solution decays at most like the exponential of the exact WKB integral, with no
+  error term.**
+
+`∫ sqrt((chi + c² y²)/(1-y²))` is the true tunneling exponent, of size `c(1 + o(1))`.  What
+is still missing for the rate is the *inner* stretch: between the turning point `y_t = sqrt(-chi)/c` and the
+mid-band point `y ≈ 1/sqrt 2` the same profile is a supersolution rather than a subsolution and the
+comparison has no admissible starting value (at the turning point `V` vanishes while `v` does not), and the
+inner allowed region contributes at the same order `c`.  That is exactly the turning-point (Airy) matching,
+and it is now the single remaining analytic ingredient.
 
 ## Lean gates
 
@@ -1070,10 +1191,24 @@ hypothesis is needed for that route.
   Paley–Wiener representation) and the prolate Sturm–Liouville action maps the pointwise eigenspace of the
   band transform into itself, with the `L²` dictionary for the spectral step
   (`ProlateJointEigen.lean`, `bandTransform_prolateSLAction`, `contDiff_eigenExtension`)
-- [ ] Lean: the **joint eigenfunction** — finite-dimensionality of the eigenspace plus symmetry of the
-  prolate action on it (both ingredients present) gives a band eigenfunction solving the prolate equation,
-  with no simplicity hypothesis; then the ODE layer (Wronskian, turning point, Hermite rescaling) applies
-  to the actual operator
+- [x] Lean: the **joint eigenfunction** — the band eigenspace is finite dimensional (Riesz, since the
+  compact operator acts on it as `lambda · id`) and the prolate action is a symmetric operator on it, so
+  every band eigenvalue carries a smooth nonzero eigenfunction that also satisfies
+  `P_c Phi = chi Phi` on `[-1,1]`, with no simplicity hypothesis
+  (`ProlateJointEigenExistence.lean`, `exists_joint_prolate_band_eigen`)
+- [x] Lean: the **flux representation and the endpoint lower bound for the prolate equation** — the flux
+  vanishes at the singular endpoint, a positive solution is decreasing beyond the turning point, and
+  `psi(1) >= psi(y_0)((1+y_0)/2)^(chi+c²)` by the pure-power integrating factor
+  (`ProlateEndpointLowerBound.lean`, `endpoint_lower_bound`)
+- [x] Lean: the **Riccati transfer machinery** — variable-coefficient differential-inequality comparison
+  and its Riccati corollary (mathlib has only constant-coefficient Grönwall), the prolate Riccati equation
+  for `v = -psi'/psi`, and the conversion of any bound `v <= V` into the endpoint bound
+  `psi(y_1) >= psi(y_0) exp(-∫ V)` (`DifferentialInequalityComparison.lean`, `ProlateRiccati.lean`)
+- [x] Lean: the **sharp outer-band WKB bound** — backward differential-inequality comparison, its Riccati
+  subsolution form, the fact that the WKB profile `sqrt((chi+c²y²)/(1-y²))` is a Riccati subsolution exactly
+  where `c²(1-2y²) <= chi`, and the assembled decay bound
+  `Phi(a) exp(-∫ sqrt((chi+c²y²)/(1-y²))) <= Phi(b)` with no error term
+  (`DifferentialInequalityComparison.lean`, `ProlateWKBSubsolution.lean`, `le_endpoint_prolateWKB`)
 - [ ] Lean: the **rate** of the lower leakage envelope, now equivalent to a pure concentration
   inequality for entire functions of exponential type `c` — unit mass on `[-1, 1]` forces mass at least
   `c_0 c^(1/2) e^(-2c)` outside — and antitonicity of the logarithmic derivative.  The polynomial
