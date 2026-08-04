@@ -1,0 +1,992 @@
+\documentclass[11pt,a4paper]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[margin=2.7cm]{geometry}
+\usepackage{xcolor}
+\definecolor{linkcol}{rgb}{0.10,0.20,0.50}
+\usepackage[colorlinks=true,linkcolor=linkcol,citecolor=linkcol,urlcolor=linkcol]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\RR}{\mathbb R}
+\newcommand{\QQ}{\mathbb Q}
+\newcommand{\CC}{\mathbb C}
+\newcommand{\NN}{\mathbb N}
+\newcommand{\one}{\mathbf 1}
+\newcommand{\Irr}{\operatorname{Irr}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\indm}{\operatorname{ind}_{-}}
+\newcommand{\corank}{\operatorname{corank}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\Span}{\operatorname{span}}
+\newcommand{\Sh}{\operatorname{Sh}}
+\newcommand{\Vect}{\operatorname{Vect}}
+\newcommand{\Hess}{\operatorname{Hess}}
+\newcommand{\Def}{\operatorname{Def}}
+\newcommand{\Tcal}{\mathcal T}
+\newcommand{\Pcal}{\mathcal P}
+\newcommand{\Mcal}{\mathcal M}
+\newcommand{\Ecal}{\mathcal E}
+
+\begin{document}
+
+\title[The Stokes--microlocal Witt law]{The polarized Stokes--microlocal Witt law}
+\author{M.~Haufschild}
+\address{Independent researcher}
+\email{haufschildmichael@gmail.com}
+\date{4 August 2026}
+
+\subjclass[2020]{Primary 34M40, 32S60; Secondary 14D24, 15A18, 18F20, 16G20}
+\keywords{Stokes structure, irregular Riemann--Hilbert correspondence, microsupport,
+vanishing cycle, characteristic cycle, Rees construction, wild character variety, Witt index,
+Puiseux contact, quasi-Hamiltonian reduction}
+
+\begin{abstract}
+For a finite Galois-stable Puiseux spectrum, highest coefficient difference determines mixed Hom
+irregularity.  We prove that its threshold partitions form a canonical dendrogram and obtain an
+exact coarea decomposition of the full polarized Stokes index.  Every threshold term is a positive
+square; physical rank is the sole potentially negative channel.
+
+We construct the finite cellular Stokes category on the boundary circle.  Microlocalization is a
+quotient functor, nearby-to-vanishing is an exact quotient, and the cellular characteristic cycle
+of a degree-$k$ exponential Hom germ has $2k$ oriented rays of unit multiplicity, exactly $k$ in
+the ordered decay orientation.  Galois-normalized directed microstalk mass equals mixed Hom
+irregularity.  Thus the coarea decomposition is also a categorical microlocal index formula.
+
+After physical-rank fusion over an arbitrary marked curve, all local channels remain positive and
+topology changes only one common-rank square.  The global form has Witt index at most one for every
+genus, puncture count, ramification pattern, and nonnegative multi-Rees specialization.  Capacity
+completion gives the sharp finite/affine/Lorentz trichotomy.  Corona reduction is an exact positive
+Schur complement; its residual is the quotient in an exact boundary--total--relative-vanishing
+sequence, and successive eliminations are order-independent.  An explicit three-term deformation
+complex derives the smooth-reduction dimension and Euler formulas by rank--nullity.  These results
+give a mixed, polarized refinement of scalar irregular rigidity formulae.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Irregular geometry combines two kinds of gluing.  Locally, a ramified exponential spectrum is
+split into branches on a finite cover and reglued by formal monodromy.  Globally, local Stokes
+spaces are fused after their physical ranks have been identified.  Both operations obscure a
+simple fact proved here: all local deformation channels form a positive coarea energy, while every
+possible negative contribution factors through one scalar, total physical rank.
+
+The scalar ancestry is important.  Hiroe proves, under multiplicity-free, regularity, and
+spectral-curve hypotheses, that an irregular rigidity index is the Euler characteristic of a
+normalized spectral curve \cite{Hiroe2019}; related local formulas involve Milnor numbers and
+intersection multiplicities \cite{Hiroe2017}.  We neither rename nor reprove that theorem.  Our
+invariant is the whole polarization on independent orbit charges.  Its coefficients are all mixed
+$\Irr\Hom$ terms, and its conclusion is an inertia theorem rather than one scalar evaluation.
+
+Let $w^N=z$ be a common local cover and let
+\[
+                     q_a(w)=\sum_{k=1}^{K}c_{a,k}w^{-k}
+\]
+run through a finite $\mu_N$-stable set $A$ of distinct exponential factors.  For $a\ne b$, let
+$k(a,b)$ be the largest exponent whose coefficients differ and put $h(a,b)=k(a,b)/N$; set
+$h(a,a)=0$.  The elementary inequality
+\[
+                     h(a,b)\leq\max\{h(a,c),h(c,b)\}
+\]
+forces the threshold partitions of $A$ to be nested.  If $H$ lies above all contacts, the resulting
+finite dendrogram has blocks $A_e$ and positive persistence lengths $\ell_e$.  If
+$I=A/\mu_N$, if $x_i$ is an orbit charge, and if $y_a=x_{[a]}$, our local theorem is
+\begin{equation}\label{eq:introduction-law}
+ \boxed{
+ Q_A(x)=\sum_{i\in I}x_i^2+
+        \sum_e\ell_e\left(\sum_{a\in A_e}y_a\right)^2
+        -(H-1)\left(\sum_{a\in A}y_a\right)^2.}              \tag{W}
+\end{equation}
+No tree, cut family, or contact matrix occurs among the hypotheses.  Each is reconstructed from
+coefficients.  Branch blocks need not be unions of Galois orbits; the vector attached to $A_e$ is
+therefore the exact incidence-count vector
+\[
+                       u_{e,i}=|A_e\cap i|,
+\]
+not an assumed orbit indicator.  This distinction is essential for ramified data.
+
+Formula \eqref{eq:introduction-law} has four further realizations.
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item The linear form $\nu_e(x)=\sum_i u_{e,i}x_i$ is the principal conormal of the cluster
+hyperplane $\nu_e=0$.
+\item The associated-graded coordinate is $\sqrt{\ell_e}\,\nu_e$.  Independent nonnegative Rees
+parameters scale these coordinates without changing the rank channel.
+\item A degree-$k$ exponential Hom germ has directed microstalk mass $k$.  After orbit summation
+and normalization by $N$, these masses are exactly the coefficients
+$s_{ij}=\Irr\Hom(q_i,q_j)$ in $Q_A$.
+\item Eliminating a positive corona block is exact Schur complementation.  The discarded square is
+the positive norm of a relative-vanishing quotient coordinate.
+\end{enumerate}
+
+For a genus-$g$ curve with a nonempty set of $m$ marked points, identify all local physical ranks
+and write their common value as $M$.  The fused form is
+\begin{equation}\label{eq:introduction-fusion}
+                   Q_{X,D}=\sum_{a=1}^{m}Q_{A_a}+2(1-g-m)M^2.
+\end{equation}
+Substituting \eqref{eq:introduction-law} leaves a positive-definite sum plus one multiple of
+$M^2$.  Hence
+\begin{equation}\label{eq:introduction-index}
+             Q_{X,D}>0\ \hbox{on }\ker M\setminus\{0\},\qquad
+             \indm(Q_{X,D})+\dim\ker(Q_{X,D})\leq1.          \tag{G}
+\end{equation}
+This is the global Stokes--microlocal Witt law.  Capacity completion replaces the displayed
+rank coefficient by the intrinsic constrained minimum at $M=1$ and yields the exact
+finite/affine/Lorentz trichotomy.  Every handle changes only this coefficient, by $-2$.
+
+The paper works entirely with finite Puiseux, cellular Stokes, and tangent-reduction objects.  The
+analytic irregular Riemann--Hilbert correspondence supplies the surrounding equivalence of
+languages \cite{SabbahStokes,DKRH}; it is not a hidden proof input.  Section~\ref{sec:transport}
+proves the precise transport statement needed here: any exact realization equivalence carrying
+the two arc-to-wall maps to the cellular germ carries the quotient microstalk and all numerical
+terms in (W).  Thus no analytic comparison is inferred from equality of numbers.
+
+Sections~\ref{sec:coefficients}--\ref{sec:global} prove the coefficient and global laws.
+Sections~\ref{sec:cellular}--\ref{sec:transport} construct the categorical microlocal side.
+Sections~\ref{sec:rees}--\ref{sec:corona} treat Rees, capacity, and corona reduction.
+Section~\ref{sec:deformation} derives the deformation dimension.  The final sections give marking
+legs, spectral consequences, novelty boundaries, and falsifiers.
+
+\section{Finite Puiseux spectra and their canonical cuts}\label{sec:coefficients}
+
+\begin{definition}[Equivariant finite Puiseux spectrum]\label{def:spectrum}
+Fix $N,K\geq1$ and a primitive $N$th root $\zeta$.  An equivariant finite Puiseux spectrum is a
+finite set $A$, a permutation $\sigma:A\to A$ with $\sigma^N=1$, and coefficients
+$c_{a,k}\in\CC$ such that
+\[
+                  c_{\sigma a,k}=\zeta^{-k}c_{a,k}
+                  \qquad(a\in A,\ 1\leq k\leq K).
+\]
+We require the coefficient vectors $(c_{a,1},\ldots,c_{a,K})$ to be pairwise distinct.  The
+associated exponential factor is $q_a(w)=\sum_kc_{a,k}w^{-k}$.
+\end{definition}
+
+For $a\ne b$, define
+\[
+ k(a,b)=\max\{k:c_{a,k}\ne c_{b,k}\},\qquad h(a,b)=k(a,b)/N,
+\]
+and put $k(a,a)=h(a,a)=0$.
+
+\begin{lemma}[Highest-difference three-point law]\label{lem:three-point}
+For all $a,b,c\in A$,
+\begin{equation}\label{eq:three-point}
+                         k(a,b)\leq\max\{k(a,c),k(c,b)\}.
+\end{equation}
+Consequently the largest of $k(a,b),k(a,c),k(b,c)$ occurs at least twice.
+\end{lemma}
+
+\begin{proof}
+Above the maximum on the right, coefficients of $a$ and $c$ agree and coefficients of $c$ and $b$
+agree.  Hence coefficients of $a$ and $b$ agree.  This proves \eqref{eq:three-point}.  Applying the
+same inequality after permuting $a,b,c$ excludes a unique largest value.
+\end{proof}
+
+\section{Capacity completion and the intrinsic phase}\label{sec:capacity}
+
+Write the positive local form as $P_A(x)=x^TPx$ and physical rank as $M(x)=r^Tx$, where
+$r_i=|i|$.  Thus
+\[
+                         Q_A(x)=x^TPx-\lambda(r^Tx)^2,
+                         \qquad\lambda=H-1,
+\]
+and $P$ is positive definite.  Define
+\begin{equation}\label{eq:capacity-definitions}
+                  c=r^TP^{-1}r>0,qquad \Omega=c^{-1}-\lambda.
+\end{equation}
+
+\begin{theorem}[Capacity normal form]\label{thm:capacity-normal}
+For $m=r^Tx$, put
+\begin{equation}\label{eq:centered-vector}
+                       z=x-\frac{m}{c}P^{-1}r.
+\end{equation}
+Then $r^Tz=0$, this decomposition is unique, and
+\begin{equation}\label{eq:capacity-normal}
+                       \boxed{Q_A(x)=z^TPz+\Omega m^2.}       \tag{K}
+\end{equation}
+Consequently:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item if $\Omega>0$, then $Q_A$ is positive definite;
+\item if $\Omega=0$, then $Q_A$ is positive semidefinite with kernel
+$\RR P^{-1}r$;
+\item if $\Omega<0$, then $Q_A$ is nonsingular with exactly one negative eigenvalue.
+\end{enumerate}
+Moreover
+\begin{equation}\label{eq:determinant-wall}
+                         \det Q_A=\det(P)c\Omega.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Since $r^TP^{-1}r=c$, equation \eqref{eq:centered-vector} gives $r^Tz=0$.  Applying $r^T$ proves
+uniqueness.  Orthogonality $z^TP(P^{-1}r)=z^Tr=0$ gives
+\[
+ x^TPx-\lambda m^2=z^TPz+(c^{-1}-\lambda)m^2.
+\]
+This proves \eqref{eq:capacity-normal}.  Its orthogonal positive-space-plus-one-line decomposition
+gives the trichotomy.  The matrix determinant lemma gives
+\[
+ \det(P-\lambda rr^T)=\det(P)(1-\lambda c)=\det(P)c(c^{-1}-\lambda).
+\]
+\end{proof}
+
+\begin{proposition}[Root-height gauge invariance]\label{prop:root-gauge}
+Increasing $H$ by $t>0$ adds the root block $A$ with persistence $t$.  Hence
+\[
+ P_t=P+trr^T,\qquad \lambda_t=\lambda+t,\qquad
+ c_t=\frac{c}{1+tc}.
+\]
+In particular $c_t^{-1}-\lambda_t=\Omega$ and
+$\det(P_t)c_t=\det(P)c$.
+\end{proposition}
+
+\begin{proof}
+The charge of the full block is $M=r^Tx$, giving the first two formulas.  Sherman--Morrison gives
+the formula for $c_t$; the two invariants follow immediately, using the determinant lemma for the
+second.
+\end{proof}
+
+For every puncture let $c_a,\Omega_a$ be its local capacity data and put
+$\delta_a=2-\Omega_a$.
+
+\begin{theorem}[Euler--capacity refinement]\label{thm:euler-capacity}
+Every $x=(x_a)\in V_{X,D}$ has a unique decomposition
+$x_a=z_a+(M/c_a)P_a^{-1}r_a$, with $r_a^Tz_a=0$, and
+\begin{equation}\label{eq:euler-capacity}
+ \boxed{
+ Q_{X,D}(x)=\sum_a z_a^TP_az_a+\Omega_{X,D}M^2,
+ \qquad
+ \Omega_{X,D}=\chi(X)+\sum_a(\Omega_a-2)
+              =\chi(X)-\sum_a\delta_a.}                    \tag{EC}
+\end{equation}
+The scalar $\Omega_{X,D}$ is the constrained minimum of $Q_{X,D}$ at $M=1$.  Its sign gives the
+positive-definite, corank-one affine, and Lorentz phases of the global form.
+\end{theorem}
+
+\begin{proof}
+Apply Theorem~\ref{thm:capacity-normal} at every puncture and insert the result into
+\eqref{eq:fused-form}.  The coefficient of $M^2$ is
+\[
+ \sum_a\Omega_a+2(1-g-m)=2-2g+\sum_a(\Omega_a-2).
+\]
+This is \eqref{eq:euler-capacity}.  The positive sum is minimized uniquely at $z_a=0$ for all
+$a$, proving the variational claim and trichotomy.
+\end{proof}
+
+\section{Corona elimination as relative vanishing}\label{sec:corona}
+
+Let $X,Y$ be finite-dimensional real vector spaces with coordinates, and let
+\[
+             \mathcal Q(x,y)=
+             \begin{pmatrix}x\\y\end{pmatrix}^{T}
+             \begin{pmatrix}A&B\\B^T&D\end{pmatrix}
+             \begin{pmatrix}x\\y\end{pmatrix},
+             \qquad D>0.
+\]
+Define the harmonic extension and relative-vanishing maps
+\begin{equation}\label{eq:corona-maps}
+ h(x)=(x,-D^{-1}B^Tx),\qquad
+ v(x,y)=y+D^{-1}B^Tx.
+\end{equation}
+
+\begin{theorem}[Exact corona--vanishing law]\label{thm:corona}
+There is a short exact sequence
+\begin{equation}\label{eq:corona-exact}
+              0\longrightarrow X\xrightarrow{h}X\oplus Y
+              \xrightarrow{v}Y\longrightarrow0.             \tag{V}
+\end{equation}
+Moreover
+\begin{equation}\label{eq:schur-completion}
+ \boxed{
+ \mathcal Q(x,y)=v(x,y)^TDv(x,y)+
+ x^T(A-BD^{-1}B^T)x.}                                      \tag{S}
+\end{equation}
+Thus the Schur complement is the unique exact effective boundary energy; equality with it occurs
+exactly on the harmonic graph $\im h$.  The quotient
+$(X\oplus Y)/\im h\cong Y$ is represented by $v$, and the energy lost under elimination is its
+positive $D$-norm.
+\end{theorem}
+
+\begin{proof}
+The map $h$ is injective and $v$ is surjective since $v(0,y)=y$.  Also $v\circ h=0$.  Conversely,
+$v(x,y)=0$ implies $y=-D^{-1}B^Tx$, so $(x,y)=h(x)$.  This proves exactness.
+Expanding the first term on the right of \eqref{eq:schur-completion} cancels the two Schur terms and
+recovers $x^TAx+2x^TBy+y^TDy$.  Positivity of $D$ proves the minimization and equality statements.
+\end{proof}
+
+\begin{corollary}[Order independence]\label{cor:corona-order}
+Successive eliminations of positive hidden corona blocks are independent of elimination order.
+\end{corollary}
+
+\begin{proof}
+Each elimination is exact minimization over one hidden block.  Iterated minima over a finite
+product do not depend on the order.  Equivalently, an exact effective energy is unique: if two
+functions are attained minima and lower bounds for the same full energy, each bounds the other.
+\end{proof}
+
+Theorem~\ref{thm:corona} resolves the terminology precisely.  A corona residual is not merely
+called a vanishing channel because its square is positive: it is the coordinate of the explicit
+quotient in \eqref{eq:corona-exact}.  In a cellular realization, Theorem~\ref{thm:transport}
+carries this quotient to the corresponding relative vanishing object.
+
+\section{The Stokes deformation complex}\label{sec:deformation}
+
+We derive the dimension identity from tangent data.  Fix $p$ punctures and nonnegative integers
+\[
+ g,\quad G=\dim\mathfrak g,\quad z=\dim Z(\mathfrak g),\quad
+ h_a,\ s_a,\ k_a\quad(1\leq a\leq p),
+\]
+where $h_a$ is formal-centralizer dimension, $s_a$ is directed Stokes-root dimension, and $k_a$
+is prescribed conjugacy-class dimension.  Set
+\begin{align}\label{eq:ambient-reduction-counts}
+ A_1&=2gG+\sum_a(G+h_a+s_a+k_a),\\
+ R&=G-z+\sum_ah_a.\notag
+\end{align}
+
+At a smooth stable reduction point, let
+\[
+ d_{\mathrm{act}}:\CC^R\longrightarrow\CC^{A_1},\qquad
+ d_\mu:\CC^{A_1}\longrightarrow\CC^R
+\]
+be the effective gauge derivative and moment derivative.  Smooth stability means
+$d_{\mathrm{act}}$ is injective, $d_\mu$ is surjective, and moment invariance gives
+$d_\mu d_{\mathrm{act}}=0$.
+
+\begin{theorem}[Source-derived tangent dimension]\label{thm:tangent-dimension}
+The reduced tangent space
+\[
+                         T=\ker d_\mu/\im d_{\mathrm{act}}
+\]
+has dimension
+\begin{equation}\label{eq:tangent-dimension}
+ \boxed{
+ \dim T=2z+(2g-2+p)G+\sum_a(s_a+k_a-h_a).}                  \tag{D}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Surjectivity gives $\dim\ker d_\mu=A_1-R$; injectivity gives
+$\dim\im d_{\mathrm{act}}=R$.  Hence $\dim T=A_1-2R$.  Substitute
+\eqref{eq:ambient-reduction-counts} and collect terms.
+\end{proof}
+
+Add a central summand in degrees zero and two and form
+\begin{equation}\label{eq:deformation-complex}
+ \CC^z\oplus\CC^R\xrightarrow{d_0}\CC^{A_1}
+ \xrightarrow{d_1}\CC^R\oplus\CC^z,
+ \qquad
+ d_0(c,u)=d_{\mathrm{act}}u,\quad d_1(v)=(d_\mu v,0).
+\end{equation}
+
+\begin{theorem}[Self-dual Euler count]\label{thm:deformation-euler}
+Sequence \eqref{eq:deformation-complex} is a complex and
+\[
+ \dim H^0=z,\qquad H^1\cong T,\qquad \dim H^2=z.
+\]
+Therefore
+\begin{equation}\label{eq:deformation-euler}
+ \boxed{
+ \chi(\Def_{\mathrm{St}})=(2-2g-p)G+\sum_a(h_a-s_a-k_a).}    \tag{E}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The identity $d_1d_0=0$ is $d_\mu d_{\mathrm{act}}=0$.  Injectivity of
+$d_{\mathrm{act}}$ leaves exactly the central $\CC^z$ in $H^0$.  The degree-one cohomology is the
+displayed quotient $T$.  Surjectivity of $d_\mu$ leaves exactly the final central $\CC^z$ in
+$H^2$.  Alternating dimensions and Theorem~\ref{thm:tangent-dimension} give
+\eqref{eq:deformation-euler}.
+\end{proof}
+
+By Theorem~\ref{thm:microlocal-index}, the Stokes-root number $s_a$ is computed by an integer
+directed microstalk sum.  Thus equations (M), (D), and (E) form a closed chain from coefficient
+differences to vanishing quotients to tangent dimension; no separately quoted dimension polynomial
+is used in the deduction.
+
+\section{Type-$A$ marking legs}\label{sec:legs}
+
+Attach a path of length $l_i\geq0$ to orbit vertex $i$.  Put
+$y_{i,0}=x_i$, $y_{i,l_i+1}=0$, and
+$d_{i,k}=y_{i,k}-y_{i,k+1}$ for $0\leq k\leq l_i$.  Then
+$\sum_kd_{i,k}=x_i$.
+
+\begin{lemma}[Path completion]\label{lem:path-completion}
+If $d_0+\cdots+d_l=x$, then
+\begin{equation}\label{eq:path-completion}
+ \sum_{k=0}^{l}d_k^2=
+ \sum_{k=0}^{l}\left(d_k-\frac{x}{l+1}\right)^2+\frac{x^2}{l+1}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Expand and use $\sum_kd_k=x$.
+\end{proof}
+
+\begin{theorem}[Leg-stable Witt law]\label{thm:legs}
+Replacing every terminal square $x_i^2$ by its full type-$A$ path energy gives
+\begin{align}\label{eq:leg-law}
+ \widehat Q_A
+ &=\sum_i\sum_{k=0}^{l_i}\left(d_{i,k}-\frac{x_i}{l_i+1}\right)^2
+   +\sum_i\frac{x_i^2}{l_i+1}
+   +\sum_e\ell_e\nu_e(x)^2-(H-1)M(x)^2.
+\end{align}
+Hence arbitrary finite marking legs do not create a second negative or null direction.
+\end{theorem}
+
+\begin{proof}
+Apply Lemma~\ref{lem:path-completion} independently to every leg.  The first term is a positive
+fluctuation complement.  The remaining positive matrix has diagonal
+$\operatorname{diag}((l_i+1)^{-1})>0$ plus the cut Gram matrix.  It is therefore positive definite
+and is perturbed by the same one rank square.  The proof of Theorem~\ref{thm:global-witt} applies.
+\end{proof}
+
+\section{Spectral consequence and sharpness}\label{sec:spectral}
+
+Suppose an honest finite Stokes graph has symmetric adjacency matrix $B$ and its Cartan
+polarization $C=2I-B$ is one of the forms covered by Theorem~\ref{thm:global-witt}, including its
+type-$A$ legs.  Let
+$\lambda_1(B)\geq\cdots\geq\lambda_n(B)$.
+
+\begin{theorem}[Second-eigenvalue obstruction]\label{thm:lambda-two}
+If $n\geq2$, then
+\begin{equation}\label{eq:lambda-two}
+                              \lambda_2(B)\leq2.
+\end{equation}
+If $\lambda_1(B)=2$, that eigenvalue is simple.  If $\lambda_1(B)>2$, exactly one adjacency
+eigenvalue exceeds $2$ and none equals $2$.
+\end{theorem}
+
+\begin{proof}
+The eigenvalues of $C$ are $2-\lambda_i(B)$.  Apply
+\eqref{eq:global-inertia}.
+\end{proof}
+
+\begin{example}[Sharp Lorentz phase]\label{ex:triangle}
+The symmetric matrix
+\[
+ B=\begin{pmatrix}0&6&4\\6&0&3\\4&3&0\end{pmatrix},\qquad
+ C=2I-B,
+\]
+has $\one^TC\one=-20$, $\det C=-258$, and $\operatorname{tr}C=6$.  Its inertia is therefore
+$(2,1,0)$.  The universal statement cannot be strengthened to positivity; one negative direction
+is sharp.
+\end{example}
+
+\section{Novelty boundary and falsifiers}\label{sec:novelty}
+
+Several ingredients have strong antecedents.  Finite Stokes filtrations and their categorical
+forms are classical \cite{SabbahStokes}; irregular Riemann--Hilbert theory supplies analytic
+realizations \cite{DKRH}; ultrametric matrices admit tree descriptions and inverse
+$M$-matrix theory \cite{Martinez1994,McDonald1995,Nabben1995}; fission and wild character spaces
+are developed in \cite{Boalch2014}; and Hiroe's theorem gives a scalar spectral-curve Euler
+identity \cite{Hiroe2019}.
+
+The new claim is their mixed dependency-closed polarization:
+\begin{equation*}
+ \text{Puiseux coefficients}
+ \Longrightarrow \text{canonical threshold cuts}
+ \Longrightarrow \text{quotient microstalk masses}
+ \Longrightarrow \text{mixed Hom index}
+ \Longrightarrow \text{positive coarea plus one rank line}.
+\end{equation*}
+Its global content is not present in a scalar rigidity formula: every puncture and every handle
+must share the same single rank port, forcing the Witt bound in arbitrary genus.  The global
+multi-Rees theorem and exact corona--relative-vanishing sequence identify how all collateral
+constructions preserve that port.
+
+Any of the following would falsify the theorem as stated.
+\begin{enumerate}[label=(\arabic*),leftmargin=2.2em]
+\item an equivariant coefficient family violating Lemma~\ref{lem:three-point};
+\item failure of \eqref{eq:coarea} for its finite threshold partitions;
+\item a directed exponential germ whose quotient microstalk mass differs from its degree;
+\item a nonzero compatible rank-zero charge of nonpositive fused energy;
+\item a nonnegative Rees specialization with two independent negative directions;
+\item a positive corona block for which \eqref{eq:schur-completion} or
+\eqref{eq:corona-exact} fails.
+\end{enumerate}
+Each item is a direct finite test.  Conversely, the theorem is not an analytic existence criterion:
+a quadratic form satisfying the Witt law need not arise from a meromorphic connection.
+
+\section{Conclusion}
+
+Universal law is the factorization of the full mixed Stokes index through a positive microlocal
+coarea space and one physical-rank line.  Principal conormals, cellular characteristic-cycle
+coefficients, vanishing quotients, Rees graded channels, corona residuals, marking legs, and local
+terms in the deformation complex are positive coordinates of that same space.  Fusion and topology
+cannot create another defect because they see local data only through common physical rank.
+
+This explains, in one statement, local Lorentz bounds, affine simplicity, capacity walls, global
+handle monotonicity, Rees stability, Schur order independence, and the adjacency obstruction
+$\lambda_2\leq2$.  More importantly, it replaces an interface between coefficient contacts and
+microlocal multiplicities by an exact categorical quotient calculation.
+
+\begin{thebibliography}{99}
+
+\bibitem{BezrukavnikovKapranov}
+R.~Bezrukavnikov and M.~Kapranov,
+\emph{Microlocal sheaves and quiver varieties},
+Ann. Fac. Sci. Toulouse Math. \textbf{25} (2016), 473--516.
+
+\bibitem{Boalch2014}
+P.~Boalch,
+\emph{Geometry and braiding of Stokes data; fission and wild character varieties},
+Ann. of Math. (2) \textbf{179} (2014), 301--365.
+
+\bibitem{DKRH}
+A.~D'Agnolo and M.~Kashiwara,
+\emph{Riemann--Hilbert correspondence for holonomic $\mathcal D$-modules},
+Publ. Math. Inst. Hautes Etudes Sci. \textbf{123} (2016), 69--197.
+
+\bibitem{DKVanishing}
+A.~D'Agnolo and M.~Kashiwara,
+\emph{Enhanced nearby and vanishing cycles in dimension one and Fourier transform},
+Publ. Res. Inst. Math. Sci. \textbf{59} (2023), 543--570.
+
+\bibitem{Hiroe2017}
+K.~Hiroe,
+\emph{Ramified irregular singularities of meromorphic connections and plane curve singularities},
+Josai Math. Monogr. \textbf{10} (2017), 161--192.
+
+\bibitem{Hiroe2019}
+K.~Hiroe,
+\emph{Index of rigidity of differential equations and Euler characteristic of their spectral
+curves}, arXiv:1907.12846.
+
+\bibitem{Martinez1994}
+S.~Mart\'{i}nez, G.~Michon and J.~San Mart\'{i}n,
+\emph{Inverse of strictly ultrametric matrices are of Stieltjes type},
+SIAM J. Matrix Anal. Appl. \textbf{15} (1994), 98--106.
+
+\bibitem{McDonald1995}
+J.~J.~McDonald, M.~Neumann, H.~Schneider and M.~J.~Tsatsomeros,
+\emph{Inverse $M$-matrix inequalities and generalized ultrametric matrices},
+Linear Algebra Appl. \textbf{220} (1995), 321--341.
+
+\bibitem{Nabben1995}
+R.~Nabben and R.~S.~Varga,
+\emph{Generalized ultrametric matrices---a class of inverse $M$-matrices},
+Linear Algebra Appl. \textbf{220} (1995), 365--390.
+
+\bibitem{SabbahStokes}
+C.~Sabbah,
+\emph{Introduction to Stokes Structures},
+Lecture Notes in Mathematics 2060, Springer, 2013.
+
+\end{thebibliography}
+
+\end{document}
+
+\section{Cellular Stokes categories, microsupport, and vanishing cycles}\label{sec:cellular}
+
+Let $\mathsf C$ be the walking cospan with objects $L,W,R$ and nonidentity arrows
+$L\to W\leftarrow R$.  Put
+\[
+                         \Sh_{\mathrm{germ}}=\operatorname{Fun}(\mathsf C,\Vect_{\QQ}).
+\]
+It is an abelian category.  For $S=L$ or $R$, let $\rho_S(F):F(S)\to F(W)$ be the corresponding
+incidence map and define
+\begin{equation}\label{eq:microstalk-functor}
+                         \mu_S(F)=F(W)/\im\rho_S(F).
+\end{equation}
+
+\begin{proposition}[Microlocal quotient functor]\label{prop:microfunctor}
+Equation \eqref{eq:microstalk-functor} defines a functor
+$\mu_S:\Sh_{\mathrm{germ}}\to\Vect_{\QQ}$.  For every germ $F$,
+\begin{equation}\label{eq:nearby-vanishing-exact}
+       F(S)\xrightarrow{\rho_S(F)}F(W)\longrightarrow\mu_S(F)\longrightarrow0
+\end{equation}
+is exact.
+\end{proposition}
+
+\begin{proof}
+A morphism $\alpha:F\to G$ is a natural transformation.  Naturality of the square at $S\to W$
+gives $\alpha_W(\im\rho_S(F))\subseteq\im\rho_S(G)$, so $\alpha_W$ induces a unique map on
+quotients.  Identity and composition descend, proving functoriality.  Exactness and surjectivity
+of the last map are the defining properties of a quotient vector space.
+\end{proof}
+
+For a finite-dimensional vector space $V$ and $\varepsilon\in\{0,1\}$, define the exponential
+germ $E(V,\varepsilon)$ by
+\[
+ E(W)=V,\qquad (E(L),E(R))=
+ \begin{cases}(V,0),&\varepsilon=1,\\(0,V),&\varepsilon=0,\end{cases}
+\]
+with the evident identity and zero incidence maps.
+
+\begin{corollary}[One oriented vanishing cycle]\label{cor:one-oriented}
+If $V\ne0$, exactly one of $\mu_L(E(V,\varepsilon))$ and
+$\mu_R(E(V,\varepsilon))$ is zero; the other is canonically $V$.
+\end{corollary}
+
+\begin{proof}
+The cokernel of $V\xrightarrow{1}V$ is zero and the cokernel of $0\to V$ is $V$.
+\end{proof}
+
+For $k>0$, label the $2k$ walls of the degree-$k$ cellular Stokes circle by
+\[
+                         \mathsf W_k=\{0,\ldots,k-1\}\times\{+,-\}.
+\]
+Place one arc between consecutive walls.  The entrance quiver has one arrow from every arc to each
+endpoint wall.  No two nonidentity arrows compose, so its path category has only identities and
+these incidence arrows.  Define the global cellular Stokes category
+\begin{equation}\label{eq:global-cellular-category}
+           \Sh_{\mathrm{St}}(S^1;k)=
+           \operatorname{Fun}(\operatorname{Path}(\mathsf W_k),\Vect_{\QQ}).
+\end{equation}
+It is abelian.  The alternating exponential object has wall stalk $V$, alternating arc stalks
+$V,0,V,0,\ldots$, and identity or zero incidence maps.
+
+\begin{definition}[Cellular microsupport and characteristic cycle]\label{def:cellular-cc}
+An oriented conormal $(w,S)$ belongs to the cellular microsupport of $F$ when
+$\mu_S(F|_w)\ne0$.  Its cellular characteristic-cycle coefficient is
+$\dim\mu_S(F|_w)$.  The directed cycle retains the $k$ conormals carrying the ordered decay
+orientation.
+\end{definition}
+
+\begin{theorem}[Exponential microsupport calculation]\label{thm:exponential-microsupport}
+Let $V$ have dimension $d$.  For the alternating degree-$k$ exponential object:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item over every wall exactly one oriented conormal lies in cellular microsupport;
+\item every nonzero characteristic-cycle coefficient equals $d$;
+\item the full characteristic-cycle mass is $2kd$;
+\item the directed decay mass is $kd$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Every wall germ is $E(V,0)$ or $E(V,1)$, so (i) and (ii) follow from
+Corollary~\ref{cor:one-oriented}.  There are $2k$ walls.  Exactly one wall in each labelled
+antipodal pair carries the ordered decay orientation, giving $k$ directed walls.  Summation proves
+(iii) and (iv).
+\end{proof}
+
+The preceding theorem is a calculation inside an abelian category, not a numerical convention:
+each coefficient is the dimension of the quotient functor \eqref{eq:microstalk-functor}, and
+\eqref{eq:nearby-vanishing-exact} is its nearby-to-vanishing sequence.
+
+\section{Microlocal Hom index and Galois descent}\label{sec:microlocal}
+
+For branches $a,b$, let $E_{ab}$ be the cellular exponential Hom object of degree $k(a,b)$.
+If orbit $i$ carries a coefficient space $V_i$ of dimension $d_i$, tensor $E_{ab}$ by
+$\Hom(V_{[a]},V_{[b]})$.  Its fiber dimension is $d_{[a]}d_{[b]}$.
+
+\begin{definition}[Normalized microlocal Hom mass]\label{def:microlocal-mass}
+For orbit classes $i,j$, define
+\begin{equation}\label{eq:microlocal-mass}
+ \mathfrak m_{ij}(d)=\frac1N
+ \sum_{a\in i}\sum_{b\in j}
+ \sum_{\xi\in\operatorname{Decay}(a,b)}
+       \dim\mu_\xi(E_{ab}\otimes\Hom(V_i,V_j)).
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Directed microlocal Hom index]\label{thm:microlocal-index}
+For all $i,j$,
+\begin{equation}\label{eq:microlocal-index}
+                       \mathfrak m_{ij}(d)=s_{ij}d_id_j.      \tag{M}
+\end{equation}
+In particular, with one-dimensional coefficient spaces, the normalized directed microstalk mass
+is exactly mixed Hom irregularity.
+\end{theorem}
+
+\begin{proof}
+Theorem~\ref{thm:exponential-microsupport} gives directed mass
+$k(a,b)d_id_j$ for each ordered pair.  Sum and divide by $N$:
+\[
+ \mathfrak m_{ij}(d)=\sum_{a\in i,b\in j}\frac{k(a,b)}N d_id_j
+ =s_{ij}d_id_j.
+\]
+Lemma~\ref{lem:integrality} shows that normalization introduces no fractional multiplicity.
+\end{proof}
+
+Define the one-dimensional categorical microlocal pairing
+\begin{equation}\label{eq:categorical-pairing}
+                       \langle x,x\rangle_\mu
+                       =\sum_{i,j}\mathfrak m_{ij}(1)x_ix_j.
+\end{equation}
+
+\begin{theorem}[Categorical microlocal coarea law]\label{thm:categorical-coarea}
+For every orbit charge $x$,
+\begin{align}\label{eq:categorical-coarea}
+ Q_A(x)
+ &=\sum_i x_i^2+M(x)^2-\langle x,x\rangle_\mu\notag\\
+ &=\sum_i x_i^2+\sum_e\ell_e\nu_e(x)^2-(H-1)M(x)^2.
+\end{align}
+Thus microsupport coefficients, directed vanishing-cycle ranks, mixed Hom irregularities, and
+threshold coarea coefficients are four presentations of the same polarization.
+\end{theorem}
+
+\begin{proof}
+The first equality is Definition~\ref{def:local-index} and
+Theorem~\ref{thm:microlocal-index}; the second is Theorem~\ref{thm:local-witt}.
+\end{proof}
+
+\section{Exact transport and irregular Riemann--Hilbert scope}\label{sec:transport}
+
+We isolate the categorical statement needed to pass between realizations.  Let $\mathcal A$ be an
+abelian category and let
+\[
+                         \Phi:\mathcal A\overset\sim\longrightarrow\Sh_{\mathrm{germ}}
+\]
+be an exact equivalence.  Define transported nearby and vanishing functors by
+\[
+             \Psi_W=\operatorname{ev}_W\Phi,qquad
+             \phi_S=\mu_S\Phi.
+\]
+
+\begin{theorem}[Exact realization transport]\label{thm:transport}
+For every $A\in\mathcal A$, the sequence
+\begin{equation}\label{eq:transport-exact}
+ \operatorname{ev}_S\Phi(A)\longrightarrow\Psi_W(A)
+ \longrightarrow\phi_S(A)\longrightarrow0
+\end{equation}
+is exact and functorial.  If $\Phi(A)$ is an exponential germ, precisely one oriented transported
+vanishing object has full coefficient rank.  All microstalk dimensions and therefore every term in
+\eqref{eq:categorical-coarea} are invariant under replacing $\Phi$ by an isomorphic exact
+realization equivalence.
+\end{theorem}
+
+\begin{proof}
+Apply Proposition~\ref{prop:microfunctor} to $\Phi(A)$.  Exactness and functoriality are preserved
+under composition.  The exponential statement is Corollary~\ref{cor:one-oriented}.  A natural
+isomorphism of realization functors induces isomorphisms on stalk maps and hence on their
+cokernels, preserving dimensions.
+\end{proof}
+
+\begin{remark}[Analytic boundary]
+Irregular Riemann--Hilbert equivalences identify analytic Stokes objects with suitable sheaf
+categories \cite{SabbahStokes,DKRH}; enhanced nearby and vanishing cycles in dimension one are
+developed in \cite{DKVanishing}.  Theorem~\ref{thm:transport} proves the complete implication used
+here once an exact realization identifies the local incidence diagram.  We make no converse claim
+that the quadratic form alone reconstructs an analytic meromorphic connection or an equivalence.
+\end{remark}
+
+\section{Principal conormals and the multi-Rees law}\label{sec:rees}
+
+For every dendrogram block $A_e$, let
+\[
+                      \mathcal H_e=\{x:\nu_e(x)=0\}.
+\]
+Its constant principal conormal is $d\nu_e=u_e=(u_{e,i})_i$.  Put
+\[
+ P_A(x)=\sum_i x_i^2+\sum_e\ell_e\nu_e(x)^2.
+\]
+
+\begin{proposition}[Principal-conormal Hessian]\label{prop:hessian}
+\begin{equation}\label{eq:hessian}
+                   \frac12\Hess(P_A)=I+\sum_e\ell_e,d\nu_e\otimes d\nu_e.
+\end{equation}
+The sole subtractive Hessian term in $Q_A$ is
+$-(H-1)dM\otimes dM$.
+\end{proposition}
+
+\begin{proof}
+Differentiate the squares in Theorem~\ref{thm:local-witt}.
+\end{proof}
+
+For parameters $t_e\in\RR$, define
+\begin{equation}\label{eq:local-rees}
+ Q_{A,\boldsymbol t}(x)=\sum_i x_i^2+
+       \sum_et_e\ell_e\nu_e(x)^2-(H-1)M(x)^2.
+\end{equation}
+The associated-graded coordinate of $e$ is
+$z_e=\sqrt{\ell_e}\nu_e$, and $\sum_ez_e^2$ is the block coarea energy.  Unit specialization is
+$Q_A$; setting $t_e=0$ deletes exactly channel $e$.
+
+At every marked point choose independent parameters $t_{a,e}$ and define the global Rees form by
+the same fusion rule \eqref{eq:fused-form}.
+
+\begin{theorem}[Global multi-Rees Witt law]\label{thm:global-rees}
+If every $t_{a,e}\geq0$, then the global Rees form is a positive-definite terminal-plus-graded
+form plus the same single common-rank square as in Theorem~\ref{thm:global-witt}.  Consequently
+\[
+              \indm(Q_{X,D,\boldsymbol t})\leq1,
+              \qquad Q_{X,D,\boldsymbol t}>0
+              \quad\text{on }\ker M\setminus\{0\}.
+\]
+The common-rank coefficient is independent of all Rees parameters.
+\end{theorem}
+
+\begin{proof}
+Replace each local positive form by
+$\sum_i x_i^2+\sum_et_{a,e}\ell_{a,e}\nu_{a,e}^2$.  Nonnegative parameters preserve
+nonnegativity of every graded term, while the terminal coordinate sum remains positive definite.
+Fusion changes only the already common rank square.  The hyperplane argument in
+Theorem~\ref{thm:global-witt} applies unchanged.
+\end{proof}
+
+For real $t>0$, define
+\begin{equation}\label{eq:threshold-relation}
+              a\sim_t b\quad\Longleftrightarrow\quad a=b\ \hbox{ or }\ h(a,b)<t.
+\end{equation}
+
+\begin{theorem}[Canonical coefficient dendrogram]\label{thm:dendrogram}
+Every relation $\sim_t$ is an equivalence relation.  Its partitions $\Pcal_t$ coarsen as $t$
+increases.  The finitely many distinct blocks, ordered by inclusion, form a canonical rooted
+dendrogram.  For distinct $a,b$, the smallest block containing both is born at $h(a,b)$.
+\end{theorem}
+
+\begin{proof}
+Only transitivity needs proof.  If $a\sim_t b$ and $b\sim_t c$, then
+Lemma~\ref{lem:three-point} gives $h(a,c)<t$.  Monotonicity in $t$ is immediate.  Only values
+$k/N$ with $0\leq k\leq K$ occur, so there are finitely many partitions.  Join every block to the
+least strictly larger block containing it and suppress repeated unary vertices.  The defining
+threshold shows that the first common block of $a,b$ occurs at $h(a,b)$.
+\end{proof}
+
+Choose $H>\max_{a,b}h(a,b)$ and list all threshold values together with $0,H$.  On every open
+interval between consecutive values, $\Pcal_t$ is constant.  Define the finite partition energy
+\begin{equation}\label{eq:partition-energy}
+ E_H(y)=\int_0^H\sum_{C\in\Pcal_t}\left(\sum_{a\in C}y_a\right)^2dt,
+\end{equation}
+where the integral denotes the corresponding finite sum of interval length times the constant
+integrand.
+
+\begin{theorem}[Coefficient coarea identity]\label{thm:coarea}
+For every $y:A\to\RR$,
+\begin{equation}\label{eq:coarea}
+ E_H(y)=H\left(\sum_ay_a\right)^2-\sum_{a,b}h(a,b)y_ay_b.    \tag{C}
+\end{equation}
+Equivalently, if $e$ runs through the non-root dendrogram blocks, $\ell_e>0$ is their persistence
+length, and $y(A_e)=\sum_{a\in A_e}y_a$, then
+\begin{equation}\label{eq:cut-energy}
+                         E_H(y)=\sum_e\ell_e y(A_e)^2.
+\end{equation}
+Moreover $E_H(y)>0$ for $y\ne0$.
+\end{theorem}
+
+\begin{proof}
+Expand \eqref{eq:partition-energy}.  The coefficient of $y_ay_b$ is the measure of thresholds
+$t\in(0,H)$ for which $a\sim_t b$.  This interval has length $H-h(a,b)$, including $a=b$ since
+$h(a,a)=0$.  Summing gives \eqref{eq:coarea}.  Grouping the step integral by persistent blocks
+gives \eqref{eq:cut-energy}.  For sufficiently small positive $t$, all blocks are singletons;
+hence a nonzero coordinate contributes on an interval of positive length.
+\end{proof}
+
+\section{Orbit descent and the local Witt law}\label{sec:orbit}
+
+Let $I=A/\langle\sigma\rangle$ and write $[a]$ for the orbit of $a$.  Put
+\[
+ r_i=|i|,\qquad
+ s_{ij}=\sum_{a\in i}\sum_{b\in j}h(a,b),\qquad
+ M(x)=\sum_ir_ix_i.
+\]
+
+\begin{lemma}[Galois integrality]\label{lem:integrality}
+Each $s_{ij}$ is a nonnegative integer.
+\end{lemma}
+
+\begin{proof}
+Decompose $i\times j$ into cyclic orbits.  Let one such orbit have length $L$ and let the leading
+degree of $q_b-q_a$ be $k$.  Its stabilizer has order $N/L$ and contains $\sigma^L$.  Equivariance
+forces $\zeta^{-Lk}=1$, hence $N$ divides $Lk$.  This pair orbit contributes
+$Lk/N\in\NN$ to $s_{ij}$.  Sum over pair orbits.
+\end{proof}
+
+\begin{definition}[Polarized local Stokes index]\label{def:local-index}
+For $x:I\to\RR$, set
+\begin{equation}\label{eq:local-index}
+             Q_A(x)=\sum_i x_i^2+M(x)^2-\sum_{i,j}s_{ij}x_ix_j.
+\end{equation}
+\end{definition}
+
+For a dendrogram block $A_e\subseteq A$, define its descended incidence vector and charge by
+\begin{equation}\label{eq:descended-cut}
+        u_{e,i}=|A_e\cap i|,\qquad
+        \nu_e(x)=\sum_i u_{e,i}x_i=\sum_{a\in A_e}x_{[a]}.
+\end{equation}
+
+\begin{theorem}[Local Stokes--microlocal Witt law]\label{thm:local-witt}
+For every orbit charge $x$,
+\begin{equation}\label{eq:local-witt}
+ \boxed{
+ Q_A(x)=\sum_i x_i^2+\sum_e\ell_e\nu_e(x)^2-(H-1)M(x)^2.}   \tag{W}
+\end{equation}
+Consequently $Q_A$ is positive definite on $\ker M$, and $\indm(Q_A)\leq1$.
+\end{theorem}
+
+\begin{proof}
+Lift $x$ to $y_a=x_{[a]}$.  Then
+\[
+ \sum_{i,j}s_{ij}x_ix_j=\sum_{a,b}h(a,b)y_ay_b,
+ \qquad \sum_ay_a=M(x).
+\]
+Insert Theorem~\ref{thm:coarea} into Definition~\ref{def:local-index}.  This gives
+\eqref{eq:local-witt}.  On $\ker M$, the last square vanishes and $\sum_i x_i^2$ is strictly
+positive away from zero.  A two-dimensional negative subspace would meet the codimension-one
+space $\ker M$ nontrivially, contradiction.
+\end{proof}
+
+\begin{remark}[No orbit-saturation hypothesis]
+The blocks $A_e$ may split a Galois orbit.  Formula \eqref{eq:descended-cut}, rather than
+$u_{e,i}=r_i\one_{A_e}(i)$, is what makes Theorem~\ref{thm:local-witt} valid in the ramified case.
+When every block is orbit-saturated the older rooted-core cut formula is recovered.
+\end{remark}
+
+\section{The global fused Witt law}\label{sec:global}
+
+Let $D=\{p_1,\ldots,p_m\}$ with $m\geq1$.  At $p_a$ choose a spectrum $A_a$, orbit space $I_a$,
+local rank $M_a$, and local index $Q_a$.  Define
+\begin{equation}\label{eq:fibre-product}
+ V_{X,D}=\{(x_a)\in\bigoplus_a\RR^{I_a}:M_1(x_1)=\cdots=M_m(x_m)\}.
+\end{equation}
+Write $M$ for common rank.  For genus $g$, define
+\begin{equation}\label{eq:fused-form}
+             Q_{X,D}(x)=\sum_{a=1}^{m}Q_a(x_a)+2(1-g-m)M^2.
+\end{equation}
+
+For each local spectrum choose $H_a$ as above and write
+\[
+ P_{X,D}(x)=\sum_a\left(\sum_{i\in I_a}x_{a,i}^2+
+                    \sum_e\ell_{a,e}\nu_{a,e}(x_a)^2\right),
+\]
+\begin{equation}\label{eq:global-coefficient}
+ \Gamma_{X,D}=2(1-g-m)-\sum_a(H_a-1).
+\end{equation}
+
+\begin{theorem}[Global coefficient-generated Witt law]\label{thm:global-witt}
+On $V_{X,D}$,
+\begin{equation}\label{eq:global-decomposition}
+                  \boxed{Q_{X,D}=P_{X,D}+\Gamma_{X,D}M^2.}   \tag{GW}
+\end{equation}
+The form $P_{X,D}$ is positive definite.  Therefore
+\begin{equation}\label{eq:global-inertia}
+ Q_{X,D}>0\quad\text{on }\ker M\setminus\{0\},\qquad
+ \indm(Q_{X,D})+\dim\ker(Q_{X,D})\leq1.                    \tag{I}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Sum Theorem~\ref{thm:local-witt} and collect the common-rank squares, including the fusion term.
+This proves \eqref{eq:global-decomposition}.  Positivity of $P_{X,D}$ follows from its terminal
+sum $\sum_{a,i}x_{a,i}^2$.
+
+For the inertia statement, $Q_{X,D}$ is positive on $\ker M\setminus\{0\}$.  Any two-dimensional
+negative subspace meets $\ker M$ nontrivially, so the negative index is at most one.  The radical
+meets $\ker M$ trivially, so restriction of $M$ to the radical is injective and the nullity is at
+most one.  If a negative vector and a nonzero radical vector both existed, their span would contain
+a nonzero rank-zero vector; because the radical is orthogonal to every vector, that vector would
+have negative energy, contradiction.  Thus the sum in \eqref{eq:global-inertia} is at most one.
+\end{proof}
+
+\begin{corollary}[Handle and sewing laws]\label{cor:handle}
+Increasing genus by one subtracts $2M^2$ and changes no local channel.  If two marked curves are
+joined away from marked points, then their common-rank coefficients add and then decrease by $2$.
+\end{corollary}
+
+\begin{proof}
+Both statements are immediate from \eqref{eq:global-coefficient} and
+$\chi(X\#Y)=\chi(X)+\chi(Y)-2$.
+\end{proof}

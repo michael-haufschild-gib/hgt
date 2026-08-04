@@ -236,11 +236,12 @@ need no asymptotic input at all and are now unconditional.
 - **`tendsto_firstRowBound_atTop`** — the `o(1)`: with `A = C c^{-1/2}` and `B = C/c` both terms vanish
   as the aperture grows, from `Real.tendsto_pow_log_div_mul_add_atTop` at exponent two.
 
-Not formalized, because it genuinely imports external asymptotics rather than being derivable here:
-Dunster's pole-uniform expansion `(14)`, the Bessel symbol branches and envelope bound, the
-one-dimensional stationary-phase estimate behind `(13)`, the endpoint-layer split `(12)`, the envelope
-integral `(15)`–`(16)`, and hence `(17)`.  Those supply exactly the *hypothesis* of
-`weighted_firstRow_sum_le`; everything downstream of it is now unconditional.
+When this paragraph was first written the following were left as the *hypothesis* of
+`weighted_firstRow_sum_le`: Dunster's pole-uniform expansion `(14)`, the Bessel symbol branches and
+envelope bound, the one-dimensional stationary-phase estimate behind `(13)`, the endpoint-layer split
+`(12)`, and the envelope integral `(15)`–`(16)`.  All of them are now proved in this tree, as the sections
+below record.  What is not formalized is `(17)`: the bookkeeping that identifies the exact Gram entry with
+the model integral, which belongs to the operator side rather than to the analysis.
 
 The endpoint bracket `(4)` is now proved:
 
@@ -842,6 +843,65 @@ Liouville mass, and that is the whole content of the `O(c^{-1})`.
   `254 C²/(c W)`.  So the exponential factor of the pole-uniform estimate is `1 + O(c^{-1})`: the relative
   error of Dunster's expansion `(14)` is now an unconditional consequence of objects in this tree.
 
+**Equation `(14)` is therefore assembled for the actual radial mode.**
+**`abs_radialProlate_comparison_le`**: let `R` solve the radial spheroidal equation of order zero with
+`chi = s c²`, `0 <= s <= 1/2`, on `[A, B] ⊂ (1, ∞)` with `c xi_s(A) >= 1`.  Then
+
+```text
+|U x| <= (C/sqrt(c xi_s(x)))/W · S(A) · exp(254 C²/(c W)),
+   U = sqrt(x²-1) R / sqrt(xi/xi'),
+```
+
+with `W = besselWronskian(c xi_s(A))` the Green kernel constant and `S(A)` the total weighted Wronskian
+size at the left endpoint.  The exponential is `1 + O(c^{-1})`.  Nothing is imported: the proof composes
+the two model ODEs, their common `u^{-1/2}` envelope, the positive constant Green kernel normalisation,
+the two transport laws in integral form, the algebraic reconstruction, the variable-coefficient Grönwall
+inequality, the exact defect identity, the simple pole, and the finite Liouville mass.
+
+`(14)` is now available in **approximation** form as well, which is what `(17)` consumes: the transform is
+not merely bounded by the Bessel envelope, it *equals* a fixed combination of the two model solutions up to
+`O(c^{-1})` times that envelope.
+
+- `abs_sub_le'`, **`abs_perturbed_sub_model_le`** — the general statement: if `U` solves the comparison
+  equation with defect `a`, both models are bounded by `E`, `|U| <= E K`, and the defect has Liouville mass
+  at most `M`, then
+
+  ```text
+  |U(x) W - (F_2(A) V_1(x) - F_1(A) V_2(x))| <= 2 K M E(x).
+  ```
+
+  Nothing analytic is added: the reconstruction identity is exact and each weighted Wronskian moves by
+  exactly `int m a U V_i`, so the deviation is `(int m a U V_2) V_1 - (int m a U V_1) V_2`, bounded
+  factorwise.
+- `intervalIntegrable_lgWeight_abs_defect_envelope`,
+  **`integral_lgWeight_abs_defect_envelope_le`** — the mass of the defect against the model envelope is
+  `<= 127 C²/c`, because `m E² = C²/(c xi')` pointwise.
+- **`abs_radialProlate_sub_model_le`** — the instantiation for the actual radial mode: with `C` the common
+  model envelope constant and `K` the endpoint Wronskian datum dressed by the Volterra exponential,
+
+  ```text
+  |U(x) W - (F_2(A) J_0(c xi_s(x)) - F_1(A) K(c xi_s(x)))| <= 2 K (127 C²/c) · C/sqrt(c xi_s(x)).
+  ```
+
+  The remainder carries one factor `c^{-1}` against the same envelope as the leading term — exactly the
+  shape `(15)`–`(17)` integrate.
+
+Two structural facts about the endpoint layer are proved in
+`formal/GaloisForLFunctions/RHTower/CCMRadialProlateEndpointLayer.lean`.  They record *why* the accounting
+of `(14)` closes, and they are what any extension of the comparison through the layer `c xi_s(x) <= 1` runs
+on.
+
+- `xiEndpointPhase_le_sqrt_mul_endpointLog`, **`lgWeight_le`** — the Liouville weight vanishes
+  quadratically at the endpoint: `m = xi/xi' <= x² - 1`, from the bracket `xi <= sqrt(x²-s) L`, `L <= r` and
+  `xi'(x²-1) = sqrt(x²-s) r`.
+- **`lgWeight_mul_abs_defect_le`** — hence `m |a| <= 40` on the *whole* ray: the quadratic vanishing of the
+  weight cancels the simple pole of the defect exactly.  This is the one-line reason the Volterra mass is
+  finite, and it needs no case split at all.
+- **`abs_besselK_le_log_envelope`**, `abs_besselJ0_le_log_envelope`,
+  **`abs_lgBesselModel_le_log_envelope`** — through the endpoint layer the square-root envelope carries no
+  information, and the right common envelope of the model pair is `2 + |log u|`: the second solution's
+  singularity is exactly the `(pi/4) log u J_0` term and `|M| <= (pi/2) log 2` is uniform.
+
 ## Lean gates
 
 - [x] Lean: exact reduction of the stationary equation to the quadratic `(7)`
@@ -879,6 +939,10 @@ Liouville mass, and that is the whole content of the `O(c^{-1})`.
   and in `0 <= s <= 1/2`; the eigenvalue enters only through that range, so nothing is imported
 - [x] Lean: the total Liouville mass of that defect — `int_A^B |a|/xi' <= 127` unconditionally, hence a
   Volterra exponent `<= 254 C²/(cW)`: the relative error of `(14)` is `1 + O(c^{-1})`
+- [x] Lean: **equation `(14)` for the actual radial mode** — the pole-uniform envelope bound on
+  `U = sqrt(x²-1) R / sqrt(xi/xi')`, with the relative factor `exp(O(1/c))`
+- [x] Lean: `(14)` in **approximation** form — `U` equals a fixed combination of the two Bessel models up
+  to `O(c^{-1})` times the common envelope
 
 ## Gates
 

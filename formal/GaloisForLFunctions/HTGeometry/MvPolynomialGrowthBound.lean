@@ -149,4 +149,71 @@ theorem posLog_norm_eval_le (A : MvPolynomial (Fin 2) ℂ) (z w : ℂ) :
     linarith
   linarith
 
+/-! ## Arbitrarily many variables -/
+
+/-- **The growth bound in any number of variables.** -/
+theorem norm_eval_le_mvCoeffNormSum_general {m : ℕ} (P : MvPolynomial (Fin m) ℂ)
+    (x : Fin m → ℂ) :
+    ‖MvPolynomial.eval x P‖
+      ≤ mvCoeffNormSum P * ∏ i : Fin m, (1 + ‖x i‖) ^ P.totalDegree := by
+  classical
+  rw [MvPolynomial.eval_eq']
+  refine le_trans (norm_sum_le _ _) ?_
+  rw [mvCoeffNormSum, Finset.sum_mul]
+  refine Finset.sum_le_sum ?_
+  intro d hd
+  have hstep : ∏ i : Fin m, ‖x i‖ ^ d i
+      ≤ ∏ i : Fin m, (1 + ‖x i‖) ^ P.totalDegree := by
+    refine Finset.prod_le_prod (fun i _ => by positivity) ?_
+    intro i _
+    have hx1 : (1 : ℝ) ≤ 1 + ‖x i‖ := by
+      have := norm_nonneg (x i)
+      linarith
+    calc ‖x i‖ ^ d i ≤ (1 + ‖x i‖) ^ d i :=
+          pow_le_pow_left₀ (norm_nonneg _) (by linarith) _
+      _ ≤ (1 + ‖x i‖) ^ P.totalDegree :=
+          pow_le_pow_right₀ hx1 (exponent_le_totalDegree hd i)
+  calc ‖MvPolynomial.coeff d P * ∏ i : Fin m, x i ^ d i‖
+      = ‖MvPolynomial.coeff d P‖ * ∏ i : Fin m, ‖x i‖ ^ d i := by
+        rw [norm_mul, norm_prod]
+        congr 1
+        exact Finset.prod_congr rfl fun i _ => by rw [norm_pow]
+    _ ≤ ‖MvPolynomial.coeff d P‖ * ∏ i : Fin m, (1 + ‖x i‖) ^ P.totalDegree :=
+        mul_le_mul_of_nonneg_left hstep (norm_nonneg _)
+
+open Real in
+/-- **The many-variable growth bound in logarithmic form.** -/
+theorem posLog_norm_eval_le_general {m : ℕ} (P : MvPolynomial (Fin m) ℂ) (x : Fin m → ℂ) :
+    Real.posLog ‖MvPolynomial.eval x P‖
+      ≤ Real.posLog (mvCoeffNormSum P)
+        + ∑ i : Fin m, (P.totalDegree : ℝ) * (Real.log 2 + Real.posLog ‖x i‖) := by
+  classical
+  have hprod0 : (0 : ℝ) ≤ mvCoeffNormSum P * ∏ i : Fin m, (1 + ‖x i‖) ^ P.totalDegree := by
+    have h := mvCoeffNormSum_nonneg P
+    have hp : (0 : ℝ) ≤ ∏ i : Fin m, (1 + ‖x i‖) ^ P.totalDegree := by
+      refine Finset.prod_nonneg fun i _ => ?_
+      have := norm_nonneg (x i)
+      positivity
+    positivity
+  have h1 : Real.posLog ‖MvPolynomial.eval x P‖
+      ≤ Real.posLog (mvCoeffNormSum P * ∏ i : Fin m, (1 + ‖x i‖) ^ P.totalDegree) :=
+    Real.monotoneOn_posLog (Set.mem_Ici.mpr (norm_nonneg _)) (Set.mem_Ici.mpr hprod0)
+      (norm_eval_le_mvCoeffNormSum_general P x)
+  have h2 : Real.posLog (mvCoeffNormSum P * ∏ i : Fin m, (1 + ‖x i‖) ^ P.totalDegree)
+      ≤ Real.posLog (mvCoeffNormSum P)
+        + Real.posLog (∏ i : Fin m, (1 + ‖x i‖) ^ P.totalDegree) := Real.posLog_mul
+  have h3 : Real.posLog (∏ i : Fin m, (1 + ‖x i‖) ^ P.totalDegree)
+      ≤ ∑ i : Fin m, Real.posLog ((1 + ‖x i‖) ^ P.totalDegree) :=
+    Real.posLog_prod _ _
+  have h4 : ∑ i : Fin m, Real.posLog ((1 + ‖x i‖) ^ P.totalDegree)
+      ≤ ∑ i : Fin m, (P.totalDegree : ℝ) * (Real.log 2 + Real.posLog ‖x i‖) := by
+    refine Finset.sum_le_sum ?_
+    intro i _
+    rw [Real.posLog_pow]
+    refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg _)
+    have hadd := Real.posLog_add (x := (1 : ℝ)) (y := ‖x i‖)
+    rw [Real.posLog_one] at hadd
+    linarith
+  linarith
+
 end GaloisForLFunctions.HTGeometry

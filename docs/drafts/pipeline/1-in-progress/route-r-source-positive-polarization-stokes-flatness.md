@@ -247,3 +247,10 @@ unproved arithmetic selection step.
   Cartier comparison preserving the `ell1` subobject.  The new two-sided-singular Gelfand theorem
   also rules out using noncoercivity alone: countable singular observers retain large common
   closed defects unless extra source invariance is proved.
+- 2026-08-04 — Constructed an independent source Stokes law on the actual rational-adelic
+  zero-isotropy complex.  The bilateral prime-orbit regulator satisfies
+  `R_p(alpha_p x-x)=epsilon_0(x)` and the induced relative period kills all `D0` boundaries while
+  reading the retained ordinary-prime class as one.  Thus positive resolved polarization and
+  source Stokes flatness now both exist independently.  Their Xi handoff still lands in a resolved
+  boundary, proving the missing comparison must be singular/secondary and primitive-retaining;
+  no ordinary chain map on `H1` can supply the scalar Cartier selector.

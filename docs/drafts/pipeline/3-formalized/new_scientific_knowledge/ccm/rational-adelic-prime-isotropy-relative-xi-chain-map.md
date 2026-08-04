@@ -191,6 +191,51 @@ Hence prime, depth, divisor, and conormal provenance all survive at chain level.
 delta_1 Phi^1_p(eta_p) = delta_1 delta_0(L_p) = 0.
 ```
 
+## Independent bilateral source Stokes period
+
+The retention theorem now has a second proof which constructs the previously missing literal
+source Stokes functional.  For an archimedean Schwartz function `f`, set
+
+```text
+R_p(f) = sum_(n>=0) f(p^n)
+       + sum_(n>=0) (f(p^(-n-1)) - f(0)).
+```
+
+The expanding tail is absolutely summable by Schwartz decay on the integer lattice.  The
+contracting tail is absolutely summable because
+
+```text
+|f(x)-f(0)| <= seminorm(f') |x|
+```
+
+and `p^(-n-1)` is geometric.  Direct reindexing of both convergent tails gives the exact law
+
+```text
+R_p(alpha_p f-f) = f(0).
+```
+
+Compose with finite-zero partial evaluation on the actual adelic tensor core.  Then
+
+```text
+R_p^A(alpha_p x-x) = epsilon_0(x).
+```
+
+Consequently the degree-one functional
+
+```text
+I_p(y,z) = z - R_p^A(y)
+```
+
+annihilates every actual relative boundary and satisfies `I_p(eta_p)=1`.  It descends to a linear
+functional on genuine relative `H^1` taking the retained class to one.  This is an independent
+Stokes-flatness certificate, not a reformulation of fixed-vector rigidity.
+
+The bilateral orbit-sum mechanism and telescoping law are parent analysis.  New scoped content is
+their unconditional convergence and exact descent on this actual rational-adelic zero-isotropy
+complex, producing a normalized scalar period of its ordinary-prime class.  It still does not
+trivialize the scalar Cartier anomaly: the strict Xi comparison sends the detected source class
+to a resolved target boundary.
+
 ## Hostile circularity audit
 
 - `eta_p` is defined before Xi divisors and uses no critical-line parameter.
@@ -222,6 +267,7 @@ Formalized module:
 
 ```text
 GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyRelativeXiChainMap
+GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyStokesRegulator
 ```
 
 Required declarations:
@@ -247,6 +293,12 @@ ccmRationalAdelicPrimeRelativeXiComparison_class_landing
 ccmRationalAdelicPrimeRelativeXiComparison_class_landing_ne_zero
 ccmRationalAdelicPrimeRelativeXiComparison_class_annihilated
 ccmRationalAdelicPrimeRelativeXiChainMap_H1_class_eq_zero
+ccmRationalArchimedeanPrimeOrbitStokes_scaling_sub
+ccmRationalAdelicPrimeOrbitStokes_scaling_sub
+ccmRationalAdelicPrimeRelativeStokesRegulator_comp_D0
+ccmRationalAdelicPrimeRelativeStokesRegulator_cocycle
+ccmRationalAdelicPrimeRelativeH1StokesRegulator
+ccmRationalAdelicPrimeRelativeH1StokesRegulator_class
 ```
 
 Verification on 2026-08-04:
@@ -269,3 +321,8 @@ only `propext`, `Classical.choice`, and `Quot.sound`.  The module contains no `s
   nonzero chain landing, unconditional annihilation, and exact classification of the image as a
   target boundary.  Strict rational-adelic provenance is closed; singular scalar Cartier descent
   remains open.
+- 2026-08-04 — constructed and formalized the bilateral prime-orbit Stokes functional on the
+  actual adelic source.  Its exact scaling coboundary is zero-adele evaluation, so the induced
+  relative regulator kills every boundary and reads the retained ordinary-prime `H^1` class as
+  one.  This independently closes source Stokes retention; it does not alter the target-boundary
+  classification or close singular Cartier descent.

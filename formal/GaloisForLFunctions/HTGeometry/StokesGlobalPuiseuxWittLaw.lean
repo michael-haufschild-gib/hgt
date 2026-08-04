@@ -262,6 +262,39 @@ theorem globalWittForm_sigNeg_le_one (genus : ℕ)
   · rw [max_eq_right (neg_nonneg.mpr (le_of_not_ge hcoeff))]
     nlinarith [globalPositiveForm_nonneg d x]
 
+/-- Positivity on the kernel of one linear functional forces the quadratic radical to have
+dimension at most one. -/
+theorem radical_finrank_le_one_of_pos_on_ker
+    {M : Type*} [AddCommGroup M] [Module ℝ M] [FiniteDimensional ℝ M]
+    (Q : QuadraticForm ℝ M) (ell : M →ₗ[ℝ] ℝ)
+    (hpos : ∀ {x : M}, ell x = 0 → x ≠ 0 → 0 < Q x) :
+    Module.finrank ℝ Q.radical ≤ 1 := by
+  let f : Q.radical →ₗ[ℝ] ℝ := ell.comp Q.radical.subtype
+  have hf : Function.Injective f := by
+    intro x y hxy
+    apply Subtype.ext
+    have hell : ell (x.1 - y.1) = 0 := by
+      rw [map_sub]
+      change ell x.1 - ell y.1 = 0
+      change ell x.1 = ell y.1 at hxy
+      exact sub_eq_zero.mpr hxy
+    by_contra hne
+    have hpositive := hpos hell (sub_ne_zero.mpr hne)
+    have hmem : x.1 - y.1 ∈ Q.radical := Q.radical.sub_mem x.2 y.2
+    have hzero : Q (x.1 - y.1) = 0 := hmem.1
+    linarith
+  have hdim := f.finrank_le_finrank_of_injective hf
+  simpa using hdim
+
+/-- The coefficient-generated global form has radical dimension at most one. -/
+theorem globalWittForm_radical_finrank_le_one (genus : ℕ)
+    (d : LocalData p n m K N) :
+    Module.finrank ℝ (globalWittForm genus d).radical ≤ 1 := by
+  apply radical_finrank_le_one_of_pos_on_ker
+    (globalWittForm genus d) (commonRankLinear d)
+  intro x hrank hx
+  exact globalWittForm_pos_of_commonRank_eq_zero genus d hrank hx
+
 /-! ## Global multi-Rees cone -/
 
 /-- Independent threshold parameters at every marked point. -/
@@ -377,6 +410,34 @@ theorem globalReesPositiveForm_nonneg (d : LocalData p n m K N)
   intro a _
   exact localReesPositiveForm_nonneg (d a) (hparameter a) (x.1 a)
 
+theorem globalReesPositiveForm_pos (d : LocalData p n m K N)
+    (parameter : ReesParameter d)
+    (hparameter : ∀ a edge, 0 ≤ parameter a edge)
+    {x : compatibleCharges d} (hx : x ≠ 0) :
+    0 < globalReesPositiveForm d parameter x := by
+  have hlocal : ∃ a, x.1 a ≠ 0 := by
+    by_contra h
+    push Not at h
+    apply hx
+    apply Subtype.ext
+    funext a i
+    exact congrFun (h a) i
+  obtain ⟨a, ha⟩ := hlocal
+  rw [globalReesPositiveForm, QuadraticMap.sum_apply]
+  apply Finset.sum_pos'
+  · intro b _
+    exact localReesPositiveForm_nonneg (d b) (hparameter b) (x.1 b)
+  · exact ⟨a, Finset.mem_univ _,
+      localReesPositiveForm_pos (d a) (hparameter a) ha⟩
+
+theorem globalReesWittForm_pos_of_commonRank_eq_zero
+    (genus : ℕ) (d : LocalData p n m K N) (parameter : ReesParameter d)
+    (hparameter : ∀ a edge, 0 ≤ parameter a edge)
+    {x : compatibleCharges d} (hrank : commonRankLinear d x = 0) (hx : x ≠ 0) :
+    0 < globalReesWittForm genus d parameter x := by
+  rw [globalReesWittForm_eq_positive_add_oneRank genus d parameter x, hrank]
+  simpa using globalReesPositiveForm_pos d parameter hparameter hx
+
 /-- **Global Rees Witt-index law.** Every nonnegative multi-Rees specialization, including any
 simultaneous contraction of threshold intervals, has at most one negative direction. -/
 theorem globalReesWittForm_sigNeg_le_one
@@ -398,6 +459,16 @@ theorem globalReesWittForm_sigNeg_le_one
       mul_nonneg hcoeff (sq_nonneg (commonRankLinear d x))]
   · rw [max_eq_right (neg_nonneg.mpr (le_of_not_ge hcoeff))]
     nlinarith [globalReesPositiveForm_nonneg d parameter hparameter x]
+
+theorem globalReesWittForm_radical_finrank_le_one
+    (genus : ℕ) (d : LocalData p n m K N) (parameter : ReesParameter d)
+    (hparameter : ∀ a edge, 0 ≤ parameter a edge) :
+    Module.finrank ℝ (globalReesWittForm genus d parameter).radical ≤ 1 := by
+  apply radical_finrank_le_one_of_pos_on_ker
+    (globalReesWittForm genus d parameter) (commonRankLinear d)
+  intro x hrank hx
+  exact globalReesWittForm_pos_of_commonRank_eq_zero
+    genus d parameter hparameter hrank hx
 
 end
 end GlobalPuiseuxWitt

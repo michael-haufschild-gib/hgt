@@ -340,3 +340,13 @@ target boundary.  Thus strict rational-adelic provenance is closed, but the phys
 cofinal landing is not: the open Bockstein/Route-R theorem must compare this resolved boundary to
 the singular coefficient-faithful Cartier quotient without replacing the comparison by the
 RH-equivalent statement that the physical coefficient vanishes.
+
+The source class now also has an independent normalized Stokes period in
+`CCMRationalAdelicPrimeIsotropyStokesRegulator.lean`.  The bilateral prime orbit sum converges at
+both archimedean ends and satisfies `R_p(alpha_p x-x)=epsilon_0(x)` on the actual adelic core.
+Hence `I_p(y,z)=z-R_p(y)` kills every relative boundary and descends to `H^1` with
+`I_p([eta_p])=1`.  Source Stokes flatness and class retention are therefore closed without using
+Xi.  This makes the remaining obstruction sharper: the strict Xi image is nevertheless a target
+boundary, so missing Cartier step cannot be an ordinary boundary-preserving cohomology map.  It
+must be a source-constructed singular/secondary comparison retaining the chosen Xi primitive and
+the graded `ell1` subobject; declaring its physical anomaly zero is still exactly RH.

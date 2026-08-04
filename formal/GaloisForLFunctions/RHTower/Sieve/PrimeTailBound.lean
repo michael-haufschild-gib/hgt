@@ -246,4 +246,97 @@ theorem sum_rpow_bigPrimeSet_le_abs {z : ℕ} (hz : 3 ≤ z) (K : ℕ) :
   rw [hsub]
   field_simp
 
+/-- A prime window grows with its upper limit. -/
+theorem bigPrimeSet_mono {z Y Y' : ℕ} (h : Y ≤ Y') : bigPrimeSet z Y ⊆ bigPrimeSet z Y' := by
+  classical
+  intro n hn
+  rw [bigPrimeSet, Finset.mem_filter, Finset.mem_Icc] at hn ⊢
+  exact ⟨⟨hn.1.1, le_trans hn.1.2 h⟩, hn.2⟩
+
+/-- **The prime tail at the standard abscissa, for every truncation.** -/
+theorem sum_rpow_bigPrimeSet_le_abs' {z Y : ℕ} (hz : 3 ≤ z) :
+    ∑ p ∈ bigPrimeSet z Y, ((p : ℝ)) ^ (-(1 + 1 / Real.log z))
+      ≤ 2 * (Real.log 2 + 2 * (2 * mertensFirstConst + 1 / 2)) / Real.log 2 := by
+  classical
+  have hz1 : 1 ≤ z := by omega
+  have hcover : Y ≤ 2 ^ Y * z := by
+    have h1 : Y < 2 ^ Y := Nat.lt_two_pow_self
+    nlinarith
+  have hsub : bigPrimeSet z Y ⊆ bigPrimeSet z (2 ^ Y * z) := bigPrimeSet_mono hcover
+  refine le_trans (Finset.sum_le_sum_of_subset_of_nonneg hsub ?_) (sum_rpow_bigPrimeSet_le_abs hz Y)
+  intro p _ _
+  positivity
+
+/-- The tail weight on the primes. -/
+noncomputable def primeTailTerm (z : ℕ) (σ : ℝ) (p : Nat.Primes) : ℝ :=
+  if z < (p : ℕ) then ((p : ℕ) : ℝ) ^ (-σ) else 0
+
+theorem primeTailTerm_nonneg (z : ℕ) (σ : ℝ) (p : Nat.Primes) : 0 ≤ primeTailTerm z σ p := by
+  rw [primeTailTerm]
+  split
+  · positivity
+  · exact le_refl 0
+
+theorem summable_primeTailTerm (z : ℕ) {σ : ℝ} (hσ : 1 < σ) :
+    Summable (primeTailTerm z σ) := by
+  have hbase : Summable (fun n : ℕ => (n : ℝ) ^ (-σ)) := by
+    rw [Real.summable_nat_rpow]
+    linarith
+  have hprime : Summable (fun p : Nat.Primes => ((p : ℕ) : ℝ) ^ (-σ)) :=
+    hbase.comp_injective Nat.Primes.coe_nat_injective
+  refine Summable.of_nonneg_of_le (primeTailTerm_nonneg z σ) (fun p => ?_) hprime
+  rw [primeTailTerm]
+  split
+  · exact le_refl _
+  · positivity
+
+/-- **The prime tail as a `tsum`.**  The form the Euler comparison consumes. -/
+theorem tsum_primeTailTerm_le {z : ℕ} (hz : 3 ≤ z) :
+    ∑' p : Nat.Primes, primeTailTerm z (1 + 1 / Real.log z) p
+      ≤ 2 * (Real.log 2 + 2 * (2 * mertensFirstConst + 1 / 2)) / Real.log 2 := by
+  classical
+  set σ : ℝ := 1 + 1 / Real.log (z : ℝ) with hσdef
+  have hz3 : (3 : ℝ) ≤ (z : ℝ) := by exact_mod_cast hz
+  have hlogz : (1 : ℝ) ≤ Real.log (z : ℝ) := by
+    have hexp : Real.exp 1 ≤ (z : ℝ) := by
+      have := Real.exp_one_lt_d9
+      linarith
+    have := Real.log_le_log (Real.exp_pos 1) hexp
+    rwa [Real.log_exp] at this
+  have hlogz0 : (0 : ℝ) < Real.log (z : ℝ) := by linarith
+  have hσ1 : (1 : ℝ) < σ := by
+    rw [hσdef]
+    have : (0 : ℝ) < 1 / Real.log (z : ℝ) := by positivity
+    linarith
+  refine (isLUB_hasSum (primeTailTerm_nonneg z σ) (summable_primeTailTerm z hσ1).hasSum).2 ?_
+  rintro x ⟨s, rfl⟩
+  have himg : ∑ n ∈ s.image (fun p : Nat.Primes => (p : ℕ)),
+        (if z < n then ((n : ℝ)) ^ (-σ) else 0) = ∑ p ∈ s, primeTailTerm z σ p :=
+    Finset.sum_image (g := fun p : Nat.Primes => (p : ℕ))
+      Nat.Primes.coe_nat_injective.injOn
+  have hval : ∑ p ∈ s, primeTailTerm z σ p
+      = ∑ n ∈ (s.image (fun p : Nat.Primes => (p : ℕ))).filter (fun n => z < n),
+          ((n : ℝ)) ^ (-σ) := by
+    rw [← himg, Finset.sum_filter]
+  have hsub : (s.image (fun p : Nat.Primes => (p : ℕ))).filter (fun n => z < n)
+      ⊆ bigPrimeSet z ((s.image (fun p : Nat.Primes => (p : ℕ))).sup id) := by
+    intro n hn
+    rw [Finset.mem_filter] at hn
+    obtain ⟨hnS, hzn⟩ := hn
+    have hprime : n.Prime := by
+      rw [Finset.mem_image] at hnS
+      obtain ⟨p, _, hpn⟩ := hnS
+      rw [← hpn]
+      exact p.2
+    have hnY : n ≤ (s.image (fun p : Nat.Primes => (p : ℕ))).sup id :=
+      Finset.le_sup (f := id) hnS
+    rw [bigPrimeSet, Finset.mem_filter, Finset.mem_Icc]
+    exact ⟨⟨by omega, hnY⟩, hprime⟩
+  simp only []
+  rw [hval]
+  refine le_trans (Finset.sum_le_sum_of_subset_of_nonneg hsub ?_) ?_
+  · intro n _ _
+    positivity
+  · exact sum_rpow_bigPrimeSet_le_abs' hz
+
 end RHTower.Sieve

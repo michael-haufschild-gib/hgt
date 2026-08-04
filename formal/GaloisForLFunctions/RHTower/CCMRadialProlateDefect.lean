@@ -1043,6 +1043,384 @@ theorem integral_volterra_exponent_le {s c A B C W : ℝ} (hs0 : 0 ≤ s) (hs1 :
     (by positivity)
 
 
+
+/-! ## Equation (14) for the actual radial mode -/
+
+/-- **Dunster's pole-uniform bound `(14)` for the actual radial prolate mode.**  Let `R` solve the radial
+spheroidal equation of order zero with separation constant `chi = s c²`, `0 <= s <= 1/2`, on an interval
+`[A, B]` inside `(1, ∞)` on which the Bessel argument has already reached one, `c xi_s(A) >= 1`.  Then the
+Liouville–Green transform `U = sqrt(x²-1) R / sqrt(xi/xi')` obeys the Bessel envelope
+
+```text
+|U x| <= (C / sqrt(c xi_s(x))) / W · S(A) · exp(254 C²/(c W)),
+```
+
+with `W` the Green kernel constant and `S(A)` the total weighted Wronskian size at the left endpoint.  The
+exponential is `1 + O(c^{-1})`: that factor is the relative error of the pole-uniform expansion, and it is
+now unconditional.  Every ingredient is a theorem of this tree — the two model ODEs, their common envelope,
+the positive constant Green kernel normalisation, the two transport laws, the algebraic reconstruction, the
+variable-coefficient Grönwall inequality, the exact defect identity, its simple pole and its finite
+Liouville mass. -/
+theorem abs_radialProlate_comparison_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hA : 1 < A) (hAB : A ≤ B)
+    (hcxi : 1 ≤ c * xiEndpointPhase s A)
+    (hR : ∀ x ∈ Set.Icc A B, HasDerivAt R (DR x) x)
+    (hDR : ∀ x ∈ Set.Icc A B, HasDerivAt DR (DDR x) x)
+    (hode : ∀ x ∈ Set.Icc A B,
+      (x ^ 2 - 1) * DDR x + 2 * x * DR x - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x ∈ Set.Icc A B,
+      |comparisonSol (prolateNormalFormSol R) s x|
+        ≤ C / Real.sqrt (c * xiEndpointPhase s x)
+            / besselWronskian (c * xiEndpointPhase s A)
+          * ((|lgWeight s A * (comparisonSol (prolateNormalFormSol R) s A
+                  * lgBesselModelDeriv s c A
+                - comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s A
+                  * lgBesselModel s c A)|
+              + |lgWeight s A * (comparisonSol (prolateNormalFormSol R) s A
+                  * lgBesselModel2Deriv s c A
+                - comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s A
+                  * lgBesselModel2 s c A)|)
+            * Real.exp (2 * C ^ 2
+                / (c * besselWronskian (c * xiEndpointPhase s A)) * 127)) := by
+  obtain ⟨C, hC0, hC⟩ := exists_lgBesselModel_common_envelope
+  refine ⟨C, hC0, fun x hx => ?_⟩
+  have hsub : Set.Icc A B ⊆ Set.Ioi 1 := fun t ht => lt_of_lt_of_le hA ht.1
+  have hW : 0 < besselWronskian (c * xiEndpointPhase s A) :=
+    besselWronskian_phase_pos hs0 hs1 hc hA
+  have hU : ∀ t ∈ Set.Icc A B, HasDerivAt (comparisonSol (prolateNormalFormSol R) s)
+      (comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s t) t :=
+    fun t ht => (radialProlate_comparison_pole_uniform hs0 hs1 (hsub ht) (hR t ht) (hDR t ht)
+      (hode t ht)).1
+  have hDU : ∀ t ∈ Set.Icc A B,
+      HasDerivAt (comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s)
+        (-(lgFirstOrderCoeff s t)
+            * comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s t
+          - (c ^ 2 * xiSpeed s t ^ 2 + lgNormalFormDefect s c (radialProlateQ s c) t)
+            * comparisonSol (prolateNormalFormSol R) s t) t :=
+    fun t ht => (radialProlate_comparison_pole_uniform hs0 hs1 (hsub ht) (hR t ht) (hDR t ht)
+      (hode t ht)).2.1
+  have hac : ContinuousOn (fun t : ℝ => lgNormalFormDefect s c (radialProlateQ s c) t)
+      (Set.Icc A B) := (continuousOn_lgNormalFormDefect_radialProlate hs0 hs1).mono hsub
+  have hmain := abs_perturbed_le_lgEnvelope_mul_exp
+    (a := fun t : ℝ => lgNormalFormDefect s c (radialProlateQ s c) t)
+    hs0 hs1 hc hA hAB hC0 hcxi (fun y hy => hC s c y hy) hac hU hDU x hx
+  have hexp : (∫ t in A..x, 2 * (lgWeight s t * |lgNormalFormDefect s c (radialProlateQ s c) t|)
+        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2
+        / besselWronskian (c * xiEndpointPhase s A))
+      ≤ 2 * C ^ 2 / (c * besselWronskian (c * xiEndpointPhase s A)) * 127 :=
+    integral_volterra_exponent_le hs0 hs1 hc hW hA hx.1
+  have hxpos : 0 < Real.sqrt (c * xiEndpointPhase s x) :=
+    Real.sqrt_pos.mpr (mul_pos hc (xiEndpointPhase_pos hs0 hs1 (hsub hx)))
+  have hE : 0 ≤ C / Real.sqrt (c * xiEndpointPhase s x)
+      / besselWronskian (c * xiEndpointPhase s A) :=
+    div_nonneg (div_nonneg hC0 hxpos.le) hW.le
+  have hS : (0 : ℝ) ≤ |lgWeight s A * (comparisonSol (prolateNormalFormSol R) s A
+        * lgBesselModelDeriv s c A
+      - comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s A
+        * lgBesselModel s c A)|
+    + |lgWeight s A * (comparisonSol (prolateNormalFormSol R) s A * lgBesselModel2Deriv s c A
+      - comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s A
+        * lgBesselModel2 s c A)| := by positivity
+  refine hmain.trans ?_
+  exact mul_le_mul_of_nonneg_left
+    (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexp) hS) hE
+
+
+
+/-! ## The approximation form of (14)
+
+The envelope bound says the transform is *at most* the Bessel envelope.  What the Gram estimate needs is
+sharper: that it *is* a fixed combination of the two model solutions, up to `O(c^{-1})` times the envelope.
+That follows from the same three ingredients — the algebraic reconstruction, the two transport laws, and the
+finite defect mass — with no further analysis: the reconstruction is exact, and the transport laws move the
+two Wronskians by exactly the defect integral. -/
+
+private theorem abs_sub_le' (a b : ℝ) : |a - b| ≤ |a| + |b| := by
+  rw [sub_eq_add_neg]
+  simpa [abs_neg] using abs_add_le a (-b)
+
+/-- **A perturbed solution is a fixed combination of the two model solutions, up to the defect mass.**
+If `U` solves the comparison equation with defect `a` on `[A, B]`, both model solutions are bounded by an
+envelope `E` there, `|U| <= E K`, and the defect has Liouville mass at most `M`, then
+
+```text
+|U(x) W - (F_2(A) V_1(x) - F_1(A) V_2(x))| <= 2 K M E(x),
+```
+
+where `F_i` are the weighted Wronskians of `U` against the model pair.  The proof is exact: the
+reconstruction identity gives `U W = F_2 V_1 - F_1 V_2` pointwise, and each `F_i` differs from its value at
+`A` by exactly `int m a U V_i`. -/
+theorem abs_perturbed_sub_model_le {s c A B K M : ℝ} {U DU a E : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hA : 1 < A) (_hAB : A ≤ B) (hK : 0 ≤ K)
+    (hM : 0 ≤ M)
+    (hU : ∀ x ∈ Set.Icc A B, HasDerivAt U (DU x) x)
+    (hDU : ∀ x ∈ Set.Icc A B, HasDerivAt DU (-(lgFirstOrderCoeff s x) * DU x
+      - (c ^ 2 * xiSpeed s x ^ 2 + a x) * U x) x)
+    (hEnv : ∀ x ∈ Set.Icc A B, |lgBesselModel s c x| ≤ E x ∧ |lgBesselModel2 s c x| ≤ E x)
+    (hUb : ∀ x ∈ Set.Icc A B, |U x| ≤ E x * K)
+    (hi1 : ∀ x ∈ Set.Icc A B, IntervalIntegrable
+      (fun t : ℝ => lgWeight s t * a t * (U t * lgBesselModel s c t)) MeasureTheory.volume A x)
+    (hi2 : ∀ x ∈ Set.Icc A B, IntervalIntegrable
+      (fun t : ℝ => lgWeight s t * a t * (U t * lgBesselModel2 s c t)) MeasureTheory.volume A x)
+    (hmi : ∀ x ∈ Set.Icc A B, IntervalIntegrable
+      (fun t : ℝ => lgWeight s t * |a t| * E t ^ 2) MeasureTheory.volume A x)
+    (hmass : ∀ x ∈ Set.Icc A B, (∫ t in A..x, lgWeight s t * |a t| * E t ^ 2) ≤ M) :
+    ∀ x ∈ Set.Icc A B,
+      |U x * besselWronskian (c * xiEndpointPhase s A)
+          - ((lgWeight s A * (U A * lgBesselModel2Deriv s c A - DU A * lgBesselModel2 s c A))
+              * lgBesselModel s c x
+            - (lgWeight s A * (U A * lgBesselModelDeriv s c A - DU A * lgBesselModel s c A))
+              * lgBesselModel2 s c x)|
+        ≤ 2 * (K * M) * E x := by
+  intro x hx
+  have hAx : A ≤ x := hx.1
+  have hxsub : Set.uIcc A x ⊆ Set.Icc A B := by
+    rw [Set.uIcc_of_le hAx]
+    exact fun t ht => ⟨ht.1, le_trans ht.2 hx.2⟩
+  have hU' : ∀ t ∈ Set.uIcc A x, HasDerivAt U (DU t) t := fun t ht => hU t (hxsub ht)
+  have hDU' : ∀ t ∈ Set.uIcc A x, HasDerivAt DU (-(lgFirstOrderCoeff s t) * DU t
+      - (c ^ 2 * xiSpeed s t ^ 2 + a t) * U t) t := fun t ht => hDU t (hxsub ht)
+  have hrec := lgReconstruction_const (U := U) (DU := DU) hs0 hs1 hc hA hAx
+  have htr1 := integral_lgBesselWronskian hs0 hs1 hc hAx hA hU' hDU' (hi1 x hx)
+  have htr2 := integral_lgBessel2Wronskian hs0 hs1 hc hAx hA hU' hDU' (hi2 x hx)
+  have hEx : 0 ≤ E x := le_trans (abs_nonneg _) (hEnv x hx).1
+  have hbound : ∀ V : ℝ → ℝ, (∀ t ∈ Set.Icc A B, |V t| ≤ E t) →
+      IntervalIntegrable (fun t : ℝ => lgWeight s t * a t * (U t * V t)) MeasureTheory.volume A x →
+      |∫ t in A..x, lgWeight s t * a t * (U t * V t)| ≤ K * M := by
+    intro V hV hint
+    have h1 : |∫ t in A..x, lgWeight s t * a t * (U t * V t)|
+        ≤ ∫ t in A..x, |lgWeight s t * a t * (U t * V t)| := by
+      have h := intervalIntegral.norm_integral_le_integral_norm (μ := MeasureTheory.volume)
+        (f := fun t : ℝ => lgWeight s t * a t * (U t * V t)) hAx
+      simpa [Real.norm_eq_abs] using h
+    have h2 : (∫ t in A..x, |lgWeight s t * a t * (U t * V t)|)
+        ≤ ∫ t in A..x, K * (lgWeight s t * |a t| * E t ^ 2) := by
+      refine intervalIntegral.integral_mono_on hAx hint.abs ((hmi x hx).const_mul K) ?_
+      intro t ht
+      have htIcc : t ∈ Set.Icc A B := hxsub (by rw [Set.uIcc_of_le hAx]; exact ht)
+      have hm : 0 < lgWeight s t := lgWeight_pos hs0 hs1 (lt_of_lt_of_le hA htIcc.1)
+      have hEt : 0 ≤ E t := le_trans (abs_nonneg _) (hEnv t htIcc).1
+      calc |lgWeight s t * a t * (U t * V t)|
+          = lgWeight s t * |a t| * (|U t| * |V t|) := by
+            rw [abs_mul, abs_mul, abs_mul, abs_of_pos hm]
+        _ ≤ lgWeight s t * |a t| * ((E t * K) * E t) := by
+            refine mul_le_mul_of_nonneg_left ?_ (mul_nonneg hm.le (abs_nonneg _))
+            exact mul_le_mul (hUb t htIcc) (hV t htIcc) (abs_nonneg _) (by positivity)
+        _ = K * (lgWeight s t * |a t| * E t ^ 2) := by ring
+    have h3 : (∫ t in A..x, K * (lgWeight s t * |a t| * E t ^ 2))
+        = K * ∫ t in A..x, lgWeight s t * |a t| * E t ^ 2 :=
+      intervalIntegral.integral_const_mul _ _
+    have h4 : K * (∫ t in A..x, lgWeight s t * |a t| * E t ^ 2) ≤ K * M :=
+      mul_le_mul_of_nonneg_left (hmass x hx) hK
+    linarith [h1, h2, h3.le, h3.ge, h4]
+  have hb1 := hbound (lgBesselModel s c) (fun t ht => (hEnv t ht).1) (hi1 x hx)
+  have hb2 := hbound (lgBesselModel2 s c) (fun t ht => (hEnv t ht).2) (hi2 x hx)
+  have hid : U x * besselWronskian (c * xiEndpointPhase s A)
+      - ((lgWeight s A * (U A * lgBesselModel2Deriv s c A - DU A * lgBesselModel2 s c A))
+          * lgBesselModel s c x
+        - (lgWeight s A * (U A * lgBesselModelDeriv s c A - DU A * lgBesselModel s c A))
+          * lgBesselModel2 s c x)
+      = (∫ t in A..x, lgWeight s t * a t * (U t * lgBesselModel2 s c t)) * lgBesselModel s c x
+        - (∫ t in A..x, lgWeight s t * a t * (U t * lgBesselModel s c t))
+          * lgBesselModel2 s c x := by
+    linear_combination hrec - lgBesselModel s c x * htr2 + lgBesselModel2 s c x * htr1
+  rw [hid]
+  refine le_trans (abs_sub_le' _ _) ?_
+  have h1 : |(∫ t in A..x, lgWeight s t * a t * (U t * lgBesselModel2 s c t))
+      * lgBesselModel s c x| ≤ K * M * E x := by
+    rw [abs_mul]
+    exact mul_le_mul hb2 (hEnv x hx).1 (abs_nonneg _) (mul_nonneg hK hM)
+  have h2 : |(∫ t in A..x, lgWeight s t * a t * (U t * lgBesselModel s c t))
+      * lgBesselModel2 s c x| ≤ K * M * E x := by
+    rw [abs_mul]
+    exact mul_le_mul hb1 (hEnv x hx).2 (abs_nonneg _) (mul_nonneg hK hM)
+  linarith [h1, h2]
+
+
+
+/-! ## The mass of the defect against the model envelope -/
+
+theorem intervalIntegrable_lgWeight_abs_defect_envelope {s c C A B : ℝ} (hs0 : 0 ≤ s)
+    (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hA : 1 < A) (hAB : A ≤ B) :
+    IntervalIntegrable (fun t : ℝ => lgWeight s t
+        * |lgNormalFormDefect s c (radialProlateQ s c) t|
+        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2) MeasureTheory.volume A B := by
+  have hsub : Set.uIcc A B ⊆ Set.Ioi 1 := by
+    rw [Set.uIcc_of_le hAB]
+    exact fun t ht => lt_of_lt_of_le hA ht.1
+  have hsqrt : ContinuousOn (fun t : ℝ => Real.sqrt (c * xiEndpointPhase s t)) (Set.uIcc A B) :=
+    Real.continuous_sqrt.comp_continuousOn
+      (continuousOn_const.mul ((continuousOn_xiEndpointPhase hs0).mono hsub))
+  have hpow : ContinuousOn (fun t : ℝ => (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2)
+      (Set.uIcc A B) := by
+    refine ContinuousOn.pow (ContinuousOn.div continuousOn_const hsqrt ?_) 2
+    intro t ht
+    exact (Real.sqrt_pos.mpr (mul_pos hc (xiEndpointPhase_pos hs0 hs1 (hsub ht)))).ne'
+  refine (ContinuousOn.mul (ContinuousOn.mul ((continuousOn_lgWeight hs0 hs1).mono hsub)
+    (((continuousOn_lgNormalFormDefect_radialProlate hs0 hs1).mono hsub).abs)) hpow).intervalIntegrable
+
+/-- **The defect mass against the model envelope is `O(1/c)`.**  Pointwise
+`m |a| E² = (C²/c) |a|/xi'`, because the Liouville weight `m = xi/xi'` cancels the envelope's `1/xi`; the
+mass bound then gives `127 C²/c`. -/
+theorem integral_lgWeight_abs_defect_envelope_le {s c C A B : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hc : 0 < c) (hA : 1 < A) (hAB : A ≤ B) :
+    (∫ t in A..B, lgWeight s t * |lgNormalFormDefect s c (radialProlateQ s c) t|
+        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2) ≤ 127 * C ^ 2 / c := by
+  have hsub : Set.uIcc A B ⊆ Set.Ioi 1 := by
+    rw [Set.uIcc_of_le hAB]
+    exact fun t ht => lt_of_lt_of_le hA ht.1
+  have heq : Set.EqOn (fun t : ℝ => lgWeight s t
+        * |lgNormalFormDefect s c (radialProlateQ s c) t|
+        * (C / Real.sqrt (c * xiEndpointPhase s t)) ^ 2)
+      (fun t : ℝ => C ^ 2 / c * defectMassIntegrand s c t) (Set.uIcc A B) := by
+    intro t ht
+    have ht1 : (1 : ℝ) < t := hsub ht
+    have hxi : 0 < xiEndpointPhase s t := xiEndpointPhase_pos hs0 hs1 ht1
+    have hV : 0 < xiSpeed s t := xiSpeed_pos hs1 ht1
+    have hsq : Real.sqrt (c * xiEndpointPhase s t) ^ 2 = c * xiEndpointPhase s t :=
+      Real.sq_sqrt (by positivity)
+    simp only [defectMassIntegrand, lgWeight, div_pow, hsq]
+    field_simp
+  rw [intervalIntegral.integral_congr heq, intervalIntegral.integral_const_mul]
+  calc C ^ 2 / c * ∫ t in A..B, defectMassIntegrand s c t
+      ≤ C ^ 2 / c * 127 :=
+        mul_le_mul_of_nonneg_left (integral_defectMassIntegrand_le (s := s) (c := c) hs0 hs1 hA hAB)
+          (by positivity)
+    _ = 127 * C ^ 2 / c := by ring
+
+/-! ## Equation (14) in approximation form for the actual radial mode -/
+
+/-- **Dunster's expansion `(14)` for the actual radial prolate mode, in approximation form.**  Under the
+hypotheses of the envelope bound, the Liouville–Green transform of the radial mode is a *fixed* linear
+combination of the two Bessel model solutions, up to `O(c^{-1})` times the common envelope:
+
+```text
+|U(x) W - (F_2(A) J_0(c xi) - F_1(A) K(c xi))| <= 2 K_0 (127 C²/c) · C/sqrt(c xi_s(x)),
+```
+
+with `K_0` the endpoint Wronskian datum divided by `W` and dressed by the Volterra exponential.  This is the
+form the Gram estimate `(17)` consumes: the leading term is the model, and the remainder carries one factor
+`c^{-1}` against the same envelope. -/
+theorem abs_radialProlate_sub_model_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hA : 1 < A) (hAB : A ≤ B)
+    (hcxi : 1 ≤ c * xiEndpointPhase s A)
+    (hR : ∀ x ∈ Set.Icc A B, HasDerivAt R (DR x) x)
+    (hDR : ∀ x ∈ Set.Icc A B, HasDerivAt DR (DDR x) x)
+    (hode : ∀ x ∈ Set.Icc A B,
+      (x ^ 2 - 1) * DDR x + 2 * x * DR x - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0) :
+    ∃ C K : ℝ, 0 ≤ C ∧ 0 ≤ K ∧ ∀ x ∈ Set.Icc A B,
+      |comparisonSol (prolateNormalFormSol R) s x * besselWronskian (c * xiEndpointPhase s A)
+          - ((lgWeight s A * (comparisonSol (prolateNormalFormSol R) s A
+                  * lgBesselModel2Deriv s c A
+                - comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s A
+                  * lgBesselModel2 s c A)) * lgBesselModel s c x
+            - (lgWeight s A * (comparisonSol (prolateNormalFormSol R) s A
+                  * lgBesselModelDeriv s c A
+                - comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s A
+                  * lgBesselModel s c A)) * lgBesselModel2 s c x)|
+        ≤ 2 * (K * (127 * C ^ 2 / c)) * (C / Real.sqrt (c * xiEndpointPhase s x)) := by
+  obtain ⟨C, hC0, hC⟩ := exists_lgBesselModel_common_envelope
+  have hsub : Set.Icc A B ⊆ Set.Ioi 1 := fun t ht => lt_of_lt_of_le hA ht.1
+  have hW : 0 < besselWronskian (c * xiEndpointPhase s A) :=
+    besselWronskian_phase_pos hs0 hs1 hc hA
+  set U := comparisonSol (prolateNormalFormSol R) s with hUdef
+  set DU := comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s
+    with hDUdef
+  have hU : ∀ t ∈ Set.Icc A B, HasDerivAt U (DU t) t :=
+    fun t ht => (radialProlate_comparison_pole_uniform hs0 hs1 (hsub ht) (hR t ht) (hDR t ht)
+      (hode t ht)).1
+  have hDU : ∀ t ∈ Set.Icc A B, HasDerivAt DU (-(lgFirstOrderCoeff s t) * DU t
+      - (c ^ 2 * xiSpeed s t ^ 2 + lgNormalFormDefect s c (radialProlateQ s c) t) * U t) t :=
+    fun t ht => (radialProlate_comparison_pole_uniform hs0 hs1 (hsub ht) (hR t ht) (hDR t ht)
+      (hode t ht)).2.1
+  have hcxit : ∀ t ∈ Set.Icc A B, 1 ≤ c * xiEndpointPhase s t := by
+    intro t ht
+    have hmono := xiEndpointPhase_le_of_le hs0 hs1 hA.le ht.1
+    have := mul_le_mul_of_nonneg_left hmono hc.le
+    linarith
+  have hEnv : ∀ t ∈ Set.Icc A B,
+      |lgBesselModel s c t| ≤ C / Real.sqrt (c * xiEndpointPhase s t)
+        ∧ |lgBesselModel2 s c t| ≤ C / Real.sqrt (c * xiEndpointPhase s t) :=
+    fun t ht => hC s c t (hcxit t ht)
+  have hac : ContinuousOn (fun t : ℝ => lgNormalFormDefect s c (radialProlateQ s c) t)
+      (Set.Icc A B) := (continuousOn_lgNormalFormDefect_radialProlate hs0 hs1).mono hsub
+  -- the envelope bound on the solution, with the Volterra exponential estimated
+  have hmainbound := abs_perturbed_le_lgEnvelope_mul_exp
+    (a := fun t : ℝ => lgNormalFormDefect s c (radialProlateQ s c) t)
+    hs0 hs1 hc hA hAB hC0 hcxi (fun y hy => hC s c y hy) hac hU hDU
+  set S := |lgWeight s A * (U A * lgBesselModelDeriv s c A - DU A * lgBesselModel s c A)|
+    + |lgWeight s A * (U A * lgBesselModel2Deriv s c A - DU A * lgBesselModel2 s c A)| with hSdef
+  set K := S * Real.exp (2 * C ^ 2 / (c * besselWronskian (c * xiEndpointPhase s A)) * 127)
+    / besselWronskian (c * xiEndpointPhase s A) with hKdef
+  have hS0 : 0 ≤ S := by
+    rw [hSdef]
+    positivity
+  have hK0 : 0 ≤ K := by
+    rw [hKdef]
+    exact div_nonneg (mul_nonneg hS0 (Real.exp_nonneg _)) hW.le
+  have hUb : ∀ t ∈ Set.Icc A B, |U t| ≤ C / Real.sqrt (c * xiEndpointPhase s t) * K := by
+    intro t ht
+    have hexp : (∫ u in A..t, 2 * (lgWeight s u
+          * |lgNormalFormDefect s c (radialProlateQ s c) u|)
+          * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ 2
+          / besselWronskian (c * xiEndpointPhase s A))
+        ≤ 2 * C ^ 2 / (c * besselWronskian (c * xiEndpointPhase s A)) * 127 :=
+      integral_volterra_exponent_le hs0 hs1 hc hW hA ht.1
+    have hE0 : 0 ≤ C / Real.sqrt (c * xiEndpointPhase s t) :=
+      div_nonneg hC0 (Real.sqrt_nonneg _)
+    refine le_trans (hmainbound t ht) ?_
+    rw [hKdef]
+    have hstep : Real.exp (∫ u in A..t, 2 * (lgWeight s u
+          * |lgNormalFormDefect s c (radialProlateQ s c) u|)
+          * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ 2
+          / besselWronskian (c * xiEndpointPhase s A))
+        ≤ Real.exp (2 * C ^ 2 / (c * besselWronskian (c * xiEndpointPhase s A)) * 127) :=
+      Real.exp_le_exp.mpr hexp
+    have hmul : S * Real.exp (∫ u in A..t, 2 * (lgWeight s u
+          * |lgNormalFormDefect s c (radialProlateQ s c) u|)
+          * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ 2
+          / besselWronskian (c * xiEndpointPhase s A))
+        ≤ S * Real.exp (2 * C ^ 2 / (c * besselWronskian (c * xiEndpointPhase s A)) * 127) :=
+      mul_le_mul_of_nonneg_left hstep hS0
+    have hdiv : C / Real.sqrt (c * xiEndpointPhase s t)
+          / besselWronskian (c * xiEndpointPhase s A) * (S * Real.exp (∫ u in A..t,
+            2 * (lgWeight s u * |lgNormalFormDefect s c (radialProlateQ s c) u|)
+            * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ 2
+            / besselWronskian (c * xiEndpointPhase s A)))
+        = C / Real.sqrt (c * xiEndpointPhase s t)
+          * (S * Real.exp (∫ u in A..t,
+            2 * (lgWeight s u * |lgNormalFormDefect s c (radialProlateQ s c) u|)
+            * (C / Real.sqrt (c * xiEndpointPhase s u)) ^ 2
+            / besselWronskian (c * xiEndpointPhase s A))
+            / besselWronskian (c * xiEndpointPhase s A)) := by
+      field_simp
+    rw [hdiv]
+    exact mul_le_mul_of_nonneg_left
+      (div_le_div_of_nonneg_right hmul hW.le) hE0
+  -- integrability of the two transport integrands and of the mass integrand
+  have hUcont : ContinuousOn U (Set.Icc A B) :=
+    fun t ht => ((hU t ht).continuousAt).continuousWithinAt
+  have hprod : ∀ (V : ℝ → ℝ), ContinuousOn V (Set.Ioi 1) → ∀ x ∈ Set.Icc A B,
+      IntervalIntegrable (fun t : ℝ => lgWeight s t
+        * lgNormalFormDefect s c (radialProlateQ s c) t * (U t * V t)) MeasureTheory.volume A x := by
+    intro V hV x hx
+    have hxsub : Set.uIcc A x ⊆ Set.Icc A B := by
+      rw [Set.uIcc_of_le hx.1]
+      exact fun t ht => ⟨ht.1, le_trans ht.2 hx.2⟩
+    have hIoi : Set.uIcc A x ⊆ Set.Ioi 1 := fun t ht => hsub (hxsub ht)
+    exact (((((continuousOn_lgWeight hs0 hs1).mono hIoi).mul
+      ((continuousOn_lgNormalFormDefect_radialProlate hs0 hs1).mono hIoi)).mul
+      ((hUcont.mono hxsub).mul (hV.mono hIoi)))).intervalIntegrable
+  refine ⟨C, K, hC0, hK0, ?_⟩
+  refine abs_perturbed_sub_model_le (a := fun t : ℝ => lgNormalFormDefect s c (radialProlateQ s c) t)
+    (E := fun t : ℝ => C / Real.sqrt (c * xiEndpointPhase s t)) (K := K)
+    (M := 127 * C ^ 2 / c) hs0 hs1 hc hA hAB hK0 (by positivity) hU hDU hEnv hUb
+    (fun x hx => hprod (lgBesselModel s c) (continuousOn_lgBesselModel hs0) x hx)
+    (fun x hx => hprod (lgBesselModel2 s c) (continuousOn_lgBesselModel2 hs0 hs1 hc) x hx)
+    (fun x hx => intervalIntegrable_lgWeight_abs_defect_envelope hs0 hs1 hc hA hx.1)
+    (fun x hx => integral_lgWeight_abs_defect_envelope_le hs0 hs1 hc hA hx.1)
+
+
 end GaloisForLFunctions.RHTower
 
 end

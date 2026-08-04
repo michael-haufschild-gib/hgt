@@ -273,3 +273,21 @@ Write a review paper whose route claims are traceable to exact Lean declarations
   R's nonclassical architecture. They are not a separate route and not a post-J successor. The
   remaining Route-R premise is source-derived global curvature annihilation/flatness, not
   construction of a nonseparable differential.
+- 2026-08-04 — Routes D2, G, P, and Q re-audited against committed HEAD `8014568e`. D2 remains
+  open and unchanged at its literal continued prime--Gamma high-frequency ceiling; new absolute
+  Euler-tail estimates lie on `Re(s)>1` and do not cross the continuation wall. G has genuine new
+  source-level progress: literal Suzuki screw function, regular/distributional kernel,
+  cross-correlation pairing, parity decomposition, and finite prime-power Hankel carrier are now
+  Lean-formalized. They close source provenance but not the source-selected cofinal two-angle
+  meromorphic limit or Xi/de Branges identification.
+- 2026-08-04 — Route P's exact quotient is now stated fully: compact Thorin exponent
+  representation, compact Markov germ representation, and RH are equivalent; every witness is
+  unique and equals the canonical Xi-divisor measure. The fixed separated polar-atom continuation
+  is closed by the invariant quarter-tilt divergence. Its open core remains source construction of
+  the coupled positive compact carrier.
+- 2026-08-04 — Route Q is retained as secondary but separated from P. Its moving positive
+  hyperbolic theta carrier gives the exact nonlinear response, while raw and `alpha=1` reciprocal
+  fixed carriers fail. The unique source-selected `alpha_*>1` carrier matches moments zero and one;
+  degree two is the next analytic falsification gate. A fixed boundary Markov representation
+  transports exactly to Route P, so Q's independent alternatives are all-degree control of the
+  selected theta carrier or direct Cassini--Jensen saturation.

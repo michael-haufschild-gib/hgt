@@ -4,11 +4,15 @@
 - **Stage:** 1 — in progress
 - **Type:** RESEARCH PROGRAM / SOURCE-PURE SELECTION / FUNCTION-FIELD CONTROL /
   RELATIVE LOCALIZATION / ARAKELOV COMPLETION
-- **Statement:** Route R is flat before scalarization.  Its RH-bearing open core is construction,
-  from the literal ordinary-prime source, of a nonzero scalar or relative descent on which inverse
-  duality equals positive adjunction.  The five programs below determine the exact mathematical
-  type of that missing descent and exclude flatness, reciprocity, determinant-line, and
-  localization theatre.
+- **Statement:** Route R is flat before scalarization. Its literal ordinary-prime source now has a
+  retained zero-isotropy relative class, a strict prime/depth/divisor-faithful map to the resolved
+  Xi complex, a source Stokes regulator descending to `H¹` with period one on that class, a
+  positive parallel resolved polarization, and an unconditional source-pure norm-conservative
+  selection theorem. Its RH-bearing open core is a graded variable-ideal,
+  coefficient-faithful singular Cartier comparison identifying that resolved boundary and metric
+  with the fixed physical same-fibre Xi conormal. The five programs below determine the exact
+  mathematical type of that comparison and exclude flatness, reciprocity, determinant-line,
+  fixed-Hilbert, and localization theatre.
 - **Parents:**
   - `route-r-resolved-bv-wold-source-frame-annihilation.md`;
   - `route-r-essential-edge-occupation-det2-bv-relative-class.md`;
@@ -140,10 +144,16 @@ simultaneously carries:
 - regular grades (k\ge2): \(\operatorname{Tr}(E_pQ)^k=Z_p(k)\), hence the `det2` moments;
 - singular grade (1): \(\operatorname{Res}_{s=1}Z_p(s)=1-p^{-1}\), the BV/Wold first trace.
 
-This is a genuine graded relative class.  The current adelic CCM corpus now constructs the actual
-class-space cyclic restriction, coefficientwise projective cyclic topology, and quotient by the
-closure of the reduced restriction range.  It does **not** yet construct a mixed complex, exact
-triangle, or connecting morphism whose boundary is the Route-R BV/Wold class.
+This is a genuine graded relative class. The corpus now constructs both its essential-edge
+operator realization and a literal rational-adelic zero-isotropy relative complex. The latter has
+`D₁D₀=0`, retains the ordinary-prime cocycle because prime-scaling-fixed Schwartz vectors vanish at
+the zero adele, and admits a strict chain map to the resolved actual-Xi complex. The source class
+lands nontrivially, retaining prime, depth, divisor, and leading-jet provenance, as an exact target
+boundary annihilated by the next differential. Thus existence of a source complex, connecting
+class, and strict resolved comparison is no longer open. A bilateral prime-orbit sum supplies an
+independent source Stokes regulator: it kills every relative boundary, descends to genuine `H¹`,
+and evaluates to one on the retained class. Source Stokes flatness and non-erasure are therefore
+also closed; they do not identify the scalar Cartier fibre.
 
 Parent theories provide three legitimate carriers:
 
@@ -159,11 +169,14 @@ exact restriction:
 > zero.  The class must measure failure of scalar descent, closure, or regularization—precisely a
 > relative boundary—not source curvature.
 
-`[OPEN CORE] [ROUTE_R_REGULAR_SINGULAR_CONNECTING_CLASS]` Construct a strict pre-specialization
-extension or exact triangle in which `(L1)` is one class with regular `det2` and singular BV faces,
-and prove that its connecting morphism is the scalar-descent obstruction while its resolved pullback
-is null.  Then identify its nonzero principal conormal landing.  Neither abstract excision nor the
-current closed cyclic cokernel supplies these identifications automatically.
+`[OPEN CORE] [ROUTE_R_REGULAR_SINGULAR_CARTIER_COMPARISON]` Extend the constructed strict resolved
+comparison to a graded variable-ideal singular Cartier comparison whose `ell1` coefficient data
+survive, and prove that its resolved target boundary equals the fixed scalar physical landing on
+the actual leading Xi conormal. The actual/Fisher edge differs by an `ell1` correction throughout
+the Xi strip, but both reflected Fisher sectors lie in one fixed `ell2` carrier only for
+`|2 Re(rho)-1|<1/2`; therefore a fixed Hilbert ideal cannot supply the full comparison. Neither
+abstract excision nor the exact closed cyclic recipient supplies this identification
+automatically.
 
 ## Program 3: relation-valued reciprocity retaining labels
 
@@ -190,15 +203,19 @@ zero boundary on the dense cross-prime arithmetic core is the full source space 
 fibre; if single-valued it is the zero graph.  Thus neither graph completion of the old zero
 boundary nor unrestricted multivaluedness can be the missing annihilator.
 
-`[PROVED HERE] [RELATION VERDICT]` Label-retaining reciprocity exists and is nonselective.  The
-missing extra datum is a positive Hermitian functor or regulator on the same labelled relation,
-faithful on the principal conormal, for which inverse relation and adjoint relation coincide.
-Orbitwise reciprocity only sends a modulus to its inverse and permits off-line pairs.
+`[PROVED HERE] [RELATION VERDICT]` Label-retaining reciprocity exists and is nonselective. A
+positive Hermitian functor on the labelled resolved relation now also exists: its fibre metric is
+strictly positive and every resolved transition is an isometry. Orbitwise reciprocity and this
+transported metric both permit every rate. The load-bearing datum is identification with the
+fixed same-fibre Cartier metric on the principal conormal; their difference is an explicit strict
+square off rate zero.
 
-`[OPEN CORE] [ROUTE_R_RELATION_DAGGER_DESCENT]` Construct that same-source dagger realization before
-divisor specialization and prove it is nonzero and conservative on the arithmetic conormal.  A
-relation field, groupoid law, or closed graph without this positive same-fibre identification adds
-no selection.
+`[OPEN CORE] [ROUTE_R_RELATION_DAGGER_IDENTIFICATION]` Prove from the literal source that the
+constructed resolved dagger realization agrees with the fixed Cartier dagger on the arithmetic
+conormal, through the variable-ideal singular comparison of Program 2. The unconditional theorem
+`normConservative_sourceCharacterFibre_descent_dichotomy` then forces either zero descent or rate
+zero; coefficient-faithful nonvanishing must exclude the zero branch. A relation field, groupoid
+law, or closed graph without this same-fibre identification adds no selection.
 
 ## Program 4: archimedean place and determinant geometry
 
@@ -260,7 +277,9 @@ Therefore (e^{ac}=1), hence (ac=0), and (a=0).
 This theorem contains neither `XiDivisorSupport` nor a zero coordinate, and it does not define the
 rate as (2\operatorname{Re}\rho-1).  It is an unconditional source theorem.  It is also only a
 consumer: the arithmetic work is to construct (T), prove it nonzero on the completed principal
-conormal, and derive norm conservation from the source.
+conormal, and derive norm conservation from the source. Its generic form is now formalized in
+`SourceCharacterFibreConservativeDescentLaw.lean`; the generic resolved connection and
+`D₁D₀=0` law are formalized in `HTGeometry/TwoRecordResolvedConnection.lean`.
 
 `[OPEN CORE] [ROUTE_R_SOURCE_PURE_NONZERO_CONSERVATIVE_DESCENT]` Construct that (T) from the
 regular/singular relative determinant character of Programs 2 and 4, with the relation-valued
@@ -273,25 +292,33 @@ of polarized Frobenius similitude.
 literal prime/depth source
   -> inverse-prime occupation operator
   -> one graded relative zeta class (regular det2 + singular BV)
-  -> resolved labelled triangular relation (flat for every rate)
+  -> retained rational-adelic zero-isotropy class
+  -> bilateral source Stokes regulator, period one on H1 class
+  -> strict source-to-resolved-Xi chain map
+  -> resolved labelled triangular relation (flat and positively polarized for every rate)
   -> Arakelov/analytic-torsion infinity correction
-  -> relative connecting/descent class
-  -> positive same-fibre dagger realization, nonzero on source conormal
+  -> graded variable-ideal singular Cartier comparison
+  -> fixed same-fibre dagger identification, nonzero on source conormal
   -> norm-conservative scalar character
   -> centered rate zero.
 ```
 
-Only the last implication is formal linear algebra.  The unresolved scientific core is the middle
-three arrows: relative connecting class, infinity-corrected determinant character, and nonzero
-positive dagger descent.
+The source relative class, period-one Stokes regulator, strict resolved map, positive transported
+frame, and last selection implication are formalized. The unresolved scientific core is the
+middle comparison: assemble the
+infinity correction with a graded variable ideal, retain coefficients, and identify the resolved
+boundary/metric with the fixed physical Cartier fibre without allowing zero descent.
 
-## External boundary through 3 August 2026
+## External boundary through 4 August 2026
 
 - Deligne's Weil theorem supplies the function-field purity endpoint; the corpus does not contain
   etale cohomology or a formal proof of Weil II.
 - Connes--Consani--Marcolli construct the cyclic-homology cokernel of the adelic restriction map and
   express the explicit formula as a Lefschetz trace formula; their RH endpoint is positivity of the
-  trace pairing, not the Route-R BV/Wold connecting class.
+  trace pairing. The corpus now realizes the exact closed nonunital strong recipient, descended
+  Lefschetz/Real/Clifford structure, and a separate prime-isotropy strict resolved-Xi chain map.
+  The corpus also has a bilateral source Stokes regulator detecting that prime-isotropy class with
+  period one. Their literature still does not provide Route R's singular Cartier comparison.
 - Blumberg--Mandell supply localization cofiber sequences for THH/TC and compatibility with the
   cyclotomic trace; Hesselholt realizes Hasse--Weil zeta regularized determinants in THH Tate
   cohomology over finite fields.  Neither result constructs the number-field Route-R class.
@@ -320,8 +347,10 @@ mathematics.
 6. Ordinary chain maps cannot turn a zero resolved square into nonzero scalar curvature.
 7. Abstract localization supplies a triangle but not the arithmetic boundary class.
 8. A positive target may erase the principal conormal; nonzero faithfulness is load-bearing.
-9. Defining target topology, norm, or harmonic space from Xi evaluation restates RH.
-10. Generalized-prime off-line systems remain falsifiers unless excluded by a proved property of
+9. A nonzero source `H¹` period proves source non-erasure but does not identify a resolved target
+   boundary with the fixed scalar Cartier fibre.
+10. Defining target topology, norm, or harmonic space from Xi evaluation restates RH.
+11. Generalized-prime off-line systems remain falsifiers unless excluded by a proved property of
     the literal integer occupation/BV/Gamma/Arakelov source.
 
 ## Gates
@@ -329,17 +358,20 @@ mathematics.
 - [x] resolved-flat/scalar-curved correction incorporated
 - [x] five programs stated with distinct theorem and open-core boundaries
 - [x] internal corpus collision audit
-- [x] targeted primary-literature audit through 3 August 2026
+- [x] targeted primary-literature audit through 4 August 2026
 - [x] dependency-closed paper proof of generic two-record resolution
 - [x] dependency-closed paper proof of function-field scalar curvature formula
 - [x] dependency-closed paper proof locating purity at positive Frobenius similitude
 - [x] dependency-closed paper proof of divisor-free source-pure selection theorem
 - [x] relation-valued reciprocity classified as exact but nonselective
 - [x] Arakelov degree correction separated from determinant/purity content
-- [ ] unconditional Lean formalization of newly isolated generic/function-field/selection results
-- [ ] construct Route-R regular/singular connecting class
+- [x] unconditional Lean formalization of generic two-record resolution and source-pure selection
+- [ ] unconditional Lean formalization of the literal function-field `(F1)`--`(F3)` bridge
+- [x] construct retained prime-isotropy relative class and strict resolved-Xi chain map
+- [x] construct source Stokes regulator descending to `H¹` and detecting the class with period one
+- [ ] construct Route-R graded variable-ideal regular/singular Cartier comparison
 - [ ] construct infinity-corrected relative determinant character
-- [ ] construct nonzero source-derived positive dagger descent
+- [ ] prove coefficient-faithful nonzero identification of resolved and fixed Cartier daggers
 - [ ] RH
 
 ## Literature
@@ -361,4 +393,3 @@ mathematics.
   https://arxiv.org/abs/2310.18423.
 - A. Connes, C. Consani, H. Moscovici, *Zeta Spectral Triples*,
   https://arxiv.org/abs/2511.22755.
-

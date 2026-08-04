@@ -8442,3 +8442,118 @@ What remains for `(T)` is to collapse the right-hand side: bound `1/log(2^k z) �
 `one_sub_exp_neg_ge`, giving `2(log 2 + 2C)/((σ−1)·log z·log 2)` — the constant
 `2(log 2 + 2C)/log 2` at `σ = 1 + 1/log z`.  Every ingredient of that collapse is now a theorem;
 only the arithmetic remains.
+
+### `(T)` is proved
+
+`RHTower/Sieve/PrimeTailBound.lean` (continued), unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+- `rpow_two_pow_mul` — `(2^k z)^{−(σ−1)} ≤ (2^{−(σ−1)})^k`, since `z^{−(σ−1)} ≤ 1`.
+- **`sum_rpow_bigPrimeSet_le_const`** — for `z ≥ 2`, `1 < σ`, `σ − 1 ≤ 1`, uniformly in `K`:
+
+      ∑_{z < p ≤ 2^K z} p^{−σ}  ≤  ((log 2 + 2C)/log z) · 2/((σ−1)·log 2).
+
+- **`sum_rpow_bigPrimeSet_le_abs`** — at the standard abscissa `σ = 1 + 1/log z` (`z ≥ 3`):
+
+      ∑_{z < p ≤ 2^K z} p^{−(1 + 1/log z)}  ≤  2(log 2 + 2C)/log 2,
+
+  **an absolute constant, uniform in `z` and in the truncation.**
+
+This is `(T)`.  The two factors cancel exactly as designed: the per-block decay `1/log z` from the
+sharp Mertens window against the geometric sum `2/((σ−1)log 2) = 2 log z/log 2` from
+`one_sub_exp_neg_ge`.  Neither factor alone is bounded; only the product is, and it is bounded by a
+constant with no residual dependence on `z`.
+
+#### Consequence: the Möbius distance lower bound is now in reach
+
+With `(T)` and `PrimeSigmaShift.abs_sum_weight_shift_le`, the chain recorded earlier closes:
+
+    ∑_{p ≤ z} cos(t log p)/p  ≥  −log((20/A)·log⁷|t|) − π²/6 − 2(log 2 + 2C)/log 2 − (1 + log 4/log z),
+
+so `D(μ, χ_t; p ≤ z)² = ∑_{p≤z}(1 + cos(t log p))/p ≥ ∑_{p≤z} 1/p − O(log log|t|)` — the lower bound
+`MoebiusDistance.lean` records as missing.  What remains is to assemble these four inequalities and
+to pass from the tower truncation `2^K z` to all primes above `z`.
+
+#### `(T)` in usable form
+
+`bigPrimeSet_mono` and **`sum_rpow_bigPrimeSet_le_abs'`** remove the tower restriction: for **every**
+upper limit `Y`, not just `Y = 2^K z`,
+
+    ∑_{z < p ≤ Y} p^{−(1 + 1/log z)}  ≤  2(log 2 + 2C)/log 2,
+
+because any `Y` is covered by the tower (`Y < 2^Y ≤ 2^Y·z`) and the terms are nonnegative.
+
+#### The one remaining mismatch
+
+The strip bound `le_tsum_re_prime_cpow_strip` is a statement about `∑'` over **all** primes — it comes
+from the Euler product, so it cannot be localised to a window.  Subtracting the tail therefore needs
+`(T)` in `tsum` form:
+
+    ∑'_{p > z} p^{−σ}  ≤  2(log 2 + 2C)/log 2,
+
+which follows from the finite version by `tsum_le_of_sum_le` (all finite subsums are bounded, terms
+are nonnegative), given summability of `p ↦ p^{−σ}` over `Nat.Primes` for `σ > 1`.
+
+That conversion is the next step.  It is pure plumbing — mapping a `Finset Nat.Primes` into a
+`bigPrimeSet` window through the coercion `Nat.Primes → ℕ` — with no analytic content, and it is the
+last item before the four inequalities assemble into
+
+    D(μ, χ_t; p ≤ z)²  ≥  ∑_{p ≤ z} 1/p − O(log log|t|).
+
+### The Möbius distance lower bound is proved
+
+The four inequalities are now assembled.  Three new modules, all unconditional
+(`[propext, Classical.choice, Quot.sound]`).
+
+**`RHTower/Sieve/PrimeTailBound.lean` (continued) — `(T)` as a `tsum`.**
+
+- `primeTailTerm z σ p = if z < p then p^{−σ} else 0`, with `primeTailTerm_nonneg` and
+  `summable_primeTailTerm` (comparison with `Real.summable_nat_rpow` composed with
+  `Nat.Primes.coe_nat_injective`).
+- **`tsum_primeTailTerm_le`** — for `z ≥ 3`,
+
+      ∑'_{p prime, p > z} p^{−(1 + 1/log z)}  ≤  2(log 2 + 2C)/log 2.
+
+  The passage from the finite bound is `isLUB_hasSum`: every finite subsum of a nonnegative family
+  is at most the constant, so the sum, being the least upper bound of the finite subsums, is too.
+  Each finite `Finset Nat.Primes` maps into the window `bigPrimeSet z Y` with `Y` its own supremum,
+  where `sum_rpow_bigPrimeSet_le_abs'` applies.  (mathlib's `tsum_le_of_sum_le` does not exist on
+  this toolchain; `isLUB_hasSum` is the working replacement.)
+
+**`RHTower/Sieve/PrimeCosineSum.lean` — the cosine sum on the one-line.**
+
+- `primeSubtypeLE z` — the primes up to `z` as a `Finset Nat.Primes`, with `mem_primeSubtypeLE` and
+  `sum_primeSubtypeLE` transporting sums to `Nat.primesLE z`.  (`Nat.Primes` is a `def`, not an
+  abbreviation, so `rw` with `Finset.mem_subtype` / `Finset.sum_subtype_eq_sum_filter` fails at
+  `instances` transparency; both must be applied in term mode.)
+- `norm_prime_tail_re_le`, **`tsum_re_prime_cpow_split`** — the head–tail split
+
+      ∑'_p Re(p^{−(σ+it)})  =  ∑_{p ≤ z} p^{−σ} cos(t log p)  +  ∑'_{p > z} Re(p^{−(σ+it)}),
+
+  the head evaluated through the corpus's `RHTower.re_natCast_cpow_neg`.
+- **`abs_tsum_prime_tail_re_le`** — the truncation error is at most `∑' primeTailTerm z σ`.
+- **`sum_cos_div_prime_ge`** — for `z ≥ 3`, `|t| ≥ 9` and `1/log z ≤ A/log⁹|t|`,
+
+      ∑_{p ≤ z} cos(t log p)/p  ≥  −log((20/A)·log⁷|t|) − π²/6 − 2(log 2 + 2C)/log 2 − (1 + log 4).
+
+  This is the estimate `MoebiusDistance.lean` recorded as "the zero-free-region input the corpus does
+  not have".  It is unconditional and uniform in the frequency.
+
+**`RHTower/Sieve/MoebiusFrequencyDistance.lean` — the distance at every frequency.**
+
+- `mulDistSqPair_neg_one_split` — `D(f, χ_t; P)² = ∑_P 1/p + ∑_P cos(t log p)/p` for `f = −1` on `P`.
+- `nine_mul_logLog_le_logLog` — the coupling `1/log z ≤ A/log⁹|t|` forces
+  `log log z ≥ 9 log log|t| − log A`.
+- `log_strip_bound_eq` — `log((20/A) log⁷|t|) = log(20/A) + 7 log log|t|`.
+- **`two_mul_logLog_abs_sub_le_mulDistSqPair`** — for `z ≥ 3`, `|t| ≥ 9`, `1/log z ≤ A/log⁹|t|` and
+  `f ≡ −1` on the primes up to `z`,
+
+      D(f, χ_t; p ≤ z)²  ≥  2 log log|t|  −  moebiusFrequencyConst,
+
+  with `moebiusFrequencyConst` absolute.
+
+The coupling between `z` and `t` is a gain, not a cost: the strip demands `log⁹|t|/A ≤ log z`, which
+supplies `9 log log|t|` of Mertens mass while the strip loses only `7 log log|t|`.  The surplus
+`2 log log|t|` is the content: **the Möbius function is quantitatively far from every character
+`χ_t` in the range, not merely from the trivial one.**  This closes the input that
+`HalaszDichotomy`/`HalaszWindow` needs on its distance side.

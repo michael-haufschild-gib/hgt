@@ -189,6 +189,11 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized the closedness/symmetry bridge, the exactness of a
+  closed holomorphic one-form, and the exponential covering of a stage with its
+  periodicity descent.
+- 2026-08-04 — Formalized the Poincaré lemma in degree one on a
+  finite-dimensional complex space, by differentiating under the integral sign.
 - 2026-08-04 — Formalized the first cohomology of a one-dimensional character
   stage: primitives on the punctured plane through the exponential covering,
   and `H^1(ℂ^×) = ℂ · d log z`.
@@ -422,12 +427,51 @@ here.
 - `deningerStageOne_cohomology_unique` — the coefficient is unique.  Together with the independence
   result this is `H^1(ℂ^×) ≅ ℂ` with generator `d log z`: the case `r = k = 1` of `(5)`, closed.
 
+### The Poincaré lemma in degree one landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPoincareOneForm.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.  mathlib has primitives of holomorphic functions only in
+one variable; this is the several-variable statement in degree one.
+
+- `deningerHomotopyPrimitive` — the integral of a one-form along the segment from the origin.
+- `deningerHomotopyDeriv`, `deningerHomotopyDeriv_hasFDerivAt`, `deningerHomotopyDeriv_continuous` —
+  the derivative of the integrand in the base point, its differentiability and its continuity in the
+  segment parameter.
+- `deningerHomotopyDeriv_eq_deriv` — the symmetry of the derivative of the form turns the integrand
+  into a total derivative in the segment parameter.
+- `deningerHomotopyPrimitive_hasFDerivAt` — **a holomorphic one-form on a finite-dimensional complex
+  space whose derivative is symmetric has a primitive.**  The proof differentiates under the
+  integral sign, dominating the derivative on the compact set swept by the segments to a ball.
+
+### The exactness bridge and the exponential covering landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerClosedOneForm.lean` and
+`formal/GaloisForLFunctions/RHTower/DeningerExpCover.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerFormFunctional` — a one-form as a family of functionals.
+- `deningerSymm_of_closed` — **closedness of a one-form is the symmetry of the derivative of its
+  functional**, which is the hypothesis the Poincaré lemma needs.
+- `deningerExists_primitive_of_closed` — **a closed holomorphic one-form on a finite-dimensional
+  complex space is the exterior derivative of a function**.
+- `deningerExpMap`, `deningerExpMap_mem`, `deningerExpDeriv`, `deningerExpMap_hasFDerivAt`,
+  `deningerExpMap_analyticAt` — the coordinatewise exponential covering of a stage, its image in the
+  stage and its derivative.
+- `deningerExpMap_periodic`, `deningerPeriodic_int`, `deningerPeriodic_descent` — **a function that
+  is `2πi`-periodic in every coordinate is constant on the fibres of the covering**, which is the
+  descent that turns a primitive on the covering space into a function on the stage.
+
 ### Remaining
 
 1. **`(5)`--`(6)`**, the de Rham cohomology `H^k((ℂ^×)^r, ℂ) ≅ Λ^k(L ⊗ ℂ)` and its colimit; mathlib
    has no de Rham cohomology of a complex manifold.  The generators are built in every degree,
    proved holomorphic, closed, nowhere zero and equivariant for the transitions; the map
    `L ⊗ ℂ → H^1` is proved injective for every `r`; and the comparison is closed for `r = k = 1`.
-   What is left is surjectivity in degree one for `r ≥ 2` and the comparison in higher degrees.
+   What is left in degree one for `r ≥ 2` is the assembly: pull the form back along the exponential
+   covering, take the primitive given by the Poincaré lemma, subtract the linear function whose
+   coefficients are the periods, and descend the result — every ingredient is now formalized.  A
+   separate gap is that the descended primitive is only known to be differentiable: upgrading it to
+   analytic needs "complex differentiable implies analytic" in several variables, which mathlib does
+   not have in any form.  Higher degrees need the Poincaré lemma in degree `k`.
 2. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
    mathlib — and the pro-Ind global-section formalism.

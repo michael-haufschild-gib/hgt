@@ -2,6 +2,8 @@ import GaloisForLFunctions.RHTower.DeningerStageDeRham
 import Mathlib.Analysis.Calculus.ParametricIntervalIntegral
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import Mathlib.Analysis.Normed.Module.FiniteDimension
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 /-!
 # The Poincaré lemma for holomorphic one-forms
@@ -79,7 +81,7 @@ namespace RHTower
 
 section PoincareMain
 
-open MeasureTheory intervalIntegral
+open MeasureTheory
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimensional ℂ E]
 
@@ -168,11 +170,18 @@ theorem deningerHomotopyPrimitive_hasFDerivAt {ω : E → (E →L[ℂ] ℂ)}
     exact fun x => (hana' x (Set.mem_univ x)).continuousAt
   obtain ⟨C₁, hC₁⟩ := (deningerScale_image_isCompact w₀).exists_bound_of_continuousOn
     hcont.continuousOn
-  have hcontOn' : ContinuousOn (fderiv ℂ ω) ((fun p : ℝ × E => (p.1 : ℂ) • p.2) ''
-      (Set.Icc (0 : ℝ) 1 ×ˢ Metric.closedBall w₀ 1)) := hcont'.continuousOn
+  have hKne : ((fun p : ℝ × E => (p.1 : ℂ) • p.2) ''
+      (Set.Icc (0 : ℝ) 1 ×ˢ Metric.closedBall w₀ 1)).Nonempty :=
+    ⟨(0 : ℂ) • w₀, ⟨(0, w₀), ⟨⟨le_refl 0, zero_le_one⟩, Metric.mem_closedBall_self zero_le_one⟩,
+      by norm_num⟩⟩
+  have hnormmap : Continuous fun A : E →L[ℂ] (E →L[ℂ] ℂ) => ‖A‖ := by
+    exact continuous_norm (E := E →L[ℂ] (E →L[ℂ] ℂ))
+  have hnorm : Continuous fun x : E => ‖fderiv ℂ ω x‖ := hnormmap.comp hcont' 
+  obtain ⟨p₂, hp₂mem, hp₂⟩ := IsCompact.exists_isMaxOn (deningerScale_image_isCompact w₀) hKne
+    hnorm.continuousOn
   obtain ⟨C₂, hC₂⟩ : ∃ C : ℝ, ∀ x ∈ ((fun p : ℝ × E => (p.1 : ℂ) • p.2) ''
-      (Set.Icc (0 : ℝ) 1 ×ˢ Metric.closedBall w₀ 1)), ‖fderiv ℂ ω x‖ ≤ C := by
-    exact (deningerScale_image_isCompact w₀).exists_bound_of_continuousOn hcontOn' 
+      (Set.Icc (0 : ℝ) 1 ×ˢ Metric.closedBall w₀ 1)), ‖fderiv ℂ ω x‖ ≤ C :=
+    ⟨‖fderiv ℂ ω p₂‖, fun x hx => hp₂ hx⟩
   set B : ℝ := max C₁ 0 + max C₂ 0 * (‖w₀‖ + 1) with hB
   have hBnonneg : 0 ≤ B := by
     have h1 : (0 : ℝ) ≤ max C₁ 0 := le_max_right _ _
@@ -199,9 +208,7 @@ theorem deningerHomotopyPrimitive_hasFDerivAt {ω : E → (E →L[ℂ] ℂ)}
               exact Metric.mem_closedBall.1 hxc
             linarith
     have htn : ‖(t : ℂ)‖ ≤ 1 := by
-      rw [Complex.norm_ofReal]
-      rw [abs_of_nonneg ht01.1]
-      exact ht01.2
+      simp [abs_of_nonneg ht01.1, ht01.2]
     refine ContinuousLinearMap.opNorm_le_bound _ hBnonneg fun u => ?_
     rw [deningerHomotopyDeriv_apply]
     have hterm1 : ‖ω (deningerScale t x) u‖ ≤ max C₁ 0 * ‖u‖ :=
@@ -235,7 +242,7 @@ theorem deningerHomotopyPrimitive_hasFDerivAt {ω : E → (E →L[ℂ] ℂ)}
       _ = B * ‖u‖ := by rw [hB]; ring
   have hmain : HasFDerivAt (deningerHomotopyPrimitive ω)
       (∫ t in (0 : ℝ)..1, deningerHomotopyDeriv ω w₀ t) w₀ := by
-    refine intervalIntegral.hasFDerivAt_integral_of_dominated_of_fderiv_le
+    refine _root_.intervalIntegral.hasFDerivAt_integral_of_dominated_of_fderiv_le
       (F := fun (x : E) (t : ℝ) => ω (deningerScale t x) x)
       (F' := fun (x : E) (t : ℝ) => deningerHomotopyDeriv ω x t)
       (bound := fun _ : ℝ => B)
@@ -252,12 +259,12 @@ theorem deningerHomotopyPrimitive_hasFDerivAt {ω : E → (E →L[ℂ] ℂ)}
         MeasureTheory.volume 0 1 :=
       (deningerHomotopyDeriv_continuous hcont hcont' w₀).intervalIntegrable 0 1
     ext u
-    rw [intervalIntegral.integral_of_le zero_le_one,
-      ContinuousLinearMap.integral_apply hint.1, ← intervalIntegral.integral_of_le zero_le_one]
+    rw [_root_.intervalIntegral.integral_of_le zero_le_one,
+      ContinuousLinearMap.integral_apply hint.1, ← _root_.intervalIntegral.integral_of_le zero_le_one]
     have hcontu : Continuous fun t : ℝ => deningerHomotopyDeriv ω w₀ t u :=
       (ContinuousLinearMap.apply ℂ ℂ u).continuous.comp
         (deningerHomotopyDeriv_continuous hcont hcont' w₀)
-    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
+    rw [_root_.intervalIntegral.integral_eq_sub_of_hasDerivAt
       (fun t _ => deningerHomotopyDeriv_eq_deriv hana hsymm w₀ u t)
       (hcontu.intervalIntegrable 0 1)]
     simp

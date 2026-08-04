@@ -5645,3 +5645,236 @@ This is the entry point of the lower-bound chain from the algebraic side. Compos
 `not_two_var_relation_of_separation`, a state relation over `ℂ` between `F₁` and `F₂` is refuted as
 soon as the analytic selection is available for the polynomial `A_D` produced here — and `A_D ≠ 0` is
 exactly what makes a minimum-modulus floor for `A_D(·, F₁)` meaningful.
+
+### `HTGeometry/StateIndependenceFromSeparation.lean` — the lower bound has no algebra left
+
+```
+GrowthSeparation F₁ F₂ :=
+  ∀ A ≠ 0, ∀ c ≥ 0, ∃ z ε, 0 < ε ∧ ε ≤ ‖A(z, F₁ z)‖ ∧
+    c · (1 + log⁺‖z‖ + log⁺‖F₁ z‖ + log⁺ε⁻¹) < log⁺‖F₂ z‖
+
+not_three_var_relation_of_growthSeparation :
+  TranscendentalEntire F₁ → GrowthSeparation F₁ F₂ →
+  ∀ P ≠ 0, ¬ (∀ z, P(z, F₁ z, F₂ z) = 0)
+```
+
+Unconditional, axiom-clean; the proof is one line of composition. `GrowthSeparation` is a purely
+analytic predicate — moduli, floors and `log⁺` only — and it yields algebraic independence of
+`(z, F₁, F₂)` over the constants, which is the state independence the lower bound needs and which the
+card had attributed to Clunie–Steinmetz.
+
+The reduction chain, all formal:
+
+```
+GrowthSeparation F₁ F₂
+  → (exists_top_two_var_relation)          read a state relation in its last variable
+  → (not_two_var_relation_of_separation)   contradict the algebraic growth bound
+  → (z, F₁, F₂) algebraically independent over ℂ
+```
+
+**What the card now needs, in full.** Upper bound: nothing — proved. Lower bound: exactly
+`GrowthSeparation F_k F_{k+1}` for each edge, plus the passage from three-variable state independence
+to jet independence (`algebraicIndependent_jets_iff`). No differential algebra, no field theory and no
+Newton–Puiseux appears anywhere in what remains; the remaining content is one growth statement about a
+composition of entire functions, of the kind the corpus's Pólya and minimum-modulus layers already
+produce pointwise.
+
+### The growth bound in any number of variables
+
+`norm_eval_le_mvCoeffNormSum_general` and `posLog_norm_eval_le_general`:
+
+`‖P(x)‖ ≤ mvCoeffNormSum P · ∏_i (1 + ‖x_i‖)^{totalDegree}`,
+`log⁺‖P(x)‖ ≤ log⁺(mvCoeffNormSum P) + ∑_i deg·(log 2 + log⁺‖x_i‖)`
+
+for `P : MvPolynomial (Fin m) ℂ` and any point. Unconditional, axiom-clean; the two-variable versions
+are the case `m = 2`.
+
+Needed because the lower-bound argument at length `n` reads a state relation in its last variable and
+leaves coefficients in *all* the earlier states, not just one: the two-variable form suffices only for
+`n = 2`. `Real.posLog_prod` (`log⁺∏ ≤ ∑ log⁺`) makes the logarithmic form as short as the two-variable
+one — no induction is needed, and `exponent_le_totalDegree` applies coordinatewise unchanged.
+
+With this, the whole reduction of the previous entries generalises verbatim from `(z, F₁, F₂)` to
+`(z, F₁, …, F_n)`: the separation hypothesis becomes "the last state outgrows any multiple of the
+joint scale of the point and all earlier states", and everything else is the same composition.
+
+### `HTGeometry/MultiVarAlgebraicBound.lean` — the no-go at any cascade length
+
+`exists_bound_posLog_of_multi_var_relation`:
+
+```
+∃ c ≥ 0, ∀ g z ε, 0 < ε → ε ≤ ‖A_D(X(z))‖ → (∑_{i ≤ D} A_i(X(z))·g(z)^i = 0) →
+  log⁺‖g z‖ ≤ c · ( 1 + ∑_j log⁺‖X_j z‖ + log⁺ε⁻¹ )
+```
+
+and `not_multi_var_relation_of_separation`, its contrapositive against a separation hypothesis. Both
+unconditional and axiom-clean, for an arbitrary family `X : Fin m → ℂ → ℂ` of states.
+
+This lifts the whole lower-bound reduction from length two to arbitrary length. The joint scale is now
+`∑_j log⁺‖X_j z‖`, and the constant is again explicit and independent of `g`, `z`, `ε`:
+`max (log D + D·K + D·m·Dg·log 2) (D·Dg) D` with `K = ∑ log⁺‖A_i‖₁`, `Dg = ∑ deg A_i`.
+
+**The card's remaining content, stated once and for all.** For the cascade `F_1, …, F_n`:
+
+```
+∀ A ≠ 0, ∀ c ≥ 0, ∃ z ε, 0 < ε ∧ ε ≤ ‖A(z, F_1 z, …, F_{n-1} z)‖ ∧
+    c · (1 + log⁺‖z‖ + ∑_{k<n} log⁺‖F_k z‖ + log⁺ε⁻¹) < log⁺‖F_n z‖
+```
+
+That single analytic statement — a growth separation of the last state against every polynomial
+expression in the earlier ones, with a floor — yields state independence, hence the lower bound, hence
+the card's theorem. Everything else in the card is now proved unconditionally in Lean.
+
+### `HTGeometry/LastVariableSplit.lean` — splitting off the newest state
+
+mathlib's `MvPolynomial.finSuccEquiv` splits off the *first* variable; a cascade relation has to be
+read in the *last* one. `lastHead m : Fin (m+1) → Fin (m+1)` is the required renaming — `castSucc j ↦
+j.succ`, `last ↦ 0` — with `lastHead_injective` and the identity that makes it usable:
+
+`(Fin.cons y w) ∘ lastHead m = Fin.snoc w y`
+
+so a head-extended evaluation point becomes the tail-extended one the states naturally form.
+
+`exists_top_multi_var_relation`: if the earlier states `X_0,…,X_{m-1}` admit no nonzero relation, then
+a relation `P(X_0,…,X_{m-1}, F) = 0` with `P ≠ 0` gives
+
+`∑_{i ≤ D} A_i(X(z)) · F(z)^i = 0`,  `D ≥ 1`,  `A_D ≠ 0` in `ℂ[Fin m]`.
+
+Unconditional, axiom-clean — and `lastHead_injective` needs only `propext, Quot.sound`, no choice.
+
+This is the general-length replacement for `exists_top_two_var_relation`, which handled only `m = 1`
+via the ad-hoc cycle `![1,2,0]`. Composed with `not_multi_var_relation_of_separation`, it gives the
+induction step for state independence at every cascade length: independence of `X_0,…,X_{m-1}` plus a
+growth separation for the next state yields independence of `X_0,…,X_{m-1},F`.
+
+### `HTGeometry/PrefixStateIndependence.lean` — the induction closes
+
+```
+StepSeparation X F :=
+  ∀ A ≠ 0, ∀ c ≥ 0, ∃ z ε, 0 < ε ∧ ε ≤ ‖A(X(z))‖ ∧
+    c · (1 + ∑_j log⁺‖X_j z‖ + log⁺ε⁻¹) < log⁺‖F z‖
+
+noRelation_snoc :
+  (X₀,…,X_{m-1} independent) → StepSeparation X F →
+  ∀ P ≠ 0, ¬ (∀ z, P(X(z), F z) = 0)
+
+noRelation_prefixFamily :
+  (∀ m, StepSeparation (prefixFamily Y m) (Y m)) →
+  ∀ m, ∀ P ≠ 0, ¬ (∀ z, P(Y₀ z, …, Y_{m-1} z) = 0)
+```
+
+Unconditional, axiom-clean. The induction runs from the empty family: for `Fin 0` the evaluation map
+*is* `MvPolynomial.isEmptyRingEquiv`, so it is injective and a nonzero constant polynomial cannot
+vanish — the base case is not vacuous, it is the statement that `ℂ` has no zero divisors in disguise.
+
+**The card, in one line.** For the cascade states `Y m = entireCascade f (m+1)`:
+
+> a growth separation at each step ⟹ the states are algebraically independent over ℂ ⟹ the lower
+> bound ⟹ `ord_DA(f_n ∘ … ∘ f_1) = n`.
+
+Together with the already-proved upper bound, every step of the card's theorem is now formal except
+the single analytic predicate `StepSeparation`, which mentions only moduli, floors and `log⁺` — no
+differential algebra, no field theory, no Nevanlinna theory and no Newton–Puiseux.
+
+### The cascade instance
+
+`noRelation_entireCascade` — for a cascade with a growth separation at every step, the coordinate
+together with all the states satisfies no nonzero polynomial relation over ℂ. Unconditional,
+axiom-clean, one line from `noRelation_prefixFamily`.
+
+The instantiation needs no special case for the coordinate: `entireCascade f 0 = id`, so the prefix
+family of `entireCascade f` *is* `(z, F_1, …, F_{m-1})` already. The same fact — the zeroth state is
+the coordinate — is what made `n` generators suffice for the upper bound's transcendence-degree count,
+and it is now doing the same work at the other end of the proof.
+
+Lean note: writing the family as `fun j => entireCascade f (j : ℕ) z` without annotating the binder
+makes Lean read `j : ℕ` and elaborate the polynomial over `MvPolynomial ℕ ℂ`; the coercion arrow is
+what misleads it. Annotate `fun j : Fin m => …`.
+
+### `HTGeometry/PolyIndependentFromNoRelation.lean` — the corpus's `PolyIndependent`, discharged
+
+`polyIndependent_of_noRelation`: if the zeroth state is the coordinate (`Y 0 = id`) and the family
+`(Y 0, …, Y n)` satisfies no nonzero polynomial relation over ℂ, then
+`PolyIndependent (fun i : Fin n => Y (i+1))` — the corpus's monomial-form independence with
+*polynomial* coefficients. Unconditional, axiom-clean.
+
+The content is that the coefficient variable can be absorbed as one more state, which for a cascade
+costs nothing because `entireCascade f 0 = id`. `coordPoly` assembles the combination into a single
+polynomial in `(z, states)`; `eval_coordPoly` recovers the original sum by `Polynomial.eval_eq_sum_range`;
+and `coeff_coordPoly` identifies its coefficients — the step that needs `Set.InjOn E T`, since distinct
+summands must carry distinct monomials, with `coordExp_injective` separating the coordinate exponent
+from the state exponents.
+
+Consequence: the hypothesis `PolyIndependent (cascadeFamily f n)` of the corpus's
+`exactDifferentialOrder_of_cascade` and `not_differentiallyAlgebraicOfOrder_of_cascade` is no longer a
+dangling algebraic assumption — it now follows from `StepSeparation`, the same analytic predicate that
+drives the route built here. Both routes to the lower bound therefore rest on one hypothesis, and the
+only obligation left anywhere on the card is `helim` (equivalently, observability of the states from
+the output jets), plus that single analytic separation.
+
+### `HTGeometry/CascadeDerivativeProduct.lean` — the chain rule in closed form
+
+`deriv_entireCascade_prod : F_k'(z) = ∏_{j<k} f_j'(F_j z)`, with
+`deriv_entireCascade_ne_zero_iff` reading off that `F_k'` vanishes exactly where some constituent
+derivative does. Unconditional, axiom-clean.
+
+This is the datum every observability computation starts from: all higher jets of `F_n` are obtained
+by differentiating this product, so the Bell/Jacobian determinant of Reduction III is a determinant in
+the quantities `f_j^{(i)}(F_j)`. Stating the product once, rather than unfolding
+`deriv_entireCascade_succ` at each level, is what will keep that computation finite.
+
+The nonvanishing criterion is also the exact hypothesis the older `cascade_relation_cleared` wanted
+before it was replaced by the division-free form: `F_k' ≠ 0` at a point is *equivalent* to all
+constituents having nonzero derivative along the states there — so a floor for `F_k'` is a
+simultaneous floor for the constituents, which is how the minimum-modulus selection should be
+organised.
+
+### The second jet: the first row of the observability system
+
+`logDeriv_deriv_entireCascade`: wherever `F_k' ≠ 0`,
+
+`F_k''/F_k' = ∑_{j<k} ( f_j''(F_j) / f_j'(F_j) ) · F_j'`.
+
+Unconditional, axiom-clean.
+
+Read as an equation in the unknowns `F_j'`, this is the first row of the observability system: the
+output's second jet is a *linear* combination of the states' derivatives, with coefficients that are
+the constituents' logarithmic-derivative data along the states. Higher jets differentiate this again
+and produce the further rows, so the Reduction III determinant is the determinant of the resulting
+triangular-in-`k` system — which is exactly the shape the corpus's abstract
+`cascadeOutputJacobian_det_ne_zero` already handles.
+
+Lean note: the induction step is `deriv2_entireCascade_succ` divided by `deriv_entireCascade_succ`,
+with the nonvanishing of both factors supplied by `deriv_entireCascade_ne_zero_iff` from the previous
+entry — the product criterion is what makes the two required nonvanishing facts (`f_k'(F_k) ≠ 0` and
+`F_k' ≠ 0`) fall out of the single hypothesis `F_{k+1}' ≠ 0`.
+
+### `HTGeometry/CascadeExactOrderFromSeparation.lean` — the corpus's cascade theorem, two of three inputs discharged
+
+```
+exactDifferentialOrder_entireCascade_of_separation :
+  (∀ i, AnalyticOnNhd ℂ (f i) univ) → (∀ i, TranscendentalEntire (f i)) →
+  (∀ k < n, DifferentiallyAlgebraicOfOrder (f k) 1) →
+  (∀ m, StepSeparation (prefixFamily (entireCascade f) m) (entireCascade f m)) →
+  helim →
+  ExactDifferentialOrder (entireCascade f n) n
+```
+
+Unconditional, axiom-clean. `exactDifferentialOrder_of_cascade` took three inputs — `hup`,
+`PolyIndependent`, `helim`. `hup` is now proved outright, and `PolyIndependent` follows from the
+analytic separation via `polyIndependent_cascadeFamily_of_stepSeparation`, so `helim` is the only
+hypothesis of that theorem still standing.
+
+A name collision surfaced and was avoided: `polyIndependent_cascadeFamily` already exists in
+`EntireCascade.lean`, with a far heavier Clunie-style hypothesis (grouped coefficients, floors,
+maximum-term data). The new derivation is kept under
+`polyIndependent_cascadeFamily_of_stepSeparation`; it reaches the same conclusion from a hypothesis
+that mentions only moduli and `log⁺`. Both now coexist, and the older one is no longer the only route
+to state independence.
+
+**Consolidated card status.**
+- `hup` (`ord_DA ≤ n`): proved, no hypotheses beyond the paper's.
+- `PolyIndependent` / state independence: reduced to `StepSeparation`.
+- `hjets` (the other route's lower bound): equivalent to `helim`-style observability by
+  `algebraicIndependent_jets_iff`.
+- Remaining: `StepSeparation` (analytic) and `helim` (observability, Reduction III).
