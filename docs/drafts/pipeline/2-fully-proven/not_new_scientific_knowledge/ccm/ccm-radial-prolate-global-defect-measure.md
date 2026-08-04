@@ -257,11 +257,68 @@ parent-theory specialization. It is `[NOT NEW SCIENTIFIC KNOWLEDGE]`.
 - D. Slepian, *Some Asymptotic Expansions for Prolate Spheroidal Wave Functions*, J. Math. Phys. 44
   (1965), 99--140.
 
-## Lean decision
+## Lean status
 
-The formal tree has no PSWF differential equation, normalized radial branch, Bessel asymptotics,
-or weak convergence of the relevant measures. Formalizing only the final oscillatory average would
-not certify the imported uniform expansion. No Lean file is added.
+**Partially formalized, 2026-08-04.**  The original decision recorded here ("the formal tree has no PSWF
+differential equation, normalized radial branch, Bessel asymptotics ...  No Lean file is added") is now out
+of date: the tree owns Bessel's equation for the integral representation, a second solution with its
+Wronskian normalisation, the `u^{-1/2}` envelopes, the large-argument phase asymptotic, the radial prolate
+equation in Liouville normal form, and the pole-uniform comparison estimate with an explicit
+`1 + O(c^{-1})` factor (see `ccm-exact-finite-aperture-first-row-vanishing.md` and
+`formal/GaloisForLFunctions/RHTower/CCMRadialProlateDefect.lean`).  What the present card adds is the
+*profile* side, in `formal/GaloisForLFunctions/RHTower/CCMRadialProlateProfileMeasure.lean`.
+
+**The radial angle and equation `(17)`:**
+
+- `radialAngle`, `radialAngle_one`, `continuous_radialAngle`, **`hasDerivAt_radialAngle`**,
+  `tendsto_radialAngle_atTop` — the angle `theta(x) = arctan(sqrt(x²-1))`, which is the card's `arccos(1/x)`,
+  with `theta(1) = 0`, `theta' = 1/(x sqrt(x²-1))` and `theta(x) -> pi/2`.
+- `profileDensity`, `profileDensity_nonneg`, `hasDerivAt_radialAngle_div_pi`,
+  `integrableOn_profileDensity` — the limiting density `1/(pi x sqrt(x²-1))` is exactly `(theta/pi)'`, and
+  its integrability on the open ray comes with the improper fundamental theorem rather than being assumed.
+- **`integral_Ioi_profileDensity`** — equation `(17)`:
+  `int_1^infinity dx/(pi x sqrt(x²-1)) = 1/2`, exactly.  No asymptotics enter: the mass is the angle swept
+  from the band edge to radial infinity, `(1/pi)(pi/2)`.
+
+**The second-order phase expansion, equation `(7)`:**
+
+- **`abs_sqrt_sq_sub_sub_le`** — the scalar Taylor bound `|sqrt(t²-s) - t + s/(2t)| <= s²/4`, uniform for
+  `t >= 1`, `0 <= s <= 1/2`.  The upper half is `(t - s/(2t))² >= t² - s`; the lower half is a polynomial
+  inequality after squaring.
+- **`abs_xiSpeed_sub_second_order_le`** — the integrand form: the Liouville speed minus its two leading
+  terms is at most `(s²/4)(t²-1)^{-1/2}`.  Multiplying by `sqrt(t²-1)` turns the statement into the scalar
+  bound, so no expansion of the singular factor is needed.
+- `intervalIntegrable_invMulSqrtSqSubOne`, **`integral_invMulSqrtSqSubOne`** — the radial angle is the exact
+  primitive of `1/(t sqrt(t²-1))` from the band edge, the integrand being singular but dominated by
+  `(t²-1)^{-1/2}`.
+- **`abs_xiEndpointPhase_sub_second_order_le`** — equation `(7)`, first half, with an explicit error:
+
+  ```text
+  |xi_s(x) - (sqrt(x²-1) - (s/2) theta(x))| <= (s²/4) log(x + sqrt(x²-1)),
+  ```
+
+  for `0 <= s <= 1/2` and `x >= 1`.  With `s = sigma²` and the separation law `sigma² = (2n+1)/c + O(c^{-2})`
+  this is `xi = sqrt(x²-1) - sigma² theta/2 + O(sigma⁴)`, uniformly on compacts — and the two leading terms
+  are exact primitives, not approximations.
+
+What remains for `(8)` is the *constant* in the large-argument Bessel asymptotic: the tree has
+`exists_besselJ0_phase_asymptotic` in the form `sqrt(u) J_0(u) = p cos u + q sin u + O(1/u)` with `p, q`
+deliberately unidentified, whereas `(8)` needs `p = q = 1/sqrt(pi)`, i.e.
+`J_0(u) = sqrt(2/(pi u)) cos(u - pi/4) + O(u^{-3/2})`.  Identifying them is a separate classical task (a
+Fresnel-type constant), independent of everything above.  `(10)`, `(16)` and `(20)` then need that constant
+plus the exact leakage identities `(13)`, which belong to the endpoint-response cards.
+
+## Lean gates
+
+- [x] Lean: the radial angle and its derivative law
+- [x] Lean: equation `(17)` — the limiting density has total mass exactly `1/2`
+- [x] Lean: equation `(7)`, phase half — the second-order expansion of `xi_sigma` with explicit error
+- [ ] Lean: the amplitude half of `(7)`, `A_sigma(x) = x^{-1/2} + O(c^{-1})`
+- [ ] Lean: the constant in the Bessel large-argument asymptotic (`p = q = 1/sqrt(pi)`)
+- [ ] Lean: equation `(8)`, the fixed-degree radial profile
+- [ ] Lean: equation `(10)`, the weak squared-profile law
+- [ ] Lean: equations `(16)`, `(20)` — total-mass matching and outer-coordinate escape (need `(13)`)
+
 
 ## Gates
 

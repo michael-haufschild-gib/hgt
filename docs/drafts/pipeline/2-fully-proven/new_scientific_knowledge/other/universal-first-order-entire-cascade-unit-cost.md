@@ -5878,3 +5878,78 @@ to state independence.
 - `hjets` (the other route's lower bound): equivalent to `helim`-style observability by
   `algebraicIndependent_jets_iff`.
 - Remaining: `StepSeparation` (analytic) and `helim` (observability, Reduction III).
+
+### `HTGeometry/PoincareRecession.lean` — the card's HT consequence, formalized
+
+The card's section *"HT consequence: universal first-order Poincaré recession"* is now Lean.
+
+- `entireCascade_const : entireCascade (fun _ => f) n = f^[n]` — a cascade with one repeated
+  constituent is the iterate, so the unit-cost law reads `ord_DA(f^{[n]}) = n`.
+- `exactDifferentialOrder_poincareApprox` — the normalized approximant
+  `z ↦ f^{[n]}(ζ + z/λ^n)` has exact order `n` whenever the iterate does, for any `λ ≠ 0`.
+- `exactDifferentialOrder_iterate_of_separation` — the unit-cost law stated directly on the iterate.
+
+All unconditional and axiom-clean. The card's justification of the approximant step was the
+triangular substitution `g_n^{(j)} = λ^{-nj}(f^{[n]})^{(j)}(ζ + z/λ^n)`; in Lean it is
+`exactDifferentialOrder_affine_precomp`, which the corpus already owned — invertible affine
+precomposition does not move the minimal order, and no jet computation is needed.
+
+Note the approximant statement needs only `λ ≠ 0`, not that the fixed point is repelling. Repulsion
+is what makes the limit exist and be the Poincaré function; it plays no part in the order count. So
+the recession `1, 2, 3, … → ∞` is a statement about the *approximants alone*, and holds along any
+nonzero multiplier.
+
+### `HTGeometry/CascadePolynomialSharpness.lean` — the transcendence hypothesis is necessary
+
+`not_exactDifferentialOrder_entireCascade_of_polynomial`: if every constituent is a polynomial then
+for `n ≥ 1` the cascade does **not** have exact order `n`. Unconditional, axiom-clean.
+
+Because a polynomial cascade is a polynomial (`exists_polynomial_entireCascade`, by composition) and a
+polynomial satisfies the order-zero equation `X₁ − p(X₀) = 0`
+(`differentiallyAlgebraicOfOrder_zero_of_polynomial`), the order is `0` no matter how long the cascade
+is. The unit-cost law therefore fails outright on the polynomial class, and "transcendental" in the
+card's hypotheses cannot be weakened to nonconstant, nonlinear, or any condition polynomials satisfy.
+
+This is the counterexample side of the card's gate, and it is worth recording that it is *not* a
+boundary case: the failure is total — order `0` against the claimed `n`, for every `n`.
+
+Lean note: the nonvanishing of `X₁ − p(X₀)` is proved by evaluating at two points with the same first
+coordinate, `![0,0]` and `![0,1]`; their difference is `1`, so the polynomial cannot be zero. Comparing
+*coefficients* would need the degree-in-`X₁` argument, which is more work for the same conclusion —
+two evaluations suffice whenever the polynomial is monic in one variable.
+
+### The order-zero class, characterized; and the charge count
+
+`differentiallyAlgebraicOfOrder_zero_iff_polynomial` — for entire `g`,
+
+`ord_DA(g) ≤ 0  ↔  g is a polynomial`,
+
+with `exactDifferentialOrder_zero_iff_polynomial` the exact-order form (the second condition of
+`ExactDifferentialOrder` is vacuous at `0`). Unconditional, axiom-clean. Both directions are now in
+hand — Liouville-at-polynomial-growth for `→`, the explicit equation `X₁ − p(X₀)` for `←` — so the
+bottom of the order hierarchy is completely described: **the entire functions algebraic over `ℂ(z)`
+are exactly the polynomials.**
+
+`exactDifferentialOrder_eq_chargeCount` closes the card's *"quantized Wiman observability charge"*
+formula: given the unit-cost law, the order equals `∑_{k<n} 1_{ω(f_k) ≠ 0}` whenever every charge is
+nonzero. The Lean content is only the count `chargeCount_eq`; the mathematical content — that a
+nonzero charge contributes exactly one order and its magnitude is irrelevant — is carried entirely by
+the main theorem, which is the right reading: quantization is not an extra fact but a restatement of
+the unit cost.
+
+### Both routes close unconditionally at length one
+
+`exactDifferentialOrder_entireCascade_one_of_cascade` — the corpus's `exactDifferentialOrder_of_cascade`
+now runs at `n = 1` with *no* hypothesis beyond transcendence and a first-order equation, because both
+of its remaining inputs degenerate:
+
+- `polyIndependent_cascadeFamily_one` — at length one the state family is the single constituent, so
+  `PolyIndependent` says exactly that `f_0` is not algebraic over `ℂ[z]`: the order-zero theorem.
+- `helim_one` — the elimination hypothesis quantifies over `m < 1`, i.e. `m = 0`, and `DA (f_0) 0` is
+  false; the implication is vacuous.
+
+Unconditional, axiom-clean. Together with `exactDifferentialOrder_entireCascade_one` (proved earlier
+through the field-theoretic route) and `exactDifferentialOrder_expCascade_one`, the length-one case of
+the card is now established three independent ways — the direct argument, the transcendence-degree
+route, and the corpus's own cascade interface. That is a genuine cross-check of the whole layer: the
+three proofs share only the order-zero theorem.

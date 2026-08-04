@@ -58,13 +58,14 @@ theorem algebraicIndependent_jets_of_minimal {B : IntermediateField F E} {y : E}
       exact (Finset.sup_lt_iff hmpos).2 fun j hj => hQvars j hj
     exact absurd ((hmin.2.2.2 hQmem hQne ⟨r₀, hr₀⟩).1) (by omega)
   · rw [Finset.not_nonempty_iff_eq_empty] at hvars
-    obtain ⟨c, hc⟩ := MvPolynomial.vars_eq_empty_iff_eq_C.mp hvars
-    have hcne : c ≠ 0 := by
+    have hC := MvPolynomial.vars_eq_empty_iff_eq_C.mp hvars
+    have hcne : Q.coeff 0 ≠ 0 := by
       intro h0
-      exact hQne (by rw [hc, h0, map_zero])
-    rw [hc] at hQeval
+      apply hQne
+      rw [hC, h0, map_zero]
+    rw [hC] at hQeval
     simp only [differentialPolynomialEvalOver_C] at hQeval
-    exact hcne ((injective_algebraMap_iff.2 inferInstance).eq_iff.1 (by simpa using hQeval))
+    exact hcne ((algebraMap B E).injective (by simpa using hQeval))
 
 /-- **Descent of a coefficient.**  An element of the larger field which lies in the jet prefix field
 of the smaller one already lies in the smaller field, as soon as the jets are algebraically

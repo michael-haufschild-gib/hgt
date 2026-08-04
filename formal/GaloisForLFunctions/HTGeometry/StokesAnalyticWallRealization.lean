@@ -61,14 +61,20 @@ theorem liftedStokesPhase_eq_norm_mul_cos (c : ℂ) (k : ℕ) (θ : ℝ) :
       congr 3
       ring
     _ = ‖c‖ * Real.cos (Complex.arg c - (k : ℝ) * θ) := by
-      simp [Complex.exp_mul_I]
+      rw [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero,
+        show ((Complex.arg c : ℂ) - ((k : ℝ) : ℂ) * (θ : ℂ)) =
+            ((Complex.arg c - (k : ℝ) * θ : ℝ) : ℂ) by
+          push_cast
+          rfl,
+        Complex.exp_ofReal_mul_I_re]
 
 theorem liftedStokesPhase_eq_stokesPhase (c : ℂ) (k : ℕ) (θ : ℝ) :
     liftedStokesPhase c k θ = stokesPhase c k (θ : Real.Angle) := by
   rw [liftedStokesPhase_eq_norm_mul_cos]
   unfold stokesPhase
   rw [← Real.Angle.coe_nsmul]
-  simp only [nsmul_eq_mul, Real.Angle.cos_coe, Real.Angle.coe_sub]
+  rw [← Real.Angle.coe_sub, Real.Angle.cos_coe]
+  simp only [nsmul_eq_mul]
 
 theorem labelledWallAngle_phase_argument (c : ℂ) {k : ℕ} (hk : 0 < k)
     (w : StokesWall k) :
@@ -88,7 +94,7 @@ theorem labelledWallAngle_phase_argument (c : ℂ) {k : ℕ} (hk : 0 < k)
     rw [mul_div_cancel₀ _ hk0, Real.Angle.coe_two_pi]
   have hjstep :
       k • ((w.1 : ℕ) • (((2 * Real.pi / (k : ℝ) : ℝ)) : Real.Angle)) = 0 := by
-    rw [nsmul_nsmul, mul_comm, ← nsmul_nsmul, hstep, nsmul_zero]
+    rw [nsmul_left_comm, hstep, nsmul_zero]
   rw [labelledWallAngle, nsmul_add, hbase, hjstep, add_zero]
   simp only [Real.Angle.coe_sub]
   abel
@@ -100,7 +106,9 @@ theorem labelledWallAngle_mem (c : ℂ) {k : ℕ} (hk : 0 < k)
   rw [stokesPhase, labelledWallAngle_phase_argument c hk w]
   cases w.2
   · rw [branchTarget, Real.Angle.cos_coe, Real.cos_pi_div_two, mul_zero]
-  · rw [branchTarget, Real.Angle.cos_coe, Real.cos_neg, Real.cos_pi_div_two, mul_zero]
+  · rw [branchTarget, Real.Angle.cos_coe,
+      show -Real.pi / 2 = -(Real.pi / 2) by ring,
+      Real.cos_neg, Real.cos_pi_div_two, mul_zero]
 
 theorem labelledWallAngle_injective (c : ℂ) {k : ℕ} (hk : 0 < k) :
     Function.Injective (labelledWallAngle c hk) := by
@@ -115,22 +123,30 @@ theorem labelledWallAngle_injective (c : ℂ) {k : ℕ} (hk : 0 < k) :
     · rfl
     · exfalso
       have := congrArg Real.Angle.sin htarget
-      simp only [branchTarget, Real.Angle.sin_coe, Real.sin_neg, Real.sin_pi_div_two] at this
+      simp only [branchTarget, Real.Angle.sin_coe] at this
+      rw [show -Real.pi / 2 = -(Real.pi / 2) by ring,
+        Real.sin_neg, Real.sin_pi_div_two] at this
       norm_num at this
     · exfalso
       have := congrArg Real.Angle.sin htarget
-      simp only [branchTarget, Real.Angle.sin_coe, Real.sin_neg, Real.sin_pi_div_two] at this
+      simp only [branchTarget, Real.Angle.sin_coe] at this
+      rw [show -Real.pi / 2 = -(Real.pi / 2) by ring,
+        Real.sin_neg, Real.sin_pi_div_two] at this
       norm_num at this
     · rfl
   subst b'
   apply Prod.ext
   · apply Fin.ext
     let step : Real.Angle := (((2 * Real.pi / (k : ℝ)) : ℝ) : Real.Angle)
+    have hstepOrder : addOrderOf step = k := by
+      letI : Fact (0 < (2 * Real.pi : ℝ)) := ⟨Real.two_pi_pos⟩
+      dsimp [step]
+      exact AddCircle.addOrderOf_period_div hk
     have hi : (i : ℕ) < addOrderOf step := by
-      rw [step, AddCircle.addOrderOf_period_div hk]
+      rw [hstepOrder]
       exact i.isLt
     have hj : (j : ℕ) < addOrderOf step := by
-      rw [step, AddCircle.addOrderOf_period_div hk]
+      rw [hstepOrder]
       exact j.isLt
     have hij : (i : ℕ) • step = (j : ℕ) • step := by
       simpa only [labelledWallAngle, step, Prod.fst, Prod.snd] using add_left_cancel h
@@ -154,8 +170,9 @@ theorem labelledWallAngle_surjective_analytic (c : ℂ) {k : ℕ} (hk : 0 < k)
         ((Complex.arg c : ℝ) : Real.Angle) - ((branchTarget false : ℝ) : Real.Angle) := by
       dsimp [base]
       rw [← Real.Angle.coe_nsmul]
-      simp only [nsmul_eq_mul, Real.Angle.coe_sub]
+      simp only [nsmul_eq_mul]
       rw [mul_div_cancel₀ _ (Nat.cast_ne_zero.mpr hk.ne')]
+      exact Real.Angle.coe_sub _ _
     have hphase :
         ((Complex.arg c : ℝ) : Real.Angle) - k • θ =
           ((branchTarget false : ℝ) : Real.Angle) := by
@@ -164,7 +181,7 @@ theorem labelledWallAngle_surjective_analytic (c : ℂ) {k : ℕ} (hk : 0 < k)
       rw [hbase]
       apply (eq_sub_iff_add_eq).2
       rw [add_comm]
-      exact (sub_eq_iff_eq_add).mp hphase
+      exact (sub_eq_iff_eq_add).mp hphase |>.symm
     obtain ⟨j, hj⟩ := (Real.Angle.nsmul_eq_iff hk.ne').mp hθbase
     refine ⟨(j, false), Subtype.ext ?_⟩
     simpa [labelledWallAngle, base] using hj.symm
@@ -174,8 +191,9 @@ theorem labelledWallAngle_surjective_analytic (c : ℂ) {k : ℕ} (hk : 0 < k)
         ((Complex.arg c : ℝ) : Real.Angle) - ((branchTarget true : ℝ) : Real.Angle) := by
       dsimp [base]
       rw [← Real.Angle.coe_nsmul]
-      simp only [nsmul_eq_mul, Real.Angle.coe_sub]
+      simp only [nsmul_eq_mul]
       rw [mul_div_cancel₀ _ (Nat.cast_ne_zero.mpr hk.ne')]
+      exact Real.Angle.coe_sub _ _
     have hphase :
         ((Complex.arg c : ℝ) : Real.Angle) - k • θ =
           ((branchTarget true : ℝ) : Real.Angle) := by
@@ -184,7 +202,7 @@ theorem labelledWallAngle_surjective_analytic (c : ℂ) {k : ℕ} (hk : 0 < k)
       rw [hbase]
       apply (eq_sub_iff_add_eq).2
       rw [add_comm]
-      exact (sub_eq_iff_eq_add).mp hphase
+      exact (sub_eq_iff_eq_add).mp hphase |>.symm
     obtain ⟨j, hj⟩ := (Real.Angle.nsmul_eq_iff hk.ne').mp hθbase
     refine ⟨(j, true), Subtype.ext ?_⟩
     simpa [labelledWallAngle, base] using hj.symm
@@ -211,9 +229,18 @@ theorem hasDerivAt_liftedStokesPhase (c : ℂ) (k : ℕ) (θ : ℝ) :
     exact liftedStokesPhase_eq_norm_mul_cos c k t]
   have hinner : HasDerivAt (fun t : ℝ => Complex.arg c - (k : ℝ) * t)
       (-(k : ℝ)) θ := by
-    convert (hasDerivAt_const θ (Complex.arg c)).sub
-      ((hasDerivAt_id θ).const_mul (k : ℝ)) using 1 <;> simp
-  convert hinner.cos.const_mul ‖c‖ using 1 <;> ring
+    change HasDerivAt
+      ((fun _ : ℝ => Complex.arg c) - fun y : ℝ => (k : ℝ) * id y)
+      (-(k : ℝ)) θ
+    simpa only [zero_sub, mul_one] using (hasDerivAt_const θ (Complex.arg c)).sub
+      ((hasDerivAt_id θ).const_mul (k : ℝ))
+  have h := hinner.cos.const_mul ‖c‖
+  have hderiv :
+      ‖c‖ * (-Real.sin (Complex.arg c - (k : ℝ) * θ) * -(k : ℝ)) =
+        ‖c‖ * (k : ℝ) * Real.sin (Complex.arg c - (k : ℝ) * θ) := by
+    ring
+  rw [← hderiv]
+  exact h
 
 theorem analyticStokesWall_simple (c : ℂ) {k : ℕ} (hk : 0 < k) (hc : c ≠ 0)
     (w : AnalyticStokesWall c k) :
@@ -242,7 +269,9 @@ theorem labelledWall_transverse_sign (c : ℂ) {k : ℕ} (hk : 0 < k)
   cases w.2
   · rw [branchTarget, Real.Angle.sin_coe, Real.sin_pi_div_two]
     rfl
-  · rw [branchTarget, Real.Angle.sin_coe, Real.sin_neg, Real.sin_pi_div_two]
+  · rw [branchTarget, Real.Angle.sin_coe,
+      show -Real.pi / 2 = -(Real.pi / 2) by ring,
+      Real.sin_neg, Real.sin_pi_div_two]
     rfl
 
 end

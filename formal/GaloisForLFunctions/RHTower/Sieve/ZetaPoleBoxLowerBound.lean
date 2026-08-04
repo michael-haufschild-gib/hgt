@@ -35,7 +35,7 @@ theorem zetaEntire_ne_zero_of_one_le_re {s : ℂ} (hs : 1 ≤ s.re) : RHTower.ze
     exact mul_ne_zero (sub_ne_zero.mpr h) (riemannZeta_ne_zero_of_one_le_re hs)
 
 /-- The distance to the pole across the box. -/
-theorem norm_sub_one_le_box {η T₀ σ t : ℝ} (hη : 0 ≤ η) (hT₀ : 0 ≤ T₀)
+theorem norm_sub_one_le_box {η T₀ σ t : ℝ}
     (hσ : σ ∈ Set.Icc (1 : ℝ) (1 + η)) (ht : t ∈ Set.Icc (-T₀) T₀) :
     ‖((σ : ℂ) + (t : ℂ) * Complex.I) - 1‖ ≤ η + T₀ + 1 := by
   have hrw : ((σ : ℂ) + (t : ℂ) * Complex.I) - 1 = (((σ - 1 : ℝ)) : ℂ) + (t : ℂ) * Complex.I := by
@@ -43,7 +43,8 @@ theorem norm_sub_one_le_box {η T₀ σ t : ℝ} (hη : 0 ≤ η) (hT₀ : 0 ≤
     ring
   rw [hrw]
   refine le_trans (norm_add_le _ _) ?_
-  rw [Complex.norm_real, Complex.norm_mul, Complex.norm_I, mul_one, Complex.norm_real]
+  rw [Complex.norm_real, Complex.norm_mul, Complex.norm_I, mul_one, Complex.norm_real,
+    Real.norm_eq_abs, Real.norm_eq_abs]
   have h1 : |σ - 1| ≤ η := by
     rw [abs_of_nonneg (by linarith [hσ.1])]
     linarith [hσ.2]
@@ -87,7 +88,7 @@ theorem exists_pos_lower_bound_zeta_pole_box {η T₀ : ℝ} (hη : 0 ≤ η) (h
       = ‖((σ : ℂ) + (t : ℂ) * Complex.I) - 1‖
         * ‖riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := by
     rw [hfac, norm_mul]
-  have hdist := norm_sub_one_le_box hη hT₀ hσI ht
+  have hdist := norm_sub_one_le_box hσI ht
   have hzn : 0 ≤ ‖riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := norm_nonneg _
   have hden : (0 : ℝ) < η + T₀ + 1 := by linarith
   rw [div_le_iff₀ hden]

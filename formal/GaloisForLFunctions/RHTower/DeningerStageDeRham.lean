@@ -162,3 +162,26 @@ theorem deningerDlogForm_closed (i : Fin r) {z : Fin r → ℂ} (hz : z ∈ deni
 end Dlog
 
 end RHTower
+
+namespace RHTower
+
+section StageLocality
+
+open Filter Topology
+
+variable {r n : ℕ}
+
+/-- **Holomorphy of a stage form is local**: two forms agreeing on the stage have the same
+holomorphy, so a form glued from holomorphic forms agreeing on overlaps is holomorphic. -/
+theorem deningerIsHolomorphicForm_congr {ω η : DeningerStageForm r n}
+    (h : Set.EqOn ω η (deningerStageTorus r)) (hη : DeningerIsHolomorphicForm η) :
+    DeningerIsHolomorphicForm ω := by
+  intro z hz
+  refine (hη z hz).congr ?_
+  have hmem : deningerStageTorus r ∈ 𝓝 z := deningerStageTorus_mem_nhds hz
+  filter_upwards [hmem] with y hy
+  exact (h hy).symm
+
+end StageLocality
+
+end RHTower

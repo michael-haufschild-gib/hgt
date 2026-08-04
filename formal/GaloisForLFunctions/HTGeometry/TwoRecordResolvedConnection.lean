@@ -49,7 +49,6 @@ theorem twoRecordConnection_div_clocks_eq_potential_sub
   rw [twoRecordConnection, twoRecordNormalizedPotential,
     twoRecordNormalizedPotential]
   field_simp [hclock i, hclock j]
-  ring
 
 /-- Weighted cocycle identity retained before normalization. -/
 theorem twoRecordConnection_weighted_cocycle

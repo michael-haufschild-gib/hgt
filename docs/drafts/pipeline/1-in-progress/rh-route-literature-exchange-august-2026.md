@@ -1,4 +1,4 @@
-# The RH Route–Literature Exchange Frontier at 3 August 2026
+# The RH Route–Literature Exchange Frontier at 4 August 2026
 
 ## Abstract
 
@@ -513,19 +513,22 @@ top-boundary, and non-erasure classification.
 (Theorem 10.2), and generalized-divisor support (Proposition 11.7). The prime-fibre and coherent
 cyclotomic descent needed by the current source carrier are represented locally. Remaining
 `H⁰`/flow and divisor-support statements can strengthen the arithmetic relevant-complex
-interface, but Deninger's paper does not prove strict source-first descent of the completed Xi
-Green/BV chain. Generic cyclic, mapping-cone, and Hodge theory cannot supply it because the local
-top reader computes the exact nonzero descent obstruction.
+interface, but Deninger's paper does not prove the singular specialization from the resolved
+boundary to the fixed scalar Burnol/Deninger physical landing. Generic cyclic, mapping-cone, and
+Hodge theory cannot supply it because the local top reader computes the exact nonzero descent
+obstruction.
 
-**Exchange verdict and Lean action.** The exact Route-L core is
-`XI_BV_GREEN_STOKES_STRICT_DESCENT`: construct a source-first chain map from the completed Xi
-Green source tensored with the Wold/BV Hochschild complex to resolved Calderón--Witt incidence,
-make the physical degree-zero landing its strict specialization, and send the explicit primitive
-to a target boundary while retaining multiplicity and prime provenance. It may not assume the
-Burnol/Deninger radial coefficient vanishes. Deninger Proposition 11.7 is a legitimate
-infrastructure import only when wired to this comparison. Theorem 7.10's prime fibre and Theorem
-10.2's endpoint-purity content are already represented. No located external theorem closes or
-shortens the strict-descent premise.
+**Exchange verdict and Lean action.** The exact Route-L core remains named
+`XI_BV_GREEN_STOKES_STRICT_DESCENT`, but its interpretation has narrowed. Completed Green source
+and primitive, ordinary BV boundary, coefficient-faithful Green-to-Calderón--Witt incidence,
+resolved complexes, strict adjacent Route-R chain provenance, and the actual Burnol/Deninger
+physical reader now exist. Missing theorem is the source-first singular comparison square whose
+degree-zero map is exactly that fixed physical landing and whose physical reader annihilates the
+relevant resolved boundaries, while retaining multiplicity and prime provenance before divisor
+specialization. It may not assume the Burnol/Deninger radial coefficient vanishes. Deninger
+Proposition 11.7 is useful infrastructure only when wired to this comparison. Theorem 7.10's prime
+fibre and Theorem 10.2's endpoint-purity content are already represented. No located external
+theorem closes or shortens this singular resolved-to-physical specialization premise.
 
 ### Route M — Gamma–Jacobi singular reader [FORMALIZED — TERMINALIZED]
 
@@ -580,15 +583,28 @@ terms; no such external theorem exists.
 
 ### Route O — Connes/CCM restricted-Weil and prolate limit [OPEN]
 
-**Local contribution beyond located literature.** The corpus proves extensive constrained-prolate
-finite algebra, exact two-mode distance reductions, determinant/ground-state limit consumers, and
-multiple source-specific no-gos. These sharpen the location of the convergence wall but do not
-prove it. The nested-floor theorem is now exact: Rayleigh floors are antitone, repair threshold is
-their negative part, one negative compact trial persists uniformly through every later aperture,
-and any cofinal floor limit zero forces nonnegativity on every trial domain. An
-`O(1/λ)` excess-to-gap comparison collapses directly to the same positivity theorem, so a
+**Local contribution beyond located literature.** The corpus proves the literal finite
+restricted-Weil matrix, its reflection and displacement laws, source/response real-rooted
+completion, extensive constrained-prolate algebra, exact two-mode distance reductions, and
+multiple source-specific no-gos. The nested-floor theorem is exact: Rayleigh floors are antitone,
+repair threshold is their negative part, one negative compact trial persists uniformly through
+every later aperture, and any cofinal floor limit zero forces nonnegativity on every trial domain.
+An `O(1/λ)` excess-to-gap comparison collapses directly to the same positivity theorem, so a
 determinant adds no independent implication. No exact external collision was located for this
 quantitative no-evacuation package.
+
+A provisional Stage-2 paper theorem now goes further at seed level. Pole-uniform PSWF comparison,
+finite defect mass, radial-prime response, Poisson center, critical-Mellin coupling, and the polar
+term assemble into
+
+```text
+QW_lambda(a_lambda,a_lambda)
+ =D_arch d_lambda log(2*pi*lambda^2)+O(d_lambda),  D_arch>0.
+```
+
+Hence the explicit constrained seed is eventually positive with Rayleigh value tending to zero.
+The concrete radial-PSWF/Bessel realization still needs hostile audit and Lean certification. No
+priority claim is made for the paper result, and it does not control the true ground space.
 
 **External contribution.** Connes–Consani–Moscovici's
 [Zeta Spectral Triples](https://arxiv.org/abs/2511.22755) gives concrete finite-prime self-adjoint
@@ -596,11 +612,14 @@ rank-one perturbations and numerical spectral/determinant convergence; Connes–
 real zeros for the Fourier transform of an isolated simple even ground state. Rigorous convergence
 of the concrete family would prove RH and remains open.
 
-**Lean action.** Formalize the concrete CCM finite operator and determinant theorem. The finite
-Carathéodory--Fejér/paraorthogonal real-zero transfer and abstract constrained-prolate machinery are
-already present, so a second generic real-zero endpoint is not selected for frontier leverage. The
-source-defined CCM family is the missing object. Do not encode numerical finite-to-Xi convergence
-as a theorem.
+**Lean action and frontier.** The finite matrix/reflection/real-root completion layer is now
+formalized. Next formal backlog is the concrete radial-PSWF primitive behind the paper seed law,
+including the classical `h_0,h_4` identification and Sturm variation where needed. The new
+scientific frontier is not another seed asymptotic or numerical finite-to-Xi convergence: it is a
+source-derived classification of every near-ground sequence into prolate, translated two-edge,
+prime-phase, and coercive-bulk channels, with intact polar-prime cross terms and relative bulk
+coercivity. Only after this whole-ground exhaustion can one orient the surviving boundary channel
+or prove the true restricted-Weil floor nonnegative.
 
 ### Route P — completed-seam Thorin/Markov carrier [OPEN]
 
@@ -832,13 +851,15 @@ External results that can still strengthen a live route, in dependency order, ar
 
 1. Suzuki Theorems 1.1 and 1.5: concrete finite screw space, Friedrichs and deficiency operators,
    self-adjoint extensions, and literal `W` (Route G; not retired G2).
-2. CCM Theorem 1.1: concrete finite restricted-Weil operator and determinant, connected to the
-   already-formalized finite real-zero transfer (Route O; terminalized Route A only gains background).
-3. Suzuki 2022 Theorem 1.5: trace-class localized screw carrier and its Weil-polarization handoff
+2. Suzuki 2022 Theorem 1.5: trace-class localized screw carrier and its Weil-polarization handoff
    (Route C1).
-4. Deninger Proposition 11.7: generalized-divisor support, but only as an input wired to the
-   arithmetic relevant-complex/strict BV descent interface (Route L). Theorem 7.10's prime fibre
+3. Deninger Proposition 11.7: generalized-divisor support, but only as an input wired to the
+   singular resolved-to-physical specialization interface (Route L). Theorem 7.10's prime fibre
    and Theorem 10.2's endpoint purity are already represented.
+
+Route O's remaining Lean work is local certification of the concrete radial-PSWF seed theorem,
+not a missing external source theorem. Its whole-ground profile-exhaustion core has no located
+literature solution.
 
 Suzuki's screw-moment Hankel criterion, full Li, Hardy, theta-at-infinity, and Romik's coefficient
 asymptotic are corpus-completeness imports, not first-order route advances. Bellotti, Mangerel, fixed
@@ -855,7 +876,7 @@ route.
 The corpus's strongest plausible new science lies mainly in source-specific finite identities,
 complete scalar tomography, obstruction classifications, exact survivor theorems, and the
 nonclassical route architectures those obstructions force. Route R's constructed pre-frequency
-joint-depth arithmetic differential, Route L's source-first strict chain descent, and the post-J
+joint-depth arithmetic differential, Route L's singular resolved-to-physical specialization, and the post-J
 pre-projection current class are not reductions to a classical scalar estimate or determinant
 limit. External SOTA contributes powerful parent operator and boundary-value languages, but no
 published unconditional theorem closes these current source-level RH premises. Scientific

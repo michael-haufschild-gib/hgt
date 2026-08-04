@@ -57,11 +57,13 @@ absolute curvature, while raw-minus-flat relative curvature retains the Deninger
 polarization. Finite Tate shifts realize it as `(1-χ_s(n))β_m`; reflection gives
 `K_n(s)β_m`, and the top-coordinate reader and completed finite-support Xi incidence recover
 that coefficient exactly. Meyer and Calderón--Witt comparisons prove non-erasure, not vanishing.
-The ordinary-integer BV Green--Stokes boundary and its physical Burnol/Deninger comparison are
-constructed; physical landing fails to descend by exactly `K_n(s)`. The open core is a
-source-first strict chain map carrying the completed Xi Green primitive to a target boundary while
-retaining multiplicity and prime provenance, without assuming the RH-bearing radial coefficient
-vanishes.
+The completed Xi Green operator and nonzero primitive, coefficient-faithful Green-to-
+Calderón--Witt incidence, ordinary-integer BV boundary, actual Burnol/Deninger conormal, and strict
+resolved Route-R chain provenance are constructed. The open core is no longer “construct some
+chain map.” It is a source-derived singular comparison identifying resolved boundary flatness with
+the existing coefficient-faithful scalar Burnol/Deninger physical landing before divisor
+specialization, while retaining multiplicity and ordinary-prime provenance and without assuming
+the RH-bearing coefficient `K_n(s)` vanishes.
 
 Route R's source, joint-depth Hilbert/Krein carrier, Gamma completion, and regular and singular
 source-to-Xi landings are closed. Positive or nonnegative Gamma shorting cannot annihilate an
@@ -96,13 +98,16 @@ the canonical surviving anti-Real transgression. Separately, the rational-adelic
 mapping cone feeds Route R as above. Neither result proves the missing Weil trace-pairing
 positivity or the singular Cartier comparison.
 
-Route O also advances locally: the literal radial prolate equation has an exact Liouville normal
-form in which aperture dependence cancels from the comparison defect, the apparent double pole
-cancels to a simple pole, and Lean proves the uniform bound `|a(x)| ≤ 40/(x²-1)` for
-`0 ≤ s ≤ 1/2`, `x>1`. It also proves the uniform finite-mass bound
-`∫_A^B |a|/ξ' ≤ 127` and the resulting Volterra exponent
-`≤254 C²/(cW)`. The high radial tail, Poisson/archimedean assembly, and global cofinal
-restricted-Weil floor remain open.
+Route O has moved past seed construction at paper level. The literal radial prolate equation has
+an exact Liouville normal form in which aperture dependence cancels from the comparison defect,
+the apparent double pole cancels to a simple pole, and Lean proves the uniform bound
+`|a(x)| ≤ 40/(x²-1)` for `0 ≤ s ≤ 1/2`, `x>1`, the finite-mass bound
+`∫_A^B |a|/ξ' ≤ 127`, and the resulting Volterra exponent `≤254 C²/(cW)`. A provisional
+Stage-2 paper proof now closes the complete radial-prime response, Poisson center,
+critical-Mellin coupling, polar contribution, and exterior seed law. The concrete radial-PSWF
+realization still needs hostile audit and Lean. The scientific open core is no longer this source
+assembly: it is source-derived profile exhaustion and reduced-resolvent control of every possible
+restricted-Weil ground direction.
 
 The disproof frontier is exact but empty: one certified off-line Xi zero, or any of several
 equivalent finite negative witnesses, would disprove RH. The most source-explicit current candidate
@@ -127,15 +132,17 @@ The shortest current chains are:
   carrying the retained rational-adelic prime-isotropy boundary from the positive resolved frame
   to the fixed same-fibre physical Xi conormal; transported positivity, Stokes flatness, strict
   resolved chain provenance, and the source-pure norm-conservative selection theorem already hold;
-- Route L: construct strict source-first BV Green--Stokes descent after the ordinary boundary and
-  its exact physical radial obstruction;
+- Route L: construct the singular source-to-physical specialization square identifying the
+  already-built resolved boundary with the existing Burnol/Deninger landing before divisor
+  specialization;
 - Route E: prove critical low-frequency Möbius cancellation and co-moving central-breadth flux
   after the formal sieve, Hall-capacity, and off-normal-tail gates;
 - Route C1: either construct the singular Hedenmalm boundary form or construct and identify the
   positive bivariant/intersection trace pairing on the exact closed CCM quotient;
 - Routes D2, G, N, O, P, and Q: supply their stated high-frequency, meromorphic producer,
-  prime-normal, cofinal Weil, compact moment, or saturation theorem. Route O's local pole-uniform
-  radial comparison is closed; its cofinal floor is not.
+  prime-normal, whole-ground profile-exhaustion, compact moment, or saturation theorem. Route O's
+  complete exterior seed law is provisionally closed on paper; its concrete PSWF realization is
+  not yet Lean-certified and its full restricted-Weil ground selection remains open.
 
 Sharp dyadic Route I, Julia-energy Route J, and quadratic Route K are not live alternatives:
 Route I collides exactly with retired Route C2, Route J closes at an unbounded coherent-energy
@@ -190,10 +197,10 @@ marked explicitly; all others remain live at their stated open core.
 | I | retired | exact collision with Route C2 width |
 | J | retired | unrenormalized and residual Julia-capacity mechanisms are closed; successor changes primitive |
 | K | retired | all-order continuation is Route P |
-| L | open | `XI_BV_GREEN_STOKES_STRICT_DESCENT` |
+| L | open | singular source-to-physical specialization identifying resolved boundary flatness with the coefficient-faithful Burnol/Deninger landing before divisor specialization (`XI_BV_GREEN_STOKES_STRICT_DESCENT`) |
 | M | terminalized coordinate | anchored cofinal flatness is exactly RH |
 | N | open | uniform source-domain prime-normal sub-log-square bound |
-| O | open | literal cofinal restricted-Weil floor convergence/nonnegativity |
+| O | open | source-derived low-energy profile exhaustion/reduced-resolvent control of the entire restricted-Weil ground space; then orient the surviving boundary channel or prove the true floor nonnegative |
 | P | open | source-built unique compact completed-seam Thorin/Markov carrier after coupled pole--zeta--Gamma completion |
 | Q | open/secondary | all-degree control of the source-selected theta carrier or direct Cassini--Jensen boundary saturation; its fixed-Markov branch is Route P |
 | R | open; positive resolved polarization, source Stokes regulator with period one, retained rational-adelic prime-isotropy class with strict resolved-Xi chain map, asymptotic/associated-grade blindness, and fixed-Hilbert Fisher-completion no-go constructed | graded variable-ideal, coefficient-faithful source-pointed singular Cartier comparison carrying resolved boundary flatness to the scalar physical fibre on the actual Xi conormal |
@@ -3142,7 +3149,7 @@ Retired route card:
 Retired regular Clifford/full-source subroute:
 `../5-failed/xi-reciprocal-clifford-square-source-rh.md`.
 
-### Route L — Deninger/Hodge/cohomological realization [OPEN — STRICT BV DESCENT]
+### Route L — Deninger/Hodge/cohomological realization [OPEN — SINGULAR PHYSICAL SPECIALIZATION]
 
 **Endpoint family.** Oriented Hodge, Weil-transport, dense-range, resolvent, and
 divisor-spectrum inclusions, all conditionally implying RH.
@@ -3157,11 +3164,13 @@ literal arithmetic relevant complex
 → RH.
 ```
 
-**Current dependency-closed status.** Route L remains open. Deninger's published
-rational-Witt dynamical space does not supply the true arithmetic space or its relevant complex;
-the latter is explicitly the missing object. Internal Poisson--zeta, square-zero amalgamation,
-endpoint, and flow-pullback models give a falsifiable candidate comparison, not an external
-construction of (R\alpha_*\mathcal G). Full closure now requires all of:
+**Current dependency-closed status.** Route L remains open, but existence of an unspecified
+arithmetic complex or generic chain map is no longer its last mile. The completed Green source,
+explicit primitive, coefficient-faithful Calderón--Witt incidence, ordinary BV boundary, physical
+Burnol/Deninger reader, and adjacent Route-R rational-adelic relative complex with strict resolved
+Xi chain provenance now exist. Deninger's full arithmetic relevant complex remains a legitimate
+longer-horizon realization program, but the following broad construction list is upstream rather
+than the authoritative first open theorem:
 
 1. sheafified unit-amalgamated Milnor/Milnor--Witt derived-section comparison, coherent
    Rost--Schmid/signature descent, and arithmetic three-degree Postnikov localization;
@@ -3919,19 +3928,33 @@ closed, but physical landing fails to descend through it by exactly the retained
 coefficient. A cyclic source trace kills `B_n`; the physical conormal marginal kills it exactly
 on the critical line.
 
-**Open core — `XI_BV_GREEN_STOKES_STRICT_DESCENT`.** Construct a source-first chain map from
-the completed/cofinal Xi Green source tensored with the Wold/BV Hochschild complex to the resolved
-Calderón--Witt incidence complex. Prove the existing physical degree-zero landing is its strict
-specialization and that the explicit primitive maps to a target boundary while multiplicity and
-prime-labelled provenance survive completion. The proof may not assume that the Burnol
-discriminant or `K_6` vanishes, Gamma/Hardy kernel membership, countercharacter triviality,
-static capacity, RH-equivalent positivity, or RH.
+**Open core — `XI_BV_GREEN_STOKES_STRICT_DESCENT`.** Construct, source-first and before divisor
+specialization, the singular comparison square
 
-Generic mapping-cone exactness, cyclicity, covariant countertransport, and bare non-erasure cannot
-prove strict descent: the coefficient-faithful reader already exhibits its exact failure on the
-ordinary boundary. Route L is open at this source-first chain map, not at source formation,
-rational-Witt prime-fibre construction, Hilbert completion, Green primitive, ordinary BV
-boundary, physical radial comparison, or finite incidence landing.
+```text
+completed Green tensor BV_1 --id tensor b--> completed Green tensor BV_0
+             | F_1                              | F_0
+             v                                  v
+       resolved target_1 ------d_T--------> resolved target_0
+                                                     |
+                                                     v physical reader
+                                               Calderon-Witt coefficient.
+```
+
+It must satisfy `d_T o F_1 = F_0 o (id tensor b)`; `F_0` must be exactly the existing
+Burnol/Deninger physical landing; the physical reader must annihilate the relevant target
+boundaries; multiplicity jets and ordinary-prime provenance must survive; and no premise may be
+equivalent to `K_n(rho)=0`. At `n=6` the existing comparison reads the lower-right value as
+`c_rho K_6(rho)` with `c_rho != 0`. Strict boundary compatibility would force that value to zero
+for every Xi divisor and hence prove RH.
+
+Generic mapping-cone exactness, Koszul compatibility, cyclicity, KMS untwisting, covariant
+countertransport, and bare non-erasure cannot prove this singular specialization: the
+coefficient-faithful reader already exhibits its exact failure on the ordinary boundary. Declaring
+the physical vector a boundary merely relocates or erases `K_n`. Route L is open at the comparison
+between the already-built resolved and physical geometries, not at source formation, Green
+primitive, BV boundary, resolved complex, strict Route-R chain provenance, physical radial
+comparison, or coefficient-faithful incidence landing.
 The generic contraction hypotheses are now instantiated unconditionally on
 `ℓ²(ℕ,ℝ)`: the unilateral shift is an eigenvector-free linear isometry, its range is
 orthogonal to the first basis vector, and the unit sphere is contractible. No theorem
@@ -4062,12 +4085,25 @@ Volterra exponent ≤ 254 C²/(cW),    1<A≤B.
 ```
 
 Thus the pole-uniform relative error is `1+O(1/c)` unconditionally at this comparison layer.
-High radial tail, Poisson-center, archimedean/true-Weil gap, and cofinal ground-floor steps remain
-distinct and open.
+
+**Complete exterior seed law now closed provisionally on paper.** The Stage-2 card
+`constrained-prolate-continuous-polar-charge-law.md` proves, subject to hostile audit before
+promotion and with its concrete radial-PSWF/Bessel realization still awaiting Lean, that the full
+radial-prime response, Poisson center, critical-Mellin coupling, and polar contribution assemble as
+
+```text
+QW_lambda(a_lambda,a_lambda)
+ = D_arch d_lambda log(2*pi*lambda^2)+O(d_lambda),
+D_arch>0.
+```
+
+The explicit constrained prolate seed therefore has an eventually positive Rayleigh value
+`r_lambda->0`. This closes the former high-radial-tail and Poisson-center scientific gates at seed
+level. It says nothing by itself about other ground directions.
 
 **Submechanism obstruction.** Let `epsilon_n` be the true nested restricted-Weil floor, `r_n` the
-normalized prolate-seed Rayleigh value, and `Delta_n=r_n-epsilon_n`. Once the source theorem
-`r_n->0` is installed, Lean proves
+normalized prolate-seed Rayleigh value, and `Delta_n=r_n-epsilon_n`. Given the now paper-proved
+source input `r_n->0`, the formal comparison layer proves
 
 ```text
 RH <-> Delta_n -> 0,
@@ -4095,15 +4131,25 @@ matrix/ground-shift completion in `CCMPublishedRestrictedWeilMatrix.lean`; and t
 pole-uniform radial comparison in `CCMRadialProlateDefect.lean`. Paper:
 `../3-formalized/not_new_scientific_knowledge/route-o-prolate-rayleigh-ground-lock.md`.
 
-**Whole-route open core.** Prove `epsilon_n->0` from literal prime/Gamma/prolate source on one
-cofinal nested restricted-Weil family. This is the direct Weil criterion and hence the RH-bearing
-hard problem. A source-derived proof of the prolate-to-ground comparison would also close it; the
-comparison's equivalence to RH shows its difficulty, not its impossibility. The literal seed
-graph-domain estimate and identification of the original simple-even eta-channel branch also remain
-unclosed. The nearest analytic gate is now assembly with the high truncated-divisor radial tail,
-Poisson center, and archimedean/true-Weil gap; none is the cofinal Weil-floor theorem.
-New determinant normalizations, arbitrary real-zero approximants, or renamed ground-state
-comparisons alone do not advance Route O.
+**Whole-route open core.** Classify every normalized near-ground sequence from the literal source.
+The first non-circular target is a concentration-compactness/reduced-resolvent law of the form
+
+```text
+u_n = prolate ladder
+    + translated two-edge boundary
+    + prime-phase escape
+    + coercive bulk
+    + o(1).
+```
+
+It must prove that these profiles exhaust all low-energy directions, retain the intact polar-prime
+cross terms, and establish relative coercivity on the bulk. The current
+`cofinal-prolate-weil-relative-normal-form-conjecture.md` is explicitly not ready: it omits the
+carrier-frequency/prime-phase channel and is marked `PHASE-CHANNEL REVISION REQUIRED`. Only after
+this source-only classification can one orient the surviving boundary channel or prove
+`epsilon_n>=0`. Equivalently, on one cofinal nested family, `epsilon_n->0` or
+`Delta_n=r_n-epsilon_n->0` already proves RH. New seed asymptotics, finite real-zero determinants,
+renamed ground comparisons, or more Suzuki flux infrastructure do not advance this wall.
 
 Failed mechanism card: `../5-failed/route-o-independent-prolate-determinant-last-mile.md`.
 Whole-route audit and active literal-source conjecture:
@@ -5099,10 +5145,10 @@ equivalent wrapper around one of them does not advance source acquisition.
    reflection discriminant to vanish. If it is not the existing Route-R current, it must receive
    separate route ownership. Backlog card:
    `../0-backlog/post-j-preprojection-principal-relative-current.md`.
-3. **Route L strict BV Green--Stokes descent.** Construct a source-first chain map from completed
-   Xi Green source tensored with the Wold/BV Hochschild complex to resolved Calderón--Witt
-   incidence, making physical degree-zero landing a strict specialization and the explicit
-   primitive a target boundary without assuming its radial coefficient vanishes.
+3. **Route L singular physical specialization.** Construct the source-first singular square from
+   completed Green `tensor BV` into the resolved target with `F_0` exactly the existing
+   Burnol/Deninger physical landing, boundary-blind physical reader, and retained multiplicity/
+   prime provenance, without assuming its radial coefficient vanishes.
 4. **Route E central-breadth Möbius cancellation.** Control the zero/near-zero Möbius frequency
    and co-moving signed flux on the exact normal Wold seam after the proved sieve,
    off-normal-tail, coprime-pair, and prime-anchor Hall inputs.
@@ -5117,10 +5163,11 @@ equivalent wrapper around one of them does not advance source acquisition.
    two-angle Livšic/Hermite--Biehler family.
 8. **Route N prime-normal domain theorem.** Prove the uniform source-domain sub-log-square
    estimate on the closed theta Grushin domain with the full Jordan tower.
-9. **Route O cofinal restricted-Weil theorem.** Assemble the now-complete pole-uniform radial
-   comparison and `O(1/c)` Volterra exponent with the high-radial tail, Poisson center, and
-   archimedean/true-Weil gap, then prove a literal cofinal Weil-floor or source-derived ground
-   comparison before determinant passage.
+9. **Route O whole-ground profile theorem.** Hostile-audit and Lean-certify the concrete
+   radial-PSWF realization of the provisionally paper-closed exterior seed law, then prove a
+   source-derived low-energy decomposition into prolate, translated two-edge, prime-phase, and
+   coercive-bulk channels. Prove profile exhaustion, intact polar-prime cross-term control, and
+   relative bulk coercivity before attempting the RH-bearing boundary orientation/floor theorem.
 10. **Route P compact moment carrier.** Construct the literal completed-seam compact positive
     Thorin/Markov carrier; Route K's all-order marked-prime extension lands here.
 11. **Route Q saturation theorem.** Prove the boundary Jensen/jet saturation inequality from
@@ -5284,7 +5331,7 @@ The cited primary sources close no Tier-1 or Tier-2 open core above.
    prime-isotropy boundary and positive resolved frame to the fixed physical Xi fibre;
 2. C1-CCM bivariant/intersection trace pairing, Hodge sign, and Weil-form identification on the
    now-exact closed nonunital strong cyclic quotient;
-3. Route L strict source-first BV Green--Stokes descent through the exact physical radial
+3. Route L singular source-to-physical specialization through the exact Burnol/Deninger radial
    obstruction;
 4. post-J pre-projection principal-relative current as a separately owned route, unless its exact
    construction is the existing Route-R source;
@@ -5298,8 +5345,8 @@ These routes begin with literal source and have short, formally closed tails to 
 ### Valuable but longer-horizon construction programs
 
 - arithmetic Deninger relevant-complex realization feeding Route L;
-- Route O high-radial/Poisson/archimedean assembly of the closed `O(1/c)` radial comparison,
-  followed by direct cofinal Connes/restricted-Weil comparison;
+- Route O full-ground profile exhaustion/reduced-resolvent control, after hostile audit and Lean
+  certification of the provisionally paper-closed exterior prolate seed law;
 - compact Thorin/Markov carrier.
 
 ### Do not spend cycles on
@@ -5354,18 +5401,22 @@ The first unresolved theorem is therefore route-dependent but consistently pre-s
 - Retired Route J has no open premise. A different pre-projection principal-relative current is a
   corpus-native new-route candidate; it belongs to Route R only if its literal source and handoff
   are the existing Route-R construction.
-- Route L needs a strict source-first BV Green--Stokes chain map. Source, relative curvature,
-  Green primitive, ordinary boundary, physical Burnol/Deninger comparison, and
-  coefficient-faithful landing exist; descent fails by exactly the RH-bearing radial coefficient.
+- Route L needs a singular source-to-physical specialization theorem. Completed Green source and
+  primitive, BV boundary, resolved complex, strict Route-R chain provenance, physical
+  Burnol/Deninger comparison, and coefficient-faithful landing exist; the missing square must
+  identify resolved boundary flatness with that fixed physical landing before divisor
+  specialization, where failure is exactly the RH-bearing radial coefficient.
 - Route E needs critical low-frequency Möbius cancellation on the central normal-breadth seam.
   Sieve counts, coprime opposite-sign supply, prime-anchor Hall capacity, and off-normal tail
   control do not orient that seam.
 - Route C1 now has an exact nonzero closed CCM class-space recipient with descended Lefschetz and
   Real/Clifford structure. It still needs either the singular Hedenmalm form or the CCM
   bivariant/intersection trace pairing, Hodge sign, and Weil identification.
-- Route O's aperture-independent radial comparison defect and uniform simple-pole bound are
-  closed, as are its mass bound `∫|a|/ξ'≤127` and `O(1/c)` Volterra exponent. High-radial/
-  Poisson/archimedean assembly and the cofinal restricted-Weil floor are not.
+- Route O's aperture-independent radial comparison defect, simple-pole/mass bounds, and `O(1/c)`
+  Volterra exponent are Lean-closed. Its complete exterior prolate seed law is provisionally
+  paper-closed and awaits concrete radial-PSWF Lean certification. The scientific gap is now
+  profile exhaustion/reduced-resolvent control of the whole restricted-Weil ground space, including
+  the prime-phase channel, followed by the RH-bearing boundary orientation or floor theorem.
 - Routes D2, G, N, P, and Q retain the distinct open cores stated in Section 8.
 
 Route A is terminalized as an exact RH coordinate after phase-natural rigidity and barycentric
@@ -5380,8 +5431,8 @@ sieve, Hedenmalm, Suzuki, Möbius-moment, and Deninger/Connes infrastructure. Wh
 both unconditional and useful, the corpus has formalized or scheduled its precise reusable
 content. No located primary source supplies Route R's singular Cartier comparison, C1-CCM's
 positive bivariant/intersection pairing on the exact recipient, the post-J pre-projection current,
-Route L's completed strict source-first BV descent, Route E's critical Möbius cancellation, or
-another live route's first open premise.
+Route L's singular resolved-to-physical Burnol/Deninger specialization, Route E's critical Möbius
+cancellation, or another live route's first open premise.
 
 The disproof map is equally closed at the connector level: one certified off-line Xi zero or an
 equivalent finite negative witness suffices, but none is present. Growing-order squared-Xi radial

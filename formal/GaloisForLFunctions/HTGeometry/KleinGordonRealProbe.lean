@@ -54,7 +54,7 @@ theorem kgPotential_im {a : WienerDensity E N} (h : IsRealDensity a) (x : E) :
 
 /-! ## Real parts of derivatives -/
 
-theorem hasDerivAt_re {f : ℝ → ℂ} {f' : ℂ} {t : ℝ} (h : HasDerivAt f f' t) :
+private theorem hasDerivAt_re {f : ℝ → ℂ} {f' : ℂ} {t : ℝ} (h : HasDerivAt f f' t) :
     HasDerivAt (fun r : ℝ => (f r).re) f'.re t :=
   Complex.reCLM.hasFDerivAt.comp_hasDerivAt t h
 

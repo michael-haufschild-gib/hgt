@@ -138,3 +138,37 @@ theorem deningerIsCylinderAt_eval_pow (v : V) (P₀ : V → ℂ) (n : ℕ) :
 end Cylinder
 
 end RHTower
+
+namespace RHTower
+
+section CylinderLocality
+
+open Filter Topology
+
+variable {V : Type*}
+
+/-- **The cylinder condition is local**: a function agreeing near a point with a cylinder function
+is cylinder there.  This is what makes the cylinder functions a sheaf: a function glued from
+cylinder functions agreeing on overlaps is near each point one of them. -/
+theorem deningerIsCylinderAt_congr {f g : (V → ℂ) → ℂ} {P₀ : V → ℂ} (h : f =ᶠ[𝓝 P₀] g)
+    (hg : DeningerIsCylinderAt g P₀) : DeningerIsCylinderAt f P₀ := by
+  obtain ⟨r, a, k, hk, hg'⟩ := hg
+  refine ⟨r, a, k, hk, ?_⟩
+  filter_upwards [h, hg'] with P hP hP'
+  rw [hP, hP']
+
+/-- **A glued family of cylinder functions is cylinder**: if a function agrees near a point with a
+member of a family of cylinder functions, it is cylinder at that point. -/
+theorem deningerIsCylinderAt_glue {ι : Type*} {f : (V → ℂ) → ℂ} {g : ι → (V → ℂ) → ℂ}
+    {P₀ : V → ℂ} (i : ι) (h : f =ᶠ[𝓝 P₀] g i) (hg : ∀ j, DeningerIsCylinderAt (g j) P₀) :
+    DeningerIsCylinderAt f P₀ :=
+  deningerIsCylinderAt_congr h (hg i)
+
+/-- The cylinder condition only depends on the germ. -/
+theorem deningerIsCylinderAt_congr_iff {f g : (V → ℂ) → ℂ} {P₀ : V → ℂ} (h : f =ᶠ[𝓝 P₀] g) :
+    DeningerIsCylinderAt f P₀ ↔ DeningerIsCylinderAt g P₀ :=
+  ⟨fun hf => deningerIsCylinderAt_congr h.symm hf, fun hg => deningerIsCylinderAt_congr h hg⟩
+
+end CylinderLocality
+
+end RHTower

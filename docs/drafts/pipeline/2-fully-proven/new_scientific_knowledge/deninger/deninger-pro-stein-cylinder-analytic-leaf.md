@@ -189,6 +189,12 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized `(4)` at the level of forms — stability of the
+  cylinder de Rham complex under power maps and Galois permutations, with the
+  action on the generators — and the locality that gives the sheaf condition.
+- 2026-08-04 — Formalized the first cohomology of a character stage in every
+  dimension: every closed holomorphic one-form is a combination of the
+  logarithmic differentials plus an exact form.
 - 2026-08-04 — Formalized the closedness/symmetry bridge, the exactness of a
   closed holomorphic one-form, and the exponential covering of a stage with its
   periodicity descent.
@@ -461,17 +467,59 @@ one variable; this is the several-variable statement in degree one.
   is `2πi`-periodic in every coordinate is constant on the fibres of the covering**, which is the
   descent that turns a primitive on the covering space into a function on the stage.
 
+### `(5)` in degree one, in every dimension, landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerStageOneFormExact.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerExpPullback`, `deningerExpPullback_analytic`, `deningerExpPullback_closed`,
+  `deningerExpPullback_periodic` — the pullback of a stage one-form along the exponential covering
+  is holomorphic on the whole covering space, closed when the form is closed, and periodic in every
+  coordinate.
+- `deningerPeriod_const` — **the increments of a primitive over the periods of the covering are
+  constants**, because the pullback is periodic and a function with vanishing derivative on a
+  normed space is constant.
+- `deningerPeriodCoeff`, `deningerCorrectedPrimitive`, `deningerCorrectedPrimitive_periodic` —
+  subtracting the linear function whose coefficients are the periods over `2πi` makes the primitive
+  periodic in every coordinate.
+- `deningerLogBranch`, `deningerLogBranch_exp`, `deningerLogBranch_hasFDerivAt` — the local branch
+  of the logarithm at a point of the stage, its inverse relation to the covering and its derivative.
+- `deningerStage_closed_one_form_exact` — **every closed holomorphic one-form on `(ℂ^×)^r` is a
+  combination of the logarithmic differentials plus the derivative of a function on the stage.**
+  This is the surjectivity half of `L ⊗ ℂ ≅ H^1` in every dimension; with
+  `deningerDlogForm_independent` the coefficients are unique.
+
+### `(4)` and the sheaf condition, at the level of forms, landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerStagePowerPermutation.lean` and locality sections
+appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerPowerMatrix`, `deningerPowerMap_eq` — **`(4)`**: raising every coordinate to the same
+  power is a monomial transition map.
+- `deningerDlogForm_power_pullback` — **the power map multiplies the generators by the exponent**,
+  which is the action of Frobenius on the cohomology of a stage.
+- `deningerPermMatrix`, `deningerPermMap_eq`, `deningerDlogForm_perm_pullback` — a Galois element
+  permutes the evaluation coordinates and permutes the generators.
+- `deningerPowerPullback_holomorphic`, `deningerPowerPullback_extDeriv`,
+  `deningerPermPullback_holomorphic`, `deningerPermPullback_extDeriv` — **`(2)`--`(3)` are stable
+  under every power map and every Galois permutation**, with the exterior derivative transporting.
+- `deningerIsCylinderAt_congr`, `deningerIsCylinderAt_glue`, `deningerIsCylinderAt_congr_iff`,
+  `deningerIsHolomorphicForm_congr` — **the cylinder condition and holomorphy of stage forms are
+  local**, which is the sheaf-gluing sentence of the card's proof: a function or form glued from
+  cylinder ones agreeing on overlaps is near each point one of them.
+
 ### Remaining
 
 1. **`(5)`--`(6)`**, the de Rham cohomology `H^k((ℂ^×)^r, ℂ) ≅ Λ^k(L ⊗ ℂ)` and its colimit; mathlib
    has no de Rham cohomology of a complex manifold.  The generators are built in every degree,
    proved holomorphic, closed, nowhere zero and equivariant for the transitions; the map
    `L ⊗ ℂ → H^1` is proved injective for every `r`; and the comparison is closed for `r = k = 1`.
-   What is left in degree one for `r ≥ 2` is the assembly: pull the form back along the exponential
-   covering, take the primitive given by the Poincaré lemma, subtract the linear function whose
-   coefficients are the periods, and descend the result — every ingredient is now formalized.  A
-   separate gap is that the descended primitive is only known to be differentiable: upgrading it to
-   analytic needs "complex differentiable implies analytic" in several variables, which mathlib does
-   not have in any form.  Higher degrees need the Poincaré lemma in degree `k`.
+   Degree one is now closed in every dimension: the classes of the logarithmic differentials are
+   independent and every closed holomorphic one-form is a combination of them plus an exact one.
+   Two gaps remain.  The primitive produced by the descent is known to be differentiable, and
+   upgrading it to analytic needs "complex differentiable implies analytic" in several variables,
+   which mathlib does not have in any form.  Degrees above one need the Poincaré lemma in degree
+   `k`, which is the same homotopy operator with the index bookkeeping of `k`-forms.
 2. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
    mathlib — and the pro-Ind global-section formalism.
