@@ -4230,3 +4230,30 @@ width), `MoebiusSmoothLittleO` and `MoebiusSharpLittleO`, which choose `H` and `
 
 for `T` growing with `N` — the frequency-uniform Möbius cancellation the mean-square input is
 assembled from.
+
+### The twisted contour bound at arbitrary smoothing width
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusTwistConcreteEdges.lean`,
+`MoebiusTwistSharpSubstitution.lean`, `MoebiusTwistContourBoundGeneral.lean`.
+`MoebiusTwistContourBound.lean` was refactored onto the first of these.
+
+The concrete geometry is now factored out and reusable:
+
+- `MoebiusTwistConcreteEdges` — `twistHeight`, `abs_add_twistHeight`, the abscissa geometry
+  (`one_lt_rightAbscissa`, `leftAbscissa_pos`, …, all from `3 ≤ log K`), the zero-freeness of the
+  band (`zero_free_twist_rect`) and the four edge bounds at the shifted heights
+  (`norm_invZetaTwist_right_le`, `_top_`, `_bot_`, `_left_le`);
+- `MoebiusTwistSharpSubstitution.norm_tsum_moebiusTwist_smoothWeight_le_sharp` — the twisted bound
+  with the three cutoff-decay constants taken as hypotheses, so each is fixed at the abscissa
+  actually met on its edge;
+- `MoebiusTwistContourBoundGeneral.exists_norm_tsum_moebiusTwist_smoothWeight_le_general` — **the
+  twisted contour bound at arbitrary smoothing width**, the cutoff entering only through the explicit
+  factor `H^{-(j+1)}(N+H+1)^{j+1}`.
+
+All unconditional (`[propext, Classical.choice, Quot.sound]`), all wired into
+`GaloisForLFunctions.RHTower`.
+
+This is the form in which the width can be chosen. What remains is the twisted analogue of
+`MoebiusSmoothLittleO`/`MoebiusSharpLittleO`: pick `H` and `K` and conclude
+`sup_{|τ| ≤ T} ‖∑_{n ≤ N} μ(n)n^{-iτ}‖ = o(N)`, the side condition `5 + 4|τ| ≤ K` fixing how fast `T`
+may grow with `N`.

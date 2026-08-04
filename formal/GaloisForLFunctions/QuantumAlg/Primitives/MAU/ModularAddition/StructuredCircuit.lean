@@ -188,8 +188,8 @@ end RawCanonicalWitness
 
 namespace PowerOfTwo
 
+set_option linter.defProp false in
 /-- Canonical `n`-bit residue encoding for the power-of-two modulus. -/
-@[nolint defLemma]
 def residueEncoding (n : Nat) : BinaryResidueEncoding (2 ^ n) n where
   modulus_pos := by
     exact pow_pos (by decide : (0 : Nat) < 2) n
@@ -853,8 +853,8 @@ end PowerOfTwo
 
 namespace Mod2
 
+set_option linter.defProp false in
 /-- One-bit canonical residue encoding for `ZMod 2`. -/
-@[nolint defLemma]
 def residueEncoding : BinaryResidueEncoding 2 1 where
   modulus_pos := by decide
   register_fits := by decide
@@ -888,8 +888,8 @@ end Mod2
 
 namespace Mod4
 
+set_option linter.defProp false in
 /-- Two-bit canonical residue encoding for `ZMod 4`. -/
-@[nolint defLemma]
 def residueEncoding : BinaryResidueEncoding 4 2 where
   modulus_pos := by decide
   register_fits := by decide
@@ -1115,8 +1115,8 @@ end RawCanonicalWitness
 
 namespace PowerOfTwo
 
+set_option linter.defProp false in
 /-- Canonical `n`-bit residue encoding for the power-of-two modulus. -/
-@[nolint defLemma]
 def residueEncoding (n : Nat) : BinaryResidueEncoding (2 ^ n) n where
   modulus_pos := by
     exact pow_pos (by decide : (0 : Nat) < 2) n
@@ -1883,8 +1883,8 @@ end PowerOfTwo
 
 namespace Mod2
 
+set_option linter.defProp false in
 /-- One-bit canonical residue encoding for `ZMod 2`. -/
-@[nolint defLemma]
 def residueEncoding : BinaryResidueEncoding 2 1 where
   modulus_pos := by decide
   register_fits := by decide
@@ -1922,8 +1922,8 @@ end Mod2
 
 namespace Mod4
 
+set_option linter.defProp false in
 /-- Two-bit canonical residue encoding for `ZMod 4`. -/
-@[nolint defLemma]
 def residueEncoding : BinaryResidueEncoding 4 2 where
   modulus_pos := by decide
   register_fits := by decide

@@ -110,11 +110,11 @@ theorem realPolynomialToComplex_coeff_eq_zero_of_natDegree_lt {P : ℝ[X]} {m : 
 
 /-- Real part of a complex-coefficient polynomial, taken coefficientwise. -/
 noncomputable def complexPolynomialRealPart (P : ℂ[X]) : ℝ[X] :=
-  Polynomial.ofFinsupp (P.toFinsupp.mapRange Complex.re (by simp))
+  Polynomial.ofFinsupp ⟨P.toFinsupp.coeff.mapRange Complex.re (by simp)⟩
 
 /-- Imaginary part of a complex-coefficient polynomial, taken coefficientwise. -/
 noncomputable def complexPolynomialImagPart (P : ℂ[X]) : ℝ[X] :=
-  Polynomial.ofFinsupp (P.toFinsupp.mapRange Complex.im (by simp))
+  Polynomial.ofFinsupp ⟨P.toFinsupp.coeff.mapRange Complex.im (by simp)⟩
 
 @[simp]
 theorem complexPolynomialRealPart_coeff (P : ℂ[X]) (n : ℕ) :
@@ -178,11 +178,11 @@ theorem complexPolynomialImagPart_eval_ofReal (P : ℂ[X]) (x : ℝ) :
 
 /-- Even coefficient part of a real polynomial. -/
 noncomputable def realPolynomialEvenPart (P : ℝ[X]) : ℝ[X] :=
-  Polynomial.ofFinsupp (P.toFinsupp.filter fun n => n % 2 = 0)
+  Polynomial.ofFinsupp ⟨P.toFinsupp.coeff.filter fun n => n % 2 = 0⟩
 
 /-- Odd coefficient part of a real polynomial. -/
 noncomputable def realPolynomialOddPart (P : ℝ[X]) : ℝ[X] :=
-  Polynomial.ofFinsupp (P.toFinsupp.filter fun n => n % 2 = 1)
+  Polynomial.ofFinsupp ⟨P.toFinsupp.coeff.filter fun n => n % 2 = 1⟩
 
 @[simp]
 theorem realPolynomialEvenPart_coeff (P : ℝ[X]) (n : ℕ) :

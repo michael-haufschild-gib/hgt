@@ -2258,7 +2258,6 @@ structure PublicBudgetRetryPackage (oneRun budget : FailureBudget) where
 deriving the two-thirds success comparison internally. This is the constructor
 used by theorem-facing endpoints instead of accepting a prebuilt
 `PublicBudgetRetryPackage` [Sho95, source.tex:1647-1663]. -/
-@[nolint defLemma]
 def publicBudgetRetryPackage (oneRun budget : FailureBudget)
     (hbudget : WellFormed budget)
     (honeRun : oneRun.WellFormed)
@@ -2346,7 +2345,6 @@ namespace PublicFailureBudget
 
 /-- Convert public failure-budget conditions into the existing retry package
 using the canonical half-failure one-run budget. -/
-@[nolint defLemma]
 def toPublicBudgetRetryPackage {budget : FailureBudget}
     (h : PublicFailureBudget budget) :
     PublicBudgetRetryPackage halfFailureOneRunBudget budget :=

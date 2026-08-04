@@ -15,7 +15,7 @@ No positivity, RH, zero simplicity, enumeration, or spectral-range hypothesis is
 
 noncomputable section
 
-open CategoryTheory Complex
+open CategoryTheory Complex MeasureTheory
 
 namespace GaloisForLFunctions.RHTower
 
@@ -24,6 +24,100 @@ private abbrev Relative :=
 private abbrev ClosedRange :=
   CCMRationalAdelicClosedNonunitalStrongRestrictionRange 0
 private abbrev Section := CCMRationalClassSpaceSection
+private abbrev U := CCMRationalProfiniteUnit
+
+local instance : MeasurableSpace U := borel U
+local instance : BorelSpace U := ⟨rfl⟩
+local instance : ccmRationalProfiniteUnitHaar.IsMulLeftInvariant := by
+  change (Measure.haarMeasure
+    ccmRationalProfiniteUnitPositiveCompact).IsMulLeftInvariant
+  infer_instance
+local instance : ccmRationalProfiniteUnitHaar.IsMulRightInvariant where
+  map_mul_right_eq_self g := by
+    simpa only [mul_comm] using
+      (map_mul_left_eq_self
+        (μ := ccmRationalProfiniteUnitHaar) g)
+
+/-! ## Exact spectral covariance -/
+
+/-- Haar--Mellin diagonalizes the exact class-space right action.  This uses the radial Mellin
+translation law and right invariance of probability Haar measure on the profinite-unit factor. -/
+theorem ccmRationalStrongClassSpaceTrivialMellinLM_rightAction
+    (c : Section) (s : ℂ) (f : CCMRationalStrongClassSpace) :
+    ccmRationalStrongClassSpaceTrivialMellinLM s
+        (ccmRationalStrongClassSpaceRightAction c f) =
+      Complex.exp
+          (s * (-(ccmRationalPositiveUnitLog c.2) : ℂ)) *
+        ccmRationalStrongClassSpaceTrivialMellinLM s f := by
+  rw [ccmRationalStrongClassSpaceTrivialMellinLM_apply,
+    ccmRationalStrongClassSpaceTrivialMellinLM_apply]
+  change
+    (∫ u : U,
+      _root_.RHTower.deningerMeyerStrongLogMellin
+        (_root_.RHTower.deningerMeyerStrongLogFlow
+          (-ccmRationalPositiveUnitLog c.2) (f (u * c.1))) s
+        ∂ccmRationalProfiniteUnitHaar) = _
+  simp_rw [_root_.RHTower.deningerMeyerStrongLogMellin_flow]
+  rw [integral_const_mul]
+  simp only [ofReal_neg]
+  congr 1
+  change
+    (∫ u : U,
+      _root_.RHTower.deningerMeyerStrongLogMellin (f (u * c.1)) s
+        ∂ccmRationalProfiniteUnitHaar) =
+      ∫ u : U,
+        _root_.RHTower.deningerMeyerStrongLogMellin (f u) s
+          ∂ccmRationalProfiniteUnitHaar
+  exact integral_mul_right_eq_self
+    (μ := ccmRationalProfiniteUnitHaar)
+    (fun u : U =>
+      _root_.RHTower.deningerMeyerStrongLogMellin (f u) s) c.1
+
+/-- Exact nonunital diagonal coordinate intertwines class-space translation. -/
+theorem ccmRationalNonunitalStrongDiagonalCoordinate_rightAction
+    (c : Section) (n : ℕ)
+    (x : CCMRationalNonunitalStrongCyclicTarget.simplicial.degree n) :
+    ccmRationalNonunitalStrongDiagonalCoordinate n
+        (ccmRationalNonunitalStrongCyclicRightActionDegree c n x) =
+      ccmRationalStrongClassSpaceRightActionLinear c
+        (ccmRationalNonunitalStrongDiagonalCoordinate n x) := by
+  apply ccmRationalStrongClassSpaceEvalLinear_injective
+  funext b
+  rw [ccmRationalNonunitalStrongDiagonalCoordinate_eval]
+  change ccmRationalNonunitalStrongDiagonalTrace n
+      (cyclicBarAlgHomDegree
+        (ccmRationalNonunitalFieldRightActionAlgHom c) n x.1) b = _
+  rw [ccmRationalNonunitalStrongDiagonalTrace_rightAction]
+  calc
+    ccmRationalNonunitalStrongDiagonalTrace n x.1 (b * c) =
+        ccmRationalStrongClassSpaceEvalLinear
+          (ccmRationalNonunitalStrongDiagonalCoordinate n x) (b * c) :=
+      (congrFun
+        (ccmRationalNonunitalStrongDiagonalCoordinate_eval n x) (b * c)).symm
+    _ = ccmRationalStrongClassSpaceEval
+        (ccmRationalStrongClassSpaceRightAction c
+          (ccmRationalNonunitalStrongDiagonalCoordinate n x)) b :=
+      (ccmRationalStrongClassSpaceEval_rightAction c
+        (ccmRationalNonunitalStrongDiagonalCoordinate n x) b).symm
+    _ = ccmRationalStrongClassSpaceEvalLinear
+        (ccmRationalStrongClassSpaceRightActionLinear c
+          (ccmRationalNonunitalStrongDiagonalCoordinate n x)) b := rfl
+
+/-- Every target Haar--Mellin functional is an exact class-space eigencharacter. -/
+theorem ccmRationalNonunitalStrongHaarMellinLM_rightAction
+    (c : Section) (n : ℕ) (s : ℂ)
+    (x : CCMRationalNonunitalStrongCyclicTarget.simplicial.degree n) :
+    ccmRationalNonunitalStrongHaarMellinLM n s
+        (ccmRationalNonunitalStrongCyclicRightActionDegree c n x) =
+      Complex.exp
+          (s * (-(ccmRationalPositiveUnitLog c.2) : ℂ)) *
+        ccmRationalNonunitalStrongHaarMellinLM n s x := by
+  rw [ccmRationalNonunitalStrongHaarMellinLM,
+    LinearMap.comp_apply,
+    ccmRationalNonunitalStrongDiagonalCoordinate_rightAction,
+    ccmRationalStrongClassSpaceRightActionLinear]
+  exact ccmRationalStrongClassSpaceTrivialMellinLM_rightAction c s
+    (ccmRationalNonunitalStrongDiagonalCoordinate n x)
 
 /-- Every actual Xi-divisor support point is a non-pole zeta zero. -/
 theorem ccmClosedXiSupport_riemannZeta_eq_zero
@@ -81,6 +175,29 @@ theorem ccmClosedXiSupportHaarMellinLM_ne_zero
   exact ccmRationalNonunitalStrongHaarMellinLM_logGaussian_ne_zero
     (rho : ℂ) (by simpa using hvalue)
 
+/-- Spectral multiplier of the literal Lefschetz correspondence at one Xi support point. -/
+def ccmClosedXiLefschetzMultiplier
+    (c : Section) (rho : _root_.RHTower.XiDivisorSupport) : ℂ :=
+  Complex.exp
+    ((rho : ℂ) * (-(ccmRationalPositiveUnitLog c.2) : ℂ))
+
+/-- Every nonzero Xi Haar--Mellin character on the literal closed quotient is an exact
+eigencharacter of the descended Lefschetz correspondence. -/
+theorem ccmClosedXiSupportHaarMellinLM_lefschetz
+    (c : Section) (rho : _root_.RHTower.XiDivisorSupport)
+    (x : Relative.simplicial.degree 0) :
+    ccmClosedXiSupportHaarMellinLM rho
+        ((ccmRationalAdelicClosedNonunitalStrongLefschetz c).simplicial.app
+          (.op (.mk 0)) x) =
+      ccmClosedXiLefschetzMultiplier c rho *
+        ccmClosedXiSupportHaarMellinLM rho x := by
+  obtain ⟨y, rfl⟩ := ClosedRange.mkQ_surjective x
+  rw [ccmRationalAdelicClosedNonunitalStrongLefschetz_mkQ,
+    ccmClosedXiSupportHaarMellinLM_mkQ,
+    ccmClosedXiSupportHaarMellinLM_mkQ,
+    ccmRationalNonunitalStrongHaarMellinLM_rightAction]
+  rfl
+
 /-- Multiplicity-exact spectral evaluation of a degree-zero literal closed CCM class. -/
 def ccmClosedXiSpectralEvaluation
     (x : Relative.simplicial.degree 0)
@@ -106,6 +223,30 @@ theorem ccmClosedXiSpectralEvaluationLM_apply
     ccmClosedXiSpectralEvaluationLM x q =
       ccmClosedXiSpectralEvaluation x q :=
   rfl
+
+/-- Multiplicity-exact spectral evaluation intertwines Lefschetz action with pointwise Mellin
+multiplication on every Xi zero copy. -/
+theorem ccmClosedXiSpectralEvaluation_lefschetz
+    (c : Section) (x : Relative.simplicial.degree 0)
+    (q : _root_.RHTower.XiZeroCopy) :
+    ccmClosedXiSpectralEvaluation
+        ((ccmRationalAdelicClosedNonunitalStrongLefschetz c).simplicial.app
+          (.op (.mk 0)) x) q =
+      ccmClosedXiLefschetzMultiplier c q.1 *
+        ccmClosedXiSpectralEvaluation x q := by
+  exact ccmClosedXiSupportHaarMellinLM_lefschetz c q.1 x
+
+/-- Function-valued intertwining law for the full multiplicity packet. -/
+theorem ccmClosedXiSpectralEvaluationLM_lefschetz
+    (c : Section) (x : Relative.simplicial.degree 0) :
+    ccmClosedXiSpectralEvaluationLM
+        ((ccmRationalAdelicClosedNonunitalStrongLefschetz c).simplicial.app
+          (.op (.mk 0)) x) =
+      fun q : _root_.RHTower.XiZeroCopy =>
+        ccmClosedXiLefschetzMultiplier c q.1 *
+          ccmClosedXiSpectralEvaluationLM x q := by
+  funext q
+  exact ccmClosedXiSpectralEvaluation_lefschetz c x q
 
 /-- Literal closed-quotient pairing obtained by critical-line reflection of the complete Xi
 evaluation packet. -/
@@ -156,6 +297,21 @@ theorem ccmClosedXiCliffordProductPairing_eq_lefschetz
           (.op (.mk 0)) x) y := by
   rw [ccmClosedXiCliffordProductPairing,
     ccmRationalAdelicClosedNonunitalStrongClifford_corrected_product_degree]
+
+/-- Non-formal spectral content of phase cancellation: the corrected Clifford product acts on
+every multiplicity copy by the actual Haar--Mellin multiplier of the product correspondence. -/
+theorem ccmClosedXiSpectralEvaluation_clifford_corrected_product
+    (c d : Section) (x : Relative.simplicial.degree 0)
+    (q : _root_.RHTower.XiZeroCopy) :
+    ccmClosedXiSpectralEvaluation
+        ((ccmRationalAdelicClosedNonunitalStrongCliffordCotransgression c).toHom.simplicial.app
+          (.op (.mk 0))
+          ((ccmRationalAdelicClosedNonunitalStrongCliffordTransgression d).toHom.simplicial.app
+            (.op (.mk 0)) x)) q =
+      ccmClosedXiLefschetzMultiplier (c * d) q.1 *
+        ccmClosedXiSpectralEvaluation x q := by
+  rw [ccmRationalAdelicClosedNonunitalStrongClifford_corrected_product_degree]
+  exact ccmClosedXiSpectralEvaluation_lefschetz (c * d) x q
 
 /-- Full bridge theorem: the numerical pairing of the literal closed-CCM Clifford product is
 exactly the multiplicity-sensitive Weil form of its two realized evaluation packets. -/

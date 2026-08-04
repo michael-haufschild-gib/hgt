@@ -254,6 +254,7 @@ theorem ccmRationalAdelicPrimeRelativeXiConnection_pos
   have hp1 : 1 < (p.1 : ℝ) := by exact_mod_cast p.2.one_lt
   have hinv : (p.1 : ℝ)⁻¹ < 1 := (inv_lt_one₀ hp0).mpr hp1
   have hlog : 0 < Real.log (p.1 : ℝ) := Real.log_pos hp1
+  have hone : 0 < 1 - (p.1 : ℝ)⁻¹ := sub_pos.mpr hinv
   rw [primeDepthBVWoldConnection,
     ccmRationalAdelicPrimeRelativeXiCellZero,
     ccmRationalAdelicPrimeRelativeXiCellOne,
@@ -262,7 +263,13 @@ theorem ccmRationalAdelicPrimeRelativeXiConnection_pos
     xiGammaEulerPrimitivePrimeDepthLogClock_apply,
     xiGammaEulerPrimitivePrimeDepthLogClock_apply]
   norm_num
-  nlinarith [inv_pos.mpr hp0]
+  calc
+    (1 - (p.1 : ℝ)⁻¹) * (p.1 : ℝ)⁻¹ * Real.log (p.1 : ℝ) =
+        ((1 - (p.1 : ℝ)⁻¹) * Real.log (p.1 : ℝ)) *
+          (p.1 : ℝ)⁻¹ := by ring
+    _ < ((1 - (p.1 : ℝ)⁻¹) * Real.log (p.1 : ℝ)) * 2 :=
+      mul_lt_mul_of_pos_left (by linarith) (mul_pos hone hlog)
+    _ = (1 - (p.1 : ℝ)⁻¹) * (2 * Real.log (p.1 : ℝ)) := by ring
 
 /-- On the retained period-one source class, equality of resolved and fixed
 physical corona landings is exactly critical-line placement.  This theorem
@@ -283,6 +290,33 @@ theorem ccmRationalAdelicPrimeXiReesCoronaComparisons_eq_iff
       (ccmRationalAdelicPrimeRelativeXiConnection_pos p).ne'
       (iteratedDeriv_XiC_ne_zero_at_supportMultiplicity rho),
     primeDepthBVWoldXiCenteredRate_eq_zero_iff]
+
+/-- Global source-to-physical corona comparison target, now stated on the
+literal period-one rational-adelic class at every retained ordinary prime. -/
+def CCMRationalAdelicPrimeXiReesCoronaComparisonsAgree : Prop :=
+  ∀ p : Nat.Primes, ∀ rho : XiDivisorSupport,
+    ccmRationalAdelicPrimeXiPhysicalReesCoronaComparison p rho
+        (ccmRationalAdelicPrimeRelativeClass p) =
+      ccmRationalAdelicPrimeXiResolvedReesCoronaComparison p rho
+        (ccmRationalAdelicPrimeRelativeClass p)
+
+theorem ccmRationalAdelicPrimeXiReesCoronaComparisonsAgree_iff_riemannHypothesis :
+    CCMRationalAdelicPrimeXiReesCoronaComparisonsAgree ↔
+      RiemannHypothesis := by
+  constructor
+  · intro h
+    apply rh_iff_xi_ne_zero_right.mpr
+    intro z hz hzero
+    let rho : XiDivisorSupport :=
+      ⟨z, mem_xi_divisor_support_of_eq_zero hzero⟩
+    let p : Nat.Primes := ⟨2, Nat.prime_two⟩
+    have hline : z.re = 1 / 2 :=
+      (ccmRationalAdelicPrimeXiReesCoronaComparisons_eq_iff p rho).mp
+        (h p rho)
+    linarith [mem_rightHalf.mp hz]
+  · intro hRH p rho
+    exact (ccmRationalAdelicPrimeXiReesCoronaComparisons_eq_iff p rho).mpr
+      (xi_divisor_support_re_eq_half_of_rh hRH rho)
 
 /-! ## Actual Xi landing and the exact remaining admission law -/
 

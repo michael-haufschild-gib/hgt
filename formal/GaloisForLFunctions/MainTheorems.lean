@@ -11,7 +11,9 @@ has six owned theorem areas:
 * `GaloisForLFunctions.Bottcher`
 * `GaloisForLFunctions.HilbertMetric`
 
-Import this module when checking whether the six areas still build together.
+and one vendored area, `GaloisForLFunctions.QuantumAlg`.
+
+Import this module when checking whether the areas still build together.
 Prefer the area-specific umbrella while developing inside one theorem program.
 -/
 import GaloisForLFunctions.RHTower
@@ -20,6 +22,7 @@ import GaloisForLFunctions.Hurwitz
 import GaloisForLFunctions.U0
 import GaloisForLFunctions.Bottcher
 import GaloisForLFunctions.HilbertMetric
+import GaloisForLFunctions.QuantumAlg
 import GaloisForLFunctions.FullyProvenNewTargets
 import GaloisForLFunctions.KummerRootApplications
 import GaloisForLFunctions.HTGeometry.NevanlinnaCharacteristicLowerBound

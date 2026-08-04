@@ -11,31 +11,31 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 | Lines | File |
 |---:|---|
+| 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
-| 5587 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
+| 6316 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularDivision/StructuredCircuit.lean` |
+| 6194 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Decomposition.lean` |
+| 5599 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 5058 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
-| 4876 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 4894 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 4763 | `formal/GaloisForLFunctions/HTGeometry/GaussianTorsionLanguageTailLock.lean` |
+| 4479 | `formal/GaloisForLFunctions/QuantumAlg/Core/Components/EncodedBitGates.lean` |
+| 4251 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/StructuredCircuit.lean` |
 | 3980 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
+| 3871 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/Arithmetic/PlainAdder/Schedule.lean` |
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3711 | `formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
 | 3594 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
+| 3532 | `formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/EkeraHastadStyle.lean` |
 | 3468 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
+| 3337 | `formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/ShorStyle.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 2671 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
+| 2630 | `formal/GaloisForLFunctions/QuantumAlg/Algorithms/OrderFinding.lean` |
 | 2627 | `formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean` |
-| 2587 | `formal/GaloisForLFunctions/RHTower/DeningerArithmeticTimeDistribution.lean` |
-| 2583 | `formal/GaloisForLFunctions/HilbertMetric/GaussianJetPositivity.lean` |
-| 2546 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
-| 2520 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine.lean` |
-| 2378 | `formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean` |
-| 2369 | `formal/GaloisForLFunctions/U0/U0SliceViableA.lean` |
-| 2304 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |
-| 2278 | `formal/GaloisForLFunctions/RHTower/ObserverTemporalDimensionLaw.lean` |
-| 2249 | `formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterra.lean` |
-| 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
 
 ## Gap Markers
 

@@ -2616,7 +2616,14 @@ value and time derivative vanish on the initial slice vanishes at every event. T
 are a genuine restriction, not a consequence of the equation: `not_decayingSolution_one_field` shows
 the constant field solves the free equation with non-integrable energy density, so a Fourier-built
 probe — bounded, not automatically decaying — needs its energy and Green products shown integrable
-before the estimate applies to it.
+before the estimate applies to it. The usable form is `eq_of_solvesWaveEq_of_memLp`: two
+square-integrable solutions of the same clock equation with the same Cauchy data agree at every
+event — square integrability of the slices and their first two derivatives being exactly what
+Plancherel delivers for a synthesis. In event coordinates that is
+**`eq_of_solvesPotentialWave_of_memLp`**, quotable directly by the clock programme. Its sharpest form is
+`eq_of_solvesWaveEq_of_memLp_of_factorDominated`, whose every hypothesis is square integrability or
+uniform-in-time domination of **one solution at a time** — no compact support anywhere. In event
+coordinates that is `eq_of_solvesPotentialWave_of_memLp_of_factorDominated`.
 
 This is uniqueness, not existence. The existence half — a Galerkin scheme or a fixed point in a
 Sobolev scale — is what would lower the regularity threshold of the probe construction below

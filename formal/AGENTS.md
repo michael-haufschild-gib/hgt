@@ -14,7 +14,10 @@ of six theorem areas:
 | q62 Böttcher | `GaloisForLFunctions.Bottcher` | `Bottcher.q62_independence`, `Bottcher.q62_mixed`, `Bottcher.q62_phiMero_norm_gap`, `Bottcher.q62_phiMero_linGap`, `Bottcher.q62_phiMero_linGap_roots`, `Bottcher.q62_phiMero_norm_gap_roots`, `Bottcher.q62_phiMero_mixed_far_roots`, `Bottcher.q62_phiMero_mixed_far_roots_swapped` |
 | Hilbert metrics | `GaloisForLFunctions.HilbertMetric` | finite graded Pluecker partitions and Gaussian feature-determinant laws |
 
-`GaloisForLFunctions.MainTheorems` imports all six.
+`GaloisForLFunctions.MainTheorems` imports all six, plus one vendored area:
+`GaloisForLFunctions.QuantumAlg` (quantum algorithms; Apache-2.0, read-only,
+see `GaloisForLFunctions/QuantumAlg/PROVENANCE.md`).  Its modules use the Lean
+module system (`module`, `public import`); ours do not.
 
 ## Start Here
 

@@ -6958,3 +6958,61 @@ so the two Jacobians agree entrywise up to `transHom e`.
 Composed with the scaling transport, the observability determinant is now known for every model of the
 form `δ X_{k+1} = (a_k X_{k+1} + β_k)·δ X_k` with `a_k ≠ 0` and constant `β_k` — the whole
 constant-coefficient first-order entire family, four parameters per level.
+
+### The law for every constant-coefficient first-order cascade
+
+`exactDifferentialOrder_expShiftCascade` (unconditional, axiom-clean): for any `a_k, c_k ≠ 0` and any
+`b_k, d_k`, the length-`n` cascade of
+
+`f_k(w) = d_k + c_k·exp(a_k w + b_k)`
+
+has differential order exactly `n`.  These are **all** transcendental entire solutions of
+constant-coefficient first-order linear equations — four parameters per level, and the widest family
+reachable without the Wiman input.
+
+`HTGeometry/ExpShiftCascade.lean`:
+
+* `deriv_expShift` — the defining equation `f' = a(f − d)`;
+* `differentiallyAlgebraicOfOrder_one_expShift` — the order-one relation, written out as
+  `X₂ − a·X₁ + a·d` and shown nonzero by two evaluations;
+* `transcendentalEntire_expShift` — from affine precomposition, constant scaling and adding a constant;
+* `deriv_expShiftCascade` / `law_expShiftCascade` — the cascade law
+  `(Y_k)' = (∏_{j<k}a_j)·∏_{j≤k}(Y_j − d_{j−1})`, which *is* `shiftedDerivation` evaluated at the
+  states;
+* `not_differentiallyAlgebraicOfOrder_expShift` and the capstone.
+
+**What the card now has, unconditionally.** The upper bound `ord ≤ n` with the paper's hypotheses;
+algebraic independence of the states of *any* first-order entire cascade; transcendence of every state;
+and the full law `ord = n` for every constant-coefficient first-order cascade, at every length.  The
+open general case is `helim` where the derivative law is algebraic rather than polynomial — and
+`AffineTopReduction`/`AffineTopDeterminant` are the general machinery waiting for it.
+
+## Current status of the card
+
+**Unconditional in Lean, with exactly the paper's hypotheses.**
+
+* `ord_DA(f_n ∘ ⋯ ∘ f_1) ≤ n` for transcendental entire `f_k` with first-order equations
+  (`differentiallyAlgebraicOfOrder_entireCascade_of_transcendental'`).
+* The states `z, f_1, f_2∘f_1, …` of **any** cascade of transcendental entire functions are
+  algebraically independent (`noRelation_entireCascade_of_transcendental`) — no growth theory; the
+  Clunie–Steinmetz separation this card was going to need is not an input at all.
+* Every state is transcendental entire, so no state satisfies an order-zero equation.
+* `ord_DA = n` for every constant-coefficient first-order cascade
+  (`exactDifferentialOrder_expShiftCascade`): maps `d_k + c_k·exp(a_k w + b_k)` with `a_k, c_k ≠ 0`,
+  four free parameters per level, every length.  The exponential tower and the affine-exponential
+  family are specialisations (`expTower_eq_expShiftCascade`, `expShift_eq_expAffine`).
+* Hence every `n ≥ 1` is the differential order of an explicit transcendental entire function.
+
+**Reusable machinery built for it.** The column-pencil determinant calculus
+(`ColumnPencilDeterminant`), the affine top reduction and its determinant form
+(`AffineTopReduction`, `AffineTopDeterminant`), the polynomial-cascade transfer
+(`PolynomialCascadeModel`), and the two model conjugations (scaling, translation).
+
+**The boundary, stated precisely.** The method needs the cascade's derivative law to be *polynomial in
+the states*, which happens exactly when each `f_k` solves `f' = a(f − d)` with constants: then every
+state's logarithmic derivative is again polynomial and the height induction closes.  With polynomial
+coefficients `f' = a(w)f + b(w)` the top reduction still applies — that is what `AffineTopDeterminant`
+is for — but the recursion stops one level down, because `δA/A` leaves the polynomial ring.  Beyond
+that lies the general case, where the derivative law is *algebraic*: that is Reduction III, and its
+missing input is the Wiman initial law (`q_k > 0`), i.e. the Goldberg/Strelitz exponents.  Everything
+downstream of that input is already built, here and in the corpus's Bell/Jacobian layer.

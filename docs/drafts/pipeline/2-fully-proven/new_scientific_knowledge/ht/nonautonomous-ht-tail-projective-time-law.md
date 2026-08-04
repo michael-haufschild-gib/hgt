@@ -186,8 +186,8 @@ checks pass, and axiom reports contain only `propext`, `Classical.choice`, and `
 - [x] 0 -> 1: nonautonomous tail and projective-time claim isolated
 - [x] 1 -> 2: complete proof with classical parents separated
 - [x] exact two-coordinate Schwarzian phase transport formalized and autonomous duplication removed
-- [ ] 2 -> 3: phase-tail isomorphism and Schwarzian transport are formalized; differential Luroth
-  and generator classification remain paper-level
+- [x] 2 -> 3: phase-tail isomorphism, Schwarzian transport, differential Luroth and the phase
+  generator are all formalized
 - [ ] 3 -> 4: external novelty audit and standalone manuscript
 
 ## Lean progress — the scalar dichotomy of part 2, first half
@@ -295,7 +295,7 @@ assumed:
 |---|---|
 | `(1)`, `(2)` phase tail and exact transport | `NonautonomousStableCore` |
 | part 2, constant branch | `nonautonomousTail_dichotomy` |
-| part 2, `(3)` generator existence | **Ritt--Kolchin differential Luroth -- absent from mathlib** |
+| part 2, `(3)` generator existence | `differentialLuroth`, `exists_nonautonomousTail_generator` |
 | `(4)` projective transition | `exists_mobius_of_differentialAlgEquiv` |
 | `(5)` Schwarzian is a generator invariant | `schwarzian_mobius` |
 | `(6)` Schwarzian transport | `schwarzian_fixed_of_differentialAlgEquiv` |
@@ -2524,3 +2524,108 @@ statement the research note listed as the missing mathematics, and the card's ce
 already has: for a nonconstant coefficient ratio `w = a/b`, the polynomial `a(U) − w·b(U)` is a
 relation of `y` over `F⟨w⟩` of rank at most `(m, d)`, so `eq_differentialAdjoin_of_ratio_rank_le`
 (equivalently `eq_of_characteristic_rank_eq`) gives `F⟨w⟩ = G`.
+
+## Coefficient supports — built
+
+`formal/GaloisForLFunctions/HTGeometry/TwoBlockCoefficientSupport.lean` (axiom-clean):
+
+- `twoBlockMonomial`, `twoBlockMonomial_apply_inl/inr`, `exists_twoBlockMonomial` — assembling and
+  splitting a two-block jet monomial.
+- `differentialPolynomialTwoBlockEquiv_monomial` — the splitting sends `monomial (νL ⊕ νR) a` to
+  `monomial νR (monomial νL a)` (proved from the left/right embedding simp lemmas, no Finsupp
+  gymnastics).
+- `coeff_coeff_twoBlockEquiv` — **the double coefficient formula**:
+  `coeff νL (coeff νR (equiv X)) = coeff (twoBlockMonomial νL νR) X`.
+- `degreeOf_twoBlockCoefficient_le` — **a coefficient of the split polynomial has no larger jet
+  degree than the polynomial**: `deg_{U_k} (coeff νR X) ≤ deg_{U_k} X`.
+
+Combined with (★) this gives, for every coefficient `a_λ` of the cleared characteristic,
+
+    ord a_λ ≤ m        and        deg_{U_m} a_λ ≤ d ,
+
+which are exactly hypotheses `hHord`, `hKord`, `hHdeg`, `hKdeg` of the single-generator criterion
+`eq_differentialAdjoin_of_ratio_rank_le`.
+
+## Remaining link to the single-generator theorem
+
+The criterion also needs, for `H = a_λ`, `K = a_μ`:
+
+    evalOver_y K ≠ 0,      evalOver_y H / evalOver_y K ∈ G,      ∉ F .
+
+These follow from the clearing identity read coefficientwise:
+`algebraMap (F{U}) K (a_λ) = scalar · φ(P.coeff λ)`, so after the jet-fraction parametrization
+(`differentialIndependentAdjoinParametrization_algebraMap_val`, already used by
+`algebraMap_jetFraction_deriv`) the ratio of the two evaluations is `P.coeff λ / P.coeff μ` in `G`.
+Non-membership in `F` holds for at least one pair whenever `F ⊊ G`, since the ratios generate `G`
+(`characteristicDifferentialRatioField_eq`).  That evaluation lemma is the one piece still to build;
+everything else in the chain is proved.
+
+## SINGLE GENERATOR — PROVED
+
+`formal/GaloisForLFunctions/HTGeometry/DifferentialLurothSingleGenerator.lean`:
+
+    theorem exists_differentialLuroth_generator
+      (G : IntermediateField F E) (hGclosed : DerivationClosed G)
+      (hG : G ≤ differentialAdjoin F {y}) (hy : DifferentialIndependent F fun _ ↦ y)
+      (P : DifferentialPolynomial Unit G)
+      (hP : IsMinimalScalarDifferentialPolynomialRank … P) (hPirr : Irreducible P)
+      (Cc : PrimitiveTwoBlockDifferentialCharacteristic G hG hy P) (hGbot : G ≠ ⊥) :
+      ∃ w : E, differentialAdjoin F ({w} : Set E) = G
+
+unconditional, axiom-clean `[propext, Classical.choice, Quot.sound]`.
+
+The generator is a ratio of two coefficients of the cleared two-block characteristic.  The chain:
+
+- `exists_scalar_twoBlockCoefficient_eval` (new, `TwoBlockCoefficientEvaluation.lean`) — reading the
+  clearing identity coefficientwise and transporting along the jet parametrization, the evaluations
+  of the coefficients are the coefficients of `P` scaled by one nonzero constant; hence
+  `twoBlockCoefficient_eval_div`: the ratio of two evaluations is the coefficient ratio, which lies
+  in `G`.
+- `characteristicDifferentialRatioField_eq` gives a ratio outside the base field whenever `G ≠ ⊥`
+  (the ratios generate `G`, and the base field is derivation closed — `derivationClosed_bot`).
+- `degreeOf_twoBlockCoefficient_le` + `twoBlock_degreeOf_inl_eq_degreeOf_inr` (★) +
+  `degreeOf_twoBlockEquiv_inr` + `twoBlockEquiv_degreeOf_eq` bound every jet degree of every
+  coefficient by the corresponding jet degree of `P`, which gives `hHord`, `hKord`, `hHdeg`,
+  `hKdeg`.
+- `eq_differentialAdjoin_of_ratio_rank_le` then returns `differentialAdjoin F {w} = G`.
+
+This is conclusion (3) of the card: **the intermediate differential field is generated by one
+element** — the differential Lüroth theorem in the form the programme needed, from the corpus's own
+characteristic theory and this session's (★).
+
+## THE DIFFERENTIAL LÜROTH THEOREM — PROVED, CLEAN HYPOTHESES
+
+`formal/GaloisForLFunctions/HTGeometry/DifferentialLurothSingleGenerator.lean`:
+
+    theorem differentialLuroth
+      (G : IntermediateField F E) (hGclosed : DerivationClosed G)
+      (hG : G ≤ differentialAdjoin F ({y} : Set E))
+      (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+      (hGbot : G ≠ ⊥) :
+      ∃ w : E, differentialAdjoin F ({w} : Set E) = G
+
+unconditional, axiom-clean `[propext, Classical.choice, Quot.sound]`.
+
+Every auxiliary object is produced internally: a nonconstant element of `G` exists because `G ≠ ⊥`;
+`exists_irreducible_minimal_differentialKernelCharacteristic` turns it into an irreducible
+characteristic of minimal rank; `exists_primitiveTwoBlockDifferentialCharacteristic` clears it into
+a primitive two-block polynomial; and `exists_differentialLuroth_generator` extracts the generator
+as a coefficient ratio.
+
+Ritt's differential Lüroth theorem is therefore formalized in this corpus, with the two hard steps —
+block symmetry (★) of the cleared characteristic, and the Ritt reduction over a coefficient ring
+that makes it provable — proved here rather than assumed.
+
+## The card's gap is closed
+
+`formal/GaloisForLFunctions/HTGeometry/NonautonomousTailGenerator.lean` (wired, axiom-clean):
+
+    exists_nonautonomousTail_generator :
+      a nontrivial phase tail is differentialAdjoin C {u} for some u
+    exists_nonautonomousTail_generator_forall :
+      the same at every phase of a protocol whose tails are all nontrivial
+
+The tail is derivation closed (`derivationClosed_nonautonomousTail`) and sits inside the free
+differential field, so `differentialLuroth` applies directly.  This was the single entry of the
+state table marked "absent from mathlib": part 2, statement `(3)`.  With it the whole numbered
+theorem of this card -- `(1)`, `(2)`, the dichotomy, `(3)`, `(4)`, `(5)`, `(6)` -- is formal.

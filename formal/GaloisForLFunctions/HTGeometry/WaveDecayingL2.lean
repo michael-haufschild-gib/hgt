@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HTGeometry.WaveEnergyDecaying
+import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.MeasureTheory.Integral.MeanInequalities
 
 /-!
 # A square-integrability criterion for the decay hypotheses
@@ -37,7 +39,7 @@ theorem decayingSolution_of_memLp_two (hu : ContDiff ℝ ∞ u) (hsolve : Solves
         (volume : Measure (Fin d → ℝ)))
     (hL2l : ∀ (t : ℝ) (i : Fin d), MemLp (coordPartial i (coordPartial i (slice u t))) 2
       (volume : Measure (Fin d → ℝ)))
-    (hVbdd : ∃ M : ℝ, ∀ p, |V p| ≤ M)
+    (hVcont : Continuous V) (hVbdd : ∃ M : ℝ, ∀ p, |V p| ≤ M)
     (hdom : ∀ t : ℝ, ∃ bound : (Fin d → ℝ) → ℝ,
       Integrable bound (volume : Measure (Fin d → ℝ)) ∧
         ∀ s ∈ Metric.ball t 1, ∀ x : Fin d → ℝ,
@@ -55,12 +57,12 @@ theorem decayingSolution_of_memLp_two (hu : ContDiff ℝ ∞ u) (hsolve : Solves
       dominated := hdom }
   · -- the energy density is a sum of squares
     have hd : Integrable (fun x : Fin d → ℝ => (waveDirDeriv (timeDir d) u (t, x)) ^ 2)
-        (volume : Measure (Fin d → ℝ)) := MemLp.integrable_sq (hL2d t)
+        (volume : Measure (Fin d → ℝ)) := _root_.MeasureTheory.MemLp.integrable_sq (hL2d t)
     have hu2 : Integrable (fun x : Fin d → ℝ => (u (t, x)) ^ 2)
-        (volume : Measure (Fin d → ℝ)) := MemLp.integrable_sq (hL2u t)
+        (volume : Measure (Fin d → ℝ)) := _root_.MeasureTheory.MemLp.integrable_sq (hL2u t)
     have hs : ∀ i : Fin d, Integrable
         (fun x : Fin d → ℝ => (waveDirDeriv (spaceDir d i) u (t, x)) ^ 2)
-        (volume : Measure (Fin d → ℝ)) := fun i => MemLp.integrable_sq (hL2s t i)
+        (volume : Measure (Fin d → ℝ)) := fun i => _root_.MeasureTheory.MemLp.integrable_sq (hL2s t i)
     have hsum : Integrable (fun x : Fin d → ℝ =>
         ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u (t, x)) ^ 2)
         (volume : Measure (Fin d → ℝ)) := integrable_finsetSum _ fun i _ => hs i
@@ -71,9 +73,8 @@ theorem decayingSolution_of_memLp_two (hu : ContDiff ℝ ∞ u) (hsolve : Solves
         (volume : Measure (Fin d → ℝ)) := MemLp.integrable_mul (hL2u t) (hL2d t)
     refine Integrable.mono' (hprod.norm.const_mul (M + 1)) ?_ ?_
     · have hmap : Continuous fun x : Fin d → ℝ => ((t, x) : ℝ × (Fin d → ℝ)) := by fun_prop
-      refine (((continuous_const.add continuous_const).aestronglyMeasurable).mul
-        hprod.aestronglyMeasurable).congr ?_
-      exact Filter.Eventually.of_forall fun x => rfl
+      exact (((hVcont.comp hmap).add continuous_const).aestronglyMeasurable).mul
+        hprod.aestronglyMeasurable
     · filter_upwards with x
       have h1 : |V (t, x) + 1| ≤ M + 1 := by
         have hMle := abs_le.mp (hM (t, x))

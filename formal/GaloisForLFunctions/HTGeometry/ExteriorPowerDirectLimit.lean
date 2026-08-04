@@ -16,8 +16,6 @@ power is injective, and a limit of injective maps is injective.
 
 namespace GaloisForLFunctions.HTGeometry
 
-open Module
-
 section ExteriorPowerInjective
 
 variable {K M N : Type*} [Field K] [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N]
@@ -49,37 +47,39 @@ noncomputable def exteriorPowerSystem (n : ℕ) (i j : ι) (h : i ≤ j) :
     ⋀[K]^n (G i) →ₗ[K] ⋀[K]^n (G j) :=
   exteriorPower.map n (f i j h)
 
-variable [DirectedSystem G fun i j h => f i j h]
-
 /-- **The canonical map from the direct limit of the exterior powers to the exterior power of the
 direct limit.** -/
 noncomputable def exteriorPowerDirectLimitMap (n : ℕ) :
-    DirectLimit (fun i => ⋀[K]^n (G i)) (exteriorPowerSystem G f n) →ₗ[K]
-      ⋀[K]^n (DirectLimit G f) :=
-  DirectLimit.lift K ι _ _ (fun i => exteriorPower.map n (DirectLimit.of K ι G f i))
+    Module.DirectLimit (fun i => ⋀[K]^n (G i)) (exteriorPowerSystem G f n) →ₗ[K]
+      ⋀[K]^n (Module.DirectLimit G f) :=
+  Module.DirectLimit.lift K ι _ _ (fun i => exteriorPower.map n (Module.DirectLimit.of K ι G f i))
     (fun i j hij x => by
-      show exteriorPower.map n (DirectLimit.of K ι G f j)
+      show exteriorPower.map n (Module.DirectLimit.of K ι G f j)
         (exteriorPower.map n (f i j hij) x) = _
       rw [← LinearMap.comp_apply, ← exteriorPower.map_comp]
       congr 1
       refine congrArg (exteriorPower.map n) ?_
       refine LinearMap.ext fun y => ?_
-      exact DirectLimit.of_f)
+      exact Module.DirectLimit.of_f)
 
+omit [IsDirectedOrder ι] [Nonempty ι] in
 @[simp]
 theorem exteriorPowerDirectLimitMap_of (n : ℕ) (i : ι) (x : ⋀[K]^n (G i)) :
     exteriorPowerDirectLimitMap G f n
-        (DirectLimit.of K ι (fun i => ⋀[K]^n (G i)) (exteriorPowerSystem G f n) i x) =
-      exteriorPower.map n (DirectLimit.of K ι G f i) x :=
-  DirectLimit.lift_of _ _ _ _
+        (Module.DirectLimit.of K ι (fun i => ⋀[K]^n (G i)) (exteriorPowerSystem G f n) i x) =
+      exteriorPower.map n (Module.DirectLimit.of K ι G f i) x :=
+  Module.DirectLimit.lift_of _ _ _
 
+variable [DirectedSystem G fun i j h => f i j h]
+
+omit [Nonempty ι] in
 /-- In a directed system of injective maps, the maps into the direct limit are injective. -/
 theorem directLimit_of_injective (hinj : ∀ i j h, Function.Injective (f i j h)) (i : ι) :
-    Function.Injective (DirectLimit.of K ι G f i) := by
+    Function.Injective (Module.DirectLimit.of K ι G f i) := by
   intro x y hxy
-  have hzero : DirectLimit.of K ι G f i (x - y) = 0 := by
+  have hzero : Module.DirectLimit.of K ι G f i (x - y) = 0 := by
     rw [map_sub, hxy, sub_self]
-  obtain ⟨j, hij, hfx⟩ := DirectLimit.of.zero_exact hzero
+  obtain ⟨j, hij, hfx⟩ := Module.DirectLimit.of.zero_exact hzero
   have : x - y = 0 := hinj i j hij (by rw [hfx, map_zero])
   exact sub_eq_zero.1 this
 
@@ -89,25 +89,25 @@ theorem exteriorPowerDirectLimitMap_bijective (n : ℕ)
     Function.Bijective (exteriorPowerDirectLimitMap G f n) := by
   classical
   constructor
-  · refine DirectLimit.lift_injective _ _ fun i => ?_
+  · refine Module.DirectLimit.lift_injective _ _ fun i => ?_
     exact exteriorPower_map_injective n (directLimit_of_injective G f hinj i)
   · rw [← LinearMap.range_eq_top]
     rw [← top_le_iff, ← exteriorPower.ιMulti_span]
     rw [Submodule.span_le]
     rintro _ ⟨v, rfl⟩
     -- every tuple of the direct limit comes from a common stage
-    have hlift : ∀ a : Fin n, ∃ i x, DirectLimit.of K ι G f i x = v a := fun a =>
-      DirectLimit.exists_of _
+    have hlift : ∀ a : Fin n, ∃ i x, Module.DirectLimit.of K ι G f i x = v a := fun a =>
+      Module.DirectLimit.exists_of _
     choose idx val hval using hlift
     obtain ⟨j, hj⟩ := Finset.exists_le (Finset.image idx Finset.univ)
     have hjmem : ∀ a : Fin n, idx a ≤ j := fun a =>
       hj (idx a) (Finset.mem_image.2 ⟨a, Finset.mem_univ a, rfl⟩)
     have hvj : ∀ a : Fin n,
-        DirectLimit.of K ι G f j (f (idx a) j (hjmem a) (val a)) = v a := by
+        Module.DirectLimit.of K ι G f j (f (idx a) j (hjmem a) (val a)) = v a := by
       intro a
-      rw [DirectLimit.of_f]
+      rw [Module.DirectLimit.of_f]
       exact hval a
-    refine ⟨DirectLimit.of K ι (fun i => ⋀[K]^n (G i)) (exteriorPowerSystem G f n) j
+    refine ⟨Module.DirectLimit.of K ι (fun i => ⋀[K]^n (G i)) (exteriorPowerSystem G f n) j
       (exteriorPower.ιMulti K n fun a => f (idx a) j (hjmem a) (val a)), ?_⟩
     rw [exteriorPowerDirectLimitMap_of, exteriorPower.map_apply_ιMulti]
     congr 1
@@ -118,8 +118,8 @@ theorem exteriorPowerDirectLimitMap_bijective (n : ℕ)
 of the exterior powers.** -/
 noncomputable def exteriorPowerDirectLimitEquiv (n : ℕ)
     (hinj : ∀ i j h, Function.Injective (f i j h)) :
-    DirectLimit (fun i => ⋀[K]^n (G i)) (exteriorPowerSystem G f n) ≃ₗ[K]
-      ⋀[K]^n (DirectLimit G f) :=
+    Module.DirectLimit (fun i => ⋀[K]^n (G i)) (exteriorPowerSystem G f n) ≃ₗ[K]
+      ⋀[K]^n (Module.DirectLimit G f) :=
   LinearEquiv.ofBijective _ (exteriorPowerDirectLimitMap_bijective G f n hinj)
 
 end DirectLimit

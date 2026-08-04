@@ -58,8 +58,8 @@ theorem modulus_fits_width : modulus ≤ 2 ^ width := by
   norm_num [modulus, width, P256DomainParameters.primeModulus,
     P256DomainParameters.bitSize]
 
+set_option linter.defProp false in
 /-- Canonical binary residue encoding for P-256 field elements. -/
-@[nolint defLemma]
 def residueEncoding : BinaryResidueEncoding modulus width where
   modulus_pos := modulus_pos
   register_fits := modulus_fits_width

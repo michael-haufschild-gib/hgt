@@ -1,7 +1,7 @@
 # Closed CCM--Xi Haar--Mellin realization
 
 - **ID:** `ccm-closed-xi-haar-mellin-realization`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** dependency-closed bridge
 - **Parent:** `ccm-clifford-bivariant-weil-product.md`
 - **Novelty verdict:** exact bridge between two existing local constructions; not standalone new
@@ -81,4 +81,28 @@ RH, zero simplicity, spectral enumeration, or surjectivity/density of `E` is use
 - [x] exact literal recipient
 - [x] multiplicity audit
 - [x] circularity audit
-- [ ] unconditional Lean verification
+- [x] unconditional Lean verification
+
+## Spectral covariance addendum
+
+`[PAPER-PROVED]` For every class-space section `c`, target chain `x`, and spectral parameter `s`,
+Haar--Mellin evaluation diagonalizes the literal right action:
+
+```text
+M_s(L_c x) = exp(-s log |c|) M_s(x).
+```
+
+Indeed the diagonal scalar profile of `L_c x` is
+`(u,t) |-> x(u c_fin,t+log|c|)`.  Right invariance of probability Haar measure removes
+`c_fin`, while translation covariance of the logarithmic Mellin transform contributes
+`exp(-s log|c|)`.  Since both action and evaluation descend through the closed restriction
+quotient, the same eigencharacter law holds for every `ell_rho`.  Consequently the product of
+the two Clifford-corrected Lefschetz classes has symbol equal to the product of their two spectral
+characters; this is a genuine spectral representation of cyclic composition, not a definition of
+the result on the divisor side.
+
+Formal verification covers Haar change of variables, nonunital diagonal covariance, descent to
+the literal closed quotient, multiplicity-packet intertwining, Clifford phase cancellation,
+spectral multiplication by `exp(-rho log |cd|)`, and equality of the resulting numerical pairing
+with Xi Weil polarization.  Target module build passes; axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.

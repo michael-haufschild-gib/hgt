@@ -92,9 +92,19 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 28 | two-sided vanishing for decaying solutions | **`eq_zero_of_waveEnergy_zero_of_decaying_all`** | **built** |
 | 29 | the decaying uniqueness in the corpus's own language | **`eq_zero_of_solvesPotentialWave_of_decaying`** | **built** |
 | 30 | the decay hypothesis is a genuine restriction | `solvesWaveEq_one_field`, `not_integrable_energyDensity_one_field`, **`not_decayingSolution_one_field`** | **built** |
+| 31 | a square-integrability criterion for the decay hypotheses | **`decayingSolution_of_memLp_two`** | **built** |
+| 32 | the criterion is closed under differences | `coordPartial_sub_fun`, `memLp_two_slice_sub`, **`memLp_two_slice_dirDeriv_sub`**, **`memLp_two_coordPartial_slice_sub`** | **built** |
+| 33 | two-solution uniqueness for square-integrable solutions | `L2Solution`, **`L2Solution.sub`**, **`eq_of_solvesWaveEq_of_memLp`** | **built** |
+| 34 | the same, in the corpus's own language | **`eq_of_solvesPotentialWave_of_memLp`** | **built** |
+| 35 | domination by products of square-integrable functions | **`integrable_of_dominated_by_memLp_two`**, **`integrable_of_dominated_by_sum_memLp_two`** | **built** |
+| 36 | the dominating function from factor-wise bounds | **`exists_bound_of_factor_memLp`** | **built** |
+| 37 | factor-wise domination is closed under differences | `abs_sub_le_add`, **`exists_bound_of_factor_memLp_sub`** | **built** |
+| 38 | uniqueness with every hypothesis on one solution at a time | `FactorDominated`, **`eq_of_solvesWaveEq_of_memLp_of_factorDominated`** | **built** |
+| 39 | the same, in the corpus's own language | **`eq_of_solvesPotentialWave_of_memLp_of_factorDominated`** | **built** |
+| 40 | continuous dependence in the square-integrable class | `decayingSolution_sub_of_memLp_of_factorDominated`, **`waveEnergy_sub_le_exp_abs_of_memLp`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
-`WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30). All wired into the umbrella; axioms
+`WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39). All wired into the umbrella; axioms
 `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -245,8 +255,104 @@ This matters for the corpus's own probes. A Fourier synthesis against an `L¹` d
 synthesis. So the earlier claim that the estimate "applies to the corpus's Fourier-built probes"
 should be read as conditional — it applies to those probes **once their energy and Green products
 are shown integrable**, which is an extra `L²`-type statement about the density and not a corollary
-of the construction. Statement 26 gives one sufficient condition (compact support); a Plancherel
-argument on the synthesis would give another.
+of the construction. Statement 26 gives one sufficient condition (compact support); statement 31 gives the practical one.
+**`decayingSolution_of_memLp_two`**: every integrability field of the bundle is a product of two
+functions, so square integrability of each factor supplies all of them by Cauchy–Schwarz
+(`MemLp.integrable_mul`), and the energy density is a sum of squares (`MemLp.integrable_sq`). What
+has to be supplied is `MemLp … 2` for the slices, their spatial derivatives, their second spatial
+derivatives, the time derivative and its spatial derivatives — plus continuity and boundedness of
+the potential and the local domination in time.
+
+That is the form a Fourier construction can meet, because Plancherel turns square integrability of a
+synthesis into square integrability of its density.
+
+Statement 32 repairs the structural defect noted below. The *bundle* is not closed under
+differences, but the *criterion* is: `MemLp _ 2` is a linear condition, so square integrability of
+the slices, of their directional derivatives and of the spatial derivatives of the slices all pass
+to a difference (`memLp_two_slice_sub`, `memLp_two_slice_dirDeriv_sub`,
+`memLp_two_coordPartial_slice_sub`, the last using `coordPartial_sub_fun`). Two solutions meeting
+the criterion therefore have a difference that meets it, and the vanishing theorem applies to them —
+which is the two-solution uniqueness statement the bundle alone could not support.
+
+Statement 33 assembles it. `L2Solution` collects the six square-integrability conditions,
+**`L2Solution.sub`** proves the class closed under differences, and
+**`eq_of_solvesWaveEq_of_memLp`**: *two square-integrable solutions of the same clock equation, with
+a continuous bounded potential, a local dominating function for the difference, and the same Cauchy
+data, agree at every event.* This is the uniqueness theorem in the class a Fourier construction can
+meet — no compact support, only decay expressed as square integrability. Statement 34 states it on
+events: **`eq_of_solvesPotentialWave_of_memLp`** — *two smooth fields solving
+`SolvesPotentialWaveAt (kgWaveOp d) V`, whose pullbacks to time-space coordinates are square
+integrable, with the same value and time derivative on the initial slice, agree at every event.*
+That is the theorem the clock programme can quote directly.
+
+### The one hypothesis that is still not an `L²` statement
+
+`hdom` — the local dominating function for the time derivative of the energy density — is the last
+hypothesis of statements 33 and 34 that is not itself square integrability. Statement 35 supplies
+the tool for removing it: that derivative is
+`2(∂ₜu·∂ₜ²u + ∑ᵢ∂ᵢu·∂ₜ∂ᵢu + u·∂ₜu)`, a **sum of products of two factors**, and
+**`integrable_of_dominated_by_sum_memLp_two`** turns square-integrable dominating functions for the
+factors into an integrable dominating function for the whole. Statement 36 does exactly that. **`exists_bound_of_factor_memLp`** takes square-integrable
+dominating functions for the five factors — `u`, `∂ₜu`, `∂ₜ²u`, each `∂ᵢu`, each `∂ₜ∂ᵢu`, uniformly
+for `s` in a unit time interval — and produces the integrable dominating function
+`2·g_T·g_TT + ∑ᵢ 2·g_S,i·g_ST,i + 2·g_U·g_T` that `hdom` asks for.
+
+So every hypothesis of the uniqueness theorem is now expressible as square integrability plus
+uniform-in-time domination of the solution and its first two derivatives — no compact support, and
+nothing about the potential beyond continuity and boundedness.
+
+### The final assembly
+
+Statement 37 closes it. The `hdom` hypothesis of statements 33–34 is about the **difference** of the
+two solutions, while statement 36 produces a dominating function from factor bounds for a **single**
+field. **`exists_bound_of_factor_memLp_sub`** bridges them: a difference is bounded by the sum of
+the bounds (`abs_sub_le_add`, with `waveDirDeriv_sub` and `waveDirDeriv_sub_fun` for the first and
+second derivatives), and `MemLp` is closed under addition, so the five families of dominating
+functions add and feed straight into statement 36 for `u₁ - u₂`.
+
+Statement 38 is the resulting theorem. `FactorDominated` packages the five families of
+uniform-in-time square-integrable dominating functions, and
+**`eq_of_solvesWaveEq_of_memLp_of_factorDominated`** reads:
+
+> two solutions of the same clock equation, each square integrable (`L2Solution`) and each
+> factor-dominated (`FactorDominated`), with a continuous bounded potential and the same Cauchy
+> data, agree at every event.
+
+Every hypothesis is about **one solution at a time**, and each is either square integrability or
+uniform-in-time domination by a square-integrable function. Compact support has disappeared from the
+layer entirely.
+
+Statement 39 states it on events — **`eq_of_solvesPotentialWave_of_memLp_of_factorDominated`** —
+which is the theorem the clock programme quotes: two smooth solutions of
+`SolvesPotentialWaveAt (kgWaveOp d) V`, each with square-integrable and factor-dominated pullback,
+sharing their value and time derivative on the initial slice, agree at every event.
+
+Statement 40 gives the quantitative companion. The difference of two square-integrable,
+factor-dominated solutions is a decaying solution
+(`decayingSolution_sub_of_memLp_of_factorDominated`), so
+**`waveEnergy_sub_le_exp_abs_of_memLp`**: the energy of the difference at any time is bounded by its
+value on the initial slice times `exp((M+1)|t|)`. Uniqueness is the special case of vanishing
+initial data; this is the stability statement, and it completes the table — estimate, uniqueness and
+continuous dependence, in each of the three hypothesis classes.
+
+(The decaying-bundle row has no separate stability entry on purpose: the bundle is not closed under
+differences, so the statement for a pair would be a restatement of the single-solution estimate
+applied to the difference, not a theorem with new content. The `L²` class is where the pair
+statement has content, because there the class *is* closed.)
+
+### The entry point to existence
+
+The layer proves uniqueness and stability; existence is the other half and is what would lower the
+regularity threshold of `finite-regularity-clock-probes`. Its entry point is the **inhomogeneous**
+estimate. For `∂ₜ²u = Δu + Vu + f` the same computation gives
+
+`∫ ∂ₜ(energy density) = 2∫((V+1)·u·∂ₜu + f·∂ₜu)`,
+
+whose only new term is the source pairing; bounding it by `2‖f(t)‖_{L²}·E(t)^{1/2}` turns Grönwall
+into `d/dt √E ≤ ((M+1)/2)√E + ‖f(t)‖_{L²}`, which is exactly the estimate a Picard iteration on the
+Duhamel formula consumes. Concretely the next bricks are: a `SolvesWaveEqSource` predicate, the
+flux identity with the extra term (a variant of statements 9 and 22), and the square-root form of
+the Grönwall step.
 
 One structural note for whoever continues: `DecayingSolution` is **not** closed under differences —
 each of its integrability fields is a product of a derivative of the field with a derivative of its
@@ -275,6 +381,21 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-04 — the entry point to existence (inhomogeneous estimate) specified on the card.
+- 2026-08-04 — statement 40 (continuous dependence in the L² class); the three-class table is
+  complete.
+- 2026-08-04 — statement 39: the capstone in event coordinates. The layer is complete.
+- 2026-08-04 — statement 38: the capstone. Uniqueness with hypotheses on each solution separately.
+- 2026-08-04 — statement 37: the final assembly built. `hdom` for a difference now follows from
+  factor bounds for each solution separately.
+- 2026-08-04 — statement 36 (dominating function from factor-wise L² bounds); the last non-L²
+  hypothesis is now derivable.
+- 2026-08-04 — statement 35 (domination by products of square-integrable functions) formalized; the
+  tool for making the last non-L² hypothesis an L² one.
+- 2026-08-04 — statement 34 (square-integrable uniqueness in event coordinates) formalized.
+- 2026-08-04 — statement 33 (two-solution uniqueness for square-integrable solutions) formalized.
+- 2026-08-04 — statement 32 (the L² criterion is closed under differences) formalized.
+- 2026-08-04 — statement 31 (square-integrability criterion for the decay bundle) formalized.
 - 2026-08-04 — statement 30 (the decay hypothesis is not implied by solving the equation); the
   claim that the estimate reaches the corpus's Fourier probes is corrected to a conditional one.
 - 2026-08-04 — statement 29 (decaying uniqueness in event coordinates) formalized.

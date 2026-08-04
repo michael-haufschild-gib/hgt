@@ -16,17 +16,14 @@ namespace RHTower.Sieve
 
 open Complex GaloisForLFunctions.HTGeometry
 
-/-- **The smoothed and sharp Möbius sums differ by at most the window length.** -/
-theorem norm_tsum_smoothWeight_sub_sum_le {N H : ℝ} (hN : 0 < N) (hH : 0 < H) :
-    ‖(∑' n : ℕ, (ArithmeticFunction.moebius n : ℂ) * ((smoothWeight N H (n : ℝ) : ℝ) : ℂ))
-        - ∑ n ∈ Finset.range (⌊N⌋₊ + 1), (ArithmeticFunction.moebius n : ℂ)‖
+/-- **The smoothed and sharp sums of a unimodular sequence differ by at most the window length.** -/
+theorem norm_tsum_smoothWeight_sub_sum_le_of_norm_le_one {a : ℕ → ℂ} (ha : ∀ n : ℕ, ‖a n‖ ≤ 1)
+    {N H : ℝ} (hN : 0 < N) (hH : 0 < H) :
+    ‖(∑' n : ℕ, a n * ((smoothWeight N H (n : ℝ) : ℝ) : ℂ))
+        - ∑ n ∈ Finset.range (⌊N⌋₊ + 1), a n‖
       ≤ H + 1 := by
-  set f : ℕ → ℂ := fun n =>
-    (ArithmeticFunction.moebius n : ℂ) * ((smoothWeight N H (n : ℝ) : ℝ) : ℂ) with hfdef
-  have hmu : ∀ n : ℕ, ‖(ArithmeticFunction.moebius n : ℂ)‖ ≤ 1 := by
-    intro n
-    rw [← Complex.ofReal_intCast, Complex.norm_real, Real.norm_eq_abs]
-    exact_mod_cast ArithmeticFunction.abs_moebius_le_one
+  set f : ℕ → ℂ := fun n => a n * ((smoothWeight N H (n : ℝ) : ℝ) : ℂ) with hfdef
+  have hmu : ∀ n : ℕ, ‖a n‖ ≤ 1 := ha
   have hfle : ∀ n : ℕ, ‖f n‖ ≤ 1 := by
     intro n
     simp only [hfdef]
@@ -35,7 +32,7 @@ theorem norm_tsum_smoothWeight_sub_sum_le {N H : ℝ} (hN : 0 < N) (hH : 0 < H) 
     have h1 := hmu n
     have h2 := smoothWeight_le_one N H (n : ℝ)
     have h3 : (0 : ℝ) ≤ smoothWeight N H (n : ℝ) := smoothWeight_nonneg N H _
-    nlinarith [norm_nonneg ((ArithmeticFunction.moebius n : ℂ))]
+    nlinarith [norm_nonneg (a n)]
   -- the sum is supported below `⌊N+H⌋₊ + 1`
   have hzero : ∀ n : ℕ, n ∉ Finset.range (⌊N + H⌋₊ + 1) → f n = 0 := by
     intro n hn
@@ -58,7 +55,7 @@ theorem norm_tsum_smoothWeight_sub_sum_le {N H : ℝ} (hN : 0 < N) (hH : 0 < H) 
     Finset.sum_Ico_consecutive f (Nat.zero_le _) hAB
   -- on the lower range the cutoff is one
   have hone : ∑ n ∈ Finset.Ico 0 (⌊N⌋₊ + 1), f n
-      = ∑ n ∈ Finset.Ico 0 (⌊N⌋₊ + 1), (ArithmeticFunction.moebius n : ℂ) := by
+      = ∑ n ∈ Finset.Ico 0 (⌊N⌋₊ + 1), a n := by
     refine Finset.sum_congr rfl fun n hn => ?_
     have hnle : n ≤ ⌊N⌋₊ := by
       simpa [Finset.mem_Ico, Nat.lt_succ_iff] using hn
@@ -71,7 +68,7 @@ theorem norm_tsum_smoothWeight_sub_sum_le {N H : ℝ} (hN : 0 < N) (hH : 0 < H) 
     simp
   -- the difference is the window sum
   have hdiff : (∑' n : ℕ, f n)
-      - ∑ n ∈ Finset.range (⌊N⌋₊ + 1), (ArithmeticFunction.moebius n : ℂ)
+      - ∑ n ∈ Finset.range (⌊N⌋₊ + 1), a n
       = ∑ n ∈ Finset.Ico (⌊N⌋₊ + 1) (⌊N + H⌋₊ + 1), f n := by
     rw [hsum, Finset.range_eq_Ico, Finset.range_eq_Ico, ← hsplit, hone]
     ring
@@ -94,5 +91,15 @@ theorem norm_tsum_smoothWeight_sub_sum_le {N H : ℝ} (hN : 0 < N) (hH : 0 < H) 
   refine le_trans (Finset.sum_le_card_nsmul _ _ 1 (fun n _ => hfle n)) ?_
   rw [Nat.card_Ico, nsmul_eq_mul, mul_one]
   exact hcard
+
+/-- **The smoothed and sharp Möbius sums differ by at most the window length.** -/
+theorem norm_tsum_smoothWeight_sub_sum_le {N H : ℝ} (hN : 0 < N) (hH : 0 < H) :
+    ‖(∑' n : ℕ, (ArithmeticFunction.moebius n : ℂ) * ((smoothWeight N H (n : ℝ) : ℝ) : ℂ))
+        - ∑ n ∈ Finset.range (⌊N⌋₊ + 1), (ArithmeticFunction.moebius n : ℂ)‖
+      ≤ H + 1 := by
+  refine norm_tsum_smoothWeight_sub_sum_le_of_norm_le_one ?_ hN hH
+  intro n
+  rw [← Complex.ofReal_intCast, Complex.norm_real, Real.norm_eq_abs]
+  exact_mod_cast ArithmeticFunction.abs_moebius_le_one
 
 end RHTower.Sieve

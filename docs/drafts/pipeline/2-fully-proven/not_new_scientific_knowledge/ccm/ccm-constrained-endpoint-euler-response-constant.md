@@ -560,10 +560,52 @@ so `tendsto_constrainedEndpointSq_of_hermiteLimits` gives `(13)` directly from t
 constrained-prolate ground-state theorem is not needed as a separate input, only the Hermite limits it
 itself rests on.
 
+**Equation `(6)` is now proved at the level of the quadratic form**, in
+`RHTower/BandQuadraticFormFourier.lean` — the form in which the variational characterisation of the
+band eigenvalues is stated:
+
+- `sincKernelSmooth_eq_cos_integral` — the real cosine form of the kernel,
+  `sinc_c(x-y) = (c/(2 pi)) ∫_(-1)^1 cos(c t (x-y)) dt`, proved by evaluating the elementary cosine
+  integral and matching the removable singularity at `x = y` and the degenerate aperture `c = 0`.
+- `swap_interval_integral` — Fubini on a box for a jointly continuous integrand, in interval-integral
+  form (compactness gives integrability, `Measure.prod_restrict` matches the two product measures).
+- `double_integral_sincKernel_eq_energy` — the band quadratic form of a continuous test function is a
+  Fourier energy:
+
+  ```text
+  ∫∫ sinc_c(x-y) psi(x) psi(y) = (c/(2 pi)) ∫_(-1)^1 ‖F_(c t) psi‖² dt,
+  ```
+
+  by averaging the cosine factorisation `(7)` over the band; the triple integral is rearranged by two
+  applications of the box Fubini, the outer one using continuity of the parametric inner integral.
+- `double_integral_sincKernel_nonneg` — hence the band form is positive semidefinite for every
+  nonnegative aperture, which is what makes the largest band eigenvalue the maximum of a nonnegative
+  Rayleigh quotient and gives the variational route to the leakage envelope.
+
+**The concentration reading of the band form is proved**, in `RHTower/BandFrequencyWindow.lean`:
+
+- `bandFourier_eq_fourier` — the card's finite-Fourier moment is mathlib's Fourier integral of the
+  band truncation, at frequency `-a/(2 pi)`: the `2 pi` of mathlib's character is absorbed in the
+  frequency, nothing else changes.
+- `energy_eq_frequency_window` — the change of variables `xi = -c t/(2 pi)` turns the band average of
+  moments into an integral over the frequency window, its Jacobian cancelling the prefactor `c/(2 pi)`
+  exactly.
+- `double_integral_sincKernel_eq_frequency_energy` — hence
+
+  ```text
+  ∫∫ sinc_c(x-y) psi(x) psi(y) dx dy = ∫_(-c/2pi)^(c/2pi) ‖𝓕 psi(xi)‖² d xi
+  ```
+
+  for every continuous test function: the band quadratic form *is* the spectral energy inside the
+  band.  With Plancherel this exhibits the leakage as the spectral tail outside the band, which is the
+  exact quantity any envelope estimate has to bound — and the form in which an explicit trial function
+  gives an upper envelope.
+
 ## Lean gates
 
 - [x] Lean: the sinc kernel equals the finite-Fourier character integral — equation `(6)` (already in the
-  tree)
+  tree), and its quadratic-form reading: the band form is a Fourier energy and is positive
+  semidefinite (`BandQuadraticFormFourier`)
 - [x] Lean: the cosine factorisation of equation `(7)`
 - [x] Lean: equations `(4)` and `(5)` from the two branch inputs (arithmetic, once the factorisation is in
   hand)

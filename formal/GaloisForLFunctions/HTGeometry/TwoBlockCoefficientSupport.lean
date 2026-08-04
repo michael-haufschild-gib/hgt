@@ -160,6 +160,45 @@ theorem degreeOf_twoBlockCoefficient_le (X : DifferentialPolynomial (Unit ⊕ Un
         exact Finset.le_sup (f := fun d : ((Unit ⊕ Unit) × ℕ) →₀ ℕ ↦
           d ((Sum.inl () : Unit ⊕ Unit), k)) hmem
 
+/-- **The right-block jet degree of a two-block polynomial is the jet degree of its split form.** -/
+theorem degreeOf_twoBlockEquiv_inr (X : DifferentialPolynomial (Unit ⊕ Unit) F) (k : ℕ) :
+    MvPolynomial.degreeOf (((), k) : Unit × ℕ) (differentialPolynomialTwoBlockEquiv F X) =
+      MvPolynomial.degreeOf ((Sum.inr () : Unit ⊕ Unit), k) X := by
+  classical
+  refine le_antisymm ?_ ?_
+  · refine MvPolynomial.degreeOf_le_iff.2 ?_
+    intro νR hνR
+    obtain ⟨νL, hνL⟩ := MvPolynomial.exists_coeff_ne_zero
+      (MvPolynomial.mem_support_iff.mp hνR)
+    have hne : MvPolynomial.coeff (twoBlockMonomial νL νR) X ≠ 0 := by
+      rw [← coeff_coeff_twoBlockEquiv]
+      exact hνL
+    have hmem : twoBlockMonomial νL νR ∈ X.support := MvPolynomial.mem_support_iff.mpr hne
+    calc νR ((), k) = twoBlockMonomial νL νR ((Sum.inr () : Unit ⊕ Unit), k) :=
+          (twoBlockMonomial_apply_inr νL νR () k).symm
+      _ ≤ MvPolynomial.degreeOf ((Sum.inr () : Unit ⊕ Unit), k) X := by
+          rw [MvPolynomial.degreeOf_eq_sup]
+          exact Finset.le_sup (f := fun d : ((Unit ⊕ Unit) × ℕ) →₀ ℕ ↦
+            d ((Sum.inr () : Unit ⊕ Unit), k)) hmem
+  · refine MvPolynomial.degreeOf_le_iff.2 ?_
+    intro ν hν
+    obtain ⟨νL, νR, rfl⟩ := exists_twoBlockMonomial ν
+    have hne : MvPolynomial.coeff νL (MvPolynomial.coeff νR
+        (differentialPolynomialTwoBlockEquiv F X)) ≠ 0 := by
+      rw [coeff_coeff_twoBlockEquiv]
+      exact MvPolynomial.mem_support_iff.mp hν
+    have hmem : νR ∈ (differentialPolynomialTwoBlockEquiv F X).support := by
+      refine MvPolynomial.mem_support_iff.mpr ?_
+      intro h0
+      rw [h0] at hne
+      simp at hne
+    calc twoBlockMonomial νL νR ((Sum.inr () : Unit ⊕ Unit), k) = νR ((), k) :=
+          twoBlockMonomial_apply_inr νL νR () k
+      _ ≤ MvPolynomial.degreeOf (((), k) : Unit × ℕ)
+            (differentialPolynomialTwoBlockEquiv F X) := by
+          rw [MvPolynomial.degreeOf_eq_sup]
+          exact Finset.le_sup (f := fun d : (Unit × ℕ) →₀ ℕ ↦ d ((), k)) hmem
+
 end
 
 end GaloisForLFunctions

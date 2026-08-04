@@ -2825,8 +2825,8 @@ end CarryWorkLayout
 
 namespace PowerOfTwo
 
+set_option linter.defProp false in
 /-- Canonical power-of-two residue encoding used by plain-adder word fields. -/
-@[nolint defLemma]
 def residueEncoding (n : Nat) : BinaryResidueEncoding (2 ^ n) n where
   modulus_pos := by
     exact pow_pos (by decide : (0 : Nat) < 2) n

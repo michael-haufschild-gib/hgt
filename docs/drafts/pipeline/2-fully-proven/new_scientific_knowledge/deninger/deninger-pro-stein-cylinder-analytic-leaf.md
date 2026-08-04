@@ -189,6 +189,13 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Stated `(5)` as an isomorphism of modules: built the closed and
+  exact forms as submodules, the cohomology of a stage as their quotient, the
+  comparison with the constant alternating forms as a linear equivalence, and
+  the basis of the cohomology given by the classes of the logarithmic wedges.
+- 2026-08-04 — Formalized the passage to the limit in `(6)`: exterior powers
+  commute with direct limits of vector spaces along injective maps, so the
+  colimit of the stagewise comparisons is the comparison for the union.
 - 2026-08-04 — Formalized the transition law of `(6)`: the covering intertwines
   a transition map with the linear map of its exponent matrix, so the pullback
   of a generator is the constant form of the determinant composed with that
@@ -964,13 +971,52 @@ generalized to an arbitrary primitive in
 - `deningerMatrixCLM_comp`, `deningerMatrixCLM_id` — the linear models compose and preserve the
   identity, matching the composition law of the transition maps.
 
+### Exterior powers commute with the limit over the lattices
+
+`formal/GaloisForLFunctions/HTGeometry/ExteriorPowerDirectLimit.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `exteriorPower_map_injective` — the exterior power of an injective map of vector spaces is
+  injective, because such a map splits.
+- `exteriorPowerDirectLimitMap_bijective`, `exteriorPowerDirectLimitEquiv` — **for a directed system
+  of vector spaces with injective transition maps, the exterior power of the direct limit is the
+  direct limit of the exterior powers.**  Surjectivity is the spanning of the exterior power by the
+  products of tuples together with the fact that finitely many elements of a direct limit come from
+  a common stage; injectivity is the injectivity of a limit of injective maps.
+
+  This is the passage to the limit of `(6)`: the lattices of `I_F` form a directed system with
+  injective maps whose union is `V_F`, so the colimit of the `Λ^k(L ⊗ ℂ)` is `Λ^k(V_F ⊗ ℂ)`.
+
+### `(5)` as an isomorphism of modules, with its basis
+
+`formal/GaloisForLFunctions/RHTower/DeningerStageCohomologyModule.lean` and
+`formal/GaloisForLFunctions/RHTower/DeningerCohomologyBasis.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerClosedForms`, `deningerExactForms`, `deningerCohomology` — the closed holomorphic forms
+  of a given degree as a submodule of the stage forms, the ones that are exterior derivatives of
+  holomorphic forms as a submodule of those, and the quotient: **the holomorphic de Rham cohomology
+  of a character stage**.  Two forms agreeing on the stage have the same class, so no separate
+  restriction to the stage is needed.
+- `deningerConstantStageForm_closed`, `deningerConstantStageForm_mem` — a constant stage form is a
+  closed holomorphic form.
+- `deningerCohomologyEquiv` — **the cohomology of a character stage is the space of constant
+  alternating forms**, `Λ^k(L ⊗ ℂ) ≅ H^k` as a linear equivalence: surjective by the decomposition
+  of a closed holomorphic form, injective because a constant form that is exact vanishes.
+- `deningerDetForm_linearIndependent`, `deningerDetFormBasis` — the determinant forms of the
+  `k`-element sets of coordinates are a basis of the constant alternating forms.
+- `deningerCohomologyBasis` — **the classes of the exterior products of the logarithmic differentials
+  of the `k`-element sets of coordinates are a basis of the cohomology of the stage**, which is the
+  comparison of `(5)` with its standard basis on both sides.
+
 ### Remaining
 
-1. **`(6)`**, the colimit of `(5)` over the filtered category of pairs `(W, L)`.  `(5)` itself is
-   closed at every finite stage, in every degree, in both directions and inside the holomorphic de
-   Rham complex, and the comparison is proved natural in the lattice: the transitions act on the
-   generators by the minors of the exponent matrix.  What is left is the pro-Ind formalism itself —
-   the filtered category of pairs and the colimit of the resulting system — which mathlib does not
-   have and which the card defines stagewise.
+1. **`(6)`**, the colimit of `(5)` over the filtered category of pairs `(W, L)`.  Its three
+   ingredients are formalized: `(5)` at every finite stage in every degree and in both directions,
+   the naturality of the comparison in the lattice (the transitions act on the generators by the
+   minors of the exponent matrix), and the passage to the limit (exterior powers commute with
+   direct limits along injective maps).  What is left is only the pro-Ind bookkeeping — assembling
+   the filtered category of pairs `(W, L)` and reading off that its colimit of stage cohomologies is
+   the pro-Ind cohomology, which the card takes as the definition of the latter.
 2. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
    mathlib — and the pro-Ind global-section formalism.

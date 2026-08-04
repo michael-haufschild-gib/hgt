@@ -38,7 +38,10 @@ OVERVIEW_MD = FORMAL / "LEAN_OVERVIEW.md"
 DECL_RE = re.compile(r"^\s*(theorem|lemma|def|structure|class|abbrev|inductive)\s+([\w'.]+)")
 DEBT_RE = re.compile(r"^\s*(sorry|admit)\b|^\s*(axiom|opaque)\s+[A-Za-z_]|^\s*unsafe\s+(def|theorem|axiom)\b")
 MARKER_RE = re.compile(r"\b(TODO|FIXME|OPEN|NEXT|Remaining|remaining|blocked|missing)\b")
-IMPORT_RE = re.compile(r"^\s*import\s+(.+?)\s*$")
+# Accepts the Lean module-system import forms (`public import`, `meta import`,
+# `private import`) alongside the plain one, so the import graph of a
+# module-system area is traversable.
+IMPORT_RE = re.compile(r"^\s*(?:(?:public|private|meta)\s+)*import\s+(.+?)\s*$")
 MODULE_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*$")
 
 THEOREM_AREAS = {
@@ -81,7 +84,22 @@ THEOREM_AREAS = {
             "gaussianDistanceMatrix_det_mul_sq_le",
         ],
     },
+    "quantum_alg": {
+        "module": "GaloisForLFunctions.QuantumAlg",
+        "path": SRC / "QuantumAlg",
+        "capstones": [
+            "QuantumAlg.Factoring.ShorStyle.main_factorization",
+            "QuantumAlg.Factoring.EkeraHastadStyle.main_factorization",
+            "QuantumAlg.GroverSearch.main_success_probability",
+            "QuantumAlg.DeutschJozsa.main",
+        ],
+    },
 }
+
+# `QuantumAlg` is vendored, not owned research; see
+# `formal/GaloisForLFunctions/QuantumAlg/PROVENANCE.md`.  It is registered as a
+# theorem area so umbrella completeness is enforced there too.
+VENDORED_AREAS = {"quantum_alg"}
 
 ALLOWED_ROOT_LEAN = {
     "Bottcher.lean",
@@ -92,6 +110,7 @@ ALLOWED_ROOT_LEAN = {
     "Hurwitz.lean",
     "KummerRootApplications.lean",
     "MainTheorems.lean",
+    "QuantumAlg.lean",
     "RHTower.lean",
     "U0.lean",
 }
