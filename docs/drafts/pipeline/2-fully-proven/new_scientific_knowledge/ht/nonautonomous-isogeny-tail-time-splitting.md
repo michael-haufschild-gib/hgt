@@ -750,3 +750,81 @@ even at a million heartbeats -- unfolding `restrictScalars` of a subfield adjunc
 run `IntermediateField.adjoin_induction` over the jets of `g` directly: each jet lies in
 `C<g^N>⟮g⟯` by induction from `derivationClosed_adjoin_of_pow`, and the adjunction is a field, so the
 induction closes.  That route never mentions `restrictScalars`.
+
+## The multiplicative protocol is now an unconditional witness — PROVED
+
+The containment that had been timing out is proved; the route recorded above (jet induction instead
+of `differentialAdjoin_le` on a `restrictScalars` target) worked unchanged, and the whole rank-one
+instance of the card's theorem (1) is now Lean-complete and axiom-clean.
+
+New modules (all wired into `GaloisForLFunctions.HTGeometry`, all
+`[propext, Classical.choice, Quot.sound]`):
+
+    RadicalDifferentialAdjoin.lean      (extended)
+      differentialAdjoin_le_adjoin_pow      C<g> <= (C<g^N>(g)).restrictScalars C
+      adjoin_pow_eq_top                     C<g^N>(g) = T when C<g> = T
+      finrank_differentialAdjoin_pow_le     [T : C<g^N>] <= N
+      finiteDimensional_differentialAdjoin_pow
+
+    HypertranscendentalPow.lean
+      transcendental_of_differentialIndependent, differentialAlgebraicOver_of_isAlgebraic
+      differentialIndependent_pow
+
+    PowerEndomorphism.lean
+      powerEndo            the differential endomorphism g |-> g^N of a freely generated field
+      powerEndo_gen, powerEndo_deriv, powerEndo_map_top (image = C<g^N>), powerEndo_comp,
+      powerEndo_one, powerEndo_congr
+
+    MultiplicativeProtocolWitness.lean
+      prefixExponent                     the accumulated exponent of the protocol
+      powerProtocol / forwardPrefix_powerProtocol / map_forwardPrefix_powerProtocol
+      scaleEquiv, scaleRep               the deck action of the coefficient units by scaling
+      scaleRep_injective                 the action is faithful
+      differentialAdjoin_pow_le_fixedField, card_map_rootsOfUnity, finite_map_rootsOfUnity
+      multiplicativeProtocol_nonautonomousTail_eq_fixedField
+
+The last theorem is the card's (1) for `G_i = G_m`, `a_i = (.)^{m_i}`, with **no** hypothesis beyond
+the protocol data: for a differentially independent generator of the ambient field, positive
+exponents, and a primitive root of unity for each accumulated exponent,
+
+    nonautonomousTail (powerProtocol ...) i
+      = fixedField ((erasedClosure (powerProtocolGroup C m) i).map scaleRep)
+
+so the hypothesis package of `nonautonomousTail_eq_fixedField_erasedClosure_of_finrank_le` is
+**inhabited**, and the deck-descent identity is not vacuous.  The degree input is the radical bound
+`[T : C<g^N>] <= N`; Artin supplies the reverse inequality; the kernels are the groups of roots of
+unity `mu_(N_n)(C)` and the deck action is faithful, so their orders are exactly the exponents.
+
+## The purely expanding case: only the velocity survives — PROVED
+
+Card item (6) is now Lean-complete for rank one.  Two further modules:
+
+    RatFuncScaleInfiniteStabilizer.lean
+      finite_setOf_ratFuncUnitScale_fixed        the scaling stabilizer of a nonconstant rational
+                                                 function is finite
+      ratFuncUnitScale_fixed_eq_constant_of_infinite
+      fixedField_map_ratFuncUnitScaleAction_of_infinite
+
+    ScalarInfiniteScaleFixedField.lean
+      mem_scalarLogCurrentField_of_infinite_scale_fixed
+
+    MultiplicativeProtocolLogCurrentTail.lean
+      scaleEquiv_eq_scalarDifferentialScaleEquivCurrent
+      multiplicativeProtocol_nonautonomousTail_eq_scalarLogCurrentField :
+        nonautonomousTail (powerProtocol ...) i = scalarLogCurrentField C g
+
+i.e. `T_i = C<g'/g>` whenever the accumulated exponents are unbounded and realized by primitive
+roots of unity.  Mechanism: every prefix image contains the current (`differentialAdjoin_logDeriv_pow_eq`),
+and an element of all prefix images is fixed by scaling by every root of unity of every accumulated
+exponent -- an infinite set -- hence is a rational function of the current alone.
+
+The generalisation that made this possible is worth stating separately: the corpus's cyclic result
+needed a scalar of **infinite order**, and the union of the prefix kernels is a torsion group, so the
+cyclic theorem could not be applied.  What is true, and is what the new module proves, is that the
+stabilizer of a nonconstant rational function is finite outright, so an infinite *torsion* group of
+scalings already collapses the fixed field.  That is exactly the algebraic content of "the Zariski
+closure of the union of the prefix kernels is all of `G_m`" without any Zariski topology.
+
+Corpus finding: `hypertranscendentalOver_pow_of_pos` (powers of a hypertranscendental element) was
+already proved in `ScalarLogCurrentReconstruction.lean`; the duplicate proved during this session was
+deleted and `differentialIndependent_pow` now calls the corpus lemma.

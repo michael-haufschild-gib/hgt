@@ -110,6 +110,28 @@ successful transition must retain logarithmic essential grade, not merely finite
    balanced preparations erase the required orientation anchor.
 5. **Block--Fock vacuum deletion.** Exact corpus theorem J3 shows this increases multivaluedness to
    the whole product.  It cannot close RH.
+6. **Moving-polynomial even factorization.** An environment-wide premise join found unconditional
+   far-right moment asymptotics and positivity feeding two RH criteria whose only remaining named
+   premise is `CompletedOddLogDerivPolynomialRightEvenFactorization`.  Failed-corpus audit then
+   found the premise is formally refuted already by `P = X`: the second completed odd moment is
+   positive at `1/2`, negative at `10`, and eventually positive, forcing odd crossings.  Exact
+   premise matching without failed-route audit would have resurrected a false route.
+
+## Environment-wide premise join
+
+Among all imported project theorems whose final conclusion is exactly `RiemannHypothesis`, exact
+type matching found only four criteria with at least one unconditionally proved premise and at
+least one open premise:
+
+1. Möbius discrete-Laplace half decay: continuation bridge closed; half-decay open.
+2. Weil Cauchy core: orientation-vector membership closed; full core nonnegativity open.
+3. completed moving polynomial: far-right asymptotic closed; even factorization open.
+4. completed moving polynomial: far-right positivity closed; same even factorization open.
+
+Item 1 retains the classical-strength half-decay wall; item 2 retains the Weil-positivity wall;
+items 3–4 are killed by hostile audit above.  Thus no criterion in the current Lean environment is
+one routine imported premise away from RH.  A successful Frankenstein must manufacture a new
+source transition, not discover a missed theorem application.
 
 ## Survivor S1: Calderón-corrected retained-grade square
 
@@ -152,6 +174,11 @@ zero-vacuum hyperplane, while singular Frobenius transport has vacuum residue pr
 **Exact open core S3.** Build a coefficient-faithful comparison from the formal Frobenius defect to
 the essential Hardy boundary.  Mere equality of abstract cocycle dimensions or norms is reporter
 theatre.
+
+**Hostile status.** Downgraded below S1 and S2.  Current
+`DeningerArithmeticFrobeniusHomotopyDefect` formalizes generic ring-valued cocycle algebra only; it
+does not instantiate arithmetic Frobenius data or map to Hardy grades.  Until a source realization
+is found elsewhere in the corpus, S3 is a two-bridge conjecture rather than a near-term route.
 
 ## Non-circularity test for every survivor
 

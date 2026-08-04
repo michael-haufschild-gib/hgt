@@ -84,7 +84,8 @@ theorem powerEndo_deriv {N : ℕ} (hN : 0 < N) (z : E) :
     simp only [differentialJet_succ, differentialJet_zero] at h3
     rw [h3, h2]
   change ((e ((genEquiv hgen) z′) : ↥(differentialAdjoin C (Set.range fun _ : Unit ↦ g ^ N))) : E)
-    = (((e ((genEquiv hgen) z) : ↥(differentialAdjoin C (Set.range fun _ : Unit ↦ g ^ N))) : E))′
+    = Differential.deriv
+      ((e ((genEquiv hgen) z) : ↥(differentialAdjoin C (Set.range fun _ : Unit ↦ g ^ N))) : E)
   rw [hgenderiv, GaloisForLFunctions.differentialIndependentAdjoinAlgEquiv_deriv]
   have h4 := coe_differentialJet_differentialAdjoin (F := C)
     (Set.range fun _ : Unit ↦ g ^ N) 1 (e ((genEquiv hgen) z))
@@ -125,8 +126,8 @@ theorem powerEndo_comp {M N : ℕ} (hM : 0 < M) (hN : 0 < N) :
       = powerEndo hg hgen (Nat.mul_pos hN hM) := by
   refine differentialAlgHom_ext_of_differentialAdjoin_eq_top (fun _ : Unit ↦ g) hgen _ _
     (fun z ↦ ?_) (fun z ↦ ?_) (fun _ ↦ ?_)
-  · change powerEndo hg hgen hM (powerEndo hg hgen hN z′) = (powerEndo hg hgen hM
-      (powerEndo hg hgen hN z))′
+  · change powerEndo hg hgen hM (powerEndo hg hgen hN z′)
+      = Differential.deriv (powerEndo hg hgen hM (powerEndo hg hgen hN z))
     rw [powerEndo_deriv, powerEndo_deriv]
   · exact powerEndo_deriv hg hgen (Nat.mul_pos hN hM) z
   · change powerEndo hg hgen hM (powerEndo hg hgen hN g) = powerEndo hg hgen (Nat.mul_pos hN hM) g

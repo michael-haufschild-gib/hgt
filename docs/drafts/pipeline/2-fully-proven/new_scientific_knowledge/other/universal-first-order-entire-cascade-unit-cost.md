@@ -7415,3 +7415,76 @@ where the coefficients are rational rather than polynomial.
 What is left for this family is the induction on the driver: the Jacobian of the Bell coefficients of
 `α·H`, whose logarithmic derivative is the sum `∑_(j≤m) (Q_j'/Q_j)(X_j)·δX_j` — the general form of
 the tower's `sumJacobian`.
+
+### The driver step costs nothing
+
+`HTGeometry/AffineTopBellJacobian.lean` (axiom-clean) closes the gap between the affine reduction's
+output and the corpus's Bell/Jacobian layer.
+
+The coefficients the reduction produces obey `A_0 = 1`, `A_(i+1) = δA_i + A_i·A` — the Bell recursion
+for the multiplier `A`.  `genJetA_eq_aeval_bellCore` identifies them with the corpus's universal Bell
+polynomials evaluated at the jets of `A`, **by the recursion alone**: no auxiliary element with
+`δ x = A·x` is needed, which matters because in the rational model no such element is at hand for the
+driver `α·H`.  `genJetA_eq_derivationBellValue` then matches the corpus's indexed form.
+
+`det_genJetA_eq_det_jets` is the payoff:
+
+`det(∂_j A_(i+1)) = det(∂_j δ^i A)`,
+
+so passing from a driven variable to its driver costs nothing — the Bell recursion is unitriangular in
+the jets.  This is the generic version of the tower's `det_bell_pderiv_eq_sumJacobian`, obtained by
+instantiating the corpus's `derivationBellValueJacobian_det`, which was already stated over an
+arbitrary commutative `ℂ`-algebra.
+
+Chained with the previous brick: the observability of the newest coordinate of a linear-coefficient
+cascade now reduces to `det(∂_j δ^i H) ≠ 0` for the head product `H = ∏_(j≤m) Q_j(X_j)` — and `H` is
+logarithmically linear with multiplier the logarithmic sum, which is where the height induction
+begins.
+
+### The multiplier avoids its own coordinate — one Bell reduction
+
+`HTGeometry/ProductLawJetReduction.lean` (axiom-clean) supplies the step the terminal-scaled Bell
+reduction needs, and the cancellation that makes it work.
+
+The jet `δX_k` has multiplier `logSum_k + (v_k'/v_k)(X_k)·δX_k`, and the second term looks like it
+involves the `k`-th coordinate.  It does not: `δX_k = (∏_(j<k)Q_j)·v_k(X_k)`, so the terminal factor
+**cancels**,
+
+`(v_k'/v_k)(X_k)·δX_k = v_k'(X_k)·∏_(j<k)Q_j(X_j)`  (`totalLog_eq_of_ne_zero`),
+
+and when `v_k` is linear this is a constant times the head product (`totalLog_linear`), free of `X_k`.
+That is precisely the property the tower's partial sums have — there the cancellation reads
+`(1/X_k)·∏_(i≤k)X_i = ∏_(i<k)X_i` — and it is why the tower's logarithmic law stayed polynomial.
+
+With it, `totalLog_mem_lowSub_pred` places the multiplier one level down, and
+`prodJetJacobian_det_reduce` instantiates the corpus's `derivationIterateOutputJacobian_det_terminalScaled`:
+
+`det(jets of δX_(s+2)) = (−1)^(s+1)·(α·∏_(j<s+2)Q_j)·(δX_(s+2))^(s+1)·det(jets of its multiplier)`,
+
+whence `prodJetJacobian_det_ne_zero_of_totalLog`.  The terminal cofactor is the slope `α` times the
+head product (`fpderiv_prodJet_terminal`), nonzero exactly when the terminal factor is genuinely
+linear — the analogue of the tower's `pderiv_towerMonomial_succ`.
+
+One level of the height induction is therefore in place; what remains is its base case and the step
+that peels the newest term off the logarithmic sum.
+
+### Leading coefficients for polynomial columns
+
+The height induction of the general product law cannot reuse the linear-column extraction: the
+newest coordinate enters the logarithmic sum through `(Q_m'/Q_m)(X_m)·v_m(X_m) + α·Q_m(X_m)`, which is
+rational, and after clearing the (always `Q_m`-power) denominators it is polynomial of arbitrary
+degree rather than affine.
+
+`HTGeometry/ColumnDegreeDeterminant.lean` (axiom-clean) supplies the general extraction:
+
+* `coeff_mul_of_natDegree_le` — `(p·q).coeff (a+b) = p.coeff a · q.coeff b` when `deg p ≤ a`,
+  `deg q ≤ b`;
+* `coeff_prod_of_natDegree_le'` — the same with per-index degrees over a `Finset`.  Mathlib has only
+  the uniform-degree form `coeff_prod_of_natDegree_le`, which a determinant cannot use because
+  different columns carry different degrees;
+* `coeff_det_of_column_natDegree_le` — if every entry of column `j` has degree at most `d j`, then
+
+  `det(M).coeff (∑ d j) = det (M i j).coeff (d j)`.
+
+With `d ≡ 1` this is the linear-column statement the tower used; the corpus now owns the general form,
+which is what the rational model's induction needs.

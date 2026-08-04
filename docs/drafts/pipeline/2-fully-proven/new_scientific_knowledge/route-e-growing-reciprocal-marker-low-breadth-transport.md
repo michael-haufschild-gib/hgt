@@ -5037,3 +5037,125 @@ bound of `sum_normSq_moebius_window_le_of_twist` is now explicit in the paramete
 With `Y ≍ K ≍ N`, `M₁ = (B(N)N)²`, `M₂ ≍ N²`: the three terms are `O(N·B(N)²N L/(εN)) = O(B²N²L/ε)`,
 `O(N·N²/(εW))` and `O(N·ε²L²)` — all `o(N L²)` once `B(N)²N/(εL) → 0`, `N²/(εWL²) → 0` and `ε → 0`,
 which the growth of `contourParam` and `B → 0` permit.
+
+### The mean square, fully explicit
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusMeanSquareExplicit.lean`.
+
+**`exists_sum_sq_real_moebius_explicit`** — substituting the block count and the logarithm-free block
+cost, there is a `B → 0` with, for all large `N` and every admissible geometry,
+
+    ∑_{t ∈ [Y, Y+K)} ( ∑_{t<n≤t+L} μ(n) )²
+      ≤ (Y+K) · log(1+K/Y)(1+ε)/ε
+          · ( 2(B(N)N)²·(L/Y) + 4(⌊N⌋+1)²/(π²W) + 2(εL+1)²·ε ) .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+**No logarithm of a large quantity, no implicit constant and no analytic hypothesis remains.** The
+right-hand side is an explicit elementary function of `Y, K, L, ε, W, N` and the single quantity
+`B(N)`, which tends to zero by the twisted contour argument. Choosing the parameters is now the whole
+of the remaining work, and the three terms to balance are named on the card above.
+
+### The normalized bound on a dyadic range
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusMeanSquareNormalized.lean`.
+
+- `normalized_bound_dyadic` — the algebra at `K = Y` (range ratio `2`), dividing by the trivial size
+  `Y·L²`;
+- **`exists_normalized_mean_square_le`** — hence, unconditionally with `B → 0`,
+
+      ( ∑_{t ∈ [Y, 2Y)} ( ∑_{t<n≤t+L} μ(n) )² ) / (Y L²)
+        ≤ 2 log 2 · (1+ε)/ε
+            · ( 2(B(N)N)²/(Y L) + 4(⌊N⌋+1)²/(π²W L²) + 2(εL+1)²·ε/L² ) .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+**The card's `(15)` is this quantity tending to zero**, and the right-hand side makes the three
+requirements explicit, each already divided by the trivial size:
+
+* `(B(N)N)²/(ε Y L) → 0` — the cancellation term; with `Y ≍ N` this is `B(N)²N/(εL) → 0`;
+* `N²/(ε W L²) → 0` — the frequency tail; `W ≍ contourParam` grows faster than any power of `log N`;
+* `ε → 0` with `ε³L² → 0` — the excess term.
+
+All three are simultaneously satisfiable in the card's regime, and each is a statement about
+explicitly proved quantities.
+
+### When the normalized bound tends to zero
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/NormalizedBoundLimit.lean`.
+
+- **`tendsto_normalizedBound`** — since `(1+ε)/ε · F = F/ε + F`, the bound `2 log 2 ·(1+ε)/ε· F`
+  tends to zero exactly when both `F/ε` and `F` do;
+- **`tendsto_normalizedBound_of_three`** — applied to the sum of the three error terms, so the
+  hypotheses are the six limits (each term with and without the `1/ε`).
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+Composed with `exists_normalized_mean_square_le`, this closes the numerical step: the card's `(15)`
+holds for any parameter schedule `ε(N), W(N), L(N), Y(N)` satisfying
+
+    (B(N)N)²/(ε Y L) → 0 ,    N²/(ε W L²) → 0 ,    (εL+1)²/L² → 0
+
+(the last being `ε → 0` together with `1/L → 0`), and the admissibility `8πW + 5 ≤ contourParam`.
+Every quantity in those three conditions is proved: `B → 0` is the twisted contour bound, and
+`contourParam(x) = ⌈exp((log x)^{1/10})⌉` gives the room for `W`.
+
+### What the parameter analysis actually shows — and the one thing still missing
+
+Working through the three conditions of `tendsto_normalizedBound_of_three` against the proved
+quantities gives a sharper picture than "only arithmetic remains", and it should be recorded
+plainly.
+
+Write `Y ≍ N` and take `W` as large as admissibility allows, `W ≍ contourParam(N)`. The conditions
+are
+
+1. `(B(N)N)²/(ε Y L) ≍ B(N)²·N/(ε L) → 0` ;
+2. `N²/(ε W L²) → 0` ;
+3. `ε → 0` and `1/L → 0` .
+
+Conditions (1) and (2) are both **lower** bounds on `ε` — `ε ≫ B²N/L` and `ε ≫ N²/(WL²)` — while (3)
+is an upper bound. So a schedule exists iff `B²N/L → 0` and `N²/(WL²) → 0`, and then any `ε` between
+them works, e.g. `ε = max(B²N/L, N²/(WL²))^{1/2}`.
+
+* For **long windows**, `L ≍ N`: condition (1) becomes `B(N)² → 0`, which holds since `B → 0`, and
+  condition (2) becomes `1/W → 0`, which holds since `contourParam → ∞`. **A schedule exists and the
+  mean square is `o(N L²)`.**
+* For **short windows**, `L = N^θ` with `θ < 1`: condition (1) becomes `B(N)²N^{1−θ} → 0`, which does
+  **not** follow from `B → 0` alone. It needs a *rate*.
+
+`exists_bound_norm_sum_moebiusTwist_div` provides only `B → 0`, with no rate — as does the corpus's
+untwisted `MoebiusSharpLittleO`. So the derivation established here gives the card's `(15)` for
+windows comparable to the range, and short windows need one further construction: **an explicit rate
+for `B`**.
+
+That rate is extractable rather than new mathematics: `MoebiusTwistSaving` already carries the saving
+`(N+H)·exp(−c₀·log(N+H)/(16 log⁹K))` with every constant explicit, and
+`MoebiusTwistMajorantRatio`/`MoebiusTwistSharpLittleO` discard it into an `o(1)` only at the last
+step. Re-running those two modules keeping the exponent would give `B(N) ≪ exp(−c·(log N)^{1/10})`,
+which is far more than enough for every `θ < 1`.
+
+This is the honest state: the reduction is complete and unconditional, the long-window case is done,
+and the short-window case is one explicit-constant bookkeeping step away.
+
+### Toward the rate — half the exponent absorbs the majorant
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/CoeffMajorantQuantitative.lean`.
+
+**`eventually_coeffMajorant_mul_exp_le`** — for every `κ > 0`,
+
+    coeffMajorant C C' M₀ a t · exp(−κt) ≤ exp(−κt/2)   for all large `t`.
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+The corpus's `tendsto_coeffMajorant_mul_exp_neg` is used only qualitatively — it feeds a `squeeze` and
+the exponent is thrown away. Splitting `exp(−κt) = exp(−κt/2)·exp(−κt/2)` and applying that limit at
+`κ/2` shows the polynomial majorant is eventually below `exp(κt/2)`, so half the exponent survives.
+
+This is the enabling step for the rate identified in the previous section: with
+`t = (log(N+H))^{1/10}` and `κ = c₀/8192`, it converts the contour bound into
+
+    ‖∑_{n ≤ N} μ(n)n^{-iτ}‖ ≪ N·exp(−c·(log N)^{1/10}) ,
+
+which is `B(N) ≪ exp(−c(log N)^{1/10})` — far more than the `B(N)²N^{1−θ} → 0` that short windows
+need. What remains is to thread it through `MoebiusTwistMajorantRatio` and
+`MoebiusTwistSharpLittleO` in place of their `o(1)` conclusions.

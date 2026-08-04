@@ -274,14 +274,27 @@ Supporting infrastructure built for it and reusable: `continuousAlternatingEquiv
 coordinate space the alternating maps are exactly the continuous ones, as a linear equivalence),
 and the generalisation of `multilinearMap_bound` to an arbitrary nontrivially normed field.
 
+**Naturality in the lattice.**  `formal/GaloisForLFunctions/HTGeometry/PeriodicPullback.lean`.
+
+- `periodLattice`, `periodic_of_mem_periodLattice` — a form periodic in every coordinate is
+  invariant under the whole period lattice, by induction over the generated subgroup.
+- `linearPullback`, `linearPullback_extDeriv`, `linearPullback_periodic`, `linearPullback_mem_closed`
+  — pullback along a linear map of covers carrying the lattice into the lattice preserves class
+  `C^1`, periodicity, closedness and exactness, and commutes with the exterior derivative.
+- `periodicCohomologyMap` — the induced map of the cohomologies.
+- `periodicCohomologyMap_constantClass` — **the comparison is natural**: the induced map sends the
+  class of an invariant form to the class of its composition with the map of covers, which is
+  exactly the pullback of invariant forms.
+
 ### What cannot be stated in Lean, and why
 
-- `C^*_sh(T_F;ℝ)` is the filtered colimit over `L` of the complexes `Ω^*(T_L;ℝ)`.  Each term and its
-  cohomology are now formalized, as is the exactness of filtered colimits (`directLimit_map_exact`)
-  and the commutation of exterior powers with them (`exteriorPowerDirectLimitEquiv`,
-  `deningerExterior_iSup_adjoin`).  What is still missing between these is the naturality of the
-  comparison in `L`: pullback along a lattice inclusion as a map of the periodic complexes, and the
-  compatibility of that map with the identification of the cohomology with `Λ^*`.
+- `C^*_sh(T_F;ℝ)` is the filtered colimit over `L` of the complexes `Ω^*(T_L;ℝ)`.  Every ingredient
+  of `(2)` is now formalized separately — each term and its cohomology, the naturality of the
+  comparison in `L`, the exactness of filtered colimits (`directLimit_map_exact`), and the
+  commutation of exterior powers with them (`exteriorPowerDirectLimitEquiv`,
+  `deningerExterior_iSup_adjoin`).  What is not written down is the colimit of the complexes as a
+  single CDGA together with its multiplicative structure, which is a statement about commutative
+  differential graded algebras rather than about any one torus.
 - `(3)` and `(4)` are statements about free `E_∞` `Hℝ`-algebras.  mathlib has no `E_∞`-algebras and
   no CDGA homotopy theory.  What survives is the algebraic content of "a free commutative algebra
   on generators in odd degree one is the exterior algebra": that is the universal property of
@@ -303,5 +316,6 @@ scalars.
   periodic-forms model on the universal cover, the averaging/Cartan proof that its cohomology is the
   constant alternating forms, and the identification of those with `Λ^*` of the cover.  The
   statement "mathlib has no de Rham complex of a manifold, so this step cannot be written down" was
-  wrong: the covering model needs only `extDeriv` and periodicity.  Naturality in `L` is what
-  remains before `(2)` can be assembled.
+  wrong: the covering model needs only `extDeriv` and periodicity.  Also formalized the naturality
+  of the comparison in `L`, so every ingredient of `(2)` except the CDGA structure of the colimit is
+  now a theorem.

@@ -928,3 +928,108 @@ polarization is preserved.  Remaining hard theorem is stricter: prove that this 
 polarization specializes to the **same fixed physical corona polarization** and fixed zero-hidden
 lift, rather than to the completed Green/Hodge mate.  The shear countermodel still blocks replacing
 that specialization law by transported positivity or abstract isometry.
+
+## 2026-08-04 completed-Xi fixed-corona polarization normal form
+
+### Frozen statement `[BRIDGE — PROVED ON PAPER]`
+
+Fix a multiplicity-exact Xi copy `q`.  Write
+
+```text
+E_q(c) = lp.single(2,q,c) in XiDivisorL2,
+R(c)   = (Re c, Im c),
+w_q    = i sign(Im(q.1)).
+```
+
+The canonical completed-Xi basis is orthonormal, while the source Hodge multiplier satisfies
+`|w_q|=1` and `w_q^2=-1`.  On the two-channel coefficient plane define
+
+```text
+U_q(z_0,z_1) = (R(z_0), R(-w_q z_1)),
+J_q(z_0,z_1) = (w_q z_1, w_q z_0).
+```
+
+Put the fixed completed-Xi real polarization on the source plane and the fixed Route-R product
+polarization on the target:
+
+```text
+g_Xi(z,u) = Re <E_q(z_0),E_q(u_0)> + Re <E_q(z_1),E_q(u_1)>,
+g_cor((x,y),(x',y')) = x dot x' + y dot y'.
+```
+
+Then, without any critical-line or fixed-ideal premise,
+
+```text
+g_cor(U_q z,U_q u) = g_Xi(z,u),
+U_q(c,0)           = (R(c),0),
+U_q(J_q(c,0))      = (0,R(c)),
+U_q J_q            = J_0 U_q,
+J_q^2              = -1,
+```
+
+where `J_0(x,y)=(-y,x)` is the fixed odd-Hodge rotation of the corona product.  The first equality
+uses the literal completed-Xi norm, not a transported or divisor-fitted metric: orthonormality gives
+`<E_q(c),E_q(d)>=conj(c)d`, and realification gives
+`R(c) dot R(d)=Re(conj(c)d)`.  Multiplication by `-w_q` preserves this form because `|w_q|=1`.
+
+The hidden trivialization is canonical.  If a real-linear `T : C -> R^2` satisfies
+`T(w_q c)=R(c)` for every `c`, then `w_q^{-1}=-w_q`, hence necessarily
+
+```text
+T(z)=R(-w_q z).
+```
+
+Thus no arbitrary gauge or pulled-back metric has been selected.
+
+### Coefficient-faithful Route-R specialization
+
+For ordinary prime `p`, support point `rho`, and rational-adelic relative class `x`, take the first
+multiplicity copy `q_rho` and the already constructed coefficient
+
+```text
+c_(p,rho,x) = R_p(x) * XiC^(m_rho)(xiSpectralPointSupport rho).
+```
+
+The completed vector `E_(q_rho)(c_(p,rho,x))` has exactly this coefficient and no other divisor
+coordinate.  Therefore `U_(q_rho)(c_(p,rho,x),0)` is definitionally the Route-R fixed same-fibre
+physical lift.  On the period-one retained class its coefficient is the actual nonzero leading Xi
+jet.  This closes the amplitude issue left by the reflected-Gaussian global vector: the canonical
+completed basis has unit norm, so no Gaussian/jet radial renormalization is used.
+
+For any real Route-R shear coefficient `K`, define the completed resolved coefficient pair
+
+```text
+G_(q,K)(c) = (c,-K w_q c).
+```
+
+Then
+
+```text
+U_q(G_(q,K)(c)) = (R(c),-K R(c)),
+```
+
+which is exactly the harmonic corona graph for coupling `K id` and hidden metric `id`.  This formula
+holds both on and off the critical line.  It identifies the resolved shear as the coefficient of
+the unique completed-Xi Hodge-mate direction; it does not erase that coefficient.
+
+### Dependency-closed proof
+
+All identities reduce to four existing unconditional inputs: the orthonormal `lp.single` basis of
+`XiDivisorL2`, the coefficient law for `lp.single`, `deningerFreqSign_sq`, and `Complex.I_sq`.
+Indeed `w_q^2=-1`; hence `(-w_q)(w_q c)=c`.  Expanding real and imaginary parts proves both the
+realification dot-product law and invariance under multiplication by `-w_q`.  The zero-hidden,
+odd-Hodge, and graph identities then follow by substitution.  Finally, substituting `z=w_q c` in
+the defining property of any competing hidden trivialization proves uniqueness.
+
+### Hostile audit and exact surviving frontier
+
+`[FALSIFIED AS AN RH PRODUCER]` Fixed-polarization identification alone forces `K=0`.  The displayed
+normal form exists for every real `K`; off-line shear is carried to the explicit Hodge-mate
+coefficient `-K`, while both fixed polarizations remain unchanged.
+
+`[POSITIVE SURVIVOR]` Completed-Xi and Route-R fixed same-fibre polarizations now have a canonical,
+coefficient-faithful common normal form, and the actual physical leading-jet lift is provably the
+zero-hidden section.  Remaining RH-strength statement is no longer a metric, coefficient, or gauge
+comparison: derive from source structure that the Hodge-mate coefficient in the actual resolved
+atom is zero, equivalently that the zero-hidden physical atom itself belongs to the harmonic graph.
+No such annihilation, and therefore no RH proof, is claimed here.

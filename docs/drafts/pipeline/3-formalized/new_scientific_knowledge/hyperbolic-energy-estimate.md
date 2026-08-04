@@ -113,7 +113,7 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 49 | a uniformly bounded strongly continuous family of operators is jointly continuous | **`continuous_uncurry_of_strong`**, `continuous_of_strong_comp` | **built** |
 | 50 | the symbols of the energy rotation and their regularity | `kgSinPhase`, `kgFreqInv`, `norm_kgSinPhase_le`, `norm_kgFreqInv_le`, `continuous_kgFreq`, `measurable_kgCosSymbol`, `measurable_kgSinPhase`, `measurable_kgFreqInv`, `continuous_kgCosSymbol_time`, `continuous_kgSinPhase_time` | **built** |
 | 51 | the scalar propagators on `L²` | `kgCosOp`, `kgSinOp`, `kgFreqInvOp`, `norm_kgCosOp_le`, `norm_kgSinOp_le`, `norm_kgFreqInvOp_le`, **`continuous_kgCosOp_apply`**, **`continuous_kgSinOp_apply`**, `kgCosOp_zero`, `kgSinOp_zero` | **built** |
-| 52 | the free propagator on the energy space | `KGEnergy`, `kgPropagator`, **`norm_kgPropagator_le`**, **`continuous_kgPropagator_uncurry`**, `continuous_kgPropagator_comp`, `kgPropagator_zero_apply` | **built** |
+| 52 | the free propagator on the Hilbert energy space | `KGEnergy` (= `WithLp 2 (L² × L²)`), `kgPair`, `kgFst`, `kgSnd`, `kgRowOne`, `kgRowTwo`, `kgPropagator`, `norm_kgPropagator_le`, **`continuous_kgPropagator_uncurry`**, `continuous_kgPropagator_comp`, `kgPropagator_zero_apply` | **built** |
 | 53 | the Volterra equation with a strongly continuous kernel | `StrongKernel`, `StrongKernel.of_continuous`, `continuous_volterraSolution_of_strong`, **`volterraSolution_eq_of_strong`**, **`volterra_eq_of_eq_of_eq_of_strong`**, **`norm_volterraSolution_le_of_strong`** | **built** |
 | 54 | the potential as a bounded perturbation in energy coordinates | `kgPotentialOp`, **`norm_kgPotentialOp_le`** | **built** |
 | 55 | the Duhamel data and its strong continuity | `kgFreeCurve`, `kgDuhamelKernel`, `norm_kgFreeCurve_le`, `norm_kgDuhamelKernel_le`, **`strongKernel_kgDuhamelKernel`** | **built** |
@@ -121,15 +121,16 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 57 | the addition laws for the propagator symbols, and the group law | `lpBoundedMulCLM_neg`, `fourierMulCLM_neg`, `kgCosOp_eq`, `kgSinOp_eq`, **`kgCosOp_add`**, **`kgSinOp_add`**, **`kgPropagator_add`** | **built** |
 | 58 | a multiplication or Fourier multiplier with a real symbol is self-adjoint on `L²` | **`inner_lpBoundedMulCLM_real`**, `inner_fourierL2`, **`inner_fourierMulCLM_real`**, `inner_kgCosOp`, `inner_kgSinOp` | **built** |
 | 59 | the Pythagorean identity and the commutation, at the operator level | **`kgCosOp_sq_add_kgSinOp_sq`**, **`kgCosOp_comp_kgSinOp_comm`**, `norm_kgCosOp_sq_add_norm_kgSinOp_sq`, `inner_kgCosOp_kgSinOp_comm` | **built** |
-| 60 | **exact conservation of the free Klein–Gordon energy** | `kgEnergy`, `kgEnergy_nonneg`, **`kgEnergy_kgPropagator`** | **built** |
+| 60 | **exact conservation of the free Klein–Gordon energy** | `kgEnergy`, `kgEnergy_eq_norm_sq`, `kgEnergy_nonneg`, **`kgEnergy_kgPropagator`**, **`norm_kgPropagator_apply`**, **`norm_kgPropagator_le_one`** | **built** |
+| 61 | **the energy estimate for the constructed solution** | **`kgEnergy_kgMildSolution_le`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
 `L2MultiplierContinuity.lean` (48), `KleinGordonL2Propagator.lean` (49–52),
 `VolterraStrongKernel.lean` (53), `KleinGordonMildSolution.lean` (54–56),
 `KleinGordonL2Propagator.lean` and `L2FourierMultiplier.lean` again (57),
-`KleinGordonEnergyConservation.lean` (58–60). All wired into the umbrella; axioms
-`[propext, Classical.choice, Quot.sound]`.
+`KleinGordonEnergyConservation.lean` (58–60), `KleinGordonMildSolution.lean` again (61). All wired
+into the umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
 
@@ -521,6 +522,37 @@ symbol identities. Note the norm used is the Hilbert one `‖v₁‖² + ‖v₂
 norm that `KGEnergy` carries; the sup norm is what the Volterra layer's bounds are stated in, and the
 factor `2` in `‖U(t)‖ ≤ 2` is exactly the discrepancy between the two.
 
+
+### The two halves state the same inequality
+
+The existence layer was first built on the product space with its supremum norm, which cost a factor
+`2` in every bound. That factor is not real, and statements 52 and 60 remove it: the energy space is
+now `WithLp 2 (L² × L²)`, whose norm is the *square root of the energy* rather than the maximum of
+the two components. On that space
+
+`‖U(t)v‖ = ‖v‖`  (**`norm_kgPropagator_apply`**),
+
+so `‖U(t)‖ ≤ 1`, and the perturbation `N` is bounded by the supremum of the potential with no factor
+at all (**`norm_kgPotentialOp_le`**, because `‖⟨D⟩⁻¹‖ ≤ 1` and `‖(0, x)‖ = ‖x‖` in the Hilbert
+norm). The Volterra layer then runs with `M = b` and `F = ‖w₀‖` instead of `2b` and `2‖w₀‖`, and the
+conclusion is the sharp one:
+
+**`norm_kgMildSolution_le`**: `‖w(t)‖ ≤ ‖w₀‖ · e^{b|t|}`, i.e. squaring,
+
+**`kgEnergy_kgMildSolution_le`**: `E(t) ≤ E(0) · e^{2b|t|}`.
+
+That is the same shape as the card's headline estimate — energy at time `t` controlled by energy of
+the data, exponentially, at a rate set by the supremum of the potential alone. The uniqueness half
+(statements 1–45) proves it for classical solutions with an integrability hypothesis; the existence
+half (46–61) now proves it for a solution that is *constructed*, from a potential asked only to be
+measurable and bounded. The two halves of the classical local theory finally assert the same
+inequality about the same kind of object.
+
+What is still open is the identification of the two objects: the mild solution is a curve in `L² × L²`
+satisfying an integral equation, and showing that for regular data it is a classical solution of the
+pointwise equation needs the generator of the propagator group — an unbounded operator — and is the
+next brick.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -541,6 +573,9 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-04 — statement 61 and the sharpening of 52/54–56/60: the energy space is now the Hilbert
+  space `WithLp 2 (L² × L²)`, the propagator is an isometry, and the constructed solution obeys
+  `E(t) ≤ E(0)e^{2b|t|}` — the same inequality the uniqueness half proves for classical solutions.
 - 2026-08-04 — statements 57–60: the propagator group law, self-adjointness of real multipliers,
   the Pythagorean and commutation identities, and **exact conservation of the free energy**.
 - 2026-08-04 — statements 46–56: **the existence half**. Bounded Fourier multipliers on `L²`, the

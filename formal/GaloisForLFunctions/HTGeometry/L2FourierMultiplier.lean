@@ -95,6 +95,37 @@ theorem lpBoundedMulCLM_neg {φ ψ : α → 𝕜} (hφ : Measurable φ) (hψ : M
   show ((lpBoundedMulCLM (p := p) (μ := μ) hψ hD0 hD f : Lp 𝕜 p μ) : α → 𝕜) x = _
   rw [h1, h4, neg_apply, h3, Pi.neg_apply, h2, neg_mul]
 
+/-- A symbol that is almost everywhere a difference induces the difference of the multipliers. -/
+theorem lpBoundedMulCLM_sub {φ ψ χ : α → 𝕜} (hφ : Measurable φ) (hψ : Measurable ψ)
+    (hχ : Measurable χ) {C D B : ℝ} (hC0 : 0 ≤ C) (hC : ∀ x, ‖φ x‖ ≤ C) (hD0 : 0 ≤ D)
+    (hD : ∀ x, ‖ψ x‖ ≤ D) (hB0 : 0 ≤ B) (hB : ∀ x, ‖χ x‖ ≤ B)
+    (hae : ∀ᵐ x ∂μ, χ x = φ x - ψ x) :
+    lpBoundedMulCLM (p := p) (μ := μ) hχ hB0 hB
+      = lpBoundedMulCLM (p := p) (μ := μ) hφ hC0 hC
+        - lpBoundedMulCLM (p := p) (μ := μ) hψ hD0 hD := by
+  refine ContinuousLinearMap.ext fun f => Lp.ext ?_
+  filter_upwards [lpBoundedMulCLM_coeFn (p := p) (μ := μ) hχ hB0 hB f,
+    lpBoundedMulCLM_coeFn (p := p) (μ := μ) hφ hC0 hC f,
+    lpBoundedMulCLM_coeFn (p := p) (μ := μ) hψ hD0 hD f,
+    Lp.coeFn_sub (lpBoundedMulCLM (p := p) (μ := μ) hφ hC0 hC f)
+      (lpBoundedMulCLM (p := p) (μ := μ) hψ hD0 hD f), hae] with x h1 h2 h3 h4 h5
+  show ((lpBoundedMulCLM (p := p) (μ := μ) hχ hB0 hB f : Lp 𝕜 p μ) : α → 𝕜) x = _
+  rw [h1, h5, sub_apply, h4, Pi.sub_apply, h2, h3, sub_mul]
+
+/-- A symbol that is almost everywhere a scalar multiple induces the scalar multiple of the
+multiplier. -/
+theorem lpBoundedMulCLM_smul {φ χ : α → 𝕜} (hφ : Measurable φ) (hχ : Measurable χ)
+    {C B : ℝ} (hC0 : 0 ≤ C) (hC : ∀ x, ‖φ x‖ ≤ C) (hB0 : 0 ≤ B) (hB : ∀ x, ‖χ x‖ ≤ B)
+    (c : 𝕜) (hae : ∀ᵐ x ∂μ, χ x = c * φ x) :
+    lpBoundedMulCLM (p := p) (μ := μ) hχ hB0 hB
+      = c • lpBoundedMulCLM (p := p) (μ := μ) hφ hC0 hC := by
+  refine ContinuousLinearMap.ext fun f => Lp.ext ?_
+  filter_upwards [lpBoundedMulCLM_coeFn (p := p) (μ := μ) hχ hB0 hB f,
+    lpBoundedMulCLM_coeFn (p := p) (μ := μ) hφ hC0 hC f,
+    Lp.coeFn_smul c (lpBoundedMulCLM (p := p) (μ := μ) hφ hC0 hC f), hae] with x h1 h2 h3 h4
+  show ((lpBoundedMulCLM (p := p) (μ := μ) hχ hB0 hB f : Lp 𝕜 p μ) : α → 𝕜) x = _
+  rw [h1, h4, smul_apply, h3, Pi.smul_apply, h2, smul_eq_mul, mul_assoc]
+
 end MulAlgebra
 
 end MeasureTheory
@@ -192,6 +223,35 @@ theorem fourierMulCLM_eq_id {φ : E → ℂ} (hφ : Measurable φ) {C : ℝ} (hC
   refine ContinuousLinearMap.ext fun f => ?_
   rw [fourierMulCLM_apply, lpBoundedMulCLM_eq_id (p := 2) (μ := (volume : Measure E)) hφ hC0 hC hae]
   simp
+
+/-- A symbol that is almost everywhere a difference gives the difference of the multipliers. -/
+theorem fourierMulCLM_sub {φ ψ χ : E → ℂ} (hφ : Measurable φ) (hψ : Measurable ψ)
+    (hχ : Measurable χ) {C D B : ℝ} (hC0 : 0 ≤ C) (hC : ∀ ξ, ‖φ ξ‖ ≤ C) (hD0 : 0 ≤ D)
+    (hD : ∀ ξ, ‖ψ ξ‖ ≤ D) (hB0 : 0 ≤ B) (hB : ∀ ξ, ‖χ ξ‖ ≤ B)
+    (hae : ∀ᵐ ξ ∂(volume : Measure E), χ ξ = φ ξ - ψ ξ) :
+    fourierMulCLM hχ hB0 hB = fourierMulCLM hφ hC0 hC - fourierMulCLM hψ hD0 hD := by
+  refine ContinuousLinearMap.ext fun f => ?_
+  rw [fourierMulCLM_apply, lpBoundedMulCLM_sub (p := 2) (μ := (volume : Measure E)) hφ hψ hχ
+    hC0 hC hD0 hD hB0 hB hae]
+  show fourierL2inv E ((lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hφ hC0 hC
+      (fourierL2 E f)) - (lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hψ hD0 hD
+      (fourierL2 E f))) = _
+  rw [map_sub]
+  rfl
+
+/-- A symbol that is almost everywhere a scalar multiple gives the scalar multiple of the
+multiplier. -/
+theorem fourierMulCLM_smul {φ χ : E → ℂ} (hφ : Measurable φ) (hχ : Measurable χ)
+    {C B : ℝ} (hC0 : 0 ≤ C) (hC : ∀ ξ, ‖φ ξ‖ ≤ C) (hB0 : 0 ≤ B) (hB : ∀ ξ, ‖χ ξ‖ ≤ B)
+    (c : ℂ) (hae : ∀ᵐ ξ ∂(volume : Measure E), χ ξ = c * φ ξ) :
+    fourierMulCLM hχ hB0 hB = c • fourierMulCLM hφ hC0 hC := by
+  refine ContinuousLinearMap.ext fun f => ?_
+  rw [fourierMulCLM_apply, lpBoundedMulCLM_smul (p := 2) (μ := (volume : Measure E)) hφ hχ
+    hC0 hC hB0 hB c hae]
+  show fourierL2inv E (c • (lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hφ hC0 hC
+      (fourierL2 E f))) = _
+  rw [map_smul]
+  rfl
 
 /-- A symbol that is almost everywhere `0` gives the zero operator. -/
 theorem fourierMulCLM_eq_zero {φ : E → ℂ} (hφ : Measurable φ) {C : ℝ} (hC0 : 0 ≤ C)
