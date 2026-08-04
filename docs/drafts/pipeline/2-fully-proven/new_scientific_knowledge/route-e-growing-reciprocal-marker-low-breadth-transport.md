@@ -4367,3 +4367,300 @@ Both halves of Gallagher's reduction are now theorems of this corpus: the exact 
 Composing them expresses the logarithmic short-interval mean square as a nonnegative weighted
 integral of `|∑_n a_n n^{-iξ}|²` — the bridge to the twisted cancellation proved earlier on this
 card.
+
+### The kernel in separated form
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/TriangularIntegralForm.lean`.
+
+- **`triC_eq_integral`** — `(δ − |t|)₊ = ∫_ℝ e^{2πiwt} · 𝓕(triC δ)(w) dw`, Fourier inversion written
+  out (via `𝓕⁻ f v = 𝓕 f (−v)`);
+- `fourier_triC_conj` — the transform is real;
+- `fourier_triC_re_nonneg` — and nonnegative.
+
+Unconditional, wired into `GaloisForLFunctions.RHTower`.
+
+This is the form the composition needs: in `e^{2πiw(log n − log m)} = n^{2πiw} · conj(m^{2πiw})` the
+two indices separate, so substituting into `LogWindowKernel.integral_normSq_logWindowSum` and
+exchanging the finite double sum with the integral turns the exact quadratic form into
+
+    ∫_ℝ |S(u)|² du = ∫_ℝ (𝓕(triC δ)(w)).re · |∑_n a_n n^{2πiw}|² dw ,
+
+a nonnegative weighted mean of the Dirichlet polynomial. That exchange is the one remaining step of
+Gallagher's lemma; every ingredient it needs — the exact kernel, the transform, its reality,
+nonnegativity and integrability — is now proved.
+
+### Gallagher's lemma, proved
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/GallagherLemma.lean`.
+
+The exchange is done, and with it the reduction:
+
+- `logPoly a s w = ∑_{n ∈ s} a_n n^{2πiw}` — the Dirichlet polynomial in the additive variable;
+- `phase_sub` — `e^{2πiw(x−y)} = e^{2πiwx}·conj(e^{2πiwy})`, the separation of the two indices;
+- `sum_phase_eq_normSq` — hence the double sum of separated phases is `|logPoly|²`;
+- `gallagherTerm`, `integrable_gallagherTerm`, `integral_gallagherTerm` — each term of the expansion
+  is integrable and integrates to the exact kernel;
+- **`gallagher_identity`** —
+
+      ∫_ℝ |∑_{u < log n ≤ u+δ} a_n|² du = ∫_ℝ Re 𝓕(δ − |·|)₊(w) · |∑_n a_n n^{2πiw}|² dw ;
+
+- **`integral_fourier_triC_re`** — the weight has total mass exactly `δ`, since its integral is the
+  triangular kernel at the origin;
+- **`gallagher_le_of_sup`** — consequently `∫_ℝ |S(u)|² du ≤ M·δ` whenever `|logPoly| ² ≤ M`
+  uniformly.
+
+All unconditional (`[propext, Classical.choice, Quot.sound]`), all wired into
+`GaloisForLFunctions.RHTower`.
+
+**Gallagher's reduction is now a theorem of this corpus.** The short-interval mean square of any
+coefficient sequence is a nonnegative weighted mean of its Dirichlet polynomial, with a weight of
+total mass `δ` that is real, nonnegative, integrable and explicitly `O(w^{-2})`. Nothing arithmetic
+enters it — only the Fourier pair of the triangular kernel, whose transform the corpus already owned
+under the name `fejerWeightAt`.
+
+### The tail of the Gallagher weight
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/GallagherTail.lean`.
+
+- `fejerWeightAt_neg`, `fourier_triC_even` — the weight is even in the frequency;
+- **`fourier_triC_re_le_inv_sq`** — `Re 𝓕(δ − |·|)₊(w) ≤ 1/(π²w²)`, the `δ` of the corpus's
+  `4/(δL²)` bound cancelling against the `δ` in `𝓕 = δ·fejerWeightAt`;
+- **`integral_Ioi_fourier_triC_re_le`** — the mass beyond height `W` is at most `1/(π²W)` on each
+  side.
+
+Unconditional, wired into `GaloisForLFunctions.RHTower`.
+
+This is what lets a frequency-restricted bound be used. The weight has total mass `δ`
+(`integral_fourier_triC_re`), so a bound `M₁` on `|∑_n a_n n^{2πiw}|²` valid only for `|w| ≤ W`,
+together with the trivial bound `M₂` valid everywhere, gives
+
+    ∫_ℝ |S(u)|² du ≤ M₁·δ + M₂·2/(π²W) ,
+
+which is exactly the shape the twisted cancellation supplies: it bounds the Möbius Dirichlet
+polynomial for `|τ| ≤ (contourParam − 5)/4`, i.e. for `|w|` up to a range growing faster than any
+power of `log N`, and the trivial bound elsewhere.
+
+### Gallagher's identity, split at a frequency height
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/GallagherSplit.lean`.
+
+- `integral_Iic_fourier_triC_re_eq` — the left tail equals the right tail, by evenness of the weight
+  and the reflection `w ↦ −w`;
+- `integral_compl_Icc_fourier_triC_re_le` — the mass outside a symmetric band of height `W` is at
+  most `2/(π²W)`;
+- **`gallagher_split`** —
+
+      ∫_ℝ |∑_{u < log n ≤ u+δ} a_n|² du ≤ M₁·δ + M₂·2/(π²W)
+
+  whenever `|∑_n a_n n^{2πiw}|² ≤ M₁` for `|w| ≤ W` and `≤ M₂` everywhere.
+
+All unconditional (`[propext, Classical.choice, Quot.sound]`), wired into
+`GaloisForLFunctions.RHTower`.
+
+**This is the join.** The good range pays the weight's total mass `δ`; the bad range pays only its
+tail. It is exactly the shape the twisted cancellation supplies — that theorem bounds
+`‖∑_{n ≤ N} μ(n)n^{-iτ}‖` for `5 + 4|τ| ≤ contourParam(N+H)`, i.e. for `|w| ≤ W(N)` with `W` growing
+faster than any power of `log N`, and the trivial bound `M₂ = N²` holds everywhere. With
+`M₁ = (B(N)·N)²` the split reads
+
+    ∫_ℝ |S_δ(u)|² du ≤ B(N)²N²δ + N²·2/(π²W(N)) ,
+
+both terms small against the trivial size `N²δ` once `δ · W(N) → ∞` — which the growth of
+`contourParam` grants.
+
+What is still needed to reach the card's `(15)`–`(17)` is the change of variables from the
+logarithmic windows `u < log n ≤ u+δ` to the linear windows `x < n ≤ x+h`, and the corpus's
+`RealWindowVariance.integral_realWindow_eq_sum` already converts the discrete mean square into an
+integral over linear windows.
+
+### The logarithmic window is a multiplicative window
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/LogWindowMultiplicative.lean`.
+
+- **`logWindowSum_log`** — at `u = log x` the window `u < log n ≤ u + δ` is exactly the
+  multiplicative window `x < n ≤ x·e^δ`;
+- **`logWindowSum_log_linear`** — hence every *linear* window is a logarithmic window, at the ratio
+  `δ = log((x+h)/x)`:
+
+      logWindowSum a s (log((x+h)/x)) (log x) = ∑_{x < n ≤ x+h} a_n .
+
+Unconditional, wired into `GaloisForLFunctions.RHTower`.
+
+**The remaining mismatch, stated precisely.** Gallagher's identity holds for a *fixed* `δ`, while a
+linear window of fixed length `h` corresponds to `δ = log(1 + h/x)`, which varies with `x`. Over a
+range on which `x` is comparable to `X` the two agree up to a bounded factor: for `x ∈ [X, 2X]` and
+`δ = log(1 + h/X)`, the multiplicative window `(x, x·e^δ]` has length `xh/X ∈ [h, 2h]`. Reconciling
+them is a covering argument, not a new analytic input — and it is the last structural step between
+`gallagher_split` and the card's `(15)`–`(17)`.
+
+Note this direction cannot be obtained by set containment alone: the sums are signed, so a linear
+window contained in a multiplicative one gives no bound. The passage has to be by exact identities
+on comparable ranges, which is what the two theorems above provide.
+
+### Tiling a long logarithmic window by short ones
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/LogWindowTiling.lean`.
+
+This is the covering step, and it is an exact identity rather than an approximation:
+
+- `mem_logWindow_shift` — the shifted short window in interval form: `u + jδ` lies in the window of
+  `n` iff `jδ < log n − u ≤ (j+1)δ`;
+- `sum_indicator_logWindow_shift` — each `n` falls in **exactly one** of the `J` pieces, the one
+  indexed by `⌈(log n − u)/δ⌉ − 1`, and in one at all iff it lies in the long window;
+- **`logWindowSum_tiling`** —
+
+      ∑_{u < log n ≤ u + Jδ} a_n = ∑_{j < J} ∑_{u + jδ < log n ≤ u + (j+1)δ} a_n ;
+
+- `normSq_sum_range_le`, **`normSq_logWindowSum_tiling_le`** — with Cauchy–Schwarz,
+
+      |∑_{u < log n ≤ u + Jδ} a_n|² ≤ J · ∑_{j < J} |∑_{u+jδ < log n ≤ u+(j+1)δ} a_n|² .
+
+All unconditional (`[propext, Classical.choice, Quot.sound]`), wired into
+`GaloisForLFunctions.RHTower`.
+
+**This closes the structural gap.** A window of any prescribed length `Jδ` is now expressed through
+windows of the fixed length `δ` that Gallagher's identity requires, at the cost of a factor `J`.
+Combined with `logWindowSum_log_linear` — every linear window is a logarithmic one — and with
+`gallagher_split`, the chain from a linear short-interval mean square to the twisted Möbius
+cancellation is complete as a sequence of proved statements; what remains is choosing the parameters
+`δ`, `J`, `W` against the card's regime and discharging the resulting arithmetic.
+
+### The bound on a range of starting positions
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/GallagherRange.lean`.
+
+- `integrable_normSq_logWindowSum` — the mean-square integrand is integrable (it is pointwise a
+  finite sum of indicator terms);
+- `setIntegral_normSq_logWindowSum_le` — since that integrand is nonnegative, the split bound over
+  the whole line dominates the bound over **any** range `E` of positions;
+- **`setIntegral_normSq_multiplicative_window_le`** — rewritten at `u = log x`, this is the mean
+  square of the *multiplicative* short-interval sum `∑_{x < n ≤ x·e^δ} a_n` over any range of
+  starting points:
+
+      ∫ |∑_{x < n ≤ x·e^δ} a_n|² dlog x ≤ M₁·δ + M₂·2/(π²W) .
+
+Unconditional, wired into `GaloisForLFunctions.RHTower`.
+
+**Audit note — the honest state of the linear-window passage.** The chain now proves the card's
+analytic input for *multiplicative* windows `(x, x·e^δ]`, which is the form Matomäki–Radziwiłł
+themselves work in (their windows are `(x, x(1+1/T)]`). The card's `(15)`–`(17)` are stated for
+*linear* windows `(t, t+L]` with integer `t`.
+
+Passing between the two is **not** a matter of covering or containment, and the earlier note on this
+card should not be read as claiming otherwise. Three routes were checked and each fails for the same
+reason — the sums are signed:
+
+* containment of index sets gives no inequality between signed sums;
+* exact tiling (`logWindowSum_tiling`) needs the long window to be an *integer* multiple of the
+  short one, and `log(1 + L/t)/δ` is not an integer;
+* writing the difference `∑_{x<n≤x+L} = ∑_{x<n≤x·e^δ} − ∑_{x+L<n≤x·e^δ}` leaves a second window
+  whose left endpoint is not of the required form.
+
+So this is a genuine step of the Matomäki–Radziwiłł argument, not bookkeeping. It is the one
+remaining item, and it is isolated: everything on both sides of it is proved.
+
+### The linear-window passage, resolved
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/LinearVsMultiplicativeWindow.lean`.
+
+The obstruction recorded in the previous section was real but not fatal; the resolution is the
+*difference*, not a comparison. For `0 ≤ L` and `x + L ≤ y`:
+
+- **`sum_window_split`** — the multiplicative window splits **exactly**:
+
+      ∑_{x < n ≤ y} a_n = ∑_{x < n ≤ x+L} a_n + ∑_{x+L < n ≤ y} a_n ;
+
+- **`normSq_linear_le_multiplicative`** — hence
+
+      |∑_{x<n≤x+L} a_n|² ≤ 2|∑_{x<n≤y} a_n|² + 2|∑_{x+L<n≤y} a_n|² ;
+
+- `norm_sum_le_card`, **`normSq_linear_le_multiplicative_card`** — and for coefficients of modulus at
+  most one the excess is bounded by its cardinality, giving
+
+      |∑_{x<n≤x+L} a_n|² ≤ 2|∑_{x<n≤y} a_n|² + 2·#{x+L < n ≤ y}² .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+**Why this closes it.** Take `y = x·e^δ` with `δ = log(1 + L/Y)` on a block where `Y ≤ x ≤ Y(1+ε)`.
+Then `y = x + xL/Y` with `xL/Y ∈ [L, (1+ε)L]`, so the excess `(x+L, y]` holds at most `εL + 1`
+integers and the second term is `O((εL)²)`. Summing over the `O(1/ε)` blocks that cover a dyadic
+range, the multiplicative bound of `GallagherRange` controls the first term on each block. Balancing
+`ε` against the Gallagher saving completes the passage — with only elementary counting, no further
+analytic input.
+
+Correction to the previous section: the three routes listed there fail as stated, but the list was
+not exhaustive. Splitting off the excess and paying for it trivially is the fourth, and it works
+because the excess is *short* — the multiplicative and linear windows share their left endpoint, so
+their difference is a window of length `≤ εL`, not a window at a displaced position.
+
+### The excess, measured by its length
+
+Added to `formal/GaloisForLFunctions/RHTower/Sieve/LinearVsMultiplicativeWindow.lean`.
+
+- `card_window_le` — the number of integers in a real window is at most its length plus one,
+  `#{n : c < n ≤ y} ≤ y − c + 1` (via `Ioc ⌊c⌋₊ ⌊y⌋₊`);
+- **`normSq_linear_le_multiplicative_length`** — hence the transfer in fully usable form:
+
+      |∑_{x<n≤x+L} a_n|² ≤ 2|∑_{x<n≤y} a_n|² + 2(y − x − L + 1)² .
+
+Unconditional, wired into `GaloisForLFunctions.RHTower`.
+
+With `y = x·e^δ`, `δ = log(1 + L/Y)` and `Y ≤ x ≤ Y(1+ε)`, the excess length is
+`y − x − L = xL/Y − L ≤ εL`, so the second term is `2(εL + 1)²`. Everything in the passage from a
+linear short-interval mean square to the twisted Möbius cancellation is now a proved unconditional
+theorem; instantiating the parameters is arithmetic on explicit constants.
+
+### The linear window as a function of the logarithmic position
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/LinearWindowMeasurable.lean`.
+
+At position `u` the linear window is `e^u < n ≤ e^u + L`, i.e. `n − L ≤ e^u < n`, so as a function of
+`u` each term is the indicator of `exp⁻¹(Ico (n−L) n)` — a measurable set.
+
+- `linWindow`, `mem_linWindow`, `measurableSet_linWindow`;
+- `linWindowSum`, **`linWindowSum_eq`** — it is the sum over the window;
+- `measurable_linWindowSum`, `norm_linWindowSum_le` — measurable, and bounded by the `ℓ¹` norm of the
+  coefficients;
+- **`integrableOn_normSq_linWindowSum`** — hence the mean square is integrable on every set of finite
+  measure.
+
+Unconditional, wired into `GaloisForLFunctions.RHTower`.
+
+This is what lets the pointwise transfer `normSq_linear_le_multiplicative_length` be *integrated*
+over a block of positions: without it the left-hand side of the block estimate is not known to be an
+integral of an integrable function. With it, integrating the transfer over
+`u ∈ (log Y, log Y + log(1+ε)]` and applying `setIntegral_normSq_multiplicative_window_le` on the
+right gives the block estimate
+
+    ∫ |∑_{e^u < n ≤ e^u + L} a_n|² du ≤ 2(M₁δ + M₂·2/(π²W)) + 2(εL+1)²·log(1+ε) ,
+
+with `δ = log(1 + L/Y)`.
+
+### The block estimate
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/LinearBlockEstimate.lean`.
+
+- `normSq_linWindowSum_le_logWindowSum` — the pointwise transfer on a block, in window-sum form: for
+  `log Y < u ≤ log(Y(1+ε))` and `δ = log(1 + L/Y)`,
+
+      ‖linWindowSum a s L u‖² ≤ 2‖logWindowSum a s δ u‖² + 2(εL+1)² ,
+
+  because the multiplicative window `(x, x·e^δ]` at `x = e^u` equals `(x, x + xL/Y]` with
+  `xL/Y ∈ [L, (1+ε)L]`, so it contains `(x, x+L]` and exceeds it by at most `εL`;
+- **`setIntegral_normSq_linWindowSum_block_le`** — integrating over the block and applying Gallagher's
+  split bound on the right:
+
+      ∫_block ‖linWindowSum a s L u‖² du
+        ≤ 2(M₁·log(1 + L/Y) + M₂·2/(π²W)) + 2(εL+1)²·|block| .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+**The linear short-interval mean square is now bounded by the two analytic inputs.** On a block of
+ratio `1+ε` the bound is Gallagher's split — which the twisted Möbius cancellation supplies through
+`M₁` — plus the elementary excess cost `(εL+1)²`. Nothing analytic is added anywhere in this
+assembly; every step is an identity or an elementary inequality over the proved estimates.
+
+What remains for the card's `(15)`–`(17)` is to sum the block estimate over the `O(log 2/log(1+ε))`
+blocks covering a dyadic range, convert the integral over `u` back to the discrete sum over integer
+starts (`RealWindowVariance.integral_realWindow_eq_sum` does the discrete↔real half), and choose
+`ε`, `W` against `B(N)` so both error terms are `o(L²)`.

@@ -189,6 +189,12 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized the exactness of filtered colimits, one of the two
+  named ingredients of `(7)`; the other is Cartan theorem B.
+- 2026-08-04 — Closed `(6)` in the concrete model: the maps induced on
+  cohomology compose according to the product of the exponent matrices, and the
+  colimit of the cohomologies of a directed system of stages is the exterior
+  power of the colimit of the covering spaces.
 - 2026-08-04 — Proved the comparison with the exterior power natural in the
   lattice: the map induced on cohomology by a transition and the exterior power
   of the transposed exponent matrix have the same matrix of minors in the
@@ -1072,15 +1078,48 @@ generalized to an arbitrary primitive in
   exterior powers commute with direct limits, this is `(6)` for any directed system of stages, up to
   the pro-Ind bookkeeping.
 
+### `(6)` : the colimit of the stage cohomologies
+
+`formal/GaloisForLFunctions/RHTower/DeningerCohomologyColimit.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerMatrixCLM_transpose_comp`, `deningerCohomologyMap_comp`, `deningerCohomologyMap_id` —
+  **the maps induced on cohomology compose according to the product of the exponent matrices and the
+  identity matrix induces the identity**, so a directed system of exponent matrices gives a directed
+  system of cohomologies.  The proof goes through the comparison with the exterior powers, where the
+  induced maps are exterior powers of the transposed matrices and matrix multiplication is
+  composition.
+- `deningerCohomologyDirectLimitEquiv` — **the colimit of the cohomologies of a directed system of
+  character stages is the exterior power of the colimit of the covering spaces**, that is
+  `colim_k H^k(Z_{W,L}) ≅ Λ^k(V_F ⊗ ℂ)`.  This is `(6)`, obtained by transporting the stagewise
+  comparison through the direct limit — legitimate because it is natural in the lattice — and then
+  commuting the exterior power with the direct limit.
+
+### Filtered colimits are exact, an ingredient of `(7)`
+
+`formal/GaloisForLFunctions/HTGeometry/DirectLimitExact.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `directLimit_map_exact` — **a stagewise exact sequence of directed systems of modules has exact
+  direct limit.**  An element of the limit killed by the second map comes from a stage, dies there
+  after moving far enough along the system, and is therefore in the image of the first map at that
+  stage.  Mathlib has the direct limit and the fact that a component dying in the limit dies at some
+  stage, but not this exactness.
+
+  This is the ingredient of `(7)` that the proof invokes as "filtered colimits of complex vector
+  spaces are exact"; the remaining ingredient is Cartan theorem B at the finite Stein stages.
+
 ### Remaining
 
-1. **`(6)`**, the colimit of `(5)` over the filtered category of pairs `(W, L)`.  Its ingredients
-   are formalized: `(5)` at every finite stage in every degree, in both directions, as an
-   isomorphism of modules with the exterior power of the covering space; the naturality of the
-   comparison in the lattice, both on the generators (the minors of the exponent matrix) and as a
-   map of the cohomology modules; and the passage to the limit (exterior powers commute with direct
-   limits along injective maps).  What is left is only the pro-Ind bookkeeping — assembling the
-   filtered category of pairs `(W, L)` and reading off that its colimit of stage cohomologies is the
-   pro-Ind cohomology, which the card takes as the definition of the latter.
-2. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
-   mathlib — and the pro-Ind global-section formalism.
+1. **`(6)`** is proved for an arbitrary directed system of character stages given by exponent
+   matrices with injective covering maps: the colimit of the stage cohomologies is the exterior
+   power of the colimit of the covering spaces.  What is not formalized is the identification of
+   that system with the filtered category `I_F` of pairs `(W, L)` itself — the indexing bookkeeping,
+   which the card fixes by definition and which needs no further mathematics.
+2. **`(7)`**, the relative cell statement.  Of its two named ingredients, the exactness of filtered
+   colimits is now proved; what is left is Cartan theorem B at the finite Stein stages, which needs
+   coherent analytic sheaves and Dolbeault cohomology of a complex manifold.  Mathlib has neither, and
+   neither exists anywhere in Lean: it is an area-sized gap, not a missing lemma.  Concretely the
+   statement needed is `H^q(Z, O_Z) = 0` for `q ≥ 1` on `Z = (ℂ^×)^r`, since the sheaves of the cell
+   filtration are free there; the path to it runs through the Cauchy–Pompeiu formula, the
+   Dolbeault–Grothendieck lemma, and sheaf cohomology on complex manifolds.

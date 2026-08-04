@@ -107,10 +107,23 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 43 | the integrated flux identity with a source | **`integral_dirDeriv_energyDensity_source`** | **built** |
 | 44 | the source pairing is dominated by the energy | **`abs_integral_source_le`** | **built** |
 | 45 | the inhomogeneous energy estimate | **`waveEnergy_le_gronwall_source`** | **built** |
+| 46 | the algebra of bounded multiplication operators on `Lᵖ` | `lpBoundedMulCLM_comp`, `lpBoundedMulCLM_eq_id`, `lpBoundedMulCLM_add`, `lpBoundedMulCLM_eq_zero` | **built** |
+| 47 | Plancherel as a continuous linear map, and the bounded Fourier multiplier | `fourierL2`, `fourierL2inv`, `norm_fourierL2_apply`, `fourierMulCLM`, **`norm_fourierMulCLM_le`**, `fourierMulCLM_comp`, `fourierMulCLM_eq_id`, `fourierMulCLM_eq_zero`, `fourierMulCLM_add` | **built** |
+| 48 | strong continuity of a pointwise convergent family of uniformly bounded multipliers | `lintegral_enorm_rpow_two_ne_top`, **`tendsto_lpBoundedMulCLM_apply`**, **`tendsto_fourierMulCLM_apply`** | **built** |
+| 49 | a uniformly bounded strongly continuous family of operators is jointly continuous | **`continuous_uncurry_of_strong`**, `continuous_of_strong_comp` | **built** |
+| 50 | the symbols of the energy rotation and their regularity | `kgSinPhase`, `kgFreqInv`, `norm_kgSinPhase_le`, `norm_kgFreqInv_le`, `continuous_kgFreq`, `measurable_kgCosSymbol`, `measurable_kgSinPhase`, `measurable_kgFreqInv`, `continuous_kgCosSymbol_time`, `continuous_kgSinPhase_time` | **built** |
+| 51 | the scalar propagators on `L²` | `kgCosOp`, `kgSinOp`, `kgFreqInvOp`, `norm_kgCosOp_le`, `norm_kgSinOp_le`, `norm_kgFreqInvOp_le`, **`continuous_kgCosOp_apply`**, **`continuous_kgSinOp_apply`**, `kgCosOp_zero`, `kgSinOp_zero` | **built** |
+| 52 | the free propagator on the energy space | `KGEnergy`, `kgPropagator`, **`norm_kgPropagator_le`**, **`continuous_kgPropagator_uncurry`**, `continuous_kgPropagator_comp`, `kgPropagator_zero_apply` | **built** |
+| 53 | the Volterra equation with a strongly continuous kernel | `StrongKernel`, `StrongKernel.of_continuous`, `continuous_volterraSolution_of_strong`, **`volterraSolution_eq_of_strong`**, **`volterra_eq_of_eq_of_eq_of_strong`**, **`norm_volterraSolution_le_of_strong`** | **built** |
+| 54 | the potential as a bounded perturbation in energy coordinates | `kgPotentialOp`, **`norm_kgPotentialOp_le`** | **built** |
+| 55 | the Duhamel data and its strong continuity | `kgFreeCurve`, `kgDuhamelKernel`, `norm_kgFreeCurve_le`, `norm_kgDuhamelKernel_le`, **`strongKernel_kgDuhamelKernel`** | **built** |
+| 56 | **global well-posedness for a bounded measurable potential** | `kgMildSolution`, `continuous_kgMildSolution`, **`kgMildSolution_eq`**, **`kgMildSolution_zero`**, **`norm_kgMildSolution_le`**, **`eq_kgMildSolution_of_duhamel`**, **`exists_unique_kgMildSolution`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
-`WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41). All wired into the umbrella; axioms
-`[propext, Classical.choice, Quot.sound]`.
+`WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
+`L2MultiplierContinuity.lean` (48), `KleinGordonL2Propagator.lean` (49–52),
+`VolterraStrongKernel.lean` (53), `KleinGordonMildSolution.lean` (54–56). All wired into the
+umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
 
@@ -414,6 +427,61 @@ two solutions separately do not cover. The two-solution uniqueness statement the
 `DecayingSolution` *of the difference*, exactly as statement 25 is phrased. That is not a defect of
 the formalisation: it is the honest content of the estimate for non-compactly-supported data.
 
+
+### The existence half, built
+
+Statements 46–56 close the other half of the classical local theory: the estimate is now accompanied
+by a construction. The route is the one the card specified — the Volterra iteration of
+`VolterraLinearIntegralEquation.lean` run in the energy space — and three things had to be built for
+it.
+
+**The energy variables.** Writing `w = (⟨D⟩u, ∂ₜu)` turns the second-order equation
+`∂ₜ²u = -⟨D⟩²u + Vu` into the first-order system `∂ₜw = Jw + Nw` with
+
+`N (w₁, w₂) = (0, V ⟨D⟩⁻¹ w₁)`.
+
+Since `⟨ξ⟩⁻¹ ≤ 1`, the operator `⟨D⟩⁻¹` is a contraction of `L²`, so `N` is a **bounded** operator
+of norm at most `‖V‖_∞` (statement 54). This is the whole point of the energy variables: in the
+field variables the perturbation is unbounded relative to the space, and no fixed-point argument
+runs; in the energy variables it is bounded, and the perturbation series converges with no smallness
+hypothesis whatever.
+
+**The free propagator.** On the Fourier side the free evolution in these variables is the rotation
+by `t⟨ξ⟩`, whose four entries `cos(t⟨ξ⟩)`, `±sin(t⟨ξ⟩)` are bounded by one *uniformly in time* — the
+plain sine, not the corpus's `kgSinSymbol`, whose factor `⟨ξ⟩⁻¹` is what makes it grow like `|t|`.
+Each entry is therefore a Fourier multiplier on `L²` of norm at most one (statement 47, built on
+mathlib's Plancherel isometry `Lp.fourierTransformₗᵢ` and the corpus's `lpBoundedMulCLM`), and
+`kgPropagator t` is bounded by `2` for every `t` (statement 52).
+
+**Strong, not norm, continuity.** No nontrivial propagator group is continuous in the operator norm,
+so the corpus's Volterra layer — which asks for a norm continuous kernel — does not apply as it
+stands. Statement 48 proves what is true: a family of symbols bounded by one constant and converging
+pointwise gives multiplication operators converging *strongly*, by dominated convergence for the
+Lebesgue integral of `|φᵢ - ψ|²|f|²`. Statement 49 upgrades strong continuity plus a uniform bound to
+joint continuity in the time and the vector, and statement 53 re-runs the whole perturbation series
+under the resulting weaker hypothesis `StrongKernel` — the bounds are unchanged, because the kernel
+is only ever applied to the iterates, which are continuous by construction.
+
+With those three, the Duhamel data are admissible and the capstone follows:
+
+**`exists_unique_kgMildSolution`**: *for a measurable potential bounded by `b` and any datum `w₀` in
+the energy space there is exactly one continuous curve `w : ℝ → L² × L²` with*
+
+`w(t) = U(t)w₀ + ∫₀ᵗ U(t-s) N w(s) ds`,
+
+*it starts at `w₀` (`kgMildSolution_zero`), and it obeys `‖w(t)‖ ≤ 2‖w₀‖ e^{2b|t|}`
+(`norm_kgMildSolution_le`).*
+
+The hypotheses on the potential are measurability and boundedness — no continuity, no decay, no
+smoothness, no sign, no time-independence of the construction's inputs beyond the statement's own.
+That is far below the `C^{2d+5}` that the Fourier synthesis of `finite-regularity-clock-probes`
+consumes, and it is global in time.
+
+What this gives is the *mild* solution. Identifying it with a classical solution of the pointwise
+equation — differentiating the Duhamel integral, which needs the group law of the propagator and a
+regularity hypothesis on the datum — is the next brick, and it is what would let the uniqueness
+half of this card (statements 1–45) and the existence half meet on the same object.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -434,6 +502,10 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-04 — statements 46–56: **the existence half**. Bounded Fourier multipliers on `L²`, the
+  free Klein–Gordon propagator on the energy space, the Volterra layer with a strongly continuous
+  kernel, and global well-posedness of the Cauchy problem for a bounded measurable potential.
+  Six new modules, every theorem unconditional.
 - 2026-08-04 — recorded the exact `volterraSolution` interface the construction step has to meet.
 - 2026-08-04 — wiring audit: every `Wave*` module in `HTGeometry/` is imported by the area umbrella
   (35 files checked, none missing).

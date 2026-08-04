@@ -541,3 +541,212 @@ the corpus's `normalize_ker`, already noted.
 Only the identification of the velocity with a `dim G_i`-tuple remains -- the coordinate description
 of the Lie algebra.  That is a statement about algebraic groups, not about differential algebra, and
 it is the single remaining scheme-level input, alongside `hring` for `(1)`.
+
+## Card picked up — entry point for the next formalization pass
+
+Survey of this folder's gates puts this card and the two rational-tail orbifold cards as the only
+ones with an open `2 -> 3`.  Here every numbered statement `(1)`-`(7)` is already formal, and what
+remains is scheme-level:
+
+- `hdeck` -- Galois descent for a finite etale isogeny (quotients of group schemes by finite subgroup
+  schemes; absent from mathlib),
+- `hring` -- the ring-theoretic input of `(1)`,
+- the coordinate description of `Lie(G_i)` as a `dim G_i`-tuple.
+
+These are mathlib-scale algebraic geometry, not differential algebra, so the next pass should begin
+by measuring what mathlib's group-scheme layer actually provides (`AlgebraicGeometry.GroupScheme`,
+finite locally free quotients, `Lie` functor) before writing anything, and should expect to build the
+finite-etale quotient API rather than find it.
+
+## Measurement: what mathlib provides, and where `hdeck` really sits
+
+**mathlib's group-scheme layer is essentially empty.**  `Mathlib/AlgebraicGeometry/Group/` is two
+files totalling about 220 lines (`Abelian.lean`, `Smooth.lean`), whose content is that a proper
+integral group scheme over an algebraically closed field is commutative.  There is no quotient by a
+finite subgroup scheme, no isogeny theory, and no `Lie` functor for group schemes.  So the
+scheme-theoretic reading of the two remaining inputs is a multi-month build from nothing.
+
+**But the corpus has already moved `hdeck` off the scheme layer.**
+`NonautonomousErasedDeckBridge.lean` proves the tail identity `(1)` from five *alternative*
+packages, none of which mentions schemes:
+
+    ..._of_finrank                    a degree count: |prefix kernel| = [F : prefix image]
+    ..._of_equivariant
+    ..._of_invariant_ring             an invariant b of the prefix kernel in a model ring B
+                                      lies in the prefix image
+    ..._of_stabilizes                 no depth beyond N erases anything new
+    ..._of_stabilizes_of_invariant_ring
+
+The abstract model is a group `G i` acting on the field by `ρ` with `forwardPrefix` the pullbacks,
+so the inclusion "image ⊆ fixed field" is free and only the reverse needs input.  For a finite group
+acting faithfully on a field that reverse inclusion is Artin's theorem, which mathlib has.
+
+**So the single genuine geometric input is the isogeny degree formula** -- that the degree of a
+finite etale isogeny equals the order of its kernel -- feeding `..._of_finrank`; or, equivalently,
+the invariant-ring statement `hring` feeding `..._of_invariant_ring`.  Everything else on this card
+is already discharged abstractly.
+
+Next pass should therefore attack the degree count, not the scheme quotient: state the isogeny
+setting so that `|prefixKernel| = [F : prefix image]` is available from mathlib's Galois theory of
+finite group actions (`FixedPoints.finrank_eq_card` and the `IsGalois` API), rather than build
+group-scheme quotients.
+
+## The concrete lever: inhabit the degree hypothesis on the multiplicative protocol
+
+The corpus already owns the Kummer degree facts that the abstract `hdeg` needs in the simplest
+isogeny protocol:
+
+    KummerDegreeBound.finrank_adjoin_le_of_pow_mem   a radical extension has degree at most the exponent
+    RadicalDegreeExact.finrank_adjoin_of_irreducible  and exactly the exponent when X^n - c is irreducible
+    RadicalDegreeExact.le_finrank_adjoin_of_irreducible
+
+For `G_i = G_m` with `a_i = (.)^{n_i}` and `g` hypertranscendental, the prefix pullback is
+`C<g^N> ⊆ C<g>` with `N = n_i ... n_{i+n-1}`, its deck group is the group of `N`-th roots of unity
+acting by scaling, and the degree count `hdeg` is exactly `[C<g> : C<g^N>] = N`, i.e. irreducibility
+of `X^N - g^N` over `C<g^N>`.
+
+Building that instance does not close the general `2 -> 3` gate, but it does something the gate
+cannot: it shows the hypothesis package is **inhabited**.  A degree hypothesis that no protocol
+satisfies would make the whole tail identity vacuous, and the card currently has no witness.  This
+is the next concrete Lean target on this card, and it needs no scheme theory:
+
+1. the deck action of the `N`-th roots of unity on `C<g>` fixing `C<g^N>`,
+2. irreducibility of `X^N - g^N` over `C<g^N>` (`g` transcendental over `C`, so `g^N` is not a
+   `p`-th power there for `p | N`),
+3. hence `hdeg`, hence `nonautonomousTail_eq_fixedField_erasedClosure_of_finrank` applies
+   unconditionally to the multiplicative protocol.
+
+## Half of `hdeg` is free — and the right mathlib lemma
+
+`hdeg` asks for an equality `finrank (prefix image) F = Nat.card (kernel image)`, but only one
+direction is geometric:
+
+- **`≥` is free.**  The prefix image sits inside the fixed field of the kernel (`hfix`, trivial), and
+  Artin's theorem computes the fixed field's degree exactly, so
+  `Nat.card Γ = finrank (fixedField Γ) F ≤ finrank (image) F`.
+- **`≤` is the only real input** — for a radical or isogeny prefix a direct degree estimate, e.g.
+  `KummerDegreeBound.finrank_adjoin_le_of_pow_mem` for the multiplicative protocol.
+
+So a lemma "`hdeg` from the upper bound alone" removes half the geometric content of the card's
+remaining hypothesis.  Two API facts pin it down:
+
+1. the usable Artin statement is `FixedPoints.finrank_eq_card` in `Mathlib/FieldTheory/Fixed.lean`,
+   phrased for `FixedPoints.subfield G F` with `G` finite acting faithfully.  The
+   `IntermediateField.finrank_fixedField_eq_card` version is **not** usable here: it assumes
+   `FiniteDimensional F E` for the whole extension, which fails for differential fields;
+2. what still needs locating is the monotonicity step `E ≤ E' ⟹ finrank E' F ≤ finrank E F` for
+   subfields of `F` with `finrank E F` finite -- either a named lemma or the tower law
+   `Module.finrank_mul_finrank` with the intermediate finiteness supplied.
+
+With those two the lemma is a five-line `le_antisymm`, and the multiplicative protocol then
+discharges `hdeg` outright through the corpus's radical degree bound.
+
+## `hdeg` is halved — PROVED
+
+`formal/GaloisForLFunctions/HTGeometry/DeckDegreeUpperBound.lean` (wired, axiom-clean, builds):
+
+    card_le_finrank_of_le_fixedField :
+      a subfield inside the fixed field of a finite automorphism group has degree at least the
+      order of the group
+    finrank_eq_card_of_le_fixedField_of_finrank_le :
+      hence the degree equals the order as soon as it does not exceed it
+    eq_fixedField_of_finrank_le :
+      and such a subfield of exactly the group's degree is the fixed field
+
+Artin's theorem is used as `FixedPoints.finrank_eq_card`, which does not assume the whole extension
+finite over the base -- the `IntermediateField.finrank_fixedField_eq_card` form does, and is unusable
+for differential fields.  Base enlargement lowers degree by
+`IntermediateField.finrank_le_of_le_left`.
+
+Consequence for this card: the `hfix`/`hdeg` package of
+`nonautonomousTail_eq_fixedField_erasedClosure_of_finrank` no longer needs a degree *equality* from
+geometry.  It needs only
+
+    finrank (prefix image) F ≤ Nat.card (prefix kernel image),
+
+which for the multiplicative protocol is `KummerDegreeBound.finrank_adjoin_le_of_pow_mem`.  The last
+geometric input on this card is therefore a one-sided degree estimate, and `eq_fixedField_of_finrank_le`
+turns it straight into the prefix-image identity that `hdeck` asserts.
+
+## The card's tail identity now runs on an inequality
+
+`formal/GaloisForLFunctions/HTGeometry/DeckDegreeUpperBoundBridge.lean` (wired, axiom-clean, builds):
+
+    nonautonomousTail_eq_fixedField_erasedClosure_of_finrank_le :
+      with the prefix kernels finite, the prefix images finite-dimensional and inside the kernels'
+      fixed fields, a degree estimate
+          finrank (prefix image) F ≤ Nat.card (prefix kernel image)
+      gives the phase-tail identity T_i = fixedField (erasedClosure)
+
+This replaces the geometric equality `hdeg` in
+`nonautonomousTail_eq_fixedField_erasedClosure_of_finrank` by the estimate in the direction a
+concrete protocol can actually prove; Artin supplies the other direction through
+`card_le_finrank_of_le_fixedField`.
+
+Status of the card's two isolated inputs:
+
+- `hdeck` -- now needs only the one-sided bound above, no Galois descent for group schemes;
+- `hring` -- unchanged, and now redundant for any protocol that supplies the bound.
+
+The remaining concrete step is the multiplicative protocol: the deck action of the `N`-th roots of
+unity on `C<g>`, then `KummerDegreeBound.finrank_adjoin_le_of_pow_mem` for the bound, then this
+bridge -- giving an unconditional witness that the deck hypothesis is inhabited.
+
+## The multiplicative protocol: derivation closure of the radical adjunction — PROVED
+
+`formal/GaloisForLFunctions/HTGeometry/RadicalDifferentialAdjoin.lean` (wired, axiom-clean, builds):
+
+    derivationClosed_adjoin_of_pow :
+      for g ≠ 0 and N > 0, the field obtained by adjoining g to the differential field C<g^N>
+      is already closed under the derivation
+
+The mechanism is the power rule: `(g^N)′ = N g^{N-1} g′` lies in `C<g^N>` because that field is
+derivation closed, and `N g^{N-1}` is invertible in the adjunction, so `g′` is a quotient of two of
+its elements.  Everything above `g` then follows from
+`derivationClosed_adjoin_range_of_deriv_mem`.
+
+Consequence: `C<g> ≤ C<g^N>(g)`, a single algebraic adjunction, radical of exponent `N`.  With
+`KummerDegreeBound.finrank_adjoin_le_of_pow_mem` this is the upper degree bound
+`[C<g> : C<g^N>] ≤ N` that `nonautonomousTail_eq_fixedField_erasedClosure_of_finrank_le` consumes.
+
+What remains for the witness: assemble the multiplicative protocol itself -- the prefix maps
+`(.)^{n_i}`, the deck action of the `N`-th roots of unity by scaling, and the identification of the
+prefix image with `C<g^N>` -- and feed the bound to the bridge.
+
+### Assembling the bound: two elaboration notes
+
+Adding the containment and the degree bound to `RadicalDifferentialAdjoin.lean` runs into
+elaboration cost rather than mathematics:
+
+- `differentialAdjoin_le` applied with the target
+  `(IntermediateField.adjoin ↥(differentialAdjoin C {g^N}) {g}).restrictScalars C` times out at
+  `whnf`.  The membership and derivation-closure sides are both available
+  (`derivationClosed_adjoin_of_pow` for the latter); what is expensive is unfolding
+  `restrictScalars` of an adjunction over a subfield inside the `DerivationClosed` predicate.  State
+  the closure directly for the restricted field, or introduce the intermediate object with `set`
+  before applying `differentialAdjoin_le`.
+- `IntermediateField.adjoin ↥(differentialAdjoin C {g^N}) {g} = (↥(differentialAdjoin C {g^N}))⟮g⟯`
+  is not closed by `rfl` in this configuration; use the `⟮ ⟯` notation from the start so that
+  `KummerDegreeBound.finrank_adjoin_le_of_pow_mem` applies without a bridging step.
+
+The mathematics is unchanged: `g^N` lies in the base, so the adjunction is radical of exponent `N`
+and its degree is at most `N`.  The module as committed contains the derivation-closure theorem,
+which is the part that needed a proof.
+
+## The radical degree bound — PROVED
+
+Added to `RadicalDifferentialAdjoin.lean` (wired, axiom-clean, builds):
+
+    finrank_adjoin_pow_le :
+      Module.finrank ↥(differentialAdjoin C {g^N}) ↥((↥(differentialAdjoin C {g^N}))⟮g⟯) ≤ N
+
+The `⟮ ⟯` notation is what makes `KummerDegreeBound.finrank_adjoin_le_of_pow_mem` apply without a
+bridging step, and `g^N` is in the base by `subset_differentialAdjoin`.
+
+Still open, and it is an elaboration problem rather than a mathematical one: the containment
+`C<g> ≤ (C<g^N>⟮g⟯).restrictScalars C`.  `differentialAdjoin_le` on that target times out at `whnf`
+even at a million heartbeats -- unfolding `restrictScalars` of a subfield adjunction inside
+`DerivationClosed` is what costs.  The way around it is to avoid `differentialAdjoin_le` entirely and
+run `IntermediateField.adjoin_induction` over the jets of `g` directly: each jet lies in
+`C<g^N>⟮g⟯` by induction from `derivationClosed_adjoin_of_pow`, and the adjunction is a field, so the
+induction closes.  That route never mentions `restrictScalars`.

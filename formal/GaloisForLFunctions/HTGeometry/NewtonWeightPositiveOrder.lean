@@ -16,15 +16,33 @@ top monomial `q` with `A_q ≠ 0`, a floor for that monomial and a ceiling for a
 `‖lead A_q‖/2·r^{deg A_q + (d − q₂)}·ν^{q₂} ≤ η·2^d·r^d + K·∑_{p ≠ q} ν^{p₂}·r^{deg A_p + (d − p₂)}`.
 
 This is `exists_radius_wimanFace`, and it carries no Newton hypothesis whatever.  The exponent
-`deg A_p − p₂` is the Newton weight of a monomial, and each reading of the face inequality is an
-arithmetic comparison of weights:
+`deg A_p − p₂` is the Newton weight of a monomial, and every further statement here is an arithmetic
+comparison of weights inside that one inequality.
 
-* if the pure monomial `A_d·f^d` has strictly maximal weight it cannot be cancelled unless the
-  central index is at least a power of the radius — `κ·r ≤ ν(r)^d`, which is positive order;
-* if a monomial with maximal derivative degree has strictly maximal weight, the same inequality read
-  from below caps the central index instead;
-* and when the capped monomial's coefficient degree is at least its derivative degree, the cap
-  contradicts divergence of the central index, so no transcendental entire solution exists.
+Applying the weight comparison once collapses the competitors into a single term
+(`exists_radius_weightCollapse`): with `E = deg A_q + (d − q₂)` and `P` any bound for the competitors'
+derivative degrees,
+
+`ν^{q₂}·r^{E+1} ≤ η·r^{d+1} + C·ν^P·r^E`  for every `η > 0`, with `C` independent of `η`.
+
+Both readings below are two-line consequences of that, and between them they cover every case of a
+strictly maximal weight.
+
+The first is `exists_centralIndex_pow_mul_radius_le`: a monomial `q` of strictly maximal weight with
+`q₂ ≤ deg A_q` pins the central index by
+
+`ν(r)^{q₂}·r ≤ C·ν(r)^P`,
+
+`P` any bound for the derivative degrees of the competitors.  Its two extremes are the classical
+alternatives:
+
+* at the pure monomial `A_d·f^d` this is `κ·r ≤ ν(r)^d` — positive order;
+* when no competitor has more derivative factors than `q`, the central index cancels and the radius
+  is bounded, which is impossible: there is no transcendental entire solution at all.
+
+The second, `centralIndex_pow_mul_pow_le_of_dominant_derivative_term`, covers the remaining case
+`deg A_q < q₂`, where the residue of the top symbol is no longer absorbed by the floor and the
+conclusion is a cap, `ν^{q₂}·r^{deg A_q + 1} ≤ 2·r^{q₂+1}`, instead.
 
 None of this needs a growth classification, an order, or convergence of `log ν/log r`.
 -/
@@ -58,9 +76,8 @@ theorem exists_radius_wimanFace
     (hdeg : ∀ p ∈ S, p.1 + p.2 ≤ d)
     (hrel : ∀ w : ℂ,
       ∑ p ∈ S, (A p).eval w * (coeffFun a w) ^ p.1 * (deriv (coeffFun a) w) ^ p.2 = 0)
-    {q : ℕ × ℕ} (hq : q ∈ S) (hqd : q.1 + q.2 = d) (hAq : A q ≠ 0)
-    {η : ℝ} (hη : 0 < η) :
-    ∃ K : ℝ, 0 < K ∧ ∀ R : ℝ, ∃ r : ℝ, R ≤ r ∧ 1 ≤ r ∧
+    {q : ℕ × ℕ} (hq : q ∈ S) (hqd : q.1 + q.2 = d) (hAq : A q ≠ 0) :
+    ∃ K : ℝ, 0 < K ∧ ∀ η : ℝ, 0 < η → ∀ R : ℝ, ∃ r : ℝ, R ≤ r ∧ 1 ≤ r ∧
       1 ≤ ((centralIndex a r : ℕ) : ℝ) ∧
       ‖(A q).leadingCoeff‖ / 2
           * (r ^ ((A q).natDegree + (d - q.2)) * ((centralIndex a r : ℕ) : ℝ) ^ q.2)
@@ -86,7 +103,7 @@ theorem exists_radius_wimanFace
     rw [hKcdef]
     linarith
   refine ⟨Kc * 2 ^ (2 * d), by positivity, ?_⟩
-  intro R
+  intro η hη R
   obtain ⟨Rν, hRν⟩ := tendsto_atTop_atTop.mp (tendsto_centralIndex_atTop ha htrans) 1
   set Rthr : ℝ := max (growthRadius P) (max Rν 1) with hRthrdef
   have hRthr1 : (1 : ℝ) ≤ Rthr := le_trans (le_max_right Rν 1) (le_max_right _ _)
@@ -259,6 +276,180 @@ theorem exists_radius_wimanFace
     linarith [hdom, hsumbound]
   exact hchain
 
+/-! ## Collapsing the competitors -/
+
+/-- **The weight comparison, collapsed.**  If the top-degree monomial `q` has strictly maximal Newton
+weight and `P` bounds the derivative degrees of its competitors, the face inequality collapses to a
+two-term comparison in which the free constant survives:
+
+`ν^{q₂}·r^{E+1} ≤ η·r^{d+1} + C·ν^P·r^E`,  `E = deg A_q + (d − q₂)`,
+
+for every `η > 0` at arbitrarily large radii, with `C` independent of `η`.  Each competitor has lost
+one power of the radius against `q` and can recover it only through the central index; the first term
+is the residue of the top symbol itself, and its coefficient is free. -/
+theorem exists_radius_weightCollapse
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    {S : Finset (ℕ × ℕ)} {A : ℕ × ℕ → Polynomial ℂ} {d : ℕ}
+    (hdeg : ∀ p ∈ S, p.1 + p.2 ≤ d)
+    (hrel : ∀ w : ℂ,
+      ∑ p ∈ S, (A p).eval w * (coeffFun a w) ^ p.1 * (deriv (coeffFun a) w) ^ p.2 = 0)
+    {q : ℕ × ℕ} (hq : q ∈ S) (hqd : q.1 + q.2 = d) (hAq : A q ≠ 0)
+    (hweight : ∀ p ∈ S, p.1 + p.2 = d → p ≠ q →
+      (A p).natDegree + (d - p.2) + 1 ≤ (A q).natDegree + (d - q.2))
+    {P : ℕ} (hP : ∀ p ∈ S, p.1 + p.2 = d → p ≠ q → p.2 ≤ P) :
+    ∃ C : ℝ, 0 < C ∧ ∀ η : ℝ, 0 < η → ∀ R : ℝ, ∃ r : ℝ, R ≤ r ∧ 1 ≤ r ∧
+      1 ≤ ((centralIndex a r : ℕ) : ℝ) ∧
+      ((centralIndex a r : ℕ) : ℝ) ^ q.2 * r ^ ((A q).natDegree + (d - q.2) + 1)
+        ≤ η * r ^ (d + 1)
+          + C * (((centralIndex a r : ℕ) : ℝ) ^ P * r ^ ((A q).natDegree + (d - q.2))) := by
+  classical
+  have hlc : 0 < ‖(A q).leadingCoeff‖ :=
+    norm_pos_iff.mpr (Polynomial.leadingCoeff_ne_zero.mpr hAq)
+  have hκ : 0 < ‖(A q).leadingCoeff‖ / 2 := by linarith
+  obtain ⟨K, hK, hface⟩ := exists_radius_wimanFace ha hn₀ htrans hdeg hrel hq hqd hAq
+  refine ⟨K * (S.card : ℝ) / (‖(A q).leadingCoeff‖ / 2) + 1, by positivity, ?_⟩
+  intro η hη R
+  obtain ⟨r, hR, hr1, hν1, hface'⟩ :=
+    hface (η * (‖(A q).leadingCoeff‖ / 2) / 2 ^ d) (by positivity) R
+  refine ⟨r, hR, hr1, hν1, ?_⟩
+  have hrpos : (0 : ℝ) < r := by linarith
+  set ν : ℝ := ((centralIndex a r : ℕ) : ℝ) with hνdef
+  set Stop : Finset (ℕ × ℕ) := S.filter (fun p => p.1 + p.2 = d) with hStopdef
+  set E : ℕ := (A q).natDegree + (d - q.2) with hEdef
+  -- each competitor loses a power of the radius
+  have hterm : ∀ p ∈ Stop.erase q,
+      (ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r ≤ ν ^ P * r ^ E := by
+    intro p hp
+    have hpne : p ≠ q := (Finset.mem_erase.mp hp).1
+    have hpStop : p ∈ Stop := (Finset.mem_erase.mp hp).2
+    have hpF : p ∈ S.filter (fun t : ℕ × ℕ => t.1 + t.2 = d) := by
+      rw [hStopdef] at hpStop
+      exact hpStop
+    have hpS : p ∈ S := (Finset.mem_filter.mp hpF).1
+    have hpd : p.1 + p.2 = d := (Finset.mem_filter.mp hpF).2
+    have h1 : ν ^ p.2 ≤ ν ^ P := pow_le_pow_right₀ hν1 (hP p hpS hpd hpne)
+    have h2 : r ^ ((A p).natDegree + (d - p.2) + 1) ≤ r ^ E :=
+      pow_le_pow_right₀ hr1 (by rw [hEdef]; exact hweight p hpS hpd hpne)
+    calc (ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r
+        = ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2) + 1) := by rw [pow_succ]; ring
+      _ ≤ ν ^ P * r ^ E := mul_le_mul h1 h2 (by positivity) (by positivity)
+  have hsum : (∑ p ∈ Stop.erase q, ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r
+      ≤ (S.card : ℝ) * (ν ^ P * r ^ E) := by
+    rw [Finset.sum_mul]
+    have hcardle : ((Stop.erase q).card : ℝ) ≤ (S.card : ℝ) := by
+      have h1 : (Stop.erase q).card ≤ S.card := by
+        refine Finset.card_le_card fun x hx => ?_
+        have hx1 : x ∈ Stop := (Finset.mem_erase.mp hx).2
+        rw [hStopdef] at hx1
+        exact (Finset.mem_filter.mp hx1).1
+      exact_mod_cast h1
+    have hle := Finset.sum_le_card_nsmul (Stop.erase q)
+      (fun p => (ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r) (ν ^ P * r ^ E) hterm
+    rw [nsmul_eq_mul] at hle
+    exact le_trans hle (mul_le_mul_of_nonneg_right hcardle (by positivity))
+  -- the normalised relation, multiplied by the radius
+  have hmain : ‖(A q).leadingCoeff‖ / 2 * (ν ^ q.2 * r ^ (E + 1))
+      ≤ η * (‖(A q).leadingCoeff‖ / 2) * r ^ (d + 1)
+        + K * ((S.card : ℝ) * (ν ^ P * r ^ E)) := by
+    have h1 := mul_le_mul_of_nonneg_right hface' hrpos.le
+    rw [add_mul] at h1
+    have h2 : (K * ∑ p ∈ Stop.erase q, ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r
+        ≤ K * ((S.card : ℝ) * (ν ^ P * r ^ E)) := by
+      calc (K * ∑ p ∈ Stop.erase q, ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r
+          = K * ((∑ p ∈ Stop.erase q, ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r) := by
+            ring
+        _ ≤ K * ((S.card : ℝ) * (ν ^ P * r ^ E)) := mul_le_mul_of_nonneg_left hsum hK.le
+    have h3 : ‖(A q).leadingCoeff‖ / 2 * (r ^ E * ν ^ q.2) * r
+        = ‖(A q).leadingCoeff‖ / 2 * (ν ^ q.2 * r ^ (E + 1)) := by rw [pow_succ]; ring
+    rw [hEdef] at h3
+    rw [h3] at h1
+    have h4 : η * (‖(A q).leadingCoeff‖ / 2) / 2 ^ d * 2 ^ d * r ^ d * r
+        = η * (‖(A q).leadingCoeff‖ / 2) * r ^ (d + 1) := by
+      rw [pow_succ]
+      field_simp
+    rw [h4] at h1
+    linarith
+  -- dividing by the leading constant
+  have hdiv : ν ^ q.2 * r ^ (E + 1)
+      ≤ η * r ^ (d + 1)
+        + K * (S.card : ℝ) / (‖(A q).leadingCoeff‖ / 2) * (ν ^ P * r ^ E) := by
+    have hmul := mul_le_mul_of_nonneg_left hmain
+      (le_of_lt (by positivity : (0 : ℝ) < (‖(A q).leadingCoeff‖ / 2)⁻¹))
+    have e1 : (‖(A q).leadingCoeff‖ / 2)⁻¹ * (‖(A q).leadingCoeff‖ / 2 * (ν ^ q.2 * r ^ (E + 1)))
+        = ν ^ q.2 * r ^ (E + 1) := by field_simp
+    have e2 : (‖(A q).leadingCoeff‖ / 2)⁻¹
+          * (η * (‖(A q).leadingCoeff‖ / 2) * r ^ (d + 1)
+            + K * ((S.card : ℝ) * (ν ^ P * r ^ E)))
+        = η * r ^ (d + 1)
+          + K * (S.card : ℝ) / (‖(A q).leadingCoeff‖ / 2) * (ν ^ P * r ^ E) := by
+      field_simp
+    rw [e1, e2] at hmul
+    exact hmul
+  have hCle : K * (S.card : ℝ) / (‖(A q).leadingCoeff‖ / 2) * (ν ^ P * r ^ E)
+      ≤ (K * (S.card : ℝ) / (‖(A q).leadingCoeff‖ / 2) + 1) * (ν ^ P * r ^ E) := by
+    have hnn : (0 : ℝ) ≤ ν ^ P * r ^ E := by positivity
+    nlinarith
+  rw [hEdef]
+  linarith [hdiv, hCle]
+
+/-! ## The general reading of a face -/
+
+/-- **A strictly maximal Newton weight pins the central index.**  Let `q` be a top-degree monomial
+with `A_q ≠ 0` whose Newton weight strictly exceeds that of every other top-degree monomial, and
+suppose its coefficient degree is at least its derivative degree.  If `P` bounds the derivative
+degrees of the competing monomials, then at arbitrarily large radii
+
+`ν(r)^{q₂}·r ≤ C·ν(r)^P`.
+
+This is the face inequality read at `q` with a small free constant: the constant term is absorbed by
+the floor because `q₂ ≤ deg A_q`, and each competitor loses exactly one power of the radius, which it
+can only recover through the central index.
+
+Both extreme cases follow.  With `P ≤ q₂` the central index cancels and the radius is bounded, which
+is impossible: no such solution exists.  With `q₂ = 0` it reads `r ≤ C·ν^P`, positive order. -/
+theorem exists_centralIndex_pow_mul_radius_le
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    {S : Finset (ℕ × ℕ)} {A : ℕ × ℕ → Polynomial ℂ} {d : ℕ}
+    (hdeg : ∀ p ∈ S, p.1 + p.2 ≤ d)
+    (hrel : ∀ w : ℂ,
+      ∑ p ∈ S, (A p).eval w * (coeffFun a w) ^ p.1 * (deriv (coeffFun a) w) ^ p.2 = 0)
+    {q : ℕ × ℕ} (hq : q ∈ S) (hqd : q.1 + q.2 = d) (hAq : A q ≠ 0)
+    (hdegq : q.2 ≤ (A q).natDegree)
+    (hweight : ∀ p ∈ S, p.1 + p.2 = d → p ≠ q →
+      (A p).natDegree + (d - p.2) + 1 ≤ (A q).natDegree + (d - q.2))
+    {P : ℕ} (hP : ∀ p ∈ S, p.1 + p.2 = d → p ≠ q → p.2 ≤ P) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, ∃ r : ℝ, R ≤ r ∧ 1 ≤ r ∧
+      1 ≤ ((centralIndex a r : ℕ) : ℝ) ∧
+      ((centralIndex a r : ℕ) : ℝ) ^ q.2 * r ≤ C * ((centralIndex a r : ℕ) : ℝ) ^ P := by
+  classical
+  have hq2d : q.2 ≤ d := by have := hdeg q hq; omega
+  obtain ⟨C, hC, hcol⟩ :=
+    exists_radius_weightCollapse ha hn₀ htrans hdeg hrel hq hqd hAq hweight hP
+  refine ⟨2 * C, by positivity, ?_⟩
+  intro R
+  obtain ⟨r, hR, hr1, hν1, hb⟩ := hcol (1 / 2) (by norm_num) R
+  refine ⟨r, hR, hr1, hν1, ?_⟩
+  have hrpos : (0 : ℝ) < r := by linarith
+  set ν : ℝ := ((centralIndex a r : ℕ) : ℝ) with hνdef
+  set E : ℕ := (A q).natDegree + (d - q.2) with hEdef
+  have hνq : (1 : ℝ) ≤ ν ^ q.2 := one_le_pow₀ hν1
+  -- the free term is absorbed by the floor
+  have habsorb : (1 : ℝ) / 2 * r ^ (d + 1) ≤ 1 / 2 * (ν ^ q.2 * r ^ (E + 1)) := by
+    have h1 : r ^ (d + 1) ≤ r ^ (E + 1) := pow_le_pow_right₀ hr1 (by rw [hEdef]; omega)
+    have h2 : r ^ (E + 1) ≤ ν ^ q.2 * r ^ (E + 1) := by
+      nlinarith [pow_pos hrpos (E + 1)]
+    linarith
+  have hhalf : (1 : ℝ) / 2 * (ν ^ q.2 * r ^ (E + 1)) ≤ C * (ν ^ P * r ^ E) := by
+    rw [hEdef] at hb ⊢
+    linarith [hb, habsorb]
+  have hpowpos : (0 : ℝ) < r ^ E := by positivity
+  refine le_of_mul_le_mul_right ?_ hpowpos
+  calc ν ^ q.2 * r * r ^ E = 2 * (1 / 2 * (ν ^ q.2 * r ^ (E + 1))) := by rw [pow_succ]; ring
+    _ ≤ 2 * (C * (ν ^ P * r ^ E)) := by linarith
+    _ = 2 * C * ν ^ P * r ^ E := by ring
+
 /-! ## The pure face -/
 
 /-- **A dominant pure term forces the central index to grow like a power of the radius.**  For a
@@ -283,122 +474,32 @@ theorem exists_centralIndex_pow_ge_mul_radius
     ∃ κ : ℝ, 0 < κ ∧ ∀ R : ℝ, ∃ r : ℝ, R ≤ r ∧
       κ * r ≤ ((centralIndex a r : ℕ) : ℝ) ^ d := by
   classical
-  set P0 : Polynomial ℂ := A ((d, 0) : ℕ × ℕ) with hP0def
-  set e0 : ℕ := P0.natDegree with he0def
-  have hlc : 0 < ‖P0.leadingCoeff‖ :=
-    norm_pos_iff.mpr (Polynomial.leadingCoeff_ne_zero.mpr hA0)
-  set κ0 : ℝ := ‖P0.leadingCoeff‖ / 2 with hκ0def
-  have hκ0 : 0 < κ0 := by rw [hκ0def]; linarith
-  obtain ⟨K, hK, hface⟩ :=
-    exists_radius_wimanFace ha hn₀ htrans hdeg hrel hmem (by simp) hA0
-      (η := κ0 / 2 ^ (d + 1)) (by positivity)
-  set C : ℝ := K * (S.card : ℝ) + 1 with hCdef
-  have hCpos : 0 < C := by
-    have : (0 : ℝ) ≤ K * (S.card : ℝ) := by positivity
-    rw [hCdef]; linarith
-  refine ⟨κ0 / (2 * C), by positivity, ?_⟩
+  obtain ⟨C, hC, hbound⟩ :=
+    exists_centralIndex_pow_mul_radius_le ha hn₀ htrans hdeg hrel hmem (by simp) hA0
+      (by simp)
+      (fun p hpS hpd hpne => by
+        have hp2 : p.2 ≠ 0 := fun h0 => hpne (Prod.ext (by omega) h0)
+        have hp2d : p.2 ≤ d := by omega
+        have := hNewton p hpS hpd hp2
+        simp only []
+        omega)
+      (P := d) (fun p hpS _ _ => by have := hdeg p hpS; omega)
+  refine ⟨1 / C, by positivity, ?_⟩
   intro R
-  obtain ⟨r, hR, hr1, hν1, hface'⟩ := hface R
+  obtain ⟨r, hR, hr1, _, hb⟩ := hbound R
   refine ⟨r, hR, ?_⟩
-  have hrpos : (0 : ℝ) < r := by linarith
-  set ν : ℝ := ((centralIndex a r : ℕ) : ℝ) with hνdef
-  set Stop : Finset (ℕ × ℕ) := S.filter (fun p => p.1 + p.2 = d) with hStopdef
-  -- every other top monomial is a power of the radius behind the pure one
-  have hterm : ∀ p ∈ Stop.erase ((d, 0) : ℕ × ℕ),
-      (ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r ≤ ν ^ d * r ^ (e0 + d) := by
-    intro p hp
-    have hpne : p ≠ ((d, 0) : ℕ × ℕ) := (Finset.mem_erase.mp hp).1
-    have hpStop : p ∈ Stop := (Finset.mem_erase.mp hp).2
-    have hpF : p ∈ S.filter (fun t : ℕ × ℕ => t.1 + t.2 = d) := by
-      rw [hStopdef] at hpStop
-      exact hpStop
-    have hpS : p ∈ S := (Finset.mem_filter.mp hpF).1
-    have hpd : p.1 + p.2 = d := (Finset.mem_filter.mp hpF).2
-    have hp2 : p.2 ≠ 0 := by
-      intro h0
-      exact hpne (Prod.ext (by omega) h0)
-    have hp2d : p.2 ≤ d := by omega
-    have hnewt : (A p).natDegree + 1 ≤ e0 + p.2 := by
-      rw [he0def, hP0def]
-      exact hNewton p hpS hpd hp2
-    calc (ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r
-        = ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2) + 1) := by rw [pow_succ]; ring
-      _ ≤ ν ^ d * r ^ (e0 + d) := by
-          gcongr
-          · exact hν1
-          · omega
-          · exact hr1
-          · omega
-  have hsum : (∑ p ∈ Stop.erase ((d, 0) : ℕ × ℕ),
-      ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r
-      ≤ (S.card : ℝ) * (ν ^ d * r ^ (e0 + d)) := by
-    rw [Finset.sum_mul]
-    have hcardle : ((Stop.erase ((d, 0) : ℕ × ℕ)).card : ℝ) ≤ (S.card : ℝ) := by
-      have h1 : (Stop.erase ((d, 0) : ℕ × ℕ)).card ≤ S.card := by
-        refine Finset.card_le_card fun x hx => ?_
-        have hx1 : x ∈ Stop := (Finset.mem_erase.mp hx).2
-        rw [hStopdef] at hx1
-        exact (Finset.mem_filter.mp hx1).1
-      exact_mod_cast h1
-    have hle := Finset.sum_le_card_nsmul (Stop.erase ((d, 0) : ℕ × ℕ))
-      (fun p => (ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r)
-      (ν ^ d * r ^ (e0 + d)) hterm
-    rw [nsmul_eq_mul] at hle
-    exact le_trans hle (mul_le_mul_of_nonneg_right hcardle (by positivity))
-  -- the free constant is absorbed by the floor
-  have hconst : κ0 / 2 ^ (d + 1) * 2 ^ d * r ^ d ≤ κ0 / 2 * r ^ (e0 + d) := by
-    have hpowle : r ^ d ≤ r ^ (e0 + d) := pow_le_pow_right₀ hr1 (by omega)
-    have hcoef : κ0 / 2 ^ (d + 1) * 2 ^ d = κ0 / 2 := by
-      rw [pow_succ]
-      field_simp
-      ring
-    rw [hcoef]
-    exact mul_le_mul_of_nonneg_left hpowle (by positivity)
-  have hpure : κ0 * (r ^ (e0 + (d - 0)) * ν ^ (0 : ℕ)) = κ0 * r ^ (e0 + d) := by
-    simp
-  rw [hpure] at hface'
-  -- the resulting comparison, cleared of the common power
-  have hstep : κ0 / 2 * r ^ (e0 + d) * r ≤ K * ((S.card : ℝ) * (ν ^ d * r ^ (e0 + d))) := by
-    have h1 : κ0 * r ^ (e0 + d) * r
-        ≤ (κ0 / 2 * r ^ (e0 + d)) * r
-          + (K * ∑ p ∈ Stop.erase ((d, 0) : ℕ × ℕ),
-              ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r := by
-      have := mul_le_mul_of_nonneg_right hface' hrpos.le
-      nlinarith [mul_le_mul_of_nonneg_right hconst hrpos.le, this]
-    have h2 : (K * ∑ p ∈ Stop.erase ((d, 0) : ℕ × ℕ),
-        ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r
-        ≤ K * ((S.card : ℝ) * (ν ^ d * r ^ (e0 + d))) := by
-      have := mul_le_mul_of_nonneg_left hsum hK.le
-      calc (K * ∑ p ∈ Stop.erase ((d, 0) : ℕ × ℕ),
-            ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r
-          = K * ((∑ p ∈ Stop.erase ((d, 0) : ℕ × ℕ),
-              ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r) := by ring
-        _ ≤ K * ((S.card : ℝ) * (ν ^ d * r ^ (e0 + d))) := this
-    nlinarith [h1, h2]
-  have hpowpos : (0 : ℝ) < r ^ (e0 + d) := by positivity
-  have hdiv : κ0 / 2 * r ≤ K * (S.card : ℝ) * ν ^ d := by
-    refine le_of_mul_le_mul_right ?_ hpowpos
-    calc κ0 / 2 * r * r ^ (e0 + d) = κ0 / 2 * r ^ (e0 + d) * r := by ring
-      _ ≤ K * ((S.card : ℝ) * (ν ^ d * r ^ (e0 + d))) := hstep
-      _ = K * (S.card : ℝ) * ν ^ d * r ^ (e0 + d) := by ring
-  have hCν : K * (S.card : ℝ) * ν ^ d ≤ C * ν ^ d := by
-    have hle : K * (S.card : ℝ) ≤ C := by rw [hCdef]; linarith
-    exact mul_le_mul_of_nonneg_right hle (by positivity)
-  rw [div_mul_eq_mul_div, div_le_iff₀ (by positivity : (0 : ℝ) < 2 * C)]
-  calc κ0 * r = 2 * (κ0 / 2 * r) := by ring
-    _ ≤ 2 * (C * ν ^ d) := by linarith
-    _ = ν ^ d * (2 * C) := by ring
+  rw [show ((d, 0) : ℕ × ℕ).2 = 0 from rfl, pow_zero, one_mul] at hb
+  rw [div_mul_eq_mul_div, div_le_iff₀ hC]
+  linarith
 
 /-! ## The derivative face -/
 
-/-- **A dominant term of maximal derivative degree caps the central index.**  If the top-degree part
-has a monomial `q` carrying at least as many derivative factors as every other top monomial and of
-strictly maximal Newton weight, then that monomial cannot be cancelled: at arbitrarily large radii
+/-- **A dominant term whose coefficient degree is below its derivative degree caps the central
+index.**  This is the reading of the face inequality left over when `deg A_q < q₂`, so that the
+residue of the top symbol is no longer absorbed by the floor.  With no competitor carrying more
+derivative factors, the whole deficit falls on the radius:
 
-`ν(r)^{q₂}·r^{deg A_q + 1} ≤ C·r^{q₂ + 1}`.
-
-This is the face inequality read at `q`.  Having no fewer derivative factors than its competitors,
-`q` cannot be overtaken through the central index, so the whole deficit falls on the radius. -/
+`ν(r)^{q₂}·r^{deg A_q + 1} ≤ 2·r^{q₂ + 1}`. -/
 theorem centralIndex_pow_mul_pow_le_of_dominant_derivative_term
     (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
@@ -414,28 +515,135 @@ theorem centralIndex_pow_mul_pow_le_of_dominant_derivative_term
       ((centralIndex a r : ℕ) : ℝ) ^ q.2 * r ^ ((A q).natDegree + 1)
         ≤ Cb * r ^ (q.2 + 1) := by
   classical
-  set e : ℕ := (A q).natDegree with hedef
-  have hlc : 0 < ‖(A q).leadingCoeff‖ :=
-    norm_pos_iff.mpr (Polynomial.leadingCoeff_ne_zero.mpr hAq)
-  set κ : ℝ := ‖(A q).leadingCoeff‖ / 2 with hκdef
-  have hκ : 0 < κ := by rw [hκdef]; linarith
   have hq2d : q.2 ≤ d := by have := hdeg q hq; omega
-  obtain ⟨K, hK, hface⟩ :=
-    exists_radius_wimanFace ha hn₀ htrans hdeg hrel hq hqd hAq (η := 1) one_pos
-  refine ⟨2 ^ (d + 1) / κ, by positivity, ?_⟩
+  obtain ⟨C, hC, hcol⟩ :=
+    exists_radius_weightCollapse ha hn₀ htrans hdeg hrel hq hqd hAq
+      (fun p hpS hpd hpne => by
+        have h1 := hNewton p hpS hpd hpne
+        have h2 : p.2 ≤ q.2 := hmaxT p hpS hpd
+        omega)
+      (P := q.2) (fun p hpS hpd _ => hmaxT p hpS hpd)
+  refine ⟨2, by norm_num, ?_⟩
   intro R
-  obtain ⟨r, hR, hr1, hν1, hface'⟩ :=
-    hface (max R (2 * K * (S.card : ℝ) / κ))
+  obtain ⟨r, hR, hr1, hν1, hb⟩ := hcol 1 one_pos (max R (2 * C))
   have hRr : R ≤ r := le_trans (le_max_left _ _) hR
-  have hthr : 2 * K * (S.card : ℝ) / κ ≤ r := le_trans (le_max_right _ _) hR
+  have hthr : 2 * C ≤ r := le_trans (le_max_right _ _) hR
   refine ⟨r, hRr, ?_⟩
   have hrpos : (0 : ℝ) < r := by linarith
   set ν : ℝ := ((centralIndex a r : ℕ) : ℝ) with hνdef
+  set E : ℕ := (A q).natDegree + (d - q.2) with hEdef
+  -- the threshold absorbs the competitors into half the floor
+  have habsorb : C * (ν ^ q.2 * r ^ E) ≤ 1 / 2 * (ν ^ q.2 * r ^ (E + 1)) := by
+    have hnn : (0 : ℝ) ≤ ν ^ q.2 * r ^ E := by positivity
+    have hstep : C * (ν ^ q.2 * r ^ E) ≤ 1 / 2 * r * (ν ^ q.2 * r ^ E) := by
+      nlinarith [hnn, hthr]
+    calc C * (ν ^ q.2 * r ^ E) ≤ 1 / 2 * r * (ν ^ q.2 * r ^ E) := hstep
+      _ = 1 / 2 * (ν ^ q.2 * r ^ (E + 1)) := by rw [pow_succ]; ring
+  have hcap : ν ^ q.2 * r ^ (E + 1) ≤ 2 * r ^ (d + 1) := by linarith [hb, habsorb]
+  -- dividing out the common power
+  have hEsplit : ν ^ q.2 * r ^ (E + 1)
+      = (ν ^ q.2 * r ^ ((A q).natDegree + 1)) * r ^ (d - q.2) := by
+    have hp : r ^ (E + 1) = r ^ ((A q).natDegree + 1) * r ^ (d - q.2) := by
+      rw [← pow_add, hEdef]
+      congr 1
+      omega
+    rw [hp]
+    ring
+  have hdsplit : (2 : ℝ) * r ^ (d + 1) = (2 * r ^ (q.2 + 1)) * r ^ (d - q.2) := by
+    have hp : r ^ (d + 1) = r ^ (q.2 + 1) * r ^ (d - q.2) := by
+      rw [← pow_add]
+      congr 1
+      omega
+    rw [hp]
+    ring
+  rw [hEsplit, hdsplit] at hcap
+  exact le_of_mul_le_mul_right hcap (by positivity)
+
+/-- **No transcendental entire solution when the dominant monomial also has the larger coefficient
+degree.**  If a top-degree monomial has strictly maximal Newton weight, no fewer derivative factors
+than any competitor, and coefficient degree at least its derivative degree, then the pinning
+inequality reads `ν^{q₂}·r ≤ C·ν^{q₂}`: the central index cancels, the radius is bounded, and that is
+impossible. -/
+theorem not_transcendental_of_dominant_derivative_term
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    {S : Finset (ℕ × ℕ)} {A : ℕ × ℕ → Polynomial ℂ} {d : ℕ}
+    (hdeg : ∀ p ∈ S, p.1 + p.2 ≤ d)
+    (hrel : ∀ w : ℂ,
+      ∑ p ∈ S, (A p).eval w * (coeffFun a w) ^ p.1 * (deriv (coeffFun a) w) ^ p.2 = 0)
+    {q : ℕ × ℕ} (hq : q ∈ S) (hqd : q.1 + q.2 = d) (hAq : A q ≠ 0)
+    (hmaxT : ∀ p ∈ S, p.1 + p.2 = d → p.2 ≤ q.2)
+    (hNewton : ∀ p ∈ S, p.1 + p.2 = d → p ≠ q →
+      (A p).natDegree + (q.2 - p.2) + 1 ≤ (A q).natDegree)
+    (hdegq : q.2 ≤ (A q).natDegree) : False := by
+  classical
+  have hq2d : q.2 ≤ d := by have := hdeg q hq; omega
+  obtain ⟨C, hC, hbound⟩ :=
+    exists_centralIndex_pow_mul_radius_le ha hn₀ htrans hdeg hrel hq hqd hAq hdegq
+      (fun p hpS hpd hpne => by
+        have h1 := hNewton p hpS hpd hpne
+        have h2 : p.2 ≤ q.2 := hmaxT p hpS hpd
+        omega)
+      (P := q.2) (fun p hpS hpd _ => hmaxT p hpS hpd)
+  obtain ⟨r, hR, hr1, hν1, hb⟩ := hbound (C + 1)
+  have hνpow : (1 : ℝ) ≤ ((centralIndex a r : ℕ) : ℝ) ^ q.2 := one_le_pow₀ hν1
+  have hrle : r ≤ C := by
+    refine le_of_mul_le_mul_left ?_ (lt_of_lt_of_le zero_lt_one hνpow)
+    calc ((centralIndex a r : ℕ) : ℝ) ^ q.2 * r
+        ≤ C * ((centralIndex a r : ℕ) : ℝ) ^ q.2 := hb
+      _ = ((centralIndex a r : ℕ) : ℝ) ^ q.2 * C := by ring
+  linarith
+
+/-! ## Ties at the maximal weight
+
+A maximal weight need not be attained once.  Among the monomials attaining it, the one with the most
+derivative factors dominates the others as soon as the central index is large, because the tied terms
+differ exactly by powers of `ν`.  In the top-degree set a monomial is determined by its derivative
+degree, so that dominant monomial is always unique — the hypothesis below is not a restriction but a
+choice of `q`.
+
+This is the reading that no longer needs the weight to be *strictly* maximal, and it is the one that
+yields positive order for the general first-order equation. -/
+
+/-- **The collapse at a tie.**  With `q` of maximal Newton weight and of strictly largest derivative
+degree among the monomials attaining that weight, the competitors split into two groups: the tied ones
+lose a power of the central index, the rest lose a power of the radius. -/
+theorem exists_radius_tieCollapse
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    {S : Finset (ℕ × ℕ)} {A : ℕ × ℕ → Polynomial ℂ} {d : ℕ}
+    (hdeg : ∀ p ∈ S, p.1 + p.2 ≤ d)
+    (hrel : ∀ w : ℂ,
+      ∑ p ∈ S, (A p).eval w * (coeffFun a w) ^ p.1 * (deriv (coeffFun a) w) ^ p.2 = 0)
+    {q : ℕ × ℕ} (hq : q ∈ S) (hqd : q.1 + q.2 = d) (hAq : A q ≠ 0)
+    (htie : ∀ p ∈ S, p.1 + p.2 = d → p ≠ q →
+      (A p).natDegree + (d - p.2) + 1 ≤ (A q).natDegree + (d - q.2) ∨
+        ((A p).natDegree + (d - p.2) = (A q).natDegree + (d - q.2) ∧ p.2 + 1 ≤ q.2))
+    {P : ℕ} (hP : ∀ p ∈ S, p.1 + p.2 = d → p ≠ q → p.2 ≤ P) :
+    ∃ C : ℝ, 0 < C ∧ ∀ η : ℝ, 0 < η → ∀ R : ℝ, ∃ r : ℝ, R ≤ r ∧ 1 ≤ r ∧
+      1 ≤ ((centralIndex a r : ℕ) : ℝ) ∧
+      ((centralIndex a r : ℕ) : ℝ) ^ q.2 * r ^ ((A q).natDegree + (d - q.2) + 1)
+        ≤ η * r ^ (d + 1)
+          + C * (((centralIndex a r : ℕ) : ℝ) ^ (q.2 - 1)
+                  * r ^ ((A q).natDegree + (d - q.2) + 1)
+                + ((centralIndex a r : ℕ) : ℝ) ^ P * r ^ ((A q).natDegree + (d - q.2))) := by
+  classical
+  have hlc : 0 < ‖(A q).leadingCoeff‖ :=
+    norm_pos_iff.mpr (Polynomial.leadingCoeff_ne_zero.mpr hAq)
+  have hκ : 0 < ‖(A q).leadingCoeff‖ / 2 := by linarith
+  obtain ⟨K, hK, hface⟩ := exists_radius_wimanFace ha hn₀ htrans hdeg hrel hq hqd hAq
+  refine ⟨K * (S.card : ℝ) / (‖(A q).leadingCoeff‖ / 2) + 1, by positivity, ?_⟩
+  intro η hη R
+  obtain ⟨r, hR, hr1, hν1, hface'⟩ :=
+    hface (η * (‖(A q).leadingCoeff‖ / 2) / 2 ^ d) (by positivity) R
+  refine ⟨r, hR, hr1, hν1, ?_⟩
+  have hrpos : (0 : ℝ) < r := by linarith
+  set ν : ℝ := ((centralIndex a r : ℕ) : ℝ) with hνdef
   set Stop : Finset (ℕ × ℕ) := S.filter (fun p => p.1 + p.2 = d) with hStopdef
-  set E : ℕ := e + (d - q.2) with hEdef
-  -- every other top monomial is a power of the radius behind `q`
+  set E : ℕ := (A q).natDegree + (d - q.2) with hEdef
+  set B : ℝ := ν ^ (q.2 - 1) * r ^ (E + 1) + ν ^ P * r ^ E with hBdef
   have hterm : ∀ p ∈ Stop.erase q,
-      (ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r ≤ ν ^ q.2 * r ^ E := by
+      (ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r ≤ B := by
     intro p hp
     have hpne : p ≠ q := (Finset.mem_erase.mp hp).1
     have hpStop : p ∈ Stop := (Finset.mem_erase.mp hp).2
@@ -444,20 +652,25 @@ theorem centralIndex_pow_mul_pow_le_of_dominant_derivative_term
       exact hpStop
     have hpS : p ∈ S := (Finset.mem_filter.mp hpF).1
     have hpd : p.1 + p.2 = d := (Finset.mem_filter.mp hpF).2
-    have hp2q : p.2 ≤ q.2 := hmaxT p hpS hpd
-    have hnewt : (A p).natDegree + (q.2 - p.2) + 1 ≤ e := by
-      rw [hedef]
-      exact hNewton p hpS hpd hpne
-    calc (ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r
+    have hrew : (ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r
         = ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2) + 1) := by rw [pow_succ]; ring
-      _ ≤ ν ^ q.2 * r ^ E := by
-          rw [hEdef]
-          gcongr
-          · exact hν1
-          · exact hr1
-          · omega
+    have hnn1 : (0 : ℝ) ≤ ν ^ (q.2 - 1) * r ^ (E + 1) := by positivity
+    have hnn2 : (0 : ℝ) ≤ ν ^ P * r ^ E := by positivity
+    rcases htie p hpS hpd hpne with hstrict | ⟨heq, hlt⟩
+    · have h1 : ν ^ p.2 ≤ ν ^ P := pow_le_pow_right₀ hν1 (hP p hpS hpd hpne)
+      have h2 : r ^ ((A p).natDegree + (d - p.2) + 1) ≤ r ^ E :=
+        pow_le_pow_right₀ hr1 (by rw [hEdef]; exact hstrict)
+      rw [hrew, hBdef]
+      have := mul_le_mul h1 h2 (by positivity) (by positivity)
+      linarith
+    · have h1 : ν ^ p.2 ≤ ν ^ (q.2 - 1) := pow_le_pow_right₀ hν1 (by omega)
+      have h2 : r ^ ((A p).natDegree + (d - p.2) + 1) ≤ r ^ (E + 1) :=
+        pow_le_pow_right₀ hr1 (by rw [hEdef]; omega)
+      rw [hrew, hBdef]
+      have := mul_le_mul h1 h2 (by positivity) (by positivity)
+      linarith
   have hsum : (∑ p ∈ Stop.erase q, ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r
-      ≤ (S.card : ℝ) * (ν ^ q.2 * r ^ E) := by
+      ≤ (S.card : ℝ) * B := by
     rw [Finset.sum_mul]
     have hcardle : ((Stop.erase q).card : ℝ) ≤ (S.card : ℝ) := by
       have h1 : (Stop.erase q).card ≤ S.card := by
@@ -467,96 +680,381 @@ theorem centralIndex_pow_mul_pow_le_of_dominant_derivative_term
         exact (Finset.mem_filter.mp hx1).1
       exact_mod_cast h1
     have hle := Finset.sum_le_card_nsmul (Stop.erase q)
-      (fun p => (ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r)
-      (ν ^ q.2 * r ^ E) hterm
+      (fun p => (ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r) B hterm
     rw [nsmul_eq_mul] at hle
-    exact le_trans hle (mul_le_mul_of_nonneg_right hcardle (by positivity))
-  -- the threshold absorbs the competitors into half the floor
-  have habsorb : K * ((S.card : ℝ) * (ν ^ q.2 * r ^ E)) ≤ κ / 2 * (r ^ E * ν ^ q.2 * r) := by
-    have hcst : 2 * K * (S.card : ℝ) ≤ κ * r := by
-      rw [div_le_iff₀ hκ] at hthr
-      linarith
-    have hnn : (0 : ℝ) ≤ ν ^ q.2 * r ^ E := by positivity
-    nlinarith [mul_le_mul_of_nonneg_right hcst hnn]
-  have hmain : κ * (r ^ E * ν ^ q.2) * r
-      ≤ 1 * 2 ^ d * r ^ d * r + κ / 2 * (r ^ E * ν ^ q.2 * r) := by
+    have hBnn : (0 : ℝ) ≤ B := by rw [hBdef]; positivity
+    exact le_trans hle (mul_le_mul_of_nonneg_right hcardle hBnn)
+  have hmain : ‖(A q).leadingCoeff‖ / 2 * (ν ^ q.2 * r ^ (E + 1))
+      ≤ η * (‖(A q).leadingCoeff‖ / 2) * r ^ (d + 1) + K * ((S.card : ℝ) * B) := by
     have h1 := mul_le_mul_of_nonneg_right hface' hrpos.le
+    rw [add_mul] at h1
     have h2 : (K * ∑ p ∈ Stop.erase q, ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r
-        ≤ K * ((S.card : ℝ) * (ν ^ q.2 * r ^ E)) := by
+        ≤ K * ((S.card : ℝ) * B) := by
       calc (K * ∑ p ∈ Stop.erase q, ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r
           = K * ((∑ p ∈ Stop.erase q, ν ^ p.2 * r ^ ((A p).natDegree + (d - p.2))) * r) := by
             ring
-        _ ≤ K * ((S.card : ℝ) * (ν ^ q.2 * r ^ E)) := mul_le_mul_of_nonneg_left hsum hK.le
-    rw [add_mul] at h1
-    linarith [h1, h2, habsorb]
-  have hhalf : κ / 2 * (r ^ E * ν ^ q.2 * r) ≤ 2 ^ d * r ^ (d + 1) := by
-    have hrw : (1 : ℝ) * 2 ^ d * r ^ d * r = 2 ^ d * r ^ (d + 1) := by rw [pow_succ]; ring
-    rw [hrw] at hmain
-    have hz : κ * (r ^ E * ν ^ q.2) * r = κ * (r ^ E * ν ^ q.2 * r) := by ring
-    rw [hz] at hmain
+        _ ≤ K * ((S.card : ℝ) * B) := mul_le_mul_of_nonneg_left hsum hK.le
+    have h3 : ‖(A q).leadingCoeff‖ / 2 * (r ^ E * ν ^ q.2) * r
+        = ‖(A q).leadingCoeff‖ / 2 * (ν ^ q.2 * r ^ (E + 1)) := by rw [pow_succ]; ring
+    rw [hEdef] at h3
+    rw [h3] at h1
+    have h4 : η * (‖(A q).leadingCoeff‖ / 2) / 2 ^ d * 2 ^ d * r ^ d * r
+        = η * (‖(A q).leadingCoeff‖ / 2) * r ^ (d + 1) := by
+      rw [pow_succ]
+      field_simp
+    rw [h4] at h1
     linarith
-  -- reading off the stated inequality
-  have hEr : r ^ E * ν ^ q.2 * r = (ν ^ q.2 * r ^ (e + 1)) * r ^ (d - q.2) := by
-    rw [hEdef, pow_add, pow_add]
-    ring
-  have hdr : (2 : ℝ) ^ d * r ^ (d + 1) = (2 ^ (d + 1) / κ * r ^ (q.2 + 1)) * (κ / 2 * r ^ (d - q.2)) := by
-    rw [show d + 1 = (q.2 + 1) + (d - q.2) from by omega, pow_add]
-    field_simp
-    ring
-  rw [hEr, hdr] at hhalf
-  have hpowpos : (0 : ℝ) < r ^ (d - q.2) := by positivity
-  refine le_of_mul_le_mul_right ?_ hpowpos
-  calc ν ^ q.2 * r ^ (e + 1) * r ^ (d - q.2)
-      = 2 / κ * (κ / 2 * ((ν ^ q.2 * r ^ (e + 1)) * r ^ (d - q.2))) := by
-        field_simp
-    _ ≤ 2 / κ * ((2 ^ (d + 1) / κ * r ^ (q.2 + 1)) * (κ / 2 * r ^ (d - q.2))) := by
-        have h2κ : (0 : ℝ) < 2 / κ := by positivity
-        exact mul_le_mul_of_nonneg_left hhalf h2κ.le
-    _ = 2 ^ (d + 1) / κ * r ^ (q.2 + 1) * r ^ (d - q.2) := by
-        field_simp
-        ring
+  have hdiv : ν ^ q.2 * r ^ (E + 1)
+      ≤ η * r ^ (d + 1) + K * (S.card : ℝ) / (‖(A q).leadingCoeff‖ / 2) * B := by
+    have hmul := mul_le_mul_of_nonneg_left hmain
+      (le_of_lt (by positivity : (0 : ℝ) < (‖(A q).leadingCoeff‖ / 2)⁻¹))
+    have e1 : (‖(A q).leadingCoeff‖ / 2)⁻¹ * (‖(A q).leadingCoeff‖ / 2 * (ν ^ q.2 * r ^ (E + 1)))
+        = ν ^ q.2 * r ^ (E + 1) := by field_simp
+    have e2 : (‖(A q).leadingCoeff‖ / 2)⁻¹
+          * (η * (‖(A q).leadingCoeff‖ / 2) * r ^ (d + 1) + K * ((S.card : ℝ) * B))
+        = η * r ^ (d + 1) + K * (S.card : ℝ) / (‖(A q).leadingCoeff‖ / 2) * B := by
+      field_simp
+    rw [e1, e2] at hmul
+    exact hmul
+  have hBnn : (0 : ℝ) ≤ B := by rw [hBdef]; positivity
+  have hCle : K * (S.card : ℝ) / (‖(A q).leadingCoeff‖ / 2) * B
+      ≤ (K * (S.card : ℝ) / (‖(A q).leadingCoeff‖ / 2) + 1) * B := by nlinarith
+  linarith [hdiv, hCle]
 
-/-- **No transcendental entire solution when the dominant derivative monomial also has the larger
-coefficient degree.**  Under the hypotheses of the cap, if the dominant monomial's coefficient degree
-is at least its number of derivative factors, the cap bounds the central index, contradicting its
-divergence. -/
-theorem not_transcendental_of_dominant_derivative_term
+/-- **Positive order at a tie.**  If the monomial `q` of maximal Newton weight and largest derivative
+degree among the tied ones satisfies `1 ≤ q₂ ≤ deg A_q`, and `P` bounds the derivative degrees of the
+competitors, then at arbitrarily large radii
+
+`r ≤ C·ν(r)^{P − q₂}`.
+
+The tied competitors cost one power of the central index and the others one power of the radius, so
+dividing the collapsed inequality by `ν^{q₂−1}r^E` leaves `ν·r ≤ C(r + ν^{P+1−q₂})`; divergence of the
+central index kills the first term, and what remains is the stated bound.
+
+For `P ≤ q₂` it reads `r ≤ C` and there is no such solution; for `q₂ < P` it is positive order with
+exponent `1/(P − q₂)`. -/
+theorem exists_radius_le_centralIndex_pow
     (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
     (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
     {S : Finset (ℕ × ℕ)} {A : ℕ × ℕ → Polynomial ℂ} {d : ℕ}
     (hdeg : ∀ p ∈ S, p.1 + p.2 ≤ d)
     (hrel : ∀ w : ℂ,
       ∑ p ∈ S, (A p).eval w * (coeffFun a w) ^ p.1 * (deriv (coeffFun a) w) ^ p.2 = 0)
-    {q : ℕ × ℕ} (hq : q ∈ S) (hqd : q.1 + q.2 = d) (hAq : A q ≠ 0) (hq1 : 1 ≤ q.2)
-    (hmaxT : ∀ p ∈ S, p.1 + p.2 = d → p.2 ≤ q.2)
-    (hNewton : ∀ p ∈ S, p.1 + p.2 = d → p ≠ q →
-      (A p).natDegree + (q.2 - p.2) + 1 ≤ (A q).natDegree)
-    (hdegq : q.2 ≤ (A q).natDegree) : False := by
+    {q : ℕ × ℕ} (hq : q ∈ S) (hqd : q.1 + q.2 = d) (hAq : A q ≠ 0)
+    (hq1 : 1 ≤ q.2) (hdegq : q.2 ≤ (A q).natDegree)
+    (htie : ∀ p ∈ S, p.1 + p.2 = d → p ≠ q →
+      (A p).natDegree + (d - p.2) + 1 ≤ (A q).natDegree + (d - q.2) ∨
+        ((A p).natDegree + (d - p.2) = (A q).natDegree + (d - q.2) ∧ p.2 + 1 ≤ q.2))
+    {P : ℕ} (hP : ∀ p ∈ S, p.1 + p.2 = d → p ≠ q → p.2 ≤ P) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, ∃ r : ℝ, R ≤ r ∧ 1 ≤ ((centralIndex a r : ℕ) : ℝ) ∧
+      r ≤ C * ((centralIndex a r : ℕ) : ℝ) ^ (P - q.2) := by
   classical
-  obtain ⟨Cb, hCb, hbound⟩ :=
-    centralIndex_pow_mul_pow_le_of_dominant_derivative_term ha hn₀ htrans hdeg hrel hq hqd hAq
-      hmaxT hNewton
-  obtain ⟨M, hM⟩ : ∃ M : ℕ, Cb ≤ (M : ℝ) := ⟨⌈Cb⌉₊, Nat.le_ceil _⟩
+  have hq2d : q.2 ≤ d := by have := hdeg q hq; omega
+  obtain ⟨C, hC, hcol⟩ :=
+    exists_radius_tieCollapse ha hn₀ htrans hdeg hrel hq hqd hAq htie hP
+  refine ⟨4 * C, by positivity, ?_⟩
+  intro R
+  -- past this radius the central index exceeds every competitor's contribution
+  obtain ⟨M, hM⟩ : ∃ M : ℕ, 4 * C ≤ (M : ℝ) := ⟨⌈4 * C⌉₊, Nat.le_ceil _⟩
   obtain ⟨R₀, hR₀⟩ := tendsto_atTop_atTop.mp (tendsto_centralIndex_atTop ha htrans) (M + 1)
-  obtain ⟨r, hr, hcap⟩ := hbound (max R₀ 1)
-  have hr1 : (1 : ℝ) ≤ r := le_trans (le_max_right R₀ 1) hr
+  obtain ⟨r, hR, hr1, hν1, hb⟩ := hcol (1 / 2) (by norm_num) (max R R₀)
+  have hRr : R ≤ r := le_trans (le_max_left _ _) hR
+  refine ⟨r, hRr, hν1, ?_⟩
   have hrpos : (0 : ℝ) < r := by linarith
   set ν : ℝ := ((centralIndex a r : ℕ) : ℝ) with hνdef
-  have hνbig : ((M : ℝ) + 1) ≤ ν := by
-    have h1 : M + 1 ≤ centralIndex a r := hR₀ r (le_trans (le_max_left R₀ 1) hr)
-    rw [hνdef]
-    exact_mod_cast h1
-  have hMnn : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg _
-  have hν1 : (1 : ℝ) ≤ ν := by linarith
-  have hpowle : r ^ (q.2 + 1) ≤ r ^ ((A q).natDegree + 1) :=
-    pow_le_pow_right₀ hr1 (by omega)
-  have hpowpos : (0 : ℝ) < r ^ ((A q).natDegree + 1) := by positivity
-  have hstep : ν ^ q.2 * r ^ ((A q).natDegree + 1) ≤ Cb * r ^ ((A q).natDegree + 1) :=
-    le_trans hcap (mul_le_mul_of_nonneg_left hpowle hCb.le)
-  have hνcap : ν ^ q.2 ≤ Cb := le_of_mul_le_mul_right (by linarith) hpowpos
-  have hνone : ν ≤ ν ^ q.2 := by
-    calc ν = ν ^ 1 := (pow_one ν).symm
-      _ ≤ ν ^ q.2 := pow_le_pow_right₀ hν1 hq1
+  set E : ℕ := (A q).natDegree + (d - q.2) with hEdef
+  have hνbig : 4 * C < ν := by
+    have h1 : M + 1 ≤ centralIndex a r := hR₀ r (le_trans (le_max_right _ _) hR)
+    have h2 : ((M : ℝ) + 1) ≤ ν := by rw [hνdef]; exact_mod_cast h1
+    linarith
+  have hνpos : (0 : ℝ) < ν := by linarith
+  -- the free term is absorbed by the floor
+  have habsorb : (1 : ℝ) / 2 * r ^ (d + 1) ≤ 1 / 2 * (ν ^ q.2 * r ^ (E + 1)) := by
+    have h1 : r ^ (d + 1) ≤ r ^ (E + 1) := pow_le_pow_right₀ hr1 (by rw [hEdef]; omega)
+    have h2 : r ^ (E + 1) ≤ ν ^ q.2 * r ^ (E + 1) := by
+      have : (1 : ℝ) ≤ ν ^ q.2 := one_le_pow₀ hν1
+      nlinarith [pow_pos hrpos (E + 1)]
+    linarith
+  have hhalf : (1 : ℝ) / 2 * (ν ^ q.2 * r ^ (E + 1))
+      ≤ C * (ν ^ (q.2 - 1) * r ^ (E + 1) + ν ^ P * r ^ E) := by
+    rw [hEdef] at hb habsorb ⊢
+    linarith
+  -- dividing out the common factor
+  have hsplit : ν ^ q.2 * r ^ (E + 1) = ν * (ν ^ (q.2 - 1) * r ^ E) * r := by
+    have hν : ν ^ q.2 = ν * ν ^ (q.2 - 1) := by
+      rw [← pow_succ']
+      congr 1
+      omega
+    rw [hν, pow_succ]
+    ring
+  have hPle : ν ^ P ≤ ν ^ (q.2 - 1) * ν ^ (P + 1 - q.2) := by
+    rw [← pow_add]
+    exact pow_le_pow_right₀ hν1 (by omega)
+  have hmle : ν ^ (P + 1 - q.2) ≤ ν ^ (P - q.2) * ν := by
+    rw [← pow_succ]
+    exact pow_le_pow_right₀ hν1 (by omega)
+  have hfactorpos : (0 : ℝ) < ν ^ (q.2 - 1) * r ^ E := by positivity
+  -- the first term is beaten by the divergence of the central index
+  have hkey : 1 / 4 * (ν * (ν ^ (q.2 - 1) * r ^ E) * r)
+      ≤ C * (ν ^ (P - q.2) * ν * (ν ^ (q.2 - 1) * r ^ E)) := by
+    have hterm1 : C * (ν ^ (q.2 - 1) * r ^ (E + 1))
+        ≤ 1 / 4 * (ν * (ν ^ (q.2 - 1) * r ^ E) * r) := by
+      have hrew : ν ^ (q.2 - 1) * r ^ (E + 1) = (ν ^ (q.2 - 1) * r ^ E) * r := by
+        rw [pow_succ]; ring
+      rw [hrew]
+      have hnn : (0 : ℝ) ≤ (ν ^ (q.2 - 1) * r ^ E) * r := by positivity
+      nlinarith [hνbig, hfactorpos, hrpos]
+    have hterm2 : C * (ν ^ P * r ^ E)
+        ≤ C * (ν ^ (P - q.2) * ν * (ν ^ (q.2 - 1) * r ^ E)) := by
+      have hchain : ν ^ P ≤ ν ^ (q.2 - 1) * (ν ^ (P - q.2) * ν) := by
+        calc ν ^ P ≤ ν ^ (q.2 - 1) * ν ^ (P + 1 - q.2) := hPle
+          _ ≤ ν ^ (q.2 - 1) * (ν ^ (P - q.2) * ν) :=
+              mul_le_mul_of_nonneg_left hmle (by positivity)
+      have hrE : (0 : ℝ) ≤ r ^ E := by positivity
+      nlinarith [mul_le_mul_of_nonneg_right hchain hrE, hC]
+    rw [hsplit] at hhalf
+    linarith
+  -- reading off the bound on the radius
+  have hfinal : 1 / 4 * (ν * (ν ^ (q.2 - 1) * r ^ E)) * r
+      ≤ (4 * C * ν ^ (P - q.2)) * (1 / 4 * (ν * (ν ^ (q.2 - 1) * r ^ E))) := by
+    calc 1 / 4 * (ν * (ν ^ (q.2 - 1) * r ^ E)) * r
+        = 1 / 4 * (ν * (ν ^ (q.2 - 1) * r ^ E) * r) := by ring
+      _ ≤ C * (ν ^ (P - q.2) * ν * (ν ^ (q.2 - 1) * r ^ E)) := hkey
+      _ = (4 * C * ν ^ (P - q.2)) * (1 / 4 * (ν * (ν ^ (q.2 - 1) * r ^ E))) := by ring
+  have hposfac : (0 : ℝ) < 1 / 4 * (ν * (ν ^ (q.2 - 1) * r ^ E)) := by positivity
+  have hmul : r * (1 / 4 * (ν * (ν ^ (q.2 - 1) * r ^ E)))
+      ≤ (4 * C * ν ^ (P - q.2)) * (1 / 4 * (ν * (ν ^ (q.2 - 1) * r ^ E))) := by
+    calc r * (1 / 4 * (ν * (ν ^ (q.2 - 1) * r ^ E)))
+        = 1 / 4 * (ν * (ν ^ (q.2 - 1) * r ^ E)) * r := by ring
+      _ ≤ (4 * C * ν ^ (P - q.2)) * (1 / 4 * (ν * (ν ^ (q.2 - 1) * r ^ E))) := hfinal
+  exact le_of_mul_le_mul_right hmul hposfac
+
+/-- **No transcendental entire solution when the dominant monomial is derivative-maximal.**  If the
+maximal-weight monomial with the most derivative factors also has no competitor with more derivative
+factors, the previous bound reads `r ≤ C`, which fails at large radii. -/
+theorem not_transcendental_of_tie_dominant
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    {S : Finset (ℕ × ℕ)} {A : ℕ × ℕ → Polynomial ℂ} {d : ℕ}
+    (hdeg : ∀ p ∈ S, p.1 + p.2 ≤ d)
+    (hrel : ∀ w : ℂ,
+      ∑ p ∈ S, (A p).eval w * (coeffFun a w) ^ p.1 * (deriv (coeffFun a) w) ^ p.2 = 0)
+    {q : ℕ × ℕ} (hq : q ∈ S) (hqd : q.1 + q.2 = d) (hAq : A q ≠ 0)
+    (hq1 : 1 ≤ q.2) (hdegq : q.2 ≤ (A q).natDegree)
+    (htie : ∀ p ∈ S, p.1 + p.2 = d → p ≠ q →
+      (A p).natDegree + (d - p.2) + 1 ≤ (A q).natDegree + (d - q.2) ∨
+        ((A p).natDegree + (d - p.2) = (A q).natDegree + (d - q.2) ∧ p.2 + 1 ≤ q.2))
+    (hmaxT : ∀ p ∈ S, p.1 + p.2 = d → p ≠ q → p.2 ≤ q.2) : False := by
+  classical
+  obtain ⟨C, hC, hbound⟩ :=
+    exists_radius_le_centralIndex_pow ha hn₀ htrans hdeg hrel hq hqd hAq hq1 hdegq htie
+      (P := q.2) hmaxT
+  obtain ⟨r, hR, _, hb⟩ := hbound (C + 1)
+  rw [show q.2 - q.2 = 0 from by omega, pow_zero, mul_one] at hb
   linarith
+
+
+/-! ## The assembled statement
+
+Nothing above required a choice: the dominant monomial is determined by the equation, first by maximal
+Newton weight and then by maximal derivative degree among the monomials attaining it.  Carrying out
+that selection turns the two readings into one theorem about the equation alone. -/
+
+/-- **Positive order when some top monomial is coefficient-heavy.**  If a single top-degree monomial
+has a nonzero coefficient of degree at least its own derivative degree — for instance the pure
+monomial `A_d·f^d` whenever `A_d ≠ 0` — then every transcendental entire solution obeys
+
+`r ≤ C·ν(r)^d`  at arbitrarily large radii,
+
+so its Wiman exponent is at least `1/d`.  The dominant monomial is selected inside the proof: maximal
+weight first, then maximal derivative degree among the ties.  One coefficient-heavy monomial pushes
+the maximal weight to at least `d`, which is exactly the statement that the dominant monomial is
+itself coefficient-heavy.  If it has no derivative factor the weight comparison is automatically
+strict, and if it has one the tie reading applies. -/
+theorem exists_radius_le_centralIndex_pow_of_top_coefficient_degree
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    {S : Finset (ℕ × ℕ)} {A : ℕ × ℕ → Polynomial ℂ} {d : ℕ}
+    (hdeg : ∀ p ∈ S, p.1 + p.2 ≤ d)
+    (hrel : ∀ w : ℂ,
+      ∑ p ∈ S, (A p).eval w * (coeffFun a w) ^ p.1 * (deriv (coeffFun a) w) ^ p.2 = 0)
+    (hsome : ∃ p ∈ S, p.1 + p.2 = d ∧ A p ≠ 0 ∧ p.2 ≤ (A p).natDegree) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, ∃ r : ℝ, R ≤ r ∧
+      r ≤ C * ((centralIndex a r : ℕ) : ℝ) ^ d := by
+  classical
+  -- discard the vanishing coefficients
+  set S' : Finset (ℕ × ℕ) := S.filter (fun p => A p ≠ 0) with hS'def
+  have hS'sub : S' ⊆ S := by rw [hS'def]; exact Finset.filter_subset _ _
+  have hmemS' : ∀ p, p ∈ S' ↔ p ∈ S ∧ A p ≠ 0 := by
+    intro p
+    rw [hS'def, Finset.mem_filter]
+  have hdeg' : ∀ p ∈ S', p.1 + p.2 ≤ d := fun p hp => hdeg p (hS'sub hp)
+  have hrel' : ∀ w : ℂ,
+      ∑ p ∈ S', (A p).eval w * (coeffFun a w) ^ p.1 * (deriv (coeffFun a) w) ^ p.2 = 0 := by
+    intro w
+    rw [Finset.sum_subset hS'sub, hrel w]
+    intro x hx hxn
+    have hA0 : A x = 0 := by
+      by_contra hne
+      exact hxn ((hmemS' x).mpr ⟨hx, hne⟩)
+    rw [hA0]
+    simp
+  -- select the dominant monomial
+  set Stop : Finset (ℕ × ℕ) := S'.filter (fun p => p.1 + p.2 = d) with hStopdef
+  have hmemStop : ∀ p, p ∈ Stop ↔ p ∈ S' ∧ p.1 + p.2 = d := by
+    intro p
+    rw [hStopdef, Finset.mem_filter]
+  obtain ⟨p₀, hp₀S, hp₀d, hp₀A, hp₀deg⟩ := hsome
+  have hp₀Stop : p₀ ∈ Stop := (hmemStop p₀).mpr ⟨(hmemS' p₀).mpr ⟨hp₀S, hp₀A⟩, hp₀d⟩
+  have hStopne : Stop.Nonempty := ⟨p₀, hp₀Stop⟩
+  obtain ⟨q₁, hq₁mem, hq₁max⟩ :=
+    Finset.exists_max_image Stop (fun p => (A p).natDegree + (d - p.2)) hStopne
+  set W : ℕ := (A q₁).natDegree + (d - q₁.2) with hWdef
+  set Tie : Finset (ℕ × ℕ) := Stop.filter (fun p => (A p).natDegree + (d - p.2) = W) with hTiedef
+  have hmemTie : ∀ p, p ∈ Tie ↔ p ∈ Stop ∧ (A p).natDegree + (d - p.2) = W := by
+    intro p
+    rw [hTiedef, Finset.mem_filter]
+  have hTiene : Tie.Nonempty := ⟨q₁, (hmemTie q₁).mpr ⟨hq₁mem, by rw [hWdef]⟩⟩
+  obtain ⟨q, hqTie, hqmax⟩ := Finset.exists_max_image Tie (fun p => p.2) hTiene
+  have hqStop : q ∈ Stop := ((hmemTie q).mp hqTie).1
+  have hqW : (A q).natDegree + (d - q.2) = W := ((hmemTie q).mp hqTie).2
+  have hqS' : q ∈ S' := ((hmemStop q).mp hqStop).1
+  have hqd : q.1 + q.2 = d := ((hmemStop q).mp hqStop).2
+  have hAq : A q ≠ 0 := ((hmemS' q).mp hqS').2
+  have hq2d : q.2 ≤ d := by have := hdeg' q hqS'; omega
+  -- the weight comparison at the selected monomial
+  have htie : ∀ p ∈ S', p.1 + p.2 = d → p ≠ q →
+      (A p).natDegree + (d - p.2) + 1 ≤ (A q).natDegree + (d - q.2) ∨
+        ((A p).natDegree + (d - p.2) = (A q).natDegree + (d - q.2) ∧ p.2 + 1 ≤ q.2) := by
+    intro p hpS' hpd hpne
+    have hpStop : p ∈ Stop := (hmemStop p).mpr ⟨hpS', hpd⟩
+    have hle : (A p).natDegree + (d - p.2) ≤ W := by
+      have := hq₁max p hpStop
+      rw [hWdef]
+      exact this
+    rcases lt_or_eq_of_le hle with hlt | heq
+    · left
+      omega
+    · right
+      have hpTie : p ∈ Tie := (hmemTie p).mpr ⟨hpStop, heq⟩
+      have h2 : p.2 ≤ q.2 := hqmax p hpTie
+      have hne2 : p.2 ≠ q.2 := by
+        intro h
+        exact hpne (Prod.ext (by omega) h)
+      exact ⟨by omega, by omega⟩
+  -- a coefficient-heavy top monomial forces the maximal weight to be at least `d`
+  have hp₀2d : p₀.2 ≤ d := by have := hdeg p₀ hp₀S; omega
+  have hWge : d ≤ W := by
+    have h1 : (A p₀).natDegree + (d - p₀.2) ≤ W := by
+      have := hq₁max p₀ hp₀Stop
+      rw [hWdef]
+      exact this
+    omega
+  have hdegq : q.2 ≤ (A q).natDegree := by omega
+  have hP : ∀ p ∈ S', p.1 + p.2 = d → p ≠ q → p.2 ≤ d := by
+    intro p hpS' _ _
+    have := hdeg' p hpS'
+    omega
+  rcases Nat.eq_zero_or_pos q.2 with hq0 | hq1
+  · -- no derivative factor: the weight comparison is strict
+    have hweight : ∀ p ∈ S', p.1 + p.2 = d → p ≠ q →
+        (A p).natDegree + (d - p.2) + 1 ≤ (A q).natDegree + (d - q.2) := by
+      intro p hpS' hpd hpne
+      rcases htie p hpS' hpd hpne with h | ⟨_, h2⟩
+      · exact h
+      · omega
+    obtain ⟨C, hC, hbound⟩ :=
+      exists_centralIndex_pow_mul_radius_le ha hn₀ htrans hdeg' hrel' hqS' hqd hAq hdegq
+        hweight (P := d) hP
+    refine ⟨C, hC, ?_⟩
+    intro R
+    obtain ⟨r, hR, _, _, hb⟩ := hbound R
+    refine ⟨r, hR, ?_⟩
+    rw [hq0, pow_zero, one_mul] at hb
+    exact hb
+  · -- a derivative factor: the tie reading applies
+    obtain ⟨C, hC, hbound⟩ :=
+      exists_radius_le_centralIndex_pow ha hn₀ htrans hdeg' hrel' hqS' hqd hAq hq1 hdegq
+        htie (P := d) hP
+    refine ⟨C, hC, ?_⟩
+    intro R
+    obtain ⟨r, hR, hν1, hb⟩ := hbound R
+    refine ⟨r, hR, ?_⟩
+    have hpow : ((centralIndex a r : ℕ) : ℝ) ^ (d - q.2) ≤ ((centralIndex a r : ℕ) : ℝ) ^ d :=
+      pow_le_pow_right₀ hν1 (by omega)
+    calc r ≤ C * ((centralIndex a r : ℕ) : ℝ) ^ (d - q.2) := hb
+      _ ≤ C * ((centralIndex a r : ℕ) : ℝ) ^ d := mul_le_mul_of_nonneg_left hpow hC.le
+
+
+/-- **Positive order whenever the pure monomial survives.**  If `A_d·f^d` occurs in the relation with
+a nonzero coefficient, every transcendental entire solution has `r ≤ C·ν(r)^d` at arbitrarily large
+radii.  The pure monomial has no derivative factor, so it is coefficient-heavy for free. -/
+theorem exists_radius_le_centralIndex_pow_of_pure_monomial
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    {S : Finset (ℕ × ℕ)} {A : ℕ × ℕ → Polynomial ℂ} {d : ℕ}
+    (hdeg : ∀ p ∈ S, p.1 + p.2 ≤ d)
+    (hrel : ∀ w : ℂ,
+      ∑ p ∈ S, (A p).eval w * (coeffFun a w) ^ p.1 * (deriv (coeffFun a) w) ^ p.2 = 0)
+    (hmem : ((d, 0) : ℕ × ℕ) ∈ S) (hA0 : A ((d, 0) : ℕ × ℕ) ≠ 0) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, ∃ r : ℝ, R ≤ r ∧
+      r ≤ C * ((centralIndex a r : ℕ) : ℝ) ^ d :=
+  exists_radius_le_centralIndex_pow_of_top_coefficient_degree ha hn₀ htrans hdeg hrel
+    ⟨((d, 0) : ℕ × ℕ), hmem, by simp, hA0, by simp⟩
+
+/-! ## The linear equation
+
+The hypothesis of the assembled theorem is a condition on a single monomial, and it holds for the
+first-order linear homogeneous equation with constant leading coefficient — the family of all
+`exp` of a polynomial. -/
+
+/-- **The central index of a solution of `c·f' + B·f = 0` grows at least linearly.**  A transcendental
+entire solution of a first-order linear homogeneous equation with constant leading coefficient
+satisfies `r ≤ C·ν(r)` at arbitrarily large radii.
+
+The dominant monomial is `f` itself: the derivative monomial has weight `0` and the undifferentiated
+one weight `deg B + 1`, so the coefficient-heaviness condition holds vacuously at the dominant
+monomial and fails at the other, which therefore cannot be dominant.
+
+The bound is sharp: for `f = exp` the central index is asymptotically `r`. -/
+theorem exists_radius_le_centralIndex_of_linear
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    (htrans : ∀ M : ℕ, ∃ n, M ≤ n ∧ a n ≠ 0)
+    {c : ℂ} {B : Polynomial ℂ} (hB : B ≠ 0)
+    (hrel : ∀ w : ℂ, c * deriv (coeffFun a) w + B.eval w * coeffFun a w = 0) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, ∃ r : ℝ, R ≤ r ∧
+      r ≤ C * ((centralIndex a r : ℕ) : ℝ) := by
+  classical
+  set S : Finset (ℕ × ℕ) := {((0, 1) : ℕ × ℕ), ((1, 0) : ℕ × ℕ)} with hSdef
+  set A : ℕ × ℕ → Polynomial ℂ :=
+    fun p => if p = ((0, 1) : ℕ × ℕ) then Polynomial.C c else B with hAdef
+  have hne : ((0, 1) : ℕ × ℕ) ≠ ((1, 0) : ℕ × ℕ) := by decide
+  have hmemS : ∀ p : ℕ × ℕ, p ∈ S ↔ p = ((0, 1) : ℕ × ℕ) ∨ p = ((1, 0) : ℕ × ℕ) := by
+    intro p
+    rw [hSdef, Finset.mem_insert, Finset.mem_singleton]
+  have hA01 : A ((0, 1) : ℕ × ℕ) = Polynomial.C c := by rw [hAdef]; simp
+  have hA10 : A ((1, 0) : ℕ × ℕ) = B := by
+    rw [hAdef]
+    simp [hne.symm]
+  have hdeg : ∀ p ∈ S, p.1 + p.2 ≤ 1 := by
+    intro p hp
+    rcases (hmemS p).mp hp with h | h <;> rw [h] <;> norm_num
+  have hrel' : ∀ w : ℂ,
+      ∑ p ∈ S, (A p).eval w * (coeffFun a w) ^ p.1 * (deriv (coeffFun a) w) ^ p.2 = 0 := by
+    intro w
+    rw [hSdef, Finset.sum_pair hne, hA01, hA10]
+    simpa using hrel w
+  have hsome : ∃ p ∈ S, p.1 + p.2 = 1 ∧ A p ≠ 0 ∧ p.2 ≤ (A p).natDegree := by
+    refine ⟨((1, 0) : ℕ × ℕ), (hmemS _).mpr (Or.inr rfl), by norm_num, ?_, ?_⟩
+    · rw [hA10]
+      exact hB
+    · simp
+  obtain ⟨C, hC, hbound⟩ :=
+    exists_radius_le_centralIndex_pow_of_top_coefficient_degree ha hn₀ htrans hdeg hrel' hsome
+  refine ⟨C, hC, ?_⟩
+  intro R
+  obtain ⟨r, hR, hb⟩ := hbound R
+  refine ⟨r, hR, ?_⟩
+  simpa using hb
 
 end GaloisForLFunctions.HTGeometry

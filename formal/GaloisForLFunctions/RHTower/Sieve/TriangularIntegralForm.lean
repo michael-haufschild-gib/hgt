@@ -24,29 +24,27 @@ theorem triC_eq_integral {δ : ℝ} (hδ : 0 < δ) (t : ℝ) :
   rw [Real.fourierInv_eq_fourier_neg, Real.fourier_real_eq] at h
   rw [← h]
   refine integral_congr_ae (Filter.Eventually.of_forall fun w => ?_)
-  simp only [Circle.smul_def, Real.fourierChar_apply]
+  simp only [Circle.smul_def, Real.fourierChar_apply, smul_eq_mul]
   rw [show ((2 * Real.pi * -(w * -t) : ℝ) : ℂ) = ((2 * Real.pi * (w * t) : ℝ) : ℂ) by
     push_cast; ring]
 
 /-- The transform of the triangular kernel is real. -/
 theorem fourier_triC_conj {δ : ℝ} (hδ : 0 < δ) (w : ℝ) :
     (starRingEnd ℂ) (𝓕 (triC δ) w) = 𝓕 (triC δ) w := by
-  rw [fourier_triC hδ, map_mul, Complex.conj_ofReal, fejerWeightAt]
+  rw [fourier_triC hδ]
   rcases eq_or_ne (-(2 * Real.pi * w)) 0 with h | h
-  · rw [h, integral_fejer_zero hδ]
-    simp
-  · rw [integral_fejer_symm_real _ h hδ, Complex.conj_ofReal]
+  · rw [h, fejerWeightAt_zero hδ, map_mul, Complex.conj_ofReal]
+  · rw [fejerWeightAt, integral_fejer_symm_real _ h hδ, map_mul, Complex.conj_ofReal,
+      Complex.conj_ofReal]
 
 /-- The transform of the triangular kernel is nonnegative. -/
 theorem fourier_triC_re_nonneg {δ : ℝ} (hδ : 0 < δ) (w : ℝ) :
     0 ≤ (𝓕 (triC δ) w).re := by
-  rw [fourier_triC hδ, fejerWeightAt]
+  rw [fourier_triC hδ]
   rcases eq_or_ne (-(2 * Real.pi * w)) 0 with h | h
-  · rw [h, integral_fejer_zero hδ]
-    simp only [← Complex.ofReal_mul, Complex.ofReal_re]
+  · rw [h, fejerWeightAt_zero hδ, ← Complex.ofReal_mul, Complex.ofReal_re]
     positivity
-  · rw [integral_fejer_symm_real _ h hδ]
-    simp only [← Complex.ofReal_mul, Complex.ofReal_re]
+  · rw [fejerWeightAt, integral_fejer_symm_real _ h hδ, ← Complex.ofReal_mul, Complex.ofReal_re]
     exact mul_nonneg hδ.le (fejer_transform_nonneg _ hδ)
 
 end RHTower.Sieve

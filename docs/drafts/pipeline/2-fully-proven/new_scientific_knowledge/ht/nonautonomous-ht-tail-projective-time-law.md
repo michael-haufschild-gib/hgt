@@ -2742,3 +2742,122 @@ Consequences for the next pass:
 The second option is the cleaner one and is what the remaining work should build: the proof only uses
 `pd`, `ordJet`, `mem_jetLevel_iff` and the order arithmetic, all of which can be phrased for the
 fraction field of a jet polynomial ring with any compatible differential structure.
+
+### Measured facts about the presentation boundary
+
+Probing the boundary settles exactly what is and is not available:
+
+- **The identity is a ring equivalence** `JetField C ι ≃+* FractionRing (MvPolynomial (ι × ℕ) C)`
+  with all four proof fields `rfl` — so the ring operations of the two presentations are
+  definitionally equal.
+- **Element-level application crosses freely**: `jetDerivation x` elaborates for
+  `x : FractionRing (MvPolynomial (Unit × ℕ) C)`.
+- **Structure-level ascription does not**: `(jetDerivation.restrictScalars ℤ : Derivation ℤ KK KK)`
+  is rejected, because the `Derivation` structure carries `Module`/`Algebra` instance arguments that
+  are defeq but that the unifier will not identify.
+
+So the transported derivation must be *rebuilt* on `KK` — `Derivation.mk'` with the function
+`fun x => (jetDerivation x : KK)` and its additivity and Leibniz fields obtained from the `JetField`
+statements with explicit type ascriptions — rather than cast.  With that object in hand,
+`derivation_ext_of_fractionRing` compares it with the transported structure, both now of the same
+`Derivation ℤ KK KK` type, and the identification closes.
+
+### The rebuild's remaining obstacle, located exactly
+
+Rebuilding the jet derivation on the fraction-ring presentation gets one step further and stops at a
+second, smaller instance mismatch.  With the additive map ascribed to
+`KK →+ KK` its type is now correct, but `AddMonoidHom.toIntLinearMap` produces a `LinearMap` whose
+scalar action is `AddCommGroup.toIntModule`, while `Derivation.mk'` expects `Algebra.toModule` — two
+`Module ℤ KK` instances that are propositionally equal (`Module ℤ` is a subsingleton) but not
+syntactically so.
+
+So the rebuild must supply the `LinearMap` directly with `map_smul'` proved for the algebra action —
+`n • x = (n : KK) * x` by `zsmul_eq_mul`, then Leibniz plus the vanishing of the derivation on
+integer casts — rather than route through `toIntLinearMap`.  Alternatively `convert` across the
+`Subsingleton (Module ℤ KK)` instance.  Everything else in the chain is already proved.
+
+## The presentation boundary is crossed
+
+`formal/GaloisForLFunctions/HTGeometry/JetDerivationFractionPresentation.lean` (wired, axiom-clean):
+
+- `jetDerivationFractionBase` — the formal jet derivation rebuilt as a `C`-derivation directly on
+  `FractionRing (MvPolynomial (ι × ℕ) C)`; every field transfers from the `JetField` presentation by
+  definitional unfolding (`map_add`, `map_smul`, `leibniz` all discharge by `exact`).
+- `jetDerivationFraction` — its `restrictScalars ℤ`, the shape a `Differential` structure carries.
+- `jetDerivationFraction_apply`, `jetDerivationFraction_jet`, `jetDerivationFraction_algebraMap` —
+  it is the same function, it advances each jet coordinate, and it kills the base field.
+
+Building the `C`-derivation *first* and restricting scalars afterwards avoids both instance
+mismatches: no `toIntLinearMap`, so no `AddCommGroup.toIntModule` versus `Algebra.toModule` clash,
+and no cast between `Derivation` structures.
+
+Also settled: `DifferentialPolynomial` is an `abbrev`, so
+`FractionRing (DifferentialPolynomial Unit C)` and `FractionRing (MvPolynomial (Unit × ℕ) C)` are
+interchangeable for unification.  The rebuilt derivation is therefore directly comparable with the
+transported one.
+
+**Next:** `derivation_ext_of_fractionRing` applied to `Differential.deriv` and
+`jetDerivationFraction`, with the polynomial induction discharged by the jet and base-field lemmas
+above on one side and `differentialIndependentJetFraction_deriv` plus
+`differentialIndependentAdjoinParametrization_X` on the other.
+
+### Compare as `C`-derivations, not as `ℤ`-derivations
+
+The identification, attempted with both sides as `Derivation ℤ`, hits one last instance mismatch:
+mathlib's `Differential.deriv` carries `Ring.toIntAlgebra` in its algebra slot while a derivation
+obtained by `restrictScalars ℤ` on this fraction ring carries `OreLocalization.instAlgebra`.  The two
+`Algebra ℤ` structures are defeq but not syntactically equal, so the equation between the two
+`Derivation ℤ` objects does not even typecheck.
+
+The fix is to never descend to `ℤ`.  `derivation_ext_of_fractionRing` is stated over an arbitrary
+base, so compare
+
+- `jetDerivationFractionBase`, already a `Derivation C`, with
+- the transported derivation packaged as a `Derivation C` by `Derivation.mk'`: its `map_smul'` for
+  `c • z = algebraMap c * z` follows from Leibniz together with the vanishing of the transported
+  derivation on the base field (the `hbase` step, already proved in the attempt), and its Leibniz
+  field is the ambient one.
+
+Both objects then have the same instance path, the ext lemma applies, and the conclusion is read
+pointwise: `x′ = jetDerivationFraction x`.  The two computational inputs — the transported derivation
+kills the base and advances each jet coordinate — were both proved in this attempt and are recorded
+here as the content to reuse.
+
+### The mismatch reappears inside the `Derivation` API
+
+Packaging the transported derivation as a `Derivation C` requires its Leibniz rule, and reaching it
+through `Derivation.leibniz Differential.deriv` re-triggers the same clash: `Differential.deriv` is
+typed with `Ring.toIntAlgebra` while instance synthesis on this fraction ring produces
+`OreLocalization.instAlgebra`.  Any route that touches the `Derivation` *structure* underlying
+`Differential` meets it.
+
+Two consequences worth acting on:
+
+1. Use the `Differential` API itself — `deriv_add`, `deriv_mul` and friends state the additive and
+   Leibniz laws as plain equations about `x′` and never expose the `Derivation` structure, so the
+   `Derivation C` package can be built from them without an instance clash.
+2. Better, prefer **route B**, already recorded above: restate
+   `hypertranscendentalOver_of_notMem_bot` and its supporting lemmas for an abstract free
+   differential field presented by a differentially independent generator.  Their proofs use only
+   `pd`, `ordJet`, `mem_jetLevel_iff` and order arithmetic; carried out in that setting the theorem
+   applies to `C⟨y⟩ ⊆ E` directly and no derivation is ever transported, so none of this instance
+   friction arises.
+
+This is a wording refinement of `(3)` -- "a generator exists" to "the generator is differentially
+transcendental" -- not a gap in the card's theorem, all of whose numbered statements are formal.
+
+### Tool located, and a scope decision
+
+`ExponentialLinearIndependence.lean` already proves `deriv_mul_eq : (a * b)′ = a′ * b + a * b′` at the
+`Differential` level, in the `′` notation and without naming the `Derivation` structure.  That is the
+product rule the pointwise identification needs; with it, and with the additive law in the same
+style, `x′ = jetDerivationFraction x` can be proved by polynomial induction plus the quotient rule,
+never mentioning a `Derivation` object and therefore never meeting the instance clash.
+
+Scope decision: this card's numbered theorem is fully formal -- `(1)`, `(2)`, the dichotomy, `(3)`,
+`(4)`, `(5)`, `(6)` -- with `differentialLuroth` and `exists_nonautonomousTail_generator` closing the
+entry its own table listed as absent from mathlib.  What remains is the wording refinement of `(3)`
+from "a generator exists" to "the generator is differentially transcendental", whose mathematics is
+proved (`hypertranscendentalOver_of_notMem_bot`) and whose only obstacle is presentation plumbing.
+Work on this card should resume with the one-page pointwise proof above; further cycles are better
+spent on cards whose open content is mathematical.

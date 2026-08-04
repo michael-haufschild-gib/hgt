@@ -7058,3 +7058,199 @@ of an asymptotic slope.
 is neither pure nor derivative-maximal — still needs the scale `ν(r) ≈ r^σ` to decide which pairs tie,
 and that is where the Newton polygon slope, hence `q_k > 0`, is read off.  The two extreme faces are
 now closed unconditionally; the interior faces are the open ground.
+
+### The face inequality is the single statement behind both readings
+
+The two Newton-face theorems above are now corollaries of one hypothesis-free statement,
+`exists_radius_wimanFace`, which is what the Wiman selection layer actually delivers.  For **every**
+top-degree monomial `q` with `A_q ≠ 0`, normalising the relation at a Wiman point by `(2r)^d` — enough
+powers of the radius to clear every derivative factor — gives, at arbitrarily large radii,
+
+`‖lead A_q‖/2 · r^{deg A_q + (d − q₂)} · ν^{q₂}
+    ≤ η·2^d·r^d + K·∑_{p ≠ q} ν^{p₂}·r^{deg A_p + (d − p₂)}`,
+
+with `K` depending only on the coefficients and `d`, and `η > 0` free.  The floor comes from the
+lower Wiman bound `ν ≤ 2r‖f'/f‖`, the ceilings from the upper bound `r‖f'/f‖ ≤ 2ν` and the
+coefficient-sum estimate; no Newton hypothesis of any kind enters.
+
+Every face conclusion is then arithmetic on the exponents `deg A_p − p₂`:
+
+* read at `q = (d, 0)` with the pure monomial of strictly maximal weight → `κ·r ≤ ν(r)^d`;
+* read at a `q` of maximal derivative degree and strictly maximal weight → the cap
+  `ν^{q₂}·r^{deg A_q + 1} ≤ C·r^{q₂+1}`;
+* and the cap plus `q₂ ≤ deg A_q` → no transcendental entire solution.
+
+This is the right shape for what Reduction I still needs: an interior face is a *different arithmetic
+reading of the same inequality*, not new analysis.  What an interior face requires in addition is a
+comparison between `ν(r)^{p₂ − q₂}` and a power of `r` — i.e. the scale of `ν` itself — which is
+exactly the Newton slope the paper reads off from `log ν/log r → ρ`.
+
+### The interior faces, and the pinning law
+
+The interior of the Newton polygon is now covered as well, by one theorem that subsumes both extreme
+readings — `exists_centralIndex_pow_mul_radius_le`.  Let `q` be any top-degree monomial with
+`A_q ≠ 0` whose Newton weight strictly exceeds every competitor's, and whose coefficient degree is at
+least its derivative degree (`q₂ ≤ deg A_q`).  Let `P` bound the derivative degrees of the
+competitors.  Then, at arbitrarily large radii,
+
+`ν(r)^{q₂}·r ≤ C·ν(r)^P`.
+
+The proof is the face inequality read at `q` with the free constant `η` taken small: `q₂ ≤ deg A_q`
+is exactly what makes the constant term absorbable by the floor, and the strict weight inequality
+makes each competitor lose one power of `r`, which it can recover only through the central index.
+
+The pinning law contains the whole dichotomy:
+
+* `q = (d, 0)`, so `q₂ = 0` and `P ≤ d`: it reads `r ≤ C·ν(r)^d` — **positive order**, exponent `1/d`;
+* `P ≤ q₂` (no competitor has more derivative factors): the central index cancels, `r ≤ C`, and the
+  radius was unbounded — **no transcendental entire solution exists**;
+* a genuine interior face, `q₂ < P`: `r ≤ C·ν(r)^{P − q₂}`, so the Wiman exponent is at least
+  `1/(P − q₂) > 0`.
+
+That third line is what Reduction I was importing from Strelitz: *whenever the top symbol has a unique
+maximal-weight monomial that is not derivative-heavy, the solution has positive order, with an
+explicit exponent read off the polygon.*  Both earlier theorems are now short corollaries, and the
+non-existence statement lost its `1 ≤ q₂` hypothesis in the process.
+
+**What is still open in Reduction I.** Only the case `deg A_q < q₂` (where the cap
+`centralIndex_pow_mul_pow_le_of_dominant_derivative_term` applies instead), and the step from
+"maximal weight is attained twice" to the *identification* of the slope with `ρ − 1`, which needs the
+scale of `ν` itself rather than one comparison at a time.
+
+### Every case of a unique maximal weight is now closed
+
+One more level was inserted, `exists_radius_weightCollapse`, and with it the last gap in Reduction I's
+weight argument disappears.  Applying the weight comparison once collapses all the competitors into a
+single term: with `E = deg A_q + (d − q₂)` and `P` any bound for the competitors' derivative degrees,
+
+`ν^{q₂}·r^{E+1} ≤ η·r^{d+1} + C·ν^P·r^E`   for **every** `η > 0`, with `C` independent of `η`.
+
+The free `η` is the whole point — it is what lets the residue of the top symbol be discarded when the
+floor can carry it.  The module is now a four-level tower:
+
+1. `exists_radius_wimanFace` — the raw selection inequality, no hypotheses at all;
+2. `exists_radius_weightCollapse` — competitors collapsed, `η` free;
+3. `exists_centralIndex_pow_mul_radius_le` (`q₂ ≤ deg A_q`) and
+   `centralIndex_pow_mul_pow_le_of_dominant_derivative_term` (`deg A_q < q₂`) — **the two readings
+   between them cover every case of a strictly maximal weight**;
+4. `exists_centralIndex_pow_ge_mul_radius` (positive order) and
+   `not_transcendental_of_dominant_derivative_term` (non-existence).
+
+Each of levels 3 and 4 is now a short derivation; the cap, which had a 90-line independent proof,
+became twenty lines and its constant improved to `2`.  So the card's line-127 claim — *a unique
+maximal-weight monomial cannot be cancelled* — is a theorem in every configuration: it always yields
+either a power lower bound on `ν`, a power upper bound, or outright non-existence, with explicit
+exponents.
+
+**Reduction I now needs exactly one more thing**: the passage from these per-monomial comparisons to
+the *identification* of the polygon slope with `ρ − 1`, which is a statement about the scale of `ν`
+itself rather than about one monomial at a time.
+
+### Ties at the maximal weight — and Strelitz for `q₂ ≤ deg A_q`
+
+The remaining hypothesis in all of the above was that the maximal weight is attained *once*.  That is
+now removed, and with it the last conditional step of Reduction I's weight argument.
+
+The observation is that a tie is never a real tie.  Among the monomials attaining the maximal weight,
+the terms differ exactly by powers of `ν`, so the one with the most derivative factors dominates as
+soon as the central index is large.  In the top-degree set a monomial is determined by its derivative
+degree (`p₁ = d − p₂`), so **that dominant monomial always exists and is always unique** — the
+hypothesis is a choice of `q`, not a restriction on the equation.
+
+`exists_radius_tieCollapse` splits the competitors accordingly: the tied ones lose a power of `ν`, the
+rest lose a power of `r`, giving
+
+`ν^{q₂}·r^{E+1} ≤ η·r^{d+1} + C·(ν^{q₂−1}·r^{E+1} + ν^P·r^E)`.
+
+`exists_radius_le_centralIndex_pow` then divides by `ν^{q₂−1}r^E`, leaving `ν·r ≤ C(r + ν^{P+1−q₂})`,
+and uses divergence of the central index to kill the first term.  The conclusion, for
+`1 ≤ q₂ ≤ deg A_q`, is
+
+`r ≤ C·ν(r)^{P − q₂}`  at arbitrarily large radii.
+
+* `P ≤ q₂` → `r ≤ C`, impossible: **no transcendental entire solution**
+  (`not_transcendental_of_tie_dominant`, which no longer assumes strict weight maximality);
+* `q₂ < P` → **positive order**, with the explicit exponent `1/(P − q₂)` read off the polygon.
+
+So for every algebraic differential relation whose dominant monomial satisfies `q₂ ≤ deg A_q`, the
+card's Strelitz input is now a theorem of this corpus, with an explicit exponent — no growth
+classification, no Goldberg, no convergence of `log ν/log r`, and no uniqueness assumption on the
+Newton polygon.  The one configuration still outside is `deg A_q < q₂`, where the cap theorem applies
+instead of the pinning law.
+
+### Strelitz, assembled: no choice left to the user
+
+The dominant monomial was never a choice — it is determined by the equation: maximal Newton weight
+first, maximal derivative degree among the ties second.  Carrying that selection out inside the proof
+turns the readings into one statement about the equation alone.
+
+`exists_radius_le_centralIndex_pow_of_top_coefficient_degree`: if some top-degree monomial of the
+relation has a nonzero coefficient and every such monomial satisfies `p₂ ≤ deg A_p`, then every
+transcendental entire solution obeys
+
+`r ≤ C·ν(r)^d`  at arbitrarily large radii,
+
+so its Wiman exponent is at least `1/d`.  **This is Strelitz's positive-order theorem for that class,
+proved here, with an explicit exponent.**
+
+The proof discards the vanishing coefficients (the relation is unchanged), selects the dominant
+monomial by two `Finset.exists_max_image` steps, and then splits: if the selected monomial carries no
+derivative factor, the weight comparison is automatically strict and the pinning law applies; if it
+carries one, the tie reading applies.  Both give `r ≤ C·ν^{d−q₂}`, hence `r ≤ C·ν^d`.
+
+The condition `p₂ ≤ deg A_p` on the top monomials is exactly the complement of the cap regime, and it
+is checkable directly on the equation — no analysis, no polygon computation.  For a first-order
+equation written with the standard normalisation `a_{b,c}(z)`, it says the coefficient of a monomial
+carrying `c` derivative factors has degree at least `c`.
+
+Card status for Reduction I: the weight argument is complete and unconditional; positive order is a
+theorem of this corpus in the coefficient-heavy regime; and the residual case `deg A_q < q₂` is
+governed by the cap rather than left open.
+
+### The hypothesis is on one monomial only — and the linear equation satisfies it
+
+The first assembly asked `p₂ ≤ deg A_p` of *every* top monomial, which is too strong: it already fails
+for `f = exp(z²)`, whose equation `f' = 2zf` has the derivative monomial with coefficient `1`.  The
+condition is only ever used at the **dominant** monomial — the one of maximal Newton weight, ties
+broken by derivative degree — and that monomial is unique, so the hypothesis is a condition on a single
+monomial.  `exists_radius_le_centralIndex_pow_of_top_coefficient_degree` now takes it in that form and
+covers `exp(z²)`: there the dominant monomial is `f` itself, with `q₂ = 0`.
+
+`exists_radius_le_centralIndex_of_linear` is the check that the hypothesis package is inhabited and
+the theorem non-vacuous.  For a first-order linear homogeneous equation with constant leading
+coefficient,
+
+`c·f' + B(z)·f = 0`,  `B ≠ 0`,
+
+every transcendental entire solution satisfies `r ≤ C·ν(r)` at arbitrarily large radii.  The
+derivative monomial has weight `0` and the undifferentiated one weight `deg B + 1`, so the latter is
+dominant and the coefficient condition holds at it trivially; the former cannot be dominant, which is
+what the proof establishes.  The bound is sharp — `ν(r) ~ r` for `exp` — and it covers the whole family
+`exp` of a polynomial, including `exp(z²)` where `ν(r) ~ 2r²`.
+
+That closes the non-vacuity question for the whole Newton-face layer: these are theorems about
+equations that have solutions, with the sharp exponent on the standard examples.
+
+### The hypothesis reduces to one line on the Newton polygon
+
+The condition "the dominant monomial is coefficient-heavy" turns out to be equivalent to something far
+easier to check.  Write `w(p) = deg A_p + (d − p₂)` for the shifted Newton weight.  Then
+
+`q₂ ≤ deg A_q  ⟺  w(q) ≥ d`,
+
+for any top monomial, so the condition at the dominant monomial — the one of maximal weight — says
+exactly that the maximal weight is at least `d`, and that follows from **any single** top monomial with
+`p₂ ≤ deg A_p`.  The assembled theorem now takes that hypothesis:
+
+> `hsome : ∃ p, p top-degree, A_p ≠ 0, p₂ ≤ deg A_p`  ⟹  `r ≤ C·ν(r)^d` at arbitrarily large radii.
+
+Two corollaries make it concrete:
+
+* `exists_radius_le_centralIndex_pow_of_pure_monomial` — if the pure monomial `A_d·f^d` occurs with a
+  nonzero coefficient, positive order follows with no further check at all: a monomial with no
+  derivative factor is coefficient-heavy for free.
+* `exists_radius_le_centralIndex_of_linear` — for `c·f' + B(z)f = 0` with `B ≠ 0`, every transcendental
+  entire solution has `r ≤ C·ν(r)`, sharp for `exp`, and covering `exp` of any polynomial.
+
+So the Strelitz input of Reduction I is available under a hypothesis that can be read off the equation
+in one glance, and is automatic whenever the top-degree part contains a pure power of `f`.

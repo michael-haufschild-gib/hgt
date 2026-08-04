@@ -295,13 +295,36 @@ summand).  Axiom audit for all 11 declarations: `propext, Classical.choice, Quot
   summand the residue is injective.  This is what "strict with closed kernel" reduces to once the
   topology is dropped.
 
+### The residue sequence in the constant model
+
+`formal/GaloisForLFunctions/RHTower/DeningerResidueSequence.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The logarithmic residue sequence `(1)`--`(2)` is now available on the constant forms, which is where
+the cohomology of a stage lives: for the projection that forgets the last coordinate and the residue
+along it — contract against its direction and restrict to the divisor —
+
+- `deningerExtendForm_injective`, `deningerResidue_comp_extend` — the extension is injective and the
+  residue of an extended form vanishes;
+- `deningerResidue_exact` — **a form with vanishing residue is extended from the divisor**: on a
+  tuple of coordinate vectors avoiding the last coordinate the two forms agree because the
+  projection and the inclusion are inverse there, and on a tuple containing it both vanish, the
+  form itself because moving that entry to the front turns it into the residue;
+- `deningerResidueForm_surjective` — **the residue is onto**, by the Pascal identity for the
+  dimensions `deningerAlt_finrank`;
+- `deningerResidue_exact_sequence` — the sequence is exact.
+
+So the residue sequence of `(1)`--`(2)` is formalized at the level the card's exactness statements
+use it; what is still missing is only its sheaf-theoretic origin, the logarithmic de Rham complex on
+the log-toric chart.
+
 ### What cannot be stated in Lean, and why
 
 The completions are the obstruction, as for the sibling restricted-sum card: the graph seminorm
 `(3)`, the Hausdorff completion `Ω¹_{log,mix,p}`, and the mixed `L¹`/`L²` packet spaces need a
 theory of complete locally convex spaces that mathlib does not have; and `(1)`--`(2)`, the
 logarithmic residue sequence on a log-toric chart, needs coherent sheaves and logarithmic de Rham
-complexes.  The Fourier-basis argument of `(2)` is now available: see
+complexes for its sheaf-theoretic form — its content on constant forms is now proved, see below.  The Fourier-basis argument of `(2)` is now available: see
 `DeningerFiniteCharacterBasis.lean` below.  The card therefore
 stays at stage 2 with its exactness theorem `(11)`--`(12)` formalized and its analytic scaffolding
 recorded as unavailable.

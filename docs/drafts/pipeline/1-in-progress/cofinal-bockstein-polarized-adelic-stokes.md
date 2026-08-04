@@ -778,3 +778,85 @@ Hostile audit of the corrected `det2` square: its positive channel is the hidden
 but now has no coefficient or metric ambiguity: prove from pre-divisor source structure that the
 fixed physical lift lies in the harmonic corona graph, equivalently annihilate this one identified
 positive rank port.  No RH proof is claimed.
+
+## 2026-08-04 harmonic-corona source-structure audit
+
+### Exact shear classification `[PROVED HERE; BRIDGE]`
+
+Let `V` be a finite-dimensional real inner-product space and let `K : V -> V` be self-adjoint.
+On `V x V` put
+
+```text
+q_K(x,y) = Kx+y,
+h_K(x)   = (x,-Kx),
+S_K(x,y) = (x,y+Kx).
+```
+
+Then
+
+```text
+q_0 S_K = q_K,             S_K h_K = h_0,
+pi_1 S_K = pi_1,
+Omega(S_K z,S_K w)=Omega(z,w),
+Omega((x,y),(x',y'))=<x,y'>-<y,x'>.
+```
+
+The last identity uses only self-adjointness of `K`.  Thus `S_K` preserves the coefficient
+projection, exact extension, alternating cup/intersection form, determinant orientation, and
+the full resolved chain law while carrying the harmonic graph to the fixed zero-hidden section.
+Moreover, if `g_0` is the product positive form and `g_K=S_K^*g_0`, then `S_K` is an isometry
+from the transported resolved polarization to `g_0` for every `K`.  This is precisely why the
+already-constructed varying positive polarization is nonselective.
+
+In contrast,
+
+```text
+S_K is an isometry of the same fixed product form g_0  <->  K=0.
+```
+
+Indeed, applying fixed-form norm preservation to `(x,0)` gives
+`||x||^2+||Kx||^2=||x||^2` for every `x`, hence `K=0`; the converse is immediate.  Equivalently,
+`S_K` commutes with the fixed odd Hodge rotation exchanging the two factors exactly when `K=0`.
+
+For Route R, `K=tau_(i,j) id`, so on the certified edge and nonzero Xi conormal this fixed-form
+condition is exactly `Delta=0`, harmonic-corona admission, and critical-line placement.
+
+### Killed source enhancements
+
+- `[FALSIFIED]` A second cup or intersection mate by itself forces harmonic admission.  The shear
+  is symplectic, so the nondegenerate derived Calderon--Witt cup and its Milnor-incidence Green
+  splitting remain unchanged for arbitrary `tau`.
+- `[FALSIFIED]` Transported positivity forces the fixed physical section to be harmonic.  Pullback
+  metric `g_K` makes the shear unitary for every `tau`; it is not the fixed physical metric.
+- `[FALSIFIED]` Ordinary source cyclicity makes the cofinal defect a retained source boundary.
+  The explicit cofinal relative class has period one.  Over the complex coefficient field,
+  annihilating `(delta-1)` times that class off the unit-monodromy locus annihilates the retained
+  generator itself.  The formal minimal stable defect boundary is therefore the whole physical
+  two-leg target off line.
+- `[FALSIFIED]` Wild/Stokes exactness selects an arbitrary lift.  The corona exact sequence
+  determines `ker q_K=im h_K`; it supplies no reason that `h_0(c)` belongs to this kernel.
+
+### Surviving exact producer
+
+`[CONJECTURE — SOURCE_DAGGER_FIXED_POLARIZATION_CARTIER_DESCENT]` Construct before divisor
+specialization a morphism from the literal rational-adelic cyclic source, together with its
+source Hodge mate, into the coefficient-generated corona extension such that:
+
+1. the period-one ordinary-prime atom lands on the fixed zero-hidden physical section;
+2. its source Hodge mate lands on the fixed odd-Hodge mate, not the shear-transported mate;
+3. the cyclic equivariance defect is an arithmetic Cartier boundary killed by a source-derived
+   period regulator;
+4. the atom remains nonzero modulo that boundary in both Gamma orientations;
+5. comparison preserves the fixed source polarization and Cartier dagger before any Xi stalk is
+   selected; and
+6. specialization agrees with the already-constructed resolved chain map and with the exact
+   Bockstein-to-corona coefficient/energy comparison.
+
+The shear classification proves that Clauses 1--6 force `K=0`; the nonzero leading Xi jet then
+gives RH through the existing formal consumer.  It also proves that replacing Clause 5 by cup,
+exactness, a transported metric, or an abstract harmonic metric is insufficient.
+
+`[OPEN CORE — FIXED_POLARIZATION_PRODUCTION]` Derive Clause 5 and the nonerasing boundary in
+Clauses 3--4 from the pre-divisor Euler--Gamma--rational-adelic source.  Current source objects do
+not imply it: the explicit shear is a countermodel to every presently proved invariant clause.
+No unconditional source annihilation theorem or RH proof is claimed.

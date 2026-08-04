@@ -112,17 +112,14 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about: 
-"### Cross-route merger verdict — a parallel polarized source atlas, not a serial super-route" from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
-
-in broader terms: we assume that the actual route leading to the rh proof will be a "frankenstein" that combines parts of every route we investigated so far in a unique and creative way. we assume that this will require a creative reinterpretation of the problem and once the rh proof is delivered it will become "of course, why did nobody think of it, it is so obvious" in hindsight.
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about this topic: we assume that the actual route leading to the rh proof will be a "frankenstein" that combines parts of every route we investigated so far in a unique and creative way. we assume that this will require a creative reinterpretation of the problem and once the rh proof is delivered it will become "of course, why did nobody think of it, it is so obvious" in hindsight.
 
 collect enough novel and significant knowledge to overcome the obstacles. do not get married to a specific route or drift into classical routes. our research corpus is ahead of your training data and literature, never assume how the solution must look like but let our research corpus guide you.
 
 research rules:
 - use heavy conjecturing
 - always check that you do not play theatre and actually are creating new knowledge
-- focus on hard problems
+- focus on hard problems, NO THEATRE, NO INFRASTRUCTURE, EVERY STEP MUST DELIVER PROGRESS
 - take a step back and look at the big picture and conjecture how you could reinterpret everything we know so far and where the reasons we got stuck are shadows of a higher universal principle
 
 add missing infrastructure, lean proofs, everything needed to get this route fully done - no simplifications.
@@ -136,6 +133,13 @@ Lean rules:
 6. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
 7. make sure you don't leave stale lean processes running - clean up after yourself.
 
+folders to check for already existing research:
+- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
+- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
+- formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
+- formal/GaloisForLFunctions/QuantumAlg for lean related to quantum algorithm around prime numbers
+  
+goal is met when lean corpus has an uncondtional formal proof for rh.
 
 
 ## Revert

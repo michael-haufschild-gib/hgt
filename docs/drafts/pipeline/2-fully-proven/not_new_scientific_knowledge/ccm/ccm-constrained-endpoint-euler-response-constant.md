@@ -644,6 +644,98 @@ the factorials.  These moments are exactly the coefficients needed to integrate 
 series `I_0(c sqrt(1-x²)) = sum_k (c²/4)^k (1-x²)^k/(k!)²` against `cos(omega x)` term by term, which is
 the route to the trial's Fourier pair and hence to the upper leakage envelope.
 
+The first of those two interchanges is done: `integral_trialWeight_cos` gives, for every weight and
+every frequency,
+
+```text
+∫_(-1)^1 (1-x²)^k cos(omega x) dx = sum_j (-1)^j omega^(2j) M(j, k)/(2j)!,
+```
+
+by term-by-term integration of the cosine series, dominated by the exponential series (the pointwise
+bound `‖term‖ <= |omega|^(2j)/(2j)!` on the band, `integral_tsum_of_summable_integral_norm`).  So each
+trial weight's finite-Fourier transform is now an explicit power series in the frequency whose
+coefficients are the closed-form moments.
+
+The algebra that collapses the resulting double series is proved as well:
+
+- `trialCoeff_eq` — the `(j, k)` term of the Kaiser–Bessel cosine series is exactly a binomial
+  coefficient over an odd factorial,
+
+  ```text
+  (c²/4)^k/(k!)² · (-1)^j omega^(2j) M(j,k)/(2j)! = 2 binom(j+k, j) (c²)^k (-omega²)^j/(2(j+k)+1)!,
+  ```
+
+  after expanding `(j+k+1)! = (j+k+1) binom(j+k,j) j! k!` and `(2j+2k+2)! = 2(j+k+1)(2(j+k)+1)!`.
+- `antidiagonal_trialCoeff_sum` — summing that over `j + k = m` is the binomial theorem:
+
+  ```text
+  sum_(j+k=m) 2 binom(m,j)(c²)^k(-omega²)^j/(2m+1)! = 2 (c² - omega²)^m/(2m+1)!.
+  ```
+
+The regrouping itself is now proved too, in `RHTower/BandTrialSeries.lean`:
+
+- `antidiagonal_binomial_sum` — the collapse for arbitrary `a`, `b`, so the same lemma serves the
+  alternating series (`a = -omega²`) and its absolute values (`a = +omega²`).
+- `tsum_eq_tsum_sum_antidiagonal` — antidiagonal reindexing of *any* summable family on `ℕ × ℕ`
+  (mathlib has this only inside the Cauchy product formula), via
+  `sigmaAntidiagonalEquivProd` and `Summable.tsum_sigma'`.
+- `summable_trialTerm` — summability of the double family: the absolute values collapse on each
+  antidiagonal to `2 (omega² + c²)^m/(2m+1)!`, and `summable_oddFactorial_pow` dominates that by the
+  exponential series (`m! <= (2m+1)!`).
+- `tsum_trialTerm_eq` — hence
+
+  ```text
+  sum_(j,k) 2 binom(j+k,j)(c²)^k(-omega²)^j/(2(j+k)+1)! = sum_m 2 (c² - omega²)^m/(2m+1)!,
+  ```
+
+  which is `2 sinh(sqrt(c²-omega²))/sqrt(c²-omega²)` inside the band and
+  `2 sin(sqrt(omega²-c²))/sqrt(omega²-c²)` outside it.
+
+**The trial's band transform is now proved**, in `RHTower/BandKaiserTrial.lean`:
+
+```text
+K_c(x) = sum_k (c²(1-x²)/4)^k/(k!)²  (= I_0(c sqrt(1-x²))),
+∫_(-1)^1 K_c(x) cos(omega x) dx = sum_m 2 (c² - omega²)^m/(2m+1)!,
+```
+
+by term-by-term integration in the weight exponent (`summable_kaiserTerm`: squared factorials dominate
+factorials, so the interchange is dominated by the exponential series), the moment expansion of each
+weight transform, the coefficient identity, and the antidiagonal collapse; the iterated sum is
+reindexed through `Equiv.prodComm` and `Summable.tsum_prod'`.
+
+Inside the band every term of the series is positive, so a *single* term bounds the transform below —
+that is what makes the trial's in-band spectral mass exponentially large, with no Stirling estimate on
+the trial itself.  Outside the band the same series is `2 sin(sqrt(omega²-c²))/sqrt(omega²-c²)`, whose
+square has a polynomial tail integral.  Both closed forms and both mass bounds are now proved, in `RHTower/BandKaiserBounds.lean`:
+
+- `tsum_oddFactorial_sinh`, `tsum_oddFactorial_sin` — the odd-factorial series is `2 sinh v/v` for a
+  positive argument `v²` and `2 sin u/u` for a negative one `-u²` (mathlib's `Real.sinh_eq_tsum`,
+  `Real.sin_eq_tsum` after pulling out `2/v`).
+- `integral_kaiserTrial_cos_of_lt`, `integral_kaiserTrial_cos_of_gt` — hence the trial transform is
+  `2 sinh(sqrt(c²-omega²))/sqrt(c²-omega²)` inside the band and
+  `2 sin(sqrt(omega²-c²))/sqrt(omega²-c²)` outside it.
+- `abs_integral_kaiserTrial_cos_le` — **the tail bound**: beyond the band edge the transform is at most
+  `min(2, 2/sqrt(omega²-c²))` in absolute value, from `|sin t| <= min(1, |t|)`.
+- `tsum_oddFactorial_mono`, `integral_kaiserTrial_cos_ge` — **the inner-band bound**: on `|omega| <= 1`
+  the transform is at least `2 sinh(sqrt(c²-1))/sqrt(c²-1)`, because every term of the series is
+  positive and monotone in `c² - omega²`; and `sinh_quotient_ge` turns that into `(e^v - 1)/v` with
+  `v = sqrt(c²-1)`, i.e. exponential growth in the aperture.
+
+So the trial's in-band spectral mass is at least of order `e^(2c)/c²` and its out-of-band mass is at
+most of order `log c`, giving the ratio `O(c² log c) e^(-2c)`.  The tail integral is proved too, in `RHTower/BandKaiserTail.lean`:
+
+- `min_four_le_cauchy` — the elementary envelope `min(4, 4/t²) <= 8/(1+t²)`.
+- `sq_integral_kaiserTrial_cos_le` — since `omega² - c² >= (|omega| - c)²`, the square of the trial
+  transform beyond the band edge is at most the Cauchy envelope `8/(1 + (|omega| - c)²)`.
+- `integral_Ioi_cauchy_envelope` — the tail integral of that envelope is `4 pi`, *independent of the
+  aperture* (improper FTC with primitive `8 arctan(omega - c)`).
+
+So the trial's out-of-band spectral mass is bounded by the absolute constant `8 pi` (both sides), while
+its in-band mass is at least of order `e^(2c)/c²`.  What remains to convert this into the leakage
+envelope is the variational step alone: the largest band eigenvalue as the supremum of the Rayleigh
+quotient of the compact positive symmetric band operator, together with the evenness bridge
+identifying `bandFourier` with the cosine transform on even test functions.
+
 ## Lean gates
 
 - [x] Lean: the sinc kernel equals the finite-Fourier character integral — equation `(6)` (already in the

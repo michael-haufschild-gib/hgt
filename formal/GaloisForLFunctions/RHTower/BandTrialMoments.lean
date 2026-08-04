@@ -1,5 +1,7 @@
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
+import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 /-!
 # Even moments of the band trial weights
@@ -140,6 +142,189 @@ theorem trialMoment_mul_factorial (k : ℕ) : ∀ j : ℕ,
     have hfne : (Nat.factorial (2 * j + 2 * k + 2) : ℝ) ≠ 0 := ne_of_gt hfpos
     field_simp at hj hj1 ⊢
     linear_combination ((2 * (j : ℝ) + 2 * (k : ℝ) + 4) * (2 * (j : ℝ) + 2 * (k : ℝ) + 3)) * hj - hj1
+
+/-! ## The cosine transform of a trial weight -/
+
+/-- The restricted band measure has total mass `2`. -/
+theorem bandMeasure_univ :
+    ((volume.restrict (Set.Ioc (-1 : ℝ) 1)) Set.univ).toReal = 2 := by
+  rw [Measure.restrict_apply_univ, Real.volume_Ioc]
+  rw [ENNReal.toReal_ofReal (by norm_num)]
+  norm_num
+
+theorem bandMeasure_real_univ :
+    (volume.restrict (Set.Ioc (-1 : ℝ) 1)).real Set.univ = 2 := by
+  show ((volume.restrict (Set.Ioc (-1 : ℝ) 1)) Set.univ).toReal = 2
+  exact bandMeasure_univ
+
+instance bandMeasure_isFinite : IsFiniteMeasure (volume.restrict (Set.Ioc (-1 : ℝ) 1)) := by
+  constructor
+  rw [Measure.restrict_apply_univ, Real.volume_Ioc]
+  exact ENNReal.ofReal_lt_top
+
+/-- **The cosine transform of a trial weight is the moment series.**  Term-by-term integration of the
+cosine series against the weight; the interchange is dominated by the exponential series. -/
+theorem integral_trialWeight_cos (k : ℕ) (ω : ℝ) :
+    (∫ x in (-1 : ℝ)..1, (1 - x ^ 2) ^ k * Real.cos (ω * x))
+      = ∑' j : ℕ, (-1) ^ j * ω ^ (2 * j) / (Nat.factorial (2 * j) : ℝ) * trialMoment j k := by
+  have hle : (-1 : ℝ) ≤ 1 := by norm_num
+  set F : ℕ → ℝ → ℝ := fun j x =>
+    (1 - x ^ 2) ^ k * ((-1) ^ j * (ω * x) ^ (2 * j) / (Nat.factorial (2 * j) : ℝ)) with hF
+  have hcont : ∀ j, Continuous (F j) := by
+    intro j
+    rw [hF]
+    fun_prop
+  have hint : ∀ j, Integrable (F j) (volume.restrict (Set.Ioc (-1 : ℝ) 1)) := by
+    intro j
+    exact (hcont j).integrableOn_Ioc
+  -- the pointwise bound on the band
+  have hptbound : ∀ (j : ℕ), ∀ x ∈ Set.Ioc (-1 : ℝ) 1,
+      ‖F j x‖ ≤ |ω| ^ (2 * j) / (Nat.factorial (2 * j) : ℝ) := by
+    intro j x hx
+    have hx1 : |x| ≤ 1 := by
+      rw [abs_le]
+      exact ⟨le_of_lt hx.1, hx.2⟩
+    have hw : |1 - x ^ 2| ≤ 1 := by
+      rw [abs_le]
+      constructor
+      · nlinarith [sq_nonneg x, sq_abs x, abs_le.mp hx1]
+      · nlinarith [sq_nonneg x]
+    have hfacpos : (0 : ℝ) < (Nat.factorial (2 * j) : ℝ) := by
+      exact_mod_cast Nat.factorial_pos _
+    have hnorm : ‖F j x‖
+        = |1 - x ^ 2| ^ k * |ω| ^ (2 * j) * |x| ^ (2 * j) / (Nat.factorial (2 * j) : ℝ) := by
+      simp only [hF, Real.norm_eq_abs, abs_mul, abs_div, abs_pow, abs_neg, abs_one, one_pow,
+        abs_of_pos hfacpos, mul_pow]
+      ring
+    rw [hnorm]
+    have h1 : |1 - x ^ 2| ^ k ≤ 1 := pow_le_one₀ (abs_nonneg _) hw
+    have h2 : |x| ^ (2 * j) ≤ 1 := pow_le_one₀ (abs_nonneg _) hx1
+    have hnum : |1 - x ^ 2| ^ k * |ω| ^ (2 * j) * |x| ^ (2 * j) ≤ |ω| ^ (2 * j) := by
+      calc |1 - x ^ 2| ^ k * |ω| ^ (2 * j) * |x| ^ (2 * j)
+          ≤ 1 * |ω| ^ (2 * j) * 1 := by
+            gcongr
+        _ = |ω| ^ (2 * j) := by ring
+    gcongr
+  have hnormbound : ∀ j : ℕ,
+      (∫ x, ‖F j x‖ ∂(volume.restrict (Set.Ioc (-1 : ℝ) 1)))
+        ≤ 2 * (|ω| ^ (2 * j) / (Nat.factorial (2 * j) : ℝ)) := by
+    intro j
+    have hmono : (∫ x, ‖F j x‖ ∂(volume.restrict (Set.Ioc (-1 : ℝ) 1)))
+        ≤ ∫ _x : ℝ, |ω| ^ (2 * j) / (Nat.factorial (2 * j) : ℝ)
+            ∂(volume.restrict (Set.Ioc (-1 : ℝ) 1)) :=
+      MeasureTheory.integral_mono_of_nonneg
+        (Filter.Eventually.of_forall fun x => norm_nonneg _)
+        (integrable_const _)
+        (by
+          filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
+          exact hptbound j x hx)
+    refine hmono.trans ?_
+    rw [MeasureTheory.integral_const, smul_eq_mul, bandMeasure_real_univ]
+  have hsummable : Summable fun j : ℕ =>
+      (∫ x, ‖F j x‖ ∂(volume.restrict (Set.Ioc (-1 : ℝ) 1))) := by
+    have hbase : Summable fun j : ℕ => |ω| ^ (2 * j) / (Nat.factorial (2 * j) : ℝ) := by
+      have hinj : Function.Injective fun j : ℕ => 2 * j := fun a b hab => by
+        have h2 : 2 * a = 2 * b := hab
+        omega
+      exact (Real.summable_pow_div_factorial |ω|).comp_injective hinj
+    refine Summable.of_nonneg_of_le (fun j => integral_nonneg fun x => norm_nonneg _)
+      hnormbound (hbase.mul_left 2)
+  have hkey := MeasureTheory.integral_tsum_of_summable_integral_norm hint hsummable
+  -- the sum of the series is the weight times the cosine
+  have hsumpt : ∀ x : ℝ, (∑' j : ℕ, F j x) = (1 - x ^ 2) ^ k * Real.cos (ω * x) := by
+    intro x
+    rw [hF]
+    rw [tsum_mul_left, Real.cos_eq_tsum]
+  -- each term integrates to the moment
+  have hterm : ∀ j : ℕ, (∫ x, F j x ∂(volume.restrict (Set.Ioc (-1 : ℝ) 1)))
+      = (-1) ^ j * ω ^ (2 * j) / (Nat.factorial (2 * j) : ℝ) * trialMoment j k := by
+    intro j
+    have hrew : ∀ x : ℝ, F j x
+        = ((-1) ^ j * ω ^ (2 * j) / (Nat.factorial (2 * j) : ℝ)) *
+          (x ^ (2 * j) * (1 - x ^ 2) ^ k) := by
+      intro x
+      simp only [hF, mul_pow]
+      ring
+    rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hrew),
+      MeasureTheory.integral_const_mul, trialMoment,
+      intervalIntegral.integral_of_le hle]
+  rw [intervalIntegral.integral_of_le hle]
+  rw [← MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hsumpt), ← hkey]
+  exact tsum_congr hterm
+
+/-! ## The Kaiser–Bessel coefficients -/
+
+/-- The trial moments in divided form. -/
+theorem trialMoment_eq (j k : ℕ) :
+    trialMoment j k = (Nat.factorial (2 * j) : ℝ) * (Nat.factorial k : ℝ) * 4 ^ (k + 1)
+        * (Nat.factorial (j + k + 1) : ℝ)
+      / ((Nat.factorial j : ℝ) * (Nat.factorial (2 * j + 2 * k + 2) : ℝ)) := by
+  have hjpos : (0 : ℝ) < (Nat.factorial j : ℝ) := by exact_mod_cast Nat.factorial_pos j
+  have hfpos : (0 : ℝ) < (Nat.factorial (2 * j + 2 * k + 2) : ℝ) := by
+    exact_mod_cast Nat.factorial_pos _
+  have h := trialMoment_mul_factorial k j
+  field_simp at h ⊢
+  linarith [h]
+
+/-- **The Kaiser–Bessel coefficient identity.**  The `(j, k)` term of the trial's cosine series is a
+binomial coefficient over an odd factorial: exactly the `(j, k)` term of the binomial expansion of
+`2 (c² - omega²)^(j+k)/(2(j+k)+1)!`. -/
+theorem trialCoeff_eq (c ω : ℝ) (j k : ℕ) :
+    (c ^ 2 / 4) ^ k / (Nat.factorial k : ℝ) ^ 2 *
+        ((-1) ^ j * ω ^ (2 * j) / (Nat.factorial (2 * j) : ℝ) * trialMoment j k)
+      = 2 * (Nat.choose (j + k) j : ℝ) * (c ^ 2) ^ k * (-(ω ^ 2)) ^ j
+          / (Nat.factorial (2 * (j + k) + 1) : ℝ) := by
+  have hjpos : (0 : ℝ) < (Nat.factorial j : ℝ) := by exact_mod_cast Nat.factorial_pos j
+  have hkpos : (0 : ℝ) < (Nat.factorial k : ℝ) := by exact_mod_cast Nat.factorial_pos k
+  have h2jpos : (0 : ℝ) < (Nat.factorial (2 * j) : ℝ) := by exact_mod_cast Nat.factorial_pos _
+  have hoddpos : (0 : ℝ) < (Nat.factorial (2 * (j + k) + 1) : ℝ) := by
+    exact_mod_cast Nat.factorial_pos _
+  -- the two factorial expansions
+  have hchoose : (Nat.factorial (j + k) : ℝ)
+      = (Nat.choose (j + k) j : ℝ) * (Nat.factorial j : ℝ) * (Nat.factorial k : ℝ) := by
+    have h := Nat.choose_mul_factorial_mul_factorial (Nat.le_add_right j k)
+    have hsub : j + k - j = k := by omega
+    rw [hsub] at h
+    exact_mod_cast h.symm
+  have hjk1 : (Nat.factorial (j + k + 1) : ℝ)
+      = ((j : ℝ) + k + 1) * (Nat.factorial (j + k) : ℝ) := by
+    have h : Nat.factorial (j + k + 1) = (j + k + 1) * Nat.factorial (j + k) :=
+      Nat.factorial_succ (j + k)
+    rw [h]
+    push_cast
+    ring
+  have hbig : (Nat.factorial (2 * j + 2 * k + 2) : ℝ)
+      = (2 * ((j : ℝ) + k + 1)) * (Nat.factorial (2 * (j + k) + 1) : ℝ) := by
+    have e1 : 2 * j + 2 * k + 2 = (2 * (j + k) + 1) + 1 := by ring
+    have h : Nat.factorial (2 * j + 2 * k + 2)
+        = (2 * (j + k) + 1 + 1) * Nat.factorial (2 * (j + k) + 1) := by
+      rw [e1, Nat.factorial_succ]
+    rw [h]
+    push_cast
+    ring
+  have hpow : ((-1 : ℝ)) ^ j * ω ^ (2 * j) = (-(ω ^ 2)) ^ j := by
+    rw [pow_mul, show -(ω ^ 2) = (-1) * ω ^ 2 by ring, mul_pow]
+  rw [trialMoment_eq, hjk1, hchoose, hbig, ← hpow, div_pow]
+  have hjk1pos : (0 : ℝ) < (j : ℝ) + k + 1 := by positivity
+  have h4 : ((4 : ℝ)) ^ k ≠ 0 := by positivity
+  field_simp
+  ring
+
+/-- **The antidiagonal collapse.**  Summing the coefficient identity over `j + k = m` is the binomial
+theorem for `(c² - omega²)^m`. -/
+theorem antidiagonal_trialCoeff_sum (c ω : ℝ) (m : ℕ) :
+    ∑ p ∈ Finset.antidiagonal m,
+        2 * (Nat.choose m p.1 : ℝ) * (c ^ 2) ^ p.2 * (-(ω ^ 2)) ^ p.1
+          / (Nat.factorial (2 * m + 1) : ℝ)
+      = 2 * (c ^ 2 - ω ^ 2) ^ m / (Nat.factorial (2 * m + 1) : ℝ) := by
+  have hbinom : (c ^ 2 - ω ^ 2) ^ m
+      = ∑ i ∈ Finset.range (m + 1),
+        (-(ω ^ 2)) ^ i * (c ^ 2) ^ (m - i) * (Nat.choose m i : ℝ) := by
+    have h : (c : ℝ) ^ 2 - ω ^ 2 = (-(ω ^ 2)) + c ^ 2 := by ring
+    rw [h, add_pow]
+  rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk, hbinom, Finset.mul_sum, Finset.sum_div]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  ring
 
 end GaloisForLFunctions.RHTower
 
