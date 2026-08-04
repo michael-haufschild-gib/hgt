@@ -2,10 +2,10 @@
 
 - **Stage:** 1-in-progress
 - **Status:** `[CONJECTURE] [OPEN CORE]`
-- **Active claim:** `[CONJECTURE — SINGULAR_ALL_PRIME_CORRECTED_DET2_CARTIER_MONODROMY]`
-  construct one divisor-independent corrected-determinant Stokes functor on the finite-prime/depth
-  source bicomplex, prove aperture compatibility, and identify its cofinal monodromy with the
-  fixed-fibre physical Xi orientation action.  No summability landing is assumed.
+- **Active claim:** `[CONJECTURE — COEFFICIENT_GENERATED_REES_CORONA_SOURCE_ADMISSION]`
+  construct, before divisor specialization, an exact irregular realization of the resolved
+  prime/depth source whose one directed Rees microstalk has quotient norm equal to the physical
+  fixed-metric Stokes excess; prove the strict source boundary lands in the corona kernel.
 
 ## Exact target
 
@@ -620,3 +620,128 @@ jet.
 on the algebraic finite-prime/depth Stokes bicomplex, prove compatibility under aperture
 enlargement, and identify its cofinal Cartier monodromy with the physical `R_(n,rho)` on the
 nonzero leading Xi wedge.  This—not another selector or quotient—is the missing producer.
+
+## 2026-08-04 determinant transgression and Witt-law correction
+
+### Common corrected determinant is not the producer `[FORMALIZED NO-GO]`
+
+For ordinary prime `p`, real grade `t`, and positive Fisher density `d(p)`, define the signed
+Bockstein coefficient and two physical rotation determinants by
+
+```text
+b_t(p)=F_(-t)(p)-F_t(p),
+det R_t(p)=-p^t,
+det R_(-t)(p)=-p^(-t).
+```
+
+Then
+
+```text
+b_t(p)=d(p) (det R_t(p)-det R_(-t)(p)).          (D1)
+```
+
+Since `d(p)>0` and `p>1`,
+
+```text
+b_t(p)=0
+ <-> det R_t(p)=det R_(-t)(p)
+ <-> det R_t(p)=det tau=det R_(-t)(p)
+ <-> t=0.                                        (D2)
+```
+
+If a corrected Stokes determinant `c` is common to both orientations and `c!=0`, cancellation
+gives
+
+```text
+c det R_t(p)=c det R_(-t)(p) <-> t=0.            (D3)
+```
+
+Thus Clause 3 of `SINGULAR_ALL_PRIME_CORRECTED_DET2_CARTIER_MONODROMY`, when interpreted as one
+common determinant-one correction, cannot annihilate the explicit Bockstein.  It preserves its
+vanishing locus exactly.  Comparing either physical determinant with the cyclic source
+determinant is already the neutral-grade assertion.  A valid Stokes producer must be genuinely
+orientation-sensitive before Xi specialization; unimodular conservation is insufficient.
+
+Equations `(D1)`--`(D3)` are formalized in
+`PrimeGammaCofinalBocksteinDeterminantTransgression.lean`.
+
+### Contribution of the Lorentzian Stokes coarea law
+
+The coefficient-generated Stokes theorem gives, for a realized finite Puiseux spectrum,
+
+```text
+Q=P-lambda M^2,    P>0,
+ind^-(Q)+null(Q)<=1.
+```
+
+Fusion, topology, nonnegative multi-Rees specialization, and positive corona elimination retain
+the same unique nonpositive rank port.  This sharply supports Route R's observed one-scalar
+frontier, but it does **not** annihilate that scalar.  The paper's corona exact sequence
+
+```text
+0 -> X -> X+Y -> Y -> 0
+```
+
+identifies the quotient with `Y`; exactness alone does not put a specified landed vector in the
+kernel of the quotient map.
+
+The exact Route-R fixed-source excess is already
+
+```text
+Delta(a,i,j,c)
+ = |(a theta_ij/(lambda_i lambda_j)) c|^2,
+```
+
+where `a=2 Re(rho)-1`, `theta_ij` is the resolved BV--Wold connection coefficient, the lambdas
+are positive Wold--Gamma clocks, and `c` is the nonzero first Xi jet.  This suggests a precise
+Rees coordinate
+
+```text
+z_(i,j)=tau_(i,j) nu_(i,j),
+tau_(i,j)=a theta_ij/(lambda_i lambda_j),
+```
+
+whose directed microstalk norm would be `Delta`.
+
+### Frozen replacement conjecture
+
+`[CONJECTURE — COEFFICIENT_GENERATED_REES_CORONA_SOURCE_ADMISSION]`
+
+There is a pre-divisor irregular realization of the existing resolved rational-adelic
+prime/depth complex satisfying all five clauses:
+
+1. finite prime/depth coefficients generate an equivariant Puiseux spectrum and its canonical
+   cut/Rees incidence without using an Xi zero;
+2. the strict resolved source differential and period-one Stokes regulator are carried by an
+   exact functor to the analytic-wall germ and its corona sequence;
+3. the unique edge microstalk coordinate specializes on the physical Xi conormal to
+
+   ```text
+   ((2 Re(rho)-1) theta_ij/(lambda_i lambda_j)) c_rho;
+   ```
+
+4. the source boundary law places that specialized vector in the image of the corona inclusion,
+   so its quotient microstalk is zero;
+5. the construction extends across Rees parameter zero, where exponential factors collide, and
+   retains prime, inverse-prime, depth, divisor, and multiplicity-jet provenance.
+
+Clauses 1--3 identify the quotient norm with `Delta_rho`.  Clause 4 forces that norm to zero.
+On the certified nonzero edge and nonzero leading Xi jet, the existing formal classifier then
+gives `Re(rho)=1/2`.
+
+### Exact open core and falsifiers
+
+`[OPEN CORE — SOURCE_TO_CORONA_KERNEL_ADMISSION]` Construct Clauses 1--2 on the literal arithmetic
+source and prove Clause 4 before selecting a divisor.  This is narrower than a general irregular
+Riemann--Hilbert theorem and stronger than the abstract Witt law.
+
+- The Witt index bound only proves uniqueness of a nonpositive channel, not its vanishing.
+- Corona exactness identifies a quotient; it does not kill an arbitrary quotient coordinate.
+- Puiseux contact orders and microstalk ranks are discrete.  Equality with the analytic norm
+  `Delta` requires an additional metric/Rees comparison, not wall counting alone.
+- Choosing `tau` after seeing `rho` is circular.  It must specialize from the global source Real
+  family carrying both Gamma orientations.
+- At `tau=0` the two exponential factors collide; a realization valid only for distinct factors
+  cannot prove critical-line admission.
+- Any exact functor built from the already curved scalar physical connection simply assumes the
+  conclusion.  It must start from the unconditionally flat resolved rank-two source.

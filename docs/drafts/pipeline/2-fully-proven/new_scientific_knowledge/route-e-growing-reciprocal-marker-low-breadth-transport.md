@@ -4087,6 +4087,7 @@ over `t` instead. These are the first bricks of that average.
 - `volume_largeValues_Icc_le` — the same on the closed interval.
 - `integral_norm_dirPoly_le_of_sup` — splitting the frequency range at `V`:
   `∫₀^T |F| ≤ V·T + M·|{|F| ≥ V}|` for any uniform sup `M`.
+- `norm_dirPoly_le_sum_norm` — the trivial sup `|F| ≤ ∑|a_n|`, so the sup need not be assumed.
 - `integral_norm_dirPoly_halasz` — the two combined:
 
       ∫₀^T |F| ≤ V·T + M·(T + 4N(1 + log N))·∑|a_n|² / V².
@@ -4094,5 +4095,8 @@ over `t` instead. These are the first bricks of that average.
   This is the mean-value shape: the small frequencies are paid for by the threshold and the large
   ones by their measure, so no pointwise decay at any individual frequency is required.
 
-All four are unconditional (`[propext, Classical.choice, Quot.sound]`) and wired into
+- `integral_norm_dirPoly_halasz_l1` — the same with the trivial sup substituted, so the bound is a
+  statement about the coefficients alone.
+
+All six are unconditional (`[propext, Classical.choice, Quot.sound]`) and wired into
 `GaloisForLFunctions.RHTower`.

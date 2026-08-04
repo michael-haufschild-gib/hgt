@@ -1,7 +1,7 @@
 # The energy estimate for the clock equation
 
 - **ID:** hyperbolic-energy-estimate
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** child of `two-species-conformal-clock-scale-law`; the "hyperbolic energy theory, which
   mathlib does not have" named in the closing note of `finite-regularity-clock-probes`
@@ -53,8 +53,9 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 ## Gates
 
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven
+- [x] 2 → 3  formalized — four modules, every theorem unconditional
+      (`[propext, Classical.choice, Quot.sound]`)
 - [ ] 3 → 4  publication-ready
 
 ## Numbered statements
@@ -71,11 +72,14 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 8 | the pointwise expansion of `∂ₜ(energy density)` | `dirDeriv_energyDensity` | **built** |
 | 9 | the flux identity `∫∂ₜ(energy density) = 2∫(V+1)·u·∂ₜu` | `integral_dirDeriv_energyDensity` (with `slice`, `contDiff_slice`, `hasCompactSupport_slice`, `dirDeriv_zero_of_notMem`) | **built** |
 | 10 | differentiation under the integral | `waveEnergy`, `hasDerivAt_waveEnergy` (with `hasDerivAt_timeSlice`, `contDiff_energyDensity`, `energyDensity_zero_of_notMem`, `hasCompactSupport_energyDensity_slice`) | **built** |
-| 11 | the Grönwall estimate | — | next |
-| 12 | uniqueness for the Cauchy problem | — | next |
+| 11 | the flux bound and the Grönwall estimate | `energyDensity_nonneg`, `waveEnergy_nonneg`, `integrable_energyDensity_slice`, `abs_integral_flux_le`, **`waveEnergy_le_exp`** | **built** |
+| 12 | vanishing of a solution with zero initial energy | `energyDensity_eq_zero_of_waveEnergy_eq_zero`, **`eq_zero_of_waveEnergy_zero`** | **built** |
+| 13 | linearity of the equation and uniqueness for the Cauchy problem | `dirDeriv_sub`, `solvesWaveEq_sub`, `waveEnergy_eq_zero_of_slice_zero`, **`eq_of_solvesWaveEq_of_data_eq`** | **built** |
+| 14 | time-reflection invariance and two-sided uniqueness | `timeReflect`, `dirDeriv_comp_timeReflect`, `solvesWaveEq_comp_timeReflect`, **`eq_of_solvesWaveEq_of_data_eq_all`** | **built** |
+| 15 | the estimate on both sides, and continuous dependence | `energyDensity_comp_timeReflect`, `waveEnergy_comp_timeReflect`, **`waveEnergy_le_exp_abs`**, **`waveEnergy_sub_le_exp_abs`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
-`WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10). All wired into the umbrella; axioms
+`WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15). All wired into the umbrella; axioms
 `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -94,18 +98,44 @@ Statement 10 is also complete: `hasDerivAt_waveEnergy` differentiates the energy
 sign, the domination being `Set.indicator K (fun _ => C)` with `C` the supremum of the continuous
 time derivative of the energy density on the compact `Icc (t-1) (t+1) ×ˢ K`.
 
-What remains (11–12):
+Statements 11 and 12 close it. The flux is dominated by the energy,
+`|2∫(V+1)·u·∂ₜu| ≤ (M+1)·E(t)` whenever `|V| ≤ M` — pointwise from `2|ab| ≤ a²+b²` and the fact that
+the energy density dominates `u² + (∂ₜu)²` — so Grönwall gives
 
-* combine 9 and 10 into `E'(t) = 2∫(V+1)·u·∂ₜu`, bound it pointwise by
-  `2|(V+1)·u·∂ₜu| ≤ (M+1)·(u² + (∂ₜu)²) ≤ (M+1)·(energy density)` for `|V| ≤ M`, integrate
-  (`norm_integral_le_integral_norm` and monotonicity), and apply
-  `norm_le_gronwallBound_of_norm_deriv_right_le` with `ε = 0` to get
-  `E(t) ≤ E(0)·exp((M+1)t)` for `t ≥ 0`;
-* uniqueness: the difference of two solutions solves the same linear equation, has zero energy at
-  `t = 0`, hence zero energy for all `t ≥ 0`; a nonnegative continuous integrand with zero integral
-  vanishes, and the energy density dominates `u²`.
+**`waveEnergy_le_exp`**: `E(t) ≤ E(0)·exp((M+1)·t)` for `t ≥ 0`,
+
+and hence **`eq_zero_of_waveEnergy_zero`**: a solution whose energy vanishes at time `0` vanishes at
+every later time. A nonnegative continuous integrand with vanishing integral is identically zero
+(`Continuous.ae_eq_iff_eq` on a measure of full support), and the energy density dominates `u²`.
+
+Statement 13 puts it in the form an inverse problem uses. The equation is linear
+(`solvesWaveEq_sub`), a field vanishing on a slice together with its time derivative has zero energy
+there (`waveEnergy_eq_zero_of_slice_zero`), and hence **`eq_of_solvesWaveEq_of_data_eq`**: *two
+classical solutions with spatially compact support, the same bounded potential and the same Cauchy
+data agree at every later time.*
+
+Statement 14 removes the sign restriction. Only the *second* time derivative enters the equation, so
+reflecting an event across the initial slice carries a solution of `V` to a solution of the
+reflected potential (`solvesWaveEq_comp_timeReflect`), and uniqueness for `t ≥ 0` gives
+**`eq_of_solvesWaveEq_of_data_eq_all`**: the two solutions agree at *every* time.
+
+Statement 15 closes the layer symmetrically. The energy density is even in the time derivative, so
+reflection turns the forward estimate into `E(t) ≤ E(0)·exp((M+1)|t|)`
+(**`waveEnergy_le_exp_abs`**), and applying that to the difference of two solutions gives
+**`waveEnergy_sub_le_exp_abs`**: *the energy of the difference at any time is controlled by the
+energy of the difference of the Cauchy data.* That is continuous dependence — uniqueness in
+quantitative form.
+
+This is the uniqueness half of the classical local theory, in exactly the class the clock programme
+uses: real classical solutions with spatially compact support. What it does *not* give is existence;
+that is the Galerkin or Sobolev-scale half, and it is what would lower the regularity threshold of
+`finite-regularity-clock-probes` below `C^{2d+5}`.
 
 ## Log
+- 2026-08-04 — statement 15 (two-sided estimate, continuous dependence) formalized.
+- 2026-08-04 — statement 14 (time reflection, two-sided uniqueness) formalized.
+- 2026-08-04 — statement 13 (linearity and Cauchy uniqueness) formalized.
+- 2026-08-04 — statements 11–12 formalized; the card is complete and moves to 3-formalized.
 - 2026-08-04 — statement 10 (differentiation under the integral) formalized; 11–12 remain.
 - 2026-08-04 — statement 9 (the flux identity) formalized; 10–12 remain.
 - 2026-08-04 — statements 1–8 formalized in three modules (Green identity, directional calculus,

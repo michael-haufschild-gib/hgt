@@ -3,7 +3,7 @@
 - **ID:** euler-stokes-rank-port-inertia
 - **Stage:** 4-publication-ready
 - **Type:** CANDIDATE NEW SCIENTIFIC KNOWLEDGE — paper-proved, Lean-proved, novelty provisional
-- **Manuscript:** `docs/drafts/manuscripts/polarized-stokes-microlocal-witt-law/submission.tex`
+- **Manuscript:** `docs/drafts/pipeline/4-publication-ready/polarized-stokes-microlocal-witt-law/submission.tex`
 - **Prior local source:** `docs/drafts/manuscripts/stokes-cartan-lorentz-law/main.tex`; used only as
   the genus-zero one-port input
 - **Statement:** Every geometric reading of a connected wild Stokes diagram determines a physical-rank covector lying in one dual Lorentz cone of its invariant Cartan form; after isolating that port, all local Stokes/Rees/corona energy is positive, while topology changes only the coefficient of the same rank-square defect.

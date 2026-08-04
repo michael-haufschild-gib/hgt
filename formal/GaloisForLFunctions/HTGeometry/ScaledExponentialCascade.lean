@@ -165,19 +165,109 @@ theorem pderiv_scaleHom (a : ℕ → ℂ) (k : ℕ) (P : MvPolynomial ℕ ℂ) :
               (MvPolynomial.C (a k) * scaleHom a ((MvPolynomial.pderiv k) p)) := by
         rw [map_mul, scaleHom_X, Derivation.leibniz, pderiv_C_mul, hp]
         simp only [smul_eq_mul]
-        ring
       have hR : scaleHom a ((MvPolynomial.pderiv k) (p * MvPolynomial.X j))
           = scaleHom a p * scaleHom a ((MvPolynomial.pderiv k) (MvPolynomial.X j))
             + MvPolynomial.C (a j) * MvPolynomial.X j * scaleHom a ((MvPolynomial.pderiv k) p) := by
         rw [Derivation.leibniz]
         simp only [smul_eq_mul, map_add, map_mul, scaleHom_X]
-        ring
       rw [hL, hR]
       by_cases hkj : k = j
       · subst hkj
-        rw [MvPolynomial.pderiv_X_self, scaleHom_C]
+        rw [MvPolynomial.pderiv_X_self, map_one]
         ring
       · rw [MvPolynomial.pderiv_X_of_ne (Ne.symm hkj), map_zero]
         ring
+
+
+/-! ## The transported determinant -/
+
+theorem iterate_scaledDerivation_C_mul (a : ℕ → ℂ) (c : ℂ) (P : MvPolynomial ℕ ℂ) (i : ℕ) :
+    ((scaledDerivation a : MvPolynomial ℕ ℂ → MvPolynomial ℕ ℂ)^[i]) (MvPolynomial.C c * P)
+      = MvPolynomial.C c * ((scaledDerivation a : MvPolynomial ℕ ℂ → MvPolynomial ℕ ℂ)^[i]) P := by
+  induction i with
+  | zero => simp
+  | succ i ih =>
+      rw [Function.iterate_succ_apply', Function.iterate_succ_apply', ih, scaledDerivation_C_mul]
+
+/-- The scaled model's jets are the tower's, up to constants and the scaling automorphism. -/
+theorem scaled_jet_eq (a : ℕ → ℂ) (N i : ℕ) :
+    MvPolynomial.C (a N) *
+        ((scaledDerivation a : MvPolynomial ℕ ℂ → MvPolynomial ℕ ℂ)^[i]) (MvPolynomial.X N)
+      = MvPolynomial.C (a 0) ^ i * scaleHom a (towerJet N i) := by
+  have h1 := iterate_scaledDerivation_scaleHom a (MvPolynomial.X N) i
+  rw [scaleHom_X, iterate_scaledDerivation_C_mul] at h1
+  exact h1
+
+/-- **The scaled model's output-jet determinant is nonzero.** -/
+theorem scaled_jet_det_ne_zero {a : ℕ → ℂ} (ha : ∀ k, a k ≠ 0) (m : ℕ) :
+    (Matrix.of fun i j : Fin (m + 1) =>
+        (MvPolynomial.pderiv ((i : ℕ) + 1))
+          (((scaledDerivation a : MvPolynomial ℕ ℂ → MvPolynomial ℕ ℂ)^[(j : ℕ)])
+            (MvPolynomial.X (m + 1)))).det ≠ 0 := by
+  classical
+  set A : Matrix (Fin (m + 1)) (Fin (m + 1)) (MvPolynomial ℕ ℂ) :=
+    Matrix.of fun i j => (MvPolynomial.pderiv ((i : ℕ) + 1))
+      (((scaledDerivation a : MvPolynomial ℕ ℂ → MvPolynomial ℕ ℂ)^[(j : ℕ)])
+        (MvPolynomial.X (m + 1))) with hA
+  set B : Matrix (Fin (m + 1)) (Fin (m + 1)) (MvPolynomial ℕ ℂ) :=
+    Matrix.of fun i j => (MvPolynomial.pderiv ((i : ℕ) + 1)) (towerJet (m + 1) (j : ℕ)) with hB
+  have hentry : ∀ i j : Fin (m + 1),
+      MvPolynomial.C (a (m + 1)) * A i j
+        = MvPolynomial.C (a 0) ^ (j : ℕ) * MvPolynomial.C (a ((i : ℕ) + 1)) *
+            scaleHom a (B i j) := by
+    intro i j
+    have h1 : (MvPolynomial.pderiv ((i : ℕ) + 1))
+        (MvPolynomial.C (a (m + 1)) *
+          ((scaledDerivation a : MvPolynomial ℕ ℂ → MvPolynomial ℕ ℂ)^[(j : ℕ)])
+            (MvPolynomial.X (m + 1)))
+        = (MvPolynomial.pderiv ((i : ℕ) + 1))
+          (MvPolynomial.C (a 0) ^ (j : ℕ) * scaleHom a (towerJet (m + 1) (j : ℕ))) := by
+      rw [scaled_jet_eq a (m + 1) (j : ℕ)]
+    rw [pderiv_C_mul] at h1
+    rw [hA, hB, Matrix.of_apply, Matrix.of_apply]
+    rw [h1, ← map_pow, pderiv_C_mul, pderiv_scaleHom, map_pow]
+    ring
+  set M3 : Matrix (Fin (m + 1)) (Fin (m + 1)) (MvPolynomial ℕ ℂ) :=
+    (scaleHom a).mapMatrix B with hM3
+  set M2 : Matrix (Fin (m + 1)) (Fin (m + 1)) (MvPolynomial ℕ ℂ) :=
+    Matrix.of fun i j => MvPolynomial.C (a ((i : ℕ) + 1)) * M3 i j with hM2
+  set M1 : Matrix (Fin (m + 1)) (Fin (m + 1)) (MvPolynomial ℕ ℂ) :=
+    Matrix.of fun i j => MvPolynomial.C (a 0) ^ (j : ℕ) * M2 i j with hM1
+  have h2 : M2.det = (∏ i : Fin (m + 1), MvPolynomial.C (a ((i : ℕ) + 1))) * M3.det :=
+    Matrix.det_mul_column _ _
+  have h1 : M1.det = (∏ j : Fin (m + 1), MvPolynomial.C (a 0) ^ (j : ℕ)) * M2.det :=
+    Matrix.det_mul_row _ _
+  have h3 : M3.det = scaleHom a B.det := (AlgHom.map_det (scaleHom a) B).symm
+  have hAM : (Matrix.of fun i j : Fin (m + 1) => MvPolynomial.C (a (m + 1)) * A i j) = M1 := by
+    funext i j
+    rw [Matrix.of_apply, hentry i j, hM1, hM2, hM3]
+    simp only [Matrix.of_apply, AlgHom.mapMatrix_apply, Matrix.map_apply]
+    ring
+  have hleft : MvPolynomial.C (a (m + 1)) ^ (m + 1) * A.det
+      = (Matrix.of fun i j : Fin (m + 1) => MvPolynomial.C (a (m + 1)) * A i j).det := by
+    rw [Matrix.det_mul_column (fun _ : Fin (m + 1) => MvPolynomial.C (a (m + 1))) A]
+    simp
+  have hdetA : MvPolynomial.C (a (m + 1)) ^ (m + 1) * A.det
+      = ((∏ j : Fin (m + 1), MvPolynomial.C (a 0) ^ (j : ℕ)) *
+          ∏ i : Fin (m + 1), MvPolynomial.C (a ((i : ℕ) + 1))) * scaleHom a B.det := by
+    rw [hleft, hAM, h1, h2, h3]
+    ring
+  intro hzero
+  rw [hzero, mul_zero] at hdetA
+  have hBdet : B.det ≠ 0 := towerJet_det_ne_zero m
+  have hφ : scaleHom a B.det ≠ 0 := by
+    intro h0
+    exact hBdet (scaleHom_injective ha (by rw [h0, map_zero]))
+  have hCne : ∀ k : ℕ, (MvPolynomial.C (a k) : MvPolynomial ℕ ℂ) ≠ 0 := by
+    intro k h
+    exact ha k (MvPolynomial.C_eq_zero.mp h)
+  have hprod : (((∏ j : Fin (m + 1), MvPolynomial.C (a 0) ^ (j : ℕ)) *
+      ∏ i : Fin (m + 1), MvPolynomial.C (a ((i : ℕ) + 1))) : MvPolynomial ℕ ℂ) ≠ 0 := by
+    refine mul_ne_zero (Finset.prod_ne_zero_iff.mpr ?_) (Finset.prod_ne_zero_iff.mpr ?_)
+    · intro j _
+      exact pow_ne_zero _ (hCne 0)
+    · intro i _
+      exact hCne ((i : ℕ) + 1)
+  exact (mul_ne_zero hprod hφ) hdetA.symm
 
 end GaloisForLFunctions.HTGeometry

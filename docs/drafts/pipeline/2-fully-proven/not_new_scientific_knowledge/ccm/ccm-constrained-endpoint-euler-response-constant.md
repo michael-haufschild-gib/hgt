@@ -461,11 +461,18 @@ All of it is unconditional and axiom-clean (`propext, Classical.choice, Quot.sou
   the band operator, with normalized eigenfunction, extends to a differentiable branch of normalized
   eigenpairs with* `nu'(c_0) = ⟪psi_0, Cos_{c_0} psi_0⟫`.
 
-So the spectral half of `(4)`–`(5)` is now proved for the operator itself, not assumed.  What the card still
-imports is the classical asymptotic input — the differentiated fixed-mode (Fuchs) expansion `(9)` and the
-constrained limit `(12)` — plus one dictionary entry: that an `L²` eigenfunction of `bandOperatorL2` has a
-continuous representative satisfying the pointwise `bandTransform` eigenrelation (kernel-smoothing regularity),
-which is what would carry the branch statement over to the classical prolate functions.
+- `RHTower/ProlateL2Regularity.lean` — the dictionary to the classical prolate functions.  The band operator
+  smooths, so an `L²` eigenvector has a distinguished continuous representative, namely its own band integral
+  `Phi(x) = nu⁻¹ ∫ sinc_c(x-y) psi(y) dy`.  `continuous_eigenExtension` proves `Phi` continuous on all of `ℝ`
+  by dominated continuity, uniformly in `x` thanks to the global bound `abs_sincSmooth_le : |sinc_c(u)| ≤
+  |c|/pi` (from `|sin t| ≤ |t|`); `eigenExtension_ae_eq` identifies it with `psi` almost everywhere; and
+  `bandTransform_eigenExtension` gives the *pointwise* eigenrelation of the corpus's function-level transform,
+  `bandTransform c Phi x = nu · Phi x` for **every** real `x` — which is the form the Slepian differential
+  machinery acts on.  The subtype-to-interval integral conversion is `integral_subtype_unit`.
+
+So the spectral half of `(4)`–`(5)` is now proved for the operator itself, not assumed, and it is stated both
+in the Hilbert space and pointwise.  What the card still imports is only the classical asymptotic input: the
+differentiated fixed-mode (Fuchs) expansion `(9)` and the constrained limit `(12)`.
 
 ## Lean gates
 
@@ -486,8 +493,9 @@ which is what would carry the branch statement over to the classical prolate fun
 - [x] Lean: the concrete band operator realised as a compact symmetric operator on real `L²[-1, 1]`,
   differentiable in the aperture, with the branch theorem instantiated on it
   (`exists_bandOperatorL2_branch`)
-- [ ] Lean: the regularity dictionary — an `L²` eigenfunction of the band operator has a continuous
-  representative satisfying the pointwise `bandTransform` eigenrelation
+- [x] Lean: the regularity dictionary — an `L²` eigenfunction of the band operator has a continuous
+  representative satisfying the pointwise `bandTransform` eigenrelation at every real point
+  (`bandTransform_eigenExtension`)
 - [ ] Lean: the differentiated fixed-mode (Fuchs) expansion `(9)` — imported classical asymptotics
 - [ ] Lean: the constrained limit `(12)` and the response constants `(13)`–`(18)`
 

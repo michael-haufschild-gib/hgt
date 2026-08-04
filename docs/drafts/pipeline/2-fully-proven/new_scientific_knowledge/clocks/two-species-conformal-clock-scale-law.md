@@ -2574,3 +2574,33 @@ while the synthesis needs order `> d+2`), and the replacement is the Cauchy prob
 hypersurface: hyperbolic energy estimates in Sobolev spaces, which mathlib does not have.
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+## Status update: the hyperbolic energy estimate
+
+The closing note of `finite-regularity-clock-probes` named "hyperbolic energy estimates in Sobolev
+spaces, which mathlib does not have" as what stands between the corpus and low-regularity potentials.
+The first half of that theory is now built, in the child card
+`../../../3-formalized/new_scientific_knowledge/hyperbolic-energy-estimate.md`:
+
+- **`integral_laplacian_mul`** — the Green identity `∫(∑ᵢ∂ᵢ∂ᵢf)·g = -∑ᵢ∫∂ᵢf·∂ᵢg` for compactly
+  supported fields, from mathlib's directional integration by parts;
+- **`integral_dirDeriv_energyDensity`** — the flux identity `∫∂ₜ(energy density) = 2∫(V+1)·u·∂ₜu`:
+  the equation, the symmetry of mixed partials and the Green identity cancel both derivative terms,
+  so no derivative of `u` survives on the right;
+- **`hasDerivAt_waveEnergy`** — differentiation under the integral sign, the domination supplied by
+  the compact spatial support;
+- **`waveEnergy_le_exp`** — `E(t) ≤ E(0)·exp((‖V‖_∞+1)t)`;
+- **`eq_zero_of_waveEnergy_zero`** — hence a solution with vanishing initial energy vanishes;
+- **`eq_of_solvesWaveEq_of_data_eq`** — and, since the equation is linear (`solvesWaveEq_sub`), two
+  solutions with the same Cauchy data agree at every later time;
+- **`eq_of_solvesWaveEq_of_data_eq_all`** — at every time, by time reflection
+  (`solvesWaveEq_comp_timeReflect`): only the second time derivative enters the equation;
+- **`waveEnergy_le_exp_abs`**, **`waveEnergy_sub_le_exp_abs`** — the estimate on both sides of the
+  initial slice, and hence continuous dependence: the energy of the difference of two solutions at
+  any time is controlled by the energy of the difference of their Cauchy data.
+
+This is uniqueness, not existence. The existence half — a Galerkin scheme or a fixed point in a
+Sobolev scale — is what would lower the regularity threshold of the probe construction below
+`C^{2d+5}`; the estimate above is its quantitative input.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.

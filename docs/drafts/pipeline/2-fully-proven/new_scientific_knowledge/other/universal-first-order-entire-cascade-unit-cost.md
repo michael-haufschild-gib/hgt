@@ -6824,3 +6824,21 @@ gives `δ Y_{k+1} = a_k·Y_{k+1}·δ Y_k`, and the shift `b_k` is invisible to t
 is the tower's model rescaled by the constants `a_k`, which a scaling automorphism
 `X_k ↦ a_k X_k` together with rescaling `δ` by `a_0` conjugates onto the tower's — the route to the
 wider family without re-running the height induction.
+
+### `HTGeometry/ScaledExponentialCascade.lean` — the conjugation that widens the family
+
+For `f_k(w) = exp(a_k w + b_k)` the derivative law is `δ Y_{k+1} = a_k·Y_{k+1}·δ Y_k`, so the model
+derivation sends `X_k` to the tower monomial scaled by `∏_{j<k} a_j` (`scaledDerivation`); the shifts
+`b_k` never appear.  Unconditional, axiom-clean:
+
+* `scaledDerivation_scaleHom` — **the conjugation identity**
+  `δ_a ∘ φ = C(a₀)·(φ ∘ δ)`, where `φ = scaleHom a` is the automorphism `X_k ↦ a_k X_k`.  Its whole
+  content is the weight identity `a_k·∏_{j<k}a_j = a_0·∏_{1≤j≤k}a_j` — both sides are `∏_{j≤k}a_j`.
+* `iterate_scaledDerivation_scaleHom` — hence `δ_a^i(φP) = C(a₀)^i·φ(δ^i P)` on jets;
+* `pderiv_scaleHom` — `∂_k ∘ φ = C(a_k)·(φ ∘ ∂_k)`;
+* `scaleHom_injective` — `φ` is an automorphism when every `a_k ≠ 0` (inverse `X_k ↦ a_k⁻¹X_k`).
+
+Together these say the scaled model's output-jet Jacobian is the tower's, with rows scaled by `a_{i+1}`,
+columns by `a_0^j`, and the entries pushed through an injective ring map.  Determinants therefore differ
+by a nonzero constant, so the tower's nonvanishing transports and the height induction is not re-run —
+which is the point of doing the widening this way.

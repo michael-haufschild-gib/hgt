@@ -89,6 +89,13 @@ theorem volume_largeValues_Icc_le (N : ℕ) (a : Fin N → ℂ) {T V : ℝ} (hT 
   have hVsq : (0 : ℝ) ≤ V ^ 2 := by positivity
   exact le_trans (mul_le_mul_of_nonneg_left hreal hVsq) (volume_largeValues_le N a hT hV)
 
+/-- The trivial sup bound: a Dirichlet polynomial is at most the `ℓ¹` norm of its coefficients. -/
+theorem norm_dirPoly_le_sum_norm (N : ℕ) (a : Fin N → ℂ) (t : ℝ) :
+    ‖dirPoly N a t‖ ≤ ∑ m : Fin N, ‖a m‖ := by
+  refine le_trans (norm_sum_le _ _) (le_of_eq (Finset.sum_congr rfl ?_))
+  intro m _
+  rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]
+
 /-- **The small values are handled by the threshold, the large ones by the sup.**  Splitting the
 frequency range at `V` costs `V·T` on the small side and `M` times the measure of the level set on
 the large one. -/
@@ -156,5 +163,17 @@ theorem integral_norm_dirPoly_halasz (N : ℕ) (a : Fin N → ℂ) {T V M : ℝ}
       = M * ((T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖a m‖ ^ 2) / V ^ 2 := by
     ring
   linarith [hdiv ▸ this]
+
+/-- **The mean-value form of the Halász bound with no free sup.**  Taking the trivial sup
+`‖F‖ ≤ ∑|a_n|` leaves a statement in the coefficients alone:
+
+    ∫₀^T |F| ≤ V·T + (∑|a_n|)·(T + 4N(1 + log N))·∑|a_n|² / V². -/
+theorem integral_norm_dirPoly_halasz_l1 (N : ℕ) (a : Fin N → ℂ) {T V : ℝ} (hT : 0 ≤ T)
+    (hV : 0 < V) :
+    ∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N a t‖
+      ≤ V * T
+        + (∑ m : Fin N, ‖a m‖)
+            * ((T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖a m‖ ^ 2) / V ^ 2 :=
+  integral_norm_dirPoly_halasz N a hT hV (norm_dirPoly_le_sum_norm N a)
 
 end RHTower.Sieve

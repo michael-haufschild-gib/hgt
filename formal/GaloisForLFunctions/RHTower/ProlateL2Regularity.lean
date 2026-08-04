@@ -132,6 +132,3 @@ theorem bandTransform_eigenExtension {c ν : ℝ} (hν : ν ≠ 0) {ψ : RealInt
 end GaloisForLFunctions.RHTower
 
 end
-#print axioms GaloisForLFunctions.RHTower.abs_sincSmooth_le
-#print axioms GaloisForLFunctions.RHTower.continuous_eigenExtension
-#print axioms GaloisForLFunctions.RHTower.bandTransform_eigenExtension

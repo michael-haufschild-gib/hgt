@@ -2341,3 +2341,49 @@ research note), not the divisibility bridge.  The machinery built in this cycle 
 slice route needs: `exists_phaseOne_reduction` removes all jets above a leader with a separant-power
 multiplier, in either block, over a coefficient ring — which is the operation "cut a slice and
 reduce it" the route requires.
+
+## Block symmetry proved, and the route to (★) that it opens
+
+`formal/GaloisForLFunctions/HTGeometry/TwoBlockSwapSymmetry.lean` (axiom-clean):
+
+- `differentialPolynomialTwoBlockDiagonal_eq_sum`, `differentialPolynomialTwoBlockSwap_eq_sum` —
+  the two expansions over the right-block monomials.
+- `twoBlockSwap_mem_of_crossDifference_mem` — **block symmetry from proportionality**: if all
+  coefficient cross-differences of a diagonal-vanishing two-block polynomial lie in an ideal and one
+  coefficient survives the coefficient map, the block swap lies in that ideal.  No order hypothesis,
+  no divisibility bridge: the cross-differences make the two coefficient readings proportional, and
+  the diagonal vanishing then kills the swap.
+- `exists_component_crossDifference_mem` — every coefficient cross-difference lies in the general
+  component of an irreducible factor (the initial and the separant are outside it).
+- `exists_twoBlock_swap_controlled_saturation` — `I(A)^a S(A)^b · swap(𝒫) ∈ [A]` in the two-block
+  ring, multiplier built from `A`.
+
+`formal/GaloisForLFunctions/HTGeometry/MvPolynomialGaussAscent.lean`:
+
+- `MvPolynomialPrimitive.irreducible_map` — **multivariable Gauss ascent**: a primitive irreducible
+  polynomial over a UFD stays irreducible over the fraction field, for an arbitrary variable type.
+  mathlib has only the univariate statement; the corpus owned only the contraction direction.
+
+### The proof of (★) this makes available
+
+Assume `M := ord_U 𝒫 > m := ord_Y 𝒫`.
+
+1. Some irreducible factor `A ∣ 𝒫` has `ord_U A = M` (degrees add over a domain).
+2. `ord_Y A = m` (corpus: `irreducible_factor_right_vars_eq`).
+3. `A` is primitive in both block senses (an irreducible factor with jets in both blocks admits no
+   one-block constant divisor), so Gauss ascent makes both localizations of `A` irreducible.
+4. `exists_twoBlock_swap_controlled_saturation` gives `M₀ · swap 𝒫 ∈ [A]` with
+   `vars M₀ ⊆ vars A`.
+5. `dvd_of_saturation_bridge` applies **in the swapped view**: its order hypotheses are
+   `ord_U M₀ ≤ ord_U A` (step 4) and `ord_Y 𝒫 = m ≤ ord_U A = M` (the assumption!), and
+   `A ∤ M₀` by right-block leader degree.  Hence `A ∣ swap 𝒫`.
+6. Applying the swap, `swap A ∣ 𝒫`, so `ord_Y (swap A) = ord_U A = M ≤ ord_Y 𝒫 = m`.
+   Contradiction with `M > m`.
+
+So the assumption `M > m` is impossible and `ord_U 𝒫 ≤ ord_Y 𝒫`.  With `M ≤ m` the component
+oracle applies to `swap 𝒫` directly, giving `A ∣ swap 𝒫` for every irreducible factor, hence
+`𝒫 ∣ swap 𝒫` by squarefree recombination and, total degree being swap-invariant, `𝒫` and `swap 𝒫`
+are associates: **both block orders and both leader degrees agree**, which is (★) in full.
+
+Note the reversal: the hypothesis that blocked the cross-difference route (`hQorder`) is exactly the
+*negation* of what is being contradicted, so in the hard case it comes for free.

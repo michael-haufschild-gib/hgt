@@ -2957,6 +2957,7 @@ import GaloisForLFunctions.RHTower.ProlateBandSymmetric
 import GaloisForLFunctions.RHTower.ProlateDiagonalization
 import GaloisForLFunctions.RHTower.ProlateL2Family
 import GaloisForLFunctions.RHTower.ProlateL2Operator
+import GaloisForLFunctions.RHTower.ProlateL2Regularity
 import GaloisForLFunctions.RHTower.ProlateOneTurningVariation
 import GaloisForLFunctions.RHTower.ProlateParityWeightUniform
 import GaloisForLFunctions.RHTower.ProlateSecularEquation
