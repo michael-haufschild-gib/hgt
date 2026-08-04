@@ -160,9 +160,9 @@ lemma mem_sympBilinForm_orthogonal_span_iff (S : Set (Fin (n + n) → ZMod 2))
   constructor
   · intro h s hs
     have := h s (Submodule.subset_span hs)
-    rwa [LinearMap.BilinForm.isOrtho_def, sympBilinForm_apply] at this
+    rwa [sympBilinForm_apply] at this
   · intro h w hw
-    rw [LinearMap.BilinForm.isOrtho_def, sympBilinForm_apply]
+    rw [sympBilinForm_apply]
     induction hw using Submodule.span_induction with
     | mem x hx => exact h x hx
     | zero => simp [symplecticBilinear]
@@ -180,11 +180,11 @@ lemma sympBilinForm_orthogonal_sup (P Q : Submodule (ZMod 2) (Fin (n + n) → ZM
   rw [LinearMap.BilinForm.mem_orthogonal_iff]
   intro w hw
   obtain ⟨p, hp, q, hq, rfl⟩ := Submodule.mem_sup.mp hw
-  rw [LinearMap.BilinForm.isOrtho_def, map_add, LinearMap.add_apply,
+  rw [map_add, LinearMap.add_apply,
     show (sympBilinForm n) p m = 0 from
-      LinearMap.BilinForm.isOrtho_def.mp ((LinearMap.BilinForm.mem_orthogonal_iff.mp hm.1) p hp),
+      ((LinearMap.BilinForm.mem_orthogonal_iff.mp hm.1) p hp),
     show (sympBilinForm n) q m = 0 from
-      LinearMap.BilinForm.isOrtho_def.mp ((LinearMap.BilinForm.mem_orthogonal_iff.mp hm.2) q hq),
+      ((LinearMap.BilinForm.mem_orthogonal_iff.mp hm.2) q hq),
     add_zero]
 
 end BilinForm
@@ -303,10 +303,8 @@ theorem operators_eq_stab_of_commutes_both_logicals (C : StabilizerCode n 1)
     obtain ⟨hwV, hwU⟩ := hw
     rw [hU, Submodule.mem_span_pair] at hwU
     obtain ⟨a, b, hab⟩ := hwU
-    have hwz : sympBilinForm n w zv = 0 := LinearMap.BilinForm.isOrtho_def.mp
-      ((LinearMap.BilinForm.mem_orthogonal_iff.mp hzv_V) w hwV)
-    have hwx : sympBilinForm n w xv = 0 := LinearMap.BilinForm.isOrtho_def.mp
-      ((LinearMap.BilinForm.mem_orthogonal_iff.mp hxv_V) w hwV)
+    have hwz : sympBilinForm n w zv = 0 := ((LinearMap.BilinForm.mem_orthogonal_iff.mp hzv_V) w hwV)
+    have hwx : sympBilinForm n w xv = 0 := ((LinearMap.BilinForm.mem_orthogonal_iff.mp hxv_V) w hwV)
     have ha : a = 0 := by
       have e : sympBilinForm n w zv = a := by
         rw [← hab]

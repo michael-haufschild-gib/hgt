@@ -213,6 +213,9 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 149 | **reversibility, with the time-reflected potential** | **`kgFieldMildT_neg`** | **built** |
 | 150 | **the solution is Lipschitz in the moving background** | `kgFieldMildT_sub_potential`, `norm_kgFieldMildT_sub_potential_le_of_nonneg`, **`norm_kgFieldMildT_sub_potential_le`** | **built** |
 | 151 | **the moving background is determined along the history of the field** | **`kgFieldMildT_potential_apply_eq`**, **`eq_zero_of_kgFieldMildT_eq`** | **built** |
+| 152 | **the non-autonomous evolution is an evolution family** | **`kgFieldMildT_flow`** | **built** |
+| 153 | **every regular vector is reached at every time** | **`exists_kgFieldMildT_eq`** | **built** |
+| 154 | **the moving background is determined by the field it produces** | **`eq_of_kgFieldMildT_eq`**, **`kgFieldMildT_injective_potential`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
@@ -232,7 +235,7 @@ Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` 
 `KleinGordonFieldFlow.lean` (120–121), `KleinGordonFieldEvolutionFamily.lean` (122–123),
 `KleinGordonFieldRegularAlways.lean` (124–126), `KleinGordonFieldVelocityBound.lean` (127–128), `KleinGordonFieldStateStability.lean` (129–130), `KleinGordonFieldReversible.lean` (131–132), `KleinGordonFieldSolutionMap.lean` (133–134), `KleinGordonPotentialStability.lean` (135–138), `KleinGordonPotentialUniqueness.lean` (139–142), `KleinGordonSourceVanishing.lean` (143),
 `KleinGordonTimePotential.lean` (144–147), `KleinGordonTimePotentialVelocity.lean` (148–149),
-`KleinGordonTimePotentialStability.lean` (150–151).
+`KleinGordonTimePotentialStability.lean` (150–151), `KleinGordonTimePotentialFlow.lean` (152–154).
 All wired into the umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -1337,6 +1340,87 @@ the observations determine the equation, and they determine it stably in the for
 remains genuinely open — and is not a Lean gap but a mathematical one — is the modulus of continuity
 of the inverse, which no argument on this card bounds.
 
+### The background may move
+
+A clock does not read a static field. Statements 144–151 replace the fixed operator `W` by a curve of
+them, `∂ₜ²u = -⟨D⟩²u + W(t)u`, which is the equation an observer in a time-varying background
+actually solves.
+
+Nothing in the Volterra layer ever used the autonomy of the kernel — it is stated for an arbitrary
+strongly continuous, uniformly bounded family `K(t,s)` — so existence, uniqueness and the exponential
+bound transfer once the kernel `sin((t-s)⟨D⟩)/⟨D⟩ ∘ W(s)` is shown strongly continuous. The
+hypotheses on `W` that do it are the corpus's own idiom for a propagator family: a uniform norm bound
+and strong continuity. The autonomous theory is the constant case, definitionally
+(**`kgFieldMildT_const`** is `rfl`).
+
+Three structural facts survive the move, each with a proof that is the autonomous one with the
+perturbation evaluated at the source time.
+
+*Differentiability.* The velocity formula costs nothing extra, because the derivative of the Duhamel
+term (statement 139) was proved for an **arbitrary** continuous source, and `s ↦ W(s)u(s)` is
+continuous exactly under the two hypotheses already assumed. So the Cauchy problem is again solved in
+the `C¹` sense with the data one prescribes (**`exists_kgFieldMildT_c1`**).
+
+*Reversibility.* Here the statement genuinely changes: reversal acts on the equation, not only on the
+datum. Running the solution backwards is running the solution of the **time-reflected** equation
+`r ↦ W(-r)` forwards, with the velocity datum negated (**`kgFieldMildT_neg`**). It degenerates to the
+autonomous statement when `W` is constant.
+
+*Stability and injectivity.* Grönwall gives the same Lipschitz constant as before, now with `δ` a
+uniform bound on `‖W₁(r)-W₂(r)‖` (**`norm_kgFieldMildT_sub_potential_le`**). The injectivity half is
+sharper here than in the autonomous case, and the reason is statement 143: the vanishing theorem for
+Duhamel sources holds at **every** time, not only at the origin. That upgrade is algebraic rather
+than analytic — translating the source by `r` changes its Duhamel term by an off-diagonal piece which
+the addition law `sinFreq(y + a) = cos(y)sinFreq(a) + sinFreq(y)cos(a)` splits into `cos(y⟨D⟩)`
+applied to the sine Duhamel term at `r` plus `sin(y⟨D⟩)/⟨D⟩` applied to the cosine one, and both of
+those vanish (the first by hypothesis, the second because it is its derivative). So the translated
+source again has a vanishing Duhamel term and the origin statement applies to it. The consequence is
+
+**`kgFieldMildT_potential_apply_eq`**: if two moving backgrounds produce the same field from every
+Cauchy datum, then `W₁(r)` and `W₂(r)` agree on the state the field occupies at time `r`, for every
+`r` and every datum
+
+— a statement about the whole history rather than one instant. At `r = 0` the state is the datum
+itself, so `W₁(0) = W₂(0)` unconditionally (**`eq_zero_of_kgFieldMildT_eq`**).
+
+### Reaching every state, and closing the inverse problem
+
+Statement 151 identifies `W₁(r)` with `W₂(r)` only on the states the field actually occupies at time
+`r`. Statements 152–154 show that set is dense, which upgrades it to `W₁ = W₂`.
+
+The instrument is the evolution-family property, and for a non-autonomous equation it has to restart
+the equation as well as the state: seen from time `s`, the potential is `W(· + s)`, so
+
+**`kgFieldMildT_flow`**: `u(t+s) = u_{W(·+s), (u(s), ∂ₜu(s))}(t)`.
+
+The proof is the autonomous one (statement 123) with the potential evaluated at the source time —
+split the Duhamel integral at `s`, recombine the early part with the free field by the addition law
+`sinFreq(t + a) = cos(t)sinFreq(a) + sinFreq(t)cos(a)`, change variables in the late part, and let
+uniqueness identify the shifted curve.
+
+Run it backwards and it produces data. Given a regular target `v = ⟨D⟩⁻¹g` and a time `r`, solve the
+*forward-shifted* equation `W(r + ·)` from `v` with zero velocity, obtaining a curve `z` with
+`z(0) = v`; restart `z` at time `-r` and the shifted potential `ρ ↦ W(r + (ρ - r))` is `W` again, so
+the restarted curve solves the *original* equation and passes through `v` at time `r`:
+
+**`exists_kgFieldMildT_eq`**: `∀ g, ∀ r, ∃ f h, u_{f,h}(r) = ⟨D⟩⁻¹g`.
+
+This is worth noting for what it is not: the free map `(f,h) ↦ cos(r⟨D⟩)f + (sin(r⟨D⟩)/⟨D⟩)h` is
+**not** surjective onto `L²`, because inverting the second symbol costs a factor `⟨ξ⟩`. Exactly that
+factor is the regularity `⟨D⟩⁻¹g` carries, and running the equation backwards supplies the datum
+without any frequency decomposition.
+
+The regular vectors are dense (statement 113), the two perturbations are continuous, and they agree
+on a dense set — so
+
+**`eq_of_kgFieldMildT_eq`**: two uniformly bounded, strongly continuous moving backgrounds producing
+the same field from every Cauchy datum are equal at every time.
+
+Together with statement 150 this makes the forward map of the inverse problem a continuous injection
+on moving backgrounds (**`kgFieldMildT_injective_potential`**), and it contains statement 142 as the
+constant case. What remains open is the same thing as in the autonomous case and is not a Lean gap:
+the modulus of continuity of the inverse.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -1357,6 +1441,16 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-04 — statements 152–154: **the inverse problem closes for moving backgrounds.** The
+  non-autonomous evolution family restarts the equation as well as the state; run backwards it
+  reaches every regular vector at every time, so the reachable set is dense and `W₁ = W₂` follows
+  from agreement on it. The free propagator alone is *not* surjective — the regularity of the target
+  is exactly the factor `⟨ξ⟩` that inverting `sin(r⟨ξ⟩)/⟨ξ⟩` costs.
+- 2026-08-04 — statements 143–151: **the background may move.** The Volterra layer never used the
+  autonomy of the kernel, so well-posedness, `C¹` regularity, reversibility (with the time-reflected
+  potential) and Lipschitz stability all transfer to `∂ₜ²u = -⟨D⟩²u + W(t)u`. Statement 143 upgrades
+  the source-vanishing theorem from the origin to every time by an addition-law identity, and with it
+  the moving background is determined along the whole history of the field.
 - 2026-08-04 — statements 139–142: **the potential is determined by the field it produces.** The
   Duhamel term of an arbitrary continuous source is differentiable, and the cosine Duhamel term has
   derivative `g(0)` at the origin — where the unbounded-generator obstruction of 99–109 is absent

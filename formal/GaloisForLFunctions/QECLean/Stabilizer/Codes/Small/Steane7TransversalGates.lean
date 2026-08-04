@@ -112,9 +112,10 @@ lemma transversalH_conjugates_stabilizer_to_stabilizer (g : NQubitPauliGroupElem
     have hxList : x ∈ generatorsList := by
       simpa [NQubitPauliGroupElement.listToSet] using hx
     refine ⟨swapXZ_element x, ?_, ?_⟩
-    · simpa [stabilizerGroup_toSubgroup_eq] using transversalSwapXZ_mem_subgroup x hxList
+    · simpa [stabilizerGroup_toSubgroup_eq, swapXZ_element] using transversalSwapXZ_mem_subgroup x hxList
     · apply Subtype.ext
-      simpa [conjByGate_val, NQubitPauliGroupElement.gate_val] using
+      simpa [conjByGate_val, NQubitPauliGroupElement.gate_val, transversalH_Steane7,
+        transversalS_Steane7, uniformTransversalGate] using
         transversalH_conjugates_element x (generators_no_Y x hxList)
   obtain ⟨g', hg', hgg'⟩ :=
     conjugates_mem_closure_of_set_conjugates transversalH_Steane7
@@ -124,7 +125,8 @@ lemma transversalH_conjugates_stabilizer_to_stabilizer (g : NQubitPauliGroupElem
         obtain ⟨x', hx', hxx'⟩ := hgen x hx
         exact ⟨x', by simpa [hS] using hx', hxx'⟩) g (by simpa [hS] using hg)
   refine ⟨g', by simpa [hS] using hg', ?_⟩
-  simpa [conjByGate_val, NQubitPauliGroupElement.gate_val] using congrArg Subtype.val hgg'
+  simpa [conjByGate_val, NQubitPauliGroupElement.gate_val, transversalH_Steane7,
+        transversalS_Steane7, uniformTransversalGate] using congrArg Subtype.val hgg'
 
 /-- Transversal Hadamard is a logical gate for the Steane code. -/
 theorem transversalH_Steane7_isLogicalGate :
@@ -139,9 +141,10 @@ theorem transversalH_Steane7_isLogicalGate :
   have hxList : x ∈ generatorsList := by
     simpa [NQubitPauliGroupElement.listToSet] using hx
   refine ⟨swapXZ_element x, ?_, ?_⟩
-  · simpa [stabilizerGroup_toSubgroup_eq] using transversalSwapXZ_mem_subgroup x hxList
+  · simpa [stabilizerGroup_toSubgroup_eq, swapXZ_element] using transversalSwapXZ_mem_subgroup x hxList
   · apply Subtype.ext
-    simpa [conjByGate_val, NQubitPauliGroupElement.gate_val] using
+    simpa [conjByGate_val, NQubitPauliGroupElement.gate_val, transversalH_Steane7,
+        transversalS_Steane7, uniformTransversalGate] using
       transversalH_conjugates_element x (generators_no_Y x hxList)
 
 /-- `swapXZ_element` sends Steane logical X to logical Z. -/
@@ -172,12 +175,12 @@ theorem transversalH_Steane7_isLogicalHadamard :
       transversalH_Steane7 := by
   refine ⟨transversalH_Steane7_isLogicalGate, ?_, ?_⟩
   · apply Subtype.ext
-    simpa [conjByGate_val, NQubitPauliGroupElement.gate_val,
-      swapXZ_element_logicalX_eq_logicalZ] using
+    simpa [conjByGate_val, NQubitPauliGroupElement.gate_val, transversalH_Steane7,
+      uniformTransversalGate, swapXZ_element_logicalX_eq_logicalZ] using
       transversalH_conjugates_element logicalX logicalX_no_Y
   · apply Subtype.ext
-    simpa [conjByGate_val, NQubitPauliGroupElement.gate_val,
-      swapXZ_element_logicalZ_eq_logicalX] using
+    simpa [conjByGate_val, NQubitPauliGroupElement.gate_val, transversalH_Steane7,
+      uniformTransversalGate, swapXZ_element_logicalZ_eq_logicalX] using
       transversalH_conjugates_element logicalZ logicalZ_no_Y
 
 /-!
@@ -193,7 +196,7 @@ lemma transversalS_conjugates_Z_generator (g : NQubitPauliGroupElement 7) (hg : 
     rcases hg with rfl | rfl | rfl <;> intro i <;> fin_cases i <;> decide
   have hphase : g.phasePower = 0 := by
     rcases hg with rfl | rfl | rfl <;> decide
-  simpa [transversalS_Steane7, NQubitPauliGroupElement.toMatrix,
+  simpa [transversalS_Steane7, uniformTransversalGate, NQubitPauliGroupElement.toMatrix,
          PauliGroupElement.phasePowerToComplex, hphase] using
     uniformTransversalGateMatrix_inv_S_conj_Z_op 7 g.operators hZ
 
@@ -202,7 +205,8 @@ lemma transversalS_conjugates_Z_generator_gate
     (g : NQubitPauliGroupElement 7) (hg : g ∈ ZGenerators) :
     conjByGate transversalS_Steane7 g.gate = g.gate := by
   apply Subtype.ext
-  simpa [conjByGate_val, NQubitPauliGroupElement.gate_val] using
+  simpa [conjByGate_val, NQubitPauliGroupElement.gate_val, transversalH_Steane7,
+        transversalS_Steane7, uniformTransversalGate] using
     transversalS_conjugates_Z_generator g hg
 
 /-- Generic gate-level helper: transversal `inv_S` conjugation for a phase-0 X/I generator
@@ -219,7 +223,8 @@ private lemma transversalS_conjugates_XI_phase0_card4_gate
   have hscalar : invSConjXIScalar g.operators = 1 := by
     rw [invSConjXIScalar_eq_negOne_pow_xSupportCard, hcard]; norm_num
   have hconj := uniformTransversalGateMatrix_inv_S_conj_element_XI_phase0 7 g hphase_g hXI
-  simpa [conjByGate_val, transversalS_Steane7, NQubitPauliGroupElement.gate_val,
+  simpa [conjByGate_val, transversalS_Steane7, uniformTransversalGate,
+    NQubitPauliGroupElement.gate_val,
     himage, hscalar, NQubitPauliGroupElement.toMatrix, hphase_h, hphase_g,
     PauliGroupElement.phasePowerToComplex] using hconj
 
@@ -260,21 +265,24 @@ lemma transversalS_conjugates_X3_gate :
 lemma transversalS_conjugates_X1 :
     transversalS_Steane7.val * X1.toMatrix * star transversalS_Steane7.val =
       (X1 * Z1).toMatrix := by
-  simpa [conjByGate_val, NQubitPauliGroupElement.gate_val] using
+  simpa [conjByGate_val, NQubitPauliGroupElement.gate_val, transversalH_Steane7,
+        transversalS_Steane7, uniformTransversalGate] using
     congrArg Subtype.val transversalS_conjugates_X1_gate
 
 /-- Transversal S conjugates X2 to X2*Z2 (matrix bridge). -/
 lemma transversalS_conjugates_X2 :
     transversalS_Steane7.val * X2.toMatrix * star transversalS_Steane7.val =
       (X2 * Z2).toMatrix := by
-  simpa [conjByGate_val, NQubitPauliGroupElement.gate_val] using
+  simpa [conjByGate_val, NQubitPauliGroupElement.gate_val, transversalH_Steane7,
+        transversalS_Steane7, uniformTransversalGate] using
     congrArg Subtype.val transversalS_conjugates_X2_gate
 
 /-- Transversal S conjugates X3 to X3*Z3 (matrix bridge). -/
 lemma transversalS_conjugates_X3 :
     transversalS_Steane7.val * X3.toMatrix * star transversalS_Steane7.val =
       (X3 * Z3).toMatrix := by
-  simpa [conjByGate_val, NQubitPauliGroupElement.gate_val] using
+  simpa [conjByGate_val, NQubitPauliGroupElement.gate_val, transversalH_Steane7,
+        transversalS_Steane7, uniformTransversalGate] using
     congrArg Subtype.val transversalS_conjugates_X3_gate
 
 /-- Transversal S is a logical gate for the Steane code. -/
@@ -342,7 +350,9 @@ theorem transversalS_Steane7_isLogicalS :
       have hpow : ((-1 : ℂ) ^ 7) = -1 := by norm_num
       simp [logicalY_eq_phase2_allY, NQubitPauliGroupElement.toMatrix,
         PauliGroupElement.phasePowerToComplex, hpow]
-    simpa [conjByGate_val, NQubitPauliGroupElement.gate_val] using hXY
+    simpa [conjByGate_val, NQubitPauliGroupElement.gate_val, transversalH_Steane7,
+        transversalS_Steane7, uniformTransversalGate,
+        LogicalQubitOps.logicalY, Steane7.logicalY] using hXY
 
 
 end Steane7

@@ -347,3 +347,63 @@ duality refinement audit; then the numeric re-certification of the full route-B 
 these corpus constants before assembly.
 
 - 2026-08-04 — unit 1 built and verified.
+
+## 2026-08-04 route-B unit 2 built: the adapted-moment well-spaced count
+
+`RHTower/Sieve/PrimePowerLargeValuesCount.lean` (wired; build 8803 jobs; axioms only
+`propext, Classical.choice, Quot.sound`; zero warnings; first-pass compile):
+
+- `card_largeValues_pow_le` — for a prime-supported vector, any `ℓ ≠ 0`, and `R + 1` values
+  `≥ V` at `δ`-spaced points of `[δ/2, T − δ/2]`:
+
+  ```text
+  (R+1)·V^{2ℓ} ≤ (T + 4N^ℓ(1+log N^ℓ))·(δ⁻¹ + 2 log N^ℓ)·ℓ^ℓ·(∑_p ‖b_p‖²)^ℓ,
+  ```
+
+  by applying the corpus's discrete cap (`card_largeValues_le`) to the power polynomial
+  `convPow` and feeding the unit-1 mass bound.  This is [4, Lemma 8]'s counting inequality in
+  corpus form: with `N = e^{(j+1)/H}`, `ℓ ≈ log T·H/j` (so `N^ℓ ≍ T`) and threshold
+  `V = (log X)^{-100}`-scale against prime mass `∑‖b_p‖² ≈ h_j`, the right side is
+  `T·polylog·exp(ℓ(log ℓ + log h_j + 2·100·log log X))/…` — the `exp((log X)^{1/48+o(1)})`
+  spaced-count of the note.
+
+Remaining route-B units: (3) [4, L11] duality-refinement audit (`AlmostOrthogonality`,
+`CharacterSeparation`, `FrequencySeparation`); (4) sharp-cutoff Halász sup ([4, L3]) from the
+uniform-frequency layer; (5) numeric re-certification of the full route-B bookkeeping with these
+exact corpus constants; (6) assembly.
+
+- 2026-08-04 — unit 2 built and verified.
+
+## 2026-08-04 unit 3 (audit) closed: the wall is the zero-free-region exponent
+
+**The κ-criterion.**  Write the available region as `σ ≥ 1 − c/(log|t|)^κ`.  Route (B)'s
+[4, L11] step must absorb the unit-2 spaced count `|𝒯| ≪ exp(C·(log T/log P)·log log X)` by the
+off-diagonal prime-sum decay `exp(−c·log P/(log T)^κ)`, which requires
+`log P ≳ (log T)^{(1+κ)/2}` — while the Ramaré rough saving requires `log P = o(log X)`.  Both
+hold simultaneously **iff κ < 1** (Littlewood's `log log`-refined κ = 1 also passes, with a
+`(log log X)^{-c}` saving).  Route (A)'s Lemma 2 needs `log P ≍ (log X)^κ·log log X`, i.e. the
+same criterion.  Spot checks: κ = 9 forces `log P ≥ (log T)⁵` — impossible; κ = 2/3 gives
+`log P ≈ (log X)^{5/6}` and a `(log X)^{-1/6+o(1)}` saving.
+
+**What is formalized, anywhere in the tree:** the corpus strip (`zetaLowerA`-layer) and the
+vendored `PNTPlus.ZetaZeroFree` are both **κ = 9** (`σ ∈ Ico (1 − A/(log|t|)⁹) 1`, with
+`|ζ| ≳ (log|t|)⁻⁷` lower bounds; hence `MediumPNT`'s `exp(−c(log x)^{1/10})` error, reach
+exponent `1/(κ+1) = 1/10`).  Even de la Vallée Poussin (κ = 1) is not formalized — and κ = 1
+would still not suffice.
+
+**Terminal analytic requirement for the corridor (both routes):** one formalized zero-free
+region with κ < 1, in three quality tiers:
+1. **Littlewood** (`σ ≥ 1 − c·log log t/log t`): needs Weyl-differencing bounds for
+   `∑ n^{it}` (equivalently `ζ(1+it) ≪ log t/log log t`); yields an explicit
+   `(log log X)^{-c}` corridor saving — sufficient for every `o(1)` consumer
+   (`MRBilinear` is a `Tendsto → 0` statement with no rate).
+2. **van der Corput/Korobov–Vinogradov family** (κ = 2/3+ε): yields `(log X)^{-c}`.
+3. The note's constants as published.
+
+Tier 1 is the licensed next target: mathlib owns the van der Corput lemma for oscillatory
+integrals; the sum version (via Abel summation + the integral test) and the Weyl-differencing
+step are classical and self-contained.  Everything else in route (B) is now built (units 1–2)
+or corpus-owned; unit 4 (sharp-cutoff Halász sup) remains but is not region-gated.
+
+- 2026-08-04 — unit 3 audit closed; tier-1 (Littlewood region) licensed as the next analytic
+  build; numeric κ-criterion recorded above.

@@ -201,7 +201,11 @@ lemma chainXOperator_boundary2_mem_XClosure (f : X.C2 → ZMod 2) :
   rw [map_sum]  -- pushes ∂₂ through the sum
   -- Goal: chainXOperator (∑ p ∈ filter, ∂₂ (singleFace p)) ∈ closure
   induction (Finset.univ.filter fun p : X.C2 => f p = 1) using Finset.induction with
-  | empty => simpa using OneMemClass.one_mem _
+  | empty =>
+    simp only [Finset.sum_empty]
+    have h1 : X.chainXOperator 0 = (1 : NQubitPauliGroupElement X.numQubits) := by simp
+    rw [h1]
+    exact one_mem _
   | insert p s hp ih =>
     rw [Finset.sum_insert hp, chainXOperator_add]
     exact Subgroup.mul_mem _
@@ -451,7 +455,11 @@ lemma chainZOperator_cutMap_mem_ZClosure (s : X.C0 → ZMod 2) :
   rw [c0_eq_sum_singleVtx_filter s]
   rw [map_sum]
   induction (Finset.univ.filter fun v : X.C0 => s v = 1) using Finset.induction with
-  | empty => simpa using OneMemClass.one_mem _
+  | empty =>
+      simp only [Finset.sum_empty]
+      have h1 : X.chainZOperator 0 = (1 : NQubitPauliGroupElement X.numQubits) := by simp
+      rw [h1]
+      exact one_mem _
   | insert v sset hv ih =>
       rw [Finset.sum_insert hv, chainZOperator_add]
       exact Subgroup.mul_mem _
