@@ -2381,6 +2381,50 @@ the probe interface (`RegularOpenProbes`, `regularOpenProbes_kgChartPotential`,
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
+### Foliated charts join the transfer
+
+The conformal calculus was localized so that it consumes the regularity a probe *actually* has on
+the region where it solves, rather than infinite smoothness everywhere
+(`SmoothMetricChart.DifferentiablePartialsOn` and the `…_on` forms of the conformal law, the Leibniz
+rules, the conjugation identity and the transfer, in
+`formal/GaloisForLFunctions/HTGeometry/ConformalMetricLowRegularity.lean`; the global statements are
+now one-line corollaries with `W = univ`). `RegularOpenProbes` records the regularity on its own
+region for the same reason.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockFoliationRegularProbes.lean` then brings the foliation
+route into the transfer:
+
+- **`differentiablePartialsOn_comp`** — a field constant along the leaves, `w ∘ φ`, has
+  differentiable partials on the tube over the interval where the ODE for `w` was solved; that is
+  exactly what the leaf-label construction produces and no more;
+- **`regularOpenProbes_foliation`**, `regularOpenProbes_foliationConformal` — hence the foliation
+  probes satisfy the regular probe interface, on a neighbourhood of every event;
+- **`regularOpenProbes_conformalRescale_foliation`** — and therefore transfer: every conformal
+  rescaling of a foliated chart carries clock probes;
+- **`twoSpecies_scale_reconstruction_conformalRescale_foliation`** — the scale law there:
+
+  ```
+  (other₁ x - other₂ x) / (μ₁ - μ₂) = exp (2 (σ₀ (φ x) - σ x))
+  ```
+
+  the foliation scale corrected by the rescaling. This is conformal covariance of the reconstruction
+  itself, and it is new ground: when `σ` is *not* a function of the leaf label the rescaled chart is
+  no longer foliated, so the corpus's foliation theorem does not reach it.
+
+The foliation hypotheses are inhabited, so none of this is vacuous:
+`formal/GaloisForLFunctions/HTGeometry/ClockFlatTimeFoliation.lean` shows the flat chart is foliated
+by its own time coordinate — `timeCoord`, with `Γ(t,t) = -1` and `□t = 0`
+(`gradPair_kgChart_timeCoord`, `dalembert_kgChart_timeCoord`) — whence
+`regularOpenProbes_kgChart_timeFoliation`, a second and entirely ordinary-differential construction
+of clock probes for potentials depending only on time, and
+`regularOpenProbes_conformalRescale_kgChart_timeFoliation`, its transfer to an arbitrary conformal
+rescaling.
+
+So the reconstruction now covers the conformal orbit of the flat chart *and* the conformal orbit of
+every foliated chart, with the probes constructed in both cases.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
 ### Cosmological charts, and causality as a conformal invariant
 
 `formal/GaloisForLFunctions/HTGeometry/ClockCosmologicalChart.lean`:

@@ -275,3 +275,25 @@ moderateness, and ideal classifier are now explicit.  Missing mathematics is one
 conservation theorem on a singular relative ideal.  Defining that conservation by declaring the
 two endpoint statuses equal is circular; it must follow from a literal Fourier/cyclic operator or
 correspondence on the completed arithmetic source.
+
+## 2026-08-04 strict cyclic-provenance audit
+
+The new source-dagger manuscript and
+`MobiusThetaPhysicalParacyclicSourceNullHomology.lean` sharpen the scalar obstruction but do not
+yet construct the chain-level source claimed by the phrase “source-null-homology.”  Precisely:
+
+- `CCMRationalAdelicDegreeOneCyclicSource` is the degree-one cyclic-bar tensor object;
+- the ordinary-prime object is proved to have product trace one, but is not proved to lie in the
+  kernel of the Hochschild degree-one boundary;
+- the product reporter is invariant under cyclic rotation, but the same formal module proves it
+  does not annihilate all degree-two Hochschild boundaries when the unit trace is nonzero;
+- `ccmMobiusThetaCofinalSourceHomologyLanding` is a linear map directly scaled by the Xi jet and
+  the product reporter; it is not proved to factor through Hochschild/cyclic homology or to be a
+  component of a strict chain map.
+
+Therefore the current one-dimensional Tate cokernel is a correct retained obstruction quotient,
+but calling its input a cyclic homology class would be theatre.  Before attempting polarized
+annihilation, construct a genuine mixed/relative rational-adelic complex and maps `D_0,D_1` such
+that `D_1 D_0=0` unconditionally, prove a retained ordinary-prime class, and prove the physical
+Xi landing is induced by a strict comparison.  This strengthened producer is now shared by the
+Bockstein and Route-R singular Cartier frontiers.

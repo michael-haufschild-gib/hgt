@@ -42,6 +42,8 @@ GaloisForLFunctions.RHTower.RealCoronaFourProblemsResolution.
 | fixed coefficient inclusion is diagonal | fixedReflectionFourierRingEquiv_coefficient | same |
 | induced finite-coordinate K0 map is diagonal | fixedCoordinateToReflectionCrossedProductKZero | same |
 | bundled exhaustive atomic law | c2AtomicOrbitAlgebraLaw | RealCoronaC2OrbitConservationLaw.lean |
+| free/fixed orientation square defect | RealOrbitIdempotentDecomposition.orientation_sq | RealCoronaUniversalTransgression.lean |
+| ordinary trace kills free orientation | realOrbitOrientation_trace_eq_zero | RealCoronaUniversalTransgression.lean |
 | definitions of D_ev, D_odd | linearPMapOrientationEven; linearPMapOrientationOdd | RealCoronaLocalDetectabilityFracture.lean |
 | parity decomposition and commutation laws | linearPMapOrientation_even_add_odd; linearPMapOrientationEven_commutes; linearPMapOrientationOdd_anticommutes | same |
 | commutator equals 2 D_odd m | linearPMapOrientationCommutator_eq_two_odd | same |
@@ -116,6 +118,8 @@ DeningerMeyerPoissonMellinFactorization.lean.
 | Paper identity/result | Lean declaration |
 |---|---|
 | descended invertible Lefschetz action | ccmRationalAdelicClosedNonunitalStrongLefschetz; ccmRationalAdelicClosedNonunitalStrongLefschetz_leftInverse_degree |
+| source/target actions, continuity, and exact equivariance | ccmRationalAdelicTwistedReducedSourceCyclicClassSpaceRightAction; ccmRationalNonunitalStrongCyclicRightActionDegree_continuous; ccmRationalAdelicReducedNonunitalStrongCyclicHom_classSpaceRightAction |
+| quotient action law and identity | ccmRationalAdelicClosedNonunitalStrongLefschetz_mul_degree; ccmRationalAdelicClosedNonunitalStrongLefschetz_one_degree |
 | descended even Real structure | ccmRationalAdelicClosedNonunitalStrongRelativeCyclicKReal |
 | Lefschetz Real-even | ccmRationalAdelicClosedNonunitalStrongLefschetzKReal |
 | every Lefschetz translation nonzero | ccmRationalAdelicClosedNonunitalStrongLefschetz_degreeZero_nonzero |
@@ -179,5 +183,5 @@ DeningerMeyerPoissonMellinFactorization.lean.
 - Axiom audit: print axioms for facade declarations from a temporary file.
 - Umbrella: formal/GaloisForLFunctions/RHTower.lean imports facade and every new module.
 
-Final outputs belong in HOSTILE_REVIEW.md; until these gates and PDF review pass, manuscript remains
-in progress.
+All gates passed on 2026-08-04. Exact outputs and hostile-review disposition are recorded in
+HOSTILE_REVIEW.md; manuscript is publication-ready.

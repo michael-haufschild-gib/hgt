@@ -460,3 +460,135 @@ language of the auxiliary univariate ring.
 This is the last general-purpose tool Ritt's argument needs.  What remains is specific to the Luroth
 setting: apply reduction to an arbitrary relation, observe the remainder is a relation of strictly
 lower rank, conclude it vanishes by minimality, and run the degree count on the resulting divisibility.
+
+## Lean progress — reduction becomes divisibility
+
+`GaloisForLFunctions/HTGeometry/MinimalRankRemainderVanishes.lean` (wired, axiom-clean):
+
+    eq_zero_of_lower_rank_mem :
+      a relation of no higher order and strictly smaller degree in the leader than the minimal
+      relation is ZERO
+
+Both escape routes are closed: a nonconstant remainder contradicts minimality of the characteristic,
+and a constant one would be a unit in the relation ideal, making it the whole ring -- which the
+relation ideal of an evaluation into a field never is.
+
+Combined with `exists_initial_pseudo_div`, this says the minimal characteristic *pseudo-divides* every
+partially reduced relation: `initial(P)^k * Q = A * P`.  That is the divisibility Ritt's degree count
+operates on, and it is now available.
+
+## CORRECTION — the pseudo-reduction layer already existed; three modules withdrawn
+
+`GaloisForLFunctions/HTGeometry/DifferentialCharacteristicPseudoReduction.lean` already contains the
+whole reduction layer:
+
+    Polynomial.PseudoDivision (structure, with quotient/remainder/exponent and the degree bound)
+    mvPolynomialPolynomialEquivAt, mvPolynomialPolynomialEquivAt_initial
+    mvPolynomial_degreeOf_eq_natDegree_asPolynomialAt
+    mvPolynomialPseudoDivision_step_degree_lt
+    characteristicPseudoReduction_remainder_eq_zero
+    exists_initial_separant_powers_mem_differentialPolynomialIterateIdeal
+    exists_differentialKernelCharacteristic_with_pseudoReduction
+
+The three modules recorded in the previous sections -- `PolynomialPseudoDivision`,
+`MvPolynomialLeaderPseudoDivision`, `MinimalRankRemainderVanishes` -- duplicated it and have been
+DELETED and unwired.  Their claims stand as corpus theorems, but under the existing names, and the
+corpus versions are stronger: the reduction there also handles the ORDER using the separant and the
+derivation-stable iterate ideal, whereas mine only handled a partially reduced dividend.
+
+Why the duplication happened, so it does not repeat: the search that preceded that work looked for
+"pseudo" in mathlib and read `DifferentialPolynomialRank` and `DifferentialKernelCharacteristic` in
+the corpus, but never ran `formal_tools.py research "pseudo division"` -- which returns the module
+immediately.  Search the corpus by the *mathematical operation*, not by the module names one already
+knows.
+
+### Revised state of `(3)`
+
+With the reduction layer in hand, what `(3)` needs is exactly what that module's header calls the
+"later two-copy coefficient-ratio theorem": Ritt's degree count comparing the rank of `y` over
+`C<w>` for a coefficient ratio `w` against the rank over the whole intermediate field.  The steps
+recorded earlier in this card that are NOT duplicates -- `mem_differentialClosure_singleton_of_cRank_one`,
+`minimalRank_le_of_le`, `map_descendCoefficients`, `exists_coeff_notMem_bot_of_relation` -- remain the
+new contributions toward it.
+
+## CORRECTION 2 — the Mobius and coefficient layers existed too; the card's Lean status was stale
+
+A proper corpus search (by mathematical operation, as the previous correction prescribed) finds an
+entire differential-Luroth development already in the tree:
+
+    TranscendentalMobius.lean            ratFunc_generator_mobius, adjoin_generator_mobius,
+                                         algEquiv_generator_mobius_of_mem
+    ClockCharacterSigmaMobius.lean       differentialAlgEquiv_generator_mobius
+    DifferentialLurothCoefficient.lean   exists_differentialRelation_coefficientRatio_not_mem_bot,
+                                         IsMinimalScalarDifferentialPolynomialRank.dvd_of_relation_order_le
+    DifferentialLurothComponentTransfer.lean, DifferentialLurothScalarExtensionSquarefree.lean,
+    DifferentialLurothVariableSupport.lean, LurothSaturationWitnesses.lean, OrdinaryLuroth.lean
+
+So `RationalGeneratorMobius.lean` (duplicating `ratFunc_generator_mobius` and
+`adjoin_generator_mobius`) and `RelationCoefficientOutsideBase.lean` (subsumed by
+`exists_differentialRelation_coefficientRatio_not_mem_bot`, which gets a non-base *ratio* rather than
+a single non-base coefficient) have been DELETED and unwired.  `PhaseGeneratorMobius.lean` has been
+rebased: its duplicate projective-transition theorem is gone and the Schwarzian result now sits
+directly on the corpus's `differentialAlgEquiv_generator_mobius`.
+
+What survives as genuinely new from this card's sessions:
+
+    schwarzian_fixed_of_differentialAlgEquiv   -- the transported observable  (6)
+    nonautonomousTail_dichotomy                -- the constant/nonconstant dichotomy
+    mem_differentialClosure_singleton_of_cRank_one
+    descendCoefficients, map_descendCoefficients
+    mem_differentialIntermediateRelationIdeal_map, scalarDifferentialPolynomialOrder_map,
+      scalarDifferentialPolynomialLeaderDegree_map, minimalRank_le_of_le
+
+**The card's Lean-status section is stale and should not be trusted**: it says "differential Luroth and
+generator classification remain paper-level", but the generator classification is formal
+(`adjoin_generator_mobius`) and the Luroth layer is far advanced.  The remaining question is which
+capstone in that layer is still missing -- that must be read off the modules themselves, not off this
+card.
+
+## The real frontier of `(3)`, read off the modules
+
+The differential-Luroth program in the tree is far along and its remaining gap is a single assembly.
+The chain, with what exists:
+
+1. premises jointly realized -- `exists_lurothSaturation_premises`
+   (derivation closure, a minimal-rank characteristic, a primitive two-block characteristic)
+2. cross-relation saturation -- `PrimitiveTwoBlockDifferentialCharacteristic.exists_mappedCrossRelation_saturation`
+   the mapped coefficient cross-relation lies in the iterate ideal after multiplying by powers of the
+   initial and the separant
+3. divisibility from that membership -- `irreducible_dvd_of_order_le_of_separant_pow_mul_mem_iterateIdeal`
+4. vanishing criterion -- `differentialPolynomialCrossDifference_eq_zero_iff`
+   the cross-difference vanishes exactly when the two coefficients are proportional over the base
+5. a non-base ratio always exists -- `exists_differentialRelation_coefficientRatio_not_mem_bot`
+
+Steps 1-5 are formal.  The capstone that is NOT in the tree is the assembly: run 2 into 3, use the
+degree/rank comparison to force the cross-difference to vanish, contradict 5 unless the coefficient
+ratio generates, and conclude `G = C<w>`.  That is the whole of `(3)`, and it is one theorem, not a
+layer.
+
+Anyone continuing this card should start by reading `DifferentialLurothComponentTransfer.lean` and
+`DifferentialLurothCoefficient.lean` end to end; the definitions there
+(`PrimitiveTwoBlockDifferentialCharacteristic`, `differentialCharacteristicCoefficientCrossRelation`,
+`differentialPolynomialIterateIdeal`) are what the assembly has to be written in terms of, and no
+part of it should be re-derived.
+
+## Lean progress — the cross-relation descends to its two coefficients
+
+`GaloisForLFunctions/HTGeometry/CrossRelationCoefficientField.lean` (wired, axiom-clean):
+
+    coeff_crossRelation_mem_adjoin :
+      every coefficient of the characteristic coefficient cross-relation lies in `F(p, q)`
+    crossRelation_descends :
+      so the cross-relation is the image of a relation over `F(p, q)`
+
+Checked against the corpus first this time: the cross-relation and its membership in the relation
+ideal are the corpus's (`differentialCharacteristicCoefficientCrossRelation`,
+`coefficientCrossRelation_mem`); the descent is this session's `descendCoefficients`.  Nothing here is
+re-derived.
+
+The point is structural.  The cross-relation is by construction
+`C q * map P - C p * map Q` with `P, Q` over the BASE field, so each of its coefficients is
+`q . a - p . b` with `a, b` in the base -- it never leaves `F(p, q)`.  Combined with
+`coefficientCrossRelation_mem`, this says: two coefficients of the minimal characteristic already
+carry a relation of `y` over the small field they generate.  That is the object Ritt's degree count
+compares against the characteristic, and the comparison is what remains of `(3)`.

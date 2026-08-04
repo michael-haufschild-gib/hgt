@@ -191,7 +191,7 @@ The next result answers the local-index question at the first spectral-triple ax
 postulating a class of formal residue expressions.
 
 \begin{theorem}[Odd complete-divisor zeta no-go]\label{thm:p1}
-Let $D_\xi$ be the absolute complete-divisor energy followed by functional-equation reflection,
+Let $D_\xi$ be the absolute complete-divisor energy followed by functional equation reflection,
 on its maximal domain in the multiplicity-exact Riemann-divisor Hilbert space.  Then $D_\xi$ is
 self-adjoint and genuinely unbounded.  It has a two-sided Hilbert--Schmidt, hence compact, inverse.
 If $m$ is the functional-equation orientation and $e_R=(1+m)/2$, then
@@ -221,14 +221,15 @@ It is not anti-Real, and
 \[
                  zL_c\text{ is anti-Real}\quad\Longleftrightarrow\quad \bar z=-z. \tag{1.13}
 \]
-More generally, let $\mathsf K$ be any proposed bivariant-class type and suppose its realized Chern
-characters are anti-Real cyclic morphisms
-\(
-             \operatorname{ch}:\mathsf K\to
-             \operatorname{Hom}_{\mathrm{cyc}}^{-}(\mathcal Q_\bullet,\mathcal Q_\bullet).
-\)
+More generally, let $\mathsf K$ be any proposed bivariant-class type and let
+\[
+ \operatorname{ch}:\mathsf K\longrightarrow
+ \operatorname{Hom}_{\mathrm{cyc}}^{-}
+   (\mathcal Q_\bullet,\mathcal Q_\bullet)
+\]
+be a realization by anti-Real cyclic morphisms.
 Then no $\kappa\in\mathsf K$ satisfies $\operatorname{ch}(\kappa)=L_c$ after forgetting Real
-parity.  The maximal parity-correct comparison is the exact equality
+parity.  The distinguished parity-correct comparison is the exact equality
 \[
                      \operatorname{Cl}(L_c)=iL_c,    \tag{1.14}
 \]
@@ -268,15 +269,20 @@ above $c$.
 \begin{theorem}[Fixed-sector variation]\label{thm:p4}
 For all parameters $t_0,t_1$,
 \[
- d(t_1)-d(t_0)=r(t_1)-r(t_0)+2\bigl(u(t_1)-u(t_0)\bigr). \tag{1.16}
+ \begin{aligned}
+ d(t_1)-d(t_0)
+   &=r(t_1)-r(t_0)+2\bigl(u(t_1)-u(t_0)\bigr).
+ \end{aligned}                                      \tag{1.16}
 \]
-The fixed-locus crossed product is Fourier-isomorphic to two coordinate blocks.  Coefficient
+The fixed-locus crossed product is isomorphic, by Fourier transform, to two coordinate blocks.  Coefficient
 inclusion induces the diagonal $K_0$ map, and central evaluation in either character block is
 $\mathbf1_{r(t)>0}$.  Hence
 \[
+ \begin{aligned}
  r(t_1)-r(t_0)
- =\mathbf1_{r(t_1)>0}-\mathbf1_{r(t_0)>0}
-  +\bigl(\mu(r(t_1))-\mu(r(t_0))\bigr),              \tag{1.17}
+   &=\mathbf1_{r(t_1)>0}-\mathbf1_{r(t_0)>0}\\
+   &\quad+\mu(r(t_1))-\mu(r(t_0)).
+ \end{aligned}                                      \tag{1.17}
 \]
 where $\mu(n)=n-\mathbf1_{n>0}$ is central multiplicity excess.
 
@@ -755,6 +761,30 @@ $G\notin\clos\im R_0$, so its quotient class is nonzero.
 
 \subsection{Real parity and the Lefschetz correspondence}
 
+\begin{proposition}[Closed Lefschetz descent]\label{prop:descent}
+For every $c\in C_\Q$, right class-space translation acts by cyclic morphisms on the reduced
+source and on $C_\bullet^{\mathrm{str},0}(B^+)$, is continuous for the strong graph topology, and
+commutes with $R_\bullet$.  It therefore preserves $\clos\im R_\bullet$ and induces a cyclic
+endomorphism $L_c$ of $\mathcal Q_\bullet$.  Moreover
+\[
+                        L_cL_d=L_{cd},\qquad L_1=\id,              \tag{4.24}
+\]
+so $L_c$ is invertible with inverse $L_{c^{-1}}$.
+\end{proposition}
+
+\begin{proof}
+On a class-space field, right translation is precomposition by the homeomorphism $x\mapsto xc$;
+on a cyclic tensor it is applied in every factor.  It preserves the global scalar augmentation
+and the diagonal trace.  In logarithmic coordinates its radial part is translation by the fixed
+number $\log|c|$, while its profinite part is a homeomorphism.  Thus each seminorm in (4.3) after
+translation is the corresponding seminorm before translation multiplied by the finite constant
+$e^{-\beta\log|c|}$; this proves continuity in every cyclic degree.  The Morita formula (4.19)
+shows directly, first on crossed-product monomials and then by linearity, that source translation
+intertwines $R_\bullet$ with target translation.  Continuity therefore sends
+$\clos\im R_\bullet$ into itself and gives the quotient map.  Composition of right translations
+gives the two identities in (4.24), and applying the same argument to $c^{-1}$ gives the inverse.
+\end{proof}
+
 The exact strong cyclic module has an even conjugate-linear Real structure $\sigma$.  A cyclic
 morphism $T$ is Real-even if $\sigma T=T\sigma$ and anti-Real if
 $\sigma T=-T\sigma$.  CCM class-space translation by $c\in C_\Q$ gives an invertible Real-even
@@ -774,7 +804,7 @@ $Tx=0$.
 Every $L_c$ is nonzero and is not anti-Real.  For every scalar $z$, the morphism $zL_c$ is
 anti-Real if and only if $\bar z=-z$.  In particular, the morphism
 \[
-                         \mathcal K_c=iL_c            \tag{4.24}
+                         \mathcal K_c=iL_c            \tag{4.25}
 \]
 is anti-Real.  At $c=1$, $\mathcal K_1^2=-\id$ in every cyclic degree.
 \end{proposition}
@@ -785,15 +815,15 @@ by $c^{-1}$ recovers $[G]$ from its $L_c$ image, so $L_c$ is nonzero.  Lemma
 \ref{lem:parityintersection} excludes anti-Real parity.  If $zL_c$ is anti-Real, evaluate its
 parity identity on a Real conjugate of a nonzero chain.  Real-evenness of $L_c$ reduces the identity
 to $\bar zL_cx=-zL_cx$, and nonvanishing gives $\bar z=-z$.  Conversely this scalar identity and
-conjugate linearity of $\sigma$ make $zL_c$ anti-Real.  Taking $z=i$ proves (4.24).  Finally
+conjugate linearity of $\sigma$ make $zL_c$ anti-Real.  Taking $z=i$ proves (4.25).  Finally
 $L_1=\id$ and $i^2=-1$.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:p2}]
 Proposition~\ref{prop:landing} proves the genuine full-adeles landing, and
 Proposition~\ref{prop:separator} proves that the literal closed recipient is nonzero.
-Class-space translation is continuous and exactly equivariant with $R_\bullet$, hence preserves
-its closed range and descends to the invertible Real-even $L_c$.  Proposition
+Proposition~\ref{prop:descent} supplies the invertible descended $L_c$, and its compatibility with
+the conjugate-linear involution makes it Real-even.  Proposition
 \ref{prop:clifford} proves scalar classification and the Clifford identity.
 
 For the theory-independent assertion, suppose a bivariant class $\kappa$ has an anti-Real
@@ -1078,8 +1108,11 @@ order and cyclic rank retain its primary multiplicity.
 
 Thus smoothness and detectability are conserved by redistribution, not simultaneously preserved
 in one channel.  Free transport is visible as off-diagonal/odd data; fixed multiplicity is visible
-as diagonal cyclic data.  The four results are forced specializations of this exhaustive
-two-channel law.
+as diagonal cyclic data.  Precisely the orbit-theoretic part of each result factors through the
+exhaustive two-channel law.  Its remaining hypotheses are independent analytic inputs: complete-
+divisor growth for P1, Haar--Meyer descent for P2, endpoint accumulation for P3, and analytic
+orders for P4.  Once those inputs are proved, Theorem~\ref{thm:orbitlaw} leaves no third channel in
+which a different smoothness or detectability contribution could reside.
 
 \section{Formal verification}\label{sec:formal}
 
@@ -1096,14 +1129,15 @@ Fourier equivalence, orientation image, entrywise commutator, and diagonal induc
 \item partially defined operators on exact invariant domains and the actual multiplicity-exact
 Riemann divisor: maximal self-adjoint odd operator, Hilbert--Schmidt inverse, and unbounded
 Real-corona projector commutator;
-\item rational finite-adele topology, normalized Haar character, Bruhat crossed product, single
-global unitization of the nonunital trace-class field algebra, both cyclic kernels, all-degree
-landing, closed-range quotient, Haar--Meyer boundary factorization, Gaussian separator, and
-descended Real/Clifford Lefschetz morphisms;
-\item the order-two reflection crossed product of the dense endpoint-holomorphic algebra, actual
-Xi and primitive self-dual Dirichlet cases, and the all-degree completed-zeta power classification;
-\item analytic orders and finite real-zero packets for self-dual entire families, the fixed-locus
-crossed-product $K_0$ comparison, and the concrete family $z^n(z^2-1)^k$.
+\item rational finite-adele topology, normalized Haar character, and Bruhat crossed product;
+\item one global unitization of the nonunital trace-class field algebra, both cyclic kernels,
+all-degree landing, and closed quotient;
+\item Haar--Meyer law, Gaussian separator, and descended Lefschetz morphisms with exact Real and
+Clifford structures;
+\item reflection crossed product of endpoint-holomorphic dense functions; Xi and
+primitive self-dual Dirichlet cases; and completed-zeta power classification;
+\item analytic orders and finite real-zero packets, fixed-locus crossed-product $K_0$, and the
+concrete family $z^n(z^2-1)^k$.
 \end{enumerate}
 
 No declaration in the paper dependency cone uses \texttt{sorry}, \texttt{admit}, a new axiom,
@@ -1116,6 +1150,7 @@ targeted commands only:
 cd formal
 lake env lean GaloisForLFunctions/RHTower/RealCoronaFourProblemsResolution.lean
 lake build GaloisForLFunctions.RHTower.RealCoronaFourProblemsResolution
+cd ..
 python3 scripts/formal_tools.py lint
 \end{verbatim}
 \endgroup

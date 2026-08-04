@@ -25,6 +25,13 @@
   (`#distinct >= (#S)^2/(X * balancedMomentConst y)`, constants explicit, no collision
   normalization used); the hard gate is thereby reduced to a size comparison against
   Brun--Titchmarsh;
+  all three analytic density inputs of the proof are now unconditional Lean theorems: the Moebius
+  mean `(1/y)∑_{y<n<=2y} mu(n) -> 0` (`Sieve/MoebiusDyadicWindow.lean`, from the corpus's own
+  prime number theorem), the squarefree density `(1/y)∑_{y<n<=2y} mu^2(n) -> 6/pi^2`
+  (`Sieve/SquarefreeWindowCount.lean`, `Sieve/SquarefreeDyadicDensity.lean`), and the `p`-deleted
+  squarefree density `(1/y)∑_{y<m<=2y} mu^2(m)1_{p!|m} -> D p/(p+1)`, i.e. equation `(8)`
+  analytically (`Sieve/CoprimeMoebiusSeries.lean`, `Sieve/CoprimeSquarefreeWindow.lean`,
+  `Sieve/CoprimeSquarefreeDyadic.lean`);
   the sole remaining input is Matomaki--Radziwill's published Theorem 2
 
 ## Statement
@@ -7847,3 +7854,129 @@ corpus's `AveragedSquarefreeTail` layer is only required when `R` is taken *belo
 which the dyadic window never needs.  Choosing `R = ⌊√(t+L)⌋ + 1` gives the error `O(√(t+L))`.
 
 Step 1 of the card therefore now rests on `(5)` alone.
+
+### Step 2's density input `(8)` is now formalized analytically
+
+`MobiusCoprimeEulerMargin.euler_exclusion_factor` had only the Euler-factor *ratio*
+`(1-1/p)/(1-1/p²) = p/(p+1)`.  The analytic content of `(8)` — that this ratio is the actual limiting
+density — is now proved, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/CoprimeMoebiusSeries.lean` — `coprimeMoebiusTerm`, `coprimeSquarefreeSum`,
+  `summable_coprimeMoebiusTerm`, `abs_sum_Icc_coprimeMoebius_sub_le`, `moebius_prime_mul`,
+  `tsum_deleted_eq`, and
+
+      coprimeSquarefreeSum_mul_eq :  S_p · (1 - p^{-2}) = D,   S_p = ∑_{p ∤ d} μ(d)/d².
+
+  The proof is the reindexing `d = p·e` of the deleted part: `μ(pe) = 0` when `p ∣ e` and `-μ(e)`
+  otherwise, so the deleted part is exactly `-p^{-2}·S_p`.
+- `RHTower/Sieve/CoprimeSquarefreeWindow.lean` — `filter_sq_dvd_Icc_eq`, `moebius_sq_eq_sum_trunc`,
+  `sq_dvd_and_prime_dvd_iff`, `card_filter_coprime_eq`, `abs_count_coprime_sub_le`,
+  `filter_coprime_eq_empty_of_dvd`, and
+
+      abs_window_coprime_squarefree_sub_le :
+        | #{n ∈ (t,t+L] : squarefree, p ∤ n} - L·(1-1/p)·S_p | ≤ 2R + L/R.
+
+  The sieve is the same as the unrestricted one with each inner count `#{d² ∣ n}` replaced by
+  `#{d² ∣ n} - #{p d² ∣ n}` — legitimate exactly because `p ∤ d` makes `p` and `d²` coprime, so
+  `d² ∣ n ∧ p ∣ n ↔ p d² ∣ n`.  Divisors `d` with `p ∣ d` contribute nothing on either side.
+- `RHTower/Sieve/CoprimeSquarefreeDyadic.lean` — `coprime_density_eq`
+  (`(1-1/p)·S_p = D·p/(p+1)`) and
+
+      tendsto_window_coprime_squarefree_density :
+        (1/y) ∑_{y < m ≤ 2y} μ²(m)·1_{p ∤ m} → D·p/(p+1).
+
+This is precisely the card's `(8)`.  All three of the card's analytic density inputs — the Möbius
+mean, the squarefree density, and the `p`-deleted squarefree density — are now unconditional Lean
+theorems.  The card's remaining dependence is on Matomäki–Radziwiłł's Theorem 2 alone.
+
+### Step 3's tail estimate `(11)` is now formalized
+
+`RHTower/Sieve/SharedPrimeTailLimit.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `mertensS_sqrt_le` — `mertensS(⌊2√x⌋) ≤ log log(3x) + C` (Mertens' second theorem at the balanced
+  height; the corpus already owned `mertensS_le`).
+- `shared_prime_tail_normalized_le` — dividing the corpus's `sum_pair_tail_le` by `h·√x`:
+
+      (tail over primes > P)/(h√x) ≤ 1/P + [ (√x + h)·mertensS(2√x) + 2√x ] / (h√x).
+
+- `excess_eq` — the bracket is exactly `mertensS/h + mertensS/√x + 2/h`.
+- `tendsto_of_growth` — the card's condition `(1)` forces `h → ∞`.
+- `tendsto_loglog_div_sqrt` — `log log(3x)/√x → 0`.
+- `tendsto_shared_prime_excess` — the bracket tends to `0`.
+- `eventually_shared_prime_tail_le`, **`exists_shared_prime_tail_small`** — the card's `(11)`:
+
+      ∀ ε > 0, ∃ P ≥ 1, eventually  (tail over primes > P)/(h√x) ≤ ε.
+
+The three pieces of the bracket are governed by exactly one hypothesis each: the first by the card's
+growth condition `h/log log(3x) → ∞` (it *is* its reciprocal), the second by `log log(3x) = o(√x)`,
+the third by `h → ∞`.  Nothing else about `h` is used, and the estimate is uniform in the interval
+data — no distribution theorem enters, as the module's original design intended.
+
+#### Status of the card's numbered equations
+
+| eq | content | Lean |
+|----|---------|------|
+| (5) | Matomäki–Radziwiłł Theorem 2 | **external — the sole gate** |
+| (6),(7) | densities → signed/absolute pair counts | needs (5) |
+| (8) | `p`-deleted squarefree density `D·p/(p+1)` | **done** (`CoprimeSquarefreeDyadic`) |
+| (9) | shared-prime sector density | algebraic form done; analytic form needs (5) |
+| (10),(11) | uniform large-prime tail | **done** (`SharedPrimeTail`, `SharedPrimeTailLimit`) |
+| (12) | noncoprime pairs `≤ D²A` | needs (9), hence (5) |
+| (13) | `A ≤ 13/36 < 1/2` | **done** (`MobiusCoprimeEulerMargin`) |
+| step 1 inputs | `∑μ = o`, `∑μ² ~ D` over `[√x, 2√x]` | **done** |
+
+Every line of the card that does not pass through `(5)` is now an unconditional Lean theorem.
+
+### The sign split `(7)` is now an exact Finset identity
+
+Two modules, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/SignSplitLimit.lean` — `tendsto_pos_class`, `tendsto_neg_class`,
+  `tendsto_sign_classes`: from `R₊+R₋ = Q`, `R₊-R₋ = S`, `Q/N → q`, `S/N → 0` conclude
+  `R±/N → q/2`.  Also `le_liminf_after_deletion`, the card's step-4 bookkeeping (deleting a set of
+  density `b` from a class of density `q` leaves `≥ q - b - ε` eventually).
+- `RHTower/Sieve/BalancedPairs.lean` — `balancedPairs x h` (the pair set
+  `x ≤ n₁n₂ ≤ x+h√x`, `√x ≤ n₁ ≤ 2√x`), `signedPairSum`, `squarefreePairCount`, `signClass`,
+  `signClassCount`, and the two **exact** identities
+
+      ∑ μ(n₁)μ(n₂) = R₊ - R₋,     ∑ μ²(n₁)μ²(n₂) = R₊ + R₋,
+
+  valid for every `x` and `h` with no hypotheses at all, together with
+  `tendsto_signClass_of_limits`, the card's `(7)`.
+
+The identities hold because `μ(n₁)μ(n₂)` and `μ²(n₁)μ²(n₂)` are the difference and the sum of the
+two sign indicators — a three-case check, no arithmetic.  So `(7)` is *not* an analytic step: the
+only analytic content is the two limits, i.e. `(5)` applied to `μ` and to `μ²`.
+
+The card's logical skeleton is now fully in Lean except for `(5)` itself: every arrow between
+numbered equations that does not start at `(5)` is a machine-checked theorem.
+
+### The card's `(5)` is now an explicit Lean interface, and `(7)` is derived from it
+
+Two modules, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/BlockMean.lean` — `blockMean f x = (1/√x)∑_{√x < n ≤ 2√x} f(n)`, with
+  `tendsto_blockMean_moebius` (`→ 0`) and `tendsto_blockMean_moebius_sq` (`→ D`).  Both are the
+  dyadic-window limits of the previous section composed with `x ↦ √x`; the block was *defined* as
+  `(√x, 2√x]` precisely so that they apply verbatim.
+- `RHTower/Sieve/MRInterface.lean` — `pairSum f x h`, and the card's `(5)` as a `Prop`:
+
+      MRBilinear f hh :=
+        Tendsto (fun x => pairSum f x (hh x)/(hh x·√x·log 2) - (blockMean f x)²) atTop (𝓝 0)
+
+  together with `tendsto_signedPairSum_of_MR`, `tendsto_squarefreePairCount_of_MR` and
+
+      tendsto_signClass_of_MR :
+        MRBilinear μ hh → MRBilinear μ² hh →
+          signClassCount(±1)/(h√x log 2) → D²/2.
+
+  This is the card's `(7)`, machine-checked, with `(5)` as its only hypothesis.
+
+Two facts fall out of the interface being definitional rather than axiomatic:
+`signedPairSum = pairSum μ` and `squarefreePairCount = pairSum μ²` hold by `rfl` — the two
+applications of `(5)` the card makes are literally the same statement at two weights, and the sign
+split needs nothing else.
+
+Following `formal/CLAUDE.md`'s rule for missing analytic inputs (explicit hypotheses or `Prop`
+interfaces), the card's dependence on Matomäki–Radziwiłł is now a single named `Prop` rather than a
+prose remark, and every downstream step is checked against it.

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ClockPotentialLocalDetermination
+import GaloisForLFunctions.HTGeometry.ClockProbeSeparablePotential
 import GaloisForLFunctions.HTGeometry.ConformalMetricClockCalculus
 
 /-!
@@ -53,24 +54,66 @@ theorem DifferentiablePartials.mul_left {f u : (Fin d → ℝ) → ℝ} (hf : Co
     exact ((differentiableAt_of_contDiff_infty hf x).mul (hu.coord i x)).add
       ((hu.base x).mul (differentiableAt_of_contDiff_infty (contDiff_coordPartial hf i) x))
 
+/-! ## The regularity class on a region -/
+
+/-- The same regularity, asked only on a region: what a probe solving on a tube actually has. -/
+structure DifferentiablePartialsOn (u : (Fin d → ℝ) → ℝ) (W : Set (Fin d → ℝ)) : Prop where
+  base : ∀ x ∈ W, DifferentiableAt ℝ u x
+  coord : ∀ (i : Fin d), ∀ x ∈ W, DifferentiableAt ℝ (coordPartial i u) x
+
+theorem DifferentiablePartials.on {u : (Fin d → ℝ) → ℝ} (hu : DifferentiablePartials u)
+    (W : Set (Fin d → ℝ)) : DifferentiablePartialsOn u W where
+  base := fun x _ => hu.base x
+  coord := fun i x _ => hu.coord i x
+
+theorem DifferentiablePartialsOn.mono {u : (Fin d → ℝ) → ℝ} {W W' : Set (Fin d → ℝ)}
+    (h : W' ⊆ W) (hu : DifferentiablePartialsOn u W) : DifferentiablePartialsOn u W' where
+  base := fun x hx => hu.base x (h hx)
+  coord := fun i x hx => hu.coord i x (h hx)
+
+theorem coordPartial_mul_eqOn {f u : (Fin d → ℝ) → ℝ} {W : Set (Fin d → ℝ)}
+    (hf : ContDiff ℝ ∞ f) (hu : DifferentiablePartialsOn u W) (i : Fin d) :
+    Set.EqOn (coordPartial i fun y => f y * u y)
+      (fun y => f y * coordPartial i u y + u y * coordPartial i f y) W := by
+  intro y hy
+  exact coordPartial_mul (differentiableAt_of_contDiff_infty hf y) (hu.base y hy) i
+
+theorem DifferentiablePartialsOn.mul_left {f u : (Fin d → ℝ) → ℝ} {W : Set (Fin d → ℝ)}
+    (hW : IsOpen W) (hf : ContDiff ℝ ∞ f) (hu : DifferentiablePartialsOn u W) :
+    DifferentiablePartialsOn (fun y => f y * u y) W where
+  base := fun x hx => (differentiableAt_of_contDiff_infty hf x).mul (hu.base x hx)
+  coord := by
+    intro i x hx
+    have heq : (coordPartial i fun y => f y * u y) =ᶠ[nhds x]
+        fun y => f y * coordPartial i u y + u y * coordPartial i f y :=
+      Filter.eventuallyEq_of_mem (hW.mem_nhds hx) (coordPartial_mul_eqOn hf hu i)
+    refine DifferentiableAt.congr_of_eventuallyEq ?_ heq
+    exact ((differentiableAt_of_contDiff_infty hf x).mul (hu.coord i x hx)).add
+      ((hu.base x hx).mul (differentiableAt_of_contDiff_infty (contDiff_coordPartial hf i) x))
+
 /-! ## The flux is differentiable -/
 
-theorem differentiableAt_flux {u : (Fin d → ℝ) → ℝ} (hu : DifferentiablePartials u) (i : Fin d)
-    (x : Fin d → ℝ) : DifferentiableAt ℝ (M.flux u i) x := by
+theorem differentiableAt_flux_on {u : (Fin d → ℝ) → ℝ} {W : Set (Fin d → ℝ)}
+    (hu : DifferentiablePartialsOn u W) (i : Fin d) {x : Fin d → ℝ} (hx : x ∈ W) :
+    DifferentiableAt ℝ (M.flux u i) x := by
   show DifferentiableAt ℝ
     (fun y => M.density y * ∑ j, M.inverseMetric y i j * coordPartial j u y) x
   refine (differentiableAt_of_contDiff_infty M.contDiff_density x).mul ?_
   have hterm : ∀ j : Fin d, DifferentiableAt ℝ
       (fun y : Fin d → ℝ => M.inverseMetric y i j * coordPartial j u y) x := fun j =>
-    (differentiableAt_of_contDiff_infty (M.contDiff_inverseMetric i j) x).mul (hu.coord j x)
+    (differentiableAt_of_contDiff_infty (M.contDiff_inverseMetric i j) x).mul (hu.coord j x hx)
   exact DifferentiableAt.fun_sum fun j _ => hterm j
+
+theorem differentiableAt_flux {u : (Fin d → ℝ) → ℝ} (hu : DifferentiablePartials u) (i : Fin d)
+    (x : Fin d → ℝ) : DifferentiableAt ℝ (M.flux u i) x :=
+  M.differentiableAt_flux_on (hu.on Set.univ) i (Set.mem_univ x)
 
 /-! ## The conformal transformation law -/
 
 /-- **The conformal transformation law of the d'Alembertian, at probe regularity.** -/
-theorem dalembert_conformalRescale_of_differentiablePartials (sigma : (Fin d → ℝ) → ℝ)
-    (hsigma : ContDiff ℝ ∞ sigma) {u : (Fin d → ℝ) → ℝ} (hu : DifferentiablePartials u)
-    (x : Fin d → ℝ) :
+theorem dalembert_conformalRescale_of_differentiablePartialsOn (sigma : (Fin d → ℝ) → ℝ)
+    (hsigma : ContDiff ℝ ∞ sigma) {u : (Fin d → ℝ) → ℝ} {W : Set (Fin d → ℝ)}
+    (hu : DifferentiablePartialsOn u W) {x : Fin d → ℝ} (hx : x ∈ W) :
     (M.conformalRescale sigma hsigma).dalembert u x =
       Real.exp (-2 * sigma x) *
         (M.dalembert u x + ((d : ℝ) - 2) * M.gradPair sigma u x) := by
@@ -84,7 +127,7 @@ theorem dalembert_conformalRescale_of_differentiablePartials (sigma : (Fin d →
     intro i
     rw [M.flux_conformalRescale sigma hsigma u i]
     rw [coordPartial_mul (differentiableAt_of_contDiff_infty hweight x)
-      (M.differentiableAt_flux hu i x) i]
+      (M.differentiableAt_flux_on hu i hx) i]
     rw [coordPartial_exp
         (differentiableAt_of_contDiff_infty (contDiff_const.mul hsigma) x) i,
       coordPartial_const_mul (differentiableAt_of_contDiff_infty hsigma x) _ i]
@@ -129,16 +172,25 @@ theorem dalembert_conformalRescale_of_differentiablePartials (sigma : (Fin d →
           simp only [dalembert]
           ring
 
+/-- **The conformal transformation law of the d'Alembertian, at probe regularity.** -/
+theorem dalembert_conformalRescale_of_differentiablePartials (sigma : (Fin d → ℝ) → ℝ)
+    (hsigma : ContDiff ℝ ∞ sigma) {u : (Fin d → ℝ) → ℝ} (hu : DifferentiablePartials u)
+    (x : Fin d → ℝ) :
+    (M.conformalRescale sigma hsigma).dalembert u x =
+      Real.exp (-2 * sigma x) *
+        (M.dalembert u x + ((d : ℝ) - 2) * M.gradPair sigma u x) :=
+  M.dalembert_conformalRescale_of_differentiablePartialsOn sigma hsigma (hu.on Set.univ)
+    (Set.mem_univ x)
+
 /-! ## Leibniz rules with one smooth factor -/
 
-theorem flux_mul_left {f u : (Fin d → ℝ) → ℝ} (hf : ContDiff ℝ ∞ f)
-    (hu : DifferentiablePartials u) (i : Fin d) :
-    M.flux (fun y => f y * u y) i =
-      fun x => f x * M.flux u i x + u x * M.flux f i x := by
-  funext x
+theorem flux_mul_left_apply {f u : (Fin d → ℝ) → ℝ} {W : Set (Fin d → ℝ)}
+    (hf : ContDiff ℝ ∞ f) (hu : DifferentiablePartialsOn u W) (i : Fin d) {x : Fin d → ℝ}
+    (hx : x ∈ W) :
+    M.flux (fun y => f y * u y) i x = f x * M.flux u i x + u x * M.flux f i x := by
   have hpd : ∀ j : Fin d, coordPartial j (fun y => f y * u y) x =
       f x * coordPartial j u x + u x * coordPartial j f x := fun j =>
-    coordPartial_mul (differentiableAt_of_contDiff_infty hf x) (hu.base x) j
+    coordPartial_mul (differentiableAt_of_contDiff_infty hf x) (hu.base x hx) j
   simp only [flux]
   have hstep : ∑ j, M.inverseMetric x i j * coordPartial j (fun y => f y * u y) x =
       f x * (∑ j, M.inverseMetric x i j * coordPartial j u x) +
@@ -148,13 +200,21 @@ theorem flux_mul_left {f u : (Fin d → ℝ) → ℝ} (hf : ContDiff ℝ ∞ f)
   rw [hstep]
   ring
 
-theorem gradPair_mul_right_left (k : (Fin d → ℝ) → ℝ) {f u : (Fin d → ℝ) → ℝ}
-    (hf : ContDiff ℝ ∞ f) (hu : DifferentiablePartials u) (x : Fin d → ℝ) :
+theorem flux_mul_left {f u : (Fin d → ℝ) → ℝ} (hf : ContDiff ℝ ∞ f)
+    (hu : DifferentiablePartials u) (i : Fin d) :
+    M.flux (fun y => f y * u y) i =
+      fun x => f x * M.flux u i x + u x * M.flux f i x := by
+  funext x
+  exact M.flux_mul_left_apply hf (hu.on Set.univ) i (Set.mem_univ x)
+
+theorem gradPair_mul_right_left_on (k : (Fin d → ℝ) → ℝ) {f u : (Fin d → ℝ) → ℝ}
+    {W : Set (Fin d → ℝ)} (hf : ContDiff ℝ ∞ f) (hu : DifferentiablePartialsOn u W)
+    {x : Fin d → ℝ} (hx : x ∈ W) :
     M.gradPair k (fun y => f y * u y) x =
       f x * M.gradPair k u x + u x * M.gradPair k f x := by
   have hpd : ∀ j : Fin d, coordPartial j (fun y => f y * u y) x =
       f x * coordPartial j u x + u x * coordPartial j f x := fun j =>
-    coordPartial_mul (differentiableAt_of_contDiff_infty hf x) (hu.base x) j
+    coordPartial_mul (differentiableAt_of_contDiff_infty hf x) (hu.base x hx) j
   simp only [gradPair]
   rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -163,9 +223,15 @@ theorem gradPair_mul_right_left (k : (Fin d → ℝ) → ℝ) {f u : (Fin d → 
   rw [hpd j]
   ring
 
+theorem gradPair_mul_right_left (k : (Fin d → ℝ) → ℝ) {f u : (Fin d → ℝ) → ℝ}
+    (hf : ContDiff ℝ ∞ f) (hu : DifferentiablePartials u) (x : Fin d → ℝ) :
+    M.gradPair k (fun y => f y * u y) x =
+      f x * M.gradPair k u x + u x * M.gradPair k f x :=
+  M.gradPair_mul_right_left_on k hf (hu.on Set.univ) (Set.mem_univ x)
+
 /-- **The second-order Leibniz rule with one smooth factor**, at probe regularity. -/
-theorem dalembert_mul_left {f u : (Fin d → ℝ) → ℝ} (hf : ContDiff ℝ ∞ f)
-    (hu : DifferentiablePartials u) (x : Fin d → ℝ) :
+theorem dalembert_mul_left_on {f u : (Fin d → ℝ) → ℝ} {W : Set (Fin d → ℝ)} (hW : IsOpen W)
+    (hf : ContDiff ℝ ∞ f) (hu : DifferentiablePartialsOn u W) {x : Fin d → ℝ} (hx : x ∈ W) :
     M.dalembert (fun y => f y * u y) x =
       f x * M.dalembert u x + u x * M.dalembert f x + 2 * M.gradPair f u x := by
   have hfluxf := M.contDiff_flux hf
@@ -174,15 +240,18 @@ theorem dalembert_mul_left {f u : (Fin d → ℝ) → ℝ} (hf : ContDiff ℝ �
         f x * coordPartial i (M.flux u i) x + M.flux u i x * coordPartial i f x +
           (u x * coordPartial i (M.flux f i) x + M.flux f i x * coordPartial i u x) := by
     intro i
-    rw [M.flux_mul_left hf hu i]
+    have hfluxeq : M.flux (fun y => f y * u y) i =ᶠ[nhds x]
+        fun y => f y * M.flux u i y + u y * M.flux f i y :=
+      Filter.eventuallyEq_of_mem (hW.mem_nhds hx) fun y hy => M.flux_mul_left_apply hf hu i hy
+    rw [coordPartial_congr hfluxeq i]
     have h₁ : DifferentiableAt ℝ (fun y : Fin d → ℝ => f y * M.flux u i y) x :=
-      (differentiableAt_of_contDiff_infty hf x).mul (M.differentiableAt_flux hu i x)
+      (differentiableAt_of_contDiff_infty hf x).mul (M.differentiableAt_flux_on hu i hx)
     have h₂ : DifferentiableAt ℝ (fun y : Fin d → ℝ => u y * M.flux f i y) x :=
-      (hu.base x).mul (differentiableAt_of_contDiff_infty (hfluxf i) x)
+      (hu.base x hx).mul (differentiableAt_of_contDiff_infty (hfluxf i) x)
     rw [coordPartial_add h₁ h₂ i]
     rw [coordPartial_mul (differentiableAt_of_contDiff_infty hf x)
-        (M.differentiableAt_flux hu i x) i,
-      coordPartial_mul (hu.base x)
+        (M.differentiableAt_flux_on hu i hx) i,
+      coordPartial_mul (hu.base x hx)
         (differentiableAt_of_contDiff_infty (hfluxf i) x) i]
   have hsplit : ∑ i, coordPartial i (M.flux (fun y => f y * u y) i) x =
       f x * (∑ i, coordPartial i (M.flux u i) x) +
@@ -209,14 +278,22 @@ theorem dalembert_mul_left {f u : (Fin d → ℝ) → ℝ} (hf : ContDiff ℝ �
   rw [hring, h1, h2, h3]
   ring
 
+/-- **The second-order Leibniz rule with one smooth factor**, at probe regularity. -/
+theorem dalembert_mul_left {f u : (Fin d → ℝ) → ℝ} (hf : ContDiff ℝ ∞ f)
+    (hu : DifferentiablePartials u) (x : Fin d → ℝ) :
+    M.dalembert (fun y => f y * u y) x =
+      f x * M.dalembert u x + u x * M.dalembert f x + 2 * M.gradPair f u x :=
+  M.dalembert_mul_left_on isOpen_univ hf (hu.on Set.univ) (Set.mem_univ x)
+
 /-! ## Conjugation by the conformal weight -/
 
 /-- **The conformal conjugation identity at probe regularity.** Conjugating by `e^{-aσ}`,
 `a = (d-2)/2`, cancels every first-order derivative of the field: only the original operator and a
 scalar defect survive. -/
-theorem dalembert_conformalRescale_conjugation_of_differentiablePartials
+theorem dalembert_conformalRescale_conjugation_of_differentiablePartialsOn
     (sigma : (Fin d → ℝ) → ℝ) (hsigma : ContDiff ℝ ∞ sigma) {u : (Fin d → ℝ) → ℝ}
-    (hu : DifferentiablePartials u) (x : Fin d → ℝ) :
+    {W : Set (Fin d → ℝ)} (hW : IsOpen W) (hu : DifferentiablePartialsOn u W)
+    {x : Fin d → ℝ} (hx : x ∈ W) :
     (M.conformalRescale sigma hsigma).dalembert
         (fun y => Real.exp (-conformalDimensionWeight d * sigma y) * u y) x =
       Real.exp (-2 * sigma x) * Real.exp (-conformalDimensionWeight d * sigma x) *
@@ -226,17 +303,30 @@ theorem dalembert_conformalRescale_conjugation_of_differentiablePartials
   set a : ℝ := conformalDimensionWeight d with ha
   have hweight : ContDiff ℝ ∞ fun y => Real.exp (-a * sigma y) :=
     Real.contDiff_exp.comp (contDiff_const.mul hsigma)
-  have hprod : DifferentiablePartials fun y => Real.exp (-a * sigma y) * u y :=
-    DifferentiablePartials.mul_left hweight hu
+  have hprod : DifferentiablePartialsOn (fun y => Real.exp (-a * sigma y) * u y) W :=
+    DifferentiablePartialsOn.mul_left hW hweight hu
   have hdim : ((d : ℝ) - 2) = 2 * a := by
     rw [ha, conformalDimensionWeight]
     ring
-  rw [M.dalembert_conformalRescale_of_differentiablePartials sigma hsigma hprod x,
-    M.dalembert_mul_left hweight hu x, M.dalembert_expSmul (-a) hsigma x,
+  rw [M.dalembert_conformalRescale_of_differentiablePartialsOn sigma hsigma hprod hx,
+    M.dalembert_mul_left_on hW hweight hu hx, M.dalembert_expSmul (-a) hsigma x,
     M.gradPair_expSmul_left (-a) hsigma u x,
-    M.gradPair_mul_right_left sigma hweight hu x,
+    M.gradPair_mul_right_left_on sigma hweight hu hx,
     M.gradPair_expSmul_right (-a) hsigma sigma x, hdim]
   ring
+
+/-- **The conformal conjugation identity at probe regularity.** -/
+theorem dalembert_conformalRescale_conjugation_of_differentiablePartials
+    (sigma : (Fin d → ℝ) → ℝ) (hsigma : ContDiff ℝ ∞ sigma) {u : (Fin d → ℝ) → ℝ}
+    (hu : DifferentiablePartials u) (x : Fin d → ℝ) :
+    (M.conformalRescale sigma hsigma).dalembert
+        (fun y => Real.exp (-conformalDimensionWeight d * sigma y) * u y) x =
+      Real.exp (-2 * sigma x) * Real.exp (-conformalDimensionWeight d * sigma x) *
+        (M.dalembert u x -
+          (conformalDimensionWeight d * M.dalembert sigma x +
+            conformalDimensionWeight d ^ 2 * M.gradPair sigma sigma x) * u x) :=
+  M.dalembert_conformalRescale_conjugation_of_differentiablePartialsOn sigma hsigma isOpen_univ
+    (hu.on Set.univ) (Set.mem_univ x)
 
 /-! ## Probe transfer -/
 
@@ -250,9 +340,10 @@ noncomputable def conformalTransferPotential (sigma V : (Fin d → ℝ) → ℝ)
 /-- **Probes transfer along a conformal rescaling.** A field solving the potential wave equation on
 the chart gives, after conjugation by the conformal weight, a field solving it on the rescaled chart
 for the transferred potential. -/
-theorem solvesPotentialWaveAt_conformalRescale (sigma : (Fin d → ℝ) → ℝ)
-    (hsigma : ContDiff ℝ ∞ sigma) {V u : (Fin d → ℝ) → ℝ} (hu : DifferentiablePartials u)
-    {x : Fin d → ℝ} (h : SolvesPotentialWaveAt M.dalembert V u x) :
+theorem solvesPotentialWaveAt_conformalRescale_on (sigma : (Fin d → ℝ) → ℝ)
+    (hsigma : ContDiff ℝ ∞ sigma) {V u : (Fin d → ℝ) → ℝ} {W : Set (Fin d → ℝ)} (hW : IsOpen W)
+    (hu : DifferentiablePartialsOn u W) {x : Fin d → ℝ} (hx : x ∈ W)
+    (h : SolvesPotentialWaveAt M.dalembert V u x) :
     SolvesPotentialWaveAt (M.conformalRescale sigma hsigma).dalembert
       (M.conformalTransferPotential sigma V)
       (fun y => Real.exp (-conformalDimensionWeight d * sigma y) * u y) x := by
@@ -264,9 +355,19 @@ theorem solvesPotentialWaveAt_conformalRescale (sigma : (Fin d → ℝ) → ℝ)
   show (M.conformalRescale sigma hsigma).dalembert
       (fun y => Real.exp (-a * sigma y) * u y) x +
       M.conformalTransferPotential sigma V x * (Real.exp (-a * sigma x) * u x) = 0
-  rw [M.dalembert_conformalRescale_conjugation_of_differentiablePartials sigma hsigma hu x,
+  rw [M.dalembert_conformalRescale_conjugation_of_differentiablePartialsOn sigma hsigma hW hu hx,
     conformalTransferPotential, hwave]
   ring
+
+/-- **Probes transfer along a conformal rescaling.** -/
+theorem solvesPotentialWaveAt_conformalRescale (sigma : (Fin d → ℝ) → ℝ)
+    (hsigma : ContDiff ℝ ∞ sigma) {V u : (Fin d → ℝ) → ℝ} (hu : DifferentiablePartials u)
+    {x : Fin d → ℝ} (h : SolvesPotentialWaveAt M.dalembert V u x) :
+    SolvesPotentialWaveAt (M.conformalRescale sigma hsigma).dalembert
+      (M.conformalTransferPotential sigma V)
+      (fun y => Real.exp (-conformalDimensionWeight d * sigma y) * u y) x :=
+  M.solvesPotentialWaveAt_conformalRescale_on sigma hsigma isOpen_univ (hu.on Set.univ)
+    (Set.mem_univ x) h
 
 end SmoothMetricChart
 

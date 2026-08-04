@@ -88,15 +88,19 @@ image repays precisely the part already hidden in the second layer.
 - `TwoReplicaPauliHallSymmetryReduction.lean`: exact paired-Pauli covariance of the literal local
   commutator family, preservation of its operator span, invariance of the canonical greatest
   maximum-defect subspace, and its resulting four-sector Pauli bigrading.
+- `FinitePauliConjugationLaw.lean` and `TwoReplicaGlobalPauliHallSymmetryReduction.lean`: exact
+  arbitrary-register Pauli conjugation law and global weight-at-most-`q` covariance; the canonical
+  global maximum-defect subspace is now proved invariant under every paired Pauli string and resolves
+  exactly under every finite list of those commuting involutions.
 - Targeted `lake env lean <file>` checks pass. Axiom audit reports only `propext`,
   `Classical.choice`, and `Quot.sound` where finite-dimensional subspace selection is used; the
   two-involution theorem uses only `propext`.
 
 ## Exact surviving frontier
 
-For the two-replica local-Pauli family, concrete paired-Pauli span covariance and resolution of the
-canonical maximizer into relative-Pauli grades are proved. The surviving task is to lift this action
-to the arbitrary-site weight-at-most-two family, prove a globally injective selection/assembly of the
+For the two-replica local-Pauli family, concrete paired-Pauli span covariance, its arbitrary-site
+weight-at-most-`q` lift, canonical-maximizer invariance, and finite simultaneous parity resolution are
+proved. The surviving task is to prove a globally injective selection/assembly of the
 literal local relative-odd inverses, and prove reverse Hall expansion on the overlap between
 grade-zero edge images and already occupied nonzero grades. The local relative-odd sectors already
 have the exact inverse (A_p^2=4I\). No claim of full Pauli Hall expansion is made until the global
@@ -123,3 +127,16 @@ assembly and reverse-overlap theorems are proved.
   every pair of axes. `TwoReplicaPauliHallSymmetryReduction.lean` compiles; axiom audits of covariance,
   span preservation, canonical invariance, and bigrading contain only `propext`, `Classical.choice`,
   and `Quot.sound`. Global arbitrary-site tensor lifting and grade assembly remain open.
+- 2026-08-04 — Closed arbitrary-site tensor lifting. Every finite Pauli string conjugates another by
+  the product of local signs; paired strings commute exactly because the one-replica sign occurs
+  twice. Every global collective commutator is therefore an eigenoperator under every paired-Pauli
+  conjugation, for any locality cutoff `q`. The canonical greatest maximum-defect subspace of the
+  complete weight-at-most-`q` family is fixed by all paired strings. The targeted modules compile and
+  their capstone axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`. Finite
+  simultaneous character resolution and mixed zero-character overlap are the surviving gates.
+- 2026-08-04 — Closed finite simultaneous parity resolution. A subspace invariant under any finite
+  commuting list of involutions equals the sum of all recursively resolved parity pieces, and their
+  finranks add exactly. Instantiation for any finite list of paired global Pauli strings now applies
+  to the canonical weight-at-most-`q` maximum-defect subspace. Targeted compilation and capstone
+  axiom audits pass with only `propext`, `Classical.choice`, and `Quot.sound`. Graded selector-output
+  assembly and zero-character overlap remain.

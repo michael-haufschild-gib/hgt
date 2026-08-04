@@ -21,9 +21,11 @@ For two orbits define the mixed irregularity
 
 `s_ij = sum_(a in A_i) sum_(b in A_j) h(a,b)`.
 
-It is integral: before division by `N`, the sum is invariant under the free cyclic rotation of
-ordered pairs, and stabilizer-orbit decomposition gives divisibility by `N`. Equivalently `s_ij`
-is the irregularity of the descended exponential Hom local system.
+It is integral. Decompose `A_i x A_j` into cyclic orbits. If an ordered pair has orbit length `L`,
+its difference polynomial is fixed by rotation through `2 pi L/N`; hence its leading exponent `k`
+is divisible by `N/L`. That orbit contributes `Lk`, divisible by `N`. Summing and dividing by `N`
+proves integrality. Equivalently `s_ij` is the irregularity of the descended exponential Hom local
+system.
 
 Define the core diagram by
 
@@ -120,11 +122,12 @@ where `c_ab` is the leading coefficient. Define its zero-time exponential sheaf
 
 `S_ab = k_{ {theta : phi_ab(theta)>=0} }`.
 
-If `a!=b`, `phi_ab` has exactly `2 k_ab` simple zeros. The sheaf is locally constant off those
-zeros. At each zero its singular support contains exactly one oriented conormal ray and its
-microstalk has rank one. Its characteristic cycle is the signed sum of those rays, each with
-coefficient one. The `k_ab` conormals on which `exp(q_b-q_a)` is maximally decaying are the Stokes
-directions for the ordered root `a->b`; hence
+If `a!=b`, `phi_ab` has exactly `2 k_ab` simple zeros. These are the dominance walls of the two
+exponentials. The sheaf is locally constant off them. At each wall its singular support contains
+exactly one oriented conormal ray and its microstalk has rank one. Its characteristic cycle is the
+signed sum of those rays, each with coefficient one. Exactly `k_ab` walls have the orientation that
+enters a decay sector for `exp(q_b-q_a)`; equivalently, those oriented walls are in canonical
+bijection with the `k_ab` maximal-decay Stokes directions for the ordered root `a->b`. Hence
 
 `k_ab = sum_(directed Stokes conormals d) dim mu_d(S_ab)`.       (M)
 

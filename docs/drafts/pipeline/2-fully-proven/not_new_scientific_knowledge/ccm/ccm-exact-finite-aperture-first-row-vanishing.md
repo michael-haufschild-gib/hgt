@@ -667,9 +667,57 @@ Three of the four hypotheses of the abstract error analysis are now discharged i
   `|U x| W <= E x (|F1 x| + |F2 x|)`, which is the inequality that closes the Volterra loop: it is what
   turns the transport laws into an integral inequality for `|F1| + |F2|` alone.
 
-What remains for `(14)`: the integrability bookkeeping for the four integrands (all continuous on the
-interval by the lemmas above), and the one genuinely external quantity — the size of the Liouville defect
-of the radial prolate equation, which is the PSWF-specific input the card cites Dunster for.  Every structural
+**The pole-uniform comparison theorem is proved.**
+**`abs_perturbed_le_lgEnvelope_mul_exp`**: let `U` solve the comparison equation perturbed by a defect
+`a` on `[A, B] ⊂ (1, ∞)`, with `c xi_s(A) >= 1`.  Then
+
+```text
+|U x| <= (C / sqrt(c xi_s(x))) / W · S(A) · exp(int_A^x 2 m |a| E² / W),
+```
+
+with `W = besselWronskian (c xi_s(A))` the Green kernel constant, `S(A)` the total Wronskian size at the
+left endpoint and `E = C / sqrt(c xi_s(·))` the common envelope of the model pair.  The exponential is
+`1 + O(mass)` for small defect mass: that factor *is* the relative error of the pole-uniform expansion,
+and with the Liouville defect of the radial prolate equation it is `1 + O(c^{-1})`.
+
+The proof composes, with nothing left over: the two model ODEs, their common `u^{-1/2}` envelope, the
+positive constant Green kernel normalisation, the two transport laws in integral form, the algebraic
+reconstruction, and the variable-coefficient Grönwall inequality.  So the pole-uniform *mechanism* of
+`(14)` is now unconditional in the corpus, for an arbitrary perturbation of the comparison equation.
+
+The route to the last input is prepared as well.  Writing a concrete equation `u'' + Q u = 0` in the
+comparison form produces the defect `a = Q + P²/4 + P'/2 - c²(xi')²`, so identifying it needs one more
+derivative of the phase.  Both differentiations are now proved:
+
+- **`xiSpeedSecondDeriv`**, `hasDerivAt_xiSpeedDeriv` — the third derivative of the endpoint phase, in
+  closed form.
+- **`lgFirstOrderCoeffDeriv`**, `hasDerivAt_lgFirstOrderCoeff` — the derivative `P'` of the first-order
+  coefficient of the comparison equation.
+- `lgNormalFormDefect` — the defect itself, recorded as a definition of the four explicit terms.
+
+The endpoint asymptotics of the phase that the cancellation needs are now available as general
+infrastructure, in `formal/GaloisForLFunctions/HTGeometry/ArcoshComparison.lean`:
+
+- `endpointLog`, **`hasDerivAt_endpointLog`**, `continuousOn_endpointLog` — the antiderivative of
+  `1/sqrt(x²-1)` on the ray, namely `log(x + sqrt(x²-1))`.  mathlib has `Real.arcosh` but no derivative
+  for it, so the antiderivative is built directly.
+- **`endpointLog_le_sqrt`**, **`sqrt_mul_one_sub_le_endpointLog`** — the two-sided comparison
+  `sqrt(x²-1)(1 - (x²-1)/6) <= log(x + sqrt(x²-1)) <= sqrt(x²-1)`.  Both are proved the same way: the
+  difference vanishes at the endpoint and its derivative has a fixed sign, the sign reducing to the
+  elementary inequality `x(x+1) >= 2`.  This is what makes `log(x + sqrt(x²-1))` and `sqrt(x²-1)`
+  interchangeable to relative order `x²-1`, which is the accuracy the singular-term cancellation needs.
+
+For the radial prolate equation the normal form is
+`u'' + [(chi - c²x²)/(x²-1) + 1/(x²-1)²] u = 0`, so `Q = ±c²(x²-s)/(x²-1) + 1/(x²-1)²` with
+`s = chi/c²`, and the pole-uniform property is exactly the statement that
+`1/(x²-1)² + P²/4 + P'/2` stays bounded as `x -> 1`: the two singular pieces cancel.  That cancellation
+is the reason the comparison is with `J_0` rather than with a trigonometric function, and it is now a
+computation about explicit elementary functions rather than about PSWFs.
+
+What is still not formalized is the PSWF-specific input: that the actual degree-four radial prolate mode
+solves this comparison equation with a defect of size `O(1)`.  That needs the prolate operator, its
+eigenvalue `chi_4(c)` and the separation law `(2)` — a layer of spectral theory that the card imports
+from Dunster and does not itself prove.  Every structural
 ingredient is now unconditional: both model ODEs, both envelopes, the positive constant Green kernel
 normalisation, the two transport laws in integral form, and the algebraic reconstruction of `U` from the
 two Wronskians.
@@ -717,8 +765,13 @@ endpoint; the endpoint normalisation is what the bracket `(4)` needs, so the two
 - [x] Lean: the four-way assembly of `(13)`, with the explicit constant `170`
 - [x] Lean: the exact pole-uniform **comparison equation** of `(14)`, solved by `J_0(c xi_s(x))`
 - [x] Lean: the exact **deviation law** of `(14)` (weighted Wronskian transport, Abel identity)
-- [ ] Lean: the **size** of the deviation integral — the bounded-variation estimate on the Liouville
-  potential defect, run against the harmonic interaction picture where `c xi >= 1`
+- [x] Lean: a second solution of Bessel's equation, its envelope and the Wronskian normalisation
+- [x] Lean: the Green kernel, the two transport laws and the algebraic reconstruction
+- [x] Lean: variable-coefficient Grönwall (integral form) — new general infrastructure
+- [x] Lean: **the pole-uniform comparison estimate** for an arbitrary perturbation of the comparison
+  equation
+- [ ] Lean: the PSWF-specific input of `(14)` — that the actual radial prolate mode solves the comparison
+  equation with an `O(1)` defect (needs the prolate operator and its eigenvalue, which the card imports)
 
 ## Gates
 

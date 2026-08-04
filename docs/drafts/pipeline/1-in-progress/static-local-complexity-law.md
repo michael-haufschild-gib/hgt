@@ -4396,3 +4396,36 @@ receive a new title and an independent significance audit.
   axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`. This removes local span
   covariance as an assumed hypothesis. The exact surviving gate is arbitrary-site tensor lifting,
   followed by global nonzero-grade selection/assembly and the grade-zero reverse-overlap Hall law.
+- 2026-08-04 -- Proved on paper an explicit collision-free selector for every nonzero global Pauli
+  character. Grade a two-replica operator by its simultaneous characters under all paired local
+  Pauli conjugations. For a nonzero grade, rotate the Pauli label at its first nonzero site through
+  `X -> Y -> Z -> X`; the required weight-one generator is the phase-free difference between the
+  old and new labels. It anticommutes with the source grade, so the collective commutator squares to
+  exactly `4I` there. First-site rotation is a permutation of all nonzero grades, so selected images
+  from distinct grades cannot overlap. Thus every invariant subspace supported on nonzero Pauli
+  characters satisfies Hall expansion using weight-one generators alone. Exact statement and proof
+  are in `../2-fully-proven/pauli-character-first-defect-selector-law.md`. Hostile audit prevents an
+  overclaim: the zero Pauli-character grade strictly contains the sitewise `SU(2)` singlet algebra,
+  and its anisotropic sector plus edge-image overlap remain the exact two-replica gate.
+- 2026-08-04 -- Formalized arbitrary-register Pauli covariance and the first-defect selector core.
+  `PauliCharacterFirstDefectSelector.lean` proves first-active rotation is a permutation of all
+  nonzero global Pauli characters, constructs its exactly weight-one selected axis, and proves source
+  anticommutation. `FinitePauliConjugationLaw.lean` proves exact product-sign conjugation for arbitrary
+  finite Pauli strings. `TwoReplicaGlobalPauliHallSymmetryReduction.lean` then proves paired strings
+  commute, every weight-at-most-`q` collective commutator is covariant by its exact character, and the
+  canonical greatest maximum-defect subspace of the global family is invariant under every paired
+  Pauli string. Targeted compilation and axiom audits pass with only `propext`, `Classical.choice`,
+  and `Quot.sound`. The next formal gate is finite simultaneous character resolution and injective
+  graded assembly; the scientific gate after it remains zero-character anisotropy/edge overlap.
+- 2026-08-04 -- Closed finite simultaneous parity resolution. For any finite commuting list of
+  involutions, every invariant subspace is exactly the sum of its simultaneous parity pieces and its
+  finrank is the exact sum of the piece finranks. The global Pauli module instantiates this for every
+  finite list of paired Pauli strings acting on the canonical weight-at-most-`q` maximum-defect
+  subspace. Formal capstones are
+  `invariantSubspace_eq_simultaneousParityPieces_sup`,
+  `invariantSubspace_finrank_eq_simultaneousParityPieces_sum`,
+  `finiteTwoReplicaQLocal_greatestMaximizer_eq_simultaneousParityPieces`, and
+  `finiteTwoReplicaQLocal_greatestMaximizer_finrank_parityPieces`; targeted compilation and axiom
+  audits pass with only `propext`, `Classical.choice`, and `Quot.sound`. The remaining formal gate is
+  injective assembly of first-defect-selected outputs; the remaining scientific gate is the
+  zero-character anisotropic/edge overlap.

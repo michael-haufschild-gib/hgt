@@ -1,1 +1,1 @@
-Construct, from arithmetic source alone, a nonzero polarization-compatible descent of resolved Route-R system such that source inverse duality becomes positive Hilbert adjunction on same fibre.
+Frontier is now sharper: construct genuine mixed/relative rational-adelic complex, prove retained ordinary-prime homology class, then build strict source-to-Xi chain map with unconditional \(D_1D_0=0\). Only then can Stokes/Cartier annihilation be an independent theorem rather than RH restated.

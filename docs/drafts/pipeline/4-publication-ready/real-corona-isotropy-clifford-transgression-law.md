@@ -1,12 +1,12 @@
 # Real-corona isotropy--Clifford transgression law
 
 - **ID:** `real-corona-isotropy-clifford-transgression-law`
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE with dependency-closed algebraic bridge
+- **Stage:** 4-publication-ready
+- **Type:** THEOREM package with exact negative answers and positive survivors for P1--P4
 - **Parent:** `../4-publication-ready/real-corona-quaternionic-cyclic/CARD.md`
 - **Lean targets:** `GaloisForLFunctions.RHTower.RealCoronaUniversalTransgression`,
   `GaloisForLFunctions.RHTower.RealCoronaLocalDetectabilityFracture`, and
-  `GaloisForLFunctions.RHTower.RealCoronaCompleteDivisorDetectability`
+  `GaloisForLFunctions.RHTower.RealCoronaFourProblemsResolution`
 - **Statement:** exchanged sectors create bounded quaternionic orientation and graded cyclic
   charge, fixed sectors create the complete Tate defect, but a nonzero unbounded odd Dirac
   operator cannot contain its own exchanged projector in the Lipschitz algebra.
@@ -600,3 +600,27 @@ stabilization or a different Dirac parity.
   restriction and graph topology, and only then descend Real/Lefschetz structure and seek an
   arithmetic nonzero witness. A reusable module-valued trace-kernel construction will encode this
   intersection without weakening the target.
+- 2026-08-04 — The fatal literal-recipient gate is closed. New modules construct the nonunital
+  continuous trace-class field algebra, its single global unitization, augmentation/strong-trace
+  double kernel, exact reduced restriction, projective/LF graph topology, degreewise closed
+  cokernel, continuous equivariant class-space translations, descended Real structure and
+  Lefschetz action, Haar--Meyer boundary factorization, and an explicit Gaussian separator proving
+  the quotient nonzero. `CCMRationalClosedKappaLefschetzParityNoGo.lean` proves the exact-recipient
+  no-lift theorem and Clifford survivor. No provisional unitized surrogate appears in the paper.
+- 2026-08-04 — Universal law strengthened to the exact fixed/free atomic crossed-product theorem.
+  Free orbits give `M₂(C)` with sign grading and entrywise commutator; fixed orbits give two Fourier
+  blocks with diagonal coefficient `K₀` map. Together with invariant-domain parity conservation,
+  this is the precise common orbit mechanism. Manuscript explicitly separates the independent
+  analytic inputs for P1--P4, avoiding a bundled restatement masquerading as one theorem.
+- 2026-08-04 — P1--P4 are dependency-closed. P1 uses the actual multiplicity-exact odd Xi divisor,
+  maximal self-adjoint operator, Hilbert--Schmidt inverse, and exact unbounded projector
+  commutator. P2 is solved negatively on the literal closed CCM quotient with exact `iL` survivor.
+  P3 classifies the natural endpoint-holomorphic crossed product and proves the Xi-power iff
+  degree-zero theorem. P4 computes fixed crossed-product character ranks and the concrete
+  `z^n(z²-1)^k` variation family.
+- 2026-08-04 — Final gates pass: direct facade elaboration; targeted module build; all 18 facade
+  axiom audits with only `propext`, `Classical.choice`, and `Quot.sound`; global formal lint; 21-page
+  PDF with zero overfull/undefined-reference warnings and complete visual inspection. Hostile
+  Review 2 closes H1--H7 and records **PASS / suitable for submission at general-journal
+  standard**. Manuscript, claim trace, literature audit, and review ledger are under
+  `docs/drafts/manuscripts/real-corona-smoothness-detectability/`.

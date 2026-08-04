@@ -129,7 +129,16 @@ def module_name(path: Path, *, formal: Path = FORMAL) -> str:
 
 
 def read_lines(path: Path) -> list[str]:
-    return path.read_text(encoding="utf-8").splitlines()
+    """Read one enumerated file, tolerating concurrent removal after discovery.
+
+    Research agents share this worktree. A leaf module can disappear between an
+    ``rglob`` snapshot and this read; at that point it is no longer part of the
+    tree being linted. Required root files are checked explicitly by callers.
+    """
+    try:
+        return path.read_text(encoding="utf-8").splitlines()
+    except FileNotFoundError:
+        return []
 
 
 def strip_lean_comments(lines: list[str]) -> list[str]:

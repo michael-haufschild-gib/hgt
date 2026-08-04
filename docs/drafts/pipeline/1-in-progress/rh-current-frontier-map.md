@@ -3732,16 +3732,25 @@ countercharacter triviality are RH-equivalent. These are detector and conservati
 missing source theorem.
 
 **Cofinal source--dagger and Bau-cohomology boundary.** The literal rational-adelic ordinary-prime
-cycle has trace one and maps, before divisor specialization, to the ordered two-leg
+degree-one tensor has trace one and maps, before divisor specialization, to the ordered two-leg
 Möbius--theta source atom. Finite Boolean packets are Hochschild-contractible, but their
 contracting homotopies fail cofinal naturality in one new Tate coordinate. Lean identifies the
-relative cofinal `H₁` with that one-dimensional top-coordinate cokernel and maps the global cyclic
-source to its Bockstein generator. At the first nonzero Xi jet the readout is the physical
-paracyclic defect. The minimal target-stable defect boundary is bottom on the critical line and
-top off it; quotient survival, source-null-homology, and annihilation by the literal source residue
-are each pointwise equivalent to `Re(ρ)=1/2`, and their global forms are RH-equivalent. Thus
-“prove source-null-homology” without a prior strict chain map is a terminal coordinate, not an
-independent proof.
+new top-coordinate cokernel with a one-dimensional quotient and maps the degree-one tensor source
+to its generator. At the first nonzero Xi jet the readout is the physical paracyclic defect. The
+minimal target-stable defect boundary is bottom on the critical line and top off it; quotient
+survival, vanishing in this cofinal quotient, and annihilation by the source reporter are each
+pointwise equivalent to `Re(ρ)=1/2`, and their global forms are RH-equivalent.
+
+The 2026-08-04 strict-chain audit retracts the stronger vocabulary “literal cyclic cycle/class”
+for the current comparison. `ccmRationalAdelicDegreeOneTrace` is invariant under cyclic rotation,
+but `MobiusThetaPhysicalParacyclicSourceNullHomology.lean` proves that its product reporter does
+not annihilate all degree-two Hochschild boundaries when the unit has nonzero trace. No theorem
+places the ordinary-prime tensor in `ker b₁`, and the cofinal landing is not yet proved to factor
+through a cyclic/Hochschild quotient or arise from a chain map. Thus the exact missing
+infrastructure is a genuine mixed/relative rational-adelic complex, a retained prime-cycle class,
+and a strict source-to-cofinal comparison commuting with its differentials. Only after those are
+constructed does “source-null-homology” name an independent source theorem; without them it is a
+terminal coordinate equivalent to the desired critical-line conclusion.
 
 The algebraic Deninger layer also proves homology/cohomology vanishing for cyclic rationalizations,
 one-generator free packets, individual root adjunctions, and finite root-adjunction towers under
@@ -4110,7 +4119,7 @@ at every fixed prime as depth tends to infinity, while evaluation at any finite 
 injective in `a`.  Every such gauge also fixes the horizontal source subobject and induces the
 identity on the vertical quotient, hence acts identically on associated grade.  Its remaining
 coordinate is exactly the displacement of the fixed vertical section by `a m_i/lambda_i`.  The
-The rational-Witt/Koszul source now supplies that distinguished section explicitly: composing its
+rational-Witt/Koszul source now supplies that distinguished section explicitly: composing its
 center section with the normalized Haar orientation section and the scalar reporter lands exactly
 at the clock-normalized vertical conormal.  For same-prime cells its Route-R comparison-square
 defect is `(-a theta(i,j)c/lambda_j,0)`.  The source-side section is therefore no longer missing.

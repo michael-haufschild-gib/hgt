@@ -219,3 +219,14 @@ unproved arithmetic selection step.
   `PrimeDepthBVWoldCalderonWittPointedSplittingObstruction.lean`.  Exact open core is now the
   coefficient-faithful nonannihilating singular Cartier comparison proving this already-typed
   source/Route-R square commutes.
+- 2026-08-04 — Audited new Stage-4 source-dagger, boundary-completeness, singular-Gelfand,
+  Real-corona, and Stokes papers against this open core.  Source-dagger gives the exact physical
+  reporter `(delta_n(rho)-1)c_rho` and a one-dimensional cofinal top-coordinate quotient, but not
+  yet a strict cyclic-chain comparison: its degree-one product reporter is rotation-invariant yet
+  formally fails to annihilate arbitrary Hochschild degree-two boundaries; no theorem proves the
+  prime tensor is a `b_1`-cycle or that the cofinal landing factors through homology.  Hence it
+  sharpens, but does not close, Route R.  Missing singular Cartier comparison must now be a genuine
+  mixed/relative chain map preserving the retained prime class and actual Xi jet grade.  The
+  singular-Gelfand dichotomy separately rules out assembling countably many noncoercive completed
+  observers as a substitute, while Real-corona and new Airy/Stokes laws preserve unrelated
+  upper/lower or contact-tree gradings.

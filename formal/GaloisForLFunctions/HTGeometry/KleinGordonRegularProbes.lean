@@ -60,7 +60,7 @@ consumes. -/
 def RegularOpenProbes (wave : ((Fin d → ℝ) → ℝ) → (Fin d → ℝ) → ℝ)
     (potential : (Fin d → ℝ) → ℝ) : Prop :=
   ∀ x : Fin d → ℝ, ∃ W : Set (Fin d → ℝ), IsOpen W ∧ x ∈ W ∧ ∃ u : (Fin d → ℝ) → ℝ,
-    SmoothMetricChart.DifferentiablePartials u ∧
+    SmoothMetricChart.DifferentiablePartialsOn u W ∧
       SolvesPotentialWaveOn wave potential u W ∧ ∀ y ∈ W, u y ≠ 0
 
 theorem RegularOpenProbes.openProbes {wave : ((Fin d → ℝ) → ℝ) → (Fin d → ℝ) → ℝ}
@@ -103,7 +103,7 @@ theorem regularOpenProbes_kgChartPotential
     hmap.eventually (eventually_kgRealField_ne_zero B hN x₀)
   obtain ⟨W, hWsub, hWopen, hWmem⟩ := mem_nhds_iff.mp hev
   refine ⟨W, hWopen, hWmem, fun z : Fin (d + 1) → ℝ => kgChartField B (kgConjChar x₀) (z + c),
-    (differentiablePartials_kgChartField B (kgConjChar x₀) hN).comp_add_const c,
+    (((differentiablePartials_kgChartField B (kgConjChar x₀) hN).comp_add_const c).on W),
     fun z _ => ?_, fun z hz => hWsub hz⟩
   have hwave := kgWaveOp_kgChartField B (kgConjChar x₀) hN (isRealFamily_timeShift hreal t₀)
     (z + c)
@@ -125,7 +125,8 @@ theorem regularOpenProbes_of_locally_kgChartPotential
   obtain ⟨B, W, hBreal, hWopen, hWmem, hWeq⟩ := h y₀
   obtain ⟨W', hW'open, hW'mem, u, hureg, hu, hune⟩ :=
     regularOpenProbes_kgChartPotential B hN hBreal y₀
-  refine ⟨W ∩ W', hWopen.inter hW'open, ⟨hWmem, hW'mem⟩, u, hureg, fun z hz => ?_,
+  refine ⟨W ∩ W', hWopen.inter hW'open, ⟨hWmem, hW'mem⟩, u,
+    hureg.mono Set.inter_subset_right, fun z hz => ?_,
     fun z hz => hune z hz.2⟩
   have hzeq : P z = kgChartPotential B z := hWeq hz.1
   have hsolve := hu z hz.2
@@ -164,9 +165,9 @@ theorem regularOpenProbes_conformalRescale {sigma : (Fin d → ℝ) → ℝ}
     Real.contDiff_exp.comp (contDiff_const.mul hsigma)
   refine ⟨W, hWopen, hxW,
     fun y => Real.exp (-conformalDimensionWeight d * sigma y) * u y,
-    SmoothMetricChart.DifferentiablePartials.mul_left hweight hureg, fun z hz => ?_,
+    SmoothMetricChart.DifferentiablePartialsOn.mul_left hWopen hweight hureg, fun z hz => ?_,
     fun z hz => ?_⟩
-  · exact M.solvesPotentialWaveAt_conformalRescale sigma hsigma hureg (hu z hz)
+  · exact M.solvesPotentialWaveAt_conformalRescale_on sigma hsigma hWopen hureg hz (hu z hz)
   · exact mul_ne_zero (Real.exp_ne_zero _) (hune z hz)
 
 end Transfer

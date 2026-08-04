@@ -119,3 +119,151 @@ fixed-divisor algebra.  A broader Real-corona K-class claim needs an explicit fu
 - PDF: compiles, but final visual audit waits for mathematical closure.
 
 No publication-ready promotion is authorized by this review.
+
+## Review 2 — 2026-08-04
+
+Verdict: **PASS / SUITABLE FOR SUBMISSION AT THE STATED GENERAL-JOURNAL STANDARD**.
+
+This verdict reopens every objection from Review 1. It concerns mathematical completeness,
+formal integrity, novelty evidence, and presentation quality of this artifact; it is not a
+prediction of an external editor's taste or a guarantee of acceptance.
+
+### H1 closed: exact CCM recipient, descent, and nontriviality
+
+The revision no longer uses the unitized prequotient surrogate. It constructs the nonunital
+continuous trace-class field algebra, takes one global unitization, intersects the augmentation
+cyclic kernel with the exact strong diagonal-trace cyclic kernel, and quotients by the degreewise
+closure of the actual reduced adelic restriction range. The manuscript defines this object before
+using it.
+
+All five required repairs are now explicit and proved:
+
+1. source and target class-space translations are defined in every cyclic degree;
+2. restriction equivariance is exact;
+3. target translation is continuous for the projective/LF strong graph topology, hence preserves
+   the closed range and descends;
+4. inverse translation proves invertibility, while the independent Gaussian/Haar--Mellin
+   separator proves the quotient and every translation are nonzero;
+5. the even Real structure and Lefschetz action descend on this same quotient.
+
+The human proof is Proposition 4.7. The decisive formal declarations are
+`CCMRationalAdelicClosedNonunitalStrongRelativeCyclicModule`,
+`ccmRationalAdelicReducedNonunitalStrongCyclicHom_classSpaceRightAction`,
+`ccmRationalNonunitalStrongCyclicRightActionDegree_continuous`,
+`ccmRationalAdelicClosedNonunitalStrongLefschetz`, and
+`ccmRationalAdelicClosedNonunitalStrong_logGaussian_ne_zero`.
+
+### H2 closed: requested lift is answered negatively at its actual type
+
+The paper does not pretend that a cyclic-module morphism is an entire bivariant class. Instead it
+proves a theory-independent obstruction: for every candidate bivariant class type whose realized
+Chern character has the required anti-Real parity, no class realizes to the untwisted Real-even
+closed CCM Lefschetz morphism. This is a quantified theorem, not absence of a construction. The
+positive survivor is stated only at its proved type: the anti-Real cyclic morphism `i L_c`, with
+exact equality to the Clifford transgression and square `-id` at the identity translation.
+
+This fully determines P2 as posed: the untwisted lift does not exist under the required parity;
+the exact parity-correct comparison is Clifford multiplication. No unbuilt bivariant theory is
+claimed.
+
+### H3 closed: full human proof of strong landing
+
+Section 4 now supplies definitions and paper proofs for periodic all-weight decay, common-period
+finite-adelic packets, normalized Haar quadrature, profinite local constancy, the Schatten-1
+weighted-shift norm and trace formula, multiplicativity, total-product reduction, and all-degree
+landing. It explicitly retains cancellations between tensor summands by period refinement. The
+closed descent and nonzero separator are also proved in the paper. Lean remains verification, not
+a substitute for the mathematical argument.
+
+### H4 closed: exact universal law without bundling theatre
+
+Theorem 1.1 is a genuine exhaustive atomic theorem: every involution orbit is fixed or free; the
+corresponding crossed products are respectively two Fourier blocks or one matrix block; free
+orientation is the sign grading and fixed coefficient inclusion is diagonal. Theorem 1.2 is its
+invariant-domain operator completion, with exact boundedness conservation.
+
+Section 7 now states the dependency boundary precisely. Orbit-theoretic parts of P1--P4 factor
+through the exhaustive two-channel law, while complete-divisor growth, Haar--Meyer descent,
+endpoint accumulation, and analytic orders are separately proved analytic inputs. The paper does
+not manufacture a structure whose fields merely restate four independent theorems, and it no
+longer claims that the atomic law alone implies the analytic inputs. “Four shadows” therefore has
+an exact mathematical meaning and no rhetorical overreach.
+
+### H5 closed: local-index scope begins at the first spectral-triple axiom
+
+P1 was strengthened and narrowed to the canonical odd multiplicity-exact complete-divisor
+realization. The operator is self-adjoint, genuinely unbounded, and has a Hilbert--Schmidt
+two-sided inverse. The exact identity
+`norm ([D_xi,e_R]x) = norm (D_xi x)` makes the projector commutator unbounded. Hence the projector
+is not in the Lipschitz algebra, so its represented spectral-triple class and any
+Connes--Moscovici local formula for that realization fail before regularity or dimension-spectrum
+questions arise. The paper explicitly says that a materially different enlarged triple is not
+excluded.
+
+### H6 closed: automorphic scope is exact
+
+P3 proves the endpoint-holomorphic classification for the stated divisor and positive-degree
+analytic interfaces, then instantiates it unconditionally for Riemann Xi, nontrivial primitive
+self-dual Dirichlet completions, and every completed-zeta power, including the exact degree-zero
+case. Higher-rank automorphic completions are stated only conditionally on the displayed analytic
+hypotheses; the paper explicitly disclaims an unformalized representation-theoretic bridge.
+
+### H7 closed: fixed crossed-product recipient and functorial K0 map
+
+The revision constructs the fixed-locus crossed product itself, proves the Fourier ring
+equivalence with its two character blocks, computes coefficient and corona-idempotent images, and
+derives the diagonal compactly supported coordinate `K0` map. Both character evaluations recover
+support, not multiplicity. The abstract defect law and concrete family
+`z^n (z^2-1)^k` then compute analytic rank, paired multiplicity, cyclic defect, and both character
+ranks exactly. No identification with the unrelated P2 quotient algebra is asserted.
+
+### Novelty and significance audit
+
+Atomic C2 normal forms, identity-theorem arguments, Gaussian Mellin integration, and root-number
+parity are classical and are labeled as such. The publishable contribution is their
+dependency-closed interaction with four hard recipients: the canonical complete divisor, literal
+closed CCM cyclic quotient, natural endpoint-holomorphic crossed product, and fixed-locus
+crossed-product K-theory. Primary-source searches found no prior work containing the exact P1
+operator obstruction, P2 closed-recipient boundary separator and parity no-lift, P3 all-degree Xi
+power classification, or P4 support/multiplicity variation package. P2 is independently
+substantial; P1, P3, P4 make the universal mechanism testable rather than ornamental.
+
+### Reproducibility gates
+
+- Direct elaboration:
+  `lake env lean GaloisForLFunctions/RHTower/RealCoronaFourProblemsResolution.lean` — **PASS**.
+- Targeted final build:
+  `lake build GaloisForLFunctions.RHTower.RealCoronaFourProblemsResolution` — **PASS**; facade
+  `.olean` refreshed 2026-08-04 08:45:24. No full build was run.
+- Axiom audit: all 18 facade declarations depend only on `propext`, `Classical.choice`, and
+  `Quot.sound`; no `sorryAx`, paper axiom, or unsafe declaration — **PASS**.
+- Formal lint: `python3 scripts/formal_tools.py lint` — **PASS** with file-size warnings only.
+- Umbrellas: facade and all reported owned modules are reachable from theorem-area umbrellas —
+  **PASS**.
+- Claim trace: every named result and substantive displayed identity maps to an exact Lean
+  declaration — **PASS**.
+- PDF: 21 pages, zero overfull boxes, zero undefined references, and all pages visually inspected;
+  only one benign first-page underfull vertical box — **PASS**.
+
+### Residual nonfatal limitations
+
+- External specialist priority can never be ruled out absolutely; the literature audit records
+  search date and primary sources.
+- The result does not prove RH, GRH, Weil positivity, or convergence of finite zeta spectral
+  triples.
+- The bivariant conclusion is an impossibility theorem uniform over anti-Real realizations; a
+  separate bornological bivariant theory would be additional future structure.
+- P3 classifies the natural endpoint-holomorphic algebra, not every conceivable smooth
+  completion.
+
+These are explicit scope boundaries, not missing premises of retained theorems.
+
+## Final gate state
+
+- Mathematical hostile review: **PASS**.
+- General renowned-journal quality threshold: **PASS**.
+- Claim-to-Lean symbol audit: **PASS**.
+- Lean lint, axiom audit, targeted build: **PASS**.
+- PDF and visual audit: **PASS**.
+
+Publication-ready promotion is authorized.
