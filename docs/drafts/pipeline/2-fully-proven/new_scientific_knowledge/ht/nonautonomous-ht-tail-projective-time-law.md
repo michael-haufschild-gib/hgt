@@ -2082,3 +2082,50 @@ the two-block ranking bridge closes, since the initial's left-block order is at 
 The remaining work on `(3)` is to iterate this pseudo-division into a full Ritt reduction in the
 two-block ring (the ordinary step is now available; the higher-jet step reduces derivatives of `A` the
 same way) and then feed `dvd_of_peeling_prime`.
+
+Added to the same module:
+
+    pderiv_succ_differentialPolynomialOverDerivation_family
+        the fresh-jet commutator `pd_{(i,n+1)} (D P) = D (pd_{(i,n+1)} P) + pd_{(i,n)} P`
+        for an ARBITRARY family of differential indeterminates
+
+The corpus had this only for a single scalar indeterminate.  The general-family version is what makes
+the reduction usable in the doubled jet ring: it says that the total derivative of a two-block
+polynomial is linear in each fresh jet with the corresponding separant as coefficient, so
+pseudo-division at the fresh RIGHT-block jet has the right-block separant as its multiplier -- and
+that separant's left-block order is at most the polynomial's, which is the bound the ranking bridge
+needs.
+
+Added to the same module:
+
+    pderiv_iterate_eq_zero_of_lt     total differentiation raises a block's order bound by exactly
+                                       one, for an arbitrary family of indeterminates
+    pderiv_top_iterate_eq_separant   EVERY DERIVATIVE HAS THE SAME SEPARANT: the partial derivative
+                                       of the k-th total derivative in its own fresh jet is the
+                                       separant of the original polynomial
+
+The second is the fact that keeps the phase-one multiplier bounded.  Differentiating raises the
+left-block order of `A` itself, so a priori the multipliers used to eliminate successive right-block
+jets would drift upward and destroy the bound the ranking bridge needs.  They do not: the separant is
+invariant under differentiation, so every phase-one pseudo-division uses a power of `S(A)`, whose
+left-block order is at most `A`'s.
+
+With this the two-block reduction has both phases and a controlled multiplier:
+
+    phase 1   eliminate the fresh right-block jets, multiplier a power of S(A)
+    phase 2   pseudo-divide at the leader, multiplier a power of I(A)
+
+exactly the `I^a S^b` shape the peeling consumes, with no denominators anywhere.
+
+Added to the same module, over a DOMAIN of characteristic zero rather than a field:
+
+    coeff_X_mul_pderiv_semiring         the coefficient identity for `X * pderiv`
+    pderiv_ne_zero_of_mem_vars_domain   an occurring variable has a nonzero partial derivative
+    degreeOf_eq_zero_of_pderiv_eq_zero  and conversely a vanishing partial means the variable is absent
+    iterate_eq_separant_mul_add         THE LINEAR DECOMPOSITION: the k-th total derivative is
+                                          `S * X_{(i,m+k)} + T` with `T` free of that jet
+
+The corpus had these only over a field, which is why the reduction could not be run with `F{U}` as
+the coefficient ring.  Over `F{U}` -- a domain of characteristic zero, not a field -- they now hold,
+and the linear decomposition says the pseudo-division at each fresh right-block jet has the separant
+as its initial.  That is the phase-one step with the multiplier already identified.

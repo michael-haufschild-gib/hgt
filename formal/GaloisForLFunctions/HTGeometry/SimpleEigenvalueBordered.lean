@@ -92,7 +92,6 @@ theorem borderedMap_bijective {T R : E →L[ℝ] E} {ψ : E}
     have h1 : T (R y + a • ψ) - (-⟪ψ, y⟫) • ψ = y := by
       rw [map_add, hR y, map_smul, hTψ]
       simp
-      abel
     have h2 : ⟪ψ, R y + a • ψ⟫ = a := by
       rw [inner_add_right, hRψ, real_inner_smul_right, hnorm]
       ring

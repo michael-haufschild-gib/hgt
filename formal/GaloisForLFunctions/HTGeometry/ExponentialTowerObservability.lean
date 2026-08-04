@@ -151,4 +151,65 @@ theorem exactDifferentialOrder_expTower_two : ExactDifferentialOrder (expTower 2
     intro h0
     simp at h0
 
+
+/-- **The unit-cost law for a tower, from its jet determinant.**  Order monotonicity turns the single
+top-order statement into the exact order. -/
+theorem exactDifferentialOrder_expTower_of_det {m : ℕ}
+    (hdet : (Matrix.of fun i j : Fin (m + 1) =>
+        (MvPolynomial.pderiv ((i : ℕ) + 1)) (towerJet (m + 1) (j : ℕ))).det ≠ 0) :
+    ExactDifferentialOrder (expTower (m + 1)) (m + 1) := by
+  have hall : ∀ i : ℕ, TranscendentalEntire ((fun _ => Complex.exp) i) :=
+    fun _ => transcendentalEntire_exp
+  have h1 : ∀ k, k < m + 1 → DifferentiallyAlgebraicOfOrder ((fun _ => Complex.exp) k) 1 :=
+    fun _ _ => differentiallyAlgebraicOfOrder_one_exp
+  refine ⟨differentiallyAlgebraicOfOrder_entireCascade_of_transcendental' hall h1, ?_⟩
+  intro k hk hDA
+  exact not_differentiallyAlgebraicOfOrder_expTower_of_det hdet
+    (hDA.mono (by omega : k ≤ m))
+
+/-! ## Height three -/
+
+theorem towerMonomial_one : towerMonomial 1 = MvPolynomial.X 1 := by
+  rw [show (1 : ℕ) = 0 + 1 from rfl, towerMonomial_succ, towerMonomial_zero, one_mul]
+
+theorem towerMonomial_two :
+    towerMonomial 2 = MvPolynomial.X 1 * MvPolynomial.X 2 := by
+  rw [show (2 : ℕ) = 1 + 1 from rfl, towerMonomial_succ, towerMonomial_one]
+
+theorem towerMonomial_three :
+    towerMonomial 3 = MvPolynomial.X 1 * MvPolynomial.X 2 * MvPolynomial.X 3 := by
+  rw [show (3 : ℕ) = 2 + 1 from rfl, towerMonomial_succ, towerMonomial_two]
+
+theorem towerJet_three_one :
+    towerJet 3 1 = MvPolynomial.X 1 * MvPolynomial.X 2 * MvPolynomial.X 3 := by
+  rw [towerJet_succ, towerJet_zero, towerDerivation_X, towerMonomial_three]
+
+theorem towerJet_three_two :
+    towerJet 3 2 =
+      MvPolynomial.X 1 * MvPolynomial.X 2 * MvPolynomial.X 3
+        + MvPolynomial.X 1 * MvPolynomial.X 1 * MvPolynomial.X 2 * MvPolynomial.X 3
+        + MvPolynomial.X 1 * MvPolynomial.X 1 * MvPolynomial.X 2 * MvPolynomial.X 2
+            * MvPolynomial.X 3 := by
+  rw [towerJet_succ, towerJet_three_one]
+  simp only [Derivation.leibniz, towerDerivation_X, towerMonomial_one, towerMonomial_two,
+    towerMonomial_three, smul_eq_mul]
+  ring
+
+/-- **The triple exponential has differential order exactly three.**  Unconditional. -/
+theorem exactDifferentialOrder_expTower_three : ExactDifferentialOrder (expTower 3) 3 := by
+  refine exactDifferentialOrder_expTower_of_det (m := 2) ?_
+  intro h0
+  have h1 := congrArg (MvPolynomial.eval (fun _ : ℕ => (1 : ℂ))) h0
+  rw [map_zero, RingHom.map_det] at h1
+  have hmat : ((MvPolynomial.eval (fun _ : ℕ => (1 : ℂ))).mapMatrix
+      (Matrix.of fun i j : Fin 3 =>
+        (MvPolynomial.pderiv ((i : ℕ) + 1)) (towerJet (2 + 1) (j : ℕ))))
+      = !![0, 1, 5; 0, 1, 4; 1, 1, 3] := by
+    funext i j
+    fin_cases i <;> fin_cases j <;>
+      simp [towerJet_three_one, towerJet_three_two, Derivation.leibniz] <;> ring
+  rw [hmat, Matrix.det_fin_three] at h1
+  simp at h1
+  norm_num at h1
+
 end GaloisForLFunctions.HTGeometry

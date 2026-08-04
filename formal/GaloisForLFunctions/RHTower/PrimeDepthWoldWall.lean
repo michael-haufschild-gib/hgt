@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.MertensFirst
+import GaloisForLFunctions.RHTower.PrimeDepthBVWoldSourceDaggerAtlasTransition
 import Mathlib.NumberTheory.SumPrimeReciprocals
 
 /-!
@@ -192,5 +193,54 @@ theorem summable_smul_woldCoeff_add_remainder_iff (a : ℝ) (e : ℕ) :
     exact (summable_smul_woldCoeff_iff a e).1 this
   · intro h
     exact ((summable_smul_woldCoeff_iff a e).2 h).add hr
+
+/-- The atlas transition writes the log anomaly as the depth coefficient scaled by `a`. -/
+theorem log_anomaly_eq (a : ℝ) (p : Nat.Primes) (e : ℕ) :
+    Real.log (primeDepthBVWoldPrimeConsecutiveTriangleAnomaly a p e) = a * woldCoeff e p := by
+  rw [primeDepthBVWoldPrimeConsecutiveTriangleAnomaly_eq, Real.log_exp, woldCoeff]
+  have hinv : ((p : ℕ) : ℝ)⁻¹ = 1 / ((p : ℕ) : ℝ) := (one_div _).symm
+  rw [hinv, div_pow, one_pow]
+  field_simp
+
+/-- **The wall, for the atlas anomaly itself.** -/
+theorem summable_log_anomaly_iff (a : ℝ) (e : ℕ) :
+    Summable (fun p : Nat.Primes =>
+        Real.log (primeDepthBVWoldPrimeConsecutiveTriangleAnomaly a p e))
+      ↔ (a = 0 ∨ 2 ≤ e) := by
+  have hcongr : (fun p : Nat.Primes =>
+      Real.log (primeDepthBVWoldPrimeConsecutiveTriangleAnomaly a p e))
+      = fun p : Nat.Primes => a * woldCoeff e p := by
+    funext p
+    exact log_anomaly_eq a p e
+  rw [hcongr]
+  exact summable_smul_woldCoeff_iff a e
+
+/-- **The wall, for the atlas anomaly against the trace-class remainder.** -/
+theorem summable_log_anomaly_add_remainder_iff (a : ℝ) (e : ℕ) :
+    Summable (fun p : Nat.Primes =>
+        Real.log (primeDepthBVWoldPrimeConsecutiveTriangleAnomaly a p e) + woldRemainder p)
+      ↔ (a = 0 ∨ 2 ≤ e) := by
+  have hcongr : (fun p : Nat.Primes =>
+      Real.log (primeDepthBVWoldPrimeConsecutiveTriangleAnomaly a p e) + woldRemainder p)
+      = fun p : Nat.Primes => a * woldCoeff e p + woldRemainder p := by
+    funext p
+    rw [log_anomaly_eq a p e]
+  rw [hcongr]
+  exact summable_smul_woldCoeff_add_remainder_iff a e
+
+/-- **The depth-one criterion.**  At depth one the anomaly plus the trace-class remainder is
+summable exactly on the critical line. -/
+theorem summable_depthOne_log_anomaly_add_remainder_iff (s : ℂ) :
+    Summable (fun p : Nat.Primes =>
+        Real.log (primeDepthBVWoldPrimeConsecutiveTriangleAnomaly (2 * s.re - 1) p 1)
+          + woldRemainder p)
+      ↔ s.re = 1 / 2 := by
+  rw [summable_log_anomaly_add_remainder_iff]
+  constructor
+  · rintro (h | h)
+    · linarith
+    · omega
+  · intro h
+    exact Or.inl (by rw [h]; ring)
 
 end RHTower

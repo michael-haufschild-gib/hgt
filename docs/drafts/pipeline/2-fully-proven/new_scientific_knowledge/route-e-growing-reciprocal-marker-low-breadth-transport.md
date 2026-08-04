@@ -3832,3 +3832,28 @@ This is a strictly better dependency than the card's prose: the prose invokes Me
 theorem `(6)` and the prime number theorem; the formalization uses neither — the marker supply comes
 from Mertens (`Sieve/PrimeWindow`), and the mean square is *derived* from the correlations rather
 than assumed.
+
+### The low-breadth layer: the sieve error is now bounded
+
+The card's `(8)` needs the low-breadth set `L_{c₀}(X,H)` to be smaller than the marker supply by a
+power of `log X`.  The corpus already owns the entropy mechanism —
+`Sieve/RateBridge.card_omega_le_le_rate` gives the lower tail with the rate
+`woldBreadthDeviationRate t = 1 − t + t log t`, positive on `(0,1)`
+(`MobiusWoldBreadthTwoSidedDeviationRate.woldBreadthDeviationRate_pos_of_lt_one`), and
+`Sieve/OmegaDeviation.lean` assembles both tails — but its bound carries two error terms that must
+be shown subpolynomial before it becomes an explicit negative power of `log z`.
+
+One of the two is now bounded, unconditionally
+(`Sieve/TruncDivisorCount.lean`, `[propext, Classical.choice, Quot.sound]`):
+
+- `le_pow_of_mem_truncDivisors_primorial` — a Brun-truncated divisor of `z#` is squarefree with all
+  prime factors at most `z` and at most `r` of them, hence at most `z^r`;
+- **`card_truncDivisors_primorial_le`** — distinct such divisors are distinct integers of
+  `[1, z^r]`, so
+
+      #{d ∣ z# : ω d ≤ r}  ≤  z^r.
+
+No combinatorics is involved: the count is bounded by the range, not by a binomial sum.  What remains
+for `(8)`'s unconditional half is the parameter choice `(z, r, λ)` making both the tilt error
+`exp(λc₁)(log z)^λ/(λ^r t^k)` and this sieve error `z^r/t^k` fall below `(log z)^{−δ}` — with
+`r ≍ log log z` and `z` subpolynomial, which is what `z^r` being subpolynomial requires.

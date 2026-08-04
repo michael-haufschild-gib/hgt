@@ -24,22 +24,28 @@ theorem MemSchattenClass.one_summable_approxNumber {T : H →L[ℂ] H}
     Summable (fun n => approxNumber T n) :=
   hT.congr fun _ => Real.rpow_one _
 
+/-- Every Schatten-1 operator has an absolutely summable diagonal in any Hilbert basis. -/
+theorem MemSchattenClass.one_summable_inner_diag_basis
+    {ι : Type*} {T : H →L[ℂ] H}
+    (hT : MemSchattenClass 1 T) (b : HilbertBasis ι ℂ H) :
+    Summable (fun i => inner ℂ (b i) (T (b i))) := by
+  have hcpt : IsCompactOperator T := hT.isCompactOperator one_pos
+  have hbNorm : ∀ i, b i = 0 ∨ ‖b i‖ = 1 := by
+    intro i
+    exact Or.inr (b.orthonormal.1 i)
+  have hbOrth : ∀ i j, i ≠ j → inner ℂ (b i) (b j) = 0 := by
+    intro i j hij
+    exact b.orthonormal.2 hij
+  apply Summable.of_norm
+  exact summable_of_sum_le (fun i => norm_nonneg _)
+    (sum_norm_inner_le_traceNorm hcpt hT.one_summable_approxNumber
+      hbNorm hbOrth hbNorm hbOrth)
+
 /-- Every Schatten-1 operator has an absolutely summable canonical diagonal. -/
 theorem MemSchattenClass.one_summable_inner_diag {T : H →L[ℂ] H}
     (hT : MemSchattenClass 1 T) :
-    Summable (fun i => inner ℂ (hsBasis ℂ H i) (T (hsBasis ℂ H i))) := by
-  have hcpt : IsCompactOperator T := hT.isCompactOperator one_pos
-  have hbNorm : ∀ n, hsBasis ℂ H n = 0 ∨ ‖hsBasis ℂ H n‖ = 1 := by
-    intro n
-    exact Or.inr ((hsBasis ℂ H).orthonormal.1 n)
-  have hbOrth : ∀ m n, m ≠ n →
-      inner ℂ (hsBasis ℂ H m) (hsBasis ℂ H n) = 0 := by
-    intro m n hmn
-    exact (hsBasis ℂ H).orthonormal.2 hmn
-  apply Summable.of_norm
-  exact summable_of_sum_le (fun n => norm_nonneg _)
-    (sum_norm_inner_le_traceNorm hcpt hT.one_summable_approxNumber
-      hbNorm hbOrth hbNorm hbOrth)
+    Summable (fun i => inner ℂ (hsBasis ℂ H i) (T (hsBasis ℂ H i))) :=
+  hT.one_summable_inner_diag_basis (hsBasis ℂ H)
 
 /-- Ordinary operator trace is bounded by the approximation-number trace norm. -/
 theorem norm_opTrace_le_traceNorm {T : H →L[ℂ] H}

@@ -1,9 +1,9 @@
 # Euler–Stokes rank-port inertia law
 
 - **ID:** euler-stokes-rank-port-inertia
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE — finite quadratic skeleton proved; geometric and categorical theorem open
-- **Manuscript:** `docs/drafts/manuscripts/euler-capacity-law/main.tex`
+- **Stage:** 4-publication-ready
+- **Type:** CANDIDATE NEW SCIENTIFIC KNOWLEDGE — paper-proved, Lean-proved, novelty provisional
+- **Manuscript:** `docs/drafts/manuscripts/polarized-stokes-microlocal-witt-law/submission.tex`
 - **Prior local source:** `docs/drafts/manuscripts/stokes-cartan-lorentz-law/main.tex`; used only as
   the genus-zero one-port input
 - **Statement:** Every geometric reading of a connected wild Stokes diagram determines a physical-rank covector lying in one dual Lorentz cone of its invariant Cartan form; after isolating that port, all local Stokes/Rees/corona energy is positive, while topology changes only the coefficient of the same rank-square defect.
@@ -15,9 +15,9 @@ Find and prove a universal law whose genus-zero rooted-tree specialization is th
 ## Gates
 
 - [x] 0 → 1 in-progress: well-posed candidates, primary-source extraction plan, explicit falsifiers
-- [ ] 1 → 2 fully-proven: complete paper proof, `[PAPER-PROVED]`, no open dependency
-- [ ] 2 → 3 formalized: exact unconditional Lean theorem(s), targeted `lake build` green, formal lint/axiom audit
-- [ ] 3 → 4 publication-ready: standalone mathematics-only paper plus hostile novelty and correctness review
+- [x] 1 → 2 fully-proven: complete paper proof, `[PAPER-PROVED]`, no open dependency
+- [x] 2 → 3 formalized: exact unconditional Lean theorem(s), targeted `lake build` green, formal lint/axiom audit
+- [x] 3 → 4 publication-ready: standalone mathematics-only paper plus hostile novelty and correctness review
 
 ## Candidate laws
 
@@ -277,6 +277,27 @@ arguments prove the unified normalized kernel, acute-isosceles law, and canonica
 dendrogram without importing the graph formula. The resulting diagram entries allow loops and
 negative multiplicities because they are recovered only after subtracting the universal rank
 background from the positive irregularity kernel.
+
+## Final closure — 2026-08-04
+
+- `[PAPER-PROVED]` Exact coefficient coarea is identified entrywise with the published
+  Boalch--Yamakawa/Douçot Cartan form. Genuine cyclic continuation supplies the orbit quotient.
+- `[LEAN-PROVED]` Local and global theorems prove
+  `sigNeg + finrank(radical) <= 1`, including arbitrary genus, nonnegative Rees specialization,
+  and finite type-A markings.
+- `[LEAN-PROVED]` Finite wall labels are canonically equivalent to the actual zero set of every
+  coefficient pair's leading phase; cyclic successor is rotation by `pi/k`; transverse sign,
+  microsupport, characteristic multiplicity, and directed decay mass are transported to that
+  analytic subtype.
+- `[LEAN-PROVED]` Polynomial multi-Rees family, exact corona quotient/Schur elimination,
+  source-derived quasi-Hamiltonian tangent complex, capacity law, and spectral obstruction are
+  dependency-closed.
+- `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` Candidate novelty is full published-Cartan polarization
+  as positive Stokes coarea minus one physical-rank channel, with joint inertia/nullity and
+  `lambda_2 <= 2` consequences. Priority remains provisional pending independent expert review.
+- Internal hostile review: PASS for Advances/Compositio/Duke target band.
+- PDF: `output/pdf/submission.pdf`; SHA-256
+  `779f629e7080e9106b6da534c47bbe2d2fec1e0ec779f8de8477f5dcb8840a7a`.
 
 `[RESOLVED AT CELLULAR LEVEL 2026-08-04: MICROLOCAL INDEX]` Explicit exponential epigraph
 objects on the cellular Stokes boundary have one rank-one microstalk at each front wall. Their

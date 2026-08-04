@@ -6556,3 +6556,77 @@ proportional (`top G_i = Π^i`), which is exactly why the Bell row reduction is 
 
 That last independence statement is the whole remaining content of the tower case, and it is
 elementary polynomial algebra — no growth theory, no Newton polygon, no external theorem.
+
+### `ord_DA(exp ∘ exp) = 2`, unconditionally
+
+`exactDifferentialOrder_expTower_two` (axiom-clean): the double exponential has differential order
+**exactly two**. This is the card's first non-vacuous instance above length one — the theorem's full
+statement, on an explicit pair of transcendental entire functions with first-order equations.
+
+Three modules carry it.
+
+`HTGeometry/ExponentialTowerJets.lean` — the transfer, with no field theory:
+* `deriv_evalStates` — evaluating the model at the tower states intertwines `towerDerivation` with
+  complex differentiation (three-case induction on the polynomial: constants, sums,
+  multiplication by a variable);
+* `evalStates_towerJet` — hence the `i`-th analytic jet of the tower *is* the evaluation of the `i`-th
+  model jet;
+* `exists_evalStates_ne_zero` — a nonzero model polynomial does not vanish identically at the states.
+  Its content is the state independence proved earlier, moved from `Fin`-indexed prefixes to the
+  `ℕ`-indexed model by `MvPolynomial.exists_fin_rename` plus a shift into an initial segment;
+* `not_differentiallyAlgebraicOfOrder_expTower` — therefore: independent model jets ⟹ no analytic
+  equation of that order.
+
+`HTGeometry/ExponentialTowerObservability.lean` — the criterion and the height-two case:
+* `pderiv_zero_towerJet` — the jets carry no coordinate variable.  Proved by the Lie bracket:
+  `⁅∂₀, towerDerivation⁆` is a derivation vanishing on every variable, hence zero, so `∂₀` commutes
+  with the tower derivation and kills every jet of `X_N` for `N ≥ 1`.
+* `not_differentiallyAlgebraicOfOrder_expTower_of_det` — the coordinate contributes a unit row and a
+  unit column, so the full Jacobian's determinant equals the jets' own determinant, and
+  `algebraicIndependent_of_domain_jacobian` finishes.  The tower question is now a single determinant.
+* At height two that determinant is `det [[0, X₂],[1, X₁]] = −X₂ ≠ 0`.
+
+The height-`n` case is the same statement with the `n×n` determinant; `n = 3` is `−X₁²X₂X₃²`
+(computed by hand, and equal to `−1` at the all-ones point, which is the cheap way to certify it:
+`RingHom.map_det` turns the symbolic determinant into a numeric one).
+
+### Height three, and the recursion that closes every height
+
+`exactDifferentialOrder_expTower_three` (axiom-clean): the triple exponential has differential order
+**exactly three**. Also `exactDifferentialOrder_expTower_of_det`, which turns the single top-order
+determinant into the exact order for any height (order monotonicity handles all lower orders, so only
+one determinant is ever needed).
+
+Certification method, worth keeping: the symbolic determinant is never expanded. `RingHom.map_det`
+pushes an evaluation through the determinant, so a numeric point suffices —
+`!![0,1,5; 0,1,4; 1,1,3]` at the all-ones point, determinant `−1`. (The all-ones point does *not*
+work at height four: the determinant carries a factor `1 − X₂`. A point with `X₂ ≠ 1` does.)
+
+**The recursion, derived.** Writing `Π_k = X_1⋯X_k` and `S_j = 1 + Π_1 + ⋯ + Π_j`, and using
+`δX_k = Π_k`:
+
+1. `δX_{N} = X_{N}·δX_{N−1}`, so the terminal-linear Bell reduction gives
+   `J_N(X_N) = ±X_N^{N−1}·J_{N−1}(Π_{N−1})`.
+2. `δΠ_{N−1} = Π_{N−1}·S_{N−2}` with `S_{N−2}` free of `X_{N−1}`, so the terminal-scaled reduction
+   gives `J_{N−1}(Π_{N−1}) = ±(∂_{N−1}Π_{N−1})·Π_{N−1}^{N−2}·J_{N−2}(S_{N−2})`.
+3. The sum output `S_m` is where the corpus's chain stopped, because `δS_m` is not a multiple of
+   `S_m`. It is an *affine* multiple: eliminating `X_m` through `X_m = (S_m − S_{m−1})/Π_{m−1}` gives
+
+   `δS_m = (δS_{m−1} − S_{m−1}²) + S_{m−1}·S_m`,
+
+   with both coefficients free of `X_m`.  Writing `δ^i S_m = a_i + b_i S_m` (`a_0 = 0`, `b_0 = 1`,
+   `a_{i+1} = δa_i + b_i c`, `b_{i+1} = δb_i + b_i d`), the terminal column of the Jacobian is
+   `b_i·∂_m S_m`, so subtracting `b_i` times the first row clears it and
+
+   `J_m(S_m) = ±(∂_m S_m)·det(∂_j a_i + S_m·∂_j b_i)_{i,j<m}`.
+
+   That determinant is a polynomial in `S_m` — equivalently in `X_m`, which none of the coefficients
+   contain — whose top coefficient is `det(∂_j b_i)`.  The `b_i` are the Bell polynomials of
+   `d = S_{m−1}`, and the Bell substitution is unitriangular, so `det(∂_j b_i) = J_{m−1}(S_{m−1})`.
+
+   Hence **`J_m(S_m) ≠ 0 ⟸ J_{m−1}(S_{m−1}) ≠ 0`**, with base `J_1(S_1) = ∂_1(1 + X_1) = 1`.
+
+So the tower is observable at every height, by an elementary induction: two Bell reductions the corpus
+already owns, plus one new *affine* terminal reduction whose whole content is that an affine
+substitution makes the terminal column proportional to the first row. Building that reduction in Lean
+is what remains for the general statement; heights two and three are already unconditional.

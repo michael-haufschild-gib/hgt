@@ -91,7 +91,22 @@ Depth therefore adds Kummer roots while regularizing away global orientation obs
 The three equivalences of the theorem statement are machine-checked exactly as stated.  No RH or
 zero-location premise enters, matching the paper proof.
 
+**The atlas transition is not quoted but used.**  The corpus already owns the object: for
+`A = primeDepthBVWoldPrimeConsecutiveTriangleAnomaly a p e`
+(`RHTower/PrimeDepthBVWoldSourceDaggerAtlasTransition.lean`),
+`primeDepthBVWoldPrimeConsecutiveTriangleAnomaly_eq` gives `A = exp(a·(1−1/p)³·p^{−e}·log p)`, so
+
+- `log_anomaly_eq` — `log A_{p,e} = a · c_e(p)`, the transition in the card's notation;
+- `summable_log_anomaly_iff`, `summable_log_anomaly_add_remainder_iff` — the wall stated for the
+  atlas anomaly itself;
+- **`summable_depthOne_log_anomaly_add_remainder_iff`** — the card's displayed depth-one conclusion,
+
+      Summable_p (log A_{p,1}(s) + r(p))  ↔  Re s = 1/2,
+
+  as a machine-checked theorem rather than a substitution remark.
+
 ## Log
 
 - 2026-08-04 — paper proof completed; moved directly from Stage 1 to Stage 2.
-- 2026-08-04 — formalized in Lean, unconditionally; gate 2 → 3 closed.
+- 2026-08-04 — formalized in Lean, unconditionally; gate 2 → 3 closed.  The depth-one conclusion is
+  proved against the corpus's own atlas anomaly, so the card quotes nothing.
