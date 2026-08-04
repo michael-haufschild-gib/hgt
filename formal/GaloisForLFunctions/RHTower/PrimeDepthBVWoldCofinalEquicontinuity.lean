@@ -42,7 +42,6 @@ theorem primePow_mul_woldCoeff_add
     exact_mod_cast p.2.ne_zero
   rw [woldCoeff, woldCoeff, pow_add]
   field_simp [hp0]
-  ring
 
 /-- Equivalent geometric-decay form of the multi-depth Wold conversion. -/
 theorem woldCoeff_add_eq_inv_pow_mul
@@ -50,9 +49,8 @@ theorem woldCoeff_add_eq_inv_pow_mul
     woldCoeff (e + r) p = (p : ℝ)⁻¹ ^ r * woldCoeff e p := by
   have hp0 : (p : ℝ) ≠ 0 := by
     exact_mod_cast p.2.ne_zero
-  rw [woldCoeff, woldCoeff, pow_add]
-  field_simp [hp0]
-  ring
+  have hpow : ((p : ℝ)) ^ r ≠ 0 := pow_ne_zero r hp0
+  rw [← primePow_mul_woldCoeff_add p e r, inv_pow, inv_mul_cancel_left₀ hpow]
 
 /-- Source-normal cofinal transport recovers the same centered coefficient at recorded depth. -/
 theorem sourceNormalCofinalCenteredTransport_smul_woldCoeff
@@ -114,9 +112,15 @@ theorem primeDepthBVWoldCenteredL1Mass_tendsto_zero (a : ℝ) :
     have hpInv1 : (p : ℝ)⁻¹ < 1 := by
       exact inv_lt_one_of_one_lt₀ (by exact_mod_cast p.2.one_lt)
     have hpow := tendsto_pow_atTop_nhds_zero_of_lt_one hpInv0 hpInv1
-    have hscaled := (hpow.const_mul |a|).mul_const (woldCoeff 2 p)
-    simpa only [show n + 2 = 2 + n by omega,
-      woldCoeff_add_eq_inv_pow_mul, mul_assoc] using hscaled
+    have hscaled : Tendsto
+        (fun n : ℕ => |a| * ((p : ℝ)⁻¹ ^ n * woldCoeff 2 p)) atTop (nhds 0) := by
+      simpa using (hpow.mul_const (woldCoeff 2 p)).const_mul |a|
+    have hfun : (fun n : ℕ => |a| * woldCoeff (n + 2) p) =
+        fun n : ℕ => |a| * ((p : ℝ)⁻¹ ^ n * woldCoeff 2 p) := by
+      funext n
+      rw [show n + 2 = 2 + n from Nat.add_comm n 2, woldCoeff_add_eq_inv_pow_mul]
+    rw [hfun]
+    exact hscaled
   · filter_upwards with n
     intro p
     have hpInv0 : 0 ≤ (p : ℝ)⁻¹ := by positivity
@@ -126,9 +130,11 @@ theorem primeDepthBVWoldCenteredL1Mass_tendsto_zero (a : ℝ) :
     rw [Real.norm_eq_abs, abs_of_nonneg
       (mul_nonneg (abs_nonneg a) (woldCoeff_nonneg (n + 2) p)),
       show n + 2 = 2 + n by omega, woldCoeff_add_eq_inv_pow_mul]
-    exact mul_le_mul_of_nonneg_left
-      (mul_le_mul_of_nonneg_right hpow (woldCoeff_nonneg 2 p))
-      (abs_nonneg a)
+    have hstep : (p : ℝ)⁻¹ ^ n * woldCoeff 2 p ≤ woldCoeff 2 p := by
+      calc (p : ℝ)⁻¹ ^ n * woldCoeff 2 p ≤ 1 * woldCoeff 2 p :=
+            mul_le_mul_of_nonneg_right hpow (woldCoeff_nonneg 2 p)
+        _ = woldCoeff 2 p := one_mul _
+    exact mul_le_mul_of_nonneg_left hstep (abs_nonneg a)
 
 /-- Quantitative missing producer.  The exact inverse-depth source transports must have one
 depth-independent bound from deep input `ℓ¹` mass to every returned coordinate. -/
@@ -152,7 +158,7 @@ theorem cofinalSourceNormalEquicontinuity_iff_zero
         atTop (nhds 0) := by
       simpa using (primeDepthBVWoldCenteredL1Mass_tendsto_zero a).const_mul C
     have hle : |a * woldCoeff 1 p2| ≤ 0 := by
-      apply le_of_tendsto htend
+      apply ge_of_tendsto htend
       filter_upwards with n
       rw [← sourceNormalCofinalCenteredTransport_from_deep a sourceDepth n p2]
       exact hbound n p2

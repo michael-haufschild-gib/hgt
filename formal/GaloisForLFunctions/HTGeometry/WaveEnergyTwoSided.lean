@@ -22,15 +22,15 @@ variable {d : ℕ} {u u₁ u₂ V : ℝ × (Fin d → ℝ) → ℝ} {K : Set (Fi
 
 theorem energyDensity_comp_timeReflect (hu : ContDiff ℝ ∞ u) (p : ℝ × (Fin d → ℝ)) :
     energyDensity (fun q => u (timeReflect d q)) p = energyDensity u (timeReflect d p) := by
-  have htime : (dirDeriv (timeDir d) (fun q => u (timeReflect d q)) p) ^ 2
-      = (dirDeriv (timeDir d) u (timeReflect d p)) ^ 2 := by
-    rw [dirDeriv_timeDir_comp_timeReflect hu]
+  have htime : (waveDirDeriv (timeDir d) (fun q => u (timeReflect d q)) p) ^ 2
+      = (waveDirDeriv (timeDir d) u (timeReflect d p)) ^ 2 := by
+    rw [waveDirDeriv_timeDir_comp_timeReflect hu]
     ring
   have hspace : ∀ i : Fin d,
-      (dirDeriv (spaceDir d i) (fun q => u (timeReflect d q)) p) ^ 2
-        = (dirDeriv (spaceDir d i) u (timeReflect d p)) ^ 2 := by
+      (waveDirDeriv (spaceDir d i) (fun q => u (timeReflect d q)) p) ^ 2
+        = (waveDirDeriv (spaceDir d i) u (timeReflect d p)) ^ 2 := by
     intro i
-    rw [dirDeriv_spaceDir_comp_timeReflect hu]
+    rw [waveDirDeriv_spaceDir_comp_timeReflect hu]
   rw [energyDensity, energyDensity, htime, Finset.sum_congr rfl fun i _ => hspace i]
 
 theorem waveEnergy_comp_timeReflect (hu : ContDiff ℝ ∞ u) (t : ℝ) :

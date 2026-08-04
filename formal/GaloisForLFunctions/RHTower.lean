@@ -5338,6 +5338,7 @@ import GaloisForLFunctions.RHTower.XiWeilCauchyCoreMultiplicity
 import GaloisForLFunctions.RHTower.XiWeilContinuedNodeDensity
 import GaloisForLFunctions.RHTower.XiWeilHilbertCore
 import GaloisForLFunctions.RHTower.XiWeilLineConjHilbert
+import GaloisForLFunctions.RHTower.CCMCliffordWeilProduct
 import GaloisForLFunctions.RHTower.XiWeilOneCauchyGate
 import GaloisForLFunctions.RHTower.XiWeilPolarization
 import GaloisForLFunctions.RHTower.XiWeilPositivityBand
@@ -5570,3 +5571,5 @@ import GaloisForLFunctions.RHTower.DeningerFullAverage
 import GaloisForLFunctions.RHTower.DeningerStageConstantForm
 import GaloisForLFunctions.RHTower.DeningerDlogWedgeBasis
 import GaloisForLFunctions.RHTower.DeningerStageDlogCohomology
+import GaloisForLFunctions.RHTower.CCMEndpointResponseConstants
+import GaloisForLFunctions.RHTower.PrimeGammaCofinalBocksteinDeterminantTransgression

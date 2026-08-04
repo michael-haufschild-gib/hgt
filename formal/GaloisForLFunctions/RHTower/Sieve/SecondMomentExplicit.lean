@@ -16,7 +16,7 @@ namespace RHTower.Sieve
 open Finset
 
 /-- The balanced window as a half-open interval. -/
-theorem Icc_eq_Ioc_pred {y : ℕ} (hy : 1 ≤ y) :
+private theorem Icc_eq_Ioc_pred {y : ℕ} (hy : 1 ≤ y) :
     Finset.Icc y (2 * y) = Finset.Ioc (y - 1) (2 * y) := by
   ext d
   simp only [Finset.mem_Icc, Finset.mem_Ioc]

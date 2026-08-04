@@ -205,11 +205,14 @@ theorem summable_succ_pow_mul_geometric (n : ℕ) {x : ℝ} (hx0 : 0 ≤ x) (hx1
   have hkey : (((k + 1) ^ n : ℕ) : ℝ) ≤ (2 : ℝ) ^ n * ((k : ℝ) ^ n) + (2 : ℝ) ^ n := by
     rcases Nat.eq_zero_or_pos k with rfl | hk
     · have h2n : (1 : ℝ) ≤ (2 : ℝ) ^ n := one_le_pow₀ (by norm_num)
-      simpa using by nlinarith [pow_nonneg (le_of_lt (by norm_num : (0:ℝ) < 2)) n]
+      have hz : (0 : ℝ) ≤ (2 : ℝ) ^ n * (((0 : ℕ) : ℝ) ^ n) := by positivity
+      have hone : (((0 + 1) ^ n : ℕ) : ℝ) = 1 := by norm_num
+      rw [hone]
+      linarith
     · have hk1 : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
       have h : ((k : ℝ) + 1) ≤ 2 * (k : ℝ) := by linarith
       have hpow : (((k : ℝ) + 1)) ^ n ≤ (2 * (k : ℝ)) ^ n :=
-        pow_le_pow_left (by positivity) h n
+        pow_le_pow_left₀ (by positivity) h n
       have hcast : (((k + 1) ^ n : ℕ) : ℝ) = ((k : ℝ) + 1) ^ n := by push_cast; ring
       have hnn : (0 : ℝ) ≤ (2 : ℝ) ^ n := by positivity
       rw [hcast]
@@ -222,6 +225,7 @@ theorem summable_succ_pow_mul_geometric (n : ℕ) {x : ℝ} (hx0 : 0 ≤ x) (hx1
         mul_le_mul_of_nonneg_right hkey hxk
     _ = (2 : ℝ) ^ n * (((k : ℝ) ^ n) * x ^ k) + (2 : ℝ) ^ n * x ^ k := by ring
 
+omit [CompleteSpace E] in
 /-- A holomorphic function is bounded on the distinguished boundary of a polydisc. -/
 theorem exists_bound_on_torus {f : (Fin n → ℂ) → E} (hf : Differentiable ℂ f) (c : Fin n → ℂ)
     {R : ℝ} (hR : 0 < R) : ∃ M : ℝ, ∀ θ : Fin n → ℝ, ‖f (torusMap c (fun _ => R) θ)‖ ≤ M := by
@@ -269,18 +273,18 @@ theorem polydiscSeries_hasSum {f : (Fin n → ℂ) → E} (hf : Differentiable �
               exact Finset.prod_congr rfl fun i _ => norm_pow _ _
           _ ≤ ∏ i, ‖y‖ ^ (m i) :=
               Finset.prod_le_prod (fun i _ => by positivity)
-                (fun i _ => pow_le_pow_left (norm_nonneg _) (norm_le_pi_norm y i) _)
-          _ = ‖y‖ ^ k := by rw [← Finset.prod_pow_eq_pow_sum, hk]
+                (fun i _ => pow_le_pow_left₀ (norm_nonneg _) (norm_le_pi_norm y i) _)
+          _ = ‖y‖ ^ k := by rw [Finset.prod_pow_eq_pow_sum, hk]
       have h2 : (∏ i, ‖(torusMap c (fun _ => R) θ i - c i) ^ (m i + 1)‖) = R ^ (k + n) := by
         have hstep : ∀ i : Fin n, ‖(torusMap c (fun _ => R) θ i - c i) ^ (m i + 1)‖ =
             R ^ (m i + 1) := by
           intro i
           rw [norm_pow, hnormζ i]
-        rw [Finset.prod_congr rfl fun i _ => hstep i, ← Finset.prod_pow_eq_pow_sum]
+        rw [Finset.prod_congr rfl fun i _ => hstep i, Finset.prod_pow_eq_pow_sum]
         congr 1
         rw [Finset.sum_add_distrib, hk, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
           smul_eq_mul, mul_one]
-      rw [h2, div_eq_mul_inv] at *
+      rw [h2, div_eq_mul_inv]
       exact mul_le_mul_of_nonneg_right h1 (by positivity)
     have hkernel : ‖polydiscKernelTerm c y k (torusMap c (fun _ => R) θ)‖ ≤
         (((k + 1) ^ n : ℕ) : ℝ) * (‖y‖ ^ k / R ^ (k + n)) := by
@@ -295,12 +299,12 @@ theorem polydiscSeries_hasSum {f : (Fin n → ℂ) → E} (hf : Differentiable �
         _ ≤ (((k + 1) ^ n : ℕ) : ℝ) * (‖y‖ ^ k / R ^ (k + n)) := by
             refine mul_le_mul_of_nonneg_right ?_ (by positivity)
             exact_mod_cast card_antidiagonalTuple_le n k
-    rw [norm_smul, hb]
+    rw [norm_smul]
+    simp only [hb]
     have hbeq : (((k + 1) ^ n : ℕ) : ℝ) * (‖y‖ / R) ^ k * (M / R ^ n) =
         ((((k + 1) ^ n : ℕ) : ℝ) * (‖y‖ ^ k / R ^ (k + n))) * M := by
       rw [div_pow, pow_add]
       field_simp
-      ring
     rw [hbeq]
     exact mul_le_mul hkernel (hM θ) (norm_nonneg _) (by positivity)
   have hcont : ∀ k : ℕ, Continuous fun θ : Fin n → ℝ =>
@@ -309,7 +313,7 @@ theorem polydiscSeries_hasSum {f : (Fin n → ℂ) → E} (hf : Differentiable �
     have hmap : Continuous fun θ : Fin n → ℝ => torusMap c (fun _ => R) θ :=
       continuous_torusMap c fun _ => R
     refine Continuous.smul ?_ (hf.continuous.comp hmap)
-    refine continuous_finset_sum _ fun m _ => ?_
+    refine continuous_finsetSum _ fun m _ => ?_
     refine Continuous.mul continuous_const ?_
     refine Continuous.inv₀ ?_ ?_
     · refine continuous_finsetProd _ fun i _ => ?_
@@ -365,41 +369,79 @@ theorem polydiscSeries_hasSum {f : (Fin n → ℂ) → E} (hf : Differentiable �
   have hfinal := hmain.const_smul (((2 * Real.pi * Complex.I) ^ n : ℂ)⁻¹)
   rw [smul_smul, inv_mul_cancel₀ hne, one_smul] at hfinal
   refine hfinal.congr_fun fun k => ?_
-  exact (polydiscSeries_apply_diag hf c hR y k).symm
+  exact polydiscSeries_apply_diag hf c hR y k
 
 /-- **A holomorphic function of several complex variables has a convergent power series** on every
 polydisc, hence on a ball around every point. -/
 theorem polydiscHasFPowerSeriesOnBall {f : (Fin n → ℂ) → E} (hf : Differentiable ℂ f)
     (c : Fin n → ℂ) {R : ℝ} (hR : 0 < R) :
-    ∃ ρ : ℝ, 0 < ρ ∧
-      HasFPowerSeriesOnBall f (polydiscSeries f c R) c (ENNReal.ofReal ρ) := by
+    HasFPowerSeriesOnBall f (polydiscSeries f c R) c (ENNReal.ofReal (R / 2 ^ (n + 1))) := by
   obtain ⟨M, hM⟩ := exists_bound_on_torus hf c hR
   have hMnn : 0 ≤ M := le_trans (norm_nonneg _) (hM fun _ => 0)
   set ρ : ℝ := R / 2 ^ (n + 1) with hρ
+  have hpow : (0 : ℝ) < 2 ^ (n + 1) := by positivity
   have hρpos : 0 < ρ := by
     rw [hρ]
     positivity
   have hρR : ρ < R := by
-    rw [hρ]
-    have h1 : (1 : ℝ) < 2 ^ (n + 1) := by
-      have := one_lt_two_pow_iff_ne_zero (n := n + 1)
-      simpa using one_lt_two_pow_iff_ne_zero.2 (Nat.succ_ne_zero n)
-    calc R / 2 ^ (n + 1) < R / 1 := by
-          refine div_lt_div_of_pos_left hR (by norm_num) h1
-      _ = R := by rw [div_one]
-  refine ⟨ρ, hρpos, ?_⟩
+    have h2 : (2 : ℝ) ≤ 2 ^ (n + 1) := by
+      calc (2 : ℝ) = 2 ^ 1 := (pow_one 2).symm
+        _ ≤ 2 ^ (n + 1) := pow_le_pow_right₀ (by norm_num) (Nat.succ_le_succ (Nat.zero_le n))
+    rw [hρ, div_lt_iff₀ hpow]
+    nlinarith [hR]
+  clear_value ρ
   refine ⟨?_, by rwa [ENNReal.ofReal_pos], ?_⟩
-  · -- the radius of convergence
+  · show (ENNReal.ofReal ρ) ≤ (polydiscSeries f c R).radius
+    have hcast : ENNReal.ofReal ρ = ((ρ.toNNReal : NNReal) : ENNReal) := rfl
+    rw [hcast]
     refine (polydiscSeries f c R).le_radius_of_bound M fun k => ?_
+    have hcoe : ((ρ.toNNReal : NNReal) : ℝ) = ρ := Real.coe_toNNReal ρ hρpos.le
+    rw [hcoe]
     have hnorm := norm_polydiscSeries_le c hR hM k
-    have hρk : ‖(ENNReal.ofReal ρ).toReal‖ ≤ ρ := by
-      rw [ENNReal.toReal_ofReal hρpos.le, Real.norm_eq_abs, abs_of_pos hρpos]
-    sorry
+    have hkey : (((k + 1) ^ n : ℕ) : ℝ) * (ρ / R) ^ k ≤ 1 := by
+      have h1 : ((k + 1) ^ n : ℕ) ≤ ((2 ^ n) ^ k : ℕ) := by
+        have hk : k + 1 ≤ 2 ^ k := Nat.lt_two_pow_self
+        calc (k + 1) ^ n ≤ (2 ^ k) ^ n := Nat.pow_le_pow_left hk n
+          _ = (2 ^ n) ^ k := by rw [← pow_mul, ← pow_mul, Nat.mul_comm]
+      have h2 : ρ / R = 1 / 2 ^ (n + 1) := by
+        rw [hρ]
+        field_simp
+      rw [h2]
+      calc (((k + 1) ^ n : ℕ) : ℝ) * (1 / 2 ^ (n + 1)) ^ k
+          ≤ (((2 ^ n) ^ k : ℕ) : ℝ) * (1 / 2 ^ (n + 1)) ^ k := by
+            refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+            exact_mod_cast h1
+        _ = ((2 : ℝ) ^ n * (1 / 2 ^ (n + 1))) ^ k := by
+            rw [mul_pow]
+            push_cast
+            ring
+        _ = ((1 : ℝ) / 2) ^ k := by
+            congr 1
+            rw [pow_succ]
+            field_simp
+        _ ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+    calc ‖polydiscSeries f c R k‖ * ρ ^ k
+        ≤ (((k + 1) ^ n : ℕ) : ℝ) * (M / R ^ k) * ρ ^ k :=
+          mul_le_mul_of_nonneg_right hnorm (by positivity)
+      _ = M * ((((k + 1) ^ n : ℕ) : ℝ) * (ρ / R) ^ k) := by
+          rw [div_pow]
+          ring
+      _ ≤ M * 1 := mul_le_mul_of_nonneg_left hkey hMnn
+      _ = M := mul_one M
   · intro y hy
     refine polydiscSeries_hasSum hf c hR hM ?_
-    rw [EMetric.mem_ball, edist_zero_right, ← ENNReal.ofReal_norm_eq_enorm] at hy
-    have := (ENNReal.ofReal_lt_ofReal_iff hρpos).1 hy
-    exact lt_trans this hρR
+    have h1 : ‖y‖ₑ < ENNReal.ofReal ρ := mem_eball_zero_iff.1 hy
+    rw [← ofReal_norm] at h1
+    exact lt_trans ((ENNReal.ofReal_lt_ofReal_iff hρpos).1 h1) hρR
+
+/-- **Complex differentiability implies analyticity in several variables.** -/
+theorem analyticAt_of_differentiable {f : (Fin n → ℂ) → E} (hf : Differentiable ℂ f)
+    (c : Fin n → ℂ) : AnalyticAt ℂ f c :=
+  (polydiscHasFPowerSeriesOnBall hf c one_pos).analyticAt
+
+/-- **A holomorphic function of several complex variables is analytic everywhere.** -/
+theorem analyticOnNhd_of_differentiable {f : (Fin n → ℂ) → E} (hf : Differentiable ℂ f) :
+    AnalyticOnNhd ℂ f Set.univ := fun c _ => analyticAt_of_differentiable hf c
 
 end Analytic
 

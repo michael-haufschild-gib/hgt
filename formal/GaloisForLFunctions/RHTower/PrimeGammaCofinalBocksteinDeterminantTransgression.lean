@@ -45,7 +45,7 @@ theorem primeGammaCofinalBocksteinCoefficient_eq_determinantTransgression
           primeGammaPhysicalRotationDeterminant (-t) p) := by
   simp only [primeGammaCofinalBocksteinCoefficient,
     primeActivationOccupancyFisherTwist,
-    primeGammaPhysicalRotationDeterminant, neg_neg]
+    primeGammaPhysicalRotationDeterminant]
   ring
 
 /-- The two physical orientation determinants agree exactly at neutral grade. -/
@@ -63,7 +63,7 @@ theorem primeGammaPhysicalRotationDeterminant_eq_reflection_iff
       (Real.strictMono_rpow_of_base_gt_one hp1).injective hpow
     linarith
   · rintro rfl
-    rfl
+    rw [neg_zero]
 
 /-- Either physical determinant equals the source determinant exactly at neutral grade. -/
 theorem primeGammaPhysicalRotationDeterminant_eq_source_iff
@@ -90,8 +90,10 @@ theorem primeGammaCofinalBocksteinCoefficient_eq_zero_iff_determinants
         primeGammaPhysicalRotationDeterminant (-t) p := by
   rw [primeGammaCofinalBocksteinCoefficient_eq_determinantTransgression]
   have hdensity : primeActivationOccupancyFisherDensity p ≠ 0 := by
+    have hp0 : (0 : ℝ) < (p.1 : ℝ) := by exact_mod_cast p.2.pos
+    have hden : (0 : ℝ) < ((p.1 : ℝ) + 1) ^ 2 := by positivity
     rw [primeActivationOccupancyFisherDensity_eq]
-    positivity
+    exact ne_of_gt (div_pos hp0 hden)
   rw [mul_eq_zero, or_iff_right hdensity, sub_eq_zero]
 
 /-- The signed pointwise Bockstein coefficient vanishes exactly at neutral grade. -/
@@ -124,7 +126,7 @@ theorem primeGammaCommonCorrectedRotationDeterminant_eq_reflection_iff
     apply (primeGammaPhysicalRotationDeterminant_eq_reflection_iff t p).mp
     exact mul_left_cancel₀ hc h
   · rintro rfl
-    rfl
+    rw [neg_zero]
 
 /-- Determinant-one `det2`/BV Stokes correction annihilates the determinant transgression iff the
 uncorrected Bockstein already vanishes. -/

@@ -22,7 +22,7 @@ namespace RHTower.Sieve
 open Finset Nat BoundingSieve
 
 /-- A squarefree number has `2^{ω}` divisors. -/
-theorem card_divisors_of_squarefree {d : ℕ} (hd : Squarefree d) :
+private theorem card_divisors_of_squarefree {d : ℕ} (hd : Squarefree d) :
     d.divisors.card = 2 ^ d.primeFactors.card := by
   classical
   have h := sum_divisors_eq_sum_powerset hd (fun _ => (1 : ℕ))

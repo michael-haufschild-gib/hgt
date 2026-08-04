@@ -77,9 +77,10 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 13 | linearity of the equation and uniqueness for the Cauchy problem | `dirDeriv_sub`, `solvesWaveEq_sub`, `waveEnergy_eq_zero_of_slice_zero`, **`eq_of_solvesWaveEq_of_data_eq`** | **built** |
 | 14 | time-reflection invariance and two-sided uniqueness | `timeReflect`, `dirDeriv_comp_timeReflect`, `solvesWaveEq_comp_timeReflect`, **`eq_of_solvesWaveEq_of_data_eq_all`** | **built** |
 | 15 | the estimate on both sides, and continuous dependence | `energyDensity_comp_timeReflect`, `waveEnergy_comp_timeReflect`, **`waveEnergy_le_exp_abs`**, **`waveEnergy_sub_le_exp_abs`** | **built** |
+| 16 | the solutions of a fixed equation form a vector space | `dirDeriv_const_smul`, **`solvesWaveEq_add`**, **`solvesWaveEq_const_smul`**, `solvesWaveEq_zero` | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
-`WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15). All wired into the umbrella; axioms
+`WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16). All wired into the umbrella; axioms
 `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -126,12 +127,35 @@ reflection turns the forward estimate into `E(t) ≤ E(0)·exp((M+1)|t|)`
 energy of the difference of the Cauchy data.* That is continuous dependence — uniqueness in
 quantitative form.
 
+Statement 16 records what superposition arguments consume: the solutions of a fixed clock equation
+are closed under sums, scalar multiples and differences, with the zero field a solution.
+
 This is the uniqueness half of the classical local theory, in exactly the class the clock programme
 uses: real classical solutions with spatially compact support. What it does *not* give is existence;
 that is the Galerkin or Sobolev-scale half, and it is what would lower the regularity threshold of
 `finite-regularity-clock-probes` below `C^{2d+5}`.
 
+### The next brick
+
+The natural next step is the **bridge to the corpus's Fourier-built probes**: identifying
+`SolvesWaveEq u V` on `ℝ × (Fin d → ℝ)` with the corpus's `SolvesPotentialWaveAt (kgWaveOp d) V u`
+on `Fin (d+1) → ℝ`. It needs two translations — the index shift `Fin (d+1) ↔ ℝ × Fin d`
+(`kgEventInvCLM`, `kgSpatial`) and the change of norm between `Fin d → ℝ` and
+`EuclideanSpace ℝ (Fin d)` (the two carry the same volume, `EuclideanSpace.volume_preserving_measurableEquiv`).
+With it, every probe the corpus constructs by Fourier synthesis inherits the uniqueness and
+stability statements above.
+
+The expansion of the corpus operator is already available and is the entry point:
+`kgWaveOp d = (SmoothPseudoMetric.ofSignature (kgEps d) (kgEps_ne_zero d)).chart.dalembert`, and
+`SmoothPseudoMetric.ofSignature_dalembert_of_differentiableAt` rewrites it as
+`∑ᵢ (kgEps d i)⁻¹ · ∂ᵢ∂ᵢu` under a differentiability hypothesis. With `kgEps d 0 = -1` and
+`kgEps d i.succ = 1`, splitting that sum by `Fin.sum_univ_succ` gives exactly the shape of
+`SolvesWaveEq`; what is left is the coordinate dictionary `coordPartial 0 ↔ dirDeriv (timeDir d)`
+and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
+`(t, x) ↦ Fin.cons t x`.
+
 ## Log
+- 2026-08-04 — statement 16 (linearity of the solution space) formalized.
 - 2026-08-04 — statement 15 (two-sided estimate, continuous dependence) formalized.
 - 2026-08-04 — statement 14 (time reflection, two-sided uniqueness) formalized.
 - 2026-08-04 — statement 13 (linearity and Cauchy uniqueness) formalized.

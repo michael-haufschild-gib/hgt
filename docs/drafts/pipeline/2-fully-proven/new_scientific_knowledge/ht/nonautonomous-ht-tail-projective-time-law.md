@@ -2387,3 +2387,39 @@ are associates: **both block orders and both leader degrees agree**, which is (�
 
 Note the reversal: the hypothesis that blocked the cross-difference route (`hQorder`) is exactly the
 *negation* of what is being contradicted, so in the hard case it comes for free.
+
+## Support lemmas for the factor step — built
+
+Added to `MvPolynomialGaussAscent.lean`:
+
+- `mvPolynomial_mem_vars_mul_left` / `_right` — over a domain, multiplication by a nonzero
+  polynomial keeps every variable (degrees add).
+- `exists_irreducible_factor_mem_vars` — **every variable of a polynomial occurs in one of its
+  irreducible factors**.  This is step 1 of the (★) proof: the factor `A` with `ord_U A = ord_U 𝒫`.
+
+## Exact Lean gaps left in the (★) proof
+
+1. `equiv (pderiv (inr (), m) X) = pderiv ((), m) (equiv X)` — the right-block partial derivative
+   commutes with the two-block splitting (same shape as the proved
+   `differentialPolynomialTwoBlockEquiv_overDerivation`).
+2. `coeff λ (initial (equiv X)) = coeff (λ + d · leader) (equiv X)` — the coefficients of the
+   initial are coefficients of the polynomial; with 1. this gives
+   `vars (symm (I^a S^b)) ⊆ vars A`, i.e. the multiplier's left-block order bound (`hMorder`).
+3. `A ∤ I(equiv A)^a S(equiv A)^b` from right-block leader degree (`hMnot`): `A` is prime, and both
+   `I` and `S` are nonzero of smaller leader degree.
+4. Primitivity of an irreducible two-block factor in each block sense: a one-block constant divisor
+   of an irreducible factor forces the factor to be one-block, excluded when it has jets in both
+   blocks.
+5. The assembly of steps 1-6 recorded above, plus the easy case `M ≤ m` through the component
+   oracle, and the recombination `Squarefree.dvd_of_forall_irreducible_factor_dvd`.
+
+### Gap 1 closed
+
+`formal/GaloisForLFunctions/HTGeometry/TwoBlockInitialSeparant.lean`:
+`differentialPolynomialTwoBlockEquiv_pderiv_inr` — partial differentiation in a right-block jet
+commutes with the two-block splitting.  So the separant of the split polynomial is the two-block
+separant, whose variables are contained in those of the polynomial; the separant half of `hMorder`
+is done.  What remains for the initial half is the analogous coefficient statement (gap 2): every
+monomial of the right-block initial, multiplied by the leader power, is a monomial of the
+polynomial.  This needs a coefficient formula for `differentialPolynomialTwoBlockEquiv`, which is
+built from `diffPolySumSplit` and `MvPolynomial.commAlgEquiv` and currently has none in the corpus.

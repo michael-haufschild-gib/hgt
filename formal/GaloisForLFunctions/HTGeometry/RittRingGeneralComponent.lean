@@ -179,6 +179,94 @@ theorem exists_component_initial_separant_powers_mem_diffPolyIterateIdeal
     exists_oracle_initial_separant_powers_mem_diffPolyIterateIdeal φ hinj hcomm hAvars hPle
       hPdvd hQ⟩
 
+/-- **Separant-only Ritt reduction over a coefficient ring.**
+
+Phase one of the reduction removes every jet above the leader with a power of the separant as the
+only multiplier.  What is left has order at most that of `A`, so the characteristic oracle makes it
+divisible by `A` over the fraction field, and primitivity contracts that divisibility to the ring.
+The initial never appears, so the multiplier is a power of the separant alone -- a polynomial whose
+variables are variables of `A`. -/
+theorem exists_separant_power_mem_diffPolyIterateIdeal
+    [UniqueFactorizationMonoid K] [Algebra K L] [IsFractionRing K L]
+    (hcomm : ∀ c : K, algebraMap K L c′ = (algebraMap K L c)′)
+    {A : DifferentialPolynomial Unit K} (hAvars : A.vars.Nonempty)
+    (hAprim : MvPolynomialPrimitive A)
+    {P : Ideal (DifferentialPolynomial Unit L)}
+    (hPle : differentialPolynomialIterateIdeal
+      (MvPolynomial.map (algebraMap K L) A) ≤ P)
+    (hPdvd : ∀ Z : DifferentialPolynomial Unit L, Z ∈ P →
+      scalarDifferentialPolynomialOrder Z ≤
+        scalarDifferentialPolynomialOrder (MvPolynomial.map (algebraMap K L) A) →
+      MvPolynomial.map (algebraMap K L) A ∣ Z)
+    {Q : DifferentialPolynomial Unit K}
+    (hQ : MvPolynomial.map (algebraMap K L) Q ∈ P) :
+    ∃ e : ℕ, scalarDifferentialPolynomialSeparant A ^ e * Q ∈ diffPolyIterateIdeal A := by
+  classical
+  have hinj : Function.Injective (algebraMap K L) := IsFractionRing.injective K L
+  have hA0 : A ≠ 0 := by
+    intro h0
+    obtain ⟨j, hj⟩ := hAvars
+    simp [h0] at hj
+  set m : ℕ := scalarDifferentialPolynomialOrder A with hm
+  have hAjets : ∀ j : ℕ, m < j → ((), j) ∉ A.vars := by
+    intro j hj hmem
+    have hle : j ≤ scalarDifferentialPolynomialOrder A :=
+      Finset.le_sup (f := fun p : Unit × ℕ ↦ p.2) hmem
+    omega
+  have hS : MvPolynomial.pderiv (((), m) : Unit × ℕ) A ≠ 0 :=
+    scalarDifferentialPolynomialSeparant_ne_zero_of_domain hAvars
+  have hle : diffPolyIterateIdeal A ≤ Ideal.comap (MvPolynomial.map (σ := Unit × ℕ)
+      (algebraMap K L)) P := by
+    rw [diffPolyIterateIdeal, Ideal.span_le]
+    rintro _ ⟨n, rfl⟩
+    have hmapn : MvPolynomial.map (algebraMap K L) (diffPolyIterate n A) =
+        diffPolyIterate n (MvPolynomial.map (algebraMap K L) A) :=
+      map_diffPolyIterate_of_commutes (algebraMap K L) hcomm n A
+    have hmem : diffPolyIterate n (MvPolynomial.map (algebraMap K L) A) ∈ P := by
+      refine hPle ?_
+      rw [diffPolyIterate_eq_iterateOver]
+      exact differentialPolynomialIterateOver_mem_iterateIdeal _ n
+    simpa [Ideal.mem_comap, hmapn] using hmem
+  obtain ⟨e, b, hmem, hbvars⟩ :=
+    exists_phaseOne_reduction (i := ()) hAjets hS (scalarDifferentialPolynomialOrder Q) Q
+      (by
+        intro j hj hmemj
+        have hle : j ≤ scalarDifferentialPolynomialOrder Q :=
+          Finset.le_sup (f := fun p : Unit × ℕ ↦ p.2) hmemj
+        omega)
+  refine ⟨e, ?_⟩
+  have hbP : MvPolynomial.map (algebraMap K L) b ∈ P := by
+    have h1 : MvPolynomial.map (algebraMap K L)
+        (MvPolynomial.pderiv (((), m) : Unit × ℕ) A ^ e * Q - b) ∈ P := hle hmem
+    have h2 : MvPolynomial.map (algebraMap K L)
+        (MvPolynomial.pderiv (((), m) : Unit × ℕ) A ^ e * Q) ∈ P := by
+      rw [map_mul]
+      exact P.mul_mem_left _ hQ
+    have hsub := P.sub_mem h2 h1
+    simpa [map_sub] using hsub
+  have hborder : scalarDifferentialPolynomialOrder (MvPolynomial.map (algebraMap K L) b) ≤
+      scalarDifferentialPolynomialOrder (MvPolynomial.map (algebraMap K L) A) := by
+    rw [scalarDifferentialPolynomialOrder_map hinj, scalarDifferentialPolynomialOrder_map hinj]
+    refine Finset.sup_le ?_
+    intro p hp
+    obtain ⟨u, j⟩ := p
+    obtain rfl : u = () := Subsingleton.elim _ _
+    by_contra hcon
+    exact hbvars j (by omega) hp
+  have hdvdK : A ∣ b :=
+    hAprim.dvd_of_fraction_map_dvd hA0 (hPdvd _ hbP hborder)
+  have hbmem : b ∈ diffPolyIterateIdeal A := by
+    obtain ⟨T, hT⟩ := hdvdK
+    rw [hT]
+    exact (diffPolyIterateIdeal A).mul_mem_right T
+      (diffPolyIterate_mem_diffPolyIterateIdeal A 0)
+  have hsplit : scalarDifferentialPolynomialSeparant A ^ e * Q =
+      (MvPolynomial.pderiv (((), m) : Unit × ℕ) A ^ e * Q - b) + b := by
+    rw [scalarDifferentialPolynomialSeparant, scalarDifferentialPolynomialLeader, ← hm]
+    ring
+  rw [hsplit]
+  exact (diffPolyIterateIdeal A).add_mem hmem hbmem
+
 end
 
 end GaloisForLFunctions

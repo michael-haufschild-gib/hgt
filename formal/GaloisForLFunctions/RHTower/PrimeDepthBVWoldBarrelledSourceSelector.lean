@@ -46,11 +46,11 @@ theorem eq_zero_of_barrelled_pointwiseBounded_cofinalReadout
     · simpa [p] using hseminorm (x n)
     · exact NNReal.coe_nonneg C
   have hnorm : Tendsto (fun n : ℕ => ‖x n‖) atTop (nhds 0) := by
-    simpa using (continuous_norm.tendsto 0).comp hx
+    simpa using hx.norm
   have hright : Tendsto (fun n : ℕ => (C : ℝ) * ‖x n‖) atTop (nhds 0) := by
     simpa using hnorm.const_mul (C : ℝ)
   have hle : |a| ≤ 0 := by
-    apply le_of_tendsto hright
+    apply ge_of_tendsto hright
     filter_upwards with n
     rw [← hreadout n]
     simpa [Real.norm_eq_abs] using hbound n
@@ -88,13 +88,16 @@ theorem PrimeDepthBVWoldBarrelledSourceCertificate.centeredRate_eq_zero
     {sourceDepth : ℕ} {a : ℝ}
     (cert : PrimeDepthBVWoldBarrelledSourceCertificate sourceDepth a) :
     a = 0 := by
-  apply eq_zero_of_barrelled_pointwiseBounded_cofinalReadout
-    cert.readout cert.orbit cert.orbit_tendsto_zero
-    cert.readout_pointwise_bounded (a * woldCoeff 1 primeDepthBVWoldPrimeTwo)
-  intro n
-  rw [cert.physical_matrix_coefficient]
-  exact sourceNormalCofinalCenteredTransport_from_deep
-    a sourceDepth n primeDepthBVWoldPrimeTwo
+  have hproduct : a * woldCoeff 1 primeDepthBVWoldPrimeTwo = 0 := by
+    apply eq_zero_of_barrelled_pointwiseBounded_cofinalReadout
+      cert.readout cert.orbit cert.orbit_tendsto_zero
+      cert.readout_pointwise_bounded (a * woldCoeff 1 primeDepthBVWoldPrimeTwo)
+    intro n
+    rw [cert.physical_matrix_coefficient]
+    exact sourceNormalCofinalCenteredTransport_from_deep
+      a sourceDepth n primeDepthBVWoldPrimeTwo
+  exact (mul_eq_zero.mp hproduct).resolve_right
+    (woldCoeff_pos 1 primeDepthBVWoldPrimeTwo).ne'
 
 /-- Xi-labelled completed-source certificate. -/
 abbrev PrimeDepthBVWoldXiBarrelledSourceCertificate

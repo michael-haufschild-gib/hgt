@@ -23,7 +23,7 @@ open Filter Topology ArithmeticFunction
 
 /-- **Dirichlet series of Möbius.**  In the half-plane of absolute convergence it is the
 reciprocal of the zeta function. -/
-theorem LSeries_moebius_eq_inv_riemannZeta {s : ℂ} (hs : 1 < s.re) :
+private theorem LSeries_moebius_eq_inv_riemannZeta {s : ℂ} (hs : 1 < s.re) :
     LSeries (fun n : ℕ => (ArithmeticFunction.moebius n : ℂ)) s = (riemannZeta s)⁻¹ := by
   have h := ArithmeticFunction.LSeries_zeta_mul_Lseries_moebius hs
   rw [ArithmeticFunction.LSeries_zeta_eq_riemannZeta hs] at h

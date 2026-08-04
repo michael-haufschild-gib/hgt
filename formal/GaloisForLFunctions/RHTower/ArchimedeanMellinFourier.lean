@@ -82,7 +82,7 @@ theorem gaussianSmoothing_fourier {f : ℝ → ℂ} (hf : Integrable f) {u : ℝ
 
 /-! ## The Gamma resolution of the power weight -/
 
-theorem re_div_two (w : ℂ) : (w / 2).re = w.re / 2 := by
+private theorem re_div_two (w : ℂ) : (w / 2).re = w.re / 2 := by
   simp
 
 /-- **Gamma resolution of the completed power weight.**  The completed Mellin weight is the Gamma

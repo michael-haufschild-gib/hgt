@@ -29,14 +29,14 @@ theorem contDiff_comp_timeReflect (hu : ContDiff ℝ ∞ u₁) :
   hu.comp (timeReflect d).contDiff
 
 /-- The chain rule for a reflected field. -/
-theorem dirDeriv_comp_timeReflect (hu : ContDiff ℝ ∞ u₁) (v p : ℝ × (Fin d → ℝ)) :
-    dirDeriv v (fun q => u₁ (timeReflect d q)) p
-      = dirDeriv (timeReflect d v) u₁ (timeReflect d p) := by
+theorem waveDirDeriv_comp_timeReflect (hu : ContDiff ℝ ∞ u₁) (v p : ℝ × (Fin d → ℝ)) :
+    waveDirDeriv v (fun q => u₁ (timeReflect d q)) p
+      = waveDirDeriv (timeReflect d v) u₁ (timeReflect d p) := by
   have hcomp : HasFDerivAt (fun q : ℝ × (Fin d → ℝ) => u₁ (timeReflect d q))
       ((fderiv ℝ u₁ (timeReflect d p)).comp (timeReflect d)) p :=
     (differentiableAt_of_contDiff_infty' hu (timeReflect d p)).hasFDerivAt.comp p
       (timeReflect d).hasFDerivAt
-  rw [dirDeriv, hcomp.fderiv]
+  rw [waveDirDeriv, hcomp.fderiv]
   rfl
 
 theorem timeReflect_timeDir : timeReflect d (timeDir d) = -(timeDir d) := by
@@ -45,59 +45,59 @@ theorem timeReflect_timeDir : timeReflect d (timeDir d) = -(timeDir d) := by
 theorem timeReflect_spaceDir (i : Fin d) : timeReflect d (spaceDir d i) = spaceDir d i := by
   refine Prod.ext ?_ ?_ <;> simp [spaceDir]
 
-theorem dirDeriv_neg_dir (v p : ℝ × (Fin d → ℝ)) :
-    dirDeriv (-v) u₁ p = -dirDeriv v u₁ p := by
-  rw [dirDeriv, dirDeriv, map_neg]
+theorem waveDirDeriv_neg_dir (v p : ℝ × (Fin d → ℝ)) :
+    waveDirDeriv (-v) u₁ p = -waveDirDeriv v u₁ p := by
+  rw [waveDirDeriv, waveDirDeriv, map_neg]
 
-theorem dirDeriv_timeDir_comp_timeReflect (hu : ContDiff ℝ ∞ u₁) (p : ℝ × (Fin d → ℝ)) :
-    dirDeriv (timeDir d) (fun q => u₁ (timeReflect d q)) p
-      = -dirDeriv (timeDir d) u₁ (timeReflect d p) := by
-  rw [dirDeriv_comp_timeReflect hu, timeReflect_timeDir, dirDeriv_neg_dir]
+theorem waveDirDeriv_timeDir_comp_timeReflect (hu : ContDiff ℝ ∞ u₁) (p : ℝ × (Fin d → ℝ)) :
+    waveDirDeriv (timeDir d) (fun q => u₁ (timeReflect d q)) p
+      = -waveDirDeriv (timeDir d) u₁ (timeReflect d p) := by
+  rw [waveDirDeriv_comp_timeReflect hu, timeReflect_timeDir, waveDirDeriv_neg_dir]
 
-theorem dirDeriv_spaceDir_comp_timeReflect (hu : ContDiff ℝ ∞ u₁) (i : Fin d)
+theorem waveDirDeriv_spaceDir_comp_timeReflect (hu : ContDiff ℝ ∞ u₁) (i : Fin d)
     (p : ℝ × (Fin d → ℝ)) :
-    dirDeriv (spaceDir d i) (fun q => u₁ (timeReflect d q)) p
-      = dirDeriv (spaceDir d i) u₁ (timeReflect d p) := by
-  rw [dirDeriv_comp_timeReflect hu, timeReflect_spaceDir]
+    waveDirDeriv (spaceDir d i) (fun q => u₁ (timeReflect d q)) p
+      = waveDirDeriv (spaceDir d i) u₁ (timeReflect d p) := by
+  rw [waveDirDeriv_comp_timeReflect hu, timeReflect_spaceDir]
 
 /-- **The clock equation is invariant under time reflection.** -/
 theorem solvesWaveEq_comp_timeReflect (hu : ContDiff ℝ ∞ u₁) (h : SolvesWaveEq u₁ V) :
     SolvesWaveEq (fun q => u₁ (timeReflect d q)) (fun q => V (timeReflect d q)) := by
   intro p
-  have hsecond : dirDeriv (timeDir d) (dirDeriv (timeDir d) fun q => u₁ (timeReflect d q)) p
-      = dirDeriv (timeDir d) (dirDeriv (timeDir d) u₁) (timeReflect d p) := by
-    have hfirst : (dirDeriv (timeDir d) fun q => u₁ (timeReflect d q))
-        = fun q => -dirDeriv (timeDir d) u₁ (timeReflect d q) := by
+  have hsecond : waveDirDeriv (timeDir d) (waveDirDeriv (timeDir d) fun q => u₁ (timeReflect d q)) p
+      = waveDirDeriv (timeDir d) (waveDirDeriv (timeDir d) u₁) (timeReflect d p) := by
+    have hfirst : (waveDirDeriv (timeDir d) fun q => u₁ (timeReflect d q))
+        = fun q => -waveDirDeriv (timeDir d) u₁ (timeReflect d q) := by
       funext q
-      exact dirDeriv_timeDir_comp_timeReflect hu q
+      exact waveDirDeriv_timeDir_comp_timeReflect hu q
     rw [hfirst]
-    have hneg : (fun q : ℝ × (Fin d → ℝ) => -dirDeriv (timeDir d) u₁ (timeReflect d q))
-        = fun q => (fun r => -dirDeriv (timeDir d) u₁ r) (timeReflect d q) := rfl
-    rw [hneg, dirDeriv_comp_timeReflect ((contDiff_dirDeriv hu _).neg), timeReflect_timeDir,
-      dirDeriv_neg_dir]
-    have hnegfun : dirDeriv (timeDir d) (fun r : ℝ × (Fin d → ℝ) =>
-        -dirDeriv (timeDir d) u₁ r) (timeReflect d p)
-        = -dirDeriv (timeDir d) (dirDeriv (timeDir d) u₁) (timeReflect d p) := by
-      have hfd : HasFDerivAt (fun r : ℝ × (Fin d → ℝ) => -dirDeriv (timeDir d) u₁ r)
-          (-(fderiv ℝ (dirDeriv (timeDir d) u₁) (timeReflect d p))) (timeReflect d p) :=
+    have hneg : (fun q : ℝ × (Fin d → ℝ) => -waveDirDeriv (timeDir d) u₁ (timeReflect d q))
+        = fun q => (fun r => -waveDirDeriv (timeDir d) u₁ r) (timeReflect d q) := rfl
+    rw [hneg, waveDirDeriv_comp_timeReflect ((contDiff_dirDeriv hu _).neg), timeReflect_timeDir,
+      waveDirDeriv_neg_dir]
+    have hnegfun : waveDirDeriv (timeDir d) (fun r : ℝ × (Fin d → ℝ) =>
+        -waveDirDeriv (timeDir d) u₁ r) (timeReflect d p)
+        = -waveDirDeriv (timeDir d) (waveDirDeriv (timeDir d) u₁) (timeReflect d p) := by
+      have hfd : HasFDerivAt (fun r : ℝ × (Fin d → ℝ) => -waveDirDeriv (timeDir d) u₁ r)
+          (-(fderiv ℝ (waveDirDeriv (timeDir d) u₁) (timeReflect d p))) (timeReflect d p) :=
         (differentiableAt_of_contDiff_infty' (contDiff_dirDeriv hu _)
           (timeReflect d p)).hasFDerivAt.neg
-      rw [dirDeriv, dirDeriv, hfd.fderiv]
+      rw [waveDirDeriv, waveDirDeriv, hfd.fderiv]
       rfl
     rw [hnegfun, neg_neg]
   have hspace : ∀ i : Fin d,
-      dirDeriv (spaceDir d i) (dirDeriv (spaceDir d i) fun q => u₁ (timeReflect d q)) p
-        = dirDeriv (spaceDir d i) (dirDeriv (spaceDir d i) u₁) (timeReflect d p) := by
+      waveDirDeriv (spaceDir d i) (waveDirDeriv (spaceDir d i) fun q => u₁ (timeReflect d q)) p
+        = waveDirDeriv (spaceDir d i) (waveDirDeriv (spaceDir d i) u₁) (timeReflect d p) := by
     intro i
-    have hfirst : (dirDeriv (spaceDir d i) fun q => u₁ (timeReflect d q))
-        = fun q => dirDeriv (spaceDir d i) u₁ (timeReflect d q) := by
+    have hfirst : (waveDirDeriv (spaceDir d i) fun q => u₁ (timeReflect d q))
+        = fun q => waveDirDeriv (spaceDir d i) u₁ (timeReflect d q) := by
       funext q
-      exact dirDeriv_spaceDir_comp_timeReflect hu i q
+      exact waveDirDeriv_spaceDir_comp_timeReflect hu i q
     rw [hfirst]
-    exact dirDeriv_spaceDir_comp_timeReflect (contDiff_dirDeriv hu _) i p
-  show dirDeriv (timeDir d) (dirDeriv (timeDir d) fun q => u₁ (timeReflect d q)) p
-    = (∑ i : Fin d, dirDeriv (spaceDir d i)
-        (dirDeriv (spaceDir d i) fun q => u₁ (timeReflect d q)) p)
+    exact waveDirDeriv_spaceDir_comp_timeReflect (contDiff_dirDeriv hu _) i p
+  show waveDirDeriv (timeDir d) (waveDirDeriv (timeDir d) fun q => u₁ (timeReflect d q)) p
+    = (∑ i : Fin d, waveDirDeriv (spaceDir d i)
+        (waveDirDeriv (spaceDir d i) fun q => u₁ (timeReflect d q)) p)
       + V (timeReflect d p) * u₁ (timeReflect d p)
   rw [hsecond, Finset.sum_congr rfl fun i _ => hspace i]
   exact h (timeReflect d p)
@@ -110,7 +110,7 @@ theorem eq_of_solvesWaveEq_of_data_eq_all (hu₁ : ContDiff ℝ ∞ u₁) (hu₂
     (h₁ : SolvesWaveEq u₁ V) (h₂ : SolvesWaveEq u₂ V) {M : ℝ} (hM : ∀ p, |V p| ≤ M)
     (hval : ∀ x : Fin d → ℝ, u₁ (0, x) = u₂ (0, x))
     (hder : ∀ x : Fin d → ℝ,
-      dirDeriv (timeDir d) u₁ (0, x) = dirDeriv (timeDir d) u₂ (0, x))
+      waveDirDeriv (timeDir d) u₁ (0, x) = waveDirDeriv (timeDir d) u₂ (0, x))
     (t : ℝ) (x : Fin d → ℝ) : u₁ (t, x) = u₂ (t, x) := by
   rcases le_total 0 t with ht | ht
   · exact eq_of_solvesWaveEq_of_data_eq hu₁ hu₂ hV hK hzero₁ hzero₂ h₁ h₂ hM hval hder ht x
@@ -124,7 +124,7 @@ theorem eq_of_solvesWaveEq_of_data_eq_all (hu₁ : ContDiff ℝ ∞ u₁) (hu₂
       (fun p => hM (timeReflect d p))
       (fun y => by simpa using hval y)
       (fun y => by
-        rw [dirDeriv_timeDir_comp_timeReflect hu₁, dirDeriv_timeDir_comp_timeReflect hu₂]
+        rw [waveDirDeriv_timeDir_comp_timeReflect hu₁, waveDirDeriv_timeDir_comp_timeReflect hu₂]
         simpa using congrArg Neg.neg (hder y))
       (t := -t) (by linarith) x
     simpa using hrefl

@@ -32,14 +32,14 @@ noncomputable def waveEnergy (u : ℝ × (Fin d → ℝ) → ℝ) (t : ℝ) : �
 /-- The time slice of a field is differentiable in time, with the directional derivative as its
 derivative. -/
 theorem hasDerivAt_timeSlice (hu : ContDiff ℝ ∞ u) (t : ℝ) (x : Fin d → ℝ) :
-    HasDerivAt (fun s : ℝ => u (s, x)) (dirDeriv (timeDir d) u (t, x)) t := by
+    HasDerivAt (fun s : ℝ => u (s, x)) (waveDirDeriv (timeDir d) u (t, x)) t := by
   have hmap : HasFDerivAt (fun s : ℝ => ((s, x) : ℝ × (Fin d → ℝ)))
       ((ContinuousLinearMap.id ℝ ℝ).prod 0) t :=
     (hasFDerivAt_id t).prodMk (hasFDerivAt_const x t)
   have hcomp := (differentiableAt_of_contDiff_infty' hu (t, x)).hasFDerivAt.comp t hmap
   have hval : ((fderiv ℝ u (t, x)).comp ((ContinuousLinearMap.id ℝ ℝ).prod 0)) 1
-      = dirDeriv (timeDir d) u (t, x) := by
-    simp [dirDeriv, timeDir]
+      = waveDirDeriv (timeDir d) u (t, x) := by
+    simp [waveDirDeriv, timeDir]
   have := hcomp.hasDerivAt
   rwa [hval] at this
 
@@ -50,9 +50,9 @@ theorem contDiff_energyDensity (hu : ContDiff ℝ ∞ u) : ContDiff ℝ ∞ (ene
 theorem energyDensity_zero_of_notMem (hK : IsCompact K)
     (hzero : ∀ p : ℝ × (Fin d → ℝ), p.2 ∉ K → u p = 0) (p : ℝ × (Fin d → ℝ)) (hp : p.2 ∉ K) :
     energyDensity u p = 0 := by
-  have h0 : dirDeriv (timeDir d) u p = 0 := dirDeriv_zero_of_notMem hK hzero _ p hp
-  have hi : ∀ i : Fin d, dirDeriv (spaceDir d i) u p = 0 := fun i =>
-    dirDeriv_zero_of_notMem hK hzero _ p hp
+  have h0 : waveDirDeriv (timeDir d) u p = 0 := waveDirDeriv_zero_of_notMem hK hzero _ p hp
+  have hi : ∀ i : Fin d, waveDirDeriv (spaceDir d i) u p = 0 := fun i =>
+    waveDirDeriv_zero_of_notMem hK hzero _ p hp
   rw [energyDensity, h0, Finset.sum_congr rfl fun i _ => by rw [hi i], hzero p hp]
   simp
 
@@ -66,15 +66,15 @@ the energy density.** -/
 theorem hasDerivAt_waveEnergy (hu : ContDiff ℝ ∞ u) (hK : IsCompact K)
     (hzero : ∀ p : ℝ × (Fin d → ℝ), p.2 ∉ K → u p = 0) (t : ℝ) :
     HasDerivAt (waveEnergy u)
-      (∫ x : Fin d → ℝ, dirDeriv (timeDir d) (energyDensity u) (t, x)) t := by
+      (∫ x : Fin d → ℝ, waveDirDeriv (timeDir d) (energyDensity u) (t, x)) t := by
   classical
   have hEcd : ContDiff ℝ ∞ (energyDensity u) := contDiff_energyDensity hu
   have hE0 : ∀ p : ℝ × (Fin d → ℝ), p.2 ∉ K → energyDensity u p = 0 :=
     energyDensity_zero_of_notMem hK hzero
-  have hF'cont : Continuous (dirDeriv (timeDir d) (energyDensity u)) :=
+  have hF'cont : Continuous (waveDirDeriv (timeDir d) (energyDensity u)) :=
     (contDiff_dirDeriv hEcd _).continuous
-  have hF'0 : ∀ p : ℝ × (Fin d → ℝ), p.2 ∉ K → dirDeriv (timeDir d) (energyDensity u) p = 0 :=
-    fun p hp => dirDeriv_zero_of_notMem hK hE0 _ p hp
+  have hF'0 : ∀ p : ℝ × (Fin d → ℝ), p.2 ∉ K → waveDirDeriv (timeDir d) (energyDensity u) p = 0 :=
+    fun p hp => waveDirDeriv_zero_of_notMem hK hE0 _ p hp
   -- a uniform bound on a compact time interval
   have hScompact : IsCompact (Set.Icc (t - 1) (t + 1) ×ˢ K) := isCompact_Icc.prod hK
   obtain ⟨C, hC⟩ := hScompact.exists_bound_of_continuousOn hF'cont.continuousOn
@@ -84,7 +84,7 @@ theorem hasDerivAt_waveEnergy (hu : ContDiff ℝ ∞ u) (hK : IsCompact K)
     exact integrableOn_const hK.measure_lt_top.ne
   have hbound : ∀ᵐ x : Fin d → ℝ ∂(volume : Measure (Fin d → ℝ)),
       ∀ s ∈ Metric.ball t 1,
-        ‖dirDeriv (timeDir d) (energyDensity u) (s, x)‖
+        ‖waveDirDeriv (timeDir d) (energyDensity u) (s, x)‖
           ≤ Set.indicator K (fun _ : Fin d → ℝ => C) x := by
     filter_upwards with x
     intro s hs
@@ -117,19 +117,19 @@ theorem hasDerivAt_waveEnergy (hu : ContDiff ℝ ∞ u) (hK : IsCompact K)
     exact hcont.integrable_of_hasCompactSupport
       (hasCompactSupport_energyDensity_slice hK hzero t)
   have hF'meas : AEStronglyMeasurable
-      (fun x : Fin d → ℝ => dirDeriv (timeDir d) (energyDensity u) (t, x))
+      (fun x : Fin d → ℝ => waveDirDeriv (timeDir d) (energyDensity u) (t, x))
       (volume : Measure (Fin d → ℝ)) := by
     have hmap : Continuous fun x : Fin d → ℝ => ((t, x) : ℝ × (Fin d → ℝ)) := by fun_prop
     exact (hF'cont.comp hmap).aestronglyMeasurable
   have hdiff : ∀ᵐ x : Fin d → ℝ ∂(volume : Measure (Fin d → ℝ)), ∀ s ∈ Metric.ball t 1,
       HasDerivAt (fun r : ℝ => energyDensity u (r, x))
-        (dirDeriv (timeDir d) (energyDensity u) (s, x)) s := by
+        (waveDirDeriv (timeDir d) (energyDensity u) (s, x)) s := by
     filter_upwards with x
     intro s _
     exact hasDerivAt_timeSlice hEcd s x
   exact (hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (F := fun s : ℝ => fun x : Fin d → ℝ => energyDensity u (s, x))
-    (F' := fun s : ℝ => fun x : Fin d → ℝ => dirDeriv (timeDir d) (energyDensity u) (s, x))
+    (F' := fun s : ℝ => fun x : Fin d → ℝ => waveDirDeriv (timeDir d) (energyDensity u) (s, x))
     (bound := Set.indicator K fun _ : Fin d → ℝ => C)
     (Metric.ball_mem_nhds t one_pos) hFmeas hFint hF'meas hbound hbound_int hdiff).2
 
@@ -137,10 +137,10 @@ theorem hasDerivAt_waveEnergy (hu : ContDiff ℝ ∞ u) (hK : IsCompact K)
 
 theorem energyDensity_nonneg (u : ℝ × (Fin d → ℝ) → ℝ) (p : ℝ × (Fin d → ℝ)) :
     0 ≤ energyDensity u p := by
-  have hsum : 0 ≤ ∑ i : Fin d, (dirDeriv (spaceDir d i) u p) ^ 2 :=
+  have hsum : 0 ≤ ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u p) ^ 2 :=
     Finset.sum_nonneg fun i _ => sq_nonneg _
   rw [energyDensity]
-  nlinarith [sq_nonneg (dirDeriv (timeDir d) u p), sq_nonneg (u p)]
+  nlinarith [sq_nonneg (waveDirDeriv (timeDir d) u p), sq_nonneg (u p)]
 
 theorem waveEnergy_nonneg (u : ℝ × (Fin d → ℝ) → ℝ) (t : ℝ) : 0 ≤ waveEnergy u t :=
   integral_nonneg fun x => energyDensity_nonneg u (t, x)
@@ -155,31 +155,31 @@ theorem integrable_energyDensity_slice (hu : ContDiff ℝ ∞ u) (hK : IsCompact
 /-- **The energy dominates the flux.** -/
 theorem abs_integral_flux_le (hu : ContDiff ℝ ∞ u) (hV : Continuous V) (hK : IsCompact K)
     (hzero : ∀ p : ℝ × (Fin d → ℝ), p.2 ∉ K → u p = 0) {M : ℝ} (hM : ∀ p, |V p| ≤ M) (t : ℝ) :
-    |2 * ∫ x : Fin d → ℝ, (V (t, x) + 1) * (u (t, x) * dirDeriv (timeDir d) u (t, x))|
+    |2 * ∫ x : Fin d → ℝ, (V (t, x) + 1) * (u (t, x) * waveDirDeriv (timeDir d) u (t, x))|
       ≤ (M + 1) * waveEnergy u t := by
   have hpt : ∀ x : Fin d → ℝ,
-      |(V (t, x) + 1) * (u (t, x) * dirDeriv (timeDir d) u (t, x))|
+      |(V (t, x) + 1) * (u (t, x) * waveDirDeriv (timeDir d) u (t, x))|
         ≤ (M + 1) / 2 * energyDensity u (t, x) := by
     intro x
     have h1 : |V (t, x) + 1| ≤ M + 1 := by
       have hMle := abs_le.mp (hM (t, x))
       rw [abs_le]
       constructor <;> linarith [hMle.1, hMle.2]
-    have hsq : 2 * (|u (t, x)| * |dirDeriv (timeDir d) u (t, x)|)
-        ≤ (u (t, x)) ^ 2 + (dirDeriv (timeDir d) u (t, x)) ^ 2 := by
-      have h := two_mul_le_add_sq |u (t, x)| |dirDeriv (timeDir d) u (t, x)|
+    have hsq : 2 * (|u (t, x)| * |waveDirDeriv (timeDir d) u (t, x)|)
+        ≤ (u (t, x)) ^ 2 + (waveDirDeriv (timeDir d) u (t, x)) ^ 2 := by
+      have h := two_mul_le_add_sq |u (t, x)| |waveDirDeriv (timeDir d) u (t, x)|
       rw [sq_abs, sq_abs] at h
       linarith
-    have hdens : (u (t, x)) ^ 2 + (dirDeriv (timeDir d) u (t, x)) ^ 2
+    have hdens : (u (t, x)) ^ 2 + (waveDirDeriv (timeDir d) u (t, x)) ^ 2
         ≤ energyDensity u (t, x) := by
-      have hsum : 0 ≤ ∑ i : Fin d, (dirDeriv (spaceDir d i) u (t, x)) ^ 2 :=
+      have hsum : 0 ≤ ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u (t, x)) ^ 2 :=
         Finset.sum_nonneg fun i _ => sq_nonneg _
       rw [energyDensity]
       linarith
-    have h2 : |u (t, x)| * |dirDeriv (timeDir d) u (t, x)| ≤ energyDensity u (t, x) / 2 := by
+    have h2 : |u (t, x)| * |waveDirDeriv (timeDir d) u (t, x)| ≤ energyDensity u (t, x) / 2 := by
       linarith
-    calc |(V (t, x) + 1) * (u (t, x) * dirDeriv (timeDir d) u (t, x))|
-        = |V (t, x) + 1| * (|u (t, x)| * |dirDeriv (timeDir d) u (t, x)|) := by
+    calc |(V (t, x) + 1) * (u (t, x) * waveDirDeriv (timeDir d) u (t, x))|
+        = |V (t, x) + 1| * (|u (t, x)| * |waveDirDeriv (timeDir d) u (t, x)|) := by
           rw [abs_mul, abs_mul]
       _ ≤ (M + 1) * (energyDensity u (t, x) / 2) := by
           refine mul_le_mul h1 h2 (mul_nonneg (abs_nonneg _) (abs_nonneg _)) ?_
@@ -188,33 +188,33 @@ theorem abs_integral_flux_le (hu : ContDiff ℝ ∞ u) (hV : Continuous V) (hK :
           linarith
       _ = (M + 1) / 2 * energyDensity u (t, x) := by ring
   have hfluxint : Integrable
-      (fun x : Fin d → ℝ => (V (t, x) + 1) * (u (t, x) * dirDeriv (timeDir d) u (t, x)))
+      (fun x : Fin d → ℝ => (V (t, x) + 1) * (u (t, x) * waveDirDeriv (timeDir d) u (t, x)))
       (volume : Measure (Fin d → ℝ)) := by
     have hmap : Continuous fun x : Fin d → ℝ => ((t, x) : ℝ × (Fin d → ℝ)) := by fun_prop
     have hVc : Continuous fun x : Fin d → ℝ => V (t, x) := hV.comp hmap
     have huc : Continuous fun x : Fin d → ℝ => u (t, x) := hu.continuous.comp hmap
-    have hvc : Continuous fun x : Fin d → ℝ => dirDeriv (timeDir d) u (t, x) :=
+    have hvc : Continuous fun x : Fin d → ℝ => waveDirDeriv (timeDir d) u (t, x) :=
       (contDiff_dirDeriv hu _).continuous.comp hmap
     have hcont : Continuous fun x : Fin d → ℝ =>
-        (V (t, x) + 1) * (u (t, x) * dirDeriv (timeDir d) u (t, x)) :=
+        (V (t, x) + 1) * (u (t, x) * waveDirDeriv (timeDir d) u (t, x)) :=
       (hVc.add continuous_const).mul (huc.mul hvc)
     refine hcont.integrable_of_hasCompactSupport ?_
     refine HasCompactSupport.intro hK fun x hx => ?_
-    show (V (t, x) + 1) * (u (t, x) * dirDeriv (timeDir d) u (t, x)) = 0
+    show (V (t, x) + 1) * (u (t, x) * waveDirDeriv (timeDir d) u (t, x)) = 0
     rw [hzero (t, x) hx, zero_mul, mul_zero]
   have hdensint := integrable_energyDensity_slice hu hK hzero t
   have hmono : (∫ x : Fin d → ℝ,
-      |(V (t, x) + 1) * (u (t, x) * dirDeriv (timeDir d) u (t, x))|)
+      |(V (t, x) + 1) * (u (t, x) * waveDirDeriv (timeDir d) u (t, x))|)
       ≤ ∫ x : Fin d → ℝ, (M + 1) / 2 * energyDensity u (t, x) :=
     integral_mono hfluxint.abs (hdensint.const_mul _) hpt
-  have hnorm : |∫ x : Fin d → ℝ, (V (t, x) + 1) * (u (t, x) * dirDeriv (timeDir d) u (t, x))|
-      ≤ ∫ x : Fin d → ℝ, |(V (t, x) + 1) * (u (t, x) * dirDeriv (timeDir d) u (t, x))| := by
+  have hnorm : |∫ x : Fin d → ℝ, (V (t, x) + 1) * (u (t, x) * waveDirDeriv (timeDir d) u (t, x))|
+      ≤ ∫ x : Fin d → ℝ, |(V (t, x) + 1) * (u (t, x) * waveDirDeriv (timeDir d) u (t, x))| := by
     simpa [Real.norm_eq_abs] using
       norm_integral_le_integral_norm
-        (f := fun x : Fin d → ℝ => (V (t, x) + 1) * (u (t, x) * dirDeriv (timeDir d) u (t, x)))
+        (f := fun x : Fin d → ℝ => (V (t, x) + 1) * (u (t, x) * waveDirDeriv (timeDir d) u (t, x)))
   rw [integral_const_mul] at hmono
   rw [abs_mul, abs_two]
-  have hfin : |∫ x : Fin d → ℝ, (V (t, x) + 1) * (u (t, x) * dirDeriv (timeDir d) u (t, x))|
+  have hfin : |∫ x : Fin d → ℝ, (V (t, x) + 1) * (u (t, x) * waveDirDeriv (timeDir d) u (t, x))|
       ≤ (M + 1) / 2 * waveEnergy u t := le_trans hnorm hmono
   rw [waveEnergy] at hfin ⊢
   linarith
@@ -228,7 +228,7 @@ theorem waveEnergy_le_exp (hu : ContDiff ℝ ∞ u) (hV : Continuous V) (hK : Is
   have hM0 : 0 ≤ M := le_trans (abs_nonneg _) (hM (0, 0))
   have hKne : (M + 1) ≠ 0 := by linarith
   have hderiv : ∀ s : ℝ, HasDerivAt (waveEnergy u)
-      (2 * ∫ x : Fin d → ℝ, (V (s, x) + 1) * (u (s, x) * dirDeriv (timeDir d) u (s, x))) s := by
+      (2 * ∫ x : Fin d → ℝ, (V (s, x) + 1) * (u (s, x) * waveDirDeriv (timeDir d) u (s, x))) s := by
     intro s
     have h := hasDerivAt_waveEnergy hu hK hzero s
     rwa [integral_dirDeriv_energyDensity hu hV hK hzero hsolve s] at h
@@ -237,7 +237,7 @@ theorem waveEnergy_le_exp (hu : ContDiff ℝ ∞ u) (hV : Continuous V) (hK : Is
   have ha : ‖waveEnergy u 0‖ ≤ waveEnergy u 0 := by
     rw [Real.norm_eq_abs, abs_of_nonneg (waveEnergy_nonneg u 0)]
   have hbound : ∀ s ∈ Set.Ico (0 : ℝ) t,
-      ‖2 * ∫ x : Fin d → ℝ, (V (s, x) + 1) * (u (s, x) * dirDeriv (timeDir d) u (s, x))‖
+      ‖2 * ∫ x : Fin d → ℝ, (V (s, x) + 1) * (u (s, x) * waveDirDeriv (timeDir d) u (s, x))‖
         ≤ (M + 1) * ‖waveEnergy u s‖ + 0 := by
     intro s _
     rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (waveEnergy_nonneg u s), add_zero]
@@ -275,11 +275,11 @@ theorem eq_zero_of_waveEnergy_zero (hu : ContDiff ℝ ∞ u) (hV : Continuous V)
   rw [h0, zero_mul] at hle
   have ht0 : waveEnergy u t = 0 := le_antisymm hle (waveEnergy_nonneg u t)
   have hden := energyDensity_eq_zero_of_waveEnergy_eq_zero hu hK hzero ht0 x
-  have hsum : 0 ≤ ∑ i : Fin d, (dirDeriv (spaceDir d i) u (t, x)) ^ 2 :=
+  have hsum : 0 ≤ ∑ i : Fin d, (waveDirDeriv (spaceDir d i) u (t, x)) ^ 2 :=
     Finset.sum_nonneg fun i _ => sq_nonneg _
   rw [energyDensity] at hden
   have hsq : (u (t, x)) ^ 2 = 0 := by
-    nlinarith [sq_nonneg (dirDeriv (timeDir d) u (t, x)), sq_nonneg (u (t, x))]
+    nlinarith [sq_nonneg (waveDirDeriv (timeDir d) u (t, x)), sq_nonneg (u (t, x))]
   exact pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hsq
 
 end Energy

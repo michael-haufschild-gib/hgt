@@ -87,7 +87,7 @@ theorem suzukiProjectiveAffineSecantTensor_linearMap_smul
 /-! ## Critical wall field as exact determinant-line density -/
 
 /-- Critical wall field never vanishes at real height and prime-power depth. -/
-theorem suzukiCriticalWallField_ne_zero
+private theorem suzukiCriticalWallField_ne_zero
     (t : ℝ) (p : Nat.Primes) (e : ℕ) :
     suzukiCriticalWallField t p e ≠ 0 := by
   have hbare : suzukiCriticalEntryWallBareAmplitude p e ≠ 0 := by

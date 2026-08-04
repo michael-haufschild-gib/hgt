@@ -16,7 +16,7 @@ namespace RHTower.Sieve
 open Finset Filter Topology ArithmeticFunction
 
 /-- The Möbius function takes only the values `-1`, `0`, `1`. -/
-theorem moebius_trichotomy (n : ℕ) :
+private theorem moebius_trichotomy (n : ℕ) :
     moebius n = 1 ∨ moebius n = -1 ∨ moebius n = 0 := by
   have h : |moebius n| ≤ 1 := ArithmeticFunction.abs_moebius_le_one
   rcases abs_le.1 h with ⟨h1, h2⟩

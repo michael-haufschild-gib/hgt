@@ -324,7 +324,7 @@ theorem tendsto_integral_cexp_sq_atTop :
 
 /-! ## The explicit constant -/
 
-theorem pi_mul_I_ne_zero : (Real.pi : ℂ) * Complex.I ≠ 0 := by
+private theorem pi_mul_I_ne_zero : (Real.pi : ℂ) * Complex.I ≠ 0 := by
   simp [Real.pi_ne_zero]
 
 /-- The principal square root of `pi i` is `sqrt(pi) exp(i pi/4)`. -/
