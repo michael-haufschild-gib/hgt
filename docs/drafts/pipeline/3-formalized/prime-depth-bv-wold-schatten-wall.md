@@ -1,7 +1,7 @@
 # Prime-depth BV--Wold Schatten wall
 
 - **ID:** prime-depth-bv-wold-schatten-wall
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / CROSS-ROUTE CLASSIFICATION
 - **Source:** `../../1-in-progress/rh-current-frontier-map.md` §1
 - **Statement:** All-prime BV--Wold log anomaly is summable exactly from depth two onward; adding physical/unit-double trace-class remainder does not change this threshold.

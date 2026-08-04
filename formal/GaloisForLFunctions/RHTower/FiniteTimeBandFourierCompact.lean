@@ -30,46 +30,46 @@ open scoped ENNReal BoundedContinuousFunction SchwartzMap
 
 namespace RHTower
 
-variable {α E : Type*} [MeasurableSpace α]
-variable [NormedAddCommGroup E] [NormedSpace ℂ E]
+variable {α 𝕜 E : Type*} [MeasurableSpace α] [RCLike 𝕜]
+variable [NormedAddCommGroup E] [NormedSpace 𝕜 E]
 variable (μ : Measure α) [IsFiniteMeasure μ]
 
 /-- Pointwise evaluation, bilinear in a continuous functional and a vector. -/
-def evalBilinear : (E →L[ℂ] ℂ) →L[ℂ] E →L[ℂ] ℂ :=
-  ContinuousLinearMap.flip (ContinuousLinearMap.apply ℂ ℂ)
+def evalBilinear : (E →L[𝕜] 𝕜) →L[𝕜] E →L[𝕜] 𝕜 :=
+  ContinuousLinearMap.flip (ContinuousLinearMap.apply 𝕜 𝕜)
 
 /-- The continuous map taking an `L²` field of functionals to its associated kernel operator. -/
 def kernelOperatorMap :
-    Lp (E →L[ℂ] ℂ) 2 μ →L[ℂ] E →L[ℂ] Lp ℂ 2 μ :=
+    Lp (E →L[𝕜] 𝕜) 2 μ →L[𝕜] E →L[𝕜] Lp 𝕜 2 μ :=
   (ContinuousLinearMap.flip
-      (ContinuousLinearMap.compL ℂ E (Lp E ∞ μ) (Lp ℂ 2 μ))
-      (Lp.constL ∞ μ ℂ)) ∘L
-    ((evalBilinear (E := E)).holderL μ 2 ∞ 2)
+      (ContinuousLinearMap.compL 𝕜 E (Lp E ∞ μ) (Lp 𝕜 2 μ))
+      (Lp.constL ∞ μ 𝕜)) ∘L
+    ((evalBilinear (𝕜 := 𝕜) (E := E)).holderL μ 2 ∞ 2)
 
 /-- The operator induced by a square-integrable field of continuous functionals. -/
-def kernelOperator (K : Lp (E →L[ℂ] ℂ) 2 μ) : E →L[ℂ] Lp ℂ 2 μ :=
+def kernelOperator (K : Lp (E →L[𝕜] 𝕜) 2 μ) : E →L[𝕜] Lp 𝕜 2 μ :=
   kernelOperatorMap (E := E) μ K
 
 @[simp] theorem kernelOperatorMap_apply
-    (K : Lp (E →L[ℂ] ℂ) 2 μ) (f : E) :
+    (K : Lp (E →L[𝕜] 𝕜) 2 μ) (f : E) :
     kernelOperatorMap (E := E) μ K f =
-      (evalBilinear (E := E)).holder 2 K (Lp.const ∞ μ f) := rfl
+      (evalBilinear (𝕜 := 𝕜) (E := E)).holder 2 K (Lp.const ∞ μ f) := rfl
 
 /-- An indicator-constant functional field induces a rank-one operator. -/
 theorem kernelOperator_indicatorConst
     (s : Set α) (hs : MeasurableSet s) (hμs : μ s < ∞)
-    (ell : E →L[ℂ] ℂ) :
+    (ell : E →L[𝕜] 𝕜) :
     kernelOperator (E := E) μ (indicatorConstLp 2 hs hμs.ne ell) =
-      (ContinuousLinearMap.toSpanSingleton ℂ
-        (indicatorConstLp 2 hs hμs.ne (1 : ℂ))) ∘L ell := by
+      (ContinuousLinearMap.toSpanSingleton 𝕜
+        (indicatorConstLp 2 hs hμs.ne (1 : 𝕜))) ∘L ell := by
   ext f
   filter_upwards [
-    (evalBilinear (E := E)).coeFn_holder (r := (2 : ENNReal))
+    (evalBilinear (𝕜 := 𝕜) (E := E)).coeFn_holder (r := (2 : ENNReal))
       (indicatorConstLp 2 hs hμs.ne ell) (Lp.const ∞ μ f),
     indicatorConstLp_coeFn (p := 2) (μ := μ) (c := ell),
     Lp.coeFn_const (p := ∞) μ f,
-    indicatorConstLp_coeFn (s := s) (p := 2) (μ := μ) (c := (1 : ℂ)),
-    Lp.coeFn_smul (ell f) (indicatorConstLp 2 hs hμs.ne (1 : ℂ))
+    indicatorConstLp_coeFn (s := s) (p := 2) (μ := μ) (c := (1 : 𝕜)),
+    Lp.coeFn_smul (ell f) (indicatorConstLp 2 hs hμs.ne (1 : 𝕜))
   ] with x hholder hK hconst hone hsmul
   rw [kernelOperator, kernelOperatorMap_apply]
   rw [hholder, hK, hconst, ContinuousLinearMap.coe_comp, Function.comp_apply,
@@ -79,25 +79,25 @@ theorem kernelOperator_indicatorConst
 /-- Indicator-constant functional fields induce compact operators. -/
 theorem isCompactOperator_kernelOperator_indicatorConst
     (s : Set α) (hs : MeasurableSet s) (hμs : μ s < ∞)
-    (ell : E →L[ℂ] ℂ) :
+    (ell : E →L[𝕜] 𝕜) :
     IsCompactOperator
       (kernelOperator (E := E) μ (indicatorConstLp 2 hs hμs.ne ell)) := by
   rw [kernelOperator_indicatorConst (E := E) μ s hs hμs ell]
   have hell : IsCompactOperator ell := isCompactOperator_of_locallyCompactSpace_dom ell
   exact hell.clm_comp
-    (ContinuousLinearMap.toSpanSingleton ℂ
-      (indicatorConstLp 2 hs hμs.ne (1 : ℂ)))
+    (ContinuousLinearMap.toSpanSingleton 𝕜
+      (indicatorConstLp 2 hs hμs.ne (1 : 𝕜)))
 
 /-- The construction is additive in the functional field. -/
 theorem kernelOperator_add
-    (K L : Lp (E →L[ℂ] ℂ) 2 μ) :
+    (K L : Lp (E →L[𝕜] 𝕜) 2 μ) :
     kernelOperator (E := E) μ (K + L) =
       kernelOperator (E := E) μ K + kernelOperator (E := E) μ L := by
   exact map_add (kernelOperatorMap (E := E) μ) K L
 
 /-- **Hilbert--Schmidt kernel theorem in field form.** Every square-integrable field of continuous
 functionals induces a compact operator into scalar `L²`. -/
-theorem isCompactOperator_kernelOperator (K : Lp (E →L[ℂ] ℂ) 2 μ) :
+theorem isCompactOperator_kernelOperator (K : Lp (E →L[𝕜] 𝕜) 2 μ) :
     IsCompactOperator (kernelOperator (E := E) μ K) := by
   apply Lp.induction (p := (2 : ENNReal)) (by norm_num)
     (motive := fun L => IsCompactOperator (kernelOperator (E := E) μ L))
@@ -107,7 +107,9 @@ theorem isCompactOperator_kernelOperator (K : Lp (E →L[ℂ] ℂ) 2 μ) :
   · intro f g hf hg hdisj ihf ihg
     rw [kernelOperator_add]
     exact ihf.add ihg
-  · exact isClosed_setOf_isCompactOperator.preimage (kernelOperatorMap (E := E) μ).continuous
+  · have hclosed : IsClosed {f : E →L[𝕜] Lp 𝕜 2 μ | IsCompactOperator f} :=
+      isClosed_setOf_isCompactOperator
+    exact hclosed.preimage (kernelOperatorMap (E := E) μ).continuous
 
 open Set
 open scoped Real
@@ -175,7 +177,7 @@ theorem finiteTimeBandFourier_coeFn (a b c d : ℝ)
       fun x => ∫ y : ClosedInterval c d,
         fourierPhaseContinuous a b c d (x, y) * f y ∂volume := by
   filter_upwards [
-    (evalBilinear (E := Lp ℂ 2 (volume : Measure (ClosedInterval c d)))).coeFn_holder
+    (evalBilinear (𝕜 := ℂ) (E := Lp ℂ 2 (volume : Measure (ClosedInterval c d)))).coeFn_holder
       (r := (2 : ENNReal)) (fourierFunctionalField a b c d)
       (Lp.const ∞ (volume : Measure (ClosedInterval a b)) f),
     ContinuousMap.coeFn_toLp (𝕜 := ℂ) (p := (2 : ENNReal))

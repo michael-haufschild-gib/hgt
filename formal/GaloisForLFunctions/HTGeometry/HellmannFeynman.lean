@@ -28,32 +28,30 @@ open RealInnerProductSpace
 
 namespace GaloisForLFunctions.HTGeometry
 
-/-- **Hellmann–Feynman.**  Let `psi` be a differentiable curve of normalized vectors, `nu` a differentiable
-eigenvalue with `A t (psi t) = nu t • psi t` for all `t`, and suppose the curve `t ↦ A t (psi t)` is
-differentiable at `c` with derivative split as `w + A c (psi' c)` — `w` being the contribution of the family's
-own motion, i.e. `(dA/dc) psi`.  If `A c` is self-adjoint against `psi' c` then
+/-- **Hellmann–Feynman, local form.**  Let `psi` be a differentiable curve of vectors, normalized at the
+point `c`, let `nu` be a differentiable function with `A t (psi t) = nu t • psi t` for all `t` near `c`, and
+suppose the curve `t ↦ A t (psi t)` is differentiable at `c` with derivative split as `w + A c (psi' c)` — `w`
+being the contribution of the family's own motion, i.e. `(dA/dc) psi`.  If `A c` is self-adjoint against
+`psi' c` then
 
 ```text
 nu'(c) = ⟪psi c, w⟫.
 ```
--/
-theorem hellmann_feynman {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+
+Only a neighbourhood of `c` is used, because a derivative is a local object. -/
+theorem hellmann_feynman_eventually {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [CompleteSpace E] {ψ : ℝ → E} {ψ' : E} {A : ℝ → E → E} {ν : ℝ → ℝ} {νp : ℝ} {w : E} {c : ℝ}
     (hnorm : ⟪ψ c, ψ c⟫ = 1)
     (hsa : ⟪ψ c, A c ψ'⟫ = ⟪A c (ψ c), ψ'⟫)
     (hν : HasDerivAt ν νp c)
     (hψ : HasDerivAt ψ ψ' c)
     (hAψ : HasDerivAt (fun t => A t (ψ t)) (w + A c ψ') c)
-    (hrel : ∀ t, A t (ψ t) = ν t • ψ t) :
+    (hrel : ∀ᶠ t in nhds c, A t (ψ t) = ν t • ψ t) :
     νp = ⟪ψ c, w⟫ := by
-  -- the eigenrelation makes the two curves equal, so the derivatives agree
+  -- the eigenrelation makes the two curves agree near `c`, so the derivatives agree
   have hsmul : HasDerivAt (fun t => ν t • ψ t) (ν c • ψ' + νp • ψ c) c := hν.smul hψ
-  have hAψ' : HasDerivAt (fun t => ν t • ψ t) (w + A c ψ') c := by
-    have hfun : (fun t => A t (ψ t)) = fun t => ν t • ψ t := by
-      funext t
-      exact hrel t
-    rw [hfun] at hAψ
-    exact hAψ
+  have hAψ' : HasDerivAt (fun t => ν t • ψ t) (w + A c ψ') c :=
+    hAψ.congr_of_eventuallyEq (hrel.mono fun t ht => ht.symm)
   have hderiv : w + A c ψ' = ν c • ψ' + νp • ψ c := hAψ'.unique hsmul
   -- pair with `psi c`
   have hpair : ⟪ψ c, w⟫ + ⟪ψ c, A c ψ'⟫ = ν c * ⟪ψ c, ψ'⟫ + νp := by
@@ -63,9 +61,23 @@ theorem hellmann_feynman {E : Type*} [NormedAddCommGroup E] [InnerProductSpace �
     exact h
   -- the eigenvector's own motion cancels
   have hcancel : ⟪ψ c, A c ψ'⟫ = ν c * ⟪ψ c, ψ'⟫ := by
-    rw [hsa, hrel c, real_inner_smul_left]
+    rw [hsa, hrel.self_of_nhds, real_inner_smul_left]
   rw [hcancel] at hpair
   linarith [hpair]
+
+/-- **Hellmann–Feynman.**  The global-eigenrelation form: for a differentiable curve of normalized vectors
+with `A t (psi t) = nu t • psi t` for every `t`, the eigenvalue derivative is the expectation of the family's
+motion. -/
+theorem hellmann_feynman {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [CompleteSpace E] {ψ : ℝ → E} {ψ' : E} {A : ℝ → E → E} {ν : ℝ → ℝ} {νp : ℝ} {w : E} {c : ℝ}
+    (hnorm : ⟪ψ c, ψ c⟫ = 1)
+    (hsa : ⟪ψ c, A c ψ'⟫ = ⟪A c (ψ c), ψ'⟫)
+    (hν : HasDerivAt ν νp c)
+    (hψ : HasDerivAt ψ ψ' c)
+    (hAψ : HasDerivAt (fun t => A t (ψ t)) (w + A c ψ') c)
+    (hrel : ∀ t, A t (ψ t) = ν t • ψ t) :
+    νp = ⟪ψ c, w⟫ :=
+  hellmann_feynman_eventually hnorm hsa hν hψ hAψ (Filter.Eventually.of_forall hrel)
 
 
 /-! ## Commuting operators on a simple eigenspace

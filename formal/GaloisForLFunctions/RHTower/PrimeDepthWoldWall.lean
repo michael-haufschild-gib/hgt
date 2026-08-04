@@ -71,6 +71,15 @@ theorem woldCoeff_nonneg (e : ℕ) (p : Nat.Primes) : 0 ≤ woldCoeff e p := by
   have hpow : (0 : ℝ) < ((p : ℕ) : ℝ) ^ e := by positivity
   positivity
 
+/-- Every local Wold coefficient is strictly positive; only the global prime sum has a wall. -/
+theorem woldCoeff_pos (e : ℕ) (p : Nat.Primes) : 0 < woldCoeff e p := by
+  have hp0 : (0 : ℝ) < ((p : ℕ) : ℝ) := by
+    linarith [two_le_prime_cast p]
+  have hfac : 0 < (1 - 1 / ((p : ℕ) : ℝ)) ^ 3 := by
+    linarith [(woldFactor_mem p).1]
+  rw [woldCoeff]
+  exact div_pos (mul_pos hfac (log_prime_pos p)) (pow_pos hp0 e)
+
 /-- **The summable majorant above the wall.**  `log p/p²` is summable because `log p ≤ 2√p`. -/
 theorem summable_log_div_sq :
     Summable (fun p : Nat.Primes => Real.log ((p : ℕ) : ℝ) / ((p : ℕ) : ℝ) ^ 2) := by

@@ -255,6 +255,88 @@ coefficient-faithful **carrier** for the horizontal class, not an independent **
 law**.  Atlas rank must count the latter.  Its open singular relative arithmetic vanishing theorem
 would be a genuinely new law; the calibrator and comparison already constructed do not imply it.
 
+**2026-08-04 Schatten-wall/source-normal refinement.**  Recent publication-ready source papers
+make the word “singular” precise when combined with Wold depth.  For
+
+```text
+L_e(rho,p)=log A_(p,e)(rho)+r(p),    r(p)=2 log(p)/p^2,
+```
+
+the all-prime coefficient family is trace-class at every divisor for `e>=2`, whereas `L_1` is
+trace-class exactly on the critical line.  Depth raising is multiplication of the anomaly by
+`p^-1`; the informative inverse is therefore the unbounded affine map
+
+```text
+B_r(f)(p)=p(f(p)-r(p))+r(p),         B_r(L_(e+1))=L_e.
+```
+
+This multiplier is source-derived, not guessed.  Route J's physical critical Gamma
+deattenuation satisfies `d(p,e,1)^2=p`; its two polarized legs give exactly `B_r` after subtracting
+and restoring the physical seam.  Thus
+
+```text
+L_2(rho) in Dom(B_r : ell^1 -> ell^1)  iff  Re(rho)=1/2.
+```
+
+Boundary-completeness singularity, Route-L adjacent-grade Hellinger graph landing, Route-J
+source-normal deattenuation, Route-R Wold depth, and unit-double physical trace cancellation are
+shadows of one domain-promotion law across the `2 -> 1` Schatten wall.  This is a genuine
+Frankenstein conversion because components play different roles.  It still does not prove RH:
+Route J currently controls moving finite prime blocks and proves its scalar readout gain is
+unbounded; it does not give all-prime `ell^1` graph-domain admission.  Exact remaining producer is
+an adjacent-grade, off-diagonal, source-derived all-prime graph limit whose matrix entries are the
+displayed affine lowering before divisor selection.  Formal interfaces are
+`PrimeDepthBVWoldSchattenAtlasLanding.lean`, `PrimeDepthBVWoldSingularDepthLowering.lean`, and
+`PrimeDepthBVWoldSourceNormalSchattenBridge.lean`.
+
+**Cofinal equicontinuity refinement.**  Graph-domain language still hides the quantitative reason
+the source construction stalls.  Put
+
+```text
+M_(n+2)(a)=sum_p |a| c_(n+2)(p).
+```
+
+Tannery gives `M_(n+2)(a) -> 0`, but exact two-leg Gamma deattenuation gives
+
+```text
+d(p,s,n+1)^2 a c_(n+2)(p) = a c_1(p).
+```
+
+Therefore a single depth-independent estimate
+
+```text
+|d(p,s,n+1)^2 a c_(n+2)(p)| <= C M_(n+2)(a)
+```
+
+forces `a=0` by fixing any prime and taking cofinal depth.  Conversely `a=0` gives the estimate
+with `C=0`.  This is a Banach--Steinhaus-type reinterpretation of the cross-route obstruction:
+off-line horizontal character is exactly failure of equicontinuity of physical inverse-depth
+transport on a compacting `ell^1` orbit.  Route J's proved linear lower bound on scalar-readout
+gain is the visible shadow of this universal principle.  Existing finite carriers already supply
+exact transport and bounded capacity, but retain the singular codiagonal; Route L/Hellinger and
+source orientation must supply off-diagonal polarized cancellation strong enough to replace
+growing gain by one uniform all-prime bound.  Formal interface:
+`PrimeDepthBVWoldCofinalEquicontinuity.lean`.  This remains a classifier until that source-only
+uniform estimate is proved.
+
+**Completion converts qualitative control into uniformity.**  HTGeometry already formalizes the
+barrelled-space Banach--Steinhaus mechanism.  Hence source need not estimate the constant above.
+It is enough to construct an independently topologized complete/barrelled source `E`, continuous
+cofinal readouts `F_n`, and a source orbit `x_n -> 0`, then prove
+
+```text
+for every x in E, {F_n(x)} is bounded,
+F_n(x_n)=d(2,s,n+1)^2 a c_(n+2)(2)=a c_1(2).
+```
+
+Banach--Steinhaus produces one uniform `C`; null orbit then forces `a=0`.  This identifies why
+serial routes and finite packet proofs stall: algebraic/dense source cores are not enough for
+uniform boundedness.  Route-J linear gain predicts an escaping completion vector unless singular
+codiagonal is removed.  Route-L Hellinger completion and CCM closed relative cyclic source are
+therefore not alternative RH routes; they are candidate completion and pointwise-boundedness
+organs for same selector.  Formal producer interface:
+`PrimeDepthBVWoldBarrelledSourceSelector.lean`.
+
 This forces a typed, rather than route-labelled, Frankenstein architecture:
 
 | Proof role | Corpus organs | Status |

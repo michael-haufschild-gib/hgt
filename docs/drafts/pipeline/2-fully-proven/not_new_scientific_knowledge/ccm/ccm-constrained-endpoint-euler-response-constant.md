@@ -401,10 +401,47 @@ kernel level, uniformly:
   a uniform kernel bound is exactly Hilbert–Schmidt differentiability of the operator family, with derivative
   the cosine-kernel operator whose expectation `(7)` computes.
 
-So every ingredient of `(4)`–`(5)` is now either proved or reduced to one statement: that the branch exists,
-is simple, and has a normalized eigenfunction depending differentiably on `c`.  That is Kato-type perturbation
-theory for a compact self-adjoint family, which mathlib does not have and which the tree currently owns only in
-the finite-dimensional (matrix charpoly) form of `HTGeometry/SimpleSpectrumAnalyticBranch.lean`.
+**The branch itself is now proved too**, in the generality the card needs — Kato-type perturbation theory for a
+compact symmetric family, which mathlib does not have.  Three new modules:
+
+- `HTGeometry/SimpleEigenvalueBordered.lean` — the *bordered system* of a simple eigenvalue.  Instead of
+  inverting `T = A - nu_0`, which is impossible because `T` kills the eigenvector, one inverts
+  `S (phi, t) = (T phi - t · psi_0, ⟪psi_0, phi⟫)` on `E × R`.  From a pseudo-inverse `R` of `T` modulo the
+  eigendirection the inverse is written down explicitly, `S^{-1}(y, a) = (R y + a psi_0, -⟪psi_0, y⟫)`, and
+  `borderedMap_bijective` proves both composites.  The left inverse is where simplicity enters:
+  `T (R (T phi) - phi) = 0` puts the difference in `ker T = span psi_0`, and pairing with `psi_0` pins the
+  coefficient.  No compactness, no completeness, no continuity of the inverse.
+
+- `HTGeometry/SimpleEigenvalueBranch.lean` — the implicit function theorem applied to the *eigen-residual*
+  `f (c, (phi, nu)) = (A c phi - nu phi, ⟪psi_0, phi⟫ - 1)`, whose zero set is exactly the set of eigenpairs
+  normalized against `psi_0`.  `hasStrictFDerivAt_eigenResidual` computes its derivative and
+  `eigenResidualDeriv_comp_inr` identifies the partial derivative in `(phi, nu)` with the bordered map, so
+  `borderedCLM_isInvertible` is precisely the invertibility hypothesis of mathlib's
+  `implicitFunctionOfProdDomain`.  Out come `exists_differentiable_simple_eigen_branch` (a differentiable
+  branch with the linear normalization `⟪psi_0, psi c⟫ = 1`),
+  `exists_differentiable_normalized_simple_eigen_branch` (rescaled by `‖psi c‖^{-1}`, hence a genuine unit
+  eigenvector, differentiable because the norm is `1` at the base point), and
+  `exists_normalized_branch_deriv_eq_expectation` — the branch *plus* `nu'(c_0) = ⟪psi_0, w⟫`.  The last step
+  needs Hellmann–Feynman with a merely local eigenrelation, so `hellmann_feynman_eventually` was added and the
+  global form derived from it.
+
+- `HTGeometry/SimpleEigenvalueCompactBranch.lean` — the pseudo-inverse is *constructed* for a compact
+  symmetric operator, so no hypothesis is left.  On `W = {phi | ⟪psi_0, phi⟫ = 0}` — closed, hence complete —
+  the operator restricts (symmetry plus the eigenrelation), the restriction is compact
+  (`IsCompactOperator.restrict'`), and `nu_0` is *not* an eigenvalue of the restriction: by simplicity an
+  eigenvector there would be a multiple of `psi_0`, which lies in `W` only if it is zero.  So the Fredholm
+  alternative puts `nu_0` in the resolvent set of the restriction, and the resolvent composed with the
+  projection `y ↦ y - ⟪psi_0, y⟫ psi_0` *is* the pseudo-inverse
+  (`exists_pseudoInverse_of_isCompactOperator`) — no gap estimate, no open mapping theorem, no contour
+  integral.  The capstone `exists_normalized_branch_of_isCompactOperator` therefore reads: a compact symmetric
+  operator with a simple nonzero eigenvalue, perturbed differentiably, has a differentiable branch with a
+  normalized eigenvector and `nu'(c_0) = ⟪psi_0, w⟫`.
+
+All of it is unconditional and axiom-clean (`propext, Classical.choice, Quot.sound`).  What the card still
+imports is therefore only the classical asymptotic input — the differentiated fixed-mode (Fuchs) expansion
+`(9)` and the constrained limit `(12)` — together with the Hilbert-space realisation of the concrete band
+operator `bandTransform` as a compact symmetric operator on `L²[-1, 1]`, which is what would let the abstract
+branch theorem be instantiated on the prolate family rather than merely applied to it.
 
 ## Lean gates
 
@@ -419,9 +456,11 @@ the finite-dimensional (matrix charpoly) form of `HTGeometry/SimpleSpectrumAnaly
   the kernel derivative identified with the double integral of `(7)`
 - [x] Lean: the family's differentiability in the aperture — a uniform second-order kernel bound, hence
   Hilbert–Schmidt differentiability with the cosine kernel as derivative
-- [ ] Lean: existence of a differentiable simple branch with normalized eigenfunction — Kato-type
-  perturbation theory for a compact self-adjoint family (absent from mathlib; the tree has the
-  finite-dimensional matrix form only)
+- [x] Lean: existence of a differentiable simple branch with normalized eigenfunction — Kato-type
+  perturbation theory for a compact symmetric family, absent from mathlib: bordered system, implicit function
+  theorem for the eigen-residual, and the Fredholm construction of the pseudo-inverse
+- [ ] Lean: the concrete band operator `bandTransform` realised as a compact symmetric operator on
+  `L²[-1, 1]`, which instantiates the branch theorem on the prolate family
 - [ ] Lean: the differentiated fixed-mode (Fuchs) expansion `(9)` — imported classical asymptotics
 - [ ] Lean: the constrained limit `(12)` and the response constants `(13)`–`(18)`
 

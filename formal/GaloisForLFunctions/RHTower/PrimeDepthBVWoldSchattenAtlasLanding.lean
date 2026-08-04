@@ -2,7 +2,6 @@ import GaloisForLFunctions.RHTower.PrimeDepthWoldWall
 import GaloisForLFunctions.RHTower.PrimeDepthBVWoldRelationKernelAtlasTransition
 import GaloisForLFunctions.RHTower.XiUnitDoubleEulerPhysicalTraceClassUniversalityLaw
 import GaloisForLFunctions.RHTower.TraceClassOperatorTrace
-import GaloisForLFunctions.RHTower.XiSourceModularTypeSuperselectionLaw
 
 /-!
 # BV--Wold depth-one Schatten atlas landing
@@ -103,16 +102,18 @@ def PrimeDepthBVWoldXiDepthOneRelativeLogTraceClass : Prop :=
 /-- Global depth-one relative-log trace class is exactly RH; this is a classifier, not a proof. -/
 theorem primeDepthBVWoldXiDepthOneRelativeLogTraceClass_iff_riemannHypothesis :
     PrimeDepthBVWoldXiDepthOneRelativeLogTraceClass ↔ RiemannHypothesis := by
-  rw [← xiBoundaryCharacterNeutral_iff_riemannHypothesis]
   constructor
-  · intro h rho
-    apply (xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff (rho : ℂ)).2
-    exact
+  · intro h
+    apply rh_iff_xi_ne_zero_right.mpr
+    intro z hz hzero
+    let rho : XiDivisorSupport :=
+      ⟨z, mem_xi_divisor_support_of_eq_zero hzero⟩
+    have hline : z.re = 1 / 2 :=
       (summable_primeDepthBVWoldXiRelativeLogCoefficient_one_iff rho).1 (h rho)
-  · intro h rho
-    apply (summable_primeDepthBVWoldXiRelativeLogCoefficient_one_iff rho).2
-    exact
-      (xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff (rho : ℂ)).1 (h rho)
+    linarith [mem_rightHalf.mp hz]
+  · intro hRH rho
+    exact (summable_primeDepthBVWoldXiRelativeLogCoefficient_one_iff rho).2
+      (xi_divisor_support_re_eq_half_of_rh hRH rho)
 
 end
 

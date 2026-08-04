@@ -1,3 +1,5 @@
+import GaloisForLFunctions.HTGeometry.DifferentialLurothVariableSupport
+import GaloisForLFunctions.HTGeometry.MvPolynomialPDerivDegree
 import GaloisForLFunctions.HTGeometry.TwoBlockEquivDerivation
 
 /-!
@@ -19,6 +21,50 @@ open MvPolynomial
 
 noncomputable section
 
+/-- **One pseudo-division step lowers the degree, over a commutative ring.**  Multiplying the
+dividend by the divisor's leading coefficient makes the leading terms cancel exactly, so no
+invertibility and no absence of zero divisors is needed. -/
+theorem natDegree_pseudoDivision_step_lt {R : Type*} [CommRing R] {p q : Polynomial R}
+    (hq : 0 < q.natDegree) (hpq : q.natDegree ≤ p.natDegree) :
+    (Polynomial.C q.leadingCoeff * p -
+        q * (Polynomial.C p.leadingCoeff *
+          Polynomial.X ^ (p.natDegree - q.natDegree))).natDegree < p.natDegree := by
+  classical
+  set d := p.natDegree with hd
+  set m := q.natDegree with hm
+  set p' : Polynomial R := Polynomial.C q.leadingCoeff * p -
+    q * (Polynomial.C p.leadingCoeff * Polynomial.X ^ (d - m)) with hp'
+  have hp'eq : p' = Polynomial.C q.leadingCoeff * p -
+      Polynomial.C p.leadingCoeff * (q * Polynomial.X ^ (d - m)) := by
+    rw [hp']
+    ring
+  have hcoeff : ∀ k : ℕ, d ≤ k → p'.coeff k = 0 := by
+    intro k hk
+    rw [hp'eq]
+    simp only [Polynomial.coeff_sub, Polynomial.coeff_C_mul,
+      Polynomial.coeff_mul_X_pow']
+    rw [if_pos (by omega)]
+    rcases lt_or_eq_of_le hk with hlt' | heq
+    · have h1 : p.coeff k = 0 := Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
+      have h2 : q.coeff (k - (d - m)) = 0 :=
+        Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
+      rw [h1, h2]
+      ring
+    · rw [← heq]
+      have h2 : d - (d - m) = m := by omega
+      rw [h2]
+      simp only [Polynomial.leadingCoeff, ← hd, ← hm]
+      ring
+  by_contra hcon
+  push Not at hcon
+  have hne : p'.coeff p'.natDegree ≠ 0 := by
+    intro h0
+    have hp'0 : p' = 0 := Polynomial.leadingCoeff_eq_zero.1 h0
+    rw [hp'0] at hcon
+    simp only [Polynomial.natDegree_zero] at hcon
+    omega
+  exact hne (hcoeff _ hcon)
+
 /-- **Univariate pseudo-division over a commutative ring.** -/
 theorem exists_pseudoDivision {R : Type*} [CommRing R] {q : Polynomial R}
     (hq : 0 < q.natDegree) (p : Polynomial R) :
@@ -30,44 +76,18 @@ theorem exists_pseudoDivision {R : Type*} [CommRing R] {q : Polynomial R}
     by_cases hlt : p.natDegree < q.natDegree
     · exact ⟨0, 0, p, by simp, hlt⟩
     · push Not at hlt
-      set d := p.natDegree with hd
-      set m := q.natDegree with hm
       set p' : Polynomial R := Polynomial.C q.leadingCoeff * p -
-        Polynomial.C p.leadingCoeff * (q * Polynomial.X ^ (d - m)) with hp'
-      have hcoeff : ∀ k : ℕ, d ≤ k → p'.coeff k = 0 := by
-        intro k hk
-        rw [hp']
-        simp only [Polynomial.coeff_sub, Polynomial.coeff_C_mul,
-          Polynomial.coeff_mul_X_pow']
-        rw [if_pos (by omega)]
-        rcases lt_or_eq_of_le hk with hlt' | heq
-        · have h1 : p.coeff k = 0 := Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
-          have h2 : q.coeff (k - (d - m)) = 0 :=
-            Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
-          rw [h1, h2]
-          ring
-        · rw [← heq]
-          have h2 : d - (d - m) = m := by omega
-          rw [h2]
-          simp only [Polynomial.leadingCoeff, ← hd, ← hm]
-          ring
-      have hdlt : p'.natDegree < d := by
-        by_contra hcon
-        push Not at hcon
-        have hne : p'.coeff p'.natDegree ≠ 0 := by
-          intro h0
-          have hp'0 : p' = 0 := Polynomial.leadingCoeff_eq_zero.1 h0
-          rw [hp'0] at hcon
-          simp only [Polynomial.natDegree_zero] at hcon
-          omega
-        exact hne (hcoeff _ hcon)
+        q * (Polynomial.C p.leadingCoeff *
+          Polynomial.X ^ (p.natDegree - q.natDegree)) with hp'
+      have hdlt : p'.natDegree < p.natDegree := natDegree_pseudoDivision_step_lt hq hlt
       obtain ⟨e, a, b, hab, hb⟩ := ih p'.natDegree (by omega) p' rfl
       refine ⟨e + 1, a + Polynomial.C q.leadingCoeff ^ e *
-        (Polynomial.C p.leadingCoeff * Polynomial.X ^ (d - m)), b, ?_, hb⟩
+        (Polynomial.C p.leadingCoeff * Polynomial.X ^ (p.natDegree - q.natDegree)), b, ?_, hb⟩
       have hstep : Polynomial.C q.leadingCoeff ^ (e + 1) * p =
           Polynomial.C q.leadingCoeff ^ e * p' +
             Polynomial.C q.leadingCoeff ^ e *
-              (Polynomial.C p.leadingCoeff * (q * Polynomial.X ^ (d - m))) := by
+              (q * (Polynomial.C p.leadingCoeff *
+                Polynomial.X ^ (p.natDegree - q.natDegree))) := by
         rw [hp']
         ring
       rw [hstep, hab]
@@ -196,45 +216,12 @@ theorem pderiv_top_iterate_eq_separant {ι K : Type*} [CommRing K] [Differential
       rw [show m + (k + 1) = (m + k) + 1 from by omega, diffPolyIterate_succ,
         pderiv_succ_differentialPolynomialOverDerivation_family, hzero, map_zero, zero_add, ih]
 
-/-- The corpus's coefficient identity for `X * pderiv`, over an arbitrary commutative semiring. -/
-theorem coeff_X_mul_pderiv_semiring {σ C : Type*} [CommSemiring C] (j : σ)
-    (P : MvPolynomial σ C) (s : σ →₀ ℕ) :
-    MvPolynomial.coeff s (MvPolynomial.X j * MvPolynomial.pderiv j P) =
-      (s j : C) * MvPolynomial.coeff s P := by
-  classical
-  induction P using MvPolynomial.induction_on' with
-  | add P Q hP hQ => simp [map_add, mul_add, hP, hQ]
-  | monomial m c =>
-      rw [MvPolynomial.X_mul_pderiv_monomial]
-      rw [MvPolynomial.coeff_smul, nsmul_eq_mul]
-      simp [MvPolynomial.coeff_monomial]
-      split_ifs with h
-      · subst m
-        ring
-      · simp
-
 /-- Over a domain of characteristic zero, a variable occurring in a polynomial has a nonzero partial
 derivative. -/
-theorem pderiv_ne_zero_of_mem_vars_domain {σ C : Type*} [CommRing C] [IsDomain C] [CharZero C]
-    {P : MvPolynomial σ C} {i : σ} (hi : i ∈ P.vars) :
-    MvPolynomial.pderiv i P ≠ 0 := by
-  classical
-  obtain ⟨s, hs, his⟩ := (MvPolynomial.mem_vars_iff_mem_support i).mp hi
-  intro hzero
-  have hcoeff := coeff_X_mul_pderiv_semiring i P s
-  rw [hzero, mul_zero, MvPolynomial.coeff_zero] at hcoeff
-  have hsj : (s i : C) ≠ 0 := by
-    exact_mod_cast Finsupp.mem_support_iff.mp his
-  exact mul_ne_zero hsj (MvPolynomial.mem_support_iff.mp hs) hcoeff.symm
-
-/-- Over a domain of characteristic zero, a vanishing partial derivative means the variable is
-absent. -/
-theorem degreeOf_eq_zero_of_pderiv_eq_zero {σ C : Type*} [CommRing C] [IsDomain C] [CharZero C]
-    {P : MvPolynomial σ C} {i : σ} (h : MvPolynomial.pderiv i P = 0) :
-    MvPolynomial.degreeOf i P = 0 := by
-  by_contra hne
-  exact pderiv_ne_zero_of_mem_vars_domain
-    (MvPolynomial.mem_vars_iff_degreeOf_ne_zero.2 hne) h
+theorem pderiv_ne_zero_of_mem_vars_domain {σ C : Type*} [CommRing C] [NoZeroDivisors C]
+    [CharZero C] {P : MvPolynomial σ C} {i : σ} (hi : i ∈ P.vars) :
+    MvPolynomial.pderiv i P ≠ 0 := fun hzero =>
+  MvPolynomial.mem_vars_iff_degreeOf_ne_zero.1 hi (degreeOf_eq_zero_of_pderiv_eq_zero hzero)
 
 /-- **The iterated derivative is linear in its fresh jet, with the separant as coefficient.** -/
 theorem iterate_eq_separant_mul_add {ι K : Type*} [CommRing K] [IsDomain K] [CharZero K]
@@ -315,9 +302,148 @@ theorem degreeOf_iterate_eq_one {ι K : Type*} [CommRing K] [IsDomain K] [CharZe
     exact hS hpd
   omega
 
+/-- **The pseudo-division step at a distinguished variable, over a commutative ring.** -/
+theorem mvPolynomialPseudoDivision_step_degreeOf_lt {K σ : Type*} [CommRing K] (i : σ)
+    {Q D : MvPolynomial σ K} (hD : MvPolynomial.degreeOf i D ≠ 0)
+    (hQD : MvPolynomial.degreeOf i D ≤ MvPolynomial.degreeOf i Q) :
+    MvPolynomial.degreeOf i
+        (mvPolynomialInitialAt i D * Q -
+          D * (mvPolynomialInitialAt i Q *
+            MvPolynomial.X i ^ (MvPolynomial.degreeOf i Q - MvPolynomial.degreeOf i D)))
+      < MvPolynomial.degreeOf i Q := by
+  classical
+  set A : ℕ := MvPolynomial.degreeOf i Q - MvPolynomial.degreeOf i D with hA
+  set E : MvPolynomial σ K := mvPolynomialInitialAt i D * Q -
+    D * (mvPolynomialInitialAt i Q * MvPolynomial.X i ^ A) with hE
+  have h2 : mvPolynomialAsPolynomialAt i E =
+      Polynomial.C (mvPolynomialAsPolynomialAt i D).leadingCoeff *
+          mvPolynomialAsPolynomialAt i Q -
+        mvPolynomialAsPolynomialAt i D *
+          (Polynomial.C (mvPolynomialAsPolynomialAt i Q).leadingCoeff * Polynomial.X ^ A) := by
+    have hpush : mvPolynomialPolynomialEquivAt (K := K) i E =
+        Polynomial.C (mvPolynomialAsPolynomialAt i D).leadingCoeff *
+            mvPolynomialAsPolynomialAt i Q -
+          mvPolynomialAsPolynomialAt i D *
+            (Polynomial.C (mvPolynomialAsPolynomialAt i Q).leadingCoeff * Polynomial.X ^ A) := by
+      rw [hE, map_sub, map_mul, map_mul, map_mul, map_pow,
+        mvPolynomialPolynomialEquivAt_initial, mvPolynomialPolynomialEquivAt_initial,
+        mvPolynomialPolynomialEquivAt_X_self, mvPolynomialPolynomialEquivAt_apply,
+        mvPolynomialPolynomialEquivAt_apply]
+    simpa using hpush
+  have hdQ : MvPolynomial.degreeOf i Q = (mvPolynomialAsPolynomialAt i Q).natDegree :=
+    mvPolynomial_degreeOf_eq_natDegree_asPolynomialAt i Q
+  have hdD : MvPolynomial.degreeOf i D = (mvPolynomialAsPolynomialAt i D).natDegree :=
+    mvPolynomial_degreeOf_eq_natDegree_asPolynomialAt i D
+  have hAeq : A = (mvPolynomialAsPolynomialAt i Q).natDegree -
+      (mvPolynomialAsPolynomialAt i D).natDegree := by
+    rw [hA, hdQ, hdD]
+  rw [mvPolynomial_degreeOf_eq_natDegree_asPolynomialAt i E, h2, hAeq, hdQ]
+  exact natDegree_pseudoDivision_step_lt (by omega) (by omega)
+
+/-- A power of a variable involves no other variable, with no nontriviality assumption. -/
+theorem vars_X_pow_subset {K σ : Type*} [CommRing K] [DecidableEq σ] (i : σ) (n : ℕ) :
+    ((MvPolynomial.X i : MvPolynomial σ K) ^ n).vars ⊆ {i} := by
+  classical
+  refine (MvPolynomial.vars_pow _ _).trans ?_
+  rcases subsingleton_or_nontrivial K with hK | hK
+  · have hzero : (MvPolynomial.X i : MvPolynomial σ K) = 0 := Subsingleton.elim _ _
+    simp [hzero]
+  · simp [MvPolynomial.vars_X]
+
+/-- **Support-preserving pseudo-division at a distinguished variable, over a commutative ring.**
+The recursion is performed in the multivariable ring itself, so at every cancellation step the
+quotient and the remainder are visibly built from the dividend and the divisor: no variable is
+introduced, and the multiplier is a power of the divisor's initial. -/
+noncomputable def supportedMvPolynomialPseudoReductionAtOfCommRing
+    {K σ : Type*} [CommRing K] [DecidableEq σ] (i : σ) :
+    ∀ (Q D : MvPolynomial σ K), MvPolynomial.degreeOf i D ≠ 0 →
+      SupportedMvPolynomialPseudoReductionAt i Q D
+  | Q, D, hDdegree => by
+      classical
+      by_cases h : MvPolynomial.degreeOf i D ≤ MvPolynomial.degreeOf i Q
+      · let A := mvPolynomialInitialAt i D
+        let Z := mvPolynomialInitialAt i Q *
+          MvPolynomial.X i ^ (MvPolynomial.degreeOf i Q - MvPolynomial.degreeOf i D)
+        let Q₁ := A * Q - D * Z
+        have hwf : MvPolynomial.degreeOf i Q₁ < MvPolynomial.degreeOf i Q := by
+          simpa [A, Z, Q₁] using mvPolynomialPseudoDivision_step_degreeOf_lt i hDdegree h
+        have hiD : i ∈ D.vars := (MvPolynomial.mem_vars_iff_degreeOf_ne_zero).mpr hDdegree
+        have hAvars : A.vars ⊆ D.vars := by
+          simpa [A] using mvPolynomialInitialAt_vars_subset i D
+        have hZvars : Z.vars ⊆ Q.vars ∪ D.vars := by
+          intro j hj
+          rcases Finset.mem_union.mp (MvPolynomial.vars_mul _ _ hj) with hjQ | hjX
+          · exact Finset.mem_union_left _ (mvPolynomialInitialAt_vars_subset i Q hjQ)
+          · rw [Finset.mem_singleton.mp (vars_X_pow_subset (K := K) i _ hjX)]
+            exact Finset.mem_union_right _ hiD
+        have hQ₁vars : Q₁.vars ⊆ Q.vars ∪ D.vars := by
+          intro j hj
+          rcases Finset.mem_union.mp (MvPolynomial.vars_sub_subset (A * Q) (q := D * Z) hj) with
+            hjAQ | hjDZ
+          · rcases Finset.mem_union.mp (MvPolynomial.vars_mul A Q hjAQ) with hjA | hjQ
+            · exact Finset.mem_union_right _ (hAvars hjA)
+            · exact Finset.mem_union_left _ hjQ
+          · rcases Finset.mem_union.mp (MvPolynomial.vars_mul D Z hjDZ) with hjD | hjZ
+            · exact Finset.mem_union_right _ hjD
+            · exact hZvars hjZ
+        let d := supportedMvPolynomialPseudoReductionAtOfCommRing i Q₁ D hDdegree
+        have hdQuotientVars : d.quotient.vars ⊆ Q.vars ∪ D.vars := by
+          intro j hj
+          rcases Finset.mem_union.mp (d.quotient_vars_subset hj) with hjQ₁ | hjD
+          · exact hQ₁vars hjQ₁
+          · exact Finset.mem_union_right _ hjD
+        have hdRemainderVars : d.remainder.vars ⊆ Q.vars ∪ D.vars := by
+          intro j hj
+          rcases Finset.mem_union.mp (d.remainder_vars_subset hj) with hjQ₁ | hjD
+          · exact hQ₁vars hjQ₁
+          · exact Finset.mem_union_right _ hjD
+        have hAZvars : (A ^ d.exponent * Z).vars ⊆ Q.vars ∪ D.vars := by
+          intro j hj
+          rcases Finset.mem_union.mp (MvPolynomial.vars_mul (A ^ d.exponent) Z hj) with hjA | hjZ
+          · exact Finset.mem_union_right _ (hAvars (MvPolynomial.vars_pow A d.exponent hjA))
+          · exact hZvars hjZ
+        exact
+          { exponent := d.exponent + 1
+            quotient := A ^ d.exponent * Z + d.quotient
+            remainder := d.remainder
+            eq_mul_add := by
+              have hd := d.eq_mul_add
+              dsimp only [Q₁, A, Z] at hd ⊢
+              linear_combination hd
+            remainder_degree_lt := d.remainder_degree_lt
+            quotient_vars_subset := by
+              intro j hj
+              rcases Finset.mem_union.mp
+                  (MvPolynomial.vars_add_subset (A ^ d.exponent * Z) d.quotient hj) with hjAZ | hjd
+              · exact hAZvars hjAZ
+              · exact hdQuotientVars hjd
+            remainder_vars_subset := hdRemainderVars }
+      · exact
+          { exponent := 0
+            quotient := 0
+            remainder := Q
+            eq_mul_add := by simp
+            remainder_degree_lt := by omega
+            quotient_vars_subset := by simp
+            remainder_vars_subset := Finset.subset_union_left }
+  termination_by Q _ _ => MvPolynomial.degreeOf i Q
+
+/-- Total differentiation raises a one-block jet bound by at most one, so no iterated derivative
+involves a jet above its own order. -/
+theorem notMem_vars_iterate_of_lt {ι K : Type*} [CommRing K] [IsDomain K] [CharZero K]
+    [Differential K] [DecidableEq ι] {i : ι} {m : ℕ} {A : DifferentialPolynomial ι K}
+    (hA : ∀ j : ℕ, m < j → ((i, j) : ι × ℕ) ∉ A.vars) (k : ℕ) {j : ℕ} (hj : m + k < j) :
+    ((i, j) : ι × ℕ) ∉ (diffPolyIterate k A).vars := by
+  have hApd : ∀ l : ℕ, m < l → MvPolynomial.pderiv ((i, l) : ι × ℕ) A = 0 := fun l hl =>
+    MvPolynomial.pderiv_eq_zero_of_notMem_vars (hA l hl)
+  rw [MvPolynomial.mem_vars_iff_degreeOf_ne_zero]
+  push Not
+  exact degreeOf_eq_zero_of_pderiv_eq_zero (pderiv_iterate_eq_zero_of_lt hApd k j hj)
+
 /-- **The higher-jet reduction step.**  A polynomial can be pseudo-divided by the `k`-th total
-derivative at the fresh jet, and the multiplier is a power of the SEPARANT of the original
-polynomial -- not of the derivative's own initial, which would drift upward in the other block. -/
+derivative at the fresh jet, the multiplier is a power of the SEPARANT of the original polynomial
+-- not of the derivative's own initial, which would drift upward in the other block -- and the
+remainder introduces no variable that was not already present. -/
 theorem exists_higherJet_reduction_step {ι K : Type*} [CommRing K] [IsDomain K] [CharZero K]
     [Differential K] [DecidableEq ι] {i : ι} {m : ℕ} {A : DifferentialPolynomial ι K}
     (hA : ∀ j : ℕ, m < j → ((i, j) : ι × ℕ) ∉ A.vars)
@@ -325,21 +451,185 @@ theorem exists_higherJet_reduction_step {ι K : Type*} [CommRing K] [IsDomain K]
     (Q : DifferentialPolynomial ι K) :
     ∃ (e : ℕ) (a b : DifferentialPolynomial ι K),
       MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ e * Q = diffPolyIterate k A * a + b ∧
-        MvPolynomial.degreeOf ((i, m + k) : ι × ℕ) b = 0 := by
+        MvPolynomial.degreeOf ((i, m + k) : ι × ℕ) b = 0 ∧
+          b.vars ⊆ Q.vars ∪ (diffPolyIterate k A).vars := by
   classical
   have hdeg := degreeOf_iterate_eq_one hA hS k hk
-  obtain ⟨e, a, b, hab, hb⟩ :=
-    exists_mvPolynomial_pseudoDivision ((i, m + k) : ι × ℕ) Q (diffPolyIterate k A)
-      (by rw [hdeg]; omega)
   have hApd : ∀ j : ℕ, m < j → MvPolynomial.pderiv ((i, j) : ι × ℕ) A = 0 := fun j hj =>
     MvPolynomial.pderiv_eq_zero_of_notMem_vars (hA j hj)
   have hinit : mvPolynomialInitialAt ((i, m + k) : ι × ℕ) (diffPolyIterate k A) =
       MvPolynomial.pderiv ((i, m) : ι × ℕ) A := by
     rw [initialAt_eq_pderiv_of_degreeOf_eq_one hdeg]
     exact pderiv_top_iterate_eq_separant hApd k
-  refine ⟨e, a, b, ?_, by omega⟩
-  rw [← hinit]
-  exact hab
+  let d := supportedMvPolynomialPseudoReductionAtOfCommRing ((i, m + k) : ι × ℕ) Q
+    (diffPolyIterate k A) (by rw [hdeg]; omega)
+  refine ⟨d.exponent, d.quotient, d.remainder, ?_, ?_, d.remainder_vars_subset⟩
+  · rw [← hinit]
+    exact d.eq_mul_add
+  · have := d.remainder_degree_lt
+    rw [hdeg] at this
+    omega
+
+/-- The differential principal ideal generated by an arbitrary differential polynomial over a
+commutative differential coefficient ring. -/
+def diffPolyIterateIdeal {ι K : Type*} [CommRing K] [Differential K]
+    (P : DifferentialPolynomial ι K) : Ideal (DifferentialPolynomial ι K) :=
+  Ideal.span (Set.range fun n : ℕ ↦ diffPolyIterate n P)
+
+theorem diffPolyIterate_mem_diffPolyIterateIdeal {ι K : Type*} [CommRing K] [Differential K]
+    (P : DifferentialPolynomial ι K) (n : ℕ) :
+    diffPolyIterate n P ∈ diffPolyIterateIdeal P :=
+  Ideal.subset_span ⟨n, rfl⟩
+
+/-- **Phase one of the two-block Ritt reduction.**  Every polynomial can be reduced modulo the
+differential ideal of `A` until it involves no jet above the leader of `A` in the distinguished
+block, and the only multiplier used is a power of the separant of `A`.
+
+The reduction descends on the highest jet present: at each level the fresh jet occurs linearly in
+the corresponding total derivative of `A`, with the separant as its coefficient, so one
+pseudo-division removes it without introducing any higher jet. -/
+theorem exists_phaseOne_reduction {ι K : Type*} [CommRing K] [IsDomain K] [CharZero K]
+    [Differential K] [DecidableEq ι] {i : ι} {m : ℕ} {A : DifferentialPolynomial ι K}
+    (hA : ∀ j : ℕ, m < j → ((i, j) : ι × ℕ) ∉ A.vars)
+    (hS : MvPolynomial.pderiv ((i, m) : ι × ℕ) A ≠ 0) :
+    ∀ (N : ℕ) (Q : DifferentialPolynomial ι K),
+      (∀ j : ℕ, m + N < j → ((i, j) : ι × ℕ) ∉ Q.vars) →
+      ∃ (e : ℕ) (b : DifferentialPolynomial ι K),
+        MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ e * Q - b ∈ diffPolyIterateIdeal A ∧
+          ∀ j : ℕ, m < j → ((i, j) : ι × ℕ) ∉ b.vars := by
+  intro N
+  induction N with
+  | zero =>
+      intro Q hQ
+      refine ⟨0, Q, ?_, ?_⟩
+      · simp
+      · intro j hj
+        exact hQ j (by omega)
+  | succ N ih =>
+      intro Q hQ
+      obtain ⟨e₁, a, b₁, hab, hb₁deg, hb₁vars⟩ :=
+        exists_higherJet_reduction_step hA hS (k := N + 1) (by omega) Q
+      have hb₁ : ∀ j : ℕ, m + N < j → ((i, j) : ι × ℕ) ∉ b₁.vars := by
+        intro j hj hmem
+        rcases Nat.lt_or_ge (m + N + 1) j with hlt | hle
+        · rcases Finset.mem_union.mp (hb₁vars hmem) with hQmem | hAmem
+          · exact hQ j (by omega) hQmem
+          · exact notMem_vars_iterate_of_lt hA (N + 1) (by omega) hAmem
+        · have hjeq : j = m + (N + 1) := by omega
+          rw [hjeq] at hmem
+          exact (MvPolynomial.mem_vars_iff_degreeOf_ne_zero.mp hmem) hb₁deg
+      obtain ⟨e₂, b, hmem, hbvars⟩ := ih b₁ hb₁
+      refine ⟨e₂ + e₁, b, ?_, hbvars⟩
+      have hrewrite : MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ (e₂ + e₁) * Q - b =
+          MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ e₂ * (diffPolyIterate (N + 1) A * a) +
+            (MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ e₂ * b₁ - b) := by
+        rw [pow_add]
+        calc MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ e₂ *
+              MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ e₁ * Q - b
+            = MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ e₂ *
+                (MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ e₁ * Q) - b := by ring
+          _ = MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ e₂ *
+                (diffPolyIterate (N + 1) A * a + b₁) - b := by rw [hab]
+          _ = _ := by ring
+      rw [hrewrite]
+      exact (diffPolyIterateIdeal A).add_mem
+        ((diffPolyIterateIdeal A).mul_mem_left _
+          ((diffPolyIterateIdeal A).mul_mem_right _
+            (diffPolyIterate_mem_diffPolyIterateIdeal A (N + 1))))
+        hmem
+
+/-- **The two-block Ritt reduction.**  Every polynomial is congruent, modulo the differential ideal
+of `A` and after multiplication by a power of the initial and a power of the separant of `A`, to a
+polynomial that is reduced with respect to `A`: it involves no jet above the leader of `A` in the
+distinguished block, and its degree in the leader is smaller than that of `A`.
+
+Both multipliers are explicit polynomials in the jets of `A`, so the certificate never leaves the
+polynomial ring and never raises the order in any other block -- the two properties that a
+denominator produced by working over a fraction field would destroy. -/
+theorem exists_ritt_reduction {ι K : Type*} [CommRing K] [IsDomain K] [CharZero K]
+    [Differential K] [DecidableEq ι] {i : ι} {m : ℕ} {A : DifferentialPolynomial ι K}
+    (hA : ∀ j : ℕ, m < j → ((i, j) : ι × ℕ) ∉ A.vars)
+    (hS : MvPolynomial.pderiv ((i, m) : ι × ℕ) A ≠ 0)
+    (hAleader : MvPolynomial.degreeOf ((i, m) : ι × ℕ) A ≠ 0)
+    (N : ℕ) (Q : DifferentialPolynomial ι K)
+    (hQ : ∀ j : ℕ, m + N < j → ((i, j) : ι × ℕ) ∉ Q.vars) :
+    ∃ (a b : ℕ) (R : DifferentialPolynomial ι K),
+      mvPolynomialInitialAt ((i, m) : ι × ℕ) A ^ a *
+            (MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ b * Q) - R ∈ diffPolyIterateIdeal A ∧
+        (∀ j : ℕ, m < j → ((i, j) : ι × ℕ) ∉ R.vars) ∧
+          MvPolynomial.degreeOf ((i, m) : ι × ℕ) R <
+            MvPolynomial.degreeOf ((i, m) : ι × ℕ) A := by
+  classical
+  obtain ⟨e, b, hmem, hbvars⟩ := exists_phaseOne_reduction hA hS N Q hQ
+  let d := supportedMvPolynomialPseudoReductionAtOfCommRing ((i, m) : ι × ℕ) b A hAleader
+  refine ⟨d.exponent, e, d.remainder, ?_, ?_, d.remainder_degree_lt⟩
+  · have hsplit : mvPolynomialInitialAt ((i, m) : ι × ℕ) A ^ d.exponent *
+        (MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ e * Q) - d.remainder =
+          mvPolynomialInitialAt ((i, m) : ι × ℕ) A ^ d.exponent *
+              (MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ e * Q - b) + A * d.quotient := by
+      have hd := d.eq_mul_add
+      linear_combination hd
+    rw [hsplit]
+    exact (diffPolyIterateIdeal A).add_mem
+      ((diffPolyIterateIdeal A).mul_mem_left _ hmem)
+      ((diffPolyIterateIdeal A).mul_mem_right _
+        (diffPolyIterate_mem_diffPolyIterateIdeal A 0))
+  · intro j hj hmemj
+    rcases Finset.mem_union.mp (d.remainder_vars_subset hmemj) with hjb | hjA
+    · exact hbvars j hj hjb
+    · exact hA j hj hjA
+
+/-- The differential principal ideal is contained in every derivation-stable ideal containing the
+polynomial. -/
+theorem diffPolyIterateIdeal_le_of_derivation_stable {ι K : Type*} [CommRing K] [Differential K]
+    {A : DifferentialPolynomial ι K} {P : Ideal (DifferentialPolynomial ι K)} (hA : A ∈ P)
+    (hstable : ∀ Q : DifferentialPolynomial ι K, Q ∈ P →
+      differentialPolynomialOverDerivation ι K Q ∈ P) :
+    diffPolyIterateIdeal A ≤ P := by
+  rw [diffPolyIterateIdeal, Ideal.span_le]
+  rintro _ ⟨n, rfl⟩
+  induction n with
+  | zero => exact hA
+  | succ n hn =>
+      show diffPolyIterate (n + 1) A ∈ P
+      rw [diffPolyIterate_succ]
+      exact hstable _ hn
+
+/-- **Ritt's reduction theorem over a coefficient ring.**  If every polynomial of the ideal that is
+reduced with respect to `A` vanishes -- the defining property of a characteristic -- then every
+element of the ideal is absorbed into the differential ideal of `A` after multiplication by a power
+of the initial and a power of the separant.
+
+The multipliers are polynomials in the jets of `A`, so the certificate introduces no denominator and
+no variable outside those of `A` and of the element being reduced. -/
+theorem exists_initial_separant_powers_mem_diffPolyIterateIdeal {ι K : Type*} [CommRing K]
+    [IsDomain K] [CharZero K] [Differential K] [DecidableEq ι] {i : ι} {m : ℕ}
+    {A : DifferentialPolynomial ι K}
+    (hA : ∀ j : ℕ, m < j → ((i, j) : ι × ℕ) ∉ A.vars)
+    (hS : MvPolynomial.pderiv ((i, m) : ι × ℕ) A ≠ 0)
+    (hAleader : MvPolynomial.degreeOf ((i, m) : ι × ℕ) A ≠ 0)
+    {P : Ideal (DifferentialPolynomial ι K)} (hle : diffPolyIterateIdeal A ≤ P)
+    (hreduced : ∀ R : DifferentialPolynomial ι K, R ∈ P →
+      (∀ j : ℕ, m < j → ((i, j) : ι × ℕ) ∉ R.vars) →
+      MvPolynomial.degreeOf ((i, m) : ι × ℕ) R <
+        MvPolynomial.degreeOf ((i, m) : ι × ℕ) A → R = 0)
+    (N : ℕ) {Q : DifferentialPolynomial ι K}
+    (hQN : ∀ j : ℕ, m + N < j → ((i, j) : ι × ℕ) ∉ Q.vars) (hQ : Q ∈ P) :
+    ∃ a b : ℕ,
+      mvPolynomialInitialAt ((i, m) : ι × ℕ) A ^ a *
+          (MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ b * Q) ∈ diffPolyIterateIdeal A := by
+  obtain ⟨a, b, R, hmem, hRvars, hRdeg⟩ := exists_ritt_reduction hA hS hAleader N Q hQN
+  have hRP : R ∈ P := by
+    have hdiff : mvPolynomialInitialAt ((i, m) : ι × ℕ) A ^ a *
+        (MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ b * Q) - R ∈ P := hle hmem
+    have hmul : mvPolynomialInitialAt ((i, m) : ι × ℕ) A ^ a *
+        (MvPolynomial.pderiv ((i, m) : ι × ℕ) A ^ b * Q) ∈ P :=
+      P.mul_mem_left _ (P.mul_mem_left _ hQ)
+    simpa using P.sub_mem hmul hdiff
+  refine ⟨a, b, ?_⟩
+  have hR0 : R = 0 := hreduced R hRP hRvars hRdeg
+  rw [hR0, sub_zero] at hmem
+  exact hmem
 
 end
 

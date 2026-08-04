@@ -3857,3 +3857,189 @@ No combinatorics is involved: the count is bounded by the range, not by a binomi
 for `(8)`'s unconditional half is the parameter choice `(z, r, λ)` making both the tilt error
 `exp(λc₁)(log z)^λ/(λ^r t^k)` and this sieve error `z^r/t^k` fall below `(log z)^{−δ}` — with
 `r ≍ log log z` and `z` subpolynomial, which is what `z^r` being subpolynomial requires.
+
+### The tilt error is gone too
+
+`Sieve/OmegaTailAbsorbed.lean`, unconditional.  The tilt error of the lower tail is not intrinsic
+either: it carries `λ^r` in the denominator, which grows geometrically in `r` while everything else
+is fixed, so it can always be buried under the entropy main term.
+
+- **`card_omega_le_le_absorbed`** — with the absorption hypothesis, both errors collapse:
+
+      #{n ∈ (a,b] : ω n ≤ k}  ≤  2(b−a)·exp((1−t)c₀)·(log z)^{−I(t)}  +  z^r/t^k;
+
+- **`exists_even_absorbing`** — the hypothesis is satisfiable for every tilt `λ > 1`: some even `r`
+  works, because `λ^r` is unbounded;
+- **`exists_card_omega_le_le_absorbed`** — hence, with no hypothesis beyond `k = t·log log z` and
+  `0 < t ≤ 1`, there is an `r` with
+
+      #{n ∈ (a,b] : ω n ≤ k}  ≤  2(b−a)·exp((1−t)c₀)·(log z)^{−I(t)}  +  z^r/t^k.
+
+**Both error terms of the lower tail are now explicit and elementary**: the sieve one is `z^r`
+(`TruncDivisorCount`), the tilt one is gone.  What remains for `(8)`'s unconditional half is purely
+the schedule: choose `z` with `log z = (log X)^{1−ε}` so that `t = c₀/(1−ε) < 1` realises the card's
+breadth cut `k = c₀ log log X`, and check `z^r = X^{o(1)}` against `H = X^{1/2+o(1)}` — with
+`r ≍ log log z` from the absorption, `z^r = exp(O((log X)^{1−ε} log log X))`, which is `X^{o(1)}`.
+
+### The absorbing exponent, explicitly
+
+The existential `r` of `exists_even_absorbing` is not enough for the schedule: the sieve error `z^r`
+has to be estimated, so `r` must be explicit.  It now is
+(`Sieve/OmegaTailAbsorbed.lean`, unconditional):
+
+- `mul_neg_log_le` — `t(−log t) ≤ 1 − t` on `(0,1]`, from `log u ≤ u − 1` at `u = 1/t`;
+- **`one_div_pow_le_log`** — hence **the tilt weight costs at most one logarithm**: with
+  `k = t·log log z` and `0 < t ≤ 1`,
+
+      t^{−k}  =  exp(t(−log t)·log log z)  ≤  log z;
+
+- `woldBreadthDeviationRate_le_one` — the entropy rate is at most one on `(0,1]`, so
+  `(log z)^{−I(t)} ≥ (log z)^{−1}`;
+- **`absorbing_of_pow_ge`** — combining the two, the absorption hypothesis holds as soon as
+
+      2^r  ≥  exp(2c₁ + |c₀|) · (log z)^4 ,
+
+  an explicit condition with no reference to `t` beyond `0 < t ≤ 1`.
+
+**Only four logarithms are needed**, because both the tilt weight `t^{−k}` and the entropy weight
+`(log z)^{−I}` cost at most one logarithm each, on top of the `(log z)^λ` of the tilt at `λ = 2`.  So
+`r ≍ log log z` suffices, which is exactly what makes `z^r = exp(O(log z · log log z))` subpolynomial
+in the card's schedule.
+
+### The lower tail in final form
+
+`Sieve/OmegaTailAbsorbed.lean` (continued), unconditional.
+
+- **`card_omega_le_le_explicit`** — with the explicit absorbing exponent, the tilt disappears from
+  the constants and `t^k` from the error (using `t^{−k} ≤ log z`):
+
+      #{n ∈ (a,b] : ω n ≤ k}  ≤  2(b−a)·e^{|c₀|}·(log z)^{−I(t)}  +  z^r·log z .
+
+  The tilt `t` now appears in exactly one place: the entropy exponent `I(t) = 1 − t + t log t`.
+
+- `exists_even_pow_between` — the least even power of two above a positive `C` is below `4C + 1`;
+- **`exists_card_omega_le_le_explicit`** — hence such an `r` exists with
+
+      exp(2c₁+|c₀|)(log z)^4  ≤  2^r  ≤  4·exp(2c₁+|c₀|)(log z)^4 + 1 ,
+
+  i.e. `r = O(log log z)` with an explicit constant, together with the bound above.
+
+**The lower tail is now a closed formula in `(b−a, z, t)` alone**, with `r` pinned to within a factor
+of four.  The remaining step for `(8)` is arithmetic on the schedule: with `log z = (log X)^{1−ε}`,
+`r ≍ 4 log₂ log z` gives `z^r = exp(O((log X)^{1−ε} log log X)) = X^{o(1)}`, which is below
+`H = X^{1/2+o(1)}`, while `t = c₀/(1−ε) < 1` realises the breadth cut `k = c₀ log log X` and leaves
+the genuine saving `(log z)^{−I(t)}`.
+
+### `(8)`'s unconditional half: the low-breadth density vanishes
+
+`Sieve/OmegaTailAbsorbed.lean` (continued), unconditional.
+
+- **`card_omega_le_div_le`** — the density form of the tail:
+
+      #{n ∈ (a,b] : ω n ≤ k} / (b−a)  ≤  2e^{|c₀|}(log z)^{−I(t)}  +  z^r·log z/(b−a);
+
+- **`tendsto_rpow_neg_rate`** — the entropy factor vanishes along any schedule with `log z → ∞`,
+  because `I(t) > 0` strictly for `0 < t < 1`
+  (`woldBreadthDeviationRate_pos_of_lt_one`);
+- **`tendsto_card_omega_le_div_zero`** — hence, along any schedule with `log z → ∞`, breadth cut
+  `k = t·log log z` at a fixed `t < 1`, absorbing exponent `r`, and sieve error small against the
+  interval,
+
+      #{n ∈ (a,b] : ω n ≤ k} / (b−a)  →  0 .
+
+**This is the unconditional half of the card's `(8)`**: the low-breadth vertices are a vanishing
+fraction of every cell, so the marker supply — which is a positive proportion of `H/log X` times a
+growing factor — dominates them.  The two hypotheses are exactly the schedule conditions:
+`log z → ∞` (a growing sieving level) and `z^r log z = o(b−a)` (a subpolynomial sieve error), both
+satisfied by `log z = (log X)^{1−ε}` against `H = X^{1/2+o(1)}`, since `r = O(log log z)`.
+
+### The cut may drift
+
+The breadth cut of `(8)` is `k = ⌊c₀ log log X⌋`, so the tilt it induces,
+`t = k / log log z`, is not a constant: it drifts with `X`.  The bound is nevertheless uniform,
+because the entropy rate is monotone (`Sieve/OmegaTailAbsorbed.lean`, unconditional):
+
+- **`woldBreadthDeviationRate_antitone`** — `I` is antitone on `(0,1]`.  Elementary, no calculus:
+  `t·log(t′/t) ≤ t′ − t` by `log x ≤ x − 1`, hence
+
+      I(t) − I(t′)  ≥  (t′ − t)(−log t′)  ≥  0 ;
+
+- **`card_omega_le_div_le_of_le`** — so any cut with `t ≤ t₀` obeys the density bound with the
+  entropy exponent frozen at `t₀`;
+- **`tendsto_card_omega_le_div_zero_of_le`** — hence the low-breadth density vanishes for a
+  *drifting* cut, provided only that it stays below a fixed `t₀ < 1`.
+
+That is exactly the card's situation: `log log z ≥ (1−ε) log log X` gives
+`t = k/log log z ≤ c₀/(1−ε) =: t₀ < 1` for `ε` small, uniformly in `X`.  The unconditional half of
+`(8)` is therefore available in the form the schedule produces it, not only for a constant tilt.
+
+### The sieve error, reduced to one exponent
+
+The last schedule hypothesis, `z^r·log z = o(b−a)`, is now a single inequality between exponents
+(`Sieve/OmegaTailAbsorbed.lean`, unconditional):
+
+- **`tendsto_pow_mul_log_div_zero`** —
+
+      z^r · log z / H  =  exp( r·log z + log log z − log H ),
+
+  so the hypothesis *is* the statement that this one exponent tends to `−∞`;
+- **`le_of_two_pow_le`** — `2^r ≤ M` gives `r ≤ log M / log 2`, so the size control of
+  `exists_card_omega_le_le_explicit` (`2^r ≤ 4·exp(2c₁+|c₀|)(log z)^4 + 1`) reads
+
+      r  ≤  ( 2c₁ + |c₀| + 4 log log z + log 4 + o(1) ) / log 2 ,
+
+  i.e. `r = O(log log z)` with an explicit constant;
+- **`tendsto_pow_mul_log_div_zero_of_exponent`** — and only that upper bound need enter: the caller
+  supplies any `R ≥ r` and the exponent condition is checked with `R`.
+
+**So the whole schedule reduces to `log z · log log z ≪ log H`.**  For the card's
+`H = X^{1/2+o(1)}` that is satisfied by `log z = log X/(log log X)²`, which also keeps
+`log log z = log log X·(1 − o(1))`, hence `t = k/log log z ≤ c₀(1+o(1)) < 1` — the ceiling the
+drifting-cut theorem needs.
+
+### The level is realisable, and the error condition is `(L+1)·log(L+1) ≪ log H`
+
+The sieving level must be a natural number, so a schedule prescribes it as a real `L` and takes
+`z = ⌈exp L⌉`.  That costs at most an additive constant
+(`Sieve/OmegaTailAbsorbed.lean`, unconditional):
+
+- `sieveLevel L = ⌈exp L⌉`, `two_le_sieveLevel` — above the threshold the tail lemmas need;
+- **`log_sieveLevel_mem`** — `L ≤ log(⌈exp L⌉) ≤ L + 1`.  The upper half is
+  `⌈exp L⌉ < exp L + 1 ≤ 2·exp L ≤ exp(L+1)`, using `2 ≤ e`;
+- `one_le_log_sieveLevel`.
+
+- **`tendsto_schedule_error`** — with the level realised this way, and `r` controlled by the size
+  bound of `exists_card_omega_le_le_explicit`, the entire sieve-error hypothesis becomes
+
+      ( log(4e^κ + 1) + 4 log(L+1) ) / log 2 · (L+1)  +  log(L+1)  −  log H  →  −∞ ,
+
+  `κ = 2c₁ + |c₀|`; that is, **`(L+1)·log(L+1) ≪ log H`** with an explicit constant.
+
+The bound `4e^κ(log z)^4 + 1 ≤ (4e^κ+1)(L+1)^4` is what turns the `Nat.find` exponent into an
+explicit `O(log(L+1))`, so nothing about `r` survives except its size.
+
+For the card's schedule `L = log X/(log log X)²` and `H = X^{1/2+o(1)}`, the left side is
+`≍ (log X/(log log X)²)·log log X = log X/log log X`, against `log H ≍ (log X)/2` — the condition
+holds with room to spare, and `log log z = log log X·(1 − o(1))` keeps the drifting cut below its
+ceiling.
+
+### `(8)`'s unconditional half, as one theorem
+
+**`Sieve/OmegaTailAbsorbed.tendsto_card_omega_le_div_zero_schedule`** (unconditional) collects the
+whole layer into a single statement about a schedule given by its level:
+
+    #{n ∈ (a X, b X] : ω n ≤ k X} / (b X − a X)  →  0
+
+for any schedule with
+
+* level `L → ∞`, `L ≥ 1`, sieving at `z = ⌈exp L⌉`;
+* breadth cut `k X = t X · log log z`, the tilt `t X` drifting but bounded by a fixed `t₀ < 1`;
+* absorbing exponent `r X` pinned two-sidedly by `e^κ(log z)^4 ≤ 2^{r X} ≤ 4e^κ(log z)^4 + 1`;
+* the single analytic condition `(L+1)·log(L+1) ≪ log(b X − a X)`.
+
+Nothing is quoted and nothing is assumed beyond the schedule.  The card's schedule
+`L = log X/(log log X)²`, `H = X^{1/2+o(1)}` meets every clause.
+
+**The low-breadth half of `(8)` is therefore closed.**  What the card still needs from outside is
+only the marker supply `(4)`, which rests on the mean-square input the card cites — not on anything
+in this layer.

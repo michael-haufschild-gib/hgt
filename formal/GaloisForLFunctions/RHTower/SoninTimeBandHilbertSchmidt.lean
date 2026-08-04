@@ -45,7 +45,7 @@ private theorem norm_kernelOperator_apply_sq
   rw [← integral_re (L2.integrable_inner
     (kernelOperator (E := E) μ K e) (kernelOperator (E := E) μ K e))]
   apply integral_congr_ae
-  have hholder := (evalBilinear (E := E)).coeFn_holder
+  have hholder := (evalBilinear (𝕜 := ℂ) (E := E)).coeFn_holder
     (r := (2 : ENNReal)) K (Lp.const ∞ μ e)
   have hconst := Lp.coeFn_const (p := ∞) μ e
   filter_upwards [hholder, hconst] with x hholder hconst

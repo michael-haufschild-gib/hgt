@@ -189,6 +189,27 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Closed `(5)` in every degree at a finite stage: every closed
+  holomorphic form is a combination of the exterior products of the logarithmic
+  differentials plus an exact form, the combination is unique, and no nonzero
+  combination is exact.
+- 2026-08-04 — Formalized that the determinant forms of the `k`-element sets of
+  coordinates span the constant alternating forms, and that the stage form of a
+  determinant form is the exterior product of logarithmic differentials.
+- 2026-08-04 — Formalized the constant stage forms, the decomposition of a
+  closed holomorphic form of any degree into a constant form and an exact form,
+  and the uniqueness of the constant form; generalized the descent criterion to
+  an arbitrary periodic primitive.
+- 2026-08-04 — Formalized the averaging of a closed periodic form over all the
+  coordinate periods: the averaged form is constant and differs from the given
+  form by the exterior derivative of a periodic form.
+- 2026-08-04 — Formalized invariance under the period flow: averaging makes a
+  form invariant in the averaged direction, preserves invariance in the others,
+  and invariance in every direction forces constancy.
+- 2026-08-04 — Formalized the homotopy between a form and its average over a
+  period, by the Cartan formula and one integration by parts.
+- 2026-08-04 — Formalized that no exterior product of logarithmic differentials
+  is exact on a character stage, in every degree.
 - 2026-08-04 — Formalized that a constant form with a periodic primitive
   vanishes in every degree: the induction by contraction and period averaging.
 - 2026-08-04 — Formalized the compatibility of contraction with the exterior
@@ -746,17 +767,118 @@ derivative of a periodic form.
   the covering space, this is the **independence of the generators in every degree**: the injective
   half of `Λ^k(L ⊗ ℂ) → H^k` for all `k`.
 
+### No generator is exact, in every degree
+
+`formal/GaloisForLFunctions/RHTower/DeningerWedgeNotExact.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerDlogWedge_not_exact` — **an exterior product of logarithmic differentials is not the
+  exterior derivative of a holomorphic form on the stage.**  Its pullback along the covering is the
+  constant determinant form, and the pullback of the primitive is periodic and `C^1`, so the
+  vanishing theorem for constant forms applies; but the determinant form is one on the coordinate
+  basis it selects.
+
+### The average over a period is homotopic to the identity
+
+`formal/GaloisForLFunctions/RHTower/DeningerAverageHomotopy.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerWeightHomotopy` — the average of a map over one period weighted by `1 - s`, with its
+  derivative under the integral sign (`deningerWeightHomotopy_hasFDerivAt`), its periodicity, its
+  continuous differentiability and the exterior derivative of the weighted average.
+- `deningerAverageOp_sub_eq_extDeriv` — **the average of a closed `C^1` form over a period differs
+  from the form by an exact form**, with primitive the weighted average of the contraction against
+  the period direction.  The Cartan formula turns the contraction of a closed form into a
+  directional derivative, and one integration by parts along the period converts the resulting
+  double integral into the weighted single one.
+
+### Invariance under the period flow
+
+`formal/GaloisForLFunctions/RHTower/DeningerFlowInvariance.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerAverageOp_flowInvariant` — the average over a period is invariant under the whole
+  translation flow in the averaged direction, because the integral of a periodic map over an
+  interval of one period does not depend on where the interval starts.
+- `deningerAverageOp_flowInvariant_of` — averaging in one direction preserves invariance in the
+  others.
+- `deningerConst_of_flowInvariant` — **a differentiable map invariant under the period flow in every
+  coordinate direction is constant**: the derivative kills every period vector, hence every
+  coordinate vector by complex linearity, hence vanishes.
+
+### Averaging in every direction
+
+`formal/GaloisForLFunctions/RHTower/DeningerFullAverage.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `DeningerAveragedData`, `deningerAveragedData` — the form averaged over a list of coordinate
+  directions together with the periodic `C^1` primitive of its difference from the given form, built
+  by recursion over the list; each step preserves closedness, periodicity and continuous
+  differentiability and adds one weighted homotopy to the primitive.
+- `deningerPeriodic_closed_eq_const_add_exact` — **a closed periodic `C^1` form on the covering
+  space is a constant form plus the exterior derivative of a periodic `C^1` form.**  Averaging over
+  every coordinate period in turn makes the form invariant under all the period flows, hence
+  constant.
+
+### `(5)` in every degree: closed forms are constant forms up to exact forms
+
+`formal/GaloisForLFunctions/RHTower/DeningerStageConstantForm.lean`, with the descent criterion
+generalized to an arbitrary primitive in
+`formal/GaloisForLFunctions/RHTower/DeningerStageExactDescent.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerStage_exact_of_primitive` — a periodic differentiable primitive of the pulled-back form,
+  not only the one produced by the Poincaré lemma, makes the form exact on the stage.
+- `deningerConstantStageForm` — the stage form with constant coefficients in the logarithmic
+  coordinates, that is, the descent of a constant form; it pulls back to that constant form.
+- `deningerStage_closed_form_decomposition` — **every closed holomorphic form of any degree on a
+  character stage is a constant stage form plus an exact form.**
+- `deningerConstantStageForm_unique` — **the constant form is determined by the class**: if two
+  constant stage forms differ by the exterior derivative of a holomorphic form, they are equal.
+
+### The determinant forms span the constant forms
+
+`formal/GaloisForLFunctions/RHTower/DeningerDlogWedgeBasis.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerConstantStageForm_detForm` — the constant stage form of a determinant form is the
+  exterior product of the logarithmic differentials of the selected coordinates, by scaling the
+  columns of the determinant.
+- `deningerDetForm_apply_single`, `deningerDetForm_single_eq_zero`, `deningerDetForm_single_perm` —
+  a determinant form evaluates on a tuple of coordinate vectors to the determinant of the incidence
+  matrix of the two selections: zero when a selected coordinate is missing, and the sign of the
+  permutation relating them when the selections agree.
+- `deningerDetForm_span` — **every constant alternating form is a combination of the determinant
+  forms of the `k`-element sets of coordinates.**  Both sides agree on tuples of distinct coordinate
+  vectors, where only the set of those coordinates contributes.
+
+### `(5)` in every degree, in the language of the generators
+
+`formal/GaloisForLFunctions/RHTower/DeningerStageDlogCohomology.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerSubsetWedge` — the exterior product of the logarithmic differentials of a set of
+  coordinates, in increasing order.
+- `deningerStage_closed_form_dlog_decomposition` — **every closed holomorphic form of any degree on
+  a character stage is a combination of the exterior products of the logarithmic differentials of
+  the coordinates, plus an exact form.**
+
+  With `deningerDlogWedge_not_exact` (no nonzero generator is exact) and
+  `deningerConstantStageForm_unique` (the constant part of a class is unique), this is `(5)` at a
+  finite stage in every degree, with the generators of the statement — up to the analyticity of the
+  primitive, which is the one remaining gap below.
+
 ### Remaining
 
-1. **`(5)`--`(6)`**, the de Rham cohomology `H^k((ℂ^×)^r, ℂ) ≅ Λ^k(L ⊗ ℂ)` and its colimit; mathlib
-   has no de Rham cohomology of a complex manifold.  The generators are built in every degree,
-   proved holomorphic, closed, nowhere zero and equivariant for the transitions; the map
-   `L ⊗ ℂ → H^1` is proved injective for every `r`; and the comparison is closed for `r = k = 1`.
-   Degrees zero and one are now closed in every dimension: the classes of the logarithmic differentials are
-   independent and every closed holomorphic one-form is a combination of them plus an exact one.
-   Two gaps remain.  The primitive produced by the descent is known to be differentiable, and
-   upgrading it to analytic needs "complex differentiable implies analytic" in several variables,
-   which mathlib does not have in any form.  Degrees above one need the Poincaré lemma in degree
-   `k`, which is the same homotopy operator with the index bookkeeping of `k`-forms.
-2. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
+1. **The analyticity of the primitive.**  `(5)` is closed at a finite stage in every degree, in
+   both directions: every closed holomorphic form is a combination of the exterior products of the
+   logarithmic differentials plus an exterior derivative, the combination is unique, and no nonzero
+   combination is exact.  The primitive produced by the descent is proved differentiable with
+   continuous derivative; upgrading it to analytic needs "complex differentiable implies analytic"
+   in several variables, which mathlib does not have in any form.  Until that is built, the
+   surjectivity half of `(5)` computes the cohomology of the stage in the `C^1` category and the
+   injectivity half in the holomorphic one.
+2. **`(6)`**, the colimit of `(5)` over the filtered category of pairs `(W, L)`: the pro-Ind
+   formalism, absent from mathlib.
+3. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
    mathlib — and the pro-Ind global-section formalism.

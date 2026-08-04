@@ -179,7 +179,7 @@ theorem fullRectangleKernelOperatorMap_tensor_apply
         ((volume : Measure ℝ).restrict (Set.Icc a b)) field f = ell f • uOut := by
     apply Lp.ext
     filter_upwards [
-      (evalBilinear (E := RealL2)).coeFn_holder (r := (2 : ENNReal))
+      (evalBilinear (𝕜 := ℂ) (E := RealL2)).coeFn_holder (r := (2 : ENNReal))
         field (Lp.const ∞ ((volume : Measure ℝ).restrict (Set.Icc a b)) f),
       BoundedContinuousFunction.coeFn_toLp (𝕜 := ℂ) (p := (2 : ENNReal))
         (μ := ((volume : Measure ℝ).restrict (Set.Icc a b))) ellBCF,

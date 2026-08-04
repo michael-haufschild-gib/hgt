@@ -2,9 +2,10 @@
 
 - **Stage:** 1-in-progress
 - **Status:** `[CONJECTURE] [OPEN CORE]`
-- **Active claim:** construct and prove an unconditional arithmetic Stokes law annihilating the
-  explicit physical cofinal Bockstein class in
-  `MobiusThetaPhysicalParacyclicSourceNullHomology.lean`.
+- **Active claim:** `[CONJECTURE — UNIVERSAL_1PLUS_SCHATTEN_STOKES_CARTIER_LANDING]` construct
+  one divisor-independent, coefficient-faithful landing of the all-order source `det2` boundary
+  through the Fréchet ideal `S_(1+) = intersection_(q>1) S_q`; prove its actual Xi Cartier residue
+  is the explicit physical cofinal Gamma Bockstein.
 
 ## Exact target
 
@@ -390,3 +391,228 @@ can supply the law: the first is quotient-trivial, the strict source image is al
 boundary, and the latter two preserve the wrong ideals.  The proof must act at the singular
 cofinal all-prime boundary and cannot use `beta=0`, equal trace-class status, or critical-line
 placement as a premise.
+
+## 2026-08-04 all-order Schatten reformulation
+
+### Killed precursor: one Hilbert--Schmidt two-boundary
+
+`[FALSIFIED]` A divisor-independent pair of global Hilbert--Schmidt source legs whose trace-class
+product has prime diagonal `F_(-t)-F_t` cannot exist over the whole spectral strip.  The diagonal
+of a trace-class operator is `ell1`, whereas the proved cofinal Bockstein classification gives
+
+```text
+[F_(-t)-F_t]=0 in (P -> C)/ell1  <->  t=0.
+```
+
+Thus a universal Hilbert--Schmidt factorization would force every strip parameter to have grade
+zero.  Restricting the Hilbert--Schmidt hypothesis to actual Xi zeros would merely rename the
+desired RH admission theorem.
+
+**Representation lesson.** Route R cannot use one fixed Schatten exponent.  The literal
+occupation `det2` kernel is not trace class but belongs naturally to every Schatten class above
+order one.  The source completion should retain this entire order scale.
+
+### Sharp Bockstein Schatten wall `[PAPER-PROVED BRIDGE]`
+
+Put
+
+```text
+Delta_t(p)=F_(-t)(p)-F_t(p),
+F_t(p)=p^t p/(p+1)^2.
+```
+
+For `|t|<1` and `q>0`,
+
+```text
+sum_p |Delta_t(p)|^q < infinity
+  <-> t=0 or q*(1-|t|)>1.                         (S1)
+```
+
+Consequently
+
+```text
+Delta_t in intersection_(q>1) ell^q  <-> t=0.    (S2)
+```
+
+**Proof.** If `t=0`, `Delta_t=0`.  Suppose `t!=0` and put `u=|t|`.  Up to the sign of `t`,
+
+```text
+|Delta_t(p)|
+ = F_u(p)-F_(-u)(p)
+ = F_u(p)*(1-p^(-2u)).
+```
+
+For every ordinary prime `p>=2`,
+
+```text
+1-2^(-2u) <= 1-p^(-2u) <= 1,
+1/4*p^(u-1) <= F_u(p) <= p^(u-1).
+```
+
+The first lower constant is strictly positive because `u>0`.  Hence `|Delta_t(p)|^q` is bounded
+above and below by positive constants times `p^(-q*(1-u))`.  Euler's prime-power criterion says
+the latter prime series converges exactly when `q*(1-u)>1`, proving `(S1)`.  If `u>0`, choose
+`q>1` sufficiently close to one that `q*(1-u)<=1`; this proves the reverse implication in `(S2)`.
+The forward implication at `t=0` is immediate.
+
+This classifier is not the RH producer.  It identifies the weakest all-order regularity that
+would force annihilation without assuming fixed `ell1` preservation or one common Hilbert
+carrier.
+
+### Frozen conjecture
+
+`[CONJECTURE — UNIVERSAL_1PLUS_SCHATTEN_STOKES_CARTIER_LANDING]`
+
+Let `S_(1+)` be the projective-limit operator ideal
+
+```text
+S_(1+) = intersection_(q>1) S_q
+```
+
+on the literal prime/depth occupation carrier.  There is a source-normal mixed Stokes/Cartier
+two-boundary, constructed before divisor specialization, with all of the following properties:
+
+1. its finite-prime restrictions are the already constructed graded-`det2`/BV source boundaries;
+2. these restrictions form one Cauchy object in `S_(1+)`, not merely in every divisor-fitted
+   variable ideal;
+3. singular Xi principal-Cartier base change is a continuous, coefficient-faithful reporter from
+   this same `S_(1+)` object to `intersection_(q>1) ell^q(P)`;
+4. on the retained period-one rational-adelic class at `rho`, its reported prime diagonal is
+
+   ```text
+   j_rho * Delta_(2 Re(rho)-1),
+   ```
+
+   where `j_rho` is the already proved nonzero leading Xi jet;
+5. multiplicity jets travel in a separate filtered channel, so no simplicity premise is inserted.
+
+Clauses 2--3 are source-topological statements, not declarations that `Delta_t` is summable.
+Clause 4 is the coefficient computation.  They imply `Delta_(2 Re(rho)-1)` lies in every
+`ell^q`, `q>1`; `(S2)` then gives `Re(rho)=1/2`.  Equivalently the fixed-quotient class `beta`
+vanishes in both Gamma orientations.
+
+### Hostile falsifiers and open core
+
+- Product-topology completion is excluded: finite-support sequences are dense and the quotient
+  loses the Bockstein.
+- One fixed `S_2` carrier is excluded by the sharp outer-half-strip escape.
+- A family of `q`-norms chosen after seeing `rho` is circular.  One projective-limit topology and
+  one reporter must exist before Xi specialization.
+- Mere membership of the occupation kernel in every `S_q` is insufficient.  The load-bearing
+  theorem is continuity of the singular Cartier reporter on the completed mixed boundary.
+- Generalized-prime systems must fail Clause 2 or Clause 3; otherwise the conjecture is false.
+
+`[OPEN CORE]` Construct the mixed boundary on the existing nonseparable prime/depth source and
+prove Clause 2 directly from its occupation coefficients.  Then construct the Cartier reporter
+on the algebraic core and prove one uniform seminorm estimate for every `q>1`.  No Lean work on
+this conjecture is licensed until those two paper proofs close.
+
+## 2026-08-04 hostile correction: ambient `S_(1+)` landing is impossible
+
+`[FALSIFIED] [NO-GO]` Clause 3 of
+`UNIVERSAL_1PLUS_SCHATTEN_STOKES_CARTIER_LANDING` cannot hold on an ambient strip family.
+Indeed, suppose one pre-divisor continuous reporter were defined for every `|t|<1`, took values
+in `intersection_(q>1) ell^q(P)`, and reported `Delta_t`.  The sharp wall `(S2)` would then give
+`t=0` for every parameter in the strip, a contradiction.  This is independent of the choice of
+occupation presentation.
+
+Restricting the reporter to the set of Xi divisor points does not repair the proof: the statement
+that its value lies in the all-order ideal at each such point is, by `(S2)`, already the
+critical-line assertion.  Passing to the principal Cartier quotient `O/(Xi)` changes the domain
+but not this logical burden unless the quotient reporter is constructed as the boundary of an
+independent source complex.  Thus the all-order ideal is a sharp **reader**, not the producer.
+
+The positive survivor is `(S1)`--`(S2)`: it gives the complete variable Schatten-order spectrum
+of the explicit cofinal Gamma Bockstein and proves that no ambient locally convex operator ideal
+can supply the desired boundary law merely by continuity.
+
+## Frozen replacement: corrected determinant-line Stokes monodromy
+
+`[CONJECTURE — SINGULAR_ALL_PRIME_CORRECTED_DET2_CARTIER_MONODROMY]`
+
+Let `U` be the literal two-orientation rational-adelic source double generated by an ordinary
+prime cycle and its cyclic rotation.  Its source rotation is
+
+```text
+tau(x,y)=(y,x),                 det(tau)=-1.
+```
+
+Let `omega_src` be its nonzero top exterior orientation.  The all-prime Calderon--Witt oriented
+complex already proves that every prime copy of this orientation represents the same normalized
+top source line and that differences of copies are exact oriented boundaries.
+
+At a divisor point `rho`, put
+
+```text
+j_rho = XiC^(m_rho)(rho) != 0,
+delta_(n,rho)=exp((2 Re(rho)-1) log n),
+R_(n,rho)(x,y)=(y,delta_(n,rho)x).
+```
+
+The existing physical source landing supplies the nonzero determinant-line value
+
+```text
+Omega_rho(omega_src)=j_rho^2 (e_0 wedge e_1).
+```
+
+There is a source-pointed singular Cartier connection over the cofinal all-prime boundary with
+the following properties.
+
+1. Its algebraic core is defined before an Xi divisor is selected and retains prime, inverse
+   prime, depth, divisor, and multiplicity-jet provenance.
+2. Its two finite Stokes legs are the already constructed graded-`det2` occupation boundary and
+   singular BV first-trace boundary.  Their corrected determinant is the Hilbert--Carleman
+   `det2` determinant plus the first-trace Cartier counterterm, not an ordinary trace-class
+   determinant.
+3. The corrected determinant of every Stokes factor is one.  Equivalently the quadratic regular
+   Wold--Gamma cocycle and singular BV first trace form one determinant-line coboundary.
+4. The total singular monodromy comparison on the nonzero orientation line is
+
+   ```text
+   Omega_rho o (wedge^2 tau)
+     = (wedge^2 R_(n,rho)) o Omega_rho
+       o (product of corrected Stokes factors).
+   ```
+
+5. The product is formed in the source singular completion and is a literal boundary law; no
+   fixed-ideal preservation, critical-line placement, `beta=0`, or divisor-fitted norm occurs in
+   its construction.
+
+### Exact consequence `[PAPER-PROVED CONDITIONAL CAPSTONE]`
+
+Taking corrected determinants in Clause 4 and using Clauses 2--3 gives
+
+```text
+det(tau)=det(R_(n,rho)).
+```
+
+The two determinants are `-1` and `-delta_(n,rho)`.  Hence
+`delta_(n,rho)=1`.  Since `n>=2` and the exponent is real,
+
+```text
+2 Re(rho)-1=0.
+```
+
+Thus `Delta_(2 Re(rho)-1)=0` coefficientwise and the explicit source-derived physical Gamma
+Bockstein vanishes.  This implication uses neither a fixed summability ideal nor beta
+annihilation as a premise.  Multiplicity is harmless because `j_rho^2!=0` for the first nonzero
+jet.
+
+### Hostile audit and exact open core
+
+- Defining the Stokes product after choosing `rho` is circular.  It must be the specialization of
+  one all-prime source connection.
+- Unipotence of abstract Stokes matrices is insufficient.  Clause 2 must identify their
+  corrected determinant with the existing explicit `det2`/BV class.
+- Reflection-hyperbolic determinant one is not Clause 4: it compares two divisor fibres and holds
+  for every rate.  The conjecture transports the one source top orientation into the determinant
+  line of one physical Cartier fibre.
+- A rank-one landing cannot carry the determinant comparison.  The ordered prime/inverse-prime
+  source double and its nonzero wedge must be retained before the cyclic trace.
+- Product topology is excluded by maximal verticality; ordinary Hilbert topology is excluded by
+  the sharp outer-half-strip escape.  The completion must be singular and source-pointed.
+
+`[OPEN CORE — DET2_BV_STOKES_DETERMINANT_COMPARISON]` Construct the corrected determinant functor
+on the algebraic finite-prime/depth Stokes bicomplex, prove compatibility under aperture
+enlargement, and identify its cofinal Cartier monodromy with the physical `R_(n,rho)` on the
+nonzero leading Xi wedge.  This—not another selector or quotient—is the missing producer.

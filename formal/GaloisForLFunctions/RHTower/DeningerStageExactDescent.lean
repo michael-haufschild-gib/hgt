@@ -11,7 +11,7 @@ derivative can be computed by the compatibility of the pullback with the exterio
 
 * `deningerLogBranch_hasFDerivAt_of_slit` : the derivative of a local branch near its centre.
 * `deningerDescendForm_eventuallyEq` : the descended form is locally a pullback along a branch.
-* `deningerStage_exact_of_periodic_primitive` : a periodic primitive makes the form exact.
+* `deningerStage_exact_of_primitive` : a periodic primitive makes the form exact.
 -/
 
 namespace RHTower
@@ -96,21 +96,17 @@ theorem deningerDescendForm_eventuallyEq {η : (Fin r → ℂ) → (Fin r → �
       (fderiv ℂ (deningerLogBranch z₀) z)
   rw [hval, (deningerLogBranch_hasFDerivAt_of_slit hz₀ hz hslit).fderiv]
 
-/-- **A periodic primitive makes the closed form exact on the stage.** -/
-theorem deningerStage_exact_of_periodic_primitive {ω : DeningerStageForm r (n + 1)}
-    (hω : DeningerIsHolomorphicForm ω)
-    (hclosed : ∀ z ∈ deningerStageTorus r, extDeriv ω z = 0)
+/-- **A periodic primitive of the pulled-back form makes the form exact on the stage.**  Near a
+point of the stage the descended primitive is the pullback of the primitive along a branch of the
+logarithm, so its exterior derivative is computed by the compatibility of the pullback with the
+exterior derivative. -/
+theorem deningerStage_exact_of_primitive {ω : DeningerStageForm r (n + 1)}
+    {η : (Fin r → ℂ) → (Fin r → ℂ) [⋀^Fin n]→L[ℂ] ℂ} (hdiff : Differentiable ℂ η)
     (hper : ∀ (j : Fin r) (w : Fin r → ℂ),
-      deningerHomotopyOperator (deningerExpPullbackForm ω)
-          (w + (2 * Real.pi * Complex.I) • (Pi.single j (1 : ℂ) : Fin r → ℂ)) =
-        deningerHomotopyOperator (deningerExpPullbackForm ω) w)
+      η (w + (2 * Real.pi * Complex.I) • (Pi.single j (1 : ℂ) : Fin r → ℂ)) = η w)
+    (hprim : ∀ w : Fin r → ℂ, extDeriv η w = deningerExpPullbackForm ω w)
     {z₀ : Fin r → ℂ} (hz₀ : z₀ ∈ deningerStageTorus r) :
-    extDeriv (deningerDescendForm (deningerHomotopyOperator (deningerExpPullbackForm ω))) z₀ =
-      ω z₀ := by
-  set η := deningerHomotopyOperator (deningerExpPullbackForm ω) with hη
-  have hdiff : Differentiable ℂ η :=
-    deningerHomotopyOperator_differentiable (deningerExpPullbackForm_differentiable hω)
-      (deningerExpPullbackForm_fderiv_continuous hω)
+    extDeriv (deningerDescendForm η) z₀ = ω z₀ := by
   have hbranchdiff : ContDiffAt ℂ ⊤ (deningerLogBranch z₀) z₀ := by
     have hana : AnalyticAt ℂ (deningerLogBranch z₀) z₀ := by
       refine AnalyticAt.pi fun j => ?_
@@ -144,7 +140,7 @@ theorem deningerStage_exact_of_periodic_primitive {ω : DeningerStageForm r (n +
     deningerLogBranch_exp hz₀ hz₀
   have hd : extDeriv η (deningerLogBranch z₀ z₀) =
       deningerExpPullbackForm ω (deningerLogBranch z₀ z₀) :=
-    deningerStage_closed_form_exact_upstairs hω hclosed _
+    hprim _
   show (extDeriv η (deningerLogBranch z₀ z₀)).compContinuousLinearMap
     (fderiv ℂ (deningerLogBranch z₀) z₀) = ω z₀
   rw [hd]
@@ -163,6 +159,23 @@ theorem deningerStage_exact_of_periodic_primitive {ω : DeningerStageForm r (n +
   show (ω z₀) (fun i => (deningerExpDeriv (deningerLogBranch z₀ z₀))
     (deningerLogBranchDeriv z₀ (v i))) = (ω z₀) v
   simp only [hcancel]
+
+/-- **A periodic primitive makes the closed form exact on the stage**, applied to the primitive
+produced by the Poincaré lemma on the covering space. -/
+theorem deningerStage_exact_of_periodic_primitive {ω : DeningerStageForm r (n + 1)}
+    (hω : DeningerIsHolomorphicForm ω)
+    (hclosed : ∀ z ∈ deningerStageTorus r, extDeriv ω z = 0)
+    (hper : ∀ (j : Fin r) (w : Fin r → ℂ),
+      deningerHomotopyOperator (deningerExpPullbackForm ω)
+          (w + (2 * Real.pi * Complex.I) • (Pi.single j (1 : ℂ) : Fin r → ℂ)) =
+        deningerHomotopyOperator (deningerExpPullbackForm ω) w)
+    {z₀ : Fin r → ℂ} (hz₀ : z₀ ∈ deningerStageTorus r) :
+    extDeriv (deningerDescendForm (deningerHomotopyOperator (deningerExpPullbackForm ω))) z₀ =
+      ω z₀ :=
+  deningerStage_exact_of_primitive
+    (deningerHomotopyOperator_differentiable (deningerExpPullbackForm_differentiable hω)
+      (deningerExpPullbackForm_fderiv_continuous hω))
+    hper (deningerStage_closed_form_exact_upstairs hω hclosed) hz₀
 
 end ExactDescent
 

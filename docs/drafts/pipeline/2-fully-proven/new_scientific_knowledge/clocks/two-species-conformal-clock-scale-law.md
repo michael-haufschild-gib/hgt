@@ -2542,3 +2542,35 @@ construction already produced (`SmoothMetricChart.DifferentiablePartialsOn U W`)
 transfer to the product consumes.
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+## Status update: the regularity threshold of the last open input
+
+"Missing 1" above is stated in terms of *analytic* transverse dependence, and its closing sentence —
+"what is left is transverse dependence which is merely smooth rather than analytic" — was already
+stale when written: `regularOpenProbes_of_smooth_spacetime` gives probes at every event of every
+dimension for an arbitrary **smooth** spacetime potential, by realizing it locally as the chart
+potential of a real convolving family. The analytic (Ovsyannikov) family is what reaches potentials
+of *low* regularity in the null directions; the Fourier family is what reaches merely smooth
+transverse dependence.
+
+The child card `../../../3-formalized/new_scientific_knowledge/finite-regularity-clock-probes.md`
+now replaces the remaining smoothness hypothesis by an explicit finite order:
+
+- **`kgFreq_pow_mul_norm_fourier_le`** — the weighted decay `⟨w⟩^{2j}‖𝓕f(w)‖ ≤ 2^j(‖f‖₁ +
+  (2π)^{-2j}‖D^{2j}f‖₁)` for a compactly supported `C^{2j}` function: the transform of the `j`-th
+  iterated derivative, evaluated at `2j` copies of the unit vector along `w`;
+- **`WienerFamily.ofContDiffCurve`** — hence a curve of compactly supported `C^{2j}` functions with
+  bounded, Lipschitz decay functional is an admissible family, with no Schwartz hypothesis;
+- **`regularOpenProbes_of_contDiff_spacetime_explicit`** — *in `1+d` dimensions a potential of class
+  `C^{2d+5}` carries regular clock probes at every event*; in the physical case `d = 3` that is
+  class `C^{11}`;
+- **`regularOpenProbes_conformalRescale_kgChart_contDiff_explicit`** — the same on every conformal
+  rescaling of the flat chart, the conformal factor still an arbitrary smooth function.
+
+So the open ground of the programme is now exactly: a potential of class `C^k` with `k < 2d+5` in
+dimension `≥ 3` — in particular `C¹`, which in dimension two is already covered by Goursat. Below
+the threshold the Fourier route provably cannot work (a `C^k` density decays only to order `k`,
+while the synthesis needs order `> d+2`), and the replacement is the Cauchy problem on a spacelike
+hypersurface: hyperbolic energy estimates in Sobolev spaces, which mathlib does not have.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.

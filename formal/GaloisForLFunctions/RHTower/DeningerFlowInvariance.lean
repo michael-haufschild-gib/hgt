@@ -34,7 +34,7 @@ theorem deningerPeriodCurve_trans (w : Fin r → ℂ) (j : Fin r) (t s : ℝ) :
   rw [add_assoc, ← add_smul]
   congr 1
   push_cast
-  ring
+  ring_nf
 
 /-- Translations along two coordinate period directions commute. -/
 theorem deningerPeriodCurve_comm (w : Fin r → ℂ) (i j : Fin r) (t s : ℝ) :
@@ -56,8 +56,9 @@ theorem deningerPeriodCurve_succ (w : Fin r → ℂ) (j : Fin r) (t : ℝ) :
   rw [add_assoc, ← add_smul]
   congr 1
   push_cast
-  ring
+  ring_nf
 
+omit [CompleteSpace X] in
 /-- **The average over a period is invariant under the flow in the direction it averages.** -/
 theorem deningerAverageOp_flowInvariant {β : (Fin r → ℂ) → X} (j : Fin r)
     (hper : ∀ w : Fin r → ℂ,
@@ -82,6 +83,7 @@ theorem deningerAverageOp_flowInvariant {β : (Fin r → ℂ) → X} (j : Fin r)
   rw [zero_add] at hper'
   exact hper'
 
+omit [CompleteSpace X] in
 /-- **Averaging in one direction preserves invariance in the others.** -/
 theorem deningerAverageOp_flowInvariant_of {β : (Fin r → ℂ) → X} {i : Fin r} (j : Fin r)
     (hinv : deningerFlowInvariant β i) : deningerFlowInvariant (deningerAverageOp β j) i := by

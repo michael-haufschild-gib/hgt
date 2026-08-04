@@ -76,50 +76,65 @@ theorem borderedInv_left {T R : E →L[ℝ] E} {ψ : E}
   rw [this, neg_smul]
   abel
 
+/-- **The candidate inverse is a right inverse.**  Only the pseudo-inverse property and the normalization
+enter: `T (R y + a • psi) = y - ⟪psi, y⟫ • psi` and the border row returns `a`. -/
+theorem borderedMap_borderedInv {T R : E →L[ℝ] E} {ψ : E}
+    (hTψ : T ψ = 0) (hnorm : ⟪ψ, ψ⟫ = 1)
+    (hR : ∀ y : E, T (R y) = y - ⟪ψ, y⟫ • ψ)
+    (hRψ : ∀ y : E, ⟪ψ, R y⟫ = 0) (q : E × ℝ) :
+    borderedMap T ψ (borderedInv R ψ q) = q := by
+  obtain ⟨y, a⟩ := q
+  have h1 : T (R y + a • ψ) - (-⟪ψ, y⟫) • ψ = y := by
+    rw [map_add, hR y, map_smul, hTψ]
+    simp
+  have h2 : ⟪ψ, R y + a • ψ⟫ = a := by
+    rw [inner_add_right, hRψ, real_inner_smul_right, hnorm]
+    ring
+  rw [borderedMap, borderedInv]
+  exact Prod.ext h1 h2
+
+/-- **The candidate inverse is a left inverse.**  This is the direction that consumes simplicity, through
+`borderedInv_left`. -/
+theorem borderedInv_borderedMap {T R : E →L[ℝ] E} {ψ : E}
+    (hsymm : ∀ u v : E, ⟪T u, v⟫ = ⟪u, T v⟫)
+    (hTψ : T ψ = 0) (hnorm : ⟪ψ, ψ⟫ = 1)
+    (hker : ∀ φ : E, T φ = 0 → ∃ s : ℝ, φ = s • ψ)
+    (hR : ∀ y : E, T (R y) = y - ⟪ψ, y⟫ • ψ)
+    (hRψ : ∀ y : E, ⟪ψ, R y⟫ = 0) (p : E × ℝ) :
+    borderedInv R ψ (borderedMap T ψ p) = p := by
+  obtain ⟨φ, t⟩ := p
+  have hTφψ : ⟪ψ, T φ⟫ = 0 := inner_eigen_apply_eq_zero hsymm hTψ φ
+  have h1 : R (T φ - t • ψ) + ⟪ψ, φ⟫ • ψ = φ := by
+    rw [map_sub, map_smul, borderedInv_left hsymm hTψ hnorm hker hR hRψ φ]
+    have hRψzero : R ψ = 0 := by
+      have hTRψ : T (R ψ) = 0 := by
+        rw [hR ψ, hnorm]
+        simp
+      obtain ⟨s, hs⟩ := hker _ hTRψ
+      have : ⟪ψ, R ψ⟫ = s := by
+        rw [hs, real_inner_smul_right, hnorm, mul_one]
+      rw [hRψ ψ] at this
+      rw [hs, ← this, zero_smul]
+    rw [hRψzero]
+    simp
+  have h2 : -⟪ψ, T φ - t • ψ⟫ = t := by
+    rw [inner_sub_right, hTφψ, real_inner_smul_right, hnorm]
+    ring
+  rw [borderedInv, borderedMap]
+  exact Prod.ext h1 h2
+
 /-- **The bordered map is bijective at a simple eigenvalue**, with the explicit inverse
-`(y, a) ↦ (R y + a • psi, -⟪psi, y⟫)`.  Both composites are computed directly; the left inverse uses the
-simplicity input through `borderedInv_left`. -/
+`(y, a) ↦ (R y + a • psi, -⟪psi, y⟫)`. -/
 theorem borderedMap_bijective {T R : E →L[ℝ] E} {ψ : E}
     (hsymm : ∀ u v : E, ⟪T u, v⟫ = ⟪u, T v⟫)
     (hTψ : T ψ = 0) (hnorm : ⟪ψ, ψ⟫ = 1)
     (hker : ∀ φ : E, T φ = 0 → ∃ s : ℝ, φ = s • ψ)
     (hR : ∀ y : E, T (R y) = y - ⟪ψ, y⟫ • ψ)
     (hRψ : ∀ y : E, ⟪ψ, R y⟫ = 0) :
-    Function.Bijective (borderedMap T ψ) := by
-  have hright : ∀ q : E × ℝ, borderedMap T ψ (borderedInv R ψ q) = q := by
-    intro q
-    obtain ⟨y, a⟩ := q
-    have h1 : T (R y + a • ψ) - (-⟪ψ, y⟫) • ψ = y := by
-      rw [map_add, hR y, map_smul, hTψ]
-      simp
-    have h2 : ⟪ψ, R y + a • ψ⟫ = a := by
-      rw [inner_add_right, hRψ, real_inner_smul_right, hnorm]
-      ring
-    rw [borderedMap, borderedInv]
-    exact Prod.ext h1 h2
-  have hleft : ∀ p : E × ℝ, borderedInv R ψ (borderedMap T ψ p) = p := by
-    intro p
-    obtain ⟨φ, t⟩ := p
-    have hTφψ : ⟪ψ, T φ⟫ = 0 := inner_eigen_apply_eq_zero hsymm hTψ φ
-    have h1 : R (T φ - t • ψ) + ⟪ψ, φ⟫ • ψ = φ := by
-      rw [map_sub, map_smul, borderedInv_left hsymm hTψ hnorm hker hR hRψ φ]
-      have hRψzero : R ψ = 0 := by
-        have hTRψ : T (R ψ) = 0 := by
-          rw [hR ψ, hnorm]
-          simp
-        obtain ⟨s, hs⟩ := hker _ hTRψ
-        have : ⟪ψ, R ψ⟫ = s := by
-          rw [hs, real_inner_smul_right, hnorm, mul_one]
-        rw [hRψ ψ] at this
-        rw [hs, ← this, zero_smul]
-      rw [hRψzero]
-      simp
-    have h2 : -⟪ψ, T φ - t • ψ⟫ = t := by
-      rw [inner_sub_right, hTφψ, real_inner_smul_right, hnorm]
-      ring
-    rw [borderedInv, borderedMap]
-    exact Prod.ext h1 h2
-  exact ⟨Function.LeftInverse.injective hleft, Function.RightInverse.surjective hright⟩
+    Function.Bijective (borderedMap T ψ) :=
+  Function.bijective_iff_has_inverse.mpr
+    ⟨borderedInv R ψ, borderedInv_borderedMap hsymm hTψ hnorm hker hR hRψ,
+      borderedMap_borderedInv hTψ hnorm hR hRψ⟩
 
 end GaloisForLFunctions.HTGeometry
 

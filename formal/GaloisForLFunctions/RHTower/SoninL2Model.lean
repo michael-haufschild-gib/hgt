@@ -152,7 +152,7 @@ theorem fullToRestrictedTimeBandFourier_coeFn_sonin
       fun x => ∫ y : ℝ in Set.Icc c d,
         Complex.exp ((-(2 * Real.pi * x * y) : ℝ) * Complex.I) * f y := by
   filter_upwards [
-    (evalBilinear (E := SoninL2)).coeFn_holder (r := (2 : ENNReal))
+    (evalBilinear (𝕜 := ℂ) (E := RealL2)).coeFn_holder (r := (2 : ENNReal))
       (fullFourierFunctionalField a b c d hab)
       (Lp.const ∞ ((volume : Measure ℝ).restrict (Set.Icc a b)) f),
     BoundedContinuousFunction.coeFn_toLp (𝕜 := ℂ) (p := (2 : ENNReal))

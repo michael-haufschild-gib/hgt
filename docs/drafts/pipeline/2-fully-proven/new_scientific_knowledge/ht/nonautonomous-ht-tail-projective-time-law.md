@@ -2129,3 +2129,128 @@ The corpus had these only over a field, which is why the reduction could not be 
 the coefficient ring.  Over `F{U}` -- a domain of characteristic zero, not a field -- they now hold,
 and the linear decomposition says the pseudo-division at each fresh right-block jet has the separant
 as its initial.  That is the phase-one step with the multiplier already identified.
+
+## Two-block Ritt reduction over a coefficient RING — built
+
+`formal/GaloisForLFunctions/HTGeometry/PseudoDivisionCommRing.lean` now carries the whole
+reduction, unconditionally, with the coefficient ring an arbitrary domain of characteristic zero
+(in the application `F{U}`, which is *not* a field — the reason the corpus's field-based
+characteristic stack could not be used):
+
+- `natDegree_pseudoDivision_step_lt` — one cancellation step, over any commutative ring.
+- `mvPolynomialPseudoDivision_step_degreeOf_lt` — the same at a distinguished variable.
+- `vars_X_pow_subset` — a variable power involves nothing else, with no nontriviality hypothesis.
+- `supportedMvPolynomialPseudoReductionAtOfCommRing` — support-preserving pseudo-division over a
+  commutative ring: the multiplier is a power of the initial and neither quotient nor remainder
+  introduces a variable.  This is the corpus's `SupportedMvPolynomialPseudoReductionAt` structure,
+  whose only constructor was over a field.
+- `notMem_vars_iterate_of_lt` — an iterated derivative has no jet above its own order.
+- `exists_higherJet_reduction_step` — one fresh jet is removed, multiplier a power of the SEPARANT
+  (via the linear decomposition `D^k A = S·Y_{m+k} + T`), remainder support-controlled.
+- `exists_phaseOne_reduction` — the descending loop: all jets above the leader are removed, one
+  multiplier `S^e`, remainder free of every jet above `m`.
+- `exists_ritt_reduction` — **the two-block Ritt reduction**: for every `Q`,
+  `I^a (S^b Q) − R ∈ [A]` with `R` reduced with respect to `A` (no jet above the leader, leader
+  degree strictly below that of `A`).
+
+Both multipliers are polynomials in the jets of `A` itself, so their order in the *other* block is
+at most that of `A`.  That is exactly the hypothesis `hMorder` of `dvd_of_saturation_bridge`, which
+the fraction-field clearing route could not supply: clearing denominators produced a multiplier of
+uncontrolled left-block order.
+
+## Route to (RITT-DVD) now that the reduction exists
+
+`exists_twoBlock_crossDifference_saturation` already gives `M · D ∈ [𝒫]` for the cross-difference
+`D` with an uncontrolled `M`.  The reduction upgrades it:
+
+1. Reduce `D` itself: `I^a S^b D − R ∈ [𝒫]`, `R` reduced with respect to `𝒫`.
+2. Map along `F{U} → Frac(F{U}) = K` (`map_diffPolyIterate_of_commutes` transports `[𝒫]`).
+3. `D` lies in the general component `P` of the mapped `𝒫` (diagonal vanishing), and `[𝒫] ≤ P`,
+   so `R ∈ P`.
+4. `R` has order `≤ m`, so `dvd_of_mem_generalComponent_of_order_le` gives `𝒫 ∣ R`.
+5. `R` has leader degree `< deg 𝒫`, so `not_rank_lt_of_dvd` forces `R = 0`.
+6. Hence `I^a S^b D ∈ [𝒫]` with a multiplier of controlled order, which is the missing input of
+   `dvd_of_saturation_bridge`; peeling (`dvd_of_peeling_prime`) then gives `𝒫 ∣ D`.
+
+## Ritt reduction over a ring, driven by a characteristic oracle — built
+
+`formal/GaloisForLFunctions/HTGeometry/RittRingGeneralComponent.lean`:
+
+- `reduced_eq_zero_of_dvd` — a multiple of `A` that is reduced with respect to `A` is zero (rank
+  comparison against `not_rank_lt_of_dvd`).
+- `scalarDifferentialPolynomialSeparant_ne_zero_of_domain` — the separant over a differential
+  domain of characteristic zero; the corpus had this only over a field.
+- `exists_oracle_initial_separant_powers_mem_diffPolyIterateIdeal` — **the reduction theorem in the
+  form the two-block argument needs**: given a derivation-compatible injective coefficient map
+  `φ : K → L` into a differential field and a prime `P` of `L{Y}` with
+  `[φ(A)] ≤ P` and the characteristic oracle "`Z ∈ P` of order `≤ ord φ(A)` implies `φ(A) ∣ Z`",
+  every `Q` with `φ(Q) ∈ P` satisfies `I(A)^a S(A)^b Q ∈ [A]` *over the ring `K`*.
+- `exists_component_initial_separant_powers_mem_diffPolyIterateIdeal` — the same with the oracle
+  produced by the general component of an irreducible `φ(A)`.
+
+The multiplier is `I(A)^a S(A)^b`, whose coefficients are coefficients of `A` itself; the
+uncontrolled coefficient-ring factor that the denominator-clearing route produced is gone.
+
+## Why the whole characteristic cannot be used, only its factors
+
+`map φ P` need not be irreducible over the jet fraction field `L ≅ F⟨y⟩`, even though `P` is
+irreducible over `G`: for `G = F⟨y²⟩` and `P = Y₀² − (y²)` the image is `Y₀² − U₀²`, which factors.
+So `exists_component_prime_of_irreducible` is not applicable to the cleared characteristic itself,
+and the argument must run through irreducible factors — which is what the corpus's
+`dvd_of_saturation_bridge` (per-factor) plus `dvd_of_peeling_prime` (recombination) already
+anticipate.  In that example the factor route is exactly right: `A = Y₀ − U₀` divides the
+cross-difference `−(Y₀−U₀)(Y₀+U₀)`, and the complementary factor is outside the component of `A`.
+
+Corpus support already in place for the factor route:
+`PrimitiveTwoBlockDifferentialCharacteristic.irreducible_factor_right_vars_eq` — every irreducible
+full-ring factor of the cleared characteristic has exactly the right-block variable support of `P`.
+
+## Remaining gap, stated exactly
+
+For an irreducible full-ring factor `A ∣ 𝒫` let `P_A` be the general component of `map φ (equiv A)`
+over `L = Frac(F{U})`.  The two inputs of `dvd_of_saturation_bridge` are now available:
+
+- `hMorder`: the multiplier is `I(A)^a S(A)^b`, whose coefficients are coefficients of `A`, so its
+  left-block order is at most that of `A`.
+- `hMnot`: `A ∤ I(A)` and `A ∤ S(A)` by right-block degree (both are nonzero of lower leader
+  degree), and `A` is prime in the two-block ring, so `A ∤ I(A)^a S(A)^b`.
+
+What is still needed is the hypothesis of the reduction:
+
+  (COMP)  `map φ (equiv D) ∈ P_A`  for the cross-difference `D`.
+
+The corpus's uncontrolled certificate gives `M' · D ∈ [A] ≤ P_A`, so primality yields
+`D ∈ P_A` **or** `map φ (equiv M') ∈ P_A`.  Closing (COMP) is exactly the disjunction-elimination
+that the peeling loop is designed to absorb: in the second branch the reduction applies to `M'`
+itself and returns `A ∣ M'`, which peels a factor off and re-enters the loop.
+
+## (COMP) is closable — the two alternatives are both excluded
+
+Write `A_L := map φ (equiv A)` for an irreducible full-ring factor `A ∣ 𝒫`, `P_A` its general
+component, `𝒫_L := map φ (equiv 𝒫)`, and `I, S` for the initial and separant of the characteristic
+`P` (equivalently, up to the clearing unit, of `𝒫_L`).
+
+The corpus's mapped-cross-relation saturation gives
+
+  I^a · S^b · Wrel ∈ [map φ' P] = [𝒫_L] ⊆ [A_L] ≤ P_A ,
+
+and `P_A` is prime, so one of `I`, `S`, `Wrel` lies in `P_A`.  Both alternatives die:
+
+**`I ∉ P_A`.**  `vars(equiv A) = vars(P)` (corpus: `irreducible_factor_right_vars_eq`), so `A_L` has
+the same leader as `𝒫_L`, and its leader degree is at least one.  `I` has leader degree zero and is
+nonzero.  If `I ∈ P_A` then, its order being at most that of `A_L`, the component's characteristic
+oracle gives `A_L ∣ I` — impossible by leader degree.
+
+**`S ∉ P_A`.**  Same oracle: `S ∈ P_A` would give `A_L ∣ S`.  Write `𝒫_L = A_L · B_L`.  Since the
+leaders agree, `S(𝒫_L) = S(A_L)·B_L + A_L·S(B_L)`, so `A_L ∣ S(A_L)·B_L`.  `A_L` is prime, and
+`A_L ∤ S(A_L)` by leader degree (the separant is nonzero in characteristic zero), so `A_L ∣ B_L` and
+therefore `A_L² ∣ 𝒫_L` — contradicting squarefreeness of the cleared characteristic, which the
+corpus already proves.
+
+Hence `Wrel ∈ P_A`, and `map φ (equiv D) = C(scalar)·Wrel ∈ P_A`, which is exactly (COMP).
+
+**Consequence.**  The chain closes:
+(COMP) → `exists_oracle_initial_separant_powers_mem_diffPolyIterateIdeal` → a certificate
+`I(A)^a S(A)^b · D ∈ [A]` with the multiplier's left-block order at most that of `A` and
+`A ∤ I(A)^a S(A)^b` (leader degree, `A` prime) → `dvd_of_saturation_bridge` gives `A ∣ D` for every
+irreducible factor → `dvd_of_peeling_prime` gives `𝒫 ∣ D`, which is (RITT-DVD).
