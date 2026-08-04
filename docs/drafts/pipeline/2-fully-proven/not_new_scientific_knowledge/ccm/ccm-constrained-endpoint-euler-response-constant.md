@@ -325,20 +325,103 @@ Equation `(7)` is now proved as well, in
   the two single integrals is the double integral because each factor is constant in the other variable, and
   the real part passes through both integrals by the `RCLike` interchange.
 
-What remains for `(4)` is the branch input: a differentiable eigenvalue branch with a normalized
-eigenfunction, i.e. the Hellmann–Feynman step `nu_m'(c) = <psi, (d/dc Q_c) psi>` and the finite-Fourier
-eigenrelation `F_c psi = mu_m(c) psi`.  Given those two, `(4)` is arithmetic: the factorisation above turns the
-derivative into `|F_c psi(1)|²/pi = |mu|²|psi(1)|²/pi`, and `(6)` gives `|mu|² = 2 pi nu/c`.  The Fuchs
-asymptotic `(9)` and the constrained-prolate limit `(12)` remain imported.
+The Fuchs asymptotic `(9)` and the constrained-prolate limit `(12)` remain imported.
 
+
+
+Equations `(4)` and `(5)` are proved as well, in the same module — given the two branch inputs, they are
+arithmetic:
+
+- **`endpointResponse_eq`** — equation `(4)`.  From the Hellmann–Feynman derivative
+  `nup = (1/pi) int int psi psi cos(c(x-y))`, the eigenrelation at the band edge
+  `bandFourier c psi = mu · psi(1)`, and the operator identity in the form `nu = (c/2 pi)‖mu‖²`, it follows
+  that `nup = 2 nu |psi(1)|²/c`.  The cosine factorisation supplies the middle step; nothing else is used.
+- **`hasDerivAt_ccmGap`** — the chain rule in the CCM variable: `d(λ) = 1 - nu(2 pi λ²)` has derivative
+  `-nup · 4 pi λ`.
+- **`endpointResponse_scaled`** — equation `(5)`: with `|e_(m,λ)(λ)|² = |psi(1)|²/λ` and `1 - d = nu`, the
+  identity `(4)` is exactly `|e_(m,λ)(λ)|² = -d'(λ)/(4(1 - d(λ)))`.
+
+So the whole of `(4)`–`(5)` is unconditional modulo two named inputs about the branch: the Hellmann–Feynman
+derivative of the sinc family, and the finite-Fourier eigenrelation for a normalized eigenfunction.  Both are
+statements about a differentiable simple eigenvalue branch, which is the layer of spectral theory this card
+imports.
+
+
+**Hellmann–Feynman itself is now proved**, as general infrastructure in
+`formal/GaloisForLFunctions/HTGeometry/HellmannFeynman.lean` — mathlib has no such lemma:
+
+- **`hellmann_feynman`** — for a differentiable curve of normalized vectors with
+  `A t (psi t) = nu t • psi t`, if the curve `t ↦ A t (psi t)` has derivative `w + A c (psi' c)` — `w` being
+  the family's own motion, i.e. `(dA/dc) psi` — and `A c` is self-adjoint against `psi'(c)`, then
+  `nu'(c) = ⟪psi c, w⟫`.  The eigenvector's motion cancels because
+  `⟪psi, A psi'⟫ = ⟪A psi, psi'⟫ = nu ⟪psi, psi'⟫`, so nothing about `psi'` is needed beyond its existence;
+  self-adjointness is needed only against that one vector, and only the value at `c` is used.
+
+- **`endpointResponse_of_hellmannFeynman`** (in the endpoint module) — the composition.  Given the
+  Hellmann–Feynman data, the identification of `⟪psi, w⟫` with the double integral of the cosine kernel (which
+  is the `c`-derivative of the sinc kernel), the finite-Fourier eigenrelation at the band edge, and the
+  operator identity `(6)`, the conclusion is `(4)`: `nu'(c) = 2 nu(c) |psi(1)|²/c`.
+
+So of the two branch inputs, the *differentiation* half is no longer an import: what remains is the
+representation-theoretic half — that the eigenfunction of the band operator satisfies the finite-Fourier
+eigenrelation, and that the abstract expectation is the double integral of the kernel — together with the
+imported Fuchs expansion `(9)` and constrained limit `(12)`.
+
+
+Both remaining spectral inputs are now reduced to their true content:
+
+- **`exists_scalar_of_commuting_of_simple`** (in the Hellmann–Feynman module) — if `F` commutes with `Q`, is
+  homogeneous, and the `nu`-eigenspace of `Q` is spanned by `psi`, then `F psi = mu • psi` for some scalar.
+  So the finite-Fourier eigenrelation is *not* an extra analytic assumption: it is a consequence of the band
+  eigenrelation together with the commutation `Q_c = (c/2 pi) F_c^* F_c` and simplicity of the branch — which
+  is the hypothesis the card already carries ("every simple prolate branch").
+- **`expectation_cosKernel_eq`** — the expectation of the cosine-kernel operator, in the integral realisation
+  of the inner product, is exactly the double integral of `(7)`:
+  `int psi(x) (int cos(c(x-y))/pi · psi(y) dy) dx = (1/pi) int int psi psi cos(c(x-y))`.  No Fubini theorem is
+  needed: the iterated order is kept and only the outer factor is pulled inside.
+
+What the card still imports is therefore only the classical asymptotic input — the differentiated fixed-mode
+(Fuchs) expansion `(9)` and the constrained limit `(12)` — plus the existence of a differentiable simple
+branch with a normalized eigenfunction, which is the spectral-theory statement the parent sources supply.
+
+
+The family's own differentiability — the last analytic ingredient of the Hellmann–Feynman step — is proved at
+kernel level, uniformly:
+
+- **`abs_sin_add_sub_taylor_le`** — `|sin(a+b) - sin a - b cos a| <= b²`, by the mean value inequality applied
+  to `t ↦ sin(a+t) - sin a - t cos a`, whose derivative `cos(a+t) - cos a` is bounded by `|t|`.
+- **`abs_sincSmooth_taylor_le`** — for every aperture `c`, increment `h` and kernel variable `u`,
+
+  ```text
+  |sincSmooth (c+h) u - sincSmooth c u - h · cos(c u)/pi| <= h² |u| / pi.
+  ```
+
+  The bound is uniform in `u`, and at `u = 0` the kernel is *linear* in `c` (`sincSmooth c 0 = c/pi`), so the
+  error vanishes identically there — the removable singularity causes no trouble.  Since the band is compact,
+  a uniform kernel bound is exactly Hilbert–Schmidt differentiability of the operator family, with derivative
+  the cosine-kernel operator whose expectation `(7)` computes.
+
+So every ingredient of `(4)`–`(5)` is now either proved or reduced to one statement: that the branch exists,
+is simple, and has a normalized eigenfunction depending differentiably on `c`.  That is Kato-type perturbation
+theory for a compact self-adjoint family, which mathlib does not have and which the tree currently owns only in
+the finite-dimensional (matrix charpoly) form of `HTGeometry/SimpleSpectrumAnalyticBranch.lean`.
 
 ## Lean gates
 
 - [x] Lean: the sinc kernel equals the finite-Fourier character integral — equation `(6)` (already in the
   tree)
 - [x] Lean: the cosine factorisation of equation `(7)`
-- [ ] Lean: the Hellmann–Feynman step and the finite-Fourier eigenrelation for a normalized branch, hence
-  `(4)` and `(5)`
+- [x] Lean: equations `(4)` and `(5)` from the two branch inputs (arithmetic, once the factorisation is in
+  hand)
+- [x] Lean: **Hellmann–Feynman** for a differentiable normalized branch — new general infrastructure,
+  absent from mathlib — and its composition with the factorisation, giving `(4)` from the spectral inputs
+- [x] Lean: the finite-Fourier eigenrelation reduced to commutation plus simplicity, and the expectation of
+  the kernel derivative identified with the double integral of `(7)`
+- [x] Lean: the family's differentiability in the aperture — a uniform second-order kernel bound, hence
+  Hilbert–Schmidt differentiability with the cosine kernel as derivative
+- [ ] Lean: existence of a differentiable simple branch with normalized eigenfunction — Kato-type
+  perturbation theory for a compact self-adjoint family (absent from mathlib; the tree has the
+  finite-dimensional matrix form only)
 - [ ] Lean: the differentiated fixed-mode (Fuchs) expansion `(9)` — imported classical asymptotics
 - [ ] Lean: the constrained limit `(12)` and the response constants `(13)`–`(18)`
 

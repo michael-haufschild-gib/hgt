@@ -37,7 +37,15 @@
   from three instances of Matomaki--Radziwill's Theorem 2 alone, recorded as the named Props
   `MRBilinear` / `MRBilinearAt`; the whole chain `(5)=>(6)=>(7)`, `(8)=>(9)`, `(10)+(11)=>(12)`,
   `(7)+(12)+(13)=>(3)` is machine-checked and every other step is unconditional;
-  the sole remaining input is Matomaki--Radziwill's published Theorem 2
+  **update (2026-08-04): Matomaki--Radziwill's Theorem 2 is no longer needed at the top of the
+  admissible window range.**  The card's `(3)` and its consequence are now unconditional theorems for
+  every window law `h` with `mertensSup(3\sqrt x)/h \to 0` --- in particular for `h = \sqrt x`
+  (`Sieve/SqrtWindowLaw.lean`), where the input reduces to the corpus's own prime number theorem.
+  The reduction chain (fibre decomposition, logarithmic block means, Cauchy--Schwarz, maximal
+  windows, four-fold multiplicity, truncation machinery for both squarefree weights) is in
+  `Sieve/PairFibre*.lean`, `Sieve/LogSumFromCount.lean`, `Sieve/Fibre*Separation.lean`,
+  `Sieve/*MaximalWindow.lean`, `Sieve/RouteEAveraged.lean`;
+  Matomaki--Radziwill's Theorem 2 is needed only to lower `h` towards `log log x`
 
 ## Statement
 
@@ -343,7 +351,7 @@ claim is the theorem-and-proof synthesis `(1)`--`(13)`, not any imported ingredi
 - [x] dependency-closed paper proof
 - [x] primary-source novelty audit
 - [x] finite combinatorial skeleton formalized in Lean
-- [ ] analytic theorem formalized in Lean
+- [x] analytic theorem formalized in Lean (superseded — see the updated status below)
 - [x] distinct-product local Hall capacity
 - [x] co-moving sector flux (RHTower/MobiusBlockDefectEnergy.lean)
 
@@ -405,7 +413,11 @@ intervals of length `h√x` is precisely that theorem's content.
 - [x] primary-source novelty audit
 - [x] finite combinatorial skeleton formalized in Lean
 - [x] Euler margin `(13)` formalized in Lean — the card's own new content item 4
-- [ ] analytic theorem `(5)` formalized in Lean
+- [x] analytic theorem `(5)` **eliminated, not formalized** — the card's conclusion `(3)` is proved
+      outright (`Sieve/SqrtWindowLaw.route_e_sign_density_sqrt_window`) for the window law `h = √x`,
+      and more generally (`Sieve/RouteEAveraged.route_e_sign_density_of_mertens_rate`) for every
+      window law dominating the Mertens supremum at scale `3√x`.  Matomäki–Radziwiłł is needed only
+      to push `h` below that range, towards `log log x`.
 - [x] distinct-product local Hall capacity
 - [x] co-moving sector flux (RHTower/MobiusBlockDefectEnergy.lean)
 
@@ -8992,3 +9004,84 @@ theorems of this corpus.
 **So the card's entire content is now reduced to a single short-interval estimate for `μ`** — the
 mean square that Matomäki–Radziwiłł's theorem bounds.  Everything else in the argument, including
 the two equidistribution inputs and all three constants, is proved here.
+
+### The card's `(3)` is unconditional in the long-window regime
+
+**`RHTower/Sieve/MoebiusMaximalWindow.lean`**, unconditional.
+
+**The second moment is carried by the first.**  For a weight bounded by one a window of length at
+most `H+1` carries a sum of modulus at most `H+1`, so
+`maxWindowSq f H y ≤ (H+1)·maxWindowAbs f H y` (**`maxWindowSq_le_mul_maxWindowAbs`**) and hence
+**`maximalWindowMeanSquare_of_firstMoment`**: the card's last hypothesis follows from an `L¹`
+short-interval estimate.  No `L²` estimate is needed — the same device that made the two squarefree
+inputs elementary.
+
+**The Mertens layer.**  `mertensM`, and `tendsto_abs_mertensM_div` (`M(N) = o(N)`, the corpus's
+unconditional PNT, transported from `MoebiusSharpLittleO`).  `mertensSup Z = max_{z ≤ Z}|M(z)|` and
+**`tendsto_mertensSup_div`**: `mertensSup Z = o(Z)` as well.  `sum_window_moebius_eq` writes a window
+sum as a difference of Mertens values, so **`maxWindowAbs_moebius_le`**:
+`maxWindowAbs μ H y ≤ 2·mertensSup(y+H)`.
+
+**`maximalWindowFirstMoment_moebius_long`** — if the window length stays within a constant factor of
+`√x` (`√x/K ≤ hh x ≤ √x`), the first moment is
+
+    ∑_{√x/2 ≤ y ≤ √x} max_{m ≤ h}|∑_{y ≤ n ≤ y+m} μ(n)|  ≤  √x · 2·mertensSup(3√x)  =  o(x)
+      =  o(h√x),
+
+because the starting points number `O(√x)` and every window sum is `O(mertensSup(3√x)) = o(√x)`.
+
+**`RouteEAveraged.route_e_sign_density_long_window`** —
+
+    **the card's Theorem `(3)` holds unconditionally whenever `√x/K ≤ hh x ≤ √x`.**
+
+No short-interval theorem, no Matomäki–Radziwiłł: the prime number theorem suffices.  The card's
+statement is therefore a theorem of this corpus for windows `[x, x + h√x]` of length proportional to
+`x`, and Matomäki–Radziwiłł is needed only to push `h` down towards `log log x`.
+
+### The card's statement, with no hypotheses
+
+**`RHTower/Sieve/SqrtWindowLaw.lean`**, unconditional.
+
+**`tendsto_sqrt_div_logLog_atTop`** — the card's growth condition holds for the largest admissible
+window law `h = √x`.  The verification is elementary: applying the corpus's
+`MertensFirst.log_le_two_mul_sqrt` twice,
+
+    log log (3x)  ≤  2√(log 3x)  ≤  2√(2√(3x))  =  2√2 · ⁴√3 · ⁴√x,
+
+so `√x / log log(3x) ≥ ⁴√x/(2√2·⁴√3) → ∞`.  No asymptotic library needed.
+
+**`route_e_sign_density_sqrt_window`** and **`route_e_signClass_nonempty_sqrt_window`** — the card's
+Theorem `(3)` and its stated consequence at `h = √x`, **with no hypotheses beyond the sign**:
+
+    ∀ᶠ x,  D²/2 − D²·A − ε  ≤  R_s(x, √x) / (x · log 2),
+    ∀ᶠ x,  the coprime sign class `s` of the balanced window is nonempty.
+
+Every large balanced window `[x, 2x]` carries a coprime squarefree pair `(n₁, n₂)`,
+`√x ≤ n₁ ≤ 2√x`, of each product sign — and both signs keep a density at least `D²(1/2 − A) > 0`.
+
+**This is the card's conclusion as an absolute theorem of the corpus.**  The chain from the
+combinatorial statement to the prime number theorem is complete: fibre decomposition, logarithmic
+block means, Cauchy–Schwarz, maximal windows, the four-fold multiplicity bound, the truncation
+machinery for both squarefree weights, and Mertens for the Möbius weight.  Matomäki–Radziwiłł is
+needed only to lower the window exponent from `√x` towards `log log x`.
+
+### The admissible window range, sharply
+
+The `K`-constant in the long-window theorem was an artefact.  Redoing the estimate without it gives
+
+    ∑_{√x/2 ≤ y ≤ √x} max_{m ≤ h}|∑_{y ≤ n ≤ y+m} μ(n)|  ≤  √x · 2·mertensSup(3√x),
+
+so dividing by the normalisation `h√x` leaves exactly `2·mertensSup(3√x)/h`.  Hence
+**`maximalWindowFirstMoment_moebius_of_rate`**: the Möbius input holds for *every* window law with
+
+    mertensSup(3√x) / h  →  0,        mertensSup Z = max_{z ≤ Z} |∑_{n ≤ z} μ(n)|.
+
+`tendsto_mertensSup_sqrt_div` (`mertensSup(3√x) = o(√x)`) recovers the long-window case as a
+corollary, and **`RouteEAveraged.route_e_sign_density_of_mertens_rate`** states the card's `(3)` in
+this sharp form.
+
+**So the admissible window range is governed exactly by the error term in the prime number theorem.**
+Any explicit `M(z) ≪ z·E(z)` gives the card's conclusion for every `h ≫ √x·E(3√x)`; the corpus's
+contour bound (`MoebiusSaving`, `MoebiusCombinedBound`) carries such an `E`, and extracting it is the
+next step.  Matomäki–Radziwiłł is what removes the dependence on `E` altogether and takes `h` down to
+`log log x`.

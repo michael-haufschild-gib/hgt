@@ -4683,6 +4683,23 @@ unordered scalar sums, scalar distributions after frequency separation, and boun
 label-blind fusion. The constructed BV--Wold connection proves that their surviving
 sign-indefinite, relation-valued category is nonempty.
 
+**Cofinal Gamma Bockstein law.** The fixed-ideal obstruction is now a constructed, formalized
+class rather than an unspecified comparison defect.  For the source-selected Fisher density put
+
+```text
+beta_t=[F_(-t)]-[F_t] in (ordinary-prime sequences)/ell1.
+```
+
+Every finite-prime Gamma Bockstein is zero, because finite-place Gamma transport induces the
+identity in this quotient.  The full all-prime class satisfies `beta_t!=0 <-> t!=0` throughout
+the Xi strip.  On the actual period-one rational-adelic source class, the difference of the two
+fixed physical Gamma landings is exactly the nonzero leading Xi jet times
+`beta_(2 Re(rho)-1)`.  Thus global annihilation of this explicit source-derived class is RH, while
+at every divisor at least one orientation survives unconditionally and off-line exactly one is
+erased.  This kills finite adelic naturality as a producer and sharpens the open core to an
+independent singular all-prime Stokes/Cartier boundary law annihilating `beta`; asserting
+two-sided ideal preservation or `beta=0` is the missing conclusion, not functoriality.
+
 **Exact open core.** Prove from literal arithmetic source structure that the constructed positive
 parallel polarization is the fixed same-fibre Cartier polarization on the actual leading Xi
 conormal, without assuming divisor location.  The resolved frame now supplies
@@ -4753,6 +4770,7 @@ the strict resolved boundary with the scalar physical fibre.
 `PrimeDepthBVWoldCalderonWittPointedSplittingObstruction.lean`,
 `CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean`,
 `CCMRationalAdelicPrimeIsotropyStokesRegulator.lean`,
+`PrimeFirstTraceGammaCofinalNormalizerFrontier.lean`,
 `SourceCharacterFibreConservativeDescentLaw.lean`,
 `HTGeometry/TwoRecordResolvedConnection.lean`, and
 `GammaSewnMobiusXiWardCofinalBoundaryLift.lean`.
@@ -5732,8 +5750,12 @@ The first unresolved theorem is therefore route-dependent but consistently pre-s
   actual Stokes-to-Xi map, leading-jet reporter square, physical specialization, and Gamma-reflected
   specialization are now constructed and formalized.  Resolved coefficient is unconditionally
   nonzero.  Physical nonerasure has exact walls `t<=0` and `0<=t`, so simultaneous nonerasure is
-  RH.  First open theorem is now source-derived global nonerasure in both orientations; it may not
-  be asserted as coefficient faithfulness or obtained by pulling back the target norm.
+  RH.  Their difference is now the explicit cofinal class
+  `beta_t=[F_(-t)]-[F_t]`: every finite-prime Bockstein vanishes, whereas the full source-derived
+  physical Bockstein is nonzero exactly off-line.  First open theorem is now an independent
+  singular all-prime Stokes/Cartier law annihilating this `beta` class, equivalently source-derived
+  global nonerasure in both orientations; it may not be asserted as coefficient faithfulness,
+  two-sided fixed-ideal functoriality, or obtained by pulling back the target norm.
 - Retired Route J has no open premise. A different pre-projection principal-relative current is a
   corpus-native new-route candidate; it belongs to Route R only if its literal source and handoff
   are the existing Route-R construction.

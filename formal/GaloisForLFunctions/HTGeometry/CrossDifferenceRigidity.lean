@@ -233,6 +233,34 @@ theorem degreeOf_inl_eq_degreeOf_inr_of_dvd_crossDifference
     exact hswap
   rw [← heq, ← heq, hanti]
 
+/-- **Degree bookkeeping for the peeling quotient.**  If the factors carrying a given variable have
+all been divided out of `D`, the quotient no longer involves that variable: the divided factors
+already account for the whole degree of `C` there, and `D`'s degree is dominated by `C`'s. -/
+theorem degreeOf_quotient_eq_zero {σ : Type*} {C T S D L : MvPolynomial σ F} {v : σ}
+    (hC : C = T * S) (hD : D = T * L) (hT0 : T ≠ 0) (hS0 : S ≠ 0) (hL0 : L ≠ 0)
+    (hSv : MvPolynomial.degreeOf v S = 0)
+    (hle : MvPolynomial.degreeOf v D ≤ MvPolynomial.degreeOf v C) :
+    MvPolynomial.degreeOf v L = 0 := by
+  have h1 : MvPolynomial.degreeOf v D =
+      MvPolynomial.degreeOf v T + MvPolynomial.degreeOf v L := by
+    rw [hD]
+    exact MvPolynomial.degreeOf_mul_eq hT0 hL0
+  have h2 : MvPolynomial.degreeOf v C =
+      MvPolynomial.degreeOf v T + MvPolynomial.degreeOf v S := by
+    rw [hC]
+    exact MvPolynomial.degreeOf_mul_eq hT0 hS0
+  omega
+
+/-- The left-block jets of the peeling quotient stay below the level already divided out. -/
+theorem degreeOf_inl_quotient_eq_zero {C T S D L : DifferentialPolynomial (Unit ⊕ Unit) F} {k : ℕ}
+    (hC : C = T * S) (hD : D = T * L) (hT0 : T ≠ 0) (hS0 : S ≠ 0) (hL0 : L ≠ 0)
+    (hSv : ∀ j : ℕ, k < j → MvPolynomial.degreeOf ((Sum.inl () : Unit ⊕ Unit), j) S = 0)
+    (hle : ∀ j : ℕ, MvPolynomial.degreeOf ((Sum.inl () : Unit ⊕ Unit), j) D ≤
+      MvPolynomial.degreeOf ((Sum.inl () : Unit ⊕ Unit), j) C) :
+    ∀ j : ℕ, k < j → MvPolynomial.degreeOf ((Sum.inl () : Unit ⊕ Unit), j) L = 0 := by
+  intro j hj
+  exact degreeOf_quotient_eq_zero hC hD hT0 hS0 hL0 (hSv j hj) (hle j)
+
 end
 
 end GaloisForLFunctions

@@ -1,8 +1,8 @@
 # Real-corona model-complete evasion classification
 
 - **ID:** `real-corona-model-complete-evasion-classification`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), with falsified universal no-go and dependency-closed positive survivor
+- **Stage:** 4-publication-ready
+- **Type:** THEOREM, with falsified universal no-go and dependency-closed positive survivor
 - **Parent:** `../4-publication-ready/real-corona-isotropy-clifford-transgression-law.md`
 - **Statement:** Across arbitrary invariant-domain operator models and arbitrary unital function
   subalgebras, the Real-corona idempotent is locally admissible exactly by parity decoupling on the
@@ -20,8 +20,8 @@ P1--P4 has a named necessary and sufficient mechanism.
 - [x] 0 → 1 in-progress: well-posed universes, falsifiers, exact survivor, literature collision
   search, and proof routes identified
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: unconditional Lean theorems, targeted module build, axiom and lint audit
-- [ ] 3 → 4 publication-ready: manuscript rebuilt and hostile review passed
+- [x] 2 → 3 formalized: unconditional Lean theorems, targeted module build, axiom and local lint audit
+- [x] 3 → 4 publication-ready: manuscript rebuilt and hostile review passed
 
 ## Falsified universal no-go
 
@@ -139,9 +139,9 @@ iff theorems name the necessary and sufficient escape mechanism in each case.
 - **Strongest positive survivor:** the two necessary-and-sufficient classifications above.
 - **New insight:** changing models does not defeat the obstruction mysteriously; it pays an exact
   price—loss of odd spectral detectability or gain of independent sector patching.
-- **Status:** operator half exists in
-  `RealCoronaLocalDetectabilityFracture.lean`; generic coefficient-algebra theorem and integrated
-  facade remain to be formalized; paper proof is dependency-closed.
+- **Status:** formalized in `RealCoronaModelCompleteEvasionClassification.lean`, exported through
+  `RealCoronaFourProblemsResolution.lean`, and wired into the `RHTower` umbrella.  Targeted builds
+  and axiom audit pass.
 
 ## Falsifiers
 
@@ -159,3 +159,6 @@ iff theorems name the necessary and sufficient escape mechanism in each case.
 - 2026-08-04 — exact projector norm identity and arbitrary unital function-algebra patching
   equivalence proved on paper; hostile domain, constant, algebra, and universality checks passed;
   advanced to `2-fully-proven`.
+- 2026-08-04 — both classifications formalized unconditionally; targeted module/facade builds and
+  axiom audit passed.  Manuscript rebuilt as a 22-page PDF and passed model-complete hostile review;
+  promoted to `4-publication-ready`.

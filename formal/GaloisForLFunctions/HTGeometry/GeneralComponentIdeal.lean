@@ -22,7 +22,9 @@ open scoped Differential
 
 noncomputable section
 
-variable {K L : Type*} [Field K] [Differential K] [CharZero K] [Field L]
+universe u
+
+variable {K : Type u} {L : Type*} [Field K] [Differential K] [CharZero K] [Field L]
 
 /-- The limit of the general-component jets: each coordinate is eventually constant. -/
 def generalComponentPoint (f : K →+* L) (A : DifferentialPolynomial Unit K)
@@ -244,6 +246,325 @@ theorem generalComponent_le_of_iterateIdeal_le (f : K →+* L)
     · exact absurd (hJ.mem_of_pow_mem _ hIpow) hI
     · exact absurd (hJ.mem_of_pow_mem _ hSpow) hS
   · exact hright
+
+omit [CharZero K] in
+/-- The initial is outside the component: it has strictly smaller order, so divisibility by `A`
+would be impossible. -/
+theorem initial_not_mem_generalComponent (f : K →+* L) {A : DifferentialPolynomial Unit K}
+    (hAvars : A.vars.Nonempty) (x₀ : Unit × ℕ → L)
+    (hx₀ : ∀ R : DifferentialPolynomial Unit K, MvPolynomial.eval₂ f x₀ R = 0 → A ∣ R) :
+    scalarDifferentialPolynomialInitial A ∉ generalComponent f A x₀ := by
+  intro hmem
+  have hA0 : A ≠ 0 := by
+    intro h0
+    rw [h0] at hAvars
+    simp at hAvars
+  have hI0 : scalarDifferentialPolynomialInitial A ≠ 0 :=
+    scalarDifferentialPolynomialInitial_ne_zero hA0
+  by_cases hvars : (scalarDifferentialPolynomialInitial A).vars.Nonempty
+  · have hlt := scalarDifferentialPolynomialInitial_order_lt hvars
+    exact not_rank_lt_of_dvd hA0 hI0
+      (dvd_of_mem_generalComponent_of_order_le f x₀ hx₀ (le_of_lt hlt) hmem)
+      (Or.inl hlt)
+  · rw [Finset.not_nonempty_iff_eq_empty] at hvars
+    have hC := MvPolynomial.vars_eq_empty_iff_eq_C.mp hvars
+    have hc : (scalarDifferentialPolynomialInitial A).coeff 0 ≠ 0 := by
+      intro h0
+      apply hI0
+      rw [hC, h0, map_zero]
+    have hunit : IsUnit (scalarDifferentialPolynomialInitial A) := by
+      rw [hC]
+      exact IsUnit.map MvPolynomial.C hc.isUnit
+    have hdvd := dvd_of_mem_generalComponent_of_order_le f x₀ hx₀
+      (by
+        rw [scalarDifferentialPolynomialOrder, hC]
+        simp) hmem
+    have hAunit : IsUnit A := isUnit_of_dvd_unit hdvd hunit
+    obtain ⟨j, hj⟩ := hAvars
+    obtain ⟨v, hv⟩ := hAunit.exists_right_inv
+    have hv0 : v ≠ 0 := by
+      intro h0
+      rw [h0, mul_zero] at hv
+      exact zero_ne_one hv
+    have hdeg := MvPolynomial.degreeOf_mul_eq (n := j) hA0 hv0
+    rw [hv] at hdeg
+    simp only [MvPolynomial.degreeOf_one] at hdeg
+    rw [MvPolynomial.mem_vars_iff_degreeOf_ne_zero] at hj
+    omega
+
+omit [CharZero K] in
+/-- The separant is outside the component. -/
+theorem separant_not_mem_generalComponent (f : K →+* L) {A : DifferentialPolynomial Unit K}
+    (hAvars : A.vars.Nonempty) (hS0 : scalarDifferentialPolynomialSeparant A ≠ 0)
+    (x₀ : Unit × ℕ → L)
+    (hx₀ : ∀ R : DifferentialPolynomial Unit K, MvPolynomial.eval₂ f x₀ R = 0 → A ∣ R) :
+    scalarDifferentialPolynomialSeparant A ∉ generalComponent f A x₀ := by
+  intro hmem
+  have hA0 : A ≠ 0 := by
+    intro h0
+    rw [h0] at hAvars
+    simp at hAvars
+  have hle := scalarDifferentialPolynomialSeparant_order_le A
+  have hdvd := dvd_of_mem_generalComponent_of_order_le f x₀ hx₀ hle hmem
+  refine not_rank_lt_of_dvd hA0 hS0 hdvd ?_
+  rcases lt_or_eq_of_le hle with hlt | heq
+  · exact Or.inl hlt
+  · exact Or.inr ⟨heq, scalarDifferentialPolynomialSeparant_leaderDegree_lt hAvars heq⟩
+
+/-- **Ranking independence.**  Two general components of the same polynomial, built from any two
+generic base points, coincide: each is the smallest prime containing the differential ideal and
+avoiding the initial and separant, and each satisfies the other's hypotheses. -/
+theorem generalComponent_eq {L' : Type*} [Field L'] (f : K →+* L) (f' : K →+* L')
+    {A : DifferentialPolynomial Unit K} (hAvars : A.vars.Nonempty)
+    (hS0 : scalarDifferentialPolynomialSeparant A ≠ 0)
+    (x₀ : Unit × ℕ → L) (x₀' : Unit × ℕ → L')
+    (hA : MvPolynomial.eval₂ f x₀ A = 0)
+    (hSeparant : MvPolynomial.eval₂ f x₀ (scalarDifferentialPolynomialSeparant A) ≠ 0)
+    (hx₀ : ∀ R : DifferentialPolynomial Unit K, MvPolynomial.eval₂ f x₀ R = 0 → A ∣ R)
+    (hA' : MvPolynomial.eval₂ f' x₀' A = 0)
+    (hSeparant' : MvPolynomial.eval₂ f' x₀' (scalarDifferentialPolynomialSeparant A) ≠ 0)
+    (hx₀' : ∀ R : DifferentialPolynomial Unit K, MvPolynomial.eval₂ f' x₀' R = 0 → A ∣ R) :
+    generalComponent f A x₀ = generalComponent f' A x₀' := by
+  refine le_antisymm ?_ ?_
+  · exact generalComponent_le_of_iterateIdeal_le f hAvars x₀ hA hSeparant hx₀
+      (generalComponent_isPrime f' A x₀')
+      (iterateIdeal_le_generalComponent f' hAvars x₀' hA' hSeparant')
+      (initial_not_mem_generalComponent f' hAvars x₀' hx₀')
+      (separant_not_mem_generalComponent f' hAvars hS0 x₀' hx₀')
+  · exact generalComponent_le_of_iterateIdeal_le f' hAvars x₀' hA' hSeparant' hx₀'
+      (generalComponent_isPrime f A x₀)
+      (iterateIdeal_le_generalComponent f hAvars x₀ hA hSeparant)
+      (initial_not_mem_generalComponent f hAvars x₀ hx₀)
+      (separant_not_mem_generalComponent f hAvars hS0 x₀ hx₀)
+
+/-- **Divisibility from a certificate, with no constraint on the multiplier's order.**  If the
+multiplier lies outside the general component, primality cancels it, and the low-order divisibility
+of the component finishes.  This strengthens the corpus's bridge, whose multiplier had to have order
+at most that of the divisor. -/
+theorem dvd_of_mul_mem_iterateIdeal_of_notMem_generalComponent (f : K →+* L)
+    {A : DifferentialPolynomial Unit K} (hAvars : A.vars.Nonempty) (x₀ : Unit × ℕ → L)
+    (hA : MvPolynomial.eval₂ f x₀ A = 0)
+    (hSeparant : MvPolynomial.eval₂ f x₀ (scalarDifferentialPolynomialSeparant A) ≠ 0)
+    (hx₀ : ∀ R : DifferentialPolynomial Unit K, MvPolynomial.eval₂ f x₀ R = 0 → A ∣ R)
+    {M Q : DifferentialPolynomial Unit K}
+    (hM : M ∉ generalComponent f A x₀)
+    (hQorder : scalarDifferentialPolynomialOrder Q ≤ scalarDifferentialPolynomialOrder A)
+    (hmem : M * Q ∈ differentialPolynomialIterateIdeal A) :
+    A ∣ Q := by
+  have hmemComp : M * Q ∈ generalComponent f A x₀ :=
+    iterateIdeal_le_generalComponent f hAvars x₀ hA hSeparant hmem
+  exact dvd_of_mem_generalComponent_of_order_le f x₀ hx₀ hQorder
+    (mem_generalComponent_of_mul_mem f A x₀ hM hmemComp)
+
+omit [CharZero K] in
+/-- **Cancelling an already-divided factor.**  A product of polynomials outside the component is
+outside it, so a quotient inherits membership. -/
+theorem mem_generalComponent_of_mul_mem_of_notMem (f : K →+* L)
+    (A : DifferentialPolynomial Unit K) (x₀ : Unit × ℕ → L)
+    {T L' : DifferentialPolynomial Unit K}
+    (hT : T ∉ generalComponent f A x₀)
+    (h : T * L' ∈ generalComponent f A x₀) :
+    L' ∈ generalComponent f A x₀ :=
+  mem_generalComponent_of_mul_mem f A x₀ hT h
+
+omit [CharZero K] in
+/-- A product of polynomials outside a prime is outside it. -/
+theorem mul_notMem_generalComponent (f : K →+* L) (A : DifferentialPolynomial Unit K)
+    (x₀ : Unit × ℕ → L) {S T : DifferentialPolynomial Unit K}
+    (hS : S ∉ generalComponent f A x₀) (hT : T ∉ generalComponent f A x₀) :
+    S * T ∉ generalComponent f A x₀ := by
+  intro hmem
+  rcases (generalComponent_isPrime f A x₀).mem_or_mem hmem with h | h
+  · exact hS h
+  · exact hT h
+
+omit [CharZero K] in
+/-- **The peeling step.**  Suppose the factors processed so far multiply to `T`, so that
+`D = T * L`, and suppose `T` avoids the component of the next factor `A` while `D` lies in it.  If
+the running quotient has order at most `A`'s, then `T * A` divides `D`: the step both divides one
+more factor out and keeps the shape of the invariant. -/
+theorem mul_dvd_of_peeling_step (f : K →+* L) {A : DifferentialPolynomial Unit K}
+    (x₀ : Unit × ℕ → L)
+    (hx₀ : ∀ R : DifferentialPolynomial Unit K, MvPolynomial.eval₂ f x₀ R = 0 → A ∣ R)
+    {T Lq D : DifferentialPolynomial Unit K}
+    (hD : D = T * Lq)
+    (hT : T ∉ generalComponent f A x₀)
+    (hDmem : D ∈ generalComponent f A x₀)
+    (hLorder : scalarDifferentialPolynomialOrder Lq ≤ scalarDifferentialPolynomialOrder A) :
+    T * A ∣ D := by
+  have hLmem : Lq ∈ generalComponent f A x₀ := by
+    refine mem_generalComponent_of_mul_mem f A x₀ hT ?_
+    rw [← hD]
+    exact hDmem
+  obtain ⟨W, hW⟩ := dvd_of_mem_generalComponent_of_order_le f x₀ hx₀ hLorder hLmem
+  exact ⟨W, by rw [hD, hW]; ring⟩
+
+/-- **The peeling loop.**  If from every partial product `T` of factors of `C` that already divides
+`D` one can always split off one more non-unit factor and keep dividing `D`, then `C` divides `D`.
+The induction is on the number of irreducible factors left to process. -/
+theorem dvd_of_peeling_loop {R : Type*} [CommRing R] [IsDomain R]
+    [UniqueFactorizationMonoid R] {C D : R} (hC0 : C ≠ 0)
+    (step : ∀ T S : R, C = T * S → T ∣ D → ¬ IsUnit S →
+      ∃ A B : R, S = A * B ∧ ¬ IsUnit A ∧ T * A ∣ D) :
+    C ∣ D := by
+  classical
+  suffices h : ∀ n : ℕ, ∀ T S : R, C = T * S → T ∣ D →
+      (UniqueFactorizationMonoid.factors S).card ≤ n → C ∣ D by
+    exact h (UniqueFactorizationMonoid.factors C).card 1 C (by ring) (one_dvd D) le_rfl
+  have hunit_of_card : ∀ S : R, S ≠ 0 →
+      (UniqueFactorizationMonoid.factors S).card = 0 → IsUnit S := by
+    intro S hS0 hcard
+    have hfact : UniqueFactorizationMonoid.factors S = 0 := Multiset.card_eq_zero.1 hcard
+    have hprod := UniqueFactorizationMonoid.factors_prod hS0
+    rw [hfact] at hprod
+    simpa using hprod.isUnit isUnit_one
+  have hfinish : ∀ T S : R, C = T * S → T ∣ D → IsUnit S → C ∣ D := by
+    intro T S hC hT hunit
+    obtain ⟨u, hu⟩ := hunit
+    have hCT : C ∣ T := ⟨(↑u⁻¹ : R), by rw [hC, ← hu]; simp [mul_assoc]⟩
+    exact hCT.trans hT
+  intro n
+  induction n with
+  | zero =>
+      intro T S hC hT hcard
+      have hS0 : S ≠ 0 := by
+        intro h0
+        rw [h0, mul_zero] at hC
+        exact hC0 hC
+      exact hfinish T S hC hT (hunit_of_card S hS0 (Nat.le_zero.1 hcard))
+  | succ n ih =>
+      intro T S hC hT hcard
+      have hS0 : S ≠ 0 := by
+        intro h0
+        rw [h0, mul_zero] at hC
+        exact hC0 hC
+      by_cases hunit : IsUnit S
+      · exact hfinish T S hC hT hunit
+      obtain ⟨A, B, hSAB, hA, hTA⟩ := step T S hC hT hunit
+      have hA0 : A ≠ 0 := by
+        intro h0
+        rw [h0, zero_mul] at hSAB
+        exact hS0 hSAB
+      have hB0 : B ≠ 0 := by
+        intro h0
+        rw [h0, mul_zero] at hSAB
+        exact hS0 hSAB
+      have hcards : (UniqueFactorizationMonoid.factors S).card =
+          (UniqueFactorizationMonoid.factors A).card +
+            (UniqueFactorizationMonoid.factors B).card := by
+        have hrel := UniqueFactorizationMonoid.factors_mul (x := A) (y := B) hA0 hB0
+        rw [hSAB]
+        rw [Multiset.card_eq_card_of_rel hrel, Multiset.card_add]
+      have hAcard : 1 ≤ (UniqueFactorizationMonoid.factors A).card := by
+        by_contra hlt
+        exact hA (hunit_of_card A hA0 (by omega))
+      refine ih (T * A) B ?_ hTA (by omega)
+      rw [hC, hSAB]
+      ring
+
+omit [Differential K] [CharZero K] in
+/-- **Ritt's peeling, assembled.**  Suppose that at every stage -- a partial product `T` of factors
+of `C` with `C = T * S` and `D = T * L` -- one can name the next factor `A` of `S` together with a
+prime ideal that detects divisibility by `A` in low order, avoids `T`, contains `D`, and bounds the
+running quotient's order.  Then `C` divides `D`.
+
+The prime plays the role of the general component of `A`; stating it abstractly avoids naming the
+residue field, which differs from factor to factor. -/
+theorem dvd_of_peeling_prime {C D : DifferentialPolynomial Unit K} (hC0 : C ≠ 0)
+    (H : ∀ T Lq S : DifferentialPolynomial Unit K, C = T * S → D = T * Lq → ¬ IsUnit S →
+      ∃ (A B : DifferentialPolynomial Unit K) (P : Ideal (DifferentialPolynomial Unit K)),
+        S = A * B ∧ ¬ IsUnit A ∧ P.IsPrime ∧
+        (∀ Q : DifferentialPolynomial Unit K, Q ∈ P →
+          scalarDifferentialPolynomialOrder Q ≤ scalarDifferentialPolynomialOrder A → A ∣ Q) ∧
+        T ∉ P ∧ D ∈ P ∧
+        scalarDifferentialPolynomialOrder Lq ≤ scalarDifferentialPolynomialOrder A) :
+    C ∣ D := by
+  refine dvd_of_peeling_loop hC0 ?_
+  intro T S hC hTD hS
+  obtain ⟨Lq, hLq⟩ := hTD
+  obtain ⟨A, B, P, hSAB, hA, hPprime, hPdvd, hTnot, hDmem, hord⟩ := H T Lq S hC hLq hS
+  refine ⟨A, B, hSAB, hA, ?_⟩
+  have hLmem : Lq ∈ P := by
+    refine (hPprime.mem_or_mem ?_).resolve_left hTnot
+    rw [← hLq]
+    exact hDmem
+  obtain ⟨W, hW⟩ := hPdvd Lq hLmem hord
+  exact ⟨W, by rw [hLq, hW]; ring⟩
+
+omit [Differential K] [CharZero K] in
+/-- **A generic point of the ordinary hypersurface exists.**  The residue field of the principal
+prime provides one: evaluation there is the quotient map into the fraction field, so a polynomial
+vanishes at the point exactly when the irreducible divides it. -/
+theorem exists_generic_point_of_irreducible {A : DifferentialPolynomial Unit K}
+    (hA : Irreducible A) :
+    ∃ (M : Type u) (_ : Field M) (f : K →+* M) (x₀ : Unit × ℕ → M),
+      MvPolynomial.eval₂ f x₀ A = 0 ∧
+        ∀ R : DifferentialPolynomial Unit K, MvPolynomial.eval₂ f x₀ R = 0 → A ∣ R := by
+  classical
+  haveI hIprime : (Ideal.span ({A} : Set (DifferentialPolynomial Unit K))).IsPrime :=
+    (Ideal.span_singleton_prime hA.ne_zero).mpr hA.prime
+  haveI : IsDomain (DifferentialPolynomial Unit K ⧸
+      Ideal.span ({A} : Set (DifferentialPolynomial Unit K))) :=
+    (Ideal.Quotient.isDomain_iff_prime _).mpr hIprime
+  set q : DifferentialPolynomial Unit K →+*
+      DifferentialPolynomial Unit K ⧸ Ideal.span ({A} : Set (DifferentialPolynomial Unit K)) :=
+    Ideal.Quotient.mk _ with hq
+  set Φ : DifferentialPolynomial Unit K →+*
+      FractionRing (DifferentialPolynomial Unit K ⧸
+        Ideal.span ({A} : Set (DifferentialPolynomial Unit K))) :=
+    (algebraMap _ _).comp q with hΦ
+  have hcanonical : ∀ T : DifferentialPolynomial Unit K,
+      MvPolynomial.eval₂ (Φ.comp MvPolynomial.C) (fun j => Φ (MvPolynomial.X j)) T = Φ T := by
+    intro T
+    have hring : MvPolynomial.eval₂Hom (Φ.comp MvPolynomial.C)
+        (fun j => Φ (MvPolynomial.X j)) = Φ := by
+      apply MvPolynomial.ringHom_ext
+      · intro c
+        simp
+      · intro j
+        simp
+    exact RingHom.congr_fun hring T
+  refine ⟨_, inferInstance, Φ.comp MvPolynomial.C, fun j => Φ (MvPolynomial.X j), ?_, ?_⟩
+  · rw [hcanonical, hΦ, RingHom.comp_apply,
+      Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton_self A), map_zero]
+  · intro T hT
+    rw [hcanonical, hΦ, RingHom.comp_apply] at hT
+    have hq0 : q T = 0 :=
+      IsFractionRing.injective _ (FractionRing _) (by rw [hT, map_zero])
+    have hmem : T ∈ Ideal.span ({A} : Set (DifferentialPolynomial Unit K)) :=
+      Ideal.Quotient.eq_zero_iff_mem.mp hq0
+    rwa [Ideal.mem_span_singleton] at hmem
+
+/-- **The per-factor package.**  For an irreducible nonconstant differential polynomial there is a
+prime ideal which contains its differential ideal, detects divisibility by it in low order, and
+avoids its initial, its separant, and every non-associate irreducible of no larger order.
+
+These are exactly the data `dvd_of_peeling_prime` consumes at each stage of Ritt's peeling. -/
+theorem exists_component_prime_of_irreducible {A : DifferentialPolynomial Unit K}
+    (hAvars : A.vars.Nonempty) (hA : Irreducible A) :
+    ∃ P : Ideal (DifferentialPolynomial Unit K),
+      P.IsPrime ∧
+        differentialPolynomialIterateIdeal A ≤ P ∧
+        (∀ Q : DifferentialPolynomial Unit K, Q ∈ P →
+          scalarDifferentialPolynomialOrder Q ≤ scalarDifferentialPolynomialOrder A → A ∣ Q) ∧
+        scalarDifferentialPolynomialInitial A ∉ P ∧
+        scalarDifferentialPolynomialSeparant A ∉ P ∧
+        ∀ B : DifferentialPolynomial Unit K, Irreducible B → ¬ Associated A B →
+          scalarDifferentialPolynomialOrder B ≤ scalarDifferentialPolynomialOrder A → B ∉ P := by
+  classical
+  obtain ⟨M, _instM, f, x₀, hAeval, hx₀⟩ := exists_generic_point_of_irreducible hA
+  have hSne : scalarDifferentialPolynomialSeparant A ≠ 0 :=
+    scalarDifferentialPolynomialSeparant_ne_zero hAvars
+  have hSeparant : MvPolynomial.eval₂ f x₀ (scalarDifferentialPolynomialSeparant A) ≠ 0 := by
+    intro h0
+    exact (irreducible_not_dvd_scalarDifferentialPolynomialSeparant hAvars hA) (hx₀ _ h0)
+  refine ⟨generalComponent f A x₀, generalComponent_isPrime f A x₀,
+    iterateIdeal_le_generalComponent f hAvars x₀ hAeval hSeparant,
+    fun Q hQ hQorder => dvd_of_mem_generalComponent_of_order_le f x₀ hx₀ hQorder hQ,
+    initial_not_mem_generalComponent f hAvars x₀ hx₀,
+    separant_not_mem_generalComponent f hAvars hSne x₀ hx₀, ?_⟩
+  intro B hB hnotassoc hBorder
+  exact not_mem_generalComponent_of_irreducible f x₀ hx₀ hB hA.not_isUnit hnotassoc hBorder
 
 end
 

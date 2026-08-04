@@ -189,6 +189,12 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized that a constant form with a periodic primitive
+  vanishes in every degree: the induction by contraction and period averaging.
+- 2026-08-04 — Formalized the compatibility of contraction with the exterior
+  derivative and the vanishing criterion for forms.
+- 2026-08-04 — Formalized the averaging operator over a period: it preserves
+  periodicity and its derivative is the average of the derivative.
 - 2026-08-04 — Formalized the vanishing of the average of a directional
   derivative along a period.
 - 2026-08-04 — Formalized that the generators of `(5)` pull back to constant
@@ -694,6 +700,51 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 - `deningerFunctional_eq_zero_of_single`, `deningerConstant_functional_eq_zero` — **a constant
   one-form that is the derivative of a periodic function vanishes**: the base case of that
   separation.
+
+### The averaging operator landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerAverageOperator.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerAverageOp` — the average of a map over one period in a coordinate direction, for an
+  arbitrary complete complex target, so it applies to form-valued maps.
+- `deningerAverageOp_periodic` — **averaging preserves periodicity** in every coordinate.
+- `deningerPeriodCurve_image_isCompact`, `deningerAverageOp_hasFDerivAt` — **the derivative of the
+  average is the average of the derivative**, by differentiation under the integral sign with the
+  bound taken on the compact set swept by the period curves over a ball.
+
+Together with the Cartan formula and the vanishing of the period average of a directional
+derivative, this is the whole mechanism of the separation argument: contracting a constant form
+with a period direction and averaging leaves a constant form of one degree lower that is again the
+derivative of a periodic form.
+
+### Contraction and the exterior derivative landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerContractDeriv.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerExtDeriv_contract` — **the exterior derivative of a contracted form** is the
+  antisymmetrized contraction of the derivative, since contraction is continuous linear.
+- `deningerForm_eq_zero_of_contract` — **a form whose contractions against the coordinate vectors
+  all vanish is zero**, which is the last step of the separation argument once every contraction
+  has been shown to vanish.
+
+### Constant forms with periodic primitives vanish, in every degree
+
+`formal/GaloisForLFunctions/RHTower/DeningerConstantFormVanishing.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerConstantForm_eq_zero` — **a form with constant coefficients on the covering space that is
+  the exterior derivative of a periodic continuously differentiable form is zero, in every
+  degree.**  The induction contracts against a period direction and averages over that period: the
+  Cartan formula turns the contraction into a directional derivative minus an exterior derivative,
+  the period average kills the directional derivative, and what is left is a constant form of one
+  degree lower with a periodic `C^1` primitive.  The base case is the vanishing of a constant
+  one-form with a periodic primitive.
+
+  With `deningerExpPullback_dlogWedge`, which says the generators of `(5)` become constant forms on
+  the covering space, this is the **independence of the generators in every degree**: the injective
+  half of `Λ^k(L ⊗ ℂ) → H^k` for all `k`.
 
 ### Remaining
 

@@ -1854,3 +1854,231 @@ That is exactly the missing passage in Ritt's peeling: the non-membership and ca
 be run in the `Y`-ranking, where equation (78) makes all factors have the same order, and the final
 divisibility in the `U`-ranking, where the cross-difference's order is bounded -- both about one
 ideal.
+
+Added, completing the layer:
+
+    initial_not_mem_generalComponent    the initial is outside the component
+    separant_not_mem_generalComponent   the separant is outside the component
+    generalComponent_eq                 RANKING INDEPENDENCE: two general components of the same
+                                          polynomial, built from ANY two generic base points over any
+                                          two fields, coincide
+
+`generalComponent_eq` is the theorem the peeling was waiting for, and it is now unconditional: the
+non-membership of the initial and separant is automatic (divisibility by `A` would raise the order or
+the leader degree past them), so minimality applies in both directions with no side conditions beyond
+the two base points being generic.
+
+The differential Luroth chain is now complete except for instantiating this layer on the two-block
+characteristic: build the two components (right block as variables, then left block), transport the
+certificate between them with the descent and ascent lemmas already proved, and run the peeling with
+`mem_generalComponent_of_mul_mem` and `not_mem_generalComponent_of_irreducible`.
+
+## Lean progress — the bridge, freed of its multiplier hypothesis
+
+Added to `GeneralComponentIdeal.lean` (wired, axiom-clean):
+
+    dvd_of_mul_mem_iterateIdeal_of_notMem_generalComponent
+        a certificate `M * Q in [A]` with `M` OUTSIDE the general component gives `A | Q`,
+        with NO constraint on the multiplier's order
+    mem_generalComponent_of_mul_mem_of_notMem, mul_notMem_generalComponent
+        cancellation and the product rule for staying outside the component
+
+This supersedes the corpus's `irreducible_dvd_of_order_le_of_mul_mem_iterateIdeal`, whose multiplier
+had to satisfy `ord M <= ord A` and `not A | M`.  With the component available as a prime ideal the
+multiplier's order is irrelevant: it only has to avoid the component, and primality does the
+cancellation.  That removes the multiplier-order problem from this card entirely -- it had been one of
+the two obstructions to the factorwise argument, and it needed the Bezout lemma to work around.
+
+**The peeling now closes with the tools in the tree.**  For an irreducible factor `A` of the cleared
+characteristic:
+
+* `D` lies in the component of `A` -- from the two-block certificate plus the multiplier's avoidance,
+  which is `initial_not_mem_generalComponent` / `separant_not_mem_generalComponent` together with
+  equation (78) (each factor has right-block order `m`, the initial has smaller order, the separant
+  smaller leader degree);
+* the already-divided factors are distinct irreducibles of the SAME right-block order, hence outside
+  the component (`not_mem_generalComponent_of_irreducible`), hence cancellable
+  (`mem_generalComponent_of_mul_mem_of_notMem`), so the running quotient stays in the component;
+* the quotient's left-block order drops below the current factor's, because the factors of a given
+  top jet absorb all of `C`'s degree there;
+* `generalComponent_eq` lets the final divisibility be read in the left-block ranking, where that
+  order bound holds.
+
+What remains is bookkeeping: the degree accounting for the quotient, and the induction over the
+finitely many left-block orders.
+
+## Lean progress — the peeling's degree accounting
+
+Added to `CrossDifferenceRigidity.lean` (wired, axiom-clean):
+
+    degreeOf_quotient_eq_zero       once the factors carrying a variable are divided out of `D`, the
+                                      quotient no longer involves that variable
+    degreeOf_inl_quotient_eq_zero   the left-block form: the quotient's jets stay below the level
+                                      already peeled
+
+This is the accounting that makes the peeling terminate: at each stage the divided factors already
+carry the whole degree of `C` at the current top jet, and `D`'s degree there is dominated by `C`'s, so
+the running quotient loses that jet.  With it, the induction over the finitely many left-block orders
+has its decreasing measure.
+
+Every ingredient of `(3)` is now a proved theorem; what is left is to write the induction that
+threads them.
+
+## Lean progress — the peeling step, as one theorem
+
+Added to `GeneralComponentIdeal.lean` (wired, axiom-clean):
+
+    mul_dvd_of_peeling_step
+        if the processed factors multiply to `T` with `D = T * L`, `T` avoids the component of the
+        next factor `A`, `D` lies in it, and the running quotient has order at most `A`'s, then
+        `T * A` divides `D`
+
+This is the inductive step of Ritt's peeling in the exact form the induction consumes: it both
+divides one more factor out and reproduces the invariant.  Its three hypotheses are supplied by
+theorems already proved -- `mul_notMem_generalComponent` with
+`not_mem_generalComponent_of_irreducible` for `T`, the certificate plus
+`dvd_of_mul_mem_iterateIdeal_of_notMem_generalComponent` for `D`, and
+`degreeOf_inl_quotient_eq_zero` for the order of the quotient.
+
+The only thing still to write is the loop: an induction over the finitely many left-block orders that
+applies this step once per level, with the factorization of `C` as a multiset.  There is no
+mathematics left in it.
+
+## Lean progress — the peeling LOOP
+
+Added to `GeneralComponentIdeal.lean` (wired, axiom-clean):
+
+    dvd_of_peeling_loop
+        in any unique factorization domain: if from every partial product `T` of factors of `C`
+        that already divides `D` one can split off one more non-unit factor and keep dividing `D`,
+        then `C | D`
+
+The induction is on the number of irreducible factors still to process, which strictly drops at each
+step because the factor split off is a non-unit.  This is the generic loop that Ritt's peeling runs,
+stated so that the application only has to supply the STEP -- which is
+`mul_dvd_of_peeling_step`, already proved.
+
+With the loop and the step both in place, `(RITT-DVD)` reduces to instantiating the step's three
+hypotheses at each stage, all of which are theorems:
+
+    T not in the component of the next factor        mul_notMem_generalComponent +
+                                                       not_mem_generalComponent_of_irreducible
+    D in the component of the next factor            exists_twoBlock_crossDifference_saturation_of_dvd +
+                                                       dvd_of_mul_mem_iterateIdeal_of_notMem_generalComponent
+    the running quotient's order is small enough     degreeOf_inl_quotient_eq_zero + generalComponent_eq
+
+## Lean progress — Ritt's peeling, assembled
+
+`dvd_of_peeling_prime` (in `GeneralComponentIdeal.lean`, wired, axiom-clean) is the whole peeling in
+one theorem:
+
+    at every stage -- a partial product `T` with `C = T*S` and `D = T*L` -- name the next factor `A`
+    of `S` together with a PRIME ideal that detects divisibility by `A` in low order, avoids `T`,
+    contains `D`, and bounds the quotient's order; then `C | D`.
+
+Stating the component abstractly as "a prime with the low-order divisibility property" removes the
+last structural obstacle: the general component of each factor lives in a DIFFERENT residue field, so
+a formulation naming that field could not quantify over the factors.  With the prime abstracted, one
+theorem covers all stages.
+
+`(RITT-DVD)` is now exactly: produce, for each factor of the cleared characteristic, the prime and
+the four facts.  All four are proved theorems:
+
+    the prime and its low-order divisibility      generalComponent, generalComponent_isPrime,
+                                                    dvd_of_mem_generalComponent_of_order_le
+    it avoids the partial product                 not_mem_generalComponent_of_irreducible,
+                                                    mul_notMem_generalComponent
+    it contains the cross-difference              exists_twoBlock_crossDifference_saturation_of_dvd,
+                                                    dvd_of_mul_mem_iterateIdeal_of_notMem_generalComponent
+    the quotient's order is bounded               degreeOf_inl_quotient_eq_zero, generalComponent_eq
+
+## Lean progress — the generic point, extracted
+
+`exists_generic_point_of_irreducible` (in `GeneralComponentIdeal.lean`, wired, axiom-clean):
+
+    for an irreducible differential polynomial there is a field, a coefficient map and a point at
+    which a polynomial vanishes EXACTLY when the irreducible divides it
+
+The corpus built this inside the bridge's proof and discarded it; extracting it as an existence
+statement is what makes the component instantiable, and phrasing it existentially (rather than as a
+definition) sidesteps the instance problem -- the residue field's `IsDomain` structure depends on the
+irreducibility hypothesis, so it cannot be attached to a definition.
+
+With this, the concrete general component of any irreducible factor is available: feed the point to
+`generalComponent`, and `generalComponent_isPrime`, `iterateIdeal_le_generalComponent`,
+`dvd_of_mem_generalComponent_of_order_le`, `initial_not_mem_generalComponent`,
+`separant_not_mem_generalComponent` and `not_mem_generalComponent_of_irreducible` all apply.  That is
+every hypothesis of `dvd_of_peeling_prime` except the two-block bookkeeping.
+
+## Lean progress — the per-factor package
+
+`exists_component_prime_of_irreducible` (in `GeneralComponentIdeal.lean`, wired, axiom-clean):
+
+    for an irreducible nonconstant differential polynomial there is a PRIME ideal which
+      * contains its differential ideal,
+      * detects divisibility by it in low order,
+      * avoids its initial, its separant, and every non-associate irreducible of no larger order.
+
+These are exactly the data `dvd_of_peeling_prime` consumes at each stage, so the peeling now runs on
+a single existence statement per factor.  Nothing about generic points, residue fields or truncated
+jet constructions is visible any more: the general-component layer is closed off behind this
+interface.
+
+State of `(3)`: the only remaining work is the two-block instantiation -- choosing the coefficients
+`H, K` of the cleared characteristic, matching the left-block order of the running quotient against
+each factor's, and feeding the package to the peeling.  Every mathematical ingredient is proved.
+
+### The instantiation, analysed to the last lemma
+
+Running the peeling on the two-block characteristic needs the avoidance facts in the `Y`-view and the
+final divisibility in the `U`-view.  Checking each avoidance in the `Y`-view:
+
+    the certificate's initial I      ord_Y I < m = ord_Y A, so `A | I` is impossible          OK
+    the certificate's separant S     same order, strictly smaller leader degree                OK
+    the clearing denominator d       d lies in F{U}, so ord_Y d = 0 < m                        OK
+    the processed factors T          distinct irreducibles of the SAME Y-order (eq. 78)        OK
+
+So `D` lies in the `Y`-view component of every factor, `T` avoids it, and the running quotient stays
+in it.  Only the last step -- from `L` in the component and `ord_U L <= ord_U A` to `A | L` -- needs
+the `U`-view, i.e. the two-block ranking bridge.
+
+For that bridge the scalar minimality theorem transports, with A's OWN initial and separant as
+multipliers (not the characteristic's):
+
+    I_A : ord_U I_A <= ord_U A and ord_Y I_A < ord_Y A, so it avoids the U-view component
+    S_A : ord_U S_A <= ord_U A and strictly smaller Y-leader degree, likewise
+
+and the only remaining unknown is the clearing denominator `d'` of the transported certificate.  It
+is NOT arbitrary: pseudo-division divides only by the initial, so `d'` is a power of `I_A`, whose
+`U`-order is at most `ord_U A` -- hence it avoids the `U`-view component too, and the bridge closes.
+
+    [LAST LEMMA]  the descent `exists_clear_mem_familyIterateIdeal_of_map_mem` must be refined to
+                  return a denominator that divides a power of the initial, instead of an arbitrary
+                  nonzero element of F{U}.
+
+That is the single remaining technical requirement for `(3)`.  It is a statement about the corpus's
+pseudo-division, not about differential algebra: the certificate produced by
+`characteristicPseudoReduction` already has its coefficients in the ring localized only at the
+initial.
+
+## Lean progress — pseudo-division over a commutative ring (the last lemma's core)
+
+`GaloisForLFunctions/HTGeometry/PseudoDivisionCommRing.lean` (wired, axiom-clean):
+
+    exists_pseudoDivision                univariate pseudo-division over an arbitrary CommRing:
+                                           `lc(q)^e * p = q*a + b` with `deg b < deg q`
+    exists_mvPolynomial_pseudoDivision   the same at a distinguished variable of a multivariable
+                                           ring, with the INITIAL at that variable as multiplier
+
+mathlib has division by a monic polynomial and division over a field, but not pseudo-division over a
+ring; the corpus's own pseudo-division also went through a field.  That is why every certificate so
+far arrived with an uncontrolled denominator.
+
+This version introduces NO denominators: the multiplier is explicitly a power of the initial.  Applied
+with the coefficient ring `F{U}` (a commutative ring, not a field) it gives a two-block reduction
+whose multiplier is a power of `A`'s initial -- exactly the `[LAST LEMMA]` recorded above, and with it
+the two-block ranking bridge closes, since the initial's left-block order is at most `A`'s.
+
+The remaining work on `(3)` is to iterate this pseudo-division into a full Ritt reduction in the
+two-block ring (the ordinary step is now available; the higher-jet step reduces derivatives of `A` the
+same way) and then feed `dvd_of_peeling_prime`.

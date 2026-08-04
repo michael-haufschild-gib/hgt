@@ -268,3 +268,44 @@ These are explicit scope boundaries, not missing premises of retained theorems.
 - PDF and visual audit: **PASS**.
 
 Publication-ready promotion is authorized.
+
+## Review 3 — model-complete revision, 2026-08-04
+
+Paper: *Model-complete Real-corona classification: smoothness, cyclic parity, and fixed
+multiplicity*.
+
+Verdict: **ACCEPT AT THE STATED GENERAL-JOURNAL STANDARD**.
+
+The previous residual model-scope objections are superseded.  A literal impossibility theorem
+over every conceivable model is false: block-diagonal unbounded operators and function algebras
+containing the sector idempotent are countermodels.  The revision states those countermodels and
+proves the strongest valid replacement:
+
+1. For every invariant-domain operator realization,
+   `norm ([D,(1+m)/2]x) = norm (D_odd x)`.  Projector Lipschitz regularity is therefore equivalent
+   to boundedness of the odd channel; for unbounded `D`, every repair moves all unboundedness to
+   the commuting even channel.
+2. For every unital complex function subalgebra, the sector idempotent belongs to the algebra if
+   and only if arbitrary algebra elements can be patched independently across the sector and its
+   complement.
+3. P2 remains uniform over every anti-Real bivariant realization, and P4 remains exact over every
+   completed self-dual analytic family.  The four channels are thus classified by parity
+   decoupling, sector patching, Clifford parity, and multiplicity excess.
+
+The separate ingredients are positioned honestly: operator parity is compared with unbounded
+`KK` theory, and idempotent patching with Peirce decomposition.  Novelty is claimed only for the
+combined Real-corona classification and its four exact recipients.
+
+### Verification disposition
+
+- New module and facade elaborate unconditionally.
+- Targeted builds of `RealCoronaModelCompleteEvasionClassification` and
+  `RealCoronaFourProblemsResolution` pass.
+- All eight new declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+- New module contains no `sorry`, `admit`, custom `axiom`, `opaque`, or `unsafe` declaration and is
+  wired through the `RHTower` umbrella.
+- Claim trace covers both new classification theorems and their exact norm/membership identities.
+- PDF: 22 pages; zero overfull boxes, undefined references, or internal verification references;
+  all pages visually inspected.  One benign first-page underfull vertical box remains.
+
+No mathematical objection or open dependency remains in the paper's stated categories.

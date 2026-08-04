@@ -275,8 +275,8 @@ and its quadratic form is exactly
 \begin{equation}\label{eq:published-Cartan-identification}
                               x^TCx=Q_A(x).
 \end{equation}
-Thus $Q_A$ is the Boalch--Yamakawa--Dou\c{c}ot Cartan polarization of the actual
-analytic-continuation orbits of the Puiseux spectrum.
+Thus $Q_A$ is the published Cartan polarization of the Stokes circles, namely the cyclic
+continuation orbits of the Puiseux spectrum.
 \end{proposition}
 
 \begin{proof}
@@ -350,21 +350,23 @@ Write $M$ for common rank and, for genus $g$, define
 \end{equation}
 
 \begin{proposition}[Quasi-Hamiltonian origin of fusion]\label{prop:qh-fusion}
-Equation \eqref{eq:fused-form} is the polarization of the wild-character-variety index
-$2-\dim\Mcal_{X,D}$.  More explicitly, for $G=\mathrm{GL}_M$, let $h_a$ be formal-centralizer
-dimension, $s_a$ directed Stokes-root dimension, and $k_a$ prescribed conjugacy-class dimension.
-Then
+For $G=\mathrm{GL}_M$, let $h_a$ be formal-centralizer dimension, $s_a$ directed
+Stokes-root dimension, and $k_a$ prescribed conjugacy-class dimension.  Put
+$Q_a^{\rm core}=M^2+h_a-s_a$ and $Q_a^{\rm mark}=Q_a^{\rm core}-k_a$.  Then
 \begin{align}\label{eq:qh-dimension}
  \dim\Mcal_{X,D}
  &=2+(2g-2+m)M^2+\sum_a(s_a+k_a-h_a),\\
- Q_a&=M^2+h_a-s_a-k_a,
+ Q_a^{\rm mark}&=M^2+h_a-s_a-k_a,
 \end{align}
 and therefore
 \begin{equation}\label{eq:qh-fusion-identity}
-       2-\dim\Mcal_{X,D}=\sum_aQ_a+2(1-g-m)M^2.
+       2-\dim\Mcal_{X,D}=\sum_aQ_a^{\rm mark}+2(1-g-m)M^2.
 \end{equation}
-For genus zero, $Q_a$ is the full Cartan quadratic form of the core and its type-$A$ marking
-legs \cite{BoalchYamakawa2020,Doucot2021}.
+The published diagram formula identifies $Q_a^{\rm core}$ with the coefficient form $Q_a$ in
+\eqref{eq:fused-form}.  Thus \eqref{eq:fused-form} is the unmarked core polarization.  For a
+type-$A$ marking, $Q_a^{\rm mark}$ is its leg-completed Cartan form
+\cite{BoalchYamakawa2020,Doucot2021}; Section~\ref{sec:legs} proves that completion preserves the
+same one-channel bound.
 \end{proposition}
 
 \begin{proof}
@@ -372,7 +374,7 @@ The local fission/Stokes factor has dimension $M^2+h_a+s_a$.  Fusion over a genu
 reduction by the formal centralizers, insertion of the conjugacy classes, and restoration of the
 two-dimensional scalar center give the first line of \eqref{eq:qh-dimension}
 \cite{Boalch2014,BoalchYamakawa2015}.  The remaining equalities are algebraic rearrangements.
-The type-$A$ Cartan identification is the diagram dimension formula.
+Core and type-$A$ Cartan identifications are the published diagram dimension formula.
 \end{proof}
 
 Choose local root heights $H_a$ and set
@@ -411,7 +413,7 @@ from marked points adds their scalar rank coefficients and then subtracts $2$.
 Use \eqref{eq:fused-form} and $\chi(X\#Y)=\chi(X)+\chi(Y)-2$.
 \end{proof}
 
-\section{Cellular Stokes categories and vanishing cycles}\label{sec:cellular}
+\section{Analytic-wall Stokes categories and vanishing cycles}\label{sec:cellular}
 
 Let $\mathsf C$ be the walking cospan $L\to W\leftarrow R$ and put
 \[
@@ -457,7 +459,7 @@ $\mu_R(E(V,\varepsilon))$ is zero; the other is canonically $V$.
 The cokernel of $V\xrightarrow{1}V$ is zero; the cokernel of $0\to V$ is $V$.
 \end{proof}
 
-Fix $c\in\CC^\times$ and $k>0$.  On the oriented boundary circle
+Fix $c\in\CC^\times$ and $k>0$.  On the oriented boundary circle of the common $w$-cover,
 $\RR/2\pi\mathbb Z$, use the dominance-wall convention
 \begin{equation}\label{eq:analytic-phase}
  f_{c,k}(\theta)=\operatorname{Re}(ce^{-ik\theta})
@@ -520,9 +522,9 @@ so the path category contains only identities and incidence arrows.  Define
 The alternating exponential object has wall stalk $V$, alternating arc stalks $V,0$, and identity
 or zero incidence maps.
 
-\begin{definition}[Cellular microsupport and cycle]\label{def:cellular-cycle}
-An oriented conormal $(w,S)$ lies in cellular microsupport when
-$\mu_S(F|_w)\ne0$.  Its cellular characteristic-cycle coefficient is
+\begin{definition}[Boundary microsupport and cycle]\label{def:cellular-cycle}
+An oriented conormal $(w,S)$ lies in boundary microsupport when
+$\mu_S(F|_w)\ne0$.  Its characteristic-cycle coefficient is
 $\dim\mu_S(F|_w)$.  The directed cycle retains the $k$ conormals carrying ordered decay orientation.
 \end{definition}
 
@@ -536,6 +538,24 @@ directed decay mass is $kd$.
 Each wall germ is $E(V,0)$ or $E(V,1)$, so the first two statements follow from
 Corollary~\ref{cor:one-oriented}.  There are $2k$ walls and one directed wall in each of $k$
 labelled antipodal pairs.
+\end{proof}
+
+\begin{corollary}[Analytic-wall characteristic cycle]\label{cor:analytic-cycle}
+For two distinct coefficient branches $a,b$, put
+$k=k(a,b)$ and $c=c_{a,k}-c_{b,k}$.  The preceding microsupport is supported on the actual
+phase-zero set
+\[
+       \{\theta\in\RR/2\pi\mathbb Z:\Re(ce^{-ik\theta})=0\}.
+\]
+It has exactly one oriented conormal over every analytic wall, with coefficient $d$ after tensoring
+by a rank-$d$ Hom space; its full and directed masses are respectively $2kd$ and $kd$.  The
+orientation is the transverse derivative sign of the displayed phase.
+\end{corollary}
+
+\begin{proof}
+Highest-difference definition gives $k>0$ and $c\ne0$.  Transport Theorem~\ref{thm:exponential-micro}
+through the cyclic-order- and transverse-sign-preserving bijection of
+Proposition~\ref{prop:analytic-walls}.
 \end{proof}
 
 Thus characteristic coefficients and vanishing ranks are dimensions of an actual quotient
@@ -577,7 +597,7 @@ Define $\langle x,x\rangle_\mu=\sum_{i,j}\mathfrak m_{ij}(1)x_ix_j$.
  &=\sum_i x_i^2+M(x)^2-\langle x,x\rangle_\mu\notag\\
  &=\sum_i x_i^2+\sum_e\ell_e\nu_e(x)^2-(H-1)M(x)^2.
 \end{align}
-Hence cellular microsupport coefficients, directed vanishing-cycle ranks, mixed Hom irregularities,
+Hence analytic-wall microsupport coefficients, directed vanishing-cycle ranks, mixed Hom irregularities,
 and threshold coarea coefficients are four presentations of the same polarization.
 \end{theorem}
 
@@ -636,13 +656,22 @@ The sole subtractive Hessian term in $Q_A$ is $-(H-1)dM\otimes dM$.
 Polarize the squares in Theorem~\ref{thm:local-witt}.
 \end{proof}
 
-For parameters $t_e\in\RR$, define
+Let $R_{\rm Rees}=\RR[\tau_e:e\in E]$.  The split threshold filtration has one graded line for
+each $e$, and its polynomial multi-Rees form is
+\begin{equation}\label{eq:polynomial-rees}
+ \mathcal Q_A^{\rm Rees}(\boldsymbol\tau;x)
+ =\sum_i x_i^2+\sum_e\tau_e^2\ell_e\nu_e(x)^2-(H-1)M(x)^2
+ \in R_{\rm Rees}.
+\end{equation}
+Thus this is an actual polynomial Rees family, not only a collection of numerical weights.  At a
+real point $\tau_e=s_e$, put $t_e=s_e^2\geq0$ and write
 \begin{equation}\label{eq:local-rees}
  Q_{A,\boldsymbol t}(x)=\sum_i x_i^2+
        \sum_et_e\ell_e\nu_e(x)^2-(H-1)M(x)^2.
 \end{equation}
-The associated-graded coordinate of $e$ is $z_e=\sqrt{\ell_e}\nu_e$.  Unit specialization is
-$Q_A$; setting $t_e=0$ deletes exactly channel $e$.
+The associated-graded coordinate of $e$ is $z_e=\sqrt{\ell_e}\nu_e$.  Unit specialization
+$\tau_e=1$ is $Q_A$; setting $\tau_e=0$ deletes exactly channel $e$.  Conversely every
+nonnegative weight vector $\boldsymbol t$ is a real specialization by $s_e=\sqrt{t_e}$.
 
 Choose independent $t_{a,e}$ at all marked points and fuse as in \eqref{eq:fused-form}.
 
@@ -770,7 +799,7 @@ two attained lower bounds for the same full energy bound one another and are equ
 \end{proof}
 
 The residual is not called a vanishing channel merely because its norm is positive: it is the
-explicit quotient in \eqref{eq:corona-exact}.  Under a cellular realization,
+explicit quotient in \eqref{eq:corona-exact}.  Under a boundary Stokes realization,
 Theorem~\ref{thm:transport} carries this quotient to the corresponding relative vanishing object.
 
 \section{The Stokes deformation complex}\label{sec:deformation}
@@ -872,14 +901,13 @@ diagram obtained from finite ramified Stokes data with its type-$A$ marking legs
                   \indm(\widehat C)+\dim\ker\widehat C\leq1.
 \end{equation}
 Thus every such diagram is finite, affine of corank one, or Lorentzian.  The assertion is invariant
-under Fourier--Laplace and the diagram-preserving symplectic Weyl-algebra transformations.
+under every relabelling that preserves its generalized Cartan matrix.
 \end{corollary}
 
 \begin{proof}
-Use a reading with the finite Puiseux Stokes circles at infinity, apply
-Proposition~\ref{prop:published-Cartan} to its core and Theorem~\ref{thm:legs} to the marking
-legs.  Dou\c{c}ot's diagram is invariant under the stated transformations
-\cite{Doucot2021}.
+Apply Proposition~\ref{prop:published-Cartan} to the cyclic-continuation orbits of the defining
+finite Puiseux spectrum and Theorem~\ref{thm:legs} to its marking legs.  Relabelling preserves
+matrix inertia.
 \end{proof}
 
 \section{Spectral consequence and sharpness}\label{sec:spectral}
@@ -893,7 +921,7 @@ $\lambda_1(B)>2$, exactly one eigenvalue exceeds $2$ and none equals $2$.
 \end{theorem}
 
 \begin{proof}
-Eigenvalues of $C$ are $2-\lambda_i(B)$.  Apply \eqref{eq:global-inertia}.
+Eigenvalues of $C$ are $2-\lambda_i(B)$.  Apply \eqref{eq:nah-diagram-law}.
 \end{proof}
 
 \begin{example}[Dou\c{c}ot's twisted triangle; sharpness]\label{ex:triangle}
@@ -972,18 +1000,33 @@ microlocal multiplicities by an exact categorical quotient calculation.
 \bibitem{Boalch2014}
 P.~Boalch, \emph{Geometry and braiding of Stokes data; fission and wild character varieties},
 Ann. of Math. (2) \textbf{179} (2014), 301--365.
+\bibitem{Boalch2025}
+P.~Boalch, \emph{Counting the fission trees and nonabelian Hodge graphs (untwisted case)},
+J. Geom. Phys. \textbf{214} (2025), 105512.
+\bibitem{BoalchYamakawa2015}
+P.~Boalch and D.~Yamakawa, \emph{Twisted wild character varieties},
+arXiv:1512.08091.
+\bibitem{BoalchYamakawa2020}
+P.~Boalch and D.~Yamakawa, \emph{Diagrams for nonabelian Hodge spaces on the affine line},
+C. R. Math. \textbf{358} (2020), 59--65.
 \bibitem{DKRH}
 A.~D'Agnolo and M.~Kashiwara, \emph{Riemann--Hilbert correspondence for holonomic
 $\mathcal D$-modules}, Publ. Math. Inst. Hautes Etudes Sci. \textbf{123} (2016), 69--197.
 \bibitem{DKVanishing}
 A.~D'Agnolo and M.~Kashiwara, \emph{Enhanced nearby and vanishing cycles in dimension one and
 Fourier transform}, Publ. Res. Inst. Math. Sci. \textbf{59} (2023), 543--570.
+\bibitem{Doucot2021}
+J.~Dou\c{c}ot, \emph{Diagrams and irregular connections on the Riemann sphere},
+arXiv:2107.02516v3.
+\bibitem{Doucot2025}
+J.~Dou\c{c}ot, \emph{New nonabelian Hodge graphs from twisted irregular connections},
+arXiv:2509.24861.
 \bibitem{Hiroe2017}
 K.~Hiroe, \emph{Ramified irregular singularities of meromorphic connections and plane curve
 singularities}, Josai Math. Monogr. \textbf{10} (2017), 161--192.
 \bibitem{Hiroe2019}
 K.~Hiroe, \emph{Index of rigidity of differential equations and Euler characteristic of their
-spectral curves}, arXiv:1907.12846.
+spectral curves}, J. Geom. Phys. \textbf{162} (2021), 104060.
 \bibitem{Martinez1994}
 S.~Mart\'{i}nez, G.~Michon and J.~San Mart\'{i}n, \emph{Inverse of strictly ultrametric matrices
 are of Stieltjes type}, SIAM J. Matrix Anal. Appl. \textbf{15} (1994), 98--106.

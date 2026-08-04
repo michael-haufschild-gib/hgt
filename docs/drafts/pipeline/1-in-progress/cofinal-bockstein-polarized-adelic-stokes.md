@@ -350,3 +350,43 @@ Xi.  This makes the remaining obstruction sharper: the strict Xi image is nevert
 boundary, so missing Cartier step cannot be an ordinary boundary-preserving cohomology map.  It
 must be a source-constructed singular/secondary comparison retaining the chosen Xi primitive and
 the graded `ell1` subobject; declaring its physical anomaly zero is still exactly RH.
+
+## 2026-08-04 explicit cofinal Gamma Bockstein
+
+The fixed-ideal obstruction has now been constructed as one literal class.  For centered grade
+`t`, define
+
+```text
+beta_t=[F_(-t)]-[F_t] in (P -> C)/ell1.
+```
+
+`PrimeFirstTraceGammaCofinalNormalizerFrontier.lean` proves unconditionally, for `|t|<1`,
+
+```text
+beta_t != 0  <->  t != 0.
+```
+
+This class is invisible at every finite stage: a Gamma multiplier supported on a finite prime set
+induces the identity modulo `ell1`, so its finite Bockstein is zero.  The full multiplier preserves
+the fixed ideal exactly for `t>=0`; its reflection preserves it exactly for `t<=0`; both preserve
+it exactly at `t=0`.
+
+The construction is now source-derived on the actual Xi landing.  The two physical images of the
+same retained period-one rational-adelic class differ by
+
+```text
+(first nonzero Xi jet at rho) * beta_(2 Re(rho)-1).
+```
+
+The jet is proved nonzero, so this physical source Bockstein is nonzero exactly off the critical
+line.  Its global annihilation is equivalent to RH.  This is new obstruction-level knowledge, not
+the missing annihilation theorem.
+
+**Sharpened open producer.** Construct from the literal infinite-prime arithmetic source a
+coefficient-faithful singular secondary boundary whose fixed-fibre physical image is exactly this
+`beta` class and whose independent Stokes/Cartier law annihilates it.  No finite-prime naturality,
+ordinary boundary-preserving comparison, transported variable norm, or fixed-Hilbert completion
+can supply the law: the first is quotient-trivial, the strict source image is already a target
+boundary, and the latter two preserve the wrong ideals.  The proof must act at the singular
+cofinal all-prime boundary and cannot use `beta=0`, equal trace-class status, or critical-line
+placement as a premise.

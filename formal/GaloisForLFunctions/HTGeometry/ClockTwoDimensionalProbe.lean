@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ClockGoursatC2
 import GaloisForLFunctions.HTGeometry.ClockCharacteristicProbe
+import GaloisForLFunctions.HTGeometry.ConformalMetricLowRegularity
 
 /-!
 # Every potential on a two-dimensional clock spacetime carries a probe
@@ -104,17 +105,39 @@ theorem hasDerivAt_planarSnd (hF : ContDiff ℝ 1 F) (ξ t : ℝ) :
   rw [hval] at h3
   exact h3
 
+/-! ## Regularity of a field read in a linear frame -/
+
+/-- **A field with differentiable partial derivatives keeps them in a linear frame.** -/
+theorem differentiablePartialsOn_comp_frame {d : ℕ} (n : Fin (d + 1) → (Fin (d + 1) → ℝ))
+    {u : (Fin (d + 1) → ℝ) → ℝ} {V : Set (Fin (d + 1) → ℝ)} (hV : IsOpen V)
+    (hu : ∀ z ∈ V, DifferentiableAt ℝ u z)
+    (hu2 : ∀ k : Fin (d + 1), ∀ z ∈ V, DifferentiableAt ℝ (coordPartial k u) z) :
+    SmoothMetricChart.DifferentiablePartialsOn (fun y => u (frameMap n y))
+      (frameMap n ⁻¹' V) where
+  base := fun x hx => differentiableAt_comp_frame n (hu _ hx)
+  coord := by
+    have hWopen : IsOpen (frameMap (d := d) n ⁻¹' V) := hV.preimage (continuous_frameMap n)
+    intro i x hx
+    have hev : coordPartial i (fun y => u (frameMap n y)) =ᶠ[nhds x]
+        fun y => ∑ k, n k i * coordPartial k u (frameMap n y) :=
+      Filter.eventuallyEq_of_mem (hWopen.mem_nhds hx) fun y hy =>
+        coordPartial_comp_frame n (hu _ hy) i
+    rw [hev.differentiableAt_iff]
+    exact DifferentiableAt.fun_sum fun k _ =>
+      (differentiableAt_comp_frame n (hu2 k _ hx)).const_mul (n k i)
+
 /-! ## The probe -/
 
 /-- **Every continuously differentiable potential on a two-dimensional clock spacetime admits a
-clock probe on a neighbourhood of any prescribed event, nonvanishing throughout and normalised to
-`1` at the event.** -/
+clock probe on a neighbourhood of any prescribed event, nonvanishing throughout, normalised to
+`1` at the event, and carrying differentiable partial derivatives.** -/
 theorem exists_clockProbe_on_two_dimensional {V : (Fin (1 + 1) → ℝ) → ℝ} (hV : ContDiff ℝ 1 V)
     (x : Fin (1 + 1) → ℝ) :
     ∃ W : Set (Fin (1 + 1) → ℝ), IsOpen W ∧ x ∈ W ∧ ∃ U : (Fin (1 + 1) → ℝ) → ℝ,
       SolvesPotentialWaveOn
           (SmoothPseudoMetric.ofSignature nullEps nullEps_ne_zero).chart.dalembert V U W ∧
-        (∀ y ∈ W, U y ≠ 0) ∧ U x = 1 := by
+        (∀ y ∈ W, U y ≠ 0) ∧ U x = 1 ∧
+          SmoothMetricChart.DifferentiablePartialsOn U W := by
   classical
   set F : ℝ × ℝ → ℝ := nullKernel V with hF_def
   have hFC : ContDiff ℝ 1 F := contDiff_nullKernel hV
@@ -173,10 +196,16 @@ theorem exists_clockProbe_on_two_dimensional {V : (Fin (1 + 1) → ℝ) → ℝ}
     show nullChartFun u x ≠ 0
     rw [hU1]
     exact one_ne_zero
+  have hreg : SmoothMetricChart.DifferentiablePartialsOn (nullChartFun u)
+      (nullFrame ⁻¹' chartBox ((Ioo (ξ₀ - h) (ξ₀ + h) ∩ Ioo c c') ×ˢ Ioo b b')) :=
+    differentiablePartialsOn_comp_frame nullCovectors (isOpen_chartBox hΩopen)
+      (fun z hz => differentiableAt_chartFun hC1u hz)
+      (fun k z hz => differentiableAt_coordPartial_chartFun hC1u hC1A hC1B k hz)
   refine ⟨(nullFrame ⁻¹' chartBox ((Ioo (ξ₀ - h) (ξ₀ + h) ∩ Ioo c c') ×ˢ Ioo b b'))
       ∩ {y | nullChartFun u y ≠ 0},
     ((isOpen_chartBox hΩopen).preimage hcontNull).inter (isOpen_ne.preimage hUcont),
-    ⟨hmemΩ, hxne⟩, nullChartFun u, ?_, fun y hy => hy.2, hU1⟩
+    ⟨hmemΩ, hxne⟩, nullChartFun u, ?_, fun y hy => hy.2, hU1,
+    hreg.mono Set.inter_subset_left⟩
   intro x' hx'
   exact solvesPotentialWaveAt_nullChartFun hC1u hC1A hC1B hx'.1 (hchar x' hx'.1)
 
@@ -188,7 +217,7 @@ theorem exists_clockProbe_two_dimensional {V : (Fin (1 + 1) → ℝ) → ℝ} (h
       SolvesPotentialWaveAt
           (SmoothPseudoMetric.ofSignature nullEps nullEps_ne_zero).chart.dalembert V U x ∧
         U x = 1 := by
-  obtain ⟨W, _, hxW, U, hUon, _, hU1⟩ := exists_clockProbe_on_two_dimensional hV x
+  obtain ⟨W, _, hxW, U, hUon, _, hU1, _⟩ := exists_clockProbe_on_two_dimensional hV x
   exact ⟨U, hUon x hxW, hU1⟩
 
 /-- **The clock probes on regions determine a two-dimensional potential completely.** This is the
@@ -203,7 +232,7 @@ theorem potential_eqOn_of_probes_on_two_dimensional {V₁ V₂ : (Fin (1 + 1) �
           (SmoothPseudoMetric.ofSignature nullEps nullEps_ne_zero).chart.dalembert V₂ U W) :
     V₂ = V₁ := by
   funext x
-  obtain ⟨W, _, hxW, U, hUon, hUne, _⟩ := exists_clockProbe_on_two_dimensional hV₁ x
+  obtain ⟨W, _, hxW, U, hUon, hUne, _, _⟩ := exists_clockProbe_on_two_dimensional hV₁ x
   exact potential_eqOn_of_solvesOn hUon (hprobe U W hUon) hUne hxW
 
 /-- **A two-dimensional clock spacetime has local probes at every event.** -/

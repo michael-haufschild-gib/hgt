@@ -6,6 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.FibreStartSeparation
 import GaloisForLFunctions.RHTower.Sieve.FibreDevSeparation
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeMaximalWindow
 import GaloisForLFunctions.RHTower.Sieve.CoprimeMaximalWindow
+import GaloisForLFunctions.RHTower.Sieve.MoebiusMaximalWindow
 
 /-!
 # The sign law from averaged short-interval estimates
@@ -247,5 +248,37 @@ theorem route_e_sign_density_of_moebius_maximal {hh : ℝ → ℝ} {s : ℤ} (hs
   filter_upwards [hsmall, eventually_ge_atTop (0 : ℝ)] with x hx hx0
   rw [sqrt_div_sq hx0 hp.pos]
   exact div_le_div_of_nonneg_right hx hp0.le
+
+/-- **The card's Theorem `(3)`, unconditionally, in the long-window regime.**  When the window
+length stays within a constant factor of `√x` the Möbius input follows from the prime number
+theorem alone, so the whole statement is a theorem of this corpus with no external input. -/
+theorem route_e_sign_density_long_window {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1) {K : ℝ}
+    (hK : 0 < K)
+    (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
+    (hsmall : ∀ᶠ x in atTop, hh x ≤ Real.sqrt x)
+    (hlow : ∀ᶠ x in atTop, Real.sqrt x / K ≤ hh x)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ x in atTop,
+      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+        ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) :=
+  route_e_sign_density_of_moebius_maximal hs hgrow hsmall
+    (maximalWindowMeanSquare_of_firstMoment abs_moebius_real_le_one (tendsto_of_growth hgrow)
+      (maximalWindowFirstMoment_moebius_long hK hlow hsmall)) hε
+
+/-- **The card's Theorem `(3)` for every window law that outgrows the Mertens supremum.**  This is
+the sharp form of what the argument gives: the admissible window range is governed exactly by the
+error term in the prime number theorem, through `mertensSup` at the scale `3√x`. -/
+theorem route_e_sign_density_of_mertens_rate {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
+    (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
+    (hsmall : ∀ᶠ x in atTop, hh x ≤ Real.sqrt x)
+    (hrate : Tendsto (fun x => mertensSup ⌈3 * Real.sqrt x⌉₊ / hh x) atTop (𝓝 0))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ x in atTop,
+      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+        ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) := by
+  have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
+  exact route_e_sign_density_of_moebius_maximal hs hgrow hsmall
+    (maximalWindowMeanSquare_of_firstMoment abs_moebius_real_le_one hhtop
+      (maximalWindowFirstMoment_moebius_of_rate hsmall (hhtop.eventually_gt_atTop 0) hrate)) hε
 
 end RHTower.Sieve

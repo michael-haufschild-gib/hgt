@@ -2514,3 +2514,31 @@ with **locally bounded** data (`VolterraWindowedEquation.lean`) and a Duhamel ca
 frequency has no addition formula.
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+## Status update: a principal part that varies in space
+
+Both classes above still have a principal part independent of the *spatial* point. The child card
+`../../../3-formalized/new_scientific_knowledge/product-chart-clock-probes.md` crosses that
+frontier, by a product argument rather than by variable-coefficient hyperbolic theory.
+
+In two dimensions the corpus already owns the full variable-coefficient inverse step
+(`exists_clockProbe_on_two_dimensional`, Goursat), and the two-dimensional conformal law of the
+d'Alembertian holds with no differentiability hypothesis. Crossing that surface with a flat factor
+and pulling the probe back along the projection gives a probe of the product; rescaling the product
+conformally by an arbitrary smooth factor of *all* the coordinates then produces a chart whose
+inverse metric varies in every coordinate:
+
+- **`SmoothMetricChart.prodFlat_dalembert_comp_front`** — the d'Alembertian of the product chart on
+  a transversally constant field is the d'Alembertian of the factor, read at the projected point;
+- **`regularOpenProbes_conformalRescale_warpedProductChart`** — regular clock probes for the widest
+  class the construction reaches: an arbitrary conformal factor on the two-dimensional block, a
+  second arbitrary conformal factor on all `2 + k` coordinates, an arbitrary `C¹` potential of the
+  two-dimensional factor;
+- **`twoSpecies_scale_law_warpedProductChart`** — two species of different mass reconstruct the
+  *product* of the two conformal factors pointwise.
+
+The two-dimensional existence theorem was strengthened in place to record the regularity its
+construction already produced (`SmoothMetricChart.DifferentiablePartialsOn U W`), which is what the
+transfer to the product consumes.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.

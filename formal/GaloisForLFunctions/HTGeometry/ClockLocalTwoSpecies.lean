@@ -200,7 +200,7 @@ theorem openProbes_conformalPotential_two {σ : (Fin (1 + 1) → ℝ) → ℝ} (
     contDiff_const.mul (Real.contDiff_exp.comp (contDiff_const.mul hσ1))
   rw [conformalPotential_weight_zero]
   intro x
-  obtain ⟨W, hWopen, hxW, U, hUon, hUne, _⟩ := exists_clockProbe_on_two_dimensional hV x
+  obtain ⟨W, hWopen, hxW, U, hUon, hUne, _, _⟩ := exists_clockProbe_on_two_dimensional hV x
   exact ⟨W, hWopen, hxW, U, hUon, hUne⟩
 
 /-- **The two-species conformal clock scale law in two dimensions, from probes on open regions,

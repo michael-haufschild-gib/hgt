@@ -6472,3 +6472,87 @@ state *outgrow* the old ones, which is Clunie–Steinmetz and genuinely hard. In
 growth at all — it needs only that a transcendental entire function is far from injective, and that an
 identity on an open set of values propagates. The card's Reduction III should be re-read with this in
 mind: its analytic half is dispensable, and only the observability half (`helim`) carries content.
+
+### Transcendence of every state, and the elimination step reduced to positive order
+
+`HTGeometry/CascadeTranscendence.lean`, unconditional and axiom-clean:
+
+* `transcendentalEntire_entireCascade` — every state `F_k` (`k ≥ 1`) of a cascade of transcendental
+  entire functions is itself transcendental entire.  One line of content: a polynomial expression
+  `F_k = p(z)` is the relation `X_k − p(X_0)` between two states, and there are none.  This replaces
+  the earlier derivation of composite transcendence from `StepSeparation`, which is no longer needed.
+* `not_differentiallyAlgebraicOfOrder_zero_entireCascade` — hence no state satisfies an order-zero
+  equation (with the order-zero classification).
+* `exactDifferentialOrder_entireCascade_of_elimination_pos` — the card's theorem with the elimination
+  hypothesis required **only for `0 < m < n`**.  At `n = 1` the hypothesis list is empty, so that case
+  is closed outright.
+
+### Where the remaining content actually sits, measured
+
+With independence free, the classical trace of the lower bound was re-examined. Writing
+`E = ℂ(z)⟨F_{k+1}⟩(F_k)^alg`, the chain rule and the first-order equation of `f_k` put every jet of
+`F_k` in `E` (each new jet of `F_{k+1}` supplies one), so
+
+`trdeg ℂ(z)⟨F_k⟩ = k ≤ trdeg E ≤ ord(F_{k+1}) + 1`,
+
+and `F_{k+1}` is transcendental over `ℂ(z)⟨F_k⟩` — the jets of `F_k` are algebraic over the state
+field, and the states are independent — which adds one:
+
+`k + 1 ≤ trdeg E ≤ ord(F_{k+1}) + 1`,  i.e. **`ord(F_{k+1}) ≥ ord(F_k)`**.
+
+The count is tight: it yields monotonicity and stops exactly one step short of the unit increment.
+What it is missing is that `F_k` should be *algebraic* over `ℂ(z)⟨F_{k+1}⟩` — observability — which is
+precisely Reduction III, and no transcendence-degree count can supply it: `k+1` output jets against
+`k` state jets is a square-plus-one system whose solvability is a Jacobian nonvanishing, not a
+dimension count.
+
+So the remaining gap is exactly one determinant, and the corpus already owns the algebra that turns it
+into the theorem (`TerminalPowerCascadeInduction.algebraicIndependent_cascadeOutput` and the
+`ScalarDifferentialOrder*` bounds). Its hypotheses are a triangular flag with nonvanishing diagonal —
+supplied by the Wiman initial law with exponent `q_k > 0` (Reduction I/II).
+
+**The next brick, stated sharply.** `q_k = ρ(f_k) > 0` — Strelitz's positive-order theorem for
+transcendental entire solutions of first-order equations. The corpus already has all three inputs:
+`exists_radius_norm_topSymbol_le` (the top symbol is small at Wiman points, with
+`z f'/f ≈ ν(r)` there), the central-index divergence `ν(r) → ∞`, and the Newton-edge root extraction.
+The argument is that at slope `p = −1` the edge polynomial's roots bound `|z f'/f| ≈ ν(r)`, so `ν`
+would be bounded — contradicting divergence. That is the shape to build next; it needs no new
+analytic theory, only the assembly of three proved statements.
+
+### The exponential tower: the whole problem becomes polynomial algebra
+
+The card's theorem is currently closed only at `n = 1`, so a non-vacuous instance at every `n` is worth
+having outright. The `n`-fold exponential is the natural one, and for it the elimination step needs no
+Wiman theory at all — the differential structure is *polynomial*.
+
+`HTGeometry/ExponentialTowerModel.lean` (unconditional, axiom-clean) builds both sides:
+
+* `deriv_expTower` — the derivative law `(Y_k)' = Y_1·Y_2⋯Y_k` for the analytic tower;
+* `towerDerivation` — the derivation on `MvPolynomial ℕ ℂ` prescribing the same law on the variables,
+  with `towerDerivation_unique` (it is the only one).
+
+**Why this closes the transfer for free.** Since `δ^i Y_n = Y_n·G_i(X_1,…,X_{n−1})` with `G_i`
+polynomials, any differential relation `P(z, Y, δY, …, δ^m Y) ≡ 0` becomes a polynomial relation among
+`X_0, X_1, …, X_n` evaluated at the states — and the states are algebraically independent
+(`noRelation_entireCascade_of_transcendental`), so the *polynomial*
+`P(X_0, X_n, X_nG_1, …, X_nG_m)` is identically zero. Splitting by the `X_n`- and `X_0`-degrees, this
+is a relation among `G_1,…,G_m` alone. No meromorphic-field embedding, no derivation extension to an
+algebraic closure: the analytic problem is exactly the algebraic independence of the `G_i`.
+
+**The reduction chain, computed.** With `Π = X_1⋯X_{n−1}`, `S = 1 + X_1 + X_1X_2 + ⋯ + X_1⋯X_{n−2}`:
+
+1. `G_1 = Π`, `G_{i+1} = Π G_i + δG_i`; row-reducing by `G_i = Π K_i` gives
+   `det(∂_jG_i) = Π^{n−2}·det[∂_jΠ; ∂_jK_2; …]` with `K_{i+1} = (Π+S)K_i + δK_i`, `K_1 = 1`.
+2. The `K_i` are the Bell polynomials of `A = Π + S`, and the Bell substitution is unitriangular, so
+   `ℂ(G_1,…,G_{n−1}) = ℂ(Π, A, δA, …, δ^{n−3}A) = ℂ(Π, S, δS, …, δ^{n−3}S)`.
+3. `S` and all its jets lie in `ℂ[X_1,…,X_{n−2}]` while `Π` is the only element involving `X_{n−1}`,
+   so the problem splits and reduces to: **`S, δS, …, δ^{n−3}S` are algebraically independent in
+   `ℂ[X_1,…,X_{n−2}]`.**
+
+Checked by hand: `n = 2` gives determinant `−X_2`; `n = 3` gives `−X_3²X_1²X_2`; `n = 4` gives
+`±X_4³X_1^5X_2^3X_3^2(1−X_2)`. The determinant is not a monomial — the factor `(1−X_2)` at `n = 4`
+shows a plain leading-monomial argument will not do, and the naive top-degree parts of the rows are
+proportional (`top G_i = Π^i`), which is exactly why the Bell row reduction is needed.
+
+That last independence statement is the whole remaining content of the tower case, and it is
+elementary polynomial algebra — no growth theory, no Newton polygon, no external theorem.
