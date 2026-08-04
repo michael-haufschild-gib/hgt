@@ -619,8 +619,9 @@ stabilization or a different Dirac parity.
   degree-zero theorem. P4 computes fixed crossed-product character ranks and the concrete
   `z^n(z²-1)^k` variation family.
 - 2026-08-04 — Final gates pass: direct facade elaboration; targeted module build; all 18 facade
-  axiom audits with only `propext`, `Classical.choice`, and `Quot.sound`; global formal lint; 21-page
-  PDF with zero overfull/undefined-reference warnings and complete visual inspection. Hostile
+  axiom audits with only `propext`, `Classical.choice`, and `Quot.sound`; global formal lint; 20-page
+  PDF with zero overfull/undefined-reference warnings, no public verification-tool references, and
+  complete visual inspection. Hostile
   Review 2 closes H1--H7 and records **PASS / suitable for submission at general-journal
   standard**. Manuscript, claim trace, literature audit, and review ledger are under
   `docs/drafts/manuscripts/real-corona-smoothness-detectability/`.

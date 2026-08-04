@@ -1,116 +1,99 @@
 import GaloisForLFunctions.RHTower.FloorAndLargeSelection
-import GaloisForLFunctions.HTGeometry.PrefixStateIndependence
-import GaloisForLFunctions.HTGeometry.AnalyticMeroPolynomialEval
-import GaloisForLFunctions.HTGeometry.OneVariableMvPolynomial
+import GaloisForLFunctions.HTGeometry.CircleComparisonSeparation
 
 /-!
-# The separation reduced to a window comparison
+# A floor quantified over an annulus cannot carry a separation
 
-The selection produces, for each window `[r, r+1]`, a point carrying a floor for the coefficient and a
-value of the new state dominating any prescribed one.  What remains of a growth separation is then a
-comparison on that window, with the point already given.
+A growth separation carries a floor `ε` for a polynomial in the earlier states, and the quantity it
+must dominate contains `log⁺ ε⁻¹`.  In the separation itself the floor is produced together with the
+point, so it may be taken to be the value of the polynomial there.  An interface that instead
+quantifies the floor universally — "for every point of the annulus and every floor at it, the
+comparison holds" — asks for the comparison with `log⁺ ε⁻¹` arbitrarily large and the right side
+fixed, and is therefore satisfied by no family at all.
 
-The analytic obligation therefore no longer involves constructing a point: only an inequality between
-the floor, the joint scale of the earlier states and the new state's value has to be verified.
+The exponential cascade witnesses this: on a circle centred at the origin the maximum of `‖exp‖` sits
+at the positive real point, whose modulus is the radius itself, and every positive number below that
+radius is an admissible floor for the coordinate there.
+
+The usable interface is the one carrying the floor on a whole circle,
+`GaloisForLFunctions.HTGeometry.CircleComparison`, where the floor is part of the datum.
 -/
 
 namespace RHTower
 
-open GaloisForLFunctions.HTGeometry
+open GaloisForLFunctions GaloisForLFunctions.HTGeometry
 
-/-- **The separation from a window comparison.**  With the coefficient nonvanishing at the origin, a
-comparison valid on some window for each level gives the growth separation. -/
-theorem stepSeparation_of_window {m : ℕ} {X : Fin m → ℂ → ℂ} {F : ℂ → ℂ}
-    (hXan : ∀ j : Fin m, AnalyticOnNhd ℂ (X j) (Set.univ : Set ℂ))
-    (hFd : Differentiable ℂ F)
-    (hcoeff0 : ∀ A : MvPolynomial (Fin m) ℂ, A ≠ 0 →
-      MvPolynomial.eval (fun j => X j 0) A ≠ 0)
-    (hwin : ∀ A : MvPolynomial (Fin m) ℂ, A ≠ 0 → ∀ c : ℝ, 0 ≤ c →
-      ∃ (r : ℝ) (w : ℂ), 0 < r ∧ ‖w‖ ≤ r ∧
-        ∀ (z : ℂ) (ε : ℝ), r ≤ ‖z‖ → ‖z‖ ≤ r + 1 → 0 < ε →
-          ε ≤ ‖MvPolynomial.eval (fun j => X j z) A‖ → ‖F w‖ ≤ ‖F z‖ →
-          c * (1 + (∑ j : Fin m, Real.posLog ‖X j z‖) + Real.posLog ε⁻¹)
-            < Real.posLog ‖F z‖) :
-    StepSeparation X F := by
-  intro A hA c hc
-  obtain ⟨r, w, hr, hw, hcomp⟩ := hwin A hA c hc
-  have hgan : AnalyticOnNhd ℂ (fun z => MvPolynomial.eval (fun j => X j z) A)
-      (Set.univ : Set ℂ) := analyticOnNhd_eval_mvPolynomial X hXan A
-  obtain ⟨z, ε, hε0, hfloor, hlarge, hzr, hzr1⟩ :=
-    exists_point_floor_and_large hgan (hcoeff0 A hA) hFd hr hw
-  exact ⟨z, ε, hε0, hfloor, hcomp z ε hzr hzr1 hε0 hfloor hlarge⟩
+/-- The cascade whose every edge is the exponential. -/
+noncomputable def expFamily : ℕ → ℂ → ℂ := fun _ => Complex.exp
 
-/-- **The separation from a window comparison, with the correct nonvanishing hypothesis.**  Only that
-each nonzero coefficient is not identically zero along the states is required — which is exactly the
-independence of the earlier states.  The centre of the window is produced by the selection. -/
-theorem stepSeparation_of_window_of_ne {m : ℕ} {X : Fin m → ℂ → ℂ} {F : ℂ → ℂ}
-    (hXan : ∀ j : Fin m, AnalyticOnNhd ℂ (X j) (Set.univ : Set ℂ))
-    (hFd : Differentiable ℂ F)
-    (hcoeffne : ∀ A : MvPolynomial (Fin m) ℂ, A ≠ 0 →
-      ∃ c : ℂ, MvPolynomial.eval (fun j => X j c) A ≠ 0)
-    (hwin : ∀ A : MvPolynomial (Fin m) ℂ, A ≠ 0 → ∀ c : ℝ, 0 ≤ c →
+/-- **No family satisfies an annulus comparison with a freely quantified floor.**  Already at the
+first edge of the exponential cascade the required inequality fails, because the floor may be taken
+below every positive number while the point and the right-hand side stay fixed. -/
+theorem not_window_comparison :
+    ¬ ∀ (m : ℕ) (A : MvPolynomial (Fin m) ℂ), A ≠ 0 → ∀ c : ℝ, 0 ≤ c →
       ∃ r : ℝ, 0 < r ∧
         ∀ (cen z : ℂ) (ε : ℝ), r ≤ ‖z - cen‖ → ‖z - cen‖ ≤ r + 1 → 0 < ε →
-          ε ≤ ‖MvPolynomial.eval (fun j => X j z) A‖ →
-          (∀ w : ℂ, ‖w - cen‖ ≤ r → ‖F w‖ ≤ ‖F z‖) →
-          c * (1 + (∑ j : Fin m, Real.posLog ‖X j z‖) + Real.posLog ε⁻¹)
-            < Real.posLog ‖F z‖) :
-    StepSeparation X F := by
-  intro A hA c hc
-  obtain ⟨r, hr, hcomp⟩ := hwin A hA c hc
-  have hgan : AnalyticOnNhd ℂ (fun z => MvPolynomial.eval (fun j => X j z) A)
-      (Set.univ : Set ℂ) := analyticOnNhd_eval_mvPolynomial X hXan A
-  obtain ⟨cen, z, ε, hε0, hfloor, h1, h2, hmax⟩ :=
-    exists_point_floor_and_large_of_ne hgan (hcoeffne A hA) hFd hr
-  exact ⟨z, ε, hε0, hfloor, hcomp cen z ε h1 h2 hε0 hfloor hmax⟩
-
-/-! ## The induction with no independence hypothesis
-
-The nonvanishing hypothesis of the window theorem is the induction's own conclusion one level down,
-so the whole state-independence induction can be run from the window comparison alone. -/
-
-/-- **State independence from window comparisons alone.** -/
-theorem noRelation_prefixFamily_of_window (Y : ℕ → ℂ → ℂ)
-    (hYan : ∀ k : ℕ, AnalyticOnNhd ℂ (Y k) (Set.univ : Set ℂ))
-    (hwin : ∀ m : ℕ, ∀ A : MvPolynomial (Fin m) ℂ, A ≠ 0 → ∀ c : ℝ, 0 ≤ c →
-      ∃ r : ℝ, 0 < r ∧
-        ∀ (cen z : ℂ) (ε : ℝ), r ≤ ‖z - cen‖ → ‖z - cen‖ ≤ r + 1 → 0 < ε →
-          ε ≤ ‖MvPolynomial.eval (fun j => prefixFamily Y m j z) A‖ →
-          (∀ w : ℂ, ‖w - cen‖ ≤ r → ‖Y m w‖ ≤ ‖Y m z‖) →
-          c * (1 + (∑ j : Fin m, Real.posLog ‖prefixFamily Y m j z‖) + Real.posLog ε⁻¹)
-            < Real.posLog ‖Y m z‖)
-    (m : ℕ) :
-    ∀ P : MvPolynomial (Fin m) ℂ, P ≠ 0 →
-      ¬ (∀ z : ℂ, MvPolynomial.eval (fun j => prefixFamily Y m j z) P = 0) := by
-  induction m with
-  | zero =>
-      intro P hP hrel
-      apply hP
-      have heq : (MvPolynomial.eval (fun j => prefixFamily Y 0 j (0 : ℂ)) :
-            MvPolynomial (Fin 0) ℂ →+* ℂ)
-          = (MvPolynomial.isEmptyRingEquiv ℂ (Fin 0) : MvPolynomial (Fin 0) ℂ →+* ℂ) :=
-        eval_empty_eq _
-      have hz : (MvPolynomial.isEmptyRingEquiv ℂ (Fin 0) : MvPolynomial (Fin 0) ℂ →+* ℂ) P = 0 := by
-        rw [← heq]
-        exact hrel 0
-      exact (MvPolynomial.isEmptyRingEquiv ℂ (Fin 0)).injective (by simpa using hz)
-  | succ m ih =>
-      intro P hP hrel
-      have hcoeffne : ∀ A : MvPolynomial (Fin m) ℂ, A ≠ 0 →
-          ∃ c : ℂ, MvPolynomial.eval (fun j => prefixFamily Y m j c) A ≠ 0 := by
-        intro A hA
-        by_contra hcon
-        refine ih A hA ?_
-        intro c
-        by_contra hc
-        exact hcon ⟨c, hc⟩
-      have hYd : Differentiable ℂ (Y m) :=
-        fun z => (hYan m z (Set.mem_univ z)).differentiableAt
-      have hsep : StepSeparation (prefixFamily Y m) (Y m) :=
-        stepSeparation_of_window_of_ne (fun j => hYan _) hYd hcoeffne (hwin m)
-      refine noRelation_snoc ih hsep P hP ?_
-      intro z
-      rw [prefixFamily_snoc]
-      exact hrel z
+          ε ≤ ‖MvPolynomial.eval
+            (fun j => prefixFamily (entireCascade expFamily) m j z) A‖ →
+          (∀ w : ℂ, ‖w - cen‖ ≤ r →
+            ‖entireCascade expFamily m w‖ ≤ ‖entireCascade expFamily m z‖) →
+          c * (1 + (∑ j : Fin m,
+              Real.posLog ‖prefixFamily (entireCascade expFamily) m j z‖)
+              + Real.posLog ε⁻¹)
+            < Real.posLog ‖entireCascade expFamily m z‖ := by
+  intro h
+  obtain ⟨r, hr, hcomp⟩ :=
+    h 1 (MvPolynomial.X 0) (MvPolynomial.X_ne_zero 0) 1 zero_le_one
+  set z : ℂ := ((r : ℝ) : ℂ) with hzdef
+  have hznorm : ‖z‖ = r := by
+    rw [hzdef, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hr]
+  have hzsub : ‖z - 0‖ = r := by rw [sub_zero, hznorm]
+  set ε : ℝ := min r (Real.exp (-(r + 2 + Real.posLog r))) with hεdef
+  have hε0 : 0 < ε := lt_min hr (Real.exp_pos _)
+  have heval : MvPolynomial.eval
+      (fun j => prefixFamily (entireCascade expFamily) 1 j z)
+      (MvPolynomial.X (0 : Fin 1)) = z := by
+    simp [prefixFamily]
+  have hfloor : ε ≤ ‖MvPolynomial.eval
+      (fun j => prefixFamily (entireCascade expFamily) 1 j z)
+      (MvPolynomial.X (0 : Fin 1))‖ := by
+    rw [heval, hznorm]
+    exact min_le_left _ _
+  have hexp1 : ∀ w : ℂ, ‖entireCascade expFamily 1 w‖ = Real.exp w.re := by
+    intro w
+    simp [expFamily, Complex.norm_exp]
+  have hdom : ∀ w : ℂ, ‖w - 0‖ ≤ r →
+      ‖entireCascade expFamily 1 w‖ ≤ ‖entireCascade expFamily 1 z‖ := by
+    intro w hw
+    have hw' : ‖w‖ ≤ r := by rwa [sub_zero] at hw
+    rw [hexp1 w, hexp1 z]
+    have hzre : z.re = r := by rw [hzdef, Complex.ofReal_re]
+    rw [hzre]
+    exact Real.exp_le_exp.mpr (le_trans (Complex.re_le_norm w) hw')
+  have hkey := hcomp 0 z ε (le_of_eq hzsub.symm) (by rw [hzsub]; linarith) hε0 hfloor hdom
+  -- the right-hand side is the radius
+  have hrhs : Real.posLog ‖entireCascade expFamily 1 z‖ = r := by
+    have hzre : z.re = r := by rw [hzdef, Complex.ofReal_re]
+    rw [hexp1 z, hzre, Real.posLog_apply, Real.log_exp]
+    exact max_eq_right hr.le
+  -- the left-hand side already exceeds it through the floor term alone
+  have hsum : (∑ j : Fin 1,
+      Real.posLog ‖prefixFamily (entireCascade expFamily) 1 j z‖) = Real.posLog r := by
+    rw [Fin.sum_univ_one]
+    have : prefixFamily (entireCascade expFamily) 1 0 z = z := by simp [prefixFamily]
+    rw [this, hznorm]
+  have hlogε : Real.log ε ≤ -(r + 2 + Real.posLog r) := by
+    have h1 : ε ≤ Real.exp (-(r + 2 + Real.posLog r)) := min_le_right _ _
+    have h2 := Real.log_le_log hε0 h1
+    rwa [Real.log_exp] at h2
+  have hpl : r + 2 + Real.posLog r ≤ Real.posLog ε⁻¹ := by
+    have h2 : Real.log ε⁻¹ ≤ Real.posLog ε⁻¹ := by
+      rw [Real.posLog_apply]
+      exact le_max_right _ _
+    rw [Real.log_inv] at h2
+    linarith
+  rw [hsum, hrhs] at hkey
+  have hp0 : (0 : ℝ) ≤ Real.posLog r := Real.posLog_nonneg
+  linarith
 
 end RHTower

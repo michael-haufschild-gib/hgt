@@ -242,8 +242,9 @@ substantial; P1, P3, P4 make the universal mechanism testable rather than orname
   **PASS**.
 - Claim trace: every named result and substantive displayed identity maps to an exact Lean
   declaration — **PASS**.
-- PDF: 21 pages, zero overfull boxes, zero undefined references, and all pages visually inspected;
-  only one benign first-page underfull vertical box — **PASS**.
+- PDF: 20 pages, zero overfull boxes, zero undefined references, zero internal-verification-tool
+  references, and all pages visually inspected; only one benign first-page underfull vertical box
+  — **PASS**.
 
 ### Residual nonfatal limitations
 

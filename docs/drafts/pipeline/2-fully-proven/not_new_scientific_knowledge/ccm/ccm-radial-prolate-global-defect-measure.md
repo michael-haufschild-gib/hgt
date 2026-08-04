@@ -312,12 +312,13 @@ equation in Liouville normal form, and the pole-uniform comparison estimate with
   `A⁴ - B⁴ = (A-B)(A+B)(A²+B²)` with `(A+B)(A²+B²) >= B³ = x^{-3/2}`, so the bound is global rather than
   compact-dependent — stronger than the card's `O(c^{-1})` on compacts.
 
-What remains for `(8)` is the *constant* in the large-argument Bessel asymptotic: the tree has
+The *constant* in the large-argument Bessel asymptotic is now proved as well (see below): the tree had
 `exists_besselJ0_phase_asymptotic` in the form `sqrt(u) J_0(u) = p cos u + q sin u + O(1/u)` with `p, q`
-deliberately unidentified, whereas `(8)` needs `p = q = 1/sqrt(pi)`, i.e.
-`J_0(u) = sqrt(2/(pi u)) cos(u - pi/4) + O(u^{-3/2})`.  Identifying them is a separate classical task (a
-Fresnel-type constant), independent of everything above.  `(10)`, `(16)` and `(20)` then need that constant
-plus the exact leakage identities `(13)`, which belong to the endpoint-response cards.
+deliberately unidentified, and `p = q = 1/sqrt(pi)` is now a theorem.  So every analytic ingredient of `(8)`
+is unconditional: the phase and amplitude expansions of `(7)` and the Bessel asymptotic with its constant.
+What `(8)` still needs is the PSWF-specific normalisation — the identification `(1)` of the radial profile
+with the Fourier ratio, and the endpoint-response nonvanishing — and `(10)`, `(16)`, `(20)` then need the
+exact leakage identities `(13)`, which belong to the endpoint-response cards.
 
 **The Fresnel constant is now proved**, in `formal/GaloisForLFunctions/RHTower/FresnelIntegral.lean`.  It is
 the one irreducible input of `(8)`: the amplitude `sqrt(2/pi)` and the phase shift `-pi/4` of the Bessel
@@ -363,6 +364,69 @@ The route from the Fresnel constant to the Bessel constant is under construction
   `g'(v) = v/(4 (1-v²/4)^{3/2}) >= 0`.  The `1` gives the Fresnel integral; `g` is nonnegative increasing
   with an explicit derivative, which is what the weighted van der Corput test consumes.
 
+**The Bessel constant is proved.**  `abs_sqrt_mul_besselJ0_sub_le`:
+
+```text
+|sqrt(u) J_0(u) - (cos u + sin u)/sqrt(pi)| <= 5 / u^{1/4}      (u >= 1),
+```
+
+i.e. `J_0(u) = sqrt(2/(pi u)) cos(u - pi/4) + O(u^{-3/4})`, with the amplitude `sqrt(2/pi)` and the phase
+shift `pi/4` identified.  This is the last analytic input of `(8)`, and it is the Fresnel constant in
+disguise.  The remaining steps beyond the substitution already recorded:
+
+- `jacCorr_le_sqrt_two_sub_one`, `jacWeight`, `jacWeight_nonneg`, `hasDerivAt_jacWeight`,
+  **`norm_integral_jacCorr_far_le`** — the far block.  Writing the increasing correction as
+  `g = g(sqrt 2) - (g(sqrt 2) - g(v))` turns it into two *nonincreasing* weights, so the corpus weighted
+  van der Corput test applies to both with `phase' = u v >= u δ`; the bound is `8 g(sqrt 2)/(u δ)`.
+- `continuousOn_jacCorr`, **`norm_integral_jacCorr_near_le`** — the near block: `|g| <= δ²/4` there, so the
+  contribution is at most `δ³/4`.
+- `norm_integral_jacCorr_split_le`, **`norm_integral_jacCorr_le`** — balancing at `δ = u^{-1/4}` (written
+  `1/sqrt(sqrt u)`, so no `rpow` is needed) gives `4/sqrt(sqrt u)³ = O(u^{-3/4})`.  This is `o(u^{-1/2})`:
+  the correction provably cannot reach the leading term, which is why the constant is exactly Fresnel's.
+- `besselPhaseIntegral`, `besselJ0_eq_re_besselPhaseIntegral`, `norm_integral_jacCorr_neg_le`,
+  **`norm_sqrt_mul_besselPhaseIntegral_sub_le`** — the scaled oscillatory integral:
+  `‖sqrt(u) Psi(u) - e^{iu} sqrt 2 conj(fresnelValue)‖ <= (2 sqrt 2 + 4)/sqrt(sqrt u)`, where
+  `sqrt(u) · sqrt(2/u) = sqrt 2` converts the Fresnel scaling into the amplitude.
+- **`re_exp_mul_conj_fresnelValue`** — the real part of the limit constant:
+  `Re[e^{iu} sqrt 2 conj(fresnelValue)] = (sqrt(pi)/2)(cos u + sin u)`, which is `cos(u - pi/4)` in disguise;
+  the factor `2/pi` of the integral representation turns it into `(cos u + sin u)/sqrt(pi)`.
+
+**Equation `(8)` is assembled**, in `formal/GaloisForLFunctions/RHTower/CCMRadialProfileAsymptotic.lean`.
+The key structural point is that the rescaled amplitude is *exactly* algebraic:
+
+```text
+sqrt c · A_s(x) / sqrt(c xi_s(x)) = [(x²-1)(x²-s)]^{-1/4},
+```
+
+with no error whatsoever — the `xi^{1/2}` inside `A_s` cancels the Bessel amplitude `(c xi)^{-1/2}`.  So the
+profile is the fourth root times a cosine, and there are exactly three errors.
+
+- `cos_add_sin_eq`, `sqrt_two_div_pi_eq`, **`abs_besselJ0_sub_amplitude_le`** — the Bessel asymptotic in
+  amplitude–phase form: `|J_0(v) - sqrt(2/pi) cos(v - pi/4)/sqrt v| <= 5 v^{-3/4}`.
+- **`abs_cos_phase_sub_le`** — the phase expansion transported through the cosine: replacing `c xi_s(x)` by
+  `c sqrt(x²-1) - c(s/2) theta(x)` costs at most `c (s²/4) log(x + sqrt(x²-1))`, by `|cos a - cos b| <= |a-b|`.
+  With `c s = 2n+1` from the separation law this is the card's degree marking `-(2n+1) theta(x)/2`, and the
+  cost is `O(1/c)`.
+- `ampFourth`, `ampFourth_pos`, **`sqrt_mul_xiAmplitude_div_eq`** — the exact amplitude identity above.
+- `ampFourth_pow_four`, **`abs_ampFourth_sub_le`** — the `s`-dependence of the fourth root is linear:
+  `|A_s-root - A_0-root| <= s A_0-root/(x²-s)`, again by the `a⁴-b⁴` factorisation.
+- **`abs_radialProfile_sub_le`** — equation `(8)`:
+
+  ```text
+  |sqrt c A_s(x) J_0(c xi_s(x))
+     - sqrt(2/pi) [(x²-1)x²]^{-1/4} cos(c sqrt(x²-1) - c(s/2) theta(x) - pi/4)|
+   <= sqrt(2/pi) A_s-root (c s²/4) L(x) + sqrt(2/pi) |A_s-root - A_0-root| + 5 A_s-root (c xi_s(x))^{-1/4},
+  ```
+
+  for every `c > 0`, every `0 <= s <= 1/2` and every `x > 1` with `c xi_s(x) >= 1`.  All three errors are
+  `o(1)` on compacts once `s = O(1/c)`: the first is `O(c s²) = O(1/c)`, the second `O(s) = O(1/c)`, the third
+  `O(c^{-1/4})`.  Note `sqrt(2/pi)[(x²-1)x²]^{-1/4} = sqrt(2/pi)/(x^{1/2}(x²-1)^{1/4})` is exactly the card's
+  amplitude.
+
+What `(8)` still imports is only the PSWF normalisation: the identification `(1)` of the radial profile with
+the Fourier ratio, Dunster's `(4)` for the actual mode (available in this tree as the pole-uniform envelope
+and approximation bounds of `ccm-exact-finite-aperture-first-row-vanishing`), and the separation law `(6)`.
+
 ## Lean gates
 
 - [x] Lean: the radial angle and its derivative law
@@ -371,10 +435,11 @@ The route from the Fresnel constant to the Bessel constant is under construction
 - [x] Lean: the amplitude half of `(7)` — `|A_sigma(x) - x^{-1/2}| <= 4 sigma²`, globally on the ray
 - [x] Lean: the **Fresnel constant** `int_0^infinity exp(i x²) dx = sqrt(pi) exp(i pi/4)/2` — new general
   infrastructure, absent from mathlib
-- [ ] Lean: the constant in the Bessel large-argument asymptotic (`p = q = 1/sqrt(pi)`).  The exact
-  substitution, the rescaled and conjugate Fresnel integrals and the Jacobian split are proved; what remains
-  is the `O(u^{-3/4})` bound on the correction term (two weighted van der Corput blocks) and the assembly
-- [ ] Lean: equation `(8)`, the fixed-degree radial profile
+- [x] Lean: the constant in the Bessel large-argument asymptotic —
+  `|sqrt(u) J_0(u) - (cos u + sin u)/sqrt(pi)| <= 5 u^{-1/4}`, i.e. `p = q = 1/sqrt(pi)`
+- [x] Lean: equation `(8)`, the fixed-degree radial profile — the model profile
+  `sqrt c A_s J_0(c xi_s)` equals the card's amplitude times the card's cosine up to three explicit `o(1)`
+  errors; the PSWF normalisation `(1)`, `(4)` and `(6)` remain imports
 - [ ] Lean: equation `(10)`, the weak squared-profile law
 - [ ] Lean: equations `(16)`, `(20)` — total-mass matching and outer-coordinate escape (need `(13)`)
 

@@ -8779,3 +8779,83 @@ and prove the card's `(3)` and its consequence.  **Every one of the card's exter
 single averaged short-interval estimate for one arithmetic function**, over the block of starting
 points, with all three constants (`0`, `D²`, `D²/(p+1)²`) derived from logarithmic block means rather
 than assumed.  Nothing else about Matomäki–Radziwiłł's theorem is used.
+
+### The inputs are mean squares over short intervals
+
+**`RHTower/Sieve/PairFibreMeanSquare.lean`**, unconditional.
+
+- **`innerFibre_eq`** — for `x ≥ 4` and `a` in the block the fibre is *exactly* the integer interval
+  `[⌈x/a⌉, ⌊(x+h√x)/a⌋]`: the ambient bounds `1 ≤ b ≤ ⌊x+h√x⌋` in its definition are implied by the
+  product constraint.  So each inner sum is literally a sum of the weight over a short interval, of
+  length between `h/2` and `h`, starting at `x/a`.
+- **`tendsto_sum_abs_div_of_meanSquare`** — Cauchy–Schwarz over the block: since the block has at
+  most `√X + 1` elements,
+
+      (∑_{a ∈ block} |g(a)|)²  ≤  (√X + 1) · ∑_{a ∈ block} g(a)²,
+
+  so a mean-square bound `∑_a g(a)² = o(h²√X)` implies the averaged bound.  Stated once for an
+  arbitrary family of deviations at a moving pair of parameters, then instantiated three times.
+- `AveragedMeanSquare`, `AveragedMeanSquareDensityAt`, and the three corollaries
+  `averagedShortInterval_of_meanSquare`, `averagedShortIntervalDensity_of_meanSquare`,
+  `averagedShortIntervalDensityAt_of_meanSquare`.
+
+**`RHTower/Sieve/RouteEAveraged.lean` (continued).**
+**`route_e_sign_density_of_meanSquare`** and **`route_e_signClass_nonempty_of_meanSquare`** prove the
+card's `(3)` and its consequence from three mean squares:
+
+    ∑_{a ∈ block} (∑_{b ∈ fibre(a)} μ(b))²                       = o(h²√x),
+    ∑_{a ∈ block} (∑_{b ∈ fibre(a)} μ²(b) − D·h√x/a)²            = o(h²√x),
+    ∑_{a ∈ block(x/p²)} (∑_{b ∈ fibre(a)} μ²1_{p∤}(b) − D_p·h√x/(pa))² = o(h²√x/p²)  (each `p`).
+
+**This is the literature's form.**  A mean square of a short sum over its starting points is exactly
+what Matomäki–Radziwiłł's theorem bounds; the fibre decomposition has now carried the card's
+statement all the way to it, with every constant derived.
+
+The remaining mismatch is bookkeeping of a known kind: the fibre lengths `⌊(x+h√x)/a⌋ − ⌈x/a⌉ + 1`
+vary with `a` between `h/2` and `h`, whereas the standard statement fixes the length.  The starting
+points `x/a` are `1`-separated up to a factor `4` (`d(x/a)/da ∈ [−1, −1/4]` on the block), so they
+form a genuine sample of starting points rather than a sparse or clustered set.
+
+### The Möbius input is now literally Matomäki–Radziwiłł's statement
+
+**`RHTower/Sieve/FibreStartSeparation.lean`**, unconditional.
+
+The fibre above `a` starts at `⌈x/a⌉`, and across the block
+
+    x/a − x/a'  =  x(a'−a)/(aa')  ≥  x/(4x)  =  1/4      (a < a'),
+
+so the starting points are `1/4`-separated.  The formal handle on this is that
+
+- **`ceil_four_mul_injOn`** — `a ↦ ⌈4x/a⌉` is *injective* on the block (a gap of `1` in the
+  quadrupled reciprocal forces distinct ceilings), and
+- **`card_fibreStart_preimage_le`** — `⌈x/a⌉ = k` confines `⌈4x/a⌉` to the four values `4k−3, …, 4k`,
+  so **at most four elements of the block share a starting point**;
+- **`sum_block_comp_start_le`** — hence for nonnegative `G`,
+
+      ∑_{a ∈ block} G(⌈x/a⌉)  ≤  4 ∑_{⌈√x/2⌉ ≤ y ≤ ⌈√x⌉} G(y).
+
+  The fibre family is a genuine sample of starting points: neither sparse nor clustered.
+
+- `maxWindowSq f H y` — the largest squared window sum of length at most `H` starting at `y`;
+- **`sum_fibre_sq_le_maximal`** — every fibre is a window of length at most `⌈h⌉` starting at
+  `⌈x/a⌉` (this uses `innerFibre_eq` and the length bound `⌊(x+h√x)/a⌋ − ⌈x/a⌉ ≤ h`, valid because
+  `a ≥ √x`), so
+
+      ∑_{a ∈ block} (∑_{b ∈ fibre(a)} f(b))²  ≤  4 ∑_{⌈√x/2⌉ ≤ y ≤ ⌈√x⌉} maxWindowSq f ⌈h⌉ y;
+
+- `MaximalWindowMeanSquare f hh` and **`averagedMeanSquare_of_maximal`**.
+
+**`RouteEAveraged.route_e_sign_density_of_maximalWindow`** — the card's `(3)` with the Möbius
+hypothesis in the form
+
+    ∑_{√x/2 ≤ y ≤ √x}  max_{m ≤ h} (∑_{y ≤ n ≤ y+m} μ(n))²  =  o(h²√x),
+
+which is exactly the mean square of `μ` over short intervals that Matomäki–Radziwiłł's theorem
+bounds — *all* starting points in a dyadic range, window length at most `h`, no reference to the
+fibre geometry at all.  **The variable length of the fibres, which is what separated the card's
+statement from the literature's, is absorbed by the maximum.**
+
+The two remaining inputs (`μ²` and `μ²·1_{p∤·}`) are still stated as centred fibre mean squares; the
+same passage applies to them once the maximal object is centred, the discrepancy between the integer
+window length `m+1` and the real fibre length `h√x/a` being at most `2` and hence contributing
+`O(√x) = o(h²√x)`.

@@ -122,10 +122,71 @@ Nothing of the 440-line global development had to be reproved.
 
 Axioms of all of the above: `[propext, Classical.choice, Quot.sound]`.
 
+### Phase 3 — the speed as a datum, and the multipliers: **done**
+
+`formal/GaloisForLFunctions/HTGeometry/HillSpeedData.lean` — the structure `HillSpeed` bundling the
+mass, the speed, its derivative and the four estimates, with every symbol bound of the previous file
+restated as a method, the window constants `propSize`, `propLip`, `coscSize`, and the fundamental
+pair of a fibre (`wronskian_freq`, the four `hasDerivAt_*_freq`, `coscSymbol_zero`).
+
+`formal/GaloisForLFunctions/HTGeometry/HillPropagatorMultiplier.lean`:
+
+- `propBCF`, `coscBCF` — the symbols as bounded continuous functions of the frequency, with
+  `norm_propBCF_le_window`, `norm_coscBCF_le_window`;
+- **`norm_propBCF_sub_time_le`**, **`norm_propBCF_sub_base_le`**, **`norm_coscBCF_sub_le`** — the
+  mean value theorem applied on the window, with the frequency-free derivative bounds, gives sup-norm
+  Lipschitz estimates in each time variable;
+- **`continuous_propBCF`** (jointly in the two times), `continuous_propBCF_time`,
+  `continuous_propBCF_base`, **`continuous_coscBCF`**.
+
+A trap worth recording: `Continuous.comp` of the joint statement with `s ↦ (t, s)` **times out** on
+these bounded-continuous-function types (200000 heartbeats, `isDefEq`); the one-variable statements
+have to be proved directly from the Lipschitz estimate, which is instant.
+
+### Phase 4 — the driven flow: **done**
+
+`formal/GaloisForLFunctions/HTGeometry/HillPotentialFlow.lean`:
+
+- `hillDuhamelKernel`, `hillFreeTerm` — the propagator followed by convolution with the transform of
+  the potential, and the damped free term, with their window bounds and joint continuity;
+- **`locallyBounded_hillDuhamel`** — the data are bounded on every window, which is exactly the
+  hypothesis of the windowed Volterra theory;
+- `hillPotentialFlow` and **`continuous_hillPotentialFlow`**, **`hillPotentialFlow_eq`**,
+  `hillPotentialFlow_zero` — the evolution exists on the whole line, solves the Duhamel equation, and
+  starts at the datum damped by one power of the frequency;
+- `hillFlowSource`, **`hillPotentialFlow_apply_eq_duhamel`** — at a fixed frequency the evolution is
+  the Duhamel solution of the driven Hill oscillator, written with that fibre's fundamental pair;
+- **`hasDerivAt_hillPotentialFlow_apply`** and **`hasDerivAt_hillFlowApplyDeriv`** — hence the fibre
+  is twice differentiable and solves
+
+  ```
+  ∂ₜ²û(t,ξ) = -ω(t,ξ)² û(t,ξ) + (a_t * û(t,·))(ξ)
+  ```
+
+  at every frequency and every time.
+
+Axioms of all of the above: `[propext, Classical.choice, Quot.sound]`.
+
+### Phase 5a — the window bounds of the driven evolution: **done**
+
+`formal/GaloisForLFunctions/HTGeometry/HillDrivenFlowBounds.lean`:
+
+- `hillFlowSize` and **`norm_hillPotentialFlow_le_window`** — the Volterra exponential bound with the
+  window constants of the kernel;
+- `hillSourceSize`, **`norm_hillFlowSource_le_window`** — the source, bounded uniformly in the
+  frequency;
+- `hillVelocitySize`, `norm_duhamel_velocity_part_le` and
+  **`norm_hillFlowApplyDeriv_le_window`** — the velocity of the evolution, bounded on every window
+  *uniformly in the frequency*. Each term of the Duhamel velocity pairs a velocity of the fundamental
+  pair with the other member, and that product is a speed ratio: the frequency cancels. This is the
+  domination the synthesis layer differentiates under.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
 ### What remains
 
-3. Package the symbols as bounded continuous functions and prove joint continuity in the two times
-   (mean value theorem with the window constants above).
-4. The driven flow, by the windowed Volterra theory, and its pointwise Duhamel identity.
-5. The field equation with the potential, in the chart.
-6. The chart layer, the probes, and the scale law.
+5b. The synthesis layer: the density `⟨ξ⟩^{-N}û`, its integrability at the three weights, its two
+    time derivatives, and the field equation `∂ₜ²u = (2π)⁻²c(t)²Δu - m²u + Vu` with
+    `V = kgPotential (b.density t)` — the potential term coming from the corpus's
+    `kgWeighted_kgConvBCF` and `integral_kgChar_mul_convolution`, exactly as in the flat case.
+6.  The chart layer, the probes for an arbitrary smooth potential, and the scale law.

@@ -239,6 +239,53 @@ theorem continuous_propBCF : Continuous fun p : ℝ × ℝ => a.propBCF (E := E)
       _ = 2 * a.propLip T * dist p q := by ring
   exact hlip.continuousOn.continuousAt hW
 
+
+theorem continuous_propBCF_base (t : ℝ) : Continuous fun s : ℝ => a.propBCF (E := E) t s := by
+  refine continuous_iff_continuousAt.mpr fun s₀ => ?_
+  set T : ℝ := |t| + |s₀| + 1 with hT
+  have htT : |t| ≤ T := by
+    rw [hT]
+    have := abs_nonneg s₀
+    linarith
+  have hW : {s : ℝ | |s| ≤ T} ∈ nhds s₀ := by
+    have hopen : IsOpen {s : ℝ | |s| < T} := isOpen_lt continuous_abs continuous_const
+    have hmem : s₀ ∈ {s : ℝ | |s| < T} := by
+      simp only [Set.mem_setOf_eq, hT]
+      have := abs_nonneg t
+      linarith
+    refine Filter.mem_of_superset (hopen.mem_nhds hmem) fun s hs => ?_
+    simp only [Set.mem_setOf_eq] at hs ⊢
+    exact le_of_lt hs
+  have hlip : LipschitzOnWith (Real.toNNReal (a.propLip T))
+      (fun s : ℝ => a.propBCF (E := E) t s) {s : ℝ | |s| ≤ T} := by
+    refine LipschitzOnWith.of_dist_le_mul fun p hp q hq => ?_
+    rw [Real.coe_toNNReal _ (a.propLip_nonneg T), dist_eq_norm, Real.dist_eq]
+    exact a.norm_propBCF_sub_base_le htT hp hq
+  exact hlip.continuousOn.continuousAt hW
+
+theorem continuous_propBCF_time (s : ℝ) : Continuous fun t : ℝ => a.propBCF (E := E) t s := by
+  refine continuous_iff_continuousAt.mpr fun t₀ => ?_
+  set T : ℝ := |t₀| + |s| + 1 with hT
+  have hsT : |s| ≤ T := by
+    rw [hT]
+    have := abs_nonneg t₀
+    linarith
+  have hW : {t : ℝ | |t| ≤ T} ∈ nhds t₀ := by
+    have hopen : IsOpen {t : ℝ | |t| < T} := isOpen_lt continuous_abs continuous_const
+    have hmem : t₀ ∈ {t : ℝ | |t| < T} := by
+      simp only [Set.mem_setOf_eq, hT]
+      have := abs_nonneg s
+      linarith
+    refine Filter.mem_of_superset (hopen.mem_nhds hmem) fun t ht => ?_
+    simp only [Set.mem_setOf_eq] at ht ⊢
+    exact le_of_lt ht
+  have hlip : LipschitzOnWith (Real.toNNReal (a.propLip T))
+      (fun t : ℝ => a.propBCF (E := E) t s) {t : ℝ | |t| ≤ T} := by
+    refine LipschitzOnWith.of_dist_le_mul fun p hp q hq => ?_
+    rw [Real.coe_toNNReal _ (a.propLip_nonneg T), dist_eq_norm, Real.dist_eq]
+    exact a.norm_propBCF_sub_time_le hp hq hsT
+  exact hlip.continuousOn.continuousAt hW
+
 end Multiplier
 
 end HillSpeed

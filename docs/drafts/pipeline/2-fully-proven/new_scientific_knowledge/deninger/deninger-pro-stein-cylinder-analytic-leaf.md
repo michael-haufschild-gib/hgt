@@ -189,6 +189,11 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized the descent of coordinatewise periodic forms along the
+  exponential covering.
+- 2026-08-04 — Formalized that the homotopy operator is continuously
+  differentiable and that the periodicity defects of the primitive are exact one
+  degree lower: the induction step of the descent.
 - 2026-08-04 — Formalized that a closed holomorphic form of any degree on a
   character stage is exact on the exponential covering space, with the pullback
   periodic in every coordinate.
@@ -587,6 +592,41 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 - `deningerPeriodDefect_closed` — **the periodicity defect of that primitive is a closed form of one
   degree lower**, which is the first step of the descent and the datum whose classes build the
   cohomology of the stage.
+
+### The homotopy operator is `C^1`, and the descent step landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerHomotopyC1.lean` and the defect section of
+`DeningerStageKFormExact.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `deningerContractL`, `deningerContractCLM_continuous` — contraction against a vector is continuous
+  linear in the vector, with norm at most the norm of the vector.
+- `deningerHomotopyKDeriv_continuous_uncurry` — the integrand of the homotopy operator is jointly
+  continuous in the base point and the segment parameter.
+- `deningerContinuous_parametric_integral`, `deningerHomotopyOperator_fderiv_continuous`,
+  `deningerHomotopyOperator_differentiable` — **the homotopy operator is continuously
+  differentiable**, so the Poincaré lemma — which now needs only `C^1` — can be applied to forms
+  built from its output.
+- `deningerPeriodDefect`, `deningerPeriodDefect_differentiable`,
+  `deningerPeriodDefect_fderiv_continuous` — the periodicity defect of the primitive is `C^1`.
+- `deningerPeriodDefect_exact` — **the periodicity defect is itself exact on the covering space** in
+  degrees at least one.  This is the induction step of the descent: the obstruction to descending
+  the primitive is pushed one degree down at each stage.
+
+### Descent of periodic forms landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerFormDescent.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerPeriodicInt`, `deningerPeriodicDescent` — a coordinatewise periodic map on the covering
+  space is constant on the fibres, in any codomain; the earlier statement was for scalars only.
+- `deningerDescendForm` — **the form on the stage attached to a periodic form upstairs**: evaluate
+  at a logarithm of the point and compose with the inverse of the derivative of the covering.
+- `deningerLogBranchDeriv_expDeriv` — that inverse cancels the derivative of the covering.
+- `deningerDescendForm_pullback` — **a periodic form on the covering space descends**: the form it
+  defines on the stage pulls back to it.  This is the tool the descent needs in every degree.
+- `deningerExpDeriv_logBranchDeriv`, `deningerCompContinuousLinearMap_cancel`,
+  `deningerExpPullback_injective` — **the pullback along the covering is injective on stage forms**,
+  so an identity checked upstairs may be read off downstairs.
 
 ### Remaining
 

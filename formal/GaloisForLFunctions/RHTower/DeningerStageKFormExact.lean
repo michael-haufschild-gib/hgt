@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerPoincareKForm
+import GaloisForLFunctions.RHTower.DeningerHomotopyC1
 import GaloisForLFunctions.RHTower.DeningerExpCover
 import GaloisForLFunctions.RHTower.DeningerFormPullback
 
@@ -171,5 +172,78 @@ theorem deningerPeriodDefect_closed {ω : DeningerStageForm r (n + 1)}
   simp
 
 end PeriodDefect
+
+end RHTower
+
+namespace RHTower
+
+section DefectExact
+
+variable {r n : ℕ}
+
+/-- **The periodicity defect** of the primitive of the pulled-back form, in the `j`-th coordinate. -/
+noncomputable def deningerPeriodDefect (ω : DeningerStageForm r (n + 1)) (j : Fin r) :
+    (Fin r → ℂ) → (Fin r → ℂ) [⋀^Fin n]→L[ℂ] ℂ :=
+  (fun y : Fin r → ℂ => deningerHomotopyOperator (deningerExpPullbackForm ω)
+      (y + (2 * Real.pi * Complex.I) • (Pi.single j (1 : ℂ) : Fin r → ℂ))) +
+    (-1 : ℂ) • deningerHomotopyOperator (deningerExpPullbackForm ω)
+
+theorem deningerPeriodDefect_differentiable {ω : DeningerStageForm r (n + 1)}
+    (hω : DeningerIsHolomorphicForm ω) (j : Fin r) :
+    Differentiable ℂ (deningerPeriodDefect ω j) := by
+  have hη : Differentiable ℂ (deningerHomotopyOperator (deningerExpPullbackForm ω)) :=
+    deningerHomotopyOperator_differentiable (deningerExpPullbackForm_differentiable hω)
+      (deningerExpPullbackForm_fderiv_continuous hω)
+  intro y
+  refine DifferentiableAt.add ?_ ((hη y).const_smul _)
+  exact (hη _).comp y (differentiableAt_id.add_const _)
+
+theorem deningerPeriodDefect_fderiv_continuous {ω : DeningerStageForm r (n + 1)}
+    (hω : DeningerIsHolomorphicForm ω) (j : Fin r) :
+    Continuous (fderiv ℂ (deningerPeriodDefect ω j)) := by
+  set c : Fin r → ℂ := (2 * Real.pi * Complex.I) • (Pi.single j (1 : ℂ) : Fin r → ℂ) with hc
+  set η := deningerHomotopyOperator (deningerExpPullbackForm ω) with hη
+  have hdiff : Differentiable ℂ η :=
+    deningerHomotopyOperator_differentiable (deningerExpPullbackForm_differentiable hω)
+      (deningerExpPullbackForm_fderiv_continuous hω)
+  have hcontfd : Continuous (fderiv ℂ η) :=
+    deningerHomotopyOperator_fderiv_continuous (deningerExpPullbackForm_differentiable hω)
+      (deningerExpPullbackForm_fderiv_continuous hω)
+  have hshiftfd : ∀ y : Fin r → ℂ,
+      fderiv ℂ (fun z : Fin r → ℂ => η (z + c)) y = fderiv ℂ η (y + c) := by
+    intro y
+    have h0 := ((hdiff (y + c)).hasFDerivAt).comp y ((hasFDerivAt_id y).add_const c)
+    rw [ContinuousLinearMap.comp_id] at h0
+    exact h0.fderiv
+  have hsum : fderiv ℂ (deningerPeriodDefect ω j) =
+      fun y => fderiv ℂ η (y + c) + (-1 : ℂ) • fderiv ℂ η y := by
+    funext y
+    have hd1 : DifferentiableAt ℂ (fun z : Fin r → ℂ => η (z + c)) y :=
+      (hdiff (y + c)).comp y (differentiableAt_id.add_const c)
+    have hd2 : DifferentiableAt ℂ ((-1 : ℂ) • η) y := (hdiff y).const_smul _
+    show fderiv ℂ ((fun z : Fin r → ℂ => η (z + c)) + (-1 : ℂ) • η) y = _
+    rw [fderiv_add hd1 hd2, fderiv_const_smul (hdiff y) (-1 : ℂ), hshiftfd y]
+  haveI : ContinuousAdd ((Fin r → ℂ) →L[ℂ] ((Fin r → ℂ) [⋀^Fin n]→L[ℂ] ℂ)) := by
+    have htag : IsTopologicalAddGroup
+        ((Fin r → ℂ) →L[ℂ] ((Fin r → ℂ) [⋀^Fin n]→L[ℂ] ℂ)) := inferInstance
+    exact htag.toContinuousAdd
+  rw [hsum]
+  exact (hcontfd.comp (continuous_id.add continuous_const)).add
+    (hcontfd.const_smul (-1 : ℂ))
+
+/-- **The periodicity defect is exact on the covering space** in degrees at least one: it is closed
+and continuously differentiable, so the Poincaré lemma applies to it.  This is the induction step of
+the descent. -/
+theorem deningerPeriodDefect_exact {m : ℕ} {ω : DeningerStageForm r (m + 1 + 1)}
+    (hω : DeningerIsHolomorphicForm ω)
+    (hclosed : ∀ z ∈ deningerStageTorus r, extDeriv ω z = 0) (j : Fin r) :
+    ∀ w : Fin r → ℂ,
+      extDeriv (deningerHomotopyOperator (deningerPeriodDefect ω j)) w =
+        deningerPeriodDefect ω j w :=
+  fun w => deningerExtDeriv_homotopyOperator (deningerPeriodDefect_differentiable hω j)
+    (deningerPeriodDefect_fderiv_continuous hω j)
+    (fun y => deningerPeriodDefect_closed hω hclosed j y) w
+
+end DefectExact
 
 end RHTower

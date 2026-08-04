@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.Sieve.RouteEMain
 import GaloisForLFunctions.RHTower.Sieve.MRFibreDensity
 import GaloisForLFunctions.RHTower.Sieve.MRFibreDensityAt
+import GaloisForLFunctions.RHTower.Sieve.PairFibreMeanSquare
+import GaloisForLFunctions.RHTower.Sieve.FibreStartSeparation
 
 /-!
 # The sign law from averaged short-interval estimates
@@ -93,5 +95,68 @@ theorem route_e_signClass_nonempty_of_averaged_all {hh : ℝ → ℝ} {s : ℤ} 
     ∀ᶠ x in atTop, (coprimeSignClass x (hh x) s).Nonempty :=
   route_e_signClass_nonempty_of_averaged hs hgrow havg1 havg2
     (fun p hp => MRBilinearAt_coprime_of_averaged hp (tendsto_of_growth hgrow) (havgp p hp))
+
+/-- **The card's Theorem `(3)` from mean-square short-interval estimates.**  Cauchy–Schwarz over the
+block turns each averaged hypothesis into a mean square over the starting points — the form in which
+short-interval estimates for `μ` are proved and stated. -/
+theorem route_e_sign_density_of_meanSquare {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
+    (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
+    (hms1 : AveragedMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
+    (hms2 : AveragedMeanSquareDensityAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+      squarefreeDensity id hh)
+    (hmsp : ∀ p : ℕ, p.Prime → AveragedMeanSquareDensityAt (coprimeSquarefreeWeight p)
+      (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
+      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ x in atTop,
+      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+        ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) := by
+  have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
+  refine route_e_sign_density_of_averaged_all hs hgrow
+    (averagedShortInterval_of_meanSquare hhtop hms1)
+    (averagedShortIntervalDensity_of_meanSquare hhtop hms2) ?_ hε
+  intro p hp
+  have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
+  have hpsq : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
+  exact averagedShortIntervalDensityAt_of_meanSquare (tendsto_id.atTop_div_const hpsq)
+    (hhtop.atTop_div_const hp0) (hmsp p hp)
+
+/-- **Both sign classes are eventually nonempty, from mean-square estimates.** -/
+theorem route_e_signClass_nonempty_of_meanSquare {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
+    (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
+    (hms1 : AveragedMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
+    (hms2 : AveragedMeanSquareDensityAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+      squarefreeDensity id hh)
+    (hmsp : ∀ p : ℕ, p.Prime → AveragedMeanSquareDensityAt (coprimeSquarefreeWeight p)
+      (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
+      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ))) :
+    ∀ᶠ x in atTop, (coprimeSignClass x (hh x) s).Nonempty := by
+  have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
+  refine route_e_signClass_nonempty_of_averaged_all hs hgrow
+    (averagedShortInterval_of_meanSquare hhtop hms1)
+    (averagedShortIntervalDensity_of_meanSquare hhtop hms2) ?_
+  intro p hp
+  have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
+  have hpsq : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
+  exact averagedShortIntervalDensityAt_of_meanSquare (tendsto_id.atTop_div_const hpsq)
+    (hhtop.atTop_div_const hp0) (hmsp p hp)
+
+/-- **The card's Theorem `(3)` with the Möbius input in its literature form.**  The cancellation
+hypothesis for `μ` is now the maximal-window mean square over *all* starting points in
+`[√x/2, √x]` at window lengths at most `h` — the statement Matomäki–Radziwiłł's theorem provides. -/
+theorem route_e_sign_density_of_maximalWindow {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
+    (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
+    (hmax : MaximalWindowMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
+    (hms2 : AveragedMeanSquareDensityAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+      squarefreeDensity id hh)
+    (hmsp : ∀ p : ℕ, p.Prime → AveragedMeanSquareDensityAt (coprimeSquarefreeWeight p)
+      (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
+      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ x in atTop,
+      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+        ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) :=
+  route_e_sign_density_of_meanSquare hs hgrow
+    (averagedMeanSquare_of_maximal (tendsto_of_growth hgrow) hmax) hms2 hmsp hε
 
 end RHTower.Sieve

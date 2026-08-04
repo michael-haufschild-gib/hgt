@@ -6345,3 +6345,64 @@ The hypothesis `h c ≠ 0` is `g'(c) ≠ 0` in disguise — differentiating the 
 This is the last analytic primitive that `exists_norm_comp_gt_at` (the corpus's composition-growth
 theorem at a free base point) requires: it consumes exactly a displacement floor on a circle, plus a
 point where the outer function is large within half that floor of `g c`.
+
+### Correction — the window interface was vacuous, and the corrected one is inhabited
+
+`RHTower.not_window_comparison` (axiom-clean): **no family satisfies the window comparison** of the
+previous entries. The hypothesis quantified the coefficient floor `ε` universally, while the quantity
+it must dominate contains `log⁺ε⁻¹`; since any smaller positive number is still a valid floor, the
+left side can be driven above every bound with the point and the right side fixed.
+
+The witness is the first edge of the exponential cascade, with `A = X₀` and level `c = 1`. For any
+proposed radius `r`, take the centre `0` and the point `z = r` on the real axis: the maximum of
+`‖exp‖` on the disc of radius `r` sits exactly there, so the domination hypothesis holds, the
+coefficient value is `r > 0`, and every `ε ≤ min(r, e^{−(r+2+log⁺r)})` is admissible. Then
+
+`1·(1 + log⁺r + log⁺ε⁻¹) ≥ r + 3 > r = log⁺‖exp z‖`.
+
+So `stepSeparation_of_window`, `stepSeparation_of_window_of_ne`, `noRelation_prefixFamily_of_window`
+and `exactDifferentialOrder_entireCascade_of_window` had unsatisfiable hypotheses. They are removed;
+what replaces them is exact, and the defect is instructive: in `StepSeparation` the floor is produced
+*together with* the point, so it may be taken to be the value there, and any interface that hands the
+floor to an adversary instead is asking for the impossible.
+
+**`HTGeometry/CircleComparisonSeparation.lean` — the corrected interface.** `CircleComparison X F`:
+for every nonzero coefficient `A` and level `c` there are a centre, a radius `s > 0` and a floor
+`ε > 0` with
+
+* `ε ≤ ‖A(X(z))‖` at **every** point of the circle, and
+* the comparison `c·(1 + ∑_j log⁺‖X_j z‖ + log⁺ε⁻¹) < log⁺‖F z‖` at every point of the circle
+  dominating the enclosed disc.
+
+The floor is now part of the datum, chosen by the analyst rather than by an adversary, and it is a
+floor on a whole circle, so it cannot be shrunk without falsifying its own clause.
+
+* `stepSeparation_of_circleComparison` — three lines: the maximiser of `‖F‖` on the circle
+  (`exists_sphere_isMaxOn_at`) carries the floor and the domination at once. No analyticity of the
+  earlier states is needed, only differentiability of the new one.
+* `noRelation_prefixFamily_of_circleComparison`, and
+  `exactDifferentialOrder_entireCascade_of_circleComparison` — the induction and the capstone.
+
+**The interface is inhabited, at the two lowest edges.**
+
+* `circleComparison_zeroth_edge` — with no earlier states a nonzero coefficient is a nonzero constant,
+  which floors itself; the coordinate then beats `c·(1 + log⁺ε⁻¹)` on the circle of radius
+  `exp(c(1+log⁺ε⁻¹)) + 1`.
+* `circleComparison_first_edge` — the univariate floor `‖lead‖/2` is uniform beyond `growthRadius`, so
+  it holds on the *whole* circle through the point where `Y 1` beats the polynomial bound; that point
+  lies outside the disc where `Y 1` is bounded, so the circle is admissible, and the comparison
+  transports to every dominating point of it because they all have the same modulus.
+* `exactDifferentialOrder_entireCascade_of_circleComparison_ge_two` — hence the card's theorem with
+  the analytic obligation required **only from the second edge on**.
+
+All unconditional, all axiom-clean, `lake build GaloisForLFunctions.HTGeometry` succeeds (14242 jobs).
+
+**`RHTower/CascadeOrderFromWindow.lean` — the geometry, at every scale.**
+`exists_circle_floor_along_states` and `exists_circle_floor_and_max_point`: for a coefficient not
+identically zero along the states and any prescribed scale `r₀`, there are a centre, a radius `s ≥ r₀`
+carrying a positive floor for the coefficient on its whole circle, and a point of that circle at which
+the new state dominates the enclosed disc. So both geometric ingredients of a `CircleComparison` are
+free at every scale; what is open is only the numeric comparison at that point.
+
+**Card status.** The obligation is one numeric inequality per edge `m ≥ 2`, on a circle whose floor
+and dominating point the corpus supplies, plus observability (`helim`). Edges 0 and 1 are theorems.

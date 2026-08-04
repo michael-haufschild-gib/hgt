@@ -1,50 +1,60 @@
 import GaloisForLFunctions.RHTower.StepSeparationFromWindow
-import GaloisForLFunctions.HTGeometry.CascadeExactOrderFromSeparation
+import GaloisForLFunctions.HTGeometry.AnalyticMeroPolynomialEval
 
 /-!
-# The unit-cost law from window comparisons
+# The geometric datum of a separation, at every scale
 
-Assembling the reduction: the paper's hypotheses give the order upper bound outright, a window
-comparison at each level gives state independence, and the elimination step is the only remaining
-input.
+A circle comparison asks for a circle carrying a floor for the coefficient and a growth comparison at
+the points of that circle which dominate the enclosed disc.  Both geometric ingredients are available
+at every scale and for every coefficient which is not identically zero along the states: the minimum
+modulus supplies the circle with its floor, and the maximum principle supplies a point of that circle
+dominating the disc.
 
-This is the card's theorem with its analytic obligation in the smallest form reached so far — an
-inequality on an annulus, with the point, the floor and the maximum-modulus domination all supplied.
+What is not supplied is the numeric comparison between the floor, the joint scale of the earlier
+states, and the value of the new state at that point.
 -/
 
 namespace RHTower
 
 open GaloisForLFunctions GaloisForLFunctions.HTGeometry
 
-variable {f : ℕ → ℂ → ℂ}
+variable {m : ℕ} {X : Fin m → ℂ → ℂ} {F : ℂ → ℂ}
 
-/-- **The unit-cost law from window comparisons.** -/
-theorem exactDifferentialOrder_entireCascade_of_window {n : ℕ}
-    (hall : ∀ i : ℕ, TranscendentalEntire (f i))
-    (h1 : ∀ k, k < n → DifferentiallyAlgebraicOfOrder (f k) 1)
-    (hwin : ∀ m : ℕ, ∀ A : MvPolynomial (Fin m) ℂ, A ≠ 0 → ∀ c : ℝ, 0 ≤ c →
-      ∃ r : ℝ, 0 < r ∧
-        ∀ (cen z : ℂ) (ε : ℝ), r ≤ ‖z - cen‖ → ‖z - cen‖ ≤ r + 1 → 0 < ε →
-          ε ≤ ‖MvPolynomial.eval
-            (fun j => prefixFamily (entireCascade f) m j z) A‖ →
-          (∀ w : ℂ, ‖w - cen‖ ≤ r → ‖entireCascade f m w‖ ≤ ‖entireCascade f m z‖) →
-          c * (1 + (∑ j : Fin m,
-              Real.posLog ‖prefixFamily (entireCascade f) m j z‖) + Real.posLog ε⁻¹)
-            < Real.posLog ‖entireCascade f m z‖)
-    (helim : ∀ m, m < n → DifferentiallyAlgebraicOfOrder (entireCascade f n) m →
-      ∃ P : MvPolynomial (Fin n) (Polynomial ℂ), P ≠ 0 ∧
-        ∀ z : ℂ, statePoly (cascadeFamily f n) P z = 0) :
-    ExactDifferentialOrder (entireCascade f n) n := by
-  have hfan : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) (Set.univ : Set ℂ) :=
-    fun i => analyticOnNhd_of_transcendentalEntire (hall i)
-  have hYan : ∀ k : ℕ, AnalyticOnNhd ℂ (entireCascade f k) (Set.univ : Set ℂ) :=
-    fun k => analyticOnNhd_entireCascade hfan k
-  have hno := noRelation_prefixFamily_of_window (entireCascade f) hYan hwin
-  have hind : PolyIndependent (cascadeFamily f n) := by
-    rw [cascadeFamily_eq]
-    exact polyIndependent_of_noRelation (Y := entireCascade f) (fun _ => rfl)
-      (hno (n + 1))
-  exact exactDifferentialOrder_of_cascade
-    (differentiallyAlgebraicOfOrder_entireCascade_of_transcendental' hall h1) hind helim
+/-- **A circle carrying a floor for the coefficient, beyond any prescribed scale.**  The coefficient
+along the states is entire, so wherever it is nonzero it has a positive floor on some circle of every
+annulus about that point. -/
+theorem exists_circle_floor_along_states
+    (hXan : ∀ j : Fin m, AnalyticOnNhd ℂ (X j) (Set.univ : Set ℂ))
+    {A : MvPolynomial (Fin m) ℂ} (hne : ∃ c : ℂ, MvPolynomial.eval (fun j => X j c) A ≠ 0)
+    (r₀ : ℝ) :
+    ∃ (cen : ℂ) (s ε : ℝ), r₀ ≤ s ∧ 0 < s ∧ 0 < ε ∧
+      ∀ z : ℂ, ‖z - cen‖ = s → ε ≤ ‖MvPolynomial.eval (fun j => X j z) A‖ := by
+  obtain ⟨cen, hcen⟩ := hne
+  have hgan : AnalyticOnNhd ℂ (fun z => MvPolynomial.eval (fun j => X j z) A)
+      (Set.univ : Set ℂ) := analyticOnNhd_eval_mvPolynomial X hXan A
+  set a : ℝ := max r₀ 1 with ha
+  have ha1 : (1 : ℝ) ≤ a := le_max_right _ _
+  obtain ⟨s, hs, ε, hε0, hfloor⟩ :=
+    exists_circle_floor_of_ne_zero hgan hcen (A := a) (B := a + 1) (by linarith) (by linarith)
+  obtain ⟨hsa, _⟩ := Set.mem_Icc.mp hs
+  exact ⟨cen, s, ε, le_trans (le_max_left _ _) hsa, by linarith, hε0, hfloor⟩
+
+/-- **The full geometric datum of a separation, at every scale.**  Beyond any prescribed scale there
+is a circle on which the coefficient is bounded below and a point of that circle at which the new
+state dominates the whole enclosed disc.
+
+Only the numeric comparison at that point is left; supplying it for one scale is exactly a
+`CircleComparison`, hence a `StepSeparation`. -/
+theorem exists_circle_floor_and_max_point
+    (hXan : ∀ j : Fin m, AnalyticOnNhd ℂ (X j) (Set.univ : Set ℂ))
+    (hFd : Differentiable ℂ F)
+    {A : MvPolynomial (Fin m) ℂ} (hne : ∃ c : ℂ, MvPolynomial.eval (fun j => X j c) A ≠ 0)
+    (r₀ : ℝ) :
+    ∃ (cen : ℂ) (s ε : ℝ) (z : ℂ), r₀ ≤ s ∧ 0 < s ∧ 0 < ε ∧ ‖z - cen‖ = s ∧
+      (∀ w : ℂ, ‖w - cen‖ = s → ε ≤ ‖MvPolynomial.eval (fun j => X j w) A‖) ∧
+      (∀ w : ℂ, ‖w - cen‖ ≤ s → ‖F w‖ ≤ ‖F z‖) := by
+  obtain ⟨cen, s, ε, hsr, hs0, hε0, hfloor⟩ := exists_circle_floor_along_states hXan hne r₀
+  obtain ⟨z, hz, hmax⟩ := exists_sphere_isMaxOn_at hFd cen hs0
+  exact ⟨cen, s, ε, z, hsr, hs0, hε0, hz, hfloor, hmax⟩
 
 end RHTower

@@ -214,6 +214,72 @@ theorem abs_coscSymbolDeriv_le_window {T t : ℝ} (ht : |t| ≤ T) (ξ : E) :
     |a.coscSymbolDeriv t ξ| ≤ Real.exp (a.logBound * T) :=
   (a.abs_coscSymbolDeriv_le t ξ).trans (a.exp_le_window ht)
 
+
+/-! ## The fundamental pair of a fibre -/
+
+/-- The bound on the fibre frequency that the flow construction consumes. -/
+noncomputable def freqBound (a : HillSpeed) (ξ : E) : ℝ :=
+  max 1 (a.mass ^ 2 + a.sizeBound ^ 2 * ‖ξ‖ ^ 2)
+
+theorem one_le_freqBound (ξ : E) : 1 ≤ a.freqBound ξ := le_max_left _ _
+
+theorem freq_sq_le (ξ : E) (r : ℝ) : a.freq ξ r ^ 2 ≤ a.freqBound ξ :=
+  (massiveFreq_sq_le a.mass_pos a.speed_sq_le le_rfl r).trans (le_max_right _ _)
+
+theorem continuous_freq (ξ : E) : Continuous (a.freq ξ) :=
+  continuous_massiveFreq a.continuous_speed a.mass ‖ξ‖
+
+theorem hillCos_freq_zero (ξ : E) : hillCos (a.freq ξ) 0 = 1 :=
+  hillCos_zero (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ)
+
+theorem hillCosDeriv_freq_zero (ξ : E) : hillCosDeriv (a.freq ξ) 0 = 0 :=
+  hillCosDeriv_zero (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ)
+
+theorem hillSin_freq_zero (ξ : E) : hillSin (a.freq ξ) 0 = 0 :=
+  hillSin_zero (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ)
+
+theorem hillSinDeriv_freq_zero (ξ : E) : hillSinDeriv (a.freq ξ) 0 = 1 :=
+  hillSinDeriv_zero (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ)
+
+theorem hasDerivAt_hillCos_freq (ξ : E) (t : ℝ) :
+    HasDerivAt (hillCos (a.freq ξ)) (hillCosDeriv (a.freq ξ) t) t :=
+  hasDerivAt_hillCos (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ) t
+
+theorem hasDerivAt_hillCosDeriv_freq (ξ : E) (t : ℝ) :
+    HasDerivAt (hillCosDeriv (a.freq ξ)) (-(a.freq ξ t ^ 2) * hillCos (a.freq ξ) t) t :=
+  hasDerivAt_hillCosDeriv (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ) t
+
+theorem hasDerivAt_hillSin_freq (ξ : E) (t : ℝ) :
+    HasDerivAt (hillSin (a.freq ξ)) (hillSinDeriv (a.freq ξ) t) t :=
+  hasDerivAt_hillSin (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ) t
+
+theorem hasDerivAt_hillSinDeriv_freq (ξ : E) (t : ℝ) :
+    HasDerivAt (hillSinDeriv (a.freq ξ)) (-(a.freq ξ t ^ 2) * hillSin (a.freq ξ) t) t :=
+  hasDerivAt_hillSinDeriv (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ) t
+
+theorem continuous_hillCos_freq_time (ξ : E) : Continuous (hillCos (a.freq ξ)) :=
+  continuous_hillCos (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ)
+
+theorem continuous_hillSin_freq_time (ξ : E) : Continuous (hillSin (a.freq ξ)) :=
+  continuous_hillSin (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ)
+
+/-- **The Wronskian of the fibre is one.** -/
+theorem wronskian_freq (ξ : E) (t : ℝ) :
+    hillCos (a.freq ξ) t * hillSinDeriv (a.freq ξ) t -
+      hillSin (a.freq ξ) t * hillCosDeriv (a.freq ξ) t = 1 :=
+  hillWronskian_eq_one (a.continuous_freq ξ) (a.one_le_freqBound ξ) (a.freq_sq_le ξ) t
+
+theorem propSymbol_eq (t s : ℝ) (ξ : E) :
+    a.propSymbol t s ξ =
+      hillSin (a.freq ξ) t * hillCos (a.freq ξ) s - hillCos (a.freq ξ) t * hillSin (a.freq ξ) s :=
+  rfl
+
+theorem coscSymbol_eq (t : ℝ) (ξ : E) :
+    a.coscSymbol t ξ = hillCos (a.freq ξ) t / a.freq ξ 0 := rfl
+
+theorem coscSymbol_zero (ξ : E) : a.coscSymbol 0 ξ = (a.freq ξ 0)⁻¹ := by
+  rw [coscSymbol_eq, a.hillCos_freq_zero ξ, one_div]
+
 end Data
 
 end HillSpeed
