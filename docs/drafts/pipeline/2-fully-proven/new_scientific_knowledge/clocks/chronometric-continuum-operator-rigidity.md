@@ -324,7 +324,12 @@ Formalize unconditionally:
 12. [complete] extra gravitational sectors: fibre-constant rigidity, reporter completeness up to
     gauge, and the reported/clock-dark dichotomy;
 13. [complete] bounded laboratory regions: region rigidity, the exact continuation criterion, and
-    the proper-subregion no-go.
+    the proper-subregion no-go;
+14. [complete] causal diamonds: proper-time determination localized to a region
+    (`SmoothPseudoMetric.eqOn_of_properTime_eqOn`), the coordinate diamond `coneFuture`/`conePast`/
+    `coneDiamond`, its traversing timelike segment (`mem_coneDiamond_segment`), and clock-only
+    determination inside it (`eqOn_coneDiamond_of_properTime`), in
+    `formal/GaloisForLFunctions/HTGeometry/ChronometricCausalDiamond.lean`.
 
 The existing all-orders symmetric multilinear polarization theorem supplies a stronger reusable
 dependency for item 1.

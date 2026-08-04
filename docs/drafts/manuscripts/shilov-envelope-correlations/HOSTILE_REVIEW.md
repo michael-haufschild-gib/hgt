@@ -23,8 +23,8 @@ while the composite returns to the graph locus. This last theorem prevents dismi
 framework as renamed diagram chasing.
 
 I would not advertise the paper as Annals/JAMS-level. At the stated target, the combination of a
-new universal object, exact diagram law, arbitrary noncommutative realization, recovery of
-countable local-envelope continuity, and formal verification is credible. Main editorial risk is
+new universal object, exact diagram law, arbitrary noncommutative realization, and recovery of
+countable local-envelope continuity is credible. Main editorial risk is
 conceptual concision: several proofs become short after the correct join is identified.
 
 ## Hostile objections and dispositions
@@ -108,14 +108,14 @@ ideal lattice, representation theory, and \(K\)-theory are unrestricted on the
 \(C^*\)-algebraic ambiguity face. Meanwhile the direct composite is the graph of an envelope
 epimorphism.
 
-### 10. "The Lean supplement is theatre."
+### 10. "The manuscript delegates part of its proof burden to computer verification."
 
-**Rejected with a strict scope boundary.** The new module defines edge joins, relational
-representatives, vertex perturbations, migration difference, connecting map, and proves
-injectivity, middle exactness, surjectivity from ambient epimorphisms, and the combined short
-exact theorem. It introduces no operator-system surrogate, positivity axiom, placeholder,
-opaque declaration, or unsafe definition. The paper states that Shilov maximality, functional
-calculus, essentiality, and local \(C^*\)-uniqueness remain analytic paper proofs.
+**Rejected.** The manuscript is self-contained and contains no reference to Lean, proof
+assistants, machine checking, or a formal supplement. Complete positivity, Shilov maximality,
+functional calculus, essentiality, local \(C^*\)-uniqueness, and the algebraic exact sequences
+are all established or reduced to explicitly cited results in the written proofs. Internal
+formalization is used only as a claim-audit tool and contributes nothing to the novelty or
+publishability argument.
 
 ### 11. "The result is too elementary and narrow for a broad journal."
 
@@ -135,9 +135,10 @@ priority checking and human refereeing remain required before any acceptance cla
 
 ## Verification record
 
-- TeX engine: Tectonic; final PDF: 12 pages.
-- Render audit: all 12 pages rendered with Poppler; title, theorem displays, long exact sequence,
-  transmutation construction, formal-scope section, and bibliography visually inspected.
+- TeX engine: Tectonic; final PDF: 11 pages.
+- Render audit: final manuscript rendered with Poppler; title, theorem displays, long exact
+  sequence, transmutation construction, consequences section, and bibliography visually
+  inspected.
 - Layout: no clipping, overlap, broken glyphs, unresolved references, or placeholder tokens; one
   harmless underfull bibliography line remains.
 - Lean source check:
@@ -158,7 +159,7 @@ priority checking and human refereeing remain required before any acceptance cla
 | Significance | 4.3/5 | Universal exact completion plus arbitrary noncommutative strictness. |
 | Depth | 4.2/5 | Conceptual rather than computational depth; realization and local limit arguments are essential. |
 | Exposition | 4.6/5 | Compact, honest scope boundaries, explicit comparison with parent theories. |
-| Reproducibility | 4.7/5 | Compiled/rendered manuscript, claim trace, literature audit, unconditional Lean core. |
+| Reproducibility | 4.7/5 | Compiled/rendered manuscript, claim trace, literature audit, and internal proof audit. |
 
 ## Final hostile verdict
 

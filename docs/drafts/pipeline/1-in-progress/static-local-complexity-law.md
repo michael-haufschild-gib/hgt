@@ -4349,9 +4349,50 @@ receive a new title and an independent significance audit.
   modularity proves that this overlap payment is sufficient. Finally, for
   any commuting involutions representing one physical Pauli on two replicas,
   the collective commutator squares to exactly `4I` on the relative-odd
-  sector and is therefore invertible there. Thus every nonzero relative
-  Pauli grade has an exact weight-one inverse. The remaining concrete gate is
-  sharply confined to the grade-zero edge image and reverse-overlap Hall
-  expansion, rather than arbitrary singlet/nonsinglet mixing. Proofs and
+  sector and is therefore invertible there. This all-subspaces rank law is
+  instantiated for the literal one-qubit two-replica Pauli matrices. Global
+  nonzero-grade selection and assembly, followed by the grade-zero edge
+  image and reverse-overlap Hall expansion, are the remaining concrete
+  gates; arbitrary singlet/nonsinglet mixing is no longer the correct
+  formulation. Proofs and
   formal status are recorded in
   `../2-fully-proven/canonical-symmetry-reduced-hall-gluing-law.md`.
+- 2026-08-04 -- Refreshed the five publication-ready manuscripts newer than
+  `riemann-hellinger-hodge-green-descent`. `two-sided-singular-gelfand-defects` contributes the
+  unconditional countable coercivity--defect dichotomy, already formalized in
+  `PythagoreanObserverBlindness.lean`: in an infinite Hilbert source, countably many injective
+  dense-range noncoercive observers admit a closed common blind space containing a countable
+  independent family. This is useful for a later thermodynamic observability boundary but cannot
+  close finite-dimensional Pauli Hall, because finite-dimensional injective dense maps are
+  coercive. `riemann-relation-kernel-transgression` supplies the exact principle that a degree-two
+  class made exact on a cover survives as a degree-one character on the relation kernel; its
+  formalization suggests classifying the zero-sum syzygies of resolved Pauli images before
+  augmentation, but supplies no such classification. `riemann-arithmetic-source-dagger-route`,
+  `riemann-boundary-completeness-law`, and `real-corona-quaternionic-cyclic` provide respectively a
+  canonical minimal invariant defect boundary, kernel-pair/graded recovery, and a two-sector
+  Clifford grading. All are formally useful analogues, but current task-specific canonical-defect,
+  overlap-compensation, and relative-Pauli inverse theorems are stronger for O4.12z25. No new paper
+  proves Pauli Hall, selector-uniform Haar anti-concentration, or the circuit union.
+- 2026-08-04 -- Proved the next symmetry-reduction layer. An invariant subspace of one involution
+  splits internally into even and odd parts; under two commuting involutions it splits into four
+  simultaneous parity sectors and their finranks add exactly. Paired two-replica Pauli conjugations
+  are literal commuting involutions, so any subspace stable under two Pauli conjugations has the
+  exact four-grade decomposition. The formal capstones are
+  `invariantSubspace_eq_commutingInvolution_bigrading`,
+  `invariantSubspace_finrank_eq_commutingInvolution_bigrading`, and
+  `twoReplicaPairedPauliInvariantSubspace_eq_bigrading`. The remaining gate is no longer existence
+  of a grading: prove concrete local-Pauli span covariance fixes the canonical global maximizer,
+  then assemble the relative-odd inverses across the resulting global grades and close the
+  grade-zero reverse-overlap channel.
+- 2026-08-04 -- Closed concrete paired-Pauli covariance for the literal local Hall family. Exact
+  conjugation sends the collective commutator on axis `a` to itself for the same axis and to its
+  negative for either transverse axis. Hence the local operator-family span is preserved, and the
+  unique greatest maximum-defect subspace is proved to be invariant under every paired-Pauli
+  conjugation and to admit the four-sector Pauli bigrading. Formal capstones are
+  `twoReplicaPairedPauli_collectiveCommutator_covariant`,
+  `twoReplicaPairedPauli_conjugatedCollectiveCommutator_mem_span`,
+  `twoReplicaLocalCollectiveCommutator_greatestMaximizer_fixed`, and
+  `twoReplicaLocalCollectiveCommutator_greatestMaximizer_bigrading`; targeted compilation passes and
+  axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`. This removes local span
+  covariance as an assumed hypothesis. The exact surviving gate is arbitrary-site tensor lifting,
+  followed by global nonzero-grade selection/assembly and the grade-zero reverse-overlap Hall law.

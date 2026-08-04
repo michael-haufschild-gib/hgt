@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.RealCoronaCompleteDivisorOddZetaNoGo
+import GaloisForLFunctions.RHTower.RealCoronaC2OrbitConservationLaw
 import GaloisForLFunctions.RHTower.CCMRationalClosedKappaLefschetzParityNoGo
 import GaloisForLFunctions.RHTower.CompleteStripRealCoronaCompactification
 import GaloisForLFunctions.RHTower.XiAutomorphicRealCoronaSmoothness
@@ -7,6 +8,7 @@ import GaloisForLFunctions.RHTower.PositiveDegreeAutomorphicRealCoronaSmoothness
 import GaloisForLFunctions.RHTower.XiPowerAutomorphicRealCoronaSmoothness
 import GaloisForLFunctions.RHTower.SelfDualFixedSectorVariation
 import GaloisForLFunctions.RHTower.PolynomialSelfDualFixedSectorVariation
+import GaloisForLFunctions.RHTower.RealCoronaFixedCrossedProductKZero
 
 /-!
 # Resolution facade for the four Real-corona problems
@@ -23,6 +25,12 @@ open Set
 namespace GaloisForLFunctions.RHTower
 
 /-! ## Governing conservation law -/
+
+/-- Exact universal orbit-algebra normal form behind the four applications: free `C₂` orbits are
+matrix blocks with sign grading, fixed orbits are two Fourier blocks with diagonal coefficient
+inclusion, and the free grading commutator detects precisely off-diagonal entries. -/
+def realCoronaC2AtomicOrbitAlgebraLaw : C2AtomicOrbitAlgebraLaw :=
+  c2AtomicOrbitAlgebraLaw
 
 variable {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
@@ -237,6 +245,22 @@ theorem realCoronaP4_polynomialFamily_centralKZeroRank (n k : ℕ) :
     polynomialSelfDualFamily.centralKZeroRankInt (n, k) =
       if n = 0 then 0 else 1 :=
   polynomialSelfDualFamily_centralKZeroRankInt n k
+
+/-- P4 on the exact fixed-locus crossed product: Fourier splitting identifies the two character
+blocks, coefficient inclusion induces the diagonal `K₀` map, and either block sees precisely the
+central support indicator. -/
+theorem realCoronaP4_fixedCrossedProductKZero_comparison
+    (F : CompletedSelfDualAnalyticFamily T) (t : T) :
+    (fixedReflectionCrossedProductKZeroPlusEvaluationRank F.center
+        (F.fixedCrossedProductKZeroClass t) =
+          (F.toSelfDualRealZeroFamily.analyticRank t : ℤ) ↔
+        F.toSelfDualRealZeroFamily.analyticRank t ≤ 1) ∧
+      (fixedReflectionCrossedProductKZeroMinusEvaluationRank F.center
+        (F.fixedCrossedProductKZeroClass t) =
+          (F.toSelfDualRealZeroFamily.analyticRank t : ℤ) ↔
+        F.toSelfDualRealZeroFamily.analyticRank t ≤ 1) :=
+  ⟨F.centralFixedCrossedPlusKZero_eq_analyticRank_iff t,
+    F.centralFixedCrossedMinusKZero_eq_analyticRank_iff t⟩
 
 /-- Concrete signed P4 variation with independently moving central and reflected-pair
 multiplicities. -/

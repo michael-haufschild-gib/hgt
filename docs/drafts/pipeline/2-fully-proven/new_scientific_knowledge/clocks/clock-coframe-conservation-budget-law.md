@@ -7,7 +7,8 @@
   program `[DEPENDENCY-CLOSURE]`
 - **Lean:**
   `formal/GaloisForLFunctions/HTGeometry/ChronometricCausalSusceptibility.lean`,
-  `formal/GaloisForLFunctions/HTGeometry/ClockCoframeDegeneracy.lean`
+  `formal/GaloisForLFunctions/HTGeometry/ClockCoframeDegeneracy.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockConservationConstrainedDrives.lean`
 
 ## Headline
 
@@ -120,6 +121,21 @@ not merely sufficient for it. If there are fewer clock channels than defect dime
 \(\operatorname{rank}\Theta<\dim V\) and some conservation defect survives every adaptive source. If
 the gradients are dependent, one defect is absorbed by many sources, so the adaptive source is not a
 datum and the separated signal channel of `(5)` is not well posed.
+
+### The constrained sources exhaust the source space
+
+`formal/GaloisForLFunctions/HTGeometry/ClockConservationConstrainedDrives.lean` completes `(5)`:
+
+- `conservationBalancedClockSourceWithSignal_surjective`,
+  `conservationBalancedClockSourceWithSignal_bijective` — every clock source is
+  conservation-balanced, for exactly one defect, so the adaptive construction is a bijection and not
+  merely an injection;
+- **`responseOperator_eq_of_conservationBalanced_data`** — consequently the conservation constraint
+  removes no drive: two probe responses agreeing on every conservation-balanced source are equal.
+  This is the form the active-measurement programme needs, where the drives must satisfy the
+  linearized conservation condition.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`; the bijection needs no choice.
 
 ### Lean status of the degeneracy boundary
 

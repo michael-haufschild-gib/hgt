@@ -83,19 +83,43 @@ image repays precisely the part already hidden in the second layer.
 - `BipartiteHallGluing.lean`: overlap-compensated mixed-layer rank theorem.
 - `TwoInvolutionCollectiveCommutator.lean`: for commuting involutions (p,q\), the collective
   commutator squares to four on the sector odd under conjugation by (pq\), hence is injective there.
+- `TwoReplicaPauliRelativeParityInverse.lean`: literal one-qubit two-replica Pauli instantiation,
+  including the full all-subspaces finrank inequality on each relative-odd sector.
+- `TwoReplicaPauliHallSymmetryReduction.lean`: exact paired-Pauli covariance of the literal local
+  commutator family, preservation of its operator span, invariance of the canonical greatest
+  maximum-defect subspace, and its resulting four-sector Pauli bigrading.
 - Targeted `lake env lean <file>` checks pass. Axiom audit reports only `propext`,
   `Classical.choice`, and `Quot.sound` where finite-dimensional subspace selection is used; the
   two-involution theorem uses only `propext`.
 
 ## Exact surviving frontier
 
-For the two-replica local-Pauli family, prove span covariance under local Clifford rotations, resolve
-the canonical maximizer into relative-Pauli grades, and prove reverse Hall expansion on the overlap
-between grade-zero edge images and already occupied nonzero grades. The relative-odd grades already
-have the exact inverse (A_p^2=4I\). No claim of full Pauli Hall expansion is made until this final
-reverse-overlap theorem is proved.
+For the two-replica local-Pauli family, concrete paired-Pauli span covariance and resolution of the
+canonical maximizer into relative-Pauli grades are proved. The surviving task is to lift this action
+to the arbitrary-site weight-at-most-two family, prove a globally injective selection/assembly of the
+literal local relative-odd inverses, and prove reverse Hall expansion on the overlap between
+grade-zero edge images and already occupied nonzero grades. The local relative-odd sectors already
+have the exact inverse (A_p^2=4I\). No claim of full Pauli Hall expansion is made until the global
+assembly and reverse-overlap theorems are proved.
 
 ## Log
 
 - 2026-08-04 — Dependency-closed paper proofs completed; all three abstract mechanisms formalized
   and axiom-audited. Final umbrella build deferred by project rule.
+- 2026-08-04 — Added basis-free invariant-subspace parity resolution. Over every field with
+  `2 != 0`, a subspace preserved by an involution is the internal direct sum of its even and odd
+  parts. For two commuting involutions it is the sum of four simultaneous parity sectors, with an
+  exact four-term finrank identity. Literal paired two-replica Pauli conjugations are involutive and
+  mutually commuting, so every subspace stable under two of them has this four-sector resolution.
+  `InvolutiveSubspaceParityDecomposition.lean` and the extended
+  `TwoReplicaPauliRelativeParityInverse.lean` compile; capstone axiom audits contain only
+  `propext`, `Classical.choice`, and `Quot.sound`. This proves the decomposition mechanism but does
+  not yet prove that the canonical global maximizer is stable under the concrete local-Pauli family;
+  concrete span covariance remains the next gate.
+- 2026-08-04 — Closed concrete covariance for the literal local family. Conjugating by paired Pauli
+  `b` fixes axis `a=b` and negates either transverse-axis collective commutator. Therefore every
+  conjugated generator lies in the original operator span, the canonical greatest maximum-defect
+  subspace is fixed by every paired-Pauli conjugation, and it has the exact four-sector bigrading for
+  every pair of axes. `TwoReplicaPauliHallSymmetryReduction.lean` compiles; axiom audits of covariance,
+  span preservation, canonical invariance, and bigrading contain only `propext`, `Classical.choice`,
+  and `Quot.sound`. Global arbitrary-site tensor lifting and grade assembly remain open.

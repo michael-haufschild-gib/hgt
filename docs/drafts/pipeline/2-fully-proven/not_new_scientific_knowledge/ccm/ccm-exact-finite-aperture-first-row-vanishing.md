@@ -568,9 +568,111 @@ The Wronskian normalisation of the pair is proved too:
   transports that to the whole ray.  No numerical evaluation of `J_0` is used — only `J_0 >= 1 - u²/2`,
   `pi > 3`, `pi <= 4` and `log 2 < 0.6931471808`.
 
-What is still needed of `K` for the Green kernel: the envelope `|K(u)| <= C u^{-1/2}`, which follows from
-the rotating-frame argument of `BesselJZeroPhase` together with Grönwall (no a priori bound is needed —
-the frame satisfies `|w'| <= |q| |w|`).
+The envelope of the second solution is proved too, and with it `K` is a complete admissible partner of
+`J_0`:
+
+- **`sq_add_sq_le_of_perturbed_harmonic`** — the energy law: if `v'' = -(1 + 1/(4x²)) v` on `x >= 1` then
+  `v² + v'² <= (v(1)² + v'(1)²) exp(1/2)`.  The mechanism is exact rather than Grönwall: the weighted
+  energy `(v² + v'²) exp(1/(2x) - 1/2)` has derivative `-2q E (v v' + v² + v'²) <= 0`, because
+  `v v' + v² + v'² = (v + v'/2)² + (3/4) v'²`.  mathlib's Grönwall lemma is not usable here — it needs a
+  *constant* coefficient, and `q = 1/(4x²)` used as the constant `1/4` would give an exponentially
+  growing bound.
+- `besselKV`, `besselKVDeriv`, `hasDerivAt_besselKV`, **`hasDerivAt_besselKVDeriv`** — the
+  Liouville–Green normalisation `sqrt x K(x)`, which satisfies exactly the perturbed harmonic equation.
+- **`exists_besselK_envelope`** — `|K(u)| <= C u^{-1/2}` for `u >= 1`, with
+  `C = sqrt((K_V(1)² + K_V'(1)²) exp(1/2))`.  No asymptotic information about `K` is used.
+
+So the pair `(J_0, K)` now has, unconditionally: the two ODEs, matching `u^{-1/2}` envelopes, and a
+nonzero constant weighted Wronskian.
+
+The Green kernel of Dunster's comparison is assembled from it in
+`CCMFirstRowDunsterModel.lean`:
+
+- `lgBesselModel2`, `lgBesselModel2Deriv`, `lgBesselModel2SecondDeriv`,
+  `hasDerivAt_lgBesselModel2`, `hasDerivAt_lgBesselModel2Deriv`, **`lgBesselModel2_ode`**,
+  `hasDerivAt_lgBesselModel2Deriv_ode` — the second model solution `K(c xi_s(x))` solves the *same*
+  comparison equation, by the identical chain-rule cancellation.
+- **`lgWronskian_model_eq`** — the Green kernel normalisation is exactly the Bessel Wronskian constant:
+  `m (V1 V2' - V1' V2) = W(c xi_s(x))`.  The Liouville weight `xi/xi'` cancels the Jacobian `c xi'` of
+  the substitution against the `1/(c xi)` of Abel's identity for Bessel.
+- `lgWronskian_model_pos` — hence it is positive, uniformly in `x`.
+- **`lgReconstruction`**, `lgReconstruction_eq` — the reconstruction identity
+  `U · [m (V1 V2' - V1' V2)] = F2 V1 - F1 V2` with `F_i = m (U V_i' - U' V_i)`: a solution of the
+  perturbed equation is recovered *algebraically* from its two weighted Wronskians against the model
+  pair.  No integral and no hypothesis on the defect enter.  Together with the transport law
+  `F_i' = m a U V_i` this is the Volterra equation of the pole-uniform expansion.
+
+The Volterra equation is now available in integral form:
+
+- **`hasDerivAt_lgBessel2Wronskian`** — the transport law against the second model solution.
+- **`integral_lgBesselWronskian`**, **`integral_lgBessel2Wronskian`** — integrating the two transport
+  laws: each weighted Wronskian moves exactly by `int m a U V_i`.  The defect enters *only* through that
+  integral.
+- **`abs_lgBesselWronskian_deviation_le`** — the deviation inequality
+  `|F1(B) - F1(A)| <= int |m a U V1|`, which is the inequality the pole-uniform `O(c^{-1})` is read off
+  from once the two envelopes and the size of `a` are inserted.
+
+The Grönwall step the quantitative estimate needs is now built as general infrastructure, in
+`formal/GaloisForLFunctions/HTGeometry/IntegralGronwall.lean`:
+
+- **`le_mul_exp_integral_of_le_add_integral`** — Grönwall's inequality in *integral* form with a
+  *variable* coefficient: `S x <= C + int_A^x k S` with `k >= 0` continuous gives
+  `S x <= C exp(int_A^x k)`.  mathlib has only the differential form with a **constant** coefficient
+  (`norm_le_gronwallBound_of_norm_deriv_right_le`), which is useless for an error analysis: replacing a
+  decaying `k` by its supremum turns an integrable perturbation into an exponentially growing bound.
+  The proof is exact rather than iterative — the primitive `R x = C + int_A^x k S` satisfies
+  `R' = k S <= k R`, so `R exp(-int_A^x k)` is antitone with value `C` at `A`.
+- `le_mul_exp_of_le_add_integral_of_mass_le` — the uniform form: if the total mass of `k` is at most `M`,
+  the bound `C exp M` holds independently of the length of the interval.  This is the form the
+  pole-uniform estimate consumes, since the Liouville defect has finite total mass.
+
+- **`abs_le_envelope_mul_exp_of_two_wronskian`** — the abstract error analysis of a comparison expansion,
+  assembled from the Grönwall lemma: given the algebraic reconstruction of the solution from its two
+  Wronskians against the model pair (divided by the Green kernel constant `W`), a common envelope `E` for
+  the two model solutions, and the two integrated transport laws, the solution obeys
+
+  ```text
+  |U x| <= (E x / W) (|F1 A| + |F2 A|) exp(int_A^x 2 kappa E² / W).
+  ```
+
+  The exponential is `1 + O(mass)` when the defect mass is small, and that is exactly where the relative
+  `O(c^{-1})` of a pole-uniform expansion comes from.  Every hypothesis of this theorem is supplied by
+  the objects already built: `lgReconstruction` gives the reconstruction, `abs_besselJ0_le_envelope` and
+  `exists_besselK_envelope` the common envelope, `lgWronskian_model_pos` the constant `W`, and
+  `integral_lgBesselWronskian` / `integral_lgBessel2Wronskian` the transport laws.
+
+The interval-level inputs of that instantiation are now proved in the Dunster module:
+
+- **`xiEndpointPhase_le_of_le`** — the endpoint phase is nondecreasing (its increment is the integral of
+  the nonnegative speed), so the Bessel argument `c xi_s(x)` only grows along the ray.  This is what lets
+  the Green kernel constant be evaluated once, at the left endpoint, and what propagates the condition
+  `c xi >= 1` from that endpoint to the whole interval.
+- **`abs_lgBesselModel_le`** — the first model solution inherits the Bessel envelope
+  `72 sqrt 2 / sqrt(c xi_s(x))`.
+- **`exists_lgBesselModel2_envelope`**, **`exists_lgBesselModel_common_envelope`** — the second model
+  solution inherits the envelope of `K`, with a constant independent of every parameter, and the pair has
+  a common envelope `C / sqrt(c xi_s(x))`.
+
+Three of the four hypotheses of the abstract error analysis are now discharged in the Dunster module:
+
+- `continuousOn_lgWeight`, `continuousOn_lgBesselModel`, `continuousOn_lgBesselModelDeriv`,
+  `continuousOn_lgBesselModel2`, `continuousOn_lgBesselModel2Deriv`, `continuousOn_xiEndpointPhase'` —
+  interior continuity of every model object, each from its own `HasDerivAt`.
+- **`besselWronskian_phase_eq`**, `besselWronskian_phase_pos` — the Green kernel constant may be
+  evaluated once at the left endpoint: the Bessel argument only grows along the ray, so Abel's identity
+  applies in the single direction the constancy lemma needs.
+- **`lgReconstruction_const`** — the reconstruction with that single constant
+  `W = besselWronskian (c xi_s(A))`.
+- **`abs_perturbed_le_envelope_mul_wronskianSum`** — the pointwise bound
+  `|U x| W <= E x (|F1 x| + |F2 x|)`, which is the inequality that closes the Volterra loop: it is what
+  turns the transport laws into an integral inequality for `|F1| + |F2|` alone.
+
+What remains for `(14)`: the integrability bookkeeping for the four integrands (all continuous on the
+interval by the lemmas above), and the one genuinely external quantity — the size of the Liouville defect
+of the radial prolate equation, which is the PSWF-specific input the card cites Dunster for.  Every structural
+ingredient is now unconditional: both model ODEs, both envelopes, the positive constant Green kernel
+normalisation, the two transport laws in integral form, and the algebraic reconstruction of `U` from the
+two Wronskians.
 
 What remains of `(14)` after that is the estimate on the deviation integral.
 

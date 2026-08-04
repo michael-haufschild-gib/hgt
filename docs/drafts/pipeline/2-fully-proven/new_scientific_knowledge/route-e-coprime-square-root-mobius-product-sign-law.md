@@ -7760,3 +7760,90 @@ Three modules, unconditional, `[propext, Classical.choice, Quot.sound]`:
 `A ≤ 1/2` enters exactly once, in `tendsto_pow_savingG`: it is what makes `1 - A > 0`, i.e. what
 makes the truncation height `exp(t)` beat the right-edge decay constant's growth `exp(At)`.  Every
 other use of the zero-free constant is qualitative.
+
+#### The smoothed Chebyshev error is `o(N)` — unconditional
+
+Two modules close the numerical assembly, both `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/ChebyshevFiveTerms.lean` — `term_tail_le`, `term_left_dslope_le`,
+  `term_horizontal_dslope_le`, `term_left_reg_le`, `term_horizontal_reg_le`: each of the five error
+  terms bounded by a constant times `t^k·N·E` or `t^k·N·G` with `k ∈ {0, 9, 18}`.
+- `RHTower/Sieve/ChebyshevErrorLimit.lean` — `norm_tsum_vonMangoldt_sub_main_five_terms`,
+  `tendsto_five_term_majorant`, and
+
+      tendsto_norm_tsum_vonMangoldt_sub_main_div :
+        ‖ 2π ∑ₙ Λ(n)w(n) - W(1)·(2·arctan(T/w) - 2·arctan(-T/w)) ‖ / N  →  0.
+
+All the existential data is discharged inside: `C` from `exists_bound_mellin_smoothWeight_uniform_upto`,
+and `(T₀, δ₀, M₀)` from `exists_chebyshev_contour_data`.  The statement has **no hypotheses**.
+
+The powers of `t` that appear are exactly the three places the strip's width enters: `w⁻¹ = t⁹/A` in
+the two left-edge terms, `w⁻² = t¹⁸/A²` in the truncation error, and the regular part's own bound
+`2240t⁹/A`.  Nothing of higher order occurs, which is why the exponent `1/10` suffices.
+
+Remaining to reach `ψ(N) ~ N`: the bracket tends to `2π` (because `T/w = t⁹exp(t)/A → ∞`), the mass
+`W(1)` lies between `N` and `N+H` with `H/N → 0`, and the sharp-versus-smooth error is
+`(H+1)log(N+H) = o(N)`.
+
+### The prime number theorem, unconditional in Lean
+
+`RHTower/Sieve/ChebyshevMainTermLimit.lean` and `RHTower/Sieve/ChebyshevPNT.lean` close the chain.
+All statements are unconditional with axioms `[propext, Classical.choice, Quot.sound]`:
+
+- `tendsto_chebWidth_div` — `H/N = exp(-(log N)^{1/20}) → 0`.
+- `tendsto_mass_div` — `W(1)/N → 1` (the mass lies between `N` and `N + H`).
+- `tendsto_height_div_width`, `tendsto_bracket_at_choice` — the bracket is `4·arctan(T/w)` and
+  tends to `2π`, because `T/w = t⁹exp(t)/A → ∞`.
+- `tendsto_width_mul_log`, `tendsto_window_mass_div` — the smoothing error
+  `(H+1)log(N+H)/N → 0`; the key identity is `(log N)^{1/20}` raised to the 20th power being
+  `log N`, so the width's exponential beats the logarithm.
+- `tendsto_tsum_vonMangoldt_smoothWeight_div` — `∑ₙ Λ(n)w(n)/N → 1`.
+- `tendsto_smooth_sub_sharp_div` — smoothed minus sharp is `o(N)`.
+- **`tendsto_sum_vonMangoldt_div`** —
+
+      ψ(x)/x → 1,   i.e.   Tendsto (fun x => (∑_{n ≤ x} Λ(n))/x) atTop (𝓝 1).
+
+  **No hypotheses.**  This is the prime number theorem.
+
+The corpus now owns both classical forms of PNT unconditionally: `∑_{n≤N} μ(n) = o(N)`
+(`tendsto_norm_sum_moebius_div`, proved earlier on this card) and `ψ(x) ~ x`.  mathlib v4.32.2 has
+neither.
+
+Route from `riemannZeta` to `ψ(x) ~ x`, end to end: smoothed Perron identity → removable singularity
+at `s = 1` (`zetaLogDerivReg`) → truncation → three-piece split → residue in closed form (arctan) →
+contour shift on the zero-free box `|σ-1| ≤ A/log⁹T`, `|t| ≤ T` → six edge estimates → balanced
+parameters `T = exp((log N)^{1/10})`, `H = N/exp((log N)^{1/20})` → five decaying terms → limit.
+
+The three exponents are forced and mutually tight: `9` by the zero-free region, `1/10` because the
+saving `exp(-A(log N)^{1/10})` must survive the truncation height `exp((log N)^{1/10})` (possible
+only because `A ≤ 1/2 < 1`), and `1/20` because `(N/H)² = exp(2(log N)^{1/20})` must be beaten by
+that same saving while `H·log N` stays `o(N)`.
+
+### Step 1's two non-MR inputs are now formalized
+
+Both analytic inputs the bilinear all-interval theorem `(5)` is applied to are proved
+unconditionally, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/MoebiusDyadicWindow.lean` — `tendsto_norm_window_sum_moebius_div` and
+  `tendsto_norm_sum_moebius_Ioc_div`:
+
+      (1/y) ‖∑_{y < n ≤ 2y} μ(n)‖ → 0.
+
+  This is the card's "the prime number theorem gives `(1/√x)∑_{√x ≤ n ≤ 2√x} μ(n) = o(1)`", at
+  `y = √x`.  It is a two-line consequence of `tendsto_norm_sum_moebius_div` once that is available:
+  a dyadic block is a difference of two initial segments, and both are `o` of the scale.
+
+- `RHTower/Sieve/SquarefreeWindowCount.lean` and `RHTower/Sieve/SquarefreeDyadicDensity.lean` —
+  `filter_sq_dvd_high_eq_empty`, `abs_window_squarefree_sub_le`, `tendsto_window_squarefree_density`:
+
+      | #{n ∈ (t, t+L] : n squarefree} - L·D | ≤ R + L/R   (for 1 ≤ R, t+L ≤ R²),
+      (1/y) ∑_{y < n ≤ 2y} μ²(n) → D = 6/π².
+
+  This is the card's "squarefree density gives `(1/√x)∑_{√x ≤ n ≤ 2√x} μ²(n) = D + o(1)`".
+
+The truncation defect vanishes identically once `R² ≥ t + L`: a divisor `d > R` has `d² > R² ≥ n`,
+while `d² ∣ n` with `n ≥ 1` forces `d² ≤ n`.  So no averaged tail estimate is needed at all — the
+corpus's `AveragedSquarefreeTail` layer is only required when `R` is taken *below* the square root,
+which the dyadic window never needs.  Choosing `R = ⌊√(t+L)⌋ + 1` gives the error `O(√(t+L))`.
+
+Step 1 of the card therefore now rests on `(5)` alone.

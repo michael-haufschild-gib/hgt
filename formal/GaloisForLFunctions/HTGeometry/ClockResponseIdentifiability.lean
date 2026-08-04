@@ -13,9 +13,11 @@ source domain and the readouts separate responses, then two response operators w
 are equal; if in addition the unknown endpoint gains are injective on the readout side and
 surjective on the drive side, the *hidden* response operator behind them is determined as well.
 
-This is the identifiability half of the operational bridge. It is exact, not quantitative: it says
-that complete data determine the response, not how an approximate response follows from approximate
-data.
+Invertible endpoints are not needed: a *family* of couplings that jointly separates responses, and
+drives whose images under the family span a dense subspace, determine the response just as well.
+
+This is the identifiability half of the operational bridge; the quantitative half is the stability
+estimate of the companion file.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -73,6 +75,30 @@ theorem hiddenResponse_eq_of_data {T S : E →L[𝕜] F} (receiver : F →L[𝕜
   ext x
   obtain ⟨v, rfl⟩ := hsource x
   exact congrArg (fun y : F => y) (hreceiver (hpt v))
+
+/-- **Separating families replace invertible couplings.** The apparatus need not implement a single
+invertible endpoint pair: a family of couplings that jointly separates responses, together with
+drives whose images span a dense subspace, determines the hidden response operator. -/
+theorem hiddenResponse_eq_of_family_data {κ μ : Type*} {T S : E →L[𝕜] F}
+    (receiver : κ → F →L[𝕜] G) (source : μ → D →L[𝕜] E) (drive : ι' → D)
+    (hsep : ∀ y : F, (∀ k, receiver k y = 0) → y = 0)
+    (hdense : Dense (Submodule.span 𝕜
+      (⋃ m : μ, Set.range fun j : ι' => source m (drive j)) : Set E))
+    {readout : ι → G →L[𝕜] 𝕜} (hread : SeparatingReadouts readout)
+    (hdata : ∀ (i : ι) (k : κ) (m : μ) (j : ι'),
+      readout i (receiver k (T (source m (drive j)))) =
+        readout i (receiver k (S (source m (drive j))))) :
+    T = S := by
+  refine ContinuousLinearMap.ext_on hdense ?_
+  rintro x hx
+  simp only [Set.mem_iUnion, Set.mem_range] at hx
+  obtain ⟨m, j, rfl⟩ := hx
+  have hdiff : ∀ k : κ, receiver k (T (source m (drive j)) - S (source m (drive j))) = 0 := by
+    intro k
+    rw [map_sub, sub_eq_zero]
+    exact eq_of_separatingReadouts hread fun i => hdata i k m j
+  have := hsep _ hdiff
+  rwa [sub_eq_zero] at this
 
 end Determination
 

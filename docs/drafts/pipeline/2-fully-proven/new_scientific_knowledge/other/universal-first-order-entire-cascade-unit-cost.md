@@ -4727,3 +4727,180 @@ with `c /= 0`" now rests on constructed Lean objects at every step except that b
 
   Beyond this card, the pair is generally useful: every argument in the corpus that wants
   "transcendental ⟹ grows faster than any polynomial" can now cite it instead of assuming it.
+
+- 2026-08-04 — **Two-variable polynomials as polynomials in the second variable**
+  (`TwoVariableDecomposition`, axiom-clean, wired).
+  - `twoVarCoeff P k` — the coefficient of `u^k`, as a polynomial in the first variable.
+  - `eval_eq_sum_twoVarCoeff` — evaluating a two-variable polynomial equals evaluating the
+    one-variable polynomial in `u` whose coefficients are those.
+
+  The device is the same fibrewise grouping of the support used for the constituents' equations
+  (`Finset.sum_fiberwise_of_maps_to`), applied to the second exponent; `MvPolynomial.finSuccEquiv`
+  would have split off the *first* variable and needed a rename to be useful here.
+  This turns an order-zero relation into the coefficient form `∑_k a_k(z)·g(z)^k = 0` that
+  `norm_le_of_order_zero` consumes, so the growth bound for an algebraic entire function is now
+  reachable from the corpus's own definition of differential order.
+
+- 2026-08-04 — **Order-zero equations in coefficient form** (axiom-clean).
+  `exists_coeff_relation_of_order_zero` — an order-zero algebraic differential equation
+  `P(z, g z) = 0` is a polynomial relation `∑_k a_k(z)·g(z)^k = 0` with the degree taken as the
+  support's supremum in the second exponent.
+  This connects the corpus's `DifferentiallyAlgebraicOfOrder` directly to the algebraic root
+  estimate.  What the statement does *not* yet carry is nondegeneracy — that some `a_k ≠ 0`, which
+  needs the coefficient identification `Polynomial.coeff j (twoVarCoeff P k) = MvPolynomial.coeff
+  (fin₂ j k) P`.  Without it the relation could be vacuous, so that identification is the next step
+  for this branch.
+  (The `Fin.cons z t` reduction trap recurred here for `Fin 1`; the same `Fin.cons_succ`-before-
+  `fin_cases` fix applies.)
+
+- 2026-08-04 — **Coefficient identification for the two-variable decomposition** (axiom-clean;
+  module now 138 lines).
+  - `fin2Exp`, `fin2Exp_eq`, `fin2_ext` — an exponent vector on `Fin 2` is determined by its two
+    entries.
+  - `coeff_twoVarCoeff` — hence `Polynomial.coeff j (twoVarCoeff P k) = MvPolynomial.coeff
+    (fin2Exp j k) P`: the fibre sum collapses to a single term, because within a fibre the first
+    exponent determines the vector.
+
+  This closes the nondegeneracy gap flagged in the previous entry.  A nonzero `P` has some nonzero
+  coefficient `coeff m P`, and `coeff_twoVarCoeff` at `(j, k) = (m 0, m 1)` makes the corresponding
+  `twoVarCoeff P (m 1)` nonzero — so the coefficient form of an order-zero equation is never vacuous.
+
+- 2026-08-04 — **The order-zero equation in nondegenerate coefficient form** (axiom-clean; module
+  now 180 lines).  `exists_nonzero_coeff_relation_of_order_zero` — an order-zero algebraic
+  differential equation for `g` yields
+
+      ∃ d, ∃ a : ℕ → ℂ[X], (∃ k ≤ d, a k ≠ 0)  ∧  ∀ z, ∑_{k ≤ d} a_k(z)·g(z)^k = 0.
+
+  The nondegeneracy comes from `coeff_twoVarCoeff`: a nonzero `P` has a nonzero coefficient at some
+  exponent vector `m`, and that same value is the `m 0`-th coefficient of `twoVarCoeff P (m 1)`.
+  This is the complete translation of the corpus's order-zero notion into the form the algebraic root
+  estimate consumes, with no hypothesis left implicit.  For the `n = 1` case of the card what remains
+  is the growth argument itself: the estimate bounds `g` by the normalised coefficients off the
+  leading coefficient's zeros, and `exists_polynomial_of_polynomial_growth` then contradicts
+  transcendence.
+
+- 2026-08-04 — **Explicit growth bounds for polynomials** (`PolynomialGrowthBound`, axiom-clean,
+  wired).
+  - `coeffNormSum` — the sum of a polynomial's coefficient norms.
+  - `norm_eval_le_coeffNormSum` — `‖p(z)‖ ≤ coeffNormSum p · (1 + ‖z‖)^{deg p}`.
+  - `norm_eval_le_of_family` — the same with a common degree bound for a finite family.
+
+  This is the elementary input the `n = 1` growth argument needs on the numerator side.  What is
+  still missing there is the denominator: a *lower* bound for `‖a_d(z)‖` away from its zeros, which
+  is where the minimum-modulus material already in the corpus (`norm_lower_bound_of_anchor`,
+  `PolynomialMinimumModulus`) applies — the polynomial case is the easy one, since a polynomial's
+  zeros are finite and explicit.
+
+- 2026-08-04 — **Polynomial lower bound far from the roots** (axiom-clean; module now 118 lines).
+  `norm_eval_ge_of_large` — for `p ≠ 0`, once `‖z‖ ≥ 1` and
+  `2·coeffNormSum(eraseLead p)·2^{deg−1} ≤ ‖leadingCoeff p‖·‖z‖`,
+
+      ‖leadingCoeff p‖/2 · ‖z‖^{deg p}  ≤  ‖p(z)‖.
+
+  The radius is explicit — no "for large enough `z`" existential — which is what lets it compose with
+  the numerator bound to give a genuine polynomial bound for the normalised coefficients.
+  With `norm_eval_le_coeffNormSum` this closes the rational-function asymptotic named two entries
+  ago: off an explicit disc, `∑‖a_k/a_d‖` is bounded by a polynomial in `‖z‖`, so an entire solution
+  of an order-zero equation has polynomial growth there, and `exists_polynomial_of_polynomial_growth`
+  applies.
+  Lean note: `norm_sub_norm_le` gives `‖a‖ − ‖b‖ ≤ ‖a − b‖`, which is the *wrong* direction for
+  extracting a leading term; the right tool is `norm_sub_le` on `(a + b) − b`.
+
+### `HTGeometry/EntireOrderZeroTranscendence.lean` — the lower bound at `n = 1`
+
+`not_differentiallyAlgebraicOfOrder_zero_of_transcendental`: an entire `g` that is not a polynomial
+satisfies no order-zero algebraic differential equation. Unconditional, axiom-clean
+(`propext, Classical.choice, Quot.sound`).
+
+The chain, all corpus-owned:
+
+1. `exists_nonzero_coeff_relation_of_order_zero` reads `P(z, g z) = 0` as `∑_{k≤d} a_k(z) g(z)^k = 0`
+   with some `a_k ≠ 0` (two-variable decomposition).
+2. `exists_top_relation` (new) truncates at the **largest** index with `a_D ≠ 0`. This is the step the
+   coefficient form does not give for free: the root estimate needs a nonvanishing *top* coefficient,
+   and "some coefficient is nonzero" is not that. `Finset.max'` on the nonzero-support supplies it,
+   and `Finset.sum_subset` discards the vanishing tail.
+3. `D = 0` is impossible: the relation becomes `a_0(z) = 0` for every `z`, and `Polynomial.funext`
+   (valid because `ℂ` is infinite) forces `a_0 = 0`.
+4. For `D ≥ 1`, `norm_le_max_sum_of_root` bounds `‖g z‖` by `max 1 ∑_{k<D} ‖a_k(z)/a_D(z)‖`, and
+   `norm_div_le_of_growthRadius_le` makes each quotient polynomially bounded beyond
+   `growthRadius (a_D)`.
+5. Inside that disc `g` is bounded by compactness (`IsCompact.exists_bound_of_continuousOn`), so the
+   two halves glue into a single global bound `‖g z‖ ≤ M (1+‖z‖)^N`.
+6. `exists_polynomial_of_polynomial_growth` (Liouville at polynomial growth, built here) makes `g` a
+   polynomial — contradiction.
+
+Supporting additions to `PolynomialGrowthBound.lean`: `norm_div_le_of_large`,
+`growthRadius`, `hyps_of_growthRadius_le`, `eval_ne_zero_of_growthRadius_le`,
+`norm_div_le_of_growthRadius_le`. Packaging the two hypotheses of the lower bound into one radius is
+what makes the estimates composable — the nonvanishing of `a_D` far out is then a *consequence* of the
+same inequality that bounds the quotients, so no separate root-avoidance argument is needed.
+
+Lean note: `Finset.range_subset` is **not** the iff `range m ⊆ range n ↔ m ≤ n` in this toolchain —
+`refine Finset.range_subset.mpr ?_` leaves the unfolded `∀ x < m, x ∈ range n`, which is why `omega`
+reported a counterexample mentioning a phantom `x`. Prove range inclusions by `intro`/`Finset.mem_range`
+instead. Second note: after `rw [hD0]` with `hD0 : D = 0`, the sum bound reads `Finset.range (0 + 1)`,
+and `Finset.sum_range_one` does not fire until `zero_add` is in the `simp only` set.
+
+### `HTGeometry/TranscendentalEntireOrderOne.lean` — the card's theorem at `n = 1`, unconditionally
+
+`exactDifferentialOrder_one_of_relation`: a transcendental entire `f` satisfying
+`∑_{p∈S} a_p(z) f(z)^{p₁} f'(z)^{p₂} = 0` (nonzero relation) has `ord_DA(f) = 1`. No hypotheses beyond
+the card's own. Axiom-clean.
+
+`TranscendentalEntire f := Differentiable ℂ f ∧ ¬ ∃ p : Polynomial ℂ, ∀ z, f z = p.eval z` — the card's
+notion, named so downstream statements read as the paper does. The upper bound is
+`differentiallyAlgebraicOfOrder_one_of_relation`; the lower bound is the order-zero theorem of the
+previous entry; the two meet at `ExactDifferentialOrder` after `m < 1 → m = 0`.
+
+**The class is inhabited.** Per the vacuity discipline, an existence witness is proved, not assumed:
+`exactDifferentialOrder_exp_one : ExactDifferentialOrder Complex.exp 1`. Its two halves:
+
+- `differentiallyAlgebraicOfOrder_one_exp` — `y' − y = 0` in the card's shape, with
+  `S = {(0,1),(1,0)}` and `A = ±1`. Nonvanishing of the constructed `firstOrderMvPoly` is checked by
+  evaluating at `(z,u,v) = (0,0,1)`, where the sum collapses to `1`: a *value* certificate, not a
+  support computation, which is why it is a single `norm_num`.
+- `transcendentalEntire_exp` — a polynomial agreeing with `exp` has no roots (`Complex.exp_ne_zero`),
+  hence degree `≤ 0` by `Complex.exists_root`, hence is constant by `Polynomial.degree_le_zero_iff`,
+  hence has zero derivative; but `Complex.deriv_exp` says that derivative *is* `exp`, which is never
+  zero. The derivative closes the argument without any appeal to `exp_eq_one_iff` or to periodicity.
+
+Also `entireCascade_one : entireCascade f 1 = f 0` holds by `rfl` (eta), so
+`exactDifferentialOrder_cascade_one` states the same result in the cascade's own vocabulary.
+
+Remaining for `n ≥ 2`: the two named obligations of `exactDifferentialOrder_of_cascade` — `hup`
+(construct the order-`n` equation for the composition) and `helim` (elimination of the constituents'
+derivatives from a low-order equation).
+
+### `HTGeometry/FirstOrderDerivativeDegree.lean` + `CascadeEdgeRelation.lean` — the nondegeneracy the upper bound needs
+
+`exists_deriv_top_relation_of_order_one`: a transcendental entire `f` with a first-order equation
+satisfies `∑_{c ≤ e} B_c(z, f) (f')^c = 0` with `e ≥ 1` and `B_e ≠ 0` in `MvPolynomial (Fin 2) ℂ`.
+Unconditional, axiom-clean.
+
+This is the separant-adjacent fact the upper bound was waiting on, and it is *cheap* once the
+order-zero theorem is available: the degree in `f'` cannot be `0`, because a degree-`0` reading is
+literally a two-variable relation `B_0(z, f) = 0`, i.e. an order-zero equation — impossible for a
+transcendental entire function. No irreducibility, no minimal polynomial, no separant computation.
+
+Mechanism: `MvPolynomial.finSuccEquiv` reads a three-variable polynomial as a polynomial in its
+*head* variable, so the derivative variable is first moved to the head by `rename derivHead` with
+`derivHead = ![1,2,0]` (injective by `decide`). Then `MvPolynomial.eval_eq_eval_mv_eval'` converts the
+evaluation into `Polynomial.eval` of the mapped polynomial, `Polynomial.eval_eq_sum_range'` expands it
+over `range (e+1)` — using `natDegree_map_le`, since specialising the coefficients can only drop the
+degree — and `Polynomial.coeff_map` identifies the terms. The top coefficient is nonzero because it is
+`p.leadingCoeff` and `finSuccEquiv` is an injective algebra map.
+
+`exists_cascade_edge_relation` composes this with the existing `cascade_relation_cleared`: at any point
+where `F_k'` does not vanish,
+
+`∑_{c ≤ e} B_c(F_k, F_{k+1}) (F_{k+1}')^c (F_k')^{e−c} = 0`.
+
+One edge of the cascade, with the constituent eliminated — only the two states and their first
+derivatives remain. Unconditional; `e ≥ 1` and `B_e ≠ 0` are carried through.
+
+What this leaves for `hup`: the top coefficient is nonzero *as a polynomial*, and the remaining step
+is that `B_e(F_k, F_{k+1})` does not vanish *identically as a function* — which is exactly the
+algebraic independence of consecutive states, the card's Clunie–Steinmetz input. That, plus a
+transcendence-degree count on the field generated by the states, is the whole of the upper bound; the
+abstract half already exists as `exists_scalarDifferentialRelation_of_trdeg_le`.

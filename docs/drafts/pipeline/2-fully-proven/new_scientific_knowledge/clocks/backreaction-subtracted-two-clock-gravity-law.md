@@ -10,7 +10,11 @@
   `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockLocalityDistributionKernel.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockBackreactionTwoMass.lean`,
-  `formal/GaloisForLFunctions/HTGeometry/ClockResponseIdentifiability.lean`
+  `formal/GaloisForLFunctions/HTGeometry/ClockResponseIdentifiability.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockResponseStability.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockConservationConstrainedDrives.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockApparatusBackreaction.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ChronometricCausalDiamond.lean`
 
 ## Headline
 
@@ -222,8 +226,25 @@ the hidden one — is formalized in
 - **`hiddenResponse_eq_of_data`** — the same for the hidden response behind unknown endpoint gains:
   an injective receiver and a surjective source suffice, with no calibration of either.
 
-This is exact identifiability, not stability: it says complete data determine the response, not that
-approximate data determine it approximately. Axioms: `[propext, Classical.choice, Quot.sound]`.
+- **`hiddenResponse_eq_of_family_data`** — invertible couplings are not needed: a *family* of
+  couplings that jointly separates responses, with drives whose images span a dense subspace, does
+  the same job. This is load-bearing hypothesis 4 of this card in its realistic form.
+
+The quantitative half is `formal/GaloisForLFunctions/HTGeometry/ClockResponseStability.lean`:
+
+- `NormingReadouts`, `NormingDrives` — the two families control, respectively, the norm of a
+  response and the operator norm; `normingReadouts_dualBall` and `normingDrives_unitBall` prove the
+  canonical families do so with constant `1`, so the hypotheses are inhabited;
+- **`responseOperator_norm_sub_le_of_data`** — data agreeing to within `ε` force
+  `‖T - S‖ ≤ C_drive C_readout ε`;
+- `norm_le_of_dressed_norm` — a receiver bounded below and a bounded right inverse of the source
+  convert a bound on the dressed operator into one on the undressed operator;
+- **`hiddenResponse_norm_sub_le_of_data`** — hence
+  `‖T - S‖ ≤ c⁻¹‖right‖ C_drive C_readout ε` for the hidden response.
+
+So the reconstruction is not merely unique: it is Lipschitz in the data, with an explicit constant
+built from the apparatus. What is still open is physical — that a finite compact intervention set is
+norming, and that noise stays inside `ε`. Axioms: `[propext, Classical.choice, Quot.sound]`.
 
 ## Hostile novelty audit
 
@@ -262,12 +283,38 @@ single-metric propagation, common coupling, common calibration, or minimal mass 
 Paper proof of exact algebra is complete. Remaining physical core:
 
 1. recover complete \(\widehat H_\mu\) from finite compact clock interventions with quantified
-   stability — the *identifiability* half is now proved (`hiddenResponse_eq_of_data`); what remains
-   is the quantitative half, finite data and noise;
-2. replace invertible compact couplings by a realistic separating family;
-3. incorporate conservation-constrained gauge-invariant sources;
-4. control genuine nonlinear gravitational backreaction of probe apparatus;
-5. prove the clock-only nonlinear causal-diamond reconstruction theorem.
+   stability — both halves are now proved (`hiddenResponse_eq_of_data`,
+   `hiddenResponse_norm_sub_le_of_data`); what remains is physical, that a finite compact
+   intervention set is norming and that noise stays inside the tolerance;
+2. replace invertible compact couplings by a realistic separating family — proved
+   (`hiddenResponse_eq_of_family_data`);
+3. incorporate conservation-constrained gauge-invariant sources — proved that the constraint costs
+   nothing (`responseOperator_eq_of_conservationBalanced_data`): with a clock coframe the
+   conservation-balanced sources exhaust the source space
+   (`conservationBalancedClockSourceWithSignal_bijective`), so the constrained drives span exactly
+   what the unconstrained ones span;
+4. control genuine nonlinear gravitational backreaction of probe apparatus — the exact algebra of
+   this is now proved (`formal/GaloisForLFunctions/HTGeometry/ClockApparatusBackreaction.lean`):
+   `measuredClockInverse_difference_geometry_independent` — the calibration channel does not mention
+   the geometric operator, so **any** species-common perturbation of the geometry, the apparatus's
+   own backreaction included, leaves the reconstructed calibration untouched;
+   `ScalarSecondOrderOperator.twoMassPrincipalSymbol_reconstruction_perturbed` — the symbol channel
+   returns the symbol of the operator actually present, that is, the backreacted geometry, shifted
+   from the undisturbed one by exactly the symbol of the perturbation (`principalSymbol_add`), so
+   backreaction is *measured*, not an error; `measuredClockInverse_difference_species_geometry` and
+   `exists_measuredClockInverse_difference_ne` — a *species-dependent* perturbation, by contrast,
+   enters the residual as its dressed difference, and that failure is not vacuous. What remains
+   physical is whether a given apparatus perturbs the two species identically;
+5. prove the clock-only nonlinear causal-diamond reconstruction theorem — the *kinematic* half is
+   formalized in `formal/GaloisForLFunctions/HTGeometry/ChronometricCausalDiamond.lean`:
+   `SmoothPseudoMetric.eqOn_of_properTime_eqOn` localizes proper-time determination to an arbitrary
+   region (the argument is pointwise in the event, so it claims nothing outside);
+   `coneFuture`, `conePast`, `coneDiamond` are the coordinate diamond, and
+   `mem_coneDiamond_segment` shows the timelike segment joining the tips lies inside it, so the
+   region a clock can traverse is not empty; **`eqOn_coneDiamond_of_properTime`** — clocks agreeing
+   at every event of the diamond determine the metric at every event of the diamond. What is still
+   open is the *dynamical* half: that clock-only sources realize the required variations inside the
+   diamond, which is where the nonlinear interaction analysis lives.
 
 ## Gates
 

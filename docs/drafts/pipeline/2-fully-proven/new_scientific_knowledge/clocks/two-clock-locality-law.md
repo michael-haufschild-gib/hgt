@@ -8,9 +8,14 @@
   `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockLocalityDistributionKernel.lean`,
-  `formal/GaloisForLFunctions/HTGeometry/ClockLocalityNullTest.lean`
+  `formal/GaloisForLFunctions/HTGeometry/ClockLocalityNullTest.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockResponseIdentifiability.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockResponseStability.lean`
 - **Status:** complete mathematical locality law and differential-algebraic residual obstruction
-  formalized unconditionally in Lean; experimental response reconstruction remains open.
+  formalized unconditionally in Lean, together with the reconstruction bridge — identifiability and
+  quantified stability of the measured response from probe data. What remains open is physical: that
+  a finite compact intervention set is norming and that laboratory noise stays inside the
+  tolerance.
 
 ## Headline
 
@@ -173,6 +178,23 @@ Public translation:
 An analogue-gravity or distributed quantum-sensor experiment is the first realistic venue.
 Astrophysical use would require phase-coherent multi-species response reconstruction, which is not
 presently available.
+
+### Lean status of the reconstruction step
+
+Step 3 of the protocol — "reconstruct regularized inverse response operators on the resolved band" —
+is supported by
+`formal/GaloisForLFunctions/HTGeometry/ClockResponseIdentifiability.lean` and
+`formal/GaloisForLFunctions/HTGeometry/ClockResponseStability.lean`:
+
+- `responseOperator_eq_of_data`, `hiddenResponse_eq_of_data`, `hiddenResponse_eq_of_family_data` —
+  complete drives and separating readouts determine the measured response, and behind unknown gains
+  the hidden one, with a separating *family* of couplings in place of invertibility;
+- `responseOperator_norm_sub_le_of_data`, `hiddenResponse_norm_sub_le_of_data` — with norming drives
+  and readouts the reconstruction is Lipschitz in the data, with an explicit constant built from the
+  apparatus; `normingReadouts_dualBall` and `normingDrives_unitBall` show the canonical families are
+  norming with constant `1`.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
 
 ## Hostile novelty audit
 

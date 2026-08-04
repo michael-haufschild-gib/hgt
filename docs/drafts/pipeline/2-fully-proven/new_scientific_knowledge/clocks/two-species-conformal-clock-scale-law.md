@@ -2344,4 +2344,83 @@ constructor asks for because it is a continuous function of the event supported 
 the bound by continuity on a compact support, the Lipschitz estimate by the mean value inequality
 applied to the partial derivative in time.
 
+## Status update: the scale law on every conformally flat chart
+
+The hyperbolic construction produces probes on the flat chart. They transfer to any conformal
+rescaling of it, which extends the reconstruction from Minkowski space to the whole conformally flat
+class — every two-dimensional chart, and the cosmological ones in higher dimensions.
+
+`formal/GaloisForLFunctions/HTGeometry/ConformalMetricLowRegularity.lean` runs the conformal calculus
+at the regularity the constructed probe actually has:
+
+- `SmoothMetricChart.DifferentiablePartials` — value and first partials differentiable; the corpus
+  proves exactly this of its field and no more (`differentiableAt_coordPartial_kgChartField`);
+- `differentiableAt_flux`, **`dalembert_conformalRescale_of_differentiablePartials`** — the conformal
+  transformation law with smoothness of the field dropped, which is exact: inspecting the smooth
+  proof shows infinite smoothness entered through differentiability of the flux and nothing else;
+- `flux_mul_left`, `gradPair_mul_right_left`, `dalembert_mul_left` — the Leibniz rules with one
+  smooth factor at the same regularity;
+- **`dalembert_conformalRescale_conjugation_of_differentiablePartials`** — conjugation by `e^{-aσ}`,
+  `a = (d-2)/2`, cancels every first-order derivative of the field, because `-2a + (d-2) = 0`;
+- `conformalTransferPotential`, **`solvesPotentialWaveAt_conformalRescale`** — hence probes transfer,
+  with `Ṽ = e^{-2σ}(V + a□σ + a²Γ(σ,σ))`.
+
+`formal/GaloisForLFunctions/HTGeometry/KleinGordonRegularProbes.lean` carries the regularity through
+the probe interface (`RegularOpenProbes`, `regularOpenProbes_kgChartPotential`,
+`regularOpenProbes_of_smooth_spacetime`, `regularOpenProbes_conformalRescale`), and
+`formal/GaloisForLFunctions/HTGeometry/KleinGordonConformallyFlat.lean` closes the loop:
+
+- `kgEventInvCLM`, `kgEventInvCLM_split`, **`regularOpenProbes_of_smooth_chart`** — probes for every
+  smooth potential of the flat chart, stated intrinsically, with no product form required;
+- `conformalPullbackPotential`, `conformalTransferPotential_pullback` — the base-chart potential that
+  transfers to a prescribed one;
+- **`regularOpenProbes_conformalRescale_kgChart`** — clock probes for every smooth potential on every
+  conformal rescaling of the flat chart;
+- **`twoSpecies_scale_reconstruction_conformallyFlat`** — the two-species scale law there, with the
+  massive species' probes constructed rather than assumed.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+### Cosmological charts, and causality as a conformal invariant
+
+`formal/GaloisForLFunctions/HTGeometry/ClockCosmologicalChart.lean`:
+
+- `SmoothPseudoMetric.squaredInterval_conformal`, `neg_conformal_iff`, `timelikeCone_conformal` — a
+  conformal rescaling multiplies every squared interval by a positive factor, so it moves no
+  timelike direction;
+- **`chronoFuture_conformal`, `chronoPast_conformal`, `chronoDiamond_conformal`** — hence the cones
+  and the chronological diamond are conformal invariants: the laboratory region of a conformally
+  flat chart is the same set as in the flat one;
+- `cosmologicalFactor`, **`cosmologicalChart`** — the flat chart rescaled by a smooth function of the
+  time coordinate, that is, a Friedmann metric in conformal time;
+- **`regularOpenProbes_cosmologicalChart`**, **`twoSpecies_scale_reconstruction_cosmological`** —
+  probes and the scale law on it, so the cosmological case of the card is an instance rather than a
+  separate construction;
+- **`twoSpecies_scale_reconstruction_conformallyFlat_diamond`** — and the diamond form of the law on
+  every conformally flat chart, with experiments confined to the diamond.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+## Status update: the scale law inside a causal diamond
+
+The determination hypotheses of the card quantify over *all* open regions, which is more than a
+laboratory supplies. `formal/GaloisForLFunctions/HTGeometry/ClockRegionalTwoSpecies.lean` confines
+both the probes and the experiments to one region:
+
+- `OpenProbesOn`, `openProbesOn_of_openProbes` — probes with their neighbourhoods inside the region;
+  probes everywhere restrict to any open region;
+- `potential_eqOn_of_openProbesOn` — experiments on open subsets *of the region* determine the
+  potential on the region, and claim nothing outside it;
+- **`scale_reconstruction_on_region`** — hence the two-species scale law at every event of the
+  region, with the massless species' probe supplied by the corpus's global nonvanishing solution;
+- `kgMetric`, `kgMetric_eq_minkowski`, `kgDiamond`, `isOpen_kgDiamond`, `mem_kgDiamond_segment` —
+  the chronological diamond of the construction's own causal structure: an open region, non-empty
+  because the interior of the clock's worldline segment lies in it
+  (`formal/GaloisForLFunctions/HTGeometry/ChronometricCausalDiamond.lean` supplies the cones);
+- **`twoSpecies_scale_reconstruction_diamond`** — for an arbitrary smooth conformal factor on
+  spacetime, experiments performed only inside the diamond reconstruct the conformal scale at every
+  event of the diamond, with the massive species' probes constructed rather than assumed.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
 Axioms of all the above: `[propext, Classical.choice, Quot.sound]`.

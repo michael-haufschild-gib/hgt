@@ -726,6 +726,198 @@ theorem besselWronskian_pos {u : ℝ} (hu : 0 < u) : 0 < besselWronskian u := by
 theorem besselWronskian_ne_zero {u : ℝ} (hu : 0 < u) : besselWronskian u ≠ 0 :=
   (besselWronskian_pos hu).ne'
 
+/-! ## The envelope of the second solution -/
+
+/-- **The perturbed-harmonic energy law.**  If `v'' = -(1 + 1/(4x²)) v` on the ray `x >= 1` then the
+energy `v² + v'²` never exceeds `exp(1/2)` times its initial value.  The mechanism is exact: the
+weighted energy `(v² + v'²) exp(1/(2x) - 1/2)` has derivative
+`-2q E (v v' + v² + v'²) <= 0`, because `v v' + v² + v'² = (v + v'/2)² + (3/4) v'²`. -/
+theorem sq_add_sq_le_of_perturbed_harmonic {v dv : ℝ → ℝ}
+    (hv : ∀ x : ℝ, 1 ≤ x → HasDerivAt v (dv x) x)
+    (hdv : ∀ x : ℝ, 1 ≤ x → HasDerivAt dv (-(1 + 1 / (4 * x ^ 2)) * v x) x)
+    {x : ℝ} (hx : 1 ≤ x) :
+    v x ^ 2 + dv x ^ 2 ≤ (v 1 ^ 2 + dv 1 ^ 2) * Real.exp (1 / 2) := by
+  set E : ℝ → ℝ := fun t => Real.exp (1 / (2 * t) - 1 / 2) with hEdef
+  set h : ℝ → ℝ := fun t => (v t ^ 2 + dv t ^ 2) * E t with hhdef
+  have hEpos : ∀ t : ℝ, 0 < E t := fun t => Real.exp_pos _
+  have hEderiv : ∀ t : ℝ, 0 < t → HasDerivAt E (-(1 / (2 * t ^ 2)) * E t) t := by
+    intro t ht
+    have hinner : HasDerivAt (fun s : ℝ => 1 / (2 * s) - 1 / 2) (-(1 / (2 * t ^ 2))) t := by
+      have h1 : HasDerivAt (fun s : ℝ => 2 * s) 2 t := by
+        simpa using (hasDerivAt_id t).const_mul 2
+      have h2 := (hasDerivAt_const t (1 : ℝ)).fun_div h1 (by positivity)
+      have hval : ((0 : ℝ) * (2 * t) - 1 * 2) / (2 * t) ^ 2 = -(1 / (2 * t ^ 2)) := by
+        field_simp
+        ring
+      rw [hval] at h2
+      exact (h2.sub_const (1 / 2))
+    have h := hinner.exp
+    rw [hEdef]
+    exact h.congr_deriv (by ring)
+  have hAderiv : ∀ t : ℝ, 1 ≤ t →
+      HasDerivAt (fun s : ℝ => v s ^ 2 + dv s ^ 2)
+        (-(2 * (1 / (4 * t ^ 2))) * (v t * dv t)) t := by
+    intro t ht
+    have hsq : (fun s : ℝ => v s ^ 2) = fun s : ℝ => v s * v s := by
+      funext s
+      ring
+    have hsq' : (fun s : ℝ => dv s ^ 2) = fun s : ℝ => dv s * dv s := by
+      funext s
+      ring
+    have h1 : HasDerivAt (fun s : ℝ => v s ^ 2) (2 * v t * dv t) t := by
+      rw [hsq, show (2 * v t * dv t) = dv t * v t + v t * dv t from by ring]
+      exact (hv t ht).fun_mul (hv t ht)
+    have h2 : HasDerivAt (fun s : ℝ => dv s ^ 2)
+        (2 * dv t * (-(1 + 1 / (4 * t ^ 2)) * v t)) t := by
+      rw [hsq', show (2 * dv t * (-(1 + 1 / (4 * t ^ 2)) * v t))
+        = (-(1 + 1 / (4 * t ^ 2)) * v t) * dv t + dv t * (-(1 + 1 / (4 * t ^ 2)) * v t) from by
+          ring]
+      exact (hdv t ht).fun_mul (hdv t ht)
+    have h := h1.fun_add h2
+    have hval : 2 * v t * dv t + 2 * dv t * (-(1 + 1 / (4 * t ^ 2)) * v t)
+        = -(2 * (1 / (4 * t ^ 2))) * (v t * dv t) := by ring
+    rw [hval] at h
+    exact h
+  have hhderiv : ∀ t : ℝ, 1 ≤ t → HasDerivAt h
+      (-(2 * (1 / (4 * t ^ 2))) * E t * (v t * dv t + (v t ^ 2 + dv t ^ 2))) t := by
+    intro t ht
+    have ht0 : (0 : ℝ) < t := by linarith
+    have h := (hAderiv t ht).fun_mul (hEderiv t ht0)
+    have hval : -(2 * (1 / (4 * t ^ 2))) * (v t * dv t) * E t
+          + (v t ^ 2 + dv t ^ 2) * (-(1 / (2 * t ^ 2)) * E t)
+        = -(2 * (1 / (4 * t ^ 2))) * E t * (v t * dv t + (v t ^ 2 + dv t ^ 2)) := by
+      field_simp
+      ring
+    rw [hval] at h
+    exact h
+  -- the weighted energy is antitone
+  have hanti : AntitoneOn h (Set.Ici 1) := by
+    refine antitoneOn_of_deriv_nonpos (convex_Ici 1) ?_ ?_ ?_
+    · intro t ht
+      exact ((hhderiv t ht).continuousAt).continuousWithinAt
+    · intro t ht
+      rw [interior_Ici] at ht
+      exact ((hhderiv t (le_of_lt ht)).differentiableAt).differentiableWithinAt
+    · intro t ht
+      rw [interior_Ici] at ht
+      have ht1 : (1 : ℝ) < t := ht
+      rw [(hhderiv t ht1.le).deriv]
+      have hq : (0 : ℝ) < 2 * (1 / (4 * t ^ 2)) := by positivity
+      have hsum : 0 ≤ v t * dv t + (v t ^ 2 + dv t ^ 2) := by
+        nlinarith [sq_nonneg (v t + dv t / 2), sq_nonneg (dv t)]
+      have := mul_nonneg (mul_nonneg hq.le (hEpos t).le) hsum
+      linarith [this]
+  have hle := hanti (Set.self_mem_Ici) (by exact hx : x ∈ Set.Ici (1 : ℝ)) hx
+  -- unwind the weight
+  have hE1 : E 1 = 1 := by
+    rw [hEdef]
+    norm_num
+  have hEx : Real.exp (-(1 / 2)) ≤ E x := by
+    rw [hEdef]
+    refine Real.exp_le_exp.mpr ?_
+    have : (0 : ℝ) < 1 / (2 * x) := by positivity
+    linarith
+  have hAnn : 0 ≤ v x ^ 2 + dv x ^ 2 := by positivity
+  have hA1nn : 0 ≤ v 1 ^ 2 + dv 1 ^ 2 := by positivity
+  rw [hhdef] at hle
+  simp only at hle
+  rw [hE1, mul_one] at hle
+  -- (A x) * E x ≤ A 1
+  have hstep : (v x ^ 2 + dv x ^ 2) * Real.exp (-(1 / 2)) ≤ v 1 ^ 2 + dv 1 ^ 2 := by
+    calc (v x ^ 2 + dv x ^ 2) * Real.exp (-(1 / 2))
+        ≤ (v x ^ 2 + dv x ^ 2) * E x := by
+          exact mul_le_mul_of_nonneg_left hEx hAnn
+      _ ≤ v 1 ^ 2 + dv 1 ^ 2 := hle
+  have hexp : Real.exp (-(1 / 2)) * Real.exp (1 / 2) = 1 := by
+    rw [← Real.exp_add]
+    norm_num
+  nlinarith [hstep, Real.exp_pos (-(1 / 2)), Real.exp_pos (1 / 2 : ℝ), hexp, hAnn]
+
+/-! ### The energy law applied to the second solution -/
+
+/-- The Liouville–Green normalisation of the second solution. -/
+def besselKV (x : ℝ) : ℝ := Real.sqrt x * besselK x
+
+/-- Its derivative. -/
+def besselKVDeriv (x : ℝ) : ℝ :=
+  1 / (2 * Real.sqrt x) * besselK x + Real.sqrt x * besselKDeriv x
+
+theorem hasDerivAt_besselKV {x : ℝ} (hx : 0 < x) : HasDerivAt besselKV (besselKVDeriv x) x :=
+  (Real.hasDerivAt_sqrt hx.ne').mul (hasDerivAt_besselK hx)
+
+theorem hasDerivAt_besselKVDeriv {x : ℝ} (hx : 0 < x) :
+    HasDerivAt besselKVDeriv (-(1 + 1 / (4 * x ^ 2)) * besselKV x) x := by
+  have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx
+  have hsq : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt hx.le
+  have hsqrt : HasDerivAt (fun t : ℝ => Real.sqrt t) (1 / (2 * Real.sqrt x)) x :=
+    Real.hasDerivAt_sqrt hx.ne'
+  have hden : HasDerivAt (fun t : ℝ => 2 * Real.sqrt t) (2 * (1 / (2 * Real.sqrt x))) x :=
+    hsqrt.const_mul 2
+  have hinv : HasDerivAt (fun t : ℝ => 1 / (2 * Real.sqrt t))
+      (-(1 / (4 * x * Real.sqrt x))) x := by
+    have h := (hasDerivAt_const x (1 : ℝ)).fun_div hden (by positivity)
+    have h4 : (2 * Real.sqrt x) ^ 2 = 4 * x := by
+      rw [mul_pow, Real.sq_sqrt hx.le]
+      ring
+    have hval : ((0 : ℝ) * (2 * Real.sqrt x) - 1 * (2 * (1 / (2 * Real.sqrt x))))
+          / (2 * Real.sqrt x) ^ 2
+        = -(1 / (4 * x * Real.sqrt x)) := by
+      rw [h4]
+      field_simp
+      ring
+    rw [hval] at h
+    exact h
+  have hprod1 : HasDerivAt (fun t : ℝ => 1 / (2 * Real.sqrt t) * besselK t)
+      (-(1 / (4 * x * Real.sqrt x)) * besselK x
+        + 1 / (2 * Real.sqrt x) * besselKDeriv x) x :=
+    hinv.fun_mul (hasDerivAt_besselK hx)
+  have hprod2 : HasDerivAt (fun t : ℝ => Real.sqrt t * besselKDeriv t)
+      (1 / (2 * Real.sqrt x) * besselKDeriv x + Real.sqrt x * besselKSecondDeriv x) x :=
+    hsqrt.fun_mul (hasDerivAt_besselKDeriv hx)
+  have h := hprod1.fun_add hprod2
+  have hode := besselK_ode hx
+  have hval : -(1 / (4 * x * Real.sqrt x)) * besselK x
+        + 1 / (2 * Real.sqrt x) * besselKDeriv x
+      + (1 / (2 * Real.sqrt x) * besselKDeriv x + Real.sqrt x * besselKSecondDeriv x)
+      = -(1 + 1 / (4 * x ^ 2)) * besselKV x := by
+    obtain ⟨S, hS0, hSx, hSeq⟩ : ∃ S : ℝ, 0 < S ∧ S * S = x ∧ Real.sqrt x = S :=
+      ⟨Real.sqrt x, hsx, hsq, rfl⟩
+    have hode' : besselKSecondDeriv x = (-besselKDeriv x - x * besselK x) / x := by
+      field_simp
+      linarith [hode]
+    rw [hode', besselKV, hSeq, ← hSx]
+    field_simp
+    ring
+  rw [hval] at h
+  exact h
+
+/-- **The envelope of the second solution.**  `|K(u)| <= C u^{-1/2}` for `u >= 1`, with
+`C = sqrt((K_V(1)² + K_V'(1)²) exp(1/2))`.  No asymptotic information about `K` is used: the energy law
+does all the work, and this is what makes `K` an admissible partner of `J_0` in the Green kernel. -/
+theorem exists_besselK_envelope :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ u : ℝ, 1 ≤ u → |besselK u| ≤ C / Real.sqrt u := by
+  refine ⟨Real.sqrt ((besselKV 1 ^ 2 + besselKVDeriv 1 ^ 2) * Real.exp (1 / 2)),
+    Real.sqrt_nonneg _, fun u hu => ?_⟩
+  have hu0 : (0 : ℝ) < u := lt_of_lt_of_le zero_lt_one hu
+  have hsu : (0 : ℝ) < Real.sqrt u := Real.sqrt_pos.mpr hu0
+  have hsq : Real.sqrt u * Real.sqrt u = u := Real.mul_self_sqrt hu0.le
+  have henergy := sq_add_sq_le_of_perturbed_harmonic
+    (v := besselKV) (dv := besselKVDeriv)
+    (fun x hx => hasDerivAt_besselKV (lt_of_lt_of_le zero_lt_one hx))
+    (fun x hx => hasDerivAt_besselKVDeriv (lt_of_lt_of_le zero_lt_one hx)) hu
+  have hVsq : besselKV u ^ 2
+      ≤ (besselKV 1 ^ 2 + besselKVDeriv 1 ^ 2) * Real.exp (1 / 2) := by
+    nlinarith [sq_nonneg (besselKVDeriv u), henergy]
+  have hV : |besselKV u|
+      ≤ Real.sqrt ((besselKV 1 ^ 2 + besselKVDeriv 1 ^ 2) * Real.exp (1 / 2)) := by
+    rw [← Real.sqrt_sq_eq_abs]
+    exact Real.sqrt_le_sqrt hVsq
+  have hKV : |besselKV u| = Real.sqrt u * |besselK u| := by
+    rw [besselKV, abs_mul, abs_of_nonneg (Real.sqrt_nonneg u)]
+  rw [hKV] at hV
+  rw [le_div_iff₀ hsu, mul_comm]
+  exact hV
+
 end GaloisForLFunctions.RHTower
 
 end

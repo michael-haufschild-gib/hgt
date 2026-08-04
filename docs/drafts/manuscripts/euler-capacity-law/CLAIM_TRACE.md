@@ -1,5 +1,12 @@
 # Claim trace: Euler--capacity law for wild character varieties
 
+> **SUPERSEDED 2026-08-04.** Statuses below record the withdrawn 2026-08-03 closure and are not
+> current proof certificates. In particular G0 is an assumed record field rather than a constructed
+> rooted Stokes realization; N14 imports rather than derives the quasi-Hamiltonian dimension
+> formula; N1--N17 do not compute genuine sheaf microsupports, characteristic cycles, or vanishing
+> cycles. Current status and open cores are tracked in
+> `docs/drafts/pipeline/1-in-progress/euler-stokes-rank-port-inertia-law.md`.
+
 Audit date: 2026-08-03
 
 This ledger separates new claims, prior geometric inputs, and formally checked algebra. Existing

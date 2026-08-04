@@ -124,7 +124,3 @@ theorem hiddenResponse_norm_sub_le_of_data {T S : E →L[𝕜] F} (receiver : F 
 end Norming
 
 end GaloisForLFunctions.HTGeometry
-
-#print axioms GaloisForLFunctions.HTGeometry.hiddenResponse_norm_sub_le_of_data
-#print axioms GaloisForLFunctions.HTGeometry.normingDrives_unitBall
-#print axioms GaloisForLFunctions.HTGeometry.normingReadouts_dualBall

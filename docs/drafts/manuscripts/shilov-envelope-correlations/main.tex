@@ -921,21 +921,6 @@ The kernel of $\rho_T$ on $\alpha_q(J_S)$ is
 
 \section{Consequences and scope}\label{sec:scope}
 
-The algebraic path law has been checked independently in Lean~4 against the repository's fixed
-mathlib toolchain.  The module
-\[
- \texttt{GaloisForLFunctions.HTGeometry.ShilovEnvelopeCorrelationLaw}
-\]
-defines edge joins, relational representative classes, the migration difference and connecting
-map, and proves injectivity, exactness at the relational term, surjectivity under ambient
-surjective bonds, and the combined short exact theorem.  The proofs introduce no project axiom,
-placeholder, opaque declaration, or unsafe definition.  Their only printed logical dependencies
-are \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}.
-
-This formal statement is deliberately algebraic.  It does not replace complete positivity,
-Shilov maximality, functional calculus, essentiality, or local \(C^*\)-envelope uniqueness by
-surrogate assumptions.  Those analytic arguments remain the paper proofs above.
-
 The preceding results organize the standard phenomena as follows.
 
 \begin{enumerate}[label=\textup{(\arabic*)}]

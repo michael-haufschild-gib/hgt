@@ -1,79 +1,87 @@
 # Literature and novelty audit
 
 Audit date: 2026-08-03. Target: theoretical paper at general-journal level. Searches used primary
-papers/preprints and author manuscripts; no novelty conclusion rests on a survey snippet.
+papers, preprints, and author manuscripts. No novelty conclusion rests on a survey snippet.
 
 ## Primary sources checked
 
-1. Connes--Consani--Marcolli, *The Weil proof and the geometry of the adeles class space*,
+1. Connes--Consani--Marcolli, The Weil proof and the geometry of the adeles class space,
    [arXiv:math/0703392](https://arxiv.org/abs/math/0703392). It defines cyclic homology of the
-   cokernel of the class-space restriction in the abelian category of cyclic modules and formulates
-   the Weil explicit formula as a Lefschetz trace.
-2. Meyer, *On a representation of the idele class group related to primes and zeros of
-   L-functions*, [arXiv:math/0311468](https://arxiv.org/abs/math/0311468). It constructs the
-   bornological idele-class representation whose character is the Weil distribution.
-3. Paugam, *Spectral symmetries of zeta functions*,
-   [arXiv:0803.0199](https://arxiv.org/abs/0803.0199). It constructs symplectic/orthogonal spectral
+   cokernel of class-space restriction in the abelian category of cyclic modules and formulates
+   Weil explicit formula as a Lefschetz trace.
+2. Meyer, On a representation of the idele class group related to primes and zeros of
+   L-functions, [arXiv:math/0311468](https://arxiv.org/abs/math/0311468). It constructs the
+   bornological idele-class representation whose character is Weil distribution.
+3. Paugam, Spectral symmetries of zeta functions,
+   [arXiv:0803.0199](https://arxiv.org/abs/0803.0199). It constructs symplectic and orthogonal
    pairings compatible with functional equations.
-4. Carboni--Guccione--Guccione, *Cyclic homology of crossed products*,
+4. Carboni--Guccione--Guccione, Cyclic homology of crossed products,
    [arXiv:0805.0582](https://arxiv.org/abs/0805.0582). It gives mixed complexes and spectral
    sequences for crossed-product cyclic homology.
-5. Moscovici, *Local index formula and twisted spectral triples*,
-   [arXiv:0902.0835](https://arxiv.org/abs/0902.0835). It analyzes JLO retraction and local index
-   formulas when twisted commutators change cocycle identities.
-6. Connes--Consani, *Hochschild homology, trace map and zeta-cycles*,
-   [arXiv:2207.10419](https://arxiv.org/abs/2207.10419). It studies spectral realizations and stable
-   zeta-cycles through Hochschild homology and trace maps.
-7. Connes--Consani--Moscovici, *Zeta spectral triples*,
-   [arXiv:2511.22755](https://arxiv.org/abs/2511.22755). It constructs finite/truncated self-adjoint
-   spectral models numerically approximating low zeta zeros and discusses convergence as an open
-   problem.
-8. Cortiñas--Valqui, *Excision in bivariant periodic cyclic cohomology: a categorical approach*,
+5. Connes--Moscovici, The local index formula in noncommutative geometry, and Moscovici,
+   Local index formula and twisted spectral triples,
+   [arXiv:0902.0835](https://arxiv.org/abs/0902.0835). These supply local-index and JLO context.
+6. Connes--Consani, Spectral triples and zeta-cycles,
+   [arXiv:2106.01715](https://arxiv.org/abs/2106.01715), and Hochschild homology, trace map and
+   zeta-cycles, [arXiv:2207.10419](https://arxiv.org/abs/2207.10419). They study finite spectral
+   realizations, zeta-cycles, and trace maps.
+7. Connes--Consani--Moscovici, Zeta spectral triples,
+   [arXiv:2511.22755](https://arxiv.org/abs/2511.22755). It constructs finite/truncated
+   self-adjoint spectral models approximating low zeta zeros and states rigorous convergence as
+   open.
+8. Cortiñas--Valqui, Excision in bivariant periodic cyclic cohomology: a categorical approach,
    [arXiv:math/0207178](https://arxiv.org/abs/math/0207178). It extends Cuntz--Quillen excision to
-   categorical/topological/bornological bivariant settings.
+   topological and bornological settings.
 
-Classical local-index, JLO, entire-function, isolated-zero, Haar-measure, and Dirichlet-L-function
-inputs were also checked against the bibliographic sources cited in the manuscript and against the
-pinned mathlib APIs used by the formal proof.
+Searches also covered exact phrases combining Real corona, cyclic homology, CCM Lefschetz,
+endpoint-holomorphic idempotents, fixed-sector analytic rank, and C2 crossed-product K0. Searches
+returned the sources above and general equivariant/crossed-product work, but no exact theorem
+package below.
 
 ## Novelty matrix
 
-| Result in manuscript | Closest prior structure | Difference checked |
+| Manuscript result | Closest prior structure | Audited difference |
 |---|---|---|
-| Smoothness--detectability conservation | standard grading decomposition and bounded-commutator definition | Exact invariant-domain equivalence `D bounded iff even and odd bounded`, followed by classification of every unbounded smooth realization as unbounded-even/bounded-odd, was not found as a named law or applied to zeta divisor orientation. |
-| Complete-divisor local-series no-go | Connes--Moscovici/JLO local formulas; zeta spectral triples | Prior work seeks or computes local characters. No source found proving termwise extinction of every positive orientation jet plus exact functional-equation cancellation of every summable degree-zero term on the complete multiplicity divisor. |
-| Exact CCM strong landing in all degrees | CCM cyclic cokernel; Meyer's strong class-space target | CCM supplies conceptual target. No source found carrying the actual rational Bruhat source through finite-adelic Haar normalization, common-period Poisson cancellation, profinite local constancy, Schatten-1 Morita continuity, and total-product reduction in every cyclic degree. |
-| Multiplication fracture | cyclic-module cokernel in CCM; general crossed-product cyclic complexes | Sources treat target as cyclic-linear. No source found giving actual Schatten matrix-unit witnesses with trace `0,0,1`, proving exact strong degree zero is not two-sided, and deducing impossibility of representative-preserving quotient multiplication. |
-| Clifford Lefschetz comparison | Paugam symmetry; CCM Lefschetz action; bivariant cyclic theory | No source found identifying the parity obstruction between anti-Real corona character and Real-even CCM Lefschetz translations, classifying every scalar correction by `conj z = -z`, or proving the positive Clifford choice `iL_c` has square `-1` at identity. |
-| Endpoint-holomorphic classification | identity theorem; dense polynomial restrictions | Classical ingredients are elementary. Novel part is exact crossed-product classification for the compactified Real-corona idempotent and its coupling to complete self-dual divisor geometry. |
-| Positive-degree P3 no-go | Hadamard factorization and standard infinitude of L zeros | No source found using a zero-count-free finite-divisor rigidity route to derive endpoint nonsmoothness for the stated analytic completion class, then formalizing actual Riemann and self-dual primitive Dirichlet cases. |
-| Fixed-sector/rank variation | functional-equation parity and analytic rank | Root-number parity is standard. No source found decomposing Real-corona fixed cyclic defect variation as rank variation plus twice off-central variation, while isolating coordinate-K0 support and exact multiplicity excess. |
+| Exhaustive C2 orbit-algebra law | elementary transformation-group algebras; general crossed-product cyclic complexes | Fixed/free normal forms themselves are elementary and not claimed as isolated novelty. No checked source packages exact orientation, commutator, and coefficient-K0 maps as one conservation law and derives P1--P4 from its exhaustive channels. |
+| Odd complete-divisor Lipschitz no-go | zeta-cycles and finite zeta spectral triples; local-index formula | Existing zeta triples use finite/truncated or perturbed scaling models. No checked source constructs the multiplicity-exact odd reflection operator with Hilbert--Schmidt inverse and proves exact projector identity norm [D,eR]x = norm Dx, excluding corona class at first Lipschitz axiom. |
+| Exact CCM strong landing in all degrees | CCM cyclic cokernel; Meyer strong class-space target | CCM supplies conceptual target. No checked source carries actual rational Bruhat source through finite-adelic Haar normalization, common-period Poisson cancellation, profinite local constancy, Schatten-1 Morita continuity, and total-product reduction in every cyclic degree. |
+| Literal closed CCM quotient nonzero | CCM closed cyclic-module cokernel; Meyer Poisson quotient | No checked source proves every exact reduced adelic Haar--Mellin value factors through a literal Meyer boundary, then combines zeta-zero annihilation with explicit global-unitization Gaussian separator to prove closed quotient nonzero. |
+| Closed-recipient Clifford Lefschetz comparison | Paugam pairing; CCM Lefschetz action; bivariant cyclic excision | No checked source identifies exact parity obstruction on literal closed nonunital CCM recipient, proves theory-independent no-realization for every anti-Real realized character, classifies scalar corrections by conjugate z = -z, or identifies Clifford survivor with iLc. |
+| Endpoint-holomorphic classification | identity theorem; dense polynomial restrictions | Classical ingredients are elementary. Audited difference is exact reflection-crossed-product classification for compactified Real-corona idempotent coupled to complete self-dual divisor geometry. |
+| Positive-degree no-go and Xi-power classification | Hadamard factorization; standard infinitude of L zeros | No checked source uses zero-count-free finite-divisor rigidity to derive endpoint nonsmoothness for stated analytic class, formalizes Xi and primitive self-dual Dirichlet cases, and proves smoothness iff degree zero for completed-zeta powers. |
+| Fixed-sector variation in crossed-product K0 | functional-equation parity, analytic rank, two characters of C2 | Root-number parity and Fourier split are standard. No checked source combines diagonal crossed-product K0 map with defect = rank + twice paired multiplicity, multiplicity excess, and concrete entire two-parameter family with independent central/pair variation. |
 
 ## Anti-theatre checks
 
-- P1 does not call a commuting orientation a local index formula. It defines the full allowed local
-  series and proves its value is zero; the nonzero target charge is separately formalized.
-- P2 does not place an idempotent in a cyclic-module quotient. It first proves the target is not
-  two-sided and that no representative multiplication descends.
-- P2's positive result is a cyclic-module morphism, not an asserted equality in unconstructed
-  bivariant homology. Manuscript calls it a bivariant cyclic representative and states completion
-  limits explicitly.
-- P3 does not assume zero infinitude in its positive-degree analytic interface. Lean derives it
-  from subquadratic growth and superlinear ray growth. The more general divisor theorem, which does
-  assume infinitude, is labeled separately.
-- P3 does not claim all possible dense smooth algebras. It classifies the explicitly defined,
-  reflection-invariant endpoint-holomorphic algebra.
-- P4 distinguishes coordinate K0 rank, total cyclic rank, analytic multiplicity, and support.
+- Universal-law claim distinguishes elementary atomic normal forms from novelty of their
+  dependency-closed application package.
+- P1 does not postulate local residue series. It proves canonical odd divisor operator fails
+  Lipschitz axiom for projector, before regularity or dimension-spectrum issues.
+- P2 uses single global unitization of nonunital continuous trace-class field algebra, intersects
+  augmentation and strong-trace cyclic kernels, and quotients by closure of exact reduced range.
+- P2 nontriviality is inside literal closed quotient, separated by a continuous Haar--Mellin
+  functional and explicit Gaussian chain.
+- P2 does not claim construction of a missing entire bivariant theory. It quantifies over every
+  proposed class type whose realized characters are anti-Real, proves no untwisted lift exists,
+  and names iLc only at exact cyclic-morphism type.
+- P3 derives zero infinitude in its positive-degree analytic interface and separately labels actual
+  Xi, primitive self-dual Dirichlet, and completed-zeta-power instances.
+- P3 classifies one explicitly defined reflection-invariant endpoint-holomorphic dense algebra,
+  not every possible smooth completion.
+- P4 constructs fixed-locus crossed product, two-character Fourier equivalence, diagonal induced
+  K0 map, and concrete entire family. It distinguishes K0 support, cyclic defect, multiplicity,
+  and analytic rank.
 - No result is advertised as RH, GRH, Weil positivity, or convergence of zeta spectral triples.
 
 ## Novelty verdict
 
-No checked source contains the universal law or any of the four exact resolution packages. Several
-ingredients are classical; novelty lies in the dependency-closed conservation/obstruction theorem,
-the literal CCM strong target calculation, and the forced Clifford/fixed-sector dichotomy. The P2
-landing and multiplication fracture provide the strongest specialist content. P1, P3, and P4 are
-structural consequences that make the package broad enough for a general journal while retaining
-explicit limits.
+No checked primary source contains four exact resolution packages. Atomic C2 normal forms,
+identity theorem, Gaussian Mellin integral, and root-number parity are classical and are not
+presented as individually new. Novelty candidate lies in dependency-closed synthesis:
+multiplicity-exact P1 Lipschitz obstruction; literal closed CCM Haar--Meyer nontriviality and
+theory-independent parity no-lift; exact endpoint crossed-product classification with actual
+completed families; and fixed crossed-product K0/multiplicity variation.
 
-Status: **novel after primary-source audit**, subject to ordinary referee discovery of uncatalogued
-work and final citation update immediately before submission.
+P2 is strongest specialist contribution. P1, P3, and P4 supply independently checkable
+consequences and scope. Verdict: novel after primary-source audit, subject to specialist discovery
+of uncatalogued work and final citation check immediately before submission.

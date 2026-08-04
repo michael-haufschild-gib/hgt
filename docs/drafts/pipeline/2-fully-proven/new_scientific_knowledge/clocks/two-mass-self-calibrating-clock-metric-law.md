@@ -9,7 +9,8 @@
   `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockCalibrationFailureModes.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockCalibrationIdentifiabilityBoundary.lean`,
-  `formal/GaloisForLFunctions/HTGeometry/ClockResponseIdentifiability.lean`
+  `formal/GaloisForLFunctions/HTGeometry/ClockResponseIdentifiability.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockResponseStability.lean`
 - **Status:** operator and principal-symbol reconstruction paper-proved and formalized
   unconditionally in Lean; physical recovery of complete dressed Green operators remains open.
 
@@ -286,8 +287,12 @@ responses are reconstructed. The *identifiability* step of that reconstruction i
 `formal/GaloisForLFunctions/HTGeometry/ClockResponseIdentifiability.lean`
 (`responseOperator_eq_of_data`, `hiddenResponse_eq_of_data`): a complete family of probe drives with
 dense span and a separating family of readouts determines the measured response, and with an
-injective receiver and surjective source the hidden response as well. What remains is quantitative:
-finite data, noise, and stability.
+injective receiver and surjective source — or merely a separating family of couplings — the hidden
+response as well. `formal/GaloisForLFunctions/HTGeometry/ClockResponseStability.lean` adds the
+quantitative half: with norming drives and readouts the reconstruction is Lipschitz in the data,
+`‖T - S‖ ≤ c⁻¹‖right‖ C_drive C_readout ε`, and the canonical families are norming with constant
+`1`. What remains is physical: that a finite compact intervention set is norming, and that
+laboratory noise stays inside the tolerance.
 
 ## Gates
 

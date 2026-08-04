@@ -133,14 +133,15 @@ section SpacetimeProbe
 
 variable {d N : ℕ}
 
-/-- **Clock probes for every smooth spacetime potential**, with no decay, smallness or
-time-independence hypothesis: the potential is cut off in space and time near each event, and the
-resulting curve of Schwartz functions is bounded and Lipschitz in time by compactness. -/
-theorem openProbes_of_smooth_spacetime
-    (hN : (Module.finrank ℝ (EuclideanSpace ℝ (Fin d)) : ℝ) + 2 < N)
+/-- **Every smooth spacetime potential is locally the potential of an admissible family**: cut off
+in space and time near the event, it becomes a curve of Schwartz potentials whose decay functional is
+bounded and Lipschitz in time by compactness. -/
+theorem exists_locally_kgChartPotential_of_smooth_spacetime
     {P : ℝ × EuclideanSpace ℝ (Fin d) → ℝ} (hP : ContDiff ℝ ∞ P) :
-    OpenProbes (kgWaveOp d) (fun y : Fin (d + 1) → ℝ => P (y 0, kgSpatial d y)) := by
-  refine openProbes_of_locally_kgChartPotential (N := N) hN fun y₀ => ?_
+    ∀ y₀ : Fin (d + 1) → ℝ, ∃ (B : WienerFamily (EuclideanSpace ℝ (Fin d)) N)
+      (W : Set (Fin (d + 1) → ℝ)), IsRealFamily B ∧ IsOpen W ∧ y₀ ∈ W ∧
+        Set.EqOn (fun y : Fin (d + 1) → ℝ => P (y 0, kgSpatial d y)) (kgChartPotential B) W := by
+  intro y₀
   set t₀ : ℝ := y₀ 0 with ht₀
   set x₀ : EuclideanSpace ℝ (Fin d) := kgSpatial d y₀ with hx₀
   set Φ : ℝ → 𝓢(EuclideanSpace ℝ (Fin d), ℂ) := kgSpacetimeCurve hP t₀ x₀ with hΦ
@@ -207,6 +208,15 @@ theorem openProbes_of_smooth_spacetime
     show P (z 0, kgSpatial d z) = kgChartPotential _ z
     rw [kgChartPotential, kgPotential_ofSchwartzCurve]
     exact (kgSpacetimeCurve_re hP htime hspace).symm
+
+/-- **Clock probes for every smooth spacetime potential**, with no decay, smallness or
+time-independence hypothesis. -/
+theorem openProbes_of_smooth_spacetime
+    (hN : (Module.finrank ℝ (EuclideanSpace ℝ (Fin d)) : ℝ) + 2 < N)
+    {P : ℝ × EuclideanSpace ℝ (Fin d) → ℝ} (hP : ContDiff ℝ ∞ P) :
+    OpenProbes (kgWaveOp d) (fun y : Fin (d + 1) → ℝ => P (y 0, kgSpatial d y)) :=
+  openProbes_of_locally_kgChartPotential (N := N) hN
+    (exists_locally_kgChartPotential_of_smooth_spacetime hP)
 
 end SpacetimeProbe
 

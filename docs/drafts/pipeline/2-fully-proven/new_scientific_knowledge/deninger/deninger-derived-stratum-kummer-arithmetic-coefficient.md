@@ -461,7 +461,84 @@ Two things remain before the `2 → 3` gate can close.
     sheaf to degree `n` of the flasque quotient.
   - `deningerLengthOneFlasque_ext_eq_zero`, `deningerLengthOneFlasque_subsingleton` — **a sheaf with
     a length-one flasque resolution has amplitude `[0,1]`**, the generic half of clause 5.
-  What remains for the `2 → 3` gate is the sheaf-level residue morphism `(5)` and its fibre `(6)`,
-  which live in a derived category of complete locally convex sheaves — a quasi-abelian ambient
-  mathlib does not have.  Everything the fibre produces — the totalization, its cohomology in all
-  degrees, its endpoints and all of its operations — is encoded.
+  The topological ambient for `(5)`--`(6)` is the next entry.
+
+- 2026-08-04 — **`(8)` and the prime-packet acyclicity encoded**, on top of the new sheaf
+  cohomology.  Axiom audit `propext, Classical.choice, Quot.sound`.
+  - `DeningerSkyscraperAcyclic.lean` — `deningerResidueAddSheaf_isFlasque`: the direct sum of
+    skyscrapers `⨁_{p ∈ P} i_{p,*} A` is flasque, restriction being precomposition with an
+    inclusion of index sets, so a section extends by zero.  Hence
+    `deningerResidueAddSheaf_ext_eq_zero` and `_subsingleton_cohomology`: the residue target has
+    amplitude `[0,0]`.
+  - `DeningerRestrictedPrimeAcyclic.lean` — `(8)`.  The restricted prime sum, whose sections were
+    already known to satisfy the unique-gluing axiom and to extend by zero, is packaged as an actual
+    sheaf of abelian groups on the arithmetic base (`deningerPrimeSheaf`), proved flasque
+    (`deningerPrimeSheaf_isFlasque`), hence acyclic (`deningerPrimeSheaf_ext_eq_zero`); and
+    `deningerPrimeSheaf_cohomologyZeroEquiv` identifies its degree-zero cohomology with the
+    restricted prime sum itself.  So `RΓ(S, ℬ_fin)` is concentrated in degree zero and is the
+    restricted sum, which is `(8)`.
+
+- 2026-08-04 — **`(6)`--`(7)` at sheaf level**: the cohomology of the fibre of a surjective residue
+  morphism.  Axiom audit `propext, Classical.choice, Quot.sound`.
+  - `DeningerResidueFibreCohomology.lean` — `deningerKernelShortExact`: a surjective residue
+    morphism has a short exact kernel sequence, so its fibre is the kernel sheaf.
+    `deningerFibre_ext_bijective` and `deningerFibre_ext_surjective`: when the residue target is
+    acyclic, the comparison from the fibre to the source is an isomorphism on cohomology in every
+    degree above one and is onto in degree one.  So the fibre carries all of the higher cohomology
+    of the source, and the only new information sits in low degrees — which is the shape `(9)`--(11)`
+    record.
+  - `DeningerArithmeticFibreEndpoint.lean` — the two instances that occur on the arithmetic base:
+    residues into the direct sum of skyscrapers and into the restricted prime sum, whose acyclicity
+    is the previous entry.  Both hypotheses are discharged, so these are unconditional.
+
+- 2026-08-04 — **`(5)`--`(6)` in a topological ambient.**  mathlib's `TopModuleCat ℝ` — topological
+  modules with continuous linear maps — has kernels, cokernels and homology, so the arithmetic
+  coefficient's complex can be written there with its differentials continuous, rather than only
+  after forgetting the topology.  `DeningerTopThreeTermComplex.lean`, axiom audit
+  `propext, Classical.choice, Quot.sound`:
+  - `deningerTopThreeTermCochain` — the three-term complex `(9)` as a cochain complex of topological
+    modules, and `deningerTopThreeTermCochain_isZero_homology` — `(10)` in that ambient: no terms and
+    no homology above degree two.
+  - `deningerTopResidueFibre` with `deningerTopResidueFibre_isLimit` — **`(6)`**: the fibre of a
+    continuous residue morphism is its topological kernel, with the universal property; and
+    `deningerTopResidueEndpoint` with `_isColimit` — the endpoint is the topological cokernel.
+  - `deningerQuotient_isClosed_of_t2`, `deningerQuotient_t2_of_isClosed`,
+    `deningerQuotient_t2_iff_isClosed` — **strictness is separatedness**: the endpoint quotient is
+    Hausdorff exactly when the boundary image is closed.  This is why the card takes the intrinsic
+    middle group to be the quotient by the *closure*, which is
+    `deningerHausdorffH1` in `DeningerThreeTermEndpointsHausdorff.lean`.
+  The complete locally convex ambient itself is the next entry.
+
+- 2026-08-04 — **the complete locally convex ambient**, in `DeningerCompleteLCSCategory.lean`.
+  Axiom audit `propext, Classical.choice, Quot.sound`.
+  - `DeningerCLCS` — the category of complete Hausdorff locally convex real vector spaces with
+    continuous linear maps, which is the ambient the card names for the coefficient values.
+  - `DeningerCLCS.ker`, `kerι`, `kerι_comp`, `isLimitKer` — **`(6)` with all of its adjectives**:
+    the fibre of a continuous residue morphism stays complete, Hausdorff and locally convex, and it
+    has the universal property of a kernel.  The three closure properties are the classical ones —
+    the kernel of a continuous map into a separated space is closed, a closed subspace of a complete
+    space is complete, and local convexity and separation pass to subspaces.
+  - `DeningerCLCS.toTopModuleCat` — the forgetful functor to `TopModuleCat ℝ`, where the three-term
+    complex `(9)`, its homology `(10)`--`(11)` and the strictness criterion live.
+
+  The composition law of `(2)` is the next entry.  Every clause the card proves *about* the
+  coefficient — locality, the finite residues, Steinberg descent, the strict boundary and `(8)`,
+  the amplitudes, the endpoints, the operations, the totalization and its vanishing — is encoded.
+
+- 2026-08-04 — **`(2)`, the composition law for derived direct images**, in
+  `DeningerPushforwardLeray.lean`.  Axiom audit `propext, Classical.choice, Quot.sound`.
+  - `deningerPushforward_isFlasque` — direct images preserve flasqueness, so
+    `deningerPushforward_ext_eq_zero`: the direct image of a flasque coefficient has no higher
+    cohomology, and `deningerPushforward_sectionsEquiv`: its degree zero is the sections over the
+    preimage.  So for a flasque coefficient the derived direct image is the underived one.
+  - `deningerPushforward_comp` and `deningerPushforwardSheaf_comp` — direct image along a composite
+    is the composite of direct images, as presheaves and as sheaves.
+  - `deningerCompositePushforward_ext_eq_zero` and `deningerCompositePushforward_sectionsEquiv` —
+    **`(2)`**: on a flasque coefficient the derived direct image along a composite has no higher
+    terms and is the sections over the total preimage.  This is what makes the pro-Stein relative
+    calculation compute the relevant coefficient after arithmetic direct image, in the case the card
+    uses, where clause 5 supplies the fineness.
+
+  What is left for the `2 → 3` gate is the construction of the pro-Stein refinement
+  `α_PS : X_η^{PS} → X_η` itself, which is Deninger's geometric input and lives on the sub-card
+  `DAC_PRO_STEIN_CYLINDER_ANALYTIC_LEAF`, not on this one.

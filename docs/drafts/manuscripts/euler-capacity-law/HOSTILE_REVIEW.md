@@ -1,5 +1,12 @@
 # Hostile referee report
 
+> **WITHDRAWN 2026-08-04.** This report is superseded. Its recommendation relied on two
+> unproved interfaces: a stored `RootedRealization.contact_eq` certificate and the published
+> quasi-Hamiltonian dimension formula. It also accepted categorical microlocal geometry as future
+> work, contrary to the reopened scope. None of its positive publication judgments may be cited
+> until the dependency-closed Stokes realization, deformation-complex dimension theorem, and
+> microsupport/characteristic-cycle/vanishing-cycle theorems are proved and re-reviewed.
+
 Manuscript: *The Euler--capacity law for wild character varieties*
 
 Audit date: 2026-08-03
@@ -10,7 +17,8 @@ internal adversarial report, not external peer review or a guarantee of acceptan
 
 ## Recommendation
 
-**Pass: suitable for submission in target band.** Central theorem is now global, memorable, and
+**Withdrawn; not suitable for submission in current state.** The former verdict below is retained
+only as an audit trail. Central theorem was described as global, memorable, and
 strictly stronger than manuscript's former genus-zero matrix theorem:
 
 `Q_(X,D) = sum_a P_a(z_a) + (chi(X) - sum_a delta_a) M^2`,
