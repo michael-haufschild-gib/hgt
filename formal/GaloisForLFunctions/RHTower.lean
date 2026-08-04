@@ -110,8 +110,10 @@ import GaloisForLFunctions.RHTower.BakerProof.NormalizedRelation
 import GaloisForLFunctions.RHTower.BakerWeldIndependence
 import GaloisForLFunctions.RHTower.BandEdgePairing
 import GaloisForLFunctions.RHTower.BandEdgePairingConstruction
+import GaloisForLFunctions.RHTower.BandLeakageSpectralTail
 import GaloisForLFunctions.RHTower.BandFrequencyWindow
 import GaloisForLFunctions.RHTower.BandQuadraticFormFourier
+import GaloisForLFunctions.RHTower.BandTrialMoments
 import GaloisForLFunctions.RHTower.BandTransformSymmetric
 import GaloisForLFunctions.RHTower.BarrierIsTheExpansion
 import GaloisForLFunctions.RHTower.BernoulliFourierBridge
@@ -3487,6 +3489,9 @@ import GaloisForLFunctions.RHTower.Sieve.MoebiusTwistContourBoundGeneral
 import GaloisForLFunctions.RHTower.Sieve.MoebiusTwistCombinedBound
 import GaloisForLFunctions.RHTower.Sieve.MoebiusTwistContourBoundRatio
 import GaloisForLFunctions.RHTower.Sieve.MoebiusTwistMajorantRatio
+import GaloisForLFunctions.RHTower.Sieve.MoebiusTwistSharpLittleO
+import GaloisForLFunctions.RHTower.Sieve.LogWindowKernel
+import GaloisForLFunctions.RHTower.Sieve.TriangularKernel
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment
@@ -5355,6 +5360,7 @@ import GaloisForLFunctions.RHTower.XiWeilHilbertCore
 import GaloisForLFunctions.RHTower.XiWeilLineConjHilbert
 import GaloisForLFunctions.RHTower.CCMCliffordWeilProduct
 import GaloisForLFunctions.RHTower.CCMClosedXiHaarMellinRealization
+import GaloisForLFunctions.RHTower.CCMClosedXiConformalKreinLaw
 import GaloisForLFunctions.RHTower.XiWeilOneCauchyGate
 import GaloisForLFunctions.RHTower.XiWeilPolarization
 import GaloisForLFunctions.RHTower.XiWeilPositivityBand
@@ -5598,3 +5604,4 @@ import GaloisForLFunctions.RHTower.DeningerTransitionWedge
 import GaloisForLFunctions.RHTower.DeningerStageCohomologyModule
 import GaloisForLFunctions.RHTower.DeningerCohomologyBasis
 import GaloisForLFunctions.RHTower.DeningerCohomologyFunctor
+import GaloisForLFunctions.RHTower.DeningerFrobeniusCohomology

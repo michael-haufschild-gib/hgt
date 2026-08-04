@@ -601,6 +601,49 @@ band eigenvalues is stated:
   exact quantity any envelope estimate has to bound — and the form in which an explicit trial function
   gives an upper envelope.
 
+**The leakage of a test function is now an exact spectral tail**, in
+`RHTower/BandLeakageSpectralTail.lean`:
+
+- `memLp_bandTrunc`, `integrable_bandTrunc` — the band truncation of a continuous function lies in
+  every `L^p` of the line (bounded, supported in a finite-measure set).
+- `lp_norm_sq_eq_integral` — the squared `L²` norm as an integral of squared norms.
+- `coeFn_fourier_bandTruncL2` — mathlib's `L²` Fourier transform of the truncation's class is its
+  classical Fourier integral, via the corpus bridge `l2_fourier_coeFn_eq_l1_fourier_of_integrable`.
+- `integral_norm_sq_fourier_bandTrunc` — Plancherel: total spectral energy equals `L²` energy.
+- `leakage_eq_spectral_tail` — hence, for every continuous test function and every positive aperture,
+
+  ```text
+  ∫_(-1)^1 psi² - ∫∫ sinc_c(x-y) psi(x) psi(y) = ∫_(|xi| > c/(2 pi)) ‖𝓕 psi(xi)‖² d xi.
+  ```
+
+  The left side is the Rayleigh deficit of the band operator at `psi`, so *any* explicit test function
+  now yields an upper bound for the band leakage, and the envelope's exponential rate is exactly the
+  decay rate of the best test function's spectral tail.  The naive trials (Gaussian, smooth bumps) give
+  rate `e^{-c}`; the classical rate `e^{-2c}` needs a trial whose in-band spectral mass is
+  exponentially large, e.g. the Kaiser–Bessel window `I_0(c sqrt(1-x²))` with Fourier pair
+  `2 sinh(sqrt(c²-omega²))/sqrt(c²-omega²)` — which is the next construction (`I_0` is absent from
+  mathlib).
+
+**The computational core of the Kaiser–Bessel trial is proved**, in `RHTower/BandTrialMoments.lean`:
+the even moments of the trial weights `(1-x²)^k`,
+
+```text
+M(j, k) = ∫_(-1)^1 x^(2j) (1 - x²)^k dx,      M(j, k) · j! · (2j+2k+2)! = (2j)! · k! · 4^(k+1) · (j+k+1)!,
+```
+
+with no Beta or Gamma function anywhere: `(1-x²)^(k+1) = (1-x²)^k - x² (1-x²)^k` gives the recursion
+`M(j, k+1) = M(j, k) - M(j+1, k)` (`trialMoment_succ`), the base case is the elementary power integral,
+and the induction step is the polynomial identity
+
+```text
+(2j+2k+4)(2j+2k+3) - 2(2j+1)(j+k+2) = 4(k+1)(j+k+2),
+```
+
+discharged by `linear_combination`.  Stating the closed form multiplicatively keeps every step inside
+the factorials.  These moments are exactly the coefficients needed to integrate the Kaiser–Bessel
+series `I_0(c sqrt(1-x²)) = sum_k (c²/4)^k (1-x²)^k/(k!)²` against `cos(omega x)` term by term, which is
+the route to the trial's Fourier pair and hence to the upper leakage envelope.
+
 ## Lean gates
 
 - [x] Lean: the sinc kernel equals the finite-Fourier character integral — equation `(6)` (already in the

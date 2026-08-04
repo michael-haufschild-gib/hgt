@@ -96,11 +96,6 @@ THEOREM_AREAS = {
     },
 }
 
-# `QuantumAlg` is vendored, not owned research; see
-# `formal/GaloisForLFunctions/QuantumAlg/PROVENANCE.md`.  It is registered as a
-# theorem area so umbrella completeness is enforced there too.
-VENDORED_AREAS = {"quantum_alg"}
-
 ALLOWED_ROOT_LEAN = {
     "Bottcher.lean",
     "Core.lean",

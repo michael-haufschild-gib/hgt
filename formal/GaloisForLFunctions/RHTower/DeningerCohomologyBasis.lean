@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.DeningerStageCohomologyModule
 import GaloisForLFunctions.RHTower.DeningerDlogWedgeBasis
+import Mathlib.LinearAlgebra.ExteriorPower.Basis
 
 /-!
 # A basis of the cohomology of a character stage
@@ -12,6 +13,8 @@ classes of the exterior products of the logarithmic differentials.
 
 * `deningerDetFormBasis` : the determinant forms of the `k`-element sets are a basis.
 * `deningerCohomologyBasis` : the classes of the logarithmic wedges are a basis of the cohomology.
+* `deningerCohomologyExteriorEquiv` : the cohomology of a stage is the exterior power of the
+  covering space.
 -/
 
 namespace RHTower
@@ -134,6 +137,14 @@ theorem deningerCohomologyBasis_apply (S : {S : Finset (Fin r) // S.card = n + 1
   show deningerCohomologyEquiv r n (deningerDetFormBasis r (n + 1) S) = _
   rw [deningerDetFormBasis_apply]
   rfl
+
+/-- **The cohomology of a character stage is the exterior power of the lattice**: both are free on
+the `k`-element sets of coordinates, the classes of the exterior products of the logarithmic
+differentials on one side and the exterior products of the basis vectors on the other. -/
+noncomputable def deningerCohomologyExteriorEquiv (r n : ℕ) :
+    deningerCohomology r n ≃ₗ[ℂ] ⋀[ℂ]^(n + 1) (Fin r → ℂ) :=
+  (deningerCohomologyBasis r n).equiv
+    ((Pi.basisFun ℂ (Fin r)).exteriorPower (n + 1)) (Equiv.refl _)
 
 /-- The basis vectors are the classes of the exterior products of logarithmic differentials. -/
 theorem deningerCohomologyBasis_eq_dlogWedge (S : {S : Finset (Fin r) // S.card = n + 1})

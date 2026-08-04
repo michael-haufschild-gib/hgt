@@ -7016,3 +7016,45 @@ is for — but the recursion stops one level down, because `δA/A` leaves the po
 that lies the general case, where the derivative law is *algebraic*: that is Reduction III, and its
 missing input is the Wiman initial law (`q_k > 0`), i.e. the Goldberg/Strelitz exponents.  Everything
 downstream of that input is already built, here and in the corpus's Bell/Jacobian layer.
+
+## Reduction I: the Newton-weight argument, unconditionally
+
+The card's Reduction I argues (line 127) that the top symbol cannot have a *unique* maximal-weight
+monomial, because the gap to the remaining weights is a fixed positive number that the `r^{o(1)}`
+factor cannot erase.  That argument is now a theorem, in both of its two shapes, and it needs no
+convergence of `log ν/log r`, no Goldberg, and no Strelitz — only the two selection facts the corpus
+already owns (top symbol small at a Wiman point, `z f'/f` within a relative error of `ν`).
+
+`HTGeometry/NewtonWeightPositiveOrder.lean` (axiom-clean, `[propext, Classical.choice, Quot.sound]`):
+
+* `exists_centralIndex_pow_ge_mul_radius` — **the pure monomial dominates.**  If the top-degree part
+  contains `A_d·f^d` with `A_d ≠ 0` and every other top monomial has strictly smaller Newton weight
+  (`deg A_p + 1 ≤ deg A_d + p₂`), then there is a `κ > 0` with
+
+  `κ·r ≤ ν(r)^d`  at arbitrarily large `r`.
+
+  This is *positive order*, in the quantitative form Reduction I needs: `ν(r) ≥ (κr)^{1/d}`, so the
+  Wiman exponent is at least `1/d` — the conclusion the card had been importing from Strelitz.  It is
+  sharp on the model cases: for `f' − f = 0` it returns `ν ≳ r`, and `ν(r) ~ r` for `exp`.
+
+* `centralIndex_pow_mul_pow_le_of_dominant_derivative_term` — **a derivative monomial dominates.**
+  If instead the strictly maximal weight sits at a monomial `q` with at least as many derivative
+  factors as every other top monomial, the same comparison run with the *lower* Wiman bound
+  `ν ≤ 2r‖f'/f‖` caps the central index:
+
+  `ν(r)^{q₂}·r^{deg A_q + 1} ≤ C·r^{q₂ + 1}`.
+
+* `not_transcendental_of_dominant_derivative_term` — **and then there is no solution at all.**  If in
+  addition `q₂ ≤ deg A_q`, the cap bounds `ν` outright, contradicting its divergence.  So an algebraic
+  differential relation of that Newton shape has no transcendental entire solution.
+
+Together these say: a unique maximal-weight top monomial forces the central index onto a power scale
+— from below when the monomial is pure, from above when it is derivative-heavy — and in the
+degenerate overlap it forces the solution not to exist.  That is exactly the dichotomy the paper
+wanted from "at least two monomials attain the maximal weight", now with an explicit exponent instead
+of an asymptotic slope.
+
+**What remains of Reduction I.** The general position — the maximal weight attained at a monomial that
+is neither pure nor derivative-maximal — still needs the scale `ν(r) ≈ r^σ` to decide which pairs tie,
+and that is where the Newton polygon slope, hence `q_k > 0`, is read off.  The two extreme faces are
+now closed unconditionally; the interior faces are the open ground.

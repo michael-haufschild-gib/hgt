@@ -164,6 +164,3 @@ theorem eventually_norm_sum_moebiusTwist_div_lt {ε : ℝ} (hε : 0 < ε) :
   exact lt_of_le_of_lt (hN τ hτ) hBN
 
 end RHTower.Sieve
-
-#print axioms RHTower.Sieve.exists_bound_norm_sum_moebiusTwist_div
-#print axioms RHTower.Sieve.eventually_norm_sum_moebiusTwist_div_lt

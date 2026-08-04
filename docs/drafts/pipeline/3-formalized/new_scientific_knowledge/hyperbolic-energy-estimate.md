@@ -102,9 +102,14 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 38 | uniqueness with every hypothesis on one solution at a time | `FactorDominated`, **`eq_of_solvesWaveEq_of_memLp_of_factorDominated`** | **built** |
 | 39 | the same, in the corpus's own language | **`eq_of_solvesPotentialWave_of_memLp_of_factorDominated`** | **built** |
 | 40 | continuous dependence in the square-integrable class | `decayingSolution_sub_of_memLp_of_factorDominated`, **`waveEnergy_sub_le_exp_abs_of_memLp`** | **built** |
+| 41 | the inhomogeneous equation and its pointwise energy identity | `SolvesWaveEqSource`, `solvesWaveEqSource_zero`, `solvesWaveEq_of_solvesWaveEqSource`, **`waveDirDeriv_energyDensity_source`** | **built** |
+| 42 | the energy dominates the `L²` norms of the field and its time derivative | **`integral_sq_dirDeriv_le_waveEnergy`**, **`integral_sq_le_waveEnergy`** | **built** |
+| 43 | the integrated flux identity with a source | **`integral_dirDeriv_energyDensity_source`** | **built** |
+| 44 | the source pairing is dominated by the energy | **`abs_integral_source_le`** | **built** |
+| 45 | the inhomogeneous energy estimate | **`waveEnergy_le_gronwall_source`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
-`WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39). All wired into the umbrella; axioms
+`WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41). All wired into the umbrella; axioms
 `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -350,9 +355,57 @@ estimate. For `∂ₜ²u = Δu + Vu + f` the same computation gives
 
 whose only new term is the source pairing; bounding it by `2‖f(t)‖_{L²}·E(t)^{1/2}` turns Grönwall
 into `d/dt √E ≤ ((M+1)/2)√E + ‖f(t)‖_{L²}`, which is exactly the estimate a Picard iteration on the
-Duhamel formula consumes. Concretely the next bricks are: a `SolvesWaveEqSource` predicate, the
-flux identity with the extra term (a variant of statements 9 and 22), and the square-root form of
-the Grönwall step.
+Duhamel formula consumes. Statement 41 lays the first of those bricks. `SolvesWaveEqSource` is the inhomogeneous equation,
+`solvesWaveEqSource_zero` places the homogeneous one inside it, and
+**`waveDirDeriv_energyDensity_source`** is the pointwise energy identity carrying the extra source
+term. `solvesWaveEq_of_solvesWaveEqSource` records the elementary but useful fact that off the zero
+set of the field a source is just a modification of the potential, `V + f/u`.
+
+Statement 42 supplies the comparison the source bound needs:
+**`integral_sq_dirDeriv_le_waveEnergy`** and **`integral_sq_le_waveEnergy`** — the energy of a slice
+dominates the `L²` norms of the time derivative and of the field there, since the energy density is
+the sum of those two squares and the gradient square.
+
+Statement 43 integrates it: **`integral_dirDeriv_energyDensity_source`** proves
+
+`∫ ∂ₜ(energy density) = 2∫(V+1)·u·∂ₜu + 2∫f·∂ₜu`
+
+from the same four families of integrability hypotheses as statement 22, plus one for the source
+pairing. The Green cancellation is untouched — the source rides along as a fifth summand.
+
+Statement 44 bounds the new term: **`abs_integral_source_le`** gives
+`|2∫f·∂ₜu| ≤ ‖f(t)‖²_{L²} + E(t)`. Using `2|ab| ≤ a² + b²` instead of Cauchy–Schwarz keeps the
+estimate free of square roots — the price is `‖f‖² + E` in place of the sharp `2‖f‖·√E`, and the
+gain is that Grönwall can be run on `E` itself rather than on `√E`, with no extra machinery.
+
+Statement 45 is that assembly. **`waveEnergy_le_gronwall_source`**: given the flux identity as the
+derivative of the energy and the two bounds on its size, Grönwall yields
+
+`E(t) ≤ gronwallBound (E(0)) (M+2) S t`  for `t ≥ 0`,
+
+with `S` a bound for the source term `‖f(s)‖²_{L²}` on the interval. Taking `S = 0` recovers the
+homogeneous estimate; the inhomogeneous form is what a Picard iteration on the Duhamel formula
+consumes, since it converts a bound on the source into a bound on the energy of the iterate.
+
+That completes the *estimate* side of the existence programme. What is still missing for existence
+itself is the construction: a solution operator for the free equation on the energy space and a
+fixed point for the Duhamel map. The corpus already owns the free evolution in its Fourier form
+(`kgCosSymbol`, `kgSinSymbol`, `memSobolev_kgCosSymbol`), so the remaining work is to run the
+Volterra iteration of `VolterraLinearIntegralEquation.lean` in the energy space rather than in the
+Wiener space — the estimate above being exactly the bound that makes that iteration converge.
+
+The interface to target is, in `VolterraLinearIntegralEquation.lean`, for a Banach space `X`:
+
+* `volterraSolution (f : ℝ → X) (K : ℝ → ℝ → X →L[ℝ] X) : ℝ → X` — the Picard series;
+* `volterraSolution_eq` — it satisfies `u t = f t + ∫ s in 0..t, K t s (u s)`;
+* `continuous_volterraSolution`, `norm_volterraSolution_le` — continuity and
+  `‖u t‖ ≤ F·exp(M|t|)`,
+
+each requiring only: `f` and `K` continuous, `‖K t s‖ ≤ M`, `‖f t‖ ≤ F`. So the construction reduces
+to exhibiting the Duhamel data — `X` the energy space, `f` the free evolution of the Cauchy data,
+`K t s` the multiplication-by-`V` operator conjugated by the free propagator — and checking those
+four bounds. The corpus already has the free propagator as a bounded Fourier multiplier
+(`memSobolev_kgCosSymbol`, `memSobolev_kgSinSymbol`), which is what supplies `‖K t s‖ ≤ M`.
 
 One structural note for whoever continues: `DecayingSolution` is **not** closed under differences —
 each of its integrability fields is a product of a derivative of the field with a derivative of its
@@ -381,6 +434,17 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-04 — recorded the exact `volterraSolution` interface the construction step has to meet.
+- 2026-08-04 — wiring audit: every `Wave*` module in `HTGeometry/` is imported by the area umbrella
+  (35 files checked, none missing).
+- 2026-08-04 — statement 45: the inhomogeneous energy estimate. The estimate side of the existence
+  programme is complete; what remains is the construction (free evolution + Duhamel fixed point).
+- 2026-08-04 — statement 44 (the source pairing is dominated by the energy); the square-root
+  Grönwall is avoidable.
+- 2026-08-04 — statement 43 (the integrated flux identity with a source).
+- 2026-08-04 — statement 42 (the energy dominates the L² norms of the field and its time
+  derivative).
+- 2026-08-04 — statement 41: the inhomogeneous equation and its pointwise energy identity.
 - 2026-08-04 — the entry point to existence (inhomogeneous estimate) specified on the card.
 - 2026-08-04 — statement 40 (continuous dependence in the L² class); the three-class table is
   complete.

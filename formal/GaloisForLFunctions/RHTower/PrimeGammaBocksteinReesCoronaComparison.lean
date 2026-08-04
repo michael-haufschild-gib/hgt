@@ -60,6 +60,68 @@ theorem primeGammaBocksteinReesCoronaFactor_ne_zero
       ((primeGammaCofinalBocksteinCoefficient_eq_zero_iff t p).not.mpr ht)
       (primeDepthBVWoldReesCoronaWeight_adjacent_ne_zero p ht))
 
+/-- The graded comparison preserves the positive coorientation after the
+explicit reflection-odd sign is removed. -/
+theorem primeGammaBocksteinReesCoronaFactor_pos
+    (t : ℝ) (p : Nat.Primes) :
+    0 < primeGammaBocksteinReesCoronaFactor t p := by
+  by_cases ht0 : t = 0
+  · simp [primeGammaBocksteinReesCoronaFactor, ht0]
+  · rw [primeGammaBocksteinReesCoronaFactor, if_neg ht0]
+    have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.2.one_lt
+    have hdensity : 0 < primeActivationOccupancyFisherDensity p := by
+      rw [primeActivationOccupancyFisherDensity_eq]
+      positivity
+    have hden : 0 <
+        xiGammaEulerPrimitivePrimeDepthLogClock
+            (ccmRationalAdelicPrimeRelativeXiCellZero p) *
+          xiGammaEulerPrimitivePrimeDepthLogClock
+            (ccmRationalAdelicPrimeRelativeXiCellOne p) :=
+      mul_pos
+        (xiGammaEulerPrimitivePrimeDepthLogClock_pos
+          (ccmRationalAdelicPrimeRelativeXiCellZero p))
+        (xiGammaEulerPrimitivePrimeDepthLogClock_pos
+          (ccmRationalAdelicPrimeRelativeXiCellOne p))
+    rcases lt_or_gt_of_ne ht0 with htneg | htpos
+    · have hpow : (p : ℝ) ^ t < (p : ℝ) ^ (-t) :=
+        Real.strictMono_rpow_of_base_gt_one hp1 (by linarith)
+      have htwist :
+          primeActivationOccupancyFisherTwist t p <
+            primeActivationOccupancyFisherTwist (-t) p := by
+        rw [primeActivationOccupancyFisherTwist,
+          primeActivationOccupancyFisherTwist]
+        exact mul_lt_mul_of_pos_right hpow hdensity
+      have hbeta : 0 < primeGammaCofinalBocksteinCoefficient t p := by
+        rw [primeGammaCofinalBocksteinCoefficient]
+        linarith
+      have hweight : primeDepthBVWoldReesCoronaWeight t
+          (ccmRationalAdelicPrimeRelativeXiCellZero p)
+          (ccmRationalAdelicPrimeRelativeXiCellOne p) < 0 := by
+        rw [primeDepthBVWoldReesCoronaWeight]
+        exact div_neg_of_neg_of_pos
+          (mul_neg_of_neg_of_pos htneg
+            (ccmRationalAdelicPrimeRelativeXiConnection_pos p)) hden
+      exact neg_pos.mpr (div_neg_of_pos_of_neg hbeta hweight)
+    · have hpow : (p : ℝ) ^ (-t) < (p : ℝ) ^ t :=
+        Real.strictMono_rpow_of_base_gt_one hp1 (by linarith)
+      have htwist :
+          primeActivationOccupancyFisherTwist (-t) p <
+            primeActivationOccupancyFisherTwist t p := by
+        rw [primeActivationOccupancyFisherTwist,
+          primeActivationOccupancyFisherTwist]
+        exact mul_lt_mul_of_pos_right hpow hdensity
+      have hbeta : primeGammaCofinalBocksteinCoefficient t p < 0 := by
+        rw [primeGammaCofinalBocksteinCoefficient]
+        linarith
+      have hweight : 0 < primeDepthBVWoldReesCoronaWeight t
+          (ccmRationalAdelicPrimeRelativeXiCellZero p)
+          (ccmRationalAdelicPrimeRelativeXiCellOne p) := by
+        rw [primeDepthBVWoldReesCoronaWeight]
+        exact div_pos
+          (mul_pos htpos
+            (ccmRationalAdelicPrimeRelativeXiConnection_pos p)) hden
+      exact neg_pos.mpr (div_neg_of_neg_of_pos hbeta hweight)
+
 /-- Exact pre-divisor coefficient comparison.  No critical-line or
 fixed-ideal premise enters the identity. -/
 theorem primeGammaCofinalBocksteinCoefficient_eq_reesCoronaWeight
@@ -75,6 +137,41 @@ theorem primeGammaCofinalBocksteinCoefficient_eq_reesCoronaWeight
       primeDepthBVWoldReesCoronaWeight]
   · rw [primeGammaBocksteinReesCoronaFactor, if_neg ht]
     field_simp [primeDepthBVWoldReesCoronaWeight_adjacent_ne_zero p ht]
+
+/-- **Metric port identification.**  Squared determinant-transgression
+energy is exactly a positive graded multiple of the fixed-source Route-R
+Stokes excess.  This identifies the cofinal Gamma and Rees--corona physical
+rank ports, rather than merely comparing their zero sets. -/
+theorem primeGammaCofinalBocksteinEnergy_eq_factor_sq_mul_stokesExcess
+    (t : ℝ) (p : Nat.Primes) (c : ℂ) :
+    primeGammaCofinalBocksteinCoefficient t p ^ 2 * Complex.normSq c =
+      primeGammaBocksteinReesCoronaFactor t p ^ 2 *
+        primeDepthBVWoldSourcePolarizationStokesExcess t
+          (ccmRationalAdelicPrimeRelativeXiCellZero p)
+          (ccmRationalAdelicPrimeRelativeXiCellOne p) c := by
+  rw [primeDepthBVWoldSourcePolarizationStokesExcess_eq,
+    primeGammaCofinalBocksteinCoefficient_eq_reesCoronaWeight,
+    primeDepthBVWoldReesCoronaWeight]
+  field_simp
+    [xiGammaEulerPrimitivePrimeDepthLogClock_ne_zero
+      (ccmRationalAdelicPrimeRelativeXiCellZero p),
+     xiGammaEulerPrimitivePrimeDepthLogClock_ne_zero
+      (ccmRationalAdelicPrimeRelativeXiCellOne p)]
+
+/-- Equivalent corona form of the metric port identification. -/
+theorem primeGammaCofinalBocksteinEnergy_eq_factor_sq_mul_coronaCorrection
+    (t : ℝ) (p : Nat.Primes) (c : ℂ) :
+    primeGammaCofinalBocksteinCoefficient t p ^ 2 * Complex.normSq c =
+      primeGammaBocksteinReesCoronaFactor t p ^ 2 *
+        GaloisForLFunctions.IrregularStokes.CoronaSchur.coronaCorrection
+          (primeDepthBVWoldReesCoronaCoupling t
+            (ccmRationalAdelicPrimeRelativeXiCellZero p)
+            (ccmRationalAdelicPrimeRelativeXiCellOne p))
+          primeDepthBVWoldReesCoronaMetric
+          (primeDepthBVWoldReesCoronaRealification c) 0 := by
+  rw [primeDepthBVWoldReesCoronaCorrection_scalarLift_eq_stokesExcess]
+  exact primeGammaCofinalBocksteinEnergy_eq_factor_sq_mul_stokesExcess
+    t p c
 
 /-- Vector-valued comparison with the literal physical corona microstalk. -/
 theorem primeGammaCofinalBocksteinCoefficient_realification_eq_coronaQuotient

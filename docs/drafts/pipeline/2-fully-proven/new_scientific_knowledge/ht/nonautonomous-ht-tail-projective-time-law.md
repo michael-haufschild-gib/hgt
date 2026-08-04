@@ -2629,3 +2629,89 @@ The tail is derivation closed (`derivationClosed_nonautonomousTail`) and sits in
 differential field, so `differentialLuroth` applies directly.  This was the single entry of the
 state table marked "absent from mathlib": part 2, statement `(3)`.  With it the whole numbered
 theorem of this card -- `(1)`, `(2)`, the dichotomy, `(3)`, `(4)`, `(5)`, `(6)` -- is formal.
+
+## Toward the card's phrasing of `(3)`: the generator is hypertranscendental
+
+The card states `(3)` with *differentially transcendental* generators.  What is proved is generator
+existence; upgrading the generator to hypertranscendental needs the fact that a free differential
+field over a field of constants contains no nonconstant differentially algebraic element.  Its
+mechanism is now in place:
+
+`formal/GaloisForLFunctions/HTGeometry/JetLevelAlgebraicallyClosed.lean` (wired, axiom-clean):
+
+- `derivation_eq_zero_of_isAlgebraic` — **a derivation vanishing on a subfield kills every element
+  algebraic over it** (implicit differentiation of the minimal polynomial; the coefficient term dies
+  and `p'(u) ≠ 0` in characteristic zero).
+- `mem_jetLevel_of_isAlgebraic` — **jet levels are algebraically closed**: an element algebraic over
+  the rational functions of the jets of level `≤ N` is itself such a rational function.
+- `ordJet_le_of_isAlgebraic` — the order form of the same statement.
+
+Remaining for the upgrade: with `ordJet_iterate` (each derivative raises the order by exactly one)
+the jet `u^{(n+1)}` is transcendental over the level containing `u, …, u^{(n)}`, hence over the field
+they generate; assembling that into algebraic independence of the whole jet family gives
+hypertranscendence of `u`, and transporting along the jet parametrization gives it for the tail
+generator.
+
+## Hypertranscendence of every nonconstant element — PROVED
+
+`formal/GaloisForLFunctions/HTGeometry/JetHypertranscendence.lean` (wired, axiom-clean):
+
+- `mem_bot_of_pd_eq_zero` — an element killed by every coordinate derivation is a constant.
+- `ordJet_deriv_eq_of_notMem_bot`, `deriv_notMem_bot_of_notMem_bot`,
+  `ordJet_iterate_of_notMem_bot` — **differentiation raises the jet order by exactly one for every
+  nonconstant element**, including the order-zero case that the corpus's version excluded (there the
+  zeroth coordinate derivative of the element becomes the top coordinate derivative of its
+  derivative).
+- `isAlgebraic_of_adjoin_le`, `pd_eq_zero_of_mem_bot` — transport lemmas.
+- `transcendental_differentialJet` — **the next jet is transcendental over the previous ones**: the
+  previous jets lie in the level below, and a jet level is algebraically closed.
+- `algebraicIndependent_differentialJet_fin` — the initial jet families are algebraically
+  independent (induction with `AlgebraicIndependent.option_iff_transcendental`).
+- `hypertranscendentalOver_of_notMem_bot` — **every nonconstant element of the free differential
+  rational field is hypertranscendental**.
+
+This is the statement the card's `(3)` needs to read "differentially transcendental generators": a
+field of constants has no differentially algebraic element in its free differential extension beyond
+its own elements.  What remains is transport along the jet parametrization to the concrete free
+differential field `C⟨y⟩ ⊆ E`, where it applies to the tail generator.
+
+## Transport step: a fraction-field derivation is determined by its restriction
+
+`formal/GaloisForLFunctions/HTGeometry/FractionRingDerivationExt.lean` (wired, axiom-clean):
+
+    derivation_ext_of_fractionRing :
+      two derivations of a fraction field agreeing on the base ring are equal
+
+This is the missing link for carrying `hypertranscendentalOver_of_notMem_bot` from the formal jet
+field to the concrete `C⟨y⟩ ⊆ E`.  The corpus attaches two differential structures to
+`Frac(C{U})`: the canonical formal jet derivation, and the one transported from `E` through
+`differentialIndependentAdjoinParametrization`.  Both send each jet variable to the next, hence
+agree on the polynomial ring by `MvPolynomial.derivation_ext`, hence agree everywhere by the lemma
+above.  With that identification the free-field hypertranscendence theorem applies to the
+transported structure, and `hypertranscendentalOver_algHom_iff` moves the conclusion to the tail
+generator in `E`.
+
+### The identification step, reduced
+
+The corpus already proves `differentialIndependentJetFraction_deriv`: the parametrization
+intertwines the *transported* derivation with the ambient one, `e (x′) = (e x)′`.  So identifying the
+transported structure with the formal jet derivation is exactly
+
+    e (jetDerivation x) = (e x)′            for all x,
+
+equivalently `x′ = jetDerivation x` after cancelling the injective `e`.  Route, with every input
+already in the corpus:
+
+1. `differentialIndependentJetFractionDifferential` is a `Derivation ℤ`; over a base of constants it
+   kills `C` (`DifferentialAlgebra.deriv_algebraMap` plus triviality), so it upgrades to a
+   `Derivation C` by the Leibniz rule.
+2. Both `C`-derivations agree on each jet coordinate: the formal one by `deriv_jet`, the transported
+   one because `differentialIndependentAdjoinParametrization_X` sends `jet (u, n)` to
+   `differentialJet n y`, whose derivative is `differentialJet (n+1) y`.
+3. `MvPolynomial.derivation_ext` upgrades coordinatewise agreement to agreement on the jet
+   polynomial ring, and `derivation_ext_of_fractionRing` (built this cycle) upgrades that to the
+   whole fraction field.
+
+Then `hypertranscendentalOver_of_notMem_bot` applies to the transported structure and
+`hypertranscendentalOver_algHom_iff` carries the conclusion to `E`, giving the card's exact wording
+of `(3)`: the phase generators are differentially transcendental.

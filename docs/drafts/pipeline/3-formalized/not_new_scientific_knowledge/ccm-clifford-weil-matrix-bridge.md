@@ -1,7 +1,7 @@
 # CCM Clifford--Weil matrix bridge
 
 - **ID:** `ccm-clifford-weil-matrix-bridge`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** dependency-closed bridge and circularity classifier
 - **Parent:** `ccm-clifford-bivariant-weil-product.md`
 - **Novelty verdict:** standard Clifford/Gram algebra specialized to the exact CCM--Xi interfaces;
@@ -93,5 +93,10 @@ criterion identifies scalar nonnegativity with RH.
 - [x] complete paper proof
 - [x] exact recipient and convention audit
 - [x] circularity classifier
-- [ ] unconditional formal verification
-- [ ] move to Stage 3 after verification and axiom audit
+- [x] unconditional formal verification
+- [x] moved to Stage 3 after verification and axiom audit
+
+Formal realization: `formal/GaloisForLFunctions/RHTower/CCMCliffordWeilProduct.lean`.
+Target module build passed. Axiom audit for `(A)`, Gram positivity, coefficient extraction, exact Xi
+polarization, and the full-domain RH equivalence reports only `propext`, `Classical.choice`, and
+`Quot.sound`.

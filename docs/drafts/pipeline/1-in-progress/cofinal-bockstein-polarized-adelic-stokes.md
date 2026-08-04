@@ -745,3 +745,36 @@ Riemann--Hilbert theorem and stronger than the abstract Witt law.
   cannot prove critical-line admission.
 - Any exact functor built from the already curved scalar physical connection simply assumes the
   conclusion.  It must start from the unconditionally flat resolved rank-two source.
+
+### Formal metric identification of the unique physical rank port (4 August 2026)
+
+The coefficient and metric comparisons are now unconditional.  For every real grade `t`, ordinary
+prime `p`, and conormal coefficient `c`, let `kappa(t,p)` be the graded Bockstein-to-corona factor.
+Lean proves
+
+```text
+kappa(t,p) > 0,
+B_t(p) = -kappa(t,p) tau_t(p),
+B_t(p)^2 |c|^2 = kappa(t,p)^2 Delta(t,(p,0),(p,1),c).
+```
+
+Here `B_t(p)` is the signed all-prime Gamma Bockstein/determinant-transgression coefficient and
+`tau_t(p)` is the literal adjacent-depth Rees--corona weight.  The last identity is also proved
+with `Delta` replaced by the exact `CoronaSchur.coronaCorrection`.  Thus the cofinal determinant
+transgression and the Lorentzian Stokes physical rank port are not merely zero-equivalent: their
+positive energies agree up to an explicit strictly positive square, with prime/depth provenance
+retained.  This closes the metric-port identification part of Clauses 1--3.
+
+Formal anchors:
+
+- `PrimeDepthBVWoldReesCoronaQuotient.lean` constructs resolved and fixed physical lifts and proves
+  resolved quotient zero, physical quotient `tau_t(p)c`, and corona energy `Delta`;
+- `PrimeGammaBocksteinReesCoronaComparison.lean` proves the positive coorientation and the two
+  energy identities above.
+
+Hostile audit of the corrected `det2` square: its positive channel is the hidden compensator energy
+`Delta`, not an independently vanishing source energy.  Therefore unconditional corrected
+`D1 D0=0` cannot be substituted for physical admission.  Exact remaining producer is unchanged
+but now has no coefficient or metric ambiguity: prove from pre-divisor source structure that the
+fixed physical lift lies in the harmonic corona graph, equivalently annihilate this one identified
+positive rank port.  No RH proof is claimed.

@@ -4257,3 +4257,90 @@ This is the form in which the width can be chosen. What remains is the twisted a
 `MoebiusSmoothLittleO`/`MoebiusSharpLittleO`: pick `H` and `K` and conclude
 `sup_{|τ| ≤ T} ‖∑_{n ≤ N} μ(n)n^{-iτ}‖ = o(N)`, the side condition `5 + 4|τ| ≤ K` fixing how fast `T`
 may grow with `N`.
+
+### The twisted Möbius sum is `o(N)`, uniformly in the twist
+
+Added: `Sieve/MoebiusTwistCombinedBound.lean`, `MoebiusTwistContourBoundRatio.lean`,
+`MoebiusTwistMajorantRatio.lean`, `MoebiusTwistSharpLittleO.lean`;
+`Sieve/SmoothVsSharp.lean` was generalised (its Möbius statement is unchanged, and is now a corollary
+of `norm_tsum_smoothWeight_sub_sum_le_of_norm_le_one`, valid for any unimodular sequence).
+
+The chain closes:
+
+- `combined_terms_twist_le` — the twisted contour terms collapse to **twice** the untwisted collapse,
+  because `twistHeight K τ ≥ truncHeight K / 2` whenever `|τ| ≤ truncHeight K / 2`, and
+  `abs_le_half_truncHeight` shows the side condition `5 + 4|τ| ≤ K` already grants that. No estimate
+  is repeated — the twisted collapse is *deduced* from the untwisted one.
+- `exists_norm_tsum_moebiusTwist_smoothWeight_le_ratio`, `..._le_majorant_ratio` — the twisted bound
+  in terms of the smoothing ratio, and against the majorant.
+- **`exists_bound_norm_sum_moebiusTwist_div`** — a single `τ`-free bound `B(N) → 0` with
+
+      ‖ ∑_{n ≤ N} μ(n)n^{-iτ} ‖ / N  ≤  B(N)   for every τ with 5 + 4|τ| ≤ contourParam(N + H),
+
+  at the smoothing width `H = N/exp((log N)^{1/20})`.
+- **`eventually_norm_sum_moebiusTwist_div_lt`** — its ε-form: for every `ε > 0`, eventually every
+  admissible twist satisfies `‖∑_{n ≤ N} μ(n)n^{-iτ}‖ < εN`.
+
+Since `contourParam x = ⌈exp((log x)^{1/10})⌉`, the admissible frequency range grows faster than any
+power of `log N`. All unconditional (`[propext, Classical.choice, Quot.sound]`), all wired into
+`GaloisForLFunctions.RHTower`.
+
+**This is the frequency-uniform Möbius cancellation the mean-square input is assembled from**, and it
+is now a theorem of this corpus rather than a citation. What the card's `(15)`–`(17)` still need
+beyond it is the *short-interval* form — the passage from the full sum `∑_{n ≤ N}` to the windows
+`∑_{x < n ≤ x+H}` — which is where the bilinear decomposition enters.
+
+### Toward the short-interval form — the exact logarithmic kernel
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/LogWindowKernel.lean`.
+
+The remaining gap is the passage from the full sum `∑_{n ≤ N}` to the windows `∑_{x < n ≤ x+H}`.
+Gallagher's reduction does it in two steps, and the first is now proved, exactly and elementarily.
+Writing `S(u) = ∑_{u < log n ≤ u+δ} a_n`:
+
+- `logWindow δ n = [log n − δ, log n)` — the set of positions at which `log n` is inside the window;
+- `volume_real_logWindow_inter` — two such windows meet in a set of measure `(δ − |log n − log m|)₊`;
+- **`integral_normSq_logWindowSum`** —
+
+      ∫_ℝ |S(u)|² du = ∑_{n,m} Re(a_n conj(a_m)) · (δ − |log n − log m|)₊ .
+
+No analysis enters: only the measure of the intersection of two half-open intervals of equal length.
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+**The second step, and why it is now cheap.** The triangular kernel `(δ − |L|)₊` is the Fourier
+transform of the Fejér kernel, and *the corpus already owns that transform in closed form*:
+`FejerSymmBound.integral_fejer_symm_real` gives `fejerWeightAt δ L = 2(1 − cos δL)/(δL²)`, with
+`FejerBounds.fejer_transform_nonneg`, `fejer_transform_le_inv` and `fejer_transform_le_len` supplying
+nonnegativity and both decay estimates. So the missing identity
+
+    (δ − |L|)₊ = (δ/2π) ∫_ℝ fejerWeightAt δ ξ · e^{iLξ} dξ
+
+is Fourier inversion applied to the compactly supported continuous function `(δ − |·|)₊`, whose
+transform is integrable precisely by the corpus's own `1/ξ²` bound. Composing it with the identity
+above gives Gallagher's lemma,
+
+    ∫_ℝ |S(u)|² du = (1/π) ∫_ℝ ((1 − cos δξ)/ξ²) · |∑_n a_n n^{-iξ}|² dξ ,
+
+with a kernel that is nonnegative and at most `min(δ²/2, 2/ξ²)` — the bridge from a short-interval
+mean square to the Dirichlet polynomial, and hence to the twisted cancellation proved above.
+
+Audit note: the classical Dirichlet integral `∫_ℝ (1 − cos aξ)/ξ² dξ = π|a|` is in neither mathlib
+nor this corpus, but the inversion route does not need it.
+
+### The triangular kernel and its transform
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/TriangularKernel.lean`.
+
+- `tri δ t = (δ − |t|)₊`, with `tri_even`, `tri_eq_sub`, `tri_eq_zero`, `continuous_tri`;
+- **`integral_tri_phase`** — `∫_ℝ (δ − |t|)₊ e^{itL} dt = δ · fejerWeightAt δ L`.
+
+Reflecting the negative half onto the positive one turns the line integral into the corpus's own two
+half-integrals, so the transform of the overlap kernel is the Fejér weight already computed in closed
+form by `FejerSymmBound.integral_fejer_symm_real`, namely `2(1 − cos δL)/L²` — real, nonnegative, and
+`O(L^{-2})`.
+
+Unconditional, wired into `GaloisForLFunctions.RHTower`.
+
+With `LogWindowKernel.integral_normSq_logWindowSum` this leaves exactly one step to Gallagher's
+lemma: Fourier inversion for the compactly supported continuous `tri δ`, whose transform is
+integrable by the `L^{-2}` bound the corpus already owns.

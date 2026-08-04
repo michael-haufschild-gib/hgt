@@ -189,6 +189,14 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized the action of `(4)` on cohomology: Frobenius acts on
+  the cohomology of degree `k` of a stage by the `k`-th power of its exponent,
+  and a Galois element by the permutation of the coordinates.  This is the
+  hostile audit's "pure power action" on local cohomology, now a theorem.
+- 2026-08-04 — Closed `(5)` in the form the statement gives it: the cohomology
+  of a stage is the exterior power of the covering space.  Built the transition
+  maps as linear maps of the cohomology modules and proved the comparison
+  natural in the lattice at the level of modules.
 - 2026-08-04 — Stated `(5)` as an isomorphism of modules: built the closed and
   exact forms as submodules, the cohomology of a stage as their quotient, the
   comparison with the constant alternating forms as a linear equivalence, and
@@ -1009,14 +1017,48 @@ generalized to an arbitrary primitive in
   of the `k`-element sets of coordinates are a basis of the cohomology of the stage**, which is the
   comparison of `(5)` with its standard basis on both sides.
 
+### The transition maps on cohomology, and `(5)` as an exterior power
+
+`formal/GaloisForLFunctions/RHTower/DeningerCohomologyFunctor.lean`, with
+`deningerCohomologyExteriorEquiv` in
+`formal/GaloisForLFunctions/RHTower/DeningerCohomologyBasis.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerStagePullbackₗ`, `deningerPullback_mem_closedForms`, `deningerClosedPullback_exact` —
+  pulling back along a transition is linear and preserves closed holomorphic forms and exact forms.
+- `deningerCohomologyMap` — **the linear map induced on the cohomology of the stages by a
+  transition map.**
+- `deningerMonomialPullback_constantStageForm`, `deningerCohomologyMap_constantClass` — **the
+  comparison of `(5)` is natural in the lattice at the level of modules**: the induced map is
+  composition with the linear map of the exponent matrix, that is, the `k`-th exterior power of the
+  transition.
+- `deningerCohomologyExteriorEquiv` — **the cohomology of a character stage is the exterior power of
+  the covering space**, `H^k ≅ Λ^k(L ⊗ ℂ)`, by matching the basis of classes of logarithmic wedges
+  with the basis of the exterior power given by the coordinate basis.
+
+### The action of `(4)` on cohomology
+
+`formal/GaloisForLFunctions/RHTower/DeningerFrobeniusCohomology.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerMatrixCLM_power` — the power transition induces multiplication by the exponent on the
+  covering space, and `deningerCompCLM_smul_id` — an alternating form of degree `k` composed with a
+  scalar is the `k`-th power of that scalar times the form.
+- `deningerCohomologyMap_power` — **Frobenius acts on the cohomology of degree `k` of a character
+  stage by `q ^ k`.**  This is the hostile audit's statement that the analytic chain action becomes
+  the pure power action on local cohomology.
+- `deningerMatrixCLM_perm`, `deningerCohomologyMap_perm` — **a Galois element acts by the
+  permutation of the coordinates** of the alternating form.
+
 ### Remaining
 
-1. **`(6)`**, the colimit of `(5)` over the filtered category of pairs `(W, L)`.  Its three
-   ingredients are formalized: `(5)` at every finite stage in every degree and in both directions,
-   the naturality of the comparison in the lattice (the transitions act on the generators by the
-   minors of the exponent matrix), and the passage to the limit (exterior powers commute with
-   direct limits along injective maps).  What is left is only the pro-Ind bookkeeping — assembling
-   the filtered category of pairs `(W, L)` and reading off that its colimit of stage cohomologies is
-   the pro-Ind cohomology, which the card takes as the definition of the latter.
+1. **`(6)`**, the colimit of `(5)` over the filtered category of pairs `(W, L)`.  Its ingredients
+   are formalized: `(5)` at every finite stage in every degree, in both directions, as an
+   isomorphism of modules with the exterior power of the covering space; the naturality of the
+   comparison in the lattice, both on the generators (the minors of the exponent matrix) and as a
+   map of the cohomology modules; and the passage to the limit (exterior powers commute with direct
+   limits along injective maps).  What is left is only the pro-Ind bookkeeping — assembling the
+   filtered category of pairs `(W, L)` and reading off that its colimit of stage cohomologies is the
+   pro-Ind cohomology, which the card takes as the definition of the latter.
 2. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
    mathlib — and the pro-Ind global-section formalism.
