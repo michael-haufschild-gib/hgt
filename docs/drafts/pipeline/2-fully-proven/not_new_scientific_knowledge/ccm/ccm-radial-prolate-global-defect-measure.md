@@ -427,6 +427,55 @@ What `(8)` still imports is only the PSWF normalisation: the identification `(1)
 the Fourier ratio, Dunster's `(4)` for the actual mode (available in this tree as the pole-uniform envelope
 and approximation bounds of `ccm-exact-finite-aperture-first-row-vanishing`), and the separation law `(6)`.
 
+**The squared-profile law `(10)` is proved on intervals**, in
+`formal/GaloisForLFunctions/RHTower/CCMRadialSquaredProfile.lean`.  Testing against intervals rather than
+against continuous `phi` is exactly vague convergence, and it is what makes the weight of the oscillatory
+integral explicit — and monotone, which is what the corpus van der Corput test consumes.
+
+- `profileWeight`, `profileWeightDeriv`, `profileWeight_pos`, **`hasDerivAt_profileWeight`**,
+  **`profileWeightDeriv_nonpos`**, `continuousOn_profileWeightDeriv` — the `s`-dependent density
+  `w_s(x) = 1/(pi sqrt((x²-1)(x²-s)))`, positive with an explicit nonpositive derivative.
+- **`profileWeight_zero_eq`** — `w_0 = profileDensity`: the `s = 0` weight *is* the limiting density
+  `1/(pi x sqrt(x²-1))` of `(10)`, whose total mass `1/2` is `(17)`.
+- **`xiSpeedDeriv_nonpos`** — the Liouville speed is nonincreasing, so the phase `2 c xi_s` has nonincreasing
+  derivative: the *anti* companion of the weighted first-derivative test applies.
+- **`abs_integral_profileWeight_mul_sin_le`** — the oscillatory half:
+  `|int_α^β w_s(x) sin(2 c xi_s(x)) dx| <= 2 w_s(α)/c`.  The phase derivative is `2 c xi_s' >= 2c` because
+  `xi_s' >= 1` on the whole ray; no stationary point exists, and this is `(9)` of the card in the exact
+  variable rather than in the expanded one.
+- `ampFourth_sq`, **`model_sq_eq`** — the algebraic half:
+  `(sqrt(2/pi) A-root cos(c xi - pi/4))² = w_s (1 + sin(2 c xi))` *identically*, by `cos²u = (1+cos 2u)/2`
+  and `cos(2u - pi/2) = sin 2u`.
+- `abs_profile_sub_model_le` (in the previous file), **`abs_profileSq_sub_le`** — the pointwise squared
+  profile: only the Bessel remainder enters, through `(2 A-root sqrt(2/pi) + E)E` with
+  `E = 5 A-root (c xi)^{-1/4}`.
+- `ampFourth_le_of_le`, **`abs_integral_profileSq_sub_le`** — equation `(10)` on an interval:
+
+  ```text
+  |int_α^β (sqrt c A_s J_0(c xi_s))² - int_α^β w_s| <= 2 w_s(α)/c + (2 sqrt(2/pi) q + E) E (β - α),
+  ```
+
+  for every `1 < α <= β` with `c xi_s(α) >= 1`, where `q = A-root(α)` and `E = 5 q (c xi_s(α))^{-1/4}`.  Both
+  terms vanish as `c -> infinity`: the first is the nonstationary-phase gain, the second is `O(c^{-1/4})`.
+  The error factors are bounded at the left endpoint because both `A-root` and `xi_s^{-1/4}` are monotone.
+
+
+The `O(s)` passage to the *limiting* density is proved as well, in the same module:
+
+- `profileWeight_eq_ampFourth_sq`, **`abs_profileWeight_sub_density_le`** — `w_s = A-root²/pi`, so the linear
+  `s`-dependence of the fourth root transfers: `|w_s(x) - w_0(x)| <= 3 s w_0(x)/(x²-s)`.
+- **`profileDensity_le_of_le`** — the limiting density is nonincreasing, which is what lets the comparison be
+  evaluated at the left endpoint.
+- **`abs_integral_profileSq_sub_density_le`** — equation `(10)` against the limiting density itself:
+
+  ```text
+  |int_α^β (sqrt c A_s J_0(c xi_s))² - int_α^β dx/(pi x sqrt(x²-1))|
+    <= 2 w_s(α)/c + (2 sqrt(2/pi) q + E) E (β-α) + 3 s w_0(α)/(α²-s) (β-α),
+  ```
+
+  every term vanishing as `c -> infinity` with `s = O(1/c)`.  The measure on the right is exactly the one
+  whose total mass `1/2` is `(17)`.
+
 ## Lean gates
 
 - [x] Lean: the radial angle and its derivative law
@@ -440,7 +489,11 @@ and approximation bounds of `ccm-exact-finite-aperture-first-row-vanishing`), an
 - [x] Lean: equation `(8)`, the fixed-degree radial profile — the model profile
   `sqrt c A_s J_0(c xi_s)` equals the card's amplitude times the card's cosine up to three explicit `o(1)`
   errors; the PSWF normalisation `(1)`, `(4)` and `(6)` remain imports
-- [ ] Lean: equation `(10)`, the weak squared-profile law
+- [x] Lean: equation `(10)`, the weak squared-profile law — on every interval inside `(1, ∞)`, with both
+  error terms explicit; the density is the `s = 0` weight, which is proved equal to the limiting density
+- [x] Lean: the `O(s)` passage from `w_s` to the limiting density `w_0`
+- [ ] Lean: the passage from intervals to test functions (one integration by parts against `phi'` against the
+  uniform interval bound, then density of `C¹` in `C⁰`)
 - [ ] Lean: equations `(16)`, `(20)` — total-mass matching and outer-coordinate escape (need `(13)`)
 
 

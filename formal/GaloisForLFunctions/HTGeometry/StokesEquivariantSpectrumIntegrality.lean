@@ -26,7 +26,7 @@ theorem orbitCard_eq_support_cycleOf (p : Equiv.Perm α) {x : α} (hx : p x ≠ 
   rw [orbitCard, Fintype.card_subtype]
   congr 1
   ext y
-  simpa [Equiv.Perm.mem_support_cycleOf_iff' hx]
+  simp [Equiv.Perm.mem_support_cycleOf_iff' hx]
 
 theorem pow_orbitCard_apply (p : Equiv.Perm α) (x : α) :
     (p ^ orbitCard p x) x = x := by
@@ -79,7 +79,6 @@ theorem dvd_sum_of_dvd_orbitCard_mul (p : Equiv.Perm α) (N : ℕ) (w : α → �
         congr 1
         ext y
         simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-        change (q y = q x) ↔ p.SameCycle x y
         constructor
         · intro h
           exact (Quotient.exact h).symm
@@ -156,8 +155,7 @@ theorem contactNumerator_monodromy (p : EquivariantFinitePuiseuxFamily m K N)
       p.coeff i e = p.coeff j e := by
     rw [p.coeff_equivariant, p.coeff_equivariant]
     exact ⟨mul_left_cancel₀ hs, congrArg _⟩
-  simp only [FinitePuiseuxFamily.contactNumerator]
-  rw [if_congr heq rfl rfl]
+  exact if_congr heq rfl rfl
 
 /-- Monodromy orbit through one exponential label. -/
 abbrev Orbit (p : EquivariantFinitePuiseuxFamily m K N) (a : Fin m) :=
@@ -191,7 +189,7 @@ theorem pairOrbitPerm_pow_fst_val (p : EquivariantFinitePuiseuxFamily m K N)
   induction n with
   | zero => rfl
   | succ n ih =>
-      rw [pow_succ', Equiv.Perm.mul_apply, Equiv.Perm.mul_apply,
+      simp only [pow_succ', Equiv.Perm.mul_apply,
         pairOrbitPerm_apply_fst_val, ih]
 
 theorem pairOrbitPerm_pow_snd_val (p : EquivariantFinitePuiseuxFamily m K N)
@@ -200,7 +198,7 @@ theorem pairOrbitPerm_pow_snd_val (p : EquivariantFinitePuiseuxFamily m K N)
   induction n with
   | zero => rfl
   | succ n ih =>
-      rw [pow_succ', Equiv.Perm.mul_apply, Equiv.Perm.mul_apply,
+      simp only [pow_succ', Equiv.Perm.mul_apply,
         pairOrbitPerm_apply_snd_val, ih]
 
 /-- Every simultaneous pair orbit contributes an integer after division by the cover degree.

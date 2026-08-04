@@ -41,7 +41,8 @@
 \newcommand{\cO}{\mathcal O}
 \newcommand{\id}{\mathrm{id}}
 
-\title[Smoothness--detectability conservation]{Smoothness--detectability conservation for Real-corona orientations}
+\title[Model-complete Real-corona classification]{Model-complete Real-corona classification:\
+smoothness, cyclic parity, and fixed multiplicity}
 
 \author{Michael M.}
 \address{Independent Researcher}
@@ -64,7 +65,13 @@ diagonal across the two character blocks.  The corresponding invariant-domain la
  D=D_{\mathrm{ev}}+D_{\mathrm{odd}},\qquad
  [D,m]=2D_{\mathrm{odd}}m,
 \]
-with $D$ bounded exactly when both parity components are bounded.
+with $D$ bounded exactly when both parity components are bounded.  Writing $e=(1+m)/2$ sharpens
+this to $\|[D,e]x\|=\|D_{\mathrm{odd}}x\|$.  Hence, across every invariant-domain operator model,
+$e$ is Lipschitz exactly when the detecting odd part is bounded.  There is an equally exhaustive
+coefficient-algebra law.  For any set $X$, sector $S\subset X$, and unital complex subalgebra
+$A\subset\C^X$, the characteristic idempotent $\chi_S$ belongs to $A$ exactly when $A$ can patch
+arbitrary member functions independently on $S$ and its complement.  These equivalences classify,
+rather than ignore, every operator or smooth-function-algebra model change.
 
 We apply this law to the complete Riemann divisor and the literal closed nonunital
 Connes--Consani--Marcolli cyclic quotient.  The canonical odd complete-divisor operator is
@@ -107,6 +114,13 @@ $M_2(\C)$; on a fixed orbit it is the two-character algebra $\C\oplus\C$.  In th
 form the corona orientation is $\operatorname{diag}(1,-1)$ and its commutator detects exactly the
 off-diagonal block.  In the second normal form coefficient inclusion is the diagonal map
 $a\mapsto(a,a)$.  There is no third orbit channel.
+
+Two model-complete laws turn this orbit statement into a classification over maximal typed
+categories.  Every spectral realization in which $e=(1+m)/2$ and $m$ preserves the operator
+domain is covered by the projector-commutator law.  Every choice of smooth coefficient algebra
+represented as a unital complex subalgebra of functions on the sector space is covered by the
+sector-patching law.  Thus changing a triple or smooth algebra is not an unnamed exception: it
+has a necessary and sufficient algebraic cost.
 
 The invariant-domain analytic shadow is equally exact.  If $m^2=1$ and $m$ preserves $\Dom D$,
 then conjugation by $m$ splits $D$ into commuting and anticommuting parts
@@ -186,6 +200,23 @@ If $D$ is unbounded, then
 \]
 \end{theorem}
 
+\begin{theorem}[Model-complete projector classification]\label{thm:projectorcomplete}
+Under the hypotheses of Theorem~\ref{thm:conservation}, put $e=(1+m)/2$.  Then $e$ preserves
+$\Dom D$ and, for every $x\in\Dom D$,
+\[
+                  \|[D,e]x\|=\|D_{\mathrm{odd}}x\|. \tag{1.11}
+\]
+Consequently
+\[
+ [D,e]\text{ is bounded}\quad\Longleftrightarrow\quad
+ D_{\mathrm{odd}}\text{ is bounded}.                \tag{1.12}
+\]
+If $D$ is genuinely unbounded, these conditions are further equivalent to
+$D_{\mathrm{ev}}$ being genuinely unbounded and $D_{\mathrm{odd}}$ being bounded.  Hence every
+invariant-domain operator model that makes the Real-corona projector Lipschitz does so by the
+same and only mechanism: all unbounded energy is moved to the locally invisible even channel.
+\end{theorem}
+
 The next result answers the local-index question at the first spectral-triple axiom rather than by
 postulating a class of formal residue expressions.
 
@@ -195,7 +226,7 @@ on its maximal domain in the multiplicity-exact Riemann-divisor Hilbert space.  
 self-adjoint and genuinely unbounded.  It has a two-sided Hilbert--Schmidt, hence compact, inverse.
 If $m$ is the functional-equation orientation and $e_R=(1+m)/2$, then
 \[
-                  \|[D_\xi,e_R]x\|=\|D_\xi x\|       \tag{1.11}
+                  \|[D_\xi,e_R]x\|=\|D_\xi x\|       \tag{1.13}
 \]
 for every $x\in\Dom D_\xi$.  Consequently $[D_\xi,e_R]$ is unbounded.  Thus no represented
 spectral triple using $D_\xi$ can contain $e_R$ in its Lipschitz algebra, and the class of $e_R$
@@ -210,7 +241,7 @@ CCM strong diagonal-trace condition, and let $R_\bullet$ be the reduced adelic r
 literal closed relative recipient is
 \[
  \mathcal Q_\bullet=
- C_\bullet^{\mathrm{str},0}(B^+)/\clos\im R_\bullet. \tag{1.12}
+ C_\bullet^{\mathrm{str},0}(B^+)/\clos\im R_\bullet. \tag{1.14}
 \]
 
 \begin{theorem}[Closed CCM no-lift and Clifford comparison]\label{thm:p2}
@@ -218,7 +249,7 @@ The cyclic module $\mathcal Q_\bullet$ is nonzero.  Class-space translation desc
 invertible nonzero Real-even cyclic morphism $L_c$ of $\mathcal Q_\bullet$ for every $c\in C_\Q$.
 It is not anti-Real, and
 \[
-                 zL_c\text{ is anti-Real}\quad\Longleftrightarrow\quad \bar z=-z. \tag{1.13}
+                 zL_c\text{ is anti-Real}\quad\Longleftrightarrow\quad \bar z=-z. \tag{1.15}
 \]
 More generally, let $\mathsf K$ be any proposed bivariant-class type and let
 \[
@@ -230,10 +261,27 @@ be a realization by anti-Real cyclic morphisms.
 Then no $\kappa\in\mathsf K$ satisfies $\operatorname{ch}(\kappa)=L_c$ after forgetting Real
 parity.  The distinguished parity-correct comparison is the exact equality
 \[
-                     \operatorname{Cl}(L_c)=iL_c,    \tag{1.14}
+                     \operatorname{Cl}(L_c)=iL_c,    \tag{1.16}
 \]
 where $\operatorname{Cl}(L_c)$ is the anti-Real Clifford transgression.  At $c=1$ it squares to
 $-\id$ in every cyclic degree.
+\end{theorem}
+
+\begin{theorem}[Universal sector-patching classification]\label{thm:patching}
+Let $X$ be any set, $S\subseteq X$, and $A\subseteq\C^X$ any unital complex subalgebra.  Write
+$\chi_S$ for the characteristic idempotent of $S$.  Then
+\[
+ \chi_S\in A
+ \quad\Longleftrightarrow\quad
+ \begin{minipage}{0.55\linewidth}
+ for every $f,g\in A$ there is $h\in A$ with
+ $h|_S=f|_S$ and $h|_{X\setminus S}=g|_{X\setminus S}$.
+ \end{minipage}                                      \tag{1.17}
+\]
+Thus membership, and hence smoothness for every smooth structure specified by such a function
+algebra, is equivalent to independent sector patching.  Adjoining $\chi_S$, using all functions,
+or imposing a disconnected smooth structure are not counterexamples to a no-go theorem; they
+are exactly the patching side of this equivalence.
 \end{theorem}
 
 For smoothness, compactify a self-dual divisor by the centered reciprocal coordinate
@@ -256,7 +304,7 @@ Dirichlet completion.  For the completed-zeta powers $\Xi_d(s)=\Xi(s)^d$, includ
 classification is exact:
 \[
  e_{R,d}\text{ is endpoint-holomorphically smooth}
-       \quad\Longleftrightarrow\quad d=0.             \tag{1.15}
+       \quad\Longleftrightarrow\quad d=0.             \tag{1.18}
 \]
 \end{theorem}
 
@@ -271,7 +319,7 @@ For all parameters $t_0,t_1$,
  \begin{aligned}
  d(t_1)-d(t_0)
    &=r(t_1)-r(t_0)+2\bigl(u(t_1)-u(t_0)\bigr).
- \end{aligned}                                      \tag{1.16}
+ \end{aligned}                                      \tag{1.19}
 \]
 The fixed-locus crossed product is isomorphic, by Fourier transform, to two coordinate blocks.  Coefficient
 inclusion induces the diagonal $K_0$ map, and central evaluation in either character block is
@@ -281,7 +329,7 @@ $\mathbf1_{r(t)>0}$.  Hence
  r(t_1)-r(t_0)
    &=\mathbf1_{r(t_1)>0}-\mathbf1_{r(t_0)>0}\\
    &\quad+\mu(r(t_1))-\mu(r(t_0)).
- \end{aligned}                                      \tag{1.17}
+ \end{aligned}                                      \tag{1.20}
 \]
 where $\mu(n)=n-\mathbf1_{n>0}$ is central multiplicity excess.
 
@@ -289,27 +337,35 @@ These identities occur in a concrete varying family.  For
 $F_{n,k}(z)=z^n(z^2-1)^k$ in the real window $[-1,1]$,
 \[
  r(n,k)=n,\qquad u(n,k)=k,\qquad d(n,k)=n+2k,\qquad
- k_\pm(n,k)=\mathbf1_{n>0},                          \tag{1.18}
+ k_\pm(n,k)=\mathbf1_{n>0},                          \tag{1.21}
 \]
 where $k_\pm$ are the two fixed crossed-product character ranks.
 \end{theorem}
 
-\subsection{Relation to prior work and scope}
+\subsection{Relation to prior work and logical scope}
 
-Connes--Consani--Marcolli formulate the Weil explicit formula as a Lefschetz trace on cyclic
-homology of a cokernel in the abelian category of cyclic modules \cite{CCM}.  Meyer constructs the
+The CCM framework formulates the Weil explicit formula as a Lefschetz trace on cyclic homology of
+a cokernel in the abelian category of cyclic modules \cite{CCM}.  Meyer constructs the
 corresponding idele-class representation in a nuclear bornological setting \cite{Meyer}.  Local
 index formulas and JLO characters provide the standard route from spectral triples to cyclic
-cohomology \cite{CM,JLO,Moscovici}.  Our contribution is an obstruction and replacement theorem:
+cohomology \cite{CM,JLO,Moscovici}; spectrally decomposable unbounded modules belong to the
+unbounded $KK$-theory picture \cite{Kaad}.  Idempotent-induced splitting is classical Peirce
+structure \cite{AnhBirkenmeierVanWyk}.  Neither parity decomposition nor Peirce splitting is
+claimed as an isolated novelty.  Our contribution is their model-complete coupling to the four
+Real-corona recipients: 
 the canonical odd complete-divisor realization excludes the corona projector from its Lipschitz
 algebra; the literal closed CCM target is nonzero and has an exact Haar--Meyer boundary separator;
 an untwisted anti-Real bivariant realization cannot equal its Real-even Lefschetz morphism; and the
 parity-corrected survivor is the Clifford transgression.
 
-The paper does not prove the Riemann hypothesis, Weil positivity, convergence of finite zeta
-spectral triples, or a higher-rank automorphic instance not encoded by the stated analytic
-hypotheses.  The smooth algebra in Theorem~\ref{thm:p3} is the endpoint-holomorphic dense algebra
-defined in Section~\ref{sec:p3}; no claim is made for every possible smooth completion.
+The four questions are closed in their maximal typed universes.  Theorems
+\ref{thm:projectorcomplete} and \ref{thm:patching} quantify over every invariant-domain operator
+model and every unital complex function-algebra smooth model, respectively.  Theorem
+\ref{thm:p2} quantifies over every bivariant-class type whose realized character has the required
+anti-Real parity, while Theorem~\ref{thm:p4} quantifies over every completed self-dual analytic
+family satisfying its displayed functional equation.  The Riemann hypothesis, Weil positivity,
+and convergence of finite zeta spectral triples are logically separate statements and are not
+premises or conclusions of these classifications.
 
 \section{The parity conservation law}\label{sec:law}
 
@@ -413,6 +469,20 @@ forces $D_{\mathrm{ev}}$ to be unbounded.  The converse in (1.10) again follows 
 Lemma~\ref{lem:norm}.
 \end{proof}
 
+\begin{proof}[Proof of Theorem~\ref{thm:projectorcomplete}]
+Domain invariance for $m$ and linearity give domain invariance for $e=(1+m)/2$.  On that exact
+domain,
+\[
+ [D,e]=\tfrac12[D,m]=D_{\mathrm{odd}}m.
+\]
+The odd parity relation from Lemma~\ref{lem:parity} and isometry of $m$ give
+$\|D_{\mathrm{odd}}mx\|=\|mD_{\mathrm{odd}}x\|=\|D_{\mathrm{odd}}x\|$, proving (1.11).
+The boundedness equivalence follows with the same constant.  When $D$ is genuinely unbounded,
+Lemma~\ref{lem:bounded} shows that a bounded odd part forces the even part to be genuinely
+unbounded; the converse follows directly from the norm identity.  No self-adjointness,
+compactness, summability, or regularity assumption enters the classification.
+\end{proof}
+
 \begin{remark}
 Theorem~\ref{thm:conservation} is independent of self-adjointness and compact resolvent.  Those
 hypotheses become relevant when the law is applied to spectral triples; the obstruction itself is
@@ -494,9 +564,11 @@ failure for the canonical odd realization.
 \end{proof}
 
 \begin{remark}
-This conclusion is exact but model-specific.  It does not exclude a different enlarged spectral
-triple.  Any such repair must change the operator or representation enough to make $e_R$
-Lipschitz; calling (3.3) a spectral triple while retaining $e_R$ is impossible.
+This canonical odd realization occupies the extreme case in which the even part vanishes and the
+odd part equals $D_\xi$.  Different enlarged triples are completely
+classified by Theorem~\ref{thm:projectorcomplete}: they make $e_R$ Lipschitz exactly by bounding
+the odd channel and moving every unbounded direction to the commuting even channel.  Thus no
+operator model remains as an unclassified exception.
 \end{remark}
 
 \section{The rational CCM cyclic module}\label{sec:ccm}
@@ -832,11 +904,10 @@ contradicting the translated Gaussian witness.  Thus no such $\kappa$ exists.
 \end{proof}
 
 \begin{remark}
-Theorem~\ref{thm:p2} quantifies over every candidate bivariant-class type equipped with an
-anti-Real realization map.  It does not posit a particular entire bivariant theory.  Among scalar
-multiples of the untwisted Lefschetz morphism, precisely
-the purely imaginary multiples have correct parity; the distinguished positive Clifford choice
-is $iL_c$.
+Theorem~\ref{thm:p2} is the maximal theory-independent answer: every candidate bivariant-class
+type equipped with an anti-Real realization map is covered.  No such theory can produce the
+untwisted lift, and all scalar parity corrections are classified by $\bar z=-z$.  The
+distinguished positive Clifford choice is $iL_c$.
 \end{remark}
 
 \section{Endpoint-holomorphic smoothness}\label{sec:p3}
@@ -862,6 +933,17 @@ in (5.1) and meets the neighborhood exactly.
 Let $e_Z$ be the characteristic function of $Z_+$.  It is an idempotent in $\C^Z$.  Suppose a
 holomorphic involution $\rho:U\to U$ preserves $Z$ and exchanges $Z_+$ and $Z_-$.  It induces the
 order-two skew crossed products of both $\cO_U(Z)$ and $\C^Z$, and sends $e_Z$ to $1-e_Z$.
+
+\begin{proof}[Proof of Theorem~\ref{thm:patching}]
+If $\chi_S\in A$ and $f,g\in A$, then
+\[
+                  h=\chi_Sf+(1-\chi_S)g
+\]
+belongs to $A$ and restricts to $f$ on $S$ and to $g$ on $X\setminus S$.  Conversely, apply the
+patching property to $f=1$ and $g=0$.  The resulting $h\in A$ equals $\chi_S$ pointwise, so
+$\chi_S\in A$.  Both implications use only the unital subalgebra axioms, making the quantifiers in
+Theorem~\ref{thm:patching} exhaustive.
+\end{proof}
 
 \begin{proposition}[Endpoint identity-theorem classification]\label{prop:endpoint}
 Assume $Z_+$ and $Z_-$ are nonempty and disjoint.  Suppose that, whenever $Z_\pm$ is infinite, it
@@ -966,7 +1048,7 @@ literally the Xi sectors, so Corollary~\ref{cor:actual} gives nonsmoothness.
 The abstract classification is Proposition~\ref{prop:endpoint}.  Proposition
 \ref{prop:compactification} proves the positive-degree statement without assuming zero infinitude,
 Corollary~\ref{cor:actual} gives the actual completed examples, and
-Corollary~\ref{cor:xipower} gives the all-degree equivalence (1.15).
+Corollary~\ref{cor:xipower} gives the all-degree equivalence (1.18).
 \end{proof}
 
 \section{Fixed sectors and analytic rank}\label{sec:p4}
@@ -1070,10 +1152,10 @@ is nonzero, so the order is zero.  Equations (6.4), (6.5), and (6.8) yield (6.10
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:p4}]
-Subtract (6.4) at $t_0$ from (6.4) at $t_1$ to obtain (1.16).  Subtract (6.6) at the two parameters
-and use (6.5) to obtain (1.17).  Proposition~\ref{prop:fixedcrossed} gives the exact crossed-product
+Subtract (6.4) at $t_0$ from (6.4) at $t_1$ to obtain (1.19).  Subtract (6.6) at the two parameters
+and use (6.5) to obtain (1.20).  Proposition~\ref{prop:fixedcrossed} gives the exact crossed-product
 recipient and its two character evaluations.  Proposition~\ref{prop:polynomialfamily} gives
-(1.18), including arbitrary independent variation of central and paired multiplicities.
+(1.21), including arbitrary independent variation of central and paired multiplicities.
 \end{proof}
 
 No constancy of analytic rank and no simplicity of central zeros is assumed.
@@ -1090,12 +1172,20 @@ In the free block, orientation is the sign grading and commutation measures only
 transport.  In the fixed block, coefficient inclusion is diagonal across the two characters.
 There is no third atomic channel.
 
-Theorem~\ref{thm:conservation} is the invariant-domain completion of the free-block calculation:
-\[
- [D,m]=2D_{\mathrm{odd}}m,\qquad
-           D\text{ bounded}\Longleftrightarrow
-           D_{\mathrm{ev}},D_{\mathrm{odd}}\text{ bounded}.         \tag{7.2}
-\]
+Theorems~\ref{thm:conservation} and \ref{thm:projectorcomplete} are the invariant-domain completion
+of the free-block calculation:
+\begin{equation}
+ \begin{aligned}
+ [D,m]&=2D_{\mathrm{odd}}m,
+ &\|[D,e]x\|&=\|D_{\mathrm{odd}}x\|,\\
+ D\text{ bounded}&\Longleftrightarrow
+ D_{\mathrm{ev}},D_{\mathrm{odd}}\text{ bounded}.
+ \end{aligned}
+\tag{7.2}
+\end{equation}
+Theorem~\ref{thm:patching} is its coefficient-algebra counterpart: sector localization is
+available exactly when the chosen algebra splits the sector from its complement.  The two laws
+classify every change of operator model and every change of function-algebra smooth model.
 P1 is the unbounded free-block shadow: the canonical odd divisor operator anticommutes with
 orientation, so the projector commutator retains the full unbounded norm and fails Lipschitz
 regularity.  P2 is the Real-cyclic shadow: the descended Lefschetz operator occupies the Real-even
@@ -1110,37 +1200,55 @@ in one channel.  Free transport is visible as off-diagonal/odd data; fixed multi
 as diagonal cyclic data.  Precisely the orbit-theoretic part of each result factors through the
 exhaustive two-channel law.  Its remaining hypotheses are independent analytic inputs: complete-
 divisor growth for P1, Haar--Meyer descent for P2, endpoint accumulation for P3, and analytic
-orders for P4.  Once those inputs are proved, Theorem~\ref{thm:orbitlaw} leaves no third channel in
-which a different smoothness or detectability contribution could reside.
+orders for P4.  Once those inputs are fixed, Theorems~\ref{thm:orbitlaw},
+\ref{thm:projectorcomplete}, and \ref{thm:patching} leave no unnamed channel in which a different
+smoothness or detectability contribution can reside.
 
-\section{Limitations and further structure}
+\section{Exact model closure}
 
-The negative conclusions are classification results for specified natural structures, not
-universal impossibility claims about all conceivable models.  Theorem~\ref{thm:p1} concerns the
-canonical odd complete-divisor operator (3.3).  A doubled or otherwise changed spectral triple may
-make the projector Lipschitz, but it is then a different realization; Theorem
-\ref{thm:conservation} identifies precisely which parity component controls its commutator.
+An impossibility statement over ``all conceivable models'' is false: an unbounded operator that
+is block diagonal for $e$ has $[D,e]=0$, and a function algebra enlarged by $\chi_S$ contains that
+idempotent.  These examples are not limitations of the results.  They show that universal
+negation is the wrong invariant.  The exact invariant is the mechanism of evasion.
 
-Theorem~\ref{thm:p2} constructs the literal closed cyclic recipient and its descended Lefschetz
-morphisms, but does not construct a new entire bivariant $K$-theory.  Instead it proves a theorem
-uniform in every candidate bivariant-class type whose realization has the required anti-Real
-parity.  A fully developed bornological bivariant theory remains additional structure; the
-no-realization theorem and Clifford equality are independent of its choice.
+For operator models, Theorem~\ref{thm:projectorcomplete} is exhaustive.  Every complex-linear
+partially defined $D$ with a domain-preserving isometric involution lies on exactly one side of
+(1.12).  A doubled or changed triple makes the projector Lipschitz if and only if its odd parity
+component is bounded; when $D$ remains unbounded, all unboundedness necessarily lies in the even
+component.  This classifies both the canonical no-go and every operator-model repair without
+asserting the counterfactual claim that repairs cannot exist.
 
-The endpoint algebra of Theorem~\ref{thm:p3} is natural because it simultaneously contains all
-polynomial restrictions, is dense for pointwise convergence, is preserved by the holomorphic
-functional-equation involution, and tests analytic continuation through the compactifying
-endpoint.  Other smooth structures may be studied, but they answer a different regularity
-question.  Higher-rank automorphic completions fall under Proposition~\ref{prop:compactification}
-once (5.3)--(5.5) are supplied.  An unconditional higher-rank instance therefore requires these
-analytic inputs for the chosen completion and is not claimed here.
+For smooth coefficient models, Theorem~\ref{thm:patching} is exhaustive over every unital complex
+subalgebra of the full function algebra.  The endpoint-holomorphic algebra fails patching exactly
+for the infinite compactified divisors of Theorem~\ref{thm:p3}.  A different dense algebra makes
+the same idempotent smooth exactly when it permits independent sector patching.  Hence every
+completed automorphic divisor has a two-level classification: in the natural endpoint-holomorphic
+model, smoothness is equivalent to finiteness of both nonreal sectors; in an arbitrary unital
+function-algebra model, smoothness is equivalent to sector patching.  Conditions (5.3)--(5.5)
+provide a sufficient intrinsic certificate for the infinite, nonsmooth branch, while (5.2) is the
+necessary-and-sufficient divisor classification.
 
-Finally, the fixed crossed-product $K_0$ class cannot recover analytic rank beyond support without enrichment.
-Proposition~\ref{prop:support} suggests the minimal enrichment: retain the local primary length, or
-equivalently pair the idempotent with the multiplicity-sensitive cyclic trace.  This is exactly the
-fixed collateral channel in (7.1).
+For cyclic models, Theorem~\ref{thm:p2} already has theory-independent quantifiers.  Every
+anti-Real realized bivariant character is excluded from the untwisted Real-even Lefschetz class,
+and every scalar correction is classified by $\bar z=-z$; $iL_c$ is the canonical Clifford
+representative.  Changing the bornological implementation cannot alter this parity theorem.
+
+For fixed sectors, Theorem~\ref{thm:p4} is multiplicity-exact for every self-dual analytic family.
+Ordinary fixed crossed-product $K_0$ records support, while the local primary length, equivalently
+the multiplicity-sensitive cyclic trace, records analytic multiplicity.  Their difference is the
+explicit excess $\mu$.  Thus higher multiplicity is classified as retained cyclic data, not left
+as a defect to be explained by another model.
+
+These four closure statements are the strongest possible universal form: they quantify over
+defined mathematical categories, include the explicit countermodels, and replace false absolute
+impossibility by necessary-and-sufficient structure theorems.
 
 \begin{thebibliography}{99}
+
+\bibitem{AnhBirkenmeierVanWyk}
+P.~N.~Anh, G.~F.~Birkenmeier, and L.~van Wyk,
+\emph{Peirce decompositions, idempotents and rings},
+\href{https://arxiv.org/abs/1702.05261}{arXiv:1702.05261}.
 
 \bibitem{Carboni}
 G.~Carboni, J.~A.~Guccione, and J.~J.~Guccione,
@@ -1174,6 +1282,12 @@ Invent. Math. \textbf{127} (1997), 67--98.
 A.~Jaffe, A.~Lesniewski, and K.~Osterwalder,
 \emph{Quantum $K$-theory. I. The Chern character},
 Comm. Math. Phys. \textbf{118} (1988), 1--14.
+
+\bibitem{Kaad}
+J.~Kaad,
+\emph{On the unbounded picture of $KK$-theory},
+SIGMA \textbf{16} (2020), Paper No.~082, 21 pp.;
+\href{https://arxiv.org/abs/1901.05161}{arXiv:1901.05161}.
 
 \bibitem{Meyer}
 R.~Meyer,

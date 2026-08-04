@@ -189,6 +189,12 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized that the generators of `(5)` pull back to constant
+  forms along the exponential covering.
+- 2026-08-04 — Stated and proved the degree-one case of `(5)` at every rank in
+  the language of stage forms, with uniqueness of the coefficients.
+- 2026-08-04 — Formalized the descent criterion: a periodic primitive on the
+  covering makes a closed stage form exact, in every degree.
 - 2026-08-04 — Formalized the descent of coordinatewise periodic forms along the
   exponential covering.
 - 2026-08-04 — Formalized that the homotopy operator is continuously
@@ -627,6 +633,45 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 - `deningerExpDeriv_logBranchDeriv`, `deningerCompContinuousLinearMap_cancel`,
   `deningerExpPullback_injective` — **the pullback along the covering is injective on stage forms**,
   so an identity checked upstairs may be read off downstairs.
+
+### Exactness on the stage from a periodic primitive landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerStageExactDescent.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerLogBranch_hasFDerivAt_of_slit` — the derivative of a local branch of the logarithm at
+  every point where the branch is holomorphic, not only at its centre.
+- `deningerDescendForm_eventuallyEq` — **the descended form is, near each point of the stage, the
+  pullback of the primitive along a local branch**, because the periodicity makes the choice of
+  branch immaterial.
+- `deningerStage_exact_of_periodic_primitive` — **if the primitive of the pulled-back form is
+  periodic in every coordinate, the closed form is exact on the stage**, in every degree.  This is
+  the descent criterion: what remains of `(5)` above degree one is exactly the analysis of when the
+  periodicity defects can be removed.
+
+### `(5)` in degree one, in the language of forms, landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerStageOneFormCohomology.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerOfSubsingleton_formFunctional`, `deningerOfSubsingleton_dlogComb`,
+  `deningerOfSubsingleton_sub` — the dictionary between one-forms and their functionals.
+- `deningerStage_one_form_cohomology` — **every closed holomorphic one-form on a character stage is
+  `∑_j c_j d log z_j` plus the exterior derivative of a zero-form**, at every rank, stated purely in
+  stage forms.
+- `deningerStage_one_form_cohomology_unique` — the coefficients are unique.  Together these are
+  `H^1 ≅ L ⊗ ℂ` in the corpus's own objects: the degree-one case of `(5)`, closed.
+
+### The generators pull back to constant forms
+
+`formal/GaloisForLFunctions/RHTower/DeningerWedgePullback.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerExpPullback_dlogWedge` — **along the exponential covering the exterior product of the
+  logarithmic differentials becomes the determinant form**, which has constant coefficients: the
+  inverse coordinates in the generator exactly cancel the diagonal of the derivative of the
+  covering.  Separating the generators in cohomology therefore reduces to separating constant forms
+  modulo derivatives of periodic forms.
 
 ### Remaining
 

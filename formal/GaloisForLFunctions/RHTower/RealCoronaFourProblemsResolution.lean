@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.RealCoronaCompleteDivisorOddZetaNoGo
 import GaloisForLFunctions.RHTower.RealCoronaC2OrbitConservationLaw
+import GaloisForLFunctions.RHTower.RealCoronaModelCompleteEvasionClassification
 import GaloisForLFunctions.RHTower.CCMRationalClosedKappaLefschetzParityNoGo
 import GaloisForLFunctions.RHTower.CompleteStripRealCoronaCompactification
 import GaloisForLFunctions.RHTower.XiAutomorphicRealCoronaSmoothness
@@ -50,6 +51,28 @@ theorem realCorona_smoothnessDetectabilityConservation
           (linearPMapOrientationOdd D m hdomm) :=
   bounded_orientationCommutator_iff_unbounded_even_and_bounded_odd
     D m hdomm hm hiso hD
+
+/-- Model-complete P1 classification: across every invariant-domain operator realization, the
+Real-corona projector is Lipschitz exactly when the detecting odd part is bounded. -/
+theorem realCorona_modelCompleteProjectorClassification
+    (D : V →ₗ.[ℂ] V) (m : Module.End ℂ V)
+    (hdomm : ∀ x : D.domain, m x ∈ D.domain)
+    (hm : m * m = 1) (hiso : ∀ y : V, ‖m y‖ = ‖y‖) :
+    HasLinearPMapBoundOnDomain (linearPMapExchangeCommutator D m hdomm) ↔
+      HasLinearPMapBoundOnDomain (linearPMapOrientationOdd D m hdomm) :=
+  hasLinearPMapBoundOnDomain_exchangeCommutator_iff_orientationOdd
+    D m hdomm hm hiso
+
+variable {X : Type*}
+
+/-- Model-complete P3 classification: across every unital complex function algebra, the
+Real-corona sector idempotent is smooth precisely when the algebra has independent sector
+patching. -/
+theorem realCorona_modelCompleteSectorPatchingClassification
+    (A : Subalgebra ℂ (X → ℂ)) (S : Set X) :
+    realCoronaSectorIdempotent S ∈ A ↔
+      HasIndependentRealCoronaSectorPatching A S :=
+  realCoronaSectorIdempotent_mem_iff_independentSectorPatching A S
 
 /-! ## P1: actual odd complete-divisor spectral-triple obstruction -/
 

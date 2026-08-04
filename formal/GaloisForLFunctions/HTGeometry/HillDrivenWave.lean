@@ -37,6 +37,7 @@ theorem hillDrivenDensitySecond_eq (a : HillSpeed) (b : WienerFamily E N) (G₀ 
   rw [hillDrivenDensitySecond, hillDrivenDensity, kgWeighted]
   ring
 
+omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 /-- **The frequency multiplier of a fibre is the spatial multiplier of the speed, minus the
 mass.** -/
 theorem hillFreq_symbol (a : HillSpeed) (t : ℝ) (ξ : E) (z : ℂ) :
@@ -53,7 +54,13 @@ theorem hillFreq_symbol (a : HillSpeed) (t : ℝ) (ξ : E) (z : ℂ) :
     rw [hfreq]
     field_simp
     ring
-  push_cast [hscalar]
+  have hC : -(((a.freq ξ t ^ 2 : ℝ) : ℂ))
+      = ((a.speed t ^ 2 / (2 * Real.pi) ^ 2 : ℝ) : ℂ) * ((-(4 * Real.pi ^ 2) * ‖ξ‖ ^ 2 : ℝ) : ℂ)
+        - ((a.mass ^ 2 : ℝ) : ℂ) := by
+    rw [← Complex.ofReal_neg, hscalar]
+    push_cast
+    ring
+  rw [hC]
   ring
 
 /-- **The synthesis of the frequency part of the equation** is the spatial Laplacian term minus the
@@ -138,6 +145,8 @@ theorem integral_kgChar_mul_weighted_source (hN : (Module.finrank ℝ E : ℝ) <
   have hrw : (∫ ξ, kgChar x ξ * (((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹ * hillFlowSource a b G₀ ξ t))
       = ∫ ξ, kgChar x ξ * ∫ η, b.density t η * hillDrivenDensity a b G₀ t (ξ - η) := by
     refine integral_congr_ae (Filter.Eventually.of_forall fun ξ => ?_)
+    show kgChar x ξ * (((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹ * hillFlowSource a b G₀ ξ t)
+      = kgChar x ξ * ∫ η, b.density t η * hillDrivenDensity a b G₀ t (ξ - η)
     rw [weighted_hillFlowSource_eq a b G₀ t ξ, kgWeighted_kgConvBCF]
     rfl
   rw [hrw, integral_kgChar_mul_convolution ha_int hint x]
@@ -196,30 +205,26 @@ theorem hillDrivenField_wave_equation (hN : (Module.finrank ℝ E : ℝ) + 2 < N
   have hsrcInt : Integrable
       (fun ξ : E => kgChar x ξ * (((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹ * hillFlowSource a b G₀ ξ t))
       (volume : Measure E) := by
-    have hcont : Continuous fun ξ : E =>
-        kgChar x ξ * (((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹ * hillFlowSource a b G₀ ξ t) := by
-      have hw : Continuous fun ξ : E =>
-          kgWeighted N (kgConvBCF (b.density t) (hillPotentialFlow a b G₀ t)) ξ :=
-        continuous_kgWeighted N _
-      have hfun : (fun ξ : E => ((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹ * hillFlowSource a b G₀ ξ t)
-          = fun ξ : E => kgWeighted N (kgConvBCF (b.density t) (hillPotentialFlow a b G₀ t)) ξ := by
-        funext ξ
-        exact weighted_hillFlowSource_eq a b G₀ t ξ
-      rw [hfun]
-      exact (continuous_kgChar' x).mul hw
-    refine (integrable_kgWeighted (E := E) hdim
-      (kgConvBCF (b.density t) (hillPotentialFlow a b G₀ t))).bdd_mul (c := 1)
-      ((continuous_kgChar' x).aestronglyMeasurable) ?_ |>.congr ?_
-    · filter_upwards with ξ
+    have hbase : Integrable (fun ξ : E => kgChar x ξ *
+        kgWeighted N (kgConvBCF (b.density t) (hillPotentialFlow a b G₀ t)) ξ)
+        (volume : Measure E) := by
+      refine (integrable_kgWeighted (E := E) hdim
+        (kgConvBCF (b.density t) (hillPotentialFlow a b G₀ t))).bdd_mul (c := 1)
+        ((continuous_kgChar' x).aestronglyMeasurable) ?_
+      filter_upwards with ξ
       exact le_of_eq (norm_kgChar x ξ)
-    · filter_upwards with ξ
-      rw [weighted_hillFlowSource_eq a b G₀ t ξ]
+    refine hbase.congr ?_
+    filter_upwards with ξ
+    rw [weighted_hillFlowSource_eq a b G₀ t ξ]
   have hsplit : (∫ ξ, kgChar x ξ * hillDrivenDensitySecond a b G₀ t ξ)
       = (∫ ξ, kgChar x ξ *
             (-(((a.freq ξ t ^ 2 : ℝ) : ℂ)) * hillDrivenDensity a b G₀ t ξ)) +
         ∫ ξ, kgChar x ξ * (((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹ * hillFlowSource a b G₀ ξ t) := by
     rw [← integral_add hfreqInt hsrcInt]
     refine integral_congr_ae (Filter.Eventually.of_forall fun ξ => ?_)
+    show kgChar x ξ * hillDrivenDensitySecond a b G₀ t ξ
+      = kgChar x ξ * (-(((a.freq ξ t ^ 2 : ℝ) : ℂ)) * hillDrivenDensity a b G₀ t ξ) +
+        kgChar x ξ * (((kgFreq ξ ^ N : ℝ) : ℂ)⁻¹ * hillFlowSource a b G₀ ξ t)
     rw [hillDrivenDensitySecond_eq a b G₀ t ξ]
     ring
   rw [hL, hsplit, integral_kgChar_mul_freq_sq a hmeas hint h2 bas t x,

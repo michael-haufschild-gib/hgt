@@ -1,6 +1,6 @@
 # Literature and novelty audit
 
-Audit date: 2026-08-03. Target: theoretical paper at general-journal level. Searches used primary
+Audit dates: 2026-08-03--04. Target: theoretical paper at general-journal level. Searches used primary
 papers, preprints, and author manuscripts. No novelty conclusion rests on a survey snippet.
 
 ## Primary sources checked
@@ -32,6 +32,14 @@ papers, preprints, and author manuscripts. No novelty conclusion rests on a surv
 8. Cortiñas--Valqui, Excision in bivariant periodic cyclic cohomology: a categorical approach,
    [arXiv:math/0207178](https://arxiv.org/abs/math/0207178). It extends Cuntz--Quillen excision to
    topological and bornological settings.
+9. Kaad, On the unbounded picture of KK-theory,
+   [arXiv:1901.05161](https://arxiv.org/abs/1901.05161). It studies equivalence and spectrally
+   decomposable unbounded Kasparov modules. This is a parent for parity/decomposition language,
+   not for the Real-corona projector norm classification.
+10. Anh--Birkenmeier--van Wyk, Peirce decompositions, idempotents and rings,
+    [arXiv:1702.05261](https://arxiv.org/abs/1702.05261). It treats the classical decomposition
+    theory induced by idempotents. The manuscript therefore does not advertise sector patching as
+    invention of Peirce decomposition.
 
 Searches also covered exact phrases combining Real corona, cyclic homology, CCM Lefschetz,
 endpoint-holomorphic idempotents, fixed-sector analytic rank, and C2 crossed-product K0. Searches
@@ -43,6 +51,7 @@ package below.
 | Manuscript result | Closest prior structure | Audited difference |
 |---|---|---|
 | Exhaustive C2 orbit-algebra law | elementary transformation-group algebras; general crossed-product cyclic complexes | Fixed/free normal forms themselves are elementary and not claimed as isolated novelty. No checked source packages exact orientation, commutator, and coefficient-K0 maps as one conservation law and derives P1--P4 from its exhaustive channels. |
+| Model-complete evasion classification | unbounded parity decompositions; Peirce decomposition by an idempotent | The two separate algebraic mechanisms are classical. No checked source couples the exact projector norm law and arbitrary function-subalgebra patching equivalence to classify every Real-corona operator/algebra repair and then joins them to the closed CCM parity and fixed multiplicity channels. |
 | Odd complete-divisor Lipschitz no-go | zeta-cycles and finite zeta spectral triples; local-index formula | Existing zeta triples use finite/truncated or perturbed scaling models. No checked source constructs the multiplicity-exact odd reflection operator with Hilbert--Schmidt inverse and proves exact projector identity norm [D,eR]x = norm Dx, excluding corona class at first Lipschitz axiom. |
 | Exact CCM strong landing in all degrees | CCM cyclic cokernel; Meyer strong class-space target | CCM supplies conceptual target. No checked source carries actual rational Bruhat source through finite-adelic Haar normalization, common-period Poisson cancellation, profinite local constancy, Schatten-1 Morita continuity, and total-product reduction in every cyclic degree. |
 | Literal closed CCM quotient nonzero | CCM closed cyclic-module cokernel; Meyer Poisson quotient | No checked source proves every exact reduced adelic Haar--Mellin value factors through a literal Meyer boundary, then combines zeta-zero annihilation with explicit global-unitization Gaussian separator to prove closed quotient nonzero. |
@@ -56,7 +65,8 @@ package below.
 - Universal-law claim distinguishes elementary atomic normal forms from novelty of their
   dependency-closed application package.
 - P1 does not postulate local residue series. It proves canonical odd divisor operator fails
-  Lipschitz axiom for projector, before regularity or dimension-spectrum issues.
+  Lipschitz axiom for projector, before regularity or dimension-spectrum issues, and then
+  classifies every invariant-domain repair by boundedness of the odd parity component.
 - P2 uses single global unitization of nonunital continuous trace-class field algebra, intersects
   augmentation and strong-trace cyclic kernels, and quotients by closure of exact reduced range.
 - P2 nontriviality is inside literal closed quotient, separated by a continuous Haar--Mellin
@@ -66,8 +76,8 @@ package below.
   and names iLc only at exact cyclic-morphism type.
 - P3 derives zero infinitude in its positive-degree analytic interface and separately labels actual
   Xi, primitive self-dual Dirichlet, and completed-zeta-power instances.
-- P3 classifies one explicitly defined reflection-invariant endpoint-holomorphic dense algebra,
-  not every possible smooth completion.
+- P3 classifies the natural endpoint-holomorphic dense algebra by sector finiteness and every
+  unital complex function-algebra smooth completion by independent sector patching.
 - P4 constructs fixed-locus crossed product, two-character Fourier equivalence, diagonal induced
   K0 map, and concrete entire family. It distinguishes K0 support, cyclic defect, multiplicity,
   and analytic rank.

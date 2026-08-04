@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.Sieve.MRFibreDensity
 import GaloisForLFunctions.RHTower.Sieve.MRFibreDensityAt
 import GaloisForLFunctions.RHTower.Sieve.PairFibreMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.FibreStartSeparation
+import GaloisForLFunctions.RHTower.Sieve.FibreDevSeparation
 
 /-!
 # The sign law from averaged short-interval estimates
@@ -158,5 +159,52 @@ theorem route_e_sign_density_of_maximalWindow {hh : ℝ → ℝ} {s : ℤ} (hs :
         ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) :=
   route_e_sign_density_of_meanSquare hs hgrow
     (averagedMeanSquare_of_maximal (tendsto_of_growth hgrow) hmax) hms2 hmsp hε
+
+/-- **The card's Theorem `(3)` with all three inputs in their literature form.**  Every hypothesis
+is now a maximal mean square of one arithmetic function over *all* starting points in a dyadic
+range, at window lengths at most `h` — the statement short-interval theory proves.  The fibre
+geometry has disappeared completely. -/
+theorem route_e_sign_density_of_maximalWindow_all {hh : ℝ → ℝ} {s : ℤ} (hs : s = 1 ∨ s = -1)
+    (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
+    (hmax1 : MaximalWindowMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
+    (hmax2 : MaximalWindowDevMeanSquareAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+      squarefreeDensity id hh)
+    (hmaxp : ∀ p : ℕ, p.Prime → MaximalWindowDevMeanSquareAt (coprimeSquarefreeWeight p)
+      (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
+      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ)))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ x in atTop,
+      squarefreeDensity ^ 2 / 2 - squarefreeDensity ^ 2 * RHTower.coprimeSharedPrimeDensity - ε
+        ≤ coprimeSignClassCount x (hh x) s / (hh x * Real.sqrt x * Real.log 2) := by
+  have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
+  refine route_e_sign_density_of_meanSquare hs hgrow
+    (averagedMeanSquare_of_maximal hhtop hmax1)
+    (averagedMeanSquareDensityAt_of_maximal squarefreeDensity_nonneg' tendsto_id hhtop hmax2) ?_ hε
+  intro p hp
+  have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
+  have hpsq : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
+  exact averagedMeanSquareDensityAt_of_maximal (coprime_block_density_nonneg hp)
+    (tendsto_id.atTop_div_const hpsq) (hhtop.atTop_div_const hp0) (hmaxp p hp)
+
+/-- **Both sign classes are eventually nonempty**, from the same three maximal mean squares. -/
+theorem route_e_signClass_nonempty_of_maximalWindow_all {hh : ℝ → ℝ} {s : ℤ}
+    (hs : s = 1 ∨ s = -1)
+    (hgrow : Tendsto (fun x => hh x / Real.log (Real.log (3 * x))) atTop atTop)
+    (hmax1 : MaximalWindowMeanSquare (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh)
+    (hmax2 : MaximalWindowDevMeanSquareAt (fun n : ℕ => ((μ n : ℤ) : ℝ) ^ 2)
+      squarefreeDensity id hh)
+    (hmaxp : ∀ p : ℕ, p.Prime → MaximalWindowDevMeanSquareAt (coprimeSquarefreeWeight p)
+      (squarefreeDensity * (p : ℝ) / ((p : ℝ) + 1))
+      (fun x => x / (p : ℝ) ^ 2) (fun x => hh x / (p : ℝ))) :
+    ∀ᶠ x in atTop, (coprimeSignClass x (hh x) s).Nonempty := by
+  have hhtop : Tendsto hh atTop atTop := tendsto_of_growth hgrow
+  refine route_e_signClass_nonempty_of_meanSquare hs hgrow
+    (averagedMeanSquare_of_maximal hhtop hmax1)
+    (averagedMeanSquareDensityAt_of_maximal squarefreeDensity_nonneg' tendsto_id hhtop hmax2) ?_
+  intro p hp
+  have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
+  have hpsq : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
+  exact averagedMeanSquareDensityAt_of_maximal (coprime_block_density_nonneg hp)
+    (tendsto_id.atTop_div_const hpsq) (hhtop.atTop_div_const hp0) (hmaxp p hp)
 
 end RHTower.Sieve

@@ -183,10 +183,79 @@ Axioms of all of the above: `[propext, Classical.choice, Quot.sound]`.
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
+### Phase 5b — the field and its wave equation: **done**
+
+`formal/GaloisForLFunctions/HTGeometry/HillDrivenField.lean`:
+
+- `hillDrivenDensity`, `hillDrivenDensityDeriv`, `hillDrivenDensitySecond`, `hillDrivenField` — the
+  weighted density of the driven evolution, its two time derivatives and the synthesis;
+- measurability of the velocity density with no joint continuity, via the corpus's
+  `aestronglyMeasurable_deriv_param`;
+- `norm_kgChar_mul_hillDrivenDensityDeriv_le`, `norm_kgChar_mul_hillDrivenDensitySecond_le` — the
+  dominating functions, `⟨ξ⟩⁻ᴺ` times a window constant, and `⟨ξ⟩²⟨ξ⟩⁻ᴺ` times another;
+- **`hasDerivAt_hillDrivenField`**, **`hasDerivAt_deriv_hillDrivenField`** — both time derivatives
+  taken under the frequency integral.
+
+`formal/GaloisForLFunctions/HTGeometry/HillDrivenWave.lean`:
+
+- `hillDrivenDensitySecond_eq` — the second density splits into the frequency multiplier and the
+  source;
+- **`hillFreq_symbol`** — `-ω(t,ξ)²` is the speed squared times the spatial multiplier, minus the
+  mass;
+- **`integral_kgChar_mul_freq_sq`** — hence the synthesis of the frequency part is the spatial
+  Laplacian term minus the mass term (stated for an arbitrary density, so it is reusable);
+- `weighted_hillFlowSource_eq`, **`integral_kgChar_mul_weighted_source`** — the synthesis of the
+  source is the potential times the field, by the corpus's convolution theorem;
+- **`hillDrivenField_wave_equation`** —
+
+  ```
+  ∂ₜ²u = (2π)⁻²c(t)² ∑ᵢ ∂²_{eᵢ} u - m²u + V(x)·u,      V = kgPotential (b.density t),
+  ```
+
+  at every event, for an arbitrary admissible density. This is the analytic heart of the card: the
+  variable-speed wave equation *with a potential*.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
+### Phase 6a — the chart calculus of the driven field: **done**
+
+The corpus's `kgChartOf` and its two derivative lemmas are generic in the density family, so the
+whole chart layer is an instantiation. Continuity of the partials in the event does *not* go through
+continuity in the frequency — the velocity density is only known to be measurable there — but through
+`continuous_kgSynthesis_event`, which asks for continuity in time and a window bound instead.
+
+`formal/GaloisForLFunctions/HTGeometry/HillDrivenChart.lean`:
+
+- `hillDrivenChartField`, `hillDrivenChartTimePartial`, `hillDrivenChartSpacePartial`,
+  `hillDrivenChartPartial`;
+- the three time-continuity lemmas at a fixed frequency and the three window bounds in the
+  `A · ⟨ξ⟩⁻ᴺ` form the instrument consumes;
+- `continuous_kgChartOf_of_bound` — the chart-level form of the dominated-convergence instrument;
+- **`hasDerivAt_hillDrivenChartField_update`**, **`continuous_hillDrivenChartPartial`**,
+  **`isC1OnPi_hillDrivenChartField`**, **`hasFDerivAt_hillDrivenChartField`**,
+  **`coordPartial_hillDrivenChartField`**.
+
+`formal/GaloisForLFunctions/HTGeometry/HillDrivenChartSecond.lean`:
+
+- `kgFreq_pow_mul_inv_pow_le`, `inv_pow_le_inv_pow` — one weight `⟨ξ⟩⁻ᴷ` with `N = K + 2` dominates
+  every density of the second-order calculus, since the frequency is at least one;
+- the three second-order window bounds at that weight, and the integrability of the derived
+  densities;
+- `hillDrivenChartTimeSecond`, `hillDrivenChartSpaceSecond` and the four
+  **`hasDerivAt_hillDrivenChart*Partial_*`**, with the two mixed objects literally equal;
+- **`continuous_hillDrivenChartTimeSecond`**, **`continuous_hillDrivenChartSpaceSecond`**,
+  **`isC1OnPi_hillDrivenChartTimePartial`**, **`isC1OnPi_hillDrivenChartSpacePartial`**,
+  **`differentiableAt_coordPartial_hillDrivenChartField`** — the hypothesis of the divergence-form
+  d'Alembertian.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
 ### What remains
 
-5b. The synthesis layer: the density `⟨ξ⟩^{-N}û`, its integrability at the three weights, its two
-    time derivatives, and the field equation `∂ₜ²u = (2π)⁻²c(t)²Δu - m²u + Vu` with
-    `V = kgPotential (b.density t)` — the potential term coming from the corpus's
-    `kgWeighted_kgConvBCF` and `integral_kgChar_mul_convolution`, exactly as in the flat case.
-6.  The chart layer, the probes for an arbitrary smooth potential, and the scale law.
+6b. The wave operator on the chart: express the two coordinate second derivatives through the
+    second-order families (as `coordPartial_coordPartial_*` does for the free field), then match
+    against `hillWaveOp d c` using `hillDrivenField_wave_equation` — the potential term becoming
+    the chart potential `kgChartPotential`-style function of the event.
+6c. The real field and its nonvanishing near an event, the probes for an arbitrary smooth potential
+    (realized as in the flat case by `exists_locally_kgChartPotential_of_smooth_spacetime`), and the
+    two-species scale law on the conformal orbit.

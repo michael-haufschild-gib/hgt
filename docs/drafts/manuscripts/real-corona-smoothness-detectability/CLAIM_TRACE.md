@@ -1,6 +1,6 @@
 # Claim trace
 
-Paper: Smoothness--detectability conservation for Real-corona orientations
+Paper: Model-complete Real-corona classification: smoothness, cyclic parity, and fixed multiplicity
 
 Scope rule: every mathematical result introduced by paper maps to an unconditional Lean
 declaration. Historical context is cited, not used as an untracked premise. Stable facade:
@@ -12,21 +12,23 @@ GaloisForLFunctions.RHTower.RealCoronaFourProblemsResolution.
 |---|---|
 | Theorem 1.1, exhaustive fixed/free orbit-algebra law | realCoronaC2AtomicOrbitAlgebraLaw |
 | Theorem 1.2, smoothness--detectability conservation | realCorona_smoothnessDetectabilityConservation |
-| Theorem 1.3, odd complete-divisor zeta no-go | realCoronaP1_oddCompleteDivisor_zetaNoGo |
-| Theorem 1.4, closed CCM Lefschetz is not anti-Real | realCoronaP2_lefschetz_not_antiReal |
-| Theorem 1.4, scalar parity classification | realCoronaP2_scalarShift_antiReal_iff_star_eq_neg |
-| Theorem 1.4, no anti-Real bivariant realization equals Lefschetz | realCoronaP2_no_bivariantChernRealization_eq_lefschetz |
-| Theorem 1.4, exact Clifford survivor iL | realCoronaP2_cliffordTransgression_eq_i_lefschetz |
-| Theorem 1.5, complete-strip smoothness no-go | realCoronaP3_completeStrip_not_smooth |
-| Theorem 1.5, certified positive-degree no-go | realCoronaP3_positiveDegreeCompletion_not_smooth |
-| Theorem 1.5, actual Xi case | realCoronaP3_riemannXi_not_smooth |
-| Theorem 1.5, primitive self-dual Dirichlet cases | realCoronaP3_selfDualPrimitiveDirichlet_not_smooth |
-| Theorem 1.5, completed-zeta powers smooth iff degree zero | realCoronaP3_xiPower_smooth_iff_degree_zero |
-| Theorem 1.6, fixed-sector variation | realCoronaP4_fixedSectorVariation |
-| Theorem 1.6, analytic-rank/K0/excess variation | realCoronaP4_analyticRankVariation_eq_kZero_add_excess |
-| Theorem 1.6, concrete polynomial defect/rank | realCoronaP4_polynomialFamily_defectRank; realCoronaP4_polynomialFamily_centralKZeroRank |
-| Theorem 1.6, fixed crossed-product K0 comparison | realCoronaP4_fixedCrossedProductKZero_comparison |
-| Theorem 1.6, concrete signed variation | realCoronaP4_polynomialFamily_defectVariation |
+| Theorem 1.3, model-complete projector classification | realCorona_modelCompleteProjectorClassification |
+| Theorem 1.4, odd complete-divisor zeta no-go | realCoronaP1_oddCompleteDivisor_zetaNoGo |
+| Theorem 1.5, closed CCM Lefschetz is not anti-Real | realCoronaP2_lefschetz_not_antiReal |
+| Theorem 1.5, scalar parity classification | realCoronaP2_scalarShift_antiReal_iff_star_eq_neg |
+| Theorem 1.5, no anti-Real bivariant realization equals Lefschetz | realCoronaP2_no_bivariantChernRealization_eq_lefschetz |
+| Theorem 1.5, exact Clifford survivor iL | realCoronaP2_cliffordTransgression_eq_i_lefschetz |
+| Theorem 1.6, universal sector-patching classification | realCorona_modelCompleteSectorPatchingClassification |
+| Theorem 1.7, complete-strip smoothness no-go | realCoronaP3_completeStrip_not_smooth |
+| Theorem 1.7, certified positive-degree no-go | realCoronaP3_positiveDegreeCompletion_not_smooth |
+| Theorem 1.7, actual Xi case | realCoronaP3_riemannXi_not_smooth |
+| Theorem 1.7, primitive self-dual Dirichlet cases | realCoronaP3_selfDualPrimitiveDirichlet_not_smooth |
+| Theorem 1.7, completed-zeta powers smooth iff degree zero | realCoronaP3_xiPower_smooth_iff_degree_zero |
+| Theorem 1.8, fixed-sector variation | realCoronaP4_fixedSectorVariation |
+| Theorem 1.8, analytic-rank/K0/excess variation | realCoronaP4_analyticRankVariation_eq_kZero_add_excess |
+| Theorem 1.8, concrete polynomial defect/rank | realCoronaP4_polynomialFamily_defectRank; realCoronaP4_polynomialFamily_centralKZeroRank |
+| Theorem 1.8, fixed crossed-product K0 comparison | realCoronaP4_fixedCrossedProductKZero_comparison |
+| Theorem 1.8, concrete signed variation | realCoronaP4_polynomialFamily_defectVariation |
 
 ## Section 2: universal orbit and invariant-domain law
 
@@ -51,6 +53,10 @@ GaloisForLFunctions.RHTower.RealCoronaFourProblemsResolution.
 | bounded commutator iff bounded odd part | hasLinearPMapBoundOnDomain_orientationCommutator_iff_odd | same |
 | bounded D iff both parts bounded | hasLinearPMapBoundOnDomain_iff_even_and_odd | same |
 | full conservation equivalence | bounded_orientationCommutator_iff_unbounded_even_and_bounded_odd | same |
+| projector commutator is half orientation commutator | linearPMapExchangeCommutator_eq_half_orientationCommutator | RealCoronaModelCompleteEvasionClassification.lean |
+| projector commutator norm equals odd-part norm | norm_linearPMapExchangeCommutator_eq_orientationOdd | same |
+| projector bounded iff odd part bounded | hasLinearPMapBoundOnDomain_exchangeCommutator_iff_orientationOdd | same |
+| unbounded-projector repair iff unbounded even and bounded odd | bounded_exchangeCommutator_iff_unbounded_even_and_bounded_odd | same |
 
 ## Section 3: P1
 
@@ -135,6 +141,8 @@ DeningerMeyerPoissonMellinFactorization.lean.
 
 | Paper identity/result | Lean declaration |
 |---|---|
+| characteristic sector function and idempotence | realCoronaSectorIdempotent; realCoronaSectorIdempotent_isIdempotent |
+| arbitrary unital function-algebra patching criterion | realCoronaSectorIdempotent_mem_iff_independentSectorPatching |
 | dense endpoint-holomorphic algebra | endpointHolomorphicSubalgebra; endpointHolomorphicSubalgebra_dense |
 | exact corona idempotent | endpointRealCoronaIdempotent; endpointRealCoronaIdempotent_isIdempotent |
 | finite-sector coefficient classification | endpointRealCoronaIdempotent_mem_iff_finite |

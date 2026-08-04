@@ -142,6 +142,50 @@ theorem sqrt_mul_xiAmplitude_div_eq {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1
   rw [div_eq_div_iff (by positivity) (by positivity)]
   field_simp
 
+/-- **The profile against the exact model phase.**  Only the Bessel remainder enters: the amplitude identity
+is exact, so the profile is the algebraic fourth root times `cos(c xi_s(x) - pi/4)` up to `O((c xi)^{-1/4})`.
+-/
+theorem abs_profile_sub_model_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
+    (hc : 0 < c) (hcxi : 1 ≤ c * xiEndpointPhase s x) :
+    |Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)
+        - Real.sqrt (2 / Real.pi) * ampFourth s x
+          * Real.cos (c * xiEndpointPhase s x - Real.pi / 4)|
+      ≤ 5 * ampFourth s x / Real.sqrt (Real.sqrt (c * xiEndpointPhase s x)) := by
+  have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
+  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hph : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
+  have hsc : 0 < Real.sqrt c := Real.sqrt_pos.mpr hc
+  have hA : 0 < xiAmplitude s x := xiAmplitude_pos hs0 hs1 hx
+  have hv0 : (0 : ℝ) < c * xiEndpointPhase s x := mul_pos hc hph
+  have hsv0 : (0 : ℝ) < Real.sqrt (c * xiEndpointPhase s x) := Real.sqrt_pos.mpr hv0
+  have hratio := sqrt_mul_xiAmplitude_div_eq hs0 hs1 hx hc
+  have hbes := abs_besselJ0_sub_amplitude_le hcxi
+  have hfac : Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)
+      - Real.sqrt (2 / Real.pi) * ampFourth s x
+        * Real.cos (c * xiEndpointPhase s x - Real.pi / 4)
+      = (Real.sqrt c * xiAmplitude s x)
+        * (besselJ0 (c * xiEndpointPhase s x)
+          - Real.sqrt (2 / Real.pi) * Real.cos (c * xiEndpointPhase s x - Real.pi / 4)
+            / Real.sqrt (c * xiEndpointPhase s x)) := by
+    have hx1 : Real.sqrt (2 / Real.pi) * ampFourth s x
+        = (Real.sqrt c * xiAmplitude s x) * (Real.sqrt (2 / Real.pi)
+          / Real.sqrt (c * xiEndpointPhase s x)) := by
+      rw [← hratio]
+      field_simp
+    rw [hx1]
+    field_simp
+  rw [hfac, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < Real.sqrt c * xiAmplitude s x)]
+  have hstep := mul_le_mul_of_nonneg_left hbes
+    (le_of_lt (by positivity : (0 : ℝ) < Real.sqrt c * xiAmplitude s x))
+  refine le_trans hstep ?_
+  have hval : (Real.sqrt c * xiAmplitude s x)
+      * (5 / (Real.sqrt (c * xiEndpointPhase s x)
+        * Real.sqrt (Real.sqrt (c * xiEndpointPhase s x))))
+      = 5 * ampFourth s x / Real.sqrt (Real.sqrt (c * xiEndpointPhase s x)) := by
+    rw [← hratio]
+    field_simp
+  rw [hval]
+
 /-- **The fixed-degree radial profile.**  For every aperture and every admissible separation constant,
 
 ```text
@@ -173,35 +217,7 @@ theorem abs_radialProfile_sub_le {s c x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 
   have hratio := sqrt_mul_xiAmplitude_div_eq hs0 hs1 hx hc
   -- the Bessel remainder
   have hbes := abs_besselJ0_sub_amplitude_le hcxi
-  have hrem : |Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)
-        - Real.sqrt (2 / Real.pi) * ampFourth s x
-          * Real.cos (c * xiEndpointPhase s x - Real.pi / 4)|
-      ≤ 5 * ampFourth s x / Real.sqrt (Real.sqrt (c * xiEndpointPhase s x)) := by
-    have hfac : Real.sqrt c * xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)
-        - Real.sqrt (2 / Real.pi) * ampFourth s x
-          * Real.cos (c * xiEndpointPhase s x - Real.pi / 4)
-        = (Real.sqrt c * xiAmplitude s x)
-          * (besselJ0 (c * xiEndpointPhase s x)
-            - Real.sqrt (2 / Real.pi) * Real.cos (c * xiEndpointPhase s x - Real.pi / 4)
-              / Real.sqrt (c * xiEndpointPhase s x)) := by
-      have hx1 : Real.sqrt (2 / Real.pi) * ampFourth s x
-          = (Real.sqrt c * xiAmplitude s x) * (Real.sqrt (2 / Real.pi)
-            / Real.sqrt (c * xiEndpointPhase s x)) := by
-        rw [← hratio]
-        field_simp
-      rw [hx1]
-      field_simp
-    rw [hfac, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < Real.sqrt c * xiAmplitude s x)]
-    have hstep := mul_le_mul_of_nonneg_left hbes
-      (le_of_lt (by positivity : (0 : ℝ) < Real.sqrt c * xiAmplitude s x))
-    refine le_trans hstep ?_
-    have hval : (Real.sqrt c * xiAmplitude s x)
-        * (5 / (Real.sqrt (c * xiEndpointPhase s x)
-          * Real.sqrt (Real.sqrt (c * xiEndpointPhase s x))))
-        = 5 * ampFourth s x / Real.sqrt (Real.sqrt (c * xiEndpointPhase s x)) := by
-      rw [← hratio]
-      field_simp
-    rw [hval]
+  have hrem := abs_profile_sub_model_le hs0 hs1 hx hc hcxi
   -- the phase error
   have hphase := abs_cos_phase_sub_le (s := s) (c := c) hs0 hs1 hx.le hc.le
   have hph2 : |Real.sqrt (2 / Real.pi) * ampFourth s x

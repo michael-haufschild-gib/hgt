@@ -8859,3 +8859,75 @@ The two remaining inputs (`μ²` and `μ²·1_{p∤·}`) are still stated as cen
 same passage applies to them once the maximal object is centred, the discrepancy between the integer
 window length `m+1` and the real fibre length `h√x/a` being at most `2` and hence contributing
 `O(√x) = o(h²√x)`.
+
+### All three inputs are now short-interval mean squares
+
+**`RHTower/Sieve/FibreDevSeparation.lean`**, unconditional.  The two density inputs compare each
+fibre sum with `c` times the *real* fibre length `h√x/a`, while a window over `[y, y+m]` carries
+`m+1` integers.  **`exists_fibre_window`**: from `⌈x/a⌉ ≤ x/a + 1` and
+`⌊(x+h√x)/a⌋ > (x+h√x)/a − 1`,
+
+    |(m+1) − h√x/a| ≤ 1,
+
+and for `h ≥ 4` the fibre is nonempty (its length exceeds `h/2 − 2`).  So the centred deviation of a
+fibre differs from that of the corresponding window by at most `c`; squaring costs an additive `2c²`
+per block element, i.e. `O(√x) = o(h²√x)` in total.  Hence
+
+- `maxWindowDevSq f c H y` — the largest squared *centred* window deviation of length `≤ H` from `y`;
+- **`sum_fibre_dev_sq_le_maximal`** —
+
+      ∑_{a ∈ block} (∑_{b ∈ fibre(a)} f(b) − c·h√x/a)²
+        ≤ 8 ∑_{⌈√x/2⌉ ≤ y ≤ ⌈√x⌉} maxWindowDevSq f c ⌈h⌉ y  +  2c²(√x + 1);
+
+- `MaximalWindowDevMeanSquareAt` and **`averagedMeanSquareDensityAt_of_maximal`**.
+
+**`RouteEAveraged.route_e_sign_density_of_maximalWindow_all`** and
+**`route_e_signClass_nonempty_of_maximalWindow_all`** — the card's `(3)` and its consequence from
+
+    ∑_{√x/2 ≤ y ≤ √x}  max_{m ≤ h} (∑_{y ≤ n ≤ y+m} μ(n))²                   = o(h²√x),
+    ∑_{√x/2 ≤ y ≤ √x}  max_{m ≤ h} (∑_{y ≤ n ≤ y+m} μ²(n) − D(m+1))²          = o(h²√x),
+    ∑_{√X/2 ≤ y ≤ √X}  max_{m ≤ h/p} (∑ μ²1_{p∤}(n) − D_p(m+1))²              = o((h/p)²√X)
+                                                                       (X = x/p², each prime `p`).
+
+**The fibre geometry has disappeared completely.**  Every hypothesis is a maximal mean square of one
+arithmetic function over *all* starting points in a dyadic range, at window lengths at most the
+window parameter — the statement short-interval theory proves.  Everything between the card's
+combinatorial statement and that form is now a theorem of this corpus, with the three constants
+`0`, `D²`, `D²/(p+1)²` derived from logarithmic block means.
+
+### The `μ²` mean square is elementary, and does not need Matomäki–Radziwiłł
+
+**`RHTower/Sieve/SquarefreeMaximalWindow.lean`**, unconditional.  The three inputs are not equally
+deep: only the `μ` one is Matomäki–Radziwiłł.  The two squarefree ones are within reach of the
+corpus's existing truncation machinery, because a **first** moment of the truncation defect
+suffices.
+
+The reason is the elementary observation that the deviation of a squarefree count over a window is
+at most the window length (`abs_window_squarefree_sub_le_len`, using `0 ≤ μ² ≤ 1` and
+`D = 6/π² ≤ 1` — `squarefreeDensity_le_one`).  Hence `E² ≤ (H+1)|E|`, and only `∑_y |E|` is needed —
+never `∑_y E²`.  Squaring the defect would have required a second moment of the count of
+squarefull-divisible integers in short windows, which is genuinely hard; the length bound avoids it.
+
+- **`abs_window_squarefree_sub_le_defect`** — the two corpus estimates combined:
+
+      | ∑_{t < n ≤ t+L} μ²(n) − LD |  ≤  R + L/R + ∑_{R < d ≤ M} #{n ∈ (t,t+L] : d² ∣ n};
+
+- `defect_mono` — the defect is monotone in the window length, so one bound at length `H+1` serves
+  every shorter window;
+- **`maxWindowDevSq_moebius_sq_le`** — hence, pointwise in the start,
+
+      max_{m ≤ H} (∑_{y ≤ n ≤ y+m} μ²(n) − (m+1)D)²  ≤  (H+1)·(R + (H+1)/R + Def_R(y−1, H+1));
+
+- `tailDefect`, `image_pred_subset`, `pred_injOn`, and **`sum_maxWindowDevSq_moebius_sq_le`** —
+  summed over the starting points, using `AveragedSquarefreeTail.sum_tail_divisor_count_le` for the
+  first moment of the defect:
+
+      ∑_{A ≤ y ≤ B} max_{m ≤ H} (…)²
+        ≤ (H+1)(R + (H+1)/R)·#[A,B]  +  (H+1)²·((B + H + 1 − (A−1))/R + M).
+
+At `A ≍ √x/2`, `B ≍ √x`, `M ≍ x^{1/4}` and `R = ⌈√H⌉` the right side divided by `H²√x` is
+`≍ R/H + 1/R + M/√x ≍ H^{-1/2} + x^{-1/4} → 0`, which is the required `o(h²√x)`.  Choosing the
+parameters and taking that limit is the remaining step.
+
+**So the card's second and third inputs are not conditional on any short-interval theorem** — only
+the `μ` one is.

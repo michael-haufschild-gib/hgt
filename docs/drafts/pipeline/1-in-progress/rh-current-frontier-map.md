@@ -200,12 +200,55 @@ then routewise conservativity kills every image, joint faithfulness kills `g_(p,
 follows when this holds at every divisor copy. No single chart must be faithful. The mathematical
 content is the intersection of route radicals; serial postprocessing can only enlarge them.
 
-The charts contribute different coordinates rather than duplicate proofs:
+**2026-08-04 refinement — quotient route charts by source isogeny before taking the parallel
+record.**  Route labels do not imply radical independence.  The newly proved all-prime transition
+law identifies Route R's independently constructed graded-`det₂` triangle anomaly `A_p(s)` with
+Route L's mate monodromy `delta_p(s)` by
 
-- Route R supplies the actual coefficient-faithful resolved Green defect, nonseparable
-  prime/depth connection, strict provenance, and positive transported frame;
-- Route L supplies the physical Burnol/Deninger reader and a literal cyclic-bar source object whose measured
-  paracyclic defect must become source-null-homologous;
+```text
+Area_p = -(1-p^(-1))^3 log p,
+A_p(s)^(p^3) = delta_p(s)^((p-1)^3).
+```
+
+At `p=2`, `A_2(s)^8=delta_2(s)`.  Moreover the actual CCM cofinal source-homology readout is
+
+```text
+(delta_2(s)-1) * jet * trace
+= (A_2(s)-1)(1+A_2(s)+...+A_2(s)^7) * jet * trace,
+```
+
+and the second factor is strictly positive.  Therefore Route R curvature correction,
+graded-`det₂` counterboundary, Route L paracyclic monodromy, and CCM cofinal Bockstein form one
+source-isogeny class with the same zero radical.  Parallelizing them repeats one detector; it does
+not reduce the intersection.  This law is formalized in
+`RHTower/PrimeDepthBVWoldSourceDaggerAtlasTransition.lean`.
+
+The same law persists through every Wold depth:
+
+```text
+Area_(p,e)=-(1-p^(-1))^3 p^(-e) log p,
+A_(p,e+1)^p=A_(p,e),
+A_(p,e+k)^(p^k)=A_(p,e),
+A_(p,e)^(p^(e+3))=delta_p^((p-1)^3).
+```
+
+So Route R's depth tower is an unconditional coherent Kummer tower of scalar anomalies and every
+level has the same radical.  Depth adds roots, not a new atlas coordinate.  This is not the
+divisor-bearing holomorphic Xi-root tower of `RiemannTower.lean`; confusing those towers would
+turn Route A's exact multiplicity obstruction into a tautological scalar root construction.
+It also cannot supply the non-scalar class conjectured by
+`DAC_FROBENIUS_COHERENCE_DEFECT_SPECTRUM`: every same-prime finite power-associator vanishes
+identically.  A transverse Frobenius class must retain the failure of local homotopies to glue
+across source charts, not merely their scalar anomaly values.
+
+The corrected atlas census is:
+
+- one **horizontal-character class** contains Route R's nonseparable prime/depth anomaly and
+  graded correction, Route L's physical Burnol/Deninger monodromy, and CCM's literal cyclic source
+  Bockstein;
+- Route R still supplies coefficient-faithful resolved Green provenance and positive transported
+  frame not present in the scalar transition, while Route L supplies the physical reader and
+  cyclic-bar source; these are complementary infrastructure, not independent vanishing radicals;
 - CCM-FU supplies a four-unit, pre-scalar Ward chart whose source escapes every fixed compact
   synthesis;
 - C1 supplies singular Hedenmalm and exact CCM class-space Hodge/intersection candidates;
@@ -217,7 +260,8 @@ Most latter charts do not yet have a comparison satisfying the displayed common-
 their route-specific open cores are exactly the missing admission or annihilation theorem. Thus
 the merger is a genuine new opening but not a completed new proof route. It changes the search in
 one important way: one need not close every route, nor make one route globally faithful. A small
-parallel family may suffice if its common radical excludes the horizontal Green defect.
+parallel family may suffice if its **primitive source-isogeny classes**, rather than nominal route
+labels, have common radical excluding the horizontal Green defect.
 
 Across the routes, the remaining obstruction has one fundamental mathematical nature:
 
