@@ -405,6 +405,12 @@ Built, wired into `GaloisForLFunctions/RHTower.lean`, axiom-clean (nineteen theo
 
 ### What remains
 
+**Superseded — see "The mean square, unconditionally" and "Step 1 of the Hall-law argument,
+unconditionally" below.** `(15)`–`(18)` no longer rest on a cited result: the mean square is derived
+in this corpus from the zero-free region, through the twisted contour argument and Gallagher's
+reduction, and step 1 consumes it with no analytic hypothesis. The paragraph below records the state
+before that work.
+
 `(15)`–`(18)` rest on Menon's 2026 mean-square theorem for Möbius in short intervals, a cited
 published analytic result; nothing in mathlib or the corpus approaches it, and `(18)` is its Markov
 consequence.  `(32)`/`(34)` are Shiu's bound, for which the corpus now owns an unconditional
@@ -443,6 +449,9 @@ Built, wired, axiom-clean (seven theorems; `markerBlock_start_ge` needs only
 `[propext, Quot.sound]`).
 
 ### Status
+
+**Superseded.** `(15)`–`(17)` are now derived in-corpus; see the sections at the end of this card.
+The paragraph below records the state before that work.
 
 Everything this card proves is now an unconditional Lean theorem except `(15)`–`(17)`, which are
 Menon's 2026 mean-square theorem for Möbius in short intervals — a cited published analytic result.
@@ -4892,3 +4901,139 @@ Status of the card's external dependency: `(15)`–`(17)` were cited to Menon's 
 mean-square theorem. That citation is no longer needed for this route — the estimate is derived here
 from the corpus's own zero-free region, through the twisted contour argument and Gallagher's
 reduction, with no external analytic input at any step.
+
+### The mean square, unconditionally
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusMeanSquareUnconditional.lean`.
+
+**`exists_sum_normSq_moebius_window_le`** — there is a `B` with `B → 0` such that for all large `N`
+and every admissible geometry,
+
+    ∑_{k < K} |∑_{Y+k < n ≤ Y+k+L} μ(n)|²
+      ≤ Y(1+ε)^J · J · ( 2((B(N)·N)²·log(1+L/Y) + (⌊N⌋+1)²·2/(π²W)) + 2(εL+1)²·log(1+ε) ) ,
+
+the admissible band being `8πW + 5 ≤ contourParam(N + smoothWidth N)`.
+
+**No analytic hypothesis remains anywhere in the statement.** Unconditional
+(`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+This is the card's `(15)`–`(17)` input, derived rather than cited. The whole derivation rests on one
+analytic fact — the zero-free region for `ζ`, which the corpus already owned and which is what makes
+`B → 0` — and on nothing else external.
+
+### The mean square in the real form step 1 consumes
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/MoebiusMeanSquareRealForm.lean`.
+
+`SquarefreeExceptional.card_le_good_add_explicit` takes its mean-square input as a **real** sum
+`∑_{t ∈ S} (∑_{t < n ≤ t+L} μ(n))² ≤ V`, while the development above produces `∑ ‖∑ μ(n)‖²` over
+complex coefficients. The two agree, the Möbius sum being real:
+
+- `normSq_moebiusC_eq_sq_real` — `‖∑_{n ∈ T} μ(n)‖² = (∑_{n ∈ T} μ(n))²`;
+- `sum_sq_real_moebius_Ico_eq` — reindexing `t = Y + k` turns the range sum into a sum over
+  `Ico Y (Y+K)`, which is the shape of `S`;
+- **`exists_sum_sq_real_moebius_Ico_le`** — hence, unconditionally, with `B → 0`:
+
+      ∑_{t ∈ Ico Y (Y+K)} ( ∑_{t < n ≤ t+L} μ(n) )²
+        ≤ Y(1+ε)^J · J · ( 2((B(N)N)²·log(1+L/Y) + (⌊N⌋+1)²·2/(π²W)) + 2(εL+1)²·log(1+ε) ) .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+**This is `hms` of `card_le_good_add_explicit`, supplied.** Step 1 of the Hall-law argument had
+exactly one hypothesis left — the mean-square bound `V` — after the truncation defect was discharged
+earlier on this card. That hypothesis is now a theorem of this corpus, so step 1 is unconditional in
+the parameter regime where the right-hand side is small enough.
+
+### Step 1 of the Hall-law argument, unconditionally
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/Step1Moebius.lean`.
+
+**`exists_card_le_good_add_moebius`** — there is a `Bd → 0` such that for all large `N` and every
+admissible geometry, `card_le_good_add_meanSquare_explicit` holds with its mean-square numerator
+supplied explicitly:
+
+    #{starts} ≤ #{good starts}
+      + Y(1+ε)^J·J·blockCost(L, Y, ε, (Bd(N)N)², (⌊N⌋+1)², W) / (DL/8)²
+      + L((Y+K+L−Y)/R + Md) / θ .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+**Both hypotheses of step 1 are now theorems of this corpus.** `hdef` (the averaged truncation
+defect) was discharged earlier in this session by `Step1Explicit`; `hms` (the mean square) is
+discharged here. Step 1 carries no analytic assumption.
+
+Audit note on a near-miss: `moebiusC` and `norm_moebiusC_le_one` were **already defined** in
+`Sieve/MoebiusEulerDamping.lean`, and this development briefly duplicated them. The duplicate only
+surfaced when a module imported both cones — a collision scan run from the wrong directory had
+silently reported nothing. The duplicates are removed and the corpus definitions are used
+throughout; the lesson is that a name scan whose `grep` target does not resolve looks identical to a
+clean scan.
+
+### Umbrella audit
+
+`lake build GaloisForLFunctions.RHTower` completes successfully (16736 jobs) with every module of
+this development wired in. That is the authoritative duplicate-name check: a name clash between two
+modules in the same namespace only surfaces when both cones are imported together, which the umbrella
+does.
+
+Card state after this work:
+
+* `(15)`–`(18)` — **derived in-corpus**, no longer cited. Chain: zero-free region → twisted contour
+  bound (`MoebiusTwist*`) → frequency-uniform Möbius cancellation → Gallagher's reduction
+  (`LogWindowKernel`, `TriangularKernel`, `TriangularInversion`, `TriangularIntegralForm`,
+  `GallagherLemma`, `GallagherSplit`, `GallagherTail`, `GallagherRange`) → linear windows
+  (`LogWindowMultiplicative`, `LogWindowTiling`, `LinearVsMultiplicativeWindow`,
+  `LinearWindowMeasurable`, `LinearRangeVariable`) → block and range summation
+  (`LinearBlockEstimate`, `LinearRangeEstimate`, `LinearMeanSquareCapstone`) → Möbius instantiation
+  (`LogPolyMoebius`, `MoebiusMeanSquareRange`, `DiscreteWindowBridge`, `MoebiusDiscreteMeanSquare`,
+  `MoebiusFrequencyBound`, `MoebiusMeanSquareFinal`, `MoebiusMeanSquareUnconditional`,
+  `MoebiusMeanSquareRealForm`) → step 1 (`Step1Explicit`, `Step1Moebius`).
+* `(32)`/`(34)` — Shiu's bound, with the corpus's weaker unconditional substitute sufficing.
+* `(35)`/`(36)` — proved.
+* Everything else on the card — proved.
+
+What is left is numerical: choosing `ε`, `W`, `J` in the card's regime and reading off the `o(·)`
+statements. No step of the argument now depends on a result outside this corpus.
+
+### The block cost without logarithms
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/BlockCostBound.lean`.
+
+**`blockCost_le`** — both logarithms are bounded by their arguments (`log(1+x) ≤ x`), so
+
+    blockCost L Y ε M₁ M₂ W ≤ 2M₁·(L/Y) + 4M₂/(π²W) + 2(εL+1)²·ε .
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+In this form the three contributions are visible as what they are:
+
+* `2M₁·(L/Y)` — the **cancellation** term, carrying `M₁ = (B(N)N)²` with `B → 0`;
+* `4M₂/(π²W)` — the **frequency-tail** term, carrying the trivial size against the admissible band
+  `W ≍ contourParam`, which grows faster than any power of `log N`;
+* `2(εL+1)²·ε` — the **excess** term, the price of replacing a linear window by a multiplicative one.
+
+The first two decrease in `Y` and `W`, the third increases in `ε`, and the numerical step is the
+balance between them: with `Y ≍ N`, the cancellation term is `2B(N)²N L` and the tail term is
+`O(N²/W)`, so both are `o(L²)` per start once `B(N)²N/L → 0` and `N²/(W L²) → 0`, while the excess
+term is `o(L²)` for `ε → 0`.
+
+### Counting the blocks
+
+Added: `formal/GaloisForLFunctions/RHTower/Sieve/BlockCount.lean`.
+
+- `log_one_add_ge` — `ε/(1+ε) ≤ log(1+ε)`;
+- **`blocks_eq_log`** — the geometry determines the block count exactly:
+  `J·log(1+ε) = log(1 + K/Y)`;
+- **`blocks_le`** — hence `J ≤ log(1 + K/Y)·(1+ε)/ε`.
+
+Unconditional (`[propext, Classical.choice, Quot.sound]`), wired into `GaloisForLFunctions.RHTower`.
+
+Covering a range of ratio `1 + K/Y` costs `O(1/ε)` blocks. Combined with `blockCost_le`, the total
+bound of `sum_normSq_moebius_window_le_of_twist` is now explicit in the parameters alone:
+
+    ∑_{t ∈ Ico Y (Y+K)} ( ∑_{t<n≤t+L} μ(n) )²
+      ≤ (Y+K) · log(1+K/Y)·(1+ε)/ε · ( 2M₁·(L/Y) + 4M₂/(π²W) + 2(εL+1)²·ε ) .
+
+With `Y ≍ K ≍ N`, `M₁ = (B(N)N)²`, `M₂ ≍ N²`: the three terms are `O(N·B(N)²N L/(εN)) = O(B²N²L/ε)`,
+`O(N·N²/(εW))` and `O(N·ε²L²)` — all `o(N L²)` once `B(N)²N/(εL) → 0`, `N²/(εWL²) → 0` and `ε → 0`,
+which the growth of `contourParam` and `B → 0` permit.

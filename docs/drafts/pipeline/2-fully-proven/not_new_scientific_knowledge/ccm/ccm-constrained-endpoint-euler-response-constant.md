@@ -774,9 +774,55 @@ quantity, and the Kaiser–Bessel trial supplies the numerator and denominator e
 - `norm_sq_fourier_bandTrunc_kaiser_le` — hence the trial's spectral density beyond the band edge obeys
   the Cauchy envelope `8/(1 + (|2 pi xi| - c)²)` in the Fourier variable.
 
-What remains is the numerical assembly: integrating that envelope over the complement of the window
-(the change of variables `omega = 2 pi xi` turning `4 pi` into the tail constant), bounding the total
-energy below by the inner-band mass, and combining.
+The numerical assembly is now carried out in `RHTower/BandLeakageEnvelope.lean`, and it closes the
+upper half of the leakage envelope for the **true** band operator, unconditionally:
+
+- `integrable_cauchyShift`, `integral_cauchyShift` — a shifted and scaled Cauchy kernel is integrable
+  on the line with the aperture-free value
+
+  ```text
+  ∫ 8/(1 + (a xi - b)²) d xi = 8 pi/a,
+  ```
+
+  by translation invariance of the volume and the scaling law of the Haar integral.  The shift is free:
+  it is exactly what allows the band edge to be placed anywhere without changing the tail constant.
+- `cauchyPair`, `folded_cauchy_le_pair`, `integral_cauchyPair` — the folded envelope
+  `8/(1 + (|2 pi xi| - c)²)`, which is what the trial's density obeys, is dominated by the *sum* of the
+  two shifted kernels centred at `+c` and `-c`; whichever sign the frequency has, one of the two
+  reproduces the folded envelope exactly and the other is nonnegative.  The sum has total mass
+  `2 · 8 pi/(2 pi) = 8` on the whole line, so folding costs a factor `2` and nothing else.
+- `lt_abs_of_notMem_window`, `integral_tail_kaiser_le` — hence the trial's **entire** out-of-band
+  spectral mass is at most `8`, an absolute constant with no dependence on the aperture.  No splitting
+  of the tail into two half-lines is needed: the pointwise domination holds on the complement of the
+  window and the two-sided envelope is integrable on all of `ℝ`.
+- `sq_intervalIntegral_le` — the interval form of Cauchy–Schwarz against the constant function,
+  `(∫_a^b f)² <= (b - a) ∫_a^b f²`, proved by expanding the nonnegative integral of `(f - mean)²`.
+- `integral_kaiserTrial`, `energy_kaiserTrial_ge`, `energy_kaiserTrial_pos`,
+  `bandClass_kaiserTrial_ne_zero` — the mean of the trial over the band is the `omega = 0` value of its
+  transform, `2 sinh(c)/c`, so its energy is at least `(2 sinh(c)/c)²/2`; in particular the trial is a
+  nonzero band class and admissible in the variational bound.
+- **`one_sub_norm_bandOperatorL2_mul_sinh_le`** — the closed-form envelope
+
+  ```text
+  (1 - ‖B_c‖)·(2 sinh(c)/c)² <= 16,
+  ```
+
+  obtained by feeding the constant tail mass and the exponential energy into the function-level
+  variational bound through the spectral-tail identity.
+- **`one_sub_norm_bandOperatorL2_le_exp`** — hence, for every aperture `c >= 1`,
+
+  ```text
+  1 - ‖B_c‖ <= 64 c² e^(-2c).
+  ```
+
+This is the sharp exponential rate `e^(-2c)` of the classical leakage asymptotic, with an explicit
+polynomial correction and an explicit absolute constant, proved for the corpus's own band operator
+with no imported asymptotic.  Gaussian and polynomial trials cannot reach it — they give `e^(-c)`; the
+Kaiser–Bessel window is what makes the in-band mass grow like `e^(2c)/c²` against an aperture-free
+tail.
+
+What the envelope gate still needs is the matching *lower* bound `1 - ‖B_c‖ >= c_0 c^(1/2) e^(-2c)`
+and the antitonicity of the logarithmic derivative of the leakage.
 
 ## Lean gates
 
@@ -806,7 +852,11 @@ energy below by the inner-band mass, and combining.
 - [x] Lean: the reduction of `(9)` to its envelope form — envelope plus antitone logarithmic
   derivative give the differentiated asymptotic (`LogDerivativeFromEnvelope`,
   `tendsto_endpointSq_div_leakage_of_envelope`)
-- [ ] Lean: the two-sided fixed-mode leakage envelope for the true operator, and antitonicity of its
+- [x] Lean: the **upper** leakage envelope for the true operator at the sharp exponential rate —
+  `1 - ‖B_c‖ <= 64 c² e^(-2c)` for `c >= 1`, from the Kaiser–Bessel trial: aperture-free out-of-band
+  mass (shifted Cauchy kernels, folded and integrated) against exponentially growing in-band energy
+  (`BandLeakageEnvelope.lean`, `one_sub_norm_bandOperatorL2_le_exp`)
+- [ ] Lean: the matching **lower** leakage envelope for the true operator, and antitonicity of its
   logarithmic derivative — the last classical inputs
 - [x] Lean: the constrained ground-state ratio `8/11` derived from the prolate-to-Hermite coefficient
   limits, with the Hermite weight arithmetic `q_1 = 3/8` (`tendsto_ellSqRatio_of_hermiteLimits`)

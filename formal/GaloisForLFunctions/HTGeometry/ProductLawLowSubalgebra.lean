@@ -190,4 +190,42 @@ theorem fpderiv_eq_zero_of_mem_lowSub {m k : ℕ} (hk : m < k) {P : CascadeField
       rw [Derivation.leibniz, ihx, ihy]
       simp
 
+/-- The coordinate derivation of any coordinate is low: it is `0` or `1`. -/
+theorem fpderiv_fx_mem_lowSub (j m k : ℕ) :
+    fpderiv k (fx j) ∈ lowSub Q v m := by
+  by_cases hkj : j = k
+  · rw [hkj, fpderiv_fx_self]
+    exact Subalgebra.one_mem _
+  · rw [fpderiv_fx_of_ne hkj]
+    exact Subalgebra.zero_mem _
+
+/-- **The low subalgebra is stable under the coordinate derivations.** -/
+theorem fpderiv_mem_lowSub {m k : ℕ} {P : CascadeField} (h : P ∈ lowSub Q v m) :
+    fpderiv k P ∈ lowSub Q v m := by
+  induction h using Algebra.adjoin_induction with
+  | mem x hx =>
+      rcases hx with (⟨j, hj, rfl⟩ | ⟨j, hj, rfl⟩) | ⟨j, hj, rfl⟩
+      · by_cases hkj : j = k
+        · rw [hkj, fpderiv_fx_self]
+          exact Subalgebra.one_mem _
+        · rw [fpderiv_fx_of_ne hkj]
+          exact Subalgebra.zero_mem _
+      · rw [Derivation.leibniz_inv, derivation_fact, smul_eq_mul]
+        exact Subalgebra.mul_mem _
+          (Subalgebra.neg_mem _ (Subalgebra.pow_mem _ (invQ_mem_lowSub Q v hj) 2))
+          (Subalgebra.mul_mem _ (fact_mem_lowSub Q v hj _) (fpderiv_fx_mem_lowSub Q v j m k))
+      · rw [Derivation.leibniz_inv, derivation_fact, smul_eq_mul]
+        exact Subalgebra.mul_mem _
+          (Subalgebra.neg_mem _ (Subalgebra.pow_mem _ (invV_mem_lowSub Q v hj) 2))
+          (Subalgebra.mul_mem _ (fact_mem_lowSub Q v hj _) (fpderiv_fx_mem_lowSub Q v j m k))
+  | algebraMap c =>
+      rw [(fpderiv k).map_algebraMap]
+      exact Subalgebra.zero_mem _
+  | add x y _ _ ihx ihy =>
+      rw [map_add]
+      exact Subalgebra.add_mem _ ihx ihy
+  | mul x y hx hy ihx ihy =>
+      simp only [Derivation.leibniz, smul_eq_mul]
+      exact Subalgebra.add_mem _ (Subalgebra.mul_mem _ hx ihy) (Subalgebra.mul_mem _ hy ihx)
+
 end GaloisForLFunctions.HTGeometry

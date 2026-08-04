@@ -118,12 +118,18 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 54 | the potential as a bounded perturbation in energy coordinates | `kgPotentialOp`, **`norm_kgPotentialOp_le`** | **built** |
 | 55 | the Duhamel data and its strong continuity | `kgFreeCurve`, `kgDuhamelKernel`, `norm_kgFreeCurve_le`, `norm_kgDuhamelKernel_le`, **`strongKernel_kgDuhamelKernel`** | **built** |
 | 56 | **global well-posedness for a bounded measurable potential** | `kgMildSolution`, `continuous_kgMildSolution`, **`kgMildSolution_eq`**, **`kgMildSolution_zero`**, **`norm_kgMildSolution_le`**, **`eq_kgMildSolution_of_duhamel`**, **`exists_unique_kgMildSolution`** | **built** |
+| 57 | the addition laws for the propagator symbols, and the group law | `lpBoundedMulCLM_neg`, `fourierMulCLM_neg`, `kgCosOp_eq`, `kgSinOp_eq`, **`kgCosOp_add`**, **`kgSinOp_add`**, **`kgPropagator_add`** | **built** |
+| 58 | a multiplication or Fourier multiplier with a real symbol is self-adjoint on `L²` | **`inner_lpBoundedMulCLM_real`**, `inner_fourierL2`, **`inner_fourierMulCLM_real`**, `inner_kgCosOp`, `inner_kgSinOp` | **built** |
+| 59 | the Pythagorean identity and the commutation, at the operator level | **`kgCosOp_sq_add_kgSinOp_sq`**, **`kgCosOp_comp_kgSinOp_comm`**, `norm_kgCosOp_sq_add_norm_kgSinOp_sq`, `inner_kgCosOp_kgSinOp_comm` | **built** |
+| 60 | **exact conservation of the free Klein–Gordon energy** | `kgEnergy`, `kgEnergy_nonneg`, **`kgEnergy_kgPropagator`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
 `L2MultiplierContinuity.lean` (48), `KleinGordonL2Propagator.lean` (49–52),
-`VolterraStrongKernel.lean` (53), `KleinGordonMildSolution.lean` (54–56). All wired into the
-umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
+`VolterraStrongKernel.lean` (53), `KleinGordonMildSolution.lean` (54–56),
+`KleinGordonL2Propagator.lean` and `L2FourierMultiplier.lean` again (57),
+`KleinGordonEnergyConservation.lean` (58–60). All wired into the umbrella; axioms
+`[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
 
@@ -482,6 +488,39 @@ equation — differentiating the Duhamel integral, which needs the group law of 
 regularity hypothesis on the datum — is the next brick, and it is what would let the uniqueness
 half of this card (statements 1–45) and the existence half meet on the same object.
 
+
+### The propagator is a group, and the energy is exactly conserved
+
+Statements 57–60 replace the two crude facts the existence proof was content with — that the
+propagator is bounded by `2` and that it starts at the identity — by the two sharp ones.
+
+Statement 57 is the group law. The addition formulas `cos((t+s)c) = cos(tc)cos(sc) - sin(tc)sin(sc)`
+and `sin((t+s)c) = sin(tc)cos(sc) + cos(tc)sin(sc)` are, through Plancherel, operator identities
+between composites of Fourier multipliers, and assembling the four entries of the rotation gives
+**`kgPropagator_add`**: `U(t+s) = U(t)U(s)`. With `kgPropagator_zero_apply` the propagator is a
+one-parameter group, which is what a Duhamel formula has to be compatible with.
+
+Statements 58–60 give the exact energy identity. A multiplication operator with a **real** symbol is
+self-adjoint on `L²` (**`inner_lpBoundedMulCLM_real`**, from `L2.inner_def` and nothing else), and
+Plancherel — which preserves the inner product, `Lp.inner_fourier_eq` — carries that to Fourier
+multipliers (**`inner_fourierMulCLM_real`**). Both propagator symbols are real, so `C_t` and `S_t`
+are self-adjoint. Two further symbol identities become operator identities the same way:
+
+`C_t² + S_t² = 1` (**`kgCosOp_sq_add_kgSinOp_sq`**, the Pythagorean identity), and
+`C_t S_t = S_t C_t` (**`kgCosOp_comp_kgSinOp_comm`**, commutativity of multiplication).
+
+Expanding `‖C v₁ + S v₂‖² + ‖-S v₁ + C v₂‖²` by the polarization expansion, the two cross terms are
+`re⟪v₁, C S v₂⟫` and `re⟪v₁, S C v₂⟫` after moving the operators across the inner product, so they
+cancel; the four diagonal terms collapse in pairs by the Pythagorean identity. That is
+
+**`kgEnergy_kgPropagator`**: `‖U(t)v‖₁² + ‖U(t)v‖₂² = ‖v₁‖² + ‖v₂‖²` — *the free Klein–Gordon
+evolution conserves the energy exactly, for every datum in the energy space and every time.*
+
+No integral is computed anywhere in the proof: the whole identity is operator algebra over the two
+symbol identities. Note the norm used is the Hilbert one `‖v₁‖² + ‖v₂‖²`, not the product-space sup
+norm that `KGEnergy` carries; the sup norm is what the Volterra layer's bounds are stated in, and the
+factor `2` in `‖U(t)‖ ≤ 2` is exactly the discrepancy between the two.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -502,6 +541,8 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-04 — statements 57–60: the propagator group law, self-adjointness of real multipliers,
+  the Pythagorean and commutation identities, and **exact conservation of the free energy**.
 - 2026-08-04 — statements 46–56: **the existence half**. Bounded Fourier multipliers on `L²`, the
   free Klein–Gordon propagator on the energy space, the Volterra layer with a strongly continuous
   kernel, and global well-posedness of the Cauchy problem for a bounded measurable potential.

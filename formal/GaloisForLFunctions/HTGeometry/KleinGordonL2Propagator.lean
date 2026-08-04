@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.L2MultiplierContinuity
 import GaloisForLFunctions.HTGeometry.KleinGordonSymbol
+import Mathlib.Analysis.Normed.Lp.ProdLp
 
 /-!
 # The free Klein–Gordon propagator on the energy space
@@ -335,43 +336,110 @@ variable {E : Type*} [NormedAddCommGroup E] [MeasurableSpace E] [BorelSpace E]
   [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
 
 variable (E) in
-/-- The energy space of the Klein–Gordon evolution: the pair `(⟨D⟩u, ∂ₜu)`. -/
-abbrev KGEnergy : Type _ := (Lp (α := E) ℂ 2) × (Lp (α := E) ℂ 2)
+/-- The energy space of the Klein–Gordon evolution: the pair `(⟨D⟩u, ∂ₜu)`, carrying the Hilbert
+norm `‖v‖² = ‖v₁‖² + ‖v₂‖²`. That quantity is the energy itself, so the norm of this space is the
+square root of the energy and not the product-space supremum. -/
+abbrev KGEnergy : Type _ := WithLp 2 ((Lp (α := E) ℂ 2) × (Lp (α := E) ℂ 2))
+
+variable (E) in
+/-- Assembling a pair of `L²` functions into an energy state, as a continuous linear map. -/
+def kgPair : ((Lp (α := E) ℂ 2) × (Lp (α := E) ℂ 2)) →L[ℂ] KGEnergy E :=
+  (WithLp.prodContinuousLinearEquiv 2 ℂ (Lp (α := E) ℂ 2)
+    (Lp (α := E) ℂ 2)).symm.toContinuousLinearMap
+
+theorem kgPair_apply (w : (Lp (α := E) ℂ 2) × (Lp (α := E) ℂ 2)) :
+    kgPair E w = WithLp.toLp 2 w := rfl
+
+@[simp] theorem kgPair_fst (w : (Lp (α := E) ℂ 2) × (Lp (α := E) ℂ 2)) :
+    (kgPair E w).fst = w.1 := rfl
+
+@[simp] theorem kgPair_snd (w : (Lp (α := E) ℂ 2) × (Lp (α := E) ℂ 2)) :
+    (kgPair E w).snd = w.2 := rfl
+
+theorem kgPair_fst_snd (v : KGEnergy E) : kgPair E (v.fst, v.snd) = v := rfl
+
+theorem norm_kgPair_le (w : (Lp (α := E) ℂ 2) × (Lp (α := E) ℂ 2)) :
+    ‖kgPair E w‖ ≤ ‖w.1‖ + ‖w.2‖ := by
+  rw [kgPair_apply, WithLp.prod_norm_eq_of_L2]
+  have hsq : ‖(WithLp.toLp 2 w).fst‖ ^ 2 + ‖(WithLp.toLp 2 w).snd‖ ^ 2
+      ≤ (‖w.1‖ + ‖w.2‖) ^ 2 := by
+    simp only [WithLp.toLp_fst, WithLp.toLp_snd]
+    nlinarith [norm_nonneg w.1, norm_nonneg w.2]
+  calc Real.sqrt (‖(WithLp.toLp 2 w).fst‖ ^ 2 + ‖(WithLp.toLp 2 w).snd‖ ^ 2)
+      ≤ Real.sqrt ((‖w.1‖ + ‖w.2‖) ^ 2) := Real.sqrt_le_sqrt hsq
+    _ = ‖w.1‖ + ‖w.2‖ :=
+        Real.sqrt_sq (add_nonneg (norm_nonneg _) (norm_nonneg _))
+
+variable (E) in
+/-- The first component of an energy state, as a continuous linear map. -/
+def kgFst : KGEnergy E →L[ℂ] Lp (α := E) ℂ 2 :=
+  WithLp.fstL 2 ℂ (Lp (α := E) ℂ 2) (Lp (α := E) ℂ 2)
+
+variable (E) in
+/-- The second component of an energy state, as a continuous linear map. -/
+def kgSnd : KGEnergy E →L[ℂ] Lp (α := E) ℂ 2 :=
+  WithLp.sndL 2 ℂ (Lp (α := E) ℂ 2) (Lp (α := E) ℂ 2)
+
+theorem kgFst_apply (v : KGEnergy E) : kgFst E v = v.fst := rfl
+
+theorem kgSnd_apply (v : KGEnergy E) : kgSnd E v = v.snd := rfl
+
+/-- The first row of the propagator matrix. -/
+def kgRowOne (t : ℝ) : KGEnergy E →L[ℂ] Lp (α := E) ℂ 2 :=
+  (kgCosOp t).comp (kgFst E) + (kgSinOp t).comp (kgSnd E)
+
+/-- The second row of the propagator matrix. -/
+def kgRowTwo (t : ℝ) : KGEnergy E →L[ℂ] Lp (α := E) ℂ 2 :=
+  (-(kgSinOp t)).comp (kgFst E) + (kgCosOp t).comp (kgSnd E)
+
+theorem kgRowOne_apply (t : ℝ) (v : KGEnergy E) :
+    kgRowOne t v = kgCosOp t v.fst + kgSinOp t v.snd := rfl
+
+theorem kgRowTwo_apply (t : ℝ) (v : KGEnergy E) :
+    kgRowTwo t v = -(kgSinOp t v.fst) + kgCosOp t v.snd := rfl
 
 /-- **The free Klein–Gordon propagator on the energy space**, the rotation by `t⟨ξ⟩`. -/
 def kgPropagator (t : ℝ) : KGEnergy E →L[ℂ] KGEnergy E :=
-  ((kgCosOp t).coprod (kgSinOp t)).prod ((-(kgSinOp t)).coprod (kgCosOp t))
+  (kgPair E).comp ((kgRowOne t).prod (kgRowTwo t))
 
 theorem kgPropagator_apply (t : ℝ) (v : KGEnergy E) :
-    kgPropagator t v = (kgCosOp t v.1 + kgSinOp t v.2, -(kgSinOp t v.1) + kgCosOp t v.2) := rfl
+    kgPropagator t v
+      = kgPair E (kgCosOp t v.fst + kgSinOp t v.snd, -(kgSinOp t v.fst) + kgCosOp t v.snd) := rfl
 
-theorem norm_kgPropagator_apply_le (t : ℝ) (v : KGEnergy E) : ‖kgPropagator t v‖ ≤ 2 * ‖v‖ := by
-  have h1 : ‖v.1‖ ≤ ‖v‖ := by rw [Prod.norm_def]; exact le_max_left _ _
-  have h2 : ‖v.2‖ ≤ ‖v‖ := by rw [Prod.norm_def]; exact le_max_right _ _
-  rw [kgPropagator_apply, Prod.norm_def]
-  refine max_le ?_ ?_
-  · refine le_trans (norm_add_le _ _) ?_
-    have ha := norm_kgCosOp_apply_le t v.1
-    have hb := norm_kgSinOp_apply_le t v.2
+theorem norm_kgPropagator_apply_le (t : ℝ) (v : KGEnergy E) : ‖kgPropagator t v‖ ≤ 4 * ‖v‖ := by
+  have hv1 : ‖v.fst‖ ≤ ‖v‖ := WithLp.norm_fst_le _ v
+  have hv2 : ‖v.snd‖ ≤ ‖v‖ := WithLp.norm_snd_le _ v
+  have ha := norm_kgCosOp_apply_le t v.fst
+  have hb := norm_kgSinOp_apply_le t v.snd
+  have hc := norm_kgSinOp_apply_le t v.fst
+  have hd := norm_kgCosOp_apply_le t v.snd
+  have h1 : ‖kgCosOp (E := E) t v.fst + kgSinOp t v.snd‖ ≤ 2 * ‖v‖ := by
+    refine le_trans (norm_add_le _ _) ?_
     linarith
-  · refine le_trans (norm_add_le _ _) ?_
-    have ha := norm_kgSinOp_apply_le t v.1
-    have hb := norm_kgCosOp_apply_le t v.2
+  have h2 : ‖-(kgSinOp (E := E) t v.fst) + kgCosOp t v.snd‖ ≤ 2 * ‖v‖ := by
+    refine le_trans (norm_add_le _ _) ?_
     rw [norm_neg]
     linarith
+  rw [kgPropagator_apply]
+  refine le_trans (norm_kgPair_le _) ?_
+  simpa using by linarith
 
-/-- **The propagator is bounded uniformly in time.** -/
-theorem norm_kgPropagator_le (t : ℝ) : ‖kgPropagator (E := E) t‖ ≤ 2 :=
+/-- **The propagator is bounded uniformly in time.** The sharp constant is `1`; this crude bound is
+what the continuity arguments consume. -/
+theorem norm_kgPropagator_le (t : ℝ) : ‖kgPropagator (E := E) t‖ ≤ 4 :=
   ContinuousLinearMap.opNorm_le_bound _ (by norm_num) (norm_kgPropagator_apply_le t)
 
 /-- **The propagator is strongly continuous.** -/
 theorem continuous_kgPropagator_apply (v : KGEnergy E) :
     Continuous fun t : ℝ => kgPropagator t v := by
-  have h1 : Continuous fun t : ℝ => kgCosOp t v.1 + kgSinOp t v.2 :=
-    (continuous_kgCosOp_apply v.1).add (continuous_kgSinOp_apply v.2)
-  have h2 : Continuous fun t : ℝ => -(kgSinOp t v.1) + kgCosOp t v.2 :=
-    (continuous_kgSinOp_apply v.1).neg.add (continuous_kgCosOp_apply v.2)
-  exact (h1.prodMk h2).congr fun t => (kgPropagator_apply t v).symm
+  have h1 : Continuous fun t : ℝ => kgCosOp t v.fst + kgSinOp t v.snd :=
+    (continuous_kgCosOp_apply v.fst).add (continuous_kgSinOp_apply v.snd)
+  have h2 : Continuous fun t : ℝ => -(kgSinOp t v.fst) + kgCosOp t v.snd :=
+    (continuous_kgSinOp_apply v.fst).neg.add (continuous_kgCosOp_apply v.snd)
+  have hc : Continuous fun t : ℝ =>
+      kgPair E (kgCosOp t v.fst + kgSinOp t v.snd, -(kgSinOp t v.fst) + kgCosOp t v.snd) :=
+    (kgPair E).continuous.comp (h1.prodMk h2)
+  exact hc.congr fun t => (kgPropagator_apply t v).symm
 
 /-- **The propagator is jointly continuous in the time and the vector.** -/
 theorem continuous_kgPropagator_uncurry :
@@ -388,14 +456,16 @@ theorem continuous_kgPropagator_comp {ι : Type*} [TopologicalSpace ι] {r : ι 
 theorem kgPropagator_add (t s : ℝ) :
     kgPropagator (E := E) (t + s) = (kgPropagator t).comp (kgPropagator s) := by
   refine ContinuousLinearMap.ext fun v => ?_
-  simp only [ContinuousLinearMap.comp_apply, kgPropagator_apply, kgCosOp_add, kgSinOp_add,
-    sub_apply, add_apply, map_add, map_neg, Prod.mk.injEq]
-  constructor <;> abel
+  simp only [ContinuousLinearMap.comp_apply, kgPropagator_apply, kgPair_fst, kgPair_snd,
+    kgCosOp_add, kgSinOp_add, sub_apply, add_apply, map_add, map_neg]
+  refine congrArg (kgPair E) (Prod.ext ?_ ?_) <;> abel_nf
 
 /-- **The propagator starts at the identity.** -/
 theorem kgPropagator_zero_apply (v : KGEnergy E) : kgPropagator 0 v = v := by
   rw [kgPropagator_apply, kgCosOp_zero, kgSinOp_zero]
-  simp
+  simp only [ContinuousLinearMap.id_apply, zero_apply, add_zero, neg_zero,
+    zero_add]
+  exact kgPair_fst_snd v
 
 end Energy
 

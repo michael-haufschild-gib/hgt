@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.GallagherLemma
 import GaloisForLFunctions.RHTower.Sieve.MoebiusTwistPerron
+import GaloisForLFunctions.RHTower.Sieve.MoebiusEulerDamping
 
 /-!
 # The Möbius Dirichlet polynomial is the twisted Möbius sum
@@ -19,10 +20,12 @@ open Complex Finset
 
 /-- **The Möbius Dirichlet polynomial is the twisted Möbius sum.** -/
 theorem logPoly_moebius_eq (s : Finset ℕ) (w : ℝ) :
-    logPoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) s w
-      = ∑ n ∈ s, moebiusTwist (-(2 * Real.pi * w)) n := by
+    logPoly moebiusC s w = ∑ n ∈ s, moebiusTwist (-(2 * Real.pi * w)) n := by
   rw [logPoly]
   refine Finset.sum_congr rfl fun n _ => ?_
+  have hc : moebiusC n = ((ArithmeticFunction.moebius n : ℤ) : ℂ) := by
+    rw [moebiusC]; push_cast; ring
+  rw [hc]
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [moebiusTwist]
   · have hn0 : ((n : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.2 (by omega)

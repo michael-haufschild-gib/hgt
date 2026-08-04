@@ -860,3 +860,71 @@ exactness, a transported metric, or an abstract harmonic metric is insufficient.
 Clauses 3--4 from the pre-divisor Euler--Gamma--rational-adelic source.  Current source objects do
 not imply it: the explicit shear is a countermodel to every presently proved invariant clause.
 No unconditional source annihilation theorem or RH proof is claimed.
+
+## 2026-08-04 pre-divisor rational-adelic / reflected-Gaussian Cartier comparison
+
+### New dependency-closed bridge `[PROVED ON PAPER AND IN LEAN]`
+
+Let `H_p^1` be the genuine ordinary-prime zero-isotropy relative cohomology, let
+`R_p : H_p^1 -> C` be its bilateral Stokes regulator, and let `eta_p` be its retained class.  The
+existing source theorem gives `R_p(eta_p)=1`.  Let `h_G` be the fixed reflected Meyer Gaussian
+horizon, constructed before divisor restriction by the two exterior absolute-Euler Cauchy lines.
+Its Xi restriction is square summable and nowhere zero, is invariant under functional-equation
+reflection, and intertwines line conjugation with coefficient conjugation.  The singular
+Gamma-residue normalizer carries the forced Cartier residue exactly to `h_G`.
+
+Define
+
+```text
+C_p(x) = R_p(x) h_G,
+J_p(x) = -G C_p(x),
+```
+
+where `G` is the already constructed completed source Green linear isometry.  Then:
+
+1. `C_p(eta_p)=h_G`, and this is exactly the source-graded singular Cartier residue;
+2. `C_p(x)=0 <-> R_p(x)=0`, because every coordinate of `h_G` is nonzero;
+3. both upper and lower absolute-Euler Gamma Cauchy legs of `eta_p` are nonzero for every real
+   boundary parameter: the Gaussian exponential and the regular-point Cauchy denominator never
+   vanish;
+4. the two-sided Gamma boundary integral is exactly `C_p(eta_p)`;
+5. `J_p(eta_p)` is the unique completed Green primitive and is the integral of the oriented
+   two-sided Gamma boundary;
+6. the fixed completed-Xi Hilbert polarization is preserved exactly:
+
+```text
+<J_p(x), J_p(y)> = <C_p(x), C_p(y)>;
+```
+
+7. the atom is retained under both functional-equation reflection and Hermitian line
+   conjugation.
+
+This bridge is source-first in the relevant sense: the coefficient is supplied by the independent
+rational-adelic period and the vector is reconstructed from pre-divisor Euler--Gamma Cauchy data;
+no divisor-indexed interpolation or pulled-back source norm is introduced.
+
+Formal module:
+`GaloisForLFunctions/RHTower/CCMRationalAdelicReflectedGaussianCartierComparison.lean`.
+
+### Exact surviving obstruction `[OPEN CORE NARROWED]`
+
+This theorem closes the missing provenance link and the two-orientation non-erasure part, but it
+does **not** identify the completed-Xi Hodge isometry with Route R's fixed same-fibre product metric.
+After applying the actual Green covariance fracture, the retained atom becomes
+
+```text
+D_G(C_p(eta_p)) = reflectedGaussianHorizonGreenProvenance,
+```
+
+and Lean proves unconditionally
+
+```text
+D_G(C_p(eta_p)) = 0 <-> RiemannHypothesis.
+```
+
+Thus the Cauchy/Cartier comparison cannot itself be cited as source annihilation.  Clauses 3--4 of
+the surviving producer now have an explicit source realization, and a fixed completed-Hilbert
+polarization is preserved.  Remaining hard theorem is stricter: prove that this independent source
+polarization specializes to the **same fixed physical corona polarization** and fixed zero-hidden
+lift, rather than to the completed Green/Hodge mate.  The shear countermodel still blocks replacing
+that specialization law by transported positivity or abstract isometry.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.KleinGordonL2Propagator
+import GaloisForLFunctions.HTGeometry.KleinGordonEnergyConservation
 import GaloisForLFunctions.HTGeometry.VolterraStrongKernel
 
 /-!
@@ -44,34 +44,33 @@ variable {V : E → ℂ} {b : ℝ}
 `(w₁, w₂) ↦ (0, V ⟨D⟩⁻¹ w₁)`. -/
 def kgPotentialOp (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b) :
     KGEnergy E →L[ℂ] KGEnergy E :=
-  (0 : KGEnergy E →L[ℂ] Lp (α := E) ℂ 2).prod
-    (((lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hV hb0 hb).comp
-      kgFreqInvOp).comp (ContinuousLinearMap.fst ℂ (Lp (α := E) ℂ 2) (Lp (α := E) ℂ 2)))
+  (kgPair E).comp
+    ((0 : KGEnergy E →L[ℂ] Lp (α := E) ℂ 2).prod
+      (((lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hV hb0 hb).comp
+        kgFreqInvOp).comp (kgFst E)))
 
 theorem kgPotentialOp_apply (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b)
     (v : KGEnergy E) :
     kgPotentialOp hV hb0 hb v
-      = (0, lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hV hb0 hb
-          (kgFreqInvOp v.1)) := rfl
+      = kgPair E (0, lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hV hb0 hb
+          (kgFreqInvOp v.fst)) := rfl
 
-/-- **The perturbation is bounded by the supremum of the potential.** -/
+/-- **The perturbation is bounded by the supremum of the potential.** The factor `⟨D⟩⁻¹` is a
+contraction, so no derivative is lost. -/
 theorem norm_kgPotentialOp_le (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b) :
     ‖kgPotentialOp hV hb0 hb‖ ≤ b := by
   refine ContinuousLinearMap.opNorm_le_bound _ hb0 fun v => ?_
-  rw [kgPotentialOp_apply, Prod.norm_def]
-  have hv1 : ‖v.1‖ ≤ ‖v‖ := by rw [Prod.norm_def]; exact le_max_left _ _
-  refine max_le ?_ ?_
-  · rw [norm_zero]
-    exact mul_nonneg hb0 (norm_nonneg v)
-  · have hmul := (lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hV hb0 hb).le_of_opNorm_le
-      (norm_lpBoundedMulCLM_le (p := 2) (μ := (volume : Measure E)) hV hb0 hb) (kgFreqInvOp v.1)
-    have hinv : ‖kgFreqInvOp (E := E) v.1‖ ≤ ‖v.1‖ := by
-      have h := (kgFreqInvOp (E := E)).le_of_opNorm_le norm_kgFreqInvOp_le v.1
-      rwa [one_mul] at h
-    calc ‖lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hV hb0 hb (kgFreqInvOp v.1)‖
-        ≤ b * ‖kgFreqInvOp (E := E) v.1‖ := hmul
-      _ ≤ b * ‖v.1‖ := mul_le_mul_of_nonneg_left hinv hb0
-      _ ≤ b * ‖v‖ := mul_le_mul_of_nonneg_left hv1 hb0
+  rw [kgPotentialOp_apply, kgPair_apply, WithLp.norm_toLp_snd]
+  have hv1 : ‖v.fst‖ ≤ ‖v‖ := WithLp.norm_fst_le _ v
+  have hmul := (lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hV hb0 hb).le_of_opNorm_le
+    (norm_lpBoundedMulCLM_le (p := 2) (μ := (volume : Measure E)) hV hb0 hb) (kgFreqInvOp v.fst)
+  have hinv : ‖kgFreqInvOp (E := E) v.fst‖ ≤ ‖v.fst‖ := by
+    have h := (kgFreqInvOp (E := E)).le_of_opNorm_le norm_kgFreqInvOp_le v.fst
+    rwa [one_mul] at h
+  calc ‖lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hV hb0 hb (kgFreqInvOp v.fst)‖
+      ≤ b * ‖kgFreqInvOp (E := E) v.fst‖ := hmul
+    _ ≤ b * ‖v.fst‖ := mul_le_mul_of_nonneg_left hinv hb0
+    _ ≤ b * ‖v‖ := mul_le_mul_of_nonneg_left hv1 hb0
 
 /-! ## The Duhamel data -/
 
@@ -92,15 +91,16 @@ theorem kgDuhamelKernel_apply (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, 
 theorem continuous_kgFreeCurve (w₀ : KGEnergy E) : Continuous (kgFreeCurve w₀) :=
   continuous_kgPropagator_apply w₀
 
-theorem norm_kgFreeCurve_le (w₀ : KGEnergy E) (t : ℝ) : ‖kgFreeCurve w₀ t‖ ≤ 2 * ‖w₀‖ :=
-  norm_kgPropagator_apply_le t w₀
+theorem norm_kgFreeCurve_le (w₀ : KGEnergy E) (t : ℝ) : ‖kgFreeCurve w₀ t‖ ≤ ‖w₀‖ :=
+  le_of_eq (norm_kgPropagator_apply t w₀)
 
 theorem norm_kgDuhamelKernel_le (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b)
-    (t s : ℝ) : ‖kgDuhamelKernel hV hb0 hb t s‖ ≤ 2 * b := by
+    (t s : ℝ) : ‖kgDuhamelKernel hV hb0 hb t s‖ ≤ b := by
   rw [kgDuhamelKernel, ContinuousLinearMap.norm_restrictScalars]
   refine le_trans (ContinuousLinearMap.opNorm_comp_le _ _) ?_
-  exact mul_le_mul (norm_kgPropagator_le (t - s)) (norm_kgPotentialOp_le hV hb0 hb)
-    (norm_nonneg _) (by norm_num)
+  have h := mul_le_mul (norm_kgPropagator_le_one (E := E) (t - s))
+    (norm_kgPotentialOp_le hV hb0 hb) (norm_nonneg _) zero_le_one
+  rwa [one_mul] at h
 
 /-- **The Duhamel kernel is strongly continuous.** The propagator is not norm continuous, so this is
 the form the perturbation series has to consume. -/
@@ -132,7 +132,7 @@ variable (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b) (w�
 /-- **The mild solution is continuous in time.** -/
 theorem continuous_kgMildSolution : Continuous (kgMildSolution hV hb0 hb w₀) :=
   continuous_volterraSolution_of_strong (continuous_kgFreeCurve w₀)
-    (strongKernel_kgDuhamelKernel hV hb0 hb) (by linarith : (0:ℝ) ≤ 2 * b) (by positivity : (0:ℝ) ≤ 2 * ‖w₀‖)
+    (strongKernel_kgDuhamelKernel hV hb0 hb) hb0 (norm_nonneg w₀)
     (norm_kgDuhamelKernel_le hV hb0 hb) (norm_kgFreeCurve_le w₀)
 
 /-- **The mild solution satisfies Duhamel's formula.** -/
@@ -141,7 +141,7 @@ theorem kgMildSolution_eq (t : ℝ) :
       = kgPropagator t w₀
         + ∫ s in (0 : ℝ)..t, kgDuhamelKernel hV hb0 hb t s (kgMildSolution hV hb0 hb w₀ s) :=
   volterraSolution_eq_of_strong (continuous_kgFreeCurve w₀)
-    (strongKernel_kgDuhamelKernel hV hb0 hb) (by linarith : (0:ℝ) ≤ 2 * b) (by positivity : (0:ℝ) ≤ 2 * ‖w₀‖)
+    (strongKernel_kgDuhamelKernel hV hb0 hb) hb0 (norm_nonneg w₀)
     (norm_kgDuhamelKernel_le hV hb0 hb) (norm_kgFreeCurve_le w₀) t
 
 /-- **The mild solution starts at the datum.** -/
@@ -152,9 +152,9 @@ theorem kgMildSolution_zero : kgMildSolution hV hb0 hb w₀ 0 = w₀ := by
 /-- **The energy of the mild solution grows at most exponentially**, at a rate set by the supremum
 of the potential alone. -/
 theorem norm_kgMildSolution_le (t : ℝ) :
-    ‖kgMildSolution hV hb0 hb w₀ t‖ ≤ 2 * ‖w₀‖ * Real.exp (2 * b * |t|) :=
+    ‖kgMildSolution hV hb0 hb w₀ t‖ ≤ ‖w₀‖ * Real.exp (b * |t|) :=
   norm_volterraSolution_le_of_strong (continuous_kgFreeCurve w₀)
-    (strongKernel_kgDuhamelKernel hV hb0 hb) (by linarith : (0:ℝ) ≤ 2 * b) (by positivity : (0:ℝ) ≤ 2 * ‖w₀‖)
+    (strongKernel_kgDuhamelKernel hV hb0 hb) hb0 (norm_nonneg w₀)
     (norm_kgDuhamelKernel_le hV hb0 hb) (norm_kgFreeCurve_le w₀) t
 
 /-- **Uniqueness: Duhamel's formula has at most one continuous solution.** -/
@@ -162,9 +162,26 @@ theorem eq_kgMildSolution_of_duhamel {w : ℝ → KGEnergy E} (hw : Continuous w
     (hduh : ∀ t : ℝ, w t = kgPropagator t w₀
       + ∫ s in (0 : ℝ)..t, kgDuhamelKernel hV hb0 hb t s (w s)) :
     w = kgMildSolution hV hb0 hb w₀ :=
-  volterra_eq_of_eq_of_eq_of_strong (strongKernel_kgDuhamelKernel hV hb0 hb) (by linarith : (0:ℝ) ≤ 2 * b)
+  volterra_eq_of_eq_of_eq_of_strong (strongKernel_kgDuhamelKernel hV hb0 hb) hb0
     (norm_kgDuhamelKernel_le hV hb0 hb) hw (continuous_kgMildSolution hV hb0 hb w₀) hduh
     (kgMildSolution_eq hV hb0 hb w₀)
+
+/-- **The energy estimate for the constructed solution.** The energy at time `t` is controlled by
+the energy of the datum with an exponential rate set by the supremum of the potential alone — the
+same shape as the estimate proved for classical solutions, now for the solution that exists. -/
+theorem kgEnergy_kgMildSolution_le (t : ℝ) :
+    kgEnergy (kgMildSolution hV hb0 hb w₀ t) ≤ kgEnergy w₀ * Real.exp (2 * b * |t|) := by
+  have h := norm_kgMildSolution_le hV hb0 hb w₀ t
+  have hpos : (0 : ℝ) ≤ ‖w₀‖ * Real.exp (b * |t|) := by positivity
+  have hsq : ‖kgMildSolution hV hb0 hb w₀ t‖ ^ 2 ≤ (‖w₀‖ * Real.exp (b * |t|)) ^ 2 := by
+    nlinarith [norm_nonneg (kgMildSolution hV hb0 hb w₀ t)]
+  have hexp : (Real.exp (b * |t|)) ^ 2 = Real.exp (2 * b * |t|) := by
+    rw [pow_two, ← Real.exp_add]
+    congr 1
+    ring
+  rw [kgEnergy_eq_norm_sq, kgEnergy_eq_norm_sq]
+  refine hsq.trans (le_of_eq ?_)
+  rw [mul_pow, hexp]
 
 /-- **The Cauchy problem for a bounded measurable potential is globally well posed in the energy
 space.** For every datum there is exactly one continuous curve satisfying Duhamel's formula, it

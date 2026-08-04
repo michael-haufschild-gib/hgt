@@ -236,16 +236,52 @@ picture a homomorphism.
 unit algebra by an equivalent one — the two facts that the proof of `(5)` composes, at the
 1-categorical level available in Lean.
 
+**The analytic heart of `(2)`: the de Rham complex of a torus and its cohomology.**
+`formal/GaloisForLFunctions/HTGeometry/` — `PeriodicAveraging`, `AlternatingContraction`,
+`PeriodicHomotopy`, `PeriodicConstantForm`, `PeriodicFullAverage`, `AlternatingFormExterior`,
+`PeriodicCohomology`; every declaration axiom-audited inside `propext, Classical.choice, Quot.sound`.
+
+A form on the torus `T_L = (L ⊗ ℝ)^∨ / L^∨` is a form on the universal cover invariant under the
+lattice, so `Ω^*(T_L;ℝ)` is written down as the complex of `C^1` maps from the coordinate space to
+the continuous alternating forms that are periodic in each coordinate, with mathlib's `extDeriv` as
+the differential.  In that model the whole of `Ω^*_inv(T_L) ≅ Λ^*(L ⊗ ℝ)` and the quasi-isomorphism
+statement are theorems, proved over any `RCLike` field and any nonzero period, hence in particular
+over `ℝ` with the standard integer lattice.
+
+- `periodCurve`, `averageOp`, `averageOp_hasFDerivAt`, `averageOp_extDeriv` — averaging a form over
+  one period differentiates under the integral sign and commutes with the exterior derivative.
+- `contractCLM`, `cartan_contract` — the Cartan formula for the constant vector field of a period
+  direction: antisymmetrizing the contraction of a derivative is the directional derivative minus
+  the contraction of the exterior derivative.
+- `averageOp_sub_eq_extDeriv` — the average of a closed form over a period differs from the form by
+  an exact form, the primitive being the weighted average of the contraction; the weight is what one
+  integration by parts along the period produces.
+- `const_of_flowInvariant`, `periodicAveragedData`, `periodic_closed_eq_const_add_exact` — averaging
+  over every coordinate period in turn makes a closed periodic form invariant under all the period
+  flows, hence constant, and changes it only by an exact form with a periodic primitive.
+- `constantForm_eq_zero`, `periodic_const_add_exact_unique` — a constant form that is the exterior
+  derivative of a periodic `C^1` form vanishes, by induction on the degree from the one-form case.
+- `periodicClosedForms`, `periodicExactForms`, `periodicCohomology`, `periodicCohomologyEquiv` —
+  the cohomology of the periodic de Rham complex, and the theorem that sending a constant
+  alternating form to its class is an isomorphism onto it.  **This is exactly the statement that the
+  inclusion of the translation-invariant forms is a quasi-isomorphism**: surjectivity is the
+  averaging decomposition, injectivity the vanishing above.
+- `alternatingFormExteriorEquiv`, `periodicCohomologyExteriorEquiv` — evaluation at the identity
+  identifies the invariant forms with `Λ^k` of the cover, so `H^k(T_L) ≅ Λ^k(L ⊗ ℝ)`.
+- `torusCohomologyEquiv`, `torusCohomologyExteriorEquiv` — the real torus `ℝ^r/ℤ^r` itself.
+
+Supporting infrastructure built for it and reusable: `continuousAlternatingEquiv` (on a finite
+coordinate space the alternating maps are exactly the continuous ones, as a linear equivalence),
+and the generalisation of `multilinearMap_bound` to an arbitrary nontrivially normed field.
+
 ### What cannot be stated in Lean, and why
 
-The formality quasi-isomorphism `(2)` itself, and everything downstream of it, needs objects
-mathlib does not have:
-
-- `C^*_sh(T_F;ℝ)` is a colimit of de Rham complexes `Ω^*(T_L;ℝ)`.  mathlib has no de Rham complex
-  of a manifold and no smooth differential forms, so `Ω^*` cannot be written down, and neither can
-  the identification of translation-invariant forms with `Λ*(L ⊗ ℝ)` nor the statement that the
-  inclusion of invariant forms is a quasi-isomorphism.  That step is the analytic heart of `(2)`
-  and is the only thing the filtration arguments above are waiting on.
+- `C^*_sh(T_F;ℝ)` is the filtered colimit over `L` of the complexes `Ω^*(T_L;ℝ)`.  Each term and its
+  cohomology are now formalized, as is the exactness of filtered colimits (`directLimit_map_exact`)
+  and the commutation of exterior powers with them (`exteriorPowerDirectLimitEquiv`,
+  `deningerExterior_iSup_adjoin`).  What is still missing between these is the naturality of the
+  comparison in `L`: pullback along a lattice inclusion as a map of the periodic complexes, and the
+  compatibility of that map with the identification of the cohomology with `Λ^*`.
 - `(3)` and `(4)` are statements about free `E_∞` `Hℝ`-algebras.  mathlib has no `E_∞`-algebras and
   no CDGA homotopy theory.  What survives is the algebraic content of "a free commutative algebra
   on generators in odd degree one is the exterior algebra": that is the universal property of
@@ -263,3 +299,9 @@ scalars.
 
 - 2026-08-02 — Formalized the setup and the two filtration arguments of the proof of `(2)`, and
   the equivariance.
+- 2026-08-04 — Formalized the analytic heart of `(2)`: the de Rham complex of a torus in the
+  periodic-forms model on the universal cover, the averaging/Cartan proof that its cohomology is the
+  constant alternating forms, and the identification of those with `Λ^*` of the cover.  The
+  statement "mathlib has no de Rham complex of a manifold, so this step cannot be written down" was
+  wrong: the covering model needs only `extDeriv` and periodicity.  Naturality in `L` is what
+  remains before `(2)` can be assembled.

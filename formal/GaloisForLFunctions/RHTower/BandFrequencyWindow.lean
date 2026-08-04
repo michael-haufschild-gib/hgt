@@ -67,7 +67,7 @@ theorem bandFourier_eq_fourier (a : ℝ) (ψ : ℝ → ℝ) :
   rw [mul_comm ((ψ x : ℂ)) _]
   congr 1
   push_cast
-  ring
+  ring_nf
 
 /-- **The band average of moments is the frequency-window energy.**  The change of variables
 `xi = -c t/(2 pi)` turns the band average into an integral over the window, and its Jacobian cancels

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareCapstone
 import GaloisForLFunctions.RHTower.Sieve.LogPolyMoebius
+import GaloisForLFunctions.RHTower.Sieve.MoebiusEulerDamping
 
 /-!
 # The Möbius short-interval mean square over a range
@@ -17,13 +18,6 @@ Only the frequency-restricted bound carries arithmetic; everything else is eleme
 namespace RHTower.Sieve
 
 open Complex MeasureTheory Finset
-
-/-- The Möbius coefficients, complex valued. -/
-noncomputable def moebiusC (n : ℕ) : ℂ := ((ArithmeticFunction.moebius n : ℤ) : ℂ)
-
-theorem norm_moebiusC_le_one (n : ℕ) : ‖moebiusC n‖ ≤ 1 := by
-  rw [moebiusC, ← Complex.ofReal_intCast, Complex.norm_real, Real.norm_eq_abs]
-  exact_mod_cast ArithmeticFunction.abs_moebius_le_one
 
 /-- The trivial bound on the Möbius Dirichlet polynomial. -/
 theorem normSq_logPoly_moebiusC_le (s : Finset ℕ) (w : ℝ) :

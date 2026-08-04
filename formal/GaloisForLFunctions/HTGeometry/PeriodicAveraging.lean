@@ -279,6 +279,27 @@ end GaloisForLFunctions.HTGeometry
 
 namespace GaloisForLFunctions.HTGeometry
 
+section IntegralHelpers
+
+/-- Continuity of a parametric interval integral, with the target abstract so that instance search
+succeeds on iterated continuous-linear-map spaces. -/
+theorem continuous_parametric_unitIntegral {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    {Y : Type*} [TopologicalSpace Y] [FirstCountableTopology Y] {f : Y → ℝ → X}
+    (hf : Continuous (Function.uncurry f)) :
+    Continuous fun y => ∫ t in (0 : ℝ)..1, f y t :=
+  intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' hf 0 1
+
+/-- Pulling a continuous linear map out of an interval integral of a continuous function. -/
+theorem unitIntegral_comp_comm {𝕜 : Type*} [RCLike 𝕜] {X Y : Type*} [NormedAddCommGroup X]
+    [NormedSpace 𝕜 X] [NormedSpace ℝ X] [NormedAddCommGroup Y] [NormedSpace 𝕜 Y] [NormedSpace ℝ Y]
+    [CompleteSpace X] [CompleteSpace Y] (L : X →L[𝕜] Y) (f : ℝ → X) (hf : Continuous f) :
+    L (∫ t in (0 : ℝ)..1, f t) = ∫ t in (0 : ℝ)..1, L (f t) := by
+  rw [_root_.intervalIntegral.integral_of_le zero_le_one,
+    _root_.intervalIntegral.integral_of_le zero_le_one]
+  exact (ContinuousLinearMap.integral_comp_comm L ((hf.intervalIntegrable 0 1).1)).symm
+
+end IntegralHelpers
+
 section AverageC1
 
 open ContinuousAlternatingMap
@@ -286,29 +307,14 @@ open ContinuousAlternatingMap
 variable {𝕜 : Type*} [RCLike 𝕜] {r : ℕ} {X : Type*} [NormedAddCommGroup X] [NormedSpace 𝕜 X]
   [NormedSpace ℝ X] [IsScalarTower ℝ 𝕜 X] [SMulCommClass ℝ 𝕜 X]
 
-omit [IsScalarTower ℝ 𝕜 X] [SMulCommClass ℝ 𝕜 X] in
-/-- Continuity of a parametric interval integral, with the target abstract so that instance search
-succeeds on iterated continuous-linear-map spaces. -/
-theorem continuous_parametric_unitIntegral {Y : Type*} [TopologicalSpace Y]
-    [FirstCountableTopology Y] {f : Y → ℝ → X} (hf : Continuous (Function.uncurry f)) :
-    Continuous fun y => ∫ t in (0 : ℝ)..1, f y t :=
-  intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' hf 0 1
-
-/-- Pulling a continuous linear map out of an interval integral of a continuous function. -/
-theorem unitIntegral_comp_comm {Y : Type*} [NormedAddCommGroup Y] [NormedSpace 𝕜 Y]
-    [NormedSpace ℝ Y] [CompleteSpace X] [CompleteSpace Y]
-    (L : X →L[𝕜] Y) (f : ℝ → X) (hf : Continuous f) :
-    L (∫ t in (0 : ℝ)..1, f t) = ∫ t in (0 : ℝ)..1, L (f t) := by
-  rw [_root_.intervalIntegral.integral_of_le zero_le_one,
-    _root_.intervalIntegral.integral_of_le zero_le_one]
-  exact (ContinuousLinearMap.integral_comp_comm L ((hf.intervalIntegrable 0 1).1)).symm
-
+omit [SMulCommClass ℝ 𝕜 X] in
 /-- The average is differentiable. -/
 theorem averageOp_differentiable {p : 𝕜} {β : (Fin r → 𝕜) → X} (hdiff : Differentiable 𝕜 β)
     (hcont' : Continuous (fderiv 𝕜 β)) (j : Fin r) :
     Differentiable 𝕜 (averageOp p β j) :=
   fun w => (averageOp_hasFDerivAt hdiff hcont' j w).differentiableAt
 
+omit [SMulCommClass ℝ 𝕜 X] in
 /-- **The average is continuously differentiable.** -/
 theorem averageOp_fderiv_continuous {p : 𝕜} {β : (Fin r → 𝕜) → X} (hdiff : Differentiable 𝕜 β)
     (hcont' : Continuous (fderiv 𝕜 β)) (j : Fin r) :
@@ -343,7 +349,7 @@ theorem averageOp_extDeriv {p : 𝕜} {β : (Fin r → 𝕜) → (Fin r → 𝕜
   have hcont : Continuous fun s : ℝ => fderiv 𝕜 β (periodCurve p w j s) :=
     hcont'.comp (continuous_periodCurve p w j)
   rw [extDeriv, (averageOp_hasFDerivAt hdiff hcont' j w).fderiv]
-  exact unitIntegral_comp_comm (alternatizeUncurryFinCLM 𝕜 (Fin r → 𝕜) 𝕜 (n := n))
+  exact unitIntegral_comp_comm (𝕜 := 𝕜) (alternatizeUncurryFinCLM 𝕜 (Fin r → 𝕜) 𝕜 (n := n))
     (fun s => fderiv 𝕜 β (periodCurve p w j s)) hcont
 
 end AverageExtDeriv
