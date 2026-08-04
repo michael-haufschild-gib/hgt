@@ -4429,3 +4429,27 @@ receive a new title and an independent significance audit.
   audits pass with only `propext`, `Classical.choice`, and `Quot.sound`. The remaining formal gate is
   injective assembly of first-defect-selected outputs; the remaining scientific gate is the
   zero-character anisotropic/edge overlap.
+- 2026-08-04 -- Refreshed the two publication-ready entries written after the previous corpus
+  audit. `real-corona-isotropy-clifford-transgression-law` supplies an exact one-involution
+  fixed/free atomic split and an even/odd smoothness--detectability allocation. This supports the
+  representation choice “nonzero Pauli characters versus the fixed zero character,” but it proves
+  no all-subspaces rank inequality and therefore contributes no Hall estimate. Its registry card
+  is also internally stale: the opening universal Chern-character statement and gates remain
+  marked conjectural/open while the terminal log records final closure, so no unresolved claim from
+  that card is imported here. `stokes-cartan-lorentz-capacity-law` proves a genuine one-defect
+  Schur-complement law, but its capacity is the scalar inertia wall
+  `c^(-1)-lambda`, not Hall capacity `dim(sum_j A_j U)-dim U`; it supplies no selector or overlap
+  bound. Neither new entry changes O4's open core.
+- 2026-08-04 -- Closed the literal nonzero-character Hall channel in Lean. The simultaneous
+  paired-Pauli character spaces are proved `iSupIndep`: distinct global Pauli words define distinct
+  conjugation characters, and exact eigenspaces embed in the independent simultaneous generalized
+  eigenspaces. `finiteTwoReplicaNonzeroPauliResolvedSubspace` is the direct sum of all nonzero
+  character components contained in an arbitrary subspace. The capstone
+  `finiteTwoReplicaNonzeroPauliResolvedSubspace_finrank_le_shadow` proves, without an invariance
+  hypothesis, that this resolved subspace cannot shrink under the literal weight-one collective
+  Pauli family. The proof assembles the first-defect inverse selector through collision-free target
+  grades. Targeted elaboration passes; the capstone axiom audit uses only `propext`,
+  `Classical.choice`, and `Quot.sound`. The nonzero channel is no longer open. Exact surviving
+  two-replica gate: Hall expansion on the zero Pauli-character fixed algebra, including its local
+  anisotropic diagonal-correlation component, plus reverse compensation for intersection of its
+  edge images with already occupied nonzero target grades.

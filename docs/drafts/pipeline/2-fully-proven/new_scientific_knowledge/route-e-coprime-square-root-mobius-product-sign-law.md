@@ -7980,3 +7980,88 @@ split needs nothing else.
 Following `formal/CLAUDE.md`'s rule for missing analytic inputs (explicit hypotheses or `Prop`
 interfaces), the card's dependence on Matomäki–Radziwiłł is now a single named `Prop` rather than a
 prose remark, and every downstream step is checked against it.
+
+### Step 2's rescaling is now an exact Finset bijection
+
+`RHTower/Sieve/BalancedPairsRescale.lean`, unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+- `mem_balancedPairs` — for `x > 0` the bounding box in the definition of `balancedPairs` is
+  *implied* by the product constraint, so membership is exactly the four real inequalities.  (If
+  `x ≤ n₁n₂` and `x > 0` then both entries are `≥ 1`, hence each is `≤ n₁n₂ ≤ x + h√x`.)
+- `sqrt_div_sq`, `rescaled_endpoint` — `√(x/p²) = √x/p` and
+  `x/p² + (h/p)·√(x/p²) = (x + h√x)/p²`.
+- **`balancedPairs_shared_eq_image`** —
+
+      { balanced pairs with p ∣ n₁ and p ∣ n₂ }  =  image (m₁,m₂) ↦ (p m₁, p m₂)
+        of  balancedPairs (x/p²) (h/p).
+
+  An exact Finset identity: the four constraints transform into each other by the two displays
+  above, so the card's `X_p = x/p²`, `h_p = h/p` is not an approximation but a bijection.
+- `coprimeSquarefreeWeight p n = μ²(n)·1_{p∤n}`, `moebius_sq_prime_mul` (`μ²(pa) = f_p(a)` for `p`
+  prime), and
+
+      sharedSectorCount_eq_pairSum :
+        C_p(x,h) = pairSum (coprimeSquarefreeWeight p) (x/p²) (h/p).
+
+So the card's `(9)` is now *definitionally* an instance of `(5)` at the weight `f_p` and the
+parameters `(X_p, h_p)`; combined with `tendsto_window_coprime_squarefree_density` (the `(8)` limit
+proved earlier) it yields `C_p/(h√x log 2) → D²/(p+1)²` as soon as the interface is available there.
+The `1/p²` of `(9)` is exactly the Jacobian `h_p√X_p = h√x/p²` of the bijection.
+
+### `(9)` derived from the interface, and `(10)`'s union bound proved
+
+Two modules, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `RHTower/Sieve/SharedSectorLimit.lean` — `MRBilinearAt f X hh`, the interface at a *moving* pair
+  of parameters (Matomäki–Radziwiłł's uniformity is what lets it be applied at `(x/p², h/p)`), with
+  `MRBilinear_iff` showing the unrescaled interface is its instance at the identity.  Then
+  `tendsto_sqrt_div_sq`, `tendsto_blockMean_coprime` (the `(8)` limit at the rescaled scale) and
+
+      tendsto_sharedSector_of_MR :
+        MRBilinearAt (μ²·1_{p∤·}) (x ↦ x/p²) (x ↦ h(x)/p)  →
+          C_p(x,h)/(h√x log 2) → D²/(p+1)².
+
+  This is the card's `(9)`.  The constant works out as `(D·p/(p+1))²/p² = D²/(p+1)²`, the `1/p²`
+  being the Jacobian of the rescaling bijection.
+- `RHTower/Sieve/NoncoprimeUnionBound.lean` — `sum_union_le_of_nonneg`,
+  `sum_biUnion_le_of_nonneg` (neither is in mathlib; the union bound for a nonnegative weight
+  follows from `Finset.sum_union_inter`), `noncoprimePairCount`, `exists_shared_prime`, and
+
+      noncoprimePairCount_le :  B(x,h) ≤ ∑_{p ≤ 2√x} C_p(x,h).
+
+  The card's `(10)`, as an exact finite inequality.  A noncoprime balanced pair has `gcd ≥ 2` — no
+  squarefreeness needed — and its prime factor divides `n₁ ≤ 2√x`, so the index range is forced.
+
+Combined with `exists_shared_prime_tail_small` (`(11)`) and `coprimeSharedPrimeDensity_le` (`(13)`),
+the only step of the card still to assemble is the passage `(10)+(11)+(9) ⟹ (12)`, which is a
+limsup interchange over the prime cut-off `P`, and then `(7)+(12)+(13) ⟹ (3)` via
+`le_liminf_after_deletion`.  Both are pure limit bookkeeping over pieces that are now all in Lean.
+
+### The prime range splits at the cut-off
+
+`RHTower/Sieve/PrimeRangeSplit.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`:
+
+- `disjoint_primesLE_bigPrimeSet`, `primesLE_eq_union` — `primesLE Q = primesLE P ⊎ bigPrimeSet P Q`
+  for `P ≤ Q`, an exact disjoint decomposition.
+- `sum_primesLE_split`, and
+
+      noncoprimePairCount_le_split :
+        B(x,h) ≤ ∑_{p ≤ P} C_p(x,h) + ∑_{P < p ≤ 2√x} C_p(x,h).
+
+This is the shape the card's step 3 consumes: the first sum is a *finite* sum of terms each of which
+has a limit by `(9)`, and the second is what `(11)` makes small uniformly.
+
+#### The one remaining unconditional gap
+
+To feed `(11)` the second sum must be compared with the tail bound it estimates, i.e.
+
+    sharedSectorCount x h p ≤ (√x/p + 1)·(h/p + 1).
+
+The corpus's `card_pair_dvd_le` proves exactly this for a *product* of two independent interval
+multiple-counts.  The balanced pair set is not such a product: for fixed `n₁` the second entry
+ranges over `[x/n₁, (x+h√x)/n₁]`, an interval whose length is `h√x/n₁ ≤ h` because `n₁ ≥ √x`.  So the
+missing step is the nested-sum decomposition of `balancedPairs` — writing it as a sum over `n₁` of
+an inner interval count — after which `card_pair_dvd_le`'s inner estimate applies with the uniform
+length bound `h`.  That is the next unconditional target; everything downstream of it is already
+built.

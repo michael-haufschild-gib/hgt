@@ -707,6 +707,23 @@ infrastructure, in `formal/GaloisForLFunctions/HTGeometry/ArcoshComparison.lean`
   elementary inequality `x(x+1) >= 2`.  This is what makes `log(x + sqrt(x²-1))` and `sqrt(x²-1)`
   interchangeable to relative order `x²-1`, which is the accuracy the singular-term cancellation needs.
 
+The phase is now bracketed by the endpoint logarithm to that accuracy, in the stationary-phase module:
+
+- **`xiSpeed_eq_factored`** — the exact factorisation
+  `sqrt((t²-s)/(t²-1)) = sqrt(1-s) (t²-1)^(-1/2) sqrt(1 + (t²-1)/(1-s))`.
+- `intervalIntegrable_invSqrtSqSubOne`, **`integral_invSqrtSqSubOne`** — the endpoint logarithm is the
+  exact primitive of `(t²-1)^{-1/2}` from the endpoint, the integrand being singular but integrable.
+- **`sqrt_one_sub_mul_endpointLog_le_xiEndpointPhase`**,
+  **`xiEndpointPhase_le_sqrt_one_sub_mul_endpointLog`** — the two-sided bracket
+
+  ```text
+  sqrt(1-s) L(x)  <=  xi_s(x)  <=  sqrt(1-s) sqrt(1 + (x²-1)/(1-s)) L(x),   L = endpointLog,
+  ```
+
+  whose correction factor is `1 + O(x²-1)`.  Combined with the `arcosh`-vs-`sqrt` comparison this gives
+  `xi_s(x) = sqrt(1-s) sqrt(x²-1) (1 + O(x²-1))`, which is exactly the accuracy at which the two
+  singular terms of the defect cancel.
+
 For the radial prolate equation the normal form is
 `u'' + [(chi - c²x²)/(x²-1) + 1/(x²-1)²] u = 0`, so `Q = ±c²(x²-s)/(x²-1) + 1/(x²-1)²` with
 `s = chi/c²`, and the pole-uniform property is exactly the statement that

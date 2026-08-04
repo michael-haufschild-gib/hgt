@@ -140,3 +140,13 @@ assembly and reverse-overlap theorems are proved.
   to the canonical weight-at-most-`q` maximum-defect subspace. Targeted compilation and capstone
   axiom audits pass with only `propext`, `Classical.choice`, and `Quot.sound`. Graded selector-output
   assembly and zero-character overlap remain.
+- 2026-08-04 — Closed graded selector-output assembly for every nonzero global Pauli character.
+  `PauliCharacterFirstDefectCovariance.lean` proves distinct Pauli words define distinct simultaneous
+  conjugation characters and that their exact character subspaces form an `iSupIndep` family.
+  `PauliCharacterFirstDefectHallExpansion.lean` then applies the collision-free first-defect
+  selector to the literal weight-one Pauli family and proves
+  `finiteTwoReplicaNonzeroPauliResolvedSubspace_finrank_le_shadow` for the sum of all nonzero
+  character components of every ambient subspace. Targeted elaboration passes and the capstone uses
+  only `propext`, `Classical.choice`, and `Quot.sound`. The sole remaining two-replica Hall channel is
+  zero character: anisotropic diagonal correlations and reverse compensation for overlap of their
+  edge outputs with the already occupied nonzero grades.

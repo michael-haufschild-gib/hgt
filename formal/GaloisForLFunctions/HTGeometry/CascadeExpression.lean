@@ -29,7 +29,7 @@ inductive CascadeExpr (f : ℕ → ℂ → ℂ) (n : ℕ) : (ℂ → ℂ) → Pr
 variable {f : ℕ → ℂ → ℂ} {n : ℕ}
 
 /-- Iterated derivatives of an entire function are entire. -/
-theorem analyticOnNhd_iteratedDeriv {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g Set.univ) (d : ℕ) :
+theorem analyticOnNhd_iterate_deriv {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g Set.univ) (d : ℕ) :
     AnalyticOnNhd ℂ (deriv^[d] g) Set.univ := by
   induction d generalizing g with
   | zero => simpa using hg
@@ -47,7 +47,7 @@ theorem differentiable_cascadeExpr (hf : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Se
   | constDeriv i d _ =>
       intro z
       have hcomp : AnalyticOnNhd ℂ (deriv^[d] (f i)) Set.univ :=
-        analyticOnNhd_iteratedDeriv (hf i) d
+        analyticOnNhd_iterate_deriv (hf i) d
       have hinner := (analyticOnNhd_entireCascade hf i) z (Set.mem_univ z)
       exact ((hcomp _ (Set.mem_univ _)).comp hinner).differentiableAt
   | const c => exact differentiable_const c
@@ -83,7 +83,7 @@ theorem cascadeExpr_deriv (hf : ∀ i : ℕ, AnalyticOnNhd ℂ (f i) Set.univ)
   | state i h => exact cascadeExpr_deriv_state hf i h
   | constDeriv i d h =>
       have hGan : AnalyticOnNhd ℂ (deriv^[d] (f i)) Set.univ :=
-        analyticOnNhd_iteratedDeriv (hf i) d
+        analyticOnNhd_iterate_deriv (hf i) d
       have hFan : AnalyticOnNhd ℂ (entireCascade f i) Set.univ :=
         analyticOnNhd_entireCascade hf i
       have hfun : deriv (fun z => deriv^[d] (f i) (entireCascade f i z))

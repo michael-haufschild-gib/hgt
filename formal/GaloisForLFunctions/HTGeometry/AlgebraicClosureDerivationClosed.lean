@@ -86,4 +86,44 @@ theorem deriv_mem_algebraicClosure {E L : Type*} [Field E] [Field L] [Algebra E 
   rw [hsolve]
   exact div_mem (neg_mem hAmem) hBmem
 
+/-! ## The closure is relatively algebraically closed -/
+
+/-- An element algebraic over the relative algebraic closure already lies in it. -/
+theorem mem_algebraicClosure_of_isAlgebraic {E L : Type*} [Field E] [Field L] [Algebra E L]
+    {y : L} (hy : IsAlgebraic (algebraicClosure E L) y) : y ∈ algebraicClosure E L := by
+  rw [mem_algebraicClosure_iff']
+  exact isIntegral_trans y hy.isIntegral
+
+/-- **A root of a nonzero polynomial with coefficients in the closure lies in the closure.** -/
+theorem mem_algebraicClosure_of_root {E L : Type*} [Field E] [Field L] [Algebra E L]
+    {e : ℕ} {A : ℕ → L} {y : L}
+    (hA : ∀ c, A c ∈ algebraicClosure E L) (hAe : A e ≠ 0)
+    (hrel : ∑ c ∈ Finset.range (e + 1), A c * y ^ c = 0) :
+    y ∈ algebraicClosure E L := by
+  classical
+  set p : Polynomial (algebraicClosure E L) :=
+    ∑ c ∈ Finset.range (e + 1),
+      Polynomial.C (⟨A c, hA c⟩ : algebraicClosure E L) * Polynomial.X ^ c with hp
+  have hcoeff : p.coeff e = (⟨A e, hA e⟩ : algebraicClosure E L) := by
+    rw [hp, Polynomial.finsetSum_coeff]
+    rw [Finset.sum_eq_single e]
+    · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_pos rfl, mul_one]
+    · intro c _ hce
+      rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg (fun hc => hce hc.symm), mul_zero]
+    · intro hmem
+      exact absurd (Finset.self_mem_range_succ e) hmem
+  have hp0 : p ≠ 0 := by
+    intro hzero
+    apply hAe
+    have := hcoeff
+    rw [hzero, Polynomial.coeff_zero] at this
+    exact congrArg Subtype.val this.symm
+  have hev : Polynomial.aeval y p = 0 := by
+    rw [hp, map_sum, ← hrel]
+    refine Finset.sum_congr rfl ?_
+    intro c _
+    rw [map_mul, Polynomial.aeval_C, map_pow, Polynomial.aeval_X]
+    rfl
+  exact mem_algebraicClosure_of_isAlgebraic ⟨p, hp0, hev⟩
+
 end GaloisForLFunctions.HTGeometry

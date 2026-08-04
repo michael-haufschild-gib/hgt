@@ -189,6 +189,13 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized the differential layer: the several-variable
+  holomorphic de Rham complex of a finite character stage, the pullback of
+  forms along the monomial transition maps, and the derivative of a cylinder
+  function.  The exterior derivative preserves the cylinder condition, squares
+  to zero, and commutes with the transitions; the generators `d log P(a)` are
+  closed.  Antisymmetrization was upgraded to a bounded operator, which mathlib
+  lacks and which the analyticity of a pulled-back form needs.
 
 ## Lean status
 
@@ -233,13 +240,74 @@ algebraic half of that is now proved.
 - `deningerIsCylinderAt_eval_pow` — **stability under `(4)`**: a power of an evaluation coordinate
   is again cylinder.
 
+### The differential layer landed
+
+Five modules, all with axiom audit `propext, Classical.choice, Quot.sound`.
+
+`formal/GaloisForLFunctions/RHTower/DeningerCylinderDerivative.lean` — differentiating a cylinder
+function.
+
+- `deningerCylinderDeriv` — the directional derivative of a cylinder function in the coordinates of
+  a local representation.
+- `deningerHasDerivAt_cylinder` — it is the derivative along the corresponding line of characters:
+  the chain rule in the evaluation coordinates.
+- `deningerIsCylinderAt_deriv` — **the derivative of a cylinder function is cylinder**, on the same
+  coordinates, because the derivative of an analytic function is analytic and evaluating a
+  continuous linear map at a fixed vector is continuous linear.
+
+`formal/GaloisForLFunctions/RHTower/DeningerStageDeRham.lean` — the several-variable holomorphic de
+Rham complex of a finite character stage.
+
+- `deningerStageTorus`, `deningerStageTorus_isOpen` — the stage `Z_{W,L} = (ℂ^×)^r` as an open
+  subset of `ℂ^r`.
+- `DeningerIsHolomorphicForm` — holomorphy of a differential form on the stage, the local condition
+  defining `Ω^n_{Z_{W,L}}` in `(3)`.
+- `deningerStage_extDeriv_holomorphic` — **the stability of the cylinder condition under the
+  exterior derivative**: `d` of a holomorphic form is holomorphic, because it is the alternatization
+  of the derivative and alternatization is continuous linear.
+- `deningerStage_extDeriv_extDeriv` — `d ∘ d = 0`, so each finite stage carries an honest complex.
+- `deningerDlogForm`, `deningerDlogForm_holomorphic`, `deningerDlogForm_closed` — the generators
+  `d log P(a)` of `(5)` are holomorphic on the stage and closed.
+
+`formal/GaloisForLFunctions/RHTower/DeningerAlternatizationOperator.lean` — mathlib has
+antisymmetrization only as an additive map, with no bound; the analyticity of a family of forms
+needs it as a bounded operator.
+
+- `deningerNorm_alternatization_le` — antisymmetrization is bounded with norm at most `n!`.
+- `deningerAlternatizationCLM`, `deningerAlternatizationCLM_toContinuousMultilinearMap`,
+  `deningerSmul_alternatizationCLM` — it is continuous linear and equals `n!` on alternating forms,
+  so in characteristic zero the alternating forms are a continuously linear retract.
+- `deningerAnalyticAt_of_toContinuousMultilinearMap` — analyticity of a family of alternating forms
+  descends from analyticity after forgetting antisymmetry.
+
+`formal/GaloisForLFunctions/RHTower/DeningerFormPullback.lean` — transport of forms.
+
+- `deningerPullbackForm` — the pullback of a differential form along a map.
+- `deningerPullbackForm_analyticAt` — **the pullback of an analytic form along an analytic map is
+  analytic**: composition with a linear map is multilinear in that map before antisymmetrization,
+  and antisymmetrization is the bounded retraction above.
+- `deningerPullbackForm_extDeriv`, `deningerStagePullback_holomorphic`,
+  `deningerStagePullback_extDeriv` — the pullback commutes with the exterior derivative and
+  preserves holomorphy on the stages.
+
+`formal/GaloisForLFunctions/RHTower/DeningerStageTransition.lean` — the transition maps of `(1)` at
+the analytic level.
+
+- `deningerMonomialMap` — the monomial map of an integer matrix, covering both the power isogenies
+  of finite-index lattice inclusions and the coordinate projections.
+- `deningerMonomialMap_mapsTo`, `deningerMonomialMap_analyticOnNhd` — it preserves the stage and is
+  holomorphic there.
+- `deningerMonomialMap_comp`, `deningerMonomialMap_id` — composition is matrix multiplication, so
+  the stages form a cofiltered system.
+- `deningerMonomialPullback_holomorphic`, `deningerMonomialPullback_extDeriv` — **the transition
+  maps are maps of holomorphic de Rham complexes**, which is what makes the colimit in `(3)` a
+  colimit of complexes.
+
 ### Remaining
 
-1. **The differential layer.**  `(3)` and the stability of the cylinder condition under the exterior
-   derivative: this needs cylinder differential forms, which requires the several-variable
-   holomorphic de Rham complex.
-2. **The Stein property.**  That each `Z_{W,L} = (ℂ^×)^r` is Stein.  mathlib has no Stein theory.
-3. **`(5)`--`(6)`**, the de Rham cohomology `H^k((ℂ^×)^r, ℂ) ≅ Λ^k(L ⊗ ℂ)` and its colimit; mathlib
-   has no de Rham cohomology of a complex manifold.
-4. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
+1. **The Stein property.**  That each `Z_{W,L} = (ℂ^×)^r` is Stein.  mathlib has no Stein theory.
+2. **`(5)`--`(6)`**, the de Rham cohomology `H^k((ℂ^×)^r, ℂ) ≅ Λ^k(L ⊗ ℂ)` and its colimit; mathlib
+   has no de Rham cohomology of a complex manifold.  The generators are built and proved closed; the
+   missing half is the comparison isomorphism.
+3. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
    mathlib — and the pro-Ind global-section formalism.

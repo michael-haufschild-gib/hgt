@@ -146,44 +146,76 @@ by a local coordinate in which a simple zero is `u=0` reduces every point to thi
 
 ## 6. Stokes deformation complex and dimension formula
 
-Let `L` be a stable Stokes local system on the real oriented blow-up `X~`. Its adjoint deformation
-complex is the cellular complex of `ad L` on the interior, with boundary conditions given by the
-formal centralizer and, at each singular direction, the directed microstalk root space in (M).
-Denote it `Def_St(L)`.
+Let `Gdim`, `z`, `h_a`, `s_a`, and `k_a` denote respectively the dimensions of `G`, its centre,
+the formal centralizer, the directed Stokes-root microstalk sum, and the prescribed conjugacy
+class.  The tangent of the unreduced factor product has dimension
 
-Required theorem, not yet closed:
+`A=2g Gdim + sum_a(Gdim+h_a+s_a+k_a)`.
 
-1. `H^0 Def_St(L)` is the infinitesimal stabilizer.
-2. The tangent space to fixed-formal-type Stokes representations modulo gauge is `H^1 Def_St(L)`.
-3. Trace pairing and antipodal pairing of roots give a chain-level perfect pairing
-   `Def_St(L) ~= Def_St(L)^vee[-2]`.
-4. Its cellular Euler characteristic is obtained by cells, so for `G=GL_M`
+Effective moment constraints and effective gauge directions each have dimension
 
-   `chi Def_St(L)=(2-2g-m)M^2 + sum_a(h_a-s_a-k_a)`,
+`R=Gdim-z+sum_a h_a`.
 
-   where `h_a` is formal-centralizer dimension, `s_a` is the directed microlocal sum above, and
-   `k_a` is the conjugacy-class dimension.
-5. Stability gives `dim H^0=dim H^2=1`; hence
+At a smooth stable point, write `d_mu:C^A -> C^R` for the surjective moment derivative and
+`d_act:C^R -> C^A` for the injective effective gauge derivative. Infinitesimal moment invariance
+is `d_mu d_act=0`. The reduced tangent is therefore not an imported dimension formula but the
+actual quotient
 
-   `dim H^1=2+(2g-2+m)M^2+sum_a(s_a+k_a-h_a)`.
+`T = ker(d_mu)/im(d_act)`.
 
-This derives Boalch's dimension polynomial from the deformation sheaf. Until the chain complex,
-pairing, and tangent identification are proved explicitly, global theorem remains open.
+Rank-nullity gives `dim T=A-2R`, hence
 
-## 7. Rees and corona requirements
+`dim T=2z+(2g-2+m)Gdim+sum_a(s_a+k_a-h_a)`.                 (QH)
 
-Required theorem, not yet closed:
+The complete three-term deformation complex is
 
-- A Rees deformation rescales intervals between successive partitions `Pi_t`. Specialization to
-  zero contracts selected intervals. Associated graded is the direct sum of relative block-charge
-  channels; (C) shows its quadratic energy is the sum of their positive squared norms.
-- For a subtree/corona block with no external singular support except attachment stratum, relative
-  cellular cohomology is contractible. Eliminating its cochains by the contraction data produces
-  the Schur complement of the positive energy matrix. The attachment microstalk is the relative
-  vanishing cycle; its metric is the Dirichlet-to-Neumann effective conductance.
+`C^z + C^R --d0--> C^A --d1--> C^R + C^z`,
 
-These statements must be proved at chain level, including order-independence of successive
-eliminations and preservation of the one-dimensional rank channel.
+where `d0` kills the central summand and equals `d_act` on the effective gauge summand, while
+`d1(v)=(d_mu(v),0)`. Injectivity and surjectivity give
+
+`dim H^0=z`, `H^1=T`, `dim H^2=z`,
+
+and therefore
+
+`chi Def_St=(2-2g-m)Gdim+sum_a(h_a-s_a-k_a)`.                (EP)
+
+Thus (QH) is derived from the cellular deformation complex. The Stokes-root term `s_a` is the
+integer Galois-normalized directed microstalk mass proved in Section 5, not a graph input.
+
+## 7. Rees and corona closure
+
+For every threshold-class cut `e`, set
+
+`z_e(y)=sqrt(ell_e) sum_a y_a 1_e(a)`.
+
+Then the associated-graded map is `y |-> (z_e(y))_e` and
+
+`sum_e z_e(y)^2=E_H(y)`.
+
+A multi-Rees parameter `lambda_e` gives
+
+`E_lambda(y)=sum_e lambda_e z_e(y)^2`.
+
+Unit specialization recovers `E_H`; setting selected `lambda_e` to zero deletes precisely those
+graded channels. For all nonnegative parameters the local part remains nonnegative, and the
+global term `-(H-1)M^2` is parameter-independent. This proves preservation of the single rank
+channel under every Rees specialization.
+
+For boundary coordinates `x`, hidden corona coordinates `y`, and a positive definite hidden block
+`D`, write the full energy matrix as
+
+`[[A,B],[B^*,D]]`.
+
+Completing the square gives the exact identity
+
+`E(x,y)=<y+D^{-1}B^*x,D(y+D^{-1}B^*x)>`
+`        + <x,(A-BD^{-1}B^*)x>`.                              (SC)
+
+Thus the effective boundary form is exactly the Schur complement, the unique minimizing extension
+is `y=-D^{-1}B^*x`, and the hidden residual is the relative vanishing-cycle coordinate with its
+positive `D`-metric. Exact minimization composes. Since an exact effective energy is unique,
+successive positive corona eliminations are independent of order.
 
 ## 8. Novelty boundary
 

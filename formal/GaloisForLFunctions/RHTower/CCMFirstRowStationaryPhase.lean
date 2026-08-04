@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.LogLinearTailIntegral
+import GaloisForLFunctions.HTGeometry.ArcoshComparison
 import GaloisForLFunctions.RHTower.ScaleSigmaSum
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
@@ -747,6 +748,140 @@ theorem abs_xiDiffSecond_stationaryPoint_bounds {s k : ℝ} (hk : 2 ≤ k) (hs0 
         ≤ 1 * (4 * k ^ 3) := by
           exact mul_le_mul hs' hbru hbrpos.le (by norm_num)
       _ = 4 * k ^ 3 := by ring
+
+/-! ## The endpoint phase against the endpoint logarithm
+
+Factoring the Liouville speed as
+
+```text
+sqrt((t²-s)/(t²-1)) = sqrt(1-s) · (t²-1)^(-1/2) · sqrt(1 + (t²-1)/(1-s))
+```
+
+turns the phase into `sqrt(1-s)` times the antiderivative of `(t²-1)^(-1/2)` — the endpoint logarithm —
+times a factor that is `1 + O(x²-1)` near the endpoint.  This is the relative accuracy that the
+pole-uniform cancellation of the comparison defect needs. -/
+
+theorem intervalIntegrable_invSqrtSqSubOne {x : ℝ} (hx : 1 ≤ x) :
+    IntervalIntegrable (fun t : ℝ => 1 / Real.sqrt (t ^ 2 - 1)) volume 1 x := by
+  have hmeas : Measurable fun t : ℝ => 1 / Real.sqrt (t ^ 2 - 1) := by fun_prop
+  have hdom : IntervalIntegrable
+      (fun t : ℝ => 1 / Real.sqrt 2 * (t - 1) ^ (-(1 : ℝ) / 2)) volume 1 x :=
+    (intervalIntegrable_rpow_sub_one (x := x)).const_mul _
+  rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hx] at hdom ⊢
+  refine MeasureTheory.Integrable.mono' hdom hmeas.aestronglyMeasurable ?_
+  filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioc] with t ht
+  obtain ⟨ht1, htx⟩ := ht
+  have hsub : (0 : ℝ) < t - 1 := by linarith
+  have hs2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  have hss : (0 : ℝ) < Real.sqrt (t - 1) := Real.sqrt_pos.mpr hsub
+  have hd : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+  have hsd : (0 : ℝ) < Real.sqrt (t ^ 2 - 1) := Real.sqrt_pos.mpr hd
+  have hden : Real.sqrt 2 * Real.sqrt (t - 1) ≤ Real.sqrt (t ^ 2 - 1) :=
+    sqrt_two_mul_sqrt_sub_one_le ht1.le
+  have hrpow : (t - 1) ^ (-(1 : ℝ) / 2) = (Real.sqrt (t - 1))⁻¹ := by
+    rw [show (-(1 : ℝ) / 2) = -((1 : ℝ) / 2) from by ring, Real.rpow_neg hsub.le,
+      ← Real.sqrt_eq_rpow]
+  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity : (0 : ℝ) ≤ 1 / Real.sqrt (t ^ 2 - 1)),
+    hrpow]
+  have hcomb : 1 / Real.sqrt 2 * (Real.sqrt (t - 1))⁻¹
+      = 1 / (Real.sqrt 2 * Real.sqrt (t - 1)) := by
+    field_simp
+  rw [hcomb]
+  exact one_div_le_one_div_of_le (by positivity) hden
+
+/-- The endpoint logarithm is the exact primitive of `(t²-1)^{-1/2}` from the endpoint. -/
+theorem integral_invSqrtSqSubOne {x : ℝ} (hx : 1 ≤ x) :
+    (∫ t in (1 : ℝ)..x, 1 / Real.sqrt (t ^ 2 - 1))
+      = GaloisForLFunctions.HTGeometry.endpointLog x := by
+  have hcont : ContinuousOn GaloisForLFunctions.HTGeometry.endpointLog (Set.Icc 1 x) :=
+    GaloisForLFunctions.HTGeometry.continuousOn_endpointLog.mono (fun t ht => ht.1)
+  have hderiv : ∀ t ∈ Set.Ioo (1 : ℝ) x,
+      HasDerivWithinAt GaloisForLFunctions.HTGeometry.endpointLog
+        (1 / Real.sqrt (t ^ 2 - 1)) (Set.Ioi t) t := fun t ht =>
+    (GaloisForLFunctions.HTGeometry.hasDerivAt_endpointLog ht.1).hasDerivWithinAt
+  have h := intervalIntegral.integral_eq_sub_of_hasDeriv_right_of_le hx hcont hderiv
+    (intervalIntegrable_invSqrtSqSubOne hx)
+  rw [h, GaloisForLFunctions.HTGeometry.endpointLog_one, sub_zero]
+
+/-- The exact factorisation of the Liouville speed. -/
+theorem xiSpeed_eq_factored {s t : ℝ} (hs1 : s ≤ 1 / 2) (ht : 1 < t) :
+    xiSpeed s t = Real.sqrt (1 - s) * (1 / Real.sqrt (t ^ 2 - 1))
+      * Real.sqrt (1 + (t ^ 2 - 1) / (1 - s)) := by
+  have ht0 : (0 : ℝ) < t := lt_trans zero_lt_one ht
+  have hd : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
+  have hs : (0 : ℝ) < 1 - s := by linarith
+  have hfac : (t ^ 2 - s) / (t ^ 2 - 1)
+      = (1 - s) * (1 / (t ^ 2 - 1)) * (1 + (t ^ 2 - 1) / (1 - s)) := by
+    field_simp
+    ring
+  rw [xiSpeed, hfac, Real.sqrt_mul (by positivity), Real.sqrt_mul hs.le,
+    Real.sqrt_div' 1 hd.le, Real.sqrt_one]
+
+/-- **The lower bracket in terms of the endpoint logarithm.** -/
+theorem sqrt_one_sub_mul_endpointLog_le_xiEndpointPhase {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hx : 1 ≤ x) :
+    Real.sqrt (1 - s) * GaloisForLFunctions.HTGeometry.endpointLog x ≤ xiEndpointPhase s x := by
+  have hs : (0 : ℝ) < 1 - s := by linarith
+  have hmono : (∫ t in (1 : ℝ)..x, Real.sqrt (1 - s) * (1 / Real.sqrt (t ^ 2 - 1)))
+      ≤ ∫ t in (1 : ℝ)..x, xiSpeed s t := by
+    refine intervalIntegral.integral_mono_on hx
+      ((intervalIntegrable_invSqrtSqSubOne hx).const_mul _)
+      (intervalIntegrable_xiSpeed hs0 hx) fun t ht => ?_
+    rcases eq_or_lt_of_le ht.1 with h1 | h1
+    · rw [← h1]
+      norm_num
+      rw [xiSpeed]
+      positivity
+    · rw [xiSpeed_eq_factored hs1 h1]
+      have hone : (1 : ℝ) ≤ Real.sqrt (1 + (t ^ 2 - 1) / (1 - s)) := by
+        refine Real.one_le_sqrt.mpr ?_
+        have hd : (0 : ℝ) < t ^ 2 - 1 := by nlinarith [h1, lt_trans zero_lt_one h1]
+        have : (0 : ℝ) < (t ^ 2 - 1) / (1 - s) := by positivity
+        linarith
+      have hpos : (0 : ℝ) ≤ Real.sqrt (1 - s) * (1 / Real.sqrt (t ^ 2 - 1)) := by positivity
+      nlinarith [hone, hpos]
+  rw [intervalIntegral.integral_const_mul, integral_invSqrtSqSubOne hx] at hmono
+  rw [xiEndpointPhase]
+  exact hmono
+
+/-- **The upper bracket in terms of the endpoint logarithm.**  The correction factor is
+`sqrt(1 + (x²-1)/(1-s))`, which is `1 + O(x²-1)` near the endpoint. -/
+theorem xiEndpointPhase_le_sqrt_one_sub_mul_endpointLog {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hx : 1 ≤ x) :
+    xiEndpointPhase s x
+      ≤ Real.sqrt (1 - s) * Real.sqrt (1 + (x ^ 2 - 1) / (1 - s))
+        * GaloisForLFunctions.HTGeometry.endpointLog x := by
+  have hs : (0 : ℝ) < 1 - s := by linarith
+  have hmono : (∫ t in (1 : ℝ)..x, xiSpeed s t)
+      ≤ ∫ t in (1 : ℝ)..x, Real.sqrt (1 - s) * Real.sqrt (1 + (x ^ 2 - 1) / (1 - s))
+          * (1 / Real.sqrt (t ^ 2 - 1)) := by
+    refine intervalIntegral.integral_mono_on hx (intervalIntegrable_xiSpeed hs0 hx)
+      ((intervalIntegrable_invSqrtSqSubOne hx).const_mul _) fun t ht => ?_
+    rcases eq_or_lt_of_le ht.1 with h1 | h1
+    · rw [← h1]
+      norm_num
+      rw [xiSpeed]
+      norm_num
+    · rw [xiSpeed_eq_factored hs1 h1]
+      have hle : Real.sqrt (1 + (t ^ 2 - 1) / (1 - s))
+          ≤ Real.sqrt (1 + (x ^ 2 - 1) / (1 - s)) := by
+        refine Real.sqrt_le_sqrt ?_
+        have ht0 : (0 : ℝ) < t := lt_trans zero_lt_one h1
+        have htx : t ≤ x := ht.2
+        have hsq : t ^ 2 ≤ x ^ 2 := by nlinarith
+        have hstep : (t ^ 2 - 1) / (1 - s) ≤ (x ^ 2 - 1) / (1 - s) := by gcongr
+        linarith
+      have hpos : (0 : ℝ) ≤ Real.sqrt (1 - s) * (1 / Real.sqrt (t ^ 2 - 1)) := by positivity
+      calc Real.sqrt (1 - s) * (1 / Real.sqrt (t ^ 2 - 1))
+            * Real.sqrt (1 + (t ^ 2 - 1) / (1 - s))
+          ≤ Real.sqrt (1 - s) * (1 / Real.sqrt (t ^ 2 - 1))
+            * Real.sqrt (1 + (x ^ 2 - 1) / (1 - s)) := by
+            exact mul_le_mul_of_nonneg_left hle hpos
+        _ = Real.sqrt (1 - s) * Real.sqrt (1 + (x ^ 2 - 1) / (1 - s))
+            * (1 / Real.sqrt (t ^ 2 - 1)) := by ring
+  rw [intervalIntegral.integral_const_mul, integral_invSqrtSqSubOne hx] at hmono
+  rw [xiEndpointPhase]
+  exact hmono
 
 end GaloisForLFunctions.RHTower
 

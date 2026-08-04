@@ -5024,3 +5024,111 @@ The base case is discharged, not assumed: `deriv_algebraMap_mem_algebraicClosure
 Net effect: the upper bound `ord_DA(F_n) ≤ n` is now reduced to exactly `n` checks, one per state —
 "`F_k'` is algebraic over `ℂ(z)(F_1,…,F_n)`" — which is what the edge relation of
 `CascadeEdgeRelation.lean` produces once its top coefficient is known to be nonzero as a function.
+
+### The edge relation without division, and the polynomial transfer
+
+**`CascadeEdgeRelation.lean` (extended).** `exists_cascade_edge_relation_of_forall` — the cleared edge
+relation holds at **every** point, not merely where `F_k'` does not vanish:
+
+`∑_{c ≤ e} B_c(F_k, F_{k+1}) (F_{k+1}')^c (F_k')^{e−c} = 0`   for all `z`.
+
+The nonvanishing hypothesis in the existing `cascade_relation_cleared` turns out to be unnecessary.
+By the chain rule `F_{k+1}' = f_k'(F_k)·F_k'`, so the `c`-th term equals
+`B_c · (f_k'(F_k))^c · (F_k')^e` *identically* — the same factor `(F_k')^e` for every `c` — and the
+sum factors as `(F_k')^e · 0`. The division was only apparent; `sum_mul_pow_chain` isolates the
+homogenisation step. This removes the "off a discrete set" caveat from the whole edge layer, and with
+it any need for an identity-theorem argument when passing to germs.
+
+**`AnalyticMeroPolynomialEval.lean`.** `analyticMeroElement_eval_mvPolynomial`: evaluating a
+polynomial at analytic functions pointwise and then passing to germs equals passing to germs first,
+
+`analyticMeroElement (z ↦ P(g₁ z, …, g_m z)) = eval₂ (constToMero U) (analyticMeroElement ∘ g) P`,
+
+together with `eval₂_constToMero_mem`: such an expression lies in any intermediate field containing
+the `g_i`'s germs. Constants are handled by `ratfuncToMero_C_eq_constToMero` — the constant embedding
+factors through `ℂ(z)`, so constants cost nothing.
+
+Stated with explicit ring homomorphisms (`constToMero`, `eval₂`) rather than an `Algebra ℂ` instance,
+so no scalar-tower diamond arises against the `RatFunc ℂ` structure already on `meroField`.
+`analyticMeroElement_congr` is what makes the induction go through: the realization depends on the
+*function*, and the analyticity proof is a `Prop`, so rewriting the function is free.
+
+Together these say: the field-level edge relation has coefficients visibly inside `ℂ(z)(states)`, and
+holds unconditionally. What is left is the top coefficient's nonvanishing as a field element.
+
+### Roots stay in the closure; sums transfer
+
+**`AlgebraicClosureDerivationClosed.lean` (extended).**
+
+- `mem_algebraicClosure_of_isAlgebraic` — an element algebraic *over* `algebraicClosure E L` already
+  lies in it. This is `isIntegral_trans` plus `mem_algebraicClosure_iff'`; mathlib states the fact
+  only as `algebraicClosure.algebraicClosure_eq_bot`, which is the same content in a form that cannot
+  be applied to an element.
+- `mem_algebraicClosure_of_root` — if `∑_{c ≤ e} A_c y^c = 0` with every `A_c` in the closure and
+  `A_e ≠ 0`, then `y` is in the closure. The polynomial is assembled explicitly as
+  `∑ C ⟨A_c, _⟩ * X^c` over the closure, its `e`-th coefficient read off by `finsetSum_coeff` and
+  `coeff_X_pow`; nonzero because that coefficient is `A_e`.
+
+This is the exact shape the edge relation produces, so no separate "algebraic over an intermediate
+ring" bookkeeping is needed.
+
+**`AnalyticMeroPolynomialEval.lean` (extended).** `analyticMeroElement_finsetSum` and
+`analyticMeroElement_zero` — a finite sum of analytic functions is realized by the sum of germs. Lean
+note: `Finset.sum_induction` produces the *Pi-form* `∑ i ∈ t, g i`, not the lambda form
+`fun z => ∑ i ∈ t, g i z`, so an explicit `Finset.sum_apply` bridge is needed before it can discharge
+an `AnalyticOnNhd` goal — the same Pi-versus-lambda trap that has now appeared five times in this
+card.
+
+With these, the pointwise edge relation transfers term by term into `meroField univ`: sums by
+`analyticMeroElement_finsetSum`, products and powers by `_mul`/`_pow`, coefficients by
+`analyticMeroElement_eval_mvPolynomial`, and the conclusion `F_{k+1}' ∈ algebraicClosure E L` by
+`mem_algebraicClosure_of_root`.
+
+### `HTGeometry/CascadeMeroField.lean` — the cascade inside the field, and a repaired name collision
+
+`cascadeMero`, `cascadeMeroDeriv` — the states and their derivatives as elements of
+`meroField univ`. `analyticMeroElement_sum_eq_zero` — a pointwise vanishing finite sum of analytic
+functions vanishes in the field. `analyticMeroElement_edgeCoeff` — the edge coefficient
+`z ↦ B_c(F_k z, F_{k+1} z)` is realized by `eval₂ (constToMero) ![X_k, X_{k+1}] (B c)`, i.e. visibly
+inside the state field.
+
+**Collision found and repaired.** Importing the cascade cone and the meromorphic-field cone into one
+module failed outright:
+
+```
+import ... CascadeExpression failed, environment already contains
+'GaloisForLFunctions.HTGeometry.analyticOnNhd_iteratedDeriv' from ...UpperEndPrimeLogJets
+```
+
+Two different theorems shared one name — `UpperEndPrimeLogJets` proves it for `iteratedDeriv n f` on
+an arbitrary `U` (fourteen call sites across HTGeometry and Hurwitz), `CascadeExpression` proves it
+for `deriv^[d] g` on `Set.univ` (two call sites, both local). Since the umbrella imports both, the
+umbrella could not have compiled since `CascadeExpression` was added. Renamed the cascade one to
+`analyticOnNhd_iterate_deriv`, matching what it actually states; the general name keeps its meaning
+and all its users.
+
+Worth recording as method: a duplicate top-level name is invisible to every module that imports only
+one of the two cones, and only surfaces the first time something needs both. The umbrella is not a
+guard against this — it is where the breakage lands.
+
+### The edge relation reaches the field
+
+`exists_cascade_edge_relation_mero` — for a transcendental entire constituent with a first-order
+equation, in `meroField univ`:
+
+`∑_{c ≤ e} eval₂ (constToMero) ![X_k, X_{k+1}] (B c) · (D_{k+1})^c · (D_k)^{e−c} = 0`,  `e ≥ 1`, `B_e ≠ 0`,
+
+with `X_j = cascadeMero j` the state germs and `D_j = cascadeMeroDeriv j` their derivative germs.
+Unconditional, axiom-clean.
+
+Every coefficient is now *visibly* an `eval₂ (constToMero) ![X_k, X_{k+1}]`, hence lands in any
+intermediate field containing the two states (`eval₂_constToMero_mem`). The transfer is term by term:
+`analyticMeroElement_edgeTerm` does one term with two `_mul`s and two `_pow`s, and
+`analyticMeroElement_sum_eq_zero` closes the sum. No analytic continuation anywhere — the pointwise
+identity of entire functions is already an identity of germs, which is exactly why removing the
+`F_k' ≠ 0` hypothesis earlier mattered.
+
+Remaining for `hup`: read the relation as a polynomial in `D_{k+1}` and apply
+`mem_algebraicClosure_of_root`. Its coefficients are `A_c · D_k^{e−c}`, all in the closure once
+`D_k` is (induction on `k`, base `D_0 = 1`), and the top one is `A_e = eval₂ … (B e)` — nonzero
+exactly when the states are algebraically independent, the card's Clunie–Steinmetz input.

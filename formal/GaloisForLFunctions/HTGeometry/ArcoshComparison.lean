@@ -172,6 +172,79 @@ theorem sqrt_mul_one_sub_le_endpointLog {x : ℝ} (hx : 1 ≤ x) :
   simp only at hle
   linarith
 
+/-! ## The companion antiderivative
+
+The second-order expansion of an endpoint Liouville phase needs the primitive of `sqrt(t²-1)` as well as
+that of `1/sqrt(t²-1)`.  Both are elementary and both are absent from mathlib. -/
+
+/-- The primitive of `sqrt(t²-1)` from the endpoint: `(x sqrt(x²-1) - L(x))/2`. -/
+def endpointSqrtPrimitive (x : ℝ) : ℝ := (x * Real.sqrt (x ^ 2 - 1) - endpointLog x) / 2
+
+theorem endpointSqrtPrimitive_one : endpointSqrtPrimitive 1 = 0 := by
+  rw [endpointSqrtPrimitive, endpointLog_one]
+  norm_num
+
+theorem hasDerivAt_endpointSqrtPrimitive {x : ℝ} (hx : 1 < x) :
+    HasDerivAt endpointSqrtPrimitive (Real.sqrt (x ^ 2 - 1)) x := by
+  have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
+  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hs : (0 : ℝ) < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hd
+  have hssq : Real.sqrt (x ^ 2 - 1) * Real.sqrt (x ^ 2 - 1) = x ^ 2 - 1 :=
+    Real.mul_self_sqrt hd.le
+  have hsq : HasDerivAt (fun t : ℝ => t ^ 2 - 1) (2 * x) x := by
+    simpa using (hasDerivAt_pow 2 x).sub_const 1
+  have hsqrt : HasDerivAt (fun t : ℝ => Real.sqrt (t ^ 2 - 1))
+      (2 * x / (2 * Real.sqrt (x ^ 2 - 1))) x := hsq.sqrt hd.ne'
+  have hprod : HasDerivAt (fun t : ℝ => t * Real.sqrt (t ^ 2 - 1))
+      (1 * Real.sqrt (x ^ 2 - 1) + x * (2 * x / (2 * Real.sqrt (x ^ 2 - 1)))) x :=
+    (hasDerivAt_id x).fun_mul hsqrt
+  have h := (hprod.fun_sub (hasDerivAt_endpointLog hx)).div_const 2
+  have hne : Real.sqrt (x ^ 2 - 1) ≠ 0 := ne_of_gt hs
+  have hval : (1 * Real.sqrt (x ^ 2 - 1) + x * (2 * x / (2 * Real.sqrt (x ^ 2 - 1)))
+        - 1 / Real.sqrt (x ^ 2 - 1)) / 2
+      = Real.sqrt (x ^ 2 - 1) := by
+    have e1 : x * (2 * x / (2 * Real.sqrt (x ^ 2 - 1)))
+        = x ^ 2 / Real.sqrt (x ^ 2 - 1) := by
+      field_simp
+    have e2 : x ^ 2 / Real.sqrt (x ^ 2 - 1) - 1 / Real.sqrt (x ^ 2 - 1)
+        = Real.sqrt (x ^ 2 - 1) := by
+      rw [div_sub_div_same, div_eq_iff hne]
+      exact hssq.symm
+    rw [add_sub_assoc, e1, e2]
+    ring
+  rw [hval] at h
+  exact h
+
+theorem continuousOn_endpointSqrtPrimitive : ContinuousOn endpointSqrtPrimitive (Ici 1) := by
+  refine ContinuousOn.div_const ?_ 2
+  refine ContinuousOn.sub ?_ continuousOn_endpointLog
+  exact continuousOn_id.mul (Real.continuous_sqrt.comp_continuousOn (by fun_prop))
+
+/-- The Taylor bound behind the second-order expansion: `|sqrt(1+u) - 1 - u/2| ≤ u²/8` for `u ≥ 0`.
+The upper half is `(1 + u/2)² ≥ 1 + u`; the lower half squares to `u⁴/64 ≤ u³/8`, i.e. `u ≤ 8`, and past
+`u = 8` the quadratic is already negative. -/
+theorem abs_sqrt_one_add_sub_le {u : ℝ} (hu : 0 ≤ u) :
+    |Real.sqrt (1 + u) - (1 + u / 2)| ≤ u ^ 2 / 8 := by
+  have h1 : (0 : ℝ) ≤ 1 + u := by linarith
+  have hs : Real.sqrt (1 + u) ≤ 1 + u / 2 := by
+    have hsq : (1 : ℝ) + u ≤ (1 + u / 2) ^ 2 := by nlinarith
+    calc Real.sqrt (1 + u) ≤ Real.sqrt ((1 + u / 2) ^ 2) := Real.sqrt_le_sqrt hsq
+      _ = 1 + u / 2 := Real.sqrt_sq (by linarith)
+  rw [abs_of_nonpos (by linarith : Real.sqrt (1 + u) - (1 + u / 2) ≤ 0)]
+  rcases le_or_gt u 8 with hle | hgt
+  · have hlow : 1 + u / 2 - u ^ 2 / 8 ≤ Real.sqrt (1 + u) := by
+      rcases le_or_gt (1 + u / 2 - u ^ 2 / 8) 0 with h | h
+      · exact le_trans h (Real.sqrt_nonneg _)
+      · have hsq2 : (1 + u / 2 - u ^ 2 / 8) ^ 2 ≤ 1 + u := by
+          nlinarith [mul_nonneg (pow_nonneg hu 3) (by linarith : (0 : ℝ) ≤ 8 - u)]
+        calc 1 + u / 2 - u ^ 2 / 8 = Real.sqrt ((1 + u / 2 - u ^ 2 / 8) ^ 2) :=
+              (Real.sqrt_sq h.le).symm
+          _ ≤ Real.sqrt (1 + u) := Real.sqrt_le_sqrt hsq2
+    linarith
+  · have h2 : (1 : ℝ) ≤ Real.sqrt (1 + u) := by
+      nlinarith [Real.sq_sqrt h1, Real.sqrt_nonneg (1 + u)]
+    nlinarith [h2, mul_nonneg hu (by linarith : (0 : ℝ) ≤ u - 8)]
+
 end GaloisForLFunctions.HTGeometry
 
 end

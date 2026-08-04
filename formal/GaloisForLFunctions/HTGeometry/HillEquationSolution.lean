@@ -44,9 +44,14 @@ theorem norm_hillField_le {ω : ℝ → ℝ} {M : ℝ} (hM1 : 1 ≤ M) (hM : ∀
 
 theorem continuous_hillField {ω : ℝ → ℝ} (hω : Continuous ω) :
     Continuous fun p : ℝ × ℝ => hillField ω p.2 := by
-  refine Continuous.prodMk ?_ ?_ |>.congr fun p => rfl
-  · exact continuous_const
-  · exact ((hω.comp continuous_snd).pow 2).neg.smul continuous_const
+  have hsplit : (fun p : ℝ × ℝ => hillField ω p.2)
+      = fun p : ℝ × ℝ => (ContinuousLinearMap.snd ℝ ℝ ℝ).prod 0 +
+        (-(ω p.2 ^ 2)) • ((0 : (ℝ × ℝ) →L[ℝ] ℝ).prod (ContinuousLinearMap.fst ℝ ℝ ℝ)) := by
+    funext p
+    refine ContinuousLinearMap.ext fun y => ?_
+    simp [hillField_apply]
+  rw [hsplit]
+  exact continuous_const.add (((hω.comp continuous_snd).pow 2).neg.smul continuous_const)
 
 /-! ## The flow -/
 
@@ -84,12 +89,11 @@ theorem hasDerivAt_hillFlow (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, �
       (hillField ω t (hillFlow ω y₀ t)) t :=
     integral_hasDerivAt_right (hcont.intervalIntegrable 0 t)
       (hcont.stronglyMeasurableAtFilter _ _) hcont.continuousAt
-  have heq : hillFlow ω y₀ =
-      fun u => y₀ + ∫ s in (0 : ℝ)..u, hillField ω s (hillFlow ω y₀ s) := by
-    funext u
-    exact hillFlow_eq hω hM1 hM y₀ u
-  rw [heq]
-  simpa using hint.const_add y₀
+  have hshift : HasDerivAt (fun u => y₀ + ∫ s in (0 : ℝ)..u, hillField ω s (hillFlow ω y₀ s))
+      (hillField ω t (hillFlow ω y₀ t)) t := by
+    simpa using hint.const_add y₀
+  refine hshift.congr_of_eventuallyEq ?_
+  exact Filter.Eventually.of_forall fun u => hillFlow_eq hω hM1 hM y₀ u
 
 end Flow
 
@@ -109,17 +113,26 @@ variable {ω : ℝ → ℝ} {M : ℝ}
 theorem hasDerivAt_hillSolution (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M)
     (y₀ : ℝ × ℝ) (t : ℝ) :
     HasDerivAt (hillSolution ω y₀) (hillSolutionDeriv ω y₀ t) t := by
-  have h := (hasDerivAt_hillFlow hω hM1 hM y₀ t).fst
-  simpa [hillSolution, hillSolutionDeriv, hillField_apply] using h
+  have h := (ContinuousLinearMap.fst ℝ ℝ ℝ).hasFDerivAt.comp_hasDerivAt t
+    (hasDerivAt_hillFlow hω hM1 hM y₀ t)
+  have h' : HasDerivAt (fun x => (hillFlow ω y₀ x).1) (hillFlow ω y₀ t).2 t := by
+    simpa [hillField_apply, Function.comp_def] using h
+  exact h'
 
 theorem hasDerivAt_hillSolutionDeriv (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M)
     (y₀ : ℝ × ℝ) (t : ℝ) :
     HasDerivAt (hillSolutionDeriv ω y₀) (-(ω t ^ 2) * hillSolution ω y₀ t) t := by
-  have h := (hasDerivAt_hillFlow hω hM1 hM y₀ t).snd
-  simpa [hillSolution, hillSolutionDeriv, hillField_apply] using h
+  have h := (ContinuousLinearMap.snd ℝ ℝ ℝ).hasFDerivAt.comp_hasDerivAt t
+    (hasDerivAt_hillFlow hω hM1 hM y₀ t)
+  have h' : HasDerivAt (fun x => (hillFlow ω y₀ x).2) (-(ω t ^ 2 * (hillFlow ω y₀ t).1)) t := by
+    simpa [hillField_apply, Function.comp_def] using h
+  have hval : -(ω t ^ 2 * (hillFlow ω y₀ t).1) = -(ω t ^ 2) * hillSolution ω y₀ t := by
+    rw [hillSolution]
+    ring
+  rw [← hval]
+  exact h'
 
-theorem hillEquation (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M) (y₀ : ℝ × ℝ)
-    (t : ℝ) :
+theorem hillEquation (ω : ℝ → ℝ) (y₀ : ℝ × ℝ) (t : ℝ) :
     -(ω t ^ 2) * hillSolution ω y₀ t + ω t ^ 2 * hillSolution ω y₀ t = 0 := by ring
 
 theorem hillSolution_zero (hω : Continuous ω) (hM1 : 1 ≤ M) (hM : ∀ s, ω s ^ 2 ≤ M)
@@ -140,7 +153,7 @@ theorem hillEnergy_hillSolution_le {dω : ℝ → ℝ} {K a b : ℝ} (hω : Cont
       hillEnergy ω (hillSolution ω y₀) (hillSolutionDeriv ω y₀) a * Real.exp (2 * K * (t - a)) :=
   hillEnergy_le_of_logDeriv_le hωd (hasDerivAt_hillSolution hω hM1 hM y₀)
     (hasDerivAt_hillSolutionDeriv hω hM1 hM y₀)
-    (fun s => hillEquation hω hM1 hM y₀ s) hωpos hK ht
+    (fun s => hillEquation ω y₀ s) hωpos hK ht
 
 end Solution
 

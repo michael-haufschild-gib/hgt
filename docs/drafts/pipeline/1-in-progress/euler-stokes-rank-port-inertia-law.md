@@ -118,24 +118,31 @@ If E1/E2/E3 fail, prove and formalize the sharp strongest survivor: exact port d
 
 Prior Stage-4 classification was wrong under dependency-closed standard.
 
-- `[OPEN CORE: ROOTED STOKES REALIZATION]` `DecoratedStokesCore.RootedRealization` stores a tree and
-  `contact_eq` as fields. Existing theorems propagate that certificate; they do not construct it
-  from a ramified irregular type, count its Stokes directions, or derive the diagram matrix from
-  those counts. `ElementaryStokesGlobalPuiseuxRealization` constructs explicit finite Puiseux
-  polynomials for a restricted elementary loopless recognition problem, but no theorem currently
-  maps a general type-A irregular class to `RootedRealization`.
-- `[OPEN CORE: QUASI-HAMILTONIAN DIMENSION]` `fusionQuadratic` defines the polynomial
-  `sum Q_a + 2(1-g-m)M^2`. Existing Lean proves consequences of that definition. It does not
-  construct `Hom_S(Pi,G)`, local fission spaces, moment maps, stable reductions, tangent exact
-  sequences, or the quotient dimension theorem underlying Boalch's formula.
+- `[RESOLVED 2026-08-04: COEFFICIENT-LEVEL ROOTED STOKES REALIZATION]` Finite Puiseux
+  coefficient vectors on a common cover now determine their highest-difference contact kernel.
+  Coefficient transitivity proves symmetry, positivity, boundedness, and the acute-isosceles law;
+  threshold equivalence classes then construct the canonical dendrogram and its positive pendant
+  cuts. Thus neither a rooted tree nor a cut decomposition is an input. The construction covers
+  the normalized orbit Hom-irregularity kernel, including diagonal and mixed cyclic-sheet terms;
+  what remains outside its scope is only the analytic identification with arbitrary meromorphic
+  connections, not the finite Stokes datum used by the theorem.
+- `[RESOLVED 2026-08-04: REDUCTION DIMENSION FROM SOURCE DATA]` The reduction polynomial is now
+  derived from an ambient fission/fusion parameter space, moment-map constraint space, infinitesimal
+  gauge action, and the tangent quotient `ker(d_mu)/im(d_act)`. Rank-nullity and the explicit local
+  factor counts give the wild character-variety dimension. A three-term deformation complex has
+  degree-zero gauge-plus-centre, degree-one ambient deformations, and degree-two
+  constraints-plus-centre; its cohomology dimensions recover the tangent dimension and the two
+  central end terms. No published dimension formula is used as an interface.
 - `[FALSIFIED: EDGE LENGTH AS CHARACTERISTIC-CYCLE MULTIPLICITY]` A contact length `ell_e` is a
   rational/real filtration length, while an ordinary characteristic-cycle multiplicity is an
   integer. Direct identification is ill-typed and cannot resolve the categorical boundary.
-- `[OPEN CORE: CATEGORICAL DECATEGORIFICATION]` Identify exact sheaf-theoretic object whose
-  endomorphism/deformation Euler pairing is the diagram quadratic form. Compute its microsupport,
-  microstalks, characteristic cycle, and vanishing cycles, and prove the contact Gram terms arise
-  by integrating or regrouping integer microlocal ranks across filtration levels—not by declaring
-  `ell_e` itself a multiplicity.
+- `[PARTIALLY RESOLVED: CATEGORICAL DECATEGORIFICATION]` The explicit one-wall cellular
+  exponential model now computes arc and wall stalks, generization, microstalk cokernels,
+  microsupport, characteristic-cycle coefficients, decay conormals, and vanishing ranks. Cyclic
+  sheet-loss layers expand orbit Hom irregularity into integer rank-one microstalk masses; rational
+  contact occurs only after finite-cover normalization. Still open: package these local objects and
+  maps as a global Stokes-sheaf category and prove the comparison with the analytic irregular
+  Riemann--Hilbert category without importing that comparison as an assumption.
 
 ### Universal-shadow candidate under audit
 
@@ -220,10 +227,11 @@ so far states the persistence-metric Witt decomposition, capacity wall, or singl
 channel for ramified Stokes deformation sheaves. This is provisional pending citation ancestry and
 descendancy audit.
 
-`[OPEN CORE]` Construct `Def(L)` from the Stokes groupoid presentation and prove its microlocal
-Morse/characteristic-cycle formula. This must simultaneously derive the root-group dimension count
-and the global reduction Euler characteristic, so no quasi-Hamiltonian dimension formula remains an
-interface.
+`[PARTIALLY RESOLVED CORE]` The finite cellular deformation object, its root-space microstalk
+counts, characteristic cycle, reduction tangent complex, and global Euler characteristic are now
+constructed independently. Remaining core is comparison: assemble local cellular objects into the
+global Stokes groupoid category and identify its finite deformation complex with the analytic
+irregular Riemann--Hilbert deformation object.
 
 ## Relentless interrogation II — exact geometric kernel
 
@@ -262,12 +270,17 @@ microlocal jump cycle, Stokes-level persistence metric, and Euler pairing must a
 one explicit finite Puiseux-orbit construction. Capacity is then the boundary norm induced by this
 kernel, rather than an independent graph decoration.
 
-`[OPEN CORE: RAMIFIED CONSTRUCTION]` Define a Stokes circle as a finite cyclic Puiseux orbit;
-define `Irr Hom` by summing highest exponents of all ordered pairs on a common cover; prove the
-unified loop/edge formula, acute-isosceles law, and canonical dendrogram without importing the
-published graph formula. This construction must include loops and negative multiplicities.
+`[RESOLVED 2026-08-04: RAMIFIED FINITE-SOURCE CONSTRUCTION]` A Stokes circle is represented by
+finite coefficient vectors on a common cover. Highest-difference exponents define branch contact;
+ordered cyclic-sheet losses define diagonal and mixed orbit Hom irregularity. Direct coefficient
+arguments prove the unified normalized kernel, acute-isosceles law, and canonical threshold
+dendrogram without importing the graph formula. The resulting diagram entries allow loops and
+negative multiplicities because they are recovered only after subtracting the universal rank
+background from the positive irregularity kernel.
 
-`[OPEN CORE: ENHANCED MICROLOCAL INDEX]` Construct the exponential epigraph sheaves on
-`S^1 x R`, compute mixed-Hom microstalks at every front crossing, and prove that integer Morse
-ranks integrated over Stokes-level lifetime equal `Irr Hom`. Ordinary characteristic-cycle
-coefficients remain integer; rational contact appears only after ramification normalization.
+`[RESOLVED AT CELLULAR LEVEL 2026-08-04: MICROLOCAL INDEX]` Explicit exponential epigraph
+objects on the cellular Stokes boundary have one rank-one microstalk at each front wall. Their
+mixed cyclic-sheet loss layers sum to `Irr Hom`; exactly half the oriented walls are decay walls.
+Ordinary characteristic-cycle and vanishing-cycle coefficients are integer, while rational contact
+appears only after normalization by cover degree. The remaining analytic comparison is recorded in
+the partially resolved categorical core above, not hidden inside this finite computation.

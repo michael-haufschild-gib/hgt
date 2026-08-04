@@ -592,3 +592,76 @@ The point is structural.  The cross-relation is by construction
 `coefficientCrossRelation_mem`, this says: two coefficients of the minimal characteristic already
 carry a relation of `y` over the small field they generate.  That is the object Ritt's degree count
 compares against the characteristic, and the comparison is what remains of `(3)`.
+
+## Lean progress — two coefficients already carry a relation over the field they generate
+
+`GaloisForLFunctions/HTGeometry/CrossRelationDescentRelation.lean` (wired, axiom-clean):
+
+    descend_crossRelation_mem_relationIdeal :
+      the descended coefficient cross-relation is a relation of `y` over `F(p, q)`
+
+Composed from three pieces, none of them re-derived: the corpus's `coefficientCrossRelation_mem` (the
+cross-relation is a relation over `G`), this session's `crossRelation_descends` (it descends to
+`F(p, q)`), and this session's `differentialPolynomialEvalOver_map_inclusion` (evaluation is unchanged
+when the coefficient field grows, so descending preserves being a relation).
+
+State of the `(3)` capstone.  For a minimal characteristic `P` over `G` and two of its coefficients
+`p, q`, we now have a relation of `y` over the small field `F(p, q) <= G`.  Rank monotonicity
+(`minimalRank_le_of_le`) compares the minimal rank over `F(p, q)` with the rank of that relation, and
+the corpus's cross-difference vanishing criterion plus non-base ratio existence say when the relation
+is nonzero.  What is still missing is the degree count that forces `F(p, q) = G`.
+
+## Lean progress — the small-field relation is nonzero
+
+`GaloisForLFunctions/HTGeometry/CrossRelationNonvanishing.lean` (wired, axiom-clean):
+
+    crossRelation_ne_zero :
+      if the two characteristic coefficients have a ratio outside the base field, their
+      cross-relation is nonzero
+
+Checked against the corpus first: the corpus proves that such a pair of coefficients always EXISTS
+(`exists_differentialRelation_coefficientRatio_not_mem_bot`); it does not record that the resulting
+cross-relation is nonzero, which is what makes the comparison non-vacuous.
+
+The three links of this session now say: for a minimal characteristic over `G` and a coefficient pair
+with non-base ratio, there is a NONZERO relation of `y` over the small field `F(p, q) <= G`.  Together
+with `minimalRank_le_of_le` this bounds the minimal rank over `F(p, q)` by the rank of that
+cross-relation.  The remaining inference -- that the bound forces `F(p, q) = G` -- is the degree count.
+
+## Lean progress — the comparison itself
+
+`GaloisForLFunctions/HTGeometry/CrossRelationRankComparison.lean` (wired, axiom-clean):
+
+    minimalRank_order_le_crossRelation :
+      for a minimal characteristic over `G` and two of its coefficients with a non-base ratio,
+        order(characteristic)  <=  order(descended cross-relation)
+
+This is the assembled comparison.  Its three inputs are the links of the previous sections plus one
+corpus lemma used rather than re-proved:
+
+* the descended cross-relation is a relation over `F(p, q)`   (this session)
+* it is nonzero                                                (this session)
+* it is nonconstant -- a constant would be a unit in a proper relation ideal, and
+  `mvPolynomial_vars_nonempty_of_ne_zero_of_not_isUnit` is the corpus's
+* rank monotonicity in the coefficient field                   (this session)
+
+So one direction of Ritt's comparison is formal.  The reverse bound -- that the cross-relation's order
+does not exceed the characteristic's, which is where the two-block degree count enters -- is what
+remains, and with it `(3)`.
+
+## Lean progress — the cross-relation cannot raise the order
+
+`GaloisForLFunctions/HTGeometry/CrossRelationOrderBound.lean` (wired, axiom-clean):
+
+    order_crossRelation_le :
+      order(cross-relation)  <=  max(order A, order B)   for its two entries `A, B`
+
+Multiplying by a constant and subtracting introduce no jet variable, so the relation a coefficient
+pair produces is never higher in order than the pair itself.  This is the structural half of the
+reverse comparison; combined with the previous section,
+
+    order(characteristic)  <=  order(cross-relation)  <=  max(order A, order B).
+
+What is left of `(3)` is therefore one specific fact about the primitive two-block characteristic:
+that its block coefficients `A, B` have order at most the order of the characteristic itself.  With
+that, the two bounds close into an equality and Ritt's comparison is complete.

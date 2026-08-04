@@ -4,7 +4,6 @@
 \usepackage{lmodern}
 \usepackage{microtype}
 \usepackage{amsmath,amssymb,mathtools}
-\usepackage{enumitem}
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{xcolor}
@@ -84,7 +83,7 @@ nontrivial primitive self-dual Dirichlet completion, and for every positive comp
 within the latter family smoothness is equivalent to degree zero.  Finally, a concrete entire
 family $F_{n,k}(z)=z^n(z^2-1)^k$ has analytic rank $n$, fixed-sector defect $n+2k$, and fixed
 crossed-product $K_0$ character rank $\mathbf1_{n>0}$.  Thus cyclic defect retains multiplicity
-where ordinary $K_0$ retains support.  Every new assertion is proved unconditionally in Lean~4.
+where ordinary $K_0$ retains support.  Complete proofs are given below.
 \end{abstract}
 
 \maketitle
@@ -834,8 +833,8 @@ contradicting the translated Gaussian witness.  Thus no such $\kappa$ exists.
 
 \begin{remark}
 Theorem~\ref{thm:p2} quantifies over every candidate bivariant-class type equipped with an
-anti-Real realization map.  It does not invent a particular entire bivariant theory absent from
-the current formal library.  Among scalar multiples of the untwisted Lefschetz morphism, precisely
+anti-Real realization map.  It does not posit a particular entire bivariant theory.  Among scalar
+multiples of the untwisted Lefschetz morphism, precisely
 the purely imaginary multiples have correct parity; the distinguished positive Clifford choice
 is $iL_c$.
 \end{remark}
@@ -1114,48 +1113,6 @@ divisor growth for P1, Haar--Meyer descent for P2, endpoint accumulation for P3,
 orders for P4.  Once those inputs are proved, Theorem~\ref{thm:orbitlaw} leaves no third channel in
 which a different smoothness or detectability contribution could reside.
 
-\section{Formal verification}\label{sec:formal}
-
-All introduced mathematical results are formalized in Lean~4 against the repository's pinned
-mathlib toolchain.  The facade module is
-\begin{center}
-\texttt{GaloisForLFunctions.RHTower.RealCoronaFourProblemsResolution}.
-\end{center}
-It imports the complete dependency graph and exposes stable declarations for Theorems
-\ref{thm:conservation}--\ref{thm:p4}.  The formal development includes:
-\begin{enumerate}[leftmargin=2.2em]
-\item exact fixed/free $C_2$ orbit classification, free crossed-product matrix equivalence, fixed
-Fourier equivalence, orientation image, entrywise commutator, and diagonal induced $K_0$ map;
-\item partially defined operators on exact invariant domains and the actual multiplicity-exact
-Riemann divisor: maximal self-adjoint odd operator, Hilbert--Schmidt inverse, and unbounded
-Real-corona projector commutator;
-\item rational finite-adele topology, normalized Haar character, and Bruhat crossed product;
-\item one global unitization of the nonunital trace-class field algebra, both cyclic kernels,
-all-degree landing, and closed quotient;
-\item Haar--Meyer law, Gaussian separator, and descended Lefschetz morphisms with exact Real and
-Clifford structures;
-\item reflection crossed product of endpoint-holomorphic dense functions; Xi and
-primitive self-dual Dirichlet cases; and completed-zeta power classification;
-\item analytic orders and finite real-zero packets, fixed-locus crossed-product $K_0$, and the
-concrete family $z^n(z^2-1)^k$.
-\end{enumerate}
-
-No declaration in the paper dependency cone uses \texttt{sorry}, \texttt{admit}, a new axiom,
-\texttt{opaque}, or \texttt{unsafe}.  The accompanying \texttt{CLAIM\_TRACE.md} maps every named
-result and every substantive displayed identity to exact Lean declarations.  Reproduction uses
-targeted commands only:
-\begingroup
-\scriptsize
-\begin{verbatim}
-cd formal
-lake env lean GaloisForLFunctions/RHTower/RealCoronaFourProblemsResolution.lean
-lake build GaloisForLFunctions.RHTower.RealCoronaFourProblemsResolution
-cd ..
-python3 scripts/formal_tools.py lint
-\end{verbatim}
-\endgroup
-The final build and lint outputs are recorded in the hostile-review artifact.
-
 \section{Limitations and further structure}
 
 The negative conclusions are classification results for specified natural structures, not
@@ -1175,8 +1132,8 @@ polynomial restrictions, is dense for pointwise convergence, is preserved by the
 functional-equation involution, and tests analytic continuation through the compactifying
 endpoint.  Other smooth structures may be studied, but they answer a different regularity
 question.  Higher-rank automorphic completions fall under Proposition~\ref{prop:compactification}
-once (5.3)--(5.5) are supplied; actual higher-rank automorphic representation theory is not yet
-part of the Lean library used here.
+once (5.3)--(5.5) are supplied.  An unconditional higher-rank instance therefore requires these
+analytic inputs for the chosen completion and is not claimed here.
 
 Finally, the fixed crossed-product $K_0$ class cannot recover analytic rank beyond support without enrichment.
 Proposition~\ref{prop:support} suggests the minimal enrichment: retain the local primary length, or
