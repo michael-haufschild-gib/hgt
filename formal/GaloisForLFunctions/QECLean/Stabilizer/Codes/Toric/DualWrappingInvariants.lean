@@ -83,10 +83,8 @@ theorem hRowAt_independent_on_dualCycles (c : toricDualCycles (L := L)) (y0 y1 :
     have h_sum_zero : ∑ x : Fin L,
         (c.val (EdgeIdx.h x y) + c.val (EdgeIdx.h x (next L y)) +
           c.val (EdgeIdx.v x y) + c.val (EdgeIdx.v (next L x) y)) = 0 := by
-      convert congr_arg
-        ( fun f : FaceIdx L → ZMod 2 => ∑ x : Fin L, f ( x, y ) )
-        h_dual_boundary_zero using 1;
-      norm_num;
+      exact Finset.sum_eq_zero fun x _ =>
+        congr_fun h_dual_boundary_zero (x, y);
     have h_sum_zero :
         ∑ x : Fin L, c.val (EdgeIdx.v x y) =
           ∑ x : Fin L, c.val (EdgeIdx.v (next L x) y) := by
@@ -126,9 +124,7 @@ theorem vColAt_independent_on_dualCycles (c : toricDualCycles (L := L)) (x0 x1 :
           c.val (EdgeIdx.h x y) + c.val (EdgeIdx.h x (next L y)) +
             c.val (EdgeIdx.v x y) + c.val (EdgeIdx.v (next L x) y) = 0 := by
         intro y
-        have := c.2
-        simp [toricDualCycles] at this;
-        convert congr_arg ( fun f : C2 L => f ( x, y ) ) c.2 using 1;
+        exact congr_fun (show toricDualBoundary L c.1 = 0 from c.2) (x, y);
       exact Finset.sum_eq_zero fun y _ => h_sum y;
     simp_all +decide [ Finset.sum_add_distrib, vColAt ];
     have h_sum_h :
@@ -305,7 +301,9 @@ theorem toric_finrank_dualCycles :
       simp +decide [ Matrix.rank, LinearMap.rank ];
       simp +decide [ ← Module.finrank_eq_rank ];
       convert Iff.rfl;
-      all_goals ext; simp +decide [ LinearMap.toMatrix' ];
+      all_goals first
+        | rfl
+        | (ext; simp +decide [ LinearMap.toMatrix' ]);
     simp +decide [ Module.finrank ];
     grind +splitImp;
   have := toric_finrank_boundaries ( L := L ) ; simp_all +decide [ mul_assoc ] ;
@@ -325,7 +323,7 @@ theorem toric_finrank_dualBoundaries :
   rw [ show Module.finrank ( ZMod 2 ) ( C0 L ) = L * L from ?_ ] at this;
   · refine eq_tsub_of_add_eq ?_;
     convert this;
-    exact?;
+    exact Eq.symm (toric_finrank_ker_cutMap_eq_one L);
   · simp +decide [ C0, Module.finrank ]
 
 /-- `phiDual` as an explicit linear map (for injectivity via dimension count). -/
@@ -353,8 +351,7 @@ noncomputable def phiDualLinearMap :
 
 /-- `phiDual` agrees with `phiDualLinearMap`. -/
 theorem phiDual_eq_phiDualLinearMap (x : toricDualH1 (L := L)) :
-    phiDual (L := L) x = phiDualLinearMap (L := L) x := by
-  convert rfl
+    phiDual (L := L) x = phiDualLinearMap (L := L) x := rfl
 
 /-
 `phiDual` is injective.
@@ -376,7 +373,7 @@ theorem phiDual_injective :
     · rw [ ← LinearEquiv.finrank_eq
         ( Submodule.comapSubtypeEquivOfLe
           ( show toricDualBoundaries ( L := L ) ≤ toricDualCycles ( L := L )
-            from by exact? ) ) ] at * ;
+            from toricDualBoundaries_le_toricDualCycles L ) ) ] at * ;
       linarith!;
     · exact le_of_lt ( Nat.lt_of_sub_eq_succ h_finrank );
   have := @phiDual_surjective L ‹_›;
@@ -384,9 +381,11 @@ theorem phiDual_injective :
       Module.finrank (ZMod 2) (↥(LinearMap.range (phiDualLinearMap (L := L)))) = 2 := by
     rw [ LinearMap.range_eq_top.mpr ] <;> norm_num [ this ];
     convert this using 1;
+    rfl
   have := LinearMap.finrank_range_add_finrank_ker ( phiDualLinearMap ( L := L ) ) ;
   simp_all +decide ;
   convert LinearMap.ker_eq_bot.mp this using 1
+  rfl
 
 /-
 `H¹_dual ≅ (ZMod 2)²` via dual wrapping invariants.

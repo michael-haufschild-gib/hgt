@@ -659,7 +659,9 @@ def IsDoubledCommutantComplete {N : ℕ} {G : Type*}
   ∀ M : Matrix (Fin N × Fin N) (Fin N × Fin N) ℂ,
     (∀ g, (u g ⊗ₖ u g) * M = M * (u g ⊗ₖ u g)) → M ∈ adCommutantGG b
 
-private theorem qubitClifford_commutant_normal_form
+/-- Every operator commuting with the doubled single-qubit Clifford action is
+an exact linear combination of identity and swap. -/
+theorem qubitClifford_commutant_normal_form
     (M : Matrix (Fin 2 × Fin 2) (Fin 2 × Fin 2) ℂ)
     (hM : ∀ g, (qubitClifford g ⊗ₖ qubitClifford g) * M =
       M * (qubitClifford g ⊗ₖ qubitClifford g)) :

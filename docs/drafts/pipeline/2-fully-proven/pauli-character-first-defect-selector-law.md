@@ -140,10 +140,14 @@ misstated as the full nonsinglet Hall theorem or as the full O4.12z25 law.
 
 ## Next exact theorem
 
-Resolve the zero Pauli-character grade under the local Clifford permutation of `X,Y,Z`. Prove that
-the anisotropic standard component supplies an exact strict weight-one surplus and that this surplus,
-together with a reverse channel on every occupied edge grade, pays the complete overlap required by
-`bipartiteHall_overlapCompensation_finrank`. This would close the full two-replica O4.12z25 law.
+Use visible-kernel recovery rather than demanding a reverse image as large as the complete forward
+overlap. Split the canonical obstruction into the sitewise-singlet layer and its local-Casimir
+complement. Independent Pauli-character edge outputs define a quotient detector on the singlet
+layer. Visible detector rank pays exposed directions; on its kernel every edge image already lies
+in the nonsinglet input, so applying the same generators once more produces the injective edge
+Casimir recovery in the singlet layer. Exact theorem and proof are in
+`visible-kernel-recovery-hall-law.md`. Concrete local-Casimir splitting and quotient-detector
+instantiation are the remaining formal gates for two-replica O4.12z25.
 
 ## Formal bridge
 
@@ -168,3 +172,13 @@ Targeted compilation passes. Axiom audits of the selector equivalence, exact wei
 conjugation, paired commutation, covariance, span preservation, canonical invariance, simultaneous
 parity decomposition, and its finrank identity contain only `propext`, `Classical.choice`, and
 `Quot.sound`.
+
+## Formal completion of nonzero channel
+
+`PauliCharacterFirstDefectCovariance.lean` proves distinct global Pauli words have distinct
+simultaneous conjugation characters and the complete family of exact character subspaces is
+`iSupIndep`. `PauliCharacterFirstDefectHallExpansion.lean` defines the sum of all nonzero character
+components contained in an arbitrary subspace and proves
+`finiteTwoReplicaNonzeroPauliResolvedSubspace_finrank_le_shadow` for the literal weight-one
+collective Pauli family. Targeted elaboration passes. Axiom audit of character injectivity,
+independence, and Hall capstone contains only `propext`, `Classical.choice`, and `Quot.sound`.

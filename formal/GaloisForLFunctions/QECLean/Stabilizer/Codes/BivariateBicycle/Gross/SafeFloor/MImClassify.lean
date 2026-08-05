@@ -252,8 +252,8 @@ theorem kerBasis_spans (z : BaseGroup → ZMod 2)
     funLift (fun z => recon z + z) (fun z => C (bbBoundary2Fn baseA baseB z))
       (by simp only [recon_zero, add_zero])
       (by simp only [bb2_zero_chain, C_zero])
-      (by intro a b; dsimp only; rw [recon_add]; abel)
-      (by intro a b; dsimp only; rw [bbBoundary2Fn_add, C_add])
+      (by intro a b; rw [recon_add]; abel)
+      (by intro a b; rw [bbBoundary2Fn_add, C_add])
       factor_basis z
   rw [hz, C_zero] at key
   funext h

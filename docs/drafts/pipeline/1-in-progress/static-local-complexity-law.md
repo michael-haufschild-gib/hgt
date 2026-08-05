@@ -3475,8 +3475,9 @@ therefore give
 This is the first all-long-time cavity contraction in the route; `(O4.12z16)`
 was only local in time.  It is not yet circuit anti-concentration.
 
-`[BRIDGE] [PAPER-PROVED]`  At two replicas the local-singlet synchronization
-part can be closed exactly.  On one physical site put
+`[PROVED]` At two replicas the local-singlet synchronization part closes
+exactly in the literal arbitrary-register physical matrix algebra. On one
+physical site put
 
 \[
  u={I\otimes I\over2},\qquad
@@ -3514,8 +3515,9 @@ and
                                                                \tag{O4.12z23}
 \]
 
-For any connected interaction graph positivity and an invertible local
-change of basis `|0> -> u`, `|1> -> f` therefore give
+For any connected interaction graph, exact tensor extension of the nine
+physical edge commutator squares and an invertible local change of basis
+`|0> -> u`, `|1> -> f` give
 
 \[
  \boxed{\quad
@@ -3524,10 +3526,16 @@ change of basis `|0> -> u`, `|1> -> f` therefore give
  \quad}                                                        \tag{O4.12z24}
 \]
 
-Indeed every edge kills all bit strings whose endpoint labels disagree, and
-connectedness leaves only the two constant strings.  Thus the entire
-`2^n`-dimensional one-site singlet algebra synchronizes to the identity and
-global-swap modes.
+The global identity/swap embedding has an explicit Möbius left inverse, so no
+coefficient-surrogate assumption is present. Each edge generator is a Pauli
+string of weight exactly two, and the literal physical edge Casimir
+intertwines exactly with the displayed four-coordinate action. Every edge
+kills all bit strings whose endpoint labels agree and is injective on the two
+mismatch coordinates; connectedness leaves only the two constant strings.
+Thus the entire `2^n`-dimensional one-site singlet algebra synchronizes to the
+identity and global-swap modes. The dependency-closed proof is
+`HTGeometry/TwoReplicaGlobalSingletEdgeCasimirBridge.lean`; capstone axiom
+audits contain only `propext`, `Classical.choice` and `Quot.sound`.
 
 This does **not** make the matrix pencil full.  The implication “positive
 Casimir with correct common kernel implies rank non-decrease” is false: the
@@ -3543,9 +3551,9 @@ gate is consequently the stronger Pauli Hall-expansion law
 
 for every subspace `U` of the global-permutation quotient.  This is precisely
 the rank-nondecreasing condition; common-kernel or spectral-gap arguments do
-not substitute for it.  The dependency-closed synchronization proof and
-hostile counterexample are in
-`../3-formalized/two-replica-local-singlet-synchronization-law.md`.
+not substitute for it. The dependency-closed synchronization proof is now
+global and literal; the hostile counterexample remains decisive because
+synchronization proves quadratic recovery, not the all-subspaces Hall law.
 
 `[BRIDGE] [PAPER-PROVED.]`  The full Hall quantifier can now be closed on
 the entire two-replica sitewise singlet quotient, not merely on coordinate
@@ -3590,11 +3598,16 @@ quantifier is only the gluing of arbitrary subspaces crossing those layers;
 separate Hall inequalities do not automatically control overlap of their
 outputs.  Full proof of `(O4.12z25c)` is in
 `../2-fully-proven/two-replica-singlet-pauli-hall-expansion.md`.
-The all-subspaces dimension mechanism is now formalized as
+The all-subspaces dimension mechanism is formalized as
 `resolvedFiberAssembly_subspace_finrank` in
-`HTGeometry/ResolvedFiberHallExpansion.lean`.  Physical completion of
-`(O4.12z25c)` still requires the concrete mismatch projections, fixed-edge
-single commutator, and injective assembly of the distinct edge-defect sectors.
+`HTGeometry/ResolvedFiberHallExpansion.lean`. Physical completion of the
+quadratic synchronized-Casimir input is exact in
+`HTGeometry/TwoReplicaGlobalSingletEdgeCasimirBridge.lean`.
+Formal completion of `(O4.12z25c)` still requires the stronger concrete
+fixed-orientation single-commutator mismatch projections and injective
+assembly of distinct edge-defect sectors. Mixed-subspace Hall gluing then
+requires the product-Clifford reducing decomposition and visible quotient
+detector; no full two-replica Hall claim is made yet.
 
 Primary inputs are V. Kargin,
 [*An algebraic characterization of non-singular matrix semicircles*](https://arxiv.org/abs/2604.23089)
@@ -4453,3 +4466,84 @@ receive a new title and an independent significance audit.
   two-replica gate: Hall expansion on the zero Pauli-character fixed algebra, including its local
   anisotropic diagonal-correlation component, plus reverse compensation for intersection of its
   edge images with already occupied nonzero target grades.
+- 2026-08-04 -- Audited all six newly designated corpus surfaces before further proof work.
+  `HTGeometry` contains direct reusable Hall machinery: central-Casimir scaling,
+  resolved-fibre assembly, Pauli-character independence, exact local-singlet synchronization, and
+  product-stabilizer operational locality witnesses. `HilbertMetric` supplies the bi-tight
+  Parseval--Bessel law and exact adjoint-departure rigidity. `QuantumAlg` supplies the strict
+  48-element one-qubit Clifford lift, doubled-commutant completeness, exact Casimir twirl, product
+  Clifford tensor lift, and general Pauli symplectic Schur solver. These identify the local
+  zero-character split into two Clifford-fixed directions and anisotropic nonsinglet directions.
+  `QECLean` supplies exact binary-symplectic Pauli parity, commutation, centralizer, support, and
+  logical-action bridges, but no matrix doubled-commutant or all-subspaces Hall theorem; concrete
+  code endpoints using `native_decide` are excluded from standard-axiom capstones. `RHTower`
+  supplies already-used recurrence, completed-time Choi plateau, syndetic hard-time, causal-horizon,
+  and Clifford multiplicity mechanisms, but no zero-character Hall closure. `PNTPlus.lean` is an
+  umbrella for PNT/sieve/Mellin modules and supplies no direct two-replica rank mechanism.
+- 2026-08-04 -- Found and proved the correct mixed-layer mechanism. Full forward-image overlap need
+  not be repaid. Let `F` record edge outputs modulo nonsinglet input. Its range pays visible singlet
+  directions. For `s in ker F`, every edge image already lies in nonsinglet input, so applying the
+  same generator again places `K_2 s=sum_p A_p^2 s` in total output. Edge synchronization makes
+  `K_2` injective on the singlet layer after quotienting global identity and global swap. Visible
+  range lies in nonsinglet layer and recovered kernel lies in singlet layer, hence their dimensions
+  add and rank-nullity closes mixed Hall. Dependency-closed proof is in
+  `../2-fully-proven/visible-kernel-recovery-hall-law.md`. Abstract capstone
+  `visibleKernelRecovery_subspace_finrank` is formalized in
+  `HTGeometry/VisibleKernelRecoveryHallExpansion.lean`. The same module formalizes quadratic return
+  `linearFamilySquare`, proves hidden first images return inside one-step target shadow, and derives
+  `quadraticHiddenKernelRecovery_subspace_finrank`. Targeted elaboration passes. Remaining
+  Exact axiom audit of both recovery capstones contains only `propext`, `Classical.choice`, and
+  `Quot.sound`. Remaining two-replica work is concrete construction of local-Casimir reducing split,
+  graded quotient detector, and physical edge-Casimir restriction—not invention of another overlap
+  inequality.
+- 2026-08-04 -- Strengthened visible-kernel recovery to the exact physical interface.
+  `visibleQuotientDetector_finrank` turns any injective assembly of detector range into actual output
+  modulo occupied nonsinglet input into the required visible-rank inequality.
+  `invariantSubspace_le_shadow_of_linearFamilySquare_injective` shows an invariant nonsinglet input
+  is reproduced once its local quadratic Casimir is injective. The combined capstone
+  `quadraticHiddenKernelRecovery_of_visibleQuotient` now leaves only task-specific representation
+  bridges. Exact axiom audit of all five recovery capstones contains only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- 2026-08-04 -- Rejected an invalid design-order shortcut before it entered the paper. Doubled
+  commutant completeness classifies fixed two-replica operators; it does not make every invariant
+  subspace of the operator representation Lie-invariant. Using it that way would silently require
+  fourth-moment control. The replacement is exact finite-group algebra.
+  `TwoReplicaCliffordTwirlHallSymmetryReduction.lean` proves that every strict doubled Clifford gate
+  normalizes the three collective Pauli commutators, hence fixes the canonical greatest Hall
+  obstruction. Its uniform conjugation average is idempotent and has range exactly
+  `span{identity, swap}`. Therefore every canonical obstruction splits into its identity/swap part
+  and its exact zero-twirl part. The module transports all statements from QuantumAlg's `Fin 2`
+  convention to the Boolean physical convention used by the edge-Casimir corpus. Ten capstone axiom
+  audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-08-04 -- Isolated the correct no-differentiation Casimir mechanism for the product-local
+  lift. For a collective Pauli commutator `B_(i,a)`, paired quarter-turn conjugation `C_(i,a)`, and
+  paired-Pauli half-turn `J_(i,a)`, exact eigenvalue interpolation gives
+  `B_(i,a)^2 = 6I - 4(C_(i,a)+C_(i,a)^(-1)) + 2J_(i,a)`. Thus the local quadratic Casimir lies in
+  the finite Clifford group algebra and preserves every Clifford-invariant canonical obstruction.
+  This identity replaces the rejected continuous-symmetry inference. Remaining concrete gates are
+  its Lean proof, arbitrary-register product-Clifford covariance/twirl range, the graded quotient
+  detector, and restriction of the already formalized connected-edge master Casimir to the global
+  identity/swap quotient.
+- 2026-08-05 -- Closed the concrete growing-replica central-Casimir bridge for every finite physical
+  register and every finite replica register. `AllReplicaCollectivePauliCasimir.lean` proves exact
+  Pauli structure constants, diagonal replica brackets, distinct-site commutation, literal
+  vectorized operator action, Hermiticity, and centrality of the complete site/axis Casimir.
+  `CentralCasimirCommonKernelCorrection.lean` then constructs the canonical orthogonal projector
+  onto the simultaneous kernel and proves the unconditional mixed-subspace law
+  `finrank U <= finrank V + finrank S_r`. This removes the earlier all-replica complement/gluing
+  obligation for the weight-one family. Exact axiom audits use only `propext`, `Classical.choice`,
+  and `Quot.sound`. The surviving frontier is sharply smaller but still substantive: one-step
+  weight-two Hall inside `S_r`, with correction reduced from the full sitewise singlet sector to
+  global replica-permutation modes. No cavity decay or Brown--Susskind time scale is claimed from
+  the new algebra alone.
+- 2026-08-05 -- Proved a universal positive-length replacement for any failed one-step Hall route.
+  `LieGeneratedCentralHallExpansion.lean` constructs the Lie subalgebra of endomorphisms that both
+  preserve a target `V` and send a source `U` into `V`. Consequently, if local generators preserve
+  `V` and send `U` into `V`, every element of their Lie span also sends `U` into `V`. Composed with
+  the exact common-kernel Casimir correction, any Lie-generated Hermitian central family satisfies
+  `finrank U <= finrank V + finrank(common kernel)`. This is unconditional and requires neither
+  one-step Hall nor a gap estimate. For the physical frontier it changes the exact remaining task:
+  prove that weight-one/two replica commutators Lie-generate a full central family and bound that
+  full family's common kernel by global replica permutations. This theorem alone does not prove the
+  desired one-step cavity contraction; it supplies a rigorous block-orbit alternative whose depth
+  cost must still be quantified.

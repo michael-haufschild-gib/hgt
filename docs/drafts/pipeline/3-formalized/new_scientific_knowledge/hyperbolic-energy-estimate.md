@@ -216,6 +216,264 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 152 | **the non-autonomous evolution is an evolution family** | **`kgFieldMildT_flow`** | **built** |
 | 153 | **every regular vector is reached at every time** | **`exists_kgFieldMildT_eq`** | **built** |
 | 154 | **the moving background is determined by the field it produces** | **`eq_of_kgFieldMildT_eq`**, **`kgFieldMildT_injective_potential`** | **built** |
+| 155 | the high-pass perturbation, and its exact operator norm | `kgHighPass`, **`kgHighPassOp`**, `norm_kgHighPassOp_le`, `le_norm_kgHighPassOp`, **`norm_kgHighPassOp`** | **built** |
+| 156 | **a perturbation above frequency `R` is damped by `⟨R⟩⁻¹`** | **`norm_kgSinFreqOp_comp_kgHighPassOp`** | **built** |
+| 157 | its field is uniformly close to the free field | **`norm_kgFieldMild_kgHighPassOp_sub_free_le`** | **built** |
+| 158 | **the forward map is not bounded below** | **`exists_norm_eq_and_kgFieldMild_close`** | **built** |
+| 159 | **the inverse problem is ill-posed** | **`exists_potentials_field_closer_than`**, `exists_norm_eq_and_kgFieldMildT_close` | **built** |
+| 160 | a multiplier obeys every bound its symbol obeys | `norm_lpBoundedMulCLM_le_of_bound`, **`norm_fourierMulCLM_le_of_bound`** | **built** |
+| 161 | **the half-order propagator is bounded by the elapsed time** | `norm_kgSinOverFreq_le_abs`, **`norm_kgSinFreqOp_le_abs`**, `norm_kgSinFreqOp_apply_le_abs` | **built** |
+| 162 | **the perturbation contributes only at second order in time** | **`norm_kgFieldMild_sub_free_le_sq`**, **`norm_kgFieldMildT_sub_free_le_sq`** | **built** |
+| 163 | `\|cos a − 1\| ≤ a²/2` and `\|sin a − a\| ≤ \|a\|³/6` | `abs_cos_sub_one_le`, **`abs_sin_sub_self_le`** | **built** |
+| 164 | the low-pass projection | `kgLowPass`, **`kgLowPassOp`**, `norm_kgLowPassOp_le`, `norm_kgLowPassOp_apply_le` | **built** |
+| 165 | **the propagators are Taylor-accurate below a fixed frequency** | **`norm_kgCosOp_lowPass_sub_le`**, **`norm_kgSinFreqOp_lowPass_sub_smul_le`** | **built** |
+| 166 | a solution from rest at a low-frequency datum leaves it at second order | **`norm_kgFieldMild_sub_data_le`** | **built** |
+| 167 | the Duhamel source integral is quadratic in the probing time | `intervalIntegral_ofReal_sub_smul`, **`norm_kgSource_sub_smul_le`** | **built** |
+| 168 | **conditional stability: on low-pass perturbations the forward map is bounded below** | **`norm_sub_le_of_lowPass`** | **built** |
+| 169 | an admissible probing time always exists | **`exists_probe_time`** | **built** |
+| 170 | **conditional stability with an explicit constant** | **`norm_sub_le_of_lowPass_explicit`** | **built** |
+| 171 | **band stability, both directions** | **`lowPass_band_stability`** | **built** |
+| 172 | a solution in a moving background leaves a low-frequency datum at second order | **`norm_kgFieldMildT_sub_data_le`** | **built** |
+| 173 | the source integral of a moving background is quadratic in the probing time | `continuous_kgPotentialDiffSource`, **`norm_kgSourceT_sub_smul_le`** | **built** |
+| 174 | **conditional stability for a moving background** | **`norm_sub_zero_le_of_lowPassT`** | **built** |
+| 175 | the optimum of `A/x² + Bx` | `exists_balance_probe`, **`balance_probe_eq`**, `inv_sq_add_linear_at_balance`, **`inv_sq_add_linear_le_of_balance`** | **built** |
+| 176 | **the optimal reconstruction error, and the cube-root law** | **`norm_sub_zero_le_optimal`** | **built** |
+| 177 | no probing time does better | **`kgProbe_bound_optimal`** | **built** |
+| 178 | the source of the energy-space equation, and its norm | `kgEnergy_ext`, `kgSourceOp`, **`norm_kgSourceOp_le`** | **built** |
+| 179 | **the state equation in the energy space, and its sharp bound** | `kgStateKernel`, `strongKernel_kgStateKernel`, `kgStateMild`, `kgStateMild_eq`, **`norm_kgStateMild_le`**, `eq_kgStateMild_of_duhamel` | **built** |
+| 180 | the gradient and the velocity of the mild solution, in closed form | `kgFieldGrad`, `kgFieldVel`, `kgFieldVel_eq_deriv`, **`kgFreqInvOp_kgFieldGrad`** | **built** |
+| 181 | the state of the mild solution solves the energy-space equation | `kgFieldState`, **`kgFieldState_duhamel`**, **`kgFieldState_eq_kgStateMild`** | **built** |
+| 182 | **the hyperbolic energy estimate, sharp, for an arbitrary bounded perturbation** | **`kgFieldEnergy_le`** | **built** |
+| 183 | **the free field conserves the energy exactly**, so the constant one is sharp | `kgFieldGrad_zero_op`, `kgFieldVel_zero_op`, **`kgFieldEnergy_zero_op`** | **built** |
+| 184 | the energy-space equation with a moving background | `kgStateKernelT`, **`strongKernel_kgStateKernelT`**, `kgStateMildT`, `kgStateMildT_eq`, **`norm_kgStateMildT_le`**, `eq_kgStateMildT_of_duhamel` | **built** |
+| 185 | the gradient and velocity in a moving background | `kgFieldGradT`, `kgFieldVelT`, `kgFieldVelT_eq_deriv`, **`kgFreqInvOp_kgFieldGradT`**, `kgFieldStateT`, **`kgFieldStateT_eq_kgStateMildT`** | **built** |
+| 186 | **the hyperbolic energy estimate in a moving background** | **`kgFieldEnergyT_le`** | **built** |
+| 187 | the energy space is a Hilbert space; the propagator is **unitary** | `inner_kgEnergy`, `kgPropagatorIsom`, **`inner_kgPropagator`**, `hasDerivAt_norm_sq_energy` | **built** |
+| 188 | **the reduced state is an ordinary integral, and differentiable** | `kgReducedState`, `kgFieldState_zero`, **`kgReducedState_eq`**, **`hasDerivAt_kgReducedState`** | **built** |
+| 189 | **the total energy of a self-adjoint perturbation is exactly conserved** | `kgTotalEnergy`, **`hasDerivAt_kgTotalEnergy`**, **`kgTotalEnergy_const`**, **`kgFieldEnergy_conserved`** | **built** |
+| 190 | the potential term is controlled by the energy (the mass gap in operator form) | `abs_re_inner_potential_le`, **`norm_kgFieldMild_sq_le_energy`** | **built** |
+| 191 | **a small real potential gives an energy bounded uniformly in time** | **`kgFieldEnergy_uniform`** | **built** |
+| 192 | **a confining real potential needs no smallness at all** | **`kgFieldEnergy_le_of_nonpos`**, `norm_kgFieldMild_le_of_nonpos` | **built** |
+| 193 | **multiplication by a bounded real potential is self-adjoint** | `kgMulOp`, `norm_kgMulOp_le`, **`inner_kgMulOp`** | **built** |
+| 194 | conservation and the uniform bound, for a real potential | **`kgRealPotential_energy_conserved`**, **`kgRealPotential_energy_uniform`** | **built** |
+| 195 | the potential term is `∫V\|u\|²` | **`re_inner_kgMulOp`** | **built** |
+| 196 | **an attractive potential keeps the field bounded for all time** | **`kgRealPotential_energy_le_of_nonpos`**, **`kgRealPotential_norm_le_of_nonpos`** | **built** |
+| 197 | the reduced state of a moving background | `kgReducedStateT`, `kgFieldStateT_zero`, **`kgReducedStateT_eq`**, **`hasDerivAt_kgReducedStateT`** | **built** |
+| 198 | **the differentiated energy identity for a moving background** | **`hasDerivAt_normSq_kgFieldStateT`** | **built** |
+| 199 | **the work–energy identity**: the energy changes at the rate the background does | `kgAdiabaticEnergy`, **`hasDerivAt_kgAdiabaticEnergy`** | **built** |
+| 200 | the energy dominates the state, and its derivative | `kgAdiabaticEnergy_lower`, `kgAdiabaticEnergy_nonneg`, **`abs_deriv_kgAdiabaticEnergy_le`** | **built** |
+| 201 | **the adiabatic estimate** | **`kgAdiabaticEnergy_le`**, **`kgFieldEnergyT_le_adiabatic`** | **built** |
+| 202 | **the exact work integral** | `continuous_kgWorkDensity`, **`kgAdiabaticEnergy_sub`**, **`abs_kgAdiabaticEnergy_sub_le`** | **built** |
+| 203 | a background switched on by a scalar profile | `kgScaledPotential`, `norm_kgScaledPotential`, **`inner_kgScaledPotential`**, **`hasDerivAt_kgScaledPotential`** | **built** |
+| 204 | **the adiabatic estimate for a switched background** | **`kgScaledPotential_energy_le`** | **built** |
+| 205 | the potential term of a switched background | **`re_inner_kgScaledPotential`** | **built** |
+| 206 | **a real potential of varying strength**, as a moving background | `kgSwitchedPotential`, `norm_kgSwitchedPotential_le`, **`inner_kgSwitchedPotential`**, **`hasDerivAt_kgSwitchedPotential`** | **built** |
+| 207 | its work density is the switching rate times `∫V\|u\|²` | **`re_inner_kgSwitchedPotential`** | **built** |
+| 208 | **the adiabatic estimate and the exact work accounting, fully concrete** | **`kgSwitchedPotential_energy_le`**, **`kgSwitchedPotential_work`** | **built** |
+| 209 | **the low-pass projection is an idempotent self-adjoint projection** | **`kgLowPassOp_comp_self`**, `kgLowPassOp_idem`, **`inner_kgLowPassOp`** | **built** |
+| 210 | the band compression of a perturbation | `kgBandOp`, `norm_kgBandOp_le`, **`inner_kgBandOp`**, `kgBandOp_sub`, **`kgBandOp_lowPass_dom`**, **`kgBandOp_lowPass_ran`** | **built** |
+| 211 | **conditional stability for band-limited perturbations** | **`norm_kgBandOp_sub_le`** | **built** |
+| 212 | **the band compression of a real potential conserves the energy exactly** | **`kgBandOp_real_energy_conserved`** | **built** |
+| 213 | each frequency is eventually below the cut-off | `norm_one_le_one`, **`tendsto_kgLowPass`** | **built** |
+| 214 | **the low-pass projections converge strongly to the identity** | **`tendsto_kgLowPassOp_apply`** | **built** |
+| 215 | **the band compressions converge strongly to the perturbation** | **`tendsto_kgBandOp_apply`** | **built** |
+| 216 | **a perturbation is determined by its band compressions** | **`eq_of_kgBandOp_eq`** | **built** |
+| 217 | the projection commutes with the propagators | **`kgCosOp_kgLowPassOp`**, **`kgSinFreqOp_kgLowPassOp`**, `kgLowPassOp_kgFieldFree` | **built** |
+| 218 | **the projection passes through the perturbed evolution** | **`kgLowPassOp_kgFieldMild`** | **built** |
+| 219 | **the band is invariant under the evolution** | **`kgFieldMild_lowPass_invariant`**, `kgBandOp_dom`, `kgBandOp_ran`, **`kgBandOp_lowPass_invariant`** | **built** |
+| 220 | **on a band the frequency obstruction disappears** | `kgFreqSqLow`, **`kgFreqSqLowOp`**, `norm_kgFreqSqLowOp_le`, **`kgFreqInvOp_sq_kgFreqSqLowOp`** | **built** |
+| 221 | **`⟨D⟩` restricted to a band**, as a bounded operator | `kgFreqLow`, **`kgFreqLowOp`**, `norm_kgFreqLowOp_le` | **built** |
+| 222 | **every band-limited vector carries one power of `⟨D⟩⁻¹`** | **`kgFreqInvOp_kgFreqLowOp`**, `kgLowPassOp_kgFreqLowOp`, `kgFreqLowOp_kgLowPassOp`, `kgFreqLowOp_kgFreqLowOp` | **built** |
+| 223 | **on a band the sine propagator is the half-order one composed with the frequency** | **`kgSinOp_kgLowPassOp`** | **built** |
+| 224 | the band-restricted frequency commutes with the propagators | **`kgCosOp_kgFreqLowOp`**, **`kgFreqSqLowOp_kgCosOp`**, **`kgFreqSqLowOp_kgSinFreqOp`** | **built** |
+| 225 | the band-restricted `⟨D⟩²` of the solution, in closed form | **`kgFreqSqLowOp_kgFieldMild`** | **built** |
+| 226 | **the mild solution on a band is a strong solution, with no smoothing hypothesis** | **`hasDerivAt_kgFieldVel_band`** | **built** |
+| 227 | **the band solution is a strong solution in the corpus's own sense** | **`solvesKGSource_band`** | **built** |
+| 228 | uniqueness of the strong solution on a band | **`eq_of_solvesKGSource_band`** | **built** |
+| 229 | **the strong Cauchy problem on a band is well posed** | **`exists_unique_solvesKGSource_band`** | **built** |
+| 230 | the band-restricted frequency turns the half-order propagator into the sine one | **`kgFreqLowOp_kgSinFreqOp`** | **built** |
+| 231 | **on a band the abstract gradient is `⟨D⟩_R u`** | **`kgFieldGrad_band`** | **built** |
+| 232 | **the classical conserved energy of the band solution** | **`kgBandReal_energy_conserved`** | **built** |
+| 233 | the difference of two solutions with different perturbations *and* different data | **`kgFieldMild_sub_general`** | **built** |
+| 234 | **the difference measured by the action of the perturbations, not their norms** | **`norm_kgFieldMild_sub_general_le`** | **built** |
+| 235 | the accumulated discrepancy of the band compressions vanishes | **`tendsto_integral_kgBandOp_sub`** | **built** |
+| 236 | **the band solutions converge to the true solution** | `tendsto_kgFieldMild_band_of_nonneg`, **`tendsto_kgFieldMild_band`** | **built** |
+| 237 | the band projection commutes with the inverse frequency | **`kgLowPassOp_kgFreqInvOp`** | **built** |
+| 238 | the perturbed sources converge, `W_R u_R(s) → W u(s)` | **`tendsto_kgBandOp_source`** | **built** |
+| 239 | the Duhamel terms of the velocity converge | **`tendsto_integral_kgCos_band`** | **built** |
+| 240 | **the whole state converges, velocity as well as field** | **`tendsto_kgFieldVel_band`** | **built** |
+| 241 | the Duhamel terms of the gradient converge | **`tendsto_integral_kgSin_band`** | **built** |
+| 242 | the gradient `⟨D⟩u_R(t)` converges | **`tendsto_kgFieldGrad_band`** | **built** |
+| 243 | the state converges in the energy space | **`tendsto_kgFieldState_band`** | **built** |
+| 244 | **the energy of the band solution converges** | **`tendsto_kgFieldEnergy_band`** | **built** |
+| 245 | one cut-off bounds the whole observation window | **`norm_kgFieldMild_band_sub_le_endpoint`** | **built** |
+| 246 | **the band approximation is uniform on `[0,T]`** | **`tendstoUniformlyOn_kgFieldMild_band`** | **built** |
+| 247 | the band compression of a moving background, and its strong limit | `kgBandOpT`, `norm_kgBandOpT_le`, `continuous_kgBandOpT_apply`, **`tendsto_kgBandOpT_apply`** | **built** |
+| 248 | the difference of two solutions in different moving backgrounds | **`kgFieldMildT_sub_general`** | **built** |
+| 249 | **the sharp difference estimate for moving backgrounds** | **`norm_kgFieldMildT_sub_general_le`** | **built** |
+| 250 | the accumulated discrepancy of the moving compressions vanishes | **`tendsto_integral_kgBandOpT_sub`** | **built** |
+| 251 | one cut-off bounds the whole window, moving case | **`norm_kgFieldMildT_band_sub_le_endpoint`** | **built** |
+| 252 | **the band solutions converge in a moving background** | `tendsto_kgFieldMildT_band_of_nonneg`, **`tendsto_kgFieldMildT_band`** | **built** |
+| 253 | **uniform on `[0,T]` in a moving background** | **`tendstoUniformlyOn_kgFieldMildT_band`** | **built** |
+| 254 | the perturbed sources converge, moving case | **`tendsto_kgBandOpT_source`** | **built** |
+| 255 | the Duhamel terms converge, moving case | **`tendsto_integral_kgCosT_band`**, **`tendsto_integral_kgSinT_band`** | **built** |
+| 256 | the velocity converges, moving case | **`tendsto_kgFieldVelT_band`** | **built** |
+| 257 | the gradient converges, moving case | **`tendsto_kgFieldGradT_band`** | **built** |
+| 258 | **the state and the energy converge in a moving background** | **`tendsto_kgFieldStateT_band`**, **`tendsto_kgFieldEnergyT_band`** | **built** |
+| 259 | the source difference is the field difference | `norm_kgPair_zero_left`, `kgSourceOp_sub_apply`, **`norm_kgSourceOp_sub_apply`** | **built** |
+| 260 | the difference of two states, split along the second one | **`kgStateMild_sub_general`** | **built** |
+| 261 | **the sharp difference estimate in the energy space** | **`norm_kgStateMild_sub_general_le`** | **built** |
+| 262 | **the sharp difference estimate for the state of the field** | **`norm_kgFieldState_sub_general_le`** | **built** |
+| 263 | one cut-off bounds the state over the whole window | **`norm_kgFieldState_band_sub_le_endpoint`** | **built** |
+| 264 | **the state converges uniformly on `[0,T]`** | **`tendstoUniformlyOn_kgFieldState_band`** | **built** |
+| 265 | gradient and velocity converge uniformly on `[0,T]` | **`tendstoUniformlyOn_kgFieldGrad_band`**, **`tendstoUniformlyOn_kgFieldVel_band`** | **built** |
+| 266 | **the energy converges uniformly on `[0,T]`** | `kgFieldEnergy_eq_norm_sq`, `norm_kgFieldState_band_le`, `norm_kgFieldState_le_window`, **`tendstoUniformlyOn_kgFieldEnergy_band`** | **built** |
+| 267 | the difference of two states in different moving backgrounds | `continuous_kgSourceOpT_apply`, **`kgStateMildT_sub_general`** | **built** |
+| 268 | **the state estimate in a moving background** | **`norm_kgStateMildT_sub_general_le`** | **built** |
+| 269 | **the state estimate for the field in a moving background** | **`norm_kgFieldStateT_sub_general_le`** | **built** |
+| 270 | one cut-off bounds the moving state over the window | **`norm_kgFieldStateT_band_sub_le_endpoint`** | **built** |
+| 271 | **the moving state converges uniformly on `[0,T]`** | **`tendstoUniformlyOn_kgFieldStateT_band`** | **built** |
+| 272 | moving gradient and velocity converge uniformly | **`tendstoUniformlyOn_kgFieldGradT_band`**, **`tendstoUniformlyOn_kgFieldVelT_band`** | **built** |
+| 273 | **the moving energy converges uniformly on `[0,T]`** | `kgFieldEnergyT_eq_norm_sq`, `norm_kgFieldStateT_band_le`, `norm_kgFieldStateT_le_window`, **`tendstoUniformlyOn_kgFieldEnergyT_band`** | **built** |
+| 274 | strong solutions in a moving background, and their energy identity | `SolvesKGSourceT`, `solvesKGSourceT_const`, **`hasDerivAt_kgStrongEnergy_sourceT`** | **built** |
+| 275 | the strong energy grows at most exponentially, moving case | **`kgStrongEnergy_le_expT`** | **built** |
+| 276 | time reversal and vanishing data, moving case | `SolvesKGSourceT.comp_neg`, **`eq_zero_of_solvesKGSourceT`** | **built** |
+| 277 | **uniqueness for the strong Cauchy problem in a moving background** | **`eq_of_solvesKGSourceT`** | **built** |
+| 278 | the band is invariant under a moving evolution | `kgLowPassOp_kgFieldMildT`, `kgFieldMildT_lowPass_invariant`, **`kgBandOpT_lowPass_invariant`** | **built** |
+| 279 | the band-restricted `⟨D⟩²` of the moving solution | **`kgFreqSqLowOp_kgFieldMildT`** | **built** |
+| 280 | **the moving band solution is a strong solution** | **`hasDerivAt_kgFieldVelT_band`** | **built** |
+| 281 | **the strong Cauchy problem on a band is well posed in a moving background** | `solvesKGSourceT_band`, `eq_of_solvesKGSourceT_band`, **`exists_unique_solvesKGSourceT_band`** | **built** |
+| 282 | compression is linear: compressing a switched background is switching the compression | `kgBandOp_smul`, **`kgBandOpT_kgScaledPotential`** | **built** |
+| 283 | **on a band the moving gradient is `⟨D⟩_R u`** | **`kgFieldGradT_band`** | **built** |
+| 284 | a real potential of varying strength, compressed to a band | `kgBandSwitchedPotential`, `kgBandSwitchedPotential_eq`, `norm_kgBandSwitchedPotential_le`, **`inner_kgBandSwitchedPotential`**, **`hasDerivAt_kgBandSwitchedPotential`** | **built** |
+| 285 | its potential term and work density are honest integrals | **`re_inner_kgBandOp_kgMulOp`**, **`re_inner_kgBandSwitchedPotential`** | **built** |
+| 286 | **the adiabatic energy on a band, every term a quantity of the field** | **`kgBandSwitched_energy_eq`** | **built** |
+| 287 | **the classical work–energy balance on a band** | **`kgBandSwitched_work`** | **built** |
+| 288 | **the adiabatic estimate on a band** | **`kgBandSwitched_energy_le`** | **built** |
+| 289 | the compressions act correctly along any convergent curve of states | **`tendsto_kgBandOpT_apply_of_tendsto`** | **built** |
+| 290 | the potential term converges | **`tendsto_re_inner_kgBandOpT_source`** | **built** |
+| 291 | **the adiabatic energy of the band solution converges** | **`tendsto_kgAdiabaticEnergy_band`** | **built** |
+| 292 | **the accumulated work of the band solution converges** | **`tendsto_integral_work_band`** | **built** |
+| 293 | **the band-restricted frequency undoes the inverse frequency** | **`kgFreqLowOp_kgFreqInvOp`** | **built** |
+| 294 | the field restart, with the state at the restarting time in closed form | **`kgFieldMildT_restart`** | **built** |
+| 295 | the velocity and the gradient restart | **`kgFieldVelT_restart`**, **`kgFieldGradT_restart`** | **built** |
+| 296 | **the evolution is an evolution family on the energy space** | **`kgFieldStateT_restart`** | **built** |
+| 297 | the period map of a periodically driven field | `kgPeriodMap`, `kgPeriodMap_apply`, **`norm_kgPeriodMap_le`**, `periodic_shift_nat` | **built** |
+| 298 | **the evolution over one period does not depend on which period** | **`kgFieldStateT_period`** | **built** |
+| 299 | **the state after `n` periods is the `n`-th iterate of the period map** | **`kgFieldStateT_iterate`** | **built** |
+| 300 | **the Floquet form of the energy estimate** | **`norm_kgFieldStateT_period_le`** | **built** |
+| 301 | the energy space componentwise; free term and kernel are linear | `kgEnergy_fst_add`, `kgEnergy_snd_add`, `kgEnergy_fst_smul`, `kgEnergy_snd_smul`, **`kgStateFree_linear`**, **`kgStateKernelT_linear`** | **built** |
+| 302 | **the state is linear in the Cauchy datum** | **`kgStateMildT_linear`** | **built** |
+| 303 | **the monodromy operator**, of norm at most `e^{b\|T\|}` | `kgPeriodLM`, **`kgMonodromy`**, `kgMonodromy_apply`, **`norm_kgMonodromy_le`** | **built** |
+| 304 | **the state after `n` periods is `Mⁿ` applied to the datum** | `kgMonodromy_pow_apply`, **`kgFieldStateT_monodromy_pow`** | **built** |
+| 305 | **stability from the monodromy alone** | **`norm_kgFieldStateT_le_of_pow_bound`** | **built** |
+| 306 | running one period backwards undoes it | `periodic_neg`, **`kgPeriodMap_left_inverse`**, **`kgPeriodMap_right_inverse`** | **built** |
+| 307 | **the monodromy is a linear homeomorphism of the energy space** | **`kgMonodromyEquiv`**, `kgMonodromyEquiv_apply`, `kgMonodromyEquiv_symm_apply`, **`norm_kgMonodromy_neg_le`** | **built** |
+| 308 | **bounded powers give stability at every time** | **`norm_kgFieldStateT_le_of_pow_bound_all`** | **built** |
+| 309 | bounded orbits give bounded powers | **`exists_pow_bound_of_orbits_bounded`** | **built** |
+| 310 | **the stability criterion for a periodically driven clock** | **`kgFloquet_stable_iff`** | **built** |
+| 311 | the state is contracted by the monodromy norm each period | **`norm_kgFieldStateT_period_le_pow`** | **built** |
+| 312 | the leftover piece of time costs one period | **`norm_kgFieldStateT_le_floor`** | **built** |
+| 313 | **a contraction over one period keeps the clock running** | **`norm_kgFieldStateT_le_of_norm_monodromy_le_one`** | **built** |
+| 314 | a strict contraction damps the clock out along the periods | **`tendsto_kgFieldStateT_period_zero`** | **built** |
+| 315 | **a strict contraction damps the clock out at every time** | **`tendsto_kgFieldStateT_zero`** | **built** |
+| 316 | a constant background is periodic with every period | `periodic_const`, `kgFieldGradT_const`, `kgFieldVelT_const`, **`kgFieldStateT_const`**, `norm_kgPair_sq` | **built** |
+| 317 | **the free monodromy is an isometry** | **`norm_kgMonodromy_zero_apply`**, **`norm_kgMonodromy_zero_le_one`** | **built** |
+| 318 | a small real potential gives a uniformly bounded state, in energy-space form | **`norm_kgFieldState_le_uniform`** | **built** |
+| 319 | **the stable class is inhabited, with an explicit constant** | **`norm_kgMonodromy_pow_le_of_small`**, `norm_kgFieldState_le_of_small` | **built** |
+| 320 | the band model of a periodic background has its own monodromy | **`periodic_kgBandOpT`**, `kgBandMonodromy`, `kgBandMonodromy_apply`, **`norm_kgBandMonodromy_le`** | **built** |
+| 321 | the band state differs from the true one by the accumulated discrepancy | **`norm_kgFieldStateT_band_sub_le_same`** | **built** |
+| 322 | **the band monodromies converge strongly to the monodromy** | **`tendsto_kgBandMonodromy`** | **built** |
+| 323 | **every power converges strongly** | **`tendsto_kgBandMonodromy_pow`** | **built** |
+| 324 | **stability transfers from the band models** | **`norm_kgMonodromy_pow_le_of_band_bound`** | **built** |
+| 325 | **the Floquet multipliers lie in the disc `\|k\| ≤ e^{b\|T\|}`** | `norm_one_kgEnergy_le`, **`norm_le_of_mem_spectrum_kgMonodromy`** | **built** |
+| 326 | **a power bound confines the multipliers to the closed unit disc** | **`norm_le_one_of_mem_spectrum_of_pow_bound`** | **built** |
+| 327 | a multiplier outside the unit disc forbids any power bound | **`not_pow_bounded_of_one_lt_norm_spectrum`** | **built** |
+| 328 | **the Floquet instability criterion** | **`exists_unbounded_of_one_lt_norm_spectrum`** | **built** |
+| 329 | **powers of an element of spectral radius `< 1` vanish in norm** (missing from mathlib) | **`tendsto_norm_pow_zero_of_spectralRadius_lt_one`** | **built** |
+| 330 | a spectral radius below one damps the clock along the periods | **`tendsto_kgFieldStateT_period_zero_of_spectralRadius`** | **built** |
+| 331 | **the sharp Floquet decay criterion** | **`tendsto_kgFieldStateT_zero_of_spectralRadius`** | **built** |
+| 332 | the radius and its multipliers | **`spectralRadius_le_one_of_forall`**, **`exists_mem_spectrum_one_lt_norm`** | **built** |
+| 333 | **a stable clock has spectral radius at most one** | **`spectralRadius_le_one_of_pow_bound`** | **built** |
+| 334 | **a spectral radius greater than one breaks the clock** | **`exists_unbounded_of_one_lt_spectralRadius`** | **built** |
+| 335 | **the Floquet trichotomy** | **`kgFloquet_trichotomy`** | **built** |
+| 336 | each component of a datum is bounded by its energy norm | **`norm_fst_le_norm_kgPair`**, **`norm_snd_le_norm_kgPair`** | **built** |
+| 337 | a uniform distance between backgrounds bounds the distance of their states | **`norm_kgFieldStateT_sub_le_of_uniform`** | **built** |
+| 338 | **the monodromy is Lipschitz in the background** | **`norm_kgMonodromy_sub_le`** | **built** |
+| 339 | **the decaying regime is open** | **`tendsto_kgFieldStateT_zero_of_perturbed`** | **built** |
+| 340 | **the `L²` space, the energy space and the operator algebra are nontrivial** | **`kgLp_nontrivial`**, **`kgEnergy_nontrivial`**, **`norm_one_kgEnergy`** | **built** |
+| 341 | **every monodromy has at least one Floquet multiplier** | **`spectrum_kgMonodromy_nonempty`** | **built** |
+| 342 | the spectral radius is attained by a multiplier | **`exists_multiplier_eq_spectralRadius`** | **built** |
+| 343 | every power of the free monodromy is an isometry of norm one | **`norm_kgMonodromy_zero_pow_apply`**, **`norm_kgMonodromy_zero_pow`** | **built** |
+| 344 | **the free clock sits exactly on the boundary of the trichotomy** | **`spectralRadius_kgMonodromy_zero`** | **built** |
+| 345 | **the free monodromy is a unit**, with inverse the monodromy over `-T` | **`kgMonodromy_zero_isUnit`** | **built** |
+| 346 | no free multiplier lies inside the unit disc | **`one_le_norm_of_mem_spectrum_kgMonodromy_zero`** | **built** |
+| 347 | **the free Floquet multipliers lie on the unit circle** | **`norm_eq_one_of_mem_spectrum_kgMonodromy_zero`** | **built** |
+| 348 | a power bound confines the spectrum to the closed unit disc (general algebra) | **`norm_le_one_of_mem_spectrum_of_pow_bound'`** | **built** |
+| 349 | **two-sided power boundedness puts the spectrum on the unit circle** | **`norm_eq_one_of_mem_spectrum_of_inverse`** | **built** |
+| 350 | the monodromies of a constant background over opposite periods are inverse | **`kgMonodromy_const_mul_inv`** | **built** |
+| 351 | **a clock in a weak static potential is purely oscillatory** | **`norm_eq_one_of_mem_spectrum_of_small_potential`** | **built** |
+| 352 | the velocity flip: an isometric involution of the energy space | `kgFlip`, `kgFlip_apply`, **`norm_kgFlip_apply`**, **`kgFlip_kgFlip`** | **built** |
+| 353 | the gradient is unchanged by time reflection | **`kgFieldGradT_neg`** | **built** |
+| 354 | the velocity changes sign under time reflection | **`kgFieldVelT_neg`** | **built** |
+| 355 | **the state reflects through the velocity flip** | **`kgFieldStateT_neg`**, **`norm_kgFieldStateT_neg`** | **built** |
+| 356 | **the backward monodromy is the flip conjugate of the reflected forward one** | **`kgMonodromy_neg_apply`**, **`kgMonodromy_neg_pow_apply`** | **built** |
+| 357 | the backward powers are no larger than the reflected forward ones | **`norm_kgMonodromy_neg_pow_le`** | **built** |
+| 358 | **the backward transfer from the band models** | **`norm_kgMonodromy_neg_pow_le_of_band_bound`** | **built** |
+| 359 | **oscillation can be decided on the band models** | **`norm_eq_one_of_mem_spectrum_of_band_bounds`** | **built** |
+| 360 | the velocity flip is a unit of the operator algebra | **`kgFlip_mul_self`**, `kgFlipUnit`, `kgFlipUnit_val`, `kgFlipUnit_inv_val` | **built** |
+| 361 | the backward monodromy is a flip conjugate, as operators | **`kgMonodromy_neg_eq_conj`** | **built** |
+| 362 | conjugating by the flip does not move the spectrum | **`spectrum_kgMonodromy_neg_eq`** | **built** |
+| 363 | **time reversal inverts the Floquet multipliers** | **`spectrum_kgMonodromy_reflected`** | **built** |
+| 364 | the reflected multipliers are the reciprocals | **`mem_spectrum_reflected_iff`** | **built** |
+| 365 | the reflection of a periodic background is periodic | **`periodic_neg_background`** | **built** |
+| 366 | **a clock that keeps time in both directions is purely oscillatory** | **`norm_eq_one_of_mem_spectrum_of_two_way_stable`** | **built** |
+| 367 | **a two-way stable clock has spectral radius exactly one** | **`spectralRadius_eq_one_of_two_way_stable`** | **built** |
+| 368 | **conditional stability at every instant** | **`norm_sub_le_of_lowPassT_everywhere`** | **built** |
+| 369 | **the cube-root law at every instant** | **`norm_sub_le_optimal_everywhere`** | **built** |
+| 370 | for every tolerance there is an admissible probe whose drift term is below it | **`exists_small_probe_time`** | **built** |
+| 371 | **exact observations determine a band-limited moving background exactly** | **`eq_of_exact_observation_everywhere`** | **built** |
+| 372 | a periodic background is periodic under every integer multiple of its period | **`periodic_shift_int`** | **built** |
+| 373 | restarting at an instant is restarting at its representative in the first period | `periodRep_nonneg`, `periodRep_lt`, **`shift_eq_periodRep`** | **built** |
+| 374 | **one period of experiments determines a periodic band-limited background** | **`eq_of_exact_observation_period`** | **built** |
+| 375 | compression contracts the difference of differences | **`norm_kgBandOp_sub_sub_le`** | **built** |
+| 376 | **the reconstruction theorem on the band models** | **`eq_of_exact_observation_band`** | **built** |
+| 377 | one period of experiments determines the band model of a periodic background | **`eq_of_exact_observation_band_period`** | **built** |
+| 378 | **observing every band model determines the background exactly** | **`eq_of_exact_observation_all_bands`** | **built** |
+| 379 | **a periodic background is determined by one period of experiments at every cut-off** | **`eq_of_exact_observation_all_bands_period`** | **built** |
+| 380 | **a symbol whose multiplication operator vanishes vanishes a.e.** (missing from the corpus) | **`ae_eq_zero_of_lpBoundedMulCLM_eq_zero`** | **built** |
+| 381 | **a bounded real potential is determined by its multiplication operator** | **`kgMulOp_injective`** | **built** |
+| 382 | **a static real potential is determined a.e. by short-time clock observations** | **`potential_ae_eq_of_exact_observation`** | **built** |
+| 383 | the four-term combination of multiplication operators is one multiplication operator | **`norm_kgMulOp_sub_sub_le`** | **built** |
+| 384 | **a moving real potential is determined a.e. at every instant** | **`potentialT_ae_eq_of_exact_observation`** | **built** |
+| 385 | the operator family of a periodic potential is periodic | **`kgMulOp_periodic`** | **built** |
+| 386 | **a periodic real potential is read off one period of experiments** | **`potentialT_ae_eq_of_exact_observation_period`** | **built** |
+| 387 | the monodromy depends on the background and nothing else | **`kgMonodromy_congr`** | **built** |
+| 388 | **observationally identical clocks have the same Floquet spectrum** | **`spectrum_kgMonodromy_eq_of_exact_observation`** | **built** |
+| 389 | **the trichotomy verdict is the same for them** | **`spectralRadius_kgMonodromy_eq_of_exact_observation`** | **built** |
+| 390 | **one period of observations decides the fate of a periodic clock** | **`spectralRadius_kgMonodromy_eq_of_exact_observation_period`** | **built** |
+| 391 | no Floquet multiplier is smaller than the estimate allows | **`exp_neg_le_norm_of_mem_spectrum_kgMonodromy`** | **built** |
+| 392 | **every Floquet multiplier lies in the annulus `e^{−b\|T\|} ≤ \|k\| ≤ e^{b\|T\|}`** | **`mem_annulus_of_mem_spectrum_kgMonodromy`** | **built** |
+| 393 | a spectral radius below one is witnessed by a multiplier inside the disc | **`exists_multiplier_lt_one_of_spectralRadius_lt_one`** | **built** |
+| 394 | **decay costs a potential**: `b·\|T\| > 0` | **`zero_lt_of_spectralRadius_lt_one`** | **built** |
+| 395 | **instability costs a potential**: `b·\|T\| > 0` | **`zero_lt_of_one_lt_norm_spectrum`** | **built** |
+| 396 | the logarithm of a multiplier is bounded by `b·\|T\|` | **`abs_log_norm_le_of_mem_spectrum_kgMonodromy`** | **built** |
+| 397 | **the Floquet exponent is bounded by the strength of the background** | **`abs_floquetExponent_le`** | **built** |
+| 398 | **a time-symmetric background has an inversion-invariant spectrum** | **`spectrum_kgMonodromy_inv_eq`** | **built** |
+| 399 | its multipliers come in reciprocal pairs | **`mem_spectrum_kgMonodromy_inv_iff`** | **built** |
+| 400 | **a stable time-symmetric clock has all multipliers on the unit circle** | **`norm_eq_one_of_mem_spectrum_of_time_symmetric`** | **built** |
+| 401 | for a time-symmetric background, forward stability is backward stability | **`stable_neg_of_time_symmetric`** | **built** |
+| 402 | **a time-symmetric periodic clock stable forwards has spectral radius one** | **`spectralRadius_eq_one_of_time_symmetric_stable`** | **built** |
+| 403 | **a stable clock in a static potential can only oscillate** | `timeSymmetric_const`, **`spectralRadius_eq_one_of_static_stable`** | **built** |
+| 404 | a spectral value is dominated by the spectral radius | `enorm_eq_ofReal_norm`, **`norm_le_spectralRadius`** | **built** |
+| 405 | a uniform bound on the values bounds the radius | **`spectralRadius_le_ofReal_of_forall`** | **built** |
+| 406 | **the spectral radius lies in the annulus too** | **`spectralRadius_kgMonodromy_mem_annulus`** | **built** |
+| 407 | **the powers are eventually below any rate exceeding the spectral radius** (missing from mathlib) | **`eventually_norm_pow_le_of_spectralRadius`** | **built** |
+| 408 | the spectral radius of a monodromy is finite | **`spectralRadius_kgMonodromy_ne_top`** | **built** |
+| 409 | **after enough periods a clock grows no faster than its spectral radius** | **`eventually_norm_kgFieldStateT_le_of_spectralRadius`** | **built** |
+| 410 | every spectral value grows no faster than the powers | **`norm_pow_le_norm_pow_of_mem_spectrum`** | **built** |
+| 411 | the powers of a monodromy grow at least like its spectral radius | **`spectralRadius_pow_le_norm_pow_kgMonodromy`** | **built** |
+| 412 | **the growth of a clock is exactly its spectral radius** | **`norm_pow_kgMonodromy_sandwich`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
@@ -235,7 +493,45 @@ Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` 
 `KleinGordonFieldFlow.lean` (120–121), `KleinGordonFieldEvolutionFamily.lean` (122–123),
 `KleinGordonFieldRegularAlways.lean` (124–126), `KleinGordonFieldVelocityBound.lean` (127–128), `KleinGordonFieldStateStability.lean` (129–130), `KleinGordonFieldReversible.lean` (131–132), `KleinGordonFieldSolutionMap.lean` (133–134), `KleinGordonPotentialStability.lean` (135–138), `KleinGordonPotentialUniqueness.lean` (139–142), `KleinGordonSourceVanishing.lean` (143),
 `KleinGordonTimePotential.lean` (144–147), `KleinGordonTimePotentialVelocity.lean` (148–149),
-`KleinGordonTimePotentialStability.lean` (150–151), `KleinGordonTimePotentialFlow.lean` (152–154).
+`KleinGordonTimePotentialStability.lean` (150–151), `KleinGordonTimePotentialFlow.lean` (152–154), `KleinGordonIllPosed.lean` (155–159), `KleinGordonSecondOrderDuhamel.lean` (160–162),
+`KleinGordonLowPass.lean` (163–165), `KleinGordonConditionalStability.lean` (166–168),
+`KleinGordonBandStability.lean` (169–171), `KleinGordonTimeBandStability.lean` (172–174),
+`KleinGordonOptimalProbe.lean` (175–177), `KleinGordonFieldEnergy.lean` (178–182),
+`KleinGordonTimeFieldEnergy.lean` (183–186), `KleinGordonExactConservation.lean` (187–189), `KleinGordonUniformEnergy.lean` (190–192),
+`KleinGordonRealPotential.lean` (193–196), `KleinGordonTimeReducedState.lean` (197–198),
+`KleinGordonAdiabatic.lean` (199–201), `KleinGordonAdiabaticWork.lean` (202–204),
+`KleinGordonSwitchedPotential.lean` (205–208), `KleinGordonBandPotential.lean` (209–212),
+`KleinGordonBandLimit.lean` (213–216), `KleinGordonBandInvariance.lean` (217–220),
+`KleinGordonBandFrequency.lean` (221–224), `KleinGordonBandStrong.lean` (225–226),
+`KleinGordonBandWellPosed.lean` (227–229), `KleinGordonBandEnergy.lean` (230–232),
+`KleinGordonStrongDifference.lean` (233–234), `KleinGordonBandApproximation.lean` (235–236),
+`KleinGordonBandStateApprox.lean` (237–240),
+`KleinGordonBandStateConvergence.lean` (241–244), `KleinGordonBandUniform.lean` (245–246),
+`KleinGordonTimeBandDifference.lean` (247–249), `KleinGordonTimeBandApproximation.lean` (250–253),
+`KleinGordonTimeBandStateConvergence.lean` (254–258),
+`KleinGordonStateDifference.lean` (259–262), `KleinGordonBandStateUniform.lean` (263–265),
+`KleinGordonBandEnergyUniform.lean` (266), `KleinGordonTimeStateDifference.lean` (267–272),
+`KleinGordonTimeBandEnergyUniform.lean` (273),
+`KleinGordonTimeStrongSolution.lean` (274–277), `KleinGordonTimeBandStrong.lean` (278–281),
+`KleinGordonTimeBandGradient.lean` (282–283), `KleinGordonBandSwitchedWork.lean` (284–288),
+`KleinGordonBandAdiabaticLimit.lean` (289–292), `KleinGordonFloquet.lean` (293–300),
+`KleinGordonMonodromy.lean` (301–305), `KleinGordonFloquetStability.lean` (306–310),
+`KleinGordonFloquetDichotomy.lean` (311–315), `KleinGordonFloquetInhabited.lean` (316–319),
+`KleinGordonBandMonodromy.lean` (320–324), `KleinGordonFloquetSpectrum.lean` (325–328),
+`KleinGordonFloquetDecay.lean` (329–331), `KleinGordonFloquetTrichotomy.lean` (332–335),
+`KleinGordonMonodromyLipschitz.lean` (336–339), `KleinGordonFloquetNontrivial.lean` (340–344),
+`KleinGordonFreeMultipliers.lean` (345–347), `KleinGordonOscillatory.lean` (348–351),
+`KleinGordonStateReflection.lean` (352–355), `KleinGordonBandOscillatory.lean` (356–359),
+`KleinGordonTimeReversalSpectrum.lean` (360–364), `KleinGordonTwoWayClock.lean` (365–367),
+`KleinGordonProbeEverywhere.lean` (368–369), `KleinGordonExactReconstruction.lean` (370–371),
+`KleinGordonPeriodicReconstruction.lean` (372–374), `KleinGordonBandReconstruction.lean` (375–376),
+`KleinGordonFullReconstruction.lean` (377–379), `KleinGordonPotentialInjective.lean` (380–382),
+`KleinGordonMovingPotential.lean` (383–384), `KleinGordonPeriodicPotential.lean` (385–386),
+`KleinGordonObservationFate.lean` (387–390), `KleinGordonMultiplierAnnulus.lean` (391–392),
+`KleinGordonNoFreeDrift.lean` (393–395), `KleinGordonFloquetExponent.lean` (396–397),
+`KleinGordonTimeSymmetric.lean` (398–400), `KleinGordonSymmetricStability.lean` (401–403),
+`KleinGordonRadiusAnnulus.lean` (404–406), `KleinGordonGrowthRate.lean` (407–409),
+`KleinGordonExactRate.lean` (410–412).
 All wired into the umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -1336,9 +1632,8 @@ arbitrary,
 **`eq_of_kgFieldMild_eq`**: `(∀ f, h, t, u_{W₁}(t) = u_{W₂}(t)) → W₁ = W₂`.
 
 With the Lipschitz estimate this makes `W ↦ u` a continuous injection on every operator-norm ball:
-the observations determine the equation, and they determine it stably in the forward direction. What
-remains genuinely open — and is not a Lean gap but a mathematical one — is the modulus of continuity
-of the inverse, which no argument on this card bounds.
+the observations determine the equation, and they determine it stably in the forward direction. The
+inverse direction is settled — negatively — by statements 155–159.
 
 ### The background may move
 
@@ -1418,8 +1713,1118 @@ the same field from every Cauchy datum are equal at every time.
 
 Together with statement 150 this makes the forward map of the inverse problem a continuous injection
 on moving backgrounds (**`kgFieldMildT_injective_potential`**), and it contains statement 142 as the
-constant case. What remains open is the same thing as in the autonomous case and is not a Lean gap:
-the modulus of continuity of the inverse.
+constant case.
+
+### The inverse problem is ill-posed
+
+Statements 135–154 make the forward map `W ↦ u` a continuous injection. Statements 155–159 settle the
+remaining question — whether its *inverse* is continuous — in the negative, and the obstruction is
+visible in the symbol rather than in any estimate.
+
+The half-order propagator `sin(τ⟨ξ⟩)/⟨ξ⟩` decays like `⟨ξ⟩⁻¹`. A perturbation living entirely above
+frequency `R` therefore enters the Duhamel term damped by `⟨R⟩⁻¹`, no matter how large its operator
+norm. The witness is the **high-pass multiplier** `kgHighPassOp`, with symbol `c·1_{‖ξ‖ ≥ R}`. Its
+norm is exactly `c` (**`norm_kgHighPassOp`**) — the upper bound is the symbol bound, and the lower
+bound is attained on any function whose spectrum lies in a ball at distance `≥ R` from the origin,
+the same `kgBallFun` witness that showed `⟨D⟩⁻¹` is not surjective (statements 114–116). But
+composed with the propagator its norm collapses:
+
+**`norm_kgSinFreqOp_comp_kgHighPassOp`**: `‖sin(τ⟨D⟩)/⟨D⟩ ∘ W_R‖ ≤ c/√(1+R²)`,
+
+and this is an operator-norm bound on the *composite*, not the product of the two operator norms —
+it is only visible at the level of symbols, which is why the Fourier-multiplier presentation of the
+whole card pays off here. Feeding it into the Duhamel formula together with the a-priori bound of
+statement 85 gives
+
+**`norm_kgFieldMild_kgHighPassOp_sub_free_le`**:
+`‖u_{W_R}(t) − u_free(t)‖ ≤ (c/√(1+R²))·|t|·(‖f‖+‖h‖)e^{c|t|}`,
+
+uniformly over *all* Cauchy data. Choosing `R = cTe^{cT}/ε` makes the right-hand side at most
+`ε(‖f‖+‖h‖)` on the whole window `[-T,T]`, so
+
+**`exists_norm_eq_and_kgFieldMild_close`**: for every tolerance `ε` and every observation window
+there is a perturbation of norm **exactly** `c` whose field is `ε`-indistinguishable from the free
+field, uniformly over all data.
+
+The forward map is therefore not bounded below, and its inverse admits no modulus of continuity:
+**`exists_potentials_field_closer_than`** produces, for any factor `κ`, two admissible perturbations
+whose fields are `κ` times closer than the perturbations themselves. Constant families are moving
+backgrounds, so the same witness applies verbatim to the non-autonomous theory
+(**`exists_norm_eq_and_kgFieldMildT_close`**).
+
+Two consequences worth stating. First, the exponential factor in the stability estimate of statements
+136 and 150 is not an artefact of the Grönwall argument — no estimate of that shape can be inverted.
+Second, and this is the physically meaningful reading for a clock: a bounded background can be
+arbitrarily violent at high frequency and still leave the field it acts on essentially untouched over
+any prescribed observation window. What a clock reads is not the potential but the potential
+convolved against a `⟨ξ⟩⁻¹`-damped kernel, and reconstruction from a finite-precision reading is
+possible only under an a-priori frequency restriction that this card does not assume.
+
+### The other side of the cut-off: conditional stability
+
+The ill-posedness of statements 155–159 lives entirely above frequency `R` — the damping `⟨ξ⟩⁻¹` that
+hides a perturbation is small only where `⟨ξ⟩` is large. Statements 160–168 show the picture reverses
+below a fixed frequency: on the class of perturbations that only couple frequencies below `R`, the
+forward map **is** bounded below, with a constant explicit in `R`, in the size of the perturbations,
+and in the length of the observation window.
+
+Three ingredients, each reusable.
+
+*The propagator is bounded by the elapsed time.* `|sin(τω)/ω| ≤ |τ|`, because `|sin a| ≤ |a|`. This is
+worthless for large times and sharp for small ones. Stating it needs a small piece of hygiene the
+corpus had been missing: a multiplier obeys **every** bound its symbol obeys, not only the one it was
+constructed with (**`norm_fourierMulCLM_le_of_bound`**). The immediate consequence is that the
+perturbation enters the Duhamel term at second order,
+`‖u(t) − u_free(t)‖ ≤ b(‖f‖+‖h‖)e^{b|t|}t²` (**`norm_kgFieldMild_sub_free_le_sq`**, and the same for a
+moving background) — so the whole first-order behaviour of the solution is free.
+
+*The propagators are Taylor-accurate at low frequency.* Cutting to `‖ξ‖ ≤ R` gives
+`‖(cos(τ⟨D⟩) − 1)P_R‖ ≤ τ²(1+R²)/2` and `‖(sin(τ⟨D⟩)/⟨D⟩ − τ)P_R‖ ≤ |τ|³(1+R²)/6`. Both descend from
+the scalar estimates `|cos a − 1| ≤ a²/2` and `|sin a − a| ≤ |a|³/6`; mathlib has the first (as
+`Real.one_sub_sq_div_two_le_cos`) but not the second, which is proved here by integrating the first
+along `sin a − a = ∫₀ᵃ(cos t − 1)dt`.
+
+*The perturbation is readable off the short-time field.* Start from rest (`h = 0`) at a low-frequency
+datum. The solution leaves it at second order — the free part by the cosine estimate, the Duhamel part
+by statement 162 — and therefore
+
+`∫₀ˣ (sin((x−s)⟨D⟩)/⟨D⟩)(A u(s)) ds = (x²/2)·Af + O(x⁴)`,
+
+where the `O(x⁴)` splits into a term carrying `‖A‖` (from the motion of the datum) and a term carrying
+`‖Af‖` (from the sine defect). The left-hand side is bounded by the observed discrepancy, via the
+difference-Duhamel identity of statement 135. Choosing the probing time `x` short enough that
+`x²((1+R²)/2 + b e^{bT}) ≤ 1/8` makes both `O(x⁴)` terms absorbable, and what is left is
+
+**`norm_sub_le_of_lowPass`**: `‖W₁ − W₂‖ ≤ 8η(1+bT)/x²`,
+
+where `η` is the uniform discrepancy of the two fields on `[−T,T]`. The hypothesis on the class is
+exactly that the difference is low-pass on both sides, `A = P_R A P_R`; the domain restriction is what
+lets a low-frequency datum test the whole operator, and the range restriction is what makes the sine
+defect bounded.
+
+Taken with 155–159 this is the complete classical picture of the inverse problem: unstable in general,
+stable on any fixed frequency band, with a constant that degrades like `R⁴` as the band widens (the
+admissible `x` is of order `(1+R²)^{-1/2}`).
+
+### The constant, and the moving background
+
+Two completions of the conditional estimate.
+
+*The probing time is not a restriction.* `x = min(T, (8K)^{-1/2})` is always admissible
+(**`exists_probe_time`**), and making the choice removes the free parameter:
+
+**`norm_sub_le_of_lowPass_explicit`**: `‖W₁−W₂‖ ≤ 8η(1+bT)(T⁻² + 8((1+R²)/2 + b e^{bT}))`.
+
+Paired with the Lipschitz estimate in the other direction this says that on each band the field
+discrepancy and the potential discrepancy control each other (**`lowPass_band_stability`**) — the
+classical formulation of a well-posed inverse problem, which holds here for every fixed band even
+though it fails without one.
+
+*A clock reads a background that moves.* Statements 172–174 redo the reconstruction for a
+time-dependent perturbation, and the answer is necessarily local in time: what the short-time field
+sees is the perturbation **at the initial instant**, blurred by however much it moves during the
+probe. Splitting the source as
+
+`W(s)u(s) − W(0)f = (W(s)−W(0))u(s) + W(0)(u(s)−f)`
+
+leaves the autonomous error, of order `x⁴` after integration, plus a new term of order `Lx³` where
+`L` bounds the temporal Lipschitz constant of the difference. Dividing by the `x²` that carries the
+signal,
+
+**`norm_sub_zero_le_of_lowPassT`**: `‖W₁(0) − W₂(0)‖ ≤ 8η(1+bT)/x² + 8Le^{bT}x`.
+
+The two terms compete: shortening the probe amplifies the observational noise `η`, lengthening it
+admits more of the background's own motion. A static background is `L = 0`, where the second term
+vanishes and statement 168 is recovered.
+
+### The optimal integration time, and the cube-root law
+
+That the estimate has a genuine optimum, rather than improving without limit as the probe shortens,
+is statements 175–177 — and the optimum is elementary. Writing the bound as `A/x² + Bx`, the balance
+point `Bx³ = 2A` makes the noise term exactly half the drift term, so the total is `(3/2)Bx`; and for
+every other probing time the total is larger, by the identity
+
+`(A/y² + By) − (A/x² + Bx) = A(x−y)²(x+2y)/(x³y²)`,
+
+which is manifestly non-negative (**`inv_sq_add_linear_le_of_balance`**). No inequality of means is
+needed — the difference is a square times a positive factor.
+
+The balance point is `x = (2A/B)^{1/3}` (**`balance_probe_eq`**), so both the optimal probe and the
+optimal error scale like the **cube root** of the observational noise: halving the noise buys a factor
+`2^{1/3} ≈ 1.26` in the reconstruction, not a factor two. That is the sharp form of the statement that
+such a measurement has an integration time — a real parameter of the experiment, not an artefact of
+the proof (**`norm_sub_zero_le_optimal`**, **`kgProbe_bound_optimal`**).
+
+### The estimate the card is named after, sharp
+
+The card opens with the energy method for pointwise solutions with compact spatial support.
+Statements 178–182 close it in the register the rest of the corpus works in, and with the constants
+the classical argument gives:
+
+**`kgFieldEnergy_le`**: `‖⟨D⟩u(t)‖² + ‖∂ₜu(t)‖² ≤ (‖⟨D⟩u(0)‖² + ‖∂ₜu(0)‖²)·e^{2‖W‖|t|}`
+
+for the mild `L²` solution of `∂ₜ²u = -⟨D⟩²u + Wu`, with `W` an **arbitrary bounded operator** and no
+regularity or smoothing hypothesis anywhere. The constant is **one** and the rate is exactly `‖W‖`;
+both are sharp, since the free evolution conserves the energy exactly (statement 58).
+
+The proof is the energy method read through the propagator rather than through an integration by
+parts — which is what makes it survive the total absence of regularity. The gradient and the velocity
+are available in closed form from the two Duhamel formulas (statements 96 and 97),
+
+`⟨D⟩u(t) = cos(t⟨D⟩)g + sin(t⟨D⟩)h + ∫₀ᵗ sin((t−s)⟨D⟩)Wu(s)ds`,
+`∂ₜu(t) = −sin(t⟨D⟩)g + cos(t⟨D⟩)h + ∫₀ᵗ cos((t−s)⟨D⟩)Wu(s)ds`,
+
+and `kgFreqInvOp_kgFieldGrad` checks that the first really is `⟨D⟩u` by dividing it back down. The
+pair they form solves a Volterra equation in the energy space whose free term is the propagator — an
+**isometry**, statement 59 — and whose kernel is the propagator composed with `v ↦ (0, W⟨D⟩⁻¹v₁)`.
+That kernel has norm at most `‖W‖` precisely because `⟨D⟩⁻¹` is a contraction, which is the operator
+form of the classical step `‖u‖ ≤ ‖⟨D⟩u‖`. The Volterra layer's own exponential bound is then already
+the sharp estimate, and the remaining work is uniqueness: the closed-form pair and the Volterra
+solution satisfy the same equation, so they agree (**`kgFieldState_eq_kgStateMild`**).
+
+Statements 183–186 say the estimate is sharp and that it survives a moving background. Sharpness is
+the degenerate case: with `W = 0` the Duhamel term is absent and the state is literally the propagator
+applied to the datum, so the estimate is an **equality** (**`kgFieldEnergy_zero_op`**) — the free field
+conserves `‖⟨D⟩u‖² + ‖∂ₜu‖²` exactly, and the exponential factor is the only room there is. As for the
+moving background, the argument never used the autonomy of the perturbation: replacing `W` by a
+uniformly bounded, strongly continuous curve changes the Volterra kernel from `v ↦ (0, W⟨D⟩⁻¹v₁)` to
+`v ↦ (0, W(s)⟨D⟩⁻¹v₁)`, whose norm obeys the same uniform bound, and nothing else moves
+(**`kgFieldEnergyT_le`**). A clock in a time-varying background obeys the same sharp estimate.
+
+### Exact conservation, for a real potential
+
+The exponential estimate is what a general bounded perturbation allows. A *real* potential allows
+much more, and statements 187–189 prove it: when `W` is self-adjoint the total energy
+
+`E(t) = ‖⟨D⟩u(t)‖² + ‖∂ₜu(t)‖² − re⟪W u(t), u(t)⟫`
+
+is **exactly conserved** (**`kgFieldEnergy_conserved`**), for the mild solution, with no regularity
+beyond the one power of `⟨D⟩⁻¹` on the position datum that the velocity already needs, and with no
+smallness anywhere.
+
+The obstacle in the mild theory is that the classical computation differentiates
+`‖⟨D⟩u‖² + ‖∂ₜu‖²` term by term, and each term's derivative involves the unbounded generator —
+`d/dt(⟨D⟩u) = ⟨D⟩∂ₜu` and `d/dt(∂ₜu) = −⟨D⟩²u + Wu` — so only their *sum* is finite, and neither
+half exists on its own. The way around it is to carry the state back to time zero by the free
+evolution. The reduced state
+
+`Z(t) = S(−t)V(t) = V(0) + ∫₀ᵗ S(−s)(0, Wu(s)) ds`
+
+is differentiable by the fundamental theorem of calculus alone (**`hasDerivAt_kgReducedState`**) — the
+generator has been absorbed into the propagator, which is not differentiated. The identity itself
+(**`kgReducedState_eq`**) is the Duhamel formula composed with the group law `S(−t)S(t−s) = S(−s)`.
+
+The rest is transport. `S(−t)` is not merely an isometry but **unitary** (**`inner_kgPropagator`**,
+from `norm_kgPropagator_apply` through `LinearIsometry.inner_map_map`), so `‖V(t)‖ = ‖Z(t)‖` and the
+inner products carry across unchanged. Differentiating the squared norm gives
+`re(⟪∂ₜu, Wu⟫ + ⟪Wu, ∂ₜu⟫)`, differentiating the potential term gives `re(⟪Wu, ∂ₜu⟫ + ⟪W∂ₜu, u⟫)`, and
+self-adjointness identifies `⟪W∂ₜu, u⟫` with `⟪∂ₜu, Wu⟫`. The two cancel.
+
+Statements 190–192 read off what conservation buys. The ill-posedness witness of 155–159 shows that
+for a general `W` the exponential of the estimate is real; for a self-adjoint `W` it disappears
+entirely, because conservation turns the differential inequality into an algebraic one. The mechanism
+is `‖u‖ ≤ ‖⟨D⟩u‖` — the operator form of the mass gap, the frequency being bounded below by one —
+which controls the potential term by the very quantity it is subtracted from
+(**`norm_kgFieldMild_sq_le_energy`**). If the potential is small, `‖W‖ = b < 1`,
+
+**`kgFieldEnergy_uniform`**: `‖⟨D⟩u(t)‖² + ‖∂ₜu(t)‖² ≤ (1+b)/(1−b)·(‖⟨D⟩u(0)‖² + ‖∂ₜu(0)‖²)`
+
+for **every** time — no growth at all, only a fixed loss. If instead the potential is confining,
+`re⟪Wx,x⟫ ≤ 0`, no smallness is needed at all: the potential term has the right sign and the energy
+never exceeds its initial value (**`kgFieldEnergy_le_of_nonpos`**), which also keeps the field itself
+bounded for all time. A clock in a real background therefore does not run away; a clock in a general
+complex one can.
+
+Statements 193–196 exhibit the class the self-adjointness hypothesis was written for, so that none of
+this is vacuous: **multiplication by a bounded real function of position**. Such an operator is
+self-adjoint for exactly the reason the classical energy method works — the potential is real, so the
+cross terms conjugate into each other (**`inner_kgMulOp`**, from statement 58). Everything specialises:
+the energy `‖⟨D⟩u‖² + ‖∂ₜu‖² − ∫V|u|²` is exactly conserved, a potential of sup-norm below one gives an
+energy bounded uniformly in time, and the potential term is literally the integral
+`∫ V(a)|u(a)|² da` (**`re_inner_kgMulOp`**). For an **attractive** potential, `V ≤ 0`, that integral is
+non-positive, so no smallness is needed at all and the field itself stays bounded forever
+(**`kgRealPotential_norm_le_of_nonpos`**) — a clock sitting in a potential well does not run away.
+
+### The adiabatic estimate
+
+A fixed real potential conserves the energy exactly. A **moving** real background does work on the
+field, and statements 197–201 identify the rate: it is exactly the rate at which the background
+itself moves.
+
+The reduced-state device of 187–188 never used the autonomy of the perturbation, so it transfers
+(**`kgReducedStateT_eq`**, **`hasDerivAt_kgReducedStateT`**), and gives the differentiated identity
+`d/dt‖state‖² = 2 re⟪W(t)u, ∂ₜu⟫` for any uniformly bounded, strongly continuous curve of
+perturbations. Differentiating the potential term as well — the product rule for `t ↦ W(t)u(t)` is
+`HasDerivAt.clm_apply`, after restricting scalars so that the operator curve is differentiated over
+the same field as the time variable — and cancelling by self-adjointness leaves the **work–energy
+identity**
+
+**`hasDerivAt_kgAdiabaticEnergy`**: `d/dt (‖⟨D⟩u‖² + ‖∂ₜu‖² − re⟪W(t)u, u⟫) = −re⟪Ẇ(t)u, u⟫`.
+
+The right-hand side is bounded by `‖Ẇ(t)‖·‖u‖²`; the mass gap bounds `‖u‖²` by the state, and for
+`‖W‖ ≤ b < 1` the state is in turn bounded by the energy itself (**`kgAdiabaticEnergy_lower`**). So
+
+`|E'| ≤ (L/(1−b))·E`,  hence  **`kgAdiabaticEnergy_le`**: `E(t) ≤ E(0)·e^{L|t|/(1−b)}`
+
+with `L` any bound for `‖Ẇ‖`. This is the adiabatic principle in quantitative form: a background that
+changes slowly heats the field slowly, at a rate proportional to its own rate of change and to nothing
+else. A static background is `L = 0`, where the bound degenerates to the exact conservation of 189.
+
+No Grönwall inequality is used: `E(t)e^{∓Kt}` is monotone because its derivative has a sign, which is
+both shorter and two-sided in the time.
+
+Statements 202–204 sharpen it and make it concrete. The work–energy identity is a derivative, so
+integrating it gives the exact accounting
+
+**`kgAdiabaticEnergy_sub`**: `E(t) − E(0) = −∫₀ᵗ re⟪Ẇ(s)u(s), u(s)⟫ ds`
+
+— the energy the field gains is literally the work the background does on it, with no inequality
+anywhere; the exponential bound is what one gets by discarding the sign of the integrand. Feeding in
+the a-priori bound on `‖u‖` turns it into the explicit
+`|E(t) − E(0)| ≤ L(‖g‖+‖h‖)²e^{2b|t|}|t|`.
+
+For the hypotheses not to be vacuous, 203–204 exhibit the canonical instance: a fixed self-adjoint
+perturbation switched on and off by a scalar profile, `W(t) = φ(t)·W₀`. Its norm derivative is
+`φ̇(t)·W₀` (**`hasDerivAt_kgScaledPotential`**, from `HasDerivAt.smul_const` after coercing the profile
+into `ℂ`), it is self-adjoint because the profile is real, and the hypotheses of the adiabatic
+estimate reduce to bounds on `φ` and `φ̇`. That is the situation a clock in a background of varying
+strength actually sits in.
+
+Statements 205–208 remove the last abstraction by composing the two concrete constructions: the fixed
+self-adjoint perturbation of 193 (multiplication by a real `V`) switched by the profile of 203. What
+is left is
+
+`∂ₜ²u = -⟨D⟩²u + φ(t)V(x)u`
+
+with no abstract hypothesis anywhere. Its work density is the switching rate times the potential
+energy of the field, `φ̇(t)·∫V|u|²` (**`re_inner_kgSwitchedPotential`**); the exact accounting
+(**`kgSwitchedPotential_work`**) and the adiabatic estimate (**`kgSwitchedPotential_energy_le`**) hold
+with every constant read off from three quantities an experiment can bound: `sup|φ|`, `sup|φ̇|` and
+`sup|V|`.
+
+### Where the two threads meet
+
+The conditional stability estimate (168, 170) is stated for perturbations that only couple frequencies
+below a fixed cut-off, `A = P_R A P_R`. Multiplication by a function of position is never of that
+form, so as it stood the inverse-problem thread and the concrete real potentials of the energy thread
+had no common ground: each was proved about a class the other could not reach.
+
+Statements 209–212 supply the intersection. The low-pass symbol is an indicator, so the projection is
+**idempotent** and **self-adjoint** (209) — both by the same one-line case split on the symbol.
+Compressing any bounded operator to the band,
+
+`A ↦ P_R A P_R` (**`kgBandOp`**),
+
+therefore produces an operator that satisfies the hypotheses of the conditional estimate on both
+sides (**`kgBandOp_lowPass_dom`**, **`kgBandOp_lowPass_ran`**, from idempotence) and that is
+self-adjoint whenever the operator is (**`inner_kgBandOp`**, from the projection being self-adjoint).
+So on each frequency band the *same* class of perturbations carries both halves of the theory:
+
+* **`norm_kgBandOp_sub_le`** — the inverse problem is well posed on it, with the explicit constant of
+  statement 170;
+* **`kgBandOp_real_energy_conserved`** — and if the operator compressed is a real potential, the
+  evolution it generates conserves the energy exactly.
+
+Physically the band compression is the part of a potential that a field of bounded frequency can
+actually feel, which is the only part any finite-bandwidth measurement could hope to recover — so the
+restriction is the one the physics imposes anyway, not an artefact of the proof.
+
+Statements 213–216 close the circle by showing the bands **exhaust** the potential, so that the
+band-restricted theory is a theory of the potential rather than of a proxy. The indicator symbols
+converge pointwise to one — each frequency is eventually below the cut-off — so the corpus's own
+strong-convergence criterion for Fourier multipliers (statement 48) gives
+`P_R x → x` (**`tendsto_kgLowPassOp_apply`**), and two applications with a triangle inequality move
+the limit past the perturbation:
+
+**`tendsto_kgBandOp_apply`**: `P_R W P_R x → W x` as `R → ∞`.
+
+Hence **`eq_of_kgBandOp_eq`**: two perturbations with the same compression on every band are equal.
+Together with 211 this is the complete statement of what the observations determine: on each band,
+quantitatively and with an explicit constant; across all bands, exactly.
+
+Statements 217–220 record what the band buys dynamically. The projection commutes with the
+propagators for the trivial reason that everything in sight is a Fourier multiplier, so it passes
+through the free field; and it passes through the *perturbed* evolution exactly when the perturbation
+neither reads nor writes outside the band — which is what the band compression arranges. Uniqueness
+then gives the invariance:
+
+**`kgBandOp_lowPass_invariant`**: band-limited data evolve into band-limited states.
+
+On such a state the frequency is bounded, and statement 220 makes that precise: the multiplier
+`⟨D⟩²P_R` has norm at most `1 + R²`, and dividing it twice by the frequency returns the projection
+(**`kgFreqInvOp_sq_kgFreqSqLowOp`**). So on a band `⟨D⟩²` is realised by a genuinely bounded operator,
+and the obstruction that forced the smoothing hypothesis of statements 103–109 — `⟨D⟩sin(τ⟨D⟩)` being
+unbounded — is simply absent.
+
+Statements 221–224 make that usable by recording the symbol calculus of `⟨D⟩_R`, the frequency cut to
+the band. All of them are instances of one fact — composing two Fourier multipliers multiplies their
+symbols — applied to products where the factor `⟨ξ⟩` cancels against `⟨ξ⟩⁻¹` or is absorbed by the
+indicator. Two of them do the real work:
+
+* **`kgFreqInvOp_kgFreqLowOp`**: `⟨D⟩⁻¹⟨D⟩_R = P_R`. Every band-limited vector is `⟨D⟩⁻¹` of
+  something, so the regularity hypothesis of the differentiated theory (statements 87–88, 96–97) is
+  **automatic** on a band — one no longer has to prescribe the datum in the form `⟨D⟩⁻¹g`.
+* **`kgSinOp_kgLowPassOp`**: `sin(t⟨D⟩)P_R = (sin(t⟨D⟩)/⟨D⟩)⟨D⟩_R`. The propagator whose
+  differentiation was blocked is, on a band, the differentiable one composed with a bounded operator.
+
+Together with the commutation identities of 224 these are exactly the inputs a strong solution on a
+band requires, and statements 225–226 assemble it:
+
+**`hasDerivAt_kgFieldVel_band`**: for band-limited data and a band-compressed perturbation the mild
+solution is twice differentiable and `∂ₜ²u = −⟨D⟩²_R u + Wu` as an identity in `L²`,
+
+with **no smoothing hypothesis** — the perturbation is any bounded operator, compressed to the band.
+This closes the gap left by statements 103–109, where the strong theory had to assume `W = ⟨D⟩⁻¹W₀`
+because differentiating the velocity a second time produced the unbounded `⟨D⟩sin(τ⟨D⟩)`. On a band
+that term never appears: the sine propagator factors as `(sin(t⟨D⟩)/⟨D⟩)⟨D⟩_R`, whose first factor is
+differentiable on every vector and whose second is bounded.
+
+Every analytic input was already in the corpus — the two propagator derivatives of statement 65, the
+Duhamel second derivative of statement 102 — each stated for `⟨D⟩⁻¹`-regular arguments, which
+statement 222 now supplies for free. What 225 adds is the bookkeeping that makes them fit: pushing
+`⟨D⟩²_R` through the Duhamel formula gives
+`⟨D⟩²_R u(t) = cos(t⟨D⟩)⟨D⟩²_R x + sin(t⟨D⟩)⟨D⟩_R y + ∫₀ᵗ sin((t−s)⟨D⟩)⟨D⟩_R Wu(s) ds`,
+which is exactly the negative of the three derivative terms.
+
+Statements 227–229 connect that back to the corpus's own strong theory. Dividing
+`∂ₜ²u = −⟨D⟩²_R u + Wu` twice by the frequency gives `⟨D⟩⁻²∂ₜ²u = −u + ⟨D⟩⁻²Wu`, because `⟨D⟩⁻²⟨D⟩²_R`
+is the band projection (220) and the solution lives on the band (219). That is exactly the predicate
+`SolvesKGSource` of statement 74, so the uniqueness theorem proved there — by the energy method, and
+never needing the smoothing hypothesis itself — applies verbatim. What had been missing was not
+uniqueness but **existence**: the strong theory could only produce solutions for a smoothing
+perturbation. So
+
+**`exists_unique_solvesKGSource_band`**: for band-limited data and any bounded perturbation compressed
+to the band there is a strong solution with those data, and it is the only one.
+
+The strong Cauchy problem, which the card could previously solve only under the smoothing hypothesis
+of 103–109, is therefore well posed on every frequency band with no hypothesis on the perturbation
+beyond boundedness.
+
+Statements 230–232 make the conserved energy concrete. The energy thread carries the gradient as an
+abstract closed-form expression `kgFieldGrad`, defined so that dividing it by the frequency returns
+the solution; on a band it is literally `⟨D⟩_R u` (**`kgFieldGrad_band`**), a bounded operator applied
+to the state. With that identification the conservation law of statement 189, specialised to a real
+potential compressed to the band, reads
+
+**`kgBandReal_energy_conserved`**:
+`‖⟨D⟩_R u(t)‖² + ‖∂ₜu(t)‖² − ∫V|u(t)|² = ‖⟨D⟩_R u(0)‖² + ‖∂ₜu(0)‖² − ∫V|u(0)|²`,
+
+the classical conserved energy of the Klein–Gordon field in a potential, with every term a quantity of
+the solution itself.
+
+### Comparing solutions without comparing operators
+
+The Lipschitz estimate of statement 136 measures the difference of two solutions by the **operator
+norm** of the difference of the perturbations. That is the right measure when the perturbations are
+close as operators, and useless when they are not — and they often are not. The band compressions of
+statement 215 converge to the potential *strongly* but not in norm, so 136 says nothing about whether
+the band solutions converge to the true one.
+
+Statements 233–234 replace the operator norm by what the perturbations actually do:
+
+**`norm_kgFieldMild_sub_general_le`**:
+`‖u₁(t) − u₂(t)‖ ≤ (‖f₁−f₂‖ + ‖h₁−h₂‖ + ∫₀ᵗ‖(W₁−W₂)u₂(s)‖ds)·e^{bt}`,
+
+allowing the data to differ as well. The mechanism is the same splitting as in 135, taken the other
+way: `W₁u₁ − W₂u₂ = (W₁−W₂)u₂ + W₁(u₁−u₂)` puts the whole discrepancy into a source evaluated along a
+**known** curve — the second solution — so what is left for Grönwall is a genuine memory term. Statement
+136 is the special case where the source is estimated by `‖W₁−W₂‖‖u₂‖`; the point of the sharper form
+is that it survives strong convergence, where the operator-norm bound is vacuous.
+
+Statements 235–236 collect the return. The band theory is a complete theory, but of the *compressed*
+equation `∂ₜ²u = −⟨D⟩²u + P_RWP_R u` with band-limited data; what makes it a theory of the original
+equation is that it converges to it. Along the true solution the discrepancy
+`(P_RWP_R − W)u(s)` tends to zero pointwise by statement 215 and is dominated by `2‖W‖‖u(s)‖`, so
+dominated convergence kills the accumulated term; the data converge by statement 214; and 234 turns
+both into
+
+**`tendsto_kgFieldMild_band`**: `u_R(t) → u(t)` as `R → ∞`, for every time.
+
+So everything the band carries — strong solutions with no smoothing hypothesis (226), well-posedness
+(229), the classical conserved energy (232), and a well-posed inverse problem (211) — is a faithful
+approximation of the general equation rather than a parallel theory about a different one.
+
+### The whole state, not only the field
+
+A clock does not read the field alone; it reads the **state**, the field and its velocity together —
+that is what statements 178–182 measure and what 129–130 propagate. So statement 236 is only half of
+what "faithful" means: it says the band field converges, and says nothing about the band velocity.
+
+Statements 237–240 close the other half. The velocity is
+`∂ₜu(t) = −sin(t⟨D⟩)f + cos(t⟨D⟩)h + ∫₀ᵗcos((t−s)⟨D⟩)Wu(s)ds`; the first two terms converge because
+the data do (214) and the propagators are contractions. The integrand of the third is the only real
+work, and the estimate is a splitting again — this time of the *source*, not of the difference:
+
+`W_Ru_R(s) − Wu(s) = (W_R − W)u(s) + W_R(u_R(s) − u(s))`.
+
+The first term vanishes by the strong convergence of the compressions (215) and the second by
+statement 236 itself, uniformly damped by `‖W_R‖ ≤ ‖W‖`; so the integrand converges pointwise while
+staying bounded by the constant `‖W‖(‖f‖+‖h‖)e^{b|t|}` on the whole interval, and dominated
+convergence gives
+
+**`tendsto_kgFieldVel_band`**: `∂ₜu_R(t) → ∂ₜu(t)` as `R → ∞`, for every time.
+
+The bookkeeping needs one commutation, `P_R⟨D⟩⁻¹ = ⟨D⟩⁻¹P_R` (237), because the velocity of the band
+solution is stated for the band-limited *field* datum `P_R⟨D⟩⁻¹g` while the approximation theorem is
+stated for `⟨D⟩⁻¹P_Rg`; the two symbols commute, so they agree. With 240 the band approximation is
+faithful on the state, which is the object the clock programme actually measures.
+
+### The energy passes to the limit, and the window is finite
+
+Two things are still missing before the band theory can be used as a theory of the original equation.
+The first is the **energy**, the quantity the whole card is about. It is the norm squared of the state
+`(⟨D⟩u, ∂ₜu)`, so it converges as soon as both components do; the gradient is the velocity's own
+Duhamel formula with the sine propagator in place of the cosine, and 238 already supplies the
+convergence of the source, so 241–243 run the same dominated-convergence argument and give
+
+**`tendsto_kgFieldEnergy_band`**: `‖⟨D⟩u_R(t)‖² + ‖∂ₜu_R(t)‖² → ‖⟨D⟩u(t)‖² + ‖∂ₜu(t)‖²`.
+
+The sharp estimate of statement 182 and the exact conservation of 189 are therefore statements about
+the limit as well, not only about the compressed equation.
+
+The second is **uniformity**. A measurement occupies a window, and a limit taken at each time
+separately does not by itself give one cut-off good for the whole of it. Here nothing new is needed:
+the right-hand side of statement 234 is monotone in the endpoint — its accumulated term is an
+integral of a norm and its exponential is increasing — so its value at `T` already majorises the
+error at every `t ∈ [0,T]` (245), and that single quantity is the one shown to vanish in 235. Hence
+
+**`tendstoUniformlyOn_kgFieldMild_band`**: `u_R → u` uniformly on `[0, T]`, for every `T`.
+
+So for any prescribed accuracy over any finite observation window there is a cut-off beyond which the
+band theory — strong solutions with no smoothing hypothesis (226), well-posedness (229), the classical
+conserved energy (232), a well-posed inverse problem (211) — describes the original equation to within
+that accuracy, everywhere in the window at once.
+
+### The background moves
+
+A clock does not sit in a static field. The moving theory of statements 144–154 solves
+`∂ₜ²u = −⟨D⟩²u + W(t)u` for a curve of bounded operators that is uniformly bounded and strongly
+continuous, and the band programme has so far compressed only a fixed one. Statements 247–253 carry
+the whole approximation thread to the moving case.
+
+Nothing in it used autonomy. The compression of a moving background is the compression at each time,
+`W_R(t) = P_RW(t)P_R`, and it inherits both hypotheses of the moving theory from the background it
+compresses (247). The splitting `W₁(s)u₁ − W₂(s)u₂ = (W₁(s)−W₂(s))u₂ + W₁(s)(u₁−u₂)` is pointwise in
+the time, so it holds verbatim for curves (248) and Grönwall closes it with the same uniform bound:
+
+**`norm_kgFieldMildT_sub_general_le`**:
+`‖u₁(t) − u₂(t)‖ ≤ (‖f₁−f₂‖ + ‖h₁−h₂‖ + ∫₀ᵗ‖(W₁(s)−W₂(s))u₂(s)‖ds)·e^{bt}`.
+
+With that in hand the rest repeats: the discrepancy `(W_R(s) − W(s))u(s)` vanishes pointwise at each
+time and is dominated by `2‖W‖‖u(s)‖` on the interval (250), so
+
+**`tendsto_kgFieldMildT_band`**: `u_R(t) → u(t)` for every time, and
+
+**`tendstoUniformlyOn_kgFieldMildT_band`**: uniformly on every window `[0,T]`.
+
+The negative-time half comes from the moving theory's own reflection (149), whose reflected
+background `r ↦ W(−r)` commutes with the compression definitionally.
+
+Statements 254–258 complete it on the state. The gradient and the velocity are the same Duhamel
+formula with the sine and the cosine propagator, and both have the same integrand, so the work is done
+once: the perturbed source converges by the splitting
+`W_R(s)u_R(s) − W(s)u(s) = W_R(s)(u_R(s) − u(s)) + (W_R(s) − W(s))u(s)`, whose first term is damped by
+the uniform bound and killed by 252 and whose second vanishes by 247. Dominated convergence then gives
+both propagator terms and hence
+
+**`tendsto_kgFieldEnergyT_band`**: `‖⟨D⟩u_R(t)‖² + ‖∂ₜu_R(t)‖² → ‖⟨D⟩u(t)‖² + ‖∂ₜu(t)‖²`.
+
+The estimate of statement 186 is therefore a statement about the moving equation itself, and the whole
+approximation thread — field, state, energy, uniformity — now holds in the register the clock
+programme uses: a bounded field in a background that changes with time, observed over a finite window.
+
+### The estimate belongs to the state, not to the field
+
+One gap is left in that list: statements 243–244 converge the state and the energy *at each time*,
+because they were obtained by dominated convergence on the Duhamel integrals, and that gives nothing
+uniform. The field's uniformity (246) came from the Grönwall bound of 234, which the state did not
+have.
+
+Statements 259–262 give the state its own. The state solves a Volterra equation in the energy space
+whose free term is an isometry applied to the datum and whose kernel is `P(t−s)∘S(W)` with
+`S(W)v = (0, W⟨D⟩⁻¹v₁)`; the splitting of 233 applies there verbatim, and the source difference is the
+*same* quantity as before, because `S(W₁) − S(W₂)` lands in the second component and a state with
+vanishing first component has the norm of its second:
+
+`‖(S(W₁) − S(W₂))v₂(s)‖ = ‖(W₁ − W₂)u₂(s)‖`.
+
+So the whole state obeys the bound of 234 with the free term replaced by the energy norm of the data
+difference:
+
+**`norm_kgFieldState_sub_general_le`**:
+`‖(⟨D⟩u₁, ∂ₜu₁)(t) − (⟨D⟩u₂, ∂ₜu₂)(t)‖ ≤ (‖(g₁−g₂, h₁−h₂)‖ + ∫₀ᵗ‖(W₁−W₂)u₂(s)‖ds)·e^{bt}`.
+
+Its right-hand side is monotone in the endpoint for the same two reasons as before, and its majorant is
+the one already shown to vanish, so 263–265 upgrade the pointwise limits to uniform ones: the state,
+the gradient and the velocity all converge uniformly on `[0, T]`. The approximation is now uniform in
+exactly the quantity the energy estimate controls.
+
+The energy follows (266). It is the square of the energy norm of the state, and squaring is uniformly
+continuous on bounded sets; both the band states and the true state are bounded on the window by the
+*same* constant `(‖g‖+‖y‖)e^{bT}`, because the band data are contractions of the data, so
+`|E_R(t) − E(t)| ≤ 2M‖v_R(t) − v(t)‖` on the window and the uniform convergence of the state passes
+straight through.
+
+Statements 267–272 do all of this again for a moving background. The energy-space kernel there is
+`P(t−s)∘S(W(s))`, so the splitting is pointwise in the time and the source difference is the same
+field difference as before; the estimate, its monotonicity in the endpoint, and the uniform band
+approximation of the state, the gradient and the velocity transfer verbatim. Everything the energy
+estimate controls is therefore approximated uniformly on a finite observation window, in a background
+that moves — including the energy itself (273).
+
+### Strong solutions in a moving background
+
+The mild theory says what the solution *is*; the strong theory says it solves the equation. Statements
+74–78 build the latter for one fixed perturbation, and statements 225–229 make it unconditional on a
+band — no smoothing hypothesis, because the sine propagator factors through the half-order one and the
+leftover frequency is the bounded `⟨D⟩_R`. Neither argument touches the perturbation's time dependence.
+
+Statements 274–281 carry both to a moving background. The energy identity
+
+`d/dt (‖⟨D⟩⁻¹∂ₜu‖² + ‖u‖²) = 2 Re⟨⟨D⟩⁻²∂ₜu, W(t)u⟩`
+
+evaluates `W` at the same instant as everything else, so it holds for a curve of operators as it
+stands, and Grönwall only ever uses the uniform bound; uniqueness then needs nothing beyond linearity
+of each `W(t)`, since the difference of two solutions solves the same equation at every time
+separately (277). On a band the mild solution is again twice differentiable with
+
+`∂ₜ²u = −⟨D⟩²_R u + W(t)u`,
+
+so it is a strong solution in that sense, and the uniqueness above makes it the only one:
+
+**`exists_unique_solvesKGSourceT_band`** — the strong Cauchy problem in a moving background is well
+posed on a band, for any uniformly bounded strongly continuous background.
+
+With 253 and 271–273 this closes the moving register: existence, uniqueness, the sharp energy
+estimate, and a band approximation that is faithful and uniform on every finite observation window.
+
+### What the clock reads: the classical work–energy balance
+
+The adiabatic layer (199–208) proves the work–energy identity for an abstract self-adjoint moving
+background. Statements 282–288 make every term of it a quantity of the field, in the register the
+clock programme uses.
+
+Band compression is linear in the operator, so compressing `φ(t)V` gives the switched compression
+`φ(t)·P_RVP_R` (282) — every statement of the adiabatic layer becomes a statement about a band by
+changing the fixed operator alone, and the compressed operator is still self-adjoint and still
+norm-differentiable in `t`. On a band the abstract gradient is `⟨D⟩_R u`, in a moving background as in
+a static one (283), and the potential term is an honest integral, because `P_Ru = u` along the
+solution (285). The identity of statement 202 therefore reads
+
+**`kgBandSwitched_work`**:
+`[‖⟨D⟩_R u(t)‖² + ‖∂ₜu(t)‖² − φ(t)∫V|u(t)|²] − [same at 0] = −∫₀ᵗ φ'(s)∫V|u(s)|² ds`,
+
+the classical work–energy balance of a Klein–Gordon field in a potential of varying strength: the
+energy changes exactly by the work the switching does. The accompanying estimate (288) bounds the
+growth by `e^{L|t|/(1−b)}` with `L` the switching rate and `b` the potential's strength, so a slowly
+switched potential moves the energy slowly — the adiabatic statement the clock programme needs, with
+nothing abstract left in it.
+
+Statements 289–292 make that balance a statement about the original equation and not only about the
+compressed one: both of its sides converge as the cut-off grows. The mechanism is one lemma — a
+uniformly bounded, strongly continuous family has compressions that act correctly along *any*
+convergent curve of states, `W_R(s)z_R → W(s)z` (289) — applied twice: to the solution, for the
+potential term, and to the derivative family, for the work density. The state converges by 258 and the
+work density is bounded by `L((‖f‖+‖h‖)e^{b|t|})²` on the interval, so dominated convergence gives
+
+**`tendsto_kgAdiabaticEnergy_band`** and **`tendsto_integral_work_band`**.
+
+The band accounting is therefore an approximation of the true one, term by term.
+
+### A periodically driven clock
+
+The evolution family of statement 152 restarts the solution from its own state, at the price of
+shifting the background. When the background is periodic the shift changes nothing — so the evolution
+over one period is the *same* map at every period.
+
+Making that precise needs the restart at the level of the state, not only of the field, and that is
+statements 293–296. The velocity restarts by differentiating the field restart in time. The gradient
+restarts because `⟨D⟩⁻¹` is injective and `⟨D⟩⁻¹⟨D⟩u = u` identifies it with the field; the missing
+half of the symbol calculus of 222, `⟨D⟩_R⟨D⟩⁻¹ = P_R` (293), is recorded alongside. Together they say
+the non-autonomous evolution is an **evolution family on the energy space**, not only on the field.
+
+For a `T`-periodic background this gives the **period map** `v ↦ (⟨D⟩u(T), ∂ₜu(T))` (297) and
+
+**`kgFieldStateT_iterate`**: the state after `n` periods is its `n`-th iterate,
+
+whence **`norm_kgFieldStateT_period_le`**: `‖v(nT)‖ ≤ ‖v(0)‖·e^{nb|T|}`. The growth of a
+periodically driven clock is carried by one operator rather than by the whole history — the Floquet
+form of the estimate the card is about.
+
+Statements 301–305 make that operator a genuine one. The state solves a Volterra equation in the
+energy space whose free term is linear in the datum and whose kernel is linear in the state, so
+superposing two solutions solves the superposed equation and uniqueness identifies it with the
+solution of the superposed datum (302). The period map is therefore linear and bounded — the
+**monodromy operator** `M`, with `‖M‖ ≤ e^{b|T|}` — and
+
+**`kgFieldStateT_monodromy_pow`**: `v(nT) = Mⁿ v(0)`.
+
+The long-time behaviour of a periodically driven clock is the behaviour of the powers of a single
+bounded operator, and any bound on those powers is a bound on the clock (305), with no exponential
+growth of its own.
+
+Statements 306–310 close the question the operator poses. A periodic background is periodic in both
+directions, so running one period backwards is the evolution of the same equation over `-T` and undoes
+it: the monodromy is a **linear homeomorphism**, with both norms bounded by `e^{b|T|}` (307). And the
+long-time behaviour is decided by its powers in both directions:
+
+* bounded powers give boundedness at *every* time, not only at multiples of the period — the leftover
+  piece of time is shorter than one period and costs one factor `e^{bT}` (308);
+* conversely, bounded orbits give bounded powers, by the uniform boundedness principle on the energy
+  space, which is complete (309).
+
+**`kgFloquet_stable_iff`**: the state stays bounded at every time for every datum **iff**
+`sup_n‖Mⁿ‖ < ∞`. A periodically driven clock is stable exactly when its monodromy has bounded powers —
+the question of whether such a clock keeps time is reduced to a spectral question about one operator.
+
+Statements 311–315 settle the two extreme cases from the crudest datum available, the norm of `M`
+itself. Along the periods the state is contracted by `‖M‖` each time (311), and between periods the
+leftover time is shorter than one period and costs at most `e^{bT}` (312). Hence
+
+* **`norm_kgFieldStateT_le_of_norm_monodromy_le_one`**: if `‖M‖ ≤ 1`, then
+  `‖v(t)‖ ≤ ‖v(0)‖e^{bT}` for every `t ≥ 0` — the clock keeps running, with a constant read off from
+  one period;
+* **`tendsto_kgFieldStateT_zero`**: if `‖M‖ < 1`, then `v(t) → 0` as `t → ∞` — the driving damps the
+  clock out, at every time and not only along the periods.
+
+The second uses that `⌊t/T⌋ → ∞`, so the geometric decay along the periods survives the leftover
+piece.
+
+### The stable class is inhabited
+
+A criterion decides nothing until something satisfies it. A constant background is periodic with
+every period, so the autonomous theory of statements 187–196 supplies the first inhabitants —
+with explicit constants, not merely existence.
+
+For the free field the monodromy is an **isometry**: the propagator conserves the energy exactly, so
+`‖M‖ ≤ 1` and statement 313 applies verbatim (317). For a self-adjoint potential of strength `b < 1`
+the exactly conserved energy of 189 differs from the state norm by the fixed factor of 191, so
+
+**`norm_kgMonodromy_pow_le_of_small`**: `‖Mⁿ‖ ≤ √((1+b)/(1−b))` for every `n`,
+
+uniformly — the criterion of statement 310 is met with a constant read off from the potential's
+strength alone, and the class of stable periodically driven clocks is not empty.
+
+### Deciding stability on a band
+
+The criterion is about the powers of the monodromy of the original equation, which is not an object
+one computes with. The band models are: there the Cauchy problem is a genuine strong problem (281),
+the frequency is bounded, and everything is a bounded operator with a cut-off.
+
+The band compression of a periodic background is periodic (320), so it carries a monodromy `M_R` of
+its own. Applying the state estimate of 269 with the *same* datum for both backgrounds bounds
+`‖M_R v − M v‖` by the accumulated discrepancy over one period, which vanishes by 250 — so `M_R → M`
+strongly (322). The `M_R` are bounded uniformly by `e^{b|T|}`, so the splitting
+`M_R^{n+1}v − M^{n+1}v = M_R(M_R^n v − M^n v) + (M_R − M)(M^n v)` propagates this to every power (323).
+Hence
+
+**`norm_kgMonodromy_pow_le_of_band_bound`**: a bound on the powers of the band monodromies, uniform in
+the cut-off, is a bound on the powers of the true monodromy.
+
+Whether a periodically driven clock keeps time may therefore be decided on the band models, and the
+answer transfers.
+
+### The Floquet multipliers
+
+The spectrum of the monodromy is the set of **Floquet multipliers**. Everything the criterion says
+about it follows from one inequality, `‖k‖ⁿ = ‖kⁿ‖ ≤ ‖Mⁿ‖‖1‖`, valid because `kⁿ` is a spectral value
+of `Mⁿ`:
+
+* every multiplier lies in the disc `|k| ≤ e^{b|T|}` cut out by the energy estimate over one
+  period (325);
+* if the powers are bounded — that is, if the clock is stable — every multiplier lies in the **closed
+  unit disc** (326), since `‖k‖ⁿ ≤ C` for every `n`.
+
+Contrapositively, and this is the classical instability statement:
+
+**`exists_unbounded_of_one_lt_norm_spectrum`** — one multiplier of modulus greater than one produces a
+Cauchy datum whose state is unbounded in time.
+
+So a single point of the spectrum outside the unit circle breaks the clock, and the whole long-time
+question sits inside the unit circle, where it belongs.
+
+### Decay from the spectral radius
+
+Statement 315 damps the clock out when the monodromy is a contraction, `‖M‖ < 1`. That is not the
+sharp condition: a clock can have `‖M‖ > 1` and still decay, because the norm sees one period while
+the fate of the clock is decided by many.
+
+The sharp condition is on the spectral radius, and Gelfand's formula reaches it. mathlib has the
+formula but not the consequence, so statement 329 proves it for an arbitrary complex Banach algebra:
+`‖aⁿ‖^{1/n} → spectralRadius a`, so a spectral radius below one puts `‖aⁿ‖ ≤ qⁿ` eventually for some
+`q < 1`, hence **`tendsto_norm_pow_zero_of_spectralRadius_lt_one`**: `‖aⁿ‖ → 0`. Applied to the
+monodromy and combined with the leftover-period estimate of 312, this gives
+
+**`tendsto_kgFieldStateT_zero_of_spectralRadius`** — if every Floquet multiplier lies in the *open*
+unit disc, the state tends to zero at every time.
+
+With 326 and 328 the picture is the classical one: multipliers strictly inside the unit disc mean
+decay, a multiplier strictly outside means an unbounded solution, and stability forces all of them
+into the closed disc.
+
+Statements 332–335 collect that at the level of the radius. The passage between the radius and its
+multipliers is the contrapositive in both directions — the radius is the supremum of the moduli, so it
+is at most one exactly when all of them are, and exceeds one only if one of them does — and the result
+is
+
+**`kgFloquet_trichotomy`**:
+
+* `spectralRadius M < 1` → every solution decays to zero;
+* `spectralRadius M > 1` → some solution is unbounded in time;
+* the clock is stable only if `spectralRadius M ≤ 1`.
+
+That is the classical Floquet statement, unconditional, for the `L²` Klein–Gordon field in a
+uniformly bounded strongly continuous periodic background.
+
+### The verdict survives an inexactly known background
+
+A criterion about one operator built from one background is only useful if the operator does not jump
+when the background is perturbed. It does not. Applying the state estimate of 269 with the same datum
+for both backgrounds, and bounding the accumulated discrepancy by a uniform operator-norm distance
+`δ = sup_s‖W₁(s) − W₂(s)‖`, gives
+
+**`norm_kgMonodromy_sub_le`**: `‖M_{W₁} − M_{W₂}‖ ≤ 2Tδe^{2bT}`,
+
+the monodromy is Lipschitz in the background. Hence the decaying regime is **open**: a clock whose
+monodromy is a strict contraction stays one under every perturbation with
+`δ < (1 − ‖M‖)/(2Te^{2bT})`, and by 315 it still damps out (339). The Floquet verdict therefore
+survives an inexactly known background, which is the only kind a measurement provides.
+
+### The multipliers exist, and the free clock is on the boundary
+
+Everything said about Floquet multipliers is empty until the spectrum is known to be inhabited, and
+that needs the energy space to be nontrivial. It is: the indicator of the unit ball is a nonzero
+element of `L²` — the corpus already built it, for the non-surjectivity of `⟨D⟩⁻¹` (114–116) — so the
+energy space and the algebra of operators on it are nontrivial (340), and every element of a
+nontrivial complex Banach algebra has nonempty spectrum. Hence
+
+**`spectrum_kgMonodromy_nonempty`**: every monodromy has at least one Floquet multiplier,
+
+and the spectral radius is attained by one of them (342). The multiplier language of 325–335 is
+therefore about something.
+
+Nontriviality also locates the free clock exactly. Its monodromy is an isometry, so every power is one
+and has norm exactly one (343) — the lower bound is where nontriviality enters — and Gelfand's formula
+turns that into
+
+**`spectralRadius_kgMonodromy_zero`**: `spectralRadius M₀ = 1`.
+
+The free field sits precisely on the boundary of the trichotomy: neither branch of 335's first two
+clauses applies to it. It is stable — its energy is exactly conserved — but it does not decay, which
+is what a clock that keeps time must look like.
+
+Statements 345–347 sharpen that from the radius to the multipliers themselves. The free evolution is
+reversible with an inverse of the same size — running one period backwards is the evolution over `-T`,
+also an isometry — so the free monodromy is a unit (345), and for `|k| < 1` the factorisation
+
+`k·1 − M₀ = −M₀(1 − kM₀⁻¹)`
+
+exhibits `k·1 − M₀` as a unit, the second factor by the Neumann series since `‖kM₀⁻¹‖ = |k| < 1`.
+So no multiplier lies inside the disc (346), and with 326 every one lies on its boundary:
+
+**`norm_eq_one_of_mem_spectrum_kgMonodromy_zero`**: `|k| = 1` for every free Floquet multiplier.
+
+The free clock oscillates and neither grows nor decays — the spectral form of the exact conservation
+of its energy.
+
+### Purely oscillatory clocks
+
+The free argument used that the evolution and its inverse are *isometries*. Statements 348–349 show
+the conclusion needs much less — **two-sided power boundedness**. If `a` is invertible and the powers
+of `a` and of `a⁻¹` are separately bounded, then `‖k‖ ≤ 1` from the first bound and `‖k⁻¹‖ ≤ 1` from
+the second, because the spectrum of an inverse is the inverse of the spectrum; so the whole spectrum
+sits on the unit circle.
+
+That applies to a clock in a weak static real potential. Its monodromies over `T` and over `−T` are
+inverse to each other (350) and statement 319 bounds the powers of both by `√((1+b)/(1−b))`. Hence
+
+**`norm_eq_one_of_mem_spectrum_of_small_potential`**: every Floquet multiplier of such a clock has
+modulus one.
+
+A clock in a weak static potential is therefore *purely oscillatory*: no secular growth, no decay —
+which is what an instrument that keeps time must do, and what the exactly conserved energy of 194
+predicts.
+
+### Time reflection, at the level of the state
+
+The moving theory reflects time on the *field* (149): running `W` backwards from `(f, h)` is running
+`W(−·)` forwards from `(f, −h)`. Everything since is stated for the state, and the estimates that
+carry it — 269 and its consequences — are proved forwards in time only. Statements 352–355 lift the
+reflection to the state, so every forward statement acquires a backward counterpart.
+
+It lifts through the **velocity flip** `(g, h) ↦ (g, −h)`, an isometric involution of the energy space
+(352). The gradient is unchanged (353), because `⟨D⟩⁻¹` is injective and the two fields agree by 149;
+the velocity changes sign (354), because it is the derivative of a curve composed with `s ↦ −s`.
+Hence
+
+**`kgFieldStateT_neg`**: `(⟨D⟩u, ∂ₜu)(−t)` is the flip of the state of the reflected background at
+`+t`,
+
+and in particular the energy at `−t` for `W` equals the energy at `+t` for `W(−·)` — the estimate is
+symmetric in time, as the equation is.
+
+### Oscillation on a band
+
+The transfer of statement 324 runs forwards only, because the state estimate it rests on is proved for
+`t ≥ 0`; the oscillatory criterion of 349 needs both directions. The reflection supplies the other one
+in a sharp form (356):
+
+`M_W(−T) = F ∘ M_{W(−·)}(T) ∘ F`,   `F` the velocity flip,
+
+an identity of operators, since `F` is an involution. Conjugation by an isometry does not change the
+norm of a power (357), so the forward transfer applied to the reflected background bounds the backward
+powers (358), and statement 349 closes it:
+
+**`norm_eq_one_of_mem_spectrum_of_band_bounds`** — if the band monodromies of the background *and of
+its reflection* have powers bounded uniformly in the cut-off, every Floquet multiplier of the clock
+lies on the unit circle.
+
+So oscillation, like stability, is decidable on the band models, where the Cauchy problem is a genuine
+strong problem.
+
+### Reversing time inverts the multipliers
+
+The flip conjugation of 356 has a spectral reading. The flip is an involution, hence a unit of the
+operator algebra (360), and conjugation by a unit does not move the spectrum, so
+
+`σ(M_W(−T)) = σ(M_{W(−·)}(T))`   (362).
+
+For a periodic background the backward monodromy is the *inverse* of the forward one, and the spectrum
+of an inverse is the inverse of the spectrum. Putting the two together:
+
+**`spectrum_kgMonodromy_reflected`**: `σ(M_{W(−·)}(T)) = σ(M_W(T))⁻¹`.
+
+Reversing time inverts the Floquet multipliers (363–364): a mode that grows by a factor `k` per period
+in one direction of time decays by exactly that factor in the other. That is the spectral form of the
+reversibility of the equation, and it explains why the marginal case — all multipliers on the unit
+circle — is the only one a clock can be in if it is to keep time in both directions.
+
+### The two-way clock
+
+That last remark is now a theorem. The criterion of 310 decides stability forwards in time and the
+trichotomy of 335 leaves three possibilities; an instrument that measures time must survive both
+directions of it, and that single extra demand removes two of the three.
+
+Stability forwards puts every multiplier in the closed unit disc (326). Stability of the *reflected*
+background — which is periodic with the same period (365) — bounds the backward powers through the
+flip conjugation (357), so `|k|⁻¹ ≤ 1` as well. Hence
+
+**`norm_eq_one_of_mem_spectrum_of_two_way_stable`**: every multiplier of a two-way stable clock lies
+on the unit circle,
+
+and since the spectrum is nonempty (341), **`spectralRadius_eq_one_of_two_way_stable`**: its spectral
+radius is exactly one. Neither the decaying branch nor the unbounded branch of the trichotomy is
+available to an instrument that keeps time in both directions — it can only oscillate.
+
+### Reading a moving background at every instant
+
+The conditional stability of statement 174 reads the background off the short-time field, but at the
+*initial* instant only. A background that moves is not determined by one instant, and the evolution
+family of 152 says what to do: restart the experiment at time `s`, which is solving the equation of
+the shifted background `W(· + s)` from time zero.
+
+Every hypothesis of 174 transfers to the shifted pair — a *uniform* Lipschitz bound on the difference
+gives the shifted one with the same constant, the band conditions are imposed at every instant, and
+the observation hypothesis is the natural one: the experimenter may prepare data at any instant and
+watch for a time `T`. So the conclusion holds at every instant, with no loss:
+
+**`norm_sub_le_of_lowPassT_everywhere`**: `‖W₁(s) − W₂(s)‖ ≤ 8η(1+bT)/x² + 8Le^{bT}x` for every `s`,
+
+and at the balance point the cube-root law of 176 holds at every instant too (369). The whole moving
+background is reconstructed, with a modulus of continuity that does not degrade with time.
+
+Letting the noise vanish closes the thread. The bound has two error sources — the observational noise
+divided by the square of the probing time, and the drift multiplied by it — and with exact
+observations the first vanishes for *every* admissible probe while the second can be made as small as
+one likes by probing briefly: every sufficiently short probe satisfies `0 < x ≤ T` and
+`x²((1+R²)/2 + be^{bT}) ≤ 1/8` (370). So the bound collapses and
+
+**`eq_of_exact_observation_everywhere`**: a band-limited moving background is determined *exactly* by
+exact observations of the short-time field, at every instant.
+
+That is the quantitative route to the injectivity of 152–154, and unlike it the argument carries a
+modulus: the same computation with `η > 0` is the cube-root law of 369.
+
+For a periodic background even that is more than one needs. Restarting at `s` and at `s + nP` is the
+same experiment, because the shifted backgrounds coincide (372), and every instant is congruent modulo
+the period to one in `[0, P)` through the integer part of `s/P` (373). So the observation hypothesis
+need only be imposed on a single period:
+
+**`eq_of_exact_observation_period`** — a periodic band-limited background is determined by **one
+period** of short-time experiments.
+
+That is what an experimenter with a periodically driven apparatus can actually perform, and it closes
+the inverse-problem thread in the register the Floquet theory works in.
+
+One thing is still owed: the reconstruction theorems carry two band hypotheses on the difference of
+the backgrounds, and a hypothesis class decides nothing until it is inhabited. The band compressions
+inhabit it — statement 210 records exactly those two identities for `P_RW₁P_R − P_RW₂P_R` — and
+compression cannot spoil the Lipschitz hypothesis either, being linear in the operator and contracting
+(375). Hence
+
+**`eq_of_exact_observation_band`**: two moving backgrounds compressed to the same band and observed
+exactly on short times have equal compressions.
+
+The reconstruction theory therefore applies to the very models on which the rest of the card computes.
+
+What that experiment recovers is the band compression `P_RWP_R`, not `W`. Statement 216 closes the
+gap: the compressions determine the operator, so running the experiment at every cut-off leaves
+nothing behind (378), and combining with the periodic reduction of 374 gives the sharpest form the
+inverse problem takes here:
+
+**`eq_of_exact_observation_all_bands_period`** — a periodic moving background is determined exactly by
+**one period** of short-time experiments performed at **every cut-off**, with no band hypothesis on
+the background itself.
+
+That is the inverse-problem counterpart of the Floquet criterion: both reduce a question about the
+original equation to a family of questions about its band models, and both transfer back.
+
+### From the operator to the potential
+
+All of that recovers an *operator*. The clock programme is about a *potential*, and the step between
+them was missing: the corpus records that an a.e. vanishing symbol induces the zero operator but not
+the converse. Statement 380 supplies it, by testing the operator on the indicator of a ball — the
+vector built for the non-surjectivity of `⟨D⟩⁻¹` (114–116). Applying the operator to it multiplies the
+symbol by one on the ball, so the symbol vanishes a.e. there; the balls of integer radius exhaust the
+space and a countable union of null sets is null.
+
+Hence a bounded real potential is determined by its multiplication operator (381), and combining with
+378:
+
+**`potential_ae_eq_of_exact_observation`** — a static bounded real potential is determined almost
+everywhere by short-time clock observations at every cut-off.
+
+That is the inverse problem in the register the card was written for: what is reconstructed is the
+potential the clock moves in, not merely the operator that represents it.
+
+Statements 383–384 let the potential move. The reconstruction machinery is built for moving
+backgrounds; what it needs is the translation of its two analytic hypotheses into statements about the
+potential. The uniform bound is immediate — a multiplication operator obeys every bound its symbol
+obeys — and the Lipschitz hypothesis is the same fact applied to the four-term combination
+`(V₁(σ)−V₂(σ)) − (V₁(τ)−V₂(τ))`, which is again a multiplication operator by the additivity of the
+symbol calculus (383). Strong continuity in time is a genuine hypothesis on the family — it is what
+the moving theory of 144–147 assumes, and the switched potentials of 206 satisfy it. With those,
+
+**`potentialT_ae_eq_of_exact_observation`** — a moving bounded real potential, Lipschitz in time, is
+determined almost everywhere at every instant by short-time clock observations at every cut-off.
+
+When the potential is periodic the instants may be restricted to a single period, by the reduction of
+379 — provided the operator family inherits the periodicity, which it does, multiplication operators
+of potentials that agree everywhere being equal (385). Hence
+
+**`potentialT_ae_eq_of_exact_observation_period`** — a periodic moving real potential, Lipschitz in
+time, is determined almost everywhere at every instant by **one period** of short-time clock
+observations at every cut-off.
+
+That is the sharpest form the inverse problem takes here, and it is the mirror of the Floquet
+criterion: both a periodically driven clock's fate and the potential driving it are decided by one
+period of band-limited data.
+
+### The observations decide the fate
+
+That mirror is now a theorem. The monodromy depends on the background and on nothing else (387), so
+the reconstruction results transfer to it directly: observationally identical clocks have the **same
+Floquet spectrum** (388), hence the same spectral radius (389), hence the same verdict in the
+trichotomy of statement 335 — and for a periodic clock one period of observations suffices (390).
+
+So the data an experimenter can collect in a finite window decides not only what the background is but
+whether the clock will keep time, decay, or break.
+
+### The multipliers live in an annulus
+
+Statement 325 confines the multipliers to the disc `|k| ≤ e^{b|T|}` that the energy estimate cuts out
+over one period. The evolution is reversible and its inverse obeys the *same* bound (307), and the
+spectrum of an inverse is the inverse of the spectrum, so `|k|⁻¹ ≤ e^{b|T|}` as well:
+
+**`mem_annulus_of_mem_spectrum_kgMonodromy`** — every Floquet multiplier satisfies
+`e^{−b|T|} ≤ |k| ≤ e^{b|T|}`.
+
+The annulus closes onto the unit circle as the potential weakens or the period shortens, which is the
+quantitative form of the free case (347): a clock cannot drift faster per period than its own energy
+estimate allows, in either direction of time. In particular the trichotomy's two extreme branches
+require a multiplier at distance at least `e^{−b|T|}` from the origin — instability and decay are both
+rate-limited by the estimate the card began with.
+
+Statements 393–395 make that a no-go. Both extreme branches need a multiplier off the unit circle, and
+the annulus says what that costs: decay needs `e^{−b|T|} < 1` and instability needs `1 < e^{b|T|}`.
+Either way
+
+**`zero_lt_of_spectralRadius_lt_one`** and **`zero_lt_of_one_lt_norm_spectrum`**: `b·|T| > 0`.
+
+**A free clock, or one whose period is instantaneous, can neither decay nor break.** The drift of a
+clock is bought entirely with the strength of its background and the length of its period — which is
+what the energy estimate the card began with says, read through the spectrum.
+
+Taking logarithms turns the annulus into the statement a physicist reads. A multiplier `k` describes a
+mode multiplied by `k` each period, so its **Floquet exponent** is `log|k|/T`, the growth rate per
+unit time, and the annulus says `|log|k|| ≤ b·|T|` (396). Hence
+
+**`abs_floquetExponent_le`**: `|log|k| / T| ≤ b`.
+
+A mode cannot grow or decay faster than the strength of the background it moves in, whatever the
+period. That is the energy estimate `‖v(t)‖ ≤ ‖v(0)‖e^{b|t|}` of statement 186 in spectral form, and
+it is sharp: the free field has `b = 0` and exponent zero (347).
+
+### A time-symmetric driving pairs its multipliers
+
+Statement 363 inverts the multipliers under time reversal. When the background is even in time —
+`W(−r) = W(r)`, a driving that looks the same run backwards — reversing time changes nothing, so the
+spectrum is **invariant under inversion** (398):
+
+`σ(M) = σ(M)⁻¹`,   equivalently   `k ∈ σ(M) ↔ k⁻¹ ∈ σ(M)` (399).
+
+The multipliers of such a clock come in reciprocal pairs, and the consequence is sharp: a multiplier
+outside the unit circle is accompanied by one inside it, so
+
+**`norm_eq_one_of_mem_spectrum_of_time_symmetric`** — a *stable* time-symmetric clock has **all** of
+its multipliers on the unit circle.
+
+There is no partial stability for a driving symmetric in time: either every mode oscillates, or some
+mode grows. This is the same conclusion as 366 for two-way stable clocks, reached from a symmetry of
+the background rather than from a demand on the solutions.
+
+That symmetry also cheapens the capstone. Statement 367 asks for stability in *both* directions of
+time; for a background even in time the two demands are one, because the reflected background is the
+background itself and a bound on the solutions run forwards is literally a bound on the reflected
+problem's (401). Hence
+
+**`spectralRadius_eq_one_of_time_symmetric_stable`** — a time-symmetric periodic clock that keeps time
+*forwards* has spectral radius exactly one.
+
+The static case is an instance: a constant background is even in time and periodic with every period,
+so **a stable clock in a static potential can only oscillate** (403) — the conclusion of 351 obtained
+from a symmetry instead of from the conserved energy.
+
+The annulus holds for the spectral radius as well as for each multiplier (406): the upper bound
+because a supremum of things below a bound is below it, the lower bound because the spectrum is
+inhabited (341) and a supremum dominates any one of its terms. The two elementary facts about suprema
+this needs — a spectral value is dominated by the radius (404), and a uniform bound on the values
+bounds the radius (405) — are recorded once here, having been inlined twice before.
+
+### The true growth rate
+
+Statement 300 bounds the state after `n` periods by `e^{nb|T|}`, the *estimate's* rate. The true rate
+is the spectral radius, and Gelfand's formula says so. mathlib has the formula but not this
+consequence: statement 329 extracted the special case `r < 1`, and 407 proves it for an arbitrary
+finite radius — for every tolerance `ε` the powers are eventually below `(r+ε)ⁿ`. The monodromy's
+radius is finite, being bounded by `e^{b|T|}` (408), so
+
+**`eventually_norm_kgFieldStateT_le_of_spectralRadius`** — after enough periods a clock grows no
+faster than its spectral radius, to any prescribed accuracy.
+
+The estimate the card began with gives the rate `b`; the spectrum gives the true one, and 397 says the
+two never differ by more than the estimate allows.
+
+The bound below is the same inequality that confines the multipliers: `kⁿ` is a spectral value of
+`Mⁿ`, so `|k|ⁿ ≤ ‖Mⁿ‖` (410). The radius of a monodromy is *attained* by a multiplier (342), so the
+lower bound holds with `r` itself and needs no tolerance (411), and the two combine into
+
+**`norm_pow_kgMonodromy_sandwich`**: `rⁿ ≤ ‖Mⁿ‖ ≤ (r+ε)ⁿ` eventually, for every `ε > 0`.
+
+The growth of a periodically driven clock is exactly its spectral radius. The estimate's rate `e^{b|T|}`
+is an upper bound for `r` (406), never the truth unless the two coincide — which for the free clock
+they do, both being one.
 
 ### Historical note on the plan
 
@@ -1441,6 +2846,304 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-05 — statements 410–412: **the growth is exactly the spectral radius.** `kⁿ ∈ σ(Mⁿ)` bounds
+  the powers below by any multiplier's modulus, and the radius is attained, so `rⁿ ≤ ‖Mⁿ‖` with no
+  tolerance; with 409 that sandwiches the growth between `rⁿ` and `(r+ε)ⁿ`. The estimate's rate is an
+  upper bound for `r`, never the truth unless the two coincide.
+- 2026-08-05 — statements 407–409: **the true growth rate is the spectral radius.** Gelfand's formula
+  gives, for an arbitrary finite radius, that the powers are eventually below `(r+ε)ⁿ` — mathlib has
+  the formula but not this consequence. The monodromy's radius is finite by the annulus, so a clock
+  eventually grows no faster than its spectral radius, to any prescribed accuracy.
+- 2026-08-05 — statements 404–406: **the annulus holds for the radius.** With the two supremum facts
+  extracted — a spectral value is dominated by the radius, a uniform bound on the values bounds it —
+  the annulus of 392 transfers from the individual multipliers to the spectral radius itself.
+- 2026-08-05 — statements 401–403: **for a symmetric driving one direction of stability is enough.**
+  When the background is even in time the reflected problem is the same problem, so forward stability
+  is backward stability and the capstone of 367 applies with half its hypotheses. The static case is
+  an instance, recovering 351 from symmetry rather than from the conserved energy.
+- 2026-08-05 — statements 398–400: **a time-symmetric driving pairs its multipliers.** If `W(−r) = W(r)`
+  the reflected background is the background itself, so 363 makes the spectrum inversion-invariant and
+  the multipliers come in reciprocal pairs. A stable time-symmetric clock therefore has all of them on
+  the unit circle — the conclusion of 366 obtained from a symmetry of the background instead.
+- 2026-08-05 — statements 396–397: **the Floquet exponent is bounded by the background strength.**
+  Taking logarithms in the annulus gives `|log|k|| ≤ b·|T|`, hence `|log|k|/T| ≤ b`: a mode grows or
+  decays no faster than `e^{b|t|}`, whatever the period. The energy estimate of 186 in spectral form.
+- 2026-08-05 — statements 393–395: **a clock cannot drift without a potential.** Both extreme branches
+  of the trichotomy need a multiplier off the unit circle, and the annulus of 392 prices that at
+  `b·|T| > 0`. A free clock, or one whose period is instantaneous, can neither decay nor break.
+- 2026-08-05 — statements 391–392: **the multipliers live in an annulus.** Reversibility gives the
+  inverse the same bound as the monodromy, and the spectrum of an inverse is the inverse of the
+  spectrum, so every Floquet multiplier satisfies `e^{−b|T|} ≤ |k| ≤ e^{b|T|}`. The annulus closes
+  onto the unit circle as the potential weakens: drift per period is rate-limited by the energy
+  estimate the card began with.
+- 2026-08-05 — statements 387–390: **the observations decide the fate.** The monodromy depends only on
+  the background, so the reconstruction results transfer: observationally identical clocks have the
+  same Floquet spectrum and the same spectral radius, hence the same verdict in the trichotomy — and
+  for a periodic clock one period of band-limited data settles it.
+- 2026-08-05 — statements 385–386: **one period reads a periodic potential.** The operator family of
+  a periodic potential is periodic, so the periodic reduction of 379 applies and a periodic moving
+  real potential is determined a.e. at every instant by one period of short-time clock observations at
+  every cut-off — the mirror of the Floquet criterion, which decides the clock's fate from the same
+  data.
+- 2026-08-05 — statements 383–384: **the potential may move.** The four-term combination of
+  multiplication operators is again one, so a pointwise Lipschitz bound on the potentials gives the
+  operator Lipschitz hypothesis; with strong continuity in time — what the moving theory assumes
+  anyway — a moving bounded real potential is determined a.e. at every instant by short-time clock
+  observations at every cut-off.
+- 2026-08-05 — statements 380–382: **from the operator to the potential.** The converse the corpus
+  lacked — a symbol whose multiplication operator vanishes vanishes a.e. — follows by testing on ball
+  indicators and exhausting the space. So a bounded real potential is determined by its multiplication
+  operator, and with 378 a static real potential is determined a.e. by short-time clock observations
+  at every cut-off: the inverse problem in the register the card was written for.
+- 2026-08-05 — statements 377–379: **the inverse problem closed with no band hypothesis.** What a
+  band experiment recovers is `P_RWP_R`; the compressions determine the operator (216), so observing
+  every cut-off recovers `W` itself, and for a periodic background one period of instants suffices.
+  Like the Floquet criterion, the inverse problem reduces to the band models and transfers back.
+- 2026-08-05 — statements 375–376: **the reconstruction class is inhabited.** The band compressions
+  satisfy the two band hypotheses of 371 by statement 210, and compression is linear and contracting,
+  so it preserves the Lipschitz hypothesis. The reconstruction theory applies to the band models the
+  rest of the card computes on.
+- 2026-08-05 — statements 372–374: **one period of experiments suffices.** A periodic background is
+  invariant under integer multiples of its period, so restarting at `s` is restarting at the
+  representative of `s` in `[0,P)`; the observation hypothesis of 371 need only be imposed on a single
+  period. The inverse problem is now closed in the register the Floquet theory works in.
+- 2026-08-05 — statements 370–371: **exact observations determine the moving background exactly.**
+  Every sufficiently short probe is admissible, so with vanishing noise the reconstruction bound
+  collapses to zero at every instant. Injectivity of 152–154 recovered quantitatively, with the
+  cube-root modulus of 369 as its noisy form.
+- 2026-08-05 — statements 368–369: **the moving background is read at every instant.** Restarting the
+  probe at time `s` is solving the shifted background from zero, and every hypothesis of 174 transfers
+  to the shift, so the conditional-stability bound and the cube-root law hold at every instant with
+  the same constants — the reconstruction does not degrade with time.
+- 2026-08-05 — statements 365–367: **a two-way clock can only oscillate.** Stability in both
+  directions of time — the reflected background being periodic with the same period — puts every
+  Floquet multiplier on the unit circle and pins the spectral radius at exactly one. The trichotomy
+  of 335 has only its marginal branch available to an instrument that keeps time.
+- 2026-08-05 — statements 360–364: **time reversal inverts the Floquet multipliers.** The flip is a
+  unit, conjugation by a unit fixes the spectrum, and for a periodic background the backward monodromy
+  is the inverse of the forward one — so `σ(M_{W(−·)}(T)) = σ(M_W(T))⁻¹`. A mode growing by `k` per
+  period forwards decays by `k` backwards: the spectral form of reversibility, and the reason the
+  marginal case is the only one a two-way clock can occupy.
+- 2026-08-05 — statements 356–359: **oscillation on a band.** The backward monodromy is the flip
+  conjugate of the reflected background's forward one, so conjugation by the isometric involution
+  leaves the norms of powers alone and the forward band transfer applied to `W(−·)` bounds the
+  backward powers. With both bounds, 349 puts every multiplier on the unit circle: oscillation, like
+  stability, is decidable on the band models.
+- 2026-08-05 — statements 352–355: **time reflection at the level of the state.** The field-level
+  reflection of 149 lifts through the velocity flip `(g,h) ↦ (g,−h)`: the gradient is unchanged by
+  injectivity of `⟨D⟩⁻¹`, the velocity changes sign as the derivative of a curve composed with `s ↦ −s`.
+  Every forward statement about the state now has a backward counterpart.
+- 2026-08-05 — statements 348–351: **purely oscillatory clocks.** Two-sided power boundedness alone
+  puts a spectrum on the unit circle, since the spectrum of an inverse is the inverse of the spectrum.
+  A clock in a weak static real potential has that — its monodromies over `T` and `−T` are inverse and
+  both are bounded by `√((1+b)/(1−b))` — so all of its multipliers have modulus one: no secular growth
+  and no decay.
+- 2026-08-05 — statements 345–347: **the free multipliers lie on the unit circle.** The free monodromy
+  is a unit whose inverse is the monodromy over `-T`, also an isometry, so a multiplier of modulus
+  below one would make `k·1 − M₀ = −M₀(1 − kM₀⁻¹)` a unit by the Neumann series. With 326 every free
+  multiplier has modulus exactly one — the spectral form of exact energy conservation.
+- 2026-08-05 — statements 340–344: **the multipliers exist.** The ball indicator built for 114–116
+  makes `L²`, the energy space and the operator algebra nontrivial, so every monodromy has nonempty
+  spectrum and its radius is attained. The same nontriviality gives `‖M₀ⁿ‖ = 1` exactly for the free
+  clock, hence `spectralRadius M₀ = 1`: the free field sits on the boundary of the trichotomy —
+  stable but not decaying, which is what keeping time looks like.
+- 2026-08-05 — statements 336–339: **the monodromy is Lipschitz in the background**, with constant
+  `2Te^{2bT}` against the uniform operator-norm distance. So the decaying regime is open: a strict
+  contraction survives every small enough perturbation and the clock still damps out — the Floquet
+  verdict survives an inexactly known background.
+- 2026-08-05 — statements 332–335: **the Floquet trichotomy.** Passing between the spectral radius and
+  its multipliers is the contrapositive both ways, and it collects the pieces into the classical
+  statement: radius below one gives decay, above one gives an unbounded solution, and stability
+  confines the spectrum to the closed unit disc.
+- 2026-08-05 — statements 329–331: **the sharp decay criterion.** mathlib has Gelfand's formula but
+  not the consequence that a spectral radius below one makes the powers vanish in norm; that is built
+  here for an arbitrary complex Banach algebra and applied to the monodromy, giving decay of the state
+  at every time when all Floquet multipliers lie in the open unit disc.
+- 2026-08-05 — statements 325–328: **the Floquet multipliers.** From `‖k‖ⁿ = ‖kⁿ‖ ≤ ‖Mⁿ‖‖1‖`: the
+  multipliers lie in the disc `|k| ≤ e^{b|T|}`, a stable clock has all of them in the closed unit disc,
+  and one multiplier outside it produces a datum whose state is unbounded in time — the classical
+  instability criterion, unconditional.
+- 2026-08-05 — statements 320–324: **stability can be decided on a band.** The band compression of a
+  periodic background is periodic, and the state estimate at equal data makes `M_R → M` strongly; the
+  uniform bound `‖M_R‖ ≤ e^{b|T|}` propagates that to every power. So a bound on the powers of the band
+  monodromies, uniform in the cut-off, bounds the powers of the true monodromy — the Floquet criterion
+  is checkable on the models where the Cauchy problem is a genuine strong problem.
+- 2026-08-05 — statements 316–319: **the stable class is inhabited.** A constant background is
+  periodic with every period, so the free field gives a monodromy that is an isometry, and a
+  self-adjoint potential of strength `b < 1` gives `‖Mⁿ‖ ≤ √((1+b)/(1−b))` uniformly in `n`. The
+  criterion of 310 is met with explicit constants, so it is not vacuous.
+- 2026-08-05 — statements 311–315: **the dichotomy from the monodromy norm.** The state is contracted
+  by `‖M‖` each period and the leftover time costs one factor `e^{bT}`, so `‖M‖ ≤ 1` bounds the clock
+  at every time and `‖M‖ < 1` damps it to zero at every time — the two extreme cases of the criterion,
+  decided by a single number.
+- 2026-08-05 — statements 306–310: **the stability criterion.** A periodic background is periodic
+  backwards too, so the monodromy is invertible with `‖M‖, ‖M⁻¹‖ ≤ e^{b|T|}`. Bounded powers give
+  boundedness at every time (the leftover piece is shorter than a period); bounded orbits give bounded
+  powers by uniform boundedness on the energy space. So a periodically driven clock is stable **iff**
+  `sup_n‖Mⁿ‖ < ∞`.
+- 2026-08-05 — statements 301–305: **the monodromy operator.** The state is linear in the datum,
+  proved by superposition plus Volterra uniqueness, so the period map is a bounded operator `M` with
+  `‖M‖ ≤ e^{b|T|}` and `v(nT) = Mⁿ v(0)`. The long-time behaviour of a periodically driven clock is
+  the behaviour of the powers of one operator; any bound on them bounds the clock.
+- 2026-08-05 — statements 293–300: **a periodically driven clock has a period map.** The evolution
+  family of 152 is lifted from the field to the state — the velocity by differentiating the field
+  restart, the gradient by injectivity of `⟨D⟩⁻¹` — so a periodic background makes the evolution over
+  one period a single map whose `n`-th iterate is the state after `n` periods, and the estimate takes
+  the Floquet form `‖v(nT)‖ ≤ ‖v(0)‖e^{nb|T|}`.
+- 2026-08-05 — statements 289–292: **the band work accounting approximates the true one.** One lemma
+  does it — the compressions act correctly along any convergent curve of states — applied to the
+  solution for the potential term and to the derivative family for the work density; the work density
+  is bounded by a constant on the interval, so dominated convergence carries the accumulated work as
+  well. Both sides of the classical balance of 287 converge as the cut-off grows.
+- 2026-08-05 — statements 282–288: **the classical work–energy balance on a band.** Compression is
+  linear in the operator, so a switched real potential compressed to a band is the switched
+  compression, still self-adjoint and still norm-differentiable; the gradient on a band is `⟨D⟩_R u`
+  in a moving background too, and the potential term is an honest integral because the solution is
+  band-limited. The abstract identity of 202 becomes
+  `Δ[‖⟨D⟩_R u‖² + ‖∂ₜu‖² − φ∫V|u|²] = −∫φ'∫V|u|²`, with the adiabatic bound `e^{L|t|/(1−b)}`.
+- 2026-08-05 — statements 274–281: **the strong theory moves.** The energy identity of the strong
+  layer evaluates the perturbation at the same instant as everything else, so it holds verbatim for a
+  curve of operators; Grönwall uses only the uniform bound and uniqueness only the linearity of each
+  `W(t)`. On a band the moving mild solution is again twice differentiable with
+  `∂ₜ²u = −⟨D⟩²_R u + W(t)u`, so the strong Cauchy problem in a moving background is well posed there,
+  with no smoothing hypothesis on the background.
+- 2026-08-05 — statement 273: the moving energy converges uniformly on the window too; the
+  approximation thread is now closed in both registers, for field, state, gradient, velocity and
+  energy.
+- 2026-08-05 — statements 266–272: **the energy converges uniformly, and the whole state thread moves.**
+  Both states are bounded on the window by the same constant, so squaring is uniformly continuous
+  there and the energy inherits the state's uniform convergence. The state estimate, its endpoint
+  monotonicity and the uniform band approximation of state, gradient and velocity then transfer
+  verbatim to a moving background — the energy-space kernel is `P(t−s)∘S(W(s))` and the splitting is
+  pointwise in the time.
+- 2026-08-05 — statements 259–265: **the sharp difference estimate belongs to the state.** The state
+  solves its own Volterra equation in the energy space, and the source difference there is the same
+  quantity as in the field estimate — `‖(S(W₁)−S(W₂))v₂‖ = ‖(W₁−W₂)u₂‖` — so the whole state obeys the
+  bound of 234. Its monotonicity in the endpoint upgrades the pointwise state/energy limits of 243–244
+  to uniform convergence on every window, for the state, the gradient and the velocity.
+- 2026-08-05 — statements 254–258: **the state and the energy converge in a moving background.** The
+  perturbed source converges by the same splitting as in the autonomous case, so both propagator terms
+  of the Duhamel formulas converge by domination, and with them the state and the energy. The
+  approximation thread is now complete in the moving register: field, state, energy, and uniformity
+  over a finite window.
+- 2026-08-05 — statements 247–253: **the band approximation for a moving background.** The
+  compression at each time inherits the uniform bound and the strong continuity, the splitting that
+  gives the sharp difference estimate is pointwise in the time and so survives verbatim for curves of
+  operators, and the rest of the approximation thread repeats: convergence at every time and
+  uniformly on every window. The clock's background is now allowed to change.
+- 2026-08-05 — statements 241–246: **the energy converges and the approximation is uniform on a
+  window.** The gradient converges by the sine version of the velocity argument, so the state
+  converges in the energy space and with it the energy itself — the sharp estimate 182 and the exact
+  conservation 189 are statements about the limit too. And because the bound of 234 is monotone in
+  its endpoint, its value at `T` majorises the error over all of `[0,T]`, giving uniform convergence
+  on every finite observation window rather than a separate limit at each instant.
+- 2026-08-05 — statements 237–240: **the whole state converges, not only the field.** Splitting the
+  *source* as `W_Ru_R − Wu = (W_R−W)u + W_R(u_R−u)` makes the Duhamel integrand of the velocity
+  converge pointwise — the first term by strong convergence (215), the second by 236 — under a
+  constant bound on the interval, so dominated convergence gives `∂ₜu_R(t) → ∂ₜu(t)`. The band
+  approximation is therefore faithful on the state a clock reads, not only on the field.
+- 2026-08-05 — statements 235–236: **the band approximation is faithful.** Along the true solution the
+  discrepancy `(P_RWP_R − W)u(s)` vanishes pointwise and is dominated by `2‖W‖‖u(s)‖`, so dominated
+  convergence plus statement 234 gives `u_R(t) → u(t)` for every time. The whole band theory is
+  therefore an approximation of the general equation, not a parallel theory about a different one.
+- 2026-08-05 — statements 233–234: a difference estimate that measures the perturbations by their
+  **action along the second solution** rather than by their operator norm,
+  `‖u₁−u₂‖ ≤ (‖f₁−f₂‖+‖h₁−h₂‖+∫₀ᵗ‖(W₁−W₂)u₂‖)e^{bt}`. Statement 136 is the special case where the
+  source is bounded by `‖W₁−W₂‖‖u₂‖`; the sharper form survives strong convergence, where that bound
+  is vacuous — which is what the band approximation needs.
+- 2026-08-05 — statements 230–232: on a band the abstract gradient of the energy thread is literally
+  `⟨D⟩_R u`, so the conservation law of 189 for a real band potential reads
+  `‖⟨D⟩_R u‖² + ‖∂ₜu‖² − ∫V|u|² = const` — the classical conserved energy, every term a quantity of
+  the solution itself.
+- 2026-08-05 — statements 227–229: the band solution **is** a `SolvesKGSource` — divide the band
+  equation twice by the frequency and use that `⟨D⟩⁻²⟨D⟩²_R` is the band projection — so the
+  uniqueness of statement 74 applies verbatim. What was missing was existence, and the band supplies
+  it: the strong Cauchy problem is well posed on every band with no hypothesis on the perturbation
+  beyond boundedness.
+- 2026-08-05 — statements 225–226: **the strong solution on a band, with no smoothing hypothesis.**
+  `∂ₜ²u = −⟨D⟩²_R u + Wu` for band-limited data and any bounded perturbation compressed to the band.
+  The obstruction of 103–109 — the unbounded `⟨D⟩sin(τ⟨D⟩)` — never appears, because on a band the
+  sine propagator factors as `(sin(t⟨D⟩)/⟨D⟩)⟨D⟩_R`: differentiable times bounded.
+- 2026-08-05 — statements 221–224: the symbol calculus of `⟨D⟩_R`. `⟨D⟩⁻¹⟨D⟩_R = P_R`, so the
+  regularity hypothesis of the differentiated theory is automatic on a band; and
+  `sin(t⟨D⟩)P_R = (sin(t⟨D⟩)/⟨D⟩)⟨D⟩_R`, so the propagator whose differentiation was blocked is the
+  differentiable one composed with a bounded operator. These are the inputs a strong solution on a
+  band needs.
+- 2026-08-05 — statements 217–220: the band is **invariant** under the evolution — the projection
+  commutes with the propagators and is absorbed by a band-compressed perturbation on both sides, so
+  uniqueness carries it through the Duhamel formula. On the band `⟨D⟩²` is a bounded operator of norm
+  `≤ 1 + R²` whose double division by the frequency is the projection, so the obstruction behind the
+  smoothing hypothesis of 103–109 is absent there.
+- 2026-08-05 — statements 213–216: the bands **exhaust** the potential. The indicator symbols converge
+  pointwise to one, so the corpus's strong-convergence criterion (48) gives `P_R x → x`, and hence
+  `P_R W P_R x → W x`; two perturbations with the same compression on every band are equal. With 211
+  this says what the observations determine: on each band quantitatively, across all bands exactly.
+- 2026-08-05 — statements 209–212: **the two threads meet.** Conditional stability wanted
+  `A = P_R A P_R`, which a multiplication operator never satisfies; the band compression
+  `A ↦ P_R A P_R` does, because the low-pass projection is idempotent, and stays self-adjoint,
+  because the projection is. So on each band the same class carries both the well-posed inverse
+  problem and exact energy conservation.
+- 2026-08-05 — statements 205–208: the last abstraction removed. Composing the real potential of 193
+  with the switching profile of 203 gives `∂ₜ²u = -⟨D⟩²u + φ(t)V(x)u`, whose work density is
+  `φ̇(t)∫V|u|²` and whose adiabatic estimate and exact work accounting have every constant read off
+  from `sup|φ|`, `sup|φ̇|` and `sup|V|`.
+- 2026-08-05 — statements 202–204: the **exact** work accounting `E(t) − E(0) = −∫₀ᵗ re⟪Ẇ u, u⟫`,
+  of which the adiabatic bound is the sign-discarded form; and the canonical instance, a fixed
+  self-adjoint perturbation switched by a scalar profile `W(t) = φ(t)W₀`, where the hypotheses reduce
+  to bounds on `φ` and `φ̇`.
+- 2026-08-05 — statements 197–201: **the adiabatic estimate.** The work–energy identity
+  `d/dt E = −re⟪Ẇ(t)u, u⟫` says the energy changes only at the rate at which the background moves;
+  with `‖W‖ ≤ b < 1` and `‖Ẇ‖ ≤ L` it integrates to `E(t) ≤ E(0)e^{L|t|/(1−b)}`. No Grönwall is
+  needed — `E(t)e^{∓Kt}` is monotone because its derivative has a sign, which is shorter and
+  two-sided. `L = 0` recovers exact conservation.
+- 2026-08-05 — statements 193–196: the self-adjointness hypothesis is **inhabited** — multiplication
+  by a bounded real potential. Conservation, the uniform bound, and the identification of the
+  potential term with `∫V|u|²` all specialise; for an attractive potential `V ≤ 0` that integral is
+  non-positive, so no smallness is needed and the field stays bounded for all time.
+- 2026-08-05 — statements 190–192: what conservation buys. For a **self-adjoint** perturbation the
+  exponential of the general estimate disappears entirely: `‖W‖ = b < 1` gives the uniform-in-time
+  bound `(1+b)/(1−b)` times the initial energy, and a confining potential (`re⟪Wx,x⟫ ≤ 0`) needs no
+  smallness at all. The mechanism is `‖u‖ ≤ ‖⟨D⟩u‖`, the operator form of the mass gap.
+- 2026-08-05 — statements 187–189: **exact conservation for a self-adjoint perturbation.**
+  `‖⟨D⟩u‖² + ‖∂ₜu‖² − re⟪Wu,u⟫` is constant, in the mild theory and with no smallness. The classical
+  term-by-term differentiation is unavailable — each half involves the unbounded generator — so the
+  state is carried back to time zero by the free evolution, where the fundamental theorem of calculus
+  applies and the generator never appears; unitarity of the propagator transports the inner products
+  back, and self-adjointness cancels the two derivatives.
+- 2026-08-05 — statements 183–186: the energy estimate is **sharp** — with `W = 0` the Duhamel term
+  vanishes, the state is the propagator applied to the datum, and the estimate is an equality — and it
+  **survives a moving background**, because the argument never used the autonomy of the perturbation:
+  the Volterra kernel `v ↦ (0, W(s)⟨D⟩⁻¹v₁)` obeys the same uniform bound.
+- 2026-08-05 — statements 178–182: **the estimate the card is named after, sharp.** For the mild `L²`
+  solution with an *arbitrary* bounded perturbation and no regularity hypothesis,
+  `‖⟨D⟩u(t)‖² + ‖∂ₜu(t)‖² ≤ (‖⟨D⟩u(0)‖² + ‖∂ₜu(0)‖²)e^{2‖W‖|t|}` — constant one, rate exactly `‖W‖`,
+  both sharp. The energy method is read through the propagator: the pair `(⟨D⟩u, ∂ₜu)` solves a
+  Volterra equation whose free term is an isometry and whose kernel has norm `‖W‖` because `⟨D⟩⁻¹` is
+  a contraction, which is the operator form of `‖u‖ ≤ ‖⟨D⟩u‖`.
+- 2026-08-05 — statements 175–177: **the cube-root law.** The reconstruction bound `A/x² + Bx` has a
+  genuine optimum at `Bx³ = 2A`, where the noise term is exactly half the drift term and the total is
+  `(3/2)Bx`; optimality is the identity `(A/y²+By) − (A/x²+Bx) = A(x−y)²(x+2y)/(x³y²)`, a square times
+  a positive factor, so no inequality of means is needed. Since the balance point is `(2A/B)^{1/3}`,
+  both the optimal probing time and the optimal reconstruction error scale like the **cube root** of
+  the observational noise.
+- 2026-08-04 — statements 169–174: the probing time can always be chosen, giving conditional
+  stability with **no free parameter** and a two-sided band statement; and the reconstruction is
+  redone for a **moving** background, where it is necessarily local in time —
+  `‖W₁(0)−W₂(0)‖ ≤ 8η(1+bT)/x² + 8Le^{bT}x`, noise over probe-time-squared plus drift times probe
+  time, the shape that gives such a measurement an optimal integration time.
+- 2026-08-04 — statements 160–168: **conditional stability.** `|sin(τω)/ω| ≤ |τ|` makes the
+  perturbation enter at second order in time; cutting to `‖ξ‖ ≤ R` makes both propagators
+  Taylor-accurate (the cubic sine estimate is built here, mathlib has only the quadratic cosine one);
+  and the two together let the perturbation be read off the short-time field. On perturbations that
+  only couple frequencies below `R` the forward map is bounded below, `‖W₁−W₂‖ ≤ 8η(1+bT)/x²`, with
+  the admissible probing time of order `(1+R²)^{-1/2}`. The ill-posedness of 155–159 is therefore
+  purely a high-frequency phenomenon.
+- 2026-08-04 — statements 155–159: **the inverse problem is ill-posed.** The high-pass multiplier of
+  height `c` has operator norm exactly `c`, but composed with `sin(τ⟨D⟩)/⟨D⟩` its norm is
+  `≤ c/√(1+R²)` — a bound visible only at the symbol level. So for every tolerance and every
+  observation window there is a perturbation of fixed size whose field is indistinguishable from the
+  free field, uniformly over all data. The forward map is not bounded below and its inverse admits no
+  modulus of continuity; the exponential factor in 136/150 is not an artefact of the proof.
 - 2026-08-04 — statements 152–154: **the inverse problem closes for moving backgrounds.** The
   non-autonomous evolution family restarts the equation as well as the state; run backwards it
   reaches every regular vector at every time, so the reachable set is dense and `W₁ = W₂` follows

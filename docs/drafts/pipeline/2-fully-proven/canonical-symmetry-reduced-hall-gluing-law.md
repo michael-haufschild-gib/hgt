@@ -98,13 +98,16 @@ image repays precisely the part already hidden in the second layer.
 
 ## Exact surviving frontier
 
-For the two-replica local-Pauli family, concrete paired-Pauli span covariance, its arbitrary-site
-weight-at-most-`q` lift, canonical-maximizer invariance, and finite simultaneous parity resolution are
-proved. The surviving task is to prove a globally injective selection/assembly of the
-literal local relative-odd inverses, and prove reverse Hall expansion on the overlap between
-grade-zero edge images and already occupied nonzero grades. The local relative-odd sectors already
-have the exact inverse (A_p^2=4I\). No claim of full Pauli Hall expansion is made until the global
-assembly and reverse-overlap theorems are proved.
+Nonzero Pauli-character selection and assembly are formalized. Full-overlap repayment is no longer
+the right surviving gate. `visible-kernel-recovery-hall-law.md` proves that independent character
+outputs pay rank visible modulo occupied nonsinglet output, while the edge Casimir need recover only
+kernel hidden completely inside nonsinglet input. The synchronized Casimir is now literal and
+global: `two-replica-global-physical-edge-casimir-law.md` proves exact weight-two
+physical/coefficient intertwinement and connected-graph injectivity modulo global identity and swap.
+The remaining concrete task is the product-Clifford reducing decomposition of the canonical
+maximizer and construction of the graded visible quotient detector needed to instantiate the
+abstract recovery theorem. No claim of full mixed Pauli Hall expansion is made until those
+hypotheses are formalized.
 
 ## Log
 
@@ -150,3 +153,19 @@ assembly and reverse-overlap theorems are proved.
   only `propext`, `Classical.choice`, and `Quot.sound`. The sole remaining two-replica Hall channel is
   zero character: anisotropic diagonal correlations and reverse compensation for overlap of their
   edge outputs with the already occupied nonzero grades.
+- 2026-08-04 — Replaced full-overlap compensation by visible-kernel recovery. Rank of edge outputs
+  modulo occupied nonsinglet grades pays every exposed singlet direction. If a singlet direction is
+  in detector kernel, each edge image already belongs to nonsinglet input; a second application of
+  the same self-adjoint generators places its quadratic-Casimir image in output. Synchronization
+  makes this Casimir injective after removing global identity and swap. Abstract theorem
+  `visibleKernelRecovery_subspace_finrank` is formalized in
+  `VisibleKernelRecoveryHallExpansion.lean`; its quadratic-family corollary automatically proves
+  return-output containment from hidden first images. Targeted elaboration passes; exact axiom audit
+  of both recovery capstones contains only `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-08-04 — Closed the literal physical edge-Casimir bridge on every finite register.
+  `TwoReplicaGlobalSingletEdgeCasimirBridge.lean` gives an explicit inverse to the global
+  identity/swap embedding, proves each edge generator has Pauli weight exactly two, intertwines the
+  nine physical commutator squares with coefficient synchronization, and classifies the common
+  kernel on every connected graph as global identity plus global swap. Targeted source checking
+  and capstone axiom audits pass. Product-Clifford reduction plus the visible quotient detector is
+  the remaining mixed-Hall gate.

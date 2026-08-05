@@ -217,11 +217,11 @@ lemma convEquiv_one_add_single {G : Type} [Fintype G] [AddCommGroup G]
     convEquiv (1 + AddMonoidAlgebra.single σ (1 : ZMod 2))
       = Pi.single (0 : G) 1 + Pi.single σ 1 := by
   funext g
-  rw [map_add, Pi.add_apply, Pi.add_apply, convEquiv_apply, convEquiv_apply]
+  rw [map_add, Pi.add_apply, Pi.add_apply]
   congr 1
-  · rw [AddMonoidAlgebra.one_def, AddMonoidAlgebra.single_apply, Pi.single_apply]
+  · rw [AddMonoidAlgebra.one_def, convEquiv_single, Pi.single_apply]
     exact if_congr eq_comm rfl rfl
-  · rw [AddMonoidAlgebra.single_apply, Pi.single_apply]
+  · rw [convEquiv_single, Pi.single_apply]
     exact if_congr eq_comm rfl rfl
 
 /-- Under `convEquiv`, the group-algebra pushforward `mapDomain q` is the
@@ -244,10 +244,10 @@ lemma convEquiv_mapDomainRingHom {Ghat G : Type}
     rw [hmap]
     funext j
     rw [convEquiv_apply, fiberSumFn_apply, Finset.sum_eq_single g0]
-    · rw [convEquiv_apply, AddMonoidAlgebra.single_apply,
-        AddMonoidAlgebra.single_apply, if_pos rfl]
+    · rw [convEquiv_single, AddMonoidAlgebra.coeff_single, Finsupp.single_apply,
+        if_pos rfl]
     · intro g1 _ hne
-      rw [convEquiv_apply, AddMonoidAlgebra.single_apply, if_neg (Ne.symm hne)]
+      rw [convEquiv_single, if_neg (Ne.symm hne)]
       exact ite_self 0
     · intro habs
       exact absurd (Finset.mem_univ g0) habs
@@ -589,8 +589,11 @@ theorem elementForm_of_orderFourLift {Ghat : Type}
     exact h2G
   -- ### `ρ` and its interface facts
   have hρsurj : Function.Surjective
-      ⇑(AddMonoidAlgebra.mapDomainRingHom (ZMod 2) q) :=
-    Finsupp.mapDomain_surjective hsurj
+      ⇑(AddMonoidAlgebra.mapDomainRingHom (ZMod 2) q) := by
+    intro y
+    obtain ⟨x, hx⟩ := Finsupp.mapDomain_surjective hsurj y.coeff
+    refine ⟨.ofCoeff x, AddMonoidAlgebra.coeff_injective ?_⟩
+    simpa using hx
   have hρε : AddMonoidAlgebra.mapDomainRingHom (ZMod 2) q
       (1 + AddMonoidAlgebra.single shat (1 : ZMod 2))
       = 1 + AddMonoidAlgebra.single D.deckS (1 : ZMod 2) := by

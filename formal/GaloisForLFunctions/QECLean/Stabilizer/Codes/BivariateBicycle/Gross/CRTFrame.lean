@@ -228,6 +228,7 @@ theorem foldl_char2 (b : BaseGroup → Fin 4) (Pf Pg : BaseGroup → Bool) :
 theorem fsum_xor (b : BaseGroup → Fin 4) (Pf Pg : BaseGroup → Bool) :
     fadd (fsum b Pf) (fsum b Pg) = fsum b (fun h => Pf h != Pg h) := by
   have h := foldl_char2 b Pf Pg allG 0 0
+  rw [show fadd (0 : Fin 4) 0 = 0 from by decide] at h
   simpa [fsum] using h
 
 /-- The CRT component transform at layer `s`:
@@ -307,7 +308,7 @@ theorem rmul_zero_right (P : ZMod 2 × ZMod 2 → Fin 4) :
   simp only [hmul]
   induction allS with
   | nil => rfl
-  | cons a t ih => simpa [fadd_zero] using ih
+  | cons a t _ih => simp [fadd_zero]
 
 /-- Indicator of a finset as a `ZMod 2` chain. -/
 def ind (S : Finset BaseGroup) : BaseGroup → ZMod 2 := fun g => if g ∈ S then 1 else 0

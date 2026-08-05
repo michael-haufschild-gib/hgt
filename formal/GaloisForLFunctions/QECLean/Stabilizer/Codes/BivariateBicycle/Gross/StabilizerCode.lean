@@ -719,7 +719,8 @@ lemma combo_singleVtx_kernel_zero (c : Fin keptCoords.length → ZMod 2)
   intro j
   have hsj := congr_fun hs0 (keptCoords.get j)
   rw [hs, Finset.sum_apply, Finset.sum_eq_single j] at hsj
-  · simpa [singleVtx_apply'] using hsj
+  · simp [singleVtx_apply'] at hsj
+    exact hsj
   · intro i _ hij
     have hne : keptCoords.get j ≠ keptCoords.get i :=
       fun h => hij (List.nodup_iff_injective_get.mp keptCoords_nodup h.symm)
@@ -741,7 +742,8 @@ lemma combo_singleFace_kernel_zero (c : Fin keptCoords.length → ZMod 2)
   intro j
   have hsj := congr_fun hs0 (keptCoords.get j)
   rw [hs, Finset.sum_apply, Finset.sum_eq_single j] at hsj
-  · simpa [singleFace_apply'] using hsj
+  · simp [singleFace_apply'] at hsj
+    exact hsj
   · intro i _ hij
     have hne : keptCoords.get j ≠ keptCoords.get i :=
       fun h => hij (List.nodup_iff_injective_get.mp keptCoords_nodup h.symm)
@@ -754,7 +756,8 @@ lemma genListPackaged_length :
     genListPackaged.length = keptCoords.length + keptCoords.length := by
   have h : genListPackaged.length = (keptCoords.map grossComplex.vertexStabOf).length
     + (keptCoords.map grossComplex.faceStabOf).length := rfl
-  simpa [List.length_map] using h
+  rw [h, List.length_map, List.length_map]
+  rfl
 
 lemma get_packaged_Z (i : Fin keptCoords.length)
     (hi : i.val < genListPackaged.length) :

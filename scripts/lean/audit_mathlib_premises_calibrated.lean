@@ -41,16 +41,19 @@ partial def conclKeys (e : Expr) : MetaM (Array (Name × List Name)) := do
       else return #[(``Exists, projConsts e)]
   | some ``Nonempty =>
       let args := e.getAppArgs
-      if args.size ≥ 1 then conclKeys args[0]! else return #[(``Nonempty, projConsts e)]
+      if args.size ≥ 1 then
+        let inner ← conclKeys args[0]!
+        return inner.push (``Nonempty, projConsts e)
+      else return #[(``Nonempty, projConsts e)]
   | some ``And =>
       let args := e.getAppArgs
       if args.size ≥ 2 then
-        return (← conclKeys args[0]!) ++ (← conclKeys args[1]!)
+        return ((← conclKeys args[0]!) ++ (← conclKeys args[1]!)).push (``And, projConsts e)
       else return #[(``And, projConsts e)]
   | some ``Iff =>
       let args := e.getAppArgs
       if args.size ≥ 2 then
-        return (← conclKeys args[0]!) ++ (← conclKeys args[1]!)
+        return ((← conclKeys args[0]!) ++ (← conclKeys args[1]!)).push (``Iff, projConsts e)
       else return #[(``Iff, projConsts e)]
   | some ``Finset.Nonempty =>
       let cs := projConsts e

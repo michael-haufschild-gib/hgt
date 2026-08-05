@@ -328,7 +328,7 @@ theorem maskOf_single (g : G36) : maskOf (Pi.single g 1) = 1 <<< idxOf36 g := by
     by_cases hgi : cellOf36 i = g
     · have hidx : idxOf36 g = i := by
         rw [← hgi, idxOf36_cellOf36 ⟨i, hlt⟩]
-      simp [Pi.single_apply, hgi, hidx]
+      simp [hgi, hidx]
     · have hidx : idxOf36 g ≠ i := fun h => hgi (by rw [← h, cellOf36_idxOf36])
       simp [hgi, hidx]
   · have h18 : ¬ i < 18 := by simpa [List.mem_range] using hi

@@ -4,8 +4,12 @@
 - **Status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, O4 planar replica cavity
 - **Lean:** resolved-fibre Hall mechanism formalized as
-  `resolvedFiberAssembly_subspace_finrank`; mismatch projections, physical
-  single-edge commutator, and orthogonal edge assembly remain
+  `resolvedFiberAssembly_subspace_finrank`; exact one-site Clifford
+  identity/swap reduction is also formalized. The arbitrary-register physical
+  identity/swap embedding is now injective, and the nine-term weight-two edge
+  Casimir is exactly intertwined with its coefficient action. The
+  fixed-orientation single-commutator mismatch projections and orthogonal
+  edge-defect assembly required for the stronger Hall statement remain.
 
 ## Exact statement
 
@@ -187,8 +191,10 @@ classes.  Equation (17) proves (4).
 
 ## What this advances
 
-The previous synchronization theorem proved only that the sum of edge
-Casimirs has common kernel `G_2`.  Equation (4) is strictly stronger: it
+The physical synchronization theorem now proves that the sum of the nine
+literal weight-two edge Casimirs has common kernel `G_2` in the global matrix
+algebra, not merely in a coefficient surrogate. Equation (4) remains
+strictly stronger: it
 controls every subspace of the singlet quotient and therefore supplies the
 actual Hall quantifier required by operator scaling.  Its mechanism is not a
 spectral gap.  It is resolved edge incidence: mismatch coordinates are
@@ -217,16 +223,27 @@ The remaining two-replica issue is the mixed-subspace gluing theorem.
 - The theorem proves rank nondecrease only.  It supplies no quantitative
   operator-scaling condition number, matrix-semicircle regularity, long-time
   cavity decay, or circuit anti-concentration by itself.
+
+## Formal progress log
+
+- 2026-08-04 — `TwoReplicaGlobalSingletEdgeCasimirBridge.lean` closed the
+  physical global Casimir gap. It proves explicit coefficient recovery,
+  exact weight-two support, edge-extension multiplication, literal
+  physical/coefficient intertwinement and the connected-graph two-mode common
+  kernel. Capstone axiom audits use only `propext`, `Classical.choice` and
+  `Quot.sound`. This does not formalize the fixed-orientation
+  single-commutator Hall assembly in equations (7)--(17).
 - No standalone novelty claim is made before external priority review.
 
 ## Next exact theorem
 
-Exploit the equality/strictness law for the bi-tight weight-one family.  Any
-overlap between its output on the nonsinglet projection of a mixed subspace
-and the edge-created mismatch sector must be paid for by strict weight-one
-dimension expansion.  Prove that the strictness surplus dominates the
-overlap, closing Hall on the full quotient at two replicas before attempting
-the higher-permutation generalization.
+Use `visible-kernel-recovery-hall-law.md`. Independent edge-character outputs
+define visible quotient detector `F`. Its range pays singlet directions not
+already hidden in nonsinglet input. On `ker F`, every first edge image belongs
+to nonsinglet input, so a second generator application produces edge-Casimir
+recovery in singlet layer. Exact synchronization makes this recovery injective
+after quotienting global identity and global swap. This avoids unsupported
+claim that weight-one strictness surplus must dominate full overlap.
 
 ## Formal bridge status
 
@@ -243,3 +260,12 @@ quotient, the fixed-orientation Pauli commutator on each mismatch fibre, and
 the injection assembling distinct edge-defect sectors into the full
 Hilbert--Schmidt space.  Once those maps and equations (7), (11), and (13) are
 formalized, the abstract theorem yields (4) directly.
+
+`HTGeometry/TwoReplicaCliffordTwirlHallSymmetryReduction.lean` additionally
+proves, in both exact matrix conventions, that the canonical greatest local
+Hall obstruction is invariant under the strict doubled Clifford group and
+splits under its idempotent average into `span{I,F}` plus the zero-twirl
+kernel. This supplies the local identity/swap layer used here without the
+invalid inference that second-design commutant completeness controls every
+invariant operator subspace. The arbitrary-register product lift remains a
+separate formal obligation.

@@ -79,14 +79,14 @@ def kgFreeCurve (w₀ : KGEnergy E) (t : ℝ) : KGEnergy E := kgPropagator t w�
 
 /-- The Duhamel kernel: the perturbation, propagated from the source time to the observation
 time. -/
-def kgDuhamelKernel (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b) (t s : ℝ) :
+def kgMildDuhamelKernel (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b) (t s : ℝ) :
     KGEnergy E →L[ℝ] KGEnergy E :=
   (((kgPropagator (t - s)).comp (kgPotentialOp hV hb0 hb)) :
     KGEnergy E →L[ℂ] KGEnergy E).restrictScalars ℝ
 
-theorem kgDuhamelKernel_apply (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b)
+theorem kgMildDuhamelKernel_apply (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b)
     (t s : ℝ) (v : KGEnergy E) :
-    kgDuhamelKernel hV hb0 hb t s v = kgPropagator (t - s) (kgPotentialOp hV hb0 hb v) := rfl
+    kgMildDuhamelKernel hV hb0 hb t s v = kgPropagator (t - s) (kgPotentialOp hV hb0 hb v) := rfl
 
 theorem continuous_kgFreeCurve (w₀ : KGEnergy E) : Continuous (kgFreeCurve w₀) :=
   continuous_kgPropagator_apply w₀
@@ -94,9 +94,9 @@ theorem continuous_kgFreeCurve (w₀ : KGEnergy E) : Continuous (kgFreeCurve w�
 theorem norm_kgFreeCurve_le (w₀ : KGEnergy E) (t : ℝ) : ‖kgFreeCurve w₀ t‖ ≤ ‖w₀‖ :=
   le_of_eq (norm_kgPropagator_apply t w₀)
 
-theorem norm_kgDuhamelKernel_le (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b)
-    (t s : ℝ) : ‖kgDuhamelKernel hV hb0 hb t s‖ ≤ b := by
-  rw [kgDuhamelKernel, ContinuousLinearMap.norm_restrictScalars]
+theorem norm_kgMildDuhamelKernel_le (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b)
+    (t s : ℝ) : ‖kgMildDuhamelKernel hV hb0 hb t s‖ ≤ b := by
+  rw [kgMildDuhamelKernel, ContinuousLinearMap.norm_restrictScalars]
   refine le_trans (ContinuousLinearMap.opNorm_comp_le _ _) ?_
   have h := mul_le_mul (norm_kgPropagator_le_one (E := E) (t - s))
     (norm_kgPotentialOp_le hV hb0 hb) (norm_nonneg _) zero_le_one
@@ -104,14 +104,14 @@ theorem norm_kgDuhamelKernel_le (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ
 
 /-- **The Duhamel kernel is strongly continuous.** The propagator is not norm continuous, so this is
 the form the perturbation series has to consume. -/
-theorem strongKernel_kgDuhamelKernel (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b) :
-    StrongKernel (kgDuhamelKernel (E := E) hV hb0 hb) := by
+theorem strongKernel_kgMildDuhamelKernel (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b) :
+    StrongKernel (kgMildDuhamelKernel (E := E) hV hb0 hb) := by
   intro u hu
   have hcomp : Continuous fun p : ℝ × ℝ =>
       kgPropagator (p.1 - p.2) (kgPotentialOp hV hb0 hb (u p.2)) :=
     continuous_kgPropagator_comp (continuous_fst.sub continuous_snd)
       ((kgPotentialOp hV hb0 hb).continuous.comp (hu.comp continuous_snd))
-  exact hcomp.congr fun p => (kgDuhamelKernel_apply hV hb0 hb p.1 p.2 (u p.2)).symm
+  exact hcomp.congr fun p => (kgMildDuhamelKernel_apply hV hb0 hb p.1 p.2 (u p.2)).symm
 
 end Potential
 
@@ -125,24 +125,24 @@ variable {V : E → ℂ} {b : ℝ}
 space. -/
 def kgMildSolution (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b) (w₀ : KGEnergy E)
     (t : ℝ) : KGEnergy E :=
-  volterraSolution (kgFreeCurve w₀) (kgDuhamelKernel hV hb0 hb) t
+  volterraSolution (kgFreeCurve w₀) (kgMildDuhamelKernel hV hb0 hb) t
 
 variable (hV : Measurable V) (hb0 : 0 ≤ b) (hb : ∀ ξ, ‖V ξ‖ ≤ b) (w₀ : KGEnergy E)
 
 /-- **The mild solution is continuous in time.** -/
 theorem continuous_kgMildSolution : Continuous (kgMildSolution hV hb0 hb w₀) :=
   continuous_volterraSolution_of_strong (continuous_kgFreeCurve w₀)
-    (strongKernel_kgDuhamelKernel hV hb0 hb) hb0 (norm_nonneg w₀)
-    (norm_kgDuhamelKernel_le hV hb0 hb) (norm_kgFreeCurve_le w₀)
+    (strongKernel_kgMildDuhamelKernel hV hb0 hb) hb0 (norm_nonneg w₀)
+    (norm_kgMildDuhamelKernel_le hV hb0 hb) (norm_kgFreeCurve_le w₀)
 
 /-- **The mild solution satisfies Duhamel's formula.** -/
 theorem kgMildSolution_eq (t : ℝ) :
     kgMildSolution hV hb0 hb w₀ t
       = kgPropagator t w₀
-        + ∫ s in (0 : ℝ)..t, kgDuhamelKernel hV hb0 hb t s (kgMildSolution hV hb0 hb w₀ s) :=
+        + ∫ s in (0 : ℝ)..t, kgMildDuhamelKernel hV hb0 hb t s (kgMildSolution hV hb0 hb w₀ s) :=
   volterraSolution_eq_of_strong (continuous_kgFreeCurve w₀)
-    (strongKernel_kgDuhamelKernel hV hb0 hb) hb0 (norm_nonneg w₀)
-    (norm_kgDuhamelKernel_le hV hb0 hb) (norm_kgFreeCurve_le w₀) t
+    (strongKernel_kgMildDuhamelKernel hV hb0 hb) hb0 (norm_nonneg w₀)
+    (norm_kgMildDuhamelKernel_le hV hb0 hb) (norm_kgFreeCurve_le w₀) t
 
 /-- **The mild solution starts at the datum.** -/
 theorem kgMildSolution_zero : kgMildSolution hV hb0 hb w₀ 0 = w₀ := by
@@ -154,16 +154,16 @@ of the potential alone. -/
 theorem norm_kgMildSolution_le (t : ℝ) :
     ‖kgMildSolution hV hb0 hb w₀ t‖ ≤ ‖w₀‖ * Real.exp (b * |t|) :=
   norm_volterraSolution_le_of_strong (continuous_kgFreeCurve w₀)
-    (strongKernel_kgDuhamelKernel hV hb0 hb) hb0 (norm_nonneg w₀)
-    (norm_kgDuhamelKernel_le hV hb0 hb) (norm_kgFreeCurve_le w₀) t
+    (strongKernel_kgMildDuhamelKernel hV hb0 hb) hb0 (norm_nonneg w₀)
+    (norm_kgMildDuhamelKernel_le hV hb0 hb) (norm_kgFreeCurve_le w₀) t
 
 /-- **Uniqueness: Duhamel's formula has at most one continuous solution.** -/
 theorem eq_kgMildSolution_of_duhamel {w : ℝ → KGEnergy E} (hw : Continuous w)
     (hduh : ∀ t : ℝ, w t = kgPropagator t w₀
-      + ∫ s in (0 : ℝ)..t, kgDuhamelKernel hV hb0 hb t s (w s)) :
+      + ∫ s in (0 : ℝ)..t, kgMildDuhamelKernel hV hb0 hb t s (w s)) :
     w = kgMildSolution hV hb0 hb w₀ :=
-  volterra_eq_of_eq_of_eq_of_strong (strongKernel_kgDuhamelKernel hV hb0 hb) hb0
-    (norm_kgDuhamelKernel_le hV hb0 hb) hw (continuous_kgMildSolution hV hb0 hb w₀) hduh
+  volterra_eq_of_eq_of_eq_of_strong (strongKernel_kgMildDuhamelKernel hV hb0 hb) hb0
+    (norm_kgMildDuhamelKernel_le hV hb0 hb) hw (continuous_kgMildSolution hV hb0 hb w₀) hduh
     (kgMildSolution_eq hV hb0 hb w₀)
 
 /-- **The energy estimate for the constructed solution.** The energy at time `t` is controlled by
@@ -190,7 +190,7 @@ only on the supremum of the potential. -/
 theorem exists_unique_kgMildSolution :
     ∃! w : ℝ → KGEnergy E, Continuous w ∧
       ∀ t : ℝ, w t = kgPropagator t w₀
-        + ∫ s in (0 : ℝ)..t, kgDuhamelKernel hV hb0 hb t s (w s) := by
+        + ∫ s in (0 : ℝ)..t, kgMildDuhamelKernel hV hb0 hb t s (w s) := by
   refine ⟨kgMildSolution hV hb0 hb w₀, ⟨continuous_kgMildSolution hV hb0 hb w₀,
     kgMildSolution_eq hV hb0 hb w₀⟩, ?_⟩
   rintro w ⟨hwc, hwd⟩

@@ -1,8 +1,8 @@
 # Mass–Xi Euler-contour source identity
 
 - **ID:** `mass-xi-euler-contour-source-identity`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean)
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md` · Section 9.3
 - **Statement:** For `a > 1/2`, `Re τ > 0`, and any `c` with `1/2 < c < a`, the mass-shifted Xi trace is exactly the normalized symmetric bottom Euler-line contour of the principal mass test `z ↦ exp (-τ sqrt (z² + a²))` against `XiC'/XiC`.
 
@@ -18,7 +18,7 @@ von-Mangoldt half-plane.  It does not by itself prove the Section 9.3 bound.
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `xiMassTraceC_eq_normalizedBottomEulerContour`, `lake build` green, axiom audit PASS
+- [x] 2 → 3  formalized: Lean theorem `xiMassTraceC_eq_normalizedBottomEulerContour`
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach
@@ -246,12 +246,11 @@ source identity.  No boundedness or RH-equivalent hypothesis occurs.
 
 ## No-go closure (mandatory when falsified)
 
-- **Exact killing theorem/mechanism:** pending
-- **Strongest positive survivor:** pending
-- **New insight:** pending
-- **Status:** active attack
+- Not applicable: conjecture survived hostile audit and was proved.
 
 ## Log
 
 - 2026-08-04 — created in 0-backlog; promoted immediately to in-progress after internal and external audits.
 - 2026-08-04 — branch/folding and gap-free integrated-resolvent attacks succeeded; complete paper proof closed and moved to Stage 2.
+- 2026-08-04 — unconditional Lean chain completed in `XiMassAnalyticTest`, `RectangleLocalCauchyFormula`, `RectangleLocalWeightedCauchyResidue`, `XiMassFiniteContour`, `XiMassSymmetricContour`, `XiGuinandWeilVerticalCauchyScaled`, `XiMassVerticalResolvent`, `XiMassBottomEdge`, and `XiMassEulerContourSourceIdentity`; promoted to Stage 3.
+- 2026-08-04 — final target build through `XiMassPrimeGradedOpenCore` succeeded; capstone axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.

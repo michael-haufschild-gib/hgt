@@ -46,13 +46,19 @@ variable {G : Type} [Fintype G]
 identifying the group algebra with the repo's function-space chains. -/
 noncomputable def convEquiv :
     AddMonoidAlgebra (ZMod 2) G ≃ₗ[ZMod 2] (G → ZMod 2) :=
-  Finsupp.linearEquivFunOnFinite (ZMod 2) (ZMod 2) G
+  (AddMonoidAlgebra.coeffLinearEquiv (ZMod 2)).trans
+    (Finsupp.linearEquivFunOnFinite (ZMod 2) (ZMod 2) G)
 
 @[simp] lemma convEquiv_apply (a : AddMonoidAlgebra (ZMod 2) G) (g : G) :
-    convEquiv a g = a g := rfl
+    convEquiv a g = a.coeff g := rfl
 
 @[simp] lemma convEquiv_symm_apply (a : G → ZMod 2) (g : G) :
-    (convEquiv.symm a) g = a g := rfl
+    (convEquiv.symm a).coeff g = a g := rfl
+
+/-- `convEquiv` on a generator: the `c`-multiple of the indicator of `s`. -/
+lemma convEquiv_single (s : G) (c : ZMod 2) (g : G) [Decidable (s = g)] :
+    convEquiv (AddMonoidAlgebra.single s c) g = if s = g then c else 0 := by
+  rw [convEquiv_apply, AddMonoidAlgebra.coeff_single, Finsupp.single_apply]
 
 variable [AddCommGroup G]
 
@@ -76,7 +82,7 @@ lemma convEquiv_mul (a b : AddMonoidAlgebra (ZMod 2) G) :
       exact add_sub_cancel _ _
     · intro hp
       exact ⟨p.1, Prod.ext rfl (by rw [eq_sub_of_add_eq' hp])⟩
-  rw [AddMonoidAlgebra.mul_apply_antidiagonal a b g _ hs, Finset.sum_map]
+  rw [AddMonoidAlgebra.coeff_mul_antidiag a b g _ hs, Finset.sum_map]
   rfl
 
 /-- Multiplication by a group generator is a translation: on `0`/`2`-chains
@@ -87,11 +93,9 @@ lemma conv_convEquiv_single (s : G) (v : G → ZMod 2) :
   classical
   funext g
   rw [conv_apply, translate_apply, Finset.sum_eq_single s]
-  · rw [convEquiv_apply, AddMonoidAlgebra.single_apply, if_pos rfl, one_mul,
-      sub_eq_add_neg]
+  · rw [convEquiv_single, if_pos rfl, one_mul, sub_eq_add_neg]
   · intro h _ hhs
-    rw [convEquiv_apply, AddMonoidAlgebra.single_apply, if_neg (Ne.symm hhs),
-      zero_mul]
+    rw [convEquiv_single, if_neg (Ne.symm hhs), zero_mul]
   · intro hcon
     exact absurd (Finset.mem_univ s) hcon
 
@@ -108,11 +112,9 @@ lemma conv_convEquiv_one_add_single (σ : G) (v : G → ZMod 2) :
   have hone : conv (convEquiv (1 : AddMonoidAlgebra (ZMod 2) G)) v = v := by
     funext g
     rw [conv_apply, Finset.sum_eq_single (0 : G)]
-    · rw [convEquiv_apply, AddMonoidAlgebra.one_def, AddMonoidAlgebra.single_apply,
-        if_pos rfl, one_mul, sub_zero]
+    · rw [AddMonoidAlgebra.one_def, convEquiv_single, if_pos rfl, one_mul, sub_zero]
     · intro h _ hh0
-      rw [convEquiv_apply, AddMonoidAlgebra.one_def, AddMonoidAlgebra.single_apply,
-        if_neg (Ne.symm hh0), zero_mul]
+      rw [AddMonoidAlgebra.one_def, convEquiv_single, if_neg (Ne.symm hh0), zero_mul]
     · intro hcon
       exact absurd (Finset.mem_univ (0 : G)) hcon
   rw [hone, conv_convEquiv_single]

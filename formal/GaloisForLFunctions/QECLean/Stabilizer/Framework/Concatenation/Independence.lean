@@ -366,7 +366,7 @@ lemma rowsLinearIndependent_promotedOuterList
     have hsum2 : (∑ j, (![c1, c2]) j
         • checkMatrix [(D.Cin.logicalOps 0).xOp, (D.Cin.logicalOps 0).zOp] j) = 0 := by
       rw [Fin.sum_univ_two]
-      simpa [checkMatrix, ConcatCSSData.Xbar, ConcatCSSData.Zbar] using h1
+      exact h1
     exact ⟨by simpa using hlog' hsum2 0, by simpa using hlog' hsum2 1⟩
   -- Reassemble the per-block coefficient vanishing into an outer linear relation.
   have hrelation : ∑ i, f i • checkMatrix (D.outerZ ++ D.outerX) i = 0 := by

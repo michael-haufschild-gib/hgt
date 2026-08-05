@@ -34,17 +34,49 @@ The two-release gap required in-tree proof repairs, listed below.
      `nsmul_two_eq_zero_iff_even`, `nsmul_two_eq_two_iff_odd`) plus a
      structural identity `mulOp_phasePower_eq_add_card_nsmul`, replacing
      `nsmulRec`-unfolding `simp_all`/`erw` chains that no longer fire.
+   - `Homological/BBConvRing.lean`: `convEquiv` now factors through
+     `AddMonoidAlgebra.coeffLinearEquiv`; a new `convEquiv_single` replaces the
+     removed `AddMonoidAlgebra.single_apply`, and `mul_apply_antidiagonal`
+     became `coeff_mul_antidiag`.  `Homological/BBBocksteinTransport.lean`
+     follows suit, and derives surjectivity of `mapDomainRingHom` through
+     `coeff_injective` instead of `Finsupp.mapDomain_surjective` directly.
+   - `Toric/{WrappingInvariants,DualWrappingInvariants,StabilizerCode}.lean`,
+     `Concatenation/Independence.lean`, `Gross/{CRTFrame,StabilizerCode}.lean`,
+     `Z3Z6/StabilizerCode.lean`: `convert … using 1` now leaves definitional
+     side goals (`(0 : α → ZMod 2) x = 0`, `f = ⇑fLinearMap`) that used to
+     close silently; each is discharged by `rfl` or by `congr_fun` on the
+     membership hypothesis.
+   - `Gross/SafeFloor/MImClassify.lean`: two `dsimp only` calls that are now
+     no-ops (an error in v4.32, previously accepted).
+   - Two `exact?` proof-search tactics left in upstream
+     `Toric/DualWrappingInvariants.lean` were replaced by the proofs they find
+     (`toric_finrank_ker_cutMap_eq_one`, `toricDualBoundaries_le_toricDualCycles`).
+   - Style-linter fixes so the repo's `lint --build` gate stays warning-free:
+     four `omit [Fact (Odd L)] [Fact (3 ≤ L)] in` in
+     `RotatedSurface/H1Dimension.lean`, three no-op `change` tactics removed,
+     and two unused `simp` arguments dropped.
 
 ## Trust: `native_decide`
 
 Upstream is `sorry`-free, and so is this copy.  It does, however, use
 `native_decide` in 59 modules (357 call sites) — chiefly the concrete-code
 distance certificates (bivariate-bicycle/gross, Steane distance, rotated
-surface, concatenation independence).  Those theorems therefore depend on the
-`Lean.ofReduceBool` axiom (compiler trust), not only on
-`[propext, Classical.choice, Quot.sound]`.  The Pauli/binary-symplectic layer,
-the stabilizer framework, and the toric-code chain-complex development are
-kernel-only.  Check any endpoint you rely on with `#print axioms`.
+surface, concatenation independence).  Those theorems carry per-call
+`…_native.native_decide.ax_…` axioms (compiler trust) on top of
+`[propext, Classical.choice, Quot.sound]`.
+
+Audited here with `#print axioms`:
+
+| Endpoint | Axioms |
+|---|---|
+| `NQubitPauliGroupElement.commutes_iff_even_anticommutes` | kernel-only |
+| `StabilizerGroup.ToricCodeN.toricCodeN_distance_eq_L` (toric distance `= L`) | kernel-only |
+| `StabilizerGroup.Steane7.transversalH_Steane7_isLogicalGate` | kernel-only |
+| `Stabilizer.Homological.BB.grossStabilizerCode_hasCodeDistance_12_uncond` | + ~100 `native_decide` axioms |
+
+So the headline toric result is kernel-checked; the gross-code `[[144,12,12]]`
+distance certificate is not.  Check any endpoint you rely on with
+`#print axioms`.
 
 The repo lint gate (`scripts/formal_tools.py lint`) is line-based and does not
 flag `native_decide`; treat this section as the axiom map.

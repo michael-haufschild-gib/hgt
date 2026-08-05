@@ -96,10 +96,8 @@ lemma conv_assoc (a b c : G → ZMod 2) : conv (conv a b) c = conv a (conv b c) 
       refine Finset.sum_bij' (fun h _ => h - k) (fun h _ => h + k)
         (fun _ _ => Finset.mem_univ _) (fun _ _ => Finset.mem_univ _) ?_ ?_ ?_
       · intro h _
-        change h - k + k = h
         abel
       · intro h _
-        change h + k - k = h
         abel
       · intro h _
         have h1 : g - h = g - k - (h - k) := by abel

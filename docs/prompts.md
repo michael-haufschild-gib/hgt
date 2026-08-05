@@ -57,13 +57,20 @@ where mathematical knowledge is missing, use the [$hgt-fields-medalist](/Users/S
 if you are not idle, keep going.
 else your task is:
 
-Audit HTGeometry, HilbertMetric, and RHTower for any remaining hypothesis or Prop interface - then attempt to discharge it:
+Audit lean corpus for any remaining hypothesis or Prop interface - then attempt to discharge it:
 1. reuse existing formal results to discharge every tractable premise
 2. create and formally prove missing connector theorems
 3. subsume theorems under a larger universal law which is nontrivial
+4. use the /hgtl7 skill´s research process on each non-immediate mathematical obstacle
 
-use the /hgtl7 skill´s research process on each non-immediate mathematical obstacle
-
+lean corpus:
+- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
+- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
+- formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
+- formal/GaloisForLFunctions/QuantumAlg for lean related to quantum algorithm around prime numbers
+- formal/GaloisForLFunctions/QECLean.lean for lean related to Quantum Error Correction
+- formal/GaloisForLFunctions/PNTPlus.lean for lean related to Prime Number Theorem
+  
 lean rules:
 1. You always build in the foreground, 1 build process at a time - other agents are also building in parallel.
 2. Always use  lake env lean <file>  and only lake build <module> for the final audit.

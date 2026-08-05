@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.KleinGordonSynthesis
 import GaloisForLFunctions.HTGeometry.L2MultiplierContinuity
 import GaloisForLFunctions.HTGeometry.KleinGordonSymbol
 import Mathlib.Analysis.Normed.Lp.ProdLp
@@ -73,10 +74,6 @@ end Strong
 section SymbolBasics
 
 variable {E : Type*} [NormedAddCommGroup E]
-
-theorem continuous_kgFreq : Continuous (kgFreq (E := E)) := by
-  show Continuous fun ξ : E => Real.sqrt (1 + ‖ξ‖ ^ 2)
-  fun_prop
 
 /-- The off-diagonal entry of the propagator in energy coordinates, `sin(t⟨ξ⟩)`. Unlike the sine
 symbol of the field variables it carries no factor `⟨ξ⟩⁻¹`, and so is bounded by one uniformly in

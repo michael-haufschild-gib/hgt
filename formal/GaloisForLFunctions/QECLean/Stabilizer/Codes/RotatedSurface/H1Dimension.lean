@@ -665,6 +665,7 @@ theorem rsc_rank_zCutMap :
 The standard pairing `⟨∂₁ c, s⟩ = ⟨c, rscZCutMap s⟩` identifies the two
 maps as mutual transposes, so they share the same rank. -/
 
+omit [Fact (Odd L)] [Fact (3 ≤ L)] in
 theorem rscBoundary1_rscZCutMap_transpose
     (c : VtxIdx L → ZMod 2) (s : ZFaceIdx L → ZMod 2) :
     ∑ zf : ZFaceIdx L, rscBoundary1 L c zf * s zf =
@@ -703,6 +704,7 @@ equality `rank ∂₁ = rank rscZCutMap`. -/
 def stabZMatrix (L : ℕ) : Matrix (ZFaceIdx L) (VtxIdx L) (ZMod 2) :=
   fun zf v => if v ∈ zSupport zf then 1 else 0
 
+omit [Fact (Odd L)] [Fact (3 ≤ L)] in
 lemma rscBoundary1_eq_mulVecLin :
     rscBoundary1 L = (stabZMatrix L).mulVecLin := by
   apply LinearMap.ext
@@ -718,6 +720,7 @@ lemma rscBoundary1_eq_mulVecLin :
   apply Finset.sum_congr _ (fun _ _ => rfl)
   ext v; simp
 
+omit [Fact (Odd L)] [Fact (3 ≤ L)] in
 lemma rscZCutMap_eq_transpose_mulVecLin :
     rscZCutMap L = (stabZMatrix L).transpose.mulVecLin := by
   apply LinearMap.ext
@@ -729,6 +732,7 @@ lemma rscZCutMap_eq_transpose_mulVecLin :
   intro zf _
   ring
 
+omit [Fact (Odd L)] [Fact (3 ≤ L)] in
 /-- `rank(∂₁) = rank(rscZCutMap)` via matrix transpose-rank. -/
 theorem rsc_rank_boundary1_eq_rank_zCutMap :
     Module.finrank (ZMod 2) (LinearMap.range (rscBoundary1 L)) =

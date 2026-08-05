@@ -3223,3 +3223,723 @@ vanishing-above-`n` submodule).
 **Session paused here.**  The cron loop was cleared at this point; the tree is green
 (`lake build GaloisForLFunctions.MainTheorems`), every module added is registered and axiom-clean,
 and no work is left half-written.
+
+## Re-audit 2026-08-05: the corpus-`Prop` instrument, persisted and re-run
+
+The corpus-`Prop` instrument now lives in the tree at `scripts/lean/audit_corpus_props.lean`
+(edit its import to the theorem-area umbrella and run `lake env lean` from `formal/`).  It reports
+two rounds: *never concluded* (nothing in the corpus establishes the interface, not even
+conditionally) and *ungrounded* (the grounding least fixpoint, so an `↔`-characterization no longer
+grounds its left side for free).
+
+**`RHTower` cone, 2026-08-05: 117 778 project constants, 1 730 project `Prop` definitions, 291
+consumed premise keys, 46 never concluded, 56 ungrounded.**
+
+**Instrument caveat, now measured.**  A row is only meaningful relative to the *import cone* of the
+umbrella the instrument is run on.  Running it on `RHTower` nominated `MatrixCyclicReader`,
+`CoordinateLocalOn`, `TateClockFiniteObservableSurjective`, `BooleanEdgeFieldSymmetric`,
+`LinearReflectionAntiInvariant`, `IsAdditiveDifferentialHopfIdeal`, `MatrixDensityClockCyclic`,
+`IsSubdirectConstraint`, `RayTailCoefficientIndependent`, `IsConstantMvPolynomial`,
+`ConjugationInvariantClockReadout`, `CompatiblePrimitiveSystem`, `commutingAdditiveActions`,
+`GammaPowerRel`, `PatternRelationHolds`, `IsCompoundPoissonMixture`, `HasObserverActionRegime`,
+`SpatiallyDisconnectedPacket`, `HasFAndMRieszVanishingConclusion` and
+`HermitianInteractionFamily` — every one of which already has a producer in an `HTGeometry` module
+that `RHTower` does not import.  Before working a row, check whether a producer exists anywhere in
+the tree (`rg` the interface name and look for a conclusion), not only inside the run's cone.
+
+### Three area-wide name collisions, repaired
+
+None of these is visible to `lake env lean <file>`; only an area-wide import sees them.  All three
+blocked an umbrella outright.
+
+| collision | modules | repair |
+|---|---|---|
+| `HTGeometry.hasDerivAt_compactFourier` | `CompactFourierEntire` (frequency derivative of `compactFourier`) vs `CompactFourierSineKernel` (shift-parameter derivative of a raw integral) | the sine-kernel one renamed `hasDerivAt_fourierIntegral_parameter`; the name `hasDerivAt_compactFourier` stays with the theorem that literally differentiates `compactFourier` |
+| `HTGeometry.kgDuhamelKernel`, `norm_kgDuhamelKernel_le` | `KleinGordonPotentialFlow` (bounded-continuous Wiener kernel) vs `KleinGordonMildSolution` (energy-space kernel) | the mild-solution one renamed `kgMildDuhamelKernel`; two dependents updated |
+| `HTGeometry.continuous_kgSinc`, `norm_kgSinc_le` | `WienerSymbolMultiplication` (the symbol `sin(t⟨ξ⟩)/⟨ξ⟩`) vs `KleinGordonRegularitySharp` (the genuine sinc `sin(t⟨ξ⟩)/(t⟨ξ⟩)`) | the Wiener ones renamed `continuous_kgSincSymbol`, `norm_kgSincSymbol_le`, which is also the accurate name |
+| `HTGeometry.continuous_kgFreq` | `KleinGordonSynthesis` vs `KleinGordonL2Propagator` — *identical statement*, a genuine duplicate | the duplicate declaration deleted from `KleinGordonL2Propagator`, which now imports `KleinGordonSynthesis`; no renames, so every downstream user keeps the name |
+
+### Ten witness modules, all built and axiom-clean
+
+`HTGeometry/ResolventFamilyWitness.lean` — the largest of them.  `IsResolventFamilyOn` (9
+consumers) carried the whole jet theory of `ResolventFamilyJet` — continuity, `∂_u S = S²`, and the
+`n`-th jet `n! S^{n+1}` — and had **no** realization: the family it is named after had never been
+attached to it.
+
+* `shiftResolvent a u = (a - u·1)⁻¹` for an element of a normed `ℝ`-algebra;
+* **`isResolventFamilyOn_shiftResolvent`** — the first resolvent identity on every set of shifts
+  inside `resolventSet ℝ a`, by the two-sided insertion `R_u - R_v = R_u ((a-v) - (a-u)) R_v` whose
+  middle factor is the scalar `u - v`.  Mathlib's convention is the *negative*: `resolvent a r` is
+  `(r·1 - a)⁻¹`, which satisfies the identity with the opposite sign, so the corpus family is the
+  negated resolvent;
+* over a complete algebra `spectrum.isOpen_resolventSet` discharges the openness hypothesis, giving
+  **premise-free** `continuousAt_shiftResolvent`, `hasDerivAt_shiftResolvent`,
+  `hasDerivAt_shiftResolvent_jet` and `hasDerivAt_resolventShiftJet_shiftResolvent`;
+* `mem_resolventSet_of_norm_lt_abs`, `resolventSet_real_nonempty`, `shiftResolvent_ne_zero` and
+  **`exists_isResolventFamilyOn_ne_zero`** — the theory is not vacuous and not carried by the zero
+  family: every shift of modulus above `‖a‖` is in the resolvent set, and there the value is a unit.
+
+The other nine:
+
+| module | interface | realization |
+|---|---|---|
+| `HTGeometry/TwoChannelKernelWitnesses` | `PairwiseNonnegativeKernel` | pairwise two-by-two PSD suffices; **every Gram kernel** qualifies, its channel-linear current being the exact square `(v_i x + v_j y)²` |
+| `HTGeometry/TailQuotientSaturationWitnesses` | `ModificationSaturatedOn`, `ObservationSupportFamilySaturated`, and the three reporter-determined interfaces | the **empty support is saturated for every setoid** (a modification supported in it is no modification), the all-identifying setoid saturates every support, constant reporters are determined by every observation, and every reporter is determined by the total observation |
+| `HTGeometry/AnalyticSectorActiveWitnesses` | `AnalyticSectorActive` | activity is *frequent nonvanishing* at the origin (`analyticSectorActive_iff_frequently`); realized by every response nonzero at the origin, and by the identity, whose zero there is isolated |
+| `HTGeometry/ResonanceWitnesses` | `coordinateResonant` | the zero weight, the zero frequency family, and — the substantive one — a weight concentrated at one index resonates exactly when that index's frequency is killed by its value, realized with **nonzero** weight in every cyclic group |
+| `HTGeometry/PrimeCoefficientTailWitnesses` | `PrimeCoefficientTailZero` | finitely supported families, closed under sums and scalars; and the constant nonzero family **fails** it, so the tail dichotomy separates two nonempty classes |
+| `HTGeometry/ExchangeGaugeWitnesses` | `DAExchangeGaugeEquivalent` | every nonzero coefficient of the base field is a gauge — embedded coefficients are differentially algebraic and fixed by the automorphism — so the relation is reflexive |
+| `HTGeometry/MultipleEllipticGammaRayWitnesses` | `MultipleEllipticGammaLiesOnRationalRay` | every rational multiple family of an upper-half-plane direction; the constant family of `i` is the concrete instance; positive coefficients make it a rational affine line with zero affine part |
+| `RHTower/UnitizedScalarLabelWitnesses` | `ccmRationalAdelicUnitizedAllScalar` | all-scalar labellings are exactly the constant scalar labelling; one crossed position refutes it, so **both branches** of the unitized restriction are occupied |
+| `RHTower/StokesCoefficientPatternWitnesses` | `IrregularStokes.SameCoefficientEqualityPattern` | an equivalence relation, and **strictly coarser than equality**: rescaling every coefficient by one nonzero complex number changes the family but no equality among its coefficients, so the contact-numerator invariance identifies families that are not equal |
+
+All ten modules are registered in their area umbrella; `#print axioms` on the capstone of each
+returns only `propext`, `Classical.choice`, `Quot.sound`.
+
+**Blocked at the end of the batch:** `lake build GaloisForLFunctions.HTGeometry` fails inside
+`TwoReplicaCliffordTwirlHallSymmetryReduction.lean`, an untracked file another lane is editing
+right now (`simp made no progress` at line 62).  `GaloisForLFunctions.RHTower` builds green with
+the two new `RHTower` modules.  The `HTGeometry`-scoped run of the instrument — which is the one
+that will give an accurate never-concluded list for that area — is waiting on that file.
+
+### Eleventh witness module: the recurrence swap
+
+`HTGeometry/RecurrenceSwapWitnesses.lean` (built, registered, axioms clean).  The reconstruction
+law turns a dynamical swap symmetry into additive separability across the corresponding cut; both
+its interfaces (`IsUniversalRecurrenceSwap`, 4 uses, and `IsAdditivelySeparableAcross`, 2) were
+consumed with no producer beyond the two extreme masks already in the law's own module.
+
+* `siteEnergy f x = ∑ v, f v (x v)` — the additively separable energy;
+* **`isUniversalRecurrenceSwap_siteEnergy`** — a sum of one-site terms is invariant under *every*
+  partial swap: swapping a mask permutes the one-site terms of the pair without changing their
+  multiset, so the identity holds termwise after a single membership split;
+* **`isAdditivelySeparableAcross_siteEnergy`** — and it is additively separable across every cut,
+  for every basepoint;
+* `isUniversalRecurrenceSwap_and_isAdditivelySeparableAcross_siteEnergy` — both hypotheses hold
+  **simultaneously** on one energy, so the law's two sides are jointly satisfiable and it is not a
+  statement about an empty class.
+
+This is the converse direction of the reconstruction law: the law proves swap symmetry ⇒ additive
+separability, and the witness exhibits the separable energies as an exhaustive supply of instances.
+
+## The instrument on `HTGeometry ∪ RHTower`, 2026-08-05
+
+With the `HTGeometry` umbrella still red inside another lane's in-flight file, the instrument was
+pointed instead at a scratch import list built from the umbrella minus that one leaf, plus
+`GaloisForLFunctions.RHTower` — the union of the two owned research areas in one environment.
+That run needed one more collision repair first: `HTGeometry.torusCharacter` was declared both in
+`TorusVelocityField` (the algebraic monomial character `u ↦ ∏ uᵢ^{eᵢ}`, newest) and in
+`InfiniteTorusCharacter` (the Fourier character, with three dependent modules); the former is now
+`torusMonomialCharacter`.
+
+**158 514 project constants, 2 192 project `Prop` definitions, 599 consumed premise keys,
+46 never concluded, 59 ungrounded.**  Unlike the `RHTower`-only run, these rows are real: every
+producer in either owned area is in the environment.
+
+### Eleven more witness modules, all built, registered, axioms clean
+
+| uses | interface | module | realization |
+|---:|---|---|---|
+| 28 | `WienerSummable` | `WienerSummableWitnesses` | the biggest interface in the corpus.  Finitely supported sequences work at every scale; the class is closed under domination, sums, scalars and negation; and **geometric decay `r^{|k|}` is Wiener summable at every scale with `r e^ρ < 1`**, the weighted terms then being exactly the two-sided geometric series of ratio `r e^ρ`.  `exists_wienerSummable_ne_zero` exhibits a carrier with **full support**, so the scale is not carried by a finitely supported sequence |
+| 9 | `IsPartialIdentityTransport` | `PartialIdentityTransportWitnesses` | the partial-isometry equation `u u* u = u`: realized by `0`, by **every isometry**, and by **every self-adjoint idempotent**, so every projection of the algebra is an event transport; closed under the star |
+| 9 | `DiscreteHerglotzH7` | `DiscreteHerglotzH7Witnesses` | **absolute summability of the weights implies `(H7)` against every atom family**, because the Nevanlinna denominator is at least one; and `(H7)` genuinely restricts — the constant unit weight on the integer atoms fails it, by divergence of the harmonic series |
+| 9 | `ContactTower.Valid` | `ContactTowerValidWitnesses` | the doubling tower `step (n+1) 2 (stack n)` is valid at **every depth**, by induction on the top-height bound; `PositiveContactPrefix` is realized by the empty prefix and by every replicated genuine step |
+| 8 | `FactorDominated` | `FactorDominatedWitnesses` | the zero field, with the zero profile as every dominating factor: all its directional derivatives vanish identically and `MemLp.zero'` supplies square integrability |
+| 7 | `ObserverTemporalMetricNondegenerate` | `ObserverTemporalMetricWitnesses` | **a coordinate readout makes the metric nondegenerate** — if some observer's gap vector is the `k`-th coordinate functional for every `k`, no nonzero shift is invisible; the identity gap family is one, and a blind gap family fails it, so the hypothesis is not free |
+| 7 | `HasPauliWeightAtMost` | `PauliWeightWitnesses` | zero operator, monotone in the weight budget, closed under sums and negation — a genuine submodule of the self-adjoint operators |
+| 7 | `EvenSurgeryPoleSeparated` | `EvenSurgeryPoleSeparationWitnesses` | **a distinct parameter family in the right half plane has separated surgery poles**: sign conjugation reverses the real part, so the two halves of the `2k` pole packet cannot meet |
+| 5 | `HasCircuitWordApproximation` | `CircuitWordApproximationWitnesses` | every gate-word value is approximated by itself at tolerance zero; the unit at every budget through the empty word; monotone in budget and tolerance |
+| 5 | `GaugeInvariant` | `GaugeInvariantWitnesses` | a law reading only the metric is invariant under **every** gauge action; every law is invariant under a trivial action; invariance is closed under postcomposition (`gaugeInvariant_of_metric` needs **no axioms at all**) |
+| 4+1 | `WeightedDescentBounded`, `CapacityEscapesAt` | `SupportEscapeDescentWitnesses` | the zero weight is bounded with constant zero, a capacity-dominated evaluation with a bounded weight is bounded with the product constant, and **the identity evaluation at constant zero capacity escapes** — so both sides of the support–escape law are simultaneously satisfiable and its conclusion (vanishing weight) has content |
+| 4 | `HasZeroPauliIdentityCoordinate` | `PauliWeightWitnesses` | zero operator, closed under sums and negation |
+
+Running total for the session: **twenty-two witness modules**, four area-wide name collisions
+repaired, and one instrument persisted with two of its own bugs fixed.
+
+### The tail: nine more witness modules
+
+Measured on the same union environment, the worklist fell **46 → 34 → 24 → 20 never concluded**
+(and 59 → 31 ungrounded) over three further batches.  The tail rows are small and each is closed by
+naming the mechanism the interface actually asks for:
+
+| interface | module | realization |
+|---|---|---|
+| `IsTotalTestFamily` | `TotalTestFamilyWitnesses` | **the family of all vectors is total** — a vector orthogonal to itself vanishes; totality then transfers along range inclusion, so every surjective family is total |
+| `DiffOp.RowStep`, `DiffOp.ColStep` | `OreElementaryStepWitnesses` | the zero multiplier does not move the matrix, so both step relations are **reflexive** as soon as two indices are distinct |
+| `ConservativeOnPointedRange` | `PointedTransportConservativeWitnesses` | every injective zero-preserving transport is conservative on every range; the zero source is conservatively delivered by every transport |
+| `ChronometricMetricField.FactorsThroughRegion` | `ChronometricRegionFactorWitnesses` | constants factor through every region, and **every law of the restricted field factors through its region** — the general form |
+| `ShiftShapeDominates`, `StrictlySubordinateAt` | `GammaOrderWitnesses` | both lexicographic orders realized in each of their clauses, and both proved **irreflexive**, so the collapse laws are not about a degenerate comparison |
+| `IsBornologicallyCofinal` | `BornologicalCofinalWitnesses` | every surjective sampling is cofinal with constant zero; every nonempty sampling of a uniformly bounded profile is cofinal with twice the bound |
+| `IsShiftInvSqSolution` | `ShiftInvSqSolutionWitnesses` | the zero denominator solves the equation for every numerator, so the no-solution theorem is about a nonempty equation with a distinguished trivial solution |
+| `PairCarried` | `PairCarriedWitnesses` | the empty face with the zero exponent is carried in every corank at least two |
+| the four `…ExpandedPatternRelationHolds` | `ExpandedPatternRelationWitnesses` | **the zero coefficient family satisfies all four**, each relation being a linear functional of the coefficients — so each translation-rank rigidity theorem says exactly that the zero relation is the only one |
+
+**Left open, and why.**  The companion `…ExpandedFullRankWitness` rows are not of this kind: each
+asserts existence of a row packet whose expanded differential evaluation matrix has injective
+`mulVec`.  That is the genuine analytic content of the genericity laws — a full-rank statement about
+an explicit moment matrix — and it is recorded here as analytic debt rather than papered over with a
+degenerate instance.  The same holds for `SpatiallyDisconnectedPacket` (a genuine geometric
+splitting of an interaction packet) and `ProjectivelyTransverseControl` (nonvanishing of a detuning
+functional at every nonzero projective character).
+
+**Session totals: 31 witness modules, five area-wide name collisions repaired, never-concluded rows
+46 → 20 on the owned-area union.**  All modules registered in their umbrella; every capstone
+`#print axioms` returns at most `propext, Classical.choice, Quot.sound`, and one
+(`gaugeInvariant_of_metric`) returns none at all.
+
+## The worklist bottoms out at eight analytic rows
+
+Eleven further witness modules took the union measurement from 20 to **8 never-concluded rows**
+(59 → 19 ungrounded).  The interfaces closed in this last stretch, and the mechanism each needed:
+
+| interface | module | realization |
+|---|---|---|
+| `SpatiallyDisconnectedPacket` (4) | `SpatiallyDisconnectedPacketWitnesses` | a splitting with disjoint site supports disconnects the packet it unites; the two-edge family on separate sites is an explicit instance |
+| `SpectrallyClusteredAround` (3) | `SpectralClusterWitnesses` | a spectrum inside the energy range clusters at every positive tolerance; **every real scalar matrix clusters at its own energy**, since the spectrum of a scalar is that scalar; monotone in the tolerance |
+| `PartialCompletion.ReflectionStable`, `.ReflectionInvariantOnStable` (3+1) | `PartialCompletionReflectionWitnesses` | the identity reflection preserves the admission domain and moves no admitted observation; stable reflections compose |
+| `CommonBaseTwoLocalMonodromyInvariantRelation` (2) | `TwoLocalMonodromyRelationWitnesses` | the zero coefficient family, the relation being linear in the coefficients |
+| `SourceProjectivelyEquivalentOddQuintic` (2) | `OddQuinticReparamWitnesses` | the unit reparametrization is the identity, so the relation is reflexive |
+| `ProjectivelyTransverseControl` (2) | `ProjectiveTransverseControlWitnesses` | **the coordinate response family is transverse** — the detuning of a character at a coordinate vector returns that character's own coefficient, nonzero somewhere on its support |
+| `IsStableSourcePointedExactDescent` (1) | `StableSourcePointedDescentWitnesses` | the identity observation on the total sector satisfies all three clauses at once, with recovery constant one |
+| `FiniteAlgebraicStateObservable` (1) | `FiniteAlgebraicStateWitnesses` | **every differentially algebraic observable is one**, via the differential field it generates — derivation closed by construction, finite transcendence degree exactly because a jet relation exists.  With the boundary theorem in the other direction the interface is an exact restatement of differential algebraicity |
+| `HasRationalExponentialProgressionRepresentation` (1) | `RationalExponentialProgressionWitnesses` | the empty sum for zero, one unit term for a pure exponential, one zero-exponent term for an arbitrary rational function of the index |
+| `BiunitarilyEquivalent` (1) | `BiunitaryEquivalenceWitnesses` | reflexive by the identity pair, and realized nontrivially by a unimodular phase — so every biunitary invariant is blind to a global phase |
+| `AutomorphicFactor.IsAbePositiveTorusless` (1) | `AbePositiveTorusFreeWitnesses` | the interface is literally "reachable from an Abe presentation": the base constructor gives it from a presentation, and a damped extension carries it up the tower |
+
+### What is left, and why it is left
+
+Eight rows survive, and every one of them is genuine mathematics rather than a missing witness:
+
+* **five `…ExpandedFullRankWitness` rows** (`herglotz`, `movingCanonical`, `movingEvenCanonical`,
+  `actualNevanlinna`, `MaximalTranslation`).  Each asserts existence of a row packet whose expanded
+  differential evaluation matrix has injective `mulVec` — a full-rank statement about an explicit
+  moment matrix.  That is the analytic content of the translation-rank genericity laws; the matching
+  `…PatternRelationHolds` side is now discharged, so each law reads "the zero relation is the only
+  one, *provided* a full-rank packet exists";
+* **two observer-time atlas rows** (`IsCompleteObserverTimeFourierValuationAtlas` and its countable
+  companion).  Each asks for a probability-measure atlas that is simultaneously the small-scale limit
+  of the finite torus phase measures and a solution of the spectral resolution Fourier law — an
+  existence theorem about a limit, not a coordinate choice;
+* **`GrowthSeparation`**, which asks for a second function outgrowing every algebraic relation of the
+  first by an arbitrary multiple of the Nevanlinna characteristic — a Wiman–Valiron-scale statement.
+
+These three families are recorded as analytic debt.  Nothing is gained by attaching a degenerate
+instance to them, and the previous entries show the difference: where an interface *was* a coordinate
+choice in disguise, naming the mechanism discharged it outright.
+
+## `HilbertMetric` measured, and the grounding fixpoint driven to its floor
+
+**`HilbertMetric`, 2026-08-05: 1 313 project constants, 11 project `Prop` definitions, 7 consumed
+premise keys, 1 never concluded.**  That single row is `IsFullCCRMatrixTuple`, and it is *correctly*
+never concluded: `CCRFiniteBlockObstruction.not_exists_isFullCCRMatrixTuple` proves it
+**unsatisfiable in positive dimension**, and every consumer has been restated with the satisfiable
+`IsBlockCCRMatrixTuple`.  An interface that is provably empty should have no producer; the area is
+clean.
+
+Seven further witness modules then attacked the *ungrounded* list — interfaces that are concluded
+somewhere but only conditionally on other ungrounded ones — taking it from 19 to **11**:
+
+| interface | module | realization |
+|---|---|---|
+| `EvenCoeff` (4) | `EvenCoeffWitnesses` | **any family reading only the modulus of its index is even**; the zero, constant and geometric `r^{\|k\|}` families are all of that form, the last being the carrier of the analytic Wiener scale |
+| `IsAssociativeProduct` (1) | `AssociativeProductWitnesses` | every semigroup multiplication, and both projections — so associativity alone forces neither commutativity nor cancellation |
+| `IsTubeBigO` (1) | `TubeBigOWitnesses` | the zero function at every order; every globally bounded function at order zero, so the content of the datum is the positive order |
+| `RootedContactTree.thresholdRel` (1) | `ContactThresholdWitnesses` | reflexive by definition, so the threshold partition is never empty |
+| `DifferentiallyAlgebraicOverOfOrder`, `DifferentiallyAlgebraicOver` (2) | `RelativeDifferentialAlgebraicWitnesses` | the zero function at order zero, the coordinate variable being a nonzero vanishing relation |
+| `IsComplexAffineAlgebraicOfCodimAtLeast` (1) | `ComplexAffineCodimWitnesses` | **the empty set has every codimension**: its vanishing ideal is everything, so its coordinate ring is the zero ring and its Krull dimension is `⊥` |
+| `NewtonGood` (1) | `NewtonGoodWitnesses` | the zero correction is good **exactly** under the Hensel starting congruence, and the unit pair satisfies it outright — so the advancing step has something to advance |
+
+### Final state of the audit
+
+**never concluded 8, ungrounded 11**, from 46 and 59.  Both residues are the same three analytic
+families and nothing else:
+
+1. the **full-rank moment packets** (`herglotz`, `movingCanonical`, `movingEvenCanonical`,
+   `actualNevanlinna`, `probabilityCarrier`, `MaximalTranslation`);
+2. the **observer-time Fourier valuation atlas** (`Is…`, `IsComplete…`, `IsCompleteCountable…`);
+3. `GrowthSeparation`, and relative `HypertranscendentalOver` — the negation of a notion whose
+   positive side is now realized, so what is missing is a relatively hypertranscendental *function*.
+
+Forty-nine witness modules were added over the session and every remaining row is an existence
+theorem with quantitative content, not a coordinate choice.
+
+## First real attack on the surviving analytic family: the full-rank matrix
+
+With the coordinate-choice interfaces exhausted, the remaining rows are attacked as mathematics.
+The largest family is the full-rank hypothesis of the translation-rank genericity laws: injectivity
+of `(expandedDifferentialEvaluationMatrix q n z exponent y).mulVec`, six rows.
+
+`HTGeometry/ExpandedEvaluationVandermonde.lean` (built, registered, axioms clean) settles the base
+case completely, by identifying what that matrix *is*.
+
+Its `(b, (a, d))` entry is `z b ^ d` times the value at row `b` of the monomial with exponent
+`exponent a`.  For a **single** exponent the second factor does not depend on the column, so the
+matrix is the Vandermonde matrix of the row nodes scaled row by row:
+
+* `expandedMonomialValue e y b` — the monomial value carried by one row;
+* **`singleExponentEvaluationMatrix_eq`** — the single-exponent matrix is
+  `diagonal (expandedMonomialValue e y) * vandermonde z`;
+* **`det_singleExponentEvaluationMatrix`** — hence its determinant is
+  `(∏ b, expandedMonomialValue e y b) * (vandermonde z).det`;
+* `isUnit_singleExponentEvaluationMatrix` — so it is invertible exactly when the row nodes are
+  pairwise distinct and no monomial value vanishes;
+* **`mulVec_injective_expandedDifferentialEvaluationMatrix_unit`** — and therefore the expanded
+  evaluation matrix at a single exponent has injective `mulVec` under precisely those two
+  conditions, which is the full-rank hypothesis in that case.
+
+**The obstacle, now named exactly.**  For two or more exponents the columns interleave: the matrix
+carries, for each exponent `a`, the whole Vandermonde block scaled by the `a`-th monomial values, and
+its determinant is no longer a product of a diagonal and a Vandermonde.  What is needed is a
+*confluent* / generalized Vandermonde nondegeneracy — distinctness of the row nodes no longer
+suffices, and the correct hypothesis couples the nodes to the exponent family.  That is the open
+mathematical content of the six full-rank rows, and it is now separated cleanly from the
+bookkeeping.
+
+## A second axis: mathlib-headed premises on corpus objects
+
+With the corpus-`Prop` axis at its floor, the **calibrated mathlib-premise instrument** was run for
+the first time this session, over `HTGeometry ∪ RHTower` at once (the `inArea` test widened to both
+areas, and the `HTGeometry` umbrella injected as an explicit import list to route around the leaf
+another lane is editing).
+
+**160 015 constants scanned, 3 017 premise keys, 1 014 unproduced.**  That count is not a debt
+figure — it contains the documented false-positive classes (capstone-`let` constraints, recursor
+artifacts, parameter constraints) — but its *head* is a worklist, and five rows off the top were
+genuine missing structure:
+
+| uses | premise | module | discharge |
+|---:|---|---|---|
+| 48 | `BorelSpace` on the Bohr hull | `BohrHullBorel` | **the hull is a completion, hence a topological space, so its Borel σ-algebra is canonical and it is a Borel space for it by definition.**  Registered as instances; every call site had been opening the σ-algebra by hand |
+| 15 | `Ideal.IsPrime` on the chart **coefficient ring** | `ChartCoefficientRingPrimeWitnesses` | the same ring under its second name: zero ideal prime because the ring is a domain, and every point's evaluation kernel prime because the values lie in a field |
+| 12 | `MvPolynomial.IsWeightedHomogeneous` for the source-derivative grading | `JetWeightHomogeneousWitnesses` | the `j`-th jet variable has weighted degree `j`, so **every degree is occupied** by a power of the first-order variable; constants and zero sit in degree zero |
+| 10 | `BddBelow` on the Rayleigh quotient set | `RayleighFloorBoundedWitnesses` | boundedness is exactly a uniform lower bound on the quotients; a form dominating a multiple of a positive norm supplies one, and a nonnegative form over a positive norm gives floor zero |
+| 7 | `Normal` on the root field | `RootFieldNormalWitnesses` | the corpus already proves the root field of a split polynomial **is** a splitting field; a splitting field is normal, so the premise was one `Normal.of_isSplittingField` away |
+
+All five build, are registered, and are axiom-clean.  Re-measured: **1 009 unproduced**, and every
+one of those five rows is gone from the list.  The new head is the 148-use Gelfond–Schneider capstone
+constraint (a documented `let`-discharged class), `Nonempty` of the family cover index (15),
+injectivity of the Nevanlinna carrier quotient (13), and a run of parameter constraints and
+`ctorIdx` recursor artifacts.
+
+**Reading.**  The corpus-`Prop` axis measures interfaces the corpus invented; this one measures
+*mathlib* structure the corpus assumed about its own objects.  The second axis is where the cheapest
+remaining discharges are — a Borel σ-algebra, a prime ideal, a grading, a lower bound, a normality —
+each free once the object is named correctly.
+
+### Two more mathlib-premise rows
+
+| uses | premise | module | discharge |
+|---:|---|---|---|
+| 5+5 | `IsProbabilityMeasure` / `IsFiniteMeasure` on the projective interval | `RHTower/ProjectiveIntervalMeasureWitnesses` | the interval is a nondegenerate closed interval around the origin, so it is nonempty and the **Dirac mass at its centre** is a probability measure on it; finiteness then follows, so the Donoghue–Herglotz transform laws are not about an empty class of measures |
+| 6 | `S.width < s.re` for a wave spectrum | `HTGeometry/WaveSpectrumHalfPlaneWitnesses` | the width is a real number, so the convergence half-plane contains the whole real ray above it, and it is closed upward in the real part |
+
+Unproduced count on the mathlib axis: **1 014 → 1 006** over the two batches, with all seven worked
+rows gone.  The current head is the 148-use Gelfond–Schneider capstone constraint (documented
+`let`-discharged class), `Nonempty` of the family cover index (15), injectivity of the Nevanlinna
+carrier quotient (13), and **non-bipartiteness of the transition support graph (12)** — the last of
+which is the first genuinely graph-theoretic row and the natural next target: non-bipartiteness
+follows from an odd cycle, so a triangle criterion on the support graph would discharge it.
+
+### The graph row, the cover index, and an eighth producer-hiding class
+
+| uses | premise | module | discharge |
+|---:|---|---|---|
+| 12 | `¬ (transitionSupportGraph A).IsBipartite` | `TransitionSupportNonBipartite` | bipartiteness is two-colourability, so **a triangle refutes it**: three mutually adjacent sites cannot get pairwise distinct colours from a two-element palette.  On the support graph that is three distinct sites whose mutual transition products do not vanish — checkable entrywise — and in particular every fully supported transition matrix on three or more sites is nonbipartite |
+| 15 | `Nonempty (famCoverIndex W p)` | `FamilyCoverIndexWitnesses` | the index is inhabited exactly when some component has a proper part spanning it with the marked element; **the two-point Boolean lattice supplies one**, the complement of the marked atom spanning with it |
+
+**An eighth way a producer hides, found and fixed.**  After adding the cover-index witnesses the row
+*went up*, 15 → 16.  The cause was in the instrument, not the corpus: `conclKeys` recursed through
+`Nonempty X` into `X` and **dropped** the `Nonempty` key, so a theorem concluding literally
+`Nonempty (famCoverIndex …)` could never match a premise keyed `Nonempty [famCoverIndex]`.  This is
+the same defect that was already fixed for `Exists`, and the fix is the same one line: keep the
+container key alongside the unfolded body.  `scripts/lean/audit_mathlib_premises_calibrated.lean` is
+corrected; the row cleared and the total fell 1 005 → 1 003.
+
+**A false positive confirmed, not worked.**  An 8-use `Ideal.IsPrime` row survives carrying
+`chosenMvPolynomialSemiring` — a `local instance` declared inside
+`ProjectiveAffineChartIncidenceBaseChange` to disambiguate the polynomial semiring.  It is the same
+mathematics as the 15-use row already discharged; only the *instance path* differs, so no producer
+written outside that file can ever key-match it.  Recorded as an instance-path artifact rather than
+manufactured around.
+
+Mathlib-axis totals for the session: **1 014 → 1 003 unproduced**, nine worked rows gone
+(`BorelSpace` on the Bohr hull ×48, `Ideal.IsPrime` on the chart coefficient ring ×15,
+`IsWeightedHomogeneous` ×12, `¬IsBipartite` ×12, `BddBelow` on the Rayleigh set ×10,
+`IsProbabilityMeasure`/`IsFiniteMeasure` ×10, `Normal` on the root field ×7, the wave half-plane ×6,
+`Nonempty` of the cover index ×15), one instrument bug fixed and one artifact class confirmed.
+
+### Two more, and the head of the mathlib axis is now artifacts
+
+| uses | premise | module | discharge |
+|---:|---|---|---|
+| 10 | `0 < primeSeamCoordinate δ` and `… < 2a` | `RHTower/PrimeSeamCoordinateWitnesses` | **the seam coordinate of a single prime valuation is its logarithm**, so positivity is free, and the observability window is inhabited for every width above half that logarithm |
+| 9 | `v.depth ≠ 0` for a cusped vertex | `HTGeometry/CuspedVertexDepthWitnesses` | only the depth-zero retraction had ever been built.  A positive-depth vertex is a **proper line**: in any space of dimension at least two a nonzero vector spans one, neither zero nor everything, of rank one — exactly what a positive depth demands |
+
+Unproduced: **1 003 → 1 002** with both rows gone (the total moves less than the rows removed because
+each new theorem contributes premise keys of its own).
+
+**Where the axis stands.**  The head of the list is now dominated by the documented false-positive
+classes rather than by debt:
+
+* 148 `Dvd.dvd` and 8 `Membership.mem` on `GelfondSchneiderProof.Setup` — the capstone-`let` class;
+* 10 `Eq` on `ElementaryPairPresentation.ctorIdx` — recursor artifacts, not premises at all;
+* 8 `Ideal.IsPrime` carrying `chosenMvPolynomialSemiring` — the instance-path artifact recorded
+  above;
+* 8 `TendstoLocallyUniformly` on `primeIsingTreePartition` — hypotheses with a *general* limit,
+  introduced deliberately by the mass-floor theorems;
+* 13 `Function.Injective` on the Nevanlinna carrier quotient — a genuine **data** hypothesis (the
+  chosen nodes lie in distinct fibres of the quotient), not a theorem: a quotient map is not
+  injective, so the only available "connector" would be vacuous.
+
+The next genuine analytic rows below that are `SummableLocallyUniformlyOn` on the Poincaré term
+(Abe's majorant, already recorded as analytic debt on the `IsAbePositiveTorusless` row) and
+`HasDerivAt` on the covector phase.
+
+### Three more, and the constant-path lesson applied
+
+| uses | premise | module | discharge |
+|---:|---|---|---|
+| 5 | `z ∈ rightHalfPlane` | `RightHalfPlaneWitnesses` | only openness had been recorded.  Membership is positivity of one real coordinate: every positive real is in it, **every positive abscissa carries a whole vertical line**, and the region is closed under addition and under adding a nonnegative real part |
+| 5 | `HasDerivAt w c (covectorPhase n x)` | `CovectorPhaseDerivativeWitnesses` | the condition is about the profile alone, so **every differentiable profile satisfies it at every phase**; the identity, the constants and the exponential are explicit instances |
+| 5 | `Irreducible P` for a differential polynomial | `DifferentialPolynomialIrreducibleWitnesses` | the differential polynomial ring is a polynomial ring on the jet coordinates, so **every jet coordinate is prime, hence irreducible**, at every order |
+
+**The constant-path lesson, applied rather than rediscovered.**  The `Irreducible` row carried a
+second constant, `differentialPolynomialTwoBlockEquiv`, so a producer mentioning only
+`DifferentialPolynomial` could not key-match it — the same shape as the `chosenMvPolynomialSemiring`
+artifact, but here the fix is real mathematics rather than a note: **irreducibility transports along
+the two-block splitting**, because that splitting is an algebra equivalence.  Adding the transported
+statement cleared the row.
+
+Mathlib-axis total: **1 014 → 999**.  Every row worked this session is gone; what remains at the head
+is the capstone-`let` class (148 + 8), recursor artifacts, the instance-path artifact, the
+deliberately-general `TendstoLocallyUniformly` limits, one genuine data hypothesis (distinct
+Nevanlinna fibres), and `SummableLocallyUniformlyOn` on the Poincaré term — which is Abe's majorant,
+already on the books as analytic debt.
+
+### Three more, one of them a pure different-head gap
+
+| uses | premise | module | discharge |
+|---:|---|---|---|
+| 6 | `x ∈ eigenSum T c` | `EigenSumMembershipWitnesses` | **the corpus already proves each eigenspace above the threshold is contained in the sum**; what the flag arguments consume is the *membership* form of that containment.  Adding it, plus the zero vector, closes the row — a textbook instance of the recorded different-head class, where an inclusion produces no membership key |
+| 5 | `DifferentiableOn ℂ f (tube k ρ)` | `TubeDifferentiabilityWitnesses` | only openness of the tube had been recorded; global differentiability restricts to it, so constants and coordinates qualify and the class is closed under products |
+| 5 | `x ≠ y` for qubit configurations | `QubitConfigurationDistinctWitnesses` | a configuration is a Boolean assignment, so one site already separates the all-zero from the all-one assignment; the configuration space is `Nontrivial` |
+
+Mathlib-axis total: **1 014 → 997**.
+
+**Worth keeping from this batch:** the `eigenSum` row is the cleanest example yet of a *false* debt
+that is nonetheless worth fixing.  The mathematics was in the corpus and had been for a long time;
+what was missing was the shape the consumers ask for.  Neither the interface nor the theorem was
+wrong — the two simply never met, and the audit found the gap because it keys on heads.
+
+### Two Gamma-iteration rows
+
+| uses | premise | module | discharge |
+|---:|---|---|---|
+| 7 | `gammaIterateInfiniteFirstJetDepth i ≤ k` | `GammaJetDepthBoundWitnesses` | the depth is zero on the base block and one more than the iteration order on the jet block, so **the base block fits under every budget** and a jet block fits exactly when its order is below it — the bound is decidable on the spot |
+| 5 | `x ∈ localGammaMicroscopeDomain (gammaIterateRegularSet k)` | `GammaMicroscopeDomainWitnesses` | **at order zero the regular set is everything, so the microscope domain is the punctured plane**; membership unfolds to two checkable conditions on the negated reciprocal, and the domain is monotone in the region |
+
+Mathlib-axis total: **1 014 → 996**.  Two more duplicate-name collisions were caught by the compiler
+during this batch (`gammaIterateRegularSet_zero` and, earlier, `eigenspace_le_eigenSum`), each time
+because the corpus already had the lemma under the shape I was about to restate; both were dropped
+in favour of the existing statement.
+
+### Two more, one of them a composite-selection row
+
+| uses | premise | module | discharge |
+|---:|---|---|---|
+| 6 | `C < ‖partialCoeff L j‖` | `PartialCoeffDominationWitnesses` | the partial coefficients of a **coordinate functional** are one at its own index and zero elsewhere, so it dominates every error below one; scaling it dominates every error below the scale, and the hypothesis is therefore satisfiable at every error level |
+| 5 | membership in the minimal cluster of the **least source class** | `LeastSourceClusterWitnesses` | both selection stages are nonempty for the corpus's own reasons — each is the fibre of an attained minimum — so the composite is nonempty; the earlier `exists_mem_polynomialPatternMinimalCluster` did not clear the row because the consumers select *inside* the least source class, so the producer has to name that stage too |
+
+Mathlib-axis total: **1 014 → 993**.
+
+The second row is the composite-selection variant of the constant-path lesson: the producer existed
+for one stage, and the consumers use two.  Naming the composite is the whole fix, and it is one line
+once the two nonemptiness lemmas are in hand.
+
+### Two Gamma-collar rows, one of them free from an existing limit
+
+| uses | premise | module | discharge |
+|---:|---|---|---|
+| 5 | `‖gammaMovingBaseShell n‖ < 1/2` | `MovingBaseShellSmallnessWitnesses` | **the corpus already proves the shell tends to zero**, so the half-shell condition holds for every large index and, at every tolerance, cofinally.  The hypothesis is a threshold on the index, not a restriction on the object — the collar laws apply along a cofinal set with no further input |
+| 5 | `gammaMonomialLimit … ≠ 0` | `GammaMonomialLimitWitnesses` | the limit returns a ratio of leading coefficients when two Gamma monomial data match in order, degree and depth.  **On the diagonal all three match and the ratio is one**, so the nonvanishing hypothesis holds there for every nonzero numerator and denominator |
+
+Mathlib-axis total: **1 014 → 990**.
+
+The shell row is the second time an existing corpus limit discharged a premise once it was stated in
+the eventually-form the consumers use (`tendsto_gammaMovingBaseShell_zero` had been proved and was
+being re-derived inside proofs).  Together with the `eigenSum` inclusion-versus-membership row, that
+is a recognisable pattern: **a limit or an inclusion in the corpus, and a threshold or a membership
+in the consumers** — the same fact, two shapes, and the audit sees only the shapes.
+
+### The Wronskian row, done properly
+
+| uses | premise | module | discharge |
+|---:|---|---|---|
+| 5 | `bilinearHorizonWronskian x y ≠ 0` | `BilinearWronskianWitnesses` | **the free differential polynomial ring on two generators supplies a nonvanishing pair.**  There the four jets `x′, x″, y′, y″` are four distinct coordinates, so the two products of the Wronskian are distinct monomials and cannot cancel |
+
+This row was flagged in the previous batch as needing real work rather than a restatement, and it
+did — but less than expected once the right tool was chosen.  The direct route is monomial
+bookkeeping: show `X₍₀,₁₎X₍₁,₂₎` and `X₍₀,₂₎X₍₁,₁₎` differ as multisets.  The short route is a single
+**separating evaluation**: send the two coordinates of the first product to one and the two of the
+second to zero, and the Wronskian evaluates to one.  Nonvanishing then follows from nontriviality of
+the coefficient ring alone.
+
+Recorded as a technique: to prove a formal differential expression nonzero, do not compare monomials
+— evaluate at a point that separates its terms.
+
+Mathlib-axis total: **1 014 → 989**.
+
+### Both sides of the cover index, and a grouped coefficient
+
+| uses | premise | module | discharge |
+|---:|---|---|---|
+| 4 | `IsEmpty (famCoverIndex W p)` | `FamilyCoverIndexEmptyWitnesses` | the complementary side of the row discharged earlier.  The index is empty exactly when nothing spans, and two structural situations force it: **no components, and a lattice with no proper part** — the two-element lattice, where only the bottom and the top exist |
+| 6 | `groupedCoeff … ≠ 0` | `GroupedCoeffNonvanishingWitnesses` | the grouped coefficient at level `j` sums the monomial family over the fibre of exponent `j` in the last variable, so **a single monomial sitting in that fibre, with unit coefficient at the all-ones point, contributes exactly one** — the cascade criterion's nonvanishing hypothesis is satisfiable at every level |
+
+Mathlib-axis total: **1 014 → 986**.
+
+The cover index is now discharged on *both* sides — inhabited over the two-point Boolean lattice,
+empty over the two-element lattice.  That is worth more than either half alone: it shows the cover
+laws and their complementary no-go each have a nonempty class, so neither is vacuous.
+
+**Not worked, and why.**  `AnalyticOnNhd` on the Nevanlinna boundary matrix (4 uses) would need a
+full `NevanlinnaBoundaryFamily` — probability leaves, moment conditions, carrier identities — built
+from nothing.  That is a construction, not a restatement, and it belongs with the analytic debt
+rather than in a witness batch.
+
+### A second both-branches pair, and a graded piece
+
+| uses | premise | module | discharge |
+|---:|---|---|---|
+| 4 | `0 < f.slope` for an oriented affine Gamma factor | `OrientedGammaFactorSlopeWitnesses` | the reflection normalization branches on the sign of a nonzero slope, and **both branches are occupied**: unit slope gives a positive factor, negated unit slope a negative one |
+| 4 | `x ∈ gradedPiece A j` | `GradedPieceMembershipWitnesses` | the zero vector is always there; membership is exactly the step together with orthogonality to everything below; and **at the bottom step nothing lies below, so the piece is the whole step** |
+
+Mathlib-axis total: **1 014 → 984**.
+
+That is the second pair discharged on *both* sides in as many batches — the cover index (inhabited
+and empty), now the factor orientation (positive and negative).  Where a law branches on a condition,
+occupying one branch only is half an answer: the other branch's consequent could still be about an
+empty class.  Worth doing as a habit whenever the premise is a sign, a nonemptiness, or any other
+two-valued split.
+
+**Examined, not worked.**  `Nonempty (fullRecurrentHilbertIndex x m)` (4 uses) unfolds to
+`Fin (recurrentHomogeneousHilbertFunction x m)` being inhabited, i.e. that Hilbert number being
+positive — a statement about the evaluation range being nonzero, which is content rather than
+bookkeeping.
+
+### Two rows, and the container-key defect closed for good
+
+| uses | premise | module | discharge |
+|---:|---|---|---|
+| 4 | `nullFrame x ∈ W` | `NullFrameSurjectiveWitnesses` | the corpus already produces, for each null point, an event whose two null coordinates are its components.  Assembling those into a *function* equality makes **the null frame surjective**, so every region containing a point is reached |
+| 4 | `PhysicalState C ψ ∧ PhysicalState D ψ` | `PhysicalStateWitnesses` | physical states are the kernel of the constraint: the zero vector is physical for every constraint and the class is a submodule, so **the zero state is jointly physical for any two constraints** and the Ward-value laws are never vacuous |
+
+**The container-key defect, third and last instance.**  The joint-physical row did not clear at
+first.  The cause was again in the instrument: `conclKeys` split `A ∧ B` into its conjuncts and
+**dropped the `And` key**, exactly as it had dropped `Nonempty` two batches ago and `Exists` before
+that.  `Iff` had the same defect.  Both are fixed now — every container branch keeps its own key
+alongside the unfolded body — and the effect is large, because conjunctive conclusions are
+everywhere: conclusion keys rose 42 561 → 46 838 and the unproduced count fell **983 → 968** on the
+fix alone.
+
+Mathlib-axis total for the session: **1 014 → 968**.
+
+Recorded as a rule: when a container branch of `conclKeys` recurses, it must *push* its own key, not
+replace it.  Three branches had the bug independently; the remaining ones (`Finset.Nonempty`,
+`Set.Nonempty`, `Set.Infinite`) were written correctly because they were added later, as bridges.
+
+## Closing state of the two audit axes
+
+**All three owned umbrellas build green**, with every module added this session registered in them:
+`lake build GaloisForLFunctions.HTGeometry`, `… .RHTower`, `… .HilbertMetric` all succeed.  (The
+`HTGeometry` umbrella had been red throughout the session inside a leaf another lane was editing;
+that lane finished, and the umbrella now closes over the whole area including the new work.)
+
+**Corpus-`Prop` axis: 8 never concluded, 11 ungrounded** — unchanged by roughly forty new modules,
+which is the point: the additions discharged interfaces without introducing any.  The residue is the
+same three analytic families throughout:
+
+1. the full-rank moment packets (`herglotz`, `movingCanonical`, `movingEvenCanonical`,
+   `actualNevanlinna`, `probabilityCarrier`, `MaximalTranslation`) — base case settled by
+   `ExpandedEvaluationVandermonde`, the confluent case open;
+2. the observer-time Fourier valuation atlas (three rows);
+3. `GrowthSeparation`, and relative `HypertranscendentalOver`.
+
+**Mathlib-premise axis: 1 014 → 968.**  What is left at the head is, in order: the capstone-`let`
+class (148 + 8), a data hypothesis on the Nevanlinna carrier quotient (13), `ctorIdx` and `HEq`
+recursor artifacts (~30 across six rows), Abe's Poincaré majorant (8, analytic debt already on the
+books), the instance-path artifact (8), the deliberately-general `TendstoLocallyUniformly` limits
+(8), singular-continuous probability laws (7, genuine measure theory), and the Klein–Gordon Floquet
+trichotomy (6, in a lane actively adding files this session and therefore left alone).
+
+**Reading.**  Both axes are now at their floor for restatement work.  Every row a witness could close
+has been closed; what remains needs either new mathematics, a construction, or a decision by the lane
+that owns it.  The instrument itself was the largest single source of apparent debt this session —
+four container branches dropping their own keys — and that is now fixed.
+
+## A third axis: axiom cleanliness of the whole corpus
+
+The two premise axes measure what is *assumed*.  A third question is what is *trusted*: which
+declarations depend on axioms beyond `propext`, `Classical.choice` and `Quot.sound`.  A new
+instrument, `scripts/lean/audit_extra_axioms.lean`, walks every declaration of an area with
+`Lean.collectAxioms` and reports the offenders grouped by the extra axiom, with the size of their
+union.
+
+| area | declarations | extra-axiom kinds | tainted declarations |
+|---|---:|---:|---:|
+| `HTGeometry ∪ RHTower ∪ HilbertMetric` | 160 938 | **0** | **0** |
+| `PNTPlus` | 1 209 | 0 | 0 |
+| `QuantumAlg` | 19 512 | 0 | 0 |
+| `QECLean` | 4 253 | 279 | **486** |
+
+**The owned corpus is unconditional in the kernel sense**, all 160 938 declarations of it — not only
+the modules added this session.  That is the strongest form of the project's standing requirement,
+and it is now measured rather than assumed.
+
+**`QECLean` is not**, and the contamination is larger than the folder note suggests.  Every extra
+axiom is a `native_decide` artifact in `Quantum.Stabilizer.Homological.BB`, and they reach 486
+declarations — including `grossStabilizerCode_hasCodeDistance_12_uncond`, whose name claims an
+unconditionality it does not have in the kernel sense.  `formal/CLAUDE.md` already warns to check
+`#print axioms` before citing a distance certificate; the measurement says the warning covers a
+tenth of that area.
+
+**No leakage.**  The owned areas' zero is the load-bearing fact: nothing in the RH, hypertranscendence
+or Hilbert-metric development cites a `native_decide` result, so the vendored contamination is
+contained inside `QECLean` and does not touch any corpus theorem.
+
+## Corpus-`Prop` axis: the vendored areas measured
+
+| area | constants | project `Prop` defs | consumed | never concluded | ungrounded |
+|---|---:|---:|---:|---:|---:|
+| `PNTPlus` | 1 209 | 26 | 0 | 0 | 0 |
+| `QECLean` | 4 253 | 50 | 0 | 0 | 0 |
+| `QuantumAlg` | 19 512 | 225 | 0 | 0 | 0 |
+
+All three vendored areas define `Prop` interfaces but consume none as hypotheses, so they carry no
+interface debt of the kind the owned areas do.  With `HilbertMetric` (1 row, provably unsatisfiable)
+and `HTGeometry ∪ RHTower` (8 rows, all analytic), **every area of the corpus is now measured on this
+axis.**
+
+## Full-rank witness obstacle — resolved into a four-module layer (HTGeometry)
+
+The six `…ExpandedFullRankWitness` interfaces asked for an analytic-looking condition on a matrix
+`M b (a,d) = z_b^d · ∏_k y(b,k)^{e_a(k)}`.  It is not analytic; it is a **sampling** condition, and
+the exact obstruction is a **relation ideal**.
+
+New modules, all registered in the HTGeometry umbrella, all `[propext, Classical.choice, Quot.sound]`:
+
+1. `ExpandedEvaluationSampling.lean` — when the jets are functions of the node, `y(b,k)=F_k(z_b)`,
+   the matrix is the coordinate minor of the fixed family
+   `g_{(a,d)} : w ↦ w^d ∏_k F_k(w)^{e_a k}`.  Linear independence of `g` ⟹ a node packet exists
+   with nonsingular matrix, and the nodes are automatically pairwise distinct
+   (`exists_injective_node_packet_mulVec_injective`).
+
+2. `ExpandedEvaluationRelationIdeal.lean` — the identification and the universal law.
+   * `expandedMonomialFamily_eq_aeval` — each column is `aeval (id, F₁,…,Fₙ)` of its own monomial
+     `X_none^d · ∏ X_{some k}^{e_a k}`.
+   * `linearIndependent_aeval_expandedColumn_of_algebraicIndependent` — **the universal law**:
+     in *any* commutative ℂ-algebra, algebraically independent elements make an injectively indexed
+     monomial box linearly independent.
+   * `linearIndependent_restrict_expandedMonomialFamily_of_algebraicIndependent` — the same on a
+     region, through `restrictAlgHom`.
+   * `not_injective_mulVec_of_expandedMonomialFamily_eq` — **the no-go**: if two columns coincide as
+     functions, *every* node packet fails, so node distinctness plus monomial nonvanishing can never
+     suffice for |κ| ≥ 2.  Explicit instance `not_injective_mulVec_collidingExponent`
+     (`n=1, F₀=id, E={0,X₀}, q=1`).
+
+3. `ExpandedEvaluationSetSampling.lean` — confinement to a region is free.
+   * `exists_node_packet_mem_mulVec_injective` — nodes inside any set on which the family is
+     independent.
+   * `linearIndependent_restrict_of_analyticOnNhd` — identity theorem: on a preconnected region an
+     analytic family stays independent on any subset with an accumulation point.
+   * `exists_node_packet_upperHalfPlane_of_algebraicIndependent`.
+
+4. `ExpandedEvaluationRowExtension.lean` — reconciling with a fixed row family.
+   * `mulVec_injective_of_submatrix_row` — extra rows never destroy injectivity.
+   * `exists_injective_extension_mem` — an injective packet inside an infinite region extends
+     injectively, inside the region, to any larger finite row family.
+   * `exists_row_packet_upperHalfPlane_of_algebraicIndependent` — the literal shape of the
+     translation-rank full-rank datum, for any row family admitting an injection from the columns.
+
+**Remaining premise, isolated.** The whole layer now rests on exactly one input:
+`AlgebraicIndependent ℂ (fun i => Set.restrict upperHalfPlane (jetEvaluationFamily F i))`,
+i.e. algebraic independence over ℂ of the coordinate `w` together with the jets
+`w ↦ L^{(m)}(w+σ)` of the packet's log-derivative, on the upper half-plane.  Verified by reading
+`movingCanonicalActualJetFamily` + `reshapeCombinedJetsFinCLM` + `combinedProjectiveRowShiftPacket`
+that the consumers' jets do factor through the node in exactly this way.
+
+## The residual premise is realized — `PeriodicJetAlgebraicIndependence.lean`
+
+The expanded-evaluation layer rested on one input:
+`AlgebraicIndependent ℂ (fun i => Set.restrict S (jetEvaluationFamily F i))`.
+That input is now **produced**, unconditionally, by a new universal law.
+
+* `regionShift`, `regionShiftAlgHom`, `regionPeriodicSubalgebra` — translation of a stable region and
+  the subalgebra of functions invariant under it (an `AlgHom.equalizer`).
+* `eq_zero_of_eval_translate_orbit` — a polynomial vanishing on a translation orbit is zero
+  (the orbit `{w + m·a}` is infinite for `a ≠ 0`).
+* `transcendental_coe_of_periodic` — **the coordinate is transcendental over any algebra of
+  translation-invariant functions**: a relation with invariant coefficients is a polynomial in the
+  coordinate that is constant along the orbit, hence identically zero.
+* `algebraicIndependent_restrict_jetEvaluationFamily_of_periodic` — **the universal law**: on a region
+  stable under a nonzero translation along which every jet is invariant, algebraic independence of
+  the jets upgrades to algebraic independence with the coordinate adjoined.  No analyticity, no
+  growth, no regularity — periodicity alone.
+* `transcendental_restrict_exp_upperHalfPlane`, `algebraicIndependent_restrict_jetEvaluationFamily_exp`
+  — the exponential realizes it on the upper half-plane (period `2πi`, and the moduli along a
+  horizontal line are already infinite in number).
+* `exists_row_packet_upperHalfPlane_exp` — **the full-rank datum, unconditionally**: for every
+  injectively indexed exponent family and every row family carrying the columns, a node packet exists
+  in the upper half-plane, pairwise distinct, with injective expanded evaluation map.
+
+So the six `…ExpandedFullRankWitness` interfaces are demonstrably **inhabitable**, not vacuous.
+
+### Frontier
+
+The consumers' own jets are `w ↦ L^{(m)}(w + σ)` with
+`L = movingCanonicalLogDerivative θ = ∑' n, ((ζ_n − w)⁻¹ − ζ_n⁻¹)`, whose zeros `ζ_n` are real and
+**not** periodic.  The periodicity law therefore witnesses inhabitation but does not discharge those
+specific interfaces.  The mechanism that does is the **pole law**, next:
+
+> Let `Z` be an infinite set of boundary points of `S` such that for each `ζ ∈ Z` there is a sequence
+> `w_j → ζ` in `S` with `|F(w_j)| → ∞`.  Then the coordinate and `F` are algebraically independent
+> over ℂ on `S`.
+
+Proof sketch (dependency-closed): a relation `∑_j p_j(w) F(w)^j = 0` with top index `J`, divided by
+`F(w_j)^J`, gives `p_J(ζ) = 0` for every `ζ ∈ Z`; `Z` infinite forces `p_J = 0`.  Route into
+`AlgebraicIndependent` is `AlgebraicIndependent.option_iff` with the coordinate in the `x` slot and
+`F` in the `a` slot, then a relabelling.  `L` satisfies the hypothesis with `Z = {ζ_n}` approached
+vertically from the upper half-plane.
+
+## Second mechanism: blow-up — `PoleJetAlgebraicIndependence.lean`
+
+Periodicity witnesses inhabitation but does not reach Cauchy-type packets.  The mechanism that does
+is now built, unconditionally and with no analyticity hypothesis anywhere:
+
+* `eval_top_eq_zero_of_blowUp` — the dominance estimate.  If `u_j → ζ` and `‖Fv j‖ → ∞` and
+  `∑_{i≤J} q_i(u_j)·Fv_j^i = 0` for every `j`, then `q_J(ζ) = 0`.  Proof: once `‖Fv j‖ ≥ 1`,
+  `‖q_J(u_j)‖ ≤ (∑_{i<J}‖q_i(u_j)‖)/‖Fv j‖`, whose right side tends to `0` while the left tends to
+  `‖q_J(ζ)‖`.
+* `HasBlowUpSet S F Z` — an infinite set `Z` of boundary values, each approached by a sequence from
+  `S` along which `‖F‖ → ∞`.
+* `transcendental_coe_of_infinite` — the coordinate is transcendental over the constants on any
+  infinite region.
+* `transcendental_restrict_of_hasBlowUpSet` — **blow-up forbids the coordinate**: the top
+  coefficient of any relation vanishes at every point of `Z`, hence identically.
+* `algebraicIndependent_restrict_jetEvaluationFamily_of_blowUp` — **the universal law**, obtained
+  from `AlgebraicIndependent.option_iff` with the coordinate in the `x` slot and the jet in the `a`
+  slot, then relabelled by `optionFinOneSwap`.
+* `infinite_upperHalfPlane`, `exists_row_packet_upperHalfPlane_of_blowUp` — the full-rank datum from
+  a single blowing-up jet.
+
+Two independent mechanisms now produce the datum: **periodicity** (no growth needed) and **blow-up**
+(no periodicity needed).  Neither needs analyticity.
+
+### Next
+
+The consumers use `n ≥ 2` jets (iterated derivatives at several shifts), so the single-jet blow-up
+law must be extended: the estimate needs a dominance ordering among the jets, e.g. a filtration by
+order of blow-up at each `ζ ∈ Z`, so that one monomial in the jets strictly dominates all others
+along the approach sequence.  For `movingCanonicalLogDerivative θ` with `Z = {ζ_n}` (the real zeros)
+approached vertically, the orders are `m + 1` for the `m`-th derivative and the shifts `σ_k` move
+which `ζ_n` is hit — that is the structure to exploit.

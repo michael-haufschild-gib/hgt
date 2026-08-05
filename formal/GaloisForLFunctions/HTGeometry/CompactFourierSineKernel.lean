@@ -235,13 +235,13 @@ theorem hasDerivAt_mul_fourierKernel {u : ℝ → ℂ} {u' : ℂ} {r : ℝ} (z :
   h.mul_const _
 
 /-- On a symmetric interval, every point of the integration set satisfies `|t| ≤ a`.  This is the
-interval fact `hasDerivAt_compactFourier` needs, so it is a lemma rather than a hypothesis. -/
+interval fact `hasDerivAt_fourierIntegral_parameter` needs, so it is a lemma rather than a hypothesis. -/
 theorem abs_le_of_mem_uIoc_symm {a t : ℝ} (ha : 0 ≤ a) (ht : t ∈ Set.uIoc (-a) a) : |t| ≤ a := by
   rw [Set.uIoc_of_le (by linarith : (-a : ℝ) ≤ a)] at ht
   exact abs_le.mpr ⟨le_of_lt ht.1, ht.2⟩
 
 /-- Interval integrability of an amplitude against the Fourier kernel, from continuity alone.  This
-discharges the base-point integrability hypothesis of `hasDerivAt_compactFourier`. -/
+discharges the base-point integrability hypothesis of `hasDerivAt_fourierIntegral_parameter`. -/
 theorem intervalIntegrable_mul_fourierKernel {f : ℝ → ℂ} (hf : Continuous f) (z : ℂ) (a b : ℝ) :
     IntervalIntegrable (fun t => f t * Complex.exp (I * z * (t : ℝ)))
       MeasureTheory.volume a b :=
@@ -253,7 +253,7 @@ derivative on the interval, the compact Fourier transform may be differentiated 
 
 Every hypothesis slot of mathlib's dominated parametric derivative is discharged here from the
 amplitude alone: the kernel contributes only continuity and the constant `exp (|Im z| a)`. -/
-theorem hasDerivAt_compactFourier {u w : ℝ → ℝ → ℂ} {a r₀ M : ℝ} {z : ℂ}
+theorem hasDerivAt_fourierIntegral_parameter {u w : ℝ → ℝ → ℂ} {a r₀ M : ℝ} {z : ℂ}
     (hmeas : ∀ᶠ r in nhds r₀, Continuous (u r))
     (hint : IntervalIntegrable
       (fun t => u r₀ t * Complex.exp (I * z * (t : ℝ))) MeasureTheory.volume (-a) a)
@@ -296,7 +296,7 @@ theorem hasDerivAt_compactFourier_of_amplitude {u w : ℝ → ℝ → ℂ} {a r�
       HasDerivAt (fun s => u s t) (w r t) r) :
     HasDerivAt (fun r => ∫ t in (-a)..a, u r t * Complex.exp (I * z * (t : ℝ)))
       (∫ t in (-a)..a, w r₀ t * Complex.exp (I * z * (t : ℝ))) r₀ :=
-  hasDerivAt_compactFourier hcont
+  hasDerivAt_fourierIntegral_parameter hcont
     (intervalIntegrable_mul_fourierKernel hcont₀ z _ _) hcontw
     (fun _ ht => abs_le_of_mem_uIoc_symm ha ht) hbound
     (fun t ht r hr => hasDerivAt_mul_fourierKernel z t (hderiv t ht r hr))

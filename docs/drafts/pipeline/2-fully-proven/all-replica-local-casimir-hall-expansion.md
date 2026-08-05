@@ -3,11 +3,12 @@
 - **Stage:** 2 — fully proven on paper
 - **Status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, O4 planar replica cavity
-- **Lean:** field-uniform central-Casimir Hall certificate formalized as
-  `centralHermitianMatrixFamily_subspace_finrank_of_commonKernel`; abstract
-  Casimir centrality formalized as
-  `quadraticCasimir_commutes_of_antisymmetric_structure`; collective-Pauli
-  bracket and sitewise-singlet kernel instantiation remain
+- **Lean:** concrete arbitrary-site/arbitrary-replica Pauli representation and
+  full Casimir centrality formalized in
+  `HTGeometry/AllReplicaCollectivePauliCasimir.lean`; exact mixed-subspace Hall
+  law modulo the simultaneous singlet sector formalized in
+  `HTGeometry/CentralCasimirCommonKernelCorrection.lean`; weight-two Hall on
+  the singlet quotient remains
 
 ## Exact statement
 
@@ -227,8 +228,47 @@ contracted indices has central quadratic Casimir.  Thus the remaining
 representation-theoretic input is only the exact collective-Pauli bracket and
 identification of its common kernel with the sitewise singlet algebra.
 
-This does not yet move this card to Stage 3.  The remaining formal obligation
-is exact: realize the collective Pauli commutators on the finite complex
-replica-operator space, prove their antisymmetric bracket, and identify their
-common kernel with `S_r`.  Restriction to `W_r` then makes the common kernel
-trivial and the two formal capstones compose directly to (7).
+This does not yet move this card to Stage 3.  The concrete representation
+obligation is now discharged for every finite physical-site type and every
+finite replica type.  The exact remaining obligation is stronger: prove
+one-step weight-two Hall expansion inside the sitewise singlet sector after
+quotienting the global replica-permutation modes.
+
+## Formal closure update — 2026-08-05
+
+`HTGeometry/AllReplicaCollectivePauliCasimir.lean` now proves, without fixing
+either cardinality:
+
+1. the exact one-qubit Pauli structure constants and their contracted
+   antisymmetry;
+2. the diagonal replica bracket at each physical site;
+3. commutation between distinct physical sites;
+4. exact column-vectorization of the operator commutator;
+5. Hermiticity of every physical commutator matrix; and
+6. centrality of the full Casimir summed over all site/axis pairs.
+
+`HTGeometry/CentralCasimirCommonKernelCorrection.lean` adds the canonical
+orthogonal projector onto a Hermitian family's simultaneous kernel, proves
+that it annihilates every generator on both sides, and obtains the unconditional
+mixed-subspace law
+
+\[
+ \dim U\le \dim V+\dim\mathcal S_r
+\]
+
+whenever every collective-Pauli image of `U` lies in `V`.  This eliminates the
+old mixed-layer gluing gap for the weight-one family.  It does **not** replace
+the open weight-two singlet-quotient theorem (15): the correction here is the
+entire sitewise singlet sector, not only global replica permutations.  Axiom
+audits of both new capstones contain only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+`HTGeometry/LieGeneratedCentralHallExpansion.lean` further proves an exact
+positive-length orbit alternative.  If a target subspace is invariant under a
+local generator family and contains every local image of `U`, it contains the
+image of `U` under the entire generated Lie algebra.  Thus any Hermitian
+central-Casimir family lying in that Lie span obeys Hall expansion modulo its
+full simultaneous kernel.  This does not establish the one-step claim (15),
+but it shows that failure of one-step singlet Hall need not end the program:
+the remaining physical obligations are Lie generation, global-kernel control,
+and a quantitative bound on required local-word depth.

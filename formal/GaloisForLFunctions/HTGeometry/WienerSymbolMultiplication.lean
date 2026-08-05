@@ -48,7 +48,7 @@ theorem norm_kgMulCLM_sub_le (m m' : E →ᵇ ℂ) : ‖kgMulCLM m - kgMulCLM m'
 
 /-! ## The two damped propagator symbols -/
 
-theorem continuous_kgSinc (t : ℝ) :
+theorem continuous_kgSincSymbol (t : ℝ) :
     Continuous fun ξ : E => ((Real.sin (t * kgFreq ξ) / kgFreq ξ : ℝ) : ℂ) := by
   refine Complex.continuous_ofReal.comp ?_
   refine Continuous.div (Real.continuous_sin.comp (continuous_const.mul continuous_kgFreq))
@@ -60,7 +60,7 @@ theorem continuous_kgCosc (t : ℝ) :
   refine Continuous.div (Real.continuous_cos.comp (continuous_const.mul continuous_kgFreq))
     continuous_kgFreq fun ξ => (kgFreq_pos ξ).ne'
 
-theorem norm_kgSinc_le (t : ℝ) (ξ : E) :
+theorem norm_kgSincSymbol_le (t : ℝ) (ξ : E) :
     ‖((Real.sin (t * kgFreq ξ) / kgFreq ξ : ℝ) : ℂ)‖ ≤ 1 := by
   rw [Complex.norm_real, Real.norm_eq_abs, abs_div, abs_of_pos (kgFreq_pos ξ)]
   rw [div_le_one (kgFreq_pos ξ)]
@@ -75,8 +75,8 @@ theorem norm_kgCosc_le (t : ℝ) (ξ : E) :
 /-- The damped sine symbol `sin(t⟨ξ⟩)/⟨ξ⟩`, the Duhamel propagator. -/
 noncomputable def kgSincBCF (t : ℝ) : E →ᵇ ℂ :=
   BoundedContinuousFunction.ofNormedAddCommGroup
-    (fun ξ : E => ((Real.sin (t * kgFreq ξ) / kgFreq ξ : ℝ) : ℂ)) (continuous_kgSinc t) 1
-    (norm_kgSinc_le t)
+    (fun ξ : E => ((Real.sin (t * kgFreq ξ) / kgFreq ξ : ℝ) : ℂ)) (continuous_kgSincSymbol t) 1
+    (norm_kgSincSymbol_le t)
 
 /-- The damped cosine symbol `cos(t⟨ξ⟩)/⟨ξ⟩`, the free propagator with one frequency of loss. -/
 noncomputable def kgCoscBCF (t : ℝ) : E →ᵇ ℂ :=

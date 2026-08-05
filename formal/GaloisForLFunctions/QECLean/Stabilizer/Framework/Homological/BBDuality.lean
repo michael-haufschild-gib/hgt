@@ -323,7 +323,6 @@ theorem bbDual_mem_dualBoundaries_iff (c : G × Fin 2 → ZMod 2) :
     exact hs
   · rintro ⟨f2, hf2⟩
     refine ⟨reflect (G := G) f2, ?_⟩
-    change (bbChainComplex A B).cutMap (reflect (G := G) f2) = bbDualFn c
     rw [← bbDualFn_bbBoundary2Fn]
     exact congrArg bbDualFn hf2
 
