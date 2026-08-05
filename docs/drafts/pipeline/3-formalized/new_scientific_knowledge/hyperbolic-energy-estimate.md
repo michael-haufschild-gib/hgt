@@ -576,6 +576,147 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 512 | **the energy in any annulus is trapped, two-sidedly** | **`kgFieldEnergy_annulus_trapped`** | **built** |
 | 513 | the energy splits across an annulus, autonomously | `kgFieldEnergy_annulus_split_static` | **built** |
 | 514 | **the spectral profile of a clock is frozen** | **`kgFieldEnergy_spectrum_frozen`** | **built** |
+| 515 | **a self-adjoint projection splits the norm of a datum orthogonally** | `norm_sq_split_of_proj` | **built** |
+| 516 | **the initial energy splits orthogonally across a band** | `kgDatum_energy_split` | **built** |
+| 517 | the same across any annulus | `kgDatum_energy_split_annulus` | **built** |
+| 518 | the energy inside an annulus obeys the estimate with its own initial energy | `kgFieldEnergyT_annulus_le` | **built** |
+| 519 | the same outside the annulus | `kgFieldEnergyT_annulus_compl_le` | **built** |
+| 520 | **the card's inequality, band by band, for a moving diagonal background** | **`kgFieldEnergyT_band_resolved`** | **built** |
+| 521 | the high-frequency energy of a moving diagonal background is charged to its own initial value | `kgFieldEnergyT_high_le` | **built** |
+| 522 | **no cascade on a finite window** | **`exists_cutoff_high_energy_small_window`** | **built** |
+| 523 | **on any finite window all but `ε` of the energy stays below a fixed frequency** | **`kgFieldEnergyT_no_uv_cascade_window`** | **built** |
+| 524 | the shifted frequency is nonnegative | `kgShiftedFreq_nonneg` | **built** |
+| 525 | its radicand is positive for a weak potential | `kgShiftedFreq_sq_arg_pos` | **built** |
+| 526 | **the shifted frequency is a genuine positive frequency** | **`kgShiftedFreq_pos`** | **built** |
+| 527 | **it squares to `⟨ξ⟩² + v`** | **`kgShiftedFreq_sq`** | **built** |
+| 528 | it is bounded below away from zero | `one_sub_le_kgShiftedFreq_sq` | **built** |
+| 529 | the shifted frequency is measurable | `measurable_kgShiftedFreq` | **built** |
+| 530 | the shifted symbols are measurable | `measurable_kgShiftedCos`, `measurable_kgShiftedSin`, `measurable_kgShiftedSinOverFreq` | **built** |
+| 531 | the shifted cosine and sine are bounded by one | `norm_kgShiftedCos_le`, `norm_kgShiftedSin_le` | **built** |
+| 532 | **`sin(tΩ)/Ω` is bounded by the elapsed time** | **`norm_kgShiftedSinOverFreq_le`** | **built** |
+| 533 | the shifted symbols are real | `starRingEnd_kgShiftedCos`, `starRingEnd_kgShiftedSinOverFreq` | **built** |
+| 534 | the shifted propagators are bounded | `norm_kgShiftedCosOp_le`, `norm_kgShiftedSinFreqOp_le` | **built** |
+| 535 | **the shifted propagators are self-adjoint** | `kgShiftedCosOp_inner`, `kgShiftedSinFreqOp_inner` | **built** |
+| 536 | the shifted symbols at time zero | `kgShiftedCos_zero`, `kgShiftedSin_zero`, `kgShiftedSinOverFreq_zero` | **built** |
+| 537 | **the cosine addition formula for the shifted frequency** | **`kgShiftedCos_add`** | **built** |
+| 538 | **the sine addition formula for the shifted frequency** | **`kgShiftedSin_add`** | **built** |
+| 539 | **the addition formula for `sin(tΩ)/Ω`**, valid where `Ω` degenerates | **`kgShiftedSinOverFreq_add`** | **built** |
+| 540 | the shifted symbols lie on the circle | `kgShiftedSin_sq_add_cos_sq` | **built** |
+| 541 | the shifted sine propagator | `kgShiftedSinOp`, `norm_kgShiftedSinOp_le` | **built** |
+| 542 | **the shifted cosine propagator is the identity at time zero** | `kgShiftedCosOp_zero` | **built** |
+| 543 | the shifted sine propagators vanish at time zero | `kgShiftedSinOp_zero`, `kgShiftedSinFreqOp_zero` | **built** |
+| 544 | **the group law of the shifted cosine propagator** | **`kgShiftedCosOp_add`** | **built** |
+| 545 | **the group law of the shifted sine propagator** | **`kgShiftedSinFreqOp_add`** | **built** |
+| 546 | **below a fixed frequency the shifted frequency is bounded** | `kgShiftedFreq_sq_le` | **built** |
+| 547 | the band bound is nonnegative | `band_bound_nonneg` | **built** |
+| 548 | the shifted cosine defect symbol is measurable | `measurable_kgShiftedCosDefectLow` | **built** |
+| 549 | **the shifted cosine defect is second order on a band** | `norm_kgShiftedCosDefectLow_le` | **built** |
+| 550 | **the shifted cosine propagator is the identity to second order below a fixed frequency** | **`norm_kgShiftedCosOp_lowPass_sub_le`** | **built** |
+| 551 | the shifted sine defect symbol is measurable | `measurable_kgShiftedSinDefectLow` | **built** |
+| 552 | **the shifted sine defect is third order on a band** | `norm_kgShiftedSinDefectLow_le` | **built** |
+| 553 | **the shifted sine propagator is multiplication by the elapsed time to third order** | **`norm_kgShiftedSinFreqOp_lowPass_sub_le`** | **built** |
+| 554 | **the shifted sine propagator differentiates to the shifted cosine propagator, below a fixed frequency** | **`hasDerivAt_kgShiftedSinFreqOp_lowPass`** | **built** |
+| 555 | the generator symbol is measurable | `measurable_kgShiftedFreqSqLow` | **built** |
+| 556 | **below a fixed frequency the generator symbol is bounded** | `norm_kgShiftedFreqSqLow_le` | **built** |
+| 557 | the generator symbol is real | `starRingEnd_kgShiftedFreqSqLow` | **built** |
+| 558 | **the generator of the shifted propagator on a band** | `kgShiftedFreqSqLowOp`, `norm_kgShiftedFreqSqLowOp_le` | **built** |
+| 559 | **the generator is self-adjoint** | `kgShiftedFreqSqLowOp_inner` | **built** |
+| 560 | **the cosine addition formula through the bounded sine symbol, cut to a band** | **`kgShiftedCos_add_lowPass`** | **built** |
+| 561 | **the group law of the shifted cosine propagator, in bounded form on a band** | **`kgShiftedCosOp_lowPass_add`** | **built** |
+| 562 | **the second equation of motion**: `d/dt cos(tΩ) = −Ω²·(sin(tΩ)/Ω)` on a band | **`hasDerivAt_kgShiftedCosOp_lowPass`** | **built** |
+| 563 | the complex symbol of a real diagonal potential | `kgRealPotSymbol`, `measurable_kgRealPotSymbol` | **built** |
+| 564 | it is bounded by the potential's size and is real | `norm_kgRealPotSymbol_le`, `starRingEnd_kgRealPotSymbol` | **built** |
+| 565 | the shifted frequency of a real potential uses the negated symbol | `abs_neg_pot_le` | **built** |
+| 566 | **the generator against `⟨D⟩⁻²` collapses to the equation's right-hand side** | **`kgFreqInvSq_kgShiftedFreqSqLow`** | **built** |
+| 567 | the shifted cosine propagator commutes with the band projection | `kgShiftedCosOp_kgLowPassOp_comm` | **built** |
+| 568 | the shifted sine propagator commutes with it | `kgShiftedSinFreqOp_kgLowPassOp_comm` | **built** |
+| 569 | the generator commutes with it | `kgShiftedFreqSqLowOp_kgLowPassOp_comm` | **built** |
+| 570 | **the collapse in operator form**: `⟨D⟩⁻²(Ω²χ(Pz)) = Pz − ⟨D⟩⁻²(p(Pz))` | **`kgFreqInvOp_sq_kgShiftedFreqSqLowOp`** | **built** |
+| 571 | the explicit field, velocity and acceleration of the shifted propagator | `kgShiftedField`, `kgShiftedVel`, `kgShiftedAcc` | **built** |
+| 572 | **the shifted field stays band-limited** | `kgLowPassOp_kgShiftedField` | **built** |
+| 573 | **the field differentiates to the velocity** | `hasDerivAt_kgShiftedField` | **built** |
+| 574 | **the velocity differentiates to the acceleration** | `hasDerivAt_kgShiftedVel` | **built** |
+| 575 | **the shifted field satisfies the strong equation** | **`kgShiftedField_equation`** | **built** |
+| 576 | **the shifted propagator is a strong solution of the band problem** | **`solvesKGSourceT_kgShifted`** | **built** |
+| 577 | it starts at the projected data | `kgShiftedField_zero`, `kgShiftedVel_zero` | **built** |
+| 578 | **it is the only strong solution with those data** | **`eq_kgShiftedField_of_solvesKGSourceT`** | **built** |
+| 579 | **the mild field of a real diagonal potential on a band is the shifted propagator** | **`kgFieldMildT_eq_kgShiftedField`** | **built** |
+| 580 | **the mild velocity is the shifted velocity** | **`kgFieldVelT_eq_kgShiftedVel`** | **built** |
+| 581 | **two symbols equal a.e. give the same multiplier, whatever bounds build it** | `fourierMulCLM_congr` | **built** |
+| 582 | **at zero potential the shifted frequency is the free frequency** | `kgShiftedFreq_zero` | **built** |
+| 583 | the shifted symbols reduce to the free symbols | `kgShiftedCos_zero_pot`, `kgShiftedSinOverFreq_zero_pot` | **built** |
+| 584 | **at zero potential the shifted cosine propagator is the free one** | `kgShiftedCosOp_zero_pot` | **built** |
+| 585 | **at zero potential the shifted sine propagator is the free one** | `kgShiftedSinFreqOp_zero_pot` | **built** |
+| 586 | **the modified energy of a real diagonal potential is exactly conserved** | **`kgFieldEnergy_conserved_diagonal`** | **built** |
+| 587 | **the field of a real diagonal potential, from band-limited data, is the shifted propagator — no band compression** | **`kgFieldMildT_diagonal_eq_kgShiftedField`** | **built** |
+| 588 | the potential that flattens the frequency below `√b` | `kgFlatPot`, `measurable_kgFlatPot` | **built** |
+| 589 | it is bounded by `b` | `abs_kgFlatPot_le` | **built** |
+| 590 | **on its band the shifted frequency is one** | **`kgShiftedFreq_kgFlatPot`** | **built** |
+| 591 | **on its band the shifted cosine symbol is the constant `cos t`** | `kgShiftedCos_kgFlatPot_lowPass` | **built** |
+| 592 | **on its band the shifted sine symbol is the constant `sin t`** | `kgShiftedSinOverFreq_kgFlatPot_lowPass` | **built** |
+| 593 | **on the flat band the shifted cosine propagator is the scalar `cos t`** | `kgShiftedCosOp_kgFlatPot` | **built** |
+| 594 | **on the flat band the shifted sine propagator is the scalar `sin t`** | `kgShiftedSinFreqOp_kgFlatPot` | **built** |
+| 595 | **the clock of the flattening potential is a plane rotation** | **`kgShiftedField_kgFlatPot`** | **built** |
+| 596 | **the clock is exactly `2π`-periodic** | **`kgShiftedField_kgFlatPot_periodic`** | **built** |
+| 597 | **it returns exactly to its initial state after one period** | **`kgShiftedField_kgFlatPot_two_pi`** | **built** |
+| 598 | on the flat band the generator symbol is the band symbol | `kgShiftedFreqSqLow_kgFlatPot_lowPass` | **built** |
+| 599 | **on the flat band the generator is the identity** | `kgShiftedFreqSqLowOp_kgFlatPot` | **built** |
+| 600 | **the velocity of the periodic clock is the rotated datum** | `kgShiftedVel_kgFlatPot` | **built** |
+| 601 | the velocity returns after one period | `kgShiftedVel_kgFlatPot_two_pi` | **built** |
+| 602 | **the monodromy of the periodic clock fixes every band-limited state** | **`kgMonodromy_kgFlatPot_fixed`** | **built** |
+| 603 | **the band compression of a self-adjoint operator is self-adjoint** | `kgBandOp_inner` | **built** |
+| 604 | **the periodic clock is a Floquet eigen-solution with multiplier one** | **`kgMonodromy_kgFlatPot_eigen`** | **built** |
+| 605 | **the shifted frequency is bounded below by `√(1−b)`** | `sqrt_one_sub_le_kgShiftedFreq` | **built** |
+| 606 | **the shifted sine symbol is bounded uniformly in time** | `norm_kgShiftedSinOverFreq_le_inv` | **built** |
+| 607 | so is the shifted sine propagator | `norm_kgShiftedSinFreqOp_le_inv` | **built** |
+| 608 | **a clock in a weak real diagonal potential does not drift** | **`norm_kgShiftedField_le`** | **built** |
+| 609 | **the velocity of a diagonal clock is bounded uniformly in time** | **`norm_kgShiftedVel_le`** | **built** |
+| 610 | **a diagonal clock drifts in neither position nor velocity** | **`norm_kgShiftedField_and_vel_le`** | **built** |
+| 611 | the potential that tunes the frequency to `c` on its band | `kgTunedPot`, `measurable_kgTunedPot` | **built** |
+| 612 | the frequency squares to `1 + ‖ξ‖²` | `kgFreq_sq_eq` | **built** |
+| 613 | **the tuned potential is admissible for `1 ≤ c² ≤ 1 + b`** | **`abs_kgTunedPot_le`** | **built** |
+| 614 | **on its band it makes the shifted frequency `c`** | **`kgShiftedFreq_kgTunedPot`** | **built** |
+| 615 | the shifted cosine symbol becomes `cos(ct)` there | `kgShiftedCos_kgTunedPot_lowPass` | **built** |
+| 616 | the shifted sine symbol becomes `sin(ct)/c` there | `kgShiftedSinOverFreq_kgTunedPot_lowPass` | **built** |
+| 617 | a positive square root at least one is at least one | `one_le_of_one_le_sq` | **built** |
+| 618 | **on the tuned band the shifted cosine propagator is the scalar `cos(ct)`** | `kgShiftedCosOp_kgTunedPot` | **built** |
+| 619 | **on the tuned band the shifted sine propagator is the scalar `sin(ct)/c`** | `kgShiftedSinFreqOp_kgTunedPot` | **built** |
+| 620 | **the tuned clock is the plane rotation at rate `c`** | **`kgShiftedField_kgTunedPot`** | **built** |
+| 621 | **it has exact period `2π/c`** | **`kgShiftedField_kgTunedPot_periodic`** | **built** |
+| 622 | **it returns to its initial state after one period** | **`kgShiftedField_kgTunedPot_period`** | **built** |
+| 623 | on the tuned band the generator symbol is `c²` times the band symbol | `kgShiftedFreqSqLow_kgTunedPot_lowPass` | **built** |
+| 624 | **on the tuned band the generator is multiplication by `c²`** | `kgShiftedFreqSqLowOp_kgTunedPot` | **built** |
+| 625 | **the velocity of the tuned clock is `−(c sin ct)Px + (cos ct)Py`** | **`kgShiftedVel_kgTunedPot`** | **built** |
+| 626 | the velocity returns after one period | `kgShiftedVel_kgTunedPot_period` | **built** |
+| 627 | **the state of the tuned clock returns after one period** | **`kgFieldStateT_kgTunedPot_period`** | **built** |
+| 628 | **the tuned clock is a Floquet eigen-solution with multiplier one at its own period** | **`kgMonodromy_kgTunedPot_eigen`** | **built** |
+| 629 | the phase acquired by the tuned clock, and its modulus one | `kgTunedPhase`, `norm_kgTunedPhase` | **built** |
+| 630 | **the clock started from `(Px, −icPx)` acquires that phase** | **`kgShiftedField_kgTunedPot_circle`** | **built** |
+| 631 | **so does its velocity** | **`kgShiftedVel_kgTunedPot_circle`** | **built** |
+| 632 | **the whole state rotates by the phase** | **`kgFieldStateT_kgTunedPot_circle`** | **built** |
+| 633 | **every point of the unit circle is an attained Floquet multiplier** | **`kgMonodromy_kgTunedPot_circle_eigen`** | **built** |
+| 634 | **the band carries a nonzero state** | **`exists_ne_zero_kgLowPassOp_fixed`** | **built** |
+| 635 | the frequency operator does not kill a nonzero band element | `kgFreqLowOp_ne_zero_of_fixed` | **built** |
+| 636 | a pair with nonzero first component is nonzero | `kgPair_ne_zero_of_fst` | **built** |
+| 637 | **the band supplies a nonzero energy-space datum** | **`exists_ne_zero_eigen_state`** | **built** |
+| 638 | **the periodic clock keeps exact time, by the general eigen-clock law** | **`exists_periodic_clock_energy_conserved`** | **built** |
+| 639 | **the unit-modulus law applied to the tuned clock** | **`exists_tuned_clock_multiplier_norm_one`** | **built** |
+| 640 | the phase is an exponential with imaginary exponent | `kgTunedPhase_eq_exp` | **built** |
+| 641 | **the flat envelope applied to the tuned clock** | **`exists_tuned_clock_flat_envelope`** | **built** |
+| 642 | **the state norm of the tuned eigen-clock is constant in time** | **`norm_kgFieldStateT_kgTunedPot_circle`** | **built** |
+| 643 | **it conserves its energy at every instant** | **`kgFieldEnergyT_kgTunedPot_circle`** | **built** |
+| 644 | **the gradient of the tuned clock from a real datum** | `kgFieldGradT_kgTunedPot_real` | **built** |
+| 645 | **its velocity** | `kgFieldVelT_kgTunedPot_real` | **built** |
+| 646 | **the exact energy of the tuned clock from a real datum** | **`kgFieldEnergyT_kgTunedPot_real`** | **built** |
+| 647 | **at time zero the energy is carried entirely by the gradient** | `kgFieldEnergyT_kgTunedPot_real_zero` | **built** |
+| 648 | **a quarter period later, entirely by the velocity** | `kgFieldEnergyT_kgTunedPot_real_quarter` | **built** |
+| 649 | **the energy never leaves the interval between the two** | **`kgFieldEnergyT_kgTunedPot_real_between`** | **built** |
+| 650 | **the projection is dominated by the frequency-weighted vector** | `norm_kgLowPassOp_le_norm_kgFreqLowOp` | **built** |
+| 651 | **and dominates it up to `√(1+R²)`** | `norm_kgFreqLowOp_le_norm_kgLowPassOp` | **built** |
+| 652 | **the excursion of the oscillating energy is the frequency spread of its band** | **`kgFieldEnergyT_kgTunedPot_real_spread`** | **built** |
+| 653 | **the explicit excursion factor lies inside the trapping band** | **`excursion_le_trap_band`** | **built** |
+| 654 | the gap between them is `2b²/(1−b)` | `trap_band_sub_excursion` | **built** |
+| 655 | **the model's energy obeys the general trapping bound** | **`kgFieldEnergyT_kgTunedPot_real_le_trap`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
@@ -640,7 +781,18 @@ Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` 
 `KleinGordonTrappedAllTime.lean` (430), `KleinGordonFloquetNormalForm.lean` (431–438),
 `KleinGordonEigenClock.lean` (439–442), `KleinGordonEigenEnvelope.lean` (443–453), `KleinGordonSymmetry.lean` (454–463), `KleinGordonMultiplierSymmetry.lean` (464–470), `KleinGordonBandExact.lean` (471–474), `KleinGordonBandSplitting.lean` (475–478),
 `KleinGordonSelfAdjointMultiplier.lean` (479–484),
-`KleinGordonBandEnergySplit.lean` (485–493), `KleinGordonAnnulus.lean` (494–504), `KleinGordonNoCascade.lean` (505–509), `KleinGordonSpectrumFrozen.lean` (510–514).
+`KleinGordonBandEnergySplit.lean` (485–493), `KleinGordonAnnulus.lean` (494–504), `KleinGordonNoCascade.lean` (505–509), `KleinGordonSpectrumFrozen.lean` (510–514), `KleinGordonBandResolved.lean` (515–520), `KleinGordonWindowCascade.lean` (521–523),
+`KleinGordonShiftedFrequency.lean` (524–535), `KleinGordonShiftedGroupLaw.lean` (536–545), `KleinGordonShiftedBandDefect.lean` (546–553), `KleinGordonShiftedDerivative.lean` (554), `KleinGordonShiftedGenerator.lean` (555–560),
+`KleinGordonShiftedEquationOfMotion.lean` (561–562),
+`KleinGordonShiftedInverseSquare.lean` (563–566),
+`KleinGordonShiftedBandCommutation.lean` (567–570),
+`KleinGordonShiftedStrongSolution.lean` (571–578),
+`KleinGordonShiftedIdentification.lean` (579–580), `KleinGordonShiftedFreeCase.lean` (581–586), `KleinGordonDiagonalClosedForm.lean` (587), `KleinGordonFlatBandPotential.lean` (588–592), `KleinGordonPeriodicClock.lean` (593–597), `KleinGordonMonodromyFixed.lean` (598–602), `KleinGordonEigenWitness.lean` (603–604), `KleinGordonDiagonalNoDrift.lean` (605–608),
+`KleinGordonDiagonalVelocityBound.lean` (609–610), `KleinGordonTunedClock.lean` (611–616), `KleinGordonTunedClockPeriod.lean` (617–622), `KleinGordonTunedVelocity.lean` (623–625), `KleinGordonTunedMonodromy.lean` (626–628), `KleinGordonTunedCircleData.lean` (629–631), `KleinGordonCircleMultiplier.lean` (632–633), `KleinGordonBandNonzero.lean` (634), `KleinGordonEigenStateNonzero.lean` (635–637),
+`KleinGordonPeriodicClockConserved.lean` (638),
+`KleinGordonTunedUnitModulus.lean` (639), `KleinGordonTunedFlatEnvelope.lean` (640–641), `KleinGordonTunedExactNorm.lean` (642–643), `KleinGordonTunedRealDatum.lean` (644–646), `KleinGordonTunedEnergyRange.lean` (647–649),
+`KleinGordonBandFrequencySpread.lean` (650–652),
+`KleinGordonModelInsideTrap.lean` (653–655).
 All wired into the umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -3218,6 +3370,390 @@ to the total, and no band gains or loses more than the fixed factor `(1+b)/(1−
 strictly stronger than the trapping of the total energy (statement 483), which on its own would permit
 energy to move freely between frequencies while the sum stayed put.
 
+### The estimate, band by band
+
+When the background *moves* the trapping law is no longer available — energy can genuinely be pumped in
+— but the decoupling survives untouched. So the card's inequality applies to each band separately, with
+that band's own initial energy on the right:
+
+**`kgFieldEnergyT_band_resolved`**: the energy splits across the annulus at every time, the initial
+energy splits with it (**`kgDatum_energy_split`**, from orthogonality of the projection), and each part
+satisfies `E_A(t) ≤ e^{2b|t|}·E_A(0)`.
+
+The decomposition is lossless — the band bounds add up to exactly the global bound — so what the
+band-resolved form adds is the *attribution*: a band's growth is charged to its own initial energy. A
+band that starts empty stays empty, however violently the background moves.
+
+This is enough to recover the no-cascade conclusion in window-limited form. On `[−T, T]` the
+exponential factor is bounded by `e^{2bT}`, and the initial high-frequency energy still tends to zero
+with the cutoff, so
+
+**`exists_cutoff_high_energy_small_window`**: for every `ε` and every window there is a cutoff above
+which the clock carries less than `ε` of energy throughout the window,
+
+and with the splitting, **`kgFieldEnergyT_no_uv_cascade_window`**. The dependence of the cutoff on the
+window is honest — a moving background really can pump energy upward, so the uniform-in-time statement
+of 508 is false here. What survives unconditionally is the attribution: the growth is always charged to
+the energy already in the band, never borrowed across a band boundary.
+
+### The shifted frequency
+
+A real frequency-diagonal potential does not change the *shape* of the Klein–Gordon equation, only its
+frequency: `ü + (⟨D⟩² + v)u = 0` is the free equation with `⟨ξ⟩` replaced by
+
+`Ω_v(ξ) = √(⟨ξ⟩² + v(ξ))`,
+
+and this is a genuine positive frequency whenever `|v| ≤ b < 1`, because `⟨ξ⟩² ≥ 1` leaves room for the
+perturbation (**`kgShiftedFreq_pos`**, **`one_sub_le_kgShiftedFreq_sq`**). The shifted symbols
+`cos(tΩ)`, `sin(tΩ)`, `sin(tΩ)/Ω` are measurable, real, and bounded — the third by the elapsed time
+alone (**`norm_kgShiftedSinOverFreq_le`**), which is what makes the shifted propagator bounded without
+any lower bound on the frequency — so they define Fourier multipliers, self-adjoint by statement 480.
+
+The bounds are proved unconditionally: where the radicand would be negative the Lean square root
+returns zero and `sin(tΩ)/Ω` returns zero, which satisfies the same estimate. The hypotheses on `v`
+enter only through the identity `Ω² = ⟨ξ⟩² + v`.
+
+The shifted symbols obey the addition formulas of the circle, and the multipliers they define inherit
+them. So the shifted propagator is a one-parameter family with exactly the algebra of the free one:
+
+**`kgShiftedCosOp_zero`**: it is the identity at time zero, and
+
+**`kgShiftedCosOp_add`**, **`kgShiftedSinFreqOp_add`**: advancing by `t + s` is advancing by `t` and
+then by `s`, with cosine and sine mixing as they do for the free field.
+
+The division by `Ω` is harmless throughout: `sin((t+s)Ω)/Ω = (sin(tΩ)/Ω)cos(sΩ) + cos(tΩ)(sin(sΩ)/Ω)`
+is an identity of division rings, so it holds where the shifted frequency degenerates as well, both
+sides being zero there.
+
+Below a fixed frequency the shifted frequency is bounded, `Ω² ≤ 1 + R² + b` (**`kgShiftedFreq_sq_le`**),
+so the Taylor estimates of the circle become uniform there:
+
+**`norm_kgShiftedCosOp_lowPass_sub_le`**: `‖(cos(τΩ) − 1)P_R‖ ≤ τ²(1 + R² + b)/2`,
+
+**`norm_kgShiftedSinFreqOp_lowPass_sub_le`**: `‖(sin(τΩ)/Ω − τ)P_R‖ ≤ |τ|³(1 + R² + b)/6`.
+
+These are the shifted counterparts of the free band estimates already in the corpus, and they are what
+makes the shifted propagator differentiable in operator norm on a band — the step that turns the
+shifted symbols into an actual solution operator.
+
+That step is now taken. The group law turns the increment of the shifted sine propagator into exactly
+those two defects,
+
+`S(s) − S(t) − (s−t)C(t) = S(t)(C(s−t) − 1) + C(t)(S(s−t) − (s−t))`,
+
+both quadratic in the increment below the cutoff, so
+
+**`hasDerivAt_kgShiftedSinFreqOp_lowPass`**: `d/dt (sin(tΩ)/Ω) = cos(tΩ)` on a band.
+
+This is the first of the two equations of motion of a frequency-diagonal background — the one carrying
+no unbounded factor.
+
+The second equation of motion carries the factor `Ω²`, which is unbounded — but bounded below a fixed
+frequency, by statement 546. So `Ω²χ_R` is a Fourier multiplier of norm at most `1 + R² + b`
+(**`norm_kgShiftedFreqSqLowOp_le`**), self-adjoint because its symbol is real
+(**`kgShiftedFreqSqLowOp_inner`**): the generator of the shifted propagator restricted to that band.
+
+The identity that will drive the second equation is the cosine addition formula rewritten through the
+*bounded* sine symbol,
+
+**`kgShiftedCos_add_lowPass`**: `cos((t+s)Ω)χ = cos(tΩ)cos(sΩ)χ − Ω²χ·(sin(tΩ)/Ω)·(sin(sΩ)/Ω)χ`,
+
+which holds because `Ω > 0` for a weak potential and the band symbol is idempotent.
+
+Composing multipliers turns that symbol identity into an operator identity on the band
+(**`kgShiftedCosOp_lowPass_add`**): `C(t+s)P = C(t)C(s)P − G·S(t)S(s)P`. Subtracting `C(t)P` and the
+linear term leaves exactly the two band defects of statements 550 and 553, both quadratic in the
+increment, so
+
+**`hasDerivAt_kgShiftedCosOp_lowPass`**: `d/dt cos(tΩ) = −Ω²·(sin(tΩ)/Ω)` on a band.
+
+With statement 554 this is the complete system of equations of motion of a frequency-diagonal
+background, written entirely in bounded operators — the form the mild theory needs.
+
+The strong form used by that theory reads `⟨D⟩⁻²ü = −u + ⟨D⟩⁻²(Wu)`, so the potential enters with a
+minus sign relative to the frequency: the natural frequency of a real diagonal potential `p` is
+`Ω² = ⟨ξ⟩² − p`. Against `⟨D⟩⁻²` the generator of that frequency collapses to exactly the equation's
+right-hand side:
+
+**`kgFreqInvSq_kgShiftedFreqSqLow`**: `⟨ξ⟩⁻²·Ω²χ·χ = χ − ⟨ξ⟩⁻²·p·χ`.
+
+This is the algebraic step that turns the two equations of motion into a strong solution.
+
+All the operators of the shifted calculus are Fourier multipliers, so they commute with the band
+projection (statements 567–569), and the collapse holds in operator form:
+
+**`kgFreqInvOp_sq_kgShiftedFreqSqLowOp`**: `⟨D⟩⁻²(Ω²χ(Pz)) = Pz − ⟨D⟩⁻²(p(Pz))`,
+
+both sides being multipliers of the same symbol. This is precisely the right-hand side the strong
+equation demands, so the candidate `u(t) = cos(tΩ)Pu₀ + (sin(tΩ)/Ω)Pu₁`, whose second derivative is
+`−Ω²χ·u(t)` by statements 554 and 562, satisfies it.
+
+### The explicit solution
+
+Putting the pieces together closes the construction. The field
+
+**`kgShiftedField`**: `u(t) = cos(tΩ)Px + (sin(tΩ)/Ω)Py`,   `Ω² = ⟨ξ⟩² − p`,
+
+stays band-limited (572), differentiates to `−Ω²χ(sin(tΩ)/Ω)Px + cos(tΩ)Py` (573), which
+differentiates to `−Ω²χ·u(t)` (574); against `⟨D⟩⁻²` that acceleration collapses to `−u + ⟨D⟩⁻²(p·u)`,
+and the band-compressed potential acts on the band-limited field as the potential itself, so
+
+**`solvesKGSourceT_kgShifted`**: the shifted propagator is a strong solution of the band problem, with
+`u(0) = Px`, `u̇(0) = Py`,
+
+and by the uniqueness of that problem (statements 278–281),
+
+**`eq_kgShiftedField_of_solvesKGSourceT`**: it is the **only** one.
+
+So for a real frequency-diagonal potential the clock is solved in closed form: the propagator is
+multiplication by `cos(tΩ)` and `sin(tΩ)/Ω` on the Fourier side, with `Ω` the shifted frequency.
+
+The corpus builds its solution as a *mild* solution of the Duhamel equation. That solution is also a
+strong solution of the band problem with the same data, so uniqueness identifies the two:
+
+**`kgFieldMildT_eq_kgShiftedField`**: the Duhamel field of a real diagonal potential on a band is
+`cos(tΩ)Px + (sin(tΩ)/Ω)Py`,
+
+and, by uniqueness of derivatives, **`kgFieldVelT_eq_kgShiftedVel`** for the velocity. The clock of a
+diagonal background is computed, not merely estimated.
+
+The construction contains the free field as the case `p = 0`: there the shifted frequency is `⟨ξ⟩`
+(**`kgShiftedFreq_zero`**) and each shifted operator is its free counterpart (**584**, **585**), the
+identification of multipliers being independent of which bound was used to build them
+(**`fourierMulCLM_congr`**).
+
+The same self-adjointness that discharged the trapping hypothesis discharges the hypothesis of the
+exact conservation law of statement 231, so
+
+**`kgFieldEnergy_conserved_diagonal`**: for **every** real diagonal potential — no smallness at all —
+the modified energy `E(t) − ⟨p·u(t), u(t)⟩` is exactly conserved.
+
+Finally the band compression can be removed. On a frequency-diagonal background it is exact for
+band-limited data (statement 473), so the solution of the *true* diagonal background, started from
+band-limited data, is the same closed form:
+
+**`kgFieldMildT_diagonal_eq_kgShiftedField`**: `u(t) = cos(tΩ)Px + (sin(tΩ)/Ω)Py`, with the potential
+itself and no compression.
+
+### A potential that flattens the frequency
+
+The shifted frequency is `Ω² = ⟨ξ⟩² − p`, and `p` is at our disposal. Taking
+
+**`kgFlatPot`**: `p(ξ) = ‖ξ‖²` for `‖ξ‖ ≤ √b`, and `0` beyond,
+
+makes `Ω = 1` identically on that band (**`kgShiftedFreq_kgFlatPot`**), and `|p| ≤ b` holds precisely
+because the band is where `‖ξ‖²` does not exceed `b`. On such a band the shifted symbols lose their
+dependence on the frequency altogether:
+
+`cos(tΩ)χ = (cos t)χ`,   `(sin(tΩ)/Ω)χ = (sin t)χ`.
+
+A clock started from data in that band therefore runs at a single frequency — the step towards an
+exactly periodic clock, and towards showing that the eigen-class of the Floquet theory is not empty.
+
+At the operator level this makes the shifted propagator multiplication by scalars (**593**, **594**),
+so the closed form of the solution collapses to a plane rotation:
+
+**`kgShiftedField_kgFlatPot`**: `u(t) = (cos t)Px + (sin t)Py`.
+
+Hence **`kgShiftedField_kgFlatPot_periodic`**: the clock is exactly `2π`-periodic, and
+**`kgShiftedField_kgFlatPot_two_pi`**: it returns exactly to its initial state after one period. This
+is a genuine bounded real potential — not a limiting or degenerate case — in which a clock repeats
+itself exactly.
+
+The velocity returns with it. On the flat band the generator `Ω²χ` is the band projection itself
+(**`kgShiftedFreqSqLowOp_kgFlatPot`**), so the velocity is `−(sin t)Px + (cos t)Py` and equals `Py` at
+`t = 2π`. Transporting both through the identification of statements 579 and 580 — the gradient by the
+injectivity of `⟨D⟩⁻¹` — gives the energy-space form:
+
+**`kgMonodromy_kgFlatPot_fixed`**: the monodromy at `2π` fixes every band-limited state, `M v = v`.
+
+So the eigen-class of the Floquet theory is **not empty**: in a genuine bounded real potential every
+nonzero band-limited datum is an eigenvector of the monodromy with multiplier one, and the eigen-clock
+statements 434–453 apply to it.
+
+In the exact form the Floquet layer uses, with the band compression of a self-adjoint potential itself
+self-adjoint (**`kgBandOp_inner`**):
+
+**`kgMonodromy_kgFlatPot_eigen`**: `M v = 1 · v`.
+
+Every statement proved for eigen-solutions — the shift law 434, the exact stroboscopic growth 436, the
+normal form 438, the exact conservation 441, the flat envelope 453 — therefore has a model, and its
+predictions are visible directly in the plane rotation of statement 595.
+
+### No drift
+
+The closed form also bounds the *field*, which the energy estimates do not. The shifted frequency of a
+weak potential is bounded below, `Ω ≥ √(1−b)` (**`sqrt_one_sub_le_kgShiftedFreq`**), so the sine
+propagator is bounded by `1/√(1−b)` **uniformly in time** rather than by the elapsed time
+(**`norm_kgShiftedSinFreqOp_le_inv`** — the estimate `‖sin(tΩ)/Ω‖ ≤ |t|` of statement 532 is the one
+that must degrade as `Ω → 0`, and a weak potential never lets that happen). Hence
+
+**`norm_kgShiftedField_le`**: `‖u(t)‖ ≤ ‖Px‖ + ‖Py‖/√(1−b)` for **all** `t`.
+
+The card's estimates bound the pair `(⟨D⟩u, u̇)`; this bounds the field itself, and says a clock in
+such a background does not drift, however long it runs.
+
+The velocity is bounded the same way: the generator is bounded on a band (558) and the sine propagator
+uniformly in time (607), so
+
+**`norm_kgShiftedVel_le`**: `‖u̇(t)‖ ≤ (1+R²+b)/√(1−b)·‖Px‖ + ‖Py‖`,
+
+and together (**`norm_kgShiftedField_and_vel_le`**) a clock in a weak real diagonal background drifts
+in neither position nor velocity, however long it runs.
+
+### Tunable clock rates
+
+The flattening construction has a free parameter. For any rate `c` with `1 ≤ c² ≤ 1 + b` the potential
+
+**`kgTunedPot`**: `p(ξ) = ⟨ξ⟩² − c²` on `‖ξ‖ ≤ √(c² − 1 + b)`, `0` beyond,
+
+is admissible — its size is at most `b` exactly on that band (**`abs_kgTunedPot_le`**) — and makes the
+shifted frequency identically `c` there (**`kgShiftedFreq_kgTunedPot`**), so the shifted symbols become
+the constants `cos(ct)` and `sin(ct)/c`.
+
+The strength of the potential therefore buys a whole interval of clock rates, `1 ≤ c ≤ √(1+b)`, each
+with its own exact period `2π/c`; the case `c = 1` is the flattening potential of statement 588.
+
+At the operator level the propagator is again multiplication by scalars (**618**, **619**), so
+
+**`kgShiftedField_kgTunedPot`**: `u(t) = cos(ct)Px + (sin(ct)/c)Py`,
+
+**`kgShiftedField_kgTunedPot_periodic`**: the clock has exact period `2π/c`, and
+**`kgShiftedField_kgTunedPot_period`**: it returns to its initial state there. As `c` runs over
+`[1, √(1+b)]` this realises every period in `[2π/√(1+b), 2π]`.
+
+The generator is multiplication by `c²` on that band (**`kgShiftedFreqSqLowOp_kgTunedPot`**), so the
+velocity is the one the second-order equation prescribes:
+
+**`kgShiftedVel_kgTunedPot`**: `u̇(t) = −(c sin(ct))Px + (cos(ct))Py`.
+
+Field and velocity together are the rotation of the pair `(Px, Py)` at rate `c`, the sine entries
+carrying the reciprocal factors `1/c` and `c`.
+
+At `t = 2π/c` both return, so the state returns (**`kgFieldStateT_kgTunedPot_period`**) and
+
+**`kgMonodromy_kgTunedPot_eigen`**: `M v = 1 · v` at the period `2π/c`.
+
+The Floquet eigen-class is therefore inhabited at **every** period in `[2π/√(1+b), 2π]`, each by its
+own admissible potential.
+
+The rotation has complex eigenvectors, and they give multipliers other than one. Started from the pair
+`(Px, −icPx)`, both field and velocity acquire the same scalar
+
+**`kgTunedPhase`**: `k(t) = cos(ct) − i sin(ct) = e^{−ict}`,   `‖k(t)‖ = 1`,
+
+by **`kgShiftedField_kgTunedPot_circle`** and **`kgShiftedVel_kgTunedPot_circle`**. This is the datum
+that will exhibit an arbitrary point of the unit circle as an attained Floquet multiplier, at every
+period — not only the value one.
+
+Transporting both components to the energy space gives the eigenvector equation at an **arbitrary**
+period `T`:
+
+**`kgMonodromy_kgTunedPot_circle_eigen`**: `M v = e^{−icT} · v` with `‖e^{−icT}‖ = 1`.
+
+Statement 440 forces every attained multiplier of a weak static real potential onto the unit circle.
+This shows the constraint is exactly sharp: as `T` runs over `ℝ`, `e^{−icT}` runs over the whole
+circle, so every unit-modulus number really occurs as a multiplier of an admissible potential.
+
+Finally the eigenvectors are not the zero vector. The low-pass symbol is the indicator of a closed
+ball, which is compact — hence of finite measure — and of positive measure, so it is a nonzero element
+of `L²` fixed by multiplication by itself; transporting it back through the Fourier transform gives
+
+**`exists_ne_zero_kgLowPassOp_fixed`**: a nonzero `z` with `P_R z = z`, for every `R > 0`.
+
+That is what the statements requiring a nonvanishing datum — the unit-modulus law 440, the exact
+conservation 441, the flat envelope 453 — need in order to apply.
+
+The frequency operator does not kill it — applying `⟨D⟩⁻¹` to `⟨D⟩_R z` returns `z` — so the
+energy-space datum built from it is nonzero as well:
+
+**`exists_ne_zero_eigen_state`**: a nonzero `kgPair(⟨D⟩_R z, P_R y)` with `P_R z = z`.
+
+The Floquet eigenvectors exhibited for the periodic and tuned clocks are therefore genuine
+eigenvectors, and every conditional statement of the eigen-theory has a complete model.
+
+Every hypothesis of the eigen-clock law of statement 441 is then available: the flattening potential
+is bounded by `b`, its band compression is self-adjoint (603), its monodromy at `2π` fixes the band
+(604), and the datum is nonzero (637). So the general theorem fires, and its conclusion is exactly the
+conservation the plane rotation exhibits:
+
+**`exists_periodic_clock_energy_conserved`**: `E(2πn) = E(0)`.
+
+That is the general machinery of the card checked end to end against a model where the answer is
+already known by inspection.
+
+The same is true of the unit-modulus law. Statement 440 derives `|k| = 1` from the two-sided bound on
+the powers of the monodromy; the tuned clock computes its multiplier to be `e^{−icT}`, of modulus one
+by inspection. Applying the general law to that clock —
+
+**`exists_tuned_clock_multiplier_norm_one`** —
+
+recomputes the same number by a completely different route: one spectral, one explicit.
+
+The third check is the envelope. Writing the phase as `e^{μT}` with `μ = −ic` (**`kgTunedPhase_eq_exp`**)
+supplies the exponent the normal form asks for, and the general theorem gives
+
+**`exists_tuned_clock_flat_envelope`**: constants `0 < m ≤ M` with `m ≤ ‖v(t)‖ ≤ M` for all `t`.
+
+The model shows this directly, since the state is multiplied by a phase and its norm is constant. Once
+more the abstract route — through the periodic part of the normal form, its continuity and its
+compactness on one period — reaches the same conclusion.
+
+The model in fact does better than the general theorems it confirms. Because the state is multiplied
+by a unit-modulus phase,
+
+**`norm_kgFieldStateT_kgTunedPot_circle`**: the state norm is *constant*, not merely trapped, and
+
+**`kgFieldEnergyT_kgTunedPot_circle`**: the energy is conserved at **every** instant, not only at
+multiples of a period.
+
+The general laws give a band (483), a flat envelope (453) and stroboscopic conservation (441); on this
+clock all three collapse to a single exact conservation law.
+
+That collapse is a property of the *datum*, not of the background. Started instead from a real datum —
+vanishing velocity — the same clock has
+
+`⟨D⟩u(t) = cos(ct)·⟨D⟩_R x`,   `u̇(t) = −(c sin(ct))·P_R x`,
+
+so **`kgFieldEnergyT_kgTunedPot_real`**:
+
+`E(t) = cos²(ct)·‖⟨D⟩_R x‖² + c² sin²(ct)·‖P_R x‖²`.
+
+The energy genuinely oscillates, exchanging between gradient and velocity, and the size of the swing
+is the spread between `‖⟨D⟩_R x‖` and `c‖P_R x‖`. So the band of statement 483 is not an artifact of
+the proof: within a diagonal background the energy really does move, and only the complex eigen-data
+hold it fixed.
+
+The range is exact. The energy is a convex combination of its two extreme values with weights
+`cos²(ct)` and `sin²(ct)`, so it never leaves the interval between them
+(**`kgFieldEnergyT_kgTunedPot_real_between`**) and reaches both ends:
+
+`E(0) = ‖⟨D⟩_R x‖²` (**647**),   `E(π/2c) = c²‖P_R x‖²` (**648**).
+
+The oscillation is therefore a complete exchange between the gradient and the velocity, once per
+quarter period, with no dissipation and no growth.
+
+Its size is the frequency spread of the band. Downwards `⟨D⟩⁻¹` recovers the projection from the
+frequency-weighted vector and has norm at most one; upwards the frequency operator on the band has
+norm `√(1+R²)`. So
+
+**`kgFieldEnergyT_kgTunedPot_real_spread`**: `‖P_R x‖² ≤ ‖⟨D⟩_R x‖² ≤ (c² + b)·‖P_R x‖²`,
+
+using `1 + R² = c² + b` for the tuned band. The two extreme values of the energy therefore lie within
+a factor `c² + b ≤ 1 + 2b` of one another — remarkably close to the general trapping band
+`(1+b)/(1−b)`, which for small `b` is also `1 + 2b + O(b²)`. The general law and the explicit model
+agree to first order in the strength of the potential.
+
+That comparison is itself a theorem. The explicit factor is below the general one
+(**`excursion_le_trap_band`**: `c² + b ≤ (1+b)/(1−b)`), the gap being exactly `2b²/(1−b)`
+(**`trap_band_sub_excursion`**), and running the explicit formula through it recovers the general
+bound:
+
+**`kgFieldEnergyT_kgTunedPot_real_le_trap`**: `E(t) ≤ (1+b)/(1−b)·E(0)` for the model.
+
+So the abstract estimate of statement 483 and the computed model agree, the model sits strictly inside
+the band, and the discrepancy between them is second order in the strength of the potential.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -3238,6 +3774,112 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-05 — statements 653–655: **the model sits inside the trap.** `c² + b ≤ (1+b)/(1−b)` with gap
+  `2b²/(1−b)`, and the explicit energy formula reproduces the general trapping bound.
+- 2026-08-05 — statements 650–652: **the excursion is the frequency spread.** `‖P_R x‖ ≤ ‖⟨D⟩_R x‖ ≤
+  √(1+R²)‖P_R x‖`, so the oscillating energy's two extremes lie within a factor `c² + b ≤ 1 + 2b` —
+  matching the general trapping band `(1+b)/(1−b)` to first order in `b`.
+- 2026-08-05 — statements 647–649: **the exact range.** The oscillating energy is a convex combination
+  of `‖⟨D⟩_R x‖²` and `c²‖P_R x‖²`, attains both at `t = 0` and `t = π/2c`, and never leaves the
+  interval between them.
+- 2026-08-05 — statements 644–646: **a real datum oscillates.** From vanishing velocity the tuned
+  clock's energy is `cos²(ct)‖⟨D⟩_R x‖² + c²sin²(ct)‖P_R x‖²` — it genuinely swings, so the trapping
+  band is not vacuous and exact conservation is a property of the eigen-datum.
+- 2026-08-05 — statements 642–643: **exact conservation at every instant.** The unit-modulus phase
+  makes the tuned eigen-clock's state norm constant, so its energy is conserved continuously — sharper
+  than the band, the envelope and the stroboscopic law that the general theory provides.
+- 2026-08-05 — statements 640–641: **the flat envelope on the tuned clock.** With the phase written
+  as `e^{−icT}` the normal-form envelope theorem applies and returns the constant bounds the explicit
+  rotation displays.
+- 2026-08-05 — statement 639: **the unit-modulus law on the tuned clock.** The spectral derivation of
+  `|k| = 1` and the explicit computation `k = e^{−icT}` agree.
+- 2026-08-05 — statement 638: **the machinery checked against the model.** Every hypothesis of the
+  eigen-clock law holds for the flattening potential, so the general theorem yields `E(2πn) = E(0)` —
+  the conservation the explicit plane rotation shows directly.
+- 2026-08-05 — statements 635–637: **the eigen-state is nonzero.** `⟨D⟩_R` does not kill a nonzero
+  band element, so the energy-space datum is nonzero and the exhibited Floquet eigenvectors are
+  genuine.
+- 2026-08-05 — statement 634: **the band is nontrivial.** The low-pass symbol is the indicator of a
+  ball of positive finite measure, so the band contains a nonzero state and the eigenvectors exhibited
+  for the Floquet theory are genuinely nonzero.
+- 2026-08-05 — statements 632–633: **the circle is exactly the multiplier set.** The complex datum's
+  state rotates by `e^{−icT}`, so at an arbitrary period the monodromy has that eigenvalue: the
+  unit-circle constraint of statement 440 is sharp.
+- 2026-08-05 — statements 629–631: **the complex datum.** Started from `(Px, −icPx)` the tuned clock
+  multiplies field and velocity by the unit-modulus phase `e^{−ict}` — the eigenvector that will give
+  non-trivial Floquet multipliers.
+- 2026-08-05 — statements 626–628: **the tuned monodromy.** At its own period the tuned clock returns
+  in field and velocity, so its monodromy fixes the band: the eigen-class is inhabited at every period
+  in `[2π/√(1+b), 2π]`.
+- 2026-08-05 — statements 623–625: **the tuned velocity.** The generator is multiplication by `c²` on
+  the tuned band, so the velocity of the plane rotation is `−(c sin ct)Px + (cos ct)Py`.
+- 2026-08-05 — statements 617–622: **the tuned clock's period.** The tuned propagator is
+  multiplication by `cos(ct)` and `sin(ct)/c`, so the clock is the plane rotation at rate `c` with
+  exact period `2π/c`, realising every period in `[2π/√(1+b), 2π]`.
+- 2026-08-05 — statements 611–616: **tunable clock rates.** The flattening potential generalises to a
+  one-parameter family: any rate `c` with `1 ≤ c² ≤ 1 + b` is realised by an admissible potential, so
+  the potential's strength buys an interval of exact clock periods.
+- 2026-08-05 — statements 609–610: **the velocity does not drift either.** The bounded generator and
+  the uniformly bounded sine propagator bound the velocity uniformly in time, completing the no-drift
+  pair.
+- 2026-08-05 — statements 605–608: **no drift.** The shifted frequency is bounded below by `√(1−b)`,
+  so the sine propagator is bounded uniformly in time and the field of a diagonal clock stays bounded
+  for all time.
+- 2026-08-05 — statements 603–604: **the eigenvector equation.** Band compression preserves
+  self-adjointness, and the periodic clock satisfies `M v = 1·v` in the exact form the Floquet layer
+  uses — every eigen-solution statement now has a model.
+- 2026-08-05 — statements 598–602: **the monodromy fixes the band.** The generator is the band
+  projection on the flat band, so the velocity returns with the field, and the monodromy at `2π` fixes
+  every band-limited state — the eigen-class of the Floquet theory is inhabited.
+- 2026-08-05 — statements 593–597: **an exactly periodic clock.** On the flat band the shifted
+  propagator is multiplication by `cos t` and `sin t`, so the clock is a plane rotation: exactly
+  `2π`-periodic, returning to its initial state after one period.
+- 2026-08-05 — statements 588–592: **a potential that flattens the frequency.** `p(ξ) = ‖ξ‖²` below
+  `√b` makes the shifted frequency identically one there, so the shifted symbols become the constants
+  `cos t` and `sin t` on that band.
+- 2026-08-05 — statement 587: **the closed form without the band.** Band compression is exact on a
+  diagonal background for band-limited data, so the true diagonal potential's field is the shifted
+  propagator as well.
+- 2026-08-05 — statements 581–586: **the free case, and exact conservation.** At zero potential the
+  shifted calculus is the free calculus; and a real diagonal potential is self-adjoint, so its modified
+  energy is exactly conserved with no smallness assumption.
+- 2026-08-05 — statements 579–580: **the mild solution in closed form.** The Duhamel field and
+  velocity of a real diagonal potential on a band coincide with the shifted propagator, by strong
+  uniqueness and uniqueness of derivatives.
+- 2026-08-05 — statements 571–578: **the explicit solution.** The shifted propagator is a strong
+  solution of the band problem for a real frequency-diagonal potential, and by the uniqueness of that
+  problem it is the only one: the clock is solved in closed form on the Fourier side.
+- 2026-08-05 — statements 567–570: **the collapse in operator form.** The shifted operators commute
+  with the band projection, and `⟨D⟩⁻²(Ω²χ(Pz)) = Pz − ⟨D⟩⁻²(p(Pz))` — the right-hand side of the
+  strong equation.
+- 2026-08-05 — statements 563–566: **the generator against the inverse square frequency.** The real
+  potential's complex symbol, and the collapse `⟨ξ⟩⁻²Ω²χ² = χ − ⟨ξ⟩⁻²pχ` that matches the right-hand
+  side of the strong equation.
+- 2026-08-05 — statements 561–562: **the second equation of motion.** The band form of the cosine
+  addition formula becomes an operator identity, and its increment reduces to the two quadratic band
+  defects, so the shifted cosine propagator differentiates to minus the generator times the shifted
+  sine propagator. The equations of motion are now complete in bounded form.
+- 2026-08-05 — statements 555–560: **the generator on a band.** `Ω²χ_R` is a bounded self-adjoint
+  Fourier multiplier, and the cosine addition formula rewritten through the bounded sine symbol is the
+  identity that will produce the second equation of motion.
+- 2026-08-05 — statement 554: **the shifted propagator differentiates.** The group law expresses the
+  increment through the two band defects, both quadratic, so the shifted sine propagator has a
+  derivative below a cutoff and it is the shifted cosine propagator.
+- 2026-08-05 — statements 546–553: **the shifted propagator on a band.** The shifted frequency is
+  bounded below a cutoff, so the circle's Taylor estimates become uniform: the shifted cosine is the
+  identity to second order and the shifted sine is multiplication by the elapsed time to third order.
+- 2026-08-05 — statements 536–545: **the group law of the shifted propagator.** The shifted symbols
+  satisfy the circle addition formulas, so the multipliers they define form a one-parameter family with
+  the free algebra: identity at time zero, and composition adding the times.
+- 2026-08-05 — statements 524–535: **the shifted frequency.** The symbol layer of a real diagonal
+  potential: `Ω = √(⟨ξ⟩² + v)` is a positive frequency for `|v| ≤ b < 1`, and the shifted propagator
+  symbols are bounded, real, and measurable, hence self-adjoint Fourier multipliers.
+- 2026-08-05 — statements 521–523: **no cascade on a finite window.** For a moving diagonal background
+  the exponential factor is bounded on a window, so a cutoff depending on the window confines all but
+  `ε` of the energy below it throughout that window.
+- 2026-08-05 — statements 515–520: **the estimate band by band.** For a moving diagonal background the
+  bands still decouple, the initial energy splits orthogonally with them, and each band obeys the card's
+  inequality charged to its own initial energy.
 - 2026-08-05 — statements 510–514: **the spectral profile is frozen.** Each band is an independent
   clock, so the trapping law confines its energy two-sidedly around its own initial value; with the
   splitting, no band gains or loses more than the fixed factor at any time.

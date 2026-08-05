@@ -111,3 +111,266 @@ Equation-level derivations with generous constants, in dependency order:
    bookkeeping before L6.
 
 - 2026-08-05 — constant stress test done (this section); L2 document is the next block.
+
+- 2026-08-05 — **L2 paper document complete**: `littlewood-l2-weyl-chain.md` — (KL) with
+  constant `1/δ + 1`; (D2) `5hN√λ + 15/√λ`; the windowed Weyl step (W); the k-th derivative
+  test (Dk) with the honest exponent pair `(h²λ)^{e_k}` / `N^{1−2^{2−k}}λ^{−2^{1−k}}` and the
+  **bounded** constant recursion `A_k ≤ 15√A_{k−1} + 4 ≤ 256` (better than every stress-tested
+  growth law); (Z) the dyadic assembly.  Honest-shape re-certification: ratios to
+  `log t/log log t` = 2.09 / 1.56 / 1.33 / 1.19 at `log t = 230 … 230259`.  Remaining in L2:
+  the stage-(R) region-transfer numeric gate; then L3 (Lean Kuzmin–Landau) begins.
+
+## 2026-08-05 L2 CLOSED: the (R) gate certifies a positive region constant
+
+End-to-end numeric gate (Ford-detector + 3-4-1, log-domain, with the certified honest-shape
+Weyl-chain growth `B(x, L)` as the ONLY analytic input; pole term `3/(aδ) + 3`, detected-zero
+cot expansion with its `π²(a+1)δ/(8η²)` correction, right-line `log(1/(aδ+η)) + 2`,
+prefactor `5/(2η)`):
+
+```text
+log t =  2303:  ζ ≠ 0 for σ ≥ 1 − 0.0149·loglog t/log t   (a = 6, η = 4·(loglog t)²/log t)
+log t = 23026:  c = 0.0179                                 (a = 6, η = 8·(loglog t)²/log t)
+```
+
+The constant increases with height, matching the symbolic balance (the window lives at
+`η ≍ (loglog t)²/log t`, where the `φ`-term, the `log(1/η)` right-line term, and the
+`loglog` remainders all sit at the same scale; the region constant tends to an absolute
+limit).  **The entire Littlewood chain — (KL), (D2), (W), (Dk), (Z), (R) — is now
+dependency-closed on paper and numerically certified end-to-end with crude constants.**
+
+Stage status: L1 ✓, L2 ✓ (this entry).  Next: **L3 — `Sieve/KuzminLandau.lean`**, per the
+Lean mapping in `littlewood-l2-weyl-chain.md`.
+
+- 2026-08-05 — L2 closed; region constant gate certified positive.
+
+## 2026-08-05 L3 built: Kuzmin–Landau in Lean
+
+`RHTower/Sieve/KuzminLandau.lean` (wired into `RHTower.lean`; targeted build 3272 jobs pass;
+axioms only `propext, Classical.choice, Quot.sound`; zero warnings):
+
+- `sin_pi_mul_pos`, `two_mul_le_sin_pi_mul` (Jordan on the band, both halves via
+  `Real.mul_le_sin` and `sin_pi_sub`), `cot_pi_mul_antitone` (the `sin_sub` cross-difference
+  identity), `cot_pi_mul_le`;
+- `klCoeff β = −1/2 − i·cot(πβ)/2` with `klCoeff_mul` (inverts the phase chord; proof via the
+  factorization `e(β) − 1 = 2S(−S + Ci)` and `linear_combination` against `I² = −1` and
+  `S² + C² = 1`), `norm_klCoeff_le ≤ 1/(4δ)` (through the corpus's `norm_exp_I_sub_one` /
+  Jordan chord lemmas from `ChordalSeparation`), `norm_klCoeff_sub` (differences are purely
+  imaginary cotangent differences — the telescoping device);
+- **`kuzminLandau_band`**: a phase sequence with monotone increments confined to `[δ, 1−δ]`
+  has exponential sum `≤ 3/(2δ) + 1`, uniformly in length.  Summation by parts is mathlib's
+  partial-sum `Finset.sum_range_by_parts` (which costs the harmless factor 2 relative to the
+  paper's `1/δ + 1` — constants are certified irrelevant), and the coefficient variation
+  telescopes by `Finset.sum_range_sub'` since the cotangent values are antitone.
+
+Lean traps recorded: `positivity` cannot use sign hypotheses (`0 < π·β` needs `nlinarith`);
+mathlib's `sum_range_by_parts` is the partial-sum Abel form (`f·g` with `∑g`-partials), not
+the `f·Δg` form; `push_cast` turns `((Real.sin x : ℝ) : ℂ)` into `Complex.sin ↑x` — keep
+`ofReal` atoms via `simp only [Complex.ofReal_*]` instead when matching `set`-abbreviations;
+`Complex.norm_ofReal` does not exist — use `Complex.norm_real` + `Real.norm_eq_abs`.
+
+Index regeneration deferred to the next module batch (L4) per efficiency discipline.
+
+Stage status: L1 ✓, L2 ✓, **L3 ✓**.  Next: **L4 — the windowed Weyl step (W) and the k-fold
+iteration**, pure Cauchy–Schwarz/counting per the L2 mapping.
+
+- 2026-08-05 — L3 built and verified.
+
+## 2026-08-05 L4 (first half) built: the windowed Weyl–van der Corput inequality
+
+`RHTower/Sieve/WeylDifferencing.lean` (wired into `RHTower.lean`; targeted build 3274 jobs;
+axioms only `propext, Classical.choice, Quot.sound`; zero warnings):
+
+- `weylCorr a N h` — the `h`-shifted autocorrelation `∑_{n<N−h} a(n+h)·conj(a n)`, with
+  `norm_weylCorr_zero_le` (energy `≤ N` for bounded coefficients);
+- `weylShift`/`sum_weylShift` — the `if`-supported shifted windows (each sums to the full sum;
+  no fibre combinatorics anywhere);
+- `sum_weylShift_mul_conj` — two shifted windows correlate to a shifted autocorrelation
+  (`Ico`-filter collapse + `sum_Ico_eq_sum_range` reindexing), symmetric via conjugation
+  (`norm_sum_weylShift_mul_conj` with the `max/min` distance);
+- `sum_norm_weylCorr_row_le` — one row of shifts costs at most twice the distance-indexed sum
+  (two explicit `sum_bij'` reindexings);
+- **`weyl_vdc`**: for `‖a n‖ ≤ 1` and any window `1 ≤ H ≤ N`,
+
+  ```text
+  H·‖∑_{n<N} a n‖² ≤ 4N·(N + ∑_{h=1}^{H−1} ‖weylCorr a N h‖).
+  ```
+
+  Chain: averaged representation (`H·S = ∑ T_m` over the enlarged window) → Cauchy–Schwarz
+  (`sq_sum_le_card_mul_sum_sq`, needs `import Mathlib.Algebra.Order.Chebyshev`) → energy
+  expansion through `re` (`Complex.mul_conj`, `re_le_norm`) → the row bound → zero-shift
+  split-off.  The correlation sums run over full truncated ranges — exactly what the (Dk)
+  induction consumes when `a` is a smooth phase.
+
+Bug caught by the compiler during the build: the first draft of the row lemma's second
+bijection evaluated the distance function at `d + r` instead of `d` — a genuine mathematical
+slip, fixed with the `max/min` rewrites.
+
+Stage status: L1 ✓, L2 ✓, L3 ✓, **L4a ✓** (windowed Weyl step).  Next: **L4b — the (D2)
+second-derivative test** (Kuzmin–Landau + integer-crossing splitting), then **L5 — the (Dk)
+induction** consuming `weyl_vdc` and (D2).
+
+- 2026-08-05 — L4a built and verified.
+
+## 2026-08-05 L4b-i built: Kuzmin–Landau at unit-spaced sample points
+
+`RHTower/Sieve/KuzminLandauInterval.lean` (wired; build 3273 jobs; axioms only
+`propext, Classical.choice, Quot.sound`; zero warnings; one-iteration compile):
+
+- `exp_two_pi_I_sub_int` — integer shifts leave the phase `e(y)` unchanged
+  (`Complex.exp_int_mul_two_pi_mul_I`);
+- **`kuzminLandau_interval`** — for a phase `g` with `HasDerivAt g (g' x) x` on the span,
+  `g'` monotone and confined to one integer band `[m+δ, m+1−δ]`:
+
+  ```text
+  ‖∑_{j=0}^{M} e(g(x₀+j))‖ ≤ 3/(2δ) + 1,
+  ```
+
+  uniformly in `M`.  The bridge: `exists_hasDerivAt_eq_slope` per unit step (with the slope
+  denominator normalized by `field_simp; ring`), interlacing of the mean-value points for the
+  increment monotonicity, per-goal `obtain`s (no global choice needed — the increments are
+  canonical, the MVT only bounds them), and the integer shift `φ j = g(x₀+j) − m·j` feeding
+  the discrete `kuzminLandau_band`.
+
+Stage status: L1–L3 ✓, L4a ✓ (Weyl step), **L4b-i ✓** (calculus bridge).  Remaining in L4b:
+(ii) the monotone-fibre interval splitting (fibres of a monotone `ℤ`-classification on
+`range N` are integer intervals; image count bounded by the classification range), and
+(iii) the (D2) assembly via the region index `I(y) = ⌊y−δ⌋ + ⌊y+δ⌋` (even = band → the
+interval lemma above; odd = gap → trivial count from the slope at the fibre's endpoints).
+
+- 2026-08-05 — L4b-i built and verified.
+
+## 2026-08-05 L4b-ii built: monotone-fibre interval splitting
+
+`RHTower/Sieve/MonotoneFibers.lean` (wired into `RHTower.lean`; targeted build 8693 jobs;
+axioms only `propext, Classical.choice, Quot.sound`; zero warnings). Also re-audited
+`KuzminLandauInterval.lean` after the span weakening (`Icc x₀ (x₀+M)` instead of `x₀+M+1` —
+the D2 fibres only control the derivative up to the last sample point): both build clean.
+
+- `sum_eq_sum_image_fibers` / `norm_sum_le_sum_image_fibers` — a sum over `range N` splits
+  over the fibres of any `ℤ`-classification (`Finset.sum_fiberwise_of_maps_to`);
+- `filter_eq_Ico_of_monotone` — fibres of a monotone classification are integer intervals
+  (`min'`/`max'` endpoints + the monotone squeeze `K min' ≤ K n ≤ K max'` forces membership);
+- `card_image_le_of_monotone` — the number of distinct values is `≤ K(N−1) − K(0) + 1`
+  (image ⊆ `Icc (K 0) (K (N−1))`, `Int.card_Icc`, cast bridge via
+  `congrArg (fun z : ℤ => (z : ℝ)) (Int.toNat_of_nonneg _)` — `push_cast` alone mangles the
+  `toNat` coercion inconsistently between hypothesis and goal; lift the ℤ-equation to ℝ by
+  `congrArg` first, then `push_cast; ring`).
+
+Stage status: L1–L3 ✓, L4a ✓, L4b-i ✓, **L4b-ii ✓**.  Next: **L4b-iii — the (D2) assembly**
+via the region index `I(y) = ⌊y−δ⌋ + ⌊y+δ⌋` (monotone in `y`; even values = bands
+`[m+δ, m+1−δ)` with `m = v/2` → `kuzminLandau_interval` per fibre; odd values = gaps →
+fibre length `≤ 2δ/λ + 1` from the slope lower bound at the fibre's endpoints; value count
+`≤ 2Nhλ + 3` from `card_image_le_of_monotone`; `δ = √λ/2`; target
+`‖S‖ ≤ 12hN√λ + 18/√λ`).
+
+- 2026-08-05 — L4b-ii built and verified.
+
+## 2026-08-05 L4b CLOSED: the (D2) second-derivative test in Lean
+
+`RHTower/Sieve/SecondDerivativeTest.lean` (wired into `RHTower.lean`; targeted build 8694
+jobs; axioms only `propext, Classical.choice, Quot.sound`; zero warnings):
+
+- `regionIdx δ y = ⌊y−δ⌋ + ⌊y+δ⌋` with `regionIdx_mono`, `regionIdx_diff_le`
+  (`≤ 2·(y'−y) + 2`), and the parity dichotomy for `2δ ≤ 1`: `regionIdx_even_band`
+  (`= m+m ⟹ y ∈ [m+δ, m+1−δ]`) and `regionIdx_odd_gap` (`= 2m+1 ⟹ y ∈ [m+1−δ, m+1+δ)`) —
+  proved by the two-floor squeeze `⌊y−δ⌋ ≤ ⌊y+δ⌋ ≤ ⌊y−δ⌋+1` plus `omega` parity;
+- **`second_derivative_test`**: for `λ ≤ g'' ≤ h·λ` on the span, `0 < λ ≤ 1`,
+
+  ```text
+  ‖∑_{n<N} e(g(x₀+n))‖ ≤ (2Nhλ + 3)·(3/√λ + 1),
+  ```
+
+  with `δ = √λ/2`; even fibres feed `kuzminLandau_interval` (band transferred from the two
+  fibre endpoints to the whole run by `MonotoneOn g'`), odd fibres are counted by the
+  MVT slope (`λ·M < 2δ` across the gap), the fibre count by `card_image_le_of_monotone` +
+  `regionIdx_diff_le` + the upper MVT bound;
+- **`second_derivative_test'`**: the expanded form `‖S‖ ≤ 8Nh√λ + 12/√λ` (better than the
+  paper target `12hN√λ + 18/√λ`); `1 ≤ h` is derived, not assumed, from `λ ≤ g''(x₀) ≤ hλ`.
+
+Lean traps: `Real.sqrt_le_one` is now an iff (`.mpr`); `⌊·⌋`-definitions must be
+`noncomputable`; never `rw [← hsqsq]` when the goal contains `Real.sqrt lam` (it rewrites
+`lam` inside the sqrt — use `linear_combination c * hsqsq` instead); division bounds done
+inv-form (`div_eq_mul_inv` + `mul_inv_cancel₀` + `nlinarith`) to avoid the deprecated
+`lt_div_iff` family.
+
+Stage status: L1–L3 ✓, L4a ✓, **L4b ✓ (D2 complete)**.  Next: **L5 — the (Dk) induction**
+consuming `weyl_vdc` + `second_derivative_test'` (statement per
+`littlewood-l2-weyl-chain.md`: `A_k ≤ 256`, window `H := ⌈(h²λ)^{−e'/(1+e')}⌉ ⊓ N`,
+exponent identity `e_k = (1/2)·e'/(1+e')`, trivial branch when `h²λ > 1`).
+
+- 2026-08-05 — L4b closed (D2 built and verified).
+
+## 2026-08-05 L5 (Dk) CLOSED: the k-th derivative test in Lean
+
+Two new modules (wired into `RHTower.lean`; targeted build 8697 jobs; axioms only
+`propext, Classical.choice, Quot.sound`; zero warnings):
+
+`RHTower/Sieve/PhaseCorrelation.lean`:
+- `exp_mul_conj_exp` (phases multiply against conjugates by phase subtraction),
+- `weylCorr_phase` — the shifted autocorrelation of `n ↦ e(g(x₀+n))` IS the exponential sum
+  of the difference phase `x ↦ g(x+h) − g(x)` over `range (N−h)`,
+- `norm_weylCorr_le`, `norm_phase_sum_le_card` (trivial bounds).
+
+`RHTower/Sieve/KthDerivativeTest.lean`:
+- **`kth_derivative_test`**: for a derivative chain `G` (`HasDerivAt (G i) (G (i+1) x) x`,
+  `i < k`) with `λ ≤ G k ≤ h·λ` on the span, `0 < λ ≤ 1 ≤ h`, `k ≥ 2`:
+
+  ```text
+  ‖∑_{n<N} e(G 0(x₀+n))‖ ≤ 256·( N·(h²λ)^{1/(2^k−2)} + N^{1−4/2^k}·λ^{−2/2^k} ),
+  ```
+
+  by `Nat.le_induction` (base = `second_derivative_test'`, 8Nh√λ+12/√λ ≤ 256(...)).
+  Step: window `H := min ⌈(h²λ)^{−e'/(1+e')}⌉₊ N` in `weyl_vdc`; each correlation is the
+  difference phase via `weylCorr_phase` and consumes the IH at `(λ', h') = (h'λ, h)` — same
+  ratio one order down (MVT slope) — with the trivial bound absorbed by `(h²h'λ)^{e'} ≥ 1`
+  when `h'λ > 1`, and `h²λ ≥ 1` handled before windowing.  Case split cap/no-cap; the
+  exponent identities `e'/(1+e') = 2e_{k+1}`, `2β' = 1+β`, `2γ' = γ` square the bound back;
+  the final constants are `√2052 ≤ 256` (no cap) and `√2052 ≤ 256` (cap).
+
+Lean traps recorded: `rw [pow_succ]` on the goal grabbed `hgrow^2` (first-match
+instantiation!) — pin with `rw [show ((2:ℝ)^(k+1)) = (2:ℝ)^k*2 from pow_succ 2 k]`;
+`set`-bound locals make `linarith`/`nlinarith` zeta-unfold rpow towers — `clear_value` the
+whole batch once their defining equations are banked, and use `linarith only [...]`
+everywhere in the giant context (the bare simplex ran past 1.6M heartbeats);
+`le_or_lt` is gone — `le_or_gt`; `div_le_div_iff` → `div_le_div_iff₀`; `rw` closes
+`weylCorr_phase`-goals by rfl through let-bound difference phases (don't add congr steps).
+
+Stage status: L1–L4 ✓, **L5 (Dk) ✓**.  Next: **(Z) — the dyadic assembly**: block data
+`g(x) = −(t/2π)·log x` on `(N, 2N]` (`λ = (t/2π)(k−1)!(2N)^{−k}`, `h = 2^k`, `(h²)^{e_k} ≤ 4`),
+Abel `1/n` weights, per-block k-minimization vs the trivial `log 2`, `∑_{n≤t}` truncation →
+`ζ(1+it) ≤ C·log t/loglog t` and the rectangle version; then L6 (Ford transfer).
+
+- 2026-08-05 — L5 (Dk) built and verified.
+
+## 2026-08-05 (Z) opened: block layer built (Z1 concrete phase, Z2 Abel)
+
+Two new modules (wired; targeted builds 8698/8699 jobs; axioms clean; zero warnings):
+
+`RHTower/Sieve/LogPhaseBlock.lean` (Z1):
+- `logPhase t = -(t/2π)·log`, `logPhaseChain t` (i-th member `(t/2π)(−1)^i(i−1)!·x^{−i}`),
+  `logPhaseChain_hasDerivAt` (honest chain on `(0,∞)`; `HasDerivAt.inv` on `x^{i+1}`),
+  `logPhaseChain_signed_bounds` (the sign-corrected member pinned on `[A,B]`),
+  `norm_phase_sum_neg` (negated phase = conjugated sum; norms equal),
+  `natCast_cpow_neg_I_mul` (`n^{-it}` IS the phase `e(g_t(n))`);
+- **`dirichlet_block_bound`**: for `k ≥ 2`, `λ = (t/2π)(k−1)!/(2N)^k ≤ 1`, a run of `L`
+  phases inside `[N, 2N]`: `‖∑_{j<L}(N+j)^{-it}‖ ≤ 256(L(4^kλ)^{e_k} + L^{1−4/2^k}λ^{−2/2^k})`
+  — even `k` feeds the chain to `kth_derivative_test` directly, odd `k` negates it.
+
+`RHTower/Sieve/DirichletBlockAbel.lean` (Z2):
+- `sum_weight_mul_eq_abel` (discrete Abel identity on `Ico N M`, ℂ-valued, prefix sums
+  against backward weight differences plus boundary),
+- `abel_block_bound` (**Abel's inequality**: decreasing nonneg weight × uniformly bounded
+  prefixes ≤ `P·w(N)`),
+- `dirichlet_block_one_bound` (`n^{-1-it} = (1/n)·n^{-it}` via `cpow_add`; ≤ `P/N`),
+- **`dirichlet_block_one_full`**: the composed dyadic bound
+  `‖∑_{N≤n<M} n^{-1-it}‖ ≤ 256((M−N)(4^kλ)^{e_k} + (M−N)^{1−4/2^k}λ^{−2/2^k})/N`
+  for `N ≤ M ≤ 2N+1` (every prefix run through Z1; monotone in the run length).
+
+Remaining in (Z): **Z3** — the schedule: head `∑_{n≤X₀} 1/n ≤ log X₀ + 1` with
+`X₀ ≈ t^{1/m}`, `m ≈ loglog t`; per tail block `k(N) := ⌈log t/log N⌉ + 1` (or its
+`t ≤ N^{k−1/2}` refinement) with the `λ ≤ 1` gate `(k−1)! ≤ 2π·2^k·√N` and per-block bound
+`≤ C/log t`; sum over `≤ log₂ t` blocks.  **Z4** — the `∑_{n≤t}` truncation from the
+PNTPlus `ZetaSum/Zeta0EqZeta` layer (`riemannZeta0_apply` at `s = 1+it`).  **Z5** — the
+rectangle version (`w n = n^{−σ}` in the same `abel_block_bound`).
+
+- 2026-08-05 — Z1+Z2 built and verified.

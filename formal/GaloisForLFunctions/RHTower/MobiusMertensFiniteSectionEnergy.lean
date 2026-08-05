@@ -351,14 +351,14 @@ private theorem exists_finiteSection_envelope_of_mertensBound
     {theta C sigma : ℝ} (htheta : 0 ≤ theta) (hC : 0 ≤ C)
     (hM : ∀ n : ℕ, ‖mobiusMertensPartialSum n‖ ≤
       C * ((n : ℝ) + 1) ^ theta) :
-    ∃ m : ℕ, ∀ N : ℕ, ∀ u : ℝ,
+    ∃ m : ℕ, sigma < m ∧ ∀ N : ℕ, ∀ u : ℝ,
       ‖mobiusLaplaceFiniteSectionLogMellinLineSource N sigma u‖ ≤
         twoSidedExpEnvelope
           (C * (Real.exp (theta ^ 2) + 2 ^ theta * mixedSubpowerAbelConstant theta))
           ((∑' k : ℕ, Real.exp (-(k : ℝ))) * (Nat.factorial m : ℝ))
           (sigma - theta) ((m : ℝ) - sigma) u := by
   obtain ⟨m : ℕ, hm⟩ := exists_nat_gt sigma
-  refine ⟨m, fun N u => ?_⟩
+  refine ⟨m, hm, fun N u => ?_⟩
   let A : ℝ := C * (Real.exp (theta ^ 2) + 2 ^ theta * mixedSubpowerAbelConstant theta)
   let B : ℝ := (∑' k : ℕ, Real.exp (-(k : ℝ))) * (Nat.factorial m : ℝ)
   by_cases hu : u ≤ 0
@@ -453,10 +453,10 @@ theorem mobiusLaplaceFiniteSectionEnergyBounded_of_mertensBound
     (hthetaSigma : theta < sigma)
     (hM : ∀ n : ℕ, ‖mobiusMertensPartialSum n‖ ≤
       C * ((n : ℝ) + 1) ^ theta) :
-    ∃ E : ℝ≥0∞, E ≠ ∞ ∧ ∀ N : ℕ,
+    ∃ E : ENNReal, E ≠ ⊤ ∧ ∀ N : ℕ,
       eLpNorm (mobiusLaplaceFiniteSectionLogMellinLineSource N sigma) 2 volume ≤ E := by
-  obtain ⟨m, henvelope⟩ :=
-    exists_finiteSection_envelope_of_mertensBound htheta hC hM
+  obtain ⟨m, hm, henvelope⟩ :=
+    exists_finiteSection_envelope_of_mertensBound (sigma := sigma) htheta hC hM
   let A : ℝ := C * (Real.exp (theta ^ 2) + 2 ^ theta * mixedSubpowerAbelConstant theta)
   let B : ℝ := (∑' k : ℕ, Real.exp (-(k : ℝ))) * (Nat.factorial m : ℝ)
   let g : ℝ → ℝ := twoSidedExpEnvelope A B (sigma - theta) ((m : ℝ) - sigma)
@@ -468,13 +468,17 @@ theorem mobiusLaplaceFiniteSectionEnergyBounded_of_mertensBound
     dsimp [B]
     positivity
   have hp : 0 < sigma - theta := sub_pos.mpr hthetaSigma
-  have hq : 0 < (m : ℝ) - sigma := sub_pos.mpr (by exact_mod_cast m.property)
+  have hq : 0 < (m : ℝ) - sigma := sub_pos.mpr (by exact_mod_cast hm)
   have hg : MemLp g 2 volume :=
     memLp_twoSidedExpEnvelope hA hB hp hq
-  let E : ℝ≥0∞ := eLpNorm g 2 volume
+  let E : ENNReal := eLpNorm g 2 volume
   refine ⟨E, ne_of_lt hg.eLpNorm_lt_top, fun N => ?_⟩
   apply eLpNorm_mono_ae
   exact Filter.Eventually.of_forall fun u => by
+    have hgu : 0 ≤ g u := by
+      dsimp only [g, twoSidedExpEnvelope]
+      split_ifs <;> positivity
+    rw [Real.norm_of_nonneg hgu]
     simpa only [g, A, B] using henvelope N u
 
 /-- Littlewood's Mertens estimate under RH yields uniform finite-section logarithmic energy on

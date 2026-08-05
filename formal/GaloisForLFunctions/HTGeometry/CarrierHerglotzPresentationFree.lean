@@ -49,7 +49,6 @@ canonical finite pattern satisfies no algebraic differential equation on the upp
 theorem not_differentiallyAlgebraicOn_herglotzPresentation_weightedBoundaryCarrier
     (eta : Measure (OnePoint ℝ)) [IsFiniteMeasure eta]
     (density : Lp ℝ (⊤ : ENNReal) eta)
-    [IsFiniteMeasure (weightedBoundaryCarrier F.base.toBoundaryFamily eta density)]
     (M : ℂ)
     (hfree : ∀ (p : FiniteDifferentialPattern Unit)
       (shift : InjectiveShiftConfiguration (CarrierPatternShift p))

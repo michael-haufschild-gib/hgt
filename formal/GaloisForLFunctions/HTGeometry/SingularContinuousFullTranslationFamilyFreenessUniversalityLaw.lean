@@ -225,9 +225,8 @@ arbitrary finite family of distinct translated Cauchy transforms. -/
 theorem
     not_familyDifferentiallyAlgebraicOn_translatedCauchy_of_allFinitePatterns_relationFree
     {m : ℕ}
-    (eta : Measure (OnePoint ℝ))
+    (eta : Measure (OnePoint ℝ)) [IsFiniteMeasure eta]
     (density : Lp ℝ (⊤ : ENNReal) eta)
-    [IsFiniteMeasure (weightedBoundaryCarrier F.base.toBoundaryFamily eta density)]
     (hfree : ∀ (p : FiniteDifferentialPattern ℕ)
       (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
       (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),
@@ -326,9 +325,8 @@ Herglotz polynomial gauge. -/
 theorem
     not_familyDifferentiallyAlgebraicOn_translatedHerglotz_of_allFinitePatterns_relationFree
     {m : ℕ}
-    (eta : Measure (OnePoint ℝ))
+    (eta : Measure (OnePoint ℝ)) [IsFiniteMeasure eta]
     (density : Lp ℝ (⊤ : ENNReal) eta)
-    [IsFiniteMeasure (weightedBoundaryCarrier F.base.toBoundaryFamily eta density)]
     (hfree : ∀ (p : FiniteDifferentialPattern ℕ)
       (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
       (coeff : CarrierPatternMonomial p × Fin (p.coefficientDegree + 1) → ℂ),

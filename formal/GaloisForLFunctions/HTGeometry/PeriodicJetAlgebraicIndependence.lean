@@ -83,53 +83,79 @@ theorem eq_zero_of_eval_translate_orbit {a : ℂ} (ha : a ≠ 0)
 
 /-! ## The coordinate is transcendental over the periodic jets -/
 
-/-- **The coordinate is transcendental over any algebra of translation-invariant functions.**  A
-polynomial relation with invariant coefficients is constant along the translation orbit, and the
-orbit is infinite. -/
-theorem transcendental_coe_of_periodic {n : ℕ} {F : Fin n → ℂ → ℂ} {a : ℂ} (ha : a ≠ 0)
-    (hS : ∀ w ∈ S, w + a ∈ S) (hper : ∀ k, ∀ w ∈ S, F k (w + a) = F k w) :
-    Transcendental (↥(Algebra.adjoin ℂ (Set.range (fun k => Set.restrict S (F k)))))
-      (fun w : S => (w : ℂ)) := by
-  set A := Algebra.adjoin ℂ (Set.range (fun k => Set.restrict S (F k))) with hA
-  have hle : A ≤ regionPeriodicSubalgebra a hS := by
-    rw [hA]
-    refine Algebra.adjoin_le ?_
-    rintro g ⟨k, rfl⟩
-    rw [SetLike.mem_coe, mem_regionPeriodicSubalgebra_iff]
-    intro w
-    exact hper k w w.2
+/-- A subalgebra whose members are constant along an infinite orbit through every point. -/
+def HasInfiniteConstancyOrbits (S : Set ℂ) (A : Subalgebra ℂ (S → ℂ)) : Prop :=
+  ∀ w : S, ∃ O : ℕ → S, O 0 = w ∧ Function.Injective (fun j => ((O j : ℂ))) ∧
+    ∀ g ∈ A, ∀ j, g (O j) = g w
+
+/-- **The coordinate is transcendental over any subalgebra with infinite constancy orbits.**  A
+relation with such coefficients is, along an orbit, a polynomial in the coordinate with frozen
+coefficients; the orbit is infinite, so the polynomial vanishes and the coefficients vanish at the
+base point.  Every point is a base point, so they vanish identically. -/
+theorem transcendental_coe_of_infiniteConstancyOrbits {A : Subalgebra ℂ (S → ℂ)}
+    (h : HasInfiniteConstancyOrbits S A) : Transcendental A (fun w : S => (w : ℂ)) := by
   rintro ⟨p, hp0, hp⟩
   set ev : S → (↥A →+* ℂ) := fun v =>
     (Pi.evalRingHom (fun _ : S => ℂ) v).comp (algebraMap (↥A) (S → ℂ)) with hev
   have hevapp : ∀ (v : S) (c : ↥A), ev v c = (c : S → ℂ) v := fun _ _ => rfl
   have key : ∀ v : S, (p.map (ev v)).eval ((v : ℂ)) = 0 := by
     intro v
-    have h := congrFun hp v
-    rw [Polynomial.aeval_def] at h
     have hcomm := Polynomial.hom_eval₂ p (algebraMap (↥A) (S → ℂ))
       (Pi.evalRingHom (fun _ : S => ℂ) v) (fun w : S => (w : ℂ))
+    have hpp := congrFun hp v
+    rw [Polynomial.aeval_def] at hpp
     rw [Polynomial.eval_map]
     calc Polynomial.eval₂ (ev v) ((v : ℂ)) p
         = (Pi.evalRingHom (fun _ : S => ℂ) v)
             (Polynomial.eval₂ (algebraMap (↥A) (S → ℂ)) (fun w : S => (w : ℂ)) p) := hcomm.symm
-      _ = 0 := h
+      _ = 0 := hpp
   refine hp0 (Polynomial.ext fun i => ?_)
   rw [Polynomial.coeff_zero]
   refine Subtype.ext (funext fun w => ?_)
-  have hconst : ∀ (m : ℕ), p.map (ev ((regionShift a hS)^[m] w)) = p.map (ev w) := by
-    intro m
-    refine Polynomial.ext fun j => ?_
+  obtain ⟨O, hO0, hOinj, hOconst⟩ := h w
+  have hconst : ∀ j, p.map (ev (O j)) = p.map (ev w) := by
+    intro j
+    refine Polynomial.ext fun r => ?_
     rw [Polynomial.coeff_map, Polynomial.coeff_map, hevapp, hevapp]
-    exact apply_iterate_eq_of_mem_regionPeriodicSubalgebra (hle (p.coeff j).2) w m
-  have hroots : ∀ m : ℕ, (p.map (ev w)).eval ((w : ℂ) + m * a) = 0 := by
-    intro m
-    rw [← coe_regionShift_iterate a hS w m, ← hconst m]
-    exact key _
-  have hzero := eq_zero_of_eval_translate_orbit ha w _ hroots
-  have := congrArg (fun r : ℂ[X] => r.coeff i) hzero
-  rw [Polynomial.coeff_map, hevapp] at this
-  simpa using this
+    exact hOconst _ (p.coeff r).2 j
+  have hroots : ∀ j : ℕ, (p.map (ev w)).eval ((O j : ℂ)) = 0 := by
+    intro j
+    rw [← hconst j]
+    exact key (O j)
+  have hzero : p.map (ev w) = 0 := by
+    refine Polynomial.eq_zero_of_infinite_isRoot _ ?_
+    exact Set.infinite_of_injective_forall_mem hOinj hroots
+  have hcoeff := congrArg (fun r : Polynomial ℂ => r.coeff i) hzero
+  rw [Polynomial.coeff_map, hevapp] at hcoeff
+  simpa using hcoeff
 
+/-- Translation orbits are infinite constancy orbits for any subalgebra of invariant functions. -/
+theorem hasInfiniteConstancyOrbits_of_le_periodic {a : ℂ} (ha : a ≠ 0)
+    (hS : ∀ w ∈ S, w + a ∈ S) {A : Subalgebra ℂ (S → ℂ)}
+    (hle : A ≤ regionPeriodicSubalgebra a hS) : HasInfiniteConstancyOrbits S A := by
+  intro w
+  refine ⟨fun j => (regionShift a hS)^[j] w, by simp, ?_, ?_⟩
+  · intro j₁ j₂ hj
+    simp only [coe_regionShift_iterate] at hj
+    have h1 : (j₁ : ℂ) * a = (j₂ : ℂ) * a := add_left_cancel hj
+    have hcast : (j₁ : ℂ) = (j₂ : ℂ) := mul_right_cancel₀ ha h1
+    exact_mod_cast hcast
+  · intro g hg j
+    exact apply_iterate_eq_of_mem_regionPeriodicSubalgebra (hle hg) w j
+
+/-- **The coordinate is transcendental over the jets when they are translation-invariant.**  The
+translation-orbit case of the constancy law. -/
+theorem transcendental_coe_of_periodic {n : ℕ} {F : Fin n → ℂ → ℂ} {a : ℂ} (ha : a ≠ 0)
+    (hS : ∀ w ∈ S, w + a ∈ S) (hper : ∀ k, ∀ w ∈ S, F k (w + a) = F k w) :
+    Transcendental (↥(Algebra.adjoin ℂ (Set.range (fun k => Set.restrict S (F k)))))
+      (fun w : S => (w : ℂ)) := by
+  refine transcendental_coe_of_infiniteConstancyOrbits
+    (hasInfiniteConstancyOrbits_of_le_periodic ha hS ?_)
+  refine Algebra.adjoin_le ?_
+  rintro g ⟨k, rfl⟩
+  rw [SetLike.mem_coe, mem_regionPeriodicSubalgebra_iff]
+  intro v
+  exact hper k v v.2
 
 /-! ## Periodicity adjoins the coordinate -/
 

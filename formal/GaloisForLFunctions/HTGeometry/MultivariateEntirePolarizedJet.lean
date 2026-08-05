@@ -43,11 +43,10 @@ theorem polarizedJetEvalCLM_apply {d n : ℕ} (x : Fin d → ℂ)
   simp only [polarizedJetEvalCLM, _root_.sum_apply,
     _root_.smul_apply, directionalJetEvalCLM_apply]
 
-/-- For a genuinely Frechet-holomorphic source, the polarized continuous observation is exactly
-the ordinary ordered mixed Frechet jet. -/
+/-- The polarized continuous observation is exactly the ordinary ordered mixed Frechet jet. -/
 theorem polarizedJetEvalCLM_eq_iteratedFDeriv {d n : ℕ}
     (x : Fin d → ℂ) (dirs : Fin n → (Fin d → ℂ))
-    (f : MultivariateEntire d) (hf : ContDiff ℂ (⊤ : WithTop ℕ∞) f.1) :
+    (f : MultivariateEntire d) :
     polarizedJetEvalCLM x dirs f =
       iteratedFDeriv ℂ n f.1 x dirs := by
   have hsymm : ∀ σ : Equiv.Perm (Fin n),
@@ -55,9 +54,9 @@ theorem polarizedJetEvalCLM_eq_iteratedFDeriv {d n : ℕ}
         iteratedFDeriv ℂ n f.1 x dirs := by
     intro σ
     simpa [Function.comp_def] using
-      (hf.contDiffAt.iteratedFDeriv_comp_perm dirs σ)
+      ((MultivariateEntire.contDiff f).contDiffAt.iteratedFDeriv_comp_perm dirs σ)
   rw [polarizedJetEvalCLM_apply]
-  simp_rw [directionalJetEval_eq_iteratedFDeriv _ _ f hf]
+  simp_rw [directionalJetEval_eq_iteratedFDeriv _ _ f]
   simpa [jetPolarizationCoeff, jetSubsetDirection] using
     continuousMultilinearMap_symmetric_polarization
       (iteratedFDeriv ℂ n f.1 x) dirs hsymm
@@ -99,15 +98,15 @@ theorem orderedPartialJetEvalCLM_apply {d n : ℕ} (x : Fin d → ℂ)
   rfl
 
 /-- Ordered coordinate observations are the ordinary ordered coordinate values of the iterated
-Frechet derivative on every Frechet-holomorphic source. -/
+Frechet derivative. -/
 theorem orderedPartialJetEvalCLM_eq_iteratedFDeriv {d n : ℕ}
     (x : Fin d → ℂ) (word : Fin n → Fin d)
-    (f : MultivariateEntire d) (hf : ContDiff ℂ (⊤ : WithTop ℕ∞) f.1) :
+    (f : MultivariateEntire d) :
     orderedPartialJetEvalCLM x word f =
       iteratedFDeriv ℂ n f.1 x
         (fun j ↦ coordinateJetDirection (word j)) := by
   exact polarizedJetEvalCLM_eq_iteratedFDeriv x
-    (fun j ↦ coordinateJetDirection (word j)) f hf
+    (fun j ↦ coordinateJetDirection (word j)) f
 
 end
 

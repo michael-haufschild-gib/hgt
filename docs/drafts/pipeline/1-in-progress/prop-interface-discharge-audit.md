@@ -4486,3 +4486,645 @@ Nor is there a sign argument for `r ≥ 1`: `Im[(ζₙ − z)^{-(r+1)}]` has arg
 `(0, (r+1)π)`, so terms of `L^{(r)}` take both signs on a horizontal line, unlike `L` itself where
 every term contributes positively.  The `m k = 0` restriction is forced by the method, not chosen for
 convenience, and removing it needs a genuinely different idea.
+
+## Audit: the corpus-`Prop` axis reads zero
+
+Re-run on `HTGeometry ∪ RHTower` after rebuilding both umbrellas:
+
+    constants 162099; propDefs 2220; consumed 608; never-concluded 0; ungrounded 0
+
+Down from `never-concluded 6; ungrounded 8` nine cycles ago.  **Every project-`Prop` interface
+consumed as a hypothesis in those two areas is now established somewhere in the corpus.**
+
+Credit where due: the five `…ExpandedFullRankWitness` rows were discharged by a **parallel agent**,
+not by this line of work — `FullRankWitnessInhabitation.lean` and the dense-residual theorems
+`global_injectiveShifts_movingCanonicalExpandedFullRankWitness_dense_residual` and
+`allFinitePatterns_…` in `MovingCanonicalFullTranslationRankGenericity.lean` are new and not mine.
+From this thread the axis gained `GrowthSeparation`, `HasBlowUpSet`, the singular-continuous
+witnesses, and the two instrument fixes (`ExistsUnique`, container keys) that removed phantom rows.
+
+Note on scope: pointing the instrument at `GaloisForLFunctions.MainTheorems` (all six areas plus the
+three vendored ones) is not worth it — the vendored builds are enormous and their `Prop` interfaces
+are read-only anyway.  The instrument is now aimed at `HTGeometry ∪ RHTower ∪ HilbertMetric`, the
+areas this work can act on.
+
+## Vanishing becomes data — `IntegerGradedIndependence.lean`
+
+The graded law admitted only blow-up, so a member that *vanishes* at the sampled points had no order
+in it and the family fell outside its reach.  That was the obstruction to differentiated companion
+jets: a companion may vanish at a sampled zero, and then the monomial's order is unknown.
+
+Nothing in the argument needs non-negative orders.  The relation is multiplied by `t ^ (D − ord a)`,
+a difference of the maximal order with the member's own, and that is non-negative however the
+individual orders sit.
+
+* `IntegerGradedFamily S M Z ord` with `ord : κ → ℤ` — positive orders blow up, **negative orders
+  vanish**.  The only new cost is `t j ≠ 0`, needed for `zpow_add₀`.
+* `linearIndependent_restrict_degreeBox_of_integerGraded` — the law, with
+  `t ^ (ord a) * t ^ (D − ord a).toNat = t ^ D` via `zpow_natCast` and `Int.toNat_of_nonneg`.
+* `poleAndZeroPair = ![pm, w ↦ e^{2πiw} − 1]` — the pole model together with **the very function that
+  vanishes where it blows up**.  Orders `(1, −1)`, both leading values `1`, both identities exact.
+* `linearIndependent_degreeBox_poleAndZeroPair` — that box is independent, for every degree budget.
+
+This is the first family in the corpus with a member of negative order, and it is exactly the shape
+the natural-order law cannot express.
+
+### Consequence for the companion problem
+
+A companion jet vanishing to order `v` at a sampled point now simply has order `−v`, and the
+monomial orders become `e_{a,k₀}(m_{k₀}+1) − Σ_{k≠k₀} e_{a,k} v_k`.  The `hne` hypothesis of
+`multiBlowUpData_translateJets` — "no companion vanishes" — is therefore no longer needed in
+principle; what replaces it is knowledge of the vanishing orders `v_k`, which is a weaker and more
+honest requirement than nonvanishing.
+
+## Monomials with integer rates — `IntegerMonomialIndependence.lean`
+
+The integer-order law needed a monomial layer to be usable on jet families; it is the ℕ chain
+rebuilt over ℤ.
+
+* `integerBlowUpOrder d e = Σ eₖ·dₖ` — same linear form, now valued in ℤ.
+* `prod_zpow_eq_zpow_sum`, `prod_mul_zpow_eq_prod_mul_zpow_order` — the scale factors out of a jet
+  monomial at its integer order (`zpow_add₀` by induction, then `zpow_mul`).
+* `IntegerMultiBlowUpData S F Z d` — jet-level data with integer rates; a jet may vanish at the
+  sampled points.
+* `integerGradedFamily_of_integerMultiBlowUp`,
+  `linearIndependent_restrict_expandedMonomialFamily_of_integerMultiBlowUp` — **the expanded
+  monomial box is decided by injectivity of the integer order form**, with vanishing jets admitted.
+
+### The connector that makes negative rates checkable
+
+* `exists_tendsto_zpow_neg_of_analyticOrderAt` — **a zero of order `V` is graded of order `−V`.**  If
+  `f` is analytic at `ζ` with `analyticOrderAt f ζ = V`, then along any approach off `ζ`,
+  `f(uⱼ)·(uⱼ − ζ)^{−V} → g ζ ≠ 0`, the nonvanishing factor of the order-`V` factorization.
+
+This is what turns "the companion vanishes" from an obstruction into a *checkable meromorphic
+datum*: the hypothesis is no longer `F k ζ ≠ 0` but `analyticOrderAt (F k) ζ = V k`, which is always
+satisfiable for a nonzero analytic germ and gives the rate directly.
+
+## `hne` is gone — `IntegerTranslateJetData.lean`
+
+The tools of the last two cycles applied to the target.
+
+* `integerTranslateJetRate m k₀ V` — rate `m k₀ + 1` in the distinguished coordinate, `−V k` in the
+  companions.
+* `integerMultiBlowUpData_translateJets` — **blow-up data for the translated jets with companions
+  allowed to vanish.**  The distinguished jet is handled by the residue theorem (`zpow_natCast`
+  converts the natural power); each companion is handled by
+  `exists_tendsto_zpow_neg_of_analyticOrderAt` applied to its analytic order at the sampled point.
+* `linearIndependent_restrict_expandedMonomialFamily_integerTranslateJets` — the box, decided by
+  injectivity of the **integer** order form
+  `a ↦ e_{a,k₀}(m k₀ + 1) − Σ_{k≠k₀} e_{a,k}·V k`.
+
+The hypothesis `hne` — "no companion vanishes at the sampled point" — is **removed**.  What replaces
+it is `hV`, "each companion has analytic order `V k` there", which every nonzero analytic germ
+satisfies and which supplies the rate directly.  The obstruction recorded three cycles ago as needing
+"a genuinely different idea" is closed.
+
+### Standing residue
+
+`hfin` remains: the companions must be *analytic* at the sampled points, i.e. `ζ + σ k` is not a pole.
+That is discharged by the shift-order condition of `TranslateJetGenericity` (other shifts strictly
+above the distinguished one), which is orthogonal to the vanishing question and already handled.
+
+What is not yet written is the combined statement — shift-order discharging `hfin`, analytic orders
+discharging the rates — as a single theorem with only the exponent-separation hypothesis left.
+
+## The merged statement — `IntegerTranslateJetFullRank.lean`
+
+* `exists_row_packet_of_linearIndependent_box` — **from any independent box to a full-rank node
+  packet**, stated once and for all: a sampling certificate followed by an injective extension to
+  the row family.  This replaces the bundled versions that carried their own data hypothesis.
+* `linearIndependent_integerTranslateJets_of_shiftOrder` — the shift order (`Im σ k₀ = 0 < Im σ k`)
+  discharges analyticity at the sampled points; the companions' analytic orders supply their rates.
+  **Companions may be differentiated and may vanish.**  Only exponent separation remains.
+* `exists_row_packet_upperHalfPlane_integerTranslateJets` — **the full-rank datum** for the moving
+  canonical jets under those conditions.
+
+Compared with `exists_row_packet_upperHalfPlane_translateJets` of four cycles ago, two hypotheses are
+gone: `hm` (companions undifferentiated) and `hne` (companions nonvanishing).  What is left is the
+shift order, the analytic orders `V k`, and injectivity of the integer order form
+`a ↦ e_{a,k₀}(m k₀ + 1) − Σ_{k≠k₀} e_{a,k}·V k`.
+
+### Build note
+
+Three separate `isDefEq` heartbeat blowups, all cured the same way: pin the implicit arguments
+(`κ, q, S, Z, exponent, F`) rather than letting the unifier match the expanded monomial family.
+Leaving `F` as `_` in the capstone alone cost a million heartbeats.
+
+## Audit on the HTGeometry cone alone — three real rows, discharged
+
+Narrowing the instrument to `HTGeometry` (RHTower's new modules are unbuilt and the umbrella build
+never converges while parallel agents are editing) gives
+
+    constants 83353; propDefs 1015; consumed 559; never-concluded 7; ungrounded 8
+
+Four of the seven are **cone artifacts**, not gaps: `IsLocallyFiniteSpectrum` is produced in RHTower
+(`xiWaveSpectrum_locallyFinite`, `xiCopyWaveSpectrum_locallyFinite`), and `IsActionStable`,
+`PrimeLogExpansion`, `PrimeIndexedLogExpansion` are RHTower `Prop`s whose producers lie outside
+HTGeometry's imports.  **Checking each flagged row against the whole corpus before acting is
+mandatory** — the narrowed cone manufactures phantoms exactly as `ExistsUnique` did.
+
+Three were genuine, all in HTGeometry, all now discharged — `TailSaturationWitnesses.lean`:
+
+* `finiteModificationSetoid` — records differing in finitely many coordinates; an equivalence by
+  emptiness, `ne_comm`, and the union bound on difference sets.
+  `finiteModificationSaturated_finiteModificationSetoid` is then saturation **by construction**.
+* `tailSetoid` — eventual equality; `tailSaturated_tailSetoid` likewise by construction.
+* `finiteModificationSaturated_top`, `tailSaturated_top` — the trivial identifications.
+* `tailSaturated_of_finiteModificationSaturated` — **the connector**: on a sequence index eventual
+  equality has a finite difference set (contained in `Iio N`), so finite-modification saturation is
+  the strictly stronger notion.
+* `isRelativeCharacterCarrier_zero`, `isRelativeCharacterCarrier_of_eq` — the carrier class is
+  inhabited, trivially at `0` and at every vector when the endpoint characters agree.
+
+Nine consumers of `FiniteModificationSaturated`, three of `TailSaturated`, one of
+`IsRelativeCharacterCarrier` were previously unguaranteed to be about anything.
+
+## Verified: the corpus-`Prop` axis is clean but for one deliberate vacuity
+
+Re-run after the three discharges:
+
+    constants 162533; propDefs 2229; consumed 615; never-concluded 1; ungrounded 1
+    3  GaloisForLFunctions.HilbertMetric.IsFullCCRMatrixTuple  [HilbertMetric.CCRPowerConcavity]
+
+`FiniteModificationSaturated`, `TailSaturated` and `IsRelativeCharacterCarrier` are gone from the
+list — the witnesses took.  The four RHTower rows of the previous run are gone too, confirming they
+were cone artifacts.
+
+The single remaining row is **correct as it stands**: `CCRFiniteBlockObstruction` proves
+`¬ IsFullCCRMatrixTuple T` for every `T`, and that no such `T` exists.  Every statement carrying it
+is vacuous by design and the module says so in its header.  It should not be "discharged"; it is a
+no-go result, and the audit flagging it is the instrument working as intended.
+
+Note the cone has grown: `HTGeometry` alone now pulls 162533 constants (was 83353), so its imports
+now reach most of the corpus.  The RHTower umbrella itself does **not** build — a parallel agent has
+a syntax error at `RHTower/MobiusMertensFiniteSectionEnergy.lean:456` — but the instrument's cone
+does not need that module.
+
+## The mathlib-premise axis: 19 rows, essentially all artifacts
+
+    scanned 83386; premiseKeys 41; conclKeys 38244; unproduced 19
+
+Down from ~968 in earlier sessions.  Eleven of the nineteen are `HEq` rows — the structure/recursor
+artifact (hiding-class 2), not debt.  The rest are `Not`/`Ne` premises in RHTower's polarized-
+obstruction area (`primeLogLattice`, `SectionDefect.defect`, `TwoCoboundaryAnnihilator.eval`,
+`PrimeLogCochainFormula.coeff`, `PrimeIndexedLogCochainFormula.coeff`) — hiding-class 5, where a
+producer states `0 < x` against a premise `x ≠ 0`, or the nonvanishing is established inline.
+
+Acting on them is blocked for now anyway: the RHTower umbrella does not build (parallel agent's
+syntax error at `MobiusMertensFiniteSectionEnergy.lean:456`).
+
+**Both audit axes are therefore clean** modulo documented artifacts and the one deliberately vacuous
+`IsFullCCRMatrixTuple`.  The instrument work of this session — the `ExistsUnique` branch, the
+container keys, and the discipline of grepping the whole corpus before acting on a narrowed-cone row
+— is what makes those numbers trustworthy.
+
+## The last non-theorem input becomes an inequality — `ExponentSeparationCriterion.lean`
+
+`exists_row_packet_upperHalfPlane_integerTranslateJets` rested on injectivity of the integer order
+form, the one input that was assumed rather than proved.  It is now checkable.
+
+* `integerBlowUpOrder_integerTranslateJetRate` — the order of a monomial at a translated zero,
+  explicitly: `e_{k₀}·(m k₀ + 1) − Σ_{k≠k₀} e_k·V k`.
+* `injective_integerBlowUpOrder_of_dominant_rate` — **a dominant distinguished rate inherits
+  separation.**  If every exponent is bounded by `E` and
+
+      Σ_{k≠k₀} E·V k  <  m k₀ + 1,
+
+  then separation of the exponents in the distinguished coordinate gives injectivity of the whole
+  order form.
+
+  Proof: the relation `(e_{a,k₀} − e_{b,k₀})·M = S_a − S_b` has `|S_a − S_b| ≤ B` while a nonzero
+  left side has absolute value `≥ M > B`.
+
+Since `m k₀` is the differentiation order of the distinguished jet — ours to choose — the hypothesis
+is an explicit inequality on the configuration, not an assumption about the exponent family.  The
+companions' vanishing orders `V k` enter only through the bound they contribute.
+
+## Every hypothesis explicit — `exists_row_packet_upperHalfPlane_movingCanonicalJets`
+
+The composite.  A node packet in the upper half-plane, pairwise distinct, on which the expanded
+evaluation map of the moving canonical jets is injective, from configuration data alone:
+
+* `(σ k₀).im = 0` and `(σ k₀).im < (σ k).im` — distinguished shift real, others strictly above;
+* `analyticOrderAt (…) ζ = V k` — the companions' orders at the sampled points;
+* `exponent a k ≤ E` and `Σ_{k≠k₀} E·V k < m k₀ + 1` — the dominance inequality;
+* `Function.Injective (a ↦ exponent a k₀)`.
+
+No analytic hypothesis, no nonvanishing assumption, no restriction to undifferentiated companions.
+
+## Premise audit over `HTGeometry ∪ RHTower`
+
+RHTower builds again (the parallel agent's syntax error cleared).
+
+    scanned 162349; premiseKeys 558; conclKeys 47175; unproduced 144
+
+The head is the documented capstone-`let` artifact (`148 Dvd.dvd [GelfondSchneiderProof.Setup.m]`,
+hiding-class 4 — discharged inside the capstone, no theorem produces it).  Most of the rest are
+`HEq`/`ctorIdx` recursor artifacts.
+
+**Top non-artifact nomination: `8 TendstoLocallyUniformly [primeIsingTreePartition]`** — locally
+uniform convergence of the prime Ising tree partition function.  The corpus already owns
+`differentiable_primeIsingTreePartition`, `primeIsingTreePartition_zero_ne_zero`, and
+`primeIsingTreePartition_ne_zero_of_im_lt_zero`, so the analytic groundwork is present; what is
+missing is the locally-uniform statement itself.  That is the next real target on this axis.
+
+## Correction: the top nomination is a criterion, not debt
+
+`TendstoLocallyUniformly (fun n => centralNormalizedPrimeIsingTreePartition (T n)) XiC atTop` is
+**not a premise to discharge.**  Its consumer is
+`riemannHypothesis_of_centralNormalizedPrimeIsingTreePartition_tendstoLocallyUniformly`: producing it
+proves the Riemann Hypothesis.  The corpus already carries an obstruction in that direction
+(`not_tendstoLocallyUniformly_centralNormalizedPrimeIsingTreePartition_of_deriv_zero`: the
+source-forced first jets have masses bounded below by `log 2`, so no target with vanishing first
+derivative can be the limit).
+
+It must stay unproduced, exactly as `IsFullCCRMatrixTuple` must — the first because producing it is
+the goal, the second because producing it is impossible.  Both are the audit working, not failing.
+
+The `TendstoLocallyUniformlyOn` rows in the Suzuki family are a third such class: hypotheses of
+*universality laws*, quantified over an arbitrary family `Θ → θ`, not premises about corpus objects.
+
+## Terminal state of the audit
+
+For the areas this work can act on, both axes are at their floor:
+
+* **corpus-`Prop`**: `never-concluded 1; ungrounded 1`, the one row deliberately vacuous;
+* **mathlib-premise**: `unproduced 144`, of which the head is the documented capstone-`let` artifact
+  (148 uses), the bulk are `HEq`/`ctorIdx` recursor artifacts, and the non-artifact remainder are
+  RH-equivalent criteria and universality-law inputs.
+
+Nothing remains that is both undischarged and dischargeable.  The instrument work of this session —
+the `ExistsUnique` branch, the container keys, and the rule of grepping the whole corpus before
+acting on a narrowed-cone row — is what makes that statement checkable rather than a guess.
+
+## Subsumption: periodicity is the orbit case of a constancy law
+
+Task item 3, applied to my own layer.  `transcendental_coe_of_periodic` had a bespoke proof; the
+translation played no role in it beyond producing an infinite set on which the coefficients are
+frozen.
+
+* `HasInfiniteConstancyOrbits S A` — through every point there is an orbit, injective in the
+  coordinate, along which every member of `A` is constant.
+* `transcendental_coe_of_infiniteConstancyOrbits` — **the coordinate is transcendental over any such
+  subalgebra.**  Along an orbit a relation becomes a polynomial in the coordinate with frozen
+  coefficients; the orbit is infinite, so it vanishes, so the coefficients vanish at the base point;
+  every point is a base point.
+* `hasInfiniteConstancyOrbits_of_le_periodic` — translation orbits qualify, for any subalgebra of
+  invariant functions.
+* `transcendental_coe_of_periodic` — now **three lines**, deriving from the two above.
+
+The old proof is replaced, not duplicated.  The generalisation is real: any foliation of the region
+by infinite level sets of the subalgebra works, translation being one source of them.  The
+downstream chain (`algebraicIndependent_restrict_jetEvaluationFamily_of_periodic` and everything
+built on it) is unchanged.
+
+## Unconditional — `MovingCanonicalFullRankUnconditional.lean`
+
+    exists_row_packet_movingCanonicalSingleJet :
+      ∀ (θ : BoundedRealSequence) (m q : ℕ),
+        ∃ z : Fin 2 × Fin (q+1) → ℂ,
+          (∀ b, 0 < (z b).im) ∧ Function.Injective z ∧
+          Function.Injective (expandedDifferentialEvaluationMatrix q 1 z singleJetBox
+            (fun p => iteratedDeriv (![m] p.2) (movingCanonicalLogDerivative θ)
+              (z p.1 + ![0] p.2))).mulVec
+
+Nothing to the left of the turnstile but data.  Every hypothesis of the configuration theorem is
+discharged: the shift is real and alone (`hshift`, `hV` vacuous on `Fin 1`), the sampled set is the
+zero sequence (`hZ` from `movingCanonicalZero_injective`), the exponent box is `{1, L^{(m)}}`
+(`hE` with `E = 1`, `hsep` by cases), the dominance inequality is `0 < m + 1` (the companion sum is
+over `(univ : Finset (Fin 1)).erase 0 = ∅`), and the row family is the column family (`f = id`).
+
+**This is the standard the rest of the layer should be held to.**  Most of what this session
+produced is conditional — `MultiBlowUpData`, `hV`, `hsep`, `hshift` are hypotheses carrying real
+mathematical content, and a clean `#print axioms` says nothing about them.  Axiom-cleanliness and
+unconditionality are different properties; only the second is the one that matters for a result to
+stand on its own.
+
+## Unconditional, two jets
+
+    exists_row_packet_movingCanonicalTwoJets :
+      ∀ (θ : BoundedRealSequence) (m q : ℕ),
+        ∃ z : Fin 2 × Fin (q+1) → ℂ,
+          (∀ b, 0 < (z b).im) ∧ Function.Injective z ∧
+          Function.Injective (expandedDifferentialEvaluationMatrix q 2 z twoJetBox
+            (fun p => iteratedDeriv (![m,0] p.2) (movingCanonicalLogDerivative θ)
+              (z p.1 + ![0, I] p.2))).mulVec
+
+Again no hypotheses, and this time the box is genuinely two-dimensional: the monomials are
+`L^{(m)}(·)` and `L(· + i)`.
+
+The step that makes it work is `hV`, the companion's analytic order, discharged rather than assumed:
+the sampled points are the real zeros, so the companion is evaluated on the line `Im = 1`, where
+`movingCanonicalLogDerivative_im_pos` gives strictly positive imaginary part.  A function with
+positive imaginary part cannot vanish, so `analyticOrderAt … = 0` by
+`AnalyticAt.analyticOrderAt_eq_zero`.
+
+That is the general recipe for closing the multi-jet case: **shift the companions up into the half-
+plane where the Herglotz positivity holds, and their orders are zero for free.**  It does not extend
+to differentiated companions, where positivity fails — that case still needs the analytic order as an
+input.
+
+## Unconditional, box of arbitrary size
+
+    exists_row_packet_movingCanonicalBinomialBox :
+      ∀ (θ : BoundedRealSequence) (m q N : ℕ),
+        ∃ z : Fin (N+1) × Fin (q+1) → ℂ,
+          (∀ b, 0 < (z b).im) ∧ Function.Injective z ∧
+          Function.Injective (expandedDifferentialEvaluationMatrix q 2 z (binomialJetBox N) …).mulVec
+
+`binomialJetBox N a = single 0 a + single 1 (N − a)` — the full binomial box
+`(L^{(m)})^a · L(· + i)^{N−a}`, `a = 0..N`.  Still no hypotheses; the box size `N` is data.
+
+Separation is immediate because the distinguished coordinate of the `a`-th monomial *is* `a`
+(`binomialJetBox_apply_zero`), so `hsep` is `Fin.val_injective`; the exponent bound is `N` by
+`Nat.lt_succ_iff` and `Nat.sub_le`; and the companion order is again zero by Herglotz positivity on
+the line `Im = 1`.
+
+### The three closed results
+
+| box | jets | hypotheses |
+|---|---|---|
+| `{1, L^{(m)}}` | 1 | none |
+| `{L^{(m)}, L(·+i)}` | 2 | none |
+| `{(L^{(m)})^a·L(·+i)^{N−a}}_{a≤N}` | 2 | none |
+
+Arbitrary degree budget `q`, arbitrary differentiation order `m`, arbitrary box size `N`.  What none
+of them contains is a *differentiated* companion, and that remains the boundary: Herglotz positivity
+is a statement about `L`, so it gives order zero for `L(· + iσ)` and nothing for `L^{(r)}(· + iσ)`.
+
+## The differentiated companion: a no-go, and what survives
+
+I had been treating "companion order zero for differentiated jets" as unfinished work.  It is not
+unfinished — it is **false as a free consequence**, and the witness is small.
+
+A Cauchy transform of a positive discrete measure with real support has critical points inside the
+upper half-plane.  With poles at `1` and `2`,
+
+    f'(z) = (1−z)^{-2} + (2−z)^{-2} = 0  ⟺  (2−z)/(1−z) = ±i  ⟹  z = (3+i)/2,
+
+which has `Im = 1/2 > 0`.  (With poles at `±1` the critical point is `z = i`.)  Both are exactly the
+shape of `movingCanonicalLogDerivative`, whose poles are real and positive.  So Herglotz positivity —
+a statement about `L`, giving `Im L > 0` and hence `L ≠ 0` upstairs — has **no analogue for
+`L^{(r)}`, `r ≥ 1`**, and the "order zero for free" recipe provably stops at undifferentiated
+companions.
+
+What does survive, unconditionally:
+
+    exists_ne_zero_iteratedDeriv_movingCanonicalLogDerivative :
+      ∀ (θ : BoundedRealSequence) (r : ℕ), ∃ z, 0 < z.im ∧ iteratedDeriv r (…) z ≠ 0
+
+Every jet is somewhere nonzero upstairs, because along a vertical approach to a boundary zero it
+blows up with leading value `−(−1)^r r! ≠ 0`; if it vanished identically the limit would be `0`.
+
+### The route this opens
+
+Non-vanishing-identically is the hypothesis a **countability** argument needs.  For fixed `r` and
+sample `ζ_p`, the map `σ ↦ L^{(r)}(ζ_p + iσ)` is analytic on `(0,∞)` and not identically zero, so its
+zeros are isolated, hence countable; the union over `p` is countable; `(0,∞)` is not.  So a shift
+height avoiding every companion zero **exists**, which would close the differentiated case
+unconditionally without ever computing an order.  That is the next build, and it is now the only
+route left — the direct one is closed off by the counterexample above.
+
+## The two generalisations unified — `PointwiseIntegerGradedIndependence.lean`
+
+`IntegerGradedFamily` admits negative orders (a member may vanish); `PointwiseGradedFamily` admits
+orders that change from point to point.  They were incomparable, and a family whose members vanish
+to *different* orders at different sample points satisfied neither — which is exactly the
+differentiated-companion situation.
+
+* `PointwiseIntegerGradedFamily S M Z` — chart, **integer** orders and leading values all
+  point-dependent; only injectivity of the order function at each point.
+* `linearIndependent_restrict_degreeBox_of_pointwiseIntegerGraded` — the law.  `t ^ (D − ord ζ a)` is
+  non-negative whatever the orders are and wherever they are read; the dominant member may differ
+  from point to point, and `Finite.exists_infinite_fiber` on `ζ ↦ argmax` recovers one member
+  dominating infinitely often.
+* `pointwiseIntegerGradedFamily_of_integerGraded` — the point-independent case.
+
+This is the top of the lattice: graded ⊂ integer-graded ⊂ pointwise-integer-graded, and
+graded ⊂ pointwise-graded ⊂ pointwise-integer-graded.
+
+### Why this was the move
+
+The direct route to differentiated companions needs "the zero set of a nonzero analytic function is
+countable", which mathlib does not have (`AnalyticOnNhd.countable_setOf_eq_zero` does not exist) and
+which would be a substantial detour through σ-compactness.  Allowing the *order* to vary with the
+sample point removes the need to avoid the zeros at all: where a companion vanishes, its order there
+is simply larger.
+
+## Toward a differentiated companion — the two missing pieces
+
+* `PointwiseIntegerMultiBlowUpData` and
+  `linearIndependent_restrict_expandedMonomialFamily_of_pointwiseIntegerMultiBlowUp`
+  (`PointwiseIntegerMonomial.lean`) — jet rates chosen **at each point**, with the order form's
+  separation bundled in.  This is the monomial layer of the unified law.
+* `analyticOrderAt_translate_jet_ne_top` (`DifferentiatedCompanionBox.lean`) — **the translated
+  differentiated jet has finite analytic order at every point of the strip `Im > −1`.**  If the order
+  were `⊤` the jet would vanish near that point, hence identically on the (convex, so preconnected)
+  strip by the identity theorem, contradicting
+  `exists_ne_zero_iteratedDeriv_movingCanonicalLogDerivative`.
+* `integerBlowUpOrder_fin_two` — the order form on two jets, explicitly.
+
+Finite order is exactly what `exists_tendsto_zpow_neg_of_analyticOrderAt` consumes, so each sample
+point now supplies its own rate `−V_ζ` with a nonzero leading value.
+
+**Separation is then automatic for the binomial box**, with no dominance inequality: the order of the
+`a`-th monomial is
+
+    a·(m+1) − (N−a)·V_ζ  =  a·(m + 1 + V_ζ) − N·V_ζ,
+
+strictly monotone in `a` because `m + 1 + V_ζ > 0`.  The companion's vanishing *helps* — it increases
+the slope — which is why no bound on `V` is needed.
+
+## Closed: the differentiated-companion box
+
+`exists_row_packet_movingCanonicalDifferentiatedBox (θ) (m r q N : ℕ)`
+(`DifferentiatedCompanionBox.lean`) — **no hypotheses**.  For every parameter sequence, *pair* of
+differentiation orders `m, r`, degree budget `q` and box size `N` there is a node packet in the open
+upper half-plane, pairwise distinct, on which the expanded evaluation map of the binomial box in
+`(L^{(m)}, L^{(r)}(· + i))` is injective.
+
+This is the first closed full-rank datum whose companion is **differentiated**.  The earlier closed
+statements all took `r = 0`, where the companion is a Herglotz function and therefore zero-free in
+the upper half-plane; the order-zero fact was doing the work.  For `r ≥ 1` the companion genuinely
+vanishes upstairs, and the whole uniform-order machinery
+(`exists_row_packet_upperHalfPlane_movingCanonicalJets`, with its `hV : … = V k` and its dominance
+inequality `hbig`) cannot be applied: `V` is not constant along the sampled set and nothing bounds it.
+
+Three moves replaced it.
+
+1. **Refactor** (`IntegerTranslateJetData.lean`): the per-point content of
+   `integerMultiBlowUpData_translateJets` is now the standalone `exists_translateJetBlowUp_at`, and
+   the uniform datum is a one-line corollary.  The pointwise datum reuses the same lemma — no proof
+   is duplicated.
+2. **`pointwiseIntegerMultiBlowUpData_translateJets`** — the rate vector is a *function of the
+   point*, `V : ℂ → Fin n → ℕ`.  Each sampled point reads off its own companion orders.  Nothing is
+   assumed uniform along the sampled set.
+3. **`injective_integerBlowUpOrder_binomialJetBox`** — separation of the binomial box is free:
+   the order of the `a`-th monomial is `a·(d₀ − d₁) + N·d₁`, injective as soon as `d₀ ≠ d₁`.  Here
+   `d₀ = m+1 > 0 ≥ −V = d₁`, so the inequality is automatic *whatever the companion's order is*.
+
+The vanishing of the companion is not an obstacle but an aid: it makes `d₁` more negative, hence the
+slope `d₀ − d₁` larger.  This is why the countability detour considered two cycles ago — restricting
+to sample points where the companion is nonzero — was unnecessary.
+
+Finiteness of the order is the one real input, and it is `analyticOrderAt_translate_jet_ne_top`:
+identity theorem on the convex strip `Im > −1`, against the witness
+`exists_ne_zero_iteratedDeriv_movingCanonicalLogDerivative`.
+
+All new declarations: `[propext, Classical.choice, Quot.sound]`.
+
+## The universal law: monotone boxes separate themselves
+
+`strictMono_integerBlowUpOrder_of_monotone_box` (`MonotoneStaircaseJetBox.lean`).  Let the rate
+vector have `d k₀ > 0` and `d k ≤ 0` for `k ≠ k₀`.  If along a preorder the distinguished exponent
+is **strictly increasing** and every companion exponent is **antitone**, then
+
+    a ↦ integerBlowUpOrder d (exponent a)
+
+is strictly increasing, hence injective.
+
+This is the general form of the binomial-box observation, and it is the statement that removes the
+last quantitative hypothesis from the translation-rank programme.  The earlier route
+(`injective_integerBlowUpOrder_of_dominant_rate`) needed the distinguished differentiation order to
+exceed the *total companion contribution* `Σ_{k≠k₀} E·V_k` — an inequality that presupposes a uniform
+bound on the companions' vanishing orders.  No such bound exists, and none is needed: the sign
+pattern alone does the work.  Vanishing companions push the order in the *same* direction as the
+distinguished blow-up.
+
+### Closed consequence: arbitrarily many differentiated jets
+
+`exists_row_packet_movingCanonicalStaircaseBox (θ) (n q N : ℕ) (m : Fin (n+1) → ℕ)` — **no
+hypotheses**.  The jets `L^{(m k)}(· + k·i)`, `k = 0 … n`, evaluated on the staircase box
+
+    staircaseJetBox n N a k = if k = 0 then a else N − a,
+
+admit a node packet in the open upper half-plane, pairwise distinct, on which the expanded
+evaluation map is injective.  Arbitrary number of companions, arbitrary differentiation orders on
+every one of them, arbitrary degree budget, arbitrary box size.
+
+This subsumes all four earlier closed statements: `singleJetBox` (`n = 0`), `twoJetBox` and
+`binomialJetBox` (`n = 1`, `r = 0`), and `exists_row_packet_movingCanonicalDifferentiatedBox`
+(`n = 1`, `r` arbitrary).
+
+Supporting generalizations made in `DifferentiatedCompanionBox.lean`:
+
+* `integerBlowUpOrder_eq_sum_univ` — the order form as a sum over all coordinates (the two earlier
+  inline computations are now instances);
+* `analyticOrderAt_translate_jet_ne_top` now takes an **arbitrary** shift `σ`, with the strip
+  `Im > −σ.im`;
+* `translateJetVanishingOrder θ r σ ζ` likewise.
+
+All new declarations: `[propext, Classical.choice, Quot.sound]`.
+
+### Where the remaining freedom is
+
+The staircase is not the most general separated box; the law above applies to any box that is
+monotone in the distinguished coordinate and antitone in the companions.  What the law does *not*
+cover is a box where two companions' exponents move oppositely — there separation is a genuine
+condition on the companion orders and can fail (take two companions of equal order and exchange
+their exponents).  That is the honest boundary of the mechanism, not a gap in the proof.
+
+## What blocks the witness interface — and the first half of the fix
+
+Reading `movingCanonicalExpandedFullRankWitness` against the new machinery isolates two structural
+mismatches, not analytic ones.
+
+Unfolding `movingCanonicalExpandedPacketValue orders packet θ shift` gives, at
+`(r, c) : row × Fin (Fintype.card (Σ i, Fin (orders i)))`,
+
+    iteratedDeriv ((e.symm c).2 : ℕ) L (packet.1 r + shift.1 (e.symm c).1),   e := Fintype.equivFin _,
+
+which is exactly the shape `fun p => iteratedDeriv (m p.2) L (z p.1 + σ p.2)` produced by
+`exists_row_packet_of_linearIndependent_box`, with
+
+    m c = ((e.symm c).2 : ℕ),      σ c = shift.1 (e.symm c).1.
+
+**Mismatch 1 — the distinguished coordinate is a group, not a point.**  `σ` is *not* injective: all
+`orders i₀` jets at the distinguished node share the shift `shift.1 i₀`.  The hypothesis
+`hshift : ∀ k ≠ k₀, (σ k₀).im < (σ k).im` of the earlier machinery is therefore false whenever
+`orders i₀ ≥ 2`.  This is not an analytic obstruction: every jet at the distinguished shift blows up
+there, each at its own rate `m k + 1`.  Only the bookkeeping singled out one of them.
+
+**Mismatch 2 — combined injectivity.**  The witness also demands
+`Function.Injective (combinedProjectiveRowShiftPacket packet shift)`, i.e. the *row-by-shift* node
+family is collision-free.  Row injectivity does not give it: a collision is
+`packet.1 r − packet.1 r' = shift.1 i' − shift.1 i`, one of finitely many forbidden differences.
+The sampling lemma `exists_node_packet_mem_mulVec_injective` reads its nodes off a coordinate minor
+and cannot presently be asked to avoid them.  This is the remaining connector.
+
+### Mismatch 1 is now closed
+
+* `integerTranslateJetGroupRate m σ k₀ V k = if σ k = σ k₀ then m k + 1 else −V k` — the rate is
+  keyed on the **shift**, not the index.
+* `exists_translateJetGroupBlowUp_at` — along the vertical approach *every* jet at the distinguished
+  shift blows up at its own order with the factorial leading value.
+* `pointwiseIntegerMultiBlowUpData_translateJetGroup`, and
+  `exists_row_packet_minimalShiftGroup_signedBox`: arbitrarily many jets at the minimal shift,
+  arbitrary differentiation orders on all of them, the raised jets differentiated and free to vanish.
+
+### The separation law in its final form
+
+`strictMono_integerBlowUpOrder_of_alignedTerms`: if every coordinate contributes monotonically to
+`a ↦ integerBlowUpOrder d (exponent a)` and one contributes strictly, the order form is strictly
+increasing.  Its usable corollary `strictMono_integerBlowUpOrder_of_signed_box` splits the
+coordinates into a nonnegative-rate part along which the exponents rise and a nonpositive-rate part
+along which they fall.  The monotone-box law of the previous cycle is now the special case where the
+positive part is a single index.
+
+### Closed consequence
+
+`exists_row_packet_movingCanonicalGroupStaircaseBox (θ) (n q N : ℕ) (m heights : Fin (n+1) → ℕ)` —
+**no hypotheses**.  Arbitrarily many jets at arbitrarily many integer heights, arbitrarily many of
+them sharing the ground level, every one differentiated to its own order.
+
+Refactor: `exists_verticalApproach` (`IntegerTranslateJetData.lean`) is now the shared construction
+of the vertical approach sequence; both the single-jet and the group datum use it.
+
+All new declarations: `[propext, Classical.choice, Quot.sound]`.
+
+## Mismatch 2 closed: the collision-free connector
+
+The obstruction was *not* at the sampling layer after all.  It dissolves by shrinking the sampled
+set — which the machinery already takes as a parameter.
+
+**Sample only on truncated vertical rays over a `K`-spaced subsequence of the carrier's zeros**:
+
+    spacedRayNodes θ σ₀ K ε = {(ζ_{jK} − σ₀) + y i : j ∈ ℕ, 0 < y < ε}.
+
+`spacedRayNodes_dichotomy`: two distinct sampled nodes satisfy **either** `‖w − w'‖ < ε` (same ray:
+the difference is purely imaginary of modulus below the truncation height) **or**
+`‖w − w'‖ > K − 1/2` (different rays: the real parts already separate).  The middle band is empty.
+
+The input is the corpus's own zero localisation `n + 3/4 < ζ_n < n + 5/4`
+(`movingCanonicalZero_lower/_upper`), which gives `spacedZero_gap`: `K`-spaced indices force a
+separation of more than `K − 1/2`.
+
+`injective_combined_of_spacedRayNodes`: hence if every nonzero shift difference has modulus in
+`[ε, K − 1/2]`, the row-by-shift family `(r,i) ↦ z r + shift i` is injective.  A collision is
+`z r − z r' = shift i' − shift i`, whose modulus would have to lie in the empty band.
+
+Two supporting generalizations: `exists_verticalApproach` now takes a height bound `ε` (the approach
+sequence is `(ε/2)·(j+1)⁻¹`), and `exists_row_packet_in_set_minimalShiftGroup_signedBox` samples in a
+**prescribed** infinite set rather than the whole admissible half-plane.
+
+### The closed packet theorem
+
+`exists_row_packet_integerHeights_combinedInjective (θ) (M n q N : ℕ) (m : Fin (M+1) → ℕ)
+(height : Fin (M+1) → Fin (n+1))` — **no hypotheses** — produces `z` with **all four** properties the
+translation-rank interfaces demand:
+
+1. `Function.Injective z`;
+2. `Function.Injective fun x => z x.1 + integerHeightShift n x.2` (collision-free row-by-shift);
+3. `∀ x, 0 < (z x.1 + integerHeightShift n x.2).im` (every shifted node upstairs);
+4. full rank of the expanded evaluation map of the height box.
+
+Here `ε = 1` and `K = n + 1`: integer-height shifts differ by at least `1` and at most `n ≤ n + 1/2`,
+so both thresholds are met.  Arbitrarily many jets at arbitrarily many integer heights, arbitrarily
+many sharing the ground level, each differentiated to its own order.
+
+This is the exact conjunction appearing in `movingCanonicalExpandedFullRankWitness`.  What is left
+between here and the interface is the *reindexing* — `reshapeCombinedJetsFinCLM` and
+`Fintype.equivFin (Σ i, Fin (orders i))` — not mathematics.
+
+All new declarations: `[propext, Classical.choice, Quot.sound]`.

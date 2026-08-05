@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.MultivariateEntireAffinePullback
+import GaloisForLFunctions.HTGeometry.MultivariateEntireFrechetRegularity
 
 /-!
 # Directional jets as diagonal Frechet jets
@@ -15,11 +15,9 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-/-- A directional line jet of a Frechet-holomorphic source is the corresponding diagonal
-iterated Frechet jet. -/
+/-- A directional line jet is the corresponding diagonal iterated Frechet jet. -/
 theorem directionalJetEval_eq_iteratedFDeriv
-    {d n : ℕ} (x v : Fin d → ℂ) (f : MultivariateEntire d)
-    (hf : ContDiff ℂ (⊤ : WithTop ℕ∞) f.1) :
+    {d n : ℕ} (x v : Fin d → ℂ) (f : MultivariateEntire d) :
     directionalJetEval n x v f =
       iteratedFDeriv ℂ n f.1 x (fun _ : Fin n ↦ v) := by
   let L : ℂ →L[ℂ] (Fin d → ℂ) :=
@@ -29,7 +27,7 @@ theorem directionalJetEval_eq_iteratedFDeriv
     funext z
     simp [affineLineRestriction, L]
   have hfShift : ContDiff ℂ (⊤ : WithTop ℕ∞) (fun y ↦ f.1 (x + y)) := by
-    exact hf.comp (contDiff_const.add contDiff_id)
+    exact (MultivariateEntire.contDiff f).comp (contDiff_const.add contDiff_id)
   have hcomp := L.iteratedFDeriv_comp_right
     (f := fun y ↦ f.1 (x + y)) hfShift (0 : ℂ)
       (show (n : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞) by simp)

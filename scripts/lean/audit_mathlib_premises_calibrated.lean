@@ -11,9 +11,8 @@ Three ways a real producer hid from the first version, all measured this session
 This version emits the extra conclusion keys for the first two, so the nomination list is closer to
 genuine debt.  The premise side is unchanged.
 -/
-import GaloisForLFunctions.RHTower
 import GaloisForLFunctions.HTGeometry
-import GaloisForLFunctions.HilbertMetric
+import GaloisForLFunctions.RHTower
 
 open Lean Meta Elab Command
 

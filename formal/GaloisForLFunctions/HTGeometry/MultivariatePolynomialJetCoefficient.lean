@@ -212,14 +212,10 @@ theorem orderedPartialJetEvalCLM_mvPolynomial_eq_centered_coeff
       MvPolynomial.coeff (wordMultiplicity word)
           (mvPolynomialBaseTranslation x P) *
         multiIndexFactorial (wordMultiplicity word) := by
-  have hpoly : ContDiff ℂ (⊤ : WithTop ℕ∞)
-      (fun y : Fin d → ℂ => MvPolynomial.eval y P) :=
-    (AnalyticOnNhd.eval_mvPolynomial P).contDiff
   rw [orderedPartialJetEvalCLM_eq_iteratedFDeriv
     x word (mvPolynomialMultivariateEntire P)]
-  · simpa [mvPolynomialMultivariateEntire, multiIndexFactorial] using
-      iteratedFDeriv_mvPolynomial_eval_coordinate_word_eq_centered_coeff P x word
-  · simpa [mvPolynomialMultivariateEntire] using hpoly
+  simpa [mvPolynomialMultivariateEntire, multiIndexFactorial] using
+    iteratedFDeriv_mvPolynomial_eval_coordinate_word_eq_centered_coeff P x word
 
 /-- **Arbitrary finite mixed-jet packet surjectivity.** At an injective finite packet of points,
 every symmetric mixed-partial packet below the prescribed total orders is realized by one

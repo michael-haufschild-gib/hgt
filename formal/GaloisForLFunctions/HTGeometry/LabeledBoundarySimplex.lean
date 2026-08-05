@@ -91,7 +91,7 @@ theorem boundaryBarycenter_isFiniteMeasure
   constructor
   rw [boundaryBarycenter, Measure.bind_apply MeasurableSet.univ hν.aemeasurable]
   simp_rw [show ∀ t, ν t Set.univ = 1 from fun t => (hprob t).measure_univ]
-  exact IsFiniteMeasure.measure_univ_lt_top
+  simpa using IsFiniteMeasure.measure_univ_lt_top (μ := η)
 
 /-- Barycentring is additive in the parameter measure. -/
 theorem boundaryBarycenter_add

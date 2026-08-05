@@ -413,3 +413,33 @@ or corpus-owned; unit 4 (sharp-cutoff Halász sup) remains but is not region-gat
   `ζ(1+it) ≤ (1.24…1.93)·log t/log log t` across five decades of `log t` with the
   k-th-derivative-test chain; formalization staged L2–L6 there).  This card's unit 5
   (numeric re-certification of route B) waits on that card's L2 honest constants.
+
+## 2026-08-05 SCOPE BOUNDARY (binding): what MRBilinear can and cannot deliver
+
+Recorded from user direction; consistent with the formal interface and with the corpus
+no-gos (`equidistributed-phase-threshold`, `density-envelope-cannot-decide-rh`,
+`five-lanes-one-wall`).
+
+1. **Littlewood does not finish this card.**  After the zero-free region lands (κ < 1),
+   the corridor still needs (a) the unit-5 numeric re-certification of the route-B
+   bookkeeping at Littlewood tier, and (b) the analytic assembly (Halász mean-value side)
+   before `MRBilinear` is a theorem.
+
+2. **A completed MR theorem yields exactly local sign-class density — no more.**  The
+   Lean interface makes the limit visible: `MRBilinear f hh` controls
+   `pairSum/(h·√x·log 2) − (blockMean f x)²`, i.e. the *fluctuation about block means*.
+   The coherent component lives in the subtracted `blockMean²` term.  Fourier
+   countermodels (a lone coherent low-frequency mode — a "Gibbs current" — of size `X^θ`
+   riding on windows of length `X^θ`) satisfy every mean-square/almost-all statement of
+   this shape while carrying nonzero net current.  This is the same extremal object as
+   the `equidistributed-phase-threshold` lone-phase no-go, one layer up.
+
+3. **Consequence.**  `route_e_sign_density` / `route_e_signClass_nonempty`
+   (`Sieve/RouteEMain.lean`) become unconditional once MRBilinear is proved — that is the
+   honest scope of the Littlewood→MR milestone.  Route E's physical Hall / seam-flux
+   theorem (the RH-bearing coherent statement, e.g. the `(G2)` parity-mixing law of
+   `ROUTE-E-GIBBS-PARITY-001` with growth `x^{−b}`, `b > 1/2`) is NOT implied by any
+   mean-square input and must be attacked by a mechanism that couples to the coherent
+   low-frequency mode (multiplicative cutoff boundary per that card, or a
+   positivity-creating mechanism per `five-lanes-one-wall`).  Do not present MRBilinear
+   as closing Route E.

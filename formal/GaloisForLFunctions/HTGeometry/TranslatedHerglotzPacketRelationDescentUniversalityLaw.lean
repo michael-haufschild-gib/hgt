@@ -25,9 +25,8 @@ relation on the translated Herglotz presentations produces one nonzero polynomia
 on the exact expanded packet-jet vector at every packet row inside the domain. -/
 theorem exists_packetRelation_of_translatedHerglotzPresentation_relation
     {m : ℕ} {row : Type} [Fintype row]
-    (eta : Measure (OnePoint ℝ))
+    (eta : Measure (OnePoint ℝ)) [IsFiniteMeasure eta]
     (density : Lp ℝ (⊤ : ENNReal) eta)
-    [IsFiniteMeasure (weightedBoundaryCarrier F.base.toBoundaryFamily eta density)]
     (packet : InjectiveProjectiveRowPacket row)
     (shift : InjectiveShiftConfiguration (Fin m))
     (M : ℂ) (U : Set ℂ)

@@ -98,10 +98,9 @@ Final verification:
 - `#print axioms` on source identity, archimedean shift/bound, fixed-line equivalence, universality,
   graded type, quantitative lower obstruction, and cofinal-unboundedness capstones reports only
   `propext`, `Classical.choice`, and `Quot.sound`;
-- repository-wide `scripts/formal_tools.py lint` reaches no proof-debt error but remains red on the
-  pre-existing unrelated umbrella issue
-  `GaloisForLFunctions.RHTower.MobiusMertensFiniteSectionEnergy` being unreachable from
-  `GaloisForLFunctions.RHTower`.
+- repository-wide `scripts/formal_tools.py lint` passes; the former umbrella reachability issue for
+  `GaloisForLFunctions.RHTower.MobiusMertensFiniteSectionEnergy` is closed by the focused premise
+  audit and the module is now imported by `GaloisForLFunctions.RHTower`.
 
 ## Open core
 
