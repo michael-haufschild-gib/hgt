@@ -262,3 +262,43 @@ Audit HTGeometry, HilbertMetric, and RHTower and write a paper that exactly and 
 Goal is met when after honest and extensive review you cannot add or change anything to the paper and it is truly a full map of where our current research corpus stands.
 
 Mandatory: You let the lean corpus speak and tell you what is. You do not assume what a proof route should look like or what an obstacle is - your training data is biased towards classical proof routes and has not seen all of our research which in part is novel scientific discovery. Do not assume anything, just read lean code.
+
+
+
+## loop arxiv
+/loop 1m (use the croncreate tool)
+
+if you are not idle, keep going.
+else your task is:
+
+do a broad arxiv search for preprints or any publication in the last year for any topic related to our research. examples (single word keyword searches): stokes, hochschild, euler, descent, bockstein, hilbert, homology, cohomology, adelic, zeta, connes, suzuki, deninger, moebius, ...
+
+check any paper against our htgeometry and rhtower lean corpus whether it:
+1. allows to discharge every tractable premise
+2. create and formally prove missing connector theorems
+3. subsume theorems under a larger universal law which is nontrivial
+4. opens new proof routes for the riemann hypothesis
+
+then formalize everything useful in lean.
+  
+lean rules:
+1. You always build in the foreground, 1 build process at a time - other agents are also building in parallel.
+2. Always use  lake env lean <file>  and only lake build <module> for the final audit.
+3. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
+4. make sure you don't leave stale lean processes running - clean up after yourself
+
+Mandatory:
+1. no computations.
+2. LEAN PROOFS MUST BE UNCONDTIONAL!!! 
+3. no subagents or background tasks
+4. You are not allowed to change the cron timing.
+5. Effort is not a criterion:
+   1. If it cannot be done in a single session -> Does not matter. Do it!
+   2. If it cannot be done in a single context window -> Does not matter. Do it!
+   3. If it takes months -> Does not matter. Do it!
+
+You are not allowed to change the cron timing.
+
+LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
+
+where mathematical knowledge is missing use the /hgtl7 skill to create it.

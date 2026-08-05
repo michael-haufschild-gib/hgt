@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- **Status:** Stage 2 -- dependency-closed paper proof complete; manuscript integration in progress
+- **Status:** Stage 3 -- dependency-closed paper proof complete; Lean surface closed unconditionally
 - **Area:** irregular nonabelian Hodge theory; Stokes geometry; Eggers--Wall trees
 - **Created:** 2026-08-03
 - **Primary object:** ramification-decorated core nonabelian Hodge diagram of a type-A irregular class at infinity
@@ -170,7 +170,7 @@ theorem for the full finite fibre.  U1--U3 no longer depend on this stronger que
 - [x] Paper proof of U3
 - [x] External novelty audit complete
 - [x] Move to Stage 2
-- [ ] Lean theorem surface frozen
+- [x] Lean theorem surface frozen
 
 ## 8. Dependency-closed paper proof
 
@@ -360,3 +360,55 @@ established type-A fission data and exact loop/edge formulae enter.  The remaini
 research question is stronger than the theorem surface needed here: whether the
 finite decorated fibre admits a canonical recursive product formula over the
 recovered skeleton.
+
+## 9. Lean certificate
+
+All modules live in `formal/GaloisForLFunctions/HTGeometry/` and are wired into
+`GaloisForLFunctions/HTGeometry.lean`.
+
+### 9.1 Skeleton, tomography and energy (U1, U2, U3)
+
+| Paper object | Lean declaration | Module |
+|---|---|---|
+| rooted contact skeleton with strictly antitone `kappa` | `IrregularStokes.RootedContactTree` | `StokesContactTomography` |
+| `K_ij = kappa(i ∧ j)` | `RootedContactTree.contact` | `StokesContactTomography` |
+| Lemma 8.1 strict diagonal separation | `RootedContactTree.contact_diagonal_lt` | `StokesContactTomography` |
+| Lemma 8.2 acute-isosceles / repeated maximum | `RootedContactTree.contact_acute`, `RootedContactTree.contact_maxTwice` | `StokesContactTomography` |
+| (RT) rooted-triple law | `RootedContactTree.rootedTriple_iff`, `.contact_lt_of_inf_lt_inf`, `.contact_eq_of_inf_lt_inf` | `StokesRootedTripleLaw` |
+| Theorem 8.3 threshold recovery of the labelled hierarchy | `RootedContactTree.hierarchy_eq_visibleHierarchy`, `.clusters_laminar`, `.hierarchy_eq_of_contact_eq` | `StokesContactTomography` |
+| (8.2) strict integral obstruction on `(B,r)` | `DecoratedStokesCore.strictDiagonal_iff`, `RootedRealization.strictCoreObstruction` | `StokesDecoratedCore` |
+| Corollary 8.4 fibre localisation | `DecoratedStokesCore.RootedRealization.hierarchy_unique`, `CertifiedFissionDatum.hierarchy_unique` | `StokesDecoratedCore`, `StokesUniversalContactLaw` |
+| Theorem 8.5(1) additive tree metric | `RootedContactTree.energy_pos_of_ne`, `.energy_eq_zero_iff`, `.energy_triangle` | `StokesRootedCutConstruction` |
+| Theorem 8.5(2) four-point law | `RootedContactTree.energy_fourPoint`, `CertifiedFissionDatum.core_energy_fourPoint` | `StokesContactTomography`, `StokesUniversalContactLaw` |
+| Theorem 8.5(3) strict negative type | `RootedContactTree.energy_strict_negative_type`, `PositivePendantCutFamily.strict_negative_type` | `StokesRootedCutConstruction`, `StokesEnergyTree` |
+| Theorem 8.5(4) explicit Hilbert embedding | `RootedContactTree.energy_has_canonical_sqEmbedding` | `StokesRootedCutConstruction` |
+| (8.4) energy in diagram coordinates | `DecoratedStokesCore.energy_eq_diagram` | `StokesRootedTripleLaw` |
+| master law | `CertifiedFissionDatum.universal_contact_master_law` | `StokesUniversalContactLaw` |
+| §8.1 contact integral and its `eta`-independence | `ContactTower.contact_eq_top_sub_analyticLoss`, `etaAnalyticContact_independent` | `StokesContactIntegral` |
+
+### 9.2 Realization: the surface is not vacuous
+
+The tomography layer had been stated for a supplied `RootedRealization`.  That input is now
+constructed from the contact matrix itself, so no realization is ever assumed.
+
+| Statement | Lean declaration | Module |
+|---|---|---|
+| contact balls, their laminarity and centre-freeness | `ContactMatrix.ball_eq_ball_of_le`, `.set_subset_or_subset` | `StokesContactRealization` |
+| skeleton vertices, reverse-inclusion order, meet, root, parent | `ContactMatrix.Vtx` with its `SemilatticeInf`, `OrderBot`, `PredOrder`, `IsPredArchimedean` instances | `StokesContactRealization` |
+| contact diameter is a strictly antitone height | `ContactMatrix.kappaV_eq_rad`, `.kappaV_strictAnti` | `StokesContactRealization` |
+| **acute matrix ⇒ rooted skeleton with that exact contact matrix** | `ContactMatrix.exists_realization`, `.realization_contact` | `StokesContactRealization` |
+| **exact realizability criterion for decorated cores** | `DecoratedStokesCore.nonempty_rootedRealization_iff` | `StokesContactRealization` |
+| integral contact hierarchies are realizable | `IntegerContactHierarchy.nonempty_rootedRealization`, `.certifiedDatum` | `StokesFissionRealizationExistence` |
+| two-level partition hierarchies | `twoLevelHierarchy` | `StokesFissionRealizationExistence` |
+| **certified fission data exist for every label set with `1 < n`** | `nonempty_certifiedFissionDatum` | `StokesFissionRealizationExistence` |
+| **unconditional master law with an existence witness** | `exists_certifiedFissionDatum_master_law` | `StokesFissionRealizationExistence` |
+
+`DecoratedStokesCore.nonempty_rootedRealization_iff` is an equivalence: a decorated core `(B,r)`
+carries a rooted fission skeleton exactly when its rescaled contact matrix is acute and its
+integral diagonal obstruction `r_j(B_ii-1) < r_i B_ij` is strict.  Both directions are proved,
+so U1--U3 hold for precisely the realizable cores and for no others.
+
+All headline declarations report `[propext, Classical.choice, Quot.sound]` under `#print axioms`.
+`lake build GaloisForLFunctions.HTGeometry` is green.
+
+- 2026-08-05 — realization layer added; Lean surface closed with no assumed realization; card advanced to Stage 3.

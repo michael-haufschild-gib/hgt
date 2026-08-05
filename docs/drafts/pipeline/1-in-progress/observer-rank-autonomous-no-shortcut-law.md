@@ -3,7 +3,7 @@
 - **ID:** observer-rank-autonomous-no-shortcut-law
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / sharp aggregate shortcut law for static local dynamics
-- **Status:** `[CONJECTURE] [SURVIVES FIRST HOSTILE ATTACK] [OPEN CORE]`
+- **Status:** `[FALSIFIED] [POSITIVE SURVIVOR PAPER-PROVED]`
 - **Parent:** `static-local-complexity-law.md`, obligation O4
 - **Master conjecture:** `observer-spectral-shortcut-action-law.md`
 - **Supersedes:** `autonomous-shortcut-free-energy-law.md` as active conjecture
@@ -275,6 +275,43 @@ leading logarithmic order forces an explicit counterexample to (5).
 No Lean work is authorized on (5) until this paper proof closes.  The proved
 observer-stationary lower obstruction remains a separate Stage-2
 formalization candidate.
+
+## Final hostile falsification -- gapped easy eigenlines
+
+The upper law `(5)` is false on its stated exponential-time window. The
+dependency-closed counterexample is
+`../2-fully-proven/gapped-eigenstate-uniform-shortcut-floor.md`.
+
+For the literal full fixed-`q` Pauli Gaussian ensemble, centre a
+full-dimensional coefficient box of width `epsilon^2/(16m_(n,q))` at the
+diagonal Hamiltonian
+
+\[
+ m_{n,q}^{-1/2}\sum_{\varnothing\ne S,\ |S|\le q} Z_S.
+\]
+
+The input product ray is its unique top eigenline with gap at least
+`2/sqrt(m_(n,q))`. Every Hamiltonian in the box has an eigenline within
+trace distance `epsilon/4` of the input, so its complete time orbit stays
+within `epsilon/2` of the input. The Gaussian box mass is at least
+
+\[
+ \left(c\epsilon^2/m_{n,q}\right)^{m_{n,q}},
+\]
+
+independently of time. At `t=2^(c_0 n)` this is
+`exp(-O_q(n^q log n))`, whereas `(5)` demands
+`exp(-Omega_q(n^(q+1)))`. This contradiction holds for every positive
+exponential-window constant.
+
+The exact why is that the Duhamel stationary tube prices transverse
+perturbations by `1/t`, while spectral-gap stability prices a neighborhood
+of an easy eigenline once and for all. Observer rank is therefore a local
+short-time action, not the aggregate exponential-time shortcut action.
+
+The positive survivor is the time-uniform gapped-eigenstate shortcut floor.
+The wider observer--spectral minimum is not falsified: its completed-orbit
+mass includes this floor and therefore forces an early spectral crossover.
 
 ## Master-law interpretation
 

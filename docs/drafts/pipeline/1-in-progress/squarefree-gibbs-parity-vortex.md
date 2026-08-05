@@ -243,3 +243,269 @@ atoms.
 - 2026-08-05 — R1–R3 formalized unconditionally.  General-k R2 remains paper-level (needs
   a general discriminant; mathlib has none — building it is a separate infrastructure
   decision).
+
+## 2026-08-05 CYCLE 3: the sector-collapse layer
+
+**N1 (infinite-volume gas is order-zero; paper proof).**  For fixed `x > 0`,
+`p_x(z) := ∑_{n squarefree} z^{ω(n)}e^{−nx}` is entire of order `0`: its `k`-th
+coefficient `c_k(x) = ∑_{ω(n)=k} μ²(n)e^{−nx}` obeys `c_k ≤ e^{−N_k x/2}·∑_n e^{−nx/2}`
+with `N_k` the `k`-th primorial (`≥ 2^k·k!`-growth), so
+`order = limsup k·log k / log(1/c_k) = 0`.  Hence the genus-`0` Hadamard factorization
+
+```text
+p_x(z) = e^{−x}·∏_j (1 − z/z_j(x)),      ∑_j |z_j(x)|^{−1} < ∞
+```
+
+(the constant term is `c_0 = e^{−x}`, the `n = 1` term).
+
+**N2 (the parity cross-ratio law; paper proof).**  Evaluating at `z = ∓1` and dividing
+(`p_x(1) > 0` by positivity):
+
+```text
+Φ(x) = e^{−x}∏_j (1 + 1/z_j),      E_{ν_x}[η] = Φ(x)/Z(x) = ∏_j (z_j+1)/(z_j−1).
+```
+
+A factor has modulus `< 1` **iff `Re z_j < 0`**, and a zero at distance `d` from the
+parity point contributes `≈ log(2/d)` of cancellation.  Consequently **(G2)/RH is exactly
+a zero-condensation law**: `∑_j log|(z_j−1)/(z_j+1)| ≥ (1/2−ε)·log(1/x)` — the
+infinite-volume parity cluster must condense onto `z = −1` at logarithmic rate `1/2`.
+This is the infinite-volume replacement of the locking law, and the precise meaning of
+"anomalous cluster collapse" from R3.
+
+**N3 (sector-collapse conjecture + finite theorems).**
+*Conjecture (all k):* the gas is Hurwitz-stable — every zero of `P_S(·,x)` (and of `p_x`)
+has `Re z < 0`, for every coupling `x > 0`.  Then every factor of N2 helps: cancellation
+is **monotonically graded zero-by-zero**, and (G2) reduces purely to *counting* zeros
+near the parity point.  Mechanism for an inductive proof: Hermite–Biehler along T0 —
+`P_{S∪p}(iω) = P_S(iω,x) + iω·P_S(iω,px)` is a stability-preserving combination if the
+two-scale phase lag is controlled; the Laplace kernel `e^{−xE}` is totally positive in
+`(x,E)`, which is the structural reason to believe the lag control.  Hand-checks: the
+`k=4` Routh–Hurwitz minors pass with room at both ends (`pqr+pq+p < min(2pqr+1,
+pqrs+2p)`, both by `q+1 ≤ qr`-type submultiplicativity); the UV vortex star lies at
+`−1 + O((φx)^{1/k})` ⊂ LHP.
+
+*Theorems (k ≤ 3, ALL x > 0, proved):*  positivity of the coefficients plus the
+Routh–Hurwitz energy inequality
+
+```text
+a₂a₁ ≥ e^{−(pq+p)x} > e^{−(pqr+1)x} = a₃a₀     (since p(q+1) ≤ pqr, strict in the exponent)
+```
+
+give: the pair gas and the triple gas have **no zero with `Re z ≥ 0`, at any coupling** —
+the vortex never crosses the imaginary axis, even though reality fails (T3).  Proof of
+the cubic criterion (classical Routh–Hurwitz, self-contained): a root `z = s+it` with
+`s ≥ 0`; if `t = 0` then `P(s) ≥ a₀ > 0`; else the imaginary part forces
+`a₃t² = 3a₃s² + 2a₂s + a₁`, and substituting into the real part yields
+`a₂a₁ − a₃a₀ = −(8a₃²s³ + 8a₃a₂s² + 2a₃a₁s + 2a₂²s) ≤ 0`, contradiction.  Per-zero
+grading: `Re ζ < 0 ⟹ ‖1+ζ‖ < ‖1−ζ‖` (difference of squares is `4·Re ζ`).
+
+Attribution: the cubic criterion is Routh–Hurwitz (1895); new content = the gas satisfies
+it at every coupling by energy submultiplicativity, the cross-ratio/condensation
+reformulation N2, and the sector-collapse conjecture with the T0/Hermite–Biehler
+mechanism.  `[OPEN CORE]` (refined): the zero-counting law — lower bounds on the number
+of gas zeros in shrinking disks about the parity point; sector stability for `k ≥ 4` and
+for `p_x`.
+
+- 2026-08-05 — N1, N2 paper-proved; N3 finite theorems proved; Lean next
+  (`RHTower/GibbsSectorStability.lean`).
+
+## 2026-08-05 N3 FORMALIZED: `RHTower/GibbsSectorStability.lean`
+
+Wired; targeted build 8657 jobs; no `sorry`; axioms only
+`propext, Classical.choice, Quot.sound`; zero warnings.  Namespace `RHTower.GibbsGas`:
+
+- `quadratic_no_rhp_root`, `cubic_no_rhp_root` — self-contained Routh–Hurwitz half-plane
+  criteria (the cubic by the `s+it` substitution and the exact identity
+  `a₂a₁ − a₃a₀ = −(8a₃²s³+8a₃a₂s²+2a₃a₁s+2a₂²s)` via
+  `linear_combination (−a₃)·hre + (−(3a₃s+a₂))·hquad`);
+- `gibbsDiag_pair_expand`, `gibbsDiag_triple_expand` — coefficient-basis bridges;
+- `triple_gas_hurwitz` — the energy inequality `a₃a₀ < a₂a₁` at every coupling
+  (submultiplicativity via `(q−2)(r−1) ≥ 0 ⟹ qr−q−1 ≥ 1`);
+- `pair_gas_sector_stable`, **`triple_gas_sector_stable`** — no zero with `Re z ≥ 0`,
+  for ALL `x > 0` (the vortex never crosses the imaginary axis);
+- `norm_one_add_lt_of_re_neg`, **`triple_gas_root_grading`** — every zero of the triple
+  gas, at every coupling, satisfies `‖1+ζ‖ < ‖1−ζ‖`: per-zero parity cancellation.
+
+Lean traps: extract re/im of a complex root equation by `z = ↑s + ↑t·I` + `congrArg
+Complex.re/im` + `simp only [add_re/mul_re/... , pow_succ, pow_zero, one_mul]` and close
+against the hand-stated real equation with `linear_combination h` (immune to simp's
+arrangement); `push_neg` is deprecated (use `rw [not_lt]`); nlinarith needs the
+`(q−2)(r−1) ≥ 0`-style product hints spelled out.
+
+- 2026-08-05 — N3 (k ≤ 3) formalized unconditionally.
+
+## 2026-08-05 CYCLE 4: dilation seam, homotopy reduction, and k = 4 stability
+
+**O1 (operator factorization; exact, all k).**  With `(M_c f)(x) := f(cx)`:
+
+```text
+P_S(z, x) = [ ∏_{p∈S} (1 + z·M_p) ] (e^{−·}) (x),
+```
+
+a product of COMMUTING operators (`M_pM_q = M_{pq}`).  T0 is the peeling of one factor.
+At `z = −1` the parity current is the Möbius transfer product `∏(1−M_p)` applied to the
+Gibbs state.
+
+**O2 (the seam is the critical line; paper).**  On `L²(0,∞)`, `M_p = p^{−1/2}·U_p` with
+`U_p` unitary (Mellin: `U_p` = multiplication by `p^{−iτ}`), so the commuting family
+`{M_p}` is simultaneously diagonalized by Mellin with symbol `p^{−s}` on `Re s = 1/2`.
+The exact scaling `‖M_p f‖² = p^{−1}‖f‖²` is the square-root-of-p law that seats the
+gas seam on the critical line — unconditionally, before any zeta input.  (Honest flag:
+pushing the z = −1 operator formula into L² approximation language lands in
+Nyman–Beurling territory — a known re-encoding class per `rh-criterion-reencoding-template`;
+the NEW content is the z-deformation: the gas polynomial and its zero geometry interpolate
+the parity point.)
+
+**O3 (homotopy reduction of all-k stability; paper).**  Zeros of `P_S(·,x)` move
+continuously in `x`; therefore Hurwitz stability for all `x` follows from
+(i) an anchor at one coupling and (ii) no zeros on the imaginary axis for any `x`.
+- *Anchor (strong coupling)*: for large `x` the coefficient sequence
+  `c_j(x) ≈ e^{−x·(p₁⋯p_j)}` satisfies Kurtz's dominance `c_j² > 4c_{j−1}c_{j+1}`
+  (since `p_{j+1} + 1/p_j > 2` strictly), hence ALL roots are real negative (Kurtz 1992)
+  — **Lee–Yang reality is restored at strong coupling**: the gas has a reality phase
+  transition in `x` (vortex at weak coupling, real-rooted at strong coupling).
+- *Axis nonvanishing*: `P_S(it, x) ≠ 0` for real `t` is exactly the Routh–Hurwitz minor
+  chain for the gas coefficients.
+
+**O4 (k = 4 minor at every coupling: the energy-injection theorem; paper proof).**
+For `S = {p,q,r,s}` (distinct, ≥ 2), all `x > 0`:
+
+```text
+A₁A₂A₃ > A₀A₃² + A₁²A₄ .
+```
+
+*Proof (term injection; uniform in x because `u < v ⟹ e^{−xu} > e^{−xv}`).*
+`A₁A₂A₃` is indexed by independent triples `(a, P, U)` (single, pair, triple ⊆ S).
+- Map `A₀A₃²`-indices `(T, T')` to `(min T, T∖min T, T')`.  Energy drops strictly:
+  `t₁ + t₂t₃ < 1 + t₁t₂t₃` ⟺ `(t₁−1)(t₂t₃−1) > 0`.  Range ⊆ `{a < min P}`; injective.
+- Map `A₁²A₄`-indices `(a, a')` to `(a, {a', b}, S∖{b})` with `b := min(S∖{a'})`.
+  Energy drops strictly: `a'b + E(S)/b < a' + E(S)` ⟺ `a' < ∏(S∖{b})`, true since
+  `a' ∈ S∖{b}` and the other two factors are `≥ 2`.  Range ⊆ `{min P = min S ≤ a}`;
+  injective (`b` = the pair element outside the triple).
+The two ranges are disjoint (`a < min P` vs `a ≥ min P`), so the 32 strictly-dominating
+LHS terms are distinct, and the remaining LHS terms are positive.  ∎
+
+With the quartic Routh–Hurwitz criterion (positive coefficients + this minor), the
+**4-element gas is Hurwitz-stable at every coupling** — N3 extends to `k = 4`, and the
+energy-injection technique is the visible template for the full minor chain (the all-k
+sector-collapse conjecture's likely proof engine).
+
+Lean this cycle: the dilation layer (`GibbsDilationSeam.lean`): the semigroup law, the
+operator form of T0, and the exact `p^{−1/2}` L²-scaling.  Next Lean targets: the quartic
+Routh–Hurwitz criterion + the O4 injection (32 comparisons), then Kurtz's anchor.
+
+- 2026-08-05 — O1–O4 established (O1, O3, O4 paper-proved here; O2's Mellin part cites
+  classical Plancherel — corpus owns the machinery per `mathlib-has-plancherel`).
+
+## 2026-08-05 O1 + scaling law FORMALIZED: `RHTower/GibbsDilationSeam.lean`
+
+Wired; build 8657 jobs; no `sorry`; axioms clean; zero warnings.  `RHTower.GibbsGas`:
+`dilate`, `dilate_dilate`/`dilate_comm` (the semigroup `M_pM_q = M_{pq}`),
+`gibbsDiag_insert_dilate` (T0 = peeling one factor of `∏(1+z·dilate p)`),
+`gibbsDiag_eq_sum_dilates` (the expanded operator product on the Gibbs state),
+`integral_dilate_sq` (the exact `p⁻¹` squared-mass scaling —
+`MeasureTheory.Measure.integral_comp_mul_left`; note the `Measure.` namespace).
+Remaining Lean targets queued: quartic Routh–Hurwitz + the O4 injection; Kurtz anchor.
+
+- 2026-08-05 — cycle 4 closed (O1–O4 paper; O1 + scaling law in Lean).
+
+## 2026-08-05 O4 + QUARTIC CRITERION FORMALIZED: `RHTower/GibbsQuarticStability.lean`
+
+Wired; build 8658 jobs; no `sorry`; axioms clean; zero warnings.  `RHTower.GibbsGas`:
+
+- **`quartic_no_rhp_root`** — the quartic Routh–Hurwitz criterion, proved constructively
+  by the conjugate-pair factorization: for a root `s+it`, `s ≥ 0`, the division identity
+  `P = (z²−2sz+m)(a₄z²+bz+c) + r₁z + r₀` (a `ring` identity once `b := a₃+2sa₄`,
+  `c := a₂+2sb−a₄m`, `r₁, r₀` are defined), `q(z₀) = 0` via `linear_combination
+  t²·Complex.I_sq`, `r₁ = r₀ = 0` from re/im, and then the **exact identity**
+  `a₃a₂a₁ − a₄a₁² − a₃²a₀ = −2sb·[(a₄m−c)² + a₃a₁]` (one `ring` after substituting the
+  four relations) — so `Δ₃ > 0` forbids `s ≥ 0`.  No Cauchy index, no case analysis on
+  root types, no interlacing machinery: the criterion reduced to two ring identities.
+- `gibbsDiag_quadruple_expand` — the 16-term coefficient bridge (T0 applied 1+2+4+8 times);
+- **`quadruple_gas_hurwitz`** — the O4 energy-injection minor `A₄A₁² + A₃²A₀ < A₃A₂A₁`
+  at every coupling: the 8 strict comparisons via `exp_pair_lt` with product hints
+  `(a−1)(bc−1) > 0`, aggregated by calc chains (`mul_lt_mul_of_pos_*`, `add_lt_add`)
+  and closed by `ring` on the 96-monomial regrouping — no large simplex anywhere;
+- **`quadruple_gas_sector_stable`**, **`quadruple_gas_root_grading`** — the 4-element gas
+  never crosses the imaginary axis, and every zero contributes parity cancellation, at
+  every coupling.
+
+N3 now holds for `k ≤ 4` in Lean.  Lean traps: `set`-atom Boltzmann weights must be
+`clear_value`d before arithmetic joints; big-product inequalities must be assembled by
+`calc`/`add_lt_add`/`mul_le_mul` with `ring` regroupings — `linarith` over a 96-monomial
+tableau exceeds 1.6M heartbeats, `ring` does it instantly.
+
+- 2026-08-05 — quartic criterion + O4 formalized unconditionally; N3 ≤ 4 closed in Lean.
+
+## 2026-08-05 CYCLE 6: weak-coupling confinement — the first ALL-k theorem
+
+The Routh minor chain is bypassed.  All statements below hold for **every** `k`, are
+unconditional, and use neither Rouché nor the fundamental theorem of algebra.
+
+**W1 (perturbation estimate).**  For finite `S` of integers `≥ 1`, `x ≥ 0`, `w ∈ ℂ`:
+
+```text
+‖P_S(−1+w, x) − w^k‖ ≤ x·∏_{p∈S}(1 + (1+‖w‖)p) ≤ x·m·(2+‖w‖)^k,   m = ∏S.
+```
+
+*Proof.*  `∑_{T⊆S}(w−1)^{|T|} = w^k` exactly (binomial), so the difference is
+`∑_T (w−1)^{|T|}(e^{−x·e(T)} − 1)`; then `|e^{−u}−1| ≤ u` and
+`∑_T ∏_{p∈T}((1+‖w‖)p) = ∏_p(1+(1+‖w‖)p)`, with `1+(1+t)p ≤ (2+t)p` since `p ≥ 1`. ∎
+
+**W2 (confinement, all k).**  If `ρ > 0` and `x·m < (ρ/(2+ρ))^k`, then `P_S(z,x) ≠ 0` for
+every `z` with `‖z+1‖ ≥ ρ`: the entire zero set is confined to the open disk of radius `ρ`
+about the parity point.
+*Proof.*  `|P| ≥ ‖w‖^k − x·m(2+‖w‖)^k > 0` because `t ↦ t/(2+t)` increases. ∎
+
+**W3 (weak-coupling Hurwitz stability, ALL k).**  `x·m < 3^{−k}` ⟹ every zero satisfies
+`‖z+1‖ < 1`, hence `Re z < 0`.  The first all-`k` sector-stability theorem for the gas
+(previous results: `k ≤ 4`, cycles 3–5).
+
+**W4 (sharpness — the quantitative totient law).**  For `k ≥ 1` and `x·m ≤ 1`:
+
+```text
+|J_S(x) − (−1)^{k+1}·φ(m)·x| ≤ x²·∏_{p∈S}(1+p²).
+```
+
+So T2's totient law is now an inequality with explicit error, and the confinement radius
+of W2 is **sharp**: the star of T4 has radius `(φ(m)x)^{1/k}`, W2 gives
+`ρ ≤ 2(mx)^{1/k}`, and `(m/φ(m))^{1/k} = ∏(p/(p−1))^{1/k} = O(1)`.  **Cluster radius
+pinned: `(φ(m)x)^{1/k} ≲ ρ_S(x) ≤ 2(mx)^{1/k}`.**
+
+**W5 (quantitative grading).**  `‖1+ζ‖ ≤ ρ ⟹ ‖1−ζ‖ ≥ 2−ρ`: each confined zero contributes
+a cancellation factor `≤ ρ/(2−ρ)`, so (with the finite factorization)
+`|J_S|/Z_S ≤ (ρ/(2−ρ))^k` — matching W4's order `φ(m)x/2^k`.  The N2 condensation
+mechanism is thereby verified quantitatively in finite volume, with no Hadamard theory.
+
+Significance: the vortex picture becomes a quantitative confinement law valid for every
+`k`.  Combined with the strong-coupling Kurtz anchor (O3), the only remaining unknown in
+the sector-collapse conjecture is the **intermediate window** `3^{−k} ≤ x·m ≲ Kurtz`.
+
+- 2026-08-05 — W1–W5 paper-proved (this entry); Lean next.
+
+## 2026-08-05 W1–W5 FORMALIZED: `RHTower/GibbsWeakCouplingConfinement.lean`
+
+Wired; build 8657 jobs; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings.  Namespace `RHTower.GibbsGas`:
+
+- `gibbsDiagC` (the gas at complex activity), `gibbsDiagC_ofReal`;
+- `sum_sub_one_pow_card` — the free gas `∑_{T⊆S}(w−1)^{|T|} = w^k` (`Finset.prod_add`);
+- **`norm_gibbsDiagC_shift_sub_pow_le`** (W1) — `‖P_S(−1+w,x) − w^k‖ ≤ x·(2+‖w‖)^k·m`;
+- **`gibbsDiagC_ne_zero_of_le_norm`** (W2) — confinement: `x·m < (ρ/(2+ρ))^k` ⟹ no zero
+  with `‖z+1‖ ≥ ρ`, for EVERY `k`;
+- **`gibbs_weak_coupling_stable`** (W3) — `x·m < 3^{−k}` ⟹ `‖z+1‖ < 1 ∧ Re z < 0`;
+- `norm_one_sub_ge_of_norm_one_add_le` (W5) — `‖1+ζ‖ ≤ ρ ⟹ ‖1−ζ‖ ≥ 2−ρ`;
+- **`abs_gibbs_current_sub_totient_le`** (W4) — `|J_S(x) − (−1)^{k+1}φ(m)x| ≤ x²∏(1+p²)`
+  for `k ≥ 1`, `x·m ≤ 1` (sharpness certificate for the confinement radius).
+
+Lean traps: `Finset.prod_add`'s cofactor `∏_{S∖T} 1` normalizes to `1 ^ card` — the simp
+set needs `one_pow` (not `Finset.prod_const_one`); `Finset.prod_le_prod_of_subset_of_one_le'`
+needs a multiplicative `OrderedCommMonoid` and does NOT apply to ℝ — split with
+`Finset.prod_sdiff` and `nlinarith` instead; `Real.abs_exp_sub_one_sub_id_le` needs
+`|u| ≤ 1` and gives constant `1`.
+
+Stage: the gas programme now has ALL-k results (W1–W5) plus exact `k ≤ 4` stability at
+every coupling.  Open: the **intermediate window** `3^{−k} ≤ x·m ≲ Kurtz` — the only
+remaining gap in the sector-collapse conjecture.
+
+- 2026-08-05 — cycle 6 closed.

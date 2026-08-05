@@ -3,10 +3,16 @@
 - **ID:** `observer-spectral-shortcut-action-law`
 - **Stage:** 1-in-progress
 - **Type:** WILD CONJECTURE / proposed master law
-- **Status:** `[CONJECTURE] [OPEN CORE] [NOT AUTHORIZED AS A PAPER CLAIM]`
+- **Status:** `[ANNEALED INTERPRETATION FALSIFIED] [SUPERSEDED AS ACTIVE CLAIM]`
 - **Parent:** `static-local-complexity-law.md`
 - **Local branch:** `observer-rank-autonomous-no-shortcut-law.md`
 - **Date:** 2026-08-05
+
+> **Active replacement:** `quenched-observer-spectral-action-law.md`. The
+> gapped-eigenline shortcut floor proves that the annealed completed mass in
+> this card cannot represent typical Brown--Susskind growth. This card remains
+> the conceptual precursor and qualitative ensemble-transfer record, not the
+> active flagship conjecture.
 
 ## The jump
 
@@ -204,8 +210,53 @@ than cosmetic.
    excess.  Maximal projective rank is exactly simultaneous floor attainment.
    This closes the spectral action law itself, but not the adaptive circuit
    selector needed for `(5)`.
+9. `../2-fully-proven/gapped-eigenstate-uniform-shortcut-floor.md`
+   proves a full-dimensional, polynomial-width Gaussian coefficient box on
+   which the product input remains close to a perturbed gapped eigenline for
+   every time. Its mass is `exp(-O_q(n^q log n))`, independent of time. This
+   falsifies the observer-only exponential-time branch, but the completed
+   orbit mass in `(2)` absorbs it exactly because the whole orbit is easy.
+10. `../3-formalized/adaptive-circuit-shortcut-action-law.md` proves and
+    formally certifies the
+    stronger finite-window theorem for every finite spectrum, every initial
+    spectral weight, every finite circuit dictionary and an arbitrary
+    time-dependent target selector. Shortcut mass is bounded by exactly
+    circuit description entropy, completed replica collision and unresolved
+    spectral action. This closes circuit adaptivity for uniform and Gaussian
+    observation windows. It does not close fixed prescribed-time growth,
+    because intrinsic replica resolution may be arbitrarily small.
 
 None of these items proves `(5)`.
+
+## Quenched correction forced by the gapped-eigenline floor
+
+The annealed quantity in `(2)` is dominated from below by rare Hamiltonians
+whose entire orbit is easy. In the flagship Gaussian ensemble,
+
+\[
+ I^{\rm comp}_{n,q,\epsilon}(R)=O_q(n^q\log n)
+\]
+
+already for the zero-gate target. Hence the action `(3)` crosses from
+`v_(n,q) log t` to its spectral branch by polynomial time, not near Hilbert
+capacity. Equation `(5)` may still be a valid annealed law, but it cannot be
+interpreted as typical Brown--Susskind growth.
+
+The stronger physically relevant target must resolve Hamiltonian rarity and
+conditional orbit information before averaging. A candidate formulation is
+the quantile envelope
+
+\[
+ \inf_{B\ge0}\left\{
+   \Pr_J\bigl(I_J^{\rm comp}(R)<B\bigr)
+   +\exp[-\min\{v_{n,q}\log t,B\}]
+ \right\},
+\]
+
+where `I_J^comp=-log nu_J(E_(n,R,epsilon))`. This is presently a
+`[CONJECTURE]`, not a replacement theorem. Any successful adaptive law must
+control the shortcut event on every resolved spectral-information stratum;
+an annealed mean may be used only after that control is proved.
 
 ## Hostile falsification programme
 

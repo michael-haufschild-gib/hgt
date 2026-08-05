@@ -554,11 +554,70 @@ lake env lean GaloisForLFunctions/HTGeometry/AffineEigenbranchDiagonalProbeLaw.l
 lake env lean GaloisForLFunctions/HTGeometry/AllVertexEndpointResponse.lean
 ```
 
-Still required before stage 3:
+Still required before stage 3 (audited against the repository, not against
+this card's earlier text):
 
-1. all-vertex-good graph induction;
-2. heterogeneous relation-erasure capstone;
-3. spanning-tree lift;
-4. disconnected module equality and rational-transverse scaling;
-5. temporal partition-curvature capstone;
-6. simultaneous subsystem and infinite product capstones.
+1. all-vertex-good graph induction — `[DONE]`
+   `exists_physicallyRealizedTensorTree_leafExtension`,
+   `exists_physicallyRealizedTensorTree_completeOneSiteSeed`,
+   `exists_physicallyRealizedTensorTree_twoQubitGraphSeed`,
+   `exists_completeOneSiteSeed_tensorTreeSchedule_maximal`,
+   `exists_twoQubitSeed_tensorTreeSchedule_maximal`;
+2. heterogeneous relation-erasure capstone — `[DONE]`
+   `crossLayer_eq_of_twoLayerAnalyticBranchRelation`,
+   `crossLayer_eq_of_selectedLayerAnalyticBranchRelation`;
+3. spanning-tree lift — `[DONE]`
+   `PhysicallyRealizedTensorTreeSystem.hermitianSuperspaceMaximalSet_dense_residual_fullMeasure`,
+   `exists_rootedSpanningTreePhysicalSystem`,
+   `exists_binarySpanningTreePhysicalSystem`;
+4. disconnected module equality and rational-transverse scaling — `[DONE]`
+   `anchoredTemporalRank_finiteComponentSumEnergy_eq_sum`,
+   `exists_scales_componentProjectivelyIndependent`;
+5. temporal partition-curvature capstone — `[DONE]`
+   `finiteGraphPartitionTemporalCurvature_eq_zero_iff`,
+   `connected_iff_all_nontrivial_partitionTemporalCurvature_pos`,
+   `finiteGraphPairTemporalCurvature_eq`,
+   `adj_iff_finiteGraphPairTemporalCurvature_pos`;
+6. simultaneous subsystem and infinite product capstones — `[IN PROGRESS]`.
+
+### Item 6: what is built and what is left
+
+The abstract mechanism of section 9 and of the infinite-network completion is
+now unconditional, in
+`GaloisForLFunctions/HTGeometry/SubsystemAtlasProjectiveGenericityLaw.lean`:
+
+- `restrictedPolynomialHermitianMaximalSet_dense_residual_fullMeasure` — one
+  subsystem reading its own subfamily of the ambient real coefficients has
+  dense, residual, full-measure maximal projective rank *in the ambient
+  coefficient space*.  The proof renames the subsystem variables into the
+  ambient ones, so the pulled-back set is literally the maximal set of an
+  ambient polynomial family;
+- `simultaneousRestrictedMaximalSet_dense_residual_fullMeasure` — a countable
+  atlas of such subsystems holds simultaneously.  Density is recovered from
+  residuality by Baire, which is what makes the simultaneous statement possible
+  at all: finite intersections of dense sets need not be dense;
+- `ambientRestrictedMaximalSet_residual` and
+  `measure_compl_ambientRestrictedMaximalSet_eq_zero` — the same conclusion in a
+  countable coefficient product, residually and almost surely for every law
+  whose finite-dimensional restriction marginals are absolutely continuous.
+
+Corollary 2 additionally needs one fixed Hamiltonian to expose *every* vertex
+subset as a genuine tensor factor.  The tensor-tree architecture stores the
+carrier as a nested product, so a new site-product locality layer is being
+built:
+
+- `GaloisForLFunctions/HTGeometry/SiteSupportedLocalHamiltonian.lean` —
+  `IsSiteSupported S H` (`H` acts as the identity off the site packet `S`), its
+  subspace, packet-monotonicity and adjoint closure,
+  `exists_liftLocalMatrix_of_isSiteSupported`, the graph-local Hamiltonian space
+  `siteFactorLocalSubmodule`, and
+  `mem_siteFactorLocalSubmodule_of_hermitian_sum`;
+- `GaloisForLFunctions/HTGeometry/SiteFactorLeafTransport.lean` —
+  `leafSiteEquiv`, `leafTransport`, the three leaf support laws
+  (`isSiteSupported_leafTransport_id`, `isSiteSupported_leafTransport`,
+  `isSiteSupported_leafTransport_newSite`) and
+  `leafTransport_mem_siteFactorLocalSubmodule`.
+
+Remaining: a site-product-charted realization carried through the seeds and the
+leaf step, the induced-restriction rank formula, and the assembly of `(5)`–`(8)`
+and `(20)` from the atlas theorems above.

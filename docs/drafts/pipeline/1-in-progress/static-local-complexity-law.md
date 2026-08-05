@@ -5063,3 +5063,32 @@ receive a new title and an independent significance audit.
   ensemble.  Fubini--Study rate--distortion is retained only as a separately
   named delocalization/comparison theorem required for the strongest plateau
   interpretation.
+- 2026-08-05 -- Falsified the observer-rank aggregate shortcut law on every
+  exponential-time window. A full-dimensional coefficient box of width
+  `epsilon^2/(16m)` around the diagonal fixed-`q` Hamiltonian
+  `m^(-1/2) sum_(empty!=S, |S|<=q) Z_S` has Gaussian mass
+  `exp(-O_q(n^q log n))`. The product input is its unique top eigenline with
+  gap at least `2/sqrt(m)`; a self-contained eigenbasis argument proves every
+  Hamiltonian in the box has a nearby eigenline, so the entire orbit remains
+  `epsilon`-easy at every time. At `t=2^(cn)` this floor is exponentially
+  larger than the conjectured `t^(-(1-eta)v)=exp(-Omega_q(n^(q+1)))`.
+  Exact proof is in
+  `../2-fully-proven/gapped-eigenstate-uniform-shortcut-floor.md`. This does
+  not falsify the observer--spectral minimum: its annealed completed-orbit
+  mass absorbs the box and therefore crosses branches by polynomial time.
+  Typical Brown--Susskind target must now be quenched/quantile-resolved,
+  charging Hamiltonian rarity separately from conditional orbit ease.
+- 2026-08-05 -- Froze the exact quenched replacement after the gapped-eigenline
+  falsification. `quenched-observer-spectral-action-law.md` conditions the
+  fixed-time shortcut event on each Hamiltonian's own completed circuit-target
+  information and conjectures
+  `P(shortcut and I_J^comp>=B) <= exp(-(1-eta) min(v log t,B))`.
+  The rare full-dimensional easy box now lies in the `I_J^comp=0` stratum and
+  is charged explicitly instead of corrupting a typical-growth average. Small
+  Hamiltonians cost `t^-m`, stationary-kernel tubes sharply cost `t^-v`, and
+  commuting/anticommuting carriers cost at least `t^-v`; none kills the new
+  statement. The first exact falsifier remains a codimension-`<v` nonlinear
+  near-integrable carrier whose exact orbit is easy but whose arbitrarily
+  small transverse perturbations have completed information at least `B`.
+  No Lean work is authorized until this resolved exceptional-carrier open core
+  has a dependency-closed paper proof.

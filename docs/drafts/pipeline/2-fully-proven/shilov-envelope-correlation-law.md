@@ -614,3 +614,30 @@ boundary conjunction `(EC)`–`(LES)` and consequence unavailable from any paren
 - 2026-08-04 — edge minimality and unconditional path short exact sequence formalized in
   `GaloisForLFunctions.HTGeometry.ShilovEnvelopeCorrelationLaw`; targeted Lean source and module
   builds pass, with only `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-08-05 — `(EC)`, `(PB)`, `(FQ)`, edge minimality, the vertical extension `(VE)`, and
+  bidirectional entrywise matricial coupling formalized in
+  `GaloisForLFunctions.HTGeometry.ShilovEnvelopeCorrelationPullback`.  Relational composition,
+  its associativity, the exact one-step ambiguity composition law, `(OL)`, the path composition
+  law `(PC)`, and the path ambiguity join law `(J)` formalized in
+  `GaloisForLFunctions.HTGeometry.ShilovCorrelationPathJoin`.  Both modules compile
+  unconditionally; `(SC)`/`(SET)`/`(LES)` and the algebraic core of `(UT)` remain.
+
+## Lean formalization map
+
+| Paper item | Lean declaration | Module |
+|---|---|---|
+| `(EC)` | `envelopeCorrelation` | `ShilovEnvelopeCorrelationPullback` |
+| `D_q` | `ker_correlationMap` | `ShilovEnvelopeCorrelationPullback` |
+| `(PB)` | `envelopeCorrelation_eq_correlationPullback` | `ShilovEnvelopeCorrelationPullback` |
+| minimal join | `edgeJoin_least` | `ShilovEnvelopeCorrelationPullback` |
+| `(FQ)` | `escapeEdgeQuotientEquiv`, `deficitEdgeQuotientEquiv` | `ShilovEnvelopeCorrelationPullback` |
+| `(VE)` source half | `correlationSourceKernelEquivEscape` | `ShilovEnvelopeCorrelationPullback` |
+| `(VE)` target half | `correlationTargetKernelEquiv`, `ker_correlationDeficitMap`, `correlationDeficitMap_surjective`, `correlationVerticalTarget_exact` | `ShilovEnvelopeCorrelationPullback` |
+| matricial lifting | `exists_entrywise_correlation_lift_source`, `exists_entrywise_correlation_lift_target` | `ShilovEnvelopeCorrelationPullback` |
+| relational composition | `relationalComp`, `relationalComp_assoc` | `ShilovCorrelationPathJoin` |
+| one-step composition law | `relationalComp_ambiguousCorrelation`, `relationalComp_envelopeCorrelation` | `ShilovCorrelationPathJoin` |
+| `(OL)` | `envelopeCorrelation_comp_le_relationalComp`, `envelopeCorrelation_le_pathCorrelation` | `ShilovCorrelationPathJoin` |
+| `(PC)` | `pathCorrelation_eq` | `ShilovCorrelationPathJoin` |
+| `(J)` | `pathJoin_eq`, `pathCorrelation_zero_mem_iff` | `ShilovCorrelationPathJoin` |
+| `(MC)`, `(MR)` | `localMigrationSequence_shortExact` | `ShilovEnvelopeCorrelationLaw` |
+| `(ED)` | `escapeEdgeQuotientEquiv`, `deficitEdgeQuotientEquiv` at a tower edge | `ShilovEnvelopeCorrelationPullback` |

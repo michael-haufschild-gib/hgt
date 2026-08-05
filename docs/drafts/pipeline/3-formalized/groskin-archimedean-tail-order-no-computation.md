@@ -1,7 +1,7 @@
 # Groskin archimedean tail order without numerical certification
 
 - **ID:** `groskin-archimedean-tail-order-no-computation`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** Akiva Groskin, arXiv:2607.02828, Lemma 3.1 and Theorem 3.2
 - **Statement:** Past an analytically produced finite threshold, the omitted CCM archimedean tail is an explicit positive-semidefinite Cauchy--Stieltjes Gram increment; no numerical value of the digamma density is used.
@@ -17,7 +17,7 @@ does not assert Weil positivity or RH.
 
 - [x] 0 → 1 in-progress: source-faithful statement, exact carrier, analytic proof strategy
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem, `lake env lean` and final module build green
+- [x] 2 → 3 formalized: Lean theorem, `lake env lean` and final module build green
 - [ ] 3 → 4 publication-ready: standalone theorem/proof/Lean certificate
 
 ## Source objects
@@ -115,3 +115,26 @@ Cauchy determinant/Andreief argument; they are not asserted by this card.
 ## Log
 
 - 2026-08-01 — created in 1-in-progress from exact external theorem; computation-certified cutoff replaced by analytic eventual threshold.
+
+## Lean certificate
+
+Module: `formal/GaloisForLFunctions/RHTower/GroskinArchimedeanTailOrder.lean`
+(wired into `GaloisForLFunctions/RHTower.lean`).
+
+| Paper step | Lean declaration |
+|---|---|
+| literal density `h_+` | `RHTower.groskinArchimedeanDensity` |
+| §1 divergence of the literal density | `RHTower.tendsto_groskinArchimedeanDensity_atTop` |
+| §1 analytic (noncomputational) threshold | `RHTower.exists_groskinArchimedeanDensity_pos_threshold`, `RHTower.groskinArchimedeanPositivityThreshold`, `RHTower.groskinArchimedeanDensity_pos_of_threshold` |
+| Cauchy features `p_T`, `q_T` | `RHTower.groskinArchTailMinusFeature`, `RHTower.groskinArchTailPlusFeature` |
+| exact rank-two density `K_T` | `RHTower.groskinArchTailKernel` |
+| §2 pointwise Gram positivity | `RHTower.groskinArchTailKernel_posSemidef` |
+| pole-free window | `RHTower.groskinArchTail_denominators_pos`, `RHTower.continuousOn_groskinArchTailKernel_apply`, `RHTower.integrable_groskinArchTailWindowKernel_apply` |
+| §3 integrated Loewner order `Δ ⪰ 0` | `RHTower.groskinArchTailIncrement_posSemidef` |
+
+All four headline declarations report
+`[propext, Classical.choice, Quot.sound]` under `#print axioms`; no numerical
+evaluation, no added axiom, no open hypothesis beyond the stated finite geometry
+(`0 < ρ`, threshold, node-freeness of the window).
+
+- 2026-08-05 — Lean surface verified green (`lake env lean`), axioms clean, card advanced to 3-formalized.

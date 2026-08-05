@@ -1104,3 +1104,522 @@ Formal status: appended to
 `GaloisForLFunctions/RHTower/CCMRationalAdelicCompletedXiFixedCoronaPolarization.lean`.
 Direct check, targeted build, and axiom audit (only `propext`, `Classical.choice`,
 `Quot.sound`) pass.
+
+## 2026-08-05 cross-corpus transfer: twisted-cyclic modular-dimension transmutation
+
+### Internal analogue audit
+
+The closest positive model is not a Hilbert-space or determinant construction.  The
+HT source-face corpus treats a retained Bockstein as the connecting image of a primitive
+lost under strict completion, and the irrational-triptic source-effectivity theorem shows
+what a successful producer must add: one pointed source cochain must construct the analytic,
+Hermitian, integral, and spectral realizations together, followed by a genuinely conservative
+comparison.  Applied to Route R, this changes the requested theorem from an unspecified
+``boundary killing beta`` to preservation of one pre-existing source modular class under a
+strict connecting comparison.
+
+The relevant scalar laws already exist on the two sides.  On a prime Wold ray the source
+first-trace/twisted-cyclic law has ratio
+
+```text
+source modular ratio = p^(-1).
+```
+
+The gauge-averaged positive marginal of the centered Xi character has ratio
+
+```text
+Xi conormal ratio = p^(-2 Re(rho)).
+```
+
+Consequently a nonzero specialization of the *same* twisted-cyclic class gives
+
+```text
+p^(-1) = p^(-2 Re(rho))
+  -> Re(rho) = 1/2
+  -> ccmRationalAdelicPrimeXiHodgeMateCoefficient p rho = 0.
+```
+
+The last implication is already formalized by the Route-R adjacent-depth classifier.  The
+existing Bockstein-to-corona comparison then identifies this modular mismatch with the unique
+positive Hodge-mate/corona port.  Thus modular-dimension preservation would annihilate the
+named central Bockstein on the retained atom without postulating `beta = 0`, a fixed-ideal
+normalizer, or critical-line placement.
+
+### Killed transfers
+
+1. A `C*`/GNS completion alone is blind: the cofinal Gamma diagonal is compact throughout the
+   strip, while its trace-class wall occurs only at neutral grade.
+2. The unitization unit or an augmented-simplex extra degeneracy supplies an algebraic primitive,
+   but it forgets the full Euler cube and only proves that the class is a boundary in an enlarged
+   absolute complex.  It does not make the fixed physical coefficient zero.
+3. A free oriented interval/Koszul carrier makes an endpoint difference a formal boundary, but
+   without a conservative reporter it merely relocates the nonzero class.  The modular action
+   on every interval layer is load-bearing.
+4. The existing CCM Real structure fixes the unit and is cyclically natural, but Real invariance
+   of the resolved graph holds for arbitrary Hodge-mate coefficient.  It does not imply the fixed
+   odd-Hodge commutation needed for `K = 0`.
+5. A bare Calderon resolvent has zero duality--adjunction seam but is rational and divisor-blind.
+   The primitive must be Euler-decorated and must retain the all-prime cube, Gamma/Poisson face,
+   and multiplicity data before completion.
+
+### Surviving producer
+
+`[CONJECTURE — ROUTE_R_TWISTED_CYCLIC_CONNECTING_CONSERVATIVITY]`
+
+Construct, before divisor specialization, one strict dagger-stable source/ambient/corona exact
+sequence from the literal rational-adelic prime-isotropy complex and the Euler-decorated
+Calderon/Wold--Toeplitz primitive, together with a morphism to the completed-Xi fixed-corona
+comparison, such that:
+
+1. the retained ordinary-prime class is the connecting image of the Euler-decorated primitive,
+   with prime, inverse-prime, depth, and full Euler-cube provenance;
+2. the source twisted-cyclic ratio is the literal `p^(-1)` first-trace/BV ratio and is preserved
+   by dagger and by the connecting morphism;
+3. reduced Xi specialization is strict and nonzero on every retained principal-conormal line;
+4. its positive gauge-averaged restriction is the centered-character marginal with ratio
+   `p^(-2 Re(rho))`;
+5. ramified multiplicity jets descend through a separate compatible channel, so conservativity
+   on the reduced line does not incorrectly force simplicity; and
+6. the fixed completed-Xi/corona comparison carries the resulting modular defect to the explicit
+   Hodge-mate coefficient `K`, not merely to a zero-equivalent scalar reporter.
+
+Clauses 1--2 make the source value independent of `rho`; Clauses 3--4 prevent zero-fibre fitting
+or erasure; Clause 5 avoids the known Jordan obstruction; Clause 6 connects the source theorem
+to the exact Route-R endpoint.  Their conjunction gives the unconditional source-dagger/norm
+identity and hence `K = 0`.
+
+This is not yet a proof.  The corpus closes the abstract connecting-map naturality, local
+Calderon dagger equality, source modular-ratio calculation, positive marginal calculation,
+algebraic Xi principal-parts carrier, Route-R coefficient/energy comparison, and final rigidity
+consumer.  Missing scientific content is the zeta-specific strict all-prime comparison in
+Clauses 1--4.  Any construction that starts after Xi fibre decomposition, transports a fitted
+metric, or merely declares the physical class null-homologous fails the anti-theatre gate.
+
+## 2026-08-05 cross-corpus audit: singular completion migration, not missing finite homology
+
+### Conjecture loop and collisions
+
+The proposed finite extension of the BV relation to a Hochschild/Tate chain map is not the live
+frontier. `LowDegreeHochschildFaceFlatness.lean` already supplies the one- and two-face
+Hochschild primitives, while `TateKummerWoldGammaIntervalCharacter.lean` supplies the oriented
+interval/Koszul carrier, prime-square boundary, and Wold character. The ordinary-integer source
+also already has the exact Toeplitz primitive
+
+```text
+B_n = [S_n^*, Q S_n] = b(S_n^* tensor Q S_n).
+```
+
+Three attempted cofinal extensions fail for exact reasons.
+
+1. The Wold thermofield standard-form vector is strict under prime enlargement, but for the
+   diagonal multiplication algebra it is central and the algebra is commutative. Therefore
+   `HH_0(A,M)=M/[A,M]=M`; the retained central vector is not made null-homologous. Passing to the
+   noncommutative Toeplitz algebra recovers the genuine modular twist and the displayed primitive,
+   but that primitive is already corpus-known.
+2. Bilateralization makes the shift unitary and removes the ambient Toeplitz index only by
+   enlarging the carrier. The corpus's exact bilateral Mellin formula still contains `XiC`, and
+   the Wold decomposition stores the nonrecurrent compressed state in the complementary channel.
+   Thus unitary dilation is conservative, not selective.
+3. The source-pure selector and the Calderon--Witt Green retractions split resolved or incidence
+   spaces. They do not split the fixed physical quotient `S/I`, `I=ell1(P)`. Off neutral grade
+   one of `F_t,F_(-t)` is literally in `I`, so no retraction defined after this quotient can retain
+   both orientations without already implying the conclusion.
+
+### Closest successful corpus mechanism
+
+The closest positive analogue is the Shilov boundary-migration/Roos exact sequence. There a class
+born only after cofinal completion is represented as degree-one migration cohomology; an explicit
+coherent lifting theorem, not finite-stage exactness, proves derived acyclicity. The
+Gamma-head/Hardy-tail moving-horizon complex supplies the complementary local model:
+
+```text
+d(head, tail)/dL = (endpoint, -endpoint),
+sumTrace(endpoint, -endpoint) = 0,
+Green(endpoint, -endpoint) = endpoint.
+```
+
+Route R has precisely the same local boundary, but its two physical legs are evaluated by
+different modular functionals. Their mismatch is the explicit cofinal class `beta_t`, hence the
+Hodge-mate coefficient `K`. The ordinary `C*` Shilov theorem cannot be imported: the relevant
+Gamma diagonal is compact throughout the strip and the distinction occurs only at the fixed
+Schatten-one/`ell1` wall.
+
+This identifies the correct new object as a **singular trace-ideal boundary-migration complex**,
+not another finite Hochschild complex and not an ordinary inverse limit. The qualification is
+essential: finite-coordinate trace ideals inverse-limit to the whole product, whereas `ell1`
+means uniform boundedness of partial absolute sums. The source topology must therefore retain
+bounded sections, not merely compatible sections.
+
+`[CONJECTURE — ROUTE_R_SINGULAR_TRACE_IDEAL_MIGRATION_ACYCLICITY]`
+
+Construct from the pre-divisor Euler--Gamma--rational-adelic source a bounded-section coefficient
+system over the ordinary-prime exhaustion with:
+
+1. bounded global ideal exactly the fixed physical first-trace ideal `I=ell1(P)`;
+2. local degree-one primitive the literal `S_p^* tensor Q S_p`, coupled to the full
+   interval/Koszul and Boolean/Tate faces without scalar diagonal renormalization;
+3. two Gamma orientation restrictions equal to the already-constructed classes
+   `[F_(-t)]` and `[F_t]` in `S/I`;
+4. Gamma-head/Hardy-tail moving-horizon differential supplying one source-defined contracting
+   cochain on the bounded-section migration complex;
+5. a nondivisive polarized Cartier identity, before selecting a zero,
+
+   ```text
+   beta(z,w) = d H(z,w) + XiC(z) R(z,w) + XiC(w) S(z,w),
+   ```
+
+   with `H,R,S` bounded in the source-selected singular bornology and retaining every prime,
+   depth, divisor-multiplicity, and both-Gamma-orientation label; and
+6. coefficient-faithful comparison of the specialized migration class with the fixed same-fibre
+   corona Hodge-mate coefficient `K`.
+
+At an actual divisor point put `(z,w)=(rho,conj rho)`. Both Xi terms vanish by the real entire
+structure, so `beta_(t_rho)` is a literal source boundary. Clause 6 then gives `K=0`, and the
+existing Lean endpoint gives `Re rho=1/2`.
+
+### Anti-theatre falsifiers
+
+1. `H` is defined by dividing `beta` by `XiC`, by a leading jet, or by `2 Re(rho)-1`.
+2. Boundedness is checked only at each finite prime cutoff; the required assertion is one uniform
+   bounded-section estimate in the fixed trace-ideal bornology.
+3. The coefficient system is a transported weighted `ell1_t` ideal rather than fixed `ell1`.
+4. The construction is an ordinary `C*` completion, a virtual diagonal, a bilateral unitary
+   dilation, or a diagonal thermofield state; all four erase the load-bearing trace wall.
+5. The Cartier identity holds only after substituting a divisor point or only in scalar residue.
+6. Prime/depth coefficients or the multiplicity-leading conormal are fused before the migration
+   class is compared to the physical corona port.
+
+This is a genuine reinterpretation of the open theorem. It does not prove the conjecture. It
+removes four already-solved or impossible subproblems and specifies the missing producer as a
+uniform singular-completion homotopy with an explicit nondivisive Xi remainder.
+
+## 2026-08-05 — Exact tail–Roos model of the fixed first-trace corona
+
+### Setup
+
+Fix the increasing enumeration of ordinary primes
+\(p_0,p_1,\ldots\). For \(n\ge 0\), put
+\[
+  A_n:=\mathbb C^{\{k:k\ge n\}},
+  \qquad
+  J_n:=\ell^1(\{k:k\ge n\}).
+\]
+Let \(\iota_n:A_{n+1}\to A_n\) insert a zero in coordinate \(n\).
+It restricts to \(J_{n+1}\to J_n\). Write \(e_n\in J_n\) for the
+head-coordinate atom.
+
+### [PAPER-PROVED] `ROUTE_R_FIXED_TRACE_TAIL_ROOS_DIAGONAL_CLASSIFICATION`
+
+For every sequence \(a=(a_k)_{k\ge0}\in\mathbb C^{\mathbb N}\):
+
+1. The induced map
+   \[
+      A_{n+1}/J_{n+1}\longrightarrow A_n/J_n
+   \]
+   is an isomorphism. Surjectivity holds because any \(x\in A_n\) differs
+   from \(\iota_n(x|_{k\ge n+1})\) by the one-coordinate vector
+   \(x_ne_n\in J_n\); injectivity follows because deletion of the head
+   coordinate sends an \(\ell^1\) sequence to an \(\ell^1\) sequence.
+
+2. The tail representatives \(a^{(n)}=(a_k)_{k\ge n}\) define a compatible
+   family in the quotient tower. Their representative mismatch is the
+   diagonal Roos cochain
+   \[
+      c_n:=\iota_na^{(n+1)}-a^{(n)}=-a_ne_n\in J_n.
+   \]
+
+3. If a family \(h_n\in J_n\) trivializes this mismatch,
+   \[
+      h_n-\iota_nh_{n+1}=c_n=-a_ne_n
+      \qquad(n\ge0),                                      \tag{TR}
+   \]
+   then it is forced coordinate by coordinate that
+   \[
+      h_n=-a^{(n)}.
+   \]
+   Indeed, the head coordinate of `(TR)` is \((h_n)_n=-a_n\), while every
+   coordinate \(k>n\) gives \((h_n)_k=(h_{n+1})_k\). Iteration fixes all
+   coordinates of every \(h_n\). Conversely these forced tails satisfy
+   `(TR)` whenever \(a\in\ell^1\).
+
+4. Consequently the diagonal physical Roos class is null-homologous exactly
+   when
+   \[
+      a\in\ell^1(\mathbb N).
+   \]
+   This is the fixed-ideal criterion, not merely a sufficient condition.
+
+Applying the classification to the Route-R Fisher defect
+\[
+  a=\beta_t,
+  \qquad
+  \beta_t(p)=F_{-t}(p)-F_t(p),
+\]
+and using the already formalized first-trace estimate gives, for \(|t|<1\),
+\[
+  [c(\beta_t)]=0
+  \iff \beta_t\in\ell^1
+  \iff t=0.
+\]
+At \(t=2\Re\rho-1\), this is exactly the critical-line condition. The
+formalized summable-difference theorems
+`xi_actualEdge_forward_sub_activationFisher_summable` and
+`xi_actualEdge_reflected_sub_activationFisher_summable` transport the same
+classification to the actual essential edge in both Gamma orientations.
+
+### Scope and hostile audit
+
+This theorem classifies the diagonal class supplied by a global coefficient
+sequence. It does **not** identify the entire derived limit
+\(\varprojlim^1J_n\) with \(\mathbb C^{\mathbb N}/\ell^1\): arbitrary
+families in \(\prod_nJ_n\) need not be diagonalizable by a global sequence.
+No such stronger assertion is used.
+
+The classification rules out three false closures:
+
+- finite-stage exactness cannot kill the compatible diagonal class;
+- a reflection coequalizer can call \(\beta_t\) a boundary while failing to
+  supply the forced \(\ell^1\) primitive;
+- a global Real/quaternionic involution pairs distinct divisor fibres, whereas
+  `(TR)` is a fixed same-fibre equation. Identifying those fibres is already
+  the critical-line condition.
+
+Thus there is no freedom to choose a more convenient physical homotopy. Any
+coefficient-faithful source proof must construct the literal tail primitive
+\(-\beta_t^{(n)}\) inside \(J_n\).
+
+### [CONJECTURE — `ROUTE_R_SOURCE_TAIL_ROOS_PRIMITIVE`]
+
+There is a pre-divisor Euler–Gamma–rational-adelic source family \(H_n(z,w)\),
+with values in the fixed tail trace ideals \(J_n\), and source-exact/Xi-remainder
+terms whose specialization at \((z,w)=(\rho,\bar\rho)\) gives
+\[
+  H_n(\rho,\bar\rho)-\iota_nH_{n+1}(\rho,\bar\rho)
+  =-\beta_{2\Re\rho-1}(p_n)e_n.                         \tag{SR}
+\]
+The construction must be coefficient-faithful, preserve the fixed physical
+polarization, work in both Gamma orientations, and use no division by Xi,
+critical-line placement, fixed-ideal preservation assumption, or prior
+vanishing of \(\beta\).
+
+By the classification, `(SR)` immediately forces
+\(\beta_{2\Re\rho-1}\in\ell^1\), hence \(2\Re\rho-1=0\). Conversely, any
+claimed source Stokes/Cartier annihilator which does not produce `(SR)` in the
+fixed ideals has changed the problem rather than solved it. This is the
+smallest exact source theorem still missing from Route R.
+
+## 2026-08-05 — Cross-corpus synthesis: safe-cone primitive and trace-wall removability
+
+The closest existing organs are not another divisor detector. They are:
+
+1. `TateClockUnilateralShiftDefect.lean`, which gives the exact
+   boundary-plus-zero-prepended-tail recursion;
+2. `EulerPrimitiveCommonTestLabeledOccupationSource.lean`, which constructs
+   genuine pre-divisor, prime-power-labelled \(\ell^1\) head/tail packets in
+   the Euler convergence chamber;
+3. the Gamma--Meixner convolution-root scale, which supplies canonical
+   positive damping \(p^{-\varepsilon}\) down to arbitrarily small positive
+   aperture;
+4. `PrimeDepthBVWoldBarrelledSourceSelector.lean`, which turns pointwise
+   boundedness on an independently completed barrelled source into the
+   depth-uniform estimate that kills the centered rate.
+
+These four organs combine into an exact normal form for the desired producer.
+
+### [PAPER-PROVED] `ROUTE_R_EULER_SAFE_CONE_TAIL_PRIMITIVE`
+
+For \(|t|<1\) and \(\varepsilon\ge0\), define
+\[
+ \beta_{t,\varepsilon}(p)
+ :=p^{-\varepsilon}\bigl(F_{-t}(p)-F_t(p)\bigr)
+ =F_{-t-\varepsilon}(p)-F_{t-\varepsilon}(p).
+\]
+Then
+\[
+ \beta_{t,\varepsilon}\in\ell^1
+ \quad\Longleftrightarrow\quad
+ t=0\ \text{ or }\ \varepsilon>|t|.                    \tag{SC1}
+\]
+
+Proof. If \(t=0\), the sequence is zero. If \(t>0\), then
+\(F_{t-\varepsilon}\ge F_{-t-\varepsilon}\) pointwise and
+\[
+ F_{t-\varepsilon}-F_{-t-\varepsilon}
+ =F_{t-\varepsilon}(1-p^{-2t})
+ \ge (1-2^{-2t})F_{t-\varepsilon}.
+\]
+The already-proved Fisher threshold
+\(F_u\in\ell^1\Longleftrightarrow u<0\) therefore gives summability exactly
+when \(t-\varepsilon<0\). The case \(t<0\) follows by reflection. This proves
+`(SC1)`, including the harmonic boundary \(\varepsilon=|t|\).
+
+For every point of the safe cone \(\varepsilon>|t|\), put
+\[
+ H_{n,t,\varepsilon}:=-\bigl(\beta_{t,\varepsilon}(p_k)\bigr)_{k\ge n}
+ \in J_n.
+\]
+Then
+\[
+ H_{n,t,\varepsilon}-\iota_nH_{n+1,t,\varepsilon}
+ =-\beta_{t,\varepsilon}(p_n)e_n.                       \tag{SC2}
+\]
+The tail--Roos classification proves that `(SC2)` has no other
+\(J_n\)-valued solution. Hence the pre-divisor Euler object already supplies
+the required primitive throughout its honest convergence chamber. The hard
+operation is continuation of this exact, uniquely forced primitive through
+the trace wall to \(\varepsilon=0\).
+
+### Same wall in the Gamma--Meixner corpus
+
+The Gamma--Meixner root weight satisfies
+\[
+ w_\varepsilon(p)asymp p^{-\varepsilon},
+\]
+and the proved prime-seam aperture law has the identical threshold
+\[
+ E_\varepsilon(\rho)<\infty
+ \quad\Longleftrightarrow\quad
+ 2\Re\rho-1=0\ \text{ or }\ \varepsilon>|2\Re\rho-1|.
+\]
+This is not a numerical coincidence. The Route-R base coefficient is exactly
+the square of the Möbius--Gamma damping, while the Meixner family is the
+canonical convolution-root scale of the same archimedean cyclic measure.
+Thus Route R fixed-\(\ell^1\) annihilation and all-root Gamma deconvolution are
+two ideal grades of one trace-wall continuation problem.
+
+### What the existing regulator does and does not control
+
+The period-one rational-adelic Stokes regulator is a separate local-prime
+linear functional. It proves that the retained class is not an ordinary
+relative boundary. It does not bound
+\(\sum_p|\beta_{t,\varepsilon}(p)|\), so it cannot justify passage through
+the trace wall. Likewise, the completed divisor Hilbert Green primitive is
+an \(\ell^2\) primitive after divisor completion; it does not supply the
+fixed prime-indexed \(\ell^1\) tails forced by `(SC2)`.
+
+### [CONJECTURE — `ROUTE_R_SOURCE_TRACE_WALL_REMOVABILITY`]
+
+Construct, before divisor selection, an independently topologized
+Euler--Gamma--rational-adelic barrelled source \(E_{\rm src}\) with:
+
+1. a coefficient-faithful map from its safe-cone Euler packets to the exact
+   tails \(H_{n,t,\varepsilon}\);
+2. continuous Gamma-root deconvolution readouts whose pointwise orbits are
+   bounded on every element of \(E_{\rm src}\);
+3. an off-diagonal Cartier identity, with nondivisive Xi remainder, which at
+   a Xi divisor identifies the zero-aperture specialization with the same
+   fixed-tail Roos equation `(SR)` in both Gamma orientations.
+
+Barrelled Banach--Steinhaus then converts clause 2 into a uniform
+deconvolution estimate. Clauses 1 and 3 identify its limit with the unique
+tail primitive. Therefore \(\beta_{2\Re\rho-1}\in\ell^1\), the Hodge-mate
+coefficient \(K\) vanishes, and the existing Lean endpoint proves RH.
+
+This formulation removes two false freedoms: the primitive cannot be chosen
+after continuation, and the completion cannot be defined as “vectors with
+bounded deconvolution orbit.” The only new scientific content required is
+source-derived pointwise boundedness plus the coefficient-faithful
+zero-aperture Cartier landing.
+
+## 2026-08-05 cross-corpus comparison: one central class, not two gaps
+
+The closest independently developed object is the trace-one ordinary-prime
+class in `MobiusThetaPhysicalParacyclicSourceNullHomology`. Its cofinal Tate
+relative coordinate is
+
+\[
+  (p^{t}-1)\,\XiC^{(r)}(w_\rho),
+  \qquad t=2\Re\rho-1,
+\]
+
+whereas the fixed-trace class uses
+
+\[
+  \beta_t(p)=F_{-t}(p)-F_t(p),
+  \qquad F_t(p)=p^t\frac{p}{(p+1)^2}.
+\]
+
+These are not merely equivalent zero tests. Direct factorization gives the
+pre-divisor, same-prime, nondivisive identity
+
+\[
+ \boxed{
+  \beta_t(p)=
+  -\frac{p}{(p+1)^2}(1+p^{-t})(p^t-1).
+ }
+ \tag{CB1}
+\]
+
+The transfer factor is strictly negative and never zero. Thus the singular
+all-prime Gamma Bockstein and the rational-adelic paracyclic central
+Bockstein are two coefficient models of one class. This is formalized in
+`RHTower/RouteRFixedTraceTailRoos.lean` by:
+
+- `routeRPrimeGammaBockstein_eq_centralGainDefect`;
+- `routeRPrimeGammaCentralTransferFactor_ne_zero`;
+- `deningerHalfDensityMateGain_prime_eq_rpow`;
+- `routeRPrimeGammaBockstein_eq_deningerCentralDefect`;
+- `routeRPrimeGammaXiDiagonalTailRoosClass_eq_zero_iff_sourceNullHomologous`.
+
+The same module now also formalizes the sharp damped trace wall
+
+\[
+ \sum_p p^{-\varepsilon}|\beta_t(p)|<\infty
+ \quad\Longleftrightarrow\quad
+ t=0\ \text{or}\ |t|<\varepsilon,
+ \tag{CB2}
+\]
+
+and constructs the literal fixed-ideal tail primitive throughout the safe
+cone, with its exact Roos boundary.
+
+### Conjecture loop audit
+
+1. **Ordinary Connes `bB+Bb` contraction — failed.** The source degree-one
+   product trace does not annihilate ordinary degree-two Hochschild
+   boundaries; this failure is already proved in
+   `MobiusThetaPhysicalParacyclicSourceNullHomology`. Hence the Cartan identity
+   alone cannot kill the retained trace-one atom.
+2. **Finite Arakelov product formula — exact but insufficient.**
+   `DeningerRealKummerArakelovBoundary` makes finite prime data exact only
+   after adjoining the negative logarithmic archimedean coordinate. Extending
+   this boundary to `(CB1)` requires exactly the missing zero-aperture
+   all-prime trace; off centre that trace crosses the divergence wall `(CB2)`.
+3. **Reflected source entropy positivity — failed.** The corpus quantity is
+   identically `1 - 2 re(s)`, a signed log-character, not a nonnegative
+   relative entropy. Reflection oddness therefore supplies no positivity
+   contradiction.
+4. **Real/quaternionic corona — two-fibre only.** Its antiunitary structure
+   exchanges reflected divisor fibres. It does not furnish the fixed
+   same-fibre isometry required to annihilate `K`; imposing that identification
+   is precisely the missing selection law.
+
+Consequently `(CB1)` removes the possibility that tail--Roos annihilation and
+paracyclic source-null-homology are independent obligations. A successful
+producer must extend one and the same central class through the all-prime
+trace wall while preserving the period-one prime detector. The remaining
+source theorem is now a singular Arakelov/Cartier extension theorem, not a new
+boundary, carrier, or comparison theorem.
+
+## Discriminator upgraded to a theorem (2026-08-05)
+
+The "first hostile discriminator" above is now an unconditional Lean theorem, not a judgement call.
+
+`[CORPUS]` `GaloisForLFunctions.RHTower.phaseDefect_eq_iff_exists_character` — for phases normalised
+at the unit, two local phases have the same coboundary defect exactly when they differ by a group
+character. The reciprocity layer is precisely the phase layer modulo characters.
+
+`[CORPUS]` `GaloisForLFunctions.RHTower.no_phaseDefect_criterion_detects_criticalLine_adelicScaling`
+— on the actual scaling group `CCMRationalAdelicScaling`, no predicate on coboundary-defect data is
+equivalent to `Re rho = 1/2`. The source-inverse endpoint residue is the character
+`q |-> (1/2 - Re rho) * log |q|` and `adelicXiSourceInverseCharacter_eq_one_iff` identifies its
+triviality with the critical line.
+
+Consequence for this card: `alpha_rho * beta_rho = 1` is defect-level data
+(`adelicXiSourceInverse_mul_adelicXiAnalyticAdjoint`), so the `[FALSIFIED]` verdict on
+reciprocity-only proposals is now forced rather than observed. Any admissible
+`POLARIZED_ADELIC_STOKES` comparison must be shown to transport the *phase*, i.e. to separate the
+two endpoint residues before their product is taken; a construction whose only invariant is the
+Stokes boundary defect cannot land the critical line, whatever its degree.
+
+Card: `docs/drafts/pipeline/3-formalized/adelic-phase-defect-character-blindness-law.md`.

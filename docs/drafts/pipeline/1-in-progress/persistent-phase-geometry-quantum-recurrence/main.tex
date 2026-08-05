@@ -64,7 +64,10 @@ as full measure.  Its strict projective-return frequency is exactly
 \[
  \left[\frac{2\arcsin(\varepsilon/2)}{\pi}\right]^{q^n-1},
 \]
-and time zero is its only exact projective return.
+and time zero is its only exact projective return.  At every fixed strict
+tolerance this completed-time density tends to zero with exact rate
+$-q^{-n}\log d_n\to-\log[2\arcsin(\varepsilon/2)/\pi]$; equivalently it
+decays doubly exponentially in chain length.
 
 Third, a single reverse-water functional controls both intrinsic return-target
 information and the least worst-spectrum recurrence deadline, with explicit
@@ -348,6 +351,50 @@ rationally independent one-particle energies while retaining extensive
 many-body sum relations \cite{RiddellBertini2024}; Theorem
 \ref{thm:path} removes every balanced many-body relation.
 
+The exact finite-volume formula also determines its thermodynamic scaling,
+provided the completed-time limit is taken first.
+
+\begin{corollary}[Thermodynamic projective-return density law]
+\label{cor:thermodynamic}
+Fix $q\ge2$ and $0<\varepsilon<2$, and set
+\begin{equation}
+ a_\varepsilon=\frac{2\arcsin(\varepsilon/2)}{\pi},
+ \qquad I(\varepsilon)=-\log a_\varepsilon>0.          \label{eq:thermorate}
+\end{equation}
+For each $n$, choose any $H_n\in\mathcal G_{n,q}$ and let $d_n(\varepsilon)$
+be the normalized frequency in \eqref{eq:pathdensity}, with the limit
+$T\to\infty$ taken at that fixed $n$.  Then
+\begin{equation}
+ d_n(\varepsilon)
+ =\exp\!\left[-(q^n-1)I(\varepsilon)\right],
+ \quad
+ \lim_{n\to\infty}d_n(\varepsilon)=0,                 \label{eq:thermodensity}
+\end{equation}
+and the exact exponential and double-logarithmic rates are
+\begin{equation}
+ \boxed{
+ \lim_{n\to\infty}\frac{-\log d_n(\varepsilon)}{q^n}
+ =I(\varepsilon),\qquad
+ \lim_{n\to\infty}\frac{\log[-\log d_n(\varepsilon)]}{n}
+ =\log q.}                                             \label{eq:thermolimits}
+\end{equation}
+Thus the strict return density is exponentially small in Hilbert-space
+dimension and doubly exponentially small in chain length.
+\end{corollary}
+
+\begin{proof}
+Equation \eqref{eq:pathdensity} gives
+$d_n=a_\varepsilon^{q^n-1}$, while $0<a_\varepsilon<1$.  Taking one and then
+two logarithms gives
+\[
+ \frac{-\log d_n}{q^n}=(1-q^{-n})I(\varepsilon),
+ \qquad
+ \frac{\log[-\log d_n]}{n}
+ =\frac{\log(q^n-1)+\log I(\varepsilon)}{n},
+\]
+which proves all three limits.
+\end{proof}
+
 For countable pure-point carriers, the same kernel principle survives without
 a finite rank.  The relation lattice equals the annihilator of the compact
 phase hull, every future tail has the same hull, and every positive summable
@@ -548,7 +595,8 @@ Relation kernel and hull & completion; $\tau+\rho=D-1$; singular walls;
 dense ranks; protected relations; weak complete conversion; countable hull;
 replica height and phase-grid spectroscopy & Law II: conservation \\
 Static local realization & generic open-path rank $q^n-1$; exact return
-frequency; no nonzero exact projective return & Law II: local maximality \\
+frequency; double-exponential finite-volume density extinction; no nonzero
+exact projective return & Law II: local maximality \\
 Weighted metric & reverse-water target information and deadline; selected
 support; finite-horizon Haar quantile; local onsite-spin transfer & Law III:
 metric information \\
@@ -576,13 +624,18 @@ Within this family, trace supplies the physically irrelevant common energy
 shift, while nearest-neighbour tensor locality forces no additional balanced
 spectral relation.
 
-The local theorem is finite-size and ensemble-theoretic.  For each fixed
-$n,q$, Equation \eqref{eq:pathdensity} gives the asymptotic frequency of a
-strict coordinatewise projective target.  It does not give the distribution
-of first-return times or a bound uniform in system size.  The parameter space
-allows nonuniform onsite and edge terms, so the genericity statement does not
-apply to a translation- or reflection-invariant subfamily.  These are the
-precise scope boundaries of the local result.
+The local theorem is finite-volume and ensemble-theoretic.  Corollary
+\ref{cor:thermodynamic} establishes a completed-time thermodynamic scaling:
+at each fixed $n$ the long-time frequency is formed first, and only then is
+$n\to\infty$ taken.  It does not construct an infinite-chain Hamiltonian,
+interchange the time and size limits, give a first-return distribution, or
+give a mixing-time bound uniform in system size.  The parameter space allows
+nonuniform onsite and edge terms, so the genericity statement does not apply
+to a translation- or reflection-invariant subfamily.  Double-exponential
+volume scaling is familiar from generic recurrence analysis
+\cite{CamposVenuti2015}; the result here is the exact density and rate after
+the required all-order arithmetic maximality has been proved within the
+static bounded-degree local family.
 
 Law III separates arithmetic availability from operational cost.  Rank says
 which directions exist; weights and observer connectivity determine which
@@ -613,6 +666,9 @@ in the exact path-local space.  Symmetric relation polynomials turn every
 nonzero balanced relation into a proper algebraic obstruction, and countable
 avoidance gives a dense residual full-measure locus.  Equidistribution of its
 rationally independent anchored gaps yields \eqref{eq:pathdensity}.
+Taking the logarithmic size asymptotics of that exact Haar volume yields
+\eqref{eq:thermodensity}--\eqref{eq:thermolimits}; no interchange of time and
+system-size limits is used.
 
 The water law sandwiches the true target between an explicit feasible
 product box and a pivot-resolved quadratic envelope.  Dirichlet pigeonhole
@@ -686,6 +742,11 @@ Integrability and chaos via fractal analysis of spectral form factors:
 Gaussian approximations and exact results,
 \emph{Phys. Rev. E} \textbf{113}, 044128 (2026);
 arXiv:2505.05199.
+
+\bibitem{CamposVenuti2015}
+L. Campos Venuti,
+The recurrence time in quantum mechanics,
+arXiv:1509.04352 (2015).
 
 \bibitem{CoverThomas2006}
 T. M. Cover and J. A. Thomas,

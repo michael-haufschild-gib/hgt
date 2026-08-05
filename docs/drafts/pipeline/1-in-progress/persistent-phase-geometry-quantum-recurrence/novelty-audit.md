@@ -24,6 +24,7 @@ reverse water-filling, or quantum extrapolation impossibility separately.
 | [Huang, *Extensive entropy from unitary evolution*](https://arxiv.org/abs/2104.02053) | Nondegenerate gaps almost everywhere in geometrically local Hamiltonian spaces | Nondegenerate gaps exclude only four-energy collisions; they do not establish absence of balanced relations of every order, full projective rank, or exact recurrence frequency |
 | [Riddell--Bertini, *Rationally independent free fermions with local hopping*](https://arxiv.org/abs/2404.12100) | Explicit 1D local hopping models with rationally independent one-particle energies | Free many-body subset-sum spectra retain additive rectangle relations; result does not give generic all-order maximal projective many-body spectrum in full interacting path family |
 | [Campos Venuti--Odavić--Hamma, *Integrability and Chaos via fractal analysis of Spectral Form Factors*](https://arxiv.org/abs/2505.05199) | Exact SFF moments under rational-independence hypotheses; free-fermion cases | Arithmetic premise is assumed for moment formulas, not proved generically for static interacting nearest-neighbour tensor-local spectra |
+| [Campos Venuti, *The recurrence time in quantum mechanics*](https://arxiv.org/abs/1509.04352) | Generic quantum recurrence time is generally doubly exponential in volume | Occupies the double-exponential scale; does not prove exact strict-target density or all-order arithmetic maximality inside the static nearest-neighbour path family |
 | [Anand et al., *Quantum recurrences and the arithmetic of Floquet dynamics*](https://arxiv.org/abs/2508.09933) | Exact state-independent Floquet recurrence via cyclotomic spectrum | Periodically driven cyclotomic exact periods are distinct from generic static Hamiltonian projective hull and density law |
 | [Kotowski--Oszmaniec, *Tight bounds on recurrence time in closed quantum systems*](https://arxiv.org/abs/2601.10409) | Dimension-dependent recurrence upper bounds and generic saturation for random Hamiltonians | Does not prove all-order arithmetic maximality inside full static 1D bounded-degree local family or exact long-time target frequency there |
 | [Manos--Weilenmann--Navascués, *Timed demolition measurements*](https://arxiv.org/abs/2507.06912) | General extrapolation fog banks and precision lower bounds | Does not supply fixed-protocol, common-spectrum, nearest-neighbour isospectral family with arbitrary moments, uniform strict-window agreement and every exact later probability |
@@ -55,3 +56,8 @@ Static path theorem prevents architecture from collapsing into an abstract
 torus taxonomy: polynomially many bounded-degree local coefficients generate
 full exponential projective phase rank almost everywhere.
 
+The thermodynamic corollary is a bridge, not an independent novelty anchor.
+Its double-exponential scale is known in generic recurrence analysis.  Its
+role here is to convert the newly closed local arithmetic theorem into an
+exact finite-volume density extinction law, with explicit rate and order of
+limits.

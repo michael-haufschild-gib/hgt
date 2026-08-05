@@ -299,6 +299,37 @@ factors.  With at least three levels, two independent anchored frequencies
 cannot both have a common nonzero exact period.
 \end{proof}
 
+\subsection{Thermodynamic density rate}
+
+Fix $q\ge2$ and $0<\varepsilon<2$, and write
+\[
+ a_\varepsilon=\frac{2\arcsin(\varepsilon/2)}{\pi},
+ \qquad I(\varepsilon)=-\log a_\varepsilon.
+\]
+Because $0<\varepsilon<2$, one has $0<a_\varepsilon<1$ and
+$I(\varepsilon)>0$.  For any sequence of generic path Hamiltonians, the
+completed-time return density at size $n$ is
+\[
+ d_n(\varepsilon)=a_\varepsilon^{q^n-1}
+ =\exp[-(q^n-1)I(\varepsilon)].
+\]
+Consequently
+\[
+ \frac{-\log d_n(\varepsilon)}{q^n}
+ =(1-q^{-n})I(\varepsilon)\longrightarrow I(\varepsilon),
+\]
+so $d_n\to0$ exponentially in Hilbert-space dimension $q^n$.  A second
+logarithm gives
+\[
+ \frac{\log[-\log d_n(\varepsilon)]}{n}
+ =\frac{\log(q^n-1)+\log I(\varepsilon)}{n}
+ \longrightarrow\log q,
+\]
+which is the precise double-exponential decay law in site number.  This is a
+sequential limit: $T\to\infty$ defines $d_n$ for each finite $n$, followed by
+$n\to\infty$.  It asserts neither recurrence of a global infinite-volume
+orbit nor validity of the reversed order of limits.
+
 \section{Reverse-water target information and deadlines}
 \label{app:water}
 
@@ -585,9 +616,9 @@ Result & Where established \\
 Projective completion; relation hull; $\tau+\rho=D-1$ & Main Law II;
 Appendix Sections C and D \\
 Singular wall, sinc profile, dense ranks, bounded-horizon indistinguishability
-& Main Theorem 3; Appendix Section D \\
+& Main Theorem~\ref{thm:interaction}; Appendix Section D \\
 Protected affine relation and complete weak separable conversion & Main
-Theorem 3; Appendix Sections D.1--D.2 \\
+Theorem~\ref{thm:interaction}; Appendix Sections D.1--D.2 \\
 Countable relation hull and infinite separable recurrence ray & Main Law II;
 Appendix Section D.3 \\
 Replica height, finite-grid readout and Nyquist sharpness & Main Law II;
@@ -599,19 +630,22 @@ Appendix Section B.2 \\
 Countable pure-point recurrence, cyclic exact return and atomless boundary &
 Main Law I; Appendix Section B.2 \\
 Generic static nearest-neighbour qudit maximality and exact return frequency &
-Main Theorem 4; Appendix Section E \\
+Main Theorem~\ref{thm:path}; Appendix Section E \\
+Exact finite-volume thermodynamic return-density extinction and rates & Main
+Corollary~\ref{cor:thermodynamic}; Appendix Section E.3 \\
 Weighted projective variance and reverse-water global optimizer & Main Law
 III; Appendix Sections F and F.1 \\
 Product-box lower law, pivot upper law and two-sided target information & Main
-Theorem 5; Appendix Section F.2 \\
+Theorem~\ref{thm:water}; Appendix Section F.2 \\
 Universal deadline, post-delay return, selected support and Haar hit quantile
-& Main Theorem 5; Appendix Section F.3 \\
+& Main Theorem~\ref{thm:water}; Appendix Section F.3 \\
 Exact onsite local-spin phase transfer and binary hard-support separation &
 Main Law III; Appendix Section F.3 \\
-Finite observer phase energy, zero set and graph capacity & Main Theorem 6;
+Finite observer phase energy, zero set and graph capacity & Main
+Theorem~\ref{thm:observer};
 Appendix Section G \\
 Sharp graph exponent, probe, calibration and device-window bounds & Main
-Theorem 6; Appendix Section G \\
+Theorem~\ref{thm:observer}; Appendix Section G \\
 Countable observer recurrence and zero law & Main Law III; Appendix Section
 G \\
 Equal qutrit local information with opposite global recurrence & Main Law
@@ -619,12 +653,13 @@ III; Appendix Section G.1 \\
 Positive binomial/parity measures and amplitude identities & Main Law IV;
 Appendix Section H.1 \\
 One Hamiltonian, uniform-field qubit and fixed-protocol isospectral forms &
-Main Theorem 7; Appendix Sections H.2--H.3 \\
+Main Theorem~\ref{thm:ambiguity}; Appendix Sections H.2--H.3 \\
 Krylov path realization, perfect-return block and forced disconnection & Main
-Theorem 7; Appendix Section H.4 \\
-Occupation embedding and complete all-sector fermionic spectra & Main Theorem
-7; Appendix Section H.5 \\
-Common moments, exponential hiding and every exact future & Main Theorem 7;
+Theorem~\ref{thm:ambiguity}; Appendix Section H.4 \\
+Occupation embedding and complete all-sector fermionic spectra & Main
+Theorem~\ref{thm:ambiguity}; Appendix Section H.5 \\
+Common moments, exponential hiding and every exact future & Main
+Theorem~\ref{thm:ambiguity};
 Appendix Sections H.1--H.3 \\
 Vandermonde support threshold and one-half forecast lower bound & Main Law IV;
 Appendix Section H.6 \\

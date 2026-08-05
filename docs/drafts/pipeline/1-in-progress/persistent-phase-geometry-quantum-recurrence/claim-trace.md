@@ -23,6 +23,7 @@ compiled document; Appendix J is completeness ledger.
 | Singular walls, sinc profile, dense ranks, bounded-horizon indistinguishability, robust-relation annihilator and countable recurrence ray | Every declaration listed in inherited universal-anatomy proof audit | `../../4-publication-ready/universal-quantum-recurrence-anatomy/proof-audit.md` |
 | Static open qudit path: exact path graph, state dimension `q^n`, trace-zero full onsite-plus-edge family, dense/residual/full-measure maximal locus | `exists_uniformQuditPathTracelessLocalHamiltonianMaximalSet_dense_residual_fullMeasure` | `formal/GaloisForLFunctions/HTGeometry/NearestNeighborQuditPathGenericityLaw.lean` |
 | Static path recurrence consequences: zero balanced kernel, rank `q^n-1`, exact strict-return frequency and no nonzero exact projective return | `exists_uniformQuditPathTracelessRecurrenceGeometry_dense_residual_fullMeasure` | `formal/GaloisForLFunctions/HTGeometry/NearestNeighborQuditPathRecurrenceLaw.lean` |
+| Completed-time thermodynamic path law: density extinction, exact Hilbert-dimension rate and double-logarithmic site rate | `thermodynamicProjectiveRecurrenceExtinctionLaw`, with component declarations `quditPathProjectiveReturnDensity_tendsto_zero`, `normalized_neg_log_quditPathProjectiveReturnDensity_tendsto_rate` and `doubleLog_quditPathProjectiveReturnDensity_tendsto_log_q` | `formal/GaloisForLFunctions/HTGeometry/ThermodynamicProjectiveRecurrenceExtinctionLaw.lean` |
 | Reverse-water minimizer, product-box/pivot target sandwich, exact information errors, universal deadline, selected support, Haar quantile and onsite-spin transfer | `universalWeightedFloquetFidelityRecurrenceTime_rateDistortionSandwich` plus every declaration in inherited projective claim trace | `formal/GaloisForLFunctions/RHTower/ProjectiveGaussianRateDistortion.lean`; `../../4-publication-ready/projective-quantum-recurrence-rate-distortion/claim-trace.md` |
 | Finite observer phase energy, graph zero set and exact capacity | `finite_quantum_observer_coherence_law` | `formal/GaloisForLFunctions/RHTower/FiniteQuantumObserverCoherenceLaw.lean` |
 | Sharp graph exponent, probes, calibration/device-window bounds, countable observer extension and equal-qutrit local/global separation | Every declaration in inherited projective claim trace; observer components packaged by `RHTower.universalQuantumRecurrenceAnatomyLaw` | inherited projective trace above |
@@ -45,11 +46,17 @@ compiled document; Appendix J is completeness ledger.
    Haar frequency for strict coordinatewise target.
 6. `MaximallyProjectiveEnergy.no_nonzeroExactAnchoredReturn` excludes every
    nonzero real return time; `n,q >= 2` supplies at least four levels.
+7. `thermodynamicProjectiveRecurrenceExtinctionLaw` packages positivity,
+   extinction and both exact rates from
+   `quditPathProjectiveReturnDensity_tendsto_zero`,
+   `normalized_neg_log_quditPathProjectiveReturnDensity_tendsto_rate` and
+   `doubleLog_quditPathProjectiveReturnDensity_tendsto_log_q` prove the
+   sequential completed-time-then-size density law and its two exact rates.
 
 ## Axiom audit
 
-`lake env lean /tmp/UnifiedQuantumRecurrenceAxioms.lean` checks all six
-load-bearing capstones together. Every `#print axioms` report is exactly:
+Scratch `lake env lean` audits check all inherited load-bearing capstones and
+the three thermodynamic declarations. Every `#print axioms` report is exactly:
 
 ```text
 [propext, Classical.choice, Quot.sound]
@@ -61,6 +68,8 @@ the proof surface. `scripts/formal_tools.py lint --check-generated` passes.
 ## Scope exclusions
 
 No manuscript theorem claims translation-invariant genericity, a sharp first
-return exponent for each fixed Hamiltonian, thermodynamic-limit recurrence,
-circuit complexity growth, black-hole statistics, or identifiability from
-full tomography.
+return exponent for each fixed Hamiltonian, recurrence of a global
+infinite-volume orbit, interchange of time and size limits, circuit
+complexity growth, or identifiability from full tomography.  The only
+thermodynamic statement is the proved sequential limit of finite-volume
+completed-time return densities.

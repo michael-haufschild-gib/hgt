@@ -16,6 +16,8 @@ provisional; external independent review still required.**
 | Frequency formula confuses Euclidean fidelity with coordinatewise target | Manuscript states strict coordinatewise projective target; formal target and arc volume match exactly | Pass |
 | “Only return is zero” ignores global phase | Statement is projective and anchored; formal screw phase vanishing implies real time is zero | Pass |
 | First-return scaling smuggled in from frequency | Explicitly excluded. Only normalized long-time frequency is claimed | Pass |
+| Thermodynamic language smuggles in an infinite-chain orbit | Corollary fixes the order: completed-time density at each finite size, followed by size limit; global infinite-volume dynamics and reversed limits are excluded | Pass |
+| Double-exponential scale is presented as independently novel | Manuscript cites prior generic recurrence scaling and limits the new residue to exact density after local all-order maximality | Pass |
 | Translation invariance implied by “chain” | Limits section states arbitrary nonuniform onsite/edge terms and excludes translation-invariant genericity | Pass |
 | Unified paper is collage | Every source result is assigned to carrier, kernel/hull, metric/observer or finite-record layer; Appendix J is complete ledger | Pass |
 | “All in one document” violated by supplement | Main source inputs detailed appendices before bibliography; one `main.pdf` contains exposition, proofs and ledger | Pass |
@@ -34,6 +36,7 @@ no-exact-return consequences make theorem physically legible.
 Main residual risk is literature priority, not proof closure. Before journal
 submission, obtain independent mathematical-physics review of local witness
 induction and search specifically for generic all-order spectral
-nonresonance in finite spin chains. Do not expand claims to translation
-invariance, thermodynamic limits or first-return exponents without new proof.
-
+nonresonance in finite spin chains. Completed-time-then-size density
+extinction is now proved and formalized. Do not expand it to translation
+invariance, a global infinite-volume recurrence theorem, reversed limits or
+first-return exponents without new proof.
