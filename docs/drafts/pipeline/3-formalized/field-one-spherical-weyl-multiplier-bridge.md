@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / CONSTRUCTION / BRIDGE
 - **Parent:** `field-one-relative-picard-hodge-passivity`
-- **Labels:** `[PAPER-PROVED] [LEAN-PARTIAL]`
+- **Labels:** `[PAPER-PROVED] [FORMALIZED]`
 - **Statement:** the \(p\)-perfect spherical stalk has a faithful Frobenius-compatible
   representation by unitary multipliers of each semilocal Bruhat--Schwartz space containing
   \(p\), although it does not map into the Bruhat--Schwartz algebra itself.
@@ -113,7 +113,8 @@ its \(L^2\) completion. The multiplier/endomorphism target is therefore forced, 
 ### What this does not prove
 
 - Compatibility of these local multiplier representations with every restriction map of the
-  semilocal sheaf is not yet proved.
+  semilocal sheaf is now proved in
+  `GaloisForLFunctions.RHTower.FieldOneSemilocalStageRestrictionWeyl`.
 - No extension across the compactified arithmetic curve or derived Abel--Jacobi pushforward is
   constructed.
 - A faithful coefficient representation does not imply Hodge positivity or RH.
@@ -122,17 +123,16 @@ its \(L^2\) completion. The multiplier/endomorphism target is therefore forced, 
 
 - [x] 0 → 1: exact source and target types identified
 - [x] 1 → 2: dependency-closed semilocal paper proof and hostile audit complete
-- [ ] 2 → 3: partially complete—abstract, archimedean, generic finite-place, canonical
-      all-depth conductor-\(\mathbb Z_p\) characters, and finite restricted-product character
-      assembly are formalized; diagonal-product compatibility is formalized on every fixed-prime
-      lattice \(\mathbb Z[1/p]\) and then on all of \(\mathbb Q\) by primary decomposition;
-      algebraic real--finite tensor assembly, full semilocal faithfulness, finite-adele
-      Haar-\(L^2\) unitarity, and product-Haar semilocal \(L^2\) unitarity are formalized;
-      the canonical algebraic Bruhat-tensor map into product-Haar \(L^2\) and exact Weyl
-      equivariance and injectivity are formalized; its pulled-back Hilbert completion,
-      identification with the closed algebraic image, and completed Weyl action are formalized;
-      full-product density, an independent factorwise completed-tensor comparison, and sheaf
-      compatibility remain
+- [x] 2 → 3: complete.  Items 1-14 below are all formalized: the abstract multiplier
+      representation, the archimedean and generic finite-place laws, canonical all-depth
+      conductor-\(\mathbb Z_p\) characters, finite restricted-product character assembly,
+      diagonal-product compatibility on every \(\mathbb Z[1/p]\) and then on all of
+      \(\mathbb Q\), algebraic real--finite tensor assembly, full semilocal faithfulness,
+      finite-adele and product-Haar \(L^2\) unitarity, the canonical Bruhat-tensor map into
+      product-Haar \(L^2\) with exact Weyl equivariance and injectivity, its Hilbert completion,
+      full-product density identifying that completion with the whole semilocal \(L^2\), the
+      independent factorwise completed-tensor comparison, and restriction-compatible sheaf
+      assembly with Weyl compatibility.  Axioms audited; umbrella build green
 - [ ] 3 → 4: publication-ready integration
 
 ## Formalization decomposition
@@ -186,8 +186,26 @@ its \(L^2\) completion. The multiplier/endomorphism target is therefore forced, 
 13. [x] Pulled-back Hilbert completion, isometric identification with the closed algebraic
     \(L^2\) image, and completed Weyl intertwining:
     `GaloisForLFunctions.RHTower.FieldOneSemilocalBruhatHilbertCompletion`.
-14. [ ] Full-product density, independent factorwise completed-tensor comparison, and
-    restriction-compatible sheaf assembly.
+14. [x] Full-product density: Haar regularity plus the compact-open basis of the rational
+    finite adeles makes finite-adele Bruhat--Schwartz functions dense in Haar \(L^2\), and the
+    separated-product density theorem then makes the algebraic semilocal Bruhat realization dense
+    in product-Haar \(L^2\).  Its abstract completion is therefore the whole semilocal
+    \(L^2\), and the completed Weyl action is injective:
+    `GaloisForLFunctions.RHTower.FieldOneFiniteBruhatL2Density`,
+    `GaloisForLFunctions.RHTower.FieldOneSemilocalBruhatL2Density`.
+15. [x] Independent factorwise completed-tensor comparison: the pointwise separated-product map
+    preserves the algebraic tensor inner product, so the Hilbert completion of
+    \(L^2(\mu)\otimes L^2(\nu)\) is isometric to \(L^2(\mu\otimes\nu)\), and the semilocal
+    Bruhat completion agrees with the factorwise Hilbert tensor product on pure tensors:
+    `GaloisForLFunctions.RHTower.L2HilbertTensorProduct`,
+    `GaloisForLFunctions.RHTower.FieldOneSemilocalFactorwiseHilbertTensor`.
+16. [x] Restriction-compatible sheaf assembly: for finite sets \(S\subseteq T\) of finite
+    places the sheaf restriction extends a section on \(A_S\) by the indicator of the integral
+    part at the places of \(T\) outside \(S\).  These maps are functorial, and the Weyl
+    multiplier of any rational integral outside \(S\) -- in particular of any \(m/p^n\) with
+    \(p\) a place of \(S\) -- commutes with every one of them, because the standard local
+    character is trivial on the local integers:
+    `GaloisForLFunctions.RHTower.FieldOneSemilocalStageRestrictionWeyl`.
 
 ## Log
 
@@ -234,3 +252,25 @@ its \(L^2\) completion. The multiplier/endomorphism target is therefore forced, 
   Algebraic Weyl automorphisms extend to completed unitaries with exact ambient intertwining and
   additive law. Full-product density, independent factorwise completed-tensor comparison, and
   sheaf compatibility remain.
+- 2026-07-30 — Lean proved full-product density.  Haar regularity and the compact-open basis of
+  the rational finite adeles approximate every finite-measure indicator by an indicator of a
+  compact-open set, which is a Bruhat–Schwartz function; `Lp.induction` then gives dense range in
+  finite-adele Haar \(L^2\).  Combined with real Schwartz density and the separated-product
+  density theorem, the algebraic semilocal Bruhat realization is dense in product-Haar \(L^2\), so
+  its abstract Hilbert completion is canonically the whole semilocal \(L^2\) and the completed
+  Weyl action is injective.  The completed Hilbert tensor product of the two \(L^2\) factors was
+  constructed independently and shown to agree with that completion on pure tensors.
+- 2026-08-05 — Lean closed the last item, restriction-compatible sheaf assembly.  For
+  \(S\subseteq T\) the semilocal restriction extends a section on \(A_S\) by the indicator of the
+  integral part at the places of \(T\) outside \(S\); these maps are functorial
+  (`fieldOneFiniteStageRestrict_self`, `fieldOneFiniteStageRestrict_comp`), the stage Weyl
+  multipliers form an additive representation (`fieldOneFiniteStageWeyl_zero`,
+  `fieldOneFiniteStageWeyl_add`), and every restriction map intertwines them for a rational
+  integral outside \(S\) (`fieldOneFiniteStageRestrict_weyl`), in particular for every \(m/p^n\)
+  with \(p\) a place of \(S\) (`fieldOneFiniteStageRestrict_weyl_int_div_pow`).  The mechanism is
+  that the standard local character is trivial on the local integers, so the places of
+  \(T\setminus S\) contribute nothing to the character on the image of the restriction.  All
+  declarations audited with `#print axioms`; they use only `propext`, `Classical.choice`, and
+  `Quot.sound`.  The card's hostile-audit item "compatibility of these local multiplier
+  representations with every restriction map of the semilocal sheaf is not yet proved" is now
+  discharged.

@@ -1,9 +1,11 @@
 # Universal static Choi complexity plateau
 
 - **ID:** universal-static-choi-complexity-plateau
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Status:** `[PROVED HERE]`; dependency-closed Lean formalization pending
+- **Status:** `[PROVED HERE]` `[FORMALIZED]`; equations (1)-(5) and the fixed-`q` Pauli
+  Gaussian almost-sure plateau are closed in Lean with no spectral premise, umbrella builds
+  green, axioms audited
 - **Role:** closes the geometric and completed-time parts of O3 in
   `../1-in-progress/static-local-complexity-law.md`
 
@@ -274,13 +276,48 @@ Completed and compiled in the foreground:
     audited with `#print axioms`; it uses only `propext`,
     `Classical.choice`, and `Quot.sound`.
 
-Remaining before stage 3:
+11. `PiMeasureAbsoluteContinuity.lean` proves that a coordinatewise absolutely
+    continuous family of sigma-finite measures has absolutely continuous finite
+    product, and specializes it to a nondegenerate product Gaussian on a finite
+    real coordinate space.
+12. `PauliTracelessChoiComplexityPlateauLaw.lean` closes the card's own
+    ensemble.  It relabels the eigenvalue family of a real combination of
+    nonidentity Pauli strings of weight at most `q` from computational
+    configurations to `Fin (2^n)`, imports the maximal projective rank already
+    proved for that ensemble in `generic-two-local-spectral-monodromy.md`, and
+    instantiates the completed-time occupation bound (4), the syndetic
+    trace-distance hardness law (5) and the ordered alternation law.  Both a
+    generic-set form and an almost-sure form for every full-density coefficient
+    law are proved, and the almost-sure form is then instantiated at a
+    nondegenerate product Gaussian.  Equation (4) is therefore now an
+    unconditional almost-sure static-local plateau law for the fixed-`q` Pauli
+    Gaussian ensemble with `q >= 2`, with no remaining spectral premise.  All
+    headline theorems were audited with `#print axioms`; they use only
+    `propext`, `Classical.choice`, and `Quot.sound`.
 
-1. Run the final umbrella build after concurrent corpus work settles.
-2. If the manuscript claims a fixed-`q` many-body nearest-neighbour chain
-   rather than the already formal finite Anderson family, formalize the
-   dependency-closed qudit-chain genericity proof first.  Its paper proof is
-   not manuscript-authorized.
-3. Any quantitative claim about the common alternation gap `L`, first hard
+Remaining before stage 4:
+
+1. Any quantitative claim about the common alternation gap `L`, first hard
    time, linear cut time, or first low-complexity recurrence remains outside
    this theorem.  Those require new Diophantine/no-shortcut input.
+2. A fixed-`q` many-body nearest-neighbour qudit chain is a different ensemble
+   from the fixed-weight Pauli ensemble proved here; it is not claimed by this
+   card and its genericity proof is not manuscript-authorized.
+
+## Lean formalization map
+
+| Paper item | Lean declaration | Module |
+|---|---|---|
+| torus entropy bound (1) | `UniversalPhaseCoherenceTargetMeasure` | `HTGeometry` |
+| translated coherence cap | `StaticChoiPhaseDensity` | `RHTower` |
+| finite dictionary (2), circuit union (3) | `StaticChoiPhaseTargetEntropy`, `StaticChoiComplexityPlateau` | `RHTower` |
+| completed time (4) | `completedTime_zeroAnchoredPaddedCircuitTargets` | `RHTower.StaticChoiProjectiveComplexityPlateau` |
+| syndetic hard endpoints (5) | `maximallyProjective_paddedCircuitHardTimes_syndetic`, `maximallyProjective_pureChoiTraceHardTimes_syndetic` | `RHTower.StaticChoiSyndeticComplexityLaw`, `RHTower.StaticChoiTraceDistanceLaw` |
+| ordered alternation | `maximallyProjective_pureChoiComplexity_alternates_syndetically` | `RHTower.StaticChoiComplexityAlternationLaw` |
+| finite Anderson family | `finiteAnderson_pureChoiComplexity_alternates_syndetically` | `RHTower.FiniteAndersonChoiComplexityAlternationLaw` |
+| fixed-`q` Pauli register relabelling | `pauliRegisterEquiv`, `pauliTracelessChoiEnergy`, `maximallyProjective_pauliTracelessChoiEnergy` | `RHTower.PauliTracelessChoiComplexityPlateauLaw` |
+| (4) for the Pauli ensemble | `pauliTraceless_completedTime_paddedCircuitTargets`, `pauliTraceless_completedTime_paddedCircuitTargets_ae` | `RHTower.PauliTracelessChoiComplexityPlateauLaw` |
+| (5) for the Pauli ensemble | `pauliTraceless_pureChoiTraceHardTimes_syndetic` | `RHTower.PauliTracelessChoiComplexityPlateauLaw` |
+| alternation for the Pauli ensemble | `pauliTraceless_pureChoiComplexity_alternates_syndetically`, `pauliTraceless_pureChoiComplexity_alternates_syndetically_ae` | `RHTower.PauliTracelessChoiComplexityPlateauLaw` |
+| Gaussian ensemble instance | `pauliTracelessGaussian_pureChoiComplexity_alternates_syndetically_ae`, `pauliTracelessGaussian_completedTime_paddedCircuitTargets_ae` | `RHTower.PauliTracelessChoiComplexityPlateauLaw` |
+| product absolute continuity | `pi_absolutelyContinuous_pi`, `productGaussian_absolutelyContinuous` | `HTGeometry.PiMeasureAbsoluteContinuity` |

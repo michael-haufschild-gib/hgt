@@ -2,91 +2,97 @@
 
 Card: `docs/drafts/pipeline/2-fully-proven/arbitrary-graph-quantum-temporal-curvature-law.md`
 
-## Audit of the card's six "still required" items (verified against the repo, not the card text)
+Items 1–5 of the card's "still required" list are **already done** in the pre-existing corpus (the
+card now records the exact declaration names per item).  Item **6** (simultaneous subsystem atlas +
+infinite product capstone) is the open one.
 
-1. all-vertex-good graph induction — DONE
-   (`exists_physicallyRealizedTensorTree_leafExtension`,
-    `exists_physicallyRealizedTensorTree_completeOneSiteSeed`,
-    `exists_physicallyRealizedTensorTree_twoQubitGraphSeed`,
-    `exists_completeOneSiteSeed_tensorTreeSchedule_maximal`,
-    `exists_twoQubitSeed_tensorTreeSchedule_maximal`)
-2. heterogeneous relation-erasure capstone — DONE (same file + `LocalTwoLayerSpectralResponse`,
-   `LocalSelectedLayerSpectralResponse`)
-3. spanning-tree lift — DONE
-   (`PhysicallyRealizedTensorTreeSystem.hermitianSuperspaceMaximalSet_dense_residual_fullMeasure`,
-    `exists_rootedSpanningTreePhysicalSystem`, `exists_binarySpanningTreePhysicalSystem`)
-4. disconnected module equality + rational-transverse scaling — DONE
-   (`DisconnectedProjectiveGapModuleLaw`: `anchoredTemporalRank_finiteComponentSumEnergy_eq_sum`,
-    `exists_scales_componentProjectivelyIndependent`)
-5. temporal partition-curvature capstone — DONE
-   (`FiniteGraphTemporalCurvatureLaw`: `finiteGraphPartitionTemporalCurvature_eq_zero_iff`,
-    `connected_iff_all_nontrivial_partitionTemporalCurvature_pos`,
-    `finiteGraphPairTemporalCurvature_eq`, `adj_iff_finiteGraphPairTemporalCurvature_pos`)
-6. simultaneous subsystem atlas + infinite product capstone — THE REMAINING ITEM.
+## Why new infrastructure was needed
 
-## Why item 6 needs new infrastructure
+`RootedTensorTree` stores the carrier as a *nested product*, in which a vertex subset `S` is not a
+tensor factor.  Corollary 2 needs one fixed ambient Hamiltonian restricted to every `S`, so the
+carrier must be the **site product** `∀ v, A v`.
 
-The tree architecture (`RootedTensorTree`) carries the physical carrier as a *nested product*
-`((F v1 × F v2) × F v3) × …`.  Corollary 2 needs, for one fixed ambient Hamiltonian, the induced
-restriction to **every** vertex subset `S`.  That requires the carrier as a **site product**
-`∀ v, F v` so that `S` is an actual tensor factor.  The corpus already owns the site-product tensor
-layer (`LocalMatrixTensorFactorization`: `LocalConfiguration`, `liftLocalMatrix`,
-`configurationSplitEquiv`, `reindex_liftLocalMatrix_eq_kronecker_one`;
-`FiniteLocalInteractionFamily`, `DisconnectedLocalAffineFactorization`), but had no graph-local
-Hamiltonian *space* on that carrier.
+## Built, compiling, wired into `GaloisForLFunctions.HTGeometry`
 
-## Built so far (all compile clean, wired into `GaloisForLFunctions.HTGeometry`)
+1. `SubsystemAtlasProjectiveGenericityLaw.lean` — abstract §9 + infinite-network mechanism
+   (`restrictedPolynomialHermitianMaximalSet_dense_residual_fullMeasure` via `MvPolynomial.rename`,
+   `simultaneousRestrictedMaximalSet_dense_residual_fullMeasure`,
+   `ambientRestrictedMaximalSet_residual`, `measure_compl_ambientRestrictedMaximalSet_eq_zero`,
+   `isOpenMap_coefficientRestrict`, `preimage_mem_residual_of_isOpenMap`).
+2. `SiteSupportedLocalHamiltonian.lean` — `IsSiteSupported`, closure lemmas incl. `of_forall_mem`,
+   `exists_liftLocalMatrix_of_isSiteSupported`, `siteFactorLocalSubmodule`, `IsGraphLocalTerm`,
+   `siteFactorTermSpan`, `mem_siteFactorLocalSubmodule_of_mem_termSpan`.
+3. `SiteFactorLeafTransport.lean` — `leafSiteEquiv`, `leafTransport`, three leaf support laws,
+   `leafTransport_mem_siteFactorTermSpan`, `isGraphLocalTerm_leafTransport_newSite/_edge`,
+   `twoSiteEquiv` + its two support laws.
+4. `PhysicalRealizationCarrierTransport.lean` — `reindex_hamiltonian_maximallyProjective`
+   (relabelling the physical carrier keeps the spectral system; requires the new carrier in the
+   **same universe** as the spectral system, which is why the site-product theorems live at `Type`).
+5. `SiteFactorGraphWitness.lean` — `PhysicallyRealizedTensorTreeSystem.tree`, `SiteFactorChart`,
+   seeds (one-site, two-site), charted leaf step, charted rooted/binary spanning-tree inductions,
+   and the capstone **`exists_maximallyProjective_mem_siteFactorLocalSubmodule`**: every connected
+   finite graph with all local dims ≥ 2 has a Hermitian onsite-plus-edge Hamiltonian on `∀ v, A v`
+   with maximal projective rank.  (Single binary site handled directly: no good observer family
+   exists for two states.)
+6. `SiteFactorLiftedSpectrum.lean` — `mem_range_hermitianEigenvalues_iff`,
+   `anchoredGapSubspace_eq_of_range_eq`, `anchoredTemporalRank_eq_of_range_eq`,
+   `isHermitian_liftLocalMatrix`, `reindex_scalarSub_liftLocalMatrix`,
+   `range_eigenvalues_liftLocalMatrix` (= spectrum of the block),
+   `anchoredTemporalRank_liftLocalMatrix`.
+7. `KroneckerSumSpectrum.lean` — `isHermitian_kroneckerSum`, `kroneckerSum_eq_conj_diagonal`,
+   **`range_eigenvalues_kroneckerSum`**: eigenvalues of `X ⊗ I + I ⊗ Y` are exactly the pairwise
+   sums.  (`kroneckerSum`/`kroneckerSum_diagonal` already existed in `ParametricSpectralBranch`.)
+8. `DisjointPacketSpectrum.lean` — `isHermitian_reindex`, `reindex_scalar`,
+   `range_eigenvalues_reindex`, `outsideSplitEquiv`,
+   `range_eigenvalues_liftLocalMatrixOutsideDisjoint`, and
+   **`range_eigenvalues_add_liftLocalMatrix_disjoint`**: the spectrum of a sum of two operators on
+   disjoint site packets is the set of pairwise sums.
 
-- `HTGeometry/SubsystemAtlasProjectiveGenericityLaw.lean` — the abstract Section-9/infinite-network
-  mechanism:
-  * `coefficientRestrict` / `coefficientExtend`, `isOpenMap_coefficientRestrict`,
-    `preimage_mem_residual_of_isOpenMap`;
-  * `restrictedPolynomialHermitianMaximalSet_dense_residual_fullMeasure` — pulls a subsystem's
-    maximal set back to the ambient coefficient space.  Trick: `MvPolynomial.rename` the subsystem
-    variables into the ambient ones, so the pullback *is* a polynomial-family maximal set and
-    `polynomialHermitianMatrixMaximalSet_dense_residual_fullMeasure` applies directly — no
-    measure-theoretic pullback needed;
-  * `simultaneousRestrictedMaximalSet_dense_residual_fullMeasure` — countable atlas; density comes
-    from Baire (finite intersections of dense sets are not dense, residual ones are);
-  * `ambientRestrictedMaximalSet_residual` and
-    `measure_compl_ambientRestrictedMaximalSet_eq_zero` — infinite countable coefficient product.
-- `HTGeometry/SiteSupportedLocalHamiltonian.lean` — `IsSiteSupported S H` (acts as identity off `S`),
-  its subspace/monotone/conjTranspose closure, `exists_liftLocalMatrix_of_isSiteSupported`,
-  `siteFactorLocalSubmodule A G`, `IsGraphLocalTerm`,
-  `mem_siteFactorLocalSubmodule_of_hermitian_sum` (Hermitian part of each term has the same
-  support, so non-Hermitian pieces of a Hermitian local Hamiltonian are harmless).
-- `HTGeometry/SiteFactorLeafTransport.lean` — `leafSiteEquiv A v : (∀ w ≠ v, A w) × A v ≃ ∀ w, A w`,
-  `leafTransport`, and the three support lemmas
-  (`isSiteSupported_leafTransport_id`, `isSiteSupported_leafTransport`,
-   `isSiteSupported_leafTransport_newSite`) plus
-  `leafTransport_mem_siteFactorLocalSubmodule`.
+## Surgery on existing files (additive, all call sites fixed)
 
-## Remaining plan
+`IsPhysicalLeafChart` (4th conclusion of `exists_physicallyRealizedTensorTree_leafExtension`) and
+`IsTwoQubitSiteChart` (4th conclusion of `exists_physicallyRealizedTensorTree_twoQubitGraphSeed`)
+expose the carrier factorization the constructions already build definitionally.  Watch out: in
+`ConnectedGraphSpanningLocalWitnessLaw` the one-site and two-qubit seeds are destructured with the
+same variable names — only the two-qubit one takes the extra component.
 
-Stage 3: a `SiteFactorRealizedSystem V A` structure = a `GoodObserverSpectralSystem.PhysicalRealization`
-whose `PhysicalState` **is** `∀ v, A v`, plus `probe_oneSite` and `hamiltonian_local`.  Mirror the
-seeds and the leaf step by calling
-`exists_maximallyProjective_physicalLocalGoodObserverFamily_leafExtension` directly (it exposes
-`physicalLeafHamiltonian oldH parentOp shift edge = oldH ⊗ 1 + 1 ⊗ diag shift + parentOp ⊗ edge`),
-then mirror the `exists_rootedSpanningTreePhysicalSystem` recursion (delete a degree-one vertex of a
-spanning tree) to get a maximally projective element of `siteFactorLocalSubmodule A G` for every
-connected `G` with all `2 ≤ card (A v)`.
+## Also done (2026-08-05, later)
 
-Stage 4: for `S ⊆ V`, `H_S` = the `S`-supported part; `anchoredTemporalRank` of a lift equals that of
-its block (`anchoredTemporalRank` only depends on `Set.range energy`; use
-`Matrix.IsHermitian.spectrum_real_eq_range_eigenvalues` and
-`reindex_liftLocalMatrix_eq_kronecker_one`), and across components of `G[S]` use
-`anchoredTemporalRank_finiteComponentSumEnergy_eq_sum`.  Feed the witnesses into
-`simultaneousRestrictedMaximalSet_dense_residual_fullMeasure`.
+- `DisjointPacketSpectrum.lean` now carries the **full** component decomposition `(18)`:
+  `liftLocalMatrix_injective`, `isHermitian_of_isHermitian_liftLocalMatrix`,
+  `isHermitian_sum_liftLocalMatrix`, `isSiteSupported_sum_liftLocalMatrix`,
+  `range_eigenvalues_sum_liftLocalMatrix` (Finset induction: split off one packet, repackage the
+  rest with `exists_liftLocalMatrix_of_isSiteSupported`), `exists_reference_sum_liftLocalMatrix`,
+  and `anchoredTemporalRank_sum_liftLocalMatrix` = `Σ_c (card (LocalConfiguration A (S c)) − 1)`
+  under `ComponentProjectivelyIndependent`.
+- `SubsystemAtlasProjectiveGenericityLaw.lean` gained `simultaneousMaximalSet` +
+  `simultaneousMaximalSet_dense_residual_fullMeasure`: several Hermitian families over ONE shared
+  real parameter space are simultaneously maximally projective on a dense residual full-measure
+  set.  **Design consequence**: the subsystem coordinates need not be a literal subfamily — write
+  each `S`-subsystem as its own generator family on `LocalConfiguration A S` indexed by the *same*
+  ambient parameters (zero generator when the packet is not inside `S`).  This kills all the
+  `S`-vs-`V` coordinate bookkeeping.
 
-Stage 5: infinite network via `ambientRestrictedMaximalSet_residual` +
-`measure_compl_ambientRestrictedMaximalSet_eq_zero`.
+## Next steps
 
-## Traps hit
+1. Ambient coordinate family: for each admissible packet `P` (singleton or edge of `G`) take
+   `Module.finBasis ℝ (selfAdjoint.submodule ℝ (Matrix (LocalConfiguration A P) … ℂ))`; index by
+   `Σ P, Fin (dim P)` and transport to `Fin m` by `Fintype.equivFin`.  Ambient generator
+   `liftLocalMatrix P (basis i)`; `S`-block generator `liftLocalMatrixToSuperset hPS (basis i)`
+   when `P ⊆ S`, else `0`.  Compatibility is `liftLocalMatrix_liftLocalMatrixToSuperset`.
+2. Assemble `(5)`–`(8)` with `FiniteGraphTemporalCurvatureLaw`, and `(20)` with
+   `ambientRestrictedMaximalSet_residual` + `measure_compl_ambientRestrictedMaximalSet_eq_zero`.
+   For disconnected `G[S]` the transversality genericity of card §8 is still needed (the witness
+   exists: `exists_scales_componentProjectivelyIndependent`).
 
-- `Matrix.IsHermitian` needs `import Mathlib.LinearAlgebra.Matrix.Hermitian`; without it dot
-  notation reports `Function.IsHermitian`.
-- `Hᴴ` needs `open scoped Matrix`.
-- The formal lint gate fails on warnings: every `theorem` that does not use a section instance needs
-  an explicit `omit … in`, and the `omit` line must come **before** the docstring.
-- `intro` does not accept `-`; use `_`.
+## Traps
+
+- `Matrix.IsHermitian` needs `import Mathlib.LinearAlgebra.Matrix.Hermitian`; `Hᴴ` needs
+  `open scoped Matrix`.
+- `R.PhysicalState` needs an ambient `Fintype X.State` even when `R`'s type pins the instances —
+  use `letI` in the statement type, or a `@[reducible]` accessor.
+- `Matrix.sub_kronecker` does not exist in this mathlib; prove `(X - Y) ⊗ₖ Z` entrywise.
+- The lint gate fails on warnings: `omit … in` before the docstring; watch unused simp args.
+- `rcases`/`obtain` `_` tries to case-split an opaque `def`; use `-`.
+- 2026-08-05: another session created untracked `HTGeometry/QuantileCoupling.lean` (not wired into
+  the umbrella yet) — the resulting `formal_tools.py lint` failure is theirs, not this work's.

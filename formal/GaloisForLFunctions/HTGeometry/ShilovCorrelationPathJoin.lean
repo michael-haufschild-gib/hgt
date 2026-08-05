@@ -167,6 +167,49 @@ theorem mem_ambiguousCorrelation_zero_iff (f : V →ₗ[𝕜] W) (Js : Submodule
       rw [this]
       exact Jt.neg_mem ht
 
+/-- An ambiguous correlation collapses to the plain envelope correlation exactly when its extra
+ambiguity is already contained in the edge join. -/
+theorem ambiguousCorrelation_eq_envelopeCorrelation_iff (f : V →ₗ[𝕜] W) (Js : Submodule 𝕜 V)
+    (Jt N : Submodule 𝕜 W) :
+    ambiguousCorrelation f Js Jt N = envelopeCorrelation f Js Jt ↔ N ≤ edgeJoin f Js Jt := by
+  constructor
+  · intro h n hn
+    have hmem : ((0 : V ⧸ Js), (Submodule.Quotient.mk n : W ⧸ Jt)) ∈
+        ambiguousCorrelation f Js Jt N := by
+      refine ⟨0, n, hn, ?_⟩
+      refine Prod.ext ?_ ?_
+      · exact (Submodule.Quotient.mk_eq_zero Js).mpr Js.zero_mem
+      · show (Submodule.Quotient.mk (f 0 + n) : W ⧸ Jt) = Submodule.Quotient.mk n
+        rw [map_zero, zero_add]
+    rw [h] at hmem
+    obtain ⟨b, hb⟩ := hmem
+    have hb₁ : (Submodule.Quotient.mk b : V ⧸ Js) = 0 := congrArg Prod.fst hb
+    have hb₂ : (Submodule.Quotient.mk (f b) : W ⧸ Jt) = Submodule.Quotient.mk n :=
+      congrArg Prod.snd hb
+    have hbJ : b ∈ Js := (Submodule.Quotient.mk_eq_zero Js).mp hb₁
+    have hdiff : f b - n ∈ Jt := (Submodule.Quotient.eq Jt).mp hb₂
+    have hval : n = f b - (f b - n) := by abel
+    rw [hval]
+    exact Submodule.sub_mem _
+      ((le_sup_right : Js.map f ≤ Jt ⊔ Js.map f) (Submodule.mem_map_of_mem hbJ))
+      ((le_sup_left : Jt ≤ Jt ⊔ Js.map f) hdiff)
+  · intro h
+    apply le_antisymm
+    · rintro p ⟨a, n, hn, rfl⟩
+      obtain ⟨t, ht, w, hw, hsum⟩ := Submodule.mem_sup.mp (h hn)
+      obtain ⟨s, hs, hfs⟩ := Submodule.mem_map.mp hw
+      refine ⟨a + s, ?_⟩
+      refine Prod.ext ?_ ?_
+      · show (Submodule.Quotient.mk (a + s) : V ⧸ Js) = Submodule.Quotient.mk a
+        exact (Submodule.Quotient.eq Js).mpr (by simpa using hs)
+      · show (Submodule.Quotient.mk (f (a + s)) : W ⧸ Jt) = Submodule.Quotient.mk (f a + n)
+        refine (Submodule.Quotient.eq Jt).mpr ?_
+        have hval : f (a + s) - (f a + n) = -t := by
+          rw [map_add, hfs, ← hsum]; abel
+        rw [hval]
+        exact Jt.neg_mem ht
+    · exact envelopeCorrelation_le_ambiguousCorrelation f Js Jt N
+
 variable {U : Type v} [AddCommGroup U] [Module 𝕜 U]
 
 /-- One-step composition law for ambiguous correlations. -/
@@ -224,6 +267,15 @@ theorem relationalComp_envelopeCorrelation (f : U →ₗ[𝕜] V) (g : V →ₗ[
       ambiguousCorrelation (g ∘ₗ f) Ju Jw (Jv.map g) := by
   rw [← ambiguousCorrelation_bot f Ju Jv, relationalComp_ambiguousCorrelation,
     Submodule.map_bot, bot_sup_eq]
+
+/-- A two-step factorisation is exact exactly when the transported middle boundary is already
+contained in the edge join of the composite; otherwise the composition is strictly larger. -/
+theorem relationalComp_eq_envelopeCorrelation_iff (f : U →ₗ[𝕜] V) (g : V →ₗ[𝕜] W)
+    (Ju : Submodule 𝕜 U) (Jv : Submodule 𝕜 V) (Jw : Submodule 𝕜 W) :
+    relationalComp (envelopeCorrelation f Ju Jv) (envelopeCorrelation g Jv Jw) =
+        envelopeCorrelation (g ∘ₗ f) Ju Jw ↔
+      Jv.map g ≤ edgeJoin (g ∘ₗ f) Ju Jw := by
+  rw [relationalComp_envelopeCorrelation, ambiguousCorrelation_eq_envelopeCorrelation_iff]
 
 end AmbiguousCorrelation
 

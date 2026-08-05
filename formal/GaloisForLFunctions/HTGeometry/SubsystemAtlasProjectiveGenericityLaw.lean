@@ -31,6 +31,10 @@ This file proves that capstone in exact generality.
   residuality by Baire, which is what makes a *simultaneous* statement
   possible: a finite intersection of dense sets is not dense, but a
   countable intersection of residual sets is residual and hence dense.
+* `simultaneousMaximalSet_dense_residual_fullMeasure` is the same conclusion
+  for several families that already share one parameter space, which is the
+  form a network atlas takes once every subsystem is written in the ambient
+  coefficients.
 * `ambientRestrictedMaximalSet_residual` and
   `measure_compl_ambientRestrictedMaximalSet_eq_zero` give the
   infinite-network completion: a countable coefficient product carries the
@@ -340,6 +344,51 @@ theorem simultaneousRestrictedMaximalSet_dense_residual_fullMeasure
           (M a) (hherm a) (e a))ᶜ := by
     rw [simultaneousRestrictedMaximalSet_eq_iInter, Set.compl_iInter]
   rw [hcompl]
+  exact measure_iUnion_null fun a => (hpiece a).2
+
+/-- Parameters at which every member of a countable family of polynomial
+Hermitian families over one common parameter space is maximally projective. -/
+def simultaneousMaximalSet {m : ℕ} {A : Type*}
+    {I : A → Type*} [∀ a, Fintype (I a)] [∀ a, DecidableEq (I a)]
+    (M : ∀ a, Matrix (I a) (I a) (MvPolynomial (Fin m) ℂ))
+    (hherm : ∀ a, ∀ p : Fin m → ℝ,
+      ((M a).map (MvPolynomial.eval₂Hom (RingHom.id ℂ)
+        (fun t => (p t : ℂ)))).IsHermitian) : Set (Fin m → ℝ) :=
+  {p | ∀ a, p ∈ polynomialHermitianMatrixMaximalSet (M a) (hherm a)}
+
+/-- **Common-parameter atlas.**  Several Hermitian families sharing one real
+parameter space are simultaneously maximally projective on a dense, residual,
+full-measure set, as soon as each of them has its own witness. -/
+theorem simultaneousMaximalSet_dense_residual_fullMeasure
+    {m : ℕ} {A : Type*} [Countable A]
+    {I : A → Type*} [∀ a, Fintype (I a)] [∀ a, DecidableEq (I a)]
+    (M : ∀ a, Matrix (I a) (I a) (MvPolynomial (Fin m) ℂ))
+    (hherm : ∀ a, ∀ p : Fin m → ℝ,
+      ((M a).map (MvPolynomial.eval₂Hom (RingHom.id ℂ)
+        (fun t => (p t : ℂ)))).IsHermitian)
+    (p₀ : A → (Fin m → ℝ))
+    (hmax : ∀ a, MaximallyProjectiveEnergy (hherm a (p₀ a)).eigenvalues) :
+    Dense (simultaneousMaximalSet M hherm) ∧
+      simultaneousMaximalSet M hherm ∈ residual (Fin m → ℝ) ∧
+      volume (simultaneousMaximalSet M hherm)ᶜ = 0 := by
+  have hpiece : ∀ a,
+      polynomialHermitianMatrixMaximalSet (M a) (hherm a) ∈
+          residual (Fin m → ℝ) ∧
+        volume (polynomialHermitianMatrixMaximalSet (M a) (hherm a))ᶜ = 0 := by
+    intro a
+    obtain ⟨-, hres, hnull⟩ :=
+      polynomialHermitianMatrixMaximalSet_dense_residual_fullMeasure
+        (M a) (hherm a) (p₀ a) (hmax a)
+    exact ⟨hres, hnull⟩
+  have hiInter : simultaneousMaximalSet M hherm =
+      ⋂ a, polynomialHermitianMatrixMaximalSet (M a) (hherm a) := by
+    ext p
+    simp [simultaneousMaximalSet]
+  have hres : simultaneousMaximalSet M hherm ∈ residual (Fin m → ℝ) := by
+    rw [hiInter]
+    exact countable_iInter_mem.2 fun a => (hpiece a).1
+  refine ⟨dense_of_mem_residual hres, hres, ?_⟩
+  rw [hiInter, Set.compl_iInter]
   exact measure_iUnion_null fun a => (hpiece a).2
 
 /-! ### Infinite-network completion -/

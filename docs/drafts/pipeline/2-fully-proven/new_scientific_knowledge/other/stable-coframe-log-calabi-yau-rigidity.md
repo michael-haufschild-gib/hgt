@@ -216,9 +216,63 @@ The arithmetic ramification fixed point is formalized in
 - `ramificationShift_fixed_eq_neg_one`;
 - `ramificationPoleOrder_fixed_eq_neg_one`.
 
-The divisor pullback formula, periodic-support argument, and log-geometric classification remain
-paper-level because the required algebraic-geometric ramification infrastructure is not present
-in the project.  No axiom is introduced for those claims.
+`formal/GaloisForLFunctions/HTGeometry/EigenvolumeRamificationSystem.lean` formalizes the whole
+combinatorial and arithmetic core of Theorem A downstream of the local law (9).  The system is a
+type of primes `alpha`, an image map `F`, a ramification index `e` and an eigenvolume order `c`
+subject to `c x + 1 = e x * (c (F x) + 1)`.
+
+| Theorem A step | Lean declaration |
+|---|---|
+| (10), preimage stability of the support | `order_ne_zero_of_image_ne_zero`, `order_ne_zero_of_iterate_ne_zero` |
+| iterated order law along a forward orbit | `shift_eq_prod_iterate`, `one_lt_prod_iterate_of_expanding` |
+| step 3, backward orbits return | `exists_pos_iterate_eq_self_of_backwardStable` |
+| step 4 on a cycle, with no iterate taken | `eigenvolumeOrder_eq_neg_one_of_periodic` |
+| (2) and (5), the horizon is reduced | `eigenvolumeOrder_eq_neg_one` |
+| (3), total invariance `f^(-1)(D) = D` | `order_ne_zero_iff_image_ne_zero` |
+| (4), etale off the horizon | `ramificationIndex_eq_one_of_order_eq_zero` |
+| (6), `R_f = f^*D - D` at coefficients | `ramificationCoefficient_eq_pullback_sub` |
+| expansion is necessary | `exists_nonexpanding_order_ne_neg_one` |
+| finiteness of the support is necessary | `exists_infiniteSupport_order_ne_neg_one` |
+
+Two improvements over the paper argument are now proved.  First, the passage to an iterate in
+step 3 is unnecessary: the cycle equation `c + 1 = (product of e along the cycle) * (c + 1)`
+already forces `c = -1` on every periodic component, so `f` itself has reduced horizon.  Second,
+both standing hypotheses are sharp.  Dropping expansion admits `c = 5` on a one-point support;
+dropping finiteness of the support admits `c(n) = 2^n - 1` on `N` with `F(n) = n - 1` and
+expanding indices throughout.
+
+All ten declarations were audited with `#print axioms`; they use only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+`formal/GaloisForLFunctions/HTGeometry/TameEisensteinDifferentExponent.lean` supplies the
+arithmetic source of the `e - 1` in the local law (8), in the local model where that law lives.
+For a discrete valuation ring, a uniformizer `x`, and a monic degree-`e` polynomial whose lower
+coefficients all have valuation at least `e` -- the Eisenstein presentation of a totally ramified
+extension -- with `e` a unit at the place:
+
+| statement | Lean declaration |
+|---|---|
+| valuation of a sum is bounded by its summands | `le_addVal_sum` |
+| valuation of a power of a uniformizer | `addVal_pow_uniformizer` |
+| derivative of the Eisenstein presentation | `derivative_eisensteinPoly`, `eval_derivative_eisensteinPoly` |
+| **the ramification exponent is exactly `e - 1`** | `addVal_eval_derivative_eisensteinPoly` |
+| the shift by one is the ramification index | `addVal_eval_derivative_eisensteinPoly_succ` |
+| the local different is exactly `m^(e-1)` | `span_eval_derivative_eisensteinPoly` |
+
+The mechanism is an ultrametric strict minimum: the leading term `e x^(e-1)` has valuation
+`e - 1` because `e` is a unit in the tame case, while every other term carries a coefficient of
+valuation at least `e`.  This is the precise sense in which the `+1` of (9) is the Jacobian
+contribution of ramification rather than a normalisation convention.  mathlib supplies only the
+divisibility `P^(e-1) | different` (`pow_sub_one_dvd_differentIdeal`); the matching upper bound,
+which is what makes the exponent exact, is proved here.  All seven declarations are axiom-clean.
+
+What remains paper-level is the rest of the algebraic-geometric input to the abstract system: the
+eigenvolume identity (7) from `f^*|W`, the passage from the local different to the global divisor
+pullback formula (8) on a smooth projective variety, and the int-amplified eigenvalue bound giving
+`e_E > 1` on recurrent components.  These need Weil divisors, the canonical divisor of a finite
+morphism, and `N^1` with amplified pullback eigenvalues, none of which exist in mathlib or in this
+project.  Corollary B needs log-canonical MMP results and is further out.  No axiom is introduced
+for any of them.
 
 ## RH impact audit
 
@@ -233,3 +287,18 @@ cannot be used to infer RH, a critical-line constraint, or positivity.
 
 - 2026-07-15 -- [PROVED HERE] full stable coframe converted to an eigenvolume; support periodicity,
   simple-pole quantization, log-Calabi--Yau boundary, and polarized structural corollary proved.
+- 2026-08-05 -- Lean closed the whole combinatorial-arithmetic core of Theorem A in
+  `EigenvolumeRamificationSystem.lean`: preimage stability of the support, return of backward
+  orbits under a surjective image map on a finite support, the cycle fixed point (which removes
+  the passage to an iterate), total invariance, etale-off-the-horizon, and the coefficient form of
+  `R_f = f^*D - D`.  Expansion and finiteness of the support were both shown necessary by explicit
+  counterexamples.  Only the algebraic-geometric inputs (7), (8) and the int-amplified eigenvalue
+  bound remain paper-level; they need divisor and `N^1` infrastructure absent from mathlib.
+- 2026-08-06 -- Lean proved the exact tame ramification exponent in
+  `TameEisensteinDifferentExponent.lean`: for an Eisenstein presentation of degree `e` over a
+  discrete valuation ring with `e` a unit at the place, the derivative evaluated at a uniformizer
+  has valuation exactly `e - 1`, and the local different is exactly the `(e-1)`-st power of the
+  maximal ideal.  mathlib had only the divisibility `P^(e-1) | different`; the matching upper
+  bound is new here and it is what makes the `e - 1` of the local law (8) exact rather than a
+  lower bound.  The proof is an ultrametric strict minimum: tameness makes the leading term
+  `e x^(e-1)` strictly smaller in valuation than every other term.

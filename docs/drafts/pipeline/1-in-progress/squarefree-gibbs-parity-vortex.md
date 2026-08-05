@@ -509,3 +509,229 @@ every coupling.  Open: the **intermediate window** `3^{−k} ≤ x·m ≲ Kurtz`
 remaining gap in the sector-collapse conjecture.
 
 - 2026-08-05 — cycle 6 closed.
+
+## 2026-08-05 CYCLE 7: the recursive stability theorem (threshold `1/σ(m)`)
+
+W3's threshold `x·m < 3^{−k}` is exponentially far from the natural barrier.  The T0
+recursion removes the entire exponential loss — this is the Hermite–Biehler-along-T0
+mechanism the programme predicted, in its correct (relative-error) form.
+
+**V1 (exact error recursion).**  Put `E_S(z,x) := P_S(z,x) − (1+z)^{|S|}` (the deviation
+of the gas from the free gas).  T0 gives, exactly,
+
+```text
+E_{S∪p}(z, x) = E_S(z, x) + z·E_S(z, px),      E_∅(z,x) = e^{−x} − 1.
+```
+
+**V2 (the relative estimate).**  On the region `1 ≤ ‖1+z‖` and `‖z‖ ≤ ‖1+z‖` — which
+contains the whole closed right half-plane —
+
+```text
+‖P_S(z,x) − (1+z)^k‖ ≤ x·σ(m)·‖1+z‖^k,      σ(m) = ∏_{p∈S}(1+p).
+```
+
+*Proof.*  Induction along V1: `‖E_{S∪p}‖ ≤ ‖E_S(x)‖ + ‖z‖·‖E_S(px)‖ ≤ x·g_S·‖1+z‖^k·(1 +
+p‖z‖)`, and `1 + p‖z‖ ≤ (1+p)‖1+z‖` because `1 ≤ ‖1+z‖` and `‖z‖ ≤ ‖1+z‖`; so
+`g_{S∪p} = (1+p)g_S`, `g_∅ = 1`.  The factor `p` of the dilated scale `px` is exactly what
+the geometry `1 + p‖z‖ ≤ (1+p)‖1+z‖` absorbs — no modulus is taken inside the product, so
+no `2^k`/`3^k` is ever created. ∎
+
+**V3 (Hurwitz stability, all k, threshold `1/σ(m)`).**  `x·σ(m) < 1` ⟹ the gas has no
+zero with `Re z ≥ 0`.  Strictly stronger than W3 (`σ(m) ≤ 3^k·m`).
+
+**V4 (localization dichotomy).**  Under `x·σ(m) < 1`, every zero satisfies
+`‖z+1‖ < 1` **or** `Re z < −1/2`: the zero set splits into the parity cluster and a
+far-left region, with the strip `{Re z ≥ −1/2} ∖ {‖z+1‖<1}` entirely free.
+
+**Sharpness.**  The parity star of T4 reaches the unit circle at `x ≈ 1/φ(m)`, and
+`σ(m)/φ(m) = ∏(p+1)/(p−1) ≍ (log p_k)²`: the threshold `1/σ(m)` is within a
+**polylogarithmic** factor of the natural barrier, versus the exponential gap of W3.
+Whether stability persists past `1/φ(m)` is the remaining window; it does for `k ≤ 4` at
+every coupling (cycles 3–5).
+
+- 2026-08-05 — V1–V4 paper-proved (this entry); Lean next.
+
+## 2026-08-05 V1–V4 FORMALIZED: `RHTower/GibbsRecursiveStability.lean`
+
+Wired; build 8658 jobs; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings; **one-iteration compile**.  Namespace `RHTower.GibbsGas`:
+
+- `gibbsDiagC_empty`, **`gibbsDiagC_insert`** — the cutoff recursion at complex activity;
+- `one_le_norm_one_add_of_re_nonneg`, `norm_le_norm_one_add_of_re` — the two geometric
+  facts (`Re z ≥ 0 ⟹ 1 ≤ ‖1+z‖`; `Re z ≥ −1/2 ⟹ ‖z‖ ≤ ‖1+z‖`);
+- **`norm_gibbsDiagC_sub_free_le`** (V2) — `‖P_S(z,x) − (1+z)^k‖ ≤ x·σ(m)·‖1+z‖^k`, by
+  `Finset.induction_on` with `x` universally quantified inside the statement (the IH is
+  applied at BOTH `x` and `p·x` — the two-scale step);
+- **`gibbsDiagC_ne_zero_of_sigma`** (V3) — no zero with `Re z ≥ 0` when `x·σ(m) < 1`;
+- **`gibbs_zero_localization`** (V4) — every zero is in `‖z+1‖ < 1` or has `Re z < −1/2`.
+
+Note the hypothesis `∀ p ∈ S, 1 ≤ p` is NOT needed anywhere: the estimate holds for any
+finite set of naturals, because `1 + p‖z‖ ≤ (1+p)‖1+z‖` only uses `p ≥ 0`.
+
+Lean note: quantify `x` inside the statement (`∀ x, 0 ≤ x → …`) rather than as a theorem
+argument, so `Finset.induction_on` produces an induction hypothesis usable at the dilated
+scale; this is the formal counterpart of the two-scale recursion.
+
+- 2026-08-05 — cycle 7 closed.  Stability threshold improved from `3^{−k}/m` (W3) to
+  `1/σ(m)` (V3), i.e. from exponential to polylogarithmic distance from the barrier.
+
+## 2026-08-05 CYCLE 8: the two-scale positivity engine, and an honest volume audit
+
+### U1 (the reduction — the exact inductive engine)
+
+If `P_{S∪p}(z,x) = P_S(z,x) + z·P_S(z,px) = 0` with `Re z ≥ 0`, then `A = −zB` for
+`A = P_S(z,x)`, `B = P_S(z,px)`, so `A·conj B = −z·|B|²` and `Re(A·conj B) ≤ 0`.  Hence:
+
+```text
+TSP_S(x, px) :  Re[ P_S(z,x)·conj P_S(z,px) ] > 0  for all Re z ≥ 0
+       ⟹  P_{S∪p} has no zero with Re z ≥ 0.
+```
+
+**All-k sector stability is therefore implied by a positivity of an explicit real
+quadratic form** — no root-tracking, no Routh chain, no homotopy.  Expanding,
+
+```text
+Re[P_S(z,x)·conj P_S(z,px)] = Σ_{j,l} B_{j,l}·r^{j+l}·cos((j−l)θ),
+B_{j,l} = Σ_{|T|=j,|U|=l} e^{−x(e(T)+p·e(U))},   z = r e^{iθ}, |θ| ≤ π/2.
+```
+
+Terms with `|j−l| ≤ 1` are automatically `≥ 0`; the whole content is that they dominate.
+At `x = 0` the form is exactly `|1+z|^{2k} ≥ 0`, and as `x → ∞` it tends to `1`: the
+criterion is correct at both ends, and the open problem is the middle — now a *finite,
+term-by-term* combinatorial inequality rather than an analytic one.
+
+**Ordering insight.**  For `k = 2` the boundary condition reduces to
+`b₁b₂ + 2√(a₁a₂c₁c₂) ≥ a₁c₂ + a₂c₁`, whose energy comparison `p·x + p·y ≤ y + pq·x`
+requires `p ≤ q`.  So the induction must **adjoin primes in decreasing order** (the new
+prime smaller than every prime already present).  This is a genuine structural constraint
+on the ladder, invisible before U1.
+
+### U2 (honest volume audit — a limitation of cycles 6–7)
+
+The stability thresholds are `x·σ(m) < 1`, i.e. `x ≲ 1/m`.  The **infinite-volume** gas at
+coupling `x` involves all primes `p ≲ 1/x`, so its effective `m = ∏_{p≤1/x}p = e^{θ(1/x)}`
+and `x·σ(m) ≫ 1` always.  **None of the finite-volume stability theorems reach the
+infinite-volume regime**; closing that is the real frontier, and V3 covers only
+`S = {p ≤ log(1/x)}`.  This is recorded as a limitation, not a gap in the proofs.
+
+### U3 (dictionary — labelled as re-encoding, not progress)
+
+By Selberg–Delange, `D_z(s) = Σ_{n sf} z^{ω(n)}n^{−s} = ∏(1+z p^{−s}) = ζ(s)^z G(z,s)`, so
+`p_x(z) ~ x^{−1}(log 1/x)^{z−1}G(z,1)/Γ(z)`.  Since `1/Γ` vanishes at `z = −1,−2,…` and
+`G(z,1)` at `z = −p`, the infinite-gas zeros approach `{−1,−2,…} ∪ {−p}` as `x → 0` — all
+real negative.  Near the parity point, `G(−1,1) = ∏(1−1/p)(1−1/p)^{−1} = 1` and
+`1/Γ(z) ≈ −(z+1)`, giving
+
+```text
+dist(nearest gas zero, −1)  ≈  |Φ(x)|·x·(log 1/x)²,
+```
+
+so RH ⟺ that distance is `≪ x^{1/2−ε}(log)²`: **the distinguished gas zero traces the
+zeta zeros**, its motion in `log(1/x)` being almost-periodic with frequencies `γ` and
+amplitude `x^{1/2}` exactly under RH.  Also: the Erdős–Kac profile (`c_j` Poisson with
+mean `λ = loglog(1/x)`) yields only `(log 1/x)^{−2}` of cancellation, versus the `x^{1/2}`
+RH needs — **quantifying how much of (G2) lies beyond the smooth profile**.  Per
+`rh-criterion-reencoding-template` this is a dictionary, claimed as guidance only.
+
+- 2026-08-05 — U1 proved (Lean next); U2, U3 recorded.  The OPEN CORE is now `TSP_S`.
+
+## 2026-08-05 U1 FORMALIZED: `RHTower/GibbsTwoScalePositivity.lean`
+
+Wired; build 8659 jobs; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings.  Namespace `RHTower.GibbsGas`:
+
+- `TwoScalePositive S x y` — the engine's invariant, `0 < Re[P_S(z,x)·conj P_S(z,y)]` on
+  `Re z ≥ 0`;
+- **`gibbsDiagC_insert_ne_zero_of_twoScale`** (U1) — the reduction: `TSP_S(x, px)` ⟹ the
+  extended gas has no zero with `Re z ≥ 0`.  Proof: `A = −zB` ⟹ `A·conj B = −z·normSq B`
+  (`Complex.mul_conj`), whose real part is `−z.re·normSq B ≤ 0`;
+- `re_mul_conj_affine` — the exact real part of an affine × conjugate-affine product;
+- **`twoScalePositive_empty`**, **`twoScalePositive_singleton`** — the engine holds
+  unconditionally at levels 0 and 1, at EVERY pair of scales (the singleton form is
+  `a₁a₂ + (a₁b₂+a₂b₁)Re z + b₁b₂|z|²`, manifestly positive);
+- **`twoScalePositive_of_sigma`** — the engine holds at every level in the weak-coupling
+  regime `xσ + yσ + xσ·yσ < 1`, via the relative estimate of cycle 7 (so the criterion is
+  non-vacuous for all `k`);
+- `gibbsDiagC_pair_ne_zero` — pair-gas stability at every coupling, re-derived from the
+  engine (consistency check against cycle 3).
+
+The OPEN CORE is now the single statement `TwoScalePositive S x (p·x)` for all `S`, `p`,
+`x` — a positivity of an explicit real quadratic form, replacing "all-k sector stability".
+
+Lean traps: `|>.re` does not parse inside a theorem statement — parenthesise;
+`simp [Complex.mul_re]` rewrites `↑(rexp t)` into `Complex.exp ↑t` (use
+`simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]` + `ring`);
+`-‖w‖ ≤ w.re` comes from `Complex.re_le_norm (-w)` + `Complex.neg_re` + `norm_neg`.
+
+- 2026-08-05 — cycle 8 closed.
+
+## 2026-08-05 CYCLE 9: level-2 two-scale positivity, and the reduced criterion
+
+### X1 (the general criterion — TSP by weighted diagonal dominance)
+
+Write `Re[P_S(z,x)·conj P_S(z,y)] = Σ_n r^n Σ_{d} D_d^{(n)} cos(dθ)` (`z = re^{iθ}`,
+`|θ| ≤ π/2`), where `D_d^{(n)} = B_{(n+d)/2,(n−d)/2} + B_{(n−d)/2,(n+d)/2}` for `d ≥ 1`
+and `D_0^{(n)} = B_{n/2,n/2}`.  Using `cos(dθ) ≥ −1` for even `d`, and — the useful point —
+**`|cos(dθ)| ≤ d·cos θ` for odd `d`** (equivalently `|sin(dφ)| ≤ d|sin φ|`), each group is
+non-negative as soon as
+
+```text
+even n :  D_0 ≥ Σ_{d ≥ 2 even} D_d ;      odd n :  D_1 ≥ Σ_{d ≥ 3 odd} d·D_d .
+```
+
+So **all-k sector stability follows from an explicit finite inequality on Boltzmann sums**
+— no analysis in `z` remains.  This is the reduced OPEN CORE.
+
+### X2 (level two, proved — the decreasing-order condition is an identity)
+
+For `S = {q,r}` the gas is `a + bz + cz²` with `a = e^{−x}`, `b = e^{−rx}+e^{−qx}`,
+`c = e^{−qrx}`, and the criterion collapses to the single inequality
+`b₁b₂ ≥ a₁c₂ + a₂c₁`.  With the **cross** pairing (not the diagonal one, which fails):
+
+```text
+e^{−qx}·e^{−ry} ≥ e^{−y}·e^{−qrx}   ⟺   q + rp ≤ p + qr   ⟺   (q−p)(r−1) ≥ 0,
+e^{−rx}·e^{−qy} ≥ e^{−x}·e^{−qry}   ⟺   r + qp ≤ 1 + qrp   ⟺   (r−1)(qp−1) ≥ 0,
+```
+
+both automatic once `p ≤ q` and `p,q,r ≥ 1` (`y = px`).  **The decreasing-order constraint
+discovered in cycle 8 is exactly the factor `(q−p)` in the first identity.**  Feeding this
+to the engine re-proves stability of the three-element gas at every coupling — by a route
+that generalizes, unlike the Routh computation of cycle 3.
+
+Cartesian form used (no polar coordinates needed): with `Re z² = z.re²−z.im²`,
+
+```text
+(a₁c₂+a₂c₁)(z.re²−z.im²) + b₁b₂(z.re²+z.im²) ≥ 2(a₁c₂+a₂c₁)·z.re² ≥ 0,
+```
+
+and every other term of `Re[F·conj G]` is non-negative for `Re z ≥ 0`.
+
+- 2026-08-05 — X1 stated (reduced open core), X2 proved; Lean next.
+
+## 2026-08-05 X1/X2 FORMALIZED: `RHTower/GibbsTwoScaleLevelTwo.lean`
+
+Wired; module build 8660 jobs; **whole `GaloisForLFunctions.RHTower` umbrella rebuilt
+clean (16955 jobs)**; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings.  Namespace `RHTower.GibbsGas`:
+
+- `re_mul_conj_quadratic` — the exact Cartesian expansion of `Re[F·conj G]` for
+  quadratics (no polar coordinates);
+- **`re_mul_conj_quadratic_pos`** — the level-two criterion: positive coefficients plus
+  `a₁c₂ + a₂c₁ ≤ b₁b₂` give positivity on `Re z ≥ 0` (the only sign-indefinite term,
+  `(a₁c₂+a₂c₁)(z.re²−z.im²)`, is absorbed by `b₁b₂(z.re²+z.im²)` leaving `2(a₁c₂+a₂c₁)z.re²`);
+- `gibbsDiagC_pair_quadratic`, `exp_pair_le_of_le`;
+- **`twoScalePositive_pair`** (X2) — the engine at level two, with the two crosswise
+  energy comparisons closed by `nlinarith` from the factorizations `(q−p)(r−1) ≥ 0` and
+  `(r−1)(qp−1) ≥ 0`;
+- **`gibbsDiagC_triple_ne_zero`** — three-element gas stable at every coupling, now
+  derived through the engine rather than by the Routh cubic of cycle 3.
+
+Note on the repository lint gate: it currently reports orphan-module errors inside
+`GaloisForLFunctions.HTGeometry` (`HalfLineTransportDistance`,
+`SiteFactorLiftedSpectrum`, …), which come from concurrent work in that area and are
+**not** from this programme — the set of reported orphans changed between two consecutive
+runs while `HTGeometry.lean` was being edited elsewhere.  Nothing in `RHTower` is
+implicated; the umbrella builds clean.
+
+- 2026-08-05 — cycle 9 closed.  OPEN CORE: the X1 criterion (weighted diagonal dominance)
+  at level `≥ 3`, i.e. `D_0 ≥ Σ_{d≥2 even}D_d` and `D_1 ≥ Σ_{d≥3 odd} d·D_d`.

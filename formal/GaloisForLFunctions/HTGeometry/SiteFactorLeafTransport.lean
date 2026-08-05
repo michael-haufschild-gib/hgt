@@ -275,6 +275,137 @@ theorem leafTransport_mem_siteFactorLocalSubmodule (v : V)
       rw [layerMatrixCoupling_smul_left, leafTransport_smul]
       exact Submodule.smul_mem _ c hXmem
 
+omit [Fintype V] in
+/-- **Inherited interaction terms stay interaction terms.**  The whole term span
+of the remaining sites embeds into that of the enlarged network, as long as
+every inherited interaction edge survives. -/
+theorem leafTransport_mem_siteFactorTermSpan (v : V)
+    {oldG : SimpleGraph {w : V // w ≠ v}} {G : SimpleGraph V}
+    (hcompat : ∀ a b : {w : V // w ≠ v}, oldG.Adj a b → G.Adj a.1 b.1)
+    {H : Matrix (∀ w : {w : V // w ≠ v}, A w.1)
+      (∀ w : {w : V // w ≠ v}, A w.1) ℂ}
+    (hH : H ∈ siteFactorTermSpan (fun w : {w : V // w ≠ v} => A w.1) oldG) :
+    leafTransport A v (layerMatrixCoupling H 1) ∈ siteFactorTermSpan A G := by
+  classical
+  induction hH using Submodule.span_induction with
+  | mem X hX =>
+      refine Submodule.subset_span ?_
+      rcases hX with ⟨u, hu⟩ | ⟨u, u', huu', hsupp⟩
+      · refine Or.inl ⟨u.1, ?_⟩
+        have := isSiteSupported_leafTransport_id (A := A) hu
+        rwa [deletedSiteImage_singleton] at this
+      · refine Or.inr ⟨u.1, u'.1, hcompat u u' huu', ?_⟩
+        have := isSiteSupported_leafTransport_id (A := A) hsupp
+        rwa [deletedSiteImage_pair] at this
+  | zero =>
+      have hzero :
+          leafTransport A v (layerMatrixCoupling (0 : Matrix _ _ ℂ) 1) = 0 := by
+        ext x y
+        rw [leafTransport_layerMatrixCoupling_apply]
+        simp
+      rw [hzero]
+      exact Submodule.zero_mem _
+  | add X Y _ _ hXmem hYmem =>
+      rw [layerMatrixCoupling_add_left, leafTransport_add]
+      exact Submodule.add_mem _ hXmem hYmem
+  | smul c X _ hXmem =>
+      rw [layerMatrixCoupling_smul_left, leafTransport_smul]
+      exact Submodule.smul_mem _ c hXmem
+
+/-- A purely new local operator is an interaction term of the enlarged
+network. -/
+theorem isGraphLocalTerm_leafTransport_newSite (v : V) (G : SimpleGraph V)
+    (M : Matrix (A v) (A v) ℂ) :
+    IsGraphLocalTerm A G (leafTransport A v (layerMatrixCoupling 1 M)) :=
+  Or.inl ⟨v, isSiteSupported_leafTransport_newSite (A := A) v M⟩
+
+omit [Fintype V] [∀ v, DecidableEq (A v)] in
+/-- An inherited one-site operator coupled to a new local operator is an
+interaction term along the new edge. -/
+theorem isGraphLocalTerm_leafTransport_edge (v : V) {G : SimpleGraph V}
+    {u : {w : V // w ≠ v}}
+    {P : Matrix (∀ w : {w : V // w ≠ v}, A w.1)
+      (∀ w : {w : V // w ≠ v}, A w.1) ℂ}
+    (hP : IsSiteSupported {u} P) (hadj : G.Adj u.1 v)
+    (M : Matrix (A v) (A v) ℂ) :
+    IsGraphLocalTerm A G (leafTransport A v (layerMatrixCoupling P M)) := by
+  refine Or.inr ⟨u.1, v, hadj, ?_⟩
+  have hsupp := isSiteSupported_leafTransport (A := A) hP M
+  rw [deletedSiteImage_singleton] at hsupp
+  have hset : insert v ({u.1} : Finset V) = {u.1, v} := by
+    ext w
+    simp [or_comm]
+  rwa [hset] at hsupp
+
+/-- Split a two-site product into its two named local factors. -/
+def twoSiteEquiv {a b : V} (hab : a ≠ b) (huniv : ∀ w : V, w = a ∨ w = b) :
+    (A a × A b) ≃ (∀ w : V, A w) := by
+  letI : Unique {w : V // w ≠ b} :=
+    { default := ⟨a, hab⟩
+      uniq := fun x => Subtype.ext ((huniv x.1).resolve_right x.2) }
+  exact (Equiv.prodCongr
+      (Equiv.piUnique (fun w : {w : V // w ≠ b} => A w.1)).symm
+      (Equiv.refl (A b))).trans (leafSiteEquiv A b)
+
+omit [Fintype V] in
+/-- The first named factor of a two-site product carries one-site operators. -/
+theorem isSiteSupported_twoSiteEquiv_left {a b : V} (hab : a ≠ b)
+    (huniv : ∀ w : V, w = a ∨ w = b) (M : Matrix (A a) (A a) ℂ) :
+    IsSiteSupported {a}
+      (Matrix.reindex (twoSiteEquiv A hab huniv) (twoSiteEquiv A hab huniv)
+        (layerMatrixCoupling M 1)) := by
+  letI : Unique {w : V // w ≠ b} :=
+    { default := ⟨a, hab⟩
+      uniq := fun x => Subtype.ext ((huniv x.1).resolve_right x.2) }
+  have hstep :
+      Matrix.reindex (twoSiteEquiv A hab huniv) (twoSiteEquiv A hab huniv)
+          (layerMatrixCoupling M 1) =
+        leafTransport A b (layerMatrixCoupling
+          (Matrix.reindex
+            (Equiv.piUnique (fun w : {w : V // w ≠ b} => A w.1)).symm
+            (Equiv.piUnique (fun w : {w : V // w ≠ b} => A w.1)).symm M) 1) :=
+    rfl
+  rw [hstep]
+  have hsupp := isSiteSupported_leafTransport_id (A := A)
+    (S := ({default} : Finset {w : V // w ≠ b}))
+    (H := Matrix.reindex
+      (Equiv.piUnique (fun w : {w : V // w ≠ b} => A w.1)).symm
+      (Equiv.piUnique (fun w : {w : V // w ≠ b} => A w.1)).symm M)
+    (IsSiteSupported.of_forall_mem
+      (A := fun w : {w : V // w ≠ b} => A w.1)
+      (fun w => by
+        simp only [Finset.mem_singleton]
+        exact Subsingleton.elim _ _) _)
+  rwa [deletedSiteImage_singleton] at hsupp
+
+/-- The second named factor of a two-site product carries one-site
+operators. -/
+theorem isSiteSupported_twoSiteEquiv_right {a b : V} (hab : a ≠ b)
+    (huniv : ∀ w : V, w = a ∨ w = b) (N : Matrix (A b) (A b) ℂ) :
+    IsSiteSupported {b}
+      (Matrix.reindex (twoSiteEquiv A hab huniv) (twoSiteEquiv A hab huniv)
+        (layerMatrixCoupling 1 N)) := by
+  letI : Unique {w : V // w ≠ b} :=
+    { default := ⟨a, hab⟩
+      uniq := fun x => Subtype.ext ((huniv x.1).resolve_right x.2) }
+  have hstep :
+      Matrix.reindex (twoSiteEquiv A hab huniv) (twoSiteEquiv A hab huniv)
+          (layerMatrixCoupling 1 N) =
+        leafTransport A b (layerMatrixCoupling
+          (Matrix.reindex
+            (Equiv.piUnique (fun w : {w : V // w ≠ b} => A w.1)).symm
+            (Equiv.piUnique (fun w : {w : V // w ≠ b} => A w.1)).symm
+            (1 : Matrix (A a) (A a) ℂ)) N) :=
+    rfl
+  have hone :
+      Matrix.reindex
+          (Equiv.piUnique (fun w : {w : V // w ≠ b} => A w.1)).symm
+          (Equiv.piUnique (fun w : {w : V // w ≠ b} => A w.1)).symm
+          (1 : Matrix (A a) (A a) ℂ) = 1 :=
+    Matrix.submatrix_one_equiv _
+  rw [hstep, hone]
+  exact isSiteSupported_leafTransport_newSite (A := A) b N
+
 end
 
 end GaloisForLFunctions.HTGeometry

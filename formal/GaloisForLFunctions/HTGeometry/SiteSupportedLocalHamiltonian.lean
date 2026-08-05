@@ -73,6 +73,16 @@ theorem neg {S : Finset V} {H : Matrix (∀ v, A v) (∀ v, A v) ℂ}
   · simp [Matrix.neg_apply, hH.1 x y hxy]
   · simp [Matrix.neg_apply, hH.2 x y x' y' h₁ h₂ h₃ h₄]
 
+/-- Every operator is supported on the full site set. -/
+theorem of_forall_mem {S : Finset V} (hS : ∀ w : V, w ∈ S)
+    (H : Matrix (∀ v, A v) (∀ v, A v) ℂ) :
+    IsSiteSupported S H := by
+  refine ⟨fun x y hxy => absurd (hS hxy.choose) hxy.choose_spec.1, ?_⟩
+  intro x y x' y' h₁ h₂ _ _
+  have hx : x = x' := funext fun w => h₁ w (hS w)
+  have hy : y = y' := funext fun w => h₂ w (hS w)
+  rw [hx, hy]
+
 /-- Enlarging the packet preserves support: entries that would newly be allowed
 to differ already force a zero entry. -/
 theorem mono {S T : Finset V} (hST : S ⊆ T)
@@ -264,6 +274,67 @@ theorem IsGraphLocalTerm.add_conjTranspose {G : SimpleGraph V}
   rcases hX with ⟨v, hv⟩ | ⟨u, v, huv, hsupp⟩
   · exact Or.inl ⟨v, hv.add hv.conjTranspose⟩
   · exact Or.inr ⟨u, v, huv, hsupp.add hsupp.conjTranspose⟩
+
+/-- Real span of the interaction terms of a graph, Hermitian or not.  A local
+Hamiltonian is exactly a Hermitian element of this span. -/
+def siteFactorTermSpan (G : SimpleGraph V) :
+    Submodule ℝ (Matrix (∀ v, A v) (∀ v, A v) ℂ) :=
+  Submodule.span ℝ {X | IsGraphLocalTerm A G X}
+
+omit [Fintype V] [∀ v, Fintype (A v)] [∀ v, DecidableEq (A v)] in
+theorem siteFactorLocalSubmodule_le_siteFactorTermSpan (G : SimpleGraph V) :
+    siteFactorLocalSubmodule A G ≤ siteFactorTermSpan A G := by
+  apply Submodule.span_le.2
+  rintro X ⟨-, hterm⟩
+  exact Submodule.subset_span hterm
+
+omit [Fintype V] [∀ v, Fintype (A v)] [∀ v, DecidableEq (A v)] in
+theorem selfAdjointPart_mem_siteFactorLocalSubmodule (G : SimpleGraph V)
+    {M : Matrix (∀ v, A v) (∀ v, A v) ℂ} (hM : M ∈ siteFactorTermSpan A G) :
+    (2⁻¹ : ℝ) • (M + Mᴴ) ∈ siteFactorLocalSubmodule A G := by
+  induction hM using Submodule.span_induction with
+  | mem X hX =>
+      refine Submodule.smul_mem _ _ (Submodule.subset_span ⟨?_, ?_⟩)
+      · show (X + Xᴴ).IsHermitian
+        unfold Matrix.IsHermitian
+        rw [Matrix.conjTranspose_add, Matrix.conjTranspose_conjTranspose,
+          add_comm]
+      · exact IsGraphLocalTerm.add_conjTranspose A hX
+  | zero =>
+      have hzero : (2⁻¹ : ℝ) • ((0 : Matrix (∀ v, A v) (∀ v, A v) ℂ) +
+          (0 : Matrix (∀ v, A v) (∀ v, A v) ℂ)ᴴ) = 0 := by
+        rw [Matrix.conjTranspose_zero, add_zero, smul_zero]
+      rw [hzero]
+      exact Submodule.zero_mem _
+  | add X Y _ _ hX hY =>
+      have hrw : (2⁻¹ : ℝ) • (X + Y + (X + Y)ᴴ) =
+          (2⁻¹ : ℝ) • (X + Xᴴ) + (2⁻¹ : ℝ) • (Y + Yᴴ) := by
+        rw [Matrix.conjTranspose_add, ← smul_add]
+        congr 1
+        abel
+      rw [hrw]
+      exact Submodule.add_mem _ hX hY
+  | smul c X _ hX =>
+      have hrw : (2⁻¹ : ℝ) • (c • X + (c • X)ᴴ) =
+          c • ((2⁻¹ : ℝ) • (X + Xᴴ)) := by
+        rw [Matrix.conjTranspose_smul, star_trivial, ← smul_add, smul_comm]
+      rw [hrw]
+      exact Submodule.smul_mem _ c hX
+
+omit [Fintype V] [∀ v, Fintype (A v)] [∀ v, DecidableEq (A v)] in
+/-- **A Hermitian span of interaction terms is a local Hamiltonian.**
+Individual terms need not be Hermitian; taking the self-adjoint part of each
+term preserves site support and rebuilds the same Hermitian operator. -/
+theorem mem_siteFactorLocalSubmodule_of_mem_termSpan (G : SimpleGraph V)
+    {H : Matrix (∀ v, A v) (∀ v, A v) ℂ} (hH : H ∈ siteFactorTermSpan A G)
+    (hherm : H.IsHermitian) :
+    H ∈ siteFactorLocalSubmodule A G := by
+  have hproj := selfAdjointPart_mem_siteFactorLocalSubmodule A G hH
+  have hrw : (2⁻¹ : ℝ) • (H + Hᴴ) = H := by
+    rw [hherm]
+    rw [show H + H = (2 : ℝ) • H by rw [two_smul], smul_smul]
+    norm_num
+  rwa [hrw] at hproj
 
 omit [Fintype V] [∀ v, Fintype (A v)] [∀ v, DecidableEq (A v)] in
 /-- **Hermitian sums of local terms are local Hamiltonians.**  Individual

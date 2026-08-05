@@ -603,21 +603,126 @@ now unconditional, in
 
 Corollary 2 additionally needs one fixed Hamiltonian to expose *every* vertex
 subset as a genuine tensor factor.  The tensor-tree architecture stores the
-carrier as a nested product, so a new site-product locality layer is being
-built:
+carrier as a nested product, so the site-product locality layer was built:
 
 - `GaloisForLFunctions/HTGeometry/SiteSupportedLocalHamiltonian.lean` —
   `IsSiteSupported S H` (`H` acts as the identity off the site packet `S`), its
   subspace, packet-monotonicity and adjoint closure,
   `exists_liftLocalMatrix_of_isSiteSupported`, the graph-local Hamiltonian space
-  `siteFactorLocalSubmodule`, and
-  `mem_siteFactorLocalSubmodule_of_hermitian_sum`;
+  `siteFactorLocalSubmodule`, the interaction-term span `siteFactorTermSpan`,
+  and `mem_siteFactorLocalSubmodule_of_mem_termSpan`;
 - `GaloisForLFunctions/HTGeometry/SiteFactorLeafTransport.lean` —
   `leafSiteEquiv`, `leafTransport`, the three leaf support laws
   (`isSiteSupported_leafTransport_id`, `isSiteSupported_leafTransport`,
-  `isSiteSupported_leafTransport_newSite`) and
-  `leafTransport_mem_siteFactorLocalSubmodule`.
+  `isSiteSupported_leafTransport_newSite`),
+  `leafTransport_mem_siteFactorTermSpan`, and the two-site splitting
+  `twoSiteEquiv`;
+- `GaloisForLFunctions/HTGeometry/PhysicalRealizationCarrierTransport.lean` —
+  `reindex_hamiltonian_maximallyProjective`: relabelling a realization's
+  physical carrier leaves the packaged spectral system untouched, so maximal
+  projective rank survives the change of carrier;
+- `GaloisForLFunctions/HTGeometry/SiteFactorGraphWitness.lean` —
+  `SiteFactorChart`, the single-site and two-site seed charts, the charted leaf
+  step, the charted rooted and binary spanning-tree inductions, and the
+  capstone
 
-Remaining: a site-product-charted realization carried through the seeds and the
-leaf step, the induced-restriction rank formula, and the assembly of `(5)`–`(8)`
-and `(20)` from the atlas theorems above.
+  ```text
+  exists_maximallyProjective_mem_siteFactorLocalSubmodule
+  ```
+
+  Every connected finite interaction graph whose local dimensions are all at
+  least two admits a Hermitian onsite-plus-edge Hamiltonian *on the site
+  product* whose spectrum has maximal projective rational rank.  The
+  single-site binary case is proved directly, since a two-state system has no
+  good observer family.
+
+  Two additive strengthenings of the existing leaf and two-qubit seed theorems
+  (`IsPhysicalLeafChart`, `IsTwoQubitSiteChart`) expose the carrier
+  factorization those constructions already produce.
+
+The spectral half of the induced-restriction rank formula is also unconditional:
+
+- `GaloisForLFunctions/HTGeometry/SiteFactorLiftedSpectrum.lean` —
+  `mem_range_hermitianEigenvalues_iff` (a real number is an eigenvalue exactly
+  when it is a root of the characteristic relation),
+  `anchoredTemporalRank_eq_of_range_eq` (the anchored gap module sees only the
+  *set* of energies), and `range_eigenvalues_liftLocalMatrix`: a site-supported
+  operator and its local block have the same spectrum, hence the same temporal
+  rank.  The proof is determinantal, through
+  `reindex_liftLocalMatrix_eq_kronecker_one` and `Matrix.det_kronecker`;
+- `GaloisForLFunctions/HTGeometry/KroneckerSumSpectrum.lean` —
+  `range_eigenvalues_kroneckerSum`: the eigenvalues of `X ⊗ I + I ⊗ Y` are
+  exactly the sums of one eigenvalue of `X` and one of `Y`, proved by
+  conjugating with the Kronecker product of the two eigenvector unitaries;
+- `GaloisForLFunctions/HTGeometry/DisjointPacketSpectrum.lean` —
+  `range_eigenvalues_reindex`, `outsideSplitEquiv`,
+  `range_eigenvalues_add_liftLocalMatrix_disjoint` (two disjoint packets),
+  `liftLocalMatrix_injective`, and the full component decomposition `(18)`:
+  `range_eigenvalues_sum_liftLocalMatrix` — the eigenvalues of a sum of
+  operators supported on *pairwise disjoint* packets are exactly the sums of one
+  eigenvalue from each packet — together with the rank capstone
+  `anchoredTemporalRank_sum_liftLocalMatrix`, which combines it with the
+  existing `anchoredTemporalRank_finiteComponentSumEnergy_eq_sum` to give
+  `τ = Σ_C (D_C − 1)` under mutual projective independence of the packet
+  spectra.
+
+The genericity side also gained `simultaneousMaximalSet_dense_residual_fullMeasure`:
+several Hermitian families that already share one real parameter space are
+simultaneously maximally projective on a dense, residual, full-measure set.
+This is the form the network atlas takes once every subsystem is written in the
+ambient coefficients, and it removes the need for the subsystem coordinates to
+be a literal subfamily.
+
+The ambient coordinate system is built in
+`GaloisForLFunctions/HTGeometry/SiteFactorInteractionCoordinates.lean`:
+
+- `packetHermitianGenerator` is the canonical Hermitian basis of the operator
+  space of one site packet, and `mem_span_packetHermitianGenerator` shows every
+  Hermitian packet block is a real combination of it;
+- `InteractionCoordinate` indexes the admissible interaction terms of the graph
+  — one basis index per single site and per interaction edge — and
+  `span_ambientInteractionGenerator` proves these coordinates span exactly
+  `siteFactorLocalSubmodule A G`;
+- `restrictedInteractionGenerator` reads the *same* coordinates inside a vertex
+  subset: the block of a generator whose packet lies in `S`, and zero
+  otherwise.  `liftLocalMatrix_realAffineMatrix_restricted` shows the resulting
+  subsystem Hamiltonian lifts back to exactly the sum of the ambient
+  interaction terms supported inside `S`;
+- `subsystemMaximalSet_dense_residual_fullMeasure` and
+  `simultaneousSubsystemMaximalSet_dense_residual_fullMeasure` then give
+  section 9: one witness per subsystem makes the parameters at which *all*
+  supplied subsystems are simultaneously maximally projective dense, residual
+  and of full Lebesgue measure.
+
+The per-subsystem witness is supplied by
+`GaloisForLFunctions/HTGeometry/SiteFactorSubsystemTransport.lean`.  The
+configurations of a packet `S` are literally the site product of the factors
+indexed by `S`, so a vertex subset carries its own network structure, and the
+two descriptions of an operator supported on a sub-packet `T ⊆ S` agree:
+
+- `exists_liftLocalMatrixToSuperset_of_isSiteSupported` — an operator of the
+  `S`-site network supported on a packet is a sub-packet lift;
+- `siteFactorLocalSubmodule_induced_le_span_restrictedGeneratorFin` — the whole
+  local Hamiltonian space of the induced network sits inside the span of the
+  ambient interaction coordinates read within `S`;
+- `exists_witness_subsystemMaximalSet_of_connected` — hence every connected
+  induced subsystem with local dimensions at least two is maximally projective
+  at some ambient parameter.
+
+Section 9 is therefore unconditional for connected induced subsystems:
+
+```text
+simultaneousConnectedSubsystemMaximalSet_dense_residual_fullMeasure
+```
+
+For a finite interaction network with all local dimensions at least two, the
+ambient interaction parameters at which *every* supplied connected induced
+subsystem is simultaneously maximally projective form a dense, residual,
+full-Lebesgue-measure set; the supplied family may be countably infinite, which
+is also the form the infinite-network completion `(20)` needs.
+
+Remaining for item 6: the assembly of `(5)`–`(8)`, which additionally needs the
+disconnected transversality genericity of section 8 for vertex subsets whose
+induced graph is disconnected (its witness already exists as
+`exists_scales_componentProjectivelyIndependent`, and the rank formula is
+`anchoredTemporalRank_sum_liftLocalMatrix`).

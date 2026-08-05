@@ -771,6 +771,45 @@ def IsTensorTreeLeafExtension
     Y.architectureGraph =
       SimpleGraph.comap e (leafGraphExtension Z.architectureGraph root)
 
+/-- Exact physical provenance of one leaf extension.  The enlarged physical
+carrier is the old carrier times the new local factor; under that
+identification every enlarged one-site operator is an old one-site operator on
+the old factor or an arbitrary operator on the new factor, and every enlarged
+local Hamiltonian is an old local Hamiltonian plus one new onsite term and one
+parent--leaf interaction. -/
+def IsPhysicalLeafChart
+    (Z Y : PhysicallyRealizedTensorTreeSystem.{u})
+    (root : Z.spectral.Observer) (ρ : Type u)
+    [Fintype ρ] [DecidableEq ρ] : Prop := by
+  letI : Fintype Z.spectral.State := Z.spectral.stateFintype
+  letI : DecidableEq Z.spectral.State := Z.spectral.stateDecidableEq
+  letI : DecidableEq Z.PhysicalState := Z.physicalDecidableEq
+  letI : Fintype Y.spectral.State := Y.spectral.stateFintype
+  letI : DecidableEq Y.spectral.State := Y.spectral.stateDecidableEq
+  exact
+    ∃ eObs : Y.spectral.Observer ≃ LeafExtendedObserver Z.spectral.Observer,
+    ∃ eP : Y.PhysicalState ≃ (Z.PhysicalState × ρ),
+      (∀ (s : Y.spectral.Observer)
+          (L : Matrix Y.PhysicalState Y.PhysicalState ℂ),
+          Y.locality.tree.IsOneSite s L →
+          (∀ t, eObs s = Sum.inl t →
+              ∃ M : Matrix Z.PhysicalState Z.PhysicalState ℂ,
+                Z.locality.tree.IsOneSite t M ∧
+                  Matrix.reindex eP eP L = layerMatrixCoupling M 1) ∧
+            ∀ u, eObs s = Sum.inr u →
+              ∃ N : Matrix ρ ρ ℂ,
+                Matrix.reindex eP eP L = layerMatrixCoupling 1 N) ∧
+        ∀ H : Matrix Y.PhysicalState Y.PhysicalState ℂ,
+          Y.locality.tree.IsLocalHamiltonian H →
+          ∃ (oldHamiltonian parentOperator :
+              Matrix Z.PhysicalState Z.PhysicalState ℂ)
+            (shift : ρ → ℂ) (edge : Matrix ρ ρ ℂ),
+            Z.locality.tree.IsLocalHamiltonian oldHamiltonian ∧
+              Z.locality.tree.IsOneSite root parentOperator ∧
+                Matrix.reindex eP eP H =
+                  physicalLeafHamiltonian oldHamiltonian parentOperator
+                    shift edge
+
 /-- One exact physical leaf extension preserves the full tensor-tree
 locality certificate while retaining maximal projective spectrum and all
 observer-good transition graphs. -/
@@ -785,7 +824,8 @@ theorem exists_physicallyRealizedTensorTree_leafExtension
       Y.spectral.stateCard =
         Z.spectral.stateCard * Fintype.card ρ ∧
       Y.spectral.observerCard =
-        Z.spectral.observerCard + 1 := by
+        Z.spectral.observerCard + 1 ∧
+      IsPhysicalLeafChart Z Y root ρ := by
   let X := Z.spectral
   let R := Z.realization
   letI : Fintype X.State := X.stateFintype
@@ -899,12 +939,26 @@ theorem exists_physicallyRealizedTensorTree_leafExtension
         { tree := RootedTensorTree.leaf Z.locality.tree ρ root
           hamiltonian_local := hHamiltonianLocal
           probe_local := hProbeLocal } }
-  refine ⟨result, ?_, ?_, ?_⟩
+  refine ⟨result, ?_, ?_, ?_, ?_⟩
   · refine ⟨Equiv.refl _, ?_⟩
     ext a b
     cases a <;> cases b <;> rfl
   · simp [result, Y, X, GoodObserverSpectralSystem.stateCard]
   · simp [result, Y, X, GoodObserverSpectralSystem.observerCard]
+  · refine ⟨Equiv.refl _, Equiv.refl _, ?_, ?_⟩
+    · intro s L hL
+      constructor
+      · rintro t rfl
+        obtain ⟨M, hM, hLeq⟩ := hL
+        exact ⟨M, hM, hLeq⟩
+      · rintro u rfl
+        obtain ⟨N, hLeq⟩ := hL
+        exact ⟨N, hLeq⟩
+    · intro H hH
+      obtain ⟨oldHamiltonian, parentOperator, shift, edge,
+        hold, hparent, hHeq⟩ := hH
+      exact ⟨oldHamiltonian, parentOperator, shift, edge,
+        hold, hparent, hHeq⟩
 
 /-- One local factor of dimension at least three supplies the exact atom
 base for tensor-tree growth. -/
@@ -942,13 +996,31 @@ theorem exists_physicallyRealizedTensorTree_completeOneSiteSeed
   · simpa [result, X] using hobserver
   · rfl
 
+/-- Exact two-site provenance of the two-qubit seed: its carrier is the product
+of the two local factors and its one-site operators are the operators of one
+factor tensored with the identity on the other. -/
+def IsTwoQubitSiteChart (Z : PhysicallyRealizedTensorTreeSystem.{0}) : Prop := by
+  letI : Fintype Z.spectral.State := Z.spectral.stateFintype
+  letI : DecidableEq Z.spectral.State := Z.spectral.stateDecidableEq
+  exact
+    ∃ eObs : Z.spectral.Observer ≃ Bool,
+    ∃ eP : Z.PhysicalState ≃ (Bool × Bool),
+      ∀ (s : Z.spectral.Observer)
+        (L : Matrix Z.PhysicalState Z.PhysicalState ℂ),
+        Z.locality.tree.IsOneSite s L →
+        (eObs s = false → ∃ M : Matrix Bool Bool ℂ,
+            Matrix.reindex eP eP L = layerMatrixCoupling M 1) ∧
+          (eObs s = true → ∃ N : Matrix Bool Bool ℂ,
+            Matrix.reindex eP eP L = layerMatrixCoupling 1 N)
+
 /-- Explicit two-qubit graph-state seed with exact edge architecture and
 endpoint-local physical probes. -/
 theorem exists_physicallyRealizedTensorTree_twoQubitGraphSeed :
     ∃ Z : PhysicallyRealizedTensorTreeSystem.{0},
       Z.spectral.stateCard = 4 ∧
       Z.spectral.observerCard = 2 ∧
-      Z.architectureGraph = ⊤ := by
+      Z.architectureGraph = ⊤ ∧
+      IsTwoQubitSiteChart Z := by
   obtain ⟨energy, henergyMaximal, _⟩ :=
     exists_maximallyProjectiveEnergy_close_fintype
       (fun _ : Bool × Bool => 0) 1 (by norm_num)
@@ -1026,10 +1098,19 @@ theorem exists_physicallyRealizedTensorTree_twoQubitGraphSeed :
             change True
             trivial
           probe_local := hprobe } }
-  refine ⟨result, ?_, ?_, ?_⟩
+  refine ⟨result, ?_, ?_, ?_, ?_⟩
   · simp [result, X, GoodObserverSpectralSystem.stateCard]
   · simp [result, X, GoodObserverSpectralSystem.observerCard]
   · rfl
+  · refine ⟨Equiv.refl _, Equiv.refl _, ?_⟩
+    intro s L hL
+    cases s with
+    | false =>
+        refine ⟨fun _ => ?_, fun h => absurd h (by simp)⟩
+        exact hL
+    | true =>
+        refine ⟨fun h => absurd h (by simp), fun _ => ?_⟩
+        exact hL
 
 /-- Maximal projective independence gives the full anchored gap rank on
 an arbitrary finite label type, without reindexing it by `Fin`. -/
@@ -1159,7 +1240,7 @@ theorem exists_physicallyRealizedTensorTree_leafSchedule
         exact hotherFin (ULift.up_injective h)
       have hLocalCard : Fintype.card Local = q := by
         simp [Local]
-      obtain ⟨W, hstep, hWstate, hWobserver⟩ :=
+      obtain ⟨W, hstep, hWstate, hWobserver, _⟩ :=
         exists_physicallyRealizedTensorTree_leafExtension
           Z root Local anchor other hother
             (by simpa [hLocalCard] using hq)
@@ -1239,7 +1320,7 @@ theorem exists_twoQubitSeed_tensorTreeSchedule_maximal :
           ∀ reference : Y.spectral.State,
             Y.anchoredRank reference =
               2 ^ (tailLength + 2) - 1 := by
-  obtain ⟨Base, hBaseState, hBaseObserver, hBaseGraph⟩ :=
+  obtain ⟨Base, hBaseState, hBaseObserver, hBaseGraph, -⟩ :=
     exists_physicallyRealizedTensorTree_twoQubitGraphSeed
   refine ⟨Base, hBaseState, hBaseObserver, hBaseGraph, ?_⟩
   intro tailLength schedule

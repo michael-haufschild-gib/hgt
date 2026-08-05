@@ -1,7 +1,7 @@
 # Shilov envelope-correlation cohomology law
 
 - **ID:** shilov-envelope-correlation-law
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM CANDIDATE
 - **Source:** ../2-fully-proven/spectral-boundary-migration-shilov-exactness.md · universal-shadow continuation requested 2026-08-04
 - **Statement:** `[PROVED HERE — NOVELTY AUDIT ACTIVE]` Shilov ideals of every quotient diagram admit a canonical
@@ -578,7 +578,11 @@ boundary conjunction `(EC)`–`(LES)` and consequence unavailable from any paren
 ## Gates
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem `<name>`, targeted build green, axioms audited
+- [x] 2 → 3 formalized: `localMigrationSequence_shortExact`,
+      `envelopeCorrelation_eq_correlationPullback`, `correlationVerticalTarget_exact`,
+      `pathJoin_eq`, `simplicialJoinCochainShortComplex_shortExact`,
+      `simplicialJoin_homology_exact₁`/`₂`/`₃`, `transmutationCohomologyEquiv`;
+      `lake build GaloisForLFunctions.HTGeometry` green; axioms audited
 - [ ] 3 → 4 publication-ready: standalone paper, novelty audit, hostile review
 
 ## Approach
@@ -621,6 +625,19 @@ boundary conjunction `(EC)`–`(LES)` and consequence unavailable from any paren
   law `(PC)`, and the path ambiguity join law `(J)` formalized in
   `GaloisForLFunctions.HTGeometry.ShilovCorrelationPathJoin`.  Both modules compile
   unconditionally; `(SC)`/`(SET)`/`(LES)` and the algebraic core of `(UT)` remain.
+- 2026-08-05 — `(SC)` formalized for the nerve of an arbitrary small diagram in
+  `GaloisForLFunctions.HTGeometry.ShilovSimplicialJoinSystem`: the transported boundary join is a
+  coefficient system, it is the least one with the prescribed vertex values, and its degree-zero
+  edge condition is exactly membership in the envelope correlation of that edge.  `(SET)` and
+  `(LES)` formalized in `GaloisForLFunctions.HTGeometry.ShilovSimplicialJoinCohomology`: the three
+  coefficient systems are cosimplicial modules, their alternating coface complexes form a short
+  exact sequence of cochain complexes, and the connecting map with its three exactness statements
+  is the long exact sequence.  The algebraic core of `(UT)` formalized in
+  `GaloisForLFunctions.HTGeometry.ShilovTransmutationTower`: on one explicit two-edge tower an
+  arbitrary prescribed module is simultaneously the upper deficit, the lower escape, the strict
+  composition excess, and degree-one migration cohomology, while the upper link and the composite
+  are both escape-free.  All headline declarations audited with `#print axioms`; they use only
+  `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Lean formalization map
 
@@ -639,5 +656,20 @@ boundary conjunction `(EC)`–`(LES)` and consequence unavailable from any paren
 | `(OL)` | `envelopeCorrelation_comp_le_relationalComp`, `envelopeCorrelation_le_pathCorrelation` | `ShilovCorrelationPathJoin` |
 | `(PC)` | `pathCorrelation_eq` | `ShilovCorrelationPathJoin` |
 | `(J)` | `pathJoin_eq`, `pathCorrelation_zero_mem_iff` | `ShilovCorrelationPathJoin` |
+| strict oplax criterion | `ambiguousCorrelation_eq_envelopeCorrelation_iff`, `relationalComp_eq_envelopeCorrelation_iff` | `ShilovCorrelationPathJoin` |
 | `(MC)`, `(MR)` | `localMigrationSequence_shortExact` | `ShilovEnvelopeCorrelationLaw` |
 | `(ED)` | `escapeEdgeQuotientEquiv`, `deficitEdgeQuotientEquiv` at a tower edge | `ShilovEnvelopeCorrelationPullback` |
+| `(SC)` coefficient system | `simplexJoin`, `simplexJoin_map_le`, `isJoinCoefficientSystem_simplexJoin` | `ShilovSimplicialJoinSystem` |
+| `(SC)` minimality | `simplexJoin_le_of_isCoefficientSystem` | `ShilovSimplicialJoinSystem` |
+| vertex and edge values | `simplexJoin_zero`, `simplexJoin_one` | `ShilovSimplicialJoinSystem` |
+| `H⁰(𝒬)` = compatible correlations | `edge_quotient_eq_iff_mem_envelopeCorrelation` | `ShilovSimplicialJoinSystem` |
+| `(SET)` | `simplicialJoinCochainShortComplex_shortExact` | `ShilovSimplicialJoinCohomology` |
+| `(LES)` | `simplicialJoinConnecting`, `simplicialJoin_homology_exact₁`, `simplicialJoin_homology_exact₂`, `simplicialJoin_homology_exact₃` | `ShilovSimplicialJoinCohomology` |
+| `(UT)` deficit becomes escape | `transmutationDeficitEquiv`, `transmutationEscapeEquiv` | `ShilovTransmutationTower` |
+| `(UT)` zero escape of link and composite | `transmutation_escapeFree_upper`, `transmutation_escapeFree_composite` | `ShilovTransmutationTower` |
+| `(UT)` strict composition excess | `transmutation_relationalComp_ne`, `transmutationCompositionExcessEquiv` | `ShilovTransmutationTower` |
+| `(UT)` degree-one obstruction | `transmutationCohomologyEquiv` | `ShilovTransmutationTower` |
+
+The Lean layer is the exact algebraic core: coefficient modules and boundary submodules stand for
+universal covers and Shilov ideals, and linear maps stand for universal `*`-epimorphisms.  No
+operator-system, positivity, topology, closed-range, or Shilov-minimality assertion is assumed.

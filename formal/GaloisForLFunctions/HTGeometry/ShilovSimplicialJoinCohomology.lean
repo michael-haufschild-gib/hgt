@@ -32,112 +32,106 @@ variable {𝕜 : Type u} [Field 𝕜]
 variable {C : Type v} [Category.{v} C]
 variable (F : C ⥤ ModuleCat.{v} 𝕜)
 
-/-- Ambient cochains: at each simplicial degree, the product over simplices of the coefficient at
-the terminal vertex. -/
-noncomputable def ambientCosimplicial : CosimplicialObject (ModuleCat.{v} 𝕜) where
-  obj n := ModuleCat.of 𝕜 (∀ σ : ComposableArrows C n.len, F.obj (simplexTip σ))
-  map {n _} θ := ModuleCat.ofHom
-    { toFun := fun c τ => simplexTransport F θ τ (c ((nerve C).map θ.op τ))
-      map_add' := by
-        intro x y
-        funext τ
-        exact map_add (simplexTransport F θ τ) _ _
-      map_smul' := by
-        intro a x
-        funext τ
-        exact map_smul (simplexTransport F θ τ) a _ }
-  map_id n := by
-    ext c τ
-    show simplexTransport F (𝟙 n) τ (c τ) = c τ
-    rw [simplexTransport_id]
-    rfl
-  map_comp {n m k} θ ψ := by
-    ext c υ
-    show simplexTransport F (θ ≫ ψ) υ (c ((nerve C).map (θ ≫ ψ).op υ)) =
-      simplexTransport F ψ υ
-        (simplexTransport F θ ((nerve C).map ψ.op υ)
-          (c ((nerve C).map θ.op ((nerve C).map ψ.op υ))))
-    rw [← simplexTransport_comp]
-    rfl
+/-- Cochains of simplicial degree `p`: the product over `p`-simplices of the coefficient at the
+terminal vertex. -/
+abbrev SimplexCochain (p : ℕ) : Type v :=
+  ∀ σ : ComposableArrows C p, F.obj (simplexTip σ)
 
-theorem ambientCosimplicial_map_apply {n m : SimplexCategory} (θ : n ⟶ m)
-    (c : ∀ σ : ComposableArrows C n.len, F.obj (simplexTip σ))
-    (τ : ComposableArrows C m.len) :
-    ((ambientCosimplicial F).map θ).hom c τ =
-      simplexTransport F θ τ (c ((nerve C).map θ.op τ)) :=
+/-- Action of a simplex map on cochains. -/
+noncomputable def cochainTransport {n m : SimplexCategory} (θ : n ⟶ m) :
+    SimplexCochain F n.len →ₗ[𝕜] SimplexCochain F m.len where
+  toFun c τ := simplexTransport F θ τ (c ((nerve C).map θ.op τ))
+  map_add' x y := by
+    funext τ
+    exact map_add (simplexTransport F θ τ) _ _
+  map_smul' a x := by
+    funext τ
+    exact map_smul (simplexTransport F θ τ) a _
+
+@[simp] theorem cochainTransport_apply {n m : SimplexCategory} (θ : n ⟶ m)
+    (c : SimplexCochain F n.len) (τ : ComposableArrows C m.len) :
+    cochainTransport F θ c τ = simplexTransport F θ τ (c ((nerve C).map θ.op τ)) :=
   rfl
+
+theorem cochainTransport_id (n : SimplexCategory) :
+    cochainTransport F (𝟙 n) = LinearMap.id := by
+  refine LinearMap.ext fun c => ?_
+  funext τ
+  rw [cochainTransport_apply, simplexTransport_id]
+  rfl
+
+theorem cochainTransport_comp {n m k : SimplexCategory} (θ : n ⟶ m) (ψ : m ⟶ k) :
+    (cochainTransport F ψ).comp (cochainTransport F θ) = cochainTransport F (θ ≫ ψ) := by
+  refine LinearMap.ext fun c => ?_
+  funext υ
+  show simplexTransport F ψ υ
+      (simplexTransport F θ ((nerve C).map ψ.op υ)
+        (c ((nerve C).map θ.op ((nerve C).map ψ.op υ)))) =
+    simplexTransport F (θ ≫ ψ) υ (c ((nerve C).map (θ ≫ ψ).op υ))
+  rw [← simplexTransport_comp]
+  rfl
+
+/-- Ambient coefficients as a cosimplicial module over the nerve of the diagram. -/
+noncomputable def ambientCosimplicial : CosimplicialObject (ModuleCat.{v} 𝕜) where
+  obj n := ModuleCat.of 𝕜 (SimplexCochain F n.len)
+  map θ := ModuleCat.ofHom (cochainTransport F θ)
+  map_id n := by rw [cochainTransport_id]; rfl
+  map_comp θ ψ := by rw [← cochainTransport_comp, ModuleCat.ofHom_comp]
 
 variable (J : ∀ X : C, Submodule 𝕜 (F.obj X))
 
 /-- Boundary-join cochains at a given simplicial degree. -/
-noncomputable def joinCochain (p : ℕ) :
-    Submodule 𝕜 (∀ σ : ComposableArrows C p, F.obj (simplexTip σ)) :=
+noncomputable def joinCochain (p : ℕ) : Submodule 𝕜 (SimplexCochain F p) :=
   Submodule.pi Set.univ (fun σ => simplexJoin F J σ)
 
-theorem mem_joinCochain {p : ℕ}
-    (c : ∀ σ : ComposableArrows C p, F.obj (simplexTip σ)) :
+theorem mem_joinCochain {p : ℕ} (c : SimplexCochain F p) :
     c ∈ joinCochain F J p ↔ ∀ σ, c σ ∈ simplexJoin F J σ := by
   rw [joinCochain, Submodule.mem_pi]
   exact ⟨fun h σ => h σ (Set.mem_univ σ), fun h σ _ => h σ⟩
 
-theorem ambientCosimplicial_map_id_apply {n : SimplexCategory}
-    (c : ∀ σ : ComposableArrows C n.len, F.obj (simplexTip σ)) :
-    ((ambientCosimplicial F).map (𝟙 n)).hom c = c := by
-  rw [(ambientCosimplicial F).map_id]
-  rfl
-
-theorem ambientCosimplicial_map_comp_apply {n m k : SimplexCategory} (θ : n ⟶ m) (ψ : m ⟶ k)
-    (c : ∀ σ : ComposableArrows C n.len, F.obj (simplexTip σ)) :
-    ((ambientCosimplicial F).map (θ ≫ ψ)).hom c =
-      ((ambientCosimplicial F).map ψ).hom (((ambientCosimplicial F).map θ).hom c) := by
-  rw [(ambientCosimplicial F).map_comp]
-  rfl
-
 theorem joinCochain_le_comap {n m : SimplexCategory} (θ : n ⟶ m) :
     joinCochain F J n.len ≤
-      Submodule.comap ((ambientCosimplicial F).map θ).hom (joinCochain F J m.len) := by
+      Submodule.comap (cochainTransport F θ) (joinCochain F J m.len) := by
   intro c hc
-  rw [mem_joinCochain] at hc
-  refine Submodule.mem_comap.mpr ?_
-  rw [mem_joinCochain]
-  intro τ
-  show simplexTransport F θ τ (c ((nerve C).map θ.op τ)) ∈ simplexJoin F J τ
-  exact simplexJoin_map_le F J θ τ (Submodule.mem_map_of_mem (hc _))
+  have hc' : ∀ σ, c σ ∈ simplexJoin F J σ := (mem_joinCochain F J c).mp hc
+  refine Submodule.mem_comap.mpr ((mem_joinCochain F J _).mpr fun τ => ?_)
+  rw [cochainTransport_apply]
+  exact simplexJoin_map_le F J θ τ (Submodule.mem_map_of_mem (hc' _))
 
 /-- The boundary-join subsystem as a cosimplicial module. -/
 noncomputable def joinCosimplicial : CosimplicialObject (ModuleCat.{v} 𝕜) where
   obj n := ModuleCat.of 𝕜 (joinCochain F J n.len)
   map θ := ModuleCat.ofHom
-    (LinearMap.restrict ((ambientCosimplicial F).map θ).hom
-      (fun _ hx => joinCochain_le_comap F J θ hx))
+    (LinearMap.restrict (cochainTransport F θ) (fun _ hx => joinCochain_le_comap F J θ hx))
   map_id n := by
     ext c x
-    show ((ambientCosimplicial F).map (𝟙 n)).hom c.1 x = c.1 x
-    rw [ambientCosimplicial_map_id_apply]
-  map_comp {n m k} θ ψ := by
+    show cochainTransport F (𝟙 n) c.1 x = c.1 x
+    rw [cochainTransport_id]
+    rfl
+  map_comp θ ψ := by
     ext c x
-    show ((ambientCosimplicial F).map (θ ≫ ψ)).hom c.1 x =
-      ((ambientCosimplicial F).map ψ).hom (((ambientCosimplicial F).map θ).hom c.1) x
-    rw [ambientCosimplicial_map_comp_apply]
+    show cochainTransport F (θ ≫ ψ) c.1 x =
+      cochainTransport F ψ (cochainTransport F θ c.1) x
+    rw [← cochainTransport_comp]
+    rfl
 
 /-- The quotient coefficient system as a cosimplicial module. -/
 noncomputable def quotientCosimplicial : CosimplicialObject (ModuleCat.{v} 𝕜) where
-  obj n := ModuleCat.of 𝕜
-    ((∀ σ : ComposableArrows C n.len, F.obj (simplexTip σ)) ⧸ joinCochain F J n.len)
+  obj n := ModuleCat.of 𝕜 (SimplexCochain F n.len ⧸ joinCochain F J n.len)
   map θ := ModuleCat.ofHom
-    (Submodule.mapQ _ _ ((ambientCosimplicial F).map θ).hom (joinCochain_le_comap F J θ))
+    (Submodule.mapQ _ _ (cochainTransport F θ) (joinCochain_le_comap F J θ))
   map_id n := by
     ext x
-    show (Submodule.Quotient.mk (((ambientCosimplicial F).map (𝟙 n)).hom x) :
-      _ ⧸ joinCochain F J n.len) = Submodule.Quotient.mk x
-    rw [ambientCosimplicial_map_id_apply]
-  map_comp {n m k} θ ψ := by
+    show (Submodule.Quotient.mk (cochainTransport F (𝟙 n) x) :
+      SimplexCochain F n.len ⧸ joinCochain F J n.len) = Submodule.Quotient.mk x
+    rw [cochainTransport_id]
+    rfl
+  map_comp {_ _ k} θ ψ := by
     ext x
-    show (Submodule.Quotient.mk (((ambientCosimplicial F).map (θ ≫ ψ)).hom x) :
-      _ ⧸ joinCochain F J k.len) =
-      Submodule.Quotient.mk
-        (((ambientCosimplicial F).map ψ).hom (((ambientCosimplicial F).map θ).hom x))
-    rw [ambientCosimplicial_map_comp_apply]
+    show (Submodule.Quotient.mk (cochainTransport F (θ ≫ ψ) x) :
+      SimplexCochain F k.len ⧸ joinCochain F J k.len) =
+      Submodule.Quotient.mk (cochainTransport F ψ (cochainTransport F θ x))
+    rw [← cochainTransport_comp]
     rfl
 
 /-- Inclusion of the boundary-join subsystem into the ambient system. -/
@@ -184,6 +178,14 @@ theorem simplicialJoin_homology_exact₁ (n : ℕ) :
       (ShortComplex.ShortExact.δ_comp
         (simplicialJoinCochainShortComplex_shortExact F J) n (n + 1) rfl)).Exact :=
   ShortComplex.ShortExact.homology_exact₁ _ _ _ _
+
+theorem simplicialJoin_homology_exact₂ (n : ℕ) :
+    (ShortComplex.mk (HomologicalComplex.homologyMap (simplicialJoinCochainShortComplex F J).f n)
+      (HomologicalComplex.homologyMap (simplicialJoinCochainShortComplex F J).g n)
+      (by rw [← HomologicalComplex.homologyMap_comp,
+        (simplicialJoinCochainShortComplex F J).zero,
+        HomologicalComplex.homologyMap_zero])).Exact :=
+  ShortComplex.ShortExact.homology_exact₂ (simplicialJoinCochainShortComplex_shortExact F J) n
 
 theorem simplicialJoin_homology_exact₃ (n : ℕ) :
     (ShortComplex.mk _ _

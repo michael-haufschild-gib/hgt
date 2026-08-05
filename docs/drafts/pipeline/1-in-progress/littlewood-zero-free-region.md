@@ -374,3 +374,164 @@ PNTPlus `ZetaSum/Zeta0EqZeta` layer (`riemannZeta0_apply` at `s = 1+it`).  **Z5*
 rectangle version (`w n = n^{−σ}` in the same `abel_block_bound`).
 
 - 2026-08-05 — Z1+Z2 built and verified.
+
+## Z3a/Z3b built (2026-08-05)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletBlockSaving.lean` — built, wired into the
+`RHTower` umbrella, axioms `[propext, Classical.choice, Quot.sound]`, zero warnings.
+
+- `dirichlet_block_one_normalized` — absorbs the block-length factor of
+  `dirichlet_block_one_full`. For `N <= M <= 2N+1`, `k >= 2`, `lam <= 1`:
+
+  ```text
+  ‖∑_{Ico N M} n^(-1-It)‖ <= 512*(4^k*lam)^(1/(2^k-2)) + 512*N^(-4/2^k)*lam^(-2/2^k)
+  ```
+
+  with `lam = (t/2pi)*(k-1)!/(2N)^k`. The bound now depends only on `(N, k, lam)`.
+
+- `block_saving` — the balanced window. If `4^k*lam <= N^(-1)` and `N^(-3/2) <= lam` then the
+  normalised bound is at most `1024*N^(-1/2^k)`.
+
+Both conditions are what the k-schedule must deliver, and they are simultaneously satisfiable
+exactly when `4^k <= N^(1/2)`, i.e. `2^k <= N^(1/4)` — comfortably true on the tail blocks
+`N >= t^(1/m)`, `m ~ loglog t`, where `k <= m`. This is the formal version of the card's warning not
+to overshoot `k` by a full unit: the branch `t </> N^(k0-1/2)` is precisely the choice that keeps
+`lam` inside `[N^(-3/2), 4^(-k) N^(-1)]`.
+
+Remaining in Z3: the schedule itself (choose `k(N)` per block and verify the two window
+inequalities from a branch on `t` versus `N^(k0-1/2)`), then the head/tail split against
+`Sieve/HarmonicLogBound` and summation of `1024*N^(-1/2^k)` over dyadic `N`.
+
+### Correction: the narrow window is unusable; use `block_saving_wide`
+
+`block_saving`'s window has multiplicative width `4^(-k)*N^(1/2)` in `lam`, but `lam` jumps by the
+factor `2N/k` when `k` increases by one. Width < step, so no integer schedule is guaranteed to land
+in it. That window is therefore a dead end for Z3.
+
+`block_saving_wide` (same module) relaxes the target saving from `N^(-1/2^k)` to `N^(-1/(3*2^k))`
+and widens the window to
+
+```text
+N^(-5/3) <= lam <= N^(-1/3),
+```
+
+of multiplicative width `N^(4/3)`, which exceeds the step `2N` as soon as `N >= 8`. Conclusion:
+
+```text
+512*(4^k*lam)^(1/(2^k-2)) + 512*N^(-4/2^k)*lam^(-2/2^k) <= 2560*N^(-1/(3*2^k)).
+```
+
+The balance point `lam ~ N^(-4/3)` sits in the middle of this window, matching the classical choice
+`k ~ log t/log N + 4/3`. Z3's remaining step is the existence of an integer `k >= 2` putting
+`lam_k = (t/2pi)(k-1)!/(2N)^k` into `[N^(-5/3), N^(-1/3)]`, which is now a width-versus-step
+argument rather than a balancing act.
+
+## Z3 schedule step closed (2026-08-05)
+
+`formal/GaloisForLFunctions/HTGeometry/RatioBoundedWindowLanding.lean` and
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletBlockSchedule.lean` — built, wired, axioms
+`[propext, Classical.choice, Quot.sound]`, zero warnings.
+
+- `exists_mem_window_of_ratio_lower_bound` (HTGeometry, reusable) — a sequence starting at or above
+  `L`, satisfying `c * u (m-1) <= u m` above the start index, and eventually dropping to `U` or
+  below, hits `[L, U]` provided `L <= c * U`. Proof: take the least index at which it drops below
+  `U`; at that index the previous value was above `U`, so the ratio bound keeps the value above
+  `c * U >= L`. No optimisation, no balancing.
+- `blockLambda`, `blockLambda_ratio` — the derivative scale
+  `lam_k = (t/2pi)(k-1)!/(2N)^k` satisfies `lam_m >= lam_(m-1)/N` for every `m >= 3`
+  (the exact ratio is `(m-1)/(2N) >= 1/N`).
+- `exists_blockLambda_in_window` — instantiation: the width condition is
+  `N^(-5/3) <= (1/N) * N^(-1/3) = N^(-4/3)`, true for every `N >= 1`. So the schedule needs only
+  `lam_2 >= N^(-5/3)` and some `k >= 2` with `lam_k <= N^(-1/3)`.
+- `exists_dirichlet_block_saving` — the capstone: under those two hypotheses,
+
+  ```text
+  exists k >= 2, ‖sum_{Ico N M} n^(-1-It)‖ <= 2560 * N^(-1/(3*2^k)).
+  ```
+
+Note the `N >= 8` heuristic in the previous entry is not needed for the formal statement: only
+`L <= c*U` is used, which holds for all `N >= 1`. The `N >= 8` remark was about the width exceeding
+the step in the informal picture.
+
+Remaining in Z3: the head/tail split against `Sieve/HarmonicLogBound`, discharging the two schedule
+hypotheses from a `t`-versus-`N` branch on the tail blocks, and summing `2560*N^(-1/(3*2^k))` over
+dyadic `N`.
+
+## Z3 per-block estimate now fully explicit (2026-08-05)
+
+`Sieve/DirichletBlockSchedule.lean` extended; `HTGeometry/RatioBoundedWindowLanding.lean`
+strengthened to also bound the landing index. Built, axioms
+`[propext, Classical.choice, Quot.sound]`, zero warnings.
+
+- `exists_mem_window_of_ratio_lower_bound` now takes the drop witness `k0` explicitly and returns
+  `k <= k0` as well. This matters: the produced order is the least one, so the saving exponent is
+  controlled by the witness.
+- `blockLambda_two_ge` : `8*pi*N^(1/3) <= t` implies `lam_2 >= N^(-5/3)`.
+  (`lam_2 = t/(8*pi*N^2)`, and `N^2 * N^(-5/3) = N^(1/3)`.)
+- `blockLambda_le_of_order` : `2 <= k`, `k-1 <= N`, `t <= 2*pi*2^k*N^(2/3)` imply
+  `lam_k <= N^(-1/3)`. Mechanism: `(k-1)! <= N^(k-1)` when `k-1 <= N`, so
+  `lam_k <= (t/2pi)/(2^k*N)`.
+- `dirichlet_block_saving_of_range` — the capstone with **checkable hypotheses only**:
+
+  ```text
+  8*pi*N^(1/3) <= t <= 2*pi*2^(k0)*N^(2/3),  k0 >= 2,  k0-1 <= N,  N <= M <= 2N+1
+    ==>  ‖sum_{Ico N M} n^(-1-It)‖ <= 2560 * N^(-1/(3*2^(k0))).
+  ```
+
+No existential order hypothesis survives: the schedule is discharged internally, and the saving is
+expressed in the caller's own `k0`. Choosing `k0 ~ log_2(t/(2*pi*N^(2/3))) + 1` gives the classical
+`k ~ log t/log N` and the saving `exp(-c*log N/2^(k0))`.
+
+Remaining in Z3: head/tail split against `Sieve/HarmonicLogBound`, and summing the per-block bound
+over dyadic `N` with the per-block `k0` schedule.
+
+## Correction: the crude factorial estimate is lossy; sharp interface added (2026-08-05)
+
+`dirichlet_block_saving_of_range` above is true but **not usable for the Littlewood saving**. Its
+window-top hypothesis `t <= 2*pi*2^(k0)*N^(2/3)` came from the crude estimate
+`(k-1)! <= N^(k-1)` (valid when `k-1 <= N`), which throws away the whole gap between `(k-1)!` and
+`N^(k-1)`. It forces `2^(k0) >~ t/N^(2/3)`, i.e. `k0 ~ log_2 t`, whereas the classical schedule
+needs `k ~ log t / log N`. With `k0 ~ log_2 t` the saving `N^(-1/(3*2^(k0)))` is essentially 1.
+
+The honest condition is the exact one. Added to `Sieve/DirichletBlockSchedule.lean`:
+
+- `blockLambda_le_iff` :
+  `lam_k <= U  <->  t*(k-1)! <= 2*pi*(2N)^k*U`.
+  No factorial estimate is baked in; the caller supplies whichever estimate its range of `k`
+  supports.
+- `blockLambda_le_of_factorial_bound` : the `U = N^(-1/3)` specialisation.
+- `dirichlet_block_saving_of_factorial_range` : same conclusion as the earlier capstone, with the
+  window-top hypothesis in exact form:
+
+  ```text
+  8*pi*N^(1/3) <= t,   t*(k0-1)! <= 2*pi*(2N)^(k0)*N^(-1/3),   k0 >= 2,   N <= M <= 2N+1
+    ==>  ‖sum_{Ico N M} n^(-1-It)‖ <= 2560 * N^(-1/(3*2^(k0))).
+  ```
+
+Taking logs, the hypothesis reads `k0*log(2N) - log((k0-1)!) >= log t + (1/3)*log N`, and with
+`(k0-1)! <= (k0-1)^(k0-1)` this is `k0*(log(2N) - log k0) >~ log t`, i.e. the classical
+`k0 ~ log t / log N`. That is the estimate the dyadic assembly must supply per block; the crude
+`k-1 <= N` version is retained only as a convenience for blocks with `N` comparable to `t`.
+
+## Classical-scale window condition (2026-08-06)
+
+The exact interface is now instantiated at the scale the assembly actually needs. Added to
+`Sieve/DirichletBlockSchedule.lean`, built, axioms `[propext, Classical.choice, Quot.sound]`:
+
+- `blockLambda_le_of_small_factorial` : if `k >= 1`, `(k-1)! <= N` (as naturals), and
+  `t <= 2*pi*2^k*N^(k-1)*N^(-1/3)`, then `lam_k <= N^(-1/3)`.
+  Mechanism: `t*(k-1)! <= t*N <= 2*pi*2^k*N^(k-1)*N^(-1/3)*N = 2*pi*(2N)^k*N^(-1/3)`.
+- `dirichlet_block_saving_of_small_factorial` : the capstone at that scale.
+
+Reading the hypothesis as `t ~ N^(k-4/3)` gives `k ~ log t/log N + 4/3` — exactly the classical
+schedule, with no loss.
+
+Why `(k-1)! <= N` is comfortable in the intended range: the assembly uses `N >= t^(1/m)` with
+`m ~ loglog t`, so `k <= m` and `(k-1)! <= (loglog t)^(loglog t) = (log t)^(o(1))`, while
+`N >= exp(log t/m)`. The factorial is negligible there; it was only the *crude bound*
+`(k-1)! <= N^(k-1)` that was catastrophic, not the factorial itself.
+
+Three tiers now exist for the same conclusion, in increasing usability:
+`dirichlet_block_saving_of_range` (crude, `k-1 <= N`, forces `k ~ log_2 t` — unusable),
+`dirichlet_block_saving_of_factorial_range` (exact, caller supplies any estimate),
+`dirichlet_block_saving_of_small_factorial` (classical scale, `(k-1)! <= N`).

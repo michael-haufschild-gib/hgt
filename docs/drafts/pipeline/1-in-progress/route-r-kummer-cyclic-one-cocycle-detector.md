@@ -2,7 +2,7 @@
 
 ## Status
 
-Stage 3 — KCC-1 through KCC-4 formalized; coefficient-faithful Xi comparison remains open;
+Stage 3 — KCC-1 through KCC-6 formalized; one explicit Gamma-naturality square remains;
 final audit pending.
 
 ## Frontier
@@ -126,6 +126,78 @@ the Bruhat coefficient.  Remaining hard theorem is a coefficient-faithful relati
 comparison carrying this genuine class to the existing nonzero Xi landing, followed by an
 independently source-derived annihilation law.
 
+## Conjecture KCC-5 — proved: corrected coefficient-faithful multiplier cycle
+
+Let `a` be the canonical retained Bruhat coefficient in the unitized multiplier core.  The
+normalized coinvariant potential
+
+`b_p = (p^-1 dot a) a - 1`
+
+satisfies the exact source identity
+
+`p dot b_p - b_p = a (p dot a) - a (p^-1 dot a)`.
+
+The right side is the Hochschild boundary of the raw decorated prime tensor.  The left side is the
+boundary of `U_p tensor b_p U_(p^-1)`.  Their difference is therefore a genuine Hochschild
+one-cycle retaining the actual Bruhat coefficient.  Its raw term has zero scalar Kummer value,
+while the normalized correction has value `log p`; consequently the corrected class has value
+`-log p` and is nonzero in genuine `HH_1`.
+
+Multiplying its descended regulator by the first nonzero Xi jet gives a homological Xi landing
+equal, on the corrected class, to the established signed Kummer landing.  Thus cycle existence,
+Bruhat coefficient fidelity, prime retention, and Xi non-erasure are all closed.  Remaining burden
+is no longer a comparison-existence theorem: it is the source-native law forcing the fixed
+physical Hodge/Bockstein port to annihilate this explicit nonzero landed class.
+
+## Conjecture KCC-6 — proved: faithful central-Bockstein cap and Gamma-parity reduction
+
+Cap the corrected multiplier `HH_1` class into the genuine retained rational-adelic relative
+`H^1` class using three literal factors: Kummer regulator, first nonzero Xi jet, and fixed physical
+Hodge-mate coefficient `K_(p,rho)`.  The independent period-one Stokes regulator reads the cap as
+
+`K_(p,rho) * L_(p,rho)`
+
+with `L_(p,rho) != 0`.  Hence this explicit central-Bockstein cap is null-homologous if and only if
+`K_(p,rho)=0`; no injectivity assumption on a large comparison space is needed.
+
+Functional-equation reflection contributes Xi-jet parity `(-1)^m`, while `K` is reflection-odd.
+Therefore the physical cap obeys the unconditional *opposite-parity* law
+
+`B_(p,sigma rho) = -(-1)^m B_(p,rho)`.
+
+If the pre-divisor comparison fixes the same source orientation in both Gamma fibres, its
+naturality square is
+
+`B_(p,sigma rho) = (+1)(-1)^m B_(p,rho)`.
+
+The two laws are compatible exactly when `B_(p,rho)=0`, equivalently `K_(p,rho)=0`, equivalently
+the fixed same-fibre norm/source-dagger law.  Globally at one prime, this *fixed-orientation*
+naturality square is equivalent to RH.  It is an exact candidate producer, but source orientation
+must be audited rather than silently identified.
+
+## Conjecture KCC-7 — falsified: ordinary source dagger does not fix orientation
+
+Genuine degree-one cyclic reversal preserves the corrected Hochschild-cycle condition and flips
+its Kummer period from `-log p` to `+log p`.  The resulting reversed homology class is provably
+distinct from the original class.  When functional-equation reflection transports this genuine
+source dagger, its Kummer minus sign cancels the Hodge-mate minus sign, giving unconditionally
+
+`B_(p,sigma rho; dagger z_p) = (-1)^m B_(p,rho; z_p)`.
+
+Therefore ordinary Gamma/dagger naturality is compatible with every horizontal grade and cannot
+annihilate `K`.  KCC-6's RH-bearing same-class parity would require erasing the genuine source
+orientation, contradicted by the nonzero Kummer period.  Functional-equation reflection is not the
+missing independent law.
+
+## Conjecture KCC-8 — open producer
+
+Construct a same-fibre, fixed-source-orientation law independent of functional-equation transport.
+It must annihilate the explicit cap class while preserving the nonzero corrected multiplier and
+relative Stokes periods.  Equivalently, it must place the fixed physical lift in the harmonic corona
+graph without identifying the two distinct Gamma-oriented source classes.  Resolved `D1 D0 = 0`,
+ordinary source dagger, defect data, cyclic rotation, and coefficient non-erasure are now all
+formally ruled out as substitutes.
+
 ## Hostile tests
 
 1. Product-formula cancellation alone fails: it cancels finite and archimedean components only as
@@ -149,6 +221,13 @@ independently source-derived annihilation law.
 - [x] construct genuine prime K1 cycle and prove its degree-one boundary is zero;
 - [x] prove full multiplier chain law `b1 b2 = 0`;
 - [x] descend Kummer regulator to genuine `HH1` and prove retained prime class is nonzero;
+- [x] construct normalized Bruhat coinvariant potential and cancel raw Hochschild boundary;
+- [x] prove corrected decorated class is nonzero in genuine `HH1`;
+- [x] land corrected class on first nonzero Xi jet and identify signed Kummer landing;
+- [x] cap corrected multiplier class into retained relative `H1` and prove Stokes faithfulness;
+- [x] prove exact opposite physical Gamma parity and reduce source parity to `K = 0`;
+- [x] hostile-test source rotation; prove reversed class is distinct and dagger naturality is blind;
+- [ ] construct independent same-fibre fixed-orientation annihilation law;
 - [x] wire modules into `RHTower.lean`;
 - [ ] direct Lean check, targeted module build, lint, and axiom audit.
 
@@ -158,6 +237,8 @@ Lean modules:
 - `RouteRSignedKummerCyclicCartierLanding.lean`
 - `RouteRPrimeChainHochschildCycleWall.lean`
 - `RouteRPreDivisorRationalAdelicMultiplierKOneHomology.lean`
+- `RouteRPreDivisorRationalAdelicCorrectedMultiplierXiLanding.lean`
+- `RouteRCorrectedMultiplierGammaOrientationDescent.lean`
 
 ## Producer narrowed by the defect-blindness law (2026-08-05)
 
@@ -206,3 +287,72 @@ multiplicative additive `f` satisfying those two identities. Read together with
 once it does, non-erasure is free.
 
 Card: `docs/drafts/pipeline/3-formalized/trace-derivation-cyclic-cocycle-transport-law.md`.
+
+## Necessary spectral condition on any admissible target (2026-08-05)
+
+`GaloisForLFunctions.RHTower.hasEigenvalue_primeLog` — a ℂ-linear multiplicative `f` satisfying the
+two intertwining identities forces `+log p` and `-log p` into the point spectrum of the target
+derivation `D_B`, with eigenvectors the images of the two legs of the ordinary-prime atom (nonzero
+by `primeAtom_not_erased`).
+
+`GaloisForLFunctions.RHTower.not_module_finite_of_comparison` — the images of the forward legs are
+linearly independent (distinct eigenvalues), so no finite-dimensional target can receive the
+comparison.
+
+Practical test for candidate targets: **the target derivation must already carry
+`{+/- log p : p prime}` in its point spectrum.** Finite-rank models, and any operator whose point
+spectrum misses a prime logarithm, are excluded before construction. Non-vacuity is certified by the
+identity comparison (`cyclicSource_not_module_finite`).
+
+Card: `docs/drafts/pipeline/3-formalized/route-r-comparison-prime-log-spectrum-obligation.md`.
+
+## KCC-9 — paper-proved: prime-log essential cap normal form
+
+Put
+
+\[
+ a_\rho=2\Re\rho-1,\qquad
+ K_{p,\rho}=a_\rho\frac{(1-p^{-1})(2-p^{-1})}{2\log p},
+\]
+
+and let `B_(p,rho)` be KCC-6's explicit central-Bockstein cap.  Its
+period-one Stokes readout contains the corrected multiplier Kummer period
+`-log p`.  Therefore the nondivisive, coefficient-faithful prime-log port
+
+\[
+ \mathcal P_{p,\rho}:=-2\,\operatorname{Stokes}_p(B_{p,\rho})
+\]
+
+satisfies the exact identity
+
+\[
+ \boxed{\mathcal P_{p,\rho}
+   =a_\rho(1-p^{-1})(2-p^{-1})c_\rho},
+ \qquad c_\rho=\XiC^{(m_\rho)}(w_\rho)\ne0.       \tag{EC1}
+\]
+
+Along the canonical increasing enumeration of the ordinary primes,
+
+\[
+ \mathcal P_{p,\rho}\longrightarrow 2a_\rho c_\rho.                \tag{EC2}
+\]
+
+Thus infinite-rank transport does not disperse the cap.  It removes the
+local `1/log p` attenuation and leaves one constant essential-corona class.
+Since `c_rho != 0`, cofinal fixed-orientation singular Stokes flatness
+`P_(p,rho) -> 0` is equivalent to `a_rho=0`, hence annihilates the original
+cap at every prime.  This is strictly stronger than another pointwise zero
+test: it proves that every admissible singular law has only one possible
+global output channel, the constant essential scalar `2 a_rho c_rho`.
+
+Hostile audit:
+
+1. Ordinary source reversal cannot supply flatness; it flips the nonzero
+   Kummer period and preserves the transported cap by KCC-7.
+2. A `c0` or compact correction cannot cancel `(EC2)` off centre, because
+   the correction vanishes while the essential scalar does not.
+3. Declaring unrestricted product-topology tails to be boundaries is
+   coefficient-unfaithful: it also erases the period-one Stokes detector.
+4. The still-open producer is now exactly the source theorem
+   `P_(p,rho) -> 0`; the algebraic implication from that law to cap nullity
+   is dependency-closed and unconditional.

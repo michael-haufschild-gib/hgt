@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** UNIVERSAL FINITE QUANTUM RECURRENCE NO-GO / POSITIVE RANK CLASSIFICATION
 - **Paper-proof status:** `[DEPENDENCY-CLOSED]`
-- **Formal status:** `[OPEN — DO NOT MOVE TO STAGE 3]`
+- **Formal status:** `[CLOSED — all ten formalization obligations discharged unconditionally; card held at Stage 2 by the non-formal gates]`
 - **Novelty status:** `[EXTERNAL PRIORITY AUDIT INCOMPLETE]`
 - **Parent conjecture:** `../1-in-progress/arithmetic-completion-of-quantum-time-conjecture.md`
 - **Date:** 2026-07-30
@@ -402,7 +402,7 @@ as one quantum-recurrence law. This is not a completed novelty claim.
 ## Gates
 
 - [x] exact statement and dependency-closed paper proof
-- [ ] unconditional Lean formalization
+- [x] unconditional Lean formalization
 - [ ] positive finite-scale replacement law
 - [ ] collision-complete external novelty audit
 - [ ] feasible protocol with finite error analysis
@@ -418,3 +418,100 @@ as one quantum-recurrence law. This is not a completed novelty claim.
 - 2026-07-30 — Corrected finite-\(\varepsilon\) density claim: exact product
   formula is retained only at maximal rank; arbitrary rank receives local
   exponent with lattice-dependent constants.
+
+## Lean certificate (2026-08-05)
+
+All modules are in `formal/GaloisForLFunctions/HTGeometry/` and are wired into
+`GaloisForLFunctions/HTGeometry.lean`; `lake build GaloisForLFunctions.HTGeometry`
+is green and every declaration cited below reports
+`[propext, Classical.choice, Quot.sound]` under `#print axioms`.
+
+### Obligation status
+
+| # | Obligation | Lean declaration | Module |
+|---|---|---|---|
+| 1 | finite rational coordinate rank | `rationalCoordinateRank` | `ArithmeticTemporalRankInstability` |
+| 2 | density of every exact rank `k` | `dense_exactRationalRank`, `exists_exactRationalRank_close` | `ArithmeticTemporalRankInstability`, `RationalRankHyperplaneAvoidance` |
+| 3 | rational-hyperplane avoidance at exact rank | `exists_exactRationalRank_close_avoiding` | `RationalRankHyperplaneAvoidance` **(new)** |
+| 4 | same-eigenvector Hermitian lift of every rank | `exists_isHermitian_commuting_close_gapRank` | `SimpleSpectrumMatrixPerturbation` |
+| 5 | bounded-horizon estimates `(1)`, `(3)` | `exp_skewAdjoint_sub_exp_skewAdjoint_norm_le`, `selfAdjoint_unitaryEvolution_norm_sub_le`, `selfAdjoint_heisenbergEvolution_norm_sub_le` | `FiniteHorizonCStarPerturbationLaw` |
+| 6 | dense exact-periodic / nonperiodic separation | `hasPositiveProjectiveReturn_iff_gapRank_le_one`, `exists_close_simpleSpectrum_periodic_and_aperiodic`, `exists_isHermitian_commuting_close_periodic_and_aperiodic` | `ProjectiveExactReturnRankOne` **(new)** |
+| 7 | exact rank = completed orbit dimension | `exists_hasBoxDim_closure_range_observedOrbit` | `SpectralObservedOrbitDimension` |
+| 8 | local Haar exponent `(4)`, `(5)` at arbitrary rank | `tendsto_log_integerReturnPreimage_div_log_of_span`, `integerReturnPreimage_measure_sandwich`, `orbitClosureHaar_eq_haar`, `tendsto_log_div_log_of_power_sandwich` | `IntegerTorusReturnVolume`, `TorusReturnExponentLaw` **(new)** |
+| 9 | maximal-rank exact density `(6)` | `finiteTorusHaarProbabilityMeasure_anchoredProjectiveReturnTarget` | `AnchoredProjectiveReturnDensityLaw` |
+| 10 | axiom and lint audit of the new material | done | — |
+
+### Theorem A topology (new)
+
+Module `RationalRankStratumTopology`.  A packet fails maximal rational rank exactly when it
+satisfies one nonzero rational linear relation, so the sub-maximal locus is covered by a countable
+family of proper closed hyperplanes.
+
+| Claim | Lean declaration |
+|---|---|
+| maximal rank = rational linear independence | `rationalCoordinateRank_eq_iff_linearIndependent` |
+| non-maximal rank forces a nonzero rational relation | `exists_ratHyperplane_of_rank_ne` |
+| rational hyperplanes are proper, closed, nowhere dense, null | `ratHyperplane_ne_top`, `isClosed_ratHyperplane`, `isNowhereDense_ratHyperplane`, `volume_ratHyperplane_eq_zero` |
+| `R_{n,k}` meagre and null for `k ≠ n` | `isMeagre_exactRationalRank`, `volume_exactRationalRank_eq_zero` |
+| `R_{n,n}` residual and conull | `residual_maximalRationalRank`, `volume_compl_maximalRationalRank_eq_zero` |
+| `R_{n,n}` has empty interior for `n ≥ 2` | `interior_maximalRationalRank_eq_empty` |
+| packaged dichotomy | `rationalRank_stratum_dichotomy` |
+
+### Corollary 1 (new)
+
+`HasPositiveProjectiveReturn E` is `∃ T > 0, ∀ j, T (E_{j+1} − E_0) ∈ 2πℤ`.
+`hasPositiveProjectiveReturn_iff_gapRank_le_one` proves it equivalent to
+`rationalCoordinateRank (anchored gaps) ≤ 1`, in both directions: a return time places every gap in
+one cyclic frequency group, and rank one lets a product of denominators clear the relations.  From
+three levels onward both the returning and the never-returning simple neighbours are dense, at the
+spectrum level and at the commuting-Hermitian-matrix level.
+
+### Corollary 3, obligation 8 (new)
+
+Module `TorusReturnExponentLaw`.  On the presenting phase torus, a return-target family squeezed
+between balls of radii `a * ε` and `b * ε` satisfies the exact two-sided law
+
+`(2a)^dim * ε^dim ≤ m (S ε) ≤ (2b)^dim * ε^dim`
+
+for all small `ε` (`finiteTorusHaar_return_sandwich`), with the explicit lattice-dependent constants
+`c∓ = (2a)^dim`, `(2b)^dim` that equation `(4)` asks for, and therefore
+
+`log m (S ε) / log ε → dim`
+
+(`tendsto_log_finiteTorusHaar_return_div_log`), which is equation `(5)`.  The purely real-analytic
+step — a two-sided power sandwich pins the logarithmic exponent — is isolated as
+`tendsto_log_div_log_of_power_sandwich` and is reusable.
+
+### Corollary 3, geometric half (new)
+
+Module `IntegerTorusReturnVolume` closes the remaining input.  The pulled-back return target is
+
+`integerReturnPreimage M ε = {u | ∀ i, dist (torusIntegerHom M u i) 0 ≤ ε}`.
+
+| Step | Lean declaration |
+|---|---|
+| a nonsingular integer matrix has trivial left kernel | `integerVecMul_eq_zero_iff` |
+| hence its pushforward has the Fourier coefficients of Haar, so it preserves Haar measure | `orbitClosureHaar_eq_haar`, `measure_preimage_torusIntegerHom` |
+| each character is Lipschitz with its row sum, so a ball of radius `ε / rowBound` lies inside the target | `ball_subset_integerReturnPreimage` |
+| a nonsingular square selection confines the target to the preimage of a ball of radius `2ε` | `integerReturnPreimage_subset_preimage_ball` |
+| two-sided volume law `(2/rowBound)^τ ε^τ ≤ m ≤ 4^τ ε^τ` — equation `(4)` | `integerReturnPreimage_measure_sandwich` |
+| exponent limit — equation `(5)` | `tendsto_log_integerReturnPreimage_div_log` |
+| a spanning character family contains a nonsingular square selection | `exists_selectedSquare_det_ne_zero` |
+| **exponent law under minimality alone** | `tendsto_log_integerReturnPreimage_div_log_of_span` |
+
+The upper bound needs no bi-Lipschitz chart: preimages along a nonsingular integer torus
+endomorphism have unchanged Haar measure, which replaces the local-chart argument of the paper
+proof by an exact global one.  The only hypothesis of the capstone is that the integer characters
+span the rational presenting space — precisely minimality of the presentation, that is, that the
+presenting torus has dimension the rational rank `τ`.
+
+### Remaining gates
+
+All ten formalization obligations are now discharged unconditionally.  The card nevertheless stays
+at Stage 2: its open gates for the positive finite-scale replacement law, the collision-complete
+external novelty audit, the feasible protocol with finite error analysis, and the Nature hostile
+review are untouched by this work.
+
+- 2026-08-05 — obligations 3, 6, 8 and the Theorem A topology closed unconditionally in Lean;
+  obligations 1, 2, 4, 5, 7, 9 verified already present in the corpus.  All ten formalization
+  obligations are discharged; the remaining open gates are non-formal.

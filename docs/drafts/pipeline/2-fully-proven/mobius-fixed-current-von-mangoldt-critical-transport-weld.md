@@ -356,9 +356,158 @@ codifferential estimate.
 `RHTower.tendsto_squarefreeMobiusBoundaryLayerLaplace`.  The no-go `(8)` and the ordered two-clock
 law `(7)`--`(9)` are therefore machine-checked in full.
 
+## Lean formalization (transport layer, in progress)
+
+`formal/GaloisForLFunctions/HTGeometry/HalfLineTransportDistance.lean` (imported by
+`GaloisForLFunctions.HTGeometry`; builds clean; every result axiom-clean).
+
+Mathlib carries no Wasserstein distance and no quantile coupling, so the transport layer is being
+built from scratch.  The first block is the `W₁` machinery for laws on `[0,∞)`, where the transport
+distance is the `L¹` distance of the survival functions.
+
+| Card item | Lean name |
+|---|---|
+| survival function `S_μ(t) = μ(t,∞)` and its monotonicity/measurability | `HTGeometry.survival`, `antitone_survival`, `measurable_survival` |
+| the half-line transport distance `W₁(μ,ν) = ∫₀^∞ \|S_μ - S_ν\|` | `HTGeometry.halfLineW1` |
+| layer cake: `∫₀^∞ S_μ = E[X]` for a half-line law | `HTGeometry.integral_survival_eq_mean` |
+| integrability of the survival function under a finite mean | `HTGeometry.integrableOn_survival` |
+| **the convergence criterion**: pointwise survival convergence + convergence of first moments ⇒ `W₁ → 0` | `HTGeometry.tendsto_halfLineW1_of_tendsto_survival` |
+| triangle inequality | `HTGeometry.halfLineW1_triangle` |
+| **`(14)`, third line**: two families converging to one limit law have vanishing mutual `W₁` | `HTGeometry.tendsto_halfLineW1_pair` |
+| the reference law `Exp(1)`: survival `e^{-t}`, half-line support, finite mean, mean one | `HTGeometry.survival_expMeasure_one`, `expMeasure_one_nonneg_ae`, `integrable_id_expMeasure_one`, `integral_id_expMeasure_one` |
+
+The convergence criterion replaces the usual compactness/uniform-integrability argument by an exact
+cancellation: `|S - T| = S + T - 2 min S T`, the minimum is dominated by the limit survival
+function, so dominated convergence sends its integral to the limit mean while the two outer
+integrals are the two means, and the three limits cancel.  This is the statement the card's `(14)`
+needs, in the form that consumes exactly the proved inputs `(11)` and `(13)`.
+
+`formal/GaloisForLFunctions/HTGeometry/QuantileCoupling.lean` builds the coupling half.  Mathlib
+carries `cdf` but no quantile function and no inverse-transform sampling, so both are built here.
+
+| Card item | Lean name |
+|---|---|
+| the quantile (generalized inverse distribution) function | `HTGeometry.quantile` |
+| its defining set is nonempty and bounded below | `quantileSet_nonempty`, `quantileSet_bddBelow` |
+| the set contains its infimum (right continuity passes the inequality to the boundary) | `le_cdf_quantile` |
+| **the Galois connection** `quantile μ p ≤ x ↔ p ≤ cdf μ x` on `0 < p < 1` | `quantile_le_iff` |
+| measurability of the quantile | `measurable_quantile` |
+| **inverse transform sampling**: the quantile pushes the uniform law on `(0,1)` to the law | `map_quantile_eq` |
+| **the monotone coupling `π_σ` of `(15)`** | `HTGeometry.monotoneCoupling` |
+| its marginals are the two laws | `map_fst_monotoneCoupling`, `map_snd_monotoneCoupling` |
+| the mean as a quantile integral, `∫₀¹ Q_μ = E[X]` | `integral_quantile_eq_mean` |
+| **its transport cost** `E_π\|X-Y\| = ∫₀¹ \|Q_μ - Q_ν\|` | `integral_monotoneCoupling_abs_sub`, `lintegral_dist_monotoneCoupling` |
+
+So the canonical monotone coupling of `(15)` now exists in Lean with its correct marginals, and its
+cost is expressed as an integral of the two quantile functions — the quantity `(15)` asserts tends
+to zero.  That limit is now also proved, conditionally only on the two analytic inputs the card
+already supplies:
+
+| Card item | Lean name |
+|---|---|
+| Scheffé cancellation: nonnegative integrands converging a.e. with converging integrals converge in `L¹` | `tendsto_integral_abs_sub_of_tendsto` |
+| the quantile of a half-line law is nonnegative | `quantile_nonneg` |
+| a finite mean makes the quantile integrable | `integrableOn_quantile` |
+| **`(15)` criterion**: a.e. quantile convergence + convergence of means ⇒ vanishing coupling cost | `tendsto_integral_monotoneCoupling_abs_sub` |
+| quantile convergence from distribution convergence at a level of strict increase | `tendsto_quantile_of_tendsto_cdf` |
+| the exponential distribution function crosses each level exactly once | `cdf_expMeasure_one_lt_of_lt`, `lt_cdf_expMeasure_one_of_lt` |
+| the exponential quantile `Q(p) = -log(1-p)` | `quantile_expMeasure_one` |
+| quantile convergence to `Exp(1)` | `tendsto_quantile_expMeasure_one` |
+| the exponential law charges no negative half line | `expMeasure_one_Iio_zero` |
+| **`(15)` against `Exp(1)`**: distribution convergence to `Exp(1)` + means → 1 ⇒ vanishing monotone-coupling cost | `tendsto_integral_monotoneCoupling_expMeasure_one` |
+
+The last statement is exactly the shape of `(15)`: it consumes pointwise convergence of the two
+critical distribution functions to that of `Exp(1)` — which is what `(11)` gives once the Laplace
+continuity theorem is available — together with the first-moment convergence `(13)`, already proved
+in the fixed-current layer.
+
+`formal/GaloisForLFunctions/HTGeometry/DiscreteHalfLineLaw.lean` builds the carrier for the two
+clock laws `(1)` and `(2)`.  Both are weighted point laws: the points are logarithms of integers
+and the weights are the normalized Dirichlet coefficients.
+
+| Card item | Lean name |
+|---|---|
+| the law of a countable weighted point family | `HTGeometry.weightedPointLaw` |
+| its measure of a set, and its total mass | `weightedPointLaw_apply`, `weightedPointLaw_univ` |
+| total mass one makes it a law | `isProbabilityMeasure_weightedPointLaw` |
+| its integrals are weighted sums | `lintegral_weightedPointLaw`, `integral_weightedPointLaw` |
+| logarithmic points give a half-line law | `weightedPointLaw_Iio_zero` |
+| its survival function | `survival_weightedPointLaw` |
+| **its Laplace transform** — a Dirichlet series at a shifted abscissa for logarithmic points | `lintegral_exp_neg_weightedPointLaw`, `integral_exp_neg_weightedPointLaw` |
+| **its mean** | `integral_id_weightedPointLaw` |
+
+So `P_σ` of `(1)` and `ν_σ` of `(2)` are now instances of one construction whose Laplace transform
+and mean are the weighted sums the card computes; what is left for item 1 is the arithmetic
+identification of those sums with `Z(σ+uε)/Z(σ)`, `A(σ+uε)/A(σ)` and their logarithmic derivatives.
+
+`formal/GaloisForLFunctions/HTGeometry/CompactMomentWeakConvergence.lean` builds the compact half
+of the Laplace continuity theorem: on a compact interval the moments determine and control a law.
+
+| Card item | Lean name |
+|---|---|
+| a continuous function on a compact space is integrable against a finite measure | `integrable_continuousMap` |
+| integration depends continuously on the law | `continuous_integral_real_continuousMap` |
+| the integral is bounded by the uniform norm | `abs_integral_continuousMap_le` |
+| polynomial integrals are moment combinations | `integral_polynomial_eq_sum` |
+| **moments determine a law on a compact interval** | `probabilityMeasure_ext_of_integral_pow_eq` |
+| **moment convergence forces weak convergence** | `probabilityMeasure_tendsto_of_integral_pow_tendsto` |
+
+The density step is used directly rather than through a closed-kernel argument: a continuous
+function is uniformly approximated by a polynomial (Stone--Weierstrass, `polynomialFunctions_closure_eq_top`),
+and each integral is bounded by the uniform norm, so the difference of the two integral functionals
+is below every tolerance.  Weak convergence then follows from compactness of the space of laws on a
+compact space together with uniqueness of cluster points.
+
+`formal/GaloisForLFunctions/HTGeometry/ExponentialCompactification.lean` and
+`.../LaplaceContinuityHalfLine.lean` close item 2, the Laplace continuity theorem.
+
+| Card item | Lean name |
+|---|---|
+| the compactification `y = e^{-x}` of the half line | `HTGeometry.expProj`, `continuous_expProj`, `coe_expProj_of_nonneg` |
+| the compactified law | `expPush`, `expPushProb` |
+| **the Laplace transform at `u = k` is the `k`-th moment of the compactified law** | `integral_pow_expPush` |
+| **Laplace convergence compactifies to weak convergence** | `tendsto_expPushProb_of_tendsto_laplace` |
+| the exponential law has no atoms | `expMeasure_one_singleton` |
+| the tail `(-∞,t]` corresponds to the upper set `{y ≥ e^{-t}}` | `expTailSet`, `expPush_expTailSet` |
+| that upper set has a one-point frontier, of zero limit mass | `frontier_expTailSet_subset`, `expPush_frontier_expTailSet` |
+| **`(11)` ⇒ distribution convergence**: Laplace convergence at every natural argument forces pointwise convergence of the distribution functions | `tendsto_cdf_expMeasure_one_of_tendsto_laplace` |
+| **`(11)` + `(13)` ⇒ `(15)`** | `tendsto_integral_monotoneCoupling_of_tendsto_laplace` |
+
+The last statement is the card's transport claim in closed form: half-line laws whose Laplace
+transforms converge to those of `Exp(1)` and whose means converge to one have monotone couplings
+with vanishing cost.  Its two hypotheses are exactly `(11)` and `(13)`.
+
 ### What remains for the Lean transport layer
 
-`(14)`--`(22)`: `W₁`/`W₂` convergence of the two clocks (their moment inputs `(13)` and `(15a)` are proved above), the monotone quantile coupling, the
-prime-current four-unit Gini law `(16)`--`(17)`, and the complementary-packet asymptotic isometry.
-These need transport-distance and coupling infrastructure that mathlib does not yet carry; the
-analytic inputs they consume — `(11)`, `(13)` and their squarefree counterparts — are now proved.
+1. Construct the two clock laws `P_σ` of `(1)` and `ν_σ` of `(2)` as measures on `ℝ`, and identify
+   their Laplace transforms with `Z(σ+uε)/Z(σ)` and `A(σ+uε)/A(σ)`.
+2. Convert the proved Laplace convergence `(11)` into pointwise survival convergence — a continuity
+   theorem for Laplace transforms on `[0,∞)`, also absent from mathlib.
+3. With `(13)` this gives `(14)` through `tendsto_halfLineW1_of_tendsto_survival`.
+4. `W₂` and `(15a)`--`(15c)`, the four-unit Gini law `(16)`--`(17)`, and the complementary-packet
+   asymptotic isometry `(18)`--`(22)`.
+
+Item 2 is closed.  Item 1 is reduced to arithmetic: the generic weighted-point-law carrier exists
+with its Laplace transform and mean, so what remains is to instantiate it at the two clock weights
+and identify the resulting weighted sums with `Z(σ+uε)/Z(σ)`, `A(σ+uε)/A(σ)` and their logarithmic
+derivatives — the scalar limits themselves are already proved in the fixed-current layer.  With that
+instantiation, `tendsto_integral_monotoneCoupling_of_tendsto_laplace` delivers `(15)` outright.
+
+- 2026-08-05 — half-line `W₁` layer built: transport distance, layer-cake mean identity, the
+  survival/moment convergence criterion, the triangle inequality, the mutual-convergence corollary,
+  and the `Exp(1)` reference law.
+- 2026-08-05 — quantile/coupling layer built: quantile function, Galois connection, measurability,
+  inverse-transform sampling, the monotone coupling with its marginals, and its transport cost as a
+  quantile integral.
+- 2026-08-05 — the `(15)` limit proved: Scheffé cancellation, quantile nonnegativity and
+  integrability, quantile convergence from distribution convergence, the explicit `Exp(1)` quantile,
+  and the capstone `tendsto_integral_monotoneCoupling_expMeasure_one`.
+- 2026-08-05 — the discrete-law carrier built: weighted point laws with their mass, integrals,
+  half-line support, survival function, Laplace transform and mean.  Item 1 is now the arithmetic
+  identification of two weighted sums.
+- 2026-08-06 — the compact half of Laplace continuity built: moments determine a law on a compact
+  interval, and moment convergence forces weak convergence.
+- 2026-08-06 — item 2 closed: the exponential compactification carries the Laplace transform to the
+  moments, weak convergence follows, and portmanteau at the one-point frontier of the compactified
+  tail turns it into distribution-function convergence.  `(11)` + `(13)` ⇒ `(15)` is now a single
+  Lean theorem.  Only item 1, the arithmetic instantiation of the two clock laws, remains.

@@ -154,7 +154,7 @@ theorem exists_rootedSpanningTreePhysicalSystem
       intro h
       have := congrArg (fun x : Local => x.down.val) h
       simp [other, anchor, otherFin, anchorFin] at this
-    obtain ⟨W, hWextension, hWstate, _hWobserver⟩ :=
+    obtain ⟨W, hWextension, hWstate, _hWobserver, _⟩ :=
       exists_physicallyRealizedTensorTree_leafExtension
         Z parentObserver Local anchor other hother
           (by simpa [hLocalCard] using hq v)
@@ -282,7 +282,7 @@ theorem exists_binarySpanningTreePhysicalSystem
     let anchor : Local := 0
     let other : Local := 1
     have hother : other ≠ anchor := by decide
-    obtain ⟨W, hWextension, hWstate, _hWobserver⟩ :=
+    obtain ⟨W, hWextension, hWstate, _hWobserver, _⟩ :=
       exists_physicallyRealizedTensorTree_leafExtension
         Z parentObserver Local anchor other hother (by decide)
     obtain ⟨eW, hWgraph⟩ := hWextension
@@ -345,7 +345,7 @@ theorem exists_binarySpanningTreePhysicalSystem
           (leafGraphExtension_connected Z.architectureGraph
             parentObserver hOldConnected)
   · have hcardEq : Fintype.card V = 2 := by omega
-    obtain ⟨Base, hBaseState, hBaseObserver, hBaseGraph⟩ :=
+    obtain ⟨Base, hBaseState, hBaseObserver, hBaseGraph, -⟩ :=
       exists_physicallyRealizedTensorTree_twoQubitGraphSeed
     letI : Fintype Base.spectral.Observer := Base.spectral.observerFintype
     let observerBool : Base.spectral.Observer ≃ Bool :=
