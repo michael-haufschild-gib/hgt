@@ -260,7 +260,7 @@ This closes the hostile bounded-degree objection for qubit chains.
 
 ## Post-freeze all-local-dimensions core proved
 
-`../2-fully-proven/nearest-neighbor-qudit-projective-spectral-maximality.md`
+`../3-formalized/nearest-neighbor-qudit-projective-spectral-maximality.md`
 extends the endpoint construction to every finite local dimension
 \(q\geq2\). For almost every arbitrary one-site plus nearest-neighbour
 two-site Hamiltonian on an open \(q\)-level path,

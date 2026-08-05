@@ -728,6 +728,12 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 664 | **the velocity of the tuned clock on a sub-band** | **`kgShiftedVel_kgTunedPot_subband`** | **built** |
 | 665 | **the field of the tuned clock from arbitrary band-limited data** | **`kgFieldMildT_kgTunedPot_band`** | **built** |
 | 666 | **its velocity from arbitrary band-limited data** | **`kgFieldVelT_kgTunedPot_band`** | **built** |
+| 667 | **the tuned clock in field coordinates** | `kgFieldMildT_kgTunedPot_field` | **built** |
+| 668 | **its velocity in field coordinates** | `kgFieldVelT_kgTunedPot_field` | **built** |
+| 669 | **a quarter period sends the field to `(1/c)·h`** | `kgFieldMildT_kgTunedPot_quarter` | **built** |
+| 670 | **and the velocity to `−c·w`** | `kgFieldVelT_kgTunedPot_quarter` | **built** |
+| 671 | **one switching cycle is `(w,h) ↦ (−(c₁/c₂)·w, −(c₂/c₁)·h)`** | **`kgSwitchedClock_step`** | **built** |
+| 672 | **so the velocity norm is multiplied by `c₂/c₁` per cycle** | **`norm_kgSwitchedClock_vel`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
@@ -804,7 +810,8 @@ Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` 
 `KleinGordonTunedUnitModulus.lean` (639), `KleinGordonTunedFlatEnvelope.lean` (640–641), `KleinGordonTunedExactNorm.lean` (642–643), `KleinGordonTunedRealDatum.lean` (644–646), `KleinGordonTunedEnergyRange.lean` (647–649),
 `KleinGordonBandFrequencySpread.lean` (650–652),
 `KleinGordonModelInsideTrap.lean` (653–655), `KleinGordonModelTrapLower.lean` (656–657), `KleinGordonTunedSubband.lean` (658–660), `KleinGordonTunedSubbandOps.lean` (661–662),
-`KleinGordonTunedSubbandVelocity.lean` (663–664), `KleinGordonTunedBandData.lean` (665–666).
+`KleinGordonTunedSubbandVelocity.lean` (663–664), `KleinGordonTunedBandData.lean` (665–666),
+`KleinGordonSwitchedClock.lean` (667–672).
 All wired into the umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -3809,6 +3816,40 @@ Restating the closed form for an arbitrary band-limited pair rather than a param
 
 so the output of one evolution can be fed into the next.
 
+Statements **667**–**672** close the switching construction. Written in field coordinates — the
+initial field `w` itself rather than the momentum `g` with `w = ⟨D⟩⁻¹g` — the tuned clock is the plain
+rotation
+
+`u(t) = cos(ct)·w + (sin(ct)/c)·h`,   `u̇(t) = −(c sin(ct))·w + cos(ct)·h`   (**667**, **668**),
+
+valid for any band-limited pair `P_R w = w`, `P_R h = h` with `R ≤ √(c²−1+b)`. At the quarter period
+`t = π/(2c)` the cosine dies and the sine is `1`, so the evolution is the exchange
+
+`(w, h) ↦ ((1/c)·h, −c·w)`   (**669**, **670**):
+
+field and velocity swap, and the rate is the exchange factor — in one direction it divides, in the
+other it multiplies.
+
+That asymmetry is the whole mechanism. Both `c₁` and `c₂` are admissible on the *same* band whenever
+`1 ≤ cᵢ² ≤ 1+b` and `R ≤ √(cᵢ²−1+b)`, so the two quarter periods compose, and **`kgSwitchedClock_step`**
+(**671**) states the composite in one theorem: running at rate `c₁` for `π/(2c₁)` and then at rate
+`c₂` for `π/(2c₂)` carries
+
+`(w, h) ↦ (−(c₁/c₂)·w, −(c₂/c₁)·h)`.
+
+Up to the sign this is a *diagonal* map with eigenvalues `c₁/c₂` and `c₂/c₁`, so **672** reads off
+`‖velocity‖ = (c₂/c₁)·‖h‖`: with `c₂ > c₁` the velocity component grows by a fixed factor on every
+cycle, hence by `(c₂/c₁)ⁿ` after `n` cycles, while the field component shrinks by the reciprocal.
+
+This is the first genuinely *growing* clock in the layer, and it is growth of the kind no static
+background can produce. A real frequency-diagonal potential has all its multipliers on the unit
+circle (**639**) and its envelope is flat (**641**) — the energy neither grows nor decays. Switching
+between two such potentials breaks that, and it breaks it at a geometric rate that is explicit in the
+two rates. Since every `c` with `1 ≤ c² ≤ 1+b` is available, the achievable growth factor per cycle
+ranges over `(1, √(1+b)]`, the whole interval permitted by the admissible band. The card's
+exponential estimate is therefore not merely an upper bound with no matching example: switching
+realises exponential growth in the energy, with base determined by the size `b` of the potential.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -3829,6 +3870,11 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-05 — statements 667–672: **the switching composition.** A quarter period at rate `c`
+  exchanges field and velocity as `(w,h) ↦ ((1/c)h, −cw)`; composing the quarter periods of two
+  admissible rates gives `(w,h) ↦ (−(c₁/c₂)w, −(c₂/c₁)h)`, so the velocity norm is multiplied by
+  `c₂/c₁` on every cycle. Switching produces geometric growth where no static real diagonal
+  potential can grow at all.
 - 2026-08-05 — statements 665–666: **arbitrary band-limited data.** The tuned clock's field and
   velocity restated for any band-limited pair, so one evolution's output is the next one's input.
 - 2026-08-05 — statements 663–664: **sub-band generator and velocity.** The tuned generator is `c²`

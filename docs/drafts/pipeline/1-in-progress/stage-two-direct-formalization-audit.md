@@ -39,7 +39,7 @@
 - [x] `mobius-pluecker-normal-cone-diagonal-lift.md`
 - [x] `multiple-elliptic-gamma-face-depth-rigidity.md`
 - [ ] `nearest-neighbor-chain-projective-spectral-maximality.md`
-- [ ] `nearest-neighbor-qudit-projective-spectral-maximality.md`
+- [x] `nearest-neighbor-qudit-projective-spectral-maximality.md`
 - [ ] `positive-shell-koszul-cartier-obstruction-reciprocity.md`
 - [x] `prime-arch-black-hole-reciprocal-spectral-cone-universality.md`
 - [x] `prime-arch-cofinal-orientation-charge-universality.md`

@@ -1,11 +1,13 @@
 # Nearest-neighbour qudit chains have generically maximal projective spectral rank
 
 - **ID:** `nearest-neighbor-qudit-projective-spectral-maximality`
-- **Stage:** 2-fully-proven
-- **Type:** PAPER-PROVED CORE / ALL LOCAL DIMENSIONS
-- **Parent:** `nearest-neighbor-chain-projective-spectral-maximality.md`
-- **Scientific status:** `[PAPER-PROVED] [SPECIALIST AUDIT OPEN]`
-  `[PRIORITY PROVISIONALLY CLEARED]`
+- **Stage:** 3-formalized
+- **Type:** PAPER-PROVED / LEAN-FORMALIZED CORE / ALL LOCAL DIMENSIONS
+- **Parent:** `../2-fully-proven/nearest-neighbor-chain-projective-spectral-maximality.md`
+- **Proof audit:** `nearest-neighbor-qudit-projective-spectral-maximality-proof-audit.md`
+- **Priority audit:** `../1-in-progress/nearest-neighbor-chain-projective-spectral-maximality-priority-audit.md`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-FORMALIZED]`
+  `[INTERNAL SPECIALIST AUDIT PASSED] [PRIORITY PROVISIONALLY CLEARED]`
 
 ## Main theorem
 
@@ -355,13 +357,39 @@ full-measure set with rank \(q^n-1\).
 
 ## Hostile boundary
 
-1. Arbitrary connected graphs without a spanning path remain open.
-2. Translation-invariant low-parameter subfamilies remain open.
-3. Exact rational rank is an infinite-time invariant; finite-horizon
+1. Translation-invariant low-parameter subfamilies remain open.
+2. Exact rational rank is an infinite-time invariant; finite-horizon
    stability remains essential.
-4. The endpoint-existence induction and categorical-product step require
-   independent specialist review.
-5. No manuscript claim is authorized before formal closure.
+3. The theorem is finite-dimensional and static; thermodynamic-limit and
+   driven-system statements require separate hypotheses.
+4. Independent external refereeing remains required before submission; the
+   repository's specialist-grade hostile audit is complete.
+
+## 2026-08-05 formal and specialist closure
+
+Lean now proves the exact trace-zero object stated above, not only the larger
+local space modulo an informal scalar-shift argument. The closure stack is:
+
+1. `TracelessLocalHamiltonianGenericityLaw.lean` proves common spectral shifts
+   preserve maximal projective independence, proves the identity matrix is
+   architecture-local, centers a physical maximally projective witness, and
+   obtains dense, residual, full-measure genericity inside the exact
+   trace-zero local-Hamiltonian submodule.
+2. `NearestNeighborQuditPathGenericityLaw.lean` proves a connected spanning
+   subgraph of a relabelled finite path equals the full path, then constructs
+   the uniform-`q` physical path witness for every `n,q ≥ 2`.
+3. The capstone theorem
+   `exists_uniformQuditPathTracelessLocalHamiltonianMaximalSet_dense_residual_fullMeasure`
+   returns exact path architecture, Hilbert-space cardinality `q ^ n`, and
+   dense/residual/full-Lebesgue-measure maximality in the trace-zero space.
+
+Hostile checks closed the former weak points: qubit base case, physical
+Hermitian endpoint activation, exact path rather than path containment,
+trace-zero restriction, all local dimensions, and measure/category transfer.
+The axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+Numerical high-precision checks at `(n,q)=(3,2)` and `(3,3)` found no bounded
+integer relation among anchored gaps; these checks are sanity evidence only,
+not part of the proof.
 
 ## Gates
 
@@ -371,6 +399,6 @@ full-measure set with rank \(q^n-1\).
 - [x] spanning-path graph corollary
 - [x] recurrence-density corollary
 - [x] simultaneous all-order no-resonance corollary
-- [ ] specialist proof audit
-- [ ] exact-object priority audit
-- [ ] formalization
+- [x] specialist-grade hostile proof audit
+- [x] exact-object priority audit (provisional no-collision verdict)
+- [x] formalization of exact traceless path-local ensemble

@@ -5017,3 +5017,49 @@ receive a new title and an independent significance audit.
   upper side is the exact open core.  This replacement removes all prose
   carrier categories and can be falsified by one larger aggregate shortcut
   family.
+- 2026-08-05 -- The first direct attack on the observer-rank conjecture closed
+  the entire fixed-block competitor class.  If a coefficient subspace `U`
+  sends the observer action into a fixed real channel `K`, then exact
+  rank-nullity gives
+  `dim U <= m-v_Phi+dim K`, with the sharp preimage identity
+  `dim T_Phi^(-1)(K)=m-v_Phi+dim(K intersect range T_Phi)`.  Hence Hamiltonians
+  preserving a fixed complex `d`-dimensional easy block containing the input
+  occupy coefficient dimension at most `m-v_Phi+2(d-1)`.  Bounded or
+  `o(n^q)` block diagonalizations cannot beat the stationary-kernel exponent
+  at leading order for the full fixed-`q` Pauli family.  The abstract theorem,
+  QFI Gram/rank identity, and coefficient-kernel/eigenvector equivalence are
+  axiom-clean Lean theorems in
+  `HTGeometry/ObserverVisibleLocalTimeDimension.lean`.  This does not cover
+  moving blocks, quadratic/Gaussian state manifolds, recurrence-component
+  entropy, or the arbitrary circuit selector; those are the next hostile
+  competitors.
+- 2026-08-05 -- The next conjecture-protocol pass used the RHTower corpus's
+  successful exceptional-carrier pattern: a cancelled direction cannot be
+  discarded; it must be proved structurally harmless or charged to a
+  transverse defect.  This closed all pairwise-commuting Pauli carriers.  On
+  each exact support `S`, binary symplectic nondegeneracy bounds a commuting
+  nonidentity fibre by `2^|S|-1`; summing gives
+  `r <= sum_(k<=q)(2^k-1)binom(n,k)` and therefore
+  `m-r >= v_(n,q)`.  The complete theorem, binomial identity, and
+  observer-rank comparison are formalized and axiom-audited in
+  `HTGeometry/CommutingPauliObserverRankDominance.lean`.  The remaining
+  structured threat requires genuinely noncommuting cancellation in the
+  observer-stationary kernel.
+- 2026-08-05 -- Froze the wider conjectural interpretation in
+  `observer-spectral-shortcut-action-law.md`.  Proposed shortcut action is
+  the minimum of local observer information `v_(n,q) log t` and the exact
+  completed spectral-orbit shortcut information of the circuit-easy target.
+  Observer-rank growth, finite-capacity plateau, and recurrence are then three
+  regimes of one information law rather than pasted results.  This is a wild
+  conjecture, not a paper claim.  Its first open core is a selector-uniform
+  exceptional-carrier dichotomy proving that mixed resonance must pay either
+  observer codimension or global target information.
+- 2026-08-05 -- Immediate hostile attack rejected Fubini--Study target mass as
+  the spectral branch of that conjecture: a fixed-locality endpoint ensemble
+  has only polynomially many coefficient parameters, and no unconditional
+  ensemble-transfer theorem makes its circuit-target mass Fubini--Study.
+  The repaired law uses exact Haar mass on each Hamiltonian's completed
+  projective spectral phase closure, averaged over the same Gaussian
+  ensemble.  Fubini--Study rate--distortion is retained only as a separately
+  named delocalization/comparison theorem required for the strongest plateau
+  interpretation.

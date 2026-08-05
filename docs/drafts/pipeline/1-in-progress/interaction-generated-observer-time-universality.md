@@ -5,7 +5,7 @@
 - **Type:** UNIVERSAL LAW / QUANTUM RECURRENCE / LOCAL INTERACTION /
   OBSERVER RELATIVITY
 - **Parent results:**
-  - `../2-fully-proven/nearest-neighbor-qudit-projective-spectral-maximality.md`
+  - `../3-formalized/nearest-neighbor-qudit-projective-spectral-maximality.md`
   - `../2-fully-proven/local-interaction-replica-collision-extremality.md`
   - `../2-fully-proven/weak-interaction-singular-quantum-time-expansion.md`
   - `../3-formalized/new_scientific_knowledge/universal-quantum-recurrence-anatomy-law.md`

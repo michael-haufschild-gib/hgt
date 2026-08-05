@@ -282,7 +282,7 @@ interaction makes them arithmetically independent.
 The path case of `(9)` is now paper-proved for every \(q\geq2\), and the
 same theorem follows for every interaction graph containing a spanning path.
 See
-`../2-fully-proven/nearest-neighbor-qudit-projective-spectral-maximality.md`.
+`../3-formalized/nearest-neighbor-qudit-projective-spectral-maximality.md`.
 Only connected graphs without a spanning path remain in open core 1.
 
 ### V. Dissipation, infinite spectra and the arrow boundary

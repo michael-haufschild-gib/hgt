@@ -166,3 +166,80 @@ unevaluated (finish with `norm_num`); `{q} ≠ insert q ∅` syntactically.
 
 - 2026-08-05 — T0–T3′ formalized unconditionally; T4 (general k, Hurwitz form) remains
   paper-level on this card.
+
+## 2026-08-05 THE TWO-SCALE REPULSION PROBLEM: SOLVED (locking law)
+
+**Question.**  What does T0 force about the separation of the parity cluster — can
+cluster discriminants be lower-bounded inductively across the prime ladder?
+
+**Answer (three theorems).**
+
+**R1 (current two-scale law).**  Evaluating T0 at the parity point:
+`J_{S∪p}(x) = J_S(x) − J_S(px)` — the Möbius–Laplace current itself is the ladder
+generator; the totient recursion `φ_{S∪p} = (p−1)φ_S` is its linearization at `x = 0`.
+
+**R2 (repulsion–current locking; general k, paper proof).**  Let `Disc_S(x)` be the
+discriminant of `P_S(·,x)`, `k = |S|`.  Then
+
+```text
+Disc_S(x) / J_S(x)^{k−1}  →  (−1)^{k(k−1)/2}·k^k     (x → 0⁺).
+```
+
+*Proof.*  Discriminants are translation-invariant, so compute at the parity jet
+`P(−1+w) = ∑ e_j(x)w^j`; normalize `ĉ_j := e_j/e_k` (`e_k → 1`).  `Disc` is the universal
+isobaric polynomial of weight `k(k−1)` in the `ĉ_j` (`ĉ_j` has weight `k−j`), every
+`ĉ_j = O(x)` (T2), and a monomial with `m` factors contributes `O(x^m)`; weight `k(k−1)`
+with factors of weight ≤ `k` forces `m ≥ k−1`, with equality **only** for `ĉ_0^{k−1}`.
+Its coefficient is read off from `Disc(w^k + c_0) = (−1)^{k(k−1)/2} k^k c_0^{k−1}`, and
+`ĉ_0 = J·(1+O(x))` with `J(x) = (−1)^{k+1}φ_S·x + O(x²)` (T2), so the remainder monomials
+are `O(x^k) = o(J^{k−1})`.  ∎  (Checks: `k=2`: `Disc₂/J → −4`; `k=3`: `Δ/J² → −27`,
+matching T3's `−27φ²x²`.)
+
+Consequently `|Disc_S(x)| ≥ (k^k/2)·(φ_S x)^{k−1}` for small `x`: **yes**, the cluster
+discriminants are lower-bounded inductively across the ladder, with constants driven by
+R1.  Root-level reading: the `k`-star's pairwise separations `≍ x^{1/k}` never
+degenerate faster than the current allows.
+
+**R3 (the reversed rung).**  Because the leading repulsion invariant is a *pure power of
+the current*, repulsion is not an independent rung: any lower bound on `|Disc|` is
+equivalent to the trivial current asymptotics.  The (G2)-relevant direction is the
+reverse inequality, which the locking law makes eventual and unconditional:
+
+```text
+J_S(x)² ≤ |Disc_S(x)|        (k = 3, all small x > 0),
+```
+
+i.e. **anomalous current cancellation can only come from anomalous cluster collapse** —
+sub-`x^{k−1}` discriminant decay.  The graded route to (G2) is therefore: upper bounds on
+the parity-cluster discriminant (partial vortex collapse), not repulsion lower bounds.
+The singularity-theoretic content of R2 is an `A_{k−1}`-unfolding computation; the new
+knowledge is the arithmetic identification (versal parameter = Möbius current, intensity
+= totient, ladder = R1) and the direction-reversal R3 for the Route E seam programme.
+
+- 2026-08-05 — R1–R3 proved on paper (this entry); Lean next: R1 (all `k`), the free
+  degeneration, the `k = 2` and `k = 3` locking limits, and R3.
+
+## 2026-08-05 R1–R3 FORMALIZED: `RHTower/GibbsClusterRepulsion.lean`
+
+Wired into `RHTower.lean`; targeted build 8656 jobs; no `sorry`; axioms only
+`propext, Classical.choice, Quot.sound`; zero warnings.  Namespace `RHTower.GibbsGas`:
+
+- `gibbs_current_insert` (**R1**, all k, all x), `gibbsDiag_zero_parity` (free cluster
+  degeneration `w^k`), `slope_limit_right` (reusable slope-limit bridge);
+- `tendsto_pair_current_div` / `tendsto_triple_current_div` — the current slopes
+  `−(p−1)(q−1)` and `+(p−1)(q−1)(r−1)` from the exported `hasDerivAt_gibbs_current`;
+- `tendsto_pairDisc_div_current` (**R2, k=2**: `Disc₂/J → −4`),
+  `tendsto_tripleDisc_div_sq_current` (**R2, k=3**: `Disc₃/J² → −27`) — the locking law,
+  with `pairJet*/tripleJet*` jets, `gibbsDiag_pair_jet`/`gibbsDiag_triple_jet` tying the
+  discriminants to the gas;
+- `eventual_current_sq_le_abs_tripleDisc` (**R3**, the reversed rung `J² ≤ |Disc₃|`).
+
+Lean traps: `Tendsto.div` produces the Pi-division `(f / g)` — `simp only [Pi.div_apply]`
+before pointwise rewrites; `div_div_div_cancel_right₀` takes the nonzero proof FIRST
+(`(hc) (a b)`); `field_simp` frequently closes the goal (trailing `ring` then errors);
+prefer `rw [div_eq_iff ...]` over `field_simp` for value computations under `set`-bound
+atoms.
+
+- 2026-08-05 — R1–R3 formalized unconditionally.  General-k R2 remains paper-level (needs
+  a general discriminant; mathlib has none — building it is a separate infrastructure
+  decision).

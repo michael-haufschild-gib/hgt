@@ -312,7 +312,11 @@ law beyond this precisely defined projective rank.
 
 ## Formalization status
 
-No Lean code.  Paper proof is dependency-closed.  Exact formal targets are:
-kernel Hamiltonians preserve the initial ray under the exponential; rank-nullity
-for the realified observer-action map; product-state local-support image rank;
-and the existing Gaussian-tube/Duhamel transport bridge.
+The exact QFI Gram factorization, QFI/observer-action rank equality,
+coefficient-kernel/eigenvector equivalence, and fixed observer-channel
+rank-nullity laws are `[LEAN-PROVED]` in
+`HTGeometry/ObserverVisibleLocalTimeDimension.lean`; see the Stage-3 card
+`observer-visible-qfi-rank-identity.md`.  The exponential ray-preservation
+step, annular/Gaussian tube laws, and exact fixed-`q` product-state rank count
+remain paper-only.  Therefore this full card remains at Stage 2 and no
+`[LEAN-PROVED]` label is attached to its complexity-escape conclusions.

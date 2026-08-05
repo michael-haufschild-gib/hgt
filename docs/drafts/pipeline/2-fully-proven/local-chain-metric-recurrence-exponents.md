@@ -146,7 +146,7 @@ analytic map
  W=\{x\in\mathbb R^D:\sum_jx_j=0\}.                  \tag{10}
 \]
 The qudit endpoint-extension theorem in
-`nearest-neighbor-qudit-projective-spectral-maximality.md` proves that on one
+`../3-formalized/nearest-neighbor-qudit-projective-spectral-maximality.md` proves that on one
 such chart there is no constant real affine relation among the eigenbranches
 except trace.
 Consequently the positive-order derivatives of \(F\), up to some finite

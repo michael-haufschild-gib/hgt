@@ -1,14 +1,15 @@
 # Priority audit — generic maximal projective rank in a local quantum chain
 
-- **Object audited:** `../2-fully-proven/nearest-neighbor-chain-projective-spectral-maximality.md`
-- **Audit date:** 2026-07-29
+- **Object audited:** `../3-formalized/nearest-neighbor-qudit-projective-spectral-maximality.md`
+- **Audit date:** 2026-07-29; current-source refresh 2026-08-05
 - **Status:** `[PRIMARY AUDIT COMPLETE TO CURRENT SEARCH]`
   `[NO EXACT COLLISION FOUND] [PROVISIONALLY NEW]`
-- **Claim whose priority matters:** in the full real coupling space of arbitrary
-  one-site and nearest-neighbour two-site qubit Hamiltonians on an open path,
+- **Claim whose priority matters:** for every fixed \(q\geq2\), in the full
+  real coupling space of arbitrary one-site and nearest-neighbour two-site
+  qudit Hamiltonians on an open path,
   Lebesgue-almost every Hamiltonian has no rational affine relation among its
-  \(2^n\) eigenvalues except trace. Equivalently, its projective spectral rank
-  is \(2^n-1\).
+  \(q^n\) eigenvalues except trace. Equivalently, its projective spectral rank
+  is \(q^n-1\).
 
 ## Exact-object distinction
 
@@ -23,8 +24,8 @@ The claim is not any of the following weaker statements:
 
 It excludes every integer or rational relation
 \[
- \sum_{j=1}^{2^n}m_jE_j=0,\qquad \sum_jm_j=0,
- \qquad m\in\mathbb Z^{2^n},
+ \sum_{j=1}^{q^n}m_jE_j=0,\qquad \sum_jm_j=0,
+ \qquad m\in\mathbb Z^{q^n},
 \]
 simultaneously, for a static bounded-degree finite-range Hamiltonian family.
 In particular it implies every finite-order \(q\)-no-resonance condition
@@ -41,7 +42,9 @@ or control only one finite order.
 | Wells, *Quantum spin chains and random matrix theory* (2014), [arXiv:1410.1666](https://arxiv.org/abs/1410.1666) | Studies random nearest-neighbour chain ensembles, Gaussian density of states, numerical level correlations and simple spectra for many translation-invariant examples. | It supplies ensemble and numerical spectral evidence, not an all-order arithmetic theorem. No maximal projective rank or rational-independence statement for the static local coupling space is proved. |
 | Riddell and Pagliaroli, *No-resonance conditions, random matrices, and quantum chaotic models* (2024), [arXiv:2307.05417](https://arxiv.org/abs/2307.05417) | Studies finite-\(q\) no-resonance conditions statistically in random matrices and a chaotic model, finding Poisson rather than repulsive sum statistics and allowing violations. | It explicitly describes higher no-resonance as usually assumed and studies statistics/violations. It gives no all-\(q\), almost-every local-chain theorem. |
 | Riddell and Bertini, *Rationally independent free fermions with local hopping* (2024), [arXiv:2404.12100](https://arxiv.org/abs/2404.12100) | Engineers rational independence of the single-particle energies in one-dimensional free-fermion models. | Many-body energies remain additive combinations of only \(O(n)\) one-particle frequencies, so their projective rational rank is at most \(O(n)\), not \(2^n-1\). The construction also uses system-size-dependent hopping ranges indexed by divisors. |
+| Huang, *Extensive entropy from unitary evolution* (2021), [arXiv:2104.02053](https://arxiv.org/abs/2104.02053) | Proves almost-everywhere nondegenerate gaps for geometrically local Hamiltonians. | Pair-gap nondegeneracy is one finite-order condition. It does not exclude arbitrary balanced integer relations or prove projective rank \(q^n-1\). |
 | Kotowski and Oszmaniec, *Tight bounds on recurrence time in closed quantum systems* (2026), [arXiv:2601.10409](https://arxiv.org/abs/2601.10409) | Gives deterministic recurrence upper bounds and proves generic saturation for unrestricted random Hamiltonians. | It does not identify the arithmetic rank or prove saturation/maximal rank inside static nearest-neighbour coupling space. |
+| Anand, Valluri, Davis and Ghose, *Quantum recurrences and arithmetic of Floquet dynamics* (2026), [arXiv:2508.09933](https://arxiv.org/abs/2508.09933) | Classifies exact state-independent Floquet recurrences through cyclotomic arithmetic. | Exact periods of driven Floquet operators are a different object. No almost-everywhere maximal projective rank theorem for static tensor-local path Hamiltonians follows. |
 | Oszmaniec, Kotowski, Horodecki and Hunter-Jones, *Saturation and recurrence of quantum complexity in random local quantum dynamics* (2024), [arXiv:2205.09734](https://arxiv.org/abs/2205.09734) | Proves complexity saturation and recurrence in random local circuits and stochastic local Hamiltonian evolution. | The ensemble is time-random dynamics, not one fixed generic nearest-neighbour Hamiltonian, and the object is circuit complexity rather than all-order spectral arithmetic. |
 | Cohen, *The Galois group of generic symmetric matrices* (1990), [EuDML](https://eudml.org/doc/115721) | Establishes full generic spectral Galois behaviour for unrestricted symmetric matrices. | It shows that maximal root arithmetic is classical in an ambient matrix ensemble. It does not treat the polynomial-size tensor-local subspace. |
 | Poláčik and Valdebenito, *Some generic properties of Schrödinger operators with radial potentials* (2019), [journal](https://doi.org/10.1017/prm.2018.129) | Proves residual rational independence of discrete eigenvalues below essential spectrum for a class of radial Schrödinger potentials. | Generic spectral nonresonance is therefore not new as an abstract perturbation phenomenon. The system class, infinite-dimensional topology and proof differ from finite two-body tensor-local chains, and no recurrence-rank conclusion for that local many-body space follows. |
@@ -68,11 +71,11 @@ and restates it as:
 
 The nearest-neighbour theorem answers the projectively meaningful version:
 **no**. Trace is unavoidable, but outside that common-energy relation,
-almost every static nearest-neighbour two-body qubit Hamiltonian has no
+almost every static nearest-neighbour two-body qudit Hamiltonian has no
 hidden resonance of any order. Since the path-local space is a linear
 subspace of the full two-body space and contains a nonzero witness for every
 rational-relation polynomial, the same conclusion follows a fortiori for
-almost every unrestricted two-body Hamiltonian and for every qubit
+almost every unrestricted two-body Hamiltonian and for every qudit
 interaction graph containing a spanning path.
 
 This talk is evidence of an explicitly asked community question, not a
@@ -155,5 +158,26 @@ specialist review remains mandatory before submission.
 
 Priority fails if a prior source proves, for the same full static path-local
 coupling space or a strictly smaller physical subfamily, that almost every
-spectrum has rational projective rank \(2^n-1\), or proves a theorem from which
+spectrum has rational projective rank \(q^n-1\), or proves a theorem from which
 that statement follows immediately.
+
+## 2026-08-05 current-source closure
+
+Search was rerun through current arXiv versions and journal records, including
+Floquet exact recurrence, recurrence-time bounds, geometrically local
+nondegenerate gaps, free-fermion rational independence, all-order spectral
+form-factor moments, graph-sparse matrices, and continuum-control generic
+nonresonance. No source found proves the exact object: full exponential
+projective rank almost everywhere in a static one-dimensional bounded-degree
+tensor-local Hamiltonian space with only polynomially many coefficients.
+
+The priority claim is therefore deliberately narrow:
+
+> A polynomial-dimensional static nearest-neighbour qudit family generically
+> realizes projective spectral rank `q ^ n - 1`, discharging all finite-order
+> no-resonance premises simultaneously and fixing the exact recurrence-density
+> exponent.
+
+**Verdict:** exact-object priority audit passed provisionally; no exact
+collision found. This is not proof against unindexed or unpublished work and
+must be rechecked during journal submission.

@@ -3,7 +3,7 @@
 - **ID:** `connected-graph-projective-spectral-maximality`
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / ACTIVE FORMALIZATION
-- **Parent:** `../2-fully-proven/nearest-neighbor-qudit-projective-spectral-maximality.md`
+- **Parent:** `../3-formalized/nearest-neighbor-qudit-projective-spectral-maximality.md`
 - **Scientific status:** `[NEW TARGET] [EXTERNAL PRIORITY PROVISIONAL]`
 
 ## Target theorem
@@ -88,4 +88,3 @@ complete.
    constant.
 5. No manuscript claim is authorized before physical locality, genericity,
    and recurrence corollaries compile without forbidden axioms.
-

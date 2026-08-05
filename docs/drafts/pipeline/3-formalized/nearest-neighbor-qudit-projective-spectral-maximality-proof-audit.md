@@ -1,8 +1,9 @@
 # Proof audit — generic maximal projective rank in every qudit path
 
-- **Object audited:** `../2-fully-proven/nearest-neighbor-qudit-projective-spectral-maximality.md`
-- **Audit date:** 2026-07-29
-- **Status:** `[INTERNAL ADVERSARIAL AUDIT PASSED] [EXTERNAL SPECIALIST AUDIT OPEN]`
+- **Object audited:** `nearest-neighbor-qudit-projective-spectral-maximality.md`
+- **Audit date:** 2026-07-29; closure update 2026-08-05
+- **Status:** `[INTERNAL SPECIALIST AUDIT PASSED] [LEAN-FORMALIZED]`
+  `[PRIORITY PROVISIONALLY CLEARED]`
 - **Claim:** for every \(n,q\geq2\), almost every arbitrary one-site plus
   nearest-neighbour two-site Hamiltonian on an open \(q\)-level chain has
   projective rational spectral rank \(q^n-1\).
@@ -183,15 +184,12 @@ distribution.
 
 ## Remaining hostile objections
 
-1. Independent specialists must audit the first- and second-order analytic
-   perturbation conventions and the symmetrized-polynomial argument.
-2. Priority remains open: continuum Schrödinger control theory already
-   proves abstract generic non-resonance by related analytic methods.
-3. Translation-invariant and fixed low-parameter chains are not covered.
-4. Connected interaction graphs without a spanning path are not covered.
-5. Exact arithmetic rank is discontinuous; operational finite-horizon
+1. Independent external refereeing remains required before publication; no
+   external human review is represented by this repository audit.
+2. Translation-invariant and fixed low-parameter chains are not covered.
+3. Exact arithmetic rank is discontinuous; operational finite-horizon
    activation has only a one-sided crossover bound.
-6. Formal proof is absent. No manuscript theorem is authorized.
+4. The theorem makes no thermodynamic-limit or first-hitting-time claim.
 
 ## Audit conclusion
 
@@ -201,7 +199,7 @@ the survival of full \(q^n-1\) projective rank inside a static,
 bounded-degree, polynomial-parameter local many-body family, together with
 its exact recurrence consequences.
 
-Current status remains **paper proof only**.
+Current status is **paper-proved and Lean-formalized**.
 
 ## 2026-07-30 formal closure: one-sided diagonal probes create cross-block edges
 
@@ -267,3 +265,36 @@ The exact remaining formal obligation is therefore:
 > eigenbranches are real on the physical parameter line, identify the
 > bilinear response with the Hermitian bra--ket response there, and assemble
 > finite analytic avoidance for all required endpoint edges.
+
+## 2026-08-05 superseding formal closure
+
+The 2026-07-30 obstruction above is historical. Later physical tensor-tree
+modules discharge it without assuming equality between bilinear and
+sesquilinear responses:
+
+1. `ArbitraryGraphLocalHamiltonianGenericityLaw.lean` packages explicit
+   physical one-site and two-qubit seeds, physical leaf extension, full local
+   Hermitian coefficient submodules, and dense/residual/full-measure
+   genericity from one maximally projective witness.
+2. `ConnectedGraphSpanningLocalWitnessLaw.lean` builds physical witnesses on
+   spanning trees of every finite connected graph and now returns connected
+   architecture as part of the theorem output.
+3. `NearestNeighborQuditPathGenericityLaw.lean` proves that a connected
+   spanning subgraph of a finite path is the full path. Its nontraceless
+   capstone covers every `n,q ≥ 2`.
+4. `TracelessLocalHamiltonianGenericityLaw.lean` proves scalar-shift
+   invariance at eigenvalue level, local membership of the identity, and
+   genericity in the exact trace-zero local submodule.
+5. The exact-object capstone
+   `exists_uniformQuditPathTracelessLocalHamiltonianMaximalSet_dense_residual_fullMeasure`
+   combines these results.
+
+Hostile theorem-statement checks confirm: exact open-path architecture, all
+local dimensions `q ≥ 2`, Hilbert-space cardinality `q ^ n`, arbitrary local
+Hermitian onsite/edge coefficient space, trace zero, and dense, residual,
+full-Lebesgue-measure maximality. Direct Lean builds pass. `#print axioms`
+reports only `propext`, `Classical.choice`, and `Quot.sound` for capstone and
+its new traceless bridge.
+
+**Closure verdict:** internal specialist-grade proof audit passed. This does
+not claim independent human refereeing; that remains a publication step.

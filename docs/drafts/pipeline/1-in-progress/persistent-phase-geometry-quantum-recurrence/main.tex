@@ -1,0 +1,706 @@
+\documentclass[10pt]{article}
+
+\usepackage[a4paper,margin=0.78in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{booktabs,tabularx,longtable,microtype,enumitem,multicol,float}
+\usepackage{xcolor,tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,
+  citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\R}{\mathbb R}
+\newcommand{\C}{\mathbb C}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\T}{\mathbb T}
+\newcommand{\ee}{\mathrm e}
+\newcommand{\ii}{\mathrm i}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\Rel}{\mathcal L}
+\newcommand{\Hull}{\mathcal T}
+\newcommand{\Carrier}{\mathcal C}
+\newcommand{\Hwater}{\mathcal H}
+\newcommand{\Fid}{\mathcal F}
+\newcommand{\sinc}{\operatorname{sinc}}
+
+\title{\textbf{Persistent phase geometry of quantum recurrence}\\
+\large Four structural laws for loss, spectral constraints, observability, and finite-horizon inference}
+\author{Michael Haufschild}
+\date{5 August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Quantum recurrence is usually divided into separate questions about existence,
+waiting time, observability, dissipation and prediction.  We prove that these
+are shadows of one object: the persistent projective phase geometry selected
+by the evolution and the observer.  It consists of a persistent spectral
+carrier, the kernel of its balanced energy-detuning map, and an
+observer-weighted metric on the resulting compact phase hull.
+
+Four laws follow.  First, dissipation selects the carrier: for every finite
+contraction, peripheral spectral mass is the exact asymptotic return-amplitude
+ceiling, while arbitrary stationary spectra obey a point-spectrum and
+collision-hierarchy law.  Second, constraints and temporal directions are
+conserved.  On a finite $D$-level carrier,
+\[
+  \tau+\rho=D-1,
+\]
+and the completed future is exactly the annihilator of the balanced relation
+lattice.  Interactions remove relations and convert them one-for-one into
+phase directions.  This mechanism persists under geometric locality: for
+every $n,q\ge2$, almost every traceless static Hamiltonian with arbitrary
+onsite and nearest-neighbour terms on an open $q$-level chain has
+$\rho=0$ and $\tau=q^n-1$.  The maximal set is dense and residual as well
+as full measure.  Its strict projective-return frequency is exactly
+\[
+ \left[\frac{2\arcsin(\varepsilon/2)}{\pi}\right]^{q^n-1},
+\]
+and time zero is its only exact projective return.
+
+Third, a single reverse-water functional controls both intrinsic return-target
+information and the least worst-spectrum recurrence deadline, with explicit
+finite errors; a coherence graph gives the exact phase capacity visible to
+any finite observer.  Fourth, finite-horizon records do not stably determine
+the completed geometry.  For any finite number of energy moments, any strict observation
+window and any target time, one fixed state and projector admit an isospectral
+family of nonnegative nearest-neighbour Hamiltonians whose earlier return
+records agree arbitrarily well while the later return probability fills
+$[0,1]$.  The construction lifts to all free-fermion sectors, has a sharp
+spectral-support threshold, and forces minimax forecast error $1/2$.
+Together the laws cover closed and contractive finite dynamics, countable
+pure-point systems, arbitrary stationary spectral measures, local spin
+realizations and exact inference limits without random-matrix or
+nonresonance assumptions.
+\end{abstract}
+
+\noindent\textbf{One-sentence summary.}
+Loss selects which phases survive, interactions remove their exact
+constraints, observers decide their metric cost, and finite-horizon records
+do not stably determine the completed phase geometry.
+
+\section{One object behind four recurrence problems}
+
+The quantum recurrence theorem guarantees approximate returns for finite
+closed systems \cite{BocchieriLoinger1957}.  Recent work bounds recurrence
+times for arbitrary and random spectra \cite{KotowskiOszmaniec2026,
+GuptaShort2026}, identifies exact arithmetic Floquet periods
+\cite{AnandEtAl2026}, reports isolated many-body recurrences
+\cite{RauerEtAl2018}, and proposes coupled-multiqubit recurrence tests
+\cite{KarimiEtAl2026}.  A unified treatment must answer four questions:
+\begin{equation}
+ \boxed{\text{What survives?}\quad\text{What constrains it?}\quad
+ \text{What does an observer resolve?}\quad\text{What can a record predict?}}
+ \label{eq:fourquestions}
+\end{equation}
+
+We show that all four questions act on the same ordered data,
+\begin{equation}
+ \text{persistent carrier}
+ \longrightarrow
+ \text{relation kernel / phase hull}
+ \longrightarrow
+ \text{observer metric}
+ \longrightarrow
+ \text{finite-horizon record}.
+ \label{eq:pipeline}
+\end{equation}
+This ordering matters.  Dissipation can delete phase coordinates.  An
+interaction can retain the carrier but remove exact relations.  An observer
+can be blind to directions present in the full hull.  Finally, a scalar
+return record known to any prescribed positive uniform accuracy on a strict
+finite interval need not stably identify the geometry that determines a
+later return.
+
+Abstract torus dynamics alone does not show whether strict spatial locality
+can realize the full projective phase rank of an exponentially large Hilbert
+space.  Existing no-resonance and recurrence results either assume the
+relevant arithmetic condition, establish only finite-order gap
+nondegeneracy, or use unrestricted or random spectra
+\cite{Huang2021,RiddellBertini2024,CamposVenutiOdavicHamma2026}.  Here a
+static, finite-range, bounded-degree family is shown to eliminate every
+nontrivial balanced relation generically.
+
+A distinct question is whether finite observations identify the phase
+geometry that controls later recurrence.  General quantum extrapolation
+results exhibit broad ``fog-bank'' phenomena
+\cite{ManosWeilenmannNavascues2025}.  The theorem proved here isolates a
+fixed-protocol boundary with a common spectrum, local nearest-neighbour
+generators, arbitrary finite moment agreement, arbitrarily accurate uniform
+continuous-window agreement, and every exact later return probability.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  font=\small,>=Latex,
+  box/.style={draw,rounded corners,align=center,text width=2.50cm,
+    minimum height=1.25cm,inner sep=4pt},
+  arr/.style={->,thick},
+  arrowlabel/.style={font=\scriptsize,fill=white,inner sep=1.5pt},
+  note/.style={align=center,font=\footnotesize,text width=2.50cm}
+]
+\node[box,fill=blue!7] (c) {persistent carrier $\Carrier$\\
+  point/peripheral spectral mass};
+\node[box,fill=purple!7,right=1.60cm of c] (k)
+  {kernel and hull\\$\Rel=\ker D_E,\ \Hull=\Rel^\perp$};
+\node[box,fill=orange!9,right=1.60cm of k] (m)
+  {observer metric\\weights and coherence graph};
+\node[box,fill=green!8,right=1.60cm of m] (r)
+  {finite-horizon record\\samples, windows\\and moments};
+\draw[arr] (c)--node[above=2pt,arrowlabel]{selection}(k);
+\draw[arr] (k)--node[above=2pt,arrowlabel]{metricization}(m);
+\draw[arr] (m)--node[above=2pt,arrowlabel]{observation}(r);
+\node[note,below=0.46cm of c] {loss changes carrier};
+\node[note,below=0.46cm of k] {interaction changes kernel};
+\node[note,below=0.46cm of m] {observer changes capacity};
+\node[note,below=0.46cm of r] {record does not\\stably fix geometry};
+\end{tikzpicture}
+\caption{\textbf{Persistent phase geometry.}  Four apparently separate
+recurrence problems are successive transformations or restrictions of one
+object.}
+\label{fig:geometry}
+\end{figure}
+
+\section{Persistent phase geometry}
+
+Consider first a finite pure-point packet with distinct occupied energies
+$E=(E_j)_{j\in\Carrier}$, positive weights $w_j$, and
+$\sum_jw_j=1$.  Global phase is physically invisible, so integer
+characters must be balanced.  Define
+\begin{align}
+ P_{\Carrier}&=\left\{k\in\Z^{\Carrier}:\sum_jk_j=0\right\},
+ \label{eq:projectivecharacters}\\
+ D_E(k)&=\sum_j k_jE_j,\qquad
+ \Rel_E=\ker D_E,                                      \label{eq:detuning}\\
+ \Hull_E&=\left\{z\in\T^{\Carrier}/\T:
+             z^k=1\ \text{for all }k\in\Rel_E\right\}. \label{eq:hull}
+\end{align}
+The relation rank is $\rho(E)=\rank_{\Z}\Rel_E$.  The temporal rank is
+\begin{equation}
+ \tau(E)=\dim_{\Q}\operatorname{span}_{\Q}
+       \{E_j-E_{j_0}:j\ne j_0\},                       \label{eq:tau}
+\end{equation}
+independent of the anchor $j_0$.  The orbit closure of
+$t\mapsto(\ee^{-\ii t(E_j-E_{j_0})})_{j\ne j_0}$ is $\Hull_E$.
+For a balanced character $k$, write $k=k^+-k^-$ with disjoint
+nonnegative parts and define its height by
+$h(k)=|k^+|_1=|k^-|_1$.  The order-$r$ fidelity replica is
+$|\sum_jw_jz_j|^{2r}$.  Throughout,
+$\sinc(u)=\sin(u)/u$ for $u\ne0$ and $\sinc(0)=1$.
+
+The state supplies a metric through its fidelity defect
+\begin{equation}
+ d_w(z)=1-\left|\sum_jw_jz_j\right|.                    \label{eq:metric}
+\end{equation}
+More general observers replace $d_w$ by an exact phase-energy quadratic
+form.  For nonunitary finite dynamics, the carrier is the semisimple
+peripheral spectral packet.  For arbitrary stationary spectral measures it
+is the pure-point component, with continuous parts contributing to the
+collision law but not persistent coherent mass.  These definitions lead to
+four laws.
+
+\section{Law I: loss selects the persistent carrier}
+
+Let $T$ be a contraction on a finite-dimensional complex Hilbert space and
+let $x$ be an initial vector.  The peripheral eigenvalues
+$|\lambda|=1$ are semisimple.  Writing $x_{\lambda}$ for the corresponding
+spectral components, define
+\begin{equation}
+ M_{\rm per}(T,x)=\sum_{|\lambda|=1}\|x_{\lambda}\|^2. \label{eq:peripheral}
+\end{equation}
+
+\begin{theorem}[Persistent-carrier selection law]
+\label{thm:carrier}
+For every finite contraction $T$ and vector $x$,
+\begin{equation}
+ \langle x,T^nx\rangle
+ =\sum_{|\lambda|=1}\lambda^n\|x_\lambda\|^2+r_n,
+ \qquad r_n\longrightarrow0.                           \label{eq:persistentdecomp}
+\end{equation}
+The scalar $M_{\rm per}(T,x)$ is the exact asymptotic return-amplitude
+ceiling: every target strictly below it is reached after every prescribed
+delay, whereas every target strictly above it is eventually impossible.
+When at least two persistent modes survive, a quantitative post-burn-in
+deadline is supplied by the weighted phase clock of Law III.
+\end{theorem}
+
+Thus loss acts before arithmetic: it removes transient coordinates, and
+recurrence takes place on the surviving torus.  The theorem includes unitary
+dynamics as $M_{\rm per}=\|x\|^2$, finite convex mixtures of contractions,
+and contractive transfer operators on finite operator spaces.
+
+There is also an arbitrary-spectrum stationary law.  Let $\mu$ be a
+probability measure on energies and
+$A_\mu(t)=\int\ee^{\ii tE}\,d\mu(E)$.  Every continuous statistic of
+$|A_\mu(t)|^2$ has a long-time mean.  For every replica order $r$, the
+mean of $|A_\mu(t)|^{2r}$ converges to the zero-gap mass of the $r$-fold
+convolution of the spectral difference measure.  In particular, stationary
+mean fidelity is exactly the squared total mass of the atoms, with their
+individual weights retained.  For atomless $\mu$, every fixed
+positive-fidelity window has asymptotic density zero and the projective
+observer phase dimension is continuum.  Conversely, every nonnegative
+summable countable pure-point phase packet recurs below every positive
+phase-energy resolution.  Exact unit-fidelity return occurs precisely when
+the additive group generated by differences in the spectral support is
+cyclic.  These statements distinguish
+absence of persistent mass, approximate recurrence of summable point
+spectra, and exact periodicity.
+
+\section{Law II: constraints are converted into time}
+
+\begin{theorem}[Kernel--quotient conservation]
+\label{thm:kernel}
+For every finite $D$-level carrier,
+\begin{equation}
+ 0\longrightarrow\Rel_E\longrightarrow P_{\Carrier}
+  \xrightarrow{D_E}\operatorname{span}_{\Q}\{E_j-E_{j_0}\}
+  \longrightarrow0,
+ \qquad \boxed{\tau(E)+\rho(E)=D-1}.                   \label{eq:conservation}
+\end{equation}
+The completed phase law is Haar measure on $\Hull_E=\Rel_E^\perp$.  A
+balanced character is an almost-sure constraint exactly when it lies in
+$\Rel_E$.  It first becomes visible in replica order equal to its minimum
+positive character height.
+\end{theorem}
+
+Equation \eqref{eq:conservation} is a conservation law on a fixed carrier:
+an increase in completed temporal dimension is exactly a decrease in
+relation rank.  It also yields a finite-resolution filtration.  A
+$(2r+1)$-point phase grid recovers every order-$r$ character coefficient
+exactly, and smaller one-coordinate grids fail in the worst case.  Along a
+coupling wall the resolved coefficient is multiplied by an exact sinc
+profile, turning the discontinuous infinite-time relation indicator into a
+continuous finite-time reporter.
+
+For an affine spectral ray $E+gW$, each balanced character has detuning
+$D_E(k)+gD_W(k)$.  Hence it either survives for every $g$ or crosses at
+one strength.  Countability gives the following global statement.
+
+\begin{theorem}[Interaction and singular-wall law]
+\label{thm:interaction}
+For arbitrary countable energy and interaction profiles, there is a
+countable exceptional set $C\subset\R$ such that
+\begin{equation}
+ \Rel_{E+gW}=\Rel_E\cap\Rel_W\qquad(g\notin C).         \label{eq:intersection}
+\end{equation}
+For finite spectra, one arbitrarily weak separable interaction can erase the
+entire post-coupling balanced relation space, convert the full uncoupled
+relation rank into temporal rank, create at least the full rectangle-sector
+gain, and attain every positive full-support replica collision floor.  For
+every observable $O$, its Heisenberg evolution changes by at most
+\begin{equation}
+ 2|t|\,\delta\,\|O\|                                  \label{eq:duhamel}
+\end{equation}
+when the Hamiltonian perturbation norm is at most $\delta$.
+\end{theorem}
+
+The exceptional set in \eqref{eq:intersection} may be dense; the theorem is
+countable exclusion, not an exclusion-free punctured neighbourhood.  At a
+transverse wall the completed relation indicator jumps, while the reporter
+at horizon $T$ is $\sinc(TD_{E+gW}(k))$.  Consequently every positive
+finite temporal rank is dense, the exact rank map is nowhere continuous,
+and any prescribed rank can be made indistinguishable from a given spectrum
+by all normalized probes on any fixed bounded horizon.  Robust relations
+under a perturbation class are exactly the base relations lying in the
+annihilator of every allowed perturbation.
+
+The interaction law is algebraic and does not assume spatial structure.  Its
+compatibility with static geometric locality is supplied by the following
+theorem.
+
+\begin{theorem}[Static one-dimensional maximality]
+\label{thm:path}
+Let $n,q\ge2$, $D=q^n$, and let $\mathcal L_{P_n,q}^0$ be the real
+vector space of traceless Hermitian Hamiltonians on
+$(\C^q)^{\otimes n}$ generated by arbitrary onsite terms and arbitrary
+nearest-neighbour edge terms on the open path.  There is a dense residual
+full-Lebesgue-measure set $\mathcal G_{n,q}\subset\mathcal L_{P_n,q}^0$
+such that every $H\in\mathcal G_{n,q}$ has simple spectrum and
+\begin{equation}
+ \Rel_H=\{0\},\qquad \tau(H)=D-1=q^n-1.                \label{eq:pathrank}
+\end{equation}
+For any energy anchor and $0<\varepsilon<2$, the normalized long-time
+frequency of the strict coordinatewise projective return target is
+\begin{equation}
+ \boxed{
+ \lim_{T\to\infty}\frac1T\left|\left\{0\le t\le T:
+ \max_{j\ne j_0}
+ \left|\ee^{-\ii t(E_j-E_{j_0})}-1\right|<\varepsilon
+ \right\}\right|
+ =\left[\frac{2\arcsin(\varepsilon/2)}{\pi}\right]^{q^n-1}.}
+ \label{eq:pathdensity}
+\end{equation}
+Moreover $t=0$ is the only exact projective return time.
+\end{theorem}
+
+Thus maximal projective rank already occurs in a static range-one,
+degree-two family; neither all-to-all coupling nor independent spectral
+tuning is used.  Free-fermion constructions can have
+rationally independent one-particle energies while retaining extensive
+many-body sum relations \cite{RiddellBertini2024}; Theorem
+\ref{thm:path} removes every balanced many-body relation.
+
+For countable pure-point carriers, the same kernel principle survives without
+a finite rank.  The relation lattice equals the annihilator of the compact
+phase hull, every future tail has the same hull, and every positive summable
+probe has a closed recurrent value interval with exact interior hits.  One
+arbitrarily weak self-adjoint trace-class separable direction can make every
+finite restriction maximally projective outside one countable set of
+couplings, preserve the self-adjoint domain, eliminate nonzero exact global
+returns, and retain syndetic recurrence for every positive summable probe.
+
+\section{Law III: observer-weighted information fixes the clock}
+
+Kernel rank tells how many directions exist, not how accurately each must be
+synchronized.  Let $w=(w_1,\ldots,w_r)$ be positive spectral probabilities.
+For a pivot $k$, allocate distortions $0<D_j\le w_j$ and define
+\begin{align}
+ \Hwater_k(w,\eta)
+ &=\min\left\{\frac12\sum_{j\ne k}\log\frac{w_j}{D_j}:
+      \sum_{j\ne k}D_j\le\eta\right\},                 \label{eq:waterpivot}\\
+ \Hwater_{\rm proj}(w,\eta)&=\min_k\Hwater_k(w,\eta). \label{eq:water}
+\end{align}
+The optimizer is reverse water filling:
+$D_j^*=\min\{w_j,\lambda_k^{-1}\}$, with the water level chosen so their
+sum is $\eta$.  This is exactly the finite parallel-Gaussian
+rate--distortion program after a change of variables \cite{CoverThomas2006,
+GrayNeuhoff1998}; no communication code is claimed.
+
+Let $\mu_w(\eta)$ be normalized Haar volume of
+$\{z:|\sum_jw_jz_j|\ge1-\eta\}$, set
+$I_w(\eta)=-\log\mu_w(\eta)$, and let $T_w(\eta)$ be the least integer
+deadline by which every phase packet has a return of fidelity at least
+$(1-\eta)^2$.
+
+\begin{theorem}[Metric-information law]
+\label{thm:water}
+For every $r\ge2$, positive probability vector $w$, and
+$0<\eta\le1$, the target volume is positive and
+\begin{align}
+ \Hwater_{\rm proj}-\frac\pi4(r-1)-\log r
+ &\le I_w
+ \le\Hwater_{\rm proj}-(r-1)\log\frac{\sqrt2}{\pi},    \label{eq:targetlaw}\\
+ \Hwater_{\rm proj}-\frac\pi4(r-1)-\log(2r)
+ &<\log T_w
+ \le\Hwater_{\rm proj}+(r-1)\log(2\pi\sqrt2).         \label{eq:deadlinelaw}
+\end{align}
+Every phase packet returns after each prescribed delay $M$, at some
+$M<n\le(M+1)T_w$.  The Haar fraction of phase packets returning in the
+first $N$ ticks is at most
+\begin{equation}
+ Nr\exp\left\{\frac\pi4(r-1)-\Hwater_{\rm proj}\right\}. \label{eq:hithaar}
+\end{equation}
+The same target and Haar volume are realized exactly in the
+single-excitation block of a Hermitian particle-number-preserving local spin
+Hamiltonian with independently tunable onsite phases.
+\end{theorem}
+
+The equality of leading functionals in \eqref{eq:targetlaw} and
+\eqref{eq:deadlinelaw} is the rate--distortion content: geometric target
+information and worst-packet recurrence information are controlled by one
+weight-sensitive scalar.  A selected-support variant discards a tail of mass
+$\tau_S$, charges it by $2\tau_S$, and synchronizes only selected
+coordinates with the exact rounded product deadline
+\begin{equation}
+ P_S=\prod_{j\in S}\left\lceil
+       \pi\sqrt{\frac{2w_j}{D_j}}\right\rceil.          \label{eq:selected}
+\end{equation}
+Hard effective support does not determine $\Hwater_{\rm proj}$, even for
+binary packets at a common operational radius.
+
+An observer further quotients the phase geometry.  For a finite family of
+states or observables, form a graph on energy sectors: $i$ and $j$ are
+adjacent when at least one weighted observer block contains their coherence.
+
+\begin{theorem}[Observer-coherence law]
+\label{thm:observer}
+The squared total observer displacement is exactly a nonnegative weighted
+edge phase energy.  It vanishes precisely when the phases agree along every
+edge, equivalently on every connected component.  If the graph has $r$
+vertices and $c$ components, its visible projective phase capacity is
+\begin{equation}
+ r-c.                                                   \label{eq:graphrank}
+\end{equation}
+A deterministic recurrence occurs by a deadline with exponent $r-c$, and
+there are spectra attaining this exponent.  Every normalized linear probe is
+controlled by total observer displacement; operator-norm normalization pays
+an explicit square-root dimension factor, which is sharp.  Two calibration
+errors add through the corresponding triangle bound, yielding a certified
+device-window condition whenever the recurrence horizon fits inside the
+measured coherence time.
+\end{theorem}
+
+The graph theorem extends to countably many pure-point blocks under the exact
+summability condition.  It also proves that local infinitesimal information
+does not fix global recurrence: two explicit full-rank qutrit states have the
+same nonzero Hilbert--Schmidt speed and the same nonzero symmetric-logarithmic-
+derivative quantum Fisher information, while one returns periodically at
+every tick and the other has matching inverse-resolution recurrence bounds.
+
+\section{Law IV: finite-horizon records do not stably determine completed geometry}
+
+The preceding laws determine recurrence when carrier, kernel and metric are
+known.  They do not imply these objects are identifiable from finite data.
+The sharpest boundary uses one fixed state, one fixed return projector, one
+common finite spectrum, local generators and uniform agreement with one
+continuous-time record to any prescribed positive accuracy on a strict
+window.
+
+\begin{theorem}[Complete finite-record ambiguity]
+\label{thm:ambiguity}
+For every moment order $m\in\mathbb N$, target time $T>0$, strict horizon
+$0\le H<T$, and $\delta>0$, there exist a normalized state $\phi$, one
+record $Q$ on $[-H,H]$, and a nonnegative self-adjoint Hamiltonian
+$K_p$ for every $p\in[0,1]$ such that:
+\begin{enumerate}[leftmargin=1.55em]
+\item all $K_p$ are unitarily equivalent, with one common spectrum;
+\item $\langle\phi,K_p^k\phi\rangle$ is independent of $p$ for every
+      $0\le k\le m$;
+\item with the fixed projector $\lvert\phi\rangle\langle\phi\rvert$,
+      $\sup_{|t|\le H}|P_p(t)-Q(t)|<\delta$;
+\item $P_p(T)=p$ for every $p\in[0,1]$;
+\item each $K_p$ can be tridiagonal in one fixed basis.  For $p<1$ a
+      connected Jacobi representative exists; at $p=1$, every such
+      fixed-protocol tridiagonal representative has a zero path coupling;
+\item for every fermion number $k$, the canonical lift
+      $d\Gamma(K_p)$ has a complete Slater eigenbasis and the same full
+      subset-sum spectrum, including multiplicities.
+\end{enumerate}
+Equivalently, one fixed permutation-invariant uniform onsite qubit field
+realizes every terminal probability by varying only a symmetric pure
+preparation, with the same moment and finite-window guarantees.
+\end{theorem}
+
+The construction is explicit.  Choose $n>m$, energies
+$E_j=\pi j/T$, fair binomial weights
+\begin{equation}
+ q_j=2^{-n}\binom{n}{j},                               \label{eq:binomial}
+\end{equation}
+and parity-conditioned weights
+\begin{equation}
+ r_j=q_j\bigl(1+(-1)^{n-j}\bigr).                     \label{eq:parity}
+\end{equation}
+For $p\in[0,1]$, let
+$w_{p,j}=(1-\sqrt p)q_j+\sqrt p\,r_j$.  Their amplitudes obey
+\begin{equation}
+ A_p(t)=\left(\frac{1+\ee^{\ii\pi t/T}}2\right)^n
+ +\sqrt p\left(\frac{\ee^{\ii\pi t/T}-1}2\right)^n,  \label{eq:clockamp}
+\end{equation}
+so $P_p(T)=p$ and
+\begin{equation}
+ |A_p(t)-A_0(t)|=\sqrt p\left|\sin\frac{\pi t}{2T}\right|^n,
+ \quad
+ |P_p(t)-P_0(t)|\le2\left|\sin\frac{\pi t}{2T}\right|^n. \label{eq:hiding}
+\end{equation}
+The alternating finite-difference identity makes all moments below order
+$n$ common.  Unitary transport fixes preparation and measurement while
+varying isospectral eigenvectors.  Krylov orthogonalization makes the
+Hamiltonian tridiagonal.  At perfect return, unused parity levels force a
+spectator block; endpoint cyclicity proves that this disconnection is
+necessary.  Second quantization preserves the complete subset-sum spectrum
+in every particle sector.
+
+The resource boundary is exact.  On $r$ common distinct energy nodes, the
+first $r$ moments determine all weights by Vandermonde invertibility.
+Hence $n+1$ levels are minimal for nontrivial agreement through moments
+$0,\ldots,n-1$.  Every real-valued forecaster presented with the common
+record has error at least
+\begin{equation}
+ \max\{|y|,|y-1|\}\ge\frac12                          \label{eq:halfforecast}
+\end{equation}
+on one compatible clock.  The lower bound is independent of computation,
+training or algorithmic architecture.
+
+There is a complementary global boundary.  Complete polynomial local data,
+and even complete perturbative jets of bounded spectral observables or
+spectral form factors for uniformly compact positive-spectrum families, do
+not universally classify persistent recurrence.  Compact support is the
+exact positive boundary for complete moment data: two compactly supported
+probability measures with the same full Hamburger moment sequence are equal.
+Thus finite information fails for an exact constructive reason; specified
+global compact data can recover the spectrum.
+
+\section{Domains and consequences of the four laws}
+
+Table \ref{tab:shadows} summarizes the settings governed by each geometric
+datum.  Detailed statements and proofs, including the realizations and sharp
+constants, appear in the appendices.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}p{0.225\textwidth}X p{0.255\textwidth}@{}}
+\toprule
+Universal datum & Results carried by it & Governing law \\
+\midrule
+Persistent carrier & finite-contraction threshold; stationary point-spectrum
+scaling; collision hierarchy; pure-point recurrence; atomless zero-density
+high-fidelity windows & Law I: selection \\
+Relation kernel and hull & completion; $\tau+\rho=D-1$; singular walls;
+dense ranks; protected relations; weak complete conversion; countable hull;
+replica height and phase-grid spectroscopy & Law II: conservation \\
+Static local realization & generic open-path rank $q^n-1$; exact return
+frequency; no nonzero exact projective return & Law II: local maximality \\
+Weighted metric & reverse-water target information and deadline; selected
+support; finite-horizon Haar quantile; local onsite-spin transfer & Law III:
+metric information \\
+Observer quotient & coherence-graph capacity; sharp graph exponent;
+operational probes; calibration and device bounds; countable observer;
+qutrit local/global separation & Law III: visibility \\
+Finite-horizon record & common Hamiltonian and varying preparations; fixed protocol
+and spectrum; connected/disconnected path dichotomy; occupation and all-sector
+fermionic lifts; exponential hiding; moment and support sharpness; half-error
+forecast law & Law IV: inference \\
+\bottomrule
+\end{tabularx}
+\caption{Recurrence consequences organized by the carrier, kernel, metric,
+observer and finite-record data that determine them.}
+\label{tab:shadows}
+\end{table}
+
+\section{Interpretation and scope}
+
+The local-chain theorem changes the scope of the constraint law.  Full
+projective rank is not confined to unrestricted random matrices, all-to-all
+models or independently tunable energy levels.  A static one-dimensional
+bounded-degree family reaches $q^n-1$ phase directions almost everywhere.
+Within this family, trace supplies the physically irrelevant common energy
+shift, while nearest-neighbour tensor locality forces no additional balanced
+spectral relation.
+
+The local theorem is finite-size and ensemble-theoretic.  For each fixed
+$n,q$, Equation \eqref{eq:pathdensity} gives the asymptotic frequency of a
+strict coordinatewise projective target.  It does not give the distribution
+of first-return times or a bound uniform in system size.  The parameter space
+allows nonuniform onsite and edge terms, so the genericity statement does not
+apply to a translation- or reflection-invariant subfamily.  These are the
+precise scope boundaries of the local result.
+
+Law III separates arithmetic availability from operational cost.  Rank says
+which directions exist; weights and observer connectivity determine which
+must be aligned.  Law IV then places a strict boundary around inference from
+one return observable.  It is not indeterminism: exact Hamiltonian knowledge
+fixes the future.  Nor is it a no-go for full state/process tomography.  It
+is an exact statement about what finite return records and finitely many
+energy tests certify inside explicit local isospectral families.
+
+The four laws therefore support a disciplined hierarchy.  First identify
+the persistent carrier.  Then compute its exact detuning kernel and hull.
+Then impose the observer metric and calculate target information.  Only
+after these steps ask what a finite record identifies.  Reversing this order
+conflates loss with dephasing, phase dimension with metric cost, and dynamical
+determinacy with statistical identifiability.
+
+\section{Methods overview}
+
+Carrier selection follows from the finite contraction decomposition into a
+semisimple peripheral part and a transient part.  The arbitrary-spectrum
+law uses the spectral difference measure and convolution at zero.
+
+Kernel conservation is rank--nullity for the balanced rational detuning map,
+joined to Pontryagin annihilator duality for orbit closure.  The coupling law
+uses affine detuning of each countable character.  For the path theorem, a
+local endpoint-extension construction gives one maximally projective witness
+in the exact path-local space.  Symmetric relation polynomials turn every
+nonzero balanced relation into a proper algebraic obstruction, and countable
+avoidance gives a dense residual full-measure locus.  Equidistribution of its
+rationally independent anchored gaps yields \eqref{eq:pathdensity}.
+
+The water law sandwiches the true target between an explicit feasible
+product box and a pivot-resolved quadratic envelope.  Dirichlet pigeonhole
+synchronization turns the same allocation into a universal deadline.  The
+observer law is the weighted graph-Laplacian identity and graph coboundary
+rank.  The inference law is the exact binomial/parity generating-function
+identity \eqref{eq:clockamp}, finite differences, Krylov tridiagonalization,
+endpoint cyclicity and exterior-power diagonalization.  Complete proofs are
+given in the appendices.
+
+\clearpage
+\appendix
+\input{appendices}
+
+\section*{Data and code availability}
+No datasets were generated or analysed.  No numerical fit or simulation is
+used; all results are exact analytic statements.
+
+\section*{Author contributions}
+M.H. formulated the framework, derived the results, performed the
+mathematical analysis and wrote the manuscript.
+
+\begin{thebibliography}{99}
+
+\bibitem{BocchieriLoinger1957}
+P. Bocchieri and A. Loinger,
+Quantum recurrence theorem,
+\emph{Phys. Rev.} \textbf{107}, 337--338 (1957).
+
+\bibitem{RauerEtAl2018}
+B. Rauer \emph{et al.},
+Recurrences in an isolated quantum many-body system,
+\emph{Science} \textbf{360}, 307--310 (2018).
+
+\bibitem{KarimiEtAl2026}
+B. Karimi, X. Wu, A. N. Cleland and J. P. Pekola,
+Blueprint for experiments exploring the quantum recurrence theorem on a
+coupled multiqubit system,
+\emph{Phys. Rev. Research} \textbf{8}, L012062 (2026).
+
+\bibitem{KotowskiOszmaniec2026}
+M. Kotowski and M. Oszmaniec,
+Tight bounds on recurrence time in closed quantum systems,
+arXiv:2601.10409 (2026).
+
+\bibitem{GuptaShort2026}
+C. Gupta and A. J. Short,
+Recurrence time for finite quantum systems,
+\emph{Phys. Rev. A} \textbf{114}, 012208 (2026);
+arXiv:2604.14995.
+
+\bibitem{AnandEtAl2026}
+A. Anand, D. Valluri, J. Davis and S. Ghose,
+Quantum recurrences and the arithmetic of Floquet dynamics,
+\emph{Quantum} \textbf{10}, 2074 (2026).
+
+\bibitem{Huang2021}
+Y. Huang,
+Extensive entropy from unitary evolution,
+arXiv:2104.02053 (2021).
+
+\bibitem{RiddellBertini2024}
+J. Riddell and B. Bertini,
+Rationally independent free fermions with local hopping,
+\emph{Phys. Rev. E} \textbf{110}, 064101 (2024);
+arXiv:2404.12100.
+
+\bibitem{CamposVenutiOdavicHamma2026}
+L. Campos Venuti, M. Odavi\'c and A. Hamma,
+Integrability and chaos via fractal analysis of spectral form factors:
+Gaussian approximations and exact results,
+\emph{Phys. Rev. E} \textbf{113}, 044128 (2026);
+arXiv:2505.05199.
+
+\bibitem{CoverThomas2006}
+T. M. Cover and J. A. Thomas,
+\emph{Elements of Information Theory}, 2nd ed. (Wiley, 2006).
+
+\bibitem{GrayNeuhoff1998}
+R. M. Gray and D. L. Neuhoff,
+Quantization,
+\emph{IEEE Trans. Inf. Theory} \textbf{44}, 2325--2383 (1998).
+
+\bibitem{ManosWeilenmannNavascues2025}
+T. Manos, M. Weilenmann and M. Navascu\'es,
+Timed demolition measurements,
+arXiv:2507.06912 (2025).
+
+\end{thebibliography}
+
+\end{document}

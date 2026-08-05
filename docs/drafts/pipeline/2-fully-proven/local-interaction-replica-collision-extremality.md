@@ -5,7 +5,7 @@
 - **Type:** DEPENDENCY-CLOSED PAPER PROOF / REPLICA MOMENTS /
   SPECTRAL-FORM-FACTOR LIMIT
 - **Parent:**
-  `nearest-neighbor-qudit-projective-spectral-maximality.md`
+  `../3-formalized/nearest-neighbor-qudit-projective-spectral-maximality.md`
 - **Master candidate:**
   `../1-in-progress/universal-replica-collision-law-of-quantum-return.md`
 - **Scientific status:** `[PAPER-PROVED]`

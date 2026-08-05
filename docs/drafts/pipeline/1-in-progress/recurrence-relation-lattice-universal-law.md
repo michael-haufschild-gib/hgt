@@ -519,7 +519,7 @@ precludes maximal rank. The full-rank countable construction is necessarily
 inhomogeneous; disorder is part of the recurrence mechanism, not a cosmetic
 choice.
 Locality alone is not expected to impose this ceiling: the paper proof in
-`../2-fully-proven/nearest-neighbor-qudit-projective-spectral-maximality.md`
+`../3-formalized/nearest-neighbor-qudit-projective-spectral-maximality.md`
 claims that a generic noncommuting nearest-neighbour qdit chain already has
 full rank \(q^n-1\). A new formal theorem now proves a related finite
 tensor-local extension result: once one maximally projective witness exists

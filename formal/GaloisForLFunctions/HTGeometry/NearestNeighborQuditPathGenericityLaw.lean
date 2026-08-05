@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ConnectedGraphSpanningLocalWitnessLaw
+import GaloisForLFunctions.HTGeometry.TracelessLocalHamiltonianGenericityLaw
 
 /-!
 # Generic nearest-neighbour qudit path maximality
@@ -106,6 +107,32 @@ theorem exists_uniformQuditPathLocalHamiltonianMaximalSet_dense_residual_fullMea
       Z.localHamiltonianMaximalSet_dense_residual_fullMeasure
     refine ⟨Z, e, hgraphEq, ?_, hdense, hresidual, hnull⟩
     simpa using hstate
+
+/-- **Exact traceless nearest-neighbour qudit path law.** For every finite
+open path of at least two `q`-level sites, the exact real trace-zero space of
+Hermitian onsite and nearest-neighbour terms has maximally projective spectrum
+on a dense residual full-Lebesgue-measure set. -/
+theorem exists_uniformQuditPathTracelessLocalHamiltonianMaximalSet_dense_residual_fullMeasure
+    (n q : ℕ) (hn : 2 ≤ n) (hq : 2 ≤ q) :
+    ∃ Z : PhysicallyRealizedTensorTreeSystem.{0},
+    ∃ e : Z.spectral.Observer ≃ Fin n,
+      Z.architectureGraph =
+          SimpleGraph.comap e (SimpleGraph.pathGraph n) ∧
+      Z.spectral.stateCard = q ^ n ∧
+      (letI : Fintype Z.PhysicalState := Z.physicalFintype
+       letI : DecidableEq Z.PhysicalState := Z.physicalDecidableEq
+       let L := Z.tracelessLocalHamiltonianSubmodule
+       let hL := Z.tracelessLocalHamiltonianSubmodule_le_selfAdjoint
+       Dense (realHermitianSubmoduleMaximalSet L hL) ∧
+         realHermitianSubmoduleMaximalSet L hL ∈
+           residual (Fin (Module.finrank ℝ L) → ℝ) ∧
+         volume (realHermitianSubmoduleMaximalSet L hL)ᶜ = 0) := by
+  obtain ⟨Z, e, hgraph, hstate, _hdense, _hresidual, _hnull⟩ :=
+    exists_uniformQuditPathLocalHamiltonianMaximalSet_dense_residual_fullMeasure
+      n q hn hq
+  obtain ⟨hdense, hresidual, hnull⟩ :=
+    Z.tracelessLocalHamiltonianMaximalSet_dense_residual_fullMeasure
+  exact ⟨Z, e, hgraph, hstate, hdense, hresidual, hnull⟩
 
 end
 

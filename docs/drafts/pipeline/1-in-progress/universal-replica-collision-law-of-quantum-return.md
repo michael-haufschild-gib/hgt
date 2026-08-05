@@ -164,7 +164,7 @@ nearest-neighbour two-site Hermitian terms on an open \(q\)-level path.
 Put \(D=q^n\).
 
 The paper proof in
-`../2-fully-proven/nearest-neighbor-qudit-projective-spectral-maximality.md`
+`../3-formalized/nearest-neighbor-qudit-projective-spectral-maximality.md`
 gives, for Lebesgue-almost every \(H\in\mathcal L_{P_n,q}\),
 \[
  \dim_{\mathbb Q}\operatorname{span}_{\mathbb Q}
