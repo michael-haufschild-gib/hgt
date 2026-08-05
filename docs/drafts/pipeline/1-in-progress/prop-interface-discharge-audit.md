@@ -5220,3 +5220,41 @@ the three `PoleCarrier` fields is missing:
 this thread transfers to it verbatim.
 
 All new declarations: `[propext, Classical.choice, Quot.sound]`.
+
+## The blocker was smaller than stated — and the fix is more general
+
+Last cycle's named obligation was `L` analytic at every `z` with `Re z < 3/4`.  Reading the corpus
+proof of `analyticAt_movingCanonicalLogDerivative` showed the half-plane hypothesis was **incidental
+to how the statement was first needed**, not to the argument.  `L = −logDeriv (movingCanonicalProduct θ)`,
+the product is entire (`movingCanonicalProduct_analytic` on `Set.univ`), and its zeros are exactly
+the `movingCanonicalZero θ n` (`movingCanonicalProduct_eq_zero_iff`).  So:
+
+`analyticAt_movingCanonicalLogDerivative_of_ne_zeros` — **`L` is analytic at every point that is not
+one of its zeros.**  Nonvanishing on a neighbourhood comes from continuity of the product; the
+identity `−logDeriv = L` then transfers along that neighbourhood.  Both existing half-plane lemmas
+are special cases; the obligation `_of_re_lt` (every zero exceeds `3/4`) is a three-line corollary.
+
+## The even carrier is a `PoleCarrier`
+
+`tendsto_iteratedDeriv_translate_movingEvenCanonicalCarrier`: near `ζ_p` the reflected summand
+`L(−z)` is analytic at `−ζ_p` (which has negative real part), hence convergent along the approach, so
+multiplying by `(u_j − ζ)^{r+1} → 0` annihilates it.  The even carrier therefore blows up with **the
+same leading value** `−(−1)^r r!` as `L`.
+
+With `analyticAt_evenTranslate_jet` for the second field, `movingEvenCanonicalPoleCarrier θ` is a
+`PoleCarrier`, and — because `jetNeZero` was demoted to a theorem last cycle — that is all three
+fields.
+
+### The generic capstone, and both instances
+
+`PoleCarrier.exists_row_packet_integerHeights (C) (M n q N) (m) (height)` — **no hypotheses.**  For
+any pole carrier: pairwise distinct nodes, a collision-free row-by-shift family, every shifted node
+in the open upper half-plane, and full expanded rank of the height box.
+
+* `exists_row_packet_integerHeights_combinedInjective` — moving canonical carrier;
+* `exists_row_packet_integerHeights_movingEvenCanonical` — even canonical carrier.
+
+Both are one line.  The even result cost **no new full-rank mathematics**: the entire six-cycle
+construction transferred by supplying three fields.
+
+All new declarations: `[propext, Classical.choice, Quot.sound]`.

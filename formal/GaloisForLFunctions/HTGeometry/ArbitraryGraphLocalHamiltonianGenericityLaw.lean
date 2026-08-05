@@ -739,6 +739,29 @@ def leafGraphExtension
     | Sum.inr _, Sum.inl y => y = root
     | Sum.inr _, Sum.inr _ => False
 
+/-- Adding one leaf at a vertex of a connected graph preserves
+connectedness. -/
+theorem leafGraphExtension_connected
+    {S : Type u} (G : SimpleGraph S) (root : S)
+    (hG : G.Connected) :
+    (leafGraphExtension G root).Connected := by
+  rw [SimpleGraph.connected_iff_exists_forall_reachable]
+  refine ⟨Sum.inl root, ?_⟩
+  intro w
+  cases w with
+  | inl w =>
+      let inclusion : G →g leafGraphExtension G root :=
+        { toFun := Sum.inl
+          map_rel' := by
+            intro a b hab
+            simp only [leafGraphExtension, SimpleGraph.fromRel_adj]
+            exact ⟨fun h => hab.ne (Sum.inl.inj h), Or.inl hab⟩ }
+      exact (hG root w).map inclusion
+  | inr w =>
+      exact (by simp [leafGraphExtension] :
+        (leafGraphExtension G root).Adj
+          (Sum.inl root) (Sum.inr w)).reachable
+
 /-- Exact architecture relation for one leaf extension. -/
 def IsTensorTreeLeafExtension
     (Z Y : PhysicallyRealizedTensorTreeSystem.{u})

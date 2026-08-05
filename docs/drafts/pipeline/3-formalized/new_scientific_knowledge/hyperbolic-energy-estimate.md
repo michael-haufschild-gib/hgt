@@ -726,6 +726,8 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 662 | **and the sine propagator the scalar `sin(ct)/c`** | `kgShiftedSinFreqOp_kgTunedPot_subband` | **built** |
 | 663 | **on a sub-band the tuned generator is multiplication by `c²`** | `kgShiftedFreqSqLowOp_kgTunedPot_subband` | **built** |
 | 664 | **the velocity of the tuned clock on a sub-band** | **`kgShiftedVel_kgTunedPot_subband`** | **built** |
+| 665 | **the field of the tuned clock from arbitrary band-limited data** | **`kgFieldMildT_kgTunedPot_band`** | **built** |
+| 666 | **its velocity from arbitrary band-limited data** | **`kgFieldVelT_kgTunedPot_band`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
@@ -802,7 +804,7 @@ Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` 
 `KleinGordonTunedUnitModulus.lean` (639), `KleinGordonTunedFlatEnvelope.lean` (640–641), `KleinGordonTunedExactNorm.lean` (642–643), `KleinGordonTunedRealDatum.lean` (644–646), `KleinGordonTunedEnergyRange.lean` (647–649),
 `KleinGordonBandFrequencySpread.lean` (650–652),
 `KleinGordonModelInsideTrap.lean` (653–655), `KleinGordonModelTrapLower.lean` (656–657), `KleinGordonTunedSubband.lean` (658–660), `KleinGordonTunedSubbandOps.lean` (661–662),
-`KleinGordonTunedSubbandVelocity.lean` (663–664).
+`KleinGordonTunedSubbandVelocity.lean` (663–664), `KleinGordonTunedBandData.lean` (665–666).
 All wired into the umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -3799,6 +3801,14 @@ plane-rotation form there (**664**): both rates of a switching pair are describe
 on the band they share. The cancellation of the `⟨D⟩` factors rests on the two identities
 `⟨D⟩⁻¹⟨D⟩_R = P_R` and `⟨D⟩_R⟨D⟩⁻¹ = P_R`, both already in the corpus.
 
+Restating the closed form for an arbitrary band-limited pair rather than a parametrised one
+(**665**, **666**) puts the evolution in the shape a switch of rate needs: given `P_R g = g` and
+`P_R h = h`,
+
+`u(t) = cos(ct)·⟨D⟩⁻¹g + (sin(ct)/c)·h`,   `u̇(t) = −(c sin(ct))·⟨D⟩⁻¹g + cos(ct)·h`,
+
+so the output of one evolution can be fed into the next.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -3819,6 +3829,8 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-05 — statements 665–666: **arbitrary band-limited data.** The tuned clock's field and
+  velocity restated for any band-limited pair, so one evolution's output is the next one's input.
 - 2026-08-05 — statements 663–664: **sub-band generator and velocity.** The tuned generator is `c²`
   on every sub-band and the velocity keeps its rotation form, so both rates of a switching pair share
   one set of formulas.

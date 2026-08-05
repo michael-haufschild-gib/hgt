@@ -121,7 +121,8 @@ theorem exists_rootedSpanningTreePhysicalSystem
     ∃ Z : PhysicallyRealizedTensorTreeSystem.{u},
     ∃ e : Z.spectral.Observer ≃ V,
       Z.architectureGraph ≤ SimpleGraph.comap e G ∧
-      Z.spectral.stateCard = ∏ v, q v := by
+      Z.spectral.stateCard = ∏ v, q v ∧
+      Z.architectureGraph.Connected := by
   classical
   by_cases hnontrivial : Nontrivial V
   · letI : Nontrivial V := hnontrivial
@@ -133,7 +134,7 @@ theorem exists_rootedSpanningTreePhysicalSystem
     have holdConnected : oldG.Connected := hremaining
     have hqOld : ∀ x : OldV, 2 ≤ q x := fun x => hq x
     have hrootOld : 3 ≤ q oldRoot := by simpa [oldRoot] using hroot
-    obtain ⟨Z, eOld, hOldGraph, hOldState⟩ :=
+    obtain ⟨Z, eOld, hOldGraph, hOldState, hOldConnected⟩ :=
       exists_rootedSpanningTreePhysicalSystem oldG holdConnected
         (fun x : OldV => q x) hqOld oldRoot hrootOld
     have hvpos : 0 < G.degree v :=
@@ -196,7 +197,7 @@ theorem exists_rootedSpanningTreePhysicalSystem
                 using hvparent
           | inr b =>
               simp [leafGraphExtension] at hab
-    refine ⟨W, finalEquiv, ?_, ?_⟩
+    refine ⟨W, finalEquiv, ?_, ?_, ?_⟩
     · rw [hWgraph]
       change SimpleGraph.comap eW
           (leafGraphExtension Z.architectureGraph parentObserver) ≤
@@ -205,6 +206,11 @@ theorem exists_rootedSpanningTreePhysicalSystem
     · rw [hWstate, hOldState, hLocalCard]
       rw [Fintype.prod_eq_mul_prod_subtype_ne q v]
       ac_rfl
+    · rw [hWgraph]
+      exact (SimpleGraph.Iso.comap eW
+        (leafGraphExtension Z.architectureGraph parentObserver)).connected_iff.mpr
+          (leafGraphExtension_connected Z.architectureGraph
+            parentObserver hOldConnected)
   · have hsubsingleton : Subsingleton V := not_nontrivial_iff_subsingleton.mp hnontrivial
     letI : Subsingleton V := hsubsingleton
     letI : Unique V :=
@@ -218,12 +224,17 @@ theorem exists_rootedSpanningTreePhysicalSystem
     letI : Fintype Base.spectral.Observer := Base.spectral.observerFintype
     let e : Base.spectral.Observer ≃ V :=
       Fintype.equivOfCardEq (hBaseObserver.trans Fintype.card_unique.symm)
-    refine ⟨Base, e, ?_, ?_⟩
+    refine ⟨Base, e, ?_, ?_, ?_⟩
     · rw [hBaseGraph]
       exact bot_le
     · rw [hBaseState, hLocalCard]
       rw [Fintype.prod_unique]
       exact congrArg q (Subsingleton.elim root default)
+    · letI : Nonempty Base.spectral.Observer := ⟨e.symm root⟩
+      letI : Subsingleton Base.spectral.Observer :=
+        ⟨fun a b => e.injective (Subsingleton.elim (e a) (e b))⟩
+      rw [hBaseGraph]
+      exact SimpleGraph.Connected.of_subsingleton
 termination_by Fintype.card V
 decreasing_by
   rw [show Fintype.card OldV = Fintype.card V - 1 by
@@ -242,7 +253,8 @@ theorem exists_binarySpanningTreePhysicalSystem
     ∃ Z : PhysicallyRealizedTensorTreeSystem.{0},
     ∃ e : Z.spectral.Observer ≃ V,
       Z.architectureGraph ≤ SimpleGraph.comap e G ∧
-      Z.spectral.stateCard = 2 ^ Fintype.card V := by
+      Z.spectral.stateCard = 2 ^ Fintype.card V ∧
+      Z.architectureGraph.Connected := by
   classical
   by_cases hlarge : 2 < Fintype.card V
   · letI : Nontrivial V :=
@@ -258,7 +270,7 @@ theorem exists_binarySpanningTreePhysicalSystem
         rw [Fintype.card_subtype_compl (fun x : V => x = v),
           Fintype.card_subtype_eq]]
       omega
-    obtain ⟨Z, eOld, hOldGraph, hOldState⟩ :=
+    obtain ⟨Z, eOld, hOldGraph, hOldState, hOldConnected⟩ :=
       exists_binarySpanningTreePhysicalSystem oldG holdConnected holdCard
     have hvpos : 0 < G.degree v :=
       hG.preconnected.degree_pos_of_nontrivial v
@@ -312,7 +324,7 @@ theorem exists_binarySpanningTreePhysicalSystem
                 using hvparent
           | inr b =>
               simp [leafGraphExtension] at hab
-    refine ⟨W, finalEquiv, ?_, ?_⟩
+    refine ⟨W, finalEquiv, ?_, ?_, ?_⟩
     · rw [hWgraph]
       change SimpleGraph.comap eW
           (leafGraphExtension Z.architectureGraph parentObserver) ≤
@@ -327,6 +339,11 @@ theorem exists_binarySpanningTreePhysicalSystem
       rw [← pow_succ]
       congr 1
       omega
+    · rw [hWgraph]
+      exact (SimpleGraph.Iso.comap eW
+        (leafGraphExtension Z.architectureGraph parentObserver)).connected_iff.mpr
+          (leafGraphExtension_connected Z.architectureGraph
+            parentObserver hOldConnected)
   · have hcardEq : Fintype.card V = 2 := by omega
     obtain ⟨Base, hBaseState, hBaseObserver, hBaseGraph⟩ :=
       exists_physicallyRealizedTensorTree_twoQubitGraphSeed
@@ -385,11 +402,15 @@ theorem exists_binarySpanningTreePhysicalSystem
       · subst a; subst b
         simpa [e, Function.comp_apply] using hendpoint.symm
       · exact (hne (ha.trans hb.symm)).elim
-    refine ⟨Base, e, ?_, ?_⟩
+    refine ⟨Base, e, ?_, ?_, ?_⟩
     · rw [hBaseGraph]
       exact htop
     · rw [hBaseState, hcardEq]
       norm_num
+    · letI : Nonempty Base.spectral.Observer :=
+        ⟨observerBool.symm false⟩
+      rw [hBaseGraph]
+      exact SimpleGraph.connected_top
 termination_by Fintype.card V
 decreasing_by
   rw [show Fintype.card OldV = Fintype.card V - 1 by
@@ -401,4 +422,3 @@ decreasing_by
 end
 
 end GaloisForLFunctions.HTGeometry
-

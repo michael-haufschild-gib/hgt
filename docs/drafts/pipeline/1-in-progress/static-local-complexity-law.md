@@ -1773,13 +1773,17 @@ while "nonintegrable implies no shortcuts" has no quantitative content.
 largest exponent that any version of `(O4.3)` can have.  First, the obstruction
 does not require commutativity.  Let `F` be an `f`-dimensional linear subspace
 of coefficient space, with orthogonal projection `pi_F`, and suppose one fixed
-local-gate architecture of length at most `B` prepares
+finite-format synthesis scheme prepares
 
 \[
  e^{-iH(y)}\Phi_0\quad(y\in F)                                \tag{O4.3aa0}
 \]
 
-to error `epsilon_-`, with only its gate parameters depending on `y`.  Assume
+to error `epsilon_-` using at most `B` local gates, uniformly in `y`.  For a
+fixed finite universal gate set this means a bounded word dictionary; for
+adjustable local gates it may be one architecture with variable parameters.
+The concrete certificate, rather than membership in the shortcut locus, is
+part of the hypothesis.  Assume
 
 \[
  \|H(x)-H(y)\|\leq L_H\|x-y\|,
@@ -1915,12 +1919,20 @@ and every admissible no-shortcut exponent obeys
 a mandatory obstruction that an upper bound must match; a larger
 fast-forwardable stratum would strengthen it further.
 
-`[CONJECTURE — AUTONOMOUS SHORTCUT ORGANIZATION LAW; FROZEN 2026-08-05.]`
+`[SUPERSEDED 2026-08-05 — AUTONOMOUS SHORTCUT ORGANIZATION LAW.]`
+The continuous-dimension-only representation below is retained as route
+history.  It is not the active conjecture: mixed continuous/periodic carriers,
+observer-stationary kernels, component entropy, and fixed-size saturation
+falsify `m-f_*` as a universal scalar law.  The later finite-scale shortcut
+free-energy replacement was itself killed as mathematically underdefined and
+potentially circular.  The active exact conjecture is now the concrete
+selector-aware Pauli law in `observer-rank-autonomous-no-shortcut-law.md`.
+
 Fix an error margin and a sub-direct-simulation word budget.  A
 `d`-dimensional **uniform synthesis stratum** is a proper, polynomial-distortion
 coefficient chart whose unit neighbourhood has annular packing growth
 `Theta(R^d)` and whose whole autonomous endpoint family is prepared by one
-uniform local-gate architecture within the budget.  Let `f_*` be the maximum
+uniform finite-format synthesis scheme within the budget.  Let `f_*` be the maximum
 such radial dimension, allowing a finite polynomial-complexity stratification
 (commuting, Cartan, quadratic, block-diagonal, and their efficiently conjugate
 forms), but not defining a stratum merely as a subset of the shortcut locus.
@@ -1996,6 +2008,75 @@ dynamics.  None of these sources proves an inverse measure theorem for the
 complete Hamiltonian-dependent shortcut locus or the codimension identity
 `(O4.3ah)`.
 
+`[CORPUS]` The paper-proved card
+`algebraic-two-local-instant-exact-complexity` supplies the qualitative
+transcendental half that this conjecture needs.  It constructs a rational
+two-local Hamiltonian for which every nonzero algebraic time has exponential
+exact state complexity, and uses restricted-analytic o-minimality to make the
+low-exact-complexity times locally finite.  Its hostile audit identifies the
+same missing bridge: exact transcendence gives no fixed positive separation
+from the semialgebraic short-circuit set.
+
+`[LITERATURE-BRIDGE]` Papas's Ax--Schanuel theorem for the matrix exponential
+provides the correct qualitative inverse geometry.  An exact intersection
+between an algebraic source and an algebraic target cannot have excess
+dimension unless it lies in a weakly special subvariety.  Crucially, the
+published `GL_D` theorem requires the component to pass through zero and the
+target through the identity.  The author explains that these restrictions are
+forced by the non-discrete, sometimes positive-dimensional fibre
+`exp^{-1}(I)` and leaves the full classification of the remaining type-II
+weakly special sets open.  Thus the obstruction to full matrix
+Ax--Schanuel is literally recurrence, not merely analogous to it.
+
+`[CONJECTURE — QUANTITATIVE AUTONOMOUS AX--SCHANUEL FORM.]` Let
+`L_n` be the complexified fixed-`q` local-Hamiltonian coefficient space and,
+for a fixed state-preparation gate-support architecture `A`, let `S_A` be the
+Zariski closure of its state image and use the state-lifted algebraic target
+
+\[
+ Z_A=\{U\in GL_D:U\Phi_0\in S_A\}.
+\]
+
+(This lift is required because the master theorem concerns state, not unitary,
+complexity.)  Call a real stratum `W subset L_n` **special-easy** when
+it is contained in a matrix-exponential weakly special/type-II recurrence
+stratum and `exp(W)Phi_0` is covered by one sub-budget gate architecture.  The
+algebraic part is the finite-format union of these certified strata; let its
+maximal radial tube-growth exponent be `f_*`.
+
+Then the complement of this algebraic part obeys a uniform approximate
+Ax--Schanuel tube bound strong enough to survive the union over every
+architecture of length `s<=aR/poly(n)`.  In particular, for some `delta>0`,
+
+\[
+ \operatorname{vol}\!\left(
+  (\mathfrak S_{\varepsilon,a}\setminus
+    \mathcal N_r(\mathfrak A_{n,s}))\cap A_R
+ \right)
+ \leq C R^{f_*-\delta},                                      \tag{O4.3aj}
+\]
+
+while the tube theorem `(O4.3aa0)`--`(O4.3aa4)` gives
+`vol(N_r(mathfrak A_(n,s)) cap A_R)=R^(f_*+o(m))`.  Equation
+`(O4.3aj)` therefore implies `(O4.3ag)` and `(O4.3ah)`.
+
+This formulation identifies the missing new mathematics without pretending
+that qualitative Ax--Schanuel proves a robust circuit bound:
+
+> **Quantitative matrix-exponential unlikely intersections with growing
+> targets.**  Excess fixed-radius tube volume in the preimage of a growing
+> semialgebraic circuit variety must concentrate near a recurrent weakly
+> special synthesis stratum.
+
+It has three genuinely new requirements absent from the published theorem:
+approximation at fixed radius rather than exact intersection, components away
+from zero rather than only the identity component, and uniformity after the
+complete circuit-architecture union.  These are precisely the robustness,
+recurrence, and selector obstacles already isolated independently in O4.
+Consequently the universal interpretation is now falsifiable: **recurrence is
+the algebraic part of autonomous quantum time; outside that part, elapsed time
+is irreducible circuit work.**
+
 `[LOCAL-RESEARCH — GITHUB LEAN INFRASTRUCTURE AUDIT]` Repository search found
 no existing Lean formalization of Carbery--Wright anti-concentration,
 Kac--Rice component counts, quantitative analytic tube bounds, unitary circuit
@@ -2012,6 +2093,14 @@ can support low-order Haar moments only.  The quantum-information, Gaussian-
 Hilbert, and classical-circuit repositories audited either contain unfinished
 proofs, use obsolete Lean, lack a usable licence, or formalize the wrong
 circuit model.  No dependency is added before Gate 4.
+
+A targeted second GitHub search found no Pila--Wilkie, Ax--Schanuel,
+o-minimal cell decomposition, or effective Lojasiewicz library in Lean.
+The only `PilaWilkie` code hit explicitly takes the terminal counting theorem
+as a hypothesis; the only `OEMinimality` hit packages cell decomposition as a
+field of evidence.  Neither proves infrastructure.  Therefore GitHub can
+remove later Gaussian/entropy boilerplate through `HighDimProb`, but no public
+Lean project currently removes the new `(O4.3aj)` research obligation.
 
 #### Dynamical NLTS equivalence
 
@@ -4848,3 +4937,83 @@ receive a new title and an independent significance audit.
   circuit length. The new `n`-step Hall theorem remains valid representation-theoretic
   infrastructure but cannot be cited as O4 anti-concentration. The surviving frontier is
   irreducibly nonlinear: robust word-metric injectivity or selector-aware annular shortcut packing.
+- 2026-08-05 -- Proved the fast-forwardable-stratum codimension obstruction on paper. Every
+  `f`-dimensional coefficient stratum with a radial-independent synthesis bound `B` creates a
+  fixed-radius annular shortcut tube of volume `Omega(R^f)` and Gaussian shortcut probability
+  `Omega(t^{-(m-f)})`. A commuting involution sector supplies the same exponent through an exact
+  recurrence lattice. For the fixed-`q` Pauli family this gives the unconditional ceiling
+  `kappa <= m-sum_(k=1)^q binom(n,k)` on every proposed no-shortcut exponent. Full proof and hostile
+  audit are in `../2-fully-proven/fast-forwardable-stratum-codimension-obstruction.md`. No Lean claim
+  is made yet.
+- 2026-08-05 -- Froze the autonomous shortcut-organization conjecture after killing chaos and raw
+  dynamical-Lie-algebra dimension as candidate invariants. The proposed law is
+  `kappa_*=m-f_*`, where `f_*` is the largest radial dimension of an independently certified uniform
+  synthesis stratum. The forced inequality is proved; the exact open inverse says excess shortcut
+  packing must organize into a higher-dimensional synthesis stratum. Papas's weak Ax--Schanuel
+  theorem for `GL_D` reveals the same obstruction independently: its restrictions are needed because
+  the matrix exponential has non-discrete, positive-dimensional identity fibres, and the remaining
+  type-II recurrence strata obstruct a full theorem. This identifies the missing new mathematics as
+  a quantitative approximate matrix-exponential unlikely-intersection theorem with growing
+  state-circuit targets, translated components, and a selector-surviving architecture union.
+- 2026-08-05 -- Audited GitHub Lean infrastructure instead of assuming all missing libraries must be
+  built locally. `dududuguo/HighDimProb` is the only strong clean candidate: Apache-2.0, no forbidden
+  proof placeholders found, and useful Gaussian concentration, covering/packing, Dudley,
+  Hanson--Wright, and matrix Bernstein modules; it needs a Lean 4.29.1-to-4.32.2 port. `physlib` and
+  `weingarten-lean` contain narrower reusable pieces but do not close O4. Searches found no genuine
+  Lean Pila--Wilkie, Ax--Schanuel, o-minimal cell-decomposition, effective Lojasiewicz, quantum
+  fast-forwarding, or unitary-circuit-variety library: apparent hits only package the desired theorem
+  as input evidence. No dependency was added before a complete paper proof.
+- 2026-08-05 -- Conjecture-protocol attack killed the frozen scalar law `kappa=m-f_*` as a universal
+  representation. At fixed `n`, compactness and a finite epsilon-circuit net eventually make every
+  radial endpoint easy, so an unspecified `R->infinity` exponent is ill-typed; different admissible
+  `(n,R)` paths need a uniform finite-size statement. More decisively, a `d`-dimensional continuous
+  synthesis carrier translated by a transverse rank-`r` period lattice creates annular shortcut
+  volume `Omega(R^(d+r))` and Gaussian mass `Omega(t^(-(m-d-r)))`. The dependency-closed proof is in
+  `../2-fully-proven/mixed-periodic-synthesis-carrier-obstruction.md`. Continuous dimension and
+  discrete recurrence rank are independent additive contributions; architecture proliferation is a
+  third contribution, not a nuisance constant.
+- 2026-08-05 -- Found a stronger state-specific obstruction missed by the commuting-sector analysis.
+  For any coefficient family, the real rank `v_Phi` of
+  `x |-> (I-|Phi><Phi|)H(x)Phi` is the number of coefficient directions visible to the initial
+  projective ray. Its kernel has dimension `m-v_Phi`; every Hamiltonian in that noncommuting kernel
+  fixes the ray exactly and hence has zero state complexity. Therefore every state-complexity escape
+  exponent obeys `kappa<=v_Phi`. For the full weight-at-most-`q` qubit Pauli space and every product
+  input, the rank is exactly `2 sum_(k=1)^q binom(n,k)`, so this observer-stationary ceiling is
+  `kappa<=2 sum_(k=1)^q binom(n,k)=(2/3^q)m+O(n^(q-1))`. Full proof is in
+  `../2-fully-proven/observer-visible-local-time-dimension-obstruction.md`. This connects the corpus's
+  prior observer-generated spectral-time laws to the static-complexity frontier without identifying
+  the two notions: the earlier law measures visible energy-gap rank after fixing `H`; the new rank
+  measures the projective action of an entire Hamiltonian coefficient family before evolution.
+- 2026-08-05 -- Froze the stronger replacement conjecture in
+  `autonomous-shortcut-free-energy-law.md`. A certified shortcut format has continuous carrier
+  dimension `d`, polynomial component-growth/recurrence entropy exponent `h`, and free codimension
+  `g=(m-d-h)_+`. The conjectural universal law is
+  `kappa_*=inf_formats g+o(m)`: transverse tuning is the energy cost, while recurrence and component
+  multiplicity are the entropy refund. It reproduces every proved shadow—observer-stationary
+  carriers, continuous fast-forwarding, recurrence lattices, mixed carriers, and fully easy one-local
+  dynamics—without defining the invariant from minimal circuit complexity. The exact open inverse is
+  that the full Hamiltonian-dependent circuit union cannot beat all certified energy-entropy formats
+  unless it organizes into a new format. For fixed `q>=2` Pauli dynamics from a product input, the
+  sharper competing prediction is that the observer-stationary carrier minimizes free codimension,
+  giving `kappa_*=2 sum_(k<=q) binom(n,k)+o(m)`. Current verdict:
+  `SURVIVES PRELIMINARY ATTACK`; no upper law or Nature-level result is claimed.
+- 2026-08-05 -- The next hostile pass killed that shortcut-free-energy card as
+  an exact conjecture.  Its “certified format,” compiler class, overlap law,
+  pre-capacity window, and scale errors were not mathematically fixed; making
+  the class broad enough to contain an arbitrary circuit selector makes the
+  inverse circular, while restricting it to known affine/periodic carriers
+  makes it nonuniversal.  Raw circuit-language entropy also grows
+  exponentially in word length and cannot be represented by one fixed
+  polynomial component exponent without trivializing the formula.  The mixed
+  carrier energy--entropy lower obstruction survives, but no inverse
+  classification is claimed.  Relentless interrogation produced a sharper,
+  exact flagship conjecture in `observer-rank-autonomous-no-shortcut-law.md`:
+  for the full fixed-`q>=2` Gaussian Pauli ensemble and product input, the
+  complete Hamiltonian-dependent shortcut probability has logarithmic
+  exponent
+  `v_(n,q)=2 sum_(k<=q) binom(n,k)`, the projective QFI rank, uniformly through
+  an explicit polynomial-to-exponential pre-capacity window.  The stationary
+  kernel proves the matching forced side up to `o(v)`; the selector-aware
+  upper side is the exact open core.  This replacement removes all prose
+  carrier categories and can be falsified by one larger aggregate shortcut
+  family.

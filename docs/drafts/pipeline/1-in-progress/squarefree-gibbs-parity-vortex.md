@@ -138,3 +138,31 @@ graded route whose rungs are geometric (cluster separations), not zero-free regi
   (Lee–Yang × Möbius/squarefree; ω-generating polynomials): no overlap found.  Next:
   Lean formalization of T0, T1, T2 (eval-level), T3, T3′ (ring identities + limit-form
   discriminant negativity), unconditional.
+
+## 2026-08-05 FORMALIZED: `RHTower/GibbsParityVortex.lean`
+
+Wired into `RHTower.lean`; targeted build 8655 jobs; axioms only
+`propext, Classical.choice, Quot.sound`; zero warnings.  Namespace `RHTower.GibbsGas`:
+
+- `gibbsDiag` (the gas), `gibbsDiag_insert` (**T0**, the cutoff recursion),
+  `gibbsDiag_zero` (free limit `(1+z)^k`), `gibbsDiag_singleton`;
+- `hasDerivAt_gibbsDiag_parity` (**T2**, the parity-jet law: coupling-derivative
+  `−∏(pw−(p−1))` at the shifted parity point) and `hasDerivAt_gibbs_current`
+  (`(−1)^{k+1}∏(p−1)`: the totient intensity);
+- `two_prime_real_rooted` (**T1**: explicit distinct real roots, AM–GM discriminant);
+- `cubic_vieta` (Vieta from a pointwise factorization, by `linear_combination` at
+  `w = 0, ±1`), `cubic_discrim_nonneg_of_real_rooted` (`Δ = a₃⁴·∏(rᵢ−rⱼ)²`),
+  `current_sq_le_of_real_rooted` (**T3′**, the current–discriminant inequality);
+- `parity_vortex_three` (**T3**: `∀ᶠ x in 𝓝[>]0`, no real factorization of the parity
+  cubic — via `Δ(x) = x²·G(x)`, `G → −27φ² < 0` by slope limits, and the Vieta
+  discriminant identity).
+
+Lean traps: `set`-bound reals are opaque to `ring` (unfold with the defining equation
+before `convert`-free value rewrites); a `HasDerivAt` chain's function/value trees must be
+mirrored exactly (build the value by a `show ... from by ring` rewrite, not `convert`);
+`Finset.sum` of function-valued summands needs `congr_of_eventuallyEq` + `Finset.sum_apply`
+to become a `HasDerivAt` of the pointwise sum; `simp` leaves numerals like `−1−1+3−1`
+unevaluated (finish with `norm_num`); `{q} ≠ insert q ∅` syntactically.
+
+- 2026-08-05 — T0–T3′ formalized unconditionally; T4 (general k, Hurwitz form) remains
+  paper-level on this card.

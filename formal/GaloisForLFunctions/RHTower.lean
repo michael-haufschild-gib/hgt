@@ -3583,6 +3583,7 @@ import GaloisForLFunctions.RHTower.Sieve.PhaseCorrelation
 import GaloisForLFunctions.RHTower.Sieve.KthDerivativeTest
 import GaloisForLFunctions.RHTower.Sieve.LogPhaseBlock
 import GaloisForLFunctions.RHTower.Sieve.DirichletBlockAbel
+import GaloisForLFunctions.RHTower.GibbsParityVortex
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment
