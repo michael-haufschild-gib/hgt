@@ -474,6 +474,8 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 410 | every spectral value grows no faster than the powers | **`norm_pow_le_norm_pow_of_mem_spectrum`** | **built** |
 | 411 | the powers of a monodromy grow at least like its spectral radius | **`spectralRadius_pow_le_norm_pow_kgMonodromy`** | **built** |
 | 412 | **the growth of a clock is exactly its spectral radius** | **`norm_pow_kgMonodromy_sandwich`** | **built** |
+| 413 | **the discrete rate governs continuous time**, at the cost of one period | **`eventually_norm_kgFieldStateT_le_floor_rate`** | **built** |
+| 414 | **an exponential bound at the true rate** | **`eventually_norm_kgFieldStateT_le_exp_rate`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
@@ -531,7 +533,7 @@ Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` 
 `KleinGordonNoFreeDrift.lean` (393–395), `KleinGordonFloquetExponent.lean` (396–397),
 `KleinGordonTimeSymmetric.lean` (398–400), `KleinGordonSymmetricStability.lean` (401–403),
 `KleinGordonRadiusAnnulus.lean` (404–406), `KleinGordonGrowthRate.lean` (407–409),
-`KleinGordonExactRate.lean` (410–412).
+`KleinGordonExactRate.lean` (410–412), `KleinGordonContinuousRate.lean` (413–414).
 All wired into the umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -2826,6 +2828,17 @@ The growth of a periodically driven clock is exactly its spectral radius. The es
 is an upper bound for `r` (406), never the truth unless the two coincide — which for the free clock
 they do, both being one.
 
+Those statements are read at multiples of the period. Between periods nothing much can happen — the
+leftover piece is shorter than one period and costs at most `e^{bT}` (312) — so the discrete rate
+governs continuous time as well (413), and when the rate is at least one that is an honest exponential
+bound:
+
+**`eventually_norm_kgFieldStateT_le_exp_rate`**: `‖v(t)‖ ≤ e^{(log(r+ε)/T)·t}·‖v(0)‖·e^{bT}` for all
+large `t`,
+
+with exponent the Floquet exponent of statement 397 at the tolerance chosen. The card's estimate, its
+spectral sharpening, and their continuous-time forms now agree.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -2846,6 +2859,10 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-05 — statements 413–414: **the true rate in continuous time.** The leftover piece between
+  periods costs one factor `e^{bT}`, so the discrete rate governs continuous time, and for a rate at
+  least one this becomes an exponential bound with exponent `log(r+ε)/T` — the Floquet exponent at the
+  chosen tolerance.
 - 2026-08-05 — statements 410–412: **the growth is exactly the spectral radius.** `kⁿ ∈ σ(Mⁿ)` bounds
   the powers below by any multiplier's modulus, and the radius is attained, so `rⁿ ≤ ‖Mⁿ‖` with no
   tolerance; with 409 that sandwiches the growth between `rⁿ` and `(r+ε)ⁿ`. The estimate's rate is an
