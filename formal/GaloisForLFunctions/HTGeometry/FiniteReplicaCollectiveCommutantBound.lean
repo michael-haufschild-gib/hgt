@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.AllReplicaTwoLocalPauliLieGeneration
+import GaloisForLFunctions.HTGeometry.FullPauliCollectiveCasimir
 import GaloisForLFunctions.HTGeometry.PermutationSumIndependence
 
 open scoped BigOperators Matrix
@@ -36,7 +36,7 @@ theorem finiteReplicaCollectiveMatrix_single_eq_replicaMoveMatrix
     · rw [if_pos hlocal, one_mul]
       have hdiff : ∃ k ∈ Finset.univ.erase j, x k ≠ y k := by
         by_contra hn
-        push_neg at hn
+        push Not at hn
         apply h
         refine ⟨hlocal.2.symm, ?_⟩
         funext k
@@ -253,10 +253,13 @@ theorem finiteReplicaCollectiveCommutant_column_zero_swap_of_mem_mem
     funext q
     by_cases hqj : q = j
     · subst q
-      simp [m, hjk, hja, hab]
+      have hu : Function.update m k a j = m j := by simp [hjk]
+      rw [hu, hmj]
+      change b = Equiv.swap a b (n j)
+      rw [hja, Equiv.swap_apply_left]
     · by_cases hqk : q = k
       · subst q
-        simp [m, hjk, hkb, hab]
+        simp [m, nswap, hkb]
       · have hna : n q ≠ a := by
           intro h
           exact hqj (hn (h.trans hja.symm))
@@ -416,7 +419,7 @@ theorem exists_duplicate_and_missing_of_replicaRange_card_lt
     intro j _
     exact Finset.mem_image_of_mem n (Finset.mem_univ j)
   obtain ⟨j, _, k, _, hjk, heq⟩ :=
-    Finset.exists_ne_map_eq_of_card_lt_of_maps_to hlt hmaps
+    Finset.exists_ne_map_eq_of_card_lt_of_maps_to (by simpa using hlt) hmaps
   have hranged : (replicaRange n).card <
       (Finset.univ : Finset (Fin d)).card := by
     simpa using lt_of_lt_of_le hlt hrd
@@ -475,7 +478,7 @@ theorem finiteReplicaCollectiveCommutant_all_columns_zero
       have hrangelt : (replicaRange n).card < r := by
         apply lt_of_le_of_ne hrangele
         intro heq
-        exact hninj (injective_of_replicaRange_card_eq heq.symm)
+        exact hninj (injective_of_replicaRange_card_eq heq)
       obtain ⟨j₀, k₀, hjk, heq, b, hb⟩ :=
         exists_duplicate_and_missing_of_replicaRange_card_lt hrd n hrangelt
       let a := n j₀
@@ -493,9 +496,8 @@ theorem finiteReplicaCollectiveCommutant_all_columns_zero
             exact ⟨q, by simp [hxqb]⟩
           have hnzero : replicaCount n b = 0 := by
             rw [replicaCount, Finset.card_eq_zero]
-            intro q hq
-            rw [Finset.mem_filter] at hq
-            exact hnb q hq.2
+            ext q
+            simp [hnb q]
           rw [hcounts b, hnzero] at hxpos
           omega
         have hxapos : 0 < replicaCount x a := by
@@ -512,7 +514,14 @@ theorem finiteReplicaCollectiveCommutant_all_columns_zero
             (∑ q : Fin r, if y q = b then X (Function.update y q a) n else 0) =
               X x n := by
           rw [Finset.sum_eq_single j]
-          · simp [y, hj]
+          · have hyj : y j = b := by simp [y]
+            have hrecover : Function.update y j a = x := by
+              funext q
+              by_cases hqj : q = j
+              · subst q
+                simp [y, hj]
+              · simp [y, hqj]
+            rw [if_pos hyj, hrecover]
           · intro q _ hqj
             rw [if_neg]
             intro hyqb
@@ -552,8 +561,8 @@ def finiteReplicaCollectiveCommutantEvaluation
   toFun X σ := X.1
     (fun q => canonicalReplicaInjection hrd (σ q))
     (canonicalReplicaInjection hrd)
-  map_add' X Y := rfl
-  map_smul' c X := rfl
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
 
 theorem replicaCount_eq_tupleCount_apply
     {r d : ℕ} (n : Fin r → Fin d) (a : Fin d) :
@@ -575,7 +584,8 @@ theorem finiteReplicaCollectiveCommutant_base_column_zero_of_evaluation_zero
     obtain ⟨σ, hσ⟩ := exists_perm_of_tupleCount_eq hi htuple
     have hcoord := congrFun heval σ
     change X.1 (fun q => i (σ q)) i = 0 at hcoord
-    rwa [hσ] at hcoord
+    subst x
+    simpa [i] using hcoord
   · push Not at hcounts
     obtain ⟨c, hc⟩ := hcounts
     exact finiteReplicaCollectiveCommutant_entry_zero_of_count_ne X.2 x i c hc
@@ -595,7 +605,8 @@ theorem finiteReplicaCollectiveCommutantEvaluation_injective
     ext x n
     exact hall n x
   · intro hX
-    simpa using hX
+    subst X
+    exact Submodule.zero_mem _
 
 /-- Stable-range Schur--Weyl upper bound, proved only from matrix-unit
 commutation: an `r`-replica collective commutant has dimension at most `r!`

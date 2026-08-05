@@ -476,6 +476,106 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 412 | **the growth of a clock is exactly its spectral radius** | **`norm_pow_kgMonodromy_sandwich`** | **built** |
 | 413 | **the discrete rate governs continuous time**, at the cost of one period | **`eventually_norm_kgFieldStateT_le_floor_rate`** | **built** |
 | 414 | **an exponential bound at the true rate** | **`eventually_norm_kgFieldStateT_le_exp_rate`** | **built** |
+| 415 | a sequence dominated by a geometric one has base at most the geometric base | **`norm_le_of_pow_geometric`** | **built** |
+| 416 | a geometric bound on the band powers passes to the true monodromy | **`norm_pow_le_of_band_rate`** | **built** |
+| 417 | **the growth rate transfers from the band models** | **`spectralRadius_le_of_band_rate`** | **built** |
+| 418 | the energy after `n` periods is bounded by the square of the operator norm | **`kgFieldEnergyT_pow_le`** | **built** |
+| 419 | **the energy grows at twice the Floquet exponent** | **`eventually_kgFieldEnergyT_le_rate`** | **built** |
+| 420 | **a band model decaying geometrically makes the true clock decay** | **`tendsto_kgFieldStateT_zero_of_band_rate`** | **built** |
+| 421 | **the energy obeys the card's estimate at the true rate** | `exp_mul_self`, **`eventually_kgFieldEnergyT_le_exp_rate`** | **built** |
+| 422 | flipping the velocity does not change the energy norm | **`norm_kgPair_neg_snd`** | **built** |
+| 423 | **the backward rate is the reflected background's forward rate** | **`eventually_norm_kgFieldStateT_neg_le_exp_rate`** | **built** |
+| 424 | **the two-sided estimate at the true rate**, for a background even in time | **`exists_bound_norm_kgFieldStateT_abs`** | **built** |
+| 425 | **the card's inequality at the sharp rate, in both directions of time** | **`exists_bound_kgFieldEnergyT_abs`** | **built** |
+| 426 | a right inverse telescopes through powers | **`pow_mul_pow_eq_one`** | **built** |
+| 427 | **a clock in a weak static real potential has spectral radius exactly one** | **`spectralRadius_eq_one_of_small_potential`** | **built** |
+| 428 | its state is bounded below as well as above | **`norm_kgFieldStateT_ge_of_small_potential`** | **built** |
+| 429 | **its energy is trapped in a band, for all time** | **`kgFieldEnergy_trapped_of_small_potential`** | **built** |
+| 430 | **the trap holds at every instant, not only at multiples of a period** | **`kgFieldEnergy_trapped_all_time`** | **built** |
+| 431 | the powers of an operator act on an eigenvector by the powers of its eigenvalue | `pow_apply_of_smul` | **built** |
+| 432 | the state is homogeneous in the Cauchy datum | `kgFieldStateT_smul` | **built** |
+| 433 | **the shift law**: one period advances the solution by restarting it | `kgFieldStateT_shift` | **built** |
+| 434 | **an eigen-solution multiplies by its multiplier over every period, at every instant** | **`kgFieldStateT_eigen_shift`** | **built** |
+| 435 | its stroboscopic state is exactly `kⁿ` times the datum | `kgFieldStateT_eigen_pow` | **built** |
+| 436 | **its growth is exactly geometric**: `‖v(nT)‖ = |k|ⁿ‖v(0)‖`, no `ε`, no one-period constant | **`norm_kgFieldStateT_eigen`** | **built** |
+| 437 | its energy is exactly geometric: `E(nT) = |k|^{2n}E(0)` | `kgFieldEnergyT_eigen` | **built** |
+| 438 | **the Floquet normal form**: `v(t) = e^{μt}p(t)` with `p` of period `T` | **`exists_floquet_normal_form`** | **built** |
+| 439 | a nonnegative real whose powers stay in `[1/c, c]` is one | `eq_one_of_pow_mem_Icc` | **built** |
+| 440 | **an attained multiplier of a weak static real potential lies on the unit circle** | **`norm_floquet_multiplier_eq_one_of_small_potential`** | **built** |
+| 441 | **an eigen-clock in a weak static real potential keeps exact time**: `E(nT) = E(0)` | **`kgFieldEnergy_eigen_conserved_of_small_potential`** | **built** |
+| 442 | the same, in the autonomous register | `kgFieldEnergy_eigen_conserved` | **built** |
+| 443 | **a continuous periodic function is bounded** | `exists_bound_of_periodic` | **built** |
+| 444 | **a nonvanishing one is bounded away from zero** | `exists_pos_lower_bound_of_periodic` | **built** |
+| 445 | the solution is its exponential factor times its periodic part | `kgFieldStateT_eq_exp_smul` | **built** |
+| 446 | the periodic part is continuous | `continuous_kgFloquetPeriodicPart` | **built** |
+| 447 | **the periodic part of an eigen-solution is periodic** | `periodic_kgFloquetPeriodicPart` | **built** |
+| 448 | the norm splits as `e^{(Re μ)t}` times the periodic part | `norm_kgFieldStateT_eq_exp_mul` | **built** |
+| 449 | **the exponential envelope of an eigen-solution, above, at every real time** | **`exists_envelope_of_eigen`** | **built** |
+| 450 | **the exact two-sided envelope of a nonvanishing eigen-solution** | **`exists_two_sided_envelope_of_eigen`** | **built** |
+| 451 | the state in a weak static real potential is bounded below at every instant | `norm_kgFieldStateT_ge_all_time` | **built** |
+| 452 | hence it never vanishes | `kgFieldStateT_ne_zero_of_small_potential` | **built** |
+| 453 | **an eigen-clock in a weak static real potential has a flat envelope** | **`exists_flat_envelope_of_small_potential`** | **built** |
+| 454 | a symmetry of the free blocks commutes with the free propagator | `kgDiagOp_kgPropagator` | **built** |
+| 455 | a symmetry of the potential commutes with the source operator | `kgDiagOp_kgSourceOp` | **built** |
+| 456 | hence with the Duhamel kernel | `kgDiagOp_kgStateKernelT` | **built** |
+| 457 | and with the free state | `kgDiagOp_kgStateFree` | **built** |
+| 458 | **a symmetry of the background is a symmetry of the flow** | **`kgDiagOp_kgStateMildT`** | **built** |
+| 459 | the symmetry law in the state register | `kgFieldStateT_diag` | **built** |
+| 460 | the symmetry law for the gradient | `kgFieldGradT_diag` | **built** |
+| 461 | the symmetry law for the velocity | `kgFieldVelT_diag` | **built** |
+| 462 | **the monodromy commutes with any symmetry of the background** | **`kgMonodromy_kgDiagOp_comm`** | **built** |
+| 463 | **a datum fixed by a symmetry stays fixed for all time** | **`kgFieldStateT_fixed`** | **built** |
+| 464 | **two Fourier multipliers commute** | `fourierMulCLM_comm` | **built** |
+| 465 | a Fourier multiplier commutes with `cos t⟨D⟩` | `fourierMulCLM_kgCosOp_comm` | **built** |
+| 466 | a Fourier multiplier commutes with `sin t⟨D⟩` | `fourierMulCLM_kgSinOp_comm` | **built** |
+| 467 | a Fourier multiplier commutes with `⟨D⟩⁻¹` | `fourierMulCLM_kgFreqInvOp_comm` | **built** |
+| 468 | **for a frequency-diagonal background every Fourier multiplier is a symmetry of the flow** | **`kgFieldStateT_fourierMul_symmetry`** | **built** |
+| 469 | its monodromy commutes with every Fourier multiplier | `kgMonodromy_fourierMul_comm` | **built** |
+| 470 | **a frequency-diagonal background cannot move energy between bands** | **`kgFieldStateT_band_invariant`** | **built** |
+| 471 | on a band-limited state a diagonal potential is unchanged by truncation | `kgSourceOp_kgBandOp_eq` | **built** |
+| 472 | **on a frequency-diagonal background the band model is exact** | **`kgStateMildT_kgBandOp_eq`** | **built** |
+| 473 | the same, in the state register | `kgFieldStateT_kgBandOp_eq` | **built** |
+| 474 | **the band energy is exact, at every time** | **`kgFieldEnergyT_kgBandOp_eq`** | **built** |
+| 475 | the state is additive in the Cauchy datum | `kgFieldStateT_add` | **built** |
+| 476 | the zero datum generates the zero state | `kgFieldStateT_zero_datum` | **built** |
+| 477 | **the trajectory splits across a projection, and the pieces stay apart** | **`kgFieldStateT_decouple`** | **built** |
+| 478 | **a clock in a frequency-diagonal background decouples across every band** | **`kgFieldStateT_band_decouple`** | **built** |
+| 479 | **multiplication by a real bounded symbol is self-adjoint on `L²`** | `lpBoundedMulCLM_inner` | **built** |
+| 480 | **a Fourier multiplier with a real symbol is self-adjoint** | **`fourierMulCLM_inner`** | **built** |
+| 481 | the low-pass symbol is real | `starRingEnd_kgLowPass` | **built** |
+| 482 | **the low-pass projection is orthogonal** | `kgLowPassOp_inner` | **built** |
+| 483 | **a clock in a weak real diagonal potential has its energy trapped, at every instant** | **`kgFieldEnergy_trapped_diagonal`** | **built** |
+| 484 | its state is bounded above and below by the same constant | `norm_kgFieldState_trapped_diagonal` | **built** |
+| 485 | the energy norm in components | `norm_kgEnergy_sq` | **built** |
+| 486 | the first component of a fixed state is fixed | `kgDiagOp_fixed_fst` | **built** |
+| 487 | the second component of a fixed state is fixed | `kgDiagOp_fixed_snd` | **built** |
+| 488 | the first component of an annihilated state is annihilated | `kgDiagOp_zero_fst` | **built** |
+| 489 | the second component of an annihilated state is annihilated | `kgDiagOp_zero_snd` | **built** |
+| 490 | **what a self-adjoint projection fixes is orthogonal to what it annihilates** | `inner_eq_zero_of_proj` | **built** |
+| 491 | **Pythagoras on the energy space, across a self-adjoint projection** | `norm_kgEnergy_add_sq` | **built** |
+| 492 | **the state splits orthogonally across every band, at every time** | **`norm_kgFieldStateT_band_split`** | **built** |
+| 493 | **a clock's energy is the sum of its band energies** | **`kgFieldEnergyT_band_split`** | **built** |
+| 494 | the annulus symbol is measurable | `measurable_kgAnnulus` | **built** |
+| 495 | it is bounded by one | `norm_kgAnnulus_le` | **built** |
+| 496 | it is real | `starRingEnd_kgAnnulus` | **built** |
+| 497 | it takes only the values `0` and `1` | `kgAnnulus_mul_self` | **built** |
+| 498 | on ordered radii it is the difference of the low-pass symbols | `kgAnnulus_eq_sub` | **built** |
+| 499 | the annulus projection is bounded by one | `norm_kgAnnulusOp_le` | **built** |
+| 500 | **the annulus projection is idempotent** | `kgAnnulusOp_idem` | **built** |
+| 501 | **the annulus projection is orthogonal** | `kgAnnulusOp_inner` | **built** |
+| 502 | on ordered radii it is the difference of the low-pass projections | `kgAnnulusOp_eq_sub` | **built** |
+| 503 | **a clock decouples across every annulus of frequencies** | **`kgFieldStateT_annulus_decouple`** | **built** |
+| 504 | **its energy is the energy inside the annulus plus the energy outside** | **`kgFieldEnergyT_annulus_split`** | **built** |
+| 505 | the high-frequency part of a datum vanishes as the cutoff grows | `tendsto_norm_sub_kgLowPassOp` | **built** |
+| 506 | the energy splits into low and high parts, autonomously | `kgFieldEnergy_band_split_static` | **built** |
+| 507 | **the high-frequency energy is a fixed multiple of its own initial value, at every time** | **`kgFieldEnergy_high_le`** | **built** |
+| 508 | **no ultraviolet cascade**: a cutoff above which the clock carries less than `ε`, for all time | **`exists_cutoff_high_energy_small`** | **built** |
+| 509 | **all but `ε` of a clock's energy stays below a fixed frequency, forever** | **`kgFieldEnergy_no_uv_cascade`** | **built** |
+| 510 | **the energy below a cutoff is trapped, two-sidedly** | `kgFieldEnergy_low_trapped` | **built** |
+| 511 | **the energy above a cutoff is trapped, two-sidedly** | `kgFieldEnergy_high_trapped` | **built** |
+| 512 | **the energy in any annulus is trapped, two-sidedly** | **`kgFieldEnergy_annulus_trapped`** | **built** |
+| 513 | the energy splits across an annulus, autonomously | `kgFieldEnergy_annulus_split_static` | **built** |
+| 514 | **the spectral profile of a clock is frozen** | **`kgFieldEnergy_spectrum_frozen`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
@@ -533,7 +633,14 @@ Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` 
 `KleinGordonNoFreeDrift.lean` (393–395), `KleinGordonFloquetExponent.lean` (396–397),
 `KleinGordonTimeSymmetric.lean` (398–400), `KleinGordonSymmetricStability.lean` (401–403),
 `KleinGordonRadiusAnnulus.lean` (404–406), `KleinGordonGrowthRate.lean` (407–409),
-`KleinGordonExactRate.lean` (410–412), `KleinGordonContinuousRate.lean` (413–414).
+`KleinGordonExactRate.lean` (410–412), `KleinGordonContinuousRate.lean` (413–414),
+`KleinGordonBandRate.lean` (415–417), `KleinGordonEnergyRate.lean` (418–420),
+`KleinGordonEnergyExponent.lean` (421), `KleinGordonTwoSidedRate.lean` (422–424),
+`KleinGordonEnergyTwoSided.lean` (425), `KleinGordonTrappedEnergy.lean` (426–429),
+`KleinGordonTrappedAllTime.lean` (430), `KleinGordonFloquetNormalForm.lean` (431–438),
+`KleinGordonEigenClock.lean` (439–442), `KleinGordonEigenEnvelope.lean` (443–453), `KleinGordonSymmetry.lean` (454–463), `KleinGordonMultiplierSymmetry.lean` (464–470), `KleinGordonBandExact.lean` (471–474), `KleinGordonBandSplitting.lean` (475–478),
+`KleinGordonSelfAdjointMultiplier.lean` (479–484),
+`KleinGordonBandEnergySplit.lean` (485–493), `KleinGordonAnnulus.lean` (494–504), `KleinGordonNoCascade.lean` (505–509), `KleinGordonSpectrumFrozen.lean` (510–514).
 All wired into the umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -2839,6 +2946,278 @@ large `t`,
 with exponent the Floquet exponent of statement 397 at the tolerance chosen. The card's estimate, its
 spectral sharpening, and their continuous-time forms now agree.
 
+The rate transfers from the band models too. Statement 324 transfers a uniform bound on the powers and
+359 a two-sided one; a *geometric* bound `‖M_Rⁿ‖ ≤ Cqⁿ`, uniform in the cut-off, passes to the limit by
+the same argument (416), and a geometric bound caps the spectrum, because `|k|ⁿ ≤ ‖Mⁿ‖` (410) and a
+sequence `|k|ⁿ` below `Cqⁿ` forces `|k| ≤ q` (415). Hence
+
+**`spectralRadius_le_of_band_rate`** — the spectral radius of the true clock is bounded by the rate of
+its band models.
+
+Growth rate, like stability (324) and oscillation (359), is decidable on the models where the Cauchy
+problem is a genuine strong problem.
+
+### Back to the energy
+
+The card's subject is the energy `E(t) = ‖⟨D⟩u(t)‖² + ‖∂ₜu(t)‖²`, and the Floquet theory has been
+carried on the state, whose norm is its square root. Everything said about the rate of the state
+therefore says the same about the energy with the exponent doubled (418–419):
+
+`E(nT) ≤ ‖Mⁿ‖²·E(0)`,   hence eventually   `E(nT) ≤ (r+ε)^{2n}·E(0)`.
+
+And the band transfer reads, in the form the card set out to prove something about:
+
+**`tendsto_kgFieldStateT_zero_of_band_rate`** — if the band models decay at a uniform geometric rate
+below one, the true clock decays.
+
+The property the card began by estimating is decided on the models where the Cauchy problem is a
+genuine strong problem.
+
+And in continuous time the card's own estimate reappears with the exponent replaced by the truth
+(421): the state grows at `log(r+ε)/T` (414) and the energy is the square of its norm, so
+
+**`eventually_kgFieldEnergyT_le_exp_rate`**: `E(t) ≤ e^{2(log(r+ε)/T)·t}·E(0)·e^{2bT}` for all large `t`.
+
+The card opened with `E(t) ≤ E(0)e^{(‖V‖+1)|t|}` for a compactly supported classical solution. It closes
+with the same shape for an arbitrary `L²` datum in a periodic bounded background, at twice the Floquet
+exponent — the rate the clock actually has — and a constant that costs one period.
+
+One asymmetry is left: the card's estimate carries `|t|`, and the spectral sharpening runs forwards.
+The reflection supplies the other direction — the state at `−t` for `W` is the state at `+t` for the
+reflected background, up to the velocity flip, which is an isometry (422) — so the backward rate is the
+reflected background's forward rate (423). When the background is even in time the two coincide and the
+bound closes up:
+
+**`exists_bound_norm_kgFieldStateT_abs`**: `‖v(t)‖ ≤ e^{μ|t|}·‖v(0)‖·e^{bT}` for all `|t|` large,
+`μ = log(r+ε)/T`.
+
+That is the shape the card began with — absolute value and all — at the rate the clock actually has.
+
+Squaring it closes the circle (425). The card opens with
+
+`E(t) ≤ E(0)·e^{(‖V‖_∞+1)|t|}`
+
+for a classical solution with uniformly compact spatial support, and it now proves
+
+**`exists_bound_kgFieldEnergyT_abs`**: `E(t) ≤ e^{2μ|t|}·E(0)·e^{2bT}` for all `|t|` large,
+
+for an **arbitrary `L²` datum** in a **periodic background even in time**, with `μ = log(r+ε)/T` twice
+the Floquet exponent. The rate is bounded by the estimate's own `b` (397) and is generally smaller; for
+the free field it is zero and the inequality degenerates to the exact conservation of statement 53.
+
+For a weak static real potential the inequality collapses further, in both directions. Statement 319
+bounds the powers by `K = √((1+b)/(1−b))` uniformly; the evolution is invertible and its inverse obeys
+the same bound, so the powers are bounded *below* too — `‖Mⁿv‖ ≥ ‖v‖/K`, since `v = M⁻ⁿMⁿv` and a right
+inverse telescopes through powers (426). Hence
+
+**`kgFieldEnergy_trapped_of_small_potential`**: `E(0)·(1−b)/(1+b) ≤ E(nT) ≤ (1+b)/(1−b)·E(0)`,
+
+and the spectral radius is exactly one (427): every multiplier lies on the unit circle (351) and the
+spectrum is inhabited (341). A weak static potential neither drives a clock nor damps it — it can only
+shift the energy by a fixed factor, once and for all.
+
+And the trap is not confined to multiples of a period. A constant background is periodic with *every*
+period, so taking the period to be `t` itself and one step of the evolution gives
+
+**`kgFieldEnergy_trapped_all_time`**: `E(0)·(1−b)/(1+b) ≤ E(t) ≤ (1+b)/(1−b)·E(0)` for **every**
+`t ∈ ℝ`.
+
+The clock's energy never leaves a fixed band. That is the strongest form the card's inequality takes:
+no exponential at all, in either direction of time, with both constants read off from the potential's
+strength alone.
+
+### The Floquet normal form
+
+A Floquet multiplier is a point of the monodromy's spectrum. When it is *attained* — by an eigenvector
+of the monodromy — the solution it carries is rigid. The restart law says the evolution over one period
+starts again from the state it has reached, so an eigen-datum reproduces itself up to its multiplier
+at **every** instant, not only at multiples of the period:
+
+**`kgFieldStateT_eigen_shift`**: `v(t + T) = k·v(t)`.
+
+Two consequences. First, the growth of an eigen-solution is *exactly* geometric —
+**`norm_kgFieldStateT_eigen`**: `‖v(nT)‖ = |k|ⁿ‖v(0)‖` — with no `ε` and no one-period constant `e^{bT}`;
+along eigen-data the approximate rates of statements 407–425 become an identity. Second, writing
+`k = e^{μT}` with `μ = log k / T`, the solution splits as
+
+**`exists_floquet_normal_form`**: `v(t) = e^{μt}·p(t)`,   `p(t + T) = p(t)`,
+
+the classical Floquet normal form. The multiplier is the entire content of the solution's long-time
+behaviour: the periodic factor contributes nothing to the rate.
+
+### An eigen-clock in a weak static potential keeps exact time
+
+For a weak static real potential the powers of the monodromy are bounded above (319) and below (428) by
+the same constant `K = √((1+b)/(1−b))`. Along an eigen-solution the stroboscopic growth is exactly
+`|k|ⁿ`, so `|k|ⁿ` is confined to `[1/K, K]` for every `n` — and a nonnegative real whose powers stay in
+a fixed compact interval away from `0` and `∞` must be `1`:
+
+**`norm_floquet_multiplier_eq_one_of_small_potential`**: `|k| = 1`.
+
+The energy of such a solution is therefore not merely trapped in the band of statement 430; it returns
+to its initial value **exactly**, at every period:
+
+**`kgFieldEnergy_eigen_conserved_of_small_potential`**: `E(nT) = E(0)`.
+
+A clock that repeats itself stroboscopically in a weak static potential keeps exact time.
+
+### The exact envelope
+
+The normal form makes the continuous-time behaviour of an eigen-solution completely explicit. Its
+periodic part is continuous, so it is bounded on a single period, and — when the solution never
+vanishes — bounded away from zero there as well; periodicity then carries both bounds to the whole
+line. The result is an exact two-sided envelope:
+
+**`exists_two_sided_envelope_of_eigen`**: `m·e^{(Re μ)t} ≤ ‖v(t)‖ ≤ M·e^{(Re μ)t}` for **all** `t ∈ ℝ`.
+
+No `ε`, no one-period loss `e^{bT}`, no restriction to large `|t|`: the rate is exactly the Floquet
+exponent `Re μ = log|k|/T`, and the only freedom left is the pair of constants — which is the sharpest
+form such a statement can take, since a nonconstant periodic factor genuinely oscillates.
+
+For a weak static real potential the two-sided monodromy bound puts the multiplier on the unit circle
+(440), so the exponent vanishes and the envelope is **flat**:
+
+**`exists_flat_envelope_of_small_potential`**: `m ≤ ‖v(t)‖ ≤ M` for all `t`, with `m > 0`.
+
+The nonvanishing hypothesis is discharged there, not assumed: the all-time lower bound `‖v(t)‖ ≥
+‖v(0)‖/K` of statement 451 — statement 428 read at period `t` — keeps the state away from the origin
+at every instant.
+
+### Symmetries
+
+The evolution is assembled from exactly two ingredients: the free propagator and the source operator
+built from the potential. An operator `Λ` on `L²` that commutes with the free building blocks —
+`cos t⟨D⟩`, `sin t⟨D⟩`, `⟨D⟩⁻¹` — and with the potential at every time commutes with both, and the
+uniqueness of the Duhamel solution promotes that to a commutation with the whole flow:
+
+**`kgDiagOp_kgStateMildT`**: `Λ v(t) = v_{Λ·datum}(t)`.
+
+This is the Noether statement for the model, and it has two structural consequences. The monodromy of
+a periodic background commutes with every such symmetry (**`kgMonodromy_kgDiagOp_comm`**), so the whole
+Floquet spectral theory of statements 293–453 splits along the symmetry's eigenspaces. And a Cauchy
+datum fixed by the symmetry stays fixed for all time (**`kgFieldStateT_fixed`**): symmetric initial data
+generate symmetric solutions, which is the conservation law the symmetry carries.
+
+The symmetry class is not abstract. Two Fourier multipliers commute, because their symbols do
+(**`fourierMulCLM_comm`**), and the free building blocks `cos t⟨D⟩`, `sin t⟨D⟩`, `⟨D⟩⁻¹` are Fourier
+multipliers — so for a background that is a Fourier multiplier at each time, *every* Fourier multiplier
+satisfies all four commutation hypotheses at once:
+
+**`kgFieldStateT_fourierMul_symmetry`**: a frequency-diagonal background admits the whole multiplier
+algebra as symmetries.
+
+The low-pass projections are Fourier multipliers, so the invariance statement reads:
+
+**`kgFieldStateT_band_invariant`**: a band-limited Cauchy datum stays band-limited for all time.
+
+A background diagonal in frequency cannot move energy between frequency bands — which is exactly why
+the band programme of statements 237–292 has to work with `P_R W P_R` and pay an approximation error
+for a general potential: only the diagonal ones leave the bands alone.
+
+On the diagonal backgrounds there is no error to pay at all. Inside the band the truncated potential
+acts exactly as the full one — `P_R` commutes with a diagonal `W` and fixes the solution, so the two
+source terms coincide pointwise along the flow (**`kgSourceOp_kgBandOp_eq`**) — and Duhamel uniqueness
+turns that into an identity of flows:
+
+**`kgStateMildT_kgBandOp_eq`**: the band model reproduces the true solution exactly, at every time,
+with no error term.
+
+So the band energy is exact as well (**`kgFieldEnergyT_kgBandOp_eq`**): a band-limited clock in a
+frequency-diagonal background loses nothing to band truncation. The approximation theorems of
+statements 237–292 are needed only where the background genuinely mixes frequencies.
+
+### The flow decouples
+
+A symmetry that is a *projection* does more than preserve its range: it splits the trajectory. The
+datum decomposes as `Λv + (1 − Λ)v`, the flow is additive, and the symmetry law keeps the two pieces
+apart — the first stays in the range of `Λ` for all time, the second stays in its kernel:
+
+**`kgFieldStateT_decouple`**: `v(t) = v_{Λ}(t) + v_{1−Λ}(t)`, with `Λ v_Λ(t) = v_Λ(t)` and
+`Λ v_{1−Λ}(t) = 0`, for every `t`.
+
+The low-pass operators are projections and, on a frequency-diagonal background, symmetries. So
+
+**`kgFieldStateT_band_decouple`**: a clock's dynamics decouples across every frequency band exactly —
+the low-frequency part of the solution is the solution of the low-frequency part of the datum, and
+nothing crosses between the bands at any time.
+
+### The self-adjointness hypothesis, discharged
+
+The whole small-potential theory — the two-sided monodromy bound (319, 428), the trapped energy (429,
+430), the eigen-clock (441), the flat envelope (453) — carries self-adjointness of the potential as a
+hypothesis. For a Fourier multiplier that hypothesis is a property of the symbol alone. The `L²` inner
+product is the integral of `conj f · g`, so a real factor moves across it (**`lpBoundedMulCLM_inner`**);
+the Fourier transform is unitary, so the multiplier it conjugates inherits the property
+(**`fourierMulCLM_inner`**). In particular the low-pass projections are *orthogonal* projections
+(**`kgLowPassOp_inner`**).
+
+The hypothesis is therefore discharged for every real bounded symbol, and the trapping law becomes a
+statement with no hypotheses beyond the size of the symbol:
+
+**`kgFieldEnergy_trapped_diagonal`**: for a real symbol of sup-norm `b < 1`,
+`E(0)·(1−b)/(1+b) ≤ E(t) ≤ (1+b)/(1−b)·E(0)` at **every** instant `t ∈ ℝ`.
+
+That is the card's inequality in its final form on a concrete, explicitly described class of
+potentials: no exponential, no `ε`, no hypothesis one cannot check by looking at the symbol.
+
+### The energy is the sum of the band energies
+
+Orthogonality upgrades the decoupling of statements 477–478 from qualitative to quantitative. A
+self-adjoint projection makes what it fixes orthogonal to what it annihilates
+(**`inner_eq_zero_of_proj`**), so Pythagoras holds on the energy space across it
+(**`norm_kgEnergy_add_sq`**); the flow keeps the two halves of a trajectory in those two subspaces for
+all time, and therefore
+
+**`kgFieldEnergyT_band_split`**: `E(t) = E_low(t) + E_high(t)` at **every** instant,
+
+each summand being the energy of the solution generated by that band of the datum. A clock in a
+frequency-diagonal background is an exact direct sum of independent band clocks: no band borrows
+energy from another, and each is separately governed by the estimate.
+
+### Annuli
+
+A band of frequencies is an annulus, not a disc. The annulus symbol — the indicator of
+`R₁ < ‖ξ‖ ≤ R₂` — is real, takes only the values `0` and `1`, and on ordered radii is the difference of
+the two low-pass symbols (**`kgAnnulus_eq_sub`**), so the annulus operator is a self-adjoint projection
+(**`kgAnnulusOp_idem`**, **`kgAnnulusOp_inner`**) and a Fourier multiplier, hence a symmetry of every
+frequency-diagonal background.
+
+Everything proved for the discs therefore holds for annuli:
+
+**`kgFieldStateT_annulus_decouple`** and **`kgFieldEnergyT_annulus_split`**: a clock's trajectory
+decouples across any annulus of frequencies, and its energy is the energy carried inside the annulus
+plus the energy carried outside it, at every instant of time.
+
+### No ultraviolet cascade
+
+The decomposition has a consequence about the *whole future*. In a weak real diagonal potential the
+energy above a cutoff is the energy of an independent sub-clock, so the trapping law of statement 483
+bounds it by `(1+b)/(1−b)` times its **own** initial value at every instant
+(**`kgFieldEnergy_high_le`**) — and that initial value tends to zero as the cutoff grows, because the
+low-pass projections converge strongly to the identity (**`tendsto_norm_sub_kgLowPassOp`**). Hence
+
+**`exists_cutoff_high_energy_small`**: for every `ε > 0` there is an `R₀` such that for every cutoff
+`R ≥ R₀` and **every** time `t`, the clock's energy above `R` is at most `ε`.
+
+Combined with the splitting this is **`kgFieldEnergy_no_uv_cascade`**: all but `ε` of a clock's energy
+stays below a fixed frequency, forever. A frequency-diagonal background cannot drive energy up the
+spectrum — what starts below a frequency stays below it, up to an error fixed once and for all, with
+no dependence on the length of the time window.
+
+### The spectral profile is frozen
+
+The same argument applies to every band at once, and in both directions. Each band carries an
+independent clock, so the trapping law confines its energy — above *and* below — to the fixed interval
+around its own initial value:
+
+**`kgFieldEnergy_annulus_trapped`**: `E_A(0)·(1−b)/(1+b) ≤ E_A(t) ≤ (1+b)/(1−b)·E_A(0)` for every
+annulus `A` of frequencies and every `t`.
+
+Together with the splitting this is **`kgFieldEnergy_spectrum_frozen`**: the band energies still add up
+to the total, and no band gains or loses more than the fixed factor `(1+b)/(1−b)`, ever. That is
+strictly stronger than the trapping of the total energy (statement 483), which on its own would permit
+energy to move freely between frequencies while the sum stayed put.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -2859,6 +3238,71 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-05 — statements 510–514: **the spectral profile is frozen.** Each band is an independent
+  clock, so the trapping law confines its energy two-sidedly around its own initial value; with the
+  splitting, no band gains or loses more than the fixed factor at any time.
+- 2026-08-05 — statements 505–509: **no ultraviolet cascade.** The energy above a cutoff is an
+  independent sub-clock's energy, so it is trapped by a fixed multiple of its own initial value for all
+  time; that initial value vanishes as the cutoff grows, so all but `ε` of the energy stays below a
+  fixed frequency forever.
+- 2026-08-05 — statements 494–504: **annuli.** The indicator of a frequency annulus is a real
+  `0`/`1` symbol, so the annulus operator is an orthogonal projection and a symmetry of every diagonal
+  background; a clock decouples across any annulus and its energy splits into inside and outside.
+- 2026-08-05 — statements 485–493: **the energy splits along the bands.** Self-adjointness makes the
+  low-pass projection orthogonal, so the two halves of a decoupled trajectory are orthogonal at every
+  instant and the energy is exactly the sum of the band energies.
+- 2026-08-05 — statements 479–484: **self-adjointness discharged.** A real bounded symbol gives a
+  self-adjoint multiplication operator, and the unitary Fourier transform carries this to the Fourier
+  multiplier; the low-pass projections are orthogonal. The trapping law then holds for every real
+  symbol of sup-norm below one, with no further hypothesis.
+- 2026-08-05 — statements 475–478: **the flow decouples across a projection.** Additivity in the datum
+  plus the symmetry law splits the trajectory into a piece confined to the range of the projection and
+  one confined to its kernel; for a frequency-diagonal background this decouples the clock across every
+  frequency band, exactly and for all time.
+- 2026-08-05 — statements 471–474: **the band model is exact on diagonal backgrounds.** Along a
+  band-limited solution the truncated and full potentials have the same source term, so Duhamel
+  uniqueness makes the two flows — and the two energies — identical, with no approximation error.
+- 2026-08-05 — statements 464–470: **the symmetry class, made concrete.** Fourier multipliers commute
+  with one another, hence with the free blocks; a frequency-diagonal background therefore admits the
+  whole multiplier algebra as symmetries, and band-limited data stay band-limited for all time.
+- 2026-08-05 — statements 454–463: **symmetries.** An operator commuting with the free building blocks
+  and with the potential commutes with the whole flow, by Duhamel uniqueness. The monodromy therefore
+  commutes with every symmetry of the background, and symmetric data generate symmetric solutions.
+- 2026-08-05 — statements 443–453: **the exact envelope.** A continuous periodic function is bounded
+  above, and away from zero when it never vanishes, by constants read off one period; through the normal
+  form this gives an eigen-solution a two-sided exponential envelope at the exact Floquet rate, valid at
+  every real time. In a weak static real potential the exponent vanishes and the envelope is flat.
+- 2026-08-05 — statements 431–442: **the Floquet normal form, and the eigen-clock.** An attained
+  multiplier makes the estimate an identity: the eigen-solution multiplies by `k` over every period, so
+  its growth is exactly `|k|ⁿ` and it splits as `e^{μt}` times a periodic state. In a weak static real
+  potential the two-sided monodromy bound confines `|k|ⁿ` to a fixed interval, forcing `|k| = 1`: such a
+  clock's energy returns to its initial value exactly, not merely to a band.
+- 2026-08-05 — statement 430: **the trap holds at every instant.** A constant background is periodic
+  with every period, so taking the period to be `t` puts the two-sided energy trap at every real time,
+  not only at multiples of a fixed one.
+- 2026-08-05 — statements 426–429: **the energy of a weak static clock is trapped.** The inverse obeys
+  the same uniform bound as the monodromy, so the powers are bounded below as well as above and the
+  energy stays in the band `[(1−b)/(1+b), (1+b)/(1−b)]·E(0)` for all time; the spectral radius is
+  exactly one. Such a potential neither drives the clock nor damps it.
+- 2026-08-05 — statement 425: **the card's inequality, at the sharp rate, in both directions.**
+  Squaring the two-sided state bound gives `E(t) ≤ e^{2μ|t|}E(0)e^{2bT}` for an arbitrary `L²` datum in
+  a periodic time-symmetric background — the shape the card opened with, at twice the Floquet exponent
+  rather than at `‖V‖+1`.
+- 2026-08-05 — statements 422–424: **the estimate in both directions.** The reflection makes the
+  backward rate the reflected background's forward rate, and for a background even in time the two
+  coincide, so the sharp bound closes up to `e^{μ|t|}` — the shape the card began with, at the rate the
+  clock actually has.
+- 2026-08-05 — statement 421: **the card's estimate at the true rate.** Squaring the continuous-time
+  state bound gives `E(t) ≤ e^{2(log(r+ε)/T)t}E(0)e^{2bT}` — the shape the card opened with, for an
+  arbitrary `L²` datum in a periodic bounded background, at twice the Floquet exponent.
+- 2026-08-05 — statements 418–420: **back to the energy.** The state's rate is the energy's rate with
+  the exponent doubled, so `E(nT) ≤ (r+ε)^{2n}E(0)` eventually; and a band model decaying at a uniform
+  geometric rate below one makes the true clock decay — the card's own subject decided on the band
+  models.
+- 2026-08-05 — statements 415–417: **the rate transfers from the band models.** A geometric bound on
+  the band powers passes to the limit as the uniform one did, and a geometric bound caps the spectrum,
+  so the true clock's spectral radius is bounded by the band models' rate. Growth rate joins stability
+  and oscillation among the things decidable on a band.
 - 2026-08-05 — statements 413–414: **the true rate in continuous time.** The leftover piece between
   periods costs one factor `e^{bT}`, so the discrete rate governs continuous time, and for a rate at
   least one this becomes an exponential bound with exponent `log(r+ε)/T` — the Floquet exponent at the

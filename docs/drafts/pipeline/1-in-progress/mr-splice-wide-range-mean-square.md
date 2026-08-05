@@ -407,3 +407,9 @@ or corpus-owned; unit 4 (sharp-cutoff Halász sup) remains but is not region-gat
 
 - 2026-08-04 — unit 3 audit closed; tier-1 (Littlewood region) licensed as the next analytic
   build; numeric κ-criterion recorded above.
+
+- 2026-08-05 — the κ < 1 requirement now has its own production card:
+  `littlewood-zero-free-region.md` (stage L1 numerically certified:
+  `ζ(1+it) ≤ (1.24…1.93)·log t/log log t` across five decades of `log t` with the
+  k-th-derivative-test chain; formalization staged L2–L6 there).  This card's unit 5
+  (numeric re-certification of route B) waits on that card's L2 honest constants.

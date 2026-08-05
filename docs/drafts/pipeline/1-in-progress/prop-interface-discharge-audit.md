@@ -3943,3 +3943,546 @@ order of blow-up at each `ζ ∈ Z`, so that one monomial in the jets strictly d
 along the approach sequence.  For `movingCanonicalLogDerivative θ` with `Z = {ζ_n}` (the real zeros)
 approached vertically, the orders are `m + 1` for the `m`-th derivative and the shifts `σ_k` move
 which `ζ_n` is hit — that is the structure to exploit.
+
+## Audit instrument: `∃!` was a producer-hiding class
+
+`conclAtoms` matched `Exists` but not `ExistsUnique`, so every interface produced only inside an
+`∃!` looked never-concluded.  Adding the `ExistsUnique` branch removed three phantom rows
+(`IsObserverTimeFourierValuationAtlas`, `IsCompleteObserverTimeFourierValuationAtlas`,
+`IsCompleteCountableObserverTimeFourierValuationAtlas` — all produced by
+`existsUnique_observerTimeFourierValuationAtlas` and its siblings).
+
+Measured on HTGeometry ∪ RHTower: never-concluded 9 → 6, ungrounded 12 → 8.
+
+## `HasBlowUpSet` realized — `periodicPoleModel`
+
+The blow-up interface I introduced was itself unproduced.  Discharged with
+`(exp(2πiw) − 1)⁻¹`: holomorphic on the upper half-plane (its modulus there is `< 1`, so the
+denominator never vanishes), with a pole at every integer reached vertically.  Consequences:
+`hasBlowUpSet_periodicPoleModel` and a second unconditional full-rank realization,
+`exists_row_packet_upperHalfPlane_periodicPoleModel`.
+
+## `GrowthSeparation` discharged — `ExponentialTowerGrowthSeparation.lean`
+
+The remaining non-full-rank never-concluded row.  Discharged unconditionally for the exponential
+tower `(exp, exp ∘ exp)`.
+
+* `tendsto_monomialRatio_zero` — for the order that reads the exponential exponent first,
+  `(xᵖ e^{bx})/(x^d e^{Jx}) → 0` whenever `b < J`, or `b = J` and `p < d`.  Both cases squeeze
+  against `xᵖe^{−x} → 0` and `1/x → 0`; no polynomial asymptotics needed.
+* `exists_dominant_monomial` — every nonzero `A ∈ ℂ[X₀,X₁]` has a monomial strictly dominant for
+  that order (sup over the support, then sup over the fibre).
+* `exists_eventually_norm_eval_exp_ge` — hence `A(x, eˣ)/(x^d e^{Jx}) → A.coeff m₀ ≠ 0`, so
+  `‖A(x, eˣ)‖ ≥ ‖A.coeff m₀‖/2` for all large real `x`.  **`ε` is a constant**, which is what makes
+  the separation work: `log⁺ε⁻¹` does not grow.
+* `growthSeparation_exp_expExp` — the joint scale `1 + log⁺|z| + log⁺|eᶻ| + log⁺ε⁻¹` is linear in
+  `x`, while `log⁺|exp exp z| = eˣ`; `exp x / x → ∞` finishes.
+* `not_three_var_relation_exp_expExp` — **the coordinate, `exp` and `exp ∘ exp` satisfy no nonzero
+  polynomial relation**, unconditionally, via `not_three_var_relation_of_growthSeparation` and
+  `transcendentalEntire_exp`.
+
+### Remaining frontier
+
+Never-concluded is now exactly the five `…ExpandedFullRankWitness` rows (plus
+`probabilityCarrierExpandedFullRankWitness`, ungrounded), and the ungrounded-only row
+`RelativeDifferentialAlgebraicity.HypertranscendentalOver`.  The full-rank rows need the multi-jet
+blow-up law: a dominance filtration among jets sharing a pole, which the single-jet estimate does
+not supply because monomials in `L, L', …` of equal pole order can cancel (the Riccati phenomenon
+`L² − L'`).
+
+## The multi-jet law — `MultiJetBlowUpIndependence.lean`
+
+The single-jet blow-up law does not extend to several jets by ordering pole orders: monomials of
+equal order can cancel (`L² − L'` drops order for a Cauchy transform).  The obstruction is real, but
+it is an obstruction to the *wrong* target.
+
+**Reframing.** The expanded-evaluation layer never needs full algebraic independence — it needs
+linear independence of a **bounded monomial box**.  There the exponents range over a finite set, so a
+rate vector separating that finite set suffices, and such a vector always exists (base-`B` weights
+for `B` above the exponent bound).  Full algebraic independence would require `e ↦ ⟨e,d⟩` injective
+on all of `ℕⁿ`, which is impossible for `n ≥ 2`; on a finite box it is routine.  That gap between
+"impossible" and "routine" is the whole content of the reframing.
+
+* `blowUpOrder d e = ∑ₖ eₖ·dₖ`, and `prod_mul_pow_eq_prod_mul_pow_order` — the scale factors out of a
+  jet monomial exactly at its order.
+* `MultiBlowUpData S F Z d` — at each `ζ ∈ Z` a sequence `uⱼ ∈ S → ζ` and a scale `tⱼ → 0` with
+  `Fₖ(uⱼ)·tⱼ^{dₖ} → cₖ ≠ 0`.
+* `linearIndependent_restrict_expandedMonomialFamily_of_multiBlowUp` — **the law**.  If
+  `a ↦ blowUpOrder d (exponent a)` is injective, the dominant stratum of a relation is a single `a₀`;
+  multiplying by `tⱼ^D` and passing to the limit gives `(∑ᵢ λ(a₀,i)·ζⁱ)·∏ₖcₖ^{e_{a₀}k} = 0`, so the
+  degree block is a polynomial vanishing on the infinite set `Z`, hence zero.
+* `multiBlowUpData_periodicPolePowers` — realized by `Fₖ = periodicPoleModel^{aₖ}` for **any** rate
+  vector `a`: along the vertical approach `periodicPoleModel(uⱼ)·tⱼ = 1` *exactly*, so
+  `Fₖ(uⱼ)·tⱼ^{aₖ} = 1` with no limit computation at all.
+* `exists_row_packet_upperHalfPlane_of_multiBlowUp` — the full-rank datum with arbitrarily many jets.
+
+Three independent mechanisms now produce the datum: **periodicity**, **single-jet blow-up**, and
+**multi-jet separated rates**.  None needs analyticity.
+
+### What is still open
+
+The consumers' own jets are `w ↦ L^{(m)}(w+σ)` for `L` the moving-canonical log-derivative.  Their
+rate vector is `d = (m+1)` per jet, which does **not** separate the exponent box — `L²` and `L'`
+share order 2.  So the law applies to the corpus's abstract full-rank interfaces and to explicit
+families, but not yet to that specific packet.  Closing it needs the leading Laurent coefficient, not
+just the order: the top-order stratum's leading combination is an explicit polynomial in the residues
+(all `−1` for this packet), and the question is whether that polynomial can vanish identically.
+
+## The mathlib-premise axis: `∃!` again, and two discharged classes
+
+`audit_mathlib_premises_calibrated.lean` had the same `ExistsUnique` blind spot as the corpus-`Prop`
+instrument; patched with an `ExistsUnique` branch emitting both its own key and `Exists`.
+
+### Singular-continuous laws are inhabited — `SingularContinuousLawWitnesses.lean`
+
+Three theorems (`AnalyticNevanlinnaCarrierRelationFree`,
+`SingularContinuousFullTranslationFamilyFreenessUniversalityLaw`, `NevanlinnaPositiveCarrierCapstone`)
+take `eta ∈ projectiveSingularContinuousProbabilityLaws` as a hypothesis, and nothing exhibited a
+member — the statements were correct but with no guarantee of being about anything.
+
+**No construction was needed.**  The corpus already proves each of these classes is a *dense* `G_δ`;
+density in a nonempty space gives nonemptiness in one line.  Discharged:
+`circle_atomlessProbabilityLaws_nonempty`, `circle_singularProbabilityLaws_nonempty`,
+`circleSingularContinuousProbabilityLaws_nonempty`, `projective_atomlessProbabilityLaws_nonempty`,
+`projective_singularProbabilityLaws_nonempty`,
+`projectiveSingularContinuousProbabilityLaws_nonempty`,
+`exists_mem_projectiveSingularContinuousProbabilityLaws`, and
+`NevanlinnaBoundaryFamily.singularContinuousParameterCarrierPhase_nonempty` (image of a nonempty
+set).
+
+Lesson: a Baire-category theorem in the corpus is a *witness producer*.  Every dense or residual
+class should carry its nonemptiness corollary, or the audit will keep reporting its members as
+unproduced.
+
+### `sqMass` positivity — `SqMassPositivity.lean`
+
+`diffBilinForm_nonneg_of_restrictedKernelFloor_tendsto_zero` carried
+`hNpos : ∀ v ∈ apertureDomain a, sqMass v ≠ 0 → 0 < sqMass v`.  That is not a hypothesis:
+`sqMass v = ∫ v²` is an integral of a square, hence nonnegative for every trial function, integrable
+or not.  `sqMass_nonneg`, `sqMass_pos_of_ne_zero`, `sqMass_pos_apertureDomain`, and the criterion
+restated without the hypothesis.
+
+## The announced plan is dead — `TwoTermBlowUpNoGo.lean`
+
+Last cycle's plan was to close the colliding-rate case by refining the blow-up invariant from the
+rate to the triple (rate, leading value, subleading value).  **That plan is provably impossible**, and
+the proof is now formal.
+
+Two negative facts were established on the way, both about the method rather than the objects:
+
+* **Scale reparametrisation is useless.**  Replacing `t` by `ρt` sends `cₖ ↦ ρ^{dₖ}cₖ`, hence
+  `C_a ↦ ρ^{⟨e_a,d⟩}C_a = ρ^D C_a` uniformly on a stratum — the factor cancels out of the stratum
+  identity.  Reparametrising `t ↦ t(1+βt)` likewise gives `w_a = Dβ` for every `a` in the stratum.
+  So neither the scale nor the approach direction carries stratum-separating information; only the
+  jets themselves do.
+* **Two orders give two equations, not enough.**  Order `t⁰` gives `∑_{E_D} C_a S_a(ζ) = 0`; order
+  `t¹` splits (on varying `ρ`) into the derivative of that — no new information — and one genuinely
+  new equation coupling stratum `D` (weighted by `w_a`) to stratum `D−1`.  Two equations cannot kill
+  `|E_D| + |E_{D−1}|` unknowns.
+
+**The formal no-go.** `TwoTermBlowUpData S F Z d c c'` records exactly rate, leading and subleading
+values.  With `P = periodicPoleModel²`:
+
+* `collidingPairEqual = ![P, P]` and `collidingPairShifted = ![P, P+1]` satisfy
+  `TwoTermBlowUpData` with the **same** `d = ![2,2]`, `c = ![1,1]`, `c' = ![0,0]`
+  (`P·t² = 1` exactly; `(P+1)·t² = 1 + t²`, whose subleading quotient is `t → 0`);
+* `not_linearIndependent_collidingPairEqual` — the first box is dependent (equal columns);
+* `linearIndependent_collidingPairShifted` — the second is independent, via
+  `poleSquare_not_const` (if `P ≡ κ` then `κ·t² = 1` with `t → 0`, so `1 = 0`);
+* `twoTermBlowUpData_cannot_decide_box` — the conjunction.
+
+A constant is invisible to every finite order of the blow-up expansion — it is swallowed by the
+vanishing scale — yet it is exactly what turns two equal functions into two independent ones.
+
+### Consequence for the frontier
+
+The multi-jet gap cannot be closed by *any* finite-order refinement of blow-up data.  It needs an
+invariant that sees the whole function rather than its behaviour at the singularity: the full
+principal part, or a global mechanism (periodicity, algebraic independence) of the kind already
+built.  Routes to reopen next: transport of box independence along an invertible change of jet basis
+(which reduces colliding families to separated ones whenever the collision is by an affine
+relation), and the hypertranscendence route through
+`algebraicIndependent_jetGerm_of_not_differentiallyAlgebraicOn`.
+
+## The missing half — `BoxBasisTransport.lean`
+
+Blow-up data is local and provably cannot see a constant.  A change of basis is global and sees
+nothing else.  Together they decide cases that neither decides alone.
+
+* `linearIndependent_of_blockComb` — **the transport law.**  For families `v, w : κ × ι → M` and an
+  invertible `T : Matrix κ κ K` with `v (a,i) = ∑_b T a b • w (b,i)`, independence of `w` gives
+  independence of `v`.  The recombination acts on the monomial index and leaves the degree index
+  untouched, so no block determinant is needed: the relation `∑_a c(a,i)·T a b = 0` is
+  `vecMul (c ·, i) T = 0` for each `i` separately, and invertibility finishes.
+* `linearIndependent_restrict_shiftedJetPair` — **constant shifts are invertible recombinations.**
+  If the box `{1, G}` is independent on a region then so is `{G, G+1}`, for every degree budget,
+  via `T = !![0,1;1,1]` (determinant `−1`).
+* `blowUpOrder_zero`, `blowUpOrder_single`, `linearIndependent_restrict_poleSquare_unitBox` — the
+  reference box `{1, P}` has orders `0` and `2`, separated, so the multi-jet law applies.
+* `linearIndependent_restrict_collidingPairShifted` — **the colliding pair, decided for every `q`.**
+
+This subsumes the ad-hoc `linearIndependent_collidingPairShifted` of the no-go module (which was
+`q = 0` only) and turns it from a hand computation into an instance of a law.
+
+### The shape of the resolution
+
+The pair `{P, P+1}` is exactly the family that defeats every finite-order blow-up invariant, and it
+is decided here.  The constant that hides from the local data is the recombination that separates
+the rates.  So the decision procedure over a colliding box is: **search for an invertible
+recombination whose image has separated `blowUpOrder`.**  Colliding families related to separated
+ones by an affine change of monomials are now all decided.
+
+What remains open is the general case: a box whose monomials span a space containing **no**
+separated-rate basis.  The moving-canonical jets `L, L'` are the test — `L² − L'` drops order, which
+is a recombination lowering an order, so the search space is nonempty there and the question is
+whether it terminates at a separated basis.
+
+## The graded law, and why the search terminates
+
+The multi-jet law never used the monomial structure.  Its proof factors entirely through
+`M_a(uⱼ)·tⱼ^{ord a} → C_a ≠ 0`, so it holds for an **arbitrary** family with prescribed orders.
+
+* `GradedBlowUpFamily S M Z ord` — a family with prescribed blow-up orders and nonzero leading values.
+* `linearIndependent_restrict_degreeBox_of_gradedBlowUp` — **the graded law**: injective `ord`
+  makes the degree box `{wⁱ·M_a}` independent.  No monomials, no jets, no rates.
+* `gradedBlowUpFamily_of_multiBlowUp` + the monomial law restated as its corollary — the previous
+  theorem is now three lines instead of eighty, with no duplicated proof.
+* `linearIndependent_of_separatingRecombination` — **the search is a theorem**: a box whose
+  monomials are an invertible recombination of a family with distinct orders is independent.
+
+### Why an adapted basis exists
+
+The leading-value map `f ↦ lim f(uⱼ)tⱼ^m` is **linear**, so its image is one-dimensional: two members
+of equal order always admit a combination that cancels the leading values.
+
+* `tendsto_leadingElimination` — `(β·f − α·g)(uⱼ)tⱼ^m → 0` when `f, g` have order `m` with leading
+  values `α, β`.  This is the engine: the graded pieces of the order filtration are at most
+  one-dimensional, so an adapted basis with **distinct** orders exists whenever the valuation is
+  total on the span.
+* `linearIndependent_of_eliminationStep` — the step as a decision: replacing the second member by
+  the elimination is invertible (`T = !![1,0; β/α, −1/α]`, determinant `−1/α`), so distinct orders
+  for the replacement decide the original colliding pair.
+
+### The residual hypothesis, precisely
+
+`tendsto_leadingElimination` gives that the elimination vanishes to *higher* order; it does not give
+that it has a *well-defined* order.  For meromorphic families it does — the Laurent expansion at a
+pole always terminates below — but that fact is not available as a limit hypothesis, and supplying it
+is exactly what "the valuation is total on the span" means.  That single hypothesis, plus the
+elimination engine, closes the general colliding case by induction on the order.
+
+## Orders may vary from point to point — `PointwiseGradedIndependence.lean`
+
+The graded law asked for one order function serving every point of `Z`.  The argument never uses
+that.  At each point it needs only a **dominant member of the support**; which member dominates may
+change from point to point.  The support is finite and `Z` is infinite, so by pigeonhole one member
+dominates infinitely often — and that member's degree block is then a polynomial with infinitely
+many roots.
+
+* `PointwiseGradedFamily S M Z` — chart, orders and leading values all allowed to depend on the
+  point; only injectivity of the order function *at each point* is required.
+* `linearIndependent_restrict_degreeBox_of_pointwiseGraded` — the law.  The new ingredient over the
+  graded proof is `Finite.exists_infinite_fiber` applied to `ζ ↦ argmax_{a ∈ A} ord_ζ a`.
+* `pointwiseGradedFamily_of_gradedBlowUp` — the graded law is the constant-order case.
+
+This matters because pole orders of a fixed family genuinely differ from pole to pole.  A family
+whose orders collide at some points but separate at infinitely many others is now decided, and no
+uniformity across `Z` is needed.
+
+### Why the general elimination still does not close: the uniformity obstruction
+
+Worked out this cycle and recorded so it is not re-attempted:
+
+* Per-point elimination cannot be used.  The elimination *changes the family*, and the law requires
+  one fixed family; recombining differently at each `ζ` gives no single object to reason about.
+* A global `T` is therefore needed, and the elimination coefficient is `β(ζ)/α(ζ)` — the ratio of
+  leading values.  A single `T` works exactly when that **ratio is independent of `ζ`**.
+* The running example satisfies this: `P` and `P+1` both have leading value `1` at every integer, so
+  the ratio is the constant `1` and the elimination `g − f = 1` is global.
+* Dropping the top stratum per point does not accumulate either: at a point one learns only that the
+  top component of the recombined coefficient vector vanishes *at that point*, and with a
+  point-dependent basis those facts are about different objects.
+
+So the residue is not "does the search terminate" — it does, by one-dimensionality of the graded
+pieces — but "is there a single recombination that works at infinitely many points at once".  That is
+a statement about the constancy of leading-value ratios across `Z`, which is where the next cycle
+goes.
+
+## The elimination closes — `EliminationOrderDescent.lean`
+
+The two facts that make the search terminate, and the induction that uses them.
+
+* `GradedAlong f u t m C` — order `m` with nonzero leading value `C` along a chart.
+* `gradedAlong_order_unique` — **the order along a chart is unique**.  If `m < m'` then
+  `f(uⱼ)tⱼ^{m'} = (f(uⱼ)tⱼ^m)·tⱼ^{m'−m} → C·0 = 0`, contradicting `C' ≠ 0`.
+* `order_lt_of_leadingElimination` — **the elimination's order is strictly smaller**.  Its leading
+  value cancels at order `m`, so no order `≥ m` carries a nonzero leading value.
+* `eliminationMatrix`, `isUnit_det_eliminationMatrix` — the elementary recombination, invertible with
+  determinant `−1/α` via `det_updateRow_smul` and `det_updateRow_add_smul_self`.
+* `UniformSpanValuation S M Z ord lead` — every nonzero combination of the family is graded, with
+  order and leading value **independent of the point**, along a chart shared by the whole span.
+  This is the uniformity identified last cycle as the real obstruction, now made a hypothesis.
+* `exists_injectiveOrder_recombination` — **the search terminates.**  Strong induction on
+  `∑ₐ ord (K a)`: if two rows collide, replace one by the elimination; the total order strictly
+  drops and cannot fall below zero.
+* `linearIndependent_degreeBox_of_uniformSpanValuation` — **the closure.**  Terminating search →
+  graded family → graded law → transport back along `K⁻¹`.
+* `uniformSpanValuation_periodicPoleModel` — realized: `pm·t = 1` exactly, so every nonzero multiple
+  is graded at order one with its own coefficient as leading value, both independent of the point.
+
+### Where this leaves the programme
+
+Box independence is now decided by a single hypothesis — a uniform valuation on the span — with a
+terminating decision procedure behind it.  The remaining gap is no longer structural: it is whether
+the moving-canonical jets admit such a valuation, i.e. whether their leading-value ratios at the real
+zeros are constant across the zeros.  That is a concrete analytic question about
+`L = ∑' ((ζₙ − w)⁻¹ − ζₙ⁻¹)`, not a question about the method.
+
+## Correction: the uniform hypothesis fails for the target, and the fix
+
+Last cycle's expectation — that the moving-canonical jets satisfy `UniformSpanValuation` because the
+residue at every real zero is `−1` — is **wrong**, and the reason is instructive.
+
+Write `L(w) = −1/s + h + O(s)` with `s = w − ζₙ`.  Then `L' = 1/s² + h' + O(s)` and
+`L² = 1/s² − 2h/s + O(1)`, so:
+
+* the *leading* values at order 2 are `1` for both `L²` and `L'` — constant across zeros, so their
+  **ratio is 1** and the elimination `L² − L'` is global;
+* but the eliminated member has order 1 with leading value `−2h(ζₙ)`, which **does vary with `n`**.
+
+So `UniformSpanValuation` (point-independent leading values for *every* combination) is too strong.
+What the induction actually needs is only that the *ratios inside an order stratum* be
+point-independent — the overall scale of a stratum may vary freely.
+
+### The weakened law
+
+* `tendsto_leadingElimination_of_proportional` — the elimination coefficients need not be the leading
+  values, only a pair proportional to them: `β·α' = α·β'` suffices.
+* `order_lt_of_proportional_elimination` — the corresponding descent.
+* `StratifiedSpanValuation S M Z ord γ ρ` — orders point-independent; leading value factors as
+  `ρ (ord c) ζ * γ c` with `γ c ≠ 0` point-independent and the scale `ρ` free.
+* `exists_injectiveOrder_recombination` and
+  `linearIndependent_degreeBox_of_stratifiedSpanValuation` — the induction and closure, now on the
+  weaker hypothesis, with the elimination coefficients taken to be the `γ`'s.
+* `stratifiedSpanValuation_of_uniform` and the uniform closure as its corollary — the old theorem is
+  the trivial-scale case, no proof duplicated.
+
+The `L²`/`L'` configuration satisfies the weakened hypothesis: order-2 stratum has constant ratio
+`1`, and the order-1 stratum after elimination is a single member, so its varying leading value never
+enters a ratio.
+
+### Build note
+
+`set … with` (without `clear_value`) and unpinned implicit arguments in
+`order_lt_of_proportional_elimination` each caused genuine million-heartbeat timeouts.  Introducing
+opaque locals by `obtain ⟨x, hx⟩ : ∃ y, y = e := ⟨_, rfl⟩` and pinning every implicit argument fixed
+both.
+
+## The elimination induction actually runs — `CollisionPairValuation.lean`
+
+Every realization so far had separated orders, so the induction was never exercised: the search
+returned its input unchanged.  This is the first family whose orders genuinely collide.
+
+* `collisionPair = ![P, P + pm]` with `P = pm²` — two members of blow-up order two whose difference
+  is `pm`, of order one.  It is the `L²`-against-`L'` configuration with the remainder made exact by
+  the pole model.
+* `collisionOrd c = if c₀ + c₁ = 0 then 1 else 2`, `collisionLead c = if c₀ + c₁ = 0 then c₁ else
+  c₀ + c₁` — the valuation on the span, both data independent of the point.
+* `uniformSpanValuation_collisionPair` — the span carries the valuation.  The two limits are exact:
+  `(c₀P + c₁(P+pm))·T² = (c₀+c₁) + c₁T` and, when `c₀ + c₁ = 0`, `(c₁·pm)·T = c₁`.
+* `collisionOrd_identity_not_injective` — **the collision is real**: both rows of the identity have
+  order two, so the graded law does not apply to the family as given and the elimination step is not
+  optional.
+* `linearIndependent_degreeBox_collisionPair` — the box is independent, for every degree budget.
+
+So the chain now runs end to end on a colliding family: valuation → terminating elimination search →
+graded law → transport.  Everything upstream had been verified only on families where the search was
+a no-op.
+
+### Remaining gap to the target
+
+The instance is a *model*: `pm·T = 1` holds exactly, so no remainder needs controlling.  For the
+actual moving-canonical jets the same shape holds with `O(s)` remainders, and building that instance
+means proving `L^{(m)}(uⱼ)·sⱼ^{m+1} → −(−1)^m m!` for the series rather than reading it off an
+identity.  That is the analytic work still outstanding, and it is now the only thing between the
+machinery and the `…ExpandedFullRankWitness` rows.
+
+## The series, not the model — `MovingCanonicalPoleResidue.lean`
+
+The first analytic result about the actual packet, and it did **not** need the tail estimate I had
+planned.  The corpus already owned the hard part.
+
+* `movingCanonicalProduct_analytic` — the canonical product is entire;
+* `movingCanonicalProduct_zero_analyticOrderAt` — it vanishes to order **exactly one** at every
+  `ζₙ`;
+* `neg_logDeriv_movingCanonicalProduct_eq` — `L = −logDeriv M` off the zero set.
+
+From these, `AnalyticAt.analyticOrderAt_eq_natCast` gives `M w = (w − ζ)·g w` near `ζ` with `g`
+analytic and `g ζ ≠ 0`, hence `deriv M w = g w + (w − ζ)·deriv g w`, hence for `w` off the zero set
+
+  `L(w)·(w − ζ) = −(g w + (w − ζ)·deriv g w) / g w  →  −1`.
+
+* `tendsto_movingCanonicalLogDerivative_mul_sub` — the residue datum, for any approach off the zero
+  set.
+* `tendsto_movingCanonicalLogDerivative_mul_sub_of_upper` — the form the machinery needs: the zeros
+  are real, so a sequence with positive imaginary part never meets them.
+
+So the leading blow-up datum of the real packet is now proved, at order one, with the residue `−1`
+predicted three cycles ago.  What is missing for a `StratifiedSpanValuation` instance is the same
+statement for the iterated derivatives, `L^{(m)}(uⱼ)·sⱼ^{m+1} → −(−1)^m m!`, which should follow the
+same route: differentiate the factorization instead of estimating the series.
+
+## Every jet's leading value — `IteratedPoleResidue.lean`
+
+The prediction from four cycles ago, now proved for the real packet at every order.
+
+* `analyticAt_iteratedDeriv` — every iterated derivative of an analytic germ is analytic
+  (induction on `iteratedDeriv_succ` and `AnalyticAt.deriv`).
+* `iteratedDeriv_inv_sub` — `iteratedDeriv m (x ↦ (x−ζ)⁻¹) w = (−1)^m·m!/(w−ζ)^{m+1}` off `ζ`, by
+  induction with `HasDerivAt.inv` on the open set `{ζ}ᶜ`.
+* `tendsto_iteratedDeriv_movingCanonicalLogDerivative_mul_pow` — **the leading blow-up value of every
+  jet**:
+
+      L^{(m)}(uⱼ)·(uⱼ − ζₙ)^{m+1}  →  −(−1)^m·m!
+
+  for any approach from the upper half-plane, and the value is the same at every zero `ζₙ`.
+
+The mechanism: on a punctured neighbourhood of `ζ` the factorization `M = (w−ζ)g` with `g ζ ≠ 0`
+gives `L = −(w−ζ)⁻¹ + k` with `k = −(deriv g)/g` analytic at `ζ`.  Splitting the iterated derivative
+(`iteratedDeriv_add` on the analytic pieces) isolates the explicit pole term; the analytic part is
+continuous at `ζ`, so multiplying by `(w−ζ)^{m+1}` kills it.
+
+That the value `−(−1)^m·m!` is **independent of `n`** is exactly the point: it is the constancy that
+`StratifiedSpanValuation` needs inside an order stratum, and it is now a theorem rather than a
+hand computation.
+
+### What remains
+
+The jets used by the consumers are `w ↦ L^{(m)}(w + σ)` — translates.  Assembling the valuation
+instance needs the translated form (immediate: translation moves the zero) and the monomial products
+(the leading value of `∏ (L^{(mₖ)})^{eₖ}` is `∏ (−(−1)^{mₖ}mₖ!)^{eₖ}`, again `n`-independent).  Both
+are bookkeeping on top of what is now proved.
+
+## Translated jets, and where the assembly actually goes
+
+* `tendsto_iteratedDeriv_translate_movingCanonicalLogDerivative` — `w ↦ L^{(m)}(w+σ)` blows up at
+  `ζₙ − σ` with the same leading value `−(−1)^m m!`, by composing with the translation.
+* `jetLeadingValue_ne_zero`, `gradedAlong_translate_jet` — the datum packaged as `GradedAlong`, the
+  exact interface the valuation machinery consumes: scale = displacement from the translated zero,
+  order = `m+1`, leading value independent of the zero.
+
+### The monomial step is not what I expected
+
+Working out `∏ₖ (L^{(mₖ)}(·+σₖ))^{eₖ}` changes the picture:
+
+* At a translated zero `ζ = ζₙ − σ_{k₀}`, **only the `k₀`-th factor blows up**; the others take
+  finite values `Fₖ(ζ)` that **depend on `n`**.  So the monomial's leading value is
+  `(−(−1)^{m}m!)^{e_{k₀}}·∏_{k≠k₀} Fₖ(ζ)^{eₖ}` — *not* point-independent.
+* Hence neither `UniformSpanValuation` nor `StratifiedSpanValuation` applies to the consumers'
+  monomials: the stratum ratios involve `∏_{k≠k₀} Fₖ(ζ)^{e_{ak}−e_{a'k}}`, which varies with `n`.
+* But `PointwiseGradedFamily` does apply.  Fix `k₀` and take `Z = {ζₙ − σ_{k₀}}`, infinite.  The
+  monomial orders are `e_{a,k₀}·(m_{k₀}+1)`, pairwise distinct exactly when `a ↦ e_{a,k₀}` is
+  injective — a condition on the **exponent family**, not on the analysis.  No elimination is
+  needed.
+
+So the elimination machinery, which cost several cycles, is **not** what the consumers need; the
+pointwise law is.  The elimination remains the right tool for boxes whose collisions are genuine, and
+`CollisionPairValuation` exercises it, but the target family is decided by exponent separation in a
+single shift coordinate.
+
+### The residual conditions, precisely
+
+For the pointwise law at `ζ = ζₙ − σ_{k₀}` one still needs, for infinitely many `n`:
+`Fₖ(ζ) ≠ 0` for every `k ≠ k₀` (leading values must be nonzero), and `ζ + σₖ` not a zero of the
+product for `k ≠ k₀` (so those jets are finite there).  Both are conditions on the interplay between
+the shift configuration and the zero sequence, and they are the last things standing between the
+machinery and the `…ExpandedFullRankWitness` rows.
+
+## The chain reaches the consumers' jets — `TranslateJetBlowUpData.lean`
+
+* `translateJetRate m k₀` — rate `m k₀ + 1` in the distinguished coordinate, zero elsewhere.
+* `blowUpOrder_translateJetRate` — the order of a monomial is exactly `e_{a,k₀} · (m k₀ + 1)`.
+* `multiBlowUpData_translateJets` — **the blow-up data for the family `w ↦ L^{(m k)}(w + σ k)` at the
+  zeros of one shift.**  The distinguished jet blows up with the universal leading value
+  `−(−1)^{m k₀}(m k₀)!`; the others converge to their values at the point.  The vertical approach
+  `u_j = ζ + i/(j+1)` works with **no condition on the shift**, because `u_j + σ k₀ = ζ_p + i/(j+1)`
+  — the shift cancels.
+* `linearIndependent_restrict_expandedMonomialFamily_translateJets` — **the box is decided by
+  exponent separation in one coordinate**: injectivity of `a ↦ exponent a k₀` suffices.
+
+That last statement is the shape the `…ExpandedFullRankWitness` interfaces need, with all conditions
+named and nothing analytic left implicit.
+
+### The two residual hypotheses
+
+Both are about the interplay of the shift configuration with the zero sequence, and both are carried
+explicitly:
+
+* `hfin` — for `k ≠ k₀`, the jet `w ↦ L^{(m k)}(w + σ k)` is analytic at `ζ`, i.e. `ζ + σ k` is not a
+  zero of the canonical product;
+* `hne` — its value there is nonzero.
+
+Neither is automatic, and neither is analysis about `L` in isolation: they say the shifted zero sets
+do not collide at the sampled points, and that no jet accidentally vanishes there.  Establishing them
+for a *generic* shift configuration is what remains.
+
+## The shift conditions, discharged — `TranslateJetGenericity.lean`
+
+Both hypotheses carried by `linearIndependent_..._translateJets` are now consequences of one
+checkable condition on the shift configuration.
+
+* `movingCanonicalLogDerivative_im_pos` — **strictly positive imaginary part on the upper
+  half-plane.**  Each term of the series contributes `Im z / ‖ζₙ − z‖² > 0`; the corpus had only
+  `0 ≤`, and strictness follows by bounding the tsum below by its zeroth term
+  (`Summable.le_tsum` after `Summable.mapL Complex.imCLM`).
+* `movingCanonicalLogDerivative_ne_zero_of_im_pos` — hence the log-derivative never vanishes there.
+* `analyticAt_translate_jet` — a translated jet is analytic wherever the translate lands in the
+  upper half-plane, by `analyticAt_iteratedDeriv` composed with the translation.
+* `linearIndependent_restrict_expandedMonomialFamily_translateJets_of_shiftOrder` — **the box is
+  independent** whenever
+  * every other shift sits strictly above the distinguished one, `Im σ k₀ < Im σ k`, and
+  * the other jets are undifferentiated, `m k = 0` for `k ≠ k₀`, and
+  * the exponents separate in the distinguished coordinate.
+
+The sampled points `ζ_p − σ k₀ + σ k` then have imaginary part `Im σ k − Im σ k₀ > 0`, so they lie
+where the log-derivative is analytic and nonvanishing — both conditions hold for free.
+
+### What is left
+
+The restriction `m k = 0` for `k ≠ k₀` is the price of using the Herglotz positivity, which is a
+statement about `L` itself and not its derivatives.  Removing it needs nonvanishing of `L^{(r)}` on
+the upper half-plane for `r ≥ 1`, which is **false in general** — `L'` can vanish there — so the
+right move is not to prove it but to pass to an infinite subsequence of zeros avoiding the zero set
+of each `L^{(r)}(· + σ k − σ k₀)`.  That is a discreteness argument, and it is the last gap.
+
+## The full-rank datum for the moving canonical jets
+
+`exists_row_packet_upperHalfPlane_translateJets` — **a node packet in the upper half-plane, pairwise
+distinct, on which the expanded evaluation map of the translated jet family is injective.**  This is
+the literal conclusion the `…ExpandedFullRankWitness` interfaces demand, for the corpus's own jets,
+with no analytic hypothesis remaining.
+
+Its hypotheses are three conditions on the configuration:
+
+* `(σ k₀).im = 0` and `(σ k₀).im < (σ k).im` for `k ≠ k₀` — the distinguished shift is real, the
+  others strictly above.  This puts the vertical approach inside the upper half-plane and puts every
+  companion sample point where the log-derivative is analytic and nonvanishing.
+* `m k = 0` for `k ≠ k₀` — companions undifferentiated.
+* `Function.Injective (a ↦ exponent a k₀)` — the exponents separate in the distinguished coordinate.
+
+Supporting: `multiBlowUpData_translateJets_of_shiftOrder` (both shift conditions discharged),
+`injective_blowUpOrder_translateJetRate` (order injectivity from exponent separation), and the
+region generalisation of `multiBlowUpData_translateJets`.
+
+## Correction: the announced subsequence argument does not work
+
+Last cycle I proposed removing `m k = 0` by passing to a subsequence of zeros avoiding the companion
+zero sets, on the grounds that those sets are discrete.  **That reasoning is wrong.**  Discreteness
+forbids accumulation *inside* the domain; the sample points `ζ_p + δ` march off to infinity along a
+horizontal line, so infinitely many of them can be zeros without any accumulation — `sin(πz)` on the
+integers is the model.
+
+Nor is there a sign argument for `r ≥ 1`: `Im[(ζₙ − z)^{-(r+1)}]` has argument `−(r+1)φ` ranging over
+`(0, (r+1)π)`, so terms of `L^{(r)}` take both signs on a horizontal line, unlike `L` itself where
+every term contributes positively.  The `m k = 0` restriction is forced by the method, not chosen for
+convenience, and removing it needs a genuinely different idea.

@@ -24,8 +24,6 @@ variable {s : ℕ → ℝ} (F : ClassicalAnalyticNevanlinnaCarrierFamily s)
 cofinal phase is atomless and Lebesgue-singular, is intrinsically free under every finite
 translated differential pattern, and has a literally hypertranscendental Cauchy transform. -/
 theorem cofinalCholeskyResidualPhase_isSingularContinuous_maximalTranslation_hypertranscendental
-    (hC : AnalyticOnNhd ℝ F.base.toBoundaryFamily.matrix.c univ)
-    (hD : AnalyticOnNhd ℝ F.base.toBoundaryFamily.matrix.d univ)
     (nu : F.base.toBoundaryFamily.carrierRange)
     (hnu : nu ∈ F.cofinalCholeskyResidualPhase) :
     NullSingletonClass (nu.1 : Measure ℝ) ∧
@@ -35,7 +33,7 @@ theorem cofinalCholeskyResidualPhase_isSingularContinuous_maximalTranslation_hyp
         (fun z => ∫ x, ((x : ℂ) - z)⁻¹ ∂(nu.1 : Measure ℝ)) := by
   let BF := F.base.toBoundaryFamily
   have hstructure :=
-    F.cofinalCholeskyResidualPhase_isSingularContinuous_maximalTranslation hC hD nu hnu
+    F.cofinalCholeskyResidualPhase_isSingularContinuous_maximalTranslation nu hnu
   obtain ⟨eta, heta⟩ := nu.property
   let mu : Measure (OnePoint ℝ) := eta
   letI : IsProbabilityMeasure mu := eta.prop

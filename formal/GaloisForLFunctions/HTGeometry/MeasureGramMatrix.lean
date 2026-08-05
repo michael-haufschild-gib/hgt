@@ -43,15 +43,11 @@ theorem measureGram_diagonal {d : ℕ} (ν : Measure ℝ) (a : Fin d → ℝ) (y
 /-- **The measure Gram off-diagonal is bounded by the diagonal.**  Its squared modulus is at most the
 product of the two atom kernel integrals. -/
 theorem norm_measureGram_sq_le {d : ℕ} (ν : Measure ℝ) (a : Fin d → ℝ) (y : ℝ) (l m : Fin d)
-    (hfm : AEStronglyMeasurable
-      (fun t : ℝ => ‖(y : ℂ) * ((t : ℂ) - upperNode (a l) y)⁻¹‖) ν)
-    (hgm : AEStronglyMeasurable
-      (fun t : ℝ => ‖(y : ℂ) * ((t : ℂ) - upperNode (a m) y)⁻¹‖) ν)
     (hfi : Integrable (fun t : ℝ => atomKernel (a l) y t) ν)
     (hgi : Integrable (fun t : ℝ => atomKernel (a m) y t) ν) :
     ‖measureGram ν a y l m‖ ^ 2 ≤
       (∫ t, atomKernel (a l) y t ∂ν) * (∫ t, atomKernel (a m) y t ∂ν) :=
-  norm_scaledPairing_sq_le_atomKernel_mul hfm hgm hfi hgi
+  norm_scaledPairing_sq_le_atomKernel_mul hfi hgi
 
 end
 

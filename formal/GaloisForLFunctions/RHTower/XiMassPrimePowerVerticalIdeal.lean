@@ -121,7 +121,6 @@ theorem summable_primeLog_mul_inv_rpow_add
       (fun p => tsum_nonneg fun k => mul_nonneg
         (Real.log_nonneg (by exact_mod_cast p.prop.one_le)) (by positivity))
     intro p
-    simp only [Prod.fst, Prod.snd]
     rw [show (fun k : ℕ =>
         Real.log (p : ℝ) * (((p : ℝ)⁻¹) ^ k * ((p : ℝ)⁻¹) ^ β)) =
         fun k => (Real.log (p : ℝ) * ((p : ℝ)⁻¹) ^ β) * ((p : ℝ)⁻¹) ^ k by
@@ -153,7 +152,6 @@ theorem summable_xiMassPrimePowerCriticalWeight_high :
     have h := summable_primeLog_mul_inv_rpow_add (3 / 2) (by norm_num)
     apply h.congr
     rintro ⟨p, k⟩
-    simp only [Prod.fst, Prod.snd]
     rw [xiMassPrimePowerCriticalWeight_eq]
     congr 1
     rw [Real.inv_rpow (Nat.cast_nonneg _),
@@ -166,7 +164,6 @@ theorem summable_xiMassPrimePowerCriticalWeight_high :
     have h := summable_primeLog_mul_inv_rpow_add 2 (by norm_num)
     apply h.congr
     rintro ⟨p, k⟩
-    simp only [Prod.fst, Prod.snd]
     rw [xiMassPrimePowerCriticalWeight_eq]
     congr 1
     rw [Real.inv_rpow (Nat.cast_nonneg _),
@@ -233,11 +230,10 @@ theorem norm_xiMassHighPrimePowerTail_vertical_le
     _ ≤ ∑' pk : Nat.Primes × ℕ,
           xiMassPrimePowerCriticalWeight pk.1 (pk.2 + 2) *
             (∫ x : ℝ, Real.exp (-(σ * |x|))) := by
-      apply tsum_le_tsum
+      apply hnorm.tsum_le_tsum
       · rintro ⟨p, k⟩
         simpa only [Prod.fst, Prod.snd, add_assoc] using
           norm_xiMassCenteredPrimeAtom_primePower_le ha hσ u p (k + 2)
-      · exact hnorm
       · exact hmajorant
     _ = _ := tsum_mul_right
 
@@ -253,16 +249,18 @@ theorem tsum_xiMassCenteredPrimeAtom_eq_prime_add_square_add_high
   have hf : Summable f := summable_xiMassCenteredPrimeAtom hhalf hca hτ
   have hpow : Summable (fun pk : Nat.Primes × ℕ =>
       f ((pk.1 : ℕ) ^ (pk.2 + 1))) := by
-    simpa only [f, eulerPrimePowerNat] using
+    simpa only [f, eulerPrimePowerNat] using!
       hf.comp_injective eulerPrimePowerNat_injective
   have hprime : Summable (fun p : Nat.Primes => f (p : ℕ)) := by
-    have h := hpow.comp_injective
-      (i := fun p : Nat.Primes => (p, 0)) (fun _ _ h => Prod.fst.inj h)
-    simpa only [Function.comp_apply, zero_add, pow_one] using h
+    have h := hf.comp_injective
+      (i := fun p : Nat.Primes => (p : ℕ)) Subtype.coe_injective
+    simpa only [Function.comp_apply] using! h
   have hsquare : Summable (fun p : Nat.Primes => f ((p : ℕ) ^ 2)) := by
-    have h := hpow.comp_injective
-      (i := fun p : Nat.Primes => (p, 1)) (fun _ _ h => Prod.fst.inj h)
-    simpa only [Function.comp_apply, one_add] using h
+    have hinj : Function.Injective (fun p : Nat.Primes => (p : ℕ) ^ 2) := by
+      intro p q hpq
+      exact Subtype.ext (Nat.pow_left_injective (by norm_num) hpq)
+    have h := hf.comp_injective hinj
+    simpa only [Function.comp_apply] using! h
   have ha : 0 < a := by linarith
   have hτform : ((τ.re : ℂ) + τ.im * I) = τ := by
     apply Complex.ext <;> simp
@@ -278,8 +276,8 @@ theorem tsum_xiMassCenteredPrimeAtom_eq_prime_add_square_add_high
           ∑' k : ℕ, f ((p : ℕ) ^ (k + 3)) := by
     have hp : Summable (fun k : ℕ => f ((p : ℕ) ^ (k + 1))) := by
       have h := hpow.comp_injective
-        (i := fun k : ℕ => (p, k)) (fun _ _ h => Prod.snd.inj h)
-      simpa only [Function.comp_apply] using h
+        (i := fun k : ℕ => (p, k)) (fun _ _ h => congrArg Prod.snd h)
+      simpa only [Function.comp_apply] using! h
     have hpShift : Summable (fun k : ℕ => f ((p : ℕ) ^ ((k + 1) + 1))) :=
       hp.comp_injective Nat.succ_injective
     calc
@@ -291,14 +289,20 @@ theorem tsum_xiMassCenteredPrimeAtom_eq_prime_add_square_add_high
           (f ((p : ℕ) ^ ((0 + 1) + 1)) +
             ∑' k : ℕ, f ((p : ℕ) ^ (((k + 1) + 1) + 1))) := by
         rw [hpShift.tsum_eq_zero_add]
-      _ = f (p : ℕ) + f ((p : ℕ) ^ 2) +
-          ∑' k : ℕ, f ((p : ℕ) ^ (k + 3)) := by
-        congr 2
-        · ring
-        · apply tsum_congr
+      _ = f (p : ℕ) +
+          (f ((p : ℕ) ^ 2) +
+            ∑' k : ℕ, f ((p : ℕ) ^ (k + 3))) := by
+        have htail :
+            (∑' k : ℕ, f ((p : ℕ) ^ (((k + 1) + 1) + 1))) =
+              ∑' k : ℕ, f ((p : ℕ) ^ (k + 3)) := by
+          apply tsum_congr
           intro k
           congr 2
-          omega
+        rw [htail]
+        norm_num
+      _ = f (p : ℕ) + f ((p : ℕ) ^ 2) +
+          ∑' k : ℕ, f ((p : ℕ) ^ (k + 3)) := by
+        rw [add_assoc]
   calc
     (∑' n : ℕ, xiMassCenteredPrimeAtom a τ n) =
         ∑' p : Nat.Primes, ∑' k : ℕ,

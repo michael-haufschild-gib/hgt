@@ -26,9 +26,7 @@ singular-continuous, maximally translation free, Cauchy--Herglotz hypertranscend
 Hamburger Hankel realization, and a carrier of the exact prime--archimedean classifier family. -/
 theorem cofinalNevanlinnaCarrier_primeArchHankelClassifierUniversality
     {s : ℕ → ℝ} (F : ClassicalAnalyticNevanlinnaCarrierFamily s)
-    (inputs : F.MaximalTranslationInputs)
-    (hC : AnalyticOnNhd ℝ F.base.toBoundaryFamily.matrix.c univ)
-    (hD : AnalyticOnNhd ℝ F.base.toBoundaryFamily.matrix.d univ) :
+    (inputs : F.MaximalTranslationInputs) :
     Dense F.cofinalCholeskyResidualPhase ∧
       IsGδ F.cofinalCholeskyResidualPhase ∧
       F.cofinalCholeskyResidualPhase ∈
@@ -81,7 +79,7 @@ theorem cofinalNevanlinnaCarrier_primeArchHankelClassifierUniversality
   obtain ⟨hnoAtoms, hsingular, hmaximal, hcauchy, hherglotz,
       hglobalCauchy, hglobalHerglotz⟩ :=
     F.cofinalCholeskyResidualPhase_singularContinuous_cauchyHerglotzLocalGlobalUniversality
-      hC hD nu hnu
+      nu hnu
   obtain ⟨eta, heta⟩ := nu.property
   have hmoments : HasHamburgerMoments s (nu.1 : Measure ℝ) := by
     rw [← heta]

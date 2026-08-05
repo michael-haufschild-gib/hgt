@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.NevanlinnaBoundaryFaceMaximalTranslation
 import GaloisForLFunctions.HTGeometry.ProjectiveLabelNullPreimage
+import GaloisForLFunctions.HTGeometry.AnalyticNevanlinnaBoundaryRealAnalytic
 
 /-!
 # Global singular-continuous maximal-translation phase of the boundary carrier simplex
@@ -110,11 +111,9 @@ theorem cofinalCholeskyResidualPhase_dense_gdelta_residual
     · simpa [cofinalCholeskyResidualPhase, singularPhase, maximalPhase, BF] using hgdelta
     · simpa [cofinalCholeskyResidualPhase, singularPhase, maximalPhase, BF] using hdense
 
-/-- Under the real-analytic lower-row hypothesis from the card, every point of the global phase is
-an atomless real-Lebesgue-singular carrier and is maximally translation free. -/
+/-- Every point of global phase is an atomless real-Lebesgue-singular carrier and is maximally
+translation free. Lower-row real analyticity follows from stored entire carrier extensions. -/
 theorem cofinalCholeskyResidualPhase_isSingularContinuous_maximalTranslation
-    (hC : AnalyticOnNhd ℝ F.base.toBoundaryFamily.matrix.c univ)
-    (hD : AnalyticOnNhd ℝ F.base.toBoundaryFamily.matrix.d univ)
     (nu : F.base.toBoundaryFamily.carrierRange)
     (hnu : nu ∈ F.cofinalCholeskyResidualPhase) :
     NullSingletonClass (nu.1 : Measure ℝ) ∧
@@ -122,7 +121,7 @@ theorem cofinalCholeskyResidualPhase_isSingularContinuous_maximalTranslation
       MaximalTranslationDifferentialFree nu.1 := by
   have hsingular :=
     F.base.toBoundaryFamily.singularContinuousParameterCarrierPhase_isSingularContinuous_of_analytic
-      hC hD nu hnu.1
+      F.analyticOnNhd_boundary_c F.analyticOnNhd_boundary_d nu hnu.1
   exact ⟨hsingular.1, hsingular.2, hnu.2⟩
 
 end ClassicalAnalyticNevanlinnaCarrierFamily

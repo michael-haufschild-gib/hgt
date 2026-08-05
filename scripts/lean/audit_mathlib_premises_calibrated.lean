@@ -33,6 +33,12 @@ partial def conclKeys (e : Expr) : MetaM (Array (Name × List Name)) := do
   if e.isForall then
     return ← forallTelescope e fun _ b => conclKeys b
   match e.getAppFn.constName? with
+  | some ``ExistsUnique =>
+      let args := e.getAppArgs
+      if args.size ≥ 2 then
+        let inner ← lambdaTelescope args[1]! fun _ b => conclKeys b
+        return (inner.push (``ExistsUnique, projConsts e)).push (``Exists, projConsts e)
+      else return #[(``ExistsUnique, projConsts e), (``Exists, projConsts e)]
   | some ``Exists =>
       let args := e.getAppArgs
       if args.size ≥ 2 then
@@ -120,5 +126,5 @@ run_cmd liftTermElabM do
       openRows := openRows.push (cnt, h, cs)
   let rows := openRows.qsort (fun a b => a.1 > b.1)
   logInfo m!"scanned {nthm}; premiseKeys {premises.size}; conclKeys {produced.size}; unproduced {rows.size}"
-  for r in rows[0:30] do
+  for r in rows do
     logInfo m!"{r.1}  {r.2.1}   {r.2.2}"

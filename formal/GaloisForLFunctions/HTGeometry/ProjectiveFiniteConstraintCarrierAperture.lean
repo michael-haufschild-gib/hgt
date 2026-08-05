@@ -36,6 +36,13 @@ variable {α : Type*} [MeasurableSpace α] (μ : Measure α) [IsFiniteMeasure μ
 noncomputable def linftyDensityMeasure (w : Lp ℝ ⊤ μ) : Measure α :=
   μ.withDensity (fun x => ENNReal.ofReal (w x))
 
+/-- Every `L∞` density over a finite measure defines a finite measure. -/
+instance instIsFiniteMeasureLinftyDensityMeasure (w : Lp ℝ ⊤ μ) :
+    IsFiniteMeasure (linftyDensityMeasure μ w) := by
+  rw [linftyDensityMeasure]
+  exact isFiniteMeasure_withDensity_ofReal
+    (MemLp.integrable (by simp) (Lp.memLp w)).hasFiniteIntegral
+
 lemma linftyDensityMeasure_injective_on_strictlyPositive
     {w u : Lp ℝ ⊤ μ} (hw : LinftyStrictlyPositive μ w)
     (hu : LinftyStrictlyPositive μ u)
@@ -68,6 +75,13 @@ variable {s : ℕ → ℝ} (F : NevanlinnaBoundaryFamily s)
 noncomputable def weightedBoundaryCarrier (w : Lp ℝ ⊤ eta) : Measure ℝ :=
   boundaryBarycenter (linftyDensityMeasure eta w)
     (fun t => (F.leaf t : Measure ℝ))
+
+/-- Every bounded reweighting of a finite Nevanlinna parameter measure has finite carrier mass. -/
+instance instIsFiniteMeasureWeightedBoundaryCarrier (w : Lp ℝ ⊤ eta) :
+    IsFiniteMeasure (weightedBoundaryCarrier F eta w) := by
+  exact boundaryBarycenter_isFiniteMeasure
+    (linftyDensityMeasure eta w) (fun t => (F.leaf t : Measure ℝ))
+    F.measurable_leaf (fun t => (F.leaf t).property)
 
 theorem weightedBoundaryCarrier_injective_on_strictlyPositive
     {w u : Lp ℝ ⊤ eta} (hw : LinftyStrictlyPositive eta w)

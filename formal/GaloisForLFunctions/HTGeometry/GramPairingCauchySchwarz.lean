@@ -18,6 +18,24 @@ open MeasureTheory
 
 noncomputable section
 
+/-- Modulus of every fixed-height scaled Cauchy kernel is strongly measurable for every measure.
+At height zero it is identically zero; at nonzero height its pole lies off real axis. -/
+theorem aestronglyMeasurable_norm_scaledCauchy (ν : Measure ℝ) (a y : ℝ) :
+    AEStronglyMeasurable
+      (fun t : ℝ => ‖(y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹‖) ν := by
+  by_cases hy : y = 0
+  · subst y
+    simpa using (aestronglyMeasurable_const :
+      AEStronglyMeasurable (fun _ : ℝ => (0 : ℝ)) ν)
+  · apply Continuous.aestronglyMeasurable
+    refine (continuous_const.mul (Continuous.inv₀
+      (Complex.continuous_ofReal.sub continuous_const) ?_)).norm
+    intro t ht
+    apply hy
+    have him := congrArg Complex.im ht
+    have him' : -y = 0 := by simpa [upperNode] using him
+    exact neg_eq_zero.mp him'
+
 /-- **Cauchy-Schwarz for a complex measure pairing.**  The squared modulus of the pairing is bounded
 by the product of the two energies. -/
 theorem norm_integral_mul_conj_sq_le
@@ -43,10 +61,6 @@ theorem norm_integral_mul_conj_sq_le
 of the scaled Cauchy kernels at two nodes is at most the product of the two atom kernel integrals. -/
 theorem norm_scaledPairing_sq_le_atomKernel_mul
     {ν : Measure ℝ} {a b y : ℝ}
-    (hfm : AEStronglyMeasurable
-      (fun t : ℝ => ‖(y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹‖) ν)
-    (hgm : AEStronglyMeasurable
-      (fun t : ℝ => ‖(y : ℂ) * ((t : ℂ) - upperNode b y)⁻¹‖) ν)
     (hfi : Integrable (fun t : ℝ => atomKernel a y t) ν)
     (hgi : Integrable (fun t : ℝ => atomKernel b y t) ν) :
     ‖∫ t, ((y : ℂ) * ((t : ℂ) - upperNode a y)⁻¹) *
@@ -58,7 +72,9 @@ theorem norm_scaledPairing_sq_le_atomKernel_mul
   have hgsq : Integrable
       (fun t : ℝ => ‖(y : ℂ) * ((t : ℂ) - upperNode b y)⁻¹‖ ^ 2) ν :=
     (integrable_normSq_scaled_cauchy_iff ν b y).2 hgi
-  have h := norm_integral_mul_conj_sq_le hfm hgm hfsq hgsq
+  have h := norm_integral_mul_conj_sq_le
+    (aestronglyMeasurable_norm_scaledCauchy ν a y)
+    (aestronglyMeasurable_norm_scaledCauchy ν b y) hfsq hgsq
   rwa [integral_normSq_scaled_cauchy ν a y, integral_normSq_scaled_cauchy ν b y] at h
 
 end

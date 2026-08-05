@@ -81,6 +81,18 @@ theorem boundaryBarycenter_isProbabilityMeasure
   exact isProbabilityMeasure_bind hν.aemeasurable
     (Filter.Eventually.of_forall hprob)
 
+/-- A measurable probability kernel preserves finiteness of its parameter measure.  Equivalently,
+the total mass of its barycenter is the total mass of the parameter measure. -/
+theorem boundaryBarycenter_isFiniteMeasure
+    (η : Measure T) [IsFiniteMeasure η]
+    (ν : T → Measure X) (hν : Measurable ν)
+    (hprob : ∀ t, IsProbabilityMeasure (ν t)) :
+    IsFiniteMeasure (boundaryBarycenter η ν) := by
+  constructor
+  rw [boundaryBarycenter, Measure.bind_apply MeasurableSet.univ hν.aemeasurable]
+  simp_rw [show ∀ t, ν t Set.univ = 1 from fun t => (hprob t).measure_univ]
+  exact IsFiniteMeasure.measure_univ_lt_top
+
 /-- Barycentring is additive in the parameter measure. -/
 theorem boundaryBarycenter_add
     (η₁ η₂ : Measure T) (ν : T → Measure X) (hν : Measurable ν) :

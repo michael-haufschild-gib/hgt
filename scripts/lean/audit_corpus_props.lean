@@ -20,8 +20,7 @@ Two rounds are reported:
 Both directions are approximations, so every row is a nomination to be checked by hand: a producer
 whose conclusion is a *container* of the interface, or an instance, stays invisible.
 -/
-import GaloisForLFunctions.HTGeometry
-import GaloisForLFunctions.RHTower
+import GaloisForLFunctions.MainTheorems
 
 open Lean Meta Elab Command
 

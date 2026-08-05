@@ -29,8 +29,6 @@ Its Cauchy transform and every normalized Herglotz presentation are relation-fre
 half-plane and literally hypertranscendental on `ℂ`. -/
 theorem
     cofinalCholeskyResidualPhase_singularContinuous_cauchyHerglotzLocalGlobalUniversality
-    (hC : AnalyticOnNhd ℝ F.base.toBoundaryFamily.matrix.c univ)
-    (hD : AnalyticOnNhd ℝ F.base.toBoundaryFamily.matrix.d univ)
     (nu : F.base.toBoundaryFamily.carrierRange)
     (hnu : nu ∈ F.cofinalCholeskyResidualPhase) :
     NullSingletonClass (nu.1 : Measure ℝ) ∧
@@ -48,7 +46,7 @@ theorem
   let BF := F.base.toBoundaryFamily
   have hstructure :=
     F.cofinalCholeskyResidualPhase_isSingularContinuous_maximalTranslation
-      hC hD nu hnu
+      nu hnu
   obtain ⟨eta, heta⟩ := nu.property
   let mu : Measure (OnePoint ℝ) := eta
   letI : IsProbabilityMeasure mu := eta.prop

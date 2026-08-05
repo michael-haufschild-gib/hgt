@@ -47,9 +47,7 @@ theorem tendsto_measureGram_offdiag_of_dominant {d : ℕ} (ν : Measure ℝ) (a 
   filter_upwards [self_mem_nhdsWithin,
     eventually_integrable_atomKernel ν (a l) R hR hdoml,
     eventually_integrable_atomKernel ν (a m) R hR hdomm] with y hy hil him
-  exact norm_measureGram_sq_le ν a y l m
-    (continuous_scaledCauchyNorm hy).aestronglyMeasurable
-    (continuous_scaledCauchyNorm hy).aestronglyMeasurable hil him
+  exact norm_measureGram_sq_le ν a y l m hil him
 
 /-- **The chamber lower bound.**  At pairwise distinct non-atomic insertion points with a Herglotz
 dominant, and with every inserted coefficient negative, the total scaled Pick Gram is negative

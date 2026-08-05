@@ -51,7 +51,9 @@ ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CON
 
 where mathematical knowledge is missing, use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to find and create it.
 
-## loop theorems
+goal is met when lean codebase is unconditional.
+
+## loop theorems claude
 /loop 1m (use the croncreate tool)
 
 if you are not idle, keep going.
@@ -92,6 +94,46 @@ You are not allowed to change the cron timing.
 LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
 
 where mathematical knowledge is missing use the /hgtl7 skill to create it.
+
+
+## goal theorems gpt
+
+/goal
+Audit lean corpus for any remaining hypothesis or Prop interface - then attempt to discharge it:
+1. reuse existing formal results to discharge every tractable premise
+2. create and formally prove missing connector theorems
+3. subsume theorems under a larger universal law which is nontrivial
+4. use the $hgt-fields-medalist skill´s research process on each non-immediate mathematical obstacle
+
+lean corpus:
+- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
+- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
+- formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
+- formal/GaloisForLFunctions/QuantumAlg for lean related to quantum algorithm around prime numbers
+- formal/GaloisForLFunctions/QECLean.lean for lean related to Quantum Error Correction
+- formal/GaloisForLFunctions/PNTPlus.lean for lean related to Prime Number Theorem
+  
+lean rules:
+1. You always build in the foreground, 1 build process at a time - other agents are also building in parallel.
+2. Always use  lake env lean <file>  and only lake build <module> for the final audit.
+3. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
+4. make sure you don't leave stale lean processes running - clean up after yourself
+
+Mandatory:
+1. no computations.
+2. LEAN PROOFS MUST BE UNCONDTIONAL!!!
+3. no subagents or background tasks
+4. You are not allowed to change the cron timing.
+5. Effort is not a criterion:
+   1. If it cannot be done in a single session -> Does not matter. Do it!
+   2. If it cannot be done in a single context window -> Does not matter. Do it!
+   3. If it takes months -> Does not matter. Do it!
+
+You are not allowed to change the cron timing.
+
+LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
+
+where mathematical knowledge is missing use the $hgt-fields-medalist skill to create it.
 
 ## research paper
 

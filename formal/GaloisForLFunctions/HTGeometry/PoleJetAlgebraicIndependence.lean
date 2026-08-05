@@ -250,12 +250,12 @@ theorem exp_two_pi_I_mul_sub_one_ne_zero {w : ℂ} (hw : 0 < w.im) :
     linarith
   linarith
 
-/-- **The blow-up datum is realized.**  Every integer is a boundary pole reached vertically from the
-upper half-plane. -/
-theorem hasBlowUpSet_periodicPoleModel :
-    HasBlowUpSet upperHalfPlane periodicPoleModel (Set.range fun n : ℤ => (n : ℂ)) := by
-  refine ⟨Set.infinite_range_of_injective (fun a b h => by exact_mod_cast h), ?_⟩
-  rintro ζ ⟨n, rfl⟩
+/-- A vertical approach to an integer from inside the upper half-plane, along which the
+denominator of the pole model vanishes. -/
+theorem exists_vertical_approach (n : ℤ) :
+    ∃ u : ℕ → ℂ, (∀ j, u j ∈ upperHalfPlane) ∧ Tendsto u atTop (𝓝 ((n : ℂ))) ∧
+      Tendsto (fun j => Complex.exp (2 * (Real.pi : ℂ) * Complex.I * u j) - 1) atTop (𝓝 0) ∧
+      ∀ j, Complex.exp (2 * (Real.pi : ℂ) * Complex.I * u j) - 1 ≠ 0 := by
   set t : ℕ → ℝ := fun j => 1 / ((j : ℝ) + 1) with ht
   set u : ℕ → ℂ := fun j => (n : ℂ) + (t j : ℂ) * Complex.I with hu
   have htpos : ∀ j, 0 < t j := by
@@ -277,7 +277,6 @@ theorem hasBlowUpSet_periodicPoleModel :
         simpa [Function.comp_def] using (Complex.continuous_ofReal.tendsto 0).comp ht0
       simpa using hc.mul_const Complex.I
     simpa [hu] using tendsto_const_nhds.add hmul
-  refine ⟨u, fun j => hpos j, hlim, ?_⟩
   have hne : ∀ j : ℕ, Complex.exp (2 * (Real.pi : ℂ) * Complex.I * u j) - 1 ≠ 0 :=
     fun j => exp_two_pi_I_mul_sub_one_ne_zero (hpos j)
   have hval : Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ)) - 1 = 0 := by
@@ -290,9 +289,19 @@ theorem hasBlowUpSet_periodicPoleModel :
     have hinner : Filter.Tendsto (fun j : ℕ => 2 * (Real.pi : ℂ) * Complex.I * u j)
         Filter.atTop (𝓝 (2 * (Real.pi : ℂ) * Complex.I * (n : ℂ))) :=
       hlim.const_mul _
-    have := ((Complex.continuous_exp.tendsto _).comp hinner).sub
+    have hsub := ((Complex.continuous_exp.tendsto _).comp hinner).sub
       (tendsto_const_nhds (x := (1 : ℂ)))
-    rwa [hval] at this
+    rwa [hval] at hsub
+  exact ⟨u, fun j => hpos j, hlim, hexp, hne⟩
+
+/-- **The blow-up datum is realized.**  Every integer is a boundary pole reached vertically from the
+upper half-plane. -/
+theorem hasBlowUpSet_periodicPoleModel :
+    HasBlowUpSet upperHalfPlane periodicPoleModel (Set.range fun n : ℤ => (n : ℂ)) := by
+  refine ⟨Set.infinite_range_of_injective (fun a b h => by exact_mod_cast h), ?_⟩
+  rintro ζ ⟨n, rfl⟩
+  obtain ⟨u, humem, hlim, hexp, hne⟩ := exists_vertical_approach n
+  refine ⟨u, humem, hlim, ?_⟩
   have hgt : Filter.Tendsto
       (fun j : ℕ => ‖Complex.exp (2 * (Real.pi : ℂ) * Complex.I * u j) - 1‖)
       Filter.atTop (𝓝[>] 0) := by
@@ -303,7 +312,6 @@ theorem hasBlowUpSet_periodicPoleModel :
   refine (tendsto_inv_nhdsGT_zero.comp hgt).congr fun j => ?_
   rw [periodicPoleModel, norm_inv]
   rfl
-
 
 /-- **A second unconditional realization of the full-rank datum**, carried by a meromorphic jet with
 boundary poles instead of a periodic one. -/

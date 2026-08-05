@@ -272,3 +272,70 @@ full simultaneous kernel.  This does not establish the one-step claim (15),
 but it shows that failure of one-step singlet Hall need not end the program:
 the remaining physical obligations are Lie generation, global-kernel control,
 and a quantitative bound on required local-word depth.
+
+## Full collective closure update — 2026-08-05
+
+The first two obligations in the previous paragraph are now closed.
+`HTGeometry/AllReplicaTwoLocalPauliLieGeneration.lean` proves that physical
+weight-one/two Pauli directions Lie-generate every nonidentity full Pauli
+commutator after arbitrary finite replication. The full family has a central
+quadratic Casimir. Therefore every invariant target containing all one-step
+local images of `U` satisfies Hall expansion modulo the full collective
+commutant.
+
+`HTGeometry/FiniteReplicaCollectiveCommutantExact.lean` gives an elementary
+stable-range Schur--Weyl classification: for `r <= 2^n`, that commutant is
+exactly the span of the `r!` replica-position permutation matrices, and those
+matrices are linearly independent. Hence
+
+\[
+ \dim U\leq \dim V+r!.
+\]
+
+Outside the stable range,
+`FiniteReplicaCollectiveCommutantUniversalBound.lean` proves the unconditional
+finite bound
+
+\[
+ \dim U\leq \dim V+(2^n)^r r!.
+\]
+
+All capstones are compiled and their axiom audits contain only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+This closes the full block-orbit algebra, not the one-step theorem (15).
+Taking `V` to be the one-step shadow need not satisfy the required invariance.
+
+`HTGeometry/FiniteReplicaTwoLocalPauliWordHall.lean` now closes the local-word
+depth question exactly.  Let `S` be the linear span of the identity and the
+replicated physical weight-one/two Pauli commutator endomorphisms.  Every
+nonidentity full-Pauli commutator of weight `w` lies in `S^w`, constructively,
+and `w <= n`.  Hence for every subspace `U`, its shadow under complex linear
+combinations of products of at most `n` physical local factors obeys
+
+\[
+ \dim U\leq\dim(S^nU)+r!\qquad(r\leq2^n),
+\]
+
+and unconditionally at every replica order
+
+\[
+ \dim U\leq\dim(S^nU)+(2^n)^r r!.
+\]
+
+The filtered construction and both Hall bounds compile, and their axiom
+audits contain only `propext`, `Classical.choice`, and `Quot.sound`.  This is a
+strict positive-length replacement for the still-open one-step claim (15):
+the full collective obstruction is reached after at most linear physical word
+depth, without assuming an invariant target.  It does not itself convert rank
+expansion into a quantitative small-ball probability for the complete
+Hamiltonian-dependent shortcut union.  Growing-replica anti-concentration,
+not local Lie-word depth, is now the surviving Brown--Susskind frontier.
+
+Hostile review adds a decisive scope boundary. Products of at most `n`
+one-local Pauli gates already contain the complete Pauli basis and hence
+linearly span the full operator algebra; this is formalized in
+`HTGeometry/OneLocalPauliWordLinearUniversalityNoGo.lean`. Therefore neither
+full span nor the stronger replicated Hall statement is a circuit-complexity
+lower bound. Any later use of this card must exhibit a separate nonlinear,
+selector-aware estimate; no rank-to-complexity implication is permitted.
