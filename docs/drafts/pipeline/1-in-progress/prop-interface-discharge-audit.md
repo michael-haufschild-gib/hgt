@@ -5128,3 +5128,95 @@ between here and the interface is the *reindexing* — `reshapeCombinedJetsFinCL
 `Fintype.equivFin (Σ i, Fin (orders i))` — not mathematics.
 
 All new declarations: `[propext, Classical.choice, Quot.sound]`.
+
+## The witness interface, discharged for every phase
+
+The reindexing identity holds **definitionally**:
+
+```
+movingCanonicalExpandedPacketValue orders packet θ shift p
+  = iteratedDeriv (combinedJetOrder orders p.2) L
+      (packet.1 p.1 + shift.1 (combinedJetIndex orders p.2))     -- by rfl
+```
+
+with `combinedJetIndex orders c = ((Fintype.equivFin (Σ i, Fin (orders i))).symm c).1` and
+`combinedJetOrder` its second component.  So the interface's packet value *is* a translated jet
+family, coordinate for coordinate, and no transport lemma is needed.
+
+`exists_row_packet_spacedRays_combined` assembles the four conditions from the previous cycles, with
+the two thresholds constructed from the shift family itself:
+
+* `shiftSeparation shift` — the minimum distance between distinct shifts (`1` if there is only one),
+  positive because the configuration is injective;
+* `shiftSpread shift = ⌈∑_{i,i'} ‖shift i − shift i'‖ + 1⌉₊` — an integer spacing beyond the diameter.
+
+Both bounds are then exactly what `injective_combined_of_spacedRayNodes` consumes.
+
+### `movingCanonicalExpandedFullRankWitness_of_strictMinimalShift`
+
+For **every** `θ`: the witness holds whenever the configuration satisfies
+
+1. some shift slot has strictly least imaginary part (`hmin`);
+2. the box rises on that slot's fibre and falls off it (`hmono`, `hanti`, `hstrict`);
+3. `row` admits an injection from `κ × Fin (degree+1)`.
+
+These are conditions on the interface's own parameters, not on the carrier.  The existing route
+(`allFinitePatterns_movingCanonicalExpandedFullRankWitness_dense_residual`) gives the witness only on
+a dense residual set of phases; this gives it at **every** phase, at the price of the box shape.
+
+### Closed instances
+
+`movingCanonicalExpandedFullRankWitness_integerShifts (θ) (n degree N : ℕ) (orders : Fin (n+1) → ℕ)`
+— **no hypotheses.**  Shifts at the integer heights `0, i, 2i, …, ni`; every slot carries at least
+one jet (`orders i + 1`); the box is the ground fibre box.
+
+`movingCanonicalExpandedPatternRelation_coefficients_eq_zero_integerShifts` — **no hypotheses beyond
+the relation itself.**  Every expanded pattern relation among the moving canonical jets at the
+integer shift configuration has vanishing coefficients, for every parameter sequence.
+
+All new declarations: `[propext, Classical.choice, Quot.sound]`.
+
+## The universal law: `PoleCarrier`
+
+The whole mechanism never used the moving canonical carrier as such.  Exactly **three** facts about
+it carried everything, and they are now the fields of a structure (`PoleCarrierFullRank.lean`):
+
+* `gap` — poles with index gap `d` are separated by more than `d − 1/2`;
+* `analyticJet` — translated jets are analytic wherever the translate is in the open upper
+  half-plane;
+* `jetBlowUp` — every jet blows up at every pole, at the rate of its own order, with nonzero leading
+  value.
+
+A fourth condition I had been carrying — *no jet vanishes identically* — turned out to be a
+**consequence**: `PoleCarrier.jetNeZero` derives it from `jetBlowUp`, since a product tending to a
+nonzero limit is eventually nonzero.  Every future instance is spared it.
+
+Everything downstream is now a theorem about an arbitrary such carrier: `analyticOrderAt_jet_ne_top`,
+`jetOrder`, `exists_groupBlowUp_at`, `pointwiseData`, `exists_row_packet_in_set`, `spacedPole_gap`,
+`spacedRayNodes` with its dichotomy, and `injective_combined_of_spacedRayNodes`.
+
+`movingCanonicalPoleCarrier θ` is the instance; the `gap` field is exactly
+`movingCanonicalZero_lower/_upper`.  `TranslateJetGroupFullRank` and `SpacedRayNodePacket` were
+**relayered** onto it — their θ-specific statements are now one-line instances, not second proofs.
+
+### What blocks the sibling carriers
+
+`movingEvenCanonicalCarrier θ z = L z − L (−z)`, and
+`movingEvenCanonicalExpandedPacketValue_apply` already shows its packet value is the jet family of
+that carrier.  So the even interface is the *same shape* with a different carrier, and only one of
+the three `PoleCarrier` fields is missing:
+
+* `gap` — same poles, same proof;
+* `analyticJet` — available from `analyticOnNhd_movingEvenCanonicalCarrier_translate_upperTail`;
+* `jetBlowUp` — **blocked.**  Near a pole `ζ_p` the term `L(−z)` must stay bounded, i.e. `L` must be
+  analytic near the *negative* real point `−ζ_p`.  The corpus proves analyticity of `L` only on
+  `0 < im` (`analyticAt_movingCanonicalLogDerivative`) and on `im ≠ 0`
+  (`analyticAt_movingCanonicalLogDerivative_of_im_ne_zero`).  Since every `ζ_n > 3/4`, `L` does
+  extend analytically across the negative axis — the series `∑ ((ζ_n − z)⁻¹ − ζ_n⁻¹)` converges
+  locally uniformly off `{ζ_n}` — but that lemma is not in the corpus.
+
+**Named obligation:** `analyticAt_movingCanonicalLogDerivative_of_lt` — `L` is analytic at every
+`z` with `z.re < 3/4`.  With it, the even carrier becomes a `PoleCarrier` and every closed result of
+this thread transfers to it verbatim.
+
+All new declarations: `[propext, Classical.choice, Quot.sound]`.

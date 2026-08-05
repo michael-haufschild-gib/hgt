@@ -1758,6 +1758,261 @@ and margins.  They also locate the irreducible task: prove `(O4.3t)`
 directly.  No targetwise Haar cap can imply it unless it has already removed
 the union of shortcut tubes whose packing `(O4.3t)` is meant to bound.
 
+#### Fast-forwarding codimension: forced half and inverse frontier
+
+`[FALSIFIED]` Neither spectral chaos nor the dimension of the dynamical Lie
+algebra can be the missing invariant by itself.  Commuting Hamiltonians,
+quadratic fermions, efficiently block-diagonalizable spin systems, and several
+Cartan-synthesizable models are all fast-forwardable for different algebraic
+reasons.  Conversely, a term-generated dynamical Lie algebra forgets the
+coefficients, although those coefficients can change the dynamics radically.
+Thus the conjecture "large Lie algebra implies no shortcuts" is too coarse,
+while "nonintegrable implies no shortcuts" has no quantitative content.
+
+`[LOCAL-RESEARCH] [PAPER-PROVED]` A previously omitted obstruction fixes the
+largest exponent that any version of `(O4.3)` can have.  First, the obstruction
+does not require commutativity.  Let `F` be an `f`-dimensional linear subspace
+of coefficient space, with orthogonal projection `pi_F`, and suppose one fixed
+local-gate architecture of length at most `B` prepares
+
+\[
+ e^{-iH(y)}\Phi_0\quad(y\in F)                                \tag{O4.3aa0}
+\]
+
+to error `epsilon_-`, with only its gate parameters depending on `y`.  Assume
+
+\[
+ \|H(x)-H(y)\|\leq L_H\|x-y\|,
+ \qquad \Lambda(H(x))\geq\lambda_-\|x\|.                     \tag{O4.3aa1}
+\]
+
+Put `d=m-f`, choose
+
+\[
+ 0<r\leq {\epsilon_+-\epsilon_-\over L_H},
+\]
+
+and let `J` be standard Gaussian in `R^m`.  Independence of its orthogonal
+projections gives, for `t>=max{2r,1}`,
+
+\[
+ \begin{split}
+ &\mathbb P\{1\leq\|\pi_FJ\|\leq2,
+              \ \|(I-\pi_F)J\|\leq r/t\}\\
+ &\qquad\geq
+ p_f(2\pi)^{-d/2}e^{-1/2}v_d r^d t^{-d},             \tag{O4.3aa2}
+ \end{split}
+\]
+
+where `p_f=P{1<=||pi_F J||<=2}>0` and `v_d` is unit-ball volume.  On this event
+set `y=t pi_F J`.  Duhamel continuity proves
+
+\[
+ \|e^{-itH(J)}\Phi_0-e^{-iH(y)}\Phi_0\|
+ \leq L_Ht\|(I-\pi_F)J\|\leq\epsilon_+-\epsilon_- .  \tag{O4.3aa3}
+\]
+
+Moreover `||tJ||>=t-r>=t/2`.  Hence, once
+
+\[
+ t\geq {2B\operatorname{poly}(n)\over a\lambda_-},             \tag{O4.3aa4}
+\]
+
+the same architecture is within the relative shortcut budget at `tJ`.
+Therefore every `f`-dimensional uniformly synthesizable coefficient subspace
+forces shortcut probability `Omega(t^{-(m-f)})`.  Deterministically, its
+fixed-radius tube has annular volume `Omega(R^f)`.  This argument extends
+verbatim to a tame proper synthesis stratum once its fixed-radius tube has
+that volume growth.
+
+The commuting case supplies an especially strong **recurrent** subevent.  Let
+
+\[
+ H(x)=\sum_{j=1}^m x_jP_j,
+ \qquad \|P_j\|\leq1,
+ \tag{O4.3aa}
+\]
+
+and suppose `P_1,...,P_f` are pairwise commuting Hermitian involutions.  Let
+`J_1,...,J_m` be independent standard Gaussians.  For `0<eta<=1`, put
+`delta=eta/m`.  If `t>=4pi`, then the event
+
+\[
+ \begin{split}
+  &\operatorname{dist}(tJ_j,2\pi\mathbb Z)\leq\delta
+       &&(1\leq j\leq f),\\
+  &|tJ_j|\leq\delta
+       &&(f<j\leq m)
+ \end{split}                                                   \tag{O4.3ab}
+\]
+
+is contained in the `eta`-ball about the initial endpoint:
+
+\[
+ \|e^{-itH(J)}-I\|\leq\eta.                                  \tag{O4.3ac}
+\]
+
+Indeed, choose integers `k_j` in `(O4.3ab)` and set
+`J_j^0=2pi k_j/t` for `j<=f`, `J_j^0=0` otherwise.  Commutativity and
+`P_j^2=I` give
+
+\[
+ e^{-itH(J^0)}=\prod_{j=1}^f e^{-2\pi i k_jP_j}=I,
+\]
+
+while Duhamel's inequality gives
+
+\[
+ \|e^{-itH(J)}-I\|
+ \leq t\|H(J)-H(J^0)\|
+ \leq\sum_{j=1}^m t|J_j-J_j^0|\leq m\delta=\eta.
+\]
+
+This event has an explicit lower probability of the form
+
+\[
+ \mathbb P\bigl((\mathrm{O4.3ab})\bigr)
+ \geq
+ \left({\varphi(1)\delta\over2\pi}\right)^f
+ \left(2\varphi(1)\delta\right)^{m-f}
+ t^{-(m-f)},                                                  \tag{O4.3ad}
+\]
+
+where `varphi` is the standard Gaussian density.  For a transverse coordinate,
+integrating over `[-delta/t,delta/t]` gives the second factor.  For a commuting
+coordinate, take all disjoint intervals of radius `delta/t` centred at
+`2pi k/t` inside `[-1/2,1/2]`.  There are at least `t/(4pi)` such intervals;
+their total length is at least `delta/(2pi)`, and the Gaussian density is at
+least `varphi(1)` on them.  Independence proves `(O4.3ad)`.
+
+The identity word therefore witnesses a robust shortcut for every initial
+state on `(O4.3ab)`.  Consequently, any upper law with failure
+`O(t^{-kappa})`, uniform in the pre-capacity range with constants that do not
+absorb an additional power of `t`, must satisfy
+
+\[
+ \boxed{\ \kappa\leq m-f.\ }                                  \tag{O4.3ae}
+\]
+
+The same result has a deterministic geometric form.  The exact recurrence
+lattice `(2pi Z)^f times {0}^{m-f}` supplies `Theta(R^f)` separated centres in
+an annulus of radius `R`.  Fixed small full-dimensional balls about them lie in
+a relaxed shortcut locus by Duhamel continuity.  Hence its annular volume is
+at least `c_{m,f,eta}R^f`.  This proves `(O4.3ae)` directly from `(O4.3i)` as
+well.  The exponent `kappa approximately m` previously suggested by one
+periodic ray is not sharp whenever an extensive commuting sector is present.
+
+For the all-to-all fixed-`q` Pauli ensemble, all nonempty `Z` strings of weight
+at most `q` form such a sector, so
+
+\[
+ f_Z(n,q)=\sum_{k=1}^q {n\choose k},\qquad
+ m(n,q)=\sum_{k=1}^q3^k{n\choose k},                            \tag{O4.3af}
+\]
+
+and every admissible no-shortcut exponent obeys
+`kappa<=m-f_Z`.  This is a theorem, not the desired upper bound.  It identifies
+a mandatory obstruction that an upper bound must match; a larger
+fast-forwardable stratum would strengthen it further.
+
+`[CONJECTURE — AUTONOMOUS SHORTCUT ORGANIZATION LAW; FROZEN 2026-08-05.]`
+Fix an error margin and a sub-direct-simulation word budget.  A
+`d`-dimensional **uniform synthesis stratum** is a proper, polynomial-distortion
+coefficient chart whose unit neighbourhood has annular packing growth
+`Theta(R^d)` and whose whole autonomous endpoint family is prepared by one
+uniform local-gate architecture within the budget.  Let `f_*` be the maximum
+such radial dimension, allowing a finite polynomial-complexity stratification
+(commuting, Cartan, quadratic, block-diagonal, and their efficiently conjugate
+forms), but not defining a stratum merely as a subset of the shortcut locus.
+
+Then, for the fixed-`q` Gaussian Pauli family throughout the pre-capacity
+double-scaling window, the robust aggregate shortcut locus has radial
+volume-growth exponent exactly `f_*`:
+
+\[
+ \operatorname{vol}\!\left(
+  \mathfrak S_{\varepsilon,a}\cap\{R\leq\|x\|\leq2R\}
+ \right)
+ =R^{f_*+o(m)},                                                \tag{O4.3ag}
+\]
+
+equivalently its optimal Gaussian escape exponent is
+
+\[
+ \boxed{\ \kappa_*=m-f_*.\ }                                  \tag{O4.3ah}
+\]
+
+The lower/forced half is `(O4.3aa0)`--`(O4.3af)` for every certified synthesis
+stratum; `(O4.3aa)`--`(O4.3af)` additionally isolate exact recurrent mass in
+the commuting case.  The new inverse half says that an excess
+of Hamiltonian-dependent shortcut islands cannot remain arithmetically
+scattered: it forces a higher-dimensional uniformly synthesizable stratum.
+This is an inverse theorem for autonomous quantum complexity, not a relabeling
+of the shortcut set.
+
+`[OPEN CORE]` Prove the inverse organization implication with quantitative
+robustness and circuit-capacity uniformity:
+
+\[
+ \limsup_R {\log N_r(\mathfrak S_{\varepsilon,a}\cap A_R)
+                 \over\log R}>d
+ \quad\Longrightarrow\quad
+ \text{a uniform synthesis stratum of radial dimension greater than `d`},
+ \tag{O4.3ai}
+\]
+
+where `A_R={x:R<=||x||<=2R}` and the limit is taken only in the stated
+pre-capacity double scaling.  Establishing `(O4.3ai)` at `d=f_*` would close
+`(O4.3i)`, hence O4.  It would also classify the exceptional branch instead of
+excluding it by an adjective: autonomous time is compressible precisely along
+organized fast-forwardable directions and irreducible in the transverse
+codimension.
+
+`[HOSTILE REVIEW]` Four attacks remain live and must be discharged before this
+conjecture can enter the paper as a result.
+
+1. Isolated arithmetic resonances might proliferate faster than every uniform
+   synthesis stratum without organizing into one; that would falsify
+   `(O4.3ai)`.
+2. Bethe-integrable or parameter-dependently diagonalizable families might be
+   fast-forwardable without fitting one polynomial-distortion chart; the
+   definition must include them without becoming circular.
+3. The number of circuit architectures grows with `R`; an inverse theorem must
+   control component proliferation, not only the dimension of each pullback.
+4. At fixed `n`, circuit capacity eventually makes every endpoint easy.
+   Therefore `(O4.3ag)` is meaningful only with explicit uniform constants in
+   the pre-saturation `n,R` double scaling, never as `R->infinity` at fixed
+   `n`.
+
+`[LITERATURE]` Atia--Aharonov prove fast-forwarding/precise-measurement
+equivalence and exhibit commuting and quadratic examples, but ask for a
+physical classification of fast-forwardability.  Gu--Somma--Sahinoglu extend
+the positive classes to efficiently block-diagonalizable, permutation-
+invariant, low-energy frustration-free, quadratic fermionic, and quadratic
+bosonic systems.  Kokcu et al. give time-independent-depth Cartan synthesis.
+The 2-local spin DLA classification shows polynomial and exponential algebra
+dimensions but explicitly notes that coefficient-blind DLA data do not fix
+dynamics.  None of these sources proves an inverse measure theorem for the
+complete Hamiltonian-dependent shortcut locus or the codimension identity
+`(O4.3ah)`.
+
+`[LOCAL-RESEARCH — GITHUB LEAN INFRASTRUCTURE AUDIT]` Repository search found
+no existing Lean formalization of Carbery--Wright anti-concentration,
+Kac--Rice component counts, quantitative analytic tube bounds, unitary circuit
+varieties, or quantum fast-forwarding.  The strongest reusable candidate is
+`dududuguo/HighDimProb`: Apache-2.0, no `sorry`/`admit`/`axiom` tokens in its
+Lean sources, with covering/packing numbers, finite chaining and Dudley,
+Hanson--Wright, scalar concentration, and matrix Bernstein.  Its Lean 4.29.1
+toolchain requires a controlled port to this project's Lean 4.32.2.  It can
+formalize auxiliary metric-entropy bounds after the paper proof closes, but it
+does not supply `(O4.3ai)`.  `leanprover-community/physlib` is toolchain-close
+and has useful quantum-information infrastructure, but relevant entropy and
+fidelity files still contain unfinished declarations.  `SciSolv/weingarten-lean`
+can support low-order Haar moments only.  The quantum-information, Gaussian-
+Hilbert, and classical-circuit repositories audited either contain unfinished
+proofs, use obsolete Lean, lack a usable licence, or formalize the wrong
+circuit model.  No dependency is added before Gate 4.
+
 #### Dynamical NLTS equivalence
 
 Fix a trivial gapped parent Hamiltonian `K_0` with unique product ground state

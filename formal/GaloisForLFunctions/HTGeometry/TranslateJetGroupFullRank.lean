@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.MonotoneStaircaseJetBox
+import GaloisForLFunctions.HTGeometry.PoleCarrierFullRank
 
 /-!
 # Several jets at the distinguished shift
@@ -17,28 +17,7 @@ open Filter Topology
 
 namespace GaloisForLFunctions.HTGeometry
 
-/-- The integer rate vector for a distinguished shift group: every jet at the distinguished shift
-blows up at its own order, every other jet is renormalized by its vanishing order. -/
-noncomputable def integerTranslateJetGroupRate {n : ℕ} (m : Fin n → ℕ) (σ : Fin n → ℂ)
-    (k₀ : Fin n) (V : Fin n → ℕ) : Fin n → ℤ :=
-  fun k => if σ k = σ k₀ then ((m k : ℤ) + 1) else -(V k : ℤ)
-
-theorem integerTranslateJetGroupRate_pos {n : ℕ} (m : Fin n → ℕ) (σ : Fin n → ℂ) (k₀ : Fin n)
-    (V : Fin n → ℕ) {k : Fin n} (hk : σ k = σ k₀) :
-    0 < integerTranslateJetGroupRate m σ k₀ V k := by
-  rw [integerTranslateJetGroupRate, if_pos hk]
-  positivity
-
-theorem integerTranslateJetGroupRate_nonpos {n : ℕ} (m : Fin n → ℕ) (σ : Fin n → ℂ) (k₀ : Fin n)
-    (V : Fin n → ℕ) {k : Fin n} (hk : σ k ≠ σ k₀) :
-    integerTranslateJetGroupRate m σ k₀ V k ≤ 0 := by
-  rw [integerTranslateJetGroupRate, if_neg hk]
-  exact neg_nonpos.mpr (Int.natCast_nonneg _)
-
-set_option maxHeartbeats 1000000 in
-/-- **The blow-up datum with a whole group at the distinguished shift.**  Along the vertical
-approach every jet at the distinguished shift blows up at its own order with the factorial leading
-value; the remaining jets are renormalized by their vanishing orders. -/
+/-- **The blow-up datum with a whole group at the distinguished shift.** -/
 theorem exists_translateJetGroupBlowUp_at {n : ℕ} (θ : BoundedRealSequence)
     (m : Fin n → ℕ) (σ : Fin n → ℂ) (k₀ : Fin n) (V : Fin n → ℕ)
     {S : Set ℂ} {ζ : ℂ} {ε : ℝ} (hε : 0 < ε)
@@ -54,64 +33,10 @@ theorem exists_translateJetGroupBlowUp_at {n : ℕ} (θ : BoundedRealSequence)
         (∀ k, c k ≠ 0) ∧
         ∀ k, Tendsto (fun j =>
             iteratedDeriv (m k) (movingCanonicalLogDerivative θ) (u j + σ k) *
-              t j ^ (integerTranslateJetGroupRate m σ k₀ V k)) atTop (𝓝 (c k)) := by
-  classical
-  obtain ⟨p, hp⟩ := hzero
-  obtain ⟨u, humem, hune, huim, hulim, htlim⟩ := exists_verticalApproach hε hS
-  have htne : ∀ j, u j - ζ ≠ 0 := fun j => sub_ne_zero.mpr (hune j)
-  have hzeroim : (ζ + σ k₀).im = 0 := by
-    rw [hp]
-    simp
-  have hupper : ∀ j, 0 < (u j + σ k₀).im := by
-    intro j
-    have h1 : (u j + σ k₀).im = (u j - ζ).im + (ζ + σ k₀).im := by
-      simp only [Complex.add_im, Complex.sub_im]
-      ring
-    rw [h1, hzeroim, add_zero]
-    exact huim j
-  have hcomp : ∀ k, σ k ≠ σ k₀ → ∃ C : ℂ, C ≠ 0 ∧
-      Tendsto (fun j => iteratedDeriv (m k) (movingCanonicalLogDerivative θ) (u j + σ k) *
-        (u j - ζ) ^ (-(V k : ℤ))) atTop (𝓝 C) :=
-    fun k hk => exists_tendsto_zpow_neg_of_analyticOrderAt (hfin k hk) (hV k hk) hulim hune
-  refine ⟨u, fun j => u j - ζ,
-    fun k => if hk : σ k = σ k₀ then -((-1 : ℂ) ^ (m k) * ((m k).factorial : ℂ))
-      else (hcomp k hk).choose,
-    humem, htne, hulim, htlim, ?_, ?_⟩
-  · intro k
-    dsimp only
-    by_cases hk : σ k = σ k₀
-    · rw [dif_pos hk]
-      exact jetLeadingValue_ne_zero _
-    · rw [dif_neg hk]
-      exact (hcomp k hk).choose_spec.1
-  · intro k
-    dsimp only
-    by_cases hk : σ k = σ k₀
-    · rw [dif_pos hk]
-      have hrate : integerTranslateJetGroupRate m σ k₀ V k = ((m k + 1 : ℕ) : ℤ) := by
-        rw [integerTranslateJetGroupRate, if_pos hk]
-        push_cast
-        ring
-      rw [hrate]
-      have hupperk : ∀ j, 0 < (u j + σ k).im := by
-        intro j
-        rw [hk]
-        exact hupper j
-      have hlim' : Tendsto u atTop (𝓝 ((movingCanonicalZero θ p : ℂ) - σ k)) := by
-        rw [hk, ← hp]
-        exact hulim
-      have hbase := tendsto_iteratedDeriv_translate_movingCanonicalLogDerivative θ p (m k) (σ k)
-        hupperk hlim'
-      refine hbase.congr fun j => ?_
-      rw [zpow_natCast, hp, hk]
-    · rw [dif_neg hk]
-      have hrate : integerTranslateJetGroupRate m σ k₀ V k = -(V k : ℤ) := by
-        rw [integerTranslateJetGroupRate, if_neg hk]
-      rw [hrate]
-      exact (hcomp k hk).choose_spec.2
+              t j ^ (integerTranslateJetGroupRate m σ k₀ V k)) atTop (𝓝 (c k)) :=
+  (movingCanonicalPoleCarrier θ).exists_groupBlowUp_at m σ k₀ V hε hS hzero hfin hV
 
-/-- **Point-dependent group blow-up data.**  Each sampled point supplies its own companion orders;
-the distinguished group's rates come from the differentiation orders alone. -/
+/-- **Point-dependent group blow-up data.** -/
 theorem pointwiseIntegerMultiBlowUpData_translateJetGroup {κ : Type*} {n : ℕ}
     (θ : BoundedRealSequence) (m : Fin n → ℕ) (σ : Fin n → ℂ) (k₀ : Fin n) (V : ℂ → Fin n → ℕ)
     {S Z : Set ℂ} {ε : ℝ} (hε : 0 < ε) (exponent : κ → (Fin n →₀ ℕ)) (hZ : Z.Infinite)
@@ -125,20 +50,10 @@ theorem pointwiseIntegerMultiBlowUpData_translateJetGroup {κ : Type*} {n : ℕ}
     (hsep : ∀ ζ ∈ Z, Function.Injective fun a =>
       integerBlowUpOrder (integerTranslateJetGroupRate m σ k₀ (V ζ)) (exponent a)) :
     PointwiseIntegerMultiBlowUpData S
-      (fun k w => iteratedDeriv (m k) (movingCanonicalLogDerivative θ) (w + σ k)) Z exponent := by
-  refine ⟨hZ, fun ζ hζ => ?_⟩
-  obtain ⟨u, t, c, humem, htne, hu, ht, hcne, hlim⟩ :=
-    exists_translateJetGroupBlowUp_at θ m σ k₀ (V ζ) hε (hS ζ hζ) (hzero ζ hζ) (hfin ζ hζ)
-      (hV ζ hζ)
-  exact ⟨u, t, c, integerTranslateJetGroupRate m σ k₀ (V ζ),
-    humem, htne, hu, ht, hcne, hsep ζ hζ, hlim⟩
+      (fun k w => iteratedDeriv (m k) (movingCanonicalLogDerivative θ) (w + σ k)) Z exponent :=
+  (movingCanonicalPoleCarrier θ).pointwiseData m σ k₀ V hε exponent hZ hS hzero hfin hV hsep
 
-set_option maxHeartbeats 1000000 in
-/-- **Full-rank node packets in a prescribed sampled set.**  Arbitrarily many jets may sit at the
-distinguished shift, each differentiated to its own order; the remaining shifts need only have
-strictly larger imaginary part.  The box must rise along the distinguished group and fall off it,
-with one coordinate rising strictly.  The nodes are drawn from any infinite set containing an initial
-segment of the vertical ray above each sampled zero. -/
+/-- **Full-rank node packets in a prescribed sampled set.** -/
 theorem exists_row_packet_in_set_minimalShiftGroup_signedBox
     {κ row : Type*} [Fintype κ] [DecidableEq κ] [LinearOrder κ] [Fintype row] {n q : ℕ}
     (θ : BoundedRealSequence) (m : Fin n → ℕ) (σ : Fin n → ℂ) (k₀ : Fin n)
@@ -154,35 +69,9 @@ theorem exists_row_packet_in_set_minimalShiftGroup_signedBox
     ∃ z : row → ℂ, (∀ b, z b ∈ S) ∧ Function.Injective z ∧
       Function.Injective (expandedDifferentialEvaluationMatrix q n z exponent
         (fun p => iteratedDeriv (m p.2) (movingCanonicalLogDerivative θ)
-          (z p.1 + σ p.2))).mulVec := by
-  classical
-  have him : ∀ ζ ∈ Z, ζ.im = -(σ k₀).im := by
-    intro ζ hζ
-    obtain ⟨p, rfl⟩ := hzero ζ hζ
-    simp
-  refine exists_row_packet_of_linearIndependent_box (q := q) hSinf
-    (fun k w => iteratedDeriv (m k) (movingCanonicalLogDerivative θ) (w + σ k)) exponent ?_ f hf
-  refine linearIndependent_restrict_expandedMonomialFamily_of_pointwiseIntegerMultiBlowUp
-    (κ := κ) (q := q) (S := S) (Z := Z) (exponent := exponent) ?_
-  refine pointwiseIntegerMultiBlowUpData_translateJetGroup (κ := κ) (S := S) (Z := Z)
-    θ m σ k₀ (fun ζ k => translateJetVanishingOrder θ (m k) (σ k) ζ) hε exponent hZ hS hzero
-    ?_ ?_ ?_
-  · intro ζ hζ k hk
-    refine analyticAt_translate_jet (m k) (σ k) ?_
-    have h1 : (ζ + σ k).im = ζ.im + (σ k).im := by simp
-    rw [h1, him ζ hζ]
-    have := hshift k hk
-    linarith
-  · intro ζ hζ k hk
-    refine analyticOrderAt_translate_jet_eq θ (m k) ?_
-    rw [him ζ hζ]
-    have := hshift k hk
-    linarith
-  · intro ζ _
-    exact injective_integerBlowUpOrder_of_signed_box _ exponent (fun k => σ k = σ k₀) k₀
-      (fun k hk => (integerTranslateJetGroupRate_pos m σ k₀ _ hk).le)
-      (fun k hk => integerTranslateJetGroupRate_nonpos m σ k₀ _ hk)
-      hmono hanti (integerTranslateJetGroupRate_pos m σ k₀ _ rfl) hstrict
+          (z p.1 + σ p.2))).mulVec :=
+  (movingCanonicalPoleCarrier θ).exists_row_packet_in_set m σ k₀ exponent hε hSinf hZ hS hzero
+    hshift hmono hanti hstrict f hf
 
 /-- **Full-rank node packets with a whole group at the minimal shift.**  The sampled set is the full
 admissible half-plane. -/

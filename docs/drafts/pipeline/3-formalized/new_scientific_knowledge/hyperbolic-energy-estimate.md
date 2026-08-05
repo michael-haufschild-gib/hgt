@@ -717,6 +717,15 @@ last step is `2|ab| ≤ a² + b²`. Grönwall closes it.
 | 653 | **the explicit excursion factor lies inside the trapping band** | **`excursion_le_trap_band`** | **built** |
 | 654 | the gap between them is `2b²/(1−b)` | `trap_band_sub_excursion` | **built** |
 | 655 | **the model's energy obeys the general trapping bound** | **`kgFieldEnergyT_kgTunedPot_real_le_trap`** | **built** |
+| 656 | the trapping comparison in cleared form | `excursion_mul_le` | **built** |
+| 657 | **the model's energy obeys the lower trapping bound too** | **`kgFieldEnergyT_kgTunedPot_real_ge_trap`** | **built** |
+| 658 | **on a sub-band the shifted cosine symbol is still `cos(ct)`** | `kgShiftedCos_kgTunedPot_subband` | **built** |
+| 659 | **and the sine symbol still `sin(ct)/c`** | `kgShiftedSinOverFreq_kgTunedPot_subband` | **built** |
+| 660 | **and the generator symbol still `c²`** | `kgShiftedFreqSqLow_kgTunedPot_subband` | **built** |
+| 661 | **on a sub-band the shifted cosine propagator is the scalar `cos(ct)`** | `kgShiftedCosOp_kgTunedPot_subband` | **built** |
+| 662 | **and the sine propagator the scalar `sin(ct)/c`** | `kgShiftedSinFreqOp_kgTunedPot_subband` | **built** |
+| 663 | **on a sub-band the tuned generator is multiplication by `c²`** | `kgShiftedFreqSqLowOp_kgTunedPot_subband` | **built** |
+| 664 | **the velocity of the tuned clock on a sub-band** | **`kgShiftedVel_kgTunedPot_subband`** | **built** |
 
 Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` (4–5),
 `WaveEnergyFlux.lean` (6–9), `WaveEnergyDerivative.lean` (10–12), `WaveCauchyUniqueness.lean` (13), `WaveTimeReflection.lean` (14), `WaveEnergyTwoSided.lean` (15), `WaveSolutionSpace.lean` (16), `WaveEventCoordinates.lean` (17), `WaveOperatorBridge.lean` (18–19), `WaveUniquenessEventForm.lean` (20), `WaveGreenIdentityIntegrable.lean` (21), `WaveEnergyFluxIntegrable.lean` (22), `WaveEnergyDerivativeIntegrable.lean` (23), `WaveEnergyDecaying.lean` (24–25), `WaveDecayingCompactSupport.lean` (26), `WaveDecayingReflection.lean` (27–28), `WaveDecayingEventForm.lean` (29), `WaveDecayingSharp.lean` (30), `WaveDecayingL2.lean` (31), `WaveDecayingL2Sub.lean` (32), `WaveL2Uniqueness.lean` (33), `WaveL2EventForm.lean` (34), `WaveDominationL2.lean` (35), `WaveDominationFactors.lean` (36), `WaveDominationSub.lean` (37), `WaveL2Capstone.lean` (38), `WaveL2CapstoneEvent.lean` (39), `WaveSourceFlux.lean` (41), `L2FourierMultiplier.lean` (46–47),
@@ -792,7 +801,8 @@ Modules: `WaveEnergyGreenIdentity.lean` (1–3), `WaveDirectionalCalculus.lean` 
 `KleinGordonPeriodicClockConserved.lean` (638),
 `KleinGordonTunedUnitModulus.lean` (639), `KleinGordonTunedFlatEnvelope.lean` (640–641), `KleinGordonTunedExactNorm.lean` (642–643), `KleinGordonTunedRealDatum.lean` (644–646), `KleinGordonTunedEnergyRange.lean` (647–649),
 `KleinGordonBandFrequencySpread.lean` (650–652),
-`KleinGordonModelInsideTrap.lean` (653–655).
+`KleinGordonModelInsideTrap.lean` (653–655), `KleinGordonModelTrapLower.lean` (656–657), `KleinGordonTunedSubband.lean` (658–660), `KleinGordonTunedSubbandOps.lean` (661–662),
+`KleinGordonTunedSubbandVelocity.lean` (663–664).
 All wired into the umbrella; axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## State of the build
@@ -3754,6 +3764,41 @@ bound:
 So the abstract estimate of statement 483 and the computed model agree, the model sits strictly inside
 the band, and the discrepancy between them is second order in the strength of the potential.
 
+The lower half follows the same way. The energy is bounded below by `‖P_R x‖²`, which the frequency
+spread bounds below by `E(0)/(c² + b)`, and `c² + b ≤ (1+b)/(1−b)` again:
+
+**`kgFieldEnergyT_kgTunedPot_real_ge_trap`**: `E(0)·(1−b)/(1+b) ≤ E(t)`.
+
+Both halves of the trapping law of statement 483 are therefore recovered from the explicit solution,
+by an argument that never mentions the monodromy or the conserved modified energy the general proof
+uses.
+
+### Towards two rates on one band
+
+The tuned potential flattens the frequency on the whole of its own band, hence on every smaller band
+as well. Stating the symbol identities for an arbitrary sub-band (**658–660**) lets two potentials of
+different rates be compared on a band they share: for `c₁ < c₂` the smaller band `‖ξ‖ ≤ √(c₁²−1+b)`
+lies inside both, and on it the two clocks are plane rotations at the two different rates.
+
+That is the configuration in which a clock switched between the two rates can be studied — the setting
+where the card's exponential estimate could first become sharp, since a static real diagonal potential
+never produces growth at all.
+
+At the operator level (**661**, **662**) the two propagators are then genuinely different scalars on
+the shared band. In the state coordinates `(⟨D⟩u, u̇)` the evolution at rate `c` over a quarter period
+`ct = π/2` sends
+
+`(g, h) ↦ ((1/c)·⟨D⟩h, −c·⟨D⟩⁻¹g)`,
+
+so switching rate after each quarter period composes two such maps and returns
+`(g, h) ↦ (−(c₁/c₂)·g, −(c₂/c₁)·h)`: the velocity component is multiplied by `c₂/c₁ > 1` each cycle.
+The `⟨D⟩` factors cancel because the two maps carry them in opposite positions.
+
+The generator too is multiplication by `c²` on every sub-band (**663**), so the velocity keeps its
+plane-rotation form there (**664**): both rates of a switching pair are described by the same formulas
+on the band they share. The cancellation of the `⟨D⟩` factors rests on the two identities
+`⟨D⟩⁻¹⟨D⟩_R = P_R` and `⟨D⟩_R⟨D⟩⁻¹ = P_R`, both already in the corpus.
+
 ### Historical note on the plan
 
 The step was originally recorded as: identifying
@@ -3774,6 +3819,18 @@ and `coordPartial i.succ ↔ dirDeriv (spaceDir d i)` along the linear map
 `(t, x) ↦ Fin.cons t x`.
 
 ## Log
+- 2026-08-05 — statements 663–664: **sub-band generator and velocity.** The tuned generator is `c²`
+  on every sub-band and the velocity keeps its rotation form, so both rates of a switching pair share
+  one set of formulas.
+- 2026-08-05 — statements 661–662: **sub-band propagators as scalars.** Two rates act as different
+  scalars on one band, so their quarter-period composition is computable and multiplies the velocity
+  component by `c₂/c₁`.
+- 2026-08-05 — statements 658–660: **sub-band identities.** The tuned symbols keep their constant
+  values on any smaller band, so two rates can be realised on one shared band — the prerequisite for
+  switching a clock between rates.
+- 2026-08-05 — statements 656–657: **the lower trap from the model.** The energy is at least
+  `‖P_R x‖² ≥ E(0)/(c²+b) ≥ E(0)(1−b)/(1+b)`, so both halves of the trapping law follow from the
+  explicit solution.
 - 2026-08-05 — statements 653–655: **the model sits inside the trap.** `c² + b ≤ (1+b)/(1−b)` with gap
   `2b²/(1−b)`, and the explicit energy formula reproduces the general trapping bound.
 - 2026-08-05 — statements 650–652: **the excursion is the frequency spread.** `‖P_R x‖ ≤ ‖⟨D⟩_R x‖ ≤
