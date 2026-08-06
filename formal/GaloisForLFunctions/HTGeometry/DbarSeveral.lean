@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.DbarSolve
 import GaloisForLFunctions.HTGeometry.PolydiscAnalytic
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 
 /-!
 # The Dolbeault operator in several complex variables
@@ -1276,5 +1277,86 @@ theorem cauchyIntegrand_support_subset {G : (Fin n → ℂ) → ℂ} {S : ℝ} {
   rw [cauchyIntegrand_eq_zero_of_notMem hgS y hnot, zero_div]
 
 end Polydisc
+
+section UniformBound
+
+open MeasureTheory Real Set
+open scoped ENNReal
+
+variable {n : ℕ}
+
+/-- **The coordinatewise Cauchy transform of a bounded slab-supported function is bounded, with a
+bound independent of the base point.**  The integrand vanishes off the disc of radius `S` about
+`y k`, and that moving disc is split at `‖w‖ = S`: on the centred ball of radius `S` the kernel
+`‖w‖⁻¹` has total mass `2πS`, and off it the kernel is at most `S⁻¹` while the moving disc has
+area `πS²`.  Splitting this way, rather than comparing the moving disc with a centred one, is what
+makes the bound uniform. -/
+theorem enorm_cauchyIntegral_le {G : (Fin n → ℂ) → ℂ} {S M : ℝ} {k : Fin n} (hS : 0 < S)
+    (hM0 : 0 ≤ M)
+    (hgS : ∀ x : Fin n → ℂ, S < ‖x k‖ → G x = 0) (hM : ∀ x : Fin n → ℂ, ‖G x‖ ≤ M)
+    (y : Fin n → ℂ) :
+    ‖∫ w : ℂ, G (y - Pi.single k w) / w‖ₑ
+      ≤ ENNReal.ofReal M * (ENNReal.ofReal S * ENNReal.ofReal (2 * π))
+        + ENNReal.ofReal (M / S) * (ENNReal.ofReal S ^ 2 * NNReal.pi) := by
+  refine le_trans (enorm_integral_le_lintegral_enorm _) ?_
+  have hle : ∀ w : ℂ, ‖G (y - Pi.single k w) / w‖ₑ
+      ≤ Set.indicator (Metric.ball (0 : ℂ) S) (fun w => ENNReal.ofReal M * ENNReal.ofReal ‖w‖⁻¹) w
+        + Set.indicator (Metric.closedBall (y k) S)
+            (fun _ => ENNReal.ofReal (M / S)) w := by
+    intro w
+    by_cases hw : w ∈ Metric.closedBall (y k) S
+    · have hbound : ‖G (y - Pi.single k w) / w‖ ≤ M * ‖w‖⁻¹ := by
+        rw [norm_div, div_eq_mul_inv]
+        gcongr
+        exact hM _
+      by_cases hw2 : w ∈ Metric.ball (0 : ℂ) S
+      · refine le_trans ?_ (le_add_of_nonneg_right bot_le)
+        rw [Set.indicator_of_mem hw2, ← ENNReal.ofReal_mul hM0, ← ofReal_norm]
+        exact ENNReal.ofReal_le_ofReal hbound
+      · refine le_trans ?_ (le_add_of_nonneg_left bot_le)
+        rw [Set.indicator_of_mem hw]
+        simp only [Metric.mem_ball, dist_zero_right, not_lt] at hw2
+        have hb2 : ‖G (y - Pi.single k w) / w‖ ≤ M / S := by
+          refine le_trans hbound ?_
+          rw [div_eq_mul_inv]
+          gcongr
+        rw [← ofReal_norm]
+        exact ENNReal.ofReal_le_ofReal hb2
+    · rw [cauchyIntegrand_eq_zero_of_notMem hgS y hw, zero_div]
+      simp
+  refine le_trans (lintegral_mono hle) ?_
+  rw [lintegral_add_left (by measurability), lintegral_indicator measurableSet_ball,
+    lintegral_indicator measurableSet_closedBall]
+  gcongr
+  · rw [lintegral_const_mul' _ _ (by simp : ENNReal.ofReal M ≠ ⊤)]
+    gcongr
+    rw [← lintegral_indicator measurableSet_ball]
+    exact lintegral_ball_norm_inv S
+  · rw [MeasureTheory.setLIntegral_const, Complex.volume_closedBall]
+
+/-- **The uniform bound in real form.**  A bounded function supported in the slab `‖x k‖ ≤ S` has
+coordinatewise Cauchy transform bounded by `3πMS` at every base point. -/
+theorem norm_cauchyIntegral_le {G : (Fin n → ℂ) → ℂ} {S M : ℝ} {k : Fin n} (hS : 0 < S)
+    (hM0 : 0 ≤ M)
+    (hgS : ∀ x : Fin n → ℂ, S < ‖x k‖ → G x = 0) (hM : ∀ x : Fin n → ℂ, ‖G x‖ ≤ M)
+    (y : Fin n → ℂ) :
+    ‖∫ w : ℂ, G (y - Pi.single k w) / w‖ ≤ 3 * π * M * S := by
+  have h := enorm_cauchyIntegral_le hS hM0 hgS hM y
+  have hrhs : ENNReal.ofReal M * (ENNReal.ofReal S * ENNReal.ofReal (2 * π))
+      + ENNReal.ofReal (M / S) * (ENNReal.ofReal S ^ 2 * NNReal.pi)
+      = ENNReal.ofReal (3 * π * M * S) := by
+    have hpi : ((NNReal.pi : NNReal) : ℝ≥0∞) = ENNReal.ofReal π := by
+      rw [← NNReal.coe_real_pi, ENNReal.ofReal_coe_nnreal]
+    rw [hpi, ← ENNReal.ofReal_pow hS.le, ← ENNReal.ofReal_mul (by positivity),
+      ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity),
+      ← ENNReal.ofReal_mul (by positivity),
+      ← ENNReal.ofReal_add (by positivity) (by positivity)]
+    congr 1
+    field_simp
+    ring
+  rw [hrhs, ← ofReal_norm] at h
+  exact (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp h
+
+end UniformBound
 
 end HTGeometry

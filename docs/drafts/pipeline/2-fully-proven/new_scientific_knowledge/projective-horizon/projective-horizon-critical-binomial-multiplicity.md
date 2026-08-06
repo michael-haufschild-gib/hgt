@@ -152,9 +152,12 @@ In projective normal coordinates the chart transition is
 ```
 
 Once a longitudinal solution `p` in a generic critical fiber is fixed, every transverse pair of
-tails gives a square linear convolution system for the low coefficients of `u` and `u/p`. The
-transverse Pascal determinant is one on a nonempty open set, so each longitudinal solution has one
-transverse lift. Repeating channels changes neither the generic degree nor `(2)`.
+tails gives a square linear convolution system for the low coefficients of `u` and `u/p`. That
+system is not nonsingular for every `p` — at `p=1` the two transverse observations coincide while
+the depths differ, and the system degenerates — but its determinant is a nonzero function of `p`,
+equal to one at the unipotent jet `p = 1 + t^m`. So on a nonempty open set of longitudinal
+solutions each has exactly one transverse lift, and repeating channels changes neither the generic
+degree nor `(2)`.
 
 ## Topological meaning
 
@@ -205,11 +208,14 @@ formalizes:
 
 It imports the already formalized nonzero critical Jacobian minor.
 
-The count `(2)` itself is now formalized, and **not** through multiprojective Bezout.  The
-truncated compatibility equation at the critical degrees closes on the nose to the exact
-factorization `(A + U)(B + V) = 1 + U V`, so a fibre point is a monic divisor of degree `m` of the
-target `1 + U V`, and a separable split polynomial has exactly `choose(m+n,m)` of those.  The
-resulting chain, all unconditional and all `[propext, Classical.choice, Quot.sound]`:
+Part of the count `(2)` is now formalized, and **not** through multiprojective Bezout.  When the
+observed packets have exactly the critical degrees — that is, each packet's lowest coefficient is
+its only one below the horizon — the truncated compatibility equation closes on the nose to the
+exact factorization `(A + U)(B + V) = 1 + U V`, so a fibre point is a monic divisor of degree `m`
+of the target `1 + U V`, and a separable split polynomial has exactly `choose(m+n,m)` of those.
+This is a thin family of observations, not a generic one; what makes it work is exactly that the
+low product cannot reach the horizon.  The resulting chain, all unconditional and all
+`[propext, Classical.choice, Quot.sound]`:
 
 - `CriticalDegreeTailFibre.nat_card_criticalFibre_criticalTails` — exact count for every
   observation whose tails have the critical degrees and whose target is separable;
@@ -218,10 +224,25 @@ resulting chain, all unconditional and all `[propext, Classical.choice, Quot.sou
 - `CriticalTargetGenericSeparable.finite_scalings_not_exact` — in every scaling family the count is
   exact off a finite set of scalars, the reciprocals of the critical values of `U V`.
 
+The other formalized regime is **depth one**: for `m = 1` (and dually `n = 1`) the observed packet
+may be arbitrary, since eliminating the reciprocal leaves a single univariate equation of degree
+`n + 1`, and `CriticalDegreeTailFibre.nat_card_criticalFibre_one_eq_multiplicity_of_tail` gives the
+count `choose(1+n,1)` for every packet with a separable depth-one equation.
+
 So neither the general multiprojective Bezout theorem nor the generic-etale theorem is needed for
-`(2)`; the bilinear pre-elimination system that Bezout would consume is nevertheless built
-(`BilinearFibreSystem.lean`) and specialises correctly.  What remains at paper level is section 5
-(all-rank transverse uniqueness) and the topological identification of the fibre points with
+those two regimes.  **What is still open in Lean is the count for a fully generic observation with
+`m, n >= 2`**: there the completed jet has degree up to `L-1` rather than `m`, the truncated
+equation no longer closes to an exact factorization, and the divisor bijection is unavailable.  The
+eliminated square system has degrees `n+1, ..., n+m`, whose Bezout product exceeds `choose(m+n,m)`,
+so the count must be taken in the bilinear pre-elimination system, which is built and specialises
+correctly (`BilinearFibreSystem.lean`).  That is the remaining research core of this card.
+
+Section 5 is formalized too, in `TransverseChannelLift.lean`: the transverse channel is a square
+linear convolution system, nonsingular at an explicit unipotent longitudinal jet, so
+`nat_card_criticalFibre_prod_transverse_channels` counts one longitudinal and any number of
+transverse channels by `criticalHorizonMultiplicity m n` itself.
+
+What remains at paper level is only the topological identification of the fibre points with
 Grassmannian Schubert cells, which the card explicitly does not claim.
 
 ## Novelty audit
@@ -1715,3 +1736,100 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   jets" into an unconditional Lean pair: `≤` always, `=` off a finite set in every scaling family,
   with the exceptional set explicitly the reciprocals of the critical values of `U V`.  The
   genericity is elementary — no discriminant, no resultant, no intersection theory.
+
+- 2026-08-06 — **Section 5 formalized: a transverse channel adds no ambiguity.**
+  `TransverseChannelLift.lean`, in the umbrella, all `[propext, Classical.choice, Quot.sound]`:
+
+  `transverseDifferential p m n L` — the transverse compatibility `u = p (u/p)` as a *linear* map
+  `degreeLT m x degreeLT n -> degreeLT L`, the square convolution system of section 5, built on the
+  corpus's `fibreTangentSpace`/`finrank_degreeLT` layer rather than a new one;
+  `injective_transverseDifferential` — nonsingular for the unipotent jet `1 + t^m`: the compatibility
+  forces the exact identity `a = (1 + t^m) b` below the horizon, whose right side has degree at
+  least `m` unless both sides vanish;
+  `bijective_transverseDifferential` — hence bijective, the two spaces having dimension `m + n`;
+  `transverseFibre`, `exists_unique_transverse`, `nat_card_transverseFibre` — every pair of observed
+  transverse tails has exactly one lift;
+  `nat_card_criticalFibre_prod_transverse` and
+  **`nat_card_criticalFibre_prod_transverse_channels`** — one longitudinal channel and any number
+  `d` of transverse channels are counted by `criticalHorizonMultiplicity m n` itself.
+
+  One correction to the card's section 5: nonsingularity of the transverse system is **not**
+  automatic, and the determinant is not identically one.  For `p = 1` the system is degenerate (the
+  two transverse observations coincide while the depths differ), so the honest statement is that the
+  nonsingular locus is nonempty — witnessed here by an explicit unipotent jet — and that on it each
+  longitudinal solution has exactly one transverse lift.  That is what the Lean theorems say, and it
+  is what the count needs.
+
+- 2026-08-06 — **Scope correction, recorded before it could propagate.**  An earlier entry today
+  described `(2)` as formalized.  That is right only in two regimes and neither is generic:
+
+  * critical-degree packets, where each observed packet's lowest coefficient is its only one below
+    the horizon (codimension `(m-1) + (n-1)` in the observation space);
+  * depth one, `m = 1` or `n = 1`, where the packet is arbitrary because elimination leaves a single
+    univariate equation of degree `n+1`.
+
+  For a generic packet with `m, n >= 2` the completed jet has degree up to `L-1`, the product
+  reaches degree `2L-2`, the truncated equation does not close to an exact factorization, and the
+  divisor bijection is simply unavailable.  That case is the card's remaining research core and is
+  the reason the bilinear system was built.  The two routes to it are multihomogeneous Bezout on
+  `P^m x P^n` and the Giambelli-Thom-Porteous degree of the rank locus of the `(m+n) x (m+1)` matrix
+  of linear forms obtained by fixing the reciprocal; the second is the more likely to be reachable,
+  since its codimension `n` equals the dimension of `P^n` and the expected count `choose(m+n,m)` is
+  exactly the classical determinantal degree.  The `Lean verification` section now states this
+  boundary explicitly.
+
+- 2026-08-06 — **Two exact reformulations of the open case, and a hand certification at `m=n=2`.**
+
+  *Rank-drop form.*  Fix the reciprocal `Q = B + V`.  The compatibility equations are linear in the
+  unknown jet coefficients, so the fibre point exists over `Q` exactly when the `L x (m+1)` matrix
+  whose columns are `Q, tQ, ..., t^(m-1) Q, 1 - U Q` in `K[t]/t^L` drops rank.  Indeed a dependency
+  `(Lambda - mu U) Q + mu = 0` with `mu != 0` normalises to `(Lambda + U) Q = 1`, which is the fibre
+  equation with `A = Lambda`; and `mu = 0` forces `Lambda Q = 0`, impossible for a unit `Q`.  The
+  matrix has entries linear in the `n+1` homogeneous coordinates of `Q`, its rank locus has expected
+  codimension `L - m = n = dim P^n`, and the classical Giambelli degree of that locus is
+  `choose(L, m)` — the assertion `(2)`.  This is the cleanest bridge from the card to a known
+  formula, and it replaces multiprojective Bezout by a determinantal degree.
+
+  *Graph form.*  Equivalently the count is a multidegree of the inversion graph
+  `{(P, P^-1)}` in `K[t]/t^L`: the observation intersects it with a product of two coordinate
+  subspaces of complementary types, `m` free jet coefficients against `n` free reciprocal ones.
+
+  *Certification at `m = n = 2`* (`L = 4`, expected `choose(4,2) = 6`).  With
+  `P = a0 + a1 t + u2 t^2 + u3 t^3` and `Q = b0 + b1 t + v2 t^2 + v3 t^3` the four equations give
+  `b0 = 1/a0`, `b1 = -a1/a0^2`, and then
+
+  ```text
+  v2 a0^3 - a1^2 + u2 a0 = 0
+  v3 a0^3 + v2 a1 a0^2 - u2 a1 + u3 a0 = 0
+  ```
+
+  Solving the second for `a1` and substituting into the first, the spurious factor `a0` cancels once
+  and leaves
+
+  ```text
+  (v2 a0^2 + u2)(v2 a0^2 - u2)^2 - a0 (v3 a0^2 + u3)^2 = 0,
+  ```
+
+  of degree exactly **6** in `a0`, with `a1` a rational function of `a0` on it.  So the generic count
+  at `m = n = 2` is `6 = choose(4,2)`, confirming that the answer is *not* the Bezout product
+  `(n+1)(n+2) = 12` of the eliminated square system.  The excess is exactly the factor the bilinear
+  structure removes.
+
+- 2026-08-06 — **The rank-drop reformulation is now a Lean theorem.**
+  `RankDropFibreCriterion.lean`, in the umbrella, `[propext, Classical.choice, Quot.sound]`:
+
+  `sum_range_C_coeff_mul_X_pow` — a polynomial below a degree is the sum of its low monomials;
+  **`exists_fibre_iff_dependent`** — for a reciprocal `Q` invertible at the origin, a compatible jet
+  of depth `m` exists **iff** there are `Lambda` of degree below `m` and a scalar `mu`, not both
+  zero, with `X^L | Lambda Q + mu (1 - U Q)`.  Forward, the compatibility equation is itself such a
+  dependency with `mu = -1`; backward, `mu = 0` would give `X^L | Lambda Q` with `Q` invertible,
+  hence `Lambda = 0`, so `mu` can be divided out and `A = -Lambda/mu` is the jet;
+  `exists_fibre_iff_dependent_coeffs` — the same criterion with `Lambda` written in coordinates, so
+  the statement literally reads "the `m+1` elements `Q, tQ, ..., t^(m-1) Q, 1 - U Q` of `K[t]/t^L`
+  are linearly dependent".
+
+  This is the first Lean step of the determinantal route to the open case: the fibre over `Q` is a
+  rank drop of an `L x (m+1)` matrix whose entries are linear in `Q`, so the fibre count over the
+  whole reciprocal space is the degree of a rank locus of expected codimension `L - m = n`, matching
+  `dim P^n`.  No genericity, no separability, and no restriction on the observed packets is used —
+  the criterion holds for every observation.

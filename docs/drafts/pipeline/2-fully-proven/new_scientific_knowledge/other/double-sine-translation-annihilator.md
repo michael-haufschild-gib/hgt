@@ -798,3 +798,15 @@ significant new classification or a routine synthesis once the question is posed
   hypertranscendence of the double-sine source;
 - [ ] Lean assembly of the card's statement: the exact augmentation-ideal annihilator and the
   total-exponent classification for the genuine meromorphic double-sine source.
+- [x] Lean divided-difference infrastructure: `(f z - f c)/(z - c)` extended by `f'(c)` is analytic
+  at `c`, and iterating gives the second-order Taylor expansion with an analytic remainder
+  (`analyticAt_analyticSlope`, `eq_taylor_two_add_sq_mul`, `analyticSlope_two_of_ne`);
+- [x] Lean second-order expansion of the extended Barnes cone kernel:
+  `t² F(t) = 1/(omega_1 omega_2) + t A_1 + t² R(t)` with `R` analytic at the origin
+  (`barnesConeKernelAnalytic`, `barnesConeKernelAnalytic_ofReal`, `barnesConeKernelAnalytic_taylor`);
+- [x] Lean continuity of the extended cone kernel and of its Taylor remainder on `[0,1]`, and the
+  resulting uniform bound on the remainder (`exists_bound_barnesConeKernelRemainder`) — the input
+  that makes the subtracted head integral converge for `Re s > 0`;
+- [ ] Lean split of the Mellin integral at `t = 1`, the two explicit head poles
+  `A_0/(s-2) + A_1/(s-1)` via `hasMellin_cpow_Ioc`, and the entire tail integral: meromorphic
+  continuation of `Gamma(s) zeta_2(s,x)` to `Re s > 0`.

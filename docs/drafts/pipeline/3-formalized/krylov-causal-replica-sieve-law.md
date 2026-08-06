@@ -1,9 +1,9 @@
 # Krylov causal replica sieve law
 
 - **ID:** `krylov-causal-replica-sieve-law`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized
 - **Type:** THEOREM / REPLACEMENT MECHANISM
-- **Status:** `[PAPER-PROVED] [LEAN PENDING] [NOVELTY UNVERIFIED]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [AXIOM-AUDITED] [NOVELTY UNVERIFIED]`
 - **Parent:** `../1-in-progress/scalar-recurrence-traceless-replica-decoupling-law.md`
 - **Date:** 2026-08-06
 
@@ -162,10 +162,22 @@ part of every target remains uncontrolled and proves the complement.
 
 - [x] 0 -> 1: exact statement and hostile falsifiers
 - [x] 1 -> 2: dependency-closed proof
-- [ ] 2 -> 3: exact Lean theorem and axiom audit
+- [x] 2 -> 3: exact Lean theorem and axiom audit
 - [ ] 3 -> 4: external priority audit and manuscript use only after carrier closure
 
 ## Log
 
 - 2026-08-06 — Replaced impossible positive near-action control by a direct
   factorial finite-time bound on every Krylov-null target channel.
+
+## Formal trace
+
+Module:
+`formal/GaloisForLFunctions/HTGeometry/KrylovCausalReplicaSieveLaw.lean`.
+
+The exact pointwise and symmetric-window conclusions are
+`norm_finiteRealTimeComplexAmplitude_le_of_moment_null_abs` and
+`uniformMoment_finiteRealTimeComplexAmplitude_le_of_moment_null`.
+The owning file passes `lake env lean`. `#print axioms` for the derivative,
+sharp Taylor, pointwise, power-integral, unnormalized-moment, and normalized-
+moment capstones reports only `propext`, `Classical.choice`, and `Quot.sound`.

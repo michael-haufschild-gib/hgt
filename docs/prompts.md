@@ -35,7 +35,7 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from these cards: docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/gamma
+formalize UNCONDITIONALLY in lean any proven theorem from these cards: docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications.
 
@@ -57,7 +57,9 @@ Non-negotiable working mode rules:
 
 LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK. 
 
-where mathematical knowledge is missing use the /hgtl7 skill to create it.
+where mathematical knowledge is missing use the /hgtl7 skill to create it.+
+
+GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF THE PIPELINE. NO SHORTCUTS OR FAKING IT!
 
 ## formalize gpt
 

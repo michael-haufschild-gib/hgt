@@ -51,3 +51,10 @@ Folder verdict:
 Bottom line: fixed positive same-fibre dagger/Cartier line is compulsory only if continuing Route R. Best corpus-native bypass is proving Möbius–Laplace half-decay or a prime-source bound for the mass-shifted spectral trace. Hedenmalm is the most developed positivity bypass, but its unresolved step begins beyond the already-closed three-node and local-jet regimes.
 
 No build was run; this was a read-only corpus audit.
+
+
+
+''''Paper does not establish thermodynamic-limit behavior, first-return-time distributions, translation-invariant genericity, or arbitrary open-system dynamics. Within its finite, static and stationary scope, however, it gives unusually complete account of what enables recurrence, what makes it difficult, what observer can detect, and why finite records may fail to predict it.
+
+
+Euler boundary corpus changes formulation materially. Exact source differential is not missing: moving horizon produces (E,-E) and Fisher boundary column is literal positive source Gram. Nonzero obstruction is failure of grade-weighted trace to remain a chain map. Transverse-orientation module isolates that failure into one orthogonal norm-four port. Thus Route R can be closed by one coefficient-faithful statement: actual completed-Xi lift lies in closed common-test graph, equivalently has zero component along explicit transverse source vector. I’m checking whether later corpus already proves that landing under another name.

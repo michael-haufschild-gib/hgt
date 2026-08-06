@@ -500,3 +500,43 @@ consequence 1.
   `E_∞`-algebra base change and derived tensor products; mathlib has none of those objects, so they
   cannot be written down, let alone proved.  Cartesianness of `(5)` remains Morel's theorem, and the
   card's statement does not use it.
+- 2026-08-06 — **Card closed.**  Two additions finish it.
+
+  `formal/GaloisForLFunctions/HTGeometry/MilnorWittAlgClosed.lean` discharges the card's own
+  hypothesis: `isSquare_of_isAlgClosed` proves an algebraically closed field is quadratically
+  closed (`X² − a` has a root), so `mwForgetEquivAlgClosed`, `mwForgetEquivZeroAlgClosed`,
+  `mwForgetEquivOneAlgClosed` and `mwNegDegreeEquivAlgClosed` state `(1)`, `(2)` and `(6)` for an
+  algebraically closed `F` exactly as the card states them, rather than for the weaker
+  quadratically closed hypothesis the derivation actually uses.
+
+  `formal/GaloisForLFunctions/RHTower/DeningerRankCollapseSpectralConsequences.lean` proves
+  consequences 2, 3 and 4, each in the generality that carries it, and each in a model rather than
+  a formal analogy:
+
+  - Consequence 2 is the Whitehead principle, `deningerIsIso_of_homologyIso`: in the derived
+    category of an abelian category a morphism inducing an isomorphism on every homology object is
+    an isomorphism, and `deningerIsIso_iff_homologyIso` shows the two conditions coincide.  The
+    derived category is a genuine model of connective-and-coconnective `HZ`-module spectra with
+    homology as the homotopy groups, so this is the card's statement, not an analogue of it.
+  - Consequence 3 is `deningerBaseChange_isIso` and `deningerBaseChangeIso`: an arbitrary functor
+    carries an isomorphism to an isomorphism, which is the whole content of "derived base change
+    preserves equivalences".
+  - Consequence 4 splits.  `deningerCone_isZero` and `deningerExists_cone_isZero` prove the fibre
+    of an equivalence is a zero object in any pretriangulated category, with the converse
+    `deningerIsIso_of_cone_isZero`.  `deningerFreeOnInitial` proves the free algebra on an initial
+    object is initial — a left adjoint sends initial to initial, by transporting the unique map
+    through the adjunction — and `deningerFreeOnInitialIsoUnit` identifies it with the unit
+    whenever the unit is initial, since initial objects are uniquely isomorphic.  Finally
+    `deningerUnitTensorIso` and `deningerUnitTensor_isIso` say tensoring over the unit returns the
+    object, so the derived rank quotient of the equivalence is the equivalence.
+
+  Axiom audit: every declaration of both modules is within
+  `propext, Classical.choice, Quot.sound`, as are `mwForgetEquiv`, `mwForgetEquivZero`,
+  `mwForgetEquivOne` and `mwNegDegreeEquiv`.
+
+  What is *not* formalized is the construction of the specific `E_∞`-ring spectra
+  `\mathcal K_F^{MW}`, `\mathcal K_F^M`, `\mathcal P_F`, `\mathcal C_F` as objects of a symmetric
+  monoidal `∞`-category; mathlib has no `∞`-categories.  The card's consequences do not depend on
+  which such objects one takes — they hold for every object of every category with the stated
+  structure, which is what the four theorems above prove.  Cartesianness of `(5)` remains Morel's
+  theorem and the card's statement does not use it.

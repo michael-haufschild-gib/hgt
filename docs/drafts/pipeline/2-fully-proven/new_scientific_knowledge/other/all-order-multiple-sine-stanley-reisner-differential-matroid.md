@@ -691,9 +691,32 @@ coset mechanism of the atomic parent.
   distinct classes modulo the period lattice: on the separated member's orbit the family has a
   single pole, and the multiplicative-orbit residue obstruction applies.
 
-What the atomic *defect-coset* statement still needs beyond this is the analytic transport: reading
-a family of translates of the source as such a dilated family, and running the arbitrary-family
-criterion over the whole orbit rather than over a single source.  The remaining assembly — the two-cylinder differential base field, the translation
+`HTGeometry.TwoCylinderGeneralTranslation` — **the orbit stays in the base field**.
+
+- `twoCylTranslate` — the action of an arbitrary translation on `ℂ(u₁)(u₂)`: the coefficient field
+  dilates by the first coordinate's multiplier, the outer variable by the second's.
+- `addTranslationMeroEquiv_twoCylinderEmbed_general` — that action is the translation, transported
+  through the embedding.  The two structural translations are the special cases where one
+  multiplier is `1`.
+
+So every translate of the source has its increments in the same two-cylinder field, dilated by the
+translation — which is exactly the shape `not_dilationTelescoped_separated_family` consumes, with
+the separation condition `h_j - h_{i₀} ∉ ℤω₁ + ℤω₂` (distinct classes modulo the period lattice).
+
+`HTGeometry.DilatedCharacterOrbitObstruction` — **the character form of the coset mechanism**.
+
+- `ratFuncEulerOp_const_mul`, `cylDeriv_iterate_eq` — the cylinder jets are the Euler-operator
+  iterates up to the constant `λⁿ`.
+- `not_dilationTelescoped_constantCharacter_separated` — **no nonzero constant character of a
+  separated family of dilated cotangent models is a `q`-difference**.  The character is grouped by
+  translate into dilated Euler-operator combinations; the translate carrying the top jet index of
+  the whole character has a nonzero leading coefficient, and its pole orbit is disjoint from the
+  others, so the separated obstruction applies.
+
+That is exactly the right-hand side of the arbitrary-family criterion's condition, for the family
+of translates.  What the atomic *defect-coset* statement still needs is the final instantiation:
+feeding the criterion the sources `T^{h_κ} M`, their increments (dilates, by
+`addTranslationMeroEquiv_twoCylinderEmbed_general`) and this character obstruction.  The remaining assembly — the two-cylinder differential base field, the translation
 action on it, and the application of the arbitrary-family Ostrowski criterion — is being built in
 `HTGeometry.TwoCylinderDifferential`, `HTGeometry.TwoCylinderTranslationAction` and
 `HTGeometry.TwoCylinderMeromorphicDifferential`.

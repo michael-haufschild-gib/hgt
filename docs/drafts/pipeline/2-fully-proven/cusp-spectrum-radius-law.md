@@ -227,9 +227,34 @@ escaping to the right) and `RHTower.tendsto_LSeries_atTop` for Dirichlet
 characters.  The Gamma ratio is handled too: `tendsto_norm_gammaRatio_rpow_inv` avoids
 Stirling entirely, since the consecutive ratio of `Γ(w+k)/Γ(1+k)` is exactly
 `(w+k)/(1+k) → 1` and `tendsto_rpow_inv_one_of_ratio_one` converts that into the
-`k`-th-root statement by telescoping and Cesàro.  What remains for Step 3 is only
-the oscillating factor `cos(π(1-s+k)/2)`, which vanishes at odd integers, so its
-`limsup` must be taken along a subsequence where it is bounded below.
+`k`-th-root statement by telescoping and Cesàro.  The oscillating factor is handled as well, in
+`HTGeometry/OscillatingRootLimsup.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the roots of a bounded factor are bounded | `rpow_inv_le_const_rpow_inv`, `isBoundedUnder_rpow_inv` |
+| **bounded above, frequently bounded below ⇒ root `limsup` is one** | `limsup_rpow_inv_eq_one` |
+| a periodic sequence is bounded | `exists_bound_of_periodic` |
+| a periodic sequence is frequently bounded below at any index | `frequently_le_of_periodic` |
+| **the root `limsup` of a periodic factor is one** | `limsup_rpow_inv_eq_one_of_periodic` |
+| **a factor tending to one leaves a `limsup` of one unchanged** | `limsup_mul_eq_one_of_tendsto_one` |
+
+Only a *frequent* lower bound is needed, which is exactly the situation for
+`cos(π(1-s+k)/2)`: as `k` runs over the residues modulo four the factor takes the
+four values `±cos θ`, `±sin θ`, so it is bounded, it may vanish on a whole
+residue class, and at least one of `cos θ`, `sin θ` is non-zero — giving the
+frequent lower bound.  `limsup_rpow_inv_eq_one_of_periodic` applies to `k ↦ cos(π(1-s+k)/2)` directly:
+it has period four, so it is bounded, and it is positive at some index because
+`cos² + sin² = 1` forbids it vanishing on every residue class.
+
+`limsup_mul_eq_one_of_tendsto_one` is the combination step: three of the four
+factors have `k`-th roots converging to one and only the oscillating factor has a
+genuine `limsup`, so they cannot simply be multiplied — the convergent group is
+absorbed into the oscillating one.
+
+Every analytic ingredient of Step 3 is therefore now formalized, and so is the
+combination law.  What remains is only the bookkeeping that assembles them
+through `riemannZeta_one_sub`.
 
 The degree-one twist's **analytic** dichotomy is `[LEAN-PROVED]` in
 `HTGeometry/LatticeTwistConvergence.lean`:

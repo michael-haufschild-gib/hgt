@@ -101,9 +101,28 @@ Chain: `ζ(s-k) = 2(2π)^{-(1-s+k)} cos(π(1-s+k)/2) Γ(1-s+k) ζ(1-s+k)`
   `HTGeometry/DeterminantRatioRoot.lean` (`cesaro_range_div_succ_atBot`,
   `tendsto_rpow_inv_succ_zero_of_ratio_zero`) — that is the ratio → 0 ⇒ root → 0
   case; mine is the unit case.
-- STILL MISSING for Step 3: only the oscillating `cos(π(1-s+k)/2)` factor
-  (vanishes at odd integers, so the limsup needs a subsequence where it is
-  bounded below).</repl>
+- Oscillating factor: DONE in `HTGeometry/OscillatingRootLimsup.lean` —
+  `rpow_inv_le_const_rpow_inv`, `isBoundedUnder_rpow_inv`,
+  `limsup_rpow_inv_eq_one` (bounded above + FREQUENTLY bounded below ⇒ root
+  limsup = 1).  That covers `cos(π(1-s+k)/2)`: mod 4 it takes ±cos θ, ±sin θ,
+  and cos²+sin²=1 so at least one is non-zero.
+- Periodic factor: `HTGeometry/PeriodicFrequentBound.lean` —
+  `periodic_add_mul`, `exists_bound_of_periodic`, `frequently_le_of_periodic`,
+  `limsup_rpow_inv_eq_one_of_periodic`.  Applies directly to
+  `k ↦ cos(π(1-s+k)/2)` (period 4; positive somewhere since cos²+sin²=1).
+- Combination law: DONE in `HTGeometry/LimsupUnitFactor.lean` —
+  `limsup_mul_eq_one_of_tendsto_one` (`Tendsto a (𝓝 1)`, `b` nonneg bounded with
+  `limsup b = 1` ⇒ `limsup (a*b) = 1`).
+- ALL analytic ingredients of Step 3 AND the combination law are now formalized.
+  What remains is ONLY the BOOKKEEPING:</repl>
+</patch>
+ assemble via mathlib `riemannZeta_one_sub`
+  (`ζ(1-w) = 2(2π)^{-w} cos(πw/2) Γ(w) ζ(w)`) with w = 1-s+k, combining
+  `hadamardLimsup_geometric_of_tendsto_one`, `tendsto_norm_gammaRatio_rpow_inv`,
+  `RHTower.tendsto_riemannZeta_of_re_atTop` and `limsup_rpow_inv_eq_one`.
+  TRAP: `IsBoundedUnder r l f` unfolds over `map f l`, so `filter_upwards`
+  binds a REAL variable — insert `rw [Filter.eventually_map]` first.</repl>
+</repl>
 
 
   Corpus Abel-summation layer (if needed later):</repl>
