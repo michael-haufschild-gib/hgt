@@ -1044,3 +1044,42 @@ The `(0,q)` local theory is therefore complete and self-contained:
 for polydiscs and polyannuli alike, in every degree.
 
 Axiom audit: `propext, Classical.choice, Quot.sound`; no `sorry` anywhere in the module.
+
+## The Dolbeault complex is exact in every positive degree (2026-08-06)
+
+`GaloisForLFunctions/HTGeometry/DbarExhaustionSolve.lean`.
+
+**The stabilizing exhaustion.**  `DbarStageSolvable E` says the system is solvable from `E (m+1)`
+to `E m` in every degree; `setDbar_exhaustion_solve` upgrades that to global solvability on the
+union, for closed forms of degree `q + 2`.  The step `dbarPrimitiveOn_step` takes a primitive `u` on
+`E (m+1)`, a primitive `v` on `E (m+3)`, forms the closed difference `v − u` of degree `q + 1 ≥ 1`,
+solves `∂̄w = v − u` on `E m`, and returns `v − ∂̄w`: a primitive on `E (m+2)` that agrees with `u`
+on `E m`, by `setDbar_setDbar_eq_zero`.  The sequence is therefore *exactly* constant near every
+point, and the pointwise limit is smooth because it agrees with a fixed member on a neighbourhood.
+
+Two Lean points worth keeping.  The recursion is dependent — the step needs the invariant of its
+input — so it is run through a total step function obtained by `by_cases` on the invariant and
+`choose`, with the sequence built by `Nat.rec` and the invariant re-proved by induction.  And the
+pointwise limit is `fun S z => useq (idx z) S z` with `idx z` the least stage containing `z`; the
+proof that this agrees with `useq m` on all of `E m` is the whole content, and it gives both
+smoothness (`ContDiffAt.congr_of_eventuallyEq`) and the equation (`setDbar_congr_on_isOpen`).
+
+**Instances.**  `polydiscExhaustion` (concentric polydiscs of radius `m + 1`) and
+`puncturedExhaustion` (polyannuli `1/(m+2) < |z_i| < m+2`) are stagewise solvable by
+`setDbar_polydisc_solve` and `setDbar_polyannulus_solve`.
+
+**Degree one.**  `pointForm u₀` is the degree-zero form carrying `u₀` at `∅`; its differential is
+`∂̄_k u₀` at `{k}` and zero elsewhere.  `dzbarAt_comm_of_setDbar_zero` extracts from closedness at
+the two-element set `{j,k}` exactly the compatibility `∂̄_k f_j = ∂̄_j f_k`, because the two signs
+are `+1` and `−1`.  So the degree-one case reduces to `dbar_global_solve` / `dbar_punctured_solve`.
+
+**Capstones.**
+
+  `setDbar_exact_global`    : on `ℂ^n`, every smooth `∂̄`-closed form of degree `q + 1` is `∂̄u` for
+                              a smooth form `u` of degree `q`.
+  `setDbar_exact_punctured` : the same on `(ℂ^×)^n`, with the primitive smooth on the punctured
+                              space.
+
+Both unconditional; axioms `propext, Classical.choice, Quot.sound`.  This is Cartan's theorem B for
+these two domains, in the concrete Dolbeault form, and it is the whole analytic input to the
+vanishing of the coherent cohomology of a complex torus in positive degrees.

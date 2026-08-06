@@ -755,3 +755,72 @@ object, and the positivity of the annulus for `c > 0` is the positivity already 
   `#print axioms` clean.  What remains unformalized is the shrinking-window profile `(17)`--`(18)` of
   section 4, which needs Mertens-type prime asymptotics, and section 5's fixed-displacement
   accelerated boundary; the five open gates are construction tasks, not formalization gaps.
+
+### Lean: sections 4 and 6
+
+Three further modules close section 4 (the shrinking-window profile and the measure-valued
+confluence law) and the local Wold/Gamma factorization of section 6.  All are unconditional and
+`#print axioms` clean (only `propext`, `Classical.choice`, `Quot.sound`).
+
+`RHTower/MertensPrimeWindowWeakConvergence.lean` is new reusable infrastructure: the finite prime
+measures
+
+```text
+nu_N = (1/log N) sum_(p <= N) (log p / p) delta_(log p / log N)
+```
+
+converge weakly to Lebesgue measure on `[0,1]`.
+
+```text
+mertensPrimeWeight n                       = log n / n at primes, 0 elsewhere;
+mertensPrimeWeightSum N                    = sum_(p <= N) log p / p;
+abs_mertensPrimeWeightSum_sub_log_le       : Mertens' first theorem in prime form;
+mertensPrimeWindow g N                     = sum_(p <= N) (log p / p) g(log p / log N);
+tendsto_mertensPrimeWindow_div_log_of_contDiff :
+  the C^1 case, by Abel summation against the Mertens error plus the substitution u = log t/log N;
+tendsto_mertensPrimeWindow_div_log         : every g continuous on [0,1], by Weierstrass;
+tendsto_mertensPrimeWindowBelow_div_log    : the same for the strict cutoff p < N.
+```
+
+The only arithmetic input is `Mertens.mertens_first_prime`; the rest is Abel summation, one
+logarithmic substitution, integration by parts, and polynomial approximation.
+
+`RHTower/EulerHellingerShrinkingWindowProfile.lean` proves `(17)`, `(18)` and `(22)`--`(23)`:
+
+```text
+dyadicSinhWindowTest t u                   = 2 (sinh(2tu) - 2 sinh(tu)) / u, continuous at u = 0;
+orientedHellingerDyadicProfile t           = Psi(t) = int_0^1 dyadicSinhWindowTest t;
+orientedHellingerDyadicProfile_neg/_pos    : Psi is odd and has the sign of t;
+abs_dyadicSinhStep_sub_cube_le             : |sinh(2v) - 2 sinh v - v^3| <= |v|^5 for |v| <= 1/2;
+abs_orientedHellingerDyadicProfile_sub_cube_le :
+  |Psi(t) - (2/3) t^3| <= 2 |t|^5 for |t| <= 1/2 -- the cubic jet (18);
+tendsto_logReflectedSewing_criticalWindow  : L_N(t / log N) -> Psi(t);                  -- (17)
+confluenceWindowPairing n phi N            : the order-n prime-power window pairing;
+tendsto_confluenceWindowPairing            : eta_(N,n) => 2(2^n - 2) u^(n-1) du.        -- (23)
+```
+
+The first prime power is exactly the Mertens window of the continuous test function; all higher
+prime powers are bounded by `8|c| K sum_p (log p) p^(-3/2)` uniformly, hence `O(1/log N)`.  The
+order-`n` tail is bounded by `K_n sum_p (log p)^n p^(-2)`, hence `O((log N)^(-n))`.
+
+`RHTower/EulerHellingerCubicWoldGammaFactorization.lean` closes the explicit series form of `(13)`
+and the local factorization `(27)`--`(29)`:
+
+```text
+iteratedDeriv_three_primeEulerLogBelow     : P_N'''(1) in closed form, prime by prime;
+cubicAnnulusPrimeCurrent p                 = 12 (log p)^3 sum_(k>=1) k^2 p^(-k);
+cubicAnnulusPrimeCurrent_eq                : its closed form -- (29);
+iteratedDeriv_three_logReflectedSewing_eq_cubicAnnulusCurrent/_eq_tsum/_pos :
+  L_N'''(0) = 12 sum_(p<N) (log p)^3 sum_k k^2 p^(-k) > 0 -- the full statement (13);
+gammaSewnSynchronizedEulerHalfHeightSecondMoment_eq : M_(2,p) at unit aperture -- (27);
+cubicAnnulusPrimeCurrent_eq_woldActivation_mul_secondMoment :
+  12 L^3 sum_k k^2 q^k = 48 L (q/(1-q)) M_(2,p) -- (28).
+```
+
+The local third derivative is closed in closed form (`-L^3 q(1+q)/(1-q)^3`) by an explicit
+three-step `HasDerivAt` chain on the open half-line, so the coefficient `-12` and the positivity of
+the annulus current are proved statements about the corpus's own finite Hellinger object.
+
+- 2026-08-06 -- Sections 1, 2, 3, 4 and the local factorization of section 6 are fully formalized.
+  Outstanding: section 5's fixed-displacement accelerated boundary `(24)`--`(25)`, which needs
+  Mertens' third theorem with the constant `e^(-gamma)`.

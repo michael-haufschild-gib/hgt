@@ -758,8 +758,12 @@ theorem abs_confluenceWindowPairing_sub_head_le {n : ℕ} (hn : 1 ≤ n) {φ : �
     have hdiff0 : 0 ≤ confluenceWindowMass n p - confluenceHeadMass n p :=
       sub_nonneg.mpr (confluenceHeadMass_le hprime)
     rw [← sub_mul, abs_mul, abs_of_nonneg hdiff0]
-    exact mul_le_mul hdiff hphi (abs_nonneg _)
-      (mul_nonneg (confluenceTailConst_nonneg n) (primeLogPowTailTerm_nonneg n p))
+    calc (confluenceWindowMass n p - confluenceHeadMass n p) *
+          |φ (Real.log p / Real.log N)|
+        ≤ (confluenceTailConst n * (Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2)) * M :=
+          mul_le_mul hdiff hphi (abs_nonneg _)
+            (mul_nonneg (confluenceTailConst_nonneg n) (primeLogPowTailTerm_nonneg n p))
+      _ = M * (confluenceTailConst n * (Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2)) := by ring
   calc |∑ p ∈ Nat.primesBelow N,
         (confluenceWindowMass n p * φ (Real.log p / Real.log N) -
           confluenceHeadMass n p * φ (Real.log p / Real.log N))|
@@ -802,7 +806,7 @@ theorem tendsto_confluenceWindowPairing {n : ℕ} (hn : 1 ≤ n) {φ : ℝ → �
   have hlogtop : Tendsto (fun N : ℕ => Real.log N) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   have hpowtop : Tendsto (fun N : ℕ => Real.log (N : ℝ) ^ n) atTop atTop :=
-    hlogtop.atTop_pow hn
+    (tendsto_pow_atTop (by omega : n ≠ 0)).comp hlogtop
   have herr : Tendsto
       (fun N : ℕ => confluenceWindowPairing n φ N - confluenceHeadPairing n φ N)
       atTop (nhds 0) := by
