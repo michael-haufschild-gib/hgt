@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.BVPrimeWindowDilationOrientation
 import GaloisForLFunctions.HTGeometry.CoefficientDecimationSieve
+import GaloisForLFunctions.HTGeometry.PrimeSieveOperator
+import GaloisForLFunctions.HTGeometry.PrimeSieveTransitionSize
 
 /-!
 # The prime-sieved BV source and its Laurent residue
@@ -214,6 +216,30 @@ theorem tendsto_sievedResidueValue_sievePrefix (W : CompactBVPrimeWindow)
     (Complex.continuous_ofReal.tendsto _).comp (tendsto_sieveDensity_sievePrefix e)
   rw [Complex.ofReal_zero] at h
   simpa using h.mul_const (W.continuedSourceResidueValue rho)
+
+/-- **The finite-packet relative source character.**  Its three components are
+the Hilbert--Schmidt vacuum defect of the sieved operator, the logarithm of the
+polarized determinant, and the sieved principal-conormal residue. -/
+def relativeCharacter (W : CompactBVPrimeWindow) (P : Finset Nat.Primes)
+    (t : ℝ) (rho : ℂ) : ℝ × ℝ × ℂ :=
+  (ContinuousLinearMap.hsNormSq (sieveOperator P - vacuumProjection),
+    sieveLogPhi P t,
+    ((sieveDensity P : ℝ) : ℂ) * W.continuedSourceResidueValue rho)
+
+/-- **The cofinal endpoint of the relative character.**  Along any enumeration of
+the primes the finite-packet character converges, in the coarse
+Hilbert/determinant/conormal topology, to the vacuum character: the operator
+channel reaches the rank-one vacuum projection, the determinant channel reaches
+the vacuum logarithm, and the conormal channel vanishes. -/
+theorem tendsto_relativeCharacter (W : CompactBVPrimeWindow) (e : ℕ ≃ Nat.Primes)
+    {t : ℝ} (ht : |t| < 1) (rho : ℂ) :
+    Tendsto (fun m : ℕ => W.relativeCharacter (sievePrefix e m) t rho) atTop
+      (𝓝 (0, vacuumLogPhi t, 0)) := by
+  have h1 := tendsto_hsNormSq_sieveOperator_sub_vacuum e
+  have h2 := tendsto_sieveLogPhi_sievePrefix e ht
+  have h3 := tendsto_sievedResidueValue_sievePrefix W e rho
+  rw [nhds_prod_eq, nhds_prod_eq]
+  exact h1.prodMk (h2.prodMk h3)
 
 end CompactBVPrimeWindow
 end RHTower

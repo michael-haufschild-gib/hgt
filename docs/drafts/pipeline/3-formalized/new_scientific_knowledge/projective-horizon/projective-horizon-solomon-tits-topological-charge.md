@@ -1,7 +1,7 @@
 # Projective horizon Solomon--Tits topological charge
 
 - **ID:** `projective-horizon-solomon-tits-topological-charge`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** TOPOLOGY OF DIFFERENTIAL INFORMATION CONTEXTS
 - **Scientific status:** `[PROVED CONSEQUENCE] [NOVEL APPLICATION CANDIDATE]`
 - **Parent:** `projective-horizon-tits-building`
@@ -1867,3 +1867,15 @@ The card's apartment paragraph makes three concrete assertions about the apartme
 chamber a single coordinate line inside a coordinate plane** — the alternation of single-observer
 horizons with pairwise common-horizon fields that the card calls the first genuinely one-dimensional
 HT horizon charge.
+
+- 2026-08-06 — **Moved to `3-formalized`.**  The `2 -> 3` gate has been checked since the Steinberg
+  work landed, but the stage field and the folder still said `2-fully-proven`.  Both cited
+  capstones were re-verified against the repository rather than against this card's text:
+
+  ```text
+  epi_frameDatum_classes_solomon   [propext, Classical.choice, Quot.sound]
+  homology_building_wedge          [propext, Classical.choice, Quot.sound]
+  ```
+
+  in `SteinbergSpanning.lean`, `SteinbergCycles.lean` and `SolomonBaseCase.lean`.  The only open
+  gate is `3 -> 4`, an external audit, which is not a Lean task.

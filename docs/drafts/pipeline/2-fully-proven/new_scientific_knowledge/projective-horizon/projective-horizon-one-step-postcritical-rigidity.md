@@ -1061,3 +1061,24 @@ and `Quot.sound`.  No full or module build was run.
   redundant data.  The corpus already had the field version for power series with an exact inverse
   (`coeff_inverse_mem_subfield`); this is the truncated, algebra-level form the generic jet uses, and
   it is what step 3 pairs with `(4)` to get `O_(m,n;N) = J_N` for `N >= L`.
+
+- 2026-08-06 — **Correction: the "Lean verification" section above is stale about step 1.**
+
+  That section says "the etale rational-descent argument converting this explicit fiber witness
+  into `v notin H(u)` remain[s] paper-level, so the card remains in stage 2", and repeats the point
+  in its closing paragraph.  The card's own header already contradicts it, and the header is
+  right: `postcritical_escapes_criticalField` is in the repository and is unconditional,
+
+  ```text
+  postcritical_escapes_criticalField   [propext, Classical.choice, Quot.sound]
+  ```
+
+  so the separation `v ∉ H(u)` is formalized, and with `(7)` (`isCoatom_stabilizer_perm`,
+  `eq_bot_or_eq_of_isCoatom_fixingSubgroup` in `CoatomFixedField.lean`) and the base-change clause
+  (`freeParameterBaseChange`) step 1 is complete for every `(m,n)`.
+
+  What is genuinely open on this card is step 3's forward inclusion: that the order-`N` observation
+  field contains the order-`L` field of `(4)` together with the raw coordinates `x_(L+1), …, x_N`.
+  Its reverse half is already formalized — `genericRecip_mem_genericRawAlgebra` in
+  `GenericRecipMemAdjoin.lean`, the statement that the inverse recursion never leaves the algebra
+  it starts in — and the forward half rests on `(4)`, which is the parent card's degree bound.

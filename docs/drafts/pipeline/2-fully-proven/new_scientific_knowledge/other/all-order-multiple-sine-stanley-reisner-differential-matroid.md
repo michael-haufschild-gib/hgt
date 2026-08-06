@@ -521,10 +521,57 @@ multiple-sine source.  The Barnes ladder supplies the defect `d`; the transport 
 `d + eps_S · reflect_{c_{S∖k}}(d)`; reflection stability and closure of the DA sector under addition
 finish it.
 
-What is **not** yet claimed.  Equation `(2)` is the *step*; the card's face-coordinate identity `(4)`
-iterates it down the face complex, and `(6)` then reads off `I_{N-1} ⊆ Ann_DA(L_V)`.  Those
-iterations are the next assembly.  The double-sine atomic defect-coset theorem — which supplies the
-*independence* half, not the annihilation half — is untouched.
+`HTGeometry.MultipleSineFaceIteration` — **the face coordinates `(4)`**.
+
+- `frameSourceMero ω hω S hS` — the multiple-sine source of a nonempty set of directions, with the
+  nonemptiness carried as an argument rather than an instance, plus its congruence law.
+- `listShiftDiff ω l` — the composite `x_{j_1} ⋯ x_{j_r}` of shift differences along a list of
+  directions.
+- `differentialAlgebraicOver_frameSource_face` — **`x_J L_S - (-1)^{|J|} L_{S∖J}` is differentially
+  algebraic** for every list of distinct directions of `S` leaving at least one direction.  That is
+  equation `(4)`, by induction on the list: translation-stability of the DA sector carries the
+  accumulated defect, the ladder step supplies the new one.
+
+`HTGeometry.PeriodCotangentMeroDA` — **the cotangent of a period as a field element**.
+
+- `differentiallyAlgebraic_of_secondOrder` — a constant-coefficient harmonic equation is an
+  algebraic differential equation.
+- `periodSin`, `periodCosScaled` — the entire solutions of `f'' = -(π/w)² f`, differentially
+  algebraic.
+- `periodCotMero w` — their quotient in the meromorphic field, with
+  `hasPuncturedMeromorphicRep_periodCotMero` identifying its punctured representative as
+  `(π/w) cot(π z/w)` and `differentialAlgebraicOver_periodCotMero` proving it differentially
+  algebraic over `ℂ(z)`.
+
+`HTGeometry.BarnesOrderOnePartialFractions` — **the order-one boundary `(3)`**.
+
+- `orderOneAtom`, `logDeriv_barnesConeProduct_const_eq_tsum` — with one direction the Barnes source
+  is the partial-fraction series `∑_{m ≥ 1} (1/(m w + z) - 1/(m w))`.
+- `barnesSource_orderOne_reflect_eq_cot` — **`Ψ(z) - Ψ(w - z) = (π/w) cot(π z/w) - 1/z + 1/(w - z)`**
+  off the period lattice.  Against the classical cotangent expansion the two summands differ by a
+  telescoping term, which sums to the single rational correction.
+
+`HTGeometry.MultipleSineOrderOneSourceDA` — **`(6)`: `I_{N-1} ⊆ Ann_DA(L_V)`**.
+
+- `HasPuncturedMeromorphicRep.reflect`, `.reflectedSource` — reflection acts on punctured
+  representatives by reflecting the function.
+- `eventually_nhdsNE_ne_intMul_period` — the period lattice is avoided on a punctured neighbourhood
+  of every point, so the pointwise identity is a punctured-local one.
+- `differentialAlgebraicOver_frameSourceMero_singleton` — **the order-one face is differentially
+  algebraic**: it differs from `periodCotMero` by an explicit rational function.
+- `differentialAlgebraicOver_frameSource_topFace` — **every product of shift differences leaving
+  exactly one direction annihilates the source modulo the DA sector**.  That is `(6)`.
+
+What is **not** yet claimed.  The annihilation half of the card is closed: `(2)`, `(4)` and `(6)` are
+Lean theorems.  The *independence* half — that no smaller ideal annihilates, which rests on the
+double-sine atomic defect-coset theorem — is untouched.  The assets it will consume are already in
+the corpus: `HTGeometry.DoubleSineCylinderHypertranscendence`
+(`hypertranscendentalOver_of_cotangentCylinderIncrement`, the cylinder-increment criterion),
+`HTGeometry.DoubleSineOrbitResidueObstruction` (the Euler-operator pole-order obstruction at the
+cotangent model), `HTGeometry.DoubleSineAugmentationAnnihilator` (the augmentation splitting of the
+translation algebra), and `HTGeometry.DifferentialMatroidGluing` (`Rank.freeBlock`,
+`Rank.graphGluing`).  The concrete input they still need is the multiple-sine cotangent increment,
+which `periodCotMero` and `barnesSource_orderOne_reflect_eq_cot` now supply.
 
 ## Parent-theory and literature gate
 
@@ -570,5 +617,5 @@ review.
 - [x] reflection covers an automorphism of `RatFunc C`; jets shown to flip by `(-1)^n`
 - [x] signed transport lemma built; differential algebraicity proved stable under reflection
 - [x] equation `(2)` proved modulo DA for the constructed multiple-sine source
-- [ ] iterate `(2)` down the face complex to get `(4)` and `(6)` (`I_{N-1} ⊆ Ann_DA(L_V)`)
+- [x] `(4)` face coordinates and `(6)` `I_{N-1} ⊆ Ann_DA(L_V)` proved in Lean, unconditionally
 - [ ] unconditional double-sine atomic defect-coset theorem in Lean

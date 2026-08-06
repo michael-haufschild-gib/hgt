@@ -909,3 +909,109 @@ modules against the rest of the tree found no other clash.
   invariant at depth one.  This is the card's sentence "topological information is concentrated in
   the depth-one incidence skeleton but remains a global invariant of the complete depth filtration",
   as a theorem.
+
+- 2026-08-06 — **The blocker on `(5)` is narrower than recorded, and the target is reachable.**
+
+  The card records `(5)` as blocked because mathlib has no model structure on `SSet` and
+  `SSet.Homotopy` is not symmetric for a non-fibrant target.  Both are true and neither blocks
+  the statement the retraction `(4)` actually gives.  A *strong deformation retract* needs no
+  composition of homotopies and no symmetry: it is a strict equation plus one homotopy in one
+  direction,
+
+  ```text
+  r ∘ i = 𝟙   (strict),      SSet.Homotopy (i ≫ r) (𝟙 (N P_∞)),
+  ```
+
+  which is strictly stronger than a bare homotopy equivalence and is exactly what collapsing each
+  cusp to its endpoint supplies.
+
+  Everything reduces to one reusable tool, which neither mathlib nor this corpus has: *a natural
+  transformation `η : F ⟶ G` of functors `C ⥤ D` induces `SSet.Homotopy (nerve.map F)
+  (nerve.map G)`*.  For posets that is `f ≤ g` pointwise, applied here to `ρ ≤ id`.
+
+  The pieces that do exist, checked against this toolchain: `SSet.Homotopy` with `h₀`/`h₁`;
+  `SSet`'s monoidal structure is `CartesianMonoidalCategory`, so `⊗` is the binary product;
+  `nerveFunctor` is a right adjoint (`nerveAdjunction`), hence preserves binary products, giving
+  `nerve (C × E) ≅ nerve C ⊗ nerve E`.  What is missing is `Δ[1] ≅ nerve (Fin 2)`, which mathlib
+  does not have anywhere; its content is only `Monotone ↔ Functor` for finite ordinals, since
+  `Δ[1]_⦋n⦌` and `nerve (Fin 2)_⦋n⦌` are the same monotone maps.
+
+  So `(5)` is not waiting on an unfinished upstream project; it is waiting on a nerve-homotopy
+  lemma of a few hundred lines.
+
+- 2026-08-06 — **The combinatorial core of the homotopy is proved.**
+  `formal/GaloisForLFunctions/HTGeometry/NerveOrderHomotopy.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext]`:
+
+  `interpolate` and `monotone_interpolate` — for monotone `f ≤ g` between preorders, the map that
+  follows `f` where an interval coordinate is `0` and `g` where it is `1` is monotone along every
+  simplex.  Three cases survive — `(0,0)`, `(1,1)`, and the single crossing `(0,1)`, where
+  `f (σ i) ≤ g (σ i) ≤ g (σ j)` — and `(1,0)` is excluded because the interval coordinate is
+  itself monotone.  That is the whole content of the simplicial homotopy: for preorders the
+  induced map of nerves carries no morphism-level data, so a homotopy is a function plus exactly
+  this proof.
+
+  What is not yet packaged is the `SSet.Homotopy` wrapper.  The obstruction is API friction, not
+  mathematics: `(nerve P ⊗ Δ[1]).obj m ⟶ (nerve Q).obj m` does not reduce to a function type at
+  the transparency `intro`/`show` use, so the two components must be reached through the
+  `↾fun x ↦ …` idiom and the `ι₀`/`ι₁` component lemmas rather than by projection; and the two
+  endpoint identities are not definitional, since `nerveMap F` acts by `X ⋙ F` while the
+  interpolation is built by `Monotone.functor` — they need the object-wise comparison of functors
+  into a preorder.
+
+  Audit: `lake build GaloisForLFunctions.HTGeometry` green, 15150 jobs.
+
+- 2026-08-06 — **The nerve homotopy is packaged: comparable order maps induce homotopic maps of
+  nerves.**  `formal/GaloisForLFunctions/HTGeometry/NerveOrderHomotopy.lean`, wired into the
+  `HTGeometry` umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  - `nerveOrderHomotopy` — for monotone `f, g : P → Q` between preorders with `f ≤ g` pointwise,
+    an `SSet.Homotopy (nerveMap hf.functor) (nerveMap hg.functor)`.
+  - `nerveOrderHomotopyMap` — the homotopy itself, `nerve P ⊗ Δ[1] ⟶ nerve Q`, with naturality by
+    `rfl`; `nerveOrderHomotopyMap_ι₀`, `nerveOrderHomotopyMap_ι₁` — its two ends.
+
+  This is the tool the homotopy-type statement `(5)` was missing, and it needs no model structure
+  on simplicial sets: for preorders a map of nerves carries no morphism-level data, so the
+  homotopy is the interpolation `if φ i = 0 then f (σ i) else g (σ i)` together with
+  `monotone_interpolate`.  The interval coordinate `φ` is itself monotone along a simplex, so the
+  crossing happens once and comparability of `f` and `g` is exactly what makes the interpolation
+  monotone.
+
+  Two API notes for whoever continues.  `ext` on an equality of maps of nerves goes all the way to
+  an equality of *objects* of `ComposableArrows`, so no `Functor.ext` is needed — but the endpoint
+  identities are not `rfl`, since `nerveMap F` acts by `X ⋙ F` while the interpolation is built by
+  `Monotone.functor`; the working form is a `show` that reduces the interval coordinate to the
+  literal `0` or `1`.  And `SSet.Homotopy` is a `def` for the `⊥`-relative case, so its fourth
+  field `rel` must be discharged by hand — every simplex of `⊥` is empty.
+
+  What remains for `(5)`: apply this to the cusp retraction `ρ ≤ id` to get the strong deformation
+  retract of `(4)` at the level of homotopy types, and then the building's own homotopy type —
+  Solomon--Tits as a wedge of spheres rather than as homology, which this corpus has only in
+  homological form.
+
+  Audit: `lake build GaloisForLFunctions.HTGeometry` green, 15151 jobs.
+
+- 2026-08-06 — **Correction: the two entries above are wrong, and the deformation-retraction half
+  of `(5)` was already proved.**
+
+  `NerveOrderHomotopy.lean` duplicated `NerveHomotopy.lean`, which has held the same theorem since
+  this card's earlier work: `nerveHomotopyOfLE` — *monotone maps in the order relation have
+  homotopic nerves* — together with `nerveHomotopy` (a functor out of a cylinder is a simplicial
+  homotopy of the nerves of its ends), `intervalIso`, `SSetDeformationRetract`, and
+  `SSetDeformationRetract.homologyIso`.  The duplicate has been deleted and unwired.
+
+  Two claims in those entries were also simply false.  Mathlib *does* have the nerve/standard-
+  simplex isomorphism — `stdSimplex.isoNerve`, which `intervalIso` is built from — and the
+  simplicial deformation retraction of the cusped complex is *not* outstanding:
+  `cuspDeformationRetract` and `cuspBuildingDeformationRetract` in `CuspedHorizonHomotopy.lean`
+  are already `SSetDeformationRetract`s, i.e. a strict section together with an `SSet.Homotopy`
+  to the identity.  That is exactly the strong deformation retract those entries proposed as the
+  target.
+
+  So the genuine content of `(5)` that is still open is narrower than the gate text and than
+  those entries suggest: not the retraction, which is done at the level of homotopy types, but
+  the *building's own* homotopy type — Solomon--Tits as a wedge of `(N-2)`-spheres rather than as
+  homology.  The corpus has that theorem only homologically
+  (`isZero_homology_building_of_ne`, `isFreeOver_cuspHomology`, `not_isZero_cuspHomology_top`).
+
+  Audit after removal: `lake build GaloisForLFunctions.HTGeometry` green, 15150 jobs.

@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.BurnolSoninEvaluationAperture
 import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
 import Mathlib.Analysis.Fourier.Inversion
 import Mathlib.Analysis.Fourier.PoissonSummation
+import GaloisForLFunctions.HTGeometry.BarnesMellinRepresentation
 
 /-!
 # Gaussian smoothing and the archimedean Mellin--Fourier exchange
@@ -267,25 +268,8 @@ theorem integral_Ioi_cpow_mul_inv (w : ℂ) (H : ℝ → ℂ) :
 /-! ## Integrability of the Gamma kernel -/
 
 theorem integrableOn_rpow_mul_exp_neg_mul_Ioi {a r : ℝ} (ha : 0 < a) (hr : 0 < r) :
-    IntegrableOn (fun u : ℝ => u ^ (a - 1) * Real.exp (-(r * u))) (Ioi 0) := by
-  have hbase : IntegrableOn (fun x : ℝ => Real.exp (-x) * x ^ (a - 1)) (Ioi (r * 0)) := by
-    simpa using Real.GammaIntegral_convergent ha
-  have hscale :=
-    (integrableOn_Ioi_comp_mul_left_iff
-      (fun x : ℝ => Real.exp (-x) * x ^ (a - 1)) 0 hr).mpr hbase
-  have hconst : IntegrableOn
-      (fun u : ℝ => r ^ (1 - a) * (Real.exp (-(r * u)) * (r * u) ^ (a - 1))) (Ioi 0) :=
-    hscale.const_mul (r ^ (1 - a))
-  refine hconst.congr_fun ?_ measurableSet_Ioi
-  intro u hu
-  have hu0 : (0 : ℝ) < u := hu
-  dsimp only
-  rw [Real.mul_rpow hr.le hu0.le]
-  have hcancel : r ^ (1 - a) * r ^ (a - 1) = 1 := by
-    rw [← Real.rpow_add hr, show (1 : ℝ) - a + (a - 1) = 0 by ring, Real.rpow_zero]
-  calc r ^ (1 - a) * (Real.exp (-(r * u)) * (r ^ (a - 1) * u ^ (a - 1)))
-      = (r ^ (1 - a) * r ^ (a - 1)) * (u ^ (a - 1) * Real.exp (-(r * u))) := by ring
-    _ = u ^ (a - 1) * Real.exp (-(r * u)) := by rw [hcancel, one_mul]
+    IntegrableOn (fun u : ℝ => u ^ (a - 1) * Real.exp (-(r * u))) (Ioi 0) :=
+  GaloisForLFunctions.HTGeometry.integrableOn_rpow_mul_exp_neg_mul_Ioi (by linarith) hr
 
 theorem continuousOn_cpow_ofReal (z : ℂ) :
     ContinuousOn (fun u : ℝ => (u : ℂ) ^ z) (Ioi (0 : ℝ)) := by

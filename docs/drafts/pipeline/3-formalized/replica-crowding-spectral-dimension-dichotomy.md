@@ -1,10 +1,10 @@
 # Replica-crowding spectral-dimension dichotomy
 
 - **ID:** `replica-crowding-spectral-dimension-dichotomy`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM / finite-time spectral-structure law
-- **Status:** `[PAPER-PROVED] [FRONTIER] [NOVELTY UNVERIFIED]`
-- **Parent:** `../3-formalized/replica-action-crowding-shortcut-law.md`
+- **Status:** `[FORMALIZED] [FRONTIER] [NOVELTY UNVERIFIED]`
+- **Parent:** `replica-action-crowding-shortcut-law.md`
 - **Date:** 2026-08-06
 
 ## Question
@@ -80,18 +80,52 @@ Consequently the whole phase orbit up to `|t|<=T` lies in the common
 not an unclassified failure of anti-concentration: it is a certificate of
 finite-time spectral-dimension loss.
 
-Combining `(3)` with the parent adaptive circuit theorem gives
+For a static Hamiltonian with maximal projective spectral rank, a normalized
+full-Choi target assigned to every padded word of length at most `s`, and a
+gate alphabet of size `g`, combining `(3)` with the parent adaptive circuit
+theorem gives
 
 \[
  \boxed{
  P_{\rm shortcut}
- \le |\mathcal C_s|\left[
+ \le g^{s+1}\left[
    \bigl(1+(2r+1)^{s_r(E;\delta)}\bigr)r!d^{-r}
    +e^{-(T\delta)^2/2}\right]}                            \tag{6}
 \]
 
 for Gaussian observation, with the uniform-window sinc remainder in place
 of the Gaussian remainder.
+
+The uniform law also gives a deterministic forward-time certificate.  If
+
+\[
+ g^{s+1}\left[
+   \bigl(1+(2r+1)^{s_r(E;\delta)}\bigr)r!d^{-r}
+   +\min\{1,(T\delta)^{-1}\}\right]
+ <(1-\epsilon^2)^r,                                  \tag{7}
+\]
+
+then some `t in (0,2T]` is farther than `epsilon` in pure-state trace
+distance from every supplied padded-word Choi target.  No closure of the gate
+set under inverses is needed: exact diagonal spectral phase translation moves
+the centered window to positive time while preserving target norms and trace
+distance.
+
+For the ordinary time-independent bounded-weight Pauli family, generic
+coefficients supply maximal projective spectrum.  Under `(7)`, the same
+Hamiltonian simultaneously satisfies
+
+\[
+ \boxed{\begin{gathered}
+ \exists t\in(0,2T]\text{ outside every depth-}s\text{ circuit target},\\
+ \forall u\in\mathbb R:\quad
+ S_{\rm local}(u)>S_{\rm Haar}.
+ \end{gathered}}                                      \tag{8}
+\]
+
+Here the second line is the corpus's exact product-stabilizer two-query
+signal for that Hamiltonian.  Thus circuit hardness at the certified future
+endpoint does not erase its permanent operational locality witness.
 
 ## Proof
 
@@ -154,15 +188,32 @@ resolved at a stated temporal resolution.
 3. The rank `s_r(E;delta)` may be large.  Then `(6)` can be too weak to survive
    circuit entropy; the structural branch, not the probability branch, is the
    content.
-4. A Nature-level paper still needs a theorem converting the slow-character
-   branch into either delayed complexity growth or a separately quantified
-   low-capacity phase.  That conversion is not claimed here.
-5. Priority remains unverified against quantitative Kronecker theory,
+4. Equation `(7)` is an explicit first-forward-hard-time certificate, but it
+   does not bound `s_r(E;delta)` for a local-Hamiltonian ensemble.  Without
+   that input it is not a Brown--Susskind cut-time scale.
+5. Low resolved spectral dimension does not imply low circuit complexity; a
+   one-parameter orbit may contain hard endpoints.  No such inference is made.
+6. Priority remains unverified against quantitative Kronecker theory,
    additive-energy inverse theorems and higher spectral-form-factor work.
 
-## Formalization target
+## Formalization inventory
 
-Formalize `(1)`--`(6)` in one dependency chain.  Reuse
-`LinearIndependentMinorCertificate.lean` for the injective coordinate minor,
-the parent crowding/circuit module for `(6)`, and the existing unit-circle
-chord inequality from `QuantumAlg/Util/Complex.lean` for `(5)`.
+All displayed mathematical claims are theorem-backed in:
+
+- `HTGeometry/ReplicaCrowdingSpectralDimensionLaw.lean`: balanced integer
+  differences, coordinate bound, injective coordinate projection, fibre and
+  global rank bounds, existence of an independent generating set with
+  cardinal exactly the rank, slow-character inequality, and Gaussian/uniform
+  rank-form moment and capture laws.
+- `RHTower/DirectAdaptiveStaticChoiSpectralDimensionLaw.lean`: invariance of
+  crowding rank under spectral sign reversal and Gaussian/uniform adaptive
+  padded-circuit shortcut bounds under maximal projective spectral rank,
+  together with the centered-window hard-time certificate.
+- `RHTower/StaticChoiForwardSpectralDimensionLaw.lean`: diagonal spectral
+  phase isometry, exact time-shift covariance of Choi capture, and the
+  forward hard-time theorem `(7)`.
+- `RHTower/StaticQLocalForwardComplexityHaarSeparationLaw.lean`: same-system
+  bounded-weight Pauli specialization `(8)`, combining future circuit
+  hardness with all-time strict separation from the exact Haar benchmark.
+
+No `sorry`, `admit`, new axiom, `opaque`, or `unsafe` declaration is used.

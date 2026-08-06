@@ -1,7 +1,7 @@
 # Prime-sieve Wold--Gamma/BV relative character and atomic cofinal limit
 
 - **ID:** `prime-sieve-wold-gamma-bv-relative-character`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE-COFINAL OPERATOR/CONORMAL THEOREM
 - **Scientific status:** `[PAPER PROOF COMPLETE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY PROVISIONAL] [NOT RH]`
@@ -347,11 +347,16 @@ Closest external parents include:
 - [x] naive independent-defect differential character killed
 - [x] exact contractive transgression inequality isolated
 - [ ] independent specialist novelty audit
-- [~] Lean formalization (in progress — see "Formalization status" below)
+- [x] Lean formalization complete for every proved theorem (Sections 1--7); see
+  "Formalization status" below
 - [ ] source-normal contractive polar transgression `(24)`
 - [ ] RH
 
 ## Formalization status
+
+Every theorem proved in this card (Sections 1--7) is formalized unconditionally
+in Lean 4, with axiom set `propext`, `Classical.choice`, `Quot.sound` throughout.
+Conjecture `(24)` is not proved on paper and is not a formalization target.
 
 Section 3, the singular first-trace layer, is `[LEAN-PROVED]` in
 `HTGeometry/PrimeSieveDensityTelescope.lean` (axioms: `propext`,
@@ -529,6 +534,42 @@ Together, `tendsto_sievedContinuedSource_residue_normalized` and
 `(20)`--`(21)`: the coarse cofinal limit of the conormal component is zero, while
 its source-normal normalization is the constant nonzero direction
 `J(p_a)` at every finite stage.
+
+Sections 5, 6 and the provable part of Section 7 are `[LEAN-PROVED]` in
+`HTGeometry/PrimeSieveTransitionSize.lean` and, for the packaged character, in
+`RHTower/BVPrimeWindowSieveResidue.lean`:
+
+| Card item | Declaration |
+|---|---|
+| `(19)` `𝔠_P = (Q_P, Φ_P, a_P J(p_a))` | `RHTower.CompactBVPrimeWindow.relativeCharacter` |
+| `(20)` `𝔠_P → 𝔠_∞ = (P_{\{1\}}, Φ_vac, 0)` | `RHTower.CompactBVPrimeWindow.tendsto_relativeCharacter` |
+| `C_r = 2ζ(3)r³/(1-r²)` | `sieveRegularConstant`, `sieveRegularConstant_nonneg` |
+| `sup_{\|t\|≤r} \|log Φ_P(t/p)\| ≤ C_r/p³` | `abs_sieveLogPhi_div_le`, `sSup_abs_sieveLogPhi_le` |
+| `(22)` `δ_r(P,p) = a_P/p + sup_{\|t\|≤r} \|log Φ_P(t/p)\|` | `sieveTransitionSize` |
+| `δ_r ≥ 0` and `δ_r(P,p) ≤ a_P/p + C_r/p³` | `sieveTransitionSize_nonneg`, `sieveTransitionSize_le` |
+| `∑_p p^{-3} < ∞` along any enumeration | `injective_primeIndex`, `tendsto_primeIndex_atTop`, `summable_primeIndex_cube_inv` |
+| **`(23)`** `∑_n δ_r(P_{n-1}, p_n) < ∞` | `summable_sieveTransitionSize` |
+| `Tr(Q_∅^k) > 0`, hence `log Φ_∅(t) < 0` on `(0,1)` | `sieveTrace_empty_pos`, `sieveLogPhi_empty_neg` |
+| the naive defect tends to `log Φ_∅(t)`, not to `0` | `tendsto_naiveRegularDefect` |
+| **Section 6** regular channel diverges | `not_summable_naiveRegularDefect` |
+| **Section 6** singular channel diverges | `not_summable_naiveSingularDefect` |
+
+`summable_sieveTransitionSize` is `(23)` exactly as the card derives it: the
+singular losses are the telescoping family of `(14)`, whose total is one, and the
+regular increments are bounded by `C_r p^{-3}`, summable because the primes are
+an injective subfamily of the integers.
+
+The Section 6 no-go is proved as a genuine divergence, not merely as a failure of
+one argument.  `sieveLogPhi_empty_neg` shows the unsieved logarithm is strictly
+negative for `0 < t < 1` — every term of `(6)` at `P = ∅` is positive, and the
+`j = 0` term already is — so by `tendsto_naiveRegularDefect` the independent
+one-prime defects converge to a nonzero limit and `not_summable_naiveRegularDefect`
+follows.  In the singular channel the independent defects are the prime
+reciprocals, not summable.  Contrast `(23)`: the nested sieve's transitions are
+summable in both channels simultaneously.  Higher-prime interaction is therefore
+load-bearing, exactly as the card asserts.
+
+Conjecture `(24)` is not proved on paper and is not a formalization target.
 
 The statement is proved for an arbitrary enumeration `e : ℕ ≃ Nat.Primes`, so it
 is the exact cofinal claim of `(14)`: the singular density has total cofinal

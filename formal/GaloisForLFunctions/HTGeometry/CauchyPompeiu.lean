@@ -22,6 +22,7 @@ in `r` and letting the inner radius tend to zero recovers the value at the centr
 -/
 
 open Complex Real intervalIntegral MeasureTheory Set
+open scoped ENNReal
 
 namespace HTGeometry
 
@@ -142,6 +143,90 @@ theorem hasDerivAt_circleMean_dzbar (hC : ContDiff ℝ 1 h) {r : ℝ} (hr : r �
   ring
 
 end RadialDerivative
+
+
+section CauchyKernel
+
+/-- **The Cauchy kernel is locally integrable in the plane.**  In polar coordinates the area
+element cancels the singularity exactly, so the integral over a ball of radius `R` is bounded by
+`2πR`. -/
+theorem lintegral_ball_norm_inv (R : ℝ) :
+    ∫⁻ w : ℂ, Set.indicator (Metric.ball (0 : ℂ) R)
+        (fun w => ENNReal.ofReal ‖w‖⁻¹) w ≤ ENNReal.ofReal R * ENNReal.ofReal (2 * π) := by
+  rw [← Complex.lintegral_comp_polarCoord_symm]
+  have htgt : polarCoord.target = Set.Ioi (0 : ℝ) ×ˢ Set.Ioo (-π) π := rfl
+  rw [htgt]
+  have hle : ∀ p ∈ Set.Ioi (0 : ℝ) ×ˢ Set.Ioo (-π) π,
+      ENNReal.ofReal p.1 • Set.indicator (Metric.ball (0 : ℂ) R)
+        (fun w => ENNReal.ofReal ‖w‖⁻¹) (Complex.polarCoord.symm p)
+      ≤ Set.indicator (Set.Ioo (0 : ℝ) R ×ˢ Set.Ioo (-π) π) (fun _ => (1 : ℝ≥0∞)) p := by
+    rintro ⟨r, θ⟩ ⟨hr, hθ⟩
+    simp only [Set.mem_Ioi] at hr
+    have hnorm : ‖Complex.polarCoord.symm (r, θ)‖ = r := by
+      rw [Complex.norm_polarCoord_symm]; exact abs_of_pos hr
+    by_cases hmem : r < R
+    · have h1 : Complex.polarCoord.symm (r, θ) ∈ Metric.ball (0 : ℂ) R := by
+        simp only [Metric.mem_ball, dist_zero_right, hnorm]; exact hmem
+      have h2 : ((r, θ) : ℝ × ℝ) ∈ Set.Ioo (0 : ℝ) R ×ˢ Set.Ioo (-π) π := ⟨⟨hr, hmem⟩, hθ⟩
+      rw [Set.indicator_of_mem h1, Set.indicator_of_mem h2, hnorm, smul_eq_mul,
+        ← ENNReal.ofReal_mul (le_of_lt hr), mul_inv_cancel₀ (ne_of_gt hr)]
+      simp
+    · have h1 : Complex.polarCoord.symm (r, θ) ∉ Metric.ball (0 : ℂ) R := by
+        simp only [Metric.mem_ball, dist_zero_right, hnorm]; exact hmem
+      rw [Set.indicator_of_notMem h1, smul_zero]
+      exact bot_le
+  calc ∫⁻ p in Set.Ioi (0 : ℝ) ×ˢ Set.Ioo (-π) π,
+        ENNReal.ofReal p.1 • Set.indicator (Metric.ball (0 : ℂ) R)
+          (fun w => ENNReal.ofReal ‖w‖⁻¹) (Complex.polarCoord.symm p)
+      ≤ ∫⁻ p in Set.Ioi (0 : ℝ) ×ˢ Set.Ioo (-π) π,
+          Set.indicator (Set.Ioo (0 : ℝ) R ×ˢ Set.Ioo (-π) π) (fun _ => (1 : ℝ≥0∞)) p :=
+        lintegral_mono_ae ((MeasureTheory.ae_restrict_iff'
+          (measurableSet_Ioi.prod measurableSet_Ioo)).2
+          (Filter.Eventually.of_forall hle))
+    _ ≤ ∫⁻ p, Set.indicator (Set.Ioo (0 : ℝ) R ×ˢ Set.Ioo (-π) π) (fun _ => (1 : ℝ≥0∞)) p :=
+        MeasureTheory.setLIntegral_le_lintegral _ _
+    _ = MeasureTheory.volume (Set.Ioo (0 : ℝ) R ×ˢ Set.Ioo (-π) π) := by
+        rw [MeasureTheory.lintegral_indicator (by measurability)]
+        simp
+    _ = ENNReal.ofReal R * ENNReal.ofReal (2 * π) := by
+        rw [MeasureTheory.Measure.volume_eq_prod, MeasureTheory.Measure.prod_prod,
+          Real.volume_Ioo, Real.volume_Ioo, sub_zero, show π - -π = 2 * π from by ring]
+
+
+/-- The Cauchy kernel is integrable on every ball. -/
+theorem integrableOn_norm_inv_ball (R : ℝ) :
+    MeasureTheory.IntegrableOn (fun w : ℂ => ‖w‖⁻¹) (Metric.ball 0 R) := by
+  refine ⟨(measurable_norm.inv.aestronglyMeasurable).restrict, ?_⟩
+  have hbound : (∫⁻ w in Metric.ball (0 : ℂ) R, ‖(‖w‖⁻¹ : ℝ)‖ₑ)
+      ≤ ENNReal.ofReal R * ENNReal.ofReal (2 * π) := by
+    rw [← MeasureTheory.lintegral_indicator measurableSet_ball]
+    refine le_trans (lintegral_mono fun w => ?_) (lintegral_ball_norm_inv R)
+    by_cases hw : w ∈ Metric.ball (0 : ℂ) R
+    · rw [Set.indicator_of_mem hw, Set.indicator_of_mem hw]
+      rw [Real.enorm_eq_ofReal (by positivity)]
+    · rw [Set.indicator_of_notMem hw, Set.indicator_of_notMem hw]
+  exact lt_of_le_of_lt hbound (by finiteness)
+
+/-- **The `∂̄` Cauchy kernel of a `C¹` function is integrable on every ball.** -/
+theorem integrableOn_dzbar_div_ball (hC : ContDiff ℝ 1 h) (R : ℝ) :
+    MeasureTheory.IntegrableOn (fun w : ℂ => dzbar h w / w) (Metric.ball 0 R) := by
+  obtain ⟨M, hM⟩ := (isCompact_closedBall (0 : ℂ) R).exists_bound_of_continuousOn
+    (f := fun w : ℂ => dzbar h w) ((continuous_dzbar hC).continuousOn)
+  set M' : ℝ := max M 0 with hM'def
+  have hM'0 : 0 ≤ M' := le_max_right _ _
+  have hM' : ∀ w ∈ Metric.closedBall (0 : ℂ) R, ‖dzbar h w‖ ≤ M' :=
+    fun w hw => le_trans (hM w hw) (le_max_left _ _)
+  refine MeasureTheory.Integrable.mono' ((integrableOn_norm_inv_ball R).const_mul M') ?_ ?_
+  · exact (((continuous_dzbar hC).measurable.mul measurable_inv).aestronglyMeasurable).restrict
+  · refine MeasureTheory.ae_restrict_of_forall_mem measurableSet_ball (fun w hw => ?_)
+    have hwc : w ∈ Metric.closedBall (0 : ℂ) R := Metric.ball_subset_closedBall hw
+    rw [norm_div]
+    calc ‖dzbar h w‖ / ‖w‖ ≤ M' / ‖w‖ := by
+          gcongr
+          exact hM' w hwc
+      _ = M' * ‖w‖⁻¹ := by rw [div_eq_mul_inv]
+
+end CauchyKernel
 
 section Annulus
 
@@ -283,6 +368,107 @@ theorem circleMean_sub_eq_annulus (hC : ContDiff ℝ 1 h) {eps R : ℝ}
   exact hFTC.symm
 
 end Annulus
+
+section Limit
+
+/-- The punctured ball is the increasing union of annuli. -/
+theorem iUnion_annulus {R : ℝ} (hR : 0 < R) :
+    (⋃ n : ℕ, deningerAnnulus (R / (n + 2)) R) = Metric.ball (0 : ℂ) R \ {0} := by
+  ext w
+  simp only [Set.mem_iUnion, deningerAnnulus, Set.mem_setOf_eq, Set.mem_sdiff,
+    Metric.mem_ball, dist_zero_right, Set.mem_singleton_iff]
+  constructor
+  · rintro ⟨n, h1, h2⟩
+    refine ⟨h2, ?_⟩
+    intro hw
+    rw [hw] at h1
+    simp only [norm_zero] at h1
+    have : 0 < R / ((n : ℝ) + 2) := by positivity
+    linarith
+  · rintro ⟨h2, h0⟩
+    have hpos : 0 < ‖w‖ := norm_pos_iff.mpr h0
+    obtain ⟨n, hn⟩ := exists_nat_gt (R / ‖w‖)
+    refine ⟨n, ?_, h2⟩
+    have hn2 : R / ‖w‖ < (n : ℝ) + 2 := by linarith
+    rw [div_lt_iff₀ (by positivity)]
+    rw [div_lt_iff₀ hpos] at hn2
+    linarith
+
+/-- The annuli increase. -/
+theorem monotone_annulus {R : ℝ} (hR : 0 < R) :
+    Monotone fun n : ℕ => deningerAnnulus (R / (n + 2)) R := by
+  intro m n hmn w hw
+  refine ⟨lt_of_le_of_lt ?_ hw.1, hw.2⟩
+  apply div_le_div_of_nonneg_left (le_of_lt hR) (by positivity)
+  have hmn' : (m : ℝ) ≤ (n : ℝ) := by exact_mod_cast hmn
+  linarith
+
+/-- The circle mean at radius zero is `2π` times the value at the origin. -/
+theorem circleMean_zero : circleMean h 0 = (2 * π : ℝ) • h 0 := by
+  have hcm : ∀ θ : ℝ, circleMap 0 0 θ = 0 := fun θ => by simp [circleMap]
+  rw [circleMean]
+  simp only [hcm]
+  rw [intervalIntegral.integral_const]
+  congr 1
+  ring
+
+/-- **Cauchy–Pompeiu at the centre of a disc.**  For a continuously real-differentiable `h`,
+
+`h(0) = (1/2π) ∫_{-π}^{π} h(R e^{iθ}) dθ − (1/π) ∬_{|w|<R} ∂̄h(w)/w dA(w)`.
+
+The proof integrates the radial derivative of the circle mean, which sees only `∂̄`, from an inner
+radius to `R`, rewrites the result as the annulus integral of the `∂̄` Cauchy kernel, and lets the
+inner radius tend to zero. -/
+theorem cauchyPompeiu_center (hC : ContDiff ℝ 1 h) {R : ℝ} (hR : 0 < R) :
+    circleMean h R - (2 * π : ℝ) • h 0 =
+      2 * ∫ w in Metric.ball (0 : ℂ) R, dzbar h w / w := by
+  have hdiff : Differentiable ℝ (circleMean h) := fun r => (hasDerivAt_circleMean hC r).differentiableAt
+  have hcontMean : Continuous (circleMean h) := hdiff.continuous
+  have heps : Filter.Tendsto (fun n : ℕ => R / ((n : ℝ) + 2)) Filter.atTop (nhds 0) := by
+    have := Filter.Tendsto.const_div_atTop
+      (Filter.tendsto_atTop_add_const_right Filter.atTop (2 : ℝ) tendsto_natCast_atTop_atTop) R
+    simpa using this
+  have hmean : Filter.Tendsto (fun n : ℕ => circleMean h (R / ((n : ℝ) + 2)))
+      Filter.atTop (nhds (circleMean h 0)) := (hcontMean.tendsto 0).comp heps
+  have hsets : ∀ n : ℕ, MeasurableSet (deningerAnnulus (R / ((n : ℝ) + 2)) R) := by
+    intro n
+    have : deningerAnnulus (R / ((n : ℝ) + 2)) R
+        = (fun w : ℂ => ‖w‖) ⁻¹' (Set.Ioo (R / ((n : ℝ) + 2)) R) := by
+      ext w; simp [deningerAnnulus, Set.mem_Ioo]
+    rw [this]
+    exact (isOpen_Ioo.preimage continuous_norm).measurableSet
+  have hInt : MeasureTheory.IntegrableOn (fun w : ℂ => dzbar h w / w)
+      (⋃ n : ℕ, deningerAnnulus (R / ((n : ℝ) + 2)) R) := by
+    rw [iUnion_annulus hR]
+    exact (integrableOn_dzbar_div_ball hC R).mono_set Set.sdiff_subset
+  have htend := MeasureTheory.tendsto_setIntegral_of_monotone hsets (monotone_annulus hR) hInt
+  rw [iUnion_annulus hR] at htend
+  have hball : (∫ w in Metric.ball (0 : ℂ) R \ {0}, dzbar h w / w)
+      = ∫ w in Metric.ball (0 : ℂ) R, dzbar h w / w := by
+    refine MeasureTheory.setIntegral_congr_set ?_
+    exact MeasureTheory.sdiff_null_ae_eq_self (measure_singleton 0)
+  rw [hball] at htend
+  have hkey : ∀ n : ℕ, circleMean h R - circleMean h (R / ((n : ℝ) + 2)) =
+      2 * ∫ w in deningerAnnulus (R / ((n : ℝ) + 2)) R, dzbar h w / w := by
+    intro n
+    refine circleMean_sub_eq_annulus hC (by positivity) ?_
+    have h2 : (1 : ℝ) ≤ (n : ℝ) + 2 := by
+      have := Nat.cast_nonneg (α := ℝ) n
+      linarith
+    exact div_le_self (le_of_lt hR) h2
+  have hlhs : Filter.Tendsto (fun n : ℕ => circleMean h R - circleMean h (R / ((n : ℝ) + 2)))
+      Filter.atTop (nhds (circleMean h R - circleMean h 0)) :=
+    Filter.Tendsto.const_sub _ hmean
+  have hrhs : Filter.Tendsto
+      (fun n : ℕ => 2 * ∫ w in deningerAnnulus (R / ((n : ℝ) + 2)) R, dzbar h w / w)
+      Filter.atTop (nhds (2 * ∫ w in Metric.ball (0 : ℂ) R, dzbar h w / w)) :=
+    htend.const_mul 2
+  have := tendsto_nhds_unique (by simpa only [hkey] using hlhs) hrhs
+  rw [circleMean_zero] at this
+  exact this
+
+end Limit
+
 
 
 end HTGeometry

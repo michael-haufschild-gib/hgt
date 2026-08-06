@@ -80,7 +80,7 @@ theorem intCast_meroField_eq_algebraMap (ε : ℤ) :
   rw [map_intCast, map_intCast]
 
 /-- **A reflected source is represented by the reflected combination.** -/
-theorem HasPuncturedMeromorphicRep.meroReflectedSource {x : meroField (Set.univ : Set ℂ)}
+theorem HasPuncturedMeromorphicRep.reflectedSource {x : meroField (Set.univ : Set ℂ)}
     {φ : ℂ → ℂ} (ε : ℤ) (c : ℂ) (hx : HasPuncturedMeromorphicRep x φ) :
     HasPuncturedMeromorphicRep (meroReflectedSource ε c x)
       (fun z => φ z - (ε : ℂ) * φ (c - z)) := by
@@ -192,6 +192,7 @@ theorem orderOneDenominator_ne_zero {w : ℂ} (hw : w ≠ 0) : orderOneDenominat
   have hww : w * w = 0 := by linear_combination 4 * this
   exact hw (by rcases mul_eq_zero.mp hww with h' | h' <;> exact h')
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- **The order-one frame source is differentially algebraic over `ℂ(z)`.** -/
 theorem differentialAlgebraicOver_frameSourceMero_singleton (ω : ι → ℂ)
     (hω : ∀ i, 0 < (ω i).im) (i : ι) (hS : ({i} : Finset ι).Nonempty) :
@@ -219,7 +220,7 @@ theorem differentialAlgebraicOver_frameSourceMero_singleton (ω : ι → ℂ)
   have hrepPsi := hasPuncturedMeromorphicRep_barnesSourceLogDerivMero
     (subframe ω ({i} : Finset ι)) (subframe_im_pos hω ({i} : Finset ι))
   rw [barnesConeProduct_subframe_singleton ω i] at hrepPsi
-  have hrepSrc := HasPuncturedMeromorphicRep.meroReflectedSource 1 w hrepPsi
+  have hrepSrc := HasPuncturedMeromorphicRep.reflectedSource 1 w hrepPsi
   rw [← hsrc] at hrepSrc
   have hrepCot := hasPuncturedMeromorphicRep_periodCotMero hw0
   have hrepDiff := hrepSrc.sub hrepCot
@@ -255,6 +256,7 @@ theorem differentialAlgebraicOver_frameSourceMero_singleton (ω : ι → ℂ)
 
 /-! ### The codimension-one face is annihilated -/
 
+omit [Fintype ι] in
 /-- **`I_{N-1} ⊆ Ann_DA(L_V)`.**  Every product of shift differences that leaves exactly one
 direction annihilates the multiple-sine source modulo the differentially algebraic sector. -/
 theorem differentialAlgebraicOver_frameSource_topFace (ω : ι → ℂ) (hω : ∀ i, 0 < (ω i).im)

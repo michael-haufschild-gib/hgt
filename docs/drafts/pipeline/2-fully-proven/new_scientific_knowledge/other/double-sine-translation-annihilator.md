@@ -527,8 +527,45 @@ slab of the cone, which is the opposite ray -- pure reindexing, exact in the hal
 convergence. These are the identities that become the double-sine step equations after
 differentiating the continuation at `s = 0`, and being exact they propagate to any continuation.
 
-Still not formalized: the meromorphic continuation of `zeta_2` past `s = 2` to a neighbourhood of
-`s = 0`, the derivative there (which defines `log Gamma_2`), the reflection giving `S_2`, and the
+*Structure of the cone.* `barnesDoubleZeta_eq_tsum_rays` slices the cone into rays,
+`barnesSingleZeta_add` is the one-dimensional shift, and `barnesDoubleZeta_add_fst_add_snd` verifies
+that the two period shifts commute: applying both removes the two boundary rays and restores the
+initial term `z^(-s)`. That commutation is the zeta-level shadow of the compatibility condition the
+paired telescoping theorem imposes on the two increments.
+
+*The continuation, and what blocks it.* mathlib's `hurwitzZeta` supplies the one-dimensional
+continuation, but only for a **real** shift `a` in `[0,1]` (`hasSum_hurwitzZeta_of_one_lt_re`), and
+the double sine needs `zeta_1(s, z | omega)` for **complex** `z`. So the continuation cannot be
+imported; it has to be built. The two viable routes are the Mellin representation
+`Gamma(s) zeta_2(s,z) = int_0^oo t^(s-1) e^(-zt)/((1-e^(-omega_1 t))(1-e^(-omega_2 t))) dt`
+for `Re s > 2`, continued by splitting at `t = 1` and subtracting the order-two pole of the
+integrand at `t = 0`; or Euler-Maclaurin for the ray zeta with complex shift. Both need real
+analysis mathlib does not currently package.
+
+`GaloisForLFunctions.HTGeometry.BarnesMellinRepresentation` starts the Mellin route.
+`integral_cpow_mul_exp_neg_real_mul_Ioi` proves the term-by-term input
+
+```text
+int_0^oo t^(s-1) e^(-w t) dt = Gamma(s) w^(-s)
+```
+
+for a **positive real** rate `w` and `Re s > 0`, by the substitution `t |-> w t`
+(`integral_comp_mul_left_Ioi`) against `Complex.Gamma_eq_integral`. The rate is real because that is
+the case where the substitution is a genuine change of variables on the half-line; the complex-rate
+version -- which is what the cone terms `w = z + m omega_1 + n omega_2` need -- follows by analytic
+continuation in `w` over the right half-plane, where both sides are analytic and agree on the
+positive reals. That continuation step, i.e. differentiating the parametric integral under the
+integral sign, is the next piece. Its convergence input is already proved for a complex rate:
+`integrableOn_cpow_mul_exp_neg_mul_Ioi` shows `t^(s-1) e^(-wt)` is integrable on the half-line for
+`Re s > 0`, `Re w > 0`, dominated by the real integrand of
+`integrableOn_rpow_mul_exp_neg_mul_Ioi`. The real integrand lemma already existed in the corpus as
+`RHTower.integrableOn_rpow_mul_exp_neg_mul_Ioi`; it has been moved to `HTGeometry` (its correct home
+as reusable infrastructure) and the `RHTower` statement now delegates to it, so there is one proof.
+
+Still not formalized: the complex-rate Euler integral, the summed Mellin representation of
+`zeta_1` and `zeta_2`, the continuation past `s = 2`, the finite part at `s = 1` (which is
+`-partial_z log Gamma_2`, since `partial_z zeta_2(s,z) = -s zeta_2(s+1,z)` makes the derivative of
+the regularization the finite part rather than a value), the reflection giving `S_2`, and the
 resulting `Psi`. Every other ingredient -- the fixed field, the independent coordinates, the
 embedded two-cylinder field, its translation action, its differential structure, and the exact form
 of the increment -- is machine-checked.
@@ -676,7 +713,13 @@ significant new classification or a routine synthesis once the question is posed
   imaginary axis where the corpus's Barnes cone hypothesis `0 < Im omega` also holds;
 - [x] Lean Barnes double-zeta series: convergence for `Re s > 2` and the two exact cone-slab shift
   identities;
-- [ ] Lean meromorphic continuation of `zeta_2` to `s = 0`, its derivative there, and the reflected
-  double sine (alternative route: identify the singleton reflected Barnes source with the cotangent
-  and localize the ladder-step defect, using the imaginary-ray regime where the corpus's cone
-  construction already applies).
+- [x] Lean ray decomposition of the cone, the one-dimensional shift, and commutation of the two
+  period shifts;
+- [x] Lean scaled Euler integral `int_0^oo t^(s-1) e^(-wt) dt = Gamma(s) w^(-s)` for positive real
+  rate, the term-by-term input of the Mellin representation;
+- [x] Lean convergence of the complex-rate Euler integral on the half-line;
+- [ ] Lean complex-rate Euler integral *value* (analytic continuation in the rate), the summed
+  Mellin representation, the continuation past `s = 2`, the finite part at `s = 1`, and the
+  reflected double sine. Alternative route: identify the singleton reflected Barnes source with the cotangent and
+  localize the ladder-step defect, using the imaginary-ray regime where the corpus's cone
+  construction already applies.

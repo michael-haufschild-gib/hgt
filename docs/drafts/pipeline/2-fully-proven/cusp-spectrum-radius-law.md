@@ -86,3 +86,47 @@ spike-type analysis of the standard twist needs.
 ## Log
 - 2026-07-25 — proved (cusp case), sharpened to two-sided, unified over base points, verified on all
   four families with explicit constants.
+
+## Formalization status
+
+The analytic bridge and the arithmetic of the spectrum are `[LEAN-PROVED]` in
+`formal/GaloisForLFunctions/HTGeometry/ShiftLatticeRadiusLaw.lean`
+(axioms: `propext`, `Classical.choice`, `Quot.sound`):
+
+| Card item | Declaration |
+|---|---|
+| `limsup_k ‖c_k‖^{1/k}` as a growth functional | `hadamardLimsup` |
+| **Cauchy--Hadamard** `radius = 1/limsup` | `radius_ofScalars_eq_inv_hadamardLimsup` |
+| the geometric factor scales the growth functional by `\|A\|` | `hadamardLimsup_geometric` |
+| **radius `R` ⟺ `limsup ‖c_k‖^{1/k} = 1/(\|A\|R)`** | `hadamardLimsup_of_radius` |
+| `Spec(F) = { d(m/q)^{1/d} : a_F(m) ≠ 0 }` | `shiftSpectrum` |
+| `Spec(F) ⊆ (0,∞)`, so `Spec \ {0} = Spec` | `shiftSpectrum_pos`, `zero_notMem_shiftSpectrum`, `shiftSpectrum_diff_zero` |
+| `a_F(1) ≠ 0 ⇒ d q^{-1/d} ∈ Spec(F)` | `base_mem_shiftSpectrum` |
+| **`Δ(0) = d q^{-1/d}`** | `infDist_zero_shiftSpectrum` |
+| `1/(2π · d q^{-1/d}) = q^{1/d}/(2πd)` | `cusp_constant_eq` |
+| **cusp case**: radius `Δ(0)` ⇒ `limsup \|F(s-k/d)/k!\|^{1/k} = q^{1/d}/(2πd)` | `hadamardLimsup_cusp` |
+
+`hadamardLimsup_of_radius` is Step 1 of the proof combined with "Hadamard's
+formula for the radius then gives the stated `limsup`" at the end of Step 2: with
+`A = 2πi` and `c_k = F_{α₀}(s-k/d)/k!` it turns any radius statement for the
+shift-lattice expansion into the boxed `limsup` and back.  `infDist_zero_shiftSpectrum`
+is the boxed cusp reduction `Δ(0) = min Spec(F) = d q^{-1/d}`, proved from
+`a_F(1) ≠ 0` and monotonicity of `m ↦ d(m/q)^{1/d}` alone.
+
+### What is not yet formalized
+
+Two inputs remain, both genuinely external to the above:
+
+1. **Step 1, the Mellin--Barnes expansion** — that the shift-lattice series with
+   coefficients `(2πi)^k F_{α₀}(s-k/d)/k!` really represents
+   `Φ_F(s,-α₀+ζ)` minus its singular part.
+2. **Step 2, `radius = Δ(α₀)`** — this needs the Kaczorowski--Perelli standard-twist
+   theory: continuation of `F_α` across every `α ∉ Spec(F)`, and `ρ_0(α) ≠ 0` on
+   the spectrum for the jump lemma.  The corpus has no Selberg-class layer at all
+   (the `Selberg*` modules under `RHTower/` are the Selberg *sieve*), so this is a
+   construction from scratch: the class axioms, the standard twist, and K--P's
+   continuation theorem.
+
+Step 3 (the independent cusp constant via the functional equation and uniform
+Stirling) is a separate route to the same constant and would also need the class
+axioms plus `Γ`-asymptotics along a leftward horizontal shift.

@@ -79,12 +79,15 @@ usual convergence-forcing correction is available without any general Runge theo
 - [x] D1b angular and radial derivatives on a circle, and the equal-circle-integrals identity
       (`HTGeometry/CircleWirtinger.lean`)
 - [x] D1c radial derivative of the circle mean (`HTGeometry/CauchyPompeiu.lean`)
-- [ ] D1d polar coordinates on an annulus, and the limit `ε → 0`
+- [x] D1d polar coordinates on an annulus, and the limit `ε → 0`
       *(mathlib has only the whole-plane change of variables `Complex.integral_comp_polarCoord_symm`;
       restrict it to the annulus with `Set.indicator` and iterate with Fubini, then use
       `Function.Periodic.intervalIntegral_eq` to move the angle from `(-π, π)` to `(0, 2π)`)*
-- [ ] D1 Cauchy–Pompeiu at the centre of a disc
-- [ ] D2 compactly supported $\bar\partial$ equation on $\mathbb C$
+- [x] D1 Cauchy–Pompeiu at the centre of a disc — `HTGeometry.cauchyPompeiu_center`
+- [x] D2 compactly supported $\bar\partial$ equation on $\mathbb C$ — `HTGeometry.dzbar_dbarSolution`
+- [x] D3a local solvability in one variable — `HTGeometry.exists_dbar_local`
+- [x] D3b(i) the several-variable $(0,q)$ layer, `∂̄`, and `ker ∂̄ = 𝒪` in degree zero
+- [ ] D3b(ii) the Dolbeault–Grothendieck lemma by induction on the `dz̄` directions
 - [ ] D3 $\bar\partial$-Poincaré on a polydisc
 - [ ] D4 Dolbeault isomorphism
 - [ ] D5 global solvability on $(\mathbb C^\times)^r$, hence $H^q=0$ for $q\ge1$
@@ -121,3 +124,90 @@ usual convergence-forcing correction is available without any general Runge theo
   - `hasDerivAt_circleMean_dzbar` — on a circle of nonzero radius only `∂̄` survives:
     `(d/dr) circleMean h r = 2 ∫₀^{2π} e^{-iθ} ∂̄h(r e^{iθ}) dθ`.  The `∂` term is removed by
     `circle_angle_integral_eq` after cancelling the common factor `r`.
+
+- 2026-08-06 — **D1 closed.**  `HTGeometry/CauchyPompeiu.lean`, axiom audit
+  `propext, Classical.choice, Quot.sound` for every declaration.
+  - `lintegral_ball_norm_inv`, `integrableOn_norm_inv_ball`, `integrableOn_dzbar_div_ball` — **the
+    Cauchy kernel is locally integrable in the plane**, proved by the polar change of variables:
+    the area element cancels the singularity exactly, so the integral over a ball of radius `R` is
+    at most `2πR`.  mathlib has no lemma of this shape.
+  - `polarCoord_symm_eq_circleMap`, `setIntegral_annulus_dzbar_div` — the `∂̄` kernel over an
+    annulus in polar coordinates, obtained from `Complex.integral_comp_polarCoord_symm` by
+    restricting with an indicator; mathlib has only the whole-plane change of variables.
+  - `setIntegral_annulus_eq_intervalIntegral` — Fubini turns it into an iterated interval integral.
+  - `circleMean_sub_eq_annulus` — integrating the radial derivative of the circle mean from `ε` to
+    `R` and rewriting gives `circleMean h R − circleMean h ε = 2 ∬_{ε<|w|<R} ∂̄h(w)/w dA`.
+  - `iUnion_annulus`, `monotone_annulus`, `circleMean_zero`, `cauchyPompeiu_center` — the annuli
+    increase to the punctured ball, the kernel is integrable there, so the limit `ε → 0` gives
+    **Cauchy–Pompeiu at the centre**:
+    `circleMean h R − 2π·h(0) = 2 ∬_{|w|<R} ∂̄h(w)/w dA(w)`.
+
+- 2026-08-06 — **D2 closed.**  `HTGeometry/DbarSolve.lean`, axiom audit
+  `propext, Classical.choice, Quot.sound` for every declaration.
+  - `wirtingerAntiholL` — `∂̄` of a real-linear map as a *continuous linear functional*, which is
+    what lets it be moved through a Bochner integral of operators.
+  - `exists_radius_of_hasCompactSupport` — a radius outside which both `g` and `fderiv ℝ g` vanish.
+  - `hasFDerivAt_cauchyIntegral` — **differentiation of the Cauchy transform under the integral
+    sign**, via `hasFDerivAt_integral_of_dominated_of_fderiv_le`: the singularity does not move
+    with `z`, the derivative of the integrand is bounded by `M‖w‖⁻¹` on a fixed ball and vanishes
+    off it, and that bound is integrable by `integrableOn_norm_inv_ball`.
+  - `integrable_fderivKernel` — the same bound gives integrability of the derivative kernel.
+  - `integral_dzbar_kernel` — **Cauchy–Pompeiu for a compactly supported source**:
+    `∫_ℂ ∂̄g(z−w)/w dA(w) = π·g(z)`.  Applying `cauchyPompeiu_center` to `t ↦ g(z−t)` on a disc
+    containing the translated support kills the boundary circle mean, and
+    `dzbar_comp_const_sub` (new, in `WirtingerDerivative.lean`, with `wirtinger_ext` and
+    `hasFDerivAt_comp_const_sub`) supplies the sign.
+  - `dbarSolution`, `dzbar_dbarSolution` — **`∂̄u = g`** for `u(z) = (1/π)∫ g(z−w)/w dA(w)`.
+
+- 2026-08-06 — **D3a closed.**  `HTGeometry.exists_dbar_local` : for `C¹` `f` and any centre `z₀`
+  and radius `r > 0` there is `u` with `∂̄u = f` on `closedBall z₀ r`.  Cutting off by a
+  `ContDiffBump` reduces to `dzbar_dbarSolution`.  Axiom audit
+  `propext, Classical.choice, Quot.sound`.
+
+### D3b — design for the several-variable layer
+
+The remaining half of D3 is the Dolbeault–Grothendieck lemma in `n` variables.  Design fixed here
+so the build can continue across sessions:
+
+* **Encoding.**  A smooth `(0,q)`-form on an open `Ω ⊆ (Fin n → ℂ)` is a coefficient family
+  `f : (Fin q → Fin n) → (Fin n → ℂ) → ℂ` alternating in the index tuple.  This keeps `∂̄` a finite
+  signed sum and avoids building a bundle-valued exterior algebra.
+* **The operator.**  `(∂̄f)_{j₀…j_q}(z) = Σ_k (-1)^k ∂̄_{j_k} f_{j₀…ĵ_k…j_q}(z)`, where `∂̄_j` is
+  `dzbar` in the `j`-th coordinate with the others frozen — the one-variable operator already built
+  in `WirtingerDerivative.lean`, precomposed with `Function.update`.
+* **`∂̄ ∘ ∂̄ = 0`** from equality of mixed partials (`ContDiff` symmetry of the second derivative).
+* **The induction (Hörmander 2.3.3).**  Induct on the largest `k` with `f` involving `dz̄_k`.  At
+  each step solve a one-variable `∂̄` problem in `z_k` with the other coordinates as parameters,
+  using `dbarSolution` applied slicewise.  The two facts needed beyond D2 are that the Cauchy
+  transform of a smooth compactly supported family is smooth in the parameters, and that it is
+  holomorphic in any parameter in which the source is holomorphic — both are
+  differentiation-under-the-integral arguments of the same shape as
+  `hasFDerivAt_cauchyIntegral`, with the same dominating bound.
+
+### D4 — the remaining bridge, and why it is the hard one
+
+Turning local `∂̄`-exactness into `H^q(Z, 𝒪) = 0` needs the sheaves of smooth `(0,q)`-forms to be
+acyclic.  The corpus already owns an Ext-based sheaf cohomology (`DeningerFlasqueAcyclic.lean`,
+with `flasque ⟹ acyclic` and `injective ⟹ flasque` from `DeningerOpenFreeSheaf.lean`), so what is
+missing is *soft ⟹ acyclic* for sheaves of modules over the sheaf of smooth functions, i.e. the
+partition-of-unity argument.  mathlib has smooth partitions of unity
+(`SmoothPartitionOfUnity`) but no softness theory; that theorem is the next area-sized target after
+D3b.
+
+- 2026-08-06 — **D3b(i) landed.**  `HTGeometry/DbarSeveral.lean`, axiom audit
+  `propext, Classical.choice, Quot.sound` for every declaration.
+  - `dbarSlice`, `dzbarAt`, `dzAt` — the coordinate slices and their one-variable Wirtinger
+    derivatives; `DbarForm`, `dbarOp` — `(0,q)`-forms as alternating coefficient families and the
+    Dolbeault operator as the signed sum `Σ_k (-1)^k ∂̄_{j_k}`.
+  - `map_smul_of_map_I` — a real-linear functional on a complex space is complex linear as soon as
+    it commutes with multiplication by `i`, proved from `c • x = c.re • x + c.im • (i • x)`.
+  - `hasFDerivAt_updateEmbed`, `hasFDerivAt_dbarSlice` — the coordinate embedding is affine with
+    derivative `Pi.single j`, so the slice differential is the full differential along the
+    coordinate line.
+  - `map_I_single`, `map_I_of_dzbarAt_eq_zero` — **the several-variable Cauchy–Riemann equations**:
+    vanishing of every `∂̄_j` makes the real differential commute with `i`, first in each coordinate
+    direction and then, by the `Pi.single` decomposition, on all of `ℂⁿ`.
+  - `differentiable_complex_of_dzbarAt_eq_zero`, `analyticOnNhd_of_dzbarAt_eq_zero` — hence
+    **`ker ∂̄ = 𝒪`**: `∂̄F = 0` makes `F` holomorphic, and analytic through the corpus's
+    `PolydiscAnalytic.analyticOnNhd_of_differentiable`.  This is the degree-zero exactness of the
+    Dolbeault resolution.

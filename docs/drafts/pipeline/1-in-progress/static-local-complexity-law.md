@@ -5122,3 +5122,20 @@ receive a new title and an independent significance audit.
   not closure of O4. The exact surviving finite-window frontier is now a
   local-Hamiltonian bound on `kappa_r(delta)` at circuit-union replica order;
   the fixed-time quenched coefficient-space frontier remains separate.
+- 2026-08-06 -- Classified replica-action crowding by a formally proved
+  finite-window spectral dimension.  For every crowding fibre, translate
+  multiplicities to balanced integer characters and let `s` be their rational
+  span rank.  An injective coordinate minor gives the exact universal count
+  `|Q_p(delta)| <= (2r+1)^s`; a basis of exactly `s` near characters obeys
+  `|exp(i t <k,E>)-1| <= |t| delta`.  Hence adaptive padded-circuit shortcut
+  probability is bounded by circuit entropy times the collision floor with
+  crowding factor `(2r+1)^s`, plus the Gaussian or uniform window remainder.
+  Lean modules:
+  `HTGeometry/ReplicaCrowdingSpectralDimensionLaw.lean` and
+  `RHTower/DirectAdaptiveStaticChoiSpectralDimensionLaw.lean`; card:
+  `../3-formalized/replica-crowding-spectral-dimension-dichotomy.md`.
+  Hostile verdict: genuine structural strengthening, but still not O4 or the
+  Brown--Susskind law.  Missing theorem must convert low resolved spectral
+  dimension into a quantitatively delayed/low-capacity complexity phase, or
+  prove that local Hamiltonian ensembles avoid this branch at growing replica
+  order.  Fixed-time quenched coefficient anti-concentration remains separate.

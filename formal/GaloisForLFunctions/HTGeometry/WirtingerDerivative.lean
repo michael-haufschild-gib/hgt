@@ -146,6 +146,50 @@ theorem hasDerivAt_comp_wirtinger {f : ℂ → ℂ} {f' : ℂ →L[ℝ] ℂ} {γ
   have h := hf.comp_hasDerivAt t hγ
   rwa [wirtinger_decomp f' γ'] at h
 
+
+/-- **Uniqueness of the Wirtinger decomposition.** -/
+theorem wirtinger_ext {a b c d : ℂ}
+    (h : ∀ v : ℂ, a * v + b * (starRingEnd ℂ) v = c * v + d * (starRingEnd ℂ) v) :
+    a = c ∧ b = d := by
+  have h1 := h 1
+  have h2 := h Complex.I
+  simp only [map_one, mul_one, Complex.conj_I] at h1 h2
+  have hsum : a + b = c + d := h1
+  have hdiff : a * Complex.I - b * Complex.I = c * Complex.I - d * Complex.I := by
+    linear_combination h2
+  have hI : (a - b) * Complex.I = (c - d) * Complex.I := by
+    rw [sub_mul, sub_mul]; exact hdiff
+  have hab : a - b = c - d := mul_right_cancel₀ Complex.I_ne_zero hI
+  constructor
+  · linear_combination (hsum + hab) / 2
+  · linear_combination (hsum - hab) / 2
+
+/-- **Precomposition with the reflection `t ↦ z − t`.** -/
+theorem hasFDerivAt_comp_const_sub {g : ℂ → ℂ} {g' : ℂ →L[ℝ] ℂ} {z w : ℂ}
+    (hg : HasFDerivAt g g' (z - w)) :
+    HasFDerivAt (fun t => g (z - t)) ((-1 : ℂ) • g') w := by
+  have hsub : HasFDerivAt (fun t : ℂ => z - t) (-(ContinuousLinearMap.id ℝ ℂ)) w := by
+    simpa using (hasFDerivAt_id w).const_sub z
+  have hcomp := hg.comp w hsub
+  have hEq : g'.comp (-(ContinuousLinearMap.id ℝ ℂ)) = (-1 : ℂ) • g' := by
+    ext v
+    simp
+  rwa [hEq] at hcomp
+
+/-- The reflection negates `∂̄`. -/
+theorem dzbar_comp_const_sub {g : ℂ → ℂ} (hg : Differentiable ℝ g) (z w : ℂ) :
+    dzbar (fun t => g (z - t)) w = -dzbar g (z - w) := by
+  rw [dzbar_eq_of_hasFDerivAt (hasFDerivAt_comp_const_sub (hg (z - w)).hasFDerivAt),
+    wirtingerAntihol_smul, dzbar]
+  ring
+
+/-- The reflection negates `∂`. -/
+theorem dz_comp_const_sub {g : ℂ → ℂ} (hg : Differentiable ℝ g) (z w : ℂ) :
+    dz (fun t => g (z - t)) w = -dz g (z - w) := by
+  rw [dz_eq_of_hasFDerivAt (hasFDerivAt_comp_const_sub (hg (z - w)).hasFDerivAt),
+    wirtingerHol_smul, dz]
+  ring
+
 end Curve
 
 end HTGeometry
