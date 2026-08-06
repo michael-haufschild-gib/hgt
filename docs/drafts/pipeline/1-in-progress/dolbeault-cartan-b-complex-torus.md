@@ -98,7 +98,11 @@ usual convergence-forcing correction is available without any general Runge theo
 - [x] D3b(ii-c2a) the induction *step*, packaged
 - [x] D3b(ii-c2b-i) the polydisc layer: line-closure and the vanishing hypothesis
 - [x] D3b(ii-c2b-ii) the cutoff on a polydisc, and the step in polydisc form
-- [ ] D3b(ii-c2b-iii) the iteration down the directions
+- [x] D3b(ii-c2b-iii-A) the assembly algebra of the recursion
+- [x] D3b(ii-c2b-iii-B) `∂̄_i ∂̄_j = ∂̄_j ∂̄_i` for `C²` functions — `HTGeometry.dzbarAt_comm`
+- [x] D3b(ii-c2b-iii-C-i) the moving-disc support of the Cauchy integrand
+- [ ] D3b(ii-c2b-iii-C-ii) the two-piece split estimate
+- [ ] D3b(ii-c2b-iii-D) the recursion itself
 - [ ] D3 $\bar\partial$-Poincaré on a polydisc
 - [x] D4a fine ⟹ Čech-acyclic, coefficients in a module (`HTGeometry/CechFineAcyclicModule.lean`)
 - [ ] D4b instantiate at the sheaves of smooth `(0,q)`-forms
@@ -554,3 +558,57 @@ That refactor is the next step; after it the induction has no remaining obstruct
 
   All that is left of D3 is to iterate this down the directions `k = n-1, …, 0` and add up the
   partial solutions — a finite recursion with no further analytic or geometric content.
+
+- 2026-08-06 — **D3b(ii-c2b-iii-A) landed**, and the remaining obligations of D3 are now completely
+  enumerated.  Axiom audit `propext, Classical.choice, Quot.sound`.
+  - `dzbarAt_zero`, `dzbarAt_sub` — the base case of the recursion and the subtraction it needs.
+  - `dzbarAt_add_solution` — **the assembly step**: if `U` solves part of the system and `v` solves
+    the residue `f − ∂̄U` on a set, then `U + v` solves `f` there.
+
+  Writing the recursion out showed exactly two facts are still missing, and nothing else:
+
+  1. **`∂̄_i ∂̄_j = ∂̄_j ∂̄_i` for `C²` functions.**  The residue `g_j := f_j − ∂̄_j U` must again be
+     `∂̄`-closed, and `∂̄_i g_j − ∂̄_j g_i = ∂̄_j ∂̄_i U − ∂̄_i ∂̄_j U`.  For `i = k` this is already
+     available (`∂̄_k U = F` and the commutation give both sides equal to `∂̄_j F`); for `i, j ≠ k`
+     it reduces, through the commutation applied twice, to symmetry of the mixed partials of the
+     source.  Route: `∂̄_j F = Λ_j(fderiv ℝ F)` with `Λ_j` a continuous linear functional
+     (`dzbarAt_eq_functional`, already proved), so `∂̄_i ∂̄_j F = Λ_i(Λ_j ∘L fderiv² F)` and the
+     statement follows from mathlib's `second_derivative_symmetric`.
+  2. **A uniform bound for the transform.**  The recursion also needs `g` to inherit the global
+     bounds.  It does: `T_k(F)` is bounded by `2·(sup‖F‖)·R` whenever `F` is supported in a slab of
+     radius `R`, because `∫_{D(a,R)} |w|⁻¹ dA ≤ ∫_{D(0,R)} |w|⁻¹ dA = 2πR` for every centre `a` —
+     a rearrangement bound, provable by the same polar computation as `lintegral_ball_norm_inv`.
+     The same bound applied to `fderiv ℝ F` controls the derivative.
+
+  With those two, the recursion in `D3b(ii-c2b-iii-D)` is `Fin n` bookkeeping over
+  `dbar_polydisc_step` and `dzbarAt_add_solution`.
+
+- 2026-08-06 — **D3b(ii-c2b-iii-B closed.**  `dzbarAt_comm` : `∂̄_i ∂̄_j F = ∂̄_j ∂̄_i F` for `C²` `F`.
+  Axiom audit `propext, Classical.choice, Quot.sound`.  The proof is the one the earlier note
+  predicted: `∂̄_j F = Λ_j(fderiv ℝ F)` for a fixed continuous linear functional `Λ_j`
+  (`dzbarAt_eq_functional`), so the iterated operator is `Λ_i(Λ_j ∘L fderiv² F)`, an explicit
+  combination of `fderiv² F (e_i a) (e_j b)` for `a, b ∈ {1, i}`, and mathlib's
+  `second_derivative_symmetric` swaps the two arguments.  This is what makes the residue
+  `g_j := f_j − ∂̄_j U` inherit `∂̄`-closedness, which is what lets the recursion descend.
+
+  One obligation now remains before the recursion: the uniform bound
+  `‖T_k F‖ ≤ 2·(sup‖F‖)·R` for `F` supported in a slab of radius `R`, from
+  `∫_{D(a,R)} |w|⁻¹ dA ≤ 2πR` uniformly in the centre `a`.
+
+- 2026-08-06 — **D3b(ii-c2b-iii-C-i) landed.**  Axiom audit `propext, Classical.choice, Quot.sound`.
+  - `cauchyIntegrand_eq_zero_of_notMem`, `cauchyIntegrand_support_subset` — for a slab-supported
+    source the Cauchy integrand is supported in `closedBall (y_k) S`.
+
+  Note the disc **moves with the base point**, which is exactly why a bound uniform in `y` does not
+  follow from `lintegral_ball_norm_inv` (a fixed-ball estimate) and needs the split below.
+
+  **The remaining estimate, in the form to be proved.**  For `‖G‖ ≤ M` and `G` slab-supported of
+  radius `S > 0`, split `closedBall (y_k) S` at `‖w‖ = S`:
+
+  * on `closedBall (y_k) S ∩ ball 0 S`, use `‖G(y − e_k w)/w‖ ≤ M‖w‖⁻¹` and
+    `∫_{ball 0 S} ‖w‖⁻¹ ≤ 2πS` (`lintegral_ball_norm_inv`, already proved) — contributes `2πMS`;
+  * on `closedBall (y_k) S \ ball 0 S`, use `‖w‖ ≥ S` so the integrand is at most `M/S`, and
+    `volume (closedBall (y_k) S) = πS²` (`Complex.volume_closedBall`) — contributes `πMS`.
+
+  Hence `‖T_k G (y)‖ ≤ 3πMS` uniformly in `y`.  No rearrangement inequality is needed, which is why
+  this split was chosen over comparing with the centred disc.

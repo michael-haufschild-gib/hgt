@@ -203,6 +203,34 @@ Step 3 (the independent cusp constant via the functional equation and uniform
 Stirling) is a separate route to the same constant and would also need the class
 axioms plus `Γ`-asymptotics along a leftward horizontal shift.
 
+Step 3's `k`-th-root mechanism is `[LEAN-PROVED]` in
+`HTGeometry/RootGrowthEngine.lean`:
+
+| Card item | Declaration |
+|---|---|
+| a positive constant is invisible to the `k`-th root | `tendsto_const_rpow_inv_nat` |
+| a power of the index is invisible to the `k`-th root | `tendsto_nat_rpow_div_self` |
+| **polynomial envelopes are invisible to the `k`-th root** | `tendsto_rpow_inv_of_polynomial_bounds` |
+| such a family has growth functional one | `hadamardLimsup_eq_one_of_tendsto` |
+| **only the geometric factor survives** | `hadamardLimsup_geometric_of_tendsto_one` |
+| ratio-to-root: consecutive ratios `→ 1` give `k`-th roots `→ 1` | `tendsto_rpow_inv_one_of_ratio_one` |
+| `(w+k)/(1+k) → 1` | `tendsto_gammaRatioFactor` |
+| **the Gamma ratio `Γ(w+k)/Γ(1+k)` is invisible to the `k`-th root** | `tendsto_norm_gammaRatio_rpow_inv` |
+
+This is exactly the shape of Step 3's computation: after the functional equation
+the shifted `L`-value is the geometric factor `(2π)^{-k}` times a ratio of Gamma
+values and an `L`-value tending to one, and
+`hadamardLimsup_geometric_of_tendsto_one` says the `k`-th root sees only the
+geometric factor.  The `L`-value input is already corpus-owned —
+`RHTower.tendsto_riemannZeta_of_re_atTop` (zeta tends to one along any sequence
+escaping to the right) and `RHTower.tendsto_LSeries_atTop` for Dirichlet
+characters.  The Gamma ratio is handled too: `tendsto_norm_gammaRatio_rpow_inv` avoids
+Stirling entirely, since the consecutive ratio of `Γ(w+k)/Γ(1+k)` is exactly
+`(w+k)/(1+k) → 1` and `tendsto_rpow_inv_one_of_ratio_one` converts that into the
+`k`-th-root statement by telescoping and Cesàro.  What remains for Step 3 is only
+the oscillating factor `cos(π(1-s+k)/2)`, which vanishes at odd integers, so its
+`limsup` must be taken along a subsequence where it is bounded below.
+
 The degree-one twist's **analytic** dichotomy is `[LEAN-PROVED]` in
 `HTGeometry/LatticeTwistConvergence.lean`:
 

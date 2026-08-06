@@ -77,7 +77,37 @@ That is the degree-one dichotomy behind verification rows 1 and 2.
   `Real.summable_one_div_nat_rpow`.
   Corpus precedent for the Dirichlet test:
   `HTGeometry/OddDirichletKernel.cauchySeq_sum_oddHarmonicSine`.
-  Corpus Abel-summation layer (if needed later):
+- `HTGeometry/RootGrowthEngine.lean` — Step 3's k-th-root mechanism:
+  `tendsto_const_rpow_inv_nat`, `tendsto_nat_rpow_div_self`,
+  `tendsto_rpow_inv_of_polynomial_bounds` (polynomial envelopes are invisible
+  to the k-th root), `hadamardLimsup_eq_one_of_tendsto`,
+  `hadamardLimsup_geometric_of_tendsto_one` (only the geometric factor
+  survives).  Uses `Real.isLittleO_log_id_atTop.tendsto_div_nhds_zero`.
+
+## STEP 3 — WHAT IS LEFT, AND WHAT IS ALREADY CORPUS-OWNED
+Chain: `ζ(s-k) = 2(2π)^{-(1-s+k)} cos(π(1-s+k)/2) Γ(1-s+k) ζ(1-s+k)`
+(mathlib `riemannZeta_one_sub`), then take k-th roots.
+- `|ζ(1-s+k)| → 1`: ALREADY CORPUS-OWNED —
+  `RHTower.tendsto_riemannZeta_of_re_atTop`
+  (`RHTower/XiSourceNormalConeDivisorConservation.lean:394`), and for Dirichlet
+  characters `RHTower.tendsto_LSeries_atTop`
+  (`RHTower/DirichletLRayLowerBound.lean:24`). DO NOT REBUILD.
+- `(2π)^{-k}` → handled by `hadamardLimsup_geometric_of_tendsto_one`.
+- Gamma ratio: DONE, no Stirling needed. `tendsto_rpow_inv_one_of_ratio_one`
+  (ratio → 1 ⇒ k-th root → 1, by telescoping + `Filter.Tendsto.cesaro`),
+  `tendsto_gammaRatioFactor`, `tendsto_norm_gammaRatio_rpow_inv`
+  (all in `HTGeometry/RootGrowthEngine.lean`).
+  The corpus has a related but DIFFERENT statement in
+  `HTGeometry/DeterminantRatioRoot.lean` (`cesaro_range_div_succ_atBot`,
+  `tendsto_rpow_inv_succ_zero_of_ratio_zero`) — that is the ratio → 0 ⇒ root → 0
+  case; mine is the unit case.
+- STILL MISSING for Step 3: only the oscillating `cos(π(1-s+k)/2)` factor
+  (vanishes at odd integers, so the limsup needs a subsequence where it is
+  bounded below).</repl>
+
+
+  Corpus Abel-summation layer (if needed later):</repl>
+
   `HTGeometry/ShiftPartialSummation.lean`, `HTGeometry/DiscreteAbelIcc.lean`,
   `HTGeometry/TopSumMajorization.lean`, `RHTower/ZetaPartialSumStrip.lean`,
   `RHTower/CesaroHull.lean`, `RHTower/OddHarmonicAbel.lean`.</repl>

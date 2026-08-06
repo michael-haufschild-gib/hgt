@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.DbarSolve
 import GaloisForLFunctions.HTGeometry.PolydiscAnalytic
+import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 
 /-!
 # The Dolbeault operator in several complex variables
@@ -1209,6 +1210,70 @@ theorem dzbarAt_add_solution {f : Fin n → (Fin n → ℂ) → ℂ} {U v : (Fin
   intro j z hz
   rw [dzbarAt_add hU hv j z, hres j z hz]
   ring
+
+
+/-- **The antiholomorphic partial derivatives commute.**  Each `∂̄_j` is a fixed continuous linear
+functional applied to the differential, so the iterated operator is that pair of functionals applied
+to the second differential, and symmetry of the second differential is symmetry in `i` and `j`. -/
+theorem dzbarAt_comm {F : (Fin n → ℂ) → ℂ} (hC : ContDiff ℝ 2 F) (i j : Fin n) (z : Fin n → ℂ) :
+    dzbarAt (dzbarAt F j) i z = dzbarAt (dzbarAt F i) j z := by
+  have hd1 : Differentiable ℝ F := hC.differentiable (by norm_num)
+  have hfd : ContDiff ℝ 1 (fderiv ℝ F) := hC.fderiv_right le_rfl
+  have hd2 : Differentiable ℝ (fderiv ℝ F) := hfd.differentiable one_ne_zero
+  have hsecond : HasFDerivAt (fderiv ℝ F) (fderiv ℝ (fderiv ℝ F) z) z := (hd2 z).hasFDerivAt
+  have hsym : ∀ v w : Fin n → ℂ,
+      (fderiv ℝ (fderiv ℝ F) z) v w = (fderiv ℝ (fderiv ℝ F) z) w v :=
+    second_derivative_symmetric (fun y => (hd1 y).hasFDerivAt) hsecond
+  have key : ∀ a b : Fin n,
+      dzbarAt (dzbarAt F b) a z
+        = dzbarFunctional a ((dzbarFunctional b).comp (fderiv ℝ (fderiv ℝ F) z)) := by
+    intro a b
+    have hDb : dzbarAt F b = fun y => dzbarFunctional b (fderiv ℝ F y) := by
+      funext y
+      exact dzbarAt_eq_functional hd1 b y
+    have hfb : HasFDerivAt (fun y : Fin n → ℂ => dzbarFunctional b (fderiv ℝ F y))
+        ((dzbarFunctional b).comp (fderiv ℝ (fderiv ℝ F) z)) z :=
+      (dzbarFunctional b).hasFDerivAt.comp z hsecond
+    rw [hDb]
+    rw [dzbarAt_eq_functional (G := fun y : Fin n → ℂ => dzbarFunctional b (fderiv ℝ F y))
+      (fun y => ((dzbarFunctional b).hasFDerivAt.comp y ((hd2 y).hasFDerivAt)).differentiableAt)
+      a z, hfb.fderiv]
+  rw [key i j, key j i]
+  simp only [dzbarFunctional_apply, wirtingerAntihol, ContinuousLinearMap.coe_comp,
+    Function.comp_apply]
+  rw [hsym (ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) i 1)
+        (ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) j 1),
+    hsym (ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) i 1)
+        (ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) j Complex.I),
+    hsym (ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) i Complex.I)
+        (ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) j 1),
+    hsym (ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) i Complex.I)
+        (ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) j Complex.I)]
+  ring
+
+
+/-- The Cauchy integrand of a slab-supported source vanishes outside a disc of radius `S` about the
+`k`-th coordinate of the base point.  The disc moves with the base point, which is why a bound
+uniform in the base point needs more than the fixed-ball estimate. -/
+theorem cauchyIntegrand_eq_zero_of_notMem {G : (Fin n → ℂ) → ℂ} {S : ℝ} {k : Fin n}
+    (hgS : ∀ x : Fin n → ℂ, S < ‖x k‖ → G x = 0) (y : Fin n → ℂ) {w : ℂ}
+    (hw : w ∉ Metric.closedBall (y k) S) : G (y - Pi.single k w) = 0 := by
+  refine hgS _ ?_
+  have hcoord : (y - (Pi.single k w : Fin n → ℂ)) k = y k - w := by simp
+  rw [hcoord]
+  simp only [Metric.mem_closedBall, Complex.dist_eq, not_le] at hw
+  rwa [← norm_neg (y k - w), neg_sub]
+
+/-- The integrand is supported in that disc. -/
+theorem cauchyIntegrand_support_subset {G : (Fin n → ℂ) → ℂ} {S : ℝ} {k : Fin n}
+    (hgS : ∀ x : Fin n → ℂ, S < ‖x k‖ → G x = 0) (y : Fin n → ℂ) :
+    Function.support (fun w : ℂ => G (y - Pi.single k w) / w)
+      ⊆ Metric.closedBall (y k) S := by
+  intro w hw
+  by_contra hnot
+  refine hw ?_
+  show G (y - Pi.single k w) / w = 0
+  rw [cauchyIntegrand_eq_zero_of_notMem hgS y hnot, zero_div]
 
 end Polydisc
 

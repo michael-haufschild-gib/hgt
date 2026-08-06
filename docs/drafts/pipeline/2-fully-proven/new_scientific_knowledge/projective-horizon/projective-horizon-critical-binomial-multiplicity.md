@@ -203,12 +203,26 @@ formalizes:
    `Fintype.card (criticalHorizonSchubertCell m n) = criticalHorizonMultiplicity m n`, where the
    cell indices are the `m`-subsets of an `(m+n)`-element set.
 
-It imports the already formalized nonzero critical Jacobian minor. A targeted leaf build and
-scratch axiom audit pass with only `propext`, `Classical.choice`, and `Quot.sound`. No full build was
-run. The general multiprojective Bezout theorem, generic-etale theorem, and the topological
-identification of these indices with the actual Grassmannian Schubert cells are used at paper level
-rather than reimplemented as a project-local algebraic-geometry library. The card therefore stays
-in step 2.
+It imports the already formalized nonzero critical Jacobian minor.
+
+The count `(2)` itself is now formalized, and **not** through multiprojective Bezout.  The
+truncated compatibility equation at the critical degrees closes on the nose to the exact
+factorization `(A + U)(B + V) = 1 + U V`, so a fibre point is a monic divisor of degree `m` of the
+target `1 + U V`, and a separable split polynomial has exactly `choose(m+n,m)` of those.  The
+resulting chain, all unconditional and all `[propext, Classical.choice, Quot.sound]`:
+
+- `CriticalDegreeTailFibre.nat_card_criticalFibre_criticalTails` — exact count for every
+  observation whose tails have the critical degrees and whose target is separable;
+- `CriticalFibreUpperBound.nat_card_criticalFibre_le` — the same binomial coefficient is an
+  unconditional ceiling, separable or not;
+- `CriticalTargetGenericSeparable.finite_scalings_not_exact` — in every scaling family the count is
+  exact off a finite set of scalars, the reciprocals of the critical values of `U V`.
+
+So neither the general multiprojective Bezout theorem nor the generic-etale theorem is needed for
+`(2)`; the bilinear pre-elimination system that Bezout would consume is nevertheless built
+(`BilinearFibreSystem.lean`) and specialises correctly.  What remains at paper level is section 5
+(all-rank transverse uniqueness) and the topological identification of the fibre points with
+Grassmannian Schubert cells, which the card explicitly does not claim.
 
 ## Novelty audit
 
@@ -1675,3 +1689,29 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   the pairs satisfying the truncated compatibility equation.  Both halves of the picture are now
   machine-checked — the eliminated square system in `m` unknowns of rising degree, and the bilinear
   system in `m + n` unknowns whose Bezout number is the answer.
+
+- 2026-08-06 — **The count is an unconditional ceiling, and it is attained generically.**  Two new
+  modules, both in the umbrella, both `[propext, Classical.choice, Quot.sound]`:
+
+  `CriticalFibreUpperBound.lean` — `monicDivisor_roots_injective` (a monic split polynomial is
+  determined by its root multiset), `roots_mem_powersetCard`, `finite_monic_divisors`,
+  `nat_card_monic_divisors_le` (a split polynomial has at most `choose` many monic divisors of a
+  prescribed degree), and **`nat_card_criticalFibre_le`**: for *every* observation with tails of the
+  critical degrees — no separability, no genericity — the fibre has at most
+  `criticalHorizonMultiplicity m n` points.  The separable case is where the injection into monic
+  divisors is onto the whole sub-multiset lattice; in general a repeated root of the target merges
+  divisors, and the count can only drop.  So `(2)` is a ceiling for all critical observations, not
+  only the generic ones.
+
+  `CriticalTargetGenericSeparable.lean` — `separable_of_no_common_root` (over an algebraically
+  closed field a polynomial sharing no root with its derivative is separable: a non-unit gcd has
+  positive degree, hence a root common to both), `finite_not_separable_scalings` (a repeated root of
+  `1 + c W` is a critical point of `W` where `W = -c⁻¹`, so `c` is one of finitely many values
+  determined by the roots of `W'`), and **`finite_scalings_not_exact`**: for critical tails `U, V`
+  over an algebraically closed field of characteristic zero, the set of scalars `c` for which
+  `Nat.card (criticalFibre K m n U (C c * V)) ≠ criticalHorizonMultiplicity m n` is **finite**.
+
+  Together these turn the paper's "generic critical observation has `choose(m+n,m)` compatible
+  jets" into an unconditional Lean pair: `≤` always, `=` off a finite set in every scaling family,
+  with the exceptional set explicitly the reciprocals of the critical values of `U V`.  The
+  genericity is elementary — no discriminant, no resultant, no intersection theory.

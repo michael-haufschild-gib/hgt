@@ -675,9 +675,25 @@ hypertranscendental**.
 
 This is the analytic hypothesis `(1)` of both double-sine parents, produced for the corpus's own
 Barnes cone source rather than assumed, and expressed in the coordinates the character obstruction
-is proved in; and the hypertranscendence half of the atomic parent is now a Lean theorem.  What the
-atomic *defect-coset* statement still needs beyond this is the orbit form: differential
-independence of a whole external orbit `{T^a F_J}`, not just of one source.  The remaining assembly — the two-cylinder differential base field, the translation
+is proved in; and the hypertranscendence half of the atomic parent is now a Lean theorem.  `HTGeometry.DilatedCotModelOrbitObstruction` — **the separated defect obstruction**, the
+coset mechanism of the atomic parent.
+
+- `ratFuncDerivative_ratFuncScale` — the chain rule for a dilation of the coordinate.
+- `ratFuncEulerOp_ratFuncScale`, `eulerCombination_ratFuncScale` — the Euler operator, and hence
+  every constant-coefficient Euler combination, commutes with dilations.  A translate of the source
+  is a dilate in the cylinder coordinate, so the character of a translate is the dilate of the
+  character.
+- `not_regularAt_scaled_eulerCombination_cotModel`, `regularAt_scaled_eulerCombination_cotModel` —
+  the dilated combination has exactly one pole, at the dilated fixed point.
+- `not_dilationTelescoped_separated_family` — **a finite family of dilated cotangent models, one of
+  whose poles lies on a multiplicative orbit disjoint from all the others, is not a `q`-difference
+  of a rational function**.  This is exactly the separation that distinguishes translates in
+  distinct classes modulo the period lattice: on the separated member's orbit the family has a
+  single pole, and the multiplicative-orbit residue obstruction applies.
+
+What the atomic *defect-coset* statement still needs beyond this is the analytic transport: reading
+a family of translates of the source as such a dilated family, and running the arbitrary-family
+criterion over the whole orbit rather than over a single source.  The remaining assembly — the two-cylinder differential base field, the translation
 action on it, and the application of the arbitrary-family Ostrowski criterion — is being built in
 `HTGeometry.TwoCylinderDifferential`, `HTGeometry.TwoCylinderTranslationAction` and
 `HTGeometry.TwoCylinderMeromorphicDifferential`.

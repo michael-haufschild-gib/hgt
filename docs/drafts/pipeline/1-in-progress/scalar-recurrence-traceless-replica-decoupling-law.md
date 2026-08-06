@@ -216,3 +216,49 @@ No paper or Lean theorem may cite `(Q)` until this open core is closed.
 - 2026-08-06 — Positive `Z_r` exponential decay conjecture killed by the
   identity-target central-limit floor.  Replaced it with the scalar-once,
   traceless-signed quenched law `(Q)`.
+
+## Krylov-carrier attack and representation change — 2026-08-06
+
+The scalar/traceless split is not the terminal invariant.  A fixed local
+Pauli target has a conserved first Krylov component
+
+\[
+ \tau_d(PH_n(J))=J_P/\sqrt{m_{n,q}},
+\]
+
+and higher shallow targets can couple to higher powers of `H`.  Tracelessness
+removes only the zeroth spectral moment.  The correct nested carrier is
+
+\[
+ \operatorname{span}\{I\}\subset
+ \operatorname{span}\{I,H,\ldots,H^K\}\subset
+ \{H\}'.
+\]
+
+Two exact replacement theorems are now closed:
+
+1. `../3-formalized/krylov-replica-moment-amplification-law.md` proves that
+   annihilating moments through `K` forces paired replica moments through
+   order `2r(K+1)-1` to vanish.
+2. `../2-fully-proven/krylov-causal-replica-sieve-law.md` proves that the
+   observed `2r`th moment of every such residual is bounded by a factorial
+   Krylov-horizon law, with no level-spacing premise.
+
+Moment cancellation does not by itself make the signed near-action window
+small; clustered finite-difference spectra can retain large near-window mass.
+It instead controls the physical finite-time kernel directly.  Therefore
+`(Q)` remains unproved and is no longer the preferred proof variable.
+
+**Stronger replacement conjecture.**  For the fixed-`q` Gaussian Pauli
+ensemble, the canonical Krylov split of every shallow-circuit target obeys a
+quenched dichotomy: its Krylov-null residual satisfies the universal causal
+sieve, while any carrier component large enough to produce capture at time
+`t` requires circuit size `Omega(t)` until the carrier reaches spectral
+dimension.  The statement must be formulated as a quantitative
+transversality theorem for the complete circuit secant set, not as the desired
+complexity conclusion hidden in a hypothesis.
+
+**New `[OPEN CORE]`.**  Find and prove the non-circular carrier invariant that
+turns large projection onto `span{I,H,...,H^K}` into an `Omega(K)` shallow-
+circuit obstruction for the ordinary fixed-local ensemble.  The exact
+residual channel is closed; only the carrier channel remains.
