@@ -148,7 +148,7 @@ theorem integral_packet_difference_sq (hω : 0 ≤ ω) {a : ℝ} (ha : 0 ≤ a) 
           (complementaryPacketKernel ω (r - a) - complementaryPacketKernel ω r) ^ 2 :=
       setIntegral_congr_fun measurableSet_Ioi fun r hr =>
         packet_difference_of_mem_Ioi ω ha hr
-    rw [hcongr, ← setIntegral_Ioi_comp_add_right
+    rw [hcongr, ← setIntegral_Ioi_zero_comp_add_right
       (fun s => (complementaryPacketKernel ω (s - a) - complementaryPacketKernel ω s) ^ 2) a]
     refine setIntegral_congr_fun measurableSet_Ioi fun r _ => ?_
     simp only [add_sub_cancel_right]

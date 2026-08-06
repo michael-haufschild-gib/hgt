@@ -128,3 +128,111 @@ choose its own reading device.
 - 2026-08-06 — created directly in stage 3: general reading law and window construction proved and
   formalized in `HTGeometry`, Route R gap criterion and RH endpoint formalized in `RHTower`,
   targeted builds green, axiom audit clean.
+
+## 2026-08-06 (second pass) — the wall is a scale detector
+
+Two further reductions, both formalized.
+
+### Sharpened asymptotic form
+
+The limiting residue is real and lies in `{-1,0,1}`. Two consequences weaken the criterion further:
+
+1. only the **real part** of the average matters, since `|c.re| = ‖c‖` for a real `c`;
+2. only a **subsequence** matters, since a convergent sequence cannot be frequently below `r < 1`
+   while converging to something of modulus one.
+
+Lean: `eq_zero_of_frequently_abs_re_profileAverage_le`,
+`xiDivisorSupport_re_eq_half_of_frequently_abs_re_profileAverage_le`,
+`riemannHypothesis_of_frequently_abs_re_profileAverage_lt_one`.
+
+### Single-stage quantitative form `[PROVED HERE]`
+
+No asymptotics are needed at all. Let `w` be one stage of a bounded unit profile carried by primes at
+least `q ≥ 3`, and `F(p) = p/(p+1)^2` the activation Fisher density. Then
+
+`|W_t(p)| = F(p)(1 - p^(-2|t|))`
+
+exactly, for every `t` and `p`, with both orientation cases and the neutral case collapsing to the
+same modulus. On the support, `1 - p^(-2|t|) ≥ 1 - q^(-2|t|)` and, from `1/p - F(p) ≤ 3/p²` together
+with `q ≤ p`, `F(p) ≥ (1 - 3/q)/p`. Comparing against the unit reference mass gives
+
+`(1 - q^(-2|t|))(1 - 3/q) ≤ ‖stageAverage w (W_t)‖`.
+
+Thus a stage average below `r` forces `(1 - q^(-2|t|))(1 - 3/q) ≤ r`; with `q ≥ 4` and
+`r < 1 - 3/q`, exponentiating back gives the explicit grade bound
+
+`|t| ≤ log((1 - 3/q)/(1 - 3/q - r)) / (2 log q)`.
+
+Letting `q → ∞` along stages sharing one threshold `r < 1` gives `t = 0`. The stage index is free:
+only the depth of the carrying primes enters.
+
+Lean: `abs_criticalWallCoefficient_eq`, `norm_stageAverage_criticalWall_eq`,
+`le_norm_stageAverage_criticalWall`, `abs_le_of_norm_stageAverage_le`,
+`eq_zero_of_deepStage_norm_profileAverage_le`, in
+`formal/GaloisForLFunctions/RHTower/RouteRFirstWallScaleQuantification.lean`. Supporting single-stage
+API in `HTGeometry/CofinalUnitProfileResidue.lean`: `IsUnitStage`, `stageAverage`,
+`tsum_stageWeighted_le`, `le_tsum_stageWeighted`, `norm_stageAverage_ofReal`.
+
+### What this says about the producer obligation
+
+The lower bound is sharp in shape: the stage average is governed by `t · log q` and by nothing else
+up to `O(1/q)`. So no profile can be *chosen* to make the average small at depth `q` when
+`|t| ≫ 1/log q` — size alone never helps, and the producer must supply genuine cancellation at some
+finite explicit depth. Conversely the obligation is now finite and quantitative: for a threshold
+`r < 1`, exhibiting one stage at depth `q` with average below `r` already bounds `|t|` by
+`C(r)/log q`.
+
+Axioms for all new capstones: `[propext, Classical.choice, Quot.sound]`.
+
+## 2026-08-06 (third pass) — the scale law is two-sided, and bounded depth provably fails
+
+### Matching upper bound
+
+For a stage carried by primes **at most** `Q`, the same termwise comparison run in the other
+direction gives
+
+`‖stageAverage w (W_t)‖ ≤ 1 - Q^(-2|t|)`,
+
+using `F(p) ≤ 1/p` and `1 - p^(-2|t|) ≤ 1 - Q^(-2|t|)`. Together with the depth floor this traps the
+modulus:
+
+`(1 - q^(-2|t|))(1 - 3/q) ≤ ‖stageAverage w (W_t)‖ ≤ 1 - Q^(-2|t|)`
+
+for a stage carried inside `[q, Q]`. Lean: `norm_stageAverage_criticalWall_le`,
+`stageAverage_criticalWall_sandwich`.
+
+### Bounded depth cannot decide `[NO-GO]`
+
+The upper bound is not decoration: it kills the localized form of the criterion. Since
+`1 - e^{-x} ≤ x`, taking `t = r / (2 log Q)` gives `1 - Q^(-2|t|) ≤ r`. Hence for **any** stage with
+a depth ceiling `Q ≥ 2` and **any** tolerance `r > 0` there is a *nonzero* grade whose average at
+that stage is within `r`. A finitely supported stage always has such a ceiling, so:
+
+- no single stage separates neutral grade;
+- no finite family of stages does either;
+- the unbounded-depth quantifier in `eq_zero_of_deepStage_norm_profileAverage_le` is intrinsic.
+
+Lean: `exists_ne_zero_norm_stageAverage_le`, `exists_depthCeiling_of_finite_support`,
+`exists_ne_zero_norm_stageAverage_le_of_finite_support`, and the witnessed form
+`exists_isCofinalUnitProfile_no_single_stage_decides` — there is a bounded cofinal prime-harmonic
+profile all of whose stages are finite, and every one of its stages is evaded by some nonzero grade.
+The witness comes from `exists_isCofinalUnitProfile_finiteSupport_primeHarmonic`, the window
+construction strengthened to record finiteness of each stage support.
+
+### What the sandwich means for the producer
+
+The device is exactly a scale meter: its output is determined, up to the ratio `log Q / log q` of the
+two depths and an `O(1/q)` Fisher correction, by the single number `|t| · log(depth)`. Two
+consequences, both now theorems:
+
+1. no reweighting inside the family helps — smallness at depth `q` is impossible once
+   `|t| ≫ 1/log q` (depth floor);
+2. no bounded depth suffices — smallness at depth `Q` is achievable by nonzero grades of size
+   `≈ r/log Q` (depth ceiling).
+
+So the remaining content is neither the choice of device nor a finite certificate: the producer must
+deliver cancellation simultaneously at unboundedly deep scales. That is the exact shape of
+`ROUTE_R_FIRST_WALL_FINITE_DEPTH_CANCELLATION` as recorded on the parent card, and the third pass
+narrows it to its unbounded-depth core.
+
+Axioms for all new capstones: `[propext, Classical.choice, Quot.sound]`.

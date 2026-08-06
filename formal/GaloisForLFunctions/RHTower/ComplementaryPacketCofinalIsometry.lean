@@ -32,8 +32,8 @@ namespace RHTower
 
 noncomputable section
 
-/-- Translation of a half-line integral. -/
-theorem setIntegral_Ioi_comp_add_right (g : ℝ → ℝ) (a : ℝ) :
+/-- Translation of a half-line integral based at the origin. -/
+theorem setIntegral_Ioi_zero_comp_add_right (g : ℝ → ℝ) (a : ℝ) :
     (∫ r in Ioi (0 : ℝ), g (r + a)) = ∫ s in Ioi a, g s := by
   have hmp : MeasurePreserving (fun r : ℝ => r + a) volume volume :=
     measurePreserving_add_right volume a
@@ -86,7 +86,7 @@ private theorem integrableOn_translate_sq (hsq : IntegrableOn (fun r => k r ^ 2)
 theorem setIntegral_translate_sq_le (hsq : IntegrableOn (fun r => k r ^ 2) (Ioi 0))
     {a : ℝ} (ha : 0 ≤ a) :
     (∫ r in Ioi (0 : ℝ), k (r + a) ^ 2) ≤ ∫ r in Ioi (0 : ℝ), k r ^ 2 := by
-  rw [setIntegral_Ioi_comp_add_right (fun s => k s ^ 2) a]
+  rw [setIntegral_Ioi_zero_comp_add_right (fun s => k s ^ 2) a]
   refine setIntegral_mono_set hsq ?_ ?_
   · filter_upwards with r using sq_nonneg _
   · exact Filter.Eventually.of_forall (Ioi_subset_Ioi ha)

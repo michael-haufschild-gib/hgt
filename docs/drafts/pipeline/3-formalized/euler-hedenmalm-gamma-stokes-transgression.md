@@ -1,9 +1,9 @@
 # Euler--Hedenmalm Gamma Stokes transgression
 
 - **ID:** `euler-hedenmalm-gamma-stokes-transgression`
-- **Stage:** 2-fully-proven / Mellin--Stokes core formalized, full Euler--Mobius theorem open
+- **Stage:** 3-formalized
 - **Type:** THEOREM / ROOT-LEVEL EULER--MOBIUS--GAMMA BOUNDARY WELD
-- **Scientific status:** `[PROVED HERE] [LEAN CORE VERIFIED] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Scientific status:** `[PROVED HERE] [LEAN VERIFIED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:**
   `hedenmalm-theta-source-compressed-inverse-determinant.md`;
   `prime-tail-hedenmalm-wiener-hopf-transgression.md`;
@@ -407,8 +407,8 @@ field, would not formalize the new result.
 - [x] multiplicity and prime-incidence jets
 - [x] RH-bearing temperedness clause separated
 - [x] Mellin--Stokes core formalized and axiom-audited
+- [x] literal Lean formalization
 - [ ] focused literature audit
-- [ ] literal Lean formalization
 - [ ] source proof of common tempered boundary
 
 ## Log
@@ -447,3 +447,60 @@ The interchange in `(8)` is the genuine Tonelli step of the paper proof: the ato
 - 2026-08-06 -- items 1 and 2 of the completion list are formalized.  Still open: the absolutely
   convergent double-series Möbius inverse `(9)` and the analytic Stokes jet independence
   `(16)`--`(17)`.
+
+## Lean: the Möbius inverse and the Stokes jet independence
+
+`RHTower/EulerHedenmalmMobiusStokesInverse.lean` closes items 3 and 4 of the completion list, so
+every theorem of the card that is not the RH-bearing temperedness clause is now unconditional in
+Lean.
+
+```text
+normalizedLogDilation_mul                  : T_m T_n = T_(mn) on every function;
+summable_prod_norm_dilated                 : the (m,n) family of dilated Green modes is
+                                             absolutely summable, from the geometric bound
+                                             ||T_r R^+ h|| <= C (r+1)^4 e^(-sigma r);
+exists_geometric_bound_dilated_antiCausalGreen : that bound, from the half-Gaussian atom estimate
+                                             and the compact-window majorant;
+mobiusDilationSynthesis_antiCausalGreen    : M R^+_alpha k = R^+_alpha h.                    -- (9)
+```
+
+`(9)` is the literal absolutely convergent double series of the paper: the family
+`mu(m) T_(mn) R^+h` is summable on `N x N`, `Summable.tsum_prod` regroups it as
+`sum_m mu(m) T_m (E R^+h) = sum_m mu(m) T_m R^+k`, and `HasSum.tsum_fiberwise` along
+`(m,n) |-> mn` collapses each fibre to `(sum_(d|r) mu(d)) T_r R^+h`, which is `T_1 R^+h = R^+h`
+by `moebius_mul_coe_zeta`.
+
+The multiplicity clause is closed in the same module:
+
+```text
+analyticOrderAt_completedEulerStokes       : ord_rho(exp(-sL) Xi) = ord_rho(Xi);
+iteratedDeriv_completedEulerStokes_eq_zero : every jet below the Xi order is killed;      -- (16)
+iteratedDeriv_completedEulerStokes_ne_zero : the order-m jet is not;
+stokesJumpFamily L s                       = exp(-sL) archFactor s;
+stokesJetPolynomial rho r                  : the r-th spectral jet divided by the character;
+stokesJetPolynomial_natDegree_le           : degree <= r;
+stokesJetPolynomial_coeff_self             : the degree-r coefficient is (-1)^r archFactor(rho);
+iteratedDeriv_stokesJumpFamily             : the Leibniz form of the r-th jet;
+stokesJumpJets_linearIndependent           : the jets are linearly independent.           -- (17)
+```
+
+Independence is the card's own argument made exact: the jets are triangular in the polynomial
+degree of the logarithmic coordinate with nonvanishing diagonal `(-1)^r archFactor(rho)`, and a
+finite complex polynomial vanishing on all of `R` is zero.
+
+## Formal audit
+
+- Modules: `GaloisForLFunctions.RHTower.EulerHedenmalmGammaStokesTransgression`,
+  `GaloisForLFunctions.RHTower.EulerHedenmalmMobiusStokesInverse`
+- Targeted source check: `lake env lean` on both files — PASS
+- Module build: `lake build GaloisForLFunctions.RHTower.EulerHedenmalmMobiusStokesInverse` — PASS
+- Axiom audit: every public theorem uses only `propext`, `Classical.choice`, `Quot.sound`
+- Forbidden declaration scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
+- Umbrella: both imported by `GaloisForLFunctions/RHTower.lean`
+
+- 2026-08-06 — promoted to Stage 3.  The four items of the completion list — the literal atom
+  scaling `(3)`, the anti-causal Euler transgression `(8)` with its Tonelli interchange, the
+  absolutely convergent Möbius inverse `(9)`, and the analytic Stokes jet independence
+  `(16)`--`(17)` — are all unconditional in Lean.  What remains is not a formalization gap: the
+  focused co-Poisson/Wiener--Hopf literature audit, and the RH-bearing source theorem that the
+  killed Stokes jets extend to one common tempered self-adjoint boundary.

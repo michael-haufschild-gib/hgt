@@ -58,6 +58,70 @@ symbol inversion `n^(−a) ↦ n^a` twisted by `n^(σ−1)`.
 | `RHTower/XiShiftDivisorValueReflection.lean` | completed-Xi and `logDeriv xi` instances, corrected value + cocycle + half-centering at divisor level, central jet parity, point/two-point connectors to the existing one-shift and pairwise theories |
 | `RHTower/XiShiftDivisorPrimeSymbol.lean` | `logDeriv xi − logDeriv archFactor = −LSeries Λ` on `Re s > 1`, the divisor prime-symbol law, the reflection/inversion dictionary |
 | `RHTower/XiShiftDivisorFaithful.lean` | symbol = translation character at frequency `log n`; trivial annihilator of the corrected completed-Xi value; injectivity of divisor ↦ value |
+| `RHTower/XiEvenShiftDivisorRationality.lean` | pointwise closed form of the archimedean correction at every even shift; parity reduction of an arbitrary natural shift; the parity-balance criterion for rationality |
+
+## Parity balance
+
+The archimedean factor `archFactor s = s(s−1)/2 · Γ_ℝ(s)` contributes exactly two digamma modes to a
+natural-shift family, one per parity class. Reducing an arbitrary shift `a` to its residue
+`a % 2` (`logDeriv_archFactor_shift_split`) makes this explicit, and gives
+
+**Exact parity decomposition** (`archimedeanCorrection_family_parity_decomposition`, no hypothesis on
+the coefficients): for `0 < Re s`, `s ≠ 1`,
+
+    ∑ᵢ cᵢ · logDeriv archFactor (s + aᵢ)
+      = (even mass) · logDeriv archFactor s
+      + (odd mass) · logDeriv archFactor (s+1)
+      + explicit rational function.
+
+**Parity-balance criterion.** If the even-shift coefficients sum to zero and the odd-shift
+coefficients sum to zero, both digamma modes cancel and the family's archimedean correction is an
+explicit rational function (`archimedeanCorrection_family_of_parity_balanced`).
+
+This covers odd shifts, which the corpus previously excluded — `XiTransverseShiftPrimeDefectValueReflection`
+states "no rationality … claim is made here for odd shifts", and the even-shift telescope only handles
+shifts `2m` against the base. The point is that oddness is not the obstruction; unbalanced parity mass
+is. The pair `δ_1 − δ_3` is odd and rational; `δ_1 − δ_0` is not.
+
+By-products:
+
+- `xiTransverseShiftArchimedeanCorrection (2m) s = xiEvenShiftPrimeCorrection m s` now holds
+  **pointwise** (the corpus had it only as an upper-end germ, via
+  `xiEvenShiftPrimeCorrection_upperEndGerm_eq_archimedean`), and with it the pointwise identification
+  `xiEvenShiftPrimeDefect m s = xiTransverseShiftPrimeDefect (2m) s`.
+- The Euler-half-plane hypothesis `1 < Re s` is not needed: `logDeriv_archFactor_shift_two_of_re_pos`
+  weakens the corpus's `logDeriv_archFactor_shift_two` to `0 < Re s` and `s ≠ 1`, and the whole
+  parity layer inherits that domain.
+- **Same-parity pairs** (`xiPairwiseShiftPrimeDifference_eq_explicit`): for integral shifts of equal
+  parity the corrected pairwise value is the raw logarithmic-derivative difference minus the explicit
+  rational telescope of their half-difference. The corpus's shift-two theory
+  (`XiShiftPrimeReflectionCocycle`) is the pair `(2,0)`.
+
+### The converse input
+
+The decomposition isolates one missing fact: independence of the two digamma modes over the rational
+functions. That fact is now proved.
+
+| Module | Content |
+|---|---|
+| `HTGeometry/DifferenceTwoOrbitBrick.lean` | a rational function has no unit-shift difference whose pole part sits on two `ℤ`-orbits with incommensurable base points |
+| `HTGeometry/DigammaHalfTranslateIndependent.lean` | `ψ(z)` and `ψ(z+1/2)` are linearly independent over `ℂ(z)` |
+
+The corpus already had the single-orbit brick (`difference_single_pole_free` in
+`HolderDifferenceBricks`, the engine of its Hölder/hypertranscendence proof). The two-orbit version is
+what the parity problem needs, because the poles of `ψ(s/2)` and `ψ((s+1)/2)` lie in `ℤ`-orbits that
+differ by a half-integer. Mechanism: pinch each orbit separately — evaluating the cross-multiplied
+identity at the largest root of the denominator in an orbit forces that root to be the orbit's base
+point, and evaluating one step below the smallest forces the smallest to be one past it; incompatible
+unless the denominator has no root in the orbit at all. Then the denominator is coprime to both
+linear factors, so the pole-part numerator is divisible by a polynomial of larger degree, hence zero.
+
+Applied to the digamma recurrence: `E·ψ(z) + O·ψ(z+1/2) = P(z)/Q(z)` becomes
+`R(z+1) − R(z) = E/z + O/(z+1/2)`, whose pole part sits on the orbits of `0` and `−1/2`. The brick
+forces `E = O = 0`.
+
+Still open: wiring this back through `gammaRealLogConnection` and the substitution `z = s/2` to turn
+the parity-balance criterion into an iff.
 
 ## Faithfulness
 

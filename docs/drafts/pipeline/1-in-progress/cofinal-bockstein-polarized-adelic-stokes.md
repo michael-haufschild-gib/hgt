@@ -1832,3 +1832,63 @@ at every Xi divisor point `rho`. Lean theorem
 `RHTower.riemannHypothesis_of_eventually_norm_profileAverage_lt_one` closes RH from that inequality.
 Exact vanishing is no longer required, and the reading device is no longer fixed. The remaining
 unproved content is a source-derived strict bound, not an equality.
+
+## 2026-08-06 — first wall is a scale detector; the obligation becomes finite
+
+`[LEAN-PROVED]` `RHTower/RouteRFirstWallScaleQuantification` proves the exact modulus identity
+
+`|W_t(p)| = F(p)(1 - p^(-2|t|))`, `F(p) = p/(p+1)^2`,
+
+uniformly in the sign of `t`, and derives, for one stage of a bounded unit profile carried by primes
+at least `q ≥ 3`,
+
+`(1 - q^(-2|t|))(1 - 3/q) ≤ ‖stageAverage w (W_t)‖`.
+
+Hence a single stage at depth `q` with modulus at most `r < 1 - 3/q` gives the explicit bound
+
+`|t| ≤ log((1 - 3/q)/(1 - 3/q - r)) / (2 log q)`,
+
+and arbitrarily deep stages sharing one threshold `r < 1` force `t = 0`
+(`eq_zero_of_deepStage_norm_profileAverage_le`). The gap criterion is separately sharpened to real
+parts along a subsequence (`riemannHypothesis_of_frequently_abs_re_profileAverage_lt_one`).
+
+### Mathematical delta
+
+The open core is no longer asymptotic in the stage index. It is finite and explicit:
+
+`[OPEN CORE — ROUTE_R_FIRST_WALL_FINITE_DEPTH_CANCELLATION]` exhibit, from pre-divisor
+fixed-source-orientation Stokes/Cartier structure, for arbitrarily large depth `q`, one stage of a
+bounded unit prime profile carried above `q` whose Xi-specialized first-wall average has modulus at
+most a fixed `r < 1`.
+
+The lower bound also shows what cannot work: the stage average depends on the grade only through
+`t · log q` up to `O(1/q)`, so no reweighting is small by size. Any producer must supply cancellation
+at a finite explicit depth.
+
+## 2026-08-06 — two-sided scale law; bounded depth provably cannot decide
+
+`[LEAN-PROVED]` The depth estimate is now two-sided. For a stage of a bounded unit prime profile
+carried inside `[q, Q]`,
+
+`(1 - q^(-2|t|))(1 - 3/q) ≤ ‖stageAverage w (W_t)‖ ≤ 1 - Q^(-2|t|)`
+
+(`stageAverage_criticalWall_sandwich`). The ceiling half is a no-go for any localized form of the
+criterion: with `t = r/(2 log Q)` and `1 - e^{-x} ≤ x`, every depth-ceilinged stage admits a nonzero
+grade within any prescribed tolerance (`exists_ne_zero_norm_stageAverage_le`). Finitely supported
+stages always have a ceiling, and the window construction now records that its stages are finite, so
+`exists_isCofinalUnitProfile_no_single_stage_decides` exhibits a profile every stage of which is
+evaded by some nonzero grade.
+
+### Mathematical delta
+
+`ROUTE_R_FIRST_WALL_FINITE_DEPTH_CANCELLATION` is therefore not achievable at any bounded depth, and
+the open core is exactly its unbounded-depth core:
+
+`[OPEN CORE — ROUTE_R_FIRST_WALL_UNBOUNDED_DEPTH_CANCELLATION]` derive from pre-divisor
+fixed-source-orientation Stokes/Cartier structure a fixed `r < 1` and, for arbitrarily large depth
+`q`, one stage of a bounded unit prime profile carried above `q` whose Xi-specialized first-wall
+average has modulus at most `r`.
+
+The sandwich also settles what cannot be traded: the device output is a function of `|t| · log(depth)`
+up to the depth ratio and an `O(1/q)` Fisher correction, so neither the choice of weights nor a
+finite certificate can contribute anything. Only genuine cancellation at unboundedly deep scales can.

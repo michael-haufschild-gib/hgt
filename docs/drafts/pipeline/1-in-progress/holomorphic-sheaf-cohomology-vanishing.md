@@ -1083,3 +1083,181 @@ are `+1` and `−1`.  So the degree-one case reduces to `dbar_global_solve` / `d
 Both unconditional; axioms `propext, Classical.choice, Quot.sound`.  This is Cartan's theorem B for
 these two domains, in the concrete Dolbeault form, and it is the whole analytic input to the
 vanishing of the coherent cohomology of a complex torus in positive degrees.
+
+## The sheaf-cohomological half: what is built and what the route is (2026-08-06)
+
+The analytic half (Cartan B in Dolbeault form on `ℂ^n` and `(ℂ^×)^n`, every positive degree) is
+closed.  The remaining passage to `H^q(Z, O_Z) = 0` in the corpus's own sheaf cohomology
+`deningerSheafCohomology U F n = Ext (deningerOpenFree U) F n` is a chain of standard results that
+mathlib does not have.  Three of its links are now built.
+
+**Acyclic resolutions.**  `RHTower/DeningerAcyclicResolution.lean`.
+`DeningerAcyclic F` says all higher cohomology of `F` vanishes.  Two consequences of the covariant
+`Ext` sequence: `deningerExt_eq_zero_of_shift` (dimension shifting: with acyclic middle term, a
+class of the subsheaf in degree `n+2` comes from degree `n+1` of the quotient) and
+`deningerExt_one_eq_zero_of_lift` (degree one dies when sections of the middle term surject onto
+sections of the quotient).  Iterating gives `deningerResolution_ext_eq_zero`: **an acyclic
+resolution whose sections surject onto the sections of the successive kernels kills all higher
+cohomology.**  This is the exact shape Cartan B is used in — the analytic input is precisely the
+surjectivity of sections, i.e. global solvability of `∂̄`.
+
+**The Godement sheaf.**  `RHTower/DeningerGodement.lean`.
+`deningerGodementSheaf F` is `U ↦ ∏_{x ∈ U} F_x`, the sheaf of arbitrary sections of the stalks.
+It is a sheaf because the underlying presheaf of types is the presheaf of dependent functions, it is
+flasque because a family defined on a smaller open set extends by zero, and the germ map
+`deningerGodementι` is a monomorphism by `section_ext`.  This gives the short exact sequence
+`0 → F → C⁰(F) → C⁰(F)/F → 0` with flasque — hence acyclic — middle term.
+
+**Fine sheaves.**  `RHTower/DeningerFineSheaf.lean`.
+`DeningerFineAction F` is a multiplication of sections by continuous real functions, additive in
+both arguments, compatible with restriction, unital, and vanishing on any open set where the
+function vanishes.  The last axiom is what makes a partition of unity usable.  Two inheritance
+theorems close the induction that the dimension shift needs:
+
+- `DeningerFineAction.godement` — the sheaf of arbitrary sections of the stalks of a fine sheaf is
+  fine, the multiplication acting through `stalkFunctor`;
+- `deningerFineAction_of_epi` / `DeningerFineAction.godementQuotient` — a fine structure transports
+  along an epimorphism intertwining the multiplications, so the Godement quotient of a fine sheaf is
+  fine.  The support axiom survives because an epimorphism of sheaves is locally surjective, so
+  every germ downstairs comes from a section upstairs that the multiplication already kills.
+
+**Why this closes.**  Every kernel of the Godement resolution of a fine sheaf is again fine.  So
+once "fine implies degree one vanishes" is available, dimension shifting through the Godement
+resolution gives acyclicity in every degree — no soft-sheaf theory, no paracompactness induction
+over closed sets.
+
+**What is left, and the exact shape of it.**  One theorem: for `X` paracompact and `F` fine, and
+any short exact sequence `0 → F → B → G → 0` of sheaves, `Γ(X,B) → Γ(X,G)` is surjective.  Note it
+is only ever needed at `U = ⊤`, because both `deningerExt_eq_zero_of_shift` and
+`deningerExt_one_eq_zero_of_lift` consume acyclicity at the same open set at which they conclude.
+That removes the usual difficulty that a partition of unity on an open subset need not extend
+continuously to the ambient space.
+
+The proof is the classical cocycle argument.  Local lifts `s_i ∈ B(V_i)` of `g`; the differences
+`c_{ij} = s_i − s_j` lie in `F(V_i ⊓ V_j)` by left exactness of sections; a partition of unity `ρ_i`
+subordinate to `{V_i}`; and `t_i := s_i − ∑_j (ρ_j c_{ij})^0` where the exponent is extension by
+zero.  On overlaps `∑_k ρ_k (c_{ik} − c_{jk}) = ∑_k ρ_k c_{ij} = c_{ij}`, so `t_i = t_j` and the
+`t_i` glue to a preimage of `g`.  Three pieces of infrastructure are needed for it:
+
+1. extension by zero of `ρ · t` from `V ⊓ W` to `V` when `tsupport ρ ⊆ W` — a two-piece gluing,
+   the compatibility being exactly the support axiom of the fine action;
+2. locally finite sums of sections — a family `e_j ∈ F(V)` such that every point has a neighbourhood
+   on which all but finitely many restrict to zero has a unique sum, defined by gluing the finite
+   partial sums;
+3. left exactness of sections — `π(b) = 0` implies `b` comes from `F`, because the sections functor
+   on sheaves is a composite of two right adjoints and therefore preserves kernels.
+
+Axiom audit for everything landed: `propext, Classical.choice, Quot.sound`.
+
+## Fine sheaves on a paracompact space are acyclic (2026-08-06)
+
+The theorem named as the remaining gap above is proved, unconditionally, in
+`RHTower/DeningerSheafGluing.lean`, `RHTower/DeningerFineLifting.lean` and
+`RHTower/DeningerFineSurjective.lean`.
+
+  `deningerFine_acyclicOn : DeningerFineAction F → DeningerAcyclicOn F ⊤`
+
+for `X` normal and paracompact.  With `deningerResolution_ext_eq_zero` this is the entire
+sheaf-theoretic half of Cartan's theorem B.
+
+**The infrastructure it needed, all of it new.**
+
+- `deningerGlue`, `deningerGlue'`, `deningerGlue_two`, `deningerRes_ext`, `deningerRes_ext_two`,
+  `deningerRes_of_overlap` — gluing over a cover, over a two-piece cover, and with the
+  compatibility stated on every common refinement rather than on the intersection (which is what
+  makes the two-piece arguments free of `inf`-commutativity bookkeeping).
+- `deningerLocallyFiniteSum` — **a locally finite family of sections has a sum.**  The finite
+  partial sums over the members of a cover on which the family is finitely supported agree on
+  overlaps, so they glue; the sum restricts to the finite partial sum on *every* open set where the
+  family is finitely supported, which is the form the argument actually consumes.
+- `deningerSections_exact` and `deningerSections_injective` — sections are left exact, and a
+  monomorphism of sheaves is injective on sections.  Both go through the corepresentation
+  `Hom(deningerOpenFree U, F) ≃ Γ(U,F)`: a section corresponds to a map out of the free abelian
+  sheaf, and `ShortComplex.Exact.lift` / `cancel_mono` do the rest.  This avoids having to prove
+  that the sections functor preserves kernels.
+- `deningerExtendByZero` — if `tsupport ρ ⊆ W`, then `ρ · t` extends by zero from `V ⊓ W` to `V`.
+  The two pieces are `V ⊓ W` and `V ∖ tsupport ρ`; on the overlap the product vanishes by the
+  support axiom of the fine action.  This is the only place the axiom is used, and it is the reason
+  the axiom is stated as "vanishing on an open set where the function vanishes" rather than
+  pointwise.
+
+**The lifting theorem** `deningerFine_sections_surjective`: for a short exact sequence of sheaves
+whose kernel is fine, global sections of the quotient lift.  Local lifts `s_i` over `V_i`,
+differences `c_{ij} = s_i − s_j` in the kernel, a partition of unity `ρ_i` subordinate to `{V_i}`,
+correction `E_i = ∑_j (ρ_j c_{ij})^0`, and `t_i = s_i − ι(E_i)`.  On an overlap, term by term,
+`(ρ_k c_{ik})^0 − (ρ_k c_{jk})^0 = ρ_k c_{ij}` — checked on the two-piece cover `V_k` and off
+`tsupport ρ_k` — and summing over the finitely many `k` alive near a point gives
+`(∑_k ρ_k) c_{ij} = c_{ij}` because the partition sums to one there.  So the `t_i` glue.
+
+**Acyclicity** then follows by induction on the degree through the Godement resolution: degree one
+by the lifting theorem against the flasque `C⁰(F)`, and degree `n+2` by dimension shifting to degree
+`n+1` of `C⁰(F)/F`, which is fine by `DeningerFineAction.godementQuotient`.
+
+Only at `U = ⊤` — deliberately, since a partition of unity on an open subset need not extend to the
+ambient space, and `deningerExt_eq_zero_of_shift` and `deningerExt_one_eq_zero_of_lift` consume
+acyclicity at exactly the open set at which they conclude.  `DeningerAcyclic` was accordingly split
+into the per-open `DeningerAcyclicOn`.
+
+Axiom audit for every declaration: `propext, Classical.choice, Quot.sound`.
+
+**What remains for `H^q(Z, O_Z) = 0`.**  Only the concrete instantiation: the sheaf of holomorphic
+functions and the sheaves of smooth `(0,q)`-forms on `Z`, their fine structures (multiplication by
+smooth functions, with smooth partitions of unity), the Dolbeault sequences as short exact sequences
+of sheaves (surjectivity is the *local* `∂̄`-lemma, already proved), and the surjectivity of global
+sections (the *global* `∂̄`-lemma, `setDbar_exact_global` / `setDbar_exact_punctured`, already
+proved).  Both halves of Cartan B now exist; what is left is to connect them.
+
+## The concrete Dolbeault sheaves, and why the multiplier had to become a parameter (2026-08-06)
+
+**The multiplier refactor.**  `DeningerFineAction F` is now `DeningerFineAction F R` for
+`R : AddSubgroup C(X, ℝ)` carrying `1`.  The reason is forced: multiplying a *smooth* form by a
+merely continuous bump does not give a smooth form, so the sheaves of the Dolbeault resolution
+cannot be modules over all of `C(X,ℝ)`.  Everything downstream carries `R`:
+`DeningerFineAction.godement`, `deningerFineAction_of_epi`, `godementQuotient`,
+`deningerExtendByZero`, the lifting theorem and the acyclicity theorem.
+
+The partition-of-unity input is now the explicit predicate
+
+  `DeningerHasPartitions R` — every pointwise-indexed open cover has a subordinate, locally finite
+  family in `R` summing to one,
+
+with `deningerHasPartitions_top` proving it for `R = ⊤` on a normal paracompact space from mathlib's
+`PartitionOfUnity.exists_isSubordinate`.  The smooth case will instantiate the same predicate from
+`SmoothPartitionOfUnity`.  This is strictly better than the previous form: the analytic input is
+named, and the acyclicity theorem no longer carries topological typeclass assumptions of its own.
+
+**The domain as a space.**  `RHTower/DeningerDomainSpace.lean`.  An open `Ω ⊆ ℂ^n` becomes
+`deningerSpace Ω`, so that `⊤` of that space is `Ω` itself — which is what the acyclicity theorem
+needs, since a partition of unity on a proper open subset need not extend to the ambient space.
+`deningerAmb U` is the ambient open set of an open set of the domain, and `deningerExtend f` is the
+extension of a section by zero to all of `ℂ^n`.  Because `Ω` is open, the extension agrees with the
+section near each of its points (`deningerExtend_eventuallyEq`), which is what makes every analytic
+condition stated through it local and restriction-stable.
+
+**The sheaves.**  `RHTower/DeningerDolbeaultSheaf.lean`.
+
+  `DeningerFormPred q f` : the coefficients vanish off the sets of `q` directions, and near every
+  point the extension agrees with a **globally smooth** `SetForm` on `ℂ^n`.
+
+Stating smoothness through a global model, rather than through local differentiability, is the
+design decision that makes the entire corpus Dolbeault theory usable verbatim: `setDbar_smooth`,
+`setDbar_add`, `setDbar_setDbar_eq_zero`, `setDbar_polydisc_solve` and `setDbar_exact_global` are
+all statements about globally smooth forms, and `deningerSetDbar_model` says the differential of a
+section is computed by any of its local models (by `setDbar_congr_of_eventuallyEq`).
+
+`DeningerClosedFormPred q` adds the vanishing of that differential.  Both are local predicates
+closed under the group operations, so `DeningerLocalGroupData` — the general gadget turning such a
+predicate into a sheaf of abelian groups, built in `RHTower/DeningerLocalSheaf.lean` on top of
+mathlib's `subpresheafToTypes` — produces
+
+  `deningerFormSheaf Ω q`       : smooth `(0,q)`-forms,
+  `deningerClosedFormSheaf Ω q` : closed smooth `(0,q)`-forms; for `q = 0` the holomorphic functions.
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+**What is left.**  The maps `deningerClosedFormSheaf Ω q ⟶ deningerFormSheaf Ω q` (inclusion) and
+`deningerFormSheaf Ω q ⟶ deningerClosedFormSheaf Ω (q+1)` (the differential), short exactness of
+each step — the epimorphism being the *local* `∂̄`-lemma — the fine action by smooth functions with
+`DeningerHasPartitions` from `SmoothPartitionOfUnity`, and the surjectivity on global sections,
+which is `setDbar_exact_global` / `setDbar_exact_punctured`.  Then
+`deningerResolution_ext_eq_zero` gives `H^q(Ω, O) = 0`.

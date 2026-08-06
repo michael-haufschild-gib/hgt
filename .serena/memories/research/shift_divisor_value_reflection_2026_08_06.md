@@ -73,6 +73,51 @@ Subsumes (machine-checked connectors exist):
   differential independence) only covers distinct nonzero NATURAL shifts; the arithmetic route
   reproves that and extends to complex shifts.
 
+## Parity balance (archimedean rationality)
+
+`GaloisForLFunctions/RHTower/XiEvenShiftDivisorRationality.lean`
+
+- `xiTransverseShiftArchimedeanCorrection_even`: for `1 < s.re`,
+  `xiTransverseShiftArchimedeanCorrection (2*m) s = xiEvenShiftPrimeCorrection m s` POINTWISE.
+  The corpus only had this as an upper-end germ
+  (`xiEvenShiftPrimeCorrection_upperEndGerm_eq_archimedean`); the pointwise shift-two step
+  `logDeriv_archFactor_shift_two` was already in `XiShiftPrimeExposure`.
+- `xiEvenShiftPrimeDefect_eq_xiTransverseShiftPrimeDefect`: pointwise on `1 < s.re`.
+- `logDeriv_archFactor_shift_split`: reduce any natural shift `a` to residue `a % 2` plus rational.
+- **`archimedeanCorrection_family_of_parity_balanced`**: the archimedean correction of a
+  natural-shift family is rational as soon as the EVEN-shift coefficient mass and the ODD-shift
+  coefficient mass separately vanish.  Odd shifts are NOT the obstruction — unbalanced parity mass
+  is.  `delta_1 - delta_3` is odd and rational; `delta_1 - delta_0` is not.  This closes the
+  "no rationality claim for odd shifts" caveat in `XiTransverseShiftPrimeDefectValueReflection`.
+- divisor forms: `xiShiftDivisorArchimedeanCorrection_parityBalanced`,
+  `xiShiftDivisorPrimeValue_parityBalanced`.
+- **`archimedeanCorrection_family_parity_decomposition`** (no hypothesis on coefficients) is the
+  primary law: `sum c_i logDeriv archFactor (s + a_i) = (even mass)*logDeriv archFactor s +
+  (odd mass)*logDeriv archFactor (s+1) + explicit rational`.  Balance is the corollary.
+- domain: `logDeriv_archFactor_shift_two_of_re_pos` weakens the corpus's
+  `logDeriv_archFactor_shift_two` from `1 < s.re` to `0 < s.re` and `s <> 1`; the whole parity layer
+  inherits that.
+- same-parity pairs: `xiPairwiseShiftPrimeDifference_eq_explicit`,
+  `xiPairwiseShiftArchimedeanCorrectionDifference_eq_explicit`, `pairShiftDivisor_parityBalanced`.
+  The corpus shift-two theory (`XiShiftPrimeReflectionCocycle`) is the pair `(2,0)`.
+- converse input NOW PROVED:
+  * `GaloisForLFunctions/HTGeometry/DifferenceTwoOrbitBrick.lean` —
+    `difference_two_orbit_pole_free`: a rational function has no unit-shift difference whose pole
+    part sits on two ZZ-orbits with incommensurable base points.  Also
+    `difference_two_orbit_pole_free_of_eval` (pointwise identity on any infinite set suffices) and
+    `q_eval_ne_zero_of_orbit` (the orbit pinch, reusable).
+    The corpus already had the SINGLE-orbit version `difference_single_pole_free` in
+    `HolderDifferenceBricks` (engine of its Hoelder/hypertranscendence proof); two orbits is what the
+    parity problem needs since poles of psi(s/2) and psi((s+1)/2) differ by a half-integer.
+  * `GaloisForLFunctions/HTGeometry/DigammaHalfTranslateIndependent.lean` —
+    `digamma_half_translate_independent`: psi(z) and psi(z+1/2) are linearly independent over C(z).
+- still open: wire this through `gammaRealLogConnection` and the substitution z = s/2 to upgrade the
+  parity-balance criterion to an iff.
+- blocked: an explicit rational reflection cocycle for same-parity pairs.  The reflected point
+  `1-a-b-s` has negative real part, outside the domain of the rational closed form; that needs a
+  global meromorphic identity (identity theorem for meromorphic functions), not just a half-plane
+  one.
+
 ## Scope boundary
 
 Divisor-side bookkeeping of the functional equation only.  It creates no positivity and is blind to

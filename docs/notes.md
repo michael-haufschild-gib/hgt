@@ -195,3 +195,75 @@ at every Xi divisor point `rho`. Lean theorem
 `RHTower.riemannHypothesis_of_eventually_norm_profileAverage_lt_one` closes RH from that inequality.
 Exact vanishing is no longer required, and the reading device is no longer fixed. The remaining
 unproved content is a source-derived strict bound, not an equality.
+
+
+Verified. This strictly supersedes previous exact-zero open core.
+
+Verdict: `[LEAN-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`. Direct Lean check passes; profile axioms contain no critical-line, divisor, or source-flatness premise.
+
+Exact remaining burden is:
+
+\[
+\exists\mu,\ \operatorname{CofinalUnitProfile}(\mu)
+\quad\land\quad
+\forall\rho,\ \exists r_\rho<1,\ 
+\|A_N^\mu(W_{t_\rho})\|\le r_\rho
+\text{ eventually}.
+\]
+
+One precision: current theorem uses one global profile, but permits \(r_\rho\) to depend on \(\rho\). A uniform \(r<1\) would be stronger.
+
+This is genuine progress because source producer now needs only strict sub-unit control, not vanishing. It remains RH-bearing: no source-derived proof of that bound exists yet.
+
+- [RouteRHarmonicQuantumGapCriterion.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/RouteRHarmonicQuantumGapCriterion.lean:84)
+- [CofinalUnitProfileResidue.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/HTGeometry/CofinalUnitProfileResidue.lean:92)
+
+Next frontier: construct a pre-divisor Stokes/Cartier profile and prove its physical first-wall average has a strict norm gap below \(1\).
+
+
+## Update 4
+ turned the Route R obligation from an asymptotic limit into a finite, explicit inequality.
+
+New module: RHTower/RouteRFirstWallScaleQuantification.lean
+
+The key step was proving the first-wall coefficient's modulus exactly, sign-free across all three orientations:
+
+|W_t(p)| = F(p)·(1 − p^(−2|t|)),  F(p) = p/(p+1)²
+
+From there, for one stage of a bounded unit profile carried by primes ≥ q ≥ 3 — no limits, no escaping supports, no stage index:
+
+(1 − q^(−2|t|))·(1 − 3/q) ≤ ‖stageAverage w (W_t)‖
+
+Two ingredients, both already in the corpus: 1 − p^(−2|t|) increases with p, and the Fisher bound 1/p − F(p) ≤ 3/p² gives F(p) ≥ (1−3/q)/p on the support. Consequences:
+
+- abs_le_of_norm_stageAverage_le — a single stage at depth q ≥ 4 with modulus ≤ r < 1 − 3/q forces |t| ≤ log((1−3/q)/(1−3/q−r)) / (2 log q).
+- eq_zero_of_deepStage_norm_profileAverage_le — arbitrarily deep stages sharing one threshold r < 1 force t = 0.
+
+The bound also says what cannot work: the stage average depends on the grade only through t·log q up to O(1/q), so no reweighting makes it small by size. A producer must supply genuine cancellation at one finite explicit depth. That is now the whole remaining content of the open core.
+
+Sharpened the previous criterion (in RouteRHarmonicQuantumGapCriterion.lean): since the limiting residue is real with modulus 0 or 1, only the real part matters and only frequently — riemannHypothesis_of_frequently_abs_re_profileAverage_lt_one needs ∃ᶠ N, |(A_N).re| ≤ r for some r < 1 per zero.
+
+Supporting general API added to HTGeometry/CofinalUnitProfileResidue.lean: IsUnitStage (the honest per-stage hypothesis — escape belongs to the family, not the stage), stageAverage, and the two termwise comparison lemmas tsum_stageWeighted_le / le_tsum_stageWeighted that drive every depth estimate.
+
+
+Integrated. This is a real frontier reduction, with two precision corrections:
+
+- One finite stage only bounds \(|t|\); it cannot force \(t=0\). Exact closure requires arbitrarily deep finite stages sharing one \(r<1\), as `eq_zero_of_deepStage_norm_profileAverage_le` states.
+- Positive unit stages contain no internal cancellation: \(W_t(p)\) has constant sign across primes. “Cancellation” must come from an external source/Stokes comparison producing the upper bound.
+
+Thus exact open core is:
+
+\[
+\exists r<1,\ \forall Q,\ \exists N:
+\operatorname{supp}(\mu_N)\subseteq\{p\ge Q\}
+\land \|A_N(W_{t_\rho})\|\le r.
+\]
+
+This removes convergence in stage index, replacing it with arbitrarily deep finite inequalities. Direct Lean verification passes.
+
+- [RouteRFirstWallScaleQuantification.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/RouteRFirstWallScaleQuantification.lean:170)
+- [Explicit grade bound](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/RouteRFirstWallScaleQuantification.lean:327)
+- [Deep-stage criterion](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/RouteRFirstWallScaleQuantification.lean:368)
+- [Frequent real-part criterion](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/RouteRHarmonicQuantumGapCriterion.lean:138)
+
+Verdict: `[LEAN-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`. Remaining producer must establish finite-depth upper bounds that contradict the positive first-wall lower bound off-center.

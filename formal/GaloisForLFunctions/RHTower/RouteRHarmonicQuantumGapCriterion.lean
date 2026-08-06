@@ -113,6 +113,40 @@ theorem tendsto_profileAverage_criticalWall_zero_iff
   · rintro rfl
     exact tendsto_profileAverage_criticalWall_zero hmu
 
+/-! ## Sharpened gap: one subsequence of real parts -/
+
+private theorem not_frequently_abs_re_profileAverage_le_of_unit
+    {t r : ℝ} (hr : r < 1) {c : ℂ} (hc : |c.re| = 1)
+    (hlim : Tendsto
+      (fun N => profileAverage mu N (routeRPrimeGammaCriticalWallField t))
+      atTop (𝓝 c))
+    (hfreq : ∃ᶠ N in atTop,
+      |(profileAverage mu N (routeRPrimeGammaCriticalWallField t)).re| ≤ r) :
+    False := by
+  have hre : Tendsto
+      (fun N =>
+        |(profileAverage mu N (routeRPrimeGammaCriticalWallField t)).re|)
+      atTop (𝓝 |c.re|) :=
+    ((Complex.continuous_re.tendsto c).comp hlim).abs
+  rw [hc] at hre
+  obtain ⟨N, hle, hlt⟩ := (hfreq.and_eventually (hre.eventually_const_lt hr)).exists
+  linarith
+
+/-- **Sharpest form of the gap criterion.**  The limiting residue is real and
+quantized, so it is enough that the *real parts* stay below the quantum along a
+*single subsequence*. -/
+theorem eq_zero_of_frequently_abs_re_profileAverage_le
+    (hmu : IsCofinalUnitProfile primeHarmonicWeight mu) {t r : ℝ} (hr : r < 1)
+    (hfreq : ∃ᶠ N in atTop,
+      |(profileAverage mu N (routeRPrimeGammaCriticalWallField t)).re| ≤ r) :
+    t = 0 := by
+  by_contra ht
+  rcases lt_or_gt_of_ne ht with htneg | htpos
+  · exact not_frequently_abs_re_profileAverage_le_of_unit hr (by simp)
+      (tendsto_profileAverage_criticalWall_one_of_neg hmu htneg) hfreq
+  · exact not_frequently_abs_re_profileAverage_le_of_unit hr (by simp)
+      (tendsto_profileAverage_criticalWall_neg_one_of_pos hmu htpos) hfreq
+
 /-! ## The Xi endpoint -/
 
 /-- Sub-quantum gap at one divisor point puts that point on the critical
@@ -125,6 +159,16 @@ theorem xiDivisorSupport_re_eq_half_of_eventually_norm_profileAverage_le
     (rho : ℂ).re = 1 / 2 := by
   rw [← primeDepthBVWoldXiCenteredRate_eq_zero_iff]
   exact eq_zero_of_eventually_norm_profileAverage_le hmu hr hbound
+
+/-- Sharpened Xi endpoint: real parts, along a subsequence only. -/
+theorem xiDivisorSupport_re_eq_half_of_frequently_abs_re_profileAverage_le
+    (hmu : IsCofinalUnitProfile primeHarmonicWeight mu)
+    (rho : XiDivisorSupport) {r : ℝ} (hr : r < 1)
+    (hfreq : ∃ᶠ N in atTop,
+      |(profileAverage mu N (routeRPrimeGammaXiCriticalWallField rho)).re| ≤ r) :
+    (rho : ℂ).re = 1 / 2 := by
+  rw [← primeDepthBVWoldXiCenteredRate_eq_zero_iff]
+  exact eq_zero_of_frequently_abs_re_profileAverage_le hmu hr hfreq
 
 end Profile
 
@@ -150,6 +194,19 @@ theorem riemannHypothesis_of_eventually_norm_profileAverage_lt_one
   obtain ⟨r, hr, hb⟩ := hbound rho
   exact xiDivisorSupport_re_eq_half_of_eventually_norm_profileAverage_le
     hmu rho hr hb
+
+/-- **RH from one sub-quantum gap on real parts along a subsequence.**  The
+weakest form of the criterion this file provides. -/
+theorem riemannHypothesis_of_frequently_abs_re_profileAverage_lt_one
+    {mu : ℕ → Nat.Primes → ℝ}
+    (hmu : IsCofinalUnitProfile primeHarmonicWeight mu)
+    (hfreq : ∀ rho : XiDivisorSupport, ∃ r < 1, ∃ᶠ N in atTop,
+      |(profileAverage mu N (routeRPrimeGammaXiCriticalWallField rho)).re| ≤ r) :
+    RiemannHypothesis := by
+  refine riemannHypothesis_of_forall_xiDivisorSupport_re_eq_half fun rho => ?_
+  obtain ⟨r, hr, hf⟩ := hfreq rho
+  exact xiDivisorSupport_re_eq_half_of_frequently_abs_re_profileAverage_le
+    hmu rho hr hf
 
 /-- The criterion is not vacuous: bounded cofinal prime-harmonic profiles
 exist. -/

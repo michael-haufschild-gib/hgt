@@ -824,3 +824,80 @@ the annulus current are proved statements about the corpus's own finite Hellinge
 - 2026-08-06 -- Sections 1, 2, 3, 4 and the local factorization of section 6 are fully formalized.
   Outstanding: section 5's fixed-displacement accelerated boundary `(24)`--`(25)`, which needs
   Mertens' third theorem with the constant `e^(-gamma)`.
+
+### Section 5: the remaining construction plan
+
+`(25)` is `lim a_x log L_x(c) = 2 e^(-gamma) c` with `a_x = prod_(p<=x)(1-1/p)`.  It factors as
+
+```text
+a_x log L_x(c) = (a_x log x) . (log L_x(c) / log x),
+```
+
+so it needs exactly two unconditional inputs.
+
+1. `log L_x(c) / log x -> 2c` for fixed `0 < c < 1/2`.  This does not need the prime number theorem
+   or the full prime--Wold asymptotic `(24)`; Mertens' first theorem suffices.
+   - upper: `-log(1-t) <= t/(1-t)` on the four abscissae gives
+     `L_N(c) <= K_c sum_(p<N) p^(2c-1) + O(1) <= K_c N^(2c)/(2c) + O(1)`, hence
+     `log L_N(c) <= 2c log N + O(1)`;
+   - lower: for every `theta < 1`, the already formalized positivity of every local term gives
+     `L_N(c) >= sum_(N^theta <= p < N) (p^(2c-1) - 2p^(c-1) - p^(-2c-1))`, and Mertens' first
+     theorem bounds `sum_(N^theta <= p < N) 1/p >= (1-theta)/2` for large `N`, so
+     `log L_N(c) >= 2c theta log N + O_theta(1)`.
+2. Mertens' third theorem `a_x log x -> e^(-gamma)`.  Absent from mathlib and from this corpus.
+   The build is
+   - `M1` Mertens' second theorem with constant: `sum_(p<x) 1/p - log log x -> M`, by Abel
+     summation of `mertensPrimeWeightSum` against `1/log t` (the error `E(t) = W(t) - log t` is
+     bounded, and `int^infty dt/(t log^2 t)` converges);
+   - `M2` the constant identification `M = gamma + B`, `B = sum_p (log(1-1/p) + 1/p)`, by the
+     classical Abelian argument: on `s > 1`,
+     `sum_p p^(-s) = log zeta(s) - R(s)` with `R(1) = -B`, and mathlib's
+     `log_riemannZeta_add_log_sub_isLittleO_ofReal` gives `sum_p p^(-s) + log(s-1) -> B`; on the
+     other side partial summation of `M1` gives `sum_p p^(-s) + log(s-1) -> M - gamma`, using
+     `int_0^infty (log u) e^(-u) du = -gamma`;
+   - `M3` assembling `prod_(p<x)(1-1/p) = exp(B_x - A(x))` with `A(x) = log log x + M + o(1)`.
+
+The only genuinely missing analytic input beyond mathlib is `int_0^infty (log u) e^(-u) du = -gamma`
+(equivalently `Gamma'(1) = -gamma`) together with the two Abel summations.
+
+#### Section 5 progress
+
+Three of the four Mertens-third inputs are now unconditional in Lean (`#print axioms` clean).
+
+```text
+HTGeometry/GammaLogIntegralEulerMascheroni.lean
+  integral_log_mul_exp_neg_Ioi        : int_0^infty (log t) e^(-t) dt = -gamma
+                                        (via Complex.hasDerivAt_GammaIntegral at s = 1).
+
+RHTower/MertensSecondTheorem.lean                                              -- M1
+  primeRecipSum N                     = sum_(p <= N) 1/p;
+  mertensFloorError t                 = sum_(p <= t) (log p)/p - log t, uniformly bounded;
+  mertensErrorWeight t                = 1/(t log^2 t);
+  integrableOn_mertensErrorWeight     : integrable on (2,infty), by the antiderivative -1/log t;
+  mertensSecondConstant               = 1 - log log 2 + int_2^infty error . weight;
+  tendsto_primeRecipSum_sub_logLog    : sum_(p<=N) 1/p - log log N -> M.
+
+RHTower/PrimeZetaLogAsymptotic.lean                                            -- half of M2
+  hasSum_log_of_hasProd               : log of a positive infinite product is the sum of logs;
+  hasProd_primeEulerFactor            : the real Euler product for zeta on s > 1;
+  hasSum_negLog_primeEulerFactor      : sum_p -log(1 - p^(-s)) = log zeta(s);
+  primeZeta s                         = sum_p p^(-s);
+  primeLogDefect s                    = sum_p (-log(1-p^(-s)) - p^(-s)), summable for s >= 1;
+  primeZeta_add_primeLogDefect        : P(s) + D(s) = log zeta(s);
+  tendsto_primeLogDefect              : D is right-continuous at 1 (dominated convergence);
+  tendsto_primeZeta_add_log_sub       : P(s) + log(s-1) -> -D(1) = sum_p (log(1-1/p)+1/p).
+```
+
+What is left is the Abelian half of `M2`: `P(s) + log(s-1) -> M - gamma`.  The route is fixed by
+mathlib's `tendsto_sum_mul_atTop_nhds_one_sub_integral₀` applied with `c = primeRecipWeight` and
+`f t = t^(-delta)`, which gives the improper Abel representation
+
+```text
+P(1 + delta) = delta int_1^infty t^(-delta-1) (sum_(p <= t) 1/p) dt,
+```
+
+after which `sum_(p<=t) 1/p = log log t + M + o(1)` splits the integral into
+`delta int_2^infty (log log t) t^(-delta-1) dt` (which is `-gamma - log delta + o(1)` after the
+substitution `u = delta log t` and the `-gamma` integral above), `M . 2^(-delta) -> M`, and a
+vanishing error term.  Comparing the two limits gives `M = gamma + sum_p (log(1-1/p)+1/p)`, hence
+Mertens' third theorem and `(25)`.

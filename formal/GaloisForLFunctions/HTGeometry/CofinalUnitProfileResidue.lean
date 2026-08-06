@@ -95,13 +95,72 @@ structure IsCofinalUnitProfile (h : ι → ℝ) (mu : ℕ → ι → ℝ) : Prop
   hasSum_mass : ∀ N, HasSum (fun i => mu N i * h i) 1
   escapes : ∀ s : Finset ι, ∀ᶠ N in atTop, ∀ i ∈ s, mu N i = 0
 
+/-- One stage of a bounded unit profile: weights in `[0,1]` of unit reference
+mass.  This is everything a single-stage estimate can use; escape of the
+supports is a property of the family, not of a stage. -/
+structure IsUnitStage (h : ι → ℝ) (w : ι → ℝ) : Prop where
+  nonneg : ∀ i, 0 ≤ w i
+  le_one : ∀ i, w i ≤ 1
+  hasSum_mass : HasSum (fun i => w i * h i) 1
+
 /-- Average of a field against one stage of a profile. -/
 noncomputable def profileAverage (mu : ℕ → ι → ℝ) (N : ℕ) (a : ι → ℂ) : ℂ :=
   ∑' i, (mu N i : ℂ) * a i
 
+/-- Average of a field against a single stage. -/
+noncomputable def stageAverage (w : ι → ℝ) (a : ι → ℂ) : ℂ :=
+  ∑' i, (w i : ℂ) * a i
+
+theorem profileAverage_eq_stageAverage (mu : ℕ → ι → ℝ) (N : ℕ) (a : ι → ℂ) :
+    profileAverage mu N a = stageAverage (mu N) a := rfl
+
+/-! ### Single-stage comparison against the reference mass -/
+
+section Stage
+
+variable {h w d : ι → ℝ} {K : ℝ}
+
+/-- A stage average is at most `K` once every weighted term is at most `K`
+times the corresponding reference term. -/
+theorem tsum_stageWeighted_le (hmass : HasSum (fun i => w i * h i) 1)
+    (hsum : Summable fun i => w i * d i)
+    (hbd : ∀ i, w i * d i ≤ K * (w i * h i)) :
+    ∑' i, w i * d i ≤ K := by
+  calc ∑' i, w i * d i ≤ ∑' i, K * (w i * h i) :=
+        hsum.tsum_le_tsum hbd (hmass.summable.mul_left K)
+    _ = K * ∑' i, w i * h i := tsum_mul_left
+    _ = K := by rw [hmass.tsum_eq, mul_one]
+
+/-- A stage average is at least `K` once every weighted term is at least `K`
+times the corresponding reference term. -/
+theorem le_tsum_stageWeighted (hmass : HasSum (fun i => w i * h i) 1)
+    (hsum : Summable fun i => w i * d i)
+    (hbd : ∀ i, K * (w i * h i) ≤ w i * d i) :
+    K ≤ ∑' i, w i * d i := by
+  calc K = K * ∑' i, w i * h i := by rw [hmass.tsum_eq, mul_one]
+    _ = ∑' i, K * (w i * h i) := tsum_mul_left.symm
+    _ ≤ ∑' i, w i * d i :=
+        (hmass.summable.mul_left K).tsum_le_tsum hbd hsum
+
+/-- A real stage average is the real average, coerced. -/
+theorem stageAverage_ofReal {f : ι → ℝ} (hs : Summable fun i => w i * f i) :
+    stageAverage w (fun i => (f i : ℂ)) = ((∑' i, w i * f i : ℝ) : ℂ) := by
+  have h1 := Complex.hasSum_ofReal.mpr hs.hasSum
+  exact (h1.congr_fun fun i => by push_cast; ring).tsum_eq
+
+theorem norm_stageAverage_ofReal {f : ι → ℝ} (hs : Summable fun i => w i * f i) :
+    ‖stageAverage w (fun i => (f i : ℂ))‖ = |∑' i, w i * f i| := by
+  rw [stageAverage_ofReal hs, Complex.norm_real, Real.norm_eq_abs]
+
+end Stage
+
 section Profile
 
 variable {h : ι → ℝ} {mu : ℕ → ι → ℝ}
+
+theorem IsCofinalUnitProfile.isUnitStage (hmu : IsCofinalUnitProfile h mu)
+    (N : ℕ) : IsUnitStage h (mu N) :=
+  ⟨hmu.nonneg N, hmu.le_one N, hmu.hasSum_mass N⟩
 
 theorem norm_profileTerm_le (hmu : IsCofinalUnitProfile h mu) (N : ℕ)
     (a : ι → ℂ) (i : ι) : ‖(mu N i : ℂ) * a i‖ ≤ ‖a i‖ := by
@@ -244,6 +303,26 @@ theorem unitWindowProfile_eq_zero_of_lt (hmN : ∀ N, N ≤ m N) {N n : ℕ}
     omega
   rw [unitWindowProfile, if_neg hA, if_neg hB]
 
+theorem unitWindowProfile_eq_zero_of_gt {N n : ℕ} (hn : m N < n) :
+    unitWindowProfile h m N n = 0 := by
+  have hA : n ∉ Finset.Ico N (m N) := by
+    simp only [Finset.mem_Ico]
+    omega
+  have hB : n ≠ m N := by omega
+  rw [unitWindowProfile, if_neg hA, if_neg hB]
+
+/-- Window stages are carried by finitely many indices. -/
+theorem finite_support_unitWindowProfile (hmN : ∀ N, N ≤ m N) (N : ℕ) :
+    (Function.support (unitWindowProfile h m N)).Finite := by
+  refine Set.Finite.subset (Finset.Ico N (m N + 1)).finite_toSet fun n hn => ?_
+  have hne : unitWindowProfile h m N n ≠ 0 := hn
+  simp only [Finset.coe_Ico, Set.mem_Ico]
+  refine ⟨?_, ?_⟩
+  · by_contra hlt
+    exact hne (unitWindowProfile_eq_zero_of_lt hmN (not_le.mp hlt))
+  · by_contra hge
+    exact hne (unitWindowProfile_eq_zero_of_gt (by omega))
+
 theorem hasSum_unitWindowProfile_mass (hpos : ∀ n, 0 < h n)
     (hmN : ∀ N, N ≤ m N) (N : ℕ) :
     HasSum (fun n => unitWindowProfile h m N n * h n) 1 := by
@@ -280,11 +359,14 @@ theorem hasSum_unitWindowProfile_mass (hpos : ∀ n, 0 < h n)
 
 end Window
 
-/-- **Every divergent positive weight is read by a bounded cofinal profile.**
-The window construction supplies one, so the residue over such a weight is
-always a limit of bounded cofinal averages. -/
-theorem exists_isCofinalUnitProfile {h : ℕ → ℝ} (hpos : ∀ n, 0 < h n)
-    (hns : ¬ Summable h) : ∃ mu : ℕ → ℕ → ℝ, IsCofinalUnitProfile h mu := by
+/-- **Every divergent positive weight is read by a bounded cofinal profile with
+finitely supported stages.**  The window construction supplies one, so the
+residue over such a weight is always a limit of bounded cofinal averages, each
+of them a finite sum. -/
+theorem exists_isCofinalUnitProfile_finiteSupport {h : ℕ → ℝ}
+    (hpos : ∀ n, 0 < h n) (hns : ¬ Summable h) :
+    ∃ mu : ℕ → ℕ → ℝ, IsCofinalUnitProfile h mu ∧
+      ∀ N, (Function.support (mu N)).Finite := by
   classical
   have hdiv : Tendsto (fun n => ∑ i ∈ Finset.range n, h i) atTop atTop :=
     (not_summable_iff_tendsto_nat_atTop_of_nonneg fun n => (hpos n).le).mp hns
@@ -319,7 +401,7 @@ theorem exists_isCofinalUnitProfile {h : ℕ → ℝ} (hpos : ∀ n, 0 < h n)
     rw [← hsucc, Finset.sum_Ico_succ_top hk] at hspec
     exact hspec
   choose m hmN hmlt hmge using hwindow
-  refine ⟨unitWindowProfile h m, ?_, ?_, ?_, ?_⟩
+  refine ⟨unitWindowProfile h m, ⟨?_, ?_, ?_, ?_⟩, ?_⟩
   · exact fun N n => unitWindowProfile_nonneg hpos hmlt N n
   · exact fun N n => unitWindowProfile_le_one hpos hmge N n
   · exact fun N => hasSum_unitWindowProfile_mass hpos hmN N
@@ -327,6 +409,12 @@ theorem exists_isCofinalUnitProfile {h : ℕ → ℝ} (hpos : ∀ n, 0 < h n)
     filter_upwards [eventually_gt_atTop (s.sup id)] with N hN i hi
     exact unitWindowProfile_eq_zero_of_lt hmN
       (lt_of_le_of_lt (Finset.le_sup (f := id) hi) hN)
+  · exact fun N => finite_support_unitWindowProfile hmN N
+
+theorem exists_isCofinalUnitProfile {h : ℕ → ℝ} (hpos : ∀ n, 0 < h n)
+    (hns : ¬ Summable h) : ∃ mu : ℕ → ℕ → ℝ, IsCofinalUnitProfile h mu :=
+  let ⟨mu, hmu, _⟩ := exists_isCofinalUnitProfile_finiteSupport hpos hns
+  ⟨mu, hmu⟩
 
 /-! ## Transport along a reindexing -/
 
@@ -343,17 +431,32 @@ theorem IsCofinalUnitProfile.equivTransport {κ : Type*} (e : κ ≃ ι) {h : ι
   · filter_upwards [hnu.escapes (s.image e.symm)] with N hN i hi
     exact hN _ (Finset.mem_image_of_mem _ hi)
 
+/-- Reindexing preserves finiteness of a stage support. -/
+theorem finite_support_comp_equiv {κ : Type*} (e : κ ≃ ι) {v : κ → ℝ}
+    (hv : (Function.support v).Finite) :
+    (Function.support fun i => v (e.symm i)).Finite :=
+  (hv.image e).subset fun i hi => ⟨e.symm i, hi, e.apply_symm_apply i⟩
+
 /-- **Every divergent positive weight on a countable index set is read by a
-bounded cofinal profile.** -/
-theorem exists_isCofinalUnitProfile_of_equiv (e : ℕ ≃ ι) {h : ι → ℝ}
+bounded cofinal profile with finitely supported stages.** -/
+theorem exists_isCofinalUnitProfile_finiteSupport_of_equiv (e : ℕ ≃ ι) {h : ι → ℝ}
     (hpos : ∀ i, 0 < h i) (hns : ¬ Summable h) :
-    ∃ mu : ℕ → ι → ℝ, IsCofinalUnitProfile h mu := by
+    ∃ mu : ℕ → ι → ℝ, IsCofinalUnitProfile h mu ∧
+      ∀ N, (Function.support (mu N)).Finite := by
   have hnsPull : ¬ Summable fun n => h (e n) := by
     intro hsum
     exact hns ((e.summable_iff (f := h)).mp (by simpa [Function.comp_def] using hsum))
-  obtain ⟨nu, hnu⟩ :=
-    exists_isCofinalUnitProfile (h := fun n => h (e n)) (fun n => hpos (e n)) hnsPull
-  exact ⟨fun N i => nu N (e.symm i), hnu.equivTransport e⟩
+  obtain ⟨nu, hnu, hfin⟩ :=
+    exists_isCofinalUnitProfile_finiteSupport (h := fun n => h (e n))
+      (fun n => hpos (e n)) hnsPull
+  exact ⟨fun N i => nu N (e.symm i), hnu.equivTransport e,
+    fun N => finite_support_comp_equiv e (hfin N)⟩
+
+theorem exists_isCofinalUnitProfile_of_equiv (e : ℕ ≃ ι) {h : ι → ℝ}
+    (hpos : ∀ i, 0 < h i) (hns : ¬ Summable h) :
+    ∃ mu : ℕ → ι → ℝ, IsCofinalUnitProfile h mu :=
+  let ⟨mu, hmu, _⟩ := exists_isCofinalUnitProfile_finiteSupport_of_equiv e hpos hns
+  ⟨mu, hmu⟩
 
 /-! ## The prime-harmonic reference weight -/
 
@@ -380,6 +483,15 @@ theorem primeHarmonicResidue_unique {a : Nat.Primes → ℂ} {c d : ℂ}
 theorem exists_isCofinalUnitProfile_primeHarmonic (e : ℕ ≃ Nat.Primes) :
     ∃ mu : ℕ → Nat.Primes → ℝ, IsCofinalUnitProfile primeHarmonicWeight mu :=
   exists_isCofinalUnitProfile_of_equiv e primeHarmonicWeight_pos
+    not_summable_primeHarmonicWeight
+
+/-- Bounded cofinal prime-harmonic profiles whose stages are carried by finitely
+many primes exist. -/
+theorem exists_isCofinalUnitProfile_finiteSupport_primeHarmonic
+    (e : ℕ ≃ Nat.Primes) :
+    ∃ mu : ℕ → Nat.Primes → ℝ, IsCofinalUnitProfile primeHarmonicWeight mu ∧
+      ∀ N, (Function.support (mu N)).Finite :=
+  exists_isCofinalUnitProfile_finiteSupport_of_equiv e primeHarmonicWeight_pos
     not_summable_primeHarmonicWeight
 
 end GaloisForLFunctions.HTGeometry
