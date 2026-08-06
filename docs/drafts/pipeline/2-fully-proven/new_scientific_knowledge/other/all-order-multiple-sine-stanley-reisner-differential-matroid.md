@@ -908,7 +908,74 @@ equations hold for it up to one rational function, and a rational shift is a bas
   coordinate in either off-face direction is a cotangent up to a rational function, hence DA.
 - `differentialAlgebraicOver_translate_canonicalFace` — **unconditional**: every integer
   off-face translate of any external translate of the face coordinate differs from it by an
-  element differentially algebraic over `ℂ`.  This is the analytic content of rank-neutrality.  The remaining assembly — the two-cylinder differential base field, the translation
+  element differentially algebraic over `ℂ`.  This is the analytic content of rank-neutrality.
+
+`HTGeometry.MultipleSineFacePacket` — **the canonical packet of a face**.
+
+- `facePacket ω hω J` — the external translates of `frameSourceMero ω hω Jᶜ`; no choice data.
+- `diffIndepOn_facePacket` — a maximal-face packet is differentially independent over `ℂ`.
+- `differentialAlgebraicOver_facePacket_offStar`,
+  `differentialAlgebraicOver_adjoin_facePacket_offStar` — off-face neutrality in packet form.
+
+`HTGeometry.MultipleSineFacePacketDisjoint` — **distinct faces, disjoint packets**.
+
+- `not_differentialAlgebraicOver_facePacket_freeStep` — a direction of the face itself moves the
+  packet by a non-algebraic amount, because the packet family is differentially independent.
+- `facePacket_disjoint` — **unconditional**: two distinct maximal faces admit a direction that is
+  off one and inside the other, so their packets cannot meet.
+
+`HTGeometry.MultipleSineFaceStarOrbit` — **the star as an orbit union**.
+
+- `faceShift_split`, `faceShift_update` — splitting the external shift at one direction.
+- `facePacketSlice`, `facePacket_eq_orbitUnion`, `faceStar_eq_orbitUnion` — along a direction of
+  the face the packet, and hence the star, is the full orbit of its slice.
+- `facePacketSlice_zpow_injective` — **unconditional**: distinct exponents give distinct elements
+  of the star, by injectivity inside a face and disjointness across faces.
+
+`HTGeometry.MultipleSineAllFaceIndependence` — **the joint gluing, `(7)` glued over all faces**.
+
+- `maximalFaces` — the faces whose complement is a pair, uniform of card `N-2`.
+- `multipleSineMaximalFaces_diffIndepOn` — **unconditional**: the union of the external packets of
+  all maximal faces is differentially independent over `ℂ`, by the nested-star engine.
+- `multipleSineMaximalFaces_diffIndepOn_rationalBase` — the same over `ℂ(z)`.
+
+`HTGeometry.MultipleSineFacePrimitiveEquation` — **equation `(9)`**.
+
+- `canonicalFace_translation_defect` — the translation defect of a face coordinate, in a direction
+  outside the face, is the coordinate of the next face down, up to a rational function.  This is
+  the exact form of `(9)`, read off the Barnes ladder.
+- `faceShift_eq_sum`, `faceShift_extend`, `translate_deeper_mem_facePacket` — the external shift of
+  the shallower face is an external shift of the deeper face with vanishing new exponent, so the
+  translated deeper coordinate lies in the deeper packet.
+- `facePacket_primitive_equation` — **unconditional**: on packets, every external translate of a
+  face coordinate is a primitive over `ℂ(z)` of the corresponding deeper translate.
+
+`HTGeometry.MultipleSineFacePalette` — **the bilateral palette**.
+
+- `facePalette ω hω J q (y, n) = T^{n ω_q} y` — the packet indexed by slice times `ℤ`.
+- `facePalette_shift` — the translation moves the palette by exactly one slice.
+- `range_facePalette` — the palette parametrizes the packet.
+- `facePalette_injective` — **unconditional**: the parametrization is injective.
+
+These are the two inputs (`x`, `hshift`) of the generic one-slice obstruction
+`oneSlice_ne_coboundary_of_twisted_ambient_shift`, which the layer descent runs on.
+
+`HTGeometry.MultipleSineFaceDisplacement` — **the displacement into the zero slice**.
+
+- `extendExp`, `extendExp_injective`, `faceShift_extendExp` — an exponent vector of a face read one
+  layer down, with vanishing new exponent.
+- `faceDisplacement` — the block labelling `α ↦ T^{a} F_{J ∪ {q}}`.
+- `faceDisplacement_mem_slice` — it lands in the zero slice of the deeper palette.
+- `faceDisplacement_primitive` — the translation defect of a block element is its displacement, up
+  to the rational base.  This is the right-hand side the coboundary equation must match.
+- `faceDisplacement_injective` — injective whenever the deeper packet family is.
+
+`HTGeometry.MultipleSineFacePacketStability` — **stability in the face's own directions**.
+
+- `unitExp`, `faceShift_unitExp` — the unit exponent vector of a direction.
+- `facePacket_translate_mem`, `facePacket_translate_image` — **unconditional**: a direction of the
+  face maps the packet onto itself.  This is what makes the deeper layers a translation-stable
+  coefficient field in the descent.  The remaining assembly — the two-cylinder differential base field, the translation
 action on it, and the application of the arbitrary-family Ostrowski criterion — is being built in
 `HTGeometry.TwoCylinderDifferential`, `HTGeometry.TwoCylinderTranslationAction` and
 `HTGeometry.TwoCylinderMeromorphicDifferential`.
@@ -996,6 +1063,19 @@ review.
 - [x] the canonical face coordinate and its free external orbit
   (`multipleSineCanonicalFaceOrbit_free`), and the off-face neutrality `(8)` in analytic form
   (`differentialAlgebraicOver_translate_canonicalFace`), both unconditional in Lean
-- [ ] the joint gluing of all maximal faces: feed the two analytic interfaces above into
-  `differentialRank_uniformFace_nestedStar_diffIndepOn_of_orbit`; what is still missing is the
-  star orbit presentation (`hStarOrbit`) and the cross-face exponent injectivity (`hStarInj`)
+- [x] the joint gluing of all maximal faces proved unconditionally in Lean
+  (`facePacket`, `facePacket_disjoint`, `faceStar_eq_orbitUnion`,
+  `facePacketSlice_zpow_injective`, `multipleSineMaximalFaces_diffIndepOn`,
+  `multipleSineMaximalFaces_diffIndepOn_rationalBase`): all three analytic interfaces of the
+  nested-star engine are discharged for the multiple-sine face packets, so the union of all
+  maximal-face packets is differentially independent over `ℂ` and over `ℂ(z)`
+- [x] equation `(9)` and the bilateral palette built unconditionally in Lean
+  (`canonicalFace_translation_defect`, `facePacket_primitive_equation`, `facePalette`,
+  `facePalette_shift`, `range_facePalette`, `facePalette_injective`)
+- [x] the displacement labelling into the zero slice and the packet stability in the face's own
+  directions, both unconditional in Lean (`faceDisplacement_mem_slice`,
+  `faceDisplacement_primitive`, `faceDisplacement_injective`, `facePacket_translate_image`)
+- [ ] the descent through the lower face layers `(10)`–`(11)`: the base-family bookkeeping (deeper
+  layers minus the target, closed under the surviving direction), relative independence of a layer
+  packet over that base via the generic twisted one-slice obstruction, then downward induction to
+  `J = ∅`

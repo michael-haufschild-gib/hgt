@@ -371,8 +371,8 @@ theorem dbar_global_solve {f : Fin n → (Fin n → ℂ) → ℂ}
       rw [Nat.cast_zero, Metric.ball_zero]
       exact differentiableOn_empty
     refine differentiableOn_of_tendstoUniformlyOn (by exact_mod_cast hNpos)
-      (fun k => (hCv (k + N)).continuous.sub (hCv N).continuous)
-      (fun k => hGholo N k) (hwcont.sub (hCv N).continuous) ?_
+      (fun k => ((hCv (k + N)).continuous.sub (hCv N).continuous).continuousOn)
+      (fun k => hGholo N k) ((hwcont.sub (hCv N).continuous).continuousOn) ?_
     intro ρ hρ0 hρN
     obtain ⟨M, hM⟩ := exists_nat_gt ρ
     rw [Metric.tendstoUniformlyOn_iff]

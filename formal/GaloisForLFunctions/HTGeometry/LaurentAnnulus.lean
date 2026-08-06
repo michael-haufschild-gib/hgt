@@ -414,4 +414,206 @@ theorem exists_punctured_approx_annulus {f : ℂ → E} {c : ℂ} {a b ρ σ ε 
 
 end RungeAnnulus
 
+section UniformApprox
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+
+/-- The outer Taylor coefficients on the circle of radius `R` about the origin. -/
+noncomputable def outerCoeff (f : ℂ → E) (R : ℝ) (k : ℕ) : E :=
+  ((2 * Real.pi * Complex.I : ℂ))⁻¹ • ∮ ζ in C(0, R), ((ζ ^ (k + 1))⁻¹) • f ζ
+
+/-- The diagonal of mathlib's Cauchy power series is the monomial in the outer coefficient. -/
+theorem cauchyPowerSeries_diag (f : ℂ → E) {R : ℝ} (hR : 0 < R) (k : ℕ) (w : ℂ) :
+    (cauchyPowerSeries f 0 R k fun _ => w) = (w ^ k) • outerCoeff f R k := by
+  rw [cauchyPowerSeries_apply, outerCoeff]
+  have hcongr : (∮ ζ in C((0 : ℂ), R), (w / (ζ - 0)) ^ k • (ζ - 0)⁻¹ • f ζ)
+      = ∮ ζ in C((0 : ℂ), R), (w ^ k) • (((ζ ^ (k + 1))⁻¹) • f ζ) := by
+    refine circleIntegral.integral_congr hR.le fun ζ hζ => ?_
+    have hζ0 : ζ ≠ 0 := by
+      intro hcon
+      rw [Metric.mem_sphere, Complex.dist_eq, hcon] at hζ
+      simp only [zero_sub, norm_neg, norm_zero] at hζ
+      exact absurd hζ.symm (ne_of_gt hR)
+    rw [sub_zero, smul_smul, smul_smul, div_pow, pow_succ]
+    congr 1
+    field_simp
+  rw [hcongr, circleIntegral.integral_smul, smul_comm]
+
+/-- **The outer coefficients are bounded by the maximum on the outer circle.** -/
+theorem norm_outerCoeff_le {f : ℂ → E} {R M : ℝ} (hR : 0 < R) (hM : 0 ≤ M)
+    (hf : ∀ ζ ∈ Metric.sphere (0 : ℂ) R, ‖f ζ‖ ≤ M) (k : ℕ) :
+    ‖outerCoeff f R k‖ ≤ M / R ^ k := by
+  have hbound : ∀ ζ ∈ Metric.sphere (0 : ℂ) R, ‖((ζ ^ (k + 1))⁻¹) • f ζ‖ ≤ (R ^ (k + 1))⁻¹ * M := by
+    intro ζ hζ
+    have hnorm : ‖ζ‖ = R := by
+      have h := Metric.mem_sphere.mp hζ
+      rwa [Complex.dist_eq, sub_zero] at h
+    rw [norm_smul, norm_inv, norm_pow, hnorm]
+    exact mul_le_mul_of_nonneg_left (hf ζ hζ) (by positivity)
+  have h := circleIntegral.norm_integral_le_of_norm_le_const hR.le hbound
+  rw [outerCoeff, norm_smul, norm_inv]
+  have hnorm2pi : ‖(2 * Real.pi * Complex.I : ℂ)‖ = 2 * Real.pi := by
+    rw [norm_mul, norm_mul, Complex.norm_I, mul_one, Complex.norm_ofNat, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos Real.pi_pos]
+  rw [hnorm2pi]
+  have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
+  rw [inv_mul_eq_div, div_le_div_iff₀ hpi (by positivity)]
+  calc ‖∮ ζ in C((0 : ℂ), R), ((ζ ^ (k + 1))⁻¹) • f ζ‖ * R ^ k
+      ≤ (2 * Real.pi * R * ((R ^ (k + 1))⁻¹ * M)) * R ^ k :=
+        mul_le_mul_of_nonneg_right h (by positivity)
+    _ = M * (2 * Real.pi) := by
+        field_simp
+        ring
+
+end UniformApprox
+
+section TailBound
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+
+/-- **The error of a partial sum is bounded by the tail of a dominating series.** -/
+theorem norm_sub_partialSum_le {t : ℕ → E} {S : E} (h : HasSum t S) {bd : ℕ → ℝ}
+    (hbd : ∀ k, ‖t k‖ ≤ bd k) (hbdsum : Summable bd) (N : ℕ) :
+    ‖S - ∑ k ∈ Finset.range N, t k‖ ≤ ∑' i, bd (i + N) := by
+  have hnormsum : Summable fun k => ‖t k‖ :=
+    hbdsum.of_nonneg_of_le (fun _ => norm_nonneg _) hbd
+  have hsplit := h.summable.sum_add_tsum_nat_add N
+  have hdiff : S - ∑ k ∈ Finset.range N, t k = ∑' i, t (i + N) := by
+    rw [← h.tsum_eq, ← hsplit]
+    abel
+  rw [hdiff]
+  refine le_trans (norm_tsum_le_tsum_norm (hnormsum.comp_injective (add_left_injective N))) ?_
+  exact Summable.tsum_le_tsum (fun i => hbd (i + N))
+    (hnormsum.comp_injective (add_left_injective N))
+    (hbdsum.comp_injective (add_left_injective N))
+
+/-- The tail of a geometric series. -/
+theorem tsum_geometric_tail {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) (N : ℕ) :
+    ∑' i : ℕ, q ^ (i + N) = q ^ N / (1 - q) := by
+  have hgeo : Summable fun i : ℕ => q ^ i := summable_geometric_of_lt_one hq0 hq1
+  calc ∑' i : ℕ, q ^ (i + N) = ∑' i : ℕ, q ^ i * q ^ N := by
+        refine tsum_congr fun i => ?_
+        rw [pow_add]
+    _ = (∑' i : ℕ, q ^ i) * q ^ N := tsum_mul_right
+    _ = q ^ N / (1 - q) := by
+        rw [tsum_geometric_of_lt_one hq0 hq1]
+        field_simp
+
+end TailBound
+
+section LaurentApprox
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+
+/-- **The Laurent partial sum**: outer Taylor part plus inner principal part. -/
+noncomputable def laurentApprox (f : ℂ → E) (r R : ℝ) (N : ℕ) (z : ℂ) : E :=
+  (∑ k ∈ Finset.range N, (z ^ k) • outerCoeff f R k) + laurentInnerPartial f 0 r N z
+
+/-- **The Laurent partial sum is holomorphic away from the origin.** -/
+theorem differentiableOn_laurentApprox (f : ℂ → E) (r R : ℝ) (N : ℕ) :
+    DifferentiableOn ℂ (laurentApprox f r R N) {z : ℂ | z ≠ 0} := by
+  refine DifferentiableOn.add ?_ (differentiableOn_laurentInnerPartial f 0 r N)
+  have heq : (fun z : ℂ => ∑ k ∈ Finset.range N, (z ^ k) • outerCoeff f R k)
+      = ∑ k ∈ Finset.range N, fun z : ℂ => (z ^ k) • outerCoeff f R k := by
+    funext z
+    simp [Finset.sum_apply]
+  rw [heq]
+  refine DifferentiableOn.sum fun k _ => ?_
+  exact ((differentiable_id.pow k).smul_const (outerCoeff f R k)).differentiableOn
+
+end LaurentApprox
+
+section UniformBound
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+
+/-- **The Laurent partial sum approximates uniformly, with an explicit bound depending only on the
+radii, the maximum on the two circles, and the number of terms.**  Because the bound does not
+mention the function beyond its maximum, the same number of terms works for a whole family. -/
+theorem norm_sub_laurentApprox_le {f : ℂ → E} {a b r R ρ σ M : ℝ}
+    (ha : 0 < a) (har : a < r) (hrρ : r < ρ) (hρσ : ρ ≤ σ) (hσR : σ < R) (hRb : R < b)
+    (hM : 0 ≤ M) (hf : DifferentiableOn ℂ f (annulusAt 0 a b))
+    (hMr : ∀ ζ ∈ Metric.sphere (0 : ℂ) r, ‖f ζ‖ ≤ M)
+    (hMR : ∀ ζ ∈ Metric.sphere (0 : ℂ) R, ‖f ζ‖ ≤ M)
+    (N : ℕ) {z : ℂ} (hz1 : ρ ≤ ‖z‖) (hz2 : ‖z‖ ≤ σ) :
+    ‖f z - laurentApprox f r R N z‖
+      ≤ M * ((σ / R) ^ N / (1 - σ / R)) + M * r / ρ * ((r / ρ) ^ N / (1 - r / ρ)) := by
+  have hrpos : 0 < r := lt_trans ha har
+  have hρpos : 0 < ρ := lt_trans hrpos hrρ
+  have hσpos : 0 < σ := lt_of_lt_of_le hρpos hρσ
+  have hRpos : 0 < R := lt_trans hσpos hσR
+  have hrR : r < R := by linarith
+  have hzr : r < ‖z‖ := lt_of_lt_of_le hrρ hz1
+  have hzR : ‖z‖ < R := lt_of_le_of_lt hz2 hσR
+  have hzr' : r < ‖z - 0‖ := by rwa [sub_zero]
+  have hzR' : ‖z - 0‖ < R := by rwa [sub_zero]
+  have hdec := laurent_decomposition ha har hrR hRb hf hzr' hzR'
+  -- the outer series
+  have hRcoe : ((R.toNNReal : NNReal) : ℝ) = R := Real.coe_toNNReal R hRpos.le
+  have hRnn : 0 < R.toNNReal := by rw [← NNReal.coe_pos, hRcoe]; exact hRpos
+  have hsphR : ContinuousOn f (Metric.sphere (0 : ℂ) R) :=
+    hf.continuousOn.mono (sphere_subset_annulusAt (by linarith) hRb)
+  have hint : CircleIntegrable f 0 ((R.toNNReal : NNReal) : ℝ) := by
+    rw [hRcoe]
+    exact hsphR.circleIntegrable hRpos.le
+  have hball := laurentOuter_hasFPowerSeriesOnBall (f := f) (c := 0) hRnn hint
+  have hzmem : z ∈ Metric.eball (0 : ℂ) ((R.toNNReal : NNReal) : ENNReal) := by
+    have hcast : ((R.toNNReal : NNReal) : ENNReal) = ENNReal.ofReal R := rfl
+    rw [mem_eball_zero_iff, ← ofReal_norm, hcast]
+    exact (ENNReal.ofReal_lt_ofReal_iff hRpos).2 hzR
+  have houter0 := hball.hasSum hzmem
+  rw [zero_add, hRcoe] at houter0
+  have houter : HasSum (fun k => (z ^ k) • outerCoeff f R k) (laurentOuter f 0 R z) := by
+    refine houter0.congr_fun fun k => ?_
+    exact (cauchyPowerSeries_diag f hRpos k z).symm
+  have houterbd : ∀ k, ‖(z ^ k) • outerCoeff f R k‖ ≤ M * (σ / R) ^ k := by
+    intro k
+    rw [norm_smul, norm_pow]
+    have h1 : ‖outerCoeff f R k‖ ≤ M / R ^ k := norm_outerCoeff_le hRpos hM hMR k
+    have h2 : ‖z‖ ^ k ≤ σ ^ k := pow_le_pow_left₀ (norm_nonneg _) hz2 k
+    calc ‖z‖ ^ k * ‖outerCoeff f R k‖ ≤ σ ^ k * (M / R ^ k) :=
+          mul_le_mul h2 h1 (norm_nonneg _) (by positivity)
+      _ = M * (σ / R) ^ k := by rw [div_pow]; field_simp
+  have hqR : σ / R < 1 := (div_lt_one hRpos).2 hσR
+  have houtersum : Summable fun k => M * (σ / R) ^ k :=
+    (summable_geometric_of_lt_one (by positivity) hqR).mul_left M
+  have houtertail := norm_sub_partialSum_le houter houterbd houtersum N
+  have houtertsum : ∑' i : ℕ, M * (σ / R) ^ (i + N) = M * ((σ / R) ^ N / (1 - σ / R)) := by
+    rw [tsum_mul_left, tsum_geometric_tail (by positivity) hqR N]
+  rw [houtertsum] at houtertail
+  -- the inner series
+  have hsphr : ContinuousOn f (Metric.sphere (0 : ℂ) r) :=
+    hf.continuousOn.mono (sphere_subset_annulusAt har (by linarith))
+  have hinner := hasSum_laurentInner hrpos hM hsphr hMr hzr'
+  have hinnerbd : ∀ k, ‖((z - 0) ^ (k + 1))⁻¹ • annulusLaurentCoeff f 0 r k‖
+      ≤ M * r / ρ * (r / ρ) ^ k := by
+    intro k
+    rw [sub_zero, norm_smul, norm_inv, norm_pow]
+    have h1 : ‖annulusLaurentCoeff f 0 r k‖ ≤ r ^ k * M * r :=
+      norm_annulusLaurentCoeff_le hrpos.le hM hMr k
+    have h2 : ρ ^ (k + 1) ≤ ‖z‖ ^ (k + 1) := pow_le_pow_left₀ hρpos.le hz1 (k + 1)
+    have h3 : (‖z‖ ^ (k + 1))⁻¹ ≤ (ρ ^ (k + 1))⁻¹ := inv_anti₀ (pow_pos hρpos (k + 1)) h2
+    calc (‖z‖ ^ (k + 1))⁻¹ * ‖annulusLaurentCoeff f 0 r k‖
+        ≤ (ρ ^ (k + 1))⁻¹ * (r ^ k * M * r) := by
+          refine mul_le_mul h3 h1 (norm_nonneg _) (by positivity)
+      _ = M * r / ρ * (r / ρ) ^ k := by rw [div_pow, pow_succ]; field_simp
+  have hqr : r / ρ < 1 := (div_lt_one hρpos).2 hrρ
+  have hinnersum : Summable fun k => M * r / ρ * (r / ρ) ^ k :=
+    (summable_geometric_of_lt_one (by positivity) hqr).mul_left _
+  have hinnertail := norm_sub_partialSum_le hinner hinnerbd hinnersum N
+  have hinnertsum : ∑' i : ℕ, M * r / ρ * (r / ρ) ^ (i + N)
+      = M * r / ρ * ((r / ρ) ^ N / (1 - r / ρ)) := by
+    rw [tsum_mul_left, tsum_geometric_tail (by positivity) hqr N]
+  rw [hinnertsum] at hinnertail
+  -- combine
+  have hsplit : f z - laurentApprox f r R N z
+      = (laurentOuter f 0 R z - ∑ k ∈ Finset.range N, (z ^ k) • outerCoeff f R k)
+        + (laurentInner f 0 r z - laurentInnerPartial f 0 r N z) := by
+    rw [hdec, laurentApprox]
+    abel
+  rw [hsplit]
+  exact le_trans (norm_add_le _ _) (add_le_add houtertail hinnertail)
+
+end UniformBound
+
 end GaloisForLFunctions.HTGeometry

@@ -879,9 +879,32 @@ significant new classification or a routine synthesis once the question is posed
   (`integrableOn_cpow_mul_barnesConeKernel_Ioi_one_all`,
   `integrableOn_cpow_mul_barnesRayKernel_Ioi_one_all`), and the brackets are identified with
   `Gamma(s) zeta(s,x)` where the series converges;
-- [ ] Lean identification of `-barnesDoubleZetaFinitePartOne` with `partial_z log Gamma_2`, i.e. the
-  derivative-in-`z` relation `partial_z zeta_2(s,z) = -s zeta_2(s+1,z)` transported to the
-  continuation, and the reflection producing the double sine.
+- [x] Lean shift equation of the Barnes double gamma (`logBarnesDoubleGamma_shift`):
+  `log Gamma_2(x) = log Gamma_2(x + omega_1) + log Gamma_1(omega_2; x)`.  The zeta shift equation
+  holds off the origin, both sides are analytic there after the `1/Gamma` regularization, so the
+  identity extends by uniqueness of limits and differentiating in `s` gives the gamma form.
+  Supporting: the regularized one-dimensional zeta at the origin (`barnesSingleZetaRegZero`,
+  `analyticAt_barnesSingleZetaRegZero`) and `logBarnesSingleGamma`;
+- [x] Lean shift identity of the ray kernel `F_1(omega;x,t) = F_1(omega;x+omega,t) + e^(-xt)`
+  (`barnesRayKernel_shift`), its descent to the Taylor data (`barnesRayLinearCoeff_shift`:
+  `b_1(x) = b_1(x+omega) + 1`) and the exact remainder identity `barnesRayRemainder_shift`, whose
+  peeled term is the elementary `(e^(-xt) - 1)/t`.  These are the ingredients of the difference
+  equation `log Gamma_1(x + omega) - log Gamma_1(x) = log x`;
+- [x] Lean shift equation of the continued one-dimensional zeta
+  (`barnesSingleZetaBracket_shift`): `zeta_1(omega;s,x) = zeta_1(omega;s,x+omega) + expShiftBracket`,
+  where the Euler bracket is the split form of `Gamma(s) x^(-s)` -- pole `1/s`, head integral of
+  `t^(s-1)(e^(-xt)-1)` convergent for `Re s > -1` because `1 - e^(-xt) <= xt`
+  (`integrableOn_cpow_mul_expSub_Ioc`), and entire tail -- together with the identification
+  `expShiftBracket_eq_Gamma_mul` on `Re s > 0`;
+- [x] Lean difference equation of the one-dimensional Barnes gamma (`logBarnesSingleGamma_shift`):
+  `log Gamma_1(omega; x + omega) = log Gamma_1(omega; x) + log x`.  The regularized exponential
+  bracket is analytic on `Re s > -1` (`analyticAt_expShiftRegZero`) and agrees with `x^(-s)` where
+  the Euler integral converges, so the identity theorem on the convex half-plane extends it
+  (`expShiftRegZero_eq_cpow`); its derivative at the origin is `-log x`
+  (`deriv_expShiftRegZero_zero`);
+- [ ] Lean reflection: `Gamma_1` reflected across the period is the sine, giving the double sine
+  `S_2 = Gamma_2(omega_1+omega_2-z)/Gamma_2(z)` and its cotangent step equations -- the last step
+  of the independent Barnes analytic branch.
 
 ### The base-change step (card lines 94-95) is corpus-owned
 

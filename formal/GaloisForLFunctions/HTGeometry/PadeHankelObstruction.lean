@@ -145,6 +145,40 @@ theorem det_padeHankel_eq_zero_iff (S : K[X]) :
   ⟨exists_pade_of_det_padeHankel_eq_zero,
     fun ⟨_, _, h0, ha, hb, hd⟩ => det_padeHankel_eq_zero h0 ha hb hd⟩
 
+
+/-! ## The transverse system's nonsingular locus -/
+
+/-- **The transverse convolution system at a jet is nonsingular exactly off the Padé–Hankel
+hypersurface.**  Its degeneracies are precisely the jets admitting a Padé approximant of type
+`(m-1, n-1)` at the horizon, and those are cut out by the vanishing of one explicit determinant. -/
+theorem injective_transverseDifferential_iff (p : K[X]) :
+    Function.Injective (transverseDifferential p m n (m + n)) ↔ (padeHankel p m n).det ≠ 0 := by
+  constructor
+  · intro hinj hdet
+    obtain ⟨α, β, hβ0, hα, hβ, hdvd⟩ := (det_padeHankel_eq_zero_iff p).1 hdet
+    have hker : transverseDifferential p m n (m + n)
+        (⟨α, mem_degreeLT.2 hα⟩, ⟨β, mem_degreeLT.2 hβ⟩) = 0 :=
+      transverseDifferential_eq_zero_iff.2 hdvd
+    have hzero : ((⟨α, mem_degreeLT.2 hα⟩ : degreeLT K m),
+        (⟨β, mem_degreeLT.2 hβ⟩ : degreeLT K n)) = 0 := hinj (by rw [hker, map_zero])
+    exact hβ0 (congrArg Subtype.val (congrArg Prod.snd hzero))
+  · intro hdet
+    rw [← LinearMap.ker_eq_bot, Submodule.eq_bot_iff]
+    intro q hq
+    have hdvd : (X : K[X]) ^ (m + n) ∣ (q.1 : K[X]) - p * (q.2 : K[X]) :=
+      transverseDifferential_eq_zero_iff.1 hq
+    have hβ : ((q.2 : K[X])).degree < (n : ℕ) := mem_degreeLT.1 q.2.2
+    have hα : ((q.1 : K[X])).degree < (m : ℕ) := mem_degreeLT.1 q.1.2
+    have hq2 : (q.2 : K[X]) = 0 ∨ (q.2 : K[X]) ≠ 0 := em _
+    rcases hq2 with h0 | h0
+    · have hq1 : (q.1 : K[X]) = 0 := by
+        rw [h0, mul_zero, sub_zero] at hdvd
+        refine Polynomial.eq_zero_of_dvd_of_degree_lt hdvd ?_
+        rw [Polynomial.degree_X_pow]
+        exact lt_of_lt_of_le hα (by exact_mod_cast Nat.le_add_right m n)
+      exact Prod.ext (Subtype.ext hq1) (Subtype.ext h0)
+    · exact absurd (det_padeHankel_eq_zero h0 hα hβ hdvd) hdet
+
 end Vanishing
 
 end GaloisForLFunctions.HTGeometry

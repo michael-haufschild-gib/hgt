@@ -363,3 +363,305 @@ Axiom audit: every declaration within `propext, Classical.choice, Quot.sound`.
 This is the inductive step's missing ingredient: the Laurent coefficients of a function of several
 variables are holomorphic in the remaining variables, so the one-variable Runge step can be applied
 coordinate by coordinate.
+
+## The uniform Laurent approximation, landed (2026-08-06)
+
+`formal/GaloisForLFunctions/HTGeometry/LaurentAnnulus.lean`, sections `UniformApprox`,
+`TailBound`, `LaurentApprox`, `UniformBound`:
+
+- `outerCoeff`, `cauchyPowerSeries_diag`, `norm_outerCoeff_le` — the outer Taylor coefficients on
+  the outer circle, their identification with the diagonal of mathlib's `cauchyPowerSeries`, and the
+  Cauchy estimate `‖c_k‖ ≤ M / R^k`.
+- `norm_sub_partialSum_le`, `tsum_geometric_tail` — the error of a partial sum is the tail of a
+  dominating series, and the tail of a geometric series in closed form.
+- `laurentApprox`, `differentiableOn_laurentApprox` — the Laurent partial sum, outer Taylor part
+  plus inner principal part, **holomorphic away from the origin**.
+- `norm_sub_laurentApprox_le` — **the uniform bound**:
+
+    `‖f z − laurentApprox f r R N z‖ ≤ M·(σ/R)^N/(1−σ/R) + (Mr/ρ)·(r/ρ)^N/(1−r/ρ)`
+
+  for `a < r < ρ ≤ ‖z‖ ≤ σ < R < b`, where `M` bounds `f` on the two circles.
+
+The point of the explicit form is that **the bound mentions the function only through `M`**.  The
+earlier `exists_punctured_approx_annulus` hides the number of terms inside an existential, so it
+cannot be applied uniformly in a parameter; this version can, because one `N` works for the whole
+family as soon as `M` is uniform.  That is exactly what the coordinate-by-coordinate induction
+needs: at each step the coefficients are circle integrals, holomorphic in the remaining variables by
+`differentiableAt_circleIntegral_slice`, and the number of terms is chosen once.
+
+Axiom audit: every declaration within `propext, Classical.choice, Quot.sound`.
+
+## B3 Runge half COMPLETE — the several-variable Runge theorem (2026-08-06)
+
+`formal/GaloisForLFunctions/HTGeometry/PolyannulusRunge.lean`:
+
+- `sliceOuterCoeff`, `sliceInnerCoeff`, `continuous_circle_zpow`,
+  `differentiableOn_sliceOuterCoeff`, `differentiableOn_sliceInnerCoeff` — **the Laurent
+  coefficients of the first-coordinate slice are holomorphic in the remaining variables**, from
+  `differentiableAt_circleIntegral_slice`.  The kernels `ζ^{-(k+1)}` are continuous along the
+  circle, which is why the parameter lemma was stated with circle continuity rather than global
+  continuity.
+- `closedPolyannulus`, `isCompact_closedPolyannulus`, `closedAnnulus`, `isCompact_closedAnnulus`,
+  `closedAnnulus_subset_annulus`, `closedPolyannulus_subset`, `cons_mem_annulusProduct` — the
+  compact closed polyannuli and their inclusions.
+- `laurentApprox_slice` — the Laurent partial sum of a slice, written through the slice
+  coefficients.
+- `exists_punctured_approx_polyannulus` — **the Runge theorem on a polyannulus**: a function
+  holomorphic on the polyannulus of radii `(a, b)` is approximated uniformly on every closed
+  sub-polyannulus `[ρ, σ]`, to any accuracy, by a function holomorphic on `(ℂ^×)^n`.
+
+The induction splits off one coordinate.  The Laurent partial sum in that coordinate has error
+`M(σ₀/R₀)^N/(1−σ₀/R₀) + (Mr₀/ρ₀)(r₀/ρ₀)^N/(1−r₀/ρ₀)`, which depends on the function only through
+its maximum `M` on a compact set, so a single `N` serves the whole slice family; its `2N`
+coefficients are holomorphic on the tail polyannulus, and the induction hypothesis approximates each
+to accuracy `η = (ε/2)/(Λ+1)` where `Λ = ∑_{k<N}(σ₀^k + ρ₀^{-(k+1)})` is the operator weight of the
+partial sum.  The two halves of the error are then `ε/2` each.
+
+Axiom audit: every declaration within `propext, Classical.choice, Quot.sound`.
+
+**B3 now needs only the Mittag-Leffler replay**: the corrected sequence of `exists_dbar_approx_sequence`
+and the limit argument of `dbar_global_solve`, with balls replaced by polyannuli,
+`dbar_polydisc_solve` by `dbar_polyannulus_solve`, and `exists_entire_approx_closedBall` by
+`exists_punctured_approx_polyannulus`.  Every ingredient is now in place, including Weierstrass,
+which applies verbatim on any ball inside `(ℂ^×)^r`.
+
+## The punctured space, its exhaustion, and the polyannulus cutoff (2026-08-06)
+
+`formal/GaloisForLFunctions/HTGeometry/DbarPuncturedSolve.lean`:
+
+- `puncturedSpace`, `isOpen_puncturedSpace` — `(ℂ^×)^n` as a product domain.
+- `puncturedExhaustion`, `puncturedExhaustion_mono`, `mem_puncturedExhaustion_of_mem` — the
+  increasing exhaustion by the polyannuli `1/(m+2) < |z_i| < m+2`, and the fact that it fills the
+  space: for a point with all coordinates nonzero, the coordinates are bounded above by the pi norm
+  and their inverses are bounded because the index set is finite.
+- `exists_polyannulus_cutoff` — **a smooth cutoff between two nested polyannuli**, one on the inner
+  and supported in the outer, as the product of the coordinate annulus cutoffs.  This is what makes
+  a datum defined only on the punctured space into a globally smooth one at each stage of the
+  exhaustion, which is what `dbar_polyannulus_solve` consumes.
+
+Also weakened `differentiableOn_of_tendstoUniformlyOn` (Weierstrass) and
+`tendsto_torusIntegral_smul` from global continuity to continuity **on the ball**, since the
+corrected sequence on `(ℂ^×)^r` is continuous only there.
+
+Axiom audit: within `propext, Classical.choice, Quot.sound`.
+
+## The corrected sequence on the punctured space (2026-08-06)
+
+`formal/GaloisForLFunctions/HTGeometry/DbarPuncturedSolve.lean`:
+
+- `wirtingerAntihol_sub`, `dzbarAt_sub_at` — **`∂̄_j` is subtractive at a point of
+  differentiability**.  The corpus's `dzbarAt_sub` needs global differentiability, which the
+  corrected sequence does not have: the Runge corrections are holomorphic only on the punctured
+  space.
+- `puncturedClosed`, `puncturedClosed_subset`, `puncturedClosed_mono`,
+  `exists_mem_puncturedClosed` — the closed polyannuli of the exhaustion, their inclusion in the
+  open ones, their monotonicity, and the fact that every point of the punctured space lies in all
+  late ones.
+- `exists_dbar_punctured_sequence` — **the corrected sequence**: local solutions from
+  `dbar_polyannulus_solve` on the polyannuli `1/(m+2) < |z_i| < m+2`, consecutive differences
+  holomorphic there by the Cauchy–Riemann criterion, corrected by functions holomorphic on all of
+  `(ℂ^×)^n` from `exists_punctured_approx_polyannulus` so that consecutive corrected solutions
+  differ by at most `2^{-m}` on `1/(m+1) ≤ |z_i| ≤ m+1`.
+
+Axiom audit: within `propext, Classical.choice, Quot.sound`.
+
+The limit argument is the last step of B3, and is the same as `dbar_global_solve`: the tail is
+dominated by a geometric series so the sum exists at every point of the punctured space; the
+convergence is uniform on every closed polyannulus of the exhaustion, so the limit is continuous
+there; on any ball inside the punctured space the partial sums are holomorphic and converge
+uniformly, so Weierstrass makes the difference holomorphic; hence the limit is smooth and solves
+the system wherever the member does.
+
+## B3 COMPLETE — global solvability of `∂̄` on `(ℂ^×)^n` (2026-08-06)
+
+`formal/GaloisForLFunctions/HTGeometry/DbarPuncturedSolve.lean`:
+
+  `dbar_punctured_solve` — **a smooth datum on `ℂⁿ` that is `∂̄`-closed on `(ℂ^×)^n` has a
+  primitive there**: there is `u`, smooth at every point of `(ℂ^×)^n`, with `∂̄_j u = f_j` on
+  `(ℂ^×)^n` for every `j`.
+
+Supporting: `puncturedExhaustion_subset_closed`, and inside the proof the monotonicity of both
+exhaustions in the index, the geometric domination of the tail, uniform convergence on every closed
+polyannulus, continuity of the limit there, and the Weierstrass step on every ball inside the
+punctured space.
+
+**This is Cartan theorem B for `(ℂ^×)^n` in Dolbeault form, in degree one.**  With
+`dbar_global_solve` it is the second complete instance of the Dolbeault programme, and the harder
+one: on `ℂⁿ` the Runge step is truncation of a Taylor series, on `(ℂ^×)^n` it is the several-variable
+Laurent theorem built above.
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+### What B4 now needs
+
+The corpus already owns sheaf cohomology (`deningerSheafCohomology`,
+`deningerSheafCohomologyZeroEquiv`, `deningerFlasque_isZero_cohomology`,
+`DeningerOpenFreeSheaf`) and the Čech side (`CechFineAcyclicModule`, `DeningerCechHomotopy`).  What
+is left is to write down the sheaf of holomorphic functions and the sheaves of smooth `(0,q)`-forms
+on an open subset of `ℂⁿ`, to observe that the Dolbeault sequence is exact — which is the local
+statement `dbar_polydisc_solve` — and that the form sheaves are acyclic, and to read off
+`H^q(Z, O_Z) = 0`.
+
+## B4 design, and what it really needs (2026-08-06)
+
+Two routes to `H^q(Z, O_Z) = 0`, and the scope question they expose.
+
+**Degree one is reachable now, without building a single sheaf.**  `H^1(Z, O) = 0` in Čech form is
+the classical Dolbeault argument done by hand:
+
+  given a cover `{U_i}` of `Z` with a subordinate smooth partition of unity `ρ` and a holomorphic
+  cocycle `F_{ij}` on the overlaps, set `g_i := ∑_k ρ_k F_{ik}` (extended by zero).  Then
+  `g_i − g_j = F_{ij}` because `∑ρ = 1` and `F` is a cocycle, so `∂̄g_i = ∂̄g_j` on overlaps and the
+  local `∂̄g_i` glue to one global `(0,1)`-datum `h`, which is `∂̄`-closed because the antiholomorphic
+  derivatives commute.  `dbar_punctured_solve` gives `u` with `∂̄u = h` on `Z`, and `s_i := g_i − u`
+  is holomorphic on `U_i` with `s_i − s_j = F_{ij}`.
+
+  The corpus's `CechFineAcyclicModule` is the same averaging trick one degree down, so its shape is
+  reusable.  The fiddly part is domain bookkeeping: the glued `h` is defined on `⋃U_i`, and
+  `dbar_punctured_solve` wants a globally smooth datum, so either the cover must be a cover of `ℂⁿ`
+  or `h` must be cut off.
+
+**Degrees `q ≥ 2` need the `(0,q)` Dolbeault layer**, which is the honest remaining gap.  The corpus
+has the objects — `DbarForm n q := (Fin q → Fin n) → (Fin n → ℂ) → ℂ` and `dbarOp`, the alternating
+sum of the `∂̄_k` over the slots — but every solvability theorem built so far is degree one: the
+datum is indexed by `Fin n` and the primitive is a scalar.  The induction that proves
+`dbar_polydisc_solve` has to be replayed with forms: at each step one clears the direction `k` from
+the top coefficient family using the same coordinatewise Cauchy transform, and the residue is a form
+of the same degree with one fewer active direction.  The cutoff, the slab estimates, the smoothness
+of the transform and the recursion structure all carry over unchanged; what changes is the
+bookkeeping of the index tuples and the sign in `dbarOp`.
+
+So the order is: `(0,q)` Dolbeault on a polydisc → on a product domain → the exhaustion arguments
+again (they are generic in the degree) → then B4 in all degrees, for which the sheaf-theoretic side
+is already corpus-owned.
+
+## The `(0,q)` layer: first pieces, and a design finding (2026-08-06)
+
+`formal/GaloisForLFunctions/HTGeometry/DbarFormsBasic.lean`:
+
+- `SmoothForm`, `formSub`, `SmoothForm.sub`, `SmoothForm.differentiable` — smoothness of a form and
+  the difference of two forms.
+- `dbarOp_smooth` — **the Dolbeault operator preserves smoothness**, from
+  `contDiff_infty_dzbarAt`.
+- `dbarOp_sub` — **it is subtractive**.
+- `FormBelow`, `FormBelow.mono` — "the form uses only directions below `m`", the predicate the
+  induction decreases.
+- `consFace_zero`, `consFace_succ`, `dbarOp_cons` — **the Dolbeault operator on a tuple with a
+  prepended index separates the zeroth slot**:
+
+    `∂̄G (cons k J) = ∂̄_k (G J) + ∑_t (−1)^{t+1} ∂̄_{J t} (G (cons k (face_t J)))`.
+
+  This is the form-level analogue of `cechD_cons`, and it is the identity the induction step turns
+  into "solving in direction `k` and disturbing nothing above it".
+
+**The design finding.**  `DbarForm n q := (Fin q → Fin n) → (Fin n → ℂ) → ℂ` indexes coefficients by
+*arbitrary* `q`-tuples, with no antisymmetry, so it is the **non-alternating** model.  The classical
+Dolbeault induction needs the decomposition `f = dz̄_k ∧ g + h` with `h` free of `dz̄_k`, and that
+decomposition is only available for alternating families: with arbitrary tuples, `f J` for a `J`
+containing `k` in a slot other than the first is independent data, and nothing ties it to
+`f (cons k J')`.
+
+So before the `(0,q)` induction can be written, the model has to be fixed: either add an
+alternating predicate to `DbarForm` and prove `dbarOp` preserves it, or re-index by strictly
+increasing tuples and restate `dbarOp` with the insertion sign.  The increasing-tuple model makes
+the decomposition definitional — the tuples containing `k` as their largest entry are exactly the
+`cons`-images — at the cost of restating the operator; the alternating-predicate model keeps
+`dbarOp` as it is at the cost of a combinatorial preservation lemma and of carrying the predicate
+through every step.  **The increasing-tuple model is the one to build**, because the induction's
+hypothesis "uses only directions below `m`" is then a statement about the largest entry, which is
+exactly what `Fin.cons` exposes.
+
+Everything already proved — the cutoff, the slab estimates, the smoothness of the coordinatewise
+Cauchy transform, the recursion over the chain of domains, and both exhaustion arguments — is
+degree-agnostic and will be reused unchanged.
+
+## The set-indexed model and the first clause of the `(0,q)` step (2026-08-06)
+
+`formal/GaloisForLFunctions/HTGeometry/DbarAltForms.lean`:
+
+- `SetForm`, `insertSign`, `setDbar` — `(0,q)`-forms indexed by finite sets of directions, with the
+  Dolbeault operator as the signed sum over deletions, the sign being the parity of the number of
+  smaller directions already present.
+- `SmoothSetForm`, `setFormSub`, `setDbar_smooth`, `setDbar_sub`, `SetFormBelow`,
+  `SetFormBelow.mono` — the same basic layer as for tuples, in the model the induction can use.
+- `setDbar_insert` — **the operator separates the distinguished direction**: on `insert k T` the
+  `k`-term is `±∂̄_k (f T)` and every other term keeps `k` inside the index.
+- `insertSign_ne_zero`, `insertSign_mul_inv` — the sign is a unit.
+- `setTransform` — **the primitive**: on a set not containing `k` it is the coordinatewise Cauchy
+  transform of the cut-off top coefficient, normalized by the inverse insertion sign; on a set
+  already containing `k` it is zero.  That second clause is what makes the induction close: in
+  `setDbar_insert` every term other than the `k`-term evaluates `setTransform` at a set containing
+  `k`, hence at zero.
+- `setDbar_setTransform_top` — **the first clause of the step**: on the small domain, where both
+  cutoffs are one, `insertSign k T · ∂̄_k (setTransform f … k T) = f (insert k T)`.
+
+The proof needed complex-scalar linearity of `∂̄` at a point, which the corpus had only for real
+scalars (`dzbar_const_smul`); it is proved here inline through the Wirtinger form, including the
+non-differentiable branch.
+
+Axiom audit: within `propext, Classical.choice, Quot.sound`.
+
+## The residue clause of the `(0,q)` step (2026-08-06)
+
+`setDbar_setTransform_eq` — **on a set containing the distinguished direction, the differential of
+the transform is exactly the top coefficient**:
+
+  `setDbar (setTransform f χ ψ k) (insert k T) z = f (insert k T) z`
+
+whenever `k ∉ T` and both cutoffs are one at `z`.  The `k`-term of `setDbar_insert` reproduces the
+coefficient by `setDbar_setTransform_top`, and every other term evaluates the transform at
+`(insert k T).erase j`, a set that still contains `k` because `j ∈ T` and `k ∉ T` — so the transform
+is zero there by construction and its `∂̄_j` vanishes.
+
+So the residue `setFormSub f (setDbar (setTransform f χ ψ k))` vanishes on **every** set containing
+`k`, with no appeal to `∂̄`-closedness.  That is the half of the induction step which the tuple model
+could not even state.
+
+The other half — that the residue also vanishes on sets containing a direction strictly above `k`,
+where `f` itself vanishes — is where closedness enters, exactly as in degree one: for a set `S` not
+containing `k` but containing some `l > k`, the terms with `j ≠ l` vanish because
+`insert k (S.erase j)` still contains `l` and `f` is zero there, while the term `j = l` is killed by
+expanding `setDbar f (insert k S) = 0`, in which every summand other than the wanted one is a
+derivative of a coefficient at a set containing `l`.
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+## The closedness crux of the `(0,q)` step (2026-08-06)
+
+`dzbarAt_eq_zero_of_setDbar_zero` — **closedness forces the derivative along a direction in which
+the form vanishes**: if `∂̄f = 0` on an open `P` and `f S = 0` on `P` for every `S` containing `l`,
+then `∂̄_l (f W) = 0` on `P` for every `W` not containing `l`.
+
+The proof is short and is the exact analogue of the degree-one step `∂̄_j f_k = ∂̄_k f_j = 0`:
+expand `∂̄f` at `insert l W`; by `setDbar_insert` the `l`-term is `insertSign l W · ∂̄_l (f W)` and
+every other summand differentiates a coefficient at `(insert l W).erase j`, a set that still
+contains `l` — so that coefficient vanishes on an open neighbourhood and its derivative is zero by
+locality of `∂̄`.  Since the insertion sign is a unit, the `l`-term is zero.
+
+With it and `setFormSub_setTransform_eq_zero` the induction step has both halves in the set model:
+the residue vanishes on every set containing the distinguished direction (by construction of the
+transform, no closedness needed), and on every set containing a direction strictly above it (by this
+lemma, feeding `dzbarAt_dbarSliceSolution_eq_zero` exactly as in degree one).
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+## The `(0,q)` step: both clauses proved (2026-08-06)
+
+`dzbarAt_setTransform_eq_zero` — **the transform is annihilated by every direction along which the
+top coefficient is already `∂̄`-closed on the domain.**  This is the degree-one second clause
+transported to the set model: the cutoff in the distinguished coordinate commutes with `∂̄_j` for
+`j ≠ k`, the second cutoff is invisible by locality because it is one on the domain, and
+`dzbarAt_dbarSliceSolution_eq_zero` then kills the whole `k`-line.  The normalization by the inverse
+insertion sign is carried through by the complex-scalar linearity of `∂̄` proved alongside it.
+
+`setFormSub_setTransform_eq_zero` — the residue vanishes on every set containing the distinguished
+direction.
+
+So both clauses of the step are proved:
+
+| where | why |
+|---|---|
+| sets containing `k` | the transform is zero on sets containing `k`, so the differential reduces to its `k`-term, which reproduces the coefficient |
+| sets containing some `l > k` | `f` vanishes there, and `dzbarAt_eq_zero_of_setDbar_zero` plus `dzbarAt_setTransform_eq_zero` kill the differential term by term |
+
+Axiom audit: within `propext, Classical.choice, Quot.sound`.

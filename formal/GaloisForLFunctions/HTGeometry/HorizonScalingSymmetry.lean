@@ -105,4 +105,66 @@ theorem nat_card_criticalFibre_comp_C_mul_X {c : K} (hc : c ≠ 0) (U V : K[X]) 
       = Nat.card (criticalFibre K m n U V) :=
   (Nat.card_congr (criticalFibreScale hc m n U V)).symm
 
+
+/-- Multiplying by a constant does not raise the degree. -/
+theorem degree_C_mul_le (a : K) (P : K[X]) : (Polynomial.C a * P).degree ≤ P.degree := by
+  calc (Polynomial.C a * P).degree ≤ (Polynomial.C a : K[X]).degree + P.degree :=
+        Polynomial.degree_mul_le _ _
+    _ ≤ 0 + P.degree := by
+        gcongr
+        exact Polynomial.degree_C_le
+    _ = P.degree := zero_add _
+
+/-! ## The unit symmetry -/
+
+/-- **Scaling the jet and its reciprocal by inverse constants is a symmetry of the fibre.**  The
+compatibility equation is literally unchanged: each term of the low product carries one factor of the
+constant and one of its inverse. -/
+theorem criticalLowProduct_unit_scale {l : K} (hl : l ≠ 0) (U V A B : K[X]) :
+    criticalLowProduct (C l * U) (C l⁻¹ * V) (C l * A) (C l⁻¹ * B)
+      = criticalLowProduct U V A B := by
+  have hll : (C l : K[X]) * C l⁻¹ = 1 := by
+    rw [← Polynomial.C_mul, mul_inv_cancel₀ hl, map_one]
+  simp only [criticalLowProduct]
+  linear_combination (A * B + A * V + U * B) * hll
+
+/-- **The unit symmetry of the fibre.**  It rescales the observed packets by inverse constants and
+leaves the target `1 + U V` fixed. -/
+noncomputable def criticalFibreUnitScale {l : K} (hl : l ≠ 0) (m n : ℕ) (U V : K[X]) :
+    criticalFibre K m n U V ≃ criticalFibre K m n (C l * U) (C l⁻¹ * V) where
+  toFun p := ⟨(C l * p.1.1, C l⁻¹ * p.1.2), by
+      exact lt_of_le_of_lt (degree_C_mul_le _ _) p.2.1, by
+      exact lt_of_le_of_lt (degree_C_mul_le _ _) p.2.2.1, by
+      rw [criticalLowProduct_unit_scale hl]
+      exact p.2.2.2⟩
+  invFun p := ⟨(C l⁻¹ * p.1.1, C l * p.1.2), by
+      exact lt_of_le_of_lt (degree_C_mul_le _ _) p.2.1, by
+      exact lt_of_le_of_lt (degree_C_mul_le _ _) p.2.2.1, by
+      have hid : criticalLowProduct U V (C l⁻¹ * p.1.1) (C l * p.1.2)
+          = criticalLowProduct (C l * U) (C l⁻¹ * V) p.1.1 p.1.2 := by
+        have hll : (C l : K[X]) * C l⁻¹ = 1 := by
+          rw [← Polynomial.C_mul, mul_inv_cancel₀ hl, map_one]
+        simp only [criticalLowProduct]
+        linear_combination (p.1.1 * p.1.2) * hll
+      rw [hid]
+      exact p.2.2.2⟩
+  left_inv p := by
+    refine Subtype.ext (Prod.ext ?_ ?_)
+    · show Polynomial.C l⁻¹ * (Polynomial.C l * p.1.1) = p.1.1
+      rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hl, map_one, one_mul]
+    · show Polynomial.C l * (Polynomial.C l⁻¹ * p.1.2) = p.1.2
+      rw [← mul_assoc, ← Polynomial.C_mul, mul_inv_cancel₀ hl, map_one, one_mul]
+  right_inv p := by
+    refine Subtype.ext (Prod.ext ?_ ?_)
+    · show Polynomial.C l * (Polynomial.C l⁻¹ * p.1.1) = p.1.1
+      rw [← mul_assoc, ← Polynomial.C_mul, mul_inv_cancel₀ hl, map_one, one_mul]
+    · show Polynomial.C l⁻¹ * (Polynomial.C l * p.1.2) = p.1.2
+      rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hl, map_one, one_mul]
+
+/-- **The fibre count is unchanged by the unit symmetry.** -/
+theorem nat_card_criticalFibre_unit_scale {l : K} (hl : l ≠ 0) (U V : K[X]) :
+    Nat.card (criticalFibre K m n (C l * U) (C l⁻¹ * V))
+      = Nat.card (criticalFibre K m n U V) :=
+  (Nat.card_congr (criticalFibreUnitScale hl m n U V)).symm
+
 end GaloisForLFunctions.HTGeometry

@@ -260,10 +260,12 @@ univariate root count — yields
 `Nat.card ≤ m + (n^(2^(m-1)))^m` whenever the towers do not degenerate.  The bound is the classical
 doubly-exponential elimination bound, not `(2)`.
 
-**Section 5** is formalized in `TransverseChannelLift.lean`: the transverse channel is a square
-linear convolution system, nonsingular at an explicit unipotent longitudinal jet, so
-`nat_card_criticalFibre_prod_transverse_channels` counts one longitudinal and any number of
-transverse channels by `criticalHorizonMultiplicity m n` itself.
+**Section 5** is formalized in `TransverseChannelLift.lean` and `TransverseChannelGeneral.lean`:
+the transverse channel is a square linear convolution system, and
+`injective_transverseDifferential_iff` identifies its nonsingular locus exactly as the complement of
+the Padé–Hankel hypersurface `det (padeHankel p m n) ≠ 0`.  Over any jet in that locus a transverse
+channel lifts uniquely, so `nat_card_criticalFibre_prod_transverse_channels_of_det` counts one
+longitudinal and any number of transverse channels by `criticalHorizonMultiplicity m n` itself.
 
 **What is still open** is the *sharp* count for a fully generic observation with `m, n >= 2`.  There
 the completed jet has degree up to `L-1` rather than `m`, the truncated equation no longer closes to
@@ -2647,3 +2649,167 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   (A `private` `coeff_comp_C_mul_X` for `ℂ` exists in `RHTower/CocycleExponentRigidity.lean`; being
   private it is unreachable, and the version here is over an arbitrary field and in the area that
   owns jet geometry.)
+
+- 2026-08-06 — **The unit symmetry of the fibre.**  Same module, all
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `criticalLowProduct_unit_scale` — scaling the jet by a constant and the reciprocal by its inverse
+  leaves the low product **literally unchanged**, each of its three terms carrying one factor of each;
+  **`criticalFibreUnitScale`** — hence
+
+  ```text
+  criticalFibre K m n U V  ≃  criticalFibre K m n (c U) (c⁻¹ V),
+  ```
+
+  and `nat_card_criticalFibre_unit_scale` for the counts.
+
+  This is the second genuine symmetry of the observation space, and it is orthogonal to the dilation
+  of the previous entry: dilation acts by `u_i ↦ c^i u_i` and moves the target, while this one fixes
+  the target `1 + U V` exactly.  It is also strictly more general than
+  `nat_card_criticalFibre_eq_of_target_eq`, which draws the same conclusion from equal targets but
+  only for critical-degree packets — here the packets are arbitrary.
+
+  Together the two symmetries say the fibre count is a function on the quotient of the observation
+  space by a two-parameter group, which is a real constraint on what any formula for `(2)` can look
+  like.
+
+- 2026-08-06 — **Section 5's nonsingular locus, identified exactly.**
+  `injective_transverseDifferential_iff` in `PadeHankelObstruction.lean`,
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  Function.Injective (transverseDifferential p m n (m+n))  ↔  (padeHankel p m n).det ≠ 0.
+  ```
+
+  When section 5 was formalized I could only exhibit *one* jet with a nonsingular transverse system,
+  the unipotent `1 + t^m`, and recorded that the card's claim of nonsingularity "on a nonempty open
+  set" needed the locus itself.  This is that locus: the transverse convolution system degenerates
+  at `p` exactly when `p` admits a Padé approximant of type `(m-1, n-1)` at the horizon, and those
+  jets are cut out by the vanishing of one explicit determinant.  So the nonsingular locus is the
+  complement of the Padé–Hankel hypersurface — open, and nonempty because the unipotent jet lies in
+  it.  No hypothesis beyond `p` being a polynomial; the depth positivity the first proof carried is
+  not needed.
+
+  The two halves of the machinery meet here: the Hankel determinant was built to express the
+  obstruction between two fibre points, and it turns out to be the same determinant that governs
+  whether a transverse channel lifts uniquely.
+
+- 2026-08-06 — **Section 5 at every nonsingular longitudinal jet.**
+  `TransverseChannelGeneral.lean`, in the umbrella, all `[propext, Classical.choice, Quot.sound]`:
+
+  `bijective_transverseDifferential_of_det`, `exists_unique_transverse_of_det`,
+  `nat_card_transverseFibre_of_det`, and
+  **`nat_card_criticalFibre_prod_transverse_channels_of_det`** — the whole of section 5, now stated
+  for **any** longitudinal jets `P i` with `det (padeHankel (P i) m n) ≠ 0` rather than for the one
+  unipotent jet the original formalization used.  Different channels may sit over different jets.
+
+  With the locus identified in the previous entry, section 5 now says what the card says: on the
+  nonempty open set where the transverse convolution determinant does not vanish, every transverse
+  channel has exactly one lift, so projective dimension multiplies the critical count by one.  The
+  original `1 + t^m` statements remain as the witness that the locus is inhabited.
+
+- 2026-08-06 — **The Pascal determinant is one.**  Same module,
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `padeHankel_one_add_X_pow_apply` — at the unipotent jet the Hankel entry at `(r, j)` is
+  `[m + r = j] + [r = j]`;
+  **`det_padeHankel_one_add_X_pow`** — hence the matrix is the identity plus a strictly upper
+  triangular part (`m + r = j` forces `j > r`), and
+
+  ```text
+  det (padeHankel (1 + t^m) m n) = 1;
+  ```
+
+  `det_padeHankel_one_add_X_pow_ne_zero` — so the unipotent jet lies in the nonsingular locus, with
+  the determinant at its simplest possible value.
+
+  This is the card's own sentence, *"the transverse Pascal determinant is one"*, now a theorem rather
+  than a description.  When section 5 was first formalized I flagged that claim as loose — the
+  determinant is **not** identically one, and at `p = 1` the system is degenerate — and the honest
+  statement was that the nonsingular locus is nonempty.  With the locus now identified as a
+  determinantal complement, the card's phrasing is recovered exactly: the value is one at the
+  unipotent jet, and that is what inhabits the locus.
+
+- 2026-08-06 — **Section 4 is formalized: the Chow ring of `P^m × P^n` and the intersection
+  number.**  New module `formal/GaloisForLFunctions/HTGeometry/BiprojectiveChowRing.lean`, wired into
+  the `HTGeometry` umbrella, every declaration `[propext, Classical.choice, Quot.sound]`:
+
+  `chowIdeal m n = (H₁^(m+1), H₂^(n+1))` in `ℤ[H₁,H₂]`, `ChowProd m n` the quotient, with the
+  hyperplane classes `chowH₁`, `chowH₂` and the point class `chowTop = H₁^m H₂^n`;
+
+  `coeff_mul_X_pow_eq_zero` — general infrastructure absent from mathlib: a product carrying a factor
+  `X i ^ k` has vanishing `d`-coefficient whenever `d i < k`;
+
+  `chowH₁_pow_eq_zero`, `chowH₂_pow_eq_zero` — the two truncation relations;
+
+  `coeff_chowBoxExponent_eq_zero_of_mem` — the coefficient functional at any exponent *inside* the
+  box `[0,m] × [0,n]` annihilates the truncation ideal, so it descends to the Chow ring;
+
+  `chow_box_independent` — the box monomials are ℤ-linearly independent, i.e. the Chow ring is free
+  abelian on them; `chowTop_ne_zero` and `intCast_mul_chow_box_eq_zero_iff` are the torsion-freeness
+  needed to read a degree off a class;
+
+  **`chow_hyperplane_sum_pow`** — the card's `(7)`–`(8)`:
+
+  ```text
+  (H₁ + H₂)^(m+n) = choose (m+n) m · H₁^m H₂^n   in ℤ[H₁,H₂]/(H₁^(m+1), H₂^(n+1)),
+  ```
+
+  proved by binomial expansion: the term with `H₁`-exponent `k > m` dies by the first truncation,
+  the term with `k < m` has `H₂`-exponent `m+n-k > n` and dies by the second, so exactly one term
+  survives;
+
+  `chow_degree_unique` — and the integer is unique: any `c` with
+  `(H₁+H₂)^(m+n) = c · H₁^m H₂^n` equals `criticalHorizonMultiplicity m n`.
+
+  This replaces the one-variable proxy `criticalHorizonMultiplicity_eq_chowCoefficient`
+  (`((X+1)^(m+n)).coeff m`) that had been standing in for section 4.  The proxy was a correct
+  binomial identity but said nothing about `P^m × P^n`; the statement now lives in the actual Chow
+  ring, with the truncation relations and the freeness that make "the degree is the coefficient of
+  `H₁^m H₂^n`" a theorem rather than a convention.
+
+  What section 4 still needs, and what this does not supply, is the *cycle-class map*: that the
+  fibre's `m+n` compatibility divisors — already proved to be of bidegree `(1,1)` in
+  `BilinearFibreSystem.lean` — have Chow class `H₁ + H₂`, and that a proper intersection of them has
+  cardinality equal to the degree of the product class.  That is multihomogeneous Bézout, and it
+  remains the single open core of the card for generic `m, n ≥ 2`.  The algebra of section 4 is now
+  closed; the geometry that feeds it is not.
+
+- 2026-08-06 — **The bigraded Hilbert identity: the numerical core of bihomogeneous Bézout.**
+  New module `formal/GaloisForLFunctions/HTGeometry/BihomogeneousHilbertIdentity.lean`, wired into
+  the `HTGeometry` umbrella, every declaration `[propext, Classical.choice, Quot.sound]`:
+
+  `prod_range_add_one_eq_factorial_mul_choose` — the rising product `∏_{i<m}(j+i+1) = m! · C(j+m,m)`;
+
+  `choosePoly m` — the rational polynomial `x ↦ C(x+m, m)`, with `eval_choosePoly` (it computes the
+  binomial at every natural argument), `natDegree_choosePoly = m`, `leadingCoeff_choosePoly = 1/m!`;
+
+  `bezoutPoly m n c = choosePoly m · choosePoly n (· + c)`, of degree exactly `m+n` and leading
+  coefficient `1/(m! n!)`;
+
+  **`alternating_sum_choose_mul_choose`** — for all `m, n, c, j`:
+
+  ```text
+  ∑_(k ≤ m+n) (-1)^(m+n-k) C(m+n,k) · C(j+k+m, m) · C(j+k+c+n, n) = C(m+n, m),
+  ```
+
+  with `alternating_sum_choose_mul_choose_int` the integral form.
+
+  This is the Hilbert function, in bidegree `(d, d+c)` for `d = j+m+n`, of the bigraded coordinate
+  ring of `P^m × P^n` modulo a regular sequence of `m+n` forms of bidegree `(1,1)`: the Koszul
+  numerator `(1-st)^(m+n)` against the denominator `(1-s)^(m+1)(1-t)^(n+1)`.  The theorem says that
+  function is *constant*, equal to the bihomogeneous Bézout number `C(m+n,m)` — so a proper such
+  intersection has at most `C(m+n,m)` points.
+
+  Mechanism: reversing the summation index turns the sum into the `(m+n)`-th forward difference of
+  `bezoutPoly` at `j`, and the `L`-th difference of a degree-`L` polynomial is `L!` times its leading
+  coefficient, here `(m+n)!/(m! n!)`.  mathlib supplies the difference calculus
+  (`fwdDiff_iter_eq_sum_shift`, `Polynomial.fwdDiff_iter_degree_eq_factorial`); the binomial-as-a-
+  polynomial layer and the identity itself were absent and are built here.
+
+  Together with `BiprojectiveChowRing.lean` this closes both *numerical* routes to the card's `(8)` —
+  the Chow-ring computation and the Hilbert-series computation now agree, unconditionally, in Lean.
+  What is still missing for `(2)` at generic `m, n ≥ 2` is the commutative algebra that connects them
+  to the fibre: that the `m+n` bidegree-`(1,1)` compatibility forms are a regular sequence when the
+  intersection is finite, Koszul exactness for that sequence, and the surjectivity of evaluation at
+  the finitely many points in large bidegree.  That chain is the remaining open core.

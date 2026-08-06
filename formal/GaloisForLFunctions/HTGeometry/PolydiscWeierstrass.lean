@@ -43,7 +43,8 @@ theorem tendsto_torusIntegral_smul
     {F : ℕ → (Fin n → ℂ) → E} {g : (Fin n → ℂ) → E} {K : (Fin n → ℂ) → ℂ}
     {c : Fin n → ℂ} {R : Fin n → ℝ} {S : Set (Fin n → ℂ)} {CK : ℝ}
     (hKcomp : Continuous fun θ : Fin n → ℝ => K (torusMap c R θ))
-    (hFcont : ∀ k, Continuous (F k)) (hgcont : Continuous g)
+    (hFcont : ∀ k, Continuous fun θ : Fin n → ℝ => F k (torusMap c R θ))
+    (hgcont : Continuous fun θ : Fin n → ℝ => g (torusMap c R θ))
     (hKb : ∀ θ, ‖K (torusMap c R θ)‖ ≤ CK) (hCK : 0 ≤ CK)
     (hmem : ∀ θ, torusMap c R θ ∈ S)
     (huni : TendstoUniformlyOn F g Filter.atTop S) :
@@ -51,9 +52,9 @@ theorem tendsto_torusIntegral_smul
       (nhds (∯ ζ in T(c, R), K ζ • g ζ)) := by
   have hmap : Continuous fun θ : Fin n → ℝ => torusMap c R θ := continuous_torusMap c R
   have hintF : ∀ k, TorusIntegrable (fun ζ => K ζ • F k ζ) c R := fun k =>
-    torusIntegrable_of_continuous (hKcomp.smul ((hFcont k).comp hmap))
+    torusIntegrable_of_continuous (hKcomp.smul (hFcont k))
   have hintg : TorusIntegrable (fun ζ => K ζ • g ζ) c R :=
-    torusIntegrable_of_continuous (hKcomp.smul (hgcont.comp hmap))
+    torusIntegrable_of_continuous (hKcomp.smul hgcont)
   set B : ℝ := (2 * Real.pi) ^ n * ∏ i, |R i| with hB
   have hBnn : (0 : ℝ) ≤ B := by
     rw [hB]
@@ -95,9 +96,9 @@ variable {n : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [Compl
 strictly inside, of functions holomorphic on a ball is holomorphic on that ball. -/
 theorem differentiableOn_of_tendstoUniformlyOn
     {F : ℕ → (Fin n → ℂ) → E} {g : (Fin n → ℂ) → E} {c : Fin n → ℂ} {R : ℝ} (hR : 0 < R)
-    (hFcont : ∀ k, Continuous (F k))
+    (hFcont : ∀ k, ContinuousOn (F k) (Metric.ball c R))
     (hFdiff : ∀ k, DifferentiableOn ℂ (F k) (Metric.ball c R))
-    (hgcont : Continuous g)
+    (hgcont : ContinuousOn g (Metric.ball c R))
     (huni : ∀ ρ : ℝ, 0 ≤ ρ → ρ < R →
       TendstoUniformlyOn F g Filter.atTop (Metric.closedBall c ρ)) :
     DifferentiableOn ℂ g (Metric.ball c R) := by
@@ -176,7 +177,18 @@ theorem differentiableOn_of_tendstoUniformlyOn
       intro i
       rw [Complex.dist_eq, norm_torusMap_sub_center, abs_of_pos hrpos]
       linarith
-    have h1 := tendsto_torusIntegral_smul (K := fun ζ => ∏ i, (ζ i - z i)⁻¹) hKcomp hFcont hgcont
+    have hballsub : ∀ θ : Fin n → ℝ, torusMap z₀ (fun _ => r) θ ∈ Metric.ball c R := by
+      intro θ
+      refine hsubball ?_
+      rw [Metric.mem_closedBall, dist_pi_le_iff (by linarith)]
+      intro i
+      rw [Complex.dist_eq, norm_torusMap_sub_center, abs_of_pos hrpos]
+      linarith
+    have hFcont' : ∀ k, Continuous fun θ : Fin n → ℝ => F k (torusMap z₀ (fun _ => r) θ) :=
+      fun k => (hFcont k).comp_continuous hmap hballsub
+    have hgcont' : Continuous fun θ : Fin n → ℝ => g (torusMap z₀ (fun _ => r) θ) :=
+      hgcont.comp_continuous hmap hballsub
+    have h1 := tendsto_torusIntegral_smul (K := fun ζ => ∏ i, (ζ i - z i)⁻¹) hKcomp hFcont' hgcont'
       hKb (by positivity) hmemS hunifρ
     have hzmem : z ∈ Metric.closedBall c ρ := by
       refine hsubc ?_
@@ -189,7 +201,12 @@ theorem differentiableOn_of_tendstoUniformlyOn
         Filter.atTop (nhds (∯ ζ in T(z₀, fun _ => r), (∏ i, (ζ i - z i)⁻¹) • g ζ)) := by
       refine h1.congr fun k => hFcauchy k
     exact tendsto_nhds_unique h1' h2
-  have hball := polydiscHasFPowerSeriesOnBall_of_cauchy hrpos hgcont.continuousOn hcauchy
+  have hball := polydiscHasFPowerSeriesOnBall_of_cauchy hrpos
+    (hgcont.mono (fun x hx => hsubball (by
+      rw [Metric.mem_closedBall, dist_pi_le_iff (by linarith)]
+      intro i
+      rw [Complex.dist_eq, hx i]
+      linarith))) hcauchy
   exact (hball.analyticAt.differentiableAt).differentiableWithinAt
 
 end Weierstrass

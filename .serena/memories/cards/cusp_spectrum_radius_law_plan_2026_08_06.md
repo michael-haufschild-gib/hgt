@@ -2,42 +2,41 @@
 
 Card: docs/drafts/pipeline/2-fully-proven/cusp-spectrum-radius-law.md
 
-## For ζ (degree 1, conductor 1) the card is CLOSED at the boundary
+## Degree 1 is CLOSED at the boundary, any conductor
 
-`RHTower/HurwitzZetaRightAsymptotics.lean` → `ZetaTwistShiftDecomposition.lean`
-→ `ZetaTwistCuspRadius.lean` → `ZetaTwistGapGeometry.lean`.
+Two independent routes, both unconditional, both via a functional equation whose
+RIGHT side is a convergent series dominated by its first exponent:
 
-Capstone: `hadamardLimsup_zetaTwistShift_eq_infDist` —
-`limsup_k |F(s₀-k,α)/k!|^{1/k} = 1/(2π · infDist α (Sing \ {α}))`
-for EVERY real shift α, unconditionally. Sides use disjoint data.
+1. **ζ, any real shift α** (`HurwitzZetaRightAsymptotics` →
+   `ZetaTwistShiftDecomposition` → `ZetaTwistCuspRadius` → `ZetaTwistGapGeometry`).
+   Capstone `hadamardLimsup_zetaTwistShift_eq_infDist`:
+   `limsup_k |F(s₀-k,α)/k!|^{1/k} = 1/(2π · infDist α (Sing \ {α}))`.
+   Input: mathlib `expZeta_one_sub` (Hurwitz formula) + `a^w ζ(w,a) → 1`.
+2. **Any periodic Φ : ZMod N → ℂ, Φ ≠ 0** (`PeriodicLSeriesRightAsymptotics` →
+   `ZModLFunctionCuspRadius`). Capstone `hadamardLimsup_zmodShift`:
+   `= N/(2π n₀)`, n₀ = least n ≥ 1 with `𝓕Φ(n) ≠ 0 ∨ 𝓕Φ(-n) ≠ 0`.
+   Input: mathlib `ZMod.LFunction_one_sub` + `n₀^w L(Θ,w) → Θ(n₀)`.
+   `hadamardLimsup_zmodShift_of_dft_one` gives the card's Dirichlet row: N/(2π).
 
-**The Mellin–Barnes step the card asked for is NOT needed.** Route:
-1. mathlib `expZeta_one_sub` (Hurwitz formula) gives
-   `F(s₀-k,α) = (2π)^{-(1-s₀+k)} Γ(1-s₀+k)(E_k ζ(w_k,α) + E'_k ζ(w_k,-α))`,
-   `w_k = 1-s₀+k`, and `|E_k|,|E'_k|` are CONSTANT in k (k is real).
-2. `a^w ζ(w,a) → 1` as Re w → ∞ (`tendsto_normalizedHurwitz`): normalize by the
-   first term, tail ≤ `a^{Re w}·∑(n+1)^{-2}`. So `ζ(w_k,α) ~ A^{-k}`,
-   `ζ(w_k,-α) ~ B^{-k}` with A,B = the two Hurwitz first exponents.
-3. A ≠ B: faster term dominates, no cancellation. A = B ⟺ α ≡ -α on the circle
-   ⟹ the two Hurwitz values are EQUAL and the bracket is a period-4 factor times
-   one of them (`twistWave`), invisible to the root.
-4. `min(A,B) = dist(α, ℤ)` = Δ(α); at integer α, Δ = 1.
+**Common mechanism — reusable.** Write the shifted value via the functional
+equation as `(geometric)^k · Γ-ratio · bracket`; the bracket is
+`E_k A_k + E'_k B_k` with `|E_k|,|E'_k|` CONSTANT in k (k real) and `E_k = e·i^k`.
+Extract the dual geometric rate; the bracket then converges to the period-four
+shape `e i^k a + e' (-i)^k b`, whose four values vanish together iff a = b = 0.
+Minimality of the first exponent forbids that ⇒ frequent lower bound ⇒
+`limsup_rpow_inv_eq_one`. NO Mellin–Barnes anywhere.
 
 ## Also closed (interior, general families)
 
 `HTGeometry/NonnegThetaCuspGrowth.lean` + `CuspGapUnconditionalInstances.lean`:
-boxed law for any non-negative coefficient family, any degree d>0, any real σ
-below the abscissa. `hadamardLimsup_divisorCoeff_cusp` = degree-2 instance.
-CAVEAT: interior shadow — the base height is *chosen* to be Δ.
-
-`RHTower/ZetaStandardTwistDichotomy.lean`: `differentiable_expZeta_iff` is K–P's
-continuation theorem for ζ, straight from mathlib.
+any non-negative coefficient family, any degree d>0, any real σ below the
+abscissa. CAVEAT: interior shadow — base height is *chosen* to be Δ.
+`RHTower/ZetaStandardTwistDichotomy.lean`: `differentiable_expZeta_iff` = K–P for ζ.
 
 ## What is left
 
-- General Selberg class `S^♯` and K–P for `d > 1`: needs the class member's own
-  Hurwitz-type formula. Corpus has NO Selberg-class layer.
-- Step 3 at degree 2 (independent constant for ζ²) hits a parity obstruction:
-  `‖c_{2m+1}‖^{1/(2m+1)}` does not reduce to a `1/m` root. Would need a
-  "limsup under exponent perturbation" lemma; `Nat.centralBinom` bounds and
-  `limsup_sup_filter` are the tools.
+- Degree `d > 1`: needs the class member's own Hurwitz-type formula
+  (general Selberg class `S^♯` + K–P). Corpus has NO Selberg-class layer.
+- Step 3 at degree 2 (ζ²) parity obstruction: `‖c_{2m+1}‖^{1/(2m+1)}` does not
+  reduce to a `1/m` root; needs a limsup-under-exponent-perturbation lemma.
+  Tools if attempted: `Nat.centralBinom` bounds, `limsup_sup_filter`.

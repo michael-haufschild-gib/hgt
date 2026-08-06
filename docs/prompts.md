@@ -6,8 +6,6 @@ your task:
 if you are already working on a card, keep going.
 else: pick a card from these:
 
-
-  
 do: formalize UNCONDITIONALLY in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
 
 Lean rules:
@@ -296,19 +294,18 @@ Mandatory: You let the lean corpus speak and tell you what is. You do not assume
 
 
 
-## loop arxiv
+## loop 
 /loop 1m (use the croncreate tool)
 
 if you are not idle, keep going.
 else your task is:
 
-do a broad arxiv search for preprints or any publication in the last year for any topic related to our research. examples (single word keyword searches): stokes, hochschild, euler, descent, bockstein, hilbert, homology, cohomology, adelic, zeta, connes, suzuki, deninger, moebius, ...
-
-check any paper against our htgeometry and rhtower lean corpus whether it:
-1. allows to discharge every tractable premise
+search our htgeometry and rhtower lean corpus for any opportunity of a value relation or value reflection that can do either of these:
+1. allows to discharge of simplify a tractable premise
 2. create and formally prove missing connector theorems
 3. subsume theorems under a larger universal law which is nontrivial
-4. opens new proof routes for the riemann hypothesis
+4. opens a new proof route for the riemann hypothesis
+5. simplifies the proof burden towards the riemann hypothesis
 
 then formalize everything useful in lean.
   
@@ -331,5 +328,3 @@ Mandatory:
 You are not allowed to change the cron timing.
 
 LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
-
-where mathematical knowledge is missing use the /hgtl7 skill to create it.

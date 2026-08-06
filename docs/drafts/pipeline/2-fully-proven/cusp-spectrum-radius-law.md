@@ -372,6 +372,47 @@ Two inputs remain, both genuinely external to the above:
    `1/min(A,B)`, and `min(A,B)` is the distance from `α` to the integer lattice,
    which is `Δ(α)`.
 
+   **The conductor is not a restriction either.**  For any periodic coefficient
+   function the same mechanism runs off mathlib's `ZMod.LFunction_one_sub`, whose
+   right-hand side is the Fourier-transformed series rather than a Hurwitz value.
+   `RHTower/PeriodicLSeriesRightAsymptotics.lean` supplies the analytic input:
+
+| Card item | Declaration |
+|---|---|
+| a periodic coefficient function is bounded | `exists_bound_zmod` |
+| the scaled terms of the Dirichlet series | `norm_natCast_cpow`, `norm_scaled_term` |
+| the tail past the first non-vanishing term is geometrically small | `norm_normalizedLFunction_sub_le` |
+| **`n₀^{w} L(Θ,w) → Θ(n₀)`: exact geometric growth `n₀^{-Re w}`** | `tendsto_normalizedLFunction` |
+
+   `RHTower/ZModLFunctionCuspRadius.lean` runs the decomposition and the law:
+
+| Card item | Declaration |
+|---|---|
+| the Fourier transform of a non-zero function is non-zero | `dft_ne_zero` |
+| the dual index: the first exponent of the transformed series | `dualSupport`, `dualSupport_nonempty`, `dualIndex`, `dualIndex_pos`, `dualIndex_spec`, `dualIndex_min` |
+| both dual series grow at the rate of the dual index | `dualP`, `dualQ`, `tendsto_dualP`, `tendsto_dualQ` |
+| **`L(s₀-k)/k! = (N/(2π n₀))^k · remainder`** | `dualSum`, `zmodRemainder`, `zmod_shift_decomposition` |
+| the quarter-turn exponentials split off | `exp_neg_quarter_turn`, `exp_shift_pos`, `exp_shift_neg` |
+| the period-four limit shape of the bracket | `dualWave`, `dualWave_periodic`, `exists_norm_dualWave_pos` |
+| the bracket converges to that shape, and is bounded | `tendsto_dualSum_sub_dualWave`, `exists_bound_norm_dualSum` |
+| **the bracket has root growth one** | `limsup_norm_dualSum_eq_one`, `hadamardLimsup_zmodRemainder` |
+| **`limsup_k \|L(s₀-k)/k!\|^{1/k} = N/(2π n₀)`** | `hadamardLimsup_zmodShift` |
+| dual coefficient non-vanishing at one pins the index | `ne_zero_of_dft_one_ne_zero`, `dualIndex_eq_one` |
+| **degree one, conductor `N`: the constant is `N/(2π)`** | `hadamardLimsup_zmodShift_of_dft_one` |
+
+   `hadamardLimsup_zmodShift_of_dft_one` is the card's Dirichlet verification row
+   proved analytically: gap `1/N`, growth constant `N/(2π)`, matching
+   `infDist_zero_shiftSpectrum_dirichlet` and `cusp_constant_dirichlet`.  The
+   general form `hadamardLimsup_zmodShift` is sharper — it shows the constant is
+   `N/(2π n₀)` with `n₀` the first exponent of the *dual* series, so a family
+   whose dual coefficients start later has a correspondingly smaller constant.
+
+   The non-cancellation step is where the minimality of `n₀` is used.  The bracket
+   converges to the period-four shape
+   `e·i^k·Θ(n₀) + e'·(-i)^k·Θ(-n₀)`, whose four values over a period vanish
+   simultaneously only if both `Θ(n₀)` and `Θ(-n₀)` vanish — which is exactly what
+   `n₀` was chosen to exclude.  No hypothesis beyond `Φ ≠ 0` is needed.
+
    For degree `d > 1` the same route needs the class member's own Hurwitz-type
    formula, which is the general Kaczorowski--Perelli input of item 2.
    The interior half of the two-sided bound is now proved
@@ -426,9 +467,68 @@ Two inputs remain, both genuinely external to the above:
    requires continuing `Φ_ζ(s, ·)` from the upper half plane across the real
    interval `(α₀ - 1, α₀ + 1)` minus its endpoints, which is item 1.
 
-Step 3 (the independent cusp constant via the functional equation and uniform
-Stirling) is a separate route to the same constant and would also need the class
-axioms plus `Γ`-asymptotics along a leftward horizontal shift.
+Step 3 (the independent cusp constant via the functional equation) is a separate
+route to the same constant.  It is now proved in degree one (zeta and, in the
+general conductor-`N` form, `hadamardLimsup_zmodShift`) and in **degree two**,
+for `ζ²`.
+
+The degree-two case needed two pieces of new infrastructure, because a lattice of
+degree `d` advances by `1/d` and so its root exponents are `1/(am+b)` rather than
+`1/m`.  `HTGeometry/ScaledRootGrowth.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the rescaling ratio `m/(am+b) → 1/a` | `scaled_denom_pos`, `tendsto_scaleRatio` |
+| **a root limit survives the rescaling of the exponent** | `tendsto_rpow_scaled_of_tendsto_rpow_inv` |
+| constants and polynomial envelopes are invisible to a rescaled root | `tendsto_const_rpow_scaled`, `tendsto_rpow_scaled_of_polynomial_bounds` |
+| rescaled roots of a bounded factor are bounded | `rpow_scaled_le_const`, `isBoundedUnder_rpow_scaled` |
+| **bounded above, frequently bounded below ⇒ rescaled root `limsup` is one** | `limsup_rpow_scaled_eq_one` |
+
+`HTGeometry/ParityLimsupSplit.lean` supplies the second piece:
+
+| Card item | Declaration |
+|---|---|
+| **`atTop` is the supremum of the even and odd pushforwards** | `atTop_eq_sup_parity` |
+| `limsup` along a pushforward is `limsup` of the composite | `limsup_map_comp` |
+| **the growth functional is the larger of its two parity parts** | `hadamardLimsup_eq_parity_sup` |
+| the extended-real image of a bounded real `limsup` | `limsup_ofReal_eq`, `coe_nnnorm_rpow_eq_ofReal` |
+
+`HTGeometry/CentralBinomialRoot.lean` handles the factorial ratio:
+
+| Card item | Declaration |
+|---|---|
+| the reciprocal quotient `4^m/C(2m,m)` | `centralQuot`, `centralQuot_pos` |
+| it lies between one and `2m` | `one_le_centralQuot`, `centralQuot_le` |
+| **it is invisible to a rescaled root** | `tendsto_centralQuot_rpow_scaled` |
+| `C(2m,m)·(m!)² = (2m)!` | `centralBinom_mul_factorial_sq` |
+
+`RHTower/ZetaSquareCuspRadius.lean` assembles them:
+
+| Card item | Declaration |
+|---|---|
+| the non-oscillating part of the shifted remainder | `gpart`, `norm_zetaShiftRemainder_eq`, `tendsto_gpart_rpow_inv` |
+| its square is invisible to a rescaled root | `tendsto_gpart_sq_rpow_scaled` |
+| the squared oscillating factor has rescaled root `limsup` one | `cosShift_sq_periodic`, `limsup_cosShift_sq_rpow_scaled` |
+| **the squared remainder has rescaled root `limsup` one** | `limsup_norm_zetaShiftRemainder_sq_rpow_scaled`, `isBoundedUnder_norm_zetaShiftRemainder_sq_rpow_scaled` |
+| the degree-two coefficients `ζ(s₀-k/2)²/k!` | `zetaSquareCoeff`, `half_shift_even`, `half_shift_odd` |
+| **the even and odd closed forms** | `zetaSquareCoeff_even`, `zetaSquareCoeff_odd` |
+| their moduli, with `1/(4π)` extracted | `vEven`, `vOdd`, `quarter_pow_identity`, `norm_zetaSquareCoeff_even`, `norm_zetaSquareCoeff_odd` |
+| the two remainders have rescaled root `limsup` one | `limsup_vEven`, `limsup_vOdd`, `pOdd`, `tendsto_pOdd_rpow` |
+| **both parity parts equal `1/(4π)`** | `limsup_parity_even`, `limsup_parity_odd` |
+| **`limsup_k \|ζ(s₀-k/2)²/k!\|^{1/k} = 1/(4π)`** | `hadamardLimsup_zetaSquareShift` |
+
+`hadamardLimsup_zetaSquareShift` is the card's Step 3 in degree two: the growth
+constant of the squared zeta shift lattice, computed from the functional equation
+alone, is `1/(4π)` — matching `cusp_constant_degree_two` and the spectral value
+`1/(2π Δ(0))` with `Δ(0) = 2` from `infDist_zero_shiftSpectrum_degree_two`.  It
+also matches the *analytic* degree-two instance
+`hadamardLimsup_divisorCoeff_cusp`, which reaches the same constant from the
+divisor function's theta series rather than from the functional equation.
+
+No uniform Stirling estimate was needed.  The factorial ratio `(m!)²/(2m)!` is
+the reciprocal of the central binomial coefficient, and the classical bound
+`4^m/(2m) ≤ C(2m,m) ≤ 4^m` is a polynomial envelope, hence invisible to the
+root.
 
 Step 3's `k`-th-root mechanism is `[LEAN-PROVED]` in
 `HTGeometry/RootGrowthEngine.lean`:
