@@ -454,9 +454,28 @@ denominator, vanishes. Consequently the constant-coefficient differential charac
 `CylinderDifferentialCharacter` are the genuine `z`-derivatives of genuine meromorphic functions,
 and the jets appearing in the Ostrowski criterion are the ones computed by `cylDeriv`.
 
-Still not formalized: the double sine itself with its two functional equations. Every other
-ingredient of the theorem -- the fixed field, the independent coordinates, the embedded
-two-cylinder field, its translation action, and its differential structure -- is machine-checked.
+`GaloisForLFunctions.HTGeometry.CotangentMeromorphicIdentification` identifies the increment.
+The cotangent is built as a genuine meromorphic germ `cotMero a = cos(a z)/sin(a z)`, and
+
+```text
+cylinderEmbed_cotModel        : iota (i (X+1)/(X-1))      = cot (a z),
+cylinderEmbed_cotModel_period : iota ((i pi/omega)(X+1)/(X-1)) = (pi/omega) cot(pi z/omega),
+```
+
+where `iota` is the cylinder embedding with coordinate `exp(2 i a z)`. The proof cross-multiplies
+to an identity of entire germs and evaluates pointwise, where it is the exponential identity
+`i (e^(2iw)+1) sin w = cos w (e^(2iw)-1)`. So the right-hand side of the double-sine step equation
+-- the logarithmic derivative of the order-one multiple sine `2 sin(pi z/omega)`, which the corpus
+owns as `multipleSineOneLogDeriv` -- is literally the embedded `cotModel` against which the
+orbit-balance obstruction was proved.
+
+Still not formalized: the double sine itself, i.e. a meromorphic `Psi` realizing the two step
+equations. Every other ingredient -- the fixed field, the independent coordinates, the embedded
+two-cylinder field, its translation action, its differential structure, and now the exact form of
+the increment -- is machine-checked. Note the construction is not the Barnes cone regime the corpus
+already owns (`barnesConeMero` needs `Im omega > 0`): for two positive real periods the double sine
+requires the Barnes double-zeta regularization or its integral representation, which is the open
+analytic build.
 
 ### Formalization of the algebraic core
 
@@ -595,4 +614,7 @@ significant new classification or a routine synthesis once the question is posed
   period of the first coordinate is the multiplicative dilation of the second;
 - [x] Lean transport of the differential structure: the cylinder embedding is a differential
   embedding for `lambda * (X d/dX)`;
-- [ ] Lean construction of the double sine with its two functional equations.
+- [x] Lean identification of the step increment: the embedded cotangent model is the genuine
+  meromorphic `(pi/omega) cot(pi z/omega)`;
+- [ ] Lean construction of the double sine itself for two positive real periods (Barnes
+  double-zeta regularization; the corpus's Barnes cone construction needs `Im omega > 0`).

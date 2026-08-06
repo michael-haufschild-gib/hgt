@@ -436,6 +436,34 @@ at a finite stage, so Tannery's theorem collapses the traces to the single
 surviving eigenvalue `n = 1` — this is exactly the Hilbert--Schmidt statement
 `(8)` at the level of the power traces.
 
+Section 1's operator layer and the determinant definition `(4)` itself are
+`[LEAN-PROVED]` in `HTGeometry/LpDiagonalOperator.lean` (reusable) and
+`HTGeometry/PrimeSieveOperator.lean`:
+
+| Card item | Declaration |
+|---|---|
+| diagonal operators on `ℓ²(ι)`, generic | `HilbertSchmidt.diagKernel`, `isHS_diagKernel`, `diagOp`, `diagOp_apply` |
+| composition, difference, powers of diagonals | `diagOp_comp`, `diagOp_sub`, `diagOp_pow` |
+| `‖·‖_HS` and the power traces of a diagonal | `hsNormSq_diagOp`, `opTrace_diagOp_comp`, `opTrace_diagOp_pow` |
+| `Q e_n = n^{-1} e_n` restricted to `(n,M_P)=1`, i.e. `(1)`+`(2)` | `sieveWeight`, `sieveOperator` |
+| `Q_P` is Hilbert--Schmidt | `isHilbertSchmidt_sieveOperator` |
+| `Tr(Q_P^k) = ζ(k) ∏(1-p^{-k})` as an operator trace | `opTrace_sieveOperator_pow` |
+| the Hilbert--Carleman exponent of `Q_P` | `operatorFredholmExpGerm_sieveOperator` |
+| convergence of that germ on `\|t\| < 1` | `summable_expGerm_term`, `sieveTraceBoundTwo`, `sieveTrace_le_boundTwo` |
+| even degrees cancel, odd degrees double | `expGermDiff`, `expGermDiff_even`, `expGermDiff_odd` |
+| `(4)` `Φ_P(t) = det₂(I-tQ_P)/det₂(I+tQ_P)` | `sievePhi` |
+| **`(4)` = `(6)`** | `sievePhi_eq_exp_sieveLogPhi` |
+| `P_{\{1\}}`, the vacuum projection | `vacuumWeight`, `vacuumProjection` |
+| `‖Q_P - P_{\{1\}}‖₂² = ∑_{n>1,(n,M_P)=1} n^{-2}` | `hsNormSq_sieveOperator_sub_vacuum` |
+| `(8)` `Q_P → P_{\{1\}}` in Hilbert--Schmidt norm | `tendsto_hsNormSq_sieveOperator_sub_vacuum` |
+
+`sievePhi_eq_exp_sieveLogPhi` closes the loop between the two presentations of
+the sieve character: the determinant quotient of `(4)`, built from the corpus's
+coordinate-free Hilbert--Carleman germ, equals the exponential of the odd trace
+series `(6)`, so the boxed enlargement law `(5)` and the increment bound `(7)`
+are statements about the determinant itself and not only about a chosen
+series.
+
 The statement is proved for an arbitrary enumeration `e : ℕ ≃ Nat.Primes`, so it
 is the exact cofinal claim of `(14)`: the singular density has total cofinal
 variation one along *every* prime exhaustion.

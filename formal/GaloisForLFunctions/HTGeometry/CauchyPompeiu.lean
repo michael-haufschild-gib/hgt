@@ -4,13 +4,13 @@ import Mathlib.Analysis.Calculus.ParametricIntervalIntegral
 /-!
 # The radial derivative of a circle mean
 
-For a `C¹` function `h : ℂ → ℂ` the circle mean `r ↦ ∫₀^{2π} h(r e^{iθ}) dθ` is differentiable, and
+For a `C¹` function `h : ℂ → ℂ` the circle mean `r ↦ ∫_{-π}^{π} h(r e^{iθ}) dθ` is differentiable, and
 its derivative is the integral of the radial derivative.  Because the angular derivative integrates
 to zero over a closed circle, the holomorphic and antiholomorphic contributions to that integral
 agree, so on a circle of nonzero radius the radial derivative of the circle mean is twice the
 `∂̄` term alone:
 
-`(d/dr) ∫₀^{2π} h(r e^{iθ}) dθ = 2 ∫₀^{2π} e^{-iθ} ∂̄h(r e^{iθ}) dθ`.
+`(d/dr) ∫_{-π}^{π} h(r e^{iθ}) dθ = 2 ∫_{-π}^{π} e^{-iθ} ∂̄h(r e^{iθ}) dθ`.
 
 This is the identity that carries all the information of the Cauchy–Pompeiu formula: integrating it
 in `r` and letting the inner radius tend to zero recovers the value at the centre.
@@ -43,7 +43,7 @@ private theorem continuous_radialIntegrand_snd (hC : ContDiff ℝ 1 h) (s : ℝ)
 /-- **Differentiation of the circle mean under the integral sign.** -/
 theorem hasDerivAt_circleMean (hC : ContDiff ℝ 1 h) (r : ℝ) :
     HasDerivAt (circleMean h)
-      (∫ θ in (0 : ℝ)..(2 * π), radialIntegrand h r θ) r := by
+      (∫ θ in (-π)..π, radialIntegrand h r θ) r := by
   have hd : Differentiable ℝ h := hC.differentiable one_ne_zero
   -- a uniform bound for the radial derivative over a neighbourhood of `r`
   obtain ⟨C, hCbound⟩ :=
@@ -92,7 +92,7 @@ theorem hasDerivAt_circleMean (hC : ContDiff ℝ 1 h) (r : ℝ) :
 mean.** -/
 theorem hasDerivAt_circleMean_dzbar (hC : ContDiff ℝ 1 h) {r : ℝ} (hr : r ≠ 0) :
     HasDerivAt (circleMean h)
-      (2 * ∫ θ in (0 : ℝ)..(2 * π),
+      (2 * ∫ θ in (-π)..π,
         Complex.exp (-((θ : ℂ) * Complex.I)) * dzbar h (circleMap 0 r θ)) r := by
   have hkey := circle_angle_integral_eq hC r
   have hcm : ∀ θ : ℝ, circleMap 0 r θ = (r : ℂ) * Complex.exp ((θ : ℂ) * Complex.I) := by
@@ -110,23 +110,23 @@ theorem hasDerivAt_circleMean_dzbar (hC : ContDiff ℝ 1 h) {r : ℝ} (hr : r �
   have hcb : Continuous fun θ : ℝ => dzbar h (circleMap 0 r θ) := (continuous_dzbar hC).comp hc0
   have hIz : IntervalIntegrable
       (fun θ : ℝ => Complex.exp ((θ : ℂ) * Complex.I) * dz h (circleMap 0 r θ))
-      MeasureTheory.volume 0 (2 * π) := (by fun_prop : Continuous _).intervalIntegrable _ _
+      MeasureTheory.volume (-π) π := (by fun_prop : Continuous _).intervalIntegrable _ _
   have hIb : IntervalIntegrable
       (fun θ : ℝ => Complex.exp (-((θ : ℂ) * Complex.I)) * dzbar h (circleMap 0 r θ))
-      MeasureTheory.volume 0 (2 * π) := (by fun_prop : Continuous _).intervalIntegrable _ _
-  have hsplit : (∫ θ in (0 : ℝ)..(2 * π),
+      MeasureTheory.volume (-π) π := (by fun_prop : Continuous _).intervalIntegrable _ _
+  have hsplit : (∫ θ in (-π)..π,
       Complex.exp ((θ : ℂ) * Complex.I) * dz h (circleMap 0 r θ)) =
-      ∫ θ in (0 : ℝ)..(2 * π),
+      ∫ θ in (-π)..π,
         Complex.exp (-((θ : ℂ) * Complex.I)) * dzbar h (circleMap 0 r θ) := by
-    have hL : (∫ θ in (0 : ℝ)..(2 * π), circleMap 0 r θ * dz h (circleMap 0 r θ)) =
-        (r : ℂ) * ∫ θ in (0 : ℝ)..(2 * π),
+    have hL : (∫ θ in (-π)..π, circleMap 0 r θ * dz h (circleMap 0 r θ)) =
+        (r : ℂ) * ∫ θ in (-π)..π,
           Complex.exp ((θ : ℂ) * Complex.I) * dz h (circleMap 0 r θ) := by
       rw [← intervalIntegral.integral_const_mul]
       refine intervalIntegral.integral_congr (fun θ _ => ?_)
       rw [hcm θ]; ring
-    have hR : (∫ θ in (0 : ℝ)..(2 * π),
+    have hR : (∫ θ in (-π)..π,
         (starRingEnd ℂ) (circleMap 0 r θ) * dzbar h (circleMap 0 r θ)) =
-        (r : ℂ) * ∫ θ in (0 : ℝ)..(2 * π),
+        (r : ℂ) * ∫ θ in (-π)..π,
           Complex.exp (-((θ : ℂ) * Complex.I)) * dzbar h (circleMap 0 r θ) := by
       rw [← intervalIntegral.integral_const_mul]
       refine intervalIntegral.integral_congr (fun θ _ => ?_)

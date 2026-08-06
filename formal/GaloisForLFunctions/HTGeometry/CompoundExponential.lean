@@ -109,4 +109,35 @@ theorem exp_smul_rdiag (k : ℕ) (w : ι → ℝ) (t : ℝ) :
   funext s
   rw [← Complex.exp_eq_exp_ℂ, Complex.ofReal_exp]
 
+
+/-! ## The exponential ray of the induced generator -/
+
+/-- The compound of a unitary, as a unit of the matrix ring. -/
+noncomputable def compoundUnit {k : ℕ} {V : Matrix ι ι ℂ} (hV : V ∈ Matrix.unitaryGroup ι ℂ) :
+    (Matrix (Set.powersetCard ι k) (Set.powersetCard ι k) ℂ)ˣ where
+  val := (compound k V)ᴴ
+  inv := compound k V
+  val_inv := compound_conjTranspose_mul_self hV
+  inv_val := compound_mul_conjTranspose_self hV
+
+/-- **The compound of an exponential ray is the exponential ray of the induced generator.** -/
+theorem exp_smul_compoundGen (k : ℕ) {V : Matrix ι ι ℂ} (hV : V ∈ Matrix.unitaryGroup ι ℂ)
+    (w : ι → ℝ) (t : ℝ) :
+    NormedSpace.exp ((t : ℂ) • compoundGen k V w)
+      = (compound k V)ᴴ * (rdiag fun s : Set.powersetCard ι k =>
+          Real.exp (t * subsetSum k w s)) * compound k V := by
+  set u : (Matrix (Set.powersetCard ι k) (Set.powersetCard ι k) ℂ)ˣ :=
+    compoundUnit (k := k) hV with hu
+  have hval : (u : Matrix (Set.powersetCard ι k) (Set.powersetCard ι k) ℂ)
+      = (compound k V)ᴴ := rfl
+  have hinv : ((u⁻¹ : (Matrix (Set.powersetCard ι k) (Set.powersetCard ι k) ℂ)ˣ)
+      : Matrix (Set.powersetCard ι k) (Set.powersetCard ι k) ℂ) = compound k V := rfl
+  have hconj : (t : ℂ) • compoundGen k V w
+      = (u : Matrix (Set.powersetCard ι k) (Set.powersetCard ι k) ℂ)
+        * ((t : ℂ) • rdiag (subsetSum k w))
+        * ((u⁻¹ : (Matrix (Set.powersetCard ι k) (Set.powersetCard ι k) ℂ)ˣ)
+          : Matrix (Set.powersetCard ι k) (Set.powersetCard ι k) ℂ) := by
+    rw [hval, hinv, compoundGen, mul_smul_comm, smul_mul_assoc]
+  rw [hconj, Matrix.exp_units_conj, exp_smul_rdiag, hval, hinv]
+
 end GaloisForLFunctions.HTGeometry

@@ -506,10 +506,25 @@ With this the chain is complete on the reflection side: the Barnes ladder holds 
 sector, the DA sector is reflection stable, the reflection is a differential-field automorphism, and
 the transport identity holds inside that field.
 
-What is **not** yet claimed.  These pieces have not been assembled into the single statement
-`(T_j - 1) L_A = -L_{A∖{j}}` modulo DA for the constructed multiple sine; that is now bookkeeping
-over already-proved lemmas rather than new mathematics.  The double-sine atomic defect-coset theorem
-is untouched.
+`HTGeometry.MultipleSineLadderStep` — **equation `(2)`, assembled**.
+
+- `meroShiftDiff_reflectedSource_of_defect` — the field-level transport carrying an explicit defect.
+- `frameSignZ`, `frameSignZ_erase`, `natCast_frameSignZ_mul_da` — the integer parity sign, its flip
+  under deletion, and the fact that multiplying by it preserves the DA sector.
+- `multipleSineSourceMero ω hω S` — the reflected Barnes source of a subframe, each frame carrying
+  its own reflection point `c_S = ∑_{i ∈ S} omega_i` and parity sign `eps_S = (-1)^{|S|+1}`.
+- `differentialAlgebraicOver_multipleSine_ladder_step` — **`(T_k - 1) L_S + L_{S∖k}` is
+  differentially algebraic**, for every direction `k` of a frame with at least two directions.
+
+That is equation `(2)` of the card, modulo the differentially algebraic sector, for the constructed
+multiple-sine source.  The Barnes ladder supplies the defect `d`; the transport turns it into
+`d + eps_S · reflect_{c_{S∖k}}(d)`; reflection stability and closure of the DA sector under addition
+finish it.
+
+What is **not** yet claimed.  Equation `(2)` is the *step*; the card's face-coordinate identity `(4)`
+iterates it down the face complex, and `(6)` then reads off `I_{N-1} ⊆ Ann_DA(L_V)`.  Those
+iterations are the next assembly.  The double-sine atomic defect-coset theorem — which supplies the
+*independence* half, not the annihilation half — is untouched.
 
 ## Parent-theory and literature gate
 
@@ -554,5 +569,6 @@ review.
 - [x] transport identity and both reflection/translation composition laws proved inside `meroField`
 - [x] reflection covers an automorphism of `RatFunc C`; jets shown to flip by `(-1)^n`
 - [x] signed transport lemma built; differential algebraicity proved stable under reflection
-- [ ] assemble the proved pieces into `(2)` modulo DA for the constructed multiple sine
+- [x] equation `(2)` proved modulo DA for the constructed multiple-sine source
+- [ ] iterate `(2)` down the face complex to get `(4)` and `(6)` (`I_{N-1} ⊆ Ann_DA(L_V)`)
 - [ ] unconditional double-sine atomic defect-coset theorem in Lean

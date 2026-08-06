@@ -93,13 +93,13 @@ section CircleMean
 
 /-- The mean of `h` over the circle of radius `r`, without the normalising factor. -/
 noncomputable def circleMean (h : ℂ → ℂ) (r : ℝ) : ℂ :=
-  ∫ θ in (0 : ℝ)..(2 * π), h (circleMap 0 r θ)
+  ∫ θ in (-π)..π, h (circleMap 0 r θ)
 
 /-- **The two Wirtinger parts have equal circle integrals.**  The angular derivative integrates to
 zero over a full circle because the circle closes up. -/
 theorem circle_angle_integral_eq (hC : ContDiff ℝ 1 h) (r : ℝ) :
-    (∫ θ in (0 : ℝ)..(2 * π), circleMap 0 r θ * dz h (circleMap 0 r θ)) =
-      ∫ θ in (0 : ℝ)..(2 * π), (starRingEnd ℂ) (circleMap 0 r θ) * dzbar h (circleMap 0 r θ) := by
+    (∫ θ in (-π)..π, circleMap 0 r θ * dz h (circleMap 0 r θ)) =
+      ∫ θ in (-π)..π, (starRingEnd ℂ) (circleMap 0 r θ) * dzbar h (circleMap 0 r θ) := by
   have hd : Differentiable ℝ h := hC.differentiable one_ne_zero
   have hc0 : Continuous fun θ : ℝ => circleMap 0 r θ := continuous_circleMap 0 r
   have hcz : Continuous fun θ : ℝ => dz h (circleMap 0 r θ) := (continuous_dz hC).comp hc0
@@ -108,22 +108,23 @@ theorem circle_angle_integral_eq (hC : ContDiff ℝ 1 h) (r : ℝ) :
   have hB : Continuous fun θ : ℝ =>
       (starRingEnd ℂ) (circleMap 0 r θ) * dzbar h (circleMap 0 r θ) := by fun_prop
   have hIA : IntervalIntegrable (fun θ : ℝ => circleMap 0 r θ * dz h (circleMap 0 r θ))
-      MeasureTheory.volume 0 (2 * π) := hA.intervalIntegrable _ _
+      MeasureTheory.volume (-π) π := hA.intervalIntegrable _ _
   have hIB : IntervalIntegrable
       (fun θ : ℝ => (starRingEnd ℂ) (circleMap 0 r θ) * dzbar h (circleMap 0 r θ))
-      MeasureTheory.volume 0 (2 * π) := hB.intervalIntegrable _ _
+      MeasureTheory.volume (-π) π := hB.intervalIntegrable _ _
   have hcont : Continuous fun θ : ℝ =>
       Complex.I * (circleMap 0 r θ * dz h (circleMap 0 r θ)
         - (starRingEnd ℂ) (circleMap 0 r θ) * dzbar h (circleMap 0 r θ)) := by fun_prop
   have hFTC :
-      (∫ θ in (0 : ℝ)..(2 * π),
+      (∫ θ in (-π)..π,
         Complex.I * (circleMap 0 r θ * dz h (circleMap 0 r θ)
           - (starRingEnd ℂ) (circleMap 0 r θ) * dzbar h (circleMap 0 r θ))) =
-        h (circleMap 0 r (2 * π)) - h (circleMap 0 r 0) :=
+        h (circleMap 0 r π) - h (circleMap 0 r (-π)) :=
     intervalIntegral.integral_eq_sub_of_hasDerivAt
       (fun θ _ => hasDerivAt_circle_angle hd r θ) (hcont.intervalIntegrable _ _)
-  have hper : circleMap 0 r (2 * π) = circleMap 0 r 0 := by
-    simpa using periodic_circleMap 0 r 0
+  have hper : circleMap 0 r π = circleMap 0 r (-π) := by
+    have := periodic_circleMap 0 r (-π)
+    rwa [show -π + 2 * π = π by ring] at this
   rw [hper, sub_self, intervalIntegral.integral_const_mul,
     intervalIntegral.integral_sub hIA hIB] at hFTC
   rcases mul_eq_zero.mp hFTC with h' | h'

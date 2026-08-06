@@ -130,3 +130,45 @@ chordal metric already computed.  That is the whole item.
 The existing `norm_exp_half_mul_exp_half_sq_le` proof is the exact template for the general
 exponent: conjugate by `exp (-y)`, take the root, conjugate back by `exp (y/2)`.  Only its third
 step changes — `CFC.sqrt_le_sqrt` becomes `CFC.rpow_le_rpow` at exponent `s`.
+
+
+## Progress log
+
+- **Step 1 DONE** 2026-08-06 — `CordesGeneralExponent.lean`.  Both the norm form
+  (`norm_exp_smul_mul_exp_smul_le`) and, more usefully, the **order form**
+  (`exp_smul_le_of_exp_le`): `exp y ≤ c exp x → exp (s y) ≤ c^s exp (s x)`.
+- **Step 2 plumbing DONE** 2026-08-06 —
+  - `CompoundOperatorOrder.lean`: `toEuclideanCLM_le_iff` is the dictionary between
+    `matQuadForm` comparison (the language of `CompoundKyFan`) and `≤` in the CLM C\*-algebra
+    (the language of the functional calculus).  Plus `matQuadForm_eq_inner`, `re_inner_swap`,
+    `isSelfAdjoint_toEuclideanCLM`, `matQuadForm_sub`.
+  - `CompoundExponential.lean`: `compound_conj_rdiag_exp` — the compound of an exponential ray is
+    an exponential ray, `Λᵏ (Vᴴ diag(exp (t w)) V) = (Λᵏ V)ᴴ diag(exp (t σ)) (Λᵏ V)`, `σ` the
+    subset sums.  Plus `compoundGen` (the induced generator, `t`-independent),
+    `isHermitian_compoundGen`, `exp_smul_rdiag`, `rdiag_conjTranspose`,
+    `isHermitian_conj_rdiag'`, `compound_conjTranspose_mul_self`,
+    `compound_mul_conjTranspose_self`.
+
+## What is left, precisely
+
+**(i) ALT assembly** — a module tying the three pieces together:
+  - `toEuclideanCLM (compoundGen k V w)` is self-adjoint; `toEuclideanCLM` of
+    `compound k (Vᴴ diag(exp (t w)) V)` is `NormedSpace.exp (t • toEuclideanCLM (compoundGen …))`.
+    NOTE the one gap here: transporting the *matrix* exponential to the *CLM* exponential.
+    `NormedSpace.map_exp` needs a continuous ring hom; `Matrix.toEuclideanCLM` is a `StarAlgEquiv`
+    and continuity is available from finite-dimensionality
+    (`LinearMap.continuous_of_finiteDimensional`).  Alternatively use `Matrix.exp_conj`
+    (needs `IsUnit U`, and `Matrix.inv_eq_right_inv` to identify `U⁻¹ = Λᵏ V`) on the matrix side
+    first, then transport a single equation.
+  - Then: `compound_quadForm_le` (bound at time 1) → `toEuclideanCLM_le_iff` → 
+    `exp_smul_le_of_exp_le` → `toEuclideanCLM_le_iff` → `prod_le_of_compound_quadForm_le`,
+    giving `∏_{i∈s} γ^{(λ)}_i ≤ a ^ λ`.
+
+**(ii) `(H)` itself** — mirror the assembly of `observerDist_triangle` in
+  `ObserverTriangleInequality.lean` (that proof is the exact template, including
+  `prod_le_exp_topSum` and the conversion of a products bound into a `topSum` bound), then
+  Karamata via `sqrt_sum_sq_le_of_topSum_le` with `c := 0`.
+
+**(iii) the limit** — `f t / t` nondecreasing (from `(H)`) and `≤ 2` (triangle inequality) gives
+  the divergence rate; define `titsDist`; check it against
+  `observerDist_metricRay_diagOp_unit` inside an apartment.

@@ -1035,3 +1035,33 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
   hence monotonicity of the divergence rate.
 
   Audit: `lake build GaloisForLFunctions.HTGeometry` green, 15124 jobs.
+
+- 2026-08-06 — **The compound layer for the remaining item: the order dictionary and the
+  compound of an exponential ray.**  Axioms `[propext, Classical.choice, Quot.sound]`.
+
+  `formal/GaloisForLFunctions/HTGeometry/CompoundOperatorOrder.lean`:
+
+  - `toEuclideanCLM_le_iff` — for Hermitian `M, N`, the comparison of Hermitian forms
+    `∀ x, (matQuadForm M x).re ≤ (matQuadForm N x).re` *is* the operator order
+    `toEuclideanCLM M ≤ toEuclideanCLM N`.
+  - `matQuadForm_eq_inner`, `re_inner_swap`, `isSelfAdjoint_toEuclideanCLM`, `matQuadForm_sub`.
+
+  This is the join between the two languages the argument needs: the compound estimates are
+  stated with Hermitian forms, and the functional calculus — where the contraction lives — is
+  stated in the C⋆-order.  Note the order lemmas cannot be run on matrices directly: `Matrix n n ℂ`
+  carries a continuous functional calculus but no `PartialOrder` and no `StarOrderedRing`, so the
+  comparison must be transported to `EuclideanSpace ℂ κ →L[ℂ] _`, which has every instance.
+
+  `formal/GaloisForLFunctions/HTGeometry/CompoundExponential.lean`:
+
+  - `compound_conj_rdiag_exp` — the compound of an exponential ray is an exponential ray:
+    `Λᵏ (Vᴴ (diag exp (t w)) V) = (Λᵏ V)ᴴ (diag exp (t σ)) (Λᵏ V)` with `σ` the subset sums.
+  - `compound_rdiag_exp`, `exp_smul_rdiag`, `compoundGen`, `isHermitian_compoundGen`,
+    `rdiag_conjTranspose`, `isHermitian_conj_rdiag'`, and the two unitarity forms of `Λᵏ V`.
+
+  The point of the identity is that both rays being compared remain exponential rays after
+  passing to the compound, with generator independent of `t` — so the homothety contraction
+  applies there, and its conclusion at time `λ` reads back as the bound
+  `Π_k (A_λ) ≤ (Π_k (A_1)) ^ λ` on subset products of the pencil spectrum.
+
+  Audit: `lake build GaloisForLFunctions.HTGeometry` green, 15130 jobs.

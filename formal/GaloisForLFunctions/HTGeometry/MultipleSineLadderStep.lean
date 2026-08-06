@@ -37,6 +37,8 @@ noncomputable section
 
 attribute [local instance] relativeGaugeDomain relativeGaugeDifferential
   relativeGaugeRatFuncAlgebra relativeGaugeRatFuncDifferential relativeGaugeDifferentialAlgebra
+  relativeGaugeCharZeroBase relativeGaugeCharZero relativeGaugeComplexAlgebra
+  relativeGaugeComplexAlgebraAnalytic
 
 /-! ### The transport with an explicit defect -/
 
@@ -80,6 +82,7 @@ theorem frameSignZ_erase {S : Finset ι} {k : ι} (hk : k ∈ S) :
   ring
 
 omit [Fintype ι] in
+omit [DecidableEq ι] in
 theorem natCast_frameSignZ_mul_da {S : Finset ι}
     {z : meroField (Set.univ : Set ℂ)}
     (hz : DifferentialAlgebraicOver (RatFunc ℂ) z) :
@@ -90,7 +93,7 @@ theorem natCast_frameSignZ_mul_da {S : Finset ι}
     unfold frameSignZ
     rw [Int.cast_pow, Int.cast_neg, Int.cast_one]
   rw [hcast]
-  exact differentialAlgebraicOver_neg_one_pow_mul hz
+  exact _root_.HTGeometry.differentialAlgebraicOver_neg_one_pow_mul hz
 
 /-! ### The reflected Barnes source of a frame -/
 
@@ -100,6 +103,7 @@ def multipleSineSourceMero (ω : ι → ℂ) (hω : ∀ i, 0 < (ω i).im) (S : F
   meroReflectedSource (frameSignZ S) (frameReflectionPoint ω S)
     (barnesSourceLogDerivMero (subframe ω S) (subframe_im_pos hω S))
 
+omit [Fintype ι] in
 /-- **Equation `(2)` for the reflected Barnes source.**  The multiple-sine difference equation holds
 modulo the differentially algebraic sector, for every direction of a frame with at least two
 directions. -/
