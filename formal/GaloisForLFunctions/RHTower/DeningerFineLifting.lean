@@ -15,7 +15,8 @@ function with a section over `V ⊓ W` extends by zero to a section over `V`: th
 does.
 
 * `RHTower.deningerSections_injective` : a monomorphism of sheaves is injective on sections.
-* `RHTower.deningerExtendByZero` : extension by zero of a section multiplied by a bump function.
+* `RHTower.deningerFineAction_extendByZero` : extension by zero of a section multiplied by a bump
+  function.
 -/
 
 namespace RHTower
@@ -61,7 +62,7 @@ theorem deningerOffSupport_apply_eq_zero {ρ : C(X, ℝ)} {x : X} (hx : x ∈ de
 
 /-- **Extension by zero.**  If the support of `ρ` lies in `W`, the product of `ρ` with a section
 over `V ⊓ W` extends by zero to a section over `V`. -/
-theorem deningerExtendByZero (A : DeningerFineAction F R) (ρ : ↥R) {V W : Opens X}
+theorem deningerFineAction_extendByZero (A : DeningerFineAction F R) (ρ : ↥R) {V W : Opens X}
     (hsupp : tsupport (ρ : C(X, ℝ)) ⊆ (W : Set X)) (t : ToType (F.1.obj (op (V ⊓ W)))) :
     ∃ E : ToType (F.1.obj (op V)),
       deningerRes F (inf_le_left : V ⊓ W ≤ V) E = A.smul ρ (V ⊓ W) t ∧

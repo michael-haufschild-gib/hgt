@@ -120,8 +120,42 @@ Applied to the digamma recurrence: `E·ψ(z) + O·ψ(z+1/2) = P(z)/Q(z)` becomes
 `R(z+1) − R(z) = E/z + O/(z+1/2)`, whose pole part sits on the orbits of `0` and `−1/2`. The brick
 forces `E = O = 0`.
 
-Still open: wiring this back through `gammaRealLogConnection` and the substitution `z = s/2` to turn
-the parity-balance criterion into an iff.
+### The negative half
+
+`RHTower/XiOddShiftArchimedeanIrrationality.lean` closes the shift-one case in the negative
+direction. The closed form
+
+    logDeriv archFactor (s+1) − logDeriv archFactor s
+      = 1/(s+1) − 1/(s−1) + ψ((s+1)/2)/2 − ψ(s/2)/2
+
+carries both digamma modes with opposite nonzero weights; substituting `s = 2z` turns them into
+`ψ(z)` and `ψ(z+1/2)`, so half-translate independence applies directly and gives
+`xiTransverseShiftArchimedeanCorrection_one_not_rational`: **no quotient of polynomials agrees with
+the shift-one archimedean correction on the right half-plane.**
+
+So parity balance is not merely a convenient sufficient condition — it is genuinely needed already
+for the single odd shift, which is exactly the case the corpus had left open.
+
+To make the applications plumbing-free, the independence theorem is stated in three strengths:
+lowest terms; lowest terms off a finite exceptional set; and an arbitrary quotient off a finite
+exceptional set (reduction to lowest terms via `RatFunc.num`/`RatFunc.denom`).
+
+### The dichotomy, closed
+
+`HTGeometry/HalfPlaneRational.lean` introduces `IsHalfPlaneRational f` — agreement with a quotient of
+polynomials on the right half-plane, off a finite exceptional set. The class is closed under sums,
+differences, constant multiples, finite sums, the substitution `z ↦ 2z`, and agreement off a finite
+set, which is exactly the bookkeeping a value relation assembled from simple fractions needs.
+
+`RHTower/XiParityMassDichotomy.lean` then gives the biconditional
+(`archimedeanCorrection_family_isHalfPlaneRational_iff`):
+
+> A natural-shift family's archimedean correction is half-plane rational **iff** its even-shift
+> coefficient mass and its odd-shift coefficient mass both vanish.
+
+Sufficiency is the explicit telescope; necessity is half-translate digamma independence applied to
+the parity decomposition after subtracting the telescope and the finitely many simple fractions
+contributed by `s(s−1)/2`.
 
 ## Faithfulness
 

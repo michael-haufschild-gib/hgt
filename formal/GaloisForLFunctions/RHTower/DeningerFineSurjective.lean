@@ -103,7 +103,7 @@ theorem deningerFine_sections_surjective {R : AddSubgroup C(X, ℝ)}
           = A.smul (ρ j) (Vs i ⊓ Vs j) (c i j) ∧
       ∀ (Z : Opens X) (hZ : Z ≤ Vs i), Z ≤ deningerOffSupport (ρ j : C(X, ℝ)) →
         deningerRes S.X₁ hZ E = 0 :=
-    fun i j => deningerExtendByZero A (ρ j) (hρsub j) (c i j)
+    fun i j => deningerFineAction_extendByZero A (ρ j) (hρsub j) (c i j)
   choose e he1 he2 using hext
   -- a neighbourhood on which only finitely many bumps are alive, and the partition sums to one
   have hnbhd : ∀ (Z : Opens X) (y : (X : Type u)), y ∈ Z → ∃ (W : Opens X) (_ : W ≤ Z), y ∈ W ∧

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.RouteRHarmonicQuantumGapCriterion
+import GaloisForLFunctions.RHTower.CentralReciprocalMoments
 
 /-!
 # The first trace wall as a scale detector
@@ -266,6 +267,18 @@ theorem norm_stageAverage_criticalWall_le
           mul_le_mul_of_nonneg_left hcore hwpos.le
       _ = (1 - Q ^ (-2 * |t|)) * (w p * primeHarmonicWeight p) := by ring
 
+/-- **The average is at most the scale product.**  Linearising the character
+defect turns the ceiling bound into `2 |t| log Q`: to certify a threshold `r` at
+depth `Q` a producer must reach `|t| ≤ r / (2 log Q)`. -/
+theorem norm_stageAverage_criticalWall_le_scale
+    (hstage : IsUnitStage primeHarmonicWeight w) {Q : ℝ} (hQ : 0 < Q)
+    (hceil : ∀ p : Nat.Primes, w p ≠ 0 → ((p : ℕ) : ℝ) ≤ Q) (t : ℝ) :
+    ‖stageAverage w (routeRPrimeGammaCriticalWallField t)‖ ≤
+      2 * |t| * Real.log Q := by
+  refine le_trans (norm_stageAverage_criticalWall_le hstage hceil t) ?_
+  rw [Real.rpow_def_of_pos hQ]
+  nlinarith [Real.add_one_le_exp (Real.log Q * (-2 * |t|))]
+
 /-- **Two-sided scale law.**  Between a floor `q` and a ceiling `Q` on the
 carrying primes the first-wall modulus is trapped by the character defects at
 those two depths.  A stage therefore resolves the grade only at scale
@@ -432,6 +445,90 @@ theorem exists_isCofinalUnitProfile_no_single_stage_decides :
   obtain ⟨t, ht, hle⟩ := exists_ne_zero_norm_stageAverage_le_of_finite_support
     (hmu.isUnitStage N) (hfin N) hr
   exact ⟨t, ht, by rwa [profileAverage_eq_stageAverage]⟩
+
+/-! ## The depth floor is free -/
+
+/-- **Cofinal escape already supplies arbitrarily deep stages.**  The primes
+below a bound form a finite set, so the depth-floor hypothesis of the deep-stage
+criterion holds eventually and never has to be assumed. -/
+theorem eventually_deepStage {mu : ℕ → Nat.Primes → ℝ}
+    (hmu : IsCofinalUnitProfile primeHarmonicWeight mu) (Q : ℕ) :
+    ∀ᶠ N in atTop, ∀ p : Nat.Primes, mu N p ≠ 0 → (Q : ℝ) ≤ ((p : ℕ) : ℝ) := by
+  have hinj : Function.Injective (fun p : Nat.Primes => (p : ℕ)) :=
+    fun a b h => Subtype.ext h
+  have hsub : (fun p : Nat.Primes => (p : ℕ)) '' {p : Nat.Primes | (p : ℕ) < Q} ⊆
+      ↑(Finset.range Q) := by
+    rintro n ⟨p, hp, rfl⟩
+    simpa using hp
+  have hfin : {p : Nat.Primes | (p : ℕ) < Q}.Finite :=
+    Set.Finite.of_finite_image ((Finset.range Q).finite_toSet.subset hsub)
+      hinj.injOn
+  filter_upwards [hmu.escapes hfin.toFinset] with N hN p hp
+  have hnot : ¬ (p : ℕ) < Q := fun hlt =>
+    hp (hN p (hfin.mem_toFinset.mpr hlt))
+  exact_mod_cast not_lt.mp hnot
+
+/-- **The deep-stage and asymptotic forms of the criterion coincide.**  A
+frequent modulus bound already provides, at every depth, one stage carried above
+that depth and satisfying the bound. -/
+theorem exists_deepStage_of_frequently {mu : ℕ → Nat.Primes → ℝ}
+    (hmu : IsCofinalUnitProfile primeHarmonicWeight mu) {t r : ℝ}
+    (hfreq : ∃ᶠ N in atTop,
+      ‖profileAverage mu N (routeRPrimeGammaCriticalWallField t)‖ ≤ r) (Q : ℕ) :
+    ∃ N : ℕ, (∀ p : Nat.Primes, mu N p ≠ 0 → (Q : ℝ) ≤ ((p : ℕ) : ℝ)) ∧
+      ‖profileAverage mu N (routeRPrimeGammaCriticalWallField t)‖ ≤ r := by
+  obtain ⟨N, hle, hdeep⟩ :=
+    (hfreq.and_eventually (eventually_deepStage hmu Q)).exists
+  exact ⟨N, hdeep, hle⟩
+
+/-- **Quantitative form of the frequent criterion.**  Because the depth floor is
+free, one asymptotic hypothesis yields the explicit grade bound simultaneously at
+every admissible depth. -/
+theorem abs_le_of_frequently_norm_profileAverage_le {mu : ℕ → Nat.Primes → ℝ}
+    (hmu : IsCofinalUnitProfile primeHarmonicWeight mu) {t r : ℝ} {Q : ℕ}
+    (hQ : 4 ≤ (Q : ℝ)) (hr : r < 1 - 3 / (Q : ℝ))
+    (hfreq : ∃ᶠ N in atTop,
+      ‖profileAverage mu N (routeRPrimeGammaCriticalWallField t)‖ ≤ r) :
+    |t| ≤ Real.log ((1 - 3 / (Q : ℝ)) / (1 - 3 / (Q : ℝ) - r)) /
+      (2 * Real.log (Q : ℝ)) := by
+  obtain ⟨N, hdeep, hle⟩ := exists_deepStage_of_frequently hmu hfreq Q
+  exact abs_le_of_norm_stageAverage_le (hmu.isUnitStage N) hQ hdeep hr
+    (by rwa [← profileAverage_eq_stageAverage])
+
+/-! ## The Xi characterization -/
+
+theorem profileAverage_criticalWall_zero_eq_zero
+    (mu : ℕ → Nat.Primes → ℝ) (N : ℕ) :
+    profileAverage mu N (routeRPrimeGammaCriticalWallField 0) = 0 := by
+  rw [profileAverage_eq_stageAverage, stageAverage]
+  simp [routeRPrimeGammaCriticalWallField]
+
+/-- **RH is exactly a sub-quantum gap.**  For any bounded cofinal
+prime-harmonic profile, the Riemann hypothesis holds if and only if at every Xi
+divisor point the first-wall real parts drop below the harmonic quantum along
+some subsequence.  Forward, neutral grade makes every average vanish
+identically; backward, the quantization excludes both orientations. -/
+theorem riemannHypothesis_iff_frequently_abs_re_profileAverage_lt_one
+    {mu : ℕ → Nat.Primes → ℝ}
+    (hmu : IsCofinalUnitProfile primeHarmonicWeight mu) :
+    RiemannHypothesis ↔
+      ∀ rho : XiDivisorSupport, ∃ r < 1, ∃ᶠ N in atTop,
+        |(profileAverage mu N
+            (routeRPrimeGammaXiCriticalWallField rho)).re| ≤ r := by
+  refine ⟨fun hRH rho => ⟨1 / 2, by norm_num, ?_⟩,
+    riemannHypothesis_of_frequently_abs_re_profileAverage_lt_one hmu⟩
+  have ht : primeDepthBVWoldXiCenteredRate rho = 0 :=
+    (primeDepthBVWoldXiCenteredRate_eq_zero_iff rho).mpr
+      (xi_divisor_support_re_eq_half_of_rh hRH rho)
+  have hfield : routeRPrimeGammaXiCriticalWallField rho =
+      routeRPrimeGammaCriticalWallField 0 := by
+    show routeRPrimeGammaCriticalWallField
+      (primeDepthBVWoldXiCenteredRate rho) = _
+    rw [ht]
+  refine Filter.Eventually.frequently ?_
+  filter_upwards with N
+  rw [hfield, profileAverage_criticalWall_zero_eq_zero]
+  norm_num
 
 end
 

@@ -1892,3 +1892,35 @@ average has modulus at most `r`.
 The sandwich also settles what cannot be traded: the device output is a function of `|t| · log(depth)`
 up to the depth ratio and an `O(1/q)` Fisher correction, so neither the choice of weights nor a
 finite certificate can contribute anything. Only genuine cancellation at unboundedly deep scales can.
+
+## 2026-08-06 — first-wall lane classified; equivalence proved, no slack remains
+
+`[LEAN-PROVED]` The first-wall gap criterion is now an equivalence. For any bounded cofinal
+prime-harmonic profile `mu`,
+
+`RiemannHypothesis ↔ ∀ rho, ∃ r < 1, ∃ᶠ N, |(profileAverage mu N (W_{t_rho})).re| ≤ r`
+
+(`riemannHypothesis_iff_frequently_abs_re_profileAverage_lt_one`). The forward direction uses only
+that neutral grade annihilates the coefficient field, together with the corpus theorem
+`xi_divisor_support_re_eq_half_of_rh`.
+
+Two further hypotheses were discharged rather than assumed:
+
+- `eventually_deepStage` — the primes below any bound are finite, so cofinal escape already forces
+  arbitrarily deep stages. The depth floor of the deep-stage criterion is free.
+- `exists_deepStage_of_frequently`, `abs_le_of_frequently_norm_profileAverage_le` — hence the
+  deep-stage and asymptotic forms of the criterion coincide, and a single frequent modulus bound gives
+  the explicit grade bound at every admissible depth.
+
+Linearizing the ceiling gives the usable form `‖stageAverage w (W_t)‖ ≤ 2 |t| log Q`
+(`norm_stageAverage_criticalWall_le_scale`).
+
+### Lane status: `[TERMINUS — CRITERION RE-ENCODING]`
+
+Device, depth floor, and bounded depth are all now proved to carry no freedom, and the modulus is
+pinned two-sidedly by `|t| · log(depth)`. So no bound on `|t_rho|` short of zero is extractable: any
+fixed `δ > 0` bound is a bounded-depth certificate, which is always satisfiable by nonzero grades.
+`ROUTE_R_FIRST_WALL_UNBOUNDED_DEPTH_CANCELLATION` is therefore equivalent to RH per zero with nothing
+left to trade. This lane should not be sharpened further; the positive residue is the quantified
+equivalence and the four no-freedom theorems. Route R's remaining hope must come from a different
+producer, not from a better reader.

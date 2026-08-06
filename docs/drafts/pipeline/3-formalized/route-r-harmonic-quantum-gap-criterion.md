@@ -236,3 +236,53 @@ deliver cancellation simultaneously at unboundedly deep scales. That is the exac
 narrows it to its unbounded-depth core.
 
 Axioms for all new capstones: `[propext, Classical.choice, Quot.sound]`.
+
+## 2026-08-06 (fourth pass) — the criterion becomes an equivalence; lane classified
+
+### The depth floor was never a hypothesis
+
+The primes below any bound form a finite set, so cofinal escape *already* forces every stage far
+enough out to be carried above that bound: `eventually_deepStage`. Consequently the deep-stage
+criterion and the asymptotic criterion are the same condition
+(`exists_deepStage_of_frequently`), and one frequent modulus bound yields the explicit grade bound at
+every admissible depth simultaneously (`abs_le_of_frequently_norm_profileAverage_le`). The `hdeep`
+hypothesis of the third pass is discharged, not assumed.
+
+### Linearized ceiling
+
+`1 - e^{-x} ≤ x` turns the ceiling bound into the usable form
+
+`‖stageAverage w (W_t)‖ ≤ 2 |t| log Q`
+
+(`norm_stageAverage_criticalWall_le_scale`): to certify threshold `r` at depth `Q` a producer must
+reach `|t| ≤ r / (2 log Q)`, and nothing weaker.
+
+### RH characterization `[PROVED HERE]`
+
+Forward, neutral grade makes the coefficient field identically zero, hence every stage average zero
+(`profileAverage_criticalWall_zero_eq_zero`), and RH puts every Xi divisor point on the critical line
+by the corpus theorem `xi_divisor_support_re_eq_half_of_rh`. Backward is the sharpened gap criterion.
+Therefore, for **any** bounded cofinal prime-harmonic profile `mu`:
+
+`RiemannHypothesis ↔ ∀ rho, ∃ r < 1, ∃ᶠ N, |(profileAverage mu N (W_{t_rho})).re| ≤ r`
+
+Lean: `riemannHypothesis_iff_frequently_abs_re_profileAverage_lt_one`. Axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+### Lane classification `[TERMINUS]`
+
+With the equivalence proved and both sides of the scale law in place, this lane is now *classified*
+rather than open, and the classification is negative for the purpose of finding slack:
+
+- the reading device carries no freedom (any bounded cofinal unit profile computes the same
+  coordinate);
+- the depth floor carries no freedom (escape supplies it);
+- bounded depth carries no information (every depth-ceilinged stage is evaded by nonzero grades);
+- the modulus is pinned two-sidedly by `|t| · log(depth)`, so no partial bound on `|t|` short of zero
+  can be extracted: a bound `|t| ≤ δ` for fixed `δ > 0` is exactly a bounded-depth certificate, which
+  the third-pass no-go shows is always satisfiable.
+
+The remaining content is therefore the full statement `t_rho = 0`, i.e. RH itself. Per
+`docs/meta/scientific-method.md` this is a criterion re-encoding, and the honest positive residue is
+the quantified equivalence plus the four no-freedom statements above, not progress toward a proof.
+The card stays at stage 3; no further sharpening of this reporter family is worth attempting.

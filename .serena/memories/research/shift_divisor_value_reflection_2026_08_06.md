@@ -111,8 +111,28 @@ Subsumes (machine-checked connectors exist):
     parity problem needs since poles of psi(s/2) and psi((s+1)/2) differ by a half-integer.
   * `GaloisForLFunctions/HTGeometry/DigammaHalfTranslateIndependent.lean` —
     `digamma_half_translate_independent`: psi(z) and psi(z+1/2) are linearly independent over C(z).
-- still open: wire this through `gammaRealLogConnection` and the substitution z = s/2 to upgrade the
-  parity-balance criterion to an iff.
+  Three strengths available: lowest terms; lowest terms off a finite exceptional set
+  (`..._of_cofinite`); arbitrary quotient off a finite exceptional set (`..._of_quotient`, reduces
+  via `RatFunc.num`/`RatFunc.denom`).  Use `..._of_quotient` in applications — no coprimality
+  obligation.
+- NEGATIVE HALF DONE: `GaloisForLFunctions/RHTower/XiOddShiftArchimedeanIrrationality.lean`
+  * `xiTransverseShiftArchimedeanCorrection_one_closed`: for `0 < s.re`, `s <> 1`,
+    `logDeriv archFactor (s+1) - logDeriv archFactor s = 1/(s+1) - 1/(s-1)
+       + psi((s+1)/2)/2 - psi(s/2)/2`
+  * `xiTransverseShiftArchimedeanCorrection_one_not_rational`: NO quotient of polynomials agrees
+    with the shift-one archimedean correction on the right half-plane.  Substitution s = 2z turns
+    the two modes into psi(z), psi(z+1/2).
+  So parity balance is genuinely necessary, already at the single odd shift the corpus left open.
+- DICHOTOMY CLOSED (iff):
+  * `GaloisForLFunctions/HTGeometry/HalfPlaneRational.lean` — predicate `IsHalfPlaneRational f`
+    (agrees with a polynomial quotient on `0 < re`, off a finite set).  Closed under add, sub,
+    const_mul, finsetSum, `comp_two` (z -> 2z), and `congr` off a finite set.  Use this class
+    instead of hand-building numerators/denominators.
+    `digamma_parity_modes_independent`: `E*psi(s/2) + O*psi((s+1)/2)` half-plane rational implies
+    `E = O = 0`.
+  * `GaloisForLFunctions/RHTower/XiParityMassDichotomy.lean` —
+    `archimedeanCorrection_family_isHalfPlaneRational_iff`: a natural-shift family's archimedean
+    correction is half-plane rational IFF both parity masses vanish.
 - blocked: an explicit rational reflection cocycle for same-parity pairs.  The reflected point
   `1-a-b-s` has negative real part, outside the domain of the rational closed form; that needs a
   global meromorphic identity (identity theorem for meromorphic functions), not just a half-plane
