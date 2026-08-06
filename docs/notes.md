@@ -33,7 +33,7 @@ theorem routeR_riemannHypothesis : RiemannHypothesis :=
     routeR_source_zero_aperture
 ```
 
-## What the missing proof must construct
+### What the missing proof must construct
 
 For every Xi divisor point `rho`, set
 
@@ -73,7 +73,7 @@ Three properties must be proved from pre-divisor source structure:
 
 Safe-cone primitives are already constructed for damping `ε` satisfying `|t| < ε` in [RouteRFixedTraceTailRoos.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/RouteRFixedTraceTailRoos.lean:351). Missing mathematics is coefficient-faithful continuation to `ε = 0` while retaining membership in `routeRSummableSequenceIdeal`.
 
-## Already closed in Lean
+### Already closed in Lean
 
 No additional physical bridge remains:
 
@@ -88,7 +88,7 @@ Those comparisons are in [RouteRFixedTraceTailRoos.lean](/Users/michael/Document
 
 So remaining burden is not a collection of routine Lean gaps. It is one RH-strength producer: zero-aperture, coefficient-faithful fixed-tail null-homology of the explicit all-prime Gamma Bockstein class. Once proved, existing Lean code closes RH immediately.
 
-### Update 1
+## Update 1
 Delivered significant Route R frontier advance.
 
 Lean now proves the oriented first-wall quantization
@@ -136,7 +136,7 @@ Verification:
 External audit places prime-zeta logarithmic singularity and Roos complexes in established parent theory; exact oriented Route R quantization remains `[BRIDGE] [NOVELTY UNVERIFIED]`, not claimed as new scientific knowledge. [Prime-zeta expansion](https://arxiv.org/abs/2603.21535), [Roos derived limits](https://doi.org/10.1112/S0024610705022416).
 
 
-### Update 2
+## Update 2
 Delivered one significant Route R advance: explicit pre-divisor harmonic-residue reporter.
 
 For restarted sieve density
@@ -167,3 +167,31 @@ Updated:
 - [RHTower umbrella](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower.lean:5793)
 
 Verification: direct Lean green, targeted module build green, formal lint green, axioms only `[propext, Classical.choice, Quot.sound]`, no stale Lean processes.
+
+## Update 3
+`[LEAN-PROVED]` The first-wall residue is a coordinate, not a device output. New module
+`RHTower/RouteRHarmonicQuantumGapCriterion` rests on `HTGeometry/CofinalUnitProfileResidue`, which
+isolates the three properties a reader actually needs:
+
+1. pointwise weights in `[0,1]`;
+2. unit reference mass `sum_p mu_N(p)/p = 1`;
+3. supports eventually avoiding every finite set.
+
+Any such family reads the residue: `A_N(a) -> c` whenever `a - c/p` is summable. The Euler sieve is
+one instance; the family is nonempty for every positive divergent weight on a countable index set,
+by the explicit unit-mass window construction. Uniqueness of the coordinate now follows from
+divergence of `sum 1/p` alone, with no reader at all.
+
+### Mathematical delta
+
+Combining with `(QW)`, the residue at the moving first wall lies in `{-1,0,+1}`. Therefore
+
+`[OPEN CORE — ROUTE_R_FIRST_WALL_SUB_QUANTUM_GAP]` it suffices to produce **one** bounded cofinal
+unit profile `mu` on the primes and **one** threshold `r < 1` with
+
+`eventually_N  ‖profileAverage mu N (routeRPrimeGammaXiCriticalWallField rho)‖ ≤ r`
+
+at every Xi divisor point `rho`. Lean theorem
+`RHTower.riemannHypothesis_of_eventually_norm_profileAverage_lt_one` closes RH from that inequality.
+Exact vanishing is no longer required, and the reading device is no longer fixed. The remaining
+unproved content is a source-derived strict bound, not an equality.

@@ -1803,3 +1803,32 @@ zero limit is equivalent to `Re rho = 1/2`, but does not assume or assert the
 limit. Thus quotient ambiguity is gone: remaining RH-bearing content is one
 explicit cofinal source limit, not an undefined residue, tail-Roos equality,
 or continuation through a forbidden aperture interval.
+
+## 2026-08-06 — Sub-quantum gap replaces exact annihilation
+
+`[LEAN-PROVED]` The first-wall residue is a coordinate, not a device output. New module
+`RHTower/RouteRHarmonicQuantumGapCriterion` rests on `HTGeometry/CofinalUnitProfileResidue`, which
+isolates the three properties a reader actually needs:
+
+1. pointwise weights in `[0,1]`;
+2. unit reference mass `sum_p mu_N(p)/p = 1`;
+3. supports eventually avoiding every finite set.
+
+Any such family reads the residue: `A_N(a) -> c` whenever `a - c/p` is summable. The Euler sieve is
+one instance; the family is nonempty for every positive divergent weight on a countable index set,
+by the explicit unit-mass window construction. Uniqueness of the coordinate now follows from
+divergence of `sum 1/p` alone, with no reader at all.
+
+### Mathematical delta
+
+Combining with `(QW)`, the residue at the moving first wall lies in `{-1,0,+1}`. Therefore
+
+`[OPEN CORE — ROUTE_R_FIRST_WALL_SUB_QUANTUM_GAP]` it suffices to produce **one** bounded cofinal
+unit profile `mu` on the primes and **one** threshold `r < 1` with
+
+`eventually_N  ‖profileAverage mu N (routeRPrimeGammaXiCriticalWallField rho)‖ ≤ r`
+
+at every Xi divisor point `rho`. Lean theorem
+`RHTower.riemannHypothesis_of_eventually_norm_profileAverage_lt_one` closes RH from that inequality.
+Exact vanishing is no longer required, and the reading device is no longer fixed. The remaining
+unproved content is a source-derived strict bound, not an equality.

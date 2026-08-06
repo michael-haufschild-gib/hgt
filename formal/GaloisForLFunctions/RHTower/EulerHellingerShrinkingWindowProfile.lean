@@ -258,7 +258,6 @@ private theorem abs_dyadicSinhStep_le (v : ℝ) :
   have habs2 : |2 * v| = 2 * |v| := by rw [abs_mul, abs_two]
   have hv0 : (0 : ℝ) ≤ |v| := abs_nonneg v
   have h1 : |Real.sinh (2 * v)| ≤ 2 * |v| * Real.cosh (2 * |v|) := by
-    have h := abs_sinh_le_abs_mul_cosh (x := 2 * v) (C := 2 * v) (le_of_eq rfl) le_rfl
     have h' := abs_sinh_le_abs_mul_cosh (x := 2 * v) (C := |2 * v|) (abs_nonneg _) le_rfl
     rw [habs2] at h'
     exact h'
@@ -365,6 +364,464 @@ private theorem abs_sewingSeriesTerm_succ_le {p : ℕ} (hp : p.Prime) {c : ℝ} 
         mul_le_mul_of_nonneg_left hsplit hpos
     _ = 8 * |c| * (Real.log (p : ℝ) * Real.exp (-(3 / 2) * Real.log (p : ℝ))) *
           dyadicTailRatio ^ j := by ring
+
+end
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+open Filter Topology MeasureTheory Set
+open scoped BigOperators
+
+/-! ## The total higher-power mass -/
+
+/-- The convergent prime-power tail mass `∑_n (log n) n^(-3/2)`. -/
+def primeLogTailMass : ℝ :=
+  ∑' n : ℕ, Real.log (n : ℝ) * Real.exp (-(3 / 2) * Real.log (n : ℝ))
+
+theorem summable_primeLogTailMass :
+    Summable (fun n : ℕ => Real.log (n : ℝ) * Real.exp (-(3 / 2) * Real.log (n : ℝ))) := by
+  have h := HTGeometry.summable_log_pow_div_nat_rpow 1 (by norm_num : (1 : ℝ) < 3 / 2)
+  refine h.congr fun n => ?_
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp
+  · have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+    rw [pow_one, Real.rpow_def_of_pos hn0,
+      show -(3 / 2 : ℝ) * Real.log (n : ℝ) = -(Real.log (n : ℝ) * (3 / 2)) by ring,
+      Real.exp_neg, div_eq_mul_inv]
+
+theorem primeLogTailTerm_nonneg (n : ℕ) :
+    0 ≤ Real.log (n : ℝ) * Real.exp (-(3 / 2) * Real.log (n : ℝ)) := by
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp
+  · have h1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+    have := Real.log_nonneg h1
+    positivity
+
+theorem sum_primesBelow_le_primeLogTailMass (N : ℕ) :
+    ∑ p ∈ Nat.primesBelow N, Real.log (p : ℝ) * Real.exp (-(3 / 2) * Real.log (p : ℝ)) ≤
+      primeLogTailMass :=
+  summable_primeLogTailMass.sum_le_tsum _ (fun n _ => primeLogTailTerm_nonneg n)
+
+theorem primeLogTailMass_nonneg : 0 ≤ primeLogTailMass :=
+  tsum_nonneg primeLogTailTerm_nonneg
+
+/-! ## The uniform tail bound -/
+
+theorem abs_localSewingLog_sub_head_le {p : ℕ} (hp : p.Prime) {c : ℝ} (hc : |c| ≤ 1 / 8) :
+    |localSewingLog p c - localSewingLogHead p c| ≤
+      8 * |c| * dyadicTailConst *
+        (Real.log (p : ℝ) * Real.exp (-(3 / 2) * Real.log (p : ℝ))) := by
+  have hc' : |c| < 1 / 2 := by linarith
+  have hsum := hasSum_sewingSeriesTerm_tail hp hc'
+  have hgeo : HasSum
+      (fun j : ℕ => 8 * |c| * (Real.log (p : ℝ) * Real.exp (-(3 / 2) * Real.log (p : ℝ))) *
+        dyadicTailRatio ^ j)
+      (8 * |c| * (Real.log (p : ℝ) * Real.exp (-(3 / 2) * Real.log (p : ℝ))) *
+        dyadicTailConst) := by
+    have hg := hasSum_geometric_of_lt_one dyadicTailRatio_pos.le dyadicTailRatio_lt_one
+    have := hg.mul_left
+      (8 * |c| * (Real.log (p : ℝ) * Real.exp (-(3 / 2) * Real.log (p : ℝ))))
+    simpa [dyadicTailConst] using this
+  have hle : ∀ j : ℕ, ‖sewingSeriesTerm p c (j + 1)‖ ≤
+      8 * |c| * (Real.log (p : ℝ) * Real.exp (-(3 / 2) * Real.log (p : ℝ))) *
+        dyadicTailRatio ^ j := by
+    intro j
+    rw [Real.norm_eq_abs]
+    exact abs_sewingSeriesTerm_succ_le hp hc j
+  have hnorm := hsum.norm_le_of_bounded hgeo hle
+  rw [Real.norm_eq_abs] at hnorm
+  calc |localSewingLog p c - localSewingLogHead p c|
+      ≤ 8 * |c| * (Real.log (p : ℝ) * Real.exp (-(3 / 2) * Real.log (p : ℝ))) *
+          dyadicTailConst := hnorm
+    _ = 8 * |c| * dyadicTailConst *
+          (Real.log (p : ℝ) * Real.exp (-(3 / 2) * Real.log (p : ℝ))) := by ring
+
+theorem abs_logReflectedSewing_sub_headSum_le {c : ℝ} (hc : |c| ≤ 1 / 8) (N : ℕ) :
+    |logReflectedSewingBelow c N - ∑ p ∈ Nat.primesBelow N, localSewingLogHead p c| ≤
+      8 * |c| * dyadicTailConst * primeLogTailMass := by
+  have hc' : |c| < 1 / 2 := by linarith
+  rw [logReflectedSewingBelow_eq_sum_localSewingLog hc' N, ← Finset.sum_sub_distrib]
+  have hK : 0 ≤ 8 * |c| * dyadicTailConst := by
+    have := dyadicTailConst_pos
+    positivity
+  calc |∑ p ∈ Nat.primesBelow N, (localSewingLog p c - localSewingLogHead p c)|
+      ≤ ∑ p ∈ Nat.primesBelow N, |localSewingLog p c - localSewingLogHead p c| :=
+        Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ p ∈ Nat.primesBelow N, 8 * |c| * dyadicTailConst *
+          (Real.log (p : ℝ) * Real.exp (-(3 / 2) * Real.log (p : ℝ))) :=
+        Finset.sum_le_sum fun p hp =>
+          abs_localSewingLog_sub_head_le (Nat.prime_of_mem_primesBelow hp) hc
+    _ = 8 * |c| * dyadicTailConst *
+          ∑ p ∈ Nat.primesBelow N,
+            Real.log (p : ℝ) * Real.exp (-(3 / 2) * Real.log (p : ℝ)) := by
+        rw [Finset.mul_sum]
+    _ ≤ 8 * |c| * dyadicTailConst * primeLogTailMass :=
+        mul_le_mul_of_nonneg_left (sum_primesBelow_le_primeLogTailMass N) hK
+
+/-! ## The first prime power is the Mertens window of the dyadic test -/
+
+theorem mertensPrimeWindowBelow_dyadicSinhWindowTest (t : ℝ) {N : ℕ} (hN : 2 ≤ N) :
+    mertensPrimeWindowBelow (dyadicSinhWindowTest t) N =
+      Real.log (N : ℝ) * ∑ p ∈ Nat.primesBelow N, localSewingLogHead p (t / Real.log N) := by
+  have hNr : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hlogN : 0 < Real.log (N : ℝ) := Real.log_pos (by linarith)
+  rw [mertensPrimeWindowBelow, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun p hp => ?_
+  have hprime := Nat.prime_of_mem_primesBelow hp
+  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast hprime.one_lt
+  have hL : 0 < Real.log (p : ℝ) := Real.log_pos hp1
+  have hp0 : (0 : ℝ) < (p : ℝ) := by linarith
+  have harg : t * (Real.log (p : ℝ) / Real.log (N : ℝ)) =
+      t / Real.log (N : ℝ) * Real.log (p : ℝ) := by ring
+  rw [dyadicSinhWindowTest, localSewingLogHead, harg]
+  field_simp
+
+/-! ## The shrinking-window limit -/
+
+/-- **The oriented shrinking-window profile law.**  In the critical window `c = t / log N` the
+reflected Hellinger sewing cost converges to the universal oriented dyadic profile. -/
+theorem tendsto_logReflectedSewing_criticalWindow (t : ℝ) :
+    Tendsto (fun N : ℕ => logReflectedSewingBelow (t / Real.log N) N) atTop
+      (nhds (orientedHellingerDyadicProfile t)) := by
+  have hcont : ContinuousOn (dyadicSinhWindowTest t) (Icc (0 : ℝ) 1) :=
+    (continuous_dyadicSinhWindowTest t).continuousOn
+  have hhead := tendsto_mertensPrimeWindowBelow_div_log hcont
+  have hlogtop : Tendsto (fun N : ℕ => Real.log N) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have herr : Tendsto
+      (fun N : ℕ => logReflectedSewingBelow (t / Real.log N) N -
+        mertensPrimeWindowBelow (dyadicSinhWindowTest t) N / Real.log N) atTop (nhds 0) := by
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    have hb : ∀ᶠ N : ℕ in atTop,
+        ‖(logReflectedSewingBelow (t / Real.log N) N -
+            mertensPrimeWindowBelow (dyadicSinhWindowTest t) N / Real.log N) - 0‖ ≤
+          8 * |t| * dyadicTailConst * primeLogTailMass / Real.log N := by
+      filter_upwards [Filter.eventually_ge_atTop 2,
+        hlogtop.eventually_ge_atTop (8 * |t|)] with N hN hlog
+      have hNr : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+      have hlogN : 0 < Real.log (N : ℝ) := Real.log_pos (by linarith)
+      have hc : |t / Real.log (N : ℝ)| ≤ 1 / 8 := by
+        rw [abs_div, abs_of_pos hlogN, div_le_iff₀ hlogN]
+        linarith
+      have hbound := abs_logReflectedSewing_sub_headSum_le hc N
+      rw [sub_zero, Real.norm_eq_abs,
+        mertensPrimeWindowBelow_dyadicSinhWindowTest t hN]
+      rw [show Real.log (N : ℝ) *
+          (∑ p ∈ Nat.primesBelow N, localSewingLogHead p (t / Real.log N)) / Real.log N =
+          ∑ p ∈ Nat.primesBelow N, localSewingLogHead p (t / Real.log N) by
+        field_simp]
+      refine hbound.trans (le_of_eq ?_)
+      rw [abs_div, abs_of_pos hlogN]
+      field_simp
+    refine squeeze_zero' (Filter.Eventually.of_forall fun N => norm_nonneg _) hb ?_
+    exact Tendsto.div_atTop tendsto_const_nhds hlogtop
+  have hsum := herr.add hhead
+  rw [zero_add] at hsum
+  refine hsum.congr fun N => ?_
+  ring
+
+end
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+open Filter Topology MeasureTheory Set
+open scoped BigOperators
+
+/-! ## The measure-valued law at every confluence order -/
+
+/-- The complete prime-power mass of one prime at confluence order `n`. -/
+def confluenceWindowMass (n p : ℕ) : ℝ :=
+  ∑' k : ℕ, ((k : ℝ) + 1) ^ (n - 1) * Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ (k + 1)
+
+/-- The first prime power of that mass. -/
+def confluenceHeadMass (n p : ℕ) : ℝ := Real.log (p : ℝ) ^ n * (p : ℝ)⁻¹
+
+/-- The fixed polynomial-geometric constant bounding all higher prime powers. -/
+def confluenceTailConst (n : ℕ) : ℝ := ∑' j : ℕ, ((j : ℝ) + 2) ^ (n - 1) * (1 / 2 : ℝ) ^ j
+
+/-- The convergent prime mass `∑_p (log p)^n p^(-2)`. -/
+def primeLogPowTailMass (n : ℕ) : ℝ := ∑' p : ℕ, Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2
+
+private theorem summable_shifted_pow_geometric (m : ℕ) {r : ℝ} (hr0 : 0 < r) (hr : r < 1) :
+    Summable (fun j : ℕ => ((j : ℝ) + 2) ^ m * r ^ j) := by
+  have hnorm : ‖r‖ < 1 := by rwa [Real.norm_eq_abs, abs_of_nonneg hr0.le]
+  have hrne : r ≠ 0 := hr0.ne'
+  have h := summable_pow_mul_geometric_of_norm_lt_one (R := ℝ) m hnorm
+  have h2 := (summable_nat_add_iff 2).mpr h
+  refine (h2.mul_left (r⁻¹ ^ 2)).congr fun j => ?_
+  push_cast
+  field_simp
+  ring
+
+theorem summable_confluenceTail (n : ℕ) :
+    Summable (fun j : ℕ => ((j : ℝ) + 2) ^ (n - 1) * (1 / 2 : ℝ) ^ j) :=
+  summable_shifted_pow_geometric (n - 1) (by norm_num) (by norm_num)
+
+theorem confluenceTailConst_nonneg (n : ℕ) : 0 ≤ confluenceTailConst n :=
+  tsum_nonneg fun j => by positivity
+
+theorem summable_primeLogPowTailMass (n : ℕ) :
+    Summable (fun p : ℕ => Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2) := by
+  have h := HTGeometry.summable_log_pow_div_nat_rpow n (by norm_num : (1 : ℝ) < 2)
+  refine h.congr fun m => ?_
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · simp
+  · have hm0 : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
+    rw [show ((2 : ℝ)) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+    field_simp
+
+theorem primeLogPowTailTerm_nonneg (n m : ℕ) :
+    0 ≤ Real.log (m : ℝ) ^ n * ((m : ℝ)⁻¹) ^ 2 := by
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · simp
+  · have h1 : (1 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
+    have := Real.log_nonneg h1
+    positivity
+
+theorem primeLogPowTailMass_nonneg (n : ℕ) : 0 ≤ primeLogPowTailMass n :=
+  tsum_nonneg (primeLogPowTailTerm_nonneg n)
+
+/-! ## Head/tail split of the confluence mass -/
+
+private theorem summable_confluenceWindowTerm {n p : ℕ} (hp : p.Prime) :
+    Summable (fun k : ℕ =>
+      ((k : ℝ) + 1) ^ (n - 1) * Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ (k + 1)) := by
+  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast hp.one_lt
+  have hr0 : (0 : ℝ) ≤ (p : ℝ)⁻¹ := by positivity
+  have hr : (p : ℝ)⁻¹ < 1 := by
+    rw [inv_lt_one_iff₀]
+    exact Or.inr hp1
+  have hnorm : ‖(p : ℝ)⁻¹‖ < 1 := by rwa [Real.norm_eq_abs, abs_of_nonneg hr0]
+  have h := summable_pow_mul_geometric_of_norm_lt_one (R := ℝ) (n - 1) hnorm
+  have h1 := (summable_nat_add_iff 1).mpr h
+  refine (h1.mul_left (Real.log (p : ℝ) ^ n)).congr fun k => ?_
+  push_cast
+  ring
+
+theorem confluenceWindowMass_nonneg {n p : ℕ} (hp : p.Prime) : 0 ≤ confluenceWindowMass n p := by
+  refine tsum_nonneg fun k => ?_
+  have h1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp.one_le
+  have := Real.log_nonneg h1
+  positivity
+
+theorem confluenceWindowMass_sub_head_le {n p : ℕ} (hp : p.Prime) :
+    confluenceWindowMass n p - confluenceHeadMass n p ≤
+      confluenceTailConst n * (Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2) := by
+  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast hp.one_lt
+  have hp2 : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp.two_le
+  have hinv : (p : ℝ)⁻¹ ≤ 1 / 2 := by
+    rw [inv_le_iff_one_le_mul₀ (by linarith)]
+    linarith
+  have hinv0 : (0 : ℝ) ≤ (p : ℝ)⁻¹ := by positivity
+  have hlog : 0 ≤ Real.log (p : ℝ) := Real.log_nonneg (by linarith)
+  have hsummable := summable_confluenceWindowTerm (n := n) hp
+  have hshift := (summable_nat_add_iff (f := fun k : ℕ =>
+    ((k : ℝ) + 1) ^ (n - 1) * Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ (k + 1)) 1).mpr hsummable
+  have hhead : ∑ i ∈ Finset.range 1,
+      ((i : ℝ) + 1) ^ (n - 1) * Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ (i + 1) =
+      confluenceHeadMass n p := by
+    simp [confluenceHeadMass]
+  have hsplit : confluenceWindowMass n p - confluenceHeadMass n p =
+      ∑' j : ℕ, ((j : ℝ) + 2) ^ (n - 1) * Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ (j + 2) := by
+    rw [confluenceWindowMass, ← hhead, ← hsummable.sum_add_tsum_nat_add 1]
+    simp only [add_sub_cancel_left]
+    refine tsum_congr fun j => ?_
+    push_cast
+    ring
+  rw [hsplit]
+  have hmajor : Summable (fun j : ℕ =>
+      confluenceTailConst n * (Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2) * 0 + 0) := by
+    simp
+  have hbound : ∀ j : ℕ,
+      ((j : ℝ) + 2) ^ (n - 1) * Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ (j + 2) ≤
+        (Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2) *
+          (((j : ℝ) + 2) ^ (n - 1) * (1 / 2 : ℝ) ^ j) := by
+    intro j
+    have hpow : ((p : ℝ)⁻¹) ^ (j + 2) = ((p : ℝ)⁻¹) ^ 2 * ((p : ℝ)⁻¹) ^ j := by
+      rw [← pow_add]
+      ring_nf
+    have hgeo : ((p : ℝ)⁻¹) ^ j ≤ (1 / 2 : ℝ) ^ j := pow_le_pow_left₀ hinv0 hinv j
+    rw [hpow]
+    have hcoef : (0 : ℝ) ≤ ((j : ℝ) + 2) ^ (n - 1) * Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2 := by
+      positivity
+    calc ((j : ℝ) + 2) ^ (n - 1) * Real.log (p : ℝ) ^ n * (((p : ℝ)⁻¹) ^ 2 * ((p : ℝ)⁻¹) ^ j)
+        = (((j : ℝ) + 2) ^ (n - 1) * Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2) *
+            ((p : ℝ)⁻¹) ^ j := by ring
+      _ ≤ (((j : ℝ) + 2) ^ (n - 1) * Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2) *
+            (1 / 2 : ℝ) ^ j := mul_le_mul_of_nonneg_left hgeo hcoef
+      _ = (Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2) *
+            (((j : ℝ) + 2) ^ (n - 1) * (1 / 2 : ℝ) ^ j) := by ring
+  have hsum2 := (summable_confluenceTail n).mul_left
+    (Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2)
+  have hsum1 : Summable (fun j : ℕ =>
+      ((j : ℝ) + 2) ^ (n - 1) * Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ (j + 2)) :=
+    hsum2.of_nonneg_of_le (fun j => by positivity) hbound
+  calc (∑' j : ℕ, ((j : ℝ) + 2) ^ (n - 1) * Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ (j + 2))
+      ≤ ∑' j : ℕ, (Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2) *
+          (((j : ℝ) + 2) ^ (n - 1) * (1 / 2 : ℝ) ^ j) :=
+        hsum1.tsum_le_tsum hbound hsum2
+    _ = confluenceTailConst n * (Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2) := by
+        rw [tsum_mul_left, confluenceTailConst]
+        ring
+
+theorem confluenceHeadMass_le {n p : ℕ} (hp : p.Prime) :
+    confluenceHeadMass n p ≤ confluenceWindowMass n p := by
+  have hsummable := summable_confluenceWindowTerm (n := n) hp
+  have h1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp.one_le
+  have hlog := Real.log_nonneg h1
+  rw [confluenceWindowMass, confluenceHeadMass]
+  have := hsummable.sum_le_tsum (Finset.range 1) (fun i _ => by positivity)
+  simpa using this
+
+end
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+open Filter Topology MeasureTheory Set
+open scoped BigOperators
+
+/-! ## The confluence-order window pairing -/
+
+/-- The complete confluence-order window pairing at cutoff `N`. -/
+def confluenceWindowPairing (n : ℕ) (φ : ℝ → ℝ) (N : ℕ) : ℝ :=
+  2 * ((2 : ℝ) ^ n - 2) / Real.log (N : ℝ) ^ n *
+    ∑ p ∈ Nat.primesBelow N, confluenceWindowMass n p * φ (Real.log p / Real.log N)
+
+/-- Its first-prime-power part. -/
+def confluenceHeadPairing (n : ℕ) (φ : ℝ → ℝ) (N : ℕ) : ℝ :=
+  2 * ((2 : ℝ) ^ n - 2) / Real.log (N : ℝ) ^ n *
+    ∑ p ∈ Nat.primesBelow N, confluenceHeadMass n p * φ (Real.log p / Real.log N)
+
+theorem confluenceHeadPairing_eq {n : ℕ} (hn : 1 ≤ n) (φ : ℝ → ℝ) {N : ℕ} (hN : 2 ≤ N) :
+    confluenceHeadPairing n φ N =
+      2 * ((2 : ℝ) ^ n - 2) *
+        (mertensPrimeWindowBelow (fun u => u ^ (n - 1) * φ u) N / Real.log N) := by
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, (Nat.succ_pred_eq_of_pos hn).symm⟩
+  have hNr : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hlogN : 0 < Real.log (N : ℝ) := Real.log_pos (by linarith)
+  simp only [Nat.add_sub_cancel]
+  have key : ∑ p ∈ Nat.primesBelow N,
+      confluenceHeadMass (m + 1) p * φ (Real.log p / Real.log N) =
+      Real.log (N : ℝ) ^ m * mertensPrimeWindowBelow (fun u => u ^ m * φ u) N := by
+    rw [mertensPrimeWindowBelow, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun p hp => ?_
+    have hprime := Nat.prime_of_mem_primesBelow hp
+    have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hprime.pos
+    rw [confluenceHeadMass, div_pow]
+    field_simp
+    ring
+  rw [confluenceHeadPairing, key]
+  field_simp
+  ring
+
+theorem abs_confluenceWindowPairing_sub_head_le {n : ℕ} (hn : 1 ≤ n) {φ : ℝ → ℝ} {M : ℝ}
+    (hM : ∀ u ∈ Icc (0 : ℝ) 1, |φ u| ≤ M) {N : ℕ} (hN : 2 ≤ N) :
+    |confluenceWindowPairing n φ N - confluenceHeadPairing n φ N| ≤
+      2 * ((2 : ℝ) ^ n - 2) / Real.log (N : ℝ) ^ n *
+        (M * (confluenceTailConst n * primeLogPowTailMass n)) := by
+  have hNr : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hlogN : 0 < Real.log (N : ℝ) := Real.log_pos (by linarith)
+  have hM0 : 0 ≤ M := le_trans (abs_nonneg _) (hM 0 ⟨le_rfl, by norm_num⟩)
+  have hcoef : 0 ≤ 2 * ((2 : ℝ) ^ n - 2) / Real.log (N : ℝ) ^ n := by
+    have h2 : (2 : ℝ) ≤ (2 : ℝ) ^ n := by
+      calc (2 : ℝ) = 2 ^ 1 := by norm_num
+        _ ≤ 2 ^ n := by
+            apply pow_le_pow_right₀ (by norm_num) hn
+    have : (0 : ℝ) < Real.log (N : ℝ) ^ n := by positivity
+    have h3 : (0 : ℝ) ≤ 2 * ((2 : ℝ) ^ n - 2) := by linarith
+    positivity
+  rw [confluenceWindowPairing, confluenceHeadPairing, ← mul_sub, ← Finset.sum_sub_distrib,
+    abs_mul, abs_of_nonneg hcoef]
+  refine mul_le_mul_of_nonneg_left ?_ hcoef
+  have hterm : ∀ p ∈ Nat.primesBelow N,
+      |confluenceWindowMass n p * φ (Real.log p / Real.log N) -
+        confluenceHeadMass n p * φ (Real.log p / Real.log N)| ≤
+      M * (confluenceTailConst n * (Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2)) := by
+    intro p hp
+    have hprime := Nat.prime_of_mem_primesBelow hp
+    have hpN : p ≤ N := le_of_lt (Nat.lt_of_mem_primesBelow hp)
+    have hmem := logRatio_mem_Icc hprime hpN
+    have hphi := hM _ hmem
+    have hdiff := confluenceWindowMass_sub_head_le (n := n) hprime
+    have hdiff0 : 0 ≤ confluenceWindowMass n p - confluenceHeadMass n p :=
+      sub_nonneg.mpr (confluenceHeadMass_le hprime)
+    rw [← sub_mul, abs_mul, abs_of_nonneg hdiff0]
+    exact mul_le_mul hdiff hphi (abs_nonneg _)
+      (mul_nonneg (confluenceTailConst_nonneg n) (primeLogPowTailTerm_nonneg n p))
+  calc |∑ p ∈ Nat.primesBelow N,
+        (confluenceWindowMass n p * φ (Real.log p / Real.log N) -
+          confluenceHeadMass n p * φ (Real.log p / Real.log N))|
+      ≤ ∑ p ∈ Nat.primesBelow N,
+          |confluenceWindowMass n p * φ (Real.log p / Real.log N) -
+            confluenceHeadMass n p * φ (Real.log p / Real.log N)| :=
+        Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ p ∈ Nat.primesBelow N,
+          M * (confluenceTailConst n * (Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2)) :=
+        Finset.sum_le_sum hterm
+    _ = M * confluenceTailConst n *
+          ∑ p ∈ Nat.primesBelow N, Real.log (p : ℝ) ^ n * ((p : ℝ)⁻¹) ^ 2 := by
+        rw [Finset.mul_sum]
+        refine Finset.sum_congr rfl fun p _ => by ring
+    _ ≤ M * confluenceTailConst n * primeLogPowTailMass n := by
+        refine mul_le_mul_of_nonneg_left
+          ((summable_primeLogPowTailMass n).sum_le_tsum _
+            (fun q _ => primeLogPowTailTerm_nonneg n q)) ?_
+        exact mul_nonneg hM0 (confluenceTailConst_nonneg n)
+    _ = M * (confluenceTailConst n * primeLogPowTailMass n) := by ring
+
+/-- **The measure-valued confluence law.**  For every confluence order `n ≥ 1` the prime-power
+window measures converge weakly to `2(2ⁿ - 2) u^(n-1) du` on the unit interval. -/
+theorem tendsto_confluenceWindowPairing {n : ℕ} (hn : 1 ≤ n) {φ : ℝ → ℝ}
+    (hφ : ContinuousOn φ (Icc (0 : ℝ) 1)) :
+    Tendsto (fun N : ℕ => confluenceWindowPairing n φ N) atTop
+      (nhds (2 * ((2 : ℝ) ^ n - 2) * ∫ u in (0 : ℝ)..1, u ^ (n - 1) * φ u)) := by
+  obtain ⟨M, hMbound⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := 1)).exists_bound_of_continuousOn hφ
+  have hM : ∀ u ∈ Icc (0 : ℝ) 1, |φ u| ≤ M := by
+    intro u hu
+    simpa [Real.norm_eq_abs] using hMbound u hu
+  have hψ : ContinuousOn (fun u : ℝ => u ^ (n - 1) * φ u) (Icc (0 : ℝ) 1) :=
+    (continuousOn_pow _).mul hφ
+  have hhead0 := tendsto_mertensPrimeWindowBelow_div_log hψ
+  have hhead : Tendsto (fun N : ℕ => confluenceHeadPairing n φ N) atTop
+      (nhds (2 * ((2 : ℝ) ^ n - 2) * ∫ u in (0 : ℝ)..1, u ^ (n - 1) * φ u)) := by
+    refine (hhead0.const_mul (2 * ((2 : ℝ) ^ n - 2))).congr' ?_
+    filter_upwards [Filter.eventually_ge_atTop 2] with N hN
+    exact (confluenceHeadPairing_eq hn φ hN).symm
+  have hlogtop : Tendsto (fun N : ℕ => Real.log N) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hpowtop : Tendsto (fun N : ℕ => Real.log (N : ℝ) ^ n) atTop atTop :=
+    hlogtop.atTop_pow hn
+  have herr : Tendsto
+      (fun N : ℕ => confluenceWindowPairing n φ N - confluenceHeadPairing n φ N)
+      atTop (nhds 0) := by
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    have hb : ∀ᶠ N : ℕ in atTop,
+        ‖(confluenceWindowPairing n φ N - confluenceHeadPairing n φ N) - 0‖ ≤
+          2 * ((2 : ℝ) ^ n - 2) * (M * (confluenceTailConst n * primeLogPowTailMass n)) /
+            Real.log (N : ℝ) ^ n := by
+      filter_upwards [Filter.eventually_ge_atTop 2] with N hN
+      rw [sub_zero, Real.norm_eq_abs]
+      have h := abs_confluenceWindowPairing_sub_head_le hn hM hN
+      refine h.trans (le_of_eq ?_)
+      ring
+    refine squeeze_zero' (Filter.Eventually.of_forall fun N => norm_nonneg _) hb ?_
+    exact Tendsto.div_atTop tendsto_const_nhds hpowtop
+  have hsum := herr.add hhead
+  rw [zero_add] at hsum
+  refine hsum.congr fun N => ?_
+  ring
 
 end
 

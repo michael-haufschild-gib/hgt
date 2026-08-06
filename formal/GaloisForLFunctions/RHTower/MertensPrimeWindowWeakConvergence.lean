@@ -562,7 +562,8 @@ open scoped BigOperators
 
 /-! ## Weak convergence against continuous test functions -/
 
-private theorem logRatio_mem_Icc {n N : ℕ} (hn : n.Prime) (hnN : n ≤ N) :
+/-- Prime window evaluation points lie in the unit interval. -/
+theorem logRatio_mem_Icc {n N : ℕ} (hn : n.Prime) (hnN : n ≤ N) :
     Real.log n / Real.log N ∈ Icc (0 : ℝ) 1 := by
   have hn2 : 2 ≤ n := hn.two_le
   have hN2 : 2 ≤ N := le_trans hn2 hnN
