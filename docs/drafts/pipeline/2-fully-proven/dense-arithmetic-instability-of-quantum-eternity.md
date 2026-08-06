@@ -433,6 +433,7 @@ is green and every declaration cited below reports
 | 1 | finite rational coordinate rank | `rationalCoordinateRank` | `ArithmeticTemporalRankInstability` |
 | 2 | density of every exact rank `k` | `dense_exactRationalRank`, `exists_exactRationalRank_close` | `ArithmeticTemporalRankInstability`, `RationalRankHyperplaneAvoidance` |
 | 3 | rational-hyperplane avoidance at exact rank | `exists_exactRationalRank_close_avoiding` | `RationalRankHyperplaneAvoidance` **(new)** |
+| 3' | **Theorem A as worded**: `R_{n,k} \ ⋃𝒜` is dense; exact rank `k` with nonzero, pairwise distinct entries | `dense_exactRationalRank_avoiding`, `exists_exactRationalRank_close_distinct` | `RationalRankHyperplaneAvoidance` |
 | 4 | same-eigenvector Hermitian lift of every rank | `exists_isHermitian_commuting_close_gapRank` | `SimpleSpectrumMatrixPerturbation` |
 | 5 | bounded-horizon estimates `(1)`, `(3)` | `exp_skewAdjoint_sub_exp_skewAdjoint_norm_le`, `selfAdjoint_unitaryEvolution_norm_sub_le`, `selfAdjoint_heisenbergEvolution_norm_sub_le` | `FiniteHorizonCStarPerturbationLaw` |
 | 6 | dense exact-periodic / nonperiodic separation | `hasPositiveProjectiveReturn_iff_gapRank_le_one`, `exists_close_simpleSpectrum_periodic_and_aperiodic`, `exists_isHermitian_commuting_close_periodic_and_aperiodic` | `ProjectiveExactReturnRankOne` **(new)** |
@@ -515,3 +516,231 @@ review are untouched by this work.
 - 2026-08-05 — obligations 3, 6, 8 and the Theorem A topology closed unconditionally in Lean;
   obligations 1, 2, 4, 5, 7, 9 verified already present in the corpus.  All ten formalization
   obligations are discharged; the remaining open gates are non-formal.
+
+## Lean certificate (2026-08-06) — the theorem-level capstones
+
+The 2026-08-05 certificate discharged the ten formalization obligations, which are the *ingredients*
+of the card.  The theorems and corollaries themselves are now compiled as single statements as well.
+All modules are in `formal/GaloisForLFunctions/HTGeometry/` and wired into
+`GaloisForLFunctions/HTGeometry.lean`; every declaration reports
+`[propext, Classical.choice, Quot.sound]`.
+
+| Card statement | Lean declaration | Module |
+|---|---|---|
+| Theorem A, last claim: `r_ℚ` is continuous at no point | `rationalCoordinateRank_nowhereContinuous` | `ArithmeticTemporalRankInstability` |
+| Theorem B | `exists_isHermitian_commuting_close_gapRank` | `SimpleSpectrumMatrixPerturbation` |
+| Theorem C `(1)` | `norm_unitaryEvolution_sub_le` | `ObserverProfileStability` |
+| **Theorem C `(2)`** uniform bounded-horizon indistinguishability at every dimension | `exists_isHermitian_commuting_gapRank_uniform_horizon` | `EternityHorizonCapstone` **(new)** |
+| the horizon bound itself | `norm_unitaryEvolution_sub_lt_of_le_horizon` | `EternityHorizonCapstone` **(new)** |
+| **Corollary 1** with a horizon fixed in advance | `exists_isHermitian_commuting_periodic_and_aperiodic_uniform_horizon` | `EternityHorizonCapstone` **(new)** |
+| **Theorem C `(3)`** the observable/trace form | `norm_trace_densityMatrix_heisenberg_sub_le` | `EternityObservableHorizonLaw` **(new)** |
+| the state-pairing bound `\|tr ρX\| ≤ ‖X‖` | `norm_trace_densityMatrix_mul_le` | `EternityObservableHorizonLaw` **(new)** |
+| every matrix entry is inside the operator norm | `norm_entry_le_l2_opNorm` | `EternityObservableHorizonLaw` **(new)** |
+| the observed orbit of a *presented* Hamiltonian | `observedOrbit_eq_orbitAssembly_presented`, `exists_hasBoxDim_closure_range_observedOrbit_presented` | `PresentedOrbitDimensionEternity` **(new)** |
+| the reporter family resolving every gap | `completeReporter`, `presentedVisibleGapSet_completeReporter` | `PresentedOrbitDimensionEternity` **(new)** |
+| the full gap module is the anchored gap module | `span_gapSet_eq_span_anchored`, `finrank_span_gapSet_eq_rationalCoordinateRank` | `PresentedOrbitDimensionEternity` **(new)** |
+| **Corollary 2** every neighbourhood contains every recurrence dimension | `exists_isHermitian_commuting_orbitDimension_uniform_horizon` | `PresentedOrbitDimensionEternity` **(new)** |
+| **Corollary 2** no dimension is open | `exists_isHermitian_commuting_orbitDimension_distinct` | `PresentedOrbitDimensionEternity` **(new)** |
+| integer rows with an integer left inverse span | `span_rows_eq_top_of_leftInverse` | `EternityReturnExponentCapstone` **(new)** |
+| **Corollary 3** every neighbourhood contains every return exponent `(4)`–`(5)` | `exists_isHermitian_commuting_returnExponent_uniform_horizon` | `EternityReturnExponentCapstone` **(new)** |
+| Corollary 3 `(6)` maximal-rank exact law | `finiteTorusHaarProbabilityMeasure_anchoredProjectiveReturnTarget` | `AnchoredProjectiveReturnDensityLaw` |
+
+Three points of substance in the new material.
+
+1. **The horizon is the perturbation radius.**  `η / T` is the only quantifier order that makes
+   `(2)` a theorem: the horizon and the error are fixed *before* the neighbour is chosen, and the
+   Duhamel bound then holds uniformly on `|t| ≤ T`.  All three capstones — dimension, periodicity,
+   orbit dimension, return exponent — are stated inside that tube.
+
+2. **Reading the dimension off the presentation.**  The corpus computes the completed-orbit
+   dimension from a chosen eigenbasis, which is not available for a matrix built from a prescribed
+   spectrum.  `exists_hasBoxDim_closure_range_observedOrbit_presented` re-derives it from any
+   presentation `H = V diag(E) V*`, which is exactly the form the perturbation is constructed in.
+   With the all-ones reporter conjugated into the presenting basis every gap is visible, so the
+   visible gap module is the full gap module and its rank is the temporal dimension.
+
+3. **The return exponent needs no chart.**  `exists_frequency_integer_basis` presents the gaps as
+   integer combinations of a rationally independent basis *together with an integer left inverse*;
+   the left inverse forces the rows to span the rational coordinate space, which is precisely the
+   hypothesis of the return-volume law.  So Corollary 3's `(4)`–`(5)` hold for the constructed
+   neighbour with no local bi-Lipschitz chart anywhere in the argument.
+
+**Correction to Theorem A.**  The nowhere-continuity claim is stated in the card for `n ≥ 1`; it is
+false at `n = 1`, where `r_ℚ` is locally constant away from the origin.  The Lean statement carries
+the correct hypothesis `2 ≤ n`, which is what the proof (density of `R_{n,1}` *and* of `R_{n,n}`
+with `1 ≠ n`) actually gives.  Everything else in Theorem A is unaffected.
+
+- 2026-08-06 — the theorem-level capstones compiled: Theorem C `(2)` and `(3)`, Corollary 1 with a
+  prescribed horizon, Corollary 2 in both halves, and Corollary 3's exponent law for the
+  constructed neighbour.  Four new modules; `lake build GaloisForLFunctions.HTGeometry` green.
+
+### The group form of Corollary 2 and the two-sided law of Corollary 3
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/HTGeometry/EternityCompletedTimeTorusCapstone.lean`.
+
+| Card statement | Lean declaration |
+|---|---|
+| the projective frequencies are the anchored gaps | `range_projectiveFrequency_eq`, `finrank_span_projectiveFrequency_eq` |
+| **Corollary 2, group form**: the neighbour's completed projective time is a compact connected subgroup presented isomorphically by a `k`-torus | `exists_isHermitian_commuting_completedTimeTorus_uniform_horizon` |
+| **Corollary 3 `(4)`**: the neighbour's two-sided return-volume law `(2/L)^k ε^k ≤ m ≤ 4^k ε^k`, with `(5)` alongside | `exists_isHermitian_commuting_returnVolume_sandwich_uniform_horizon` |
+
+The group form uses the corpus representation `exists_completedTime_representation` — the completed
+time of a frequency packet is the range of an injective integer torus homomorphism, hence compact,
+connected, and isomorphic as a topological group to the presenting torus
+(`orbitClosureAddEquiv`, `orbitClosureHomeomorph`).  What the capstone adds is that the presenting
+dimension can be prescribed: the perturbation fixes the rank of the gap packet, and the projective
+frequency packet has the same rank because its range is literally the set of anchored gaps.
+
+With this the card is formalized at the level of its statements, not only of its obligations:
+Theorem A (all four claims), Theorem B, Theorem C `(1)`–`(3)`, Corollary 1 (both forms),
+Corollary 2 (dimension form, group form, and non-openness) and Corollary 3 `(4)`–`(6)` are each a
+single unconditional Lean theorem.
+
+- 2026-08-06 — Corollary 2's group form and Corollary 3's two-sided law `(4)` added for the
+  prescribed neighbour; `lake build` green on every new module, all axiom-clean.
+
+### Corollary 1 in the card's exact form
+
+`[LEAN-PROVED]` Added to `formal/GaloisForLFunctions/HTGeometry/ProjectiveExactReturnRankOne.lean`.
+
+The corpus equivalence was stated for an arbitrary spectrum, with "gap rank `≤ 1`".  The card states
+Corollary 1 for a *simple* spectrum, with "gap rank **is** one".  For a simple spectrum the two
+agree, because the first gap is already nonzero and a nonzero coordinate forces positive rank; that
+step is now proved and the card's form is available directly.
+
+| Card item | Lean name |
+|---|---|
+| a nonzero coordinate forces positive rational rank | `rationalCoordinateRank_pos` |
+| **Corollary 1 as stated**: simple spectrum, exact projective return iff gap rank `= 1` | `hasPositiveProjectiveReturn_iff_gapRank_eq_one` |
+
+- 2026-08-06 — Corollary 1 sharpened from `≤ 1` to `= 1` under simplicity, matching the card text.
+
+### Theorem B stated on the eigenvalues themselves
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/HTGeometry/EternityEigenvaluePresentation.lean`
+(wired into `GaloisForLFunctions/HTGeometry.lean`; axiom-clean).
+
+The perturbation is built from a prescribed spectrum `E'`, so the corpus statement of Theorem B
+gives the rank of `E'`.  The card states `τ(K_k)` in terms of the eigenvalues `λ_j(K_k)` of the
+perturbed matrix.  These agree, and the identification is now proved rather than tacit.
+
+| Card item | Lean name |
+|---|---|
+| the eigenvalue value set of a spectral presentation | `range_eigenvalues_of_presentation` |
+| a presented simple spectrum makes the eigenvalue function injective | `injective_eigenvalues_of_presentation` |
+| the gap module depends only on the value set of the spectrum | `rationalCoordinateRank_gaps_congr` |
+| **Theorem B in the card's own form** | `exists_isHermitian_commuting_close_eigenvalueGapRank` |
+| **Theorem B with a horizon, on the eigenvalues** | `exists_isHermitian_commuting_eigenvalueGapRank_uniform_horizon` |
+| **Corollary 1 on the eigenvalues**: simple periodic and simple aperiodic neighbours in one tube | `exists_isHermitian_commuting_eigenvaluePeriodic_and_aperiodic_uniform_horizon` |
+| **Corollary 3 on the eigenvalues**: the neighbour's own gaps present the return exponent `k` | `exists_isHermitian_commuting_eigenvalueReturnExponent_uniform_horizon` |
+| **Corollary 2, group form, on the eigenvalues**: the neighbour's own completed time is a `k`-torus | `exists_isHermitian_commuting_eigenvalueCompletedTimeTorus_uniform_horizon` |
+| **Corollary 2 as worded**: the completed time *is* a `k`-torus — homeomorphic and group-isomorphic, not merely a presented range | `exists_isHermitian_commuting_completedTimeTorus_equiv_uniform_horizon`, `exists_isHermitian_commuting_eigenvalueCompletedTimeTorus_equiv_uniform_horizon` |
+| a minimal integer presentation is a closed embedding | `isClosedEmbedding_torusIntegerHom`, `torusIntegerHomHomeomorphRange`, `torusIntegerAddEquivRange` |
+| **Corollary 3's `R_K(ε)` as worded**: the anchored chord target *is* the projective operator-norm return target | `mem_anchoredProjectiveReturnTarget_iff_l2_opNorm` |
+| the operator-norm distance to the anchoring phase is the largest relative-phase chord | `l2_opNorm_unitaryEvolution_sub_anchorPhase`, `anchorPhase` |
+| unitary conjugation is an isometry of the operator norm | `l2_opNorm_unitary_conj_eq` |
+| **`R_K(ε)` as a set of times**, and its pullback description | `projectiveReturnTimes`, `projectiveReturnTimes_eq_preimage` |
+| **exact projective return in operator norm** is the `ε = 0` target | `unitaryEvolution_eq_anchorPhase_smul_one_iff` |
+| the degenerate target is the arithmetic return condition | `mem_anchoredProjectiveReturnTarget_zero_iff`, `fourier_one_coe_eq_one_iff` |
+| **`HasPositiveProjectiveReturn` in operator terms**: the evolution reaches a scalar multiple of the identity | `exists_pos_unitaryEvolution_eq_anchorPhase_smul_one_iff` |
+| **Corollary 1 in operator form**: a simple spectrum repeats exactly in operator norm iff its gap rank is one | `exists_pos_unitaryEvolution_eq_anchorPhase_smul_one_iff_gapRank_eq_one` |
+| **the card's public theorem, on the operator**, as a single statement | `eternity_public_theorem` |
+| **Corollary 1's dense pair, in operator form**: a neighbour whose evolution reaches a scalar multiple of the identity and one whose evolution never does, in the same tube | `exists_isHermitian_commuting_operatorPeriodic_and_aperiodic_uniform_horizon` |
+| **Theorem B's displayed norm identity** `‖H − K‖ = max_j \|λ_j − λ'_j\|` | `l2_opNorm_spectralTransport_sub`, `l2_opNorm_conjStarAlgAut_diagonal_sub` |
+| **Theorem C's mechanism**: `‖e^{−itK} − e^{−itH}‖ = max_j \|e^{−itλ'_j} − e^{−itλ_j}\|` for shared eigenvectors | `l2_opNorm_unitaryEvolution_spectralTransport_sub` |
+| **Theorem C's distance in closed form**: `= 2 max_j \|sin(t(λ'_j−λ_j)/2)\|` | `l2_opNorm_unitaryEvolution_spectralTransport_sub_eq_sin`, `norm_exp_neg_I_mul_sub_exp_neg_I_mul` |
+| **Theorem C `(1)` by the card's own route** (closed form + `\|sin x\| ≤ \|x\|`) | `l2_opNorm_unitaryEvolution_spectralTransport_sub_le` |
+| a square integer matrix with an integer left inverse is nonsingular | `det_ne_zero_of_leftInverse` |
+| **Corollary 3 `(6)` for a constructed maximal-rank neighbour** | `exists_isHermitian_commuting_maximalReturnLaw_uniform_horizon` |
+
+The value-set step is the spectrum computation: unitary conjugation preserves the `ℂ`-spectrum
+(`AlgEquiv.spectrum_eq`), the spectrum of a real diagonal matrix is the set of its entries
+(`spectrum_diagonal`), and the real spectrum is the real points of the complex one
+(`spectrum.algebraMap_mem_iff`); mathlib's `spectrum_real_eq_range_eigenvalues` then identifies it
+with the eigenvalue value set.  Injectivity follows by counting: `n+1` distinct prescribed values in
+the image of an `n+1`-element domain.
+
+- 2026-08-06 — Theorem B's temporal dimension restated on the perturbed matrix's own eigenvalues,
+  closing the last place where a card statement was carried by the construction rather than proved.
+- 2026-08-06 — Corollary 1 restated on the perturbed matrices' own eigenvalues as well, using the
+  sharpened `= 1` equivalence: from three levels onward every uniform bounded-horizon tube contains
+  a commuting neighbour with simple spectrum that returns exactly and one that never does, both
+  read off the neighbours' own spectra.
+- 2026-08-06 — Corollary 3 also restated on the neighbour's own eigenvalues.  Equal gap *modules*
+  do not give equal anchored gaps, so the integer character presentation is rebuilt from the
+  eigenvalue gap vector itself; its rank is `k` by the value-set congruence, and the return
+  exponent follows as before.  Theorem B and Corollaries 1 and 3 are now uniformly stated on the
+  perturbed matrix's own spectrum.
+- 2026-08-06 — Corollary 2's group form restated on the neighbour's own eigenvalues as well.  Every
+  statement of Theorem B and Corollaries 1--3 is now available both in the construction's spectrum
+  and in the perturbed matrix's own spectrum; the bridge in each case is the value-set congruence of
+  the gap module.
+- 2026-08-06 — `(6)` bridged from the coordinate torus to a constructed neighbour.  At maximal rank
+  the presenting character matrix has an integer left inverse and is square, hence unimodular, so
+  the pulled-back anchored chord target keeps the exact coordinate-torus law
+  `(2 arcsin(ε/2)/π)^{D-1}`.  Every clause of Corollary 3 -- the two-sided law `(4)`, the exponent
+  `(5)` and the maximal-rank closed form `(6)` -- now holds of a neighbour the theorems produce.
+- 2026-08-06 — Theorem A's two remaining wordings proved.  The avoidance theorem was an
+  `∃`-statement; the card says the *set* `R_{n,k} ∖ ⋃𝒜` is dense, which is now the statement
+  (`dense_exactRationalRank_avoiding`).  The card's consequence -- "exact rank `k` can be realized
+  arbitrarily close to any gap packet while retaining nonzero and pairwise distinct gaps" -- is the
+  avoidance theorem applied to the coordinate hyperplanes `ω_i = 0` and the diagonal hyperplanes
+  `ω_i = ω_j`, a finite rational family; that instantiation is now
+  `exists_exactRationalRank_close_distinct`.
+- 2026-08-06 — Corollary 2's phrase "hence a `k`-torus up to a finite character presentation" made a
+  theorem.  The corpus had the closure *equal to the range* of an injective integer torus
+  homomorphism, together with compactness and connectedness; the card asserts the closure **is** a
+  `k`-torus.  That upgrade is the closed-embedding argument: a continuous injection of a compact
+  space into a Hausdorff space is a closed embedding, so the presenting torus is homeomorphic to the
+  closure, and injectivity of the bundled homomorphism makes it an isomorphism of topological
+  groups.  Both the construction-spectrum and the eigenvalue forms now carry it.
+- 2026-08-06 — Corollary 3's target identified with the object the card names.  The return law is
+  proved for the *anchored chord* target on the relative-phase torus, whereas the card defines
+  `R_K(ε)` as the projective **operator-norm** return target of the evolution.  These are now proved
+  to be the same set: conjugation by the eigenvector unitary is an isometry, so the operator-norm
+  distance from `e^{-itK}` to its anchoring phase `e^{-itλ_a}` is exactly the largest chord among
+  the relative phases, and membership in the chord target is equivalent to that distance being at
+  most `ε`.  The equivalence needs `0 ≤ ε` — for a one-level system the chord condition is vacuous
+  while the operator-norm condition is not.
+- 2026-08-06 — `R_K(ε)` given as a set of *times* and identified with the pullback of the chord
+  target along the phase map, so every Haar statement about the target is a statement about the
+  operator-norm return set.  At `ε = 0` the same equivalence says the evolution equals a scalar
+  multiple of the identity exactly when its relative-phase point is an exact return — the operator
+  form of the exact-repetition notion Corollary 1 classifies.
+- 2026-08-06 — Corollary 1 restated on the operator.  `HasPositiveProjectiveReturn` is the
+  arithmetic condition "some `T > 0` puts every gap in `2πℤ`"; the card's claim is about a
+  Hamiltonian that *repeats exactly*.  The two are now proved equivalent — a positive time exists
+  with `e^{-itK}` a scalar multiple of the identity exactly when the arithmetic condition holds —
+  so the rank-one criterion reads directly as a statement about the matrix and its evolution.
+- 2026-08-06 — the dense periodic/aperiodic pair also restated on the operator.  The public theorem
+  says every quantum Hamiltonian is arbitrarily close both to a system that *repeats exactly* and to
+  one that *never repeats exactly*, indistinguishable on any prescribed horizon.  Both clauses are
+  now literally about the evolutions: one neighbour satisfies `e^{-itB} = c·1` at some positive
+  time, the other satisfies no such equation at any positive time.
+- 2026-08-06 — Theorem B's displayed norm identity proved as an equality.  The construction only
+  needed the bound `‖K − H‖ < δ`, so that is what the corpus carried; the card states the exact
+  value `max_j |λ_j − λ'_j|`.  With unitary conjugation now known to be an isometry, the difference
+  is the conjugate of a diagonal matrix and its operator norm is exactly the supremum of the
+  spectral shifts.
+- 2026-08-06 — Theorem C's proof mechanism proved as an identity.  The card argues `(1)` by
+  "taking the maximum diagonal entry" of the shared-eigenbasis phase differences; the corpus had
+  only the resulting Lipschitz bound.  Since unitary conjugation is an isometry, the evolution
+  distance of two spectra transported through one eigenbasis *is* the largest phase chord, and the
+  card's bound is that identity together with the scalar estimate on each chord.
+- 2026-08-06 — Theorem C's distance given in closed form.  Each phase chord is `2|sin(θ/2)|` of the
+  spectral shift, so the evolution distance of the constructed neighbour is exactly
+  `2 max_j |sin(t(λ'_j − λ_j)/2)|`.  Both consequences the card uses fall out of this: the Lipschitz
+  bound `(1)`, from `|sin x| ≤ |x|`, and the fact that the distance never exceeds `2` however long
+  the horizon — the quantitative content of "the instability carries no bounded-time dynamical
+  singularity".
+- 2026-08-06 — `(1)` also derived the card's way.  The corpus proves it for arbitrary pairs by a
+  C*-estimate; the card proves it for the constructed neighbour from the shared eigenbasis, by
+  bounding each phase chord.  That derivation is now a theorem: the closed-form distance against
+  `|sin x| ≤ |x|`, with `‖K − H‖` the exact spectral shift of Theorem B.  Theorem C's proof as the
+  card writes it is therefore machine-checked end to end.
+- 2026-08-06 — the public theorem compiled as one object.  The card opens with a single claim: every
+  finite quantum system lies arbitrarily close to systems of every recurrence dimension, and (from
+  three levels onward) both to one that repeats exactly and to one that never does, all
+  indistinguishable on any horizon fixed in advance.  `eternity_public_theorem` states exactly that,
+  on the neighbours' own spectra and their evolutions, so the headline is one citable theorem rather
+  than a conjunction a reader assembles.

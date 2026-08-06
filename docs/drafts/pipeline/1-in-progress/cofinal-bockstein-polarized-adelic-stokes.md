@@ -1623,3 +1623,96 @@ two endpoint residues before their product is taken; a construction whose only i
 Stokes boundary defect cannot land the critical line, whatever its degree.
 
 Card: `docs/drafts/pipeline/3-formalized/adelic-phase-defect-character-blindness-law.md`.
+
+## 2026-08-06 — `SingularStokesFlat` producer audit after prime-log transport
+
+The formal endpoint is now exact.  For every Xi support point `rho`, the
+prime-log transported cap port is
+
+\[
+ P_p(\rho)
+ =a_\rho(1-p^{-1})(2-p^{-1})c_\rho,
+ \qquad
+ a_\rho=2\operatorname{Re}\rho-1,
+ \qquad c_\rho\ne0,
+\]
+
+and hence \(P_p(\rho)\to2a_\rho c_\rho\).  Therefore
+
+\[
+ \operatorname{SingularStokesFlat}(\rho)
+ \Longleftrightarrow a_\rho=0.
+ \tag{SSF}
+\]
+
+This is formalized in
+`RHTower/RouteRPrimeLogEssentialCapSingularStokesLaw.lean`, including the
+global equivalence of `(SSF)` with RH.  The following source-first producers
+were hostile-tested against the literal pre-divisor objects.
+
+1. **Reflected entropy positivity — falsified.**  The corpus quantity called
+   `riemannReflectedSourceEntropy` is exactly \(1-2\operatorname{Re}s\).  It
+   is an oriented log-ratio, is reflection-odd, and is negative on the
+   right-half divisor.  It is not a nonnegative relative entropy.
+2. **Rational Cartier orbit rigidity — consumer only.**  The canonical
+   pre-divisor rational potential is constant and has source gain \(1\).
+   Its defect from physical gain \(p^{a_\rho}\) is exactly the central
+   Bockstein coordinate.  Identifying those gains is the already-formalized
+   rational Cartier landing, equivalent to `(SSF)`.
+3. **Weak-\(L^1\)/singular-trace commutator — domain failure.**  The exact
+   damped wall is
+   \[
+     \sum_p p^{-\varepsilon}|\beta_t(p)|<\infty
+     \Longleftrightarrow t=0\ \text{or}\ |t|<\varepsilon.
+   \]
+   At zero aperture, membership in the required trace domain already forces
+   \(t=0\).  A bounded-commutator or Dixmier-trace presentation would assume
+   the conclusion through ideal membership.
+4. **Cyclic dagger plus Gamma reversal — falsified by the retained atom.**
+   Genuine cyclic reversal sends the corrected multiplier class to a
+   distinct class and flips its nonzero Kummer period.  This sign cancels the
+   Gamma-reflection sign, so dagger-transported naturality holds for every
+   horizontal grade and annihilates nothing.
+5. **All-prime Kakutani/GNS sector rigidity — missing bounded intertwiner.**
+   Source and physical valuation sectors are mutually singular off neutral
+   grade, but the infinite-rank comparison currently transports only
+   multiplication, trace, derivation, and the nonzero prime atoms.  It does
+   not intertwine the product valuation representations.  The canonical
+   source Hilbert marking is Fisher-damped, while exact recovery of the
+   undamped Gamma valuation frame grows at least as \(\sqrt p\) and is
+   formally unbounded.
+6. **Fixed Hilbert Stokes reporter — exact but unavailable.**  If the
+   transported prime-log derivation were self-adjoint on one fixed positive
+   target, its normalized distinct-prime eigenvectors would be orthonormal.
+   Any one bounded Stokes reporter would then have coefficients tending to
+   zero by Bessel, and the exact port limit would prove `(SSF)`.  Existing
+   source topologies do not give this reporter: the algebraic LF topology
+   allows arbitrary coefficient families, trace-norm continuity allows
+   bounded constant coefficients, and the completed-Xi Hilbert comparison
+   forgets the prime-log eigenspaces.  Bounded reporter assembly is another
+   form of zero-aperture trace-wall removability, not a consequence of
+   primewise continuity.
+
+### Exact open source equation
+
+No independent obstruction remains between the paracyclic and fixed-trace
+models: `(CB1)` identifies them coefficientwise.  The only unresolved
+source step is to construct, before divisor selection and in both fixed
+Gamma orientations, a source-derived family in the literal fixed tail
+ideals satisfying
+
+\[
+ H_n(\rho)-\iota_nH_{n+1}(\rho)
+ =-\beta_{2\operatorname{Re}\rho-1}(p_n)e_n.
+ \tag{SSR}
+\]
+
+The tail--Roos classification makes `(SSR)` equivalent to
+\(\beta_{2\operatorname{Re}\rho-1}\in\ell^1\), hence to `(SSF)`.  Safe-cone
+families exist uniquely for every damping
+\(\varepsilon>|2\operatorname{Re}\rho-1|\); missing scientific content is
+their coefficient-faithful continuation to \(\varepsilon=0\).  Current
+pre-divisor source structure supplies neither pointwise-bounded Gamma-root
+deconvolution nor a fixed-ideal zero-aperture landing.  Consequently no
+unconditional Lean proof of `SingularStokesFlat` can be added without first
+proving this analytic extension theorem.

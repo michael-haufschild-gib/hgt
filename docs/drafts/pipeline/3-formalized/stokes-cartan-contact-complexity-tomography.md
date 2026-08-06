@@ -379,6 +379,9 @@ All modules live in `formal/GaloisForLFunctions/HTGeometry/` and are wired into
 | (8.2) strict integral obstruction on `(B,r)` | `DecoratedStokesCore.strictDiagonal_iff`, `RootedRealization.strictCoreObstruction` | `StokesDecoratedCore` |
 | Corollary 8.4 fibre localisation | `DecoratedStokesCore.RootedRealization.hierarchy_unique`, `CertifiedFissionDatum.hierarchy_unique` | `StokesDecoratedCore`, `StokesUniversalContactLaw` |
 | Theorem 8.5(1) additive tree metric | `RootedContactTree.energy_pos_of_ne`, `.energy_eq_zero_iff`, `.energy_triangle` | `StokesRootedCutConstruction` |
+| **Theorem 8.5(1) as a path metric**: `d_ij` is the root-path length through the meet, with positive edge lengths | `RootedContactTree.energy_eq_pathLoss`, `.vertexLength_pos` | `StokesRootedCutConstruction` |
+| **§8.5 displayed cut decomposition**: `d_ij = Σ_e ℓ_e \|1_{A_e}(i) - 1_{A_e}(j)\|` | `RootedCutContact.energy_eq_absDist`, `RootedContactTree.energy_eq_canonicalCut_absSum`, `RootedCutContact.side_eq_zero_or_one` | `StokesEnergyTree`, `StokesRootedCutConstruction` |
+| **§8.5 displayed negative-type identity**: `Σ x_i x_j d_ij = -2 Σ_e ℓ_e (Σ_{i∈A_e} x_i)²` on the zero-sum hyperplane | `RootedContactTree.energy_qform_eq_neg_cut_squares` (tree), `CutFamily.qform_eq_negative_edge_squares` (abstract) | `StokesRootedCutConstruction`, `StokesEnergyTree` |
 | Theorem 8.5(2) four-point law | `RootedContactTree.energy_fourPoint`, `CertifiedFissionDatum.core_energy_fourPoint` | `StokesContactTomography`, `StokesUniversalContactLaw` |
 | Theorem 8.5(3) strict negative type | `RootedContactTree.energy_strict_negative_type`, `PositivePendantCutFamily.strict_negative_type` | `StokesRootedCutConstruction`, `StokesEnergyTree` |
 | Theorem 8.5(4) explicit Hilbert embedding | `RootedContactTree.energy_has_canonical_sqEmbedding` | `StokesRootedCutConstruction` |
@@ -401,7 +404,13 @@ constructed from the contact matrix itself, so no realization is ever assumed.
 | integral contact hierarchies are realizable | `IntegerContactHierarchy.nonempty_rootedRealization`, `.certifiedDatum` | `StokesFissionRealizationExistence` |
 | two-level partition hierarchies | `twoLevelHierarchy` | `StokesFissionRealizationExistence` |
 | **certified fission data exist for every label set with `1 < n`** | `nonempty_certifiedFissionDatum` | `StokesFissionRealizationExistence` |
-| **unconditional master law with an existence witness** | `exists_certifiedFissionDatum_master_law` | `StokesFissionRealizationExistence` |
+| **unconditional master law with an existence witness** | `exists_certifiedFissionDatum_master_law` |
+| the reconstructed skeleton's energy, read off the matrix | `ContactMatrix.realization_energy` |
+| **U3 stated on the contact matrix itself** | `ContactMatrix.energy_tree_law` |
+| **U1 `(RT)` stated on the contact matrix itself** | `ContactMatrix.rootedTriple_iff` |
+| **the reconstruction is unique**: two skeletons with the same contact matrix have the same hierarchy | `ContactMatrix.hierarchy_unique` | `StokesFissionRealizationExistence` |
+| **every rooted skeleton is a contact matrix** | `RootedContactTree.toContactMatrix` | `StokesContactRealization` |
+| **Theorem 8.3 as a round trip**: a skeleton and the skeleton reconstructed from its own matrix have the same contact matrix and the same hierarchy | `RootedContactTree.realization_contact_eq`, `.hierarchy_realization_eq` | `StokesContactRealization` |
 
 `DecoratedStokesCore.nonempty_rootedRealization_iff` is an equivalence: a decorated core `(B,r)`
 carries a rooted fission skeleton exactly when its rescaled contact matrix is acute and its
@@ -412,3 +421,186 @@ All headline declarations report `[propext, Classical.choice, Quot.sound]` under
 `lake build GaloisForLFunctions.HTGeometry` is green.
 
 - 2026-08-05 — realization layer added; Lean surface closed with no assumed realization; card advanced to Stage 3.
+
+### 9.3 The displayed weighted form of §8.1
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/HTGeometry/StokesContactWeightedForm.lean` (wired into
+`GaloisForLFunctions/HTGeometry.lean`; axiom-clean).
+
+§8.1 evaluates the contact integral into a single weighted sum
+
+```text
+K = λ_0(1 - 1/D_0) + Σ_a λ_a(1/D_{a-1} - 1/D_a) + f/D_t .
+```
+
+The Lean surface had the recursive contact and the genuine interval integral; the displayed
+weighted form itself is now proved, together with the fact that its coefficients are a probability
+vector.
+
+| Card object | Lean declaration |
+|---|---|
+| terminal height and total ramification of a branch | `ContactTower.terminalHeight`, `.totalRamification`, `.totalRamification_pos` |
+| the weighted level sum with reciprocal-ramification weights | `ContactTower.weightedLevelSum`, `.weightedLevelSum_step`, `.weightedLevelSum_leaf` |
+| **§8.1 displayed form**: contact is that weighted sum | `ContactTower.weightedLevelSum_eq_mul_contact`, `ContactTower.contact_eq_weightedLevelSum` |
+| the same for the genuine path integral | `ContactTower.top_sub_analyticLoss_eq_weightedLevelSum` |
+| the weights add to one | `ContactTower.weightTotal`, `.weightTotal_eq` |
+| every level weight and the residual weight are positive | `ContactTower.level_weight_pos`, `.residual_weight_pos` |
+| **contact is a convex combination**: terminal height ≤ contact ≤ top | `ContactTower.terminalHeight_le_contact`, `.contact_le_top`, `.le_weightedLevelSum`, `.weightedLevelSum_le` |
+| **the terminal height carries weight `1/D_t`** | `ContactTower.setTerminal`, `.contact_setTerminal`, `.terminal_weight_pos` |
+| contact is strictly increasing in the terminal height | `ContactTower.contact_setTerminal_strictMono` |
+| **§8.3 strict convex undercut**: levels below a bound and terminal strictly below it force contact strictly below it | `ContactTower.weightedLevelSum_lt`, `.contact_lt_of_terminalHeight_lt` |
+| **§8.2 integral sharpening**: the strict obstruction holds with a `+1` | `DecoratedStokesCore.RootedRealization.strictCoreObstruction_add_one_le` |
+| **`(8.2)` as displayed**: *both* strict obstructions, with the same off-diagonal entry | `DecoratedStokesCore.RootedRealization.strictCorePairObstruction`, `.strictCorePairObstruction_add_one_le` |
+
+`contact_setTerminal` is the exact statement behind the §8.2 remark that "the terminal height zero
+has positive weight `1/r_i`": contact is affine in the terminal height with slope exactly the
+reciprocal of the accumulated ramification, so raising the terminal height strictly raises the
+contact.  That is the alternative, purely arithmetic route to Lemma 8.1, independent of the
+integral cancellation.
+
+
+`contact_lt_of_terminalHeight_lt` is the profile-level mechanism of Lemma 8.2 as the card proves it:
+after cancelling the common prefix the lower branch distributes weight `1/D_t` over heights at most
+`f`, and its final positive weight `1/D_u` samples the strictly smaller `g`, so the convex
+combination is strictly below `f/D_t`.  The tree-model form of the same lemma
+(`RootedContactTree.contact_lt_of_inf_lt_inf`) was already in place; both routes are now
+machine-checked.
+
+The threshold-equivalence step of §8.4 is also owned in the graph and dendrogram encodings
+(`ElementaryDecoratedGraph.thresholdSetoid` with `thresholdSetoid_mono`,
+`FiniteContactDendrogram.strictThresholdSetoid`); it is now proved for `ContactMatrix` itself in
+`StokesContactThreshold` (§9.5), so the card's own reconstruction recipe -- read the matrix at a
+threshold -- is machine-checked on the matrix the card names.
+
+- 2026-08-06 — §8.1's displayed weighted form proved, with positivity and total one of its weights,
+  the convex bounds it implies, and the exact terminal weight `1/D_t`; §8.3's strict convex
+  undercut and §8.2's integral `+1` sharpening added.
+
+### 9.4 The branch continuation of §8.2
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/HTGeometry/StokesBranchContinuation.lean` (wired into
+`GaloisForLFunctions/HTGeometry.lean`; axiom-clean).
+
+§8.2 proves Lemma 8.1 by an integral identity rather than by the convexity argument: the diagonal
+branch is the common branch *continued* below the fission height, and
+
+```text
+K_ij - K_ii = ∫_0^{f_ij} du / R_i(u) > 0 .
+```
+
+The corpus had the arithmetic route (contact is affine in the terminal height) and the tree-model
+inequality; the continuation itself, and this identity, are now proved.
+
+| Card object | Lean declaration |
+|---|---|
+| continuing a branch below its terminal height | `ContactTower.graft` |
+| the continuation keeps the top, moves the terminal height, multiplies ramification | `ContactTower.top_graft`, `.terminalHeight_graft`, `.totalRamification_graft`, `.valid_graft` |
+| the loss of a continued branch | `ContactTower.loss_graft` |
+| **contact drops by the rescaled loss of the continuation** | `ContactTower.contact_graft` |
+| **§8.2 displayed identity**: the drop is the genuine reciprocal-ramification interval integral | `ContactTower.contact_sub_contact_graft_eq_analyticLoss` |
+| a branch reaching strictly below its top has positive loss | `ContactTower.loss_pos_of_terminalHeight_lt` |
+| **Lemma 8.1, analytic route** | `ContactTower.contact_graft_lt_of_terminalHeight_lt`, `.contact_graft_lt` |
+| **the diagonal branch of a pair**: same top, terminal height zero, strictly smaller contact, gap equal to the integral | `ContactTower.diagonal_graft_law` |
+
+- 2026-08-06 — §8.2's own proof mechanism formalized.  Lemma 8.1 was available in the tree model and
+  through the convexity of the weighted form; the card derives it from the integral identity
+  `K_ij - K_ii = ∫_0^{f_ij} du/R_i(u)`, which needs the notion of a branch continued below its
+  terminal height.  Grafting is now defined, its top/terminal-height/ramification laws proved, and
+  the contact drop identified with the analytic path integral of the continuation, rescaled by the
+  ramification accumulated above it.  Both routes to Lemma 8.1 are therefore machine-checked, and
+  the "diagonal has `f=0` and terminal denominator `r_i`" clause of §1 is a proved consequence.
+
+### 9.5 §8.4's threshold reconstruction, on the contact matrix
+
+`[LEAN-PROVED]` `formal/GaloisForLFunctions/HTGeometry/StokesContactThreshold.lean` (wired into
+`GaloisForLFunctions/HTGeometry.lean`; axiom-clean).
+
+§8.4 reconstructs the skeleton by reading `K` at a threshold: `i ~_a j` iff `K_ij ≤ a`, with the
+diagonal reflexive.  The claims are that this is an equivalence relation, that its classes nest as
+`a` grows, and that every nonsingleton class is the descendant set of a branch vertex.
+
+| Card object | Lean declaration |
+|---|---|
+| the threshold relation `i ~_a j` | `ContactMatrix.ThresholdRel`, `.thresholdSetoid` |
+| **the acute inequality makes it transitive** | `ContactMatrix.thresholdRel_trans` |
+| threshold classes | `ContactMatrix.thresholdClass`, `.mem_thresholdClass` |
+| **classes grow with the threshold** | `ContactMatrix.thresholdClass_mono` |
+| classes at one threshold are equal or disjoint | `ContactMatrix.thresholdClass_eq_of_mem`, `.thresholdClass_eq_or_disjoint` |
+| **the family across thresholds is laminar** | `ContactMatrix.thresholdClass_laminar` |
+| below the diagonal value a label is alone | `ContactMatrix.thresholdClass_eq_singleton` |
+| **every nonsingleton class is a cluster** | `ContactMatrix.isCluster_thresholdClass` |
+| **every cluster occurs as a threshold class** | `ContactMatrix.thresholdClass_val_eq_ball` |
+
+- 2026-08-06 — §8.4's threshold recipe proved on `ContactMatrix`.  It had been available only in the
+  graph and dendrogram encodings; the card states it for the matrix `K`, and that is now the object
+  it is proved of.  The nonsingleton classes and the contact balls are the same family in both
+  directions, so "make these classes the internal nodes" is the vertex set the realization module
+  already uses.
+
+### 9.4a Full audit re-run (2026-08-06, after the day's additions)
+
+Every backticked Lean name in the four cards of this group was resolved against a fresh index of
+all corpus declarations, built by parsing every `theorem`/`lemma`/`def`/`abbrev`/`instance`/
+`structure`/`inductive`/`class` header (attributes stripped, every partial namespace prefix
+generated).  Two stale citations were found and corrected: the Mobius card had prefixed `(6)`'s
+coefficient-derivative theorem with `RHTower.` although its module declares no namespace, and this
+card had abbreviated `DecoratedStokesCore.RootedRealization.hierarchy_unique`.  Every other
+unresolved token is a mathlib name, a module name, a file path, or a prose symbol.
+
+A single `#print axioms` sweep was then run over all 232 names cited in headline table rows across
+the four cards.  Every one that is a declaration reports `[propext, Classical.choice, Quot.sound]`;
+`ContactTower.setTerminal` reports no axioms at all, being a plain recursion.  The remaining
+entries are module names and prose symbols, not declarations.
+
+### 9.4 Cross-card audit (2026-08-06)
+
+Every Lean declaration name cited anywhere in this card was resolved against the corpus by an
+automated scan of all `theorem`/`def`/`instance` headers: no name drift, no dangling citation.  The
+same scan was run on the other three cards of the eternity/Stokes/Groskin/Möbius group with the
+same result — the only unresolved backticked tokens are mathematical prose symbols (`d_ij`, `p_T`,
+`ell_E`, …), module names, and one mathlib declaration.
+
+A single `#print axioms` sweep over the headline theorems of all four cards
+(`exists_certifiedFissionDatum_master_law`, `ContactTower.contact_eq_weightedLevelSum`,
+`exists_isHermitian_commuting_gapRank_uniform_horizon`, `…_orbitDimension_…`, `…_returnExponent_…`,
+`…_completedTimeTorus_…`, `norm_trace_densityMatrix_heisenberg_sub_le`,
+`RHTower.groskinArchTailIncrement_posSemidef`, `…_mono`, `…_rank_le_two`,
+`tendsto_integral_monotoneCoupling_criticalClocks`, `tendsto_criticalPacketEdgeCost`,
+`tendsto_criticalEulerEdgeEnergy`, `RHTower.hasDerivAt_completedSuzukiPacket`) reports
+`[propext, Classical.choice, Quot.sound]` for every one.
+- 2026-08-06 — U3 restated on the contact matrix.  Its clauses were proved of a *supplied* rooted
+  tree, whereas the card states U3 for `d` built from `K` (equivalently from `(B,r)`).  Since an
+  acute matrix reconstructs its own skeleton, `d_ij = 2K_ij - K_ii - K_jj` is that skeleton's energy,
+  so positivity, the vanishing criterion, the triangle inequality, the four-point law, strict
+  negative type and the explicit squared-Euclidean embedding all hold of the matrix directly.
+- 2026-08-06 — U1 also restated on the contact matrix, together with uniqueness of the
+  reconstruction.  U1--U3 are now each available in two forms: on a supplied rooted skeleton, and on
+  the matrix `K` (equivalently the decorated core `(B,r)`) that the card actually names.  U2 needed
+  no restatement -- `DecoratedStokesCore.RootedRealization.hierarchy_unique` was already stated on `(B,r)`.
+- 2026-08-06 — U3(1) stated as the card words it.  The card says `d` *is the path metric* of the
+  skeleton with each edge carrying its contact drop; the corpus had positivity, the vanishing
+  criterion and the triangle inequality, which are consequences, plus the cut representation.  The
+  path identity itself, `d_ij = pathLoss(i) + pathLoss(j) - 2 pathLoss(i ∧ j)`, follows from the
+  potential-drop law `pathLoss v = κ(root) - κ(v)`, and `vertexLength_pos` supplies the positivity
+  of the edge lengths.
+- 2026-08-06 — the displayed cut decomposition of §8.5 proved in the card's own absolute-value form.
+  The corpus carried the squared cut distance `Σ ℓ_e (1_A(i) - 1_A(j))²`; since the sides are
+  idempotent they take only the values zero and one, so squares and absolute values agree and the
+  card's `Σ ℓ_e |1_A(i) - 1_A(j)|` — the total length of the cuts separating the two leaves — is the
+  same number.
+- 2026-08-06 — the negative-type identity of §8.5 exposed at the tree level.  The abstract cut form
+  `qform_eq_negative_edge_squares` was already there and strict negativity was derived from it, but
+  the identity itself -- the reason the form is negative -- was not stated for a rooted skeleton's
+  energy.  It is now, so §8.5's proof reads in Lean the way the card writes it: identity first,
+  strictness as its consequence.
+- 2026-08-06 — the two encodings closed into a round trip.  The corpus had matrix → skeleton
+  (`exists_realization`) and uniqueness of the hierarchy given the matrix, but never skeleton →
+  matrix, so "the matrix `K` uniquely reconstructs `S(Theta)`" was only half stated.  A rooted
+  skeleton's own contact function satisfies the three contact-matrix axioms verbatim
+  (`contact_symm`, `contact_acute`, `contact_diagonal_lt`), so it *is* a contact matrix; the
+  skeleton reconstructed from it has the same contact matrix and hence the same labelled hierarchy.
+  Nothing that `S(Theta)` retains is lost in passing to `K`.
+- 2026-08-06 — `(8.2)` completed to the pair the card displays.  The corpus proved one obstruction,
+  `r_j(B_ii - 1) < r_i B_ij`; the card states both, the second being `r_i(B_jj - 1) < r_j B_ij`
+  *with the same off-diagonal entry*.  That is the swapped instance together with the core's own
+  symmetry `B_ji = B_ij`, and both now carry the integral `+1` sharpening the card asserts of each.

@@ -423,6 +423,12 @@ theorem realization_contact (hn : 1 < n) (i j : Fin n) :
     simpa using hUpper hp
   · exact κ.le_rad hjM
 
+/-- The energy metric of the reconstructed skeleton, read off the contact matrix. -/
+theorem realization_energy (hn : 1 < n) (i j : Fin n) :
+    (κ.realization hn).energy i j = 2 * κ.val i j - κ.val i i - κ.val j j := by
+  rw [RootedContactTree.energy, κ.realization_contact hn, κ.realization_contact hn,
+    κ.realization_contact hn]
+
 /-- **Contact realization.**  Every acute contact matrix with strictly separated diagonal is the
 complementary-contact matrix of a rooted skeleton. -/
 theorem exists_realization (hn : 1 < n) :
@@ -476,6 +482,36 @@ theorem nonempty_rootedRealization_iff (hn : 1 < n) :
     exact (g.toContactMatrix hacute hstrict).realization_contact hn i j
 
 end DecoratedStokesCore
+
+/-! ### The two encodings are the same object -/
+
+namespace RootedContactTree
+
+/-- **Every rooted skeleton is a contact matrix.**  Symmetry, the acute inequality and strict
+diagonal separation are precisely the axioms of a contact matrix, so the complementary contact of a
+rooted skeleton is one. -/
+def toContactMatrix {n : ℕ} (t : RootedContactTree n) : ContactMatrix n where
+  val := t.contact
+  val_symm := t.contact_symm
+  val_acute := t.contact_acute
+  val_diagonal_lt := fun hij => t.contact_diagonal_lt hij
+
+@[simp] theorem toContactMatrix_val {n : ℕ} (t : RootedContactTree n) (i j : Fin n) :
+    t.toContactMatrix.val i j = t.contact i j := rfl
+
+/-- **The reconstruction round trip.**  The skeleton reconstructed from a rooted skeleton's own
+contact matrix has exactly that skeleton's contact matrix. -/
+theorem realization_contact_eq {n : ℕ} (t : RootedContactTree n) (hn : 1 < n) (i j : Fin n) :
+    (t.toContactMatrix.realization hn).contact i j = t.contact i j :=
+  t.toContactMatrix.realization_contact hn i j
+
+/-- **Theorem 8.3 as a round trip.**  A rooted skeleton and the skeleton reconstructed from its own
+contact matrix have the same labelled hierarchy: the matrix loses nothing that `S(Theta)` retains. -/
+theorem hierarchy_realization_eq {n : ℕ} (t : RootedContactTree n) (hn : 1 < n) :
+    (t.toContactMatrix.realization hn).hierarchy = t.hierarchy :=
+  hierarchy_eq_of_contact_eq _ _ (t.realization_contact_eq hn)
+
+end RootedContactTree
 
 end IrregularStokes
 end GaloisForLFunctions

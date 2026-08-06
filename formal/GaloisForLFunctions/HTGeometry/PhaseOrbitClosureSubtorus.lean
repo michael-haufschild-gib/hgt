@@ -139,6 +139,57 @@ theorem exists_orbitClosure_eq_range_torusIntegerHom (omega : d → ℝ) :
   exact ⟨k, M, closure_range_finiteClockPhasePoint_eq omega gamma M hindep hM,
     torusIntegerHom_injective M A hA, hrank⟩
 
+/-! ### The presented orbit closure is a torus -/
+
+omit [Fintype d] in
+/-- **A minimal integer presentation is a closed embedding.**  A continuous injection of a compact
+space into a Hausdorff space is a closed embedding. -/
+theorem isClosedEmbedding_torusIntegerHom {M : d → k → ℤ}
+    (hinj : Function.Injective (torusIntegerHom (d := d) (k := k) M)) :
+    Topology.IsClosedEmbedding (torusIntegerHom (d := d) (k := k) M) :=
+  (continuous_torusIntegerHom M).isClosedEmbedding hinj
+
+/-- **The presented orbit closure is homeomorphic to the presenting torus.** -/
+noncomputable def torusIntegerHomHomeomorphRange {M : d → k → ℤ}
+    (hinj : Function.Injective (torusIntegerHom (d := d) (k := k) M)) :
+    UnitAddTorus k ≃ₜ (Set.range (torusIntegerHom (d := d) (k := k) M)) :=
+  (isClosedEmbedding_torusIntegerHom hinj).isEmbedding.toHomeomorph
+
+/-- **The presented orbit closure is an isomorphic copy of the presenting torus as a group.** -/
+noncomputable def torusIntegerAddEquivRange {M : d → k → ℤ}
+    (hinj : Function.Injective (torusIntegerHom (d := d) (k := k) M)) :
+    UnitAddTorus k ≃+ (torusIntegerAddHom (d := d) (k := k) M).range :=
+  AddMonoidHom.ofInjective (f := torusIntegerAddHom M) hinj
+
+omit [Fintype d] in
+/-- The range of the bundled homomorphism is the range of the underlying map. -/
+theorem coe_torusIntegerAddHom_range (M : d → k → ℤ) :
+    (((torusIntegerAddHom (d := d) (k := k) M).range : AddSubgroup (UnitAddTorus d)) :
+        Set (UnitAddTorus d))
+      = Set.range (torusIntegerHom (d := d) (k := k) M) := by
+  ext x
+  simp
+
+omit [Fintype d] in
+/-- **Corollary 2's group form, as worded.**  A set that is the range of a minimal integer
+presentation is homeomorphic to the presenting torus. -/
+theorem nonempty_homeomorph_of_eq_torusIntegerAddHom_range {S : Set (UnitAddTorus d)}
+    {M : d → k → ℤ} (hS : S = (((torusIntegerAddHom (d := d) (k := k) M).range :
+        AddSubgroup (UnitAddTorus d)) : Set (UnitAddTorus d)))
+    (hinj : Function.Injective (torusIntegerHom (d := d) (k := k) M)) :
+    Nonempty (UnitAddTorus k ≃ₜ S) :=
+  ⟨(torusIntegerHomHomeomorphRange hinj).trans
+    (Homeomorph.setCongr (by rw [hS, coe_torusIntegerAddHom_range]))⟩
+
+/-- **The phase-orbit closure of a presented frequency family is a torus.** -/
+theorem nonempty_homeomorph_closure_range_finiteClockPhasePoint (omega : d → ℝ) (gamma : k → ℝ)
+    (M : d → k → ℤ) (hgamma : RationallyIndependentFrequency gamma)
+    (hM : ∀ i, omega i = ∑ j, (M i j : ℝ) * gamma j)
+    (hinj : Function.Injective (torusIntegerHom (d := d) (k := k) M)) :
+    Nonempty (UnitAddTorus k ≃ₜ (closure (Set.range (finiteClockPhasePoint omega)))) :=
+  ⟨(torusIntegerHomHomeomorphRange hinj).trans
+    (Homeomorph.setCongr (closure_range_finiteClockPhasePoint_eq omega gamma M hgamma hM).symm)⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry

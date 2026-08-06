@@ -735,3 +735,61 @@ implicated; the umbrella builds clean.
 
 - 2026-08-05 — cycle 9 closed.  OPEN CORE: the X1 criterion (weighted diagonal dominance)
   at level `≥ 3`, i.e. `D_0 ≥ Σ_{d≥2 even}D_d` and `D_1 ≥ Σ_{d≥3 odd} d·D_d`.
+
+## 2026-08-06 CYCLE 10: X1 falsified for k ≥ 5, and the condensation law made rigorous
+
+### Y1 (NO-GO: the X1 criterion is empty beyond k = 4)
+
+X1 uses `cos(dθ) ≥ −1`, which is lossy.  Test it at `x = 0`, where `B_{j,l} = C(k,j)C(k,l)`
+and the true form is the perfect square `|1+z|^{2k} > 0`:
+
+```text
+k = 4, n = 4 :  D_0 = C(4,2)² = 36  ≥  32 + 2 = 34    ✓
+k = 5, n = 4 :  D_0 = C(5,2)² = 100 <  100 + 10 = 110  ✗
+k = 6, n = 6 :  D_0 = C(6,3)² = 400 <  2·C(6,4)C(6,2) = 450  ✗
+```
+
+and asymptotically `Σ_{j} C(k,j)C(k,n−j) = C(2k,n)`, so at `n = k` the off-diagonal mass
+exceeds the diagonal by a factor `≍ √k`.  **X1 holds exactly for `k ≤ 4` — precisely the
+range already covered — so it buys nothing.**  Any workable criterion must keep the phase
+cancellation among the `cos(dθ)` terms (at `x = 0` they conspire into a perfect square);
+bounding them termwise is fatal.  Recorded so no future cycle re-attempts it.
+
+### Y2 (the finite-volume condensation law, now a theorem)
+
+The gas is a polynomial of exact degree `|S|` with leading coefficient `e^{−x·m} ≠ 0`, so
+over `ℂ` it factors completely.  Evaluating at the parity activity `z = −1` and at `z = 1`:
+
+```text
+‖J_S(x)‖ · ∏_ζ ‖1 − ζ‖  =  ‖Z_S(x)‖ · ∏_ζ ‖1 + ζ‖        (over the zeros, with multiplicity)
+```
+
+**The parity current is exactly the cross-ratio product of the gas zeros against the parity
+point, at every coupling** — N2 in finite volume, with no Hadamard theory and no
+smallness hypothesis.  This is the machine the programme was built to feed: any control of
+zero locations transfers directly to the current.  First payoff (completing W5, which was
+paper-level pending factorization): if every zero lies within `ρ` of the parity point,
+
+```text
+‖J_S(x)‖ · (2 − ρ)^{|S|}  ≤  ‖Z_S(x)‖ · ρ^{|S|}.
+```
+
+- 2026-08-06 — Y1 (no-go) and Y2 established; Lean below.
+
+## 2026-08-06 Y2 FORMALIZED: `RHTower/GibbsParityFactorization.lean`
+
+Wired; build 8658 jobs; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings.  `RHTower.GibbsGas`: `gibbsPoly` (the gas as `Polynomial ℂ`),
+`gibbsPoly_eval`, `gibbsPoly_coeff`, `gibbsPoly_coeff_card`, **`gibbsPoly_natDegree`**
+(= `|S|`, via `Finset.eq_of_subset_of_card_le` to isolate `T = S`), `gibbsPoly_ne_zero`,
+`norm_multiset_prod_complex`, **`gibbsDiagC_eq_prod_roots`**, **`gibbs_roots_card`**,
+**`gibbs_parity_cross_ratio`** (Y2), `prod_norm_one_add_le`, `pow_le_prod_norm_one_sub`,
+**`norm_gibbs_current_le_of_confinement`**.
+
+Lean traps: `Polynomial.Splits` is now **unary** (`p.Splits`, no ring hom) and the
+factorization is `Polynomial.Splits.eq_prod_roots`; `IsAlgClosed.splits p` supplies it;
+`(Polynomial.mem_roots h).mp` returns the root equation directly (no `.2`);
+`Polynomial.eval_finset_sum`/`finset_sum_coeff` are deprecated in favour of
+`eval_finsetSum`/`finsetSum_coeff`; `coeff_X_pow` orients its `if` as `j = T.card` while
+`Finset.sum_filter` orients its own as `T.card = j` — rewrite both explicitly with
+`if_pos h.symm` / `if_neg (fun hh => h hh.symm)`.

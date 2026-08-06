@@ -427,6 +427,44 @@ theorem tendsto_integral_monotoneCoupling_expMeasure_one {ι : Type*} {l : Filte
   · rw [integral_id_expMeasure_one]
     exact hmean
 
+/-- **Mutual transport cost.**  Two families of laws each coupled to a common law with vanishing
+cost are coupled to each other with vanishing cost. -/
+theorem tendsto_integral_monotoneCoupling_pair {ι : Type*} {l : Filter ι}
+    (μs κs : ι → Measure ℝ) (ν : Measure ℝ)
+    [∀ i, IsProbabilityMeasure (μs i)] [∀ i, IsProbabilityMeasure (κs i)]
+    [IsProbabilityMeasure ν]
+    (hintμ : ∀ i, Integrable (id : ℝ → ℝ) (μs i)) (hintκ : ∀ i, Integrable (id : ℝ → ℝ) (κs i))
+    (hintν : Integrable (id : ℝ → ℝ) ν)
+    (hμ : Tendsto (fun i => ∫ z, |z.1 - z.2| ∂(monotoneCoupling (μs i) ν)) l (𝓝 0))
+    (hκ : Tendsto (fun i => ∫ z, |z.1 - z.2| ∂(monotoneCoupling (κs i) ν)) l (𝓝 0)) :
+    Tendsto (fun i => ∫ z, |z.1 - z.2| ∂(monotoneCoupling (μs i) (κs i))) l (𝓝 0) := by
+  have hnonneg : ∀ i, 0 ≤ ∫ z, |z.1 - z.2| ∂(monotoneCoupling (μs i) (κs i)) :=
+    fun i => integral_nonneg fun z => abs_nonneg _
+  have hbound : ∀ i, ∫ z, |z.1 - z.2| ∂(monotoneCoupling (μs i) (κs i))
+      ≤ (∫ z, |z.1 - z.2| ∂(monotoneCoupling (μs i) ν))
+        + ∫ z, |z.1 - z.2| ∂(monotoneCoupling (κs i) ν) := by
+    intro i
+    rw [integral_monotoneCoupling_abs_sub, integral_monotoneCoupling_abs_sub,
+      integral_monotoneCoupling_abs_sub]
+    have hIμ := integrableOn_quantile (μs i) (hintμ i)
+    have hIκ := integrableOn_quantile (κs i) (hintκ i)
+    have hIν := integrableOn_quantile ν hintν
+    have h1 : IntegrableOn (fun p => |quantile (μs i) p - quantile ν p|) (Ioo (0 : ℝ) 1) :=
+      (hIμ.sub hIν).abs
+    have h2 : IntegrableOn (fun p => |quantile (κs i) p - quantile ν p|) (Ioo (0 : ℝ) 1) :=
+      (hIκ.sub hIν).abs
+    have h3 : IntegrableOn (fun p => |quantile (μs i) p - quantile (κs i) p|) (Ioo (0 : ℝ) 1) :=
+      (hIμ.sub hIκ).abs
+    rw [← integral_add h1 h2]
+    refine integral_mono h3 (h1.add h2) fun p => ?_
+    calc |quantile (μs i) p - quantile (κs i) p|
+        ≤ |quantile (μs i) p - quantile ν p| + |quantile ν p - quantile (κs i) p| :=
+          abs_sub_le _ _ _
+      _ = |quantile (μs i) p - quantile ν p| + |quantile (κs i) p - quantile ν p| := by
+          rw [abs_sub_comm (quantile ν p)]
+  refine squeeze_zero hnonneg hbound ?_
+  simpa using hμ.add hκ
+
 end
 
 end GaloisForLFunctions.HTGeometry

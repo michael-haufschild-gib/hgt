@@ -9,7 +9,7 @@
   - `../2-fully-proven/gamma-sonin-asymptotic-passivity-incidence-curvature.md`
   - `../2-fully-proven/complementary-packet-euler-connection-weld.md`
   - `../2-fully-proven/complementary-packet-critical-gini-isometry.md`
-  - `../2-fully-proven/mobius-fixed-current-von-mangoldt-critical-transport-weld.md`
+  - `../3-formalized/mobius-fixed-current-von-mangoldt-critical-transport-weld.md`
   - `../2-fully-proven/complementary-packet-affine-flux-fisher-ward-isometry.md`
   - `../2-fully-proven/squarefree-fixed-current-right-half-ward-localization.md`
   - `../2-fully-proven/high-exponent-shell-zero-free-common-divisor-law.md`

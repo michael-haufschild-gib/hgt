@@ -230,6 +230,87 @@ theorem exists_exactRationalRank_close_avoiding {k : ℕ} (hk : 0 < k) (hkn : k 
     rw [hslope s a] at hcon
     exact hsbad (Or.inr (Set.mem_iUnion.mpr ⟨a, hcon⟩))
 
+/-- **The exact-rank locus stays dense after deleting any finite family of rational hyperplanes.**
+This is the topological form of the avoidance theorem. -/
+theorem dense_exactRationalRank_avoiding {k : ℕ} (hk : 0 < k) (hkn : k ≤ n)
+    {ι : Type*} [Fintype ι] (c : ι → Fin n → ℚ) (hc : ∀ a, c a ≠ 0) (d : ι → ℚ) :
+    Dense ({ω : Fin n → ℝ | rationalCoordinateRank ω = k} \
+      ⋃ a : ι, {ω : Fin n → ℝ | (∑ i, (c a i : ℝ) * ω i) = (d a : ℝ)}) := by
+  rw [Metric.dense_iff]
+  intro x ε hε
+  obtain ⟨y, hrank, hclose, havoid⟩ := exists_exactRationalRank_close_avoiding hk hkn x hε c hc d
+  refine ⟨y, ?_, hrank, ?_⟩
+  · rw [Metric.mem_ball, dist_pi_lt_iff hε]
+    exact hclose
+  · simp only [Set.mem_iUnion, Set.mem_setOf_eq, not_exists]
+    exact havoid
+
+/-- A single coordinate read off by a rational indicator functional. -/
+theorem sum_single_mul (i : Fin n) (y : Fin n → ℝ) :
+    (∑ i' : Fin n, (((Pi.single i (1 : ℚ) : Fin n → ℚ) i' : ℚ) : ℝ) * y i') = y i := by
+  classical
+  rw [Finset.sum_eq_single i]
+  · simp
+  · intro b _ hb
+    simp [hb]
+  · intro h
+    exact absurd (Finset.mem_univ i) h
+
+/-- A coordinate difference read off by a rational functional. -/
+theorem sum_singleSub_mul (a b : Fin n) (y : Fin n → ℝ) :
+    (∑ i' : Fin n, ((((Pi.single a (1 : ℚ) : Fin n → ℚ)
+        - (Pi.single b (1 : ℚ) : Fin n → ℚ)) i' : ℚ) : ℝ) * y i') = y a - y b := by
+  classical
+  have hsplit : ∀ i' : Fin n,
+      ((((Pi.single a (1 : ℚ) : Fin n → ℚ) - (Pi.single b (1 : ℚ) : Fin n → ℚ)) i' : ℚ) : ℝ)
+          * y i'
+        = (((Pi.single a (1 : ℚ) : Fin n → ℚ) i' : ℚ) : ℝ) * y i'
+          - (((Pi.single b (1 : ℚ) : Fin n → ℚ) i' : ℚ) : ℝ) * y i' := by
+    intro i'
+    simp only [Pi.sub_apply]
+    push_cast
+    ring
+  rw [Finset.sum_congr rfl fun i' _ => hsplit i', Finset.sum_sub_distrib, sum_single_mul,
+    sum_single_mul]
+
+/-- **Exact rank with nonzero, pairwise distinct entries.**  Every packet has arbitrarily close
+packets of any prescribed positive rational rank whose entries are all nonzero and pairwise
+distinct: the coordinate hyperplanes and the diagonal hyperplanes are a finite rational family, so
+the avoidance theorem applies to them. -/
+theorem exists_exactRationalRank_close_distinct {k : ℕ} (hk : 0 < k) (hkn : k ≤ n)
+    (x : Fin n → ℝ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ y : Fin n → ℝ, rationalCoordinateRank y = k ∧ (∀ i, dist (y i) (x i) < ε) ∧
+      (∀ i, y i ≠ 0) ∧ ∀ i j, i ≠ j → y i ≠ y j := by
+  classical
+  set c : (Fin n) ⊕ {p : Fin n × Fin n // p.1 ≠ p.2} → Fin n → ℚ := fun a =>
+    match a with
+    | Sum.inl i => (Pi.single i (1 : ℚ) : Fin n → ℚ)
+    | Sum.inr p =>
+        (Pi.single p.1.1 (1 : ℚ) : Fin n → ℚ) - (Pi.single p.1.2 (1 : ℚ) : Fin n → ℚ) with hcdef
+  have hc : ∀ a, c a ≠ 0 := by
+    rintro (i | ⟨⟨a, b⟩, hab⟩) hcon
+    · have := congrFun hcon i
+      simp [hcdef] at this
+    · have := congrFun hcon a
+      simp only [hcdef, Pi.sub_apply, Pi.zero_apply, Pi.single_apply,
+        if_neg (fun h : a = b => hab h)] at this
+      norm_num at this
+  obtain ⟨y, hrank, hclose, havoid⟩ :=
+    exists_exactRationalRank_close_avoiding hk hkn x hε c hc (fun _ => 0)
+  refine ⟨y, hrank, hclose, fun i => ?_, fun i j hij => ?_⟩
+  · have h := havoid (Sum.inl i)
+    rw [show ((0 : ℚ) : ℝ) = 0 by norm_num] at h
+    have hval : (∑ i' : Fin n, ((c (Sum.inl i) i' : ℚ) : ℝ) * y i') = y i := by
+      simpa [hcdef] using sum_single_mul i y
+    rw [hval] at h
+    exact h
+  · have h := havoid (Sum.inr ⟨(i, j), hij⟩)
+    rw [show ((0 : ℚ) : ℝ) = 0 by norm_num] at h
+    have hval : (∑ i' : Fin n, ((c (Sum.inr ⟨(i, j), hij⟩) i' : ℚ) : ℝ) * y i') = y i - y j := by
+      simpa [hcdef] using sum_singleSub_mul i j y
+    rw [hval] at h
+    exact fun hcon => h (by rw [hcon, sub_self])
+
 end
 
 end GaloisForLFunctions.HTGeometry

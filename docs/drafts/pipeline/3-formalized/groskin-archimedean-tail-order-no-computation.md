@@ -131,6 +131,26 @@ Module: `formal/GaloisForLFunctions/RHTower/GroskinArchimedeanTailOrder.lean`
 | §2 pointwise Gram positivity | `RHTower.groskinArchTailKernel_posSemidef` |
 | pole-free window | `RHTower.groskinArchTail_denominators_pos`, `RHTower.continuousOn_groskinArchTailKernel_apply`, `RHTower.integrable_groskinArchTailWindowKernel_apply` |
 | §3 integrated Loewner order `Δ ⪰ 0` | `RHTower.groskinArchTailIncrement_posSemidef` |
+| **the kernel of the increment's form**: it vanishes at a vector exactly when the Cauchy Gram vanishes a.e. on the window | `RHTower.groskinArchTailIncrement_quadraticForm_eq_zero_iff`, `.groskinArchTailScalarGram`, `.integrableOn_groskinArchTailScalarGram` |
+| **the kernel annihilates both Cauchy features** off the sine zeros | `RHTower.groskinArchTailIncrement_quadraticForm_eq_zero_annihilates` |
+| **the increment's Cauchy--Stieltjes representation**: `x* Δ x = ∫_window w(T)(\|Σ x p_T\|² + \|Σ x q_T\|²) dT` | `RHTower.groskinArchTailIncrement_quadraticForm` |
+| **§2 displayed Gram identity** `Σ c̄ K c = w(\|Σ c p\|² + \|Σ c q\|²)` | `RHTower.groskinArchTailKernel_quadraticForm` |
+| the density has rank at most two | `RHTower.groskinArchTailKernel_rank_le_two` |
+| **the density has rank exactly two** | `RHTower.groskinArchTailKernel_rank_eq_two` |
+| **its column space is exactly the span of the two Cauchy features** | `RHTower.range_groskinArchTailKernel_eq_span` |
+| the two Cauchy features are independent when two nodes differ | `RHTower.linearIndependent_groskinArchTailFeatures`, `RHTower.cauchyPair_combination` |
+| the scalar density is nonzero off the sine zeros | `RHTower.groskinArchTailWeight_ne_zero` |
+| strict Cauchy--Schwarz: the Gram determinant of an independent pair (absent from mathlib) | `GaloisForLFunctions.HTGeometry.gramDet_pos_of_linearIndependent` |
+| a two-term Gram sum of independent features has rank exactly two | `GaloisForLFunctions.HTGeometry.rank_gramPair_eq_two`, `.span_pair_le_range_gramPair` |
+| nonzero scaling preserves the rank | `GaloisForLFunctions.HTGeometry.rank_smul_eq` |
+| **nonvacuity of the exact rank**: a legal cutoff off the sine zeros always exists | `RHTower.exists_groskinArchTailKernel_rank_eq_two`, `RHTower.exists_sin_ne_zero_ge` |
+| **its column space is spanned by the two Cauchy features** | `RHTower.range_groskinArchTailKernel_le_span` |
+| the action of a Cauchy outer product | `RHTower.vecMulVec_mulVec_self`, `RHTower.smul_mulVec_eq` |
+| rank subadditivity, finite sums and scaling (absent from mathlib) | `GaloisForLFunctions.HTGeometry.rank_add_le_rank_add_rank`, `.rank_sum_le`, `.rank_smul_le` |
+| **the tail order itself**: shrinking the window lowers the increment in the Loewner order | `RHTower.groskinArchTailIncrement_mono` |
+| **nonvacuity**: every scale and node family admits a legal window | `RHTower.exists_groskinArchTailWindow` |
+| **nonvacuity of the order**: that window carries a positive semidefinite increment | `RHTower.exists_groskinArchTailIncrement_posSemidef` |
+| entrywise integration is additive on differences | `HTGeometry.integralMatrixKernel_sub` |
 
 All four headline declarations report
 `[propext, Classical.choice, Quot.sound]` under `#print axioms`; no numerical
@@ -138,3 +158,55 @@ evaluation, no added axiom, no open hypothesis beyond the stated finite geometry
 (`0 < ρ`, threshold, node-freeness of the window).
 
 - 2026-08-05 — Lean surface verified green (`lake env lean`), axioms clean, card advanced to 3-formalized.
+- 2026-08-06 — §2's displayed Gram identity and the rank-two property proved.  The positive
+  semidefiniteness had been obtained from the outer-product form directly; the identity itself, and
+  the statement that the column space is spanned by the two Cauchy feature vectors, are what make
+  the increment an *explicit* rank-two Cauchy--Stieltjes Gram rather than an unstructured positive
+  matrix.  Rank subadditivity `rank (A + B) ≤ rank A + rank B` and `rank (c • A) ≤ rank A` are
+  absent from mathlib and were built from the column-space modular law
+  (`formal/GaloisForLFunctions/HTGeometry/MatrixRankSubadditive.lean`).
+- 2026-08-06 — the order in the card's title formalized: for nested cutoff windows the increments
+  are Loewner-monotone, `Δ_{T₁',T₂'} ⪯ Δ_{T₁,T₂}`, because their difference is the integral of the
+  same density over the discarded part of the window, where it is still positive semidefinite.  The
+  supporting additivity of entrywise integration was added to `PSDMatrixSpectralHankel`.
+- 2026-08-06 — the rank layer completed with the finite-sum bound `rank (∑ A_a) ≤ ∑ rank (A_a)`,
+  which is the general shape behind the rank-two claim: an explicitly presented finite Gram sum has
+  rank at most the total rank of its terms.
+- 2026-08-06 — nonvacuity certified.  The Loewner theorems carry three hypotheses (positive scale,
+  window past the analytic threshold, window past every scaled node); the threshold is an
+  unspecified analytic constant, so it is worth knowing the hypotheses are jointly satisfiable.  For
+  every positive scale and finite node family a legal window exists, and on it the increment is
+  positive semidefinite -- so the card's theorems are statements about a nonempty situation.
+- 2026-08-06 — the structural half of "rank-two Cauchy--Stieltjes" made explicit: every column of the
+  density lies in the span of the two Cauchy feature vectors, with no positivity or threshold
+  hypothesis.  The rank bound is a consequence; the span statement is the shape.
+- 2026-08-06 — "exactly rank two" upgraded from the bound to the equality.  The lower bound needs the
+  two Cauchy features to be independent, which holds as soon as two nodes differ: a vanishing
+  combination gives `(T/ρ)(s+t) + x_i(s-t) = 0` at every node, so two distinct nodes force `s = t`
+  and then `s = t = 0`.  The general step -- a sum of two outer products of independent vectors has
+  rank exactly two -- needed strict Cauchy--Schwarz for the dot product, which mathlib does not
+  carry; it is proved by completing the square, and the resulting invertible Gram matrix exhibits
+  both features in the column space.  The column-space inclusion is therefore an equality.
+- 2026-08-06 — the exact-rank theorem certified nonvacuous.  It carries a fourth hypothesis beyond
+  the Loewner ones -- the modulating sine must not vanish at the cutoff -- so it is worth knowing
+  the four are jointly satisfiable.  They are, for every nonzero modulating frequency: a sine and
+  its quarter-period translate cannot vanish together, so past any threshold there is a legal
+  cutoff.  For `L = 0` the density is identically zero and the rank is `0`, which is why the
+  frequency hypothesis is necessary rather than cosmetic.
+- 2026-08-06 — the increment's Stieltjes representation proved.  The corpus had the pointwise Gram
+  identity and the integrated Loewner order, but the increment's own quadratic form had never been
+  displayed: it is the integral over the cutoff window of the pointwise Cauchy Gram, the scalar
+  density times the sum of the two squared Cauchy features.  That identity is what makes the omitted
+  tail an explicit *Cauchy--Stieltjes Gram increment* rather than an unstructured positive matrix,
+  and positivity is now visible as an integral of squares rather than inferred from the order.
+- 2026-08-06 — the degeneracy of the Loewner order located.  With the increment's form written as an
+  integral of a nonnegative Cauchy Gram, the vanishing set of the form is exactly the set of
+  coefficient vectors whose Gram vanishes almost everywhere on the cutoff window.  This is the
+  sharpest statement available without the rational-separation and Cauchy-determinant input the card
+  explicitly leaves out: it does not assert strict positive definiteness, it says precisely what
+  would have to fail for it.
+- 2026-08-06 — the kernel identified concretely.  A coefficient vector on which the increment's form
+  vanishes annihilates *both* Cauchy feature vectors at almost every cutoff where the modulating
+  sine is nonzero.  That is precisely the hypothesis the excluded strictness argument would have to
+  contradict, so the card's boundary is now sharp on both sides: the Loewner order is proved, and
+  what strictness would require is stated exactly, without being claimed.

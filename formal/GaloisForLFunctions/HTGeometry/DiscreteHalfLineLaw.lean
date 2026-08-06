@@ -96,6 +96,13 @@ theorem integral_id_weightedPointLaw (x : ι → ℝ) (w : ι → ℝ≥0∞)
     ∫ y, y ∂(weightedPointLaw x w) = ∑' i, (w i).toReal * x i :=
   integral_weightedPointLaw x w hint
 
+/-- **Integrability against a discrete law is summability of the weighted values.** -/
+theorem integrable_weightedPointLaw [Countable ι] (x : ι → ℝ) (w : ι → ℝ≥0∞)
+    (hw : ∀ i, w i ≠ ⊤) {f : ℝ → ℝ}
+    (h : Summable fun i => (w i).toReal * ‖f (x i)‖) :
+    Integrable f (weightedPointLaw x w) :=
+  integrable_sum_dirac hw h
+
 end
 
 end GaloisForLFunctions.HTGeometry

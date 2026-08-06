@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.StokesContactRealization
 import GaloisForLFunctions.HTGeometry.StokesUniversalContactLaw
+import GaloisForLFunctions.HTGeometry.StokesRootedTripleLaw
 
 /-!
 # Integral contact hierarchies realize certified fission data
@@ -192,6 +193,47 @@ theorem exists_certifiedFissionDatum_master_law {n : ℕ} (hn : 1 < n) :
             datum.core.energy i j) := by
   obtain ⟨datum⟩ := nonempty_certifiedFissionDatum hn
   exact ⟨datum, datum.universal_contact_master_law⟩
+
+/-- **U3 on the contact matrix itself.**  The Stokes energy of an acute contact matrix is a positive
+additive tree metric of strict negative type with an explicit squared-Euclidean embedding: it is the
+energy of the skeleton that the matrix reconstructs. -/
+theorem ContactMatrix.energy_tree_law {n : ℕ} (κ : ContactMatrix n) (hn : 1 < n) :
+    ∃ t : RootedContactTree n,
+      (∀ i j, t.energy i j = 2 * κ.val i j - κ.val i i - κ.val j j) ∧
+        (∀ i j, i ≠ j → 0 < t.energy i j) ∧
+        (∀ i j, t.energy i j = 0 ↔ i = j) ∧
+        (∀ i j k, t.energy i k ≤ t.energy i j + t.energy j k) ∧
+        (∀ i j k l, MaxTwice (t.energy i j + t.energy k l)
+          (t.energy i k + t.energy j l) (t.energy i l + t.energy j k)) ∧
+        (∀ x : Fin n → ℝ, ∑ i, x i = 0 → x ≠ 0 →
+          (∑ i, ∑ j, x i * x j * t.energy i j) < 0) ∧
+        (∀ i j, (∑ e, (t.canonicalCuts.toPositivePendantCutFamily.feature i e -
+          t.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ 2) = t.energy i j) :=
+  ⟨κ.realization hn, κ.realization_energy hn,
+    fun _ _ hij => RootedContactTree.energy_pos_of_ne _ hij,
+    fun i j => RootedContactTree.energy_eq_zero_iff _ i j,
+    fun i j k => RootedContactTree.energy_triangle _ i j k,
+    fun i j k l => RootedContactTree.energy_fourPoint _ i j k l,
+    fun _ hsum hx => RootedContactTree.energy_strict_negative_type _ hsum hx,
+    fun i j => RootedContactTree.energy_has_canonical_sqEmbedding _ i j⟩
+
+/-- **U1 `(RT)` on the contact matrix itself.**  In the skeleton an acute contact matrix
+reconstructs, a strictly nested pair of meets is exactly a strict inequality with a repeated
+maximum among the three contact values. -/
+theorem ContactMatrix.rootedTriple_iff {n : ℕ} (κ : ContactMatrix n) (hn : 1 < n)
+    (i j k : Fin n) :
+    (κ.realization hn).leaf i ⊓ (κ.realization hn).leaf k
+        < (κ.realization hn).leaf i ⊓ (κ.realization hn).leaf j ↔
+      κ.val i j < κ.val i k ∧ κ.val i k = κ.val j k := by
+  rw [RootedContactTree.rootedTriple_iff, κ.realization_contact hn, κ.realization_contact hn,
+    κ.realization_contact hn]
+
+/-- **The reconstruction is unique.**  Any two rooted skeletons with the contact matrix `κ` carry
+the same labelled branching hierarchy, so the hierarchy is a function of the matrix. -/
+theorem ContactMatrix.hierarchy_unique {n : ℕ} (κ : ContactMatrix n)
+    (s t : RootedContactTree n) (hs : ∀ i j, s.contact i j = κ.val i j)
+    (ht : ∀ i j, t.contact i j = κ.val i j) : s.hierarchy = t.hierarchy :=
+  RootedContactTree.hierarchy_eq_of_contact_eq s t fun i j => by rw [hs i j, ht i j]
 
 end IrregularStokes
 end GaloisForLFunctions

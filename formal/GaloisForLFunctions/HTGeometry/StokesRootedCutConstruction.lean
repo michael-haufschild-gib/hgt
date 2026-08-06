@@ -187,6 +187,16 @@ theorem canonicalCutSum_eq_pathLoss (t : RootedContactTree n) (i j : Fin n) :
       · rw [if_neg h, if_neg h]
         ring
 
+/-- **U3(1): the energy is the tree path metric.**  With every edge carrying its contact drop, the
+Stokes energy of two leaves is the length of the path joining them: down from their meet to each
+leaf, measured against the root. -/
+theorem energy_eq_pathLoss (t : RootedContactTree n) (i j : Fin n) :
+    t.energy i j = t.pathLoss (t.leaf i) + t.pathLoss (t.leaf j)
+      - 2 * t.pathLoss (t.leaf i ⊓ t.leaf j) := by
+  rw [energy, contact, contact, contact, t.pathLoss_eq_root_sub, t.pathLoss_eq_root_sub,
+    t.pathLoss_eq_root_sub, inf_idem, inf_idem]
+  ring
+
 /-- The constructed cuts recover the original complementary-contact matrix exactly. -/
 theorem canonicalCuts_contact_eq (t : RootedContactTree n) (i j : Fin n) :
     t.canonicalCuts.contact i j = t.contact i j := by
@@ -201,6 +211,13 @@ theorem canonicalCuts_energy_eq (t : RootedContactTree n) (i j : Fin n) :
   rw [t.canonicalCuts_contact_eq, t.canonicalCuts_contact_eq,
     t.canonicalCuts_contact_eq]
 
+/-- **The displayed cut decomposition at the canonical cuts.**  The Stokes energy of two leaves is
+the total length of the canonical cuts that separate them. -/
+theorem energy_eq_canonicalCut_absSum (t : RootedContactTree n) (i j : Fin n) :
+    t.energy i j = ∑ e, t.canonicalCuts.length e *
+      |t.canonicalCuts.side e i - t.canonicalCuts.side e j| := by
+  rw [← t.canonicalCuts_energy_eq, RootedCutContact.energy_eq_absDist]
+
 /-- Every finite rooted contact tree has an unconditional explicit squared-Euclidean energy
 embedding; no separate cut certificate is assumed. -/
 theorem energy_has_canonical_sqEmbedding (t : RootedContactTree n) (i j : Fin n) :
@@ -208,6 +225,24 @@ theorem energy_has_canonical_sqEmbedding (t : RootedContactTree n) (i j : Fin n)
       t.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ 2) = t.energy i j := by
   rw [← t.canonicalCuts_energy_eq]
   exact t.canonicalCuts.energy_has_explicit_sqEmbedding i j
+
+/-- **The displayed negative-type identity of §8.5.**  On the zero-sum hyperplane the Stokes
+quadratic form is minus twice the total cut energy of the partial sums, which is why it is strictly
+negative. -/
+theorem energy_qform_eq_neg_cut_squares (t : RootedContactTree n) {x : Fin n → ℝ}
+    (hsum : ∑ i, x i = 0) :
+    (∑ i, ∑ j, x i * x j * t.energy i j)
+      = -2 * ∑ e, t.canonicalCuts.length e *
+        (∑ i, x i * t.canonicalCuts.side e i) ^ 2 := by
+  have hrewrite : (∑ i, ∑ j, x i * x j * t.energy i j)
+      = t.canonicalCuts.toPositivePendantCutFamily.qform x := by
+    simp only [PositivePendantCutFamily.qform, CutFamily.qform]
+    refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+    have hdist : t.canonicalCuts.dist i j = t.energy i j := by
+      rw [← RootedCutContact.energy_eq_dist, t.canonicalCuts_energy_eq]
+    exact congrArg (fun r => x i * x j * r) hdist.symm
+  rw [hrewrite, PositivePendantCutFamily.qform,
+    CutFamily.qform_eq_negative_edge_squares _ x hsum]
 
 /-- Every finite rooted contact energy has strict negative type, derived from its canonical
 pendant cuts. -/

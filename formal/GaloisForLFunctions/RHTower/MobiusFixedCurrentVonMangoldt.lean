@@ -395,6 +395,52 @@ theorem analyticAt_logDeriv_zetaResidueUnit {z : ℂ} (hz : zetaResidueUnit z �
   filter_upwards with w
   rw [logDeriv_apply]
 
+/-- **`(12)`: the simple pole of zeta.**  The Euler current minus its polar part has a limit at the
+pole, namely minus the logarithmic derivative of the analytic residue unit.  This is the exact form
+of `A(1+x) = 1/x + O(1)`. -/
+theorem tendsto_vonMangoldtCurrent_sub_pole :
+    Tendsto (fun s : ℂ => vonMangoldtCurrent s - (s - 1)⁻¹)
+      (nhdsWithin (1 : ℂ) {(1 : ℂ)}ᶜ) (nhds (-logDeriv zetaResidueUnit 1)) := by
+  have hG1 : zetaResidueUnit 1 ≠ 0 := by rw [zetaResidueUnit_one]; norm_num
+  have hcont : Tendsto (fun s : ℂ => -logDeriv zetaResidueUnit s) (nhds (1 : ℂ))
+      (nhds (-logDeriv zetaResidueUnit 1)) :=
+    ((analyticAt_logDeriv_zetaResidueUnit hG1).continuousAt.tendsto).neg
+  refine (hcont.mono_left nhdsWithin_le_nhds).congr' ?_
+  filter_upwards [vonMangoldtCurrent_eventuallyEq] with s hs
+  rw [hs]
+  ring
+
+/-- **The `O(1)` statement of `(12)`.**  The correction to the polar part is bounded near the
+pole. -/
+theorem exists_bound_vonMangoldtCurrent_sub_pole :
+    ∃ C : ℝ, ∀ᶠ s : ℂ in nhdsWithin (1 : ℂ) {(1 : ℂ)}ᶜ,
+      ‖vonMangoldtCurrent s - (s - 1)⁻¹‖ ≤ C := by
+  refine ⟨‖(-logDeriv zetaResidueUnit 1)‖ + 1, ?_⟩
+  have hball := tendsto_vonMangoldtCurrent_sub_pole
+    (Metric.ball_mem_nhds (-logDeriv zetaResidueUnit 1) one_pos)
+  filter_upwards [hball] with s hs
+  have hdist : dist (vonMangoldtCurrent s - (s - 1)⁻¹) (-logDeriv zetaResidueUnit 1) < 1 :=
+    Metric.mem_ball.mp hs
+  have := norm_le_norm_add_norm_sub' (vonMangoldtCurrent s - (s - 1)⁻¹)
+    (-logDeriv zetaResidueUnit 1)
+  rw [dist_eq_norm] at hdist
+  linarith [this]
+
+/-- **`(12)` along the real critical scaling.**  For real escapes the correction to `1/x` stays
+bounded. -/
+theorem exists_bound_vonMangoldtCurrent_one_add_sub_inv :
+    ∃ C : ℝ, ∀ᶠ x : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0),
+      ‖vonMangoldtCurrent (1 + (x : ℂ)) - ((x : ℂ))⁻¹‖ ≤ C := by
+  obtain ⟨C, hC⟩ := exists_bound_vonMangoldtCurrent_sub_pole
+  refine ⟨C, ?_⟩
+  have hmap := tendsto_ofReal_one_add_mul (c := 1) one_pos
+  have hpull := hmap.eventually hC
+  filter_upwards [hpull] with x hx
+  have harg : (1 : ℂ) + ((1 : ℝ) : ℂ) * (x : ℂ) - 1 = (x : ℂ) := by push_cast; ring
+  have hval : (1 : ℂ) + ((1 : ℝ) : ℂ) * (x : ℂ) = 1 + (x : ℂ) := by push_cast; ring
+  rw [harg, hval] at hx
+  exact hx
+
 theorem deriv_vonMangoldtCurrent_of_mem {s : ℂ} (hs : s ∈ eulerCurrentLaurentSet) :
     deriv vonMangoldtCurrent s = -1 / (s - 1) ^ 2 - deriv (logDeriv zetaResidueUnit) s := by
   have hsmem : s ∈ eulerCurrentLaurentSet := hs
@@ -415,6 +461,50 @@ theorem deriv_vonMangoldtCurrent_of_mem {s : ℂ} (hs : s ∈ eulerCurrentLauren
     hinv.sub ((analyticAt_logDeriv_zetaResidueUnit hG).differentiableAt.hasDerivAt)
   rw [heq.deriv_eq, hsum.deriv]
 
+/-- **The differentiated form of `(12)`.**  The derivative of the Euler current minus its double
+polar part has a limit at the pole: `A′(1+x) = -x^{-2} + O(1)`. -/
+theorem tendsto_deriv_vonMangoldtCurrent_add_pole :
+    Tendsto (fun s : ℂ => deriv vonMangoldtCurrent s + 1 / (s - 1) ^ 2)
+      (nhdsWithin (1 : ℂ) {(1 : ℂ)}ᶜ) (nhds (-deriv (logDeriv zetaResidueUnit) 1)) := by
+  have hG1 : zetaResidueUnit 1 ≠ 0 := by rw [zetaResidueUnit_one]; norm_num
+  have hcont : Tendsto (fun s : ℂ => -deriv (logDeriv zetaResidueUnit) s) (nhds (1 : ℂ))
+      (nhds (-deriv (logDeriv zetaResidueUnit) 1)) :=
+    (((analyticAt_logDeriv_zetaResidueUnit hG1).deriv).continuousAt.tendsto).neg
+  refine (hcont.mono_left nhdsWithin_le_nhds).congr' ?_
+  filter_upwards [self_mem_nhdsWithin,
+    nhdsWithin_le_nhds zetaResidueUnit_ne_zero_eventually] with s hs hG
+  have hmem : s ∈ eulerCurrentLaurentSet := ⟨hs, hG⟩
+  rw [deriv_vonMangoldtCurrent_of_mem hmem]
+  ring
+
+/-- **The `O(1)` statement of the differentiated `(12)`.** -/
+theorem exists_bound_deriv_vonMangoldtCurrent_add_pole :
+    ∃ C : ℝ, ∀ᶠ s : ℂ in nhdsWithin (1 : ℂ) {(1 : ℂ)}ᶜ,
+      ‖deriv vonMangoldtCurrent s + 1 / (s - 1) ^ 2‖ ≤ C := by
+  refine ⟨‖(-deriv (logDeriv zetaResidueUnit) 1)‖ + 1, ?_⟩
+  have hball := tendsto_deriv_vonMangoldtCurrent_add_pole
+    (Metric.ball_mem_nhds (-deriv (logDeriv zetaResidueUnit) 1) one_pos)
+  filter_upwards [hball] with s hs
+  have hdist : dist (deriv vonMangoldtCurrent s + 1 / (s - 1) ^ 2)
+      (-deriv (logDeriv zetaResidueUnit) 1) < 1 := Metric.mem_ball.mp hs
+  have hnorm := norm_le_norm_add_norm_sub' (deriv vonMangoldtCurrent s + 1 / (s - 1) ^ 2)
+    (-deriv (logDeriv zetaResidueUnit) 1)
+  rw [dist_eq_norm] at hdist
+  linarith [hnorm]
+
+/-- **The differentiated `(12)` along the real critical scaling.** -/
+theorem exists_bound_deriv_vonMangoldtCurrent_one_add :
+    ∃ C : ℝ, ∀ᶠ x : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0),
+      ‖deriv vonMangoldtCurrent (1 + (x : ℂ)) + 1 / (x : ℂ) ^ 2‖ ≤ C := by
+  obtain ⟨C, hC⟩ := exists_bound_deriv_vonMangoldtCurrent_add_pole
+  refine ⟨C, ?_⟩
+  have hpull := (tendsto_ofReal_one_add_mul (c := 1) one_pos).eventually hC
+  filter_upwards [hpull] with x hx
+  have harg : (1 : ℂ) + ((1 : ℝ) : ℂ) * (x : ℂ) - 1 = (x : ℂ) := by push_cast; ring
+  have hval : (1 : ℂ) + ((1 : ℝ) : ℂ) * (x : ℂ) = 1 + (x : ℂ) := by push_cast; ring
+  rw [harg, hval] at hx
+  exact hx
+
 theorem hasDerivAt_neg_inv_sq {s : ℂ} (hs : s - 1 ≠ 0) :
     HasDerivAt (fun z : ℂ => -1 / (z - 1) ^ 2) (2 / (s - 1) ^ 3) s := by
   have hbase : HasDerivAt (fun z : ℂ => (z - 1) ^ 2) (2 * (s - 1)) s := by
@@ -431,6 +521,53 @@ theorem hasDerivAt_neg_inv_sq {s : ℂ} (hs : s - 1 ≠ 0) :
   filter_upwards with z
   simp only [Pi.neg_apply, Pi.inv_apply]
   rw [neg_div, one_div]
+
+/-- The Laurent form of the second derivative of the Euler current: a triple pole with an
+analytic correction. -/
+theorem deriv2_vonMangoldtCurrent_of_mem {s : ℂ} (hs : s ∈ eulerCurrentLaurentSet) :
+    deriv (deriv vonMangoldtCurrent) s
+      = 2 / (s - 1) ^ 3 - deriv (deriv (logDeriv zetaResidueUnit)) s := by
+  have hs0 : s - 1 ≠ 0 := sub_ne_zero.mpr hs.1
+  have heq : deriv vonMangoldtCurrent =ᶠ[nhds s]
+      fun z => -1 / (z - 1) ^ 2 - deriv (logDeriv zetaResidueUnit) z := by
+    filter_upwards [isOpen_eulerCurrentLaurentSet.mem_nhds hs] with z hz
+    exact deriv_vonMangoldtCurrent_of_mem hz
+  have hsum : HasDerivAt (fun z : ℂ => -1 / (z - 1) ^ 2 - deriv (logDeriv zetaResidueUnit) z)
+      (2 / (s - 1) ^ 3 - deriv (deriv (logDeriv zetaResidueUnit)) s) s :=
+    (hasDerivAt_neg_inv_sq hs0).sub
+      ((analyticAt_logDeriv_zetaResidueUnit hs.2).deriv.differentiableAt.hasDerivAt)
+  rw [heq.deriv_eq, hsum.deriv]
+
+/-- **The second-order residue expansion.**  The second derivative of the Euler current minus its
+triple polar part has a limit at the pole: `A″(1+x) = 2x^{-3} + O(1)`. -/
+theorem tendsto_deriv2_vonMangoldtCurrent_sub_pole :
+    Tendsto (fun s : ℂ => deriv (deriv vonMangoldtCurrent) s - 2 / (s - 1) ^ 3)
+      (nhdsWithin (1 : ℂ) {(1 : ℂ)}ᶜ)
+      (nhds (-deriv (deriv (logDeriv zetaResidueUnit)) 1)) := by
+  have hG1 : zetaResidueUnit 1 ≠ 0 := by rw [zetaResidueUnit_one]; norm_num
+  have hcont : Tendsto (fun s : ℂ => -deriv (deriv (logDeriv zetaResidueUnit)) s) (nhds (1 : ℂ))
+      (nhds (-deriv (deriv (logDeriv zetaResidueUnit)) 1)) :=
+    (((analyticAt_logDeriv_zetaResidueUnit hG1).deriv.deriv).continuousAt.tendsto).neg
+  refine (hcont.mono_left nhdsWithin_le_nhds).congr' ?_
+  filter_upwards [self_mem_nhdsWithin,
+    nhdsWithin_le_nhds zetaResidueUnit_ne_zero_eventually] with s hs hG
+  rw [deriv2_vonMangoldtCurrent_of_mem ⟨hs, hG⟩]
+  ring
+
+/-- **The `O(1)` statement of the second-order residue expansion.** -/
+theorem exists_bound_deriv2_vonMangoldtCurrent_sub_pole :
+    ∃ C : ℝ, ∀ᶠ s : ℂ in nhdsWithin (1 : ℂ) {(1 : ℂ)}ᶜ,
+      ‖deriv (deriv vonMangoldtCurrent) s - 2 / (s - 1) ^ 3‖ ≤ C := by
+  refine ⟨‖(-deriv (deriv (logDeriv zetaResidueUnit)) 1)‖ + 1, ?_⟩
+  have hball := tendsto_deriv2_vonMangoldtCurrent_sub_pole
+    (Metric.ball_mem_nhds (-deriv (deriv (logDeriv zetaResidueUnit)) 1) one_pos)
+  filter_upwards [hball] with s hs
+  have hdist : dist (deriv (deriv vonMangoldtCurrent) s - 2 / (s - 1) ^ 3)
+      (-deriv (deriv (logDeriv zetaResidueUnit)) 1) < 1 := Metric.mem_ball.mp hs
+  have hnorm := norm_le_norm_add_norm_sub' (deriv (deriv vonMangoldtCurrent) s - 2 / (s - 1) ^ 3)
+    (-deriv (deriv (logDeriv zetaResidueUnit)) 1)
+  rw [dist_eq_norm] at hdist
+  linarith [hnorm]
 
 /-- **The second derivative residue of the Euler current.**  `(s-1)³ A″(s) → 2`. -/
 theorem tendsto_sub_one_cube_mul_deriv2_vonMangoldtCurrent :
@@ -454,16 +591,7 @@ theorem tendsto_sub_one_cube_mul_deriv2_vonMangoldtCurrent :
     nhdsWithin_le_nhds zetaResidueUnit_ne_zero_eventually] with s hs hG
   have hs1 : s ≠ 1 := hs
   have hs0 : s - 1 ≠ 0 := sub_ne_zero.mpr hs1
-  have hmem : s ∈ eulerCurrentLaurentSet := ⟨hs1, hG⟩
-  have heq : deriv vonMangoldtCurrent =ᶠ[nhds s]
-      fun z => -1 / (z - 1) ^ 2 - deriv (logDeriv zetaResidueUnit) z := by
-    filter_upwards [isOpen_eulerCurrentLaurentSet.mem_nhds hmem] with z hz
-    exact deriv_vonMangoldtCurrent_of_mem hz
-  have hsum : HasDerivAt (fun z : ℂ => -1 / (z - 1) ^ 2 - deriv (logDeriv zetaResidueUnit) z)
-      (2 / (s - 1) ^ 3 - deriv (deriv (logDeriv zetaResidueUnit)) s) s :=
-    (hasDerivAt_neg_inv_sq hs0).sub
-      ((analyticAt_logDeriv_zetaResidueUnit hG).deriv.differentiableAt.hasDerivAt)
-  rw [heq.deriv_eq, hsum.deriv]
+  rw [deriv2_vonMangoldtCurrent_of_mem ⟨hs1, hG⟩]
   field_simp
 
 /-- **`(15a)`: the second moment of the critical Euler clock tends to two.** -/

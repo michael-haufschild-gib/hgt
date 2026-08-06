@@ -108,6 +108,38 @@ theorem eigenvolumeOrder_eq_neg_one_of_periodic
   rw [Nat.cast_prod]
   exact hshift
 
+/-- A single ramified place on a cycle already makes the product of indices exceed one. -/
+theorem one_lt_prod_iterate_of_exists_ramified {x : α} (hone : ∀ y, 1 ≤ e y)
+    {n : ℕ} (hram : ∃ k < n, 1 < e (F^[k] x)) :
+    1 < ∏ k ∈ Finset.range n, e (F^[k] x) := by
+  classical
+  obtain ⟨k, hk, hek⟩ := hram
+  have hmem : k ∈ Finset.range n := Finset.mem_range.mpr hk
+  rw [← Finset.mul_prod_erase _ _ hmem]
+  have hrest : 1 ≤ ∏ j ∈ (Finset.range n).erase k, e (F^[j] x) :=
+    Finset.one_le_prod' fun j _ => hone _
+  calc 1 < e (F^[k] x) := hek
+    _ = e (F^[k] x) * 1 := (mul_one _).symm
+    _ ≤ e (F^[k] x) * ∏ j ∈ (Finset.range n).erase k, e (F^[j] x) :=
+        Nat.mul_le_mul_left _ hrest
+
+/-- **Sharp form of the horizon quantization.**  A periodic prime whose cycle carries ramification
+at even one place already has eigenvolume order exactly `-1`.  No expansion at every component, no
+finiteness of the support, and no surjectivity are needed. -/
+theorem eigenvolumeOrder_eq_neg_one_of_ramifiedCycle
+    (hone : ∀ y, 1 ≤ e y)
+    (hlaw : ∀ x, c x + 1 = (e x : ℤ) * (c (F x) + 1))
+    {x : α} {n : ℕ} (hper : F^[n] x = x)
+    (hram : ∃ k < n, 1 < e (F^[k] x)) :
+    c x = -1 := by
+  have hprodpos : 1 < ∏ k ∈ Finset.range n, e (F^[k] x) :=
+    one_lt_prod_iterate_of_exists_ramified hone hram
+  have hshift := shift_eq_prod_iterate hlaw n x
+  rw [hper] at hshift
+  refine ramificationShift_fixed_eq_neg_one hprodpos ?_
+  rw [Nat.cast_prod]
+  exact hshift
+
 end RamificationSystem
 
 section BackwardOrbit
@@ -227,6 +259,23 @@ theorem ramificationCoefficient_eq_pullback_sub
     {x : α} (hx : c x = -1) (hFx : c (F x) = -1) :
     ((e x : ℤ) - 1) = (e x : ℤ) * (-(c (F x))) - (-(c x)) := by
   rw [hx, hFx]; ring
+
+/-- **The horizon is reduced under the sharp ramification hypothesis.**  It suffices that every
+cycle inside the divisorial support carries ramification at one place; expansion at every
+component is not needed. -/
+theorem eigenvolumeOrder_eq_neg_one_of_someRamified
+    (hF : Function.Surjective F)
+    (hone : ∀ y, 1 ≤ e y)
+    (hlaw : ∀ x, c x + 1 = (e x : ℤ) * (c (F x) + 1))
+    (hfin : {y : α | c y ≠ 0}.Finite)
+    (hram : ∀ y : α, c y ≠ 0 → ∀ n : ℕ, 0 < n → F^[n] y = y →
+      ∃ k < n, 1 < e (F^[k] y))
+    {x : α} (hx : c x ≠ 0) :
+    c x = -1 := by
+  obtain ⟨n, hn, hper⟩ :=
+    exists_pos_iterate_eq_self_of_backwardStable hF hfin
+      (fun y hy => order_ne_zero_of_image_ne_zero hlaw hy) hx
+  exact eigenvolumeOrder_eq_neg_one_of_ramifiedCycle hone hlaw hper (hram x hx n hn hper)
 
 end Horizon
 

@@ -138,6 +138,18 @@ theorem integralMatrixKernel_quadratic_eq_integral
       intro j hj
       ring
 
+omit [Fintype iota] in
+/-- Entrywise integration is additive on differences of integrable matrix kernels. -/
+theorem integralMatrixKernel_sub
+    (mu : Measure Omega) (kernel₁ kernel₂ : Omega -> Matrix iota iota Real)
+    (hEntry₁ : forall i j, Integrable (fun omega => kernel₁ omega i j) mu)
+    (hEntry₂ : forall i j, Integrable (fun omega => kernel₂ omega i j) mu) :
+    integralMatrixKernel mu (fun omega => kernel₁ omega - kernel₂ omega)
+      = integralMatrixKernel mu kernel₁ - integralMatrixKernel mu kernel₂ := by
+  funext i j
+  simp only [integralMatrixKernel, Matrix.sub_apply]
+  exact integral_sub (hEntry₁ i j) (hEntry₂ i j)
+
 /-- Pointwise positive-semidefinite matrix densities remain positive semidefinite after
 entrywise integration. -/
 theorem integralMatrixKernel_posSemidef

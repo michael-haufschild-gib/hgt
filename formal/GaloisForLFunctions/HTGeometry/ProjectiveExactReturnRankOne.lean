@@ -179,6 +179,37 @@ theorem exists_isHermitian_commuting_close_periodic_and_aperiodic {n : ℕ} (hn 
     have := (hasPositiveProjectiveReturn_iff_gapRank_le_one E').mp hret
     omega
 
+/-- A nonzero coordinate forces positive rational rank. -/
+theorem rationalCoordinateRank_pos {n : ℕ} {ω : Fin n → ℝ} {i : Fin n} (h : ω i ≠ 0) :
+    0 < rationalCoordinateRank ω := by
+  haveI : Module.Finite ℚ (Submodule.span ℚ (Set.range ω)) :=
+    Module.Finite.span_of_finite ℚ (Set.finite_range ω)
+  have hmem : ω i ∈ Submodule.span ℚ (Set.range ω) := Submodule.subset_span ⟨i, rfl⟩
+  have hnt : Nontrivial (Submodule.span ℚ (Set.range ω)) := by
+    refine ⟨⟨0, ⟨ω i, hmem⟩, ?_⟩⟩
+    simp [Subtype.ext_iff, h, eq_comm]
+  exact Module.finrank_pos
+
+/-- **Corollary 1 for a simple spectrum.**  A simple finite spectrum has a positive exact global
+projective return exactly when its gap rank is one: simplicity rules out rank zero, because the
+first gap is already nonzero. -/
+theorem hasPositiveProjectiveReturn_iff_gapRank_eq_one {d : ℕ} (hd : 0 < d)
+    {E : Fin (d + 1) → ℝ} (hinj : Function.Injective E) :
+    HasPositiveProjectiveReturn E ↔
+      rationalCoordinateRank (fun j : Fin d => E j.succ - E 0) = 1 := by
+  have hzero : (⟨0, hd⟩ : Fin d).succ ≠ 0 := Fin.succ_ne_zero _
+  have hne : E (⟨0, hd⟩ : Fin d).succ - E 0 ≠ 0 := by
+    intro hcon
+    exact hzero (hinj (sub_eq_zero.mp hcon))
+  have hpos : 0 < rationalCoordinateRank (fun j : Fin d => E j.succ - E 0) :=
+    rationalCoordinateRank_pos (i := (⟨0, hd⟩ : Fin d)) hne
+  constructor
+  · intro hret
+    have hle := (hasPositiveProjectiveReturn_iff_gapRank_le_one E).mp hret
+    omega
+  · intro hrank
+    exact (hasPositiveProjectiveReturn_iff_gapRank_le_one E).mpr (le_of_eq hrank)
+
 end
 
 end GaloisForLFunctions.HTGeometry

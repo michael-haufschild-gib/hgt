@@ -112,6 +112,33 @@ theorem RootedRealization.hierarchy_unique {n : ℕ} {g : DecoratedStokesCore n}
   intro i j
   rw [s.contact_eq, t.contact_eq]
 
+/-- **The integral sharpening of the strict diagonal obstruction.**  Both sides of the strict
+inequality are integers, so the left side exceeds the right by at least one. -/
+theorem RootedRealization.strictCoreObstruction_add_one_le {n : ℕ} {g : DecoratedStokesCore n}
+    (realization : RootedRealization g) {i j : Fin n} (hij : i ≠ j) :
+    (g.ramification j : ℤ) * (g.B i i - 1) + 1 ≤ (g.ramification i : ℤ) * g.B i j :=
+  Int.add_one_le_iff.mpr (realization.strictCoreObstruction hij)
+
+/-- **`(8.2)` as the card states it: the pair of strict arithmetic obstructions.**  Lemma 8.1 gives
+strict separation of the diagonal from the edge at both endpoints, so a rooted realization forces
+both integral inequalities, with the same off-diagonal entry on the right by symmetry of the core. -/
+theorem RootedRealization.strictCorePairObstruction {n : ℕ} {g : DecoratedStokesCore n}
+    (realization : RootedRealization g) {i j : Fin n} (hij : i ≠ j) :
+    (g.ramification j : ℤ) * (g.B i i - 1) < (g.ramification i : ℤ) * g.B i j ∧
+      (g.ramification i : ℤ) * (g.B j j - 1) < (g.ramification j : ℤ) * g.B i j := by
+  refine ⟨realization.strictCoreObstruction hij, ?_⟩
+  have h := realization.strictCoreObstruction (Ne.symm hij)
+  rwa [g.B_symm j i] at h
+
+/-- **The integral sharpening of both obstructions.**  Both sides of each inequality are integers,
+so each left side is at least the corresponding right side plus one. -/
+theorem RootedRealization.strictCorePairObstruction_add_one_le {n : ℕ} {g : DecoratedStokesCore n}
+    (realization : RootedRealization g) {i j : Fin n} (hij : i ≠ j) :
+    (g.ramification j : ℤ) * (g.B i i - 1) + 1 ≤ (g.ramification i : ℤ) * g.B i j ∧
+      (g.ramification i : ℤ) * (g.B j j - 1) + 1 ≤ (g.ramification j : ℤ) * g.B i j := by
+  obtain ⟨h₁, h₂⟩ := realization.strictCorePairObstruction hij
+  exact ⟨Int.add_one_le_iff.mpr h₁, Int.add_one_le_iff.mpr h₂⟩
+
 end DecoratedStokesCore
 
 end IrregularStokes

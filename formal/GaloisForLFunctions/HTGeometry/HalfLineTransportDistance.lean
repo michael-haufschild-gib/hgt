@@ -145,6 +145,14 @@ theorem tendsto_halfLineW1_of_tendsto_survival {ι : Type*} {l : Filter ι}
     simpa [h2] using hlim
   exact (hfinal.congr fun i => (hsplit i).symm)
 
+/-- The half-line transport distance is symmetric. -/
+theorem halfLineW1_symm (μ ν : Measure ℝ) : halfLineW1 μ ν = halfLineW1 ν μ :=
+  integral_congr_ae (Filter.Eventually.of_forall fun _ => abs_sub_comm _ _)
+
+/-- The half-line transport distance is nonnegative. -/
+theorem halfLineW1_nonneg (μ ν : Measure ℝ) : 0 ≤ halfLineW1 μ ν :=
+  setIntegral_nonneg measurableSet_Ioi fun _ _ => abs_nonneg _
+
 /-- The half-line transport distance obeys the triangle inequality. -/
 theorem halfLineW1_triangle {μ ν ρ : Measure ℝ} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
     [IsFiniteMeasure ρ]

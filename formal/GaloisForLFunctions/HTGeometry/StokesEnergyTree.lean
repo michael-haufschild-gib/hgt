@@ -352,6 +352,28 @@ theorem energy_strict_negative_type (c : RootedCutContact n m) {x : Fin n → �
   simp_rw [c.energy_eq_dist]
   exact c.toPositivePendantCutFamily.strict_negative_type hsum hx
 
+/-- Idempotent sides take only the two values zero and one. -/
+theorem side_eq_zero_or_one (c : RootedCutContact n m) (e : Fin m) (i : Fin n) :
+    c.side e i = 0 ∨ c.side e i = 1 := by
+  have h := c.side_idempotent e i
+  have hfac : c.side e i * (c.side e i - 1) = 0 := by nlinarith [h]
+  rcases mul_eq_zero.mp hfac with h0 | h1
+  · exact Or.inl h0
+  · exact Or.inr (by linarith)
+
+/-- **The displayed cut decomposition.**  Since the sides are indicators, the squared cut distance
+is the absolute one: the Stokes energy is the total length of the cuts separating the two leaves. -/
+theorem energy_eq_absDist (c : RootedCutContact n m) (i j : Fin n) :
+    c.energy i j = ∑ e, c.length e * |c.side e i - c.side e j| := by
+  rw [c.energy_eq_dist]
+  simp only [PositivePendantCutFamily.dist, CutFamily.dist]
+  refine Finset.sum_congr rfl fun e _ => ?_
+  have hsq : (c.side e i - c.side e j) ^ 2 = |c.side e i - c.side e j| := by
+    rcases c.side_eq_zero_or_one e i with hi | hi <;>
+      rcases c.side_eq_zero_or_one e j with hj | hj <;>
+        rw [hi, hj] <;> norm_num
+  rw [hsq]
+
 end RootedCutContact
 
 end IrregularStokes
