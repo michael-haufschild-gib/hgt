@@ -1,159 +1,65 @@
-# Deninger tensor-square mate identification of actual Gamma boundary
-
-- **Stage:** 3-formalized
+# Deninger Gamma tensor-square mate identification
 
 - **ID:** `deninger-gamma-tensor-square-mate-identification`
-- **Route:** L / Deninger finite failure-nerve mate
-- **Status:** fully proved on paper; RH not proved
-- **Input:** actual ordered `(2,3)` Gamma/co-Poisson Calderon--Witt witness;
-  bilateral Deninger half-density character
+- **Status:** formalized in Lean 4; unconditional; Route L remains open
+- **Paper proof:**
+  `new_scientific_knowledge/deninger/deninger-gamma-tensor-square-mate-identification.md`
+- **Lean module:**
+  `GaloisForLFunctions.RHTower.DeningerCalderonWittGammaTensorSquareMateIdentification`
 
-## Theorem
+## Formal result
 
-For (n>1) and (s\in\mathbb C), let
+For the Deninger half-density character
 
-\[
- \lambda_n(s)=n^{1/2-s}
-\]
+```text
+lambda_n(s) = n^(1/2-s),
+```
 
-be the associated-grade Deninger half-density character.  Its tensor-square
-radial source-inverse/analytic-dagger mate curvature is
+the module defines tensor-square radial source-inverse/analytic-dagger mate
+curvature
 
-\[
- K_n(s)=\|\lambda_n(s)\|^{-2}-\|\lambda_n(s)\|^2.
- \tag{1}
-\]
+```text
+K_n(s) = norm(lambda_n(s))^(-2) - norm(lambda_n(s))^2
+```
 
-Then
+and proves unconditionally
 
-\[
- K_n(s)=2\sinh\bigl((2\Re s-1)\log n\bigr).
- \tag{2}
-\]
+```text
+K_n(s) = 2 sinh((2 Re(s)-1) log n).
+```
 
-Let (q) be an actual Xi-divisor copy, write
+For every `n >= 2`, its zero set is exactly `Re(s)=1/2`.  At the actual
+ordered `(2,3)` Gamma/co-Poisson Calderon--Witt witness, the two depth-zero
+modular rates sum to `-log 6`.  With
 
-\[
- f_q=2\left(\Re\rho_q-\frac12\right),
-\]
+```text
+c_23 = -A_23/2 > 0,
+```
 
-and let (b_\Gamma(q)) be the actual Gamma/co-Poisson reflection-odd
-boundary coefficient at the canonical ordered `(2,3)` Calderon--Witt
-witness.  If (A_{23}) is its undeformed exterior amplitude, then
+the actual boundary coefficient satisfies the exact comparison
 
-\[
- \boxed{
- b_\Gamma(q)=\left(-\frac{A_{23}}2\right)K_6(\rho_q),
- \qquad -\frac{A_{23}}2>0.
- }
- \tag{3}
-\]
+```text
+b_Gamma(q) = c_23 * K_6(rho_q).
+```
 
-Thus actual Gamma admission coefficient is, before bounded normalization,
-exactly a strictly positive calibration of the tensor-square radial mate
-curvature of the Deninger associated-grade character at composite degree
-(6=2\cdot3).
+The comparison preserves the critical zero set.
 
-## Proof
+## Novelty boundary
 
-The half-density norm law gives
+Neither half-density norm formula, scalar hyperbolic-sine curvature, nor
+Gamma reflection-odd formula is claimed new.  New content is equality of the
+independently constructed actual Gamma reporter and Deninger tensor-square
+mate curvature, including forced composite degree `6`, sign, and strictly
+positive calibration.
 
-\[
- \|\lambda_n(s)\|=n^{1/2-\Re s}.
-\]
+This closes radial associated-grade part of
+`FINITE_EPG_FAILURE_NERVE_MATE_COMPARISON`.  It does not construct filtered
+prime/depth source mate or strict cofinal Xi Cartier landing.
 
-Put (d=2\Re s-1).  Then
+## Verification
 
-\[
- \|\lambda_n(s)\|^{-2}=n^d,
- \qquad
- \|\lambda_n(s)\|^2=n^{-d}.
-\]
-
-Since (n^{\pm d}=\exp(\pm d\log n)),
-
-\[
- K_n(s)=e^{d\log n}-e^{-d\log n}
-       =2\sinh(d\log n),
-\]
-
-which proves `(2)`.
-
-For the actual ordered `(2,3)` Gamma witness, the already proved explicit
-formula is
-
-\[
- b_\Gamma(q)=A_{23}\sinh(f_qR_{23}),
-\]
-
-where (A_{23}<0) and (R_{23}) is the sum of the two depth-zero modular
-rates.  Each depth-zero rate is minus the prime logarithm, hence
-
-\[
- R_{23}=-\log2-\log3=-\log6.
-\]
-
-Therefore
-
-\[
-\begin{aligned}
- b_\Gamma(q)
- &=A_{23}\sinh(-f_q\log6)\\
- &=-A_{23}\sinh(f_q\log6)\\
- &=\left(-\frac{A_{23}}2\right)K_6(\rho_q),
-\end{aligned}
-\]
-
-using (f_q=2\Re\rho_q-1) and `(2)`.  Since (A_{23}<0), the calibration
-constant is strictly positive.
-
-No Xi zero location, RH, source-null-homotopy, or conormal-dependent metric
-is assumed.
-
-## What is new and what is not
-
-Not new:
-
-- half-density character and its critical-line norm criterion;
-- radial mate curvature
-  (|\lambda\|^{-2}-\|\lambda\|^2=2\sinh(2\log|\lambda|^{-1})), already
-  present in Burnol/Sonin full-history work;
-- hyperbolic-sine formula for actual Gamma boundary.
-
-New theorem is exact equality `(3)` between these independently constructed
-objects, including forced composite degree (6), sign, and positive
-calibration.  Corpus search found no previous Deninger/Burnol mate theorem
-identified with the actual Calderon--Witt Gamma admission witness.
-
-This is a finite associated-grade comparison, not the missing cofinal source
-producer.  It closes a precise part of
-`FINITE_EPG_FAILURE_NERVE_MATE_COMPARISON`: on the radial associated grade,
-the concrete Gamma reporter already reads the tensor-square source
-inverse/dagger mate curvature at its canonical witness.
-
-## Frontier left
-
-Still missing:
-
-1. lift `(3)` from radial character to the full filtered finite
-   prime/depth reporter, retaining zero-rate Euler gauge and terminal pole;
-2. prove compatibility over prime cutoff, exponent depth, and Gamma aperture;
-3. pass strict, nonannihilatingly through Xi Cartier base change;
-4. derive a source Bianchi/null-homotopy identity for the resulting positive
-   quadratic Green curvature.
-
-Any construction which inserts (s=\rho_q) before the filtered source mate
-or defines its metric by requiring `(3)` is rejected as circular.
-
-## Formalization target
-
-Lean should prove unconditionally:
-
-- formula `(2)` from existing `bilateralHalfDensityCharacter` norm law;
-- (R_{23}=-\log6);
-- exact comparison `(3)`;
-- strict positivity of calibration constant;
-- zero-set compatibility as a corollary, not as an assumption.
-
-
-- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.
+- symbolic scratch proof using repository toolchain: passed;
+- direct `lake env lean` on module: passed;
+- targeted module build: passed;
+- axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`;
+- umbrella import: `GaloisForLFunctions.RHTower`.

@@ -88,10 +88,20 @@ usual convergence-forcing correction is available without any general Runge theo
 - [x] D3a local solvability in one variable — `HTGeometry.exists_dbar_local`
 - [x] D3b(i) the several-variable $(0,q)$ layer, `∂̄`, and `ker ∂̄ = 𝒪` in degree zero
 - [x] D3b(ii-a) solving `∂̄_k U = G` in one coordinate with the others as parameters
-- [ ] D3b(ii-b) `∂̄_j` commutes with the coordinatewise Cauchy transform for `j ≠ k`
-      *(blocked on elaboration cost, see below — the mathematics is settled)*
-- [ ] D3b(ii-c) the Dolbeault–Grothendieck induction on the `dz̄` directions
+- [x] D3b(ii-b) `∂̄_j` commutes with the coordinatewise Cauchy transform for `j ≠ k`
+- [x] D3b(ii-c0) the `∂̄_j` calculus needed by the induction
+- [x] D3b(ii-c1a) the full Fréchet derivative of the coordinatewise Cauchy transform
+- [x] D3b(ii-c1b) smoothness by induction on the order (Banach-valued transform)
+- [x] D3b(ii-c1c) `C^∞` preservation for both transforms
+- [x] D3b(ii-c1d-i) slab far-field estimates
+- [x] D3b(ii-c1d-ii) transform lemmas restated on slab hypotheses
+- [x] D3b(ii-c2a) the induction *step*, packaged
+- [x] D3b(ii-c2b-i) the polydisc layer: line-closure and the vanishing hypothesis
+- [x] D3b(ii-c2b-ii) the cutoff on a polydisc, and the step in polydisc form
+- [ ] D3b(ii-c2b-iii) the iteration down the directions
 - [ ] D3 $\bar\partial$-Poincaré on a polydisc
+- [x] D4a fine ⟹ Čech-acyclic, coefficients in a module (`HTGeometry/CechFineAcyclicModule.lean`)
+- [ ] D4b instantiate at the sheaves of smooth `(0,q)`-forms
 - [ ] D4 Dolbeault isomorphism
 - [ ] D5 global solvability on $(\mathbb C^\times)^r$, hence $H^q=0$ for $q\ge1$
 - [ ] feed back into the four Deninger cards
@@ -187,7 +197,30 @@ so the build can continue across sessions:
   differentiation-under-the-integral arguments of the same shape as
   `hasFDerivAt_cauchyIntegral`, with the same dominating bound.
 
-### D4 — the remaining bridge, and why it is the hard one
+### D4 — corpus audit (2026-08-06): most of this already exists
+
+A search of the tree before building any more turned up the following, all of it reusable and none
+of it to be rebuilt:
+
+| Asset | Module | Bearing |
+|---|---|---|
+| **fine ⟹ Čech-acyclic in every degree**, by the partition-of-unity contracting homotopy `δK + Kδ = id` | `RHTower/DeningerCechHomotopy.lean` (`deningerCechK`, `deningerCech_homotopy`, `deningerCech_exact`) | this *is* the D4 bridge |
+| Čech degree zero = global sections (compatible families glue, uniquely) | `RHTower/DeningerCechGlue.lean` | the `H⁰` half |
+| first Čech cohomology splits for a fine cover | `RHTower/DeningerCechSplit.lean` | the `q = 1` instance |
+| Ext-based sheaf cohomology, `flasque ⟹ acyclic`, `injective ⟹ flasque`, free abelian sheaf on an open | `RHTower/DeningerFlasqueAcyclic.lean`, `DeningerOpenFreeSheaf.lean`, `DeningerSkyscraperAcyclic.lean`, `DeningerRestrictedPrimeAcyclic.lean` | the derived-functor side |
+| CDGA, its cohomology, morphisms, quasi-isomorphisms; filtered colimits of CDGAs; cohomology commutes with them | `HTGeometry/CDGA.lean`, `CDGAColimit.lean`, `CDGAColimitQuasiIso.lean` | the algebra of `(7)` on the pro-Stein card |
+| relative Sullivan stages and towers over an arbitrary directed order, `cohomology_computed_at_stages` | `HTGeometry/GradedSullivan{Stage,Tower,Graded,Augmented}.lean` | the "relative Sullivan algebra as a filtered union of finite cell stages" of `(7)` |
+
+So D4 does **not** have to be built from scratch.  `deningerCech_exact` is exactly "a fine sheaf is
+acyclic", proved in every degree by multiplying by a partition of unity.  Its only limitation is
+that `DeningerCechCochain X ι q` is `ℝ`-valued; the proof uses nothing but scalar multiplication and
+finite sums, so generalizing the target to an arbitrary `ℝ`-module — which is what the sheaves of
+smooth `(0,q)`-forms are — is mechanical and is the next step.
+
+There is **no** operad, `E_∞`, spectra, motivic-cohomology or cotangent-complex material anywhere in
+the tree; those four cards genuinely need new area-scale theories, and the audit confirms it.
+
+### D4 — the remaining bridge, in its corrected form
 
 Turning local `∂̄`-exactness into `H^q(Z, 𝒪) = 0` needs the sheaves of smooth `(0,q)`-forms to be
 acyclic.  The corpus already owns an Ext-based sheaf cohomology (`DeningerFlasqueAcyclic.lean`,
@@ -240,3 +273,284 @@ D3b.
   instances, or prove the `HasFDerivAt` by hand from `hasFDerivAt_cauchyIntegral` composed with the
   coordinate embedding, which keeps `H = ℂ` throughout and moves the several-variable dependence
   into a plain composition.
+
+- 2026-08-06 — **D3b(ii-b) closed**, and the elaboration blocker is gone.  The fix was the route
+  recorded above: keep `H = ℂ` throughout by differentiating the *slice* of the transform rather
+  than the transform itself, so `hasFDerivAt_integral_of_dominated_of_fderiv_le` is applied with a
+  one-dimensional parameter space, exactly as in `hasFDerivAt_cauchyIntegral`.  Axiom audit
+  `propext, Classical.choice, Quot.sound` for every declaration.
+  - `opNorm_single_le`, `norm_coord_le`, `hasFDerivAt_updateSlice`,
+    `dzbarAt_eq_wirtingerAntihol` — the coordinate inclusion has operator norm at most one, the
+    slice derivative is the full differential composed with it, and `∂̄_j` is the antiholomorphic
+    Wirtinger part of that composite.
+  - `hasFDerivAt_sliceSolution_along` — **differentiation under the integral sign along a
+    coordinate `j ≠ k`**.  The dominating bound is again `M‖w‖⁻¹` on a fixed ball, finite by
+    `integrableOn_norm_inv_ball`, and the far-field vanishing uses that the `k`-th coordinate of
+    the integration point is `y_k − w`, whose norm grows with `‖w‖`.
+  - `integrable_sliceFderivKernel` — the same bound gives integrability of the derivative kernel.
+  - `dzbarAt_dbarSliceSolution_of_ne` — **`∂̄_j U = T_k(∂̄_j G)` for `j ≠ k`**, where `T_k` is the
+    coordinatewise Cauchy transform.  Together with `dzbarAt_dbarSliceSolution_of_compactSupport`
+    (`∂̄_k U = G`) these are the two facts the Dolbeault–Grothendieck induction runs on: solving in
+    one direction fixes that direction and transports the others without introducing new ones.
+
+- 2026-08-06 — **D3b(ii-c0) landed**: the `∂̄_j` calculus the induction runs on, audit
+  `propext, Classical.choice, Quot.sound`.
+  - `dzbarFunctional`, `dzbarFunctional_apply`, `dzbarAt_eq_functional` — `∂̄_j` is a *continuous
+    linear functional* applied to the differential, `∂̄_j G = Λ_j (fderiv ℝ G)`.  Everything below
+    follows from that one identification.
+  - `contDiff_dzbarAt` — **`∂̄_j` loses exactly one degree of smoothness**,
+    `ContDiff ℝ (m+1) G → ContDiff ℝ m (∂̄_j G)`, via `ContDiff.fderiv_right`.
+  - `dzbarAt_add` — additivity.
+  - `hasCompactSupport_dzbarAt` — `∂̄_j` preserves compact support, via
+    `HasCompactSupport.fderiv` and `comp_left`.
+
+### The one remaining input for the induction
+
+The Hörmander induction on the highest `dz̄` direction is now fully set up: `∂̄_k T_k(f_k) = f_k`
+and `∂̄_j T_k(f_k) = T_k(∂̄_j f_k) = T_k(∂̄_k f_j)` (using `∂̄`-closedness), so
+`g_j := f_j − ∂̄_j T_k(f_k)` vanishes in direction `k` and in every direction above it, and the
+induction hypothesis applies to `g`.
+
+What is still needed is that `g` inherits the *smoothness* hypothesis, i.e. that the coordinatewise
+Cauchy transform `T_k` of a `C^∞` compactly supported function is again `C^∞`.  Each single
+derivative is already available — `hasFDerivAt_cauchyIntegral` in the `k`-th direction and
+`hasFDerivAt_sliceSolution_along` in the others, both with the dominating bound `M‖w‖⁻¹·1_{ball}` —
+so the missing step is the *iteration*.  The clean mechanism, fixed here:
+
+* generalize `dbarSolution`, `hasFDerivAt_cauchyIntegral` and `hasFDerivAt_sliceSolution_along`
+  from a `ℂ`-valued source to a Banach-space-valued one (`E` normed over `ℝ`, complete).  Every
+  proof carries over unchanged: the bound is `M‖w‖⁻¹·1_{ball}`, the integrability comes from
+  `integrableOn_norm_inv_ball`, and nothing uses multiplicativity of the target;
+* then `fderiv ℝ (T_k G) = T_k^{E}(fderiv ℝ G)` with `E = (Fin n → ℂ) →L[ℝ] ℂ`, because the
+  derivative of the integrand is `w⁻¹ • fderiv ℝ G (y − e_k w)`, which is exactly the integrand of
+  the `E`-valued transform applied to `fderiv ℝ G`;
+* induct on the order with `contDiff_succ_iff_fderiv`: `ContDiff ℝ (m+1) G` gives
+  `ContDiff ℝ m (fderiv ℝ G)` with compact support, hence `ContDiff ℝ m (T_k^E (fderiv ℝ G))` by
+  the inductive hypothesis, hence `ContDiff ℝ (m+1) (T_k G)`.
+
+With that in place the Hörmander induction closes and D3 is complete.
+
+- 2026-08-06 — **D3b(ii-c1a) closed, and the earlier elaboration blow-up is fully diagnosed and
+  fixed.**  `hasFDerivAt_piCauchyIntegral` gives the *full Fréchet* derivative of the coordinatewise
+  Cauchy transform on `(Fin n → ℂ)`:
+
+  `d/dy ∫ G(y − e_k w)/w dA(w) = ∫ w⁻¹ • fderiv ℝ G (y − e_k w) dA(w)`.
+
+  The earlier attempt at exactly this statement exceeded 4·10⁶ heartbeats at `whnf`; the fix was to
+  hoist *every* side condition out of the tactic block into its own top-level lemma
+  (`pi_far_norm`, `pi_continuous_arg`, `pi_measF`, `pi_measF'`, `pi_boundInt`, `pi_Fint`,
+  `pi_bound`, `pi_diff`), leaving the main proof a single application of
+  `hasFDerivAt_integral_of_dominated_of_fderiv_le`.  With the side conditions elaborated separately
+  the whole thing goes through.  Axiom audit `propext, Classical.choice, Quot.sound` throughout.
+
+  This is precisely the identity the smoothness induction needs: it exhibits `fderiv ℝ (T_k G)` as
+  the *same* transform applied to `fderiv ℝ G`, so once the transform is generalized to a Banach
+  target the induction `ContDiff ℝ (m+1) G → ContDiff ℝ (m+1) (T_k G)` closes by
+  `contDiff_succ_iff_fderiv`.
+
+- 2026-08-06 — **D3b(ii-c1 closed: the coordinatewise Cauchy transform preserves smoothness.**
+  Axiom audit `propext, Classical.choice, Quot.sound` throughout.
+  - `piCauchyB` — the transform for a Banach-valued source,
+    `T_k G (y) = ∫ w⁻¹ • G(y − e_k w) dA(w)`.  Generalizing the target costs nothing: the
+    dominating bound `M‖w‖⁻¹·1_{ball}` and `integrableOn_norm_inv_ball` never use multiplicativity.
+  - `piB_measF`, `piB_Fint`, `piB_bound`, `piB_diff` — the four side conditions, hoisted, exactly
+    as in the scalar case.
+  - `continuous_piCauchyB` — continuity, by `MeasureTheory.continuousAt_of_dominated` with the
+    bound taken on a unit ball around each point (the radius grows with the base point, so the
+    domination has to be local; that is why the statement is proved through `ContinuousAt`).
+  - `hasFDerivAt_piCauchyB` — **`fderiv ℝ (T_k G) = T_k (fderiv ℝ G)`**: the differential of the
+    transform is the transform of the differential.
+  - `contDiff_piCauchyB` — **`ContDiff ℝ m G` and compact support give `ContDiff ℝ m (T_k G)`**, by
+    induction on `m` through `contDiff_succ_iff_fderiv`, the inductive step being applied to the
+    `((Fin n → ℂ) →L[ℝ] F)`-valued transform.  This is the input the Hörmander induction was
+    waiting on.
+
+- 2026-08-06 — **D3b(ii-c1c) landed**: `contDiff_infty_piCauchyB`,
+  `dbarSliceSolution_eq_piCauchyB`, `contDiff_infty_dbarSliceSolution` — both transforms preserve
+  `C^∞`, the scalar one being `π⁻¹` times the Banach-valued one.  Axiom audit
+  `propext, Classical.choice, Quot.sound`.
+
+### Correction to the D3b(ii-c2) design
+
+An earlier note here described the induction as if the cut-off source stayed `∂̄`-closed.  It does
+not, and that has to be handled explicitly:
+
+* the transform `T_k` needs a *compactly supported* source, so `f_k` must be cut off by a bump `χ`
+  before `T_k` is applied;
+* `∂̄_j(χ f_k) = χ ∂̄_j f_k + (∂̄_j χ) f_k`, and the second term does not vanish, so
+  `∂̄_j T_k(χ f_k) = T_k(∂̄_j(χ f_k))` is *not* zero for `j > k` on all of `ℂⁿ`;
+* what is true, and what the induction must carry, is that the identity holds **on the smaller
+  ball where `χ ≡ 1`**: there `∂̄_j(χ f_k) = ∂̄_j f_k = ∂̄_k f_j = 0` for `j > k`.
+
+So the induction statement has to be *local*, of the shape
+
+> for every `m`, every open `Ω`, every smooth `f` with `∂̄_i f_j = ∂̄_j f_i` on `Ω` and `f_j = 0` on
+> `Ω` for `j ≥ m`, and every `p ∈ Ω`, there are a neighbourhood `V ⊆ Ω` of `p` and a smooth `u`
+> with `∂̄_j u = f_j` on `V` for every `j`,
+
+with each induction step shrinking `V`.  Finitely many steps, so the shrinking terminates.  Every
+analytic ingredient for this is now in place — `dzbarAt_dbarSliceSolution_of_compactSupport`,
+`dzbarAt_dbarSliceSolution_of_ne`, `contDiff_infty_dbarSliceSolution`, `contDiff_dzbarAt`,
+`dzbarAt_add`, `hasCompactSupport_dzbarAt`, and `ContDiffBump` for the cutoffs — what remains is the
+bookkeeping of the shrinking neighbourhoods and the index induction.
+
+### Second correction to D3b(ii-c2): the cutoff must be in the `k`-th variable alone
+
+The shrinking-domain reading recorded above is *not* how Hörmander's induction actually works, and
+the difference matters for the Lean hypotheses.  The problem with a bump `χ(z)` in all variables is
+that `∂̄_j(χ f_k) = χ ∂̄_j f_k + (∂̄_j χ) f_k`, and `T_k` integrates over the whole `k`-th line, so
+it sees the region where `∂̄_j χ ≠ 0` no matter how small the target neighbourhood is.  The
+`j > k` directions are then not killed and the induction does not descend.
+
+The resolution is that **the cutoff is a function of the `k`-th coordinate only**, `χ(z) = χ₀(z_k)`.
+Then `∂̄_j χ = 0` for every `j ≠ k`, so
+
+* `∂̄_k T_k(χ f_k) = χ f_k = f_k` on the slab where `χ₀ ≡ 1`, and
+* `∂̄_j T_k(χ f_k) = T_k(χ ∂̄_j f_k) = 0` for `j > k`, exactly as required,
+
+and no shrinking of the *other* coordinates is needed at all.
+
+The cost is that `χ f_k` is **not compactly supported** — it is supported in a slab
+`{z | z_k ∈ K}` with `K ⊂ ℂ` compact, unbounded in the other coordinates.  So the transform layer
+has to be restated with
+
+* `∃ S, ∀ z, S < ‖z k‖ → G z = 0` (slab support in the `k`-th coordinate),
+* `∀ z, ‖G z‖ ≤ M₀` and `∀ z, ‖fderiv ℝ G z‖ ≤ M` (global bounds),
+
+in place of `HasCompactSupport G`.  Every existing proof survives this change essentially
+unchanged, and in fact becomes slightly simpler: the far-field estimate already only ever used the
+`k`-th coordinate, since `(y − e_k w)_k = y_k − w`, so `pi_far_norm` becomes a statement about
+`‖y_k − w‖` and no longer needs to control `‖y‖`.  `dzbarAt_dbarSliceSolution` was already stated
+slicewise and needs no change; it is `hasFDerivAt_sliceSolution_along`,
+`hasFDerivAt_piCauchyIntegral`, `integrable_sliceFderivKernel`, `piB_*` and `contDiff_piCauchyB`
+that take the new hypotheses.
+
+That refactor is the next step; after it the induction has no remaining obstruction.
+
+- 2026-08-06 — **D3b(ii-c1d-i) landed**, axiom audit `propext, Classical.choice, Quot.sound`.
+  - `slab_of_compactSupport` — compact support implies slab support in every coordinate, since
+    `‖x k‖ ≤ ‖x‖`.  So the slab hypothesis is *weaker* than the one the current lemmas carry, and
+    restating them on it is a strict generalization that keeps every existing caller working.
+  - `slab_far_norm` — the far-field estimate for the full transform, now depending only on
+    `‖y₀ k‖` rather than `‖y₀‖`, because `(y − e_k w)_k = y_k − w` and no other coordinate moves.
+  - `slab_far_slice` — the same for the `j ≠ k` slice, where the `k`-th coordinate of the
+    integration point is `y_k − w` whatever the `j`-th parameter does.
+
+  These are the two estimates every remaining hypothesis of the transform layer rests on; with them
+  in slab form, restating `hasFDerivAt_sliceSolution_along`, `integrable_sliceFderivKernel`,
+  `hasFDerivAt_piCauchyIntegral`, the `piB_*` family and `contDiff_piCauchyB` is mechanical
+  substitution of `‖·‖` by `‖· k‖` in the vanishing hypothesis and of `‖y₀‖` by `‖y₀ k‖` in the
+  ball radius.
+
+- 2026-08-06 — **D4a landed, by generalizing existing corpus work rather than rebuilding it.**
+  `HTGeometry/CechFineAcyclicModule.lean`, axiom audit `propext, Classical.choice, Quot.sound`.
+  `RHTower/DeningerCechHomotopy` already had the partition-of-unity contracting homotopy for
+  *real-valued* Čech cochains; its proof uses only scalar multiplication and finite sums, so it is
+  carried out here for cochains valued in an arbitrary real module — the generality the sheaves of
+  smooth `(0,q)`-forms need.
+  - `CechCochain`, `cechExtendZero`, `cechExtendZero_apply` — module-valued cochains and extension
+    by zero, via `Set.indicator` so no decidability hypothesis is needed.
+  - `cechD`, `cechK` — the differential and the averaging homotopy.
+  - `cechD_cons`, `cechFace_zero`, `cechFace_succ` — the simplicial identities.
+  - `cech_homotopy` — **`δK + Kδ = id` in every degree**.
+  - `cech_exact` — **every cocycle is a coboundary**: a fine coefficient has no higher Čech
+    cohomology.
+
+- 2026-08-06 — **D3b(ii-c1d closed: the transform layer now runs on slab hypotheses**, which is what
+  the Dolbeault induction actually supplies.  Done by *refactoring* the existing proofs rather than
+  duplicating them: the compact-support hypothesis was only ever used to extract `S, M, M₀` and the
+  far-field vanishing, and the far-field argument already went through the `k`-th coordinate alone.
+  Axiom audit `propext, Classical.choice, Quot.sound`.
+  - `hasCompactSupport_slice_of_slab` — slab support gives compactly supported slices in the `k`-th
+    coordinate, uniformly in the others.
+  - `dzbarAt_dbarSliceSolution_of_slab` — **`∂̄_k T_k(G) = G`** for a slab-supported source.
+  - `hasFDerivAt_sliceSolution_along_slab`, `integrable_sliceFderivKernel_slab` — the `j ≠ k`
+    derivative and its kernel integrability, on slab hypotheses `∀ x, S < ‖x k‖ → G x = 0` (and the
+    same for `fderiv`) plus global bounds.
+  - `dzbarAt_dbarSliceSolution_of_ne` — **`∂̄_j T_k(G) = T_k(∂̄_j G)` for `j ≠ k`**, now on slab
+    hypotheses.
+
+  With the cutoff `χ(z) = χ₀(z_k)` a function of the `k`-th coordinate alone, `χ · f_k` satisfies
+  exactly these hypotheses, and `∂̄_j χ = 0` for `j ≠ k` makes `∂̄_j(χ f_k) = χ ∂̄_j f_k`, so the
+  `j > k` directions are killed.  The induction has no analytic obstruction left; what remains is
+  its index bookkeeping.
+
+- 2026-08-06 — **The cutoff lemma, and the final form of the induction's domain hypothesis.**
+  Landed (audit `propext, Classical.choice, Quot.sound`):
+  - `dzbar_const_smul` — `∂̄` is homogeneous under a constant real scalar, including the
+    non-differentiable case, where both sides are zero.
+  - `dzbarAt_slabCutoff_smul` — **a cutoff in the `k`-th coordinate alone commutes with `∂̄_j` for
+    `j ≠ k`**: `∂̄_j(χ(z_k)·f) = χ(z_k)·∂̄_j f`.  This is exactly why the induction cuts off in one
+    variable, and it is now a theorem rather than a remark.
+
+  **Third and final correction to the domain hypothesis.**  Neither "shrink the neighbourhood" nor
+  "cut off in all variables" is right; both were recorded above and both fail, for the same reason:
+  `T_k` is *nonlocal along the `k`-th coordinate line*, so to conclude `∂̄_j T_k(f_k) = 0` one needs
+  `∂̄_j f_k = 0` on the whole `k`-line through the target point, not merely near it.  Hörmander's
+  hypothesis supplies exactly that, and it is a hypothesis about the *shape of the domain*: on a
+  **polydisc** `D = ∏ ball(c_i, r_i)`, moving the `k`-th coordinate keeps the point in `D`, and
+  `∂̄`-closedness together with `f` not involving `dz̄_{k+1},…,dz̄_n` makes the coefficients of the
+  `dz̄_k` part *holomorphic in `z_{k+1},…,z_n` on all of `D`*.  Then with `χ = χ(z_k)` supported in
+  `ball(c_k, r_k)`:
+
+  * `∂̄_k T_k(χ f_k) = χ f_k = f_k` where `χ ≡ 1`, and
+  * `∂̄_j T_k(χ f_k) = T_k(χ ∂̄_j f_k) = 0` for `j > k`, because the integrand samples `f_k` only at
+    points of `D` — the other coordinates never move — where `∂̄_j f_k` vanishes identically.
+
+  So the Lean statement of the induction must be relative to a polydisc and use `ContDiffOn`, with
+  the transform integrating over the `k`-disc.  Every analytic ingredient is in place; this is the
+  shape the remaining bookkeeping has to take, and the two earlier readings recorded above are
+  superseded.
+
+- 2026-08-06 — **D3b(ii-c2a) landed: the induction step is now a single theorem.**  Axiom audit
+  `propext, Classical.choice, Quot.sound`.
+  - `dzbarAt_dbarSliceSolution_eq_zero` — **vanishing along the `k`-th coordinate line kills the
+    transported derivative**: `∂̄_j T_k(F) (z) = 0` as soon as `∂̄_j F` vanishes on the whole `k`-line
+    through `z`.  This is the exact mechanism identified in the domain-hypothesis correction: `T_k`
+    is nonlocal only along that line, and the other coordinates never move under the integral.
+  - `dbar_induction_step` — the step, packaged as
+    `∃ U, (∀ z, ∂̄_k U z = F z) ∧ ∀ j ≠ k, ∀ z, (∂̄_j F vanishes on the k-line through z) → ∂̄_j U z = 0`.
+    The first clause removes direction `k`; the second says no direction above `k` is created.
+    On a polydisc, `∂̄`-closedness supplies the hypothesis of the second clause, since moving the
+    `k`-th coordinate keeps the point in the domain.
+
+  What is left of D3 is to iterate this step down the directions and assemble `u`, which is
+  bookkeeping over `Fin n` with no further analytic content.
+
+- 2026-08-06 — **D3b(ii-c2b-i) landed: the polydisc layer.**  Axiom audit
+  `propext, Classical.choice, Quot.sound`.
+  - `polydisc`, `mem_polydisc_iff` — the product of coordinate discs.
+  - `update_mem_polydisc` — **a polydisc is closed under moving one coordinate inside its own
+    disc**.  This is the geometric property the whole induction rests on, and it is why the domain
+    must be a product: the `k`-line through a point of the polydisc, cut down to the `k`-th disc,
+    stays inside.
+  - `dzbarAt_eq_zero_of_eventually_zero` — a function vanishing near a point has vanishing `∂̄_j`
+    there.
+  - `dzbarAt_vanishes_on_line` — **on a polydisc, `∂̄`-closedness plus `f_j ≡ 0` makes `∂̄_j f_k`
+    vanish on the whole `k`-line through any point of the polydisc**.  This is exactly the
+    hypothesis `dzbarAt_dbarSliceSolution_eq_zero` consumes, so the step and the geometry now meet.
+
+  Remaining for D3: multiply by a cutoff `χ(z_k)` supported in the `k`-th disc to make the source
+  slab-supported (`dzbarAt_slabCutoff_smul` already shows `∂̄_j` passes through it for `j ≠ k`), then
+  iterate the step down the directions.
+
+- 2026-08-06 — **D3b(ii-c2b-ii) landed: the induction step now takes polydisc data directly.**
+  Axiom audit `propext, Classical.choice, Quot.sound`.
+  - `isOpen_polydisc` — a polydisc is open.
+  - `cutoff_slab_support` — a cutoff in the `k`-th coordinate makes any source slab supported.
+  - `dzbarAt_cutoff_vanishes_on_line` — **the cut-off source is `∂̄_j`-closed along the whole
+    `k`-line**: off the support of the cutoff the product vanishes, and on it the point stays inside
+    the polydisc, where `∂̄`-closedness applies.  This discharges the hypothesis of
+    `dzbarAt_dbarSliceSolution_eq_zero` from polydisc data, which is the join between the analytic
+    step and the geometry.
+  - `dbar_polydisc_step` — **the step in polydisc form**:
+
+    > given a cutoff `χ` supported in the `k`-th disc and equal to one on the polydisc, there is `U`
+    > with `∂̄_k U = f_k` on the polydisc, and `∂̄_j U = 0` on the polydisc for every `j ≠ k` along
+    > which `f_j` vanishes there.
+
+    The cutoff is invisible where it is one, and it kills exactly the part of each coordinate line
+    that leaves the polydisc.
+
+  All that is left of D3 is to iterate this down the directions `k = n-1, …, 0` and add up the
+  partial solutions — a finite recursion with no further analytic or geometric content.

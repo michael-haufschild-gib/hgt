@@ -1,71 +1,117 @@
 # Card: cusp-spectrum-radius-law — formalization in progress
 
 Card: `docs/drafts/pipeline/2-fully-proven/cusp-spectrum-radius-law.md`
-(carries a "Formalization status" section with the declaration tables).
+(carries a "Formalization status" section + a "Corpus reuse audit" section).
 
-## DONE (unconditional; axioms propext/Classical.choice/Quot.sound; both wired
-into the HTGeometry umbrella)
+## ALREADY IN THE CORPUS — REUSE, DO NOT REBUILD
+- **`HTGeometry/ResidueJumpLowerBound.lean`** (root namespace `HTGeometry`):
+  `residue_jump_bound`, `residue_jump_of_integral_eq_zero`.
+  This IS the card's jump lemma
+  (`sup_{|s-s*_0|=r}|F_α - F_{α'}| ≥ |ρ_0(α)|/r`). Its docstring already names
+  the standard twist as the intended application.
+- See `cusp_card_corpus_reuse_audit_2026_08_06` for the full audit
+  (`Bottcher/NaturalBoundary*`, `RHTower/BVPrimeWindowContinuation`,
+  mathlib `mellin` + `HTGeometry/SmoothWeightPerron`,
+  `SelfDualPrimitiveDirichletDatum`).
 
-### `HTGeometry/ShiftLatticeRadiusLaw.lean` — the Hadamard bridge + spectrum
-`hadamardLimsup`, `nnnorm_ofScalars`,
-`radius_ofScalars_eq_inv_hadamardLimsup` (Cauchy–Hadamard),
-`hadamardLimsup_geometric`, `hadamardLimsup_of_radius` (**the bridge**:
-radius `R` for `∑ A^k c_k ζ^k` ⇒ `limsup ‖c_k‖^{1/k} = 1/(‖A‖R)`),
-`shiftSpectrum`, `shiftSpectrum_pos`, `zero_notMem_shiftSpectrum`,
-`shiftSpectrum_diff_zero`, `base_mem_shiftSpectrum`,
-`infDist_zero_shiftSpectrum` (**Δ(0) = d q^{-1/d}**), `cusp_constant_eq`,
-`hadamardLimsup_cusp`.
+## DONE BY ME (unconditional; axioms propext/Classical.choice/Quot.sound;
+all wired into the HTGeometry umbrella)
+- `HTGeometry/ShiftLatticeRadiusLaw.lean` — Cauchy–Hadamard bridge
+  (`hadamardLimsup`, `radius_ofScalars_eq_inv_hadamardLimsup`,
+  `hadamardLimsup_geometric`, `hadamardLimsup_of_radius`) + spectrum
+  (`shiftSpectrum`, `infDist_zero_shiftSpectrum` = **Δ(0) = d q^{-1/d}**,
+  `cusp_constant_eq`, `hadamardLimsup_cusp`).
+- `HTGeometry/ShiftLatticeThetaSeries.lean` — convergence layer
+  (`summable_rpow_mul_exp_neg_rpow`, `thetaTerm`, `thetaSeries`,
+  `norm_thetaTerm`, `summable_norm_thetaTerm_of_im_pos`,
+  `summable_thetaTerm_of_im_pos`, `summable_thetaTerm_of_re`).
+- `HTGeometry/ShiftLatticeExpansion.lean` — Step 1 interior + UPPER bound
+  (`hasSum_shiftLatticeExpansion`, `hadamardLimsup_shiftLatticeCoeff_le`).
+  Needs `set_option maxHeartbeats 1600000 in` on the expansion theorem.
+- `HTGeometry/PowerSeriesSingularRadius.lean` — LOWER bound mechanism
+  (`shiftSumFun`, `analyticOnNhd_shiftSumFun`,
+  `exists_analytic_extension_of_lt_radius`,
+  `radius_le_of_no_analytic_extension`,
+  `le_hadamardLimsup_of_no_analytic_extension`).
+- `HTGeometry/ResidueJumpNoLimit.lean` — the two missing consequences of the
+  corpus jump lemma: `not_analyticOnNhd_of_circleIntegral_ne_zero` (Cauchy
+  certificate, feeds `radius_le_of_no_analytic_extension`) and
+  `not_tendstoUniformlyOn_of_residue_ne_zero` (qualitative jump).
+- `HTGeometry/ShiftSpectrumSpacing.lean` — the card's **Consequences** section:
+  `shiftSpectrumPoint`, `shiftSpectrumMap`, `shiftSpectrumSlope`,
+  `hasDerivAt_shiftSpectrumMap`, `shiftSpectrumGap`, `shiftSpectrumGap_nonneg`,
+  `exists_shiftSpectrumGap_eq` (MVT form of the card's `≍`),
+  `shiftSpectrumGap_le`, `tendsto_shiftSpectrumGap_nhds_zero`
+  (= **Δ(α_m) → 0 for d > 1**), `tendsto_degreeOneLatticeRoot_atTop`
+  (= degree-one lattice has radius zero above degree one), plus
+  `tendsto_rpow_neg_nhds_zero`.
+  Needs imports `Mathlib.Analysis.Calculus.Deriv.MeanValue`,
+  `Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics`,
+  `Mathlib.Analysis.SpecialFunctions.Pow.Deriv`.
+- `HTGeometry/ShiftLatticeVerification.lean` — the card's **Verifications**
+  table: `shiftSpectrum_degree_one` (degree-one spectrum is the rational
+  lattice), `infDist_zero_shiftSpectrum_zeta` / `_dirichlet` / `_degree_two`,
+  and `cusp_constant_zeta` / `_dirichlet` / `_degree_two` (= 1/(4π)).
 
-### `HTGeometry/ShiftLatticeThetaSeries.lean` — the convergence layer
-`summable_rpow_mul_exp_neg_rpow` (`∑ n^A e^{-c n^e} < ∞`, any A, c>0, e>0),
-`thetaTerm`, `thetaSeries`, `thetaTerm_zero`, `norm_thetaTerm`,
-`const_nonneg_of_bound`, `summable_thetaTerm_of_im_pos` (converges for EVERY
-spectral parameter above the real axis), `summable_thetaTerm_of_re` (the
-standard twist on its abscissa half-plane).
+## FURTHER CORPUS REUSE FOUND (do not rebuild)
+`HTGeometry/BohrFejerConcentration.lean` already carries the bounded
+exponential-sum machinery: `expChar`, `fejerSum`, `fejerSum_eq_geom`,
+`norm_expChar`, `norm_expChar_sub_one_sq`, and — INSIDE the proof of
+`fejerKernel_norm_le` — the bound `‖fejerSum β N u‖ ≤ 2/‖expChar β u - 1‖`.
+That inline bound is exactly "exponential sums off the lattice are bounded",
+the input that makes the degree-one standard twist entire off its spectrum.
+DONE: extracted as `norm_fejerSum_le` in
+`HTGeometry/LatticeExpSumDichotomy.lean`, together with `latticeChar`,
+`latticeChar_eq`, `latticeChar_ne_one`, `norm_latticeExpSum_le` (bounded off the
+lattice, uniformly in N) and `latticeExpSum_at_integer` (= N+1 on the lattice).
+That is the degree-one dichotomy behind verification rows 1 and 2.
+- `HTGeometry/LatticeTwistConvergence.lean` — the ANALYTIC degree-one dichotomy:
+  `twistWeight`, `antitone_twistWeight`, `tendsto_twistWeight`,
+  `cauchySeq_latticeTwist` + `exists_tendsto_latticeTwist` (off the lattice the
+  twisted series converges for EVERY σ > 0, via mathlib's Dirichlet test
+  `Antitone.cauchySeq_series_mul_of_tendsto_zero_of_bounded`),
+  `latticeTwist_at_integer` (on the lattice it is the real p-series),
+  `not_summable_twistWeight` (which diverges for σ ≤ 1).
+  So in DEGREE ONE the card's Step-2 input is available without K–P.
+  NOTE: needs `import Mathlib.Analysis.PSeries` for
+  `Real.summable_one_div_nat_rpow`.
+  Corpus precedent for the Dirichlet test:
+  `HTGeometry/OddDirichletKernel.cauchySeq_sum_oddHarmonicSine`.
+  Corpus Abel-summation layer (if needed later):
+  `HTGeometry/ShiftPartialSummation.lean`, `HTGeometry/DiscreteAbelIcc.lean`,
+  `HTGeometry/TopSumMajorization.lean`, `RHTower/ZetaPartialSumStrip.lean`,
+  `RHTower/CesaroHull.lean`, `RHTower/OddHarmonicAbel.lean`.</repl>
+</repl>
+</repl>
+</repl>
+</invoke>
 
-## NEXT STEP (well-scoped, no new theory needed)
-The INTERIOR shift-lattice expansion needs no Mellin–Barnes. For `z₀ ∈ ℍ` and
-`|ζ| < Im z₀`, the double family
-`((2πiζ)^k/k!) · a(n) n^{-(s-k/d)} e(z₀ n^{1/d})` on `ℕ × ℕ` is absolutely
-summable: summing over `k` first turns `e^{-2π(Im z₀)n^{1/d}}` into
-`e^{-2π(Im z₀-|ζ|)n^{1/d}}`, still covered by
-`summable_rpow_mul_exp_neg_rpow`. Fubini (`HasSum.prod_fiberwise` /
-`Summable.tsum_prod`) then yields
-`HasSum (fun k => ((2πiζ)^k/k!) * thetaSeries a d (s-k/d) z₀)
-   (thetaSeries a d s (z₀+ζ))`,
-and with `FormalMultilinearSeries.le_radius_of_summable_nnnorm` +
-`radius_ofScalars_eq_inv_hadamardLimsup` gives the UPPER bound
-`limsup_k |Θ(s-k/d,z₀)/k!|^{1/k} ≤ 1/(2π Im z₀)`.
-Per-`n` identity needed: `n^{-(s-k/d)} = n^{-s}·(n^{1/d})^k` and
-`∑_k (2πiζ n^{1/d})^k/k! = e(ζ n^{1/d})` (mathlib `Complex.exp_eq_tsum_div` /
-`NormedSpace.exp`).
 
-## STILL MISSING (large, from scratch)
-- The BOUNDARY case `z₀ = -α₀ ∈ ℝ`: Mellin–Barnes + Kaczorowski–Perelli
-  continuation of `F_α` off `Spec(F)`, and `ρ_0(α) ≠ 0` on the spectrum
-  (jump lemma) — this is what upgrades the upper bound to the exact radius.
-- The Selberg class `S^♯` as a Lean structure (Dirichlet series, continuation,
-  functional equation, Ramanujan bound). The corpus has NO such layer: the
-  `RHTower/Selberg*.lean` modules are the Selberg SIEVE.
-- Step 3 (independent cusp constant): functional equation + uniform Stirling.
+## STATE OF THE PROOF
+Hadamard mechanism complete in BOTH directions; jump lemma + its consequences
+complete. What remains is genuinely K–P/Selberg-class construction:
+1. Selberg class `S^♯` as a Lean structure (model on
+   `RHTower/SelfDualDirichletRealZeros.lean`'s `SelfDualPrimitiveDirichletDatum`).
+2. The standard twist `F_α` with its meromorphic continuation off `Spec(F)`
+   (model on `RHTower/BVPrimeWindowContinuation.lean`'s `continuedSource` +
+   `LSeries_…_eq_continuation` idiom).
+3. `ρ_0(α) ≠ 0` on `Spec(F)` — the K–P residue nonvanishing. Once available,
+   `residue_jump_of_integral_eq_zero` +
+   `not_analyticOnNhd_of_circleIntegral_ne_zero` +
+   `le_hadamardLimsup_of_no_analytic_extension` close the lower bound.
+4. Step 1 at the boundary `z₀ = -α₀ ∈ ℝ`: Mellin–Barnes (mathlib `mellin`,
+   contour technique as in `HTGeometry/SmoothWeightPerron.lean`).
+5. Step 3: functional equation + uniform Stirling.
 
-## mathlib assets found
-- `FormalMultilinearSeries.ofScalars`, `ofScalars_norm`, `radius_eq_liminf`
-  (in `Mathlib.Analysis.Analytic.RadiusLiminf`, NOT `.OfScalars`),
-  `le_radius_of_summable_nnnorm`, `le_radius_of_bound`.
-- `ENNReal.inv_limsup`, `ENNReal.limsup_const_mul_of_ne_top` (any filter;
-  `ENNReal.limsup_const_mul` needs `CountableInterFilter`, which ℕ's `atTop`
-  is NOT), `ENNReal.ofReal_inv_of_pos`, `ENNReal.eq_div_iff`.
-- `tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero` and `tendsto_rpow_atTop`
-  (ROOT namespace); `isLittleO_exp_neg_mul_rpow_atTop`.
-- `summable_of_isBigO_nat`, `Asymptotics.IsBigO.of_bound`,
-  `Filter.Tendsto.eventually_lt_const`.
-- `Complex.norm_natCast_cpow_of_pos`, `Complex.norm_exp`,
-  `Real.summable_nat_rpow_inv`.
-- `Metric.infDist_le_dist_of_mem` needs `(x := …)` explicitly.
-- `Mathlib.Analysis.SpecialFunctions.Pow.NNRpow` does not exist; use `.NNReal`.
+## TRAPS
+- `TendstoUniformlyOn` is stated with the uniformity filter; use
+  `Metric.tendstoUniformlyOn_iff` for the ε form.
+- `AnalyticAt.comp` mis-unifies `f`; pass `(g := …) (f := …) (x := …)`.
+- `le_of_forall_lt` is strict; use `by_contra` + `rw [not_le]` + `exists_between`.
+- `ofReal_norm` (ROOT ns); `ofReal_norm_eq_enorm` is deprecated.
+- `Metric.eball`/`Metric.mem_eball` (`EMetric.ball` deprecated).
+- `ENNReal.ofReal_inv_of_pos` states `ofReal x⁻¹ = (ofReal x)⁻¹` — use `←`.
 
 ## NOTE
-`HTGeometry/DbarSeveral.lean` currently fails the umbrella build with a
-`whnf` heartbeat timeout. It is NOT mine — a concurrent session is editing it
-(modified 15:57, working-tree dirty). My modules build clean in isolation.
+`+GaloisForLFunctions.HTGeometry` intermittently fails on `DbarSeveral.lean` /
+`CriticalTailFibreCount.lean`, both dirty from a CONCURRENT session. Not mine.

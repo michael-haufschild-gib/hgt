@@ -1149,3 +1149,529 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   With this the linear-algebra side of the elimination is complete: source, target, injectivity,
   and the range criterion.  The one remaining input is unchanged — the degree of the rank-drop
   locus of a generic `(m+n) x (n+1)` matrix of linear forms, `C(m+n, n)`.
+
+- 2026-08-06 — **The fibre condition is now the degeneracy of an augmented system.**  Same module,
+  axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `mem_range_iff_exists_nontrivial` — for an injective linear map, a vector lies in the range
+  exactly when the system augmented by that vector has a nontrivial relation;
+  `exists_snd_iff_augmented_degenerate` — the polynomial form: `A` extends to a fibre point exactly
+  when `(U + A) B = c (1 - A V)` modulo `X ^ L` has a solution with `deg B < n` and `(B, c) ≠ 0`.
+  The scalar cannot vanish, since that would force `B = 0` by the injectivity of the previous
+  entry.
+
+  This is the last reduction before the count itself.  The fibre is now the locus, in the
+  `m`-dimensional space of first components, where an `L x (n+1)` matrix whose entries are affine
+  in `A` has a nontrivial kernel — a determinantal condition in the literal sense, with the target
+  appearing as one further column.
+
+  Two notes on the route.  Writing the scalar as `C c` rather than `c • ·` makes `ring` blow past
+  the heartbeat limit on the expansion step; the scalar-action form goes through by rewriting.  And
+  the degree bound must avoid `add_le_add_right` in `WithBot ℕ`, whose covariance instances are
+  expensive here — `Polynomial.degree_smul_le` gives it directly.
+
+- 2026-08-06 — **The general framework is tied back to the counted case.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `criticalFibre_eq_factorizations` — for tails of the critical degrees the fibre defined by the
+  *truncated* equation is exactly the set of exact factorizations `(A + U)(B + V) = 1 + U V`.  The
+  low product cannot reach the horizon, so nothing is lost by truncating.
+
+  This closes the loop: the general fibre of the framework built in the entries above specialises,
+  at the critical degrees, to the object whose cardinality is already computed to be
+  `criticalHorizonMultiplicity m n`.  The truncated and exact pictures are the same set, not merely
+  the same count.
+
+  Note the hypothesis `0 < m + n` is necessary and not cosmetic: at `m = n = 0` the horizon power
+  is `X ^ 0 = 1`, which divides everything, so the truncated condition is vacuous while the exact
+  one is `0 = 1`.
+
+- 2026-08-06 — **The count is proved outright at depth zero, for arbitrary tails.**  Same module,
+  axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `exists_truncated_inverse` — a polynomial invertible at the origin has a truncated inverse of
+  degree below the horizon, from the coprimality of `X ^ n` with it and reduction of the Bezout
+  cofactor;
+  `existsUnique_fibre_depth_zero` — hence at `m = 0` the fibre is a **single point** for every
+  observation whose tail is invertible at the origin: the first component must vanish and the
+  second is that truncated inverse, unique by the elimination.
+
+  This is the first case of the card's count proved with **no restriction on the tails at all** —
+  not monomial, not of critical degree, not truncated.  It is `criticalHorizonMultiplicity 0 n = 1`,
+  the degenerate edge of the binomial profile, and it confirms the framework computes the right
+  number where the answer is independently known.
+
+  The remaining input is unchanged and now has a sharper shape: what is missing is the count for
+  `m ≥ 1`, i.e. the degree of the rank-drop locus of the `(m+n) x (n+1)` matrix.  At `m = 0` that
+  locus is a point and the degree is one, which is what this entry proves directly.
+
+- 2026-08-06 — **The observation symmetry, and the second degenerate edge.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `criticalLowProduct_comm` — the low product is symmetric under exchanging the two channels,
+  `criticalLowProduct U V A B = criticalLowProduct V U B A`;
+  `mem_criticalFibre_swap` — hence a point of one fibre is exactly the swap of a point of the
+  other, which is the fibre-level form of the symmetry `C(L, m) = C(L, n)` the multiplicity already
+  has;
+  `existsUnique_fibre_codepth_zero` — so the count at `n = 0` is also a single point, for every
+  observation whose other tail is invertible at the origin.
+
+  Both degenerate edges of the binomial profile are now theorems for arbitrary tails, and they are
+  the same theorem seen from the two sides.  The symmetry also halves the remaining work: any count
+  proved for `m ≤ n` transfers to `m ≥ n` without a second argument.
+
+- 2026-08-06 — **The two dimensions of the elimination are computed.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `finrank_quotient_X_pow` — the residues below the horizon form an `F`-space of dimension `L`,
+  through `AdjoinRoot.powerBasis` for `X ^ L` (the quotient by a monic polynomial is defeq to the
+  adjoined root);
+  `finrank_degreeLT` — the second components form a space of dimension `n`, through
+  `Polynomial.degreeLTEquiv`.
+
+  So the elimination map goes from an `n`-dimensional space to an `L`-dimensional one, injectively.
+  That is the numerical content behind the expected codimension: the augmented map adds one
+  dimension to the source, and it can drop rank only in codimension `L - n = m`, matching the
+  dimension of the space of first components.  With `finrank_quotient_X_pow` holding for every `L`
+  including zero, no positivity side conditions are needed.
+
+  These are the coordinates the determinantal count will be written in: `AdjoinRoot.powerBasis`
+  supplies a basis of the target and `Polynomial.degreeLTEquiv` one of the source, so the
+  elimination becomes an explicit `L x n` matrix and its augmentation an `L x (n+1)` one.
+
+- 2026-08-06 — **The fibre condition is now a kernel condition on one explicit linear map.**  Same
+  module, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `elimMap` — the elimination map on the second components, `degreeLT F n →ₗ[F] F[X] ⧸ (X ^ L)`;
+  `injective_elimMap` — it is injective when the first component is invertible at the origin;
+  `augmentedMap` — the same map together with a scalar on the target,
+  `(degreeLT F n) × F →ₗ[F] F[X] ⧸ (X ^ L)`, with `augmentedMap_apply`;
+  `exists_snd_iff_ker_augmentedMap` — a first component extends to a fibre point **exactly when the
+  augmented map has nontrivial kernel**.
+
+  This is the determinantal condition in its final form before coordinates.  The source has
+  dimension `n + 1` and the target dimension `L`, both computed in the previous entry; the map's
+  matrix entries are affine in the coefficients of the first component; and the fibre is in
+  bijection with the locus where that matrix drops rank.
+
+  Everything on the polynomial side of the card's open link is now discharged.  What is left is
+  purely a statement about a family of matrices of linear forms: the degree of its rank-drop locus,
+  `C(m+n, n)`.
+
+- 2026-08-06 — **The fibre condition is a rank deficiency.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `finiteDimensional_degreeLT` — the second components are finite dimensional, through
+  `Polynomial.degreeLTEquiv`;
+  `ker_ne_bot_iff_finrank_range_lt` — the augmented map has nontrivial kernel exactly when its
+  range has dimension below `n + 1`, by rank–nullity on a source of dimension `n + 1`;
+  `exists_snd_iff_finrank_range_lt` — hence a first component extends exactly when the augmented
+  map drops rank.
+
+  The card's fibre is now, verbatim, the rank-deficiency locus of a family of linear maps indexed
+  by the first component, of the shape `(n+1)`-dimensional source into an `L`-dimensional target.
+  There is nothing left of the polynomial formulation in the statement.
+
+  The remaining input is the degree of that locus, `C(m+n, n)`: Giambelli–Thom–Porteous, or
+  equivalently multiprojective Bezout for `(1,1)` forms.  Its Chow-ring side is already formalized
+  here as `criticalHorizonMultiplicity_eq_chowCoefficient`; what mathlib lacks is the geometric
+  side.
+
+- 2026-08-06 — **At depth one the elimination is square.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `finiteDimensional_quotient_X_pow` — the truncated ring is finite dimensional, from its power
+  basis;
+  `exists_snd_iff_range_ne_top_depth_one` — at `m = 1` the augmented map has an `(n+1)`-dimensional
+  source **and** an `(n+1)`-dimensional target, so a first component extends exactly when that map
+  fails to be surjective.
+
+  This is the first case where the rank condition collapses to a single determinant: choosing the
+  power basis of the target and the monomial basis of the source turns the condition into the
+  vanishing of one `(n+1) x (n+1)` determinant whose entries are affine in the single unknown
+  coefficient of the first component.  Its degree in that unknown is `n + 1 = C(n+1, 1)`, which is
+  the critical multiplicity at `m = 1` — so the depth-one row of the binomial profile is a
+  one-variable root count rather than an intersection-theoretic one.
+
+  With the two degenerate edges already proved, the profile is now established at `m = 0` and
+  `n = 0` and reduced to a one-variable determinant at `m = 1`.
+
+- 2026-08-06 — **Degeneracy is the vanishing of a determinant.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `ker_ne_bot_iff_det_eq_zero` — for a linear map between spaces of the same finite dimension with
+  chosen bases, the kernel is nontrivial exactly when the determinant of its matrix vanishes.
+
+  Composed with the depth-one entry, this puts the `m = 1` row of the profile in final form: the
+  fibre over an observation is the vanishing locus of one determinant whose entries are affine in
+  the single unknown coefficient — a polynomial equation, so the count is a root count.
+
+  The lemma is stated for arbitrary spaces and bases rather than for the case at hand, since the
+  same step is what will convert the general rank-drop condition into minors once the two bases
+  (`AdjoinRoot.powerBasis` for the target, `Polynomial.degreeLTEquiv` for the source) are wired in.
+
+  Naming note for this toolchain: `Basis` is `Module.Basis`, and
+  `Matrix.exists_mulVec_eq_zero_iff` is the bridge from a nontrivial kernel to a vanishing
+  determinant.
+
+- 2026-08-06 — **The depth-one fibre is the vanishing locus of one explicit determinant.**  Same
+  module, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `truncBasis` — the power basis of the truncated ring, reindexed by the horizon;
+  `elimSourceBasis` — the monomial basis of the second components together with the scalar on the
+  target, indexed by `Fin n ⊕ Fin 1`;
+  `exists_snd_iff_det_eq_zero_depth_one` — in those bases, a first component extends to a fibre
+  point **exactly when an explicit `(n+1) x (n+1)` determinant vanishes**.
+
+  The `m = 1` row of the binomial profile is therefore a one-variable root count: the matrix entries
+  are affine in the single unknown coefficient of the first component, so the determinant is a
+  polynomial in it, and the fibre is its root set.
+
+  Two elaboration notes, both of which cost a round.  `finSumFinEquiv` cannot have its implicit
+  arguments inferred from the reindexed type, since that would require inverting `?a + ?b = n + 1`;
+  they must be supplied.  And `ker_ne_bot_iff_det_eq_zero` must be given its two bases explicitly
+  in the rewrite, or the `DecidableEq` on the index type is stuck on a metavariable.
+
+- 2026-08-06 — **The degree bound for a determinant of polynomials, and a duplication note.**
+  Same module, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `natDegree_det_le` — for a matrix of polynomials with all entries of degree at most `d`, the
+  determinant has degree at most `card ι * d`, by the permutation expansion.
+
+  **This generalises a lemma the corpus already had**: `polynomial_det_natDegree_le` in
+  `RHTower/GammaShiftZetaJetFlag.lean` is the same statement and the same proof for the special
+  case of `Fin q` indices over `ℂ`.  It was written here before that was found.  The general
+  version is what this card needs — the index type of the elimination is `Fin n ⊕ Fin 1`, not a
+  `Fin q`, and the field is arbitrary — so the existing lemma could not have been used directly;
+  but the RHTower special case can now be re-derived from this one if that area is ever touched.
+
+  For the next step the corpus has the right tool and it should be used rather than rebuilt:
+  `coeff_det_of_column_natDegree_le` in `ColumnDegreeDeterminant.lean` computes the **leading
+  coefficient** of a determinant under per-column degree bounds, as the determinant of the matrix
+  of leading coefficients.  That is exactly what shows the depth-one determinant has degree
+  *exactly* `n + 1` rather than at most, which is what turns the upper bound into the count.
+
+- 2026-08-06 — **Retraction: the entries above from `criticalFibre` onwards duplicated existing
+  work, and the module has been removed.**
+
+  `TruncatedCompatibilityFibre.lean` has held the general fibre framework since earlier work on
+  this card, with several of the *same names*:
+
+  ```text
+  criticalLowProduct_comm            criticalFibre            criticalFibreSwap
+  coeff_zero_add_ne_zero_of_dvd      criticalLowProduct_right_unique
+  criticalFibre_fst_injective        eq_zero_of_dvd_of_degree_lt
+  dvd_criticalLowProduct_sub_one_iff
+  ```
+
+  and `OneDeepFibreBound.lean` already proves the depth-one count —
+  `nat_card_criticalFibre_one_le`, "the fibre of a one-deep observation has at most the horizon
+  length many points, for any observed tail whatever" — by an explicit elimination polynomial
+  (`oneDeepEquation`, `degree_oneDeepEquation`, `isRoot_oneDeepEquation`) rather than by the
+  linear-algebra route built above.
+
+  `criticalLowProduct_comm` and `criticalFibre` were declared twice in the same namespace, both
+  reachable from the umbrella: a genuine collision, invisible here only because the area build has
+  been failing on an unrelated in-flight module.  `CriticalTailFibreCount.lean` has been deleted
+  and unwired; `TruncatedCompatibilityFibre` and `OneDeepFibreBound` build clean.
+
+  What was genuinely new in the deleted module, and may be worth re-adding under non-colliding
+  names once checked against the corpus properly: the count for arbitrary tails of the critical
+  degrees with squarefree target; the truncation-invariance of the fibre; the depth-zero
+  `∃!` statement; and the linear-algebra presentation (`mulTruncMap`, `elimMap`, `augmentedMap`,
+  the rank and determinant criteria, the two `finrank` computations).  A salvage copy is kept
+  outside the tree.
+
+  The card's open link is unchanged by any of this and is what it was before: the count for
+  `m, n ≥ 2`, where the corpus has the depth-one row and both degenerate edges but not the general
+  determinantal degree.
+
+- 2026-08-06 — **The critical-degree case no longer needs monomial tails.**
+  `formal/GaloisForLFunctions/HTGeometry/CriticalDegreeTailFibre.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `criticalFibre_mul_eq_of_degree_le` — for **any** tails of exactly the critical degrees, a fibre
+  point satisfies the exact factorization `(A + U)(B + V) = 1 + U V`.  The truncation is vacuous at
+  those degrees, so the compatibility equation closes on the nose;
+  `degree_leadingCoeff_add_tail` — and the completed jet has degree the first depth with the
+  observed leading coefficient.
+
+  These are the two facts `MonomialTailFibreEquiv` uses to build its bijection with the monic
+  divisors of the target, stated without the monomial assumption: that file's proofs use of the
+  tails only their degrees.  What remains to lift `nat_card_criticalFibre_monomialTail` to all
+  critical-degree observations is the bijection itself, with `1 + U V` in place of
+  `1 + c d X^(m+n)`, and the count of its monic divisors, which needs `1 + U V` separable — an open
+  condition on the observation rather than the closed one of being monomial.
+
+  Frontier note, recorded because an earlier entry on this card understated it: with
+  `nat_card_criticalFibre_eq_solutions` the general case is already reduced to counting solutions
+  of the explicit square system `a^(k+1) V_k = (invNumerator u k)(a)` for `n ≤ k < m + n`.  Depth
+  one is settled exactly (`nat_card_criticalFibre_one_eq_multiplicity`).  The count for
+  `m, n ≥ 2` is the only remaining mathematical content.
+
+- 2026-08-06 — **The fibre-to-divisor map for arbitrary critical-degree tails.**  Same module,
+  axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `criticalTailToDivisor` — a fibre point of a critical-degree observation gives a monic divisor of
+  `1 + U V` of degree the first depth, by scaling the completed jet by the inverse of its leading
+  coefficient;
+  `criticalTailToDivisor_injective` — and the divisor determines the fibre point, through the
+  corpus's own `criticalFibre_fst_injective`.
+
+  This is the monomial-tail bijection of `MonomialTailFibreEquiv` with the monomial assumption
+  removed from the half that does not need it.  What is left for the full count at these degrees is
+  surjectivity — that every monic divisor of the right degree arises — and then the divisor count,
+  which is `C(m+n, m)` exactly when `1 + U V` is separable.
+
+- 2026-08-06 — **The target of a critical-degree observation.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `degree_leadingCoeff_target_tail` — for arbitrary tails of exactly the critical degrees,
+  `1 + U V` has degree the horizon `m + n` and leading coefficient the product of the two observed
+  leading coefficients.  The constant `1` cannot reach the top, and the leading coefficient is the
+  product because the two tails have exactly their nominal degrees.
+
+  This is the general form of `degree_leadingCoeff_target` in `MonomialTailFibreEquiv`, which
+  states the same for the monomial target `1 + c d X^(m+n)`; the name is kept distinct.
+
+  It is the last ingredient for surjectivity of `criticalTailToDivisor`: given a monic divisor `M`
+  of degree `m`, the cofactor has degree exactly `n` and leading coefficient the observed one, so
+  scaling `M` by `U.coeff m` and the cofactor by its inverse produces a fibre point whose two
+  components have the required degrees.
+
+- 2026-08-06 — **The fibre of a critical-degree observation is exactly its set of monic divisors.**
+  Same module, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `criticalTailToDivisor_surjective` — every monic divisor of `1 + U V` of degree the first depth
+  arises from a fibre point.  Given such a divisor `M`, its cofactor has degree exactly the second
+  depth and leading coefficient the observed one, so scaling `M` by `U.coeff m` and the cofactor by
+  the inverse gives a pair whose components sit below their depths, and whose exact factorization
+  is the compatibility equation.
+
+  With the injectivity already proved, the fibre-to-divisor map is a bijection for **arbitrary**
+  tails of the critical degrees.  That is `MonomialTailFibreEquiv`'s theorem with the monomial
+  hypothesis removed: what the argument needs of the tails is only that they attain their nominal
+  degrees.
+
+  All that now separates this from the count `criticalHorizonMultiplicity m n` at these degrees is
+  the number of monic divisors of `1 + U V` of degree `m`, which is `C(m+n, m)` exactly when the
+  target is separable — the same divisor count the monomial case uses, applied to a general target.
+
+- 2026-08-06 — **The count holds at the critical degrees for arbitrary tails.**  Same module,
+  axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `nat_card_monic_divisors_of_separable` — the monic divisors of a **not necessarily monic**
+  separable polynomial, of a prescribed degree, are counted by the binomial coefficient of its
+  degree; normalising by the leading coefficient changes neither the divisors nor separability;
+  `nat_card_criticalFibre_criticalTails` — hence
+
+  ```text
+  Nat.card (criticalFibre K m n U V) = criticalHorizonMultiplicity m n
+  ```
+
+  for **every** observation whose two tails have exactly the critical degrees and whose target
+  `1 + U V` is separable.
+
+  This closes the generalisation begun four entries ago: `nat_card_criticalFibre_monomialTail`
+  required the tails to be the monomials `c X^m` and `d X^n`; the count now holds on the open set
+  where the target is squarefree, which contains that two-parameter family.  Separability is the
+  only condition the tail coefficients enter through.
+
+  The card's remaining mathematical content is unchanged and is now the whole of it: for tails
+  **longer** than the critical degrees, `nat_card_criticalFibre_eq_solutions` reduces the count to
+  the solutions of the explicit square system, settled at depth one and open for `m, n ≥ 2`.
+
+- 2026-08-06 — **An observation is seen only through its coefficients below the horizon.**  Same
+  module, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `criticalLowProduct_sub_tails` — changing the tails changes the low product by
+  `A (V - V') + (U - U') B`;
+  `dvd_criticalLowProduct_of_dvd_sub_tails` — so tails agreeing to the horizon impose the *same*
+  compatibility equation;
+  `criticalFibreCongr` — hence the fibre of an observation is equivalent to the fibre of its
+  truncation, by the identity on the underlying pairs.
+
+  This is what makes the general count a finite-dimensional question: a tail of any length imposes
+  the same condition as its truncation below `X ^ (m+n)`, so the space of observations that matters
+  is the space of pairs of truncated tails, not of tails of unbounded degree.  The corpus had no
+  such statement.
+
+  Combined with the previous entry, the position on this card is now: the count is proved for every
+  observation whose truncated tails have exactly the critical degrees and squarefree target, and
+  reduced — by `nat_card_criticalFibre_eq_solutions` — to an explicit square system otherwise,
+  settled at depth one and open for `m, n ≥ 2`.
+
+- 2026-08-06 — **The count for observations of any tail length.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `nat_card_criticalFibre_of_truncation` — an observation is counted by
+  `criticalHorizonMultiplicity m n` as soon as its **truncation** below the horizon has the
+  critical degrees and a separable target, with no bound whatever on the degrees of the observed
+  tails themselves.
+
+  This is the card's open link discharged for the whole class of observations whose truncated tails
+  are critical.  The entry that opened this link recorded the obstruction as "an observation whose
+  tails are not monomials, where `deg (A + U) = deg U` exceeds `m` and the factor degrees no longer
+  split as `(m, n)`" — that is now exactly the class this theorem covers, because the excess of the
+  tail beyond the horizon is invisible to the fibre.
+
+  What genuinely remains is narrower than the card's text suggests: observations whose *truncations*
+  have degrees strictly between the critical degrees and the horizon.  For those the factorization
+  is not exact and `nat_card_criticalFibre_eq_solutions` applies, settled at depth one and open for
+  `m, n ≥ 2`.
+
+- 2026-08-06 — **The separability hypothesis is satisfiable, and the monomial case is an instance.**
+  Same module, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `separable_C_mul` — separability survives a nonzero scalar multiple.  Mathlib has no such lemma;
+  the coprimality witnesses are rescaled by the inverse;
+  `separable_one_add_C_mul_X_pow` — a monomial target `1 + e X ^ L` is separable in characteristic
+  zero, being a scalar multiple of `X ^ L - C a` with `a` nonzero.
+
+  This settles that the count proved above is not vacuous: the monomial observations, whose count
+  `nat_card_criticalFibre_monomialTail` already gives, satisfy its hypothesis.  So the general
+  theorem contains the known one rather than running alongside it, and the open set of separable
+  targets is nonempty.
+
+  `separable_C_mul` is worth noting on its own: it is used twice here (once inside the divisor
+  count, once for the monomial instance) and is a general-purpose gap in mathlib's `Separable` API.
+
+- 2026-08-06 — **Depth one holds for an arbitrary observed reciprocal tail.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `criticalSystemSolutionsCongrOne` — at depth one the observation's square system reduces to the
+  single index `k = n`, so it reads the reciprocal tail only through `V.coeff n` and two tails
+  agreeing there have the same solution set;
+  `nat_card_criticalFibre_one_eq_multiplicity_of_tail` — hence the depth-one count
+  `criticalHorizonMultiplicity 1 n` holds for **every** reciprocal tail with that coefficient
+  nonzero, not only for the monomial `C d * X ^ n` the corpus's theorem assumes.
+
+  The corpus proved depth one for arbitrary *jet* tails but a monomial *reciprocal* tail; this
+  removes the remaining monomial hypothesis there, by transporting along
+  `nat_card_criticalFibre_eq_solutions` in both directions and observing that only one coefficient
+  of the tail ever enters the system.
+
+  Between this and the critical-degree count, the profile is now established: at `m = 0` and
+  `n = 0` outright; at `m = 1` and `n = 1` for arbitrary tails; and at all `(m, n)` for
+  observations whose truncated tails attain the critical degrees with separable target.  What
+  remains is `m, n ≥ 2` with truncations strictly between the critical degrees and the horizon.
+
+- 2026-08-06 — **Correction: the resultant's vanishing criterion is in mathlib.**
+  `Polynomial.resultant_eq_zero_iff` (`RingTheory/Polynomial/Resultant/Basic.lean`) states, over a
+  field, `f.resultant g = 0 ↔ (f ≠ 0 ∨ g ≠ 0) ∧ ¬ IsCoprime f g`, and this corpus already uses it
+  (`separable_of_resultant_ne` in `U0/U0PhiCard.lean`).
+
+  An earlier note here recorded it as missing and proposed building it from the Sylvester matrix.
+  That was wrong: the declaration sits at line 908 of a 900-line file and a truncated listing of
+  that file's declarations cut off before reaching it.
+
+  The practical consequence is favourable: elimination for the remaining case needs no new
+  infrastructure.  What is still genuinely absent is the *multivariate* step — eliminating one
+  unknown at a time from the square system for `m, n ≥ 2` and controlling the degrees, for which
+  the resultant criterion is the tool rather than the obstacle.
+
+- 2026-08-06 — **The fibre's system is natural in the coefficient ring.**
+  `formal/GaloisForLFunctions/HTGeometry/InverseJetNumeratorMap.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `invNumerator_map` — a ring map carries the numerators of a jet to the numerators of the image
+  jet, by induction on the defining recursion;
+  `eval_invNumerator_map` — and the same after evaluation.
+
+  This is what allows the square system of `nat_card_criticalFibre_eq_solutions` to be written
+  **universally**, over a polynomial ring in the unknown jet coefficients, and then specialised at
+  a point: the system over the ground field is the image of the universal one.  Without it the
+  system exists only pointwise and no elimination theory can be applied to it.
+
+  With `Polynomial.resultant_eq_zero_iff` available in mathlib, that is the shape the remaining
+  case needs: the equations as elements of `MvPolynomial (Fin m) K`, eliminated one unknown at a
+  time.
+
+- 2026-08-06 — **The observation's system, as a universal polynomial system.**
+  `formal/GaloisForLFunctions/HTGeometry/UniversalFibreSystem.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `jetVar` — the coefficients of the completed jet as elements of `MvPolynomial (Fin m) K`: a
+  variable shifted by the observed tail below the first depth, a constant above it;
+  `eval_jetVar` — specialising at a candidate jet returns the completed jet's coefficient;
+  `fibreSysPoly` — the `k`-th equation of the square system as a polynomial in the unknown jet
+  coefficients;
+  `eval_fibreSysPoly` — specialising it returns the `k`-th equation of
+  `criticalSystemSolutions`.
+
+  The fibre's defining conditions are now finitely many polynomials in finitely many variables over
+  the ground field, so the count is an ordinary question about their common zeros.  Together with
+  the naturality of the previous entry, and with `Polynomial.resultant_eq_zero_iff` available in
+  mathlib, the elimination for `m, n ≥ 2` has all its ingredients present; what remains is to
+  perform it and control the degrees.
+
+- 2026-08-06 — **The fibre is the common zero locus of the universal system.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `eval_fibreSysPoly_eq_zero_iff` — an equation of the universal system vanishes at a candidate jet
+  exactly when the observation's corresponding equation holds there;
+  `mem_criticalSystemSolutions_iff` — hence membership in `criticalSystemSolutions` is exactly:
+  the jet's constant term does not vanish, and the `m` universal polynomials all vanish.
+
+  Chained with the corpus's `nat_card_criticalFibre_eq_solutions`, the card's `(2)` is now the
+  count of points of an explicit affine variety: the common zeros of `m` polynomials in `m`
+  variables over the ground field, off the hypersurface where the jet's constant term vanishes.
+  Every step from the observed jet down to that variety is machine-checked.
+
+  This is the form in which the remaining case `m, n ≥ 2` should be attacked: eliminate one
+  variable at a time with `Polynomial.resultant_eq_zero_iff`, which mathlib supplies, and control
+  the degrees along the way.
+
+- 2026-08-06 — **The degrees of the universal system.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `totalDegree_jetVar_le` — each coefficient of the completed jet is of total degree at most one in
+  the unknowns;
+  `totalDegree_eval_invNumerator_jetVar_le` — the evaluated numerator of index `k` has total degree
+  at most `k`, by induction on the recursion: each term carries one tail coefficient, a power of the
+  jet's constant term, and a numerator of smaller index, and the exponents add to `k`;
+  `totalDegree_fibreSysPoly_le` — hence the `k`-th equation of the system has total degree at most
+  `k + 1`.
+
+  So the observation's square system consists of `m` equations of total degrees at most
+  `n + 1, …, n + m` in `m` unknowns.  This is the first degree control on it, and it is what any
+  elimination must consume: the naive Bezout product of those degrees far exceeds `C(m+n, m)`, so
+  the count cannot follow from degrees alone — the multihomogeneous structure has to be used.  That
+  is now a statement about an explicit polynomial system rather than about jets.
+
+- 2026-08-06 — **The system in its bilinear form.**
+  `formal/GaloisForLFunctions/HTGeometry/BilinearFibreSystem.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `univA`, `univB` — the unknown jet and unknown reciprocal as universal polynomials whose
+  coefficients are the two groups of variables;
+  `bilinSysPoly` — the `k`-th equation of the observation as the `k`-th coefficient of the low
+  product against one, over `MvPolynomial (Fin m ⊕ Fin n) K`;
+  `univA_coeff`, `degree_univA_lt` — the universal jet has the variables as its coefficients and
+  degree below the first depth.
+
+  The point of this form: before elimination the compatibility equation is **bilinear** — the jet
+  and the reciprocal enter linearly, coupled only through their product — so the `m + n` equations
+  have bidegree one in each group of unknowns and their count is the multihomogeneous Bezout
+  number `C(m+n, m)`.  The square system of the previous module, obtained by eliminating the
+  reciprocal, has degrees `n+1, …, n+m` whose product far exceeds that; the structure carrying the
+  answer is visible only before elimination.
+
+  This is the system the remaining case `m, n ≥ 2` should be counted in.
+
+- 2026-08-06 — **Specialising the bilinear system.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `jetOfPoint`, `recipOfPoint` — the jet and reciprocal determined by a point of affine space;
+  `map_univA`, `map_univB` — the universal unknowns specialise to them;
+  `map_map_C` — the observed tails are unchanged by the round trip through the polynomial ring;
+  `map_criticalLowProduct` — the low product is natural in the coefficient ring;
+  `eval_bilinSysPoly` — hence evaluating the `k`-th universal equation at a point returns the
+  `k`-th coefficient of the observation's low product against one, for the jet and reciprocal that
+  point names.
+
+  The bilinear system is therefore a faithful universal model of the fibre: its common zeros in
+  `A^(m+n)`, cut by the `m + n` equations of bidegree one in each group of unknowns, are exactly
+  the pairs satisfying the truncated compatibility equation.  Both halves of the picture are now
+  machine-checked — the eliminated square system in `m` unknowns of rising degree, and the bilinear
+  system in `m + n` unknowns whose Bezout number is the answer.

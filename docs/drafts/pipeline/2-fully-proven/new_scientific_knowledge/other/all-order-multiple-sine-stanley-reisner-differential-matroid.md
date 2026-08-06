@@ -597,11 +597,90 @@ explicit rational normalization.
 - `addTranslationMeroEquiv_periodCotMero` — the period cotangent is invariant under its own period,
   i.e. `(T_i - 1) L_{i} = 0`.
 
-What remains for the exact equation is bookkeeping over these: the rational correction
-`ρ = 1/X - 1/(X - (ω_1 + ω_2))` cancels every pole of the accumulated rational defect (its two
-shift-difference pole pairs are exactly the two pairs above), the residue is then a polynomial, and
-discrete integration removes that polynomial up to a constant — which the cotangent-model character
-obstruction tolerates.
+`HTGeometry.MultipleSineRationalNormalization`
+
+- `linInv`, `ratShiftBy_linInv`, `ratReflectBy_linInv` — simple poles in the coordinate field and
+  how the translation and the reflection move them.
+- `orderOneCorrection_eq`, `subframeLadderRat_eq` — both rational data in partial fractions: two
+  simple poles at `0, ω_j`, and one simple pole at `-ω_k`.
+- `normalizationRat c = 1/X - 1/(X - c)` and `multipleSine_two_normalized_defect` — **the
+  normalized two-period defect is a polynomial**: the two shift-difference pole pairs of `ρ` are
+  exactly the two pairs of the accumulated defect, so every pole cancels and the antisymmetrized
+  ladder polynomial `P_k - P_k(ω_j - ·)` is what remains.
+
+`HTGeometry.MultipleSineNormalizedSource`
+
+- `addTranslationAnalyticEquiv_comm`, `addTranslationMeroEquiv_comm` — translations commute on the
+  meromorphic field.
+- `normalizedSource_shiftDiff` — `(T_k - 1)(L_S + ρ) = -(π/ω_j) cot(π z/ω_j) + Q_k` with `Q_k` a
+  polynomial.
+
+`HTGeometry.DoubleSineExactDifference` — **the exact double-sine difference equation**.
+
+- `exists_exact_doubleSine_source` — for a two-period frame there is a rational correction `r` such
+  that
+
+  ```text
+  (T_k - 1) (L_S + r) = -(π/ω_j) cot(π z/ω_j),
+  (T_j - 1) (L_S + r) = -(π/ω_k) cot(π z/ω_k) + b,
+  ```
+
+  with `b` a constant.  Discrete integration kills the polynomial in the first direction; in the
+  second the remainder is a polynomial annihilated by the first shift difference — because the
+  translations commute and the cotangent of a period is invariant under that period — hence a
+  constant, which is exactly what the cotangent-model character obstruction tolerates.
+
+`HTGeometry.PeriodCotangentCylinderForm` — **the increment in cylinder coordinates**.
+
+- `periodCotMero_eq_cotMero` — the order-one boundary built from the harmonic equation is the
+  corpus's cotangent germ rescaled by the period.
+- `periodCotMero_eq_cylinderEmbed` — hence, under the cylinder embedding with coordinate
+  `u = exp(2πi z/ω)`, it is the image of the rational cotangent model `(iπ/ω)(X+1)/(X-1)`.
+
+`HTGeometry.DoubleSineImaginaryRaySource` — **the source-side package in the working regime**.
+
+- `exists_doubleSine_source_imaginaryRay` — for periods `i a`, `i b` with `a, b > 0` (which satisfy
+  the Barnes cone hypothesis `0 < Im ω` *and* lie on a common ray, the regime of the incommensurate
+  model) there is a meromorphic source whose two structural defects are exactly the cotangents of
+  the other period, up to one constant.
+- `linearIndependent_cylinderFrequencies_imaginaryRay` — the two cylinder frequencies `2πi/ω_j` are
+  `ℚ`-independent, the separation hypothesis of the two-cylinder embedding.
+
+`HTGeometry.DoubleSineIncrementBaseForm` — **the increments inside the base field**.
+
+- `twoCylinderEmbed_coeffExtend` — the two-cylinder embedding restricted to constant-coefficient
+  rational functions of the outer variable is the second cylinder's embedding.
+- `periodCotMero_eq_twoCylinderEmbed_coeff` — the first direction's increment is the image of the
+  coefficient field `ℂ(u₁)`.
+- `periodCotMero_eq_twoCylinderEmbed_coeffExtend`, `periodCotMero_eq_twoCylinderEmbed_cotModel` —
+  the second direction's increment is the coefficient extension of the one-variable cotangent
+  model, i.e. `cotModel` over `ℂ(u₁)`.
+
+Both increments of the exact difference equation therefore lie in `ℂ(u₁)(u₂)`, which is what the
+criterion requires of the family `bb`.
+
+`HTGeometry.DoubleSineHypertranscendenceAssembly` — **the double-sine source is
+hypertranscendental**.
+
+- `hypertranscendentalOver_twoCylinder_of_exact_defects` — a meromorphic source whose two
+  structural translation defects are the cotangents of the other period, up to a constant, is
+  hypertranscendental over `ℂ(u₁)(u₂)`.  This is the arbitrary-family differential Ostrowski
+  criterion fed with: the two-cylinder embedding as the base algebra, the scalar tower and the
+  differential-algebra structure it carries, the two translation actions (dilation of the outer
+  coordinate, scaling of the coefficient field), the constant common fixed field, and the cylinder
+  jets of the cotangent model.
+- `hypertranscendental_doubleSine_imaginaryRay` — **unconditional**: for `ω₁ = i a`, `ω₂ = i b`
+  with `a, b > 0` and `a/b` irrational, the constructed multiple-sine source of the two-period
+  frame is hypertranscendental over the two-cylinder function field.
+
+This is the analytic hypothesis `(1)` of both double-sine parents, produced for the corpus's own
+Barnes cone source rather than assumed, and expressed in the coordinates the character obstruction
+is proved in; and the hypertranscendence half of the atomic parent is now a Lean theorem.  What the
+atomic *defect-coset* statement still needs beyond this is the orbit form: differential
+independence of a whole external orbit `{T^a F_J}`, not just of one source.  The remaining assembly — the two-cylinder differential base field, the translation
+action on it, and the application of the arbitrary-family Ostrowski criterion — is being built in
+`HTGeometry.TwoCylinderDifferential`, `HTGeometry.TwoCylinderTranslationAction` and
+`HTGeometry.TwoCylinderMeromorphicDifferential`.
 
 What is **not** yet claimed.  The annihilation half of the card is closed: `(2)`, `(4)` and `(6)`
 are Lean theorems.  The *independence* half still needs the double-sine atomic defect-coset

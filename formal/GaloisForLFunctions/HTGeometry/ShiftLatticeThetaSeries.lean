@@ -108,9 +108,9 @@ theorem const_nonneg_of_bound {a : ℕ → ℂ} {C B : ℝ}
 /-- **Absolute convergence on the upper half plane.**  Above the real axis the
 exponential decay beats every polynomial, so the theta series converges for every
 spectral parameter. -/
-theorem summable_thetaTerm_of_im_pos {a : ℕ → ℂ} {C B : ℝ}
+theorem summable_norm_thetaTerm_of_im_pos {a : ℕ → ℂ} {C B : ℝ}
     (ha : ∀ n : ℕ, ‖a n‖ ≤ C * (n : ℝ) ^ B) {d : ℝ} (hd : 0 < d) (w z : ℂ)
-    (hz : 0 < z.im) : Summable fun n : ℕ => thetaTerm a d w z n := by
+    (hz : 0 < z.im) : Summable fun n : ℕ => ‖thetaTerm a d w z n‖ := by
   have hC : 0 ≤ C := const_nonneg_of_bound ha
   have hc : 0 < 2 * Real.pi * z.im := by
     have := Real.pi_pos
@@ -120,7 +120,7 @@ theorem summable_thetaTerm_of_im_pos {a : ℕ → ℂ} {C B : ℝ}
       C * ((n : ℝ) ^ (B - w.re)
         * Real.exp (-(2 * Real.pi * z.im * (n : ℝ) ^ (1 / d)))) :=
     (summable_rpow_mul_exp_neg_rpow hc he).mul_left C
-  refine Summable.of_norm_bounded hsum fun n => ?_
+  refine Summable.of_nonneg_of_le (fun n => norm_nonneg _) (fun n => ?_) hsum
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · rw [thetaTerm_zero, norm_zero]
     have h0 : (0 : ℝ) ≤ ((0 : ℕ) : ℝ) ^ (B - w.re) := Real.rpow_nonneg (by norm_num) _
@@ -143,6 +143,12 @@ theorem summable_thetaTerm_of_im_pos {a : ℕ → ℂ} {C B : ℝ}
             (mul_le_mul_of_nonneg_right (ha n) hpow.le) hexp.le
       _ = C * ((n : ℝ) ^ B * (n : ℝ) ^ (-w.re)
             * Real.exp (-(2 * Real.pi * z.im * (n : ℝ) ^ (1 / d)))) := by ring
+
+/-- **Absolute convergence on the upper half plane**, unnormed form. -/
+theorem summable_thetaTerm_of_im_pos {a : ℕ → ℂ} {C B : ℝ}
+    (ha : ∀ n : ℕ, ‖a n‖ ≤ C * (n : ℝ) ^ B) {d : ℝ} (hd : 0 < d) (w z : ℂ)
+    (hz : 0 < z.im) : Summable fun n : ℕ => thetaTerm a d w z n :=
+  (summable_norm_thetaTerm_of_im_pos ha hd w z hz).of_norm
 
 /-- **Absolute convergence of the standard twist.**  On the closed upper half
 plane the theta series converges absolutely to the right of the abscissa fixed by

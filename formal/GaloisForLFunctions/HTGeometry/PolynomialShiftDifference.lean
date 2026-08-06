@@ -168,6 +168,31 @@ theorem surjective_shiftDiffPoly {a : ℂ} (ha : a ≠ 0) :
     (lt_of_le_of_lt degree_le_natDegree (by exact_mod_cast Nat.lt_succ_self _))
   exact ⟨q, hq⟩
 
+/-! ### The kernel of the shift difference -/
+
+/-- **A polynomial invariant under a nonzero shift is constant.** -/
+theorem eq_C_of_shiftDiff_eq_zero {a : ℂ} (ha : a ≠ 0) {p : Polynomial ℂ}
+    (h : p.comp (X + C a) = p) : p = C (p.eval 0) := by
+  have hiter : ∀ n : ℕ, p.eval ((n : ℂ) * a) = p.eval 0 := by
+    intro n
+    induction n with
+    | zero => simp
+    | succ m ih =>
+        have hev := congrArg (fun q => Polynomial.eval ((m : ℂ) * a) q) h
+        simp only [Polynomial.eval_comp, Polynomial.eval_add, Polynomial.eval_X,
+          Polynomial.eval_C] at hev
+        rw [show ((m + 1 : ℕ) : ℂ) * a = (m : ℂ) * a + a by push_cast; ring, hev, ih]
+  have hroot : {x : ℂ | (p - C (p.eval 0)).IsRoot x}.Infinite := by
+    refine Set.infinite_of_injective_forall_mem (f := fun n : ℕ => (n : ℂ) * a) ?_ ?_
+    · intro m n hmn
+      have hmn' : (m : ℂ) = (n : ℂ) := mul_right_cancel₀ ha hmn
+      exact_mod_cast hmn'
+    · intro n
+      simp only [Set.mem_setOf_eq, Polynomial.IsRoot, Polynomial.eval_sub, Polynomial.eval_C]
+      rw [hiter n, sub_self]
+  have hzero := Polynomial.eq_zero_of_infinite_isRoot _ hroot
+  exact sub_eq_zero.mp hzero
+
 /-- **Discrete integration of a polynomial.**  For a nonzero step there is a polynomial with any
 prescribed shift difference. -/
 theorem exists_shiftDiff_eq {a : ℂ} (ha : a ≠ 0) (p : Polynomial ℂ) :

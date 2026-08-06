@@ -131,26 +131,195 @@ needed.  `summable_thetaTerm_of_re` is the complementary boundary statement, whe
 `Im z = 0` and only the Dirichlet abscissa controls convergence — that is the
 regime in which the standard twist `F_α` is defined before continuation.
 
+The interior shift-lattice expansion is `[LEAN-PROVED]` in
+`HTGeometry/ShiftLatticeExpansion.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the geometric factor `2πi`, with `\|2πi\| = 2π` | `shiftFactor`, `norm_shiftFactor`, `shiftFactor_ne_zero` |
+| `n^{-(s-k/d)} = n^{-s} (n^{1/d})^k` | `natCast_cpow_shift` |
+| the termwise expansion `e((z₀+ζ)n^{1/d}) = e(z₀ n^{1/d}) ∑_k (2πiζ n^{1/d})^k/k!` | `hasSum_thetaTerm_shift` |
+| exact modulus of one member of the double family | `norm_shiftDouble` |
+| absolute summability of the double family for `\|ζ\| < Im z₀` | `summable_shiftDouble` |
+| `F_{α₀}(s-k/d)/k!` as the normalized spectral family | `shiftLatticeCoeff` |
+| **`Θ(s, z₀+ζ) = ∑_k (2πiζ)^k Θ(s-k/d, z₀)/k!`** | `hasSum_shiftLatticeExpansion` |
+| each `k`-fibre of the double family | `hasSum_shiftDouble_fiber` |
+| absolute summability of the weighted family for `r < Im z₀` | `summable_norm_shiftLatticeCoeff_mul_pow` |
+| **`limsup_k ‖Θ(s-k/d,z₀)/k!‖^{1/k} ≤ 1/(2π Im z₀)`** | `hadamardLimsup_shiftLatticeCoeff_le` |
+
+`summable_shiftDouble` is the reason no Mellin--Barnes is needed in the interior:
+summing the exponential series back up replaces the decay rate `Im z₀` by
+`Im z₀ - |ζ|`, still positive, so the whole double family over `ℕ × ℕ` is
+absolutely summable and Fubini applies directly.  The card's Step 1 is therefore
+complete *inside* `H`; only the boundary base point `z₀ = -α₀ ∈ ℝ`, where the
+spectral family is the continued standard twist rather than a convergent series,
+still needs the contour argument.
+
+The other half of the Hadamard argument — that a genuine singularity caps the
+radius — is `[LEAN-PROVED]` in `HTGeometry/PowerSeriesSingularRadius.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the sum function of the expansion, recentred at `z₀` | `shiftSumFun`, `shiftSumFun_eq_tsum` |
+| it is analytic on every ball inside the radius | `analyticOnNhd_shiftSumFun` |
+| a radius above `R` *produces* an analytic continuation past `R` | `exists_analytic_extension_of_lt_radius` |
+| **no continuation ⇒ radius ≤ `R`** | `radius_le_of_no_analytic_extension` |
+| **no continuation ⇒ `limsup ‖c_k‖^{1/k} ≥ 1/R`** | `le_hadamardLimsup_of_no_analytic_extension` |
+
+Together with `hadamardLimsup_shiftLatticeCoeff_le` this is the complete Hadamard
+mechanism of Step 2, phrased so that the only remaining input is the *analytic*
+fact the card cites from Kaczorowski--Perelli: that `Φ_F(s,·)` admits no analytic
+extension past a boundary point of `Spec(F)`.  Feeding that into
+`le_hadamardLimsup_of_no_analytic_extension` gives the lower bound, and the
+convergence bound gives the upper one, so the two combine to the boxed equality.
+
 ### What is not yet formalized
 
 Two inputs remain, both genuinely external to the above:
 
-1. **Step 1, the shift-lattice expansion.**  In the *interior* of `H` this needs
-   no Mellin--Barnes at all: with `z₀ ∈ H` and `|ζ| < Im z₀` the double family
-   `((2πiζ)^k/k!) · a(n) n^{-(s-k/d)} e(z₀ n^{1/d})` is absolutely summable,
-   because summing the `k`-series first replaces `e^{-2π (Im z₀) n^{1/d}}` by
-   `e^{-2π (Im z₀ - |ζ|) n^{1/d}}`, still summable by
-   `summable_rpow_mul_exp_neg_rpow`.  Fubini then gives the expansion directly,
-   and with `hadamardLimsup_of_radius` the upper bound
-   `limsup_k |Θ(s-k/d, z₀)/k!|^{1/k} ≤ 1/(2π Im z₀)`.  Only the *boundary* case
-   `z₀ = -α₀ ∈ ℝ` needs Mellin--Barnes and continuation.
-2. **Step 2, `radius = Δ(α₀)`** — this needs the Kaczorowski--Perelli standard-twist
-   theory: continuation of `F_α` across every `α ∉ Spec(F)`, and `ρ_0(α) ≠ 0` on
-   the spectrum for the jump lemma.  The corpus has no Selberg-class layer at all
-   (the `Selberg*` modules under `RHTower/` are the Selberg *sieve*), so this is a
-   construction from scratch: the class axioms, the standard twist, and K--P's
-   continuation theorem.
+1. **Step 1 at the boundary.**  The interior expansion is done
+   (`hasSum_shiftLatticeExpansion`).  What remains is the base point
+   `z₀ = -α₀ ∈ ℝ`, where the coefficients are the *continued* standard twists
+   `F_{α₀}(s-k/d)` rather than convergent series, so the Mellin--Barnes contour
+   argument and the explicit singular part are genuinely needed.
+   The interior half of the two-sided bound is now proved
+   (`hadamardLimsup_shiftLatticeCoeff_le`): the expansion converges on the whole
+   disk of radius `Im z₀`, so the radius is at least `Im z₀` and the growth is at
+   most `1/(2π Im z₀)`.  What the boundary case adds is the *lower* bound — that
+   the radius is not larger — which is exactly where the jump lemma and
+   `ρ_0(α) ≠ 0` enter.
+2. **Step 2, the analytic input to `radius = Δ(α₀)`.**  The Hadamard *mechanism*
+   is now complete in both directions (`hadamardLimsup_shiftLatticeCoeff_le` and
+   `le_hadamardLimsup_of_no_analytic_extension`).  What is still needed is the
+   single analytic fact those consume: that `Φ_F(s,·)` admits **no** analytic
+   extension past a boundary point of `Spec(F)`.  That is Kaczorowski--Perelli
+   standard-twist theory — continuation of `F_α` across every `α ∉ Spec(F)`, and
+   `ρ_0(α) ≠ 0` on the spectrum for the jump lemma.  The corpus has no
+   Selberg-class layer at all (the `Selberg*` modules under `RHTower/` are the
+   Selberg *sieve*), so this is a construction from scratch: the class axioms,
+   the standard twist, and K--P's continuation theorem.
 
 Step 3 (the independent cusp constant via the functional equation and uniform
 Stirling) is a separate route to the same constant and would also need the class
 axioms plus `Γ`-asymptotics along a leftward horizontal shift.
+
+The degree-one twist's **analytic** dichotomy is `[LEAN-PROVED]` in
+`HTGeometry/LatticeTwistConvergence.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the real weight `n^{-σ}`, antitone and vanishing | `twistWeight`, `antitone_twistWeight`, `tendsto_twistWeight` |
+| **off the lattice `∑ n^{-σ} e(αn)` converges for every `σ > 0`** | `cauchySeq_latticeTwist`, `exists_tendsto_latticeTwist` |
+| on the lattice the same series is the real `p`-series | `latticeTwist_at_integer` |
+| which diverges for `σ ≤ 1` | `not_summable_twistWeight` |
+
+This is Kaczorowski--Perelli's continuation statement in the one case where it is
+elementary: off `Spec(F)` the bounded character sums let Dirichlet's test carry
+the twist from the abscissa `σ > 1` of absolute convergence all the way down to
+`σ > 0`, while on `Spec(F)` no cancellation is available and the series is the
+divergent `p`-series that carries the pole.  So in degree one the card's Step 2
+input is available; the general degree needs the full K--P theory.
+
+The degree-one *mechanism* behind rows 1 and 2 — why the twist is entire off the
+lattice and singular on it — is `[LEAN-PROVED]` in
+`HTGeometry/LatticeExpSumDichotomy.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the Dirichlet-sum bound, extracted from the Fejér layer | `norm_fejerSum_le` |
+| the additive character `e(α)` of the lattice | `latticeChar`, `latticeChar_eq` |
+| `α ∉ ℤ ⇒ e(α) ≠ 1` | `latticeChar_ne_one` |
+| **off the lattice: `‖∑_{k≤N} e(αk)‖ ≤ 2/‖e(α)-1‖`, uniformly in `N`** | `norm_latticeExpSum_le` |
+| **on the lattice: `∑_{k≤N} e(mk) = N+1`** | `latticeExpSum_at_integer` |
+
+This is the exact dichotomy the row-1 and row-2 checks rest on: bounded character
+sums off `Spec(F)` make `F_α` entire there, while on the lattice the sums are the
+full length and carry the pole of the underlying `L`-function.  The geometric
+estimate was already present inside the proof of
+`GaloisForLFunctions.fejerKernel_norm_le`; it is extracted here rather than
+reproved.
+
+The **Verifications** table's predicted radii and growth constants are
+`[LEAN-PROVED]` in `HTGeometry/ShiftLatticeVerification.lean`:
+
+| Card row | Declaration |
+|---|---|
+| in degree one the spectrum is the rational lattice `{m/q : a(m) ≠ 0}` | `shiftSpectrum_degree_one` |
+| `ζ`: `d = 1`, `q = 1`, radius `1` | `infDist_zero_shiftSpectrum_zeta`, `cusp_constant_zeta` |
+| `L(·,χ)` of conductor `q`: radius `1/q` | `infDist_zero_shiftSpectrum_dirichlet`, `cusp_constant_dirichlet` |
+| `L(·,Δ)` and level-one Maass: `d = 2`, `q = 1`, radius `2`, growth `1/(4π)` | `infDist_zero_shiftSpectrum_degree_two`, `cusp_constant_degree_two` |
+
+The degree-two row holds for every archimedean parameter, which is the card's
+observation that the level-one Maass answer `1/(4π)` is independent of the
+spectral parameter `r`.
+
+The arithmetic of the **Consequences** section is `[LEAN-PROVED]` in
+`HTGeometry/ShiftSpectrumSpacing.lean`:
+
+| Card item | Declaration |
+|---|---|
+| `α_m = d(m/q)^{1/d}` and the spectral map | `shiftSpectrumPoint`, `shiftSpectrumMap` |
+| its derivative `q^{-1}(x/q)^{1/d-1}` | `shiftSpectrumSlope`, `hasDerivAt_shiftSpectrumMap` |
+| the consecutive spacing | `shiftSpectrumGap`, `shiftSpectrumGap_nonneg` |
+| **the spacing is a derivative at an interior point** | `exists_shiftSpectrumGap_eq` |
+| `Δ(α_m) ≤ q^{-1}(α_m/d)^{1-d}` | `shiftSpectrumGap_le` |
+| **`Δ(α_m) → 0` for `d > 1`** | `tendsto_shiftSpectrumGap_nhds_zero` |
+| **degree-one lattice: `d^d k^{d-1}\|2πz\| → ∞` for `d ≥ 2`** | `tendsto_degreeOneLatticeRoot_atTop` |
+
+`exists_shiftSpectrumGap_eq` is the mean-value form of the card's `≍`: since
+`x ↦ d(x/q)^{1/d}` is concave for `d ≥ 1`, its slope at an interior point is
+squeezed between the endpoint slopes, and the left endpoint gives exactly
+`q^{-1}(α_m/d)^{1-d}`.  `tendsto_shiftSpectrumGap_nhds_zero` is the card's
+`Δ(α_m) → 0`, the quantitative reason Kaczorowski--Perelli's upper bounds on
+`F(s,α)` must degrade in `α`.  `tendsto_degreeOneLatticeRoot_atTop` is the second
+Consequence: with spacing one the `k`-th root of the coefficient diverges, so
+that expansion has radius zero above degree one.
+
+The **jump lemma** of Step 2 was already in the corpus and is reused, not
+rebuilt: `HTGeometry/ResidueJumpLowerBound.lean` proves
+`HTGeometry.residue_jump_bound` and
+`HTGeometry.residue_jump_of_integral_eq_zero`, which is exactly the card's
+`sup_{|s-s*_0|=r}|F_α(s) - F_{α'}(s)| ≥ |ρ_0(α)|/r`, with `∮ F_{α'} = 0` and
+`∮ F_α = 2πi ρ_0(α)`.  Its two missing consequences are `[LEAN-PROVED]` in
+`HTGeometry/ResidueJumpNoLimit.lean`:
+
+| Card item | Declaration |
+|---|---|
+| a non-vanishing circle integral certifies non-analyticity | `HTGeometry.not_analyticOnNhd_of_circleIntegral_ne_zero` |
+| a non-zero residue is not a uniform limit of residue-free functions | `HTGeometry.not_tendstoUniformlyOn_of_residue_ne_zero` |
+
+The first is the certificate consumed by `radius_le_of_no_analytic_extension`;
+the second is the qualitative form of the jump, which is what makes the twist
+family `α ↦ F_α` discontinuous exactly on `Spec(F)`.
+
+### Corpus reuse audit (before continuing)
+
+Checked the existing Lean corpus for overlap.  Nothing duplicates the modules
+above: the other users of `FormalMultilinearSeries.radius`
+(`HTGeometry/GutzmerIdentity.lean`, and the two
+`*MagnitudeHypertranscendence.lean` files) prove `radius = ⊤` for entire phase
+series or Gutzmer's identity, and `HTGeometry/BarnesSourceRepresentative.lean` is
+the Barnes cone-product logarithmic derivative, not Mellin--Barnes.
+
+Four existing layers should be *reused* rather than rebuilt when the remaining
+inputs are constructed:
+
+- `Bottcher/NaturalBoundary*.lean` (seven modules, including
+  `no_unit_min_of_analytic`) — the corpus's natural-boundary engine, the closest
+  existing analogue of the "no analytic extension past a boundary point" input
+  that `le_hadamardLimsup_of_no_analytic_extension` consumes.
+- `RHTower/BVPrimeWindowContinuation.lean` — a worked template for
+  "Dirichlet series + meromorphic continuation + residue at a zero"
+  (`continuedSource`, `meromorphicOn_continuedSource_rightHalf`,
+  `LSeries_polarCoefficient_eq_continuedSource`).  The same
+  `LSeries_…_eq_continuation` idiom recurs across the `CCM*` modules.  The
+  standard twist `F_α` should follow this shape.
+- mathlib's `mellin`, already used in `HTGeometry/SmoothWeightPerron.lean` for
+  Perron/contour estimates and in `HTGeometry/MellinConjugate.lean`; plus
+  `CompactBVPrimeWindow.mellinTransform` with its exact dilation character.
+- `RHTower/SelfDualDirichletRealZeros.lean`'s `SelfDualPrimitiveDirichletDatum`
+  — the corpus idiom for bundling L-function axioms as structure fields, to be
+  the model for the Selberg class `S^♯`.
+
+Confirmed absent: any Selberg-class structure, standard twist, or
+Kaczorowski--Perelli continuation.
