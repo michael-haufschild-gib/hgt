@@ -3,7 +3,7 @@
 - **ID:** `deninger-ramified-top-conormal-finite-stage-cocone`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/deninger/deninger-ramified-top-conormal-finite-stage-cocone.md`
+  `new_scientific_knowledge/deninger/deninger-ramified-top-conormal-finite-stage-cocone.md`
 - **Lean module:**
   `GaloisForLFunctions.RHTower.DeningerRamifiedTopConormalFiniteStageCocone`
 

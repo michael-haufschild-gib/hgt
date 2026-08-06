@@ -3,7 +3,7 @@
 - **ID:** `deninger-one-sided-framed-mate-curvature-transgression`
 - **Stage:** 3, formalized in Lean 4
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/deninger/deninger-one-sided-framed-mate-curvature-transgression.md`
+  `new_scientific_knowledge/deninger/deninger-one-sided-framed-mate-curvature-transgression.md`
 - **Lean module:**
   `GaloisForLFunctions.RHTower.DeningerOneSidedFramedMateCurvatureTransgression`
 - **RH status:** not proved

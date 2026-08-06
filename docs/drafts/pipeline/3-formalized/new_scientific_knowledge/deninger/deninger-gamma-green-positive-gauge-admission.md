@@ -1,7 +1,7 @@
 # Deninger Gamma--Green positive-gauge admission law
 
 - **ID:** `deninger-gamma-green-positive-gauge-admission`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** ACTUAL SOURCE COMPARISON / CONSERVATIVE HORIZONTAL DETECTOR / NO-GO
 - **Scientific status:** `[PROVED HERE] [NEW SOURCE IDENTIFICATION] [NOT RH]`
 - **Parents:**
@@ -190,3 +190,5 @@ Construct a genuinely horizontal, source-derived arithmetic null-homotopy
 which makes the left side of `(11)` vanish without assuming critical-line
 support.  The positive-gauge law proves that neither the actual Gamma
 reflection boundary by itself nor any positive rescaling of it can do this.
+
+- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.

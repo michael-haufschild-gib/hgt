@@ -1,6 +1,6 @@
 # Deninger cross-prime arithmetic source completion
 
-**Stage:** 2 — dependency-closed paper proof  
+**Stage:** 3 — formalised in Lean 4  
 **Date:** 2026-08-03
 
 ## Problem
@@ -157,3 +157,5 @@ Formalized card:
 docs/drafts/pipeline/3-formalized/
 deninger-cross-prime-arithmetic-source-completion.md
 ```
+
+- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.

@@ -1,7 +1,7 @@
 # Ramified top-conormal cocone on actual rational-Witt stages
 
 - **ID:** `deninger-ramified-top-conormal-finite-stage-cocone`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** BRIDGE INFRASTRUCTURE / EXACT SOURCE-SECTOR CONSTRUCTION
 - **Label:** `DAC_RAMIFIED_TOP_CONORMAL_FINITE_STAGE_COCONE`
 - **Parents:**
@@ -243,3 +243,5 @@ coefficient, or assuming source-inverse/analytic-dagger equality does not discha
 
 - 2026-08-03 — hostile audit separated unit-group rational-Witt stages from ramified local
   algebra; constructed minimal strict top-conormal thickening and actual algebraic-source cocone.
+
+- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.

@@ -1,5 +1,7 @@
 # Deninger tensor-square mate identification of actual Gamma boundary
 
+- **Stage:** 3-formalized
+
 - **ID:** `deninger-gamma-tensor-square-mate-identification`
 - **Route:** L / Deninger finite failure-nerve mate
 - **Status:** fully proved on paper; RH not proved
@@ -153,3 +155,5 @@ Lean should prove unconditionally:
 - strict positivity of calibration constant;
 - zero-set compatibility as a corollary, not as an assumption.
 
+
+- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.

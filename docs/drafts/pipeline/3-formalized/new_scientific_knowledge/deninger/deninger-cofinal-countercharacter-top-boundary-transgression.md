@@ -1,5 +1,7 @@
 # Deninger cofinal countercharacter top-boundary transgression
 
+- **Stage:** 3-formalized
+
 - **ID:** `deninger-cofinal-countercharacter-top-boundary-transgression`
 - **Route:** L — Deninger/Hodge/cohomological realization
 - **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
@@ -228,3 +230,5 @@ strictly stronger:
 
 Because `(12)` and `(15)` are coefficient-faithful, this is now visibly the RH-bearing arithmetic
 annihilation theorem.  Generic relative homology, completion, or cyclic machinery cannot prove it.
+
+- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.

@@ -3,7 +3,7 @@
 - **ID:** `deninger-ramified-top-conormal-ambidexterity`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/deninger/deninger-ramified-top-conormal-ambidexterity.md`
+  `new_scientific_knowledge/deninger/deninger-ramified-top-conormal-ambidexterity.md`
 - **Lean module:**
   `GaloisForLFunctions.RHTower.DeningerRamifiedTopConormalAmbidexterity`
 

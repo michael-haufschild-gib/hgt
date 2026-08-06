@@ -1,7 +1,7 @@
 # Source-pointed observation network law
 
 - **ID:** `resolved-source-augmentation-conservativity-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** UNIVERSAL EXACT-DESCENT / SOURCE-SUPPORT LAW
 - **Status:** `[PAPER PROOF COMPLETE] [LEAN CORE COMPLETE] [NOVELTY UNVERIFIED]`
 - **Stage-1 card:**
@@ -322,3 +322,5 @@ uniform normed sufficient criterion for `(9)` are now formalized in
   its two-stage lower-bound product were formalized; the card's `(0)` is the finite `m`-stage
   statement, obtained "by induction", and that induction was missing.  Formalized it, together with
   the explicit product lower bound `∏ c i` rather than only the existential uniform bound.
+
+- 2026-08-06 — Lean correspondence re-verified on this toolchain: all ten named modules exist (`SourcePointed{ConservativityChain,ObservationNetwork,FiniteRoute}Law`, `Resolved{Defect,SourceAugmentation}Conservativity/ConservationLaw` in `HTGeometry`, and the five Deninger modules in `RHTower`), each is wired into its theorem-area umbrella, none uses `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  The card's numbered content `(0)`--`(11)` is formalized; `(12)` is the card's own declared RH-producing successor target, not part of this theorem.  Card moves to `3-formalized`.

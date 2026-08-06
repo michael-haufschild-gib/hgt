@@ -1,5 +1,7 @@
 # Deninger--Burnol conormal radial top-boundary comparison
 
+- **Stage:** 3-formalized
+
 - **ID:** `deninger-burnol-conormal-radial-top-boundary-comparison`
 - **Route:** L — Deninger/Hodge/cohomological realization
 - **Status:** `[PAPER-PROVED] [CROSS-CORPUS IDENTIFICATION] [NOT RH]`
@@ -202,3 +204,5 @@ reflection-oddness equivalent to RH, static capacity, positivity equivalent to R
 The Green primitive, actual co-Poisson conormal, Deninger top-boundary class, Gamma boundary, and
 Calderón--Witt incidence target are now fixed.  Only arithmetic annihilation remains.
 
+
+- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.

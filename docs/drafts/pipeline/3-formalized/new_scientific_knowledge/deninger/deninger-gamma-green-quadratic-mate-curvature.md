@@ -1,5 +1,7 @@
 # Deninger Gamma--Green quadratic mate curvature
 
+- **Stage:** 3-formalized
+
 - **ID:** `deninger-gamma-green-quadratic-mate-curvature`
 - **Route:** L / Deninger arithmetic cohomology
 - **Status:** fully proved on paper; RH not proved
@@ -182,3 +184,5 @@ New Lean module should prove, unconditionally:
 - the exact normalized factorization `(4)`;
 - nonnegativity, strict off-line positivity, and radical of (E_q);
 - pointwise operator identity `(2)` for arbitrary completed provenance.
+
+- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.

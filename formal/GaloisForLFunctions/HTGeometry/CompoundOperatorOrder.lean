@@ -84,4 +84,56 @@ theorem toEuclideanCLM_le_iff {M N : Matrix κ κ ℂ} (hM : M.IsHermitian) (hN 
     rw [hre]
     linarith [h (WithLp.ofLp x)]
 
+
+/-! ## Scaled comparison -/
+
+omit [DecidableEq κ] in
+theorem coe_smul_clm (r : ℝ) (T : EuclideanSpace ℂ κ →L[ℂ] EuclideanSpace ℂ κ) :
+    ((r : ℂ)) • T = r • T :=
+  Complex.coe_smul r T
+
+omit [Fintype κ] [DecidableEq κ] in
+theorem isHermitian_smul_real (c : ℝ) {M : Matrix κ κ ℂ} (h : M.IsHermitian) :
+    (((c : ℂ)) • M).IsHermitian := by
+  show ((c : ℂ) • M)ᴴ = (c : ℂ) • M
+  rw [Matrix.conjTranspose_smul, h.eq]
+  congr 1
+  simp
+
+omit [DecidableEq κ] in
+theorem matQuadForm_smul (c : ℝ) (M : Matrix κ κ ℂ) (x : κ → ℂ) :
+    (matQuadForm ((c : ℂ) • M) x).re = c * (matQuadForm M x).re := by
+  have h : matQuadForm ((c : ℂ) • M) x = (c : ℂ) * matQuadForm M x := by
+    rw [matQuadForm, matQuadForm, Matrix.smul_mulVec, dotProduct_smul, smul_eq_mul]
+  rw [h, Complex.re_ofReal_mul]
+
+/-- **The scaled comparison of Hermitian forms is the scaled operator order.** -/
+theorem toEuclideanCLM_smul_le_iff {M N : Matrix κ κ ℂ} (hM : M.IsHermitian) (hN : N.IsHermitian)
+    (c : ℝ) :
+    Matrix.toEuclideanCLM (𝕜 := ℂ) M ≤ c • Matrix.toEuclideanCLM (𝕜 := ℂ) N
+      ↔ ∀ x : κ → ℂ, (matQuadForm M x).re ≤ c * (matQuadForm N x).re := by
+  have hsmul : c • Matrix.toEuclideanCLM (𝕜 := ℂ) N
+      = Matrix.toEuclideanCLM (𝕜 := ℂ) ((c : ℂ) • N) := by
+    rw [map_smul, coe_smul_clm]
+  rw [hsmul, toEuclideanCLM_le_iff hM (isHermitian_smul_real c hN)]
+  constructor
+  · intro h x
+    rw [← matQuadForm_smul]
+    exact h x
+  · intro h x
+    rw [matQuadForm_smul]
+    exact h x
+
+
+/-! ## The contraction, specialised to operators on a Euclidean space -/
+
+/-- The homothety contraction of the operator order, in the algebra of operators on a Euclidean
+space. -/
+theorem exp_smul_le_of_exp_le_clm
+    {x y : EuclideanSpace ℂ κ →L[ℂ] EuclideanSpace ℂ κ}
+    (hx : IsSelfAdjoint x) (hy : IsSelfAdjoint y) {c : ℝ} (hc : 0 < c)
+    (h : NormedSpace.exp y ≤ c • NormedSpace.exp x) {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1) :
+    NormedSpace.exp (s • y) ≤ (c ^ s) • NormedSpace.exp (s • x) :=
+  exp_smul_le_of_exp_le hx hy hc h hs0 hs1
+
 end GaloisForLFunctions.HTGeometry

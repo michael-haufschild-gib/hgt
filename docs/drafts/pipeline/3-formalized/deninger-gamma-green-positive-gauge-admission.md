@@ -3,7 +3,7 @@
 - **ID:** `deninger-gamma-green-positive-gauge-admission`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/deninger/deninger-gamma-green-positive-gauge-admission.md`
+  `new_scientific_knowledge/deninger/deninger-gamma-green-positive-gauge-admission.md`
 - **Lean module:**
   `GaloisForLFunctions.RHTower.DeningerCalderonWittAllCrossPrimeGammaAdmissionOperator`
 

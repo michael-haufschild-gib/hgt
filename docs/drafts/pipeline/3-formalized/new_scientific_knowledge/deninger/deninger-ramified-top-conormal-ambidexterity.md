@@ -1,7 +1,7 @@
 # Ramified top-conormal ambidexterity and coherent power-sector classification
 
 - **ID:** `deninger-ramified-top-conormal-ambidexterity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** NEW STRUCTURAL THEOREM / ROUTE-L PRODUCER REFINEMENT
 - **Label:** `DAC_RAMIFIED_TOP_CONORMAL_AMBIDEXTERITY`
 - **Parent:** `source-reporter-ambidexterity-categorical-half-density-law`
@@ -367,3 +367,5 @@ Formalize without analytic computation:
 
 - 2026-08-03 — extracted from updated Hellinger first-coalescence and off-diagonal-source audit;
   proved unique coherent top-conormal correction for ramified Deninger power transfer.
+
+- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.

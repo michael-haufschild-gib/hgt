@@ -1,9 +1,9 @@
 # Replica-action crowding shortcut law
 
 - **ID:** `replica-action-crowding-shortcut-law`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM / finite-window near-resonance law
-- **Status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
+- **Status:** `[FORMALIZED] [BRIDGE] [NOVELTY UNVERIFIED]`
 - **Parent:** `../3-formalized/direct-net-adaptive-static-choi-shortcut-action-law.md`
 - **Date:** 2026-08-06
 
@@ -93,10 +93,10 @@ Equations `(5)`--`(7)` give the target-uniform bound
                                                                   \tag{8}
 \]
 
-with the analogous uniform remainder.  Markov amplification, finite circuit
-union, and arbitrary-selector finite-net reduction then proceed exactly as
-in the parent theorem, with `(8)` replacing the minimum-action-resolution
-bound.
+with the analogous uniform remainder.  Markov amplification and adaptive
+finite circuit union are formalized with `(8)` replacing the
+minimum-action-resolution bound.  No finite-net crowding theorem is claimed
+on this card.
 
 ## Proof
 
@@ -148,6 +148,25 @@ which gives `C_r=B_r`.  Finally, multinomial domination gives
 
 proving `(7)`--`(8)`.
 
+## Formalization
+
+Generic graph, moment, and capture-measure laws:
+
+- `formal/GaloisForLFunctions/HTGeometry/ReplicaActionCrowdingShortcutLaw.lean`
+
+Direct normalized Choi targets, adaptive finite dictionaries, and padded
+circuit words:
+
+- `formal/GaloisForLFunctions/RHTower/DirectAdaptiveStaticChoiCrowdingLaw.lean`
+
+The final operational theorem is
+`gaussian_directAdaptivePaddedCircuitShortcut_crowdingProbability_le`, with
+the centered uniform analogue
+`uniform_directAdaptivePaddedCircuitShortcut_crowdingProbability_le`.
+Both quantify over every finite gate alphabet, circuit depth, positive
+replica order, positive observation scale and resolution, and every
+capture radius in `[0,1]`.
+
 ## Mathematical delta
 
 The parent law charges every nonzero replica action by the single smallest
@@ -158,6 +177,27 @@ crowding of replica energy sums.  A tiny isolated action costs only one
 additional permutation-floor unit.  This replaces a worst-gap invariant by
 an optimizable weighted near-resonance profile without losing target
 uniformity.
+
+## External priority audit
+
+A 2026-08-06 primary-source search found adjacent but non-identical results:
+
+- Legramandi--Talwar, *The moments of the spectral form factor in SYK*
+  (`arXiv:2412.18737`), studies higher spectral-form-factor moments and their
+  model-specific deviations from random-matrix statistics.
+- Oszmaniec--Kotowski--Horodecki--Hunter-Jones, *Saturation and recurrence of
+  quantum complexity in random local quantum dynamics* (`arXiv:2205.09734`),
+  proves complexity saturation and recurrence for random circuits and
+  stochastic Hamiltonian evolution, not one ordinary fixed Hamiltonian.
+- Ippoliti, *Provable random-matrix spectral ramp in a static, geometrically
+  local Hamiltonian* (`arXiv:2606.30635`), proves a spectral ramp for a
+  specially embedded static local family, not an adaptive circuit-shortcut
+  bound or a target-uniform near-action crowding law.
+
+No searched source stated the exact maximum-local-degree replica-action bound
+or its adaptive full-Choi circuit consequence. This is evidence of separation,
+not a complete priority proof; status remains `NOVELTY UNVERIFIED` pending
+full-text citation chaining through additive-energy and higher-SFF literature.
 
 ## Hostile audit
 

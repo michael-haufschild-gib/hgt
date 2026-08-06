@@ -5105,3 +5105,20 @@ receive a new title and an independent significance audit.
   finite-window branch.  It does not close O4: intrinsic replica action
   resolution can collapse with size/order, and no fixed-time quenched
   coefficient-space anti-concentration follows.
+- 2026-08-06 -- Replaced the finite-window branch's global minimum-action
+  bottleneck by a formally proved local crowding invariant. At replica order
+  `r` and resolution `delta`, let `kappa_r(delta)` be the maximum number of
+  distinct replica multiplicity vectors whose energy sum lies within
+  `delta` of one fixed vector. A symmetric weighted Schur estimate proves
+  that all unresolved nonzero actions carry mass at most `kappa_r(delta)`
+  times the exact permutation floor. Consequently every adaptive padded
+  circuit dictionary obeys the Gaussian shortcut bound
+  `|gate|^(s+1) * ((1+kappa_r(delta))*r!*d^(-r)
+  + exp(-(T*delta)^2/2))`, with the uniform-window sinc analogue. The result
+  is Lean-proved in `HTGeometry/ReplicaActionCrowdingShortcutLaw.lean` and
+  `RHTower/DirectAdaptiveStaticChoiCrowdingLaw.lean`; it needs no smallest
+  spectral gap, and an isolated arbitrarily small replica action costs only
+  one floor unit. This is a real strengthening of the adaptive circuit law,
+  not closure of O4. The exact surviving finite-window frontier is now a
+  local-Hamiltonian bound on `kappa_r(delta)` at circuit-union replica order;
+  the fixed-time quenched coefficient-space frontier remains separate.

@@ -1,5 +1,7 @@
 # Deninger centered-flow countercharacter erasure and relative curvature
 
+- **Stage:** 3-formalized
+
 - **ID:** `deninger-centered-flow-countercharacter-relative-curvature-no-go`
 - **Route:** L — Deninger/Hodge/cohomological realization
 - **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
@@ -300,3 +302,5 @@ sewing, and prove an arithmetic source boundary law annihilating the polarized r
 `(12)` without assuming (K_6(\rho)=0), source-countercharacter triviality, static capacity, or
 RH.
 
+
+- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.

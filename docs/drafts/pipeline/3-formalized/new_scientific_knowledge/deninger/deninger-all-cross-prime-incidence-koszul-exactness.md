@@ -1,7 +1,7 @@
 # Deninger all-cross-prime incidence Koszul exactness
 
 **Route:** L — Deninger/Hodge/cohomological realization  
-**Stage:** 2 — dependency-closed paper proof  
+**Stage:** 3 — formalised in Lean 4  
 **Date:** 2026-08-03
 
 ## Frontier correction
@@ -275,3 +275,5 @@ its transverse directions are forced by actual source arithmetic.  The
 claim is algebraic; no unproved Hilbert topology on the Milnor-incidence
 submodule is smuggled into (8).  It strengthens source provenance but does
 not alter the exact residual obstruction \(\mathbb C\eta\).
+
+- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.

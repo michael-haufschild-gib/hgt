@@ -3,7 +3,7 @@
 - **ID:** `deninger-gamma-green-quadratic-mate-curvature`
 - **Status:** formalized in Lean 4; unconditional; Route L remains open
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/deninger/deninger-gamma-green-quadratic-mate-curvature.md`
+  `new_scientific_knowledge/deninger/deninger-gamma-green-quadratic-mate-curvature.md`
 - **Lean module:**
   `GaloisForLFunctions.RHTower.DeningerCalderonWittGammaGreenQuadraticMateCurvature`
 

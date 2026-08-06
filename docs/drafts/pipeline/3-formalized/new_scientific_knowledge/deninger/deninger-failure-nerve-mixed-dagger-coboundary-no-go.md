@@ -2,7 +2,8 @@
 
 - **ID:** `deninger-failure-nerve-mixed-dagger-coboundary-no-go`
 - **Route:** L / finite filtered source mate
-- **Status:** fully proved on paper; RH not proved
+- **Stage:** 3-formalized
+- **Status:** fully proved on paper; formalized unconditionally in Lean; RH not proved
 - **Inputs:** actual normalized failure-nerve transition; unique purified face
   metric; Deninger tensor-square mate curvature
 
@@ -218,3 +219,61 @@ Lean should formalize unconditionally:
 - mixed Leibniz/Bianchi law `(9)`--`(10)`;
 - tautological mixed coboundary `(12)`;
 - reverse-gain difference `(13)` and actual Gamma specialization `(14)`.
+
+## Lean status
+
+All five formalization targets landed unconditionally in
+`formal/GaloisForLFunctions/RHTower/DeningerFailureNerveMixedDaggerCoboundary.lean`.  Axiom audit
+for all 16 declarations: `propext, Classical.choice, Quot.sound`.
+
+**The weighted Hermitian adjunction identity and `(3)`--`(8)`.**
+
+- `deningerMixedSourceReversal`, `deningerMixedAdjoint`, `deningerMixedDefect` — the two reverse
+  laws `S = (λQ)⁻¹` and `A = Q⁻¹ conj λ` and their difference, defined for arbitrary scalars, so no
+  step is fitted to the Xi divisor.
+- `deningerMixedSourceReversal_eq` — `(3)`, source reversal in split coordinates.
+- `deningerMixedAdjoint_metric_eq` — `(4)`: the ratio of the forced weights times the conjugate
+  transition, `‖Q‖⁻² conj(λQ)`, is exactly `Q⁻¹ conj λ`.
+- `deningerMixed_adjunction` — `(5)`: with the pairing `⟨z,w⟩_h = h · conj z · w` and the forced
+  weights `h_{F∪{p}} = h_F ‖Q‖⁻²`, the transition moves across the two pairings into `A`.
+- `deningerMixedModularRatio` — `(6)`: `S A⁻¹ = ‖λ‖⁻²`, the Euler gauge cancelling.
+- `deningerMixedDefect_eq` and `deningerMixedDefect_eq_mul_sub_one` — the two closed forms `(7)`,
+  the second exhibiting `‖λ‖⁻² − 1` as the only factor that can vanish.
+- `deningerMixedDefect_eq_zero_iff_norm_one` — `(8)` abstractly: `Δ = 0` is unimodularity of `λ`;
+  `deningerFailureNerveMixedDefect_eq_zero_iff` specializes it to the actual failure-nerve edge for
+  a prime power at least two and `Re(s) > 0`, giving `Δ = 0 ↔ Re(s) = 1/2` from the existing
+  half-density unitarity theorem `norm_bilateralHalfDensityCharacter_eq_one_iff`.
+
+**The mixed Leibniz/Bianchi law `(9)`--`(10)` and the tautological coboundary `(12)`.**
+
+- `deningerMixedDefect_comp` — `(9)`, `S₁S₂ − A₁A₂ = S₁(S₂−A₂) + (S₁−A₁)A₂`.
+- `deningerMixedDefect_bianchi` — `(10)`, the two expansions around a commuting prime square agree.
+- `DeningerMixedEdgeSystem` and `DeningerMixedEdgeSystem.cobar` — `(11)`, the mixed cobar
+  differential `(δ_{S,A}H)_e = S_e H_{t(e)} − H_{s(e)} A_e` on an arbitrary edge system.
+- `DeningerMixedEdgeSystem.cobar_one` and `.defect_mem_range` — `(12)`: the constant identity
+  cochain has coboundary exactly `Δ`, so the defect is mixed-cobar exact **at every parameter**,
+  including every off-critical one where it is nonzero.  This is the no-go: linear Bianchi
+  closedness and linear null-homotopy of `Δ` hold identically on and off the critical line and
+  therefore cannot prove RH.
+
+**The reverse-gain difference `(13)` and the Gamma specialization `(14)`.**
+
+- `deningerFailureNerveReverseGainDifference_eq` — `(13)`: the difference of the two uniquely
+  purified relative squared gains, `‖λ‖⁻² − ‖λ‖²`, is the tensor-square radial mate curvature
+  `deningerTensorSquareRadialMateCurvature (p^m) s`.
+- `deningerFailureNerveMixedDefect_eq_zero_iff_reverseGainDifference_eq_zero` — both the linear
+  defect and the quadratic reporter cut out the critical line, which is exactly why the identical
+  exactness of the linear one carries no information about the quadratic one.
+- `deningerFailureNerveGammaSecondaryTransgression` — `(14)`: the actual Gamma boundary defect
+  coefficient is `c₂₃` times the tensor-square radial mate curvature at the forced composite degree
+  `6`, with `c₂₃ > 0`.  The two inputs are the already-formalized
+  `deningerCalderonWittBaseGammaBoundaryDefectCoefficient_eq_tensorSquareMateCurvature` and
+  `deningerCalderonWittBaseGammaMateCalibration_pos`.
+
+The successor core `[SECONDARY_CARTIER_NORM_TRANSGRESSION_STOKES]` is not part of this theorem and
+stays open.
+
+## Log
+
+- 2026-08-06 — Formalized all five targets unconditionally and wired the module into
+  `GaloisForLFunctions.RHTower`; card moves to `3-formalized`.

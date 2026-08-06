@@ -1,5 +1,7 @@
 # Ordinary-integer BV Green--Stokes boundary and the physical radial coefficient
 
+- **Stage:** 3-formalized
+
 **Status:** paper-proved exact comparison; source Stokes relation constructed; physical annihilation not proved.
 
 **Route:** L
@@ -173,3 +175,5 @@ positive-integer sequence endomorphism algebra, including the literal degree-one
 primitive, and formalizes (6), (8), (10), and (12) through the existing Burnol/Deninger radial
 comparison. All proofs are unconditional. The completed tensor statement (3) remains paper-level
 because its strict Xi-to-incidence chain map is exactly the open core above.
+
+- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.

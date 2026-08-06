@@ -3,7 +3,7 @@
 - **ID:** `deninger-gamma-tensor-square-mate-identification`
 - **Status:** formalized in Lean 4; unconditional; Route L remains open
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/deninger/deninger-gamma-tensor-square-mate-identification.md`
+  `new_scientific_knowledge/deninger/deninger-gamma-tensor-square-mate-identification.md`
 - **Lean module:**
   `GaloisForLFunctions.RHTower.DeningerCalderonWittGammaTensorSquareMateIdentification`
 

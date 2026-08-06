@@ -1,5 +1,7 @@
 # One-sided framed mate-curvature transgression
 
+- **Stage:** 3-formalized
+
 - **ID:** `deninger-one-sided-framed-mate-curvature-transgression`
 - **Route:** L / Deninger source
 - **Stage:** 2, fully proved on paper
@@ -285,3 +287,5 @@ Lean formalization must prove unconditionally:
 - nonflatness criterion `(11)`;
 - actual Gamma specialization `(13)`.
 
+
+- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.

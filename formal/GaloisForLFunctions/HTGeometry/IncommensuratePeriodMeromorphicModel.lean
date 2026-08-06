@@ -643,6 +643,72 @@ theorem meroFieldDeriv_cylinderEmbed (hl : LinearIndependent ℚ l) (i : Fin 2) 
   · linear_combination h
   · exact absurd h hQ0
 
+
+/-! ## Periods on a common ray -/
+
+/-- A nonzero complex rescaling preserves `ℚ`-linear independence. -/
+theorem linearIndependent_rat_const_mul {ι : Type*} {v : ι → ℂ}
+    (h : LinearIndependent ℚ v) {c : ℂ} (hc : c ≠ 0) :
+    LinearIndependent ℚ (fun i => c * v i) := by
+  rw [linearIndependent_iff'] at h ⊢
+  intro s g hsum i hi
+  refine h s g ?_ i hi
+  have hc' : c * ∑ j ∈ s, g j • v j = 0 := by
+    rw [Finset.mul_sum, ← hsum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    simp only [Rat.smul_def]
+    ring
+  exact (mul_eq_zero.mp hc').resolve_left hc
+
+/-- Periods on a common ray are `ℝ`-dependent. -/
+theorem not_linearIndependent_real_const_mul_pair (c : ℂ) (a b : ℝ) :
+    ¬ LinearIndependent ℝ ![c * (a : ℂ), c * (b : ℂ)] := by
+  intro hind
+  rcases eq_or_ne (c * (a : ℂ)) 0 with h0 | h0
+  · have := (LinearIndependent.pair_iff.mp hind) 1 0 (by simp [h0])
+    exact one_ne_zero this.1
+  · have ha : (a : ℝ) ≠ 0 := by
+      intro hzero
+      exact h0 (by rw [hzero]; simp)
+    have hcomb : b • (c * (a : ℂ)) + (-a) • (c * (b : ℂ)) = 0 := by
+      show (b : ℂ) * (c * (a : ℂ)) + ((-a : ℝ) : ℂ) * (c * (b : ℂ)) = 0
+      push_cast
+      ring
+    have := (LinearIndependent.pair_iff.mp hind) b (-a) hcomb
+    exact ha (neg_eq_zero.mp this.2)
+
+/-- **Two incommensurate periods on a common ray have constant common fixed field.**  This is the
+regime of the double-sine theorem: `ω_j = c a_j` with `a_j` real and `a_1/a_2` irrational.  Taking
+`c = i` puts the periods on the positive imaginary axis, where the Barnes cone construction of the
+corpus is available, while keeping them `ℝ`-collinear, which is what forces the common fixed field
+to be exactly `ℂ`. -/
+theorem exists_constant_of_two_rayPeriods_fixed {c : ℂ} (hc : c ≠ 0) {a b : ℝ}
+    (h : Irrational (a / b)) {z : meroField (Set.univ : Set ℂ)}
+    (h1 : addTranslationMeroEquiv (c * (a : ℂ)) z = z)
+    (h2 : addTranslationMeroEquiv (c * (b : ℂ)) z = z) :
+    ∃ w : ℂ, algebraMap ℂ (meroField (Set.univ : Set ℂ)) w = z := by
+  have hfun : (fun i => c * (![(a : ℂ), (b : ℂ)] i)) = ![c * (a : ℂ), c * (b : ℂ)] := by
+    funext i
+    fin_cases i <;> rfl
+  have hQ : LinearIndependent ℚ ![c * (a : ℂ), c * (b : ℂ)] := by
+    rw [← hfun]
+    exact linearIndependent_rat_const_mul (linearIndependent_rat_ofReal_pair_of_irrational h) hc
+  exact exists_constant_of_two_realDependent_translations_fixed hQ
+    (not_linearIndependent_real_const_mul_pair c a b) h1 h2
+
+/-- Periods on the positive imaginary axis satisfy the Barnes cone hypothesis. -/
+theorem im_I_mul_ofReal_pos {a : ℝ} (ha : 0 < a) : 0 < (Complex.I * (a : ℂ)).im := by
+  simpa using ha
+
+/-- **The imaginary-ray regime.**  Two periods `i a, i b` with `a, b > 0` and `a/b` irrational both
+satisfy the Barnes cone hypothesis `0 < Im ω` and have constant common fixed field. -/
+theorem exists_constant_of_two_imaginaryPeriods_fixed {a b : ℝ}
+    (h : Irrational (a / b)) {z : meroField (Set.univ : Set ℂ)}
+    (h1 : addTranslationMeroEquiv (Complex.I * (a : ℂ)) z = z)
+    (h2 : addTranslationMeroEquiv (Complex.I * (b : ℂ)) z = z) :
+    ∃ w : ℂ, algebraMap ℂ (meroField (Set.univ : Set ℂ)) w = z :=
+  exists_constant_of_two_rayPeriods_fixed Complex.I_ne_zero h h1 h2
+
 end
 
 end GaloisForLFunctions.HTGeometry

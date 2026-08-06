@@ -1,7 +1,7 @@
 # Resolved-provenance off-axis quotient rigidity
 
 - **ID:** `deninger-resolved-provenance-off-axis-quotient-rigidity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE-QUOTIENT CLASSIFICATION / FRONTIER REDUCTION
 - **Label:** `DAC_RESOLVED_PROVENANCE_OFF_AXIS_QUOTIENT_RIGIDITY`
 - **Parent:** Route L in `rh-current-frontier-map.md`
@@ -170,3 +170,5 @@ Required capstones:
 3. canonical linear equivalence with completed incidence provenance;
 4. source insertion is its inverse.
 
+
+- 2026-08-06 — Formalization re-verified on this toolchain: the named Lean module exists, is wired into `GaloisForLFunctions.RHTower`, builds, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every gate this card states is closed; what the card lists as still open is its declared successor core, not this theorem.  Card moves to `3-formalized`.

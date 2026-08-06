@@ -3,7 +3,7 @@
 - **ID:** `deninger-failure-nerve-singular-cartier-metric`
 - **Status:** formalized finite/source-local core in Lean 4; unconditional; Route L remains open
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/deninger/deninger-failure-nerve-singular-cartier-metric.md`
+  `new_scientific_knowledge/deninger/deninger-failure-nerve-singular-cartier-metric.md`
 - **Lean module:**
   `GaloisForLFunctions.RHTower.DeningerFailureNerveSingularCartierMetric`
 

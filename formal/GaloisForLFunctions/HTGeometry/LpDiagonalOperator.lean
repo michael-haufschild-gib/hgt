@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtTrace
+import GaloisForLFunctions.HTGeometry.FredholmDeterminantExamples
 
 /-!
 # Diagonal Hilbert--Schmidt operators on `ℓ²(ι)`
@@ -21,65 +22,62 @@ namespace HilbertSchmidt
 
 variable {ι : Type*} [DecidableEq ι]
 
-/-- The diagonal kernel of a weight family. -/
-def diagKernel (w : ι → ℂ) : ι × ι → ℂ := fun p => if p.1 = p.2 then w p.1 else 0
+@[simp] theorem diagMul_diag (w : ι → ℂ) (i : ι) : diagMul w (i, i) = w i := by
+  simp [diagMul]
 
-@[simp] theorem diagKernel_diag (w : ι → ℂ) (i : ι) : diagKernel w (i, i) = w i := by
-  simp [diagKernel]
-
-theorem diagKernel_of_ne {w : ι → ℂ} {i j : ι} (h : i ≠ j) : diagKernel w (i, j) = 0 := by
-  simp [diagKernel, h]
+theorem diagMul_of_ne {w : ι → ℂ} {i j : ι} (h : i ≠ j) : diagMul w (i, j) = 0 := by
+  simp [diagMul, h]
 
 omit [DecidableEq ι] in
 theorem injective_diag : Function.Injective fun i : ι => (i, i) := by
   intro a b h
   exact congrArg Prod.fst h
 
-theorem support_diagKernel_normSq (w : ι → ℂ) :
-    Function.support (fun p : ι × ι => ‖diagKernel w p‖ ^ 2)
+theorem support_diagMul_normSq (w : ι → ℂ) :
+    Function.support (fun p : ι × ι => ‖diagMul w p‖ ^ 2)
       ⊆ Set.range fun i : ι => (i, i) := by
   rintro ⟨a, b⟩ hp
   by_cases h : a = b
   · exact ⟨a, by rw [h]⟩
   · refine absurd ?_ hp
-    show ‖diagKernel w (a, b)‖ ^ 2 = 0
-    rw [diagKernel_of_ne h, norm_zero]
+    show ‖diagMul w (a, b)‖ ^ 2 = 0
+    rw [diagMul_of_ne h, norm_zero]
     norm_num
 
 /-- Diagonal weight energy: the kernel energy of a diagonal kernel is the weight
 energy. -/
-theorem tsum_diagKernel_normSq (w : ι → ℂ) :
-    ∑' p : ι × ι, ‖diagKernel w p‖ ^ 2 = ∑' i, ‖w i‖ ^ 2 := by
-  rw [← injective_diag.tsum_eq (support_diagKernel_normSq w)]
+theorem tsum_diagMul_normSq (w : ι → ℂ) :
+    ∑' p : ι × ι, ‖diagMul w p‖ ^ 2 = ∑' i, ‖w i‖ ^ 2 := by
+  rw [← injective_diag.tsum_eq (support_diagMul_normSq w)]
   refine tsum_congr fun i => ?_
-  show ‖diagKernel w (i, i)‖ ^ 2 = ‖w i‖ ^ 2
-  rw [diagKernel_diag]
+  show ‖diagMul w (i, i)‖ ^ 2 = ‖w i‖ ^ 2
+  rw [diagMul_diag]
 
 /-- A square-summable weight family gives a Hilbert--Schmidt kernel. -/
-theorem isHS_diagKernel {w : ι → ℂ} (hw : Summable fun i => ‖w i‖ ^ 2) :
-    IsHS (diagKernel w) := by
-  refine (Function.Injective.summable_iff (f := fun p : ι × ι => ‖diagKernel w p‖ ^ 2)
+theorem isHS_diagMul_of_summable {w : ι → ℂ} (hw : Summable fun i => ‖w i‖ ^ 2) :
+    IsHS (diagMul w) := by
+  refine (Function.Injective.summable_iff (f := fun p : ι × ι => ‖diagMul w p‖ ^ 2)
     injective_diag ?_).mp ?_
   · rintro ⟨a, b⟩ hb
     by_cases h : a = b
     · exact absurd ⟨a, by rw [h]⟩ hb
-    · show ‖diagKernel w (a, b)‖ ^ 2 = 0
-      rw [diagKernel_of_ne h, norm_zero]
+    · show ‖diagMul w (a, b)‖ ^ 2 = 0
+      rw [diagMul_of_ne h, norm_zero]
       norm_num
   · refine hw.congr fun i => ?_
-    show ‖w i‖ ^ 2 = ‖diagKernel w (i, i)‖ ^ 2
-    rw [diagKernel_diag]
+    show ‖w i‖ ^ 2 = ‖diagMul w (i, i)‖ ^ 2
+    rw [diagMul_diag]
 
 /-- The diagonal operator of a square-summable weight family. -/
 noncomputable def diagOp (w : ι → ℂ) (hw : Summable fun i => ‖w i‖ ^ 2) :
     lp (fun _ : ι => ℂ) 2 →L[ℂ] lp (fun _ : ι => ℂ) 2 :=
-  toOperator (isHS_diagKernel hw)
+  toOperator (isHS_diagMul_of_summable hw)
 
 theorem diagOp_apply (w : ι → ℂ) (hw : Summable fun i => ‖w i‖ ^ 2)
     (f : lp (fun _ : ι => ℂ) 2) (i : ι) : diagOp w hw f i = w i * f i := by
   rw [diagOp, toOperator_apply,
-    tsum_eq_single i fun j hj => by rw [diagKernel_of_ne (Ne.symm hj), zero_mul],
-    diagKernel_diag]
+    tsum_eq_single i fun j hj => by rw [diagMul_of_ne (Ne.symm hj), zero_mul],
+    diagMul_diag]
 
 theorem diagOp_congr {w v : ι → ℂ} (hw : Summable fun i => ‖w i‖ ^ 2)
     (hv : Summable fun i => ‖v i‖ ^ 2) (h : w = v) : diagOp w hw = diagOp v hv := by
@@ -93,7 +91,7 @@ theorem isHilbertSchmidt_diagOp (w : ι → ℂ) (hw : Summable fun i => ‖w i�
 /-- The Hilbert--Schmidt norm of a diagonal is the weight energy. -/
 theorem hsNormSq_diagOp (w : ι → ℂ) (hw : Summable fun i => ‖w i‖ ^ 2) :
     ContinuousLinearMap.hsNormSq (diagOp w hw) = ∑' i, ‖w i‖ ^ 2 := by
-  rw [diagOp, hsNormSq_toOperator, hsNormSq, tsum_diagKernel_normSq]
+  rw [diagOp, hsNormSq_toOperator, hsNormSq, tsum_diagMul_normSq]
 
 /-- Composition of diagonals is pointwise multiplication of weights. -/
 theorem diagOp_comp (w v : ι → ℂ) (hw : Summable fun i => ‖w i‖ ^ 2)
@@ -151,9 +149,8 @@ theorem opTrace_diagOp_comp (w v : ι → ℂ) (hw : Summable fun i => ‖w i‖
     ContinuousLinearMap.opTrace (diagOp w hw ∘L diagOp v hv) = ∑' i, w i * v i := by
   rw [diagOp, diagOp, opTrace_toOperator_comp]
   refine tsum_congr fun i => ?_
-  show (∑' k, diagKernel w (i, k) * diagKernel v (k, i)) = w i * v i
-  rw [tsum_eq_single i fun k hk => by rw [diagKernel_of_ne (Ne.symm hk), zero_mul],
-    diagKernel_diag, diagKernel_diag]
+  rw [show hsComp (diagMul w) (diagMul v) = diagMul fun i => w i * v i from
+    hsComp_diagMul w v, diagMul_diag]
 
 /-- **Power traces of a diagonal.**  Every power trace from degree two onward is
 the sum of that power of the weights. -/
