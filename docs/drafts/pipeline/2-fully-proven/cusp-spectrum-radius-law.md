@@ -113,13 +113,37 @@ shift-lattice expansion into the boxed `limsup` and back.  `infDist_zero_shiftSp
 is the boxed cusp reduction `Δ(0) = min Spec(F) = d q^{-1/d}`, proved from
 `a_F(1) ≠ 0` and monotonicity of `m ↦ d(m/q)^{1/d}` alone.
 
+The convergence layer of the theta series and of the standard twist is
+`[LEAN-PROVED]` in `HTGeometry/ShiftLatticeThetaSeries.lean`:
+
+| Card item | Declaration |
+|---|---|
+| `∑_n n^A exp(-c n^{1/d}) < ∞` for every `A`, every `c > 0` | `summable_rpow_mul_exp_neg_rpow` |
+| `Θ(w,z) = ∑_{n≥1} a(n) n^{-w} e(z n^{1/d})` | `thetaTerm`, `thetaSeries` |
+| `\|a(n) n^{-w} e(z n^{1/d})\| = \|a(n)\| n^{-Re w} e^{-2π (Im z) n^{1/d}}` | `norm_thetaTerm` |
+| `Φ_F(s,·)` converges absolutely on `H`, for **every** `s` | `summable_thetaTerm_of_im_pos` |
+| `F_α(w)` converges absolutely to the right of the abscissa | `summable_thetaTerm_of_re` |
+
+`summable_thetaTerm_of_im_pos` is the reason the theta function is entire in the
+spectral variable on the open half plane: above the real axis the factor
+`exp(-2π (Im z) n^{1/d})` beats every polynomial, so no abscissa condition is
+needed.  `summable_thetaTerm_of_re` is the complementary boundary statement, where
+`Im z = 0` and only the Dirichlet abscissa controls convergence — that is the
+regime in which the standard twist `F_α` is defined before continuation.
+
 ### What is not yet formalized
 
 Two inputs remain, both genuinely external to the above:
 
-1. **Step 1, the Mellin--Barnes expansion** — that the shift-lattice series with
-   coefficients `(2πi)^k F_{α₀}(s-k/d)/k!` really represents
-   `Φ_F(s,-α₀+ζ)` minus its singular part.
+1. **Step 1, the shift-lattice expansion.**  In the *interior* of `H` this needs
+   no Mellin--Barnes at all: with `z₀ ∈ H` and `|ζ| < Im z₀` the double family
+   `((2πiζ)^k/k!) · a(n) n^{-(s-k/d)} e(z₀ n^{1/d})` is absolutely summable,
+   because summing the `k`-series first replaces `e^{-2π (Im z₀) n^{1/d}}` by
+   `e^{-2π (Im z₀ - |ζ|) n^{1/d}}`, still summable by
+   `summable_rpow_mul_exp_neg_rpow`.  Fubini then gives the expansion directly,
+   and with `hadamardLimsup_of_radius` the upper bound
+   `limsup_k |Θ(s-k/d, z₀)/k!|^{1/k} ≤ 1/(2π Im z₀)`.  Only the *boundary* case
+   `z₀ = -α₀ ∈ ℝ` needs Mellin--Barnes and continuation.
 2. **Step 2, `radius = Δ(α₀)`** — this needs the Kaczorowski--Perelli standard-twist
    theory: continuation of `F_α` across every `α ∉ Spec(F)`, and `ρ_0(α) ≠ 0` on
    the spectrum for the jump lemma.  The corpus has no Selberg-class layer at all

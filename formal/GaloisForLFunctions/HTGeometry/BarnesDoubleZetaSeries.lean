@@ -2,6 +2,7 @@ import Mathlib.Analysis.PSeries
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.Normed.Ring.InfiniteSum
 import Mathlib.Topology.Algebra.InfiniteSum.Constructions
+import Mathlib.NumberTheory.LSeries.MellinEqDirichlet
 
 /-!
 # The Barnes double zeta series of a real two-dimensional cone
@@ -36,10 +37,22 @@ facts that carry the double-sine functional equations.
   `barnesDoubleZeta_add_fst_add_snd` checks that the two period shifts commute, the initial term
   being restored after both boundary rays are removed.
 
+* **The Mellin representation.**  Summing the Euler integral of each cone term gives, for a positive
+  real argument and `Re s > 2`,
+
+  ```text
+  Γ(s) ζ₂(s, x) = ∫_0^∞ t^(s-1) e^(-x t) / ((1 - e^(-ω₁ t))(1 - e^(-ω₂ t))) dt.
+  ```
+
+  The cone generating function `hasSum_barnesConeKernel` is a product of two geometric series, and
+  the interchange is mathlib's `hasSum_mellin`.  The right-hand side is what continues past the
+  abscissa of convergence.
+
 Everything here is unconditional and uses only the standard axioms.
 -/
 
-open Complex Real
+open Complex Real MeasureTheory Set Filter
+open scoped Topology
 open scoped BigOperators
 
 namespace GaloisForLFunctions.HTGeometry
@@ -346,6 +359,121 @@ theorem barnesDoubleZeta_add_fst_add_snd {o1 o2 : ℝ} (h1 : 0 < o1) (h2 : 0 < o
   have hstep2 := barnesDoubleZeta_add_fst h1 h2 hs hz
   have hray := barnesSingleZeta_add h1 (show (1:ℝ) < s.re by linarith) hz
   rw [hstep1, hstep2, hray]
+  ring
+
+
+/-! ## The Mellin representation -/
+
+/-- The kernel of the one-dimensional Barnes zeta: the generating function of the ray. -/
+def barnesRayKernel (o x : ℝ) (t : ℝ) : ℂ :=
+  (Real.exp (-x * t) : ℂ) / (1 - (Real.exp (-o * t) : ℂ))
+
+/-- The kernel of the Barnes double zeta: the generating function of the cone. -/
+def barnesConeKernel (o1 o2 x : ℝ) (t : ℝ) : ℂ :=
+  (Real.exp (-x * t) : ℂ) /
+    ((1 - (Real.exp (-o1 * t) : ℂ)) * (1 - (Real.exp (-o2 * t) : ℂ)))
+
+theorem exp_neg_mul_lt_one {o t : ℝ} (ho : 0 < o) (ht : 0 < t) :
+    Real.exp (-o * t) < 1 := by
+  rw [Real.exp_lt_one_iff]
+  nlinarith
+
+/-- **The ray generating function.**  Summing the ray of rates gives the geometric kernel. -/
+theorem hasSum_barnesRayKernel {o x : ℝ} (ho : 0 < o) (t : ℝ) (ht : 0 < t) :
+    HasSum (fun n : ℕ => (1 : ℂ) * (Real.exp (-(x + n * o) * t) : ℂ))
+      (barnesRayKernel o x t) := by
+  have hr : ‖(Real.exp (-o * t) : ℂ)‖ < 1 := by
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+    exact exp_neg_mul_lt_one ho ht
+  have hgeom : HasSum (fun n : ℕ => ((Real.exp (-o * t) : ℂ)) ^ n)
+      (1 - (Real.exp (-o * t) : ℂ))⁻¹ := hasSum_geometric_of_norm_lt_one hr
+  have hmul := hgeom.mul_left ((Real.exp (-x * t) : ℂ))
+  have hfun : (fun n : ℕ => (Real.exp (-x * t) : ℂ) * ((Real.exp (-o * t) : ℂ)) ^ n)
+      = fun n : ℕ => (1 : ℂ) * (Real.exp (-(x + n * o) * t) : ℂ) := by
+    funext n
+    rw [one_mul, ← Complex.ofReal_pow, ← Complex.ofReal_mul, ← Real.exp_nat_mul,
+      ← Real.exp_add]
+    congr 2
+    ring
+  rw [hfun] at hmul
+  rw [barnesRayKernel, div_eq_mul_inv]
+  exact hmul
+
+
+/-- **The cone generating function.**  Summing the cone of rates gives the product of two geometric
+kernels. -/
+theorem hasSum_barnesConeKernel {o1 o2 x : ℝ} (h1 : 0 < o1) (h2 : 0 < o2) (t : ℝ) (ht : 0 < t) :
+    HasSum (fun p : ℕ × ℕ => (1 : ℂ) * (Real.exp (-(x + barnesLattice o1 o2 p) * t) : ℂ))
+      (barnesConeKernel o1 o2 x t) := by
+  set r1 : ℂ := (Real.exp (-o1 * t) : ℂ) with hr1def
+  set r2 : ℂ := (Real.exp (-o2 * t) : ℂ) with hr2def
+  have hr1 : ‖r1‖ < 1 := by
+    rw [hr1def, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+    exact exp_neg_mul_lt_one h1 ht
+  have hr2 : ‖r2‖ < 1 := by
+    rw [hr2def, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+    exact exp_neg_mul_lt_one h2 ht
+  have hg1 : HasSum (fun n : ℕ => r1 ^ n) (1 - r1)⁻¹ := hasSum_geometric_of_norm_lt_one hr1
+  have hg2 : HasSum (fun n : ℕ => r2 ^ n) (1 - r2)⁻¹ := hasSum_geometric_of_norm_lt_one hr2
+  have hn1 : Summable (fun n : ℕ => ‖r1 ^ n‖) := by
+    simpa [norm_pow] using summable_geometric_of_lt_one (norm_nonneg r1) hr1
+  have hn2 : Summable (fun n : ℕ => ‖r2 ^ n‖) := by
+    simpa [norm_pow] using summable_geometric_of_lt_one (norm_nonneg r2) hr2
+  have hprodsum : Summable (fun p : ℕ × ℕ => r1 ^ p.1 * r2 ^ p.2) :=
+    Summable.of_norm (Summable.mul_norm hn1 hn2)
+  have hprod : HasSum (fun p : ℕ × ℕ => r1 ^ p.1 * r2 ^ p.2) ((1 - r1)⁻¹ * (1 - r2)⁻¹) :=
+    hg1.mul hg2 hprodsum
+  have hmul := hprod.mul_left ((Real.exp (-x * t) : ℂ))
+  have hfun : (fun p : ℕ × ℕ => (Real.exp (-x * t) : ℂ) * (r1 ^ p.1 * r2 ^ p.2))
+      = fun p : ℕ × ℕ => (1 : ℂ) * (Real.exp (-(x + barnesLattice o1 o2 p) * t) : ℂ) := by
+    funext p
+    rw [one_mul, hr1def, hr2def, ← Complex.ofReal_pow, ← Complex.ofReal_pow,
+      ← Complex.ofReal_mul, ← Complex.ofReal_mul, ← Real.exp_nat_mul, ← Real.exp_nat_mul,
+      ← Real.exp_add, ← Real.exp_add]
+    congr 2
+    simp only [barnesLattice]
+    ring
+  rw [hfun] at hmul
+  rw [barnesConeKernel, div_eq_mul_inv, mul_inv]
+  exact hmul
+
+/-- **The Mellin representation of the Barnes double zeta.**  For a positive real argument and
+`Re s > 2`,
+
+```text
+Γ(s) ζ₂(s, x) = ∫_0^∞ t^(s-1) e^(-x t) / ((1 - e^(-ω₁ t))(1 - e^(-ω₂ t))) dt.
+```
+
+This is the representation whose right-hand side continues past the abscissa of convergence. -/
+theorem Gamma_mul_barnesDoubleZeta_eq_mellin {o1 o2 x : ℝ} (h1 : 0 < o1) (h2 : 0 < o2)
+    (hx : 0 < x) {s : ℂ} (hs : 2 < s.re) :
+    Complex.Gamma s * barnesDoubleZeta o1 o2 s (x : ℂ)
+      = mellin (barnesConeKernel o1 o2 x) s := by
+  have hs0 : 0 < s.re := by linarith
+  have hsum : Summable fun p : ℕ × ℕ =>
+      ‖(1 : ℂ)‖ / (x + barnesLattice o1 o2 p) ^ s.re := by
+    have := summable_barnesLattice_rpow h1 h2 hx hs
+    refine this.congr fun p => ?_
+    rw [Real.rpow_neg (by
+      have := barnesLattice_nonneg h1.le h2.le p
+      linarith)]
+    simp [one_div]
+  have hmain := hasSum_mellin (a := fun _ : ℕ × ℕ => (1 : ℂ))
+    (p := fun p : ℕ × ℕ => x + barnesLattice o1 o2 p)
+    (F := barnesConeKernel o1 o2 x) (s := s)
+    (fun p => Or.inr (by
+      have := barnesLattice_nonneg h1.le h2.le p
+      linarith))
+    hs0
+    (fun t ht => hasSum_barnesConeKernel h1 h2 t ht)
+    hsum
+  rw [← hmain.tsum_eq, barnesDoubleZeta, ← tsum_mul_left]
+  refine tsum_congr fun p => ?_
+  have hcast : ((x : ℂ) + ((barnesLattice o1 o2 p : ℝ) : ℂ))
+      = (((x + barnesLattice o1 o2 p : ℝ)) : ℂ) := by
+    push_cast
+    ring
+  rw [hcast, Complex.cpow_neg]
   ring
 
 end

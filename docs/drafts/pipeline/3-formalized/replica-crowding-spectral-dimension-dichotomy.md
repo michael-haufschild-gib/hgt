@@ -127,6 +127,40 @@ Here the second line is the corpus's exact product-stabilizer two-query
 signal for that Hamiltonian.  Thus circuit hardness at the certified future
 endpoint does not erase its permanent operational locality witness.
 
+## Exact target-weighted strengthening
+
+The rank bound is a target-blind fallback, not the sharp law.  For every
+normalized Choi target `a`, let `M_r(a;E,delta)` be the exact near-action mass
+of its diagonal spectral weights, and define the circuit resonance partition
+
+\[
+ Z_r(\mathcal C_s;E,\delta)=
+   \sum_{a\in\mathcal C_s}M_r(a;E,\delta).              \tag{9}
+\]
+
+The adaptive uniform-window law is
+
+\[
+ \boxed{
+ (1-\epsilon^2)^r P_{[-T,T]}(\text{shortcut})
+ \le |\mathcal C_s|\left[r!d^{-r}+
+   \min\{1,(T\delta)^{-1}\}\right]+Z_r.}              \tag{10}
+\]
+
+This is stronger than `(6)` because
+
+\[
+ Z_r\le |\mathcal C_s|\,\kappa_r(E;\delta)r!d^{-r}
+ \le |\mathcal C_s|(2r+1)^{s_r(E;\delta)}r!d^{-r}.     \tag{11}
+\]
+
+The Gaussian analogue has the exponential remainder.  If the right side of
+`(10)` is strictly below `(1-epsilon^2)^r`, some future time in `(0,2T]`
+misses the whole circuit dictionary.  The resonance partition is invariant
+under the spectral phase translation used to move the time window.  The
+same-system bounded-weight Pauli/Haar-separation theorem remains valid with
+this sharper budget.
+
 ## Proof
 
 Fix `p`.  Translation by `-p` is injective, so `q -> k_q` identifies the
@@ -195,6 +229,9 @@ resolved at a stated temporal resolution.
    one-parameter orbit may contain hard endpoints.  No such inference is made.
 6. Priority remains unverified against quantitative Kronecker theory,
    additive-energy inverse theorems and higher spectral-form-factor work.
+7. The exact partition `(9)` removes worst-spectrum minimax loss but may
+   itself require ensemble-specific anti-concentration to estimate.  It is a
+   theorem-level reduction of that frontier, not its disappearance.
 
 ## Formalization inventory
 
@@ -214,6 +251,12 @@ All displayed mathematical claims are theorem-backed in:
   forward hard-time theorem `(7)`.
 - `RHTower/StaticQLocalForwardComplexityHaarSeparationLaw.lean`: same-system
   bounded-weight Pauli specialization `(8)`, combining future circuit
-  hardness with all-time strict separation from the exact Haar benchmark.
+  hardness with all-time strict separation from the exact Haar benchmark;
+  both rank and target-weighted budgets are formalized.
+- `RHTower/DirectAdaptiveStaticChoiWeightedCrowdingLaw.lean`: exact
+  target-weighted resonance partition, Gaussian/uniform adaptive laws
+  `(9)`--`(11)`, and centered hard-time certificate.
+- `RHTower/StaticChoiForwardWeightedCrowdingLaw.lean`: phase invariance of
+  the resonance partition and the target-weighted future hard-time theorem.
 
 No `sorry`, `admit`, new axiom, `opaque`, or `unsafe` declaration is used.

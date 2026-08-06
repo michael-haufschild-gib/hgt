@@ -87,7 +87,10 @@ usual convergence-forcing correction is available without any general Runge theo
 - [x] D2 compactly supported $\bar\partial$ equation on $\mathbb C$ — `HTGeometry.dzbar_dbarSolution`
 - [x] D3a local solvability in one variable — `HTGeometry.exists_dbar_local`
 - [x] D3b(i) the several-variable $(0,q)$ layer, `∂̄`, and `ker ∂̄ = 𝒪` in degree zero
-- [ ] D3b(ii) the Dolbeault–Grothendieck lemma by induction on the `dz̄` directions
+- [x] D3b(ii-a) solving `∂̄_k U = G` in one coordinate with the others as parameters
+- [ ] D3b(ii-b) `∂̄_j` commutes with the coordinatewise Cauchy transform for `j ≠ k`
+      *(blocked on elaboration cost, see below — the mathematics is settled)*
+- [ ] D3b(ii-c) the Dolbeault–Grothendieck induction on the `dz̄` directions
 - [ ] D3 $\bar\partial$-Poincaré on a polydisc
 - [ ] D4 Dolbeault isomorphism
 - [ ] D5 global solvability on $(\mathbb C^\times)^r$, hence $H^q=0$ for $q\ge1$
@@ -211,3 +214,29 @@ D3b.
     **`ker ∂̄ = 𝒪`**: `∂̄F = 0` makes `F` holomorphic, and analytic through the corpus's
     `PolydiscAnalytic.analyticOnNhd_of_differentiable`.  This is the degree-zero exactness of the
     Dolbeault resolution.
+
+- 2026-08-06 — **D3b(ii-a) landed** in `HTGeometry/DbarSeveral.lean`, audit
+  `propext, Classical.choice, Quot.sound`.
+  - `dbarSliceSolution` — the coordinatewise Cauchy transform, solving the one-variable equation in
+    the `k`-th coordinate with the others as parameters.
+  - `dbarSlice_dbarSliceSolution`, `dzbarAt_dbarSliceSolution`,
+    `dzbarAt_dbarSliceSolution_of_compactSupport` — **`∂̄_k U = G`**.  The parameters do not move
+    under the slice, so this is `dzbar_dbarSolution` applied fibrewise; the slice hypotheses are
+    discharged from `HasCompactSupport G` by `contDiff_updateEmbed` and
+    `hasCompactSupport_slice` (which uses `‖t‖ ≤ ‖update z k t‖`).
+  - `dbarSliceSolution_eq_integral` — **the transform is a convolution along a coordinate line**,
+    `U(y) = (1/π) ∫ G(y − e_k w)/w dA(w)`.  This is the form in which the singularity no longer
+    moves with the parameter, so differentiation under the integral is available in *every*
+    direction, not only the `k`-th.
+  - `norm_pi_single`, `exists_radius_pi` — the two supporting facts for that differentiation.
+
+  **The blocker on D3b(ii-b) is elaboration cost, not mathematics.**  The proof of
+  `HasFDerivAt (fun y => ∫ w, G (y − e_k w)/w) (∫ w, w⁻¹ • fderiv ℝ G (y₀ − e_k w)) y₀` is the exact
+  analogue of `hasFDerivAt_cauchyIntegral` (which is proved, for `H = ℂ`), with the same dominating
+  bound `M‖w‖⁻¹·1_{ball}` and the same three side conditions; every hypothesis was written and
+  type-checked individually, but `hasFDerivAt_integral_of_dominated_of_fderiv_le` with
+  `H = (Fin n → ℂ)` exceeds 4·10⁶ heartbeats at `whnf` even with all implicits pinned.  Next
+  attempt: replace the `Pi` type by a `ContinuousLinearEquiv`-transported model with cheaper
+  instances, or prove the `HasFDerivAt` by hand from `hasFDerivAt_cauchyIntegral` composed with the
+  coordinate embedding, which keeps `H = ℂ` throughout and moves the several-variable dependence
+  into a plain composition.

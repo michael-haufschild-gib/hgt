@@ -994,3 +994,121 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   `DeformedFibreLowerBound.lean` gives at least `C(L,m)` points over an algebraically independent
   observation, by deforming each pure point.  Note that this direction cannot come from the pure
   count by semicontinuity, which runs the other way.
+
+- 2026-08-06 — **The fibre count no longer needs monomial tails.**
+  `formal/GaloisForLFunctions/HTGeometry/CriticalTailFibreCount.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `nat_card_monic_divisors_criticalTails` — for **arbitrary** tails `U, V` of exactly the critical
+  degrees (`deg U ≤ m`, `deg V ≤ n`, with `U.coeff m ≠ 0` and `V.coeff n ≠ 0`), whenever the
+  target `1 + U V` is separable its monic divisors of degree `m` number
+  `criticalHorizonMultiplicity m n`.  With `natDegree_one_add_mul_of_coeff_ne_zero`: the target has
+  degree exactly `m + n`, since the constant `1` cannot reach the top.
+
+  The previous entry proved the count only for the two-parameter family of monomial tails
+  `c X^m`, `d X^n`.  This replaces that family by every observation of the critical degrees whose
+  target is squarefree — an open condition, so the count now holds on a dense open set of
+  observations rather than on a surface inside it.  Separability is the *only* way the tail
+  coefficients enter: the proof normalises `1 + U V` by its leading coefficient, which preserves
+  both divisors and separability, and then applies the separable-split divisor count.
+
+  What is still open is unchanged and is the card's recorded link: tails **longer** than critical,
+  where `deg (A + U)` exceeds `m`, the factor degrees no longer split as `(m, n)`, and the fibre is
+  cut out by prescribed middle coefficients — a square bilinear system of `L` equations in `L`
+  unknowns whose generic count is the multihomogeneous Bezout number.  Mathlib has no
+  multiprojective Bezout theorem.
+
+- 2026-08-06 — **The long-tail case is reduced to a finite-dimensional one: an observation is seen
+  only through its first `L` coefficients.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `criticalLowProduct_sub` — the low product changes by `A (V - V') + (U - U') B`;
+  `dvd_criticalLowProduct_sub_one_congr` — hence if the two tails agree modulo `X ^ L` they impose
+  the *same* truncated compatibility equation;
+  `fibre_eq_of_dvd_sub` — so the fibres are literally the same set.
+
+  This is the first step of the passage the card records as open.  However long the observed tails
+  are, the fibre over them is the fibre over their truncations below the horizon, so the
+  factorization count is a question about a finite-dimensional family of observations rather than
+  about tails of unbounded degree.  Combined with the previous entry, the count
+  `criticalHorizonMultiplicity m n` is now proved for every observation whose truncated tails have
+  exactly the critical degrees and squarefree target — no monomial assumption anywhere.
+
+  What is still missing, and is the whole of the remaining link: tails whose truncations have
+  degree strictly between the critical degree and the horizon.  There the substitution
+  `A ↦ A + U_low` absorbs the tail's low part into the unknown but *also* moves the target
+  `1 + U V`, so the case does not reduce to the previous entry; the fibre is a square bilinear
+  system of `L` equations in `L` unknowns whose generic solution count is the multihomogeneous
+  Bezout number.  The Chow-ring side of that number is already formalized
+  (`criticalHorizonMultiplicity_eq_chowCoefficient`); the geometric side — that a generic square
+  system of `(1,1)` forms on `P^m x P^n` has exactly that many solutions — is what mathlib lacks
+  and what remains to build.
+
+- 2026-08-06 — **The elimination step: the fibre injects into the space of first components.**
+  Same module, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `criticalLowProduct_eq_affine` — the compatibility equation is affine-linear in the second
+  unknown once the first is fixed, `(U + A) B + (A V - 1)`;
+  `fibre_snd_unique` — hence for a fixed `A` with `(U + A)(0) ≠ 0` there is **at most one** `B`:
+  two solutions differ by a multiple of `X ^ L` of degree below the horizon, so by nothing.
+
+  This cuts the fibre from `L` unknowns to `m`: the count is a question about the first components
+  alone.  It uses the corpus's own cancellation lemma
+  (`dvd_of_mul_dvd_of_coeff_zero_ne_zero` in `HorizonTruncationCancel.lean`), the precise content
+  of "invertible modulo `X ^ L`".
+
+  **Where the remaining count actually sits, stated exactly.**  Bihomogenising, the fibre is the
+  common zero locus of `L` forms of bidegree `(1,1)` on `P^m x P^n`, whose dimension is `L` — so
+  the expected count is the coefficient of `h1^m h2^n` in `(h1 + h2)^L`, which is
+  `criticalHorizonMultiplicity m n` and is already formalized as
+  `criticalHorizonMultiplicity_eq_chowCoefficient`.  Under the elimination above the same number
+  appears a second way: for fixed `a` the conditions on `b` are linear, given by an
+  `(m+n) x (n+1)` matrix of linear forms in `a`, and a solution exists exactly where that matrix
+  drops rank.  That locus has codimension `m` in `P^m` — so it is finite — and its degree by the
+  Giambelli--Thom--Porteous formula is `C(m+n, n)`, again the critical multiplicity.
+
+  So the missing input is one classical theorem, in either of two equivalent forms: multiprojective
+  Bezout for `(1,1)` forms, or the degree of a generic determinantal locus.  Mathlib has neither.
+  The elimination step above is what reduces the card's link to that single input, and the
+  determinantal form looks the more tractable of the two to build, since it needs only the degree
+  of one rank-drop locus rather than an intersection theory for products of projective spaces.
+
+- 2026-08-06 — **The elimination is now unconditional: the fibre injects into the first
+  components whenever the target is invertible at the origin.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `criticalFibre` — the fibre as a set;
+  `coeff_zero_ne_zero_of_mem_criticalFibre` — on the fibre, `U + A` is **automatically** invertible
+  at the origin as soon as `1 + U V` is.  If it were not, the constant term of the equation would
+  read `A(0) V(0) = 1` with `A(0) = -U(0)`, i.e. `(1 + U V)(0) = 0`;
+  `criticalFibre_fst_injOn` — hence `Prod.fst` is injective on the fibre.
+
+  The previous entry's uniqueness needed the invertibility as a hypothesis; it is now a consequence
+  of the single nondegeneracy `(1 + U V)(0) ≠ 0`, which is exactly the condition that the target of
+  the factorization is a unit.  So for every observation with that nondegeneracy — no degree
+  restriction on the tails, no monomial assumption — the fibre is the graph of a function on a
+  subset of the `m`-dimensional space of first components.
+
+  That is the whole of the elimination the biprojective passage needs.  What is left is to count
+  the first components: the locus where the `(m+n) x (n+1)` matrix of linear forms in `a` drops
+  rank, whose degree is `C(m+n, n)` by Giambelli--Thom--Porteous.
+
+- 2026-08-06 — **The fibre is now presented as a solvability locus in the first components.**
+  Same module, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `exists_snd_iff_linear_solvable` — a first component `A` extends to a fibre point exactly when
+  the congruence `(U + A) B ≡ 1 - A V (mod X ^ L)` is solvable with `deg B < n`.  The unknown
+  second component enters the equation only through multiplication by `U + A`;
+  `criticalFibre_fst_image` — hence the image of the fibre under `Prod.fst` is exactly the set of
+  `A` of degree below `m` for which that congruence is solvable.
+
+  With the injectivity of the previous entry, the fibre and this locus have the same cardinality.
+  The locus is the rank-drop set of the elimination: multiplication by `U + A` is an `F`-linear map
+  from the `n`-dimensional space of second components into the `L`-dimensional space of residues
+  modulo `X ^ L`, and solvability says the target `1 - A V` lies in its image, i.e. the augmented
+  `L x (n+1)` matrix — whose entries are affine in the coefficients of `A` — has rank at most `n`.
+
+  So the card's remaining link is now a single self-contained statement about matrices of linear
+  forms, with every polynomial-side reduction discharged: the degree of the locus where a generic
+  `(m+n) x (n+1)` matrix of linear forms in `m+1` homogeneous variables drops rank is
+  `C(m+n, n)`.  That degree, and nothing else, is what remains to build.

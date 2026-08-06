@@ -554,16 +554,44 @@ for a **positive real** rate `w` and `Re s > 0`, by the substitution `t |-> w t`
 the case where the substitution is a genuine change of variables on the half-line; the complex-rate
 version -- which is what the cone terms `w = z + m omega_1 + n omega_2` need -- follows by analytic
 continuation in `w` over the right half-plane, where both sides are analytic and agree on the
-positive reals. That continuation step, i.e. differentiating the parametric integral under the
-integral sign, is the next piece. Its convergence input is already proved for a complex rate:
+positive reals. That continuation step is now done. `hasDerivAt_integral_cpow_mul_exp` differentiates under the
+integral sign (dominated on a ball around the rate by `t^(Re s) e^(-a t)`), making the integral
+holomorphic in `w` on the right half-plane; `integral_cpow_mul_exp_neg_mul_Ioi` then concludes
+
+```text
+int_0^oo t^(s-1) e^(-w t) dt = Gamma(s) w^(-s)      for Re s > 0, Re w > 0
+```
+
+by the identity theorem on that convex, hence preconnected, set, starting from the real-rate case.
+The real-rate case is mathlib's `Complex.integral_cpow_mul_exp_neg_mul_Ioi`; the complex-rate
+statement is not in mathlib and is the new content. Its convergence input is proved for a complex
+rate:
 `integrableOn_cpow_mul_exp_neg_mul_Ioi` shows `t^(s-1) e^(-wt)` is integrable on the half-line for
 `Re s > 0`, `Re w > 0`, dominated by the real integrand of
 `integrableOn_rpow_mul_exp_neg_mul_Ioi`. The real integrand lemma already existed in the corpus as
 `RHTower.integrableOn_rpow_mul_exp_neg_mul_Ioi`; it has been moved to `HTGeometry` (its correct home
 as reusable infrastructure) and the `RHTower` statement now delegates to it, so there is one proof.
 
-Still not formalized: the complex-rate Euler integral, the summed Mellin representation of
-`zeta_1` and `zeta_2`, the continuation past `s = 2`, the finite part at `s = 1` (which is
+The summed Mellin representation is now proved. `hasSum_barnesConeKernel` identifies the cone
+generating function as a product of two geometric series,
+
+```text
+sum_{m,n>=0} e^(-(x + m omega_1 + n omega_2) t)
+  = e^(-xt)/((1-e^(-omega_1 t))(1-e^(-omega_2 t))),
+```
+
+and `Gamma_mul_barnesDoubleZeta_eq_mellin` gives, for positive real `x` and `Re s > 2`,
+
+```text
+Gamma(s) zeta_2(s,x) = mellin (barnesConeKernel omega_1 omega_2 x) s.
+```
+
+The interchange of sum and integral is mathlib's `hasSum_mellin`, the "Mellin transform = Dirichlet
+series" machine. It requires the rates to be real, which is why the representation is stated at a
+real argument: that is the natural base for continuing in `s` first and in `z` afterwards.
+
+Still not formalized: the continuation of the Mellin transform past `s = 2` (subtracting the
+order-two pole of the kernel at `t = 0`), the finite part at `s = 1` (which is
 `-partial_z log Gamma_2`, since `partial_z zeta_2(s,z) = -s zeta_2(s+1,z)` makes the derivative of
 the regularization the finite part rather than a value), the reflection giving `S_2`, and the
 resulting `Psi`. Every other ingredient -- the fixed field, the independent coordinates, the
@@ -718,8 +746,11 @@ significant new classification or a routine synthesis once the question is posed
 - [x] Lean scaled Euler integral `int_0^oo t^(s-1) e^(-wt) dt = Gamma(s) w^(-s)` for positive real
   rate, the term-by-term input of the Mellin representation;
 - [x] Lean convergence of the complex-rate Euler integral on the half-line;
-- [ ] Lean complex-rate Euler integral *value* (analytic continuation in the rate), the summed
-  Mellin representation, the continuation past `s = 2`, the finite part at `s = 1`, and the
+- [x] Lean complex-rate Euler integral `int_0^oo t^(s-1) e^(-wt) dt = Gamma(s) w^(-s)` for
+  `Re w > 0`, by holomorphy in the rate plus the identity theorem;
+- [x] Lean cone generating function and the summed Mellin representation
+  `Gamma(s) zeta_2(s,x) = mellin (cone kernel) s` for real `x > 0`, `Re s > 2`;
+- [ ] Lean continuation of the Mellin transform past `s = 2`, the finite part at `s = 1`, and the
   reflected double sine. Alternative route: identify the singleton reflected Barnes source with the cotangent and
   localize the ladder-step defect, using the imaginary-ray regime where the corpus's cone
   construction already applies.

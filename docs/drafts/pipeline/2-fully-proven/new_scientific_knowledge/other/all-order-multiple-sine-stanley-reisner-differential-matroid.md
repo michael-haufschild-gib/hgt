@@ -562,9 +562,50 @@ finish it.
 - `differentialAlgebraicOver_frameSource_topFace` — **every product of shift differences leaving
   exactly one direction annihilates the source modulo the DA sector**.  That is `(6)`.
 
-What is **not** yet claimed.  The annihilation half of the card is closed: `(2)`, `(4)` and `(6)` are
-Lean theorems.  The *independence* half — that no smaller ideal annihilates, which rests on the
-double-sine atomic defect-coset theorem — is untouched.  The assets it will consume are already in
+### Toward the atomic parent: the exact multiple-sine difference equation
+
+The independence half needs the double-sine atomic theorem, whose hypothesis is the **exact**
+difference equation `(T_1 - 1) L_2 = ε_1 a_2` with a cotangent right-hand side — not the
+DA-modulo form.  The following are now Lean theorems, and they reduce that hypothesis to an
+explicit rational normalization.
+
+`HTGeometry.BarnesLadderDefectPolePart`
+
+- `barnesSource_ladder_defect_eq` — the Barnes ladder defect **is** the embedded rational function
+  `N_j/(X + ω_j)`, not merely a DA element.
+- `barnesLadderNumerator_eval_neg_period` — the numerator is `-1` at `z = -ω_j`, so
+- `barnesLadderRatio_eq` — `N_j/(X + ω_j) = P_j - 1/(X + ω_j)`: the entire pole part of the ladder
+  defect is one simple pole at `-ω_j` with residue `-1`.
+
+`HTGeometry.PolynomialShiftDifference`
+
+- `fallPoly`, `shiftDiff_fallPoly` — the falling-factorial basis of a step, with
+  `Δ_a F_{k+1} = (k+1) a F_k`.
+- `surjective_shiftDiffPoly`, `exists_shiftDiff_eq` — **discrete integration**: for a nonzero step
+  every polynomial is a shift difference of a polynomial.
+
+`HTGeometry.MultipleSineLadderRationalDefect`
+
+- `subframe_ladder_defect_eq`, `multipleSine_ladder_defect_eq` — equation `(2)` with its **exact**
+  rational defect `R_k + ε_S · R_k(c_{S∖k} - ·)`.  The two summands have their poles at `-ω_k` and
+  at `c_{S∖k} + ω_k`, one period apart, with opposite residues.
+
+`HTGeometry.MultipleSineOrderOneSourceExact`
+
+- `frameSourceMero_singleton_eq` — the order-one source **is** `periodCotMero` plus the explicit
+  rational function `(2z - ω)/(z(ω - z))`.
+- `addTranslationMeroEquiv_periodCotMero` — the period cotangent is invariant under its own period,
+  i.e. `(T_i - 1) L_{i} = 0`.
+
+What remains for the exact equation is bookkeeping over these: the rational correction
+`ρ = 1/X - 1/(X - (ω_1 + ω_2))` cancels every pole of the accumulated rational defect (its two
+shift-difference pole pairs are exactly the two pairs above), the residue is then a polynomial, and
+discrete integration removes that polynomial up to a constant — which the cotangent-model character
+obstruction tolerates.
+
+What is **not** yet claimed.  The annihilation half of the card is closed: `(2)`, `(4)` and `(6)`
+are Lean theorems.  The *independence* half still needs the double-sine atomic defect-coset
+theorem itself, i.e. the assembly above plus the corpus's cylinder criterion.  The assets it will consume are already in
 the corpus: `HTGeometry.DoubleSineCylinderHypertranscendence`
 (`hypertranscendentalOver_of_cotangentCylinderIncrement`, the cylinder-increment criterion),
 `HTGeometry.DoubleSineOrbitResidueObstruction` (the Euler-operator pole-order obstruction at the

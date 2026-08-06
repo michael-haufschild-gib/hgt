@@ -193,10 +193,13 @@ theorem orderOneDenominator_ne_zero {w : ℂ} (hw : w ≠ 0) : orderOneDenominat
   exact hw (by rcases mul_eq_zero.mp hww with h' | h' <;> exact h')
 
 omit [Fintype ι] [DecidableEq ι] in
-/-- **The order-one frame source is differentially algebraic over `ℂ(z)`.** -/
-theorem differentialAlgebraicOver_frameSourceMero_singleton (ω : ι → ℂ)
+/-- **The order-one frame source differs from the period cotangent by an explicit rational
+function.** -/
+theorem hasPuncturedMeromorphicRep_frameSourceMero_singleton_sub (ω : ι → ℂ)
     (hω : ∀ i, 0 < (ω i).im) (i : ι) (hS : ({i} : Finset ι).Nonempty) :
-    DifferentialAlgebraicOver (RatFunc ℂ) (frameSourceMero ω hω ({i} : Finset ι) hS) := by
+    HasPuncturedMeromorphicRep
+      (frameSourceMero ω hω ({i} : Finset ι) hS - periodCotMero (ω i))
+      (fun z => (orderOneNumerator (ω i)).eval z / (orderOneDenominator (ω i)).eval z) := by
   classical
   set w : ℂ := ω i with hwdef
   have hwim : 0 < w.im := hω i
@@ -247,11 +250,25 @@ theorem differentialAlgebraicOver_frameSourceMero_singleton (ω : ι → ℂ)
     rw [hidentity]
     field_simp
     ring
+  exact hratio
+
+omit [Fintype ι] [DecidableEq ι] in
+/-- **The order-one frame source is differentially algebraic over `ℂ(z)`.** -/
+theorem differentialAlgebraicOver_frameSourceMero_singleton (ω : ι → ℂ)
+    (hω : ∀ i, 0 < (ω i).im) (i : ι) (hS : ({i} : Finset ι).Nonempty) :
+    DifferentialAlgebraicOver (RatFunc ℂ) (frameSourceMero ω hω ({i} : Finset ι) hS) := by
+  have hwim : 0 < (ω i).im := hω i
+  have hw0 : ω i ≠ 0 := by
+    intro h
+    rw [h] at hwim
+    simp at hwim
   have hDAdiff : DifferentialAlgebraicOver (RatFunc ℂ)
-      (frameSourceMero ω hω ({i} : Finset ι) hS - periodCotMero w) :=
+      (frameSourceMero ω hω ({i} : Finset ι) hS - periodCotMero (ω i)) :=
     differentialAlgebraicOver_of_hasPuncturedMeromorphicRep_ratio
-      (orderOneDenominator_ne_zero hw0) hratio
-  have hsum := differentialAlgebraicOver_add hDAdiff (differentialAlgebraicOver_periodCotMero w)
+      (orderOneDenominator_ne_zero hw0)
+      (hasPuncturedMeromorphicRep_frameSourceMero_singleton_sub ω hω i hS)
+  have hsum := differentialAlgebraicOver_add hDAdiff
+    (differentialAlgebraicOver_periodCotMero (ω i))
   simpa using hsum
 
 /-! ### The codimension-one face is annihilated -/

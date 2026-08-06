@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.StaticChoiForwardSpectralDimensionLaw
+import GaloisForLFunctions.RHTower.StaticChoiForwardWeightedCrowdingLaw
 import GaloisForLFunctions.RHTower.StaticQLocalComplexityHaarSeparationLaw
 
 /-!
@@ -63,6 +64,58 @@ theorem pauliBounded_forwardCircuitHardness_and_permanentHaarSeparation
   constructor
   · exact
       exists_forward_directAdaptivePaddedCircuitHardTime_of_spectralDimensionBudget
+        hdChoi (maximallyProjectiveEnergy_pauliBoundedChoiEnergy p hmax)
+        s target htarget r hr hT hδ hepsilon hepsilonOne hbudget
+  · intro t
+    simpa using (finiteQLocalAutonomousTransferSignal_gt_haarBenchmark
+      (Fin n) q (pauliBoundedHamiltonian p)
+      (pauliBoundedHamiltonian_ne_zero_of_maximallyProjective hn p hmax)
+      (pauliBoundedHamiltonian_hasPauliWeightAtMost p)
+      t (by simpa using hsep))
+
+theorem pauliBounded_forwardWeightedCircuitHardness_and_permanentHaarSeparation
+    (n q : ℕ) (hn : 0 < n) (hq : 2 ≤ q)
+    (p : Fin (Fintype.card (PauliBoundedLabel n q)) → ℝ)
+    (hp : p ∈ polynomialMatrixProjectiveGenericSet
+      (pauliBoundedFinPolynomialMatrix n q))
+    {gate : Type*} [Fintype gate] (s : ℕ)
+    (target : PaddedCircuitWord gate s →
+      EuclideanSpace ℂ
+        (Fin ((2 ^ n - 1) + 1) × Fin ((2 ^ n - 1) + 1)))
+    (htarget : ∀ w, ‖target w‖ = 1)
+    (r : ℕ) (hr : 0 < r) {T δ epsilon : ℝ}
+    (hT : 0 < T) (hδ : 0 < δ) (hepsilon : 0 ≤ epsilon)
+    (hepsilonOne : epsilon ≤ 1)
+    (hbudget :
+      (Fintype.card gate : ℝ) ^ (s + 1) *
+          ((r.factorial : ℝ) *
+              (((((2 ^ n - 1) + 1 : ℕ)) : ℝ))⁻¹ ^ r +
+            min 1 (T * δ)⁻¹) +
+          directAdaptiveChoiNearActionPartition target
+            (pauliBoundedChoiEnergy p) r δ <
+        (1 - epsilon ^ 2) ^ r)
+    (hsep :
+      Fintype.card (FiniteQLocalPauliLabel (Fin n) q) * 3 ^ q <
+        2 ^ n + 1) :
+    (∃ t ∈ Set.Ioc 0 (2 * T),
+      ∀ w : PaddedCircuitWord gate s,
+        t ∉ staticChoiTargetCaptureSet
+          (pauliBoundedChoiEnergy p) (target w) epsilon) ∧
+      ∀ t : ℝ,
+        1 / (((2 ^ n + 1 : ℕ) : ℝ)) <
+          productStabilizerTwoQueryProtocolSignal
+            (fun P : FiniteQLocalPauliLabel (Fin n) q => P.1)
+            (finiteQLocalPauliTransferMatrix (Fin n) q
+              (pauliBoundedHamiltonian p) t) := by
+  obtain ⟨-, -, -, hgeneric⟩ :=
+    pauliBounded_simple_and_projectivelyIndependent_generically n hq
+  have hmax := (hgeneric p hp).2
+  have hdChoi : 0 < (2 ^ n - 1) + 1 := by
+    have hpow : 0 < 2 ^ n := pow_pos (by omega) n
+    omega
+  constructor
+  · exact
+      exists_forward_directAdaptivePaddedCircuitHardTime_of_weightedCrowdingBudget
         hdChoi (maximallyProjectiveEnergy_pauliBoundedChoiEnergy p hmax)
         s target htarget r hr hT hδ hepsilon hepsilonOne hbudget
   · intro t

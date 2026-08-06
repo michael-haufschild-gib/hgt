@@ -235,6 +235,52 @@ theorem dzbarAt_dbarSliceSolution_of_compactSupport {G : (Fin n → ℂ) → ℂ
     (fun y => hC.comp (contDiff_updateEmbed k y))
     (fun y => hasCompactSupport_slice hcs k y) z
 
+
+/-- **The coordinatewise Cauchy transform is a convolution with the Cauchy kernel along a
+coordinate line.**  Written this way the singularity no longer moves with the parameter, which is
+what makes differentiation under the integral sign available in every direction. -/
+theorem dbarSliceSolution_eq_integral (G : (Fin n → ℂ) → ℂ) (k : Fin n) (y : Fin n → ℂ) :
+    dbarSliceSolution G k y
+      = ((Real.pi)⁻¹ : ℝ) • ∫ w : ℂ, G (y - Pi.single k w) / w := by
+  have hfun : (fun w : ℂ => G (Function.update y k (y k - w)) / w)
+      = fun w : ℂ => G (y - Pi.single k w) / w := by
+    funext w
+    congr 2
+    funext i
+    by_cases h : i = k <;> simp [Function.update, Pi.single, h]
+  rw [dbarSliceSolution, dbarSolution, hfun]
+
+
+/-- The norm of a single-coordinate vector. -/
+theorem norm_pi_single (k : Fin n) (w : ℂ) : ‖(Pi.single k w : Fin n → ℂ)‖ = ‖w‖ := by
+  refine le_antisymm ?_ ?_
+  · refine pi_norm_le_iff_of_nonneg (norm_nonneg w) |>.2 (fun i => ?_)
+    by_cases h : i = k
+    · subst h; simp
+    · simp [Pi.single_eq_of_ne h]
+  · have := norm_le_pi_norm (Pi.single k w : Fin n → ℂ) k
+    simpa using this
+
+/-- A radius outside which a compactly supported function and its derivative vanish. -/
+theorem exists_radius_pi {G : (Fin n → ℂ) → ℂ} (hcs : HasCompactSupport G) :
+    ∃ S : ℝ, 0 ≤ S ∧ (∀ x : Fin n → ℂ, S < ‖x‖ → G x = 0) ∧
+      ∀ x : Fin n → ℂ, S < ‖x‖ → fderiv ℝ G x = 0 := by
+  obtain ⟨S₁, hS₁⟩ := hcs.isBounded.subset_closedBall (0 : Fin n → ℂ)
+  obtain ⟨S₂, hS₂⟩ := (hcs.fderiv ℝ).isBounded.subset_closedBall (0 : Fin n → ℂ)
+  refine ⟨max (max S₁ S₂) 0, le_max_right _ _, ?_, ?_⟩
+  · intro x hx
+    refine image_eq_zero_of_notMem_tsupport (fun hc => ?_)
+    have h1 := hS₁ hc
+    simp only [Metric.mem_closedBall, dist_zero_right] at h1
+    have h2 : S₁ ≤ max (max S₁ S₂) 0 := le_trans (le_max_left _ _) (le_max_left _ _)
+    linarith
+  · intro x hx
+    refine image_eq_zero_of_notMem_tsupport (fun hc => ?_)
+    have h1 := hS₂ hc
+    simp only [Metric.mem_closedBall, dist_zero_right] at h1
+    have h2 : S₂ ≤ max (max S₁ S₂) 0 := le_trans (le_max_right _ _) (le_max_left _ _)
+    linarith
+
 end SlicewiseSolution
 
 end HTGeometry

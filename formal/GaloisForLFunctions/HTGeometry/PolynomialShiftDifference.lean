@@ -71,12 +71,11 @@ theorem fallPoly_comp_shift (a : ℂ) (k : ℕ) :
   have hterm : ∀ i : ℕ, (X - C ((i : ℂ) * a)).comp (X + C a)
       = X - C (((i : ℂ) - 1) * a) := by
     intro i
-    rw [sub_comp, X_comp, C_comp, map_mul, map_sub, map_one]
+    simp only [sub_comp, X_comp, mul_comp, C_comp, map_mul, map_sub, map_one]
     ring
   rw [Finset.prod_congr rfl fun i _ => hterm i, Finset.prod_range_succ']
   have hzero : X - C ((((0 : ℕ) : ℂ) - 1) * a) = X + C a := by
-    rw [map_mul, map_sub, map_one]
-    push_cast
+    rw [show (((0 : ℕ) : ℂ) - 1) * a = -a by push_cast; ring, map_neg]
     ring
   have hshift : ∀ i ∈ Finset.range k,
       X - C ((((i + 1 : ℕ) : ℂ) - 1) * a) = X - C ((i : ℂ) * a) := by
@@ -107,7 +106,7 @@ def shiftDiffPoly (a : ℂ) : Polynomial ℂ →ₗ[ℂ] Polynomial ℂ where
     simp only [add_comp]
     ring
   map_smul' c p := by
-    simp only [smul_comp, RingHom.id_apply, smul_eq_C_mul]
+    simp only [RingHom.id_apply, smul_eq_C_mul, mul_comp, C_comp]
     ring
 
 @[simp] theorem shiftDiffPoly_apply (a : ℂ) (p : Polynomial ℂ) :
@@ -143,7 +142,7 @@ theorem mem_range_of_degree_lt {a : ℂ} (ha : a ≠ 0) :
       set c : ℂ := p.coeff n with hc
       set q : Polynomial ℂ := p - C c * fallPoly a n with hq
       have hqdeg : q.degree < (n : WithBot ℕ) := by
-        refine degree_lt_iff_coeff_zero.mpr fun m hm => ?_
+        refine (degree_lt_iff_coeff_zero q n).mpr fun m hm => ?_
         have hmn : n ≤ m := by exact_mod_cast hm
         rw [hq, coeff_sub, coeff_C_mul]
         rcases eq_or_lt_of_le hmn with rfl | hlt

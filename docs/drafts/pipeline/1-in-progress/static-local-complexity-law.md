@@ -5139,3 +5139,35 @@ receive a new title and an independent significance audit.
   dimension into a quantitatively delayed/low-capacity complexity phase, or
   prove that local Hamiltonian ensembles avoid this branch at growing replica
   order.  Fixed-time quenched coefficient anti-concentration remains separate.
+- 2026-08-06 -- Converted the spectral-dimension occupation law into an
+  explicit future hard-time theorem.  If circuit entropy times the rank-form
+  replica floor and uniform-window remainder is below `(1-epsilon^2)^r`, some
+  `t in (0,2T]` misses every supplied depth-`s` Choi target.  Exact diagonal
+  phase translation removes the centered-window and inverse-closed-gate
+  loopholes while preserving norms and pure-state trace distance.  The
+  ordinary bounded-weight Pauli capstone proves, for the same generic static
+  `q`-local Hamiltonian, this future circuit-hard endpoint and strict
+  product-stabilizer two-query separation from the Haar benchmark at every
+  real time.  Lean modules:
+  `RHTower/StaticChoiForwardSpectralDimensionLaw.lean` and
+  `RHTower/StaticQLocalForwardComplexityHaarSeparationLaw.lean`.
+  This quantitatively connects O3 and O6 but does not close Brown--Susskind
+  timing: the live input is an ensemble-scale bound on
+  `replicaNearActionRank(E,r,delta)` at growing `r`, or a sharper weighted
+  crowding invariant that survives circuit entropy.
+- 2026-08-06 -- Removed the remaining worst-spectrum minimax loss from the
+  finite-window theorem.  `DirectAdaptiveStaticChoiWeightedCrowdingLaw.lean`
+  retains each target's exact diagonal-weight near-action mass and sums it
+  only after the adaptive circuit union.  The resulting resonance partition
+  `Z_r(C;E,delta)` gives
+  `(1-epsilon^2)^r P_shortcut <= |C|[r!d^-r+window]+Z_r`.
+  It is formally bounded by the prior degree-floor term and hence by the
+  spectral-rank term, so this is a genuine strengthening, not a renamed
+  invariant.  `StaticChoiForwardWeightedCrowdingLaw.lean` proves exact phase-
+  shift invariance of `Z_r` and a future hard endpoint in `(0,2T]` whenever
+  the weighted budget closes.  The bounded-weight Pauli same-Hamiltonian
+  capstone now pairs this stronger future-hardness certificate with permanent
+  strict separation from Haar by the local two-query witness.  Remaining
+  Brown--Susskind frontier: bound `Z_r` (or its ensemble quantiles) at growing
+  replica order for ordinary local Hamiltonians, then extract the physical
+  cut/plateau scale and matching low-complexity recurrence time.
