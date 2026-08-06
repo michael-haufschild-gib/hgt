@@ -35,41 +35,43 @@ def matQuadForm {κ : Type*} [Fintype κ] (M : Matrix κ κ ℂ) (x : κ → ℂ
 def rdiag {κ : Type*} [DecidableEq κ] (d : κ → ℝ) : Matrix κ κ ℂ :=
   Matrix.diagonal fun i => (d i : ℂ)
 
-variable {κ : Type*} [Fintype κ]
+variable {κ : Type*} [Fintype κ] [DecidableEq κ]
 
+omit [DecidableEq κ] in
+theorem matQuadForm_eq_sum (M : Matrix κ κ ℂ) (x : κ → ℂ) :
+    matQuadForm M x = ∑ i, star (x i) * (M *ᵥ x) i := rfl
+
+theorem star_mul_self_complex (z : ℂ) : star z * z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+  rw [show star z * z = ((starRingEnd ℂ) z) * z from rfl, RCLike.conj_mul]
+  norm_cast
+
+omit [DecidableEq κ] in
 theorem matQuadForm_congr (M A : Matrix κ κ ℂ) (x : κ → ℂ) :
     matQuadForm (Aᴴ * M * A) x = matQuadForm M (A *ᵥ x) := by
   rw [matQuadForm, matQuadForm, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec,
     Matrix.dotProduct_mulVec, ← Matrix.star_mulVec]
 
-theorem matQuadForm_one (x : κ → ℂ) : matQuadForm (1 : Matrix κ κ ℂ) x = ∑ i, star (x i) * x i := by
-  rw [matQuadForm, Matrix.one_mulVec]
-  rfl
-
 theorem matQuadForm_one_re (x : κ → ℂ) :
     (matQuadForm (1 : Matrix κ κ ℂ) x).re = ∑ i, ‖x i‖ ^ 2 := by
-  rw [matQuadForm_one, Complex.re_sum]
+  rw [matQuadForm_eq_sum, Complex.re_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [RCLike.conj_mul]
-  norm_cast
+  rw [Matrix.one_mulVec, star_mul_self_complex, Complex.ofReal_re]
 
-theorem matQuadForm_rdiag_re [DecidableEq κ] (d : κ → ℝ) (x : κ → ℂ) :
+theorem matQuadForm_rdiag_re (d : κ → ℝ) (x : κ → ℂ) :
     (matQuadForm (rdiag d) x).re = ∑ i, d i * ‖x i‖ ^ 2 := by
-  rw [matQuadForm, rdiag, Complex.re_sum]
+  rw [matQuadForm_eq_sum, Complex.re_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Matrix.mulVec_diagonal,
+  rw [rdiag, Matrix.mulVec_diagonal,
     show star (x i) * ((d i : ℂ) * x i) = ((d i : ℂ)) * (star (x i) * x i) from by ring,
-    RCLike.conj_mul]
-  norm_cast
+    star_mul_self_complex, ← Complex.ofReal_mul, Complex.ofReal_re]
 
-theorem matQuadForm_rdiag_le [DecidableEq κ] {d : κ → ℝ} {c : ℝ} (hd : ∀ i, d i ≤ c)
+theorem matQuadForm_rdiag_le {d : κ → ℝ} {c : ℝ} (hd : ∀ i, d i ≤ c)
     (x : κ → ℂ) :
     (matQuadForm (rdiag d) x).re ≤ c * (matQuadForm (1 : Matrix κ κ ℂ) x).re := by
   rw [matQuadForm_rdiag_re, matQuadForm_one_re, Finset.mul_sum]
-  exact Finset.sum_le_sum fun i _ => by
-    exact mul_le_mul_of_nonneg_right (hd i) (sq_nonneg _)
+  exact Finset.sum_le_sum fun i _ => mul_le_mul_of_nonneg_right (hd i) (sq_nonneg _)
 
-theorem matQuadForm_one_unitary {U : Matrix κ κ ℂ} [DecidableEq κ]
+theorem matQuadForm_one_unitary {U : Matrix κ κ ℂ}
     (hU : U ∈ Matrix.unitaryGroup κ ℂ) (x : κ → ℂ) :
     matQuadForm (1 : Matrix κ κ ℂ) (U *ᵥ x) = matQuadForm (1 : Matrix κ κ ℂ) x := by
   rw [← matQuadForm_congr]
@@ -143,8 +145,10 @@ theorem prod_le_of_compound_quadForm_le {k : ℕ} {P R S Z : Matrix ι ι ℂ} {
   have hnorm : (matQuadForm (1 : Matrix (Set.powersetCard ι k) (Set.powersetCard ι k) ℂ) u).re
       = 1 := by
     have hstar : (compound k Z)ᴴ ∈ Matrix.unitaryGroup (Set.powersetCard ι k) ℂ := by
-      rw [← Matrix.star_eq_conjTranspose]
-      exact unitary.star_mem hZC
+      rw [Matrix.mem_unitaryGroup_iff', Matrix.star_eq_conjTranspose,
+        Matrix.conjTranspose_conjTranspose]
+      rw [Matrix.mem_unitaryGroup_iff, Matrix.star_eq_conjTranspose] at hZC
+      exact hZC
     rw [hu, matQuadForm_one_unitary hstar, matQuadForm_one_re, he]
     rw [Finset.sum_eq_single s]
     · simp

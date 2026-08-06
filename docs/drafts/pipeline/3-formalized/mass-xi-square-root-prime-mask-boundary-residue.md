@@ -104,3 +104,5 @@ exact dilation identity and the resulting two-dimensional horizontal quotient cl
   covariance; numerical pre-certification matched pointwise and Fourier identities.
 - 2026-08-05 — exact masked `tsum`, summability, uniform bound, quotient equivalence, and RH
   capstone direct-pass in Lean; modules wired into `GaloisForLFunctions.RHTower`.
+- 2026-08-06 — targeted build passed `9480/9480`; capstone axiom audit contains only `propext`,
+  `Classical.choice`, and `Quot.sound`; forbidden-token scan clean.

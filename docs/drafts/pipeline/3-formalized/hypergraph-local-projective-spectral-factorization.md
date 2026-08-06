@@ -1,12 +1,12 @@
 # Arbitrary finite interaction hypergraphs have maximal generic component spectra
 
 - **ID:** `hypergraph-local-projective-spectral-factorization`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** DEPENDENCY-CLOSED PAPER PROOF / ALL FINITE INTERACTION ORDERS /
   GENERIC PROJECTIVE SPECTRUM
 - **Date:** 2026-07-30
-- **Status:** `[PAPER-PROVED] [SPECIALIST AUDIT OPEN]`
-  `[PRIORITY OPEN] [LEAN PROOF OPEN]`
+- **Status:** `[PAPER-PROVED] [LEAN PROOF CLOSED]`
+  `[SPECIALIST AUDIT OPEN] [PRIORITY OPEN]`
 - **Parents:**
   `arbitrary-graph-quantum-temporal-curvature-law.md`,
   `disconnected-local-spectral-factorization-genericity.md`
@@ -133,6 +133,71 @@ few-parameter subfamily may lie inside an exceptional relation variety.
 No paper-proof dependency remains. Exact-object priority and formalization
 remain open.
 
+## Lean formalization
+
+Unconditional; every theorem below has axioms `[propext, Classical.choice,
+Quot.sound]` only.  Four modules, all wired into `GaloisForLFunctions.HTGeometry`.
+
+`HTGeometry.HypergraphLocalHamiltonian`
+
+- `twoSection 𝔥` — two-section graph; `twoSection_adj_iff`,
+  `twoSection_reachable_of_mem_hyperedge`.
+- `hypergraphLocalSubmodule A 𝔥` — the exact real space \(\mathcal L_{\mathfrak H}\):
+  the real span of Hermitian operators `IsSiteSupported {v}` or `IsSiteSupported X`
+  for `X ∈ 𝔥`.  This is the stated support convention, so lower-body operators
+  inside a hyperedge are admissible.
+- `siteFactorLocalSubmodule_twoSection_le_hypergraphLocalSubmodule` — equation `(2)`.
+- `exists_maximallyProjective_mem_hypergraphLocalSubmodule` — connected witness.
+- `hypergraphLocalMaximalSet_dense_residual_fullMeasure`,
+  `anchoredTemporalRank_hypergraphLocalMatrix_eq`,
+  `injective_eigenvalues_hypergraphLocalMatrix` — the connected case:
+  `τ(H) = ∏_v q_v − 1` and simple spectrum, dense, residual, full measure in the
+  canonical coordinates of \(\mathcal L_{\mathfrak H}\).
+- `injective_of_maximallyProjectiveEnergy` — maximal projective rank ⟹ simplicity.
+
+`HTGeometry.HypergraphComponentFactorization`
+
+- `hypergraphComponents 𝔥` — component packets; disjointness, covering
+  (`biUnion_hypergraphComponents`, `prod_hypergraphComponents_prod`),
+  `hyperedge_subset_hypergraphComponentOf` (no admissible term crosses components).
+- `exists_hermitian_componentBlocks` — exact block decomposition of every
+  hyperedge-local Hamiltonian over the components.
+- `anchoredTemporalRank_eq_sum_hypergraphComponents` — equation `(1)`.
+- `injective_eigenvalues_of_componentProjectivelyIndependent` — simple total
+  spectrum from transverse component gap modules.
+
+`HTGeometry.ConcatenatedSpectrumScaleShiftWitness`
+
+- `exists_scale_shift_concatenated_linearIndependent`,
+  `exists_scale_shift_concatenated_maximallyProjective` — independently scaling
+  and shifting maximally projective component spectra makes the concatenation
+  carry no nonzero integer relation.  This is the transverse witness of §3 and
+  the input the block-diagonal genericity theorem had never been given.
+
+`HTGeometry.HypergraphComponentWitness`
+
+- `blockLocalSubmodule A 𝔥 P` — block space of one component; contains the
+  identity (`one_mem_blockLocalSubmodule`), so component spectra shift freely.
+- `siteFactorLocalSubmodule_le_blockLocalSubmodule`,
+  `exists_maximallyProjective_mem_blockLocalSubmodule` — component witness.
+
+`HTGeometry.HypergraphProjectiveSpectralFactorization`
+
+- `hypergraphHamiltonian A 𝔥 p`, `hypergraphBlock A 𝔥 c p` — the exact affine
+  parameterization of \(\mathcal L_{\mathfrak H}\) split by component;
+  `hypergraphHamiltonian_eq_sum_lift`, `exists_hypergraphHamiltonian_eq`
+  (the coordinates exhaust the space).
+- `exists_witness_hypergraphBlock` — the transverse witness parameter.
+- `hypergraphComponentGenericSet_dense_residual_fullMeasure` — dense, residual,
+  full Lebesgue measure.
+- `anchoredTemporalRank_hypergraphHamiltonian_eq_sum` — equation `(1)`:
+  `τ(H) = ∑_{C ∈ π₀(𝔥)} (∏_{v ∈ C} q_v − 1)`.
+- `injective_eigenvalues_hypergraphHamiltonian` — simple spectrum.
+
+The only hypotheses are the ones in the statement: `V` finite, `q_v ≥ 2`, and
+`𝔥` a finite family of site packets.  Hyperedge sizes, interaction order, vertex
+degrees and geometry are unconstrained.
+
 ## Gates
 
 - [x] exact support convention
@@ -140,7 +205,7 @@ remain open.
 - [x] connected component witness
 - [x] larger-space genericity
 - [x] disconnected factorization
-- [ ] exact Lean formalization
+- [x] exact Lean formalization
 - [ ] exact-object priority audit
 - [ ] independent specialist review
 

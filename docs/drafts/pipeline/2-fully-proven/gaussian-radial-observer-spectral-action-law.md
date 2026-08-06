@@ -236,10 +236,47 @@ supply this estimate.
 
 ## Formalization gate
 
-The paper proof is dependency-closed.  The exact scalar-Gaussian finite
-spectral-packet identity and zero-action limit are formalized in
+The paper proof is dependency-closed.  Equations `(2)`, `(3)`, `(5)`--`(10)` are
+now closed unconditionally in Lean 4 (axioms: `propext`, `Classical.choice`,
+`Quot.sound`).
+
+| Card item | Lean module | Declaration |
+|---|---|---|
+| `(2)` radial density `ρ_m` | `HTGeometry/GaussianRadialPolarLaw.lean` | `gaussianRadialDensity`, `gaussian_polar_constant` |
+| `(10)` Gaussian polar disintegration | same | `integral_stdGaussian_fun_norm` |
+| radial Fourier kernel `ρ̂_m` | `HTGeometry/GaussianRadialActionKernel.lean` | `radialActionKernel`, `radialActionKernel_eq_integral_stdGaussian`, `radialActionKernel_zero`, `tendsto_radialActionKernel_cocompact` |
+| `(7)` exact transfer law, packet form | `HTGeometry/GaussianRadialSpectralPacket.lean` | `radialSpectralPacket`, `integral_radialSpectralPacket` |
+| `(8)` zero-action completion, packet form | same | `tendsto_integral_radialSpectralPacket_atTop` |
+| `(5)` replica detuning, `(6)` replica coefficient | `HTGeometry/ReplicaReporterSpectralExpansion.lean` | `replicaDetuning`, `replicaCoefficient`, `replicaReporter_spectral_expansion` |
+| `(7)`, `(9)` operator form | same | `integral_replicaReporter_radial` |
+| `(8)` operator form, Haar/mean value | same | `bohrMean_replicaReporter`, `tendsto_integral_replicaReporter_radial_bohrMean` |
+| `(3)` for every continuous almost periodic reporter | `HTGeometry/GaussianRadialCompletionLaw.lean` | `tendsto_integral_radial_bohrMean` |
+| `(3)` angular mixture | same, and `HTGeometry/GaussianRadialAngularMixture.lean` | `tendsto_integral_radial_bohrMean_angularMixture`, `tendsto_integral_replicaReporter_angularMixture` |
+
+Supporting infrastructure built for this card, absent from `Mathlib`: the density
+of the standard Gaussian against Lebesgue measure
+(`HTGeometry/GaussianRadialLaw.lean`, `stdGaussian_eq_withDensity`, via
+`measure_pi_gaussianReal_eq_withDensity` and `map_withDensity_measurableEquiv`),
+the contraction and continuity of the radial kernel, and the general multilinear
+expansion of an operator string (`quditStringOf_sum_family`).
+
+The scalar-clock parent layer remains in
 `HTGeometry/GaussianSpectralPacketActionLaw.lean`; see
-`../3-formalized/gaussian-spectral-packet-action-law.md`.  Gaussian polar
-disintegration and the weak-limit mixture remain to be formalized.  The
-parent shortcut-action inequality remains unauthorized until the angular
-selector-uniform theorem is proved.
+`../3-formalized/gaussian-spectral-packet-action-law.md`.
+
+Two presentation conventions are used, both faithful to the paper proof:
+
+1. The Haar average `∫_{G_ω} F(gΦ) dν_ω(g)` over the compact monothetic closure
+   of the one-parameter group is realized as the Bohr mean value `bohrMean` of
+   the pullback `s ↦ F([e^{-isH(ω)}Φ])`.  These are the same number; the
+   construction of `G_ω` as a topological group carrying `ν_ω`, and the
+   identification of its Haar integral with `bohrMean`, are not yet formalized.
+2. Equation `(3)` is proved for every continuous Bohr almost periodic reporter
+   admitting a Bochner--Fejér trigonometric approximation — the class the paper
+   proof uses.  The corpus supplies the approximation itself in
+   `HTGeometry/BohrBochnerFejerApprox.lean` (`exists_trigPoly_spectrum_approx`).
+
+Still open: equation `(4)` — assembling `μ_∞` as a Borel measure on projective
+state space by Riesz representation and deducing the continuity-set statement
+from portmanteau.  The parent shortcut-action inequality remains unauthorized
+until the angular selector-uniform theorem is proved.

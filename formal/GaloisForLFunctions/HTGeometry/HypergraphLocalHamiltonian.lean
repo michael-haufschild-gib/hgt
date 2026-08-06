@@ -175,6 +175,37 @@ theorem exists_maximallyProjective_mem_hypergraphLocalSubmodule
     siteFactorLocalSubmodule_twoSection_le_hypergraphLocalSubmodule A 𝔥 hmem,
     hmax⟩
 
+/-! ### Maximal projectivity forces a simple spectrum -/
+
+/-- **Maximal projective rank forces distinct levels.**  A repeated level is a
+balanced integer relation with two nonzero coefficients. -/
+theorem injective_of_maximallyProjectiveEnergy
+    {I : Type*} [Fintype I] [DecidableEq I] {energy : I → ℝ}
+    (hmax : MaximallyProjectiveEnergy energy) : Function.Injective energy := by
+  intro a b hab
+  by_contra hne
+  have hzero := hmax (fun i => (if i = a then 1 else 0) - if i = b then 1 else 0)
+    (by
+      show (∑ i, ((if i = a then (1 : ℤ) else 0) - if i = b then 1 else 0)) = 0
+      rw [Finset.sum_sub_distrib, Finset.sum_ite_eq' Finset.univ a fun _ => (1 : ℤ),
+        Finset.sum_ite_eq' Finset.univ b fun _ => (1 : ℤ)]
+      simp)
+    (by
+      have hexpand : ∀ i : I,
+          (((if i = a then (1 : ℤ) else 0) - if i = b then 1 else 0 : ℤ) : ℝ) *
+              energy i =
+            (if i = a then energy i else 0) - if i = b then energy i else 0 := by
+        intro i
+        by_cases hia : i = a <;> by_cases hib : i = b <;>
+          simp [hia, hib, hne, Ne.symm hne]
+      rw [Finset.sum_congr rfl fun i _ => hexpand i, Finset.sum_sub_distrib,
+        Finset.sum_ite_eq' Finset.univ a energy,
+        Finset.sum_ite_eq' Finset.univ b energy]
+      simp [hab])
+  have ha := congrFun hzero a
+  rw [if_pos rfl, if_neg hne] at ha
+  simp at ha
+
 /-! ### Canonical coordinates of the hyperedge-local space -/
 
 /-- Canonical Hermitian basis generators of the hyperedge-local space. -/
@@ -280,6 +311,16 @@ theorem anchoredTemporalRank_hypergraphLocalMatrix_eq
     (hypergraphLocalMatrix_isHermitian A 𝔥 p).eigenvalues
     (maximallyProjective_of_mem_hypergraphLocalMaximalSet A 𝔥 p hp) r,
     Fintype.card_pi]
+
+/-- **Connected hypergraph spectral simplicity.**  At every coordinate of the
+generic set the hyperedge-local Hamiltonian has a simple spectrum. -/
+theorem injective_eigenvalues_hypergraphLocalMatrix
+    (𝔥 : Finset (Finset V))
+    (p : Fin (Module.finrank ℝ (hypergraphLocalSubmodule A 𝔥)) → ℝ)
+    (hp : p ∈ hypergraphLocalMaximalSet A 𝔥) :
+    Function.Injective (hypergraphLocalMatrix_isHermitian A 𝔥 p).eigenvalues :=
+  injective_of_maximallyProjectiveEnergy
+    (maximallyProjective_of_mem_hypergraphLocalMaximalSet A 𝔥 p hp)
 
 end
 

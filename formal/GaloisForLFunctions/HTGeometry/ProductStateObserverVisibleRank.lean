@@ -76,6 +76,16 @@ def stringVacTarget (a : σ → Fin D × Fin D) : σ → Fin D :=
 noncomputable def stringVacCoeff (a : σ → Fin D × Fin D) : ℂ :=
   ∏ i, localVacCoeff (a i)
 
+/-- A string acts on the product ground state through the ground column of each
+local factor. -/
+theorem quditStringOf_mulVec_vacuum_apply (M : σ → Matrix (Fin D) (Fin D) ℂ)
+    (r : σ → Fin D) :
+    (quditStringOf M *ᵥ (quditVacuum : (σ → Fin D) → ℂ)) r = ∏ i, M i (r i) 0 := by
+  simp only [Matrix.mulVec, dotProduct, quditVacuum, configBasis_apply]
+  rw [Finset.sum_eq_single (fun _ : σ => (0 : Fin D))
+    (fun b _ hb => by rw [if_neg hb, mul_zero])
+    (fun h => absurd (Finset.mem_univ _) h), if_pos rfl, mul_one, quditStringOf_apply]
+
 /-- **Product ground action.**  A Hermitian string sends the product ground state
 to a multiple of a single configuration basis vector. -/
 theorem quditString_mulVec_vacuum (a : σ → Fin D × Fin D) :
@@ -83,12 +93,9 @@ theorem quditString_mulVec_vacuum (a : σ → Fin D × Fin D) :
       = stringVacCoeff a • configBasis (stringVacTarget a) := by
   funext r
   have hlhs : (quditString a *ᵥ (quditVacuum : (σ → Fin D) → ℂ)) r
-      = quditString a r (fun _ => 0) := by
-    simp only [Matrix.mulVec, dotProduct, quditVacuum, configBasis_apply]
-    rw [Finset.sum_eq_single (fun _ : σ => (0 : Fin D))
-      (fun b _ hb => by rw [if_neg hb, mul_zero])
-      (fun h => absurd (Finset.mem_univ _) h), if_pos rfl, mul_one]
-  rw [hlhs, Pi.smul_apply, configBasis_apply, smul_eq_mul, quditString_apply]
+      = ∏ i, quditHermUnit (a i) (r i) 0 :=
+    quditStringOf_mulVec_vacuum_apply _ r
+  rw [hlhs, Pi.smul_apply, configBasis_apply, smul_eq_mul]
   simp only [stringVacCoeff]
   rw [Finset.prod_congr rfl (fun i (_ : i ∈ Finset.univ) =>
     quditHermUnit_apply_ground (a i) (r i))]

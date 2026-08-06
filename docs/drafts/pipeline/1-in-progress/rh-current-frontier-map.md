@@ -6259,3 +6259,91 @@ Mixed cost, row supply, pool entropy, source-support deletion, central grade, an
 proved.  Do not replace the three remaining physical statements by global target counts, label
 normalization, static sector cancellation, Mertens prefix energy, or a complete-bipartite flow;
 each is already classified as theatre or as an RH-bearing restatement.
+
+## 2026-08-06 Route E corpus-growth reorientation
+
+Route E is still open.  The corpus growth closes several major auxiliary programmes but does not
+produce `OPEN-SOURCE-001`:
+
+- the squarefree Gibbs gas now has a complete finite-volume dictionary, arithmetic anchor,
+  infinite-volume truncation bridge, exact condensation identity, and exact scale-defect
+  decomposition;
+- the corpus owns an unconditional exponent-one zero-free region, an
+  `exp(-c (log X)^(1/3))` Möbius bound, and an `exp(-c sqrt(log X))` Chebyshev/PNT bound;
+- the Littlewood derivative-test programme reaches the line bound and a moving-order rectangle,
+  but its MR consumer controls fluctuations only after subtracting the coherent block mean;
+- the fixed-current Möbius/von-Mangoldt transport weld is formalized, but its charged anti-causal
+  codifferential/nonexpansive landing remains unproved.
+
+None of these statements bounds the all-prime coherent Möbius current at strict-half strength.
+In particular, the Gibbs card's `STATUS: complete` means its structural programme is complete; it
+does not mean Route E or RH is complete.
+
+### New exact source law
+
+The scale defect is no longer an unnamed remainder.  For
+
+\[
+ \psi_S(x)=J_S(x)/Z_S(x),\qquad
+ C_S(x)=\operatorname{CovNum}_{S,x}((-1)^{|T|},E(T)),
+\]
+
+the new paper- and Lean-proved theorem
+`ROUTE-E-GIBBS-PARITY-ENERGY-DEFECT-001` gives
+
+\[
+ \psi_S'(x)=-C_S(x)/Z_S(x)^2,
+\qquad
+ \Delta_{S,p}(x)=Z_S(x)Z_S(px)
+   \int_x^{px}-C_S(t)/Z_S(t)^2\,dt.                     \tag{E-COV}
+\]
+
+Its free-boundary jet is exact:
+
+\[
+ \Delta_{S,p}'(0)
+ =(p-1)2^{|S|}(-1)^{|S|+1}\prod_{q\in S}(q-1).          \tag{E-JET}
+\]
+
+For natural prime apertures this is positive at odd volume and negative at even volume.  Therefore
+uniform sign-definite covariance, monotone prime insertion, and termwise-positive defect production
+are dead source mechanisms.  The all-prime source must exploit signed cofinal cancellation across
+alternating finite volumes; absolute values erase the needed effect.
+
+### Current proof route
+
+1. Choose a moving prime aperture large enough that the proved geometric tail bridge is below
+   strict-half scale.
+2. Use the exact insertion recurrence to split normalized-current evolution into the
+   `(log(1/x))^-2` scale-invariant contraction baseline and defect forcing.
+3. Replace every forcing term by the exact parity--energy covariance integral `(E-COV)`.
+4. Prove a **cofinal signed covariance accumulation theorem**: after the recurrence weights and
+   moving-aperture normalization are retained, the full alternating defect contribution leaves
+   `|J|/Z <= x^(1/2-o(1))`.
+5. Apply the existing infinite-volume bridge and strict-half Möbius--Laplace consumer to obtain RH.
+
+Step 4 is the first genuinely unproved implication in this route.  It is stronger and more precise
+than “bound `Delta`”: it names the source statistic, its integration intervals, partition weights,
+and unavoidable volume-sign alternation.
+
+### Open obstacles
+
+1. **Cofinal covariance accumulation.**  No theorem controls the signed weighted sum of `(E-COV)`
+   at the moving physical aperture.  This is the current Gibbs hard core.
+2. **Nonuniform finite-volume jets.**  `(E-JET)` grows like
+   `2^|S| * product(q-1)`; fixed-aperture Taylor estimates cannot be interchanged with the all-prime
+   limit.
+3. **Coherent low-frequency blindness.**  MR/mean-square inputs yield local sign density but
+   explicitly leave the block-mean mode uncontrolled.  They can support incidence, not Step 4.
+4. **Physical Hall alternative.**  The explicit relation `R_X^gr` remains valid, but
+   `ENTROPY-SPREAD-GRADE-RECURRENT-CUBE-CAPACITY` still lacks cross-anchor incoming-load control,
+   interval Hall after collision quotienting, and nonnegative co-moving seam-flux weights.  No
+   current theorem derives these from `(E-COV)` or conversely.
+5. **Operator alternative.**  The fixed-current transport route still needs the charged
+   anti-causal codifferential to be closed/nonexpansive and to land on `ell_E`; current transport
+   identities do not prove this estimate.
+
+Hence proof route remains open, but frontier has moved: sector stability, generic zero-free-region
+quality, and an opaque `Delta` are no longer the question.  The exact open source is signed cofinal
+parity--energy covariance accumulation, with the Hall and operator seams as separate alternative
+realizations of the same missing coherent mode.

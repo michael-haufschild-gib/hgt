@@ -774,3 +774,64 @@ Added keywords **de Branges**, **large sieve**.  Nothing adoptable:
 Remaining unused keywords: perfectoid, motivic, condensed, Frobenius, Weyl, trace formula,
 exponential sums, random matrix, ergodic, entropy, positivity, Berkovich, operad, moduli,
 Langlands, Eisenstein, theta, crystalline.
+
+## Downstream: θ and π inherit the exponent
+
+The width-`1/log` contour's conclusion is stated for `ψ`.  Both classical companions now carry the
+same error term, unconditionally.
+
+**θ** — `RHTower/Sieve/ChebyshevThetaBigO.lean`:
+
+```
+RHTower.Sieve.chebyshevTheta_sub_id_isBigO :
+  ∃ c > 0,  (Chebyshev.theta - id)  =O[atTop]  fun x => x · exp( -c · √(log x) )
+```
+
+The corpus already owned `Chebyshev.abs_psi_sub_theta_le_sqrt_mul_log : |ψ x - θ x| ≤ 2√x·log x`.
+What had to be proved is that this correction sits below the contour's own error
+(`sqrt_mul_log_le_shape`): writing `L = log x`, `2L·exp(c√L) ≤ √x` splits as `2L ≤ x^{1/4}` (from
+`isLittleO_log_rpow_atTop`, which lives at the **root**, not under `Real`) and
+`exp(c√L) ≤ exp(L/4) = x^{1/4}` (valid once `L ≥ 16c²`).
+
+**π** — `RHTower/Sieve/PrimeCountingBigO.lean`:
+
+```
+RHTower.Sieve.primeCounting_sub_logIntegral_isBigO :
+  ∃ c > 0,  (fun x => π(⌊x⌋) - ∫_{[2,x]} dt/log t)
+              =O[atTop]  fun x => x · exp( -c · √(log x) )
+```
+
+This refines PNTPlus's `pi_asymp` / `pi_alt` / `pi_alt'`, all of which are qualitative
+(`c =o[atTop] 1`), to a rate against the logarithmic integral.
+
+Two PNTPlus assets carried the whole passage and must not be rebuilt:
+
+- `pi_asymp_aux : π(⌊x⌋) = θ(x)/log x + ∫_{[2,x]} θ(t)·(t log²t)⁻¹` — the partial summation;
+- `integral_log_inv'' : 2/log 2 + ∫_{[2,x]} (log t)⁻¹ = x/log x + ∫_{[2,x]} (log t)⁻²` — the main
+  term reassembling into the logarithmic integral.
+
+`chebyshev_asymptotic''` supplies `f` with `θ(x) = x(1 + f(x))` **together with its integrability
+on every `[2,x]`**, which is what makes the integral split legitimate; deriving integrability of a
+`θ`-based integrand from scratch would have been the expensive part.
+
+## The reusable brick
+
+`RHTower/Sieve/SqrtLogDecayIntegral.lean` is stated for an arbitrary integrand, so any later
+`exp(−c√(log t))`-weighted integral can use it:
+
+```
+RHTower.Sieve.exists_bound_setIntegral_sqrt_log_decay :
+  0 < c → 0 ≤ K →
+  (∀ x ≥ 2, IntegrableOn g [2,x]) →
+  (∀ᶠ t, |g t| ≤ K·exp(-c√(log t))) →
+  ∃ C ≥ 0, ∀ᶠ x,  |∫_{[2,x]} g|  ≤  C · x · exp( -(c/2)·√(log x) )
+```
+
+**The halving is intrinsic.**  Split at `√x`: below it the weight is only bounded by `1` and the
+interval is `√x` long; above it the weight is at most `exp(−c√(log √x)) = exp(−(c/√2)√(log x))`.
+No pure-power majorant `exp(−c'√(log x))·(t/x)^α` can avoid the split — at `t ≈ 2` the left side is
+`≈ 1` while the majorant is `≈ 0`, so it fails at the bottom for every `α`.  The bottom's true
+contribution is only `√x`, which is why the split is cheap but unavoidable.
+
+Also proved there: `sqrt_log_sqrt_le` (`√(log x)/2 ≤ √(log t)` for `t ≥ √x` — the `√2` at the split
+point is spent down to `2`, which keeps the arithmetic rational).

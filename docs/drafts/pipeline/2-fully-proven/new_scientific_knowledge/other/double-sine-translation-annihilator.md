@@ -249,6 +249,58 @@ F_P is DA
 Thus net multiplicity is the complete differential-algebraic invariant of every finite structural
 translate product.
 
+### Unconditional Lean formalization
+
+Three modules now carry the theorem's machine-checked content, all axiom-clean (`propext`,
+`Classical.choice`, `Quot.sound` only).
+
+`GaloisForLFunctions.HTGeometry.MultiplicativeOrbitNonSummability` builds the multiplicative
+dilation `X |-> qX` of `C(X)` as the localization of the polynomial substitution `p |-> p(qX)`,
+proves the exact regularity transport `RegularAt (sigma_q g) w <-> RegularAt g (qw)`, generalizes
+the additive orbit obstruction of `RationalNonSummability` to an arbitrary injective orbit
+`orb : Z -> C`, and specializes it to the multiplicative orbit. The capstone
+`not_dilationTelescoped_of_unique_multOrbit_pole` is the orbit-balance obstruction of the section
+"Multiplicative-orbit residue obstruction": a rational function with exactly one pole on
+`p_0 q^Z` is not `h(qX) - h(X)` for any rational `h`. The module also proves
+`exp_two_pi_I_zpow_ne_one`: an irrational rotation number gives a non-torsion multiplier, which is
+exactly why `q = exp(2 pi i omega_1/omega_2)` is not a root of unity.
+
+`GaloisForLFunctions.HTGeometry.DoubleSineOrbitResidueObstruction` supplies the pole computation.
+It proves the exact numerator recursion `f (X-1)^k = p  ==>  f' (X-1)^(k+1) = p'(X-1) - k p`, hence
+that the Euler operator `delta = X d/dX` raises the pole order at `X = 1` by exactly one; iterating
+on `b(X) = c (X+1)/(X-1)` gives `A(b) (X-1)^(r+1)` a polynomial whose value at `1` is
+`a_r` times a nonzero constant. Therefore `A(b)` has a pole at `1` and is regular everywhere else,
+so it has exactly one pole on `q^Z`. The capstone
+`not_dilationTelescoped_ratFuncEulerCombination_cotModel` (and its period form
+`not_dilationTelescoped_irrationalPeriodRatio`) is equation (5) of the descent: no rational `h`
+satisfies `h(qX) - h(X) = A(b)(X)`. This is the analytic contradiction of the hypertranscendence
+proof, formalized without hypotheses beyond `q` non-torsion, `c != 0`, `a_r != 0`.
+
+`GaloisForLFunctions.HTGeometry.DoubleSineAugmentationAnnihilator` formalizes (6)-(9) as an exact
+theorem about any source with the double-sine step property. For `Psi` with every single-period
+defect `T_j Psi - Psi` differentially algebraic and `Psi` itself hypertranscendental,
+
+```text
+differentialAlgebraicOver_transApply_iff_augMap_eq_zero :
+  Q Psi is DA over C(z)  <->  augMap Q = 0,
+daTranslationAnnihilator_eq_augIdeal :
+  {Q | Q Psi is DA} = (T_1-1, ..., T_N-1),
+differentialAlgebraicOver_transApply_iff_sum_coeff_eq_zero :
+  Q Psi is DA  <->  sum of coefficients of Q = 0,
+not_differentialAlgebraicOver_transApply_monomial :
+  no nonzero single translate is DA.
+```
+
+The last two are (9) and (8): total exponent is the complete differential-algebraic invariant, and
+every structural translate represents the same nonzero class. Compare
+`differentialAlgebraicOver_transApply_barnesSource_iff`, whose annihilator is the principal ideal
+`(prod_j (T_j - 1))`: the two Lean theorems exhibit the reflection-induced collapse of
+`R/(x_1 x_2)` to `R/(x_1, x_2)` as a comparison of two proved annihilators, not as an analogy.
+
+Still not formalized: the construction of the double sine itself, the several-translation
+telescoping theorem, and the two-cylinder coefficient field separation, i.e. the reduction of the
+hypertranscendence statement to equation (5).
+
 ### Formalization of the algebraic core
 
 The abstract algebraic content of (9) — that the operator annihilator modulo DA is the augmentation
@@ -341,8 +393,12 @@ significant new classification or a routine synthesis once the question is posed
 2. Only structural translations are classified.
 3. Coefficients of translation operators are constant.
 4. The proof inherits the independent-audit obligation of the paired telescoping theorem.
-5. No unconditional Lean formalization of double sine or several-translation differential Galois
-   theory exists in the current tree; formalizing only (6) would be theatre.
+5. The double sine itself and the several-translation parameterized telescoping theorem are not
+   yet Lean objects. What is Lean-proved unconditionally is the algebraic skeleton on both ends:
+   the multiplicative-orbit residue obstruction that kills the descended `q`-difference equation,
+   and the exact augmentation annihilator with its total-exponent classification, stated for any
+   source with the double-sine step property. The missing Lean link is the reduction of the first
+   to the second.
 
 ## Gates
 
@@ -359,4 +415,9 @@ significant new classification or a routine synthesis once the question is posed
 - [ ] independent audit of paired telescoping and specialization;
 - [ ] exact/equivalent/stronger literature search;
 - [ ] independent significance and novelty verdict;
-- [ ] unconditional analytic formalization in Lean.
+- [x] multiplicative-orbit residue obstruction formalized unconditionally in Lean;
+- [x] Euler-operator pole computation for the cotangent model formalized unconditionally in Lean;
+- [x] exact augmentation-ideal annihilator and total-exponent classification formalized
+  unconditionally in Lean;
+- [ ] Lean reduction of hypertranscendence to the descended `q`-difference equation (double sine
+  construction, several-translation telescoping, two-cylinder separation).

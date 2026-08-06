@@ -152,11 +152,16 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
   flat is the Euclidean distance of their weights
 - [x] inversion is the geodesic symmetry: `log (P⁻¹) = − log P`, so an observer metric and its
   inverse are at the same distance from the reference metric
-- [x] the distance between two observer metrics is defined and separates them; only its triangle
-  inequality (the nonpositive-curvature theorem) is still open
-- [ ] 2 -> 3: parent reconstruction core formalized; the Tits boundary of `SL_N(C)/SU(N)` as a
-  metric object (symmetric-space distance, geodesic asymptote classes, Tits metric) is still
-  unavailable in Lean, so `(3)` itself is not encoded
+- [x] the distance between two observer metrics is defined and separates them
+- [x] the triangle inequality for that distance — the nonpositive-curvature theorem for the
+  observer-metric space — proved unconditionally in Lean
+- [x] symmetry of that distance, and the packaged `MetricSpace` instance on the observer metrics:
+  the symmetric-space distance of `X_N` now exists in Lean as a metric object
+- [x] for that metric: a maximal flat is an isometric Euclidean space, and the rays `(4)` are
+  geodesic lines with `d (exp (s T)) (exp (t T)) = |t - s| ‖T‖`
+- [ ] 2 -> 3: parent reconstruction core formalized; the *asymptotic* layer of the Tits boundary of
+  `SL_N(C)/SU(N)` (geodesic asymptote classes and the Tits metric on them) is still unavailable in
+  Lean, so `(3)` itself is not encoded
 - [ ] 3 -> 4: external audit in symmetric spaces and projective differential invariants
 
 ## References
@@ -558,3 +563,152 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
   still missing — and it is now the *only* missing analytic input for `(3)` — is its **triangle
   inequality**, which for this distance is precisely the nonpositive-curvature (CAT(0)) theorem for
   the symmetric space, together with the Tits metric that is built from it on the boundary.
+
+- 2026-08-06 — **The triangle inequality is proved: the observer-metric distance is a metric.**
+  Four new modules under `formal/GaloisForLFunctions/HTGeometry/`, all in the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  MatrixCompound.lean            compound k A, Cauchy-Binet, star, unit, diagonal, unitary
+  CompoundKyFan.lean             prod_le_mul_of_compound  (multiplicative Ky Fan for a pencil)
+  TopSumMajorization.lean        topSum, Karamata for the square, sqrt_sum_sq_le_of_topSum_le
+  ObserverTriangleInequality.lean  observerDist_triangle
+  ```
+
+  ```text
+  observerDist hP hn hR ≤ observerDist hP hn hQ + observerDist hQ hn hR
+  ```
+
+  for arbitrary positive-definite Hermitian `P`, `Q`, `R`, with no further hypotheses.  This was
+  the last missing analytic input of `(3)`, and it is the nonpositive-curvature statement for
+  `X_N`: with `observerDist_eq_zero_iff` the space of observer metrics now carries a genuine
+  point-separating distance obeying the triangle inequality.
+
+  **The proof is elementary and calculus-free**, which is the part worth recording.  The classical
+  route (Bhatia) is Riemannian: the exponential-metric-increasing property, proved from the
+  Daleckii--Krein derivative of `exp`, plus the identification of the distance with an infimum of
+  path lengths.  Mathlib has no Fréchet derivative of the operator exponential, so that route was
+  rejected.  The Golden--Thompson / Araki log-majorization route was rejected too, and for a
+  mathematical reason rather than a formalisation one: it runs the *other* way, giving
+  `‖H + K‖ ≤ ‖log (e^(H/2) e^K e^(H/2))‖`, which is the exponential-metric-increasing inequality,
+  not the triangle inequality; the reverse comparison `‖log (e^(H/2)e^Ke^(H/2))‖ ≤ ‖H+K‖` is false.
+
+  What works instead is the multiplicative Ky Fan inequality.  Write `λ(P,Q)` for the spectrum of
+  the pencil, that is the eigenvalues of `√P⁻¹ Q √P⁻¹`, so that
+  `observerDist P Q = ‖log λ(P,Q)‖₂` (`distId_eq_sqrt`).  Then:
+
+  1. for positive-definite forms, `x* Q x ≤ a · x* P x` and `x* R x ≤ b · x* Q x` compose to
+     `x* R x ≤ ab · x* P x` — a chain of quadratic-form inequalities and nothing else;
+  2. run that chain on the `k`-th compound, where a product of `k` eigenvalues becomes a single
+     one: `∏_(i<k) λ↓(P,R) ≤ ∏_(i<k) λ↓(P,Q) · ∏_(i<k) λ↓(Q,R)`;
+  3. at `k = N` the inequality is an equality, by multiplicativity of the determinant;
+  4. so `log λ(P,R)` is *majorized* by `log λ(P,Q)↓ + log λ(Q,R)↓`, and Karamata's inequality for
+     the square — one summation by parts, with the antitone weights `a i + v i` — gives the
+     Euclidean comparison, which is the triangle inequality.
+
+  Mathlib has none of Cauchy--Binet, an inner product on exterior powers, or majorization theory.
+  The compound is therefore defined as the matrix of `exteriorPower.map`, which makes
+  **Cauchy--Binet a corollary of functoriality**; the minor formula
+  `exteriorPower.ιMultiDual_apply_ιMulti` then gives `C_k (Aᴴ) = C_k(A)ᴴ`, which is what makes the
+  compound of a unitary unitary and the compound of a Hermitian form Hermitian.  The pencil
+  statements are all phrased through *explicit* unitary diagonalisations supplied as hypotheses,
+  so no eigenvalue-multiset uniqueness is ever needed and the operator-to-matrix bridge
+  (`obsMat`, `invSqrtMat`) is mechanical.
+
+- 2026-08-06 — **The observer metrics are a metric space, in mathlib's sense.**
+  Two further modules, in the `HTGeometry` umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  ObserverDistanceSymmetry.lean       observerDist_comm, distId_swap, distId_eq_sqrt_of_diagonal
+  ObserverMetricSpaceStructure.lean   ObserverMetric, instance : MetricSpace (ObserverMetric E)
+  ```
+
+  Symmetry was the one axiom of a metric that the card had not recorded as needed, and it is not
+  formal: `observerDist P Q` and `observerDist Q P` are read off *different* frames.  What
+  identifies them is that the relative form of the reversed pair is the inverse of the relative
+  form up to a change of frame:
+
+  ```text
+  √P (√Q⁻¹ √Q⁻¹ √P)  =  (√P⁻¹ Q √P⁻¹)⁻¹                (relOp_swap_eq_invOp)
+  ```
+
+  and that the two orders `X* X` and `X X*` of a product of two Hermitian operators carry the same
+  weights (`distId_swap`): if `X* X` has orthonormal eigenframe `u` with weights `g`, the
+  normalised images `g i ^ (-1/2) • X (u i)` are an orthonormal eigenframe of `X X*` with the same
+  weights.  This is the polar-decomposition fact, proved here without a polar decomposition —
+  the frame is written down and its orthonormality is the polarisation identity.  Since inversion
+  negates the logarithm (`distId_invOp`, already in the corpus), the two distances agree.
+
+  The capstone packages the three facts as an instance: the positive-definite Hermitian forms with
+  `observerDist` are a `MetricSpace`.  `X_N` is the determinant-one slice of that space, so the
+  symmetric-space distance of `(3)` now exists as a metric object in Lean.  What `(3)` still needs
+  is the *asymptotic* layer on top of it: geodesic asymptote classes and the Tits metric on the
+  set of classes.
+
+- 2026-08-06 — **Flats are isometrically Euclidean and rays are geodesic lines, for the metric
+  itself.**  `formal/GaloisForLFunctions/HTGeometry/FlatGeodesicIsometry.lean`, in the umbrella,
+  axioms `[propext, Classical.choice, Quot.sound]`.
+
+  The earlier flat module measured a flat in the logarithmic chart — the tangent norm of the
+  difference of the logarithms.  With `observerDist` now a metric, the same computation can be run
+  for the distance itself:
+
+  ```text
+  observerDist (diagOp b p) (diagOp b q) = ‖log q - log p‖₂          (observerDist_diagOp)
+  observerDist (exp (s T)) (exp (t T))   = |t - s| · ‖T‖             (observerDist_metricRay)
+  ```
+
+  So a maximal flat is an isometric copy of Euclidean space — the real-rank statement is now
+  metric, not only linear-algebraic — and the card's rays `(4)` are genuine geodesic lines, not
+  merely curves leaving the reference metric at constant rate.
+
+  The enabling lemmas are of independent use: a form diagonal in a frame has its **square root**
+  and its **inverse** diagonal in the same frame (`sqrtOp_eq_diagOp`, `invOp_eq_diagOp`), hence so
+  does the relative form of two forms in one frame.  The square-root statement is the uniqueness of
+  the positive square root, proved through the flag: at a nonnegative threshold the flag of a square
+  root is the flag of the form at the squared threshold, so `eq_of_eigenSum_eq` applies with no
+  eigenbasis bookkeeping.  The inverse statement needs no flag at all — the diagonal candidate is a
+  left inverse, and `comp_invOp` makes it the inverse.
+
+  Added in the same module: `observerDist_metricRay_diagOp` and
+  `exists_pos_observerDist_metricRay_diagOp` — two rays of one flat separate at exactly `|t|` times
+  the Euclidean distance of their weight vectors, and that rate is positive as soon as the
+  directions differ.  So inside an apartment the boundary is faithfully parametrised by directions,
+  and the asymptotic separation rate is the Euclidean one, which is the comparison quantity the
+  Tits angle is built from.  The corresponding statement for directions **not** in a common flat
+  needs the exponential-metric-increasing inequality `‖H - K‖ ≤ d (exp H) (exp K)`, whose analytic
+  input is the operator-norm Golden--Thompson inequality; note that mathlib does carry
+  Löwner--Heinz (`CFC.rpow_le_rpow`), which is the usual entry point to it.
+
+- 2026-08-06 — **The analytic core of the asymptotic layer is built: Lie–Trotter and
+  Golden–Thompson.**  Two modules, in the `HTGeometry` umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  LieTrotterProduct.lean    tendsto_pow_exp_smul_inv, norm_exp_le_exp_norm, norm_pow_sub_pow_le
+  GoldenThompsonNorm.lean   norm_exp_half_mul_exp_half_sq_le, norm_exp_add_le
+  ```
+
+  ```text
+  (exp (A/n) * exp (B/n)) ^ n → exp (A + B)                     in any Banach algebra
+  ‖exp (x/2) * exp (y/2)‖ ^ 2 ≤ ‖exp x * exp y‖                 Cordes at exponent 1/2
+  ‖exp (x + y)‖ ≤ ‖exp x * exp y‖                               Golden–Thompson for the norm
+  ```
+
+  Mathlib has neither the product formula nor Golden–Thompson.  What it does have, and what makes
+  the second line cheap, is **Löwner–Heinz** (`CFC.rpow_le_rpow`, `CFC.sqrt_le_sqrt`): the norm
+  bound on `exp y exp (2x) exp y` is transported by conjugation with `exp (-y)` into
+  `exp (2x) ≤ (c exp (-y)) ^ 2`, the square root turns that into `exp x ≤ c exp (-y)`, and a
+  second conjugation with `exp (y/2)` returns Cordes.  Iterating Cordes makes the dyadic sequence
+  `‖exp (2⁻ᵐ x) exp (2⁻ᵐ y)‖ ^ 2 ^ m` non-increasing, and the product formula identifies
+  `‖exp (x + y)‖` as a limit of terms below it.
+
+  The product formula is proved by the quantitative two-line estimate: the defect
+  `exp (tA) exp (tB) − exp (t(A+B))` has vanishing derivative at `t = 0`, hence is `o(t)`, and
+  `‖x ^ n − y ^ n‖ ≤ n M ^ n ‖x − y‖` for `‖x‖, ‖y‖ ≤ M`, `1 ≤ M`; taking
+  `M = exp ((‖A‖+‖B‖)/n)`, whose `n`-th power is constant, turns `o(1/n)` into `o(1)`.
+
+  This is the missing input for the exponential-metric-increasing inequality
+  `‖H − K‖ ≤ d (exp H) (exp K)`, which is what makes rays with distinct directions non-asymptotic
+  outside a common flat, and hence what the boundary-at-infinity layer of `(3)` needs.

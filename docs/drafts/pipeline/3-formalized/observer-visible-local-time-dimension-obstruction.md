@@ -327,6 +327,7 @@ unconditionally in Lean 4 (axioms: `propext`, `Classical.choice`, `Quot.sound`).
 | (13) dictionary dimension `m_{n,q,ℓ}` | `HTGeometry/FiniteQuditHermitianStringBasis.lean`, `HTGeometry/ProductStateObserverVisibleRank.lean` | `card_QLocalStringLabel`, `finrank_qLocalDictionary` |
 | (14), (16) visible rank `v_Φ = 2N_{n,q,ℓ}` | `HTGeometry/ProductStateObserverVisibleRank.lean` | `card_ExcConfigLabel`, `map_qLocalDictionary`, `finrank_map_qLocalDictionary` |
 | (16) `dim F_Φ = m − 2N` | `HTGeometry/ProductStateObserverVisibleRank.lean` | `finrank_ker_add_finrank_map_qLocalDictionary` |
+| (16) same rank for every product state | `HTGeometry/ProductStateLocalUnitaryInvariance.lean` | `conj_quditString_mem_span_sameSupport`, `map_conj_qLocalDictionary_le`, `map_qLocalDictionary_productState`, `finrank_map_qLocalDictionary_productState`, `finrank_map_qLocalDictionary_productVector` |
 | (17) qubit specialisation | `HTGeometry/ProductStateObserverVisibleRank.lean` | `finrank_map_qLocalDictionary_qubit`, `finrank_qLocalDictionary_qubit` |
 
 Supporting infrastructure built for this card: the local Hermitian unit basis of

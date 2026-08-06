@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ProductStateObserverVisibleRank
+import Mathlib.Analysis.InnerProductSpace.PiL2
 
 /-!
 # Local-unitary invariance of the observer-visible rank
@@ -205,8 +206,8 @@ theorem map_qLocalDictionary_productState (hU : ∀ i, (U i)ᴴ * U i = 1)
         (observerActionR (quditStringOf U *ᵥ (quditVacuum : (σ → Fin D) → ℂ)))
       = ((qLocalDictionary σ D q).map (vacuumObserverAction σ D)).map
         (mulVecR (quditStringOf U)) := by
-  set W := quditStringOf U with hWdef
-  have hWW' : W * Wᴴ = 1 := quditStringOf_mul_conjTranspose_self hU'
+  have hWW' : quditStringOf U * (quditStringOf U)ᴴ = 1 :=
+    quditStringOf_mul_conjTranspose_self hU'
   have hUadj : ∀ i, ((U i)ᴴ)ᴴ * (U i)ᴴ = 1 := by
     intro i
     rw [Matrix.conjTranspose_conjTranspose]
@@ -217,19 +218,26 @@ theorem map_qLocalDictionary_productState (hU : ∀ i, (U i)ᴴ * U i = 1)
     exact hU i
   apply le_antisymm
   · rintro _ ⟨A, hA, rfl⟩
-    have hB : Wᴴ * A * W ∈ qLocalDictionary σ D q := by
-      have := map_conj_qLocalDictionary_le (U := fun i => (U i)ᴴ) hUadj hUadj' q hA
-      rw [quditStringOf_conjTranspose] at this
-      simpa only [Matrix.conjTranspose_conjTranspose] using this
-    have hAeq : A = W * (Wᴴ * A * W) * Wᴴ := by
-      rw [← mul_assoc, ← mul_assoc, ← mul_assoc, hWW', one_mul, mul_assoc,
-        mul_assoc, hWW', mul_one]
-    refine ⟨QuantumAlg.centered (quditVacuum : (σ → Fin D) → ℂ) (Wᴴ * A * W),
-      ⟨Wᴴ * A * W, hB, rfl⟩, ?_⟩
-    rw [mulVecR_apply, ← centered_conj hU, ← hAeq]
+    have hB : (quditStringOf U)ᴴ * A * quditStringOf U ∈ qLocalDictionary σ D q := by
+      have h := map_conj_qLocalDictionary_le (U := fun i => (U i)ᴴ) hUadj hUadj' q hA
+      rw [← quditStringOf_conjTranspose] at h
+      simpa only [Matrix.conjTranspose_conjTranspose] using h
+    have hAeq : quditStringOf U * ((quditStringOf U)ᴴ * A * quditStringOf U)
+        * (quditStringOf U)ᴴ = A := by
+      calc quditStringOf U * ((quditStringOf U)ᴴ * A * quditStringOf U)
+            * (quditStringOf U)ᴴ
+          = quditStringOf U * (quditStringOf U)ᴴ * A
+            * (quditStringOf U * (quditStringOf U)ᴴ) := by
+            simp only [mul_assoc]
+        _ = A := by rw [hWW', one_mul, mul_one]
+    refine ⟨QuantumAlg.centered (quditVacuum : (σ → Fin D) → ℂ)
+        ((quditStringOf U)ᴴ * A * quditStringOf U),
+      ⟨(quditStringOf U)ᴴ * A * quditStringOf U, hB, rfl⟩, ?_⟩
+    rw [mulVecR_apply, ← centered_conj hU, hAeq]
     rfl
   · rintro _ ⟨_, ⟨A, hA, rfl⟩, rfl⟩
-    refine ⟨W * A * Wᴴ, map_conj_qLocalDictionary_le hU hU' q hA, ?_⟩
+    refine ⟨quditStringOf U * A * (quditStringOf U)ᴴ,
+      map_conj_qLocalDictionary_le hU hU' q hA, ?_⟩
     rw [observerActionR_apply, centered_conj hU]
     rfl
 
@@ -246,6 +254,58 @@ theorem finrank_map_qLocalDictionary_productState (hU : ∀ i, (U i)ᴴ * U i = 
         (mulVecR_injective hU)
         ((qLocalDictionary σ D q).map (vacuumObserverAction σ D))).finrank_eq,
     finrank_map_qLocalDictionary]
+
+/-- Every unit vector is the ground column of a unitary matrix. -/
+theorem exists_unitary_col_zero {φ : Fin D → ℂ} (hφ : ∑ i, ‖φ i‖ ^ 2 = 1) :
+    ∃ U : Matrix (Fin D) (Fin D) ℂ, Uᴴ * U = 1 ∧ U * Uᴴ = 1 ∧ ∀ r, U r 0 = φ r := by
+  classical
+  set w : EuclideanSpace ℂ (Fin D) := (EuclideanSpace.equiv (Fin D) ℂ).symm φ with hw
+  have hnorm : ‖w‖ = 1 := by
+    rw [EuclideanSpace.norm_eq, show ∑ i, ‖w i‖ ^ 2 = ∑ i, ‖φ i‖ ^ 2 from rfl, hφ]
+    simp
+  have hcard : Module.finrank ℂ (EuclideanSpace ℂ (Fin D)) = Fintype.card (Fin D) := by
+    simp
+  have horth : Orthonormal ℂ
+      (Set.restrict ({0} : Set (Fin D)) (fun _ : Fin D => w)) := by
+    constructor
+    · intro i
+      exact hnorm
+    · intro i j hij
+      exact absurd (Subsingleton.elim i j) hij
+  obtain ⟨b, hb⟩ := horth.exists_orthonormalBasis_extension_of_card_eq hcard
+  have hU : (Matrix.of fun r c => b c r)ᴴ * (Matrix.of fun r c => b c r)
+      = (1 : Matrix (Fin D) (Fin D) ℂ) := by
+    ext c c'
+    rw [Matrix.mul_apply, Matrix.one_apply]
+    have hinner : (inner ℂ (b c) (b c') : ℂ) = if c = c' then 1 else 0 :=
+      orthonormal_iff_ite.mp b.orthonormal c c'
+    rw [PiLp.inner_apply] at hinner
+    rw [← hinner]
+    refine Finset.sum_congr rfl fun r _ => ?_
+    rw [Matrix.conjTranspose_apply, Matrix.of_apply, Matrix.of_apply,
+      RCLike.inner_apply]
+    exact mul_comm _ _
+  exact ⟨_, hU, mul_eq_one_comm.mp hU, fun r => by
+    simp only [Matrix.of_apply]
+    rw [hb 0 rfl]
+    rfl⟩
+
+/-- **Observer-visible rank of an arbitrary product state.**  For any choice of
+local unit vectors, the `q`-local dictionary acts on the corresponding product
+state with the same visible rank as at the product ground state. -/
+theorem finrank_map_qLocalDictionary_productVector
+    (φ : σ → (Fin D → ℂ)) (hφ : ∀ i, ∑ x, ‖φ i x‖ ^ 2 = 1) (q : ℕ) :
+    Module.finrank ℝ ↥((qLocalDictionary σ D q).map
+        (observerActionR (fun r : σ → Fin D => ∏ i, φ i (r i))))
+      = 2 * ∑ k ∈ Finset.Icc 1 q, (Fintype.card σ).choose k * (D - 1) ^ k := by
+  choose U hU hU' hUcol using fun i => exists_unitary_col_zero (hφ i)
+  have hstate : quditStringOf U *ᵥ (quditVacuum : (σ → Fin D) → ℂ)
+      = fun r : σ → Fin D => ∏ i, φ i (r i) := by
+    funext r
+    rw [quditStringOf_mulVec_vacuum_apply]
+    exact Finset.prod_congr rfl fun i _ => hUcol i (r i)
+  rw [← hstate]
+  exact finrank_map_qLocalDictionary_productState hU hU' q
 
 end RankTransport
 

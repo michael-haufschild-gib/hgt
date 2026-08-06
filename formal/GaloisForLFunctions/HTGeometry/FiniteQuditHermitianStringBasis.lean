@@ -86,6 +86,28 @@ theorem quditStringOf_sum (lam : σ → (Fin D × Fin D) → ℂ) :
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [Matrix.smul_apply, quditString_apply, smul_eq_mul, Finset.prod_mul_distrib]
 
+omit [NeZero D] in
+/-- **General multilinear expansion.**  A string whose factors are local
+combinations of a fixed family expands into the corresponding combination of
+strings of that family. -/
+theorem quditStringOf_sum_family {P : Type*} [Fintype P] [DecidableEq P]
+    (M : P → Matrix (Fin D) (Fin D) ℂ) (lam : σ → P → ℂ) :
+    quditStringOf (fun i => ∑ p : P, lam i p • M p)
+      = ∑ a : σ → P, (∏ i, lam i (a i)) • quditStringOf (fun i => M (a i)) := by
+  ext r c
+  rw [quditStringOf_apply, Matrix.sum_apply]
+  have hfac : ∀ i : σ,
+      (∑ p : P, lam i p • M p) (r i) (c i)
+        = ∑ p : P, lam i p * M p (r i) (c i) := by
+    intro i
+    rw [Matrix.sum_apply]
+    exact Finset.sum_congr rfl fun p _ => by rw [Matrix.smul_apply, smul_eq_mul]
+  rw [Finset.prod_congr rfl (fun i (_ : i ∈ Finset.univ) => hfac i)]
+  rw [Finset.prod_univ_sum (fun _ : σ => (Finset.univ : Finset P))
+    (fun i p => lam i p * M p (r i) (c i)), Fintype.piFinset_univ]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [Matrix.smul_apply, quditStringOf_apply, smul_eq_mul, Finset.prod_mul_distrib]
+
 omit [DecidableEq σ] [NeZero D] in
 /-- A matrix unit is the string of local matrix units. -/
 theorem single_eq_quditStringOf (r0 c0 : σ → Fin D) :
