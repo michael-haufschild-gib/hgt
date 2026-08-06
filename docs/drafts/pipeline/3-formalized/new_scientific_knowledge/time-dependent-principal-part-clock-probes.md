@@ -3,7 +3,7 @@
 - **ID:** `time-dependent-principal-part-clock-probes`
 - **Stage:** 1-in-progress
 - **Type:** CONSTRUCTION / HYPERBOLIC PDE / CLOCKS
-- **Parent:** `../2-fully-proven/new_scientific_knowledge/clocks/two-species-conformal-clock-scale-law.md`
+- **Parent:** `clocks/two-species-conformal-clock-scale-law.md`
 - **Status:** closed for the mass potential. The construction is complete and formalized: the chart
   whose propagation speed depends on the time coordinate carries a clock probe at **every** event,
   the probe is regular, the operator is the divergence-form d'Alembertian of an explicit smooth

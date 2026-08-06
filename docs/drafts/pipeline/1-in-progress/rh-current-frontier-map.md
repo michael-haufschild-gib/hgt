@@ -6450,3 +6450,37 @@ variables \(d_j\) under the positive hazard weights \(\beta_jA_{j+1:k}\), using 
 recoverable from (E-ACC) or its endpoint.  Generic covariance inequalities, absolute moments,
 fixed-order Wold panels, MR fluctuation estimates, and insertion-order averaging do not supply
 that law.  Calling (E-IFF) itself the missing accumulation theorem is theatre.
+
+## 2026-08-06 Route E critical-dissipation saturation no-go
+
+Quadratic survivor does **not** admit bounded critical Mellin deficit throughout `0<r\le1`. For
+natural apertures `S_Y=\{p:p\le Y\}`, exact finite reporter inequality is
+
+\[
+ \mathscr E_r(S)\ge\frac{|\Gamma(r+it)|^2}{\Gamma(r)}
+ \prod_{p\in S}\frac{|1-p^{-r-it}|^2}{1+p^{-r}}.        \tag{E-REPORT}
+\]
+
+At moving frequency `t_Y=\pi/\log Y`, primes `Y^{3/4}<p\le Y` lie in antiscale chamber. Each
+normalized factor is at least `1+p^{-r}/6`. Terminal window `(Y/3,Y]` contains
+`\gg Y/\log Y` primes, while total logarithmic loss from `p\le Y^{3/4}` is
+`O_r(Y^{3(1-r)/4})`. Consequently
+
+\[
+ \log\prod_{p\le Y}\frac{|1-p^{-r-it_Y}|^2}{1+p^{-r}}
+ \ge c_r\frac{Y^{1-r}}{\log Y}-O_r(Y^{3(1-r)/4})\to+\infty
+\]
+
+for every fixed `0<r<1`, and hence
+
+\[
+ \boxed{\mathscr E_r(S_Y)\to+\infty\qquad(0<r<1).}
+\]
+
+Thus antiscale coherence is exact and realized escape mode: pointwise
+`\mathcal D_{S,p}(x)=0` iff `\psi_S(px)=-\psi_S(x)`, and terminal prime block coheres at
+frequency `\pi/\log Y`. Bounded dissipation saturation below `r=1` is retired as overstrong Route E
+premise. Endpoint `r=1` survives this falsifier. Any positive-energy continuation must remove or
+renormalize moving antiscale chamber before its norm, rather than demand impossible bounded
+residual. Card:
+`../5-failed/route-e-critical-dissipation-saturation-antiscale-resonance-no-go.md`.

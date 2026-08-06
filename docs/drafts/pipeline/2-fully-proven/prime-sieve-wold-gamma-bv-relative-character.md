@@ -347,9 +347,106 @@ Closest external parents include:
 - [x] naive independent-defect differential character killed
 - [x] exact contractive transgression inequality isolated
 - [ ] independent specialist novelty audit
-- [ ] Lean formalization
+- [~] Lean formalization (in progress — see "Formalization status" below)
 - [ ] source-normal contractive polar transgression `(24)`
 - [ ] RH
+
+## Formalization status
+
+Section 3, the singular first-trace layer, is `[LEAN-PROVED]` in
+`HTGeometry/PrimeSieveDensityTelescope.lean` (axioms: `propext`,
+`Classical.choice`, `Quot.sound`):
+
+| Card item | Declaration |
+|---|---|
+| `a_P = ∏_{p∈P}(1-p^{-1})` | `sieveDensity` |
+| `(13)` `a_{P∪{p}} = a_P(1-p^{-1})` | `sieveDensity_insert` |
+| `(13)` `a_P - a_{P∪{p}} = a_P/p` | `sieveDensity_sub_insert` |
+| telescoping partial sums | `sum_sieveDensity_div_prime` |
+| `a_{P_n} → 0` from Euler divergence | `tendsto_sieveDensity_sievePrefix` |
+| `(14)` `∑_{n≥1} a_{P_{n-1}}/p_n = 1` | `hasSum_sieveDensity_div_prime`, `tsum_sieveDensity_div_prime` |
+
+The sieved trace identity behind the logarithmic expansion `(6)` is `[LEAN-PROVED]`
+in `HTGeometry/PrimeSieveEulerTrace.lean`:
+
+| Card item | Declaration |
+|---|---|
+| `M_P = ∏_{p∈P} p` and its enlargement | `sievePrimorial`, `sievePrimorial_insert`, `coprime_sievePrimorial` |
+| the coprimality class of the enlarged sieve | `coprime_sievePrimorial_insert_iff` |
+| the sieved sum `∑_{(n,M_P)=1} f(n)` | `sievedSum` |
+| the arithmetic splitting of `(3)`: coprime-to-`p` plus `p` times the class | `sievedSum_insert` |
+| finite Euler product of the sieve | `sievedSum_eq_mul_prod` |
+| `Tr(Q_P^k) = ζ(k) ∏_{p∈P}(1-p^{-k})` | `sievedSum_rpow_inv` |
+
+`sievedSum_insert` is the exact arithmetic content of the `Q_P`-reducing
+decomposition `(3)`: every integer coprime to `M_P` is uniquely either prime to
+`p` or `p` times an integer coprime to `M_P`, and on the second class the weight
+is scaled by `f(p)`.
+
+Section 3's decimated expansion `(12)` and its affine asymptotic `(11)` are
+`[LEAN-PROVED]` in `HTGeometry/PrimeSieveHarmonicInclusionExclusion.lean`:
+
+| Card item | Declaration |
+|---|---|
+| `T_P(N) = ∑_{n ≤ N, (n,M_P)=1} 1/n` | `sievedHarmonic` |
+| `H_N = ∑_{1 ≤ j ≤ N} 1/j` | `sum_Icc_one_div_eq_harmonic` |
+| divisors of `gcd` as the filtered divisors | `divisors_gcd_eq_filter` |
+| `∑_{d ∣ n} μ(d) = [n = 1]` | `sum_divisors_moebius_real` |
+| the multiples of `d` below `N` are `d · Icc 1 ⌊N/d⌋` | `multiples_Icc` |
+| `(12)` `T_P(N) = ∑_{d ∣ M_P} μ(d)/d · H_{⌊N/d⌋}` | `sievedHarmonic_eq_sum_divisors` |
+| `d ↦ μ(d)/d` multiplicative, and its divisor sum | `moebiusDiv`, `isMultiplicative_moebiusDiv`, `isMultiplicative_moebiusDivSum` |
+| `∑_{d ∣ M_P} μ(d)/d = a_P = ∏_{p∈P}(1-1/p)` | `sum_divisors_moebiusDiv_sievePrimorial` |
+| `⌊N/d⌋ → ∞` and `⌊N/d⌋/N → 1/d` | `tendsto_natDiv_atTop`, `tendsto_natDiv_div_self` |
+| `log ⌊N/d⌋ - log N → -log d` | `tendsto_log_natDiv_sub_log` |
+| `H_{⌊N/d⌋} - log N → γ - log d` | `tendsto_harmonic_natDiv_sub_log` |
+| `κ_P = ∑_{d ∣ M_P} μ(d)/d · (γ - log d)` | `sieveHarmonicConstant` |
+| `(11)` `T_P(N) - a_P log N → κ_P` | `tendsto_sievedHarmonic_sub` |
+
+The leading coefficient of `(11)` is literally the sieve density of `(13)`: the
+Möbius divisor sum of the squarefree primorial is the finite Euler product, so
+the same `a_P` governs both the density telescope of Section 3 and the
+logarithmic growth of the first sieved trace.
+
+Section 2's regular determinant layer is `[LEAN-PROVED]` in
+`HTGeometry/PrimeSieveRegularDeterminant.lean`, at the level of
+`log Φ_P` (the polarization kills the even traces and the regularized quadratic
+term, so `(6)` is the complete content of `(4)`):
+
+| Card item | Declaration |
+|---|---|
+| `Tr(Q_P^k)` as a sieved sum, natural-power form | `sieveTrace`, `sieveTrace_eq_mul_prod`, `sieveTrace_insert` |
+| `0 ≤ Tr(Q_P^k) ≤ ζ(3)` for `k ≥ 3` | `sieveTrace_nonneg`, `sieveTraceBound`, `sieveTrace_le_bound` |
+| `(6)` `log Φ_P(t) = -2 ∑_{j≥1} t^{2j+1}/(2j+1) ζ(2j+1) ∏(1-p^{-(2j+1)})` | `sieveLogPhi` |
+| convergence of `(6)` on `|t| < 1` | `norm_sieveLogPhi_term_le`, `summable_sieveLogPhi_bound`, `summable_sieveLogPhi_term` |
+| `(5)` `Φ_{P∪{p}}(t) = Φ_P(t)/Φ_P(t/p)` | `sieveLogPhi_insert` |
+| `sup_{|t|≤r} |log Φ_P(t)| ≤ 2ζ(3)/(1-r²) · r³` | `abs_sieveLogPhi_le` |
+| `(7)` increment bound `C_r/p³` | `abs_sieveLogPhi_insert_sub_le` |
+| `log Φ_vac(t) = 2t + log(1-t) - log(1+t)` | `vacuumLogPhi` |
+| `(9)` `Φ_vac(t) = e^{2t}(1-t)/(1+t)` | `exp_vacuumLogPhi` |
+| odd tail of the `artanh` series | `hasSum_vacuumSeries` |
+| `Tr(Q_P^k) → 1` cofinally | `tendsto_sieveTrace_sievePrefix` |
+| `(9)` cofinal limit `log Φ_P → log Φ_vac` | `tendsto_sieveLogPhi_sievePrefix` |
+
+`sieveLogPhi_insert` is the boxed law `(5)` in logarithmic form: the enlarged
+logarithm is the difference of the old logarithm and its own decimation at the
+adjoined prime, so the numerator does change with the already-sieved packet.
+`tendsto_sieveTrace_sievePrefix` replaces the Euler-product argument by the
+direct one: every integer above one has a prime factor, which enters the sieve
+at a finite stage, so Tannery's theorem collapses the traces to the single
+surviving eigenvalue `n = 1` — this is exactly the Hilbert--Schmidt statement
+`(8)` at the level of the power traces.
+
+The statement is proved for an arbitrary enumeration `e : ℕ ≃ Nat.Primes`, so it
+is the exact cofinal claim of `(14)`: the singular density has total cofinal
+variation one along *every* prime exhaustion.
+
+Remaining for this card: Section 1 (the commuting sieve on `ℓ²(ℕ_{>0})`, `(1)`--`(3)`),
+Section 2 (the polarized `det₂` layer `(4)`--`(9)`; the corpus already owns the
+regularized determinant germ `operatorFredholmDet2Germ` in
+`HTGeometry/OperatorFredholmGerm.lean` and the Hilbert--Schmidt trace layer),
+Sections 3's asymptotic `(11)`--`(12)`, Section 4 (`(15)`--`(18)`, the BV
+principal-conormal coefficient), Section 5 (`(19)`--`(21)`), and Section 6.
+Conjecture `(24)` is not proved on paper and is not a formalization target.
 
 ## Log
 

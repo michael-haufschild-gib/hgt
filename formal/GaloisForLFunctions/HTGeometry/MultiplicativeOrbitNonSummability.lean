@@ -113,6 +113,17 @@ theorem ratFuncScale_scale_inv (q : K) (hq : q ≠ 0) (f : RatFunc K) :
   rw [ratFuncScale_div, ratFuncScale_div, polyScale_polyScale, polyScale_polyScale,
     inv_mul_cancel₀ hq, polyScale_one, polyScale_one]
 
+@[simp] theorem ratFuncScale_one (h : (1 : K) ≠ 0) (f : RatFunc K) :
+    ratFuncScale 1 h f = f := by
+  refine RatFunc.induction_on (P := fun f => ratFuncScale 1 h f = f) f ?_
+  intro p s _
+  rw [ratFuncScale_div, polyScale_one, polyScale_one]
+
+theorem ratFuncScale_of_eq_one {q : K} (hq : q ≠ 0) (h : q = 1) (f : RatFunc K) :
+    ratFuncScale q hq f = f := by
+  subst h
+  exact ratFuncScale_one hq f
+
 /-- **Dilation moves poles by dilation.**  The dilate of `g` is regular at `w` exactly when `g` is
 regular at `q w`. -/
 theorem regularAt_ratFuncScale (q : K) (hq : q ≠ 0) (g : RatFunc K) (w : K) :

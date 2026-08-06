@@ -35,6 +35,7 @@ variable {R σ : Type*} [CommRing R] [DecidableEq σ]
 
 /-! ### The squarefree Veronese filtration -/
 
+omit [DecidableEq σ] in
 /-- Monomial width is antitone in the required width. -/
 theorem monoWide_mono {r s : ℕ} (hrs : r ≤ s) {P : MvPolynomial σ R}
     (hP : MonoWide s P) : MonoWide r P :=
@@ -128,6 +129,7 @@ variable (σ) in
 noncomputable def skeletonFacets [Fintype σ] (k : ℕ) : Finset (Finset σ) :=
   (Finset.univ : Finset σ).powersetCard k
 
+omit [DecidableEq σ] in
 /-- **Faces of the skeleton.**  A vertex set is a face of the `k`-element facet family exactly when
 it has at most `k` elements. -/
 theorem isFaceOf_skeletonFacets_iff [Fintype σ] {k : ℕ} (hk : k ≤ Fintype.card σ)
@@ -176,13 +178,30 @@ theorem barnesIdeal_eq_span_prod [Fintype σ] :
     barnesIdeal R σ = Ideal.span ({∏ j : σ, X j} : Set (MvPolynomial σ R)) :=
   veroneseIdeal_card_eq_span_prod
 
-theorem multipleSineIdeal_eq_stanleyReisner [Fintype σ] (hN : 1 ≤ Fintype.card σ) :
+theorem multipleSineIdeal_eq_stanleyReisner [Fintype σ] (hN : 2 ≤ Fintype.card σ) :
     multipleSineIdeal R σ =
       stanleyReisnerIdeal R (skeletonFacets σ (Fintype.card σ - 2)) := by
-  rw [stanleyReisnerIdeal_skeletonFacets (by omega)]
-  unfold multipleSineIdeal
-  congr 1
-  omega
+  have hidx : Fintype.card σ - 2 + 1 = Fintype.card σ - 1 := by omega
+  rw [stanleyReisnerIdeal_skeletonFacets (by omega), hidx]
+  rfl
+
+/-- **The Barnes face complex is the next skeleton up.**  Its facets are the `(N-1)`-element sets,
+so every proper subset of the vertex set is a face and the only minimal nonface is the whole set. -/
+theorem barnesIdeal_eq_stanleyReisner [Fintype σ] (hN : 1 ≤ Fintype.card σ) :
+    barnesIdeal R σ = stanleyReisnerIdeal R (skeletonFacets σ (Fintype.card σ - 1)) := by
+  have hidx : Fintype.card σ - 1 + 1 = Fintype.card σ := by omega
+  rw [stanleyReisnerIdeal_skeletonFacets (by omega), hidx]
+  rfl
+
+/-- **Reflection is a one-step drop of the facet dimension.**  Barnes multiple gamma sits on the
+skeleton with `(N-1)`-element facets, the multiple sine on the skeleton with `(N-2)`-element
+facets. -/
+theorem reflection_drops_one_skeleton [Fintype σ] (hN : 2 ≤ Fintype.card σ) :
+    barnesIdeal R σ = stanleyReisnerIdeal R (skeletonFacets σ (Fintype.card σ - 1)) ∧
+      multipleSineIdeal R σ =
+        stanleyReisnerIdeal R (skeletonFacets σ (Fintype.card σ - 2)) ∧
+      Fintype.card σ - 1 = (Fintype.card σ - 2) + 1 :=
+  ⟨barnesIdeal_eq_stanleyReisner (by omega), multipleSineIdeal_eq_stanleyReisner hN, by omega⟩
 
 theorem barnesIdeal_le_multipleSineIdeal [Fintype σ] :
     barnesIdeal R σ ≤ multipleSineIdeal R σ :=

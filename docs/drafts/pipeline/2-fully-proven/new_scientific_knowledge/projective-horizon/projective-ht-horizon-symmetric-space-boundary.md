@@ -167,9 +167,12 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
   boundary points and simplices of the building correspond bijectively
 - [x] the Tits metric inside an apartment: the divergence rate of two rays of a flat is the chordal
   distance `2 sin (θ/2)` of their unit directions, so an apartment's boundary is the round sphere
-- [ ] 2 -> 3: what remains for `(3)` is the equivariance of that correspondence — the congruence
-  action of the observer group on rays inducing the conjugation action on flags — and the Tits
-  metric between boundary points of *different* apartments
+- [x] the equivariance of that correspondence: the congruence action of the observer group on rays
+  induces the conjugation action on flags.  A moved ray is asymptotic to a ray from the reference
+  metric, and the direction of that ray is the one carrying the transported flag — so the boundary
+  is basepoint-independent and the group acts on it through flags
+- [ ] 2 -> 3: what remains for `(3)` is the Tits metric between boundary points of *different*
+  apartments
 - [ ] 3 -> 4: external audit in symmetric spaces and projective differential invariants
 
 ## References
@@ -798,3 +801,237 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
   the observer group on rays induces the conjugation action on flags.  The two halves of that are
   already present separately (`eigenSum_conj` on the flag side, and the congruence-invariance of
   the distance on the metric side); only their combination is unwritten.
+
+- 2026-08-06 — **The correspondence is equivariant for the stabiliser of the reference metric.**
+  `formal/GaloisForLFunctions/HTGeometry/ObserverBoundaryEquivariance.lean`, in the umbrella,
+  axioms `[propext, Classical.choice, Quot.sound]`.
+
+  ```text
+  isSymmetric_conjOp, trace_conjOp   conjugation by an isometry preserves Hermiticity and trace
+  eigenSum_conjOp                    eigenSum (g T g⁻¹) c = (eigenSum T c).map g
+  asymptotic_conjOp_iff              Asymptotic (ray (gTg⁻¹)) (ray (gSg⁻¹)) ↔ Asymptotic (ray T) (ray S)
+  conjOp_smul_eq                     scalars act trivially, so the action is projective
+  ```
+
+  With the previous entry this is `(3)` for the stabiliser `SU(N)` of the reference metric: the
+  boundary point of a conjugated ray is the conjugated flag, and the correspondence between
+  asymptote classes and simplices of the horizon building intertwines the two actions.  Note that
+  the equivariance needs no metric input at all once the asymptote class has been identified with
+  the flag — it is inherited from the flag side.
+
+  Two items remain before `(3)` is encoded in full: equivariance for the whole observer group
+  rather than the stabiliser, which needs the basepoint-change theorem (every ray is asymptotic to
+  exactly one ray from any prescribed point — the CAT(0) statement), and the Tits metric between
+  boundary points of *different* apartments.
+
+- 2026-08-06 — **The observer group acts by isometries.**
+  `formal/GaloisForLFunctions/HTGeometry/ObserverCongruenceIsometry.lean`, in the umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  ```text
+  congrOp g P = g* P g                                    the congruence action
+  observerDist (g* P g) (g* Q g) = observerDist P Q       (observerDist_congrOp)
+  ```
+
+  for an arbitrary symmetry `g` of the observer space — not only for the isometries fixing the
+  reference metric.  With the orbit description of `(1)` this is the statement that the observer
+  group acts on `X_N` by isometries, which is the missing metric half of the `PGL`-equivariance of
+  `(3)`: the boundary at infinity is now an object on which the whole group acts, not only its
+  basepoint stabiliser.
+
+  The mechanism avoids any eigenvalue-uniqueness theory.  The operator
+
+  ```text
+  X = (g* P g)^(-1/2) g* P^(1/2)
+  ```
+
+  preserves inner products (`inner_congrIntertwine`) — the computation uses only that the inverse
+  square root squares to the inverse and that `g* P g` inverts `g⁻¹ P^(-1/2)` — and it carries the
+  eigenframe of the relative form of `(P, Q)` onto an eigenframe of the relative form of the
+  congruated pair with the *same* weights.  Since the distance is the Euclidean norm of the
+  logarithms of those weights, it is unchanged.
+
+  Supporting facts of independent use: `invSqrtOp_comp_invSqrtOp` (the inverse square root squares
+  to the inverse), `apply_invSqrtOp` (`P P^(-1/2) = P^(1/2)`), and the symmetry and positive
+  definiteness of the congruate.
+
+- 2026-08-06 — **The distance is bounded by the pencil norms** — the converse of the exponential
+  metric increasing property.  `formal/GaloisForLFunctions/HTGeometry/ObserverDistNormBound.lean`,
+  in the umbrella, axioms `[propext, Classical.choice, Quot.sound]`.
+
+  ```text
+  ‖P⁻¹ Q‖ ≤ C,  ‖Q⁻¹ P‖ ≤ C,  1 ≤ C   →   observerDist P Q ≤ √n · log C
+  ```
+
+  EMI turns a spectral gap into a lower bound on the distance; this turns operator estimates into
+  an *upper* bound, which is what any boundedness statement about two rays needs — in particular
+  the basepoint change, the last open item of `(3)`.
+
+  The mechanism is short: `P^(-1/2)` carries an eigenvector of the relative form to an eigenvector
+  of `P⁻¹ Q` with the same eigenvalue, and the same vector is an eigenvector of `Q⁻¹ P` with the
+  reciprocal eigenvalue, so every `|log λ|` is at most `log C` and the Euclidean norm of the
+  logarithms is at most `√n log C`.
+
+  With this the remaining mathematics of the basepoint change is an operator estimate rather than a
+  metric one.  The shape of that estimate, worked out on paper: writing `g = u p` in polar form, the
+  ray `t ↦ g* exp (t T) g` is `t ↦ p exp (t u* T u) p`, and its candidate limit direction is the one
+  whose flag is `p (eigenSum T c)` with the *same* thresholds.  Expanding
+  `p⁻¹ exp (-t T) p⁻¹ exp (t S)` in the two spectral resolutions, the coefficient of
+  `exp (t (σ_j - τ_i))` vanishes whenever `σ_j > τ_i`, precisely because
+  `p⁻¹ (S-eigenspace σ_j) ⊆ eigenSum T (σ_j - ε)`; so the sum is bounded for `t ≥ 0`, and
+  symmetrically for the inverse.
+
+- 2026-08-06 — **Eigenframes in decreasing order, and the flag as an initial segment.**
+  `formal/GaloisForLFunctions/HTGeometry/AntitoneEigenframe.lean`, in the umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  ```text
+  exists_antitone_eigenframe    every direction has an orthonormal eigenframe with antitone weights
+  gt_set_eq_empty_or_Iic        above a threshold the indices form an initial segment
+  eigenSum_eq_span_initial      eigenSum T c is ⊥ or the span of b '' Set.Iic k
+  ```
+
+  This is the shape in which the flag is transported by a symmetry.  The basepoint change needs a
+  direction `S` with `eigenSum S c = (eigenSum T c).map g*` **at the same thresholds**; realizing it
+  by the corpus's graded-piece construction would require enumerating the distinct eigenvalues,
+  whereas an antitone frame makes every flag member the span of an initial segment — and initial
+  segments are exactly what Gram–Schmidt preserves (`span_gramSchmidt_Iic`).  So `S` will be the
+  frame obtained by orthonormalising `g* b` in decreasing order, weighted by the same eigenvalues.
+
+- 2026-08-06 — **Flag transport: the limit direction of a moved ray exists.**
+  `formal/GaloisForLFunctions/HTGeometry/FlagTransport.lean`, in the umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  ```text
+  exists_isSymmetric_eigenSum_map :
+    ∀ g T, ∃ S, S.IsSymmetric ∧ ∀ c, eigenSum S c = (eigenSum T c).map g*
+  ```
+
+  The thresholds are the *same*, which is what the basepoint change needs and what the corpus's
+  graded-piece realization does not give: it realizes a flag with thresholds of its own choosing.
+  The construction is Gram–Schmidt in an eigenframe ordered by decreasing eigenvalue.  There every
+  flag member is the span of an initial segment (previous entry), initial spans are exactly what
+  Gram–Schmidt preserves (`span_gramSchmidt_Iic`), and normalisation does not move a span
+  (`span_image_of_smul`), so orthonormalising `g* b` in that order and weighting by the same
+  eigenvalues gives the required direction.
+
+  This is the direction the basepoint change assigns to the ray `t ↦ g* exp (t T) g`.  What remains
+  of `(3)` is the estimate that the two rays stay a bounded distance apart, whose paper proof is in
+  the entry above and whose metric half — turning the two operator bounds into a bounded distance —
+  is `observerDist_le_of_norm_le`.
+
+  By-products: `adjoint_equiv_injective` (the adjoint of a symmetry is injective) and
+  `span_gramSchmidtOrthonormalBasis_Iic` (the Gram–Schmidt *orthonormal basis*, not only the
+  unnormalised family, preserves initial spans — mathlib states this only for the unnormalised
+  one).
+
+- 2026-08-06 — **Triangularity of the transported frame.**
+  `formal/GaloisForLFunctions/HTGeometry/TriangularFrames.lean`, in the umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  ```text
+  (g*)⁻¹ (gs j) ∈ span (b '' Set.Iic j)        adjoint_symm_gramSchmidt_mem_span
+  g* (b i)      ∈ span (gs '' Set.Iic i)       mem_span_gramSchmidtOrthonormalBasis
+  ```
+
+  These are the two facts that make the estimate work, and the reason the argument needs no
+  spectral projections at all.  Expanding the pencil `P⁻¹Q = g⁻¹ e^(-tT) (g*)⁻¹ e^(tS)` on the
+  transported frame gives
+
+  ```text
+  (P⁻¹Q) (gs j) = ∑_i ⟪b i, (g*)⁻¹ (gs j)⟫ · e^(t (w j - w i)) · g⁻¹ (b i),
+  ```
+
+  where triangularity kills every term with `i > j`, and antitonicity of the weights makes
+  `w j - w i ≤ 0` on the surviving terms — so the exponentials are bounded by `1` for `t ≥ 0` and
+  the whole expression is bounded uniformly.  The mirror expansion, using the second inclusion,
+  bounds `Q⁻¹P`.
+
+  Also recorded here, both elementary and reusable: `norm_toCLM_le_sum_norm_apply` (an operator's
+  norm is at most the sum of the norms of its values on an orthonormal frame) and
+  `inner_eq_zero_of_mem_span_Iic` (a vector spanned by an initial segment of a frame has vanishing
+  coordinates beyond it).
+
+- 2026-08-06 — **Basepoint change: the boundary is independent of the basepoint, and the
+  observer group acts on it through flags.**  This closes the equivariance half of `2 -> 3`.
+  `formal/GaloisForLFunctions/HTGeometry/BasepointChange.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  - `exists_asymptotic_observerRay` — for every symmetry `g` and every Hermitian direction `T`
+    there is a direction `S` with `Asymptotic (movedRay g hT) (observerRay hS)` and
+    `eigenSum S c = (eigenSum T c).map g*` at every threshold.  So a ray that has been moved off
+    the reference metric still has a boundary point, that point is the ray of a reference
+    direction, and the direction is the one carrying the transported flag.
+  - `asymptotic_movedRay` — the estimate itself, from a pair of frames.
+  - `movedRay`, `dist_movedRay` — the moved ray as a curve of observer metrics.
+
+  The mechanism is a pair of uniform pencil bounds, in
+  `formal/GaloisForLFunctions/HTGeometry/MovedRayPencil.lean`:
+
+  - `pencil_apply` — with `P = g* exp (t T) g` and `Q = exp (t S)`,
+    `(P⁻¹ Q) (gs j) = ∑ i, exp (t (w j - w i)) ⟪b i, (g*)⁻¹ (gs j)⟫ · g⁻¹ (b i)`.
+  - `mirror_pencil_apply` — the same expansion in the other direction, on both frames.
+  - `norm_pencil_le`, `norm_mirror_pencil_le` — both pencils are bounded uniformly in `t ≥ 0`.
+  - `invOp_congrOp_metricRay` — the inverse of a moved ray is the moved inverse; proved from
+    `invOp_eq_of_left_inverse`, that the spectral inverse is *any* left inverse.
+  - `metricRay_expand`, `invOp_metricRay_expand` — a ray and its inverse in an eigenframe.
+
+  Why the estimate closes: the exponent `t (w j - w i)` appears only for `i ≤ j`, because the
+  Gram–Schmidt frame of the images is triangular against the original frame; and there
+  antitonicity of the weights makes the exponent nonpositive.  So no exponential survives, the
+  bound is a fixed sum of frame coordinates, and `observerDist_le_of_norm_le` turns the two
+  operator bounds into a bounded distance.  The same construction supplies the flag identity, via
+  the extracted `eigenSum_diagOp_eq_map` in `FlagTransport.lean` — the flag computation of
+  transport, now stated from a pair of frames rather than only existentially.
+
+  Note that no curvature, no polar decomposition and no operator-exponential derivative enters:
+  the whole equivariance statement rests on triangularity plus the order of the weights.
+
+  Audit: `lake build GaloisForLFunctions.HTGeometry` green, 15118 jobs.
+
+- 2026-08-06 — **Cordes' inequality at a general exponent**, the analytic input for the one
+  remaining item.  `formal/GaloisForLFunctions/HTGeometry/CordesGeneralExponent.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  - `norm_exp_smul_mul_exp_smul_le` — for self-adjoint `x, y` in a C⋆-algebra and `s ∈ [0,1]`,
+    `‖exp (s x) * exp (s y)‖ ≤ ‖exp x * exp y‖ ^ s`.
+  - `exp_rpow` — `(exp x) ^ s = exp (s x)`, the functional-calculus power of an exponential.
+  - `exp_smul_one`, `exp_smul_sub` — exponentials with a scalar absorbed into the exponent.
+
+  The corpus already had this at `s = 1/2` only.  The general exponent is the same proof —
+  conjugate, take the root, conjugate back — with operator monotonicity of the square root
+  replaced by operator monotonicity of the `s`-th power.  What makes the middle step available is
+  writing the normalising scalar as part of the exponent, `z = (log c) 1 - y`: the functional
+  calculus is then applied only to exponentials, where `(exp x) ^ s = exp (s x)`, and no
+  scalar-versus-power algebra is needed.
+
+  Its purpose: the remaining card item, the Tits metric across apartments, is the divergence rate
+  `lim_{t→∞} d (exp (t T), exp (t S)) / t`.  Boundedness of `d / t` by `2` is already available
+  from the triangle inequality; monotonicity is the geodesic homothety contraction
+  `d (exp (λ X), exp (λ Y)) ≤ λ d (exp X, exp Y)`, which is Araki–Lieb–Thirring, which is this
+  inequality applied on the `k`-th compound.  Monotone and bounded gives the limit.
+
+  Audit: `lake build GaloisForLFunctions.HTGeometry` green, 15122 jobs.
+
+- 2026-08-06 — **The homothety contraction in the operator order.**
+  `formal/GaloisForLFunctions/HTGeometry/CordesGeneralExponent.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  - `exp_smul_le_of_exp_le` — for self-adjoint `x, y`, `0 < c` and `s ∈ [0,1]`,
+
+    ```text
+    exp y ≤ c exp x   →   exp (s y) ≤ c ^ s exp (s x).
+    ```
+
+  This is the order form of the contraction the last card item needs, and it turns out to need
+  *no norms at all*: operator monotonicity of the `s`-th power applied to the hypothesis gives it
+  directly, once the scalar is carried inside the exponent as `z = (log c) 1 + x`, where the power
+  acts on it as an ordinary real power.  Cordes' inequality is the norm form of the same fact and
+  remains the tool for the compound step.
+
+  What this reduces the remaining item to: with `Π_k` the largest `k`-fold subset product of the
+  pencil spectrum, applying this on the `k`-th compound gives `Π_k (A_λ) ≤ (Π_k (A_1)) ^ λ`, which
+  is the log-majorization; Karamata then gives the homothety contraction of the distance itself,
+  hence monotonicity of the divergence rate.
+
+  Audit: `lake build GaloisForLFunctions.HTGeometry` green, 15124 jobs.

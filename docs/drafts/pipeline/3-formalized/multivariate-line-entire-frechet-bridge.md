@@ -25,7 +25,7 @@ bundles continuity and holomorphy on every affine complex line.
   `formal/GaloisForLFunctions/HTGeometry/MultivariateEntireCompactOpen.lean` says every affine-line
   restriction is complex differentiable; `MultivariateEntire` additionally carries continuity.
 - `[CORPUS]` `lineEntire_of_differentiable` proves only the forward implication.
-- `[LOCAL-RESEARCH]` `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/clocks/two-species-conformal-clock-scale-law.md`
+- `[LOCAL-RESEARCH]` `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/clocks/two-species-conformal-clock-scale-law.md`
   explicitly records Hartogs as absent from the project mathlib and changes representation to
   coordinate-slice holomorphy rather than proving the bridge.
 - `[LITERATURE]` J. Bochnak and J. Siciak, *Analytic functions in topological vector spaces*,

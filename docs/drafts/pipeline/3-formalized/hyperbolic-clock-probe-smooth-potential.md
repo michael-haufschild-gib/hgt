@@ -3,7 +3,7 @@
 - **ID:** `hyperbolic-clock-probe-smooth-potential`
 - **Stage:** 3-formalized
 - **Type:** CONSTRUCTION / HYPERBOLIC PDE / CLOCKS
-- **Parent:** `../2-fully-proven/new_scientific_knowledge/clocks/two-species-conformal-clock-scale-law.md`
+- **Parent:** `new_scientific_knowledge/clocks/two-species-conformal-clock-scale-law.md`
 - **Status:** **closed.** The open core of the parent card is discharged: clock probes are
   constructed, unconditionally in Lean, for *every* smooth potential on spacetime — no analyticity,
   no decay, no smallness, no time-independence — in every dimension, and with them the parent's

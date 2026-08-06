@@ -336,9 +336,112 @@ The common-constant collapse (3) is already corpus-owned:
 function invariant under the integer span of two `Q`-independent, `R`-dependent periods is
 constant, which is exactly the joint fixed-field collapse used at (3).
 
-Still not formalized: the construction of the double sine itself, the several-translation
-parameterized telescoping theorem, and the two-cylinder coefficient field separation, i.e. the
-production of equation (4) from a hypothetical differential-algebraic relation.
+`GaloisForLFunctions.HTGeometry.CylinderDifferentialCharacter` makes the cylinder a differential
+field. On the cylinder the coordinate is an exponential, so `d/dz` is `lam` times the Euler
+operator, with `lam = 2 pi i/omega`; the module builds that derivation (`cylDeriv`, `cylDerivation`,
+`cylinderDifferential`), identifies its jets on the cotangent model
+(`cylDeriv_iterate_cotModel`), and proves the theorem the telescoping reduction needs:
+
+```text
+no_constantCharacter_dilationTelescoping :
+  sigma_q k - k  !=  sum_n alpha_n d^n b     for all rational k,
+```
+
+for every nonzero finite constant character `alpha`, every non-torsion `q`, every nonzero `lam`
+and every nonzero `c`. Three equivalent shapes are given -- explicit iterate, `differentialJet`,
+and `Finsupp.linearCombination` -- the last being exactly what the arbitrary-family Ostrowski
+criterion produces. `no_constantCharacter_dilationTelescoping_twoCylinder` is the instance over
+`C(u_1)`, where the paired telescoping theorem actually produces its base element.
+
+`GaloisForLFunctions.HTGeometry.DoubleSineCylinderHypertranscendence` performs the reduction.
+The several-translation telescoping theorem is corpus-owned: it is the arbitrary-family
+differential Ostrowski criterion
+`automorphismFamily_differentialIndependent_iff_no_constant_simultaneous_jet_telescoping` of
+`SourceLogarithmicBoundary`, proved for a possibly noncommuting family with common fixed field the
+constants. Feeding the character obstruction into it gives
+
+```text
+hypertranscendentalOver_of_cotangentCylinderIncrement :
+  Psi additive primitive for a compatible automorphism family with common fixed field C,
+  increments in C(u_1)(u_2),
+  one direction acting by a non-torsion dilation of u_2 with cotangent-model increment
+  ==>  Psi is hypertranscendental over C(u_1,u_2).
+```
+
+Only one of the two translation directions is examined; the second enters solely through the
+common fixed-field hypothesis, which is where the two incommensurate periods are used, and which
+is corpus-owned as `meromorphicNF_constant_of_rankTwo_realDependent_periods`.
+
+`GaloisForLFunctions.HTGeometry.IncommensuratePeriodMeromorphicModel` builds the first two pieces
+of the concrete model inside the global meromorphic field.
+
+*The common fixed field.* A germ fixed by two translations is fixed by their whole integer span
+(`addTranslationMeroEquiv_fixed_of_mem_intSpan`). For two `Q`-independent, `R`-dependent periods --
+two positive reals with irrational ratio -- that span is not discrete, so it contains arbitrarily
+small nonzero periods, and a global meromorphic germ with arbitrarily small periods is constant.
+Hence `exists_constant_of_two_realDependent_translations_fixed`, and in period form
+`exists_constant_of_two_realPeriods_fixed`: for `Irrational (omega_1/omega_2)`, the common fixed
+field of the two translations in the global meromorphic field is exactly `C`. This discharges the
+`hfixed` hypothesis of the reduction theorem, and it is the only place where incommensurability of
+the periods enters.
+
+*Independent cylinder coordinates.* The exponential characters `z |-> exp(mu z)` are injective-in-`mu`
+monoid homomorphisms of the additive group of `C`, so Dedekind independence of characters gives
+`exp_coeff_eq_zero_of_sum_eq_zero`: exponentials with pairwise distinct frequencies are linearly
+independent. Point evaluation of global analytic germs is a ring homomorphism, so the same holds
+inside the meromorphic field (`physicalExponentialMero_coeff_eq_zero_of_sum_eq_zero`). This is the
+separation statement behind the two-cylinder coefficient field: with `omega_1/omega_2` irrational
+the frequencies `m(2 pi i/omega_1) + n(2 pi i/omega_2)` are pairwise distinct, so
+`u_1 = exp(2 pi i z/omega_1)` and `u_2 = exp(2 pi i z/omega_2)` are independent coordinates.
+
+*Algebraically independent coordinates.* `algebraicIndependent_pair_physicalExponentialMero` turns
+the frequency separation into the exact statement: for `Q`-independent frequencies the two
+exponential modes are algebraically independent over `C`. A polynomial relation expands into a
+finite exponential sum whose frequencies `m lambda_1 + n lambda_2` are pairwise distinct
+(`pairFrequency_injective`), so every coefficient vanishes.
+
+*The embedded cylinder field and its translation action.* Each coordinate is therefore
+transcendental over `C`, so `C(X)` embeds in the meromorphic field by `X |-> u` (`cylinderEmbed`,
+injective by `cylinderEmbed_injective`). Under that embedding translation by `tau` is exactly the
+multiplicative dilation by `exp(lambda tau)`:
+
+```text
+addTranslationMeroEquiv_cylinderEmbed :
+  T_tau (iota y) = iota (ratFuncScale (exp (lambda tau)) y).
+```
+
+So the translation action on the embedded cylinder coordinate field is literally the
+`ratFuncScale` against which the orbit-balance obstruction was proved. For
+`lambda_j = 2 pi i/omega_j` this gives `T_{omega_1} u_1 = u_1` and
+`T_{omega_1} u_2 = q u_2` with `q = exp(2 pi i omega_1/omega_2)`, the non-torsion multiplier.
+
+*The two-cylinder field.* Algebraic independence also makes the second coordinate transcendental
+over the first coordinate's function field: `injective_eval₂_second_cylinder` proves that
+evaluating a polynomial over `C(u_1)` at `u_2` is injective, by transporting
+`AlgebraicIndependent.transcendental_adjoin` down to the polynomial ring and then up to the
+fraction field with `IsFractionRing.isAlgebraic_iff`. Hence `twoCylinderEmbed` embeds
+`RatFunc (RatFunc C) = C(u_1)(u_2)` in the global meromorphic field, injectively
+(`twoCylinderEmbed_injective`), with the explicit numerator/denominator formula
+`twoCylinderEmbed_div`. This is the coefficient field in which the paired telescoping theorem
+produces its base element, now a literal subfield of the meromorphic field.
+
+*The translation action on the two-cylinder field.* `addTranslationMeroEquiv_twoCylinderEmbed`
+transports the action: whenever the translation `tau` is a period of the first coordinate
+(`exp(lambda_1 tau) = 1`, i.e. `tau in omega_1 Z` for `lambda_1 = 2 pi i/omega_1`), translation of
+an embedded element is exactly the multiplicative dilation of the second coordinate,
+
+```text
+T_tau (iota y) = iota (ratFuncScale (exp(lambda_2 tau)) y),
+```
+
+with the coefficient field `C(u_1)` fixed pointwise. For `tau = omega_1` the dilation factor is
+`q = exp(2 pi i omega_1/omega_2)`, the non-torsion multiplier of the descended equation. This is
+literally the `ratFuncScale` action of `not_dilationTelescoped_twoCylinder`, so the orbit-balance
+obstruction now applies to the genuine translation of genuine meromorphic functions.
+
+Still not formalized: the differential structure transported to the two-variable embedding, and the
+double sine itself with its two functional equations. Everything downstream of that is
+machine-checked.
 
 ### Formalization of the algebraic core
 
@@ -461,5 +564,19 @@ significant new classification or a routine synthesis once the question is posed
   unconditionally in Lean;
 - [x] cylinder coordinate bridge (cotangent identity, Euler-operator form of `d/dz`, analytic jets
   of the cotangent model) formalized unconditionally in Lean;
-- [ ] Lean reduction of hypertranscendence to the descended `q`-difference equation (double sine
-  construction, several-translation telescoping, two-cylinder separation).
+- [x] cylinder differential field, jets of the cotangent model, and the character obstruction
+  formalized unconditionally in Lean;
+- [x] Lean reduction of hypertranscendence to the descended `q`-difference equation, via the
+  corpus arbitrary-family differential Ostrowski criterion;
+- [x] Lean proof that the common fixed field of two incommensurate real translations in the global
+  meromorphic field is exactly `C`;
+- [x] Lean proof that exponentials with distinct frequencies are independent in the global
+  meromorphic field (the two-cylinder separation input);
+- [x] Lean proof that the two exponential coordinates are algebraically independent over `C`;
+- [x] Lean embedding of one cylinder coordinate field `C(u)` into the meromorphic field, with
+  translation acting by the multiplicative dilation `ratFuncScale`;
+- [x] Lean embedding of the two-cylinder field `C(u_1)(u_2)` into the meromorphic field, injective;
+- [x] Lean transport of the translation action to the two-cylinder embedding: translation by a
+  period of the first coordinate is the multiplicative dilation of the second;
+- [ ] Lean transport of the differential structure to that embedding, and the double sine with its
+  two functional equations.

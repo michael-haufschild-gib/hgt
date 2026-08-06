@@ -5092,3 +5092,16 @@ receive a new title and an independent significance audit.
   small transverse perturbations have completed information at least `B`.
   No Lean work is authorized until this resolved exceptional-carrier open core
   has a dependency-closed paper proof.
+- 2026-08-06 -- Closed a strictly stronger adaptive finite-window shortcut
+  theorem in `../3-formalized/direct-net-adaptive-static-choi-shortcut-action-law.md`.
+  Direct overlap with each arbitrary full-Choi target removes the orbit-anchor
+  triangle loss: every capture radius below one is allowed, and maximal
+  projective rank bounds each order-`r` target collision by `r! d^(-r)`.
+  Finite circuit words pay their exact padded-word entropy.  An arbitrary,
+  even uncountable, time-adaptive target class pays only any supplied finite
+  metric-net cardinality; selector measurability is unnecessary.  Gaussian
+  and uniform time-window laws are Lean-proved and axiom-audited.  This closes
+  target resolution and continuous-family selector removal for the
+  finite-window branch.  It does not close O4: intrinsic replica action
+  resolution can collapse with size/order, and no fixed-time quenched
+  coefficient-space anti-concentration follows.

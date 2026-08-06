@@ -320,3 +320,41 @@ and insertion-order averaging fail those tests.
 - `[PROVED HERE]` endpoint/accumulation equivalence and order-gauge law `(A10)`--`(A11)`.
 - `[OPEN; RH-STRENGTH]` the numerical bound `(A1)`.
 - `[NO THEATRE]` no claim that the exact representation proves its own endpoint estimate.
+- `[PROVED HERE]` pointwise signed-energy polarization and nonnegative same-sign dissipation
+  `(A9a)`--`(A9b)`; Mellin balance `(A9c)`--`(A9d)` is the paper corollary.
+- `[LEAN]` unconditional finite laws in
+  `RHTower/GibbsSignedCovarianceAccumulation.lean`; targeted build 8659/8659 passes; axioms only
+  `propext`, `Classical.choice`, and `Quot.sound`; umbrella wired.
+
+## 2026-08-06 critical-dissipation falsifier
+
+Proposed bounded Mellin-energy deficit for every `0<r\le1` is false. Paper theorem
+`ROUTE-E-CRITICAL-DISSIPATION-ANTISCALE-NOGO-001` proves that for every fixed `0<r<1`,
+
+\[
+ \mathscr E_r(S_Y)\to+\infty
+ \qquad(S_Y=\{p:p\le Y\}).
+\]
+
+Proof uses exact source Mellin reporter
+
+\[
+ \mathscr E_r(S)\ge\frac{|\Gamma(r+it)|^2}{\Gamma(r)}
+ \prod_{p\in S}\frac{|1-p^{-r-it}|^2}{1+p^{-r}}
+\]
+
+at `t=\pi/\log Y`. Every terminal prime has almost negative dilation phase, so normalized local
+factors exceed one; Chebyshev supplies `\gg Y/\log Y` such primes, while loss from
+`p\le Y^{3/4}` is lower order. Antiscale coherence is therefore attained cofinal resonance, not
+merely logical escape.
+
+This kills Mellin dissipation saturation as an all-`0<r\le1` producer but not pointwise target
+`(A1)`. Surviving options: prove distinct `r=1` endpoint, project/renormalize moving
+`1/\log Y` antiscale chamber before taking positive norm, or return to signed statistic cancelling
+across terminal shells. Full proof and positive survivor:
+`../5-failed/route-e-critical-dissipation-saturation-antiscale-resonance-no-go.md`.
+
+Finite source factorization, exact dissipation null space, normalized local reporter, and terminal
+window gain are Lean-certified in
+`RHTower/GibbsCriticalDissipationAntiscaleResonance.lean`; targeted build `8859/8859` passes and
+axioms are only `propext`, `Classical.choice`, and `Quot.sound`.

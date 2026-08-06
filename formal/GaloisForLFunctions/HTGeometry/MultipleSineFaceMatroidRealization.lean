@@ -1,0 +1,118 @@
+import GaloisForLFunctions.HTGeometry.MultipleSineReflectionLayer
+import GaloisForLFunctions.HTGeometry.CompressedFaithfulSeparationRealization
+
+/-!
+# Realizing the two consecutive face matroids of the reflection
+
+The Barnes multiple gamma sits on the skeleton whose facets are the `(N-1)`-element vertex sets;
+the multiple sine sits one layer down, on the skeleton whose facets are the `(N-2)`-element sets.
+Their Stanley--Reisner ideals are the consecutive squarefree Veronese ideals `I_N = (x_1 ⋯ x_N)` and
+`I_{N-1}`.
+
+Both face complexes are realized: for each of them a bounded prime-log Herglotz source has a
+differentially independent structural orbit whose finite Laurent structural families have full
+nonlinear differential matroid equal to the localized Stanley--Reisner matroid of that complex.  So
+the one-face-layer reflection quotient is a comparison between two *realized* nonlinear differential
+matroids, not between two formal ideals.
+
+The analytic identification of the realizing source with the actual Barnes multiple gamma and
+multiple sine is a separate question and is not claimed here.
+-/
+
+namespace GaloisForLFunctions.HTGeometry
+
+open GaloisForLFunctions MvPolynomial Polynomial GaloisForLFunctions.VeroneseIdeal
+open scoped Differential
+
+noncomputable section
+
+/-- Face complex of the multiple sine: facets are the `(N-2)`-element vertex sets. -/
+noncomputable def multipleSineFacets (α : Type*) [Fintype α] [DecidableEq α] :
+    Finset (Finset α) :=
+  skeletonFacets α (Fintype.card α - 2)
+
+/-- Face complex of the Barnes multiple gamma: facets are the `(N-1)`-element vertex sets. -/
+noncomputable def barnesFacets (α : Type*) [Fintype α] [DecidableEq α] :
+    Finset (Finset α) :=
+  skeletonFacets α (Fintype.card α - 1)
+
+variable {α : Type*} [Fintype α] [DecidableEq α]
+
+theorem stanleyReisnerIdeal_multipleSineFacets {R : Type*} [CommRing R]
+    (hN : 2 ≤ Fintype.card α) :
+    stanleyReisnerIdeal R (multipleSineFacets α) = multipleSineIdeal R α :=
+  (multipleSineIdeal_eq_stanleyReisner hN).symm
+
+theorem stanleyReisnerIdeal_barnesFacets {R : Type*} [CommRing R]
+    (hN : 1 ≤ Fintype.card α) :
+    stanleyReisnerIdeal R (barnesFacets α) = barnesIdeal R α :=
+  (barnesIdeal_eq_stanleyReisner hN).symm
+
+/-- **Realized multiple-sine face matroid.**  Every finite Laurent structural family over the
+multiple-sine face complex is realized by a compressed prime-log Herglotz source with full nonlinear
+differential matroid equal to its Stanley--Reisner numerator matroid. -/
+theorem exists_multipleSineFaceMatroid_realization
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (d : translationSubmonoid (Polynomial ℂ) α)
+    (N : ι → MvPolynomial α (Polynomial ℂ) ⧸
+      stanleyReisnerIdeal (Polynomial ℂ) (multipleSineFacets α)) :
+    ∃ (S : FacetSeparationValues α (multipleSineFacets α)) (t : ℂ)
+      (u : PrimeLogBoundedGauge),
+      letI := isDomain_upperEndAnalyticSubring
+      letI : Algebra ℂ upperEndMeroField := upperEndComplexToMero.toAlgebra
+      letI := upperEndMeroFieldDifferential
+      let source : FiniteFinsuppRowIndex
+          (stanleyReisnerLaurentRows d (multipleSineFacets α) N) → upperEndMeroField :=
+        fun q => boundedGaugeTranslatedPrimeLogUpperEnd (S.orbitShift t) u q.1
+      DifferentialIndependent ℂ
+          (differentialOperatorRowApply
+            (finiteFinsuppOperatorRows
+              (stanleyReisnerLaurentRows d (multipleSineFacets α) N)) source) ↔
+        LinearIndependent (Polynomial ℂ) N :=
+  exists_compressed_stanleyReisnerLaurentDifferentialMatroid (multipleSineFacets α) d N
+
+/-- **Realized Barnes face matroid.**  The same for the face complex one layer up. -/
+theorem exists_barnesFaceMatroid_realization
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (d : translationSubmonoid (Polynomial ℂ) α)
+    (N : ι → MvPolynomial α (Polynomial ℂ) ⧸
+      stanleyReisnerIdeal (Polynomial ℂ) (barnesFacets α)) :
+    ∃ (S : FacetSeparationValues α (barnesFacets α)) (t : ℂ)
+      (u : PrimeLogBoundedGauge),
+      letI := isDomain_upperEndAnalyticSubring
+      letI : Algebra ℂ upperEndMeroField := upperEndComplexToMero.toAlgebra
+      letI := upperEndMeroFieldDifferential
+      let source : FiniteFinsuppRowIndex
+          (stanleyReisnerLaurentRows d (barnesFacets α) N) → upperEndMeroField :=
+        fun q => boundedGaugeTranslatedPrimeLogUpperEnd (S.orbitShift t) u q.1
+      DifferentialIndependent ℂ
+          (differentialOperatorRowApply
+            (finiteFinsuppOperatorRows
+              (stanleyReisnerLaurentRows d (barnesFacets α) N)) source) ↔
+        LinearIndependent (Polynomial ℂ) N :=
+  exists_compressed_stanleyReisnerLaurentDifferentialMatroid (barnesFacets α) d N
+
+/-- **The reflection layer between two realized matroids.**  The Barnes and multiple-sine face
+complexes are consecutive skeleta; their Stanley--Reisner ideals are the consecutive squarefree
+Veronese ideals; the inclusion is strict, so the induced surjection removes exactly one complete
+face layer, generated by the classes of the maximal proper faces. -/
+theorem multipleSine_reflection_layer_law {R : Type*} [CommRing R] [Nontrivial R]
+    (hN : 2 ≤ Fintype.card α) :
+    stanleyReisnerIdeal R (barnesFacets α) = veroneseIdeal R α (Fintype.card α) ∧
+      stanleyReisnerIdeal R (multipleSineFacets α) =
+        veroneseIdeal R α (Fintype.card α - 1) ∧
+      stanleyReisnerIdeal R (barnesFacets α) <
+        stanleyReisnerIdeal R (multipleSineFacets α) ∧
+      RingHom.ker (reflectionQuotientMap (R := R) (σ := α)) =
+        Ideal.span ((Ideal.Quotient.mk (barnesIdeal R α)) ''
+          veroneseGens R α (Fintype.card α - 1)) := by
+  refine ⟨stanleyReisnerIdeal_barnesFacets (by omega),
+    stanleyReisnerIdeal_multipleSineFacets hN, ?_,
+    ker_reflectionQuotientMap_eq_span_maximalFaces⟩
+  rw [stanleyReisnerIdeal_barnesFacets (by omega),
+    stanleyReisnerIdeal_multipleSineFacets hN]
+  exact reflection_removes_a_layer (by omega)
+
+end
+
+end GaloisForLFunctions.HTGeometry

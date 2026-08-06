@@ -3,7 +3,7 @@
 - **ID:** `variable-speed-arbitrary-potential-clock-probes`
 - **Stage:** 1-in-progress
 - **Type:** CONSTRUCTION / HYPERBOLIC PDE / CLOCKS
-- **Parent:** `../2-fully-proven/new_scientific_knowledge/clocks/two-species-conformal-clock-scale-law.md`
+- **Parent:** `clocks/two-species-conformal-clock-scale-law.md`
 - **Predecessor:** `../3-formalized/new_scientific_knowledge/time-dependent-principal-part-clock-probes.md`
   (closed: the variable-speed chart carries probes for the **constant** potential `-m²`, at every
   event, and the two-species scale law holds on its conformal orbit)

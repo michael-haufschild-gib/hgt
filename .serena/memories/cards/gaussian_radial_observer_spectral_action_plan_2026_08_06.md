@@ -1,52 +1,43 @@
-# Card: gaussian-radial-observer-spectral-action-law — formalization progress
+# Card gaussian-radial-observer-spectral-action-law — FULLY FORMALIZED
 
-Card: `docs/drafts/pipeline/2-fully-proven/gaussian-radial-observer-spectral-action-law.md`
-(its "Formalization gate" section carries the full equation→declaration table).
+Card moved to `docs/drafts/pipeline/3-formalized/gaussian-radial-observer-spectral-action-law.md`,
+status `[LEAN-PROVED]`.  Every displayed equation (1)–(10) is closed
+unconditionally (axioms = propext / Classical.choice / Quot.sound only), including
+existence + uniqueness of `μ_∞` and the literal `G_ω`/Haar presentation.
 
-## DONE — eqs (1),(2),(3),(4),(5),(6),(7),(8),(9),(10)
-All unconditional; axioms = propext/Classical.choice/Quot.sound; umbrella builds.
+## Modules (all wired into `GaloisForLFunctions/HTGeometry.lean`)
 
-| Module | Key declarations |
+| Module | Content |
 |---|---|
-| `GaussianRadialLaw.lean` | `measure_pi_gaussianReal_eq_withDensity`, `map_withDensity_measurableEquiv`, `euclideanGaussianDensityReal`, `stdGaussian_eq_withDensity` |
-| `GaussianRadialPolarLaw.lean` | `gaussianRadialDensity`, `gaussian_polar_constant`, `integral_stdGaussian_fun_norm` |
-| `GaussianRadialActionKernel.lean` | `radialActionKernel`, `radialActionKernel_eq_integral_stdGaussian`, `radialActionKernel_zero`, `tendsto_radialActionKernel_cocompact` |
-| `GaussianRadialSpectralPacket.lean` | `radialSpectralPacket`, `integral_radialSpectralPacket`, `tendsto_integral_radialSpectralPacket_atTop`, `tendsto_mul_atTop_cocompact` |
-| `ReplicaReporterSpectralExpansion.lean` | `outerProduct`, `replicaReporter`, `replicaDetuning`, `replicaCoefficient`, `replicaReporter_spectral_expansion`, `integral_replicaReporter_radial`, `tendsto_integral_replicaReporter_radial_atTop`, `bohrMean_replicaReporter`, `tendsto_integral_replicaReporter_radial_bohrMean` |
-| `GaussianRadialAngularMixture.lean` | `norm_radialActionKernel_le_one`, `continuous_radialActionKernel`, `tendsto_integral_angularMixture`, `tendsto_integral_replicaReporter_angularMixture` |
-| `GaussianRadialCompletionLaw.lean` | `tendsto_integral_trigPolyChar_radial`, `tendsto_integral_radial_bohrMean`, `tendsto_integral_radial_bohrMean_angularMixture` |
-| `GaussianRadialContinuousReporter.lean` | `exists_trigPolyChar_approx_of_isBohrAlmostPeriodic`, `tendsto_integral_radial_bohrMean_of_almostPeriodic`, `isBohrAlmostPeriodic_finsetSum`, `isBohrAlmostPeriodic_comp_of_range_subset`, `isBohrAlmostPeriodic_smul_const`, `spectralStateCurve`, `isBohrAlmostPeriodic_spectralStateCurve`, `tendsto_integral_radial_bohrMean_continuous_reporter` |
-| `GaussianRadialEndpointLaw.lean` | `tendsto_integral_radial_bohrMean_real`, `endpointLaw`, `endpointProbabilityLaw`, `integral_endpointLaw`, `tendsto_endpointProbabilityLaw`, `tendsto_measure_endpointLaw_of_null_frontier` |
+| `GaussianRadialLaw.lean` | density of `stdGaussian` vs Lebesgue: `measure_pi_gaussianReal_eq_withDensity`, `map_withDensity_measurableEquiv`, `stdGaussian_eq_withDensity` |
+| `GaussianRadialPolarLaw.lean` | (2),(10): `gaussianRadialDensity`, `gaussian_polar_constant`, `integral_stdGaussian_fun_norm` |
+| `GaussianRadialActionKernel.lean` | `ρ̂_m`: `radialActionKernel`, `radialActionKernel_zero`, `tendsto_radialActionKernel_cocompact` |
+| `GaussianRadialSpectralPacket.lean` | (7),(8) packet form |
+| `ReplicaReporterSpectralExpansion.lean` | (5),(6),(7),(8),(9) operator form + `bohrMean_replicaReporter` |
+| `GaussianRadialAngularMixture.lean` | `continuous_radialActionKernel`, `tendsto_integral_angularMixture` |
+| `GaussianRadialCompletionLaw.lean` | `tendsto_integral_radial_bohrMean` (+ angular mixture) |
+| `GaussianRadialContinuousReporter.lean` | `spectralStateCurve`, its almost-periodicity, `tendsto_integral_radial_bohrMean_continuous_reporter` |
+| `GaussianRadialEndpointLaw.lean` | (1),(4): `endpointLaw`, `tendsto_endpointProbabilityLaw`, `tendsto_measure_endpointLaw_of_null_frontier` |
+| `GaussianRadialLimitLaw.lean` | tightness + Prokhorov: `exists_completedEndpointLaw`, `completedEndpointLaw_unique` |
+| `CompletedTimeBohrMean.lean` | `G_ω`/Haar: `clockPhaseWindowLaw`, `integral_clockPhaseWindowLaw`, `tendsto_clockPhaseWindowLaw_orbitClosureHaar`, `torusStateMap`, `integral_orbitClosureHaar_eq_bohrMean` |
+| `GaussianRadialCompletedOrbitLaw.lean` | (3) literal: `completedOrbitLaw`, `tendsto_endpointProbabilityLaw_completedOrbitLaw`, `exists_tendsto_endpointProbabilityLaw_completedOrbitLaw` |
 
-Also `quditStringOf_sum_family` in `FiniteQuditHermitianStringBasis.lean`.
-All wired into `GaloisForLFunctions/HTGeometry.lean`.
+Also `quditStringOf_sum_family` added to `FiniteQuditHermitianStringBasis.lean`.
 
-## Technical facts
-- mathlib has NO density of `stdGaussian` vs Lebesgue and NO lintegral-Fubini for
-  `Measure.pi`; route = `Measure.pi_eq` + `Measure.restrict_pi_pi` +
-  `integral_fintype_prod_eq_prod` + `ofReal_integral_eq_lintegral_ofReal`.
-- `integral_fun_norm_addHaar` (HaarToSphere) makes the polar law cheap.
-- `Real.tendsto_integral_exp_smul_cocompact` needs no integrability hypothesis.
-- `Matrix (Fin k → Fin D)` IS the k-fold tensor power ⇒ reuse `quditStringOf`.
+## Reusable assets created
+- Density of `ProbabilityTheory.stdGaussian` against Lebesgue (mathlib has none).
+- `map_withDensity_measurableEquiv`.
+- Gaussian polar disintegration and the chi density with the exact `2^{1-m/2}/Γ(m/2)` constant.
+- Radial Fourier kernel with Riemann–Lebesgue decay and contraction/continuity.
+- Vector-valued `isBohrAlmostPeriodic_finsetSum`, `isBohrAlmostPeriodic_comp_of_range_subset`,
+  `isBohrAlmostPeriodic_smul_const`.
+- Complex-valued weak convergence transfer `tendsto_integral_of_tendsto_probabilityMeasure`.
+- One-sided-window clock-phase law + equidistribution (corpus previously had only
+  the symmetric `finiteTorusPhaseProbabilityMeasure`).
+
+## Traps to remember
+- Corpus `UnitAddTorus` lemmas are universe-0 (`d : Type`), not `Type*`.
 - `IsBohrAlmostPeriodic` lives in the ROOT namespace `HTGeometry`.
-- Corpus Bohr assets used: `bohrMean`, `bohrMean_sub`, `bohrMean_le_bohrMean`,
-  `norm_bohrMean_le_bohrMean_norm`, `bohrMean_const_real`, `bohrMean_ofReal`,
-  `exists_bound_of_isBohrAlmostPeriodic`, `isBohrAlmostPeriodic_add/_neg/_const`,
-  `uniformContinuous_of_isBohrAlmostPeriodic`,
-  `hasTotallyBoundedOrbit_of_isBohrAlmostPeriodic`,
-  `exists_trigPoly_spectrum_approx` (BohrBochnerFejerApprox),
-  `expChar`/`bohrMean_sum_expChar`/`isBohrAlmostPeriodic_expChar` (KroneckerWeylDensity).
-- mathlib portmanteau: `ProbabilityMeasure.tendsto_measure_of_null_frontier_of_tendsto'`,
-  `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto`.
+- `ProbabilityMeasure` is NOT a subtype: use `ProbabilityMeasure.toMeasure_injective`.
 - `integral_map` names the map `φ`, the integrand `f`.
-
-## REMAINING (single gap)
-Existence half of "there is a unique probability measure `μ_∞`":
-build `μ_∞` from the positive normalized functional `F ↦ bohrMean (F ∘ curve)`
-by Riesz representation (mathlib `RieszMarkovKakutani`), or equivalently as
-`Haar(T).map Ψ` where `T` is the closure of the frequency torus orbit and
-`Ψ z = ∑ z_i • w_i`.  The second route would simultaneously close the
-`∫_{G_ω} … dν_ω = bohrMean` identification; corpus starting points are
-`CompletedObserverTimeTorus.lean` (`orbitClosureHaar`,
-`orbitClosureHaar_mFourier_integral`) and `BohrOrbitHaarLaw.lean`.
-Uniqueness of `μ_∞` is immediate from (3).
+- mathlib has NO lintegral-Fubini for `Measure.pi`.
