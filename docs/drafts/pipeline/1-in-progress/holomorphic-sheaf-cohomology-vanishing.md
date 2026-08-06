@@ -746,3 +746,301 @@ below itself, so `d = a − 1`.  Hence
 so the two orders of deletion carry opposite signs and the double sum of `setDbar ∘ setDbar` cancels
 in pairs, `∂̄_k ∂̄_j` being symmetric by `dzbarAt_comm`.  This is what has to be formalized next; the
 work is the two cardinality identities `b = c` and `d = a − 1` in `Finset.filter` form.
+
+## The sign identity, formalized (2026-08-06)
+
+`filter_erase_self`, `filter_erase_two_lt`, `filter_erase_two_lt'`, `insertSign_swap` in
+`DbarAltForms.lean`.
+
+The three `Finset.filter` identities are exactly the counting facts derived by hand above: deleting
+a direction never changes the count strictly below it; deleting a *larger* direction does not change
+the count below a smaller one; deleting a *smaller* direction removes exactly one element from the
+count below a larger one, which is `Finset.card_erase_of_mem`.  With them,
+
+  `insertSign k (S.erase k) · insertSign j ((S.erase k).erase j)
+     = −(insertSign j (S.erase j) · insertSign k ((S.erase j).erase k))`   for `j < k ∈ S`,
+
+so the two orders of deleting a pair of directions carry opposite signs.  That is the whole content
+of `d² = 0` beyond `dzbarAt_comm`: the double sum of `setDbar ∘ setDbar` pairs `(k,j)` with `(j,k)`,
+the iterated derivatives agree by commutativity and the coefficients are at the same set, and the
+signs cancel.
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+## `d² = 0`: linearity and the expansion (2026-08-06)
+
+`dzbarAt_const_mul` — **`∂̄_j` is homogeneous under a complex constant.**  The corpus had only the
+real-scalar version; the insertion signs are complex, so this was needed three times over and is now
+factored out, including the branch where the slice is not differentiable.
+
+`dzbarAt_finset_sum` — **`∂̄_j` is additive over a finite sum**, by induction on the index set.
+
+`setDbar_setDbar_expand` — **the double differential expands into a sum over ordered pairs of
+distinct directions**:
+
+  `∂̄(∂̄f) S = ∑_{k ∈ S} ∑_{j ∈ S.erase k} ε(k,S∖k)·ε(j,S∖{k,j}) · ∂̄_k ∂̄_j f (S∖{k,j})`.
+
+With `insertSign_swap` giving the sign flip and `dzbarAt_comm` the symmetry of the iterated
+derivative, the pairing `(k,j) ↦ (j,k)` is a fixed-point-free involution of the index set whose
+terms cancel, which is `d² = 0`.
+
+Axiom audit: all three within `propext, Classical.choice, Quot.sound`.
+
+## `d² = 0` PROVED (2026-08-06)
+
+`setDbar_setDbar_eq_zero` — **the Dolbeault operator on set-indexed forms squares to zero**, for
+any form with `C²` coefficients.
+
+The double sum is transported to a sum over `S.sigma (fun k => S.erase k)`, the set of ordered pairs
+of distinct directions of `S`, and `Finset.sum_involution` is applied to the transposition
+`⟨k,j⟩ ↦ ⟨j,k⟩`.  It is fixed-point free because the pair is distinct; the two terms have the same
+coefficient because `erase_erase_comm`, the same iterated derivative because `dzbarAt_comm`, and
+opposite signs because `insertSign_swap`.
+
+This was the last identity the general-degree recursion was waiting on: the residue of the induction
+step is `f − ∂̄G`, and its `∂̄`-closedness is now `∂̄f − ∂̄∂̄G = 0 − 0`.
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+## The `(0,q)` layer: every local ingredient is proved (2026-08-06)
+
+`setFormAdd`, `SmoothSetForm.add`, `setDbar_add`, `setDbar_empty`, `smoothSetForm_setTransform`
+complete the algebraic layer.  The full inventory of `DbarAltForms.lean`:
+
+| piece | content |
+|---|---|
+| `SetForm`, `insertSign`, `setDbar` | the model and the operator |
+| `setDbar_smooth`, `setDbar_add`, `setDbar_sub`, `setDbar_empty` | its formal properties |
+| `setDbar_insert` | separation of a distinguished direction |
+| `setTransform`, `smoothSetForm_setTransform` | the primitive and its smoothness |
+| `setDbar_setTransform_top`, `setFormSub_setTransform_eq_zero` | first clause of the step |
+| `dzbarAt_setTransform_eq_zero` | second clause of the step |
+| `dzbarAt_eq_zero_of_setDbar_zero` | closedness crux |
+| `setDbar_step_below` | **the induction step** |
+| `dzbarAt_const_mul`, `dzbarAt_finset_sum` | `∂̄` linearity, complex scalars and finite sums |
+| `insertSign_swap`, `erase_erase_comm`, `setDbar_setDbar_expand` | the sign combinatorics |
+| `setDbar_setDbar_eq_zero` | **`d² = 0`** |
+
+Everything is degree-agnostic and stated over an arbitrary **product domain**, so it applies to
+polydiscs and polyannuli alike.
+
+### The one remaining shape question for the recursion
+
+The recursion over directions is the analogue of `dbar_product_solve_aux` and needs, at each link of
+the chain and each direction, the cut-off pair together with the analytic data the step consumes:
+the slab radius, the two bounds, smoothness and compact support of the cut-off top coefficients —
+**for every index set `T`**, because the transform is applied to all of them at once.  In degree one
+there was a single coefficient and these were five plain hypotheses; here they are five families
+indexed by `T`, and the statement is only writable if they are bundled.
+
+The natural bundling is a `Prop`-valued predicate `StepCutoff D D' k f` asserting the existence of
+`chi`, `psi` and the families, since `chi` and `psi` are data and cannot live in a structure field
+of a `Prop`.  With that predicate the recursion reads exactly like `dbar_product_solve_aux`: induct
+on the number of directions still to clear, apply `setDbar_step_below` at `k = ⟨m, _⟩`, use
+`setDbar_setDbar_eq_zero` for the residue's closedness and `SmoothSetForm.sub` for its smoothness,
+recurse, and assemble with `setDbar_add`.
+
+## The `(0,q)` Dolbeault–Grothendieck lemma PROVED (2026-08-06)
+
+`cutCoeff`, `StepCutoff`, `setDbar_solve_aux`, `setDbar_solve` in `DbarAltForms.lean`.
+
+`StepCutoff D D' k f` bundles what one link of a chain of product domains supplies at a direction:
+the two cutoffs, and — indexed by the set `T` — the slab radius, the two bounds, smoothness and
+compact support of the cut-off top coefficients.  The bundling has to be an existential `Prop`
+because `chi` and `psi` are data.
+
+`setDbar_solve_aux` is the induction on the number of directions still to clear, with the same shape
+as `dbar_product_solve_aux`: for `n ≤ m` the hypothesis is vacuous and the step is a
+re-application; otherwise the step at `k = ⟨m, _⟩` produces the transform `G`, the residue
+`f − ∂̄G` is smooth (`SmoothSetForm.sub`), vanishes at the empty index (`setDbar_empty`), is
+`∂̄`-closed (`setDbar_sub` and `setDbar_setDbar_eq_zero`) and lies below `m` (`setDbar_step_below`);
+the recursive solution `v` is assembled with `setDbar_add` into `G + v`.
+
+`setDbar_solve` — **the `(0,q)` Dolbeault–Grothendieck lemma on a product domain**: a smooth
+`∂̄`-closed form of positive degree on the first domain of the chain has a smooth primitive on the
+`n`-th.  Since the statement is over an arbitrary product domain, it covers **polydiscs and
+polyannuli in every degree at once**.
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+### What is left
+
+The two exhaustion arguments at general degree.  Both are written entirely as "solve on a member of
+the exhaustion, correct the difference by something holomorphic on the whole space, take the limit",
+and every ingredient of that is degree-agnostic — `dbar_polydisc_solve` is replaced by
+`setDbar_solve` with the polydisc chain, `dbar_polyannulus_solve` by the same with the polyannulus
+chain, and the corrections come from the same Runge theorems, applied to each coefficient of the
+form separately.  Then B4.
+
+## The cut-off data from a pair of bumps (2026-08-06)
+
+`stepCutoff_of_bumps` — **`StepCutoff` follows from the two bumps alone.**  Smoothness and compact
+support of the cut-off top coefficients come from the second bump; the slab radii and the two bounds
+are then the usual consequences of compact support, chosen uniformly in the index set by `choose`,
+with the two slab radii merged by a maximum.
+
+This is what makes the `(0,q)` lemma usable: the chain of polydiscs supplies its bumps from
+`exists_polydisc_bumps` and the chain of polyannuli from `exists_annulus_cutoff` together with
+`exists_bounded_bump`, exactly as in degree one — so both instantiations of `setDbar_solve` reduce
+to the bump constructions already proved.
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+## Recipe for the two instantiations of `setDbar_solve`
+
+Both are transcriptions of the degree-one proofs, with the chain and the bumps unchanged.
+
+**Polydisc.**  Chain `Dom o i := Metric.ball (c i) (R o i)` with the geometric interpolation
+`R o i := r i − (r i − ρ i)(1 − 2^{-o})`, so `R 0 = r`, `R` is strictly decreasing in `o`, and
+`R n i > ρ i`.  Note `polydisc c s = productDomain (fun i => Metric.ball (c i) (s i))`
+definitionally, so no translation is needed.  The link cutoffs come from `exists_polydisc_bumps`
+with radii `(R o, R (o+1))` and the outer bound `Rmax := 1 + ∑ i |r i|`, and `stepCutoff_of_bumps`
+turns them into `StepCutoff`.  Conclusion: a smooth `∂̄`-closed form of positive degree on
+`polydisc c r` has a smooth primitive on `polydisc c ρ`.
+
+**Polyannulus.**  Identical, with `Dom o i := annulus (A o i) (B o i)` for the two geometric chains
+`annulusChainIn` and `annulusChainOut` already defined, and the link cutoffs from
+`exists_annulus_cutoff` and `exists_bounded_bump` — exactly the `hcut` built inside
+`dbar_polyannulus_solve`, which can be lifted out and reused verbatim.
+
+**The exhaustions.**  `exists_dbar_approx_sequence` / `dbar_global_solve` and
+`exists_dbar_punctured_sequence` / `dbar_punctured_solve` are written as "solve on a member of the
+exhaustion, correct the difference, take the limit".  At general degree the same proof runs
+coefficientwise: the difference of two consecutive primitives is a `∂̄`-closed form of degree `q−1`
+whose coefficients are holomorphic where both solve, so each coefficient is corrected by the Runge
+theorem already proved (`exists_entire_approx_closedBall` for `ℂⁿ`,
+`exists_punctured_approx_polyannulus` for `(ℂ^×)ⁿ`), and the estimates are summed over the finitely
+many index sets.  Weierstrass applies to each coefficient separately, so
+`differentiableOn_of_tendstoUniformlyOn` is used unchanged.
+
+## The `(0,q)` Dolbeault lemma on a polydisc, in every degree (2026-08-06)
+
+`polydiscChain`, `setDbar_polydisc_solve` — **a smooth `∂̄`-closed form of positive degree on
+`polydisc c r` has a smooth primitive on every strictly smaller `polydisc c ρ`**, in every degree.
+
+The chain is the geometric interpolation `R o = r − (r − ρ)(1 − 2^{-o})`: it starts at `r`, is
+strictly decreasing, and still contains `ρ` after `n` steps.  Each link's cutoffs come from
+`exists_polydisc_bumps` and are turned into `StepCutoff` by `stepCutoff_of_bumps`.  Because
+`polydisc c s` is definitionally `productDomain (fun i => ball (c i) (s i))`, no translation between
+the two notions of domain is needed anywhere.
+
+This is `dbar_polydisc_solve` generalized from degree one to all degrees, and it is the local
+statement the Dolbeault resolution needs — the exactness of `0 → O → A^{0,0} → A^{0,1} → ⋯` at
+every point.
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+## The `(0,q)` Dolbeault lemma on a polyannulus, in every degree (2026-08-06)
+
+`setDbar_polyannulus_solve` — **a smooth `∂̄`-closed form of positive degree on the polyannulus of
+radii `(a, b)` has a smooth primitive on every strictly smaller polyannulus**, in every degree.
+
+Same shape as the polydisc instantiation: the chains `annulusChainIn` and `annulusChainOut` already
+built for degree one, the link cutoffs from `exists_annulus_cutoff` and `exists_bounded_bump`, and
+`stepCutoff_of_bumps` to package them.
+
+Both instantiations of `setDbar_solve` are therefore done, and the `(0,q)` local theory is complete:
+
+| domain | degree one | every degree |
+|---|---|---|
+| polydisc | `dbar_polydisc_solve` | `setDbar_polydisc_solve` |
+| polyannulus | `dbar_polyannulus_solve` | `setDbar_polyannulus_solve` |
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+## A structural simplification for `q ≥ 2`, and what degree tracking is still needed
+
+Setting up the exhaustion at general degree turned up a fact that changes the remaining work.
+
+**For `q ≥ 2` the exhaustion needs no Runge step at all.**  In degree one the difference of two
+consecutive local primitives is a *holomorphic function* on the smaller ball, and a holomorphic
+function cannot in general be corrected to zero — only approximated, which is why the whole Laurent
+and Runge apparatus was necessary.  In degree `q ≥ 2` the difference `u_{m+1} − u_m` is a
+`∂̄`-closed form of degree `q − 1 ≥ 1`, and the local lemma applies to *it*: on a slightly smaller
+polydisc it is `∂̄w_m` for some `w_m`.  Replacing `u_{m+1}` by `u_{m+1} − ∂̄w_m` makes it agree with
+`u_m` exactly on that smaller domain, so the corrected sequence **stabilizes** and the limit is
+defined pointwise with no convergence argument, no Weierstrass, and no approximation.
+
+So the remaining exhaustion work splits: degree one is already done (`dbar_global_solve`,
+`dbar_punctured_solve`), and degrees `≥ 2` need only the stabilization argument, which is much
+shorter.
+
+**What degree tracking is needed.**  `SetForm` is inhomogeneous — a family over all finite index
+sets — and `setDbar u {k} = ±∂̄_k (u ∅)`, so the degree-zero part of a primitive is visible in the
+degree-one part of its differential.  For the stabilization argument the forms must be homogeneous,
+so a predicate
+
+  `SetFormDeg q f := ∀ S, S.card ≠ q → f S = 0`
+
+has to be added, together with the observations that it is preserved by the construction: the
+transform of a form of degree `q` has degree `q − 1`, because `setTransform f χ ψ k T` involves only
+`f (insert k T)`, which vanishes unless `|T| = q − 1`, and the coordinatewise Cauchy transform of the
+zero function is zero.  The residue and the recursive primitive then stay homogeneous of the right
+degrees.
+
+## Degree tracking, landed (2026-08-06)
+
+`SetFormDeg`, `SetFormDeg.empty`, `SetFormDeg.sub`, `SetFormDeg.add`, `dbarSliceSolution_zero`,
+`setTransform_deg`, `setDbar_deg` in `DbarAltForms.lean`.
+
+- A form of positive degree has no degree-zero part, which is the hypothesis `setDbar_solve` needs.
+- **The transform of a form of degree `q + 1` has degree `q`**: `setTransform f χ ψ k T` involves
+  only `f (insert k T)`, which vanishes unless `|T| = q`, and the coordinatewise Cauchy transform of
+  the zero function is zero.
+- **The differential of a form of degree `q` has degree `q + 1`**: every summand differentiates a
+  coefficient at a set of cardinality `|S| − 1`, which vanishes unless that is `q`.
+- Degree is preserved by sums and differences.
+
+With these the stabilization argument for `q ≥ 2` is expressible: the difference of two consecutive
+local primitives is homogeneous of degree `q − 1 ≥ 1`, hence has no degree-zero part, hence is
+`∂̄`-exact on a smaller domain by `setDbar_polydisc_solve`, and the correction makes consecutive
+members agree exactly rather than approximately.
+
+Axiom audit: within `propext, Classical.choice, Quot.sound`.
+
+## The stabilizing exhaustion for `q ≥ 2`: the construction to write
+
+Hypotheses: an increasing family `P : ℕ → Set (Fin n → ℂ)` exhausting `Ω`, and local solvability
+"every `∂̄`-closed form of degree `q` on `P (m+1)` with no degree-zero part has a primitive on
+`P m`" — which is `setDbar_polydisc_solve` for the ball exhaustion and
+`setDbar_polyannulus_solve` for the polyannulus one.
+
+Construction.  Let `u m` solve `∂̄(u m) = f` on `P m`.  Define `v` recursively with `v 0 := u 0` and
+
+  `v (m+1) := u (m+1) + ∂̄ w_m`,  where `∂̄ w_m = v m − u (m+1)` on `P (m−1)`.
+
+The right-hand side is legitimate: `v m − u (m+1)` is `∂̄`-closed on `P m` because both solve
+`∂̄· = f` there, and it is homogeneous of degree `q − 1 ≥ 1`, so it has no degree-zero part
+(`SetFormDeg.empty`) and the local lemma applies to it.  Then `∂̄(v (m+1)) = f` on `P (m+1)` by
+`setDbar_setDbar_eq_zero`, and `v (m+1) = v m` on `P (m−1)`.
+
+So the sequence is eventually constant at each point: for `z ∈ P M` the value `v m z` is the same
+for all `m ≥ M+1`, and `u z := v (M+1) z` is well defined.  No convergence, no Weierstrass, no
+approximation — the whole Laurent and Runge apparatus is needed only for `q = 1`, which is already
+done in both geometries.
+
+The one Lean subtlety is that `w_m` depends on `v m`, so the recursion is dependent: the state to
+recurse on is the subtype of forms carrying the invariant (smooth, homogeneous of degree `q`, solving
+`∂̄· = f` on `P m`), and `Nat.rec` on that subtype produces the sequence together with its
+properties, the agreement `v (m+1) = v m` on `P (m−1)` being read off the step.
+
+## Degree threaded through the whole `(0,q)` chain (2026-08-06)
+
+`setDbar_solve_aux`, `setDbar_solve`, `setDbar_polydisc_solve` and `setDbar_polyannulus_solve` now
+carry the degree: from `SetFormDeg (q+1) f` they conclude `SetFormDeg q u` for the primitive, as
+well as its smoothness and the equation.
+
+This was needed, not cosmetic.  The stabilization argument for `q ≥ 2` corrects a primitive by a
+primitive **of the difference of two primitives**, and to apply the local lemma to that difference
+one must know it is homogeneous of positive degree — otherwise `SetFormDeg.empty` does not apply and
+the local lemma has no hypothesis to consume.  Threading the degree costs only `setTransform_deg`
+and `setDbar_deg` at the step, and `SetFormDeg.add` at the assembly.
+
+The `(0,q)` local theory is therefore complete and self-contained:
+
+  `SetFormDeg (q+1) f` ∧ smooth ∧ `∂̄`-closed on the larger domain
+    ⟹ ∃ `u`, smooth, `SetFormDeg q u`, `∂̄u = f` on the smaller domain,
+
+for polydiscs and polyannuli alike, in every degree.
+
+Axiom audit: `propext, Classical.choice, Quot.sound`; no `sorry` anywhere in the module.

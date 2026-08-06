@@ -1,8 +1,8 @@
 # Route R cofinal sieve harmonic residue
 
 - **ID:** route-r-cofinal-sieve-harmonic-residue
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `cofinal-bockstein-polarized-adelic-stokes.md` · first-wall open core
 - **Statement:** Conditional Euler-sieve tail variation recovers, coefficient-faithfully and independently of summable perturbations, the oriented `1/p` coefficient of every Route R critical-wall prime field.
 
@@ -21,7 +21,7 @@ whose zero-limit law remains to be derived from fixed-source-orientation Stokes/
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem, targeted `lake build` green, axiom audit
+- [x] 2 → 3 formalized: Lean theorem, targeted `lake build` green, axiom audit
 - [ ] 3 → 4 publication-ready: standalone paper and refreshed external novelty audit
 
 ## Internal corpus audit
@@ -156,8 +156,30 @@ New open core: prove one explicit limit law for restarted nested sieve variation
 All analytic quotient ambiguity has been removed. Any proposed source-dagger or Stokes producer can
 now be tested coefficientwise against this reporter.
 
+## Lean certificate
+
+- Module: `GaloisForLFunctions.RHTower.RouteRCofinalSieveHarmonicResidue`
+- Umbrella: `GaloisForLFunctions/RHTower.lean`
+- Core infrastructure:
+  - `hasSum_routeRCofinalSieveWeight`;
+  - `tendsto_routeRCofinalSieveHarmonicReporter_zero_of_summable`;
+  - `tendsto_routeRCofinalSieveHarmonicReporter`;
+  - `routeRPrimeHarmonicAsymptotic_unique`.
+- Route R quantization:
+  - `tendsto_routeRPrimeGammaCriticalWallReporter_neg_one_of_pos`;
+  - `tendsto_routeRPrimeGammaCriticalWallReporter_one_of_neg`;
+  - `tendsto_routeRPrimeGammaCriticalWallReporter_zero`;
+  - `routeRPrimeGammaCriticalWallReporter_zeroLimit_iff`;
+  - `routeRPrimeGammaXiCriticalWallReporter_zeroLimit_iff_re_eq_half`.
+- Direct check: `lake env lean GaloisForLFunctions/RHTower/RouteRCofinalSieveHarmonicResidue.lean` — green.
+- Final target audit: `lake build GaloisForLFunctions.RHTower.RouteRCofinalSieveHarmonicResidue` — green.
+- Formal lint: `python3 scripts/formal_tools.py lint` — green.
+- Axioms: `[propext, Classical.choice, Quot.sound]`.
+
 ## Log
 
 - 2026-08-06 — created directly in stage 1 after corpus and literature audit; attempts 1–2
   falsified; attempt 3 dependency-closed on paper.
 - 2026-08-06 — advanced to stage 2 after complete proof and hostile circularity audit.
+- 2026-08-06 — formalized unconditionally, wired into umbrella, targeted build and lint green;
+  advanced to stage 3.

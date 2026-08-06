@@ -1761,3 +1761,45 @@ By `(QW)`, zero residue forces oriented rank to be zero, hence `t=0`. Existing
 fixed-tail/Xi comparison then annihilates Hodge-mate coefficient and closes RH
 endpoint. Remaining unproved content is this source-derived residue law, not
 an `ell^1` deconvolution across a positive-width aperture region.
+
+## 2026-08-06 — Cofinal restarted-sieve realization of harmonic residue
+
+`[LEAN-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]` The phrase “harmonic residue”
+now has an explicit, source-native meaning. For any prime enumeration `e`,
+restart the Euler sieve after prefix `N` and put
+
+\[
+ D_{N,n}=\prod_{k<n}\left(1-\frac1{e(N+k)}\right),\qquad
+ S_N(a)=\sum_{n\ge0}D_{N,n}a(e(N+n)).
+\]
+
+New module
+`RHTower/RouteRCofinalSieveHarmonicResidue.lean` proves:
+
+1. restarted loss weights `D_{N,n}/e(N+n)` are positive and sum to one;
+2. `S_N(b) -> 0` for every summable prime field `b`;
+3. if `a(p)=c/p+b(p)` with `b in ell^1`, then `S_N(a) -> c`, and `c` is
+   unique;
+4. for actual first-wall Gamma field `W_t`, the limits are `-1` for `t>0`,
+   `0` for `t=0`, and `+1` for `t<0`, for every enumeration.
+
+The first two conjectures were falsified before formalization: an unshifted
+sieve reporter has nonzero `ell^1` bias, and global-tail normalization hides
+the source law behind division by vanishing density. Literal tail restart
+removes both defects.
+
+### Frontier reduction
+
+`[OPEN CORE — ROUTE_R_COFINAL_SIEVE_STOKES_ZERO_LIMIT]` Derive, from the
+pre-divisor fixed-source-orientation Stokes/Cartier producer, the concrete law
+
+\[
+ S_N(W_{t_\rho})\longrightarrow0
+\]
+
+for every Xi support point `rho`. Formal theorem
+`routeRPrimeGammaXiCriticalWallReporter_zeroLimit_iff_re_eq_half` proves this
+zero limit is equivalent to `Re rho = 1/2`, but does not assume or assert the
+limit. Thus quotient ambiguity is gone: remaining RH-bearing content is one
+explicit cofinal source limit, not an undefined residue, tail-Roos equality,
+or continuation through a forbidden aperture interval.
