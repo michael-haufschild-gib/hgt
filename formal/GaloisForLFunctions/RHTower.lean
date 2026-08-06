@@ -3624,6 +3624,7 @@ import GaloisForLFunctions.RHTower.GibbsMoebiusAnchor
 import GaloisForLFunctions.RHTower.GibbsInfiniteVolume
 import GaloisForLFunctions.RHTower.GibbsPotentialBound
 import GaloisForLFunctions.RHTower.GibbsLogDerivative
+import GaloisForLFunctions.RHTower.GibbsScaleContraction
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment
@@ -3780,6 +3781,8 @@ import GaloisForLFunctions.RHTower.Sieve.ChebyshevSharpTransferOne
 import GaloisForLFunctions.RHTower.Sieve.ChebyshevSharpRateOne
 import GaloisForLFunctions.RHTower.Sieve.ChebyshevSharpMassRateOne
 import GaloisForLFunctions.RHTower.Sieve.ChebyshevSharpSelfRateOne
+import GaloisForLFunctions.RHTower.Sieve.ChebyshevPsiBigO
+import GaloisForLFunctions.RHTower.Sieve.ChebyshevThetaBigO
 import GaloisForLFunctions.RHTower.Sieve.SavingSubstitution
 import GaloisForLFunctions.RHTower.Sieve.GrowthSubstitution
 import GaloisForLFunctions.RHTower.Sieve.EdgeBoundAtChoice

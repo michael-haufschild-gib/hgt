@@ -184,6 +184,46 @@ theorem measure_rayClose_ge_gaussian_smallBall {v : ℕ} {ψ : EuclideanSpace �
   exact GaloisForLFunctions.HTGeometry.measure_pi_gaussian_transverse_ball_lower
     v hL hε ht hle
 
+omit [BorelSpace E] [FiniteDimensional ℝ E] in
+/-- **Observer-visible ceiling.**  A uniform upper law `K t ^ (-κ)` on the
+ray-closeness probability cannot beat the transverse Gaussian tube, so the upper
+exponent is at most the number of visible coordinates. -/
+theorem exponent_le_visible_of_upper_law {v : ℕ} {ψ : EuclideanSpace ℂ d}
+    (hψ : ‖ψ‖ = 1) (Hmap : (E × (Fin v → ℝ)) →ₗ[ℝ] Matrix d d ℂ)
+    (hherm : ∀ w, (Hmap w)ᴴ = Hmap w)
+    (hinv : ∀ e : E, centered ψ.ofLp (Hmap (e, 0)) = 0)
+    {L ε : ℝ} (hL : 0 < L) (hε : 0 < ε)
+    (hlip : ∀ u w : E × (Fin v → ℝ), ‖Hmap u - Hmap w‖ ≤ L * ‖u - w‖)
+    (μ : Measure E) [IsProbabilityMeasure μ] {K κ T : ℝ}
+    (hupper : ∀ t : ℝ, T ≤ t → 1 ≤ t →
+      ((μ.prod (Measure.pi fun _ : Fin v => ProbabilityTheory.gaussianReal 0 1))
+        {p : E × (Fin v → ℝ) | RayClose ψ (unitaryEvolution (Hmap p) t) ε}).toReal
+        ≤ K * t ^ (-κ)) :
+    κ ≤ (v : ℝ) := by
+  have hbase : 0 < 2 * GaloisForLFunctions.HTGeometry.gaussianDensityFloor * (ε / L) :=
+    mul_pos (by linarith [GaloisForLFunctions.HTGeometry.gaussianDensityFloor_pos])
+      (div_pos hε hL)
+  refine GaloisForLFunctions.HTGeometry.exponent_le_natCast_of_forall_le
+    (c := (2 * GaloisForLFunctions.HTGeometry.gaussianDensityFloor * (ε / L)) ^ v)
+    (K := K) (T := max T (ε / L)) (pow_pos hbase v) ?_
+  intro t htT ht1
+  have ht0 : (0 : ℝ) < t := lt_of_lt_of_le zero_lt_one ht1
+  have hle : ε ≤ L * t := by
+    have hdiv : ε / L ≤ t := le_trans (le_max_right _ _) htT
+    calc ε = L * (ε / L) := by field_simp
+      _ ≤ L * t := mul_le_mul_of_nonneg_left hdiv (le_of_lt hL)
+  have hmeas := measure_rayClose_ge_gaussian_smallBall hψ Hmap hherm hinv hL hε hlip
+    μ ht0 hle
+  have hfin : ((μ.prod (Measure.pi fun _ : Fin v => ProbabilityTheory.gaussianReal 0 1))
+      {p : E × (Fin v → ℝ) | RayClose ψ (unitaryEvolution (Hmap p) t) ε}) ≠ ⊤ :=
+    measure_ne_top _ _
+  have hlow : (2 * GaloisForLFunctions.HTGeometry.gaussianDensityFloor * (ε / L)) ^ v
+      * (t ^ v)⁻¹
+      ≤ ((μ.prod (Measure.pi fun _ : Fin v => ProbabilityTheory.gaussianReal 0 1))
+        {p : E × (Fin v → ℝ) | RayClose ψ (unitaryEvolution (Hmap p) t) ε}).toReal :=
+    (ENNReal.ofReal_le_iff_le_toReal hfin).mp hmeas
+  exact le_trans hlow (hupper t (le_trans (le_max_left _ _) htT) ht1)
+
 end ProductTube
 
 end QuantumAlg

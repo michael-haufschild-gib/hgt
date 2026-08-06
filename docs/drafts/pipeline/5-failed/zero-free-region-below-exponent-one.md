@@ -1,3 +1,24 @@
+# RETIRED: the van der Corput family cannot reach exponent below one
+
+**Outcome.** The goal — a zero-free region `σ ≥ 1 − c/(log t)^κ` with `κ < 1` — is **not reachable**
+from the corpus's toolkit.  The obstruction is proved, not merely suspected:
+
+- the per-block saving of the `k`-th derivative test is `N^{−1/(3·2^k)}`, doubly exponentially weak
+  in the order, while the height window forces `k ≥ log t/log N`.  Both hold together only for
+  `log N ≳ log t/loglog t`, so every smaller block saves nothing at any order.  The `≍ log t/loglog t`
+  blocks below that contribute `O(1)` each — exactly the Littlewood bound, as a **ceiling**;
+- the Landau/DLVP frame turns any bound `|ζ| ≪ t^{θ(1−σ)}` into width `≍ 1/(θ log t)`, independent
+  of the radius, so κ = 1 exactly — even under Lindelöf.
+
+Only a growth bound with exponent **sub-linear in `(1−σ)`** breaks it, and that is
+Vinogradov–Korobov, i.e. Vinogradov's mean value theorem — in neither the corpus nor mathlib.
+
+Kept for the inventory table below and the reusable lemmas; read before re-attempting.
+See `mem:route_e/van_der_corput_capped_at_loglog_2026_08_06` and
+`mem:route_e/landau_route_is_pinned_at_kappa_one_2026_08_06`.
+
+---
+
 # Breaking κ = 1: a zero-free region of exponent below one
 
 **Status:** in progress.  Goal `σ ≥ 1 − c/(log t)^κ` with **κ < 1**, which is what
@@ -113,3 +134,61 @@ is what produces an exponent **sub-linear in `(1−σ)`** after the dyadic sum.
 3. **The dyadic sum.**  Sum `∑_{n∼N} n^{−σ−it}` over dyadic `N` with the per-block `ρ`, giving
    `|ζ(σ+it)| ≪ t^{A(1−σ)^{3/2}}·log^{2/3}t` (or any sub-linear exponent).
 4. **Feed into** `landau_logDeriv` + `dlvp_inequality` at `R ≍ (loglog t/log t)^{2/3}`.
+
+---
+
+# CORRECTION (audit of the existing corpus)
+
+**Most of what is above was already built.**  The plan was written without auditing the
+`Dirichlet*` family, and bricks 1–3 duplicate existing theorems.  What follows replaces the
+"next bricks" list.
+
+## Canonical, already in the corpus
+
+| module | theorem | content |
+|---|---|---|
+| `DirichletBlockSchedule` | `blockLambda` | `λ = (t/2π)(k−1)!/(2N)^k`, as a definition |
+| | **`exists_blockLambda_in_window`** | **the per-block order choice** — returns `k ∈ [2, k₀]` with `λ` in `[N^{−5/3}, N^{−1/3}]` |
+| | `blockLambda_two_ge`, `blockLambda_le_of_small_factorial` | discharge its two hypotheses |
+| `DirichletBlockSaving` | `block_saving`, `block_saving_wide` | **the window and the saving**: `4^k λ ≤ N⁻¹`, `N^{−3/2} ≤ λ` ⟹ `≤ 1024·N^{−1/2^k}` |
+| | `dirichlet_block_saving_of_range`, `…_of_factorial_range`, `…_of_small_factorial` | with the height window stated in `t` |
+| `DirichletBlockSigma` | `dirichlet_block_sigma_saving`, `…_of_small_factorial` | **the same at general σ**: `≤ 2560·N^{1−σ}·N^{−1/(3·2^k)}` |
+| `DirichletDyadicTailAssembly` | **`dirichlet_tail_dyadic_le`** | **the dyadic sum, already taking a per-block order `k : ℕ → ℕ`** |
+| `DirichletHeadTailSplit`, `DirichletEndpointReduction`, `DirichletConstantOrder`, `DirichletExponentShape`, `DirichletAssembledBound`, `DirichletExplicitRHS`, `DirichletOrderChoice`, `DirichletOrderRate` | | the assembly through to `norm_riemannZeta_line_rate_clean` |
+
+## What this session added, and what of it is redundant
+
+| module | status |
+|---|---|
+| `DirichletBlockAdmissible` | `block_terms_mono` is general and reusable; `dirichlet_block_lam_le_one` gives a factorial-**free** admissibility condition `T·k^k ≤ (2N)^k`, which the corpus states instead as `(k−1)! ≤ N`.  The `_powers` / `_clean` restatements are a coordinate change of `dirichlet_block_bound`. |
+| `DirichletBlockWindow` | **duplicates** `block_saving`, in `T`-coordinates instead of `λ`. |
+| `DirichletBlockStandardOrder` | **duplicates** `block_saving` / `block_saving_wide` specialisations. |
+| `DirichletOrderExists` | `rpow_le_of_le_log_div`, `le_rpow_of_log_div_le`, `mul_le_rpow_of_log_div_le` are generic and reusable.  `exists_order_in_window` duplicates the combinatorial core of `exists_blockLambda_in_window`. |
+| `DirichletBlockOrderChoice` | **duplicates** `exists_blockLambda_in_window`. |
+
+Nothing outside this session's own chain imports any of them.
+
+## THE ACTUAL GAP
+
+`dirichlet_tail_dyadic_le` already accepts a **varying** order `k : ℕ → ℕ`.  Every consumer of it
+in the corpus (`DirichletConstantOrder`, `norm_dirichlet_partial_littlewood_const`) instantiates a
+**constant** order across all blocks, and `DirichletOrderChoice` / `DirichletOrderRate` then
+optimise that one order globally.  **A constant order is exactly what caps the result at
+`log t/loglog t`.**
+
+The sub-linear `(1−σ)^{3/2}` exponent needs `k(r)` to grow with the dyadic index `r`.  The plumbing
+already permits it; no existing theorem exercises it.
+
+### Remaining work, correctly scoped
+
+1. Choose a growing `k(r)` and verify the four hypotheses of `dirichlet_tail_dyadic_le`:
+   `2 ≤ k r`, `(k r − 1)! ≤ A·2^r`, `8π(A2^r)^{1/3} ≤ t`, and the upper height bound.
+   The second is the binding one and is what forces `k(r) ≍ log(A2^r)/log log(A2^r)`.
+2. Sum `∑_r 2560·(A2^r)^{−1/(3·2^{k r})}` with that growing order — the sum no longer collapses to
+   a single power, which is the whole point.
+3. Repeat at general σ with `dirichlet_block_sigma_saving`, giving the growth bound with exponent
+   sub-linear in `(1−σ)`.
+4. Feed into `landau_logDeriv` + `dlvp_inequality` at `R ≍ (loglog t/log t)^{2/3}`.
+
+**Before writing anything: grep the `Dirichlet*` family.**  It is large, and its module names
+describe their contents accurately.

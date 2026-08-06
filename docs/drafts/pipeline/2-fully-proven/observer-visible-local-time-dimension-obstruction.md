@@ -1,9 +1,9 @@
 # Observer-visible local-time dimension obstruction
 
 - **ID:** observer-visible-local-time-dimension-obstruction
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / exact observer-dependent obstruction to autonomous state-complexity growth
-- **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
+- **Status:** `[LEAN-PROVED] [NOVELTY UNVERIFIED]`
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, obligation O4
 
 ## Exact universal statement
@@ -312,11 +312,41 @@ law beyond this precisely defined projective rank.
 
 ## Formalization status
 
-The exact QFI Gram factorization, QFI/observer-action rank equality,
-coefficient-kernel/eigenvector equivalence, and fixed observer-channel
-rank-nullity laws are `[LEAN-PROVED]` in
-`HTGeometry/ObserverVisibleLocalTimeDimension.lean`; see the Stage-3 card
-`observer-visible-qfi-rank-identity.md`.  The exponential ray-preservation
-step, annular/Gaussian tube laws, and exact fixed-`q` product-state rank count
-remain paper-only.  Therefore this full card remains at Stage 2 and no
-`[LEAN-PROVED]` label is attached to its complexity-escape conclusions.
+`[LEAN-PROVED]` — every mathematical statement of this card is now closed
+unconditionally in Lean 4 (axioms: `propext`, `Classical.choice`, `Quot.sound`).
+
+| Card item | Lean module | Declaration |
+|---|---|---|
+| (2), (8a)–(8c) QFI Gram factorization and rank identity | `HTGeometry/ObserverVisibleLocalTimeDimension.lean` | `qfim_eq_four_smul_realification_gram`, `qfim_rank_eq_centeredRealification_rank` |
+| (3) visible/invisible dimension split | `HTGeometry/ObserverInvisibleRayPreservation.lean` | `finrank_ker_centeredRealification_add_rank` |
+| (4) exponential ray preservation | `HTGeometry/ObserverInvisibleRayPreservation.lean` | `exp_mulVec_of_eigenvector`, `unitaryEvolution_generatorCombination_mulVec_of_invisible`, `exists_unit_phase_unitaryEvolution_of_invisible`, `exists_unit_phase_unitaryEvolution_of_centered_eq_zero` |
+| (10) Duhamel tube continuity | `HTGeometry/ObserverInvisibleTubeShortcut.lean` | `norm_unitaryEvolution_mulVec_sub_le`, `rayClose_of_transverse_small` |
+| (6) annular tube volume law | `HTGeometry/ObserverKernelTubeVolume.lean`, `HTGeometry/ObserverInvisibleTubeShortcut.lean` | `measure_annulus`, `measure_annulusTube`, `measure_rayClose_ge_annulusTube` |
+| (7) Gaussian small-ball law | `HTGeometry/GaussianSmallBallLowerBound.lean`, `HTGeometry/ObserverInvisibleTubeShortcut.lean` | `measure_pi_gaussian_closedBall_lower`, `measure_pi_gaussian_transverse_ball_lower`, `measure_rayClose_ge_gaussian_smallBall` |
+| (8) ceiling `κ ≤ v_Φ` | `HTGeometry/ObserverKernelTubeVolume.lean`, `HTGeometry/ObserverInvisibleTubeShortcut.lean` | `exponent_le_of_forall_rpow_le`, `exponent_le_natCast_of_forall_le`, `exponent_le_visible_of_upper_law` |
+| (13) dictionary dimension `m_{n,q,ℓ}` | `HTGeometry/FiniteQuditHermitianStringBasis.lean`, `HTGeometry/ProductStateObserverVisibleRank.lean` | `card_QLocalStringLabel`, `finrank_qLocalDictionary` |
+| (14), (16) visible rank `v_Φ = 2N_{n,q,ℓ}` | `HTGeometry/ProductStateObserverVisibleRank.lean` | `card_ExcConfigLabel`, `map_qLocalDictionary`, `finrank_map_qLocalDictionary` |
+| (16) `dim F_Φ = m − 2N` | `HTGeometry/ProductStateObserverVisibleRank.lean` | `finrank_ker_add_finrank_map_qLocalDictionary` |
+| (17) qubit specialisation | `HTGeometry/ProductStateObserverVisibleRank.lean` | `finrank_map_qLocalDictionary_qubit`, `finrank_qLocalDictionary_qubit` |
+
+Supporting infrastructure built for this card: the local Hermitian unit basis of
+`Mat_ℓ(ℂ)` with the identity as its only non-traceless member and the explicit
+inverse change of basis (`HTGeometry/FiniteQuditHermitianUnit.lean`), the
+Hermitian operator-string basis of the full register algebra with its support
+filtration (`HTGeometry/FiniteQuditHermitianStringBasis.lean`), and the
+support-size counting law for finite configuration spaces
+(`HTGeometry/FiniteSupportCounting.lean`).
+
+Two modelling conventions are used and are exactly the ones the paper proof
+takes:
+
+1. The shortcut membership `x ∈ 𝔖_{ε,a}` is formalized as `RayClose`: the
+   time-`t` endpoint lies within `ε` of the initial ray.  This is the content of
+   the paper argument — the zero-gate identity witness prepares the initial ray
+   exactly and therefore satisfies every nonnegative relative budget — so no
+   circuit-complexity predicate is assumed or needed.
+2. The orthogonal splitting `V = F_Φ ⊕ F_Φ^⊥` of the paper proof is taken as the
+   coefficient space `E × F` with the invisible carrier as the first factor, and
+   the standard Gaussian on the visible coordinates is the product of standard
+   one-dimensional Gaussians.  This is the same object; no genericity or
+   nondegeneracy hypothesis enters.

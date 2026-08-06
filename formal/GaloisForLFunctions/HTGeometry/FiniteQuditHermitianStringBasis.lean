@@ -140,6 +140,41 @@ theorem linearIndependent_real_quditString :
   intro x y hxy
   simpa using hxy
 
+omit [NeZero D] in
+/-- Strings multiply factorwise. -/
+theorem quditStringOf_mul (M N : σ → Matrix (Fin D) (Fin D) ℂ) :
+    quditStringOf M * quditStringOf N = quditStringOf (fun i => M i * N i) := by
+  ext r c
+  rw [Matrix.mul_apply, quditStringOf_apply]
+  have hfac : ∀ i : σ, (M i * N i) (r i) (c i)
+      = ∑ x : Fin D, M i (r i) x * N i x (c i) := fun i => Matrix.mul_apply
+  rw [Finset.prod_congr rfl (fun i (_ : i ∈ Finset.univ) => hfac i),
+    Finset.prod_univ_sum (fun _ : σ => (Finset.univ : Finset (Fin D)))
+      (fun i x => M i (r i) x * N i x (c i)), Fintype.piFinset_univ]
+  refine Finset.sum_congr rfl fun s _ => ?_
+  rw [quditStringOf_apply, quditStringOf_apply, ← Finset.prod_mul_distrib]
+
+omit [DecidableEq σ] [NeZero D] in
+/-- The adjoint of a string is the string of adjoints. -/
+theorem quditStringOf_conjTranspose (M : σ → Matrix (Fin D) (Fin D) ℂ) :
+    (quditStringOf M)ᴴ = quditStringOf (fun i => (M i)ᴴ) := by
+  ext r c
+  rw [Matrix.conjTranspose_apply, quditStringOf_apply, quditStringOf_apply,
+    Complex.star_def, map_prod]
+  exact Finset.prod_congr rfl fun i _ => rfl
+
+omit [DecidableEq σ] [NeZero D] in
+/-- The all-identity string is the identity operator. -/
+theorem quditStringOf_one :
+    quditStringOf (fun _ : σ => (1 : Matrix (Fin D) (Fin D) ℂ)) = 1 := by
+  ext r c
+  rw [quditStringOf_apply]
+  simp only [Matrix.one_apply]
+  rw [Finset.prod_boole]
+  by_cases h : r = c
+  · rw [if_pos h, if_pos (fun i _ => congrFun h i)]
+  · rw [if_neg h, if_neg (fun hh => h (funext fun i => hh i (Finset.mem_univ i)))]
+
 /-- Sites carrying a non-identity local factor. -/
 def quditStringSupport (a : σ → Fin D × Fin D) : Finset σ :=
   configSupport ((0, 0) : Fin D × Fin D) a

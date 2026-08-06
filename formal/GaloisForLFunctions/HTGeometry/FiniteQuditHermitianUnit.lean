@@ -1,4 +1,7 @@
 import Mathlib.LinearAlgebra.Matrix.Trace
+import Mathlib.Data.Matrix.Basis
+import Mathlib.LinearAlgebra.Dimension.OrzechProperty
+import Mathlib.LinearAlgebra.Dimension.Finrank
 import Mathlib.Data.Complex.Basic
 import Mathlib.LinearAlgebra.Matrix.ToLin
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
@@ -291,5 +294,137 @@ theorem single_eq_sum_quditUnitCoeff (a b : Fin D) :
     · rw [if_neg (not_lt.mpr (le_of_lt hgt)), if_neg (not_lt.mpr (le_of_lt hgt)),
         quditHermUnit_gt hgt, quditHermUnit_lt hgt, smul_smul, hII']
       module
+
+/-- **The local Hermitian units span the local operator algebra.** -/
+theorem span_quditHermUnit_eq_top :
+    Submodule.span ℂ (Set.range (quditHermUnit (D := D))) = ⊤ := by
+  rw [eq_top_iff]
+  rintro M -
+  rw [Matrix.matrix_eq_sum_single M]
+  refine Submodule.sum_mem _ fun r _ => Submodule.sum_mem _ fun c _ => ?_
+  have hs : Matrix.single r c (M r c) = M r c • Matrix.single r c (1 : ℂ) := by
+    rw [Matrix.smul_single, smul_eq_mul, mul_one]
+  rw [hs, single_eq_sum_quditUnitCoeff]
+  refine Submodule.smul_mem _ _ (Submodule.sum_mem _ fun p _ => ?_)
+  exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨p, rfl⟩)
+
+/-- **The local Hermitian units are a complex basis of the local operator
+algebra.** -/
+theorem linearIndependent_quditHermUnit :
+    LinearIndependent ℂ (quditHermUnit (D := D)) := by
+  refine linearIndependent_of_top_le_span_of_card_eq_finrank ?_ ?_
+  · rw [span_quditHermUnit_eq_top]
+  · rw [Module.finrank_matrix ℂ ℂ (Fin D) (Fin D), Fintype.card_prod,
+      Fintype.card_fin, Module.finrank_self, mul_one]
+
+/-- Coordinates in the local Hermitian unit family are unique. -/
+theorem quditHermUnit_coeff_unique {c d : Fin D × Fin D → ℂ}
+    (h : ∑ p, c p • quditHermUnit p = ∑ p, d p • quditHermUnit p) : c = d := by
+  have hzero : ∑ p, (c p - d p) • quditHermUnit (D := D) p = 0 := by
+    rw [Finset.sum_congr rfl (fun p _ => sub_smul (c p) (d p) (quditHermUnit p)),
+      Finset.sum_sub_distrib, h, sub_self]
+  have hcd := (Fintype.linearIndependent_iff.mp linearIndependent_quditHermUnit)
+    (fun p => c p - d p) hzero
+  funext p
+  exact sub_eq_zero.mp (hcd p)
+
+omit [NeZero D] in
+/-- An off-diagonal matrix unit is traceless. -/
+theorem trace_single_of_ne {i j : Fin D} (hij : i ≠ j) :
+    (Matrix.single i j (1 : ℂ)).trace = 0 := by
+  rw [Matrix.trace]
+  refine Finset.sum_eq_zero fun x _ => ?_
+  rw [Matrix.diag_apply, Matrix.single_apply,
+    if_neg (fun h => hij (h.1.trans h.2.symm))]
+
+/-- The trace of a local Hermitian unit: the identity label carries the local
+dimension, every other label is traceless. -/
+theorem trace_quditHermUnit (p : Fin D × Fin D) :
+    (quditHermUnit p).trace = if p = (0, 0) then (D : ℂ) else 0 := by
+  rcases eq_or_ne p.1 p.2 with hd | hd
+  · rcases eq_or_ne p.1 0 with h0 | h0
+    · have hp : p = (0, 0) := Prod.ext h0 (hd ▸ h0)
+      rw [hp, quditHermUnit_zero, if_pos rfl, Matrix.trace_one]
+      simp
+    · have hp : p = (p.1, p.1) := Prod.ext rfl hd.symm
+      rw [hp, quditHermUnit_diag_of_ne_zero h0,
+        if_neg (fun h => h0 (congrArg Prod.fst h)), Matrix.trace_sub]
+      simp
+  · have hne : p ≠ (0, 0) := by
+      intro h
+      exact hd (by rw [h])
+    rcases lt_or_gt_of_ne hd with hlt | hgt
+    · rw [show p = (p.1, p.2) from rfl, quditHermUnit_lt hlt, if_neg hne,
+        Matrix.trace_add, trace_single_of_ne hd, trace_single_of_ne (Ne.symm hd),
+        add_zero]
+    · rw [show p = (p.1, p.2) from rfl, quditHermUnit_gt hgt, if_neg hne,
+        Matrix.trace_smul, Matrix.trace_sub, trace_single_of_ne hd,
+        trace_single_of_ne (Ne.symm hd), sub_zero, smul_zero]
+
+/-- A Hermitian matrix has real coordinates in the local Hermitian unit
+family. -/
+theorem exists_real_repr_of_conjTranspose_eq {M : Matrix (Fin D) (Fin D) ℂ}
+    (hM : Mᴴ = M) :
+    ∃ c : Fin D × Fin D → ℝ, M = ∑ p, ((c p : ℂ)) • quditHermUnit p := by
+  obtain ⟨a, ha⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp
+    (by rw [span_quditHermUnit_eq_top]; trivial :
+      M ∈ Submodule.span ℂ (Set.range (quditHermUnit (D := D))))
+  have h1 : (∑ p, a p • quditHermUnit (D := D) p)ᴴ
+      = ∑ p, (starRingEnd ℂ (a p)) • quditHermUnit p := by
+    rw [Matrix.conjTranspose_sum]
+    refine Finset.sum_congr rfl fun p _ => ?_
+    rw [Matrix.conjTranspose_smul, quditHermUnit_conjTranspose]
+    rfl
+  have hconj : ∑ p, (starRingEnd ℂ (a p)) • quditHermUnit (D := D) p
+      = ∑ p, a p • quditHermUnit p := by
+    rw [← h1, ha]
+    exact hM
+  have hreal := quditHermUnit_coeff_unique hconj
+  refine ⟨fun p => (a p).re, ?_⟩
+  rw [← ha]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  congr 1
+  exact (Complex.conj_eq_iff_re.mp (congrFun hreal p)).symm
+
+/-- A traceless Hermitian matrix has real coordinates vanishing at the identity
+label. -/
+theorem exists_real_repr_ground_zero_of_traceless {M : Matrix (Fin D) (Fin D) ℂ}
+    (hM : Mᴴ = M) (htr : M.trace = 0) :
+    ∃ c : Fin D × Fin D → ℝ, c (0, 0) = 0
+      ∧ M = ∑ p, ((c p : ℂ)) • quditHermUnit p := by
+  obtain ⟨c, hc⟩ := exists_real_repr_of_conjTranspose_eq hM
+  have hDne : (D : ℂ) ≠ 0 := by
+    have h : (D : ℕ) ≠ 0 := NeZero.ne D
+    exact_mod_cast h
+  have htr' : ((c (0, 0) : ℂ)) * (D : ℂ) = 0 := by
+    have hsum := htr
+    rw [hc, Matrix.trace_sum] at hsum
+    rw [Finset.sum_congr rfl (fun p (_ : p ∈ Finset.univ) => by
+      rw [Matrix.trace_smul, trace_quditHermUnit p, smul_eq_mul])] at hsum
+    rw [Finset.sum_eq_single ((0, 0) : Fin D × Fin D)
+      (fun b _ hb => by rw [if_neg hb, mul_zero])
+      (fun h => absurd (Finset.mem_univ _) h), if_pos rfl] at hsum
+    exact hsum
+  refine ⟨c, ?_, hc⟩
+  rcases mul_eq_zero.mp htr' with h | h
+  · exact_mod_cast h
+  · exact absurd h hDne
+
+/-- A traceless Hermitian matrix lies in the real span of the non-identity local
+Hermitian units. -/
+theorem mem_span_real_nonIdentity_of_traceless {M : Matrix (Fin D) (Fin D) ℂ}
+    (hM : Mᴴ = M) (htr : M.trace = 0) :
+    M ∈ Submodule.span ℝ (quditHermUnit (D := D) '' {p | p ≠ (0, 0)}) := by
+  obtain ⟨c, hc0, hc⟩ := exists_real_repr_ground_zero_of_traceless hM htr
+  rw [hc, ← Finset.add_sum_erase _ _ (Finset.mem_univ ((0, 0) : Fin D × Fin D)),
+    hc0]
+  simp only [Complex.ofReal_zero, zero_smul, zero_add]
+  refine Submodule.sum_mem _ fun p hp => ?_
+  have hmem : quditHermUnit p ∈ quditHermUnit (D := D) '' {p | p ≠ (0, 0)} :=
+    ⟨p, Finset.ne_of_mem_erase hp, rfl⟩
+  have hsm : ((c p : ℂ)) • quditHermUnit p = c p • quditHermUnit (D := D) p := by
+    rw [Complex.coe_smul]
+  rw [hsm]
+  exact Submodule.smul_mem _ _ (Submodule.subset_span hmem)
 
 end GaloisForLFunctions.HTGeometry

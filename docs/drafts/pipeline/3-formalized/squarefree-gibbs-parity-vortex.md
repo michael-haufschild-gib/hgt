@@ -1189,3 +1189,90 @@ basis).
 Lean notes: `Polynomial.derivative_sum` (not `derivative_finsetSum`) for `Finset.sum`;
 `rw … at *` is dangerous when a hypothesis mentions the rewritten head (`hJ` got rewritten
 and broke the goal shape) — use an explicit `calc` instead.
+
+## 2026-08-06 CYCLE 20: where the cancellation is manufactured
+
+Nineteen cycles described the structure of the cancellation; this one identifies its
+*mechanism*.  Adjoining a prime **differences** the current across the dilated pair while
+**averaging** the partition function over it:
+
+```text
+J_{S∪p}(x) = J_S(x) − J_S(px),        Z_{S∪p}(x) = Z_S(x) + Z_S(px).
+```
+
+**V1 (non-expansiveness).**  A uniform bound on the normalized current `ψ_S = J_S/Z_S` at
+the two dilated couplings passes to the enlarged set: `|J| ≤ M·Z` is preserved.  So `ψ`
+never grows, at any prime, at any coupling.
+
+**V2 (contraction).**  If `ψ_S` is *scale invariant* across the dilation
+(`J_S(x)Z_S(px) = J_S(px)Z_S(x)`), then
+
+```text
+ψ_{S∪p}(x) = ψ_S(x) · (Z_S(x) − Z_S(px)) / (Z_S(x) + Z_S(px)),
+```
+
+a strict contraction, since `Z_S` is strictly decreasing in the coupling.
+
+**What this quantifies.**  For the natural gas at small coupling `Z_S(px)/Z_S(x) ≈ 1/p`, so
+the contraction factor is `≈ (p−1)/(p+1)`, and over the primes up to `y`
+
+```text
+∏_{p ≤ y} (p−1)/(p+1) ≍ (log y)^{−2}.
+```
+
+That is exactly the Erdős–Kac baseline computed in cycle 14 — so the scale-invariant
+mechanism reproduces `(log 1/x)^{−2}` of cancellation and **no more**.  RH demands
+`x^{1/2}`.  Hence the sharp conclusion of the whole programme: *the baseline cancellation
+is a two-scale averaging contraction, and all RH-strength cancellation must come from the
+systematic failure of scale invariance* — from `ψ_S(px)` exceeding `ψ_S(x)` coherently
+across primes, which is precisely the coherent-mode phenomenon this programme was opened to
+study.
+
+- 2026-08-06 — V1, V2 proved and formalized.
+
+## 2026-08-06 CYCLE 20 FORMALIZED: `RHTower/GibbsScaleContraction.lean`
+
+Wired; build 8657 jobs; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings.  `RHTower.GibbsGas`: `gibbs_partition_insert`, `gibbs_partition_pos`,
+**`gibbs_partition_strict_anti`**, **`normalized_current_nonexpansive`**,
+**`normalized_current_contraction`**, `contraction_factor_lt_one`.
+
+## 2026-08-06 CYCLE 21: the exact decomposition, and closing the programme
+
+**V3 (exact decomposition).**  Adjoining a prime splits the current into the
+scale-invariant contraction plus the scale-invariance defect
+`Δ = J_S(px)·Z_S(x) − J_S(x)·Z_S(px)`:
+
+```text
+J_{S∪p}(x)·Z_S(x)  =  J_S(x)·(Z_S(x) − Z_S(px))  −  Δ .
+```
+
+`Δ = 0` exactly under scale invariance, recovering V2.  **All cancellation beyond the
+`(log)^{−2}` contraction baseline is carried by `Δ`** — the programme's final statement,
+now an identity rather than a description.
+
+Formalized in `RHTower/GibbsScaleContraction.lean`
+(`normalized_current_decomposition`); build 8657 jobs, no `sorry`, axioms clean.
+
+## STATUS: the theory is complete; the card moves to `3-formalized`
+
+Every theorem on this card is proved on paper **and** formalized unconditionally in Lean 4
+(21 modules, `RHTower.GibbsGas`, all audited to `propext, Classical.choice, Quot.sound`,
+zero warnings, wired into `GaloisForLFunctions.RHTower`).  Summary of the corpus:
+
+| Layer | Content |
+|---|---|
+| Object & vortex | `gibbsDiag`, cutoff recursion T0, two-prime Lee–Yang, parity-jet law (totient = vortex intensity), parity vortex at `k=3`, current–discriminant identity |
+| Locking | `Disc/J^{k−1} → (−1)^{k(k−1)/2}k^k`; repulsion is not independent of the current |
+| Stability | `k ≤ 4` at all couplings; all `k` for `x·σ(m) < 1`; **falsified in general** (Szegő/`s₆`); energy-spread scoping; two-scale engine (levels 0–2) |
+| Condensation | exact log identity; two-sided gap↔cancellation; localization; Coulomb-potential bound |
+| Arithmetic | anchor (gas = Möbius); infinite-volume bridge; zero potential = arithmetic ratio |
+| Mechanism | two-scale contraction; non-expansiveness; exact defect decomposition |
+
+**Open cores, explicitly not claimed:** (i) the refined conjecture (natural-gas stability) —
+predicted *false*, obstruction named (Sathe–Selberg uniform to `j ≈ log(1/x)/loglog(1/x)`);
+(ii) any bound on the defect `Δ`, which is equivalent to (G2)/RH and receives no new
+leverage here.  **Dead lines, recorded so they are not re-attempted:** the X1 criterion
+(`k ≥ 5`), the TSP engine (sufficient for a false statement), general-`S` sector stability.
+
+- 2026-08-06 — programme closed at cycle 21; card promoted to `3-formalized`.
