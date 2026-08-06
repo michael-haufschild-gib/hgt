@@ -83,6 +83,14 @@ theorem shiftDivisorValue_smul (m : ℂ) (w : ℂ →₀ ℂ) (f : ℂ → ℂ) 
     Finsupp.mul_sum]
   exact Finsupp.sum_congr fun a _ => by ring
 
+theorem shiftDivisorValue_finset_sum {ι : Type*} (S : Finset ι) (w : ι → ℂ →₀ ℂ)
+    (f : ℂ → ℂ) (s : ℂ) :
+    shiftDivisorValue (∑ i ∈ S, w i) f s = ∑ i ∈ S, shiftDivisorValue (w i) f s := by
+  classical
+  refine Finset.induction_on S (by simp) ?_
+  intro i S hi ih
+  rw [Finset.sum_insert hi, shiftDivisorValue_add, ih, Finset.sum_insert hi]
+
 /-- Only the values of the observed function on the divisor support matter. -/
 theorem shiftDivisorValue_congr (w : ℂ →₀ ℂ) {f g : ℂ → ℂ} {s : ℂ}
     (h : ∀ a ∈ w.support, f (s + a) = g (s + a)) :

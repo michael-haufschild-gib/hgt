@@ -417,3 +417,33 @@ field, would not formalize the new result.
   root-level prime anomaly, theta Borel holonomy, and pre-existing theta Mobius inverse.  The
   divisor moved from an unnamed completion defect to the explicit kernel of completed Euler
   synthesis on the nonzero Gamma Stokes jump.
+
+## Lean: the literal atom scaling and the ordinary anti-causal Euler transgression
+
+`formal/GaloisForLFunctions/RHTower/EulerHedenmalmMobiusStokesInverse.lean` closes items 1 and 2 of
+the completion list, unconditionally and `#print axioms` clean:
+
+```text
+normalizedLogDilation n f x            = n^(-1/2) f (x + log n);                        -- T_n
+normalizedLogDilation_thetaAtomSeed    : T_n h = thetaCuspSourceTerm . n;                -- (3)
+eulerDilationSynthesis f x             = sum_(n>=1) T_n f x;                             -- E
+eulerDilationSynthesis_thetaAtomSeed   : E h = k;
+stokesPhase alpha y                    = exp(i alpha y);
+antiCausalGreen alpha f x              = -exp(-i alpha x) int_x^infty exp(i alpha y) f y dy;
+setIntegral_Ioi_comp_add_right         : half-line translation of the Green integral;
+integrableOn_stokesPhase_mul_sourceTerm: each phase-weighted atom is integrable on every (x,infty);
+integrableOn_stokesPhase_mul_source    : so is the completed source, for |Im alpha| < 1;
+summable_integral_norm_phaseAtom       : sum_n int_x^infty ||phase . atom_n|| < infinity;
+normalizedLogDilation_antiCausalGreen  : T_n R^+_alpha h = -exp(-i alpha x) int_x^infty
+                                           exp(i alpha y) thetaCuspSourceTerm y n dy;
+eulerDilationSynthesis_antiCausalGreen : E R^+_alpha h = R^+_alpha k.                    -- (8)
+```
+
+The interchange in `(8)` is the genuine Tonelli step of the paper proof: the atom bound
+`exp y |h_n(y)| <= C exp(-(pi/2) n^2)` on the positive half-line and the compact-window majorant
+`thetaCuspSourceMajorant` on `(x,0]` together make `sum_n int_x^infty ||.||` finite, so
+`hasSum_integral_of_summable_integral_norm` applies with no extra hypothesis.
+
+- 2026-08-06 -- items 1 and 2 of the completion list are formalized.  Still open: the absolutely
+  convergent double-series Möbius inverse `(9)` and the analytic Stokes jet independence
+  `(16)`--`(17)`.

@@ -51,6 +51,28 @@ Subsumes (machine-checked connectors exist):
 - **dictionary**: divisor reflection about `(1-σ)/2` = symbol inversion `n^(-a) ↦ n^a` twisted by
   `n^(σ-1)` (`shiftDivisorSymbol_of_xiReflection_eigen`)
 
+## Faithfulness (trivial annihilator)
+
+`GaloisForLFunctions/RHTower/XiShiftDivisorFaithful.lean`
+
+- bridge `shiftDivisorSymbol_eq_translationChar`: `shiftDivisorSymbol w n =
+  GaloisForLFunctions.RHTower.translationChar (Real.log n) (AddMonoidAlgebra.ofCoeff w)`
+  (`AddMonoidAlgebra` is a structure in this toolchain; constructor `ofCoeff`, projection `coeff`)
+- with `euler_translation_faithful` (already in `RayCompleteTranslationFaithful`):
+  symbol vanishing at every prime power implies `w = 0`
+- with `LSeries.eq_of_LSeries_eventually_eq` plus the prime-symbol law:
+  `xiShiftDivisorPrimeValue_eq_zero_iff` — for shifts with `0 <= a.re`, the corrected completed-Xi
+  value vanishes on `Re s > 1` iff `w = 0`.  So `logDeriv xi - logDeriv archFactor` satisfies no
+  nontrivial constant-coefficient linear difference relation
+  (`shiftDivisor_eq_zero_of_completedPrimeSource_relation`), and divisor to value is injective.
+- already present: character-level faithfulness.  New: the analytic-value-relation to
+  character-vanishing bridge.
+- finite-family form `completedPrimeSource_translate_independent`: distinct complex shifts with
+  `0 <= Re a` give linearly independent corrected completed log-derivatives on `Re s > 1`.
+  The corpus route (`linearIndependent_xiTransverseShiftPrimeDefectRotatedFamily_iff`, via
+  differential independence) only covers distinct nonzero NATURAL shifts; the arithmetic route
+  reproves that and extends to complex shifts.
+
 ## Scope boundary
 
 Divisor-side bookkeeping of the functional equation only.  It creates no positivity and is blind to

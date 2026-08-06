@@ -27,10 +27,6 @@ theorem exists_bound_zmod (Θ : ZMod N → ℂ) : ∃ M : ℝ, 0 ≤ M ∧ ∀ j
   obtain ⟨M, hM⟩ := (Set.finite_range (fun j => ‖Θ j‖)).bddAbove
   exact ⟨max M 0, le_max_right _ _, fun j => le_trans (hM ⟨j, rfl⟩) (le_max_left _ _)⟩
 
-theorem norm_natCast_cpow {n : ℕ} (hn : 0 < n) (w : ℂ) :
-    ‖(n : ℂ) ^ w‖ = (n : ℝ) ^ w.re := by
-  rw [← Complex.ofReal_natCast, Complex.norm_cpow_eq_rpow_re_of_pos (by exact_mod_cast hn)]
-
 omit [NeZero N] in
 theorem norm_scaled_term (Θ : ZMod N → ℂ) {M : ℝ} (hM : ∀ j, ‖Θ j‖ ≤ M)
     {n₀ m : ℕ} (hn₀ : 0 < n₀) (hm : 0 < m) (w : ℂ) :
@@ -41,7 +37,8 @@ theorem norm_scaled_term (Θ : ZMod N → ℂ) {M : ℝ} (hM : ∀ j, ‖Θ j‖
   have hpow : (0 : ℝ) < ((m : ℝ)) ^ w.re := Real.rpow_pos_of_pos hmR _
   have hn₀pow : (0 : ℝ) < ((n₀ : ℝ)) ^ w.re := Real.rpow_pos_of_pos hn₀R _
   rw [LSeries.term_of_ne_zero hm.ne' _ _, norm_mul, norm_div,
-    norm_natCast_cpow hn₀ w, norm_natCast_cpow hm w, Real.div_rpow hn₀R.le hmR.le]
+    Complex.norm_natCast_cpow_of_pos hn₀ w,
+    Complex.norm_natCast_cpow_of_pos hm w, Real.div_rpow hn₀R.le hmR.le]
   calc ((n₀ : ℝ)) ^ w.re * (‖Θ (m : ZMod N)‖ / ((m : ℝ)) ^ w.re)
       ≤ ((n₀ : ℝ)) ^ w.re * (M / ((m : ℝ)) ^ w.re) := by
         gcongr

@@ -1,9 +1,9 @@
 # Arithmetic Xi--Stokes central rank-port law
 
 - **ID:** `arithmetic-xi-stokes-central-rank-port-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** BRIDGE / ARITHMETIC REALIZATION / VANISHING AND SCALING LAW / NO-GO CLOSURE
-- **Upstream:** `../1-in-progress/arithmetic-xi-stokes-rank-port-realization.md`
+- **Upstream:** `arithmetic-xi-stokes-rank-port-realization.md`
 - **Target manuscript:** `../4-publication-ready/polarized-stokes-microlocal-witt-law/`
 - **Novelty label:** `[BRIDGE]`.  Scalar twists and determinant weights are standard separately.
   New claim is restricted to their exact identification with the coefficient-generated Stokes
@@ -448,3 +448,43 @@ Module `GaloisForLFunctions.RHTower.ArithmeticXiStokesCentralRankPort` certifies
 No axiom, `sorry`, `admit`, `opaque`, `unsafe`, RH assumption, or global vanishing theorem is
 used. Targeted module build passes; axiom report contains only `propext`, `Classical.choice`, and
 `Quot.sound`.
+
+## Formal audit
+
+- Module: `GaloisForLFunctions.RHTower.ArithmeticXiStokesCentralRankPort`
+- Targeted source check: `lake env lean GaloisForLFunctions/RHTower/ArithmeticXiStokesCentralRankPort.lean` — PASS
+- Module build: `lake build GaloisForLFunctions.RHTower.ArithmeticXiStokesCentralRankPort` — PASS
+- Axiom audit: every public theorem uses only `propext`, `Classical.choice`, `Quot.sound`
+- Forbidden declaration scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
+- Umbrella: imported by `GaloisForLFunctions/RHTower.lean`
+
+Declaration map for the nine closure items of section 9:
+
+```text
+1. scalarHomTransport_invisible_iff_componentwise,
+   PuiseuxOrbitCoareaDatum.scalarTwistInvisible_iff_constant,
+   PuiseuxOrbitCoareaDatum.normalizedHomIrregularity_pos_of_ne;
+2. scalarHomTransport_const;
+3. commonScalar_determinantWeight, componentScalar_determinantWeight, scalarTwist_det;
+4. centralHolonomyDefect_mul_clock, centralHolonomy_reflection, centralHolonomy_pow_clock;
+5. ccmXiResidue_eq_centralHolonomyDefect,
+   ccmXiResidue_rankPortClock_eq_determinantCentralHolonomyDefect;
+6. ccmXiPrimeResidue_eq_centralHolonomyDefect,
+   ccmXiPrimeCentralHolonomyDefect_eq_zero_iff,
+   ccmXiPrimeDeterminantCentralHolonomyDefect_eq_zero_iff;
+7. determinantCentralGainDefect_reflection_product,
+   stokesRankPortPrimeEnergy_eq_reflectionDefectSum;
+8. stokesRankPortPrimeEnergy_eq_zero_iff;
+9. tendsto_stokesRankPortPrimeEnergy_zero_of_scaled_tendsto_zero,
+   tendsto_stokesRankPortPrimeEnergy_critical_profile,
+   tendsto_stokesRankPortPrimeEnergy_atTop_of_scaled_tendsto_atTop.
+```
+
+The two no-gos of section 3 are `not_exists_continuousPhysicalRank_eq_centralDefect` and
+`PuiseuxOrbitCoareaDatum.cartanQuadratic_eq_of_contactNumerator_eq`; the RH classifier is
+`xiArithmeticCentralCharacterUnitary_iff_riemannHypothesis`.
+
+## Log
+
+- 2026-08-06 — promoted to Stage 3.  Every theorem of sections 2--6 is unconditional in Lean and
+  the axiom report contains only `propext`, `Classical.choice`, and `Quot.sound`.

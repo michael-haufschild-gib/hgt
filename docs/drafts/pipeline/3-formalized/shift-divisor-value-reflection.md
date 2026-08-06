@@ -57,6 +57,29 @@ symbol inversion `n^(−a) ↦ n^a` twisted by `n^(σ−1)`.
 | `HTGeometry/ShiftDivisorLSeries.lean` | Dirichlet symbol, twisted stream, `LSeries_shiftDivisorStream`, symbol inversion under reflection |
 | `RHTower/XiShiftDivisorValueReflection.lean` | completed-Xi and `logDeriv xi` instances, corrected value + cocycle + half-centering at divisor level, central jet parity, point/two-point connectors to the existing one-shift and pairwise theories |
 | `RHTower/XiShiftDivisorPrimeSymbol.lean` | `logDeriv xi − logDeriv archFactor = −LSeries Λ` on `Re s > 1`, the divisor prime-symbol law, the reflection/inversion dictionary |
+| `RHTower/XiShiftDivisorFaithful.lean` | symbol = translation character at frequency `log n`; trivial annihilator of the corrected completed-Xi value; injectivity of divisor ↦ value |
+
+## Faithfulness
+
+The Dirichlet symbol at `n` is the translation character of the divisor at the frequency `log n`
+(`shiftDivisorSymbol_eq_translationChar`). Ray-complete translation faithfulness on the prime-log
+rays (`euler_translation_faithful`) then gives: a divisor whose symbol vanishes at every prime power
+is zero. Feeding the prime-symbol law and Dirichlet-series injectivity into this converts an
+*analytic* value relation into the *algebraic* conclusion:
+
+    (∀ s, 1 < Re s → ∑ a w a · (logDeriv xi (s+a) − logDeriv archFactor (s+a)) = 0) → w = 0
+
+for divisors with shifts of nonnegative real part. So the corrected completed logarithmic derivative
+satisfies no nontrivial linear difference relation with constant complex coefficients, and distinct
+divisors give distinct values. The corpus already had the character-level faithfulness; the new
+content is the bridge from the analytic value relation down to it.
+
+In finite-family form (`completedPrimeSource_translate_independent`): distinct complex shifts of
+nonnegative real part give linearly independent corrected completed logarithmic derivatives on the
+Euler half-plane. The corpus proved the corresponding statement for distinct nonzero *natural*
+shifts through differential independence
+(`linearIndependent_xiTransverseShiftPrimeDefectRotatedFamily_iff`); the arithmetic route reproves it
+and extends it to arbitrary complex shifts with `0 ≤ Re a`.
 
 Named laws: `shiftDivisorValue_signed_reflection`, `shiftDivisorValue_reflection_of_eigen`,
 `reflectShiftDivisor_mem_annihilator`, `reflectShiftDivisor_iteratedDifferenceDivisor`,
