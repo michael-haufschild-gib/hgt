@@ -123,6 +123,7 @@ Module: `formal/GaloisForLFunctions/RHTower/GroskinArchimedeanTailOrder.lean`
 
 | Paper step | Lean declaration |
 |---|---|
+| **the card's Statement line, as one theorem** | `RHTower.groskinArchimedeanTailStatement` |
 | literal density `h_+` | `RHTower.groskinArchimedeanDensity` |
 | §1 divergence of the literal density | `RHTower.tendsto_groskinArchimedeanDensity_atTop` |
 | §1 analytic (noncomputational) threshold | `RHTower.exists_groskinArchimedeanDensity_pos_threshold`, `RHTower.groskinArchimedeanPositivityThreshold`, `RHTower.groskinArchimedeanDensity_pos_of_threshold` |
@@ -210,3 +211,9 @@ evaluation, no added axiom, no open hypothesis beyond the stated finite geometry
   sine is nonzero.  That is precisely the hypothesis the excluded strictness argument would have to
   contradict, so the card's boundary is now sharp on both sides: the Loewner order is proved, and
   what strictness would require is stated exactly, without being claimed.
+- 2026-08-06 — the card's Statement line compiled as one object.  `groskinArchimedeanTailStatement`
+  asserts, for every positive scale and finite node family: a legal cutoff window exists past the
+  analytic threshold and past every scaled node; on it the increment is positive semidefinite; its
+  quadratic form is the Cauchy--Stieltjes integral of the pointwise Cauchy Gram; and the generating
+  density has its column space inside the span of the two Cauchy features.  The threshold entering
+  it is the analytic one, so the no-computation constraint is visible in the statement itself.

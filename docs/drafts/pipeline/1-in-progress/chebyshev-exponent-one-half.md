@@ -187,3 +187,81 @@ Expected capstone: `|ψ(N) - N| ≪ N·exp(-√(log N)/480000)`.
 Remaining: `∑' Λ(n)n^{-d}` is already covered (`tsum_vonMangoldt_rpow_neg_le`, giving
 `8/(d-1)² = 8log²T`); `‖mellin w 1‖` via `mellin_smoothWeight_one_eq_ofReal`; then the assembly and
 the sharp comparison.
+
+## Step 4 done: the remaining shape data
+
+`RHTower/Sieve/ChebyshevKappaOneShape.lean` closes the last unknowns of the plan:
+
+- `chebRightTwo_sub_chebLeftTwo_le` : the rectangle's width is `≤ 2/log T`;
+- `chebRightTwo_sub_chebLeftTwo_pos`;
+- `tsum_vonMangoldt_chebRightTwo_le` : `∑' Λ(n)n^{-d(T)} ≤ 8 log²T`, from the corpus's
+  `tsum_vonMangoldt_rpow_neg_le` (`≤ 8/(d-1)²`) at `d-1 = 1/log T`.
+
+The cutoff's mass needed nothing new: `norm_mellin_smoothWeight_one_le` already gives
+`‖mellin w 1‖ ≤ N + H` (and `le_integral_smoothWeight` gives `N ≤ ∫ w`, so the mass is pinned
+between `N` and `N+H`).
+
+**Every input of the assembly now exists.**  What is left is purely the assembly: bound the five
+terms plus the bracket correction at `T = chebHeightOne (N+H+1)` and `H = chebWidthOne N`, then
+transfer to the sharp sum with `norm_tsum_vonMangoldt_smoothWeight_sub_sum_le`.
+
+Follow the Möbius pattern exactly: abstract per-term lemmas as **top-level** declarations (the
+200000-heartbeat limit is per-declaration), each proved by `mul_le_mul_of_nonneg_*` plus `linarith`,
+never `nlinarith` on a degree-five product.
+
+## Step 5 done: the five terms against a common shape
+
+`RHTower/Sieve/ChebyshevKappaOneTerms.lean` — purely arithmetic, no zeta, no contour:
+
+- `cheb_trunc_term_le` : `2(S·(W·Zd))/T ≤ 2(S·(W·(Z·E)))` — the height cancels the right line's
+  growth, using `Zd ≤ Z·E·T`.
+- `cheb_left_bracket_le` : `2(Yc/c) + 2(W·Zc) ≤ 4(Z·E) + 2(W·(Z·E))` — dividing by the left
+  abscissa costs at most a factor two, since `c ≥ 1/2`.
+- `cheb_horiz_pole_le` : the pole term, using `T ≥ 1`.
+- `cheb_horiz_reg_le` : the regular term, using `Zd ≤ Z·E·T` and `T ≥ 1` again.
+
+**Trap.**  `nlinarith` does **not** ring-normalise `T ^ (1 + 1)` when the exponent is an unreduced
+natural-numeral sum: the hypothesis `0 ≤ W(ZE)T(T-1)` and the goal `W·Zd ≤ W(ZE)·T^(1+1)` were
+treated as involving unrelated atoms.  Rewriting with `have hTT : T ^ (1 + 1) = T * T := by ring`
+first makes it immediate.  The exponent shape `(1+1)` comes from the contour lemma's `j + 1` with
+`j = 1`, so it appears throughout this chain.
+
+**Also:** `div_le_div_of_nonneg_right` takes `0 ≤ c`, not `0 < c`, for the denominator.
+
+## What is left
+
+Only the concrete assembly: instantiate `exists_norm_tsum_vonMangoldt_kappa_one_general` at
+`T = chebHeightOne (N+H+1)` and `H = chebWidthOne N`, feed the four term lemmas plus
+`abs_bracket_kappa_one_le`, absorb `s²` with `sq_le_exp_div_gen`, and transfer to the sharp sum with
+`norm_tsum_vonMangoldt_smoothWeight_sub_sum_le`.
+
+## Step 6 done: the three edge powers against one exponential factor
+
+`RHTower/Sieve/ChebyshevPowersAtHeight.lean`.  All three powers of the contour bound are bounded by
+the single factor
+
+```text
+E = exp( -√(log(N+H+1)) / 160000 ),
+```
+
+the right line carrying an extra `T` that the truncation height cancels:
+
+- `rpow_chebLeftTwo_at_shift` : `Y^{c(T)} ≤ Y·E`, with `T = chebHeightOne (Y+1)`.  The exponent
+  `1/160000` is the *shifted* one: the height is chosen at `Y+1` while the left edge's trivial size
+  is `Y`, and since `Y + 1 ≤ Y²` the saving `1/80000` merely halves.
+- `rpow_chebLeftTwo_at_le`  : `Z^{c(T)} ≤ Z·E`.
+- `rpow_chebRightTwo_at_le` : `Z^{d(T)} ≤ Z·E·T`.
+
+The last two are weakenings of the *exact* identities of `ChebyshevRatePowersOne`; they are stated
+against the same `E` so the four term lemmas of `ChebyshevKappaOneTerms` apply with a single
+instantiation.
+
+**Every hypothesis of every term lemma is now discharged.**  The assembly is the only step left.
+
+## Note on concurrent builds
+
+One umbrella build in this session failed inside
+`GaloisForLFunctions/RHTower/DivisorReesGradedMetric.lean`, a module of another agent's concurrent
+work that was being edited at that moment (file mtime three minutes before the build).  A retry
+after they finished built clean.  When an umbrella build fails in a file this chain does not touch,
+check the mtime before diagnosing.

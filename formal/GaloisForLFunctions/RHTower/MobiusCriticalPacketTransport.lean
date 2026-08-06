@@ -654,6 +654,40 @@ theorem eventually_gammaSoninModel_energy_le_four {c : ℝ → ℝ}
     (fun ε f t => c ε * q t * f t) (fun ε => |c ε|)
     (fun ε f hf => gammaSoninModel_energy_le c q hq ε f hf) hc hδ
 
+/-! ### The card's statement in one object -/
+
+/-- **The fixed-current transport weld.**  In one statement:
+
+* the logarithmic current of the exact signed all-prime Mobius multiplier is the escape parameter
+  times the positive von Mangoldt prime-power law;
+* the critical Euler clock and the critical squarefree Mobius clock both converge in the half-line
+  transport distance to the mean-one exponential law;
+* their canonical monotone coupling has vanishing critical complementary-packet cost, and the same
+  for the induced edge fields;
+* the four-unit packet geometry holds of the Euler current itself.
+-/
+theorem mobiusFixedCurrentTransportWeld :
+    (∀ σ ε : ℝ, 1 < σ → 0 < ε →
+        logDeriv (fun v : ℝ => RHTower.mobiusMovingMultiplier σ ε v) 0
+          = (ε : ℂ) * RHTower.vonMangoldtCurrent (σ : ℂ))
+      ∧ Tendsto (fun ε : ℝ =>
+          halfLineW1 (scaledEulerClockLaw (1 + ε)) (ProbabilityTheory.expMeasure 1))
+        (𝓝[>] (0 : ℝ)) (𝓝 0)
+      ∧ Tendsto (fun ε : ℝ =>
+          halfLineW1 (scaledSquarefreeClockLaw (1 + ε)) (ProbabilityTheory.expMeasure 1))
+        (𝓝[>] (0 : ℝ)) (𝓝 0)
+      ∧ Tendsto criticalPacketCost (𝓝[>] (0 : ℝ)) (𝓝 0)
+      ∧ Tendsto criticalPacketEdgeCost (𝓝[>] (0 : ℝ)) (𝓝 0)
+      ∧ Tendsto criticalEulerEdgeEnergy (𝓝[>] (0 : ℝ)) (𝓝 4) := by
+  refine ⟨fun σ ε hσ hε => ?_, tendsto_halfLineW1_scaledEulerClockLaw,
+    tendsto_halfLineW1_scaledSquarefreeClockLaw, tendsto_criticalPacketCost,
+    tendsto_criticalPacketEdgeCost, tendsto_criticalEulerEdgeEnergy⟩
+  have h := RHTower.logDeriv_mobiusMovingMultiplier hσ hε (le_refl (0 : ℝ))
+  rw [h]
+  congr 2
+  push_cast
+  ring
+
 end
 
 end GaloisForLFunctions.HTGeometry

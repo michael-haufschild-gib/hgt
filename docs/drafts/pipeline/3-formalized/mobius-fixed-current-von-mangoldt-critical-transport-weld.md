@@ -824,6 +824,7 @@ same level of generality as the prime-power leg `(7)`.
 | **`(6) ⇒ (7)` termwise**: the `α`-derivative of the packet series is the series of the coefficient derivatives `2Λ(n)` | `RHTower.hasDerivAt_LSeries_suzukiShiftedCoefficient` |
 | **`(12)`** `A(1+x) = 1/x + O(1)`: the current minus its polar part has a limit at the pole, hence is bounded there | `RHTower.tendsto_vonMangoldtCurrent_sub_pole`, `.exists_bound_vonMangoldtCurrent_sub_pole`, `.exists_bound_vonMangoldtCurrent_one_add_sub_inv` |
 | **the second-order residue expansion** `A″(1+x) = 2x^{-3} + O(1)`, with the Laurent form of `A″` | `RHTower.deriv2_vonMangoldtCurrent_of_mem`, `.tendsto_deriv2_vonMangoldtCurrent_sub_pole`, `.exists_bound_deriv2_vonMangoldtCurrent_sub_pole` |
+| **the card's Statement line, as one theorem** | `mobiusFixedCurrentTransportWeld` |
 | **the card's "positive theorem"**: the ordered two-clock law as one statement — `(9)`, `(8)` and the divergence together | `orderedTwoClockLaw` |
 | **`(12)` differentiated**: `A′(1+x) = -x^{-2} + O(1)` | `RHTower.tendsto_deriv_vonMangoldtCurrent_add_pole`, `.exists_bound_deriv_vonMangoldtCurrent_add_pole`, `.exists_bound_deriv_vonMangoldtCurrent_one_add` |
 | **`(11)`, exact form, both clocks**: `E[e^{-uX_E}] = A(σ+uε)/A(σ)` and `E[e^{-uX_P}] = Z(σ+uε)/Z(σ)`, for every `u ≥ 0` | `ofReal_integral_exp_neg_scaledEulerClockLaw_eq`, `ofReal_integral_exp_neg_scaledSquarefreeClockLaw_eq` |
@@ -1038,3 +1039,10 @@ them.
   vanish, because the reversed order gives `3` and the normalized quotient diverges.  Its three
   clauses were separate theorems; `orderedTwoClockLaw` now carries them together, so the forced
   order is a single citable statement rather than a reading of three.
+- 2026-08-06 — the card's Statement line compiled as one object.  `mobiusFixedCurrentTransportWeld`
+  carries its four clauses together: the signed multiplier's logarithmic current is the escape
+  parameter times the positive von Mangoldt law; both critical clocks converge in the half-line
+  transport distance to the mean-one exponential law; the canonical monotone coupling has vanishing
+  complementary-packet cost, and so do the induced edge fields; and the four-unit packet geometry
+  holds of the Euler current itself.  All four cards of this group now carry their headline claim as
+  a single citable theorem.

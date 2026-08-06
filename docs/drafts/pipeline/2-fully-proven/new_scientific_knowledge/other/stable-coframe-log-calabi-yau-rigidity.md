@@ -921,3 +921,20 @@ cannot be used to infer RH, a critical-line constraint, or positivity.
   mathlib's `conductor_mul_differentIdeal`, whose conclusion then reads
   `differentIdeal A B = span {f'(x)}` for the minimal polynomial of a uniformizer -- and with the
   tame computation of that derivative, the different is the `(e-1)`-st power of the maximal ideal.
+- 2026-08-06 -- The different of a monogenic extension (`DifferentIdealMonogenic.lean`).  With the
+  conductor trivial, mathlib's identity collapses to
+  `differentIdeal A B = span {aeval x (derivative (minpoly A x))}`
+  (`differentIdeal_eq_span_aeval_derivative`).  Both of its hypotheses are now supplied by the
+  preceding modules: the conductor is trivial because the uniformizer generates the extension, and
+  the generation hypothesis holds over the fraction field by the transport.  What remains to reach
+  `differentIdeal A B = (maximalIdeal B)^(e-1)` is the identification of the degree of the minimal
+  polynomial with the ramification index, so that the tame computation of the derivative applies
+  to it.
+- 2026-08-06 -- The powers of a uniformizer are a basis (`UniformizerPowerBasis.lean`).  Distinct
+  powers below the ramification index carry valuations in distinct residue classes modulo that
+  index, so no two terms of a relation can have equal valuation and the strict minimum principle
+  gives any relation a finite valuation, which a vanishing sum cannot have
+  (`linearIndependent_pow`).  With the generation statement this makes them a basis
+  (`uniformizerPowBasis`), so the rank of the extension equals the ramification index
+  (`finrank_eq_ramificationIndex`) rather than being assumed equal to it.  This is the degree
+  identification the different statement was waiting for.

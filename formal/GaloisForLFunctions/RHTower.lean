@@ -828,6 +828,7 @@ import GaloisForLFunctions.RHTower.CreaseHolonomy
 import GaloisForLFunctions.RHTower.CreationRate
 import GaloisForLFunctions.RHTower.CriticalActivationReesSourceLaw
 import GaloisForLFunctions.RHTower.DivisorReesGradedMetric
+import GaloisForLFunctions.RHTower.DivisorReesDaggerIdentification
 import GaloisForLFunctions.RHTower.CriticalDiscAnalyticCompleteness
 import GaloisForLFunctions.RHTower.CriticalDiscEulerCompleteness
 import GaloisForLFunctions.RHTower.CriticalDiscEulerConnectionRigidity
@@ -3602,6 +3603,7 @@ import GaloisForLFunctions.RHTower.GibbsRecursiveStability
 import GaloisForLFunctions.RHTower.GibbsTwoScalePositivity
 import GaloisForLFunctions.RHTower.GibbsTwoScaleLevelTwo
 import GaloisForLFunctions.RHTower.GibbsParityFactorization
+import GaloisForLFunctions.RHTower.GibbsTruncationSection
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment
@@ -3744,6 +3746,8 @@ import GaloisForLFunctions.RHTower.Sieve.ChebyshevRatePowersOne
 import GaloisForLFunctions.RHTower.Sieve.ChebyshevWidthOne
 import GaloisForLFunctions.RHTower.Sieve.ChebyshevBracketBound
 import GaloisForLFunctions.RHTower.Sieve.ChebyshevKappaOneShape
+import GaloisForLFunctions.RHTower.Sieve.ChebyshevKappaOneTerms
+import GaloisForLFunctions.RHTower.Sieve.ChebyshevPowersAtHeight
 import GaloisForLFunctions.RHTower.Sieve.SavingSubstitution
 import GaloisForLFunctions.RHTower.Sieve.GrowthSubstitution
 import GaloisForLFunctions.RHTower.Sieve.EdgeBoundAtChoice

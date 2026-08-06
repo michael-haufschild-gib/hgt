@@ -133,6 +133,21 @@ theorem gradedScoreOfUnit_posSemidef {d : ℕ} {u v : ℝ → ℝ} {m K : ℝ} (
     _ ≤ u t ^ 2 * K ^ 2 / m ^ 2 := hgoal
     _ = u t ^ 2 * (K ^ 2 / m ^ 2) := by ring
 
+/-- **The metric constant is determined by the datum.**  On a compact region where the unit does not
+vanish, the bounds of `gradedScoreOfUnit_posSemidef` exist automatically, so the positive metric is
+source-defined rather than imposed: no constant has to be supplied by hand. -/
+theorem exists_gradedScoreOfUnit_posSemidef_of_isCompact {d : ℕ} {u v : ℝ → ℝ} {s : Set ℝ}
+    (hs : IsCompact s) (hne : s.Nonempty) (hu : ContinuousOn u s) (hv : ContinuousOn v s)
+    (hu0 : ∀ t ∈ s, u t ≠ 0) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ t ∈ s,
+      (divisorReesGram (u t) (gradedScoreOfUnit d u v t) C).PosSemidef := by
+  obtain ⟨t₀, ht₀s, ht₀⟩ := hs.exists_isMinOn hne hu.abs
+  obtain ⟨t₁, ht₁s, ht₁⟩ := hs.exists_isMaxOn hne
+    (((continuousOn_const.mul hu).add (continuousOn_id.mul hv)).abs)
+  have hm : 0 < |u t₀| := abs_pos.mpr (hu0 t₀ ht₀s)
+  refine ⟨|gradedScoreOfUnit d u v t₁| ^ 2 / |u t₀| ^ 2, by positivity, fun t hts => ?_⟩
+  exact gradedScoreOfUnit_posSemidef hm (fun _ hw => ht₀ hw) (fun _ hw => ht₁ hw) t hts
+
 /-! ### The graded symbol is a single-Kraus positive form -/
 
 /-- **The graded Gram is an outer square.**  At every nonzero point the graded mass/score pair is
@@ -220,6 +235,74 @@ theorem gradedDivisorReesGram_contraction (d : ℕ) {t : ℝ} (ht : t ≠ 0) :
         ((d : ℝ) ^ 2)).PosSemidef := by
   rw [← gradedDivisorDefect_eq d ht]
   exact gradedDivisorDefect_posSemidef d
+
+/-! ### The normalized graded symbol is an orthogonal projection -/
+
+/-- The energy-normalized graded symbol. -/
+def gradedDivisorProjection (d : ℕ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  (gradedDivisorEnergy d)⁻¹ • Matrix.vecMulVec ![1, (d : ℝ)] ![1, (d : ℝ)]
+
+theorem gradedDivisorProjection_eq (d : ℕ) {t : ℝ} (ht : t ≠ 0) :
+    gradedDivisorProjection d
+      = (gradedDivisorEnergy d)⁻¹ •
+          divisorReesGram (gradedDivisorOverlap d t) (gradedDivisorFisherNumerator d t)
+            ((d : ℝ) ^ 2) := by
+  rw [gradedDivisorProjection, gradedDivisorReesGram_eq_vecMulVec d ht]
+
+/-- **The normalized graded symbol is idempotent.**  Being the outer square of a vector divided by
+that vector's own squared length, it is the orthogonal projection onto the Kraus direction. -/
+theorem gradedDivisorProjection_idempotent (d : ℕ) :
+    gradedDivisorProjection d * gradedDivisorProjection d = gradedDivisorProjection d := by
+  have hE := (gradedDivisorEnergy_pos d).ne'
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    (simp [gradedDivisorProjection, gradedDivisorEnergy, Matrix.vecMulVec, Matrix.mul_apply,
+      Fin.sum_univ_two]; try field_simp; try ring)
+
+/-- **The graded symbol carries exactly one unit of trace**, uniformly in the multiplicity and in
+the point.  So its contribution sits inside the four-unit budget with a factor-four margin, and the
+margin is exact rather than estimated. -/
+theorem trace_gradedDivisorProjection (d : ℕ) :
+    Matrix.trace (gradedDivisorProjection d) = 1 := by
+  have hE := (gradedDivisorEnergy_pos d).ne'
+  rw [Matrix.trace_fin_two]
+  simp only [gradedDivisorProjection, gradedDivisorEnergy, Matrix.vecMulVec, Matrix.smul_apply,
+    Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, smul_eq_mul]
+  field_simp
+
+theorem trace_gradedDivisorProjection_le_four (d : ℕ) :
+    Matrix.trace (gradedDivisorProjection d) ≤ 4 := by
+  rw [trace_gradedDivisorProjection]
+  norm_num
+
+/-- **The symbol and its defect resolve the identity.** -/
+theorem gradedDivisorProjection_add_defect (d : ℕ) :
+    gradedDivisorProjection d + gradedDivisorDefect d = 1 := by
+  have hE := (gradedDivisorEnergy_pos d).ne'
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    (simp [gradedDivisorProjection, gradedDivisorDefect, gradedDivisorEnergy, Matrix.vecMulVec];
+      try field_simp; try ring)
+
+/-- **The symbol and its defect are orthogonal.**  They are the two complementary rank-one
+projections of the graded plane. -/
+theorem gradedDivisorProjection_mul_defect (d : ℕ) :
+    gradedDivisorProjection d * gradedDivisorDefect d = 0 := by
+  have hE := (gradedDivisorEnergy_pos d).ne'
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    (simp [gradedDivisorProjection, gradedDivisorDefect, gradedDivisorEnergy, Matrix.vecMulVec,
+      Matrix.mul_apply, Fin.sum_univ_two]; try field_simp; try ring)
+
+/-- The defect carries the complementary unit of trace. -/
+theorem trace_gradedDivisorDefect (d : ℕ) :
+    Matrix.trace (gradedDivisorDefect d) = 1 := by
+  have hE := (gradedDivisorEnergy_pos d).ne'
+  rw [Matrix.trace_fin_two]
+  simp only [gradedDivisorDefect, gradedDivisorEnergy, Matrix.cons_val', Matrix.cons_val_zero,
+    Matrix.cons_val_one, Matrix.head_cons, Matrix.empty_val', Matrix.cons_val_fin_one,
+    Matrix.head_fin_const]
+  field_simp
 
 /-- **Dagger stability for a general regular datum.**  If the parameter set is carried into itself
 by the reflection, the same constant completes the reflected graded pair. -/

@@ -235,5 +235,36 @@ theorem ContactMatrix.hierarchy_unique {n : ℕ} (κ : ContactMatrix n)
     (ht : ∀ i j, t.contact i j = κ.val i j) : s.hierarchy = t.hierarchy :=
   RootedContactTree.hierarchy_eq_of_contact_eq s t fun i j => by rw [hs i j, ht i j]
 
+/-- **U1--U3 on the contact matrix, as one statement.**  An acute contact matrix reconstructs a
+rooted skeleton in which
+
+* strictly nested meets are exactly a strict inequality with a repeated maximum among the three
+  contact values -- the rooted-triple law `(RT)` of U1;
+* the labelled hierarchy is a function of the matrix alone, so any two skeletons carrying it agree
+  -- the fibre localisation of U2;
+* the energy `d_ij = 2K_ij - K_ii - K_jj` is a positive additive tree metric obeying the four-point
+  law, of strict negative type, with an explicit squared-Euclidean embedding -- U3.
+-/
+theorem ContactMatrix.stokes_tomography_law {n : ℕ} (κ : ContactMatrix n) (hn : 1 < n) :
+    (∀ i j k : Fin n,
+        (κ.realization hn).leaf i ⊓ (κ.realization hn).leaf k
+            < (κ.realization hn).leaf i ⊓ (κ.realization hn).leaf j ↔
+          κ.val i j < κ.val i k ∧ κ.val i k = κ.val j k)
+      ∧ (∀ s t : RootedContactTree n, (∀ i j, s.contact i j = κ.val i j) →
+          (∀ i j, t.contact i j = κ.val i j) → s.hierarchy = t.hierarchy)
+      ∧ ∃ t : RootedContactTree n,
+          (∀ i j, t.energy i j = 2 * κ.val i j - κ.val i i - κ.val j j) ∧
+            (∀ i j, i ≠ j → 0 < t.energy i j) ∧
+            (∀ i j, t.energy i j = 0 ↔ i = j) ∧
+            (∀ i j k, t.energy i k ≤ t.energy i j + t.energy j k) ∧
+            (∀ i j k l, MaxTwice (t.energy i j + t.energy k l)
+              (t.energy i k + t.energy j l) (t.energy i l + t.energy j k)) ∧
+            (∀ x : Fin n → ℝ, ∑ i, x i = 0 → x ≠ 0 →
+              (∑ i, ∑ j, x i * x j * t.energy i j) < 0) ∧
+            (∀ i j, (∑ e, (t.canonicalCuts.toPositivePendantCutFamily.feature i e -
+              t.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ 2) = t.energy i j) :=
+  ⟨fun i j k => κ.rootedTriple_iff hn i j k, fun s t hs ht => κ.hierarchy_unique s t hs ht,
+    κ.energy_tree_law hn⟩
+
 end IrregularStokes
 end GaloisForLFunctions

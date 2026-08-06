@@ -11,7 +11,8 @@
   `formal/GaloisForLFunctions/RHTower/EulerActivationSquarefreeProbability.lean`;
   `formal/GaloisForLFunctions/RHTower/CriticalActivationReesSourceLaw.lean`;
   `formal/GaloisForLFunctions/RHTower/EulerActivationSubcriticalOccupancy.lean`;
-  `formal/GaloisForLFunctions/RHTower/DivisorReesGradedMetric.lean`
+  `formal/GaloisForLFunctions/RHTower/DivisorReesGradedMetric.lean`;
+  `formal/GaloisForLFunctions/RHTower/DivisorReesDaggerIdentification.lean`
 - **Parents:**
   - `../wold-shell-euler-activation-square.md`;
   - `../mobius-fixed-current-von-mangoldt-critical-transport-weld.md`;
@@ -414,7 +415,11 @@ regular, and
 - `gradedScoreOfUnit`, **`gradedScoreOfUnit_eq`**, **`gradedScoreOfUnit_posSemidef`** — for a general
   regular datum `B = t^d u`, `S = d t^(d-1) u + t^d v`, wherever the unit is bounded below by `m` and
   the graded score above by `K`, the constant `K^2/m^2` completes the graded pair; no smallness of
-  the coordinate is used.
+  the coordinate is used;
+- **`exists_gradedScoreOfUnit_posSemidef_of_isCompact`** — on a compact region where the unit does
+  not vanish those bounds exist automatically, by the extreme value theorem.  The metric is
+  therefore *source-defined*, read off the datum and the region, not imposed by hand — which is
+  exactly the property the conjecture demanded of it.
 
 The graded symbol is moreover *pure*:
 
@@ -438,9 +443,25 @@ Normalized by its own energy the graded symbol is moreover a *contraction*:
   because the defect is an outer square the contraction is *complete*, not merely scalar.  This is
   the graded-symbol precursor of the fourth arrow, the Pick contraction on the anti-causal boundary.
 
+The reflected dagger is identified in
+`formal/GaloisForLFunctions/RHTower/DivisorReesDaggerIdentification.lean`:
+
+- **`burnolCoPoissonConormalReflection_eq_lineReflection`** — the Burnol co-Poisson conormal
+  reflection `rho |-> 1 - conj rho` is exactly reflection across the critical line;
+- **`xi_analyticOrderAt_burnolCoPoissonConormalReflection`**,
+  `xi_multiplicity_burnolCoPoissonConormalReflection` — the completed-Xi analytic order is
+  invariant under it, the functional equation and the Schwarz reality pairing composing;
+- `xiGradedSymbol`, **`xiGradedSymbol_burnolCoPoissonConormalReflection`** — the graded Rees symbol
+  attached to a spectral point sees that point only through its multiplicity, so **the reflected
+  dagger acts trivially on it**;
+- `xiGradedSymbol_eq_vecMulVec`, `xiGradedSymbol_posSemidef`,
+  **`xiGradedSymbol_contraction_reflection`** — at the reflected point the symbol is still the same
+  outer square, still positive, and still a complete contraction with the same energy constant.
+
 So the obstruction of `(35)`--`(37)` is an obstruction to the *ungraded* pair only.  The graded
 symbol carries a source-defined positive metric, is a single-Kraus completely positive form, is
-stable under reflection, and is a complete contraction once normalized by its own energy.  What remains open on this arrow is the identification of the reflected
+stable under the Gamma/co-Poisson reflected dagger, and is a complete contraction once normalized
+by its own energy.  What remains open on this arrow is the identification of the reflected
 dagger with the Gamma/co-Poisson involution, not the existence of a compatible positive metric.
 All of this is strictly narrower than a bounded Hilbert-space continuation, which `(35)`--`(37)`
 rule out.
@@ -515,8 +536,9 @@ Primary references:
 - [x] positive Hermitian metric on the graded Rees correspondence (`DivisorReesGradedMetric.lean`)
 - [x] single-Kraus complete positivity and reflection stability of the graded symbol
 - [x] complete contractivity of the energy-normalized graded symbol
-- [ ] construct exceptional Gamma/co-Poisson disintegration (identify the reflected dagger with the
-      Gamma/co-Poisson involution)
+- [x] reflected dagger identified with the co-Poisson conormal reflection; graded symbol invariant
+- [ ] construct exceptional Gamma/co-Poisson disintegration (transport the graded symbol along the
+      continuation to the Xi anti-causal boundary graph)
 - [ ] prove complete contractivity on the Xi boundary graph
 - [ ] four-unit relative-trace estimate
 - [ ] RH

@@ -408,6 +408,7 @@ constructed from the contact matrix itself, so no realization is ever assumed.
 | the reconstructed skeleton's energy, read off the matrix | `ContactMatrix.realization_energy` |
 | **U3 stated on the contact matrix itself** | `ContactMatrix.energy_tree_law` |
 | **U1 `(RT)` stated on the contact matrix itself** | `ContactMatrix.rootedTriple_iff` |
+| **U1--U3 on the contact matrix, as one statement** | `ContactMatrix.stokes_tomography_law` |
 | **the reconstruction is unique**: two skeletons with the same contact matrix have the same hierarchy | `ContactMatrix.hierarchy_unique` | `StokesFissionRealizationExistence` |
 | **every rooted skeleton is a contact matrix** | `RootedContactTree.toContactMatrix` | `StokesContactRealization` |
 | **Theorem 8.3 as a round trip**: a skeleton and the skeleton reconstructed from its own matrix have the same contact matrix and the same hierarchy | `RootedContactTree.realization_contact_eq`, `.hierarchy_realization_eq` | `StokesContactRealization` |
@@ -604,3 +605,7 @@ A single `#print axioms` sweep over the headline theorems of all four cards
   `r_j(B_ii - 1) < r_i B_ij`; the card states both, the second being `r_i(B_jj - 1) < r_j B_ij`
   *with the same off-diagonal entry*.  That is the swapped instance together with the core's own
   symmetry `B_ji = B_ij`, and both now carry the integral `+1` sharpening the card asserts of each.
+- 2026-08-06 — U1, U2 and U3 packaged into a single statement on the contact matrix.  The master law
+  bundles the clauses that live on a certified fission datum; this bundles the three conjectures as
+  the card words them, on `K` itself: the rooted-triple law, uniqueness of the labelled hierarchy
+  given the matrix, and the full energy-tree law with the explicit squared-Euclidean embedding.

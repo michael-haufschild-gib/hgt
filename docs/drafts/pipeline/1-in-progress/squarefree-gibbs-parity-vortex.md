@@ -793,3 +793,71 @@ factorization is `Polynomial.Splits.eq_prod_roots`; `IsAlgClosed.splits p` suppl
 `eval_finsetSum`/`finsetSum_coeff`; `coeff_X_pow` orients its `if` as `j = T.card` while
 `Finset.sum_filter` orients its own as `T.card = j` — rewrite both explicitly with
 `if_pos h.symm` / `if_neg (fun hh => h hh.symm)`.
+
+## 2026-08-06 CYCLE 11: THE ALL-k SECTOR-STABILITY CONJECTURE IS FALSE
+
+The conjecture pursued since cycle 3 ("the gas has no zero with `Re z ≥ 0`, for every finite
+`S` and every coupling") is **false**.  Counterexample family, with the mechanism:
+
+**Z1 (truncation).**  If every `T` with `|T| ≤ J` is light (`x·e(T) ≤ ε`) and every larger
+one heavy (`x·e(T) ≥ R`), then uniformly
+
+```text
+‖P_S(z,x) − Σ_{j≤J} C(k,j) z^j‖ ≤ (ε + e^{−R})·(1+‖z‖)^k.
+```
+
+**Z2 (the section limit).**  Take `S` = `k` primes in `[N, 2N]` and `x = N^{−(J+1/2)}`.
+Then `ε = 2^J N^{−1/2} → 0` and `R = N^{1/2} → ∞`, so the gas is uniformly close to
+`Σ_{j≤J}C(k,j)z^j`; substituting `z = w/k` and letting `k → ∞` (there are `≍ N/log N` primes
+available) gives `C(k,j)/k^j → 1/j!`, i.e. the `J`-th Taylor section of the exponential,
+
+```text
+s_J(w) = Σ_{j≤J} w^j/j!.
+```
+
+The tail is harmless on the relevant scale `|z| ≍ J/k`, where `(1+‖z‖)^k = O(e^J)`.
+
+**Z3 (the sixth section is unstable).**  For `q(w) = 6!·s₆(w) =
+w⁶+6w⁵+30w⁴+120w³+360w²+720w+720`:
+
+* `q(iy)` has imaginary part `6y((y²−10)² + 20)`, which vanishes only at `y = 0`, where
+  `q(0) = 720 ≠ 0`: **no zeros on the imaginary axis**;
+* its third Hurwitz determinant is `det [6,120,720; 1,30,360; 0,6,120] = −1440 < 0`, so by
+  the necessity half of Routh–Hurwitz (Hurwitz 1895 — the one classical input here) `q` is
+  not Hurwitz stable.
+
+Together: `s₆` has a zero with `Re w > 0`.  (Independent confirmation: for a stable degree-6
+real polynomial the even part of `q(iy)` must have three positive roots in `y²`; here
+`u³−30u²+360u−720` has derivative `3(u²−20u+120) > 0`, so it is strictly increasing and has
+exactly one.)  This is the finite-`J` shadow of Szegő's theorem: the zeros of `s_n(nz)`
+accumulate on `|z e^{1−z}| = 1`, which meets `Re z > 0`.
+
+**Z4 (conclusion).**  With `J = 6` and `k, N` large, the gas has a zero with `Re z > 0`.
+**Sector stability fails**, so parity cancellation is *not* monotonically graded by the
+zeros in general: some zeros contribute `‖1+ζ‖/‖1−ζ‖ > 1`, i.e. anti-cancellation.  The
+cycle 3–9 stability results are therefore sharp in scope — `k ≤ 4` at all couplings, all `k`
+at weak coupling — and the two-scale positivity `TSP` of cycle 8, being *sufficient* for
+stability, must also fail in general.  **The engine cannot be completed; this closes that
+line.**
+
+What survives, and is now the load-bearing structure: the **condensation law** (cycle 10),
+which is an identity valid at every coupling regardless of where the zeros sit.
+
+- 2026-08-06 — conjecture falsified; Z1, Z3 formalized below.
+
+## 2026-08-06 Z1/Z3 FORMALIZED: `RHTower/GibbsTruncationSection.lean`
+
+Wired; build 8658 jobs; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings.  `RHTower.GibbsGas`: `sum_powerset_pow_card`,
+`sum_powerset_card_le_eq_binomial` (light part = truncated binomial, via
+`Finset.sum_fiberwise_of_maps_to` and `Finset.card_powersetCard`),
+**`gibbsDiagC_sub_truncated_le`** (Z1), `expSection6`, `expSection6_axis`,
+**`expSection6_ne_zero_on_axis`** (Z3, first half), **`expSection6_hurwitzDelta3`**
+(Z3, second half: the minor equals `−1440`).
+
+The only step not formalized is the classical necessity half of Routh–Hurwitz, which is
+cited, not assumed: no Lean theorem here depends on it.
+
+Lean trap: in `mul_le_mul_of_nonneg_left h (by positivity)` the multiplier is a
+metavariable at elaboration time and `positivity` may unify it with the wrong hypothesis
+(here `hx : 0 ≤ x`); bind it first with an explicit `have` and use a `calc`.

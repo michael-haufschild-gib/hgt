@@ -583,4 +583,27 @@ theorem groskinArchTailIncrement_quadraticForm_eq_zero_annihilates {ι : Type*} 
         sq_nonneg (∑ i, c i * groskinArchTailPlusFeature ρ x T i)]
     exact pow_eq_zero_iff (two_ne_zero) |>.mp hB
 
+/-! ### The card's statement in one object -/
+
+/-- **The archimedean tail statement.**  For every positive scale and every finite node family there
+is a cutoff window past an analytically produced threshold and past every scaled node, on which the
+omitted archimedean tail increment is positive semidefinite, its quadratic form is the
+Cauchy--Stieltjes integral of the pointwise Cauchy Gram, and the density generating it has its
+column space inside the span of the two Cauchy feature vectors.  No numerical value of the digamma
+density enters: the threshold is the analytic one. -/
+theorem groskinArchimedeanTailStatement {ι : Type*} [Fintype ι] [DecidableEq ι] (L : ℝ) {ρ : ℝ}
+    (hρ : 0 < ρ) (x : ι → ℝ) :
+    ∃ T₁ T₂ : ℝ, T₁ < T₂ ∧ groskinArchimedeanPositivityThreshold ≤ T₁ ∧ (∀ i, ρ * |x i| < T₁) ∧
+      (groskinArchTailIncrement L ρ T₁ T₂ x).PosSemidef ∧
+      (∀ c : ι → ℝ, dotProduct (star c) ((groskinArchTailIncrement L ρ T₁ T₂ x).mulVec c)
+        = ∫ T in Set.Icc T₁ T₂, groskinArchTailScalarGram L ρ x c T) ∧
+      (∀ T : ℝ, LinearMap.range (Matrix.mulVecLin (groskinArchTailKernel L ρ x T))
+        ≤ Submodule.span ℝ
+            {groskinArchTailMinusFeature ρ x T, groskinArchTailPlusFeature ρ x T}) := by
+  obtain ⟨T₁, T₂, hlt, hthreshold, hnode⟩ := exists_groskinArchTailWindow ρ x
+  refine ⟨T₁, T₂, hlt, hthreshold, hnode,
+    groskinArchTailIncrement_posSemidef x hρ hthreshold hnode, fun c => ?_,
+    fun T => range_groskinArchTailKernel_le_span L ρ x T⟩
+  exact groskinArchTailIncrement_quadraticForm x hρ hnode c
+
 end RHTower
