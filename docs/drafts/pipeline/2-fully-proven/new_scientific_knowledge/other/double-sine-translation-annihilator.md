@@ -590,8 +590,24 @@ The interchange of sum and integral is mathlib's `hasSum_mellin`, the "Mellin tr
 series" machine. It requires the rates to be real, which is why the representation is stated at a
 real argument: that is the natural base for continuing in `s` first and in `z` afterwards.
 
-Still not formalized: the continuation of the Mellin transform past `s = 2` (subtracting the
-order-two pole of the kernel at `t = 0`), the finite part at `s = 1` (which is
+`GaloisForLFunctions.HTGeometry.BarnesKernelExpansion` starts the continuation. Continuing past
+`s = 2` means subtracting the singular part of the kernel at `t = 0`, and the whole content of that
+is one factor: `z/(1 - e^(-omega z))` has a removable singularity at the origin with value
+`1/omega`. `hasDerivAt_one_sub_exp_neg_mul` is the first-order vanishing of the denominator and
+`tendsto_div_one_sub_exp_neg_mul` is the resulting limit, read off as the reciprocal of the
+difference quotient. (The division-by-zero convention makes `(slope)^(-1)` equal
+`z/(1 - e^(-omega z))` identically, so the proof needs no case split on the denominator.) Hence
+`t^2 e^(-xt)/((1-e^(-omega_1 t))(1-e^(-omega_2 t)))` extends across `t = 0` with value
+`1/(omega_1 omega_2)`.
+
+mathlib supplies the rest of the continuation scaffolding: `mellin_differentiableAt_of_isBigO_rpow`
+gives holomorphy of a Mellin transform in a strip determined by the decay at `0` and `infinity`, and
+`hasMellin_cpow_Ioc` evaluates the subtracted power terms, contributing exactly the poles at
+`s = 2, 1, 0`.
+
+Still not formalized: the Taylor expansion of the extended kernel to second order (which fixes the
+subtracted coefficients), the resulting continuation past `s = 2`, the finite part at `s = 1`
+(which is
 `-partial_z log Gamma_2`, since `partial_z zeta_2(s,z) = -s zeta_2(s+1,z)` makes the derivative of
 the regularization the finite part rather than a value), the reflection giving `S_2`, and the
 resulting `Psi`. Every other ingredient -- the fixed field, the independent coordinates, the
@@ -750,7 +766,9 @@ significant new classification or a routine synthesis once the question is posed
   `Re w > 0`, by holomorphy in the rate plus the identity theorem;
 - [x] Lean cone generating function and the summed Mellin representation
   `Gamma(s) zeta_2(s,x) = mellin (cone kernel) s` for real `x > 0`, `Re s > 2`;
-- [ ] Lean continuation of the Mellin transform past `s = 2`, the finite part at `s = 1`, and the
-  reflected double sine. Alternative route: identify the singleton reflected Barnes source with the cotangent and
+- [x] Lean removable singularity of the kernel factor `z/(1 - e^(-omega z))` at the origin, the
+  analytic core of the subtraction;
+- [ ] Lean second-order Taylor expansion of the extended kernel, the continuation past `s = 2`,
+  the finite part at `s = 1`, and the reflected double sine. Alternative route: identify the singleton reflected Barnes source with the cotangent and
   localize the ladder-step defect, using the imaginary-ray regime where the corpus's cone
   construction already applies.

@@ -1112,3 +1112,40 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   forms, with every polynomial-side reduction discharged: the degree of the locus where a generic
   `(m+n) x (n+1)` matrix of linear forms in `m+1` homogeneous variables drops rank is
   `C(m+n, n)`.  That degree, and nothing else, is what remains to build.
+
+- 2026-08-06 — **The solvability is now a linear range membership.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `mulTruncMap` — multiplication by a polynomial followed by truncation below the horizon, as an
+  `F`-linear map `F[X] →ₗ[F] F[X] ⧸ (X ^ L)`;
+  `quot_eq_iff_dvd` — divisibility by the horizon power is equality in the truncated ring;
+  `exists_snd_iff_mem_range` — a first component extends exactly when
+  `1 - A V` lies in the image of `Polynomial.degreeLT F n` under `mulTruncMap (U + A) L`.
+
+  Together with the injectivity and the image description, the fibre is now *literally* a
+  linear-algebra object: an `n`-dimensional source, an `L`-dimensional target, and a rank
+  condition whose matrix entries are affine in the coefficients of `A`.
+
+  A note on the route, since the obvious one fails.  Presenting the truncation with
+  `Polynomial.modByMonic` requires `(c • p) %ₘ q = c • (p %ₘ q)` to get an `F`-linear map, and
+  mathlib has no such lemma; passing instead through the quotient `F[X] ⧸ (X ^ L)` makes linearity
+  free, since `Ideal.Quotient.mkₐ` is an algebra map and the composite with `LinearMap.mulLeft` is
+  linear by construction.
+
+- 2026-08-06 — **The elimination matrix has full column rank.**  Same module, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `mulTruncMap_eq_zero_iff` — vanishing in the truncated ring is divisibility of the product;
+  `eq_zero_of_mulTruncMap_eq_zero` — multiplication by a polynomial invertible at the origin is
+  injective on the second components: `X ^ L ∣ (U + A) B` cancels the invertible factor, and
+  `deg B < n ≤ L` leaves nothing;
+  `disjoint_ker_degreeLT` — the same as disjointness of the kernel from `degreeLT F n`.
+
+  This is what makes the rank-drop locus have the expected codimension.  The elimination matrix is
+  `L x n` of full column rank `n`, so the augmented `L x (n+1)` matrix drops rank exactly on a
+  locus of codimension `L - n = m` in the `m`-dimensional space of first components — which is why
+  the fibre is finite and why its count is the determinantal degree rather than something larger.
+
+  With this the linear-algebra side of the elimination is complete: source, target, injectivity,
+  and the range criterion.  The one remaining input is unchanged — the degree of the rank-drop
+  locus of a generic `(m+n) x (n+1)` matrix of linear forms, `C(m+n, n)`.

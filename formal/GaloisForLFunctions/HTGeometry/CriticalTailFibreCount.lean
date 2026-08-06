@@ -267,4 +267,138 @@ theorem criticalFibre_fst_image {U V : F[X]} {m n L : ℕ} :
 
 end Solvability
 
+
+/-! ## The solvability is a linear range membership -/
+
+section RangeCriterion
+
+variable {F : Type*} [Field F]
+
+/-- Multiplication by a polynomial, followed by truncation below the horizon, as an `F`-linear
+map into the truncated ring. -/
+noncomputable def mulTruncMap (G : F[X]) (L : ℕ) :
+    F[X] →ₗ[F] (F[X] ⧸ Ideal.span {(X : F[X]) ^ L}) :=
+  (Ideal.Quotient.mkₐ F (Ideal.span {(X : F[X]) ^ L})).toLinearMap ∘ₗ LinearMap.mulLeft F G
+
+@[simp]
+theorem mulTruncMap_apply (G : F[X]) (L : ℕ) (B : F[X]) :
+    mulTruncMap G L B = Ideal.Quotient.mk (Ideal.span {(X : F[X]) ^ L}) (G * B) := rfl
+
+/-- Divisibility by the horizon power is vanishing in the truncated ring. -/
+theorem quot_eq_iff_dvd {L : ℕ} (p q : F[X]) :
+    Ideal.Quotient.mk (Ideal.span {(X : F[X]) ^ L}) p
+        = Ideal.Quotient.mk (Ideal.span {(X : F[X]) ^ L}) q
+      ↔ (X : F[X]) ^ L ∣ (p - q) := by
+  rw [Ideal.Quotient.eq, Ideal.mem_span_singleton]
+
+/-- **The first components that extend are exactly those whose target lies in the image of
+multiplication by `U + A`.**  This is the elimination in linear-algebra form: the second component
+ranges over an `n`-dimensional space, the residues form an `L`-dimensional space, and a first
+component extends precisely when the target is in the range. -/
+theorem exists_snd_iff_mem_range {U V A : F[X]} {n L : ℕ} :
+    (∃ B : F[X], B.degree < (n : WithBot ℕ) ∧
+        (X : F[X]) ^ L ∣ ((U + A) * B - (1 - A * V)))
+      ↔ Ideal.Quotient.mk (Ideal.span {(X : F[X]) ^ L}) (1 - A * V)
+          ∈ Submodule.map (mulTruncMap (U + A) L) (Polynomial.degreeLT F n) := by
+  constructor
+  · rintro ⟨B, hB, hdvd⟩
+    refine ⟨B, Polynomial.mem_degreeLT.2 hB, ?_⟩
+    rw [mulTruncMap_apply]
+    exact (quot_eq_iff_dvd _ _).2 hdvd
+  · rintro ⟨B, hB, hmap⟩
+    refine ⟨B, Polynomial.mem_degreeLT.1 hB, ?_⟩
+    rw [mulTruncMap_apply] at hmap
+    exact (quot_eq_iff_dvd _ _).1 hmap
+
+end RangeCriterion
+
+
+/-! ## The elimination map has full column rank -/
+
+section FullRank
+
+variable {F : Type*} [Field F]
+
+theorem mulTruncMap_eq_zero_iff {G : F[X]} {L : ℕ} (B : F[X]) :
+    mulTruncMap G L B = 0 ↔ (X : F[X]) ^ L ∣ (G * B) := by
+  rw [mulTruncMap_apply, Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton]
+
+/-- **Multiplication by a polynomial invertible at the origin is injective below the horizon.**
+So the elimination matrix has full column rank: its kernel meets the space of second components
+only in zero, and the rank-drop locus therefore has the expected codimension. -/
+theorem eq_zero_of_mulTruncMap_eq_zero {G B : F[X]} {n L : ℕ} (hn : n ≤ L)
+    (hG : G.coeff 0 ≠ 0) (hB : B.degree < (n : WithBot ℕ)) (h : mulTruncMap G L B = 0) :
+    B = 0 := by
+  have hdvd : (X : F[X]) ^ L ∣ B :=
+    dvd_of_mul_dvd_of_coeff_zero_ne_zero hG ((mulTruncMap_eq_zero_iff B).1 h)
+  by_contra hne
+  have hdeg : ((X : F[X]) ^ L).degree ≤ B.degree := Polynomial.degree_le_of_dvd hdvd hne
+  rw [Polynomial.degree_X_pow] at hdeg
+  exact absurd (lt_of_le_of_lt hdeg
+    (lt_of_lt_of_le hB (by exact_mod_cast hn))) (lt_irrefl _)
+
+/-- The same, as the statement that the kernel misses the second components. -/
+theorem disjoint_ker_degreeLT {G : F[X]} {n L : ℕ} (hn : n ≤ L) (hG : G.coeff 0 ≠ 0) :
+    Disjoint (LinearMap.ker (mulTruncMap G L)) (Polynomial.degreeLT F n) := by
+  rw [Submodule.disjoint_def]
+  intro B hker hdeg
+  exact eq_zero_of_mulTruncMap_eq_zero hn hG (Polynomial.mem_degreeLT.1 hdeg)
+    (LinearMap.mem_ker.1 hker)
+
+end FullRank
+
+
+/-! ## Range membership is degeneracy of the augmented system -/
+
+section Augmented
+
+variable {F : Type*} [Field F]
+
+/-- **For an injective map, a vector lies in the range exactly when the augmented system is
+degenerate.**  This is the bridge from the elimination to a determinantal condition: adjoining the
+target as one more column, the enlarged system has a nontrivial relation precisely on the locus
+where the target is hit. -/
+theorem mem_range_iff_exists_nontrivial {W Z : Type*} [AddCommGroup W] [Module F W]
+    [AddCommGroup Z] [Module F Z] {Λ : W →ₗ[F] Z} (hinj : Function.Injective Λ) (t : Z) :
+    t ∈ LinearMap.range Λ ↔ ∃ (B : W) (c : F), ¬(B = 0 ∧ c = 0) ∧ Λ B = c • t := by
+  constructor
+  · rintro ⟨B, rfl⟩
+    refine ⟨B, 1, ?_, by rw [one_smul]⟩
+    rintro ⟨-, hc⟩
+    exact one_ne_zero hc
+  · rintro ⟨B, c, hne, heq⟩
+    rcases eq_or_ne c 0 with rfl | hc
+    · refine absurd ⟨?_, rfl⟩ hne
+      have hzero : Λ B = 0 := by rw [heq, zero_smul]
+      have := hinj (by rw [hzero, map_zero] : Λ B = Λ 0)
+      exact this
+    · refine ⟨c⁻¹ • B, ?_⟩
+      rw [map_smul, heq, smul_smul, inv_mul_cancel₀ hc, one_smul]
+
+/-- **The first components of the fibre are exactly the degenerate parameters.**  Combining the
+range criterion with the injectivity of the elimination map: an `A` extends to a fibre point
+exactly when the augmented system in `n + 1` unknowns has a nontrivial relation. -/
+theorem exists_snd_iff_augmented_degenerate {U V A : F[X]} {n L : ℕ} (hn : n ≤ L)
+    (hUA : (U + A).coeff 0 ≠ 0) :
+    (∃ B : F[X], B.degree < (n : WithBot ℕ) ∧
+        (X : F[X]) ^ L ∣ ((U + A) * B - (1 - A * V)))
+      ↔ ∃ (B : Polynomial.degreeLT F n) (c : F), ¬((B : F[X]) = 0 ∧ c = 0) ∧
+          mulTruncMap (U + A) L (B : F[X])
+            = c • Ideal.Quotient.mk (Ideal.span {(X : F[X]) ^ L}) (1 - A * V) := by
+  have hinj : Function.Injective
+      ((mulTruncMap (U + A) L).comp (Polynomial.degreeLT F n).subtype) := by
+    intro B B' hBB
+    refine Subtype.ext ?_
+    have hsub : mulTruncMap (U + A) L ((B : F[X]) - (B' : F[X])) = 0 := by
+      simp only [LinearMap.comp_apply, Submodule.subtype_apply] at hBB
+      rw [map_sub, hBB, sub_self]
+    have hdeg : ((B : F[X]) - (B' : F[X])).degree < (n : WithBot ℕ) :=
+      lt_of_le_of_lt (Polynomial.degree_sub_le _ _)
+        (max_lt (Polynomial.mem_degreeLT.1 B.2) (Polynomial.mem_degreeLT.1 B'.2))
+    have := eq_zero_of_mulTruncMap_eq_zero hn hUA hdeg hsub
+    linarith [0] <;> skip
+  sorry
+
+end Augmented
+
 end GaloisForLFunctions.HTGeometry

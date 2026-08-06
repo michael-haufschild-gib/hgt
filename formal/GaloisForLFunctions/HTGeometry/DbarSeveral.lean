@@ -281,6 +281,137 @@ theorem exists_radius_pi {G : (Fin n → ℂ) → ℂ} (hcs : HasCompactSupport 
     have h2 : S₂ ≤ max (max S₁ S₂) 0 := le_trans (le_max_right _ _) (le_max_left _ _)
     linarith
 
+
+/-- The single-coordinate inclusion has operator norm at most one. -/
+theorem opNorm_single_le (k : Fin n) :
+    ‖ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) k‖ ≤ 1 := by
+  refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one (fun w => ?_)
+  rw [one_mul]
+  exact le_of_eq (norm_pi_single (n := n) k w)
+
+/-- The `k`-th coordinate of a vector is bounded by its norm, in the form needed below. -/
+theorem norm_coord_le (z : Fin n → ℂ) (k : Fin n) : ‖z k‖ ≤ ‖z‖ :=
+  norm_le_pi_norm z k
+
+/-- The slice derivative at an arbitrary point of the slice. -/
+theorem hasFDerivAt_updateSlice {G : (Fin n → ℂ) → ℂ} (hd : Differentiable ℝ G) (j : Fin n)
+    (z : Fin n → ℂ) (s : ℂ) :
+    HasFDerivAt (fun t : ℂ => G (Function.update z j t))
+      ((fderiv ℝ G (Function.update z j s)).comp
+        (ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) j)) s :=
+  (hd (Function.update z j s)).hasFDerivAt.comp s (hasFDerivAt_updateEmbed j z s)
+
+set_option maxHeartbeats 1000000 in
+/-- **Differentiating the coordinatewise Cauchy transform along another coordinate.**  For `j ≠ k`
+the parameter enters through a coordinate that the singularity does not touch, so differentiation
+under the integral sign applies in its one-variable form. -/
+theorem hasFDerivAt_sliceSolution_along {G : (Fin n → ℂ) → ℂ} (hC : ContDiff ℝ 1 G)
+    (hcs : HasCompactSupport G) {j k : Fin n} (hjk : j ≠ k) (y : Fin n → ℂ) :
+    HasFDerivAt (fun s : ℂ => ∫ w : ℂ,
+        G (Function.update (Function.update y k (y k - w)) j s) / w)
+      (∫ w : ℂ, (w⁻¹ : ℂ) • ((fderiv ℝ G
+        (Function.update (Function.update y k (y k - w)) j (y j))).comp
+          (ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) j))) (y j) := by
+  obtain ⟨S, hS0, hgS, hdS⟩ := exists_radius_pi hcs
+  obtain ⟨M, hM⟩ := (hcs.fderiv ℝ).exists_bound_of_continuous (hC.continuous_fderiv one_ne_zero)
+  obtain ⟨M₀, hM₀⟩ := hcs.exists_bound_of_continuous (hC.differentiable one_ne_zero).continuous
+  have hd : Differentiable ℝ G := hC.differentiable one_ne_zero
+  have hM0 : (0 : ℝ) ≤ M := le_trans (norm_nonneg (fderiv ℝ G 0)) (hM 0)
+  have hT : (0 : ℝ) < S + ‖y‖ + 2 := by positivity
+  have hfar : ∀ (w : ℂ), w ∉ Metric.ball (0 : ℂ) (S + ‖y‖ + 2) → ∀ s : ℂ,
+      S < ‖Function.update (Function.update y k (y k - w)) j s‖ := by
+    intro w hw s
+    simp only [Metric.mem_ball, dist_zero_right, not_lt] at hw
+    have hk : (Function.update (Function.update y k (y k - w)) j s) k = y k - w := by
+      rw [Function.update_of_ne (Ne.symm hjk), Function.update_self]
+    have h1 : ‖y k - w‖ ≤ ‖Function.update (Function.update y k (y k - w)) j s‖ := by
+      calc ‖y k - w‖ = ‖(Function.update (Function.update y k (y k - w)) j s) k‖ := by rw [hk]
+        _ ≤ ‖Function.update (Function.update y k (y k - w)) j s‖ := norm_coord_le _ k
+    have h2 : ‖w‖ - ‖y k‖ ≤ ‖y k - w‖ := by
+      rw [← norm_neg (y k - w)]
+      simpa [neg_sub] using norm_sub_norm_le w (y k)
+    have h3 : ‖y k‖ ≤ ‖y‖ := norm_coord_le y k
+    linarith
+  have hcontArg : ∀ s : ℂ, Continuous fun w : ℂ =>
+      Function.update (Function.update y k (y k - w)) j s := by
+    intro s
+    refine continuous_pi (fun i => ?_)
+    by_cases hij : i = j
+    · subst hij
+      simp only [Function.update_self]
+      exact continuous_const
+    · simp only [Function.update_of_ne hij]
+      by_cases hik : i = k
+      · subst hik
+        simp only [Function.update_self]
+        fun_prop
+      · simp only [Function.update_of_ne hik]
+        exact continuous_const
+  have hmeasF : ∀ s : ℂ, MeasureTheory.AEStronglyMeasurable
+      (fun w : ℂ => G (Function.update (Function.update y k (y k - w)) j s) / w)
+      MeasureTheory.volume := fun s =>
+    ((hd.continuous.comp (hcontArg s)).measurable.mul measurable_inv).aestronglyMeasurable
+  have hmeasF' : MeasureTheory.AEStronglyMeasurable
+      (fun w : ℂ => (w⁻¹ : ℂ) • ((fderiv ℝ G
+        (Function.update (Function.update y k (y k - w)) j (y j))).comp
+          (ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) j))) MeasureTheory.volume := by
+    refine (Measurable.aestronglyMeasurable ?_)
+    exact measurable_inv.smul
+      ((((hC.continuous_fderiv one_ne_zero).comp (hcontArg (y j))).clm_comp
+        continuous_const).measurable)
+  have hboundInt : MeasureTheory.Integrable
+      (fun w : ℂ => M * Set.indicator (Metric.ball (0 : ℂ) (S + ‖y‖ + 2))
+        (fun w => ‖w‖⁻¹) w) MeasureTheory.volume := by
+    refine MeasureTheory.Integrable.const_mul ?_ M
+    rw [MeasureTheory.integrable_indicator_iff measurableSet_ball]
+    exact integrableOn_norm_inv_ball _
+  have hFint : MeasureTheory.Integrable
+      (fun w : ℂ => G (Function.update (Function.update y k (y k - w)) j (y j)) / w)
+      MeasureTheory.volume := by
+    refine MeasureTheory.Integrable.mono'
+      (((MeasureTheory.integrable_indicator_iff
+        (measurableSet_ball (x := (0 : ℂ)) (ε := S + ‖y‖ + 2))).2
+        (integrableOn_norm_inv_ball _)).const_mul (max M₀ 0)) (hmeasF (y j)) ?_
+    refine Filter.Eventually.of_forall (fun w => ?_)
+    by_cases hw : w ∈ Metric.ball (0 : ℂ) (S + ‖y‖ + 2)
+    · rw [Set.indicator_of_mem hw, norm_div, div_eq_mul_inv]
+      gcongr
+      exact le_trans (hM₀ _) (le_max_left _ _)
+    · rw [Set.indicator_of_notMem hw, hgS _ (hfar w hw (y j))]
+      simp
+  refine hasFDerivAt_integral_of_dominated_of_fderiv_le
+    (bound := fun w : ℂ => M * Set.indicator (Metric.ball (0 : ℂ) (S + ‖y‖ + 2))
+      (fun w => ‖w‖⁻¹) w)
+    (F' := fun s w => (w⁻¹ : ℂ) • ((fderiv ℝ G
+      (Function.update (Function.update y k (y k - w)) j s)).comp
+        (ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) j)))
+    (Metric.ball_mem_nhds (y j) one_pos)
+    (Filter.Eventually.of_forall (fun s => hmeasF s)) hFint hmeasF' ?_ hboundInt ?_
+  · refine Filter.Eventually.of_forall (fun w => ?_)
+    intro s _
+    by_cases hw : w ∈ Metric.ball (0 : ℂ) (S + ‖y‖ + 2)
+    · rw [Set.indicator_of_mem hw, norm_smul, norm_inv, mul_comm]
+      gcongr
+      calc ‖(fderiv ℝ G (Function.update (Function.update y k (y k - w)) j s)).comp
+            (ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) j)‖
+          ≤ ‖fderiv ℝ G (Function.update (Function.update y k (y k - w)) j s)‖ *
+            ‖ContinuousLinearMap.single ℝ (fun _ : Fin n => ℂ) j‖ :=
+            ContinuousLinearMap.opNorm_comp_le _ _
+        _ ≤ M * 1 :=
+            mul_le_mul (hM _) (opNorm_single_le j) (norm_nonneg _) hM0
+        _ = M := mul_one M
+    · rw [Set.indicator_of_notMem hw, hdS _ (hfar w hw s)]
+      simp
+  · filter_upwards [MeasureTheory.compl_mem_ae_iff.2 (MeasureTheory.measure_singleton (0 : ℂ))] with w _ s _
+    have h1 := hasFDerivAt_updateSlice hd j (Function.update y k (y k - w)) s
+    have heq : (fun s : ℂ => G (Function.update (Function.update y k (y k - w)) j s) / w)
+        = fun s : ℂ => (w⁻¹ : ℂ) • G (Function.update (Function.update y k (y k - w)) j s) := by
+      funext u
+      rw [smul_eq_mul, div_eq_mul_inv, mul_comm]
+    rw [heq]
+    exact h1.const_smul (w⁻¹ : ℂ)
+
 end SlicewiseSolution
+
 
 end HTGeometry
