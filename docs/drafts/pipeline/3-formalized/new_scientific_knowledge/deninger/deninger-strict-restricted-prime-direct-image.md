@@ -1,7 +1,7 @@
 # Strict restricted prime direct image
 
 - **ID:** `deninger-strict-restricted-prime-direct-image`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** COMPLETE LOCALLY CONVEX SHEAF THEOREM
 - **Label:** `DAC_STRICT_RESTRICTED_PRIME_PUSHFORWARD`
 - **Parent:** `deninger-derived-stratum-kummer-arithmetic-coefficient`
@@ -331,12 +331,50 @@ declarations: `propext, Classical.choice, Quot.sound`.
 - `deningerPrimeSections_restrict_surjective` — **flasqueness**: extension by zero is a section of
   every restriction.
 
-### Remaining
+### The completed mixed space landed
 
-The card stays at stage 2 for one reason only: its value spaces are *complete locally convex*
-spaces, and mathlib has no such category — no completed mixed `L¹`/`L²` space, no strict inductive
-limit, no completed direct sum, and no derived category of sheaves in which to state `(6)`--`(7)`.
-Everything in the proof that does not mention completeness is now formalized: the module structure
-of `(4)`, the sheaf axiom, flasqueness, the finite-cover estimate `(8)`, and the finite support of
-the residue family `(11)`--`(12)`.  The strict splitting `(10)` is the split-leg situation of
-`DeningerPolarizationAlmostProjection.lean`.
+The earlier record said the card stayed at stage 2 "for one reason only: its value spaces are
+*complete locally convex* spaces, and mathlib has no such category — no completed mixed `L¹`/`L²`
+space, no strict inductive limit, no completed direct sum, and no derived category of sheaves in
+which to state `(6)`--`(7)`."  Each clause of that is now discharged.
+
+`formal/GaloisForLFunctions/RHTower/DeningerMixedPrimeBanach.lean`.  Axiom audit for all 10
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerLpEval` — coordinate evaluation on `lp`, as a continuous linear map of norm at most one.
+  This is what makes the compatibility condition below a closed condition.
+- `deningerMixedSubmodule` — **the completed mixed weighted `L¹`/`L²` space `(4)`--`(5)`**.  It is
+  realized without leaving mathlib's `lp` spaces: rescaling a family by `α_p` turns the first
+  condition of `(4)` into membership in `lp E 1`, rescaling by `√β_p` turns the second into
+  membership in `lp E 2`, and the mixed space is the locus in `lp E 1 × lp E 2` where the two
+  rescalings come from one common family, i.e. `α_p x₂(p) = √β_p x₁(p)`.  Its norm is the sum of
+  the two `lp` norms, which is `(5)`.
+- `deningerMixed_mem_iff` — membership is exactly the existence of that common family, so the
+  realization is faithful to `(4)` and not a surrogate.
+- `deningerMixed_summable_one`, `deningerMixed_summable_two` — the underlying family satisfies the
+  two weighted summability conditions of `(4)` literally, `∑ α_p ‖f_p‖ < ∞` and
+  `∑ β_p ‖f_p‖² < ∞`.
+- `deningerMixedSubmodule_isClosed` and `deningerMixedSubmodule_completeSpace` — **the mixed space
+  is complete**.  The compatibility condition is, for each prime, an equality of two continuous
+  functions of the pair, so the mixed space is a closed subspace of a product of two Banach spaces.
+  This is the completion mathlib was missing.
+- `deningerMixedSingle`, `deningerMixedSingle_mem`, `deningerMixed_hasSum_single` — **`(7)`**: the
+  single-prime truncation of a member is again a member, and every member is the *unconditional*
+  sum of its single-prime truncations.  So the finitely supported packet families form a dense
+  subspace whose completion is the mixed space itself, which is exactly "strict inductive limit of
+  the finite direct sums, then completion".
+
+The remaining half of `(6)` — that `RΓ(S, ℬ_fin)` is concentrated in degree zero with value the
+restricted sum — was already formalized in `DeningerRestrictedPrimeAcyclic.lean`
+(`deningerPrimeSheaf_isFlasque`, `deningerPrimeSheaf_ext_eq_zero`,
+`deningerPrimeSheaf_cohomologyZeroEquiv`) on top of the sheaf cohomology of
+`DeningerFlasqueAcyclic.lean`.  Together with the sheaf axiom and flasqueness of
+`DeningerRestrictedPrimeGluing.lean` and the finite-cover estimate `(8)` of
+`DeningerRestrictedPrimeSheaf.lean`, every numbered statement of the card is formalized
+unconditionally.
+
+## Log
+
+- 2026-08-06 — Built the completed mixed weighted `L¹`/`L²` space and proved it complete, and
+  proved that its finitely supported members are dense through the unconditional single-prime
+  expansion.  This closes the card's only stated obstruction; card moves to `3-formalized`.

@@ -469,13 +469,69 @@ to an identity of entire germs and evaluates pointwise, where it is the exponent
 owns as `multipleSineOneLogDeriv` -- is literally the embedded `cotModel` against which the
 orbit-balance obstruction was proved.
 
-Still not formalized: the double sine itself, i.e. a meromorphic `Psi` realizing the two step
-equations. Every other ingredient -- the fixed field, the independent coordinates, the embedded
-two-cylinder field, its translation action, its differential structure, and now the exact form of
-the increment -- is machine-checked. Note the construction is not the Barnes cone regime the corpus
-already owns (`barnesConeMero` needs `Im omega > 0`): for two positive real periods the double sine
-requires the Barnes double-zeta regularization or its integral representation, which is the open
-analytic build.
+### The realization route
+
+Nothing in the proof uses that the periods are *real* -- only that they are `R`-collinear (which
+makes the joint period group non-discrete, hence the fixed field constant) and `Q`-independent
+(which makes `q = exp(2 pi i omega_1/omega_2)` non-torsion and the cylinder coordinates
+algebraically independent). `exists_constant_of_two_rayPeriods_fixed` records the fixed-field
+collapse for `omega_j = c a_j` with `a_j` real and `a_1/a_2` irrational; `c` is an arbitrary nonzero
+complex number. Since `omega_1/omega_2 = a_1/a_2` the multiplier `q` is unchanged.
+
+This matters for the one remaining gate. The corpus already owns a Barnes cone construction --
+`barnesConeProduct`, `barnesConeMero`, `barnesSourceLogDerivMero`, the subframe ladder step, and the
+reflected `multipleSineSourceMero` -- but every one of them assumes `0 < Im omega_i`. Taking
+`c = i` puts the periods on the positive imaginary axis, where that hypothesis holds
+(`im_I_mul_ofReal_pos`) *and* the periods are still `R`-collinear with irrational ratio, so the
+fixed-field collapse still applies (`exists_constant_of_two_imaginaryPeriods_fixed`). The two
+regimes are therefore not disjoint: the imaginary ray lies in both.
+
+So the realization does **not** require the Barnes double-zeta regularization. What it requires is:
+
+1. identify the singleton reflected Barnes source `multipleSineSourceMero omega homega {j}` with the
+   cotangent `(pi/omega_j) cot(pi z/omega_j)` -- the order-one reflected source is the reciprocal
+   sine, so this should be a Weierstrass-product identification;
+2. locate the differentially algebraic defect `d` in the ladder step
+   `(T_k - 1) L_S + L_{S∖k} = d` precisely enough to place it in the coefficient field. Note the
+   argument tolerates a defect rational in `z`: enlarging `K` to `C(z,u_1,u_2)` keeps `K` stable
+   under both translations, and a defect rational in `z, u_1` is a *constant* for the `u_2`
+   variable, so it contributes no pole on the orbit `q^Z` and the orbit-balance obstruction is
+   unaffected. This is exactly why the obstruction was proved over an arbitrary base field.
+
+### The Barnes double-zeta regularization
+
+`GaloisForLFunctions.HTGeometry.BarnesDoubleZetaSeries` starts the direct construction of the double
+sine for real positive periods, via the Barnes double zeta
+
+```text
+zeta_2(s,z) = sum_{m,n >= 0} (z + m omega_1 + n omega_2)^(-s).
+```
+
+Two things are proved unconditionally.
+
+*Convergence.* `summable_barnesLattice_rpow`: the real cone `p`-series converges for exponent above
+two. The mechanism is `c + delta(m+n) >= e sqrt((1+m)(1+n))`, which dominates the terms by a product
+of two one-dimensional `p`-series of exponent `sigma/2 > 1`; `norm_cpow_neg_le_rpow` transfers this
+to the complex series with a uniform `exp(pi |Im s|)` factor coming from the argument, giving
+`summable_barnesDoubleZeta_term` for `Re s > 2`, `Re z > 0`.
+
+*The shift identities.* `barnesDoubleZeta_add_fst` and `barnesDoubleZeta_add_snd`:
+
+```text
+zeta_2(s, z + omega_1) = zeta_2(s,z) - zeta_1(s, z | omega_2),
+zeta_2(s, z + omega_2) = zeta_2(s,z) - zeta_1(s, z | omega_1),
+```
+
+with `zeta_1(s,z|omega) = sum_{n>=0} (z + n omega)^(-s)`. Translating by a generator deletes one
+slab of the cone, which is the opposite ray -- pure reindexing, exact in the half-plane of
+convergence. These are the identities that become the double-sine step equations after
+differentiating the continuation at `s = 0`, and being exact they propagate to any continuation.
+
+Still not formalized: the meromorphic continuation of `zeta_2` past `s = 2` to a neighbourhood of
+`s = 0`, the derivative there (which defines `log Gamma_2`), the reflection giving `S_2`, and the
+resulting `Psi`. Every other ingredient -- the fixed field, the independent coordinates, the
+embedded two-cylinder field, its translation action, its differential structure, and the exact form
+of the increment -- is machine-checked.
 
 ### Formalization of the algebraic core
 
@@ -616,5 +672,11 @@ significant new classification or a routine synthesis once the question is posed
   embedding for `lambda * (X d/dX)`;
 - [x] Lean identification of the step increment: the embedded cotangent model is the genuine
   meromorphic `(pi/omega) cot(pi z/omega)`;
-- [ ] Lean construction of the double sine itself for two positive real periods (Barnes
-  double-zeta regularization; the corpus's Barnes cone construction needs `Im omega > 0`).
+- [x] Lean fixed-field collapse for periods on an arbitrary common ray, in particular the positive
+  imaginary axis where the corpus's Barnes cone hypothesis `0 < Im omega` also holds;
+- [x] Lean Barnes double-zeta series: convergence for `Re s > 2` and the two exact cone-slab shift
+  identities;
+- [ ] Lean meromorphic continuation of `zeta_2` to `s = 0`, its derivative there, and the reflected
+  double sine (alternative route: identify the singleton reflected Barnes source with the cotangent
+  and localize the ladder-step defect, using the imaginary-ray regime where the corpus's cone
+  construction already applies).

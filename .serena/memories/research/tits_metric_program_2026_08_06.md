@@ -1,3 +1,18 @@
+# Tits metric across apartments — COMPLETE 2026-08-06
+
+**The programme below is finished.**  `TitsDivergenceRate.lean` closes it:
+`tendsto_rayDist_div` (the divergence rate exists for arbitrary directions), `titsRate` (the Tits
+distance), `titsRate_diagOp` (inside an apartment it is the chordal distance, so it extends the
+flat metric).  Supporting: `ObserverHomothety.lean` (`observerDist_metricRay_smul_le`),
+`CompoundHomothety.lean`, `CompoundExponentialTransport.lean`, `CompoundExponential.lean`,
+`CompoundOperatorOrder.lean`, `CordesGeneralExponent.lean`.
+
+With it the card's `2 -> 3` gate is closed and the card moved to
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/projective-horizon/`.
+Only `3 -> 4` (external audit) remains, which is not a Lean task.
+
+The rest of this file is the record of how it was built — keep it for the traps section.
+
 # Tits metric across apartments — the last item of gate 2 -> 3
 
 Card: `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/projective-horizon/projective-ht-horizon-symmetric-space-boundary.md`
@@ -151,24 +166,41 @@ step changes — `CFC.sqrt_le_sqrt` becomes `CFC.rpow_le_rpow` at exponent `s`.
 
 ## What is left, precisely
 
-**(i) ALT assembly** — a module tying the three pieces together:
-  - `toEuclideanCLM (compoundGen k V w)` is self-adjoint; `toEuclideanCLM` of
-    `compound k (Vᴴ diag(exp (t w)) V)` is `NormedSpace.exp (t • toEuclideanCLM (compoundGen …))`.
-    NOTE the one gap here: transporting the *matrix* exponential to the *CLM* exponential.
-    `NormedSpace.map_exp` needs a continuous ring hom; `Matrix.toEuclideanCLM` is a `StarAlgEquiv`
-    and continuity is available from finite-dimensionality
-    (`LinearMap.continuous_of_finiteDimensional`).  Alternatively use `Matrix.exp_conj`
-    (needs `IsUnit U`, and `Matrix.inv_eq_right_inv` to identify `U⁻¹ = Λᵏ V`) on the matrix side
-    first, then transport a single equation.
-  - Then: `compound_quadForm_le` (bound at time 1) → `toEuclideanCLM_le_iff` → 
-    `exp_smul_le_of_exp_le` → `toEuclideanCLM_le_iff` → `prod_le_of_compound_quadForm_le`,
-    giving `∏_{i∈s} γ^{(λ)}_i ≤ a ^ λ`.
+**Steps 1 and 2 are DONE** (2026-08-06).  The log-majorization is
+`quadForm_compound_expRay_le` in `CompoundHomothety.lean`:
 
-**(ii) `(H)` itself** — mirror the assembly of `observerDist_triangle` in
-  `ObserverTriangleInequality.lean` (that proof is the exact template, including
-  `prod_le_exp_topSum` and the conversion of a products bound into a `topSum` bound), then
-  Karamata via `sqrt_sum_sq_le_of_topSum_le` with `c := 0`.
+```text
+Λᵏ Q₁ ≤ c Λᵏ P₁   →   Λᵏ Q_t ≤ c ^ t Λᵏ P_t      (0 ≤ t ≤ 1)
+```
 
-**(iii) the limit** — `f t / t` nondecreasing (from `(H)`) and `≤ 2` (triangle inequality) gives
-  the divergence rate; define `titsDist`; check it against
-  `observerDist_metricRay_diagOp_unit` inside an apartment.
+for exponential rays `P_t = Vᴴ diag(exp (t p)) V`, `Q_t = Wᴴ diag(exp (t q)) W`, stated as a
+comparison of Hermitian forms so it plugs straight into the two Ky Fan lemmas.  Supporting:
+`CompoundExponentialTransport.lean` (`toEuclideanCLM_exp`, `isometry_toEuclideanCLM`),
+`CompoundExponential.lean`, `CompoundOperatorOrder.lean`
+(`toEuclideanCLM_le_iff`, `toEuclideanCLM_smul_le_iff`, `exp_smul_le_of_exp_le_clm`).
+
+**Step 3 is DONE** (2026-08-06): `observerDist_metricRay_smul_le` in `ObserverHomothety.lean`
+is `(H)` itself — `d (exp (λT), exp (λS)) ≤ λ d (exp T, exp S)` for `λ ∈ [0,1]`.  Karamata in
+scaled form is `sqrt_sum_sq_le_smul_of_topSum_le`; the totals come from
+`prod_relOp_eigenvalues_metricRay` (the product of the relative spectrum along a ray is
+`exp (t (tr S - tr T))`).
+
+**Remaining: step 4 only.**
+
+(iv) the limit — `f t / t` nondecreasing (from `(H)`) and `≤ 2` (triangle inequality) gives the
+  divergence rate; define `titsDist`; check it against `observerDist_metricRay_diagOp_unit`
+  inside an apartment.
+
+## Hard-won traps
+
+- **Missing `StarOrder` import causes a runaway, not an error.**  Instantiating the abstract C\*
+  contraction at an operator algebra hits a `whnf` heartbeat timeout unless
+  `Mathlib.Analysis.InnerProductSpace.StarOrder` is imported (it carries
+  `StarOrderedRing (E →L[𝕜] E)`).  Symptom looks like a defeq blowup; raising `maxHeartbeats`
+  does not help.  `Mathlib.Analysis.InnerProductSpace.Positive` alone is not enough — it gives the
+  Loewner `PartialOrder` but not the `StarOrderedRing`.
+- `CFC.rpow_def` is stated over `ℝ≥0`; the real-valued form is `CFC.rpow_eq_cfc_real` (takes
+  `0 ≤ a`).
+- `Complex.coe_smul` may fail to rewrite across instance paths; restate it once as a local lemma
+  proved by `exact Complex.coe_smul _ _` (defeq is accepted where `rw` matching is not), then
+  rewrite with the local version.

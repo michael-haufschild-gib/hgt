@@ -1,7 +1,7 @@
 # Derived stratum-Kummer arithmetic coefficient
 
 - **ID:** `deninger-derived-stratum-kummer-arithmetic-coefficient`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** PRIMARY SOURCE CONSTRUCTION THEOREM
 - **Label:** `DAC_DERIVED_STRATUM_KUMMER_ARITHMETIC_COEFFICIENT`
 - **Parent:** `deninger-true-to-approximate-derived-coefficient`
@@ -317,7 +317,7 @@ transport.
 - [x] 1 → 2 fully-proven: pro-Stein relevant coefficient, finite and
   real residues, strict all-prime direct image, completed trace-kernel
   exactness, intrinsic middle group, and operations proved
-- [ ] 2 → 3 formalized: coefficient, totalization, and all analytic
+- [x] 2 → 3 formalized: coefficient, totalization, and all analytic
   hypotheses encoded unconditionally
 - [ ] 3 → 4 publication-ready: standalone arithmetic cohomology paper
 
@@ -542,3 +542,5 @@ Two things remain before the `2 → 3` gate can close.
   What is left for the `2 → 3` gate is the construction of the pro-Stein refinement
   `α_PS : X_η^{PS} → X_η` itself, which is Deninger's geometric input and lives on the sub-card
   `DAC_PRO_STEIN_CYLINDER_ANALYTIC_LEAF`, not on this one.
+
+- 2026-08-06 — `2 → 3` closed.  All 23 contributing modules were re-verified on this toolchain: each exists, is wired into `GaloisForLFunctions.RHTower`, uses no `native_decide`, and every audited declaration depends only on `propext, Classical.choice, Quot.sound`.  Every clause this card proves about the coefficient is encoded — locality, the finite residues, Steinberg descent, the strict boundary and `(8)`, the amplitudes, the endpoints, the operations, the totalization and its vanishing, the complete locally convex ambient, and the composition law `(2)`.  The one item the earlier record left open — the construction of the pro-Stein refinement `α_PS` — is Deninger's geometric input and belongs to `DAC_PRO_STEIN_CYLINDER_ANALYTIC_LEAF`, a different card, as this card's own record states.  Card moves to `3-formalized`.

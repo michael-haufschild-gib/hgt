@@ -464,6 +464,72 @@ series `(6)`, so the boxed enlargement law `(5)` and the increment bound `(7)`
 are statements about the determinant itself and not only about a chosen
 series.
 
+Section 4's coefficient layer is `[LEAN-PROVED]` in
+`HTGeometry/CoefficientDecimationSieve.lean`:
+
+| Card item | Declaration |
+|---|---|
+| `(D_q b)(N) = b(qN)`, `(S_q b)(M) = b(M/q)` on multiples | `decimate`, `inflate` |
+| `D_q S_q = 1` | `decimate_inflate` |
+| `P_q = S_q D_q` is the projection onto multiples of `q` | `multipleProjection`, `multipleProjection_apply` |
+| `E_q = I - S_q D_q` is the projection onto non-multiples | `offMultiple`, `offMultiple_apply` |
+| `E_P` as a coordinate projection onto `(M, M_P) = 1` | `sieveOffMultiple`, `sieveOffMultiple_empty` |
+| `E_{P∪\{p\}} = E_p ∘ E_P` | `sieveOffMultiple_insert` |
+| `D_p` commutes with `E_P` for `p ∉ P` | `decimate_sieveOffMultiple` |
+| `J(S_q b) = q^{-s} J(b)` for the Dirichlet functional, exactly | `LSeries_inflate` |
+| the multiple-projection Dirichlet series | `LSeries_multipleProjection`, `LSeriesSummable_multipleProjection` |
+| the off-multiple Dirichlet split | `LSeries_offMultiple` |
+| **`(17)`+`(18)`** `J(E_P p_a) = a_P J(p_a)` | `J_sieveOffMultiple` |
+
+`sieveOffMultiple_inv_eq_sieveWeight` (in `PrimeSieveOperator.lean`) identifies
+this coefficient-space `E_P` with the spectral projection carried by the sieved
+diagonal of Section 1: the off-multiple sieve of the reciprocal sequence *is*
+`sieveWeight P`.  So `(18)` and `(13)` speak about one operator, which is the
+content of the card's remark that `a_P` in `(11)` is literally the coefficient of
+the same sieved BV principal conormal.
+
+`J_sieveOffMultiple` derives `(18)` from exactly the four source laws the card
+lists: the decimation reindexing `(15)`, the decimation character `q^{s-1}` and
+the inflation character `q^{-s}` of `(16)`, and additivity of `J`.  The
+inflation character is discharged unconditionally here (`LSeries_inflate`), and
+the decimation character is the corpus theorem
+`RHTower.CompactBVPrimeWindow.continuedSourceResidueValue_argumentDilation`
+together with the coefficient decimation
+`polarCoefficient_argumentDilation_eq_argumentExpansion_sq_mul`.  That extension is carried out in
+`RHTower/BVPrimeWindowSieveResidue.lean`, which closes Section 4 at the actual
+Laurent residue:
+
+| Card item | Declaration |
+|---|---|
+| natural-number argument dilation, total in the index | `natDilate`, `natDilate_eq`, `mellinTransform_natDilate` |
+| `(16a)` `J(p_{aq}) = q^{s-1} J(p_a)` | `continuedSourceResidueValue_natDilate` |
+| `(15)` `D_q p_a = p_{aq}`, for every integer `q ≥ 1` | `weightedPrimeWindow_decimate`, `polarCoefficient_decimate`, `decimate_polarCoefficient` |
+| the continuation of the sieved coefficient sequence | `sievedContinuedSource` |
+| that it *is* the continuation | `LSeries_sieveOffMultiple_polarCoefficient` |
+| **`(18)`** `J(E_P p_a) = a_P J(p_a)` at the actual residue | `tendsto_sievedContinuedSource_residue` |
+| **`(21)`** `a_P^{-1} J(E_P p_a) = J(p_a)` | `tendsto_sievedContinuedSource_residue_normalized` |
+| the conormal component of `(20)`: `a_P J(p_a) → 0` cofinally | `tendsto_sievedResidueValue_sievePrefix` |
+
+`polarCoefficient_decimate` is `(15)` in the general form the card states it —
+for every integer `q ≥ 1`, with no square condition: the finite prime part is
+reindexed directly and the archimedean counterterm rescales by
+`M_{W_q}(3/2) = q^{1/2} M_W(3/2)`.  The parent card proved only the square case,
+because it moved along the bilateral ladder on both channels at once.
+
+`tendsto_sievedContinuedSource_residue` needs no hypothesis beyond `0 < Re ρ`
+and `ρ` being a zero of the pole-filled zeta.  The mechanism is exactly the one
+the card describes: the Möbius expansion of `E_P` turns the sieved series into a
+finite alternating combination of dilated continued sources, each inflation
+contributes `d^{-(ρ+1/2)}` and each dilation `d^{ρ-1/2}`, these cancel to
+`d^{-1}` independently of the zero, and `∑_{d ∣ M_P} μ(d)/d` is the Euler
+product `a_P`.
+
+Together, `tendsto_sievedContinuedSource_residue_normalized` and
+`tendsto_sievedResidueValue_sievePrefix` are the two halves of the fracture
+`(20)`--`(21)`: the coarse cofinal limit of the conormal component is zero, while
+its source-normal normalization is the constant nonzero direction
+`J(p_a)` at every finite stage.
+
 The statement is proved for an arbitrary enumeration `e : ℕ ≃ Nat.Primes`, so it
 is the exact cofinal claim of `(14)`: the singular density has total cofinal
 variation one along *every* prime exhaustion.

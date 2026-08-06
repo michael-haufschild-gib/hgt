@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.CompoundKyFan
 import GaloisForLFunctions.HTGeometry.CordesGeneralExponent
 import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.Analysis.InnerProductSpace.Positive
+import Mathlib.Analysis.InnerProductSpace.StarOrder
 
 /-!
 # The quadratic form of a matrix and the operator order
@@ -127,6 +128,7 @@ theorem toEuclideanCLM_smul_le_iff {M N : Matrix κ κ ℂ} (hM : M.IsHermitian)
 
 /-! ## The contraction, specialised to operators on a Euclidean space -/
 
+omit [DecidableEq κ] in
 /-- The homothety contraction of the operator order, in the algebra of operators on a Euclidean
 space. -/
 theorem exp_smul_le_of_exp_le_clm

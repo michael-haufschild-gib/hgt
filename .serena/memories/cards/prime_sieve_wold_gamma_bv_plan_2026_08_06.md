@@ -3,72 +3,62 @@
 Card: `docs/drafts/pipeline/2-fully-proven/prime-sieve-wold-gamma-bv-relative-character.md`
 (its "Formalization status" section carries the full declaration tables).
 
-## DONE — Sections 1, 2, 3 are complete and unconditional
+## DONE — Sections 1, 2, 3 complete; Section 4's coefficient layer complete
 (axioms = propext/Classical.choice/Quot.sound; all wired into
-`GaloisForLFunctions/HTGeometry.lean`)
+`GaloisForLFunctions/HTGeometry.lean`; umbrella builds clean)
 
-- `HTGeometry/PrimeSieveDensityTelescope.lean` — Section 3 (13),(14):
-  `sieveDensity`, `sieveDensity_insert`, `sievePrefix`,
-  `tendsto_sieveDensity_sievePrefix`, `tsum_sieveDensity_div_prime` (boxed (14)).
-- `HTGeometry/PrimeSieveEulerTrace.lean` — arithmetic of (3):
-  `sievePrimorial`, `sievedSum`, `sievedSum_insert`, `sievedSum_eq_mul_prod`,
-  `sievedSum_rpow_inv`.
-- `HTGeometry/PrimeSieveHarmonicInclusionExclusion.lean` — Section 3 (11),(12):
-  `sievedHarmonic_eq_sum_divisors` (12), `sum_divisors_moebiusDiv_sievePrimorial`
-  (`∑_{d|M_P} μ(d)/d = a_P`), `tendsto_sievedHarmonic_sub` (11),
-  plus `moebiusDiv`, `tendsto_natDiv_div_self`, `tendsto_harmonic_natDiv_sub_log`.
-- `HTGeometry/PrimeSieveRegularDeterminant.lean` — Section 2 (5)–(9) analytically:
-  `sieveTrace`, `sieveTraceBound`, `sieveTrace_le_bound`, `sieveLogPhi` (6),
-  `sieveLogPhi_insert` (boxed (5)), `abs_sieveLogPhi_insert_sub_le` (7),
-  `vacuumLogPhi`, `exp_vacuumLogPhi` (9), `hasSum_vacuumSeries`,
-  `tendsto_sieveTrace_sievePrefix`, `tendsto_sieveLogPhi_sievePrefix` (9).
-- `HTGeometry/LpDiagonalOperator.lean` — REUSABLE generic layer, namespace
-  `HilbertSchmidt`: `diagMul_diag`, `diagMul_of_ne`, `isHS_diagMul_of_summable`,
-  `tsum_diagMul_normSq`, `diagOp`, `diagOp_apply`, `diagOp_congr`,
-  `isHilbertSchmidt_diagOp`, `hsNormSq_diagOp`, `diagOp_comp`, `diagOp_sub`,
-  `summable_pow_normSq`, `diagOp_pow`, `opTrace_diagOp_comp`, `opTrace_diagOp_pow`.
-- `HTGeometry/PrimeSieveOperator.lean` — Section 1 (1)–(3) + (4) + (8):
-  `sieveWeight`, `sieveOperator`, `isHilbertSchmidt_sieveOperator`,
-  `opTrace_sieveOperator_pow`, `operatorFredholmExpGerm_sieveOperator`,
-  `sieveTraceBoundTwo`, `sieveTrace_le_boundTwo`, `summable_expGerm_term`,
-  `expGermDiff`/`_even`/`_odd`, `expGerm_sub_eq_sieveLogPhi`, `sievePhi` (4),
-  `sievePhi_eq_exp_sieveLogPhi` (**(4) = (6)**), `vacuumProjection`,
-  `hsNormSq_sieveOperator_sub_vacuum`,
-  `tendsto_hsNormSq_sieveOperator_sub_vacuum` (8).
+- `HTGeometry/PrimeSieveDensityTelescope.lean` — Section 3 (13),(14).
+- `HTGeometry/PrimeSieveEulerTrace.lean` — arithmetic of (3), `sievedSum`.
+- `HTGeometry/PrimeSieveHarmonicInclusionExclusion.lean` — (11),(12) and
+  `∑_{d|M_P} μ(d)/d = a_P`.
+- `HTGeometry/PrimeSieveRegularDeterminant.lean` — (5),(6),(7),(9) analytically.
+- `HTGeometry/LpDiagonalOperator.lean` — REUSABLE diagonal operators on ℓ²(ι).
+- `HTGeometry/PrimeSieveOperator.lean` — (1),(2),(4),(8);
+  `sievePhi_eq_exp_sieveLogPhi` welds (4) to (6);
+  `sieveOffMultiple_inv_eq_sieveWeight` welds Section 4's `E_P` to Section 1's.
+- `HTGeometry/CoefficientDecimationSieve.lean` — Section 4 coefficient layer:
+  `decimate`, `inflate`, `decimate_inflate`, `multipleProjection(_apply)`,
+  `offMultiple(_apply)`, `sieveOffMultiple(_empty/_insert)`,
+  `decimate_sieveOffMultiple` (commutation), `LSeries_inflate` (16b, exact and
+  hypothesis-free), `LSeries_multipleProjection`,
+  `LSeriesSummable_multipleProjection`, `LSeries_offMultiple` (parent card (14)),
+  `J_sieveOffMultiple` ((17)+(18) from the four source laws).
 
-## Corpus facts learned (do not rebuild)
-- `HilbertSchmidt.diagMul` (general diagonal kernel), `hsComp_diagMul`,
-  `hsPow_diagMul`, `isHS_diagMul` (finite support only) already exist in
-  `HTGeometry/FredholmDeterminantExamples.lean`. My layer adds the
-  infinite/square-summable case and the OPERATOR side.
-- `HTGeometry/HilbertSchmidtMatrix.lean`: `lpBasis`, `toOperator`,
-  `toOperator_apply`, `isHilbertSchmidt_toOperator`, `hsNormSq_toOperator`.
-- `HTGeometry/HilbertSchmidtTrace.lean`: `opTrace`, `opTrace_toOperator_comp`.
-- `HTGeometry/OperatorFredholmGerm.lean`: `operatorFredholmExpGerm`,
-  `operatorFredholmDet2Germ`, `operatorFredholmDet1Germ` (ROOT namespace
-  `HTGeometry`, so write `HTGeometry.operatorFredholmExpGerm` from inside
-  `GaloisForLFunctions.HTGeometry`).
-- `RHTower/XiDivisorDiagonalTraceClass.lean` has an Xi-specialized diagonal
-  layer; do not import it from HTGeometry.
-
-## Traps hit
-- `∘L` binds TIGHTER than `^`: write `((T) ^ k) ∘L T`.
-- `T ^ (k+1) = T ^ k * T`; convert `*` to `∘L` with
-  `ContinuousLinearMap.mul_def`.
-- `ext f i` on a CLM into `lp` already descends to coordinates — no `lp.ext`.
-- Beta-redexes from `Function.support (fun p => ...)` block `rw` — insert `show`.
-- `omit [inst] in` must precede the DOCSTRING.
-- `summable_of_finite_support` is deprecated with a different signature; use
-  `summable_of_ne_finset_zero (s := ...)`.
-- Name collisions are checked by the umbrella build, not the linter:
-  `HilbertSchmidt.diagKernel` already existed. Grep before naming.
+## The one remaining gap in Section 4
+`J_sieveOffMultiple` takes as hypotheses exactly the card's source laws:
+additivity of `J`, `(15)` `D_q p_a = p_{aq}`, `(16a)` `J(p_{aq}) = q^{s-1}J(p_a)`,
+`(16b)` `J(S_q b) = q^{-s}J(b)`.  (16b) is discharged unconditionally here.
+(15) and (16a) are corpus theorems in
+`RHTower/BVPrimeWindowDilationOrientation.lean`:
+`polarCoefficient_argumentDilation_eq_argumentExpansion_sq_mul` and
+`continuedSourceResidueValue_argumentDilation`
+(with `J = continuedSourceResidueValue · rho`, `s = rho + 1/2`, `q = r^2`).
+BLOCKER for full instantiation: the corpus `J` is defined on WINDOWS, not on
+coefficient sequences, so `J (inflate q b)` is not even typeable.  Extending `J`
+to sequences means the residue of the CONTINUED source
+(`RHTower/BVPrimeWindowContinuation.lean`: `continuedSource`,
+`LSeries_polarCoefficient_eq_continuedSource`,
+`polarCoefficient_LSeriesSummable`), not of the Dirichlet series — at
+`s = rho + 1/2` with `Re rho ∈ (0,1)` the series does not converge.
+Residue machinery: `RHTower/BVPrimeWindowDivisorTomography.lean`
+(`tendsto_continuedSource_residue_of_zeta_zero`,
+`meromorphicOrderAt_continuedSource_eq_neg_one_iff_mellin_ne_zero`).
+Any such module must live in RHTower (RHTower may import HTGeometry, not
+conversely).
 
 ## REMAINING
-1. Section 4 (15)–(18): BV scale-decimation and `J(E_P p_a) = a_P J(p_a)`.
-   `J` is the pole-cancelled BV/co-Poisson principal-normal class; the two
-   homogeneity laws (16) come from the parent card
-   `not_new_scientific_knowledge/bv-prime-window-polar-coefficient-decimation-law.md`.
-   Locate/construct the corpus `J` first; (17)–(18) are then a purely algebraic
-   induction over commuting `E_q = I − S_q D_q`.
+1. Extend `J` to coefficient sequences via the continued source, then instantiate
+   `J_sieveOffMultiple` — closes Section 4 fully.
 2. Sections 5–6: assemble (19)–(21) and the naive no-go.
 Conjecture (24) has no paper proof — NOT a formalization target.
+
+## Traps (cumulative)
+- `∘L` binds TIGHTER than `^`; `T^(k+1) = T^k * T`, convert with
+  `ContinuousLinearMap.mul_def`.
+- `rw` of an `Iff` inside an `if` condition fails on the `Decidable` motive —
+  use `by_cases` + `if_pos`/`if_neg` with `.mp`/`.mpr` applied.
+- `rw [someDef]` can fail ("Failed to rewrite using equation theorems") for a
+  `def f a b : X → Y := fun m => ...`; add an explicit `f_eq ... := rfl` lemma.
+- `LSeries_sub` lives in `Mathlib.NumberTheory.LSeries.Linearity`, not `.Basic`.
+- `Complex.natCast_mul_natCast_cpow` is the `(q*N)^s = q^s N^s` lemma.
+- Name collisions are caught by the umbrella build, not the linter. Grep first.

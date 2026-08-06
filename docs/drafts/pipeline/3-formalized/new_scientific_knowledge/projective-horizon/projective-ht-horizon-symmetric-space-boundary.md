@@ -1,7 +1,7 @@
 # Projective HT horizons are a symmetric-space boundary at infinity
 
 - **ID:** `projective-ht-horizon-symmetric-space-boundary`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** NONPOSITIVELY CURVED OBSERVER GEOMETRY / TITS BOUNDARY
 - **Scientific status:** `[PROVED CONSEQUENCE OVER C] [NOVEL INTERPRETATION CANDIDATE]`
 - **Parents:** `projective-horizon-tits-building`,
@@ -171,8 +171,11 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
   induces the conjugation action on flags.  A moved ray is asymptotic to a ray from the reference
   metric, and the direction of that ray is the one carrying the transported flag — so the boundary
   is basepoint-independent and the group acts on it through flags
-- [ ] 2 -> 3: what remains for `(3)` is the Tits metric between boundary points of *different*
-  apartments
+- [x] the Tits metric between boundary points of *different* apartments: the divergence rate
+  `lim_{t → ∞} d (exp (t T), exp (t S)) / t` exists for arbitrary directions — the ratio is
+  nondecreasing by the homothety contraction and bounded by the triangle inequality — and inside
+  an apartment it is the chordal distance already computed, so it extends it
+- [x] 2 -> 3: `(3)` is formalized
 - [ ] 3 -> 4: external audit in symmetric spaces and projective differential invariants
 
 ## References
@@ -1065,3 +1068,87 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
   `Π_k (A_λ) ≤ (Π_k (A_1)) ^ λ` on subset products of the pencil spectrum.
 
   Audit: `lake build GaloisForLFunctions.HTGeometry` green, 15130 jobs.
+
+- 2026-08-06 — **The log-majorization of the pencil spectra: the homothety contraction holds on
+  every compound.**  Axioms `[propext, Classical.choice, Quot.sound]`.
+
+  `formal/GaloisForLFunctions/HTGeometry/CompoundHomothety.lean`:
+
+  - `quadForm_compound_expRay_le` — if the compound forms of two exponential rays satisfy
+    `Λᵏ Q₁ ≤ c Λᵏ P₁` at time one, then `Λᵏ Q_t ≤ c ^ t Λᵏ P_t` for every `t ∈ [0,1]`.
+  - `expRayMat`, `compoundGenCLM`, `toEuclideanCLM_compound_expRayMat` — the compound of an
+    exponential ray, as an exponential ray of operators with a `t`-independent generator.
+  - `exp_le_smul_exp_of_quadForm`, `quadForm_le_of_exp_le` — the two crossings of the dictionary.
+
+  `formal/GaloisForLFunctions/HTGeometry/CompoundExponentialTransport.lean`:
+
+  - `toEuclideanCLM_exp` — the operator of an exponential is the exponential of the operator,
+    from `isometry_toEuclideanCLM`: the matrix-to-operator equivalence is an isometry for the
+    `L²` operator norm, hence continuous, hence commutes with the exponential.
+
+  Composed with the two Ky Fan lemmas this is exactly Araki–Lieb–Thirring for these rays: every
+  `k`-fold subset product of the pencil spectrum at time `t` is at most the `t`-th power of the
+  bound at time one.  That is the log-majorization the divergence rate needs.
+
+  One practical note worth keeping: instantiating the abstract C⋆ contraction at an operator
+  algebra diverges — a `whnf` timeout, not a slow proof — unless
+  `Mathlib.Analysis.InnerProductSpace.StarOrder` is imported.  Without it the `StarOrderedRing`
+  instance is absent and instance search runs away rather than failing.
+
+  Audit: `lake build GaloisForLFunctions.HTGeometry` green, 15137 jobs.
+
+- 2026-08-06 — **The homothety contraction of the observer distance.**
+  `formal/GaloisForLFunctions/HTGeometry/ObserverHomothety.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  - `observerDist_metricRay_smul_le` — for Hermitian directions `T, S` and `λ ∈ [0,1]`,
+
+    ```text
+    d (exp (λ T), exp (λ S)) ≤ λ · d (exp T, exp S).
+    ```
+
+  - `sqrt_sum_sq_le_smul_of_topSum_le` — Karamata for the square in scaled form, with
+    `topSum_zero` and `topSum_smul_nonneg`.
+  - `prod_relOp_eigenvalues_metricRay` — the product of the relative spectrum along a ray is
+    `exp (t (tr S - tr T))`, so the totals scale exactly; with `det_conj_rdiag`, `det_expRayMat`.
+  - `obsMat_metricRay_eq_expRayMat` — in any orthonormal frame the matrix of a point of an
+    exponential ray is the corresponding exponential ray of matrices.
+
+  Assembly: the log-majorization on every compound gives the top-sum inequalities, the
+  determinant gives the equality of totals, and Karamata converts the two into the inequality of
+  Euclidean norms, which is the distance.  The proof follows `observerDist_triangle` step for
+  step, with the multiplicative Ky Fan inequality replaced by the compound contraction.
+
+  This is the whole remaining mathematical content of the last item except the limit itself: with
+  `f t = d (exp (t T), exp (t S))`, the contraction says `f (λ t) ≤ λ f t`, so `f t / t` is
+  nondecreasing; the triangle inequality gives `f t ≤ 2 t`; a monotone bounded quantity converges,
+  and its limit is the Tits distance of the two boundary points.
+
+  Audit: `lake build GaloisForLFunctions.HTGeometry` green, 15139 jobs.
+
+- 2026-08-06 — **The Tits metric between boundary points of different apartments.  This closes
+  `2 -> 3`.**  `formal/GaloisForLFunctions/HTGeometry/TitsDivergenceRate.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  - `tendsto_rayDist_div` — for arbitrary Hermitian directions `T, S`,
+
+    ```text
+    d (exp (t T), exp (t S)) / t  →  titsRate    as t → ∞.
+    ```
+
+  - `titsRate` — the limit itself, the Tits distance of the two boundary points.
+  - `rayDist_div_mono` — the ratio is nondecreasing; this is the homothety contraction
+    reparametrised, applied to the directions `t T` and `t S` at the scale `s / t`.
+  - `rayDist_le` — the distance grows at most linearly, `d ≤ t (‖T‖ + ‖S‖)`, by the triangle
+    inequality through the reference metric.
+  - `titsRate_diagOp` — inside an apartment the rate is the chordal distance
+    `√(2 - 2 ⟨w, w'⟩)` of the unit directions, so the rate defined for arbitrary directions
+    extends the metric already computed on a flat.
+  - `metricRay_smul_left`, `metricRay_zero`, `rayRate`, `monotone_rayRate`, `rayRate_le`,
+    `bddAbove_range_rayRate`.
+
+  The whole argument is that a monotone bounded quantity converges.  Monotonicity is where all
+  the work sits: it is the homothety contraction, which is Araki–Lieb–Thirring on the compounds,
+  which is operator monotonicity of the `s`-th power.  Boundedness is free.
+
+  Audit: `lake build GaloisForLFunctions.HTGeometry` green, 15141 jobs.

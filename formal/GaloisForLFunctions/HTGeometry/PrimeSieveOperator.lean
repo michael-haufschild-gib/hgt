@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.LpDiagonalOperator
 import GaloisForLFunctions.HTGeometry.OperatorFredholmGerm
 import GaloisForLFunctions.HTGeometry.PrimeSieveRegularDeterminant
+import GaloisForLFunctions.HTGeometry.CoefficientDecimationSieve
 
 /-!
 # The commuting prime sieve as a diagonal operator on `ℓ²`
@@ -76,6 +77,12 @@ theorem tsum_sieveWeight_pow (P : Finset Nat.Primes) {k : ℕ} (hk : 1 ≤ k) :
     (∑' n : ℕ, (sieveWeight P n) ^ k) = ((sieveTrace P k : ℝ) : ℂ) := by
   rw [sieveTrace, sievedSum, Complex.ofReal_tsum]
   exact tsum_congr fun n => sieveWeight_pow P hk n
+
+/-- **The off-multiple coordinate sieve of the reciprocal sequence is the sieved
+diagonal weight.**  The coefficient-space projection `E_P` and the spectral
+projection carried by the sieved diagonal are the same operator. -/
+theorem sieveOffMultiple_inv_eq_sieveWeight (P : Finset Nat.Primes) :
+    sieveOffMultiple P (fun n : ℕ => ((n : ℂ))⁻¹) = sieveWeight P := rfl
 
 /-- **The commuting prime sieve as a Hilbert--Schmidt diagonal on `ℓ²`.** -/
 def sieveOperator (P : Finset Nat.Primes) :

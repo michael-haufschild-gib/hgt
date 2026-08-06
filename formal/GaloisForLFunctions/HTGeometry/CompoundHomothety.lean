@@ -49,7 +49,6 @@ theorem isSelfAdjoint_compoundGenCLM (k : ℕ) (V : Matrix ι ι ℂ) (p : ι �
     IsSelfAdjoint (compoundGenCLM k V p) :=
   isSelfAdjoint_toEuclideanCLM (isHermitian_compoundGen k V p)
 
-set_option maxHeartbeats 2000000 in
 theorem toEuclideanCLM_compound_expRayMat (k : ℕ) {V : Matrix ι ι ℂ}
     (hV : V ∈ Matrix.unitaryGroup ι ℂ) (p : ι → ℝ) (t : ℝ) :
     Matrix.toEuclideanCLM (𝕜 := ℂ) (compound k (expRayMat V p t))
@@ -60,7 +59,6 @@ theorem toEuclideanCLM_compound_expRayMat (k : ℕ) {V : Matrix ι ι ℂ}
 
 /-! ## The contraction -/
 
-set_option maxHeartbeats 1000000 in
 /-- The comparison at time one, read in the operator order. -/
 theorem exp_le_smul_exp_of_quadForm {k : ℕ} {V W : Matrix ι ι ℂ}
     (hV : V ∈ Matrix.unitaryGroup ι ℂ) (hW : W ∈ Matrix.unitaryGroup ι ℂ)
@@ -73,7 +71,6 @@ theorem exp_le_smul_exp_of_quadForm {k : ℕ} {V W : Matrix ι ι ℂ}
   rwa [toEuclideanCLM_compound_expRayMat k hV p 1,
     toEuclideanCLM_compound_expRayMat k hW q 1, one_smul, one_smul] at h
 
-set_option maxHeartbeats 1000000 in
 /-- The comparison at time `t`, read back as forms. -/
 theorem quadForm_le_of_exp_le {k : ℕ} {V W : Matrix ι ι ℂ}
     (hV : V ∈ Matrix.unitaryGroup ι ℂ) (hW : W ∈ Matrix.unitaryGroup ι ℂ)
@@ -89,7 +86,6 @@ theorem quadForm_le_of_exp_le {k : ℕ} {V W : Matrix ι ι ℂ}
       (isHermitian_compound_expRayMat k V p t) d] at hle
   exact hle x
 
-set_option maxHeartbeats 2000000 in
 /-- **The comparison of compound forms of two exponential rays contracts along the rays.** -/
 theorem quadForm_compound_expRay_le {k : ℕ} {V W : Matrix ι ι ℂ}
     (hV : V ∈ Matrix.unitaryGroup ι ℂ) (hW : W ∈ Matrix.unitaryGroup ι ℂ)
