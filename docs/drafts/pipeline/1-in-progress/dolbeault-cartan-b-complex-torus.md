@@ -75,6 +75,14 @@ usual convergence-forcing correction is available without any general Runge theo
 
 ## Gates
 
+- [x] D1a Wirtinger derivatives (`HTGeometry/WirtingerDerivative.lean`)
+- [x] D1b angular and radial derivatives on a circle, and the equal-circle-integrals identity
+      (`HTGeometry/CircleWirtinger.lean`)
+- [x] D1c radial derivative of the circle mean (`HTGeometry/CauchyPompeiu.lean`)
+- [ ] D1d polar coordinates on an annulus, and the limit `ε → 0`
+      *(mathlib has only the whole-plane change of variables `Complex.integral_comp_polarCoord_symm`;
+      restrict it to the annulus with `Set.indicator` and iterate with Fubini, then use
+      `Function.Periodic.intervalIntegral_eq` to move the angle from `(-π, π)` to `(0, 2π)`)*
 - [ ] D1 Cauchy–Pompeiu at the centre of a disc
 - [ ] D2 compactly supported $\bar\partial$ equation on $\mathbb C$
 - [ ] D3 $\bar\partial$-Poincaré on a polydisc
@@ -87,3 +95,29 @@ usual convergence-forcing correction is available without any general Runge theo
 - 2026-08-06 — created; route fixed after confirming that mathlib has no $\bar\partial$ layer, that
   its divergence theorem is box-only, and that the polar-coordinate proof of D1 needs only
   one-dimensional calculus plus mathlib's polar-coordinate change of variables.
+
+- 2026-08-06 — D1a and D1b landed unconditionally, axiom audit
+  `propext, Classical.choice, Quot.sound` for every declaration, both modules wired into
+  `GaloisForLFunctions.HTGeometry`.
+  - `WirtingerDerivative.lean` — `wirtingerHol`, `wirtingerAntihol` and the decomposition
+    `f' v = ∂ · v + ∂̄ · conj v` of a real-linear endomorphism of `ℂ`; `wirtingerAntihol_eq_zero_iff`
+    identifying the vanishing of `∂̄` with complex linearity; the operators `dz`, `dzbar` on
+    functions, with `dzbar_eq_zero_of_differentiableAt` giving the Cauchy–Riemann equations and
+    `dz = deriv` on holomorphic functions; and `hasDerivAt_comp_wirtinger`, the derivative along a
+    real curve.
+  - `CircleWirtinger.lean` — continuity of `dz` and `dzbar` for a `C¹` function;
+    `hasDerivAt_circle_angle` (`∂_θ = i(w ∂h − w̄ ∂̄h)`) and `hasDerivAt_circle_radius`
+    (`∂_r = e^{iθ} ∂h + e^{-iθ} ∂̄h`); and `circle_angle_integral_eq`, the identity
+    `∮ w ∂h = ∮ w̄ ∂̄h` obtained by integrating the angular derivative over a closed circle.  This
+    is the step that replaces a two-dimensional Stokes theorem.
+
+- 2026-08-06 — D1c landed unconditionally in `HTGeometry/CauchyPompeiu.lean`, axiom audit
+  `propext, Classical.choice, Quot.sound`, wired into `GaloisForLFunctions.HTGeometry`.
+  - `hasDerivAt_circleMean` — the circle mean is differentiable in the radius and its derivative is
+    the integral of the radial derivative.  Differentiation under the integral sign uses
+    `intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le`; the dominating bound is the
+    supremum of `‖∂h‖ + ‖∂̄h‖` on the closed ball of radius `|r| + 1`, finite because `∂h` and `∂̄h`
+    are continuous and the ball is compact, and it dominates because `|e^{iθ}| = 1`.
+  - `hasDerivAt_circleMean_dzbar` — on a circle of nonzero radius only `∂̄` survives:
+    `(d/dr) circleMean h r = 2 ∫₀^{2π} e^{-iθ} ∂̄h(r e^{iθ}) dθ`.  The `∂` term is removed by
+    `circle_angle_integral_eq` after cancelling the common factor `r`.

@@ -21,9 +21,9 @@ real curve `γ` through `z`,
 
 * `HTGeometry.wirtingerHol`, `HTGeometry.wirtingerAntihol` : the two parts of a real-linear map.
 * `HTGeometry.wirtinger_decomp` : `f' v = ∂ · v + ∂̄ · conj v`.
-* `HTGeometry.wirtingerAntihol_eq_zero_iff_isLinearMap` : `∂̄ = 0` is complex linearity.
+* `HTGeometry.wirtingerAntihol_eq_zero_iff` : `∂̄ = 0` is complex linearity.
 * `HTGeometry.dz`, `HTGeometry.dzbar` : the operators `∂` and `∂̄` on functions.
-* `HTGeometry.HasFDerivAt.hasDerivAt_comp_wirtinger` : the derivative along a curve.
+* `HTGeometry.hasDerivAt_comp_wirtinger` : the derivative along a curve.
 -/
 
 open Complex
@@ -62,19 +62,19 @@ theorem wirtingerHol_add_wirtingerAntihol (f' : ℂ →L[ℝ] ℂ) :
 
 @[simp] theorem wirtingerHol_smul (c : ℂ) (f' : ℂ →L[ℝ] ℂ) :
     wirtingerHol (c • f') = c * wirtingerHol f' := by
-  simp only [wirtingerHol, ContinuousLinearMap.smul_apply, smul_eq_mul]; ring
+  simp only [wirtingerHol, smul_apply, smul_eq_mul]; ring
 
 @[simp] theorem wirtingerAntihol_smul (c : ℂ) (f' : ℂ →L[ℝ] ℂ) :
     wirtingerAntihol (c • f') = c * wirtingerAntihol f' := by
-  simp only [wirtingerAntihol, ContinuousLinearMap.smul_apply, smul_eq_mul]; ring
+  simp only [wirtingerAntihol, smul_apply, smul_eq_mul]; ring
 
 @[simp] theorem wirtingerHol_add (f' g' : ℂ →L[ℝ] ℂ) :
     wirtingerHol (f' + g') = wirtingerHol f' + wirtingerHol g' := by
-  simp only [wirtingerHol, ContinuousLinearMap.add_apply]; ring
+  simp only [wirtingerHol, add_apply]; ring
 
 @[simp] theorem wirtingerAntihol_add (f' g' : ℂ →L[ℝ] ℂ) :
     wirtingerAntihol (f' + g') = wirtingerAntihol f' + wirtingerAntihol g' := by
-  simp only [wirtingerAntihol, ContinuousLinearMap.add_apply]; ring
+  simp only [wirtingerAntihol, add_apply]; ring
 
 /-- **The antiholomorphic part vanishes exactly on complex-linear maps.**  This is the
 Cauchy–Riemann condition in Wirtinger form. -/
@@ -112,20 +112,27 @@ theorem dz_eq_of_hasFDerivAt {f' : ℂ →L[ℝ] ℂ} {z : ℂ} (h : HasFDerivAt
 theorem dzbar_eq_of_hasFDerivAt {f' : ℂ →L[ℝ] ℂ} {z : ℂ} (h : HasFDerivAt f f' z) :
     dzbar f z = wirtingerAntihol f' := by rw [dzbar, h.fderiv]
 
+/-- The real Fréchet derivative of a complex-differentiable function is multiplication by its
+complex derivative. -/
+theorem fderiv_real_apply_of_differentiableAt {z : ℂ} (h : DifferentiableAt ℂ f z) (v : ℂ) :
+    fderiv ℝ f z v = deriv f z * v := by
+  rw [h.fderiv_restrictScalars ℝ]
+  show (fderiv ℂ f z) v = deriv f z * v
+  rw [show v = v • (1 : ℂ) by simp, map_smul]
+  simp only [smul_eq_mul, mul_one]
+  rw [mul_comm]
+  rfl
+
 /-- **A complex-differentiable function has vanishing `∂̄`, and `∂` is its complex derivative.** -/
 theorem dzbar_eq_zero_of_differentiableAt {z : ℂ} (h : DifferentiableAt ℂ f z) :
     dzbar f z = 0 ∧ dz f z = deriv f z := by
-  have hr : HasFDerivAt f ((deriv f z) • (1 : ℂ →L[ℂ] ℂ)).restrictScalars ℝ z := by
-    simpa using (h.hasFDerivAt.restrictScalars ℝ)
   constructor
-  · rw [dzbar_eq_of_hasFDerivAt hr, wirtingerAntihol]
-    simp only [ContinuousLinearMap.coe_restrictScalars', ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.one_apply, smul_eq_mul, mul_one]
-    linear_combination (deriv f z) * Complex.I_sq
-  · rw [dz_eq_of_hasFDerivAt hr, wirtingerHol]
-    simp only [ContinuousLinearMap.coe_restrictScalars', ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.one_apply, smul_eq_mul, mul_one]
-    linear_combination (-(deriv f z)) * Complex.I_sq
+  · rw [dzbar, wirtingerAntihol, fderiv_real_apply_of_differentiableAt h 1,
+      fderiv_real_apply_of_differentiableAt h Complex.I]
+    linear_combination (deriv f z / 2) * Complex.I_sq
+  · rw [dz, wirtingerHol, fderiv_real_apply_of_differentiableAt h 1,
+      fderiv_real_apply_of_differentiableAt h Complex.I]
+    linear_combination (-(deriv f z) / 2) * Complex.I_sq
 
 end Operators
 

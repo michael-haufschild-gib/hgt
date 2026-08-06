@@ -486,12 +486,30 @@ the reflection:
 - `differentialJet_complexReflectionMeroEquiv` — **the jets flip sign**:
   `jet n (reflect x) = (-1)^n · reflect (jet n x)`, each derivation contributing one sign.
 
-What is **not** yet claimed.  The corpus's transport lemma requires the jets to commute *exactly*;
-here they commute up to the unit `(-1)^n` of the base field.  Closing the gate needs the transport
-lemma generalised to a unit-valued jet law — algebraic independence is insensitive to rescaling each
-generator by a unit of the base, so this is a substitution `X_p |-> (-1)^{p.2} X_p` on the
-polynomial ring, but mathlib has no `AlgebraicIndependent.units_smul` to quote and the substitution
-has to be built.  The double-sine atomic defect-coset theorem is untouched.
+`HTGeometry.ReflectionStableDifferentialAlgebraicity` — **the DA sector is reflection stable**.
+
+Algebraic independence does not see the sign, because `(-1)^n` is a unit of the base field:
+rescaling each generator of a family by a unit is an invertible substitution on the polynomial ring.
+mathlib has no `AlgebraicIndependent.units_smul` to quote, so the substitution is built here.
+
+- `jetSign`, `jetSign_mul_self`, `jetSignSub`, `jetSignSub_jetSignSub`, `jetSignSub_injective` — the
+  substitution `X_p |-> (-1)^{p.2} X_p` on `MvPolynomial (Unit x N) (RatFunc C)` is an involution,
+  hence injective.
+- `aeval_jetSignSub` — evaluating after it rescales the evaluation family.
+- `differentialAlgebraicOver_of_signed_transport` — the corpus's transport lemma generalised: the
+  jets need only commute **up to the alternating unit of the base**.
+- `differentialAlgebraicOver_complexReflectionMeroEquiv`,
+  `daSector_complexReflectionMeroEquiv` — **differential algebraicity is stable under reflection**,
+  and the DA sector is a reflection-stable subset.
+
+With this the chain is complete on the reflection side: the Barnes ladder holds modulo the DA
+sector, the DA sector is reflection stable, the reflection is a differential-field automorphism, and
+the transport identity holds inside that field.
+
+What is **not** yet claimed.  These pieces have not been assembled into the single statement
+`(T_j - 1) L_A = -L_{A∖{j}}` modulo DA for the constructed multiple sine; that is now bookkeeping
+over already-proved lemmas rather than new mathematics.  The double-sine atomic defect-coset theorem
+is untouched.
 
 ## Parent-theory and literature gate
 
@@ -535,6 +553,6 @@ review.
   with the derivation
 - [x] transport identity and both reflection/translation composition laws proved inside `meroField`
 - [x] reflection covers an automorphism of `RatFunc C`; jets shown to flip by `(-1)^n`
-- [ ] generalise the corpus transport lemma to a unit-valued jet law, giving DA-stability under
-  reflection, then compose with the Barnes ladder
+- [x] signed transport lemma built; differential algebraicity proved stable under reflection
+- [ ] assemble the proved pieces into `(2)` modulo DA for the constructed multiple sine
 - [ ] unconditional double-sine atomic defect-coset theorem in Lean

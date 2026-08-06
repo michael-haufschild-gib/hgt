@@ -5,6 +5,8 @@ import GaloisForLFunctions.HTGeometry.MeromorphicRankThreeSourceBoundary
 import GaloisForLFunctions.HTGeometry.MeromorphicPhysicalCharacteristicIncidence
 import GaloisForLFunctions.HTGeometry.MultiplicativeOrbitNonSummability
 import GaloisForLFunctions.HTGeometry.MeromorphicEllipticCompositum
+import GaloisForLFunctions.HTGeometry.CylinderDifferentialCharacter
+import GaloisForLFunctions.HTGeometry.MeromorphicExponentialGaugeDA
 import Mathlib.NumberTheory.Real.Irrational
 
 /-!
@@ -53,6 +55,9 @@ local instance twoCylComplexAlgebraAnalytic :
 local instance twoCylComplexAlgebra : Algebra ℂ (meroField (Set.univ : Set ℂ)) :=
   ((algebraMap (analyticSubring (Set.univ : Set ℂ)) (meroField Set.univ)).comp
     (constToAnalytic Set.univ)).toAlgebra
+
+local instance twoCylDifferential : Differential (meroField (Set.univ : Set ℂ)) :=
+  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
 
 /-! ## Fixed points of an integer span of translations -/
 
@@ -541,6 +546,102 @@ theorem addTranslationMeroEquiv_twoCylinderEmbed (hl : LinearIndependent ℚ l) 
     = twoCylinderEmbed hl (ratFuncScale s hs0 y)) y ?_
   intro p q _
   rw [ratFuncScale_div, twoCylinderEmbed_div, twoCylinderEmbed_div, map_div₀, hpoly, hpoly]
+
+
+/-! ## The cylinder embedding is a differential embedding -/
+
+theorem deriv_algebraMap_complex_mero (c : ℂ) :
+    (algebraMap ℂ (meroField (Set.univ : Set ℂ)) c)′ = 0 := by
+  change (algebraMap (analyticSubring (Set.univ : Set ℂ)) (meroField Set.univ)
+    (constToAnalytic Set.univ c))′ = 0
+  rw [meroFieldDifferential_algebraMap isOpen_univ isPreconnected_univ Set.univ_nonempty]
+  have hz : analyticSubringDeriv (U := (Set.univ : Set ℂ)) isOpen_univ
+      (constToAnalytic Set.univ c) = 0 := by
+    apply Subtype.ext
+    change ((deriv (fun _ : ℂ => c) : ℂ → ℂ) : Germ (𝓟 (Set.univ : Set ℂ)) ℂ) = 0
+    rw [deriv_const']
+    rfl
+  rw [hz, map_zero]
+
+/-- Differentiating a polynomial in the exponential coordinate: the chain rule in the cylinder. -/
+theorem deriv_aeval_physicalExponentialMero (lam : ℂ) (p : Polynomial ℂ) :
+    (Polynomial.aeval (physicalExponentialMero lam) p)′
+      = algebraMap ℂ (meroField (Set.univ : Set ℂ)) lam * physicalExponentialMero lam
+        * Polynomial.aeval (physicalExponentialMero lam) (Polynomial.derivative p) := by
+  letI : Algebra ℤ (meroField (Set.univ : Set ℂ)) := Ring.toIntAlgebra _
+  set u : meroField (Set.univ : Set ℂ) := physicalExponentialMero lam with hu
+  induction p using Polynomial.induction_on with
+  | C a =>
+      rw [Polynomial.aeval_C, deriv_algebraMap_complex_mero, Polynomial.derivative_C, map_zero,
+        mul_zero]
+  | add p q hp hq =>
+      rw [map_add, Derivation.map_add, hp, hq, Polynomial.derivative_add, map_add, mul_add]
+  | monomial n a ih =>
+      have hsplit : Polynomial.C a * Polynomial.X ^ (n + 1)
+          = (Polynomial.C a * Polynomial.X ^ n) * Polynomial.X := by ring
+      have hderiv : Polynomial.derivative ((Polynomial.C a * Polynomial.X ^ n) * Polynomial.X)
+          = Polynomial.derivative (Polynomial.C a * Polynomial.X ^ n) * Polynomial.X
+            + (Polynomial.C a * Polynomial.X ^ n) := by
+        rw [Polynomial.derivative_mul, Polynomial.derivative_X, mul_one]
+      have hud : u′ = algebraMap ℂ (meroField (Set.univ : Set ℂ)) lam * u := by
+        rw [hu]
+        exact physicalExponentialMero_deriv lam
+      rw [hsplit, map_mul, Polynomial.aeval_X, Derivation.leibniz, smul_eq_mul, smul_eq_mul, ih,
+        hderiv]
+      simp only [map_add, map_mul, Polynomial.aeval_X, hud]
+      ring
+
+set_option synthInstance.maxHeartbeats 1000000 in
+/-- **The cylinder embedding is a differential embedding.**  Differentiation in `z` corresponds on
+`ℂ(X)` to the cylinder derivation `lam · X d/dX` with `lam` the logarithmic derivative of the
+coordinate. -/
+theorem meroFieldDeriv_cylinderEmbed (hl : LinearIndependent ℚ l) (i : Fin 2) (y : RatFunc ℂ) :
+    (cylinderEmbed hl i y)′ = cylinderEmbed hl i (cylDeriv (l i) y) := by
+  classical
+  have hpoly : ∀ p : Polynomial ℂ,
+      (cylinderEmbed hl i (algebraMap (Polynomial ℂ) (RatFunc ℂ) p))′
+        = cylinderEmbed hl i (cylDeriv (l i) (algebraMap (Polynomial ℂ) (RatFunc ℂ) p)) := by
+    intro p
+    rw [cylinderEmbed_polynomial, cylDeriv, ratFuncEulerOp, ratFuncDerivative_algebraMap,
+      algebraMap_ratFunc_eq_polynomialC, ← map_mul, ← map_mul, cylinderEmbed_polynomial,
+      deriv_aeval_physicalExponentialMero]
+    rw [map_mul, Polynomial.aeval_C, map_mul, Polynomial.aeval_X, mul_assoc]
+  refine RatFunc.induction_on
+    (P := fun y => (cylinderEmbed hl i y)′ = cylinderEmbed hl i (cylDeriv (l i) y)) y ?_
+  intro p q hq
+  set Y : RatFunc ℂ := algebraMap (Polynomial ℂ) (RatFunc ℂ) p /
+    algebraMap (Polynomial ℂ) (RatFunc ℂ) q with hY
+  set Q : RatFunc ℂ := algebraMap (Polynomial ℂ) (RatFunc ℂ) q with hQ
+  letI : Algebra ℤ (meroField (Set.univ : Set ℂ)) := Ring.toIntAlgebra _
+  have hQ0 : cylinderEmbed hl i Q ≠ 0 := by
+    intro hzero
+    have hQz : Q = 0 := cylinderEmbed_injective hl i (by rw [hzero, map_zero])
+    exact RatFunc.algebraMap_ne_zero hq hQz
+  have hYQ : Y * Q = algebraMap (Polynomial ℂ) (RatFunc ℂ) p := by
+    rw [hY, hQ, div_mul_cancel₀]
+    exact RatFunc.algebraMap_ne_zero hq
+  have hmero : (cylinderEmbed hl i Y)′ * cylinderEmbed hl i Q
+      + cylinderEmbed hl i Y * (cylinderEmbed hl i Q)′
+      = (cylinderEmbed hl i (algebraMap (Polynomial ℂ) (RatFunc ℂ) p))′ := by
+    rw [← hYQ, map_mul (cylinderEmbed hl i), Derivation.leibniz, smul_eq_mul, smul_eq_mul]
+    ring
+  have hcyl : cylinderEmbed hl i (cylDeriv (l i) Y) * cylinderEmbed hl i Q
+      + cylinderEmbed hl i Y * cylinderEmbed hl i (cylDeriv (l i) Q)
+      = cylinderEmbed hl i (cylDeriv (l i) (algebraMap (Polynomial ℂ) (RatFunc ℂ) p)) := by
+    rw [← hYQ, cylDeriv_mul, map_add (cylinderEmbed hl i), map_mul (cylinderEmbed hl i),
+      map_mul (cylinderEmbed hl i)]
+    ring
+  have hQderiv : (cylinderEmbed hl i Q)′ = cylinderEmbed hl i (cylDeriv (l i) Q) := by
+    rw [hQ]
+    exact hpoly q
+  have hkey : ((cylinderEmbed hl i Y)′ - cylinderEmbed hl i (cylDeriv (l i) Y))
+      * cylinderEmbed hl i Q = 0 := by
+    have h1 := hmero
+    rw [hpoly p] at h1
+    linear_combination h1 - hcyl - cylinderEmbed hl i Y * hQderiv
+  rcases mul_eq_zero.mp hkey with h | h
+  · linear_combination h
+  · exact absurd h hQ0
 
 end
 

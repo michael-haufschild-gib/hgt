@@ -4,8 +4,10 @@
 
 your task:
 if you are already working on a card, keep going.
-else: pick a card from docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/ccm
+else: pick a card from these:
 
+
+  
 do: formalize UNCONDITIONALLY in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
 
 Lean rules:
@@ -25,6 +27,33 @@ Non-negotiable working mode rules:
 6. The only reason to stop working on a card if a proof is mathematically impossible. Open research is not mathematically impossible.
 
 You are not allowed to change the cron timing.
+
+LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK. 
+
+where mathematical knowledge is missing use the /hgtl7 skill to create it.
+
+## formalize goal
+/goal
+
+formalize UNCONDITIONALLY in lean any proven theorem from these cards: docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/gamma
+
+add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications.
+
+Lean rules:
+1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
+
+Non-negotiable working mode rules:
+1. If it cannot be done in a single session -> Does not matter. Do it!
+2. If it cannot be done in a single context window -> Does not matter. Do it!
+3. If it takes months -> Does not matter. Do it!
+4. If it is "research-level construction" -> Does not matter. If there is any way you could build it you build it no matter what.
+5. Missing in mathlib -> Build it no matter the effort.
+6. The only reason to stop working on a card if a proof is mathematically impossible. Open research is not mathematically impossible.
 
 LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK. 
 

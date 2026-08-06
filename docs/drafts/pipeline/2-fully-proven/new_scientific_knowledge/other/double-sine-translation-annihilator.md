@@ -439,9 +439,24 @@ with the coefficient field `C(u_1)` fixed pointwise. For `tau = omega_1` the dil
 literally the `ratFuncScale` action of `not_dilationTelescoped_twoCylinder`, so the orbit-balance
 obstruction now applies to the genuine translation of genuine meromorphic functions.
 
-Still not formalized: the differential structure transported to the two-variable embedding, and the
-double sine itself with its two functional equations. Everything downstream of that is
-machine-checked.
+*The differential structure on the cylinder.* `meroFieldDeriv_cylinderEmbed` transports
+differentiation the same way:
+
+```text
+(iota y)' = iota (cylDeriv lambda y),      cylDeriv lambda = lambda * (X d/dX),
+```
+
+so the cylinder embedding is a differential embedding. The proof runs the chain rule on polynomials
+(`deriv_aeval_physicalExponentialMero`, an induction whose only inputs are
+`physicalExponentialMero_deriv` and the Leibniz rule) and then extends to quotients by the
+`y Q = P` trick: the difference of the two derivations, multiplied by the nonzero image of the
+denominator, vanishes. Consequently the constant-coefficient differential characters of
+`CylinderDifferentialCharacter` are the genuine `z`-derivatives of genuine meromorphic functions,
+and the jets appearing in the Ostrowski criterion are the ones computed by `cylDeriv`.
+
+Still not formalized: the double sine itself with its two functional equations. Every other
+ingredient of the theorem -- the fixed field, the independent coordinates, the embedded
+two-cylinder field, its translation action, and its differential structure -- is machine-checked.
 
 ### Formalization of the algebraic core
 
@@ -578,5 +593,6 @@ significant new classification or a routine synthesis once the question is posed
 - [x] Lean embedding of the two-cylinder field `C(u_1)(u_2)` into the meromorphic field, injective;
 - [x] Lean transport of the translation action to the two-cylinder embedding: translation by a
   period of the first coordinate is the multiplicative dilation of the second;
-- [ ] Lean transport of the differential structure to that embedding, and the double sine with its
-  two functional equations.
+- [x] Lean transport of the differential structure: the cylinder embedding is a differential
+  embedding for `lambda * (X d/dX)`;
+- [ ] Lean construction of the double sine with its two functional equations.

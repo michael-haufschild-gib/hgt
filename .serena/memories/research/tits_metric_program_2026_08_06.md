@@ -50,10 +50,17 @@ chordal metric already computed.  That is the whole item.
 
    i.e. `∏_{i≤k} λ_i (A_λ) ≤ (∏_{i≤k} λ_i (A_1))^λ`.  Two things are needed to run step 1 there:
 
-   - **(a) the compound algebra must be a C\*-algebra.**  Do NOT try to put the C\*-structure on
-     `Matrix κ κ ℂ` directly.  Transport along `Matrix.toEuclideanCLM`, the *star algebra
-     equivalence* `Matrix κ κ ℂ ≃⋆ₐ[ℂ] (EuclideanSpace ℂ κ →L[ℂ] EuclideanSpace ℂ κ)`; the
-     target is a C\*-algebra with the order instances Cordes needs.
+   - **(a) the compound algebra must be a C\*-algebra.**  CONFIRMED: `Matrix κ κ ℂ` has a global
+     `ContinuousFunctionalCalculus ℝ _ IsSelfAdjoint` instance (mathlib
+     `Analysis/Matrix/HermitianFunctionalCalculus.lean`) but **no `PartialOrder` and no
+     `StarOrderedRing`** — so the order lemmas cannot be used on matrices.  Work on the CLM side:
+     `EuclideanSpace ℂ κ →L[ℂ] EuclideanSpace ℂ κ` has every instance
+     (`CStarAlgebra`, `PartialOrder`, `StarOrderedRing`, `NormOneClass`) once
+     `Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap` is imported — this is exactly what
+     `ExponentialMetricIncreasing.lean` already relies on for `E →L[ℂ] E`.  Move compounds there
+     along `Matrix.toEuclideanCLM`, a `StarAlgEquiv`; `Matrix.toEuclideanCLM_toLp` and
+     `ofLp_toEuclideanCLM` are both `rfl`, and `EuclideanSpace.inner_eq_star_dotProduct` connects
+     the inner product to `matQuadForm`.
    - **(b) `Λ^k (exp W) = exp (D_k W)` with `D_k W` self-adjoint.**  Do NOT build the derivation
      abstractly (`Λ^k` is multiplicative, not additive).  Diagonalise: `W = U D U*` gives
      `Λ^k (exp W) = (Λ^k U) (Λ^k (exp D)) (Λ^k U)*` by `compound_mul` and
@@ -65,11 +72,23 @@ chordal metric already computed.  That is the whole item.
    quadratic-form comparison, which gives multiplicative constants only.  ALT needs the exponent,
    so it must go through the operator norm and step 1, not through that file's method.
 
+   **The order form of step 1 is already proved** (2026-08-06): `exp_smul_le_of_exp_le` in
+   `CordesGeneralExponent.lean` gives `exp y ≤ c exp x → exp (s y) ≤ c^s exp (s x)` from Löwner–
+   Heinz alone, no norms.  Applied in the compound algebra with the two `CompoundKyFan` lemmas
+   (`compound_quadForm_le` produces the hypothesis at time 1 from a products bound,
+   `prod_le_of_compound_quadForm_le` reads the conclusion at time λ back as a products bound),
+   this *is* the ALT step.  So what remains of step 2 is only (a) the CLM/`matQuadForm`
+   dictionary and (b) the compound-exponential identity.
+   Useful mathlib names, verified: `Matrix.exp_diagonal`, `Matrix.exp_conj` (needs `IsUnit U`),
+   `Matrix.IsHermitian.spectral_theorem`.  Corpus side: `compound_mul`, `compound_conjTranspose`,
+   `compound_diagonal`, `compound_unitary`, `compound_rdiag`.
+
 3. **Turn log-majorization into (H).**  Take logs: `log λ(A_λ) ≺ λ · log λ(A_1)` with equal
    totals (both are `λ (tr Y − tr X)`, so it is genuine majorization, not just weak).  Then
-   Karamata for the square.  `TopSumMajorization.lean` has the Abel-summation engine
-   (`sum_mul_nonpos_of_partialSums`) and `sqrt_sum_sq_le_of_topSum_le`; the one-sided form
-   `a ≺ b → ‖a‖₂ ≤ ‖b‖₂` is a strictly easier corollary of the same engine — add it there.
+   Karamata for the square.  **Karamata is FREE here** — no new work:
+   instantiate the existing `sqrt_sum_sq_le_of_topSum_le` with `b := λ • b` and `c := 0`.  Its
+   hypothesis `topSum m a ≤ topSum m b + topSum m c` becomes `topSum m a ≤ λ · topSum m b`, and
+   its conclusion `√∑a² ≤ √∑b² + √∑c²` becomes `√∑a² ≤ λ √∑b²`.
 
 4. **Assemble.**  `(H)` ⟹ `f t / t` nondecreasing ⟹ with `f t ≤ 2 t` the limit exists.
    Define `titsDist` as that limit, prove it is the chordal value in a flat.
