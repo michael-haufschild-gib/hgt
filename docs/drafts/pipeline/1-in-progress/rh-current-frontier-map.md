@@ -6347,3 +6347,106 @@ Hence proof route remains open, but frontier has moved: sector stability, generi
 quality, and an opaque `Delta` are no longer the question.  The exact open source is signed cofinal
 parity--energy covariance accumulation, with the Hall and operator seams as separate alternative
 realizations of the same missing coherent mode.
+
+## 2026-08-06 Route E weighted-accumulation audit
+
+The phrase “cofinal signed covariance accumulation bound” has now been audited against the exact
+prime ladder.  For an ordered aperture \(S_j=S_{j-1}\cup\{p_j\}\), define
+
+\[
+ \alpha_j=
+ \frac{Z_{j-1}(x)-Z_{j-1}(p_jx)}
+      {Z_{j-1}(x)+Z_{j-1}(p_jx)},\qquad
+ \beta_j=
+ \frac{Z_{j-1}(p_jx)}
+      {Z_{j-1}(x)+Z_{j-1}(p_jx)},
+\]
+\[
+ d_j=\psi_{j-1}(p_jx)-\psi_{j-1}(x)
+   =\int_x^{p_jx}-\operatorname{Cov}_{S_{j-1},t}
+      ((-1)^{|T|},E(T))\,dt .
+\]
+
+The exact one-step and cofinal finite-prefix laws are
+
+\[
+ \psi_j(x)=\alpha_j\psi_{j-1}(x)-\beta_jd_j,
+\]
+\[
+ \psi_k(x)=A_{1:k}-
+   \sum_{j=1}^k\beta_jA_{j+1:k}d_j,\qquad
+ A_{a:b}=\prod_{\ell=a}^b\alpha_\ell.                   \tag{E-ACC}
+\]
+
+No recurrence weight, prime-dilation interval, covariance sign, or partition normalization is
+lost.  Moreover \(\alpha_j=1-2\beta_j\), so the retained forcing weights have exact mass
+
+\[
+ \sum_{j=1}^k\beta_jA_{j+1:k}=\frac{1-A_{1:k}}2<\frac12. \tag{E-MASS}
+\]
+
+This proves that coefficient growth is not the obstruction.  It also closes a circularity trap.
+If \(W_k=\sum_j\beta_jA_{j+1:k}d_j\), then for every error budget \(\eta\),
+
+\[
+ |W_k-A_{1:k}|\le\eta\quad\Longleftrightarrow\quad|\psi_k|\le\eta. \tag{E-IFF}
+\]
+
+Thus an RH-strength estimate on the accumulated covariance minus its baseline is the normalized
+current bound itself.  It is not an independent producer unless preceded by a source-specific
+cross-prime theorem.  Reordering or averaging primes cannot repair this: for two orders of the
+same aperture, endpoint invariance forces
+
+\[
+ W_k^\sigma-W_k^\tau=A_{1:k}^\sigma-A_{1:k}^\tau.        \tag{E-GAUGE}
+\]
+
+The alternating free-boundary jet also cannot be promoted to a global sign law.  In the
+two-prime gas \(S=\{2,3\}\), writing \(u=e^{-x}\) gives
+
+\[
+ \psi_S(x)=1-\frac{2u(1+u)}{1+u+u^2+u^5}.
+\]
+
+The auxiliary quotient has derivative
+\[
+ \frac{1+2u-4u^5-3u^6}{(1+u+u^2+u^5)^2}>0
+ \quad(0<u\le1/2),
+\]
+so \(\psi_S'(x)>0\) for \(x\ge\log2\), although its free-boundary derivative has the
+opposite sign.  The physical dilation increments can change orientation with coupling.
+
+Squaring only after signed insertion gives a positive survivor.  With
+\[
+ \mathcal Q_S=J_S^2/Z_S,\qquad
+ \mathcal D_{S,p}=
+ \frac{Z_S(x)Z_S(px)}{Z_S(x)+Z_S(px)}
+   (\psi_S(x)+\psi_S(px))^2,
+\]
+the exact polarization law is
+\[
+ \mathcal Q_{S\cup p}(x)+\mathcal D_{S,p}(x)
+ =\mathcal Q_S(x)+\mathcal Q_S(px),\qquad \mathcal D_{S,p}\ge0. \tag{E-ENERGY}
+\]
+Mellin integration gives
+\[
+ \mathscr E_r(S\cup p)+\mathscr D_r(S,p)
+ =(1+p^{-r})\mathscr E_r(S).
+\]
+The unconditional Euler ceiling closes only for \(r>1\).  In the strict-half range
+\(0<r\le1\), the missing theorem is exact dissipation saturation; its escape mode is
+antiscale coherence \(\psi_S(px)\approx-\psi_S(x)\).  This is a positive formulation of the
+same cross-prime obstruction, not a proof of its saturation.
+
+These finite theorems are formalized in
+RHTower/GibbsSignedCovarianceAccumulation.lean: exact concrete one-step recurrence, list
+unrolling over any distinct insertion order, retained-mass identity, accumulation/current
+equivalence, order-gauge law, and pointwise signed-energy polarization with nonnegative
+dissipation.
+
+**Revised first open premise.**  Route E now needs
+WEIGHTED-PRIME-DILATION-INCREMENT-CANCELLATION: an arithmetic law controlling the signed
+variables \(d_j\) under the positive hazard weights \(\beta_jA_{j+1:k}\), using structure not
+recoverable from (E-ACC) or its endpoint.  Generic covariance inequalities, absolute moments,
+fixed-order Wold panels, MR fluctuation estimates, and insertion-order averaging do not supply
+that law.  Calling (E-IFF) itself the missing accumulation theorem is theatre.

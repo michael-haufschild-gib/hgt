@@ -1,13 +1,16 @@
 # The Lindelöf frontier: a map of proved method-ceilings
 
 - **ID:** `lindelof-frontier-criticality-map`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / STRUCTURAL MAP — barrier theorems
-- **Source:** `../../1-in-progress/lindelof-hypothesis-campaign.md`, cycles 1–33
-- **Scientific status:** `[PROVED HERE] [NOT AN LH PROOF] [NEEDS EXTERNAL AUDIT]`
+- **Source:** `../../../1-in-progress/lindelof-hypothesis-campaign.md`, cycles 1–33
+- **Scientific status:** `[PROVED HERE] [LEAN PROOF CLOSED] [NOT AN LH PROOF]`
+  `[NEEDS EXTERNAL AUDIT]`
 - **Lean:** `HTGeometry.MomentNeutralityLaw`, `HTGeometry.MomentChordPivot`,
-  `HTGeometry.ShiftAverageTransfer`, `HTGeometry.MomentResolutionFloor` — axioms
-  `[propext, Classical.choice, Quot.sound]` only.
+  `HTGeometry.ShiftAverageTransfer`, `HTGeometry.MomentResolutionFloor`,
+  `HTGeometry.LindelofMethodCeilings`, `HTGeometry.LindelofPivotCoincidences`,
+  `HTGeometry.ResonanceSubpolynomialGain`, `HTGeometry.LindelofFrontierCompleteness`,
+  `HTGeometry.JensenZeroGeometry` — axioms `[propext, Classical.choice, Quot.sound]` only.
 - **Rewritten 2026-07-25** to remove claims retracted in cycles 18, 19, 22, 25, 29 (errata E1–E5).
 
 Notation. `M(A)` = growth exponent of `∫_T^{2T}|ζ(1/2+it)|^A dt`; `m(k) := M(2k)`;
@@ -130,6 +133,46 @@ Uncapped: the moment conjecture (equivalent to LH); the exponent-pair conjecture
 Conrey–Gonek size with square-root shift cancellation (implies LH).
 
 > **There is no uncapped intermediate.** That is the structural reason the problem is open.
+
+## 6a. Lean closure of the completeness list
+
+Every entry of §6 is now an unconditional Lean theorem; the whole list is bundled in
+`HTGeometry.lindelof_frontier_completeness`, and the four characterisations of the pivot in
+`HTGeometry.lindelof_pivot_is_one_point`.
+
+`HTGeometry.LindelofPivotCoincidences`
+
+- `phi_lines_cross_iff`, `phi_lines_cross_value`, `certifiedPhi_at_pivot`,
+  `certifiedPhi_pivot_eq_plateau` — §2.3(1): `φ ≥ 4v` and `φ ≥ 12v−1` cross exactly at `v = 1/8`,
+  both equal `1/2` there, and that value is the chord–pivot plateau.
+- `halasz_selfDual_balance_iff` — §2.3(2); `forcedBlockExponent_threshold_iff` — §2.3(3), the
+  Guth–Maynard threshold `N^{3/4}`.
+- `meanValue_traces_convexity`, `meanValue_crosses_convexity_iff`, `convexityExponent_half` — §3.1:
+  the mean-value route's output `1/(2k)` at its own abscissa `1−1/k` equals the Phragmén–Lindelöf
+  value `(1−σ)/2` there, and that abscissa is the unique crossing.
+- `halasz_is_fourthMoment` — §3.2: Halász–Montgomery reproduces the fourth-moment bound exactly.
+- `gmFirst_le_classical_iff`, `guthMaynardBound_selfDual`, `classical_le_guthMaynardBound`,
+  `guthMaynard_inert`, `guthMaynardBound_eq_classical_iff` — §3.3: at the self-dual block the
+  Guth–Maynard terms fall below the classical one exactly for `v ≥ 3/20`, so the Guth–Maynard
+  maximum is never smaller than the classical bound and the best available bound is classical at
+  every `v`.
+- `heathBrown_window_iff`, `heathBrown_window_lower_is_pivot` — §3.7: `G = T^{2v}` lies in
+  `[T^{1/4}, T^{1/3}]` exactly for `v ∈ [1/8, 1/6]`, whose lower end is the pivot.
+- `shortIntervalVariance_transfer_three/six`, `shortIntervalVariance_worse_than_chord` — §3.6:
+  Ivić's proved `x h^{4/3}` gives `m(3) ≤ 4/3` and `m(6) ≤ 7/3`, strictly worse than the chord
+  values `5/4` and `2`; the conjecturally optimal input reproduces the chord and gains nothing.
+- `meanValueOutput_two/three/four` — the values `1/4`, `1/6`, `1/8` the capped routes deliver.
+
+`HTGeometry.ResonanceSubpolynomialGain`
+
+- `galSumExponent_eq`, `galSumExponent_sub_atBot`, `resonanceGain_tendsto_zero` — §3.8: with
+  `L = log N`, the Bondarenko–Seip gain exponent `C√(L log L)` minus any power exponent `cL` tends
+  to `−∞`, because `log L / L → 0`.  So the resonance gain is smaller than every fixed power and no
+  resonance construction can give `Ω(T^c)`.
+
+Only §3.4 (`MomentNeutralityLaw`), §3.5 (`ShiftAverageTransfer`), §3.9 (`MomentResolutionFloor`),
+§2.3(4) (`MomentChordPivot`) and §7 (`JensenZeroGeometry`) were already formalized; the
+circle-method split is tautological and carries no theorem.
 
 ## Novelty audit
 

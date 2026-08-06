@@ -3,7 +3,7 @@
 - **ID:** `two-mass-self-calibrating-clock-metric-law`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / CONTINUUM GRAVITY / CLOCKS / INVERSE PROPAGATORS / CALIBRATION
-- **Parent:** `../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
+- **Parent:** `../../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
 - **Lean:**
   `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`,

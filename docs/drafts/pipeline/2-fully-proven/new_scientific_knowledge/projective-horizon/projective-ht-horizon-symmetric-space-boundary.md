@@ -159,9 +159,17 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
   the symmetric-space distance of `X_N` now exists in Lean as a metric object
 - [x] for that metric: a maximal flat is an isometric Euclidean space, and the rays `(4)` are
   geodesic lines with `d (exp (s T)) (exp (t T)) = |t - s| ‖T‖`
-- [ ] 2 -> 3: parent reconstruction core formalized; the *asymptotic* layer of the Tits boundary of
-  `SL_N(C)/SU(N)` (geodesic asymptote classes and the Tits metric on them) is still unavailable in
-  Lean, so `(3)` itself is not encoded
+- [x] the boundary is faithful as a *metric* statement: rays with distinct traceless directions
+  diverge linearly, by the exponential metric increasing property (Golden--Thompson, Cordes and
+  the Lie--Trotter product formula, all built here)
+- [x] geodesic asymptote classes: the asymptote relation is defined and computed — the asymptote
+  class of a ray is its degeneration flag — and every flag is realized by a traceless direction, so
+  boundary points and simplices of the building correspond bijectively
+- [x] the Tits metric inside an apartment: the divergence rate of two rays of a flat is the chordal
+  distance `2 sin (θ/2)` of their unit directions, so an apartment's boundary is the round sphere
+- [ ] 2 -> 3: what remains for `(3)` is the equivariance of that correspondence — the congruence
+  action of the observer group on rays inducing the conjugation action on flags — and the Tits
+  metric between boundary points of *different* apartments
 - [ ] 3 -> 4: external audit in symmetric spaces and projective differential invariants
 
 ## References
@@ -712,3 +720,81 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
   This is the missing input for the exponential-metric-increasing inequality
   `‖H − K‖ ≤ d (exp H) (exp K)`, which is what makes rays with distinct directions non-asymptotic
   outside a common flat, and hence what the boundary-at-infinity layer of `(3)` needs.
+
+- 2026-08-06 — **The exponential metric increasing property, and the boundary is faithful.**
+  `formal/GaloisForLFunctions/HTGeometry/ExponentialMetricIncreasing.lean`, in the umbrella,
+  axioms `[propext, Classical.choice, Quot.sound]`.
+
+  ```text
+  eigenvector_le_observerDist :
+    (S - T) v = μ • v,  v ≠ 0   →   μ ≤ observerDist (exp T) (exp S)
+
+  exists_pos_le_observerDist_metricRay :
+    tr (S - T) = 0,  S ≠ T      →   ∃ c > 0, ∀ t ≥ 0,
+      c * t ≤ observerDist (exp (t T)) (exp (t S))
+  ```
+
+  The second is the card's boundary-faithfulness statement in full generality: **two rays with
+  distinct traceless directions diverge linearly**, with no assumption that the directions commute.
+  The flat case was the Euclidean computation of `observerDist_diagOp`; that argument is blind to
+  the case of two directions with the *same spectrum in different frames*, which is exactly where
+  the curvature lives, and there the elementary test-vector estimates all return zero.  What
+  supplies it is the exponential metric increasing property, whose analytic input is the
+  Golden–Thompson inequality of the previous entry.
+
+  The chain, all of it now formal: `observerDist` dominates `log` of the operator norm of the
+  relative form (the ℓ² norm of the log-spectrum dominates its ℓ^∞ norm, and the operator norm of a
+  positive form is one of its eigenvalues); the relative form of two rays is
+  `exp (-T/2) exp S exp (-T/2)`, whose norm is `‖exp (S/2) exp (-T/2)‖ ^ 2` by the C⋆-identity;
+  Golden–Thompson bounds that below by `‖exp ((S-T)/2)‖ ^ 2 = ‖exp (S - T)‖`; and that is at least
+  `exp μ` for any eigenvalue `μ` of `S - T`.  Finally a nonzero traceless Hermitian direction has a
+  positive eigenvalue, and the scaling `t ↦ t (S - T)` gives the linear rate.
+
+  Supporting lemmas of independent use: the operator norm of a form diagonal in a frame is bounded
+  by the sup of `|w i|` (`norm_toCLM_diagOp_le`), the inverse square root of a ray is the ray at
+  parameter `-1/2` (`invSqrtOp_metricRay`), and `exp` of a direction dominates `exp` of each of its
+  eigenvalues (`exp_le_norm_metricRay_of_eigenvector`).
+
+- 2026-08-06 — **The boundary at infinity is constructed, and its points are the flags.**
+  Two modules, in the `HTGeometry` umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  ObserverBoundaryAtInfinity.lean   observerRay, Asymptotic, not_asymptotic_observerRay,
+                                    asymptotic_iff_eigenSum_eq, eq_of_asymptotic,
+                                    observerDist_metricRay_diagOp_unit
+  ObserverBoundaryBuilding.lean     exists_traceless_isSymmetric_eigenSum_eq,
+                                    exists_observerRay_eigenSum_eq
+  ```
+
+  The asymptote relation on rays is defined (`Asymptotic γ δ ↔ the distance stays bounded`), shown
+  reflexive, symmetric and transitive, and then computed:
+
+  ```text
+  Asymptotic (ray T) (ray S)  ↔  ∀ c, eigenSum T c = eigenSum S c      (traceless T, S)
+  ```
+
+  **The asymptote class of a ray is exactly its degeneration flag** — the card's
+  metric-degeneration description upgraded from a dictionary to an equivalence.  The forward
+  direction is the exponential metric increasing property of the previous entry; the backward
+  direction is that a direction is determined by its flag.
+
+  The correspondence is onto: `exists_traceless_isSymmetric_eigenSum_eq` realizes **every** flag of
+  the building by a *traceless* direction, hence by a ray that stays inside the determinant-one
+  space `X_N`.  Tracelessness is free because adding a scalar shifts the flag thresholds without
+  moving the flag.  So asymptote classes of rays based at the reference metric and simplices of the
+  horizon building correspond bijectively, which is `(3)` at the level of points.
+
+  Inside an apartment the Tits metric is computed:
+
+  ```text
+  observerDist (exp (t · diagOp b w)) (exp (t · diagOp b w')) = |t| · √(2 - 2 ⟪w, w'⟫)
+  ```
+
+  for unit weight vectors, so the divergence rate is `2 sin (θ/2)` for the Euclidean angle `θ`
+  between the directions: the boundary of a maximal flat carries the spherical metric, which is
+  the Tits metric of an apartment.
+
+  What `(3)` still lacks is the *equivariance* at boundary level — that the congruence action of
+  the observer group on rays induces the conjugation action on flags.  The two halves of that are
+  already present separately (`eigenSum_conj` on the flag side, and the congruence-invariance of
+  the distance on the metric side); only their combination is unwritten.

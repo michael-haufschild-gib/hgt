@@ -3,7 +3,7 @@
 - **ID:** `two-species-conformal-clock-scale-law`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / CONTINUUM GRAVITY / CLOCKS / CONFORMAL SCALE / INVERSE PROBLEM
-- **Parent:** `../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
+- **Parent:** `../../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
 - **Status:** **complete.** Every proved theorem of this card is unconditional in Lean, including
   the literal smooth pseudo-Riemannian realization of the conformal wave operator and formula `(4)`.
   Step 1 of the continuum-gravity bridge is closed end to end on any chart admitting a non-null

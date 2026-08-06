@@ -156,7 +156,7 @@ theorem cotangentTerm_cylinder (ω : ℂ) (z : ℂ)
         * (Complex.cos ((Real.pi : ℂ) * z / ω) / Complex.sin ((Real.pi : ℂ) * z / ω))
       = Polynomial.eval (Complex.exp (2 * (Real.pi : ℂ) * Complex.I * z / ω))
             (Polynomial.C (Complex.I * (Real.pi : ℂ) / ω) * (Polynomial.X + Polynomial.C 1))
-        / Polynomial.eval (Complex.exp (2 * (Real.pi : ℂ) * Complex.I * z / ω)) linFac := by
+        / Polynomial.eval (Complex.exp (2 * (Real.pi : ℂ) * Complex.I * z / ω)) (linFac ℂ) := by
   have hexp : Complex.exp (2 * Complex.I * ((Real.pi : ℂ) * z / ω))
       = Complex.exp (2 * (Real.pi : ℂ) * Complex.I * z / ω) :=
     congrArg Complex.exp (by ring)

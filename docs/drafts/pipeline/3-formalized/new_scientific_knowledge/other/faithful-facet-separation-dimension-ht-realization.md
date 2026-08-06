@@ -1,9 +1,10 @@
 # Faithful facet-separation dimension controls compressed HT relation geometry
 
 - **ID:** `faithful-facet-separation-dimension-ht-realization`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / HT CONSTRAINT-DIMENSION GEOMETRY
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Scientific status:** `[PROVED HERE] [LEAN PROOF CLOSED]`
+  `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** Every faithful complex hyperplane representation of the facet complements of a
   finite simplicial complex produces a non-Gamma meromorphic HT system in the same analytic
   dimension whose exact full nonlinear differential matroid is the localized Stanley--Reisner
@@ -271,9 +272,45 @@ theorem `faithfulSeparation_fin_four_and_minimal` proves that four coordinates e
 faithful separation in dimension at most three exists for any `r,s>=2`. The earlier concrete
 `S^1 wedge S^2` lower theorem is retained as a specialization-independent check.
 
-The card remains in stage 2 because the complete generic compressed Herglotz realization theorem
-and its nonlinear differential-matroid rank formula have not yet been packaged as one unconditional
-Lean theorem consuming arbitrary `FaithfulSeparation` data.
+The compressed realization theorem and its nonlinear differential-matroid rank formula are now one
+unconditional Lean theorem consuming arbitrary faithful-separation data.  Three modules:
+
+`HTGeometry.FacetSliceLaurentSupport`
+
+- `facetTranslationPolynomialEmbedding_support_slice`, `stanleyReisnerLaurentRows_slice`,
+  `finiteFinsuppRowIndex_slice`: the finite Laurent operator-row index of a Stanley--Reisner class
+  lies in the **facet slice** `{(A,n) : n_v = 0 for v ∉ A}`.  This is the formal counterpart of
+  `rho_A` killing translations outside `A`, and it is what makes compression possible: the
+  universal system separates the whole lattice `Z^V` at every facet, the compressed system only
+  has to separate each facet's own lattice `Z^A`.
+
+`HTGeometry.FaithfulSeparationOrbitShift`
+
+- `FacetSeparationValues` — the complete numerical content `x_{A,v} = ell_A(a_v)` of a faithful
+  facet separation: exact facet-complement zero pattern plus facetwise rational independence.
+  `ofSeparation` builds it from `(a_v, ell_A)` in an arbitrary complex vector space, in any
+  dimension; `ofTranscendental` shows every finite facet family admits such data.
+- `orbitSum`, `orbitShift` — the compressed shift palette `(7)`, with the cross-facet constants
+  taken as `gamma_A = t * tag(A)` for a single parameter `t`.
+- `orbitSum_injOn_slice`, `orbitShift_injOn`, `collisionSet_countable`,
+  `exists_separation_parameter` — the palette is injective on the facet slice for every `t`
+  outside one explicit countable collision set, and such a `t` exists.  This replaces the
+  countable union of affine hyperplanes in `(gamma_A)` by a single real-analytic avoidance.
+
+`HTGeometry.CompressedFaithfulSeparationRealization`
+
+- `exists_compressedSeparation_stanleyReisnerLaurentDifferentialMatroid` — **the theorem the card
+  asked for**: arbitrary faithful-separation data yields a separation parameter and one bounded
+  prime-log Herglotz source whose compressed structural orbit is differentially independent, and
+  for which every finite Laurent structural family has full nonlinear differential matroid equal to
+  its localized Stanley--Reisner matroid.  This is `(6)`.
+- `exists_compressedSeparation_annihilator` — `(5)`: a single structural output is differentially
+  independent exactly when its Stanley--Reisner class is nonzero, so the annihilator is exactly
+  `I_Delta`.
+- `exists_compressed_stanleyReisnerLaurentDifferentialMatroid` — the unconditional form: every
+  finite facet family carries a compressed realization.
+
+Axioms: `[propext, Classical.choice, Quot.sound]` only.
 
 ## Novelty and parent boundary
 
@@ -297,7 +334,7 @@ dimension, and older translation-module literature.
 - [x] universal upper bounds and exact boundary-wedge faithful dimension formalized in Lean
 - [x] positive analytic-dimension geometry stated
 - [ ] independent specialist novelty audit
-- [ ] complete unconditional Lean formalization before stage 3
+- [x] complete unconditional Lean formalization
 
 ## Log
 
@@ -305,3 +342,6 @@ dimension, and older translation-module literature.
   non-Gamma HT realization dimension.
 - 2026-07-11 -- Compressed the seven-facet `S^1 wedge S^2` realization to four analytic coordinates
   and proved that no faithful linear separation exists in dimension at most three.
+- 2026-08-06 -- Compressed realization and nonlinear differential-matroid rank formula packaged as
+  one unconditional Lean theorem consuming arbitrary faithful-separation data; the mechanism is the
+  facet slice of the Laurent operator rows.

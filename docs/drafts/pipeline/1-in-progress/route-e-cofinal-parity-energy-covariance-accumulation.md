@@ -72,3 +72,251 @@ strict-half bound.  Existing consumers then imply RH.
   `RHTower/GibbsParityEnergyCovariance.lean`.
 - `[OPEN CORE]` Find a non-circular cross-prime law controlling the signed weighted accumulation.
 
+## Exact weighted recurrence `[PROVED HERE]`
+
+Order the aperture primes as \(p_1,\ldots,p_k\), put
+\(S_0=\varnothing\), \(S_j=S_{j-1}\cup\{p_j\}\), and write
+
+\[
+ Z_j(t)=Z_{S_j}(t),\qquad \psi_j(t)=J_{S_j}(t)/Z_{S_j}(t).
+\]
+
+At the fixed physical coupling \(x>0\), define
+
+\[
+ r_j=\frac{Z_{j-1}(p_jx)}{Z_{j-1}(x)},\qquad
+ \alpha_j=\frac{1-r_j}{1+r_j},\qquad
+ \beta_j=\frac{r_j}{1+r_j},                              \tag{A3}
+\]
+
+and retain the prime-dilation interval through
+
+\[
+ d_j=\psi_{j-1}(p_jx)-\psi_{j-1}(x)
+    =\int_x^{p_jx}-\operatorname{Cov}_{S_{j-1},t}
+       ((-1)^{|T|},E(T))\,dt .                            \tag{A4}
+\]
+
+The insertion laws \(J_j(x)=J_{j-1}(x)-J_{j-1}(p_jx)\) and
+\(Z_j(x)=Z_{j-1}(x)+Z_{j-1}(p_jx)\) give, without discarding a sign or a
+partition weight,
+
+\[
+ \boxed{\psi_j(x)=\alpha_j\psi_{j-1}(x)-\beta_jd_j.}       \tag{A5}
+\]
+
+Indeed, divide numerator and denominator by \(Z_{j-1}(x)>0\), substitute
+\(\psi_{j-1}(p_jx)=\psi_{j-1}(x)+d_j\), and collect terms.  Since the
+partition function is strictly decreasing, \(0<r_j<1\), hence
+
+\[
+ 0<\alpha_j<1,\qquad 0<\beta_j<\tfrac12,
+ \qquad \alpha_j=1-2\beta_j.                              \tag{A6}
+\]
+
+Let
+
+\[
+ A_{a:b}=\prod_{\ell=a}^{b}\alpha_\ell,
+ \qquad A_{a:b}=1\quad(a>b).
+\]
+
+As \(\psi_0(x)=1\), induction in `(A5)` proves the fully unrolled law
+
+\[
+ \boxed{
+ \psi_k(x)=A_{1:k}-
+   \sum_{j=1}^{k}\beta_j A_{j+1:k}
+     \int_x^{p_jx}-\operatorname{Cov}_{S_{j-1},t}
+       ((-1)^{|T|},E(T))\,dt .}                           \tag{A7}
+\]
+
+This is the requested recurrence with every recurrence weight, dilation interval, and
+finite-volume sign retained.
+
+## Exact retained-mass law `[PROVED HERE]`
+
+The positive recurrence weights in `(A7)` have a closed total mass:
+
+\[
+ \boxed{\sum_{j=1}^{k}\beta_jA_{j+1:k}
+       =\frac{1-A_{1:k}}2<\frac12.}                       \tag{A8}
+\]
+
+Proof: `(A6)` gives
+
+\[
+ \beta_jA_{j+1:k}
+   =\tfrac12(A_{j+1:k}-A_{j:k}),
+\]
+
+and the sum telescopes.  Thus coefficient growth is not the obstruction.  The forcing in
+`(A7)` is a signed subprobability mean of the normalized-current changes across the actual
+prime-dilation intervals.  Taking absolute values gives only
+
+\[
+ \left|\sum_j\beta_jA_{j+1:k}d_j\right|
+ \le \frac{1-A_{1:k}}2\max_j|d_j|\le1,                  \tag{A9}
+\]
+
+which cannot approach a positive power of \(x\).
+
+## Quadratic signed-energy survivor [PROVED HERE]
+
+Taking a positive norm only after the signed insertion exposes an additional exact loss.  Define
+
+\[
+ \mathcal Q_S(x)=\frac{J_S(x)^2}{Z_S(x)}=Z_S(x)\psi_S(x)^2
+\]
+and
+\[
+ \mathcal D_{S,p}(x)=
+ \frac{Z_S(x)Z_S(px)}{Z_S(x)+Z_S(px)}
+   \bigl(\psi_S(x)+\psi_S(px)\bigr)^2\ge0.
+\]
+
+Polarization of \(J_{S\cup p}=J_S-J_S\circ p\) against
+\(Z_{S\cup p}=Z_S+Z_S\circ p\) gives
+
+\[
+ \boxed{\mathcal Q_{S\cup p}(x)+\mathcal D_{S,p}(x)
+       =\mathcal Q_S(x)+\mathcal Q_S(px).}               \tag{A9a}
+\]
+
+This is not an absolute-value estimate: the loss retains whether the normalized currents at
+\(x\) and \(px\) have the same sign.  It identifies the only positive energy created by the signed
+difference.  In particular,
+
+\[
+ \mathcal Q_{S\cup p}(x)\le \mathcal Q_S(x)+\mathcal Q_S(px). \tag{A9b}
+\]
+
+For \(r>0\), finite aperture makes all following integrals convergent.  Put
+\[
+ \mathscr E_r(S)=\int_0^\infty x^{r-1}\mathcal Q_S(x)\,dx,\qquad
+ \mathscr D_r(S,p)=\int_0^\infty x^{r-1}\mathcal D_{S,p}(x)\,dx.
+\]
+Changing variables \(u=px\) in (A9a) yields the exact Mellin balance
+\[
+ \boxed{\mathscr E_r(S\cup p)+\mathscr D_r(S,p)
+       =(1+p^{-r})\mathscr E_r(S).}                      \tag{A9c}
+\]
+
+Since \(\mathscr E_r(\varnothing)=\Gamma(r)\), iterating gives
+\[
+ \mathscr E_r(S_k)=
+ \Gamma(r)\prod_{j=1}^k(1+p_j^{-r})
+ -\sum_{j=1}^k\mathscr D_r(S_{j-1},p_j)
+       \prod_{\ell=j+1}^k(1+p_\ell^{-r}).                \tag{A9d}
+\]
+
+For \(r>1\), discarding the dissipation already leaves a cofinally finite Euler ceiling.  At
+\(0<r\le1\), the Euler baseline diverges and a source theorem must prove that the positive
+same-sign dissipation saturates it to the required precision.  Thus squaring does not prove the
+strict-half endpoint, but it converts the missing signed cancellation into a precise positive
+coherence-saturation problem.  Antiscale coherence
+\(\psi_S(px)\approx-\psi_S(x)\) is the exact escape mode.
+
+## Circularity theorem `[PROVED HERE]`
+
+Put
+
+\[
+ W_k(x)=\sum_{j=1}^{k}\beta_jA_{j+1:k}d_j.
+\]
+
+Equation `(A7)` is the exact identity \(\psi_k=A_{1:k}-W_k\).  Consequently, for every
+nonnegative error budget \(\eta\),
+
+\[
+ \boxed{|W_k(x)-A_{1:k}|\le\eta
+       \quad\Longleftrightarrow\quad |\psi_k(x)|\le\eta.} \tag{A10}
+\]
+
+In particular, a theorem called “signed covariance accumulation” whose conclusion is merely
+
+\[
+ |W_k(x)-A_{1:k}|\ll x^{1/2-o(1)}
+\]
+
+is not a producer for `(A1)`: it is `(A1)` written through the exact recurrence.  It becomes a
+proof only if a separately stated source theorem controls the cross-prime signed mean before
+`(A10)` is invoked.
+
+There is also no gain from changing or averaging insertion orders.  For any two orderings
+\(\sigma,\tau\) of the same aperture, endpoint invariance and `(A7)` force
+
+\[
+ W_k^{\sigma}(x)-W_k^{\tau}(x)
+   =A_{1:k}^{\sigma}(x)-A_{1:k}^{\tau}(x).                \tag{A11}
+\]
+
+Thus all order dependence of the contraction baseline is exactly compensated by order dependence
+of the accumulated covariance.  Permutation averaging cannot manufacture an endpoint estimate.
+
+## Alternating-sign audit
+
+For \(j>1\), the free-boundary jet in the parent theorem gives
+
+\[
+ d_j'(0)=(p_j-1)\psi_{j-1}'(0),\qquad
+ \operatorname{sgn}d_j'(0)=(-1)^j.                       \tag{A12}
+\]
+
+Hence the forcing terms in `(A5)` alternate infinitesimally with finite volume.  This is a local
+jet statement, not a uniform sign theorem on the moving intervals `[x,p_jx]`.  Its coefficient
+contains \(\prod_{q\in S_{j-1}}(q-1)\), so its Taylor window collapses nonuniformly with aperture.
+Using `(A12)` as though it oriented the physical cofinal terms would violate gate 3.
+
+The failure is not merely a lack of uniformity in the proof.  It already occurs in the
+two-prime gas.  For \(S=\{2,3\}\), put \(u=e^{-x}\).  Directly from the four configurations,
+
+\[
+ \psi_{\{2,3\}}(x)
+ =\frac{1-u-u^2+u^5}{1+u+u^2+u^5}
+ =1-\frac{2u(1+u)}{1+u+u^2+u^5}.                        \tag{A13}
+\]
+
+For
+\[
+ H(u)=\frac{u(1+u)}{1+u+u^2+u^5},
+\]
+exact differentiation gives
+\[
+ H'(u)=\frac{1+2u-4u^5-3u^6}{(1+u+u^2+u^5)^2}>0
+ \qquad(0<u\le\tfrac12),                                \tag{A14}
+\]
+because \(4u^5+3u^6\le 11/64<1\).  Since \(u'=-u\), equations (A13)--(A14) imply
+\[
+ \psi_{\{2,3\}}'(x)>0\qquad(x\ge\log2).                  \tag{A15}
+\]
+Therefore every dilation increment
+\(\psi_{\{2,3\}}(px)-\psi_{\{2,3\}}(x)\) is positive for \(p>1\) and
+\(x\ge\log2\).  But its derivative at \(x=0\) is negative by (A12).  Thus the same
+finite-volume forcing changes orientation with coupling.  No global alternating-sign pairing can
+be inferred from the free-boundary jet.
+
+## Hostile verdict and revised open core
+
+The exact requested accumulation formula is now proved, but the requested strict-half estimate is
+not: by `(A10)` that estimate is the RH-strength endpoint itself.  No corpus theorem supplies an
+independent bound for its signed cross-prime mean.
+
+What remains genuinely open is narrower than the original wording:
+
+> **`WEIGHTED-PRIME-DILATION-INCREMENT-CANCELLATION`.**  Prove an arithmetic cancellation law for
+> the signed variables \(d_j\) under the positive hazard weights
+> \(\beta_jA_{j+1:k}\), using information not recoverable from the endpoint identity `(A7)`.
+
+Any candidate must distinguish the actual prime prefixes from arbitrary bounded sequences, retain
+the coherent low-frequency mode, and survive `(A11)` and the nonuniform-jet audit.  Generic
+covariance inequalities, absolute moments, fixed-order Wold reporters, MR fluctuation estimates,
+and insertion-order averaging fail those tests.
+
+## Status after exact audit
+
+- `[PROVED HERE]` fully weighted covariance recurrence `(A7)`.
+- `[PROVED HERE]` exact retained forcing mass `(A8)`.
+- `[PROVED HERE]` endpoint/accumulation equivalence and order-gauge law `(A10)`--`(A11)`.
+- `[OPEN; RH-STRENGTH]` the numerical bound `(A1)`.
+- `[NO THEATRE]` no claim that the exact representation proves its own endpoint estimate.

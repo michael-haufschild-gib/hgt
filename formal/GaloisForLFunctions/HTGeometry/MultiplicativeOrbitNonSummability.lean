@@ -19,7 +19,12 @@ with `h` rational and the right side carrying a single pole on the orbit `q^ℤ`
 
 Two things are built here.
 
-1. The dilation `X ↦ q X` as an algebra endomorphism `ratFuncScale q` of `ℂ(X)`, together with the
+Everything is proved over an arbitrary base field `K` (characteristic zero only where the additive
+orbit is used), which is what removes the specialization step from the double-sine descent: the
+descended equation lives in `ℂ(u₁)(u₂)`, and taking `K = ℂ(u₁)` applies the obstruction there
+directly.
+
+1. The dilation `X ↦ q X` as an algebra endomorphism `ratFuncScale q` of `K(X)`, together with the
    exact transport of regularity, `RegularAt (ratFuncScale q g) w ↔ RegularAt g (q w)`.  The
    dilation is genuine — it is the localization of the polynomial substitution `p ↦ p(qX)` — so the
    obstruction below is a statement about the actual `q`-difference equation, not about an abstract
@@ -37,27 +42,29 @@ open Polynomial
 
 namespace GaloisForLFunctions
 
+variable {K : Type*} [Field K]
+
 noncomputable section
 
 /-! ## Substituting `q X` in a polynomial -/
 
 /-- Substituting `q * X` for the variable of a polynomial. -/
-def polyScale (q : ℂ) : Polynomial ℂ →ₐ[ℂ] Polynomial ℂ :=
+def polyScale (q : K) : Polynomial K →ₐ[K] Polynomial K :=
   Polynomial.aeval (Polynomial.C q * Polynomial.X)
 
-theorem polyScale_eq_comp (q : ℂ) (p : Polynomial ℂ) :
+theorem polyScale_eq_comp (q : K) (p : Polynomial K) :
     polyScale q p = p.comp (C q * X) := by
   rw [polyScale, Polynomial.aeval_def, Polynomial.comp, Polynomial.algebraMap_eq]
 
-@[simp] theorem polyScale_X (q : ℂ) : polyScale q X = C q * X := by
+@[simp] theorem polyScale_X (q : K) : polyScale q X = C q * X := by
   rw [polyScale_eq_comp, Polynomial.X_comp]
 
-@[simp] theorem eval_polyScale (q : ℂ) (p : Polynomial ℂ) (w : ℂ) :
+@[simp] theorem eval_polyScale (q : K) (p : Polynomial K) (w : K) :
     (polyScale q p).eval w = p.eval (q * w) := by
   rw [polyScale_eq_comp, Polynomial.eval_comp]
   simp
 
-theorem polyScale_polyScale (q r : ℂ) (p : Polynomial ℂ) :
+theorem polyScale_polyScale (q r : K) (p : Polynomial K) :
     polyScale q (polyScale r p) = polyScale (q * r) p := by
   have h : (polyScale q).comp (polyScale r) = polyScale (q * r) := by
     refine Polynomial.algHom_ext ?_
@@ -67,11 +74,11 @@ theorem polyScale_polyScale (q r : ℂ) (p : Polynomial ℂ) :
   have h' := DFunLike.congr_fun h p
   rwa [AlgHom.comp_apply] at h'
 
-@[simp] theorem polyScale_one (p : Polynomial ℂ) : polyScale 1 p = p := by
+@[simp] theorem polyScale_one (p : Polynomial K) : polyScale 1 p = p := by
   rw [polyScale_eq_comp]
   simp
 
-theorem polyScale_injective {q : ℂ} (hq : q ≠ 0) : Function.Injective (polyScale q) := by
+theorem polyScale_injective {q : K} (hq : q ≠ 0) : Function.Injective (polyScale q) := by
   intro p₁ p₂ h
   have := congrArg (polyScale q⁻¹) h
   rwa [polyScale_polyScale, polyScale_polyScale, inv_mul_cancel₀ hq, polyScale_one,
@@ -81,24 +88,24 @@ theorem polyScale_injective {q : ℂ} (hq : q ≠ 0) : Function.Injective (polyS
 
 /-- The multiplicative dilation `X ↦ q * X` of the rational function field, obtained by localizing
 the polynomial substitution `p ↦ p(qX)`. -/
-def ratFuncScale (q : ℂ) (hq : q ≠ 0) : RatFunc ℂ →ₐ[ℂ] RatFunc ℂ :=
+def ratFuncScale (q : K) (hq : q ≠ 0) : RatFunc K →ₐ[K] RatFunc K :=
   RatFunc.mapAlgHom (polyScale q)
     (nonZeroDivisors_le_comap_nonZeroDivisors_of_injective _ (polyScale_injective hq))
 
-theorem ratFuncScale_div (q : ℂ) (hq : q ≠ 0) (p s : Polynomial ℂ) :
-    ratFuncScale q hq (algebraMap (Polynomial ℂ) (RatFunc ℂ) p /
-        algebraMap (Polynomial ℂ) (RatFunc ℂ) s) =
-      algebraMap (Polynomial ℂ) (RatFunc ℂ) (polyScale q p) /
-        algebraMap (Polynomial ℂ) (RatFunc ℂ) (polyScale q s) := by
-  show (RatFunc.mapAlgHom _ _ : RatFunc ℂ →ₐ[ℂ] RatFunc ℂ) _ = _
+theorem ratFuncScale_div (q : K) (hq : q ≠ 0) (p s : Polynomial K) :
+    ratFuncScale q hq (algebraMap (Polynomial K) (RatFunc K) p /
+        algebraMap (Polynomial K) (RatFunc K) s) =
+      algebraMap (Polynomial K) (RatFunc K) (polyScale q p) /
+        algebraMap (Polynomial K) (RatFunc K) (polyScale q s) := by
+  show (RatFunc.mapAlgHom _ _ : RatFunc K →ₐ[K] RatFunc K) _ = _
   rw [show ((RatFunc.mapAlgHom (polyScale q)
       (nonZeroDivisors_le_comap_nonZeroDivisors_of_injective _ (polyScale_injective hq)) :
-      RatFunc ℂ →ₐ[ℂ] RatFunc ℂ) :
-      RatFunc ℂ → RatFunc ℂ) = RatFunc.map (polyScale q) _ from
+      RatFunc K →ₐ[K] RatFunc K) :
+      RatFunc K → RatFunc K) = RatFunc.map (polyScale q) _ from
     RatFunc.coe_mapAlgHom_eq_coe_map _ _]
   exact RatFunc.map_apply_div _ _ p s
 
-theorem ratFuncScale_scale_inv (q : ℂ) (hq : q ≠ 0) (f : RatFunc ℂ) :
+theorem ratFuncScale_scale_inv (q : K) (hq : q ≠ 0) (f : RatFunc K) :
     ratFuncScale q⁻¹ (inv_ne_zero hq) (ratFuncScale q hq f) = f := by
   refine RatFunc.induction_on (P := fun f => ratFuncScale q⁻¹ (inv_ne_zero hq)
     (ratFuncScale q hq f) = f) f ?_
@@ -108,7 +115,7 @@ theorem ratFuncScale_scale_inv (q : ℂ) (hq : q ≠ 0) (f : RatFunc ℂ) :
 
 /-- **Dilation moves poles by dilation.**  The dilate of `g` is regular at `w` exactly when `g` is
 regular at `q w`. -/
-theorem regularAt_ratFuncScale (q : ℂ) (hq : q ≠ 0) (g : RatFunc ℂ) (w : ℂ) :
+theorem regularAt_ratFuncScale (q : K) (hq : q ≠ 0) (g : RatFunc K) (w : K) :
     RegularAt (ratFuncScale q hq g) w ↔ RegularAt g (q * w) := by
   constructor
   · rintro ⟨p, s, hs, hgs⟩
@@ -126,9 +133,9 @@ end
 
 /-! ## The orbit obstruction along an arbitrary injective orbit -/
 
-theorem finite_orbit_poles_gen (g : RatFunc ℂ) (orb : ℤ → ℂ)
+theorem finite_orbit_poles_gen (g : RatFunc K) (orb : ℤ → K)
     (hinj : Function.Injective orb) : {n : ℤ | ¬ RegularAt g (orb n)}.Finite := by
-  have hroot : {w : ℂ | g.denom.IsRoot w}.Finite :=
+  have hroot : {w : K | g.denom.IsRoot w}.Finite :=
     Polynomial.finite_setOf_isRoot (RatFunc.denom_ne_zero g)
   refine Set.Finite.subset (Set.Finite.preimage hinj.injOn hroot) ?_
   intro n hn
@@ -139,8 +146,8 @@ theorem finite_orbit_poles_gen (g : RatFunc ℂ) (orb : ℤ → ℂ)
 /-- **No single-pole orbit for a telescoped difference, along an arbitrary injective orbit.**
 The only inputs are injectivity of the orbit and the statement that `gs` has, at each orbit point,
 the regularity of `g` one step along. -/
-theorem regularAt_orbit_of_telescoped_pole_subsingleton_gen (g gs : RatFunc ℂ)
-    (orb : ℤ → ℂ) (hinj : Function.Injective orb)
+theorem regularAt_orbit_of_telescoped_pole_subsingleton_gen (g gs : RatFunc K)
+    (orb : ℤ → K) (hinj : Function.Injective orb)
     (hshift : ∀ n : ℤ, RegularAt gs (orb n) ↔ RegularAt g (orb (n + 1)))
     (D : Set ℤ) (hD : ∀ n : ℤ, ¬ RegularAt (gs - g) (orb n) → n ∈ D)
     (hsub : D.Subsingleton) : ∀ n : ℤ, RegularAt g (orb n) := by
@@ -171,10 +178,10 @@ theorem regularAt_orbit_of_telescoped_pole_subsingleton_gen (g gs : RatFunc ℂ)
 
 /-- **A rational function with exactly one pole on an injective orbit is not a telescoped
 difference along that orbit.** -/
-theorem not_telescoped_of_unique_orbit_pole_gen (r : RatFunc ℂ) (orb : ℤ → ℂ)
+theorem not_telescoped_of_unique_orbit_pole_gen (r : RatFunc K) (orb : ℤ → K)
     (hinj : Function.Injective orb) (hpole : ¬ RegularAt r (orb 0))
     (hunique : ∀ n : ℤ, n ≠ 0 → RegularAt r (orb n)) :
-    ¬ ∃ g gs : RatFunc ℂ,
+    ¬ ∃ g gs : RatFunc K,
       (∀ n : ℤ, RegularAt gs (orb n) ↔ RegularAt g (orb (n + 1))) ∧ r = gs - g := by
   rintro ⟨g, gs, hshift, rfl⟩
   have hD : ∀ n : ℤ, ¬ RegularAt (gs - g) (orb n) → n ∈ ({0} : Set ℤ) := by
@@ -190,17 +197,17 @@ theorem not_telescoped_of_unique_orbit_pole_gen (r : RatFunc ℂ) (orb : ℤ →
 noncomputable section
 
 /-- The multiplicative orbit `n ↦ p₀ * q ^ n`. -/
-def multOrbit (q p₀ : ℂ) : ℤ → ℂ := fun n => p₀ * q ^ n
+def multOrbit (q p₀ : K) : ℤ → K := fun n => p₀ * q ^ n
 
-@[simp] theorem multOrbit_zero (q p₀ : ℂ) : multOrbit q p₀ 0 = p₀ := by
+@[simp] theorem multOrbit_zero (q p₀ : K) : multOrbit q p₀ 0 = p₀ := by
   simp [multOrbit]
 
-theorem multOrbit_succ (q p₀ : ℂ) (hq : q ≠ 0) (n : ℤ) :
+theorem multOrbit_succ (q p₀ : K) (hq : q ≠ 0) (n : ℤ) :
     multOrbit q p₀ (n + 1) = q * multOrbit q p₀ n := by
   simp [multOrbit, zpow_add₀ hq]
   ring
 
-theorem multOrbit_injective {q p₀ : ℂ} (hq : q ≠ 0) (hp₀ : p₀ ≠ 0)
+theorem multOrbit_injective {q p₀ : K} (hq : q ≠ 0) (hp₀ : p₀ ≠ 0)
     (hqtor : ∀ n : ℤ, n ≠ 0 → q ^ n ≠ 1) : Function.Injective (multOrbit q p₀) := by
   intro m n hmn
   by_contra hne
@@ -216,10 +223,10 @@ function `r` has a pole at `p₀ ≠ 0` and no other pole on the multiplicative 
 This is the exact obstruction used to contradict the descended paired telescoping relation in the
 double-sine hypertranscendence argument. -/
 theorem not_dilationTelescoped_of_unique_multOrbit_pole
-    (q p₀ : ℂ) (hq : q ≠ 0) (hp₀ : p₀ ≠ 0) (hqtor : ∀ n : ℤ, n ≠ 0 → q ^ n ≠ 1)
-    (r : RatFunc ℂ) (hpole : ¬ RegularAt r p₀)
+    (q p₀ : K) (hq : q ≠ 0) (hp₀ : p₀ ≠ 0) (hqtor : ∀ n : ℤ, n ≠ 0 → q ^ n ≠ 1)
+    (r : RatFunc K) (hpole : ¬ RegularAt r p₀)
     (hunique : ∀ n : ℤ, n ≠ 0 → RegularAt r (p₀ * q ^ n)) :
-    ¬ ∃ h : RatFunc ℂ, r = ratFuncScale q hq h - h := by
+    ¬ ∃ h : RatFunc K, r = ratFuncScale q hq h - h := by
   rintro ⟨h, hr⟩
   refine not_telescoped_of_unique_orbit_pole_gen r (multOrbit q p₀)
     (multOrbit_injective hq hp₀ hqtor) (by simpa using hpole) (fun n hn => hunique n hn)

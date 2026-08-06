@@ -297,9 +297,48 @@ every structural translate represents the same nonzero class. Compare
 `(prod_j (T_j - 1))`: the two Lean theorems exhibit the reflection-induced collapse of
 `R/(x_1 x_2)` to `R/(x_1, x_2)` as a comparison of two proved annihilators, not as an analogy.
 
+`GaloisForLFunctions.HTGeometry.CylinderCoordinateEulerBridge` closes the coordinate change that
+connects the analytic statement to the rational model. It proves the cotangent identity
+
+```text
+cos w / sin w = i (e^(2iw)+1)/(e^(2iw)-1),
+(pi/omega) cot(pi z/omega)
+  = eval_u (C (i pi/omega) (X+1)) / eval_u (X-1),   u = exp(2 pi i z/omega),
+```
+
+so the cotangent term of the double-sine functional equation is literally the value of the
+numerator and denominator polynomials of `cotModel`. It proves that differentiation in `z` is the
+Euler operator in the coordinate,
+
+```text
+d^n/dz^n [f(exp(a z))] = a^n (u d/du)^n f  evaluated at exp(a z),
+```
+
+on any open set where `f` is analytic (`iteratedDeriv_comp_exp_mul`), so a constant-coefficient
+order-`r` differential operator in `z` becomes a constant-coefficient order-`r` Euler-operator
+polynomial with proportional top coefficient. Finally it proves that the analytic Euler jets of
+`c(u+1)/(u-1)` obey exactly the polynomial recursion `eulerNum` of the rational model
+(`eulerOp_iterate_cotFun`), hence `eulerCombinationFun_eq`: the analytic `A(b)` is the value of the
+rational `A(b)`. The residue obstruction therefore applies to the genuine cotangent term, not to a
+formal stand-in.
+
+The whole pole-order and orbit-balance layer is proved over an arbitrary base field, not only over
+`C`. That removes the specialization step of the section "Descent to one cylinder": the paired
+telescoping theorem produces `g` in the two-cylinder field `C(u_1,u_2)`, and taking the base field
+to be `C(u_1)` applies the obstruction there directly, because every pole of `A(b)` and every point
+of the orbit `q^Z` lies in the constant subfield `C`. The theorem
+`not_dilationTelescoped_twoCylinder` is exactly this form. The specialization argument, and with it
+one of the card's open audit obligations, is therefore not needed.
+
+The common-constant collapse (3) is already corpus-owned:
+`meromorphicNF_constant_of_rankTwo_realDependent_periods` in
+`GaloisForLFunctions.HTGeometry.RankTwoRealDependentPeriods` proves that a meromorphic normal-form
+function invariant under the integer span of two `Q`-independent, `R`-dependent periods is
+constant, which is exactly the joint fixed-field collapse used at (3).
+
 Still not formalized: the construction of the double sine itself, the several-translation
-telescoping theorem, and the two-cylinder coefficient field separation, i.e. the reduction of the
-hypertranscendence statement to equation (5).
+parameterized telescoping theorem, and the two-cylinder coefficient field separation, i.e. the
+production of equation (4) from a hypothetical differential-algebraic relation.
 
 ### Formalization of the algebraic core
 
@@ -412,12 +451,15 @@ significant new classification or a routine synthesis once the question is posed
 - [x] every finite translate product classified;
 - [x] Barnes-versus-double-sine rank collapse identified;
 - [ ] normalization and sign convention checked against a primary source;
-- [ ] independent audit of paired telescoping and specialization;
+- [ ] independent audit of paired telescoping (the specialization step is now eliminated: the
+  Lean obstruction is proved over an arbitrary base field and applies directly in `C(u_1)(u_2)`);
 - [ ] exact/equivalent/stronger literature search;
 - [ ] independent significance and novelty verdict;
 - [x] multiplicative-orbit residue obstruction formalized unconditionally in Lean;
 - [x] Euler-operator pole computation for the cotangent model formalized unconditionally in Lean;
 - [x] exact augmentation-ideal annihilator and total-exponent classification formalized
   unconditionally in Lean;
+- [x] cylinder coordinate bridge (cotangent identity, Euler-operator form of `d/dz`, analytic jets
+  of the cotangent model) formalized unconditionally in Lean;
 - [ ] Lean reduction of hypertranscendence to the descended `q`-difference equation (double sine
   construction, several-translation telescoping, two-cylinder separation).

@@ -3,7 +3,7 @@
 - **ID:** `chronometric-continuum-operator-rigidity`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / CONTINUUM GRAVITY / TIME / CAUSALITY / INVERSE LAW
-- **Parent:** `../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
+- **Parent:** `../../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
 - **Status:** dependency-closed paper proof, fully formalized. Continuum-indexed polarization,
   graph rigidity, Ramsey phase recovery, the tangent-bundle and chart lifts, the quotient lift
   under label-preserving frame automorphisms, and ordered-product recovery for a regular pulse
@@ -330,6 +330,12 @@ Formalize unconditionally:
     `coneDiamond`, its traversing timelike segment (`mem_coneDiamond_segment`), and clock-only
     determination inside it (`eqOn_coneDiamond_of_properTime`), in
     `formal/GaloisForLFunctions/HTGeometry/ChronometricCausalDiamond.lean`.
+15. [complete] the diamond reconstruction from clock *readings*: every direction at every event of
+    the chronological diamond is realized by a probe confined to the diamond
+    (`realizedDirections_eq_univ`), the reading of such a probe differentiates to its instantaneous
+    rate (`hasDerivAt_properTime`), and equal readings on all confined probes force equal metrics
+    (`eqOn_chronoDiamond_of_clockReadings`), in
+    `formal/GaloisForLFunctions/HTGeometry/ChronometricDiamondRealization.lean`.
 
 The existing all-orders symmetric multilinear polarization theorem supplies a stronger reusable
 dependency for item 1.
@@ -358,6 +364,27 @@ polarization argument is fiberwise, so it lifts to a family of fibers indexed by
 - `law_eq_invFun_encode_comp_symm`, `injective_encode_comp_symm` — Corollary 3, equation `(6)`:
   on a region where the law is bijective it equals the inverse of the induced source-to-clock map
   composed with the clock encoding.
+
+`formal/GaloisForLFunctions/HTGeometry/ChronometricDiamondRealization.lean` — item 15. The
+kinematic determination consumes squared intervals on the whole timelike cone; a laboratory reads
+clocks on worldlines it can actually run. Both are reconciled inside the open chronological diamond:
+
+- `clockSegment`, `hasDerivAt_clockSegment` — the straight probe through an event with a prescribed
+  four-velocity;
+- `realizedDirections`, `mem_realizedDirections`, `realizedDirections_eq_univ`,
+  `timelikeCone_subset_realizedDirections` — every direction at every event of the diamond is run by
+  a probe that never leaves it, with the explicit parameter interval in
+  `exists_pos_segment_subset_chronoDiamond` and the confinement of a whole run in
+  `eventually_uIcc_subset_chronoDiamond`;
+- `properTimeRate`, `properTime`, `continuous_properTimeRate_along`, `hasDerivAt_properTime` — the
+  reading of a probe is the integral of its rate and differentiates back to it, the metric
+  coefficients being smooth (`continuous_squaredInterval_event`);
+- `properTimeRate_eq_of_properTime_eventuallyEq`, `squaredInterval_eq_of_properTimeRate_eq` — equal
+  readings on arbitrarily short runs give equal rates, and the rate determines the squared interval
+  on the timelike cone;
+- `eqOn_chronoDiamond_of_clockReadings`,
+  `squaredInterval_eqOn_chronoDiamond_of_clockReadings` — hence clock readings inside the diamond
+  determine the geometry inside the diamond, and claim nothing outside it.
 
 `formal/GaloisForLFunctions/HTGeometry/ChronometricRegionLocalization.lean` — item 13, which makes
 hostile-audit point 4 exact:

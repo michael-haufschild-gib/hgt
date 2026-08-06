@@ -14,7 +14,8 @@
   `formal/GaloisForLFunctions/HTGeometry/ClockResponseStability.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockConservationConstrainedDrives.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockApparatusBackreaction.lean`,
-  `formal/GaloisForLFunctions/HTGeometry/ChronometricCausalDiamond.lean`
+  `formal/GaloisForLFunctions/HTGeometry/ChronometricCausalDiamond.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ChronometricDiamondRealization.lean`
 
 ## Headline
 
@@ -246,6 +247,42 @@ So the reconstruction is not merely unique: it is Lipschitz in the data, with an
 built from the apparatus. What is still open is physical — that a finite compact intervention set is
 norming, and that noise stays inside `ε`. Axioms: `[propext, Classical.choice, Quot.sound]`.
 
+### Lean status of the causal-diamond reconstruction
+
+The kinematic half assumes the squared interval is known on every timelike direction at every event
+of the diamond. A laboratory knows neither: it reads clocks, and it can carry a clock only along a
+worldline confined to the diamond. `ChronometricDiamondRealization.lean` closes both gaps.
+
+*Realization.* The chronological diamond is open, so for every event `x` of it and **every**
+direction `v` the straight probe `s ↦ x + s·v` stays inside the diamond for a nonempty interval of
+its own parameter — `mem_realizedDirections`, with the explicit interval in
+`exists_pos_segment_subset_chronoDiamond` and the confinement of a whole run in
+`eventually_uIcc_subset_chronoDiamond`. Hence **`realizedDirections_eq_univ`**: the realized
+directions are all of them, and `timelikeCone_subset_realizedDirections` specializes this to the
+directions the kinematic half actually consumes. `hasDerivAt_clockSegment` identifies the probe's
+velocity as exactly `v`, so the pair `(event, four-velocity)` is prescribed, not merely approximated.
+
+*From readings to the form.* The clock's rate at `x` with velocity `v` is
+`properTimeRate g x v = √(−g(x)(v,v))`, and its accumulated reading is
+`properTime g x v a b = ∫_a^b properTimeRate g (x+s·v) v ds`. The integrand is continuous in `s`
+(`continuous_properTimeRate_along`, using smoothness of the metric coefficients through
+`continuous_squaredInterval_event`), so the fundamental theorem of calculus gives
+`hasDerivAt_properTime`: the reading differentiates at the moment of passage to the instantaneous
+rate. Two clocks whose readings agree on arbitrarily short runs therefore have the same rate
+(`properTimeRate_eq_of_properTime_eventuallyEq`, by uniqueness of the derivative), and the rate
+determines the squared interval on the timelike cone
+(`squaredInterval_eq_of_properTimeRate_eq`: `√` is injective on the positives, and a positive rate
+forces the other metric's direction to be timelike as well, so no timelike hypothesis on the second
+metric is needed).
+
+*The theorem.* **`eqOn_chronoDiamond_of_clockReadings`** — if for every event of the chronological
+diamond, every direction, and every run of the probe that stays inside the diamond the two metrics
+give the clock the same reading, then the two metrics agree at every event of the diamond;
+**`squaredInterval_eqOn_chronoDiamond_of_clockReadings`** states the same conclusion as equality of
+squared intervals. Nothing outside the diamond is claimed.
+
+Axioms: `[propext, Classical.choice, Quot.sound]`.
+
 ## Hostile novelty audit
 
 1. Block inversion, Schur complements, Dyson resummation, and self-energy subtraction are standard
@@ -312,9 +349,15 @@ Paper proof of exact algebra is complete. Remaining physical core:
    `coneFuture`, `conePast`, `coneDiamond` are the coordinate diamond, and
    `mem_coneDiamond_segment` shows the timelike segment joining the tips lies inside it, so the
    region a clock can traverse is not empty; **`eqOn_coneDiamond_of_properTime`** — clocks agreeing
-   at every event of the diamond determine the metric at every event of the diamond. What is still
-   open is the *dynamical* half: that clock-only sources realize the required variations inside the
-   diamond, which is where the nonlinear interaction analysis lives.
+   at every event of the diamond determine the metric at every event of the diamond. The
+   *dynamical* half is formalized in
+   `formal/GaloisForLFunctions/HTGeometry/ChronometricDiamondRealization.lean`:
+   **`realizedDirections_eq_univ`** — at every event of the chronological diamond *every* direction
+   is realized by a probe that never leaves the diamond, so the variations the kinematic half
+   consumes are all produced inside the laboratory region; and
+   **`eqOn_chronoDiamond_of_clockReadings`** — two metrics whose clocks give the same *readings* on
+   every probe confined to the diamond agree at every event of it. Both halves are unconditional,
+   and the reconstruction hypothesis is now a set of measured numbers rather than a quadratic form.
 
 ## Gates
 
@@ -327,6 +370,12 @@ Paper proof of exact algebra is complete. Remaining physical core:
 - [ ] 3 → 4: finite experimental recovery, gauge/control, stability, and priority audit
 
 ## Log
+
+- 2026-08-06 — closed the dynamical half of the clock-only causal-diamond reconstruction. Every
+  direction at every event of the chronological diamond is realized by a probe confined to the
+  diamond (`realizedDirections_eq_univ`), and the accumulated clock readings of those probes
+  differentiate to the metric (`eqOn_chronoDiamond_of_clockReadings`). Status item 5 is now
+  mathematically complete; only modelling caveats remain.
 
 - 2026-08-01 — added exact Lean bridge proving that the coupling-off/on contrast has the
   oppositely dressed hidden operator as a two-sided inverse; connected it to literal two-mass

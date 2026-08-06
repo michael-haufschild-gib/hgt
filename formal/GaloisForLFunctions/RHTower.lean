@@ -3626,6 +3626,7 @@ import GaloisForLFunctions.RHTower.GibbsPotentialBound
 import GaloisForLFunctions.RHTower.GibbsLogDerivative
 import GaloisForLFunctions.RHTower.GibbsScaleContraction
 import GaloisForLFunctions.RHTower.GibbsParityEnergyCovariance
+import GaloisForLFunctions.RHTower.GibbsSignedCovarianceAccumulation
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors
 import GaloisForLFunctions.RHTower.Sieve.BalancedDivisorSecondMoment

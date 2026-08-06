@@ -251,7 +251,11 @@ now closed unconditionally in Lean 4 (axioms: `propext`, `Classical.choice`,
 | `(7)`, `(9)` operator form | same | `integral_replicaReporter_radial` |
 | `(8)` operator form, Haar/mean value | same | `bohrMean_replicaReporter`, `tendsto_integral_replicaReporter_radial_bohrMean` |
 | `(3)` for every continuous almost periodic reporter | `HTGeometry/GaussianRadialCompletionLaw.lean` | `tendsto_integral_radial_bohrMean` |
-| `(3)` angular mixture | same, and `HTGeometry/GaussianRadialAngularMixture.lean` | `tendsto_integral_radial_bohrMean_angularMixture`, `tendsto_integral_replicaReporter_angularMixture` |
+| `(3)` for **every** continuous reporter | `HTGeometry/GaussianRadialContinuousReporter.lean` | `tendsto_integral_radial_bohrMean_of_almostPeriodic`, `tendsto_integral_radial_bohrMean_continuous_reporter` |
+| `(3)` angular mixture | `HTGeometry/GaussianRadialCompletionLaw.lean`, `HTGeometry/GaussianRadialAngularMixture.lean` | `tendsto_integral_radial_bohrMean_angularMixture`, `tendsto_integral_replicaReporter_angularMixture` |
+| `(1)` endpoint law, weak convergence | `HTGeometry/GaussianRadialEndpointLaw.lean` | `endpointLaw`, `endpointProbabilityLaw`, `tendsto_endpointProbabilityLaw` |
+| `(4)` continuity-set limit | same | `tendsto_measure_endpointLaw_of_null_frontier` |
+| existence and uniqueness of `μ_∞` | `HTGeometry/GaussianRadialLimitLaw.lean` | `isTightMeasureSet_endpointLaw`, `exists_completedEndpointLaw`, `completedEndpointLaw_unique`, `exists_completedEndpointLaw_tendsto_measure` |
 
 Supporting infrastructure built for this card, absent from `Mathlib`: the density
 of the standard Gaussian against Lebesgue measure
@@ -271,12 +275,28 @@ Two presentation conventions are used, both faithful to the paper proof:
    the pullback `s ↦ F([e^{-isH(ω)}Φ])`.  These are the same number; the
    construction of `G_ω` as a topological group carrying `ν_ω`, and the
    identification of its Haar integral with `bohrMean`, are not yet formalized.
-2. Equation `(3)` is proved for every continuous Bohr almost periodic reporter
-   admitting a Bochner--Fejér trigonometric approximation — the class the paper
-   proof uses.  The corpus supplies the approximation itself in
-   `HTGeometry/BohrBochnerFejerApprox.lean` (`exists_trigPoly_spectrum_approx`).
+2. Equation `(3)` is proved for **every** continuous reporter: the spectrally
+   presented state curve is almost periodic with precompact range
+   (`isBohrAlmostPeriodic_spectralStateCurve`,
+   `isBohrAlmostPeriodic_comp_of_range_subset`), and the corpus's Bochner--Fejér
+   theorem (`HTGeometry/BohrBochnerFejerApprox.lean`,
+   `exists_trigPoly_spectrum_approx`) supplies the trigonometric approximants.
+   No approximation hypothesis is carried in the final statement.
 
-Still open: equation `(4)` — assembling `μ_∞` as a Borel measure on projective
-state space by Riesz representation and deducing the continuity-set statement
-from portmanteau.  The parent shortcut-action inequality remains unauthorized
-until the angular selector-uniform theorem is proved.
+Equation `(4)` is unconditional.  The endpoint laws are all supported in one
+fixed closed ball, hence tight; Prokhorov's theorem gives their closure compact
+in the space of probability measures, a cluster point realizes the completed-time
+average of every bounded continuous reporter, and the whole family therefore
+converges weakly to it.  Uniqueness follows because a finite Borel measure is
+determined by its integrals against bounded continuous functions.  Portmanteau
+then gives the continuity-set statement.
+
+The only item of the card not yet carried in Lean is the *presentation* of the
+completed-time average as a Haar integral over an explicitly constructed compact
+monothetic group `G_ω`; the number itself — the value of `∫_{G_ω} F(gΦ) dν_ω(g)`
+— is formalized throughout as `bohrMean`.  The corpus starting points for that
+construction are `HTGeometry/CompletedObserverTimeTorus.lean` (`orbitClosureHaar`,
+`orbitClosureHaar_mFourier_integral`) and `HTGeometry/BohrOrbitHaarLaw.lean`.
+
+The parent shortcut-action inequality remains unauthorized until the angular
+selector-uniform theorem is proved.
