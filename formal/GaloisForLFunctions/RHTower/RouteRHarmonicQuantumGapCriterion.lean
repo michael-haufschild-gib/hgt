@@ -115,21 +115,16 @@ theorem tendsto_profileAverage_criticalWall_zero_iff
 
 /-! ## Sharpened gap: one subsequence of real parts -/
 
-private theorem not_frequently_abs_re_profileAverage_le_of_unit
-    {t r : ℝ} (hr : r < 1) {c : ℂ} (hc : |c.re| = 1)
-    (hlim : Tendsto
-      (fun N => profileAverage mu N (routeRPrimeGammaCriticalWallField t))
-      atTop (𝓝 c))
-    (hfreq : ∃ᶠ N in atTop,
-      |(profileAverage mu N (routeRPrimeGammaCriticalWallField t)).re| ≤ r) :
-    False := by
-  have hre : Tendsto
-      (fun N =>
-        |(profileAverage mu N (routeRPrimeGammaCriticalWallField t)).re|)
-      atTop (𝓝 |c.re|) :=
+/-- A sequence converging to a value of unit real modulus is not frequently
+below a threshold under one. -/
+theorem not_frequently_abs_re_le_of_unit_limit {F : ℕ → ℂ} {r : ℝ} (hr : r < 1)
+    {c : ℂ} (hc : |c.re| = 1) (hlim : Tendsto F atTop (𝓝 c))
+    (hfreq : ∃ᶠ N in atTop, |(F N).re| ≤ r) : False := by
+  have hre : Tendsto (fun N => |(F N).re|) atTop (𝓝 |c.re|) :=
     ((Complex.continuous_re.tendsto c).comp hlim).abs
   rw [hc] at hre
-  obtain ⟨N, hle, hlt⟩ := (hfreq.and_eventually (hre.eventually_const_lt hr)).exists
+  obtain ⟨N, hle, hlt⟩ :=
+    (hfreq.and_eventually (hre.eventually_const_lt hr)).exists
   linarith
 
 /-- **Sharpest form of the gap criterion.**  The limiting residue is real and
@@ -142,10 +137,48 @@ theorem eq_zero_of_frequently_abs_re_profileAverage_le
     t = 0 := by
   by_contra ht
   rcases lt_or_gt_of_ne ht with htneg | htpos
-  · exact not_frequently_abs_re_profileAverage_le_of_unit hr (by simp)
+  · exact not_frequently_abs_re_le_of_unit_limit hr (by simp)
       (tendsto_profileAverage_criticalWall_one_of_neg hmu htneg) hfreq
-  · exact not_frequently_abs_re_profileAverage_le_of_unit hr (by simp)
+  · exact not_frequently_abs_re_le_of_unit_limit hr (by simp)
       (tendsto_profileAverage_criticalWall_neg_one_of_pos hmu htpos) hfreq
+
+/-! ## Robustness under negligible perturbation of the source field -/
+
+/-- A producer field agreeing with the first wall up to a summable or pointwise
+negligible error carries the same oriented residue. -/
+theorem hasReferenceResidueMod_of_negligible_sub_criticalWall
+    {a : Nat.Primes → ℂ} {t : ℝ} {c : ℂ}
+    (hres : HasReferenceResidue primeHarmonicWeight
+      (routeRPrimeGammaCriticalWallField t) c)
+    (hneg : IsCofinitelyNegligible primeHarmonicWeight
+      (fun p => a p - routeRPrimeGammaCriticalWallField t p)) :
+    HasReferenceResidueMod primeHarmonicWeight a c :=
+  ⟨fun p => routeRPrimeGammaCriticalWallField t p -
+      c * (primeHarmonicWeight p : ℂ),
+    fun p => a p - routeRPrimeGammaCriticalWallField t p, hres, hneg,
+    fun p => by ring⟩
+
+/-- **Robust gap criterion.**  The threshold test may be applied to any producer
+field that agrees with the first wall up to a summable or `o(1/p)` error: the
+oriented quantum is unchanged, so a frequent sub-quantum bound on the producer
+still forces neutral grade. -/
+theorem eq_zero_of_frequently_abs_re_profileAverage_le_of_negligible_sub
+    (hmu : IsCofinalUnitProfile primeHarmonicWeight mu)
+    {a : Nat.Primes → ℂ} {t r : ℝ} (hr : r < 1)
+    (hneg : IsCofinitelyNegligible primeHarmonicWeight
+      (fun p => a p - routeRPrimeGammaCriticalWallField t p))
+    (hfreq : ∃ᶠ N in atTop, |(profileAverage mu N a).re| ≤ r) :
+    t = 0 := by
+  by_contra ht
+  rcases lt_or_gt_of_ne ht with htneg | htpos
+  · exact not_frequently_abs_re_le_of_unit_limit hr (by simp)
+      (tendsto_profileAverage_mod primeHarmonicWeight_nonneg hmu
+        (hasReferenceResidueMod_of_negligible_sub_criticalWall
+          (hasReferenceResidue_criticalWall_one_of_neg htneg) hneg)) hfreq
+  · exact not_frequently_abs_re_le_of_unit_limit hr (by simp)
+      (tendsto_profileAverage_mod primeHarmonicWeight_nonneg hmu
+        (hasReferenceResidueMod_of_negligible_sub_criticalWall
+          (hasReferenceResidue_criticalWall_neg_one_of_pos htpos) hneg)) hfreq
 
 /-! ## The Xi endpoint -/
 
@@ -207,6 +240,32 @@ theorem riemannHypothesis_of_frequently_abs_re_profileAverage_lt_one
   obtain ⟨r, hr, hf⟩ := hfreq rho
   exact xiDivisorSupport_re_eq_half_of_frequently_abs_re_profileAverage_le
     hmu rho hr hf
+
+/-- Uniqueness of the prime-harmonic residue on the enlarged domain, where the
+error is allowed to be summable or pointwise `o(1/p)`. -/
+theorem primeHarmonicResidueMod_unique {a : Nat.Primes → ℂ} {c d : ℂ}
+    (hc : HasReferenceResidueMod primeHarmonicWeight a c)
+    (hd : HasReferenceResidueMod primeHarmonicWeight a d) : c = d := by
+  obtain ⟨mu, hmu⟩ := exists_isCofinalUnitProfile_primeHarmonic nthPrimeEquiv
+  exact HasReferenceResidueMod.unique_of_profile primeHarmonicWeight_nonneg hmu
+    hc hd
+
+/-- **RH from a robust sub-quantum gap.**  At each Xi divisor point the producer
+may deliver any field agreeing with the first wall up to a summable or `o(1/p)`
+error; a frequent sub-quantum bound on the producer's own averages suffices. -/
+theorem riemannHypothesis_of_frequently_negligible_producer
+    {mu : ℕ → Nat.Primes → ℝ}
+    (hmu : IsCofinalUnitProfile primeHarmonicWeight mu)
+    (hprod : ∀ rho : XiDivisorSupport, ∃ (a : Nat.Primes → ℂ) (r : ℝ), r < 1 ∧
+      IsCofinitelyNegligible primeHarmonicWeight
+        (fun p => a p - routeRPrimeGammaXiCriticalWallField rho p) ∧
+      (∃ᶠ N in atTop, |(profileAverage mu N a).re| ≤ r)) :
+    RiemannHypothesis := by
+  refine riemannHypothesis_of_forall_xiDivisorSupport_re_eq_half fun rho => ?_
+  obtain ⟨a, r, hr, hneg, hfreq⟩ := hprod rho
+  rw [← primeDepthBVWoldXiCenteredRate_eq_zero_iff]
+  exact eq_zero_of_frequently_abs_re_profileAverage_le_of_negligible_sub hmu hr
+    hneg hfreq
 
 /-- The criterion is not vacuous: bounded cofinal prime-harmonic profiles
 exist. -/

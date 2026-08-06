@@ -286,3 +286,62 @@ The remaining content is therefore the full statement `t_rho = 0`, i.e. RH itsel
 `docs/meta/scientific-method.md` this is a criterion re-encoding, and the honest positive residue is
 the quantified equivalence plus the four no-freedom statements above, not progress toward a proof.
 The card stays at stage 3; no further sharpening of this reporter family is worth attempting.
+
+## 2026-08-06 (fifth pass) — the reading law on an enlarged domain
+
+The lane is closed as a criterion (fourth pass), but the *reader* was still tied to `ell^1`. This pass
+enlarges its domain, which is what a producer actually needs: a source field that agrees with the
+first wall up to a non-summable but pointwise small error.
+
+### Negligible fields
+
+Call `b` *negligible* against `h` when for every `ε > 0` there is a finite set off which
+`‖b i‖ ≤ ε · h i`. Negligible fields need not be summable and summable fields need not be
+negligible — the classes are incomparable. Over the primes with `h(p) = 1/p`, negligible means
+`b(p) = o(1/p)` with an explicit depth threshold, and this catches non-summable examples: `∑_p 1/p`
+diverges like `log log x`, so `b(p) = 1/(p log log p)` is not summable while `p · b(p) → 0`.
+
+`[PROVED HERE]` Negligible fields are invisible to cofinal averaging. Once a stage vanishes on the
+finite exceptional set, the bound `mu_N(i) ‖b(i)‖ ≤ ε · (mu_N(i) h(i))` holds at *every* index, so the
+unit reference mass gives `‖A_N(b)‖ ≤ ε` directly — no convergence of `b` is used. Summability of the
+stage terms at a fixed `N`, where escape has not yet happened, comes from majorizing by
+`mu_N h + indicator(s)·mu_N‖b‖`.
+
+Hence the residue is read modulo `ell^1 + negligible`:
+
+`HasReferenceResidueMod h a c := ∃ b₁ b₂, Summable b₁ ∧ IsCofinitelyNegligible h b₂ ∧
+   a - c h = b₁ + b₂`
+
+and `tendsto_profileAverage_mod` gives `A_N(a) → c` on that larger domain, with uniqueness from the
+existence of a single profile (`HasReferenceResidueMod.unique_of_profile`).
+
+### Robust criterion
+
+`[PROVED HERE]` The threshold test transfers to any producer field: if `a - W_t` is summable or
+`o(1/p)`, then `a` carries the same oriented residue, so a frequent sub-quantum bound on `a`'s own
+averages forces `t = 0`
+(`eq_zero_of_frequently_abs_re_profileAverage_le_of_negligible_sub`), and
+
+`riemannHypothesis_of_frequently_negligible_producer`
+
+closes RH from producer fields that need never equal the first-wall field exactly.
+
+### Lean
+
+`HTGeometry/CofinalUnitProfileResidue.lean`: `IsCofinitelyNegligible`,
+`summable_profileTerm_negligible`, `tendsto_profileAverage_zero_of_cofinitelyNegligible`,
+`HasReferenceResidueMod`, `HasReferenceResidue.mod`, `profileAverage_add`,
+`tendsto_profileAverage_mod`, `HasReferenceResidueMod.unique_of_profile`,
+`primeHarmonicWeight_nonneg`, `finite_primes_lt`, `isCofinitelyNegligible_primeHarmonic`.
+
+`RHTower/RouteRHarmonicQuantumGapCriterion.lean`: `not_frequently_abs_re_le_of_unit_limit` (the
+sequence-level form, replacing the earlier specialized private lemma),
+`hasReferenceResidueMod_of_negligible_sub_criticalWall`,
+`eq_zero_of_frequently_abs_re_profileAverage_le_of_negligible_sub`,
+`primeHarmonicResidueMod_unique`, `riemannHypothesis_of_frequently_negligible_producer`.
+
+### Scope note
+
+This enlarges what a producer may hand in; it does not reopen the lane. The fourth-pass classification
+stands: the criterion is equivalent to RH per zero, and the enlargement changes the admissible error
+class, not the difficulty.

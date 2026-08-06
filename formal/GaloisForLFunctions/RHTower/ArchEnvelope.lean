@@ -52,21 +52,24 @@ theorem digamma_continuousOn_re_pos :
   rw [hdef]
   exact hderivcont.div hΓdiff.continuousOn hΓne
 
-/-- **Logarithmic derivative of `Γ_ℝ`.**  On the right half plane,
-`Γ_ℝ′(s) = Γ_ℝ(s)·(ψ(s/2) − log π)/2`. -/
-theorem hasDerivAt_Gammaℝ_of_re_pos {s : ℂ} (hs : 0 < s.re) :
-    HasDerivAt Complex.Gammaℝ
-      (Complex.Gammaℝ s *
-        (Complex.digamma (s / 2) / 2 - (Real.log Real.pi : ℂ) / 2)) s := by
+/-- Positive real part keeps `s/2` away from the poles of `Γ`. -/
+theorem div_two_ne_neg_nat_of_re_pos {s : ℂ} (hs : 0 < s.re) :
+    ∀ m : ℕ, s / 2 ≠ -(m : ℂ) := by
+  intro m hc
   have h2 : 0 < (s / 2).re := by
     rw [re_div_two]
     linarith
-  have hpole : ∀ m : ℕ, s / 2 ≠ -(m : ℂ) := by
-    intro m hc
-    rw [hc] at h2
-    simp only [Complex.neg_re, Complex.natCast_re] at h2
-    have : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
-    linarith
+  rw [hc] at h2
+  simp only [Complex.neg_re, Complex.natCast_re] at h2
+  have : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
+  linarith
+
+/-- **Logarithmic derivative of `Γ_ℝ`.**  Off the poles of `Γ(s/2)`,
+`Γ_ℝ′(s) = Γ_ℝ(s)·(ψ(s/2) − log π)/2`. -/
+theorem hasDerivAt_Gammaℝ_off_poles {s : ℂ} (hpole : ∀ m : ℕ, s / 2 ≠ -(m : ℂ)) :
+    HasDerivAt Complex.Gammaℝ
+      (Complex.Gammaℝ s *
+        (Complex.digamma (s / 2) / 2 - (Real.log Real.pi : ℂ) / 2)) s := by
   have hGne : Complex.Gamma (s / 2) ≠ 0 := Complex.Gamma_ne_zero hpole
   have hGdiff : DifferentiableAt ℂ Complex.Gamma (s / 2) :=
     Complex.differentiableAt_Gamma _ hpole
@@ -111,6 +114,13 @@ theorem hasDerivAt_Gammaℝ_of_re_pos {s : ℂ} (hs : 0 < s.re) :
   exact hfn.congr_of_eventuallyEq
     (Filter.Eventually.of_forall fun z => Complex.Gammaℝ_def z)
 
+/-- **Logarithmic derivative of `Γ_ℝ` on the right half plane.** -/
+theorem hasDerivAt_Gammaℝ_of_re_pos {s : ℂ} (hs : 0 < s.re) :
+    HasDerivAt Complex.Gammaℝ
+      (Complex.Gammaℝ s *
+        (Complex.digamma (s / 2) / 2 - (Real.log Real.pi : ℂ) / 2)) s :=
+  hasDerivAt_Gammaℝ_off_poles (div_two_ne_neg_nat_of_re_pos hs)
+
 /-- The canonical derivative of `archFactor`: product rule through the logarithmic derivative
 of `Γ_ℝ`. -/
 noncomputable def archFactorDeriv (s : ℂ) : ℂ :=
@@ -118,15 +128,20 @@ noncomputable def archFactorDeriv (s : ℂ) : ℂ :=
     s * (s - 1) / 2 *
       (Complex.Gammaℝ s * (Complex.digamma (s / 2) / 2 - (Real.log Real.pi : ℂ) / 2))
 
-theorem hasDerivAt_archFactor_of_re_pos {s : ℂ} (hs : 0 < s.re) :
+theorem hasDerivAt_archFactor_off_poles {s : ℂ} (hpole : ∀ m : ℕ, s / 2 ≠ -(m : ℂ)) :
     HasDerivAt archFactor (archFactorDeriv s) s := by
   have hpoly : HasDerivAt (fun z : ℂ => z * (z - 1) / 2) ((2 * s - 1) / 2) s := by
     have h1 : HasDerivAt (fun z : ℂ => z * (z - 1)) (1 * (s - 1) + s * 1) s :=
       (hasDerivAt_id s).mul ((hasDerivAt_id s).sub_const 1)
     have h2 := h1.div_const (2 : ℂ)
     simpa only [Pi.div_apply] using! h2.congr_deriv (by ring)
-  have hmul := hpoly.mul (hasDerivAt_Gammaℝ_of_re_pos hs)
+  have hmul := hpoly.mul (hasDerivAt_Gammaℝ_off_poles hpole)
   simpa only [archFactor, archFactorDeriv, Pi.mul_apply] using! hmul
+
+/-- The canonical derivative of `archFactor` on the right half plane. -/
+theorem hasDerivAt_archFactor_of_re_pos {s : ℂ} (hs : 0 < s.re) :
+    HasDerivAt archFactor (archFactorDeriv s) s :=
+  hasDerivAt_archFactor_off_poles (div_two_ne_neg_nat_of_re_pos hs)
 
 /-- The completed archimedean envelope is analytic on the open right half plane. -/
 theorem archFactor_analyticOnNhd_re_pos :

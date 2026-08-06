@@ -157,6 +157,23 @@ Sufficiency is the explicit telescope; necessity is half-translate digamma indep
 the parity decomposition after subtracting the telescope and the finitely many simple fractions
 contributed by `s(s−1)/2`.
 
+### Off the right half-plane
+
+Reading the corpus proof of `hasDerivAt_Gammaℝ_of_re_pos` shows `0 < Re s` is used only to place `s/2`
+away from the poles of `Γ`. Generalizing that hypothesis in place (keeping the old name as a
+corollary) propagates: `hasDerivAt_archFactor_off_poles`, `logDeriv_archFactor_closed_off_poles`, and
+then the whole even ladder.
+
+`RHTower/ArchLadderRegular.lean` packages the two conditions the ladder actually needs —
+`s` avoids the poles of `Γ(s/2)`, and `s` is not an odd integer (where `s(s−1)/2` vanishes after an
+even translation) — as `ArchLadderRegular s`, stable under even translation. Consequence:
+
+- `xiTransverseShiftArchimedeanCorrection_even_of_ladderRegular` — the rational telescope holds on the
+  whole ladder, not merely on the right half-plane;
+- `xiPairwiseShiftReflectionCocycle_eq_explicit` — the previously blocked item: an **explicit rational
+  reflection cocycle for every same-parity integral pair**. The reflected point `1 − a − s` sits in
+  the left half-plane, which is exactly what the old domain restriction could not reach.
+
 ## Faithfulness
 
 The Dirichlet symbol at `n` is the translation character of the divisor at the frequency `log n`

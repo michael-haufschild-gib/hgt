@@ -29,15 +29,26 @@ open GaloisForLFunctions
 
 /-- Closed form of the completed archimedean/boundary logarithmic derivative on the
 positive-real-part half-plane. -/
-theorem logDeriv_archFactor_closed {s : ℂ} (hs : 0 < s.re)
-    (h0 : s ≠ 0) (h1 : s ≠ 1) :
+theorem logDeriv_archFactor_closed_off_poles {s : ℂ}
+    (hpole : ∀ m : ℕ, s / 2 ≠ -(m : ℂ)) (h0 : s ≠ 0) (h1 : s ≠ 1) :
     logDeriv archFactor s =
       1 / s + 1 / (s - 1) + gammaRealLogConnection s := by
-  have hG : Complex.Gammaℝ s ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos hs
-  rw [logDeriv_apply, (hasDerivAt_archFactor_of_re_pos hs).deriv]
+  have hG : Complex.Gammaℝ s ≠ 0 := by
+    intro hzero
+    obtain ⟨n, hn⟩ := Complex.Gammaℝ_eq_zero_iff.mp hzero
+    exact hpole n (by rw [hn]; ring)
+  rw [logDeriv_apply, (hasDerivAt_archFactor_off_poles hpole).deriv]
   unfold archFactorDeriv archFactor gammaRealLogConnection
   field_simp [h0, sub_ne_zero.mpr h1, hG]
   ring
+
+/-- Closed form of the completed archimedean/boundary logarithmic derivative on the
+positive-real-part half-plane. -/
+theorem logDeriv_archFactor_closed {s : ℂ} (hs : 0 < s.re)
+    (h0 : s ≠ 0) (h1 : s ≠ 1) :
+    logDeriv archFactor s =
+      1 / s + 1 / (s - 1) + gammaRealLogConnection s :=
+  logDeriv_archFactor_closed_off_poles (div_two_ne_neg_nat_of_re_pos hs) h0 h1
 
 /-- Translation by two removes the common digamma mode from the completed archimedean
 factor and leaves an explicit rational function. -/

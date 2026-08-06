@@ -416,6 +416,130 @@ theorem exists_isCofinalUnitProfile {h : ℕ → ℝ} (hpos : ∀ n, 0 < h n)
   let ⟨mu, hmu, _⟩ := exists_isCofinalUnitProfile_finiteSupport hpos hns
   ⟨mu, hmu⟩
 
+/-! ## Negligible fields and the enlarged residue -/
+
+/-- `b` is *negligible* against the reference weight when, off some finite set, it
+is uniformly small relative to `h`.  Negligible fields need not be summable, and
+summable fields need not be negligible: the two classes are incomparable, and the
+residue is read modulo their sum. -/
+def IsCofinitelyNegligible (h : ι → ℝ) (b : ι → ℂ) : Prop :=
+  ∀ ε > 0, ∃ s : Set ι, s.Finite ∧ ∀ i ∉ s, ‖b i‖ ≤ ε * h i
+
+section Negligible
+
+variable {h : ι → ℝ} {mu : ℕ → ι → ℝ}
+
+theorem summable_profileTerm_negligible (hh : ∀ i, 0 ≤ h i)
+    (hmu : IsCofinalUnitProfile h mu) {b : ι → ℂ}
+    (hb : IsCofinitelyNegligible h b) (N : ℕ) :
+    Summable fun i => (mu N i : ℂ) * b i := by
+  obtain ⟨s, hfin, hs⟩ := hb 1 one_pos
+  have hmajSummable : Summable fun i => mu N i * h i +
+      s.indicator (fun j => mu N j * ‖b j‖) i :=
+    (hmu.hasSum_mass N).summable.add
+      (summable_of_hasFiniteSupport (hfin.subset Set.support_indicator_subset))
+  refine Summable.of_norm (Summable.of_nonneg_of_le (fun i => norm_nonneg _)
+    (fun i => ?_) hmajSummable)
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (hmu.nonneg N i)]
+  by_cases hi : i ∈ s
+  · rw [Set.indicator_of_mem hi]
+    have hnn : (0 : ℝ) ≤ mu N i * h i :=
+      mul_nonneg (hmu.nonneg N i) (hh i)
+    linarith
+  · rw [Set.indicator_of_notMem hi]
+    have hb1 := mul_le_mul_of_nonneg_left (hs i hi) (hmu.nonneg N i)
+    simpa using hb1
+
+/-- **Negligible fields are invisible to cofinal averaging.**  Unlike the
+summable case this uses no convergence of `b`, only its pointwise smallness
+relative to the reference weight off a finite set. -/
+theorem tendsto_profileAverage_zero_of_cofinitelyNegligible (hh : ∀ i, 0 ≤ h i)
+    (hmu : IsCofinalUnitProfile h mu) {b : ι → ℂ}
+    (hb : IsCofinitelyNegligible h b) :
+    Tendsto (fun N => profileAverage mu N b) atTop (𝓝 0) := by
+  rw [NormedAddGroup.tendsto_nhds_zero]
+  intro ε hε
+  obtain ⟨s, hfin, hs⟩ := hb (ε / 2) (half_pos hε)
+  filter_upwards [hmu.escapes hfin.toFinset] with N hN
+  have hterm := summable_profileTerm_negligible hh hmu hb N
+  have hnormEq : ∀ i, ‖(mu N i : ℂ) * b i‖ = mu N i * ‖b i‖ := fun i => by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (hmu.nonneg N i)]
+  have hpt : ∀ i, mu N i * ‖b i‖ ≤ ε / 2 * (mu N i * h i) := by
+    intro i
+    by_cases hi : i ∈ s
+    · rw [hN i (hfin.mem_toFinset.mpr hi)]
+      simp
+    · calc mu N i * ‖b i‖ ≤ mu N i * (ε / 2 * h i) :=
+            mul_le_mul_of_nonneg_left (hs i hi) (hmu.nonneg N i)
+        _ = ε / 2 * (mu N i * h i) := by ring
+  have hsumR : Summable fun i => mu N i * ‖b i‖ :=
+    hterm.norm.congr hnormEq
+  have hbound : ∑' i, mu N i * ‖b i‖ ≤ ε / 2 :=
+    tsum_stageWeighted_le (hmu.hasSum_mass N) hsumR hpt
+  have hnorm : ‖profileAverage mu N b‖ ≤ ∑' i, mu N i * ‖b i‖ := by
+    show ‖∑' i, (mu N i : ℂ) * b i‖ ≤ _
+    exact le_trans (norm_tsum_le_tsum_norm hterm.norm)
+      (le_of_eq (tsum_congr hnormEq))
+  linarith
+
+/-- `a` has residue `c` modulo the sum of the summable and the negligible
+fields. -/
+def HasReferenceResidueMod (h : ι → ℝ) (a : ι → ℂ) (c : ℂ) : Prop :=
+  ∃ b₁ b₂ : ι → ℂ, Summable b₁ ∧ IsCofinitelyNegligible h b₂ ∧
+    ∀ i, a i - c * (h i : ℂ) = b₁ i + b₂ i
+
+theorem HasReferenceResidue.mod (hh : ∀ i, 0 ≤ h i) {a : ι → ℂ} {c : ℂ}
+    (ha : HasReferenceResidue h a c) : HasReferenceResidueMod h a c :=
+  ⟨fun i => a i - c * (h i : ℂ), fun _ => 0, ha,
+    fun ε hε => ⟨∅, Set.finite_empty, fun i _ => by
+      simpa using mul_nonneg hε.le (hh i)⟩,
+    fun i => by ring⟩
+
+theorem profileAverage_add {f g : ι → ℂ} {N : ℕ}
+    (hf : Summable fun i => (mu N i : ℂ) * f i)
+    (hg : Summable fun i => (mu N i : ℂ) * g i) :
+    profileAverage mu N (fun i => f i + g i) =
+      profileAverage mu N f + profileAverage mu N g :=
+  ((hf.hasSum.add hg.hasSum).congr_fun fun i => by ring).tsum_eq
+
+/-- **The reading law on the enlarged domain.**  Cofinal unit profiles recover
+the residue modulo summable *and* negligible errors. -/
+theorem tendsto_profileAverage_mod (hh : ∀ i, 0 ≤ h i)
+    (hmu : IsCofinalUnitProfile h mu) {a : ι → ℂ} {c : ℂ}
+    (hres : HasReferenceResidueMod h a c) :
+    Tendsto (fun N => profileAverage mu N a) atTop (𝓝 c) := by
+  obtain ⟨b₁, b₂, hb₁, hb₂, hdec⟩ := hres
+  have key : ∀ N, profileAverage mu N a =
+      c + (profileAverage mu N b₁ + profileAverage mu N b₂) := by
+    intro N
+    have h1 : HasSum (fun i => c * ((mu N i : ℂ) * (h i : ℂ))) c := by
+      simpa using (hasSum_profileReference hmu N).mul_left c
+    have h2 := (summable_profileTerm hmu hb₁ N).hasSum
+    have h3 := (summable_profileTerm_negligible hh hmu hb₂ N).hasSum
+    refine ((h1.add (h2.add h3)).congr_fun fun i => ?_).tsum_eq
+    have ha : a i = b₁ i + b₂ i + c * (h i : ℂ) := by
+      rw [← hdec i]; ring
+    rw [ha]
+    ring
+  have hz1 := tendsto_profileAverage_zero_of_summable hmu hb₁
+  have hz2 := tendsto_profileAverage_zero_of_cofinitelyNegligible hh hmu hb₂
+  have hsum : Tendsto
+      (fun N => c + (profileAverage mu N b₁ + profileAverage mu N b₂))
+      atTop (𝓝 c) := by simpa using (hz1.add hz2).const_add c
+  exact hsum.congr fun N => (key N).symm
+
+/-- Existence of one profile already pins the enlarged residue. -/
+theorem HasReferenceResidueMod.unique_of_profile (hh : ∀ i, 0 ≤ h i)
+    (hmu : IsCofinalUnitProfile h mu) {a : ι → ℂ} {c d : ℂ}
+    (hc : HasReferenceResidueMod h a c) (hd : HasReferenceResidueMod h a d) :
+    c = d :=
+  tendsto_nhds_unique (tendsto_profileAverage_mod hh hmu hc)
+    (tendsto_profileAverage_mod hh hmu hd)
+
+end Negligible
+
 /-! ## Transport along a reindexing -/
 
 /-- Reindexing a profile along an equivalence gives a profile for the reindexed
@@ -466,6 +590,33 @@ noncomputable def primeHarmonicWeight (p : Nat.Primes) : ℝ := ((p : ℕ) : ℝ
 theorem primeHarmonicWeight_pos (p : Nat.Primes) : 0 < primeHarmonicWeight p := by
   have hp : (0 : ℝ) < ((p : ℕ) : ℝ) := by exact_mod_cast p.2.pos
   simpa [primeHarmonicWeight] using inv_pos.mpr hp
+
+theorem primeHarmonicWeight_nonneg (p : Nat.Primes) : 0 ≤ primeHarmonicWeight p :=
+  (primeHarmonicWeight_pos p).le
+
+/-- The primes below a bound form a finite set. -/
+theorem finite_primes_lt (Q : ℕ) : {p : Nat.Primes | (p : ℕ) < Q}.Finite := by
+  have hinj : Function.Injective (fun p : Nat.Primes => (p : ℕ)) :=
+    fun a b hab => Subtype.ext hab
+  have hsub : (fun p : Nat.Primes => (p : ℕ)) ''
+      {p : Nat.Primes | (p : ℕ) < Q} ⊆ ↑(Finset.range Q) := by
+    rintro n ⟨p, hp, rfl⟩
+    simpa using hp
+  exact Set.Finite.of_finite_image ((Finset.range Q).finite_toSet.subset hsub)
+    hinj.injOn
+
+/-- A prime field that is `o(1/p)` with an explicit depth threshold is negligible
+against the prime-harmonic weight.  Such fields need not be summable. -/
+theorem isCofinitelyNegligible_primeHarmonic {b : Nat.Primes → ℂ}
+    (hb : ∀ ε > 0, ∃ Q : ℕ, ∀ p : Nat.Primes, Q ≤ (p : ℕ) →
+      ‖b p‖ * ((p : ℕ) : ℝ) ≤ ε) :
+    IsCofinitelyNegligible primeHarmonicWeight b := by
+  intro ε hε
+  obtain ⟨Q, hQ⟩ := hb ε hε
+  refine ⟨{p : Nat.Primes | (p : ℕ) < Q}, finite_primes_lt Q, fun p hp => ?_⟩
+  have hp0 : (0 : ℝ) < ((p : ℕ) : ℝ) := by exact_mod_cast p.2.pos
+  rw [primeHarmonicWeight, ← div_eq_mul_inv, le_div_iff₀ hp0]
+  exact hQ p (not_lt.mp hp)
 
 theorem not_summable_primeHarmonicWeight : ¬ Summable primeHarmonicWeight := by
   intro hsum

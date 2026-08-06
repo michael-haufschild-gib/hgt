@@ -162,3 +162,102 @@ theorem integrableOn_logSub_mul_exp {δ a : ℝ} (ha : 0 ≤ a) :
 end
 
 end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+open Filter Topology MeasureTheory Set Asymptotics
+open scoped BigOperators
+
+/-! ## The improper log-log integral -/
+
+theorem integral_logLog_Ioi {δ : ℝ} (hδ : 0 < δ) :
+    δ * (∫ t in Ioi (2 : ℝ), t ^ (-δ - 1) * Real.log (Real.log t)) =
+      (∫ u in Ioi (δ * Real.log 2), Real.log u * Real.exp (-u)) -
+        Real.log δ * Real.exp (-(δ * Real.log 2)) := by
+  have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have ha : (0 : ℝ) ≤ δ * Real.log 2 := by positivity
+  have hLHS : Tendsto
+      (fun T : ℝ => ∫ t in (2 : ℝ)..T, δ * (t ^ (-δ - 1) * Real.log (Real.log t)))
+      atTop (nhds (δ * ∫ t in Ioi (2 : ℝ), t ^ (-δ - 1) * Real.log (Real.log t))) := by
+    have hint := (integrableOn_rpow_mul_logLog hδ).const_mul δ
+    have h := intervalIntegral_tendsto_integral_Ioi (2 : ℝ) hint tendsto_id
+    rwa [MeasureTheory.integral_const_mul] at h
+  have hRHS : Tendsto (fun T : ℝ => ∫ u in (δ * Real.log 2)..(δ * Real.log T),
+      (Real.log u - Real.log δ) * Real.exp (-u)) atTop
+      (nhds (∫ u in Ioi (δ * Real.log 2), (Real.log u - Real.log δ) * Real.exp (-u))) := by
+    refine intervalIntegral_tendsto_integral_Ioi _ (integrableOn_logSub_mul_exp ha) ?_
+    exact Real.tendsto_log_atTop.const_mul_atTop hδ
+  have heq : (fun T : ℝ => ∫ t in (2 : ℝ)..T, δ * (t ^ (-δ - 1) * Real.log (Real.log t)))
+      =ᶠ[atTop] fun T : ℝ => ∫ u in (δ * Real.log 2)..(δ * Real.log T),
+        (Real.log u - Real.log δ) * Real.exp (-u) := by
+    filter_upwards [eventually_ge_atTop (2 : ℝ)] with T hT
+    exact integral_logLog_change_of_variables hδ hT
+  have hval := tendsto_nhds_unique (hLHS.congr' heq) hRHS
+  rw [hval]
+  have hsplit : (fun u : ℝ => (Real.log u - Real.log δ) * Real.exp (-u)) =
+      fun u : ℝ => Real.log u * Real.exp (-u) - Real.log δ * Real.exp (-u) :=
+    funext fun u => by ring
+  rw [hsplit, MeasureTheory.integral_sub (HTGeometry.integrableOn_log_mul_exp_neg_Ioi ha)
+    ((integrableOn_exp_neg_Ioi _).const_mul _), MeasureTheory.integral_const_mul,
+    integral_exp_neg_Ioi]
+
+/-- **The log-log integral asymptotic.**  `δ ∫_2^∞ t^(-δ-1) log log t dt + log δ → -γ`. -/
+theorem tendsto_logLog_integral_add_log :
+    Tendsto (fun δ : ℝ => δ * (∫ t in Ioi (2 : ℝ), t ^ (-δ - 1) * Real.log (Real.log t))
+      + Real.log δ) (nhdsWithin 0 (Ioi 0)) (nhds (-Real.eulerMascheroniConstant)) := by
+  have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have hscale : Tendsto (fun δ : ℝ => δ * Real.log 2) (nhdsWithin 0 (Ioi 0))
+      (nhdsWithin 0 (Ioi 0)) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have : Tendsto (fun δ : ℝ => δ * Real.log 2) (nhds 0) (nhds (0 * Real.log 2)) :=
+        (continuous_id.mul continuous_const).tendsto 0
+      simpa using this.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with δ hδ
+      exact mul_pos hδ hlog2
+  have htail : Tendsto (fun δ : ℝ => ∫ u in Ioi (δ * Real.log 2), Real.log u * Real.exp (-u))
+      (nhdsWithin 0 (Ioi 0)) (nhds (-Real.eulerMascheroniConstant)) :=
+    HTGeometry.tendsto_integral_Ioi_log_mul_exp_neg.comp hscale
+  have hsmall : Tendsto (fun δ : ℝ =>
+      -(Real.log δ * (Real.exp (-(δ * Real.log 2)) - 1))) (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
+    have hb : ∀ᶠ δ : ℝ in nhdsWithin 0 (Ioi 0),
+        ‖-(Real.log δ * (Real.exp (-(δ * Real.log 2)) - 1))‖ ≤
+          Real.log 2 * |δ * Real.log δ| := by
+      filter_upwards [self_mem_nhdsWithin] with δ hδ
+      have hδ0 : (0 : ℝ) < δ := hδ
+      have hx : (0 : ℝ) ≤ δ * Real.log 2 := by positivity
+      have hexp : |Real.exp (-(δ * Real.log 2)) - 1| ≤ δ * Real.log 2 := by
+        have h1 : Real.exp (-(δ * Real.log 2)) ≤ 1 := by
+          rw [Real.exp_le_one_iff]
+          linarith
+        have h2 : 1 - (δ * Real.log 2) ≤ Real.exp (-(δ * Real.log 2)) := by
+          have := Real.add_one_le_exp (-(δ * Real.log 2))
+          linarith
+        rw [abs_of_nonpos (by linarith)]
+        linarith
+      rw [norm_neg, Real.norm_eq_abs, abs_mul]
+      calc |Real.log δ| * |Real.exp (-(δ * Real.log 2)) - 1|
+          ≤ |Real.log δ| * (δ * Real.log 2) :=
+            mul_le_mul_of_nonneg_left hexp (abs_nonneg _)
+        _ = Real.log 2 * (|Real.log δ| * δ) := by ring
+        _ = Real.log 2 * |δ * Real.log δ| := by
+            rw [abs_mul, abs_of_pos hδ0]
+            ring
+    refine squeeze_zero_norm' hb ?_
+    have hmul : Tendsto (fun δ : ℝ => δ * Real.log δ) (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
+      have h := Real.continuous_mul_log.tendsto (0 : ℝ)
+      simpa using h.mono_left nhdsWithin_le_nhds
+    have habs : Tendsto (fun δ : ℝ => |δ * Real.log δ|) (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
+      simpa using hmul.abs
+    simpa using habs.const_mul (Real.log 2)
+  have hsum := htail.add hsmall
+  rw [add_zero] at hsum
+  refine hsum.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with δ hδ
+  rw [integral_logLog_Ioi hδ]
+  ring
+
+end
+
+end RHTower

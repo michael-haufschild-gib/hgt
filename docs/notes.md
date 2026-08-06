@@ -267,3 +267,78 @@ This removes convergence in stage index, replacing it with arbitrarily deep fini
 - [Frequent real-part criterion](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/RouteRHarmonicQuantumGapCriterion.lean:138)
 
 Verdict: `[LEAN-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`. Remaining producer must establish finite-depth upper bounds that contradict the positive first-wall lower bound off-center.
+
+## Update 5
+made the scale law two-sided, which turned into a no-go.
+
+Matching upper bound → the sandwich
+
+Running the same termwise comparison in the other direction, for a stage carried by primes at most Q:
+
+‖stageAverage w (W_t)‖ ≤ 1 − Q^(−2|t|)
+
+Combined with last pass's floor, a stage carried inside [q, Q] is trapped:                 
+(1 − q^(−2|t|))(1 − 3/q) ≤ ‖stageAverage w (W_t)‖ ≤ 1 − Q^(−2|t|)                          
+(norm_stageAverage_criticalWall_le, stageAverage_criticalWall_sandwich).                   
+The ceiling half is a no-go                                                                
+It kills any localized form of the criterion. Since 1 − e^(−x) ≤ x, taking t = r/(2 log Q) gives 1 − Q^(−2|t|) ≤ r. So for iling Q ≥ 2 and any tolerance r >0 there is a nonzero grade whose average at that stage is within r:
+
+- exists_ne_zero_norm_stageAverage_le
+- exists_depthCeiling_of_finite_always gives a ceiling
+- exists_ne_zero_norm_stageAverage_le_of_finite_support
+- exists_isCofinalUnitProfile_nohe witnessed form: a boundedcofinal prime-harmonic profile exists all of whose stages are finitely supported, and every
+one of its stages is evaded by s
+
+So the unbounded-depth quantifiensic — no single stage, no finitefamily, no finite certificate can separate neutral grade. I had left that possibility open;
+it is now closed. The producer mat unboundedly deep scales, andnothing else in the construction is negotiable: the device output is a function of
+|t|·log(depth) up to the depth r correction.
+
+To get the witness I strengthene to record stage-supportfiniteness (exists_isCofinalUnitProfile_finiteSupport{,_of_equiv,_primeHarmonic}, finite_support_unitWindowProfileiv); the old plain-existence names are kept as one-line corollaries, so nothing downstream changed.
+
+
+No-go is valid and materially sharpens frontier.
+
+Two precision points:
+
+- `[LEAN-PROVED]` directly covers every single ceiling-bounded or finitely supported stage. “No finite family” follows by taking a common ceiling over finite union, but lacks a separately named Lean theorem.
+- Minimal surviving obligation is weaker than modulus control: one global cofinal profile with, for each \(\rho\),
+  \[
+  \exists r_\rho<1,\quad
+  \exists^\infty N,\ 
+  |\Re A_N(W_{t_\rho})|\le r_\rho.
+  \]
+  Cofinal escape automatically makes these witnessing stages unboundedly deep.
+
+Thus bounded-depth localization is `[FALSIFIED]`. Positive survivor is the two-sided scale classification: stage detects only \(|t|\log(\text{depth})\), up to Fisher correction.
+
+Because positive unit stages contain no internal cancellation, remaining producer must supply an external Stokes/Cartier comparison or signed companion channel at unbounded depths.
+
+- [Two-sided sandwich](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/RouteRFirstWallScaleQuantification.lean:287)
+- [Single-stage no-go](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/RouteRFirstWallScaleQuantification.lean:302)
+- [Witness profile](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/RouteRFirstWallScaleQuantification.lean:438)
+- [RH characterization](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/RouteRFirstWallScaleQuantification.lean:493)
+
+Direct Lean verification passes.
+
+## Update 6
+ The Route R first-wall lane is now closed as a classified re-encoding, and the RHTower area umbrella builds green for the first time this session.
+
+RH characterization — the criterion is now an equivalence
+
+riemannHypothesis_iff_frequently_abs_re_profileAverage_lt_one: for any bounded cofinal prime-harmonic profile mu,
+
+RiemannHypothesis ↔ ∀ρ, ∃ r < 1, ∃ᶠ N, |(profileAverage mu N (W_{t_ρ})).re| ≤ r
+
+Forward uses only that neutral grade annihilates the coefficient field, plus the existing corpus theorem xi_divisor_support_re_eq_half_of_rh. Unconditional, [propext, Classical.choice, Quot.sound].
+
+Two premises discharged (item 1)
+
+- eventually_deepStage — the pria finite set, soIsCofinalUnitProfile.escapes already forces every far-enough stage above that depth. The
+depth floor I assumed in pass ths.
+- Hence exists_deepStage_of_frequently: the deep-stage and asymptotic forms of the
+criterion are the same conditiony_norm_profileAverage_le turns one frequent modulus bound into the explicit grade bound at every admissible depth
+simultaneously.
+
+Also linearized the ceiling: ‖st| log Q(norm_stageAverage_criticalWall_le_scale) — the usable form of the producer's target.
+
+Lane verdict: terminus, not progress. Four no-freedom facts are now theorems — the device carries none (all profiles computhe depth floor carries none(escape supplies it), bounded depth carries no information (pass three's no-go), and tmodulus is pinned two-sidedly byund on |t_ρ| short of zero isextractable: a bound |t| ≤ δ for fixed δ > 0 is a bounded-depth certificate, which is always satisfiable by nonzero grs RH per zero with nothing left to trade. I recorded this on both cards and in memory as [TERMINUS — CRITERION RE-ENCODING], with an explicit "do not sharpenther"; Route R's remaining hope needs a different producer, not a better reader.

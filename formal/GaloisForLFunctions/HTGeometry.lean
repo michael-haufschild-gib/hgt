@@ -5673,6 +5673,7 @@ import GaloisForLFunctions.HTGeometry.LaurentAnnulus
 import GaloisForLFunctions.HTGeometry.PolyannulusRunge
 import GaloisForLFunctions.HTGeometry.DbarPuncturedSolve
 import GaloisForLFunctions.HTGeometry.DbarExhaustionSolve
+import GaloisForLFunctions.HTGeometry.SmoothTruncation
 import GaloisForLFunctions.HTGeometry.PolydiscCauchyFormula
 import GaloisForLFunctions.HTGeometry.PolydiscCauchyLocal
 import GaloisForLFunctions.HTGeometry.PolydiscSeriesCoefficients

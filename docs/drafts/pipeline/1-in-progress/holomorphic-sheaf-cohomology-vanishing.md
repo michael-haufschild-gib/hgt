@@ -1261,3 +1261,78 @@ each step — the epimorphism being the *local* `∂̄`-lemma — the fine actio
 `DeningerHasPartitions` from `SmoothPartitionOfUnity`, and the surjectivity on global sections,
 which is `setDbar_exact_global` / `setDbar_exact_punctured`.  Then
 `deningerResolution_ext_eq_zero` gives `H^q(Ω, O) = 0`.
+
+## The Dolbeault resolution is short exact (2026-08-06)
+
+`RHTower/DeningerDolbeaultSheaf.lean`.
+
+**The maps.**  `deningerFormIncl Ω q : K^q ⟶ A^q` is the inclusion of the closed forms;
+`deningerFormDbar Ω q : A^q ⟶ K^{q+1}` is `f ↦ ∂̄f`, computed on the ambient extension.  That the
+target is the *closed* forms of degree `q+1` is `deningerDbarSection_pred`: the degree comes from
+`setDbar_deg` applied to a local model, and the closedness from `setDbar_setDbar_eq_zero`.  Both
+maps are well defined because `deningerSetDbar_model` computes the differential from any local
+model, and models exist on explicit open neighbourhoods (`exists_model_open`).
+
+**Exactness at the middle** is not proved by an abstract argument but by exhibiting the inclusion as
+the kernel: `deningerFormStep_isKernel` builds, for any `k : T ⟶ A^q` with `k ≫ ∂̄ = 0`, the lift
+`deningerKernelLift` into the closed forms, which is legitimate precisely because `k`'s sections are
+killed by `∂̄`.  Then `ShortComplex.exact_of_f_is_kernel`.  This avoids needing that the sections
+functor is exact or that exactness of sheaves is checked on stalks.
+
+**The epimorphism is the local `∂̄`-lemma.**  `deningerFormDbar_locallySurjective`: given a closed
+form of degree `q+1` over `U` and a point `x`, take a local model `g` on an open `N`, note that `g`
+is closed on `N ∩ deningerAmb U` (again by `setDbar_congr_on_isOpen`), pick `ε` with
+`ball c ε ⊆ N ∩ deningerAmb U` and observe `polydisc c ε ⊆ ball c ε` by `pi_norm_lt_iff`, and apply
+`setDbar_polydisc_solve` on that polydisc.  The primitive `u` is *globally* smooth of degree `q`, so
+it is its own model, and the section `y ↦ u · y` over the corresponding open set of the domain has
+`∂̄ = h` there.  Hence `Epi` via `isLocallySurjective_iff_epi`, and
+
+  `deningerFormStep_shortExact : (deningerFormStep Ω q).ShortExact`.
+
+**Truncation.**  `HTGeometry/SmoothTruncation.lean`: `exists_contDiff_eventuallyEq` — a function
+smooth on an open set agrees, near each of its points, with a globally smooth function.  Multiply by
+a bump supported in a ball inside the open set and extend by zero; the ball and the complement of
+the closed ball carrying the bump cover the space.  Checked against the corpus first: the existing
+bump machinery is all *specific* cutoffs (`exists_annulus_cutoff`, `exists_polyannulus_cutoff`,
+`exists_polydisc_bumps`, `cutoff_slab_support`, `SmoothWeight`) — none of them turns an arbitrary
+germ into a global function, so this is new rather than a duplicate.  It is what will carry the
+smooth partition of unity on the domain into the global-model form the sheaves are stated in.
+
+Axiom audit for all of it: `propext, Classical.choice, Quot.sound`.
+
+## The form sheaves are fine, and the exact route to the smooth partitions (2026-08-06)
+
+`RHTower/DeningerDolbeaultFine.lean`.
+
+`DeningerSmoothMult Ω` is the subgroup of `C(deningerSpace Ω, ℝ)` of functions whose extension by
+zero agrees, near every point of the domain, with a globally smooth function on `ℂ^n` — the same
+"global model" device the form sheaves use, so the two match without any conversion.  It contains
+`1` because the domain is open.  `deningerFormFineAction Ω q` is the multiplication
+`(ρ · f)(y)(S) = ρ(y) f(y)(S)`; the model of the product is the product of the models, which is why
+the multiplier subgroup had to be stated with global models rather than with local
+differentiability.
+
+**The remaining three items, with every ingredient verified to exist.**
+
+1. `DeningerHasPartitions (DeningerSmoothMult Ω)`.  The route that works, and the one to take:
+   refine the given cover `V x` to `W x ⊆ V x` with `closure (W x)` compact — then
+   `SmoothPartitionOfUnity.exists_isSubordinate` on the manifold `↥Ω` (instances checked:
+   `IsManifold` and `T2Space` are found; `SigmaCompactSpace ↥Ω` is
+   `sigmaCompactSpace_of_locallyCompact_secondCountable` after `Ω.2.locallyCompactSpace`) produces
+   members with `tsupport` inside a compact set, hence `HasCompactSupport`.  Then
+   `ContMDiff.extend_zero` gives `ContMDiff` of the extension by zero **on `ℂ^n`**, and
+   `contMDiff_iff_contDiff` turns that into `ContDiff ℝ ⊤` — a *global* model, which is exactly
+   membership in `DeningerSmoothMult Ω`.  Note this route needs no truncation at all; the
+   compact-support refinement replaces it.  `HTGeometry.exists_contDiff_eventuallyEq` remains as the
+   general tool for germs that are not compactly supported.
+2. Surjectivity of `Γ(⊤, A^q) → Γ(⊤, K^{q+1})`.  A global section of `K^{q+1}` over `⊤` has, at
+   every point, a global smooth model; on `Ω = ℂ^n` or `(ℂ^×)^n` the whole section *is* a global
+   `∂̄`-closed `SetForm` of degree `q+1`, and `setDbar_exact_global` / `setDbar_exact_punctured`
+   produce the primitive, which is again a section because it is globally smooth.
+3. `deningerResolution_ext_eq_zero` with `K i := deningerClosedFormSheaf Ω i`,
+   `A i := deningerFormSheaf Ω i`, `ι i := deningerFormIncl Ω i`, `π i := deningerFormDbar Ω i`,
+   `hSE := deningerFormStep_shortExact`, `hacy i := deningerFine_acyclicOn hpu
+   (deningerFormFineAction Ω i)`, and `hlift` from item 2 — giving `H^{q+1}(Ω, O_Ω) = 0`, with
+   `O_Ω = deningerClosedFormSheaf Ω 0`.
+
+Axiom audit for everything landed: `propext, Classical.choice, Quot.sound`.

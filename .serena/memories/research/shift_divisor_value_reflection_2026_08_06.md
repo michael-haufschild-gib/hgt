@@ -133,10 +133,17 @@ Subsumes (machine-checked connectors exist):
   * `GaloisForLFunctions/RHTower/XiParityMassDichotomy.lean` —
     `archimedeanCorrection_family_isHalfPlaneRational_iff`: a natural-shift family's archimedean
     correction is half-plane rational IFF both parity masses vanish.
-- blocked: an explicit rational reflection cocycle for same-parity pairs.  The reflected point
-  `1-a-b-s` has negative real part, outside the domain of the rational closed form; that needs a
-  global meromorphic identity (identity theorem for meromorphic functions), not just a half-plane
-  one.
+- UNBLOCKED (no identity theorem needed): `0 < s.re` in the corpus's
+  `hasDerivAt_Gammaℝ_of_re_pos` was only used to keep `s/2` off the poles of Gamma.  Generalized in
+  place (old names kept as corollaries): `hasDerivAt_Gammaℝ_off_poles`,
+  `hasDerivAt_archFactor_off_poles` (ArchEnvelope.lean),
+  `logDeriv_archFactor_closed_off_poles` (XiShiftPrimeExposure.lean).
+  `GaloisForLFunctions/RHTower/ArchLadderRegular.lean` defines `ArchLadderRegular s` =
+  (s/2 off Gamma poles) AND (s not an odd integer); stable under even translation
+  (`ArchLadderRegular.shift`).  Gives
+  `xiTransverseShiftArchimedeanCorrection_even_of_ladderRegular` on the whole ladder and
+  `xiPairwiseShiftReflectionCocycle_eq_explicit` — explicit rational reflection cocycle for every
+  same-parity integral pair, valid at the reflected point in the LEFT half-plane.
 
 ## Scope boundary
 
