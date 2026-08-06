@@ -2,41 +2,41 @@
 
 Card: docs/drafts/pipeline/2-fully-proven/cusp-spectrum-radius-law.md
 
-## Degree 1 is CLOSED at the boundary, any conductor
+## Closed unconditionally
 
-Two independent routes, both unconditional, both via a functional equation whose
-RIGHT side is a convergent series dominated by its first exponent:
+**Boundary law, degree 1, any conductor** — two routes, both via a functional
+equation whose RIGHT side is a convergent series dominated by its first exponent:
+1. ζ, any real shift α: `HurwitzZetaRightAsymptotics` → `ZetaTwistShiftDecomposition`
+   → `ZetaTwistCuspRadius` → `ZetaTwistGapGeometry`.
+   Capstone `hadamardLimsup_zetaTwistShift_eq_infDist` = `1/(2π·infDist α (Sing\{α}))`.
+2. Any periodic Φ : ZMod N → ℂ, Φ ≠ 0: `PeriodicLSeriesRightAsymptotics` →
+   `ZModLFunctionCuspRadius`. `hadamardLimsup_zmodShift` = `N/(2π n₀)`;
+   `hadamardLimsup_zmodShift_of_dft_one` = `N/(2π)` (card's Dirichlet row).
 
-1. **ζ, any real shift α** (`HurwitzZetaRightAsymptotics` →
-   `ZetaTwistShiftDecomposition` → `ZetaTwistCuspRadius` → `ZetaTwistGapGeometry`).
-   Capstone `hadamardLimsup_zetaTwistShift_eq_infDist`:
-   `limsup_k |F(s₀-k,α)/k!|^{1/k} = 1/(2π · infDist α (Sing \ {α}))`.
-   Input: mathlib `expZeta_one_sub` (Hurwitz formula) + `a^w ζ(w,a) → 1`.
-2. **Any periodic Φ : ZMod N → ℂ, Φ ≠ 0** (`PeriodicLSeriesRightAsymptotics` →
-   `ZModLFunctionCuspRadius`). Capstone `hadamardLimsup_zmodShift`:
-   `= N/(2π n₀)`, n₀ = least n ≥ 1 with `𝓕Φ(n) ≠ 0 ∨ 𝓕Φ(-n) ≠ 0`.
-   Input: mathlib `ZMod.LFunction_one_sub` + `n₀^w L(Θ,w) → Θ(n₀)`.
-   `hadamardLimsup_zmodShift_of_dft_one` gives the card's Dirichlet row: N/(2π).
+**Step 3 in degree 2** — `RHTower/ZetaSquareCuspRadius.lean`:
+`hadamardLimsup_zetaSquareShift : limsup |ζ(s₀-k/2)²/k!|^{1/k} = 1/(4π)`,
+needing `∀ k:ℕ, s₀ ≠ k/2`. NO Stirling: `(m!)²/(2m)! = 1/C(2m,m)` and
+`4^m/(2m) ≤ C(2m,m) ≤ 4^m` is a polynomial envelope.
+New infrastructure (reusable for any degree d):
+- `HTGeometry/ScaledRootGrowth.lean` — exponent `1/(a m + b)` versions of the
+  whole root-growth engine. Key trick: `u^{1/(am+b)} = (u^{1/m})^{m/(am+b)}` and
+  `m/(am+b) → 1/a`, then continuity of rpow at (1, 1/a).
+- `HTGeometry/ParityLimsupSplit.lean` — `atTop = map(2·) atTop ⊔ map(2·+1) atTop`,
+  `hadamardLimsup_eq_parity_sup`, `limsup_ofReal_eq`.
+- `HTGeometry/CentralBinomialRoot.lean` — `centralQuot`, its bounds and root.
 
-**Common mechanism — reusable.** Write the shifted value via the functional
-equation as `(geometric)^k · Γ-ratio · bracket`; the bracket is
-`E_k A_k + E'_k B_k` with `|E_k|,|E'_k|` CONSTANT in k (k real) and `E_k = e·i^k`.
-Extract the dual geometric rate; the bracket then converges to the period-four
-shape `e i^k a + e' (-i)^k b`, whose four values vanish together iff a = b = 0.
-Minimality of the first exponent forbids that ⇒ frequent lower bound ⇒
-`limsup_rpow_inv_eq_one`. NO Mellin–Barnes anywhere.
+**Interior law, any degree** — `HTGeometry/NonnegThetaCuspGrowth.lean` +
+`CuspGapUnconditionalInstances.lean` (non-negative coefficient families).
+CAVEAT: base height is *chosen* to be Δ, so it is the interior shadow.
 
-## Also closed (interior, general families)
-
-`HTGeometry/NonnegThetaCuspGrowth.lean` + `CuspGapUnconditionalInstances.lean`:
-any non-negative coefficient family, any degree d>0, any real σ below the
-abscissa. CAVEAT: interior shadow — base height is *chosen* to be Δ.
-`RHTower/ZetaStandardTwistDichotomy.lean`: `differentiable_expZeta_iff` = K–P for ζ.
+**K–P for ζ** — `RHTower/ZetaStandardTwistDichotomy.lean`,
+`differentiable_expZeta_iff`, straight from mathlib's `expZeta`.
 
 ## What is left
 
-- Degree `d > 1`: needs the class member's own Hurwitz-type formula
-  (general Selberg class `S^♯` + K–P). Corpus has NO Selberg-class layer.
-- Step 3 at degree 2 (ζ²) parity obstruction: `‖c_{2m+1}‖^{1/(2m+1)}` does not
-  reduce to a `1/m` root; needs a limsup-under-exponent-perturbation lemma.
-  Tools if attempted: `Nat.centralBinom` bounds, `limsup_sup_filter`.
+Only degree `d > 1` in the *general* boundary law: it needs the class member's
+own Hurwitz-type formula, i.e. the Selberg class `S^♯` + Kaczorowski–Perelli.
+The corpus has NO Selberg-class layer (the `Selberg*` modules are the sieve).
+Model the structure on `RHTower/SelfDualDirichletRealZeros.lean`'s
+`SelfDualPrimitiveDirichletDatum`. The scaled/parity engine above is already in
+place for whatever degree such a formula would produce.

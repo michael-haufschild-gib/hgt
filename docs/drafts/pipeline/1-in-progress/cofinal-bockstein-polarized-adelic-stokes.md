@@ -1716,3 +1716,48 @@ pre-divisor source structure supplies neither pointwise-bounded Gamma-root
 deconvolution nor a fixed-ideal zero-aperture landing.  Consequently no
 unconditional Lean proof of `SingularStokesFlat` can be added without first
 proving this analytic extension theorem.
+
+## 2026-08-06 — First-wall oriented harmonic quantization
+
+`[LEAN-PROVED]` Forbidden continuation interval is no longer minimal producer
+burden. Put
+
+\[
+ W_t(p)=p^{-|t|}\beta_t(p),\qquad h(p)=p^{-1}.
+\]
+
+New module
+`RHTower/RouteRCriticalWallOrientedHarmonicQuantization.lean` proves
+
+\[
+ [W_t]=
+ \begin{cases}
+   +[h],&t<0,\\
+   0,&t=0,\\
+   -[h],&t>0,
+ \end{cases}
+ \qquad [h]\ne0
+ \tag{QW}
+\]
+
+inside actual fixed summable tail--Roos corona. Proof is coefficient-faithful
+and pre-divisor: occupancy Fisher differs from `1/p` by an `ell^1` sequence,
+while remaining critical-wall correction has order `p^(-1-2|t|)` and is
+summable for every `t != 0`.
+
+### Mathematical delta
+
+Every off-centre aperture no longer presents a separate continuation problem.
+At its first trace wall, complete continuum collapses to one universal nonzero
+prime-harmonic rank port with orientation sign. Route R therefore does not
+need source continuation from `epsilon>|t|` through entire forbidden interval
+to `epsilon=0`. A strictly smaller producer suffices:
+
+`[OPEN CORE — ROUTE_R_FIRST_WALL_SOURCE_RESIDUE_VANISHING]` Prove from
+pre-divisor fixed-source-orientation Stokes/Cartier law that Xi-specialized
+critical-wall tail class has zero harmonic residue.
+
+By `(QW)`, zero residue forces oriented rank to be zero, hence `t=0`. Existing
+fixed-tail/Xi comparison then annihilates Hodge-mate coefficient and closes RH
+endpoint. Remaining unproved content is this source-derived residue law, not
+an `ell^1` deconvolution across a positive-width aperture region.

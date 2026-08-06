@@ -1,8 +1,8 @@
 # Route R critical-wall oriented harmonic quantization
 
-- **Stage:** 2-fully-proven
-- **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
-- **Active claim:** `[PAPER-PROVED — ROUTE_R_CRITICAL_WALL_ORIENTED_HARMONIC_QUANTIZATION]`
+- **Stage:** 3-formalized
+- **Status:** `[LEAN-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
+- **Active claim:** `[LEAN-PROVED — ROUTE_R_CRITICAL_WALL_ORIENTED_HARMONIC_QUANTIZATION]`
 
 ## Exact claim
 
@@ -195,3 +195,28 @@ prime-harmonic rank port with an orientation sign. Thus any source producer need
 It no longer needs to construct an `ell^1` continuation through the whole forbidden aperture
 interval. If the residue law is coefficient-faithful, `(QW)` forces the oriented rank to be zero,
 hence `t=0`, after which the existing Route R Lean chain proves RH.
+
+## Lean verification
+
+Module:
+`formal/GaloisForLFunctions/RHTower/RouteRCriticalWallOrientedHarmonicQuantization.lean`.
+
+Principal declarations:
+
+- `summable_criticalWallCoefficient_add_primeHarmonic_of_pos`;
+- `summable_criticalWallCoefficient_sub_primeHarmonic_of_neg`;
+- `routeRDiagonalTailRoosClass_eq_iff_summable_sub`;
+- `routeRPrimeGammaCriticalWallTailRoosClass_eq_neg_harmonic_of_pos`;
+- `routeRPrimeGammaCriticalWallTailRoosClass_eq_harmonic_of_neg`;
+- `routeRPrimeGammaCriticalWallTailRoosClass_eq_zero`;
+- `routeRPrimeHarmonicTailRoosClass_ne_zero`.
+
+Verification:
+
+- `lake env lean GaloisForLFunctions/RHTower/RouteRCriticalWallOrientedHarmonicQuantization.lean`;
+- `lake build GaloisForLFunctions.RHTower.RouteRCriticalWallOrientedHarmonicQuantization`;
+- key declaration axiom audit: `[propext, Classical.choice, Quot.sound]`;
+- module wired into `GaloisForLFunctions/RHTower.lean`;
+- global lint's semantic gates passed for this module; global reachability audit remains red only
+  because concurrent unrelated Krylov/CentralBinomial modules are not yet wired into their
+  umbrellas.

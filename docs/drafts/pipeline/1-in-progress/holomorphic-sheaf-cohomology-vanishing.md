@@ -665,3 +665,84 @@ So both clauses of the step are proved:
 | sets containing some `l > k` | `f` vanishes there, and `dzbarAt_eq_zero_of_setDbar_zero` plus `dzbarAt_setTransform_eq_zero` kill the differential term by term |
 
 Axiom audit: within `propext, Classical.choice, Quot.sound`.
+
+## The `(0,q)` induction step, assembled (2026-08-06)
+
+`setDbar_step_below` — **subtracting the differential of the transform lowers by one the highest
+direction the form uses**:
+
+  if `f` is `∂̄`-closed on `productDomain D` and uses only directions `≤ m`, and `k` is the direction
+  with `(k : ℕ) = m`, then `f − ∂̄(setTransform f χ ψ k)` uses only directions `< m` on
+  `productDomain D'`.
+
+The proof splits on whether the index set contains `k`.  If it does, the residue is zero by
+`setFormSub_setTransform_eq_zero`, with no closedness used.  If it does not, then the offending
+direction `l` satisfies `l ≠ k` and hence `(l : ℕ) > m`, so `f` itself vanishes there; the
+differential of the transform is then killed term by term — the terms `j ≠ l` because the coefficient
+at `insert k (S.erase j)` still carries `l`, and the term `j = l` because
+`dzbarAt_eq_zero_of_setDbar_zero` turns closedness into the vanishing of `∂̄_l` at
+`insert k (S.erase l)`.
+
+This is the general-degree analogue of `dbar_product_step_smooth`, and like it, it is stated over an
+arbitrary **product domain**, so it applies to polydiscs and polyannuli alike without any further
+work.
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+### Remaining in the `(0,q)` chain
+
+The recursion over directions (the analogue of `dbar_product_solve_aux`, which is a plain induction
+on the number of directions still to clear, with the chain of domains supplying the cutoffs), and
+then the two exhaustion arguments, which are degree-agnostic: `exists_dbar_approx_sequence` /
+`dbar_global_solve` over `ℂⁿ` and `exists_dbar_punctured_sequence` / `dbar_punctured_solve` over
+`(ℂ^×)ⁿ` are written entirely in terms of "solve on a member of the exhaustion, correct the
+difference, take the limit", and the only degree-dependent input is the step above.
+
+## What the recursion needs next: `d² = 0` in the set model (2026-08-06)
+
+Writing the recursion over directions exposed the one identity the degree-one chain got for free.
+
+In degree one the residue's `∂̄`-closedness came from `dzbarAt_comm` — the antiholomorphic
+derivatives commute — used directly.  In general degree the residue is `f − ∂̄G` and its closedness
+is `∂̄f − ∂̄∂̄G = 0`, so it needs
+
+  `setDbar (setDbar f) = 0`,
+
+which is `dzbarAt_comm` plus the sign bookkeeping: expanding twice gives
+`∑_{k ∈ S} ∑_{j ∈ S.erase k} ε(k,S) ε(j, S.erase k) ∂̄_k ∂̄_j f (S \ {k,j})`, and the terms of the
+pairs `(k,j)` and `(j,k)` carry the same set and the same iterated derivative but opposite signs,
+because
+
+  `insertSign k (S.erase k) · insertSign j ((S.erase k).erase j)
+     = − insertSign j (S.erase j) · insertSign k ((S.erase j).erase k)`.
+
+That sign identity is the crux; with it the double sum is an involution-paired cancellation.
+
+Also noted while setting up the recursion: `SetForm` does not track the degree, so the induction's
+base case needs `f ∅ = 0` as an explicit hypothesis — a form of positive degree has no
+degree-zero part.  It is preserved by the step, since the differential of anything is zero at the
+empty set (an empty sum), so `(f − ∂̄G) ∅ = f ∅ = 0`.
+
+So the order is: `setDbar_setDbar_eq_zero` → the recursion over directions (the analogue of
+`dbar_product_solve_aux`, whose shape is already fixed by the degree-one proof) → the two
+exhaustions, which are degree-agnostic → B4.
+
+### The sign identity, verified by hand
+
+For `j ≠ k` both in `S`, write
+
+  `a = |{i ∈ S : i < k}|`,  `c = |{i ∈ S : i < j}|`,
+  `b = |{i ∈ S \ {k,j} : i < j}|`,  `d = |{i ∈ S \ {j,k} : i < k}|`.
+
+Then `insertSign k (S.erase k) = (−1)^a`, `insertSign j ((S.erase k).erase j) = (−1)^b`,
+`insertSign j (S.erase j) = (−1)^c`, `insertSign k ((S.erase j).erase k) = (−1)^d`.
+
+Take `j < k` without loss of generality.  Deleting `k` does not change the count below `j`, and `j`
+is not below itself, so `b = c`.  Deleting `j` removes exactly one element below `k`, and `k` is not
+below itself, so `d = a − 1`.  Hence
+
+  `(−1)^a (−1)^b = (−1)^{a+b}`  and  `−(−1)^c (−1)^d = −(−1)^{b+a−1} = (−1)^{a+b}`,
+
+so the two orders of deletion carry opposite signs and the double sum of `setDbar ∘ setDbar` cancels
+in pairs, `∂̄_k ∂̄_j` being symmetric by `dzbarAt_comm`.  This is what has to be formalized next; the
+work is the two cardinality identities `b = c` and `d = a − 1` in `Finset.filter` form.

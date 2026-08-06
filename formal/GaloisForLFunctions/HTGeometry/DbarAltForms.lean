@@ -349,4 +349,74 @@ theorem dzbarAt_eq_zero_of_setDbar_zero {f : SetForm n} {P : Set (Fin n → ℂ)
 
 end Closedness
 
+section Step
+
+variable {n : ℕ}
+
+/-- **The `(0,q)` Dolbeault induction step.**  Subtracting the differential of the transform lowers
+by one the highest direction the form uses. -/
+theorem setDbar_step_below {f : SetForm n} {D D' : Fin n → Set ℂ} {k : Fin n} {m : ℕ}
+    (hkm : (k : ℕ) = m) (hD : ∀ i, D' i ⊆ D i) (hopen : ∀ i, IsOpen (D i))
+    (chi : ℂ → ℝ) (psi : (Fin n → ℂ) → ℝ)
+    (hchi : ∀ t : ℂ, chi t ≠ 0 → t ∈ D k)
+    (hchione : ∀ z ∈ productDomain D', chi (z k) = 1)
+    (hpsione : ∀ z ∈ productDomain D, psi z = 1)
+    (Sr M M₀ : Finset (Fin n) → ℝ)
+    (hC1 : ∀ T, ContDiff ℝ 1
+      (fun x : Fin n → ℂ => (chi (x k) : ℝ) • ((psi x : ℝ) • f (insert k T) x)))
+    (hgS : ∀ T, ∀ x : Fin n → ℂ, Sr T < ‖x k‖ →
+      (chi (x k) : ℝ) • ((psi x : ℝ) • f (insert k T) x) = 0)
+    (hdS : ∀ T, ∀ x : Fin n → ℂ, Sr T < ‖x k‖ →
+      fderiv ℝ (fun y : Fin n → ℂ => (chi (y k) : ℝ) • ((psi y : ℝ) • f (insert k T) y)) x = 0)
+    (hMb : ∀ T, ∀ x : Fin n → ℂ,
+      ‖fderiv ℝ (fun y : Fin n → ℂ => (chi (y k) : ℝ) • ((psi y : ℝ) • f (insert k T) y)) x‖
+        ≤ M T)
+    (hM₀b : ∀ T, ∀ x : Fin n → ℂ,
+      ‖(chi (x k) : ℝ) • ((psi x : ℝ) • f (insert k T) x)‖ ≤ M₀ T)
+    (hclosed : ∀ S : Finset (Fin n), ∀ z ∈ productDomain D, setDbar f S z = 0)
+    (hbelow : SetFormBelow (m + 1) f (productDomain D)) :
+    SetFormBelow m (setFormSub f (setDbar (setTransform f chi psi k))) (productDomain D') := by
+  intro S hS z hz
+  obtain ⟨l, hlS, hlm⟩ := hS
+  have hzD : z ∈ productDomain D := productDomain_mono hD hz
+  by_cases hkS : k ∈ S
+  · have heq : S = insert k (S.erase k) := (Finset.insert_erase hkS).symm
+    rw [heq]
+    exact setFormSub_setTransform_eq_zero (Finset.notMem_erase k S) (hC1 _) (hgS _)
+      (hchione z hz) (hpsione z hzD)
+  · have hlk : l ≠ k := fun hcon => hkS (hcon ▸ hlS)
+    have hlgt : m + 1 ≤ (l : ℕ) := by
+      rcases lt_or_eq_of_le hlm with h | h
+      · omega
+      · exact absurd (Fin.ext (by omega : (l : ℕ) = (k : ℕ))) hlk
+    have hvanl : ∀ S' : Finset (Fin n), l ∈ S' → ∀ y ∈ productDomain D, f S' y = 0 :=
+      fun S' hS' y hy => hbelow S' ⟨l, hS', hlgt⟩ y hy
+    have hfS : f S z = 0 := hvanl S hlS z hzD
+    show f S z - setDbar (setTransform f chi psi k) S z = 0
+    have hdb : setDbar (setTransform f chi psi k) S z = 0 := by
+      refine Finset.sum_eq_zero fun j hj => ?_
+      have hjk : j ≠ k := fun hcon => hkS (hcon ▸ hj)
+      have hkj : k ∉ S.erase j := fun hcon => hkS (Finset.mem_of_mem_erase hcon)
+      have hvanish : ∀ y ∈ productDomain D,
+          dzbarAt (f (insert k (S.erase j))) j y = 0 := by
+        intro y hy
+        by_cases hjl : j = l
+        · subst hjl
+          refine dzbarAt_eq_zero_of_setDbar_zero (isOpen_productDomain hopen) hclosed ?_ hvanl hy
+          intro hcon
+          rcases Finset.mem_insert.1 hcon with h | h
+          · exact hjk h
+          · exact (Finset.notMem_erase j S) h
+        · refine dzbarAt_eq_zero_of_eventually_zero ?_
+          refine Filter.eventually_of_mem
+            ((isOpen_productDomain hopen).mem_nhds hy) fun y' hy' => ?_
+          refine hvanl _ ?_ y' hy'
+          refine Finset.mem_insert_of_mem ?_
+          exact Finset.mem_erase.2 ⟨fun hcon => hjl hcon.symm, hlS⟩
+      rw [dzbarAt_setTransform_eq_zero hjk hD hopen chi psi hchi hpsione hkj (hC1 _) (hgS _)
+        (hdS _) (hMb _) (hM₀b _) hvanish hz, mul_zero]
+    rw [hfS, hdb, sub_zero]
+
+end Step
+
 end HTGeometry
