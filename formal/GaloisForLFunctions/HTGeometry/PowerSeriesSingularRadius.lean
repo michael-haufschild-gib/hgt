@@ -119,4 +119,35 @@ theorem le_hadamardLimsup_of_no_analytic_extension {c : ℕ → ℂ} {f : ℂ �
   have h := ENNReal.inv_le_iff_inv_le.mp hrad
   rwa [← ENNReal.ofReal_inv_of_pos hR, ← one_div] at h
 
+/-- **Unboundedness is a genuine singularity.**  A function unbounded on the ball
+admits no analytic extension to any larger ball: such an extension would be
+continuous on the compact closed ball and hence bounded there. -/
+theorem no_analytic_extension_of_unbounded {f : ℂ → ℂ} {z₀ : ℂ} {R : ℝ}
+    (hunb : ∀ M : ℝ, ∃ z ∈ Metric.ball z₀ R, M < ‖f z‖) :
+    ∀ R' : ℝ, R < R' →
+      ¬ ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g (Metric.ball z₀ R')
+        ∧ ∀ z ∈ Metric.ball z₀ R, g z = f z := by
+  rintro R' hRR' ⟨g, hg, hgf⟩
+  have hsub : Metric.closedBall z₀ R ⊆ Metric.ball z₀ R' :=
+    Metric.closedBall_subset_ball hRR'
+  have hcont : ContinuousOn g (Metric.closedBall z₀ R) :=
+    (hg.mono hsub).continuousOn
+  obtain ⟨M, hM⟩ := (isCompact_closedBall z₀ R).exists_bound_of_continuousOn hcont
+  obtain ⟨z, hz, hzM⟩ := hunb M
+  have hzc : z ∈ Metric.closedBall z₀ R := Metric.ball_subset_closedBall hz
+  have : ‖f z‖ ≤ M := by
+    rw [← hgf z hz]
+    exact hM z hzc
+  linarith
+
+/-- **An unbounded function caps the radius.**  Combining the two previous
+results: if the represented function is unbounded on the ball of radius `R`, the
+expansion has radius at most `R`. -/
+theorem radius_le_of_unbounded {c : ℕ → ℂ} {f : ℂ → ℂ} {z₀ : ℂ} {R : ℝ}
+    (hR : 0 < R)
+    (hsum : ∀ ζ : ℂ, ‖ζ‖ < R → HasSum (fun k : ℕ => c k * ζ ^ k) (f (z₀ + ζ)))
+    (hunb : ∀ M : ℝ, ∃ z ∈ Metric.ball z₀ R, M < ‖f z‖) :
+    (FormalMultilinearSeries.ofScalars ℂ c).radius ≤ ENNReal.ofReal R :=
+  radius_le_of_no_analytic_extension hR hsum (no_analytic_extension_of_unbounded hunb)
+
 end GaloisForLFunctions.HTGeometry

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ShiftLatticeThetaSeries
+import GaloisForLFunctions.HTGeometry.PowerSeriesSingularRadius
 
 /-!
 # The shift-lattice expansion inside the upper half plane
@@ -263,6 +264,34 @@ theorem summable_norm_shiftLatticeCoeff_mul_pow {C B : ℝ}
   rw [← hrw]
   exact hle
 
+/-- **The expansion converges on the whole disk of radius the height of the base
+point.** -/
+theorem le_radius_shiftLattice {C B : ℝ}
+    (ha : ∀ n : ℕ, ‖a n‖ ≤ C * (n : ℝ) ^ B) (hd : 0 < d) (s z₀ : ℂ)
+    (hz : 0 < z₀.im) :
+    ENNReal.ofReal z₀.im
+      ≤ (FormalMultilinearSeries.ofScalars ℂ
+          (fun k => shiftFactor ^ k * shiftLatticeCoeff a d s z₀ k)).radius := by
+  by_contra hcon
+  rw [not_le] at hcon
+  obtain ⟨c, hcrad, hc⟩ := exists_between hcon
+  refine absurd ?_ (not_le.mpr hcrad)
+  have hctop : c ≠ ⊤ := ne_top_of_lt hc
+  have hcre : c.toReal < z₀.im := by
+    have := (ENNReal.toReal_lt_toReal hctop ENNReal.ofReal_ne_top).mpr hc
+    rwa [ENNReal.toReal_ofReal hz.le] at this
+  have hcnn : 0 ≤ c.toReal := ENNReal.toReal_nonneg
+  have hsum := summable_norm_shiftLatticeCoeff_mul_pow ha hd s z₀ hcnn hcre
+  have hle := (FormalMultilinearSeries.ofScalars ℂ
+      (fun k => shiftFactor ^ k * shiftLatticeCoeff a d s z₀ k)).le_radius_of_summable_nnnorm
+    (r := c.toReal.toNNReal) ?_
+  · rwa [show ((c.toReal.toNNReal : ℝ≥0) : ℝ≥0∞) = ENNReal.ofReal c.toReal from rfl,
+      ENNReal.ofReal_toReal hctop] at hle
+  · refine (NNReal.summable_coe).mp ?_
+    refine hsum.congr fun k => ?_
+    rw [NNReal.coe_mul, coe_nnnorm, FormalMultilinearSeries.ofScalars_norm,
+      NNReal.coe_pow, Real.coe_toNNReal _ hcnn]
+
 /-- **The interior radius bound.**  The shift-lattice expansion converges on the
 whole disk of radius the height of the base point, so the factorially normalized
 spectral family grows no faster than `1/(2π Im z₀)`. -/
@@ -271,27 +300,7 @@ theorem hadamardLimsup_shiftLatticeCoeff_le {C B : ℝ}
     (hz : 0 < z₀.im) :
     hadamardLimsup (shiftLatticeCoeff a d s z₀)
       ≤ ENNReal.ofReal (1 / (2 * Real.pi * z₀.im)) := by
-  set q : ℕ → ℂ := fun k => shiftFactor ^ k * shiftLatticeCoeff a d s z₀ k with hq
-  have hrad : ENNReal.ofReal z₀.im
-      ≤ (FormalMultilinearSeries.ofScalars ℂ q).radius := by
-    by_contra hcon
-    rw [not_le] at hcon
-    obtain ⟨c, hcrad, hc⟩ := exists_between hcon
-    refine absurd ?_ (not_le.mpr hcrad)
-    have hctop : c ≠ ⊤ := ne_top_of_lt hc
-    have hcre : c.toReal < z₀.im := by
-      have := (ENNReal.toReal_lt_toReal hctop ENNReal.ofReal_ne_top).mpr hc
-      rwa [ENNReal.toReal_ofReal hz.le] at this
-    have hcnn : 0 ≤ c.toReal := ENNReal.toReal_nonneg
-    have hsum := summable_norm_shiftLatticeCoeff_mul_pow ha hd s z₀ hcnn hcre
-    have hle := (FormalMultilinearSeries.ofScalars ℂ q).le_radius_of_summable_nnnorm
-      (r := c.toReal.toNNReal) ?_
-    · rwa [show ((c.toReal.toNNReal : ℝ≥0) : ℝ≥0∞) = ENNReal.ofReal c.toReal from rfl,
-        ENNReal.ofReal_toReal hctop] at hle
-    · refine (NNReal.summable_coe).mp ?_
-      refine hsum.congr fun k => ?_
-      rw [NNReal.coe_mul, coe_nnnorm, FormalMultilinearSeries.ofScalars_norm,
-        NNReal.coe_pow, Real.coe_toNNReal _ hcnn]
+  have hrad := le_radius_shiftLattice ha hd s z₀ hz
   rw [radius_ofScalars_eq_inv_hadamardLimsup, hadamardLimsup_geometric] at hrad
   have hA : ((‖shiftFactor‖₊ : ℝ≥0∞)) ≠ 0 := by
     simp [shiftFactor_ne_zero]
@@ -315,6 +324,78 @@ theorem hadamardLimsup_shiftLatticeCoeff_le {C B : ℝ}
   rw [← ENNReal.ofReal_div_of_pos hpi]
   congr 1
   field_simp
+
+/-- **The exact interior radius.**  If the theta function admits no analytic
+extension past the disk of radius the height of the base point, the shift-lattice
+expansion has radius exactly that height. -/
+theorem radius_shiftLattice_eq {C B : ℝ}
+    (ha : ∀ n : ℕ, ‖a n‖ ≤ C * (n : ℝ) ^ B) (hd : 0 < d) (s z₀ : ℂ)
+    (hz : 0 < z₀.im)
+    (hsing : ∀ R' : ℝ, z₀.im < R' →
+      ¬ ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g (Metric.ball z₀ R')
+        ∧ ∀ z ∈ Metric.ball z₀ z₀.im, g z = thetaSeries a d s z) :
+    (FormalMultilinearSeries.ofScalars ℂ
+        (fun k => shiftFactor ^ k * shiftLatticeCoeff a d s z₀ k)).radius
+      = ENNReal.ofReal z₀.im := by
+  refine le_antisymm ?_ (le_radius_shiftLattice ha hd s z₀ hz)
+  refine radius_le_of_no_analytic_extension hz ?_ hsing
+  intro ζ hζ
+  have hexp := hasSum_shiftLatticeExpansion ha hd s z₀ ζ hζ
+  have heq : (fun k : ℕ => (shiftFactor ^ k * shiftLatticeCoeff a d s z₀ k) * ζ ^ k)
+      = fun k : ℕ => (shiftFactor * ζ) ^ k * shiftLatticeCoeff a d s z₀ k := by
+    funext k
+    rw [mul_pow]
+    ring
+  rw [heq]
+  exact hexp
+
+/-- **The theta series is analytic on the open upper half plane.**  Its
+shift-lattice expansion at an interior base point is a genuine power series
+representation on the disk of radius the height. -/
+theorem hasFPowerSeriesOnBall_thetaSeries {C B : ℝ}
+    (ha : ∀ n : ℕ, ‖a n‖ ≤ C * (n : ℝ) ^ B) (hd : 0 < d) (s z₀ : ℂ)
+    (hz : 0 < z₀.im) :
+    HasFPowerSeriesOnBall (fun z => thetaSeries a d s z)
+      (FormalMultilinearSeries.ofScalars ℂ
+        (fun k => shiftFactor ^ k * shiftLatticeCoeff a d s z₀ k))
+      z₀ (ENNReal.ofReal z₀.im) := by
+  refine ⟨le_radius_shiftLattice ha hd s z₀ hz, by simpa using hz, ?_⟩
+  intro y hy
+  have hylt : ‖y‖ < z₀.im := by
+    rw [Metric.mem_eball, edist_zero_right, ← ofReal_norm] at hy
+    exact (ENNReal.ofReal_lt_ofReal_iff_of_nonneg (norm_nonneg _)).mp hy
+  have hexp := hasSum_shiftLatticeExpansion ha hd s z₀ y hylt
+  have heq : (fun k : ℕ => (FormalMultilinearSeries.ofScalars ℂ
+        (fun k => shiftFactor ^ k * shiftLatticeCoeff a d s z₀ k)) k fun _ => y)
+      = fun k : ℕ => (shiftFactor * y) ^ k * shiftLatticeCoeff a d s z₀ k := by
+    funext k
+    rw [FormalMultilinearSeries.ofScalars_apply_eq, smul_eq_mul, mul_pow]
+    ring
+  rw [heq]
+  exact hexp
+
+/-- **The boxed radius law, interior form.**  Given a genuine singularity at
+distance the height of the base point, the factorially normalized spectral family
+grows exactly like `1/(2π Im z₀)` — the card's
+`limsup_k |F_{α₀}(s-k/d)/k!|^{1/k} = 1/(2π Δ(α₀))` with `Δ` the interior gap. -/
+theorem hadamardLimsup_shiftLatticeCoeff_eq {C B : ℝ}
+    (ha : ∀ n : ℕ, ‖a n‖ ≤ C * (n : ℝ) ^ B) (hd : 0 < d) (s z₀ : ℂ)
+    (hz : 0 < z₀.im)
+    (hsing : ∀ R' : ℝ, z₀.im < R' →
+      ¬ ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g (Metric.ball z₀ R')
+        ∧ ∀ z ∈ Metric.ball z₀ z₀.im, g z = thetaSeries a d s z) :
+    hadamardLimsup (shiftLatticeCoeff a d s z₀)
+      = ENNReal.ofReal (1 / (2 * Real.pi * z₀.im)) := by
+  have h := hadamardLimsup_of_radius shiftFactor_ne_zero
+    (shiftLatticeCoeff a d s z₀) hz (radius_shiftLattice_eq ha hd s z₀ hz hsing)
+  rwa [norm_shiftFactor] at h
+
+/-- The theta series is analytic at every interior point. -/
+theorem analyticAt_thetaSeries {C B : ℝ}
+    (ha : ∀ n : ℕ, ‖a n‖ ≤ C * (n : ℝ) ^ B) (hd : 0 < d) (s z₀ : ℂ)
+    (hz : 0 < z₀.im) :
+    AnalyticAt ℂ (fun z => thetaSeries a d s z) z₀ :=
+  (hasFPowerSeriesOnBall_thetaSeries ha hd s z₀ hz).analyticAt
 
 end RadiusBound
 

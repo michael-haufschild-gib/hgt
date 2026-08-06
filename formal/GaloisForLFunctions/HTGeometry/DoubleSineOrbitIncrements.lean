@@ -27,13 +27,13 @@ noncomputable section
 theorem polyCoeffScale_map_algebraMap {q : ℂ} (hq : q ≠ 0) (p : Polynomial ℂ) :
     polyCoeffScale hq (p.map (algebraMap ℂ (RatFunc ℂ)))
       = p.map (algebraMap ℂ (RatFunc ℂ)) := by
-  rw [polyCoeffScale, Polynomial.mapRingHom, Polynomial.map_map]
-  refine Polynomial.map_congr rfl ?_
-  intro x _
-  show ((ratFuncScale q hq : RatFunc ℂ →ₐ[ℂ] RatFunc ℂ) : RatFunc ℂ →+* RatFunc ℂ).comp
-      (algebraMap ℂ (RatFunc ℂ)) x = algebraMap ℂ (RatFunc ℂ) x
-  rw [RingHom.comp_apply]
-  exact ratFuncScale_algebraMap_base q hq x
+  have hcomp : ((ratFuncScale q hq : RatFunc ℂ →ₐ[ℂ] RatFunc ℂ) :
+        RatFunc ℂ →+* RatFunc ℂ).comp (algebraMap ℂ (RatFunc ℂ))
+      = algebraMap ℂ (RatFunc ℂ) := by
+    ext x
+    exact ratFuncScale_algebraMap_base q hq x
+  simp only [polyCoeffScale, Polynomial.coe_mapRingHom]
+  rw [Polynomial.map_map, hcomp]
 
 theorem cylinderCoeffScale_coeffExtend {q : ℂ} (hq : q ≠ 0) (y : RatFunc ℂ) :
     cylinderCoeffScale hq (coeffExtend (K := RatFunc ℂ) y) = coeffExtend y := by
@@ -76,19 +76,25 @@ theorem twoCylTranslate_coeffExtend {q0 q1 : ℂ} (hq0 : q0 ≠ 0) (hq1 : q1 ≠
 the period lattice.**  This is the coset condition of the defect matroid. -/
 theorem separated_of_notMem_periodLattice {l : Fin 2 → ℂ} {ω : Fin 2 → ℂ} {h₁ h₂ : ℂ}
     (hω1 : ω 1 ≠ 0) (hl1 : l 1 = 2 * (Real.pi : ℂ) * Complex.I / ω 1)
-    (hper : Complex.exp (l 1 * ω 1) = 1)
     (hnot : ∀ m n : ℤ, h₁ - h₂ ≠ (m : ℂ) * ω 0 + (n : ℂ) * ω 1) (n : ℤ) :
     (Complex.exp (l 1 * h₁))⁻¹ * Complex.exp (l 1 * ω 0) ^ n
       ≠ (Complex.exp (l 1 * h₂))⁻¹ := by
   intro hcon
+  have hA : Complex.exp (l 1 * h₁) ≠ 0 := Complex.exp_ne_zero _
+  have hB : Complex.exp (l 1 * h₂) ≠ 0 := Complex.exp_ne_zero _
   have hexp : Complex.exp (l 1 * (h₂ - h₁ + (n : ℂ) * ω 0)) = 1 := by
-    rw [mul_sub, mul_add, Complex.exp_add, Complex.exp_sub]
-    rw [show l 1 * ((n : ℂ) * ω 0) = (n : ℂ) * (l 1 * ω 0) by ring, Complex.exp_int_mul]
-    field_simp at hcon ⊢
-    rw [mul_comm] at hcon
+    have h1 : Complex.exp (l 1 * (h₂ - h₁ + (n : ℂ) * ω 0))
+        = Complex.exp (l 1 * h₂) * (Complex.exp (l 1 * h₁))⁻¹
+          * Complex.exp (l 1 * ω 0) ^ n := by
+      rw [show l 1 * (h₂ - h₁ + (n : ℂ) * ω 0)
+          = l 1 * h₂ - l 1 * h₁ + (n : ℂ) * (l 1 * ω 0) by ring,
+        Complex.exp_add, Complex.exp_sub, Complex.exp_int_mul]
+      ring
+    rw [h1]
+    field_simp at hcon
+    field_simp
     linear_combination hcon
   obtain ⟨k, hk⟩ := Complex.exp_eq_one_iff.mp hexp
-  refine hnot (-n) (-k) ?_
   have hl1ne : l 1 ≠ 0 := by
     rw [hl1]
     refine div_ne_zero ?_ hω1
@@ -97,11 +103,11 @@ theorem separated_of_notMem_periodLattice {l : Fin 2 → ℂ} {ω : Fin 2 → �
   have h2pi : 2 * (Real.pi : ℂ) * Complex.I = l 1 * ω 1 := by
     rw [hl1]
     field_simp
-  have hkey : l 1 * (h₂ - h₁ + (n : ℂ) * ω 0) = (k : ℂ) * (l 1 * ω 1) := by
-    rw [hk, ← h2pi]
+  have hcancel : h₂ - h₁ + (n : ℂ) * ω 0 = (k : ℂ) * ω 1 := by
+    refine mul_left_cancel₀ hl1ne ?_
+    rw [hk, h2pi]
     ring
-  have hcancel : h₂ - h₁ + (n : ℂ) * ω 0 = (k : ℂ) * ω 1 :=
-    mul_left_cancel₀ hl1ne (by rw [hkey]; ring)
+  refine hnot n (-k) ?_
   push_cast
   linear_combination -hcancel
 

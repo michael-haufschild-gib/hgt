@@ -32,7 +32,7 @@ theorem periodic_add_mul (hper : ∀ k, f (k + p) = f k) (k n : ℕ) :
       rw [this, hper, ih]
 
 /-- **A periodic sequence is bounded.** -/
-theorem exists_bound_of_periodic (hp : 0 < p) (hper : ∀ k, f (k + p) = f k) :
+theorem exists_bound_of_periodic_nat (hp : 0 < p) (hper : ∀ k, f (k + p) = f k) :
     ∃ C : ℝ, ∀ k, f k ≤ C := by
   classical
   refine ⟨Finset.sup' (Finset.range p) (by simp [hp.ne']) f, fun k => ?_⟩
@@ -59,7 +59,7 @@ non-negative and positive somewhere contributes nothing to the root growth. -/
 theorem limsup_rpow_inv_eq_one_of_periodic (hp : 0 < p)
     (hper : ∀ k, f (k + p) = f k) (hnn : ∀ k, 0 ≤ f k) {k₀ : ℕ} (hk₀ : 0 < f k₀) :
     limsup (fun k : ℕ => (f k) ^ (1 / (k : ℝ))) atTop = 1 := by
-  obtain ⟨C, hC⟩ := exists_bound_of_periodic hp hper
+  obtain ⟨C, hC⟩ := exists_bound_of_periodic_nat hp hper
   have hCpos : 0 < C := lt_of_lt_of_le hk₀ (hC k₀)
   exact limsup_rpow_inv_eq_one hCpos hk₀ hnn hC
     (frequently_le_of_periodic hp hper k₀)

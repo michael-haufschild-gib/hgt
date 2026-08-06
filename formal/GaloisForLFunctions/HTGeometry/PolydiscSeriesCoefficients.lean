@@ -97,8 +97,9 @@ noncomputable def polydiscCoeff (f : (Fin n → ℂ) → E) (c : Fin n → ℂ) 
 
 omit [CompleteSpace E] in
 /-- The integrand of a Cauchy coefficient is continuous on the torus. -/
-theorem polydiscCoeff_continuous {f : (Fin n → ℂ) → E} (hf : Continuous f)
-    (c : Fin n → ℂ) {R : ℝ} (hR : 0 < R) (m : Fin n → ℕ) :
+theorem polydiscCoeff_continuous {f : (Fin n → ℂ) → E} {c : Fin n → ℂ} {R : ℝ}
+    (hf : Continuous fun θ : Fin n → ℝ => f (torusMap c (fun _ => R) θ))
+    (hR : 0 < R) (m : Fin n → ℕ) :
     Continuous fun θ : Fin n → ℝ =>
       (∏ i, (torusMap c (fun _ => R) θ i - c i) ^ (m i + 1))⁻¹ • f (torusMap c (fun _ => R) θ) := by
   have hmap : Continuous fun θ : Fin n → ℝ => torusMap c (fun _ => R) θ :=
@@ -111,17 +112,18 @@ theorem polydiscCoeff_continuous {f : (Fin n → ℂ) → E} (hf : Continuous f)
     have := norm_torusMap_sub_center c R θ i
     rw [hcon, norm_zero] at this
     exact absurd this.symm (by positivity)
-  refine Continuous.smul ?_ (hf.comp hmap)
+  refine Continuous.smul ?_ hf
   refine Continuous.inv₀ ?_ hne
   refine continuous_finsetProd _ fun i _ => ?_
   exact (((continuous_apply i).comp hmap).sub continuous_const).pow _
 
 omit [CompleteSpace E] in
 /-- The Cauchy coefficient integrand is torus integrable. -/
-theorem polydiscCoeff_integrable {f : (Fin n → ℂ) → E} (hf : Continuous f)
-    (c : Fin n → ℂ) {R : ℝ} (hR : 0 < R) (m : Fin n → ℕ) :
+theorem polydiscCoeff_integrable {f : (Fin n → ℂ) → E} {c : Fin n → ℂ} {R : ℝ}
+    (hf : Continuous fun θ : Fin n → ℝ => f (torusMap c (fun _ => R) θ))
+    (hR : 0 < R) (m : Fin n → ℕ) :
     TorusIntegrable (fun ζ => (∏ i, (ζ i - c i) ^ (m i + 1))⁻¹ • f ζ) c (fun _ => R) :=
-  torusIntegrable_of_continuous (polydiscCoeff_continuous hf c hR m)
+  torusIntegrable_of_continuous (polydiscCoeff_continuous hf hR m)
 
 omit [CompleteSpace E] in
 /-- **The Cauchy coefficients are bounded by the maximum of the function on the torus** divided by

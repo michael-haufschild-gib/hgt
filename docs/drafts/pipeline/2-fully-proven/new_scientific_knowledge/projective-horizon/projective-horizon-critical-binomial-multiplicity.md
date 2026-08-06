@@ -208,42 +208,76 @@ formalizes:
 
 It imports the already formalized nonzero critical Jacobian minor.
 
-Part of the count `(2)` is now formalized, and **not** through multiprojective Bezout.  When the
-observed packets have exactly the critical degrees — that is, each packet's lowest coefficient is
-its only one below the horizon — the truncated compatibility equation closes on the nose to the
-exact factorization `(A + U)(B + V) = 1 + U V`, so a fibre point is a monic divisor of degree `m`
-of the target `1 + U V`, and a separable split polynomial has exactly `choose(m+n,m)` of those.
-This is a thin family of observations, not a generic one; what makes it work is exactly that the
-low product cannot reach the horizon.  The resulting chain, all unconditional and all
-`[propext, Classical.choice, Quot.sound]`:
+The count `(2)` is formalized in several regimes, by a route that avoids multiprojective Bezout
+entirely.  All statements below are unconditional Lean theorems with axioms
+`[propext, Classical.choice, Quot.sound]`.
 
-- `CriticalDegreeTailFibre.nat_card_criticalFibre_criticalTails` — exact count for every
-  observation whose tails have the critical degrees and whose target is separable;
-- `CriticalFibreUpperBound.nat_card_criticalFibre_le` — the same binomial coefficient is an
-  unconditional ceiling, separable or not;
+**Critical-degree packets, all depths.**  When each observed packet's lowest coefficient is its only
+one below the horizon, the truncated compatibility equation closes to the exact factorization
+`(A + U)(B + V) = 1 + U V`, so a fibre point is a monic divisor of degree `m` of the target.  Hence
+
+- `CriticalFibreNonempty.nat_card_criticalFibre_eq_card_powersetCard` — the **exact** count for
+  *every* such observation, separable or not:
+  `Nat.card (criticalFibre K m n U V) = card ((1 + U V).roots.powersetCard m).toFinset`,
+  the number of distinct sub-multisets of size `m` of the target's roots;
+- `CriticalDegreeTailFibre.nat_card_criticalFibre_criticalTails` — for a separable target those are
+  the `choose(m+n,m)` subsets of a set of `m+n` distinct roots, giving `(2)` on the nose;
+- `CriticalFibreNonempty.nat_card_criticalFibre_eq_iff_separable` — and separability is **necessary**
+  as well as sufficient: the count equals `choose(m+n,m)` *iff* the target is separable;
+- `CriticalFibreUpperBound.nat_card_criticalFibre_le` — `choose(m+n,m)` is an unconditional ceiling;
+- `CriticalFibreNonempty.nonempty_criticalFibre_criticalTails` — and the fibre is never empty, with
+  no separability needed;
+- `CriticalFibreNonempty.nat_card_criticalFibre_eq_of_target_eq` — the count depends only on the
+  target `1 + U V`;
 - `CriticalTargetGenericSeparable.finite_scalings_not_exact` — in every scaling family the count is
   exact off a finite set of scalars, the reciprocals of the critical values of `U V`.
 
-The other formalized regime is **depth one**: for `m = 1` (and dually `n = 1`) the observed packet
-may be arbitrary, since eliminating the reciprocal leaves a single univariate equation of degree
-`n + 1`, and `CriticalDegreeTailFibre.nat_card_criticalFibre_one_eq_multiplicity_of_tail` gives the
-count `choose(1+n,1)` for every packet with a separable depth-one equation.
+**Depth one, arbitrary packets.**  `CriticalDegreeTailFibre.nat_card_criticalFibre_one_eq_of_tail`
+gives the exact count as the number of distinct **nonzero roots** of the depth-one equation, over any
+field and with no separability;
+`CriticalDegreeTailFibre.nat_card_criticalFibre_one_eq_multiplicity_of_tail`
+specialises it to `choose(1+n,1)` for a separable depth-one equation; `OneDepthHankelBound.nat_card_criticalFibre_one_le_of_tail`
+gives the sharp bound `choose(1+n,1)` unconditionally, by the Padé–Hankel pencil.  Both dualise to
+reciprocal depth one in `SwappedFibreBounds.lean`.
 
-So neither the general multiprojective Bezout theorem nor the generic-etale theorem is needed for
-those two regimes.  **What is still open in Lean is the count for a fully generic observation with
-`m, n >= 2`**: there the completed jet has degree up to `L-1` rather than `m`, the truncated
-equation no longer closes to an exact factorization, and the divisor bijection is unavailable.  The
-eliminated square system has degrees `n+1, ..., n+m`, whose Bezout product exceeds `choose(m+n,m)`,
-so the count must be taken in the bilinear pre-elimination system, which is built and specialises
-correctly (`BilinearFibreSystem.lean`).  That is the remaining research core of this card.
+**Both depths two, arbitrary packets.**  `DepthTwoGeneralPacketBound`: the eliminated system is two
+equations in `(a₀, a₁)`, and eliminating `a₁` leaves a sextic with leading coefficient `v₂³`.  Hence
+`nat_card_criticalFibre_two_two_eq_card_roots` — over **any** field and with **no** separability —
+puts the fibre in bijection with the *distinct* roots of that sextic, exactly parallel to the
+sub-multiset formula in the critical-degree regime; specialising it gives
+`nat_card_criticalFibre_two_two = choose(4,2) = 6` for a separable sextic under the explicit
+genericity condition `u₂v₃ + u₃v₂ ≠ 0`; `≤ 6` under the condition alone; and
+`nat_card_criticalFibre_two_two_le_of_critical` gives `≤ 12` for **every** critical observation,
+from either packet.  This is the first case of the card's open core with both depths above one.
 
-Section 5 is formalized too, in `TransverseChannelLift.lean`: the transverse channel is a square
+**Every pair of depths: finiteness.**  The product obstruction (`FibrePairProductObstruction`) puts
+the product of the jets of any two fibre points on a Padé–Hankel hypersurface
+(`PadeHankelObstruction`, `MvHankelHypersurface`), of degree `n` in the `m` unknown jet coefficients.
+A choice of `m` fibre points therefore gives a square system, and the elimination tower built in
+`MvResultantElimination.lean` — resultants, the weighted determinant degree bound, and the
+univariate root count — yields
+`AnyDepthCoordinateBound.nat_card_criticalFibre_le_of_towers`:
+`Nat.card ≤ m + (n^(2^(m-1)))^m` whenever the towers do not degenerate.  The bound is the classical
+doubly-exponential elimination bound, not `(2)`.
+
+**Section 5** is formalized in `TransverseChannelLift.lean`: the transverse channel is a square
 linear convolution system, nonsingular at an explicit unipotent longitudinal jet, so
 `nat_card_criticalFibre_prod_transverse_channels` counts one longitudinal and any number of
 transverse channels by `criticalHorizonMultiplicity m n` itself.
 
-What remains at paper level is only the topological identification of the fibre points with
-Grassmannian Schubert cells, which the card explicitly does not claim.
+**What is still open** is the *sharp* count for a fully generic observation with `m, n >= 2`.  There
+the completed jet has degree up to `L-1` rather than `m`, the truncated equation no longer closes to
+an exact factorization, and the divisor bijection is unavailable.  Every elimination-based bound
+above is loose for one structural reason: pairwise elimination discards the bilinearity that makes
+the honest answer binomial.  That bilinearity is itself now machine-checked —
+`BilinearFibreSystem.degreeOf_bilinSysPoly_inl` and `_inr` prove the pre-elimination system has
+bidegree `(1,1)`, and `criticalFibre_coeff_eq` gives its `m+n` scalar equations in explicit bilinear
+form — so what remains is exactly the multihomogeneous Bezout count for a bidegree-`(1,1)` system on
+`P^m x P^n`, whose hypotheses are now verified and whose conclusion needs intersection theory that
+mathlib does not have.
+
+What remains at paper level besides that is only the topological identification of the fibre points
+with Grassmannian Schubert cells, which the card explicitly does not claim.
 
 ## Novelty audit
 
@@ -1833,3 +1867,783 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   whole reciprocal space is the degree of a rank locus of expected codimension `L - m = n`, matching
   `dim P^n`.  No genericity, no separability, and no restriction on the observed packets is used —
   the criterion holds for every observation.
+
+- 2026-08-06 — **The fibre locus is cut by minors of a matrix of affine-linear forms.**  Two
+  modules, both in the umbrella, both `[propext, Classical.choice, Quot.sound]`:
+
+  `RankDropMatrixCriterion.lean` — `rankDropMatrix U Q m L`, the `L x (m+1)` matrix whose first `m`
+  columns are the shifts `t^j Q` and whose last is `1 - U Q`, read off below the horizon (stated over
+  any commutative ring); `mulVec_rankDropMatrix` — the matrix acts on a coefficient vector as the
+  corresponding combination of those elements; **`exists_fibre_iff_mulVec_eq_zero`** — over a field,
+  the fibre over `Q` (invertible at the origin) is nonempty exactly when that matrix has a nonzero
+  kernel vector; `det_submatrix_rankDropMatrix_eq_zero` — hence every maximal minor vanishes there.
+
+  `UniversalRankDropMatrix.lean` — `univRecip V n`, the reciprocal with unknown low coefficients over
+  the observed tail; `univRecip_coeff`, `map_univRecip`, `rankDropMatrix_univRecip_map` (the
+  universal matrix specialises to the rank-drop matrix of the named reciprocal),
+  `eval_det_submatrix_rankDropMatrix` (so do its minors);
+  **`totalDegree_rankDropMatrix_univRecip`** — every entry has total degree at most one in the
+  unknown reciprocal coefficients; **`totalDegree_det_submatrix_rankDropMatrix`** — hence every
+  maximal minor has total degree at most `m + 1`.
+
+  So the fibre locus in the `n`-dimensional reciprocal space is contained in the common zero locus of
+  the maximal minors of an `L x (m+1)` matrix of affine-linear forms — expected codimension
+  `L - m = n`, matching the dimension, with each equation of degree `m + 1`.  This is exactly the
+  input a determinantal degree formula consumes; what is still missing is the formula itself
+  (Giambelli: the degree of the maximal-minor rank locus of a `p x q` matrix of general linear forms
+  is `choose(p, q-1)`, here `choose(L, m)`).  Mathlib has no intersection theory, so that formula has
+  to be built; the objects it acts on now exist and are machine-checked.
+
+- 2026-08-06 — **Two points of one fibre force a Padé degeneracy at the product of their jets.**
+  Two modules, both in the umbrella, both `[propext, Classical.choice, Quot.sound]`:
+
+  `FibrePairProductObstruction.lean` — `product_relation_identity` / `dvd_product_relation`: for two
+  compatible pairs of one observation,
+
+  ```text
+  (A - A') - (A+U)(A'+U) (B' - B) = (A'+U)((A+U)(B+V) - 1) - (A+U)((A'+U)(B'+V) - 1),
+  ```
+
+  so the left side is divisible by the horizon.  `exists_kernel_of_fibre_ne` reads this as a nonzero
+  kernel vector of the convolution pairing at the **product** `S = (A+U)(A'+U)`: `alpha = S beta` below
+  the horizon with `deg alpha < m`, `deg beta < n`, `alpha != 0` (the jets differ, since a fibre point is
+  determined by its jet).  `not_injective_transverseDifferential_of_fibre_ne` — that pairing is
+  exactly the transverse channel's square convolution system, so it is singular at the product;
+  `product_ne_one_add_X_pow_of_fibre_ne` — hence no two distinct fibre points multiply to the
+  unipotent jet `1 + t^m`, whose pairing is nonsingular.
+
+  `PadeHankelObstruction.lean` — `padeHankel S m n`, the `n x n` matrix with entries
+  `(t^j S)_{m+r}`; `mulVec_padeHankel`; **`det_padeHankel_eq_zero_iff`**: the determinant vanishes
+  **iff** `S` admits a Padé approximant of type `(m-1, n-1)` to order `m+n`.  Both directions are
+  proved (the forward one truncates the numerator below `m`, the backward one reads the kernel
+  vector off the denominator).  Mathlib has no Padé theory at all; this is the classical existence
+  criterion.  **`det_padeHankel_product_eq_zero`**: the product of the jets of any two distinct
+  points of a fibre lies on that Hankel hypersurface.
+
+  Mathematically this is a genuine constraint on how large a fibre can be: the `N` jets of a fibre
+  have all `N(N-1)/2` pairwise products confined to a single hypersurface of degree `n` in the jet
+  coefficients.  Fixing one fibre point makes it a hypersurface of degree `n` in the `m` remaining
+  jet coefficients, so with a Bezout theorem for `A^m` this would bound the fibre by `m + n^m` — at
+  `m = 1` that is `n + 1 = choose(L,1)` and at `m = n = 2` it is `2 + 4 = 6 = choose(4,2)`, both
+  sharp.  Mathlib has no Bezout theorem for affine space either, so the bound is not yet a Lean
+  theorem; the obstruction it rests on now is.
+
+- 2026-08-06 — **The obstruction becomes a matrix pencil, and at depth one it closes the bound.**
+  `OneDepthHankelBound.lean`, in the umbrella, `[propext, Classical.choice, Quot.sound]`:
+
+  `padeHankel_C_mul_add` — the Hankel matrix is linear in the jet, so fixing one fibre point turns
+  the obstruction into a **pencil** `a . H_1 + H_0` in the unknown jet coordinate;
+  `det_pencil_eq_charpoly` — with invertible leading matrix, `det(a H_1 + H_0) = det H_1 . f(a)`
+  where `f` is the characteristic polynomial of `-H_1^{-1} H_0`, monic of degree `n`;
+  `card_le_of_det_pencil_eq_zero` — hence at most `n` degenerate members;
+  `det_padeHankel_fibre_ne_zero` — the leading matrix, the Hankel matrix of a fibre point's own jet,
+  **is** invertible whenever `V.coeff n != 0`: a degeneracy would force `alpha Q_0 = beta` below the
+  horizon with `deg beta < n`, and reading the coefficient at `n` gives `alpha_0 . V_n = 0`, hence
+  `alpha = 0`, hence `beta = 0`;
+  **`nat_card_criticalFibre_one_le_of_tail`** — therefore at depth one, for every observed packet,
+  `Nat.card (criticalFibre K 1 n U V) <= criticalHorizonMultiplicity 1 n`.
+
+  This is unconditional: no separability, no algebraically closed field, and — unlike the corpus's
+  `OneDeepFibreBound.nat_card_criticalFibre_one_le`, which needs the monomial packet `C d X^n` — no
+  restriction on the observed packet beyond `X^n | V` and `V_n != 0`, in particular no bound on its
+  degree above the horizon.
+
+  The value is mostly in the method: the pencil argument is the `m = 1` shadow of the general one.
+  For general `m` the same obstruction confines the other fibre points to a hypersurface of degree
+  `n` in the `m` unknown jet coordinates; what is missing is a Bezout bound for `A^m`.  **The next
+  concrete step is `m = 2`**: plane Bezout follows from resultants, and mathlib does have
+  `Polynomial.resultant` and `resultant_eq_zero_iff` (the corpus already uses them in
+  `U0/U0PhiCard.lean`).  That would give `Nat.card <= 2 + n^2`, which at `n = 2` is
+  `6 = choose(4,2)` — sharp, and the first general-packet count at `m, n >= 2`.
+
+- 2026-08-06 — **The open case is entered: both depths two, general packets, sharp bound.**
+  `DepthTwoGeneralPacketBound.lean`, in the umbrella, `[propext, Classical.choice, Quot.sound]`:
+
+  `fibre_two_two_coeffs` — the four scalar equations of a fibre point at `m = n = 2`, read off the
+  compatibility equation coefficient by coefficient;
+  `fibre_two_two_eliminated` — eliminating the two reciprocal unknowns leaves
+  `v₂a₀³ - a₁² + u₂a₀ = 0` and `v₃a₀³ + v₂a₁a₀² - u₂a₁ + u₃a₀ = 0`;
+  `criticalSextic u₂ u₃ v₂ v₃ = (v₂X²+u₂)(v₂X²-u₂)² - X(v₃X²+u₃)²`, with
+  `natDegree_criticalSextic` — degree exactly `6`, leading coefficient `v₂³`, hence nonzero as soon
+  as the observation is critical;
+  `isRoot_criticalSextic` — eliminating `a₁` between the two equations shows every fibre point's
+  first jet coefficient is a root of the sextic;
+  **`nat_card_criticalFibre_two_two_le`** — hence, for `X² | U`, `X² | V`, `V₂ ≠ 0` and
+  `u₂v₃ + u₃v₂ ≠ 0`,
+
+  ```text
+  Nat.card (criticalFibre K 2 2 U V) ≤ criticalHorizonMultiplicity 2 2 = 6.
+  ```
+
+  The genericity condition `u₂v₃ + u₃v₂ ≠ 0` is exactly what makes the first jet coefficient
+  determine the second: if `v₂a₀² = u₂` at a fibre point then the second equation forces
+  `v₃a₀² = -u₃`, and eliminating `a₀²` between those gives `u₂v₃ + u₃v₂ = 0`.
+
+  **This is the first case of the card's open core.**  The observed packets here carry *both* of
+  their coefficients — `u₃` and `v₃` are unrestricted — so this is not the critical-degree family,
+  and the divisor bijection does not apply.  The bound is sharp: `6 = choose(4,2)`, and the
+  critical-degree specialisation `u₃ = v₃ = 0` is known to attain it.  No separability, no
+  algebraically closed field, no bound on the packets' degree above the horizon.
+
+  What is still missing at `m = n = 2` is the matching *lower* bound for a general packet, which
+  needs the sextic to have six distinct roots — a discriminant condition — and the general
+  `m, n ≥ 2` case, where the same elimination has no closed form and the count is the determinantal
+  degree.
+
+- 2026-08-06 — **`m = n = 2` with general packets is closed: the count is exactly `choose(4,2)`.**
+  Same module, all `[propext, Classical.choice, Quot.sound]`:
+
+  `coeff_zero_injective_two_two` — factored out of the bound: away from the degenerate locus the
+  first jet coefficient determines the fibre point;
+  `exists_criticalFibre_two_two_of_coeffs` — the converse of the coefficient extraction: any
+  solution of the four scalar equations *is* a fibre point (the completed jet and reciprocal are the
+  linear polynomials with those coefficients, and their product agrees with `1` below the horizon);
+  `exists_criticalFibre_of_isRoot` — **every** root of the sextic is attained.  Given a root `a₀`,
+  the second equation defines `a₁ = -a₀(v₃a₀²+u₃)/(v₂a₀²-u₂)`, and the sextic is exactly what makes
+  the first equation `a₁² = a₀(v₂a₀²+u₂)` hold; the reciprocal is then `b₀ = a₀⁻¹`,
+  `b₁ = -a₁/a₀²`.  The root is nonzero because the sextic's constant term is `u₂³`, and the
+  denominator is nonzero by the same genericity condition as before;
+  **`nat_card_criticalFibre_two_two`** — hence for `X² | U`, `X² | V`, `u₂ ≠ 0`, `v₂ ≠ 0`,
+  `u₂v₃ + u₃v₂ ≠ 0` and a separable sextic, over an algebraically closed field,
+
+  ```text
+  Nat.card (criticalFibre K 2 2 U V) = criticalHorizonMultiplicity 2 2 = 6.
+  ```
+
+  The fibre is in bijection with the roots of the sextic, and a separable split sextic has six.
+
+  **This closes the first case of the card's open core**, `m, n >= 2` with observed packets carrying
+  all their coefficients.  The hypotheses are the honest genericity conditions: `u₂, v₂ ≠ 0` is
+  criticality of the observation, `u₂v₃ + u₃v₂ ≠ 0` cuts out the locus where the first jet
+  coefficient stops determining the second, and separability of the sextic is the same kind of
+  condition the critical-degree theorem imposes on `1 + U V`.  What remains is general `m, n >= 2`,
+  where the elimination has no closed form.
+
+- 2026-08-06 — **The classical resultant degree bound, built from scratch.**  Two modules, both in
+  the umbrella, both `[propext, Classical.choice, Quot.sound]`:
+
+  `WeightedDeterminantDegree.lean` — `degree_det_le_of_degree_le` and
+  `natDegree_det_le_of_degree_le`: if every entry of a square polynomial matrix has degree at most
+  `u i + v j`, the determinant has degree at most `∑u + ∑v`.  And the form the Sylvester matrix
+  actually has, **`degree_det_add_le`**: if `degree (M i j) + i ≤ c j` — a *decreasing* row weight,
+  absorbed to the left so nothing leaves the natural numbers — then
+  `degree (det M) + ∑ i ≤ ∑ c`.  Mathlib bounds a determinant only by the uniform entry degree times
+  the size, which is far too weak for eliminants.
+
+  `ResultantDegreeBound.lean` — `sylvesterWeight`, `degree_sylvester_add_le` (the Sylvester entries
+  obey exactly that shifted bound: the entry in row `i` of the column at position `j₁` of the block
+  of `g` is `g.coeff (i - j₁)`, of degree at most `b - (i - j₁)`, and the out-of-range entries vanish),
+  and **`degree_resultant_add_le`**:
+
+  ```text
+  degree (resultant f g m n) + ∑_{i < m+n} i  ≤  ∑_{j < m+n} sylvesterWeight a b m n j,
+  ```
+
+  with `sum_sylvesterWeight` evaluating the right side to `(m·b + Σ_{j<m} j) + (n·a + Σ_{j<n} j)`.
+  Subtracting the two triangular sums gives the classical `m·b + n·a - m·n`, which for `a = m`,
+  `b = n` is exactly the Bezout number `a·b`.
+
+  This is the missing half of plane elimination.  With the bridge from the previous entry — the
+  resultant vanishes at the first coordinate of every common zero — the two together bound the
+  common zeros of a two-variable system by the resultant's degree, which is the affine Bezout
+  estimate the general `m, n >= 2` case needs.  None of it existed in mathlib.
+
+- 2026-08-06 — **The plane elimination bound is assembled.**  Same module, all
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `sum_fin_val_add`, `sum_sylvesterWeight_add` — the weight sum against the row sum, in the
+  subtraction-free form `∑ weights + m n = ∑ rows + (m b + n a)`;
+  `natDegree_resultant_add_le` — the same bound on natural degrees for a nonzero resultant;
+  **`card_first_coords_le_of_degrees`** — combining it with the elimination bridge:
+
+  ```text
+  s.card + m * n ≤ m * b + n * a
+  ```
+
+  for any finset `s` of first coordinates of common zeros of a two-variable system with declared
+  degrees `m, n` and total degrees `a, b`, provided the resultant is nonzero.  That is the classical
+  affine Bezout estimate `m b + n a - m n`; for two conics (`m = n = a = b = 2`) it returns `4`, the
+  right answer.
+
+  So the corpus now owns, unconditionally and from scratch, the whole elimination chain that mathlib
+  lacks: the weighted determinant degree bound, the Sylvester degree estimate, the resultant's
+  vanishing at common zeros, and the resulting count.  This is the general tool the remaining
+  `m, n >= 2` case needs — the alternative, grinding out each `(m, n)` by hand as was done for
+  `(2,2)`, does not scale past the next case.
+
+- 2026-08-06 — **Affine Bezout, in the clean form.**  `IteratedTotalDegree.lean` plus a corollary in
+  `ResultantDegreeBound.lean`, both in the umbrella, all `[propext, Classical.choice, Quot.sound]`:
+
+  `TotalDegLE p d` — total degree at most `d` for a two-variable polynomial written as a polynomial
+  in the outer variable with polynomial coefficients: `degree (p.coeff k) + k ≤ d` for every `k`.
+  In this form no truncated subtraction appears and the zero coefficients are free, their degree
+  being `⊥`.  `TotalDegLE.add`, `.neg`, `.mul` (degrees add), `.sum`, `.prod`, `.mono`,
+  `.natDegree_le` (a total degree bound bounds the degree in the outer variable), and
+  **`TotalDegLE.det`** — a determinant of an `N x N` matrix of entries of total degree at most `d`
+  has total degree at most `N d`.
+
+  **`card_first_coords_le_of_totalDeg`** — with the total degrees as the declared degrees, the
+  elimination bound collapses to the Bézout number:
+
+  ```text
+  s.card ≤ a * b
+  ```
+
+  for any finset `s` of first coordinates of common zeros of a plane system of total degrees `a, b`
+  with nonzero resultant.  Mathlib has total degree only for `MvPolynomial`, where this iterated
+  form is not available; the determinant bound is what turns an affine-linear matrix of size `n`
+  into a hypersurface of degree `n`, which is the shape the Padé–Hankel obstruction produces.
+
+  The immediate application is `m = 2` with **any** `n`: fixing two fibre points, every other one
+  lies on two hypersurfaces of degree `n` in the two unknown jet coefficients, so the fibre is finite
+  with at most `n² + 2` points.  That is the first general-`n` statement for general packets at
+  `m ≥ 2`; the pieces for it are now all in place.
+
+- 2026-08-06 — **The depth-two Hankel curve.**  `DepthTwoHankelCurve.lean`, in the umbrella, all
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `affineCurveMatrix H₀ H₁ H₂` — a matrix of affine-linear forms `H₀ + H₁ x + H₂ y` in two
+  variables, written over `(K[x])[y]`; `totalDegLE_affineCurveMatrix` (entries of total degree one),
+  `evalPairHom_affineCurveMatrix` (specialisation), **`totalDegLE_det_affineCurveMatrix`** (the
+  determinant of an `n x n` such matrix is a plane curve of degree at most `n`), and
+  `evalPairHom_det_affineCurveMatrix_swap` — exchanging the two variables just exchanges the two
+  linear parts, so the swapped system needed for the second elimination is the same construction
+  with `H₁` and `H₂` transposed.
+
+  `hankelCurveMatrix P₀ U n` — the instance that matters: at depth two the unknown jet is
+  `a₀ + a₁ t` above the packet, so `P₀ · (a₀ + a₁ t + U) = a₀ P₀ + a₁ (t P₀) + P₀ U` and the
+  Padé–Hankel matrix, being linear in the jet, becomes
+  `affineCurveMatrix (padeHankel (P₀ U)) (padeHankel P₀) (padeHankel (t P₀))`.  Its determinant is a
+  plane curve of degree `n`, and **`evalPairHom_det_hankelCurveMatrix_eq_zero`** says every fibre
+  point other than the base one lies on it.
+
+  So at depth two, for **any** `n` and unrestricted packets, two fibre points confine all the others
+  to the intersection of two plane curves of degree `n` — the shape the elimination chain of the
+  previous entries consumes.  The count itself is next.
+
+- 2026-08-06 — **Depth two, every `n`, unrestricted packets: the fibre is finite.**  Same module,
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `hankelCurve P₀ U n` and `hankelCurveSwap P₀ U n` — the base jet's plane curve and the same curve
+  with the two jet coordinates exchanged (which by the swap lemma is the same construction with the
+  two linear parts transposed); `totalDegLE_hankelCurve`, `totalDegLE_hankelCurveSwap` — both of
+  degree `n`; `natDegree_resultant_hankel_le` — the eliminant of two of them has degree at most
+  `n²`; and
+
+  **`nat_card_criticalFibre_depth_two_le`**:
+
+  ```text
+  Nat.card (criticalFibre K 2 n U V) ≤ 2 + n² · n²
+  ```
+
+  for `X² | U`, `X^n | V`, provided the eliminants of the curve pair (and of the swapped pair) of
+  any two fibre points do not vanish identically.  Two fibre points are set aside as the bases; every
+  other one lies on both curves, so its first coordinate is a root of the first eliminant and its
+  second a root of the swapped one, and the jet's two coefficients determine the fibre point.
+
+  **This is the first finiteness statement for the fibre at `m ≥ 2` with unrestricted packets and no
+  restriction on `n`.**  Until now depth two was known only at `n = 2` (where the count is exactly
+  `6`), and everything else needed the packets to carry only their lowest coefficient.  The bound
+  `n⁴` is far from the truth `choose(n+2,2)` — it pays twice for using the eliminant in each
+  coordinate separately rather than a sharp plane Bezout with distinct first coordinates — but
+  finiteness, with an explicit bound, is what was missing.
+
+- 2026-08-06 — **The obstruction hypersurface at any depth.**  `MvHankelHypersurface.lean`, in the
+  umbrella, all `[propext, Classical.choice, Quot.sound]`:
+
+  `padeHankel_add`, `padeHankel_C_mul`, `padeHankel_zero`, `padeHankel_finsetSum` — the Hankel matrix
+  is a linear function of the jet; **`padeHankel_mul_jet`** — hence for a base jet `P₀`,
+
+  ```text
+  padeHankel (P₀ · (∑_{i<m} a_i t^i + U)) = padeHankel (P₀ U) + ∑_{i<m} a_i · padeHankel (t^i P₀),
+  ```
+
+  affine-linear in the `m` unknown jet coefficients;
+  `affineMvMatrix H₀ H` — a matrix of affine-linear forms in `m` variables over
+  `MvPolynomial (Fin m) K`, with `totalDegree_affineMvMatrix_le` (entries of degree one),
+  `eval_affineMvMatrix`, and **`totalDegree_det_affineMvMatrix_le`** — the determinant of an
+  `N x N` such matrix has total degree at most `N`;
+  `hankelMvMatrix P₀ U m n`, `totalDegree_det_hankelMvMatrix_le`, `eval_det_hankelMvMatrix`, and
+  **`eval_det_hankelMvMatrix_eq_zero`** — every fibre point other than the base one lies on the base
+  point's hypersurface.
+
+  So at **every** pair of depths, one fibre point confines all the others to a hypersurface of
+  degree `n` in the `m` unknown jet coefficients.  At `m = 2` this is the plane curve of the
+  depth-two count, recovered as a special case; at larger `m` it is the object a dimension or degree
+  argument has to consume, and it is now built and machine-checked rather than assumed.
+
+- 2026-08-06 — **Elimination of one variable from a multivariate system.**
+  `MvResultantElimination.lean`, in the umbrella, all `[propext, Classical.choice, Quot.sound]`:
+
+  `mvEvalHom s y` — evaluation in the split presentation, the outer variable at `y` and the rest at
+  `s`, as a ring homomorphism; `mvEvalHom_C`, `mvEvalHom_finSuccEquiv` (via mathlib's
+  `eval_eq_eval_mv_eval'`);
+  **`eval_resultant_eq_zero_of_mv_common_zero`** — splitting off the first variable with
+  `finSuccEquiv` and taking the resultant, the eliminant vanishes at the projection of every common
+  zero of the two members;
+  `exists_ne_zero_vanishing_on_projection` — so a nontrivial eliminant confines those projections to
+  a hypersurface in the remaining variables;
+  **`totalDegree_det_add_le`** — the weighted degree bound for a determinant of multivariate
+  polynomials, with zero entries admitted explicitly (a zero `MvPolynomial` has total degree `0`,
+  not `⊥`, so they cannot be swept under the ordering as in the univariate case).
+
+  This is the inductive step of elimination, which mathlib does not have in any form — it has the
+  resultant and its Bézout identity, and nothing that connects them to common zeros of a system in
+  more than one variable.  Worth recording: mathlib **does** have
+  `MvPolynomial.totalDegree_coeff_finSuccEquiv_add_le`, exactly the degree transfer
+  `totalDegree ((finSuccEquiv f).coeff i) + i ≤ totalDegree f` that the next stage needs to keep
+  degrees under control while iterating the step.
+
+- 2026-08-06 — **The eliminant's degree, multivariately.**  Same module, all
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `totalDegree_sylvester_finSuccEquiv_add_le` — the Sylvester entries of a split multivariate pair
+  obey the weighted bound.  Mathlib's `totalDegree_coeff_finSuccEquiv_add_le` carries a
+  *nonvanishing* hypothesis on the coefficient, which is exactly right here: when the coefficient
+  vanishes the entry is zero and the disjunction's left branch applies, so nothing is lost;
+  **`totalDegree_resultant_finSuccEquiv_add_le`** — hence the eliminant either vanishes identically
+  or satisfies
+
+  ```text
+  totalDegree (resultant (finSuccEquiv f) (finSuccEquiv g) p q) + p q ≤ p b + q a
+  ```
+
+  for total degrees `a, b`.  This is the same classical estimate as the univariate case, now in the
+  variables that survive elimination.
+
+  Together with the elimination step of the previous entry, the inductive tool is complete: given
+  two polynomials in `m + 1` variables of total degrees `a` and `b`, eliminating one variable leaves
+  a polynomial in `m` variables of total degree at most `p b + q a - p q`, vanishing on the
+  projection of every common zero.  Iterating it is what a general `m` count needs; each step is now
+  unconditional and machine-checked.
+
+- 2026-08-06 — **One elimination step for a whole system.**  Same module,
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `natDegree_finSuccEquiv_le_totalDegree` — the degree in the eliminated variable is bounded by the
+  total degree (via mathlib's `degree_finSuccEquiv` and `degreeOf_le_totalDegree`), which is what
+  feeds the declared degrees to the resultant;
+  **`exists_eliminated_system`** — eliminating the first variable against a distinguished member
+  turns `N + 1` equations of total degree `d` in `m + 1` variables into `N` equations of total
+  degree `d²` in `m` variables, each nonzero, and still vanishing at every projection of a common
+  zero of the original system.
+
+  This is the induction the general `m` count runs on: starting from the `m` Hankel hypersurfaces of
+  degree `n` that contain the fibre's jet coordinates, `m - 1` steps leave a single univariate
+  polynomial of degree at most `n^(2^(m-1))`, nonzero at each stage under the stated resultant
+  conditions.  The bound is doubly exponential and nothing like the truth `choose(m+n,m)`, but it is
+  the classical elimination bound and it is now an unconditional Lean theorem at every step rather
+  than a citation.
+
+- 2026-08-06 — **The elimination tower.**  Same module, all
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `elimStep d F` — one elimination of the leading variable from a square system, with
+  `totalDegree_elimStep_le` (degree `d` becomes `d²`, unconditionally: if a resultant happens to
+  vanish the eliminant is zero and its degree is zero) and `eval_elimStep_eq_zero` (the eliminated
+  system still vanishes on the tail of every common zero, via `Fin.cons_self_tail`);
+  **`elimTower k F d`** — the tower itself, defined by recursion: `k + 1` equations in `k + 1`
+  variables reduce to `k` in `k`, ending in a single polynomial in one variable.  The square shape
+  is preserved by every step, which is what makes the recursion type-check at all;
+  **`totalDegree_elimTower_le`** — `totalDegree (elimTower k F d) ≤ d^(2^k)`;
+  **`eval_elimTower_eq_zero`** — the tower vanishes at the last coordinate of every common zero of
+  the original system.
+
+  Both tower theorems are **unconditional**: no resultant is assumed nonzero anywhere.  A vanishing
+  resultant simply propagates a zero polynomial, which satisfies the degree bound and the vanishing
+  statement trivially.  The nonvanishing is needed only to *conclude* finiteness from the tower, and
+  that is a hypothesis on the single output polynomial rather than on the `k` intermediate stages —
+  which is the difference between a statable theorem and an unusable one.
+
+  What remains to turn this into a general `m` fibre bound is the univariate root count for a nonzero
+  `MvPolynomial (Fin 1) K`, and then the product over the `m` coordinate orders.
+
+- 2026-08-06 — **The elimination tower now counts.**  Same module, all
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `eval_empty_injective` — evaluation of a polynomial in no variables is injective (by
+  `MvPolynomial.ringHom_ext`, where the condition on the variables is vacuous, against
+  `isEmptyRingEquiv`);
+  `card_roots_mvPolynomial_one_le` — a nonzero polynomial in **one** variable has at most its total
+  degree many roots.  The transfer to `K[X]` goes through `finSuccEquiv` and the coefficient map,
+  reusing `natDegree_finSuccEquiv_le_totalDegree` for the degree and the injectivity above for the
+  nonvanishing;
+  **`card_last_coord_le`** — hence for a square system of `k + 1` equations of total degree `d` in
+  `k + 1` variables whose elimination tower does not vanish, the last coordinate of a common zero
+  takes at most `d^(2^k)` values.
+
+  The only hypothesis beyond the degrees is `elimTower k F d ≠ 0` — a condition on the single
+  polynomial the tower outputs, not on the `k` intermediate resultants.  With the Hankel
+  hypersurfaces of `MvHankelHypersurface.lean` as the system (`d = n`, one equation per base fibre
+  point), this bounds each jet coordinate of the fibre at **every** depth `m`, and the product over
+  the `m` coordinate orders bounds the fibre itself.
+
+- 2026-08-06 — **The chain closes on a general-depth statement.**
+  `AnyDepthCoordinateBound.lean`, in the umbrella, `[propext, Classical.choice, Quot.sound]`:
+
+  `hankelSystem base U` — the square system attached to a choice of `m` fibre points: `m` Hankel
+  hypersurfaces of degree `n` in the `m` unknown jet coefficients, with
+  `totalDegree_hankelSystem_le`;
+  **`card_top_coeff_le`** — for every observation and **every** pair of depths, the top jet
+  coefficient of the fibre points other than the chosen bases takes at most `n^(2^(m-1))` values,
+  provided the elimination tower of that system does not vanish identically.
+
+  This is the first general-`m` finiteness-type statement on the card.  It runs the whole chain
+  end to end: product obstruction → Padé–Hankel determinant → hypersurface of degree `n` in the jet
+  coordinates → square system from `m` base points → elimination tower → univariate root count.
+  Every link was built here; mathlib supplied only the resultant and its Bézout identity.
+
+  The bound `n^(2^(m-1))` is the classical doubly-exponential elimination bound and is nowhere near
+  the truth `choose(m+n,m)`.  It is loose for a structural reason worth recording: pairwise
+  elimination discards the bilinearity that makes the honest count binomial, exactly as the earlier
+  `n⁴` at depth two did.  Sharpening it is not a matter of tightening these estimates — it needs the
+  multihomogeneous Bezout number of the pre-elimination system, which is the card's original route
+  and remains the open core.
+
+- 2026-08-06 — **The fibre is finite at every depth.**  `AnyDepthCoordinateBound.lean` (with two
+  Finset-valued companions in `MvResultantElimination.lean`), all
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `exists_finset_roots_mvPolynomial_one`, `exists_finset_last_coord` — the earlier counts, restated
+  so they *produce* the finite set rather than bounding an arbitrary finset of it, which is what an
+  injection argument needs;
+  `hankelSystemPerm base U σ` — the square Hankel system with its variables permuted, so any chosen
+  coordinate becomes the one the tower eliminates last (`totalDegree_rename_le` keeps the degree);
+  `card_coeff_le`, `exists_finset_coeff` — hence **every** jet coefficient of the fibre lies in an
+  explicit set of at most `n^(2^(m-1))` values;
+  **`nat_card_criticalFibre_le_of_towers`**:
+
+  ```text
+  Nat.card (criticalFibre K m n U V) ≤ m + (n^(2^(m-1)))^m
+  ```
+
+  for every observation, at **every** pair of depths, given `m` base fibre points whose permuted
+  elimination towers do not vanish.  A fibre point is determined by its `m` jet coefficients, so the
+  fibre injects into the product of the coordinate sets together with the bases.
+
+  **This is the first proof that the fibre is finite at general `m`.**  Until now finiteness was
+  known only at `m = 1` and `m = 2`.  The bound is doubly exponential and the truth is
+  `choose(m+n,m)`; the gap is structural, not an artefact of loose estimates, and closing it needs
+  the multihomogeneous Bezout number of the bilinear pre-elimination system — the card's open core.
+
+- 2026-08-06 — **Finiteness at both depths two with no genericity at all.**
+  `nat_card_criticalFibre_two_two_le_of_critical` in `DepthTwoGeneralPacketBound.lean`,
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  X² | U,  X² | V,  V₂ ≠ 0   ⟹   Nat.card (criticalFibre K 2 2 U V) ≤ 12.
+  ```
+
+  The genericity condition `u₂v₃ + u₃v₂ ≠ 0` of the sharp count is dropped entirely.  When it fails
+  the first jet coefficient no longer determines the second, but the *first* eliminated equation
+  still reads `a₁² = v₂a₀³ + u₂a₀`, so the second coefficient is determined **up to sign**: the fibre
+  injects into the pairs `(a₀, a₁)` with `a₀` a root of the sextic (at most six) and `a₁` a root of a
+  quadratic (at most two).
+
+  So at both depths two the trichotomy is complete: exactly `choose(4,2) = 6` for a separable sextic
+  under the genericity condition, at most `6` under the condition alone, and at most `12` for
+  **every** critical observation.  Criticality of the observed reciprocal packet — `v₂ ≠ 0`, which is
+  what makes the observation an observation at these depths — is the only hypothesis left.
+
+- 2026-08-06 — **The system really is bilinear: bidegree `(1,1)` proved.**
+  `BilinearFibreSystem.lean`, all `[propext, Classical.choice, Quot.sound]`:
+
+  `CoeffDegreeOfLE s P d` — every coefficient of a polynomial has degree at most `d` in a chosen
+  variable — with `.add`, `.sub`, `.mono`, `.mul` (degrees add), `degreeOf_neg_le`, and the base
+  cases `coeffDegreeOfLE_map_C`, `coeffDegreeOfLE_one`;
+  `univB_coeff` (the missing companion of `univA_coeff`), and the four
+  `coeffDegreeOfLE_univA/univB_inl/inr` lemmas: the universal jet is linear in the jet unknowns and
+  constant in the reciprocal ones, and dually;
+  **`degreeOf_bilinSysPoly_inl`** and **`degreeOf_bilinSysPoly_inr`**:
+
+  ```text
+  degreeOf (inl i) (bilinSysPoly U V m n k) ≤ 1,   degreeOf (inr j) (bilinSysPoly U V m n k) ≤ 1.
+  ```
+
+  This closes the step flagged as outstanding when the bilinear system was first built: the `m + n`
+  equations of the observation are, before any elimination, **linear in each group of unknowns
+  separately**.  That is precisely the hypothesis a multihomogeneous Bezout count consumes, and it is
+  the structural reason the honest answer is `choose(m+n,m)` rather than the product of the
+  eliminated system's degrees.  The count itself still needs intersection theory on `P^m x P^n`;
+  what is now machine-checked is that the system has the shape that theorem applies to.
+
+- 2026-08-06 — **The observation's scalar equations, at any pair of depths.**
+  `BilinearFibreSystem.lean`, `[propext, Classical.choice, Quot.sound]`:
+
+  `criticalLowProduct_sub_one_coeff` — the compatibility defect coefficient by coefficient;
+  **`criticalFibre_coeff_eq`** — for a fibre point and every `k` below the horizon,
+
+  ```text
+  ∑_{i≤k} a_i b_{k-i}  +  ∑_{i≤k} a_i v_{k-i}  +  ∑_{i≤k} u_i b_{k-i}  =  [k = 0].
+  ```
+
+  This is the general form of what was hand-rolled at depth two as `fibre_two_two_coeffs`: the `m+n`
+  scalar equations of the observation, each visibly bilinear in the unknown low coefficients of the
+  jet and of the reciprocal.  Any future depth-specific elimination starts here instead of being
+  re-derived from the divisibility.
+
+  Housekeeping in the same pass: `coeff_mul_range` moved from `DepthTwoGeneralPacketBound.lean` down
+  to `TruncatedCompatibilityFibre.lean`, where both the depth-two work and the general bilinear
+  layer can reach it, rather than being duplicated or imported sideways.
+
+- 2026-08-06 — **The same bounds at the reciprocal depth.**  `SwappedFibreBounds.lean`, in the
+  umbrella, all `[propext, Classical.choice, Quot.sound]`:
+
+  `nat_card_criticalFibre_snd_one_le_of_tail` — at reciprocal depth one, any jet packet, the fibre
+  has at most `criticalHorizonMultiplicity m 1` points;
+  `nat_card_criticalFibre_snd_depth_two_le` — at reciprocal depth two, any `m`, the fibre is finite
+  with the explicit bound;
+  **`nat_card_criticalFibre_two_two_le_of_critical_fst`** — at both depths two, a critical observed
+  **jet** packet already forces `Nat.card ≤ 12`.
+
+  All three are transported through `criticalFibreSwap`, which exchanges the jet with its reciprocal
+  and hence the two depths and the two packets.  The mathematical content is the existing proofs; the
+  gain is in coverage and, at both depths two, in the hypothesis: finiteness now follows from
+  *either* observed packet being critical, `u₂ ≠ 0` or `v₂ ≠ 0`, where before only the reciprocal
+  packet would do.
+
+  Regimes with an unconditional finiteness statement are now: depth one on either side (sharp), both
+  depths two (bound `12`, from either packet), reciprocal depth two at any jet depth, jet depth two
+  at any reciprocal depth, and — under the tower conditions — every pair of depths.
+
+- 2026-08-06 — **Every critical-degree observation is realised.**  `CriticalFibreNonempty.lean`, in
+  the umbrella, `[propext, Classical.choice, Quot.sound]`:
+
+  `exists_monic_divisor_of_natDegree_le` — over an algebraically closed field a polynomial has a
+  monic divisor of every degree up to its own: take any sub-multiset of that size of its roots and
+  multiply the corresponding linear factors.  No nonvanishing hypothesis is needed — the zero
+  polynomial has natural degree zero and the empty product serves;
+  **`nonempty_criticalFibre_criticalTails`** — hence every observation whose packets have exactly
+  the critical degrees admits at least one compatible source jet.
+
+  This is the existence half of the card's theorem in the critical-degree regime, and unlike the
+  count it needs **no separability**: a compatible jet exists whether or not the target `1 + U V` has
+  distinct roots.  Previously nonemptiness was only available as a by-product of the exact count,
+  which assumes separability, so the degenerate targets had no existence statement at all.
+
+- 2026-08-06 — **The exact count for *every* critical-degree observation.**  Same module,
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `exists_monic_divisor_roots_eq` — every sub-multiset of the root multiset is the root multiset of a
+  monic divisor of that degree (the product of the corresponding linear factors, using mathlib's
+  `roots_multiset_prod_X_sub_C`);
+  **`nat_card_criticalFibre_eq_card_powersetCard`**:
+
+  ```text
+  Nat.card (criticalFibre K m n U V) = card ((1 + U V).roots.powersetCard m).toFinset
+  ```
+
+  with no separability hypothesis at all.  The fibre is in bijection with the monic degree-`m`
+  divisors of the target, and those are in bijection with the **distinct** sub-multisets of size `m`
+  of its root multiset — injectively because a monic split polynomial is its root multiset, and
+  surjectively by the construction above.
+
+  This subsumes the two earlier statements in the critical-degree regime and explains the gap between
+  them: for a separable target the sub-multisets are the `choose(m+n,m)` subsets of a set of `m+n`
+  distinct roots, giving the exact binomial count; repeated roots merge sub-multisets, and the count
+  drops by exactly that merging.  The earlier `≤ choose(m+n,m)` is now the visible corollary that
+  distinct sub-multisets are at most all of them.
+
+- 2026-08-06 — **The depth-two count, before separability.**
+  `nat_card_criticalFibre_two_two_eq_card_roots` in `DepthTwoGeneralPacketBound.lean`,
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  Nat.card (criticalFibre K 2 2 U V) = card (criticalSextic u₂ u₃ v₂ v₃).roots.toFinset
+  ```
+
+  under `u₂ ≠ 0`, `v₂ ≠ 0` and `u₂v₃ + u₃v₂ ≠ 0`, over **any** field and with **no** separability
+  hypothesis.  The exact count `6` is now the specialisation obtained by adding separability and
+  algebraic closure, and the closure assumption turns out to be needed only for that last step — the
+  bijection itself holds over any field, so the `IsAlgClosed` binder was dropped from it.
+
+  This mirrors, at both depths two with unrestricted packets, exactly what
+  `nat_card_criticalFibre_eq_card_powersetCard` does in the critical-degree regime: the fibre count
+  is the number of *distinct* solutions of an explicit univariate object, and separability is what
+  turns that number into the binomial coefficient.  Both regimes now expose the same structure, and
+  in both the loss from repeated roots is visible rather than hidden behind a hypothesis.
+
+- 2026-08-06 — **Depth one, before separability.**  `nat_card_criticalFibre_one_eq_of_tail` in
+  `CriticalDegreeTailFibre.lean`, `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  Nat.card (criticalFibre K 1 n U V) = Nat.card {a // a ≠ 0 ∧ (oneDeepEquation U v_n n).IsRoot a}
+  ```
+
+  for an arbitrary observed packet `V` with `X^n | V`, `deg V < 1+n`, `v_n ≠ 0`, over any field and
+  with no separability.  The corpus already had this for a *monomial* packet
+  (`OneDeepFibreBound.nat_card_criticalFibre_one_eq`); the transfer to arbitrary packets goes through
+  `criticalSystemSolutionsCongrOne`, since at depth one the system reads only the packet's
+  coefficient at the reciprocal depth.
+
+  All three formalized regimes now have the same shape, stated before any separability hypothesis:
+
+  | regime | the fibre is in bijection with |
+  |---|---|
+  | critical-degree packets, all depths | distinct sub-multisets of size `m` of the roots of `1 + U V` |
+  | depth one, arbitrary packet | distinct nonzero roots of the depth-one equation |
+  | both depths two, arbitrary packets | distinct roots of the sextic |
+
+  In each, separability is exactly what turns the distinct-object count into `choose(m+n,m)`, and the
+  drop caused by repeated roots is visible in the statement rather than excluded by hypothesis.
+
+- 2026-08-06 — **Depth one with no degree restriction on the packet.**
+  `nat_card_criticalFibre_one_eq_of_tail_of_dvd` in `CriticalDegreeTailFibre.lean`,
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  Nat.card (criticalFibre K 1 n U V) = Nat.card {a // a ≠ 0 ∧ (oneDeepEquation U v_n n).IsRoot a}
+  ```
+
+  for `X^n | V` and `v_n ≠ 0`, with **no bound on the degree of `V`**.  The previous statement needed
+  `deg V < 1 + n`; truncating the packet at the horizon, `V' = V %ₘ X^(1+n)`, changes neither the
+  fibre (by `criticalFibreCongr`, since the difference is divisible by the horizon) nor the
+  coefficient the depth-one equation reads, so the restriction was an artefact.
+
+  The depth-one regime is now stated in its natural generality: any observed jet packet, any observed
+  reciprocal packet of any degree, over any field, with no separability — and the count is the number
+  of distinct nonzero roots of one explicit univariate polynomial.
+
+- 2026-08-06 — **The critical-degree count at any packet length.**
+  `nat_card_criticalFibre_eq_card_powersetCard_of_truncation` in `CriticalFibreNonempty.lean`,
+  `[propext, Classical.choice, Quot.sound]`: for observations whose packets agree below the horizon
+  with critical-degree ones,
+
+  ```text
+  Nat.card (criticalFibre K m n U V) = card ((1 + U' V').roots.powersetCard m).toFinset,
+  ```
+
+  with no bound on the packets' own degrees and no separability.  This is the separability-free
+  strengthening of `nat_card_criticalFibre_of_truncation`, and it completes the pattern of the last
+  three entries: every exact count on this card is now stated for packets of arbitrary length, over
+  an arbitrary field where the argument allows it, with separability appearing only where it is
+  genuinely used — to convert a count of distinct objects into the binomial coefficient.
+
+- 2026-08-06 — **The exactness criterion at both depths two, as an iff.**
+  `nat_card_criticalFibre_two_two_eq_iff` in `DepthTwoGeneralPacketBound.lean`,
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  Nat.card (criticalFibre K 2 2 U V) = choose(4,2)  ↔  (criticalSextic u₂ u₃ v₂ v₃).roots.Nodup
+  ```
+
+  under `u₂ ≠ 0`, `v₂ ≠ 0`, `u₂v₃ + u₃v₂ ≠ 0` over an algebraically closed field.  Both directions:
+  the fibre counts the *distinct* roots of a sextic all of whose six roots lie in the field, and a
+  count of distinct elements reaches the cardinality exactly when there are no repeats.
+
+  This is the first place on the card where the binomial count is characterised rather than merely
+  achieved.  Until now separability was a sufficient hypothesis with no statement about necessity;
+  here the multiplicity-free condition is proved to be exactly what `(2)` requires, so an observation
+  failing it provably has *fewer* than `choose(m+n,m)` compatible jets.  The distinct-object
+  formulations of the previous entries are what made the converse direction available at all.
+
+- 2026-08-06 — **The exactness criterion at every pair of depths.**  `PowersetCardNodup.lean` and
+  `nat_card_criticalFibre_eq_iff` in `CriticalFibreNonempty.lean`, all
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `exists_le_card_eq`, `not_nodup_powersetCard_of_not_nodup`, **`nodup_powersetCard_iff`** — the
+  sub-multisets of a fixed size `0 < m < card s` of a multiset are pairwise distinct **iff** the
+  multiset has no repeated element.  Mathlib proves only the easy direction
+  (`Multiset.Nodup.powersetCard`); the converse is the one a characterisation needs, and it is
+  proved by exhibiting the repeat: a doubled element `a` gives `s = a ::ₘ a ::ₘ t`, and a
+  sub-multiset `a ::ₘ w` with `w ≤ t` of size `m-1` then appears in **both** summands of
+  `powersetCard_cons`;
+
+  **`nat_card_criticalFibre_eq_iff`** — hence, for critical-degree packets at every pair of depths,
+
+  ```text
+  Nat.card (criticalFibre K m n U V) = choose(m+n,m)  ↔  (1 + U V).roots.Nodup.
+  ```
+
+  The depth-two criterion of the previous entry is now matched in the regime that covers all depths.
+  Separability is no longer a hypothesis anywhere in the critical-degree regime: it is a *proved
+  equivalent* of the binomial count, so an observation with a repeated target root has provably
+  fewer than `choose(m+n,m)` compatible jets, and the card's `(2)` is characterised, not merely
+  achieved.
+
+- 2026-08-06 — **Both criteria in the separability phrasing.**
+  `nat_card_criticalFibre_eq_iff_separable` and `nat_card_criticalFibre_two_two_eq_iff_separable`,
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  Nat.card (criticalFibre K m n U V) = choose(m+n,m)  ↔  (1 + U V).Separable          (critical degrees)
+  Nat.card (criticalFibre K 2 2 U V) = choose(4,2)    ↔  (criticalSextic ...).Separable (depth two)
+  ```
+
+  via mathlib's `nodup_roots_iff_of_splits`, which turns the multiplicity-free condition into
+  separability for a split nonzero polynomial.
+
+  The separability hypothesis that every count on this card has carried since the first divisor
+  bijection is therefore not an artefact of the proof and not merely sufficient — it is exactly
+  equivalent to the binomial answer, in both regimes where an exact count is known.  The card's `(2)`
+  is now a characterisation wherever it is proved.
+
+- 2026-08-06 — **The exactness criterion at depth one, completing the trio.**
+  `nat_card_criticalFibre_one_eq_iff` in `CriticalDegreeTailFibre.lean`,
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  Nat.card (criticalFibre K 1 n U V) = choose(1+n,1)
+      ↔  (oneDeepEquation U v_n n).Separable ∧ ¬ (oneDeepEquation U v_n n).IsRoot 0
+  ```
+
+  for any observed packets with `X | U`, `X^n | V`, `v_n ≠ 0`, of any degree.  The corpus's
+  depth-one count assumes both conditions; they are now proved **necessary** as well.  The argument
+  splits on whether the origin is a root: if it is, the nonzero roots number at most `n`, so the
+  count cannot reach `1+n` and the right side fails too; if it is not, the count is the number of
+  distinct roots and reaching the degree is exactly separability.
+
+  All three regimes with an exact count now have a matching characterisation:
+
+  | regime | count is `choose(m+n,m)` iff |
+  |---|---|
+  | critical-degree packets, all depths | `1 + U V` is separable |
+  | depth one, any packets | the depth-one equation is separable and nonzero at the origin |
+  | both depths two, any packets | the sextic is separable |
+
+  Nowhere on this card is separability now merely a convenient hypothesis; wherever `(2)` is proved,
+  it is proved as an equivalence.
+
+- 2026-08-06 — **Degenerate observations strictly lose jets.**  Three corollaries, all
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `nat_card_criticalFibre_lt_of_not_separable` (critical degrees, all depths),
+  `nat_card_criticalFibre_two_two_lt_of_not_separable` (both depths two),
+  `nat_card_criticalFibre_one_lt_of_not` (depth one) — when the regime's exactness criterion fails,
+
+  ```text
+  Nat.card (criticalFibre K m n U V) < criticalHorizonMultiplicity m n
+  ```
+
+  strictly.  Each combines that regime's unconditional ceiling with its characterisation from the
+  previous entries: `≤` and `≠` give `<`.
+
+  So the picture in every regime with an exact count is complete in both directions.  A critical
+  observation has at most `choose(m+n,m)` compatible jets always; exactly that many when the
+  criterion holds; and strictly fewer when it fails.  There is no gap left in these regimes where the
+  count is merely bounded — the degenerate case is now a theorem rather than an exclusion.
+
+- 2026-08-06 — **The scaling symmetry of a horizon observation.**  `HorizonScalingSymmetry.lean`, in
+  the umbrella, all `[propext, Classical.choice, Quot.sound]`:
+
+  `coeff_comp_C_mul_X` — dilating by `t ↦ c t` multiplies the `i`-th coefficient by `c^i`;
+  `comp_C_mul_X_comp`, `degree_comp_C_mul_X`, `X_pow_dvd_comp_C_mul_X_iff` — dilation is invertible,
+  preserves degrees, and preserves divisibility by the horizon exactly (for `c ≠ 0`);
+  **`criticalFibreScale`** — hence dilation is a *bijection*
+
+  ```text
+  criticalFibre K m n U V  ≃  criticalFibre K m n (U ∘ (c t)) (V ∘ (c t)),
+  ```
+
+  and `nat_card_criticalFibre_comp_C_mul_X` — the fibre count is an invariant of the scaling orbit of
+  the observation, not of the observation itself.
+
+  This is a genuine symmetry of the problem rather than a bookkeeping transport: it acts on the
+  observation space by `u_i ↦ c^i u_i`, `v_j ↦ c^j v_j`, so every count on this card is constant
+  along those orbits, and the exactness criteria are too — a target `1 + U V` is separable exactly
+  when its dilate is.  It also says the genericity conditions cannot be sharpened to anything that
+  distinguishes an observation from its dilates.
+
+  (A `private` `coeff_comp_C_mul_X` for `ℂ` exists in `RHTower/CocycleExponentRigidity.lean`; being
+  private it is unreachable, and the version here is over an arbitrary field and in the area that
+  owns jet geometry.)

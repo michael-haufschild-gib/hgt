@@ -6484,3 +6484,35 @@ premise. Endpoint `r=1` survives this falsifier. Any positive-energy continuatio
 renormalize moving antiscale chamber before its norm, rather than demand impossible bounded
 residual. Card:
 `../5-failed/route-e-critical-dissipation-saturation-antiscale-resonance-no-go.md`.
+
+## 2026-08-06 Route E prime-sieve normalization wall
+
+The expanded prime-sieve stack does not close `OPEN-SOURCE-001`, but it now isolates the surviving
+`r=1` normalization exactly.  For finite prime aperture `P`,
+
+\[
+ a_P=\prod_{p\in P}(1-p^{-1}),\quad
+ B_1(P)=\prod_{p\in P}(1+p^{-1}),\quad
+ a_PB_1(P)=\prod_{p\in P}(1-p^{-2})
+          =\frac{T_2(P)}{T_2(\varnothing)}.              \tag{E-NORM}
+\]
+
+The sieved second trace satisfies `T_2(P_N) -> 1` along every prime exhaustion.  Thus the regular
+Hilbert--Schmidt factor in `(E-NORM)` has a finite nonzero limit, and all raw critical Euler growth
+is reciprocal sieve-density growth.  This closes the `p^-2` regular layer, not the normalized
+`p^-1` source: multiplication by `a_P` loses source-normal mass, and division by `a_P` amplifies
+the telescoping edge `a_P/p` to the nonsummable edge `1/p`.
+
+Consequently sieve-density telescoping, determinant convergence, Hilbert--Schmidt vacuum collapse,
+and generic graph-seminorm completion do not reduce the normalized Route E endpoint.  The sharpened
+survivor is a source-defined signed first-trace/Bockstein countertransport, built from `(E-COV)`,
+which cancels the normalized `1/p` principal transition across alternating finite volumes before
+positive norm and leaves the already-controlled `p^-2` remainder.  Without an explicit formula
+and a uniform moving-antiscale estimate, this is still
+`WEIGHTED-PRIME-DILATION-INCREMENT-CANCELLATION`.
+
+The scalar sieve hazards `a_{P_{j-1}}/p_j` also telescope to one, but they do not close the Hall
+alternative: a uniform moving-window lift to `R_X^gr`, collision-quotiented interval Hall, and
+cross-anchor incoming-load control remain missing.  Full card and Lean:
+`../3-formalized/route-e-critical-gibbs-sieve-normalization-wall.md` and
+`RHTower/GibbsCriticalSieveNormalizationWall.lean`.

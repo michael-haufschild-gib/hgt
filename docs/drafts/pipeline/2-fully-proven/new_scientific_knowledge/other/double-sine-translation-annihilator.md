@@ -768,9 +768,9 @@ significant new classification or a routine synthesis once the question is posed
   `Gamma(s) zeta_2(s,x) = mellin (cone kernel) s` for real `x > 0`, `Re s > 2`;
 - [x] Lean removable singularity of the kernel factor `z/(1 - e^(-omega z))` at the origin, the
   analytic core of the subtraction;
-- [ ] Lean second-order Taylor expansion of the extended kernel, the continuation past `s = 2`,
-  the finite part at `s = 1`, and the reflected double sine.  This route is no longer on the
-  critical path: `exists_exact_doubleSine_source` already supplies the two step equations
+- [x] Lean second-order Taylor expansion of the extended kernel, the continuation past `s = 2`,
+  and the finite part at `s = 1` (the reflected double sine remains open, tracked below).  This
+  route is no longer on the critical path: `exists_exact_doubleSine_source` already supplies the two step equations
   unconditionally for any two-period frame with `0 < Im omega_j`, and the imaginary-ray regime
   `omega_j = i a_j` satisfies both that hypothesis and the rational-independence hypothesis of the
   fixed-field collapse.  The Barnes double-zeta regularization is therefore kept as an independent
@@ -790,14 +790,14 @@ significant new classification or a routine synthesis once the question is posed
   `(twoCylinderEmbed y)' = twoCylinderEmbed (twoCylDerivation lam y)`
   (`meroFieldDeriv_twoCylinderEmbed`), the differential-algebra hypothesis of the Ostrowski
   criterion;
-- [ ] Lean identification of `periodCotMero` with the embedded `cotModel`, producing the increment
-  family `bb : Fin 2 -> RatFunc (RatFunc C)`;
-- [ ] Lean instantiation of `hypertranscendentalOver_of_cotangentCylinderIncrement` on the
-  imaginary-ray frame, with `exists_exact_doubleSine_source` supplying the step equations and
-  `exists_constant_of_two_imaginaryPeriods_fixed` the common fixed field: unconditional
-  hypertranscendence of the double-sine source;
-- [ ] Lean assembly of the card's statement: the exact augmentation-ideal annihilator and the
-  total-exponent classification for the genuine meromorphic double-sine source.
+- [x] Lean identification of `periodCotMero` with the embedded `cotModel`
+  (`periodCotMero_eq_twoCylinderEmbed_cotModel`), producing the increment family;
+- [x] Lean instantiation of `hypertranscendentalOver_of_cotangentCylinderIncrement` on the
+  imaginary-ray frame (`hypertranscendental_doubleSine_imaginaryRay`): hypertranscendence of the
+  double-sine source over the two-cylinder field;
+- [x] Lean assembly of the card's statement: the exact augmentation-ideal annihilator and the
+  total-exponent classification for the genuine meromorphic double-sine source
+  (`daTranslationAnnihilator_doubleSine_imaginaryRay`).
 - [x] Lean divided-difference infrastructure: `(f z - f c)/(z - c)` extended by `f'(c)` is analytic
   at `c`, and iterating gives the second-order Taylor expansion with an analytic remainder
   (`analyticAt_analyticSlope`, `eq_taylor_two_add_sq_mul`, `analyticSlope_two_of_ne`);
@@ -807,6 +807,113 @@ significant new classification or a routine synthesis once the question is posed
 - [x] Lean continuity of the extended cone kernel and of its Taylor remainder on `[0,1]`, and the
   resulting uniform bound on the remainder (`exists_bound_barnesConeKernelRemainder`) — the input
   that makes the subtracted head integral converge for `Re s > 0`;
-- [ ] Lean split of the Mellin integral at `t = 1`, the two explicit head poles
-  `A_0/(s-2) + A_1/(s-1)` via `hasMellin_cpow_Ioc`, and the entire tail integral: meromorphic
-  continuation of `Gamma(s) zeta_2(s,x)` to `Re s > 0`.
+- [x] Lean split of the Mellin integral at `t = 1`, the two explicit head poles
+  `1/(omega_1 omega_2 (s-2)) + A_1/(s-1)` via `hasMellin_cpow_Ioc`, and the absolutely convergent
+  tail: `Gamma_mul_barnesDoubleZeta_eq_continuation` writes `Gamma(s) zeta_2(s,x)` for `Re s > 2` as
+  two explicit simple poles plus two integrals which converge for every `Re s > 0`.  Supporting
+  pieces: exponential decay of the cone kernel beyond `t = 1` (`norm_barnesConeKernel_le`),
+  continuity of the kernel on the positive reals, and absolute convergence of both the head and
+  tail integrands.
+- [x] Lean holomorphy of the two continued integrals in `s` on `Re s > 0`
+  (`differentiableAt_barnesConeHead`, `differentiableAt_barnesConeTail`,
+  `analyticAt_barnesConeContinuedPart`), giving the meromorphic continuation as an identity of
+  analytic functions rather than a pointwise formula.  Both integrals are Mellin transforms of
+  indicator-supported functions and fall under the standard Mellin holomorphy criterion.
+- [x] Lean definition of the continued Barnes double zeta `barnesDoubleZetaCont` on the right
+  half-plane, its agreement with the convergent series for `Re s > 2`
+  (`barnesDoubleZetaCont_eq_barnesDoubleZeta`), and its analyticity away from `s = 1, 2`
+  (`analyticAt_barnesDoubleZetaCont`);
+- [x] Lean Laurent expansion at `s = 1`: `barnesDoubleZetaCont_eq_pole_add_remainder` splits it off
+  the pole as `A_1/(s-1) + R(s)` with `R` analytic at `1`
+  (`analyticAt_barnesDoubleZetaRemainderOne`), the residue confirmed as a limit
+  (`tendsto_sub_one_mul_barnesDoubleZetaCont`), and the finite part named
+  (`barnesDoubleZetaFinitePartOne`).  Only the finite part is needed downstream: in
+  `partial_z log Gamma_2 = -[zeta_2(s+1,z) + s zeta_2'(s+1,z)]_{s=0}` the two poles cancel and the
+  limit is exactly the constant term.
+- [x] Lean shift derivative `partial_x zeta_2(s,x) = -s zeta_2(s+1,x)`
+  (`hasDerivAt_barnesDoubleZeta_shift`), by differentiating the Mellin representation under the
+  integral sign: the `x`-derivative multiplies the integrand by `-t`, which raises the Mellin
+  variable by one, dominated by the integrand at half the shift
+  (`norm_barnesConeKernel_mono`, `integrableOn_cpow_mul_barnesConeKernel_Ioi`);
+- [x] Lean Taylor expansion to arbitrary order with an analytic remainder
+  (`analyticSlopeIter`, `eq_taylor_add_pow_mul`, `analyticSlopeIter_of_ne`), and its third-order
+  instance for the cone kernel (`barnesConeKernelAnalytic_taylor_three`) with the cubic remainder
+  bounded on `[0,1]` (`exists_bound_barnesConeCubicRemainder`);
+- [x] Lean continuation past `s = 0`: `Gamma_mul_barnesDoubleZeta_eq_continuation_three` writes
+  `Gamma(s) zeta_2(s,x)` as three explicit simple poles (`s = 2, 1, 0`) plus a head integral
+  convergent for `Re s > -1` and the entire tail.  This is the range needed to reach `s = 0`, where
+  the simple zero of `1/Gamma` cancels the new pole, so `zeta_2` is regular there;
+- [x] Lean definition of the Barnes double gamma: the tail integral is entire
+  (`differentiableAt_barnesConeTail_all`), the subtracted head is holomorphic for `Re s > -1`
+  (`differentiableAt_barnesConeDeepHead`), and at `s = 0` the head's pole is cancelled by the simple
+  zero of `1/Gamma`, giving a function analytic there (`barnesDoubleZetaRegZero`,
+  `analyticAt_barnesDoubleZetaRegZero`) which agrees with the continuation off the origin
+  (`barnesDoubleZetaRegZero_eq`) and with the convergent series for `Re s > 2`
+  (`barnesDoubleZetaDeep_eq_barnesDoubleZeta`).  `logBarnesDoubleGamma` is its `s`-derivative at the
+  origin;
+- [x] Lean meromorphic continuation of the one-dimensional Barnes zeta: Mellin representation
+  (`Gamma_mul_barnesSingleZeta_eq_mellin`), the extended ray kernel `t F(t)` with its second-order
+  expansion (`barnesRayKernelAnalytic_taylor`), the bounded remainder, and the continuation with two
+  explicit poles at `s = 1, 0` (`Gamma_mul_barnesSingleZeta_eq_continuation`).  The double zeta's
+  shift equations reduce to the single zeta, so this is required to transport any functional
+  equation to the continued functions;
+- [x] Lean shift identity of the cone kernel `F_2(x,t) = F_2(x+omega_1,t) + F_1(omega_2;x,t)`
+  (`barnesConeKernel_shift`) -- an exact algebraic identity, not a statement about series, so it
+  transports to every object built from the kernel and avoids any appeal to the identity theorem on
+  a punctured domain;
+- [x] Lean additivity and peeling laws for the iterated divided difference (`analyticSlope_add`,
+  `analyticSlope_add_sub_mul`, `analyticSlopeIter_add`, `analyticSlopeIter_add_sub_mul`): adding
+  `(z-c)` times a function shifts the divided difference by that function, which is how the shift
+  identity descends to the Taylor coefficients and remainders;
+- [x] Lean descent of the shift identity to the Taylor data: the extended kernels satisfy
+  `A_2(x,z) = A_2(x+omega_1,z) + z A_1(omega_2;x,z)` near the origin
+  (`barnesConeKernelAnalytic_shift_eventually`), the divided difference only depends on the germ
+  (`analyticSlopeIter_eq_of_eventuallyEq`), and peeling gives the coefficient identities
+  `barnesConeLinearCoeff_shift`, `barnesConeQuadCoeff_shift` together with the exact remainder
+  identity `barnesConeCubicRemainder_shift`;
+- [x] Lean shift equation of the continued Barnes double zeta
+  (`barnesDoubleZetaBracket_shift`, `barnesDoubleZetaDeep_shift`):
+  `zeta_2(s,x) = zeta_2(s,x+omega_1) + zeta_1(omega_2;s,x)` on `Re s > -1`, proved by matching the
+  three pole coefficients, the subtracted head integrals and the tail integrals separately -- no
+  analytic continuation argument.  Both tails were generalised to converge for every exponent
+  (`integrableOn_cpow_mul_barnesConeKernel_Ioi_one_all`,
+  `integrableOn_cpow_mul_barnesRayKernel_Ioi_one_all`), and the brackets are identified with
+  `Gamma(s) zeta(s,x)` where the series converges;
+- [ ] Lean identification of `-barnesDoubleZetaFinitePartOne` with `partial_z log Gamma_2`, i.e. the
+  derivative-in-`z` relation `partial_z zeta_2(s,z) = -s zeta_2(s+1,z)` transported to the
+  continuation, and the reflection producing the double sine.
+
+### The base-change step (card lines 94-95) is corpus-owned
+
+The paper proof's step "since `K(z)` is DA over both `K` and `C(z)`, transitivity makes `L_2` DA
+over `K`" is already available in Lean: `DifferentialAlgebraicTransitivity.lean` proves
+`differentialAlgebraicOver_trans` together with the transcendence-degree machinery
+(`differentialAdjoin_trdeg_lt_aleph0_of_differentialAlgebraic`) it rests on, and
+`FiniteDifferentialCircuitBoundary.lean` proves `differentialAlgebraicOver_mono`.  No new
+differential-algebra theory is needed; only the two concrete inputs for this frame.
+
+- [x] Lean inputs for the base change: `z` as an element of the global meromorphic field with
+  `z' = 1` and `z'' = 0`, hence differentially algebraic over the two-cylinder field
+  (`differentialAlgebraicOver_coordinateMero`), and the containment of the whole coordinate field
+  `C(z)` in the differential field the two-cylinder field generates by adjoining `z`
+  (`ratMero_mem_differentialAdjoin_coordinate`);
+- [x] Lean assembly of the base change: the algebra instance on the differential adjoin (by
+  restricting `ratMero` to it) and `differentialAlgebraicOver_twoCylinder_of_ratFunc`, which
+  discharges the `hHT` hypothesis of `daTranslationAnnihilator_eq_augIdeal`
+  (`not_differentialAlgebraicOver_doubleSine_source`);
+- [x] Lean discharge of the `hstep` hypothesis (`differentialAlgebraicOver_doubleSine_defect`, from
+  the corpus's `differentialAlgebraicOver_periodCotMero`) and the **capstone**: for any two-period
+  frame with rationally independent cylinder frequencies, non-torsion second dilation and constant
+  common fixed field, a meromorphic source with the exact cotangent defects satisfies
+  `daTranslationAnnihilator_doubleSine_eq_augIdeal` -- the annihilator modulo the differentially
+  algebraic sector over `C(z)` is exactly the augmentation ideal -- together with the total-exponent
+  classification (`differentialAlgebraicOver_transApply_doubleSine_iff`) and the statement that no
+  single structural translate is differentially algebraic
+  (`not_differentialAlgebraicOver_transApply_doubleSine_monomial`);
+- [x] Lean specialisation of the capstone to the imaginary-ray frame `omega_j = i a_j`, assembling
+  the frame facts (periodicity, non-torsion, fixed field): the statement is now closed with no frame
+  hypotheses.  `daTranslationAnnihilator_doubleSine_imaginaryRay` -- for `a, b > 0` with `a/b`
+  irrational there exists a meromorphic source with the two exact cotangent defects whose
+  translation annihilator modulo the differentially algebraic sector over `C(z)` is exactly the
+  augmentation ideal, equivalently a translation operator kills the class precisely when its
+  coefficients sum to zero.  **The card's main theorem is formalised unconditionally.**

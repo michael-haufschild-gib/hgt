@@ -240,7 +240,7 @@ Two exact replacement theorems are now closed:
 1. `../3-formalized/krylov-replica-moment-amplification-law.md` proves that
    annihilating moments through `K` forces paired replica moments through
    order `2r(K+1)-1` to vanish.
-2. `../2-fully-proven/krylov-causal-replica-sieve-law.md` proves that the
+2. `../3-formalized/krylov-causal-replica-sieve-law.md` proves that the
    observed `2r`th moment of every such residual is bounded by a factorial
    Krylov-horizon law, with no level-spacing premise.
 

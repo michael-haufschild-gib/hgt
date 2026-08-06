@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.LatticeCoverSystem
 import GaloisForLFunctions.HTGeometry.TorusFormalityColimit
+import GaloisForLFunctions.HTGeometry.TorusSystemInstances
 import GaloisForLFunctions.RHTower.DeningerCharacterShapeFormality
 
 /-!

@@ -19,7 +19,7 @@ which is the form needed to subtract the singular part of a Mellin integrand.
 -/
 
 open Complex Filter Metric
-open scoped Topology
+open scoped Topology BigOperators
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -109,6 +109,108 @@ theorem analyticSlope_two_of_ne {f : ℂ → ℂ} {c z : ℂ} (h : z ≠ c) :
   have ht := eq_taylor_two_add_sq_mul f c z
   rw [eq_div_iff hz]
   linear_combination -ht
+
+
+/-- The iterated divided difference at a point. -/
+def analyticSlopeIter (f : ℂ → ℂ) (c : ℂ) : ℕ → (ℂ → ℂ)
+  | 0 => f
+  | n + 1 => analyticSlope (analyticSlopeIter f c n) c
+
+@[simp] theorem analyticSlopeIter_zero (f : ℂ → ℂ) (c : ℂ) : analyticSlopeIter f c 0 = f := rfl
+
+@[simp] theorem analyticSlopeIter_succ (f : ℂ → ℂ) (c : ℂ) (n : ℕ) :
+    analyticSlopeIter f c (n + 1) = analyticSlope (analyticSlopeIter f c n) c := rfl
+
+theorem analyticAt_analyticSlopeIter {f : ℂ → ℂ} {c : ℂ} (hf : AnalyticAt ℂ f c) (n : ℕ) :
+    AnalyticAt ℂ (analyticSlopeIter f c n) c := by
+  induction n with
+  | zero => simpa using hf
+  | succ n ih => exact analyticAt_analyticSlope ih
+
+/-- **Taylor expansion to any order with an analytic remainder.**  The coefficients are the values
+of the iterated divided differences at the base point. -/
+theorem eq_taylor_add_pow_mul (f : ℂ → ℂ) (c z : ℂ) (n : ℕ) :
+    f z = (∑ k ∈ Finset.range n, (z - c) ^ k * analyticSlopeIter f c k c)
+      + (z - c) ^ n * analyticSlopeIter f c n z := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      have hstep := sub_eq_mul_analyticSlope (analyticSlopeIter f c n) c z
+      have hval : analyticSlopeIter f c n z
+          = analyticSlopeIter f c n c + (z - c) * analyticSlopeIter f c (n + 1) z := by
+        rw [analyticSlopeIter_succ]
+        linear_combination hstep
+      rw [Finset.sum_range_succ]
+      rw [hval] at ih
+      linear_combination ih
+
+
+/-- Away from the base point the iterated divided difference is the explicit Taylor remainder. -/
+theorem analyticSlopeIter_of_ne {f : ℂ → ℂ} {c z : ℂ} (h : z ≠ c) (n : ℕ) :
+    analyticSlopeIter f c n z
+      = (f z - ∑ k ∈ Finset.range n, (z - c) ^ k * analyticSlopeIter f c k c) / (z - c) ^ n := by
+  have hz : (z - c) ^ n ≠ 0 := pow_ne_zero n (sub_ne_zero.mpr h)
+  have ht := eq_taylor_add_pow_mul f c z n
+  rw [eq_div_iff hz]
+  linear_combination -ht
+
+
+theorem analyticSlopeIter_succ' (f : ℂ → ℂ) (c : ℂ) (n : ℕ) :
+    analyticSlopeIter f c (n + 1) = analyticSlopeIter (analyticSlope f c) c n := by
+  induction n with
+  | zero => rfl
+  | succ n ih => rw [analyticSlopeIter_succ, ih, analyticSlopeIter_succ]
+
+/-- The divided difference is additive. -/
+theorem analyticSlope_add {f g : ℂ → ℂ} {c : ℂ} (hf : DifferentiableAt ℂ f c)
+    (hg : DifferentiableAt ℂ g c) :
+    analyticSlope (fun z => f z + g z) c = fun z => analyticSlope f c z + analyticSlope g c z := by
+  funext z
+  rcases eq_or_ne z c with rfl | hz
+  · rw [analyticSlope_self, analyticSlope_self, analyticSlope_self]
+    exact (hf.hasDerivAt.add hg.hasDerivAt).deriv
+  · have hzc : z - c ≠ 0 := sub_ne_zero.mpr hz
+    rw [analyticSlope_of_ne hz, analyticSlope_of_ne hz, analyticSlope_of_ne hz]
+    field_simp
+    ring
+
+/-- **Peeling one factor.**  Adding `(z - c)` times a function shifts the divided difference by that
+function. -/
+theorem analyticSlope_add_sub_mul {B C : ℂ → ℂ} {c : ℂ} (hB : DifferentiableAt ℂ B c)
+    (hC : DifferentiableAt ℂ C c) :
+    analyticSlope (fun z => B z + (z - c) * C z) c = fun z => analyticSlope B c z + C z := by
+  have h1 : HasDerivAt (fun z : ℂ => z - c) 1 c := (hasDerivAt_id c).sub_const c
+  funext z
+  rcases eq_or_ne z c with rfl | hz
+  · have hA : HasDerivAt (fun w : ℂ => B w + (w - z) * C w)
+        (deriv B z + (1 * C z + (z - z) * deriv C z)) z :=
+      hB.hasDerivAt.add (h1.mul hC.hasDerivAt)
+    rw [analyticSlope_self, analyticSlope_self]
+    rw [hA.deriv]
+    ring
+  · have hzc : z - c ≠ 0 := sub_ne_zero.mpr hz
+    rw [analyticSlope_of_ne hz, analyticSlope_of_ne hz]
+    field_simp
+    ring
+
+theorem analyticSlopeIter_add {f g : ℂ → ℂ} {c : ℂ} (hf : AnalyticAt ℂ f c)
+    (hg : AnalyticAt ℂ g c) (n : ℕ) :
+    analyticSlopeIter (fun z => f z + g z) c n
+      = fun z => analyticSlopeIter f c n z + analyticSlopeIter g c n z := by
+  induction n generalizing f g with
+  | zero => rfl
+  | succ n ih =>
+      rw [analyticSlopeIter_succ', analyticSlope_add hf.differentiableAt hg.differentiableAt,
+        ih (analyticAt_analyticSlope hf) (analyticAt_analyticSlope hg),
+        analyticSlopeIter_succ', analyticSlopeIter_succ']
+
+/-- **Peeling one factor, iterated.** -/
+theorem analyticSlopeIter_add_sub_mul {B C : ℂ → ℂ} {c : ℂ} (hB : AnalyticAt ℂ B c)
+    (hC : AnalyticAt ℂ C c) (n : ℕ) :
+    analyticSlopeIter (fun z => B z + (z - c) * C z) c (n + 1)
+      = fun z => analyticSlopeIter B c (n + 1) z + analyticSlopeIter C c n z := by
+  rw [analyticSlopeIter_succ', analyticSlope_add_sub_mul hB.differentiableAt hC.differentiableAt,
+    analyticSlopeIter_add (analyticAt_analyticSlope hB) hC n, analyticSlopeIter_succ']
 
 end
 

@@ -1074,6 +1074,12 @@ def polydisc (c : Fin n → ℂ) (r : Fin n → ℝ) : Set (Fin n → ℂ) :=
 theorem mem_polydisc_iff {c : Fin n → ℂ} {r : Fin n → ℝ} {z : Fin n → ℂ} :
     z ∈ polydisc c r ↔ ∀ i, z i ∈ Metric.ball (c i) (r i) := Iff.rfl
 
+/-- A polydisc grows with its radii. -/
+theorem polydisc_mono {c : Fin n → ℂ} {r r' : Fin n → ℝ} (h : ∀ i, r' i ≤ r i) :
+    polydisc c r' ⊆ polydisc c r := by
+  intro z hz i
+  exact Metric.ball_subset_ball (h i) (hz i)
+
 /-- **A polydisc is closed under moving one coordinate inside its own disc.**  This is the property
 that makes the Dolbeault induction work: the `k`-line through a point of the polydisc, restricted to
 the `k`-th disc, stays inside the polydisc, which is exactly the hypothesis of
@@ -1161,10 +1167,10 @@ theorem cutoff_slab_support {g : (Fin n → ℂ) → ℂ} {c : Fin n → ℂ} {r
 its own coordinate makes it slab supported, so the coordinatewise Cauchy transform applies; the
 cutoff is invisible on the polydisc, where it is one, and it kills the part of every coordinate line
 that leaves the polydisc, so no direction along which the datum vanishes is disturbed. -/
-theorem dbar_polydisc_step {f : Fin n → (Fin n → ℂ) → ℂ} {c : Fin n → ℂ} {r : Fin n → ℝ}
-    {k : Fin n} {S M M₀ : ℝ} (chi : ℂ → ℝ)
+theorem dbar_polydisc_step {f : Fin n → (Fin n → ℂ) → ℂ} {c : Fin n → ℂ} {r r' : Fin n → ℝ}
+    {k : Fin n} {S M M₀ : ℝ} (hr : ∀ i, r' i ≤ r i) (chi : ℂ → ℝ)
     (hchi : ∀ t : ℂ, chi t ≠ 0 → t ∈ Metric.ball (c k) (r k))
-    (hone : ∀ z ∈ polydisc c r, chi (z k) = 1)
+    (hone : ∀ z ∈ polydisc c r', chi (z k) = 1)
     (hCF : ContDiff ℝ 1 (fun x : Fin n → ℂ => (chi (x k) : ℝ) • f k x))
     (hgS : ∀ x : Fin n → ℂ, S < ‖x k‖ → (chi (x k) : ℝ) • f k x = 0)
     (hdS : ∀ x : Fin n → ℂ, S < ‖x k‖ →
@@ -1173,9 +1179,9 @@ theorem dbar_polydisc_step {f : Fin n → (Fin n → ℂ) → ℂ} {c : Fin n �
     (hM₀ : ∀ x : Fin n → ℂ, ‖(chi (x k) : ℝ) • f k x‖ ≤ M₀)
     (hclosed : ∀ j : Fin n, ∀ z ∈ polydisc c r, dzbarAt (f k) j z = dzbarAt (f j) k z) :
     ∃ U : (Fin n → ℂ) → ℂ,
-      (∀ z ∈ polydisc c r, dzbarAt U k z = f k z) ∧
+      (∀ z ∈ polydisc c r', dzbarAt U k z = f k z) ∧
       ∀ j : Fin n, j ≠ k → (∀ y ∈ polydisc c r, f j y = 0) →
-        ∀ z ∈ polydisc c r, dzbarAt U j z = 0 := by
+        ∀ z ∈ polydisc c r', dzbarAt U j z = 0 := by
   refine ⟨dbarSliceSolution (fun x : Fin n → ℂ => (chi (x k) : ℝ) • f k x) k, ?_, ?_⟩
   · intro z hz
     rw [dzbarAt_dbarSliceSolution_of_slab hCF hgS z]
@@ -1183,7 +1189,7 @@ theorem dbar_polydisc_step {f : Fin n → (Fin n → ℂ) → ℂ} {c : Fin n �
     rw [hone z hz, one_smul]
   · intro j hjk hfj z hz
     refine dzbarAt_dbarSliceSolution_eq_zero hjk hCF hgS hdS hM hM₀ z (fun t => ?_)
-    exact dzbarAt_cutoff_vanishes_on_line hjk (hclosed j) hfj chi hchi hz t
+    exact dzbarAt_cutoff_vanishes_on_line hjk (hclosed j) hfj chi hchi (polydisc_mono hr hz) t
 
 
 /-- `∂̄_j` of the zero function. -/
@@ -1358,5 +1364,95 @@ theorem norm_cauchyIntegral_le {G : (Fin n → ℂ) → ℂ} {S M : ℝ} {k : Fi
   exact (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp h
 
 end UniformBound
+
+section CompactCutoff
+
+variable {n : ℕ}
+
+/-- **`∂̄_j` is local**: it depends only on the germ of the function at the point. -/
+theorem dzbarAt_congr_of_eventuallyEq {g g' : (Fin n → ℂ) → ℂ} {j : Fin n} {z : Fin n → ℂ}
+    (h : ∀ᶠ y in nhds z, g y = g' y) : dzbarAt g j z = dzbarAt g' j z := by
+  have hz : (fun s : ℂ => Function.update z j s) (z j) = z := Function.update_eq_self j z
+  have hcont : Filter.Tendsto (fun s : ℂ => Function.update z j s) (nhds (z j)) (nhds z) := by
+    have hc : ContinuousAt (fun s : ℂ => Function.update z j s) (z j) :=
+      ((contDiff_updateEmbed j z).continuous).continuousAt
+    have h1 : Filter.Tendsto (fun s : ℂ => Function.update z j s) (nhds (z j))
+        (nhds ((fun s : ℂ => Function.update z j s) (z j))) := hc
+    rwa [hz] at h1
+  have hs : (dbarSlice g j z) =ᶠ[nhds (z j)] (dbarSlice g' j z) := hcont.eventually h
+  rw [dzbarAt, dzbarAt, dzbar, dzbar, hs.fderiv_eq]
+
+/-- A compactly supported function is slab supported in every coordinate, with a positive
+radius. -/
+theorem exists_slab_of_hasCompactSupport {E : Type*} [NormedAddCommGroup E]
+    {G : (Fin n → ℂ) → E} (hcs : HasCompactSupport G)
+    (k : Fin n) : ∃ S : ℝ, 0 < S ∧ ∀ x : Fin n → ℂ, S < ‖x k‖ → G x = 0 := by
+  obtain ⟨R, hR, hzero⟩ := hcs.exists_pos_le_norm
+  exact ⟨R, hR, fun x hx => hzero x (le_trans hx.le (norm_coord_le x k))⟩
+
+/-- **The Dolbeault induction step with a compactly supported cutoff.**  The cutoff is a function
+of the `k`-th coordinate alone times one that does not depend on that coordinate; the product is
+compactly supported, so the coordinatewise Cauchy transform is smooth, while the second factor is
+invisible to `∂̄_j` along every `k`-line meeting the polydisc, because it is one on the polydisc and
+constant along that line.  Hence no direction along which the datum vanishes is disturbed. -/
+theorem dbar_polydisc_step_smooth {f : Fin n → (Fin n → ℂ) → ℂ} {c : Fin n → ℂ}
+    {r r' : Fin n → ℝ} {k : Fin n} (hr : ∀ i, r' i ≤ r i)
+    (chi : ℂ → ℝ) (psi : (Fin n → ℂ) → ℝ)
+    (hchi : ∀ t : ℂ, chi t ≠ 0 → t ∈ Metric.ball (c k) (r k))
+    (hchione : ∀ z ∈ polydisc c r', chi (z k) = 1)
+    (hpsione : ∀ z ∈ polydisc c r, psi z = 1)
+    (hCG : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+      (fun x : Fin n → ℂ => (chi (x k) : ℝ) • ((psi x : ℝ) • f k x)))
+    (hcs : HasCompactSupport (fun x : Fin n → ℂ => (chi (x k) : ℝ) • ((psi x : ℝ) • f k x)))
+    (hclosed : ∀ j : Fin n, ∀ z ∈ polydisc c r, dzbarAt (f k) j z = dzbarAt (f j) k z) :
+    ∃ U : (Fin n → ℂ) → ℂ,
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) U ∧
+      (∀ z ∈ polydisc c r', dzbarAt U k z = f k z) ∧
+      ∀ j : Fin n, j ≠ k → (∀ y ∈ polydisc c r, f j y = 0) →
+        ∀ z ∈ polydisc c r', dzbarAt U j z = 0 := by
+  set F : (Fin n → ℂ) → ℂ :=
+    fun x : Fin n → ℂ => (chi (x k) : ℝ) • ((psi x : ℝ) • f k x) with hF
+  have hC1 : ContDiff ℝ 1 F := hCG.of_le (by exact_mod_cast le_top)
+  obtain ⟨S, hS, hgS⟩ := exists_slab_of_hasCompactSupport hcs k
+  obtain ⟨Sd, hSd, hdS⟩ :=
+    exists_slab_of_hasCompactSupport (hcs.fderiv ℝ) k
+  obtain ⟨M, hM⟩ :=
+    (hcs.fderiv ℝ).exists_bound_of_continuous (hC1.continuous_fderiv one_ne_zero)
+  obtain ⟨M₀, hM₀⟩ := hcs.exists_bound_of_continuous hC1.continuous
+  set T : ℝ := max S Sd with hT
+  have hgT : ∀ x : Fin n → ℂ, T < ‖x k‖ → F x = 0 :=
+    fun x hx => hgS x (lt_of_le_of_lt (le_max_left _ _) hx)
+  have hdT : ∀ x : Fin n → ℂ, T < ‖x k‖ → fderiv ℝ F x = 0 :=
+    fun x hx => hdS x (lt_of_le_of_lt (le_max_right _ _) hx)
+  refine ⟨dbarSliceSolution F k, contDiff_infty_dbarSliceSolution F k hCG hcs, ?_, ?_⟩
+  · intro z hz
+    rw [dzbarAt_dbarSliceSolution_of_slab hC1 hgT z, hF]
+    show (chi (z k) : ℝ) • ((psi z : ℝ) • f k z) = f k z
+    rw [hchione z hz, hpsione z (polydisc_mono hr hz), one_smul, one_smul]
+  · intro j hjk hfj z hz
+    refine dzbarAt_dbarSliceSolution_eq_zero hjk hC1 hgT hdT hM hM₀ z ?_
+    intro t
+    have hslice : dzbarAt F j (Function.update z k t)
+        = (chi t : ℝ) • dzbarAt (fun x : Fin n → ℂ => (psi x : ℝ) • f k x) j
+            (Function.update z k t) := by
+      rw [hF, dzbarAt_slabCutoff_smul hjk chi, Function.update_self]
+    rw [hslice]
+    by_cases ht : chi t = 0
+    · rw [ht, zero_smul]
+    · have hmem : Function.update z k t ∈ polydisc c r :=
+        update_mem_polydisc (polydisc_mono hr hz) (hchi t ht)
+      have hloc : dzbarAt (fun x : Fin n → ℂ => (psi x : ℝ) • f k x) j (Function.update z k t)
+          = dzbarAt (f k) j (Function.update z k t) := by
+        refine dzbarAt_congr_of_eventuallyEq ?_
+        refine Filter.eventually_of_mem ((isOpen_polydisc c r).mem_nhds hmem) (fun y hy => ?_)
+        show (psi y : ℝ) • f k y = f k y
+        rw [hpsione y hy, one_smul]
+      rw [hloc, hclosed j _ hmem]
+      have hzero : dzbarAt (f j) k (Function.update z k t) = 0 := by
+        refine dzbarAt_eq_zero_of_eventually_zero ?_
+        exact Filter.eventually_of_mem ((isOpen_polydisc c r).mem_nhds hmem) (fun y hy => hfj y hy)
+      rw [hzero, smul_zero]
+
+end CompactCutoff
 
 end HTGeometry

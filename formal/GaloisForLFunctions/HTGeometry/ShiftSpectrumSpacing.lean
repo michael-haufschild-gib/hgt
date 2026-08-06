@@ -147,6 +147,42 @@ theorem tendsto_shiftSpectrumGap_nhds_zero (hd : 1 < d) (hq : 0 < q) :
   · filter_upwards [eventually_gt_atTop 0] with m hm
     exact shiftSpectrumGap_le hd hq hm
 
+/-- **The spectral gap at a base point**: the distance from `α₀` to the rest of
+the standard-twist spectrum. -/
+noncomputable def spectralGap (a : ℕ → ℂ) (d q : ℝ) (α₀ : ℝ) : ℝ :=
+  Metric.infDist α₀ (shiftSpectrum a d q \ {α₀})
+
+/-- **The cusp gap.**  At the cusp the deleted point is absent from the spectrum,
+so the gap is the distance to the whole spectrum, namely `d q^{-1/d}`. -/
+theorem spectralGap_zero {a : ℕ → ℂ} (ha : a 1 ≠ 0) (hd : 0 < d) (hq : 0 < q) :
+    spectralGap a d q 0 = d * q ^ (-(1 / d)) := by
+  rw [spectralGap, shiftSpectrum_diff_zero hd hq, infDist_zero_shiftSpectrum ha hd hq]
+
+/-- The gap at a spectral point is at most the distance to the next one. -/
+theorem spectralGap_le_shiftSpectrumGap {a : ℕ → ℂ} {m : ℕ}
+    (hm : 0 < m) (hnext : a (m + 1) ≠ 0) (hd : 0 < d) (hq : 0 < q) :
+    spectralGap a d q (shiftSpectrumPoint d q m) ≤ shiftSpectrumGap d q m := by
+  have hmem : shiftSpectrumPoint d q (m + 1)
+      ∈ shiftSpectrum a d q \ {shiftSpectrumPoint d q m} := by
+    refine ⟨⟨m + 1, Nat.succ_pos m, hnext, rfl⟩, ?_⟩
+    intro hcon
+    have hlt : shiftSpectrumPoint d q m < shiftSpectrumPoint d q (m + 1) := by
+      rw [shiftSpectrumPoint, shiftSpectrumPoint]
+      have hmR : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
+      refine mul_lt_mul_of_pos_left ?_ hd
+      refine Real.rpow_lt_rpow (by positivity) ?_ (by positivity)
+      gcongr
+      exact_mod_cast Nat.lt_succ_self m
+    rw [Set.mem_singleton_iff] at hcon
+    exact absurd hcon.symm (ne_of_lt hlt)
+  have hle : spectralGap a d q (shiftSpectrumPoint d q m)
+      ≤ dist (shiftSpectrumPoint d q m) (shiftSpectrumPoint d q (m + 1)) :=
+    Metric.infDist_le_dist_of_mem hmem
+  rwa [Real.dist_eq, abs_sub_comm,
+    abs_of_nonneg (by
+      rw [← shiftSpectrumGap]
+      exact shiftSpectrumGap_nonneg hd hq m), ← shiftSpectrumGap] at hle
+
 end Spacing
 
 section DegreeOneLattice

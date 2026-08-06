@@ -583,3 +583,47 @@ scalars.
   source as an exterior power of a colimit, and reduced the remaining lattice-to-torus dictionary to
   a choice of bases by proving that any functorial family of integer matrices is a tower of tori
   (`torusCoverSystemOfMatrices`).
+
+### The dictionary from the lattice filtration to a tower of tori, landed — 2026-08-06
+
+The one concrete item the previous entry named as missing is now built, so `(2)` is formalized for
+the card's own indexing family rather than for an abstract `TorusCoverSystem`.
+
+`formal/GaloisForLFunctions/HTGeometry/LatticeCoverSystem.lean` turns a monotone family of lattices
+into a tower of tori.  `latticeInclusion` is the inclusion of one lattice in a later one, with
+`latticeInclusion_self` and `latticeInclusion_comp` its functoriality;
+`integerCoverSystemOfBases` reads that inclusion off in chosen bases as an integer matrix and proves
+the two `IntegerCoverSystem` laws — the matrix of a reflexive relation is the identity
+(`LinearMap.toMatrix_id`), and the matrices multiply along a composite (`LinearMap.toMatrix_comp`),
+both after the transpose that puts the matrix in the covariant convention where it acts on the
+coordinates of the larger covering space.  `torusCoverSystemOfBases` composes this with
+`torusCoverSystemOfMatrices`.
+
+`formal/GaloisForLFunctions/HTGeometry/TorusSystemInstances.lean` registers the two directed-system
+facts that the colimit of the algebras consumes — `torusSystemDirectedDeg` and
+`exteriorSystemDirectedDeg`, each obtained from `directedSystem_deg` applied to the corresponding
+`CDGADirectedSystem` witness.
+
+`formal/GaloisForLFunctions/RHTower/DeningerLatticeTorusTower.lean` instantiates this at the card's
+`𝓛_F`.  The lattices of a torsion-free abelian group are directed (`IsDirectedOrder` instance from
+`deningerFGSubmodule_directed`), finitely generated hence finite modules, and free
+(`deningerLatticeFree`), so `deningerLatticeBasis` is a basis indexed by the rank and
+`deningerTorusTower` is the tower of tori of the whole filtration, with
+`deningerTorusTower_dim` identifying the dimension of each stage with `finrank ℤ L`.  Finally
+
+  `deningerTorusFormality_isQuasiIso`
+
+is `(2)` for that tower: the comparison of the exterior algebra of the colimit of the duals with the
+colimit of the de Rham algebras of the tori is a quasi-isomorphism of commutative differential
+graded algebras.  Axiom audit: every declaration of the three modules is within
+`propext, Classical.choice, Quot.sound`.
+
+So `(2)` is formalized without any remaining choice to be made, for the card's own family of
+lattices.  What still has no mathlib counterpart is `(4)`, which is a statement about free
+`E_∞` `Hℝ`-algebras rather than about commutative differential graded algebras, and `(5)`, which
+needs the relative derived tensor product of such algebras.  The general homotopical steps that
+`(5)` and `(6)` are built from — base change preserves equivalences, the fibre of an equivalence
+vanishes, the free algebra on the zero object is the unit, and tensoring over the unit is the
+identity — are proved in
+`formal/GaloisForLFunctions/RHTower/DeningerRankCollapseSpectralConsequences.lean`.  The card stays
+at stage 2 for `(4)`, which is one of its own `[PROVED HERE]` labels.

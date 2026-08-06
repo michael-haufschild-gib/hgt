@@ -612,3 +612,123 @@ That refactor is the next step; after it the induction has no remaining obstruct
 
   Hence `‖T_k G (y)‖ ≤ 3πMS` uniformly in `y`.  No rearrangement inequality is needed, which is why
   this split was chosen over comparing with the centred disc.
+
+## D3b(ii-c2b-iii-C) — the uniform bound, landed (2026-08-06)
+
+`formal/GaloisForLFunctions/HTGeometry/DbarSeveral.lean`, section `UniformBound`:
+
+- `enorm_cauchyIntegral_le` — for `G` bounded by `M` and supported in the slab `‖x k‖ ≤ S`,
+  the `ℒ`-norm of the coordinatewise Cauchy integrand is bounded by
+  `ofReal M * (ofReal S * ofReal (2π)) + ofReal (M/S) * (ofReal S ^ 2 * π)`.
+  The integrand vanishes off `closedBall (y k) S` (`cauchyIntegrand_eq_zero_of_notMem`), and that
+  moving disc is split at `‖w‖ = S`: inside `ball 0 S` the kernel `‖w‖⁻¹` is dominated with total
+  mass `2πS` (`lintegral_ball_norm_inv`), outside it the kernel is at most `S⁻¹` while the moving
+  disc has area `πS²` (`Complex.volume_closedBall`).  Splitting this way rather than comparing the
+  moving disc with a centred one is what makes the bound independent of the base point.  The whole
+  estimate runs in `ℝ≥0∞`, so no integrability side condition is needed.
+- `norm_cauchyIntegral_le` — the same in real form: `‖T_k G (y)‖ ≤ 3πMS`, uniformly in `y`.
+
+Axiom audit: both within `propext, Classical.choice, Quot.sound`.
+
+### Next: D3b(ii-c2b-iii-D), the `Fin n` recursion
+
+The recursion clears coefficients from the top down.  `P m` says: a `∂̄`-closed datum whose
+coefficients vanish on the polydisc in every direction `j` with `m ≤ (j : ℕ)` is solvable.  `P 0` is
+trivial (`u = 0`); for `n ≤ m` the hypothesis of `P m` is vacuous so `P (m+1)` follows from `P m`;
+and for `m < n` one applies `dbar_polydisc_step` at `k = ⟨m, _⟩`, replaces `f` by
+`f' j = f j − ∂̄_j U`, which vanishes in every direction `j ≥ m`, and appeals to `P m`.
+Closedness of `f'` is `dzbarAt_comm`.
+
+**The regularity obligation this exposes.**  Iterating needs `U = T_k(χ f_k)` to be `C^∞`, and
+`contDiff_infty_dbarSliceSolution` gives that only for a *compactly supported* source, while the
+one-coordinate cutoff leaves only slab support.  Two routes:
+
+1. prove smoothness of `T_k G` for `G` smooth and slab supported, by differentiating under the
+   integral as in `contDiff_infty_piCauchyB` — the uniform bound above is the domination this
+   needs, and derivatives of a slab-supported function are slab supported;
+2. or precompose the whole induction with a global cutoff that is one on a neighbourhood of the
+   closed target polydisc and supported in a slightly larger one, which makes every stage
+   compactly supported at the cost of shrinking the polydisc once per stage — `n` shrinkings in
+   all, which is harmless because the Dolbeault–Grothendieck lemma is local.
+
+Route 1 keeps the polydisc fixed and is the one to build; route 2 is the fallback if the
+differentiation-under-the-integral argument does not transfer to slab support.
+
+## D3b(ii-c2b-iii-C2) — the smooth step, landed (2026-08-06)
+
+Two corrections to the design recorded above, both now carried by the Lean code.
+
+**The cutoff must factor, and the second factor restores compact support.**  The note above said
+route 1 (smoothness of `T_k` for slab-supported sources) was required because a global cutoff
+breaks `∂̄_j`-closedness along the `k`-line.  That is only true for a cutoff that mixes the
+coordinates.  Take instead
+
+  `Θ(z) = χ(z_k) · ψ(z)`,  `ψ ≡ 1` on the polydisc, `ψ` compactly supported.
+
+Then `Θ f_k` **is** compactly supported, so `contDiff_infty_dbarSliceSolution` applies and the
+solution is `C^∞`; and for `j ≠ k` and `z` in the polydisc the `ψ` factor is invisible, because
+`∂̄_j` is local and `ψ ≡ 1` on the polydisc, which is an open neighbourhood of every point of the
+`k`-line where `χ` is nonzero.  No hypothesis on `∂̄_j ψ` is needed at all — locality does the whole
+job.  So neither route 1 nor route 2 is needed; this is a third and simpler route.
+
+**The two polydiscs.**  As previously stated, `dbar_polydisc_step` asked for a cutoff supported in
+`ball (c k) (r k)` *and* equal to one on all of `polydisc c r` — no such function exists, so the
+theorem was vacuous.  Both steps now take two radii `r' ≤ r`: the cutoff is supported in the big
+disc and equal to one on the small one, closedness and the vanishing hypothesis are read on the big
+polydisc, and the conclusion holds on the small one.  This is the correct shape of the
+Dolbeault–Grothendieck lemma anyway — solvability is asserted on a slightly smaller polydisc.
+
+New in `formal/GaloisForLFunctions/HTGeometry/DbarSeveral.lean`:
+
+- `polydisc_mono` — a polydisc grows with its radii.
+- `dzbarAt_congr_of_eventuallyEq` — **`∂̄_j` is local**: it depends only on the germ.
+- `exists_slab_of_hasCompactSupport` — a compactly supported map into any normed space is slab
+  supported in every coordinate, with a positive radius.
+- `dbar_polydisc_step_smooth` — **the induction step, with a smooth solution**: for a factored
+  compactly supported cutoff, there is `U ∈ C^∞` with `∂̄_k U = f_k` on the small polydisc and
+  `∂̄_j U = 0` there for every `j ≠ k` along which the datum vanishes on the big polydisc.
+- `dbar_polydisc_step` — restated with two radii.
+
+Axiom audit: all within `propext, Classical.choice, Quot.sound`.
+
+Smoothness of `U` is what lets the step be iterated: the residue `f' j = f j − ∂̄_j U` is again
+`C^∞`, and `dzbarAt_comm` (which needs `C²`) gives its `∂̄`-closedness.
+
+### Next: D3b(ii-c2b-iii-D), the `Fin n` recursion, and the cutoff supply
+
+Two remaining pieces.
+
+1. **The cutoffs exist.**  `ContDiffBump` supplies `χ` (one on `ball (c k) (r'_k)`, supported in
+   `ball (c k) (r_k)`) and `ψ` (one on a neighbourhood of the closed polydisc, compactly
+   supported).  Both are standard; the second needs a bump on `Fin n → ℂ`, which is a finite
+   dimensional normed space, so `ContDiffBump` applies directly.
+2. **The recursion** `P m` on `m ≤ n`, clearing directions from the top down, with a fresh pair of
+   radii at each of the `n` stages.  Because each stage shrinks the polydisc once, the final
+   conclusion is solvability on a polydisc of any prescribed radii strictly inside the original —
+   which is exactly the local statement Cartan B consumes.
+
+## D3 COMPLETE — the Dolbeault–Grothendieck lemma on a polydisc (2026-08-06)
+
+`formal/GaloisForLFunctions/HTGeometry/DbarPolydiscSolve.lean`:
+
+- `contDiff_infty_dzbarAt` — **`∂̄_j` preserves smoothness**: it is a fixed continuous linear
+  functional of the differential, so `C^∞ → C^∞`.  This is what lets the step be iterated.
+- `exists_polydisc_bumps` — the two cutoffs of the step, from `ContDiffBump`: one in the `k`-th
+  coordinate, equal to one on the small disc and supported in the large one; one in all
+  coordinates, equal to one on the whole polydisc and compactly supported, which exists because a
+  polydisc is bounded in the supremum norm of `Fin n → ℂ`.
+- `dbar_polydisc_solve_aux` — the induction on the number of directions still to clear.  `P 0` is
+  `u = 0`; for `n ≤ m` the hypothesis is vacuous and the step is a re-application; for `m < n` one
+  applies `dbar_polydisc_step_smooth` at `k = ⟨m, _⟩` with intermediate radii
+  `r'' = (ρ + r)/2`, forms the residue `g j = f j − ∂̄_j U`, which is smooth
+  (`contDiff_infty_dzbarAt`), `∂̄`-closed (`dzbarAt_sub` and `dzbarAt_comm`), and vanishes in every
+  direction `j ≥ m` on `polydisc c r''`, and recurses.  Assembly is `dzbarAt_add_solution`.
+- `dbar_polydisc_solve` — **the lemma itself**: for `0 < ρ i < r i` in every coordinate, a smooth
+  `∂̄`-closed datum `f : Fin n → (Fin n → ℂ) → ℂ` on `polydisc c r` has a smooth `u` with
+  `∂̄_j u = f j` on `polydisc c ρ` for every `j`.
+
+Axiom audit: all four within `propext, Classical.choice, Quot.sound`.
+
+D1, D2 and D3 of the programme are now closed.  The remaining chain to
+`H^q(Z, O_Z) = 0` for `Z = (ℂ^×)^r` is recorded in
+`docs/drafts/pipeline/1-in-progress/holomorphic-sheaf-cohomology-vanishing.md`.

@@ -131,8 +131,9 @@ variable {n : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [Compl
 omit [CompleteSpace E] in
 /-- The value of the term of degree `k` of the series on a constant tuple is the corresponding
 Cauchy integral. -/
-theorem polydiscSeries_apply_diag {f : (Fin n → ℂ) → E} (hf : Continuous f) (c : Fin n → ℂ)
-    {R : ℝ} (hR : 0 < R) (y : Fin n → ℂ) (k : ℕ) :
+theorem polydiscSeries_apply_diag {f : (Fin n → ℂ) → E} {c : Fin n → ℂ} {R : ℝ}
+    (hf : Continuous fun θ : Fin n → ℝ => f (torusMap c (fun _ => R) θ))
+    (hR : 0 < R) (y : Fin n → ℂ) (k : ℕ) :
     (polydiscSeries f c R k fun _ => y) =
       ((2 * Real.pi * Complex.I) ^ n : ℂ)⁻¹ •
         ∯ ζ in T(c, fun _ => R), (polydiscKernelTerm c y k ζ) • f ζ := by
@@ -151,7 +152,7 @@ theorem polydiscSeries_apply_diag {f : (Fin n → ℂ) → E} (hf : Continuous f
       funext θ
       rw [smul_smul]
     rw [hsmul]
-    exact (polydiscCoeff_continuous hf c hR m).const_smul _
+    exact (polydiscCoeff_continuous hf hR m).const_smul _
   have hstep : (polydiscSeries f c R k fun _ => y) =
       ∑ m ∈ Finset.Nat.antidiagonalTuple n k,
         (∏ i, y i ^ m i) • polydiscCoeff f c R m := by
@@ -227,27 +228,49 @@ theorem summable_succ_pow_mul_geometric (n : ℕ) {x : ℝ} (hx0 : 0 ≤ x) (hx1
 
 omit [NormedSpace ℂ E] [CompleteSpace E] in
 /-- A holomorphic function is bounded on the distinguished boundary of a polydisc. -/
-theorem exists_bound_on_torus {f : (Fin n → ℂ) → E} (hf : Continuous f) (c : Fin n → ℂ)
-    {R : ℝ} (hR : 0 < R) : ∃ M : ℝ, ∀ θ : Fin n → ℝ, ‖f (torusMap c (fun _ => R) θ)‖ ≤ M := by
-  haveI : ProperSpace (Fin n → ℂ) := FiniteDimensional.proper ℂ (Fin n → ℂ)
-  obtain ⟨p₀, -, hp₀⟩ := (isCompact_closedBall c R).exists_isMaxOn
-    ⟨c, Metric.mem_closedBall_self hR.le⟩
-    (Continuous.continuousOn (f := fun z => ‖f z‖) (continuous_norm.comp hf))
-  refine ⟨‖f p₀‖, fun θ => ?_⟩
-  refine hp₀ ?_
-  rw [Metric.mem_closedBall, dist_pi_le_iff hR.le]
-  intro i
-  rw [dist_eq_norm, norm_torusMap_sub_center, abs_of_pos hR]
+theorem exists_bound_on_torus {f : (Fin n → ℂ) → E} {c : Fin n → ℂ} {R : ℝ} (hR : 0 < R)
+    (hf : ContinuousOn f {z : Fin n → ℂ | ∀ i, ‖z i - c i‖ = R}) :
+    ∃ M : ℝ, ∀ θ : Fin n → ℝ, ‖f (torusMap c (fun _ => R) θ)‖ ≤ M := by
+  set T : Set (Fin n → ℂ) := {z : Fin n → ℂ | ∀ i, ‖z i - c i‖ = R} with hT
+  have hmemT : ∀ θ : Fin n → ℝ, torusMap c (fun _ => R) θ ∈ T := by
+    intro θ i
+    rw [norm_torusMap_sub_center, abs_of_pos hR]
+  have hclosed : IsClosed T := by
+    have heq : T = ⋂ i : Fin n, (fun z : Fin n → ℂ => z i) ⁻¹' (Metric.sphere (c i) R) := by
+      ext z
+      simp only [hT, Set.mem_setOf_eq, Set.mem_iInter, Set.mem_preimage, Metric.mem_sphere,
+        Complex.dist_eq]
+    rw [heq]
+    exact isClosed_iInter fun i => (Metric.isClosed_sphere).preimage (continuous_apply i)
+  have hbdd : Bornology.IsBounded T := by
+    refine (Metric.isBounded_iff_subset_closedBall c).2 ⟨R, fun z hz => ?_⟩
+    rw [Metric.mem_closedBall, dist_pi_le_iff hR.le]
+    intro i
+    rw [Complex.dist_eq]
+    exact le_of_eq (hz i)
+  have hcomp : IsCompact T := Metric.isCompact_of_isClosed_isBounded hclosed hbdd
+  obtain ⟨p₀, hp₀mem, hp₀⟩ := hcomp.exists_isMaxOn ⟨torusMap c (fun _ => R) 0, hmemT 0⟩
+    (continuous_norm.comp_continuousOn hf)
+  exact ⟨‖f p₀‖, fun θ => hp₀ (hmemT θ)⟩
 
 /-- **A continuous affine-line-entire function has its Cauchy power series on every polydisc.**
 This is the finite-dimensional Banach-valued Gâteaux-to-Fréchet bridge. -/
-theorem polydiscSeries_hasSum_of_affineLineEntire
-    {f : (Fin n → ℂ) → E} (hf : Continuous f) (hline : AffineLineEntire f)
-    (c : Fin n → ℂ)
-    {R : ℝ} (hR : 0 < R) {M : ℝ} (hM : ∀ θ : Fin n → ℝ, ‖f (torusMap c (fun _ => R) θ)‖ ≤ M)
+theorem polydiscSeries_hasSum_of_cauchy
+    {f : (Fin n → ℂ) → E} {c : Fin n → ℂ} {R : ℝ} (hR : 0 < R)
+    (hf : ContinuousOn f {z : Fin n → ℂ | ∀ i, ‖z i - c i‖ = R})
+    (hcauchy : ∀ z : Fin n → ℂ, (∀ i, z i ∈ Metric.ball (c i) R) →
+      (∯ ζ in T(c, fun _ => R), (∏ i, (ζ i - z i)⁻¹) • f ζ) =
+        ((2 * Real.pi * Complex.I) ^ n : ℂ) • f z)
+    {M : ℝ} (hM : ∀ θ : Fin n → ℝ, ‖f (torusMap c (fun _ => R) θ)‖ ≤ M)
     {y : Fin n → ℂ} (hy : ‖y‖ < R) :
     HasSum (fun k => polydiscSeries f c R k fun _ => y) (f (c + y)) := by
   classical
+  have hmemT : ∀ θ : Fin n → ℝ,
+      torusMap c (fun _ => R) θ ∈ {z : Fin n → ℂ | ∀ i, ‖z i - c i‖ = R} := by
+    intro θ i
+    rw [norm_torusMap_sub_center, abs_of_pos hR]
+  have hfT : Continuous fun θ : Fin n → ℝ => f (torusMap c (fun _ => R) θ) :=
+    hf.comp_continuous (continuous_torusMap c fun _ => R) hmemT
   have hMnn : 0 ≤ M := le_trans (norm_nonneg _) (hM fun _ => 0)
   have hynn : (0 : ℝ) ≤ ‖y‖ := norm_nonneg _
   have hyi : ∀ i, ‖y i‖ < R := fun i => lt_of_le_of_lt (norm_le_pi_norm y i) hy
@@ -315,7 +338,7 @@ theorem polydiscSeries_hasSum_of_affineLineEntire
     intro k
     have hmap : Continuous fun θ : Fin n → ℝ => torusMap c (fun _ => R) θ :=
       continuous_torusMap c fun _ => R
-    refine Continuous.smul ?_ (hf.comp hmap)
+    refine Continuous.smul ?_ hfT
     refine continuous_finsetSum _ fun m _ => ?_
     refine Continuous.mul continuous_const ?_
     refine Continuous.inv₀ ?_ ?_
@@ -340,7 +363,7 @@ theorem polydiscSeries_hasSum_of_affineLineEntire
       (∏ i, (torusMap c (fun _ => R) θ i - (c i + y i))⁻¹) • f (torusMap c (fun _ => R) θ) := by
     have hmap : Continuous fun θ : Fin n → ℝ => torusMap c (fun _ => R) θ :=
       continuous_torusMap c fun _ => R
-    refine Continuous.smul ?_ (hf.comp hmap)
+    refine Continuous.smul ?_ hfT
     refine continuous_finsetProd _ fun i _ => ?_
     refine Continuous.inv₀ (((continuous_apply i).comp hmap).sub continuous_const) fun θ => ?_
     have hn := norm_torusMap_sub_center c R θ i
@@ -362,8 +385,7 @@ theorem polydiscSeries_hasSum_of_affineLineEntire
       show ‖c i + y i - c i‖ < R
       rw [add_sub_cancel_left]
       exact hyi i
-    have := polydiscCauchyFormula_of_affineLineEntire n f hf hline c
-      (fun _ => R) (c + y) hmem
+    have := hcauchy (c + y) hmem
     rw [← this]
     rfl
   rw [hcauchy] at hmain
@@ -373,7 +395,17 @@ theorem polydiscSeries_hasSum_of_affineLineEntire
   have hfinal := hmain.const_smul (((2 * Real.pi * Complex.I) ^ n : ℂ)⁻¹)
   rw [smul_smul, inv_mul_cancel₀ hne, one_smul] at hfinal
   refine hfinal.congr_fun fun k => ?_
-  exact polydiscSeries_apply_diag hf c hR y k
+  exact polydiscSeries_apply_diag hfT hR y k
+
+/-- **A continuous affine-line-entire function has its Cauchy power series on every polydisc.** -/
+theorem polydiscSeries_hasSum_of_affineLineEntire
+    {f : (Fin n → ℂ) → E} (hf : Continuous f) (hline : AffineLineEntire f)
+    (c : Fin n → ℂ)
+    {R : ℝ} (hR : 0 < R) {M : ℝ} (hM : ∀ θ : Fin n → ℝ, ‖f (torusMap c (fun _ => R) θ)‖ ≤ M)
+    {y : Fin n → ℂ} (hy : ‖y‖ < R) :
+    HasSum (fun k => polydiscSeries f c R k fun _ => y) (f (c + y)) :=
+  polydiscSeries_hasSum_of_cauchy hR hf.continuousOn
+    (fun z hz => polydiscCauchyFormula_of_affineLineEntire n f hf hline c (fun _ => R) z hz) hM hy
 
 /-- Compatibility form for a globally Fréchet-differentiable function. -/
 theorem polydiscSeries_hasSum {f : (Fin n → ℂ) → E} (hf : Differentiable ℂ f)
@@ -386,11 +418,14 @@ theorem polydiscSeries_hasSum {f : (Fin n → ℂ) → E} (hf : Differentiable �
 
 /-- **A continuous affine-line-entire function has a convergent power series** on every polydisc,
 hence on a ball around every point. -/
-theorem polydiscHasFPowerSeriesOnBall_of_affineLineEntire
-    {f : (Fin n → ℂ) → E} (hf : Continuous f) (hline : AffineLineEntire f)
-    (c : Fin n → ℂ) {R : ℝ} (hR : 0 < R) :
+theorem polydiscHasFPowerSeriesOnBall_of_cauchy
+    {f : (Fin n → ℂ) → E} {c : Fin n → ℂ} {R : ℝ} (hR : 0 < R)
+    (hf : ContinuousOn f {z : Fin n → ℂ | ∀ i, ‖z i - c i‖ = R})
+    (hcauchy : ∀ z : Fin n → ℂ, (∀ i, z i ∈ Metric.ball (c i) R) →
+      (∯ ζ in T(c, fun _ => R), (∏ i, (ζ i - z i)⁻¹) • f ζ) =
+        ((2 * Real.pi * Complex.I) ^ n : ℂ) • f z) :
     HasFPowerSeriesOnBall f (polydiscSeries f c R) c (ENNReal.ofReal (R / 2 ^ (n + 1))) := by
-  obtain ⟨M, hM⟩ := exists_bound_on_torus hf c hR
+  obtain ⟨M, hM⟩ := exists_bound_on_torus hR hf
   have hMnn : 0 ≤ M := le_trans (norm_nonneg _) (hM fun _ => 0)
   set ρ : ℝ := R / 2 ^ (n + 1) with hρ
   have hpow : (0 : ℝ) < 2 ^ (n + 1) := by positivity
@@ -443,10 +478,18 @@ theorem polydiscHasFPowerSeriesOnBall_of_affineLineEntire
       _ ≤ M * 1 := mul_le_mul_of_nonneg_left hkey hMnn
       _ = M := mul_one M
   · intro y hy
-    refine polydiscSeries_hasSum_of_affineLineEntire hf hline c hR hM ?_
+    refine polydiscSeries_hasSum_of_cauchy hR hf hcauchy hM ?_
     have h1 : ‖y‖ₑ < ENNReal.ofReal ρ := mem_eball_zero_iff.1 hy
     rw [← ofReal_norm] at h1
     exact lt_trans ((ENNReal.ofReal_lt_ofReal_iff hρpos).1 h1) hρR
+
+/-- **A continuous affine-line-entire function has a convergent power series** on every polydisc. -/
+theorem polydiscHasFPowerSeriesOnBall_of_affineLineEntire
+    {f : (Fin n → ℂ) → E} (hf : Continuous f) (hline : AffineLineEntire f)
+    (c : Fin n → ℂ) {R : ℝ} (hR : 0 < R) :
+    HasFPowerSeriesOnBall f (polydiscSeries f c R) c (ENNReal.ofReal (R / 2 ^ (n + 1))) :=
+  polydiscHasFPowerSeriesOnBall_of_cauchy hR hf.continuousOn
+    (fun z hz => polydiscCauchyFormula_of_affineLineEntire n f hf hline c (fun _ => R) z hz)
 
 /-- Compatibility form for a globally Fréchet-differentiable function. -/
 theorem polydiscHasFPowerSeriesOnBall {f : (Fin n → ℂ) → E} (hf : Differentiable ℂ f)

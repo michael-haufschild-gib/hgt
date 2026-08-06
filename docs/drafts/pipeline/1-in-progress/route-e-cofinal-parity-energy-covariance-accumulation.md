@@ -358,3 +358,42 @@ Finite source factorization, exact dissipation null space, normalized local repo
 window gain are Lean-certified in
 `RHTower/GibbsCriticalDissipationAntiscaleResonance.lean`; targeted build `8859/8859` passes and
 axioms are only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## 2026-08-06 prime-sieve normalization cross-audit
+
+The new prime-sieve Hilbert--Schmidt stack closes one exact part of the surviving `r=1` energy
+normalization, but not the signed current.  For finite prime aperture `P`, write
+
+\[
+ a_P=\prod_{p\in P}(1-p^{-1}),\qquad
+ B_1(P)=\prod_{p\in P}(1+p^{-1}),\qquad
+ C_2(P)=\prod_{p\in P}(1-p^{-2}).
+\]
+
+Then
+
+\[
+ a_PB_1(P)=C_2(P)=\frac{T_2(P)}{T_2(\varnothing)},
+ \qquad C_2(P_N)\longrightarrow T_2(\varnothing)^{-1}>0.       \tag{A16}
+\]
+
+Hence raw critical Euler growth is exactly reciprocal sieve-density growth times a regular
+Hilbert--Schmidt factor.  The new sieve-operator convergence closes the `p^-2` factor.  It cannot
+control the normalized `p^-1` source layer: multiplying by `a_P` erases source mass, while dividing
+back restores the entire divergence.  The existing prime-valuation normalization-amplification
+no-go makes this obstruction exact (`a_P/p` becomes `1/p`).
+
+This rules out a false shortcut from sieve-density telescoping, determinant convergence, or generic
+seminorm completion to `(A1)`.  It sharpens the possible positive continuation: construct a
+source-defined **signed first-trace/Bockstein countertransport** from `(E-COV)` which cancels the
+normalized `1/p` transition before positive norm and leaves the now-closed `p^-2` remainder.  Until
+an explicit non-circular formula is produced, that is the same open
+`WEIGHTED-PRIME-DILATION-INCREMENT-CANCELLATION` problem, not a solution.
+
+For the Hall lane, `a_{P_{j-1}}/p_j` gives canonical scalar weights summing cofinally to one, but
+does not supply their moving-window lift to `R_X^gr`, collision-quotiented interval Hall, or
+cross-anchor incoming-load control.
+
+Paper proof and unconditional Lean:
+`../3-formalized/route-e-critical-gibbs-sieve-normalization-wall.md` and
+`RHTower/GibbsCriticalSieveNormalizationWall.lean`.

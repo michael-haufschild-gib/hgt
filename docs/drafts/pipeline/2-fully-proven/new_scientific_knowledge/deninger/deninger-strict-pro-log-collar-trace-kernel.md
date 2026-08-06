@@ -351,3 +351,33 @@ argument of `(1)`--`(2)`:
 
 What remains missing for `(1)`--`(2)` is only the geometric side: the logarithmic residue sequence
 on a log-toric chart, which needs coherent sheaves and logarithmic de Rham complexes.
+
+### The graph-seminorm completion, landed — 2026-08-06
+
+The claim above that the Hausdorff completion "needs a theory of complete locally convex spaces
+that mathlib does not have" was too strong for the space this card actually uses.  The graph
+seminorm is a **single** seminorm, so the completion is the completion of a seminormed space, and
+that is entirely within reach.
+
+`formal/GaloisForLFunctions/HTGeometry/SeminormCompletion.lean`:
+
+- `seminormedOfSeminorm` — a seminorm makes the space a seminormed group.
+- `exists_banach_completion_of_seminorm` — **the Hausdorff completion of a real vector space with
+  respect to a seminorm is a Banach space**, together with a linear map from the space whose norm
+  is the seminorm and whose image is dense.  The uniform completion of a seminormed group is
+  already a *normed* group: it identifies vectors at seminorm distance zero, which is exactly the
+  Hausdorff quotient by the null space, so no separate separation quotient is needed.
+- `graphSeminorm`, `graphSeminorm_apply` — the graph seminorm `v ↦ ‖f v‖ + ‖g v‖` of a pair of
+  linear maps into seminormed spaces.
+- `exists_banach_completion_graphSeminorm` — **the graph completion is a Banach space**: a space of
+  forms measured simultaneously by two linear images has a Banach completion recording both, with
+  dense image.  This is `Ω¹_{log,mix,p}` of `(3)`.
+
+Axiom audit: all three within `propext, Classical.choice, Quot.sound`.
+
+Together with `DeningerMixedPrimeBanach.lean`, which realizes the mixed weighted `L¹`/`L²` packet
+space as a closed subspace of `lp E 1 × lp E 2` and proves it complete, the completion half of the
+card's analytic scaffolding is now formalized.  What remains genuinely absent is the geometric
+side: the logarithmic residue sequence `(1)`--`(2)` in its sheaf-theoretic form needs coherent
+sheaves and the logarithmic de Rham complex of a log-toric chart, neither of which exists in
+mathlib.  The card stays at stage 2 on that account alone.

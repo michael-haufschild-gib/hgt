@@ -23,6 +23,33 @@ open Polynomial
 
 variable {K : Type*} [Field K] {m L : ℕ}
 
+/-- The coefficients of a polynomial written in the monomial basis. -/
+theorem coeff_sum_range_C_mul_X_pow (c : ℕ → K) (N i : ℕ) :
+    (∑ j ∈ Finset.range N, C (c j) * X ^ j).coeff i = if i < N then c i else 0 := by
+  rw [Polynomial.finsetSum_coeff]
+  by_cases hi : i < N
+  · rw [if_pos hi, Finset.sum_eq_single i]
+    · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_pos rfl, mul_one]
+    · intro b _ hb
+      rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg (Ne.symm hb), mul_zero]
+    · intro hmem
+      exact absurd (Finset.mem_range.2 hi) hmem
+  · rw [if_neg hi, Finset.sum_eq_zero]
+    intro j hj
+    have hij : i ≠ j := fun h => hi (h ▸ Finset.mem_range.1 hj)
+    rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg hij, mul_zero]
+
+/-- A polynomial written in the monomial basis below a degree has degree below it. -/
+theorem degree_sum_range_C_mul_X_pow_lt (c : ℕ → K) (N : ℕ) :
+    (∑ j ∈ Finset.range N, C (c j) * X ^ j).degree < ((N : ℕ) : WithBot ℕ) := by
+  refine lt_of_le_of_lt (Polynomial.degree_sum_le _ _) ?_
+  refine (Finset.sup_lt_iff (WithBot.bot_lt_coe N)).2 fun i hi => ?_
+  calc (C (c i) * X ^ i).degree ≤ (X ^ i : K[X]).degree := by
+        rw [← Polynomial.smul_eq_C_mul]
+        exact Polynomial.degree_smul_le _ _
+    _ = ((i : ℕ) : WithBot ℕ) := Polynomial.degree_X_pow i
+    _ < ((N : ℕ) : WithBot ℕ) := by exact_mod_cast Finset.mem_range.1 hi
+
 /-- A polynomial below a degree is the sum of its low monomials. -/
 theorem sum_range_C_coeff_mul_X_pow {Λ : K[X]} (hΛ : Λ.degree < (m : ℕ)) :
     (∑ i ∈ Finset.range m, C (Λ.coeff i) * X ^ i) = Λ := by
@@ -104,13 +131,7 @@ theorem exists_fibre_iff_dependent_coeffs (hmL : m ≤ L) {U Q : K[X]} (hQ : Q.c
     · rwa [sum_range_C_coeff_mul_X_pow hΛ]
   · rintro ⟨lam, μ, hne, hdvd⟩
     refine ⟨∑ i ∈ Finset.range m, C (lam i) * X ^ i, μ, ?_, ?_, hdvd⟩
-    · refine lt_of_le_of_lt (Polynomial.degree_sum_le _ _) ?_
-      refine (Finset.sup_lt_iff (WithBot.bot_lt_coe m)).2 fun i hi => ?_
-      calc (C (lam i) * X ^ i).degree ≤ (X ^ i : K[X]).degree := by
-            rw [← Polynomial.smul_eq_C_mul]
-            exact Polynomial.degree_smul_le _ _
-        _ = ((i : ℕ) : WithBot ℕ) := Polynomial.degree_X_pow i
-        _ < ((m : ℕ) : WithBot ℕ) := by exact_mod_cast Finset.mem_range.1 hi
+    · exact degree_sum_range_C_mul_X_pow_lt lam m
     · rcases hne with ⟨i, him, hlam⟩ | hμ0
       · refine Or.inl fun h0 => hlam ?_
         have := congrArg (fun p => Polynomial.coeff p i) h0

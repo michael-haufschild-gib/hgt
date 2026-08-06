@@ -393,6 +393,106 @@ def criticalSystemSolutionsCongrOne {U V V' : K[X]} (h : V.coeff n = V'.coeff n)
   left_inv _ := rfl
   right_inv _ := rfl
 
+/-- **The fibre at depth one is the set of nonzero roots of the depth-one equation, for an
+arbitrary observed reciprocal tail.**  No separability and no algebraically closed field: the count
+is the number of distinct nonzero roots, whatever their multiplicities. -/
+theorem nat_card_criticalFibre_one_eq_of_tail (hn : 0 < n) {U V : K[X]}
+    (hU0 : U.coeff 0 = 0) (hU : (X : K[X]) ^ 1 ∣ U) (hV : (X : K[X]) ^ n ∣ V)
+    (hVdeg : V.degree < ((1 + n : ℕ) : WithBot ℕ)) (hVn : V.coeff n ≠ 0) :
+    Nat.card (criticalFibre K 1 n U V)
+      = Nat.card {a : K // a ≠ 0 ∧ (oneDeepEquation U (V.coeff n) n).IsRoot a} := by
+  have hmono : ((C (V.coeff n) * X ^ n : K[X])).coeff n = V.coeff n := by
+    rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_pos rfl, mul_one]
+  have hdvdmono : (X : K[X]) ^ n ∣ (C (V.coeff n) * X ^ n) := Dvd.intro_left _ rfl
+  have hdegmono : ((C (V.coeff n) * X ^ n : K[X])).degree < ((1 + n : ℕ) : WithBot ℕ) := by
+    refine lt_of_le_of_lt (Polynomial.degree_C_mul_X_pow_le _ _) ?_
+    exact_mod_cast (by omega : n < 1 + n)
+  rw [nat_card_criticalFibre_eq_solutions (by omega) hn hU hV hVdeg,
+    Nat.card_congr (criticalSystemSolutionsCongrOne (V' := C (V.coeff n) * X ^ n) hmono.symm),
+    ← nat_card_criticalFibre_eq_solutions (by omega) hn hU hdvdmono hdegmono]
+  exact nat_card_criticalFibre_one_eq hn hU0 hVn
+
+/-- **The fibre at depth one, for a packet of arbitrary degree.**  Only the packet's coefficients
+below the horizon are seen, so the degree bound of the previous statement can be dropped: truncating
+the packet at the horizon changes neither the fibre nor the coefficient the depth-one equation
+reads. -/
+theorem nat_card_criticalFibre_one_eq_of_tail_of_dvd (hn : 0 < n) {U V : K[X]}
+    (hU0 : U.coeff 0 = 0) (hU : (X : K[X]) ^ 1 ∣ U) (hV : (X : K[X]) ^ n ∣ V)
+    (hVn : V.coeff n ≠ 0) :
+    Nat.card (criticalFibre K 1 n U V)
+      = Nat.card {a : K // a ≠ 0 ∧ (oneDeepEquation U (V.coeff n) n).IsRoot a} := by
+  classical
+  set q : K[X] := (X : K[X]) ^ (1 + n) with hq
+  have hmonic : q.Monic := Polynomial.monic_X_pow _
+  set V' : K[X] := V %ₘ q with hV'
+  have hsplit : V' + q * (V /ₘ q) = V := Polynomial.modByMonic_add_div V q
+  have hdiff : (X : K[X]) ^ (1 + n) ∣ (V - V') := by
+    refine ⟨V /ₘ q, ?_⟩
+    rw [← hq]
+    linear_combination -hsplit
+  have hcoeff : ∀ k, k < 1 + n → V'.coeff k = V.coeff k := by
+    intro k hk
+    have hz := (Polynomial.X_pow_dvd_iff.1 hdiff) k hk
+    rw [Polynomial.coeff_sub, sub_eq_zero] at hz
+    exact hz.symm
+  have hV'deg : V'.degree < ((1 + n : ℕ) : WithBot ℕ) := by
+    have hlt := Polynomial.degree_modByMonic_lt V hmonic
+    rwa [hq, Polynomial.degree_X_pow] at hlt
+  have hV'n : V'.coeff n = V.coeff n := hcoeff n (by omega)
+  have hV'dvd : (X : K[X]) ^ n ∣ V' := by
+    refine Polynomial.X_pow_dvd_iff.2 fun k hk => ?_
+    rw [hcoeff k (by omega)]
+    exact (Polynomial.X_pow_dvd_iff.1 hV) k hk
+  rw [Nat.card_congr (criticalFibreCongr (m := 1) (n := n) (U := U) (U' := U)
+      (by simp) hdiff),
+    nat_card_criticalFibre_one_eq_of_tail hn hU0 hU hV'dvd hV'deg (by rw [hV'n]; exact hVn),
+    hV'n]
+
+/-- **The exactness criterion at depth one.**  The fibre attains the critical binomial multiplicity
+exactly when the depth-one equation is separable and does not vanish at the origin — the two
+conditions the corpus's count assumes are together necessary as well as sufficient. -/
+theorem nat_card_criticalFibre_one_eq_iff [IsAlgClosed K] [DecidableEq K] (hn : 0 < n)
+    {U V : K[X]} (hU0 : U.coeff 0 = 0) (hU : (X : K[X]) ^ 1 ∣ U) (hV : (X : K[X]) ^ n ∣ V)
+    (hVn : V.coeff n ≠ 0) :
+    Nat.card (criticalFibre K 1 n U V) = criticalHorizonMultiplicity 1 n ↔
+      ((oneDeepEquation U (V.coeff n) n).Separable ∧
+        ¬ (oneDeepEquation U (V.coeff n) n).IsRoot 0) := by
+  classical
+  set E : K[X] := oneDeepEquation U (V.coeff n) n with hE
+  have hEne : E ≠ 0 := oneDeepEquation_ne_zero hVn n
+  have hEdeg : E.natDegree = 1 + n := natDegree_oneDeepEquation hVn n
+  have hcardroots : Multiset.card E.roots = 1 + n := by
+    rw [← (IsAlgClosed.splits E).natDegree_eq_card_roots]
+    exact hEdeg
+  have hequiv : {a : K // a ≠ 0 ∧ E.IsRoot a} ≃ {a : K // a ∈ E.roots.toFinset.erase 0} := by
+    refine Equiv.subtypeEquivRight fun a => ?_
+    rw [Finset.mem_erase, Multiset.mem_toFinset, Polynomial.mem_roots hEne]
+  have hmult : criticalHorizonMultiplicity 1 n = 1 + n := by
+    rw [criticalHorizonMultiplicity, Nat.choose_one_right]
+  rw [nat_card_criticalFibre_one_eq_of_tail_of_dvd hn hU0 hU hV hVn, ← hE,
+    Nat.card_congr hequiv, Nat.card_eq_fintype_card, Fintype.card_coe, hmult]
+  by_cases hzero : (0 : K) ∈ E.roots.toFinset
+  · have hcard : (E.roots.toFinset.erase 0).card = E.roots.toFinset.card - 1 :=
+      Finset.card_erase_of_mem hzero
+    have hle : E.roots.toFinset.card ≤ 1 + n := by
+      rw [← hcardroots]
+      exact Multiset.toFinset_card_le _
+    constructor
+    · intro hc
+      omega
+    · rintro ⟨-, hnr⟩
+      exact absurd ((Polynomial.mem_roots hEne).1 (Multiset.mem_toFinset.1 hzero)) hnr
+  · rw [Finset.erase_eq_self.2 hzero]
+    constructor
+    · intro hc
+      refine ⟨?_, fun hr => hzero (Multiset.mem_toFinset.2 ((Polynomial.mem_roots hEne).2 hr))⟩
+      rw [← Polynomial.nodup_roots_iff_of_splits hEne (IsAlgClosed.splits _),
+        ← Multiset.toFinset_card_eq_card_iff_nodup, hcardroots]
+      exact hc
+    · rintro ⟨hsep, -⟩
+      rw [← hcardroots, Multiset.toFinset_card_eq_card_iff_nodup]
+      exact Polynomial.nodup_roots hsep
+
 /-- **The count at depth one, for an arbitrary observed reciprocal tail.**  The corpus's depth-one
 theorem is stated for a monomial tail; at depth one the system reads only the tail's coefficient at
 the reciprocal depth, so the count holds for every tail with that coefficient. -/

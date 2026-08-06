@@ -146,6 +146,13 @@ The interior shift-lattice expansion is `[LEAN-PROVED]` in
 | each `k`-fibre of the double family | `hasSum_shiftDouble_fiber` |
 | absolute summability of the weighted family for `r < Im z₀` | `summable_norm_shiftLatticeCoeff_mul_pow` |
 | **`limsup_k ‖Θ(s-k/d,z₀)/k!‖^{1/k} ≤ 1/(2π Im z₀)`** | `hadamardLimsup_shiftLatticeCoeff_le` |
+| the expansion converges on the whole disk of that radius | `le_radius_shiftLattice` |
+| **the radius is *exactly* the height, given a genuine singularity** | `radius_shiftLattice_eq` |
+| **the boxed law, interior form: `limsup_k ‖Θ(s-k/d,z₀)/k!‖^{1/k} = 1/(2π Im z₀)`** | `hadamardLimsup_shiftLatticeCoeff_eq` |
+| the disk of radius the height stays in the half plane | `im_pos_of_mem_ball` |
+| **the height is exactly the distance to the real axis** | `infDist_realAxis_eq_im` |
+| the expansion is a genuine power-series representation | `hasFPowerSeriesOnBall_thetaSeries` |
+| **`Φ_F(s,·)` is holomorphic on `H`** | `analyticAt_thetaSeries` |
 
 `summable_shiftDouble` is the reason no Mellin--Barnes is needed in the interior:
 summing the exponential series back up replaces the decay rate `Im z₀` by
@@ -165,6 +172,23 @@ radius — is `[LEAN-PROVED]` in `HTGeometry/PowerSeriesSingularRadius.lean`:
 | a radius above `R` *produces* an analytic continuation past `R` | `exists_analytic_extension_of_lt_radius` |
 | **no continuation ⇒ radius ≤ `R`** | `radius_le_of_no_analytic_extension` |
 | **no continuation ⇒ `limsup ‖c_k‖^{1/k} ≥ 1/R`** | `le_hadamardLimsup_of_no_analytic_extension` |
+| **unboundedness is a genuine singularity** | `no_analytic_extension_of_unbounded` |
+| an unbounded represented function caps the radius | `radius_le_of_unbounded` |
+| the constant family in degree one, spectral parameter zero | `oneCoeff`, `thetaTerm_geometric` |
+| `Θ(iy) ≥ N e^{-2πyN}` for every truncation | `le_norm_thetaSeries_geometric` |
+| **`Θ` is unbounded on every disk touching the real axis** | `unbounded_thetaSeries_geometric` |
+| **the boxed law with NO hypotheses, for the geometric family** | `hadamardLimsup_geometricShiftLattice` |
+| **radius of convergence exactly the gap, with NO hypotheses** | `radius_geometricShiftLattice` |
+| the constant family at a general **real** spectral parameter `σ` | `powTerm`, `thetaTerm_pow`, `thetaSeries_pow` |
+| `Θ(iy) ≥ (∑_{n≤N} n^{-σ}) e^{-2πyN}` for every truncation | `pSum`, `le_norm_thetaSeries_pow` |
+| the `p`-series partial sums diverge for `σ ≤ 1` | `tendsto_pSum_atTop` |
+| **`Θ` unbounded on every disk touching the axis, all `σ ≤ 1`** | `unbounded_thetaSeries_pow` |
+| **the boxed law with NO hypotheses, for every real `σ ≤ 1`** | `hadamardLimsup_powShiftLattice` |
+| the constant family in **every degree** `d > 0` | `degTerm`, `thetaTerm_deg`, `thetaSeries_deg`, `shiftExp_imag` |
+| `Θ(iy) ≥ (∑_{n≤N} n^{-σ}) e^{-2πyN^{1/d}}` | `le_norm_thetaSeries_deg` |
+| **`Θ` unbounded on every disk touching the axis, all `d > 0`, `σ ≤ 1`** | `unbounded_thetaSeries_deg` |
+| **the boxed law with NO hypotheses, every degree and every real `σ ≤ 1`** | `hadamardLimsup_degShiftLattice` |
+| **radius exactly the gap, NO hypotheses, every degree, every `σ ≤ 1`** | `radius_degShiftLattice` |
 
 Together with `hadamardLimsup_shiftLatticeCoeff_le` this is the complete Hadamard
 mechanism of Step 2, phrased so that the only remaining input is the *analytic*
@@ -177,11 +201,179 @@ convergence bound gives the upper one, so the two combine to the boxed equality.
 
 Two inputs remain, both genuinely external to the above:
 
+0. **The boxed theorem holds in the interior.**
+   `hadamardLimsup_shiftLatticeCoeff_eq` is the card's boxed equality
+   `limsup_k |F_{α₀}(s-k/d)/k!|^{1/k} = 1/(2π Δ(α₀))` for an interior base
+   point, with `Δ` the interior gap `Im z₀`.  Its one hypothesis is the
+   singularity — everything else (expansion, convergence, Hadamard, geometry) is
+   proved.  `no_analytic_extension_of_unbounded` reduces that hypothesis to a
+   checkable one: it suffices that `Φ_F(s,·)` be *unbounded* on the disk, since an
+   analytic extension would be continuous on the compact closed disk and hence
+   bounded.  That is how a boundary singularity is verified in practice, and it is
+   what the row-1 check needs.  `unbounded_thetaSeries_geometric` then supplies
+   it outright for the constant coefficient family in degree one at spectral
+   parameter zero: on the imaginary axis every term is a positive real, so the
+   sum dominates any truncation, and `N` terms at height `1/N` give the lower
+   bound `N e^{-2π}`, which diverges.  Composing the three steps gives
+   `hadamardLimsup_geometricShiftLattice`: the boxed radius law holding
+   **with no hypotheses at all** for the constant coefficient family in degree
+   one at spectral parameter zero.  That is the first fully unconditional
+   instance of the card's boxed theorem, in both of the card's phrasings:
+   `radius_geometricShiftLattice` gives "radius of convergence exactly `Δ`" and
+   `hadamardLimsup_geometricShiftLattice` gives the `limsup` form.
+
+   The same argument runs at every **real** spectral parameter `σ ≤ 1`.  On the
+   imaginary axis the terms are `n^{-σ} e^{-2πyn}`, still positive reals, so the
+   truncation bound becomes `(∑_{n≤N} n^{-σ}) e^{-2πyN}`
+   (`le_norm_thetaSeries_pow`); at height `y = 1/N` the exponential is the
+   constant `e^{-2π}` and the prefactor is the `p`-series partial sum, which
+   diverges precisely because `σ ≤ 1` (`tendsto_pSum_atTop`, from
+   `Real.summable_one_div_nat_rpow`).  This gives `unbounded_thetaSeries_pow`
+   and hence `hadamardLimsup_powShiftLattice`: the boxed radius law, **with no
+   hypotheses at all**, for the constant coefficient family in degree one at
+   every real spectral parameter at or below the abscissa.  For `σ > 1` this
+   route genuinely fails — the series converges at `z = 0`, so the singularity
+   there is a branch point rather than a pole, and its detection needs the
+   Mellin--Barnes asymptotic instead.
+
+   The degree is not a restriction either.  In degree `d` the terms on the
+   imaginary axis are `n^{-σ} e^{-2π y n^{1/d}}`, still positive reals and still
+   decreasing in `n` because `1/d > 0`, so the truncation bound
+   `le_norm_thetaSeries_deg` reads `(∑_{n≤N} n^{-σ}) e^{-2π y N^{1/d}}`; taking
+   the height `y = N^{-1/d}` again makes the exponential the constant `e^{-2π}`.
+   This gives `unbounded_thetaSeries_deg` and hence
+   `hadamardLimsup_degShiftLattice` and `radius_degShiftLattice`: **the card's
+   boxed theorem, with no hypotheses at all, for the constant coefficient family
+   in every degree `d > 0` and at every real spectral parameter `σ ≤ 1`**, in
+   both of the card's phrasings.  The gap is `Δ = y₀`, matching
+   `infDist_zero_shiftSpectrum` for the constant family, whose spectrum is
+   `{d (m/q)^{1/d}}` with nearest point `d q^{-1/d}`.
+
+   **The constant family is not special either.**  Everything the argument uses
+   is that the terms are non-negative reals and that the Dirichlet series
+   diverges at `σ`, so it runs for an arbitrary non-negative coefficient family.
+   `HTGeometry/NonnegThetaCuspGrowth.lean`:
+
+| Card item | Declaration |
+|---|---|
+| a real family, viewed as a complex one | `realCoeff`, `realCoeff_apply` |
+| its theta terms on the imaginary axis are real | `nonnegTerm`, `thetaTerm_realCoeff`, `thetaSeries_realCoeff` |
+| the Dirichlet partial sums | `dirichletPartial`, `dirichletPartial_one` |
+| **non-summability at `σ` ⇒ the partial sums diverge** | `tendsto_dirichletPartial_atTop` |
+| `Θ(iy) ≥ (∑_{n≤N} a(n) n^{-σ}) e^{-2πyN^{1/d}}` | `le_norm_thetaSeries_nonneg` |
+| **`Θ` unbounded on every disk touching the real axis** | `unbounded_thetaSeries_nonneg` |
+| **the boxed law, NO hypotheses, any non-negative family below its abscissa** | `hadamardLimsup_nonnegShiftLattice` |
+| **radius exactly the gap, same generality** | `radius_nonnegShiftLattice` |
+
+   Basing the expansion at height `Δ` itself converts this into the card's
+   *local--global identity* with no hypotheses at all.
+   `HTGeometry/CuspGapUnconditionalInstances.lean`:
+
+| Card item | Declaration |
+|---|---|
+| a family bounded below by one diverges at and below `σ = 1` | `not_summable_of_one_le` |
+| **`limsup_k \|F(s-k/d)/k!\|^{1/k} = 1/(2πΔ)` at the base point `iΔ`** | `hadamardLimsup_at_cuspGap` |
+| **radius of convergence exactly `Δ`, at the base point `iΔ`** | `radius_at_cuspGap` |
+| degree one, conductor one: `Δ = 1`, constant `1/(2π)` | `constCoeff`, `infDist_shiftSpectrum_constCoeff`, `hadamardLimsup_constCoeff_cusp` |
+| the divisor function is a legitimate coefficient family | `divisorCoeff`, `divisorCoeff_bound`, `one_le_divisorCoeff`, `card_divisors_le` |
+| **degree two, conductor one: `Δ = 2`, constant `1/(4π)`** | `infDist_shiftSpectrum_divisorCoeff`, `hadamardLimsup_divisorCoeff_cusp`, `radius_divisorCoeff_cusp` |
+
+   What `hadamardLimsup_at_cuspGap` proves, stated precisely: the base point is
+   the *interior* point `iΔ`, the disk of radius `Δ` is the largest one inside
+   the half plane, and its boundary point directly below is the origin — which
+   for a divergent Dirichlet series really is a singularity of `Φ_F(s,·)`.  So
+   the radius is exactly `Δ` and the growth functional exactly `1/(2πΔ)`.  The
+   height `Δ` is *chosen* to be `infDist 0 Spec(F)`, so the identity is the
+   interior shadow of the card's boundary statement, not yet the boundary
+   statement itself: what is proved is that the singularity directly below the
+   base point sits at distance exactly the height.  Locating the *next* spectral
+   point — the content of `Δ(α₀)` for `α₀ ∈ Spec(F)` — still needs the boundary
+   expansion of item 1 below.  `hadamardLimsup_divisorCoeff_cusp` is the first
+   **degree-two** instance, and it reproduces `cusp_constant_degree_two`
+   numerically: gap two, growth constant `1/(4π)`.
+
+   **Step 2's opening clause is proved.**  `analyticAt_thetaSeries` is the card's
+   "`Φ_F(s,·)` is holomorphic on `H`", obtained directly from the shift-lattice
+   expansion rather than from a separate convergence argument: the expansion at an
+   interior base point *is* a power-series representation on the disk of radius
+   the height (`hasFPowerSeriesOnBall_thetaSeries`).
+
+   **The interior boxed theorem is closed, and its geometry is exact.**
+   `infDist_realAxis_eq_im` says the height of an interior base point *is* its
+   distance to the real axis, so the disk in `radius_shiftLattice_eq` is the
+   largest one inside `H` and the nearest possible singularity is the boundary
+   point directly below — which is why the interior radius law is the correct
+   interior shadow of the boundary statement `Δ(α₀)`.  `radius_shiftLattice_eq` is the
+   card's "radius of convergence exactly `Δ(α₀)`" for an interior base point:
+   `le_radius_shiftLattice` gives `≥` from absolute convergence and
+   `radius_le_of_no_analytic_extension` gives `≤` from the singularity, so the
+   only remaining input is the singularity itself.
+
 1. **Step 1 at the boundary.**  The interior expansion is done
-   (`hasSum_shiftLatticeExpansion`).  What remains is the base point
-   `z₀ = -α₀ ∈ ℝ`, where the coefficients are the *continued* standard twists
-   `F_{α₀}(s-k/d)` rather than convergent series, so the Mellin--Barnes contour
-   argument and the explicit singular part are genuinely needed.
+   (`hasSum_shiftLatticeExpansion`).  What remains for a general class member is
+   the base point `z₀ = -α₀ ∈ ℝ`, where the coefficients are the *continued*
+   standard twists `F_{α₀}(s-k/d)` rather than convergent series.
+
+   **For the zeta function this is now proved, and no Mellin--Barnes contour was
+   needed.**  The Hurwitz formula already writes the continued twist at a
+   rightward-shifted argument in closed form, and the growth of its two Hurwitz
+   zeta values is elementary.  Three modules:
+
+   `RHTower/HurwitzZetaRightAsymptotics.lean` — the analytic input:
+
+| Card item | Declaration |
+|---|---|
+| the ratios of the Hurwitz series to its first term | `hurwitzRatio`, `hurwitzRatio_zero`, `hurwitzRatio_succ_le` |
+| normalising by the first term replaces the summands by their ratios | `cpow_hurwitzRatio`, `hasSum_hurwitzRatio` |
+| the tail is geometrically small | `hurwitzTailConst`, `norm_normalizedHurwitz_sub_one_le` |
+| **`a^{w} ζ(w,a) → 1` as `Re w → ∞`: exact geometric growth `a^{-Re w}`** | `tendsto_normalizedHurwitz` |
+
+   `RHTower/ZetaTwistShiftDecomposition.lean` — the decomposition:
+
+| Card item | Declaration |
+|---|---|
+| the smallest exponent of the Hurwitz series at a real shift | `twistFirst`, `twistFirst_pos`, `twistFirst_le_one` |
+| a shift and its fractional part agree on the circle | `coe_fract_unitAddCircle` |
+| **the normalized Hurwitz value tends to one, integer shifts included** | `tendsto_normalizedTwist` |
+| the cusp gap `Δ(α)` as the smaller of the two exponents | `twistGap`, `twistGap_of_fract_zero`, `twistGap_of_fract_ne_zero` |
+| **`F(s₀-k,α)/k! = (2π)^{-k} · (const · Γ(1-s₀+k)/Γ(1+k) · bracket)`** | `twistRemainder`, `zetaTwist_decomposition` |
+
+   `RHTower/ZetaTwistCuspRadius.lean` + `RHTower/ZetaTwistGapGeometry.lean` — the law:
+
+| Card item | Declaration |
+|---|---|
+| the two halves of the bracket, geometric factor extracted | `twistP`, `twistLead`, `twistTerm`, `twistTerm_eq`, `norm_twistTerm` |
+| the dominant half has constant modulus, the other decays | `tendsto_norm_twistTerm_of_eq`, `tendsto_norm_twistTerm_of_lt` |
+| the bracket, recombined | `twistBracket`, `twistSum`, `twistBracket_eq` |
+| equal exponents force equal shifts on the circle | `coe_neg_eq_of_twistFirst_eq`, `twistP_neg_eq` |
+| in that case the bracket is a period-four factor times one Hurwitz value | `twistWave`, `twistWave_periodic`, `exists_norm_twistWave_pos`, `twistSum_eq_wave` |
+| **the bracket has root growth exactly one after extraction** | `limsup_norm_twistSum_eq_one`, `hadamardLimsup_twistT` |
+| **`limsup_k \|F(s₀-k,α)/k!\|^{1/k} = 1/(2π Δ(α))`** | `hadamardLimsup_zetaTwistShift` |
+| the gap is the distance to the integers | `fract_eq_zero_iff`, `infDist_intRange` |
+| **`Δ(α) = dist(α, Sing ∖ {α})`** | `infDist_singular_sdiff_eq_twistGap` |
+| **the boxed law with `Δ` read off from the singular set** | `hadamardLimsup_zetaTwistShift_eq_infDist` |
+| at an integer shift the constant is `1/(2π)` | `hadamardLimsup_zetaTwistShift_int` |
+
+   `hadamardLimsup_zetaTwistShift_eq_infDist` is the card's boxed theorem at a
+   **boundary** base point, unconditionally, for the zeta function in degree one
+   and conductor one.  Here the two sides really are computed from disjoint data:
+   the left from the Hurwitz formula plus the rightward growth of the two Hurwitz
+   zeta values, the right from the location of the singularities of the family
+   `α ↦ F(·,α)`.  Nothing is chosen to make them agree.
+
+   The mechanism replaces the card's Mellin--Barnes step entirely.  Writing
+   `A` and `B` for the smallest exponents of the Hurwitz series at `α` and `-α`,
+   the bracket of the Hurwitz formula is `E_k ζ(w_k,α) + E'_k ζ(w_k,-α)` with
+   `|E_k|`, `|E'_k|` constant in `k`; the two Hurwitz values grow like `A^{-k}`
+   and `B^{-k}`.  If `A ≠ B` the faster term dominates and no cancellation is
+   possible; if `A = B` then `α` and `-α` are the same point of the circle, the
+   two Hurwitz values coincide, and the bracket is a period-four factor times a
+   single Hurwitz value — invisible to the root.  Either way the root growth is
+   `1/min(A,B)`, and `min(A,B)` is the distance from `α` to the integer lattice,
+   which is `Δ(α)`.
+
+   For degree `d > 1` the same route needs the class member's own Hurwitz-type
+   formula, which is the general Kaczorowski--Perelli input of item 2.
    The interior half of the two-sided bound is now proved
    (`hadamardLimsup_shiftLatticeCoeff_le`): the expansion converges on the whole
    disk of radius `Im z₀`, so the radius is at least `Im z₀` and the growth is at
@@ -196,8 +388,43 @@ Two inputs remain, both genuinely external to the above:
    standard-twist theory — continuation of `F_α` across every `α ∉ Spec(F)`, and
    `ρ_0(α) ≠ 0` on the spectrum for the jump lemma.  The corpus has no
    Selberg-class layer at all (the `Selberg*` modules under `RHTower/` are the
-   Selberg *sieve*), so this is a construction from scratch: the class axioms,
-   the standard twist, and K--P's continuation theorem.
+   Selberg *sieve*), so for a general class member this is a construction from
+   scratch: the class axioms, the standard twist, and K--P's continuation
+   theorem.
+
+   **For the zeta function itself the K--P input is already available, and is now
+   formalized.**  mathlib's `HurwitzZeta.expZeta` *is* the continued standard
+   twist `ζ(s, α) = ∑_{n ≥ 1} e^{2πiαn} n^{-s}`, and mathlib proves it entire
+   for `α ∉ ℤ`.  `RHTower/ZetaStandardTwistDichotomy.lean` identifies it with the
+   card's objects and completes the dichotomy:
+
+| Card item | Declaration |
+|---|---|
+| the standard twist of `ζ` at a real shift | `zetaStandardTwist` |
+| **it is the theta series on the half plane of convergence** | `thetaSeries_eq_zetaStandardTwist` |
+| `ζ` is not differentiable at its pole | `not_differentiableAt_riemannZeta_one` |
+| the untwisted series is `ζ`, hence not entire | `not_differentiable_expZeta_zero` |
+| **the spectral dichotomy: entire ⟺ off the spectrum** | `differentiable_expZeta_iff` |
+| a real shift is spectral exactly when it is an integer | `coe_unitAddCircle_eq_zero_iff`, `not_differentiable_zetaStandardTwist_iff` |
+| the singular set of the twist family | `zetaTwistSingularSet`, `mem_zetaTwistSingularSet` |
+| **the shift spectrum consists of singular shifts** | `shiftSpectrum_subset_singular` |
+| **every singular shift is a spectral point translated by the lattice** | `singular_iff_spectrum_translate` |
+| **the cusp gap of `ζ` is one: `Δ(α₀) = 1` for every `α₀ ∈ Spec`** | `infDist_zetaTwistSingularSet_sdiff` |
+
+   `differentiable_expZeta_iff` is exactly K--P's continuation statement in
+   degree one and conductor one: `F_α` continues to an entire function for every
+   `α ∉ Spec(F)`, and fails to for every `α ∈ Spec(F)`.  The failure is not an
+   abstract non-continuation but an explicit pole, inherited from the pole of `ζ`
+   at `s = 1`.  `infDist_zetaTwistSingularSet_sdiff` then computes the card's
+   `Δ(α₀)` at a *boundary* base point, from the singular set rather than from a
+   chosen height: from any spectral shift the nearest other spectral shift is at
+   distance exactly one, so `1/(2π Δ(α₀)) = 1/(2π)`, matching both
+   `hadamardLimsup_zetaShift` and `cusp_constant_zeta`.
+
+   What is still missing for `ζ` is only the *transport* of this dichotomy into
+   the `z`-variable: the shift-lattice expansion at a real base point `α₀`
+   requires continuing `Φ_ζ(s, ·)` from the upper half plane across the real
+   interval `(α₀ - 1, α₀ + 1)` minus its endpoints, which is item 1.
 
 Step 3 (the independent cusp constant via the functional equation and uniform
 Stirling) is a separate route to the same constant and would also need the class
@@ -238,6 +465,13 @@ Stirling entirely, since the consecutive ratio of `Γ(w+k)/Γ(1+k)` is exactly
 | a periodic sequence is frequently bounded below at any index | `frequently_le_of_periodic` |
 | **the root `limsup` of a periodic factor is one** | `limsup_rpow_inv_eq_one_of_periodic` |
 | **a factor tending to one leaves a `limsup` of one unchanged** | `limsup_mul_eq_one_of_tendsto_one` |
+| the growth functional is the extended-real image of the root `limsup` | `hadamardLimsup_eq_ofReal_limsup` |
+| **growth functional one from root `limsup` one** | `hadamardLimsup_eq_one_of_limsup_eq_one` |
+| the geometric factor `(2π)^{-k}` splits off | `two_pi_cpow_shift` |
+| **`ζ(s₀-k)/k! = (2π)^{-k} · (const · Γ(1-s₀+k)/Γ(1+k) · cos(π(1-s₀+k)/2) · ζ(1-s₀+k))`** | `zetaShift_decomposition` |
+| the oscillating factor, with period four | `cosShift`, `cosShift_periodic` |
+| it cannot vanish at both index zero and one | `exists_cosShift_pos` |
+| **the oscillating factor contributes nothing to the root growth** | `limsup_cosShift_rpow_inv_eq_one` |
 
 Only a *frequent* lower bound is needed, which is exactly the situation for
 `cos(π(1-s+k)/2)`: as `k` runs over the residues modulo four the factor takes the
@@ -252,9 +486,48 @@ factors have `k`-th roots converging to one and only the oscillating factor has 
 genuine `limsup`, so they cannot simply be multiplied — the convergent group is
 absorbed into the oscillating one.
 
-Every analytic ingredient of Step 3 is therefore now formalized, and so is the
-combination law.  What remains is only the bookkeeping that assembles them
-through `riemannZeta_one_sub`.
+`hadamardLimsup_eq_ofReal_limsup` is the bridge between the two limsups in play:
+the growth functional lives in the extended non-negative reals, while the
+squeeze arguments for the four factors are real.  With it, a real root `limsup`
+of one transfers to a growth functional of one.
+
+Every analytic ingredient of Step 3 is therefore formalized, together with the
+combination law and the transfer.  The splitting itself is now proved: `zetaShift_decomposition` applies mathlib's
+`riemannZeta_one_sub` at `s = 1-s₀+k`, uses `k! = Γ(1+k)`, and separates the
+geometric factor, under the single hypothesis that `s₀` is not a natural number
+(which is exactly what keeps `1-s₀+k` off the poles of `Γ` and away from the
+pole of `ζ`).  **Step 3 is complete for the zeta function.**  `RHTower/ZetaCuspRadiusConstant.lean`
+assembles the decomposition against the root laws:
+
+| Card item | Declaration |
+|---|---|
+| the remainder of the decomposition | `RHTower.zetaShiftRemainder` |
+| its Gamma quotient has `k`-th roots tending to one | `RHTower.tendsto_gammaQuotient` |
+| its zeta value has `k`-th roots tending to one | `RHTower.tendsto_zetaShiftValue` |
+| the remainder has growth functional one | `RHTower.hadamardLimsup_zetaShiftRemainder` |
+| **`limsup_k \|ζ(s₀-k)/k!\|^{1/k} = 1/(2π)`** | `RHTower.hadamardLimsup_zetaShift` |
+| **the local--global identity: analytic constant = `1/(2πΔ(0))`** | `RHTower.hadamardLimsup_zetaShift_eq_spectral` |
+
+This is the card's independent cusp-constant computation for `ζ`, degree one and
+conductor one.  `hadamardLimsup_zetaShift_eq_spectral` states the agreement
+directly: the constant obtained from the functional equation *equals*
+`1/(2π Δ(0))` with `Δ(0)` the spectral gap of the standard-twist spectrum.  The
+two sides use disjoint data — the first only the archimedean functional
+equation, the second only `a(1) ≠ 0` and the location of the first prime-side
+singularity — so the card's "local--global identity" is now a Lean theorem.  The
+only hypothesis is that `s₀` is not a natural number.
+
+The assembly lives in `RHTower` because the fourth factor's limit,
+`RHTower.tendsto_riemannZeta_of_re_atTop`, does; `HTGeometry` may not import
+`RHTower`.
+
+Earlier note, superseded: three of the four factors are discharged against the
+root laws: the constant (`tendsto_const_rpow_inv_nat`), the Gamma quotient
+(`tendsto_norm_gammaRatio_rpow_inv`) and the oscillating cosine
+(`limsup_cosShift_rpow_inv_eq_one`).  The fourth, `ζ(1-s₀+k) → 1`, is the
+corpus theorem `RHTower.tendsto_riemannZeta_of_re_atTop`; since that lives in
+`RHTower`, the final assembly module must be placed there rather than in
+`HTGeometry`.
 
 The degree-one twist's **analytic** dichotomy is `[LEAN-PROVED]` in
 `HTGeometry/LatticeTwistConvergence.lean`:
@@ -316,6 +589,9 @@ The arithmetic of the **Consequences** section is `[LEAN-PROVED]` in
 | the consecutive spacing | `shiftSpectrumGap`, `shiftSpectrumGap_nonneg` |
 | **the spacing is a derivative at an interior point** | `exists_shiftSpectrumGap_eq` |
 | `Δ(α_m) ≤ q^{-1}(α_m/d)^{1-d}` | `shiftSpectrumGap_le` |
+| **`Δ(α₀) = dist(α₀, Spec(F) \ {α₀})`** | `spectralGap` |
+| `Δ(0) = d q^{-1/d}` | `spectralGap_zero` |
+| `Δ(α_m)` is at most the distance to the next spectral point | `spectralGap_le_shiftSpectrumGap` |
 | **`Δ(α_m) → 0` for `d > 1`** | `tendsto_shiftSpectrumGap_nhds_zero` |
 | **degree-one lattice: `d^d k^{d-1}\|2πz\| → ∞` for `d ≥ 2`** | `tendsto_degreeOneLatticeRoot_atTop` |
 

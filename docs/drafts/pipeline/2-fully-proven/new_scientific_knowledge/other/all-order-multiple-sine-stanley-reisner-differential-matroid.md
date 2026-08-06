@@ -714,9 +714,201 @@ the separation condition `h_j - h_{i₀} ∉ ℤω₁ + ℤω₂` (distinct clas
   others, so the separated obstruction applies.
 
 That is exactly the right-hand side of the arbitrary-family criterion's condition, for the family
-of translates.  What the atomic *defect-coset* statement still needs is the final instantiation:
-feeding the criterion the sources `T^{h_κ} M`, their increments (dilates, by
-`addTranslationMeroEquiv_twoCylinderEmbed_general`) and this character obstruction.  The remaining assembly — the two-cylinder differential base field, the translation
+of translates.
+
+`HTGeometry.DoubleSineOrbitIncrements` — **the orbit increments are dilated cotangent models**.
+
+- `cylinderCoeffScale_coeffExtend`, `ratFuncScale_coeffExtend`, `twoCylTranslate_coeffExtend` — on
+  a constant-coefficient element the coefficient dilation of a general translation is invisible, so
+  the translation acts purely by dilating the outer variable: `T^h` sends the increment to its
+  dilate by `exp(l₁ h)`.
+- `separated_of_notMem_periodLattice` — **two translates lie on distinct multiplicative orbits of
+  the structural multiplier exactly when their difference is not in the period lattice**
+  `ℤω₁ + ℤω₂`.  This is the coset condition of the defect matroid, in the form the separated
+  obstruction requires.
+
+`HTGeometry.DoubleSineOrbitIndependence` — **the external orbit is differentially independent**.
+
+- `differentialIndependent_orbit_of_exact_defects` — for a source with exact cotangent defects, the
+  family of translates `T^{h_κ} M` by shifts in **distinct classes modulo the period lattice** is
+  differentially independent over the two-cylinder function field.
+
+This is the arbitrary-family differential criterion run over the whole orbit: every translate has
+the same two structural defects, translated; the translation acts on them by dilating the outer
+cylinder coordinate; and a nonzero constant character of the family is a nonzero constant character
+of a separated family of dilated cotangent models, which the orbit-residue obstruction forbids from
+being a difference.  The coset hypothesis enters exactly once, through
+`separated_of_notMem_periodLattice`.
+
+- `differentialIndependent_doubleSineOrbit_imaginaryRay` — **unconditional**: for periods `i a`,
+  `i b` with `a, b > 0` and `a/b` irrational, the translates of the constructed multiple-sine
+  source by shifts in distinct classes modulo `ℤ(i a) + ℤ(i b)` are differentially independent over
+  the two-cylinder function field.
+
+That is the atomic defect-coset mechanism, unconditionally in Lean, for the corpus's own
+constructed source, and it is exactly the full-orbit independence this card consumes for its
+maximal faces.  Two things are *not* claimed by it: the parent card's exact transcendence-degree
+count (which also needs the matching upper bound), and the transport of independence from
+`ℂ(u₁)(u₂)` down to `ℂ(z)`.
+
+`HTGeometry.TwoCylinderDilationEquivariance` — **the dilations are differential**.
+
+- `polyScale_monomial`, `coeffDeriv_polyScale` — dilating the outer variable by a constant of the
+  coefficient field commutes with the coefficientwise derivation.
+- `twoCylDerivation_ratFuncScale` — hence the outer dilation commutes with the *total* two-cylinder
+  derivation, so it is a differential automorphism of the base field.
+
+`HTGeometry.TwoCylinderDifferentialAutomorphisms` — the companion for the other direction.
+
+- `cylDeriv_ratFuncScale` — the one-cylinder statement: the cylinder derivation commutes with
+  dilations.
+- `coeffDeriv_polyCoeffScale`, `cylinderCoeffScale_algebraMap`,
+  `twoCylDerivation_cylinderCoeffScale` — hence the **coefficient** dilation also commutes with the
+  total two-cylinder derivation: its coefficient part is the one-cylinder statement, and it fixes
+  the outer coordinate and the (constant) logarithmic derivative of that coordinate.
+
+Both translation actions are therefore differential automorphisms of the base.  That is the
+hypothesis the corpus's source-boundary matroid law
+(`automorphismFamily_differentialFamilyMatroid_eq_sourceBoundaryQuotientMatroid`) requires beyond
+what the independence criterion needs: it asks for `DifferentialAlgEquiv`s, not merely ring equivs.
+`HTGeometry.TwoCylinderDilationConstants` — the remaining structural hypotheses.
+
+- `ratFuncScale_algebraMap_complex`, `cylinderCoeffScale_algebraMap_complex` — both dilations fix
+  the embedded complex constants, so each is a `ℂ`-algebra automorphism.
+- `twoCylDerivation_algebraMap_complex` — the complex constants are differential constants of the
+  two-cylinder derivation (`hconst` of the matroid law).
+
+With these the exact matroid — and hence the exact transcendence-degree count — becomes an
+instantiation rather than a construction: every hypothesis of
+`automorphismFamily_differentialFamilyMatroid_eq_sourceBoundaryQuotientMatroid` is now a proved
+statement about the double-sine model.
+
+`HTGeometry.DoubleSineLatticeShiftDefect` — **the other half of the count**.
+
+- `addTranslationMeroEquiv_zero_apply` — the trivial translation is the identity on the
+  meromorphic field.
+- `BaseDefectShift`, `baseDefectShift_zero/add/neg/zsmul` — the shifts whose defect lies in the
+  embedded two-cylinder field form a subgroup: defects compose by
+  `Δ_{a+b} = T^a(Δ_b) + Δ_a`, and translations keep the base field inside itself.
+- `baseDefectShift_lattice` — **every shift in the period lattice `ℤω₁ + ℤω₂` has its defect in the
+  base field**.
+
+`HTGeometry.DoubleSineSameClassDependence` — **the dependence half, sharply**.
+
+- `not_differentialIndependent_of_sub_eq_algebraMap` — if two members of a family differ by a
+  base-field element, the family is not differentially independent: the two zeroth jets already
+  satisfy the relation `X_i - X_j - y = 0` over the base.
+- `translate_sub_translate_eq_embed` — two translates whose shifts differ by a lattice element do
+  differ by a base-field element.
+
+So translates whose shifts share a class are differentially dependent, while translates in distinct
+classes are independent.
+
+`HTGeometry.DoubleSineOrbitCosetCriterion` — **the criterion, two-sided**.
+
+- `baseDefectShift_period_zero`, `baseDefectShift_period_one` — the two structural defects are
+  base-field defects, so the subgroup of lattice shifts applies to the constructed source.
+- `differentialIndependent_orbit_iff_distinct_classes` — translates of a source with exact
+  cotangent defects are differentially independent over the two-cylinder field **if and only if**
+  their shifts lie in pairwise distinct classes modulo the period lattice.
+- `differentialIndependent_doubleSineOrbit_iff_imaginaryRay` — **unconditional**: the same
+  equivalence for the constructed multiple-sine source with periods `i a`, `i b`, `a, b > 0`,
+  `a/b` irrational.
+
+That is the coset classification of the defect orbit: the matroid of the family is determined by
+the classes of the shifts modulo `ℤω₁ + ℤω₂`.
+
+`HTGeometry.DoubleSineOrbitMatroid` — **the matroid and its exact rank**.
+
+- `periodLattice`, `periodClass`, `periodClass_eq_iff` — the lattice `ℤω₁ + ℤω₂` as an
+  `AddSubgroup ℂ` and the class map into `ℂ ⧸ (ℤω₁ + ℤω₂)`.
+- `doubleSineOrbit_differentialFamilyMatroid` — the represented differential matroid of the
+  translate family over `ℂ(u₁)(u₂)` **is** `affineCollisionMatroid (periodClass ∘ sh)`.
+- `doubleSineOrbit_eRk` — on every subpacket `I`, the differential rank equals
+  `((periodClass ∘ sh) '' I).encard`, the number of distinct classes met.
+- `doubleSineOrbit_matroid_imaginaryRay` — **unconditional**: for periods `i a`, `i b` with
+  `a, b > 0`, `a/b` irrational, a source with those defects exists and its orbit realises that
+  matroid and that rank.
+
+So `dtrdeg = #{distinct classes}` is now a theorem over the two-cylinder base, with matching
+upper and lower bounds supplied by the single matroid identity.
+
+`HTGeometry.DoubleSineRationalBaseMatroid` — **the descent to `ℂ(z)`**.
+
+The two-cylinder field and the rational coordinate field are incomparable, so the descent runs
+through the constants: restrict along the tower `ℂ → ℂ(u₁)(u₂) → 𝓜`, then adjoin the coordinate,
+which is differentially algebraic over `ℂ` and whose differential adjunction is exactly `ℂ(z)`.
+
+- `twoCylinderEmbed_algebraMap_complex` — the embedding fixes the constants, giving the tower.
+- `doubleSineOrbit_differentialIndependent_rationalBase` — translates by shifts in distinct
+  classes satisfy no algebraic differential relation with rational-function coefficients.
+- `doubleSineOrbit_differentialFamilyMatroid_freeOn_rationalBase` — that family represents the
+  free matroid over `ℂ(z)`.
+- `doubleSineOrbit_rationalBase_imaginaryRay` — **unconditional**: for `i a`, `i b` with
+  `a, b > 0`, `a/b` irrational, the source exists, its separated orbit is independent over `ℂ(z)`,
+  and the source itself is hypertranscendental over `ℂ(z)`.
+
+`HTGeometry.TwoCylinderImageDifferentialAlgebraic` — **the image is DA over the constants**.
+
+- `differentialAlgebraicOver_complex_physicalExponentialMero` — each exponential gauge is an
+  eigenvector of differentiation, hence DA over `ℂ`.
+- `cylinderGaugeField`, `twoCylinderEmbed_mem_cylinderGaugeField` — the whole two-cylinder image
+  lies in the subfield generated by the two gauges.
+- `differentialAlgebraicOver_complex_twoCylinderEmbed` — therefore every element of the image is
+  differentially algebraic over `ℂ`, by transitivity across the two generators.
+
+`HTGeometry.DoubleSineRationalBaseCollisionMatroid` — **the two-sided count over `ℂ(z)`**.
+
+- `doubleSineOrbit_differentialFamilyMatroid_rationalBase` — the represented matroid over `ℂ(z)`
+  is `affineCollisionMatroid (periodClass ∘ sh)`: distinct classes independent, equal classes
+  dependent.
+- `doubleSineOrbit_eRk_rationalBase` — rank on any subpacket = number of distinct classes met.
+- `doubleSineOrbit_rationalBase_matroid_imaginaryRay` — **unconditional** version of both.
+
+`HTGeometry.DoubleSineRayMatroid` — **the parent on an arbitrary ray**.
+
+The multiple-sine setting puts all periods on a common ray in the upper half plane, which is the
+configuration a maximal face of the `N`-period face complex presents; the imaginary ray is one
+instance.  Both hypotheses are ray-invariant.
+
+- `exists_doubleSine_source_ray` — the source for periods `μ a`, `μ b` with `Im μ > 0`, `a, b > 0`.
+- `linearIndependent_cylinderFrequencies_ray` — the ray direction cancels from the frequency
+  ratio, leaving the irrational ratio of the radii.
+- `doubleSineRay_rationalBase_matroid` — **unconditional**: source, hypertranscendence over
+  `ℂ(z)`, the collision matroid of the shift classes, and the rank formula, all on a general ray.
+
+`HTGeometry.MultipleSineFaceOrbitMatroid` — **the maximal-face orbit `(7)`**.
+
+- `faceShift` — the external shift `∑_{k ∈ J} α_k ω_k` of a face.
+- `faceShift_separated` — rational independence of the whole period family separates distinct
+  integer vectors on `J` modulo `ℤ ω_i + ℤ ω_j`, because `i, j ∉ J`.
+- `irrational_ratio_of_linearIndependent_ray` — the pair of radii at the complement has irrational
+  ratio, the analytic hypothesis of the parent.
+- `multipleSineFaceOrbit_free` — **unconditional**: for a ray family `ω_k = μ r_k` with `Im μ > 0`
+  and `(μ r_k)` rationally independent, the external orbit `O_J` of a face `J` avoiding `i, j` is
+  differentially independent over `ℂ(z)` and represents the free matroid.
+
+`HTGeometry.MultipleSineCanonicalFaceOrbit` — **the canonical face coordinate**.
+
+The face coordinate is the multiple-sine source of the complementary frame,
+`frameSourceMero ω hω {i,j}`, not a source drawn from an existential.  The exact difference
+equations hold for it up to one rational function, and a rational shift is a base gauge over
+`ℂ(z)`.
+
+- `doubleSineRay_independent_of_source` — the ray criterion with the source handed in.
+- `multipleSineCanonicalFaceOrbit_free` — **unconditional**: the external orbit of the canonical
+  face coordinate is differentially independent over `ℂ(z)`.
+
+`HTGeometry.MultipleSineFaceOffStarNeutrality` — **equation `(8)`, the off-face directions**.
+
+- `differentialAlgebraicOver_zpow_translation_sub` — integer telescoping: a differentially
+  algebraic one-step translation defect gives a differentially algebraic defect for every
+  integer multiple of the step.
+- `differentialAlgebraicOver_canonicalFace_step` — the one-step defect of the canonical face
+  coordinate in either off-face direction is a cotangent up to a rational function, hence DA.
+- `differentialAlgebraicOver_translate_canonicalFace` — **unconditional**: every integer
+  off-face translate of any external translate of the face coordinate differs from it by an
+  element differentially algebraic over `ℂ`.  This is the analytic content of rank-neutrality.  The remaining assembly — the two-cylinder differential base field, the translation
 action on it, and the application of the arbitrary-family Ostrowski criterion — is being built in
 `HTGeometry.TwoCylinderDifferential`, `HTGeometry.TwoCylinderTranslationAction` and
 `HTGeometry.TwoCylinderMeromorphicDifferential`.
@@ -777,4 +969,33 @@ review.
 - [x] signed transport lemma built; differential algebraicity proved stable under reflection
 - [x] equation `(2)` proved modulo DA for the constructed multiple-sine source
 - [x] `(4)` face coordinates and `(6)` `I_{N-1} ⊆ Ann_DA(L_V)` proved in Lean, unconditionally
-- [ ] unconditional double-sine atomic defect-coset theorem in Lean
+- [x] full-orbit independence of the double-sine defect orbit proved unconditionally in Lean
+  (`differentialIndependent_doubleSineOrbit_imaginaryRay`): translates in distinct classes modulo
+  the period lattice are differentially independent over the two-cylinder field
+- [x] the parent's exact transcendence-degree count (matching upper bound) proved unconditionally
+  in Lean (`doubleSineOrbit_differentialFamilyMatroid`, `doubleSineOrbit_eRk`,
+  `doubleSineOrbit_matroid_imaginaryRay`): the orbit represents the collision matroid of the shift
+  classes, so rank = number of distinct classes, both bounds at once
+- [x] the descent of independence from `ℂ(u₁)(u₂)` to `ℂ(z)` proved unconditionally in Lean
+  (`doubleSineOrbit_differentialIndependent_rationalBase`,
+  `doubleSineOrbit_rationalBase_imaginaryRay`), through the tower `ℂ → ℂ(u₁)(u₂) → 𝓜` and the
+  differential adjunction of the coordinate
+- [x] the *two-sided* count over `ℂ(z)` proved unconditionally in Lean
+  (`differentialAlgebraicOver_complex_twoCylinderEmbed`,
+  `doubleSineOrbit_differentialFamilyMatroid_rationalBase`, `doubleSineOrbit_eRk_rationalBase`,
+  `doubleSineOrbit_rationalBase_matroid_imaginaryRay`): the two-cylinder image lies in the field
+  generated by the two exponential gauges, each an eigenvector of differentiation, so same-class
+  differences are DA over the constants and a fortiori over `ℂ(z)`
+- [x] the parent generalized from the imaginary ray to an arbitrary ray in the upper half plane
+  (`exists_doubleSine_source_ray`, `linearIndependent_cylinderFrequencies_ray`,
+  `doubleSineRay_rationalBase_matroid`), the configuration a maximal face presents
+- [x] the maximal-face instantiation for general `N` proved unconditionally in Lean
+  (`faceShift`, `faceShift_separated`, `irrational_ratio_of_linearIndependent_ray`,
+  `multipleSineFaceOrbit_free`): the external orbit `O_J` at a face `J` avoiding the complementary
+  pair is free over `ℂ(z)`, for any ray family with rationally independent periods
+- [x] the canonical face coordinate and its free external orbit
+  (`multipleSineCanonicalFaceOrbit_free`), and the off-face neutrality `(8)` in analytic form
+  (`differentialAlgebraicOver_translate_canonicalFace`), both unconditional in Lean
+- [ ] the joint gluing of all maximal faces: feed the two analytic interfaces above into
+  `differentialRank_uniformFace_nestedStar_diffIndepOn_of_orbit`; what is still missing is the
+  star orbit presentation (`hStarOrbit`) and the cross-face exponent injectivity (`hStarInj`)

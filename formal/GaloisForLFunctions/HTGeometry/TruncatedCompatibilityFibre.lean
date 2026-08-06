@@ -17,6 +17,12 @@ namespace GaloisForLFunctions.HTGeometry
 
 open Polynomial
 
+
+/-- The coefficients of a product, indexed by the first factor. -/
+theorem coeff_mul_range {R : Type*} [CommRing R] (p q : R[X]) (k : ℕ) :
+    (p * q).coeff k = ∑ i ∈ Finset.range (k + 1), p.coeff i * q.coeff (k - i) := by
+  rw [Polynomial.coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
+
 /-! ## The general truncated form -/
 
 /-- The truncated compatibility equation is the factorization equation, term by term. -/
