@@ -1,7 +1,7 @@
 # Spherical exponents act faithfully by semilocal Weyl multipliers
 
 - **ID:** `field-one-spherical-weyl-multiplier-bridge`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / CONSTRUCTION / BRIDGE
 - **Parent:** `field-one-relative-picard-hodge-passivity`
 - **Labels:** `[PAPER-PROVED] [FORMALIZED]`

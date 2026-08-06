@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.FiniteHorizonCStarPerturbationLaw
 import Mathlib.LinearAlgebra.Countable
+import Mathlib.Algebra.AlgebraicCard
+import Mathlib.Analysis.Real.Cardinality
 import Mathlib.LinearAlgebra.Dimension.Constructions
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.LinearIndependent.Lemmas
@@ -49,6 +51,235 @@ theorem rationalCoordinateRank_le {n : ℕ} (ω : Fin n → ℝ) : rationalCoord
     simp
   rw [rationalCoordinateRank, hrange]
   exact le_trans (finrank_span_finset_le_card _) hcard
+
+/-- **Powers of a transcendental are rationally independent.**  A vanishing rational combination of
+powers is a rational polynomial vanishing at the number, hence the zero polynomial. -/
+theorem linearIndependent_pow_of_transcendental {θ : ℝ} (h : Transcendental ℚ θ) (k : ℕ) :
+    LinearIndependent ℚ (fun i : Fin k => θ ^ (i : ℕ)) := by
+  classical
+  rw [linearIndependent_iff']
+  intro s c hsum i hi
+  set p : Polynomial ℚ := ∑ j ∈ s, Polynomial.C (c j) * Polynomial.X ^ (j : ℕ) with hp
+  have haeval : Polynomial.aeval θ p = 0 := by
+    rw [hp, map_sum]
+    simpa [Algebra.smul_def] using hsum
+  have hzero : p = 0 := (transcendental_iff.mp h) p haeval
+  have hcoeff : p.coeff (i : ℕ) = c i := by
+    rw [hp, Polynomial.finsetSum_coeff, Finset.sum_eq_single i]
+    · simp
+    · intro j _ hji
+      have hne : (i : ℕ) ≠ (j : ℕ) := fun hcon => hji (Fin.ext hcon).symm
+      simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, hne]
+    · intro hni
+      exact absurd hi hni
+  rw [hzero] at hcoeff
+  simpa using hcoeff.symm
+
+/-- **Theorem A's model space has exactly the prescribed rank.**  The span of `1, θ, …, θ^{k-1}`
+for a transcendental `θ` has rational dimension `k`: this is the card's `V_k`. -/
+theorem rationalCoordinateRank_pow_of_transcendental {θ : ℝ} (h : Transcendental ℚ θ) (k : ℕ) :
+    rationalCoordinateRank (fun i : Fin k => θ ^ (i : ℕ)) = k := by
+  rw [rationalCoordinateRank]
+  simpa using finrank_span_eq_card (linearIndependent_pow_of_transcendental h k)
+
+/-- Transcendental reals exist: the algebraic ones are countable. -/
+theorem exists_transcendental_real : ∃ θ : ℝ, Transcendental ℚ θ := by
+  by_contra hcon
+  push Not at hcon
+  have hall : {x : ℝ | IsAlgebraic ℚ x} = Set.univ := by
+    ext x
+    simp only [Set.mem_setOf_eq, Set.mem_univ, iff_true]
+    simpa [Transcendental] using hcon x
+  have hcount : (Set.univ : Set ℝ).Countable := hall ▸ Algebraic.countable ℚ ℝ
+  exact Cardinal.not_countable_real hcount
+
+/-- **A rational subspace of the reals containing one is dense.**  This is the card's step
+"since `ℚ ⊂ V_k` and `ℚ` is dense in `ℝ`, `V_k` is dense in `ℝ`". -/
+theorem dense_of_one_mem {W : Submodule ℚ ℝ} (h1 : (1 : ℝ) ∈ W) : Dense (W : Set ℝ) := by
+  refine Dense.mono ?_ Rat.denseRange_cast
+  rintro _ ⟨q, rfl⟩
+  have hq : ((q : ℝ)) = q • (1 : ℝ) := by
+    simp [Rat.smul_def]
+  rw [hq]
+  exact W.smul_mem q h1
+
+/-- **The card's model space is dense.**  `V_k = span_ℚ{1, θ, …, θ^{k-1}}` contains `1`, hence is
+dense in the reals. -/
+theorem dense_span_pow {θ : ℝ} {k : ℕ} (hk : 0 < k) :
+    Dense ((Submodule.span ℚ (Set.range fun i : Fin k => θ ^ (i : ℕ)) : Submodule ℚ ℝ) : Set ℝ) := by
+  refine dense_of_one_mem ?_
+  have hmem : θ ^ ((⟨0, hk⟩ : Fin k) : ℕ) ∈ Set.range fun i : Fin k => θ ^ (i : ℕ) :=
+    ⟨⟨0, hk⟩, rfl⟩
+  have h1 : θ ^ ((⟨0, hk⟩ : Fin k) : ℕ) = 1 := by simp
+  rw [h1] at hmem
+  exact Submodule.subset_span hmem
+
+/-! ### Escaping a proper subspace along a detected direction
+
+These are the two case distinctions the card's basis construction makes when it forms `v = a + q b`
+with `b` outside the span built so far.
+-/
+
+variable {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
+
+/-- **From inside the subspace, every nonzero correction escapes.** -/
+theorem add_smul_notMem_of_mem {W : Submodule K V} {a b : V} (ha : a ∈ W) (hb : b ∉ W) {q : K}
+    (hq : q ≠ 0) : a + q • b ∉ W := by
+  intro hmem
+  have hqb : q • b ∈ W := by
+    have := W.sub_mem hmem ha
+    simpa using this
+  exact hb (by simpa [smul_smul, inv_mul_cancel₀ hq] using W.smul_mem q⁻¹ hqb)
+
+/-- **From outside the subspace, at most one correction falls back in.** -/
+theorem eq_of_add_smul_mem_of_add_smul_mem {W : Submodule K V} {a b : V} (hb : b ∉ W) {q q' : K}
+    (h : a + q • b ∈ W) (h' : a + q' • b ∈ W) : q = q' := by
+  by_contra hne
+  have hsub : (q - q') • b ∈ W := by
+    have := W.sub_mem h h'
+    simpa [sub_smul] using this
+  have hq : q - q' ≠ 0 := sub_ne_zero.mpr hne
+  exact hb (by simpa [smul_smul, inv_mul_cancel₀ hq] using W.smul_mem (q - q')⁻¹ hsub)
+
+/-- **The card's selection step.**  Inside a dense rational subspace `W`, arbitrarily close to any
+real point there is an element of `W` outside any prescribed proper subspace `U < W`: take a nearby
+element of `W`, and if it happens to lie in `U`, correct it by a small nonzero rational multiple of
+a vector of `W` outside `U`. -/
+theorem exists_mem_notMem_close {W U : Submodule ℚ ℝ} (hW : Dense (W : Set ℝ)) (hU : U < W)
+    (x : ℝ) {ε : ℝ} (hε : 0 < ε) : ∃ y ∈ W, y ∉ U ∧ dist y x < ε := by
+  obtain ⟨b, hbW, hbU⟩ : ∃ b ∈ W, b ∉ U := by
+    obtain ⟨b, hbW, hbU⟩ := SetLike.exists_of_lt hU
+    exact ⟨b, hbW, hbU⟩
+  obtain ⟨a, haW, haclose⟩ := hW.exists_dist_lt x (half_pos hε)
+  rw [dist_comm] at haclose
+  by_cases haU : a ∉ U
+  · exact ⟨a, haW, haU, lt_trans haclose (by linarith)⟩
+  · push Not at haU
+    have hbne : b ≠ 0 := fun hcon => hbU (by rw [hcon]; exact U.zero_mem)
+    obtain ⟨m, hm⟩ := exists_nat_gt (2 * |b| / ε)
+    have hmpos : (0 : ℝ) < m := lt_of_le_of_lt (by positivity) hm
+    have hmnat : 0 < m := by exact_mod_cast hmpos
+    have hmne : (m : ℚ) ≠ 0 := Nat.cast_ne_zero.mpr hmnat.ne'
+    set q : ℚ := (m : ℚ)⁻¹ with hq
+    have hqne : q ≠ 0 := inv_ne_zero hmne
+    have hqval : ((q : ℝ)) = (m : ℝ)⁻¹ := by
+      rw [hq]
+      push_cast
+      ring
+    have hsmall : |(q : ℝ) * b| < ε / 2 := by
+      have hb2 : 2 * |b| < (m : ℝ) * ε := by
+        rw [div_lt_iff₀ hε] at hm
+        linarith [hm]
+      rw [abs_mul, hqval, abs_of_pos (by positivity : (0:ℝ) < (m:ℝ)⁻¹), inv_mul_eq_div,
+        div_lt_iff₀ hmpos]
+      nlinarith [hb2]
+    refine ⟨a + (q : ℝ) * b, ?_, ?_, ?_⟩
+    · have : (q : ℝ) * b = q • b := by
+        simp [Rat.smul_def]
+      rw [this]
+      exact W.add_mem haW (W.smul_mem q hbW)
+    · have hsm : a + (q : ℝ) * b = a + q • b := by
+        simp [Rat.smul_def]
+      rw [hsm]
+      exact add_smul_notMem_of_mem haU hbU hqne
+    · calc dist (a + (q : ℝ) * b) x ≤ dist (a + (q : ℝ) * b) a + dist a x := dist_triangle _ _ _
+        _ < ε / 2 + ε / 2 := by
+            refine add_lt_add ?_ haclose
+            rw [Real.dist_eq]
+            simpa using hsmall
+        _ = ε := by ring
+
+/-- **The card's inductive basis construction.**  Inside a dense rational subspace of rational
+dimension `k`, any `m ≤ k` prescribed reals are approximated by `m` independent elements of the
+subspace. -/
+theorem exists_linearIndependent_mem_close {W : Submodule ℚ ℝ} (hW : Dense (W : Set ℝ))
+    {k : ℕ} (hfin : Module.finrank ℚ W = k) :
+    ∀ m : ℕ, m ≤ k → ∀ z : Fin m → ℝ, ∀ ε : ℝ, 0 < ε →
+      ∃ v : Fin m → ℝ, LinearIndependent ℚ v ∧ (∀ i, v i ∈ W) ∧ ∀ i, dist (v i) (z i) < ε := by
+  intro m
+  induction m with
+  | zero =>
+      intro _ _ ε _
+      exact ⟨fun i => Fin.elim0 i, linearIndependent_empty_type,
+        fun i => Fin.elim0 i, fun i => Fin.elim0 i⟩
+  | succ m ih =>
+      intro hmk z ε hε
+      obtain ⟨v, hvind, hvmem, hvclose⟩ := ih (by omega) (fun j : Fin m => z j.succ) ε hε
+      have hspanle : Submodule.span ℚ (Set.range v) ≤ W := by
+        refine Submodule.span_le.mpr ?_
+        rintro _ ⟨i, rfl⟩
+        exact hvmem i
+      have hspanrank : Module.finrank ℚ (Submodule.span ℚ (Set.range v)) = m := by
+        simpa using finrank_span_eq_card hvind
+      have hlt : Submodule.span ℚ (Set.range v) < W :=
+        Submodule.lt_of_le_of_finrank_lt_finrank hspanle (by rw [hspanrank, hfin]; omega)
+      obtain ⟨a, haW, haU, haclose⟩ := exists_mem_notMem_close hW hlt (z 0) hε
+      refine ⟨Fin.cons a v, hvind.finCons haU, ?_, ?_⟩
+      · intro i
+        refine Fin.cases ?_ (fun j => ?_) i
+        · simpa using haW
+        · simpa using hvmem j
+      · intro i
+        refine Fin.cases ?_ (fun j => ?_) i
+        · simpa using haclose
+        · simpa using hvclose j
+
+/-- **Theorem A's construction, as the card writes it.**  Every real packet has arbitrarily close
+packets whose entries all lie in a prescribed dense rational subspace of dimension `k` and whose
+rational span is exactly that subspace; in particular their exact rational rank is `k`. -/
+theorem exists_close_span_eq_of_dense {W : Submodule ℚ ℝ} (hW : Dense (W : Set ℝ))
+    {k n : ℕ} (hfin : Module.finrank ℚ W = k) (hk : 0 < k) (hkn : k ≤ n)
+    (x : Fin n → ℝ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ y : Fin n → ℝ, (∀ i, dist (y i) (x i) < ε) ∧ (∀ i, y i ∈ W) ∧
+      Submodule.span ℚ (Set.range y) = W := by
+  classical
+  haveI : Module.Finite ℚ W := Module.finite_of_finrank_pos (by rw [hfin]; exact hk)
+  obtain ⟨v, hvind, hvmem, hvclose⟩ :=
+    exists_linearIndependent_mem_close hW hfin k (le_refl k)
+      (fun j : Fin k => x (Fin.castLE hkn j)) ε hε
+  have hchoose : ∀ i : Fin n, ∃ w : ℝ, w ∈ W ∧ dist w (x i) < ε := by
+    intro i
+    obtain ⟨w, hwW, hwclose⟩ := hW.exists_dist_lt (x i) hε
+    exact ⟨w, hwW, by rwa [dist_comm]⟩
+  choose w hwW hwclose using hchoose
+  refine ⟨fun i => if h : (i : ℕ) < k then v ⟨i, h⟩ else w i, ?_, ?_, ?_⟩
+  · intro i
+    by_cases h : (i : ℕ) < k
+    · simp only [dif_pos h]
+      have hcast : Fin.castLE hkn ⟨(i : ℕ), h⟩ = i := Fin.ext rfl
+      simpa [hcast] using hvclose ⟨(i : ℕ), h⟩
+    · simp only [dif_neg h]
+      exact hwclose i
+  · intro i
+    by_cases h : (i : ℕ) < k
+    · simp only [dif_pos h]
+      exact hvmem ⟨(i : ℕ), h⟩
+    · simp only [dif_neg h]
+      exact hwW i
+  · have hle : Submodule.span ℚ (Set.range fun i : Fin n =>
+        if h : (i : ℕ) < k then v ⟨i, h⟩ else w i) ≤ W := by
+      refine Submodule.span_le.mpr ?_
+      rintro _ ⟨i, rfl⟩
+      by_cases h : (i : ℕ) < k
+      · simpa [h] using hvmem ⟨(i : ℕ), h⟩
+      · simpa [h] using hwW i
+    haveI : Module.Finite ℚ (Submodule.span ℚ (Set.range fun i : Fin n =>
+        if h : (i : ℕ) < k then v ⟨i, h⟩ else w i)) := Submodule.finiteDimensional_of_le hle
+    refine Submodule.eq_of_le_of_finrank_eq hle (le_antisymm (Submodule.finrank_mono hle) ?_)
+    have hsub : Submodule.span ℚ (Set.range v)
+        ≤ Submodule.span ℚ (Set.range fun i : Fin n =>
+          if h : (i : ℕ) < k then v ⟨i, h⟩ else w i) := by
+      refine Submodule.span_le.mpr ?_
+      rintro _ ⟨j, rfl⟩
+      refine Submodule.subset_span ⟨Fin.castLE hkn j, ?_⟩
+      have hjlt : ((Fin.castLE hkn j : Fin n) : ℕ) < k := by simp
+      simp only [dif_pos hjlt]
+      congr 1
+    have hrank : Module.finrank ℚ (Submodule.span ℚ (Set.range v)) = k := by
+      simpa using finrank_span_eq_card hvind
+    calc Module.finrank ℚ W = k := hfin
+      _ = Module.finrank ℚ (Submodule.span ℚ (Set.range v)) := hrank.symm
+      _ ≤ _ := Submodule.finrank_mono hsub
 
 /-- Every real packet can be perturbed coordinatewise to a rationally
 independent packet of the same length. -/

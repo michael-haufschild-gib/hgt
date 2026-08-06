@@ -142,6 +142,19 @@ def contact {n : ℕ} (t : RootedContactTree n) (i j : Fin n) : ℝ :=
 theorem contact_symm {n : ℕ} (t : RootedContactTree n) (i j : Fin n) :
     t.contact i j = t.contact j i := by simp [contact, inf_comm]
 
+/-- **The leaf value of `kappa`.**  At a leaf the contact coordinate is the height of that leaf:
+this is the card's `kappa(i) = K_ii`. -/
+theorem contact_self {n : ℕ} (t : RootedContactTree n) (i : Fin n) :
+    t.contact i i = t.kappa (t.leaf i) := by
+  simp [contact]
+
+/-- **The internal value of `kappa` is well defined.**  Any two leaf pairs with the same meet carry
+the same contact coordinate, so setting `kappa(v) = K_ij` for leaves in two different children of
+`v` does not depend on the choice. -/
+theorem contact_eq_of_inf_eq {n : ℕ} (t : RootedContactTree n) {i j i' j' : Fin n}
+    (h : t.leaf i ⊓ t.leaf j = t.leaf i' ⊓ t.leaf j') : t.contact i j = t.contact i' j' := by
+  rw [contact, contact, h]
+
 /-- Strict leaf-to-meet separation. -/
 theorem contact_diagonal_lt {n : ℕ} (t : RootedContactTree n) {i j : Fin n}
     (hij : i ≠ j) : t.contact i i < t.contact i j := by

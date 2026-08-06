@@ -263,6 +263,17 @@ theorem contact_setTerminal (t : ContactTower) (h : ℚ) :
       push_cast
       ring
 
+/-- **The slope of contact in the terminal height is the reciprocal ramification.**  Every
+difference quotient of complementary contact in the terminal height equals `1/R`, which is the
+route's `d kappa / de = 1/R` in the rational model. -/
+theorem contact_setTerminal_slope (t : ContactTower) {h h' : ℚ} (hne : h ≠ h') :
+    ((t.setTerminal h').contact - (t.setTerminal h).contact) / (h' - h)
+      = 1 / (t.totalRamification : ℚ) := by
+  have hsub : h' - h ≠ 0 := sub_ne_zero.mpr (Ne.symm hne)
+  rw [contact_setTerminal t h, contact_setTerminal t h']
+  field_simp
+  ring
+
 /-- The terminal weight is positive on an admissible branch. -/
 theorem terminal_weight_pos {t : ContactTower} (hvalid : t.Valid) :
     0 < (1 : ℚ) / (t.totalRamification : ℚ) := by

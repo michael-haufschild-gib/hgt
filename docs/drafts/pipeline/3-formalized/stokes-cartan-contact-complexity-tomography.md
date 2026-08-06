@@ -375,6 +375,7 @@ All modules live in `formal/GaloisForLFunctions/HTGeometry/` and are wired into
 | Lemma 8.1 strict diagonal separation | `RootedContactTree.contact_diagonal_lt` | `StokesContactTomography` |
 | Lemma 8.2 acute-isosceles / repeated maximum | `RootedContactTree.contact_acute`, `RootedContactTree.contact_maxTwice` | `StokesContactTomography` |
 | (RT) rooted-triple law | `RootedContactTree.rootedTriple_iff`, `.contact_lt_of_inf_lt_inf`, `.contact_eq_of_inf_lt_inf` | `StokesRootedTripleLaw` |
+| **§8.4's definition of `kappa`**: its leaf value `K_ii`, and well-definedness at an internal vertex | `RootedContactTree.contact_self`, `.contact_eq_of_inf_eq` | `StokesContactTomography` |
 | Theorem 8.3 threshold recovery of the labelled hierarchy | `RootedContactTree.hierarchy_eq_visibleHierarchy`, `.clusters_laminar`, `.hierarchy_eq_of_contact_eq` | `StokesContactTomography` |
 | (8.2) strict integral obstruction on `(B,r)` | `DecoratedStokesCore.strictDiagonal_iff`, `RootedRealization.strictCoreObstruction` | `StokesDecoratedCore` |
 | Corollary 8.4 fibre localisation | `DecoratedStokesCore.RootedRealization.hierarchy_unique`, `CertifiedFissionDatum.hierarchy_unique` | `StokesDecoratedCore`, `StokesUniversalContactLaw` |
@@ -449,6 +450,7 @@ vector.
 | **contact is a convex combination**: terminal height ≤ contact ≤ top | `ContactTower.terminalHeight_le_contact`, `.contact_le_top`, `.le_weightedLevelSum`, `.weightedLevelSum_le` |
 | **the terminal height carries weight `1/D_t`** | `ContactTower.setTerminal`, `.contact_setTerminal`, `.terminal_weight_pos` |
 | contact is strictly increasing in the terminal height | `ContactTower.contact_setTerminal_strictMono` |
+| **route step 3, `d kappa/de = 1/R`**: every difference quotient of contact in the terminal height is the reciprocal ramification | `ContactTower.contact_setTerminal_slope` |
 | **§8.3 strict convex undercut**: levels below a bound and terminal strictly below it force contact strictly below it | `ContactTower.weightedLevelSum_lt`, `.contact_lt_of_terminalHeight_lt` |
 | **§8.2 integral sharpening**: the strict obstruction holds with a `+1` | `DecoratedStokesCore.RootedRealization.strictCoreObstruction_add_one_le` |
 | **`(8.2)` as displayed**: *both* strict obstructions, with the same off-diagonal entry | `DecoratedStokesCore.RootedRealization.strictCorePairObstruction`, `.strictCorePairObstruction_add_one_le` |
@@ -548,6 +550,13 @@ coefficient-derivative theorem with `RHTower.` although its module declares no n
 card had abbreviated `DecoratedStokesCore.RootedRealization.hierarchy_unique`.  Every other
 unresolved token is a mathlib name, a module name, a file path, or a prose symbol.
 
+The project's full local gate (`lint --check-generated --build --build-target
+GaloisForLFunctions.MainTheorems`) was also run.  `lake build GaloisForLFunctions.MainTheorems`
+itself is green (21579 jobs), but the gate additionally rejects Lean build warnings and currently
+reports 171 of them.  Grouping them by file shows none in any module of these four cards: the
+emitters are unrelated modules elsewhere in the tree.  The gate's other failures are an unwired
+`RHTower.Sieve` module and generated-file staleness, both from another agent's concurrent work.
+
 A single `#print axioms` sweep was then run over all 232 names cited in headline table rows across
 the four cards.  Every one that is a declaration reports `[propext, Classical.choice, Quot.sound]`;
 `ContactTower.setTerminal` reports no axioms at all, being a plain recursion.  The remaining
@@ -609,3 +618,11 @@ A single `#print axioms` sweep over the headline theorems of all four cards
   bundles the clauses that live on a certified fission datum; this bundles the three conjectures as
   the card words them, on `K` itself: the rooted-triple law, uniqueness of the labelled hierarchy
   given the matrix, and the full energy-tree law with the explicit squared-Euclidean embedding.
+- 2026-08-06 — §8.4's own definition of `kappa` recorded: its value at a leaf is `K_ii`, and its
+  value at an internal vertex does not depend on which pair of leaves in different children is
+  chosen, because the contact coordinate depends only on the meet.
+- 2026-08-06 — route step 3 recorded literally.  The route derives strictness from
+  `d kappa/de = 1/R > 0`; the corpus had the affine identity and the strict monotonicity it implies,
+  but not the slope itself.  Since contact lives in `ℚ` here, the faithful form is that *every*
+  difference quotient in the terminal height equals `1/R`, which is what the derivative statement
+  means in this model.

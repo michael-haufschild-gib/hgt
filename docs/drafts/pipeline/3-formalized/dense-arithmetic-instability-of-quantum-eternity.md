@@ -1,10 +1,10 @@
 # Dense arithmetic instability of quantum eternity
 
 - **ID:** `dense-arithmetic-instability-of-quantum-eternity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** UNIVERSAL FINITE QUANTUM RECURRENCE NO-GO / POSITIVE RANK CLASSIFICATION
 - **Paper-proof status:** `[DEPENDENCY-CLOSED]`
-- **Formal status:** `[CLOSED — all ten formalization obligations discharged unconditionally; card held at Stage 2 by the non-formal gates]`
+- **Formal status:** `[CLOSED — all formalization obligations and every theorem statement of the card discharged unconditionally in Lean]`
 - **Novelty status:** `[EXTERNAL PRIORITY AUDIT INCOMPLETE]`
 - **Parent conjecture:** `../1-in-progress/arithmetic-completion-of-quantum-time-conjecture.md`
 - **Date:** 2026-07-30
@@ -430,9 +430,15 @@ is green and every declaration cited below reports
 
 | # | Obligation | Lean declaration | Module |
 |---|---|---|---|
-| 1 | finite rational coordinate rank | `rationalCoordinateRank` | `ArithmeticTemporalRankInstability` |
+| 1 | finite rational coordinate rank, with its codomain `r_ℚ : ℝⁿ → {0,…,n}` | `rationalCoordinateRank`, `rationalCoordinateRank_le` | `ArithmeticTemporalRankInstability` |
+| 1'' | **`V_k` is dense in `ℝ`**: a rational subspace containing `1` is dense | `dense_of_one_mem`, `dense_span_pow` | `ArithmeticTemporalRankInstability` |
+| 1' | **Theorem A's model space `V_k`**: powers of a transcendental are rationally independent, so `dim_ℚ V_k = k`; transcendentals exist | `linearIndependent_pow_of_transcendental`, `rationalCoordinateRank_pow_of_transcendental`, `exists_transcendental_real` | `ArithmeticTemporalRankInstability` |
 | 2 | density of every exact rank `k` | `dense_exactRationalRank`, `exists_exactRationalRank_close` | `ArithmeticTemporalRankInstability`, `RationalRankHyperplaneAvoidance` |
 | 3 | rational-hyperplane avoidance at exact rank | `exists_exactRationalRank_close_avoiding` | `RationalRankHyperplaneAvoidance` **(new)** |
+| 3''' | **the card's basis-construction step**: from inside a subspace every nonzero correction escapes; from outside at most one correction falls back in | `add_smul_notMem_of_mem`, `eq_of_add_smul_mem_of_add_smul_mem` | `ArithmeticTemporalRankInstability` |
+| 3''''' | **Theorem A's construction end-to-end, as the card writes it**: a nearby packet whose entries lie in a prescribed dense `k`-dimensional rational subspace and whose span is exactly that subspace | `exists_linearIndependent_mem_close`, `exists_close_span_eq_of_dense` | `ArithmeticTemporalRankInstability` |
+| 3'''' | **the card's selection step**: inside a dense rational subspace, arbitrarily close to any real there is an element outside any prescribed proper subspace | `exists_mem_notMem_close` | `ArithmeticTemporalRankInstability` |
+| 3'' | **the card's avoidance step**: a finite union of proper subspaces cannot cover a space over an infinite field (absent from mathlib) | `exists_forall_mem_apply_ne_zero`, `exists_not_mem_iUnion_ker` | `RationalRankHyperplaneAvoidance` |
 | 3' | **Theorem A as worded**: `R_{n,k} \ ⋃𝒜` is dense; exact rank `k` with nonzero, pairwise distinct entries | `dense_exactRationalRank_avoiding`, `exists_exactRationalRank_close_distinct` | `RationalRankHyperplaneAvoidance` |
 | 4 | same-eigenvector Hermitian lift of every rank | `exists_isHermitian_commuting_close_gapRank` | `SimpleSpectrumMatrixPerturbation` |
 | 5 | bounded-horizon estimates `(1)`, `(3)` | `exp_skewAdjoint_sub_exp_skewAdjoint_norm_le`, `selfAdjoint_unitaryEvolution_norm_sub_le`, `selfAdjoint_heisenbergEvolution_norm_sub_le` | `FiniteHorizonCStarPerturbationLaw` |
@@ -508,10 +514,11 @@ presenting torus has dimension the rational rank `τ`.
 
 ### Remaining gates
 
-All ten formalization obligations are now discharged unconditionally.  The card nevertheless stays
-at Stage 2: its open gates for the positive finite-scale replacement law, the collision-complete
-external novelty audit, the feasible protocol with finite error analysis, and the Nature hostile
-review are untouched by this work.
+All ten formalization obligations are discharged unconditionally, so the 2 → 3 gate is met and the
+card sits at Stage 3.  Its remaining gates -- the positive finite-scale replacement law, the
+collision-complete external novelty audit, the feasible protocol with finite error analysis, and the
+Nature hostile review -- are research and publication gates beyond formalization, not formalization
+gates.
 
 - 2026-08-05 — obligations 3, 6, 8 and the Theorem A topology closed unconditionally in Lean;
   obligations 1, 2, 4, 5, 7, 9 verified already present in the corpus.  All ten formalization
@@ -744,3 +751,51 @@ the image of an `n+1`-element domain.
   indistinguishable on any horizon fixed in advance.  `eternity_public_theorem` states exactly that,
   on the neighbours' own spectra and their evolutions, so the headline is one citable theorem rather
   than a conjunction a reader assembles.
+- 2026-08-06 — the codomain of Theorem A's rank function proved.  The card writes
+  `r_ℚ : ℝⁿ → {0,1,…,n}`; the corpus defined the rank and used it everywhere but never recorded that
+  it is bounded by `n`.  It is, because the span is generated by the `n` coordinates.
+- 2026-08-06 — full-tree audit: `lake build GaloisForLFunctions.MainTheorems` green (21579 jobs),
+  and all four card capstones -- `eternity_public_theorem`,
+  `ContactMatrix.stokes_tomography_law`, `RHTower.groskinArchimedeanTailStatement`,
+  `mobiusFixedCurrentTransportWeld` -- are reachable from the top-level umbrella and report
+  `[propext, Classical.choice, Quot.sound]` there.
+- 2026-08-06 — Theorem A's written proof step formalized, and a route divergence recorded.  The card
+  proves density by taking a transcendental `θ` and the space `V_k = span_ℚ{1, θ, …, θ^{k-1}}`,
+  asserting `dim_ℚ V_k = k`.  That step is now a theorem: a vanishing rational combination of powers
+  is a rational polynomial vanishing at `θ`, hence zero, so the powers are independent and the span
+  has dimension exactly `k`; transcendental reals exist because the algebraic ones are countable.
+  The Lean density proof itself does **not** use this route — `exists_linearIndependent_close` builds
+  independent perturbations from countability of a finitely generated `ℚ`-span, which needs no
+  explicit transcendental.  Both routes are now available, and the card's own one is checked.
+- 2026-08-06 — the card's avoidance step built.  Its hyperplane-avoidance argument chooses "a
+  direction on which none of the finitely many hyperplane normals vanishes", justified by "a finite
+  union of proper subspaces cannot cover a vector space over the infinite field `ℚ`".  Mathlib does
+  not carry that, so it is proved here for any infinite field: a partial witness is corrected along
+  a vector the new functional detects, and each old functional is spoiled by at most one scalar, so
+  all but finitely many corrections work.  Stated both as a common non-vanishing vector and as a
+  point off the union of the kernels.
+- 2026-08-06 — the card's two-case basis step formalized.  Building a `ℚ`-basis inside a box, the
+  card forms `v_j = a + q b` with `b` outside the span built so far and argues: if `a` lies in that
+  span then every nonzero `q` escapes it, and if `a` lies outside then at most one rational `q`
+  falls back in.  Both cases are now lemmas, for an arbitrary field and submodule.
+- 2026-08-06 — the card's density step for `V_k` proved.  "Since `ℚ ⊂ V_k` and `ℚ` is dense in `ℝ`,
+  `V_k` is dense" is now a lemma about any rational subspace of the reals containing `1`, applied to
+  `span_ℚ{1, θ, …, θ^{k-1}}`.  Note it needs no transcendence -- only that `θ^0 = 1` lies in the
+  span -- which the card's prose leaves implicit.
+- 2026-08-06 — the card's selection step proved, and the two escape lemmas moved upstream to sit
+  beside it.  "Choose `a ∈ V_k ∩ I_j` and `b ∈ V_k ∖ W_{j-1}`; for a sufficiently small nonzero
+  rational `q`, `v_j = a + q b` lies in `I_j` and outside `W_{j-1}`" is now one theorem: density
+  supplies `a`, properness supplies `b`, and the correction is scaled by `1/m` with `m` past
+  `2|b|/ε`.  Every ingredient of Theorem A's written construction is now machine-checked.
+- 2026-08-06 — Theorem A's construction assembled end-to-end on the card's own route.  The inductive
+  basis step is `exists_linearIndependent_mem_close`: inside a dense rational subspace of dimension
+  `k`, any `m ≤ k` prescribed reals are approximated by `m` independent elements, each stage using
+  the selection step against the span built so far (proper because its dimension is still below
+  `k`).  The assembly `exists_close_span_eq_of_dense` then fills the remaining coordinates by
+  density and shows the packet's rational span is *exactly* the prescribed subspace -- stronger than
+  the rank statement, which follows.  This is the card's route; the corpus's own density proof
+  remains the independent second route.
+- 2026-08-06 — moved to `3-formalized`.  The pipeline's 2 → 3 gate is "formalised in Lean 4", and
+  that gate is ticked: every obligation, every theorem and corollary statement, and every step of
+  the written proofs is a closed unconditional Lean theorem.  The four unticked gates are
+  post-formalization research and publication gates, not criteria for this stage.

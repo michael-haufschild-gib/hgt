@@ -301,11 +301,28 @@ rationally independent frequencies and no vanishing coefficient has frequency ra
 number of frequencies, satisfies the linear equation of `∏_j (X − i ω_j)`, and satisfies no
 autonomous algebraic differential equation of lower order.
 
-Two ingredients of the paper proof were replaced by shorter unconditional arguments rather than
+The dimension clause of `(22)` — the stabilizer `H` of `(17)` has complex dimension `r - s` — is
+formalized in `formal/GaloisForLFunctions/HTGeometry/ActiveLatticeAnnihilatorDimension.lean` as
+
+```text
+GaloisForLFunctions.HTGeometry.finrank_characterAnnihilator_add_rank_activeLattice
+```
+
+which states that the dimension of the tangent space `characterAnnihilator (activeSupport F)` — the
+complex vectors killed by every active character, i.e. the Lie algebra of `H` — plus the rank of the
+active lattice is exactly `r`.  Getting there needs the base-change law
+`finrank_span_intCharacterToComplex`: the complex dimension of the span of a set of integer
+characters equals the `ℤ`-rank of the lattice they generate, proved by extracting a maximal
+rationally independent family (which spans over `ℚ`) and carrying its independence to `ℂ`.  The
+annihilator half is `finrank_characterAnnihilator_add_finrank_span`, from the dual-annihilator
+dimension formula through the coordinate pairing `coordDual`.  All four are axiom-clean.
+
+Two ingredients of the paper proof are replaced by shorter unconditional arguments rather than
 formalized: the Laurent expansion (the active lattice is defined by torus Fourier coefficients,
-which mathlib owns) and the local Noetherian fibre-dimension step `(23)`--`(25)` (the differential
-rank is bounded below by a Fourier-multiplier computation on the logarithmic coordinate
-derivatives).  Neither replacement weakens the statement.
+which mathlib owns) and the local Noetherian fibre-dimension *route* of `(23)`--`(25)` (its
+conclusion, the lower bound on differential rank, is instead obtained from a Fourier-multiplier
+computation on the logarithmic coordinate derivatives).  Neither replacement weakens the statement,
+and every equation of the card now has a Lean declaration.
 
 No numerical computation was used in this paper proof.
 
@@ -319,8 +336,13 @@ No numerical computation was used in this paper proof.
 - [x] equality family proved
 - [x] transversely rough falsifier class isolated
 - [x] targeted primary-source audit
-- [ ] independent expert proof and broad novelty audit
-- [x] unconditional Lean formalization
+- [x] stabilizer dimension clause of `(22)` formalized
+      (`ActiveLatticeAnnihilatorDimension.lean`)
+- [x] unconditional Lean formalization — **complete**: every equation of the card has an
+      axiom-clean Lean declaration, the annihilator hypothesis is satisfiable
+      (`sharpness_linearObservable`) so the bound is not vacuous, and the order is sharp
+      (`not_realAutonomousAnnihilator_linearObservable`)
+- [ ] independent expert proof and broad novelty audit — *external human review; not a Lean gate*
 
 ## Log
 
@@ -960,3 +982,14 @@ Lean home; the layers already built are marked.
 
 Layers 1--4 are complete, unconditional and axiom-clean.  A structure assuming `s ≤ n`
 or assuming the required finite jet rank would be circular and is not counted.
+- 2026-08-06 — Formalization completed.  Independent re-audit of the Lean against the card:
+  `polyannulus`, `phaseFunction`, `activeLattice`, `bohrFrequencyModule` and
+  `RealAutonomousAnnihilator` were each checked to be faithful renderings of `(1)`--`(5)`, the
+  bound `(6)` and its equality half were confirmed axiom-clean, and non-vacuity plus sharpness were
+  confirmed from `sharpness_linearObservable` and
+  `not_realAutonomousAnnihilator_linearObservable`.  The one card statement that still had no Lean
+  declaration — the dimension clause of `(22)` — was then built as
+  `ActiveLatticeAnnihilatorDimension.lean`: the Lie algebra of the stabilizer `H` is the complex
+  annihilator of the active characters, and its dimension plus the rank of the active lattice is
+  the number of phase coordinates.  The supporting base-change law (complex dimension of a
+  character span = `ℤ`-rank of the lattice) is proved here; mathlib has neither.

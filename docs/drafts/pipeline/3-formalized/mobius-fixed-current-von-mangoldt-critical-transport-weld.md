@@ -356,7 +356,7 @@ codifferential estimate.
 `RHTower.tendsto_squarefreeMobiusBoundaryLayerLaplace`.  The no-go `(8)` and the ordered two-clock
 law `(7)`--`(9)` are therefore machine-checked in full.
 
-## Lean formalization (transport layer, in progress)
+## Lean formalization (transport layer)
 
 `formal/GaloisForLFunctions/HTGeometry/HalfLineTransportDistance.lean` (imported by
 `GaloisForLFunctions.HTGeometry`; builds clean; every result axiom-clean).
@@ -608,6 +608,15 @@ the card's limits use.  What is left is the final assembly:
    now discharged, as are the Euler mean limit and the squarefree Laplace limit; only the squarefree
    mean limit remains, by the same pattern;
 2. `(15a)`--`(15c)`, `(16)`--`(17)` and `(18)`--`(22)`, the second-order and packet statements.
+
+**Both items are discharged.**  The narrative above was written while the layer was being built and
+is kept for its record of the route; it is no longer a statement of what is missing.  Item 1's last
+piece, the squarefree mean limit, is `tendsto_integral_id_scaledSquarefreeClockLaw`, and both clocks
+now carry `(11)` and `(13)` as *exact identities* at arbitrary nonnegative argument rather than only
+as limits (`ofReal_integral_exp_neg_scaledEulerClockLaw_eq`,
+`ofReal_integral_exp_neg_scaledSquarefreeClockLaw_eq`, `ofReal_integral_id_scaledEulerClockLaw_eq`,
+`ofReal_integral_id_scaledSquarefreeClockLaw_eq`).  Item 2 is compiled in full, as the tables above
+record.  The section title no longer says "in progress".
 
 - 2026-08-05 — half-line `W₁` layer built: transport distance, layer-cake mean identity, the
   survival/moment convergence criterion, the triangle inequality, the mutual-convergence corollary,
@@ -1046,3 +1055,7 @@ them.
   complementary-packet cost, and so do the induced edge fields; and the four-unit packet geometry
   holds of the Euler current itself.  All four cards of this group now carry their headline claim as
   a single citable theorem.
+- 2026-08-06 — stale progress text corrected.  The transport-layer section still described item 1 as
+  partly open and was titled "in progress"; every clause it listed is proved, and `(11)` and `(13)`
+  are now available as identities for both clocks.  The historical narrative is kept, marked as
+  history rather than as an open list.

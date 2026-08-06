@@ -861,3 +861,331 @@ cited, not assumed: no Lean theorem here depends on it.
 Lean trap: in `mul_le_mul_of_nonneg_left h (by positivity)` the multiplier is a
 metavariable at elaboration time and `positivity` may unify it with the wrong hypothesis
 (here `hx : 0 ≤ x`); bind it first with an explicit `have` and use a `calc`.
+
+## 2026-08-06 CYCLE 12: scoping the falsification — energy spread blocks the mechanism
+
+Cycle 11's counterexample used primes in a dyadic window `[N,2N]`, i.e. an
+**energy-degenerate** set.  That is not an accident of the construction but a requirement.
+
+**S1 (the dichotomy obstruction).**  The truncation lemma needs every `J`-configuration
+light and every `(J+1)`-configuration heavy, so it forces
+
+```text
+max_{|T| = J} e(T)  <  min_{|T| = J+1} e(T)
+```
+
+— energies ordered by cardinality alone.  Exhibiting one `(J+1)`-set no heavier than some
+`J`-set refutes it outright: `R ≤ x·e(T₂) ≤ x·e(T₁) ≤ ε < R`.
+
+**S2 (the natural gas is never in the regime).**  For `S` = primes up to `y`, level `J`
+would need the product of the `J` largest primes below the `(J+1)`-st primorial — false for
+every `y` past a fixed bound, since the left side grows like `y^J` and the right side is a
+constant.  Already `{2,3,7} ⊆ S` blocks level one: `2·3 ≤ 7`.
+
+**Consequence — the refined conjecture.**  Cycle 11 falsifies sector stability for
+*general* `S`; it says nothing about the arithmetically natural gas.  The structural
+dichotomy behind this:
+
+```text
+sharp truncation of the coefficient profile  ⟹  Szegő regime  ⟹  right half-plane zeros,
+gradual (super-exponentially decaying) profile ⟹ Kurtz regime ⟹ real negative zeros.
+```
+
+A dyadic window produces the first; the natural prime gas, whose energies span many
+scales, produces the second (its coefficient profile is Poisson-like in the bulk with a
+super-exponentially thin primorial tail).  **Refined conjecture: the natural gas
+`S = {p prime : p ≤ y}` is sector-stable at every coupling.**  This — not the general
+statement — is the Route E-relevant question, and it is now the sharp open core.
+
+- 2026-08-06 — S1, S2 proved; refined conjecture stated.
+
+## 2026-08-06 S1/S2 FORMALIZED: `RHTower/GibbsEnergySpread.lean`
+
+Wired; build 8659 jobs; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings.  `RHTower.GibbsGas`: **`no_truncation_dichotomy`** (S1, general witness
+form), **`no_truncation_dichotomy_of_dominant`** (a single element dominating a product of
+two blocks level one), **`no_truncation_dichotomy_of_two_three_seven`** (the concrete
+arithmetic instance `2·3 ≤ 7`).
+
+## 2026-08-06 CYCLE 13: the condensation law becomes two-sided
+
+Cycle 10 gave the identity in cross-ratio form.  Evaluating the same factorization directly
+at the parity activity gives the sharper pair (`m = ∏ S`, product over zeros with
+multiplicity):
+
+```text
+‖J_S(x)‖ = e^{−x·m} · ∏_ζ ‖1 + ζ‖ ,        ‖Z_S(x)‖ = e^{−x·m} · ∏_ζ ‖1 − ζ‖ .
+```
+
+**T1 (gap ⟹ current lower bound).**  If no zero comes within `δ` of the parity point,
+
+```text
+‖J_S(x)‖ ≥ e^{−x·m}·δ^{|S|}.
+```
+
+**T2 (the contrapositive — cancellation forces condensation).**  If
+`‖J_S(x)‖ < e^{−x·m}·δ^{|S|}` then **some gas zero lies within `δ` of the parity point**.
+
+Both hold at every coupling, for every finite `S`, with **no stability hypothesis** — which
+matters now that sector stability is known to fail in general (cycle 11).  This is the
+converse the programme was missing: cycle 10 showed confinement ⟹ cancellation, and T2
+shows cancellation ⟹ confinement, with matching explicit rates.  Consistency check against
+the weak-coupling laws: `‖J_S‖ ≈ φ(m)x` (W4) forces `δ ≲ (φ(m)x·e^{x m})^{1/k}`, matching
+the confinement radius `2(mx)^{1/k}` of W2 up to constants.
+
+Read arithmetically: **to make the Möbius–Laplace current anomalously small one must drag a
+zero of the squarefree Gibbs gas onto the parity point, at an explicitly quantified rate.**
+No mechanism can produce cancellation without producing condensation.
+
+- 2026-08-06 — T1, T2 proved and formalized.
+
+## 2026-08-06 T1/T2 FORMALIZED: `RHTower/GibbsCurrentGap.lean`
+
+Wired; build 8659 jobs; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings.  `RHTower.GibbsGas`: `gibbsPoly_leadingCoeff`, `pow_le_prod_of_le`,
+**`norm_gibbs_current_eq`**, **`norm_gibbs_current_ge_of_gap`** (T1),
+**`exists_zero_near_parity_of_small_current`** (T2), `norm_gibbs_partition_eq`.
+
+## 2026-08-06 CYCLE 14: distant zeros are inert — the dictionary closes
+
+**U1 (per-zero localization).**  `‖1−ζ‖ ≤ 2 + ‖1+ζ‖`, so a zero at distance `d` from the
+parity point contributes a cross-ratio at most `1 + 2/d`.  **Distant zeros are inert**: all
+cancellation is produced by zeros near the parity point.  Division-free form, at every
+coupling, no stability hypothesis:
+
+```text
+‖Z_S(x)‖ · ∏_ζ ‖1+ζ‖  ≤  ‖J_S(x)‖ · ∏_ζ (2 + ‖1+ζ‖).
+```
+
+With cycle 13 this closes the dictionary in both directions and with matching rates:
+
+```text
+gap δ around −1        ⟹  ‖J_S‖ ≥ e^{−xm}·δ^{|S|}                    (T1)
+‖J_S‖ small            ⟹  a zero within δ of −1                      (T2)
+zeros far from −1      ⟹  no cancellation (each contributes ≤ 1+2/d) (U1)
+zeros confined to ρ    ⟹  cancellation ≤ (ρ/(2−ρ))^{|S|}             (cycle 10)
+```
+
+### Assessment of the refined conjecture (cycle 12) — likely also false
+
+Honest prediction, recorded so no cycle chases it blindly.  For the natural gas the
+coefficient profile is `A_j ≈ Z·λ^j/j!` with `λ = loglog(1/x)` throughout the Sathe–Selberg
+range, and this persists (in large-deviation form) up to `j ≈ K`, where `K` is fixed by
+`P_K x ≈ 1` (`P_K` the primorial); beyond `K` the profile drops super-exponentially because
+the *minimum* energy `P_j` takes over.  That is a Poisson profile with a **sharp** cutoff,
+i.e. `Z·e^{−λ}·s_K(λz)` — exactly the Szegő shape.  Since `s_K` has right half-plane zeros
+for `K ≥ 6`, and `K ≥ 6` already for `x ≤ 1/30030`, the natural gas is probably unstable
+too, and the refined conjecture false.
+
+The obstruction to *proving* it is precise and worth stating: one needs Sathe–Selberg
+counting uniform in `j` up to `j = K ≈ log(1/x)/loglog(1/x)`, far outside the usual
+`j ≍ loglog` range.  That is a genuine analytic-number-theory input, not a gap in the gas
+theory.  **Conclusion for the programme: stability is not the right structure to chase.
+The two-sided condensation law is, and it needs no stability at all.**
+
+- 2026-08-06 — U1 proved and formalized; refined conjecture downgraded to "likely false,
+  with a named obstruction".
+
+## 2026-08-06 U1 FORMALIZED: `RHTower/GibbsZeroLocalization.lean`
+
+Wired; build 8660 jobs; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings.  `RHTower.GibbsGas`: `multiset_prod_map_le`, `norm_one_sub_le_two_add`,
+**`gibbs_partition_le_current_mul_localization`**.
+
+Repo note: this tree currently has several concurrent sessions writing to it (HTGeometry
+umbrella churn, a `2-fully-proven` card, `RHTower/DivisorReesDehomogenization.lean`).  A
+`pgrep -f "lean --"` check matches *their* shell command text and reports false "stale
+process" hits; check `ps -Ao comm | grep -E "/lean$|/lake$"` instead.
+
+## 2026-08-06 CYCLE 15: the arithmetic anchor — the gas IS the Möbius–Laplace current
+
+Fourteen cycles proved theorems about "the parity point of the gas".  That the parity point
+*is* Möbius was an interpretive claim on this card, not a Lean theorem.  It is now a
+theorem.  For a finite set `S` of distinct **primes** with `m = ∏S`:
+
+```text
+gibbsDiag S x (−1)  =  ∑_{d ∣ m} μ(d)·e^{−d x}.
+```
+
+Ingredients: a product of distinct primes is squarefree; it has exactly `|T|` prime factors
+with multiplicity; hence `μ(∏T) = (−1)^{|T|}` — the gas's alternating sign *is* the Möbius
+function.  The re-indexing is the bijection `T ↦ ∏T` between `S.powerset` and the divisors
+of `m`, inverted by `d ↦ d.primeFactors` (using `Nat.primeFactors_prod` and
+`Nat.prod_primeFactors_of_squarefree`).
+
+**Consequence.**  Every theorem of cycles 1–14 about the parity point is now, without
+reinterpretation, a theorem about finite Möbius–Laplace sums.  In particular the two-sided
+condensation law reads:
+
+```text
+|∑_{d∣m} μ(d)e^{−dx}| = e^{−x m}·∏_ζ ‖1+ζ‖ ,
+```
+
+so a Möbius–Laplace sum is anomalously small **iff** a zero of the associated gas polynomial
+condenses onto `−1`, at the explicit rate of T1/T2.
+
+- 2026-08-06 — arithmetic anchor established.
+
+## 2026-08-06 CYCLE 15 FORMALIZED: `RHTower/GibbsMoebiusAnchor.lean`
+
+Wired; build 8656 jobs; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings.  `RHTower.GibbsGas`: `squarefree_prod_primes`, `cardFactors_prod_primes`,
+**`moebius_prod_primes`**, **`gibbs_parity_eq_moebius_powerset`**,
+**`gibbs_parity_eq_moebius_divisors`**.
+
+Also re-verified after concurrent edits by other sessions in this tree: the full
+`GaloisForLFunctions.RHTower` umbrella rebuilds clean (17094 jobs).
+
+Lean notes: the `μ` notation needs `open scoped ArithmeticFunction.Moebius` — with plain
+`open ArithmeticFunction` write `moebius`, else `autoImplicit` silently binds `μ` as a
+variable and the error is confusing; `Finset.sum_nbij'` wants the two maps, two membership
+proofs, two inverse proofs and the value equality, in that order.
+
+## 2026-08-06 CYCLE 16: the infinite-volume bridge (U2 closed)
+
+The limitation recorded as **U2** in cycle 8 — "the finite theory does not reach the
+infinite-volume object" — is now closed as a theorem.  Define the genuine Möbius–Laplace
+transform `Φ(x) = ∑'_n μ(n)e^{−nx}`.  For every `x > 0` and every cutoff `y`:
+
+```text
+|Φ(x) − P_{S_y}(−1, x)|  ≤  e^{−(y+1)x} / (1 − e^{−x}),      S_y = {p prime : p ≤ y}.
+```
+
+*Proof.*  By the cycle-15 anchor the gas over `S_y` is `∑_{d ∣ m} μ(d)e^{−dx}`, and the
+divisors of `m = ∏S_y` are exactly the squarefree integers all of whose prime factors are
+`≤ y`.  Any `n` missing from that list with `μ(n) ≠ 0` is squarefree with a prime factor
+above `y`, hence `n > y` — because a squarefree `n ≤ y` has all its prime factors `≤ n ≤ y`
+and therefore divides the primorial.  The difference is thus supported beyond `y` and is
+dominated termwise by the geometric tail `∑_{n>y} e^{−nx}`. ∎
+
+Consequences: every finite-volume statement of cycles 1–15 transfers to `Φ` with an
+exponentially small, fully explicit error.  Choosing `y ≍ C·log(1/x)/x` makes the error
+`O(x^C)`, far below any power relevant to (G2).  In particular the two-sided condensation
+law now constrains the true Möbius–Laplace transform, not just its truncations.
+
+- 2026-08-06 — U2 closed.
+
+## 2026-08-06 CYCLE 16 FORMALIZED: `RHTower/GibbsInfiniteVolume.lean`
+
+Wired; build 8657 jobs; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings.  `RHTower.GibbsGas`: `moebiusLaplace`, `primesUpTo`, `exp_neg_mul_nat`
+(Boltzmann weights are powers of `e^{−x}`), **`dvd_prod_primesUpTo`**,
+**`abs_moebiusLaplace_sub_gibbs_le`**.
+
+Lean notes: `set F : ℕ → ℝ := fun n => …` makes `rw [hF]` fail on applied occurrences —
+use `simp only [hF]` (it beta-reduces).  For `|∑' g| ≤ ∑' h` avoid the norm route
+(`norm_tsum_le_tsum_norm` triggered `whnf` timeouts here); sandwich instead with
+`Summable.tsum_le_tsum` applied twice, using `−h ≤ g ≤ h` and `tsum_neg`.  The finite part
+is best obtained from `hasSum_sum_of_ne_finset_zero`, which gives both the summability and
+the `tsum = Finset.sum` identity.
+
+## 2026-08-06 CYCLE 17: the capstone — cancellation ≤ Coulomb potential of the zeros
+
+Taking logarithms in the localization inequality converts the product over zeros into a
+sum, which is the form that survives a large zero set: inert zeros contribute essentially
+nothing.  With `d_ζ = ‖1+ζ‖` the distance of a zero to the parity point, and provided the
+current does not vanish,
+
+```text
+log ‖Z_S(x)‖ − log ‖J_S(x)‖  ≤  ∑_ζ 2 / d_ζ .
+```
+
+**The logarithmic cancellation of a Möbius–Laplace sum never exceeds twice the Coulomb
+potential of the gas zeros at the parity point.**  Unlike T1/T2 this statement is
+non-vacuous however large the prime set is, because the sum weights each zero by its own
+proximity: adding primes far beyond the coupling scale adds zeros of distance `≫ 1`, which
+contribute `≈ 0`.
+
+Combined with cycles 15–16 this is the programme's sharpest form.  For the true transform,
+`Z(x) ≍ 1/x`, so an RH-strength bound `|Φ(x)| ≪ x^{−1/2−ε}` forces
+
+```text
+∑_ζ 1 / d_ζ  ≥  (1/4 − o(1))·log(1/x) :
+```
+
+**RH requires the zeros of the squarefree Gibbs gas to accumulate at the parity point with
+Coulomb potential growing like `log(1/x)`.**  This is a necessary condition, stated
+unconditionally and quantitatively; it is the precise sense in which parity cancellation
+*is* zero condensation.
+
+- 2026-08-06 — capstone proved and formalized.
+
+## 2026-08-06 CYCLE 17 FORMALIZED: `RHTower/GibbsPotentialBound.lean`
+
+Wired; build 8661 jobs; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings.  `RHTower.GibbsGas`: `multiset_log_prod`, `multiset_sum_map_le`,
+`multiset_sum_map_add`, `gibbsDiagC_one_ne_zero` (the partition function is a positive
+real), `norm_one_add_pos_of_root`, **`log_partition_sub_log_current_le`**.
+
+Lean note: the termwise step is `log((2+d)/d) ≤ (2+d)/d − 1 = 2/d`
+(`Real.log_le_sub_one_of_pos`), so no series expansion of `log(1+u)` is needed.
+
+## 2026-08-06 CYCLE 18: the capstone sharpened to an EXACT identity
+
+The cycle-17 bound is one reading of an equality.  Both product formulas of cycle 13 have
+the same prefactor `e^{−xm}`, so it cancels in the ratio and — with no zero at `±1`, i.e.
+whenever the current is nonzero —
+
+```text
+log ‖Z_S(x)‖ − log ‖J_S(x)‖  =  ∑_ζ ( log‖1−ζ‖ − log‖1+ζ‖ ) .
+```
+
+**The logarithmic cancellation of a Möbius–Laplace sum is exactly the sum of logarithmic
+cross-ratios of the gas zeros against the parity point.**  No estimate, no hypothesis on
+the zero locations, every coupling.  The necessary direction (cycle 17, Coulomb potential)
+and the sufficient direction (cycles 10 and 13) are both readings of this one identity,
+obtained by bounding its summands from either side.
+
+With the anchor (cycle 15) and the bridge (cycle 16), the (G2)/RH statement becomes an
+exact statement about a zero set:
+
+```text
+RH   ⟺   ∑_ζ log( ‖1−ζ‖ / ‖1+ζ‖ )  ≥  (1/2 − ε)·log(1/x)     (up to the explicit tail).
+```
+
+Every summand is positive exactly when the zero lies in the open left half-plane, which is
+why the stability programme mattered — and why its failure (cycle 11) matters: some
+summands can be negative, and the identity accounts for them exactly.
+
+- 2026-08-06 — exact form proved and formalized (`log_cancellation_eq`), build 8661 jobs,
+  no `sorry`, axioms clean.  Added `norm_one_sub_pos_of_root`.
+
+Lean note: keep multiset maps in plain lambda form throughout — after `multiset_log_prod`
+normalize with `simp only [Multiset.map_map, Function.comp_def]` rather than
+`Multiset.map_map` alone, otherwise `Real.log ∘ f` and `fun ζ => Real.log (f ζ)` become
+distinct atoms and `linarith`/`ring` cannot match them.
+
+## 2026-08-06 CYCLE 19: the zero potential IS an arithmetic ratio
+
+Eighteen cycles produced geometry constrained by arithmetic.  This one closes the loop in
+the other direction.  The logarithmic derivative of the gas at the parity point is, on one
+side, the Coulomb sum of the zeros against that point and, on the other, an explicit ratio
+of Möbius-weighted Laplace sums — the numerator weighted by the number of prime factors.
+For `J_S(x) = P_S(-1,x) ≠ 0`:
+
+```text
+∑_ζ 1/(1+ζ)  =  ( ∑_{T ⊆ S} |T|·(−1)^{|T|}·e^{−x·e(T)} ) / J_S(x)
+             =  ( ∑_{d ∣ m} μ(d)·ω(d)·e^{−d x} ) / ( ∑_{d ∣ m} μ(d)·e^{−d x} ),
+```
+
+the second line by the cycle-15 anchor (`ω(d) = |T|` on squarefree divisors).  **At the
+parity point the zero potential is not merely bounded by arithmetic — it *is* an arithmetic
+ratio.**  With cycle 17 (`log ‖Z‖ − log ‖J‖ ≤ ∑ 2/‖1+ζ‖`) and
+`∑_ζ 1/‖1+ζ‖ ≥ |∑_ζ 1/(1+ζ)|`, the Coulomb sum is therefore squeezed between an explicit
+arithmetic ratio below and the cancellation above — the first two-way bridge in the
+programme between the zero set and computable Möbius data.
+
+- 2026-08-06 — proved and formalized.
+
+## 2026-08-06 CYCLE 19 FORMALIZED: `RHTower/GibbsLogDerivative.lean`
+
+Wired; build 8660 jobs; no `sorry`; axioms only `propext, Classical.choice, Quot.sound`;
+zero warnings.  `RHTower.GibbsGas`: **`eval_derivative_multiset_prod`** (the logarithmic
+derivative of a product of linear factors is the Coulomb sum — clean multiset induction,
+`field_simp` closes the step), `gibbsPoly_eq_prod_roots`, **`gibbs_coulomb_sum_eq`**
+(division-free form), **`gibbsPoly_derivative_eval`** (derivative in the configuration
+basis).
+
+Lean notes: `Polynomial.derivative_sum` (not `derivative_finsetSum`) for `Finset.sum`;
+`rw … at *` is dangerous when a hypothesis mentions the rewritten head (`hJ` got rewritten
+and broke the goal shape) — use an explicit `calc` instead.

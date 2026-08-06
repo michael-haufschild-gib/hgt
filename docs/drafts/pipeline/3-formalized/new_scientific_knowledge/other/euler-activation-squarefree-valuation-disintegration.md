@@ -12,7 +12,15 @@
   `formal/GaloisForLFunctions/RHTower/CriticalActivationReesSourceLaw.lean`;
   `formal/GaloisForLFunctions/RHTower/EulerActivationSubcriticalOccupancy.lean`;
   `formal/GaloisForLFunctions/RHTower/DivisorReesGradedMetric.lean`;
-  `formal/GaloisForLFunctions/RHTower/DivisorReesDaggerIdentification.lean`
+  `formal/GaloisForLFunctions/RHTower/DivisorReesDaggerIdentification.lean`;
+  `formal/GaloisForLFunctions/RHTower/DivisorReesBoundaryGraph.lean`;
+  `formal/GaloisForLFunctions/RHTower/DivisorReesEulerContinuation.lean`;
+  `formal/GaloisForLFunctions/RHTower/DivisorReesBoundaryContraction.lean`;
+  `formal/GaloisForLFunctions/RHTower/DivisorReesDehomogenization.lean`;
+  `formal/GaloisForLFunctions/RHTower/DivisorReesFourUnitBridge.lean`;
+  `formal/GaloisForLFunctions/RHTower/DivisorReesChannel.lean`;
+  `formal/GaloisForLFunctions/RHTower/DivisorReesCompactBoundary.lean`;
+  `formal/GaloisForLFunctions/RHTower/EulerActivationSubcriticalFiniteness.lean`
 - **Parents:**
   - `../wold-shell-euler-activation-square.md`;
   - `../mobius-fixed-current-von-mangoldt-critical-transport-weld.md`;
@@ -441,7 +449,15 @@ Normalized by its own energy the graded symbol is moreover a *contraction*:
 - **`gradedDivisorDefect_posSemidef`**, **`gradedDivisorDefect_eq`**,
   **`gradedDivisorReesGram_contraction`** — hence `E^(-1) G <= 1` at every nonzero point, and
   because the defect is an outer square the contraction is *complete*, not merely scalar.  This is
-  the graded-symbol precursor of the fourth arrow, the Pick contraction on the anti-causal boundary.
+  the graded-symbol precursor of the fourth arrow, the Pick contraction on the anti-causal boundary;
+- `gradedDivisorProjection`, **`gradedDivisorProjection_idempotent`** — the normalized symbol is not
+  merely a contraction, it is the *orthogonal projection* onto its Kraus direction;
+- **`trace_gradedDivisorProjection`** — its trace is exactly `1`, uniformly in the multiplicity and
+  in the point, so **`trace_gradedDivisorProjection_le_four`** meets the four-unit budget of `(32)`
+  with a factor-four margin, and the margin is exact rather than estimated;
+- **`gradedDivisorProjection_add_defect`**, **`gradedDivisorProjection_mul_defect`**,
+  `trace_gradedDivisorDefect` — symbol and defect are the two complementary rank-one projections of
+  the graded plane, each carrying one unit of trace.
 
 The reflected dagger is identified in
 `formal/GaloisForLFunctions/RHTower/DivisorReesDaggerIdentification.lean`:
@@ -458,13 +474,183 @@ The reflected dagger is identified in
   **`xiGradedSymbol_contraction_reflection`** — at the reflected point the symbol is still the same
   outer square, still positive, and still a complete contraction with the same energy constant.
 
+The assembly over a boundary graph is
+`formal/GaloisForLFunctions/RHTower/DivisorReesBoundaryGraph.lean`.  Mathlib has no positivity
+lemma for block diagonals or for scalar multiples, so both are built here:
+
+- **`posSemidef_smul`**, `dotProduct_mulVec_blockDiagonal`, **`posSemidef_blockDiagonal`**,
+  **`trace_blockDiagonal`** — the quadratic form of a block diagonal is the sum of the blockwise
+  forms, so blockwise positivity and blockwise trace both assemble;
+- `xiGradedBoundarySymbol`, **`xiGradedBoundarySymbol_posSemidef`**,
+  **`xiGradedBoundarySymbol_idempotent`** — carrying one graded symbol over each vertex of a finite
+  boundary graph again gives an idempotent positive form;
+- **`trace_xiGradedBoundarySymbol`** — its trace is the *number of vertices*, each divisor point
+  contributing exactly one unit whatever its multiplicity;
+- **`trace_xiGradedBoundarySymbol_le_four_iff`** — so at the level of the graded symbol the
+  four-unit budget of `(32)` reads exactly as a four-vertex budget: the boundary relative trace
+  stays inside four units precisely when the graph carries at most four divisor points;
+- `xiGradedSymbol_multiplicity_eq_zero`, **`finite_nontrivial_xiGradedMultiplicity`** — off the
+  divisor the symbol is the trivial multiplicity-zero projection, and the Xi zeros are isolated, so
+  any *compact* piece of the boundary carries only finitely many nontrivial vertices;
+- `xiGradedSymbol_eq_trivial`, **`exists_finite_xiGradedSymbol_nontrivial`** — outside a finite set
+  the symbol field on a closed ball is the single outer square of `(1, 0)`.  So a compact region of
+  the continuation *is* a finite-graph datum: the field is a finitely supported perturbation of a
+  constant, which is what makes the assembly above apply to a genuine boundary region rather than a
+  hand-picked vertex set.
+
+The transport of the symbol along the continuation itself — the analytic passage from the Euler
+chamber to the boundary, as opposed to the finite assembly — is
+`formal/GaloisForLFunctions/RHTower/DivisorReesEulerContinuation.lean`:
+
+- `xi_ne_zero_of_re_nonpos` — with the corpus confinement `xi_zero_re_mem_open_unit`, the whole
+  divisor sits in `0 < \operatorname{Re} < 1`, so neither the Euler chamber nor its reflection
+  carries any part of it;
+- **`xiGradedSymbol_eq_trivial_of_one_le_re`**, `xiGradedSymbol_eq_trivial_of_re_nonpos`,
+  `xiGradedSymbol_eq_of_outside_strip` — throughout the Euler chamber, where the Euler product
+  converges, the graded symbol is the *constant* trivial outer square, and it is the very same
+  constant on the reflected chamber;
+- **`re_mem_strip_of_xiGradedSymbol_ne_trivial`** — the transport law itself: every nontrivial value
+  of the symbol field is manufactured by the analytic passage into the critical strip.  Starting
+  from the Euler chamber the symbol cannot change until the continuation crosses
+  `\operatorname{Re} = 1`;
+- **`card_le_card_xi_zeros`**, **`trace_xiGradedBoundarySymbol_le_card_xi_zeros`** — the boundary
+  graph of a compact region has at most as many vertices as `xi` has zeros there, so its assembled
+  relative trace is bounded by that zero count;
+- **`trace_xiGradedBoundarySymbol_eq_zero_of_one_le_re`**,
+  `trace_xiGradedBoundarySymbol_eq_zero_of_re_nonpos` — a region lying inside either chamber carries
+  no vertices at all and contributes no relative trace.  The whole boundary budget of `(32)` is
+  created by the continuation and is invisible where the Euler product converges.
+
+Complete contractivity of the assembled boundary symbol is
+`formal/GaloisForLFunctions/RHTower/DivisorReesBoundaryContraction.lean`.  Mathlib has no
+contraction lemma for symmetric idempotents, so the orthogonal-splitting argument is built here:
+
+- `dotProduct_self_nonneg`, **`dotProduct_mulVec_self_of_isSymm_idempotent`**,
+  **`dotProduct_self_eq_add_of_isSymm_idempotent`** — a symmetric idempotent reproduces its own
+  quadratic form and splits the square length of every vector into the part it keeps and the part
+  it discards;
+- **`dotProduct_mulVec_le_of_isSymm_idempotent`** — the discarded part has nonnegative square, so a
+  symmetric idempotent never increases length;
+- `isSymm_kronecker_one`, `idempotent_kronecker_one`,
+  **`dotProduct_mulVec_kronecker_le_of_isSymm_idempotent`** — every ancilla amplification of a
+  symmetric idempotent is again a symmetric idempotent, hence again length-decreasing;
+- **`xiGradedBoundarySymbol_contraction`**,
+  **`xiGradedBoundarySymbol_completely_contractive`**,
+  `gradedDivisorProjection_completely_contractive` — so the graded symbol is a *complete*
+  contraction, at one divisor point and on the whole assembled Xi boundary graph, with no bound
+  assumed anywhere.  This is exactly the property `(35)`--`(37)` deny to the ungraded pair.
+
+The identification of the continued channel with the graded symbol is
+`formal/GaloisForLFunctions/RHTower/DivisorReesDehomogenization.lean`:
+
+- `divisorTwist`, `divisorTwist_transpose`, **`divisorReesGram_monomial_eq_twist_graded`** — the
+  ungraded Gram `(34)` of the continued channel at a divisor point of multiplicity \(d\), with
+  completion entry \(C/t^2\), is *exactly* the congruence of the graded Gram with completion \(C\)
+  by the diagonal divisor twist \(\operatorname{diag}(t^d,t^{-1})\).  The graded symbol is
+  therefore not a substitute for the continued channel: it is that channel written in the
+  coordinates that divide out the divisor;
+- **`divisorReesGram_monomial_posSemidef`**, **`divisorReesGram_monomial_posSemidef_sq`** —
+  positivity transports along the congruence, so the continued channel is positive at every point
+  off the divisor with completion \(d^2/t^2\).  That inverse square is precisely the blow-up
+  `(37)` shows no uniformly bounded completion can absorb, and precisely what the twist removes.
+
+A compact region of the continuation determines a boundary graph *canonically*, in
+`formal/GaloisForLFunctions/RHTower/DivisorReesCompactBoundary.lean`:
+
+- `xiBoundaryVertices`, `XiBoundaryVertex`, `xiBoundaryGraph` — the vertices of a closed ball are
+  the zeros of `xi` inside it, finite because the divisor is discrete, so the graph is a function
+  of the region and not of any chosen family;
+- **`trace_xiGradedBoundarySymbol_xiBoundaryGraph`** — the relative trace of a region *counts the
+  zeros there*, each contributing one unit whatever its multiplicity;
+- **`trace_xiBoundaryGraph_le_four_iff`** — so the four-unit budget on a region is literally the
+  statement that the region contains at most four zeros;
+- `trace_xiBoundaryGraph_mono` — the trace grows with the region;
+- **`trace_xiBoundaryGraph_eq_zero_of_one_le_re`**, `trace_xiBoundaryGraph_eq_zero_of_re_nonpos` —
+  it vanishes on any region contained in the Euler chamber or in its reflection.
+
+This is the domain on which the estimate `(32)` has to be proved: \(\Delta_\Xi\) is a function of a
+region, and the graded relative trace of that region is now an explicit zero count.
+
+The channel form of the symbol is `formal/GaloisForLFunctions/RHTower/DivisorReesChannel.lean`.
+The symbol is a symmetric idempotent, so conjugation by it is a *map* on matrices and not merely a
+Gram:
+
+- **`vecMulVec_mul_mul_vecMulVec`** — sandwiching a matrix between two copies of an outer square
+  measures the quadratic form of the Kraus vector and prepares the outer square.  Mathlib has no
+  such lemma;
+- `gradedDivisorChannel`, **`gradedDivisorChannel_eq_smul`** — hence the graded radical channel is
+  measure-and-prepare with the single effect `(1,d)`: this is its Stinespring form, with one Kraus
+  operator, as `(31)` requires;
+- **`gradedDivisorChannel_posSemidef`**, **`gradedDivisorChannel_completely_positive`** — the
+  channel preserves positivity, and so does every ancilla amplification of it;
+- `gradedDivisorChannel_idempotent`, `gradedDivisorChannel_projection` — it is idempotent and fixes
+  the symbol, so it is a conditional expectation onto the line the symbol spans.
+
+The bridge from the four-vertex reading of the budget to the off-line Cauchy energy of §7 is
+`formal/GaloisForLFunctions/RHTower/DivisorReesFourUnitBridge.lean`:
+
+- `xiOfflineOffset`, `xiOfflineHeight`, `xiDivisorMultiplicity`, with `xiOfflineOffset_pos`,
+  `xiOfflineOffset_lt_half`, `one_le_xiDivisorMultiplicity` — the off-line data of a divisor point.
+  It is admissible for the corpus Cauchy-energy estimate purely because the functional equation
+  confines the divisor to the strip, so no extra hypothesis enters;
+- **`four_mul_trace_lt_xiOfflineCauchyEnergy`** — the Cauchy energy of any finite family of
+  off-line `xi` zeros is *strictly larger* than four times the graded relative trace of that very
+  family.  Each point contributes exactly one unit of relative trace but strictly more than one
+  unit of Cauchy self-energy the moment it leaves the critical line;
+- `not_xiOfflineCauchyEnergy_le_four_mul_trace`, **`four_lt_xiOfflineCauchyEnergy_single`** — one
+  off-line zero already breaks the four units of `(32)`;
+- **`xi_zero_re_eq_half_of_four_unit_budget`** — hence the four-unit budget, which is a statement
+  about the boundary symbol and not about any selected zero, is a criterion for the critical line.
+  The RH mechanism of §7 is now a Lean implication rather than a narrative: what is still missing
+  is the analytic `\(o(u)\)` estimate `(32)` for \(\Delta_\Xi\), not the deduction from it.
+
 So the obstruction of `(35)`--`(37)` is an obstruction to the *ungraded* pair only.  The graded
 symbol carries a source-defined positive metric, is a single-Kraus completely positive form, is
-stable under the Gamma/co-Poisson reflected dagger, and is a complete contraction once normalized
-by its own energy.  What remains open on this arrow is the identification of the reflected
-dagger with the Gamma/co-Poisson involution, not the existence of a compatible positive metric.
-All of this is strictly narrower than a bounded Hilbert-space continuation, which `(35)`--`(37)`
-rule out.
+stable under the Gamma/co-Poisson reflected dagger — that dagger being *identified* with the
+Burnol co-Poisson conormal reflection, not merely postulated — is a complete contraction once
+normalized by its own energy, and assembles over a boundary graph with the four-unit budget
+reading as a vertex count.  All of this is strictly narrower than a bounded Hilbert-space
+continuation, which `(35)`--`(37)` rule out.
+
+## Formalization audit
+
+Every equation of the proved sections `1`--`6` and `8` has an unconditional, axiom-clean Lean
+declaration.  All declarations live in `RHTower`.
+
+| Equation | Declaration |
+|---|---|
+| `(2)` | `woldActivationHolonomy_diagonal_eq_squarefreePartition` |
+| `(3)`, `(5)` | `diagonalActivationPositiveValuationMass`, `..._factorization` |
+| `(4)` | `diagonalActivationValuationMass_total` |
+| `(6)`--`(7)` | `diagonalActivationOccupancyProbability` |
+| `(8)` | `diagonalActivationConditionalValuationMass` |
+| `(9)` | `eulerActivationSquarefreeDisintegration_law` |
+| `(10)`--`(11)` | `finitePrimeActivationRadical`, `finitePrimeActivationOccupancyWeight_eq_gibbs` |
+| `(12)`--`(13)` | `diagonalActivationPositiveValuationMass_prime_eq_mobiusDifference` |
+| `(14)` | `diagonalActivationOccupancyFisher_eq_variance`, `..._eq_dyadicSquarefreeParityVariance` |
+| `(15)`--`(16)` | `diagonalActivationPrimeMass_eq_fisherDampedGammaValuation` |
+| `(17)` | `xiMobiusPrimeSchurValuationDamping_sq_eq_activationOccupancyFisher` |
+| `(18)` | `tsum_mobiusForwardDifference_mul_eq_fisherDampedGammaKernel` |
+| `(19)`--`(20)` | `diagonalActivationOccupancyScore`, `diagonalActivationValuationScore` |
+| `(21)` | `tsum_diagonalActivationConditionalValuationMass_mul_score`, `..._score_sq` |
+| `(22)` | `diagonalActivationFullScore_eq_orthogonal_split`, `tsum_diagonalActivationOccupancyScore_mul_valuationScore` |
+| `(23)` | `diagonalActivationFullFisher_eq_occupancy_add_valuation` |
+| `(24)` | `subcriticalEulerProductMeasure` |
+| `(25)` | `summable_subcritical_activationOccupancy`, `tsum_subcriticalPrimeOccupiedSequence_ne_top` |
+| `(25)`, conclusion | **`subcriticalEulerProductMeasure_finite_occupancy`** |
+| `(26)` | `criticalPrimeOccupancyProbability_not_summable`, `tsum_criticalPrimeOccupiedSequence_eq_top` |
+| `(27)` | `criticalEulerProductMeasure_infinite_occupancy` |
+| `(28)`--`(30)` | `completedXi_sub_completedSquarefree_eq_activationNormalConnection` |
+| `(33)`--`(34)` | `monomialDivisorOverlap`, `monomialDivisorFisherNumerator`, `divisorReesGram` |
+| `(35)`--`(36)` | `monomialDivisorFisher_ratio`, `monomialDivisorFisher_ratio_unbounded` |
+| `(37)` | `no_bounded_positive_divisorReesGram` |
+| `(38)` | `divisorReesGram_monomial_eq_twist_graded` |
+
+The conclusion of `(25)` — that above the Euler edge only finitely many primes are occupied almost
+surely, so the source really is a random finite integer — is proved in
+`EulerActivationSubcriticalFiniteness.lean` from the first Borel--Cantelli lemma, and is the exact
+complement of `(27)`.  Only `(31)`--`(32)` of §7 have no declaration: they are the successor
+conjecture, not results proved here.
 
 ## 9. Hostile audit
 
@@ -537,10 +723,24 @@ Primary references:
 - [x] single-Kraus complete positivity and reflection stability of the graded symbol
 - [x] complete contractivity of the energy-normalized graded symbol
 - [x] reflected dagger identified with the co-Poisson conormal reflection; graded symbol invariant
-- [ ] construct exceptional Gamma/co-Poisson disintegration (transport the graded symbol along the
-      continuation to the Xi anti-causal boundary graph)
-- [ ] prove complete contractivity on the Xi boundary graph
-- [ ] four-unit relative-trace estimate
+- [x] block-diagonal assembly of the graded symbol over a finite boundary graph; four-unit budget
+      identified with a four-vertex budget
+- [x] transport of the graded symbol along the *continuation*: constancy on the Euler chamber and
+      on its reflection, all nontrivial content created inside the critical strip, compact boundary
+      regions finite with vertex count bounded by the local zero count, and vanishing relative trace
+      on either chamber (`DivisorReesEulerContinuation.lean`)
+- [x] identify the continued channel with the graded symbol as an exact divisor-twist congruence,
+      transporting positivity both ways (`DivisorReesDehomogenization.lean`)
+- [x] subcritical finite-integer carrier: above the Euler edge only finitely many primes are
+      occupied almost surely (`EulerActivationSubcriticalFiniteness.lean`), the exact complement
+      of `(27)`
+- [x] formalization audit: every equation of `1`--`6` and `8` mapped to an axiom-clean declaration
+- [ ] promote the pointwise twist identification to the analytic channel on \(L^2\) — an
+      operator-level Stinespring form for the continued radical conditional expectation
+- [x] complete contractivity on the Xi boundary graph: the assembled symbol and every ancilla
+      amplification of it are length-decreasing (`DivisorReesBoundaryContraction.lean`)
+- [ ] four-unit relative-trace estimate `(32)` for the analytic \(\Delta_\Xi\) itself — the graded
+      symbol supplies the vertex-count form of the budget, not the `\(o(u)\)` asymptotic
 - [ ] RH
 
 ## Log
@@ -561,3 +761,56 @@ Primary references:
   `EulerActivationSubcriticalOccupancy.lean`.  Every proved statement of the card is now
   unconditional in Lean; the open gates are the research conjectures (exceptional disintegration,
   complete contractivity, four-unit estimate, RH).
+- 2026-08-06 — Built the graded Rees metric layer and closed the §8 arrow.  The graded symbol
+  carries a source-defined positive Hermitian metric, is a single-Kraus completely positive form,
+  is invariant under a reflected dagger *identified* with the Burnol co-Poisson conormal
+  reflection, is an exact rank-one projection of unit trace, and assembles block-diagonally over a
+  finite boundary graph so that the four-unit budget of `(32)` reads as a four-vertex budget
+  (`DivisorReesGradedMetric.lean`, `DivisorReesDaggerIdentification.lean`,
+  `DivisorReesBoundaryGraph.lean`).  Mathlib had no positivity or trace lemma for block diagonals
+  or for scalar multiples; all three are built here.
+- 2026-08-06 — Transported the graded symbol along the *continuation*
+  (`DivisorReesEulerContinuation.lean`).  The functional equation confines the divisor to
+  `0 < Re < 1`, so the symbol is one and the same constant on the Euler chamber and on its
+  reflection, and every nontrivial value is created by the analytic passage into the strip.  A
+  compact boundary region therefore has finitely many vertices, bounded by the local zero count,
+  and a region inside either chamber contributes no relative trace at all.
+- 2026-08-06 — Proved complete contractivity on the Xi boundary graph
+  (`DivisorReesBoundaryContraction.lean`) by building the missing orthogonal-splitting theory for
+  symmetric idempotents: such a matrix reproduces its own quadratic form, splits every square
+  length into a kept and a discarded part, and hence is length-decreasing; every Kronecker
+  amplification by an identity is again a symmetric idempotent, so the symbol is *completely*
+  contractive with no bound assumed.  The remaining gates are the identification of the continued
+  radical channel with the symbol field, the analytic `o(u)` form of `(32)`, and RH.
+- 2026-08-06 — Identified the continued channel with the graded symbol
+  (`DivisorReesDehomogenization.lean`).  The ungraded Gram of the continued channel at a divisor
+  point of multiplicity `d`, with completion `C/t²`, is exactly the congruence of the graded Gram
+  with completion `C` by the diagonal twist `diag(t^d, t⁻¹)`; positivity transports along the
+  congruence in both directions.  So the graded symbol is not a substitute for the channel — it is
+  the channel in the coordinates that divide out the divisor, and the inverse square that `(37)`
+  shows no bounded completion can absorb is precisely what the twist removes.
+- 2026-08-06 — Bridged the four-vertex budget to the off-line Cauchy energy
+  (`DivisorReesFourUnitBridge.lean`).  The Cauchy energy of any finite family of off-line `xi`
+  zeros is strictly larger than four times the graded relative trace of that same family — one
+  off-line zero already breaks four units — so the four-unit budget, a statement about the boundary
+  symbol rather than about any selected zero, is a proved criterion for the critical line.  What is
+  still missing is the analytic `o(u)` estimate for Δ_Ξ, not the deduction from it.
+- 2026-08-06 — Put the symbol in channel form (`DivisorReesChannel.lean`).  Conjugation by the
+  graded symbol is measure-and-prepare with a single effect — the Stinespring form `(31)` asks for
+  — is completely positive, is idempotent, and fixes the symbol, so it is a conditional expectation
+  onto the line the symbol spans.  What is left on that arrow is the passage from this
+  finite-dimensional channel to the analytic channel on `L²`.
+- 2026-08-06 — Made the boundary graph of a compact region canonical
+  (`DivisorReesCompactBoundary.lean`).  The vertices of a closed ball are the `xi` zeros inside it,
+  so the relative trace is a function of the region alone: it counts those zeros, grows with the
+  region, and vanishes on any region contained in either chamber.  The four-unit budget on a region
+  is therefore literally "at most four zeros here".  This is the domain on which `(32)` has to be
+  proved.
+- 2026-08-06 — Closed the last gap in the proved content.  §5 asserted that above the Euler edge
+  the source is an honest random finite integer, but only the summability `(25)` had been
+  formalized, not its conclusion.  `EulerActivationSubcriticalFiniteness.lean` now builds the
+  subcritical Kolmogorov product `ν_σ` for every `σ > 1`, computes its occupancy cylinder masses,
+  and derives from the first Borel--Cantelli lemma that almost every configuration occupies only
+  finitely many primes — the exact complement of `(27)`.  A formalization audit table was added
+  mapping every equation of `1`--`6` and `8` to its declaration; only the successor conjecture
+  `(31)`--`(32)` has none.

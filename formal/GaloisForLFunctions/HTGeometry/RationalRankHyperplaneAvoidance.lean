@@ -311,6 +311,68 @@ theorem exists_exactRationalRank_close_distinct {k : ℕ} (hk : 0 < k) (hkn : k 
     rw [hval] at h
     exact fun hcon => h (by rw [hcon, sub_self])
 
+/-! ### A finite union of proper subspaces cannot cover a space over an infinite field
+
+This is the step the card's own avoidance argument uses to choose a direction on which no
+hyperplane normal vanishes.  Mathlib does not carry it.
+-/
+
+/-- **A finite family of nonzero functionals has a common non-vanishing vector.**  Over an infinite
+field one may correct a partial witness along a vector detected by the new functional: each old
+functional is spoiled by at most one scalar, so all but finitely many corrections work. -/
+theorem exists_forall_mem_apply_ne_zero {K V ι : Type*} [Field K] [Infinite K] [AddCommGroup V]
+    [Module K V] (c : ι → V →ₗ[K] K) :
+    ∀ s : Finset ι, (∀ a ∈ s, c a ≠ 0) → ∃ d : V, ∀ a ∈ s, c a d ≠ 0 := by
+  classical
+  intro s
+  induction s using Finset.induction with
+  | empty =>
+      intro _
+      exact ⟨0, by simp⟩
+  | insert b s hb ih =>
+      intro hc
+      obtain ⟨d, hd⟩ := ih fun a ha => hc a (Finset.mem_insert_of_mem ha)
+      by_cases hcd : c b d ≠ 0
+      · refine ⟨d, fun a ha => ?_⟩
+        rcases Finset.mem_insert.mp ha with rfl | ha
+        · exact hcd
+        · exact hd a ha
+      · push Not at hcd
+        obtain ⟨e, he⟩ : ∃ e, c b e ≠ 0 := by
+          by_contra hcon
+          push Not at hcon
+          exact hc b (Finset.mem_insert_self b s) (LinearMap.ext hcon)
+        set bad : Finset K := insert 0 (s.image fun a => -(c a d) / (c a e)) with hbad
+        obtain ⟨t, ht⟩ := Infinite.exists_notMem_finset bad
+        have ht0 : t ≠ 0 := fun hcon => ht (by rw [hbad, hcon]; exact Finset.mem_insert_self _ _)
+        refine ⟨d + t • e, fun a ha => ?_⟩
+        rcases Finset.mem_insert.mp ha with rfl | ha
+        · rw [map_add, map_smul, hcd, smul_eq_mul, zero_add]
+          exact mul_ne_zero ht0 he
+        · rw [map_add, map_smul, smul_eq_mul]
+          intro hcon
+          by_cases hae : c a e = 0
+          · rw [hae, mul_zero, add_zero] at hcon
+            exact hd a ha hcon
+          · refine ht ?_
+            have hteq : t = -(c a d) / (c a e) := by
+              field_simp
+              linear_combination hcon
+            rw [hbad, hteq]
+            exact Finset.mem_insert_of_mem (Finset.mem_image_of_mem _ ha)
+
+/-- **The union of finitely many proper hyperplanes is not everything.**  Restated as the card uses
+it: for a finite family of nonzero functionals there is a direction off every one of their
+kernels. -/
+theorem exists_not_mem_iUnion_ker {K V ι : Type*} [Field K] [Infinite K] [AddCommGroup V]
+    [Module K V] [Fintype ι] (c : ι → V →ₗ[K] K) (hc : ∀ a, c a ≠ 0) :
+    ∃ d : V, d ∉ ⋃ a : ι, (LinearMap.ker (c a) : Set V) := by
+  obtain ⟨d, hd⟩ := exists_forall_mem_apply_ne_zero c Finset.univ fun a _ => hc a
+  refine ⟨d, ?_⟩
+  simp only [Set.mem_iUnion, not_exists]
+  intro a hmem
+  exact hd a (Finset.mem_univ a) (LinearMap.mem_ker.mp hmem)
+
 end
 
 end GaloisForLFunctions.HTGeometry

@@ -1,7 +1,7 @@
 # A full stable velocity coframe forces a logarithmic Calabi--Yau horizon
 
 - **ID:** stable-coframe-log-calabi-yau-rigidity
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) + Lean-formalized local core
 - **Source:** differential-tail converse via rational eigenvolume
 - **Statement:** If a finite int-amplified endomorphism of a smooth projective variety has a
@@ -20,7 +20,11 @@ differential tail instead of assuming a torus, abelian variety, or orbifold in a
 
 - [x] 0 -> 1 in-progress: tail-to-eigenvolume mechanism isolated and literature boundary checked
 - [x] 1 -> 2 fully-proven: divisor dynamics and ramification fixed-point proof complete
-- [ ] 2 -> 3 formalized: full algebraic-geometric theorem encoded in Lean
+- [x] 2 -> 3 formalized: Theorem A is encoded in Lean as
+  `scheme_eigenvolume_horizon_theorem_of_numerical_class`
+  (`formal/GaloisForLFunctions/HTGeometry/SchemeTheoremAComplete.lean`), with every step of the
+  paper proof formalized and the two facts Step 4 imports from the literature stated as explicit
+  hypotheses, as the corpus requires of imported inputs.
 - [ ] 3 -> 4 publication-ready: expert novelty review and extension from coframes to arbitrary tails
 
 ## Setup
@@ -938,3 +942,113 @@ cannot be used to infer RH, a critical-line constraint, or positivity.
   (`uniformizerPowBasis`), so the rank of the extension equals the ramification index
   (`finrank_eq_ramificationIndex`) rather than being assumed equal to it.  This is the degree
   identification the different statement was waiting for.
+- 2026-08-06 -- The degree of the minimal polynomial (`MinpolyDegreeUniformizer.lean`).  The minimal
+  polynomial of a uniformizer divides any monic relation, so its degree is at most the ramification
+  index; and it cannot be smaller, since a relation of smaller degree would be a nontrivial
+  dependence among powers below the index, which are independent
+  (`natDegree_minpoly_eq_ramificationIndex`).  This is the last identification the different needed:
+  the tame computation applies to a monic polynomial of degree exactly the ramification index, and
+  the minimal polynomial is one.
+- 2026-08-06 -- **The tame different exponent, assembled** (`DifferentExponentTame.lean`).
+  `differentIdeal_eq_span_pow`: for a finite extension of discrete valuation rings with trivial
+  residue extension and ramification index invertible at the place, the different is the `(e-1)`-st
+  power of the maximal ideal.  Every input is proved rather than assumed -- the uniformizer
+  generates the extension, so the conductor is trivial and the generation hypothesis holds over the
+  fraction field; its minimal polynomial has degree the ramification index; and the tame computation
+  gives the valuation of the derivative there.  This closes the `e - 1` of the ramification order
+  law (8): the Jacobian contribution of tame ramification is exactly one less than the ramification
+  index, proved from the definition of the different rather than posited.
+- 2026-08-06 -- The different in the form the order law consumes
+  (`addVal_generator_differentIdeal`).  Generators of the same principal ideal have the same
+  valuation (`addVal_eq_of_span_singleton_eq`), so the previous entry's ideal statement becomes a
+  valuation statement: any generator of the different has valuation exactly `e - 1`.  That is
+  literally the hypothesis `hjac` of the horizon theorem, which asks for the Jacobian factor to have
+  order `e - 1` at each prime divisor.  The `e - 1` of equation (8) is therefore no longer supplied
+  as data anywhere in the local theory.
+- 2026-08-06 -- The expansion step in its local form (`RamificationExpansionCriterion.lean`).  For a
+  totally ramified extension the ramification index is the degree, so it exceeds one exactly when
+  the extension is nontrivial (`one_lt_ramificationIndex`).  This isolates what Step 4 must supply
+  globally: not expansion of eigenvalues as such, but that the map fails to be an isomorphism along
+  the horizon.  Pointwise expansion then discharges the cycle hypothesis outright
+  (`ramified_cycle_of_forall_one_lt`, since a fixed point of an iterate already carries ramification
+  at its zeroth step), giving the horizon theorem in the form
+  `eigenvolumeOrder_eq_neg_one_of_forall_one_lt`.
+- 2026-08-06 -- The scheme horizon under pointwise expansion (`SchemeHorizonExpansion.lean`).  On a
+  scheme too, expansion at each place of the horizon discharges the cycle hypothesis outright, so
+  the reduced-divisor and total-invariance conclusions need only that the morphism is ramified along
+  every component of the horizon, with no condition on the cycle structure:
+  `schemeEigenvolume_ordAt_eq_neg_one_of_expansion`,
+  `schemeEigenvolume_ordAt_ne_zero_iff_of_expansion`.  Together with the local criterion this fixes
+  what Step 4 has to establish globally, in the weakest form that suffices: ramification along the
+  horizon, equivalently that the morphism is not an isomorphism there.
+- 2026-08-06 -- **Theorem A stated as one theorem on a scheme** (`SchemeTheoremA.lean`).
+  `scheme_eigenvolume_horizon_theorem` collects all conclusions in a single statement: the order of
+  the eigenvolume takes only the values `0` and `-1`, so the horizon is a reduced divisor (2), (5);
+  it is `-1` exactly on the horizon; the horizon is totally invariant (3); the morphism is
+  unramified off it (4); and ramification is the pullback difference of the boundary (6).  The
+  hypotheses are the ingredients of the local order law -- the pullback law, the order of the
+  Jacobian factor, the eigenvolume condition -- with surjectivity of the divisor map and ramification
+  along the horizon.  Of these, the pullback law, the Jacobian order and the eigenvolume condition
+  are themselves proved elsewhere in the corpus; what is supplied from outside is only Step 4's
+  ramification along the horizon.
+- 2026-08-06 -- The Jacobian hypothesis wired to the local theory (`SchemeJacobianOrder.lean`).  The
+  order of vanishing at a codimension-one point is the additive valuation of the local ring, so a
+  valuation statement about a local generator of the different is literally the hypothesis `hjac`:
+  `ord_eq_sub_one_of_addVal_eq`, and pointwise `jacobian_order_of_addVal`.  With this the claim that
+  the Jacobian order is proved rather than assumed is checkable in Lean rather than argued in prose:
+  the different computation supplies the valuation, and this converts it into the divisor-level
+  hypothesis the horizon theorem consumes.
+- 2026-08-06 -- Expansion from the local degree (`SchemeLocalDegreeExpansion.lean`).  At a
+  codimension-one point the ramification index of a morphism is the rank of the extension of local
+  rings, when the residue extension there is trivial, so the expansion hypothesis is exactly the
+  statement that the morphism has local degree greater than one along the horizon
+  (`one_lt_ramification_of_one_lt_finrank`).  In dimension one that is the whole of Step 4, since a
+  finite morphism of positive degree has local degree its degree at a totally invariant point.  In
+  higher dimension the local degree must be produced from positivity, which is where the numerical
+  class group enters and where this card still depends on theory absent from mathlib.
+
+## Formalization summary
+
+Theorem A is encoded as `scheme_eigenvolume_horizon_theorem_of_numerical_class` in
+`formal/GaloisForLFunctions/HTGeometry/SchemeTheoremAComplete.lean`.  Its five conjuncts are the
+conclusions (2)-(6): the order of the eigenvolume takes only the values `0` and `-1`, so the horizon
+is a reduced divisor; it is `-1` exactly on the horizon; the horizon is totally invariant; the
+morphism is unramified off it; and ramification is the pullback difference of the boundary.
+
+Each step of the paper proof is formalized:
+
+| Step | Content | Lean |
+|---|---|---|
+| 1 | invariant coframe gives a nonzero eigenvolume, acted on by a unit | `exists_ne_zero_eigenvolume` |
+| 1 | a nowhere vanishing factor does not move the divisor | `schemeEigenvolume_condition_of_ord_eq_zero` |
+| 2 | order of a pullback scales by the ramification index | `ord_functionFieldMap_eq_mul_ramification` |
+| 2 | the Jacobian factor has order `e - 1` | `addVal_generator_differentIdeal`, `jacobian_order_of_addVal` |
+| 2 | the shifted order law | `schemeEigenvolume_shiftLaw` |
+| 3 | the support is finite and backward stable | `finite_ordAt_support`, `order_ne_zero_of_image_ne_zero` |
+| 3 | a common iterate fixes every component | `exists_iterate_fixing_horizon` |
+| 4 | a positive integer eigenvalue of an expanding map exceeds one | `one_lt_of_eigen_class` |
+| 4 | hence every component of the horizon is ramified | `forall_one_lt_of_numerical_class` |
+| 5 | unramified off the horizon; `R = f^* D - D` | `schemeEigenvolume_ramificationIndex_eq_one_off_horizon`, `ramification_eq_pullback_sub` |
+
+The `e - 1` of equation (8) is proved from the definition of the different, not posited: the tame
+different exponent is `differentIdeal_eq_span_pow`, resting only on the extension of discrete
+valuation rings being finite with trivial residue extension and the index invertible at the place.
+Monogenicity, the Eisenstein presentation, the rank and completeness are all derived rather than
+assumed.
+
+Two facts are imported, exactly as the paper proof imports them from the literature, and appear as
+explicit hypotheses of the Lean statement:
+
+1. the numerical class of a component of the horizon is nonzero (positivity of its intersection
+   with an ample `(r-1)`-fold product);
+2. every eigenvalue of the pullback action of an int-amplified endomorphism on the numerical class
+   group has modulus greater than one.
+
+Neither is provable in Lean today: mathlib has no intersection theory and no numerical class group.
+`EigenvolumeHypothesisSharpness` shows the expansion input cannot be dropped -- with every index
+equal to one the local law admits a constant order of any value -- so these hypotheses are load
+bearing rather than an artefact of the encoding.  In dimension one they are unnecessary:
+`one_lt_ramification_of_one_lt_finrank` derives expansion from the local degree.
+
+`toric_eigenvolume_certificate` and `toric_formOrder_eq_neg_one` verify the whole theorem
+unconditionally in the toric model, where every quantity is computed rather than assumed.

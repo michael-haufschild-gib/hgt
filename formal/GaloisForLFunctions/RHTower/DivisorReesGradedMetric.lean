@@ -267,7 +267,7 @@ theorem trace_gradedDivisorProjection (d : ℕ) :
   have hE := (gradedDivisorEnergy_pos d).ne'
   rw [Matrix.trace_fin_two]
   simp only [gradedDivisorProjection, gradedDivisorEnergy, Matrix.vecMulVec, Matrix.smul_apply,
-    Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, smul_eq_mul]
+    Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, smul_eq_mul]
   field_simp
 
 theorem trace_gradedDivisorProjection_le_four (d : ℕ) :
@@ -297,12 +297,11 @@ theorem gradedDivisorProjection_mul_defect (d : ℕ) :
 /-- The defect carries the complementary unit of trace. -/
 theorem trace_gradedDivisorDefect (d : ℕ) :
     Matrix.trace (gradedDivisorDefect d) = 1 := by
-  have hE := (gradedDivisorEnergy_pos d).ne'
-  rw [Matrix.trace_fin_two]
-  simp only [gradedDivisorDefect, gradedDivisorEnergy, Matrix.cons_val', Matrix.cons_val_zero,
-    Matrix.cons_val_one, Matrix.head_cons, Matrix.empty_val', Matrix.cons_val_fin_one,
-    Matrix.head_fin_const]
-  field_simp
+  have htr := congrArg Matrix.trace (gradedDivisorProjection_add_defect d)
+  rw [Matrix.trace_add, trace_gradedDivisorProjection] at htr
+  have hone : Matrix.trace (1 : Matrix (Fin 2) (Fin 2) ℝ) = 2 := by simp
+  rw [hone] at htr
+  linarith
 
 /-- **Dagger stability for a general regular datum.**  If the parameter set is carried into itself
 by the reflection, the same constant completes the reflected graded pair. -/
