@@ -513,6 +513,21 @@ theorem exists_lgBesselModel_common_envelope :
   · rw [div_le_div_iff₀ hs hs]
     nlinarith [hs.le, h72]
 
+/-- One fixed common Bessel-envelope constant, chosen once for all parameters. -/
+def lgBesselCommonEnvelopeConstant : ℝ :=
+  Classical.choose exists_lgBesselModel_common_envelope
+
+theorem lgBesselCommonEnvelopeConstant_nonneg : 0 ≤ lgBesselCommonEnvelopeConstant :=
+  (Classical.choose_spec exists_lgBesselModel_common_envelope).1
+
+theorem lgBesselCommonEnvelopeConstant_spec (s c x : ℝ)
+    (h : 1 ≤ c * xiEndpointPhase s x) :
+    |lgBesselModel s c x| ≤
+        lgBesselCommonEnvelopeConstant / Real.sqrt (c * xiEndpointPhase s x) ∧
+      |lgBesselModel2 s c x| ≤
+        lgBesselCommonEnvelopeConstant / Real.sqrt (c * xiEndpointPhase s x) :=
+  (Classical.choose_spec exists_lgBesselModel_common_envelope).2 s c x h
+
 /-! ## Interior continuity of the model objects -/
 
 theorem continuousOn_lgWeight {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :

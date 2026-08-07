@@ -198,10 +198,7 @@ private theorem abs_integral_radialEndpointLogIntegrand_le {s c A B : ℝ}
         convert hder using 1
         · funext y
           simp only [Pi.add_apply, id_eq]
-          ring
-        · change 320 + (120 / c) * (1 / Real.sqrt (t ^ 2 - 1)) =
-            320 + (120 / c) * (1 / Real.sqrt (t ^ 2 - 1))
-          rfl)
+        · simp [radialEndpointLogMajorant])
       hgcont.intervalIntegrable
     calc
       (∫ t in A..B, radialEndpointLogMajorant c t) =

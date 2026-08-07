@@ -167,3 +167,20 @@ Do not pretend that this formalizes meromorphic principal-part realization or tr
 - [x] exact `choose(d,2)` algebraic private-sector rank formalized in Lean
 - [ ] independent audit of the depth-two analytic parent
 - [ ] independent specialist proof and priority audit
+
+## Correction — the elliptic-gamma atomic theorem is corpus-owned, not an external parent
+
+Every boundary note on this card that defers to "the independently unaudited elliptic-gamma atomic
+theorem" is stale.  The order-one atomic input is formalized in this tree:
+
+    GaloisForLFunctions/HTGeometry/EllipticGammaAtomicOverDAExtension.lean
+      ellipticGammaExternalDefectFamily_differentialIndependent_daExtension
+
+Its hypotheses are the data of the class only — both periods in the upper half plane, `ℚ`-linear
+independence of the source periods, and the theta-translation nonresonance and separation
+conditions on the shift family.  There is no assumed theorem.  `#print axioms` reports
+`[propext, Classical.choice, Quot.sound]`.
+
+So the consequences on this card that were labelled conditional on that parent are conditional on
+nothing external: what remains for them is Lean derivation work inside this corpus, not an
+unformalized classical input.

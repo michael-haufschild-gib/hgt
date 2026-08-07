@@ -1609,3 +1609,30 @@ Hypotheses are object regularity only (`Differentiable ℝ u`, `Continuous (deri
 
 Trap: `rw` under an `integral_congr_ae` binder needs the goal beta-reduced first — insert an
 explicit `show` of the pointwise identity before rewriting, or the pattern will not be found.
+
+## AF. The Gagliardo scaling law is closed
+
+`GagliardoFourierConstant.lean` is now at 11 declarations, all `#print axioms` clean.
+
+- `gagliardoIntegrand_scaling` — the integrand at frequency `ξ` is `ξ^{1+2s}` times the
+  unit-frequency integrand evaluated at `ξh`. Pure homogeneity of the weight (`Real.mul_rpow`).
+- `integral_gagliardoIntegrand_scaling` — **the scaling law**:
+
+      ∫_0^∞ 4 sin²(πξh) h^{−(1+2s)} dh = ξ^{2s} · c_s ,      ξ > 0,
+
+  via `MeasureTheory.integral_comp_mul_left_Ioi`, which contributes the `ξ⁻¹` that turns
+  `ξ^{1+2s}` into `ξ^{2s}`.
+
+This was item 1 of the two remaining pieces of prerequisite 1 named in section O.
+
+### Prerequisite 1 — what is left
+
+Only the Plancherel step: applying Plancherel to `û(ξ)(e^{2πihξ} − 1)` and exchanging `dh` with
+`dξ` by Tonelli, to turn
+
+    ∫∫ |u(x+h) − u(x)|² |h|^{−(1+2s)} dh dx      into      c_s ∫ |û(ξ)|² |ξ|^{2s} dξ.
+
+Every scalar ingredient is now built: the phase modulus (`normSq_exp_mul_I_sub_one`), the
+constant's existence on `0 < s < 1` and positivity on the unit window, and the scaling law above.
+What remains is the two-variable measure-theoretic step, and mathlib's Plancherel
+(`mathlib-has-plancherel`) supplies the isometry half.

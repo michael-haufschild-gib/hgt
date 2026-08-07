@@ -173,4 +173,48 @@ theorem gagliardoIntegrand_pos {s h : ℝ} (hh0 : 0 < h) (hh1 : h < 1) :
   have hnum : (0 : ℝ) < 4 * Real.sin (Real.pi * h) ^ 2 := by positivity
   exact mul_pos hnum hw
 
+/-! ## The scaling law
+
+The frequency enters the Gagliardo integral only through a dilation of the shift variable, and the
+weight is homogeneous.  So the whole `ξ`-dependence is the single power `|ξ|^{2s}`, with the
+constant `c_s` computed once at unit frequency.
+-/
+
+/-- The integrand at frequency `ξ` is a homogeneous rescaling of the unit-frequency integrand. -/
+theorem gagliardoIntegrand_scaling {s ξ h : ℝ} (hξ : 0 < ξ) (hh : 0 < h) :
+    4 * Real.sin (Real.pi * (ξ * h)) ^ 2 * h ^ (-(1 + 2 * s))
+      = ξ ^ (1 + 2 * s) * gagliardoIntegrand s (ξ * h) := by
+  unfold gagliardoIntegrand
+  have hmul : (ξ * h) ^ (-(1 + 2 * s)) = ξ ^ (-(1 + 2 * s)) * h ^ (-(1 + 2 * s)) :=
+    Real.mul_rpow hξ.le hh.le
+  rw [hmul]
+  have hinv : ξ ^ (1 + 2 * s) * ξ ^ (-(1 + 2 * s)) = 1 := by
+    rw [← Real.rpow_add hξ]
+    simp
+  calc 4 * Real.sin (Real.pi * (ξ * h)) ^ 2 * h ^ (-(1 + 2 * s))
+      = (ξ ^ (1 + 2 * s) * ξ ^ (-(1 + 2 * s))) *
+        (4 * Real.sin (Real.pi * (ξ * h)) ^ 2 * h ^ (-(1 + 2 * s))) := by rw [hinv]; ring
+    _ = ξ ^ (1 + 2 * s) *
+        (4 * Real.sin (Real.pi * (ξ * h)) ^ 2 *
+          (ξ ^ (-(1 + 2 * s)) * h ^ (-(1 + 2 * s)))) := by ring
+
+/-- **The scaling law.**  The Gagliardo integral at frequency `ξ` is `|ξ|^{2s}` times its value at
+unit frequency.  This is the whole `ξ`-dependence of the Fourier weight. -/
+theorem integral_gagliardoIntegrand_scaling {s ξ : ℝ} (hξ : 0 < ξ) :
+    (∫ h in Ioi (0 : ℝ), 4 * Real.sin (Real.pi * (ξ * h)) ^ 2 * h ^ (-(1 + 2 * s)))
+      = ξ ^ (2 * s) * ∫ h in Ioi (0 : ℝ), gagliardoIntegrand s h := by
+  have hcongr : (∫ h in Ioi (0 : ℝ), 4 * Real.sin (Real.pi * (ξ * h)) ^ 2 * h ^ (-(1 + 2 * s)))
+      = ∫ h in Ioi (0 : ℝ), ξ ^ (1 + 2 * s) * gagliardoIntegrand s (ξ * h) := by
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi fun h hh => ?_
+    exact gagliardoIntegrand_scaling hξ (mem_Ioi.mp hh)
+  rw [hcongr, MeasureTheory.integral_const_mul,
+    MeasureTheory.integral_comp_mul_left_Ioi (gagliardoIntegrand s) 0 hξ, mul_zero, smul_eq_mul]
+  have hsplit : ξ ^ (1 + 2 * s) * (ξ⁻¹ * ∫ h in Ioi (0 : ℝ), gagliardoIntegrand s h)
+      = (ξ ^ (1 + 2 * s) * ξ⁻¹) * ∫ h in Ioi (0 : ℝ), gagliardoIntegrand s h := by ring
+  rw [hsplit]
+  congr 1
+  rw [show (ξ : ℝ)⁻¹ = ξ ^ (-1 : ℝ) by rw [Real.rpow_neg_one], ← Real.rpow_add hξ]
+  congr 1
+  ring
+
 end GaloisForLFunctions.HTGeometry
