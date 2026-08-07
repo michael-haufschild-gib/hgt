@@ -2153,3 +2153,28 @@ composition was an artefact of matching the corpus's `hlow`/`hhigh`, and this re
 `intervalIntegral.integral_comp_add_left` does the shift; the twist is what keeps the bound's right-hand side fixed.
 One incidental: `ring` failed on the exponent identity where `ring_nf` succeeded, which Lean itself suggested — the
 two differ on goals with casts inserted by `push_cast`.
+
+## The first moment for `LSeries`
+
+`RHTower/Sieve/LSeriesFirstMomentLargeValues.lean` (green, axiom-clean, wired).
+
+`integral_norm_LSeries_le_largeValues` :
+
+`∫_{|y| ≤ nΔ} ‖L(a, σ+iy)‖ dy ≤ 2Δ·√(n·((2n+1)Δ + 4M(1+log M))(1/Δ + 2 log M)·∑_i ‖a_{i+1}(i+1)^{−σ}‖²)`
+
+for `a` supported in `[1, M]`, `M ≥ 2`.  The chain is `LSeries_eq_logPoly_of_support` → `logPoly_eq_dirPoly` →
+reflection (absorbed by the symmetric interval) → the shifted large-values first moment.
+
+**The analytic half of the programme is now complete in the Montgomery–Halász form.**  Every step is unconditional
+and no step assumes an estimate:
+
+`∫_{|y| ≤ T} ‖L(a,σ+iy)‖ dy  ≲  Δ·√((T/Δ)(T + M log M)(1/Δ + log M)·(ℓ² mass of the damped coefficients))`.
+
+Comparison with the routes that failed: the Lorentzian route multiplied the mean squares by the kernel's
+quadratic-decay constant `N^σ(N/H)²`; the measure route charged the trivial size to a window of `O(T log z)` cells.
+This bound has neither — the trivial size of the integrand appears nowhere, and the only inputs are the number of
+cells and an `ℓ²` mass.
+
+For the two prime weights of the convolution the `ℓ²` masses are `∑_p (log p)²p^{−2σ}` and
+`∑_p (log p/log⌊N/p⌋)²p^{−2σ}`, both bounded by the dyadic Chebyshev cap `sum_prime_logSq_rpow_neg_le` at
+`w = 2σ`.  Feeding those in, together with the Perron identity and the smoothing connector, is what remains.
