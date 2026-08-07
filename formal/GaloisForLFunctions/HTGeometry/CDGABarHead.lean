@@ -48,20 +48,23 @@ noncomputable instance barSplitFintype (c : ℕ) : Fintype (BarSplit c) :=
 abbrev barShiftFamily (n : ℕ) : Type u := augIdealCarrier ε (n + 1)
 
 /-- **One term of the head of the bar differential**, as a linear map: project the inner tensor
-factor at the second part of the split, reassociate, and multiply the first two slots. -/
+factor at the second part of the split, reassociate, and multiply the first two slots.  The
+multiplication is taken into the target degree directly, so no transport along an identification of
+degrees appears. -/
 noncomputable def barHeadTermₗ (n : ℕ) (c e : ℕ) (hp : c + e = n + 1) (a a' : ℕ)
     (hs : a + a' + 1 = c) :
     TensorCarrier (R := R) (barShiftFamily ε)
         (TensorCarrier (R := R) (barShiftFamily ε) Z) n
       →ₗ[R] TensorProduct R (barShiftFamily ε c) (Z e) :=
-  hs ▸ (((TensorProduct.map (augIdealShiftMulTensor ε a a') (LinearMap.id (R := R) (M := Z e))).comp
+  ((TensorProduct.map (augIdealShiftMulOfTensor ε hs)
+        (LinearMap.id (R := R) (M := Z e))).comp
       ((TensorProduct.assoc R (barShiftFamily ε a) (barShiftFamily ε a') (Z e)).symm.toLinearMap)).comp
     ((TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε a))
         (LinearMap.proj (R := R) (φ := fun q : {ab : ℕ × ℕ // ab.1 + ab.2 = a' + e} =>
           TensorProduct R (barShiftFamily ε q.1.1) (Z q.1.2)) ⟨(a', e), rfl⟩)).comp
       (LinearMap.proj (R := R) (φ := fun q : {ab : ℕ × ℕ // ab.1 + ab.2 = n} =>
         TensorProduct R (barShiftFamily ε q.1.1)
-          (TensorCarrier (R := R) (barShiftFamily ε) Z q.1.2)) ⟨(a, a' + e), by omega⟩)))
+          (TensorCarrier (R := R) (barShiftFamily ε) Z q.1.2)) ⟨(a, a' + e), by omega⟩))
 
 /-- The sum over the splits, at one decomposition. -/
 noncomputable def barHeadTermSum (n : ℕ) (p : {ce : ℕ × ℕ // ce.1 + ce.2 = n + 1}) :
@@ -93,19 +96,5 @@ theorem barHead_apply (n : ℕ)
       = ∑ s : BarSplit p.1.1, barHeadTermₗ ε Z n p.1.1 p.1.2 p.2 s.1.1 s.1.2 s.2 F := by
   show barHeadTermSum ε Z n p F = _
   rw [barHeadTermSum, LinearMap.sum_apply]
-
-/-- One term of the head, on the component it reads. -/
-theorem barHeadTermₗ_apply (n c e : ℕ) (hp : c + e = n + 1) (a a' : ℕ) (hs : a + a' + 1 = c)
-    (F : TensorCarrier (R := R) (barShiftFamily ε)
-      (TensorCarrier (R := R) (barShiftFamily ε) Z) n) :
-    barHeadTermₗ ε Z n c e hp a a' hs F
-      = hs ▸ (TensorProduct.map (augIdealShiftMulTensor ε a a') LinearMap.id
-        ((TensorProduct.assoc R (barShiftFamily ε a) (barShiftFamily ε a') (Z e)).symm
-          (TensorProduct.map LinearMap.id
-            (LinearMap.proj (R := R) (φ := fun q : {ab : ℕ × ℕ // ab.1 + ab.2 = a' + e} =>
-              TensorProduct R (barShiftFamily ε q.1.1) (Z q.1.2)) ⟨(a', e), rfl⟩)
-            (F ⟨(a, a' + e), by omega⟩)))) := by
-  cases hs
-  rfl
 
 end GaloisForLFunctions.HTGeometry

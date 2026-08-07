@@ -143,10 +143,21 @@ head and `R` the right-factor degree-one construction, the square expands into f
   `augIdealShiftMulOf_cancel`; the general case is three nested inductions, since the middle factors
   are themselves tensor products.
 
-  What remains is bookkeeping and no longer mathematics: expanding the head's finite sum twice,
-  reindexing the two double sums over the common triples `(u, u', w)` with `u + u' + w + 2 = c` —
-  the outer-then-inner split `(a,a'),(u,u')` maps to `(u,u',a')`, the outer-then-tail split
-  `(a,a'),(v,v')` maps to `(a,v,v')`, and both read the *same* component of the argument — and
-  applying `barMul_cancel` termwise.
+  The reindexing is built too:
+  `formal/GaloisForLFunctions/HTGeometry/CDGABarSquare.lean` has `BarTriple`, the triples of degrees
+  the two multiplications consume, the two reindexings `barTripleOfFirst` and `barTripleOfSecond`
+  with both round trips, and `barTele`, the component of the argument both halves read with its
+  three shifted factors separated.  `barHeadTermₗ` was also rebuilt to multiply straight into the
+  target degree, so no transport along an identification of degrees appears anywhere.
+
+  What remains is Lean plumbing and no longer mathematics: identifying the composite
+  *outer term ∘ inner term* with `barMulFirstTwo ∘ barTele`, and *outer term ∘ tail term* with
+  `(-1)^u • barMulLastTwo ∘ barTele`.  Both are equalities of composites of `TensorProduct.map`,
+  the associator and two projections, true because the projections act on the innermost factor and
+  the multiplications on the outer ones.  The obstacle met so far is mechanical: reducing to pure
+  tensors needs the *same* projected subterm to be abstracted on both sides at once, and `set` does
+  not abstract it in the composite spelling that `barTele` unfolds to.  The fix is to state the
+  identification as an equality of linear maps and descend with `TensorProduct.ext'` at each layer,
+  rather than to induct on an element.
 
 Everything the statement quantifies over is defined, and one of the four terms is proved.

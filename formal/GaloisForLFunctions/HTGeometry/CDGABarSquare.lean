@@ -101,4 +101,21 @@ noncomputable def barTele (u u' w e : ℕ) :
         TensorProduct R (barShiftFamily ε q.1.1)
           (TensorCarrier (R := R) (barShiftFamily ε) Z q.1.2)) ⟨(u', w + e), rfl⟩))
 
+section Identification
+
+variable {ε} {Z}
+
+/-- Abbreviation for the family of shifted factors. -/
+local notation "S" => barShiftFamily ε
+
+/-- The projection of a graded tensor product at a bidegree. -/
+noncomputable abbrev barProj {M N : ℕ → Type u} [∀ n, AddCommGroup (M n)] [∀ n, Module R (M n)]
+    [∀ n, AddCommGroup (N n)] [∀ n, Module R (N n)] {n : ℕ}
+    (p : {ab : ℕ × ℕ // ab.1 + ab.2 = n}) :
+    TensorCarrier (R := R) M N n →ₗ[R] TensorProduct R (M p.1.1) (N p.1.2) :=
+  LinearMap.proj (R := R) (φ := fun q : {ab : ℕ × ℕ // ab.1 + ab.2 = n} =>
+    TensorProduct R (M q.1.1) (N q.1.2)) p
+
+end Identification
+
 end GaloisForLFunctions.HTGeometry
