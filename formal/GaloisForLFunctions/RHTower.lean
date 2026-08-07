@@ -2478,6 +2478,7 @@ import GaloisForLFunctions.RHTower.HedenmalmThetaSourceUnconditional
 import GaloisForLFunctions.RHTower.HedenmalmThetaTrace
 import GaloisForLFunctions.RHTower.HedenmalmTwoEndedVolterraDefect
 import GaloisForLFunctions.RHTower.HedenmalmTwoPrimeBezout
+import GaloisForLFunctions.RHTower.HedenmalmTwoPrimeBezoutGrowthNoGo
 import GaloisForLFunctions.RHTower.HedenmalmTwoPrimeIdeal
 import GaloisForLFunctions.RHTower.HedenmalmTwoPrimeNormalFrame
 import GaloisForLFunctions.RHTower.HedenmalmUniversalPositiveFormClassification
@@ -6153,3 +6154,4 @@ import GaloisForLFunctions.RHTower.ZetaZeroFreeRegion
 import GaloisForLFunctions.RHTower.Sieve.SieveMeanSquareZetaSums
 import GaloisForLFunctions.RHTower.Sieve.LogSqZetaCap
 import GaloisForLFunctions.RHTower.Sieve.HalaszExplicitParameters
+import GaloisForLFunctions.RHTower.Sieve.PrimeLogSqZetaCap

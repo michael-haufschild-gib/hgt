@@ -1006,3 +1006,28 @@ whole coefficient mass, so they force `z` small (`z ≈ (log N)^{1/2}` and `Y` b
 the count is sharp only when `log Y ≈ log p`, a single sieve level cannot serve the whole prime range: the
 prime range must itself be split dyadically, with the level chosen per block.  That is the same dyadic
 decomposition as above, so the two obstructions are resolved by one construction.
+
+## The prime saving restored
+
+`RHTower/Sieve/PrimeLogSqZetaCap.lean` (green, axiom-clean, wired, no `sorry`).
+
+`sum_prime_logSq_rpow_neg_le` :
+
+`∑_{p ≤ N} p^{−w}(log p)² ≤ 2 log 2 log 4 · ((1−r)⁻¹ + r/(1−r)²)`,   `r = 2^{1−w} < 1`, uniformly in `N`,
+
+for every `w > 1`.  The proof is the dyadic block bound announced above: `j = ⌊log₂ p⌋` gives
+`p^{−w} ≤ 2^{−jw}` and `log p ≤ (j+1)log 2`, the block's remaining factor `∑_{p ∈ block} log p` is bounded by
+Chebyshev's `θ(2^{j+1}) ≤ 2^{j+1} log 4` (the corpus's `sum_log_primesLE_le`), and the blocks are summed
+against the geometric series (`sum_range_succ_mul_geometric_le`, from mathlib's two geometric sums).
+
+`Finset.sum_fiberwise_of_maps_to` does the grouping, `Nat.pow_log_le_self` and `Nat.lt_pow_succ_log_self`
+the block, and `Nat.log_mono_right` the range of block indices.
+
+Against the integer cap this is smaller by `1/(w−1)`, so the factor discarded above is recovered.  As
+`w ↓ 1` the bound behaves like `1/(w−1)²` rather than `1/(w−1)³`: at `σ = 1 + 1/log N` and `w = 2σ−1` that is
+`(log N)²` in place of `(log N)³`.
+
+**Next:** replace the integer caps inside `sieveMeanSquare_le_sieveBound` by this one.  That needs the
+mean-square split restated over the prime-filtered index set — the coefficients are supported on primes, so
+`∑_{n ∈ Icc 1 M}` may be replaced by `∑_{p ∈ Icc 1 M with p.Prime}` at no cost, which is the missing
+bookkeeping step.
