@@ -1960,3 +1960,32 @@ hypothesis being exactly `∀ t ∈ S, ∀ u ∈ S, t ≠ u → Δ ≤ |t − u|
 with `|S| ≤ T/Δ`, giving `≍ (log N)(T e^{−δ²} + Δ)`.  Choosing `Δ` small makes the second term negligible, and the
 first carries the damping — no `Tδ` term anywhere.  That is the bound the corpus's own assembly was missing, and
 with it the Halász mean-value theorem becomes a matter of choosing `δ` and `z`.
+
+## Correction: the corpus's dichotomy is local — but its large-values count is the global mechanism, and it exists
+
+Attempting to feed the spaced families into `sum_norm_tsum_twistedSummand_le_of_spacing` exposes its second
+hypothesis: besides the spacing `Δ ≤ |t − u|`, it requires `|(t − u)·log p| ≤ π` for all `p ≤ z` — an *upper* bound
+on the spread of the family.  So the bound applies only to families inside a single cell of length `π/log z`, and
+"at most one close point" means one per such cell — `O(T log z)` of them across `[−T, T]`.  My previous entry read
+it as global; it is local.  Which is the same locality that makes the measure route lose `T log z`.
+
+**But the corpus already owns the global mechanism.**  `DirichletLargeValuesCount.card_largeValues_le` is a
+Montgomery-type large-values estimate: for `δ`-spaced frequencies `lam 0 < … < lam R` in `[0,T]` at which a
+Dirichlet polynomial of length `N` has `‖dirPoly N a (lam r)‖ ≥ V`,
+
+`(R+1)·V² ≤ (T + 4N(1 + log N))·(1/δ + 2 log N)·∑_m ‖a_m‖²`.
+
+That bounds the *number* of spaced large values by `(T + N log N)(1/δ + log N)·(ℓ² mass)/V²` — governed by the
+threshold `V`, not by the measure of a window.  This is exactly the mechanism the classical Halász argument uses in
+place of the distance dichotomy, and it applies to the two prime polynomials `L(a)`, `L(b)`, which are finite.
+
+**The next brick is a sum-from-counts device.**  The count gives, for each threshold, how many spaced points exceed
+it; a dyadic decomposition in `V` converts that into a bound on `∑_{t ∈ S} ‖D(t)‖` over a spaced set `S`.  With the
+discretisation already built, the chain becomes
+
+`∫ |L(a)L(b)L(f)| ≤ Wsup·Δ·∑_{spaced} |L(a)L(b)|·|L(f)| ≤ Wsup·Δ·(trivial size of L(f))·∑_{spaced} |L(a)L(b)|`,
+
+and the last sum is what the large-values count controls — with no window, no measure, and no `Tδ`.
+
+Recorded as the specification: the corpus has the count and the discretisation; what is missing is the dyadic
+sum-from-counts lemma, which is elementary and general.
