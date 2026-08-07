@@ -835,3 +835,32 @@ which is where the original argument spends a factor.
 (`sum_Icc_ghsTriple_eq_prime_double_average`), and step 4 (`exists_norm_tsum_ghs_smoothWeight_le`) with the
 smoothing connector (`norm_partialSum_le_of_smoothed_bound`).  What is left is the arithmetic evaluation of
 `sieveMeanSquare` at the natural parameters.
+
+## The paper half is closed: partial sum versus triple convolution
+
+`RHTower/Sieve/PartialSumVsTripleConvolution.lean` (green, axiom-clean, wired).
+
+`norm_sum_Icc_mul_log_sub_ghsTriple_le` :
+
+`‖(∑_{n ≤ N} f(n))·log N − ∑_{n ≤ N} (a ⍟ (b ⍟ f))(n)‖
+    ≤ (9+c)N + N log 4 + (9+c)·N·(B/log 2)·(1 + log log₂ N)`
+
+for the two prime weights at `N₀ = M = N`, where the inner truncation is vacuous because the inner primes
+already satisfy `q ≤ N/p ≤ N` (`sum_Icc_ghsTriple_self_eq`).
+
+Three errors, all `O(N log log N)`:
+
+1. the first recursion, `(9+c)N`;
+2. the primes above `N/2`, whose inner partial sum is the single term `f(1)` — bounded by Chebyshev's
+   `∑_{p ≤ N} log p ≤ N log 4`, which the corpus already owned (`sum_log_primesLE_le`), reached through
+   `filter_prime_Icc_eq_primesLE` (`norm_sum_prime_head_le`);
+3. the second recursion against the dyadic quotient window.
+
+The left-hand object is what a mean value theorem is about; the right-hand object is what step 4 estimates.
+Both halves of the programme are now closed in Lean, and they meet at this inequality:
+
+* paper half: `(∑_{n≤N} f)·log N ≈ ∑_{n≤N} (a ⍟ (b ⍟ f))` with error `O(N log log N)`;
+* analytic half: `2π‖∑ₙ (a ⍟ (b ⍟ f))(n)w(n)‖ ≤ (Euler)·(kernel)·√(sieve a)·√(sieve b)`, and
+  `‖∑_{n≤K} d(n)‖ ≤ (that)/2π + H` for the sharp cutoff.
+
+The only remaining input is arithmetic: evaluating `sieveMeanSquare` at the natural parameters.
