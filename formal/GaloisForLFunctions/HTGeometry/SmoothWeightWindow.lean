@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SmoothWeight
+import Mathlib.Algebra.Order.Chebyshev
 
 /-!
 # The smoothing error without a boundedness hypothesis
