@@ -40,7 +40,7 @@ sign of the shift and `d_bar` multiplies adjacent factors.
    the direct sum in each degree.
 4. **The total object** `⨁_k (sĀ)^{⊗k}` in each degree.
 5. **The two differentials** and `d² = 0`.
-6. **The augmentation and the counit**, and the comparison `B(A) → R`.
+6. **The augmentation and the counit**, and the comparison `B(A) → R`.  `[LANDED]`
 
 ## Status
 
@@ -201,3 +201,20 @@ The `show` tactic does not: it checks with `isDefEq` at default transparency, wh
 everything.  So the step is written by naming every operand in the synthesised spelling —
 `barH`, `barT`, `barHsucc`, `barTH`, `barTT` — and moving the goal into that spelling with `show`
 once at each stage.  No redesign of `Cochain` was needed.
+
+## Step 6
+
+`barCounit` in `CDGABarDifferential.lean` is the counit — the component of the bar construction with
+no factors — and `barCounit_totalD` says it is a morphism of complexes: the ground stage has no
+differential, and nothing can be multiplied down into it, so every contribution to that component
+vanishes.  Axiom audit `propext, Classical.choice, Quot.sound`.
+
+## What is left on this card
+
+`barTotalD` squares to zero on each of its three pieces separately — `d_int² = 0` comes with the
+tensor product, `barD_sq` is proved above — but the **cross term** `barD ∘ d_int + d_int ∘ barD = 0`
+is not.  It is the Leibniz rule for the shifted product against the internal differential, a fourth
+cancellation of the same kind as the three already built: the head differentiated is the sum of its
+two factors differentiated, with the sign the shift contributes, and those match the two ways the
+internal differential of the tensor product can act.  Everything it needs — `augIdealMul_leibniz`,
+`augIdealShiftMulOf`, `tensorDL`/`tensorDR` and the telescope machinery — is in place.

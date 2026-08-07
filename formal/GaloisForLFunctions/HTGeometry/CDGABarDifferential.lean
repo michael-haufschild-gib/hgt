@@ -98,3 +98,43 @@ theorem barTotalD_of (k n : ℕ) (x : (barPower ε k).carrier n) :
   rw [DirectSum.toModule_lof]
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open DirectSum
+
+variable {R : Type u} [CommRing R] {X : ℕ → Type u} [∀ n, AddCommGroup (X n)]
+  [∀ n, Module R (X n)] {A : CDGAStructure R X} (ε : CDGAHom A (groundCDGA R))
+
+/-- **The counit of the bar construction**: the component with no factors. -/
+noncomputable def barCounit (n : ℕ) :
+    BarCarrier ε n →ₗ[R] (barPower ε 0).carrier n :=
+  DirectSum.component R ℕ (fun k => (barPower ε k).carrier n) 0
+
+/-- **The counit is a morphism of complexes.**  The ground stage has no differential, and nothing can
+be multiplied down into it, so every contribution to the component with no factors vanishes. -/
+theorem barCounit_totalD (n : ℕ) (k : ℕ) (y : (barPower ε k).carrier n) :
+    barCounit ε (n + 1)
+        (barTotalD ε n (DirectSum.lof R ℕ (fun j => (barPower ε j).carrier n) k y)) = 0 := by
+  rw [barTotalD_of]
+  cases k with
+  | zero =>
+      show DirectSum.component R ℕ (fun j => (barPower ε j).carrier (n + 1)) 0
+        ((DirectSum.lof R ℕ (fun j => (barPower ε j).carrier (n + 1)) 0)
+          ((barPower ε 0).d n y)) = 0
+      rw [DirectSum.component.lof_self]
+      rfl
+  | succ k' =>
+      show DirectSum.component R ℕ (fun j => (barPower ε j).carrier (n + 1)) 0
+        ((DirectSum.lof R ℕ (fun j => (barPower ε j).carrier (n + 1)) (k' + 1))
+            ((barPower ε (k' + 1)).d n y)
+          + (DirectSum.lof R ℕ (fun j => (barPower ε j).carrier (n + 1)) k')
+            (barD ε k' n y)) = 0
+      rw [map_add, DirectSum.component.of, DirectSum.component.of, dif_neg (by omega)]
+      cases k' with
+      | zero =>
+          simp only [barD_zero, dif_pos]
+          rw [LinearMap.zero_apply, add_zero]
+      | succ k'' => rw [dif_neg (by omega), add_zero]
+
+end GaloisForLFunctions.HTGeometry
