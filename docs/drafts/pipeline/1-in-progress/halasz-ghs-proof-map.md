@@ -503,3 +503,22 @@ The rectangle integral is the difference of the two vertical edges plus the two 
 Perron's lemma
 `|(1/2πi)∫_{σ−iT}^{σ+iT} y^s ds/s − 1_{y>1}| ≤ y^σ/(πT|log y|)`
 follows by letting `A → ∞`.  Every ingredient is in the tree; what remains is the limit bookkeeping.
+
+## Nineteenth brick: Perron's lemma, the `y < 1` half
+
+`RHTower/Sieve/PerronVerticalBound.lean` (green, axiom-clean, wired):
+
+`‖∫_{-T}^{T} y^{σ+it}/(σ+it) dt‖ ≤ 2·y^σ/(|T|·|log y|)`   for `0 < y < 1`, `σ > 0`, `T > 0`.
+
+The rectangle `[σ, A] × [−T, T]` lies in the right half-plane, so it contains no pole and its boundary
+integral vanishes — PNTPlus's `HolomorphicOn.vanishesOnRectangle`.  Reading the four sides off
+`RectangleIntegral` expresses the wanted vertical integral as the two horizontal sides plus the far
+vertical one, each already bounded uniformly in `A`, and `ge_of_tendsto` with `y^A → 0` removes the far
+side in the limit.
+
+The horizontal bounds had to hold at height `−T` as well as `+T`, which is why the segment lemmas were
+generalised to `T ≠ 0` with `|T|` in the denominator first.
+
+Remaining for the full lemma: the `y > 1` half — the same argument with the rectangle `[−A, σ] × [−T, T]`,
+whose interior contains the origin, so the boundary value is the residue `1` (already proved as
+`rectangleIntegral'_cpow_div_eq_one`) instead of `0`.
