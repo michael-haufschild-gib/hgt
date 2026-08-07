@@ -1,6 +1,6 @@
 # CDGA-module derived tensor layer
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** INFRASTRUCTURE (Lean)
 - **Statement:** Build, in Lean, the substitute for `E_∞`-algebra homotopy theory that the Deninger
   cards `deninger-character-shape-formality`, `deninger-derived-rank-quotient-universal-property`
