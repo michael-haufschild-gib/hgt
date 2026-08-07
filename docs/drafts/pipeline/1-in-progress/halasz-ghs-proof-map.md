@@ -1151,3 +1151,34 @@ summing the `j`-indexed series, in the same style as the dyadic Chebyshev cap.
 Together they turn a block's sieve mean square into a product of powers of `2^j` and polynomials in `j`,
 which is what makes the block sum a geometric-type series — the same shape the dyadic Chebyshev cap already
 sums.
+
+## A block's sieve mean square, in closed form
+
+`RHTower/Sieve/BlockSieveMeanSquare.lean` (green, axiom-clean, wired).
+
+`sieveMeanSquare_coeffBlock_le` — the three block quantities substituted into the majorant:
+
+`sieveMeanSquare a_j (Icc 1 M) σ z Y
+    ≤ (2^{j+1}log 4/(j log 2))·(2(2^{j+1}·2 sinh δ + 1)/log Y + E + z)·(A(j+1)log 2)²·2^{−2σj}`
+
+— the number of primes of the block, the largest value of the Selberg count on it, the block's uniform
+coefficient bound squared, and the damping at its left endpoint.  The sum over the block is reduced to its
+primes first (the coefficients vanish elsewhere), then bounded termwise and counted.
+
+Every factor is a power of `2^j` or a polynomial in `j`, so with a level sequence `(z_j, Y_j)` fixed the block
+sum is a geometric-type series in `j`.  The level remains free in the statement: nothing constrains `Y` beyond
+admissibility.
+
+**The route is now device-complete and reduced to one choice.**  Writing `L = log 2` and `δ = 1/2π`, the block
+sum to be bounded is
+
+`∑_{j ≤ log₂M} √( 25π²·(2^{j+1}·log 4/(jL))·(2(2^{j+1}·2 sinh δ + 1)/log Y_j + E_j + z_j)·(A(j+1)L)²·2^{−2σj} )`,
+
+and the question is which `(z_j, Y_j)` makes it small.  The factor `2^{j}·2^{−2σj} = 2^{-j(2σ-1)}` decays, the
+count contributes `2^{j}/j`, and `E_j = Y_j²e^{4c}(log z_j)⁴` must stay below the main term — which caps
+`Y_j` at about `2^{j/2}/(j log z_j)²`.  With `log Y_j ≍ j` the linear part of each block is
+`≍ 2^{2j}(j+1)²/(j²·j)·2^{−2σj}`, whose square root is `≍ 2^{j(1−σ)}·j^{-1/2}`, and the geometric sum over
+`j ≤ log₂ N` is dominated by its last block: `≍ N^{1−σ}/√(log N)`.  At `σ = 1 + 1/log N` that is
+`≍ 1/√(log N)`, which against the Euler factor `log N` and the kernel constant `N` gives
+`N(log N)^{1/2}` — below the trivial `N log N` by `√(log N)`.  Establishing that in Lean is the arithmetic
+that remains; the estimate above is the target, not a theorem.

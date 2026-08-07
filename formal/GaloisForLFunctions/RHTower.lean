@@ -2457,6 +2457,7 @@ import GaloisForLFunctions.RHTower.HedenmalmQuantileDivisorCharge
 import GaloisForLFunctions.RHTower.HedenmalmQuantileMetric
 import GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm
 import GaloisForLFunctions.RHTower.HedenmalmQuantileRootMode
+import GaloisForLFunctions.RHTower.HedenmalmQuantileSliceMoment
 import GaloisForLFunctions.RHTower.HedenmalmRankOneDilationObstruction
 import GaloisForLFunctions.RHTower.HedenmalmRankTwoTangentInertia
 import GaloisForLFunctions.RHTower.HedenmalmRootFluxModularCharge
@@ -6159,3 +6160,4 @@ import GaloisForLFunctions.RHTower.Sieve.HalaszPrimeSavingBound
 import GaloisForLFunctions.RHTower.Sieve.LSeriesBlockDecomposition
 import GaloisForLFunctions.RHTower.Sieve.BlockMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.DyadicBlockQuantities
+import GaloisForLFunctions.RHTower.Sieve.BlockSieveMeanSquare
