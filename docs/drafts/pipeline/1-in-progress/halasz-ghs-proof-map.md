@@ -2077,3 +2077,33 @@ corpus's large-values estimate consumes `∑_{r ∈ range (R+1)}`, and these ide
 What remains is to compose them, which is a single (long) chain of rewrites with no estimate left to prove, and then
 the parameter choice — where, for the first time in this programme, the bound to optimise has no term in which a
 trivial size multiplies a length.
+
+## Specification of the composition (next brick, ready to implement)
+
+The pieces are all present; what follows is the exact statement to prove and the parameter choices that make the
+corpus's hypotheses match, worked out and checked against a type-correct skeleton.
+
+```
+theorem integral_norm_dirPoly_le_largeValues (N : ℕ) (hN : 2 ≤ N) (a : Fin N → ℂ) {Δ : ℝ}
+    (hΔ : 0 < Δ) (n : ℕ) (hn : 1 ≤ n) :
+    (∫ t in (Δ/2)..(Δ/2 + (2*n : ℕ)*Δ), ‖dirPoly N a t‖)
+      ≤ 2*Δ*√((n : ℝ) * (((2*n+1 : ℕ)*Δ + 4*N*(1 + log N))*(1/Δ + 2*log N)*∑ i, ‖a i‖²))
+```
+
+Choices that align the hypotheses:
+
+* **`m = 2n` cells** starting at `a = Δ/2`, so each parity family has exactly `n` points and the corpus's
+  `∑_{r ∈ range (R+1)}` matches at `R + 1 = n`;
+* **`T = (2n+1)Δ`**, which is `Δ/2 + 2nΔ + Δ/2`: then `hlow : Δ/2 ≤ lam 0` holds because `c 0 ≥ Δ/2`, and
+  `hhigh : lam R + Δ/2 ≤ T` because the last maximiser is at most `Δ/2 + 2nΔ`;
+* `δ = Δ` in the large-values estimate, supplied by `exists_gap_sequence_of_cells`.
+
+Steps: `exists_cell_max_integral_le` → `sum_filter_even_eq_sum_range`/`sum_filter_odd_eq_sum_range` to reindex →
+`exists_gap_sequence_of_cells` at `r = 0, 1` for the gap → `sum_norm_dirPoly_le_sqrt` twice → add the two roots
+(`√x + √x = 2√x`).
+
+The `n = 0` case is excluded by `hn` only for convenience: there both sides vanish, but the empty family makes
+`hlow` vacuous and the corpus's estimate is stated for a nonempty range.
+
+Recorded at this level of detail because the composition is mechanical and long; the next pass should be able to
+write it without re-deriving any of the alignment.
