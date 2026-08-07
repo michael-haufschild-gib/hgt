@@ -176,3 +176,25 @@ Traps: `HasDerivAt.comp` refuses to unify the composition point here — use
 `integrableOn_const` now takes autoParams — use `Measure.integrableOn_of_bounded` instead.
 `Continuous.congr` leaves a `Function.comp` redex — insert `show`.
 For `linear_combination` after this integration by parts the coefficient is **+1**, not −1.
+
+## Card 5 statements (7 closed form), (11), (15), (16), (18)-(20) CLOSED (2026-08-07)
+
+`formal/GaloisForLFunctions/RHTower/HedenmalmTwoPrimeNormalFrame.lean` (wired, builds,
+axiom-clean).  KEY SIMPLIFICATION: do NOT formalize (15)/(16) as jet identities via a Leibniz
+rule.  mathlib's `analyticOrderAt` + `analyticOrderAt_mul` +
+`AnalyticAt.analyticOrderAt_eq_zero` give the sharper statement directly:
+`analyticOrderAt (a_n * XiC) ζ = analyticOrderAt XiC ζ` whenever `a_n ζ ≠ 0`.
+Combined with `no_common_zero_centered_two_three` and `XiC_zero_ne` this is
+`two_prime_retains_divisor`.
+
+Also: `centeredMultiplier_eq_sin`, `analyticAt_centeredMultiplier`, `compactNormalMultiplier`,
+`compactNormalMultiplier_eq` (NO outer minus sign — the two sign flips cancel),
+`compactNormalMultiplier_root` (needs no hypothesis: `inv_neg`+`inv_inv`+`neg_neg`).
+
+Trap: after `rw [e1]` a later `-(...)` has ALREADY been rewritten, so a second equation for the
+negated form is dead; state the sine lemma with `-(w * I)` and normalise inside its own proof.
+
+Card 5 remaining: (13)/(14) conormal generation — needs Wedderburn/Cartan B for entire functions
+(two entire functions with no common zero generate the unit ideal).  ABSENT from corpus and
+mathlib; this is the real blocker.  Then (17) cokernel rests on (14); plus the two self-adjoint
+convolution channels and the three frame obstructions.

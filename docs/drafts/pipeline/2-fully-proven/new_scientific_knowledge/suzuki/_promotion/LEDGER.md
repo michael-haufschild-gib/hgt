@@ -1425,3 +1425,39 @@ needs `R_full` tested against a BV weight in the jump form `(8)`, not the pointw
 Note the remaining step is *distributional*: the corpus has no jump-form pairing for `R_full` yet,
 only the pointwise operator `gammaTransport`. Building `E_R(F,w)` as a genuine bilinear form and
 proving its absolute convergence from the two inputs above is the next module.
+
+## Z. `(8)`/`(9)` closed — the jump-form pairing converges
+
+New module `formal/GaloisForLFunctions/HTGeometry/GammaJumpFormPairing.lean`, wired into the
+`HTGeometry` umbrella. 4 declarations, all `#print axioms` clean.
+
+    jumpFormIntegrand F w s L = (F L − F (L+s)) * (w L − w (L+s))
+
+- `abs_jumpFormIntegrand_le` — the profile factor contributes at most `2M` per slice.
+- `intervalIntegrable_abs_jumpFormIntegrand` — the slice integrand is integrable, by domination
+  against the weight's own increment. No regularity beyond `Continuous F` and `Monotone w`.
+- `integral_abs_jumpFormIntegrand_le` — **the slice bound `(9)`**: `∫_a^b |jump| ≤ 2M · V · s`,
+  linear in the shift.
+- `integrableOn_jumpFormDominant` — **`(9)`'s outer half**: `s ↦ 2M·V·s·k(s)` is integrable on
+  `Ioi 0`, straight from the kernel's finite first moment.
+
+So the two halves the card cites in `(9)` are now joined: a linear-in-`s` slice bound against a
+kernel with finite first moment. The jump form `(8)` is absolutely convergent for a bounded
+continuous profile against a monotone weight.
+
+**Namespace correction.** Sections M–P placed `integral_abs_translate_sub_le_variation` and its
+companions in `GaloisForLFunctions.HTGeometry` *directly*, not in the nested
+`MonotoneTranslation` namespace — only the later `intervalIntegrable_translate_sub` /
+`integral_sq_translate_sub_le` / Gagliardo / log-bracket blocks are nested. Earlier ledger entries
+that wrote `MonotoneTranslation.integral_abs_translate_sub_le_variation` are wrong; the bare name
+is correct.
+
+### Prerequisite 4 — what is left
+
+The pairing converges; the remaining step is to *use* it: test `(3)` against the truncated weights
+`w_M(L) = 1_{[L_0,M]}(L) L^{−3/2}` of `(10)` and conclude that `L ↦ P F(L)/(4L^{3/2})` is
+integrable on a terminal ray, which is exactly the hypothesis `tendsto_halfLogAverage` consumes.
+Note `w_M` is **not monotone** — it is a difference of two monotone pieces (an indicator times a
+decreasing power), so `integral_abs_jumpFormIntegrand_le` must be applied to each piece and summed,
+or the slice bound restated for BV weights. That splitting is the next step, and it is the last one
+before `(4)`.

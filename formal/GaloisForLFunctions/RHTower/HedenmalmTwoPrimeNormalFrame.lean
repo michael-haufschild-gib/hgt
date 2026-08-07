@@ -39,11 +39,10 @@ theorem centeredMultiplier_eq_sin (n : ℕ) {z : ℂ} (hz : z ≠ 0) :
     rw [hw]; ring
   have hsin : Complex.exp (w * Complex.I) - Complex.exp (-(w * Complex.I))
       = 2 * Complex.I * Complex.sin w := by
-    rw [Complex.sin]
-    linear_combination (Complex.exp (w * Complex.I) - Complex.exp (-(w * Complex.I))) * hI2
+    rw [Complex.sin, show -(w * Complex.I) = -w * Complex.I by ring]
+    linear_combination (Complex.exp (w * Complex.I) - Complex.exp (-w * Complex.I)) * hI2
   rw [centeredMultiplier, e1, hsin]
   field_simp
-  ring
 
 /-! ### Analyticity away from the origin -/
 
@@ -115,8 +114,8 @@ The sine of a reciprocal argument exhibits the essential singularity at the comp
 boundary `μ = 0`. -/
 theorem compactNormalMultiplier_eq (n : ℕ) {μ : ℂ} (hμ : μ ≠ 0) :
     compactNormalMultiplier n μ
-      = -(2 * ((((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ)) : ℂ) * μ
-        * Complex.sin (μ⁻¹ * ((Real.log n / 2 : ℝ) : ℂ))) := by
+      = 2 * ((((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ)) : ℂ) * μ
+        * Complex.sin (μ⁻¹ * ((Real.log n / 2 : ℝ) : ℂ)) := by
   have hne : (-μ⁻¹ : ℂ) ≠ 0 := neg_ne_zero.mpr (inv_ne_zero hμ)
   rw [compactNormalMultiplier, centeredMultiplier_eq_sin n hne,
     show (-μ⁻¹ : ℂ) * ((Real.log n / 2 : ℝ) : ℂ)
@@ -124,7 +123,7 @@ theorem compactNormalMultiplier_eq (n : ℕ) {μ : ℂ} (hμ : μ ≠ 0) :
   field_simp
 
 /-- **The compact multiplier reproduces the normal multiplier on every root block.** -/
-theorem compactNormalMultiplier_root (n : ℕ) {ζ : ℂ} (hζ : ζ ≠ 0) :
+theorem compactNormalMultiplier_root (n : ℕ) (ζ : ℂ) :
     compactNormalMultiplier n (-ζ⁻¹) = centeredMultiplier n ζ := by
   rw [compactNormalMultiplier]
   congr 1

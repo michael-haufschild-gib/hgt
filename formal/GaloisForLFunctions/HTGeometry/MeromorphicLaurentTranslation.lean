@@ -195,4 +195,44 @@ theorem laurentCoeff_add_zsmul_of_period {f : ℂ → ℂ} {ℓ : ℤ} {h : ℂ}
       rw [hstep, ih] at hh
       exact hh.symm
 
+
+/-! ### Translation of the meromorphic order -/
+
+theorem tendsto_add_const_nhdsNE (a h : ℂ) :
+    Filter.Tendsto (fun z : ℂ => z + h) (𝓝[≠] a) (𝓝[≠] (a + h)) := by
+  rw [tendsto_nhdsWithin_iff]
+  refine ⟨?_, ?_⟩
+  · have hc : Filter.Tendsto (fun z : ℂ => z + h) (𝓝 a) (𝓝 (a + h)) :=
+      (continuous_id.add continuous_const).continuousAt
+    exact hc.mono_left nhdsWithin_le_nhds
+  · filter_upwards [self_mem_nhdsWithin] with z hz
+    simp only [Set.mem_compl_iff, Set.mem_singleton_iff] at hz ⊢
+    intro hcon
+    exact hz (by linear_combination hcon)
+
+/-- **The meromorphic order is translation equivariant.** -/
+theorem meromorphicOrderAt_comp_add (f : ℂ → ℂ) (a h : ℂ) :
+    meromorphicOrderAt (fun z => f (z + h)) a = meromorphicOrderAt f (a + h) := by
+  by_cases hf : MeromorphicAt f (a + h)
+  swap
+  · rw [meromorphicOrderAt_of_not_meromorphicAt hf,
+      meromorphicOrderAt_of_not_meromorphicAt (fun hc => hf (meromorphicAt_comp_add.mp hc))]
+  have hfa : MeromorphicAt (fun z => f (z + h)) a := meromorphicAt_comp_add.mpr hf
+  rcases eq_or_ne (meromorphicOrderAt f (a + h)) ⊤ with htop | hne
+  · rw [htop, meromorphicOrderAt_eq_top_iff]
+    rw [meromorphicOrderAt_eq_top_iff] at htop
+    filter_upwards [(tendsto_add_const_nhdsNE a h).eventually htop] with z hz
+    simpa using hz
+  · obtain ⟨n, hn⟩ := WithTop.ne_top_iff_exists.mp hne
+    have hord : meromorphicOrderAt f (a + h) = (n : ℤ) := hn.symm
+    rw [hord, meromorphicOrderAt_eq_int_iff hfa]
+    obtain ⟨g, hg, hga, hfg⟩ := (meromorphicOrderAt_eq_int_iff hf).mp hord
+    refine ⟨fun z => g (z + h), ?_, ?_, ?_⟩
+    · exact AnalyticAt.comp (g := g) (f := fun z : ℂ => z + h) (x := a) (by simpa using hg)
+        (by fun_prop)
+    · simpa using hga
+    · filter_upwards [(tendsto_add_const_nhdsNE a h).eventually hfg] with z hz
+      rw [show z + h - (a + h) = z - a from by ring] at hz
+      exact hz
+
 end GaloisForLFunctions.HTGeometry

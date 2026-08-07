@@ -5875,3 +5875,4 @@ import GaloisForLFunctions.HTGeometry.MonotoneTranslationModulus
 import GaloisForLFunctions.HTGeometry.GagliardoFourierConstant
 import GaloisForLFunctions.HTGeometry.GammaTransportKernel
 import GaloisForLFunctions.HTGeometry.HalfLogCesaroAverage
+import GaloisForLFunctions.HTGeometry.GammaJumpFormPairing

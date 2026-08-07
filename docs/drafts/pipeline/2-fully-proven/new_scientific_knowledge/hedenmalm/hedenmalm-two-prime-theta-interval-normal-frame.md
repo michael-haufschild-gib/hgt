@@ -428,9 +428,22 @@ source, with no hypothesis: one integration by parts on the line, the window der
 | `(5)` | **`hat r_n = q_n Xi_C`** | `integral_integerAnomaly_sourceChar` |
 | `(7)` | **`hat c_n = a_n Xi_C`** | `integral_centeredWindow_sourceChar` |
 
-Still missing: the conormal generation
-statement, the two bounded self-adjoint channels, the essential compact-boundary symbol, and the
-three frame obstructions.
+**Normal frame and compact coordinate.**  `formal/GaloisForLFunctions/RHTower/HedenmalmTwoPrimeNormalFrame.lean`
+(namespace `RHTower.HedenmalmThetaSource`).
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(7)` | closed trigonometric form `a_n(z) = 2 n^(-1/2) sin(z log n / 2)/z` | `centeredMultiplier_eq_sin` |
+| `(11)` | the multiplier is analytic off the origin | `analyticAt_centeredMultiplier` |
+| `(15)`,`(16)` | **a nonvanishing multiplier retains the exact analytic order of `Xi_C`** | `centeredWindowTransform`, `analyticOrderAt_centeredWindowTransform` |
+| `(16)` | **two literal primes retain every `Xi` point and its exact multiplicity** | `two_prime_retains_analyticOrder`, `two_prime_retains_divisor` |
+| `(18)`,`(19)` | the compact reciprocal multiplier `A_n(mu) = 2 n^(-1/2) mu sin(L_n/(2 mu))` | `compactNormalMultiplier`, `compactNormalMultiplier_eq` |
+| `(20)` | `A_n(-1/zeta) = a_n(zeta)` on every root block | `compactNormalMultiplier_root` |
+
+Still missing: the conormal generation statement `(13)`--`(14)` (this needs Wedderburn/Cartan B
+for entire functions: two entire functions without a common zero generate the unit ideal --- absent
+from the corpus and from mathlib), the two bounded self-adjoint convolution channels and the
+cokernel `(17)` that rests on `(14)`, and the three frame obstructions.
 
 ## Gates
 
