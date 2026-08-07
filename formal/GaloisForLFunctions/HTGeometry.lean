@@ -527,6 +527,7 @@ import GaloisForLFunctions.HTGeometry.CDGATensorConstExchange
 import GaloisForLFunctions.HTGeometry.CDGATensorConstHom
 import GaloisForLFunctions.HTGeometry.CDGATensorLeft
 import GaloisForLFunctions.HTGeometry.CDGATensorShift
+import GaloisForLFunctions.HTGeometry.CDGAFreeExterior
 import GaloisForLFunctions.HTGeometry.CDGATotalAlgebra
 import GaloisForLFunctions.HTGeometry.CDGATensorShiftHom
 import GaloisForLFunctions.HTGeometry.CDGATensorSingle
