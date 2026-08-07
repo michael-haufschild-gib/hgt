@@ -1461,3 +1461,31 @@ Note `w_M` is **not monotone** — it is a difference of two monotone pieces (an
 decreasing power), so `integral_abs_jumpFormIntegrand_le` must be applied to each piece and summed,
 or the slice bound restated for BV weights. That splitting is the next step, and it is the last one
 before `(4)`.
+
+## AA. The BV splitting is closed — the test weights are now admissible
+
+`GammaJumpFormPairing.lean` is now at 6 declarations, all `#print axioms` clean.
+
+- `integral_abs_translate_sub_le_variation_sub` — a **difference of monotone weights** keeps a
+  linear `L¹` modulus, the two variations adding: `∫_a^b |Δ_s(w₁−w₂)| ≤ (V₁+V₂)s`.
+- `integral_abs_jumpFormIntegrand_le_bv` — the jump-form slice bound for a BV weight:
+  `∫_a^b |jump(F, w₁−w₂)| ≤ 2M(V₁+V₂)s`.
+
+This removes the obstruction noted at the end of section Z. The truncated test weights
+`w_M(L) = 1_{[L₀,M]}(L) L^{−3/2}` of `(10)` are exactly a difference of monotone pieces, so they are
+now admissible in the pairing.
+
+### Prerequisite 4 — the remaining step, stated precisely
+
+Everything the card's §3 argument needs is now formalized *except* the distributional step itself:
+substituting `w_M` into `(3)` and reading off that `L ↦ P F(L)/(4L^{3/2})` is integrable on a
+terminal ray. Concretely what is missing is
+
+    E(F, w_M) = ⟨G − P F, w_M⟩     (the equation tested against w_M)
+
+as a statement connecting `gammaTransport` / the jump form to the pointwise operator — i.e. the
+identity `(7)` `R_full f = R_half F + qF` **in jump form**. Section U built `(6)`, the scalar
+identity `∫_L^∞ k = q(L)` that underlies it, but the operator-level identity `(7)` itself is not
+yet formalized, and it is what converts the convergent pairing into a statement about `P F`.
+
+That single identity is now the whole of the remaining gap on prerequisite 4.

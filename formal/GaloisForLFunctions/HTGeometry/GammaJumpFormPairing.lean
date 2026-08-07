@@ -133,4 +133,64 @@ theorem integral_abs_translate_sub_le_variation_sub {w₁ w₂ : ℝ → ℝ}
   rw [hsplit] at hmono
   nlinarith [hmono, hb1, hb2]
 
+/-- **The slice bound for a bounded-variation weight.**  The jump form pairs a bounded profile
+against a difference of monotone weights with a modulus still linear in the shift, the two
+variations adding.  This is the form the truncated test weights of `(10)` require. -/
+theorem integral_abs_jumpFormIntegrand_le_bv {F w₁ w₂ : ℝ → ℝ} {MF V₁ V₂ a b s : ℝ}
+    (hFc : Continuous F) (h1 : Monotone w₁) (h2 : Monotone w₂)
+    (hF : ∀ x, |F x| ≤ MF) (hMF : 0 ≤ MF) (hs : 0 ≤ s)
+    (hV1 : w₁ (b + s) - w₁ a ≤ V₁) (hV2 : w₂ (b + s) - w₂ a ≤ V₂) (hab : a ≤ b) :
+    (∫ L in a..b, |jumpFormIntegrand F (fun x => w₁ x - w₂ x) s L|)
+      ≤ 2 * MF * ((V₁ + V₂) * s) := by
+  set w : ℝ → ℝ := fun x => w₁ x - w₂ x with hwdef
+  have hmeasw : Measurable fun L => |w (L + s) - w L| :=
+    ((((monotone_comp_add_right h1 s).measurable).sub
+      ((monotone_comp_add_right h2 s).measurable)).sub
+      (h1.measurable.sub h2.measurable)).abs
+  have hi1 : IntervalIntegrable (fun L => |w₁ (L + s) - w₁ L|) volume a b :=
+    (MonotoneTranslation.intervalIntegrable_translate_sub h1 s a b).abs
+  have hi2 : IntervalIntegrable (fun L => |w₂ (L + s) - w₂ L|) volume a b :=
+    (MonotoneTranslation.intervalIntegrable_translate_sub h2 s a b).abs
+  have hptw : ∀ L : ℝ, |w (L + s) - w L|
+      ≤ |w₁ (L + s) - w₁ L| + |w₂ (L + s) - w₂ L| := by
+    intro L
+    have hrw : w (L + s) - w L
+        = (w₁ (L + s) - w₁ L) + (-(w₂ (L + s) - w₂ L)) := by
+      simp only [hwdef]; ring
+    rw [hrw]
+    calc |(w₁ (L + s) - w₁ L) + (-(w₂ (L + s) - w₂ L))|
+        ≤ |w₁ (L + s) - w₁ L| + |-(w₂ (L + s) - w₂ L)| := abs_add_le _ _
+      _ = |w₁ (L + s) - w₁ L| + |w₂ (L + s) - w₂ L| := by rw [abs_neg]
+  have hiw : IntervalIntegrable (fun L => |w (L + s) - w L|) volume a b := by
+    refine IntervalIntegrable.mono_fun (hi1.add hi2) hmeasw.aestronglyMeasurable ?_
+    filter_upwards with L
+    have hnn : 0 ≤ |w₁ (L + s) - w₁ L| + |w₂ (L + s) - w₂ L| := by positivity
+    simp only [Real.norm_eq_abs, abs_abs, abs_of_nonneg hnn]
+    exact hptw L
+  have hmeas : Measurable fun L => |jumpFormIntegrand F w s L| := by
+    unfold jumpFormIntegrand
+    exact (((hFc.measurable).sub
+      ((hFc.comp (continuous_id.add continuous_const)).measurable)).mul
+      (((h1.measurable.sub h2.measurable)).sub
+        (((monotone_comp_add_right h1 s).measurable).sub
+          ((monotone_comp_add_right h2 s).measurable)))).abs
+  have hlhs : IntervalIntegrable (fun L => |jumpFormIntegrand F w s L|) volume a b := by
+    refine IntervalIntegrable.mono_fun (hiw.const_mul (2 * MF))
+      hmeas.aestronglyMeasurable ?_
+    filter_upwards with L
+    have hpt := abs_jumpFormIntegrand_le (w := w) hF s L
+    have hnn : 0 ≤ 2 * MF * |w (L + s) - w L| := le_trans (abs_nonneg _) hpt
+    simp only [Real.norm_eq_abs, abs_abs, abs_of_nonneg hnn]
+    exact hpt
+  have hmono : (∫ L in a..b, |jumpFormIntegrand F w s L|)
+      ≤ ∫ L in a..b, 2 * MF * |w (L + s) - w L| :=
+    intervalIntegral.integral_mono_on hab hlhs (hiw.const_mul (2 * MF))
+      fun L _ => abs_jumpFormIntegrand_le (w := w) hF s L
+  have hval : (∫ L in a..b, 2 * MF * |w (L + s) - w L|)
+      = 2 * MF * ∫ L in a..b, |w (L + s) - w L| := intervalIntegral.integral_const_mul _ _
+  have hbv : (∫ L in a..b, |w (L + s) - w L|) ≤ (V₁ + V₂) * s :=
+    integral_abs_translate_sub_le_variation_sub h1 h2 hs hV1 hV2 hab
+  rw [hval] at hmono
+  nlinarith [hmono, hbv, hMF]
+
 end GaloisForLFunctions.HTGeometry
