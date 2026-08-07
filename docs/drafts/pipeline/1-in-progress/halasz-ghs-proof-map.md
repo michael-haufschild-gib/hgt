@@ -1915,3 +1915,26 @@ and the cell maximisers form a `Δ`-spaced set to which the corpus's spacing bou
 This is the classical Halász architecture, and it needs exactly one new general lemma — the cell-supremum
 discretisation of an integral — plus the observation that cell maximisers are `Δ`-spaced.  Everything else,
 including the spacing bound itself, the corpus already owns.  Recorded as the specification for the next brick.
+
+## Discretisation by cell maxima
+
+`HTGeometry/CellMaxDiscretisation.lean` (new, green, axiom-clean, wired) — the device the previous entry specified.
+
+`exists_cell_max_integral_le` : for continuous `F`, splitting `[a, a+mΔ]` into `m` closed cells of length `Δ`,
+
+`∃ c : ℕ → ℝ`, each `c k` in the `k`-th cell, with   `∫_a^{a+mΔ} F ≤ ∑_{k<m} Δ·F(c k)`.
+
+The maximisers are produced by the statement, which is the point: an estimate for sums over well-spaced
+frequencies can consume them.  `IsCompact.exists_isMaxOn` supplies each cell's maximiser,
+`intervalIntegral.sum_integral_adjacent_intervals` reassembles the cells, and `integral_mono_on` against the
+constant `F (c k)` bounds each cell.
+
+**Why this is the right shape.**  Maximisers of cells of the *same parity* are at distance at least `Δ` — cell `k`
+ends where cell `k+1` begins, so consecutive maximisers can coincide, but cells `k` and `k+2` are separated by a
+full cell.  Splitting into even and odd families therefore gives two `Δ`-spaced families at the cost of a factor
+two, and on each the corpus's `sum_norm_tsum_twistedSummand_le_of_spacing` applies: one frequency pays the trivial
+size, all others are damped.
+
+That converts the Halász dichotomy into an integral bound of the shape `Δ·(trivial) + T·(damped)` instead of
+`Tδ·(trivial) + T·(damped)`.  The next brick is the parity split, and then the balance — which no longer contains
+the product `T·δ` that defeated the previous three accountings.
