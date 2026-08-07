@@ -1,0 +1,158 @@
+import Mathlib
+
+/-!
+# The Gagliardo constant of a frequency
+
+The difference-quotient and Fourier descriptions of a fractional Sobolev weight are matched by one
+scalar integral.  Plancherel turns the translation difference of `u` into multiplication of `û` by
+`e^{2πihξ} − 1`, so the Gagliardo seminorm becomes
+
+`∫ |û(ξ)|² (∫ |e^{2πihξ} − 1|² |h|^{-(1+2s)} dh) dξ`,
+
+and the inner integral depends on `ξ` only through `|ξ|^{2s}`.  Its value is the constant that
+converts one description into the other.
+
+The modulus is elementary,
+
+`|e^{iθ} − 1|² = 2 − 2cos θ = 4 sin²(θ/2)`,
+
+and the resulting integrand is integrable exactly on `0 < s < 1`: near the origin `sin²` cancels
+two powers, leaving `h^{1−2s}`, which needs `s < 1`; near infinity the sine is bounded, leaving
+`h^{−(1+2s)}`, which needs `s > 0`.
+-/
+
+open MeasureTheory Set Real
+
+namespace GaloisForLFunctions.HTGeometry
+
+/-! ## The modulus of a phase difference -/
+
+/-- The half-angle form of the squared modulus of a phase difference. -/
+theorem sin_sq_half (x : ℝ) : Real.sin (x / 2) ^ 2 = 1 / 2 - Real.cos x / 2 := by
+  have hdouble : Real.cos x = 2 * Real.cos (x / 2) ^ 2 - 1 := by
+    have := Real.cos_two_mul (x / 2)
+    rwa [show 2 * (x / 2) = x by ring] at this
+  have hpyth := Real.sin_sq_add_cos_sq (x / 2)
+  linarith
+
+/-- **The modulus of a phase difference.**  `|e^{iθ} − 1|² = 2 − 2cos θ`, by expanding the
+exponential into its real and imaginary parts. -/
+theorem normSq_exp_mul_I_sub_one (θ : ℝ) :
+    ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ 2 = 2 - 2 * Real.cos θ := by
+  rw [Complex.exp_mul_I, ← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+  simp only [Complex.add_re, Complex.add_im, Complex.sub_re, Complex.sub_im, Complex.mul_re,
+    Complex.mul_im, Complex.cos_ofReal_re, Complex.cos_ofReal_im, Complex.sin_ofReal_re,
+    Complex.sin_ofReal_im, Complex.I_re, Complex.I_im, Complex.one_re, Complex.one_im]
+  have hpyth := Real.sin_sq_add_cos_sq θ
+  nlinarith [hpyth]
+
+/-- The same modulus in half-angle form: `|e^{iθ} − 1|² = 4 sin²(θ/2)`. -/
+theorem normSq_exp_mul_I_sub_one_eq_four_mul_sin_sq (θ : ℝ) :
+    ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ 2 = 4 * Real.sin (θ / 2) ^ 2 := by
+  rw [normSq_exp_mul_I_sub_one, sin_sq_half]
+  ring
+
+/-! ## The Gagliardo integrand and its two tails -/
+
+/-- The Gagliardo integrand at unit frequency: the squared phase modulus against the fractional
+weight. -/
+noncomputable def gagliardoIntegrand (s h : ℝ) : ℝ :=
+  4 * Real.sin (Real.pi * h) ^ 2 * h ^ (-(1 + 2 * s))
+
+/-- The integrand is nonnegative on the positive ray. -/
+theorem gagliardoIntegrand_nonneg {s h : ℝ} (hh : 0 < h) : 0 ≤ gagliardoIntegrand s h := by
+  unfold gagliardoIntegrand
+  have h1 : (0 : ℝ) ≤ 4 * Real.sin (Real.pi * h) ^ 2 := by positivity
+  exact mul_nonneg h1 (Real.rpow_nonneg hh.le _)
+
+/-- **Near the origin the sine cancels two powers.**  The integrand is dominated by a constant
+multiple of `h^{1−2s}`. -/
+theorem gagliardoIntegrand_le_near_zero {s h : ℝ} (hh : 0 < h) :
+    gagliardoIntegrand s h ≤ 4 * Real.pi ^ 2 * h ^ (1 - 2 * s) := by
+  unfold gagliardoIntegrand
+  have hsin : Real.sin (Real.pi * h) ^ 2 ≤ (Real.pi * h) ^ 2 := by
+    have habs : |Real.sin (Real.pi * h)| ≤ |Real.pi * h| := abs_sin_le_abs
+    nlinarith [abs_nonneg (Real.sin (Real.pi * h)), abs_nonneg (Real.pi * h),
+      sq_abs (Real.sin (Real.pi * h)), sq_abs (Real.pi * h)]
+  have hw : (0 : ℝ) < h ^ (-(1 + 2 * s)) := Real.rpow_pos_of_pos hh _
+  have hsplit : (Real.pi * h) ^ 2 * h ^ (-(1 + 2 * s)) = Real.pi ^ 2 * h ^ (1 - 2 * s) := by
+    have hh2 : (h : ℝ) ^ 2 = h ^ (2 : ℝ) := by
+      rw [← Real.rpow_natCast h 2]; norm_num
+    rw [mul_pow, hh2, mul_assoc, ← Real.rpow_add hh]
+    congr 2
+    ring
+  calc 4 * Real.sin (Real.pi * h) ^ 2 * h ^ (-(1 + 2 * s))
+      ≤ 4 * (Real.pi * h) ^ 2 * h ^ (-(1 + 2 * s)) := by nlinarith [hsin, hw]
+    _ = 4 * ((Real.pi * h) ^ 2 * h ^ (-(1 + 2 * s))) := by ring
+    _ = 4 * (Real.pi ^ 2 * h ^ (1 - 2 * s)) := by rw [hsplit]
+    _ = 4 * Real.pi ^ 2 * h ^ (1 - 2 * s) := by ring
+
+/-- **Near infinity the sine is bounded.**  The integrand is dominated by `4 h^{−(1+2s)}`. -/
+theorem gagliardoIntegrand_le_near_infty {s h : ℝ} (hh : 0 < h) :
+    gagliardoIntegrand s h ≤ 4 * h ^ (-(1 + 2 * s)) := by
+  unfold gagliardoIntegrand
+  have hsin : Real.sin (Real.pi * h) ^ 2 ≤ 1 := by
+    have := Real.neg_one_le_sin (Real.pi * h)
+    have := Real.sin_le_one (Real.pi * h)
+    nlinarith
+  have hw : (0 : ℝ) < h ^ (-(1 + 2 * s)) := Real.rpow_pos_of_pos hh _
+  nlinarith [hsin, hw]
+
+/-! ## Integrability exactly on the unit strip of exponents -/
+
+/-- The integrand is measurable. -/
+theorem measurable_gagliardoIntegrand (s : ℝ) : Measurable (gagliardoIntegrand s) := by
+  unfold gagliardoIntegrand
+  fun_prop
+
+/-- **The Gagliardo integrand is integrable near the origin exactly below `s = 1`.** -/
+theorem integrableOn_gagliardoIntegrand_Ioo {s : ℝ} (hs : s < 1) :
+    IntegrableOn (gagliardoIntegrand s) (Ioo 0 1) := by
+  have hbase : IntegrableOn (fun h : ℝ => h ^ (1 - 2 * s)) (Ioo 0 1) := by
+    rw [intervalIntegral.integrableOn_Ioo_rpow_iff zero_lt_one]
+    linarith
+  have hdom : IntegrableOn (fun h : ℝ => 4 * Real.pi ^ 2 * h ^ (1 - 2 * s)) (Ioo 0 1) :=
+    hbase.const_mul _
+  refine MeasureTheory.Integrable.mono' hdom
+    (measurable_gagliardoIntegrand s).aestronglyMeasurable ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioo] with h hh
+  rw [Real.norm_eq_abs, abs_of_nonneg (gagliardoIntegrand_nonneg hh.1)]
+  exact gagliardoIntegrand_le_near_zero hh.1
+
+/-- **The Gagliardo integrand is integrable near infinity exactly above `s = 0`.** -/
+theorem integrableOn_gagliardoIntegrand_Ioi {s : ℝ} (hs : 0 < s) :
+    IntegrableOn (gagliardoIntegrand s) (Ioi 1) := by
+  have hbase : IntegrableOn (fun h : ℝ => h ^ (-(1 + 2 * s))) (Ioi 1) := by
+    rw [integrableOn_Ioi_rpow_iff zero_lt_one]
+    linarith
+  have hdom : IntegrableOn (fun h : ℝ => 4 * h ^ (-(1 + 2 * s))) (Ioi 1) :=
+    hbase.const_mul _
+  refine MeasureTheory.Integrable.mono' hdom
+    (measurable_gagliardoIntegrand s).aestronglyMeasurable ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
+  have hpos : (0 : ℝ) < h := lt_trans zero_lt_one hh
+  rw [Real.norm_eq_abs, abs_of_nonneg (gagliardoIntegrand_nonneg hpos)]
+  exact gagliardoIntegrand_le_near_infty hpos
+
+/-- **The Gagliardo constant exists exactly on `0 < s < 1`.**  Both tails converge there, so the
+integrand is integrable on the whole positive ray.  This is the constant that converts the
+difference-quotient description of a fractional Sobolev weight into the Fourier description. -/
+theorem integrableOn_gagliardoIntegrand_Ioi_zero {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1) :
+    IntegrableOn (gagliardoIntegrand s) (Ioi 0) := by
+  have hsplit : Ioi (0 : ℝ) = Ioo 0 1 ∪ Ici 1 := by
+    ext x
+    simp only [mem_Ioi, mem_union, mem_Ioo, mem_Ici]
+    constructor
+    · intro hx
+      rcases lt_or_ge x 1 with h | h
+      · exact Or.inl ⟨hx, h⟩
+      · exact Or.inr h
+    · rintro (⟨h1, _⟩ | h1)
+      · exact h1
+      · linarith
+  have hIci : IntegrableOn (gagliardoIntegrand s) (Ici 1) :=
+    (integrableOn_gagliardoIntegrand_Ioi hs0).congr_set_ae Ioi_ae_eq_Ici.symm
+  rw [hsplit]
+  exact (integrableOn_gagliardoIntegrand_Ioo hs1).union hIci
+
+end GaloisForLFunctions.HTGeometry

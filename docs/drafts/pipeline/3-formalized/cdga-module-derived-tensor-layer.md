@@ -1401,3 +1401,30 @@ splitting each of the two indices, indexed by the bidegrees of the left factor's
 which `tensorIndexFintype` already knows is finite.  Associativity and commutativity of the sum are
 reindexing arguments on top of `tensorPair_assoc` and `tensorPair_comm`; the Leibniz rule is
 `tensorPair_dL` and `tensorPair_dR` summed, matched against `tensorD`'s two halves.
+
+## The convolution product itself
+
+`CDGATensorAlgebra.lean` gained `tensorAlgTerm`, its four linearity lemmas, **`tensorAlgMul`**, and
+`tensorAlgMul_add_left`, `_add_right`, `_smul_left`, `_smul_right`.
+
+The product of two elements of the tensor product is, at each output bidegree, the sum over the
+bidegrees `r` of the left factor's total degree of the Koszul product of `f r` with the matching
+component of `g`, taken to be zero when `r` does not fit inside the output.  The index set is
+`tensorIndexFintype`, so the sum is finite; the `dite` on "`r` fits" is a condition on indices
+alone, which is why all four linearity laws split cleanly into the two branches.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+### What remains for the tensor product of algebras
+
+Three laws, all reindexing on top of the bidegree lemmas already proved:
+
+* **associativity** — a double sum over `(r, s)` on each side; the two index sets are in bijection
+  by `(r, s) ↦ (r + s, s)`, and the summands correspond by `tensorPair_assoc`;
+* **graded commutativity** — the involution `r ↦ p − r` matches the summands by `tensorPair_comm`;
+* **Leibniz** — `tensorD`'s two halves are summed against `tensorPair_dL` and `tensorPair_dR`, with
+  the boundary terms (where a shifted index leaves the range) vanishing because the corresponding
+  `dite` is false.
+
+None of the three needs a new sign identity; the signs are all in `tensorPair_comm`,
+`tensorPair_assoc`, `tensorPair_dL` and `tensorPair_dR`.

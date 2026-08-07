@@ -180,4 +180,78 @@ theorem laurentCoeff_const_eq_zero_of_mixedQuadrant
   have hIci : (Set.Ici N').Finite := Set.Finite.of_finite_image (hfin.subset hmaps) hinj
   exact (Set.Ici_infinite N') hIci
 
+
+/-- **Finiteness of the nonzero principal-part coefficients along a lattice orbit.**  If the
+coefficient function is invariant under `1` and under `τ`, then along the `σ`-orbit of a point only
+finitely many members carry a nonzero coefficient: the orbit reduces into one compact fundamental
+rectangle, injectively by integer independence. -/
+theorem finite_setOf_laurentCoeff_ne_zero_orbit
+    {G : ℂ → ℂ} (hG : MeromorphicOn G Set.univ) {ℓ : ℤ} (hℓ : ℓ < 0)
+    {τ σ : ℂ} (hτ : 0 < τ.im)
+    (hper1 : ∀ z : ℂ, laurentCoeff G (z + 1) ℓ = laurentCoeff G z ℓ)
+    (hperτ : ∀ z : ℂ, laurentCoeff G (z + τ) ℓ = laurentCoeff G z ℓ)
+    (hindep : ∀ m n j : ℤ, (m : ℂ) * σ + (n : ℂ) * τ + (j : ℂ) = 0 → m = 0 ∧ n = 0 ∧ j = 0)
+    (p : ℂ) :
+    {m : ℤ | laurentCoeff G (p + (m : ℂ) * σ) ℓ ≠ 0}.Finite := by
+  classical
+  set x : ℤ → ℂ := fun m => p + (m : ℂ) * σ with hx
+  set t : ℤ → ℤ := fun m => -⌊(x m).im / τ.im⌋ with ht
+  set y : ℤ → ℂ := fun m => x m + ((t m : ℤ) : ℂ) * τ with hy
+  set sh : ℤ → ℤ := fun m => -⌊(y m).re⌋ with hsh
+  set w : ℤ → ℂ := fun m => y m + ((sh m : ℤ) : ℂ) with hw
+  set M : ℝ := 1 + τ.im with hM
+  have hyim : ∀ m : ℤ, (y m).im = Int.fract ((x m).im / τ.im) * τ.im := by
+    intro m
+    have hyim0 : (y m).im = (x m).im + ((t m : ℤ) : ℝ) * τ.im := by
+      simp [hy, Complex.add_im, Complex.mul_im]
+    have hu : (x m).im = ((x m).im / τ.im) * τ.im := by
+      field_simp
+    rw [hyim0]
+    simp only [ht, Int.cast_neg, Int.fract]
+    linear_combination hu
+  have him : ∀ m : ℤ, |(w m).im| ≤ τ.im := by
+    intro m
+    have hwim : (w m).im = (y m).im := by
+      simp [hw, Complex.add_im, Complex.intCast_im]
+    rw [hwim, hyim m, abs_le]
+    constructor
+    · nlinarith [Int.fract_nonneg ((x m).im / τ.im), hτ]
+    · nlinarith [Int.fract_lt_one ((x m).im / τ.im), hτ, Int.fract_nonneg ((x m).im / τ.im)]
+  have hre : ∀ m : ℤ, |(w m).re| ≤ 1 := by
+    intro m
+    have hwre : (w m).re = Int.fract ((y m).re) := by
+      simp only [hw, hsh, Complex.add_re, Int.cast_neg, Complex.neg_re, Complex.intCast_re,
+        Int.fract]
+      ring
+    rw [hwre, abs_le]
+    constructor
+    · linarith [Int.fract_nonneg ((y m).re)]
+    · linarith [Int.fract_lt_one ((y m).re)]
+  have hball : ∀ m : ℤ, w m ∈ Metric.closedBall (0 : ℂ) M := by
+    intro m
+    simp only [Metric.mem_closedBall, dist_zero_right]
+    calc ‖w m‖ ≤ |(w m).re| + |(w m).im| := Complex.norm_le_abs_re_add_abs_im _
+      _ ≤ 1 + τ.im := add_le_add (hre m) (him m)
+      _ = M := by rw [hM]
+  have hcoef : ∀ m : ℤ, laurentCoeff G (w m) ℓ = laurentCoeff G (x m) ℓ := by
+    intro m
+    rw [hw, laurentCoeff_add_intCast hper1, hy, laurentCoeff_add_zsmul_of_period hperτ]
+  have hinj : Set.InjOn w {m : ℤ | laurentCoeff G (x m) ℓ ≠ 0} := by
+    intro m₁ _ m₂ _ heq
+    have hzero : ((m₁ - m₂ : ℤ) : ℂ) * σ + ((t m₁ - t m₂ : ℤ) : ℂ) * τ
+        + ((sh m₁ - sh m₂ : ℤ) : ℂ) = 0 := by
+      have h := heq
+      simp only [hw, hy, hx] at h
+      push_cast at h ⊢
+      linear_combination h
+    obtain ⟨hm, -, -⟩ := hindep _ _ _ hzero
+    omega
+  have hfin := finite_setOf_laurentCoeff_ne_zero_of_bounded hG hℓ
+    (S := Metric.closedBall (0 : ℂ) M) (Metric.isBounded_closedBall)
+  have hmaps : w '' {m : ℤ | laurentCoeff G (x m) ℓ ≠ 0} ⊆
+      {a : ℂ | a ∈ Metric.closedBall (0 : ℂ) M ∧ laurentCoeff G a ℓ ≠ 0} := by
+    rintro _ ⟨m, hm, rfl⟩
+    exact ⟨hball m, by rw [hcoef m]; exact hm⟩
+  exact Set.Finite.of_finite_image (hfin.subset hmaps) hinj
+
 end GaloisForLFunctions.HTGeometry

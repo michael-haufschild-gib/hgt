@@ -63,8 +63,8 @@ theorem connectedFiniteTorusChartCover_exists_nontrivial_cyclic_quotient
     [Nontrivial (p ⁻¹' {(1 : ComplexTorusAffineChart k)})] :
     ∃ N : Subgroup (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range,
       IsCoatom N ∧
-        IsCyclic ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⨸ N) ∧
-        Nontrivial ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⨸ N) := by
+        IsCyclic ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N) ∧
+        Nontrivial ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N) := by
   letI : CommGroup (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range :=
     torusChartMonodromyRangeCommGroup p cov
   letI : Nontrivial (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range :=
