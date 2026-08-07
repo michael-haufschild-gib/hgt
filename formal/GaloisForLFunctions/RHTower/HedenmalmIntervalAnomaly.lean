@@ -226,6 +226,19 @@ theorem shiftMultiplier_eq_zero_iff {n : ℕ} (hn : 2 ≤ n) {z : ℂ} (hz : z �
 
 
 
+
+/-- The trivial shift carries no anomaly: the interval degenerates. -/
+@[simp] theorem intervalMass_self (a : ℝ) : intervalMass S a a = 0 := by
+  rw [intervalMass, Set.Ioc_self, MeasureTheory.setIntegral_empty]
+
+@[simp] theorem centeredWindow_one (x : ℝ) : centeredWindow S 1 x = 0 := by
+  rw [centeredWindow]
+  simp [Real.log_one]
+
+@[simp] theorem shiftMultiplier_one (z : ℂ) : shiftMultiplier 1 z = 0 := by
+  rw [shiftMultiplier]
+  simp [Real.log_one]
+
 /-! ### The two-prime no-common-zero theorem -/
 
 private theorem pow_three_ne_pow_two {a b : ℕ} (ha : 0 < a)
@@ -315,7 +328,7 @@ theorem no_common_zero_two_three {z : ℂ}
       rw [← e1, ← e2]
       ring
     have h2ne : (2 : ℂ) * (Real.pi : ℂ) ≠ 0 := by
-      simpa using mul_ne_zero (two_ne_zero) hpi
+      exact mul_ne_zero two_ne_zero hpi
     have := mul_left_cancel₀ h2ne (by linear_combination e3 :
       (2 : ℂ) * (Real.pi : ℂ) * (((j : ℤ) : ℂ) * ((Real.log ((3 : ℕ) : ℝ) : ℝ) : ℂ))
         = (2 : ℂ) * (Real.pi : ℂ) * (((k : ℤ) : ℂ) * ((Real.log ((2 : ℕ) : ℝ) : ℝ) : ℂ)))
@@ -344,6 +357,84 @@ theorem no_common_zero_two_three {z : ℂ}
   rcases mul_eq_zero.mp this with h | h
   · exact hz h
   · exact hl2 h
+
+
+
+/-! ### The centered multiplier -/
+
+/-- The centered interval multiplier `a_n(z) = n^{-1/2} · 2 sin(z log n / 2) / z`, written with
+the exponential form of the sine. -/
+def centeredMultiplier (n : ℕ) (z : ℂ) : ℂ :=
+  ((((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ)) : ℂ)
+    * (Complex.exp (Complex.I * z * ((Real.log n / 2 : ℝ) : ℂ))
+      - Complex.exp (-(Complex.I * z * ((Real.log n / 2 : ℝ) : ℂ)))) / (Complex.I * z)
+
+/-- **The centered multiplier is the shifted interval multiplier.** -/
+theorem centeredMultiplier_eq {n : ℕ} {z : ℂ} (hz : z ≠ 0) :
+    centeredMultiplier n z
+      = -Complex.I * Complex.exp (Complex.I * z * ((Real.log n / 2 : ℝ) : ℂ))
+        * shiftMultiplier n z := by
+  have hI : (Complex.I : ℂ) ≠ 0 := Complex.I_ne_zero
+  have hII : Complex.I * Complex.I = -1 := Complex.I_mul_I
+  have hexp : Complex.exp (Complex.I * z * ((Real.log n / 2 : ℝ) : ℂ))
+      * Complex.exp (-(Complex.I * z * ((Real.log n : ℝ) : ℂ)))
+      = Complex.exp (-(Complex.I * z * ((Real.log n / 2 : ℝ) : ℂ))) := by
+    rw [← Complex.exp_add]
+    congr 1
+    push_cast
+    ring
+  rw [centeredMultiplier, shiftMultiplier,
+    show Complex.exp (-(Complex.I * z * ((Real.log n / 2 : ℝ) : ℂ)))
+        = Complex.exp (Complex.I * z * ((Real.log n / 2 : ℝ) : ℂ))
+          * Complex.exp (-(Complex.I * z * ((Real.log n : ℝ) : ℂ))) from hexp.symm]
+  field_simp
+  linear_combination (((((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ)) : ℂ)
+    * (1 - Complex.exp (-(Complex.I * z * ((Real.log n : ℝ) : ℂ))))) * hII
+
+/-- **The centered multiplier has the same zero set as the interval multiplier.** -/
+theorem centeredMultiplier_eq_zero_iff {n : ℕ} {z : ℂ} (hz : z ≠ 0) :
+    centeredMultiplier n z = 0 ↔ shiftMultiplier n z = 0 := by
+  rw [centeredMultiplier_eq hz]
+  constructor
+  · intro h
+    rcases mul_eq_zero.mp h with h1 | h1
+    · rcases mul_eq_zero.mp h1 with h2 | h2
+      · exact absurd (neg_eq_zero.mp h2) Complex.I_ne_zero
+      · exact absurd h2 (Complex.exp_ne_zero _)
+    · exact h1
+  · intro h
+    rw [h, mul_zero]
+
+/-- **The centered prime-2 and prime-3 multipliers have no common zero.** -/
+theorem no_common_zero_centered_two_three {z : ℂ}
+    (h2 : centeredMultiplier 2 z = 0) (h3 : centeredMultiplier 3 z = 0) : z = 0 := by
+  by_contra hz
+  exact hz (no_common_zero_two_three ((centeredMultiplier_eq_zero_iff hz).mp h2)
+    ((centeredMultiplier_eq_zero_iff hz).mp h3))
+
+
+
+/-! ### Uniform bounds on the window -/
+
+theorem intervalMass_le_mass {a b : ℝ} (hab : a ≤ b) : intervalMass S a b ≤ S.mass := by
+  rw [← mass_mul_cdfFun_sub S hab]
+  have hb := (S.cdfFun_mem_Ioo b).2
+  have ha := (S.cdfFun_mem_Ioo a).1
+  have hM := S.mass_pos
+  nlinarith
+
+/-- The centered window is uniformly bounded by the normalized total mass. -/
+theorem centeredWindow_le {n : ℕ} (hn : 1 ≤ n) (x : ℝ) :
+    centeredWindow S n x ≤ (n : ℝ) ^ (-(1 / 2 : ℝ)) * S.mass := by
+  have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn)
+  have hle : x - Real.log n / 2 ≤ x + Real.log n / 2 := by linarith
+  have hpow : (0 : ℝ) < (n : ℝ) ^ (-(1 / 2 : ℝ)) := by
+    have : (0 : ℝ) < (n : ℝ) := by
+      have : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+      linarith
+    exact Real.rpow_pos_of_pos this _
+  rw [centeredWindow]
+  exact mul_le_mul_of_nonneg_left (intervalMass_le_mass S hle) hpow.le
 
 
 end HedenmalmIntervalAnomaly

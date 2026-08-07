@@ -86,4 +86,38 @@ theorem fourier_translate_half (f : ℝ → ℂ) {ξ : ℝ} (hξ : ξ ≠ 0) :
   rw [hgoal, Circle.smul_def, hph]
   ring
 
+/-- **Decay from the `L¹` modulus of continuity.**  Twice the transform is the transform of the
+half-period difference, so it is bounded by that difference's `L¹` norm.  This needs neither
+differentiability nor bounded variation. -/
+theorem two_mul_norm_fourier_le_translationDistance (f : ℝ → ℂ) (hf : Integrable f) {ξ : ℝ}
+    (hξ : ξ ≠ 0) :
+    2 * ‖fourier f ξ‖ ≤ ∫ x, ‖f x - f (x + 1 / (2 * ξ))‖ := by
+  have htr := fourier_translate_half f hξ
+  set h : ℝ := 1/(2*ξ) with hh
+  have hft : Integrable (fun x => f (x + h)) := hf.comp_add_right h
+  have hneg : Integrable (fun x => -f (x + h)) := hft.neg
+  have hadd := congrFun (VectorFourier.fourierIntegral_add (E := ℂ) (e := Real.fourierChar)
+    (μ := (volume : Measure ℝ)) (L := innerₗ ℝ) Real.continuous_fourierChar (by fun_prop)
+    hf hneg) ξ
+  have hnegf : fourier (fun x => -f (x + h)) ξ = -fourier (fun x => f (x + h)) ξ := by
+    have := congrFun (VectorFourier.fourierIntegral_const_smul (E := ℂ) Real.fourierChar
+      (volume : Measure ℝ) (innerₗ ℝ) (fun x => f (x + h)) (-1 : ℂ)) ξ
+    have hs : ((-1 : ℂ) • (fun x => f (x + h))) = (fun x => -f (x + h)) := by
+      funext x; simp
+    rw [hs] at this
+    simp only [Pi.smul_apply, neg_smul, one_smul] at this
+    exact this
+  have hsub : fourier (fun x => f x - f (x + h)) ξ = 2 * fourier f ξ := by
+    have hrw : (fun x => f x - f (x + h)) = (fun x => f x + -f (x + h)) := by
+      funext x; ring
+    rw [hrw]
+    have h2 : fourier (fun x => f x + -f (x + h)) ξ
+        = fourier f ξ + fourier (fun x => -f (x + h)) ξ := hadd
+    rw [h2, hnegf, htr]
+    ring
+  have hbd : ‖fourier (fun x => f x - f (x + h)) ξ‖ ≤ ∫ x, ‖f x - f (x + h)‖ :=
+    VectorFourier.norm_fourierIntegral_le_integral_norm _ _ _ _ _
+  rw [hsub] at hbd
+  simpa using hbd
+
 end GaloisForLFunctions.HTGeometry

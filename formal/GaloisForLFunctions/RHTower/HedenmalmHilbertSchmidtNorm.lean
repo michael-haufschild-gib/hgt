@@ -86,6 +86,14 @@ theorem integral_pinnedKernelSlice_sq {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1) :
   rw [hleft, hright]
   ring
 
+
+/-- The pinned kernel slice is bounded by one on the unit interval. -/
+theorem abs_pinnedKernelSlice_le {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) (u : ℝ) :
+    |pinnedKernelSlice t u| ≤ 1 := by
+  rw [pinnedKernelSlice]
+  by_cases h : u ≤ t <;> simp only [h, if_true, if_false] <;>
+    rw [abs_le] <;> constructor <;> linarith [ht.1, ht.2]
+
 /-! ### The Hilbert--Schmidt energy in source coordinates -/
 
 variable (S : PositiveDensitySource)

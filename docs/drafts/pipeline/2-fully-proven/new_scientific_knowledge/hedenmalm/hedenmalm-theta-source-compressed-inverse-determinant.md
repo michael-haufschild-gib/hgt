@@ -323,7 +323,7 @@ card.  All declarations are `#print axioms`-clean.
 
 | # | statement | Lean declaration |
 |---|---|---|
-| `(4)` | the pinned kernel slice `1_(y<=x) - p(x)` | `pinnedKernelSlice` |
+| `(4)` | the pinned kernel slice `1_(y<=x) - p(x)`, bounded by one | `pinnedKernelSlice`, `abs_pinnedKernelSlice_le` |
 | `(5)` | inner slice energy `t(1-t)` | `integral_pinnedKernelSlice_sq` |
 | `(5)` | Hilbert--Schmidt energy `= M integral p(1-p)/k` | `integral_quantileSpeed_sq_slice`, `tailEnergyDensity` |
 | `(6)` | a divisor point is an eigenvalue: `B f_z = -z^(-1) f_z` | `sourceInverse_sourceModeF_eq_smul` |

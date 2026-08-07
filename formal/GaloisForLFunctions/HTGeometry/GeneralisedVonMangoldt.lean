@@ -48,4 +48,38 @@ theorem vonMangoldtOf_zeta
   · simp
   · simp [pmul, ArithmeticFunction.zeta_apply, hn.ne']
 
+/-- **For a completely multiplicative `f` the generalised von Mangoldt function is `f·Λ`.**  Every
+antidiagonal term collapses, `f a · (f b Λ b) = f (ab) Λ b = f n Λ b`, and `∑_{b ∣ n} Λ b = log n`. -/
+theorem pmul_log_eq_mul_pmul_vonMangoldt (f : ArithmeticFunction ℝ)
+    (hf : ∀ m n : ℕ, f (m * n) = f m * f n) :
+    pmul f ArithmeticFunction.log = f * pmul f Λ := by
+  ext n
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp
+  rw [ArithmeticFunction.mul_apply, pmul_apply, ArithmeticFunction.log_apply]
+  have hterm : ∀ x ∈ n.divisorsAntidiagonal, f x.1 * (pmul f Λ) x.2 = f n * Λ x.2 := by
+    intro x hx
+    rw [Nat.mem_divisorsAntidiagonal] at hx
+    rw [pmul_apply, ← mul_assoc, ← hf, hx.1]
+  rw [Finset.sum_congr rfl hterm, ← Finset.mul_sum]
+  have hdiv : (∑ x ∈ n.divisorsAntidiagonal, Λ x.2) = ∑ i ∈ n.divisors, Λ i :=
+    Nat.sum_divisorsAntidiagonal' (fun _ b => Λ b)
+  rw [hdiv, vonMangoldt_sum]
+
+/-- The generalised von Mangoldt function of a completely multiplicative `f`. -/
+theorem vonMangoldtOf_eq_pmul_vonMangoldt (f : ArithmeticFunction ℝ) (hf1 : Invertible (f 1))
+    (hf : ∀ m n : ℕ, f (m * n) = f m * f n) :
+    vonMangoldtOf f hf1 = pmul f Λ :=
+  (eq_vonMangoldtOf_of_mul_eq f (pmul f Λ) hf1 (pmul_log_eq_mul_pmul_vonMangoldt f hf).symm).symm
+
+/-- **The weight of the recursion is dominated by `Λ`.**  For a bounded completely multiplicative `f`
+the generalised von Mangoldt function is supported on prime powers with mass at most `log p`. -/
+theorem abs_vonMangoldtOf_le_vonMangoldt (f : ArithmeticFunction ℝ) (hf1 : Invertible (f 1))
+    (hf : ∀ m n : ℕ, f (m * n) = f m * f n) (hbdd : ∀ n : ℕ, |f n| ≤ 1) (n : ℕ) :
+    |vonMangoldtOf f hf1 n| ≤ Λ n := by
+  have h0 : (0 : ℝ) ≤ Λ n := vonMangoldt_nonneg
+  rw [vonMangoldtOf_eq_pmul_vonMangoldt f hf1 hf, pmul_apply, abs_mul, abs_of_nonneg h0]
+  calc |f n| * Λ n ≤ 1 * Λ n := mul_le_mul_of_nonneg_right (hbdd n) h0
+    _ = Λ n := one_mul _
+
 end GaloisForLFunctions.HTGeometry

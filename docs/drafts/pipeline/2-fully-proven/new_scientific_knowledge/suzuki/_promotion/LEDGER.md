@@ -678,3 +678,188 @@ hin : ((innerₗ ℝ) (1/(2*ξ)) ξ : ℝ) = 1/2
 Unfold through `RCLike.inner_apply` (`⟪x,y⟫ = conj x * y`, with `star_trivial` on `ℝ`) rather than
 by `show`; `innerₗ_apply` does not exist under that name in this toolchain.  Once `hin` is proved
 the rest of the chain already type-checks as written above.
+
+### J.3 The translation lemma is proved
+
+`HTGeometry/FourierDecayFromDerivative.lean` now carries
+
+```text
+fourier_translate_half : 𝓕 (fun x => f (x + 1/(2ξ))) ξ = -𝓕 f ξ      for ξ ≠ 0
+```
+
+The `hin` step of J.2 is `simp only [innerₗ]` followed by `simp [innerₛₗ, mul_comm]` and
+`field_simp` — the `RCLike.inner_apply` route was a dead end, and `innerₛₗ_apply` does not exist
+under that name.
+
+Remaining for the decay bound: linearity of `𝓕` across `f x - f (x + h)` — an `integral_sub` with
+both translates integrable — giving
+
+```text
+2 * ‖𝓕 f ξ‖ ≤ ∫ ‖f x - f (x + 1/(2ξ))‖ dx,
+```
+
+and then any `L¹` modulus bound `∫ ‖f(·+h) - f‖ ≤ |h| V` yields `‖𝓕 f ξ‖ ≤ V/(4|ξ|)`, the second
+hypothesis of `memSobolevWeight_of_decay`.  That completes section 4 of
+`suzuki-two-port-return-redundancy-and-interior-null-core` and the profile membership needed by
+`suzuki-carleman-flat-port-weighted-strip-barrier`.
+
+### J.4 The decay bound is proved
+
+```text
+two_mul_norm_fourier_le_translationDistance
+  2 * ‖𝓕 f ξ‖ ≤ ∫ ‖f x - f (x + 1/(2ξ))‖ dx      for integrable f and ξ ≠ 0
+```
+
+No differentiability, no bounded variation.  The chain used
+`VectorFourier.fourierIntegral_add`, `fourierIntegral_const_smul` at `-1`, and
+`norm_fourierIntegral_le_integral_norm`, bridged to the `𝓕` notation by `exact` (never `simpa` —
+that normalises across the `VectorFourier`/`Real` coercion and blocks the defeq).
+
+Section J is therefore reduced to one arithmetic step for each consuming card: supply an `L¹`
+modulus bound `∫ ‖f(·+h) − f‖ ≤ |h| V` for the profile, then
+
+```text
+‖𝓕 f ξ‖ ≤ V / (4|ξ|)
+```
+
+feeds `memSobolevWeight_of_decay` with `K = V/4`, giving `H^s` membership for every `s < 1/2`.
+For a monotone profile on a collar the modulus bound is its total variation.
+
+### J.5 The one remaining step, and why it is the honest one
+
+Everything in section J is proved except the `L¹` modulus bound itself:
+
+```text
+∫ ‖f (x + h) - f x‖ dx ≤ |h| * V
+```
+
+Two routes, and the cheap-looking one does not work:
+
+* **Does not work.** `‖f(x+h) − f x‖ ≤ 2‖f‖_∞` with bounded support gives
+  `∫ ≤ 2‖f‖_∞ · |supp|` — a *constant*, independent of `h`, so it yields no decay at all.  The
+  `|h|`-linearity is the entire content.
+* **Works.** For `f` absolutely continuous with `f' ∈ L¹`, `f(x+h) − f(x) = ∫_x^{x+h} f'`, hence
+  `∫ ‖f(x+h) − f x‖ dx ≤ ∫∫ |f'| = |h| ‖f'‖₁` by Tonelli on the strip.  This needs FTC for the
+  Lebesgue integral plus one Tonelli application, both in mathlib.
+
+For the card's profile `exp(-sqrt(log(1/r)))` cut off on a collar: it is monotone and bounded there,
+`C¹` on the open collar, and `‖f'‖₁` equals its total variation (a finite endpoint-to-collar
+change plus the cutoff's variation), so the second route applies with `V = ‖f'‖₁` even though `f`
+is not differentiable at the endpoint — the FTC route needs only absolute continuity, which the
+monotone bounded profile has.
+
+That single estimate closes section 4 of `suzuki-two-port-return-redundancy-and-interior-null-core`
+and the profile membership of `suzuki-carleman-flat-port-weighted-strip-barrier`.
+
+### J.6 The modulus estimate: everything but the Tonelli swap
+
+Probed in `formal/tmp/probeK.lean` (scratch only — nothing entered the tree).  Use the form
+`f(x+h) − f(x) = ∫_0^h f'(x+s) ds`, which avoids a triangular domain.  Verified to compile:
+
+```text
+hinv : ∀ s, (∫ x, ‖g (x + s)‖) = ∫ x, ‖g x‖        integral_add_right_eq_self      ✓
+       then intervalIntegral.integral_const and simp give  h * ∫ ‖g‖                ✓
+```
+
+The single open step is the swap
+
+```text
+∫ x, ∫ s in (0:ℝ)..h, ‖g (x + s)‖  =  ∫ s in (0:ℝ)..h, ∫ x, ‖g (x + s)‖
+```
+
+i.e. `MeasureTheory.integral_integral_swap` on `ℝ × [0,h]`, whose hypothesis is joint integrability
+of `(x,s) ↦ ‖g (x+s)‖` on the product.  That follows from `hg` by the measure-preserving shear
+`(x,s) ↦ (x+s, s)`, which is where the work is.
+
+With that swap, `∫ ‖f(x+h) − f x‖ dx ≤ h ‖f'‖₁` follows, and section J closes both consuming cards.
+
+### J.7 Executable plan for the Tonelli swap
+
+Do **not** reach for the `ENNReal`/`lintegral` form: converting back to Bochner integrals costs more
+than supplying the integrability directly.  The Bochner route:
+
+```text
+μ := volume.restrict (Ioc 0 h)     ν := volume
+F : ℝ → ℝ → ℝ  ,  F s x = ‖g (x + s)‖
+```
+
+`MeasureTheory.integrable_prod_iff` (note the *order*: the outer variable must be the one the
+criterion quantifies over, so put `s` outside and `x` inside — the naive `x`-outside orientation
+gives the wrong criterion and is the trap here) reduces joint integrability to two facts, both
+immediate:
+
+```text
+∀ s, Integrable (fun x => ‖g (x + s)‖) volume      from (hg.comp_add_right s).norm
+Integrable (fun s => ∫ x, ‖g (x + s)‖) μ           the inner integral is the constant ‖g‖₁ by
+                                                   integral_add_right_eq_self, and a constant is
+                                                   integrable on the finite-measure set Ioc 0 h
+```
+
+The only real work is `AEStronglyMeasurable` of the uncurry `(s, x) ↦ ‖g (x + s)‖` on the product:
+obtain it from `hg.aestronglyMeasurable` composed with the continuous shear `(s, x) ↦ x + s`, using
+that the shear is measure preserving on `ν` for each fixed `s`.
+
+Then `MeasureTheory.integral_integral_swap` gives the swap, `intervalIntegral.integral_of_le`
+converts to and from the interval form, and J.6's verified remainder finishes
+
+```text
+∫ ‖f (x + h) - f x‖ dx ≤ h * ‖f'‖₁ .
+```
+
+### J.8 J.7's plan verified; one measurability fact left
+
+`formal/tmp/probeL.lean` confirms the whole of J.7 compiles **except** the measurability side
+condition.  With that granted, `integrable_prod_iff` closes joint integrability exactly as planned:
+`(hg.comp_add_right s).norm` for the inner factor, and the inner integral is the constant `‖g‖₁`
+(`integral_add_right_eq_self` after `norm_norm`), integrable on `Ioc 0 h` by `integrableOn_const`.
+
+The remaining fact is
+
+```text
+AEStronglyMeasurable (fun p : ℝ × ℝ => ‖g (p.2 + p.1)‖)
+  ((volume.restrict (Ioc 0 h)).prod volume)
+```
+
+Route: `AEStronglyMeasurable.comp_quasiMeasurePreserving` applied to `hg.aestronglyMeasurable.norm`
+and the shear `p ↦ p.2 + p.1`.  There is **no** ready-made `QuasiMeasurePreserving` instance for
+that shear — `exact?` finds nothing — so it has to be built from its definition: measurability of
+the shear (continuous), plus
+
+```text
+Measure.map (fun p => p.2 + p.1) ((volume.restrict (Ioc 0 h)).prod volume) ≪ volume,
+```
+
+which holds because the pushforward is `h • volume`: for fixed `s` the map `x ↦ x + s` preserves
+`volume` (`measurePreserving_add_right`), and Fubini integrates that over `s ∈ Ioc 0 h`.
+
+Trying to dodge this by passing to a strongly measurable representative of `g` is circular — the
+a.e. equality still has to be transported to the product measure, which is the same absolute
+continuity.
+
+### J.9 All ingredients present; the FTC step is verified
+
+`HTGeometry/TranslationModulus.lean` now supplies the measure-theoretic half.  The analytic half is
+verified too (`formal/tmp/probeQ.lean`):
+
+```text
+(∫ s in (0:ℝ)..h, deriv f (x + s)) = f (x + h) - f x
+  by  intervalIntegral.integral_comp_add_left
+      intervalIntegral.integral_eq_sub_of_hasDerivAt   ring_nf
+```
+
+Assembly, with every name now known:
+
+```text
+hptw : ‖f (x+h) - f x‖ ≤ ∫ s in (0:ℝ)..h, ‖deriv f (x+s)‖
+       FTC above + intervalIntegral.norm_integral_le_integral_norm (needs 0 ≤ h)
+swap : ∫ s in Ioc 0 h, ∫ x, ‖g (x+s)‖ = ∫ x, ∫ s in Ioc 0 h, ‖g (x+s)‖
+       integral_integral_swap (integrable_uncurry_norm_shear g hg h)     -- orientation already
+                                                                        -- matches: s outer
+value: the left side is h * ‖g‖₁ by integral_integral_shear_eq
+outer integrability of x ↦ ∫ s in Ioc 0 h, ‖g (x+s)‖ : Integrable.integral_prod_right'
+conclude by integral_mono
+```
+
+Note the orientation of `integrable_uncurry_norm_shear` was chosen (J.7) so that
+`integral_integral_swap` produces exactly the direction needed here — `s` outer, `x` inner — with no
+re-proof.

@@ -168,17 +168,21 @@ theorem freeCellGen_apply (v : V) :
     (Nat.zero_add k)).apply_symm_apply _
 
 variable (P : CDGAModuleStructure A M) (hP : CDGAModuleUnital u P) (g : V →ₗ[R] M k)
-  (hg : ∀ v, P.d k (g v) = 0)
 
-include hP hg
+include hP
 
-/-- **The extension takes the prescribed value on a generator.** -/
-theorem freeCellExtend_gen (v : V) :
-    (freeCellExtend P k g hg).toFun k (freeCellGen (R := R) (X := X) u k v) = g v := by
-  rw [freeCellExtend_toFun,
-    freeCellExtendₗ_apply P k g (Nat.zero_add k) (freeCellGen (R := R) (X := X) u k v),
+/-- **The extension takes the prescribed value on a generator.**  This needs no assumption on the
+generators. -/
+theorem freeCellExtendₗ_gen (v : V) :
+    freeCellExtendₗ P k g k (freeCellGen (R := R) (X := X) u k v) = g v := by
+  rw [freeCellExtendₗ_apply P k g (Nat.zero_add k) (freeCellGen (R := R) (X := X) u k v),
     freeCellGen_apply, TensorProduct.lift.tmul, freeCellBil_apply]
   exact hP.act_one k (g v)
+
+/-- The extension of a map into the cocycles takes the prescribed value on a generator. -/
+theorem freeCellExtend_gen (hg : ∀ v, P.d k (g v) = 0) (v : V) :
+    (freeCellExtend P k g hg).toFun k (freeCellGen (R := R) (X := X) u k v) = g v :=
+  freeCellExtendₗ_gen u k P hP g v
 
 end Generator
 

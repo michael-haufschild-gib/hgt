@@ -1294,3 +1294,40 @@ Everything that step needs is now built and unconditional:
 `coverColimMap_cohomologyMap_surjective`.  What is left is the bundled recursion, the two
 convergence arguments (a cocycle of the colimit lives at a stage; a coboundary of the target is
 killed at the next one), and the assembly.
+
+## Semi-free resolutions exist, and they are flat
+
+`CDGAUnitalCells.lean` — `tensorConst_unital`, `shift_unital`, **`freeCell_unital`**: a free cell
+over a unital algebra is a unital module, which is what makes a generator's twist equal to its
+prescribed value rather than the unit acting on it.
+
+`CDGADGStage.lean` — **`DGStage`** (carrier, its two instances, structure and comparison, all in one
+object so that a recursion can produce them), `killIndex`, **`cellIndex`** (`Z^k(P) ⊕ killIndex`),
+`cellW`, `cellG`, `cellG_primitive`, **`killStep`**, `killStepHom`, **`killSeq`**, `killTrans`,
+`killDirectedSystem`, **`killColim`**, **`killColimMap`**, `killSeq_unital`, **`killSeq_kills`**,
+**`killSeq_covers`**, `killColimMap_surjective_on_cocycles`,
+**`killColimMap_cohomologyMap_injective`**, **`killColimMap_isQuasiIso`**.
+
+One cell per stage suffices because the covering generators and the killing generators live in the
+*same* degree: the cell attached at stage `j` is free on `Z^k(P) ⊕ {(c, v) | c ∈ Z^{k+1}, ε c = d v}`
+with `k = (Nat.unpair j).2`, attached by `0` on the left summand and by `c` on the right.  So a
+single `freeCellTwist` and a single `freeCellTwistedLift` do both jobs, and `Nat.pair` schedules
+every degree infinitely often — which is exactly what the two convergence arguments need.
+
+`CDGAResolution.lean` — `resolutionBase`, **`resolution`**, `resolutionMap`,
+**`resolutionMap_isQuasiIso`**, `resolutionMap_cocyclesMap_zero_surjective`, **`killSeq_flat`**,
+`relTensorMapLeft_killColim_isQuasiIsoFull`, **`relTensorMapLeft_resolution_isQuasiIsoFull`**.
+
+> **Every differential graded module over a unital commutative differential graded algebra has a
+> semi-free resolution, and that resolution is flat for the tensor product over the algebra.**
+
+Axioms throughout: `propext, Classical.choice, Quot.sound`.
+
+### The one thing a cell cannot do
+
+`IsQuasiIsoFull` asks in addition that `Z^0` map bijectively.  The resolution gives surjectivity
+there, but not injectivity, and no cell can supply it: killing a degree-zero cocycle would need a
+generator in degree `−1`.  In non-negative cohomological degrees that is not a gap in the
+construction but a fact about it, and it is why `resolutionMap_isQuasiIso` is stated as
+`IsQuasiIso` rather than `IsQuasiIsoFull`.  The flatness theorem is unaffected: it consumes a full
+quasi-isomorphism in the *other* variable and says nothing about the resolution's own `Z^0`.
