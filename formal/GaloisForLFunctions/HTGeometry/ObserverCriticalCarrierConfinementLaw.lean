@@ -15,7 +15,7 @@ transversality statements.  It also identifies the quantitative successor:
 lower tails of this observer minor, rather than the minimum spectral gap.
 -/
 
-open MeasureTheory Metric Set
+open MeasureTheory ProbabilityTheory Metric Set
 
 namespace GaloisForLFunctions.HTGeometry
 

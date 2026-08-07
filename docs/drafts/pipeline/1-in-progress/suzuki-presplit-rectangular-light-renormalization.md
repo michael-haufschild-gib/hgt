@@ -8,8 +8,8 @@
   `../2-fully-proven/new_scientific_knowledge/suzuki-wall-field-light-cone-kernel-completion.md`
 - **New proved input:**
   `../2-fully-proven/new_scientific_knowledge/suzuki-aperture-dressed-wall-light-completion.md`,
-  `../2-fully-proven/new_scientific_knowledge/suzuki-causal-depth-frostman-transfer.md`,
-  `../2-fully-proven/new_scientific_knowledge/suzuki-causal-depth-rectangular-caratheodory-growth.md`,
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-causal-depth-frostman-transfer.md`,
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-causal-depth-rectangular-caratheodory-growth.md`,
   `../2-fully-proven/new_scientific_knowledge/suzuki-rectangular-wall-gram-gate.md`
 - **RH used:** no
 - **Computation used:** no

@@ -6041,3 +6041,4 @@ import GaloisForLFunctions.RHTower.RouteRGammaCoronaHorizonGaugeIndependence
 import GaloisForLFunctions.RHTower.Sieve.DistanceAbscissaBridge
 import GaloisForLFunctions.RHTower.SuzukiCausalEntryMovingCutRealization
 import GaloisForLFunctions.RHTower.Sieve.HalaszFullSeriesSum
+import GaloisForLFunctions.RHTower.SuzukiCriticalAperturePrimeCurrent

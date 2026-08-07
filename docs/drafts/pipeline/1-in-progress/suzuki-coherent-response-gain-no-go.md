@@ -5,7 +5,7 @@
 - **Type:** SOURCE-SPECIFIC NO-GO / SHARP BOUNDARY LAW
 - **Scientific status:** `[PROVED ON PAPER] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Parents:**
-  `../2-fully-proven/new_scientific_knowledge/suzuki-coherent-causal-depth-fusion.md`,
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-coherent-causal-depth-fusion.md`,
   `../2-fully-proven/new_scientific_knowledge/suzuki-rectangular-wall-gram-gate.md`
 - **Attacks:** `suzuki-coherent-fusion-gamma-weld.md`
 - **RH used:** no

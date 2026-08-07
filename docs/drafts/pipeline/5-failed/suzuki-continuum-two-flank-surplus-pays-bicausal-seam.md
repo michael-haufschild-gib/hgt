@@ -75,6 +75,6 @@ identity.  Treating S69's apex-relative block surplus as free target capacity is
 
 Paper and Lean survivor:
 
-- `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-critical-apex-vacuum-capacity-no-go.md`;
+- `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki/suzuki-critical-apex-vacuum-capacity-no-go.md`;
 - `formal/GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean`;
 - capstone axioms: only `propext`, `Classical.choice`, `Quot.sound`.

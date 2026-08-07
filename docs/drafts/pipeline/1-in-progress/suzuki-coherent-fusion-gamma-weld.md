@@ -5,10 +5,10 @@
 - **Type:** CONJECTURE / GLOBAL SOURCE ASSEMBLY / CROSS-PRIME SCHUR COMPLETION
 - **Scientific status:** `[CONJECTURE] [RH-BEARING] [SOURCE-SPECIFIC]`
 - **Source:**
-  `../2-fully-proven/new_scientific_knowledge/suzuki-causal-depth-frostman-transfer.md`,
-  `../2-fully-proven/new_scientific_knowledge/suzuki-causal-depth-rectangular-caratheodory-growth.md`,
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-causal-depth-frostman-transfer.md`,
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-causal-depth-rectangular-caratheodory-growth.md`,
   `../2-fully-proven/new_scientific_knowledge/suzuki-rectangular-wall-gram-gate.md`,
-  `../2-fully-proven/new_scientific_knowledge/suzuki-critical-entry-wall-quarter-shift-green-law.md`,
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-critical-entry-wall-quarter-shift-green-law.md`,
   Gamma cyclic measure, and rectangular Ward connector
 - **Statement:** Start from compactly gated observer-free wall Grams carrying exact sharp prime
   cells, transport them through actual restricted-Weil boundary response into the coherently fused

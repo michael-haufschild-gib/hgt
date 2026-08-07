@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** NO-GO / EXACT RH-EQUIVALENT SOURCE CLASSIFICATION
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
-- **Parents:** `../3-formalized/new_scientific_knowledge/suzuki-volterra-cartesian-phase-defect.md`,
+- **Parents:** `../3-formalized/new_scientific_knowledge/suzuki/suzuki-volterra-cartesian-phase-defect-formalized.md`,
   `suzuki-carleman-jump-euler-defect-weld.md`
 - **Original statement:** Literal Suzuki screw/Volterra source constructs, without Xi-zero data,
   positivity assumptions, or RH, produce analytic boundary responses and an analytic

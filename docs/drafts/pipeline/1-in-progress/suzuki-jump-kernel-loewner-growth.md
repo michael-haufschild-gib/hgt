@@ -5,7 +5,7 @@
 - **Type:** RH-SUFFICIENT SOURCE CONJECTURE
 - **Status:** `[OPEN CORE] [SOURCE-PURE] [NO RH PREMISE]`
 - **Proved reduction:**
-  `../2-fully-proven/new_scientific_knowledge/suzuki-jump-kernel-loewner-growth-gap.md`
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-jump-kernel-loewner-growth-gap.md`
 
 ## Goal
 
@@ -90,7 +90,7 @@ in the characteristic gauge `W_(-L)=W_(-2L)+LJ`, `d=W_(-2L)'(0)`.
   negative on negative coordinates.  Actual open core is now the sharper
   `SUZUKI-GLOBAL-LOCAL-KREIN-WELD`: prove explicit coupled Euler--Gamma/Neumann completion pays
   exactly the negative spectral debt while retaining Xi divisor.  See
-  `../2-fully-proven/new_scientific_knowledge/suzuki-affine-resolvent-krein-defect.md`.
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-affine-resolvent-krein-defect.md`.
 
 ## 2026-07-22 frontier correction
 
@@ -357,7 +357,7 @@ marked tensor as positive prime--Gamma Gram, with global Xi multiplier and exact
 term retained.  One negative principal minor falsifies it.
 
 See
-`../2-fully-proven/new_scientific_knowledge/suzuki-volterra-cartesian-phase-defect.md` and
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-volterra-cartesian-phase-defect.md` and
 `formal/GaloisForLFunctions/RHTower/SuzukiVolterraCartesianPhaseDefect.lean`.
 
 ## 2026-07-22 global-local compound Bezoutian correction
@@ -466,5 +466,5 @@ mismatch or negative finite principal minor falsifies conjecture.
 
 Paper and Lean:
 
-- `../2-fully-proven/new_scientific_knowledge/suzuki-marked-secant-midpoint-lorentz-completion.md`;
+- `../3-formalized/new_scientific_knowledge/suzuki/suzuki-marked-secant-midpoint-lorentz-completion.md`;
 - `formal/GaloisForLFunctions/RHTower/SuzukiMarkedSecantMidpointLorentzCompletion.lean`.

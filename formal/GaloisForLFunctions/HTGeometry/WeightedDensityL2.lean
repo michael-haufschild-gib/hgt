@@ -123,6 +123,105 @@ theorem memLp_two_withDensity_iff {w : α → ℝ} (hw : Measurable w) (hpos : �
     rw [eLpNorm_two_withDensity hw hpos hmeas]
     exact hf.2
 
+/-! ### The unitary `f ↦ √w · f` -/
+
+variable (w : α → ℝ) (hw : Measurable w) (hpos : ∀ x, 0 < w x)
+
+/-- The weighted `L²` space of a positive real density. -/
+abbrev WeightedL2 : Type _ := Lp ℂ 2 (μ.withDensity (realDensity w))
+
+/-- Multiplication by `√w`, from the weighted space to the plain space. -/
+def densityMul (f : WeightedL2 (μ := μ) w) : Lp ℂ 2 μ :=
+  ((memLp_two_withDensity_iff hw hpos).mp (Lp.memLp f)).toLp _
+
+theorem densityMul_ae (f : WeightedL2 (μ := μ) w) :
+    densityMul w hw hpos f =ᵐ[μ] fun x => sqrtWeight w x * f x :=
+  MemLp.coeFn_toLp _
+
+/-- Multiplication by `(√w)⁻¹`, from the plain space to the weighted space. -/
+def densityDiv (g : Lp ℂ 2 μ) : WeightedL2 (μ := μ) w := by
+  refine MemLp.toLp (fun x => (sqrtWeight w x)⁻¹ * g x) ?_
+  refine (memLp_two_withDensity_iff hw hpos).mpr ?_
+  refine MemLp.ae_eq ?_ (Lp.memLp g)
+  filter_upwards with x
+  rw [← mul_assoc, mul_inv_cancel₀ (sqrtWeight_ne_zero hpos x), one_mul]
+
+theorem densityDiv_ae (g : Lp ℂ 2 μ) :
+    densityDiv w hw hpos g =ᵐ[μ] fun x => (sqrtWeight w x)⁻¹ * g x := by
+  have h := MemLp.coeFn_toLp (μ := μ.withDensity (realDensity w))
+    (p := 2) (f := fun x => (sqrtWeight w x)⁻¹ * g x)
+    ((memLp_two_withDensity_iff hw hpos).mpr
+      (MemLp.ae_eq (by
+        filter_upwards with x
+        rw [← mul_assoc, mul_inv_cancel₀ (sqrtWeight_ne_zero hpos x), one_mul])
+        (Lp.memLp g)))
+  exact (withDensity_realDensity_ae_eq hw hpos).mp h
+
+theorem norm_densityMul (f : WeightedL2 (μ := μ) w) : ‖densityMul w hw hpos f‖ = ‖f‖ := by
+  rw [Lp.norm_def, Lp.norm_def, eLpNorm_congr_ae (densityMul_ae w hw hpos f)]
+  congr 1
+  exact (eLpNorm_two_withDensity hw hpos
+    ((aestronglyMeasurable_withDensity_realDensity_iff hw hpos).mp (Lp.aestronglyMeasurable f))).symm
+
+theorem densityMul_add (f g : WeightedL2 (μ := μ) w) :
+    densityMul w hw hpos (f + g) = densityMul w hw hpos f + densityMul w hw hpos g := by
+  apply Lp.ext
+  have hfg : ((f + g : WeightedL2 (μ := μ) w) : α → ℂ) =ᵐ[μ] fun x => f x + g x :=
+    (withDensity_realDensity_ae_eq hw hpos).mp (Lp.coeFn_add f g)
+  filter_upwards [densityMul_ae w hw hpos (f + g), densityMul_ae w hw hpos f,
+    densityMul_ae w hw hpos g, hfg,
+    Lp.coeFn_add (densityMul w hw hpos f) (densityMul w hw hpos g)] with x h1 h2 h3 h4 h5
+  rw [h1, h5]
+  simp only [Pi.add_apply]
+  rw [h2, h3, h4]
+  ring
+
+theorem densityMul_smul (c : ℂ) (f : WeightedL2 (μ := μ) w) :
+    densityMul w hw hpos (c • f) = c • densityMul w hw hpos f := by
+  apply Lp.ext
+  have hcf : ((c • f : WeightedL2 (μ := μ) w) : α → ℂ) =ᵐ[μ] fun x => c * f x := by
+    refine (withDensity_realDensity_ae_eq hw hpos).mp ?_
+    filter_upwards [Lp.coeFn_smul c f] with x hx
+    simpa using hx
+  filter_upwards [densityMul_ae w hw hpos (c • f), densityMul_ae w hw hpos f, hcf,
+    Lp.coeFn_smul c (densityMul w hw hpos f)] with x h1 h2 h3 h4
+  rw [h1, h4]
+  simp only [Pi.smul_apply, smul_eq_mul]
+  rw [h2, h3]
+  ring
+
+theorem densityDiv_densityMul (f : WeightedL2 (μ := μ) w) :
+    densityDiv w hw hpos (densityMul w hw hpos f) = f := by
+  apply Lp.ext
+  refine (withDensity_realDensity_ae_eq hw hpos).mpr ?_
+  filter_upwards [densityDiv_ae w hw hpos (densityMul w hw hpos f),
+    densityMul_ae w hw hpos f] with x h1 h2
+  rw [h1, h2, ← mul_assoc, inv_mul_cancel₀ (sqrtWeight_ne_zero hpos x), one_mul]
+
+theorem densityMul_densityDiv (g : Lp ℂ 2 μ) :
+    densityMul w hw hpos (densityDiv w hw hpos g) = g := by
+  apply Lp.ext
+  filter_upwards [densityMul_ae w hw hpos (densityDiv w hw hpos g),
+    densityDiv_ae w hw hpos g] with x h1 h2
+  rw [h1, h2, ← mul_assoc, mul_inv_cancel₀ (sqrtWeight_ne_zero hpos x), one_mul]
+
+/-- **The positive-density unitary.**  Multiplication by `√w` identifies the weighted space
+`L²(μ.withDensity w)` with the plain space `L²(μ)`. -/
+def weightedDensityUnitary : WeightedL2 (μ := μ) w ≃ₗᵢ[ℂ] Lp ℂ 2 μ where
+  toFun := densityMul w hw hpos
+  map_add' := densityMul_add w hw hpos
+  map_smul' := densityMul_smul w hw hpos
+  norm_map' := norm_densityMul w hw hpos
+  invFun := densityDiv w hw hpos
+  left_inv := densityDiv_densityMul w hw hpos
+  right_inv := densityMul_densityDiv w hw hpos
+
+@[simp] theorem weightedDensityUnitary_apply (f : WeightedL2 (μ := μ) w) :
+    weightedDensityUnitary w hw hpos f = densityMul w hw hpos f := rfl
+
+@[simp] theorem weightedDensityUnitary_symm_apply (g : Lp ℂ 2 μ) :
+    (weightedDensityUnitary w hw hpos).symm g = densityDiv w hw hpos g := rfl
+
 end
 
 end GaloisForLFunctions.HTGeometry

@@ -302,6 +302,7 @@ import GaloisForLFunctions.HTGeometry.TitsDivergenceRate
 import GaloisForLFunctions.HTGeometry.UniversalFibreSystem
 import GaloisForLFunctions.HTGeometry.BilinearFibreSystem
 import GaloisForLFunctions.HTGeometry.BiprojectiveChowRing
+import GaloisForLFunctions.HTGeometry.BiprojectiveGradedPiece
 import GaloisForLFunctions.HTGeometry.BihomogeneousHilbertIdentity
 import GaloisForLFunctions.HTGeometry.TriangularFrames
 import GaloisForLFunctions.HTGeometry.TwistedGaugeAction

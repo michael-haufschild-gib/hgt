@@ -95,9 +95,11 @@ C_(h,a,t)(p)=sum_(e>=0) T_e
              =T_0/(1-rho).                            (5)
 ```
 
-Prime completion of `(5)` is absolutely convergent on paper because transverse factor
-`q/(1+q)=1/(p+1)` changes critical scale to `sqrt(log p)/p^(5/4)`.  Its Lean completion is next
-analytic gate.
+Prime completion of `(5)` is absolutely convergent because transverse factor
+`q/(1+q)=1/(p+1)` changes critical scale to `sqrt(log p)/p^(5/4)`.  This is now a Lean theorem:
+`‖C_(h,a,t)(p)‖ <= 2K_h p^(-9/8)` uniformly in the height, hence
+`summable_norm_suzukiCriticalApertureQuarterShiftCurrent` and the exhaustion-independent
+`hasSum_suzukiCriticalApertureCofinalCurrent`.
 
 This subchannel cannot be polarized atomwise: delayed-hinge theorem gives explicit negative Pick
 nodes for every nonzero prime atom.  It must enter stronger collective identity already proved in
@@ -145,7 +147,8 @@ Only cancelled residual may be squared and passed cofinally.
 
 1. Prove `(1)--(3)` and sharp completion theorem unconditionally.
 2. Formalize those exact identities and connect them to compound Bezoutian theorem.
-3. Complete absolute prime summability of exact current `(5)` in Lean.
+3. ~~Complete absolute prime summability of exact current `(5)` in Lean.~~  **Done**, see
+   `formal/GaloisForLFunctions/RHTower/SuzukiCriticalAperturePrimeCurrent.lean`.
 4. Insert exact current into marked Robin term of collective identity `(6)` before characteristic
    division.
 5. Match finite compound kernel against marked Robin plus completed causal Weil exterior and
@@ -172,7 +175,7 @@ Only cancelled residual may be squared and passed cofinally.
   is `SUZUKI-CAUSAL-APERTURE-ENTRY-COMPOUND-WELD`: assemble finite-delay boundary tails, complete
   far-prime tail, and exact polar--Gamma source inside compound kernel before positivity or
   cofinal limit.  Paper/Lean theorem:
-  `../2-fully-proven/new_scientific_knowledge/suzuki-causal-hinge-boundary-tail-green-law.md`.
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-causal-hinge-boundary-tail-green-law.md`.
 - 2026-07-22 — hostile audit disproved unrenormalized cofinal order: exact critical raw mass is
   `Lambda(p)/sqrt(p)`, dominates `log(2)/p`, and diverges.  Lean connector lands no-go directly on
   existing uniquely renormalized Gamma-conormal coordinate.  Stronger scalar-rigidity theorem says
@@ -217,7 +220,7 @@ Only cancelled residual may be squared and passed cofinally.
   rectangular source vector and prove its defect uniformly lower bounded.  Trace-class or
   finite-rank error helps only after its values on this orbit are uniformly lower bounded.
   Paper/Lean:
-  `../2-fully-proven/new_scientific_knowledge/suzuki-rectangular-ward-defect-semiboundedness.md`.
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-rectangular-ward-defect-semiboundedness.md`.
 - 2026-07-22 — discrete near-entry placeholder resolved to exact boundary reporter.  For the
   denominator-matched hinge channel, moving-boundary endpoint terms cancel in the first two delay
   derivatives.  Near and far channels match at `ell=2a` through order two; first defect is
@@ -227,7 +230,7 @@ Only cancelled residual may be squared and passed cofinally.
   input is no longer free: couple this forced third-jet trace to critical quarter-shift Gamma
   current, triple-integrate from each wall, and prove only uniform lower semiboundedness.
   Paper/Lean:
-  `../2-fully-proven/new_scientific_knowledge/suzuki-causal-entry-third-jet-boundary-law.md`.
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-causal-entry-third-jet-boundary-law.md`.
 - 2026-07-22 — phase/type and triple-integration ambiguity closed.  The complete near/far gap
   satisfies exact all-depth transport `(d/dell-I*z)gap''=z^2*exp(I*a*z)*endpointTrace`.  At
   prime-power entry wall `a=log(p^(e+1))/2`, its phase is exactly conjugated critical Gamma phase.
@@ -237,7 +240,7 @@ Only cancelled residual may be squared and passed cofinally.
   core remains `SUZUKI-RECTANGULAR-WARD-DEFECT-SEMIBOUNDED`, now reduced to proving concrete
   restricted-Weil deficiency endpoint trace realizes calibrated amplitude after fixed affine
   normalization, or proving residual rectangular form uniformly lower semibounded.  Paper/Lean:
-  `../2-fully-proven/new_scientific_knowledge/suzuki-critical-entry-wall-quarter-shift-green-law.md`.
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-critical-entry-wall-quarter-shift-green-law.md`.
 - 2026-07-22 — **source-type correction and symmetric-square weld.**  S57 observed amplitude
   depends injectively on independently chosen positive observer aperture at depth zero, so cannot
   be universal restricted-Weil deficiency endpoint trace.  Removing observer innovation exposes
@@ -248,7 +251,7 @@ Only cancelled residual may be squared and passed cofinally.
   `SUZUKI-WALL-SYMMETRIC-SQUARE-WARD`: prove actual normalized deficiency wall trace equals `b_e`,
   or prove observer-paired residual form uniformly lower bounded; then establish assembled
   rectangular Ward-defect lower bound.  Paper/Lean:
-  `../2-fully-proven/new_scientific_knowledge/suzuki-critical-wall-field-square-root-weld.md`.
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-critical-wall-field-square-root-weld.md`.
 - 2026-07-22 — **second source-type correction: resolvent dressing is mandatory.**  Bare `b_e` is
   restricted-Weil input coordinate, not endpoint response.  At one spectral level `s`, shifted
   response is `D_lambda=(s-lambda)^(-1)omega_e`.  Exact two-shift residual is
@@ -259,14 +262,14 @@ Only cancelled residual may be squared and passed cofinally.
   `SUZUKI-RESOLVENT-DRESSED-WALL-WARD`: construct actual spectral measure/boundary observation and
   prove marked Robin/polar--Gamma/holonomy compensation pays exact negative-mode debt with
   uniformly lower-bounded rectangular residual.  Paper/Lean:
-  `../2-fully-proven/new_scientific_knowledge/suzuki-critical-wall-field-resolvent-dressing-law.md`.
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-critical-wall-field-resolvent-dressing-law.md`.
 - 2026-07-22 — **projective carrier correction.**  One-mode dressing is exact but not canonical
   producer because common source scaling cancels from Suzuki normalized characteristic response.
   Division-free marked affine-secant tensor and denominator are both homogeneous degree two.
   Scaling all source coordinates by `omega_e(t)` multiplies each by exact far-hinge numerator
   `omega_e(t)^2`; quotient cancels it.  Arithmetic source therefore lives as common
   determinant-line density before division.  Paper/Lean:
-  `../2-fully-proven/new_scientific_knowledge/suzuki-wall-field-projective-density-separation-law.md`.
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-wall-field-projective-density-separation-law.md`.
 - 2026-07-22 — **FE-reflected Hermitian lift closes positivity-type obstruction.**  Define
   `K_e(t,u)=omega_e(t)*conj(omega_e(u))`.  Lean proves every finite height section is literal
   rank-one Gram, `K_e(t,t)=Lambda(n)/sqrt(n)>0`, and
@@ -279,3 +282,13 @@ Only cancelled residual may be squared and passed cofinally.
   carrier before projective division, and prove uniformly lower-semibounded rectangular Ward
   defect.  Paper/Lean:
   `../2-fully-proven/new_scientific_knowledge/suzuki-wall-field-antidiagonal-gram-lift.md`.
+- 2026-08-07 — **critical current topology closed in Lean.**  The absolute prime completion of
+  `(5)` is now a theorem: `‖C_(h,a,t)(p)‖ ≤ 2K_h p^(-9/8)` uniformly in the height, so
+  `summable_norm_suzukiCriticalApertureQuarterShiftCurrent` holds for every `h>0`, `a>0`, and
+  `hasSum_suzukiCriticalApertureCofinalCurrent` makes the cofinal current exhaustion-independent.
+  The paper majorant `sqrt(log p)/p^(5/4)` is realized exactly, with the transverse factor
+  `q/(1+q)=1/(p+1)` supplying the extra inverse prime and the quarter shift alone bounding the
+  depth ratio by `2^(-1/4)`.  This removes falsifier "failure of absolute prime completion of
+  `(5)` despite paper majorant" and closes step 3 of the scientific-method list.  The open core is
+  unchanged: `SUZUKI-FE-REFLECTED-WALL-WARD-ASSEMBLY`.  Paper/Lean:
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-critical-aperture-quarter-shift-current.md`.

@@ -911,3 +911,31 @@ target is determined by its value at the single index, and the preimage of `rel(
 
 With injectivity the shift descent is an isomorphism, and together with the same two steps for the
 constant exchange (whose stability is already proved) the free-cell computation for `⊗_A` closes.
+
+## Tensoring over the algebra commutes with the degree shift
+
+`CDGARelTensorDescent.lean` is complete on the shift side.
+
+* `shiftIndexSubsingleton` — the index of a shifted degree is a subsingleton.  This is what makes
+  the converse direction tractable: an element of a shifted carrier is determined by its value at
+  the single index.
+* `tensorShiftEquiv` — the ungraded comparison packaged as an equivalence.
+* **`relTensorRel_shift_of_forall`** — the converse of stability: an element whose image is a
+  relation in every shifted degree was already a relation.  The proof runs a span induction whose
+  motive is stated on the *preimage*, `(tensorShiftEquiv).symm ∘ (shiftEvalAt).symm`, so the zero,
+  add and smul cases are pure linearity and only the generator case does work: the preimage of
+  `rel(x, m, v₀)` is `rel(x, m, (shiftEvalAt …).symm v₀)`.
+* `relTensorShiftMap_injective`, `relTensorShiftMap_bijective`, and
+  **`relTensorShiftEquiv : M ⊗_A N[−k] ≃ₗ (M ⊗_A N)[−k]`**.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+Stating the induction motive on the preimage rather than on the image is the trick worth keeping:
+it converts three of the four span-induction cases into `map_zero`/`map_add`/`map_smul`.
+
+## Next
+
+The same four steps for the constant exchange — its relator correspondence and stability are already
+proved, so what is left is the descent (`Submodule.liftQ`), the converse, and the packaging.  Then
+`relTensorShiftEquiv` and that equivalence, composed with `relUnitorHom`, give the free-cell
+computation for `⊗_A` and discharge `hcell` there.

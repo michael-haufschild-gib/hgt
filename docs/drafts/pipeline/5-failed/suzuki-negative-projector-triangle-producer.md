@@ -8,7 +8,7 @@
   negative spectral projector `P_-W` of the restricted-Weil operator
 - **Positive survivor:**
   `../2-fully-proven/new_scientific_knowledge/suzuki-homogeneous-projective-resolvent-plucker-lift.md`,
-  `../2-fully-proven/new_scientific_knowledge/suzuki-volterra-cartesian-phase-defect.md`
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-volterra-cartesian-phase-defect.md`
 - **RH used:** no
 - **Computation used:** no
 
