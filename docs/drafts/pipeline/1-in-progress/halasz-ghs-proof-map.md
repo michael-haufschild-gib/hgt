@@ -737,3 +737,27 @@ Consequences, in the variable the Perron integral uses:
 `integral_lorentz_normSq_LSeries_le_prime_sieve` — the same with the count discharged by the Selberg sieve
 for prime-supported coefficients.  This is GHS Lemma 1 on the Perron line, with the damping `n^{-σ}`
 carried inside the coefficients where the Cauchy–Schwarz split needs it.
+
+## Twenty-eighth brick: the master inequality of the three-factor integral
+
+`HTGeometry/WeightedCauchySchwarz.lean` (appended; green, axiom-clean):
+
+* `norm_integral_mul_three_le_sup_mul_sqrt_mul_sqrt` — Cauchy–Schwarz with one factor bounded pointwise:
+  absorbing the bounded factor into the weight gives
+  `‖∫ g₁g₂g₃W‖ ≤ (sup‖g₃‖)·√(∫‖g₁‖²‖W‖)·√(∫‖g₂‖²‖W‖)`;
+* `integrable_normSq_mul_weight_of_le`, `integral_normSq_mul_weight_le` — a weight dominated by `C/(1+y²)`
+  transfers a mean square to the Lorentzian one at the cost of `C`;
+* `norm_integral_mul_three_le_sup_mul_lorentz` — the two combined:
+
+  `‖∫ g₁g₂g₃W‖ ≤ M·C·√(∫‖g₁‖²/(1+y²))·√(∫‖g₂‖²/(1+y²))`   for `‖g₃‖ ≤ M`, `‖W‖ ≤ C/(1+y²)`.
+
+Nothing about Dirichlet series enters the statement; the hypotheses are exactly what a smoothed Perron
+kernel (`exists_bound_mellin_smoothWeight_line`) and an Euler product bound
+(`norm_tsum_twistedSummand_le_trivial`) supply.
+
+`RHTower/Sieve/LorentzianLSeriesLine.lean` gains `integrable_lorentz_normSq_LSeries`, the integrability
+side condition for a finitely supported series: the polynomial is bounded on the line by the `ℓ¹` mass of
+its damped coefficients, and the kernel is integrable.
+
+**Step 4 is now one substitution away from assembled**: the master inequality's three hypotheses are held
+by the Euler bound, the kernel decay bound and the two prime-supported mean squares, all present.
