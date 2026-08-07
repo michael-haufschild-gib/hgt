@@ -109,3 +109,26 @@ Gallagher and the `e^δ − e^{−δ} ≍ 2δ` of the window. The one logarithm 
 
 Steps 2 and 3 of the skeleton (the second application of the recursion, and the dyadic partition of the
 prime range) and the truncated Perron formula of step 4 remain.
+
+## Fourth brick: the whole frequency line, with no parameters
+
+`RHTower/Sieve/LorentzianMeanSquare.lean` (green, axiom-clean, wired). The weight a sharp Perron kernel
+attaches to a vertical line is `1/|s|`, so the governing quantity is the Lorentzian-weighted mean square.
+Cutting the line into the unit block and the dyadic annuli of `GallagherDyadicTail`, and paying each
+piece by the almost-diagonal mean value theorem at the matching window length `δ = 1/(2πT)`:
+
+`∫_ℝ ‖∑_n a_n n^{2πiw}‖² dw/(1+w²) ≤ (25π/2) ∑_n ‖a_n‖² · #{m ∈ s : |log n − log m| < 1/(2π)}`.
+
+**This theorem has no hypotheses at all** — no positivity, no range, no growth condition: `a` and `s` are
+arbitrary. Each annulus contributes `4^{-k}` from the weight against `2^k` from the mean value theorem,
+so the dyadic sum is geometric and the constant is absolute; `logNeighbourCount_mono` lets every block
+be charged to the *unit-scale* count.
+
+Declarations: `logNeighbourCount_mono`, `continuous_normSq_logPoly`,
+`integral_Icc_normSq_logPoly_le_unit_count`, `integrable_lorentz_normSq_logPoly`,
+`integral_dyadicAnnulus_lorentz_le`, `integral_lorentz_normSq_logPoly_le_count`.
+
+With `PrimeLogWindowCount` this is `I₂` of GHS step 4 over the *whole* line: their
+`∑_{|N| ≤ log²x+1} (N²+1)^{-1} sup_{|t−N| ≤ 1/2}|F_x(1+it)|²` is a Lorentzian-weighted sum of unit-block
+suprema, i.e. the same weight, and their truncation at height `(log x)²` is no longer needed on the
+`B_k` factor.

@@ -44,3 +44,22 @@ Brun–Titchmarsh shape with `selbergFibreError z Y + z`), and
 
 The δ cancels: Gallagher contributes `5/(4δ)` and the window length contributes `e^δ − e^{−δ} ≍ 2δ`.
 With `log Y ≍ (log p)/3` the per-prime weight is `≍ (log p)/p` — GHS Lemma 1's `Λ(n)/n`, not `Λ(n)²/n`.
+
+## Update 2: the Lorentzian-weighted mean value theorem (no hypotheses)
+
+`RHTower/Sieve/LorentzianMeanSquare.lean`:
+`∫_ℝ ‖logPoly a s w‖²/(1+w²) dw ≤ (25π/2) ∑_{n ∈ s} (logNeighbourCount s (1/(2π)) n) ‖a n‖²`
+for arbitrary `a : ℕ → ℂ` and `s : Finset ℕ` — **zero hypotheses**.
+
+Built from the corpus's dyadic annulus scaffolding (`GallagherDyadicTail.dyadicAnnulus`,
+`pairwise_disjoint_dyadicAnnulus`, `iUnion_dyadicAnnulus`) plus mathlib's `hasSum_integral_iUnion`,
+`Summable.tsum_mono` (NOT `tsum_le_tsum` — renamed), `hasSum_geometric_of_lt_one`,
+`setIntegral_mono_set`. The mechanism: on annulus `k` the weight is `≤ 4^{-k}` and the mean value
+theorem at `T = 2^{k+1}` costs `2^k`, so the series is geometric; `logNeighbourCount_mono` charges every
+block to the unit-scale count.
+
+This is `I₂` of GHS step 4 over the whole line, so no truncated Perron formula is needed for the `B_k`
+factor. What still needs a Perron passage is the *outer* extraction of `S_k(x)` from its Dirichlet
+series; the corpus's exact smoothed identity (`SmoothWeightPerron.tsum_mul_smoothWeight_eq_integral`,
+kernel Lorentzian by `exists_bound_mellin_smoothWeight_line`) is the candidate, with a smoothing scale
+`H = N/(log N)³` making the sharp-cutoff error `O(N/log N)`.
