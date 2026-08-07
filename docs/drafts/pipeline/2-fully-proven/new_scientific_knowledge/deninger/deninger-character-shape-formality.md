@@ -637,3 +637,27 @@ at stage 2 for `(4)`, which is one of its own `[PROVED HERE]` labels.
   turns an inclusion into the transpose of its matrix; `deningerTorusFormality_isQuasiIso` is then
   `(2)` for the whole filtration.  What remains on this card is only `(3)`--`(6)`, which are
   statements about free `E_∞` `Hℝ`-algebras.
+
+### The `E_∞` substitute is now complete, and what `(5)` still needs
+
+The card's `(3)`–`(6)` were recorded as "statements about free `E_∞` `Hℝ`-algebras" with no
+counterpart.  The substitute the card names — "rational `E_∞`-algebras are modeled by commutative
+DGAs" — is now built and unconditional; see the stage-3 card
+`cdga-module-derived-tensor-layer`.  What it supplies for `(5)`:
+
+- **the derived tensor product itself**: `relTensorModule` together with
+  `relTensorMapLeft_resolution_isQuasiIsoFull` — tensoring a semi-free module over the algebra
+  preserves full quasi-isomorphisms, so `− ⊗_A F` is a derived functor;
+- **semi-free resolutions**: `resolutionMap_isQuasiIso` — every differential graded module over a
+  unital commutative differential graded algebra receives a quasi-isomorphism from a semi-free one,
+  so `⊗^{\mathbb L}` is defined on every argument;
+- **base change along an equivalence is an equivalence**, which is the first sentence of the card's
+  proof of `(5)`: it is exactly `relTensorMapLeft_resolution_isQuasiIsoFull`.
+
+What is left of `(5)` in this language is one identification: the card composes base change with
+`P ⊗^{\mathbb L}_P K ≃ K`, i.e. with the **left** unitor `A ⊗_A M ≅ M`.  The corpus owns the right
+unitor (`relUnitorHom`, `relUnitorHom_isQuasiIsoFull`: `M ⊗_A A ≅ M`) and `relTensorModule` is not
+symmetric as built — the relations are written with the left factor's action distinguished — so the
+mirror has to be constructed, or a braiding `M ⊗_A N ≅ N ⊗_A M` proved.  That is the only remaining
+module-level obstacle to `(5)`; above it, `(6)` is the passage to homotopy groups, and the
+multiplicative structure on the derived tensor product remains the genuinely higher part.
