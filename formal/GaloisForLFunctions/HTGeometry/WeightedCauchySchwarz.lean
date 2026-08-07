@@ -3,6 +3,7 @@ import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.MeasureTheory.Integral.MeanInequalities
 import Mathlib.MeasureTheory.Function.L2Space
+import GaloisForLFunctions.HTGeometry.WeightedHolder
 
 /-!
 # Cauchy–Schwarz for a weighted integral
@@ -32,57 +33,8 @@ theorem integral_mul_mul_weight_le_sqrt_mul_sqrt {g₁ g₂ W : ℝ → ℂ}
     (h2 : Integrable fun y => ‖g₂ y‖ ^ 2 * ‖W y‖) :
     (∫ y : ℝ, ‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖)
       ≤ Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖)
-          * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖) := by
-  set F : ℝ → ℝ := fun y => ‖g₁ y‖ * Real.sqrt ‖W y‖ with hF
-  set G : ℝ → ℝ := fun y => ‖g₂ y‖ * Real.sqrt ‖W y‖ with hG
-  have hFsq : ∀ y : ℝ, F y ^ 2 = ‖g₁ y‖ ^ 2 * ‖W y‖ := by
-    intro y
-    rw [hF]
-    have hsq : Real.sqrt ‖W y‖ ^ 2 = ‖W y‖ := Real.sq_sqrt (norm_nonneg _)
-    calc (‖g₁ y‖ * Real.sqrt ‖W y‖) ^ 2 = ‖g₁ y‖ ^ 2 * (Real.sqrt ‖W y‖) ^ 2 := by ring
-      _ = ‖g₁ y‖ ^ 2 * ‖W y‖ := by rw [hsq]
-  have hGsq : ∀ y : ℝ, G y ^ 2 = ‖g₂ y‖ ^ 2 * ‖W y‖ := by
-    intro y
-    rw [hG]
-    have hsq : Real.sqrt ‖W y‖ ^ 2 = ‖W y‖ := Real.sq_sqrt (norm_nonneg _)
-    calc (‖g₂ y‖ * Real.sqrt ‖W y‖) ^ 2 = ‖g₂ y‖ ^ 2 * (Real.sqrt ‖W y‖) ^ 2 := by ring
-      _ = ‖g₂ y‖ ^ 2 * ‖W y‖ := by rw [hsq]
-  have hFm : AEStronglyMeasurable F volume :=
-    (hm1.norm).mul (Real.continuous_sqrt.comp_aestronglyMeasurable hmW.norm)
-  have hGm : AEStronglyMeasurable G volume :=
-    (hm2.norm).mul (Real.continuous_sqrt.comp_aestronglyMeasurable hmW.norm)
-  have hFint : Integrable fun y => ‖F y‖ ^ 2 := by
-    refine h1.congr (Filter.Eventually.of_forall fun y => ?_)
-    dsimp only
-    rw [Real.norm_eq_abs, sq_abs, hFsq]
-  have hGint : Integrable fun y => ‖G y‖ ^ 2 := by
-    refine h2.congr (Filter.Eventually.of_forall fun y => ?_)
-    dsimp only
-    rw [Real.norm_eq_abs, sq_abs, hGsq]
-  have hFLp : MemLp F 2 volume := (memLp_two_iff_integrable_sq_norm hFm).mpr hFint
-  have hGLp : MemLp G 2 volume := (memLp_two_iff_integrable_sq_norm hGm).mpr hGint
-  have hFnn : 0 ≤ᵐ[volume] F := Filter.Eventually.of_forall fun y => by rw [hF]; positivity
-  have hGnn : 0 ≤ᵐ[volume] G := Filter.Eventually.of_forall fun y => by rw [hG]; positivity
-  have hcs := integral_mul_le_Lp_mul_Lq_of_nonneg Real.HolderConjugate.two_two hFnn hGnn
-    (by simpa using hFLp) (by simpa using hGLp)
-  have hpt : ∀ y : ℝ, ‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖ = F y * G y := by
-    intro y
-    rw [hF, hG]
-    have hsq : Real.sqrt ‖W y‖ * Real.sqrt ‖W y‖ = ‖W y‖ := Real.mul_self_sqrt (norm_nonneg _)
-    calc ‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖
-        = ‖g₁ y‖ * ‖g₂ y‖ * (Real.sqrt ‖W y‖ * Real.sqrt ‖W y‖) := by rw [hsq]
-      _ = ‖g₁ y‖ * Real.sqrt ‖W y‖ * (‖g₂ y‖ * Real.sqrt ‖W y‖) := by ring
-  rw [integral_congr_ae (Filter.Eventually.of_forall hpt)]
-  refine hcs.trans (le_of_eq ?_)
-  have hFpow : (∫ y : ℝ, F y ^ (2 : ℝ)) = ∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖ := by
-    refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
-    dsimp only
-    rw [Real.rpow_two, hFsq]
-  have hGpow : (∫ y : ℝ, G y ^ (2 : ℝ)) = ∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖ := by
-    refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
-    dsimp only
-    rw [Real.rpow_two, hGsq]
-  rw [hFpow, hGpow, Real.sqrt_eq_rpow, Real.sqrt_eq_rpow]
+          * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖) :=
+  integral_mul_mul_weight_le_sqrt_mul_sqrt_measure hm1 hm2 hmW h1 h2
 
 /-- **Cauchy–Schwarz for a weighted vertical integral.**  A product of two factors against a weight is
 bounded by the two weighted mean squares. -/

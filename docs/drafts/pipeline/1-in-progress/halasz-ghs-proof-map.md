@@ -1292,3 +1292,23 @@ are stated for `volume` on the line.  The truncated route needs them on `volume.
 the proofs use nothing but Hölder for the measure at hand: restating the family for an arbitrary measure `μ`
 subsumes both the global and the truncated case, with the present statements recovered by `μ = volume`.  That
 is the next step, followed by the truncated assembly.
+
+## Weighted Cauchy–Schwarz over an arbitrary measure
+
+`HTGeometry/WeightedHolder.lean` (new, green, axiom-clean, wired); `WeightedCauchySchwarz.lean` now delegates.
+
+`integral_mul_mul_weight_le_sqrt_mul_sqrt_measure` and `norm_integral_mul_mul_le_sqrt_mul_sqrt_measure` state
+the weighted Cauchy–Schwarz inequality for an arbitrary measure on an arbitrary measurable space:
+
+`∫ ‖g₁‖‖g₂‖‖W‖ ∂μ ≤ (∫ ‖g₁‖²‖W‖ ∂μ)^{1/2}(∫ ‖g₂‖²‖W‖ ∂μ)^{1/2}`.
+
+Nothing about the line or about Lebesgue measure was used in the old proof — only Hölder with conjugate
+exponents `2, 2` — so the generalisation is the same proof with `volume` replaced by `μ`, and the version on
+the line is now a one-line corollary (`integral_mul_mul_weight_le_sqrt_mul_sqrt` delegates; every downstream
+user is untouched and `BlockMeanSquare` rebuilds).
+
+The instance that matters next is `μ = volume.restrict (Icc (−T) T)`: on a bounded height range the smoothed
+Perron kernel obeys the uniform bound `‖W‖ ≤ (N+H)^σ/σ ≍ N`, with none of the `(N/H)²` its global
+quadratic-decay bound carries.  That is the route the corpus's own Halász assembly takes, and the truncated
+mean square (`integral_Icc_normSq_logPoly_le_prime_sieve`) and tail estimate
+(`integral_compl_Icc_inv_one_add_sq_le`) are already in place for it.
