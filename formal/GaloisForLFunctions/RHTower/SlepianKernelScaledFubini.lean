@@ -542,6 +542,7 @@ theorem even_bandTransform (c : ℝ) {Φ : ℝ → ℝ} (_hΦ : Continuous Φ)
   rw [← hneg]
   apply intervalIntegral.integral_congr
   intro y _hy
+  change sincKernelSmooth c (-x) (-y) * Φ (-y) = sincKernelSmooth c x y * Φ y
   rw [hΦeven y]
   unfold sincKernelSmooth
   rw [show -x - -y = -(x - y) by ring, sincSmooth_even]
@@ -549,21 +550,212 @@ theorem even_bandTransform (c : ℝ) {Φ : ℝ → ℝ} (_hΦ : Continuous Φ)
 /-- The prolate Sturm--Liouville action preserves evenness. -/
 theorem even_prolateSLAction (c : ℝ) {Φ : ℝ → ℝ} (hΦ : Function.Even Φ) :
     Function.Even (prolateSLAction c Φ) := by
-  intro x
-  have hderiv : deriv Φ (-x) = -deriv Φ x := by
+  have hderiv : Function.Odd (deriv Φ) := by
+    intro x
     have hfun : (fun y : ℝ => Φ (-y)) = Φ := funext hΦ
     have h := congrArg (fun f : ℝ → ℝ => deriv f x) hfun
     rw [deriv_comp_neg] at h
     linarith
-  have hderiv2 : deriv (deriv Φ) (-x) = deriv (deriv Φ) x := by
+  have hderiv2 : Function.Even (deriv (deriv Φ)) := by
+    intro x
     have hfun : (fun y : ℝ => deriv Φ (-y)) = fun y : ℝ => -deriv Φ y :=
       funext fun y => hderiv y
     have h := congrArg (fun f : ℝ → ℝ => deriv f x) hfun
-    rw [deriv_comp_neg, deriv.neg] at h
+    rw [deriv_comp_neg] at h
+    have hright : deriv (fun y : ℝ => -deriv Φ y) x = -deriv (deriv Φ) x := by
+      change deriv (-(deriv Φ)) x = -deriv (deriv Φ) x
+      rw [deriv.neg]
+    rw [hright] at h
     linarith
+  intro x
   unfold prolateSLAction
-  rw [hΦ x, hderiv, hderiv2]
+  rw [hΦ x, hderiv x, hderiv2 x]
   ring
+
+/-- Linear subspace of even real-valued functions. -/
+def evenFunctionSubmodule : Submodule ℝ (ℝ → ℝ) where
+  carrier := {Φ | Function.Even Φ}
+  zero_mem' := by
+    intro x
+    rfl
+  add_mem' := by
+    intro Φ Ψ hΦ hΨ x
+    change Φ (-x) + Ψ (-x) = Φ x + Ψ x
+    rw [hΦ x, hΨ x]
+  smul_mem' := by
+    intro r Φ hΦ x
+    change r * Φ (-x) = r * Φ x
+    rw [hΦ x]
+
+/-- The smooth Slepian extension depends linearly on its `L²` class. -/
+def eigenExtensionLinearMap (c lam : ℝ) :
+    GaloisForLFunctions.RHTower.RealIntervalL2 (-1 : ℝ) 1 →ₗ[ℝ] (ℝ → ℝ) where
+  toFun f := GaloisForLFunctions.RHTower.eigenExtension c lam f
+  map_add' f g := by
+    funext x
+    exact GaloisForLFunctions.RHTower.eigenExtension_add c lam f g x
+  map_smul' r f := by
+    funext x
+    change GaloisForLFunctions.RHTower.eigenExtension c lam (r • f) x =
+      r * GaloisForLFunctions.RHTower.eigenExtension c lam f x
+    exact GaloisForLFunctions.RHTower.eigenExtension_smul c lam r f x
+
+/-- Even part of one Slepian band eigenspace, kept as a direct subspace of the ambient interval
+`L²` space so its inherited Hilbert structure is definitionally coherent. -/
+def evenBandEigenspace (c lam : ℝ) :
+    Submodule ℝ (GaloisForLFunctions.RHTower.RealIntervalL2 (-1 : ℝ) 1) :=
+  GaloisForLFunctions.RHTower.bandEigenspace c lam ⊓
+    evenFunctionSubmodule.comap (eigenExtensionLinearMap c lam)
+
+theorem mem_evenBandEigenspace_iff
+    {c lam : ℝ}
+    {f : GaloisForLFunctions.RHTower.RealIntervalL2 (-1 : ℝ) 1} :
+    f ∈ evenBandEigenspace c lam ↔
+      GaloisForLFunctions.RHTower.bandOperatorL2 c f = lam • f ∧
+        Function.Even (GaloisForLFunctions.RHTower.eigenExtension c lam f) := by
+  rw [evenBandEigenspace, Submodule.mem_inf,
+    GaloisForLFunctions.RHTower.mem_bandEigenspace_iff]
+  rfl
+
+/-- The canonical representative of the prolate action's band class is the prolate action
+itself.  This upgrades equality of `L²` classes to a global pointwise identity. -/
+theorem eigenRep_prolateOnEigenspace
+    {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0)
+    (f : GaloisForLFunctions.RHTower.bandEigenspace c lam) :
+    GaloisForLFunctions.RHTower.eigenRep c lam
+        (GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam f) =
+      prolateSLAction c (GaloisForLFunctions.RHTower.eigenRep c lam f) := by
+  change GaloisForLFunctions.RHTower.eigenExtension c lam
+      (GaloisForLFunctions.RHTower.bandClass
+        (prolateSLAction c (GaloisForLFunctions.RHTower.eigenRep c lam f)) _) = _
+  apply eigenExtension_bandClass_eq_self_of_bandEigen hlam
+  intro x
+  exact GaloisForLFunctions.RHTower.bandTransform_prolateSLAction
+    (GaloisForLFunctions.RHTower.contDiff_eigenRep hc hlam f)
+    (GaloisForLFunctions.RHTower.bandTransform_eigenRep hlam f) x
+
+/-- Prolate action restricted to the even part of one band eigenspace. -/
+def prolateOnEvenEigenspace
+    {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0) :
+    evenBandEigenspace c lam →ₗ[ℝ] evenBandEigenspace c lam where
+  toFun f :=
+    let bf : GaloisForLFunctions.RHTower.bandEigenspace c lam := ⟨f.1, f.2.1⟩
+    let pf := GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam bf
+    ⟨pf.1, ⟨pf.2, by
+      change Function.Even (GaloisForLFunctions.RHTower.eigenRep c lam pf)
+      rw [eigenRep_prolateOnEigenspace hc hlam]
+      exact even_prolateSLAction c f.2.2⟩⟩
+  map_add' f g := by
+    apply Subtype.ext
+    change ((GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam)
+        (⟨f.1 + g.1, _⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam)).1 =
+      ((GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam)
+        (⟨f.1, f.2.1⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam)).1 +
+      ((GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam)
+        (⟨g.1, g.2.1⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam)).1
+    exact congrArg Subtype.val
+      (map_add (GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam)
+        (⟨f.1, f.2.1⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam)
+        (⟨g.1, g.2.1⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam))
+  map_smul' r f := by
+    apply Subtype.ext
+    change ((GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam)
+        (⟨r • f.1, _⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam)).1 =
+      r • ((GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam)
+        (⟨f.1, f.2.1⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam)).1
+    exact congrArg Subtype.val
+      (map_smul (GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam) r
+        (⟨f.1, f.2.1⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam))
+
+/-- Symmetry survives restriction to the even invariant subspace. -/
+theorem isSymmetric_prolateOnEvenEigenspace
+    {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0) :
+    (prolateOnEvenEigenspace hc hlam).IsSymmetric := by
+  intro f g
+  exact GaloisForLFunctions.RHTower.isSymmetric_prolateOnEigenspace hc hlam
+    (⟨f.1, f.2.1⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam)
+    (⟨g.1, g.2.1⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam)
+
+/-- Every nonzero even Slepian band eigenvector carries a nonzero smooth even joint
+band/prolate eigenfunction. -/
+theorem exists_joint_even_prolate_band_eigen
+    {c lam : ℝ} (hc : 0 < c) (hlam : lam ≠ 0)
+    {ψ₀ : GaloisForLFunctions.RHTower.RealIntervalL2 (-1 : ℝ) 1}
+    (hψ₀ : GaloisForLFunctions.RHTower.bandOperatorL2 c ψ₀ = lam • ψ₀)
+    (hψ₀ne : ψ₀ ≠ 0)
+    (hψ₀even : Function.Even
+      (GaloisForLFunctions.RHTower.eigenExtension c lam ψ₀)) :
+    ∃ (Φ : ℝ → ℝ) (η : ℝ),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ ∧
+        Φ ≠ 0 ∧ Function.Even Φ ∧
+        (∀ x : ℝ, bandTransform c Φ x = lam * Φ x) ∧
+        (∀ x : ℝ, prolateSLAction c Φ x = η * Φ x) := by
+  let ef₀ : evenBandEigenspace c lam :=
+    ⟨ψ₀, GaloisForLFunctions.RHTower.mem_bandEigenspace_iff.mpr hψ₀, hψ₀even⟩
+  letI : FiniteDimensional ℝ
+      (GaloisForLFunctions.RHTower.bandEigenspace c lam) :=
+    GaloisForLFunctions.RHTower.finiteDimensional_bandEigenspace hlam
+  let inclusion : evenBandEigenspace c lam →ₗ[ℝ]
+      GaloisForLFunctions.RHTower.bandEigenspace c lam :=
+    { toFun := fun f => ⟨f.1, f.2.1⟩
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl }
+  letI : FiniteDimensional ℝ (evenBandEigenspace c lam) :=
+    FiniteDimensional.of_injective inclusion (by
+      intro f g hfg
+      apply Subtype.ext
+      exact congrArg (fun h : GaloisForLFunctions.RHTower.bandEigenspace c lam => h.1) hfg)
+  have hef₀ne : ef₀ ≠ 0 := by
+    intro hzero
+    apply hψ₀ne
+    have hval := congrArg
+      (fun f : evenBandEigenspace c lam => f.1) hzero
+    exact hval
+  letI : Nontrivial (evenBandEigenspace c lam) := nontrivial_of_ne ef₀ 0 hef₀ne
+  have hsym := isSymmetric_prolateOnEvenEigenspace hc hlam
+  obtain ⟨η, hη⟩ : ∃ η : ℝ, Module.End.HasEigenvalue
+      (prolateOnEvenEigenspace hc hlam) η :=
+    ⟨_, hsym.hasEigenvalue_iSup_of_finiteDimensional⟩
+  obtain ⟨v, hvmem, hvne⟩ := hη.exists_hasEigenvector
+  have hveq : prolateOnEvenEigenspace hc hlam v = η • v :=
+    Module.End.mem_eigenspace_iff.mp hvmem
+  let vf : GaloisForLFunctions.RHTower.bandEigenspace c lam := ⟨v.1, v.2.1⟩
+  let Φ : ℝ → ℝ := GaloisForLFunctions.RHTower.eigenRep c lam vf
+  have hΦne : Φ ≠ 0 := by
+    intro hzero
+    have hclass := GaloisForLFunctions.RHTower.bandClass_eigenRep hlam vf
+    have hclassZero : GaloisForLFunctions.RHTower.bandClass Φ
+        (GaloisForLFunctions.RHTower.continuous_eigenRep c lam vf) = 0 := by
+      have hstep := GaloisForLFunctions.RHTower.bandClass_congr
+        (GaloisForLFunctions.RHTower.continuous_eigenRep c lam vf)
+        continuous_const hzero
+      rw [hstep]
+      exact GaloisForLFunctions.RHTower.bandClass_zero _
+    have hvzero : (v : evenBandEigenspace c lam) = 0 := by
+      apply Subtype.ext
+      rw [← hclass]
+      exact hclassZero
+    exact hvne hvzero
+  have hprolate : ∀ x : ℝ, prolateSLAction c Φ x = η * Φ x := by
+    have hvaleq :
+        GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam vf = η • vf := by
+      apply Subtype.ext
+      exact congrArg (fun w : evenBandEigenspace c lam => w.1) hveq
+    have hrepeq := congrArg
+      (fun w : GaloisForLFunctions.RHTower.bandEigenspace c lam =>
+        GaloisForLFunctions.RHTower.eigenRep c lam w) hvaleq
+    rw [eigenRep_prolateOnEigenspace hc hlam] at hrepeq
+    intro x
+    have hx := congrFun hrepeq x
+    change prolateSLAction c Φ x = η * Φ x
+    have hsmul : GaloisForLFunctions.RHTower.eigenRep c lam (η • vf) x =
+        η * GaloisForLFunctions.RHTower.eigenRep c lam vf x :=
+      GaloisForLFunctions.RHTower.eigenExtension_smul c lam η vf x
+    rw [hsmul] at hx
+    exact hx
+  exact ⟨Φ, η, GaloisForLFunctions.RHTower.contDiff_eigenRep hc hlam vf,
+    hΦne, v.2.2,
+    GaloisForLFunctions.RHTower.bandTransform_eigenRep hlam vf, hprolate⟩
 
 /-- Every live signed prolate mode produces a nonzero eigenvector of the established real
 `L²[-1,1]` Slepian operator, at the squared signed eigenvalue. -/
@@ -623,6 +815,7 @@ theorem exists_realIntervalL2_bandEigen_of_signedMode
       exact eigenExtension_bandClass_eq_inv_mul_bandTransform c lam hψ x
     rw [hext]
     intro x
+    change lam⁻¹ * bandTransform c ψ (-x) = lam⁻¹ * bandTransform c ψ x
     rw [htransformEven x]
   exact ⟨ψ₀, hψ₀ne, hψ₀eig, hextEven⟩
 
@@ -644,5 +837,38 @@ theorem exists_joint_prolate_band_eigen_of_signedMode
     exists_realIntervalL2_bandEigen_of_signedMode ha n hvalue
   exact GaloisForLFunctions.RHTower.exists_joint_prolate_band_eigen
     (by positivity) (pow_ne_zero 2 hvalue) hψ₀eig hψ₀ne
+
+/-- Parity-preserving strengthening: every live signed mode carries a nonzero smooth **even**
+joint Slepian/prolate eigenfunction, and the differential equation holds globally. -/
+theorem exists_joint_even_prolate_band_eigen_of_signedMode
+    {a : ℝ} (ha : 0 < a) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0) :
+    ∃ (Φ : ℝ → ℝ) (η : ℝ),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ ∧
+        Φ ≠ 0 ∧ Function.Even Φ ∧
+        (∀ x : ℝ,
+          bandTransform (2 * Real.pi * a ^ 2) Φ x =
+            evenProlateSignedValue a n ^ 2 * Φ x) ∧
+        (∀ x : ℝ,
+          prolateSLAction (2 * Real.pi * a ^ 2) Φ x = η * Φ x) := by
+  obtain ⟨ψ₀, hψ₀ne, hψ₀eig, hψ₀even⟩ :=
+    exists_realIntervalL2_bandEigen_of_signedMode ha n hvalue
+  exact exists_joint_even_prolate_band_eigen
+    (by positivity) (pow_ne_zero 2 hvalue) hψ₀eig hψ₀ne hψ₀even
+
+/-- Unconditional fixed-index form: every signed mode eventually admits an exact nonzero smooth
+even joint Slepian/prolate representative. -/
+theorem eventually_exists_joint_even_prolate_band_eigen_of_signedMode (n : ℕ) :
+    ∀ᶠ a : ℝ in Filter.atTop,
+      ∃ (Φ : ℝ → ℝ) (η : ℝ),
+        ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ ∧
+          Φ ≠ 0 ∧ Function.Even Φ ∧
+          (∀ x : ℝ,
+            bandTransform (2 * Real.pi * a ^ 2) Φ x =
+              evenProlateSignedValue a n ^ 2 * Φ x) ∧
+          (∀ x : ℝ,
+            prolateSLAction (2 * Real.pi * a ^ 2) Φ x = η * Φ x) := by
+  filter_upwards [Filter.eventually_gt_atTop (0 : ℝ),
+    eventually_evenProlateSignedValue_ne_zero n] with a ha hvalue
+  exact exists_joint_even_prolate_band_eigen_of_signedMode ha n hvalue
 
 end RHTower

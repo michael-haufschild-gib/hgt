@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.CDGARelTensorShiftHom
 import GaloisForLFunctions.HTGeometry.CDGARelTensorConstHom
 import GaloisForLFunctions.HTGeometry.CDGARelTensorUnit
 import GaloisForLFunctions.HTGeometry.CDGAFreeCoefficients
+import GaloisForLFunctions.HTGeometry.CDGARelTensorTower
 
 /-!
 # Free cells are invariant for the tensor product over the algebra
@@ -14,6 +15,8 @@ the algebra tensored over itself, which the unitor identifies with the module.
 
 * `HTGeometry.relTensorMapLeft_freeCell_isQuasiIsoFull` : `− ⊗_A (A[−k] ⊗ V)` preserves full
   quasi-isomorphisms.
+* `HTGeometry.relTensorMapLeft_freeTower_isQuasiIsoFull` : the same for a tower of free cells, so a
+  semi-free module is flat for the derived tensor product.
 -/
 
 universe w
@@ -57,5 +60,26 @@ theorem relTensorMapLeft_freeCell_isQuasiIsoFull (u : CDGAUnit A)
       (relTensorShiftHom_isQuasiIsoFull P (tensorConstModule (CDGAStructure.selfModule A) V) k)
   exact CDGAModuleHom.IsQuasiIsoFull.of_comp_right h5
     (relTensorShiftHom_isQuasiIsoFull P' (tensorConstModule (CDGAStructure.selfModule A) V) k)
+
+/-- **A tower of free cells is flat for the tensor product over the algebra.**  Each stage is a
+twisted extension by a free cell, and both the base and every cell are invariant. -/
+theorem relTensorMapLeft_freeTower_isQuasiIsoFull (u : CDGAUnit A)
+    (hP : CDGAModuleUnital u P) (hP' : CDGAModuleUnital u P') (φ : CDGAModuleHom P P')
+    (hφ : φ.IsQuasiIsoFull)
+    {V₀ : Type w} [AddCommGroup V₀] [Module R V₀]
+    {ι₀ : Type w} [Fintype ι₀] [DecidableEq ι₀] (b₀ : Module.Basis ι₀ R V₀) (k₀ : ℕ)
+    {V : ℕ → Type w} [∀ i, AddCommGroup (V i)] [∀ i, Module R (V i)]
+    {ι : ℕ → Type w} [∀ i, Fintype (ι i)] [∀ i, DecidableEq (ι i)]
+    (b : ∀ i, Module.Basis (ι i) R (V i)) (deg : ℕ → ℕ)
+    (τ : ∀ (i : ℕ)
+      (S : CDGAModuleStructure A
+        (towerCarrier (FreeCellCarrier X V₀ k₀) (fun i => FreeCellCarrier X (V i) (deg i)) i)),
+      CDGATwist S (freeCellModule A (V i) (deg i))) (i : ℕ) :
+    CDGAModuleHom.IsQuasiIsoFull (relTensorMapLeft φ
+      (towerMod (freeCellModule A V₀ k₀) (fun i => freeCellModule A (V i) (deg i)) τ i)) :=
+  relTensorMapLeft_tower_isQuasiIsoFull P P' φ (freeCellModule A V₀ k₀)
+    (fun i => freeCellModule A (V i) (deg i)) τ
+    (relTensorMapLeft_freeCell_isQuasiIsoFull P P' u hP hP' φ hφ b₀ k₀)
+    (fun i => relTensorMapLeft_freeCell_isQuasiIsoFull P P' u hP hP' φ hφ (b i) (deg i)) i
 
 end GaloisForLFunctions.HTGeometry

@@ -320,3 +320,23 @@ exists_bound_mellin_smoothWeight_line` supplies `∃ C > 0, ∀ y, ‖W(σ+iy)�
 at most `C·(π − 2 arctan T)` — an explicit computation via `intervalIntegral.integral_one_div_one_add_sq`
 that would close the last parameter. After that, choosing `z, δ, T, H, σ` is arithmetic, and only then
 does a decay statement for a specific `f` follow.
+
+## Both kernel parameters discharged — the estimate is fully explicit
+
+Appended to `HalaszPerronAssembly.lean` (9074 jobs, exit 0, axiom-clean):
+
+- `integral_compl_Icc_inv_one_add_sq_le` — the Cauchy tail: `∫_{|y| > T} (1+y²)⁻¹ ≤ π − 2 arctan T`,
+  via `integral_Iic_inv_one_add_sq` and `integral_Ioi_inv_one_add_sq` after covering the complement of
+  `[-T,T]` by `Iic (-T) ∪ Ioi T` (disjoint, which needs `0 ≤ T`).
+- `exists_norm_tsum_mul_smoothWeight_le` — **the estimate with no free kernel quantity**:
+
+  `∃ C ≥ 0, 2π‖∑ₙ f(n)w(n)‖ ≤ ((N+H)^σ/σ)·(Halász integral bound) + trivial·C·(π − 2 arctan T)`,
+
+  the `C` being the corpus's own quadratic-decay constant from
+  `SmoothWeightInversion.exists_bound_mellin_smoothWeight_line`.
+
+Every quantity on the right is now explicit in `σ, z, δ, T, N, H` and one decay constant. The only work
+left in this thread is arithmetic: choose the parameters (`σ = 1 + 1/log z`, `z` a power of `log T`,
+`δ` from the corpus's uniform distance lower bound, `T` and `H` to balance the two terms) and check that
+the total is `o(1)` for a specific `f`. That is a calculation, not a missing theorem — but it is not done,
+so no decay statement is claimed.

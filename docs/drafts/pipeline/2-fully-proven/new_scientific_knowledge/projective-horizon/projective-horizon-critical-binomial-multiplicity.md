@@ -2840,3 +2840,41 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   recurrence on successive quotient bigraded pieces.  Iterating that recurrence feeds these
   dimensions into `alternating_sum_choose_mul_choose`; evaluation on the reduced finite critical
   fibre then identifies the eventual quotient dimension with its point count.
+
+- 2026-08-07 — **Exact Hilbert--Bézout recurrence and actual compactified equations.**  Two new
+  modules are wired into the `HTGeometry` umbrella; direct foreground checks, leaf builds, and
+  scratch `#print axioms` audits pass with only `[propext, Classical.choice, Quot.sound]`.
+
+  `formal/GaloisForLFunctions/HTGeometry/BiprojectiveHilbertBezout.lean` constructs multiplication
+  on genuine bigraded pieces and quotient pieces, the natural quotient factor map after adjoining a
+  bihomogeneous form, and proves its range equals the factor map's kernel.  Rank--nullity gives the
+  exact short recurrence.  `BiprojectiveRegularSequence.finrank_eq_iterate_fwdDiff` iterates it, and
+
+  ```text
+  BiprojectiveRegularSequence.finrank_quotientPiece_eq_criticalHorizonMultiplicity
+  ```
+
+  proves that any full regular sequence of `m+n` forms of bidegree `(1,1)` has stable diagonal
+  quotient dimension `choose(m+n,m)`.  This closes the commutative-algebra and Koszul/Hilbert
+  calculation previously listed as missing; no Koszul exactness is postulated.
+
+  `formal/GaloisForLFunctions/HTGeometry/CriticalBiprojectiveSystem.lean` then constructs the card's
+  concrete projective variables, homogenizing coordinates `alpha,beta`, factors `A+alpha U` and
+  `B+beta V`, and the exact homogenization of every coefficient of
+  `criticalLowProduct U V A B - 1`.  It proves:
+
+  - every compactified coefficient equation is weighted homogeneous of exact bidegree `(1,1)`;
+  - evaluation on `alpha=beta=1` is exactly `bilinSysPoly`, coefficient by coefficient;
+  - if `X^m | U`, `X^n | V`, and `k<m+n`, the exact homogenization equals the literal card equation
+    `coeff_k((A+alpha U)(B+beta V)-alpha beta)`; and
+  - that literal equation is therefore bidegree `(1,1)` under precisely the critical-tail
+    hypotheses.
+
+  Final leaf audits:
+  `lake build GaloisForLFunctions.HTGeometry.BiprojectiveHilbertBezout` (`3038` jobs) and
+  `lake build GaloisForLFunctions.HTGeometry.CriticalBiprojectiveSystem` (`3050` jobs).
+
+  Exact remaining dependency for the unrestricted generic observation is now sharply isolated:
+  prove that this *concrete* list of `m+n` equations is regular over the generic tail field, then
+  identify its stable bigraded quotient dimension with geometric fibre cardinality.  Neither fact
+  is assumed by the new theorems.

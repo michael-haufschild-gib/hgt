@@ -5805,3 +5805,4 @@ import GaloisForLFunctions.HTGeometry.ZetaPrimeValuationFiniteWindow
 import GaloisForLFunctions.HTGeometry.ZetaShiftDecomposition
 import GaloisForLFunctions.HTGeometry.ZetaUpperEndHypertranscendence
 import GaloisForLFunctions.HTGeometry.ZetaVerticalAlmostPeriodic
+import GaloisForLFunctions.HTGeometry.AtomicJumpForm

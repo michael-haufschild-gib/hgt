@@ -203,7 +203,7 @@ weighted jump-form duality plus penalized extrema force the signed pointwise tra
 conormality. The live E1 gate is the earlier source-domain theorem that every completion-safe
 square-Evans zero mode has such a bounded weak/classical representative. Its bounded weak half is
 now proved in
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-completed-eigenmode-atomic-jump-boundedness.md`:
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-completed-eigenmode-atomic-jump-boundedness.md`:
 the literal von-Mangoldt block is a positive atomic jump form minus scalar potential, so every
 completed eigenfunction is bounded, continuous, and satisfies the optimal half-log boundary bound.
 The weak trace gate is closed in

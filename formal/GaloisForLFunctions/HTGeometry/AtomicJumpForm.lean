@@ -28,48 +28,53 @@ noncomputable def jumpForm (h : ℝ) (u φ : ℝ → ℝ) : ℝ :=
 noncomputable def pairing (u φ : ℝ → ℝ) : ℝ := ∫ x, u x * φ x
 
 private theorem integrable_shift_mul {u φ : ℝ → ℝ} (hu : Continuous u) (hφ : Continuous φ)
-    (hcu : HasCompactSupport u) (hcφ : HasCompactSupport φ) (s t : ℝ) :
+    (hcu : HasCompactSupport u) (s t : ℝ) :
     Integrable (fun x => u (x + s) * φ (x + t)) := by
   have hcont : Continuous fun x : ℝ => u (x + s) * φ (x + t) :=
     ((hu.comp (continuous_id.add continuous_const)).mul
       (hφ.comp (continuous_id.add continuous_const)))
   refine hcont.integrable_of_hasCompactSupport ?_
-  have h1 : HasCompactSupport fun x : ℝ => u (x + s) := by
-    simpa using hcu.comp_homeomorph (Homeomorph.addRight s)
+  have h1 : HasCompactSupport fun x : ℝ => u (x + s) :=
+    hcu.comp_homeomorph (Homeomorph.addRight s)
   exact h1.mul_right
 
 private theorem integral_shift (f : ℝ → ℝ) (s : ℝ) : ∫ x, f (x + s) = ∫ x, f x :=
   integral_add_right_eq_self f s
 
 /-- **Translation-pair identity.**  The jump form is twice the pairing minus the two shifted
-pairings. -/
+pairings, so a symmetric translation pair is a positive atomic Dirichlet form minus twice the
+identity. -/
 theorem jumpForm_eq_two_pairing_sub {u φ : ℝ → ℝ} (hu : Continuous u) (hφ : Continuous φ)
-    (hcu : HasCompactSupport u) (hcφ : HasCompactSupport φ) (h : ℝ) :
+    (hcu : HasCompactSupport u) (h : ℝ) :
     jumpForm h u φ =
       2 * pairing u φ - pairing (fun x => u (x + h)) φ - pairing (fun x => u (x - h)) φ := by
-  have hi00 := integrable_shift_mul hu hφ hcu hcφ 0 0
-  have hihh := integrable_shift_mul hu hφ hcu hcφ h h
-  have hih0 := integrable_shift_mul hu hφ hcu hcφ h 0
-  have hi0h := integrable_shift_mul hu hφ hcu hcφ 0 h
-  have hexpand : ∀ x : ℝ, (u (x + h) - u x) * (φ (x + h) - φ x) =
-      u (x + h) * φ (x + h) - u (x + h) * φ x - u x * φ (x + h) + u x * φ x := by
-    intro x; ring
-  have hzero : ∀ f : ℝ → ℝ, (fun x : ℝ => f (x + 0)) = f := by
-    intro f; funext x; simp
-  rw [jumpForm]
-  simp only [hexpand]
-  rw [integral_add (by simpa [hzero] using (hihh.sub hih0).sub hi0h)
-      (by simpa [hzero] using hi00),
-    integral_sub (by simpa [hzero] using hihh.sub hih0) (by simpa [hzero] using hi0h),
-    integral_sub (by simpa [hzero] using hihh) (by simpa [hzero] using hih0)]
+  have e1 : Integrable (fun x => u (x + h) * φ (x + h)) :=
+    integrable_shift_mul hu hφ hcu h h
+  have e2 : Integrable (fun x => u (x + h) * φ (x + 0)) :=
+    integrable_shift_mul hu hφ hcu h 0
+  have e3 : Integrable (fun x => u (x + 0) * φ (x + h)) :=
+    integrable_shift_mul hu hφ hcu 0 h
+  have e4 : Integrable (fun x => u (x + 0) * φ (x + 0)) :=
+    integrable_shift_mul hu hφ hcu 0 0
+  simp only [add_zero] at e2 e3 e4
+  have hsplit : jumpForm h u φ =
+      (∫ x, u (x + h) * φ (x + h)) - (∫ x, u (x + h) * φ x) - (∫ x, u x * φ (x + h)) +
+        ∫ x, u x * φ x := by
+    have hcongr : ∀ x : ℝ, (u (x + h) - u x) * (φ (x + h) - φ x) =
+        u (x + h) * φ (x + h) - u (x + h) * φ x - u x * φ (x + h) + u x * φ x :=
+      fun x => by ring
+    have e12 : Integrable (fun x => u (x + h) * φ (x + h) - u (x + h) * φ x) := e1.sub e2
+    have e123 : Integrable
+        (fun x => u (x + h) * φ (x + h) - u (x + h) * φ x - u x * φ (x + h)) := e12.sub e3
+    rw [jumpForm, integral_congr_ae (Filter.Eventually.of_forall hcongr),
+      integral_add e123 e4, integral_sub e12 e3, integral_sub e1 e2]
   have hshift : ∫ x, u (x + h) * φ (x + h) = ∫ x, u x * φ x := by
     have := integral_shift (fun y => u y * φ y) h
     simpa using this
   have hminus : ∫ x, u x * φ (x + h) = ∫ x, u (x - h) * φ x := by
     have := integral_shift (fun y => u (y - h) * φ y) h
-    simpa using this.symm
-  rw [hshift, hminus, pairing, pairing, pairing]
-  simp only [hzero]
+    simpa using this
+  rw [hsplit, hshift, hminus, pairing, pairing, pairing]
   ring
 
 /-! ## Truncation coercivity -/

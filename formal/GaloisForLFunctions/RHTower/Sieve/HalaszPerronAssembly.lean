@@ -162,6 +162,84 @@ theorem norm_tsum_mul_smoothWeight_le_explicit
     (fun y => norm_perronKernel_le hN.le hH (by linarith) y)
 
 
+/-! ## The kernel tail -/
+
+/-- The Cauchy tail: outside `[-T, T]` the reciprocal-quadratic majorant integrates to
+`π − 2 arctan T`. -/
+theorem integral_compl_Icc_inv_one_add_sq_le {T : ℝ} (hT : 0 ≤ T) :
+    (∫ y in (Set.Icc (-T) T)ᶜ, (1 + y ^ 2)⁻¹) ≤ Real.pi - 2 * Real.arctan T := by
+  have hsub : (Set.Icc (-T) T)ᶜ ⊆ Set.Iic (-T) ∪ Set.Ioi T := by
+    intro y hy
+    rcases lt_or_ge y (-T) with h | h
+    · exact Or.inl (le_of_lt h)
+    · rcases lt_or_ge T y with h2 | h2
+      · exact Or.inr h2
+      · exact absurd (Set.mem_Icc.mpr ⟨h, h2⟩) hy
+  have hdisj : Disjoint (Set.Iic (-T)) (Set.Ioi T) := by
+    rw [Set.disjoint_left]
+    intro a ha hb
+    have h1 : a ≤ -T := ha
+    have h2 : T < a := hb
+    linarith
+  have hunion : (∫ y in Set.Iic (-T) ∪ Set.Ioi T, (1 + y ^ 2)⁻¹)
+      = (∫ y in Set.Iic (-T), (1 + y ^ 2)⁻¹) + ∫ y in Set.Ioi T, (1 + y ^ 2)⁻¹ :=
+    setIntegral_union hdisj measurableSet_Ioi
+      integrable_inv_one_add_sq.integrableOn integrable_inv_one_add_sq.integrableOn
+  have hmono : (∫ y in (Set.Icc (-T) T)ᶜ, (1 + y ^ 2)⁻¹)
+      ≤ ∫ y in Set.Iic (-T) ∪ Set.Ioi T, (1 + y ^ 2)⁻¹ := by
+    refine setIntegral_mono_set integrable_inv_one_add_sq.integrableOn ?_ hsub.eventuallyLE
+    filter_upwards with y using by positivity
+  refine le_trans hmono (le_of_eq ?_)
+  rw [hunion, integral_Iic_inv_one_add_sq, integral_Ioi_inv_one_add_sq, Real.arctan_neg]
+  ring
+
+/-- **The assembled bound with both kernel quantities discharged.**  The only free parameters left are
+the arithmetic ones: the prime range `z`, the distance level `δ`, the height `T`, and the cutoff data
+`N, H`. -/
+theorem exists_norm_tsum_mul_smoothWeight_le
+    (hf1 : f 1 = 1) (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n)
+    (hbdd : ∀ n, ‖f n‖ ≤ 1) (hf0 : f 0 = 0)
+    {σ : ℝ} (hσ : 1 < σ) {z : ℕ} (hz2 : 2 ≤ z) {δ : ℝ} (hδ : 0 ≤ δ)
+    (hWz : 0 < logSqWeight z) {N H : ℝ} (hN : 0 < N) (hH : 0 < H)
+    {T : ℝ} (hT : 0 ≤ T) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      (2 * Real.pi) *
+          ‖∑' n : ℕ, f n *
+            ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ)‖ ≤
+        ((N + H) ^ σ / σ) * ((1 + 1 / (σ - 1)) *
+              Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2) * (2 * T)
+            + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
+              ((2 * T * Real.log (z : ℝ) / Real.pi + 1) *
+                (2 * Real.sqrt (2 * Real.pi ^ 2 * δ ^ 2 / logSqWeight z))))
+          + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
+              (C * (Real.pi - 2 * Real.arctan T)) := by
+  obtain ⟨C, hC0, hCbound⟩ :=
+    exists_bound_mellin_smoothWeight_line hN hH (show (0 : ℝ) < σ by linarith)
+  refine ⟨C, hC0, ?_⟩
+  have htriv0 : (0 : ℝ) ≤ (1 + 1 / (σ - 1)) * Real.exp (7 / 2) := by
+    have h1 : 0 < σ - 1 := by linarith
+    positivity
+  have hWint : Integrable (fun y : ℝ => perronKernel σ N H y) :=
+    verticalIntegrable_mellin_smoothWeight (σ := σ) hN hH (by linarith)
+  have htail : (∫ y in (Set.Icc (-T) T)ᶜ, ‖perronKernel σ N H y‖)
+      ≤ C * (Real.pi - 2 * Real.arctan T) := by
+    have hb : ∀ y ∈ (Set.Icc (-T) T)ᶜ, ‖perronKernel σ N H y‖ ≤ C * (1 + y ^ 2)⁻¹ :=
+      fun y _ => hCbound y
+    have hint1 : IntegrableOn (fun y : ℝ => ‖perronKernel σ N H y‖) (Set.Icc (-T) T)ᶜ :=
+      hWint.norm.integrableOn
+    have hint2 : IntegrableOn (fun y : ℝ => C * (1 + y ^ 2)⁻¹) (Set.Icc (-T) T)ᶜ :=
+      (integrable_inv_one_add_sq.const_mul C).integrableOn
+    refine le_trans (setIntegral_mono_on hint1 hint2 measurableSet_Icc.compl hb) ?_
+    rw [integral_const_mul]
+    exact mul_le_mul_of_nonneg_left (integral_compl_Icc_inv_one_add_sq_le hT) hC0
+  have hmain := norm_tsum_mul_smoothWeight_le_explicit hf1 hmul hbdd hf0 hσ hz2 hδ hWz hN hH hT
+  have hstep : (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
+      ∫ y in (Set.Icc (-T) T)ᶜ, ‖perronKernel σ N H y‖
+      ≤ (1 + 1 / (σ - 1)) * Real.exp (7 / 2) * (C * (Real.pi - 2 * Real.arctan T)) :=
+    mul_le_mul_of_nonneg_left htail htriv0
+  linarith
+
+
 end
 
 end RHTower.Sieve

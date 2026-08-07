@@ -1009,3 +1009,43 @@ The same upgrade for `tensorConstExchange` — a `CDGAModuleHom` from
 `tensorModule P (tensorConstModule Q V)` — after which both descents are morphisms, the composite
 `relTensorFreeCellEquiv` is a morphism, and naturality in `P` plus two out of three against
 `freeCellFunctor_isQuasiIsoFull` discharges `hcell` for `⊗_A`.
+
+## The free cell is invariant for the tensor product over the algebra
+
+Four modules close the last row of the parity table.
+
+* `CDGATensorConstHom.lean` — `tensorConstExchange_tensorAct`, `tensorConstExchange_tensorD`,
+  **`tensorConstHom`**, `tensorConstHom_isQuasiIsoFull`, `tensorConstExchange_naturality`,
+  `tensorConstHom_naturality`.  The action and the left half-differential act through the first
+  factor, which the exchange does not touch; the right half-differential meets it in one place, and
+  there `(mk v w) ∘ d = (d ⊗ 1) ∘ (mk v w)` because both send `v` to `d v ⊗ w`.
+* `CDGARelTensorShiftHom.lean` — **`relTensorShiftHom`**, `_isQuasiIsoFull`, `_naturality`.
+* `CDGARelTensorConstHom.lean` — **`relTensorConstHom`**, `_isQuasiIsoFull`, `_naturality`.
+* `CDGARelFreeCellInvariance.lean` — **`relTensorMapLeft_freeCell_isQuasiIsoFull`** and
+  **`relTensorMapLeft_freeTower_isQuasiIsoFull`**.
+
+The assembly does not build the composite equivalence at all.  Each of the three factors carries a
+naturality square with degreewise-bijective verticals, so three applications of two-out-of-three
+walk the invariance from `− ⊗_A A` (already known) up through `− ⊗_A (A ⊗ V)` and then
+`− ⊗_A (A[−k] ⊗ V)`.  That is strictly cheaper than upgrading `relTensorFreeCellEquiv` to a
+morphism and proving *its* naturality, and it needs no inverse morphism, which would otherwise have
+had to be produced from degreewise bijectivity.
+
+Axioms throughout: `propext, Classical.choice, Quot.sound`.
+
+## Both parities are closed
+
+| coefficients | cell | invariance |
+|---|---|---|
+| `⊗_R` | `constCellModule` | `tensorMapLeft_constCellTower_isQuasiIsoFull` |
+| `⊗_A` | `freeCellModule` | `relTensorMapLeft_freeTower_isQuasiIsoFull` |
+
+So a tower of free cells is flat for `− ⊗_A −`: tensoring it with a full quasi-isomorphism is
+again a full quasi-isomorphism.  This is the flatness statement the derived tensor product needs,
+and it is now unconditional.
+
+## Next
+
+Semi-free resolutions: produce, for a given differential graded module, a tower of free cells with
+a full quasi-isomorphism onto it.  The invariance theorem above is what makes such a resolution
+compute a derived tensor product; the construction itself is the remaining work.

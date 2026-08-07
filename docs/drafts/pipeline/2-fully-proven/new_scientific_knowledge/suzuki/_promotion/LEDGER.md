@@ -15,7 +15,7 @@ that name and its relative links deepened by one level.  Inbound links are repai
 restricted-Weil trace", "specialist novelty review", "3 → 4 publication-ready") do not block
 promotion; gates that name missing Lean do.
 
-## A. Promoted (65 of 103)
+## A. Promoted (66 of 103)
 
 - `suzuki-affine-resolvent-krein-defect`
 - `suzuki-affine-sewn-weil-robin-far-tail-factorization`
@@ -30,6 +30,7 @@ promotion; gates that name missing Lean do.
 - `suzuki-coherent-causal-depth-fusion`
 - `suzuki-coherent-response-gain-no-go`
 - `suzuki-compactified-inverse-phase-lattice-holography`
+- `suzuki-completed-eigenmode-atomic-jump-boundedness`
 - `suzuki-critical-affine-cauchy-residual-divergence`
 - `suzuki-critical-aperture-quarter-shift-current`
 - `suzuki-critical-apex-vacuum-capacity-no-go`
@@ -87,6 +88,8 @@ promotion; gates that name missing Lean do.
 
 ```text
 HTGeometry/AlternatingChordLaw.lean                  2-alternating chord law + exterior instance
+HTGeometry/AtomicJumpForm.lean                       translation-pair identity, truncation
+                                                     coercivity, positive weighted combination
 HTGeometry/DyadicLatticeCover.lean                   lattice window cover, finite subcover, weight
 RHTower/SuzukiCausalEntryMovingCutRealization.lean   moving-cut integrals, their three derivative
                                                      laws, hypothesis-free jet chain, entry law
@@ -97,16 +100,15 @@ RHTower/SuzukiProjectiveResolventBlade.lean          Plücker blade form of the 
 RHTower/SuzukiSupportPrunedSeamCarrierBounds.lean    adjoint law, norm bounds, pruned action
 ```
 
-All seven are wired into their area umbrella, build green, and are axiom-clean.
+All eight are wired into their area umbrella, build green, and are axiom-clean.
 
-## B. Remaining (38)
+## B. Remaining (37)
 
 - `bv-copoisson-sharp-critical-half-weight-log-flux`
 - `suzuki-arithmetic-tangent-inverse-moment-holography`
 - `suzuki-boundary-log-nonclock-nonflat-tangent`
 - `suzuki-carleman-flat-port-weighted-strip-barrier`
 - `suzuki-complementary-primitive-flux-derivative-recovery`
-- `suzuki-completed-eigenmode-atomic-jump-boundedness`
 - `suzuki-coordinate-cutoff-covariance-classification`
 - `suzuki-coordinate-cutoff-primitive-flux-identity`
 - `suzuki-exact-log-remainder-signed-trace-rigidity`

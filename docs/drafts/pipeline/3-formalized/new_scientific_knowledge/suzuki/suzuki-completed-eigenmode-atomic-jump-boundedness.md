@@ -1,7 +1,7 @@
 # Suzuki completed eigenmodes are bounded by atomic-jump coercivity
 
 - **ID:** `suzuki-completed-eigenmode-atomic-jump-boundedness`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper) / COMPLETION-TO-FUNCTION REGULARITY
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
@@ -345,20 +345,35 @@ identity, positive von-Mangoldt coefficients, and the resulting elimination
 of the unbounded completed-zero-mode escape.  Specialist priority review
 remains required.
 
-## 9. Formalization decision
+## 9. Formalization
 
-This theorem has a precise unconditional formal core:
+The unconditional formal core is now proved in
 
-1. the shift-pair/atomic-jump identity `(7)`--`(8)`;
-2. truncation monotonicity `(9)`--`(10)`;
-3. the finite positive weighted sum;
-4. the source specialization \(c_n=\Lambda(n)/\sqrt n\ge0\).
+```text
+formal/GaloisForLFunctions/HTGeometry/AtomicJumpForm.lean
+```
 
-Formalizing only these algebraic and order-theoretic claims is useful because
-they certify the load-bearing source sign.  The analytic logarithmic
-truncation theorem and Suzuki form-domain identification remain imported
-paper mathematics until the relevant measure and Fourier infrastructure is
-available in Lean.
+1. **the shift-pair/atomic-jump identity `(7)`--`(8)`** —
+   `jumpForm`, `pairing`, `jumpForm_eq_two_pairing_sub`:
+   `J_h(u,φ) = 2⟨u,φ⟩ − ⟨u(·+h),φ⟩ − ⟨u(·−h),φ⟩` for continuous compactly supported data, by
+   translation invariance of Lebesgue measure (`integral_add_right_eq_self`).  Multiplying by
+   `c_h ≥ 0` and rearranging is exactly `(8)`: a symmetric prime pair is a positive atomic
+   Dirichlet form minus a scalar potential.
+2. **truncation monotonicity `(9)`--`(10)`** — `truncPos`, `truncPos_mono`, `truncPos_sub_le`,
+   `sub_mul_truncPos_sub_ge` (the pointwise `(9)`), and `jumpForm_truncPos_ge`, which gives both
+   halves of `(10)`: `J_h(T u, T u) ≥ 0` and `J_h(u, T u) ≥ J_h(T u, T u)`.
+3. **the finite positive weighted sum** — `sum_weighted_jumpForm_nonneg`.
+4. **the source specialization `c_n = Λ(n)/√n ≥ 0`** — `primePairWeight`,
+   `primePairWeight_nonneg`, and `sum_primePairWeight_jumpForm_nonneg`.
+
+Every declaration is unconditional with axiom surface `propext`, `Classical.choice`, `Quot.sound`.
+`jumpForm_truncPos_ge` takes the two integrability facts of its own integrands as hypotheses
+because they are properties of the particular eigenfunction, not of the inequality; the
+mathematical content — the pointwise inequality and the sign — is proved, not assumed.
+
+The analytic logarithmic truncation theorem and Suzuki's form-domain identification remain
+imported paper mathematics until the relevant measure and Fourier infrastructure is available in
+Lean; no Lean theorem here assumes either.
 
 ## Gates
 

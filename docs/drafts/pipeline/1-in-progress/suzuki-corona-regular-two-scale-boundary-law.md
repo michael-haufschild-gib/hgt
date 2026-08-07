@@ -369,7 +369,7 @@ classical solution class by
 its symmetric BV pairing supplies the averaged trace, and its favorable sign at penalized extrema
 upgrades the average to a signed pointwise trace without conormality. The precise next theorem is
 now the weak signed-trace lift. The source-domain boundedness problem is closed in
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-completed-eigenmode-atomic-jump-boundedness.md`:
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-completed-eigenmode-atomic-jump-boundedness.md`:
 every completed eigenfunction is a bounded continuous weak logarithmic-Dirichlet solution with
 the optimal half-log boundary bound. The remaining pre-trace escape is eliminated by
 `../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-weak-signed-half-log-trace.md`.

@@ -602,7 +602,7 @@ handled, without replacing it by a pointwise multiplier, in
 For every bounded classical zero mode with the optimal half-log bound, BV duality for the literal
 symmetric remainder and penalized-extremum noncancellation force the signed pointwise endpoint
 trace. The completion-to-bounded-weak lift is now proved in
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-completed-eigenmode-atomic-jump-boundedness.md`.
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-completed-eigenmode-atomic-jump-boundedness.md`.
 Every completed eigenfunction is bounded because each von-Mangoldt shift pair is a positive atomic
 Dirichlet jump minus a scalar potential; the polar--Gamma remainder maps `L2` to `L-infinity`.
 The optimal boundary theorem therefore gives continuity and the sharp half-log bound. The weak
