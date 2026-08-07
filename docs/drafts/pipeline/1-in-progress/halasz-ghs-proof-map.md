@@ -316,3 +316,23 @@ line.** The single remaining ingredient is step 4's outer Perron passage — ext
 sum from its Dirichlet series — for which the corpus's exact smoothed identity
 (`SmoothWeightPerron.tsum_mul_smoothWeight_eq_integral`, kernel Lorentzian by
 `exists_bound_mellin_smoothWeight_line`) is the candidate at smoothing scale `H = N/(log N)³`.
+
+## Thirteenth brick: the triple hyperbola identity, and a generalisation
+
+`RHTower/Sieve/TripleSummatorySwap.lean`:
+
+* `sum_Icc_mul_mul_apply` — `∑_{m ≤ N} (a*(b*c))(m) = ∑_{p ≤ N} a(p) ∑_{q ≤ ⌊N/p⌋} b(q) ∑_{k ≤ ⌊N/p/q⌋} c(k)`,
+  two lines from the corpus's own summatory swap applied twice;
+* `le_div_div_iff` — the nested floors are the hyperbola: `k ≤ ⌊⌊N/p⌋/q⌋ ↔ pqk ≤ N`.
+
+To get there, `RHTower.sum_Icc_mul_apply` (`DirichletSummatorySwap`) was **generalised from
+`ArithmeticFunction ℝ` to `ArithmeticFunction R` for any semiring** — its proof is scalar-agnostic
+(`sum_sigma`, `divisorsAntidiagonal`, `sum_nbij'`), and all four existing users (`VonMangoldtLogSummatory`,
+`ChebyshevPsiLogSummatory`, `MoebiusFloorSummatory`, `VonMangoldtConvHarmonicSummatory`) still build
+unchanged. That removes the need for a ℂ-valued copy, which is what the GHS convolution requires.
+
+This is the identity step 4's Perron passage consumes: after two applications of the log recursion the
+partial sum is a triple convolution, and Perron applies to `∑_{m ≤ N} d(m)` with `D(s) = A(s)B(s)C(s)`.
+The remaining obstacle is that `d` is not bounded — its coefficients carry two logarithms — so the
+corpus's smoothed Perron identity (stated for `‖a n‖ ≤ 1`) needs its hypothesis relaxed to polynomial
+growth. That is the next brick.

@@ -6118,3 +6118,4 @@ import GaloisForLFunctions.RHTower.Sieve.MultiplicativePrimeAverage
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogQuotientSum
 import GaloisForLFunctions.RHTower.Sieve.TripleConvolutionWindow
 import GaloisForLFunctions.RHTower.Sieve.DoubleAverageSplit
+import GaloisForLFunctions.RHTower.Sieve.TripleSummatorySwap
