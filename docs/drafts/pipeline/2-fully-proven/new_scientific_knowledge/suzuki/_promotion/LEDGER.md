@@ -1394,3 +1394,34 @@ is a genuine step, not glue.
 2. Gamma transport operator — closed.
 3. Carleman estimates on a weighted strip — untouched.
 4. Weak signed half-log trace — all components closed; assembly remains.
+
+## Y. `(12)` closed — the averaged trace exists
+
+`HalfLogCesaroAverage.lean` is now at 12 declarations, all `#print axioms` clean.
+
+- `tendsto_of_integrableOn_deriv` — **the assembly engine**: an integrable derivative on a terminal
+  ray forces the primitive to converge, to `A(L₀) + ∫_{Ioi L₀} A'`. Built from
+  `intervalIntegral.integral_eq_sub_of_hasDeriv_right_of_le` (FTC on `[L₀,L]`) and
+  `MeasureTheory.intervalIntegral_tendsto_integral_Ioi` (letting the endpoint run to infinity).
+- `continuous_halfLinePrimitive` — the primitive of a continuous profile is continuous.
+- `tendsto_halfLogAverage` — **`(12)`**: whenever the source equation makes `A'` integrable on a
+  terminal ray, `A` converges. All hypotheses are object regularity (`Continuous F`, `0 < L₀`) plus
+  the integrability that the source equation supplies; the derivative formula is *chained* from
+  `hasDerivAt_halfLogAverage`, not assumed.
+
+Combined with `halfLogAverage_le` / `le_halfLogAverage`, `(12)` and `(13)` are now both formalized
+as a connected chain: source integrability ⟹ `α` exists ⟹ `liminf H ≤ α ≤ limsup H`.
+
+### What is still missing for the card's conclusion `(4)`
+
+The chain above needs its hypothesis supplied: that the source equation `(3)` `P F + R_full f = G`
+makes `L ↦ P F(L)/(4L^{3/2})` integrable on a terminal ray. That is the distributional pairing
+`(8)`/`(10)` — testing `(3)` against `w_M(L) = 1_{[L_0,M]}(L)L^{−3/2}` — and it is the one genuine
+step still open on prerequisite 4. Its two analytic inputs are both built
+(`integrableOn_id_mul_gammaTransportKernel_Ioi_zero` and
+`integral_abs_translate_sub_le_variation`); what remains is the pairing argument itself, which
+needs `R_full` tested against a BV weight in the jump form `(8)`, not the pointwise form.
+
+Note the remaining step is *distributional*: the corpus has no jump-form pairing for `R_full` yet,
+only the pointwise operator `gammaTransport`. Building `E_R(F,w)` as a genuine bilinear form and
+proving its absolute convergence from the two inputs above is the next module.

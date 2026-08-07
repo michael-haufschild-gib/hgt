@@ -95,7 +95,7 @@ theorem radialProlate_deriv_nonpos_of_nonnegative {s c x : ℝ} {R DR DDR : ℝ 
 
 /-- Nonnegative low-separation radial profiles are antitone on every exterior interval. -/
 theorem radialProlate_antitoneOn_of_nonnegative {s c B : ℝ} {R DR DDR : ℝ → ℝ}
-    (hs : s ≤ 1 / 2) (hB : 1 ≤ B)
+    (hs : s ≤ 1 / 2) (_hB : 1 ≤ B)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
     (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
@@ -104,9 +104,9 @@ theorem radialProlate_antitoneOn_of_nonnegative {s c B : ℝ} {R DR DDR : ℝ �
     AntitoneOn R (Icc (1 : ℝ) B) := by
   refine antitoneOn_of_deriv_nonpos (convex_Icc _ _)
     (continuous_iff_continuousAt.mpr (fun t => (hR t).continuousAt)).continuousOn
-    (show DifferentiableOn ℝ R (Icc (1 : ℝ) B) from
+    ((show DifferentiableOn ℝ R (Icc (1 : ℝ) B) from
       (show Differentiable ℝ R from fun t => (hR t).differentiableAt).differentiableOn).mono
-        interior_subset
+        interior_subset)
     fun x hx => ?_
   rw [interior_Icc] at hx
   have hposx : ∀ t ∈ Icc (1 : ℝ) x, 0 ≤ R t := fun t ht =>

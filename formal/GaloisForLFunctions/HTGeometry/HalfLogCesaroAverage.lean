@@ -147,4 +147,60 @@ theorem le_halfLogAverage {F : ℝ → ℝ} (hF : Continuous F) {L c : ℝ} (hL 
   calc c * (2 * Real.sqrt L) = ∫ t in (0 : ℝ)..L, c * t ^ (-(1 : ℝ) / 2) := hval.symm
     _ ≤ ∫ t in (0 : ℝ)..L, F t := hmono
 
+/-! ## The assembly engine
+
+An integrable derivative on a terminal ray forces the primitive to converge.  This is the step that
+turns the source equation — which controls `A'` — into existence of the averaged trace `α`, and
+with the comparison above into the two-sided bound on the half-log trace.
+-/
+
+open Filter Set in
+/-- **An integrable derivative on a ray forces convergence.**  The primitive of an integrable
+derivative tends to its total integral offset by the initial value. -/
+theorem tendsto_of_integrableOn_deriv {A A' : ℝ → ℝ} {L₀ : ℝ}
+    (hcont : ContinuousOn A (Ici L₀))
+    (hderiv : ∀ x ∈ Ioi L₀, HasDerivAt A (A' x) x)
+    (hint : IntegrableOn A' (Ioi L₀)) :
+    Tendsto A atTop (nhds (A L₀ + ∫ x in Ioi L₀, A' x)) := by
+  have hkey : ∀ L : ℝ, L₀ ≤ L → A L = A L₀ + ∫ x in L₀..L, A' x := by
+    intro L hL
+    have hsub : IntervalIntegrable A' volume L₀ L := by
+      rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hL]
+      exact hint.mono_set fun x hx => hx.1
+    have hIcc : ContinuousOn A (Icc L₀ L) := hcont.mono (Icc_subset_Ici_self)
+    have hdw : ∀ x ∈ Ioo L₀ L, HasDerivWithinAt A (A' x) (Ioi x) x := fun x hx =>
+      (hderiv x hx.1).hasDerivWithinAt
+    have := intervalIntegral.integral_eq_sub_of_hasDeriv_right_of_le hL hIcc hdw hsub
+    linarith [this]
+  have hEv : (fun L => A L) =ᶠ[atTop] fun L => A L₀ + ∫ x in L₀..L, A' x := by
+    filter_upwards [eventually_ge_atTop L₀] with L hL
+    exact hkey L hL
+  refine Tendsto.congr' hEv.symm ?_
+  exact tendsto_const_nhds.add
+    (MeasureTheory.intervalIntegral_tendsto_integral_Ioi L₀ hint tendsto_id)
+
+/-- The primitive of a continuous profile is continuous. -/
+theorem continuous_halfLinePrimitive {F : ℝ → ℝ} (hF : Continuous F) :
+    Continuous (halfLinePrimitive F) :=
+  continuous_iff_continuousAt.mpr fun L => (hasDerivAt_halfLinePrimitive hF L).continuousAt
+
+open Filter Set in
+/-- **The averaged trace exists.**  This is `(12)`: whenever the source equation makes `A'`
+integrable on a terminal ray, the half-log Cesàro average converges. -/
+theorem tendsto_halfLogAverage {F : ℝ → ℝ} (hF : Continuous F) {L₀ : ℝ} (hL₀ : 0 < L₀)
+    (hint : IntegrableOn (fun L => logDirichlet F L / (4 * L * Real.sqrt L)) (Ioi L₀)) :
+    Tendsto (halfLogAverage F) atTop
+      (nhds (halfLogAverage F L₀ +
+        ∫ x in Ioi L₀, logDirichlet F x / (4 * x * Real.sqrt x))) := by
+  have hYc : Continuous (halfLinePrimitive F) := continuous_halfLinePrimitive hF
+  have hcont : ContinuousOn (halfLogAverage F) (Ici L₀) := by
+    refine ContinuousOn.div hYc.continuousOn (by fun_prop) fun x hx => ?_
+    have hxpos : 0 < x := lt_of_lt_of_le hL₀ hx
+    have : 0 < Real.sqrt x := Real.sqrt_pos.mpr hxpos
+    positivity
+  have hderiv : ∀ x ∈ Ioi L₀,
+      HasDerivAt (halfLogAverage F) (logDirichlet F x / (4 * x * Real.sqrt x)) x := fun x hx =>
+    hasDerivAt_halfLogAverage hF (lt_trans hL₀ hx)
+  exact tendsto_of_integrableOn_deriv hcont hderiv hint
+
 end GaloisForLFunctions.HTGeometry

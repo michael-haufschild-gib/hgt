@@ -429,4 +429,42 @@ theorem tensorAlgMul_assoc {a b c m q n : ℕ} (h₁ : a + b = m) (h₂ : m + c 
 
 end Convolution
 
+section External
+
+variable {A : CDGAStructure R X}
+
+/-- **A differential graded algebra as a module with zero action.**  Every axiom of a module is an
+identity between zeros except the two for the differential, which are the algebra's own.  This is
+what lets the external differential of a tensor product of algebras reuse the module-level
+half-differentials: they refer to the two differentials only, but their signatures ask for two
+modules over one algebra. -/
+def zeroActModule (B : CDGAStructure R Y) : CDGAModuleStructure A Y where
+  act _ _ _ := 0
+  d := B.d
+  act_add_left _ _ _ _ := (add_zero (0 : Y _)).symm
+  act_add_right _ _ _ _ := (add_zero (0 : Y _)).symm
+  act_smul_left _ _ _ _ := (smul_zero _).symm
+  act_smul_right _ _ _ _ := (smul_zero _).symm
+  act_assoc _ _ _ _ _ _ _ := rfl
+  d_add := B.d_add
+  d_smul := B.d_smul
+  d_d := B.d_d
+  d_act _ _ _ := by
+    show B.d _ 0 = 0 + ((-1 : R)) ^ _ • 0
+    rw [show B.d _ (0 : Y _) = 0 from (B.dₗ _).map_zero, smul_zero, add_zero]
+
+@[simp] theorem zeroActModule_d (B : CDGAStructure R Y) (n : ℕ) (y : Y n) :
+    (zeroActModule (A := A) B).d n y = B.d n y := rfl
+
+/-- **The external differential of a tensor product of algebras.** -/
+noncomputable def extTensorD (A : CDGAStructure R X) (B : CDGAStructure R Y) (n : ℕ)
+    (f : TensorCarrier (R := R) X Y n) : TensorCarrier (R := R) X Y (n + 1) :=
+  tensorD (CDGAStructure.selfModule A) (zeroActModule (A := A) B) n f
+
+theorem extTensorD_d (A : CDGAStructure R X) (B : CDGAStructure R Y) (n : ℕ)
+    (f : TensorCarrier (R := R) X Y n) : extTensorD A B (n + 1) (extTensorD A B n f) = 0 :=
+  (tensorModule (CDGAStructure.selfModule A) (zeroActModule (A := A) B)).d_d n f
+
+end External
+
 end GaloisForLFunctions.HTGeometry
