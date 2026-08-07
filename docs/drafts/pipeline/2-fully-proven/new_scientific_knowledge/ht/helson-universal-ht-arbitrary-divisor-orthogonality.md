@@ -254,3 +254,16 @@ The universality and dense/codense seam consequences are already formalized axio
 three add is the *instantiation*, i.e. that the hypothesis class is inhabited by the actual
 `Z_χ` family.  Until then the formal statements are conditional on their hypotheses being met, and
 the card should not claim the joint law is formal.
+
+## Lean progress — Pong's hypothesis is discharged for every character
+
+`GaloisForLFunctions/HTGeometry/PrimeSupportNotFinitelyGenerated.lean` (wired, axiom-clean):
+
+    mem_of_prime_mem_closure             a prime in the multiplicative closure of a finite set of
+                                         primes belongs to that set
+    primeSupport_not_finitelyGenerated   **no finite set of primes generates every prime**
+
+Pong's Theorem 5.9 applies to an arithmetic function whose prime support is not finitely generated.
+For a completely multiplicative unimodular `chi` the support is all primes, so the hypothesis is
+now a theorem rather than a condition to be checked per character.  What remains of Pong's input is
+its conclusion — algebraic independence of the shifted derivatives — not its hypothesis.

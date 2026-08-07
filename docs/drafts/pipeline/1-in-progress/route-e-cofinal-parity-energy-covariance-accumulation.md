@@ -547,6 +547,33 @@ supply missing square-root exponent, nor control parity-mass collapse in (A22). 
 requires new conversion from its frequency average to one term of (A23) at physical-power
 strength.
 
+A further exact coordinate audit shows why “nonproduct boundary component” alone is too weak.
+Set
+
+\[
+ A=K_++K_-,\qquad B=W_+-W_-,\qquad J=K_+-K_-,\qquad W=W_++W_-.
+\]
+
+Then two independent determinants are
+
+\[
+ D_{\rm anti}=WA-BJ=2(W_-K_++W_+K_-),\qquad
+ D_{\rm np}=WJ-BA=2(W_-K_+-W_+K_-),                  \tag{A25}
+\]
+
+and
+
+\[
+ \boxed{\mathcal C_{S,P}={D_{\rm anti}^2\over W(W^2-B^2)}}. \tag{A26}
+\]
+
+Companion \(D_{\rm np}\) detects unequal unsigned even/odd response and vanishes for
+parity-block product response. It does not enter (A26). Boundary nonproductness may therefore
+sit entirely in antiscale direction and contribute no coarse dissipation. Revised premise
+must prove **antiscale-transverse** boundary response—\(D_{\rm anti}\) at physical-power
+strength—or one of within-parity variances. This strictly sharpens and supersedes bare
+“nonproduct frame” wording.
+
 Paper and unconditional Lean:
 `../3-formalized/new_scientific_knowledge/route-e-parity-coarse-grained-batch-rigidity.md` and
 `RHTower/GibbsBatchParityCoarseGraining.lean`.  Targeted build `9712/9712`; axioms only

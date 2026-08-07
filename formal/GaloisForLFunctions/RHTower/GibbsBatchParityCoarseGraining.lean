@@ -120,7 +120,9 @@ theorem routeEScalarParityCoarseDeterminantIdentity
   have hdisc : (Wp + Wn) ^ 2 - (Wp - Wn) ^ 2 ≠ 0 := by
     have hfour : (4 : ℝ) * Wp * Wn ≠ 0 :=
       mul_ne_zero (mul_ne_zero (by norm_num) hp) hn
-    convert hfour using 1 <;> ring
+    calc
+      (Wp + Wn) ^ 2 - (Wp - Wn) ^ 2 = (4 : ℝ) * Wp * Wn := by ring
+      _ ≠ 0 := hfour
   field_simp [hp, hn, hs, hdisc]
   ring
 

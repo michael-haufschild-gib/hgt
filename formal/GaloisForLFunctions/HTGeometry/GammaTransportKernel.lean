@@ -513,4 +513,35 @@ theorem neg_le_secondDifference_of_weighted {f : ℝ → ℝ} {X s δ : ℝ} (hX
   have hA : f X + δ * s / Real.sqrt X - f X = δ * s / Real.sqrt X := by ring
   nlinarith [hfwd, hbwd, hA]
 
+/-- **The near-shift bound, linearised.**  On `0 ≤ s ≤ X/2` the two terms collapse to a single
+multiple of `s`, with constant `2δ/√X + 2(f X + δ√X/2)/X`.  Only the kernel's *first* moment is
+then needed — no second moment enters. -/
+theorem neg_mul_le_secondDifference_of_weighted {f : ℝ → ℝ} {X s δ : ℝ} (hX : 0 < X) (hs : 0 ≤ s)
+    (hsX : s ≤ X / 2) (hδ : 0 ≤ δ) (hf : 0 ≤ f X)
+    (hp : Real.sqrt (X + s) * f (X + s) ≤ Real.sqrt X * f X + δ * s)
+    (hm : Real.sqrt (X - s) * f (X - s) ≤ Real.sqrt X * f X + δ * s) :
+    -((2 * δ / Real.sqrt X + 2 * (f X + δ * Real.sqrt X / 2) / X) * s)
+      ≤ secondDifference f X s := by
+  have hsq : 0 < Real.sqrt X := Real.sqrt_pos.mpr hX
+  have hsqsq : Real.sqrt X * Real.sqrt X = X := Real.mul_self_sqrt hX.le
+  have hbase := neg_le_secondDifference_of_weighted hX hs hsX hδ hf hp hm
+  have hkey : δ * s / Real.sqrt X ≤ δ * Real.sqrt X / 2 := by
+    rw [div_le_div_iff₀ hsq (by norm_num : (0:ℝ) < 2)]
+    nlinarith [hsqsq, hsq, hδ, hsX, hs]
+  have hstep : 2 * (s / X) * (f X + δ * s / Real.sqrt X)
+      ≤ 2 * (f X + δ * Real.sqrt X / 2) / X * s := by
+    have h1 : f X + δ * s / Real.sqrt X ≤ f X + δ * Real.sqrt X / 2 := by linarith [hkey]
+    have h2 : (0:ℝ) ≤ 2 * (s / X) := by positivity
+    have h3 : 2 * (s / X) * (f X + δ * s / Real.sqrt X)
+        ≤ 2 * (s / X) * (f X + δ * Real.sqrt X / 2) := by nlinarith [h1, h2]
+    have h4 : 2 * (s / X) * (f X + δ * Real.sqrt X / 2)
+        = 2 * (f X + δ * Real.sqrt X / 2) / X * s := by field_simp
+    linarith [h3, h4.le, h4.ge]
+  have hfirst : 2 * (δ * s / Real.sqrt X) = 2 * δ / Real.sqrt X * s := by
+    field_simp
+  have hexp : (2 * δ / Real.sqrt X + 2 * (f X + δ * Real.sqrt X / 2) / X) * s
+      = 2 * δ / Real.sqrt X * s + 2 * (f X + δ * Real.sqrt X / 2) / X * s := by ring
+  rw [hexp]
+  linarith [hbase, hstep, hfirst.le, hfirst.ge]
+
 end GaloisForLFunctions.HTGeometry

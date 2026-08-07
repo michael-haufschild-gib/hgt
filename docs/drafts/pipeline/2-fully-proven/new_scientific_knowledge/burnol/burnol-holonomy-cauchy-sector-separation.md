@@ -1,7 +1,7 @@
 # Burnol finite-holonomy/Cauchy sector separation
 
 - **ID:** `burnol-holonomy-cauchy-sector-separation`
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven
 - **Type:** THEOREM / NO-GO CLOSURE
 - **Conjecture label:** C13
 - **Inputs:** `BurnolCoPoissonQuotientOrder`, `BurnolDividedShiftPhysicalDissipativity`,
@@ -56,6 +56,12 @@ with the zeros of the Riemann zeta function*; Burnol (2007), *Entrelacement de c
 
 - [x] Exact conjecture and failure mechanism frozen
 - [x] Dependency-closed paper proof
-- [ ] Lean formalization and axiom audit
-- [ ] Promote to Stage 2/3 after exact source verification
+- [x] Lean formalization and axiom audit
+- [x] Promote to Stage 2 after exact source verification
 
+## Formalization
+
+`GaloisForLFunctions.RHTower.BurnolHolonomyCauchySectorSeparation` proves strict accretivity and
+both uncompressed and quotient-compressed separation theorems. Exact `lake env lean` source
+verification passes. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+The module is wired into `RHTower.lean`; no umbrella build was run.

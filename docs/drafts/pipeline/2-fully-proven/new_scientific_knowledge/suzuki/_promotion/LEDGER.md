@@ -2421,3 +2421,84 @@ Full asset list for §4–§5, all axiom-clean:
     transport: neg_le_secondDifference_of_one_sided, integrable_transport_lower_bound,
                abs_integral_transport_far_le
     interiority: lt_of_localised
+
+## BH. The near-shift bound is built
+
+`GammaTransportKernel.lean` is now at 26 declarations, all `#print axioms` clean. It now imports
+`PenalizedMaximum`.
+
+- `neg_le_secondDifference_of_weighted` — at a penalized maximizer of the *weighted* profile, the
+  *unweighted* second difference obeys, for `0 ≤ s ≤ X/2`,
+
+      secondDifference f X s  ≥  −2 (δ s/√X)  −  2 (s/X) (f X + δ s/√X).
+
+  Both terms carry a factor `s`, which is exactly what the kernel's finite first moment absorbs.
+
+This is the near half of section BE's split, in pointwise form. It closes the last estimate the
+card's §4–§5 needs; both weight directions, the sharp expansion, the transport lower bound, the far
+tail and the §5 apparatus are all now built and axiom-clean.
+
+### `suzuki-weak-signed-half-log-trace` — what is left
+
+Purely assembly, with no unbuilt estimate behind it:
+
+1. integrate `neg_le_secondDifference_of_weighted` against `k(s)` over `Ioc 0 (X/2)` — the two
+   terms give `O(δ/√X)` and `O(1/X)` via `integrableOn_id_mul_gammaTransportKernel_Ioi_zero`;
+2. add `abs_integral_transport_far_le` at `R = X/2`;
+3. feed the sum into `(18)` with `(19)` and `(20)`, take `n → ∞` along the maximizers, and read off
+   `M ≤ liminf H`.
+
+Every input to those three steps exists. The card remains in stage 2 until they are written and the
+resulting theorem is axiom-clean — a complete asset list is not a proof.
+
+## BI. The near-shift bound is linearised — only the first moment is needed
+
+`GammaTransportKernel.lean` is now at 27 declarations, all `#print axioms` clean.
+
+- `neg_mul_le_secondDifference_of_weighted` — on `0 ≤ s ≤ X/2`,
+
+      secondDifference f X s  ≥  −(2δ/√X + 2(f X + δ√X/2)/X) · s.
+
+  The bound of section BH has a term `2(s/X)(δs/√X)` that is quadratic in `s`; bounding
+  `δs/√X ≤ δ√X/2` (which is exactly `s ≤ X/2`) collapses it to a multiple of `s`.
+
+**This matters for step 1 of the assembly.** Left in its BH form the integral would need
+`∫ s² k(s) ds`, a *second* moment that is not built. Linearised, only
+`integrableOn_id_mul_gammaTransportKernel_Ioi_zero` — the first moment, section T — is required.
+Do not build a second moment for this purpose.
+
+### `suzuki-weak-signed-half-log-trace` — remaining
+
+1. integrate the linearised bound against `k(s)` over `Ioc 0 (X/2)`: the result is
+   `−(2δ/√X + 2(f X + δ√X/2)/X) · ∫_0^{X/2} s k(s) ds`, bounded using the first moment;
+2. add `abs_integral_transport_far_le` at `R = X/2`;
+3. combine with `(18)`, `(19)`, `(20)`, take `n → ∞` along the maximizers, read off `M ≤ liminf H`.
+
+With `δ = δ_n = L_n^{−1/2} → 0`, `X = X_n → ∞` and `f X` bounded, the step-1 constant is
+`O(δ_n) + O(1/X_n) → 0`, and the step-2 term is `4M q(X_n/2) → 0`. Both vanish, which is the
+mechanism.
+
+## BJ. Structural point for step 1: integrability comes from the equation, not the maximizer
+
+Starting step 1 (integrate the linearised bound over `Ioc 0 (X/2)`) exposes an asymmetry that must
+be respected when writing it.
+
+`integral_mono` needs **both** integrands integrable. The dominating function `−C·s·k(s)` is
+integrable by the first moment. But `secondDifference f X · × k` is **not** obviously integrable
+near `s = 0`: the kernel has a simple pole, and the maximizer supplies only a *one-sided* bound.
+`(24)` gives `H(X ± s) ≤ H(X) + δs`, i.e. upper bounds on the shifted values, hence only a **lower**
+bound on `2f(X) − f(X+s) − f(X−s)`. An upper bound on the second difference would need *lower*
+bounds on `f(X ± s)`, which the maximizer does not give.
+
+Integrability therefore cannot be derived from the maximizer. It comes from the **equation**: the
+card's `(18)` `P f_ε + R_full f_ε = G_ε + C_ε` asserts that `R_full f_ε` exists at the point in
+question. So when step 1 is written, `IntegrableOn (fun s => secondDifference f X s *
+gammaTransportKernel s) (Ioc 0 (X/2))` is legitimate object data — it is part of what `(18)`
+says — and must **not** be attacked as if it were derivable from `(24)`.
+
+Contrast with the far half: `abs_integral_transport_far_le` (BE) *does* derive its own
+integrability, because there the second difference is bounded and the kernel is integrable away
+from the pole. The asymmetry is real and is a property of the pole, not an oversight.
+
+Next: write step 1 with that integrability hypothesis, then steps 2–3. Every estimate they need is
+built (BE, BI, section T's first moment).

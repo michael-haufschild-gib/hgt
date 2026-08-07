@@ -263,3 +263,25 @@ existing statement — there is no cheap derivation, since a bounded good set ca
 For (27): split the prime sum into a finite head and a tail bounded by `4 ∑ ω_p / p`; apply the
 strengthened Kronecker to the head.  Note `|b_p|` is EVEN in t, so `liminf_{t→+∞}` and
 `liminf_{|t|→∞}` agree.
+
+## Kronecker recurrence built; card 5 (25) CLOSED (2026-08-07)
+
+NEW REUSABLE CORPUS ASSET:
+`formal/GaloisForLFunctions/HTGeometry/KroneckerApproxRecurrence.lean` —
+`GaloisForLFunctions.kronecker_approx_atTop (hind) (θ) (hε) (T₀) : ∃ t, T₀ < t ∧ ∀ j, …`.
+This is `kronecker_approx` with the approximating time pushed past any bound.  The proof is the
+original Bohr-mean contradiction with ONE change: `hpoint` is only assumed for `t > T₀`, and in
+`hbd` the window integral is split at `S = max T₀ 0`,
+`‖∫_0^T g‖ ≤ S + q^K·T`, so `T⁻¹‖∫_0^T g‖ ≤ S/T + q^K`, and the two limits are compared with
+`le_of_tendsto_of_tendsto` instead of `le_of_tendsto`.  Everything else is copied verbatim.
+
+`formal/GaloisForLFunctions/RHTower/HedenmalmPrimeFrameObstruction.lean`:
+`abs_sin_le_norm_expChar_sub_one`, `sq_frameSymbol_le` (frameSymbol² ≤ 4ε² when |sin| ≤ ε — uses
+only `p^{-1/2} ≤ 1`, no rpow algebra needed), and
+`exists_gt_sum_sq_frameSymbol_lt (P : Finset Nat.Primes) (hδ) (T) : ∃ t > T, ∑_{p∈P} b_p(t)² < δ`.
+Trick: apply Kronecker with frequencies `Real.log p` at time `s` and return `t = 2s`; this avoids
+needing a "scale a linearly independent family" lemma.
+
+Remaining for card 5 frame obstructions: only (27), the summably weighted all-prime form.
+Route: head/tail split with `tendsto_tsum_compl_atTop_zero` on `∑ ω_p/p`, then
+`exists_gt_sum_sq_frameSymbol_lt` on the head.

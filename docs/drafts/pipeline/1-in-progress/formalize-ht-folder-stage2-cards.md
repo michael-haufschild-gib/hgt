@@ -221,3 +221,20 @@ Remaining, per card, in rough order of cost:
 - card 7: a Rosenlicht-type quotient for a general connected commutative algebraic group
 - card 8: Pong 5.9, Andersson's arbitrary-divisor theorem, Saksman--Webb/Seip
 - card 9: two-sided Stirling for `Γ(1 + sk)` against `(k!)^s`, then Sibuya--Ramis and Barnes
+
+
+## Built this cycle (cards 2, 3, 4, 5, 6, 8)
+
+```text
+HTGeometry/TripticSourceDivisor.lean (extended)   triptic_multiplicative_divisor_reciprocity_int,
+                                                   laurentCoeff_shiftDiff_logDeriv,
+                                                   finite_support_shiftOrder,
+                                                   tripticOrbitCharge{,_mul,_shift}
+HTGeometry/ParabolicSignatureClassification.lean  parabolic_of_pole_orders,
+   (extended)                                      parabolicSphereSignature_of_pole_orders
+HTGeometry/PrimeSupportNotFinitelyGenerated.lean  primeSupport_not_finitelyGenerated
+```
+
+Card 4's algebraic core (including the telescoping identity
+`TelescopeIdeal.iInf_span_singleton_eq_span_prod_of_primes`) is audited axiom-clean; its remaining
+statements rest on the exact-image parent of the all-depth card, not on anything of this card's own.

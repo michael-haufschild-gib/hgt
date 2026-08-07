@@ -393,6 +393,14 @@ def firstRowBesselProduct (s c k x : ℝ) : ℝ :=
 def compactBesselProfileError (s c a : ℝ) : ℝ :=
   5 * ampFourth s a / Real.sqrt (Real.sqrt (c * xiEndpointPhase s a))
 
+/-- Uniform compact error in the product of two first-row Bessel profiles. -/
+def compactFirstRowProductError (s c k a : ℝ) : ℝ :=
+  compactBesselProfileError s c a * compactBesselProfileError s c (k * a)
+    + compactBesselProfileError s c a *
+        (Real.sqrt (2 / Real.pi) * ampFourth s (k * a))
+    + (Real.sqrt (2 / Real.pi) * ampFourth s a) *
+        compactBesselProfileError s c (k * a)
+
 theorem continuousOn_ampFourth_exterior {s : ℝ} (hs1 : s ≤ 1 / 2) :
     ContinuousOn (ampFourth s) (Ioi 1) := by
   intro x hx
@@ -505,11 +513,7 @@ theorem abs_firstRowBesselProduct_sub_leading_le
     (hc : 0 < c) (ha : 1 < a) (hax : a ≤ x)
     (hcxi : 1 ≤ c * xiEndpointPhase s a) :
     |firstRowBesselProduct s c k x - firstRowLeadingProduct s c k x|
-      ≤ compactBesselProfileError s c a * compactBesselProfileError s c (k * a)
-        + compactBesselProfileError s c a *
-            (Real.sqrt (2 / Real.pi) * ampFourth s (k * a))
-        + (Real.sqrt (2 / Real.pi) * ampFourth s a) *
-            compactBesselProfileError s c (k * a) := by
+      ≤ compactFirstRowProductError s c k a := by
   have hka : 1 < k * a := mapsTo_mul_left_Ioi hk ha
   have hk0 : 0 < k := by linarith
   have hkax : k * a ≤ k * x := mul_le_mul_of_nonneg_left hax hk0.le
@@ -538,6 +542,7 @@ theorem abs_firstRowBesselProduct_sub_leading_le
   have hAka : 0 ≤ ampFourth s (k * a) := (ampFourth_pos hs1 hka).le
   have hfac : P * Q - L * M = (P - L) * (Q - M) + (P - L) * M + L * (Q - M) := by ring
   change |P * Q - L * M| ≤ _
+  rw [compactFirstRowProductError]
   rw [hfac]
   calc
     |(P - L) * (Q - M) + (P - L) * M + L * (Q - M)|
@@ -573,6 +578,302 @@ theorem tendsto_compactBesselProfileError_zero
     funext i
     rw [compactBesselProfileError]]
   exact Tendsto.div_atTop (hA.const_mul 5) hroot
+
+theorem tendsto_compactFirstRowProductError_zero
+    {ι : Type*} {l : Filter ι} {c s : ι → ℝ}
+    (hc : Tendsto c l atTop) (hs : Tendsto s l (nhds 0))
+    (hs0 : ∀ᶠ i in l, 0 ≤ s i) {k a : ℝ} (hk : 2 ≤ k) (ha : 1 < a) :
+    Tendsto (fun i => compactFirstRowProductError (s i) (c i) k a) l (nhds 0) := by
+  have hka : 1 < k * a := mapsTo_mul_left_Ioi hk ha
+  have hEa := tendsto_compactBesselProfileError_zero hc hs hs0 ha
+  have hEka := tendsto_compactBesselProfileError_zero hc hs hs0 hka
+  have hAa := tendsto_ampFourth_fixed_radius hs ha
+  have hAka := tendsto_ampFourth_fixed_radius hs hka
+  have h1 : Tendsto (fun i => compactBesselProfileError (s i) (c i) a *
+      compactBesselProfileError (s i) (c i) (k * a)) l (nhds 0) := by
+    convert hEa.mul hEka using 1 <;> ring
+  have h2 : Tendsto (fun i => compactBesselProfileError (s i) (c i) a *
+      (Real.sqrt (2 / Real.pi) * ampFourth (s i) (k * a))) l (nhds 0) := by
+    convert hEa.mul (hAka.const_mul (Real.sqrt (2 / Real.pi))) using 1 <;> ring
+  have h3 : Tendsto (fun i => (Real.sqrt (2 / Real.pi) * ampFourth (s i) a) *
+      compactBesselProfileError (s i) (c i) (k * a)) l (nhds 0) := by
+    convert (hAa.const_mul (Real.sqrt (2 / Real.pi))).mul hEka using 1 <;> ring
+  rw [show (fun i => compactFirstRowProductError (s i) (c i) k a) = fun i =>
+      compactBesselProfileError (s i) (c i) a *
+          compactBesselProfileError (s i) (c i) (k * a)
+        + compactBesselProfileError (s i) (c i) a *
+          (Real.sqrt (2 / Real.pi) * ampFourth (s i) (k * a))
+        + (Real.sqrt (2 / Real.pi) * ampFourth (s i) a) *
+          compactBesselProfileError (s i) (c i) (k * a) by
+    funext i
+    rw [compactFirstRowProductError]]
+  simpa only [zero_add] using (h1.add h2).add h3
+
+theorem abs_intervalIntegral_firstRowBesselProduct_sub_leading_le
+    {s c k a b : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k)
+    (hc : 0 < c) (hab : a ≤ b) (ha : 1 < a)
+    (hcxi : 1 ≤ c * xiEndpointPhase s a) :
+    |(∫ x in a..b, firstRowBesselProduct s c k x) -
+        ∫ x in a..b, firstRowLeadingProduct s c k x|
+      ≤ compactFirstRowProductError s c k a * |b - a| := by
+  have hsub : uIcc a b ⊆ Ioi 1 := by
+    rw [uIcc_of_le hab]
+    exact fun _ hx => ha.trans_le hx.1
+  have hBint : IntervalIntegrable (firstRowBesselProduct s c k) volume a b :=
+    ((continuousOn_firstRowBesselProduct hs0 hs1 hk).mono hsub).intervalIntegrable
+  have hLint : IntervalIntegrable (firstRowLeadingProduct s c k) volume a b :=
+    ((continuousOn_firstRowLeadingProduct hs0 hs1 hk).mono hsub).intervalIntegrable
+  rw [← intervalIntegral.integral_sub hBint hLint, ← Real.norm_eq_abs]
+  apply intervalIntegral.norm_integral_le_of_norm_le_const
+  intro x hx
+  rw [uIoc_of_le hab] at hx
+  rw [Real.norm_eq_abs]
+  exact abs_firstRowBesselProduct_sub_leading_le hs0 hs1 hk hc ha hx.1.le hcxi
+
+/-- Exact regular Bessel first-row product cancellation on every fixed exterior interval. -/
+theorem tendsto_integral_firstRowBesselProduct
+    {ι : Type*} {l : Filter ι} {c s : ι → ℝ}
+    (hc : Tendsto c l atTop) (hs : Tendsto s l (nhds 0))
+    (hs0 : ∀ᶠ i in l, 0 ≤ s i)
+    {k a b : ℝ} (hk : 2 ≤ k) (hab : a ≤ b) (ha : 1 < a)
+    (haCross : Real.sqrt (1 + 2 / k ^ 2) ≤ a) :
+    Tendsto (fun i => ∫ x in a..b, firstRowBesselProduct (s i) (c i) k x)
+      l (nhds 0) := by
+  have hlead := tendsto_integral_firstRowLeadingProduct hc hs hs0 hk hab ha haCross
+  have hbudget := tendsto_compactFirstRowProductError_zero hc hs hs0 hk ha
+  have hmajor : Tendsto (fun i => compactFirstRowProductError (s i) (c i) k a * |b - a|)
+      l (nhds 0) := by
+    simpa using hbudget.mul_const |b - a|
+  have hsHalf : ∀ᶠ i in l, s i ≤ 1 / 2 :=
+    (hs.eventually (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1 / 2))).mono
+      fun _ hi => hi.le
+  have hcPos : ∀ᶠ i in l, 0 < c i := hc.eventually (eventually_gt_atTop 0)
+  have harg := tendsto_c_mul_xiEndpointPhase_fixed_radius_atTop hc hs hs0 ha
+  have hcxi : ∀ᶠ i in l, 1 ≤ c i * xiEndpointPhase (s i) a :=
+    harg.eventually (eventually_ge_atTop 1)
+  have hdiff : Tendsto (fun i =>
+      (∫ x in a..b, firstRowBesselProduct (s i) (c i) k x) -
+        ∫ x in a..b, firstRowLeadingProduct (s i) (c i) k x) l (nhds 0) := by
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    simpa only [sub_zero, Real.norm_eq_abs] using squeeze_zero'
+      (Eventually.of_forall fun i => abs_nonneg
+        ((∫ x in a..b, firstRowBesselProduct (s i) (c i) k x) -
+          ∫ x in a..b, firstRowLeadingProduct (s i) (c i) k x))
+      (by
+        filter_upwards [hs0, hsHalf, hcPos, hcxi] with i hsi0 hsi1 hci hcix
+        exact abs_intervalIntegral_firstRowBesselProduct_sub_leading_le
+          hsi0 hsi1 hk hci hab ha hcix)
+      hmajor
+  simpa only [sub_add_cancel, zero_add] using hdiff.add hlead
+
+/-! ## Exact endpoint-normalized radial profile on a compact interval -/
+
+/-- Rescaled exact radial profile. -/
+def radialProlateRescaledProfile (c : ℝ) (R : ℝ → ℝ) (x : ℝ) : ℝ :=
+  Real.sqrt c * R x
+
+/-- Exact first-row radial product at the density scale. -/
+def firstRowRadialProduct (c : ℝ) (R : ℝ → ℝ) (k x : ℝ) : ℝ :=
+  radialProlateRescaledProfile c R x * radialProlateRescaledProfile c R (k * x)
+
+/-- Uniform compact exact-to-Bessel profile error supplied by Dunster transfer. -/
+def compactExactProfileError (s c a : ℝ) : ℝ :=
+  (radialProlateUniformTransferConstant * lgBesselCommonEnvelopeConstant / c) *
+    ampFourth s a
+
+/-- Uniform exact-to-Bessel product error on a fixed first-row interval. -/
+def compactExactFirstRowProductError (s c k a : ℝ) : ℝ :=
+  compactExactProfileError s c a * compactExactProfileError s c (k * a)
+    + compactExactProfileError s c a *
+        (compactBesselProfileError s c (k * a) +
+          Real.sqrt (2 / Real.pi) * ampFourth s (k * a))
+    + (compactBesselProfileError s c a +
+        Real.sqrt (2 / Real.pi) * ampFourth s a) *
+        compactExactProfileError s c (k * a)
+
+theorem compactExactProfileError_nonneg
+    {s c a : ℝ} (hs1 : s ≤ 1 / 2) (hc : 0 < c) (ha : 1 < a) :
+    0 ≤ compactExactProfileError s c a := by
+  rw [compactExactProfileError]
+  have hK := radialProlateUniformTransferConstant_nonneg
+  have hC := lgBesselCommonEnvelopeConstant_nonneg
+  exact mul_nonneg (div_nonneg (mul_nonneg hK hC) hc.le) (ampFourth_pos hs1 ha).le
+
+/-- Dunster's uniform transfer after multiplication by the natural `sqrt c` profile scale. -/
+theorem abs_radialProlateRescaledProfile_sub_besselProfile_le
+    {s c a x : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c)
+    (haCross : dunsterEndpointCrossing c ≤ a) (ha : 1 < a) (hax : a ≤ x)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    |radialProlateRescaledProfile c R x - radialProlateBesselProfile s c x|
+      ≤ compactExactProfileError s c a := by
+  let K := radialProlateUniformTransferConstant
+  let C := lgBesselCommonEnvelopeConstant
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
+  have hx : 1 < x := ha.trans_le hax
+  have hraw := abs_radialProlate_sub_besselProfile_le hs0 hs1 hc hR1 hR hDR hode
+    (haCross.trans hax)
+  have hmul := mul_le_mul_of_nonneg_left hraw (Real.sqrt_nonneg c)
+  have hfac : radialProlateRescaledProfile c R x - radialProlateBesselProfile s c x =
+      Real.sqrt c *
+        (R x - xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) := by
+    rw [radialProlateRescaledProfile, radialProlateBesselProfile]
+    ring
+  have hratio := sqrt_mul_xiAmplitude_div_eq hs0 hs1 hx hc0
+  have heq : Real.sqrt c *
+      (xiAmplitude s x * ((K / c) *
+        (C / Real.sqrt (c * xiEndpointPhase s x)))) =
+      (K * C / c) * ampFourth s x := by
+    rw [← hratio]
+    ring
+  rw [hfac, abs_mul, abs_of_nonneg (Real.sqrt_nonneg c)]
+  refine hmul.trans ?_
+  rw [heq, compactExactProfileError]
+  have hcoef : 0 ≤ K * C / c := by
+    exact div_nonneg (mul_nonneg radialProlateUniformTransferConstant_nonneg
+      lgBesselCommonEnvelopeConstant_nonneg) hc0.le
+  exact mul_le_mul_of_nonneg_left (ampFourth_le_of_le hs1 ha hax) hcoef
+
+theorem abs_radialProlateBesselProfile_le_compact
+    {s c a x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hc : 0 < c) (ha : 1 < a) (hax : a ≤ x)
+    (hcxi : 1 ≤ c * xiEndpointPhase s a) :
+    |radialProlateBesselProfile s c x| ≤
+      compactBesselProfileError s c a +
+        Real.sqrt (2 / Real.pi) * ampFourth s a := by
+  let L := Real.sqrt (2 / Real.pi) * ampFourth s x *
+    Real.cos (c * xiEndpointPhase s x - Real.pi / 4)
+  have herror := abs_radialProlateBesselProfile_sub_leading_le hs0 hs1 hc ha hax hcxi
+  have hlead : |L| ≤ Real.sqrt (2 / Real.pi) * ampFourth s a :=
+    abs_radialProlateLeadingProfile_le hs1 ha hax
+  change |radialProlateBesselProfile s c x| ≤ _
+  calc
+    |radialProlateBesselProfile s c x|
+        = |(radialProlateBesselProfile s c x - L) + L| := by ring_nf
+    _ ≤ |radialProlateBesselProfile s c x - L| + |L| := abs_add_le _ _
+    _ ≤ compactBesselProfileError s c a +
+        Real.sqrt (2 / Real.pi) * ampFourth s a := add_le_add herror hlead
+
+theorem abs_firstRowRadialProduct_sub_bessel_le
+    {s c k a x : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hc : 5 ≤ c)
+    (haCross : dunsterEndpointCrossing c ≤ a) (ha : 1 < a) (hax : a ≤ x)
+    (hcxi : 1 ≤ c * xiEndpointPhase s a)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    |firstRowRadialProduct c R k x - firstRowBesselProduct s c k x|
+      ≤ compactExactFirstRowProductError s c k a := by
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
+  have hka : 1 < k * a := mapsTo_mul_left_Ioi hk ha
+  have hk0 : 0 < k := by linarith
+  have hkax : k * a ≤ k * x := mul_le_mul_of_nonneg_left hax hk0.le
+  have hphase : xiEndpointPhase s a ≤ xiEndpointPhase s (k * a) :=
+    xiEndpointPhase_le_of_le hs0 hs1 ha.le (by nlinarith)
+  have hcxiFar : 1 ≤ c * xiEndpointPhase s (k * a) :=
+    hcxi.trans (mul_le_mul_of_nonneg_left hphase hc0.le)
+  let P := radialProlateRescaledProfile c R x
+  let Q := radialProlateRescaledProfile c R (k * x)
+  let B := radialProlateBesselProfile s c x
+  let D := radialProlateBesselProfile s c (k * x)
+  have hP : |P - B| ≤ compactExactProfileError s c a :=
+    abs_radialProlateRescaledProfile_sub_besselProfile_le hs0 hs1 hc haCross ha hax
+      hR1 hR hDR hode
+  have hQ : |Q - D| ≤ compactExactProfileError s c (k * a) :=
+    abs_radialProlateRescaledProfile_sub_besselProfile_le hs0 hs1 hc
+      (haCross.trans (by nlinarith)) hka hkax hR1 hR hDR hode
+  have hB : |B| ≤ compactBesselProfileError s c a +
+      Real.sqrt (2 / Real.pi) * ampFourth s a :=
+    abs_radialProlateBesselProfile_le_compact hs0 hs1 hc0 ha hax hcxi
+  have hD : |D| ≤ compactBesselProfileError s c (k * a) +
+      Real.sqrt (2 / Real.pi) * ampFourth s (k * a) :=
+    abs_radialProlateBesselProfile_le_compact hs0 hs1 hc0 hka hkax hcxiFar
+  have hEP := compactExactProfileError_nonneg hs1 hc0 ha
+  have hEQ := compactExactProfileError_nonneg hs1 hc0 hka
+  have hBEa := compactBesselProfileError_nonneg hs0 hs1 hc0 ha
+  have hBEka := compactBesselProfileError_nonneg hs0 hs1 hc0 hka
+  have hboundA : 0 ≤ compactBesselProfileError s c a +
+      Real.sqrt (2 / Real.pi) * ampFourth s a := by positivity
+  have hboundKa : 0 ≤ compactBesselProfileError s c (k * a) +
+      Real.sqrt (2 / Real.pi) * ampFourth s (k * a) := by positivity
+  have hfac : P * Q - B * D = (P - B) * (Q - D) + (P - B) * D + B * (Q - D) := by ring
+  change |P * Q - B * D| ≤ _
+  rw [compactExactFirstRowProductError, hfac]
+  calc
+    |(P - B) * (Q - D) + (P - B) * D + B * (Q - D)|
+        ≤ |P - B| * |Q - D| + |P - B| * |D| + |B| * |Q - D| := by
+          calc
+            |(P - B) * (Q - D) + (P - B) * D + B * (Q - D)|
+                ≤ |(P - B) * (Q - D) + (P - B) * D| + |B * (Q - D)| :=
+              abs_add_le _ _
+            _ ≤ (|(P - B) * (Q - D)| + |(P - B) * D|) + |B * (Q - D)| :=
+              add_le_add (abs_add_le _ _) le_rfl
+            _ = |P - B| * |Q - D| + |P - B| * |D| + |B| * |Q - D| := by
+              simp only [abs_mul]
+    _ ≤ compactExactProfileError s c a * compactExactProfileError s c (k * a)
+        + compactExactProfileError s c a *
+            (compactBesselProfileError s c (k * a) +
+              Real.sqrt (2 / Real.pi) * ampFourth s (k * a))
+        + (compactBesselProfileError s c a +
+            Real.sqrt (2 / Real.pi) * ampFourth s a) *
+              compactExactProfileError s c (k * a) := by
+          gcongr
+
+theorem tendsto_compactExactProfileError_zero
+    {ι : Type*} {l : Filter ι} {c s : ι → ℝ}
+    (hc : Tendsto c l atTop) (hs : Tendsto s l (nhds 0))
+    {a : ℝ} (ha : 1 < a) :
+    Tendsto (fun i => compactExactProfileError (s i) (c i) a) l (nhds 0) := by
+  have hA := tendsto_ampFourth_fixed_radius hs ha
+  have hinv : Tendsto (fun i => (c i)⁻¹) l (nhds 0) := tendsto_inv_atTop_zero.comp hc
+  rw [show (fun i => compactExactProfileError (s i) (c i) a) = fun i =>
+      (radialProlateUniformTransferConstant * lgBesselCommonEnvelopeConstant) *
+        (c i)⁻¹ * ampFourth (s i) a by
+    funext i
+    rw [compactExactProfileError, div_eq_mul_inv]]
+  convert ((hinv.const_mul
+    (radialProlateUniformTransferConstant * lgBesselCommonEnvelopeConstant)).mul hA) using 1 <;> ring
+
+theorem tendsto_compactExactFirstRowProductError_zero
+    {ι : Type*} {l : Filter ι} {c s : ι → ℝ}
+    (hc : Tendsto c l atTop) (hs : Tendsto s l (nhds 0))
+    (hs0 : ∀ᶠ i in l, 0 ≤ s i) {k a : ℝ} (hk : 2 ≤ k) (ha : 1 < a) :
+    Tendsto (fun i => compactExactFirstRowProductError (s i) (c i) k a) l (nhds 0) := by
+  have hka : 1 < k * a := mapsTo_mul_left_Ioi hk ha
+  have hXa := tendsto_compactExactProfileError_zero hc hs ha
+  have hXka := tendsto_compactExactProfileError_zero hc hs hka
+  have hBa := tendsto_compactBesselProfileError_zero hc hs hs0 ha
+  have hBka := tendsto_compactBesselProfileError_zero hc hs hs0 hka
+  have hAa := tendsto_ampFourth_fixed_radius hs ha
+  have hAka := tendsto_ampFourth_fixed_radius hs hka
+  have hboundAka : Tendsto (fun i => compactBesselProfileError (s i) (c i) (k * a) +
+      Real.sqrt (2 / Real.pi) * ampFourth (s i) (k * a)) l
+      (nhds (Real.sqrt (2 / Real.pi) * ampFourth 0 (k * a))) := by
+    simpa only [zero_add] using hBka.add (hAka.const_mul (Real.sqrt (2 / Real.pi)))
+  have hboundAa : Tendsto (fun i => compactBesselProfileError (s i) (c i) a +
+      Real.sqrt (2 / Real.pi) * ampFourth (s i) a) l
+      (nhds (Real.sqrt (2 / Real.pi) * ampFourth 0 a)) := by
+    simpa only [zero_add] using hBa.add (hAa.const_mul (Real.sqrt (2 / Real.pi)))
+  have h1 := hXa.mul hXka
+  have h2 := hXa.mul hboundAka
+  have h3 := hboundAa.mul hXka
+  rw [show (fun i => compactExactFirstRowProductError (s i) (c i) k a) = fun i =>
+      compactExactProfileError (s i) (c i) a * compactExactProfileError (s i) (c i) (k * a)
+        + compactExactProfileError (s i) (c i) a *
+            (compactBesselProfileError (s i) (c i) (k * a) +
+              Real.sqrt (2 / Real.pi) * ampFourth (s i) (k * a))
+        + (compactBesselProfileError (s i) (c i) a +
+            Real.sqrt (2 / Real.pi) * ampFourth (s i) a) *
+              compactExactProfileError (s i) (c i) (k * a) by
+    funext i
+    rw [compactExactFirstRowProductError]]
+  simpa only [zero_mul, zero_add, mul_zero] using (h1.add h2).add h3
 
 
 end GaloisForLFunctions.RHTower

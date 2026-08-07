@@ -442,6 +442,16 @@ source, with no hypothesis: one integration by parts on the line, the window der
 | `(23)` | the first-order normalized frame symbol `b_n(t) = t a_n(t) = 2 n^(-1/2) sin(t log n / 2)` | `frameSymbol`, `mul_centeredMultiplier_eq_frameSymbol`, `abs_frameSymbol_le` |
 | `(22)` | **the multiplier decays like `1/abs t`, so `abs a_2 + abs a_3 -> 0`** | `norm_centeredMultiplier_le`, `tendsto_norm_centeredMultiplier_atTop` |
 
+**Kronecker frame obstruction.**  `formal/GaloisForLFunctions/HTGeometry/KroneckerApproxRecurrence.lean`
+strengthens the corpus Kronecker theorem to arbitrarily large times, and
+`formal/GaloisForLFunctions/RHTower/HedenmalmPrimeFrameObstruction.lean` applies it.
+
+| # | statement | Lean declaration |
+|---|---|---|
+| — | **Kronecker recurrence at arbitrarily large times** | `GaloisForLFunctions.kronecker_approx_atTop` |
+| `(24)` | the sine is dominated by the character defect | `abs_sin_le_norm_expChar_sub_one`, `sq_frameSymbol_le` |
+| `(25)` | **for every finite prime set the diagonal sum of squares drops below any tolerance at arbitrarily large times** | `exists_gt_sum_sq_frameSymbol_lt` |
+
 **Positive-kernel self-adjoint channels.**  `formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeChannels.lean`
 (namespace `RHTower.HedenmalmThetaSource`).
 
@@ -461,14 +471,13 @@ requires Weierstrass products and Mittag-Leffler interpolation.  It is absent fr
 from mathlib, and it is the one real infrastructure gap left on this card; the analytic-cokernel
 half of `(17)` rests on it.
 
-Of the three frame obstructions, the first --- `(22)`/`(23)`, no bounded Bezout pair on the real
-axis --- is now formalized.  The two Kronecker obstructions `(25)` and `(27)` are not yet built,
-but both of their inputs already exist in the corpus:
-`GaloisForLFunctions.linearIndependent_log_primes` (rational independence of the prime logarithms)
-and `GaloisForLFunctions.kronecker_approx` in `HTGeometry/KroneckerWeylDensity.lean`.  What
-`kronecker_approx` still lacks for `(25)` is a lower bound on the approximating time: its Bohr-mean
-contradiction only uses the tail, so the same proof gives `for all T, exists t > T`, but that
-strengthened form has to be stated and proved.
+Of the three frame obstructions, `(22)`/`(23)` (no bounded Bezout pair on the real axis) and
+`(25)` (the finite-prime Kronecker obstruction) are now formalized.  Only the summably weighted
+all-prime form `(27)` is left.  Its two inputs are in place --- `kronecker_approx_atTop` and the
+pointwise bound `frameSymbol p t ^ 2 <= 4 / p` --- and the remaining step is the head/tail split:
+choose a finite head `P` with `sum over the complement of 4 omega_p / p < delta / 2` (from
+`tendsto_tsum_compl_atTop_zero` applied to the summability hypothesis), then apply
+`exists_gt_sum_sq_frameSymbol_lt` to the head with tolerance `delta / 2`.
 
 ## Gates
 

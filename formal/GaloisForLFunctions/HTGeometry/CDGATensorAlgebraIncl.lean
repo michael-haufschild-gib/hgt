@@ -81,6 +81,26 @@ theorem tensorAlgMul_tensorSingle_ne {a b n : ℕ} (h : a + b = n)
       (tensorSingle (M := X) (N := Y) s w rs.1.2) = 0
     rw [tensorSingle_ne _ hr, map_zero, LinearMap.zero_apply]
 
+/-- **The product of two single-bidegree elements is a single-bidegree element**, at the sum of the
+two bidegrees. -/
+theorem tensorAlgMul_tensorSingle_eq_single {a b n : ℕ} (h : a + b = n)
+    (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) (s : {ab : ℕ × ℕ // ab.1 + ab.2 = b})
+    (z : TensorProduct R (X r.1.1) (Y r.1.2)) (w : TensorProduct R (X s.1.1) (Y s.1.2))
+    (hrs : (r.1.1 + s.1.1, r.1.2 + s.1.2).1 + (r.1.1 + s.1.1, r.1.2 + s.1.2).2 = n) :
+    tensorAlgMul A B h (tensorSingle (M := X) (N := Y) r z)
+        (tensorSingle (M := X) (N := Y) s w)
+      = tensorSingle (M := X) (N := Y) ⟨(r.1.1 + s.1.1, r.1.2 + s.1.2), hrs⟩
+        (tensorPairₗ A B (rfl : r.1.1 + s.1.1 = r.1.1 + s.1.1)
+          (rfl : r.1.2 + s.1.2 = r.1.2 + s.1.2) z w) := by
+  funext p
+  by_cases hp : p = (⟨(r.1.1 + s.1.1, r.1.2 + s.1.2), hrs⟩ :
+      {ab : ℕ × ℕ // ab.1 + ab.2 = n})
+  · subst hp
+    rw [tensorAlgMul_tensorSingle A B h r s z w _ rfl rfl, tensorSingle_same]
+  · rw [tensorAlgMul_tensorSingle_ne A B h r s z w p (by
+      rintro ⟨h1, h2⟩
+      exact hp (Subtype.ext (Prod.ext h1.symm h2.symm))), tensorSingle_ne _ hp]
+
 section Inclusions
 
 variable {A B}

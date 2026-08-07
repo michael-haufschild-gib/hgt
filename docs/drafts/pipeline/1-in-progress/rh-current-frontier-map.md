@@ -6647,3 +6647,21 @@ conversion.
 Paper and unconditional Lean:
 `../3-formalized/new_scientific_knowledge/route-e-parity-coarse-grained-batch-rigidity.md` and
 `RHTower/GibbsBatchParityCoarseGraining.lean`. `OPEN-SOURCE-001` and RH remain open.
+
+### Determinant sharpening
+
+With W = W_plus + W_minus, A = K_plus + K_minus, B = W_plus - W_minus, and
+J = K_plus - K_minus, exact class coordinates are
+
+    D_anti = W A - B J = 2(W_minus K_plus + W_plus K_minus),
+    D_np   = W J - B A = 2(W_minus K_plus - W_plus K_minus),
+
+and coarse dissipation is exactly
+
+    C = D_anti^2 / (W (W^2 - B^2)).
+
+D_np detects departure from parity-block product response; D_anti detects departure from
+antiscale opposition. Only D_anti dissipates coarse current. Therefore proving a boundary
+component merely nonproduct is insufficient: it may be aligned entirely with antiscale escape.
+Current hard core is antiscale-transverse boundary determinant or within-parity variation at
+physical-power strength.

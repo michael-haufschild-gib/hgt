@@ -174,7 +174,48 @@ Therefore `(2)` becomes the source identity
 The classes are nonempty because ∅ is even and any singleton {(p)} with (p\in P) is
 odd.  Positivity of every Gibbs partition gives positive class masses.
 
-## 4. Frontier consequence
+## 4. Four-current determinant coordinates
+
+Put
+
+\[
+ W=W_++W_-,\qquad A=K_++K_-,\qquad
+ B=W_+-W_-,\qquad J=K_+-K_-.
+\]
+
+Here \(A\) is unsigned batch-parity/base-current numerator, \(B\) is parity-mass numerator,
+and \(J\) is full checkerboard current numerator. Two exact determinants diagonalize
+class-mean geometry:
+
+\[
+ D_{\rm anti}=WA-BJ=2(W_-K_++W_+K_-),
+\]
+
+\[
+ D_{\rm np}=WJ-BA=2(W_-K_+-W_+K_-).                    \tag{5a}
+\]
+
+Since \(W^2-B^2=4W_+W_->0\),
+
+\[
+ \boxed{\mathcal C={D_{\rm anti}^2\over W(W^2-B^2)}.} \tag{5b}
+\]
+
+If \(\bar f_\pm=K_\pm/W_\pm\), then
+
+\[
+ \bar f_++\bar f_-={2D_{\rm anti}\over W^2-B^2},\qquad
+ \bar f_+-\bar f_-={2D_{\rm np}\over W^2-B^2}.        \tag{5c}
+\]
+
+Thus \(D_{\rm np}\) detects departure from equal class response, hence from parity-block
+product model, while \(D_{\rm anti}\) detects failure of exact antiscale opposition. Only
+\(D_{\rm anti}\) enters coarse dissipation. Proving that a moving boundary is nonproduct
+therefore does **not** suffice: its new component may lie entirely in antiscale direction.
+Successful boundary theorem must be transverse to that direction or create within-parity
+variation.
+
+## 5. Frontier consequence
 
 `GIBBS-MOVING-BOUNDARY-NONPRODUCT-FRAME` now has an exhaustive three-way positive target.  It is
 sufficient to prove, with physical-power strength and literal Gibbs weights, that at least one of
@@ -225,6 +266,10 @@ Unconditional declarations include:
 - `routeEBatchResidual_eq_withinClassResiduals_add_coarse`;
 - `routeEBatchNearEscape_rigidity`;
 - `routeEBatchResidual_eq_zero_iff_classConstant_and_coarse`;
+- `routeEBatchParityAntiscaleDeterminant_eq`;
+- `routeEBatchParityNonproductDeterminant_eq`;
+- `routeEScalarParityCoarseDeterminantIdentity`;
+- `routeEBatchParityCoarseDefect_eq_antiscaleDeterminant`;
 - `routeEGibbsBatch_currentEnergy_add_parityCoarse_eq_leafEnergy`;
 - `routeEGibbsBatch_nearEscape_rigidity`;
 - `routeEGibbsBatchResidual_eq_zero_iff_parityRigidity`.
