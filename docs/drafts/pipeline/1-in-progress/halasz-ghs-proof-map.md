@@ -651,3 +651,26 @@ not cosmetic — in the dyadic quotient window `2^m ≤ ⌊N/p⌋` the outer wei
 
 Both the general triple convolution and the GHS instance are now one-line corollaries of it
 (`… ≤ (⌊K+H⌋ − K)·(log⌊K+H⌋)⁴/(log 2)²` and `… /(log 2)³`).
+
+## Twenty-fourth brick: the smoothed sum is connected to the sharp partial sum
+
+`RHTower/Sieve/SmoothedPartialSumConnector.lean` (green, axiom-clean, wired).
+
+The corpus's Halász layer (`HalaszPerronAssembly`) bounds the *smoothly* cut series `∑ₙ f(n)w(n)`; a mean
+value theorem is a statement about `∑_{n ≤ K} f(n)`.  The gap is exactly the transition window:
+
+* `tsum_mul_smoothWeight_eq_sum_range` — the smooth cutoff vanishes past `K + H`, so the weighted series
+  is the finite sum over any range containing the window;
+* `card_smoothing_window_le` — the window `(K, ⌊K+H⌋]` has at most `H` elements;
+* `norm_partialSum_le_of_smoothed_bound` — for `‖f‖ ≤ 1`,
+  `‖∑_{n ≤ K} f(n)‖ ≤ B/(2π) + H` whenever `2π‖∑ₙ f(n)w(n)‖ ≤ B`.
+
+The third is a pure connector: its hypothesis is verbatim the conclusion of the assembled Halász bound, so
+
+* `exists_norm_partialSum_le_halasz` — the corpus's `exists_norm_tsum_mul_smoothWeight_le`, transported to
+  the sharp partial sum of a bounded multiplicative function, explicit in `z, δ, T, K, H` with the cost of
+  removing the smoothing being exactly `H`.
+
+This closes a premise that has been open in the corpus since the Halász assembly was built: the existing
+route produced a bound only for the smoothed sum, and every application needs the sharp one.  It also
+serves the GHS route, whose Perron step consumes the same window bound with polylogarithmic coefficients.

@@ -6145,3 +6145,4 @@ import GaloisForLFunctions.RHTower.Sieve.PerronVerticalBound
 import GaloisForLFunctions.RHTower.Sieve.PrimeSupportedConvolutionBound
 import GaloisForLFunctions.RHTower.Sieve.ConvolutionSmoothingError
 import GaloisForLFunctions.RHTower.Sieve.GhsCoefficients
+import GaloisForLFunctions.RHTower.Sieve.SmoothedPartialSumConnector
