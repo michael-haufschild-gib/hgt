@@ -1128,3 +1128,48 @@ Universes: `TensorCarrier` is monomorphic in its two families, so the index type
 live in the same universe as the modules — the file declares `ι : Type w`.
 
 Axioms: `propext, Classical.choice, Quot.sound`.
+
+## Step 3, and the flatness of semi-free modules
+
+`CDGARelTensorRight.lean` — `tensorMapRight_tensorSingle`, `tensorMapRight_relTensorRelator`,
+`relTensorRel_map_right`, **`relTensorMapRight`**: the tensor product over the algebra is functorial
+in the right variable too, which is what makes a directed system of second factors into a directed
+system of quotients.
+
+`CDGARelTensorColimit.lean` — `relTensorSystem`, `relTensorColimMap`,
+**`relTensorRel_colim_at_stage`**, injectivity, surjectivity, **`relTensorColimEquiv`**,
+**`relTensorColimHom`**, `relTensorColimHom_naturality`, and
+**`relTensorMapLeft_colim_isQuasiIsoFull`**.
+
+The mathematical content is one observation: a relation over the colimit is a finite combination of
+relators, each mentioning a single element of the colimit, so a common stage carries all of them.
+Injectivity then reduces to injectivity of the *graded* comparison, which is
+`tensorColimEquiv` from the previous step.
+
+`CDGARelSemiFreeFlat.lean` — **`relTensorMapLeft_freeTowerColim_isQuasiIsoFull`**: a semi-free
+module, that is the colimit of a tower of free cells, is flat for `− ⊗_A −`.
+
+Axioms throughout: `propext, Classical.choice, Quot.sound`.
+
+### The instance trap that runs through all of it
+
+`TensorCarrier` and `RelTensorCarrier` are `def`s with their own `AddCommGroup` instances, while
+`Module.DirectLimit` takes those instances as arguments.  Writing `Module.DirectLimit.of` by hand
+re-synthesises them and produces a term that is definitionally but not syntactically the one the
+comparison was built with, so every `rw` with `map_add`, `map_sub` or `map_zero` fails with an
+opaque "application type mismatch".  Type ascription does **not** fix it — the instance is chosen
+from the operand's own type, not from the expected type.  Two things do:
+
+* spell the family as the bare product (`tensorColimFamily`) wherever the product instances are
+  wanted, and introduce genuinely typed locals (`obtain ⟨A, hA⟩ : ∃ A : …, A = …`) before forming
+  a difference;
+* never write a raw `Module.DirectLimit.of` downstream — go through `colimModuleOf` and the
+  `colimModuleD_colimOf` / `colimModuleAct_colimOf` / `colimModuleHomFun_colimOf` forms, which are
+  stated in the file where the instances are already the right ones.
+
+### Universes
+
+`colimModuleDeg` lands in `Type (max v' w)` for an index in `Type v'`, and `TensorCarrier` is
+monomorphic, so the index of a colimit that is going to be tensored must satisfy `v' ≤ w`.  Lean has
+no such constraint, but `max 0 w = w` holds definitionally, so declaring the index in `Type 0` —
+which covers `ℕ`, hence every tower — is both sufficient and universe-clean.

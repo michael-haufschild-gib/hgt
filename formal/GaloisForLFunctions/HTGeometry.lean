@@ -320,6 +320,7 @@ import GaloisForLFunctions.HTGeometry.BipolarGramDriftAnomaly
 import GaloisForLFunctions.HTGeometry.BiprojectiveChowRing
 import GaloisForLFunctions.HTGeometry.BiprojectiveGradedPiece
 import GaloisForLFunctions.HTGeometry.SegreDiagonalRing
+import GaloisForLFunctions.HTGeometry.SegreProjectiveScheme
 import GaloisForLFunctions.HTGeometry.BiprojectiveHilbertBezout
 import GaloisForLFunctions.HTGeometry.CriticalBiprojectiveSystem
 import GaloisForLFunctions.HTGeometry.BiunitaryEquivalenceWitnesses
@@ -493,6 +494,8 @@ import GaloisForLFunctions.HTGeometry.CDGATensorConstExchange
 import GaloisForLFunctions.HTGeometry.CDGATensorLeft
 import GaloisForLFunctions.HTGeometry.CDGATensorShift
 import GaloisForLFunctions.HTGeometry.CDGATensorShiftHom
+import GaloisForLFunctions.HTGeometry.CDGARelSemiFreeFlat
+import GaloisForLFunctions.HTGeometry.CDGARelTensorColimit
 import GaloisForLFunctions.HTGeometry.CDGARelTensorRight
 import GaloisForLFunctions.HTGeometry.CDGATensorColimit
 import GaloisForLFunctions.HTGeometry.DirectLimitPi

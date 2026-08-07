@@ -1,7 +1,8 @@
 # Burnol--Hedenmalm archimedean completion domain--radical exchange
 
 - **ID:** `burnol-hedenmalm-archimedean-completion-domain-radical-exchange`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `burnol-hedenmalm-archimedean-completion-domain-radical-exchange-formalized.md`
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Statement:** Burnol's uncompleted divided-zero vectors belong to a source-defined Sonine
@@ -170,6 +171,7 @@ The resulting constructive route is recorded in
       (`BurnolHedenmalmCompletionDomain.lean`, `XiHedenmalmSymmetricMultiplicity.lean`)
 - [x] formalize the algebraic transport step `(3)` of the uncompleted exclusion and its
       contrapositive consumer (`BurnolHedenmalmUncompletedDomain.lean`)
-- [ ] formalize the classical input `(4)`: zeta is not square integrable on the critical line
-      (route and Lean plan in `../../1-in-progress/zeta-not-square-integrable-critical-line.md`)
+- [x] formalize the classical input `(4)`: zeta is not square integrable on the critical line
+      (`not_memLp_riemannZeta_criticalLine`), hence the uncompleted domain exclusion
+      unconditionally (`not_memLp_coordinate_dividedZetaLine_unconditional`)
 

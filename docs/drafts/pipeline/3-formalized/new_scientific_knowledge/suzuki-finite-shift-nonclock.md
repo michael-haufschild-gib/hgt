@@ -5,7 +5,7 @@
 - **Type:** THEOREM / ENDPOINT SINGULARITY / FOURIER-COMPLETE CARRIER RIGIDITY
 - **Scientific status:** `[LEAN-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/suzuki-boundary-log-nonclock-nonflat-tangent.md`
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-boundary-log-nonclock-nonflat-tangent.md`
 - **Lean module:**
   `formal/GaloisForLFunctions/RHTower/SuzukiFiniteShiftNonClock.lean`
 

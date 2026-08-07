@@ -204,6 +204,11 @@ omit [IsDirectedOrder ι] [Nonempty ι]
         ((Θ i).toFun n m) :=
   Module.DirectLimit.map_apply_of _ _ _
 
+@[simp] theorem colimModuleHomFun_colimOf (n : ℕ) (i : ι) (m : M i n) :
+    colimModuleHomFun φ ψ Θ hΘ n ((colimModuleOf φ i).toFun n m)
+      = (colimModuleOf ψ i).toFun n ((Θ i).toFun n m) :=
+  colimModuleHomFun_of φ ψ Θ hΘ n i m
+
 /-- **The morphism of colimit modules induced by a compatible family of morphisms.** -/
 noncomputable def colimModuleHom : CDGAModuleHom (colimModule φ) (colimModule ψ) where
   toFun n z := colimModuleHomFun φ ψ Θ hΘ n z

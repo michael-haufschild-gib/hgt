@@ -1,10 +1,10 @@
 # Zeta is not square integrable on the critical line
 
 - **ID:** `zeta-not-square-integrable-critical-line`
-- **Stage:** 1 — in progress
-- **Type:** THEOREM (classical), `[FORMALIZATION TARGET]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (classical statement, new elementary proof), `[FORMALIZED]`
 - **Serves:** the last open gate of
-  `../2-fully-proven/new_scientific_knowledge/burnol/burnol-hedenmalm-archimedean-completion-domain-radical-exchange.md`,
+  `burnol-hedenmalm-archimedean-completion-domain-radical-exchange.md`,
   whose Section 1 excludes the uncompleted divided vectors from the coordinate domain.
 
 ## Statement
@@ -115,10 +115,45 @@ not_memLp_coordinate_dividedZetaLine
 
 ## Gates
 
-- [x] the algebraic transport step and its contrapositive consumer (Lean)
-- [ ] `phi in L^1(R) cap L^2(R)` via the log substitution `(2)`
-- [ ] the Fourier identity `(4)` from the corpus fractional-part identity `(3)`
-- [ ] Step A: Cauchy--Schwarz integrability of `Fourier(phi)` `(5)`
-- [ ] Step B: continuity of `psi` and inversion at continuity points `(6)`
-- [ ] Step C: the two-sided jump contradiction `(7)`,`(8)`
-- [ ] `(Z)`, and with it the uncompleted domain exclusion of the parent card
+- [x] the algebraic transport step and its contrapositive consumer
+- [x] `phi in L^1(R)` via the log substitution `(2)`
+- [x] the Fourier identity `(4)` from the corpus fractional-part identity `(3)`
+- [x] Step A: Cauchy--Schwarz integrability of `Fourier(phi)` `(5)`
+- [x] Step B: continuity of `psi` and inversion at continuity points `(6)`
+- [x] Step C: the two-sided jump contradiction `(7)`,`(8)`
+- [x] `(Z)`, and with it the uncompleted domain exclusion of the parent card
+
+## Formal theorem chain
+
+```text
+formal/GaloisForLFunctions/RHTower/ZetaCriticalLineNotSquareIntegrable.lean
+
+fractLogCarrier                                     phi y = frac(e^y) e^(-y/2)          (1)
+fractLogCarrier_eq_exp_smul                         the log substitution                (2)
+integrable_fractLogCarrier                          phi is integrable                   (2)
+criticalAbscissa                                    w = 1/2 + 2 pi i xi
+fourier_fractLogCarrier                             Fourier(phi)(xi) = - zeta(w)/w      (4)
+memLp_inv_criticalAbscissa                          1/w is square integrable
+integrable_fourier_fractLogCarrier                  Step A                              (5)
+continuous_fourierInv_of_integrable                 Step B, continuity of psi
+fractLogCarrier_eq_left / _eq_right                 the two branches at log 2           (7)
+continuousAt_fractLogCarrier_left / _right          continuity off the points log n
+not_memLp_riemannZeta_criticalAbscissa              Step C, the contradiction        (8),(Z)
+
+formal/GaloisForLFunctions/RHTower/BurnolHedenmalmUncompletedDomain.lean
+
+not_memLp_riemannZeta_criticalLine                  (Z) in the natural parametrisation
+not_memLp_coordinate_dividedZetaLine_unconditional  the parent card's exclusion
+```
+
+## Verification
+
+```text
+lake env lean GaloisForLFunctions/RHTower/ZetaCriticalLineNotSquareIntegrable.lean  -- clean
+lake env lean GaloisForLFunctions/RHTower/BurnolHedenmalmUncompletedDomain.lean     -- clean
+lake build GaloisForLFunctions.RHTower.BurnolHedenmalmUncompletedDomain             -- success
+#print axioms not_memLp_riemannZeta_criticalAbscissa -> [propext, Classical.choice, Quot.sound]
+#print axioms not_memLp_riemannZeta_criticalLine     -> [propext, Classical.choice, Quot.sound]
+```
+
+Both modules are wired into `GaloisForLFunctions.RHTower`.

@@ -37,3 +37,18 @@ lemmas, same name, both files committed and clean. Renamed the `BurnolSoninDivid
 Both area umbrellas are currently red for reasons unrelated to new work. Verify new modules with a
 synthetic all-imports file plus per-module `lake build`; treat the umbrella as a shared resource whose
 state depends on every session.
+
+## Follow-up: two committed modules repaired, umbrella still blocked elsewhere
+
+- `RHTower/ZetaCriticalLineNotSquareIntegrable.lean` now **builds** (8696 jobs). Two repairs: the
+  nonexistent `Complex.log_ofReal_of_pos` → `← Complex.ofReal_log hpos.le, Real.log_exp`, and two dead
+  tactics at the end (`norm_num at hjump` already closed the goal, so the following
+  `rw [Complex.ofReal_eq_zero] at hjump; exact absurd …` were unreachable). The three `rw` failures seen
+  earlier were artefacts of the stale olean state, not real.
+- Next umbrella blocker is `RHTower/BurnolHedenmalmUncompletedDomain.lean:80`
+  (`AEStronglyMeasurable.comp_measurable` type mismatch). That file is **modified in the working tree by
+  another session** — in-flight, so left alone.
+
+Standing state: RHTower umbrella red only because of another session's in-flight file; every committed
+module that was broken and safe to touch has been repaired. Do not edit files marked `M` in
+`git status` — they belong to a live session.

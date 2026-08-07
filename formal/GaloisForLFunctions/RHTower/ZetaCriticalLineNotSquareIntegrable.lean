@@ -314,8 +314,5 @@ theorem not_memLp_riemannZeta_criticalAbscissa :
     rw [← hleft, hright]
   rw [fractLogLeft, fractLogRight, Real.exp_log (by norm_num : (0:ℝ) < 2)] at hjump
   norm_num at hjump
-  have hexp : (0 : ℝ) < Real.exp (-(Real.log 2 / 2)) := Real.exp_pos _
-  rw [Complex.ofReal_eq_zero] at hjump
-  linarith
 
 end RHTower

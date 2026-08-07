@@ -80,3 +80,11 @@ projective/trace-class/determinant consequences.
   positive definite on the `h_(4j)` trial space and negative definite on the `h_(4j+2)` trial
   space; hence the concrete signed spectrum eventually contains both signs.  Remaining numbering
   gate is multiplicity-sensitive Sturm/min-max identification, not existence of either sector.
+- 2026-08-07 — closed the multiplicity-sensitive sign half of the gate.  A new compact
+  self-adjoint min–max induction proves that every `m`-dimensional strictly negative (respectively
+  positive) quadratic trial space forces `m` orthonormal genuine eigenvectors of the corresponding
+  sign.  Applied to the exact Hermite trial spaces, the true even prolate block eventually has
+  `n+1` orthonormal positive eigenvectors and `n+1` orthonormal negative eigenvectors at every fixed
+  depth.  `lake env lean GaloisForLFunctions/RHTower/ProlateFourierSignSectors.lean` passes.  The
+  remaining numbering gate is conversion of these eigenvalue counts into signed-greedy indices,
+  followed by Sturm separation for classical `4j` / `4j+2` labels.

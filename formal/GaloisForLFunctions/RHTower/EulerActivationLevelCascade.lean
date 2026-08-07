@@ -208,6 +208,33 @@ theorem eulerActivationProductMeasure_infiniteSquarefull_of_le_half {σ : ℝ} (
   rw [show ((2 : ℕ) : ℝ) = 2 by norm_num] at hgt
   linarith
 
+/-! ## The critical model, read at level two -/
+
+/-- **The critical Euler source is squarefree away from a finite set of primes.**  At the Euler edge the
+level-two boundary `σ = 1/2` is already passed, so the squarefull part of the source is almost surely
+finite even though its occupied set is almost surely infinite. -/
+theorem criticalEulerProductMeasure_finiteSquarefull :
+    criticalEulerProductMeasure
+        {K : CriticalEulerConfiguration | {p : Nat.Primes | 2 ≤ K p}.Finite} = 1 := by
+  have h := eulerActivationProductMeasure_finiteLevel_eq_one_iff
+    (σ := 1) one_pos (m := 2) (by norm_num)
+  rw [eulerActivationProductMeasure_one] at h
+  refine h.mpr ?_
+  norm_num
+
+/-- The same at every level `m ≥ 2`: the critical source has only finitely many primes of
+multiplicity `m`. -/
+theorem criticalEulerProductMeasure_finiteLevel {m : ℕ} (hm : 2 ≤ m) :
+    criticalEulerProductMeasure
+        {K : CriticalEulerConfiguration | {p : Nat.Primes | m ≤ K p}.Finite} = 1 := by
+  have h := eulerActivationProductMeasure_finiteLevel_eq_one_iff
+    (σ := 1) one_pos (m := m) (by omega)
+  rw [eulerActivationProductMeasure_one] at h
+  refine h.mpr ?_
+  have hm2 : (2 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
+  linarith
+
+
 end
 
 end RHTower

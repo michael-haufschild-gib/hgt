@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.BiprojectiveGradedPiece
 import Mathlib.Algebra.MonoidAlgebra.Grading
 import Mathlib.Algebra.MonoidAlgebra.MapDomain
 import Mathlib.Data.Finsupp.Multiset
+import Mathlib.RingTheory.FiniteType
 
 /-!
 # The standard graded coordinate ring of the Segre variety
@@ -153,6 +154,54 @@ theorem exists_segrePairMarginal_eq (m n : ℕ) (e : segreExponentSubmonoid m n)
     rw [mapDomain_toFinsupp, hs₁, Finsupp.toMultiset_toFinsupp]
   · change Finsupp.mapDomain Prod.snd (Multiset.toFinsupp s) = lr.2
     rw [mapDomain_toFinsupp, hs₂, Finsupp.toMultiset_toFinsupp]
+
+/-- Pair marginals as a map onto the balanced exponent monoid. -/
+noncomputable def segrePairMarginalBalanced (m n : ℕ) :
+    (Fin (m + 1) × Fin (n + 1) →₀ ℕ) →+ segreExponentSubmonoid m n where
+  toFun z := ⟨segrePairMarginal m n z, by
+    change ((Finsupp.weight biprojectiveWeight) (segrePairMarginal m n z)).1 = _
+    rw [weight_biprojectiveWeight]
+    rw [show Finsupp.sumFinsuppEquivProdFinsupp (segrePairMarginal m n z) =
+        (Finsupp.mapDomain Prod.fst z, Finsupp.mapDomain Prod.snd z) by
+      exact Finsupp.sumFinsuppEquivProdFinsupp.apply_symm_apply _]
+    exact (Finsupp.sum_mapDomain_index_addMonoidHom
+      (s := z) (f := Prod.fst) (fun _ => AddMonoidHom.id ℕ)).trans
+      (Finsupp.sum_mapDomain_index_addMonoidHom
+        (s := z) (f := Prod.snd) (fun _ => AddMonoidHom.id ℕ)).symm⟩
+  map_zero' := by
+    apply Subtype.ext
+    exact (segrePairMarginal m n).map_zero
+  map_add' a b := by
+    apply Subtype.ext
+    exact (segrePairMarginal m n).map_add a b
+
+/-- Balanced marginal map is onto. -/
+theorem segrePairMarginalBalanced_surjective (m n : ℕ) :
+    Function.Surjective (segrePairMarginalBalanced m n) := by
+  intro e
+  obtain ⟨z, hz⟩ := exists_segrePairMarginal_eq m n e
+  exact ⟨z, Subtype.ext hz⟩
+
+/-- Polynomial presentation by the degree-one Segre coordinates. -/
+noncomputable def segreDiagonalPresentation (K : Type*) [CommSemiring K] (m n : ℕ) :
+    MvPolynomial (Fin (m + 1) × Fin (n + 1)) K →ₐ[K] SegreDiagonalRing K m n :=
+  AddMonoidAlgebra.mapDomainAlgHom K K (segrePairMarginalBalanced m n)
+
+/-- The degree-one polynomial presentation is surjective. -/
+theorem segreDiagonalPresentation_surjective (K : Type*) [CommSemiring K] (m n : ℕ) :
+    Function.Surjective (segreDiagonalPresentation K m n) :=
+  by
+    intro y
+    obtain ⟨x, hx⟩ := Finsupp.mapDomain_surjective (M := K)
+      (segrePairMarginalBalanced_surjective m n) y.coeff
+    refine ⟨AddMonoidAlgebra.ofCoeff x, ?_⟩
+    apply AddMonoidAlgebra.coeff_injective
+    simpa [segreDiagonalPresentation, AddMonoidAlgebra.mapDomain] using hx
+
+noncomputable instance segreDiagonalRing_finiteType (K : Type*) [CommSemiring K] (m n : ℕ) :
+    Algebra.FiniteType K (SegreDiagonalRing K m n) :=
+  Algebra.FiniteType.of_surjective (segreDiagonalPresentation K m n)
+    (segreDiagonalPresentation_surjective K m n)
 
 /-- Degree-`d` part of the standard graded Segre coordinate ring. -/
 noncomputable abbrev SegreDiagonalPiece (K : Type*) [Field K] (m n d : ℕ) :=

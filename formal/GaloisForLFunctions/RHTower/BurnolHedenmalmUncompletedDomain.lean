@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.BurnolHedenmalmCompletionDomain
+import GaloisForLFunctions.RHTower.ZetaCriticalLineNotSquareIntegrable
 
 /-!
 # The uncompleted coordinate domain of the divided zeta vectors
@@ -57,5 +58,44 @@ theorem not_memLp_coordinate_dividedZetaLine
     (h1 : MemLp (dividedZetaLine ρ) 2 volume) :
     ¬ MemLp (fun t : ℝ => criticalLinePoint t * dividedZetaLine ρ t) 2 volume := fun h2 =>
   hζ (memLp_riemannZeta_criticalLine_of_dividedZetaLine hρ h1 h2)
+
+
+theorem criticalAbscissa_eq_criticalLinePoint (xi : ℝ) :
+    criticalAbscissa xi = criticalLinePoint (2 * Real.pi * xi) := by
+  rw [criticalAbscissa, criticalLinePoint]
+
+/-- **Zeta is not square integrable on the critical line.** -/
+theorem not_memLp_riemannZeta_criticalLine :
+    ¬ MemLp (fun t : ℝ => riemannZeta (criticalLinePoint t)) 2 volume := by
+  intro h
+  apply not_memLp_riemannZeta_criticalAbscissa
+  have hc : (2 * Real.pi) ≠ 0 := by positivity
+  have hsq := (memLp_two_iff_integrable_sq_norm h.aestronglyMeasurable).mp h
+  have hcomp : Integrable
+      (fun xi : ℝ => ‖riemannZeta (criticalLinePoint (2 * Real.pi * xi))‖ ^ 2) volume :=
+    (integrable_comp_mul_left_iff
+      (fun t : ℝ => ‖riemannZeta (criticalLinePoint t)‖ ^ 2) hc).mpr hsq
+  have hmeas : AEStronglyMeasurable
+      (fun xi : ℝ => riemannZeta (criticalAbscissa xi)) volume := by
+    have hq := h.aestronglyMeasurable.comp_quasiMeasurePreserving
+      (realMul_quasiMeasurePreserving (2 * Real.pi) hc)
+    refine hq.congr ?_
+    filter_upwards with xi
+    rw [criticalAbscissa_eq_criticalLinePoint]
+    rfl
+  rw [memLp_two_iff_integrable_sq_norm hmeas]
+  refine hcomp.congr ?_
+  filter_upwards with xi
+  rw [criticalAbscissa_eq_criticalLinePoint]
+
+/-- **The uncompleted domain exclusion, unconditionally.**  No point of the critical line carries a
+first divided vector lying in the maximal domain of coordinate multiplication inside `L²` of that
+line: the coordinate recurrence would transport square integrability to `zeta` itself, and `zeta`
+is not square integrable there. -/
+theorem not_memLp_coordinate_dividedZetaLine_unconditional
+    {ρ : ℂ} (hρ : ∀ t : ℝ, criticalLinePoint t ≠ ρ)
+    (h1 : MemLp (dividedZetaLine ρ) 2 volume) :
+    ¬ MemLp (fun t : ℝ => criticalLinePoint t * dividedZetaLine ρ t) 2 volume :=
+  not_memLp_coordinate_dividedZetaLine not_memLp_riemannZeta_criticalLine hρ h1
 
 end RHTower

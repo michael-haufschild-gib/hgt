@@ -112,6 +112,42 @@ theorem exists_sgVal_pos_of_re_inner_pos {S : H →L[ℂ] H}
   have hnreal : sgVal S n = -c := by exact_mod_cast hn
   rwa [hnreal]
 
+/-- Multiplicity-sensitive spectral exhaustion: a nonzero eigenvector has a nonzero coefficient
+against some signed-greedy vector carrying the same eigenvalue. -/
+theorem exists_sgVal_eq_of_eigenvalue_and_inner_ne_zero {S : H →L[ℂ] H}
+    (hcpt : IsCompactOperator S) (hsym : S.IsSymmetric) {c : ℂ} {v : H}
+    (hv : v ≠ 0) (heig : S v = c • v) (hc : c ≠ 0) :
+    ∃ n, ((sgVal S n : ℝ) : ℂ) = c ∧ inner ℂ (sgVec S n) v ≠ 0 := by
+  by_contra hall
+  have horth : ∀ n, inner ℂ (sgVec S n) v = 0 := by
+    intro n
+    by_contra hn
+    apply hall
+    refine ⟨n, ?_, hn⟩
+    have h1 : inner ℂ (sgVec S n) (S v) = c * inner ℂ (sgVec S n) v := by
+      rw [heig, inner_smul_right]
+    have h2 : inner ℂ (sgVec S n) (S v) =
+        ((sgVal S n : ℝ) : ℂ) * inner ℂ (sgVec S n) v := by
+      calc
+        inner ℂ (sgVec S n) (S v) = inner ℂ (S (sgVec S n)) v :=
+          (hsym (sgVec S n) v).symm
+        _ = inner ℂ (((sgVal S n : ℝ) : ℂ) • sgVec S n) v := by
+          rw [apply_sgVec]
+        _ = ((sgVal S n : ℝ) : ℂ) * inner ℂ (sgVec S n) v := by
+          rw [inner_smul_left]
+          congr 1
+          simp
+    have h3 : (c - ((sgVal S n : ℝ) : ℂ)) * inner ℂ (sgVec S n) v = 0 := by
+      rw [sub_mul, ← h1, ← h2, sub_self]
+    rcases mul_eq_zero.mp h3 with hdiff | hinner
+    · exact (sub_eq_zero.mp hdiff).symm
+    · exact absurd hinner hn
+  have hSv : S v = 0 := apply_eq_zero_of_forall_inner_sgVec hcpt hsym horth
+  rw [heig] at hSv
+  rcases smul_eq_zero.mp hSv with h | h
+  · exact hc h
+  · exact hv h
+
 /-- A negative quadratic trial space of dimension at least `m` forces `m` orthonormal genuine
 negative eigenvectors.  This is the finite-dimensional negative-index half of the min–max
 principle, proved directly by repeatedly restricting to the orthogonal complement of the
@@ -139,7 +175,7 @@ theorem exists_orthonormal_negative_eigenfamily_of_finrank_le {S : H →L[ℂ] H
       have hxe : ∀ i, inner ℂ (e i) x = 0 := by
         intro i
         simpa [w, i.isLt] using hxorth (i : ℕ) i.isLt
-      set W : Submodule ℂ H := (Submodule.span ℂ (Set.range e))ᵊ with hW
+      set W : Submodule ℂ H := (Submodule.span ℂ (Set.range e))ᗮ with hW
       have hxW : x ∈ W := by
         rw [hW, Submodule.mem_orthogonal_span_iff]
         rintro u ⟨i, rfl⟩
@@ -165,14 +201,18 @@ theorem exists_orthonormal_negative_eigenfamily_of_finrank_le {S : H →L[ℂ] H
       let uW : W := ((‖v‖ : ℂ))⁻¹ • v
       have huNorm : ‖uW‖ = 1 := norm_smul_inv_norm hv0
       have huEigW : Sw uW = (c : ℂ) • uW := by
-        dsimp [uW]
-        rw [map_smul, hv, smul_comm]
+        change Sw (((‖v‖ : ℂ))⁻¹ • v) =
+          (c : ℂ) • (((‖v‖ : ℂ))⁻¹ • v)
+        rw [map_smul, hv]
+        exact smul_comm ((‖v‖ : ℂ))⁻¹ (c : ℂ) v
       have huOrth : ∀ i, inner ℂ (uW : H) (e i) = 0 := by
         intro i
-        have huW := uW.2
-        rw [hW, Submodule.mem_orthogonal_span_iff] at huW
-        have heu : inner ℂ (e i) (uW : H) = 0 := huW (e i) ⟨i, rfl⟩
-        rw [inner_conj_symm, heu, map_zero]
+        have huW : (uW : H) ∈ (Submodule.span ℂ (Set.range e))ᗮ := by
+          rw [← hW]
+          exact uW.2
+        have huW' := (Submodule.mem_orthogonal_span_iff.mp huW)
+        have heu : inner ℂ (e i) (uW : H) = 0 := huW' (e i) ⟨i, rfl⟩
+        rw [← inner_conj_symm, heu, map_zero]
       have huEig : S (uW : H) = (c : ℂ) • (uW : H) := by
         have h := congrArg (Subtype.val : W → H) huEigW
         rw [hSw_apply] at h

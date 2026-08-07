@@ -408,3 +408,44 @@ membership of a compactly supported bounded-variation function for `s < 1/2`.  T
 self-contained target — the `‖u(·+h) − u‖₂² ≤ ‖u(·+h) − u‖₁ ‖u(·+h) − u‖_∞` interpolation the card
 displays, plus the Fourier characterization of `H^s` — and it is worth building as reusable
 `HTGeometry` infrastructure since the Carleman-barrier card needs the same profile.
+
+## G. Immediate next step (identified, not yet done)
+
+`SuzukiRestrictedWeilForm.lean` has one internal inconsistency to repair before
+`suzuki-boundary-log-nonclock-nonflat-tangent` can be promoted:
+
+- `weilPrimeBlock` uses the **whole-line** `pairing` (so that `jumpForm_eq_two_pairing_sub`
+  applies), while `IsRestrictedWeilRepresentative` uses the **interval** integral
+  `∫ x in (-a)..a`.
+
+The fix is not to change either definition but to state the representative theorem on the honest
+domain — test functions with `tsupport φ ⊆ Ioo (-a) a` — and add the bridge
+`∫ x, f x * φ x = ∫ x in (-a)..a, f x * φ x` for such `φ`
+(`MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero` or
+`intervalIntegral.integral_of_le` plus a support argument). Then
+
+```text
+IsRestrictedWeilRepresentative a A s k u (restrictedWeilRepresentative a A s k u)
+```
+
+follows from `integral_add`, `integral_sub`, `integral_const_mul` and `Finset.sum`, and Theorem A
+`(4)` of `suzuki-boundary-log-nonclock-nonflat-tangent` is complete: `(5)` and `(6)` are already
+theorems, and the remaining blocks are continuous hence bounded on the compact aperture.
+
+A stale companion `suzuki-boundary-log-nonclock-nonflat-tangent-formalized.md` already sits in
+`3-formalized/new_scientific_knowledge/suzuki/` from an earlier generation pass; the paper card is
+still in stage 2. Regenerate the companion and `git mv` the card once `(4)` closes.
+
+## H. The BV → `H^s` target (serves two cards)
+
+`suzuki-two-port-return-redundancy-and-interior-null-core` section 4 and
+`suzuki-carleman-flat-port-weighted-strip-barrier` both need: a compactly supported
+bounded-variation function lies in `H^s(ℝ)` for every `0 < s < 1/2`. Route the card displays:
+
+```text
+‖u(·+h) − u‖₂² ≤ ‖u(·+h) − u‖₁ · ‖u(·+h) − u‖_∞ ≤ |h| · TV(u) · TV(u)
+```
+
+then the Gagliardo/Besov characterisation `∫ ‖u(·+h) − u‖₂² |h|^{-1-2s} dh < ∞`. mathlib has
+`eVariationOn`/`BoundedVariationOn` but not the fractional Sobolev characterisation, so that
+characterisation is the piece to build; the translation estimate itself is elementary.

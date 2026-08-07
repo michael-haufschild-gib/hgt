@@ -65,10 +65,28 @@ def restrictedWeilForm (a A : ℝ) (s : Finset ℕ) (k : ℝ → ℝ) (u φ : �
   weilFinitePartBlock a u φ + weilScalarBlock a A u φ + weilPrimeBlock s u φ +
     weilSmoothBlock a k u φ
 
-/-- `w` represents the form at `u`: this is what a card means by `A_a u = w`. -/
+/-- A test function for the aperture: continuous and vanishing off the open interval. -/
+structure ApertureTest (a : ℝ) (φ : ℝ → ℝ) : Prop where
+  cont : Continuous φ
+  compact : HasCompactSupport φ
+  vanish : ∀ x ∉ Set.Ioo (-a) a, φ x = 0
+
+/-- `w` represents the form at `u`: this is what a card means by `A_a u = w`.  All pairings are
+whole-line, with functions zero-extended off the aperture, which is the convention the source
+uses. -/
 def IsRestrictedWeilRepresentative (a A : ℝ) (s : Finset ℕ) (k : ℝ → ℝ) (u w : ℝ → ℝ) : Prop :=
-  ∀ φ : ℝ → ℝ, Continuous φ → HasCompactSupport φ →
-    restrictedWeilForm a A s k u φ = ∫ x in (-a)..a, w x * φ x
+  ∀ φ : ℝ → ℝ, ApertureTest a φ → restrictedWeilForm a A s k u φ = ∫ x, w x * φ x
+
+/-- **Interval-to-line bridge.**  A test function supported inside the aperture turns every
+interval integral against it into a whole-line integral. -/
+theorem intervalIntegral_eq_integral_of_apertureTest {a : ℝ} (ha : 0 ≤ a) {φ : ℝ → ℝ}
+    (hφ : ApertureTest a φ) (f : ℝ → ℝ) :
+    (∫ x in (-a)..a, f x * φ x) = ∫ x, f x * φ x := by
+  rw [intervalIntegral.integral_of_le (by linarith : (-a : ℝ) ≤ a)]
+  refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
+  intro x hx
+  have : φ x = 0 := hφ.vanish x (fun hmem => hx ⟨hmem.1, le_of_lt hmem.2⟩)
+  rw [this, mul_zero]
 
 /-- The candidate representative assembled block by block. -/
 def restrictedWeilRepresentative (a A : ℝ) (s : Finset ℕ) (k : ℝ → ℝ) (u : ℝ → ℝ) (x : ℝ) : ℝ :=
@@ -86,6 +104,92 @@ theorem restrictedWeilRepresentative_eq (a A : ℝ) (s : Finset ℕ) (k : ℝ �
           (∑ n ∈ s, primePairWeight n * (u (x + Real.log n) + u (x - Real.log n))) +
           weilSmoothRepresentative a k u x) := by
   rw [restrictedWeilRepresentative, cauchyFinitePart]
+  ring
+
+/-! ## Each block is represented by its own kernel -/
+
+theorem weilFinitePartBlock_eq {a : ℝ} (ha : 0 ≤ a) {φ : ℝ → ℝ} (hφ : ApertureTest a φ)
+    (u : ℝ → ℝ) :
+    weilFinitePartBlock a u φ = ∫ x, (-(1 / 2) * cauchyFinitePart a x u) * φ x := by
+  rw [weilFinitePartBlock, intervalIntegral_eq_integral_of_apertureTest ha hφ,
+    ← MeasureTheory.integral_const_mul]
+  exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => by ring)
+
+theorem weilScalarBlock_eq {a : ℝ} (ha : 0 ≤ a) (A : ℝ) {φ : ℝ → ℝ} (hφ : ApertureTest a φ)
+    (u : ℝ → ℝ) :
+    weilScalarBlock a A u φ = ∫ x, (-(2 * A + 1) * u x) * φ x := by
+  rw [weilScalarBlock, intervalIntegral_eq_integral_of_apertureTest ha hφ,
+    ← MeasureTheory.integral_const_mul]
+  exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => by ring)
+
+theorem weilSmoothBlock_eq {a : ℝ} (ha : 0 ≤ a) {φ : ℝ → ℝ} (hφ : ApertureTest a φ)
+    (k u : ℝ → ℝ) :
+    weilSmoothBlock a k u φ = ∫ x, weilSmoothRepresentative a k u x * φ x := by
+  rw [weilSmoothBlock, intervalIntegral_eq_integral_of_apertureTest ha hφ,
+    ← MeasureTheory.integral_neg]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  simp only [weilSmoothRepresentative]
+  ring
+
+theorem weilPrimeBlock_eq {u φ : ℝ → ℝ} (hu : Continuous u) (hφ : Continuous φ)
+    (hcφ : HasCompactSupport φ) (s : Finset ℕ) :
+    weilPrimeBlock s u φ =
+      ∫ x, (-(∑ n ∈ s, primePairWeight n *
+        (u (x + Real.log n) + u (x - Real.log n)))) * φ x := by
+  classical
+  have hint : ∀ h : ℝ, MeasureTheory.Integrable (fun x => u (x + h) * φ x) := by
+    intro h
+    have hcont : Continuous fun x : ℝ => u (x + h) * φ x :=
+      (hu.comp (continuous_id.add continuous_const)).mul hφ
+    exact hcont.integrable_of_hasCompactSupport hcφ.mul_left
+  have hint' : ∀ h : ℝ, MeasureTheory.Integrable (fun x => u (x - h) * φ x) := by
+    intro h
+    simpa [sub_eq_add_neg] using hint (-h)
+  have hterm : ∀ n ∈ s, MeasureTheory.Integrable
+      (fun x => primePairWeight n * (u (x + Real.log n) + u (x - Real.log n)) * φ x) := by
+    intro n _
+    refine (((hint (Real.log n)).add (hint' (Real.log n))).const_mul
+      (primePairWeight n)).congr (Filter.Eventually.of_forall fun x => ?_)
+    simp only [Pi.add_apply]
+    ring
+  have hrhs : (∫ x, (-(∑ n ∈ s, primePairWeight n *
+      (u (x + Real.log n) + u (x - Real.log n)))) * φ x) =
+      -∫ x, ∑ n ∈ s, primePairWeight n *
+        (u (x + Real.log n) + u (x - Real.log n)) * φ x := by
+    rw [← MeasureTheory.integral_neg]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+    simp only [neg_mul, Finset.sum_mul]
+  rw [weilPrimeBlock, hrhs, MeasureTheory.integral_finsetSum s hterm]
+  congr 1
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [pairing, pairing]
+  rw [show (∫ a, primePairWeight n * (u (a + Real.log n) + u (a - Real.log n)) * φ a)
+      = primePairWeight n * ∫ a, (u (a + Real.log n) * φ a + u (a - Real.log n) * φ a) from by
+    rw [← MeasureTheory.integral_const_mul]
+    exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => by ring)]
+  rw [MeasureTheory.integral_add (hint (Real.log n)) (hint' (Real.log n))]
+
+/-- **The form is the sum of its four represented blocks.**  Against any aperture test function
+each block pairs its own explicit kernel, so the whole form is a sum of four `L²` pairings and the
+representative can be read off block by block. -/
+theorem restrictedWeilForm_eq_blocks {a A : ℝ} (ha : 0 ≤ a) (s : Finset ℕ) (k u : ℝ → ℝ)
+    (hu : Continuous u) {φ : ℝ → ℝ} (hφ : ApertureTest a φ) :
+    restrictedWeilForm a A s k u φ =
+      (∫ x, (-(1 / 2) * cauchyFinitePart a x u) * φ x) +
+        (∫ x, (-(2 * A + 1) * u x) * φ x) +
+        (∫ x, (-(∑ n ∈ s, primePairWeight n *
+          (u (x + Real.log n) + u (x - Real.log n)))) * φ x) +
+        ∫ x, weilSmoothRepresentative a k u x * φ x := by
+  rw [restrictedWeilForm, weilFinitePartBlock_eq ha hφ, weilScalarBlock_eq ha A hφ,
+    weilPrimeBlock_eq hu hφ.cont hφ.compact s, weilSmoothBlock_eq ha hφ]
+
+/-- The four block kernels add up to the assembled representative. -/
+theorem blockKernels_sum_eq_representative (a A : ℝ) (s : Finset ℕ) (k u : ℝ → ℝ) (x : ℝ) :
+    (-(1 / 2) * cauchyFinitePart a x u) + (-(2 * A + 1) * u x) +
+        (-(∑ n ∈ s, primePairWeight n * (u (x + Real.log n) + u (x - Real.log n)))) +
+        weilSmoothRepresentative a k u x =
+      restrictedWeilRepresentative a A s k u x := by
+  rw [restrictedWeilRepresentative]
   ring
 
 /-! ## The prime block is a positive atomic Dirichlet form minus a potential -/

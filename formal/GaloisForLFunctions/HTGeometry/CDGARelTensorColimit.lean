@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CDGARelTensorRight
 import GaloisForLFunctions.HTGeometry.CDGATensorColimit
+import GaloisForLFunctions.HTGeometry.CDGAModuleColimitQuasiIso
 
 /-!
 # The tensor product over the algebra commutes with filtered colimits
@@ -264,6 +265,8 @@ section Naturality
 variable {M' : ℕ → Type w} [∀ n, AddCommGroup (M' n)] [∀ n, Module R (M' n)]
   (P' : CDGAModuleStructure A M') (φ : CDGAModuleHom P P')
 
+omit [IsDirectedOrder ι] [Nonempty ι] [DecidableEq ι]
+  [∀ n : ℕ, DirectedSystem (fun i => N i n) fun i j h => moduleDegTransition ψ n i j h] in
 /-- The two functorialities commute on the tensor product over the algebra. -/
 theorem relTensorMapLeft_relTensorMapRight {i j : ι} (hij : i ≤ j) (n : ℕ)
     (f : RelTensorCarrier P (Q i) n) :
@@ -272,14 +275,14 @@ theorem relTensorMapLeft_relTensorMapRight {i j : ι} (hij : i ≤ j) (n : ℕ)
   refine Quotient.inductionOn' f fun z => ?_
   refine congrArg Submodule.Quotient.mk ?_
   exact congrFun (congrArg (fun H : CDGAModuleHom (tensorModule P (Q i)) (tensorModule P' (Q j)) =>
-    H.toFun n) (tensorMapLeft_comp_tensorMapRight φ (Q i) (Q j) (ψ i j hij))) z
+    H.toFun n) (tensorMapLeft_comp_tensorMapRight φ (ψ i j hij))) z
 
 /-- The comparison of the colimits is natural in the left variable. -/
 theorem relTensorColimHom_naturality :
     (relTensorMapLeft φ (colimModule ψ)).comp (relTensorColimHom P ψ)
       = (relTensorColimHom P' ψ).comp (colimModuleHom (relTensorSystem P ψ)
           (relTensorSystem P' ψ) (fun i => relTensorMapLeft φ (Q i))
-          (fun i j hij n f => relTensorMapLeft_relTensorMapRight P ψ P' φ hij n f)) := by
+          (fun _ _ hij n f => relTensorMapLeft_relTensorMapRight P ψ P' φ hij n f)) := by
   refine CDGAModuleHom.hom_ext fun n ξ => ?_
   obtain ⟨i, f, rfl⟩ := colimModuleOf_exists (relTensorSystem P ψ) n ξ
   refine Quotient.inductionOn' f fun z => ?_
@@ -288,13 +291,13 @@ theorem relTensorColimHom_naturality :
         ((colimModuleOf (relTensorSystem P ψ) i).toFun n (Submodule.Quotient.mk z)))
     = relTensorColimMap P' ψ n (colimModuleHomFun (relTensorSystem P ψ) (relTensorSystem P' ψ)
         (fun i => relTensorMapLeft φ (Q i))
-        (fun i j hij n f => relTensorMapLeft_relTensorMapRight P ψ P' φ hij n f) n
+        (fun _ _ hij n f => relTensorMapLeft_relTensorMapRight P ψ P' φ hij n f) n
         ((colimModuleOf (relTensorSystem P ψ) i).toFun n (Submodule.Quotient.mk z)))
-  rw [relTensorColimMap_of, colimModuleHomFun_of, relTensorColimMap_of]
+  rw [relTensorColimMap_of, colimModuleHomFun_colimOf, relTensorColimMap_of]
   refine congrArg Submodule.Quotient.mk ?_
   exact congrFun (congrArg
     (fun H : CDGAModuleHom (tensorModule P (Q i)) (tensorModule P' (colimModule ψ)) => H.toFun n)
-    (tensorMapLeft_comp_tensorMapRight φ (Q i) (colimModule ψ) (colimModuleOf ψ i))) z
+    (tensorMapLeft_comp_tensorMapRight φ (colimModuleOf ψ i))) z
 
 /-- **Tensoring the colimit over the algebra preserves full quasi-isomorphisms** as soon as every
 stage does. -/
@@ -303,7 +306,7 @@ theorem relTensorMapLeft_colim_isQuasiIsoFull
     (relTensorMapLeft φ (colimModule ψ)).IsQuasiIsoFull := by
   have h1 : (colimModuleHom (relTensorSystem P ψ) (relTensorSystem P' ψ)
       (fun i => relTensorMapLeft φ (Q i))
-      (fun i j hij n f => relTensorMapLeft_relTensorMapRight P ψ P' φ hij n f)).IsQuasiIsoFull :=
+      (fun _ _ hij n f => relTensorMapLeft_relTensorMapRight P ψ P' φ hij n f)).IsQuasiIsoFull :=
     colimModuleHom_isQuasiIsoFull _ _ _ _ hstage
   have h2 := CDGAModuleHom.IsQuasiIsoFull.comp (relTensorColimHom_isQuasiIsoFull P' ψ) h1
   rw [← relTensorColimHom_naturality P ψ P' φ] at h2

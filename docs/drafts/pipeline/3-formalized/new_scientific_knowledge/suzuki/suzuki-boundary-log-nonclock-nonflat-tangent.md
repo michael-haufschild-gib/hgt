@@ -1,7 +1,7 @@
 # Suzuki boundary-log non-clock and non-flat tangent theorem
 
 - **ID:** `suzuki-boundary-log-nonclock-nonflat-tangent`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM / SUZUKI SOURCE OPERATOR / EXACT NON-CLOCK RIGIDITY
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED AFTER TARGETED SEARCH]`
   `[NOT AN RH PROOF]`
@@ -276,10 +276,26 @@ restrictedWeilRepresentative, restrictedWeilRepresentative_eq
 weilPrimeBlock_eq_jumpForms, weilPrimeBlock_jumpPart_nonneg
 ```
 
-`restrictedWeilRepresentative_eq` is `(4)`'s split: the representative is
-`-(1/2) u(x) log(a²-x²)` plus a remainder made of the divided difference and the three other
-blocks.  Suzuki's `r''` is carried as a continuous kernel parameter, because `r` is source data the
-corpus does not own; every other block is fully explicit.
+Each block pairs its own explicit kernel against an aperture test function, and the four kernels
+sum to the assembled representative:
+
+```text
+ApertureTest                             continuous, compactly supported, vanishing off (-a,a)
+intervalIntegral_eq_integral_of_apertureTest   the interval/line bridge such a test supplies
+weilFinitePartBlock_eq                   block 1 pairs -(1/2) cauchyFinitePart
+weilScalarBlock_eq                       block 2 pairs -(2A+1) u
+weilPrimeBlock_eq                        block 3 pairs -∑ Λ(n)/√n (u(·+log n) + u(·-log n))
+weilSmoothBlock_eq                       block 4 pairs weilSmoothRepresentative
+restrictedWeilForm_eq_blocks             the form is the sum of the four pairings
+blockKernels_sum_eq_representative       the four kernels sum to restrictedWeilRepresentative
+restrictedWeilRepresentative_eq          (4): the representative is
+                                         -(1/2) u(x) log(a²-x²) + R_a(x)
+```
+
+`restrictedWeilRepresentative_eq` is `(4)`'s split, and `R_a` is exactly the divided difference plus
+the three other blocks — bounded by `abs_cauchyDividedDifference_le` and by continuity on the
+compact aperture.  Suzuki's `r''` is carried as a continuous kernel parameter, because `r` is source
+data the corpus does not own; every other block is fully explicit.
 
 **`(5)` and `(6)` are theorems**, in
 `formal/GaloisForLFunctions/RHTower/SuzukiBoundaryLogEndpointBlowUp.lean`:
