@@ -174,10 +174,30 @@ differential on three factors** — the first case with content, since on two fa
 
 ## Status of `d² = 0`
 
-Proved for three factors.  The general statement is an induction on the number of factors whose
-inductive step needs, besides everything above, that two multiplications at distance at least two
-commute — the terms `H ∘ R(R(barD))` against `R(barD) ∘ H` — which is the second of the two classical
-cancellations and is not yet built.  The tail-against-tail term is already discharged in general by
-`tensorRightDegOne_comp`.
+**Proved for three factors** (`barD_two_sq`), and every ingredient of the general statement is proved.
+Writing the inductive step as `barD (k+1) = H_k + R(barD k)`, the square has four terms and each has
+its reason:
+
+| term | proved by |
+|---|---|
+| `H ∘ H` and `H ∘ R(H)` | `barHead_sq` — stated for an arbitrary coefficient family, so it applies at every `k` |
+| `H ∘ R(R(barD))` and `R(barD) ∘ H` | `barHead_comm_tail_apply` in `CDGABarComm.lean` |
+| `R(barD) ∘ R(barD)` | `tensorRightDegOne_comp` together with the inductive hypothesis |
+
+`CDGABarComm.lean` builds the second of the two classical cancellations from scratch: `barMulTail`,
+the map that multiplies the first two factors and acts on the third; `barMulTail_first` and
+`barMulTail_second`, which show both orders compose to it; `barMulTail_cancel`, which cancels them
+because the two Koszul signs differ by exactly one — the multiplication raises the degree of the slot
+the outer sign reads; and `barHead_tailtail_term`, `barHead_tail_term`,
+`barHead_comm_tail_apply`, which identify the two halves componentwise and cancel them.
+`tensorRightDegOne_add_map` splits a tail into its own head and tail, and `barD_succ_split` and
+`barTailFamily` fix the spelling the split needs.
+
+What is left is the induction itself.  It is blocked on nothing mathematical: `(barPower (k+1)).carrier`
+and `TensorCarrier S (barPower k).carrier` are *definitionally* equal but not syntactically so, and
+Lean elaborates the two summands of the inductive step against the two different spellings, so the
+`HAdd` instance for their sum is not found and the rewrite that splits the tail does not fire.  The
+fix is to force one spelling through the whole step — `barTailFamily` does it for the tail; the head
+and the outer differential need the same treatment.
 
 Everything the statement quantifies over is defined, and one of the four terms is proved.

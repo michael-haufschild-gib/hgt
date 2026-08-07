@@ -214,4 +214,18 @@ theorem barHead_comm_tail_apply (n c e : ℕ) (hp : c + e = n + 1 + 1)
 
 end Componentwise
 
+/-- The tail of a bar differential, spelled with the domain the head uses. -/
+noncomputable def barTailFamily (k b : ℕ) :
+    TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier) b
+      →ₗ[R] TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier (b + 1) :=
+  tensorRightDegOneₗ (M := barShiftFamily ε) (fun b' => barD ε k b') b
+
+theorem barD_succ_split (k b : ℕ) :
+    barD ε (k + 1) b = barHeadₗ ε (barPower ε k).carrier b + barTailFamily ε k b := by
+  rw [barD_succ]
+  rfl
+
+
+
 end GaloisForLFunctions.HTGeometry
