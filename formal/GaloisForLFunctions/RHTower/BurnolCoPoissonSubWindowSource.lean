@@ -271,10 +271,11 @@ theorem soninMellinEvaluation_coPoissonSubWindowSonin_ne_zero_iff (hc : 0 < c) (
 lies in the kernel of the evaluation there, so a witness must come from its orthogonal
 complement. -/
 theorem soninMellinEvaluation_coPoissonSubWindowSonin_eq_zero (hc : 0 < c) (hcd : c ≤ d)
-    {w : ℂ} (hw0 : 0 < w.re) (hw1 : w.re < 1) (hz : riemannZeta w = 0) :
+    {w : ℂ} (hw0 : 0 < w.re) (hz : riemannZeta w = 0) :
     soninMellinEvaluation w
         (((coPoissonSubWindowSonin hc hcd :
           soninExtendedSpace (subWindowAperture c d)) : evenSubspace) : SoninL2) = 0 := by
+  have hw1 : w.re < 1 := riemannZeta_zero_re_lt_one hz
   rw [soninMellinEvaluation_coPoissonSubWindowSonin hc hcd hw0 hw1, hz]
   simp
 
@@ -284,7 +285,7 @@ theorem inner_burnolExtendedSoninEvaluationVector_coPoissonSubWindowSonin_eq_zer
     ⟪burnolExtendedSoninEvaluationVector w (subWindowAperture c d) hlo hhi
         (subWindowAperture_pos hc hcd), coPoissonSubWindowSonin hc hcd⟫_ℂ = 0 := by
   rw [inner_burnolExtendedSoninEvaluationVector]
-  exact soninMellinEvaluation_coPoissonSubWindowSonin_eq_zero hc hcd (by linarith) hhi hz
+  exact soninMellinEvaluation_coPoissonSubWindowSonin_eq_zero hc hcd (by linarith) hz
 
 
 /-! ## The family at a fixed aperture -/
@@ -319,7 +320,7 @@ theorem inner_burnolExtendedSoninEvaluationVector_subWindowAt_eq_zero
         coPoissonSubWindowSoninAt hc hcd hAle⟫_ℂ = 0 := by
   rw [inner_burnolExtendedSoninEvaluationVector, coe_coPoissonSubWindowSoninAt]
   have hval := soninMellinEvaluation_coPoissonSubWindowSonin_eq_zero hc hcd
-    (by linarith : (0 : ℝ) < w.re) hhi hz
+    (by linarith : (0 : ℝ) < w.re) hz
   exact hval
 
 /-- **Off the zero set the same family is a witness at that aperture.** -/

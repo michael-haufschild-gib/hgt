@@ -518,6 +518,28 @@ together with its confluent jets and boundedness of `K_j`; `(8)` is then a subst
 - [ ] formalize Burnol completeness (closed span of confluent zero evaluators = quotient) and hence `(2)`, `(8)`, `(9)`, `(13)`--`(15)`
 - [ ] RH
 
+## Bilateral source-covariance reduction
+
+The pre-divisor source layer now gives an unconditional stronger simplification. Both normalized
+dilation orientations send the literal closed co-Poisson source at aperture `a` into the source at
+`a/r`. Hilbert adjunction therefore sends the quotient source-orthogonal at `a/r` back into the
+source-orthogonal at `a`. Consequently, on the actual quotient domain,
+
+```text
+E_a (U_r y)      = P_a (U_r y)
+E_a (U_r^* y)    = P_a (U_r^* y),       y in Y_(a/r),
+```
+
+where `E_a` is the co-Poisson quotient projection and `P_a` the plain extended-Sonin projection.
+Lean proves these as `coPoissonQuotientInverse_eq_soninProjection_of_mem_next` and
+`coPoissonQuotientForward_eq_soninProjection_of_mem_next` in
+`BurnolCoPoissonQuotientDilationCollapse.lean`.
+
+This deletes the co-Poisson source-projection correction from both physical Gamma orientations.
+The exact-couple morphism `(29)` must now identify the first-trace edge with one pure Sonin
+aperture-leakage Bockstein and prove inverse/dagger equality there. Burnol completeness is still
+needed for the full operator-flatness statement `(2)`, but it is not needed for this reduction.
+
 ## Sharpening of the remaining input for `(2)`
 
 `GammaCoPoissonSoninQuadrantZeta.lean` now proves, unconditionally, that a co-Poisson annihilator
@@ -581,3 +603,20 @@ limiting construction, is what supplies the critical-line evaluators.
 Only then does `coPoissonQuotientCommutator_ladderKernel_eq_zero` (already proved) plus its
 confluent jets give `(2)`; `(8)` is then a substitution back into `(7)`, `(9)` is local
 cancellation, and `(13)`--`(15)` follow from `(2)` by adjacent transpositions.
+
+### First brick of sub-target 1
+
+`formal/GaloisForLFunctions/RHTower/BurnolSoninMellinHeadTail.lean` (axiom-clean, umbrella
+registered) proves the starting identity of Burnol's Theorem 4.8:
+
+```text
+integral_Ioc_soninMellinKernel        -- int_(0,a] t^(-w) dt = a^(1-w)/(1-w)  for Re w < 1
+soninMellinEvaluation_head_tail       -- M(f)(w) = P(w) * ( c * a^(1-w)/(1-w) + int_a^infinity f t^(-w) dt )
+```
+
+The head term is already meromorphic on the whole plane with its only singularity the simple pole at
+`w = 1`, so the entire analytic burden of the continuation sits on the tail integral.  The tail
+converges absolutely for `Re w > 1/2`, which continues `M(f)` to `{Re w > 1/2} \ {1}`; crossing the
+critical line needs Burnol's entire functions `C_a(u, 1-s) = F_+(1_{t>a} t^{-s})(u)` from
+*Sur les "espaces de Sonine" associés par de Branges à la transformation de Fourier*, which is the
+next brick.

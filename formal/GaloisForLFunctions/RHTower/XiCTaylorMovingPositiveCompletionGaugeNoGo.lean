@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiCTaylorAnisotropicGaugeCharge
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailMonotonePacketAnisotropic
 import GaloisForLFunctions.RHTower.ChargeTomography
+import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 
 /-!
 # Moving positive-completion gauges cannot screen Xi divisor charge
@@ -317,6 +318,47 @@ theorem
     using
       xiCTaylor_movingPositiveTailCompletionGaugeChargeScreenedAt_iff_xi_ne_zero
         hS hsigma hg
+
+/-- **The moving theta-packet no-go is an RH criterion.**  Screening happens exactly off the `ξ`
+divisor, and `ξ` has no zeros left of the critical line precisely under RH
+(`riemannHypothesis_iff_xi_ne_zero_of_re_lt_half`), so RH is equivalent to screening at every point
+of that half-plane.  The schedule and packet data are arbitrary subject to the same conditions the
+classification uses; none of them mentions `ξ`. -/
+theorem riemannHypothesis_iff_forall_movingCriticalLogPhaseTailPacketChargeScreened
+    {S : ℕ → ℕ} (hS : XiCTaylorSuperaccurateSchedule S)
+    {L : ℕ → ℝ} {M : ℕ → ℕ} (hL : ∀ n : ℕ, 0 ≤ L n) (hM : ∀ n : ℕ, 0 < M n) :
+    RiemannHypothesis ↔
+      ∀ sigma : ℂ, sigma.re < 1 / 2 →
+        XiCTaylorMovingCriticalLogPhaseTailPacketChargeScreenedAt S L M sigma := by
+  rw [riemannHypothesis_iff_xi_ne_zero_of_re_lt_half]
+  constructor
+  · intro h sigma hs
+    exact (xiCTaylor_movingCriticalLogPhaseTailPacketChargeScreenedAt_iff_xi_ne_zero
+      hS hs hL hM).mpr (h sigma hs)
+  · intro h sigma hs
+    exact (xiCTaylor_movingCriticalLogPhaseTailPacketChargeScreenedAt_iff_xi_ne_zero
+      hS hs hL hM).mp (h sigma hs)
+
+/-- **The moving positive-completion gauge no-go is an RH criterion.**  Same statement for an
+arbitrary moving positive-completion gauge, for gauge data satisfying the classification's
+positivity condition at every point left of the critical line. -/
+theorem riemannHypothesis_iff_forall_movingPositiveTailCompletionGaugeChargeScreened
+    {N : ℕ → ℕ} (hN : XiCTaylorSuperaccurateSchedule N)
+    {h : ℕ → ℝ → ℝ} {F D : ℕ → ℂ}
+    (hg : ∀ sigma : ℂ, sigma.re < 1 / 2 →
+      ∀ᶠ n : ℕ in atTop, PositiveTailCompletionGaugeAt
+        (h n) (F n) (D n) (xiCTaylorAnisotropicCenteredPoint sigma n)) :
+    RiemannHypothesis ↔
+      ∀ sigma : ℂ, sigma.re < 1 / 2 →
+        XiCTaylorMovingPositiveTailCompletionGaugeChargeScreenedAt N F D sigma := by
+  rw [riemannHypothesis_iff_xi_ne_zero_of_re_lt_half]
+  constructor
+  · intro hx sigma hs
+    exact (xiCTaylor_movingPositiveTailCompletionGaugeChargeScreenedAt_iff_xi_ne_zero
+      hN hs (hg sigma hs)).mpr (hx sigma hs)
+  · intro hx sigma hs
+    exact (xiCTaylor_movingPositiveTailCompletionGaugeChargeScreenedAt_iff_xi_ne_zero
+      hN hs (hg sigma hs)).mp (hx sigma hs)
 
 end
 

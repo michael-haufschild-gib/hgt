@@ -33,8 +33,8 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from these cards: docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger
-
+formalize UNCONDITIONALLY in lean any proven theorem from these cards:  docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/sonin
+  
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications.
 
 Lean rules:
@@ -88,16 +88,18 @@ goal is met when lean codebase is unconditional.
 if you are not idle, keep going.
 else your task is:
 
-Audit lean corpus for any remaining hypothesis or Prop interface - then attempt to discharge it:
-1. reuse existing formal results to discharge every tractable premise
+Audit lean corpus for opportunities to:
+1. reuse existing formal results to discharge or simplify a premise
 2. create and formally prove missing connector theorems
 3. subsume theorems under a larger universal law which is nontrivial
-4. use the /hgtl7 skill´s research process on each non-immediate mathematical obstacle
+4. open new proof routes or simplify proof routes towards a lean proof of the riemann hypothesis
 
 lean corpus:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 - formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
+
+read-only corpus:
 - formal/GaloisForLFunctions/QuantumAlg for lean related to quantum algorithm around prime numbers
 - formal/GaloisForLFunctions/QECLean.lean for lean related to Quantum Error Correction
 - formal/GaloisForLFunctions/PNTPlus.lean for lean related to Prime Number Theorem
@@ -138,6 +140,8 @@ lean corpus:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 - formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
+
+read only corpus:
 - formal/GaloisForLFunctions/QuantumAlg for lean related to quantum algorithm around prime numbers
 - formal/GaloisForLFunctions/QECLean.lean for lean related to Quantum Error Correction
 - formal/GaloisForLFunctions/PNTPlus.lean for lean related to Prime Number Theorem

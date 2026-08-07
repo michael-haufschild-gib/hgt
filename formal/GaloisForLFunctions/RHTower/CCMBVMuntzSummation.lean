@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.CCMSawtoothDilationMean
+import GaloisForLFunctions.RHTower.ReflectionCocycleClass
 import Mathlib.Topology.EMetricSpace.BoundedVariation
 import Mathlib.Analysis.MellinTransform
 import Mathlib.NumberTheory.LSeries.RiemannZeta
@@ -679,8 +680,9 @@ nontrivial zeta zero, including any hypothetical off-line zero. -/
 theorem mellin_arithmeticSum_eq_zero_of_zeta_eq_zero {f : ℝ → ℝ} (hm : Measurable f) {B L : ℝ}
     (hbnd : ∀ x, |f x| ≤ B) (hbv : BoundedVariationOn f univ)
     (hsupp : ∀ x, x ∉ Ioc (0 : ℝ) L → f x = 0) (hint : (∫ x in (0 : ℝ)..L, f x) = 0)
-    {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ.re < 1) (hz : riemannZeta ρ = 0) :
+    {ρ : ℂ} (hρ0 : 0 < ρ.re) (hz : riemannZeta ρ = 0) :
     mellin (fun t : ℝ => ((arithmeticSum f t : ℝ) : ℂ)) ρ = 0 := by
+  have hρ1 : ρ.re < 1 := _root_.RHTower.riemannZeta_zero_re_lt_one hz
   have him : ρ.im ≠ 0 := by
     intro h
     have hreal : ρ = ((ρ.re : ℝ) : ℂ) := by

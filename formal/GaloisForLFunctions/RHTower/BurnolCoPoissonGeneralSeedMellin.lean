@@ -725,9 +725,10 @@ theorem soninMellinEvaluation_burnolCoPoissonSource {b : ℝ} (hb : 0 < b)
 
 /-- At a zero of zeta the completed Mellin evaluation annihilates every co-Poisson source vector. -/
 theorem soninMellinEvaluation_burnolCoPoissonSource_eq_zero {b : ℝ} (hb : 0 < b)
-    (src : BurnolCoPoissonSource b) {w : ℂ} (hlo : 1 / 2 < w.re) (hhi : w.re < 1)
+    (src : BurnolCoPoissonSource b) {w : ℂ} (hlo : 1 / 2 < w.re)
     (hz : riemannZeta w = 0) :
     soninMellinEvaluation w (((src.vector : soninExtendedSpace b) : evenSubspace) : SoninL2) = 0 := by
+  have hhi : w.re < 1 := riemannZeta_zero_re_lt_one hz
   rw [soninMellinEvaluation_burnolCoPoissonSource hb src hlo hhi, hz]
   simp
 
@@ -737,7 +738,7 @@ theorem inner_burnolExtendedSoninEvaluationVector_source_eq_zero {b : ℝ} (hb :
     (hz : riemannZeta w = 0) :
     ⟪burnolExtendedSoninEvaluationVector w b hlo hhi hb, src.vector⟫_ℂ = 0 := by
   rw [inner_burnolExtendedSoninEvaluationVector]
-  exact soninMellinEvaluation_burnolCoPoissonSource_eq_zero hb src hlo hhi hz
+  exact soninMellinEvaluation_burnolCoPoissonSource_eq_zero hb src hlo hz
 
 /-- Off the zero set of zeta a co-Poisson source vector is detected by the evaluator as soon as its
 seed has nonvanishing Mellin transform. -/

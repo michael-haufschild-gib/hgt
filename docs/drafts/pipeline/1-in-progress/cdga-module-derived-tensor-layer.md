@@ -530,3 +530,48 @@ alone the middle regime would be unprovable.
 
 Axioms: `propext, Classical.choice, Quot.sound` (`shiftCocyclesEquiv` needs only
 `propext, Quot.sound`).
+
+## Free coefficients, and the free cell functor
+
+`CDGATensorConst.lean` and `CDGAFreeCoefficients.lean`.
+
+* **`tensorConstModule P V`** — tensoring degreewise with a fixed `R`-module.  Neither the grading
+  nor the roles change: differential and action work on the left factor, the second is carried
+  along.  With `tensorConstMap` (functoriality in the module) and `tensorConstVMap` (functoriality
+  in the coefficients).
+* **`freeCellModule_eq`** — `freeCellModule A V k = shiftModule (tensorConstModule (selfModule A) V) k`,
+  by `rfl`.  The free cell is exactly a shift of a constant tensor; nothing else is going on in it.
+* **`tensorConstPiHom`** — tensoring with `ι → R` *is* the product of `ι` copies, as a map of
+  differential graded modules, degreewise bijective.
+* **`CDGAModuleHom.IsQuasiIsoFull.piMap`** — a product of full quasi-isomorphisms is one; the
+  degree-zero half is read off componentwise from `mem_pi_cocycles`.
+* **`tensorConstMap_isQuasiIsoFull`** — **free coefficients preserve full quasi-isomorphisms.**  A
+  basis identifies `V` with `ι → R`, the comparison is natural, and two out of three does the rest.
+* **`freeCellFunctor_isQuasiIsoFull`** — and so does the free cell functor `P ↦ (P ⊗ V)[−k]`, by
+  composing with `shiftMap_isQuasiIsoFull`.
+
+Axioms: `propext, Classical.choice, Quot.sound`; `tensorConstModule`, `tensorConstMap`,
+`tensorConstVMap` and `freeCellModule_eq` need only `propext, Quot.sound`.
+
+A universe note, of the same kind as the one recorded for the unitor: `IsQuasiIsoFull` compares two
+modules in a *single* universe, and `ι → R` lives in `max u w`, so `CDGAFreeCoefficients.lean`
+declares the ground ring in the same universe as the modules.  For the cards — everything over `ℝ` —
+this is no restriction.
+
+## Next
+
+What is still missing to discharge `hcell` of `tensorMapLeft_tower_isQuasiIsoFull` outright is the
+identification of the *cell as a tensor factor*: for the cell `constCell V k` — the module `V` placed
+in degree `k` with zero action and zero differential, which is a legitimate `CDGAModuleStructure` —
+one needs
+
+  `tensorModule P (constCell V k) ≅ shiftModule (tensorConstModule P V) k`.
+
+Both sides are `M^{n-k} ⊗ V` in degree `n`; the content is only the bookkeeping of the bidegree
+index against the one-degree concentration.  With that, `freeCellFunctor_isQuasiIsoFull` *is*
+`hcell`, and the tower theorem applies to any tower built from cells concentrated in single degrees
+with free coefficients — which is the definition of semi-free over the ground ring.
+
+Note that the `A`-free cells (`freeCellModule`) are the right cells for `⊗_A`, not for `⊗_R`: over
+the ground ring, `M ⊗_R A[−k] ⊗ V` involves `H(M ⊗_R A)`, not `H(M)`.  The two programmes need
+different cells, and both cell types are now built.

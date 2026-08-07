@@ -4,6 +4,7 @@ import GaloisForLFunctions.RHTower.WeldZeroGenerator
 import GaloisForLFunctions.RHTower.RHLadderTheory
 import GaloisForLFunctions.RHTower.CompletedLogDerivStrip
 import GaloisForLFunctions.RHTower.BornTemperatureFactorType
+import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 
 /-!
 # Normalized prime-flux residue and canonical Fitting seam scalar
@@ -276,6 +277,34 @@ theorem xiCanonicalFittingSeamAt_hasDeterminantTransverseDefect_iff (ρ : ℂ) :
     (xiCanonicalFittingSeamAt ρ).HasDeterminantTransverseDefect ↔ xi ρ = 0 := by
   rw [← xiCanonicalFittingSeamAt_hasNontrivialFittingBoundary_iff ρ]
   exact (xiCanonicalFittingSeamAt ρ).hasNontrivialFittingBoundary_iff_hasDeterminantTransverseDefect.symm
+
+/-- **The Riemann hypothesis read off the Fitting boundary of the canonical seam.**  The seam has a
+nontrivial Fitting boundary exactly on the `ξ` divisor, so RH says that boundary can appear only on
+the critical line. -/
+theorem riemannHypothesis_iff_xiCanonicalFittingSeamAt_hasNontrivialFittingBoundary :
+    RiemannHypothesis ↔
+      ∀ ρ : ℂ, HasNontrivialFittingBoundary (analyticOrderAt xi ρ).toNat
+        (xiCanonicalFittingSeamAt ρ).A (xiCanonicalFittingSeamAt ρ).Delta → ρ.re = 1 / 2 := by
+  rw [riemannHypothesis_iff_xi_zero_re_eq_half]
+  exact ⟨fun h ρ hb => h ρ ((xiCanonicalFittingSeamAt_hasNontrivialFittingBoundary_iff ρ).mp hb),
+    fun h ρ hz => h ρ ((xiCanonicalFittingSeamAt_hasNontrivialFittingBoundary_iff ρ).mpr hz)⟩
+
+/-- **The same criterion through the low-coefficient boundary witness.** -/
+theorem riemannHypothesis_iff_xiCanonicalFittingSeamAt_boundaryCoeffWitness :
+    RiemannHypothesis ↔
+      ∀ ρ : ℂ, (xiCanonicalFittingSeamAt ρ).BoundaryCoeffWitness () → ρ.re = 1 / 2 := by
+  rw [riemannHypothesis_iff_xi_zero_re_eq_half]
+  exact ⟨fun h ρ hw => h ρ ((xiCanonicalFittingSeamAt_boundaryCoeffWitness_iff ρ).mp hw),
+    fun h ρ hz => h ρ ((xiCanonicalFittingSeamAt_boundaryCoeffWitness_iff ρ).mpr hz)⟩
+
+/-- **The same criterion through the determinant-transverse defect.** -/
+theorem riemannHypothesis_iff_xiCanonicalFittingSeamAt_hasDeterminantTransverseDefect :
+    RiemannHypothesis ↔
+      ∀ ρ : ℂ, (xiCanonicalFittingSeamAt ρ).HasDeterminantTransverseDefect → ρ.re = 1 / 2 := by
+  rw [riemannHypothesis_iff_xi_zero_re_eq_half]
+  exact ⟨fun h ρ hd =>
+      h ρ ((xiCanonicalFittingSeamAt_hasDeterminantTransverseDefect_iff ρ).mp hd),
+    fun h ρ hz => h ρ ((xiCanonicalFittingSeamAt_hasDeterminantTransverseDefect_iff ρ).mpr hz)⟩
 
 /-- The meromorphic continuation of the infinite von Mangoldt prime flux. -/
 noncomputable def infinitePrimeFlux (s : ℂ) : ℂ := -logDeriv riemannZeta s

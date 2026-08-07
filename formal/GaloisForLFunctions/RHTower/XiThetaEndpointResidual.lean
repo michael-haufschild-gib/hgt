@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.RiemannTower
+import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 
 /-!
 # Exact theta-endpoint residual
@@ -39,5 +40,28 @@ theorem completedRiemannZeta₀_eq_neg_inv_mul_iff_xi_eq_zero
     simp [h] at hres
     rw [xiThetaEndpointResidual] at hres
     linear_combination hres
+
+/-- **The Riemann hypothesis as a critical-line law for the endpoint anchor.**  The rational anchor
+`Λ₀(s) = -1/(s(s-1))` is attained exactly on the `ξ` divisor, and every `ξ` zero lies in the open
+critical strip, so RH is the statement that the anchor can only be attained on the critical line. -/
+theorem riemannHypothesis_iff_completedRiemannZeta₀_eq_neg_inv_mul_criticalLine :
+    RiemannHypothesis ↔
+      ∀ s : ℂ, s ≠ 0 → s ≠ 1 →
+        completedRiemannZeta₀ s = -(1 / (s * (s - 1))) → s.re = 1 / 2 := by
+  rw [riemannHypothesis_iff_xi_zero_re_eq_half]
+  constructor
+  · intro h s hs0 hs1 hanchor
+    exact h s ((completedRiemannZeta₀_eq_neg_inv_mul_iff_xi_eq_zero s hs0 hs1).mp hanchor)
+  · intro h ρ hz
+    obtain ⟨h0, h1⟩ := xi_zero_re_mem_open_unit hz
+    have hs0 : ρ ≠ 0 := by
+      intro hc
+      rw [hc, Complex.zero_re] at h0
+      exact absurd h0 (lt_irrefl 0)
+    have hs1 : ρ ≠ 1 := by
+      intro hc
+      rw [hc, Complex.one_re] at h1
+      exact absurd h1 (lt_irrefl 1)
+    exact h ρ hs0 hs1 ((completedRiemannZeta₀_eq_neg_inv_mul_iff_xi_eq_zero ρ hs0 hs1).mpr hz)
 
 end RHTower

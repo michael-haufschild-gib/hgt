@@ -5734,6 +5734,8 @@ import GaloisForLFunctions.HTGeometry.CDGAModule
 import GaloisForLFunctions.HTGeometry.CDGAFreeCell
 import GaloisForLFunctions.HTGeometry.CDGAShift
 import GaloisForLFunctions.HTGeometry.CDGAShiftQuasiIso
+import GaloisForLFunctions.HTGeometry.CDGATensorConst
+import GaloisForLFunctions.HTGeometry.CDGAFreeCoefficients
 import GaloisForLFunctions.HTGeometry.CDGATensor
 import GaloisForLFunctions.HTGeometry.CDGACellTower
 import GaloisForLFunctions.HTGeometry.CDGATensorSingle

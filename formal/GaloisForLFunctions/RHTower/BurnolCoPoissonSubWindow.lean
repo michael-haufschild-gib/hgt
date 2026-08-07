@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.BurnolCoPoissonMellinZeta
+import GaloisForLFunctions.RHTower.ReflectionCocycleClass
 
 /-!
 # Sub-window reciprocal seeds
@@ -258,9 +259,10 @@ theorem integral_Ioi_burnolCoPoisson_subWindow_cpow {c d : ℝ} (hc : 0 < c) (hc
 /-- **Every sub-window co-Poisson value is annihilated at a zeta zero.**  The whole two-parameter
 family of explicit inhabitants carries the factor `zeta(w)`. -/
 theorem integral_Ioi_burnolCoPoisson_subWindow_cpow_eq_zero {c d : ℝ} (hc : 0 < c) (hcd : c ≤ d)
-    {w : ℂ} (hw0 : 0 < w.re) (hw1 : w.re < 1) (hz : riemannZeta w = 0) :
+    {w : ℂ} (hw0 : 0 < w.re) (hz : riemannZeta w = 0) :
     (∫ t in Set.Ioi (0 : ℝ),
         burnolCoPoissonRightSum (coPoissonSubWindowSeed c d) t * (t : ℂ) ^ (-w)) = 0 := by
+  have hw1 : w.re < 1 := riemannZeta_zero_re_lt_one hz
   rw [integral_Ioi_burnolCoPoisson_subWindow_cpow hc hcd hw0 hw1, hz]
   simp
 

@@ -372,6 +372,37 @@ end Chase
 
 end CellInvariance
 
+section PiFull
+
+variable {R : Type u} [CommRing R] {X : ℕ → Type v} [∀ n, AddCommGroup (X n)]
+  [∀ n, Module R (X n)] {A : CDGAStructure R X} {ι : Type*}
+  {M : ι → ℕ → Type w} [∀ i n, AddCommGroup (M i n)] [∀ i n, Module R (M i n)]
+  {N : ι → ℕ → Type w} [∀ i n, AddCommGroup (N i n)] [∀ i n, Module R (N i n)]
+  {P : ∀ i, CDGAModuleStructure A (M i)} {Q : ∀ i, CDGAModuleStructure A (N i)}
+
+/-- **A product of full quasi-isomorphisms is a full quasi-isomorphism.**  A family is a cocycle
+exactly when each of its components is, so the degree-zero half is read off componentwise. -/
+theorem IsQuasiIsoFull.piMap {φ : ∀ i, CDGAModuleHom (P i) (Q i)}
+    (hφ : ∀ i, (φ i).IsQuasiIsoFull) : (CDGAModuleHom.piMap φ).IsQuasiIsoFull := by
+  classical
+  refine ⟨⟨?_, ?_⟩, IsQuasiIso.piMap fun i => (hφ i).2⟩
+  · intro a b hab
+    refine Subtype.ext (funext fun i => ?_)
+    have h1 : (φ i).cocyclesMap 0
+          ⟨(a : ∀ j, M j 0) i, CDGAModuleStructure.mem_pi_cocycles.1 a.2 i⟩
+        = (φ i).cocyclesMap 0
+          ⟨(b : ∀ j, M j 0) i, CDGAModuleStructure.mem_pi_cocycles.1 b.2 i⟩ :=
+      Subtype.ext (congrFun (congrArg Subtype.val hab) i)
+    exact congrArg Subtype.val ((hφ i).1.1 h1)
+  · intro v
+    choose u hu using fun i => (hφ i).1.2
+      ⟨(v : ∀ j, N j 0) i, CDGAModuleStructure.mem_pi_cocycles.1 v.2 i⟩
+    refine ⟨⟨fun i => (u i : M i 0),
+      CDGAModuleStructure.mem_pi_cocycles.2 fun i => (u i).2⟩, ?_⟩
+    exact Subtype.ext (funext fun i => congrArg Subtype.val (hu i))
+
+end PiFull
+
 end CDGAModuleHom
 
 end GaloisForLFunctions.HTGeometry

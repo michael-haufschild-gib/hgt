@@ -122,11 +122,12 @@ theorem integral_Ioi_burnolCoPoisson_subWindow_pair_cpow_eq_zero
     {b : ℝ} (hb : 0 < b)
     (hs₁ : Function.support (coPoissonSubWindowSeed c₁ d₁) ⊆ Icc b b⁻¹)
     (hs₂ : Function.support (coPoissonSubWindowSeed c₂ d₂) ⊆ Icc b b⁻¹)
-    {w : ℂ} (hw0 : 0 < w.re) (hw1 : w.re < 1) (hz : riemannZeta w = 0) :
+    {w : ℂ} (hw0 : 0 < w.re) (hz : riemannZeta w = 0) :
     (∫ t in Set.Ioi (0 : ℝ),
         burnolCoPoissonRightSum
           (fun v => coPoissonSubWindowSeed c₁ d₁ v + coPoissonSubWindowSeed c₂ d₂ v) t *
             (t : ℂ) ^ (-w)) = 0 := by
+  have hw1 : w.re < 1 := riemannZeta_zero_re_lt_one hz
   have hpt : ∀ t ∈ Set.Ioi (0 : ℝ),
       burnolCoPoissonRightSum
           (fun v => coPoissonSubWindowSeed c₁ d₁ v + coPoissonSubWindowSeed c₂ d₂ v) t *

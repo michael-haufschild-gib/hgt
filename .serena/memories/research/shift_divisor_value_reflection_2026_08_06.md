@@ -437,3 +437,26 @@ Remaining from the sweep, not yet closed: the three
 `XiCTaylorMovingPositive...ChargeScreenedAt_iff_xi_ne_zero` (stated on Re σ < 1/2 — the matching
 bridge is `riemannHypothesis_iff_xi_ne_zero_of_re_lt_half`, but schedule/gauge hypotheses must be
 threaded into the criterion rather than discharged).
+
+## Sweep closed: the last six criteria (2026-08-07, clean tree)
+
+Tree verified clean first: lint reports no errors, the `deningerExtendFun` duplicate is gone.
+
+- `riemannHypothesis_iff_forall_movingCriticalLogPhaseTailPacketChargeScreened` and
+  `riemannHypothesis_iff_forall_movingPositiveTailCompletionGaugeChargeScreened`
+  (XiCTaylorMovingPositiveCompletionGaugeNoGo) — RH ↔ the moving gauge/packet screens the finite
+  Taylor charge at every point LEFT of the critical line. Bridge:
+  `riemannHypothesis_iff_xi_ne_zero_of_re_lt_half`. The packet version's schedule data (hS, hL, hM)
+  is sigma-independent so it stays outside the quantifier; the gauge version's positivity condition
+  is not, so it is stated only for `Re sigma < 1/2` — the minimal form, not a new global hypothesis.
+- `riemannHypothesis_iff_completedRiemannZeta₀_eq_neg_inv_mul_criticalLine`
+  (XiThetaEndpointResidual) — RH ↔ the rational endpoint anchor `Λ₀(s) = -1/(s(s-1))` is attained
+  only on the critical line.
+- Three in CompletedPrimeFluxFittingAttachment for the canonical torsion seam:
+  `..._hasNontrivialFittingBoundary`, `..._boundaryCoeffWitness`,
+  `..._hasDeterminantTransverseDefect`. All three interfaces detect the ξ divisor exactly, so each
+  is RH.
+
+The 17-candidate sweep from the previous round is now fully closed. `SeamStripRamification.
+xi_zero_iff_zeta_zero_of_mem_strip` was the only entry needing nothing: it is a ξ/ζ bridge already
+subsumed by `xi_eq_zero_iff_riemannZeta_eq_zero_and_nontrivial`, not a new criterion.
