@@ -62,9 +62,8 @@ theorem differentialIndependent_const_mul (hF : ∀ a : F, (algebraMap F E a)′
         | mul_X p n hp =>
             simp only [hSdef, hS'def, map_mul, MvPolynomial.aeval_X, map_mul,
               MvPolynomial.aeval_C] at hp ⊢
-            rw [hp]
-            field_simp
-            ring
+            rw [hp, MvPolynomial.algebraMap_eq, ← mul_assoc (MvPolynomial.C a),
+              ← MvPolynomial.C_mul, mul_inv_cancel₀ ha, map_one, one_mul]
       · intro q
         induction q using MvPolynomial.induction_on with
         | C r => simp [hSdef, hS'def]
@@ -72,9 +71,8 @@ theorem differentialIndependent_const_mul (hF : ∀ a : F, (algebraMap F E a)′
         | mul_X p n hp =>
             simp only [hSdef, hS'def, map_mul, MvPolynomial.aeval_X, map_mul,
               MvPolynomial.aeval_C] at hp ⊢
-            rw [hp]
-            field_simp
-            ring
+            rw [hp, MvPolynomial.algebraMap_eq, ← mul_assoc (MvPolynomial.C a⁻¹),
+              ← MvPolynomial.C_mul, inv_mul_cancel₀ ha, map_one, one_mul]
     exact hscale.injective
   exact hinj
 

@@ -113,6 +113,11 @@ theorem algebraicIndependent_genericAmbientRaw
   convert hfield using 1
   funext i
   rw [genericRaw, dif_pos i.isLt]
+  simp only [Function.comp_apply]
+  apply congrArg (genericJetFieldMap K N)
+  apply congrArg (algebraMap (genericJetRing K N) (genericJetAlgebra K N))
+  apply congrArg MvPolynomial.X
+  exact Fin.ext rfl
 
 /-- **The actual critical source coordinates are algebraically independent.** -/
 theorem algebraicIndependent_criticalAmbientRaw

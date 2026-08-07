@@ -1460,11 +1460,28 @@ bodies use only the two differentials; rather than duplicate them, the second al
 two for the differential, which are the algebra's own.  So the external differential of a tensor
 product of algebras *is* `tensorD` of two modules, and `d² = 0` comes for free.
 
-**Leibniz is what is left.**  At an output bidegree the left side is `tensorDL + tensorDR` of a sum
-over splittings, and each term expands by `tensorPair_dL` and `tensorPair_dR` into two; the right
-side is a sum over the splittings of the two shifted degrees.  The matching is four groups of terms
-under the index shifts `r ↦ r + e` on each coordinate, with the out-of-range terms vanishing.  No
-new sign identity is involved — all four are already proved.
+**Leibniz is proved** — `tensorDL_of_fst_zero`, `tensorDR_of_snd_zero`,
+**`tensorAlgMul_tensorDL`**, **`tensorAlgMul_tensorDR`**, **`tensorAlgMul_extTensorD`** — and with
+it the whole structure:
+
+> **`tensorCDGA` : the tensor product of two commutative differential graded algebras is a
+> commutative differential graded algebra.**
+
+Each half-differential is treated separately.  On the left side the differential of a sum over
+splittings expands, term by term, into two by `tensorPair_dL` (resp. `tensorPair_dR`); on the right
+side the two summands are sums over splittings of the two shifted degrees, and the four groups match
+under the coordinate shifts.  The `tensorDR` half is the one with position-dependent signs — the
+half-differential carries `(−1)^{p₁}` where `p₁` varies over the sum — and they come out right
+because `p₁ = r₁ + s₁` on each splitting: the two exponents differ by an even number, which is
+exactly what `neg_one_pow_eq_of_even_add` consumes.
+
+Two mechanical points:
+
+* the shift maps are `def`s, so `(shiftLeftSnd … rs).1.2` does not reduce to `rs.1.2` at reducible
+  transparency and `rw` cannot see through it; stating the summand identity with a `show` written
+  entirely in terms of `rs` — which is defeq — puts both sides in the same shape.
+* pulling a scalar out of the *first* argument of a bilinear map is `LinearMap.map_smul₂`, not
+  `map_smul`; out of the second it is `map_smul`.
 
 None of the three needs a new sign identity; the signs are all in `tensorPair_comm`,
 `tensorPair_assoc`, `tensorPair_dL` and `tensorPair_dR`.
