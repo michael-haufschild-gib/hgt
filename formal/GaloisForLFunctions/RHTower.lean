@@ -6139,3 +6139,4 @@ import GaloisForLFunctions.RHTower.Sieve.TripleSummatorySwap
 import GaloisForLFunctions.RHTower.Sieve.TripleConvolutionPerron
 import GaloisForLFunctions.RHTower.Sieve.PerronKernelResidue
 import GaloisForLFunctions.RHTower.Sieve.PerronVerticalBound
+import GaloisForLFunctions.RHTower.Sieve.PrimeSupportedConvolutionBound

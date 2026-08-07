@@ -574,3 +574,21 @@ short-interval bound is available by differencing if some later step wants it.  
 
 **Next brick:** the pointwise bound above, `‖(a ⍟ (b ⍟ c))(n)‖ ≤ (ω(n) log n)²` for prime-supported `a, b`
 with `‖a_p‖ ≤ log p`, `‖b_q‖ ≤ log q`, `‖c‖ ≤ 1`.
+
+## Twenty-first brick: the polylog bound, proved
+
+`RHTower/Sieve/PrimeSupportedConvolutionBound.lean` (green, axiom-clean, wired):
+
+* `filter_prime_divisors_eq_primeFactors` — the prime divisors among the divisors are `n.primeFactors`;
+* `norm_convolution_prime_support_le` — `‖(b ⍟ c)(m)‖ ≤ ω(m)·log m` for `b` prime-supported with
+  `‖b_q‖ ≤ log q` and `‖c‖ ≤ 1`;
+* `norm_convolution_triple_prime_support_le` — `‖(a ⍟ (b ⍟ c))(n)‖ ≤ ω(n)²·(log n)²` when both `a` and `b`
+  are prime-supported.
+
+Mechanism: expanding a convolution as `∑_{q ∣ m} b(q)·c(m/q)` (`Nat.sum_divisorsAntidiagonal`), every term
+with `b(q) ≠ 0` has `q` prime and `q ∣ m`, so the support of the sum is `m.primeFactors` and each term is
+at most `log m`.  Iterating gives the square.
+
+With `ω(n) ≤ log n/log 2` this is `(log n)⁴/(log 2)²`, so the correction recorded above is now formal: the
+triple convolution's coefficients are polylogarithmic, and **no short-interval divisor estimate appears
+anywhere in the chain**.

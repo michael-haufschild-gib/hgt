@@ -1,0 +1,157 @@
+import Mathlib.NumberTheory.LSeries.Convolution
+
+/-!
+# A threefold convolution with prime-supported factors is polylogarithmic
+
+A general threefold Dirichlet convolution has `d₃(n)` terms at `n`, and no polylogarithmic pointwise
+bound.  But when two of the three factors are supported on the primes, a contributing factorisation
+`n = pqk` is determined by a *pair of prime divisors* of `n`, so there are at most `ω(n)²` terms:
+
+`‖(a ⍟ (b ⍟ c))(n)‖ ≤ ω(n)²·(log n)²`   for `‖a_p‖ ≤ log p`, `‖b_q‖ ≤ log q`, `‖c‖ ≤ 1`.
+
+Since `ω(n) ≤ log n/log 2`, the coefficients are bounded by `(log n)⁴/(log 2)²` — polylogarithmic, with no
+divisor function.  This is what makes every Perron passage for the Granville–Harper–Soundararajan triple
+convolution elementary: the smoothing window and the near-diagonal block of a truncated contour both cost
+a polylogarithm times their length, so no short-interval divisor estimate is needed.
+-/
+
+noncomputable section
+namespace RHTower.Sieve
+open Finset
+
+/-- The prime divisors are the prime divisors of the divisor set. -/
+theorem filter_prime_divisors_eq_primeFactors {m : ℕ} (hm : m ≠ 0) :
+    {q ∈ m.divisors | Nat.Prime q} = m.primeFactors := by
+  classical
+  ext q
+  simp only [Finset.mem_filter, Nat.mem_divisors, Nat.mem_primeFactors]
+  constructor
+  · rintro ⟨⟨hdvd, _⟩, hp⟩
+    exact ⟨hp, hdvd, hm⟩
+  · rintro ⟨hp, hdvd, _⟩
+    exact ⟨⟨hdvd, hm⟩, hp⟩
+
+/-- **A prime-supported convolution factor is polylogarithmic.**  If `b` is supported on primes with
+`‖b q‖ ≤ log q` and `‖c‖ ≤ 1`, then `‖(b ⍟ c)(m)‖ ≤ ω(m)·log m`: only the prime divisors of `m`
+contribute, and each contributes at most `log m`. -/
+theorem norm_convolution_prime_support_le {b c : ℕ → ℂ}
+    (hb : ∀ q : ℕ, b q ≠ 0 → Nat.Prime q) (hbB : ∀ q : ℕ, ‖b q‖ ≤ Real.log q)
+    (hc : ∀ k : ℕ, ‖c k‖ ≤ 1) {m : ℕ} (hm : 1 ≤ m) :
+    ‖(LSeries.convolution b c) m‖ ≤ (m.primeFactors.card : ℝ) * Real.log m := by
+  classical
+  have hm0 : m ≠ 0 := by omega
+  have hmR : (1 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
+  have hlogm : (0 : ℝ) ≤ Real.log m := Real.log_nonneg hmR
+  have hexp : (LSeries.convolution b c) m = ∑ q ∈ m.divisors, b q * c (m / q) := by
+    rw [LSeries.convolution_def]
+    exact Nat.sum_divisorsAntidiagonal (fun q k => b q * c k)
+  rw [hexp]
+  refine le_trans (norm_sum_le _ _) ?_
+  have hterm : ∀ q ∈ m.divisors,
+      ‖b q * c (m / q)‖ ≤ (if Nat.Prime q then Real.log m else 0) := by
+    intro q hq
+    rw [Nat.mem_divisors] at hq
+    by_cases hbq : b q = 0
+    · rw [hbq, zero_mul, norm_zero]
+      by_cases hp : Nat.Prime q
+      · rw [if_pos hp]
+        exact hlogm
+      · rw [if_neg hp]
+    · have hp : Nat.Prime q := hb q hbq
+      rw [if_pos hp, norm_mul]
+      have hqm : q ≤ m := Nat.le_of_dvd (by omega) hq.1
+      have hq1 : (1 : ℝ) ≤ (q : ℝ) := by
+        have : 1 ≤ q := hp.one_lt.le.trans' (by norm_num)
+        exact_mod_cast this
+      have hlogq : Real.log q ≤ Real.log m := by
+        refine Real.log_le_log (by linarith) ?_
+        exact_mod_cast hqm
+      calc ‖b q‖ * ‖c (m / q)‖ ≤ Real.log q * 1 :=
+            mul_le_mul (hbB q) (hc _) (norm_nonneg _) (le_trans (norm_nonneg _) (hbB q))
+        _ = Real.log q := mul_one _
+        _ ≤ Real.log m := hlogq
+  refine le_trans (Finset.sum_le_sum hterm) ?_
+  rw [← Finset.sum_filter, Finset.sum_const, filter_prime_divisors_eq_primeFactors hm0,
+    nsmul_eq_mul]
+
+
+/-- **The triple convolution with two prime-supported factors is polylogarithmic.**  Only pairs of prime
+divisors of `n` contribute, and each contributes at most `(log n)²`, so
+
+`‖(a ⍟ (b ⍟ c))(n)‖ ≤ ω(n)²·(log n)²`.
+
+There is no divisor function on the right: the prime support of two of the three factors collapses the
+`d₃(n)` factorisations of a general threefold convolution to `ω(n)²` of them. -/
+theorem norm_convolution_triple_prime_support_le {a b c : ℕ → ℂ}
+    (ha : ∀ p : ℕ, a p ≠ 0 → Nat.Prime p) (haB : ∀ p : ℕ, ‖a p‖ ≤ Real.log p)
+    (hb : ∀ q : ℕ, b q ≠ 0 → Nat.Prime q) (hbB : ∀ q : ℕ, ‖b q‖ ≤ Real.log q)
+    (hc : ∀ k : ℕ, ‖c k‖ ≤ 1) {n : ℕ} (hn : 1 ≤ n) :
+    ‖(LSeries.convolution a (LSeries.convolution b c)) n‖
+      ≤ (n.primeFactors.card : ℝ) ^ 2 * (Real.log n) ^ 2 := by
+  classical
+  have hn0 : n ≠ 0 := by omega
+  have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have hlogn : (0 : ℝ) ≤ Real.log n := Real.log_nonneg hnR
+  have hωnn : (0 : ℝ) ≤ (n.primeFactors.card : ℝ) := Nat.cast_nonneg _
+  have hexp : (LSeries.convolution a (LSeries.convolution b c)) n
+      = ∑ p ∈ n.divisors, a p * (LSeries.convolution b c) (n / p) := by
+    rw [LSeries.convolution_def]
+    exact Nat.sum_divisorsAntidiagonal (fun p r => a p * (LSeries.convolution b c) r)
+  rw [hexp]
+  refine le_trans (norm_sum_le _ _) ?_
+  have hterm : ∀ p ∈ n.divisors,
+      ‖a p * (LSeries.convolution b c) (n / p)‖
+        ≤ (if Nat.Prime p then
+              (n.primeFactors.card : ℝ) * Real.log n * Real.log n else 0) := by
+    intro p hp
+    rw [Nat.mem_divisors] at hp
+    by_cases hap : a p = 0
+    · rw [hap, zero_mul, norm_zero]
+      by_cases hpr : Nat.Prime p
+      · rw [if_pos hpr]
+        positivity
+      · rw [if_neg hpr]
+    · have hpr : Nat.Prime p := ha p hap
+      rw [if_pos hpr, norm_mul]
+      have hpn : p ≤ n := Nat.le_of_dvd (by omega) hp.1
+      have hp1 : (1 : ℝ) ≤ (p : ℝ) := by
+        have : 1 ≤ p := hpr.one_lt.le.trans' (by norm_num)
+        exact_mod_cast this
+      have hlogp : Real.log p ≤ Real.log n := by
+        refine Real.log_le_log (by linarith) ?_
+        exact_mod_cast hpn
+      have hq1 : 1 ≤ n / p := Nat.one_le_div_iff hpr.pos |>.2 hpn
+      have hinner := norm_convolution_prime_support_le hb hbB hc hq1
+      have hdvd : (n / p) ∣ n := Nat.div_dvd_of_dvd hp.1
+      have hωle : ((n / p).primeFactors.card : ℝ) ≤ (n.primeFactors.card : ℝ) := by
+        have := Finset.card_le_card (Nat.primeFactors_mono hdvd hn0)
+        exact_mod_cast this
+      have hlogle : Real.log ((n / p : ℕ) : ℝ) ≤ Real.log n := by
+        refine Real.log_le_log ?_ ?_
+        · have : (1 : ℕ) ≤ n / p := hq1
+          have h1 : (1 : ℝ) ≤ ((n / p : ℕ) : ℝ) := by exact_mod_cast this
+          linarith
+        · have : (n / p : ℕ) ≤ n := Nat.div_le_self n p
+          exact_mod_cast this
+      have hinner' : ‖(LSeries.convolution b c) (n / p)‖
+          ≤ (n.primeFactors.card : ℝ) * Real.log n := by
+        refine hinner.trans ?_
+        have hlognn : (0 : ℝ) ≤ Real.log ((n / p : ℕ) : ℝ) := by
+          have h1 : (1 : ℝ) ≤ ((n / p : ℕ) : ℝ) := by exact_mod_cast hq1
+          exact Real.log_nonneg h1
+        calc ((n / p).primeFactors.card : ℝ) * Real.log ((n / p : ℕ) : ℝ)
+            ≤ (n.primeFactors.card : ℝ) * Real.log ((n / p : ℕ) : ℝ) :=
+              mul_le_mul_of_nonneg_right hωle hlognn
+          _ ≤ (n.primeFactors.card : ℝ) * Real.log n :=
+              mul_le_mul_of_nonneg_left hlogle hωnn
+      calc ‖a p‖ * ‖(LSeries.convolution b c) (n / p)‖
+          ≤ Real.log n * ((n.primeFactors.card : ℝ) * Real.log n) := by
+            refine mul_le_mul ((haB p).trans hlogp) hinner' (norm_nonneg _) hlogn
+        _ = (n.primeFactors.card : ℝ) * Real.log n * Real.log n := by ring
+  refine le_trans (Finset.sum_le_sum hterm) ?_
+  rw [← Finset.sum_filter, Finset.sum_const, filter_prime_divisors_eq_primeFactors hn0,
+    nsmul_eq_mul]
+  exact le_of_eq (by ring)
+
+end RHTower.Sieve
+end
