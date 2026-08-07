@@ -1886,3 +1886,32 @@ So the next attempt should replace the "measure of the window" step by the corpu
 Cauchy–Schwarz split should consume in place of an integral over `S`.  Recorded before attempting it — this is the
 third architectural correction in this programme, and each has come from computing the balance rather than from
 reading the construction.
+
+## The resolution: the exceptional set is one *point*, not a window — discretise the integral
+
+`HalaszFullSeriesSum.sum_norm_tsum_twistedSummand_le_of_spacing` is the corpus's sharp form of the dichotomy, and
+reading it settles the architecture.  Over a `Δ`-spaced finite set `S` of frequencies,
+
+`∑_{t ∈ S} ‖L(f,σ+it)‖ ≤ (1 + 1/(σ−1))·exp(7/2 + 2(σ−1)(log z + log 4))·(|S|·e^{−δ²} + 1)`,
+
+because **at most one point of `S` can be close** to the extremal character (`card_filter_close_le_one_of_spacing`).
+So one point pays the trivial bound and every other point is damped by `e^{−δ²}` — the exceptional set is a single
+*point*, not a set of positive measure.
+
+That is why every measure-based accounting in this programme has failed, including the corpus's own
+`HalaszPerronAssembly`, whose bound `Wsup·(damped·2T + trivial·(2T log z/π + 1)·2√(2π²δ²/logSqWeight z))` is
+`≍ N(log N)(e^{−δ²}T + Tδ)` and needs `T ≪ 1` to beat `N log N`.  The `T` in the second term comes from charging
+the trivial bound to a *window* of `O(T log z)` cells rather than to one point.
+
+**The missing device is a discretisation.**  Cover `[−T,T]` by `O(T/Δ)` cells of length `Δ`; on each closed cell a
+continuous integrand attains its maximum (`IsCompact.exists_isMaxOn`), so
+
+`∫_{−T}^{T} |F| ≤ Δ·∑_{cells} max_{cell} |F|`,
+
+and the cell maximisers form a `Δ`-spaced set to which the corpus's spacing bound applies.  Then the integral is
+`≲ Δ·[trivial·1 + damped·(T/Δ)] = Δ·trivial + T·damped`, with **no `Tδ` term**: the first is negligible for small
+`Δ`, the second carries `e^{−δ²}`.
+
+This is the classical Halász architecture, and it needs exactly one new general lemma — the cell-supremum
+discretisation of an integral — plus the observation that cell maximisers are `Δ`-spaced.  Everything else,
+including the spacing bound itself, the corpus already owns.  Recorded as the specification for the next brick.
