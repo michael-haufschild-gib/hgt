@@ -1736,3 +1736,24 @@ This is the unit object of the tensor product of algebras and the target of an a
 is what an augmented algebra — the input to a bar construction — is defined against.
 
 Axioms: `propext, Quot.sound`.
+
+## Augmented algebras and the augmentation ideal
+
+`CDGAAugmentation.lean` — `augIdealCarrier`, `aug_d`, `aug_mul_mem`, `augIdeal_mul_mem`,
+**`augIdealModule`**.
+
+An augmentation is a morphism to `groundCDGA`; no new definition is needed for it, since a morphism
+of algebras already is one.  What does need building is its kernel: degreewise the kernel of the
+degree map, closed under the differential because the ground algebra has no differential at all, and
+closed under multiplication by the algebra because the augmentation is multiplicative and one factor
+is already zero.  Those two closures are exactly the two structure fields, so the kernel is a
+differential graded module over the algebra — the object on which a bar construction is built.
+
+Two Lean points.  The carrier must be an `abbrev`, not a `def`: as a `def` the subtype coercion
+`(x : X b)` is not found through it, and every structure field fails on the coercion rather than on
+the mathematics.  And membership in a kernel does not unify with an equation on `toFun` when the
+element is still a metavariable — `LinearMap.mem_ker.mp x.2` elaborates only once the degree and the
+element are named, which is why the multiplicative closure is routed through a helper theorem whose
+statement names both rather than through an inline `have` with placeholders.
+
+Axioms: `propext, Quot.sound`.

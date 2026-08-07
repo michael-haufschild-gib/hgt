@@ -250,10 +250,52 @@ declarations: `propext, Classical.choice, Quot.sound`.
 
 ### What cannot be stated in Lean, and why
 
-`(1)`, the de Rham computation identifying invariant logarithmic forms with `RΓ(Z_L, Ω^•)`, and the
-pro-Stein direct image `(7)` are not formalizable here: mathlib has no de Rham complex of a complex
-manifold, no Stein theory, no coherent-sheaf cohomology and no derived category in which `(6)` and
-`(7)` would live.  The estimate `(8)` needs the Allcock--Vaaler space.  What the card contributes
-beyond those imports — the existence, uniqueness and naturality of the current, the square-zero
-algebra map and its power equivariance — is formalized above; the card therefore stays at stage 2
-with its analytic scaffolding recorded as unavailable.
+`(1)` is no longer among these: the holomorphic de Rham cohomology of a character stage is built in
+the corpus, and the current now lives on it — see the entry below.  What is still not formalizable
+here is the pro-Stein direct image `(7)`, which needs the pro-Ind analytic sheaf category the corpus
+does not have, and the estimate `(8)`, which needs the Allcock--Vaaler space.  What the card
+contributes beyond those imports — the existence, uniqueness and naturality of the current, the
+square-zero algebra map and its power equivariance — is formalized above; the card therefore stays
+at stage 2 with the remaining analytic scaffolding recorded as unavailable.
+
+### `(1)` and `(3)` on the actual cohomology of a character stage — 2026-08-07
+
+`formal/GaloisForLFunctions/RHTower/DeningerStageCurrent.lean`.  Axiom audit for all sixteen
+declarations: `propext, Classical.choice, Quot.sound`.
+
+The card's `(1)` was recorded as an import on the ground that no de Rham complex of a complex
+manifold exists in Lean.  That reason is gone: the corpus builds the holomorphic de Rham cohomology
+of a character stage as an actual quotient of closed holomorphic forms by exact ones
+(`deningerCohomology`), and proves it is the exterior power of the covering space
+(`deningerCohomologyExteriorEquiv`).  So the current can be, and now is, defined on that object
+rather than on an abstract vector space with a chosen basis.
+
+- `deningerSingletonEquiv` — the one-element sets of coordinates are the coordinates.  This is what
+  reindexes the general degree-`k` basis of the cohomology to the degree-one case.
+- `deningerNormalizedBasis` — **the basis `d log χ^{e_i} / (2πi)` of the first cohomology of a
+  character stage**, the basis of classes of logarithmic differentials rescaled by the invertible
+  constant `(2πi)⁻¹`.  `deningerNormalizedBasis_eq_class` identifies each basis vector with the
+  class of the constant stage form of the corresponding determinant form.
+- `deningerKummerClass` — **the Kummer class map `a ↦ [d log χ^a / (2πi)]`**, a linear equivalence
+  of the complexified lattice with the first cohomology.  It is an equivalence because both sides
+  are free on the coordinates; this is exactly the perfect pairing the card's proof invokes.
+- `deningerStageCurrent`, `deningerStageCurrent_kummer`, `deningerStageCurrent_exists_unique` —
+  **`(3)` on the actual cohomology**: the functional whose value on `[d log χ^a / (2πi)]` is the
+  archimedean place average of `a`, and it is the unique such functional.  Uniqueness is genuine
+  content here, not a restatement: it holds because the Kummer classes exhaust the cohomology, which
+  is the surjectivity half of the equivalence above.
+- `deningerDetForm_one_comp` — the pullback of the logarithmic differential of a coordinate along a
+  transition is the combination of logarithmic differentials given by the exponent matrix.  For a
+  one-form this is a `1 × 1` determinant, so it is the matrix row itself.
+- `deningerCohomologyMap_normalizedBasis`, `deningerCohomologyMap_kummerClass` — **a transition of
+  stages carries Kummer classes by the exponent matrix**, that is, by the lattice inclusion itself.
+- `deningerStageCurrent_natural` — **transition compatibility of the current**: restricting the
+  current of a larger stage along a transition is the current of the smaller stage for the
+  restricted place average.  This is the card's compatibility assertion, now about the actual
+  cohomology of the actual stages.
+- `deningerStageLift`, `deningerStageLift_kummer`, `deningerStageLift_mul_eq_zero` — **`(4)`--`(6)`
+  on the stage cohomology**: the exterior algebra of `H^1` maps to `ℂ[ε]/(ε²)` by the universal
+  property, with value `ℓ_∞(a)ε` on a Kummer generator and zero on any product of two generators.
+
+What remains an import for this card is `(7)`, which quantifies over the pro-Ind analytic sheaf
+category, and the continuity estimate `(8)`.
