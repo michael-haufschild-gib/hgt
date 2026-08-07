@@ -5840,3 +5840,4 @@ import GaloisForLFunctions.HTGeometry.FourierDecayFromDerivative
 import GaloisForLFunctions.HTGeometry.GraphFluxStabilityEstimate
 import GaloisForLFunctions.HTGeometry.ShiftedDerivativeCoercivity
 import GaloisForLFunctions.HTGeometry.SkewFrequencyCurrent
+import GaloisForLFunctions.HTGeometry.GeneralisedVonMangoldt

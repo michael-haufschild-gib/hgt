@@ -334,4 +334,12 @@ def BurnolCoPoissonSource.reciprocal {b : ℝ} (hb : 0 < b)
     (src : BurnolCoPoissonSource b) :
     (src.reciprocal hb).seed = coPoissonReciprocalSeed src.measurableSeed := rfl
 
+/-- Reciprocal landing is involutive on its physical `L²` source vector. -/
+@[simp] theorem BurnolCoPoissonSource.reciprocal_reciprocal_vector
+    {b : ℝ} (hb : 0 < b) (src : BurnolCoPoissonSource b) :
+    ((src.reciprocal hb).reciprocal hb).vector = src.vector := by
+  rw [BurnolCoPoissonSource.reciprocal_vector,
+    BurnolCoPoissonSource.reciprocal_vector,
+    burnolExtendedSoninCosine_involutive]
+
 end RHTower

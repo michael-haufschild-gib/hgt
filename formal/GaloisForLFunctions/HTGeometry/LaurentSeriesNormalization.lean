@@ -30,6 +30,7 @@ theorem exists_laurent_powerSeries_normalization
     (v : ι → K⸨X⸩) (hone : ∃ i, v i = 1) :
     ∃ (c : K⸨X⸩) (_ : c ≠ 0) (w : ι → PowerSeries K) (i₀ : ι),
       v i₀ = c ∧
+      (∀ i, Valued.v (v i) ≤ Valued.v c) ∧
       (∀ i, (w i : K⸨X⸩) = v i / c) ∧
       w i₀ = 1 := by
   classical
@@ -50,7 +51,7 @@ theorem exists_laurent_powerSeries_normalization
     apply (HahnSeries.ofPowerSeries_injective (Γ := ℤ))
     rw [hw i₀]
     simp [c, hc]
-  exact ⟨c, hc, w, i₀, rfl, hw, hwi₀⟩
+  exact ⟨c, hc, w, i₀, rfl, hi₀, hw, hwi₀⟩
 
 /-- If the distinguished affine coordinate remains nonzero after normalization, the scale has
 valuation one; hence every original coordinate was already integral. -/

@@ -407,10 +407,12 @@ conjunction.
 | `(3)` | the rank-one anomaly vectors `r_n` | `HedenmalmPrimeTranslation.integerAnomaly` |
 | `(4)` | exact interval transgression `r_n(x) = i n^(-1/2) integral_x^(x+log n) k` | `intervalMass`, `mass_mul_cdfFun_sub`, `integerAnomaly_eq_intervalMass` |
 | `(5a)` | multiplicative Wess--Zumino law `r_(mn) = n^(-1/2) r_m + T_m r_n` | `intervalMass_add`, `integerAnomaly_mul` |
-| `(6)` | the centered window `c_n = -i S_(L_n/2) r_n` and its strict positivity | `centeredWindow`, `centeredWindow_eq`, `centeredWindow_pos`, `intervalMass_pos` |
+| `(5)` | the interval multiplier `q_n` and its exact zero set `z log n in 2 pi Z` | `shiftMultiplier`, `shiftMultiplier_eq_zero_iff` |
+| `(6)` | the centered window `c_n = -i S_(L_n/2) r_n`, strictly positive and even | `centeredWindow`, `centeredWindow_eq`, `centeredWindow_pos`, `intervalMass_pos`, `cdfFun_neg`, `intervalMass_neg`, `centeredWindow_neg` |
 
-Still missing: the divisor factorization `(5)` `hat r_n = q_n Xi_C` (a Fubini interchange against
-the interval indicator), the evenness and decay of `(6)` and the multiplier `(7)`, the two-prime no-common-zero theorem, the conormal generation
+Still missing: the factorization `hat r_n = q_n Xi_C` itself (a Fubini interchange against the
+interval indicator; the multiplier and its zero set are already in place), the decay of `(6)`,
+the centered multiplier `(7)`, the two-prime no-common-zero theorem, the conormal generation
 statement, the two bounded self-adjoint channels, the essential compact-boundary symbol, and the
 three frame obstructions.
 

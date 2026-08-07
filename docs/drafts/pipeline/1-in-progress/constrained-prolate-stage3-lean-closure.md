@@ -125,3 +125,13 @@ projective/trace-class/determinant consequences.
   `H u + c s u = (xi² u'' + 2 xi u')/c` pointwise, with global smoothness, evenness, and
   `s ≥ 0`, for every live signed mode.  This is the exact true-operator input to the future
   Hermite compactness/label proof; no model family is substituted.  Per-file checks pass.
+### 2026-08-07: regular-singular endpoint nonvanishing
+
+- Added `ProlateEndpointNonvanishing.lean`.
+- Proved interior uniqueness based at any point of `(-1,1)`.
+- Proved a smooth prolate solution with `Phi(1)=0` vanishes on the aperture, using the exact
+  Sturm--Liouville flux identity and a strict compact-maximum contraction near `1`.
+- Proved every nonzero global joint band/prolate mode has `Phi(1) != 0`.
+- Strengthened the signed-mode radial witness with exact endpoint nonvanishing, without analytic,
+  asymptotic, or spectral-identification premises.
+- Verified with `lake env lean GaloisForLFunctions/RHTower/ProlateEndpointNonvanishing.lean`.

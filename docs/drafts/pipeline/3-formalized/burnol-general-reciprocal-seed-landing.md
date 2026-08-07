@@ -70,6 +70,7 @@ Main unconditional theorems:
 - `burnolCoPoissonRightSum_congr_ae`
 - `fourierUnitary_burnolCoPoissonSource_eq_reciprocalSum`
 - `BurnolCoPoissonSource.reciprocal`
+- `BurnolCoPoissonSource.reciprocal_reciprocal_vector`
 - `burnolCoPoissonAnnihilatorPoint_of_riemannZeta_eq_zero`
 - `coPoissonLadderAnnihilator_iff_riemannZeta_eq_zero`
 - `norm_coPoissonLadderKernel_max_le_of_riemannZeta_eq_zero`

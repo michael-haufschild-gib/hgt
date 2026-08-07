@@ -63,4 +63,27 @@ theorem memSobolevWeight_of_integrable_deriv {s : ℝ} (hs0 : 0 ≤ s) (hs : s <
     calc ‖fourier f ξ‖ * |ξ| * (2 * π) = ‖fourier f ξ‖ * (2 * π * |ξ|) := by ring
       _ ≤ ∫ t, ‖deriv f t‖ := hmain
 
+/-! ## Half-period translation -/
+
+/-- **Half-period translation flips the transform.**  At frequency `ξ` the shift by `1/(2ξ)`
+multiplies the transform by `fourierChar (1/2) = e^{iπ} = -1`.  This is the step that gives
+order-one decay from an `L¹` modulus of continuity alone, with no differentiability and no bounded
+variation. -/
+theorem fourier_translate_half (f : ℝ → ℂ) {ξ : ℝ} (hξ : ξ ≠ 0) :
+    fourier (fun x => f (x + 1 / (2 * ξ))) ξ = -fourier f ξ := by
+  have hval := congrFun (VectorFourier.fourierIntegral_comp_add_right (E := ℂ) Real.fourierChar
+    (volume : Measure ℝ) (innerₗ ℝ) f (1 / (2 * ξ))) ξ
+  have hin : ((innerₗ ℝ) (1 / (2 * ξ)) ξ : ℝ) = 1 / 2 := by
+    simp only [innerₗ]
+    simp [innerₛₗ, mul_comm]
+    field_simp
+  rw [hin] at hval
+  have hph : ((Real.fourierChar ((1 : ℝ) / 2) : Circle) : ℂ) = -1 := by
+    rw [Real.fourierChar_apply, show (2 * π * (1 / 2) : ℝ) = π by ring]
+    exact Complex.exp_pi_mul_I
+  have hgoal : fourier (fun x => f (x + 1 / (2 * ξ))) ξ
+      = (Real.fourierChar ((1 : ℝ) / 2) : Circle) • fourier f ξ := hval
+  rw [hgoal, Circle.smul_def, hph]
+  ring
+
 end GaloisForLFunctions.HTGeometry

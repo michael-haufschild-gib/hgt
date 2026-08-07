@@ -602,3 +602,79 @@ contradicts `IntegrableOn (fun η => ‖f η‖²) (Ioi 0)` because `∫_1^∞ d
 (`integrableOn_Ioi_rpow_iff` at exponent `-1`).  Hence `C = 0` and `f` vanishes on the ray; the
 negative ray is symmetric.  That closes `suzuki-gamma-skew-frequency-flux-liouville`, whose other
 gates are all research.
+
+## J. The `BV` Fourier decay, without `BV`
+
+`suzuki-two-port-return-redundancy-and-interior-null-core` section 4 and
+`suzuki-carleman-flat-port-weighted-strip-barrier` need order-one decay for a profile that is
+**not** globally differentiable: `exp(-sqrt(log(1/r)))` has an infinite one-sided derivative at the
+endpoint, so `norm_fourier_mul_le_integral_norm_deriv` (which assumes `Differentiable ℝ f`) does
+not apply.
+
+The classical translation trick avoids bounded variation altogether and needs only integrability.
+mathlib supplies the key step, found this session:
+
+```text
+VectorFourier.fourierIntegral_comp_add_right
+  fourier (f ∘ (· + v₀)) = fun w => e (L v₀ w) • fourier f w
+```
+
+Specialised to `ℝ` with `L v w = v * w` and `h = 1/(2ξ)`, the phase is
+`fourierChar (h * ξ) = fourierChar (1/2) = exp(π i) = -1`, so
+
+```text
+fourier (fun x => f (x + 1/(2ξ))) ξ = - fourier f ξ
+2 * fourier f ξ = fourier (fun x => f x - f (x + 1/(2ξ))) ξ
+2 ‖fourier f ξ‖ ≤ ∫ ‖f x - f (x + 1/(2ξ))‖ dx.
+```
+
+Any `L¹` modulus-of-continuity bound `∫ ‖f(·+h) - f‖ ≤ |h| V` then gives `‖f̂(ξ)‖ ≤ V/(4|ξ|)`,
+which is the second hypothesis of `memSobolevWeight_of_decay`.  For a monotone profile on a collar
+`V` is its total variation, and no Stieltjes integration by parts is needed anywhere.
+
+Remaining Lean work for this route: linearity of `fourier` across the subtraction (an
+`integral_sub` with both translates integrable) and the `Circle` coercion for
+`fourierChar (1/2) = -1`.
+
+### J.1 Two concrete obstacles, both diagnosed
+
+Probed against this toolchain; neither is conceptual.
+
+1. **The phase value.**  `Real.fourierChar_apply` leaves
+   `Complex.exp (2 * π * (1/2) * I) = -1`.  Close it with
+   `rw [show (2:ℂ) * π * (1/2) = π by ring, Complex.exp_pi_mul_I]` — `norm_num` alone does not.
+2. **The bilinear form.**  `Real.fourier` is
+   `VectorFourier.fourierIntegral Real.fourierChar volume (innerₗ ℝ)`, so
+   `fourierIntegral_comp_add_right` produces the phase at `⟪h, ξ⟫_ℝ`, not at `h * ξ`, and the
+   `Circle` coercion elaborates through `Submonoid.unitSphere ℂ`.  State the translation lemma with
+   `inner ℝ h ξ` and convert with `real_inner_comm`/`RCLike.inner_apply` rather than writing
+   `h * ξ` and hoping `simp` bridges it; `simp only [Function.comp]` before the rewrite breaks the
+   instance path and must be avoided.
+
+With those two, section J's chain is mechanical.
+
+### J.2 Probed to one remaining step
+
+Worked in `formal/tmp/probeD.lean`, not in the tree, so nothing is half-built.  Three of the four
+steps now compile:
+
+```text
+hval := congrFun (VectorFourier.fourierIntegral_comp_add_right (E := ℂ) Real.fourierChar
+          (volume : Measure ℝ) (innerₗ ℝ) f (1/(2*ξ))) ξ                       ✓
+hph  : ((Real.fourierChar ((1:ℝ)/2) : Circle) : ℂ) = -1                        ✓
+       by  rw [Real.fourierChar_apply, show (2 * π * (1/2) : ℝ) = π by ring]
+           exact Complex.exp_pi_mul_I
+hgoal : 𝓕 (fun x => f (x + 1/(2*ξ))) ξ = 𝐞 (1/2) • 𝓕 f ξ  :=  hval             ✓ (defeq bridge
+       from the VectorFourier form to the `Real.fourierIntegral` notation)
+```
+
+The one open step is evaluating the bilinear form:
+
+```text
+hin : ((innerₗ ℝ) (1/(2*ξ)) ξ : ℝ) = 1/2
+```
+
+`show (1/(2*ξ)) * ξ = 1/2` fails — `innerₗ ℝ a b` is **not** reducibly defeq to `a * b` on `ℝ`.
+Unfold through `RCLike.inner_apply` (`⟪x,y⟫ = conj x * y`, with `star_trivial` on `ℝ`) rather than
+by `show`; `innerₗ_apply` does not exist under that name in this toolchain.  Once `hin` is proved
+the rest of the chain already type-checks as written above.

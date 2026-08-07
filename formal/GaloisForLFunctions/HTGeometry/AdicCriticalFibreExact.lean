@@ -85,7 +85,7 @@ theorem coeffMem_remainder (p : S[X]) : CoeffMem D.ideal (D.remainder p) := by
   rw [remainder, Polynomial.coeff_sub]
   have h := congrArg (fun q : K[X] => q.coeff i) (D.map_constantLift p)
   rw [Polynomial.coeff_map, Polynomial.coeff_map] at h
-  rw [h, sub_self]
+  rw [map_sub, h, sub_self]
 
 theorem natDegree_remainder_lt {r : ℕ} (hr : 0 < r) {p : S[X]}
     (hp : p.degree < (r : ℕ)) : (D.remainder p).natDegree < r := by
