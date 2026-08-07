@@ -489,6 +489,8 @@ import GaloisForLFunctions.HTGeometry.CDGAFreeCoefficients
 import GaloisForLFunctions.HTGeometry.CDGAFreeCoefficientsInfinite
 import GaloisForLFunctions.HTGeometry.CDGAFreeCover
 import GaloisForLFunctions.HTGeometry.CDGAGround
+import GaloisForLFunctions.HTGeometry.CDGAGroundModule
+import GaloisForLFunctions.HTGeometry.CDGACochain
 import GaloisForLFunctions.HTGeometry.CDGALeftUnitor
 import GaloisForLFunctions.HTGeometry.CDGAModule
 import GaloisForLFunctions.HTGeometry.CDGAModuleColimit

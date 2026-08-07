@@ -44,4 +44,31 @@ sign of the shift and `d_bar` multiplies adjacent factors.
 
 ## Status
 
-Step 1 landed: `formal/GaloisForLFunctions/HTGeometry/CDGAAugmentationIdealAlgebra.lean`.
+Steps 1--3 landed; axiom audit for every declaration below is `propext, Classical.choice, Quot.sound`
+or less.
+
+- `formal/GaloisForLFunctions/HTGeometry/CDGAAugmentationIdealAlgebra.lean` — `augIdealMul` with
+  bilinearity, `augIdealMul_assoc`, `augIdealMul_comm`, `augIdealMul_leibniz`: **the augmentation
+  ideal is a commutative differential graded algebra without a unit.**
+- `formal/GaloisForLFunctions/HTGeometry/CDGAGroundModule.lean` — `zeroComplexModule`: **a cochain
+  complex is a differential graded module with zero action**, over any algebra.  This is the device
+  that makes the whole module layer — in particular the tensor product with its Koszul sign —
+  available for plain complexes, without building a second tensor product.  The first attempt went
+  through modules over `groundCDGA` with the scalar action in degree zero; that forces a transport
+  along `0 + b = n` into every axiom, and the zero action avoids all of it while giving the same
+  tensor product, since `tensorD` never reads the action.
+- `formal/GaloisForLFunctions/HTGeometry/CDGACochain.lean` — `Cochain`, a complex packaged with its
+  instances so that complexes can be produced by recursion (the `DGStage` pattern);
+  `Cochain.tensor`, **the tensor product of complexes**, whose differential squares to zero for
+  free; `Cochain.ground`; `augIdealShift`, **the shift of the augmentation ideal**, degree `n` being
+  degree `n + 1` of the ideal with the differential negated; and `barPower`, **the `k`-fold tensor
+  power of the shifted ideal**, by recursion on `k`.
+
+## What step 5 needs that does not exist yet
+
+The bar differential maps `(sĀ)^{⊗(k+1)} → (sĀ)^{⊗k}` and *raises* the total degree by one, since
+multiplying two shifted elements of degrees `a` and `b` gives an element of `Ā` in degree
+`a + b + 2`, which is degree `a + b + 1` after the shift.  So it is the multiplication
+`sĀ ⊗ sĀ → sĀ`, a map of degree one, applied in the first two slots.  The corpus's `tensorMapLeft`
+tensors a *degree-zero* morphism with the identity; what is needed is the same for a degree-one map,
+with the sign that the Koszul convention forces.  That is the next object to build.
