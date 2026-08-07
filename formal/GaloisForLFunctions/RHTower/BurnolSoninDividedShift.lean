@@ -673,7 +673,7 @@ theorem ofReal_div_cpow {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (z : ℂ) :
   push_cast
   ring
 
-theorem integral_Ioc_ofReal_cpow {p q : ℝ} (hpq : p ≤ q) {z : ℂ}
+theorem integral_Ioc_ofReal_cpow_of_le {p q : ℝ} (hpq : p ≤ q) {z : ℂ}
     (hz : -1 < z.re) :
     (∫ u in Ioc p q, ((u : ℝ) : ℂ) ^ z) =
       (((q : ℝ) : ℂ) ^ (z + 1) - ((p : ℝ) : ℂ) ^ (z + 1)) / (z + 1) := by
@@ -746,7 +746,7 @@ theorem burnolShiftFun_head_eq {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (hρ1 : ρ.re < 
             _ = a := hRt
       rw [burnolShiftKernel_eq_cpow hu0, mul_comm u t, hval hmem]
     rw [hcongr, integral_mul_const, ← MeasureTheory.integral_Ioc_eq_integral_Ioo,
-      integral_Ioc_ofReal_cpow hR1.le hznegre]
+      integral_Ioc_ofReal_cpow_of_le hR1.le hznegre]
     rw [Complex.ofReal_one, Complex.one_cpow]
     ring_nf
   -- tail piece

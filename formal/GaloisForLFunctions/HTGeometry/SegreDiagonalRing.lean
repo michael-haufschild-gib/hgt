@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.BiprojectiveGradedPiece
 import Mathlib.Algebra.MonoidAlgebra.Grading
 import Mathlib.Algebra.MonoidAlgebra.MapDomain
+import Mathlib.Data.Finsupp.Multiset
 
 /-!
 # The standard graded coordinate ring of the Segre variety
@@ -39,6 +40,54 @@ noncomputable def segreExponentDegree (m n : ℕ) : segreExponentSubmonoid m n �
 noncomputable abbrev SegreDiagonalRing (K : Type*) [Semiring K] (m n : ℕ) :=
   AddMonoidAlgebra K (segreExponentSubmonoid m n)
 
+/-- Inclusion of the Segre diagonal ring into the biprojective Cox ring. -/
+noncomputable def segreToBiprojective (K : Type*) [CommSemiring K] (m n : ℕ) :
+    SegreDiagonalRing K m n →ₐ[K] MvPolynomial (BiprojVar m n) K :=
+  AddMonoidAlgebra.mapDomainAlgHom K K (AddSubmonoid.subtype (segreExponentSubmonoid m n))
+
+/-- The diagonal monoid-algebra presentation has no extra relations: its map into the Cox ring is
+injective. -/
+theorem segreToBiprojective_injective (K : Type*) [CommSemiring K] (m n : ℕ) :
+    Function.Injective (segreToBiprojective K m n) :=
+  AddMonoidAlgebra.mapDomain_injective Subtype.val_injective
+
+/-- Exponent of the degree-one Segre coordinate indexed by a pair of projective coordinates. -/
+noncomputable def segrePairExponent (m n : ℕ) (i : Fin (m + 1)) (j : Fin (n + 1)) :
+    segreExponentSubmonoid m n :=
+  ⟨Finsupp.single (Sum.inl i) 1 + Finsupp.single (Sum.inr j) 1, by
+    change ((Finsupp.weight biprojectiveWeight)
+        (Finsupp.single (Sum.inl i) 1 + Finsupp.single (Sum.inr j) 1)).1 = _
+    rw [map_add, Finsupp.weight_single, Finsupp.weight_single]
+    rfl⟩
+
+@[simp] theorem segreExponentDegree_pair (m n : ℕ) (i : Fin (m + 1)) (j : Fin (n + 1)) :
+    segreExponentDegree m n (segrePairExponent m n i j) = 1 := by
+  change ((Finsupp.weight biprojectiveWeight)
+    (Finsupp.single (Sum.inl i) 1 + Finsupp.single (Sum.inr j) 1)).1 = 1
+  rw [map_add, Finsupp.weight_single, Finsupp.weight_single]
+  rfl
+
+/-- Marginal-sum map from matrices of exponents on coordinate pairs to biprojective exponents. -/
+noncomputable def segrePairMarginal (m n : ℕ) :
+    (Fin (m + 1) × Fin (n + 1) →₀ ℕ) →+ (BiprojVar m n →₀ ℕ) where
+  toFun z := Finsupp.sumFinsuppEquivProdFinsupp.symm
+    (Finsupp.mapDomain Prod.fst z, Finsupp.mapDomain Prod.snd z)
+  map_zero' := by ext x <;> cases x <;> simp
+  map_add' a b := by
+    ext x
+    cases x with
+    | inl i => exact DFunLike.congr_fun
+        ((Finsupp.mapDomain.addMonoidHom Prod.fst).map_add a b) i
+    | inr j => exact DFunLike.congr_fun
+        ((Finsupp.mapDomain.addMonoidHom Prod.snd).map_add a b) j
+
+@[simp] theorem segrePairMarginal_single (m n : ℕ)
+    (i : Fin (m + 1)) (j : Fin (n + 1)) (c : ℕ) :
+    segrePairMarginal m n (Finsupp.single (i, j) c) =
+      Finsupp.single (Sum.inl i) c + Finsupp.single (Sum.inr j) c := by
+  ext x
+  cases x <;> simp [segrePairMarginal]
+
 /-- Degree-`d` part of the standard graded Segre coordinate ring. -/
 noncomputable abbrev SegreDiagonalPiece (K : Type*) [Field K] (m n d : ℕ) :=
   AddMonoidAlgebra.gradeBy K (segreExponentDegree m n) d
@@ -66,6 +115,14 @@ noncomputable def segreDiagonalMonomialBasisRaw (K : Type*) [Field K] (m n d : �
       {e : segreExponentSubmonoid m n // segreExponentDegree m n e = d} K
       (SegreDiagonalPiece K m n d) where
   repr := AddMonoidAlgebra.supportedEquivFinsupp _
+
+/-- Canonical linear identification of a Segre degree-`d` piece with the Cox-ring bidegree
+`(d, d)` piece. -/
+noncomputable def segreDiagonalPieceEquivBiprojectivePiece
+    (K : Type*) [Field K] (m n d : ℕ) :
+    SegreDiagonalPiece K m n d ≃ₗ[K] BiprojectivePiece K m n d d :=
+  (segreDiagonalMonomialBasisRaw K m n d).equiv
+    (biprojectiveMonomialBasisRaw K m n d d) (segreExponentDegreeEquiv m n d)
 
 /-- Monomial basis indexed by the two weak compositions of the common degree. -/
 noncomputable def segreDiagonalMonomialBasis (K : Type*) [Field K] (m n d : ℕ) :

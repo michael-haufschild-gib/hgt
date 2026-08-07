@@ -494,5 +494,13 @@ Every declaration depends only on `propext`, `Classical.choice` and `Quot.sound`
 - [x] Lean bounded-composite local-metric rigidity
 - [x] Lean canonical singular metric: bounded, positive, injective, dense range, no
       positive lower bound, and the ordinary-`L2` pullback `(4a)`
+- [x] Lean exact kernel `(6)`, hyperbolic pairing `(7)`, and boundary amplitudes `(15)`--`(16)`
+- [x] Lean two nonzero boundary eigenvalues `+-1/sqrt 12`
+- [x] Lean spectral flux law `(8)` on a quantile root mode
+- [x] Lean differentiability of the quantile and the explicit root mode `(9)`, with two-point
+      uniqueness for the pinned differential equation
+- [x] Lean endpoint criterion `(10)`: the source transform `Xi_C` and its quantile average
+- [x] Lean two-point energy balance and the ordered-correlation flux identity `(11)`
+- [x] Lean centered logarithmic residue `(12)` and divisor-charge form `(13)`--`(14)`
 - [ ] source theorem forcing the theta root traces into the neutral cone
 - [ ] RH

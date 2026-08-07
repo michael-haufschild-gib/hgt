@@ -69,3 +69,14 @@ projective/trace-class/determinant consequences.
   is by absolute eigenvalue and interleaves positive `4j` with negative `4j+2` sectors.
 - 2026-08-07 — ruled out a global solved-form ODE Lipschitz constant on `(-1,1)`; coefficient
   `1/(1-x^2)` is unbounded at singular endpoints.  Compact subinterval uniqueness is exact.
+- 2026-08-07 — constructed the complementary negative Hermite sector `h_(4j+2)` in
+  `HermiteEvenCarrier.lean`: exact Fourier eigenvalue `-1`, unit normalization, internal and
+  positive/negative cross orthogonality, truncation convergence, and uniform finite-span
+  compressed-operator estimates.  Positive `h_(4j)` and negative `h_(4j+2)` trial spaces both
+  have exact dimension `n+1`.
+- 2026-08-07 — added `ProlateFourierSignSectors.lean`.  C-star spectral order plus the compact
+  Fredholm alternative now turns a strict quadratic sign witness into an actual signed-greedy
+  eigenvalue of that sign.  At every fixed depth the true compressed Fourier form is eventually
+  positive definite on the `h_(4j)` trial space and negative definite on the `h_(4j+2)` trial
+  space; hence the concrete signed spectrum eventually contains both signs.  Remaining numbering
+  gate is multiplicity-sensitive Sturm/min-max identification, not existence of either sector.

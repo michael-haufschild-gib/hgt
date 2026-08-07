@@ -493,6 +493,7 @@ import GaloisForLFunctions.HTGeometry.CDGATensorConstExchange
 import GaloisForLFunctions.HTGeometry.CDGATensorLeft
 import GaloisForLFunctions.HTGeometry.CDGATensorShift
 import GaloisForLFunctions.HTGeometry.CDGATensorShiftHom
+import GaloisForLFunctions.HTGeometry.CDGARelTensorRight
 import GaloisForLFunctions.HTGeometry.CDGATensorColimit
 import GaloisForLFunctions.HTGeometry.DirectLimitPi
 import GaloisForLFunctions.HTGeometry.CDGACellTowerColimit

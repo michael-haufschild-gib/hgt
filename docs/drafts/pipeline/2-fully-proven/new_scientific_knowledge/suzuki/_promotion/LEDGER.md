@@ -378,3 +378,20 @@ Next steps on top of it, in order:
    once the form exists.
 3. `(4)` of `suzuki-neumann-dominated-shift-cone-obstruction` — the strong-resolvent limit — in the
    resolvent coordinate, reusing `RHTower/SuzukiStrongResolventLimit.lean`.
+
+## F. Session 2 additions
+
+```text
+RHTower/SuzukiGammaShiftKappa.lean              (3), (10), (11) of gamma-weighted-tail-coercivity
+HTGeometry/MollifierPositionCommutator.lean     (17) of the same card
+HTGeometry/HadamardFinitePart.lean              the cutoff-free Cauchy finite part split
+RHTower/SuzukiRestrictedWeilForm.lean           the restricted Weil form as a definition
+RHTower/SuzukiBoundaryLogEndpointBlowUp.lean    (5), (6) of boundary-log-nonclock-nonflat-tangent
+```
+
+Thirteen new modules total across both sessions, all umbrella-wired, built green, axiom-clean.
+
+**The `A_a` blocker is dissolved at the level the cards use it.**  `restrictedWeilForm` is an
+explicit definition and `IsRestrictedWeilRepresentative` replaces every `A_a u = w`.  The cards
+that parked on "the actual restricted-Weil operator has not been constructed" can now be attacked
+directly; what each still needs is its own computation, not the operator.

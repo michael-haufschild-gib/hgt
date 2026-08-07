@@ -24,7 +24,7 @@ open GaloisForLFunctions.HTGeometry
 
 /-! ## The `p`-series value bound -/
 
-theorem antitoneOn_rpow_neg {σ : ℝ} (hσ : 0 < σ) :
+theorem antitoneOn_rpow_neg_Ici {σ : ℝ} (hσ : 0 < σ) :
     AntitoneOn (fun x : ℝ => x ^ (-σ)) (Set.Ici (1 : ℝ)) := by
   intro x hx y hy hxy
   have hx1 : (1 : ℝ) ≤ x := hx
@@ -38,7 +38,7 @@ theorem antitoneOn_rpow_neg {σ : ℝ} (hσ : 0 < σ) :
 theorem tsum_shift_rpow_neg_le {σ : ℝ} (hσ : 1 < σ) :
     ∑' n : ℕ, (((n + 1 + 1 : ℕ) : ℝ)) ^ (-σ) ≤ 1 / (σ - 1) := by
   have hanti : AntitoneOn (fun x : ℝ => x ^ (-σ)) (Set.Ici ((1 : ℕ) : ℝ)) := by
-    simpa using antitoneOn_rpow_neg (by linarith : (0 : ℝ) < σ)
+    simpa using antitoneOn_rpow_neg_Ici (by linarith : (0 : ℝ) < σ)
   have hint : IntegrableOn (fun x : ℝ => x ^ (-σ)) (Set.Ioi ((1 : ℕ) : ℝ)) := by
     simpa using integrableOn_Ioi_rpow_of_lt (by linarith : -σ < -1) (by norm_num : (0:ℝ) < 1)
   have hnn : ∀ t ∈ Set.Ioi ((1 : ℕ) : ℝ), (0 : ℝ) ≤ t ^ (-σ) := by

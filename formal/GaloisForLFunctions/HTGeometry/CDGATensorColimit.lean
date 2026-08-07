@@ -25,6 +25,11 @@ variable {R : Type u} [CommRing R] {X : ℕ → Type v} [∀ n, AddCommGroup (X 
   {N : ι → ℕ → Type w} [∀ i n, AddCommGroup (N i n)] [∀ i n, Module R (N i n)]
   {Q : ∀ i, CDGAModuleStructure A (N i)} (ψ : ∀ i j, i ≤ j → CDGAModuleHom (Q i) (Q j))
 
+/-- The graded tensor products of a directed system, spelled as a product over the bidegrees so
+that the product instances are the ones the comparison uses. -/
+abbrev tensorColimFamily (n : ℕ) (i : ι) : Type w :=
+  ∀ p : {ab : ℕ × ℕ // ab.1 + ab.2 = n}, TensorProduct R (M p.1.1) (N i p.1.2)
+
 /-- The transition maps of the system of graded tensor products, bidegree by bidegree. -/
 def tensorFamilyTransition (n : ℕ) (p : {ab : ℕ × ℕ // ab.1 + ab.2 = n}) (i j : ι) (h : i ≤ j) :
     TensorProduct R (M p.1.1) (N i p.1.2) →ₗ[R] TensorProduct R (M p.1.1) (N j p.1.2) :=
@@ -40,24 +45,25 @@ instance tensorFamilyDirectedSystem (n : ℕ) (p : {ab : ℕ × ℕ // ab.1 + ab
 
 /-- **The graded tensor product commutes with a filtered colimit.** -/
 noncomputable def tensorColimEquiv (n : ℕ) :
-    Module.DirectLimit (fun i => TensorCarrier (R := R) M (N i) n)
+    Module.DirectLimit (fun i => tensorColimFamily (R := R) (M := M) (N := N) n i)
         (piTransition (tensorFamilyTransition (M := M) ψ n))
       ≃ₗ[R] TensorCarrier (R := R) M (colimModuleDeg ψ) n :=
   (directLimitPi (tensorFamilyTransition (M := M) ψ n)).trans
     (LinearEquiv.piCongrRight fun p =>
       (TensorProduct.directLimitRight (moduleDegTransition ψ p.1.2) (M p.1.1)).symm)
 
-@[simp] theorem tensorColimEquiv_of (n : ℕ) (i : ι) (z : TensorCarrier (R := R) M (N i) n)
+@[simp] theorem tensorColimEquiv_of (n : ℕ) (i : ι)
+    (z : tensorColimFamily (R := R) (M := M) (N := N) n i)
     (p : {ab : ℕ × ℕ // ab.1 + ab.2 = n}) :
     tensorColimEquiv ψ n
-        (Module.DirectLimit.of R ι (fun i => TensorCarrier (R := R) M (N i) n)
+        (Module.DirectLimit.of R ι (fun i => tensorColimFamily (R := R) (M := M) (N := N) n i)
           (piTransition (tensorFamilyTransition (M := M) ψ n)) i z) p
       = LinearMap.lTensor (M p.1.1)
         (Module.DirectLimit.of R ι (fun i => N i p.1.2) (moduleDegTransition ψ p.1.2) i) (z p) := by
   show (TensorProduct.directLimitRight (moduleDegTransition ψ p.1.2) (M p.1.1)).symm
       (directLimitPi (tensorFamilyTransition (M := M) ψ n) _ p) = _
   rw [show (directLimitPi (tensorFamilyTransition (M := M) ψ n)
-      (Module.DirectLimit.of R ι (fun i => TensorCarrier (R := R) M (N i) n)
+      (Module.DirectLimit.of R ι (fun i => tensorColimFamily (R := R) (M := M) (N := N) n i)
         (piTransition (tensorFamilyTransition (M := M) ψ n)) i z)) p
     = Module.DirectLimit.of R ι (fun i => TensorProduct R (M p.1.1) (N i p.1.2))
         (tensorFamilyTransition (M := M) ψ n p) i (z p) from

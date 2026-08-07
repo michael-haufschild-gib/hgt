@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HadamardFinitePart
 import GaloisForLFunctions.HTGeometry.AtomicJumpForm
-import GaloisForLFunctions.RHTower.SuzukiScrewCorrelationPairing
+import Mathlib
 
 /-!
 # The restricted Weil form, assembled
@@ -11,8 +11,8 @@ Suzuki's distributional screw kernel on an aperture is
 
 and the restricted Weil form is `Q(u, φ) = ∫∫ k(x−y) u(y) φ(x)`.  Every one of those four pieces is
 already an explicit object: the finite part is the cutoff-free Cauchy finite part, the Dirac terms
-are `L²` pairings and translation pairings, and the smooth remainder is the corpus's regular screw
-kernel form.  This file assembles them, so the form is a definition rather than a hypothesis, and
+are `L²` pairings and translation pairings, and the smooth remainder is an ordinary continuous
+convolution block, its kernel `r''` carried as a parameter because Suzuki's `r` is source data.  This file assembles them, so the form is a definition rather than a hypothesis, and
 records the decomposition that the source cards use: the prime block is a *positive* atomic
 Dirichlet form minus a scalar potential.
 
@@ -50,18 +50,43 @@ def weilPrimeBlock (s : Finset ℕ) (u φ : ℝ → ℝ) : ℝ :=
   -∑ n ∈ s, primePairWeight n *
     (pairing (fun x => u (x + Real.log n)) φ + pairing (fun x => u (x - Real.log n)) φ)
 
-/-- The smooth archimedean remainder block, through the corpus's regular screw kernel. -/
-def weilRegularBlock (u φ : ℝ → ℝ) : ℝ := -screwRegularForm u φ
+/-- The smooth archimedean remainder block.  Suzuki's remainder `r` is `C²` on the compact
+difference interval, so its second derivative enters as an ordinary continuous convolution kernel;
+that kernel is the parameter `k` here. -/
+def weilSmoothBlock (a : ℝ) (k : ℝ → ℝ) (u φ : ℝ → ℝ) : ℝ :=
+  -∫ x in (-a)..a, (∫ y in (-a)..a, k (x - y) * u y) * φ x
+
+/-- The representative of the smooth block. -/
+def weilSmoothRepresentative (a : ℝ) (k : ℝ → ℝ) (u : ℝ → ℝ) (x : ℝ) : ℝ :=
+  -∫ y in (-a)..a, k (x - y) * u y
 
 /-- **The restricted Weil form.** -/
-def restrictedWeilForm (a A : ℝ) (s : Finset ℕ) (u φ : ℝ → ℝ) : ℝ :=
+def restrictedWeilForm (a A : ℝ) (s : Finset ℕ) (k : ℝ → ℝ) (u φ : ℝ → ℝ) : ℝ :=
   weilFinitePartBlock a u φ + weilScalarBlock a A u φ + weilPrimeBlock s u φ +
-    weilRegularBlock u φ
+    weilSmoothBlock a k u φ
 
 /-- `w` represents the form at `u`: this is what a card means by `A_a u = w`. -/
-def IsRestrictedWeilRepresentative (a A : ℝ) (s : Finset ℕ) (u w : ℝ → ℝ) : Prop :=
+def IsRestrictedWeilRepresentative (a A : ℝ) (s : Finset ℕ) (k : ℝ → ℝ) (u w : ℝ → ℝ) : Prop :=
   ∀ φ : ℝ → ℝ, Continuous φ → HasCompactSupport φ →
-    restrictedWeilForm a A s u φ = ∫ x, w x * φ x
+    restrictedWeilForm a A s k u φ = ∫ x in (-a)..a, w x * φ x
+
+/-- The candidate representative assembled block by block. -/
+def restrictedWeilRepresentative (a A : ℝ) (s : Finset ℕ) (k : ℝ → ℝ) (u : ℝ → ℝ) (x : ℝ) : ℝ :=
+  -(1 / 2) * cauchyFinitePart a x u - (2 * A + 1) * u x -
+    (∑ n ∈ s, primePairWeight n * (u (x + Real.log n) + u (x - Real.log n))) +
+    weilSmoothRepresentative a k u x
+
+/-- **The endpoint logarithm is the only unbounded part of the representative.**  Splitting off the
+logarithmic term leaves the divided difference, three bounded blocks, and nothing else. -/
+theorem restrictedWeilRepresentative_eq (a A : ℝ) (s : Finset ℕ) (k : ℝ → ℝ) (u : ℝ → ℝ) (x : ℝ) :
+    restrictedWeilRepresentative a A s k u x =
+      -(1 / 2) * (u x * Real.log (a ^ 2 - x ^ 2)) +
+        (-(1 / 2) * ((∫ y in (-a)..x, (u y - u x) * (x - y)⁻¹) +
+            ∫ y in x..a, (u y - u x) * (y - x)⁻¹) - (2 * A + 1) * u x -
+          (∑ n ∈ s, primePairWeight n * (u (x + Real.log n) + u (x - Real.log n))) +
+          weilSmoothRepresentative a k u x) := by
+  rw [restrictedWeilRepresentative, cauchyFinitePart]
+  ring
 
 /-! ## The prime block is a positive atomic Dirichlet form minus a potential -/
 

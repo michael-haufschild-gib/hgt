@@ -263,9 +263,42 @@ coefficient `-e^x/2` of `(4)` cannot be altered by the finitely many prime shift
 archimedean remainder: each of those contributes a bounded term with finite one-sided endpoint
 limits and none of them carries a `log ε`.
 
-Concrete construction of Suzuki's unbounded `A_a`, form domain, and distribution kernel remains
-outside current Lean source layer; analytic Theorem A is paper-proved here and its exact reusable
-kernel, boundary and sampling mechanisms are formalized without axioms.
+**The form itself is now a Lean definition**, in
+`formal/GaloisForLFunctions/RHTower/SuzukiRestrictedWeilForm.lean`.  Kernel `(1)` is assembled
+block by block — finite part, scalar Dirac, prime translation pairs, smooth remainder — so what
+this card writes as `A_a u = w` is `IsRestrictedWeilRepresentative`, a statement about an explicit
+integral pairing.  No Friedrichs extension and no spectral theorem is involved:
+
+```text
+cauchyFinitePart, weilFinitePartBlock, weilScalarBlock, weilPrimeBlock, weilSmoothBlock
+restrictedWeilForm, IsRestrictedWeilRepresentative
+restrictedWeilRepresentative, restrictedWeilRepresentative_eq
+weilPrimeBlock_eq_jumpForms, weilPrimeBlock_jumpPart_nonneg
+```
+
+`restrictedWeilRepresentative_eq` is `(4)`'s split: the representative is
+`-(1/2) u(x) log(a²-x²)` plus a remainder made of the divided difference and the three other
+blocks.  Suzuki's `r''` is carried as a continuous kernel parameter, because `r` is source data the
+corpus does not own; every other block is fully explicit.
+
+**`(5)` and `(6)` are theorems**, in
+`formal/GaloisForLFunctions/RHTower/SuzukiBoundaryLogEndpointBlowUp.lean`:
+
+```text
+cauchyDividedDifference
+cauchyFinitePart_eq_dividedDifference_add
+abs_cauchyDividedDifference_le                 |divided difference| ≤ 2 a L for L-Lipschitz u
+tendsto_neg_half_cauchyFinitePart_atTop        (5): -(1/2) FP → +∞ at the right endpoint
+not_bounded_of_tendsto_neg_half_cauchyFinitePart  (6): hence no bounded representative
+```
+
+The mechanism is exactly the card's: the divided difference is *uniformly* bounded by the Lipschitz
+constant times the aperture length, so the whole endpoint behaviour sits in `log(a²-x²)`, whose
+coefficient `u(x)` tends to `u(a) > 0`.
+
+Concrete construction of Suzuki's unbounded `A_a` as an operator, its form domain, and the
+identification of the parameter `r''` with Suzuki's own remainder remain outside the current Lean
+source layer; the analytic content of Theorem A is formalized without axioms.
 
 ## 7. Hostile audit
 

@@ -1,9 +1,10 @@
 # Hedenmalm reflection fold is a rank-one Dirac source defect
 
 - **ID:** `hedenmalm-reflection-folded-dirac-source-defect`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / EXACT OPEN-CORE REFINEMENT
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED HERE] [LEAN FORMALIZED] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
+- **Formalized companion:** `hedenmalm-reflection-folded-dirac-source-defect-formalized.md`
 - **Parent:** Hedenmalm's theta boundary-value problem and the corpus Fourier equation
   `(alpha-z) U_alpha(z)=-i XiC(z)`.
 
