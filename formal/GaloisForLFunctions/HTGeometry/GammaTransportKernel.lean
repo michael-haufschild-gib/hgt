@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.HTGeometry.PenalizedMaximum
 
 /-!
 # The Gamma transport kernel
@@ -489,5 +490,27 @@ theorem abs_integral_transport_far_le {F : ℝ → ℝ} {M R : ℝ} (X : ℝ) (h
     _ = 4 * M * ∫ s in Ioi R, gammaTransportKernel s := integral_const_mul _ _
     _ = 4 * M * (-Real.log (1 - Real.exp (-R))) := by
         rw [integral_Ioi_gammaTransportKernel hR]
+
+/-! ## The near shifts at a penalized maximizer
+
+Combining the two weight-removal directions, the second difference of the *unweighted* profile at a
+penalized maximizer is bounded below by two terms, each carrying a factor `s`.  That linear
+vanishing is what the kernel's finite first moment absorbs.
+-/
+
+/-- **The near-shift bound.**  At a penalized maximizer of the weighted profile, the unweighted
+second difference is at least `−2δs/√X − 2(s/X)(f X + δs/√X)` for `0 ≤ s ≤ X/2`.  Both terms are
+`O(s)`, so they integrate against the kernel. -/
+theorem neg_le_secondDifference_of_weighted {f : ℝ → ℝ} {X s δ : ℝ} (hX : 0 < X) (hs : 0 ≤ s)
+    (hsX : s ≤ X / 2) (hδ : 0 ≤ δ) (hf : 0 ≤ f X)
+    (hp : Real.sqrt (X + s) * f (X + s) ≤ Real.sqrt X * f X + δ * s)
+    (hm : Real.sqrt (X - s) * f (X - s) ≤ Real.sqrt X * f X + δ * s) :
+    -(2 * (δ * s / Real.sqrt X) + 2 * (s / X) * (f X + δ * s / Real.sqrt X))
+      ≤ secondDifference f X s := by
+  have hfwd := le_of_weighted_le_forward hX hs hδ hf hp
+  have hbwd := le_of_weighted_le_backward hX hs hsX hδ hf hm
+  unfold secondDifference
+  have hA : f X + δ * s / Real.sqrt X - f X = δ * s / Real.sqrt X := by ring
+  nlinarith [hfwd, hbwd, hA]
 
 end GaloisForLFunctions.HTGeometry

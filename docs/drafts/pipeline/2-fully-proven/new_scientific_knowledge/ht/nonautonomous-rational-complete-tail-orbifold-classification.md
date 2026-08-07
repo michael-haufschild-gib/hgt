@@ -615,3 +615,13 @@ other case is a counting bound (five cones, or four with one order at least thre
 Together with `parabolic_signature_classification` this closes the Euler-characteristic trichotomy
 input of the classification: hyperbolic signatures are bounded away from parabolic by `1/42`, and
 the parabolic ones are exactly the six recorded signatures.
+
+Added to `ParabolicSignatureClassification.lean` (wired, axiom-clean):
+
+    sum_map_const_mul                           pulling the tensor weight out of a pole-order sum
+    parabolic_of_pole_orders                    `(11)`: total pole order `2ℓ` gives `∑(1-1/ν) = 2`
+    parabolicSphereSignature_of_pole_orders     hence one of the six signatures
+
+This is the passage from the divisor-degree budget of an `ℓ`-differential on the sphere to the
+parabolic equation and its classification — steps `(10)`, `(11)` and the signature list of the
+proof, now formal end to end.

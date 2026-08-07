@@ -184,3 +184,18 @@ conditions on the shift family.  There is no assumed theorem.  `#print axioms` r
 So the consequences on this card that were labelled conditional on that parent are conditional on
 nothing external: what remains for them is Lean derivation work inside this corpus, not an
 unformalized classical input.
+
+## Lean audit — the algebraic core is verified, not merely claimed
+
+Every declaration this card's Lean-formalization section names resolves and reports
+`[propext, Classical.choice, Quot.sound]` under `#print axioms`:
+`privateSectorPolynomial_ne_zero`, `setVariableOne_privateSectorPolynomial_eq_zero`,
+`privateSectorPolynomial_totalDegree`, `privateSector_card_le_totalDegree_of_dvd`,
+`pairPrivateWitness_exact`, `pairPrivateWitness_coordinates`,
+`pairPrivateWitness_linearIndependent`, `pairFaceIndex_card`, `pairPrivateWitness_span_finrank`,
+together with the telescoping identity `(1)` itself,
+`GaloisForLFunctions.TelescopeIdeal.iInf_span_singleton_eq_span_prod_of_primes`.
+
+So the card's unconditional algebraic content is in Lean and audited.  What is not — the meromorphic
+realization of an arbitrary private charge and the direct-sum private field — depends on the
+exact-image parent, which is an analytic theorem of the all-depth card, not of this one.

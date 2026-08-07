@@ -396,6 +396,7 @@ def compactBesselProfileError (s c a : ℝ) : ℝ :=
 theorem continuousOn_ampFourth_exterior {s : ℝ} (hs1 : s ≤ 1 / 2) :
     ContinuousOn (ampFourth s) (Ioi 1) := by
   intro x hx
+  have hx1 : 1 < x := hx
   have hleft : 0 < x ^ 2 - 1 := by nlinarith
   have hright : 0 < x ^ 2 - s := by nlinarith
   have hden : Real.sqrt (Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s))) ≠ 0 := by positivity
@@ -416,7 +417,7 @@ theorem continuousOn_radialProlateBesselProfile
 theorem continuousOn_firstRowBesselProduct
     {s c k : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) :
     ContinuousOn (firstRowBesselProduct s c k) (Ioi 1) := by
-  have hp := continuousOn_radialProlateBesselProfile hs0 hs1
+  have hp := continuousOn_radialProlateBesselProfile (c := c) hs0 hs1
   have hlin : ContinuousOn (fun x : ℝ => k * x) (Ioi 1) :=
     (continuous_const.mul continuous_id).continuousOn
   unfold firstRowBesselProduct
@@ -474,7 +475,8 @@ theorem abs_radialProlateBesselProfile_sub_leading_le
         ≤ 5 * ampFourth s a / Real.sqrt (Real.sqrt (c * xiEndpointPhase s x)) := by
           gcongr
     _ ≤ 5 * ampFourth s a / Real.sqrt (Real.sqrt (c * xiEndpointPhase s a)) := by
-          exact div_le_div_of_nonneg_left (by positivity) hdena hdenx
+          exact div_le_div_of_nonneg_left
+            (mul_nonneg (by norm_num) (ampFourth_pos hs1 ha).le) hdena hdenx
 
 /-- Uniform absolute size of the leading cosine profile on the compact ray. -/
 theorem abs_radialProlateLeadingProfile_le
@@ -487,7 +489,14 @@ theorem abs_radialProlateLeadingProfile_le
   have hamp := ampFourth_le_of_le hs1 ha hax
   rw [abs_mul, abs_of_nonneg (by positivity : 0 ≤ Real.sqrt (2 / Real.pi) * ampFourth s x)]
   have hcos := Real.abs_cos_le_one (c * xiEndpointPhase s x - Real.pi / 4)
-  nlinarith [Real.sqrt_nonneg (2 / Real.pi), ampFourth_pos hs1 ha]
+  calc
+    Real.sqrt (2 / Real.pi) * ampFourth s x *
+        |Real.cos (c * xiEndpointPhase s x - Real.pi / 4)|
+        ≤ Real.sqrt (2 / Real.pi) * ampFourth s x * 1 := by
+          exact mul_le_mul_of_nonneg_left hcos (by positivity)
+    _ ≤ Real.sqrt (2 / Real.pi) * ampFourth s a := by
+          rw [mul_one]
+          exact mul_le_mul_of_nonneg_left hamp (Real.sqrt_nonneg _)
 
 /-- Uniform pointwise difference between the exact Bessel product and its two-cosine leading
 product on a compact first-row interval. -/
@@ -525,14 +534,22 @@ theorem abs_firstRowBesselProduct_sub_leading_le
   have hEa := compactBesselProfileError_nonneg hs0 hs1 hc ha
   have hEka := compactBesselProfileError_nonneg hs0 hs1 hc hka
   have hT : 0 ≤ Real.sqrt (2 / Real.pi) := Real.sqrt_nonneg _
+  have hAa : 0 ≤ ampFourth s a := (ampFourth_pos hs1 ha).le
+  have hAka : 0 ≤ ampFourth s (k * a) := (ampFourth_pos hs1 hka).le
   have hfac : P * Q - L * M = (P - L) * (Q - M) + (P - L) * M + L * (Q - M) := by ring
   change |P * Q - L * M| ≤ _
   rw [hfac]
   calc
     |(P - L) * (Q - M) + (P - L) * M + L * (Q - M)|
         ≤ |P - L| * |Q - M| + |P - L| * |M| + |L| * |Q - M| := by
-          rw [abs_mul, abs_mul, abs_mul]
-          exact (abs_add_le _ _).trans (add_le_add_right (abs_add_le _ _) _)
+          calc
+            |(P - L) * (Q - M) + (P - L) * M + L * (Q - M)|
+                ≤ |(P - L) * (Q - M) + (P - L) * M| + |L * (Q - M)| :=
+              abs_add_le _ _
+            _ ≤ (|(P - L) * (Q - M)| + |(P - L) * M|) + |L * (Q - M)| :=
+              add_le_add (abs_add_le _ _) le_rfl
+            _ = |P - L| * |Q - M| + |P - L| * |M| + |L| * |Q - M| := by
+              simp only [abs_mul]
     _ ≤ compactBesselProfileError s c a * compactBesselProfileError s c (k * a)
         + compactBesselProfileError s c a *
             (Real.sqrt (2 / Real.pi) * ampFourth s (k * a))

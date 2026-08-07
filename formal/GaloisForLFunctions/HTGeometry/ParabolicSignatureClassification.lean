@@ -71,4 +71,33 @@ theorem parabolic_triple_classification {a b c : ℕ} (ha : 2 ≤ a) (hab : a �
     (a = 2 ∧ b = 3 ∧ c = 6) ∨ (a = 2 ∧ b = 4 ∧ c = 4) ∨ (a = 3 ∧ b = 3 ∧ c = 3) :=
   euclidean_cone_triple ha hab hbc (by simpa [one_div] using heq)
 
+
+/-- Pulling the tensor weight out of a pole-order sum. -/
+theorem sum_map_const_mul (l : List ℕ) (lam : ℚ) :
+    (l.map (fun ν : ℕ => lam * (1 - 1 / (ν : ℚ)))).sum
+      = lam * (l.map (fun ν : ℕ => 1 - 1 / (ν : ℚ))).sum := by
+  induction l with
+  | nil => simp
+  | cons a t ih =>
+      simp only [List.map_cons, List.sum_cons, ih]
+      ring
+
+/-- **From the pole-order budget of an `ℓ`-differential to the parabolic equation.**  If the poles
+of a nonzero `ℓ`-differential on the sphere have orders `ℓ(1 - 1/ν_y)` at the cone points and `ℓ` at
+the cusps, and the total pole order is `2ℓ`, then the signature is parabolic. -/
+theorem parabolic_of_pole_orders {lam : ℚ} (hlam : lam ≠ 0) (c : ℕ) (l : List ℕ)
+    (hsum : lam * (c : ℚ) + (l.map (fun ν : ℕ => lam * (1 - 1 / (ν : ℚ)))).sum = 2 * lam) :
+    (c : ℚ) + (l.map (fun ν : ℕ => 1 - 1 / (ν : ℚ))).sum = 2 := by
+  rw [sum_map_const_mul] at hsum
+  have h : lam * ((c : ℚ) + (l.map (fun ν : ℕ => 1 - 1 / (ν : ℚ))).sum) = lam * 2 := by
+    linarith
+  exact mul_left_cancel₀ hlam h
+
+/-- **The pole-order budget of a transported tensor forces one of the six signatures.** -/
+theorem parabolicSphereSignature_of_pole_orders {lam : ℚ} (hlam : lam ≠ 0) (c : ℕ) (l : List ℕ)
+    (hsorted : l.Pairwise (· ≤ ·)) (h2 : ∀ ν ∈ l, 2 ≤ ν)
+    (hsum : lam * (c : ℚ) + (l.map (fun ν : ℕ => lam * (1 - 1 / (ν : ℚ)))).sum = 2 * lam) :
+    ∃ s : ParabolicSphereSignature, s.cuspCount = c ∧ s.finiteConeOrders = l :=
+  exists_parabolicSphereSignature c l hsorted h2 (parabolic_of_pole_orders hlam c l hsum)
+
 end GaloisForLFunctions.HTGeometry

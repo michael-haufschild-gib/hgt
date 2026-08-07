@@ -1604,8 +1604,27 @@ some of them by `rfl` and then leaves `omega` with no goals.
 Axioms: `propext, Classical.choice, Quot.sound`; the two differential computations need only
 `propext, Quot.sound`.
 
+## Restriction of scalars
+
+`CDGARestrictScalars.lean` — **`CDGAHom.restrictModule`**, `restrictModule_act`, `restrictModule_d`,
+**`CDGAHom.restrictModule_unital`**.
+
+A morphism of commutative differential graded algebras makes the target a differential graded module
+over the source: the action is the product with the image, `act_assoc` is multiplicativity of the
+morphism followed by associativity of the product, and `d_act` is the Leibniz rule of the target
+together with the fact that the morphism commutes with the differentials.  Unitality holds as soon
+as the morphism sends the unit to the unit.
+
+This is the datum a relative construction is defined against: with it, every algebra over a base
+algebra is a module over it, so `relTensorModule` — the layer's `⊗_A`, and everything proved about
+it, including flatness of semi-free resolutions — applies to algebras over a base.
+
+Axioms: `propext, Quot.sound`.
+
 ## Next
 
-The relative tensor product of *algebras* over a base algebra — the layer's `⊗_A` is still a module
-construction.  With both inclusions in hand, `A ⊗ B` is an algebra under each factor, which is the
-datum a relative construction is defined against.
+The algebra structure on `A ⊗_C B`: the underlying module is `relTensorModule` of the two
+restrictions, and the product has to be shown to descend through the relations.  The descent is the
+same shape as the four already carried out in this layer — a relator correspondence in three
+rewrites, then stability by span induction, then `Submodule.liftQ` — with the new ingredient being
+that the product is bilinear rather than linear, so the induction runs in both variables.

@@ -110,6 +110,20 @@ theorem routeEBatchParityNonproductDeterminant_eq
     routeEBatchParitySignedNumerator
   ring
 
+/-- Scalar determinant form of the coarse antiscale defect. -/
+theorem routeEScalarParityCoarseDeterminantIdentity
+    (Wp Wn Kp Kn : ℝ) (hp : Wp ≠ 0) (hn : Wn ≠ 0)
+    (hs : Wp + Wn ≠ 0) :
+    (Wn * Kp + Wp * Kn) ^ 2 / ((Wp + Wn) * Wp * Wn) =
+      ((Wp + Wn) * (Kp + Kn) - (Wp - Wn) * (Kp - Kn)) ^ 2 /
+        ((Wp + Wn) * ((Wp + Wn) ^ 2 - (Wp - Wn) ^ 2)) := by
+  have hdisc : (Wp + Wn) ^ 2 - (Wp - Wn) ^ 2 ≠ 0 := by
+    have hfour : (4 : ℝ) * Wp * Wn ≠ 0 :=
+      mul_ne_zero (mul_ne_zero (by norm_num) hp) hn
+    convert hfour using 1 <;> ring
+  field_simp [hp, hn, hs, hdisc]
+  ring
+
 /-- The coarse defect is the squared antiscale determinant divided by the
 exact parity-balance discriminant. -/
 theorem routeEBatchParityCoarseDefect_eq_antiscaleDeterminant
@@ -123,18 +137,16 @@ theorem routeEBatchParityCoarseDefect_eq_antiscaleDeterminant
         (routeEBatchParityTotalMass s c w *
           (routeEBatchParityTotalMass s c w ^ 2 -
             routeEBatchParityMassImbalance s c w ^ 2)) := by
-  have hdisc : routeEBatchParityTotalMass s c w ^ 2 -
-      routeEBatchParityMassImbalance s c w ^ 2 ≠ 0 := by
-    rw [routeEBatchParityTotalMass, routeEBatchParityMassImbalance]
-    have hfour : (4 : ℝ) * routeEBatchClassMass s c w *
-        routeEBatchClassMass s (fun i => ¬ c i) w ≠ 0 :=
-      mul_ne_zero (mul_ne_zero (by norm_num) hp) hn
-    convert hfour using 1 <;> ring
-  rw [routeEBatchParityAntiscaleDeterminant_eq]
-  unfold routeEBatchParityCoarseDefect routeEBatchParityTotalMass
-    routeEBatchParityMassImbalance
-  field_simp [hp, hn, ht, hdisc]
-  ring
+  simpa [routeEBatchParityCoarseDefect,
+    routeEBatchParityAntiscaleDeterminant,
+    routeEBatchParityTotalMass, routeEBatchParityUnsignedNumerator,
+    routeEBatchParitySignedNumerator, routeEBatchParityMassImbalance] using
+    routeEScalarParityCoarseDeterminantIdentity
+      (routeEBatchClassMass s c w)
+      (routeEBatchClassMass s (fun i => ¬ c i) w)
+      (routeEBatchClassNumerator s c w value)
+      (routeEBatchClassNumerator s (fun i => ¬ c i) w value)
+      hp hn ht
 
 /-- Scalar two-class polarization underlying the parity coarse graining. -/
 theorem routeEScalarParityCoarseIdentity

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CriticalGeometricMonodromy
 import GaloisForLFunctions.HTGeometry.GenericJetInversePolynomial
+import GaloisForLFunctions.HTGeometry.LaurentCriticalFibreIntegrality
 
 /-!
 # Geometric sheets as actual critical-fibre points
@@ -15,6 +16,8 @@ namespace GaloisForLFunctions.HTGeometry
 open Polynomial
 
 noncomputable section
+
+set_option synthInstance.maxHeartbeats 100000
 
 /-- Raw observation coordinate as an element of the actual observation field. -/
 noncomputable def criticalObservationRaw
@@ -150,7 +153,11 @@ theorem criticalSourceRawPolynomial_eq_low_add_tail
         · simp [i, Nat.add_sub_of_le hmn]
         · intro j _ hji
           rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg, mul_zero]
-          exact fun h => hji (Fin.ext (by omega))
+          intro heq
+          apply hji
+          apply Fin.ext
+          dsimp [i]
+          omega
         · exact fun h => absurd (Finset.mem_univ _) h
       rw [criticalSourceRawLow, lowPolynomial_coeff, dif_neg hkm, htail, zero_add]
       apply Subtype.ext
@@ -204,7 +211,11 @@ theorem criticalSourceReciprocalPolynomial_eq_low_add_tail
         · simp [j, Nat.add_sub_of_le hnm]
         · intro i _ hij
           rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg, mul_zero]
-          exact fun h => hij (Fin.ext (by omega))
+          intro heq
+          apply hij
+          apply Fin.ext
+          dsimp [j]
+          omega
         · exact fun h => absurd (Finset.mem_univ _) h
       rw [criticalSourceReciprocalLow, lowPolynomial_coeff, dif_neg hkn, htail, zero_add]
       apply Subtype.ext
@@ -234,14 +245,37 @@ theorem X_pow_dvd_criticalSourceRaw_mul_reciprocal_sub_one
         criticalSourceReciprocalPolynomial K m n - 1 := by
   rw [Polynomial.X_pow_dvd_iff]
   intro k hk
-  apply Subtype.ext
   have hgeneric := genericRawPolynomial_mul_genericRecipPolynomial_coeff
     K (m + n) k (by omega)
   have hmapped := congrArg (genericJetFieldMap K (m + n)) hgeneric
-  rw [map_sub]
-  simpa only [Polynomial.coeff_sub, Polynomial.coeff_one,
-    criticalSourceRawPolynomial, criticalSourceReciprocalPolynomial,
-    Polynomial.coeff_mul, map_zero, Subtype.coe_zero] using hmapped
+  have hprod :
+      genericJetFieldMap K (m + n)
+          ((genericRawPolynomial K (m + n) *
+            genericRecipPolynomial K (m + n)).coeff k) =
+        (((criticalSourceRawPolynomial K m n *
+          criticalSourceReciprocalPolynomial K m n).coeff k :
+            criticalSourceField K m n) : genericJetField K (m + n)) := by
+    rw [coeff_mul_range, coeff_mul_range, map_sum]
+    apply Finset.sum_congr rfl
+    intro i hi
+    have hi' := Finset.mem_range.1 hi
+    rw [map_mul,
+      genericRawPolynomial_coeff K (m + n) i (by omega),
+      genericRecipPolynomial_coeff K (m + n) (k - i) (by omega),
+      criticalSourceRawPolynomial_coeff K m n i (by omega),
+      criticalSourceReciprocalPolynomial_coeff K m n (k - i) (by omega)]
+    rfl
+  have hone :
+      genericJetFieldMap K (m + n)
+          ((1 : (genericJetAlgebra K (m + n))[X]).coeff k) =
+        (((1 : (criticalSourceField K m n)[X]).coeff k :
+            criticalSourceField K m n) : genericJetField K (m + n)) := by
+    rcases k with _ | k <;> simp
+  apply Subtype.ext
+  rw [Polynomial.coeff_sub, Subtype.coe_sub, Subtype.coe_zero]
+  apply sub_eq_zero.mpr
+  rw [← hprod, ← hone]
+  exact hmapped
 
 /-- A geometric sheet evaluated on the low coefficient blocks is an actual critical-fibre point
 over the normal closure. -/
@@ -254,15 +288,15 @@ noncomputable def criticalGeometricSheetToFibre
         ((criticalObservationReciprocalTail K m n).map
           (algebraMap (criticalObservationField K m n) (criticalNormalClosure K m n))) := by
   intro σ
-  let A := (criticalSourceRawLow K m n).map σ
-  let B := (criticalSourceReciprocalLow K m n).map σ
+  let A := (criticalSourceRawLow K m n).map σ.toRingHom
+  let B := (criticalSourceReciprocalLow K m n).map σ.toRingHom
   refine ⟨(A, B), ?_, ?_, ?_⟩
   · exact lt_of_le_of_lt Polynomial.degree_map_le (lowPolynomial_degree_lt _)
   · exact lt_of_le_of_lt Polynomial.degree_map_le (lowPolynomial_degree_lt _)
   · apply (dvd_criticalLowProduct_sub_one_iff_mul_sub_one
       (Polynomial.map_dvd _ (X_pow_dvd_criticalObservationRawTail K m n))
       (Polynomial.map_dvd _ (X_pow_dvd_criticalObservationReciprocalTail K m n)) A B).2
-    have h := Polynomial.map_dvd σ
+    have h := Polynomial.map_dvd σ.toRingHom
       (X_pow_dvd_criticalSourceRaw_mul_reciprocal_sub_one K m n)
     rw [criticalSourceRawPolynomial_eq_low_add_tail,
       criticalSourceReciprocalPolynomial_eq_low_add_tail] at h
@@ -275,8 +309,8 @@ theorem criticalGeometricSheetToFibre_injective
     (K : Type*) [Field K] (m n : ℕ) :
     Function.Injective (criticalGeometricSheetToFibre K m n) := by
   intro σ τ hστ
-  have hA : (criticalSourceRawLow K m n).map σ =
-      (criticalSourceRawLow K m n).map τ :=
+  have hA : (criticalSourceRawLow K m n).map σ.toRingHom =
+      (criticalSourceRawLow K m n).map τ.toRingHom :=
     congrArg (fun p => p.1.1) hστ
   apply AlgHom.ext
   intro x
