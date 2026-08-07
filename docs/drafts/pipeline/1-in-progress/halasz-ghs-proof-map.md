@@ -939,3 +939,32 @@ are bounded by these caps, so the whole right-hand side is an explicit function 
 The programme's remaining task is the parameter optimisation: choosing `σ`, the sieve level `Y ≤ z` and the
 smoothing width `H` so that the sum of the three error groups beats the trivial bound `N log N` — the point
 at which the argument becomes a mean value theorem rather than a chain of identities.
+
+## The master bound with every quantity explicit
+
+`RHTower/Sieve/HalaszExplicitParameters.lean` (green, axiom-clean, wired).
+
+`sieveBound A σ z Y` closes the sieve mean square of any prime weight with `‖a_n‖ ≤ A log n`:
+
+`sieveBound A σ z Y = (4 sinh δ/log Y)·A²·(16/(2σ−2)²)(1 + 2/(2σ−2))
+                        + (2/log Y + E + z)·A²·(16/(2σ−1)²)(1 + 2/(2σ−1))`
+
+(`sieveMeanSquare_le_sieveBound`, with `sieveCapLinear`, `sieveCapConst` naming the two caps and both shown
+nonnegative).  Substituted for both weights — `A = 1/log 2` outside, `A = 1` inside —
+
+`exists_norm_sum_Icc_mul_log_le_sieveBound` :
+`‖∑_{n ≤ N} f(n)‖·log N ≤ (recursion errors) + (H+1)(log⌊N+H⌋)⁴/(log 2)³
+    + (1/2π)(1 + 1/(σ−1))e^{7/2}·C·√(25π²·sieveBound (1/log 2) σ z Y)·√(25π²·sieveBound 1 σ z Y)`.
+
+**Nothing in the statement is an unevaluated sum or an assumed estimate.**  Whether it beats the trivial
+`N log N` is now a question about the parameters alone, and the shape of that question is visible:
+
+* the linear cap contributes `1/(σ−1)²·(1 + 1/(σ−1))` — at `σ = 1 + 1/log N` this is `(log N)³`;
+* the sieve level enters as `1/log Y` in the linear part and as `E + z` in the constant part, with
+  `E = Y²e^{4c}(log z)⁴`, so `Y` must stay small against `z` and `z` small against the main term;
+* the smoothing width enters as `(H+1)(log(N+H))⁴`, so `H = N/(log N)⁶` is admissible and costs
+  `N/(log N)²`;
+* `C` is the kernel's decay constant, free in `N`.
+
+That is the optimisation the programme now faces, and it is a question about explicit real functions with no
+number theory left in it.
