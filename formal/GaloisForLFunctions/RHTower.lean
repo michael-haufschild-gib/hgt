@@ -319,6 +319,7 @@ import GaloisForLFunctions.RHTower.BudgetSharpAndMarginUniform
 import GaloisForLFunctions.RHTower.BurgersFieldDamping
 import GaloisForLFunctions.RHTower.BurnolBilateralApertureRH
 import GaloisForLFunctions.RHTower.BurnolCartierZeroTransferHeadGain
+import GaloisForLFunctions.RHTower.BurnolCartierZeroTransferHeadPolarization
 import GaloisForLFunctions.RHTower.BurnolCoPoissonBerezin
 import GaloisForLFunctions.RHTower.BurnolCoPoissonBerezinFaithful
 import GaloisForLFunctions.RHTower.BurnolCoPoissonBerezinReflection
@@ -6121,3 +6122,4 @@ import GaloisForLFunctions.RHTower.Sieve.PrimeLogQuotientSum
 import GaloisForLFunctions.RHTower.Sieve.TripleConvolutionWindow
 import GaloisForLFunctions.RHTower.Sieve.DoubleAverageSplit
 import GaloisForLFunctions.RHTower.Sieve.TripleSummatorySwap
+import GaloisForLFunctions.RHTower.Sieve.TripleConvolutionPerron

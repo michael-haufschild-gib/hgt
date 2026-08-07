@@ -289,9 +289,11 @@ Uniformization is now needed only for `(2,2,∞)`, `(2,2,2,2)`, `(2,3,6)`, `(2,4
 
 ```text
 HTGeometry/ScalingInvariantRationalFunction.lean       multiplicative deck group (single scalar and
-                                                        separating family)
-HTGeometry/TranslationInvariantRationalFunction.lean   additive deck group (one nonzero translation
-                                                        suffices in characteristic zero)
+                                                        separating family) — NEW, no counterpart
+                                                        existed
+HTGeometry/RatFuncTranslationFixedField.lean           additive deck group — ALREADY IN THE TREE
+HTGeometry/ScalarAdditiveDifferentialTorsor.lean       additive torsor, unit translation fixes
+                                                        exactly `F⟨q′⟩` — ALREADY IN THE TREE
 HTGeometry/ChebyshevQuadraticCurrent.lean              `(w′/w)² = y′²/(y² - 4)` for `y = w + w⁻¹`,
                                                         the `(2,2,∞)` transported current
 ```

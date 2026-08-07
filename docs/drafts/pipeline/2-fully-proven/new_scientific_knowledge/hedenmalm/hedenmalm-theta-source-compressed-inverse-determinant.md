@@ -351,6 +351,7 @@ whole layer at the actual arithmetic source, so the statements below carry **no 
 | `(9)` | **the source variance in quantile coordinates**, `integral over (0,1) of Q^2 = M^(-1) integral of x^2 k` | `integral_sq_quantileFun` |
 | `(9)` | **`tr(B^2)` is well posed**: the diagonal series converges over every Hilbert basis and its sum is basis independent | `thetaKernelOperator`, `thetaTraceSq`, `summable_thetaTraceSq_diag`, `thetaTraceSq_eq_tsum_basis` |
 | `(9)` | `tr(B^2) = <B^dagger, B>_HS`, bounded by the Hilbert--Schmidt energy | `thetaTraceSq_eq_hsInner`, `norm_thetaTraceSq_le` |
+| `(1)`,`(9)` | **`B^2` is trace class**, and so is the positive energy `B^dagger B`, whose trace is the Hilbert--Schmidt energy | `isTraceClass_thetaKernelOperator_sq`, `isTraceClass_adjoint_comp_thetaKernelOperator`, `re_opTrace_adjoint_comp_thetaKernelOperator` |
 
 Corpus assets to use for the remaining items, rather than rebuilding them:
 `ContinuousLinearMap.IsHilbertSchmidt` (`HTGeometry/HilbertSchmidtOperator.lean`),

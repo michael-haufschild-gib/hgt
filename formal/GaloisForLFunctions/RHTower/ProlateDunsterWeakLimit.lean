@@ -349,10 +349,10 @@ theorem tendsto_integral_Ioi_radialProlateDensity
     {R DR DDR : ι → ℝ → ℝ}
     (hc : Tendsto c l atTop) (hs : Tendsto s l (nhds 0))
     (hs0 : ∀ᶠ i in l, 0 ≤ s i)
-    (hR1 : ∀ i, R i 1 = 1)
-    (hR : ∀ i t, HasDerivAt (R i) (DR i t) t)
-    (hDR : ∀ i t, HasDerivAt (DR i) (DDR i t) t)
-    (hode : ∀ i t, (t ^ 2 - 1) * DDR i t + 2 * t * DR i t
+    (hR1 : ∀ᶠ i in l, R i 1 = 1)
+    (hR : ∀ᶠ i in l, ∀ t, HasDerivAt (R i) (DR i t) t)
+    (hDR : ∀ᶠ i in l, ∀ t, HasDerivAt (DR i) (DDR i t) t)
+    (hode : ∀ᶠ i in l, ∀ t, (t ^ 2 - 1) * DDR i t + 2 * t * DR i t
       - (s i * c i ^ 2 - c i ^ 2 * t ^ 2) * R i t = 0)
     {a : ℝ} (ha : 1 < a) :
     Tendsto (fun i => ∫ x in Ioi a, radialProlateDensity (c i) (R i) x) l
@@ -380,7 +380,8 @@ theorem tendsto_integral_Ioi_radialProlateDensity
         ((∫ x in Ioi a, radialProlateDensity (c i) (R i) x) -
           ∫ x in Ioi a, radialProlateBesselDensity (s i) (c i) x))
       (by
-        filter_upwards [hs0, hsHalf, hc5, hcrossA] with i hsi0 hsi1 hci hcai
+        filter_upwards [hs0, hsHalf, hc5, hcrossA, hR1, hR, hDR, hode]
+          with i hsi0 hsi1 hci hcai hR1i hRi hDRi hodei
         have hci0 : 0 < c i := lt_of_lt_of_le (by norm_num) hci
         have hcross1 : 1 < dunsterEndpointCrossing (c i) :=
           dunsterEndpointCrossing_gt_one hci0
@@ -396,7 +397,7 @@ theorem tendsto_integral_Ioi_radialProlateDensity
             (radialProlateDensityTransferConstant / c i)
         have hExactCont : Continuous (radialProlateDensity (c i) (R i)) := by
           have hRc : Continuous (R i) := continuous_iff_continuousAt.mpr fun x =>
-            (hR i x).continuousAt
+            (hRi x).continuousAt
           unfold radialProlateDensity
           fun_prop
         have hDiffMeas : AEStronglyMeasurable
@@ -413,7 +414,7 @@ theorem tendsto_integral_Ioi_radialProlateDensity
           filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
           rw [Real.norm_eq_abs]
           exact abs_radialProlateDensity_sub_besselDensity_le
-            hsi0 hsi1 hci (hR1 i) (hR i) (hDR i) (hode i) (hcai.trans hx.le)
+            hsi0 hsi1 hci hR1i hRi hDRi hodei (hcai.trans hx.le)
         have hExactInt : IntegrableOn (radialProlateDensity (c i) (R i)) (Ioi a) := by
           have hadd := hDiffInt.add hBint
           rw [show radialProlateDensity (c i) (R i) =
@@ -440,7 +441,7 @@ theorem tendsto_integral_Ioi_radialProlateDensity
               exact Real.norm_eq_abs _
           _ ≤ 2 * radialProlateDensityTransferConstant / c i :=
             integral_Ioi_abs_radialProlateDensity_sub_besselDensity_le
-              hsi0 hsi1 hci hcai (hR1 i) (hR i) (hDR i) (hode i))
+              hsi0 hsi1 hci hcai hR1i hRi hDRi hodei)
       hbound
   have hadd := hdiff.add hbessel
   simpa only [sub_add_cancel, zero_add] using hadd

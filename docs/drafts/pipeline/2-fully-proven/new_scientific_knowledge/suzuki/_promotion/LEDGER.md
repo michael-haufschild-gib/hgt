@@ -2960,3 +2960,59 @@ theorem stated elsewhere, so it stays.
 `neg_le_gammaTransport_of_isMaxOn` and `gammaTransport_le_of_isMaxOn_neg`. Chaining them gives
 trace bounds whose only inputs are the equation, the maximizer/minimizer property, and object
 regularity — which is the form the card-level derivation should consume.
+
+## CA. The trace bounds are fully chained — no derived input assumed
+
+`LogNormalEquationTrace.lean` is now at 4 declarations, all `#print axioms` clean, no `sorry`.
+
+- `halfLog_le_of_equation_isMaxOn` — at a penalized maximizer,
+
+      √X f(X) ≤ (T + [C₊·m(X) + 4M·q(X/2)])/(2√X) + A(X),
+
+  from the equation `logDirichlet f X + gammaTransport f X = S`, `S ≤ T`, and
+  `IsMaxOn (penalized (fun L => √L f L) δ L₀) (Ici a) X`.
+- `le_halfLog_of_equation_isMaxOn_neg` — the mirror at a penalized minimizer.
+
+**Every derived input is now chained.** The transport bound is no longer a hypothesis; it is
+`neg_le_gammaTransport_of_isMaxOn` / `gammaTransport_le_of_isMaxOn_neg` applied inside. What
+remains as hypotheses:
+
+    the equation (18)                    — the object being studied
+    IsMaxOn / IsMaxOn of the negation    — defines the critical point
+    a ≤ X/2                              — the window lies in the ray
+    Continuous / Measurable f, |f| ≤ M   — object regularity
+    near integrability                   — what (18) asserts (BJ)
+    0 ≤ f X  /  hnum                     — sign conditions at the point
+
+None of these is a theorem stated elsewhere in the corpus. The chain from `(18)` to a pointwise
+trace bound is complete and premise-free in the project's sense.
+
+### Remaining for `(4)`
+
+Only the limit passage: construct the two critical-point families along `L_n → ∞` with
+`δ_n = L_n^{−1/2}`, verify the hypotheses above hold along them, and apply
+`le_of_tendsto_of_tendsto'` then `tendsto_of_le_liminf_of_limsup_le` (both mathlib).
+
+## CB. The far contribution provably vanishes
+
+`GammaTransportKernel.lean` is now at 37 declarations, all `#print axioms` clean, no `sorry`.
+
+- `tendsto_kernelTailMass_atTop` — `q(R) = −log(1 − e^{−R}) → 0` as `R → ∞`.
+- `tendsto_kernelTailMass_half_atTop` — the same at `R = X/2`, the form the near/far split produces.
+
+So the far contribution `4 M q(X_n/2)` in the trace bounds of CA vanishes along any family of
+critical points running to infinity. This was asserted informally from section BE onward; it is now
+a theorem.
+
+### The three vanishing factors, status
+
+| factor | vanishes because | built |
+|---|---|---|
+| `4 M q(X/2)` | tail mass → 0 | **CB** |
+| `C₊ m(X)`, `C₋ m(X)` | `C = O(δ) + O(1/X)`, `m` bounded by the first moment | T (bound), arithmetic |
+| `(T + …)/(2√X)` | `1/√X → 0` | `tendsto_const_div_sqrt_atTop` (AR) |
+
+All three are now either theorems or immediate from built bounds. The limit passage has no
+unproved ingredient left — what remains is constructing the two critical-point families from the
+card's hypotheses and applying `le_of_tendsto_of_tendsto'` and
+`tendsto_of_le_liminf_of_limsup_le`.

@@ -62,6 +62,26 @@ theorem norm_thetaTraceSq_le :
   norm_opTrace_comp_le isHilbertSchmidt_thetaKernelOperator'
     isHilbertSchmidt_thetaKernelOperator'
 
+
+/-- **The square of the source inverse is trace class**, by the factorization characterization of
+the Schatten `S₁` ideal. -/
+theorem isTraceClass_thetaKernelOperator_sq :
+    IsTraceClass (thetaKernelOperator ∘L thetaKernelOperator) :=
+  isHilbertSchmidt_thetaKernelOperator'.comp_isTraceClass
+    isHilbertSchmidt_thetaKernelOperator'
+
+/-- **The positive energy of the source inverse is trace class**, with trace the Hilbert--Schmidt
+energy. -/
+theorem isTraceClass_adjoint_comp_thetaKernelOperator :
+    IsTraceClass (ContinuousLinearMap.adjoint thetaKernelOperator ∘L thetaKernelOperator) :=
+  isHilbertSchmidt_thetaKernelOperator'.adjoint_comp_self_isTraceClass
+
+theorem re_opTrace_adjoint_comp_thetaKernelOperator :
+    RCLike.re (opTrace (ContinuousLinearMap.adjoint thetaKernelOperator ∘L thetaKernelOperator))
+      = hsNormSq thetaKernelOperator :=
+  re_opTrace_adjoint_comp_self isHilbertSchmidt_thetaKernelOperator'
+
+
 end HedenmalmThetaSource
 
 end

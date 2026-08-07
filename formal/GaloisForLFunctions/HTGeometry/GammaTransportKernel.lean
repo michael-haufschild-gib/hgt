@@ -808,4 +808,28 @@ theorem gammaTransport_le_of_isMaxOn_neg {f : ℝ → ℝ} {X δ M L₀ a : ℝ}
     have hm : X - s ∈ Ici a := by simp only [mem_Ici]; linarith
     exact (le_of_isMaxOn_penalized_neg_shift hmax hδ hs0 hp hm).2
 
+/-! ## The tail mass vanishes
+
+The far-window bound is proportional to the kernel's tail mass `q(R) = −log(1 − e^{−R})`, which
+tends to zero as the radius grows.  With the radius taken to be `X/2`, the far contribution
+therefore vanishes along any family of critical points running to infinity.
+-/
+
+open Filter in
+/-- **The kernel's tail mass vanishes at infinity.** -/
+theorem tendsto_kernelTailMass_atTop :
+    Tendsto (fun R : ℝ => -Real.log (1 - Real.exp (-R))) atTop (nhds 0) := by
+  have hexp : Tendsto (fun R : ℝ => 1 - Real.exp (-R)) atTop (nhds 1) := by
+    have h := Real.tendsto_exp_neg_atTop_nhds_zero
+    simpa using (tendsto_const_nhds.sub h)
+  have hlog := hexp.log (by norm_num : (1:ℝ) ≠ 0)
+  rw [Real.log_one] at hlog
+  simpa using hlog.neg
+
+open Filter in
+/-- The same at half the radius, the form the near/far split produces. -/
+theorem tendsto_kernelTailMass_half_atTop :
+    Tendsto (fun X : ℝ => -Real.log (1 - Real.exp (-(X / 2)))) atTop (nhds 0) :=
+  tendsto_kernelTailMass_atTop.comp (tendsto_id.atTop_div_const (by norm_num : (0:ℝ) < 2))
+
 end GaloisForLFunctions.HTGeometry

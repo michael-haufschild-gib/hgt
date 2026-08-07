@@ -1645,10 +1645,10 @@ theorem tendsto_integral_firstRowRadialProduct
     {R DR DDR : ι → ℝ → ℝ}
     (hc : Tendsto c l atTop) (hs : Tendsto s l (nhds 0))
     (hs0 : ∀ᶠ i in l, 0 ≤ s i)
-    (hR1 : ∀ i, R i 1 = 1)
-    (hR : ∀ (i : ι) (t : ℝ), HasDerivAt (R i) (DR i t) t)
-    (hDR : ∀ (i : ι) (t : ℝ), HasDerivAt (DR i) (DDR i t) t)
-    (hode : ∀ (i : ι) (t : ℝ), (t ^ 2 - 1) * DDR i t + 2 * t * DR i t
+    (hR1 : ∀ᶠ i in l, R i 1 = 1)
+    (hR : ∀ᶠ i in l, ∀ t, HasDerivAt (R i) (DR i t) t)
+    (hDR : ∀ᶠ i in l, ∀ t, HasDerivAt (DR i) (DDR i t) t)
+    (hode : ∀ᶠ i in l, ∀ t, (t ^ 2 - 1) * DDR i t + 2 * t * DR i t
       - (s i * c i ^ 2 - c i ^ 2 * t ^ 2) * R i t = 0)
     {k a b : ℝ} (hk : 2 ≤ k) (hab : a ≤ b) (ha : 1 < a)
     (haStationary : Real.sqrt (1 + 2 / k ^ 2) ≤ a) :
@@ -1758,11 +1758,12 @@ theorem tendsto_integral_Ioi_firstRowRadialProduct
   have harg := tendsto_c_mul_xiEndpointPhase_fixed_radius_atTop hc hs hs0 ha
   have hcxi : ∀ᶠ i in l, 1 ≤ c i * xiEndpointPhase (s i) a :=
     harg.eventually (eventually_ge_atTop 1)
-  filter_upwards [hs0, hsHalf, hc5, hcOsc, hcrossA, hcxi, hMajorSmall]
-    with i hsi0 hsi1 hci5 hciOsc hcrossi hcxii hmajori
+  filter_upwards [hs0, hsHalf, hc5, hcOsc, hcrossA, hcxi, hMajorSmall,
+      hR1, hR, hDR, hode]
+    with i hsi0 hsi1 hci5 hciOsc hcrossi hcxii hmajori hR1i hRi hDRi hodei
   have hbound := abs_integral_Ioi_firstRowRadialProduct_budget_le
     hsi0 hsi1 hk hci5 hciOsc ha hab hcrossi hbStationary hcxii
-      (hR1 i) (hR i) (hDR i) (hode i)
+      hR1i hRi hDRi hodei
   rw [Real.dist_eq, sub_zero]
   exact hbound.trans_lt (by simpa [T] using hmajori)
 

@@ -390,3 +390,67 @@ I created `HTGeometry/HilbertSchmidtTrace.lean` with `cat >` WITHOUT CHECKING IT
 destroyed the file; `TwoProjectionHilbertSchmidtEnergy.lean` imports it and broke.
 Recovered with `git show HEAD:<path> > <path>` (NOT `git checkout`, which is banned here).
 ALWAYS `ls`/`test -f` a target path before `cat >` in this tree.
+
+## THIRD CORRECTION (2026-08-07): det_2 EXISTS in the corpus
+
+`HTGeometry/FredholmDeterminant.lean` — the regularized Hilbert–Carleman determinant for an
+ARBITRARY Hilbert–Schmidt kernel: `fredholmExp`, `fredholmExp_summable`, `fredholmDet`,
+`logDeriv_fredholmDet` (Plemelj), `fredholmDet_ne_zero`, `hasDerivAt_fredholmDet`,
+`fredholmDet_differentiableOn`, `fredholmDet_weld`.
+`HTGeometry/FredholmDeterminantInfinite.lean` — the countable diagonal case with the closed-form
+resolvent trace.
+`HTGeometry/HilbertSchmidt.lean` — `resolventTrace`, `resolventTrace_summable`.
+`HTGeometry/HilbertSchmidtMatrix.lean` — the operator/kernel bridge `toOperator`, `matrixOf`,
+`isHS_matrixOf`, `matrixOf_toOperator`, `toOperator_matrixOf`.
+
+So card 7 (8) is a TRANSFER + IDENTIFICATION problem, not a missing-theory problem.
+Card 7's Lean-status text (which asserted no det_2 exists) has been corrected in place.
+
+### Running score on my own "missing infrastructure" claims this session: 3 wrong out of 4.
+Weierstrass products — already there.  Trace class — already there.  det_2 — already there.
+Only Mittag-Leffler interpolation and analytic-Fredholm/Riesz-projection multiplicity survive
+as genuinely absent (the latter: `grep -rln "rieszProj\|generalizedEigenspace\|algebraicMultiplicity"`
+returns NOTHING in the corpus).
+ALWAYS run the corpus audit BEFORE declaring a blocker.
+
+## COMPLETED CORPUS AUDIT of the remaining blockers (2026-08-07)
+
+Genuinely ABSENT from corpus and mathlib (verified by grep, nothing found):
+* Mittag-Leffler / analytic interpolation — no `interpolat`/`MittagLeffler`/`prescribed` module
+  for entire functions with prescribed jets.  Blocks card 5 (13)/(14) and the (17) cokernel.
+* Analytic-Fredholm multiplicity / Riesz projections — `rieszProj`, `generalizedEigenspace`,
+  `algebraicMultiplicity` return NOTHING.  Blocks card 7 (6), hence card 4 (16) and card 8.
+* Unbounded Fredholm theory — no `IsFredholm`, no `fredholmIndex`, no compact-resolvent layer for
+  `LinearPMap`.  The corpus `LinearPMap` files (RealCorona*, InfinitePhaseLadder*) are boundedness
+  CLASSIFICATION, not Fredholm theory.  Blocks card 6 (4)-index, (8), (9), (10).
+
+PRESENT but not yet applied (do NOT rebuild):
+* det_2 — `HTGeometry/FredholmDeterminant.lean` + `FredholmDeterminantInfinite.lean`.
+* trace class on HS products — `HTGeometry/HilbertSchmidtTrace.lean`.
+* operator/kernel bridge — `HTGeometry/HilbertSchmidtMatrix.lean`.
+* genus-one Weierstrass products — `RHTower/CanonicalProduct.lean`,
+  `HTGeometry/MovingCanonicalProduct.lean`.
+
+## Tree state at end of session
+All 13 new Hedenmalm modules + `HTGeometry/KroneckerApproxRecurrence.lean` are wired into their
+umbrellas, build, and contain no sorry/admit/axiom/opaque/unsafe.
+`scripts/formal_tools.py lint` reports 9 "owned module unreachable from umbrella" errors — ALL
+pre-existing and none of them mine (Prolate*, RouteEMovingTerminalKernelResonance,
+CriticalGenericArc, CriticalGeometricSheetFibre, GenericJetInversePolynomial).  Do not wire them
+blindly; they belong to other in-progress work.
+
+## Card 7: B² is trace class (2026-08-07)
+
+Added to `HedenmalmThetaTrace.lean`: `isTraceClass_thetaKernelOperator_sq`,
+`isTraceClass_adjoint_comp_thetaKernelOperator`,
+`re_opTrace_adjoint_comp_thetaKernelOperator` (Re tr(B†B) = ‖B‖²_HS).
+Uses `RHTower.IsTraceClass` + `IsHilbertSchmidt.comp_isTraceClass` +
+`IsHilbertSchmidt.adjoint_comp_self_isTraceClass` from
+`RHTower/SoninTimeBandHilbertSchmidt.lean` — a FOURTH already-built layer (Schatten S₁ by
+factorization, plus `tendsto_opTrace_pow_add_two_zero_of_isHilbertSchmidt_norm_lt_one`).
+
+### The genuine gap for card 7 (9) is now ONE bridge
+`hsNormSq_kernelOperator_eq_norm_sq` exists (Sonin file, line 111) but there is NO polarized
+version.  Build `hsInner (kernelOperator μ K) (kernelOperator μ L) = ⟪K, L⟫_{L²(μ; E*)}`; then
+`tr(B²) = ⟨B†, B⟩_HS` evaluates to the kernel double integral and (9) closes against
+`integral_sq_quantileFun`.

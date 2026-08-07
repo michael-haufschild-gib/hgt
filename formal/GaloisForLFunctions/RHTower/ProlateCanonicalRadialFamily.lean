@@ -88,8 +88,46 @@ theorem eventually_signedModeRadialData_isExact (n : ℕ) :
   exact signedModeRadialData_isExact ha n hvalue
 
 theorem eventually_signedModeRadialData_s_nonneg (n : ℕ) :
-    ∀ᶠ a : ℝ in atTop, 0 ≤ (signedModeRadialData a n).s :=
-  (eventually_signedModeRadialData_isExact n).mono fun _ h => h.2.2.2.2.2.2.2.2.2.2.2.1
+    ∀ᶠ a : ℝ in atTop, 0 ≤ (signedModeRadialData a n).s := by
+  filter_upwards [eventually_signedModeRadialData_isExact n] with a h
+  rcases h with ⟨_, _, _, _, _, _, _, _, _, _, _, hs0, _⟩
+  exact hs0
+
+theorem eventually_signedModeRadialData_R_one (n : ℕ) :
+    ∀ᶠ a : ℝ in atTop, (signedModeRadialData a n).R 1 = 1 := by
+  filter_upwards [eventually_signedModeRadialData_isExact n] with a h
+  rcases h with ⟨_, _, _, _, _, _, _, hR1, _⟩
+  exact hR1
+
+theorem eventually_signedModeRadialData_hasDerivAt (n : ℕ) :
+    ∀ᶠ a : ℝ in atTop, ∀ t,
+      HasDerivAt (signedModeRadialData a n).R
+        (deriv (signedModeRadialData a n).R t) t := by
+  filter_upwards [eventually_signedModeRadialData_isExact n] with a h
+  rcases h with ⟨_, _, _, _, _, hRsm, _⟩
+  intro t
+  exact ((contDiff_infty_iff_deriv.mp hRsm).1 t).hasDerivAt
+
+theorem eventually_signedModeRadialData_hasSecondDerivAt (n : ℕ) :
+    ∀ᶠ a : ℝ in atTop, ∀ t,
+      HasDerivAt (deriv (signedModeRadialData a n).R)
+        (deriv (deriv (signedModeRadialData a n).R) t) t := by
+  filter_upwards [eventually_signedModeRadialData_isExact n] with a h
+  rcases h with ⟨_, _, _, _, _, hRsm, _⟩
+  intro t
+  exact ((contDiff_infty_iff_deriv.mp
+    (contDiff_infty_iff_deriv.mp hRsm).2).1 t).hasDerivAt
+
+theorem eventually_signedModeRadialData_ode (n : ℕ) :
+    ∀ᶠ a : ℝ in atTop, ∀ t,
+      (t ^ 2 - 1) * deriv (deriv (signedModeRadialData a n).R) t +
+          2 * t * deriv (signedModeRadialData a n).R t -
+        ((signedModeRadialData a n).s * signedModeRadialBandwidth a ^ 2 -
+          signedModeRadialBandwidth a ^ 2 * t ^ 2) *
+          (signedModeRadialData a n).R t = 0 := by
+  filter_upwards [eventually_signedModeRadialData_isExact n] with a h
+  rcases h with ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, hode⟩
+  exact hode
 
 /-- Canonical fixed-mode radial density obeys the exact CCM arcsine tail law once the remaining
 separation asymptotic is proved. -/
@@ -104,50 +142,13 @@ theorem tendsto_integral_Ioi_signedModeRadialDensity
   let D : ℝ → SignedModeRadialData := fun a => signedModeRadialData a n
   let DR : ℝ → ℝ → ℝ := fun a => deriv (D a).R
   let DDR : ℝ → ℝ → ℝ := fun a => deriv (deriv (D a).R)
-  have hexact := eventually_signedModeRadialData_isExact n
-  have hR1 : ∀ a, (D a).R 1 = 1 := by
-    intro a
-    by_cases h : (D a).IsExact a n
-    · exact h.2.2.2.2.2.2.2.1
-    · simp [D, signedModeRadialData]
-      split_ifs with hlive
-      · exact False.elim (h (Classical.choose_spec
-          (exists_signedModeRadialData_isExact hlive.1 n hlive.2)))
-      · rfl
-  have hR : ∀ a t, HasDerivAt (D a).R (DR a t) t := by
-    intro a t
-    exact hasDerivAt_deriv_iff.mpr ((by
-      by_cases h : (D a).IsExact a n
-      · exact h.2.2.2.2.2.1.differentiable.differentiableAt
-      · simp [D, signedModeRadialData]
-        split_ifs with hlive
-        · exact False.elim (h (Classical.choose_spec
-            (exists_signedModeRadialData_isExact hlive.1 n hlive.2)))
-        · fun_prop))
-  have hDR : ∀ a t, HasDerivAt (DR a) (DDR a t) t := by
-    intro a t
-    exact hasDerivAt_deriv_iff.mpr ((by
-      by_cases h : (D a).IsExact a n
-      · exact ((contDiff_infty_iff_deriv.mp h.2.2.2.2.2.1).2).differentiable.differentiableAt
-      · simp [D, DR, signedModeRadialData]
-        split_ifs with hlive
-        · exact False.elim (h (Classical.choose_spec
-            (exists_signedModeRadialData_isExact hlive.1 n hlive.2)))
-        · fun_prop))
-  have hode : ∀ a t, (t ^ 2 - 1) * DDR a t + 2 * t * DR a t -
-      ((D a).s * signedModeRadialBandwidth a ^ 2 -
-        signedModeRadialBandwidth a ^ 2 * t ^ 2) * (D a).R t = 0 := by
-    intro a t
-    by_cases h : (D a).IsExact a n
-    · exact h.2.2.2.2.2.2.2.2.2.2.2.2.2 t
-    · simp [D, DR, DDR, signedModeRadialData]
-      split_ifs with hlive
-      · exact False.elim (h (Classical.choose_spec
-          (exists_signedModeRadialData_isExact hlive.1 n hlive.2)))
-      · simp
   exact GaloisForLFunctions.RHTower.tendsto_integral_Ioi_radialProlateDensity_to_ccmLeakage
     tendsto_signedModeRadialBandwidth_atTop hs
-    (eventually_signedModeRadialData_s_nonneg n) hR1 hR hDR hode hb
+    (eventually_signedModeRadialData_s_nonneg n)
+    (by simpa [D] using eventually_signedModeRadialData_R_one n)
+    (by simpa [D, DR] using eventually_signedModeRadialData_hasDerivAt n)
+    (by simpa [D, DR, DDR] using eventually_signedModeRadialData_hasSecondDerivAt n)
+    (by simpa [D, DR, DDR] using eventually_signedModeRadialData_ode n) hb
 
 /-- Canonical fixed-mode first-row radial Gram overlaps vanish on the full exterior ray once the
 remaining separation asymptotic is proved. -/
@@ -161,49 +162,13 @@ theorem tendsto_integral_Ioi_signedModeFirstRowRadialProduct
   let D : ℝ → SignedModeRadialData := fun a => signedModeRadialData a n
   let DR : ℝ → ℝ → ℝ := fun a => deriv (D a).R
   let DDR : ℝ → ℝ → ℝ := fun a => deriv (deriv (D a).R)
-  have hR1 : ∀ a, (D a).R 1 = 1 := by
-    intro a
-    by_cases h : (D a).IsExact a n
-    · exact h.2.2.2.2.2.2.2.1
-    · simp [D, signedModeRadialData]
-      split_ifs with hlive
-      · exact False.elim (h (Classical.choose_spec
-          (exists_signedModeRadialData_isExact hlive.1 n hlive.2)))
-      · rfl
-  have hR : ∀ a t, HasDerivAt (D a).R (DR a t) t := by
-    intro a t
-    exact hasDerivAt_deriv_iff.mpr ((by
-      by_cases h : (D a).IsExact a n
-      · exact h.2.2.2.2.2.1.differentiable.differentiableAt
-      · simp [D, signedModeRadialData]
-        split_ifs with hlive
-        · exact False.elim (h (Classical.choose_spec
-            (exists_signedModeRadialData_isExact hlive.1 n hlive.2)))
-        · fun_prop))
-  have hDR : ∀ a t, HasDerivAt (DR a) (DDR a t) t := by
-    intro a t
-    exact hasDerivAt_deriv_iff.mpr ((by
-      by_cases h : (D a).IsExact a n
-      · exact ((contDiff_infty_iff_deriv.mp h.2.2.2.2.2.1).2).differentiable.differentiableAt
-      · simp [D, DR, signedModeRadialData]
-        split_ifs with hlive
-        · exact False.elim (h (Classical.choose_spec
-            (exists_signedModeRadialData_isExact hlive.1 n hlive.2)))
-        · fun_prop))
-  have hode : ∀ a t, (t ^ 2 - 1) * DDR a t + 2 * t * DR a t -
-      ((D a).s * signedModeRadialBandwidth a ^ 2 -
-        signedModeRadialBandwidth a ^ 2 * t ^ 2) * (D a).R t = 0 := by
-    intro a t
-    by_cases h : (D a).IsExact a n
-    · exact h.2.2.2.2.2.2.2.2.2.2.2.2.2 t
-    · simp [D, DR, DDR, signedModeRadialData]
-      split_ifs with hlive
-      · exact False.elim (h (Classical.choose_spec
-          (exists_signedModeRadialData_isExact hlive.1 n hlive.2)))
-      · simp
   exact GaloisForLFunctions.RHTower.tendsto_integral_Ioi_firstRowRadialProduct
     tendsto_signedModeRadialBandwidth_atTop hs
-    (eventually_signedModeRadialData_s_nonneg n) hR1 hR hDR hode hk
+    (eventually_signedModeRadialData_s_nonneg n)
+    (by simpa [D] using eventually_signedModeRadialData_R_one n)
+    (by simpa [D, DR] using eventually_signedModeRadialData_hasDerivAt n)
+    (by simpa [D, DR, DDR] using eventually_signedModeRadialData_hasSecondDerivAt n)
+    (by simpa [D, DR, DDR] using eventually_signedModeRadialData_ode n) hk
 
 end RHTower
 
