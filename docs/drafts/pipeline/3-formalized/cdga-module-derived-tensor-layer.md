@@ -1369,3 +1369,35 @@ Every intermediate invariance hypothesis is discharged at the point of use: `hba
 of `relTensorMapLeft_tower_isQuasiIsoFull` inside `relTensorMapLeft_freeTower_isQuasiIsoFull`, and
 `h₀` of `killSeq_flat` inside `relTensorMapLeft_resolution_isQuasiIsoFull`, where the base is the
 concrete free cell on the cocycles of degree zero.
+
+## Towards the multiplicative structure: the Koszul product on a bidegree
+
+`CDGATensorAlgebra.lean` — `neg_one_pow_eq_of_even_add`, `tensorPairMap`, **`tensorPairₗ`**,
+`tensorPairₗ_tmul`, **`tensorPair_comm`**, **`tensorPair_assoc`**, **`tensorPair_dL`**,
+**`tensorPair_dR`**.
+
+`(x₁ ⊗ y₁)(x₂ ⊗ y₂) = (−1)^{|y₁||x₂|}(x₁x₂) ⊗ (y₁y₂)`, built from
+`TensorProduct.tensorTensorTensorComm` followed by the two multiplications, and the four laws it
+satisfies bidegree by bidegree.  This is where all the sign bookkeeping of a tensor product of
+algebras lives; the remaining work is the sum over splittings of a total degree, which is
+reindexing, not signs.
+
+Every sign identity reduces to one lemma, `neg_one_pow_eq_of_even_add`: two powers of `−1` agree
+when their exponents differ by an even number.  Stating it that way turns each verification into a
+single `ring` goal, which is what makes the four laws short.  Two of the four signs are not what a
+first guess gives:
+
+* graded commutativity needs `(−1)^{(a₁+a₂)(b₁+b₂)}` — the *total* degrees — and the shuffle sign
+  plus the two algebra signs conspire to produce exactly that;
+* the first Leibniz half carries `(−1)^{a₁+a₂}`, again the total degree of the left factor, not the
+  `(−1)^{a₁}` that the `X`-differential alone would suggest.
+
+Axioms: `propext, Quot.sound`.
+
+## Next
+
+The sum over splittings: for a fixed output bidegree the product is a finite sum over the ways of
+splitting each of the two indices, indexed by the bidegrees of the left factor's total degree —
+which `tensorIndexFintype` already knows is finite.  Associativity and commutativity of the sum are
+reindexing arguments on top of `tensorPair_assoc` and `tensorPair_comm`; the Leibniz rule is
+`tensorPair_dL` and `tensorPair_dR` summed, matched against `tensorD`'s two halves.

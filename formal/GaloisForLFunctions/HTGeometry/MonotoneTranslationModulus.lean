@@ -198,6 +198,65 @@ theorem integrableOn_gagliardo_quotient {s C : ℝ} (hs : s < 1 / 2) {F : ℝ �
   rw [Real.norm_eq_abs, abs_of_nonneg (div_nonneg (hnn h hh) hden.le)]
   exact hquot
 
+/-! ## The logarithmic weight is dominated by every positive power
+
+The Sobolev criterion is applied to `log⟨ξ⟩`, not to a power of `ξ`.  The two are compatible
+because the logarithm grows slower than every positive power: `log⟨ξ⟩ ≤ C_s (1 + |ξ|^s)` for every
+`s > 0`, with the explicit constant `C_s = 2^{s/2}/s`.  So membership in one Sobolev weight below
+one half already puts `log⟨D⟩u` in `L²`.
+-/
+
+/-- A power of the larger of `1` and `|ξ|` is bounded by `1 + |ξ|^s`. -/
+theorem max_one_abs_rpow_le (s : ℝ) (ξ : ℝ) :
+    (max 1 |ξ|) ^ s ≤ 1 + |ξ| ^ s := by
+  rcases le_total |ξ| 1 with h | h
+  · rw [max_eq_left h, Real.one_rpow]
+    have := Real.rpow_nonneg (abs_nonneg ξ) s
+    linarith
+  · rw [max_eq_right h]
+    linarith [zero_le_one (α := ℝ)]
+
+/-- The squared bracket is bounded by twice the square of the larger of `1` and `|ξ|`. -/
+theorem one_add_sq_le_two_mul_max_sq (ξ : ℝ) : 1 + ξ ^ 2 ≤ 2 * (max 1 |ξ|) ^ 2 := by
+  have h1 : (1 : ℝ) ≤ max 1 |ξ| := le_max_left _ _
+  have h2 : |ξ| ≤ max 1 |ξ| := le_max_right _ _
+  have h3 : ξ ^ 2 = |ξ| ^ 2 := (sq_abs ξ).symm
+  nlinarith [abs_nonneg ξ]
+
+/-- **The logarithmic weight is dominated by every positive power**, with explicit constant.
+This is the compatibility that lets a fractional Sobolev bound feed a logarithmic multiplier. -/
+theorem log_sqrt_one_add_sq_le {s : ℝ} (hs : 0 < s) (ξ : ℝ) :
+    Real.log (Real.sqrt (1 + ξ ^ 2)) ≤ 2 ^ (s / 2) / s * (1 + |ξ| ^ s) := by
+  have hbase : (0 : ℝ) < 1 + ξ ^ 2 := by positivity
+  have hstep : Real.log (Real.sqrt (1 + ξ ^ 2)) ≤ Real.sqrt (1 + ξ ^ 2) ^ s / s :=
+    Real.log_le_rpow_div (Real.sqrt_nonneg _) hs
+  have hrw : Real.sqrt (1 + ξ ^ 2) ^ s = (1 + ξ ^ 2) ^ (s / 2) := by
+    rw [Real.sqrt_eq_rpow, ← Real.rpow_mul hbase.le]
+    ring_nf
+  have hmax : (0 : ℝ) ≤ max 1 |ξ| := le_trans zero_le_one (le_max_left _ _)
+  have hbound : (1 + ξ ^ 2) ^ (s / 2) ≤ 2 ^ (s / 2) * (max 1 |ξ|) ^ s := by
+    have h1 : (1 + ξ ^ 2) ^ (s / 2) ≤ (2 * (max 1 |ξ|) ^ 2) ^ (s / 2) :=
+      Real.rpow_le_rpow hbase.le (one_add_sq_le_two_mul_max_sq ξ) (by positivity)
+    have h2 : (2 * (max 1 |ξ|) ^ 2 : ℝ) ^ (s / 2) = 2 ^ (s / 2) * (max 1 |ξ|) ^ s := by
+      rw [Real.mul_rpow (by norm_num) (by positivity)]
+      congr 1
+      rw [← Real.rpow_natCast (max 1 |ξ|) 2, ← Real.rpow_mul hmax]
+      congr 1
+      push_cast
+      ring
+    rw [h2] at h1
+    exact h1
+  have hpow : (max 1 |ξ|) ^ s ≤ 1 + |ξ| ^ s := max_one_abs_rpow_le s ξ
+  have htwo : (0 : ℝ) < 2 ^ (s / 2) := Real.rpow_pos_of_pos (by norm_num) _
+  rw [hrw] at hstep
+  have hchain : (1 + ξ ^ 2) ^ (s / 2) ≤ 2 ^ (s / 2) * (1 + |ξ| ^ s) := by
+    refine hbound.trans ?_
+    exact mul_le_mul_of_nonneg_left hpow htwo.le
+  calc Real.log (Real.sqrt (1 + ξ ^ 2)) ≤ (1 + ξ ^ 2) ^ (s / 2) / s := hstep
+    _ ≤ 2 ^ (s / 2) * (1 + |ξ| ^ s) / s := by
+        gcongr
+    _ = 2 ^ (s / 2) / s * (1 + |ξ| ^ s) := by ring
+
 end MonotoneTranslation
 
 end GaloisForLFunctions.HTGeometry
