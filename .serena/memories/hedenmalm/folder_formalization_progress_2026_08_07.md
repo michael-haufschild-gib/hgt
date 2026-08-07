@@ -850,3 +850,159 @@ with `g := D f` (NOT with f and g swapped, which was my first, wrong, attempt) t
 
 Card 6 (8) still lacks the OPERATOR statement (self-adjointness of the closure, compact resolvent);
 that part still needs the unbounded-Fredholm layer.
+
+## Card 6: EVERY statement now has its core-level content (2026-08-07)
+
+`HedenmalmWeightedAdjointCore` additions: `weightedPair`/`sourceD`/`sourceL`,
+`weightedPair_D_left`, `conj_weightedPair_integrand`, `weightedPair_L_left`,
+`weightedPair_dirac_symmetry` (card 6 (9)), `integral_weighted_witten` +
+`integral_weighted_energy_nonneg` (card 6 (8)), and
+`eq_zero_of_shifted_kernel` (card 6 (10) strictness: `(A+α)f = 0` with compact support ⟹ f ≡ 0,
+via `f(x)e^{iαx}` constant + ℝ noncompact).
+
+Traps: `HasDerivAt.cexp` gives `exp(...) * c`, not `c * exp(...)` — use `congr_deriv; ring`.
+`Set.ne_univ_iff_exists_not_mem` and `image_eq_zero_of_nmem_tsupport` do NOT exist; use
+`by_contra` + `Set.eq_univ_of_forall` + `IsCompact.ne_univ`, and `subset_tsupport` with
+`Function.mem_support`.
+
+What remains on card 6 is UNIFORM: the passage from each core identity to the operator statement
+after closure (A* = L, index −1, compact resolvent, self-adjointness, operator strict positivity).
+That is the unbounded-Fredholm layer.
+
+# ============ BUILD PLANS FOR THE THREE REMAINING LAYERS ============
+(written 2026-08-07 at the end of the long formalisation session; all supporting
+ assets below were VERIFIED present, not guessed)
+
+## PLAN A — Wedderburn / Mittag-Leffler  (closes card 5 (13),(14),(17)-cokernel)
+
+Target: `f g : ℂ → ℂ` entire with no common zero ⟹ `∃ a b entire, a*f + b*g = 1`.
+Reduction (classical): find entire `b` with `b ≡ 1/f` to order `m_z` at each zero `z` of `g`;
+then `a := (1 - b*f)/g` is entire and `a*g + b*f = 1`.
+For card 5 the zeros are SIMPLE (`a_n` has simple zeros at `2πk/log n`, k ≠ 0), so only VALUE
+interpolation is needed — no jets.
+
+Concrete steps:
+1. Weierstrass side is DONE in the corpus:
+   `RHTower.canonicalProductE1Indexed_hasProdLocallyUniformlyOn` needs only
+   `∀ i, a i ≠ 0` and `Summable (fun i => 1 / ‖a i‖^2)`; the zeros `2πk/log n` satisfy both.
+   `HTGeometry/MovingCanonicalProduct.lean` gives `movingCanonicalProduct_eq_zero_iff` and the
+   `analyticOrderAt` at each zero.
+2. Build the interpolation series
+   `b z = ∑_k c_k · G z / ((z - w_k) * deriv G w_k) · (z / w_k)^{m_k}`
+   with `m_k` chosen so that `∑_k |c_k / deriv G w_k| · (R/|w_k|)^{m_k} < ∞` on each `|z| ≤ R`.
+   The convergence engine is the same `Summable`+`HasProdLocallyUniformlyOn` machinery.
+3. `b` is entire and `b w_k = c_k` (the k-th term is the only one not vanishing at `w_k`).
+Estimate: several hundred lines; the analysis is standard but the locally-uniform bookkeeping is
+the bulk.
+
+## PLAN B — the trace formula  (closes card 7 (6)+(8), unblocks cards 4 and 8)
+
+Target: `HilbertSchmidt.resolventTrace thetaKernelMatrix z = -Xi_C'(z)/Xi_C(z)` (sign/shift TBD),
+then `HilbertSchmidt.fredholmDet_weld` finishes (8) immediately, and (6)'s multiplicity is the
+order of vanishing of `thetaFredholmDet`.
+Everything else is BUILT: `thetaKernelMatrix`, `isHS_thetaKernelMatrix`, `thetaFredholmDet`,
+`logDeriv_thetaFredholmDet`, `differentiableOn_thetaFredholmDet`.
+Two routes, both research-level:
+* B1 Lidskii for a NON-self-adjoint trace-class operator (`tr(B^m) = ∑ λ_j^m`), then match with
+  the Hadamard product `RHTower/XiHadamardFactorization.lean`.  The corpus Lidskii is
+  self-adjoint only and `B` is not self-adjoint (`RBR = -B`).
+* B2 Grushin–Schur: factor the bordered pencil as `(invertible) ∘ diag(I, Xi_C(z)/Xi_C(0))` and
+  push it through `det₂`, which is multiplicative only up to `exp(-tr((A-I)(B-I)))` — that
+  correction term must be computed.
+`HTGeometry/SourceGrushinInverse.lean` currently gives only KERNEL equivalence, not determinants.
+
+## PLAN C — unbounded Fredholm  (closes ALL of card 6's operator half in one go)
+
+Card 6 already has EVERY statement's core-level content in Lean.  What is missing is uniform: the
+passage core-identity ⟹ operator-statement after closure.  Needed, none of which mathlib has:
+`IsFredholm` for `LinearPMap`, the index, compact resolvent, and self-adjointness of a 2×2 block
+Dirac operator.  mathlib supplies only `LinearPMap.adjoint`, `.closure`, `.IsClosable`.
+Build order: closability of `D` on `C_c^∞` in `H_k` (use `integral_weighted_symmetry` for the
+symmetric-pair criterion) → identify `A^*` with the maximal `L` → closed range from the explicit
+two-ended solution → index −1 from `ker A = 0` (`not_integrable_const_mul_inv_thetaSource`) and
+`ker A^* = ℂ k` (`integral_range_pairing`).
+
+## PLAN A step 1 BUILT (2026-08-07)
+
+`HedenmalmTwoPrimeNormalFrame`: `centeredMultiplierZero n k = 2πk/log n`,
+`centeredMultiplierZero_ne_zero` (n ≥ 2, k ≠ 0), `norm_centeredMultiplierZero`, and
+`summable_inv_sq_centeredMultiplierZero` — `Summable (fun k : ℤ => 1/‖w_k‖²)`.
+
+That is EXACTLY the hypothesis of
+`RHTower.canonicalProductE1Indexed_hasProdLocallyUniformlyOn`, so the Weierstrass product over the
+zeros of `a_n` can now be formed (index over `ℤ`, and Lean's `1/0 = 0` makes the k = 0 term
+harmless — `Real.summable_one_div_int_pow` covers the whole of `ℤ`).
+
+Next in Plan A: form the canonical product `G_n` over these zeros, show `G_n` and `a_n` have the
+same divisor (use `movingCanonicalProduct_eq_zero_iff` and `centeredMultiplier_eq_zero_iff`), then
+the interpolation series.
+
+## PLAN A step 2 BUILT (2026-08-07)
+
+`centeredZero n : {j : ℤ // j ≠ 0} → ℂ` (the zeros of `a_n` on the nonzero integers),
+`centeredZero_ne_zero`, `summable_inv_sq_centeredZero` (`Summable.subtype` off the ℤ version),
+`centeredCanonicalProduct n := canonicalProductE1Indexed (centeredZero n)`, and
+`hasProdLocallyUniformlyOn_centeredCanonicalProduct` — the genus-one Weierstrass product over the
+zeros of `a_n` now EXISTS in Lean.
+
+Plan A remaining: (3) show `centeredCanonicalProduct n` and `centeredMultiplier n` have the same
+divisor away from 0 (`movingCanonicalProduct_eq_zero_iff`-style + `centeredMultiplier_eq_zero_iff`);
+(4) the interpolation series with convergence factors; (5) Wedderburn.
+
+## PLAN A step 3 (partial) BUILT (2026-08-07)
+
+`analyticOnNhd_centeredCanonicalProduct` (entire) and `centeredCanonicalProduct_ne_zero`
+(vanishes only on the prescribed set) — both one-liners off
+`canonicalProductE1Indexed_analytic` / `canonicalProductE1Indexed_ne_zero`.
+
+So the Weierstrass side of Plan A is COMPLETE: an entire function with exactly the zeros of `a_n`
+(as a set) is now available.  What is left of step 3 is the divisor MATCH (same zeros AND same
+simple order) against `centeredMultiplier_eq_zero_iff`; then step 4, the interpolation series,
+which is the analytic bulk of Plan A.
+
+## PLAN A step 3 COMPLETE (2026-08-07)
+
+`centeredMultiplier_eq_zero_iff_mem_zeros (hn : 2 ≤ n) (hz : z ≠ 0) :`
+`centeredMultiplier n z = 0 ↔ ∃ k : {j // j ≠ 0}, z = centeredZero n k`.
+So the divisor of `a_n` off the origin is EXACTLY the zero set of the canonical product.
+
+TRAP (already in memory, hit again): `push_cast`/`field_simp` rewrite `((Real.log n : ℝ) : ℂ)`
+into `Complex.log ↑n`, which then never matches.  Prove a local `hcast` with
+`simp only [Complex.ofReal_div, Complex.ofReal_mul, Complex.ofReal_intCast]; norm_num`
+and drive the algebra with `eq_div_iff` / `div_mul_cancel₀` instead.
+
+Plan A remaining: (4) the interpolation series (the analytic bulk), (5) Wedderburn.
+
+## PLAN A step 4 — the simplicity sub-lemma has a ready-made tool (2026-08-07)
+
+`AnalyticAt.analyticOrderAt_eq_one_of_zero_deriv_ne_zero`
+(`Mathlib/Analysis/Analytic/Order.lean:328`) — if `f x = 0` and `deriv f x ≠ 0` then
+`analyticOrderAt f x = 1`.  (Companion: `analyticOrderAt_sub_eq_one_of_deriv_ne_zero`, and
+`AnalyticAt.analyticOrderAt_eq_natCast` for the general `(z - z₀)^n • g` characterisation.)
+
+So the simplicity of the zeros of `a_n` needs only:
+1. `analyticAt_centeredMultiplier n hz` (BUILT);
+2. `centeredMultiplier n w_k = 0` (BUILT, `centeredMultiplier_eq_zero_iff_mem_zeros`);
+3. `deriv (centeredMultiplier n) w_k ≠ 0`.
+For (3): from `centeredMultiplier_eq_sin` (`a_n z = 2c·sin(z l)/z`, l = log n / 2), the quotient
+rule at `w` with `sin(w l) = 0` gives `a_n'(w) = 2c·l·cos(w l)/w`, and `w·l = π k` so
+`cos(w l) = (-1)^k ≠ 0`.  `centeredMultiplier_eq_sin` holds only off the origin, so use
+`HasDerivAt.congr_of_eventuallyEq` on the open set `{z ≠ 0}`.
+
+That gives the simple-divisor match; then the interpolation series (per-index convergence factors,
+`Summable` bookkeeping) is the remaining bulk of Plan A.
+
+## PLAN A: the derivative of a_n is BUILT (2026-08-07)
+
+`hasDerivAt_centeredMultiplier (n) (hw : w ≠ 0)` — quotient rule on
+`a_n z = 2c·sin(z l)/z`, transferred to `centeredMultiplier` by
+`HasDerivAt.congr_of_eventuallyEq` on the open set `{z ≠ 0}` (`isOpen_ne.mem_nhds hw`).
+
+Trap: `((hasDerivAt_id w).mul_const l).csin` produces `id x * l` and `1 * l` in the statement;
+wrap it in `by have h := …; simpa using h`.
+
+Remaining for the simplicity lemma: evaluate that derivative at `w_k`, where `sin(w_k l) = 0` and
+`cos(w_k l) = cos(π k) = (-1)^k ≠ 0`, then apply
+`AnalyticAt.analyticOrderAt_eq_one_of_zero_deriv_ne_zero`.
+Need `w_k * l = π k` — immediate from `centeredZero`/`centeredMultiplierZero` and
+`l = log n / 2` (watch the `Real.log` cast trap: never `push_cast` through it).

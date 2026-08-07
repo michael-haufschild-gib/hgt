@@ -674,3 +674,36 @@ applies directly.  Interval integrability along the shifted bottom edge is *deri
 `1`-periodicity plus analyticity on the border, not assumed.
 
 `#print axioms` reports `[propext, Classical.choice, Quot.sound]` for every declaration above.
+
+## Lean progress — the realizing source belongs to the class
+
+`GaloisForLFunctions/HTGeometry/EllipticGammaConeCocycle.lean` (wired, axiom-clean):
+
+    expChar_add, expChar_one, expChar_add_one, expChar_neg_mul_self, one_sub_expChar_neg
+    coneProduct_periodic            every factor is `1`-periodic, hence so is the product
+    ellipticGammaCone_periodic      **`Γ(z+1) = Γ(z)`**
+    coneProduct_cocycle_identity    the four-fold shift identity
+                                      `(1 - e(z))·N = (1 - e(-z))·D`
+    coneProduct_mixed_cocycle       `N = -e(-z)·D`
+    ellipticGammaCone_mixed_cocycle **`C_Γ(z) = Γ(z+a+b)Γ(z)/(Γ(z+a)Γ(z+b)) = -e(-z)`**
+
+Together with the two shift relations added to `ExpConeProduct.lean`,
+
+    singleFactor, singleProduct     `P(w) = ∏_{k ≥ 0}(1 - e(k b + w))`
+    singleProduct_shift             `P(w) = (1 - e(w))·P(w + b)`
+    hasProd_singleProduct_shifted   Fubini for the double product
+    coneProduct_shift               `Φ(w) = P(w)·Φ(w + a)`
+    coneProduct_comm                `Φ` is symmetric in its two periods
+
+this establishes both defining properties of the multiplicative triptic source class for `Γ`:
+`1`-periodicity, and a mixed multiplicative coboundary that is an exponential character (so its
+logarithmic derivative is the constant `-2πi`).  Combined with the divisor computation, the
+realizing source is now a proved member of the class with proved divisor `[0]`, and its translates
+realize every class `[g]`.
+
+The cancellation is exact and needs no analysis beyond the shift relations: in
+
+    N = Φ(-z)Φ(a+b-z)Φ(z+a)Φ(z+b),   D = Φ(z+a+b)Φ(z)Φ(b-z)Φ(a-z),
+
+every cone product cancels against a partner, leaving `P(-z)P(z+b)` against `P(z)P(b-z)`, whose
+ratio is `(1 - e(-z))/(1 - e(z)) = -e(-z)`.

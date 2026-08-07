@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HalfLogCesaroAverage
 import GaloisForLFunctions.HTGeometry.GammaTransportKernel
+import GaloisForLFunctions.HTGeometry.MollifierUniformApproximation
 
 /-!
 # The equation bounds the half-log trace
@@ -480,6 +481,40 @@ theorem eventually_localised_of_isMaxOn_family {H X : ℝ → ℝ} {a B : ℝ}
   have hs : 0 ≤ Real.sqrt L₀ := Real.sqrt_nonneg _
   nlinarith [hloc, hlow, hs]
 
+/-! ## The boundedness side conditions are not hypotheses
+
+The four filter-boundedness conditions of the trace theorem follow from the card's `(1)` — the
+profile being bounded on the terminal ray — and so must be derived rather than assumed.
+-/
+
+open Filter Set in
+/-- Bounded above on a terminal ray gives boundedness under `atTop`. -/
+theorem isBoundedUnder_le_of_eventually_le {f : ℝ → ℝ} {a B : ℝ}
+    (h : ∀ L ∈ Ici a, f L ≤ B) : IsBoundedUnder (· ≤ ·) atTop f :=
+  ⟨B, by
+    rw [Filter.eventually_map]
+    filter_upwards [eventually_ge_atTop a] with L hL using h L hL⟩
+
+open Filter Set in
+/-- Bounded below on a terminal ray gives the dual. -/
+theorem isBoundedUnder_ge_of_eventually_le {f : ℝ → ℝ} {a B : ℝ}
+    (h : ∀ L ∈ Ici a, -B ≤ f L) : IsBoundedUnder (· ≥ ·) atTop f :=
+  ⟨-B, by
+    rw [Filter.eventually_map]
+    filter_upwards [eventually_ge_atTop a] with L hL using h L hL⟩
+
+open Filter Set in
+/-- Coboundedness above, from the lower bound. -/
+theorem isCoboundedUnder_le_of_eventually_le {f : ℝ → ℝ} {a B : ℝ}
+    (h : ∀ L ∈ Ici a, -B ≤ f L) : IsCoboundedUnder (· ≤ ·) atTop f :=
+  (isBoundedUnder_ge_of_eventually_le h).isCoboundedUnder_le
+
+open Filter Set in
+/-- Coboundedness below, from the upper bound. -/
+theorem isCoboundedUnder_ge_of_eventually_le {f : ℝ → ℝ} {a B : ℝ}
+    (h : ∀ L ∈ Ici a, f L ≤ B) : IsCoboundedUnder (· ≥ ·) atTop f :=
+  (isBoundedUnder_le_of_eventually_le h).isCoboundedUnder_ge
+
 /-! ## The signed half-log trace theorem
 
 Assembling everything: from the logarithmic normal equation with a bounded source, a bounded
@@ -507,12 +542,12 @@ theorem tendsto_halfLogTrace_of_equation
       0 ≤ F Y - (Real.sqrt L₀)⁻¹ * s / Real.sqrt Y)
     (heq : ∀ Y, logDirichlet F Y + gammaTransport F Y = S Y)
     (hSu : ∀ Y, S Y ≤ T) (hSl : ∀ Y, Tl ≤ S Y)
-    (hA : Tendsto (halfLogAverage F) atTop (nhds α))
-    (hb : IsBoundedUnder (· ≤ ·) atTop fun L => Real.sqrt L * F L)
-    (hb' : IsBoundedUnder (· ≥ ·) atTop fun L => Real.sqrt L * F L)
-    (hcb : IsCoboundedUnder (· ≤ ·) atTop fun L => Real.sqrt L * F L)
-    (hcb' : IsCoboundedUnder (· ≥ ·) atTop fun L => Real.sqrt L * F L) :
+    (hA : Tendsto (halfLogAverage F) atTop (nhds α)) :
     Tendsto (fun L => Real.sqrt L * F L) atTop (nhds α) := by
+  have hb := isBoundedUnder_le_of_eventually_le hHup
+  have hb' := isBoundedUnder_ge_of_eventually_le hHlow
+  have hcb := isCoboundedUnder_le_of_eventually_le hHlow
+  have hcb' := isCoboundedUnder_ge_of_eventually_le hHup
   obtain ⟨Xu, hXu⟩ := exists_maximizer_family (B := B) hHcont hHup
   obtain ⟨Xl, hXl⟩ := exists_minimizer_family (B := B) hHcont hHlow
   have hlocu := eventually_localised_of_isMaxOn_family hHup hHlow
@@ -540,5 +575,132 @@ theorem tendsto_halfLogTrace_of_equation
     (fun L₀ h => (hXl L₀ h).2) hXlint hXlpos
   exact tendsto_halfLogTrace_of_equation_families hFb hXudiv hXldiv hratio hXunn
     hup hlow hA hb hb' hcb hcb'
+
+
+/-! ## The trace theorem with the averaged limit chained
+
+`(12)` — existence of the averaged trace — is itself a theorem, not an assumption.  Chaining it
+determines the limit explicitly and leaves only the equation, the source bounds and object
+regularity.
+-/
+
+open Filter MeasureTheory Set in
+/-- **The signed half-log trace, with `(12)` chained.**  The limit is the explicit value
+`A(L₀) + ∫_{L₀}^∞ P F/(4L^{3/2})` rather than a free parameter. -/
+theorem tendsto_halfLogTrace_of_equation_of_integrable
+    {F S : ℝ → ℝ} {a M T Tl B L₀ : ℝ}
+    (hFb : ∀ x, |F x| ≤ M) (hmeas : Measurable F) (hFpos : ∀ x, 0 ≤ F x)
+    (hFcont : Continuous F)
+    (hHcont : ContinuousOn (fun L => Real.sqrt L * F L) (Ici a))
+    (hHup : ∀ L ∈ Ici a, Real.sqrt L * F L ≤ B)
+    (hHlow : ∀ L ∈ Ici a, -B ≤ Real.sqrt L * F L)
+    (hnear : ∀ Y, IntegrableOn (fun s => secondDifference F Y s * gammaTransportKernel s)
+      (Ioc 0 (Y / 2)))
+    (hnumlow : ∀ L₀' Y, ∀ s, 0 ≤ s → s ≤ Y / 2 →
+      0 ≤ F Y - (Real.sqrt L₀')⁻¹ * s / Real.sqrt Y)
+    (heq : ∀ Y, logDirichlet F Y + gammaTransport F Y = S Y)
+    (hSu : ∀ Y, S Y ≤ T) (hSl : ∀ Y, Tl ≤ S Y)
+    (hL₀ : 0 < L₀)
+    (hAint : IntegrableOn (fun L => logDirichlet F L / (4 * L * Real.sqrt L)) (Ioi L₀)) :
+    Tendsto (fun L => Real.sqrt L * F L) atTop
+      (nhds (halfLogAverage F L₀
+        + ∫ x in Ioi L₀, logDirichlet F x / (4 * x * Real.sqrt x))) :=
+  tendsto_halfLogTrace_of_equation hFb hmeas hFpos hHcont hHup hHlow hnear hnumlow heq hSu hSl
+    (tendsto_halfLogAverage hFcont hL₀ hAint)
+
+/-! ## The averaged-trace integrability, reduced to the card's `(10)`
+
+The equation splits `P F/(4L^{3/2})` into a bounded source over `L^{3/2}` — always integrable on a
+terminal ray — and the transport term over the same weight, which is exactly the card's `(10)`.
+-/
+
+open MeasureTheory Set in
+/-- `L^{-3/2}` is integrable on any terminal ray. -/
+theorem integrableOn_inv_weight {L₀ : ℝ} (hL₀ : 0 < L₀) :
+    IntegrableOn (fun L : ℝ => L ^ (-(3:ℝ)/2)) (Ioi L₀) := by
+  rw [integrableOn_Ioi_rpow_iff hL₀]
+  norm_num
+
+open MeasureTheory Set in
+/-- A bounded numerator over `4L^{3/2}` is integrable on a terminal ray. -/
+theorem integrableOn_bounded_div_weight {S : ℝ → ℝ} {L₀ C : ℝ} (hL₀ : 0 < L₀)
+    (hmeas : Measurable S) (hbd : ∀ L, |S L| ≤ C) :
+    IntegrableOn (fun L => S L / (4 * L * Real.sqrt L)) (Ioi L₀) := by
+  have hdom : IntegrableOn (fun L : ℝ => C * L ^ (-(3:ℝ)/2)) (Ioi L₀) :=
+    (integrableOn_inv_weight hL₀).const_mul C
+  have hm : Measurable fun L : ℝ => S L / (4 * L * Real.sqrt L) := by fun_prop
+  refine Integrable.mono' hdom hm.aestronglyMeasurable ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with L hL
+  have hpos : 0 < L := lt_trans hL₀ hL
+  have hs : 0 < Real.sqrt L := Real.sqrt_pos.mpr hpos
+  have hden : 0 < 4 * L * Real.sqrt L := by positivity
+  have hprod : L * Real.sqrt L = L ^ ((3:ℝ)/2) := by
+    rw [Real.sqrt_eq_rpow, show ((3:ℝ)/2) = 1 + 1/2 by norm_num, Real.rpow_add hpos,
+      Real.rpow_one]
+  have hrw : L ^ (-(3:ℝ)/2) = 1 / (L * Real.sqrt L) := by
+    rw [hprod, one_div, ← Real.rpow_neg hpos.le]
+    norm_num
+  rw [Real.norm_eq_abs, abs_div, abs_of_pos hden, div_le_iff₀ hden, hrw]
+  have h1 := hbd L
+  have h2 : C * (1 / (L * Real.sqrt L)) * (4 * L * Real.sqrt L) = 4 * C := by
+    field_simp
+  rw [h2]
+  linarith [h1, abs_nonneg (S L)]
+
+open MeasureTheory Set in
+/-- **The averaged-trace integrability follows from the equation and `(10)`.**  The source half is
+automatic; only the transport half is the card's `(10)`. -/
+theorem integrableOn_logDirichlet_weight_of_equation {F S : ℝ → ℝ} {L₀ C : ℝ}
+    (hL₀ : 0 < L₀) (hSmeas : Measurable S) (hSbd : ∀ L, |S L| ≤ C)
+    (heq : ∀ Y, logDirichlet F Y + gammaTransport F Y = S Y)
+    (hR : IntegrableOn (fun L => gammaTransport F L / (4 * L * Real.sqrt L)) (Ioi L₀)) :
+    IntegrableOn (fun L => logDirichlet F L / (4 * L * Real.sqrt L)) (Ioi L₀) := by
+  have hS := integrableOn_bounded_div_weight (S := S) hL₀ hSmeas hSbd
+  have hdiff := hS.sub hR
+  refine hdiff.congr ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with L _
+  have h := heq L
+  have hsub : S L - gammaTransport F L = logDirichlet F L := by linarith
+  show S L / (4 * L * Real.sqrt L) - gammaTransport F L / (4 * L * Real.sqrt L)
+    = logDirichlet F L / (4 * L * Real.sqrt L)
+  rw [div_sub_div_same, hsub]
+
+/-! ## The mollified equation
+
+Mollification commutes with the transport operator and with the primitive; only multiplication by
+the coordinate does not, and its defect is the first-moment kernel.  So the logarithmic Dirichlet
+operator of the mollified profile is the mollified operator plus twice that defect — the card's
+`(17)`, and the step that converts the equation into its pointwise smoothed form `(18)`.
+-/
+
+open MeasureTheory in
+/-- **The card's `(17)`.**  `P f_ε = ρ_ε * (P f) + 2 (s ρ_ε) * f`, from `mollify_position_eq` plus
+linearity.
+
+**Caution on `hY`.**  The hypothesis `ρ * Y_F = Y_{ρ*F}` is stated here for the *half-line*
+primitive, and in that form it is **false** for a mollifier supported on both sides of the origin:
+unfolding the right-hand side gives `∫ρ(t)(∫_{−t}^{L−t}F)dt`, which differs from
+`∫ρ(t)(∫_0^{L−t}F)dt`.  The correct statement uses the *full* primitive of the zero extension,
+where the commutation is associativity of convolution.  Use this lemma only with a `ρ` supported in
+`[0,∞)`, or restate it via `zeroExtend`. -/
+theorem logDirichlet_mollify {ρ F : ℝ → ℝ} (hρ : Continuous ρ) (hF : Continuous F)
+    (hcρ : HasCompactSupport ρ) (L : ℝ)
+    (hY : mollify ρ (halfLinePrimitive F) L = halfLinePrimitive (mollify ρ F) L) :
+    logDirichlet (mollify ρ F) L
+      = mollify ρ (logDirichlet F) L + 2 * mollify (firstMomentKernel ρ) F L := by
+  have hpos := mollify_position_eq ρ F hρ hF hcρ L
+  have hlin : mollify ρ (fun Y => 2 * Y * F Y - halfLinePrimitive F Y) L
+      = 2 * mollify ρ (fun y => y * F y) L - mollify ρ (halfLinePrimitive F) L := by
+    unfold mollify
+    rw [← MeasureTheory.integral_const_mul, ← MeasureTheory.integral_sub]
+    · refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+      show ρ t * (2 * (L - t) * F (L - t) - halfLinePrimitive F (L - t))
+        = 2 * (ρ t * ((L - t) * F (L - t))) - ρ t * halfLinePrimitive F (L - t)
+      ring
+    · exact (integrable_mollifyKernel hρ (continuous_id.mul hF) hcρ L).const_mul 2
+    · exact integrable_mollifyKernel hρ (continuous_halfLinePrimitive hF) hcρ L
+  unfold logDirichlet
+  rw [← hY, hlin, hpos]
+  ring
 
 end GaloisForLFunctions.HTGeometry

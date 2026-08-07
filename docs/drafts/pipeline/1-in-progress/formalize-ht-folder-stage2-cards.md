@@ -388,3 +388,21 @@ line* (`ord = -1` for `m ≤ 0`, `0` for `m > 0`), so its shift differences are 
 index `m = 0`.  A theta function would give charge `0`: its divisor meets each orbit finitely and the
 telescoping sum vanishes.  That is why the elliptic gamma, and not a theta function, is the
 realizing source.
+
+
+## Closed: the realizing source is a proved member of the class
+
+`HTGeometry/EllipticGammaConeCocycle.lean` proves the two defining properties of the multiplicative
+triptic source class for the constructed `Γ`:
+
+```text
+ellipticGammaCone_periodic       Γ(z+1) = Γ(z)
+ellipticGammaCone_mixed_cocycle  C_Γ(z) = -e(-z), an exponential character
+```
+
+The second follows from the two shift relations `Φ(w) = P(w)Φ(w+a)` and `P(w) = (1-e(w))P(w+b)`
+(added to `ExpConeProduct.lean`, with Fubini for the double product via `HasProd.prod_fiberwise` —
+mathlib's `tprod` Fubini needs a `CommGroup`, which `ℂ` under multiplication is not).
+
+So for cards 2 and 3, `Γ ∈ M` with `D_Γ = [0]` is fully formal.  The single remaining input on both
+is the kernel identification: `Y` is differentially algebraic exactly when `D_Y = 0`.

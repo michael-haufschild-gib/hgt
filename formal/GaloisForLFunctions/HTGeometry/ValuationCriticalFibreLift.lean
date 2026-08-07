@@ -64,6 +64,22 @@ noncomputable def valuationSubringCriticalFibreLift
   rw [Polynomial.coeff_map] at hcoeff
   rw [hcoeff, hpzero, map_zero]
 
+/-- Mapping the integral lift back to the fraction field recovers the original point. -/
+theorem criticalFibreMap_valuationSubringCriticalFibreLift
+    {L : Type*} [Field L] (O : ValuationSubring L)
+    {m n : ℕ} (US VS : O[X])
+    (p : criticalFibre L m n (US.map O.subtype) (VS.map O.subtype))
+    (hmem : (∀ i : Fin m, p.1.1.coeff i ∈ O) ∧
+      ∀ j : Fin n, p.1.2.coeff j ∈ O) :
+    criticalFibreMap O.subtype m n US VS
+        (valuationSubringCriticalFibreLift O US VS p hmem) = p := by
+  apply Subtype.ext
+  apply Prod.ext
+  · change (valuationSubringLowLift O p.1.1 hmem.1).map O.subtype = p.1.1
+    exact valuationSubringLowLift_map O p.2.1 hmem.1
+  · change (valuationSubringLowLift O p.1.2 hmem.2).map O.subtype = p.1.2
+    exact valuationSubringLowLift_map O p.2.2.1 hmem.2
+
 end
 
 

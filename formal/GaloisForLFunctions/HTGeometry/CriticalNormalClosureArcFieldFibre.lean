@@ -4,7 +4,12 @@ import GaloisForLFunctions.HTGeometry.CriticalNormalClosureArcReduction
 
 namespace GaloisForLFunctions.HTGeometry
 
+open Polynomial
+
 noncomputable section
+
+set_option maxHeartbeats 1000000
+set_option synthInstance.maxHeartbeats 1000000
 
 private abbrev ArcValuationRing
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
@@ -28,14 +33,17 @@ noncomputable def criticalGeometricSheetToArcFieldFibre
     criticalGeometricSheet K m n →
       CriticalNormalClosureArcFieldFibre K hm hn := by
   intro σ
-  change criticalFibre (criticalNormalClosure K m n) m n
-    ((criticalNormalClosureArcRawTail K hm hn).map
-      (criticalNormalClosureArcSubtype K hm hn))
-    ((criticalNormalClosureArcReciprocalTail K hm hn).map
-      (criticalNormalClosureArcSubtype K hm hn))
+  let p := criticalGeometricSheetToNormalFibre K m n σ
+  refine ⟨p.1, p.2.1, p.2.2.1, ?_⟩
+  change (X : (criticalNormalClosure K m n)[X]) ^ (m + n) ∣
+    criticalLowProduct
+      ((criticalNormalClosureArcRawTail K hm hn).map
+        (criticalNormalClosureArcSubtype K hm hn))
+      ((criticalNormalClosureArcReciprocalTail K hm hn).map
+        (criticalNormalClosureArcSubtype K hm hn)) p.1.1 p.1.2 - 1
   rw [criticalNormalClosureArcRawTail_map_subtype K hm hn,
     criticalNormalClosureArcReciprocalTail_map_subtype K hm hn]
-  exact criticalGeometricSheetToNormalFibre K m n σ
+  exact p.2.2.2
 
 end
 

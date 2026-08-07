@@ -91,3 +91,174 @@ theorem norm_integral_mul_mul_le_sqrt_mul_sqrt {g₁ g₂ W : ℝ → ℂ}
 
 end GaloisForLFunctions.HTGeometry
 end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open MeasureTheory
+
+/-- **Cauchy–Schwarz with one factor bounded pointwise.**  Absorbing the bounded factor into the weight
+turns the two-factor inequality into
+
+`‖∫ g₁ g₂ g₃ W‖ ≤ (sup ‖g₃‖) · (∫ ‖g₁‖²‖W‖)^{1/2} (∫ ‖g₂‖²‖W‖)^{1/2}`.
+
+This is the shape a vertical-line integral of three Dirichlet series takes when one of them is estimated by
+an Euler product and the other two in mean square. -/
+theorem norm_integral_mul_three_le_sup_mul_sqrt_mul_sqrt {g₁ g₂ g₃ W : ℝ → ℂ} {M : ℝ}
+    (hm1 : AEStronglyMeasurable g₁ volume) (hm2 : AEStronglyMeasurable g₂ volume)
+    (hm3 : AEStronglyMeasurable g₃ volume) (hmW : AEStronglyMeasurable W volume)
+    (hM : ∀ y : ℝ, ‖g₃ y‖ ≤ M)
+    (h1 : Integrable fun y => ‖g₁ y‖ ^ 2 * ‖W y‖)
+    (h2 : Integrable fun y => ‖g₂ y‖ ^ 2 * ‖W y‖) :
+    ‖∫ y : ℝ, g₁ y * g₂ y * g₃ y * W y‖
+      ≤ M * (Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖)
+          * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖)) := by
+  have hM0 : 0 ≤ M := le_trans (norm_nonneg _) (hM 0)
+  set W' : ℝ → ℂ := fun y => g₃ y * W y with hW'
+  have hW'norm : ∀ y : ℝ, ‖W' y‖ ≤ M * ‖W y‖ := by
+    intro y
+    rw [hW', norm_mul]
+    exact mul_le_mul_of_nonneg_right (hM y) (norm_nonneg _)
+  have hW'm : AEStronglyMeasurable W' volume := hm3.mul hmW
+  have hdom : ∀ (g : ℝ → ℂ), AEStronglyMeasurable g volume →
+      (Integrable fun y => ‖g y‖ ^ 2 * ‖W y‖) →
+      (Integrable fun y => ‖g y‖ ^ 2 * ‖W' y‖)
+        ∧ (∫ y : ℝ, ‖g y‖ ^ 2 * ‖W' y‖) ≤ M * ∫ y : ℝ, ‖g y‖ ^ 2 * ‖W y‖ := by
+    intro g hgm hg
+    have hbound : ∀ y : ℝ, ‖g y‖ ^ 2 * ‖W' y‖ ≤ M * (‖g y‖ ^ 2 * ‖W y‖) := by
+      intro y
+      have h := mul_le_mul_of_nonneg_left (hW'norm y) (sq_nonneg ‖g y‖)
+      calc ‖g y‖ ^ 2 * ‖W' y‖ ≤ ‖g y‖ ^ 2 * (M * ‖W y‖) := h
+        _ = M * (‖g y‖ ^ 2 * ‖W y‖) := by ring
+    have hmeas : AEStronglyMeasurable (fun y : ℝ => ‖g y‖ ^ 2 * ‖W' y‖) volume :=
+      ((hgm.norm).pow 2).mul hW'm.norm
+    have hgM : Integrable fun y : ℝ => M * (‖g y‖ ^ 2 * ‖W y‖) := hg.const_mul M
+    have hint : Integrable fun y : ℝ => ‖g y‖ ^ 2 * ‖W' y‖ := by
+      refine Integrable.mono' hgM hmeas ?_
+      filter_upwards with y
+      have h0 : (0 : ℝ) ≤ ‖g y‖ ^ 2 * ‖W' y‖ := by positivity
+      rw [Real.norm_eq_abs, abs_of_nonneg h0]
+      exact hbound y
+    refine ⟨hint, ?_⟩
+    have hmono : (∫ y : ℝ, ‖g y‖ ^ 2 * ‖W' y‖) ≤ ∫ y : ℝ, M * (‖g y‖ ^ 2 * ‖W y‖) :=
+      integral_mono hint hgM hbound
+    rwa [integral_const_mul] at hmono
+  obtain ⟨h1', h1le⟩ := hdom g₁ hm1 h1
+  obtain ⟨h2', h2le⟩ := hdom g₂ hm2 h2
+  have hcs := norm_integral_mul_mul_le_sqrt_mul_sqrt hm1 hm2 hW'm h1' h2'
+  have hassoc : ∀ y : ℝ, g₁ y * g₂ y * g₃ y * W y = g₁ y * g₂ y * W' y := by
+    intro y
+    rw [hW']
+    ring
+  rw [integral_congr_ae (Filter.Eventually.of_forall hassoc)]
+  refine hcs.trans ?_
+  have hs1 : Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W' y‖)
+      ≤ Real.sqrt M * Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖) := by
+    rw [← Real.sqrt_mul hM0]
+    exact Real.sqrt_le_sqrt h1le
+  have hs2 : Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W' y‖)
+      ≤ Real.sqrt M * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖) := by
+    rw [← Real.sqrt_mul hM0]
+    exact Real.sqrt_le_sqrt h2le
+  have hprod := mul_le_mul hs1 hs2 (Real.sqrt_nonneg _) (by positivity)
+  refine hprod.trans (le_of_eq ?_)
+  have hsq : Real.sqrt M * Real.sqrt M = M := Real.mul_self_sqrt hM0
+  calc Real.sqrt M * Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖)
+        * (Real.sqrt M * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖))
+      = (Real.sqrt M * Real.sqrt M) * (Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖)
+          * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖)) := by ring
+    _ = M * (Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖)
+          * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖)) := by rw [hsq]
+
+/-- A mean square against a weight dominated by the Lorentzian kernel is integrable. -/
+theorem integrable_normSq_mul_weight_of_le {g W : ℝ → ℂ} {C : ℝ}
+    (hgm : AEStronglyMeasurable g volume) (hWm : AEStronglyMeasurable W volume)
+    (hC : ∀ y : ℝ, ‖W y‖ ≤ C * (1 + y ^ 2)⁻¹)
+    (hint : Integrable fun y : ℝ => ‖g y‖ ^ 2 * (1 + y ^ 2)⁻¹) :
+    Integrable fun y : ℝ => ‖g y‖ ^ 2 * ‖W y‖ := by
+  have hC0 : 0 ≤ C := by
+    have h := hC 0
+    have h0 : (0 : ℝ) ≤ ‖W 0‖ := norm_nonneg _
+    norm_num at h
+    linarith
+  have hbound : ∀ y : ℝ, ‖g y‖ ^ 2 * ‖W y‖ ≤ C * (‖g y‖ ^ 2 * (1 + y ^ 2)⁻¹) := by
+    intro y
+    have h := mul_le_mul_of_nonneg_left (hC y) (sq_nonneg ‖g y‖)
+    calc ‖g y‖ ^ 2 * ‖W y‖ ≤ ‖g y‖ ^ 2 * (C * (1 + y ^ 2)⁻¹) := h
+      _ = C * (‖g y‖ ^ 2 * (1 + y ^ 2)⁻¹) := by ring
+  refine Integrable.mono' (hint.const_mul C) (((hgm.norm).pow 2).mul hWm.norm) ?_
+  filter_upwards with y
+  have h0 : (0 : ℝ) ≤ ‖g y‖ ^ 2 * ‖W y‖ := by positivity
+  rw [Real.norm_eq_abs, abs_of_nonneg h0]
+  exact hbound y
+
+/-- **The mean square against a kernel with quadratic decay.**  A weight dominated by `C/(1+y²)` transfers
+the mean square to the Lorentzian one at the cost of the constant. -/
+theorem integral_normSq_mul_weight_le {g W : ℝ → ℂ} {C : ℝ}
+    (hgm : AEStronglyMeasurable g volume) (hWm : AEStronglyMeasurable W volume)
+    (hC : ∀ y : ℝ, ‖W y‖ ≤ C * (1 + y ^ 2)⁻¹)
+    (hint : Integrable fun y : ℝ => ‖g y‖ ^ 2 * (1 + y ^ 2)⁻¹) :
+    (∫ y : ℝ, ‖g y‖ ^ 2 * ‖W y‖) ≤ C * ∫ y : ℝ, ‖g y‖ ^ 2 * (1 + y ^ 2)⁻¹ := by
+  have hbound : ∀ y : ℝ, ‖g y‖ ^ 2 * ‖W y‖ ≤ C * (‖g y‖ ^ 2 * (1 + y ^ 2)⁻¹) := by
+    intro y
+    have h := mul_le_mul_of_nonneg_left (hC y) (sq_nonneg ‖g y‖)
+    calc ‖g y‖ ^ 2 * ‖W y‖ ≤ ‖g y‖ ^ 2 * (C * (1 + y ^ 2)⁻¹) := h
+      _ = C * (‖g y‖ ^ 2 * (1 + y ^ 2)⁻¹) := by ring
+  have hmono := integral_mono (integrable_normSq_mul_weight_of_le hgm hWm hC hint)
+    (hint.const_mul C) hbound
+  rwa [integral_const_mul] at hmono
+
+end GaloisForLFunctions.HTGeometry
+end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open MeasureTheory
+
+/-- **The master inequality of a three-factor vertical integral.**  One factor bounded pointwise, a kernel
+with quadratic decay, and two Lorentzian mean squares:
+
+`‖∫ g₁ g₂ g₃ W‖ ≤ M·C·(∫ ‖g₁‖²/(1+y²))^{1/2}(∫ ‖g₂‖²/(1+y²))^{1/2}`,
+
+for `‖g₃‖ ≤ M` and `‖W‖ ≤ C/(1+y²)`.  Nothing about Dirichlet series enters; the hypotheses are exactly
+what a smoothed Perron kernel and an Euler product supply. -/
+theorem norm_integral_mul_three_le_sup_mul_lorentz {g₁ g₂ g₃ W : ℝ → ℂ} {M C : ℝ}
+    (hm1 : AEStronglyMeasurable g₁ volume) (hm2 : AEStronglyMeasurable g₂ volume)
+    (hm3 : AEStronglyMeasurable g₃ volume) (hmW : AEStronglyMeasurable W volume)
+    (hM : ∀ y : ℝ, ‖g₃ y‖ ≤ M) (hC : ∀ y : ℝ, ‖W y‖ ≤ C * (1 + y ^ 2)⁻¹)
+    (h1 : Integrable fun y : ℝ => ‖g₁ y‖ ^ 2 * (1 + y ^ 2)⁻¹)
+    (h2 : Integrable fun y : ℝ => ‖g₂ y‖ ^ 2 * (1 + y ^ 2)⁻¹) :
+    ‖∫ y : ℝ, g₁ y * g₂ y * g₃ y * W y‖
+      ≤ M * C * (Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * (1 + y ^ 2)⁻¹)
+          * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * (1 + y ^ 2)⁻¹)) := by
+  have hM0 : 0 ≤ M := le_trans (norm_nonneg _) (hM 0)
+  have hC0 : 0 ≤ C := by
+    have h := hC 0
+    have h0 : (0 : ℝ) ≤ ‖W 0‖ := norm_nonneg _
+    norm_num at h
+    linarith
+  have h1' : Integrable fun y : ℝ => ‖g₁ y‖ ^ 2 * ‖W y‖ :=
+    integrable_normSq_mul_weight_of_le hm1 hmW hC h1
+  have h2' : Integrable fun y : ℝ => ‖g₂ y‖ ^ 2 * ‖W y‖ :=
+    integrable_normSq_mul_weight_of_le hm2 hmW hC h2
+  refine (norm_integral_mul_three_le_sup_mul_sqrt_mul_sqrt hm1 hm2 hm3 hmW hM h1' h2').trans ?_
+  have hs1 : Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖)
+      ≤ Real.sqrt C * Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * (1 + y ^ 2)⁻¹) := by
+    rw [← Real.sqrt_mul hC0]
+    exact Real.sqrt_le_sqrt (integral_normSq_mul_weight_le hm1 hmW hC h1)
+  have hs2 : Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖)
+      ≤ Real.sqrt C * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * (1 + y ^ 2)⁻¹) := by
+    rw [← Real.sqrt_mul hC0]
+    exact Real.sqrt_le_sqrt (integral_normSq_mul_weight_le hm2 hmW hC h2)
+  have hprod := mul_le_mul hs1 hs2 (Real.sqrt_nonneg _) (by positivity)
+  have hstep := mul_le_mul_of_nonneg_left hprod hM0
+  refine hstep.trans (le_of_eq ?_)
+  have hsq : Real.sqrt C * Real.sqrt C = C := Real.mul_self_sqrt hC0
+  calc M * (Real.sqrt C * Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * (1 + y ^ 2)⁻¹)
+        * (Real.sqrt C * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * (1 + y ^ 2)⁻¹)))
+      = M * ((Real.sqrt C * Real.sqrt C) * (Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * (1 + y ^ 2)⁻¹)
+          * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * (1 + y ^ 2)⁻¹))) := by ring
+    _ = M * C * (Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * (1 + y ^ 2)⁻¹)
+          * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * (1 + y ^ 2)⁻¹)) := by rw [hsq]; ring
+
+end GaloisForLFunctions.HTGeometry
+end

@@ -273,6 +273,53 @@ theorem weightedPair_dirac_symmetry {f₁ g₁ f₂ g₂ : ℝ → ℂ}
   rw [weightedPair_L_left hf₂ hg₁ hf₂s, weightedPair_D_left hf₁ hg₂ hf₁s]
 
 
+
+/-! ### Strict positivity of the shifted Hermitian square -/
+
+/-- **The shifted pencil has no compactly supported null datum.**  If `(A + α) f = 0` and `f` has
+compact support then `f` vanishes identically: the tilted product `f(x) e^{iαx}` has zero
+derivative, hence is constant, and the constant is `0` because the line is not compact.  This is
+the strictness in `H_α = (A+α)^*(A+α) > 0`. -/
+theorem eq_zero_of_shifted_kernel {α : ℂ} {f : ℝ → ℂ} (hf : ContDiff ℝ 1 f)
+    (hfs : HasCompactSupport f)
+    (heq : ∀ x, -Complex.I * deriv f x + α * f x = 0) (x : ℝ) : f x = 0 := by
+  have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
+  have hfd : ∀ t : ℝ, HasDerivAt f (deriv f t) t := fun t =>
+    (hf.differentiable (by simp) t).hasDerivAt
+  have hchar : ∀ t : ℝ, HasDerivAt (fun s : ℝ => Complex.exp (Complex.I * α * (s : ℂ)))
+      (Complex.I * α * Complex.exp (Complex.I * α * (t : ℂ))) t := by
+    intro t
+    have hlin : HasDerivAt (fun s : ℝ => Complex.I * α * ((s : ℝ) : ℂ)) (Complex.I * α) t := by
+      simpa using (hasDerivAt_id t).ofReal_comp.const_mul (Complex.I * α)
+    have h := hlin.cexp
+    refine h.congr_deriv ?_
+    ring
+  have hprod : ∀ t : ℝ,
+      HasDerivAt (fun s : ℝ => f s * Complex.exp (Complex.I * α * (s : ℂ))) 0 t := by
+    intro t
+    have h := (hfd t).mul (hchar t)
+    refine h.congr_deriv ?_
+    have ht := heq t
+    linear_combination (Complex.I * Complex.exp (Complex.I * α * (t : ℂ))) * ht
+      + (Complex.exp (Complex.I * α * (t : ℂ)) * (deriv f t)) * hI
+  have hdiff : Differentiable ℝ (fun s : ℝ => f s * Complex.exp (Complex.I * α * (s : ℂ))) :=
+    fun t => (hprod t).differentiableAt
+  have hderivzero : ∀ t : ℝ,
+      deriv (fun s : ℝ => f s * Complex.exp (Complex.I * α * (s : ℂ))) t = 0 :=
+    fun t => (hprod t).deriv
+  obtain ⟨y, hy⟩ : ∃ y : ℝ, y ∉ tsupport f := by
+    by_contra hcon
+    push Not at hcon
+    exact (hfs.isCompact).ne_univ (Set.eq_univ_of_forall hcon)
+  have hfy : f y = 0 := by
+    by_contra hne
+    exact hy (subset_tsupport f (by simpa [Function.mem_support] using hne))
+  have hconst := is_const_of_deriv_eq_zero hdiff hderivzero x y
+  rw [hfy, zero_mul] at hconst
+  have hexp : Complex.exp (Complex.I * α * (x : ℂ)) ≠ 0 := Complex.exp_ne_zero _
+  exact (mul_eq_zero.mp hconst).resolve_right hexp
+
+
 /-! ### The half-density conjugation -/
 
 /-- **The half-density conjugation.**  Multiplying by `k^{1/2}` turns the plain derivative into the

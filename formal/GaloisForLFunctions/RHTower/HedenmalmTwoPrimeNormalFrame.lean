@@ -187,6 +187,140 @@ theorem tendsto_norm_centeredMultiplier_atTop (n : ℕ) :
   exact norm_centeredMultiplier_le n (ne_of_gt ht)
 
 
+
+/-! ### The zero set of the centered multiplier
+
+Plan input for the conormal generation clause: the zeros of `a_n` form an arithmetic progression
+whose reciprocal squares are summable, which is exactly the hypothesis of the corpus genus-one
+canonical product. -/
+
+/-- The `k`-th zero of the centered multiplier `a_n`, `w_k = 2 pi k / log n`. -/
+def centeredMultiplierZero (n : ℕ) (k : ℤ) : ℂ :=
+  (((2 * Real.pi * (k : ℝ) / Real.log n : ℝ)) : ℂ)
+
+theorem centeredMultiplierZero_ne_zero {n : ℕ} (hn : 2 ≤ n) {k : ℤ} (hk : k ≠ 0) :
+    centeredMultiplierZero n k ≠ 0 := by
+  have hn1 : (1 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hlog : 0 < Real.log n := Real.log_pos hn1
+  have hkR : ((k : ℝ)) ≠ 0 := Int.cast_ne_zero.mpr hk
+  rw [centeredMultiplierZero]
+  simp only [ne_eq, Complex.ofReal_eq_zero]
+  have : (2 : ℝ) * Real.pi * (k : ℝ) ≠ 0 := by
+    have := Real.pi_ne_zero
+    positivity
+  exact div_ne_zero this hlog.ne'
+
+theorem norm_centeredMultiplierZero {n : ℕ} (k : ℤ) :
+    ‖centeredMultiplierZero n k‖ = |2 * Real.pi * (k : ℝ) / Real.log n| := by
+  rw [centeredMultiplierZero, Complex.norm_real, Real.norm_eq_abs]
+
+/-- **The reciprocal squares of the zeros are summable.**  This is the exact hypothesis of
+`RHTower.canonicalProductE1Indexed_hasProdLocallyUniformlyOn`. -/
+theorem summable_inv_sq_centeredMultiplierZero {n : ℕ} (hn : 2 ≤ n) :
+    Summable (fun k : ℤ => 1 / ‖centeredMultiplierZero n k‖ ^ 2) := by
+  have hn1 : (1 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hlog : 0 < Real.log n := Real.log_pos hn1
+  have hbase : Summable (fun k : ℤ => 1 / ((k : ℝ)) ^ (2 : ℕ)) :=
+    (Real.summable_one_div_int_pow).mpr (by norm_num)
+  have hc : (0 : ℝ) < (Real.log n / (2 * Real.pi)) ^ 2 := by
+    have := Real.pi_pos
+    positivity
+  refine (hbase.mul_left ((Real.log n / (2 * Real.pi)) ^ 2)).congr fun k => ?_
+  rw [norm_centeredMultiplierZero]
+  rcases eq_or_ne k 0 with rfl | hk
+  · simp
+  · have hkR : ((k : ℝ)) ≠ 0 := Int.cast_ne_zero.mpr hk
+    have hpi := Real.pi_ne_zero
+    rw [sq_abs]
+    field_simp
+
+
+
+/-- The zeros of `a_n` indexed by the nonzero integers. -/
+def centeredZero (n : ℕ) (k : {j : ℤ // j ≠ 0}) : ℂ := centeredMultiplierZero n (k : ℤ)
+
+theorem centeredZero_ne_zero {n : ℕ} (hn : 2 ≤ n) (k : {j : ℤ // j ≠ 0}) :
+    centeredZero n k ≠ 0 :=
+  centeredMultiplierZero_ne_zero hn k.2
+
+theorem summable_inv_sq_centeredZero {n : ℕ} (hn : 2 ≤ n) :
+    Summable (fun k : {j : ℤ // j ≠ 0} => 1 / ‖centeredZero n k‖ ^ 2) :=
+  (summable_inv_sq_centeredMultiplierZero hn).subtype _
+
+/-- **The canonical product over the zeros of the centered prime multiplier.**  The genus-one
+Weierstrass product of the corpus, formed at the arithmetic progression `2 pi k / log n`. -/
+def centeredCanonicalProduct (n : ℕ) : ℂ → ℂ :=
+  canonicalProductE1Indexed (centeredZero n)
+
+theorem hasProdLocallyUniformlyOn_centeredCanonicalProduct {n : ℕ} (hn : 2 ≤ n) :
+    HasProdLocallyUniformlyOn (fun k z => weierstrassE1 (z / centeredZero n k))
+      (centeredCanonicalProduct n) Set.univ :=
+  canonicalProductE1Indexed_hasProdLocallyUniformlyOn (centeredZero n)
+    (centeredZero_ne_zero hn) (summable_inv_sq_centeredZero hn)
+
+
+
+theorem analyticOnNhd_centeredCanonicalProduct {n : ℕ} (hn : 2 ≤ n) :
+    AnalyticOnNhd ℂ (centeredCanonicalProduct n) Set.univ :=
+  canonicalProductE1Indexed_analytic (centeredZero n) (centeredZero_ne_zero hn)
+    (summable_inv_sq_centeredZero hn)
+
+/-- **The canonical product vanishes only on the prescribed zero set.** -/
+theorem centeredCanonicalProduct_ne_zero {n : ℕ} (hn : 2 ≤ n) {z : ℂ}
+    (hz : ∀ k : {j : ℤ // j ≠ 0}, z ≠ centeredZero n k) :
+    centeredCanonicalProduct n z ≠ 0 :=
+  canonicalProductE1Indexed_ne_zero (centeredZero n) (centeredZero_ne_zero hn)
+    (summable_inv_sq_centeredZero hn) hz
+
+
+
+/-- **The zero set of the centered multiplier, off the origin, is exactly the prescribed
+arithmetic progression.**  This matches the divisor of `a_n` with that of the canonical product. -/
+theorem centeredMultiplier_eq_zero_iff_mem_zeros {n : ℕ} (hn : 2 ≤ n) {z : ℂ} (hz : z ≠ 0) :
+    centeredMultiplier n z = 0 ↔ ∃ k : {j : ℤ // j ≠ 0}, z = centeredZero n k := by
+  have hn1 : (1 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hlog : 0 < Real.log n := Real.log_pos hn1
+  have hlogC : ((Real.log n : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hlog.ne'
+  have hcast : ∀ m : ℤ, ((2 * Real.pi * (m : ℝ) / Real.log n : ℝ) : ℂ)
+      = (2 * ((Real.pi : ℝ) : ℂ) * ((m : ℤ) : ℂ)) / ((Real.log n : ℝ) : ℂ) := by
+    intro m
+    simp only [Complex.ofReal_div, Complex.ofReal_mul, Complex.ofReal_intCast]
+    norm_num
+  rw [centeredMultiplier_eq_zero_iff hz, shiftMultiplier_eq_zero_iff hn hz]
+  constructor
+  · rintro ⟨j, hj⟩
+    have hjne : j ≠ 0 := by
+      intro h
+      rw [h] at hj
+      simp only [Int.cast_zero, mul_zero] at hj
+      exact hz ((mul_eq_zero.mp hj).resolve_right hlogC)
+    refine ⟨⟨j, hjne⟩, ?_⟩
+    rw [centeredZero, centeredMultiplierZero, hcast, eq_div_iff hlogC]
+    exact hj
+  · rintro ⟨k, rfl⟩
+    refine ⟨(k : ℤ), ?_⟩
+    rw [centeredZero, centeredMultiplierZero, hcast, div_mul_cancel₀ _ hlogC]
+
+
+/-- The derivative of the centered multiplier off the origin. -/
+theorem hasDerivAt_centeredMultiplier (n : ℕ) {w : ℂ} (hw : w ≠ 0) :
+    HasDerivAt (centeredMultiplier n)
+      ((2 * ((((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ)) : ℂ)
+          * (Complex.cos (w * ((Real.log n / 2 : ℝ) : ℂ)) * ((Real.log n / 2 : ℝ) : ℂ)) * w
+        - 2 * ((((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ)) : ℂ)
+          * Complex.sin (w * ((Real.log n / 2 : ℝ) : ℂ)) * 1) / w ^ 2) w := by
+  have hsin : HasDerivAt (fun z : ℂ => Complex.sin (z * ((Real.log n / 2 : ℝ) : ℂ)))
+      (Complex.cos (w * ((Real.log n / 2 : ℝ) : ℂ)) * ((Real.log n / 2 : ℝ) : ℂ)) w :=
+    by
+      have h := ((hasDerivAt_id w).mul_const ((Real.log n / 2 : ℝ) : ℂ)).csin
+      simpa using h
+  have hnum := hsin.const_mul (2 * ((((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ)) : ℂ))
+  have hquot := hnum.div (hasDerivAt_id w) hw
+  refine hquot.congr_of_eventuallyEq ?_
+  filter_upwards [isOpen_ne.mem_nhds hw] with z hz
+  exact centeredMultiplier_eq_sin n hz
+
+
 end HedenmalmThetaSource
 
 end

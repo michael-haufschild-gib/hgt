@@ -184,3 +184,43 @@ theorem integral_lorentz_normSq_LSeries_le_prime_sieve {a : ℕ → ℂ} {s : Fi
 
 end RHTower.Sieve
 end
+
+noncomputable section
+namespace RHTower.Sieve
+open Complex MeasureTheory Finset
+
+/-- The Lorentzian mean square of a finitely supported Dirichlet series converges: the series is bounded
+on the line and the kernel is integrable. -/
+theorem integrable_lorentz_normSq_LSeries {a : ℕ → ℂ} {s : Finset ℕ} (hs0 : 0 ∉ s)
+    (hsupp : ∀ n : ℕ, a n ≠ 0 → n ∈ s) (σ : ℝ) :
+    Integrable fun y : ℝ => ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2 * (1 + y ^ 2)⁻¹ := by
+  classical
+  set c : ℕ → ℂ := fun n => a n * ((((n : ℝ) ^ (-σ) : ℝ)) : ℂ) with hc
+  set B : ℝ := ∑ n ∈ s, ‖c n‖ with hB
+  have hcongr : ∀ y : ℝ, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2 * (1 + y ^ 2)⁻¹
+      = ‖logPoly c s (-y / (2 * Real.pi))‖ ^ 2 * (1 + y ^ 2)⁻¹ := by
+    intro y
+    rw [LSeries_eq_logPoly_of_support hs0 hsupp σ y]
+  refine (Integrable.congr ?_ (Filter.Eventually.of_forall fun y => (hcongr y).symm))
+  have hcont : Continuous fun y : ℝ => ‖logPoly c s (-y / (2 * Real.pi))‖ ^ 2 := by
+    refine (continuous_normSq_logPoly c s).comp ?_
+    fun_prop
+  have hmaj : Integrable fun y : ℝ => B ^ 2 * (1 + y ^ 2)⁻¹ :=
+    integrable_inv_one_add_sq.const_mul (B ^ 2)
+  have hker : Continuous fun y : ℝ => (1 + y ^ 2)⁻¹ := by
+    have hdiv : Continuous fun y : ℝ => 1 / (1 + y ^ 2) :=
+      continuous_const.div (by fun_prop) fun y => by positivity
+    simpa [one_div] using hdiv
+  refine Integrable.mono' hmaj (hcont.mul hker).aestronglyMeasurable ?_
+  filter_upwards with y
+  have hpoly : ‖logPoly c s (-y / (2 * Real.pi))‖ ≤ B := norm_logPoly_le c s _
+  have hBnn : (0 : ℝ) ≤ B := Finset.sum_nonneg fun n _ => norm_nonneg _
+  have hsq : ‖logPoly c s (-y / (2 * Real.pi))‖ ^ 2 ≤ B ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg _) hpoly 2
+  have hkpos : (0 : ℝ) < (1 + y ^ 2)⁻¹ := by positivity
+  have h0 : (0 : ℝ) ≤ ‖logPoly c s (-y / (2 * Real.pi))‖ ^ 2 * (1 + y ^ 2)⁻¹ := by positivity
+  rw [Real.norm_eq_abs, abs_of_nonneg h0]
+  exact mul_le_mul_of_nonneg_right hsq hkpos.le
+
+end RHTower.Sieve
+end
