@@ -1989,3 +1989,33 @@ and the last sum is what the large-values count controls — with no window, no 
 
 Recorded as the specification: the corpus has the count and the discretisation; what is missing is the dyadic
 sum-from-counts lemma, which is elementary and general.
+
+## The sum-from-counts device already exists: `DirichletLargeValuesL1`
+
+The brick specified in the previous entry is already in the corpus, and in a better form than the dyadic
+decomposition I was about to write.  `DirichletLargeValuesL1.sum_norm_dirPoly_le_sqrt`:
+
+`∑_{r ≤ R} ‖dirPoly N a (λ_r)‖ ≤ √((R+1)·(T + 4N(1 + log N))(1/δ + 2 log N)·∑_m ‖a_m‖²)`
+
+on any `δ`-spaced set `λ_0 < … < λ_R` in `[0,T]` — the first moment straight from the mean value theorem by
+Cauchy–Schwarz, no dyadic decomposition in `V` needed.  Its module docstring says exactly why it is there: "the
+first moment and the large-value count, not the mean square, are what the bilinear method uses".
+
+**So the remaining gap is a formulation bridge, not a mathematical device.**  The corpus's large-values layer is
+indexed — `lam : ℕ → ℝ` with `hgap : ∀ i, lam i + δ ≤ lam (i+1)`, `hlow`, `hhigh` — while the discretisation
+produces `Finset ℝ` families of cell maximisers.  The bridge is to index the even-indexed maximisers,
+
+`lam j := if 2j < m then c (2j) else a + 2jΔ`,
+
+which satisfies the gap condition for *all* `i`: within the range because cells `2j` and `2j+2` are separated by a
+full cell, past it because the fallback is an arithmetic progression of step `2Δ`, and at the boundary because
+`c (2j) ≤ a + (2j+1)Δ`.  The same for the odd family.
+
+With that bridge the chain is complete and contains no window and no measure:
+
+`∫_{−T}^{T}|L(a)L(b)L(f)| ≤ Wsup·Δ·(trivial size of L(f))·∑_{spaced} |L(a)L(b)|`
+  `≤ Wsup·Δ·(log N)·√((T/Δ)(T + 4N(1+log N))(1/Δ + 2 log N)·(ℓ² mass))`,
+
+so the `√` carries `T/Δ·T/Δ ≍ T²/Δ²` against the `ℓ²` mass of the prime coefficients — and `Δ` cancels against the
+prefactor.  That is the Montgomery–Halász shape, and unlike every earlier attempt in this programme it has no term
+in which the trivial size multiplies a length.
