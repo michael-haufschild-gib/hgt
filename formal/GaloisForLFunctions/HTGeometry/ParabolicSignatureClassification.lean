@@ -64,4 +64,11 @@ theorem parabolicSphereSignature_iff (c : ℕ) (l : List ℕ) :
     obtain ⟨hsorted, h2⟩ := s.coneOrders_spec
     exact ⟨hsorted, h2, s.euclidean⟩
 
+
+/-- The parabolic third of the triangle trichotomy, stated with reciprocals. -/
+theorem parabolic_triple_classification {a b c : ℕ} (ha : 2 ≤ a) (hab : a ≤ b) (hbc : b ≤ c)
+    (heq : (a : ℚ)⁻¹ + (b : ℚ)⁻¹ + (c : ℚ)⁻¹ = 1) :
+    (a = 2 ∧ b = 3 ∧ c = 6) ∨ (a = 2 ∧ b = 4 ∧ c = 4) ∨ (a = 3 ∧ b = 3 ∧ c = 3) :=
+  euclidean_cone_triple ha hab hbc (by simpa [one_div] using heq)
+
 end GaloisForLFunctions.HTGeometry

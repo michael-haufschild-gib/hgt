@@ -1339,3 +1339,23 @@ polynomial core of the last step:
 so a scaling-invariant element of `L(y)` is a constant of `L`.  What remains is the bridge:
 writing `x ∈ F⟨ℓ⟩(y)` as `P(y)/Q(y)` with `P, Q` coprime over `F⟨ℓ⟩`, transporting
 `σ x = x` into that polynomial identity through transcendence of `y`, and reading off `x ∈ F⟨ℓ⟩`.
+
+## The `G_m` position--velocity theorem is closed
+
+Added to `LogarithmicDerivativeFixedField.lean` (wired, axiom-clean):
+
+    ratFuncEval_eq_div                       evaluation through numerator and denominator
+    mem_logDerivField_of_scaling_invariant   a scaling-invariant element lies in `F⟨y′/y⟩`
+    two_pow_ne_of_ne                         the powers of `2` are pairwise distinct
+    fixedField_scaling_eq_logDerivField :
+      {x | ∀ a ≠ 0, σ_a x = x} = F⟨y′/y⟩
+
+This is the card's `(2)`, `(6)` and `(7)` for `G_m`: the erased sector is the whole multiplicative
+group, so the reversible position is trivial and the phase tail is exactly the differential field
+of the Maurer--Cartan velocity `ℓ = y′/y`; its differential transcendence degree is one, which is
+`dim G_m`.  Every object is constructed: the deck automorphisms come from the two jet evaluations,
+and the invariance hypothesis is discharged at the single scalar `a = 2`, so the statement is not
+vacuous.
+
+The general `(2)` for an arbitrary connected commutative algebraic group still needs a
+Rosenlicht-type differential-rational quotient theorem.

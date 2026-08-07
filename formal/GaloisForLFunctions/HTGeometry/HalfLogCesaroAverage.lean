@@ -203,4 +203,36 @@ theorem tendsto_halfLogAverage {F : ℝ → ℝ} (hF : Continuous F) {L₀ : ℝ
     hasDerivAt_halfLogAverage hF (lt_trans hL₀ hx)
   exact tendsto_of_integrableOn_deriv hcont hderiv hint
 
+/-! ## The squeeze
+
+A two-sided bound between the lower and upper limits does not by itself produce a limit.  What
+closes the gap is a family of approximants: if for every tolerance the profile is uniformly within
+that tolerance of *some* function converging to the same value, then the profile itself converges.
+This is what the mollified family supplies, the tolerance being the order of the commutator defect.
+-/
+
+open Filter in
+/-- **The squeeze.**  A profile uniformly approximable, to every tolerance, by functions converging
+to a common value converges to that value.  Note the approximants must share the limit; that is
+exactly what the mollified family provides, since mollification does not move the averaged
+trace. -/
+theorem tendsto_of_forall_uniform_approx {H : ℝ → ℝ} {α : ℝ}
+    (h : ∀ δ : ℝ, 0 < δ → ∃ G : ℝ → ℝ,
+      Tendsto G atTop (nhds α) ∧ ∀ L, |H L - G L| ≤ δ) :
+    Tendsto H atTop (nhds α) := by
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  obtain ⟨G, hGlim, hGapp⟩ := h (ε / 4) (by linarith)
+  rw [Metric.tendsto_atTop] at hGlim
+  obtain ⟨N, hN⟩ := hGlim (ε / 4) (by linarith)
+  refine ⟨N, fun L hL => ?_⟩
+  have h1 : |H L - G L| ≤ ε / 4 := hGapp L
+  have h2 : |G L - α| < ε / 4 := by
+    have := hN L hL
+    rwa [Real.dist_eq] at this
+  have hsplit : H L - α = (H L - G L) + (G L - α) := by ring
+  rw [Real.dist_eq, hsplit]
+  calc |(H L - G L) + (G L - α)| ≤ |H L - G L| + |G L - α| := abs_add_le _ _
+    _ < ε := by linarith
+
 end GaloisForLFunctions.HTGeometry

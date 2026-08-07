@@ -23,7 +23,7 @@ prove its properties rather than assuming them.
 | `hypertranscendental-pair-localization-noncompression` | algebraic core audited axiom-clean |
 | `nonautonomous-rational-first-order-tail-orbifold-law` | Euclidean signature classification closed |
 | `nonautonomous-rational-complete-tail-orbifold-classification` | Euclidean signature classification closed |
-| `nonautonomous-isogeny-tail-time-splitting` | (1),(3),(4),(5) formal; (2),(6),(7) open |
+| `nonautonomous-isogeny-tail-time-splitting` | (1),(3),(4),(5) formal; (2),(6),(7) formal for `G_m` |
 | `helson-universal-ht-arbitrary-divisor-orthogonality` | pending |
 | `irrational-power-canonical-products-…-gevrey-slope-rigidity` | pending |
 
@@ -179,3 +179,23 @@ Remaining bridge for the `G_m` fixed-field theorem: write `x ∈ F⟨ℓ⟩(y)` 
 coprime over `F⟨ℓ⟩` (via `RatFunc.algEquivOfTranscendental` and the corpus's `ratFuncEval`),
 transport `σ x = x` to `P(aY)·Q = P·Q(aY)` using transcendence of `y`, then apply
 `natDegree_eq_zero_of_scaling_invariant`.
+
+
+## Closed: the `G_m` position--velocity theorem (card 7)
+
+```text
+HTGeometry/FreeDifferentialScalingAutomorphism.lean   scalingAutomorphism (constructed), its
+                                                       derivation compatibility and action on `y`
+HTGeometry/ScalingInvariantRationalFunction.lean      a scaling-invariant coprime fraction is constant
+HTGeometry/LogarithmicDerivativeFixedField.lean       ratFuncEval_eq_div,
+                                                       mem_logDerivField_of_scaling_invariant,
+                                                       two_pow_ne_of_ne,
+                                                       fixedField_scaling_eq_logDerivField
+```
+
+Capstone: `fixedField_scaling_eq_logDerivField` —
+`{x | ∀ a ≠ 0, σ_a x = x} = F⟨y′/y⟩`.  Non-vacuous: the invariance hypothesis is discharged at the
+single scalar `a = 2`.
+
+Also added `parabolic_triple_classification` to `ParabolicSignatureClassification.lean`, the
+reciprocal form another session's `TriangleSignatureTrichotomy.lean` consumes.

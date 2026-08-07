@@ -1545,5 +1545,21 @@ to it unchanged.  The cell-tower theorem is recorded in that form:
 Universes are the only friction: `CDGAConstCellTensor` puts the ground ring in the same universe as
 the modules, so the bridge must too.
 
-Axioms: `propext, Quot.sound` for `zeroActHom`; `propext, Classical.choice, Quot.sound` for the
-invariance.
+`CDGAHom.id`, **`tensorCDGAMap_isQuasiIso`**, **`tensorCDGAMap_isQuasiIso_of_isQuasiIsoFull`** close
+the upgrade:
+
+> tensoring with a quasi-isomorphism of algebras is a quasi-isomorphism **of algebras** as soon as
+> it is one of the underlying complexes.
+
+That transport is *definitional*.  The cocycles, coboundaries and cohomology of an algebra are those
+of its underlying complex, and the differential of a tensor product of algebras is the differential
+of the tensor product of the underlying zero-action modules, so `CDGAHom.IsQuasiIso` of the induced
+map and `CDGAModuleHom.IsQuasiIso` of the module-level comparison are the *same proposition* — the
+proof is the hypothesis itself.  (The corresponding statement about the underlying degreewise maps
+is also true by `rfl` but too expensive to check; the `Prop`-level one is cheap.)
+
+So the algebra layer needs no invariance theory of its own: any module-level theorem — const-cell
+towers, free coefficients of any rank, semi-free towers — supplies the hypothesis.
+
+Axioms: `propext, Quot.sound` for `zeroActHom` and `CDGAHom.id`;
+`propext, Classical.choice, Quot.sound` for the invariance statements.

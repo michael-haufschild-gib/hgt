@@ -17,6 +17,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+set_option synthInstance.maxHeartbeats 100000
+
 /-- An algebraic closure containing the actual critical source field. -/
 abbrev criticalSourceAlgebraicClosure (K : Type*) [Field K] (m n : ℕ) :=
   AlgebraicClosure (criticalSourceField K m n)
@@ -31,12 +33,6 @@ noncomputable instance criticalObservationAlgebraicClosureAlgebra
       (criticalSourceAlgebraicClosure K m n)).comp
     (algebraMap (criticalObservationField K m n)
       (criticalSourceField K m n))).toAlgebra
-
-instance criticalObservationSourceAlgebraicClosureTower
-    (K : Type*) [Field K] (m n : ℕ) :
-    IsScalarTower (criticalObservationField K m n)
-      (criticalSourceField K m n) (criticalSourceAlgebraicClosure K m n) :=
-  IsScalarTower.of_algebraMap_eq' rfl
 
 /-- Normal closure of the actual critical source field over the actual observation field. -/
 abbrev criticalNormalClosure (K : Type*) [Field K] (m n : ℕ) :=
@@ -59,16 +55,24 @@ noncomputable def criticalNormalClosureAction (K : Type*) [Field K] (m n : ℕ) 
     { toFun := fun f => σ.toAlgHom.comp f
       invFun := fun f => σ.symm.toAlgHom.comp f
       left_inv := fun f => by
-        ext x
+        apply AlgHom.ext
+        intro x
         simp
       right_inv := fun f => by
-        ext x
+        apply AlgHom.ext
+        intro x
         simp }
   map_one' := by
-    ext f x
+    apply Equiv.ext
+    intro f
+    apply AlgHom.ext
+    intro x
     rfl
   map_mul' σ τ := by
-    ext f x
+    apply Equiv.ext
+    intro f
+    apply AlgHom.ext
+    intro x
     rfl
 
 /-- **Actual geometric monodromy subgroup** of the critical horizon map. -/

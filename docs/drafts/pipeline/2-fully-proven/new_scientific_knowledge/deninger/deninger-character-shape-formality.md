@@ -680,3 +680,17 @@ the axiom audit is `propext, Classical.choice, Quot.sound`.
 What remains of `(5)`–`(6)` is the multiplicative structure: the derived tensor product is built
 here on *modules*, so the statement that `𝒞^M_{F,ℝ}` is an algebra and that `(6)` is an isomorphism
 of graded rings is still outside the layer.
+
+### The algebra level of `(5)`–`(6)`
+
+The entry above closed `(5)` at module level and named the multiplicative structure as what was
+left.  It is now built: `tensorCDGA` (the tensor product of two commutative differential graded
+algebras), `tensorCDGAMap` (functoriality), `tensorCDGAUnit`, and
+`tensorCDGAMap_isQuasiIso_of_isQuasiIsoFull` — tensoring with a quasi-isomorphism of algebras is a
+quasi-isomorphism *of algebras* whenever it is one of the underlying complexes, which every
+module-level invariance theorem of the layer supplies.
+
+What that gives the card: the comparison in `(5)` can now be carried as a morphism of algebras
+rather than of modules, so `(6)` is available as a statement about graded rings.  What it does not
+yet give is the *relative* tensor product of algebras over a base algebra — the layer's `⊗_A` is
+still a module construction — nor the `E_∞` coherence above it.

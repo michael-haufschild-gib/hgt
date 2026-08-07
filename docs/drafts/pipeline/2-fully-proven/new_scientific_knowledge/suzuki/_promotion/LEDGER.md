@@ -1858,3 +1858,63 @@ any proof that appears to do it has an error.
 
 Same caution for `suzuki-two-port-return-redundancy`: check whether its `(14)` really follows from
 the integrated Gagliardo identity alone before assuming that card is one rewrite from done.
+
+## AO. The commutator defect is quantified — first step of the squeeze
+
+`MollifierPositionCommutator.lean` gains `integral_abs_firstMomentKernel_le`, axiom-clean:
+
+    ρ ≥ 0,  ρ = 0 outside [−ε,ε],  ∫ρ = 1     ⟹     ∫ |t ρ(t)| dt ≤ ε
+
+So the commutator defect of section X — mollification against the first-moment kernel, the only
+part of `[L, ρ_ε*]` that survives — has `L¹` mass at most `ε` and vanishes linearly in the width.
+This is the quantitative input the `liminf H = limsup H` squeeze of section AN consumes.
+
+The hypothesis `0 ≤ ε` was written and then dropped: it is implied, since `ρ = 0` outside `[−ε,ε]`
+with `∫ρ = 1` is already contradictory for negative `ε`. A hypothesis that the others entail is a
+premise, not regularity.
+
+### The squeeze — what is still missing
+
+With the defect quantified, the remaining argument is:
+
+1. mollify the equation, using that `R_full` and `Y` commute with convolution exactly and that the
+   position defect is `O(ε)` (this file);
+2. deduce a bound on `limsup H − liminf H` that is `O(ε)` uniformly in `L`;
+3. let `ε → 0`.
+
+Step 2 is the real content and is **not** built: it needs the mollified profile's half-log trace
+compared with the unmollified one, which is where the `O(ε)` defect has to be converted into an
+oscillation bound. Steps 1 and 3 are routine given it.
+
+Trap: `AEStronglyMeasurable` unfolds to an `Exists`, so dot-notation `.abs` resolves to
+`Exists.abs` and fails; there is no `AEStronglyMeasurable.abs` here either. Use `.norm` — for real
+scalars `‖·‖` and `|·|` agree definitionally enough for `Real.norm_eq_abs` to finish.
+
+## AP. The squeeze engine is built
+
+`HalfLogCesaroAverage.lean` gains `tendsto_of_forall_uniform_approx`, axiom-clean:
+
+    (∀ δ > 0, ∃ G, G → α ∧ ∀ L, |H L − G L| ≤ δ)     ⟹     H → α
+
+This is step 2's engine from section AO, and it settles the objection raised in section AN: a
+two-sided bound `liminf H ≤ α ≤ limsup H` does not give a limit, but a *uniformly approximating
+family sharing the limit* does. Proof is the ε/4 triangle split; no `limsup`/`liminf` machinery is
+needed at all, which avoids the boundedness side conditions those carry.
+
+**The approximants must share the limit `α`.** That is the substantive hypothesis, and it is what
+the mollified family has to supply: mollification must not move the averaged trace. Do not weaken
+this to "each `G_δ` converges to something" — the statement is false that way.
+
+### The trace card's remaining obligation, now minimal
+
+To apply the engine, one must exhibit for each `δ` a mollified profile `H_ε` with
+
+    (i)  `H_ε → α`   — the same `α = lim A` from `tendsto_halfLogAverage`;
+    (ii) `|H(L) − H_ε(L)| ≤ δ` uniformly in `L`, with `δ = O(ε)`.
+
+`(ii)` is where `integral_abs_firstMomentKernel_le` (section AO) enters: the position commutator is
+the only obstruction and its mass is `≤ ε`. `(i)` needs that mollification commutes with the
+averaging that defines `A`, which follows from `mollify_position_eq` together with exact
+commutation of `Y` with convolution.
+
+Both remaining items are now specific statements about the *mollified profile*, not open analysis.

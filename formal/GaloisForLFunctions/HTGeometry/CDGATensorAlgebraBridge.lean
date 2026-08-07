@@ -25,6 +25,14 @@ variable {R : Type w} [CommRing R]
   {Y : ℕ → Type w} [∀ n, AddCommGroup (Y n)] [∀ n, Module R (Y n)]
   {A : CDGAStructure R X} {A' : CDGAStructure R X'} {B : CDGAStructure R Y}
 
+/-- The identity morphism of commutative differential graded algebras. -/
+def CDGAHom.id (A : CDGAStructure R X) : CDGAHom A A where
+  toFun _ x := x
+  map_add _ _ _ := rfl
+  map_smul _ _ _ := rfl
+  map_mul _ _ _ := rfl
+  map_d _ _ := rfl
+
 /-- **A morphism of algebras as a morphism of zero-action modules.** -/
 def zeroActHom (φ : CDGAHom A A') :
     CDGAModuleHom (zeroActModule (A := A₀) A) (zeroActModule (A := A₀) A') where
@@ -52,5 +60,25 @@ theorem tensorMapLeft_zeroActHom_constCellTower (φ : CDGAHom A A')
     (tensorMapLeft (zeroActHom (A₀ := A₀) φ)
       (towerMod Q₀ (fun j => constCellModule A₀ (W j) (kk j)) τ i)).IsQuasiIsoFull :=
   tensorMapLeft_constCellTower_isQuasiIsoFull (zeroActHom (A₀ := A₀) φ) hφ Q₀ bb τ h₀ i
+
+/-- **The induced comparison of tensor products is a quasi-isomorphism of algebras** as soon as it
+is one of the underlying complexes.  The cocycles, the coboundaries and the cohomology of a
+differential graded algebra are those of its underlying complex, and the tensor product of algebras
+has the differential of the tensor product of the underlying zero-action modules, so the two
+statements are the same statement. -/
+theorem tensorCDGAMap_isQuasiIso (φ : CDGAHom A A')
+    (h : (tensorMapLeft (zeroActHom (A₀ := A₀) φ)
+      (zeroActModule (A := A₀) B)).IsQuasiIso) :
+    (tensorCDGAMap φ (CDGAHom.id B)).IsQuasiIso := h
+
+/-- **Derived base change at the algebra level.**  Tensoring an algebra with a quasi-isomorphism of
+algebras is a quasi-isomorphism of algebras whenever it is one of the underlying complexes — and
+that is supplied by whichever module-level invariance theorem fits the underlying complex of the
+fixed factor. -/
+theorem tensorCDGAMap_isQuasiIso_of_isQuasiIsoFull (φ : CDGAHom A A')
+    (h : (tensorMapLeft (zeroActHom (A₀ := A₀) φ)
+      (zeroActModule (A := A₀) B)).IsQuasiIsoFull) :
+    (tensorCDGAMap φ (CDGAHom.id B)).IsQuasiIso :=
+  tensorCDGAMap_isQuasiIso φ h.2
 
 end GaloisForLFunctions.HTGeometry

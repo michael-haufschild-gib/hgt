@@ -189,7 +189,7 @@ theorem ratFuncEval_eq_div {L : Type*} [Field L] {K : Type*} [Field K] [Algebra 
     | add p q hp hq => simp [hp, hq]
     | monomial n c ih =>
         simp only [Polynomial.C_mul_X_pow_eq_monomial] at ih ⊢
-        simp [RatFunc.algebraMap_X]
+        simp
   conv_lhs => rw [← RatFunc.num_div_denom f]
   rw [map_div₀, hpoly, hpoly]
 

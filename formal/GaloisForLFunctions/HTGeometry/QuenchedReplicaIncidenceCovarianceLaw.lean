@@ -18,6 +18,14 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- Fixed finite orthonormal coordinates on a replica subspace. -/
+noncomputable def replicaSubspaceOrthonormalBasis
+    {α : Type*} [Fintype α] (r : ℕ)
+    (S : Submodule ℂ (EuclideanSpace ℂ (Fin r → α))) :
+    OrthonormalBasis
+      (Fin (Module.finrank ℂ S)) ℂ S :=
+  stdOrthonormalBasis ℂ S
+
 /-- Fixed finite orthonormal coordinates on the occupied replica target span. -/
 noncomputable def replicaTargetOrthonormalBasis
     {C α : Type*} [Fintype α]
@@ -25,7 +33,18 @@ noncomputable def replicaTargetOrthonormalBasis
     OrthonormalBasis
       (Fin (Module.finrank ℂ (replicaTargetSpan r target))) ℂ
       (replicaTargetSpan r target) :=
-  stdOrthonormalBasis ℂ (replicaTargetSpan r target)
+  replicaSubspaceOrthonormalBasis r (replicaTargetSpan r target)
+
+/-- Coordinate of a replicated source vector along one mode of a replica
+subspace. -/
+noncomputable def replicaSubspaceCoordinate
+    {α : Type*} [Fintype α] (r : ℕ)
+    (S : Submodule ℂ (EuclideanSpace ℂ (Fin r → α)))
+    (ψ : α → ℂ) (i : Fin (Module.finrank ℂ S)) : ℂ :=
+  inner ℂ
+    ((replicaSubspaceOrthonormalBasis r S i : S) :
+      EuclideanSpace ℂ (Fin r → α))
+    (finitePureTensorPowerEuclidean r ψ)
 
 /-- Coordinate of a replicated source vector along one occupied target-span
 mode. -/
@@ -33,11 +52,7 @@ noncomputable def replicaTargetCoordinate
     {C α : Type*} [Fintype α]
     (r : ℕ) (target : C → α → ℂ) (ψ : α → ℂ)
     (i : Fin (Module.finrank ℂ (replicaTargetSpan r target))) : ℂ :=
-  inner ℂ
-    ((replicaTargetOrthonormalBasis r target i :
-      replicaTargetSpan r target) :
-      EuclideanSpace ℂ (Fin r → α))
-    (finitePureTensorPowerEuclidean r ψ)
+  replicaSubspaceCoordinate r (replicaTargetSpan r target) ψ i
 
 /-- Parseval identifies projection mass with the sum of occupied-coordinate
 energies. -/
@@ -53,9 +68,21 @@ theorem replicaTargetProjectionMass_eq_sum_coordinate_norm_sq
   rw [← b.sum_sq_norm_inner_right (S.orthogonalProjectionOnto u)]
   apply Finset.sum_congr rfl
   intro i _
-  congr 1
-  simpa [replicaTargetCoordinate, b, S, u] using
-    S.inner_orthogonalProjectionOnto_eq_of_mem_left (b i) u
+  change ‖inner ℂ (b i) (S.orthogonalProjectionOnto u)‖ ^ 2 =
+    ‖inner ℂ (b i) u‖ ^ 2
+  rw [S.inner_orthogonalProjectionOnto_eq_of_mem_left]
+
+/-- Quenched covariance of coordinates in one replica subspace. -/
+noncomputable def replicaSubspaceIncidenceCovariance
+    {X α : Type*} [MeasurableSpace X] [Fintype α]
+    (μ : Measure X) (r : ℕ)
+    (S : Submodule ℂ (EuclideanSpace ℂ (Fin r → α)))
+    (state : X → α → ℂ) :
+    Matrix
+      (Fin (Module.finrank ℂ S)) (Fin (Module.finrank ℂ S)) ℂ :=
+  fun i j => ∫ x,
+    star (replicaSubspaceCoordinate r S (state x) i) *
+      replicaSubspaceCoordinate r S (state x) j ∂μ
 
 /-- Quenched covariance of occupied replica coordinates. -/
 noncomputable def replicaTargetIncidenceCovariance
@@ -65,9 +92,18 @@ noncomputable def replicaTargetIncidenceCovariance
     Matrix
       (Fin (Module.finrank ℂ (replicaTargetSpan r target)))
       (Fin (Module.finrank ℂ (replicaTargetSpan r target))) ℂ :=
-  fun i j => ∫ x,
-    star (replicaTargetCoordinate r target (state x) i) *
-      replicaTargetCoordinate r target (state x) j ∂μ
+  replicaSubspaceIncidenceCovariance μ r
+    (replicaTargetSpan r target) state
+
+/-- Squared Hilbert--Schmidt energy of quenched covariance in one replica
+subspace. -/
+noncomputable def replicaSubspaceIncidenceCollision
+    {X α : Type*} [MeasurableSpace X] [Fintype α]
+    (μ : Measure X) (r : ℕ)
+    (S : Submodule ℂ (EuclideanSpace ℂ (Fin r → α)))
+    (state : X → α → ℂ) : ℝ :=
+  ∑ i, ∑ j,
+    ‖replicaSubspaceIncidenceCovariance μ r S state i j‖ ^ 2
 
 /-- Squared Hilbert--Schmidt energy of the quenched covariance compressed to
 the occupied replica target image. -/
@@ -75,8 +111,8 @@ noncomputable def replicaTargetIncidenceCollision
     {X C α : Type*} [MeasurableSpace X] [Fintype α]
     (μ : Measure X) (r : ℕ) (target : C → α → ℂ)
     (state : X → α → ℂ) : ℝ :=
-  ∑ i, ∑ j,
-    ‖replicaTargetIncidenceCovariance μ r target state i j‖ ^ 2
+  replicaSubspaceIncidenceCollision μ r
+    (replicaTargetSpan r target) state
 
 /-- Trace versus Hilbert--Schmidt inequality in explicit finite coordinates. -/
 theorem sq_sum_re_diag_le_card_mul_matrix_hilbertSchmidt
@@ -112,12 +148,16 @@ theorem re_replicaTargetIncidenceCovariance_diag
     (i : Fin (Module.finrank ℂ (replicaTargetSpan r target))) :
     (replicaTargetIncidenceCovariance μ r target state i i).re =
       ∫ x, ‖replicaTargetCoordinate r target (state x) i‖ ^ 2 ∂μ := by
-  rw [replicaTargetIncidenceCovariance]
+  rw [replicaTargetIncidenceCovariance,
+    replicaSubspaceIncidenceCovariance]
   simp_rw [show ∀ z : ℂ, star z * z = ((‖z‖ ^ 2 : ℝ) : ℂ) by
     intro z
     rw [show star z * z = ((starRingEnd ℂ) z) * z from rfl,
       RCLike.conj_mul]
     norm_cast]
+  change
+    (∫ x, ((‖replicaTargetCoordinate r target (state x) i‖ ^ 2 : ℝ) : ℂ) ∂μ).re =
+      ∫ x, ‖replicaTargetCoordinate r target (state x) i‖ ^ 2 ∂μ
   simpa using congrArg Complex.re
     (@integral_ofReal X _ μ ℂ _
       (fun x => ‖replicaTargetCoordinate r target (state x) i‖ ^ 2))
@@ -167,7 +207,9 @@ theorem sq_integral_replicaTargetProjectionMass_le_hilbert_mul_collision
         replicaTargetIncidenceCollision μ r target state := by
   rw [integral_replicaTargetProjectionMass_eq_sum_re_covariance_diag
     μ r target state hcoord]
-  simpa [replicaTargetIncidenceCollision, Fintype.card_fin] using
+  simpa [replicaTargetIncidenceCollision,
+    replicaSubspaceIncidenceCollision, replicaTargetIncidenceCovariance,
+    Fintype.card_fin] using
     sq_sum_re_diag_le_card_mul_matrix_hilbertSchmidt
       (replicaTargetIncidenceCovariance μ r target state)
 
@@ -223,8 +265,10 @@ theorem completePureStateTargetCapture_withZero
   · rintro ⟨c, hc⟩
     cases c with
     | none =>
-        simp [replicaTargetWithZero, finitePureStateFidelity] at hc
-        exact (not_lt_of_ge hc) hthreshold
+        have hzero : finitePureStateFidelity (state x) (0 : α → ℂ) = 0 := by
+          simp [finitePureStateFidelity, finiteComplexInner]
+        rw [replicaTargetWithZero, hzero] at hc
+        linarith
     | some c => exact ⟨c, hc⟩
   · rintro ⟨c, hc⟩
     exact ⟨some c, hc⟩
@@ -240,10 +284,8 @@ theorem replicaTargetIncidenceCollision_eq_of_span_eq
       replicaTargetSpan r target') :
     replicaTargetIncidenceCollision μ r target state =
       replicaTargetIncidenceCollision μ r target' state := by
-  unfold replicaTargetIncidenceCollision replicaTargetIncidenceCovariance
-    replicaTargetCoordinate replicaTargetOrthonormalBasis
-  cases hspan
-  rfl
+  unfold replicaTargetIncidenceCollision
+  rw [hspan]
 
 /-- Duplicate circuit descriptions do not change compressed covariance
 collision. -/

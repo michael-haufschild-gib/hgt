@@ -1,8 +1,8 @@
 # Burnol reflected co-shift Cartier continuation
 
 - **ID:** `burnol-reflected-coshift-cartier-continuation`
-- **Stage:** 2-fully-proven
-- **Type:** `[PROVED HERE] [BRIDGE] [ROUTE R FRONTIER]`
+- **Stage:** 3-formalized
+- **Type:** `[LEAN-PROVED] [PROVED HERE] [BRIDGE] [ROUTE R FRONTIER]`
 - **Exact claim:** the divergent reflected co-shift at `1-rho` has a unique bounded,
   coefficient-faithful critical-line continuation equal to the negative forward divided shift;
   at every right-half Xi divisor it sends the fixed co-Poisson atom to an actual zero-divided
@@ -19,7 +19,7 @@ continuation.  It no longer gets to choose an auxiliary vector, representation, 
 - [x] 0 -> 1 in-progress: exact source-pure operator and Xi-zero landing isolated; corpus and
   primary-literature audits complete
 - [x] 1 -> 2 fully-proven: dependency-closed proof below, `[PROVED HERE]`
-- [ ] 2 -> 3 formalized: exact Lean module, umbrella wiring, targeted build, lint, and axiom audit
+- [x] 2 -> 3 formalized: exact Lean module, umbrella wiring, targeted build, lint, and axiom audit
 - [ ] 3 -> 4 publication-ready: standalone exposition and external mathematical review
 
 ## Conjecture loop
@@ -193,6 +193,36 @@ the actual Xi-divisor landing, and the Route R physical port.
   function*, J. Theorie des Nombres de Bordeaux 16 (2004), 65--94.
 - J.-F. Burnol, *Entrelacement de co-Poisson*, Ann. Inst. Fourier 57 (2007), 525--602.
 
+## Lean certificate
+
+Module:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolReflectedCoShiftCartierContinuation.lean
+```
+
+Principal declarations:
+
+```text
+burnolReflectedCoShiftContinuationSymbol_eq_neg
+re_burnolReflectedCoShiftContinuationSymbol_eq
+burnolSpectralReflectedCoShiftContinuation_eq_neg
+burnolReflectedCoShiftContinuation_eq_neg
+re_inner_burnolReflectedCoShiftContinuation_eq
+re_inner_burnolReflectedCoShiftContinuation_neg
+burnolReflectedCoShiftContinuation_unique
+burnolReflectedCoShiftCartierPort_eq_neg
+re_burnolReflectedCoShiftCartierPort_neg
+xiDivisor_burnolReflectedCoShiftContinuation_mem_soninExtendedSpace
+burnolXiReflectedCoShiftCartierSourceLift
+burnolXiDividedShiftPhysicalDissipativity_of_forwardReflectedCartierStokesSewing
+riemannHypothesis_of_burnolXiForwardReflectedCartierStokesSewing
+```
+
+All are unconditional.  Exact assumptions reported by Lean are only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
 ## Log
 
 - 2026-08-07 — conjecture loop completed; dependency-closed paper proof and hostile audit passed.
+- 2026-08-07 — formalized, umbrella-wired, and passed targeted Lean, lint, axiom, and module audits.

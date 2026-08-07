@@ -66,7 +66,7 @@ theorem xiAmplitude_sq_div_phase_eq_pi_mul_profileWeight
       xiEndpointPhase s x / Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) := by
     apply (sq_eq_sq₀ (sq_nonneg _) (div_nonneg hphase.le hsqrt.le)).mp
     rw [show (xiAmplitude s x ^ 2) ^ 2 = xiAmplitude s x ^ 4 by ring,
-      hfourth, sq_div, Real.sq_sqrt hprod.le]
+      hfourth, div_pow, Real.sq_sqrt hprod.le]
     field_simp
   rw [hsq]
   field_simp
@@ -167,6 +167,10 @@ theorem radialProlateDensity_le_profileWeight
     exact mul_le_mul_of_nonneg_left hU hamp.le
   have hsq := (sq_le_sq₀ (abs_nonneg (R x)) (by positivity)).2 hRabs
   have hweight := xiAmplitude_sq_div_phase_eq_pi_mul_profileWeight hs0 hs1 hxx
+  have hAmp : xiAmplitude s x ^ 2 =
+      Real.pi * profileWeight s x * xiEndpointPhase s x := by
+    rw [div_eq_iff hphase.ne'] at hweight
+    exact hweight
   rw [radialProlateDensity, radialProlateDensityEnvelopeConstant]
   have hRsq : R x ^ 2 = |R x| ^ 2 := (sq_abs (R x)).symm
   rw [hRsq]
@@ -176,7 +180,7 @@ theorem radialProlateDensity_le_profileWeight
           (((1 + K) * C) / Real.sqrt (c * xiEndpointPhase s x))) ^ 2 :=
       mul_le_mul_of_nonneg_left hsq hc0.le
     _ = Real.pi * ((1 + K) * C) ^ 2 * profileWeight s x := by
-      rw [mul_pow, div_pow, Real.sq_sqrt (mul_pos hc0 hphase).le, hweight]
+      rw [mul_pow, div_pow, Real.sq_sqrt (mul_pos hc0 hphase).le, hAmp]
       field_simp
       ring
     _ = Real.pi * ((1 + radialProlateUniformTransferConstant) *
@@ -268,7 +272,8 @@ theorem abs_radialProlateDensity_sub_besselDensity_le
         rw [div_eq_iff hphase.ne'] at hweight
         linarith
       rw [hAmp]
-      field_simp [hrootSq, hc0.ne', hphase.ne']
+      field_simp [hc0.ne', hphase.ne']
+      rw [hrootSq]
       ring
     _ = (radialProlateDensityTransferConstant / c) * profileWeight s x := by rfl
 
@@ -304,9 +309,6 @@ theorem integrableOn_profileWeight
   refine Integrable.mono' hdom
     (hcont.aestronglyMeasurable measurableSet_Ioi) ?_
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-  rw [Real.norm_eq_abs, abs_of_pos (profileWeight_pos hs1 (ha.trans hx)),
-    Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (by norm_num)
-      (profileDensity_nonneg (ha.le.trans hx.le)))]
   exact profileWeight_le_four_mul_profileDensity hs0 hs1 (ha.trans hx)
 
 /-- Uniform total profile-weight bound on every strict exterior tail. -/
@@ -316,11 +318,10 @@ theorem integral_Ioi_profileWeight_le_two
   have hsubset : Ioi a ⊆ Ioi (1 : ℝ) := Ioi_subset_Ioi ha.le
   have hmono : (∫ x in Ioi a, profileWeight s x) ≤
       ∫ x in Ioi a, 4 * profileDensity x := by
-    apply MeasureTheory.integral_mono_on
+    apply integral_mono_ae
       (integrableOn_profileWeight hs0 hs1 ha)
       ((integrableOn_profileDensity.mono_set hsubset).const_mul 4)
-      measurableSet_Ioi
-    intro x hx
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     exact profileWeight_le_four_mul_profileDensity hs0 hs1 (ha.trans hx)
   calc
     (∫ x in Ioi a, profileWeight s x)
@@ -328,7 +329,9 @@ theorem integral_Ioi_profileWeight_le_two
     _ = 4 * ∫ x in Ioi a, profileDensity x := by rw [integral_const_mul]
     _ ≤ 4 * ∫ x in Ioi (1 : ℝ), profileDensity x := by
       gcongr
-      exact MeasureTheory.setIntegral_mono_set integrableOn_profileDensity hsubset
+      exact setIntegral_mono_set integrableOn_profileDensity
+        ((ae_restrict_mem measurableSet_Ioi).mono fun x hx => profileDensity_nonneg hx.le)
+        (Eventually.of_forall hsubset)
     _ = 2 := by rw [integral_Ioi_profileDensity]; ring
 
 /-- The exact Bessel density has the same fixed integrable envelope. -/
@@ -338,12 +341,17 @@ theorem radialProlateBesselDensity_le_profileWeight
     radialProlateBesselDensity s c x ≤
       Real.pi * lgBesselCommonEnvelopeConstant ^ 2 * profileWeight s x := by
   let C := lgBesselCommonEnvelopeConstant
+  have hC0 : 0 ≤ C := lgBesselCommonEnvelopeConstant_nonneg
   have hphase : 0 < xiEndpointPhase s x := xiEndpointPhase_pos hs0 hs1 hx
   have hmodel := (lgBesselCommonEnvelopeConstant_spec s c x hv).1
   rw [lgBesselModel] at hmodel
   have hsq := (sq_le_sq₀ (abs_nonneg (besselJ0 (c * xiEndpointPhase s x)))
-    (by positivity)).2 hmodel
+    (div_nonneg hC0 (Real.sqrt_nonneg _))).2 hmodel
   have hweight := xiAmplitude_sq_div_phase_eq_pi_mul_profileWeight hs0 hs1 hx
+  have hAmp : xiAmplitude s x ^ 2 =
+      Real.pi * profileWeight s x * xiEndpointPhase s x := by
+    rw [div_eq_iff hphase.ne'] at hweight
+    exact hweight
   have hJ : besselJ0 (c * xiEndpointPhase s x) ^ 2 =
       |besselJ0 (c * xiEndpointPhase s x)| ^ 2 := (sq_abs _).symm
   rw [radialProlateBesselDensity, mul_pow, mul_pow, Real.sq_sqrt hc.le, hJ]
@@ -353,7 +361,7 @@ theorem radialProlateBesselDensity_le_profileWeight
           (C / Real.sqrt (c * xiEndpointPhase s x)) ^ 2 :=
       mul_le_mul_of_nonneg_left hsq (mul_nonneg hc.le (sq_nonneg _))
     _ = Real.pi * C ^ 2 * profileWeight s x := by
-      rw [div_pow, Real.sq_sqrt (mul_pos hc hphase).le, hweight]
+      rw [div_pow, Real.sq_sqrt (mul_pos hc hphase).le, hAmp]
       field_simp
       ring
     _ = Real.pi * lgBesselCommonEnvelopeConstant ^ 2 * profileWeight s x := rfl
@@ -382,14 +390,13 @@ theorem integral_Ioi_abs_radialProlateDensity_sub_besselDensity_le
       (radialProlateDensityTransferConstant / c)
   have hRcont : Continuous R := continuous_iff_continuousAt.mpr fun x => (hR x).continuousAt
   have hBcont : ContinuousOn (radialProlateBesselDensity s c) (Ioi a) := by
-    intro x hx
-    have hx1 : 1 < x := ha.trans hx
+    have hsub : Ioi a ⊆ Ioi (1 : ℝ) := Ioi_subset_Ioi ha.le
     unfold radialProlateBesselDensity
-    exact (((continuous_const.mul
-      ((continuousOn_xiAmplitude hs0 hs1) x hx1)).mul
-        (continuous_besselJ0.continuousAt.comp
-          (continuousAt_const.mul
-            ((continuousOn_xiEndpointPhase hs0) x hx1)))).pow 2).continuousWithinAt
+    exact (((continuousOn_const.mul
+      ((continuousOn_xiAmplitude hs0 hs1).mono hsub)).mul
+        (continuous_besselJ0.comp_continuousOn
+          (continuousOn_const.mul
+            ((continuousOn_xiEndpointPhase hs0).mono hsub)))).pow 2)
   have hFmeas : AEStronglyMeasurable
       (fun x => |radialProlateDensity c R x - radialProlateBesselDensity s c x|)
       (volume.restrict (Ioi a)) := by
@@ -408,8 +415,8 @@ theorem integral_Ioi_abs_radialProlateDensity_sub_besselDensity_le
   have hmono : (∫ x in Ioi a,
       |radialProlateDensity c R x - radialProlateBesselDensity s c x|) ≤
       ∫ x in Ioi a, E x := by
-    apply MeasureTheory.integral_mono_on hFint hEint measurableSet_Ioi
-    intro x hx
+    apply integral_mono_ae hFint hEint
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     exact abs_radialProlateDensity_sub_besselDensity_le hs0 hs1 hc hR1 hR hDR hode
       (hca.trans hx.le)
   calc
