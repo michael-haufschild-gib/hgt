@@ -6115,3 +6115,4 @@ import GaloisForLFunctions.RHTower.Sieve.MertensBlock
 import GaloisForLFunctions.RHTower.Sieve.MultiplicativePrimeAverage
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogQuotientSum
 import GaloisForLFunctions.RHTower.Sieve.TripleConvolutionWindow
+import GaloisForLFunctions.RHTower.Sieve.DoubleAverageSplit

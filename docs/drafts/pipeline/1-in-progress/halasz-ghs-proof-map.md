@@ -292,3 +292,27 @@ analytic range sum to `O(2^{i₀} N)`, which is `O(N·L(x))` for the right cut `
 
 Step 3 now needs only the choice of the cut and the summation of the two regimes; step 4's outer Perron
 passage is the one analytic ingredient still missing.
+
+## Twelfth brick: step 3 is complete — one threshold, no block summation
+
+`RHTower/Sieve/DoubleAverageSplit.lean` (green, axiom-clean, wired):
+
+* `filter_large_quotient_eq` — the primes with a large quotient form an **initial segment**:
+  `{p : 2^n ≤ ⌊N/p⌋} = {p ≤ ⌊N/2^n⌋}`;
+* `sum_split_at_quotient_threshold` — the prime range splits at the threshold;
+* `doubleAverageTerm f N p` — the summand of the double prime average;
+* `norm_double_average_sub_initial_le` — **step 3**: for `n ≥ 1`,
+
+  `‖∑_{p : ⌊N/p⌋ ≥ 2} term − ∑_{p ≤ ⌊N/2^n⌋} term‖ ≤ (1 + C/log 2)·N·(n·log 2 + 2C)`.
+
+GHS's block bookkeeping disappears: because the window bound is already additive in the number of dyadic
+scales the window spans, the union of all discarded blocks is a *single* window `2 ≤ ⌊N/p⌋ < 2^n`, and one
+application of `norm_window_triple_le` bounds it by `O(N·n)`. Their discarded part is `x·L/100`, obtained
+at `n ≍ L`; the surviving part is the restriction to the initial segment `p ≤ ⌊N/2^n⌋`, which is exactly
+the range on which step 4's Dirichlet polynomials live.
+
+**Status of the skeleton: steps 1, 2, 3 complete; step 4's Lemma 1 complete over the whole frequency
+line.** The single remaining ingredient is step 4's outer Perron passage — extracting the initial-segment
+sum from its Dirichlet series — for which the corpus's exact smoothed identity
+(`SmoothWeightPerron.tsum_mul_smoothWeight_eq_integral`, kernel Lorentzian by
+`exists_bound_mellin_smoothWeight_line`) is the candidate at smoothing scale `H = N/(log N)³`.
