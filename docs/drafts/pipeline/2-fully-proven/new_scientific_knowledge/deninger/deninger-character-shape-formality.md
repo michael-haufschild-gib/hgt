@@ -661,3 +661,22 @@ symmetric as built — the relations are written with the left factor's action d
 mirror has to be constructed, or a braiding `M ⊗_A N ≅ N ⊗_A M` proved.  That is the only remaining
 module-level obstacle to `(5)`; above it, `(6)` is the passage to homotopy groups, and the
 multiplicative structure on the derived tensor product remains the genuinely higher part.
+
+### `(5)`'s module-level content is now a theorem
+
+The obstacle named in the entry above — the missing left unitor — is built:
+`relLeftUnitorHom_isQuasiIsoFull` (`A ⊗_A M ≅ M`).  With it, the card's proof of `(5)` transcribes
+into the corpus as `derivedBaseChange_unit`:
+
+> if `C` is a differential graded `A`-module equivalent to `A` itself, then `C ⊗^{\mathbb L}_A K`
+> is quasi-isomorphic to `K`.
+
+The Lean statement composes exactly the three steps of the card's two-line proof — the semi-free
+resolution computes `⊗^{\mathbb L}`, base change along the equivalence is an equivalence, and
+`A ⊗_A F ≃ F`.  Its hypotheses are the card's own: a unit for the algebra, unital actions, and that
+the comparison `(4)` is a quasi-isomorphism.  Nothing is assumed that the card does not assume, and
+the axiom audit is `propext, Classical.choice, Quot.sound`.
+
+What remains of `(5)`–`(6)` is the multiplicative structure: the derived tensor product is built
+here on *modules*, so the statement that `𝒞^M_{F,ℝ}` is an algebra and that `(6)` is an isomorphism
+of graded rings is still outside the layer.
