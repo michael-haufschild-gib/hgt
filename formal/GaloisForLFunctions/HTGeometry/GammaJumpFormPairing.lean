@@ -83,4 +83,54 @@ theorem integrableOn_jumpFormDominant (MF V : ℝ) :
     IntegrableOn (fun s => 2 * MF * V * (s * gammaTransportKernel s)) (Ioi 0) :=
   integrableOn_id_mul_gammaTransportKernel_Ioi_zero.const_mul (2 * MF * V)
 
+/-! ## Weights of bounded variation
+
+The truncated weights `w_M(L) = 1_{[L₀,M]}(L) L^{−3/2}` that test the source equation are not
+monotone — an indicator times a decreasing power is a *difference* of two monotone pieces.  The
+linear `L¹` modulus survives the splitting, with the two variations adding.
+-/
+
+/-- **A difference of monotone weights keeps a linear `L¹` modulus.**  This is what lets the
+truncated test weights be used: they are differences of monotone pieces, not monotone. -/
+theorem integral_abs_translate_sub_le_variation_sub {w₁ w₂ : ℝ → ℝ}
+    (h1 : Monotone w₁) (h2 : Monotone w₂) {a b s V₁ V₂ : ℝ}
+    (hs : 0 ≤ s) (hV1 : w₁ (b + s) - w₁ a ≤ V₁) (hV2 : w₂ (b + s) - w₂ a ≤ V₂) (hab : a ≤ b) :
+    (∫ L in a..b, |(w₁ (L + s) - w₂ (L + s)) - (w₁ L - w₂ L)|) ≤ (V₁ + V₂) * s := by
+  have hi1 : IntervalIntegrable (fun L => |w₁ (L + s) - w₁ L|) volume a b :=
+    (MonotoneTranslation.intervalIntegrable_translate_sub h1 s a b).abs
+  have hi2 : IntervalIntegrable (fun L => |w₂ (L + s) - w₂ L|) volume a b :=
+    (MonotoneTranslation.intervalIntegrable_translate_sub h2 s a b).abs
+  have hpt : ∀ L : ℝ, |(w₁ (L + s) - w₂ (L + s)) - (w₁ L - w₂ L)|
+      ≤ |w₁ (L + s) - w₁ L| + |w₂ (L + s) - w₂ L| := by
+    intro L
+    have hrw : (w₁ (L + s) - w₂ (L + s)) - (w₁ L - w₂ L)
+        = (w₁ (L + s) - w₁ L) + (-(w₂ (L + s) - w₂ L)) := by ring
+    rw [hrw]
+    calc |(w₁ (L + s) - w₁ L) + (-(w₂ (L + s) - w₂ L))|
+        ≤ |w₁ (L + s) - w₁ L| + |-(w₂ (L + s) - w₂ L)| := abs_add_le _ _
+      _ = |w₁ (L + s) - w₁ L| + |w₂ (L + s) - w₂ L| := by rw [abs_neg]
+  have hmeas : Measurable fun L => |(w₁ (L + s) - w₂ (L + s)) - (w₁ L - w₂ L)| :=
+    ((((monotone_comp_add_right h1 s).measurable).sub
+      ((monotone_comp_add_right h2 s).measurable)).sub
+      (h1.measurable.sub h2.measurable)).abs
+  have hlhs : IntervalIntegrable
+      (fun L => |(w₁ (L + s) - w₂ (L + s)) - (w₁ L - w₂ L)|) volume a b := by
+    refine IntervalIntegrable.mono_fun (hi1.add hi2) hmeas.aestronglyMeasurable ?_
+    filter_upwards with L
+    have hnn : 0 ≤ |w₁ (L + s) - w₁ L| + |w₂ (L + s) - w₂ L| := by positivity
+    simp only [Real.norm_eq_abs, abs_abs, abs_of_nonneg hnn]
+    exact hpt L
+  have hmono : (∫ L in a..b, |(w₁ (L + s) - w₂ (L + s)) - (w₁ L - w₂ L)|)
+      ≤ ∫ L in a..b, (|w₁ (L + s) - w₁ L| + |w₂ (L + s) - w₂ L|) :=
+    intervalIntegral.integral_mono_on hab hlhs (hi1.add hi2) fun L _ => hpt L
+  have hsplit : (∫ L in a..b, (|w₁ (L + s) - w₁ L| + |w₂ (L + s) - w₂ L|))
+      = (∫ L in a..b, |w₁ (L + s) - w₁ L|) + ∫ L in a..b, |w₂ (L + s) - w₂ L| :=
+    intervalIntegral.integral_add hi1 hi2
+  have hb1 : (∫ L in a..b, |w₁ (L + s) - w₁ L|) ≤ V₁ * s :=
+    integral_abs_translate_sub_le_variation h1 (a := a) (b := b) hs hV1
+  have hb2 : (∫ L in a..b, |w₂ (L + s) - w₂ L|) ≤ V₂ * s :=
+    integral_abs_translate_sub_le_variation h2 (a := a) (b := b) hs hV2
+  rw [hsplit] at hmono
+  nlinarith [hmono, hb1, hb2]
+
 end GaloisForLFunctions.HTGeometry
