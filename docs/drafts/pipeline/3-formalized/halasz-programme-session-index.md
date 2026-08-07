@@ -144,18 +144,22 @@ generalisation of the corpus's) — but they do not close the gap, and this card
 
 ## Fourth brick: the route the third no-go named
 
-`ghs-multiplicative-log-recursion.md` — the Granville–Harper–Soundararajan log recursion is now in Lean,
-unconditional and axiom-clean:
+`ghs-multiplicative-log-recursion.md` — the prime-only form of Halász's recursion, unconditional and
+axiom-clean:
 
-`|S_f(N)·log N − ∑_{p ≤ N} f(p) log p · S_f(⌊N/p⌋)| ≤ (9 + mertensTail)·N`.
+`‖S_f(N)·log N − ∑_{p ≤ N} f(p) log p · S_f(⌊N/p⌋)‖ ≤ (9 + mertensTail)·N`
 
-Two modules: `HTGeometry/GeneralisedVonMangoldt` (the weight `Λ_f = f⁻¹ * (f·log)`, its uniqueness, and
-`Λ_f = f·Λ` for completely multiplicative `f`) and `RHTower/Sieve/MultiplicativeLogRecursion` (the
-recursion, the log-shift via `le_log_factorial`, the prime-only reduction via
-`RHTower.Mertens.tail_bounded`).
+for completely multiplicative `f : ℕ → ℂ` with `‖f‖ ≤ 1`.
+
+The recursion itself was already in the corpus (`RHTower.Sieve.sum_mul_log_eq_vonMangoldt`, via
+`sum_divisors_swap`), as were the Leibniz rule (`RHTower.pmul_log_mul`), the Möbius instance
+(`Sieve/MoebiusLogRecursion`), the prime-power excess bound (`RHTower.Mertens.tail_bounded`) and
+Stirling's lower bound (`Sieve/MertensFirst.le_log_factorial`). What was missing was the passage from the
+recursion to the primes — the log-shift and the excess bound against the divided size — and the weight
+`Λ_f` as a universal object with `Λ_{f*g} = Λ_f + Λ_g`.
 
 This does not contradict the three no-gos and claims no decay: the identity holds for `f = 1` too. What
 it changes is the shape of the remaining gate. There is no Dirichlet polynomial of length `x` and no
-mean-value theorem at a short height anywhere in it, so the regime obstruction of no-go 3 does not
-apply; and the prime sum is signed, so cancellation survives. The gate is now a bound for
+mean-value theorem at a short height anywhere in it, so the regime obstruction of no-go 3 does not apply;
+and the prime sum is signed, so cancellation survives. The gate is now a bound for
 `∑_{p ≤ N} f(p) log p · S_f(⌊N/p⌋)` under a distance hypothesis on the values `f(p)`.
