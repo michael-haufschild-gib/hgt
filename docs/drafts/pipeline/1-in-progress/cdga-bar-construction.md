@@ -109,7 +109,14 @@ source types, `TensorCarrier sĀ (barPower (k+1))` and `TensorCarrier sĀ (Tenso
 transparency and does not see it; ascribing both summands to the same type with `show … from` is what
 lets the sum elaborate.
 
-What remains for step 5 is `d² = 0`: the double-sum cancellation of the head against itself, which
-is associativity of the ideal's product together with the sign of the shift, and the cross terms
-between the head and the internal differential, which are the Leibniz rule.  Then step 6, the total
-object `⨁_k (sĀ)^{⊗k}` with the counit.
+Step 6 is landed too, in the same module: `BarCarrier`, **the bar construction** — in each degree
+the direct sum over the number of factors of the tensor powers of the shifted ideal —
+`barTotalComponent`, the component of the total differential on the `k`-fold power (the internal
+differential, which keeps the number of factors, plus the bar differential, which lowers it by one),
+`barTotalD`, and `barTotalD_of`, its value on a single factor.
+
+What remains is `d² = 0`: the double-sum cancellation of the head against itself, which is
+associativity of the ideal's product together with the sign of the shift, and the cross terms
+between the head and the internal differential, which are the Leibniz rule.  Everything the
+statement quantifies over is now defined, so the remaining work is a computation rather than a
+construction.
