@@ -54,5 +54,12 @@ to fixed-rank trials.
 
 Kaiser leakage side and C39 finite flux identity are unconditional in Lean. Missing object is the
 cross-corpus synthesis map with cofinal, subexponential conditioning. No existing theorem supplies
-it. This is the only surviving new avenue found in the latest corpus audit; it is neither a
-classical PNT route nor another local prime-difference estimate.
+it. It is neither a classical PNT route nor another local prime-difference estimate.
+
+Latest critical-Mellin completion work shows C40 is no longer the only surviving avenue. The
+finite complete prime source equals polar partial source minus completed-error terminal flux plus
+a centered completed-Chebyshev-error current. Polar source converges to explicit archimedean-pole
+evaluation with height-independent norm, and terminal flux tends to zero for every `a>1/2`.
+Therefore C39's cumulative square-root main mass is removable before Kaiser synthesis. C40 remains
+open as a possible non-diagonal norm for the surviving centered current, but any synthesis theorem
+should now target that current rather than raw cumulative Abel coordinates.

@@ -457,3 +457,47 @@ The two half lines are disjoint (`d ≥ 1` against `d ≤ 0`), and in both regim
 is supported at the single index `m = -e`.  So the charge is `1` on the orbit of *every* period
 point, not only the origin — which is the statement that `D_Γ` is the class `[0]` in `ℤ[G]` rather
 than a base-point-dependent number.
+
+## Lean progress — products of gamma translates add their divisors
+
+Added to `EllipticGammaConeDivisor.lean` and `EllipticGammaConeOrder.lean` (wired, axiom-clean):
+
+    untop₀_ite_sub_ite
+    shiftOrder_ellipticGammaCone_periodPoint       **the shift order along the orbit of any period
+                                                   point is supported at the single index `m = -e`**,
+                                                   uniformly in the two regimes `1 ≤ d` and `d ≤ 0`
+    tripticOrbitCharge_ellipticGammaCone_periodPoint
+                                                   hence the charge is `1` at *every* period point
+    finite_shiftOrder_support_ellipticGammaCone_periodPoint
+    ellipticGammaConeTranslate_eq_comp
+    meromorphicOn_ellipticGammaConeTranslate
+    meromorphicOrderAt_ellipticGammaConeTranslate_ne_top
+    finite_shiftOrder_support_ellipticGammaConeTranslate
+                                                   the support is a single index inside the class and
+                                                   empty outside it
+    tripticOrbitCharge_ellipticGammaConeTranslate_mul
+                                                   **`D_{Y₁Y₂} = D_{Y₁} + D_{Y₂}` for translates**
+
+The uniformity is the point: in the zero regime the shift difference is
+`[1-e ≤ m+1] - [1-e ≤ m]` and in the pole regime it is `[m ≤ -e] - [m+1 ≤ -e]`, and both equal
+`[m = -e]`.  So the charge does not depend on which representative of the class is taken as base
+point, which is what makes `D` a function on `ℤ[G]` rather than on `ℂ`.
+
+With additivity now available *on the realizing sources* — the finiteness and finite-order
+hypotheses of `tripticOrbitCharge_mul` are discharged, not assumed — the card's "products add
+divisors, integer powers give signed multiplicities" is formal for the gamma translates.
+
+## Lean progress — the elliptic gamma source as a convergent atom series
+
+`GaloisForLFunctions/HTGeometry/EllipticGammaConeSource.lean` (wired, axiom-clean):
+
+    logDeriv_coneFactor            `(log(1 - e(w)))′ = -2πi·e(w)/(1 - e(w))`
+    norm_logDeriv_coneFactor_le    where the factor is within `1/2` of one, its logarithmic
+                                   derivative is at most `4π` times the deviation
+    summable_logDeriv_coneFactor   hence the atom series converges, by the same geometric
+                                   domination as the product
+    logDeriv_coneProduct_eq_tsum   **`(log Φ)′(z) = ∑_{j,k ≥ 0} -2πi e(ja + kb + z)/(1 - e(ja + kb + z))`**
+
+`Ψ = δ log Γ` is the difference of two such series, one at `z` and one at `a + b - z`.  This is the
+object the principal-part normal form `F − R_trip(F)Ψ ∈ Mer_DA` is written in, now available as an
+explicit convergent series rather than as a name.

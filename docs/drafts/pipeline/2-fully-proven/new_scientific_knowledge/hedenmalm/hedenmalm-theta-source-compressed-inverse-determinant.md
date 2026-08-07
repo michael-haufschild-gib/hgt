@@ -378,6 +378,11 @@ trace formula itself.
 | `(9)` | the slice moment `s |-> integral of q(t)(1_(s<=t) - t) dt` | `sliceMoment` |
 | `(9)` | **it moves exactly like the quantile**: its increment is minus the increment of `Q` | `sliceMoment_sub_of_le` |
 | `(9)` | equivalently `sliceMoment + Q` is constant on the open interval | `sliceMoment_add_quantileFun_eq` |
+| `(9)` | the quantile speed integrates to the quantile increment | `integral_quantileSpeed_indicator_Ico` |
+| `(9)` | the quantile map is integrable on the unit interval | `integrableOn_quantileFun_thetaSource` |
+| `(9)` | **the second absolute moment of the source is finite**, so the quantile map is square integrable | `integrable_sq_mul_thetaSource`, `integrableOn_sq_quantileFun_thetaSource` |
+| `(9)` | the quantile map is monotone | `quantileFun_le_quantileFun` |
+| `(9)` | the slice increment is an interval indicator | `abs_pinnedKernelSlice_sub` |
 | `(9)` | the quantile of the even theta source is odd, and its speed symmetric | `quantileFun_one_sub`, `quantileSpeed_one_sub` |
 | `(9)` | **the slice moment is odd under reflection**, which pins the additive constant | `sliceMoment_one_sub` |
 | `(9)` | **`sliceMoment S s = -Q(s)`**, unconditionally | `sliceMoment_eq_neg_quantileFun` |
@@ -407,6 +412,7 @@ starts the adjoint side.
 | `(9)` | **the adjoint of the source inverse IS the transposed kernel operator** | `adjoint_kernelOperator_eq` |
 | `(9)` | off the diagonal, `-K(t,u)K(u,t)/(q(t)q(u)) = min(t,u) - t u` | `neg_mul_pinnedKernelSlice` |
 | `(9)` | **the covariance decomposition** `min(t,u) - t u = integral of slice(t,s) slice(u,s) ds` | `integral_pinnedKernelSlice_mul`, `integral_pinnedKernelSlice_mul_min` |
+| `(9)` | the absolute slice mass `2 u (1-u)`, the majorant of the first interchange | `integral_abs_pinnedKernelSlice` |
 | `(9)` | the Riesz vectors of the two kernel fields | `toDual_symm_innerSL`, `toDual_symm_pinnedKernelField`, `toDual_symm_transposeKernelField`, `inner_riesz_eq` |
 | `(9)` | **`tr(B^2)` is the double kernel integral** `double integral of q(t) q(u) (min(t,u) - t u)` --- the quantile form of `2 integral over x<y of p(x)(1-p(y))` | `thetaTraceSq_eq_double_integral` |
 

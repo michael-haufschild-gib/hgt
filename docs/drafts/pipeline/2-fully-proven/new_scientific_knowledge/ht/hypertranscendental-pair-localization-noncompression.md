@@ -199,3 +199,18 @@ together with the telescoping identity `(1)` itself,
 So the card's unconditional algebraic content is in Lean and audited.  What is not — the meromorphic
 realization of an arbitrary private charge and the direct-sum private field — depends on the
 exact-image parent, which is an analytic theorem of the all-depth card, not of this one.
+
+## Lean progress — the elliptic gamma source as a convergent atom series
+
+`GaloisForLFunctions/HTGeometry/EllipticGammaConeSource.lean` (wired, axiom-clean):
+
+    logDeriv_coneFactor            `(log(1 - e(w)))′ = -2πi·e(w)/(1 - e(w))`
+    norm_logDeriv_coneFactor_le    where the factor is within `1/2` of one, its logarithmic
+                                   derivative is at most `4π` times the deviation
+    summable_logDeriv_coneFactor   hence the atom series converges, by the same geometric
+                                   domination as the product
+    logDeriv_coneProduct_eq_tsum   **`(log Φ)′(z) = ∑_{j,k ≥ 0} -2πi e(ja + kb + z)/(1 - e(ja + kb + z))`**
+
+`Ψ = δ log Γ` is the difference of two such series, one at `z` and one at `a + b - z`.  This is the
+object the principal-part normal form `F − R_trip(F)Ψ ∈ Mer_DA` is written in, now available as an
+explicit convergent series rather than as a name.

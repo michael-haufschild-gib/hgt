@@ -146,6 +146,70 @@ noncomputable abbrev barTH (k m : ℕ) :
 
 end General
 
+/-- **The Leibniz cancellation on a triple.**  Differentiating the merged slot, against multiplying
+after differentiating either factor, sums to zero: on a pure tensor it is the Leibniz rule of the
+shifted product, and both sides are linear. -/
+theorem barMulD_cancel {p q m : ℕ} (h : p + q + 1 = m)
+    (T : TensorProduct R (barShiftFamily ε p) (TensorProduct R (barShiftFamily ε q) W)) :
+    TensorProduct.map (augIdealShiftD ε m) (LinearMap.id (R := R) (M := W))
+        (barMulTail ε h (LinearMap.id (R := R) (M := W)) T)
+      + barMulTail ε (show p + 1 + q + 1 = m + 1 by omega) (LinearMap.id (R := R) (M := W))
+        (TensorProduct.map (augIdealShiftD ε p)
+          (LinearMap.id (R := R)
+            (M := TensorProduct R (barShiftFamily ε q) W)) T)
+      + ((-1 : R)) ^ p • barMulTail ε (show p + (q + 1) + 1 = m + 1 by omega)
+        (LinearMap.id (R := R) (M := W))
+        (TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε p))
+          (TensorProduct.map (augIdealShiftD ε q) (LinearMap.id (R := R) (M := W))) T) = 0 := by
+  induction T using TensorProduct.induction_on with
+  | zero => simp only [map_zero, smul_zero, add_zero]
+  | add T T' hT hT' =>
+      simp only [map_add, smul_add]
+      calc _ = (TensorProduct.map (augIdealShiftD ε m) (LinearMap.id (R := R) (M := W))
+              (barMulTail ε h (LinearMap.id (R := R) (M := W)) T)
+            + barMulTail ε (show p + 1 + q + 1 = m + 1 by omega) LinearMap.id
+              (TensorProduct.map (augIdealShiftD ε p) LinearMap.id T)
+            + ((-1 : R)) ^ p • barMulTail ε (show p + (q + 1) + 1 = m + 1 by omega) LinearMap.id
+              (TensorProduct.map LinearMap.id
+                (TensorProduct.map (augIdealShiftD ε q) LinearMap.id) T))
+          + (TensorProduct.map (augIdealShiftD ε m) (LinearMap.id (R := R) (M := W))
+              (barMulTail ε h (LinearMap.id (R := R) (M := W)) T')
+            + barMulTail ε (show p + 1 + q + 1 = m + 1 by omega) LinearMap.id
+              (TensorProduct.map (augIdealShiftD ε p) LinearMap.id T')
+            + ((-1 : R)) ^ p • barMulTail ε (show p + (q + 1) + 1 = m + 1 by omega) LinearMap.id
+              (TensorProduct.map LinearMap.id
+                (TensorProduct.map (augIdealShiftD ε q) LinearMap.id) T')) := by abel
+        _ = 0 := by rw [hT, hT', add_zero]
+  | tmul x V =>
+      induction V using TensorProduct.induction_on with
+      | zero => simp only [TensorProduct.tmul_zero, map_zero, smul_zero, add_zero]
+      | add V V' hV hV' =>
+          simp only [TensorProduct.tmul_add, map_add, smul_add]
+          calc _ = (TensorProduct.map (augIdealShiftD ε m) (LinearMap.id (R := R) (M := W))
+                  (barMulTail ε h (LinearMap.id (R := R) (M := W)) (x ⊗ₜ[R] V))
+                + barMulTail ε (show p + 1 + q + 1 = m + 1 by omega) LinearMap.id
+                  (TensorProduct.map (augIdealShiftD ε p) LinearMap.id (x ⊗ₜ[R] V))
+                + ((-1 : R)) ^ p • barMulTail ε (show p + (q + 1) + 1 = m + 1 by omega)
+                  LinearMap.id (TensorProduct.map LinearMap.id
+                    (TensorProduct.map (augIdealShiftD ε q) LinearMap.id) (x ⊗ₜ[R] V)))
+              + (TensorProduct.map (augIdealShiftD ε m) (LinearMap.id (R := R) (M := W))
+                  (barMulTail ε h (LinearMap.id (R := R) (M := W)) (x ⊗ₜ[R] V'))
+                + barMulTail ε (show p + 1 + q + 1 = m + 1 by omega) LinearMap.id
+                  (TensorProduct.map (augIdealShiftD ε p) LinearMap.id (x ⊗ₜ[R] V'))
+                + ((-1 : R)) ^ p • barMulTail ε (show p + (q + 1) + 1 = m + 1 by omega)
+                  LinearMap.id (TensorProduct.map LinearMap.id
+                    (TensorProduct.map (augIdealShiftD ε q) LinearMap.id) (x ⊗ₜ[R] V'))) := by
+              abel
+            _ = 0 := by rw [hV, hV', add_zero]
+      | tmul y w =>
+          show augIdealShiftD ε m (augIdealShiftMulOf ε h x y) ⊗ₜ[R] w
+              + augIdealShiftMulOf ε (show p + 1 + q + 1 = m + 1 by omega)
+                (augIdealShiftD ε p x) y ⊗ₜ[R] w
+              + ((-1 : R)) ^ p • (augIdealShiftMulOf ε (show p + (q + 1) + 1 = m + 1 by omega) x
+                (augIdealShiftD ε q y) ⊗ₜ[R] w) = 0
+          rw [TensorProduct.smul_tmul', ← TensorProduct.add_tmul, ← TensorProduct.add_tmul,
+            augIdealShiftMulOf_leibniz ε h x y, TensorProduct.zero_tmul]
+
 section Componentwise
 
 variable {N N' : ℕ → Type u} [∀ n, AddCommGroup (N n)] [∀ n, Module R (N n)]

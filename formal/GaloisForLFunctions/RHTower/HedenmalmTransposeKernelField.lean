@@ -660,6 +660,62 @@ theorem integral_pinnedKernelSlice_mul_min {t u : ℝ} (ht : t ∈ Ioo (0 : ℝ)
     ring
 
 
+
+set_option maxHeartbeats 1000000 in
+/-- **The absolute slice mass.**  The pinned slice has absolute mass `2 u (1-u)` on the unit
+interval.  This is the majorant that makes the slice-moment double integral a product-integrable
+one. -/
+theorem integral_abs_pinnedKernelSlice {u : ℝ} (hu : u ∈ Ioo (0 : ℝ) 1) :
+    (∫ s in Ioo (0 : ℝ) 1, |pinnedKernelSlice u s|) = 2 * (u * (1 - u)) := by
+  have hbdd : ∀ s : ℝ, ‖|pinnedKernelSlice u s|‖ ≤ 1 := by
+    intro s
+    rw [Real.norm_eq_abs, abs_abs]
+    exact abs_pinnedKernelSlice_le (Ioo_subset_Icc_self hu) s
+  have hmeas : AEStronglyMeasurable (fun s => |pinnedKernelSlice u s|) volume := by
+    refine Measurable.aestronglyMeasurable (Measurable.abs ?_)
+    exact (measurable_const.ite (measurableSet_le measurable_id measurable_const)
+      measurable_const).sub measurable_const
+  have hint : ∀ v : Set ℝ, MeasurableSet v → volume v ≠ ⊤ →
+      IntegrableOn (fun s => |pinnedKernelSlice u s|) v volume := by
+    intro v hv hfin
+    refine Measure.integrableOn_of_bounded (M := (1 : ℝ)) hfin hmeas ?_
+    filter_upwards with s
+    exact hbdd s
+  have hsplit : Ioo (0 : ℝ) 1 = Ioc 0 u ∪ Ioo u 1 := by
+    ext s
+    simp only [mem_Ioo, mem_union, mem_Ioc]
+    constructor
+    · rintro ⟨h0, h1⟩
+      rcases le_or_gt s u with h | h
+      · exact Or.inl ⟨h0, h⟩
+      · exact Or.inr ⟨h, h1⟩
+    · rintro (⟨h0, h⟩ | ⟨h, h1⟩)
+      · exact ⟨h0, lt_of_le_of_lt h hu.2⟩
+      · exact ⟨lt_trans hu.1 h, h1⟩
+  have hdisj : Disjoint (Ioc (0 : ℝ) u) (Ioo u 1) := by
+    rw [Set.disjoint_left]
+    rintro s ⟨_, hs⟩ ⟨hs', _⟩
+    exact absurd hs (not_le.mpr hs')
+  have h1 := hint (Ioc (0 : ℝ) u) measurableSet_Ioc
+    (by rw [Real.volume_Ioc]; exact ENNReal.ofReal_ne_top)
+  have h2 := hint (Ioo u (1 : ℝ)) measurableSet_Ioo
+    (by rw [Real.volume_Ioo]; exact ENNReal.ofReal_ne_top)
+  rw [hsplit, MeasureTheory.setIntegral_union hdisj measurableSet_Ioo h1 h2]
+  have hleft : (∫ s in Ioc (0 : ℝ) u, |pinnedKernelSlice u s|) = u * (1 - u) := by
+    rw [setIntegral_congr_fun measurableSet_Ioc (g := fun _ => 1 - u) fun s hs => ?_]
+    · rw [setIntegral_const, Measure.real, Real.volume_Ioc, sub_zero, smul_eq_mul,
+        ENNReal.toReal_ofReal hu.1.le]
+    · rw [pinnedKernelSlice, if_pos hs.2, abs_of_nonneg (by linarith [hu.2])]
+  have hright : (∫ s in Ioo u (1 : ℝ), |pinnedKernelSlice u s|) = (1 - u) * u := by
+    rw [setIntegral_congr_fun measurableSet_Ioo (g := fun _ => u) fun s hs => ?_]
+    · rw [setIntegral_const, Measure.real, Real.volume_Ioo, smul_eq_mul,
+        ENNReal.toReal_ofReal (by linarith [hu.2] : (0 : ℝ) ≤ 1 - u)]
+    · rw [pinnedKernelSlice, if_neg (not_le.mpr hs.1), zero_sub, abs_neg,
+        abs_of_nonneg hu.1.le]
+  rw [hleft, hright]
+  ring
+
+
 end HedenmalmThetaSource
 
 end

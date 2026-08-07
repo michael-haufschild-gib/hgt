@@ -1,7 +1,7 @@
 # Exterior elimination forces a positive Feshbach self-energy on Suzuki's pruned seam
 
 - **ID:** `suzuki-exterior-feshbach-pruning-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE-SPECIFIC EXACT CLASSIFICATION / CARRIER CORRECTION
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`

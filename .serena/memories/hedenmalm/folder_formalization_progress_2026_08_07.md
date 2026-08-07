@@ -1334,3 +1334,66 @@ because `|slice(u,s)| ≤ 1_{[min(s,1/2),max(s,1/2))}(u) + |slice(u,1/2)|` and
 `∫ q · 1_{[a,b)} = Q(b) − Q(a)`; `Q ∈ L¹(0,1)` via `integrableOn_comp_quantileFun_iff`
 (ALREADY IN THE CORPUS, `HTGeometry/PositiveDensityQuantile.lean`) applied to `g = id`,
 whose right-hand side is `integrable_mul_thetaSource`.
+
+## Card 7 (9): two more support lemmas (2026-08-08)
+
+`integral_quantileSpeed_indicator_Ico (S) (ha) (hb) (hab) :`
+`  ∫ t, (Ico a b).indicator (quantileSpeed S) t ∂μ = Q b - Q a`
+— the FTC on the unit interval, extracted so the endpoint behaviour never appears.
+
+`integrableOn_quantileFun_thetaSource : IntegrableOn Q (Ioo 0 1) volume`
+— via the corpus `PositiveDensitySource.integrableOn_comp_quantileFun_iff` (g = id) and
+`integrable_mul_thetaSource`.  NOTE: `integral_quantileFun` and `integral_sq_quantileFun` were
+proved through `integral_comp_quantile`, which is an equality of integrals and does NOT establish
+integrability; that is why this lemma was still needed.
+
+These are the two inputs to the bound
+`∫_t q(t)|slice(t,s)| dt ≤ A + |Q s - Q (1/2)|`, `A = ∫_t q(t)|slice(t,1/2)| dt`,
+which is the product-integrability hypothesis for the LAST Fubini of (9)
+(the one that must be taken with `s` OUTSIDE — with `t` outside the iterated bound diverges).
+
+## Card 7 (9): the majorant of the first interchange (2026-08-08)
+
+`integral_abs_pinnedKernelSlice (hu) : ∫ s in Ioo 0 1, |pinnedKernelSlice u s| = 2 u (1-u)`
+(two-way split at `s = u`; the integrand is `1-u` on `Ioc 0 u` and `u` on `Ioo u 1`).
+
+This is what makes the FIRST of the two remaining interchanges work:
+`G(u,s) = q(u) slice(t,s) slice(u,s)` is dominated by `q(u)|slice(u,s)|`, whose iterated integral
+with `u` OUTSIDE is `∫_u q(u) · 2u(1-u) du`, finite by AM-GM against `HasFiniteKernelEnergy`.
+
+The SECOND interchange (`H(t,s) = q(t) slice(t,s) sliceMoment s`) must be taken with `s` OUTSIDE
+and still needs two things NOT yet in the tree:
+  (i) `∫_t q(t)|slice(t,s)| dt ≤ A + |Q s - Q(1/2)|`, from
+      `|slice(t,s)| ≤ 1_{Ico(min(s,1/2),max(s,1/2))}(t) + |slice(t,1/2)|` and
+      `integral_quantileSpeed_indicator_Ico`;
+  (ii) `Q ∈ L²(0,1)`, i.e. `Integrable (fun x => x^2 * thetaCuspFullSource x)` — CONFIRMED ABSENT
+      from the corpus (only the first-moment `integrable_mul_thetaSource` exists), so it must be
+      built on the `thetaBound * exp(-|x|)` envelope like its first-moment sibling.
+      Note mathlib has no `integrable_pow_mul_exp_neg_mul_abs`; the corpus's
+      `integrable_abs_mul_exp_neg_mul_abs` is the degree-one case only, and
+      `integrable_sq_mul_exp_neg_abs` in `MobiusIncidenceClockGiniFisherFourUnit.lean` is `private`.
+
+## Card 7 (9): the "absent" second-moment dependency was NOT absent (2026-08-08)
+
+CORRECTION to the previous note.  `Integrable (fun x => x^2 * thetaCuspFullSource x)` is three
+lines, because the source IS Schwartz:
+  `thetaCuspSchwartzReal.integrable_pow_mul (volume) 2` gives `Integrable (‖x‖^k * ‖φ x‖)`,
+  and `Integrable.mono'` against it closes `integrable_sq_mul_thetaSource`.
+No envelope argument, no `integrable_pow_mul_exp_neg_mul_abs` needed.
+(The general corpus lemma `integrable_abs_pow_mul_exp_neg_mul_abs (k) (hc)` in
+`RHTower/ThetaCuspFourierLaplace.lean` also exists if a non-Schwartz source ever needs it, and
+`SuzukiSafeBoundaryThetaCumulantWall.lean` has `integrable_pow_mul_exp_mul_thetaCuspFullSource`.)
+
+Built with it: `integrableOn_sq_quantileFun_thetaSource` (Q ∈ L²(0,1)),
+`quantileFun_le_quantileFun` (monotonicity of Q, derived from
+`integral_quantileSpeed_indicator_Ico` and `quantileSpeed_pos` — the corpus had NO monotonicity
+lemma for `quantileFun`), and `abs_pinnedKernelSlice_sub`
+(`|slice(t,s) − slice(t,c)| = 1_{Ico(min s c, max s c)}(t)`).
+
+TRAP: in the two unit branches of `abs_pinnedKernelSlice_sub`, `simp`/`norm_num` do NOT close
+`|0 - t - (1 - t)| = 1`; use `abs_of_nonpos (by linarith)` then `ring`.
+
+ALL inputs of the last Fubini of (9) are now in the tree.  What is left is only:
+  `absSliceMoment s := ∫_t q(t)|slice(t,s)| dt ≤ absSliceMoment (1/2) + |Q s − Q(1/2)|`
+  (immediate from `abs_pinnedKernelSlice_sub` + `integral_quantileSpeed_indicator_Ico`
+   + `quantileFun_le_quantileFun`), then the two interchanges.

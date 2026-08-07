@@ -109,6 +109,71 @@ theorem meromorphicOrderAt_ellipticGammaCone_ne_top {a b : ℂ} (ha : 0 < a.im) 
   exact withTop_sub_ne_top (meromorphicOrderAt_ellipticGammaConeNum_ne_top ha hb z)
     (meromorphicOrderAt_coneProduct_ne_top ha hb z)
 
+/-! ### Translates -/
+
+theorem ellipticGammaConeTranslate_eq_comp (a b g : ℂ) :
+    ellipticGammaConeTranslate a b g = fun z => ellipticGammaCone a b (z + (-g)) := by
+  funext z
+  simp [ellipticGammaConeTranslate, sub_eq_add_neg]
+
+theorem meromorphicOn_ellipticGammaConeTranslate {a b : ℂ} (ha : 0 < a.im) (hb : 0 < b.im)
+    (g : ℂ) : MeromorphicOn (ellipticGammaConeTranslate a b g) Set.univ := by
+  intro z _
+  rw [ellipticGammaConeTranslate_eq_comp]
+  exact meromorphicAt_comp_add.mpr (meromorphicOn_ellipticGammaCone ha hb _ (Set.mem_univ _))
+
+theorem meromorphicOrderAt_ellipticGammaConeTranslate_ne_top {a b : ℂ} (ha : 0 < a.im)
+    (hb : 0 < b.im) (g z : ℂ) :
+    meromorphicOrderAt (ellipticGammaConeTranslate a b g) z ≠ ⊤ := by
+  rw [ellipticGammaConeTranslate_eq_comp, meromorphicOrderAt_comp_add]
+  exact meromorphicOrderAt_ellipticGammaCone_ne_top ha hb _
+
+/-- **The shift-order support of a translate along any orbit is finite.**  Either the base point
+lies in the period class of the translation, and the support is the single index given by the
+half-line law, or it does not, and the support is empty. -/
+theorem finite_shiftOrder_support_ellipticGammaConeTranslate {a b : ℂ} (ha : 0 < a.im)
+    (hb : 0 < b.im) (hindep : IndepPeriods a b) (g p : ℂ) :
+    {m : ℤ | shiftOrder (ellipticGammaConeTranslate a b g) b (p + (m : ℂ) * b) ≠ 0}.Finite := by
+  classical
+  have hrw : ∀ m : ℤ, shiftOrder (ellipticGammaConeTranslate a b g) b (p + (m : ℂ) * b)
+      = shiftOrder (ellipticGammaCone a b) b ((p - g) + (m : ℂ) * b) := by
+    intro m
+    rw [shiftOrder_ellipticGammaConeTranslate]
+    congr 1
+    ring
+  by_cases hmem : PeriodGroupMem a b (p - g)
+  · obtain ⟨c, d, e, hcde⟩ := hmem
+    refine (finite_shiftOrder_support_ellipticGammaCone_periodPoint ha hb hindep c d e).subset
+      fun m hm => ?_
+    simp only [Set.mem_setOf_eq] at hm ⊢
+    rw [hrw m, hcde] at hm
+    exact hm
+  · refine Set.Finite.subset (Set.finite_empty) fun m hm => ?_
+    simp only [Set.mem_setOf_eq] at hm
+    exfalso
+    apply hm
+    rw [hrw m, shiftOrder]
+    have hstep : (p - g) + (m : ℂ) * b + b = (p - g) + (((m + 1 : ℤ) : ℂ)) * b := by
+      push_cast
+      ring
+    rw [hstep, meromorphicOrderAt_ellipticGammaCone_orbit_of_notMem ha hb hmem,
+      meromorphicOrderAt_ellipticGammaCone_orbit_of_notMem ha hb hmem]
+    simp
+
+/-- **Products of translates add their orbital charges.** -/
+theorem tripticOrbitCharge_ellipticGammaConeTranslate_mul {a b : ℂ} (ha : 0 < a.im)
+    (hb : 0 < b.im) (hindep : IndepPeriods a b) (g₁ g₂ p : ℂ) :
+    tripticOrbitCharge (fun z => ellipticGammaConeTranslate a b g₁ z
+        * ellipticGammaConeTranslate a b g₂ z) b p
+      = tripticOrbitCharge (ellipticGammaConeTranslate a b g₁) b p
+        + tripticOrbitCharge (ellipticGammaConeTranslate a b g₂) b p :=
+  tripticOrbitCharge_mul (meromorphicOn_ellipticGammaConeTranslate ha hb g₁)
+    (meromorphicOn_ellipticGammaConeTranslate ha hb g₂)
+    (meromorphicOrderAt_ellipticGammaConeTranslate_ne_top ha hb g₁)
+    (meromorphicOrderAt_ellipticGammaConeTranslate_ne_top ha hb g₂)
+    (finite_shiftOrder_support_ellipticGammaConeTranslate ha hb hindep g₁ p)
+    (finite_shiftOrder_support_ellipticGammaConeTranslate ha hb hindep g₂ p)
+
 end
 
 end GaloisForLFunctions.HTGeometry

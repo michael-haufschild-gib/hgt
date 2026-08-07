@@ -365,4 +365,48 @@ theorem meromorphicOrderAt_ellipticGammaCone_periodPoint {a b : ℂ} (ha : 0 < a
         ((coneProduct_periodPoint_orbit_eq_zero_iff ha hb hindep c d e m).mp h)), if_neg hcase]
   rw [hnumorder, hdenorder]
 
+/-- Untopping a difference of indicator orders. -/
+theorem untop₀_ite_sub_ite (A B : Prop) [Decidable A] [Decidable B] :
+    (((if A then (1 : WithTop ℤ) else 0) - (if B then (1 : WithTop ℤ) else 0))).untop₀
+      = (if A then (1 : ℤ) else 0) - (if B then (1 : ℤ) else 0) := by
+  by_cases hA : A <;> by_cases hB : B <;> simp [hA, hB]
+
+/-- **The shift order along the orbit of any period point** is supported at the single index
+`m = -e`, in both the zero regime `1 ≤ d` and the pole regime `d ≤ 0`. -/
+theorem shiftOrder_ellipticGammaCone_periodPoint {a b : ℂ} (ha : 0 < a.im) (hb : 0 < b.im)
+    (hindep : IndepPeriods a b) (c d e m : ℤ) :
+    shiftOrder (ellipticGammaCone a b) b
+        (((c : ℂ) + (d : ℂ) * a + (e : ℂ) * b) + (m : ℂ) * b)
+      = if m = -e then 1 else 0 := by
+  classical
+  have hstep : ((c : ℂ) + (d : ℂ) * a + (e : ℂ) * b) + (m : ℂ) * b + b
+      = ((c : ℂ) + (d : ℂ) * a + (e : ℂ) * b) + (((m + 1 : ℤ) : ℂ)) * b := by
+    push_cast
+    ring
+  rw [shiftOrder, hstep, meromorphicOrderAt_ellipticGammaCone_periodPoint ha hb hindep,
+    meromorphicOrderAt_ellipticGammaCone_periodPoint ha hb hindep,
+    untop₀_ite_sub_ite, untop₀_ite_sub_ite]
+  split_ifs <;> omega
+
+/-- **The orbital charge of the elliptic gamma at any period point is one.** -/
+theorem tripticOrbitCharge_ellipticGammaCone_periodPoint {a b : ℂ} (ha : 0 < a.im) (hb : 0 < b.im)
+    (hindep : IndepPeriods a b) (c d e : ℤ) :
+    tripticOrbitCharge (ellipticGammaCone a b) b ((c : ℂ) + (d : ℂ) * a + (e : ℂ) * b) = 1 := by
+  classical
+  rw [tripticOrbitCharge]
+  rw [finsum_congr (shiftOrder_ellipticGammaCone_periodPoint ha hb hindep c d e)]
+  rw [finsum_eq_single (fun m : ℤ => if m = -e then (1 : ℤ) else 0) (-e) (fun x hx => if_neg hx)]
+  norm_num
+
+/-- The shift-order support along the orbit of a period point is a single index, hence finite. -/
+theorem finite_shiftOrder_support_ellipticGammaCone_periodPoint {a b : ℂ} (ha : 0 < a.im)
+    (hb : 0 < b.im) (hindep : IndepPeriods a b) (c d e : ℤ) :
+    {m : ℤ | shiftOrder (ellipticGammaCone a b) b
+      (((c : ℂ) + (d : ℂ) * a + (e : ℂ) * b) + (m : ℂ) * b) ≠ 0}.Finite := by
+  classical
+  refine (Set.finite_singleton (-e)).subset fun m hm => ?_
+  simp only [Set.mem_setOf_eq, shiftOrder_ellipticGammaCone_periodPoint ha hb hindep] at hm
+  by_contra hne
+  exact hm (if_neg hne)
+
 end GaloisForLFunctions.HTGeometry

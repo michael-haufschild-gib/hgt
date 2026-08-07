@@ -4639,3 +4639,28 @@ in the spectral coordinate:
 one are elementary once the right coordinate is chosen — the first is linear algebra on `ℝ²`, the
 second an rpow computation.  Scan the remaining cards' `## 1. Result` for *computational* content
 before assuming an analytic build.
+
+## EI. Exterior Feshbach pruning — promoted (74/103)
+
+`suzuki-exterior-feshbach-pruning-law` is in stage 3.
+
+Two Lean modules:
+- `HTGeometry/ExteriorFeshbachBlocks.lean` — the exact block equations `(4)`/`(5)` in a bare `Ring`.
+  `feshbach_exterior`, `feshbach_interior`.  Axioms: `[propext]` only.
+- `HTGeometry/ExteriorFeshbachPruning.lean` — the Neumann layer (`shiftInverse`,
+  `norm_shiftInverse_le`), the exterior block and its inverse, `exteriorInverse_comm` (the ambient
+  lift restricts faithfully to `Q X`), the three norm bounds `(6a)`,`(6b)`,`(7)`, and the
+  C*-positivity `(8)` (`isSelfAdjoint_selfEnergy`, `nonneg_selfEnergy`).
+
+Reusable facts recorded here:
+- mathlib has `Units.oneSub t h` for `‖t‖ < 1` but **no** norm bound on its inverse.
+  `norm_inverse_oneSub_le` supplies `‖(1-t)⁻¹‖ ≤ (1-‖t‖)⁻¹` via `norm_tsum_le_tsum_norm` +
+  `tsum_geometric_of_lt_one`.  Name traps on this toolchain: `norm_pow_le` (not
+  `norm_pow_le_pow_norm`), `Summable.tsum_le_tsum` (not `tsum_le_tsum`),
+  `Summable.of_nonneg_of_le` (not `summable_of_norm_bounded`), `inv_anti₀` (not
+  `inv_le_inv_of_le`).
+- C*-order API used: `IsSelfAdjoint.neg_algebraMap_norm_le_self`, `algebraMap_nonneg`,
+  `star_left_conjugate_nonneg`.  `CStarAlgebra A` supplies `NormedAlgebra ℝ A` by instance.
+- Compressing an operator to a subspace is best formalized as an **ambient lift that commutes with
+  the projection**, not as an operator on a subtype.  `α • 1 + Q T Q` commutes with `Q`, and so
+  does its inverse (`comm_of_comm_inverse`), which is exactly faithfulness of the lift.
