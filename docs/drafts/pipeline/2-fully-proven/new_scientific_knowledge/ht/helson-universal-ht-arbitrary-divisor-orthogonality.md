@@ -232,3 +232,25 @@ builds pass.  The final declarations depend only on `propext`, `Classical.choice
 - K. Seip, *Universality and distribution of zeros and poles of some zeta functions*, J. Anal.
   Math. 141 (2020), especially Section 1.1 and its citation of the Saksman--Webb almost-sure
   meromorphic-abscissa theorem.
+
+## Lean plan — the three classical inputs, separated by cost
+
+The card's open `2 → 3` gate names three concrete external theorems.  They are not equally
+expensive, and the abstract layer they feed is already formal.
+
+- **Pong's Theorem 5.9** (finite families of distinct shifted derivatives of a Dirichlet series
+  with non-finitely-generated prime support are algebraically independent over the finite-prime
+  differential field).  The corpus already owns the differential-independence machinery this
+  produces (`DifferentialIndependence`, `DifferentialIndependentFieldUniversality`,
+  `PrimeDirichletDifferentialField`), so the missing content is the *arithmetic* input: a prime
+  support that is not finitely generated forces independence.  This is the piece to attack first.
+- **Andersson's arbitrary-divisor theorem** — an analytic continuation statement about
+  `Z_χ`; needs Dirichlet-series continuation machinery the corpus partly owns via `PNTPlus`.
+- **Saksman--Webb/Seip almost-sure `σ(χ) = 1/2`** — a probabilistic statement on the character
+  torus; the corpus owns the compact phase torus (`completed-time-torus` layer) but not the
+  almost-sure abscissa.
+
+The universality and dense/codense seam consequences are already formalized axiom-clean; what these
+three add is the *instantiation*, i.e. that the hypothesis class is inhabited by the actual
+`Z_χ` family.  Until then the formal statements are conditional on their hypotheses being met, and
+the card should not claim the joint law is formal.

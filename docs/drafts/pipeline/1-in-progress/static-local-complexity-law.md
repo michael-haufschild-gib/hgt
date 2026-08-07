@@ -5188,3 +5188,16 @@ receive a new title and an independent significance audit.
   coarea mass of the complete circuit tube after return removal; unlike a raw
   pointwise determinant, it must retain fibre-sheet multiplicity and occupied
   endpoint image.
+- 2026-08-07 -- Closed the representation part of the incidence-normalized
+  coarea frontier.  For the occupied return-removed replica span `S_r`, its
+  Hilbert number `h_r`, and the quenched covariance `C_r` compressed to that
+  span, the full approximate shortcut event satisfies the Lean-proved law
+  `a^(2r) P(E_a)^2 <= h_r ||C_r||_HS^2`.  Source coefficient sheets remain
+  inside the covariance integrals, while arbitrary target relabeling,
+  duplicate circuit words, and exact-return zero residuals leave the bound
+  invariant.  No targetwise probability union occurs.  Module:
+  `HTGeometry/QuenchedReplicaIncidenceCovarianceLaw.lean`; card:
+  `../3-formalized/quenched-replica-incidence-covariance-law.md`.  This is not
+  O4 closure.  Exact remaining local-physics theorem is growing-replica decay
+  of this one compressed covariance collision for the ordinary fixed-`q`
+  Gaussian static ensemble, against occupied circuit-image Hilbert growth.

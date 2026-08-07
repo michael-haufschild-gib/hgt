@@ -69,7 +69,7 @@ theorem replicaTargetProjectionMass_eq_sum_coordinate_norm_sq
   apply Finset.sum_congr rfl
   intro i _
   change ‖inner ℂ (b i) (S.orthogonalProjectionOnto u)‖ ^ 2 =
-    ‖inner ℂ (b i) u‖ ^ 2
+    ‖inner ℂ ((b i : S) : EuclideanSpace ℂ (Fin r → α)) u‖ ^ 2
   rw [S.inner_orthogonalProjectionOnto_eq_of_mem_left]
 
 /-- Quenched covariance of coordinates in one replica subspace. -/
@@ -150,17 +150,37 @@ theorem re_replicaTargetIncidenceCovariance_diag
       ∫ x, ‖replicaTargetCoordinate r target (state x) i‖ ^ 2 ∂μ := by
   rw [replicaTargetIncidenceCovariance,
     replicaSubspaceIncidenceCovariance]
-  simp_rw [show ∀ z : ℂ, star z * z = ((‖z‖ ^ 2 : ℝ) : ℂ) by
-    intro z
-    rw [show star z * z = ((starRingEnd ℂ) z) * z from rfl,
-      RCLike.conj_mul]
-    norm_cast]
   change
-    (∫ x, ((‖replicaTargetCoordinate r target (state x) i‖ ^ 2 : ℝ) : ℂ) ∂μ).re =
-      ∫ x, ‖replicaTargetCoordinate r target (state x) i‖ ^ 2 ∂μ
-  simpa using congrArg Complex.re
+    (∫ x,
+      star (replicaSubspaceCoordinate r (replicaTargetSpan r target)
+        (state x) i) *
+      replicaSubspaceCoordinate r (replicaTargetSpan r target)
+        (state x) i ∂μ).re =
+      ∫ x, ‖replicaSubspaceCoordinate r (replicaTargetSpan r target)
+        (state x) i‖ ^ 2 ∂μ
+  rw [show
+      (fun x =>
+        star (replicaSubspaceCoordinate r (replicaTargetSpan r target)
+          (state x) i) *
+        replicaSubspaceCoordinate r (replicaTargetSpan r target)
+          (state x) i) =
+      (fun x =>
+        ((‖replicaSubspaceCoordinate r (replicaTargetSpan r target)
+          (state x) i‖ ^ 2 : ℝ) : ℂ)) by
+    funext x
+    rw [show star (replicaSubspaceCoordinate r
+        (replicaTargetSpan r target) (state x) i) *
+        replicaSubspaceCoordinate r (replicaTargetSpan r target) (state x) i =
+      ((starRingEnd ℂ) (replicaSubspaceCoordinate r
+        (replicaTargetSpan r target) (state x) i)) *
+        replicaSubspaceCoordinate r (replicaTargetSpan r target) (state x) i
+      from rfl, RCLike.conj_mul]
+    norm_cast]
+  exact (congrArg Complex.re
     (@integral_ofReal X _ μ ℂ _
-      (fun x => ‖replicaTargetCoordinate r target (state x) i‖ ^ 2))
+      (fun x => ‖replicaSubspaceCoordinate r
+        (replicaTargetSpan r target) (state x) i‖ ^ 2))).trans
+    (Complex.ofReal_re _)
 
 /-- The quenched projection moment is exactly the trace of compressed
 covariance. -/

@@ -132,3 +132,29 @@ With `PrimeLogWindowCount` this is `I₂` of GHS step 4 over the *whole* line: t
 `∑_{|N| ≤ log²x+1} (N²+1)^{-1} sup_{|t−N| ≤ 1/2}|F_x(1+it)|²` is a Lorentzian-weighted sum of unit-block
 suprema, i.e. the same weight, and their truncation at height `(log x)²` is no longer needed on the
 `B_k` factor.
+
+## Fifth and sixth bricks: GHS Lemma 1, over the whole line
+
+`RHTower/Sieve/LorentzianDirPoly.lean` — the same theorem in the frequency variable in which every
+vertical-line estimate of the corpus is stated, via the corpus's own `logPoly_eq_dirPoly`:
+
+`∫_ℝ ‖∑_{n ≤ N} a_n n^{it}‖² dt/(1+t²) ≤ 25π² ∑_{n ≤ N} ‖a_n‖² · #{m ≤ N : |log n − log m| < 1/(2π)}`.
+
+The substitution `t = 2πw` costs `2π` and the weight *improves*: `1 + 4π²w² ≥ 1 + w²`.
+
+`RHTower/Sieve/LorentzianPrimeSupport.lean` — the count only ever sees indices with a nonzero
+coefficient, so dropping the vanishing terms (`logPoly_eq_logPoly_filter`) replaces the count over the
+index set by the count over the **support** (`integral_lorentz_normSq_logPoly_le_support_count`). For
+coefficients supported on primes the support count is a short-interval prime count, and the sieve
+discharges it:
+
+`∫_ℝ ‖∑_p a_p p^{2πiw}‖² dw/(1+w²)
+   ≤ (25π/2) ∑_p (2(p(e^δ − e^{−δ}) + 1)/log Y + selbergFibreError z Y + z) ‖a_p‖²`,  `δ = 1/(2π)`.
+
+That is **GHS Lemma 1 over the whole frequency line**: a prime-supported mean square with weight
+`Λ(n)/n` in place of `Λ(n)²/n`, with no truncation of the line, and no parameter except the sieve level
+`Y ≤ z`. The only hypothesis is that the coefficients vanish off the primes.
+
+What remains of the skeleton: steps 2 and 3 (the second application of the recursion and the dyadic
+partition of the prime range, both Mertens bookkeeping over corpus assets), and the outer Perron passage
+extracting `S_k(x)` from its Dirichlet series.

@@ -235,4 +235,40 @@ theorem tendsto_of_forall_uniform_approx {H : ℝ → ℝ} {α : ℝ}
   calc |(H L - G L) + (G L - α)| ≤ |H L - G L| + |G L - α| := abs_add_le _ _
     _ < ε := by linarith
 
+/-! ## Mollification does not move the averaged trace
+
+The averaged trace divides by `√L`, so any bound on the mollification defect that is uniform in `L`
+is washed out as `L → ∞`.  Hence the mollified averages share the limit of the unmollified one —
+the hypothesis the squeeze requires.
+-/
+
+open Filter in
+/-- A vanishing difference transports a limit. -/
+theorem tendsto_of_sub_tendsto_zero {G H : ℝ → ℝ} {α : ℝ}
+    (hH : Tendsto H atTop (nhds α))
+    (hd : Tendsto (fun L => G L - H L) atTop (nhds 0)) :
+    Tendsto G atTop (nhds α) := by
+  have hsum := hH.add hd
+  rw [add_zero] at hsum
+  exact hsum.congr fun L => by ring
+
+open Filter in
+/-- A defect bounded by a constant over `√L` vanishes. -/
+theorem tendsto_const_div_sqrt_atTop (C : ℝ) :
+    Tendsto (fun L : ℝ => C / Real.sqrt L) atTop (nhds 0) :=
+  Filter.Tendsto.div_atTop tendsto_const_nhds Real.tendsto_sqrt_atTop
+
+open Filter in
+/-- **Mollification does not move the averaged trace.**  A defect uniform in `L` is divided by
+`√L`, so the mollified average converges to the same limit.  This is the hypothesis
+`tendsto_of_forall_uniform_approx` needs of its approximating family. -/
+theorem tendsto_of_defect_div_sqrt {G H : ℝ → ℝ} {α C : ℝ}
+    (hH : Tendsto H atTop (nhds α))
+    (hbd : ∀ L, |G L - H L| ≤ C / Real.sqrt L) :
+    Tendsto G atTop (nhds α) := by
+  refine tendsto_of_sub_tendsto_zero hH ?_
+  refine squeeze_zero_norm (fun L => ?_) (tendsto_const_div_sqrt_atTop C)
+  rw [Real.norm_eq_abs]
+  exact hbd L
+
 end GaloisForLFunctions.HTGeometry

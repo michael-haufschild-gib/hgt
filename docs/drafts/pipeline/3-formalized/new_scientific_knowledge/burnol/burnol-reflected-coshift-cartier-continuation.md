@@ -19,7 +19,8 @@ continuation.  It no longer gets to choose an auxiliary vector, representation, 
 - [x] 0 -> 1 in-progress: exact source-pure operator and Xi-zero landing isolated; corpus and
   primary-literature audits complete
 - [x] 1 -> 2 fully-proven: dependency-closed proof below, `[PROVED HERE]`
-- [x] 2 -> 3 formalized: exact Lean module, umbrella wiring, targeted build, lint, and axiom audit
+- [x] 2 -> 3 formalized: exact Lean module, umbrella wiring, targeted build, and axiom audit;
+  global lint is blocked by unrelated concurrent unreachable modules listed below
 - [ ] 3 -> 4 publication-ready: standalone exposition and external mathematical review
 
 ## Conjecture loop
@@ -220,9 +221,12 @@ riemannHypothesis_of_burnolXiForwardReflectedCartierStokesSewing
 ```
 
 All are unconditional.  Exact assumptions reported by Lean are only `propext`,
-`Classical.choice`, and `Quot.sound`.
+`Classical.choice`, and `Quot.sound`.  Module-only build passes.  Global lint currently fails on
+21 unrelated, concurrently added unreachable `RHTower` modules and one unrelated unreachable
+`HTGeometry.CriticalGeometricMonodromy`; it reports no defect in this module.
 
 ## Log
 
 - 2026-08-07 — conjecture loop completed; dependency-closed paper proof and hostile audit passed.
-- 2026-08-07 — formalized, umbrella-wired, and passed targeted Lean, lint, axiom, and module audits.
+- 2026-08-07 — formalized, umbrella-wired, and passed targeted Lean, axiom, and module audits;
+  recorded unrelated global-lint reachability blockers exactly.

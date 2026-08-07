@@ -238,3 +238,21 @@ the approximate shortcut problem.  The raw observer-Jacobian lower-tail route
 is now also retired by an exact compensation law.  The quantitative open core
 is the incidence-normalized coarea action of the complete circuit tube, not a
 minimum spectral gap and not a raw pseudodeterminant.
+
+## Conjecturing loop -- quenched incidence covariance, 2026-08-07
+
+12. `[LEAN-PROVED] [REPRESENTATION CORE CLOSED]`  Let `S_r` be the occupied
+    return-removed replica target span, `h_r=dim S_r`, and `C_r` the quenched
+    covariance of endpoint replica coordinates compressed to `S_r`.  Then the
+    complete capture event `E_a` obeys
+    `a^(2r) mu(E_a)^2 <= h_r ||C_r||_HS^2`.  The complete circuit union is
+    absorbed before squaring.  Source fibres remain in the covariance
+    integrals; target duplicates and exact-return zero residuals change
+    neither event nor RHS.  See
+    `../3-formalized/quenched-replica-incidence-covariance-law.md` and
+    `HTGeometry/QuenchedReplicaIncidenceCovarianceLaw.lean`.
+13. `[OPEN CORE, STRICTLY REDUCED]`  Prove growing-replica decay of the single
+    compressed covariance collision for the ordinary fixed-`q` Gaussian
+    local-Hamiltonian ensemble, strong enough to beat occupied shallow-circuit
+    Hilbert growth.  Minimum spectral gaps, raw Jacobians, and targetwise union
+    bounds remain retired.

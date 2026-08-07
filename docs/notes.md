@@ -1,24 +1,37 @@
-Current Lean chain already proves:
+Delivered significant Route R frontier move.
 
-- \(B_6=[S_6^*,QS_6]\) is an explicit Hochschild boundary.
-- Source cyclic reader \(\tau_6\) annihilates \(B_6\).
-- Fixed physical reader evaluates \(B_6\) as a positive unit times explicit Route R coefficient \(K_\rho\).
-- Physical cyclic descent is equivalent to \(K_\rho=0\), hence RH.
-
-Exact remaining gap:
+[BurnolReflectedCoShiftCartierContinuation.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/BurnolReflectedCoShiftCartierContinuation.lean:112) proves unconditionally:
 
 \[
-R_{\mathrm{phys}}(B_6)=\tau_6(B_6)
+R_{1-\rho}=-M_\rho,\qquad
+\Re\langle f,R_\sigma f\rangle
+=(\Re\sigma-\tfrac12)\|R_\sigma f\|^2<0
 \]
 
-derived independently from pre-divisor source structure. Since \(\tau_6(B_6)=0\), that closes the endpoint.
+for nonzero \(f\). The continuation is coefficient-faithful and unique. Crucially, at every right-half Xi divisor, its value on the fixed co-Poisson atom lands in the actual zero-divided extended-Sonin source ([landing theorem](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/BurnolReflectedCoShiftCartierContinuation.lean:215)).
 
-Anything that merely:
+This narrows the open core to the explicit source sewing law at [line 273](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/BurnolReflectedCoShiftCartierContinuation.lean:273):
 
-- constructs another cyclic reader,
-- rewrites the fracture,
-- compares Wold and Sonin coefficients,
-- characterizes critical-line vanishing, or
-- gives another conditional criterion
+\[
+\Pi(\rho)=
+\left\langle f_0,\,
+\operatorname{CartierLift}_{1-\rho}(f_0)
+\right\rangle .
+\]
 
-does not advance the Lean proof chain. I’m discarding the dense-ideal direction. No significant advance should be claimed until a source theorem establishes that fixed-reader comparison—or a strictly weaker independently proved law implying it—and the corresponding Lean module builds.
+The right side is now a constructed, unique, strictly negative source reading—not an unspecified sign premise. Lean proves this sewing implies physical dissipativity and then RH at [line 290](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/BurnolReflectedCoShiftCartierContinuation.lean:290).
+
+Conjecture loop killed three false producers: completed Gamma output, evaluator landing, and positive atomic jump energy. Reflected Cartier continuation survived.
+
+Verification:
+
+- Targeted `lake env lean`: passed.
+- Module-only `lake build`: passed.
+- Axioms: only `propext`, `Classical.choice`, `Quot.sound`.
+- Umbrella wired.
+- No stale Lean process from this task.
+- Global lint is blocked solely by 22 unrelated concurrent umbrella-reachability failures.
+
+Research card: [burnol-reflected-coshift-cartier-continuation.md](/Users/michael/Documents/code/hgt/docs/drafts/pipeline/3-formalized/new_scientific_knowledge/burnol/burnol-reflected-coshift-cartier-continuation.md:158).
+
+Literature audit covered Burnol’s [Sonine/co-Poisson zero framework](https://arxiv.org/abs/math/0203120) and [co-Poisson intertwining](https://www.numdam.org/articles/10.5802/aif.2268/); neither supplies this exact Route R continuation-and-landing synthesis.

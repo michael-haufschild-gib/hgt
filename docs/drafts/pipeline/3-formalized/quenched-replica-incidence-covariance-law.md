@@ -1,10 +1,10 @@
 # Quenched replica incidence--covariance law
 
 - **ID:** `quenched-replica-incidence-covariance-law`
-- **Stage:** 1 -- in progress
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** frontier theorem / incidence-normalized coarea bound
 - **Parent:** `oriented-no-shortcut-without-return-law.md`
-- **Status:** `[PAPER-PROVED] [LEAN IN PROGRESS] [APPLICATION NOVELTY UNVERIFIED]`
+- **Status:** `[LEAN-PROVED] [APPLICATION NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-07
 
 ## Frontier
@@ -53,7 +53,7 @@ the best attack invariant.
 
 ### C4 -- compressed covariance collision
 
-**Verdict:** `[PAPER-PROVED SURVIVOR]`.  Let `b_1,...,b_h` be any orthonormal basis of `S_r(Z)`,
+**Verdict:** `[LEAN-PROVED SURVIVOR]`.  Fix an orthonormal basis `b_1,...,b_h` of `S_r(Z)`,
 where `h = dim S_r(Z)`, and define the compressed quenched covariance
 
 ```text
@@ -69,10 +69,11 @@ Then
 a^(2r) mu(E_a)^2 <= h K_(r,Z)(mu).                       (QIC2)
 ```
 
-`K_(r,Z)` is the squared Hilbert--Schmidt norm of the moment operator compressed to the occupied
-replica image.  It is therefore independent of the chosen orthonormal basis.  Equation `(QIC2)` is
-the incidence-normalized coarea bound: source sheets remain in every covariance integral, while
-the target enters only through its occupied replica image.
+`K_(r,Z)` is the squared coordinate Hilbert--Schmidt energy of the moment operator compressed to
+the occupied replica image.  The Lean definition fixes one finite orthonormal basis and separately
+proves that the resulting quantity depends only on the occupied replica span, not on target labels.
+Equation `(QIC2)` is the incidence-normalized coarea bound: source sheets remain in every covariance
+integral, while the target enters only through its occupied replica image.
 
 ## Dependency-closed paper proof
 
@@ -139,6 +140,27 @@ return-removed occupied Veronese image for autonomous recurrence/complexity.  Cu
 ## Lean target
 
 - Module: `GaloisForLFunctions.HTGeometry.QuenchedReplicaIncidenceCovarianceLaw`
-- Required capstone: `quenchedReplica_incidenceCovariance_bound`
-- Required invariances: duplicated target labels and adjoined exact-return zero.
+- Capstone: `quenchedReplica_incidenceCovariance_bound`
+- Span extensionality: `replicaTargetIncidenceCollision_eq_of_span_eq`
+- Event invariances: `completePureStateTargetCapture_duplicated` and
+  `completePureStateTargetCapture_withZero`
+- RHS invariances: `replicaTargetIncidenceCollision_duplicated` and
+  `replicaTargetIncidenceCollision_withZero`
 
+## Lean verification
+
+- Direct `lake env lean` check: PASS.
+- Final `lake build GaloisForLFunctions.HTGeometry.QuenchedReplicaIncidenceCovarianceLaw`: PASS,
+  8657 jobs.
+- Axiom audit of capstone, span extensionality, and return-removal theorems: only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- Area umbrella import: wired through `GaloisForLFunctions.HTGeometry`.
+- Global lint reaches the new module and reports no error in it.  Repository lint remains red on
+  unrelated concurrently added, unwired `RHTower.Prolate*`, `ConstrainedProlate*`, and
+  `SlepianKernelScaledFubini` modules.
+
+## Honest frontier after proof
+
+Representation problem named in this card is closed.  Brown--Susskind is not.  Exact next input is
+a growing-replica decay theorem for `replicaTargetIncidenceCollision` under the ordinary fixed-`q`
+Gaussian local-Hamiltonian law, strong enough to beat occupied shallow-circuit Hilbert growth.

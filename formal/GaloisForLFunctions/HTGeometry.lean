@@ -505,6 +505,7 @@ import GaloisForLFunctions.HTGeometry.CDGATensorConstExchange
 import GaloisForLFunctions.HTGeometry.CDGATensorLeft
 import GaloisForLFunctions.HTGeometry.CDGATensorShift
 import GaloisForLFunctions.HTGeometry.CDGATensorShiftHom
+import GaloisForLFunctions.HTGeometry.CDGATensorAlgebraIncl
 import GaloisForLFunctions.HTGeometry.CDGATensorAlgebraBridge
 import GaloisForLFunctions.HTGeometry.CDGATensorAlgebraUnit
 import GaloisForLFunctions.HTGeometry.CDGATensorAlgebraMap
@@ -1159,6 +1160,7 @@ import GaloisForLFunctions.HTGeometry.CriticalLengthEigenspace
 import GaloisForLFunctions.HTGeometry.CriticalMonodromyJordan
 import GaloisForLFunctions.HTGeometry.OccupationSubsetPrimitivity
 import GaloisForLFunctions.HTGeometry.CriticalObservationField
+import GaloisForLFunctions.HTGeometry.CriticalGeometricMonodromy
 import GaloisForLFunctions.HTGeometry.CriticalPeriodTrace
 import GaloisForLFunctions.HTGeometry.CriticalTargetGenericSeparable
 import GaloisForLFunctions.HTGeometry.CriticalizationInputWitness
@@ -5888,3 +5890,5 @@ import GaloisForLFunctions.HTGeometry.HalfLogCesaroAverage
 import GaloisForLFunctions.HTGeometry.GammaJumpFormPairing
 import GaloisForLFunctions.HTGeometry.JumpFormAdjointness
 import GaloisForLFunctions.HTGeometry.CarlemanWeightedStrip
+import GaloisForLFunctions.HTGeometry.MollifierUniformApproximation
+import GaloisForLFunctions.HTGeometry.BumpMollifierFamily

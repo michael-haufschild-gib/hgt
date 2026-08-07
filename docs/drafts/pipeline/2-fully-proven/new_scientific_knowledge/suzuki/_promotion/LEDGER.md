@@ -1918,3 +1918,123 @@ averaging that defines `A`, which follows from `mollify_position_eq` together wi
 commutation of `Y` with convolution.
 
 Both remaining items are now specific statements about the *mollified profile*, not open analysis.
+
+## AQ. Obligation (ii) is built — mollification approximates within the modulus
+
+New module `formal/GaloisForLFunctions/HTGeometry/MollifierUniformApproximation.lean`, wired into
+the `HTGeometry` umbrella. 3 declarations, all `#print axioms` clean.
+
+- `abs_sub_mollify_le` — **the uniform approximation bound**: for a unit-mass nonnegative density
+  supported in `[−ε, ε]`,
+
+      |u(x) − (ρ * u)(x)| ≤ M      whenever  |u(y) − u(y−t)| ≤ M for all y and all |t| ≤ ε,
+
+  uniformly in `x`. Proof: `u(x) − (ρ*u)(x) = ∫ ρ(t)[u(x) − u(x−t)] dt` by unit mass, then dominate
+  by `∫ ρ(t) M = M`.
+
+This is obligation **(ii)** of section AP: the mollified profile is uniformly within the profile's
+own modulus of continuity at scale `ε`. Combined with `tendsto_of_forall_uniform_approx` (AP), a
+profile whose modulus tends to zero with the width converges to whatever its mollifications
+converge to.
+
+Trap that cost two attempts: proving `u x − mollify ρ u x = ∫ ρ(t)(u x − u(x−t))` by
+`rw [← integral_density_mul_const …]` **rewrites `u x` everywhere**, including inside the target's
+own integrand, producing an unprovable goal. Compute the right-hand side forward instead
+(`hsplit`, then rewrite it), never rewrite a constant *into* a goal that still mentions it.
+
+### The trace card — remaining
+
+Only obligation **(i)**: that the mollified profiles share the limit `α`, i.e. mollification does
+not move the averaged trace. Its inputs are `mollify_position_eq` (the position commutator, section
+X) and `integral_abs_firstMomentKernel_le` (its `O(ε)` mass, section AO); what is missing is the
+statement tying the mollified `A` to the unmollified one.
+
+## AR. Obligation (i) is built — both squeeze inputs now exist
+
+`HalfLogCesaroAverage.lean` gains three declarations, all `#print axioms` clean:
+
+- `tendsto_of_sub_tendsto_zero` — a vanishing difference transports a limit.
+- `tendsto_const_div_sqrt_atTop` — `C/√L → 0`.
+- `tendsto_of_defect_div_sqrt` — **obligation (i)**: if the mollified average differs from the
+  unmollified one by at most `C/√L`, it converges to the same `α`.
+
+The mechanism is the normalisation itself: `A = Y/(2√L)`, so *any* mollification defect that is
+uniform in `L` is divided by `√L` and washed out. Since `Y' = F` and `F` is bounded, the defect is
+`O(ε)` uniformly, hence `|A_ε − A| = O(ε)/√L`. The mollified averages therefore share the limit —
+exactly the hypothesis `tendsto_of_forall_uniform_approx` (section AP) requires of its family.
+
+### Status of the trace card's `(4)`
+
+All three ingredients of the squeeze now exist and are axiom-clean:
+
+| | |
+|---|---|
+| squeeze engine | `tendsto_of_forall_uniform_approx` (AP) |
+| (i) approximants share the limit | `tendsto_of_defect_div_sqrt` (this section) |
+| (ii) uniform approximation by mollification | `abs_sub_mollify_le` (AQ) |
+| commutator defect is `O(ε)` | `integral_abs_firstMomentKernel_le` (AO) |
+| position commutator | `mollify_position_eq` (pre-existing) |
+
+What remains is instantiation: choosing the mollifier family, checking its three hypotheses
+(nonneg, unit mass, support in `[−ε,ε]`) for a concrete bump, and feeding the chain. No further
+analytic content is outstanding on this card — but the instantiation has not been written, so the
+card is **not** promotable yet, and must not be recorded as such.
+
+## AS. The mollifier family is instantiated
+
+New module `formal/GaloisForLFunctions/HTGeometry/BumpMollifierFamily.lean`, wired into the
+`HTGeometry` umbrella. 9 declarations, all `#print axioms` clean.
+
+`bumpMollifier hε = (widthBump hε).normed volume`, built from mathlib's `ContDiffBump` with
+`rIn = ε/2`, `rOut = ε`. All five hypotheses the approximation machinery requires are discharged:
+
+- `continuous_bumpMollifier`, `hasCompactSupport_bumpMollifier`, `nonneg_bumpMollifier`,
+  `integrable_bumpMollifier`, `integral_bumpMollifier` (unit mass);
+- `bumpMollifier_eq_zero` — support within the width, from `ContDiffBump.support_normed_eq`
+  (`support = Metric.ball 0 ε`).
+
+Two ready-to-use instantiations:
+
+- `abs_sub_mollify_bump_le` — the uniform approximation bound (AQ) for this family;
+- `integral_abs_firstMomentKernel_bump_le` — the `O(ε)` commutator defect (AO) for this family.
+
+So the squeeze chain of section AR is now instantiated end to end at a concrete family. There is no
+remaining construction, and no remaining analytic content, for the trace card's `(4)`.
+
+**What is still not written** is the card-level statement itself: a single theorem whose hypotheses
+are the card's `(1)` and `(3)` and whose conclusion is `(4)` `lim √L F(L) = β`. Assembling it means
+choosing how to state `(3)` (the tested form, via `integral_secondDifference_pairing`) and threading
+the modulus bound that feeds `abs_sub_mollify_bump_le`. Until that theorem exists and is
+axiom-clean, the card stays in stage 2 — a chain of available lemmas is not the theorem.
+
+## AT. Correction to AS: analytic content *does* remain
+
+Section AS said "no remaining construction, and no remaining analytic content" for the trace card's
+`(4)`. **That is wrong**, and writing the card-level theorem exposes why.
+
+The squeeze needs, for each width `ε`, a bound
+
+    hmod : ∀ y t, |t| ≤ ε → |H y − H (y − t)| ≤ M(ε)        with  M(ε) → 0,
+
+for `H(L) = √L F(L)` — a **uniform modulus of continuity for `H`**. `abs_sub_mollify_bump_le`
+consumes such a modulus; it does not produce one. Nothing built this session produces one either.
+
+Deriving that modulus from the card's hypotheses `(1)` and `(3)` *is* the analytic content of §4:
+the equation has to be turned into equicontinuity of the half-log profile. That is a genuine
+estimate, not instantiation.
+
+Consequence: any "card-level theorem" written now would have to take `hmod` (or the approximating
+family `happrox`) as a hypothesis, which makes it a restatement of
+`tendsto_of_forall_uniform_approx` under a new name — a rename, not a theorem. **Do not write it.**
+
+Corrected status of the trace card:
+
+| | |
+|---|---|
+| squeeze engine, both obligations, mollifier family | built, axiom-clean (AO, AP, AQ, AR, AS) |
+| uniform modulus of `H` from the source equation | **not built — the remaining analytic content** |
+| card-level `(4)` | blocked on the above |
+
+This is the third time this session a "one step left" estimate has been too optimistic (see AN for
+the second). The pattern: I have been costing the remainder from the machinery I just built rather
+than from the card's actual hypotheses. Check what a lemma *consumes*, not only what it produces.

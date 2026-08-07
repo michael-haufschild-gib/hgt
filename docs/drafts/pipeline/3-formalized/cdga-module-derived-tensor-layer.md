@@ -1563,3 +1563,23 @@ towers, free coefficients of any rank, semi-free towers — supplies the hypothe
 
 Axioms: `propext, Quot.sound` for `zeroActHom` and `CDGAHom.id`;
 `propext, Classical.choice, Quot.sound` for the invariance statements.
+
+## The product of two single-bidegree elements
+
+`CDGATensorAlgebraIncl.lean` — **`tensorAlgMul_tensorSingle`**: the product of two elements
+supported at single bidegrees is a *one-term* sum, the surviving splitting being the pair of those
+two bidegrees; every other splitting kills one of the two factors by `tensorSingle_ne`.
+
+Uniqueness of the surviving splitting is where the subtype bookkeeping bites: with the left parts
+equal, the right parts agree by cancelling the same left summand from the two splitting conditions.
+`omega` will *not* do that here — it atomises the iterated `Subtype.val` projections and loses the
+link — so the cancellation has to be written out, `Nat.add_left_cancel (e₁.trans e₃.symm)`.  That is
+worth remembering: when a goal about splittings is pure cancellation, give the term.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+## Next
+
+The two inclusions `A → A ⊗ B` and `B → A ⊗ B` (the generator lemma above is exactly what their
+multiplicativity needs), and then the relative tensor product of *algebras* over a base algebra —
+the layer's `⊗_A` is still a module construction.

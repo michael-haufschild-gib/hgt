@@ -183,6 +183,37 @@ theorem exists_routeEAntiscaleFrameEnergy_ge_uniform :
   rw [routeEAntiscaleFrameEnergy_eq_two_mulDistSqPair]
   linarith
 
+/-- The harmonic frame has a sharp coefficient-blind ceiling: its total
+energy never exceeds four times reciprocal-prime mass. -/
+theorem routeEAntiscaleFrameEnergy_le_four_mul_sum_inv
+    (P : Finset ℕ) (hP : ∀ p ∈ P, 0 < p) (t : ℝ) :
+    routeEAntiscaleFrameEnergy P t ≤
+      4 * ∑ p ∈ P, 1 / (p : ℝ) := by
+  rw [routeEAntiscaleFrameEnergy, Finset.mul_sum]
+  apply Finset.sum_le_sum
+  intro p hp
+  rw [normSq_one_add_charFn]
+  have hpR : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hP p hp
+  have hcos : Real.cos (t * Real.log (p : ℝ)) ≤ 1 := Real.cos_le_one _
+  have hnum : 2 * (1 + Real.cos (t * Real.log (p : ℝ))) ≤ 4 := by
+    linarith
+  calc
+    2 * (1 + Real.cos (t * Real.log (p : ℝ))) / (p : ℝ) ≤
+        4 / (p : ℝ) := div_le_div_of_nonneg_right hnum hpR.le
+    _ = 4 * (1 / (p : ℝ)) := by ring
+
+/-- The ceiling is attained by the trivial Mellin phase. -/
+theorem routeEAntiscaleFrameEnergy_zero
+    (P : Finset ℕ) :
+    routeEAntiscaleFrameEnergy P 0 =
+      4 * ∑ p ∈ P, 1 / (p : ℝ) := by
+  rw [routeEAntiscaleFrameEnergy, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro p hp
+  rw [normSq_one_add_charFn]
+  simp
+  ring
+
 end
 
 end RHTower.Sieve
@@ -190,6 +221,85 @@ end RHTower.Sieve
 namespace RHTower.GibbsGas
 
 noncomputable section
+
+/-- Multiplicative scale attached to one subset of a prime batch. -/
+def routeEGibbsBatchScale (T : Finset ℕ) (x : ℝ) : ℝ :=
+  (∏ p ∈ T, (p : ℝ)) * x
+
+/-- Expansion of a Gibbs section over all leaves of a disjoint prime batch. -/
+def routeEGibbsBatchLeafSum
+    (S P : Finset ℕ) (x z : ℝ) : ℝ :=
+  ∑ T ∈ P.powerset,
+    z ^ T.card * gibbsDiag S (routeEGibbsBatchScale T x) z
+
+/-- Adjoining one batch coordinate splits the leaf sum into the old scale and
+the prime-dilated scale. -/
+theorem routeEGibbsBatchLeafSum_insert
+    (S P : Finset ℕ) {p : ℕ} (hp : p ∉ P) (x z : ℝ) :
+    routeEGibbsBatchLeafSum S (insert p P) x z =
+      routeEGibbsBatchLeafSum S P x z +
+        z * routeEGibbsBatchLeafSum S P ((p : ℝ) * x) z := by
+  classical
+  have hdisj : Disjoint P.powerset (P.powerset.image (insert p)) := by
+    rw [Finset.disjoint_left]
+    intro T hT hT'
+    rw [Finset.mem_powerset] at hT
+    obtain ⟨T', _, rfl⟩ := Finset.mem_image.mp hT'
+    exact hp (hT (Finset.mem_insert_self p T'))
+  have hinj : ∀ T₁ ∈ P.powerset, ∀ T₂ ∈ P.powerset,
+      insert p T₁ = insert p T₂ → T₁ = T₂ := by
+    intro T₁ h₁ T₂ h₂ h
+    rw [Finset.mem_powerset] at h₁ h₂
+    have e₁ : (insert p T₁).erase p = T₁ :=
+      Finset.erase_insert (fun hmem => hp (h₁ hmem))
+    have e₂ : (insert p T₂).erase p = T₂ :=
+      Finset.erase_insert (fun hmem => hp (h₂ hmem))
+    rw [← e₁, ← e₂, h]
+  rw [routeEGibbsBatchLeafSum, Finset.powerset_insert,
+    Finset.sum_union hdisj, Finset.sum_image hinj]
+  have hterm : ∀ T ∈ P.powerset,
+      z ^ (insert p T).card *
+          gibbsDiag S (routeEGibbsBatchScale (insert p T) x) z =
+        z * (z ^ T.card *
+          gibbsDiag S (routeEGibbsBatchScale T ((p : ℝ) * x)) z) := by
+    intro T hT
+    rw [Finset.mem_powerset] at hT
+    have hpT : p ∉ T := fun hmem => hp (hT hmem)
+    rw [Finset.card_insert_of_notMem hpT, pow_succ]
+    have hscale : routeEGibbsBatchScale (insert p T) x =
+        routeEGibbsBatchScale T ((p : ℝ) * x) := by
+      simp only [routeEGibbsBatchScale, Finset.prod_insert hpT]
+      ring
+    rw [hscale]
+    ring
+  rw [Finset.sum_congr rfl hterm, ← Finset.mul_sum]
+  rfl
+
+/-- **Exact source batch expansion.**  A disjoint finite batch expands the
+Gibbs section into all multiplicatively dilated leaves with the subset sign
+encoded by `z ^ card`. -/
+theorem gibbsDiag_union_eq_routeEGibbsBatchLeafSum
+    (S P : Finset ℕ) (hdisj : Disjoint S P) (x z : ℝ) :
+    gibbsDiag (S ∪ P) x z = routeEGibbsBatchLeafSum S P x z := by
+  classical
+  induction P using Finset.induction_on generalizing x with
+  | empty =>
+      simp [routeEGibbsBatchLeafSum, routeEGibbsBatchScale]
+  | @insert p P hp ih =>
+      have hpS : p ∉ S := by
+        intro hpMem
+        exact (Finset.disjoint_left.mp hdisj) hpMem
+          (Finset.mem_insert_self p P)
+      have hdisjP : Disjoint S P := by
+        rw [Finset.disjoint_left]
+        intro q hqS hqP
+        exact (Finset.disjoint_left.mp hdisj) hqS
+          (Finset.mem_insert_of_mem hqP)
+      have hpUnion : p ∉ S ∪ P := by simp [hpS, hp]
+      rw [show S ∪ insert p P = insert p (S ∪ P) by ext q; simp,
+        gibbsDiag_insert p (S ∪ P) hpUnion,
+        routeEGibbsBatchLeafSum_insert S P hp,
+        ih hdisjP, ih hdisjP]
 
 /-- Total positive weight in a finite Route E batch. -/
 def routeEBatchWeightMass {ι : Type*} (s : Finset ι) (w : ι → ℝ) : ℝ :=
@@ -289,6 +399,91 @@ theorem routeEBatchResidual_eq_zero_iff_constant
   simp only [mul_eq_zero, OfNat.ofNat_ne_zero,
     ne_of_gt hmassPos, or_false]
   exact routeEBatchPairwiseDispersion_eq_zero_iff_constant s w value hw
+
+/-- Positive partition weight of one multiplicatively dilated Gibbs leaf. -/
+def routeEGibbsBatchWeight
+    (S : Finset ℕ) (x : ℝ) (T : Finset ℕ) : ℝ :=
+  gibbsDiag S (routeEGibbsBatchScale T x) 1
+
+/-- Checkerboard-signed normalized current on one batch leaf. -/
+def routeEGibbsBatchSignedValue
+    (S : Finset ℕ) (x : ℝ) (T : Finset ℕ) : ℝ :=
+  (-1 : ℝ) ^ T.card *
+    normalizedGibbsCurrent S (routeEGibbsBatchScale T x)
+
+/-- Batch leaf weights sum to the enlarged positive partition. -/
+theorem sum_routeEGibbsBatchWeight_eq_partition
+    (S P : Finset ℕ) (hdisj : Disjoint S P) (x : ℝ) :
+    (∑ T ∈ P.powerset, routeEGibbsBatchWeight S x T) =
+      gibbsDiag (S ∪ P) x 1 := by
+  rw [gibbsDiag_union_eq_routeEGibbsBatchLeafSum S P hdisj]
+  simp [routeEGibbsBatchLeafSum, routeEGibbsBatchWeight]
+
+/-- Weighted checkerboard leaves sum to the enlarged signed current. -/
+theorem sum_routeEGibbsBatchWeight_mul_signedValue_eq_current
+    (S P : Finset ℕ) (hdisj : Disjoint S P) (x : ℝ) :
+    (∑ T ∈ P.powerset,
+      routeEGibbsBatchWeight S x T *
+        routeEGibbsBatchSignedValue S x T) =
+      gibbsDiag (S ∪ P) x (-1) := by
+  rw [gibbsDiag_union_eq_routeEGibbsBatchLeafSum S P hdisj]
+  unfold routeEGibbsBatchLeafSum
+  apply Finset.sum_congr rfl
+  intro T hT
+  unfold routeEGibbsBatchWeight routeEGibbsBatchSignedValue
+  unfold normalizedGibbsCurrent
+  have hZ : gibbsDiag S (routeEGibbsBatchScale T x) 1 ≠ 0 :=
+    ne_of_gt (gibbs_partition_pos S (routeEGibbsBatchScale T x))
+  field_simp [hZ]
+
+/-- The abstract batch mean energy is exactly the enlarged Gibbs current
+energy `J^2 / Z`. -/
+theorem routeEGibbsBatchMeanEnergy_eq_currentEnergy
+    (S P : Finset ℕ) (hdisj : Disjoint S P) (x : ℝ) :
+    routeEBatchMeanEnergy P.powerset
+        (routeEGibbsBatchWeight S x)
+        (routeEGibbsBatchSignedValue S x) =
+      gibbsDiag (S ∪ P) x (-1) ^ 2 / gibbsDiag (S ∪ P) x 1 := by
+  unfold routeEBatchMeanEnergy routeEBatchWeightMass
+  rw [sum_routeEGibbsBatchWeight_mul_signedValue_eq_current S P hdisj,
+    sum_routeEGibbsBatchWeight_eq_partition S P hdisj]
+
+/-- **Source-specialized order-free batch polarization.**  Enlarged Gibbs
+current energy plus checkerboard dispersion equals the complete common-prefix
+leaf energy. -/
+theorem routeEGibbsBatch_currentEnergy_add_residual_eq_leafEnergy
+    (S P : Finset ℕ) (hdisj : Disjoint S P) (x : ℝ) :
+    gibbsDiag (S ∪ P) x (-1) ^ 2 / gibbsDiag (S ∪ P) x 1 +
+        routeEBatchResidual P.powerset
+          (routeEGibbsBatchWeight S x)
+          (routeEGibbsBatchSignedValue S x) =
+      routeEBatchLeafEnergy P.powerset
+        (routeEGibbsBatchWeight S x)
+        (routeEGibbsBatchSignedValue S x) := by
+  have hmass : routeEBatchWeightMass P.powerset
+      (routeEGibbsBatchWeight S x) ≠ 0 := by
+    unfold routeEBatchWeightMass
+    rw [sum_routeEGibbsBatchWeight_eq_partition S P hdisj]
+    exact ne_of_gt (gibbs_partition_pos (S ∪ P) x)
+  rw [← routeEGibbsBatchMeanEnergy_eq_currentEnergy S P hdisj]
+  exact routeEBatchMeanEnergy_add_residual_eq_leafEnergy
+    P.powerset (routeEGibbsBatchWeight S x)
+      (routeEGibbsBatchSignedValue S x) hmass
+
+/-- **Exact batch escape mode.**  The source batch residual vanishes precisely
+when one common prefix current follows the full subset checkerboard. -/
+theorem routeEGibbsBatchResidual_eq_zero_iff_checkerboard
+    (S P : Finset ℕ) (x : ℝ) :
+    routeEBatchResidual P.powerset
+        (routeEGibbsBatchWeight S x)
+        (routeEGibbsBatchSignedValue S x) = 0 ↔
+      ∀ T ∈ P.powerset, ∀ U ∈ P.powerset,
+        routeEGibbsBatchSignedValue S x T =
+          routeEGibbsBatchSignedValue S x U := by
+  apply routeEBatchResidual_eq_zero_iff_constant
+  · intro T hT
+    exact gibbs_partition_pos S (routeEGibbsBatchScale T x)
+  · exact ⟨∅, Finset.empty_mem_powerset P⟩
 
 end
 

@@ -317,3 +317,28 @@ the unconditional-proof rule.
 - 2026-07-27 — Located Sibuya--Ramis exact Gevrey-order theorem.
 - 2026-07-27 — Proved exact irrational zeta-tail order and the DA transfer.
 - 2026-07-27 — Combined with rational cyclic norms to isolate the sole real open stratum.
+
+## Lean plan — what is formalizable and in what order
+
+The card's "formalizing only the elementary coefficient estimate would not formalize the scientific
+content" is right about the *headline*, but wrong as a reason not to start: the three analytic
+layers decompose into pieces of very different cost, and two of them are ordinary work.
+
+1. **The sharpness half of §3 is elementary and self-contained.**  What it needs is
+
+       for irrational `s`, the set `{k : ℕ | 1/2 ≤ |sin(π s k / 2)|}` is infinite.
+
+   Route: `AddCircle.denseRange_zsmul_coe_iff` gives density of the `ℤ`-orbit of `s/2` in
+   `AddCircle 1` exactly when `s/2` is irrational.  The target set is symmetric under `θ ↦ -θ`
+   (`|sin|` is even), so infinitely many integers in an open good arc give infinitely many natural
+   numbers.  This is the only place irrationality is used, and it is the whole reason the exact
+   Gevrey order is irrational.
+
+2. **The Gevrey bounds `(9)` and `(11)`** are Stirling plus `1 < ζ(1+sk) ≤ ζ(1+s)`; mathlib has
+   Stirling and the corpus owns the `ζ` bounds.  These give `gev(R̂_s) = s` once `1` is available.
+
+3. **The Sibuya--Ramis exact-order theorem and the Barnes expansion `(4)`--`(6)`** are the genuine
+   mathlib-scale layers; they are the remaining cost, and neither is to be introduced as an axiom.
+
+Doing `1` and `2` first makes the eventual statement of `3` precise and gives the card a real Lean
+surface instead of none.

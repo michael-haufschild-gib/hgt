@@ -2353,6 +2353,7 @@ import GaloisForLFunctions.RHTower.GermExtension
 import GaloisForLFunctions.RHTower.GibbsClusterRepulsion
 import GaloisForLFunctions.RHTower.GibbsCriticalDissipationAntiscaleResonance
 import GaloisForLFunctions.RHTower.GibbsCriticalSieveNormalizationWall
+import GaloisForLFunctions.RHTower.GibbsAntiscaleFirstTraceFrame
 import GaloisForLFunctions.RHTower.GibbsCurrentGap
 import GaloisForLFunctions.RHTower.GibbsDilationSeam
 import GaloisForLFunctions.RHTower.GibbsEnergySpread
@@ -6097,3 +6098,5 @@ import GaloisForLFunctions.RHTower.Sieve.GallagherReverse
 import GaloisForLFunctions.RHTower.Sieve.GallagherAlmostDiagonal
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogWindowCount
 import GaloisForLFunctions.RHTower.Sieve.LorentzianMeanSquare
+import GaloisForLFunctions.RHTower.Sieve.LorentzianDirPoly
+import GaloisForLFunctions.RHTower.Sieve.LorentzianPrimeSupport
