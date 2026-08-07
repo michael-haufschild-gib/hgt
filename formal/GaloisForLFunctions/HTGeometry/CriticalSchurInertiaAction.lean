@@ -42,7 +42,7 @@ theorem criticalSchurInertiaAction_range_le_monodromy
     MonoidHom.range (criticalSchurInertiaAction K hm hn) ≤
       criticalGeometricMonodromy K m n := by
   rintro _ ⟨g, rfl⟩
-  refine ⟨(g : criticalSchurDecompositionGroup K hm hn :
+  refine ⟨((g : criticalSchurDecompositionGroup K hm hn) :
     criticalNormalClosure K m n ≃ₐ[criticalObservationField K m n]
       criticalNormalClosure K m n), rfl⟩
 

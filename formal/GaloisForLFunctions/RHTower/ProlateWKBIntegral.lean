@@ -55,6 +55,44 @@ theorem prolateWKB_le_of_nonpos {c χ y : ℝ} (hc : 0 ≤ c) (hy : y ∈ Ioo (-
   rw [hval] at hstep
   exact hstep
 
+/-- Positive radial separation improves the forbidden-region WKB profile by the sharp elementary
+factor `sqrt (1-s)`. -/
+theorem prolateWKB_le_radial_separation {c s y : ℝ}
+    (hc : 0 ≤ c) (hs0 : 0 ≤ s) (hs1 : s ≤ 1)
+    (hy : y ∈ Ioo (-1 : ℝ) 1) (hy0 : 0 ≤ y) (hturn : s ≤ y ^ 2) :
+    prolateWKB c (-(s * c ^ 2)) y ≤
+      c * Real.sqrt (1 - s) * y / Real.sqrt (1 - y ^ 2) := by
+  have hp : 0 < 1 - y ^ 2 := by
+    have h1 : -1 < y := hy.1
+    have h2 : y < 1 := hy.2
+    nlinarith
+  have hsp : 0 < Real.sqrt (1 - y ^ 2) := Real.sqrt_pos.mpr hp
+  have hsroot : Real.sqrt (1 - s) ^ 2 = 1 - s :=
+    Real.sq_sqrt (sub_nonneg.mpr hs1)
+  have hnum0 : 0 ≤ -(s * c ^ 2) + c ^ 2 * y ^ 2 := by
+    have hc2 : 0 ≤ c ^ 2 := sq_nonneg c
+    nlinarith
+  have hnum : -(s * c ^ 2) + c ^ 2 * y ^ 2
+      ≤ (c * Real.sqrt (1 - s) * y) ^ 2 := by
+    have hy2 : y ^ 2 ≤ 1 := by nlinarith [hy.1, hy.2]
+    have hc2 : 0 ≤ c ^ 2 := sq_nonneg c
+    rw [show (c * Real.sqrt (1 - s) * y) ^ 2 =
+      c ^ 2 * Real.sqrt (1 - s) ^ 2 * y ^ 2 by ring, hsroot]
+    nlinarith [mul_nonneg hc2 (mul_nonneg hs0 (sub_nonneg.mpr hy2))]
+  have hmono : (-(s * c ^ 2) + c ^ 2 * y ^ 2) / (1 - y ^ 2)
+      ≤ (c * Real.sqrt (1 - s) * y) ^ 2 / (1 - y ^ 2) := by
+    exact div_le_div_of_nonneg_right hnum hp.le
+  have hstep : prolateWKB c (-(s * c ^ 2)) y ≤
+      Real.sqrt ((c * Real.sqrt (1 - s) * y) ^ 2 / (1 - y ^ 2)) := by
+    rw [prolateWKB]
+    exact Real.sqrt_le_sqrt hmono
+  have hfac0 : 0 ≤ c * Real.sqrt (1 - s) * y := by positivity
+  have hval : Real.sqrt ((c * Real.sqrt (1 - s) * y) ^ 2 / (1 - y ^ 2)) =
+      c * Real.sqrt (1 - s) * y / Real.sqrt (1 - y ^ 2) := by
+    rw [Real.sqrt_div (by positivity), Real.sqrt_sq hfac0]
+  rw [hval] at hstep
+  exact hstep
+
 /-- The elementary antiderivative of the dominating profile. -/
 theorem hasDerivAt_negMulSqrt {c y : ℝ} (hy : y ∈ Ioo (-1 : ℝ) 1) :
     HasDerivAt (fun t : ℝ => -c * Real.sqrt (1 - t ^ 2))
@@ -134,6 +172,79 @@ theorem integral_prolateWKB_le_aperture {c χ a b : ℝ} (hc : 0 ≤ c) (hab : a
     refine mul_le_mul_of_nonneg_left ?_ hc
     linarith
   linarith [hmain, hstep]
+
+/-- The WKB action for radial ratio `s` gains the factor `sqrt (1-s)` on every forbidden-region
+subinterval. -/
+theorem integral_prolateWKB_radial_le {c s a b : ℝ}
+    (hc : 0 ≤ c) (hs0 : 0 ≤ s) (hs1 : s ≤ 1)
+    (hab : a ≤ b) (ha0 : 0 ≤ a) (ha : -1 < a) (hb : b < 1)
+    (hturn : ∀ t ∈ Icc a b, s ≤ t ^ 2) :
+    (∫ t in a..b, prolateWKB c (-(s * c ^ 2)) t) ≤
+      c * Real.sqrt (1 - s) *
+        (Real.sqrt (1 - a ^ 2) - Real.sqrt (1 - b ^ 2)) := by
+  let C : ℝ := c * Real.sqrt (1 - s)
+  have hsubIoo : ∀ t ∈ Icc a b, t ∈ Ioo (-1 : ℝ) 1 := by
+    intro t ht
+    exact ⟨lt_of_lt_of_le ha ht.1, lt_of_le_of_lt ht.2 hb⟩
+  have hpne : ∀ t ∈ Icc a b, (1 : ℝ) - t ^ 2 ≠ 0 := by
+    intro t ht
+    have h := hsubIoo t ht
+    have h1 : -1 < t := h.1
+    have h2 : t < 1 := h.2
+    nlinarith
+  have hcont : ContinuousOn (fun t : ℝ => C * t / Real.sqrt (1 - t ^ 2)) (Icc a b) := by
+    refine ContinuousOn.div (by fun_prop) (Real.continuous_sqrt.comp_continuousOn (by fun_prop))
+      fun t ht => ?_
+    have h := hsubIoo t ht
+    have hp : 0 < 1 - t ^ 2 := by nlinarith [h.1, h.2]
+    exact ne_of_gt (Real.sqrt_pos.mpr hp)
+  have hint2 : IntervalIntegrable (fun t : ℝ => C * t / Real.sqrt (1 - t ^ 2)) volume a b := by
+    rw [intervalIntegrable_iff_integrableOn_Icc_of_le hab]
+    exact hcont.integrableOn_compact isCompact_Icc
+  have hint1 : IntervalIntegrable (prolateWKB c (-(s * c ^ 2))) volume a b := by
+    rw [intervalIntegrable_iff_integrableOn_Icc_of_le hab]
+    exact (continuousOn_prolateWKB hpne).integrableOn_compact isCompact_Icc
+  have hcmp : (∫ t in a..b, prolateWKB c (-(s * c ^ 2)) t)
+      ≤ ∫ t in a..b, C * t / Real.sqrt (1 - t ^ 2) := by
+    refine intervalIntegral.integral_mono_on hab hint1 hint2 fun t ht => ?_
+    simpa only [C, mul_assoc] using
+      prolateWKB_le_radial_separation hc hs0 hs1 (hsubIoo t ht)
+        (le_trans ha0 ht.1) (hturn t ht)
+  have hFTC : (∫ t in a..b, C * t / Real.sqrt (1 - t ^ 2)) =
+      -C * Real.sqrt (1 - b ^ 2) - -C * Real.sqrt (1 - a ^ 2) := by
+    refine intervalIntegral.integral_eq_sub_of_hasDerivAt
+      (f := fun t : ℝ => -C * Real.sqrt (1 - t ^ 2)) (fun t ht => ?_) hint2
+    rw [Set.uIcc_of_le hab] at ht
+    exact hasDerivAt_negMulSqrt (c := C) (hsubIoo t ht)
+  rw [hFTC] at hcmp
+  dsimp only [C] at hcmp ⊢
+  calc
+    (∫ t in a..b, prolateWKB c (-(s * c ^ 2)) t)
+        ≤ -(c * Real.sqrt (1 - s)) * Real.sqrt (1 - b ^ 2) -
+            -(c * Real.sqrt (1 - s)) * Real.sqrt (1 - a ^ 2) := hcmp
+    _ = c * Real.sqrt (1 - s) *
+        (Real.sqrt (1 - a ^ 2) - Real.sqrt (1 - b ^ 2)) := by ring
+
+/-- Global forbidden-region WKB action bound with the strict positive-separation gain. -/
+theorem integral_prolateWKB_radial_le_aperture {c s a b : ℝ}
+    (hc : 0 ≤ c) (hs0 : 0 ≤ s) (hs1 : s ≤ 1)
+    (hab : a ≤ b) (ha0 : 0 ≤ a) (ha : -1 < a) (hb : b < 1)
+    (hturn : ∀ t ∈ Icc a b, s ≤ t ^ 2) :
+    (∫ t in a..b, prolateWKB c (-(s * c ^ 2)) t) ≤
+      c * Real.sqrt (1 - s) := by
+  have hmain := integral_prolateWKB_radial_le hc hs0 hs1 hab ha0 ha hb hturn
+  have h1 : Real.sqrt (1 - a ^ 2) ≤ 1 := by
+    have h := Real.sqrt_le_sqrt (show 1 - a ^ 2 ≤ 1 by nlinarith [sq_nonneg a])
+    rwa [Real.sqrt_one] at h
+  have h2 : 0 ≤ Real.sqrt (1 - b ^ 2) := Real.sqrt_nonneg _
+  have hfac0 : 0 ≤ c * Real.sqrt (1 - s) := by positivity
+  have hstep : c * Real.sqrt (1 - s) *
+      (Real.sqrt (1 - a ^ 2) - Real.sqrt (1 - b ^ 2)) ≤
+        c * Real.sqrt (1 - s) := by
+    nlinarith [mul_nonneg hfac0 (sub_nonneg.mpr
+      (show Real.sqrt (1 - b ^ 2) ≤ Real.sqrt (1 - a ^ 2) from
+        Real.sqrt_le_sqrt (by nlinarith)))]
+  exact hmain.trans hstep
 
 /-! ## The explicit endpoint bound at the correct rate -/
 

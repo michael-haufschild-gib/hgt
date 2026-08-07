@@ -20,16 +20,16 @@ open Metric Filter
 
 /-! ### Partial sums are entire -/
 
-theorem differentiable_partialSum_apply (p : FormalMultilinearSeries ℂ ℂ ℂ) (i : ℕ) :
+theorem differentiable_scalarPartialSum_apply (p : FormalMultilinearSeries ℂ ℂ ℂ) (i : ℕ) :
     Differentiable ℂ (fun z : ℂ => (p i) fun _ => z) := by
   have hdiag : Differentiable ℂ (fun z : ℂ => (fun _ : Fin i => z)) :=
     (ContinuousLinearMap.pi (fun _ : Fin i => ContinuousLinearMap.id ℂ ℂ)).differentiable
   exact (((p i).contDiff (n := (1 : ℕ))).differentiable (by norm_num)).comp hdiag
 
-theorem differentiable_partialSum (p : FormalMultilinearSeries ℂ ℂ ℂ) (n : ℕ) :
+theorem differentiable_scalarPartialSum (p : FormalMultilinearSeries ℂ ℂ ℂ) (n : ℕ) :
     Differentiable ℂ (fun z : ℂ => p.partialSum n z) := by
   unfold FormalMultilinearSeries.partialSum
-  exact Differentiable.fun_sum fun i _ => differentiable_partialSum_apply p i
+  exact Differentiable.fun_sum fun i _ => differentiable_scalarPartialSum_apply p i
 
 /-! ### Approximation with real radii -/
 
@@ -49,7 +49,7 @@ theorem exists_entire_approx {f : ℂ → ℂ} {R r ε : ℝ} (hR : 0 < R) (hrR 
     rw [hR'coe]; exact hf
   obtain ⟨n, hn⟩ := exists_partialSum_approx hR'pos hfR hr'R' hε
   refine ⟨fun z => (cauchyPowerSeries f 0 ((R' : ℝ))).partialSum n z,
-    differentiable_partialSum _ n, fun z hz => ?_⟩
+    differentiable_scalarPartialSum _ n, fun z hz => ?_⟩
   refine hn z ?_
   simp only [mem_ball, dist_zero_right] at hz ⊢
   calc ‖z‖ < r := hz

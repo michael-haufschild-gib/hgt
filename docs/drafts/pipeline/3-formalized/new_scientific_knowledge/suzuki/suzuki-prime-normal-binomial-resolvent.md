@@ -1,7 +1,7 @@
 # The complete Suzuki prime normal flow is an exact binomial resolvent
 
 - **ID:** `suzuki-prime-normal-binomial-resolvent`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT OPERATOR SOLUTION / ALL-GRADE PRIME TRANSPORT
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`
@@ -278,6 +278,7 @@ unverified.
 - [x] prove \(\ell^1\) convergence at \(L>M_a/2\)
 - [x] prove descendant nuclear physical \(L^2\)
 - [x] formalize recurrence, positivity, and \(2^{-k}\) majorant in Lean
+- [x] formalize the operator solution, its derivative, the trace, uniqueness, and the expansion
 - [ ] couple exact prime resolvent to Gamma jump by a physical Duhamel theorem
 - [ ] insert low-frequency counterterms and exterior/Feshbach source
 - [ ] realize every completed zero mode in resulting physical carrier

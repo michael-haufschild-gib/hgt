@@ -197,3 +197,110 @@ theorem tensorRightDegOne_comp (f : ∀ b : ℕ, N b →ₗ[R] N' (b + 1))
           rfl
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open TensorProduct
+
+variable {R : Type u} [CommRing R]
+  {M : ℕ → Type w} [∀ n, AddCommGroup (M n)] [∀ n, Module R (M n)]
+  {M' : ℕ → Type w} [∀ n, AddCommGroup (M' n)] [∀ n, Module R (M' n)]
+  {N : ℕ → Type w} [∀ n, AddCommGroup (N n)] [∀ n, Module R (N n)]
+  {N' : ℕ → Type w} [∀ n, AddCommGroup (N' n)] [∀ n, Module R (N' n)]
+  {N'' : ℕ → Type w} [∀ n, AddCommGroup (N'' n)] [∀ n, Module R (N'' n)]
+
+/-- **A degree-one map on the left factor and one on the right anticommute.**  Both compose to the
+same map of tensor products, and the two Koszul signs differ by one because the left map raises
+exactly the degree the right map's sign reads. -/
+theorem tensorLeftDegOne_tensorRightDegOne_add (f : ∀ a : ℕ, M a →ₗ[R] M' (a + 1))
+    (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1)) (n : ℕ) (F : TensorCarrier (R := R) M N n) :
+    tensorLeftDegOne (N := N') f (n + 1) (tensorRightDegOne (M := M) g n F)
+      + tensorRightDegOne (M := M') g (n + 1) (tensorLeftDegOne (N := N) f n F) = 0 := by
+  funext p
+  obtain ⟨⟨a, b⟩, h⟩ := p
+  cases a with
+  | zero =>
+      cases b with
+      | zero => rfl
+      | succ b' =>
+          show tensorLeftDegOne (N := N') f (n + 1) (tensorRightDegOne (M := M) g n F)
+                ⟨(0, b' + 1), h⟩
+              + ((-1 : R)) ^ 0 • TensorProduct.map LinearMap.id (g b')
+                (tensorLeftDegOne (N := N) f n F ⟨(0, b'), by omega⟩) = 0
+          simp only [tensorLeftDegOne_zero, map_zero, smul_zero, add_zero]
+  | succ a' =>
+      cases b with
+      | zero =>
+          show TensorProduct.map (f a') LinearMap.id
+                (tensorRightDegOne (M := M) g n F ⟨(a', 0), by omega⟩)
+              + tensorRightDegOne (M := M') g (n + 1) (tensorLeftDegOne (N := N) f n F)
+                ⟨(a' + 1, 0), h⟩ = 0
+          simp only [tensorRightDegOne_zero, map_zero, add_zero]
+      | succ b' =>
+          show TensorProduct.map (f a') LinearMap.id
+                (tensorRightDegOne (M := M) g n F ⟨(a', b' + 1), by omega⟩)
+              + ((-1 : R)) ^ (a' + 1) • TensorProduct.map LinearMap.id (g b')
+                (tensorLeftDegOne (N := N) f n F ⟨(a' + 1, b'), by omega⟩) = 0
+          have hswap : ∀ W : TensorProduct R (M a') (N b'),
+              TensorProduct.map (f a') (LinearMap.id (R := R) (M := N' (b' + 1)))
+                  (TensorProduct.map (LinearMap.id (R := R) (M := M a')) (g b') W)
+                = TensorProduct.map (LinearMap.id (R := R) (M := M' (a' + 1))) (g b')
+                  (TensorProduct.map (f a') (LinearMap.id (R := R) (M := N b')) W) := by
+            intro W
+            rw [← LinearMap.comp_apply, ← LinearMap.comp_apply, ← TensorProduct.map_comp,
+              ← TensorProduct.map_comp]
+            simp only [LinearMap.id_comp, LinearMap.comp_id]
+          rw [tensorRightDegOne_succ, tensorLeftDegOne_succ, map_smul, hswap, pow_succ, mul_comm,
+            neg_one_mul, neg_smul, add_neg_cancel]
+
+/-- **Two pairs of degree-one maps on the right factor whose composites cancel.**  The Koszul signs
+are the same in both orders, so the cancellation of the composites is inherited verbatim. -/
+theorem tensorRightDegOne_comp_add {N₁ N₂ : ℕ → Type w} [∀ n, AddCommGroup (N₁ n)]
+    [∀ n, Module R (N₁ n)] [∀ n, AddCommGroup (N₂ n)] [∀ n, Module R (N₂ n)]
+    (f₁ : ∀ b : ℕ, N b →ₗ[R] N₁ (b + 1)) (g₁ : ∀ b : ℕ, N₁ b →ₗ[R] N'' (b + 1))
+    (f₂ : ∀ b : ℕ, N b →ₗ[R] N₂ (b + 1)) (g₂ : ∀ b : ℕ, N₂ b →ₗ[R] N'' (b + 1))
+    (hgf : ∀ b : ℕ, (g₁ (b + 1)).comp (f₁ b) + (g₂ (b + 1)).comp (f₂ b) = 0) (n : ℕ)
+    (F : TensorCarrier (R := R) M N n) :
+    tensorRightDegOne (M := M) g₁ (n + 1) (tensorRightDegOne (M := M) f₁ n F)
+      + tensorRightDegOne (M := M) g₂ (n + 1) (tensorRightDegOne (M := M) f₂ n F) = 0 := by
+  funext p
+  obtain ⟨⟨a, b⟩, h⟩ := p
+  cases b with
+  | zero => rfl
+  | succ b' =>
+      cases b' with
+      | zero =>
+          have h0 : (a, 0).1 + (a, 0).2 = n + 1 := by
+            have h' : a + (0 + 1) = n + 1 + 1 := h
+            show a + 0 = n + 1
+            omega
+          show ((-1 : R)) ^ a • TensorProduct.map LinearMap.id (g₁ 0)
+                (tensorRightDegOne (M := M) f₁ n F ⟨(a, 0), h0⟩)
+              + ((-1 : R)) ^ a • TensorProduct.map LinearMap.id (g₂ 0)
+                (tensorRightDegOne (M := M) f₂ n F ⟨(a, 0), h0⟩) = 0
+          simp only [tensorRightDegOne_zero, map_zero, smul_zero, add_zero]
+      | succ b'' =>
+          have h0 : (a, b'' + 1).1 + (a, b'' + 1).2 = n + 1 := by
+            have h' : a + (b'' + 1 + 1) = n + 1 + 1 := h
+            show a + (b'' + 1) = n + 1
+            omega
+          show ((-1 : R)) ^ a • TensorProduct.map LinearMap.id (g₁ (b'' + 1))
+                (tensorRightDegOne (M := M) f₁ n F ⟨(a, b'' + 1), h0⟩)
+              + ((-1 : R)) ^ a • TensorProduct.map LinearMap.id (g₂ (b'' + 1))
+                (tensorRightDegOne (M := M) f₂ n F ⟨(a, b'' + 1), h0⟩) = 0
+          have heven : ((-1 : R)) ^ (a + a) = 1 := Even.neg_one_pow ⟨a, rfl⟩
+          have hcomp : ∀ W : TensorProduct R (M a) (N b''),
+              TensorProduct.map (LinearMap.id (R := R) (M := M a)) (g₁ (b'' + 1))
+                  (TensorProduct.map (LinearMap.id (R := R) (M := M a)) (f₁ b'') W)
+                + TensorProduct.map (LinearMap.id (R := R) (M := M a)) (g₂ (b'' + 1))
+                  (TensorProduct.map (LinearMap.id (R := R) (M := M a)) (f₂ b'') W) = 0 := by
+            intro W
+            rw [← LinearMap.comp_apply, ← LinearMap.comp_apply, ← TensorProduct.map_comp,
+              ← TensorProduct.map_comp, LinearMap.comp_id,
+              ← LinearMap.add_apply, ← TensorProduct.map_add_right, hgf b'',
+              TensorProduct.map_zero_right, LinearMap.zero_apply]
+          rw [tensorRightDegOne_succ, tensorRightDegOne_succ, map_smul, map_smul,
+            smul_smul, smul_smul, ← pow_add, heven, one_smul, one_smul]
+          exact hcomp _
+
+end GaloisForLFunctions.HTGeometry

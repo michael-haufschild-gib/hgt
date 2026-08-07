@@ -124,6 +124,18 @@ theorem eventually_evenProlateLeakageValue_le_kaiser {n : ℕ} {ε : ℝ} (hε :
       linarith
   nlinarith
 
+/-- The arbitrarily sharp Kaiser clock for the actual signed-greedy leakage. -/
+theorem eventually_evenProlateSignedLeakage_le_kaiser
+    {n : ℕ} {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ a : ℝ in atTop,
+      evenProlateSignedLeakage a n ≤
+        Real.exp (-((2 - ε) * (2 * Real.pi * a ^ 2))) := by
+  filter_upwards [eventually_evenProlateLeakageValue_le_kaiser (n := n) hε,
+    eventually_gt_atTop (0 : ℝ)] with a hle ha
+  rw [evenProlateSignedLeakage,
+    ← evenProlateLeakageValue_eq_signedValue_leakage a ha n]
+  exact hle
+
 /-- Closed fixed-index corollary: true even-prolate leakage is eventually at most
 `exp (-2 pi a²)`, with no assumptions or supplied data. -/
 theorem eventually_evenProlateLeakageValue_le_exp_neg_two_pi_sq (n : ℕ) :

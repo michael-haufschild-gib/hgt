@@ -1,14 +1,20 @@
 # Von Mangoldt Toeplitz countertrace has no regular Hilbert realization
 
 - **ID:** `von-mangoldt-toeplitz-countertrace-regularity-no-go`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / SOURCE-SPECIFIC FAILED CLASS
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / SOURCE-SPECIFIC FAILED CLASS
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Source:** `../../1-in-progress/von-mangoldt-weighted-density-boundary-anomaly.md`
 - **Statement:** The canonical Toeplitz countertrace coefficients for the cofinal von Mangoldt
   successor current are unbounded. Hence their Toeplitz kernel defines neither a bounded operator
   on `ell2(N)` nor an operator whose domain contains the finite-support core.
 - **RH used:** no
 - **Computation used:** no
+- **Lean modules:**
+  - `GaloisForLFunctions.HTGeometry.PowerMomentRatioEscape`
+  - `GaloisForLFunctions.HTGeometry.MomentToeplitzRegularityNoGo`
+  - `GaloisForLFunctions.RHTower.VonMangoldtToeplitzCountertraceRegularityNoGo`
+- **Lean capstone:** `RHTower.vonMangoldtToeplitzCountertraceRegularityNoGo`
 
 ## Goal
 
@@ -159,6 +165,45 @@ Suppose `|d_k|<=B` for every `k`. Positivity of the moments, `(9)`, and `(7)` im
 
 The right side tends to zero, a contradiction. This proves `(8)`. `square`
 
+## Stronger unconditional proof used in Lean
+
+The formal proof avoids every quantitative prime-number-theorem estimate. Define the finite
+positive logarithmic-segment measure
+
+```text
+nu = sum_(n>=2) (Lambda(n)/n) 1_(log n,log(n+1)](x) dx.
+```
+
+Termwise integration and the already-proved absolute summability give the exact identity
+
+```text
+integral x^q dnu(x) = m_(q+1)/(q+1).                  (11)
+```
+
+The measure has positive mass above every real threshold: choose a prime `p>exp(R)` and use its
+positive component on `(log p,log(p+1)]`. A general finite-measure theorem now applies. If a
+nonnegative measurable carrier has positive mass above every threshold and all power moments are
+integrable, then
+
+```text
+integral x^(q+1) dnu / integral x^q dnu -> infinity.  (12)
+```
+
+For fixed `R>0`, split at `2R`. Positive mass above `3R` eventually dominates the part below
+`2R`, because `(2/3)^q nu(univ)` tends to zero. The next moment is at least `2R` times the tail
+moment, so its ratio to the full current moment eventually exceeds any prescribed constant.
+Combining `(11)` and `(12)` yields
+
+```text
+m_q/m_(q+1) -> 0.                                     (13)
+```
+
+If all canonical counterweights obeyed `|d_k|<=B`, choose `epsilon=1/(8B)` and a tail on which
+every reverse adjacent ratio is at most `epsilon`. Telescoping bounds the normalized opening sum
+by the geometric series `2 epsilon`; exact opening cancellation then forces
+`1<=4 B epsilon=1/2`, contradiction. This proves `(8)` without RH, PNT asymptotics, or numerical
+computation.
+
 ## Operator consequences
 
 Let
@@ -194,9 +239,9 @@ D(i,j)=d_|i-j|.                                        (10)
 
 ## No-go closure
 
-- **Exact killing theorem/mechanism:** Factorial source-moment growth makes all lower moments
-  negligible in the opening equation if the Toeplitz coefficients are bounded. Exact cancellation
-  therefore forces unbounded coefficients.
+- **Exact killing theorem/mechanism:** Unbounded support of the positive logarithmic-segment
+  measure forces adjacent moment-ratio escape, hence `m_q/m_(q+1) -> 0`. Exact opening cancellation
+  then contradicts every uniform counterweight bound by a geometric-tail estimate.
 - **Strongest positive survivor:** The unique Toeplitz countertrace is a canonical singular
   boundary functional on the directed algebra of finite jet sections. Its exact finite and
   pointwise-cofinal laws remain intact.
@@ -204,17 +249,28 @@ D(i,j)=d_|i-j|.                                        (10)
   Toeplitz operator with the ordinary finite-support core, or a regular density on standard jet
   `ell2`. Any joint Gamma--Jacobi coupling must place the countertrace in a rigged/distributional
   boundary space and prove its Euler covariance there.
-- **Status:** Dependency-closed paper proof. Prime number theorem and elementary
-  sum-integral comparison are parent mathematics. Corpus searches found the recurrence and its
-  finite/cofinal coefficientwise laws, but no regularity theorem. Targeted arXiv and broader
-  literature searches found general Toeplitz--Hankel operator and moment theory, not this
-  von-Mangoldt countertrace no-go. External novelty remains provisional.
+- **Status:** Dependency-closed paper proof and unconditional Lean formalization complete. The
+  formal proof strengthens the original factorial/PNT route by using only exact segment moments,
+  infinitude of primes, and a generic unbounded-support moment-ratio theorem. Axiom audit reports
+  only `propext`, `Classical.choice`, and `Quot.sound`; direct Lean checks and the targeted capstone
+  module build pass. Corpus and targeted primary-literature searches found general moment and
+  Toeplitz--Hankel operator theory, not this source-specific von-Mangoldt countertrace no-go.
+  External novelty remains provisional.
+
+Primary literature checked:
+
+- A. D. Sokal and J. Walrad, *Continued-fraction characterization of Stieltjes moment sequences
+  with support in `[xi,infinity)`*, arXiv:`2404.12131`.
+- D. R. Yafaev, *Unbounded Hankel operators and moment problems*, arXiv:`1601.08042`.
+- T. Ehrhardt, T. Hagger, and J. A. Virtanen, *Bounded and compact Toeplitz+Hankel matrices*,
+  arXiv:`2007.04744`.
 
 ## Gates
 
 - [x] 0 -> 1 in-progress: source-pure question and exact falsifier
 - [x] 1 -> 2 fully-proven: factorial moment bounds, recurrence contradiction, operator no-go
-- [ ] 2 -> 3 formalized: formalize source-moment growth and counterweight unboundedness
+- [x] 2 -> 3 formalized: exact moment representation, ratio decay, counterweight unboundedness,
+  bounded-operator no-go, finite-core no-go, and finite countertrace survivor
 - [ ] 3 -> 4 publication-ready: independent PNT/asymptotic audit and specialist priority review
 
 ## Log
@@ -223,3 +279,6 @@ D(i,j)=d_|i-j|.                                        (10)
   recurrence to exclude every bounded counterweight sequence.
 - 2026-07-27 — extracted the stronger standard-core no-go: the Toeplitz matrix cannot act on
   `ell2(N)` with `c00` in its domain.
+- 2026-08-08 — replaced the quantitative PNT route by an exact unbounded-support measure argument;
+  formalized the ratio theorem, counterweight obstruction, both operator no-gos, and surviving
+  finite opening/countertrace laws in unconditional Lean 4.

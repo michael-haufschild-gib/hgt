@@ -334,6 +334,63 @@ theorem negativeHermiteL2Span_topologicalClosure_eq_negativeSubspace :
     _ = evenFourierNegativeSubspace :=
       evenFourierPositiveSubspace_orthogonal_eq_negativeSubspace
 
+/-! ## Exact Fourier-sector decomposition -/
+
+/-- The positive and negative even Fourier eigenspaces are complementary. -/
+theorem evenFourierPositiveSubspace_sup_negativeSubspace_eq_top :
+    evenFourierPositiveSubspace ⊔ evenFourierNegativeSubspace = ⊤ := by
+  letI : CompleteSpace evenFourierPositiveSubspace :=
+    isClosed_evenFourierPositiveSubspace.completeSpace_coe
+  rw [← evenFourierPositiveSubspace_orthogonal_eq_negativeSubspace]
+  exact Submodule.sup_orthogonal_of_hasOrthogonalProjection
+
+/-- The positive and negative even Fourier eigenspaces have trivial intersection. -/
+theorem evenFourierPositiveSubspace_inf_negativeSubspace_eq_bot :
+    evenFourierPositiveSubspace ⊓ evenFourierNegativeSubspace = ⊥ := by
+  rw [← evenFourierPositiveSubspace_orthogonal_eq_negativeSubspace]
+  exact evenFourierPositiveSubspace.inf_orthogonal_eq_bot
+
+/-- Every even `L²` vector is the sum of a positive and a negative Fourier eigenvector. -/
+theorem exists_evenFourierPositive_add_negative (u : evenSubspace) :
+    ∃ p ∈ evenFourierPositiveSubspace, ∃ n ∈ evenFourierNegativeSubspace, u = p + n := by
+  have hu : u ∈ evenFourierPositiveSubspace ⊔ evenFourierNegativeSubspace := by
+    rw [evenFourierPositiveSubspace_sup_negativeSubspace_eq_top]
+    exact Submodule.mem_top
+  rw [Submodule.mem_sup] at hu
+  obtain ⟨p, hp, n, hn, hpn⟩ := hu
+  exact ⟨p, hp, n, hn, hpn.symm⟩
+
+/-- The positive/negative Fourier-sector decomposition is unique. -/
+theorem evenFourierPositive_add_negative_unique
+    {u p₁ p₂ n₁ n₂ : evenSubspace}
+    (hp₁ : p₁ ∈ evenFourierPositiveSubspace)
+    (hp₂ : p₂ ∈ evenFourierPositiveSubspace)
+    (hn₁ : n₁ ∈ evenFourierNegativeSubspace)
+    (hn₂ : n₂ ∈ evenFourierNegativeSubspace)
+    (h₁ : u = p₁ + n₁) (h₂ : u = p₂ + n₂) :
+    p₁ = p₂ ∧ n₁ = n₂ := by
+  have hdiff : p₁ - p₂ = n₂ - n₁ := by
+    have heq : p₁ + n₁ = p₂ + n₂ := h₁.symm.trans h₂
+    calc
+      p₁ - p₂ = (p₁ + n₁) - (p₂ + n₁) := by abel
+      _ = (p₂ + n₂) - (p₂ + n₁) := by rw [heq]
+      _ = n₂ - n₁ := by abel
+  have hpos : p₁ - p₂ ∈ evenFourierPositiveSubspace :=
+    evenFourierPositiveSubspace.sub_mem hp₁ hp₂
+  have hneg : p₁ - p₂ ∈ evenFourierNegativeSubspace := by
+    rw [hdiff]
+    exact evenFourierNegativeSubspace.sub_mem hn₂ hn₁
+  have hzero : p₁ - p₂ = 0 := by
+    have hinter : p₁ - p₂ ∈ evenFourierPositiveSubspace ⊓ evenFourierNegativeSubspace :=
+      ⟨hpos, hneg⟩
+    rw [evenFourierPositiveSubspace_inf_negativeSubspace_eq_bot] at hinter
+    exact hinter
+  constructor
+  · exact sub_eq_zero.mp hzero
+  · rw [h₁] at h₂
+    rw [sub_eq_zero.mp hzero] at h₂
+    exact add_left_cancel h₂
+
 /-! ## Hilbert bases -/
 
 /-- The normalized full Hermite family in `L²(ℝ)`. -/

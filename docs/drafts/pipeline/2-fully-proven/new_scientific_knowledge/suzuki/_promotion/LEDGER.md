@@ -4664,3 +4664,37 @@ Reusable facts recorded here:
 - Compressing an operator to a subspace is best formalized as an **ambient lift that commutes with
   the projection**, not as an operator on a subtype.  `α • 1 + Q T Q` commutes with `Q`, and so
   does its inverse (`comm_of_comm_inverse`), which is exactly faithfulness of the lift.
+
+## EJ. Prime-normal binomial resolvent — in progress
+
+Four Lean modules built and green (74 promoted; this card is #75, not yet moved):
+- `HTGeometry/PrimeNormalBinomialResolvent.lean` — scalar layer.  Added `ringChoose_succ`,
+  `ringChoose_neg_half` (the half-integer binomial coefficient IS the central binomial
+  coefficient), `hasSum_centralBinom_rpow` (the card's `(13)`), `primeNormalCoeff_succ` `(14)`,
+  `primeNormalCoeff_one`, `primeNormalCoeff_le_two_pow` `(16)`, `hasSum_primeNormalCoeff` `(19)`.
+- `HTGeometry/PrimeNormalFlowResolvent.lean` — `flowSymbol`, `primeNormalFlow`,
+  `abs_flowSlope_le` (the scalar second-order defect, proved algebraically in `p=√a, q=√b`),
+  `hasDerivAt_primeNormalFlow` — the CFC parametric derivative the card called an open
+  formalization gap.
+- `HTGeometry/PrimeNormalFlowEquation.lean` — `primeNormalFlow_equation` `(1)`,
+  `norm_primeNormalFlow_le` `(7)`, `tendsto_sqrt_smul_primeNormalFlow` `(3)`.
+- `HTGeometry/PrimeNormalFlowExpansion.lean` — `hasSum_flowSymbol`, `hasSum_primeNormalFlow` `(4)`.
+
+Still to build for this card: uniqueness from the half-log trace.  Route (verified on paper):
+`S(L) = cfc √(L - t/2)`, `S' = (1/2) F`, `S F = 1`, `(2L)•1 - T = 2 S²`; then `H = S·G` has
+`H' = 0`, so `H` is constant by `constant_of_has_deriv_right_zero` on `[L₀, L]`, and
+`(√L)⁻¹ • S(L) → 1` pins the constant to the trace.
+
+Reusable facts recorded here:
+- mathlib HAS the generalized binomial series: `Real.one_add_rpow_hasFPowerSeriesOnBall_zero`
+  with `binomialSeries ℝ a` and `Ring.choose`.  It does NOT have `Ring.choose (-1/2) n` in closed
+  form; the induction runs off `descPochhammer_succ_right` + `Nat.succ_mul_centralBinom_succ`.
+- The corpus module `HTGeometry/CfcNormBound.lean` (`norm_cfc_le_of_forall_le`,
+  `tendsto_norm_cfc_zero`) is exactly the tool for a CFC parametric derivative: state the defect
+  symbol, bound it uniformly on the spectrum, done.  Do not rebuild it.
+- `cfc_sub` is `(f) (g) (a) (hf) (hg)`; `cfc_add` is `(f) (g)` with `a` a section variable;
+  `cfc_const_mul` is `(r) (f) (a) (hf)`; `cfc_sum` needs the Pi-form `∑ i ∈ s, f i`, so convert
+  with `funext; simp` first.  Passing a `ContinuousOn` built by `.mul`/`.sub` gives the
+  eta-contracted Pi form and breaks `rw`; bind it to a `have` with an explicit lambda type.
+- `field_simp` rewrites `L - t/2` into `(2*L - t)/2` and then cannot see through `√`.  Generalize
+  the square roots to opaque variables first (`have hkey : ∀ p r, … `), then `field_simp`.

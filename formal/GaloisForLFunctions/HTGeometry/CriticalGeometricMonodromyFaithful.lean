@@ -13,7 +13,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 set_option synthInstance.maxHeartbeats 200000
-set_option maxHeartbeats 1000000
+set_option maxHeartbeats 4000000
 
 /-- The Galois action of the actual normal closure on the actual geometric sheets is faithful. -/
 theorem criticalNormalClosureAction_injective

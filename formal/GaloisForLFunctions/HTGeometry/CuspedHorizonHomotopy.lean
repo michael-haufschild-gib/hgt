@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CuspedHorizonPoset
-import GaloisForLFunctions.HTGeometry.NerveHomotopy
+import GaloisForLFunctions.HTGeometry.SSetStrongHomotopyEquivalence
 
 /-!
 # The all-depth cusped horizon poset retracts onto its depth-one skeleton
@@ -137,6 +137,15 @@ noncomputable def cuspBuildingDeformationRetract (K V : Type u) [Field K] [AddCo
           ≫ (depthOneNerveIso K V).inv ≫ (cuspDeformationRetract K V).incl by
         rw [Category.assoc, ← Category.assoc ((depthOneNerveIso K V).hom), Iso.hom_inv_id,
           Category.id_comp]] at h
+
+/-- **The all-depth cusped horizon complex and the spherical building have the same simplicial
+homotopy type.**  This is the homotopy-type statement carried by the explicit cusp deformation;
+it is stronger than, and logically prior to, the induced homology isomorphisms below. -/
+noncomputable def cuspBuildingStrongHomotopyEquiv (K V : Type u) [Field K] [AddCommGroup V]
+    [Module K V] [FiniteDimensional K V] [DecidableEq (Submodule K V)] :
+    SSetStrongHomotopyEquiv (nerveFunctor.obj (Cat.of (CuspedVertex K V)))
+      (nerveFunctor.obj (Cat.of ({S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤})ᵒᵈ)) :=
+  (cuspBuildingDeformationRetract K V).toStrongHomotopyEquiv
 
 /-- **The all-depth cusped horizon complex has the homology of the building**, in every degree and
 with any coefficients: the cusps add nothing.  With the classical computation of the building's
