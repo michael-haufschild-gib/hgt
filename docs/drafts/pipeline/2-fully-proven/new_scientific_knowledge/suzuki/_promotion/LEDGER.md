@@ -2304,3 +2304,56 @@ The one caution before writing it: `(24)` is stated for `H_n = √L f_{ε_n}`, w
 operator acts on `f_{ε_n}`. Converting between them is the card's "elementary expansion of
 `(X_n ± s)^{−1/2}`" and is **not** yet formalized — it is the last genuine gap, not the
 combination itself.
+
+## BD. Forward weight removal is built; the backward direction is where the cost sits
+
+`PenalizedMaximum.lean` is now at 8 declarations, all `#print axioms` clean.
+
+- `le_of_weighted_le_forward` — from `√(X+s) f(X+s) ≤ √X f(X) + δ s` (with `f X ≥ 0`, `δ ≥ 0`),
+
+      f(X + s) ≤ f X + δ s / √X.
+
+  Forward in `L` the ratio `√(X/(X+s)) ≤ 1`, so removing the weight is free.
+
+**The backward direction is not free**, and this is the last real item. For `X − s` the ratio
+`√(X/(X−s)) > 1` and grows without bound as `s → X`. Restricting to `0 < s ≤ X/2` gives
+`√(X−s) ≥ √X/√2`, hence
+
+      f(X − s) ≤ √2 · (f X + δ s / √X),
+
+a constant-factor loss. Whether the card's argument tolerates that factor, or needs the sharper
+expansion of `(X ± s)^{−1/2}` it refers to, is **not yet determined** — and it matters, because the
+transport integral runs over all `s > 0`, not only `s ≤ X/2`. The tail `s > X/2` must be handled
+separately, presumably by the kernel's exponential decay (`gammaTransportKernel_le_two_mul_exp_neg`)
+together with boundedness of `f`, rather than by the one-sided inequality.
+
+That split — near shifts by the penalized inequality, far shifts by exponential decay — is the
+concrete next step, and it is a genuine estimate rather than bookkeeping.
+
+Status: every ingredient of the card's §4–§5 is built and axiom-clean except this split and the
+final combination. `suzuki-weak-signed-half-log-trace` remains in stage 2.
+
+## BE. The far half of the split is built
+
+`GammaTransportKernel.lean` is now at 25 declarations, all `#print axioms` clean.
+
+- `abs_integral_transport_far_le` — for a bounded measurable profile and any radius `R > 0`,
+
+      |∫_{s>R} secondDifference F X s · k(s) ds| ≤ 4 M · q(R),      q(R) = −log(1 − e^{−R}).
+
+  The second difference is merely bounded there (`abs_secondDifference_le_of_bounded`), and the
+  kernel's tail mass is exactly `q(R)` by section U's `integral_Ioi_gammaTransportKernel`. No
+  hypothesis on `R` beyond positivity — the bound holds at every radius and `q(R) → 0` as `R → ∞`.
+
+So the near/far split of section BD now has its far half. Taking `R = X/2` gives a far contribution
+`≤ 4M q(X/2) → 0` as `X → ∞`, which is what the maximizer argument needs, since `X_n → ∞`.
+
+### `suzuki-weak-signed-half-log-trace` — remaining
+
+The **near** half: for `0 < s ≤ X/2`, convert the penalized inequality `(24)` on `H = √L f` into a
+bound on `secondDifference f X s`, using `le_of_weighted_le_forward` in one direction and the `√2`
+loss backward (section BD), then integrate against `k(s)` over `Ioc 0 (X/2)` using
+`integrable_transport_lower_bound`. Then combine with `(18)`, `(19)`, `(20)` and let `n → ∞`.
+
+Every asset for this is now built; what is unwritten is the near-half estimate itself and the final
+combination. The card stays in stage 2.

@@ -35,20 +35,33 @@ theorem hasDerivAt_xiSumPhase {s k x : ℝ} (hs0 : 0 ≤ s) (hx : 1 < x)
     HasDerivAt (xiSumPhase s k) (xiSumSpeed s k x) x := by
   have h1 := hasDerivAt_xiEndpointPhase hs0 hx
   have h2 := hasDerivAt_xiEndpointPhase_dilate (s := s) (r := k) (x := x) hs0 hkx
-  rw [xiSpeed_mul] at h2
-  simpa [xiSumPhase, xiSumSpeed] using h1.add h2
+  have h2' : HasDerivAt (fun x : ℝ => xiEndpointPhase s (k * x))
+      (k * xiSpeed s (k * x)) x := by
+    rw [xiSpeed_mul]
+    exact h2
+  change HasDerivAt
+    (fun y : ℝ => xiEndpointPhase s y + xiEndpointPhase s (k * y))
+    (xiSpeed s x + k * xiSpeed s (k * x)) x
+  exact h1.add h2'
 
 theorem hasDerivAt_xiSumSpeed {s k x : ℝ} (hs1 : s ≤ 1) (hx : 1 < x)
     (hkx : 1 < k * x) :
     HasDerivAt (xiSumSpeed s k) (xiSumSecond s k x) x := by
-  have h1 := hasDerivAt_xiSpeed hs1 hx
+  have h1 : HasDerivAt (xiSpeed s) (xiSpeedDeriv s x) x := by
+    rw [xiSpeedDeriv]
+    exact hasDerivAt_xiSpeed hs1 hx
   have hlin : HasDerivAt (fun t : ℝ => k * t) k x := by
     simpa using (hasDerivAt_id x).const_mul k
   have h2 : HasDerivAt (fun t : ℝ => xiSpeed s (k * t))
       (xiSpeedDeriv s (k * x) * k) x :=
     (hasDerivAt_xiSpeed hs1 hkx).comp x hlin
   have h3 := h2.const_mul k
-  simpa [xiSumSpeed, xiSumSecond] using h1.add h3
+  change HasDerivAt (fun y : ℝ => xiSpeed s y + k * xiSpeed s (k * y))
+    (xiSpeedDeriv s x + k ^ 2 * xiSpeedDeriv s (k * x)) x
+  have hcoef : k ^ 2 * xiSpeedDeriv s (k * x) =
+      k * (xiSpeedDeriv s (k * x) * k) := by ring
+  rw [hcoef]
+  exact h1.fun_add h3
 
 theorem one_add_le_xiSumSpeed {s k x : ℝ} (hs1 : s ≤ 1) (hk : 0 ≤ k)
     (hx : 1 < x) (hkx : 1 < k * x) :
@@ -163,13 +176,19 @@ theorem ampFourth_mul_eq_ampFourthRoot {s k x : ℝ}
   have hkxsq : (k * x) ^ 2 = k ^ 2 * x ^ 2 := by ring
   rw [hkxsq, ampPoly]
   have hA : 0 < (x ^ 2 - 1) * (x ^ 2 - s) := by
-    have : 0 < x := by linarith
-    positivity
+    have hleft : 0 < x ^ 2 - 1 := by nlinarith
+    have hright : 0 < x ^ 2 - s := by nlinarith
+    exact mul_pos hleft hright
   have hB : 0 < (k ^ 2 * x ^ 2 - 1) * (k ^ 2 * x ^ 2 - s) := by
     have hk0 : 0 < k := by linarith
     have hx0 : 0 < x := by linarith
-    positivity
-  rw [← Real.sqrt_mul hA.le]
+    have hleft : 0 < k ^ 2 * x ^ 2 - 1 := by nlinarith [sq_nonneg (k * x)]
+    have hright : 0 < k ^ 2 * x ^ 2 - s := by nlinarith [sq_nonneg (k * x)]
+    exact mul_pos hleft hright
+  rw [show (x ^ 2 - 1) * (x ^ 2 - s) * (k ^ 2 * x ^ 2 - 1) * (k ^ 2 * x ^ 2 - s) =
+      ((x ^ 2 - 1) * (x ^ 2 - s)) *
+        ((k ^ 2 * x ^ 2 - 1) * (k ^ 2 * x ^ 2 - s)) by ring,
+    Real.sqrt_mul hA.le]
   ring
 
 theorem firstRowLeadingProduct_eq_phase_sum {s c k x : ℝ}
@@ -208,34 +227,63 @@ theorem firstRowLeadingProduct_eq_phase_sum {s c k x : ℝ}
 theorem abs_integral_firstRowLeadingProduct_le {s c k a b : ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k)
     (hc : 3 * k ≤ c) (hab : a ≤ b) (ha : 1 < a)
-    (hb : Real.sqrt (1 + 2 / k ^ 2) ≤ b) :
+    (haCross : Real.sqrt (1 + 2 / k ^ 2) ≤ a) :
     |∫ x in a..b, firstRowLeadingProduct s c k x|
       ≤ (1 / Real.pi) *
         (340 / (Real.sqrt c * k ^ 2) +
           4 * ampFourthRoot s k a / (c * (1 + k))) := by
   have hc0 : 0 < c := by linarith
-  have h1b : (1 : ℝ) ≤ b := by
-    have : (1 : ℝ) ≤ Real.sqrt (1 + 2 / k ^ 2) := by
-      refine Real.one_le_sqrt.mpr ?_
-      positivity
-    exact this.trans hb
-  have hdiffFull := abs_integral_firstRow_leading_le hs0 hs1 hk hc hb
-  have hdiffLeft := abs_integral_firstRow_leading_le hs0 hs1 hk hc
-    (le_trans (by
-      refine Real.one_le_sqrt.mpr ?_
-      positivity) hb)
+  have hcrossb : Real.sqrt (1 + 2 / k ^ 2) ≤ b := haCross.trans hab
+  have hdiffFull := abs_integral_firstRow_leading_le hs0 hs1 hk hc hcrossb
+  have hdiffLeft := abs_integral_firstRow_leading_le hs0 hs1 hk hc haCross
   have hdiff : |∫ x in a..b, ampFourthRoot s k x *
       Real.cos (c * xiDiffPhase s k x)| ≤ 340 / (Real.sqrt c * k ^ 2) := by
     have h1a : (1 : ℝ) ≤ a := ha.le
+    have h1b : (1 : ℝ) ≤ b := h1a.trans hab
+    let f : ℝ → ℝ := fun x => ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)
+    have hint : ∀ p q : ℝ, 1 ≤ p → p ≤ q → IntervalIntegrable f volume p q := by
+      intro p q hp hpq
+      rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hpq]
+      have hbig : IntegrableOn (ampFourthRoot s k) (Ioc 1 q) volume :=
+        integrableOn_ampFourthRoot hs0 hs1 hk (hp.trans hpq)
+      have hsub : Ioc p q ⊆ Ioi 1 := fun _ hx => lt_of_le_of_lt hp hx.1
+      have hdom : IntegrableOn (ampFourthRoot s k) (Ioc p q) volume :=
+        hbig.mono_set (fun _ hx => ⟨lt_of_le_of_lt hp hx.1, hx.2⟩)
+      have hmeas : AEStronglyMeasurable f (volume.restrict (Ioc p q)) := by
+        refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioc
+        exact ((continuousOn_ampFourthRoot hs1 hk).mono hsub).mul
+          (Real.continuous_cos.comp_continuousOn
+            (continuousOn_const.mul ((continuousOn_xiDiffPhase hs0 hk).mono hsub)))
+      refine Integrable.mono' hdom hmeas ?_
+      filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
+      have hx1 : 1 < x := lt_of_le_of_lt hp hx.1
+      have hamp := (ampFourthRoot_pos hs1 hk hx1).le
+      dsimp [f]
+      rw [abs_mul, abs_of_nonneg hamp]
+      nlinarith [Real.abs_cos_le_one (c * xiDiffPhase s k x)]
     have hsplit : (∫ x in (1 : ℝ)..b, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)) =
         (∫ x in (1 : ℝ)..a, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)) +
           ∫ x in a..b, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x) := by
-      rw [intervalIntegral.integral_add_adjacent_intervals]
-    have htri := abs_sub_le
-      (∫ x in (1 : ℝ)..b, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x))
-      (∫ x in (1 : ℝ)..a, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)) 0
-    rw [sub_zero, hsplit, add_sub_cancel_left] at htri
-    exact htri.trans (by linarith [hdiffFull, hdiffLeft])
+      simpa [f] using (intervalIntegral.integral_add_adjacent_intervals
+        (hint 1 a le_rfl h1a) (hint a b h1a hab)).symm
+    have heq : (∫ x in a..b, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)) =
+        (∫ x in (1 : ℝ)..b, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)) -
+          ∫ x in (1 : ℝ)..a, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x) := by
+      linarith [hsplit]
+    rw [heq]
+    calc
+      |(∫ x in (1 : ℝ)..b, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)) -
+          ∫ x in (1 : ℝ)..a, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)|
+          ≤ |∫ x in (1 : ℝ)..b, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)| +
+            |∫ x in (1 : ℝ)..a, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)| :=
+        abs_sub _ _
+      _ ≤ 340 / (Real.sqrt c * k ^ 2) := by
+        calc
+          |∫ x in (1 : ℝ)..b, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)| +
+              |∫ x in (1 : ℝ)..a, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)|
+              ≤ 170 / (Real.sqrt c * k ^ 2) + 170 / (Real.sqrt c * k ^ 2) :=
+            add_le_add hdiffFull hdiffLeft
+          _ = 340 / (Real.sqrt c * k ^ 2) := by ring
   have hsum := abs_integral_firstRow_sum_le hs0 hs1 hk hc0 hab ha
   have hpoint : ∀ x ∈ uIcc a b, firstRowLeadingProduct s c k x =
       (1 / Real.pi) * (ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x) +
@@ -245,24 +293,27 @@ theorem abs_integral_firstRowLeadingProduct_le {s c k a b : ℝ}
     rw [firstRowLeadingProduct_eq_phase_sum hs1 hk hx']
     ring
   rw [intervalIntegral.integral_congr hpoint, intervalIntegral.integral_const_mul]
+  have hsub : uIcc a b ⊆ Ioi 1 := by
+    rw [uIcc_of_le hab]
+    exact fun _ hx => ha.trans_le hx.1
+  have hdiffInt : IntervalIntegrable
+      (fun x => ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)) volume a b :=
+    (((continuousOn_ampFourthRoot hs1 hk).mono hsub).mul
+      (Real.continuous_cos.comp_continuousOn
+        (continuousOn_const.mul ((continuousOn_xiDiffPhase hs0 hk).mono hsub)))).intervalIntegrable
+  have hsumInt : IntervalIntegrable
+      (fun x => ampFourthRoot s k x * Real.cos (c * xiSumPhase s k x - Real.pi / 2))
+      volume a b :=
+    (((continuousOn_ampFourthRoot hs1 hk).mono hsub).mul
+      (Real.continuous_cos.comp_continuousOn
+        ((continuousOn_const.mul ((continuousOn_xiSumPhase hs0 hk).mono hsub)).sub
+          continuousOn_const))).intervalIntegrable
   have hInt :
       (∫ x in a..b, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x) +
         ampFourthRoot s k x * Real.cos (c * xiSumPhase s k x - Real.pi / 2)) =
       (∫ x in a..b, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)) +
         ∫ x in a..b, ampFourthRoot s k x * Real.cos (c * xiSumPhase s k x - Real.pi / 2) := by
-    rw [intervalIntegral.integral_add]
-    · exact (continuousOn_ampFourthRoot hs1 hk).intervalIntegrable_of_Icc
-        (fun x hx => by rw [uIcc_of_le hab] at hx; exact ha.trans_le hx.1)
-        |>.mul_continuousOn
-          (Real.continuous_cos.comp_continuousOn
-            (continuousOn_const.mul ((continuousOn_xiDiffPhase hs0 hk).mono
-              (fun x hx => by rw [uIcc_of_le hab] at hx; exact ha.trans_le hx.1))))
-    · exact (continuousOn_ampFourthRoot hs1 hk).intervalIntegrable_of_Icc
-        (fun x hx => by rw [uIcc_of_le hab] at hx; exact ha.trans_le hx.1)
-        |>.mul_continuousOn
-          (Real.continuous_cos.comp_continuousOn
-            ((continuousOn_const.mul ((continuousOn_xiSumPhase hs0 hk).mono
-              (fun x hx => by rw [uIcc_of_le hab] at hx; exact ha.trans_le hx.1))).sub continuousOn_const))
+    rw [intervalIntegral.integral_add hdiffInt hsumInt]
   rw [hInt, abs_mul, abs_of_nonneg (by positivity : 0 ≤ 1 / Real.pi)]
   calc
     1 / Real.pi * |(∫ x in a..b, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)) +
@@ -271,7 +322,7 @@ theorem abs_integral_firstRowLeadingProduct_le {s c k a b : ℝ}
           (|(∫ x in a..b, ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x))| +
             |∫ x in a..b, ampFourthRoot s k x * Real.cos (c * xiSumPhase s k x - Real.pi / 2)|) := by
           gcongr
-          exact abs_add _ _
+          exact abs_add_le _ _
     _ ≤ (1 / Real.pi) *
         (340 / (Real.sqrt c * k ^ 2) +
           4 * ampFourthRoot s k a / (c * (1 + k))) := by gcongr

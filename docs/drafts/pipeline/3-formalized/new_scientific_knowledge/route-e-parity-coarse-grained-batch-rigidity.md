@@ -1,9 +1,9 @@
 # Route E parity-coarse-grained batch rigidity
 
 - **ID:** `ROUTE-E-PARITY-COARSE-BATCH-RIGIDITY-001`
-- **Stage:** 2-fully-proven
-- **Type:** `[EXACT DECOMPOSITION]` / `[QUANTITATIVE ESCAPE RIGIDITY]` / `[OPEN-CORE REDUCTION]`
-- **Scientific status:** `[PAPER-PROVED] [INTERNAL COLLISION-AUDITED] [EXTERNAL NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Type:** `[EXACT DECOMPOSITION]` / `[QUANTITATIVE ESCAPE RIGIDITY]` / `[OPEN-CORE REDUCTION]` / `[FORMALIZED]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [INTERNAL COLLISION-AUDITED] [EXTERNAL NOVELTY UNVERIFIED]`
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
 - **RH used:** no
 - **Computation used:** no
@@ -188,7 +188,7 @@ sufficient to prove, with physical-power strength and literal Gibbs weights, tha
 captures the required fraction of leaf energy.  Conversely, failure of such dissipation forces
 all of the following at once:
 
-- ψₛ((m_Tx)) is nearly constant across all relevant even subsets;
+- `ψ_S(m_T x)` is nearly constant across all relevant even subsets;
 - it is nearly constant across all relevant odd subsets;
 - the two weighted constants are nearly exact negatives, with loss amplified only by the explicit
   parity-balance factor (W/(W_+W_-)).
@@ -212,8 +212,28 @@ must either prevent parity-mass collapse or extract same-parity variance before 
 4. The decomposition is exhaustive because it is equality `(1)`, not a union-bound heuristic.
 5. `OPEN-SOURCE-001`, `GIBBS-MOVING-BOUNDARY-NONPRODUCT-FRAME`, and RH remain open.
 
-## Formalization target
+## Lean certificate
 
-Formalize `(1)`--`(2)` for arbitrary finite weighted families, derive nonnegativity and exact
-nullspace from positive weights, then specialize `(5)` to Gibbs powerset leaves.  No analytic
-assumption is permitted.
+Module:
+`formal/GaloisForLFunctions/RHTower/GibbsBatchParityCoarseGraining.lean`.
+It is imported by `formal/GaloisForLFunctions/RHTower.lean`.
+
+Unconditional declarations include:
+
+- `routeEScalarParityCoarseIdentity`;
+- `routeEBatchMeanEnergy_add_withinClassResiduals_add_coarse_eq_leafEnergy`;
+- `routeEBatchResidual_eq_withinClassResiduals_add_coarse`;
+- `routeEBatchNearEscape_rigidity`;
+- `routeEBatchResidual_eq_zero_iff_classConstant_and_coarse`;
+- `routeEGibbsBatch_currentEnergy_add_parityCoarse_eq_leafEnergy`;
+- `routeEGibbsBatch_nearEscape_rigidity`;
+- `routeEGibbsBatchResidual_eq_zero_iff_parityRigidity`.
+
+Verification on 2026-08-07:
+
+- `lake env lean GaloisForLFunctions/RHTower/GibbsBatchParityCoarseGraining.lean`: pass;
+- `lake build GaloisForLFunctions.RHTower.GibbsBatchParityCoarseGraining`: pass
+  (`9712/9712`), used only for this module's missing `.olean`;
+- targeted `#print axioms`: only `propext`, `Classical.choice`, and `Quot.sound`;
+- no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration occurs in module;
+- no full build was run.

@@ -134,4 +134,34 @@ theorem lt_of_localised {L₀ X D a : ℝ} (hloc : |X - L₀| ≤ D) (hgap : a <
   have h := abs_le.mp hloc
   linarith [h.1]
 
+/-! ## Removing the square-root weight
+
+The penalized inequalities are stated for the weighted profile `√L f(L)`, while the transport
+operator acts on `f` itself.  Moving the weight across costs the ratio of the two square roots.
+Forward in `L` that ratio is at most one, so the conversion is free; backward it is not, which is
+the same weight mismatch that rules out a uniform modulus.
+-/
+
+/-- **Forward weight removal.**  A one-sided bound on the weighted profile gives one on the profile
+itself, with the penalty slope divided by `√X`.  Forward in `L` the square-root ratio is at most
+one, so nothing is lost. -/
+theorem le_of_weighted_le_forward {f : ℝ → ℝ} {X s δ : ℝ} (hX : 0 < X) (hs : 0 ≤ s)
+    (hδ : 0 ≤ δ) (hf : 0 ≤ f X)
+    (hw : Real.sqrt (X + s) * f (X + s) ≤ Real.sqrt X * f X + δ * s) :
+    f (X + s) ≤ f X + δ * s / Real.sqrt X := by
+  have hXs : 0 < X + s := by linarith
+  have hsq : 0 < Real.sqrt X := Real.sqrt_pos.mpr hX
+  have hsq' : 0 < Real.sqrt (X + s) := Real.sqrt_pos.mpr hXs
+  have hmono : Real.sqrt X ≤ Real.sqrt (X + s) := Real.sqrt_le_sqrt (by linarith)
+  have hnum : 0 ≤ Real.sqrt X * f X + δ * s := by positivity
+  have hstep : f (X + s) ≤ (Real.sqrt X * f X + δ * s) / Real.sqrt (X + s) := by
+    rw [le_div_iff₀ hsq']
+    linarith [hw]
+  have hstep2 : (Real.sqrt X * f X + δ * s) / Real.sqrt (X + s)
+      ≤ (Real.sqrt X * f X + δ * s) / Real.sqrt X :=
+    div_le_div_of_nonneg_left hnum hsq hmono
+  have hval : (Real.sqrt X * f X + δ * s) / Real.sqrt X = f X + δ * s / Real.sqrt X := by
+    field_simp
+  linarith [hstep, hstep2, hval.le, hval.ge]
+
 end GaloisForLFunctions.HTGeometry

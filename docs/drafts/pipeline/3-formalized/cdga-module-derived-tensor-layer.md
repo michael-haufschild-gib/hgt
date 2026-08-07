@@ -1581,14 +1581,31 @@ Axioms: `propext, Classical.choice, Quot.sound`.
 **`tensorAlgMul_tensorSingle_ne`** is the companion: off the sum of the two bidegrees the product
 vanishes, because every splitting misses one of the two supports.
 
+## The two inclusions
+
+`tensorSingleRight_apply`, `_ne`, **`extTensorD_tensorSingleRight`**, **`tensorCDGAInclLeft`**;
+`tensorSingleLeft_apply`, `_ne`, **`extTensorD_tensorSingleLeft`**, **`tensorCDGAInclRight`**.
+
+Multiplicativity is the two product lemmas above; compatibility with the differential is that the
+half-differential in the other variable kills the inclusion's image because `d1 = 0`.
+
+The two are *not* mirror images, and the asymmetry is worth naming.  For `x ⊗ 1` the second
+half-differential reads at `(p₁, β)` — the first coordinate is unchanged, so `p₁ ≠ 0` transfers
+straight to the read index.  For `1 ⊗ y` the first half-differential reads at `(α, p₂)` with
+`α = p₁ − 1`, and `α` may be zero even when `p₁` is not; that branch needs its own sub-case, in
+which the value is nonzero but `A.d 1 = 0` kills it anyway.  Splitting on the *predecessor* before
+introducing any index proof is what makes it go through.
+
+Two mechanical points, both about `rw` picking the wrong occurrence: state the vanishing lemma with
+its index proof supplied explicitly, so the rewrite is pinned to the intended bidegree; and pass the
+splitting-index proofs positionally (`… h rfl`) rather than by `by simp only; omega`, which closes
+some of them by `rfl` and then leaves `omega` with no goals.
+
+Axioms: `propext, Classical.choice, Quot.sound`; the two differential computations need only
+`propext, Quot.sound`.
+
 ## Next
 
-The two inclusions `A → A ⊗ B` and `B → A ⊗ B`.  Their multiplicativity is exactly the two lemmas
-above — the product of `x ⊗ 1` with `y ⊗ 1` is a one-term sum and vanishes off the diagonal — and
-their compatibility with the differential is the observation that the second half-differential kills
-`x ⊗ 1` because `d1 = 0`.  What makes them fiddly is not the mathematics but the index case split:
-the value of a single-bidegree element at an arbitrary bidegree wants an `if`-shaped helper, and the
-four combinations of `p₁, p₂` being zero or a successor each need their own half-differential lemma.
-
-After that, the relative tensor product of *algebras* over a base algebra — the layer's `⊗_A` is
-still a module construction.
+The relative tensor product of *algebras* over a base algebra — the layer's `⊗_A` is still a module
+construction.  With both inclusions in hand, `A ⊗ B` is an algebra under each factor, which is the
+datum a relative construction is defined against.

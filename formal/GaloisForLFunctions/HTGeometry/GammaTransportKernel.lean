@@ -451,4 +451,43 @@ theorem integrable_transport_lower_bound (c : ℝ) :
     IntegrableOn (fun s => -(2 * c * (s * gammaTransportKernel s))) (Ioi 0) :=
   (integrableOn_id_mul_gammaTransportKernel_Ioi_zero.const_mul (2 * c)).neg
 
+/-! ## The far tail of the transport integral
+
+Beyond any fixed radius the second difference is merely bounded, and the kernel's tail mass is
+`q(R) = −log(1 − e^{−R})` exactly.  So the far part of the transport integral is bounded by
+`4M q(R)`, which tends to zero as the radius grows — the estimate that lets the near part be
+handled separately by a pointwise inequality valid only for small shifts.
+-/
+
+/-- **The far tail is controlled by the kernel's tail mass.**  For a bounded profile the transport
+integral beyond radius `R` is at most `4M q(R)` with `q(R) = −log(1 − e^{−R})`. -/
+theorem abs_integral_transport_far_le {F : ℝ → ℝ} {M R : ℝ} (X : ℝ) (hR : 0 < R)
+    (hF : ∀ x, |F x| ≤ M) (hmeas : Measurable F) :
+    |∫ s in Ioi R, secondDifference F X s * gammaTransportKernel s|
+      ≤ 4 * M * (-Real.log (1 - Real.exp (-R))) := by
+  have hk := integrableOn_gammaTransportKernel_Ioi hR
+  have hdom : IntegrableOn (fun s => 4 * M * gammaTransportKernel s) (Ioi R) := hk.const_mul _
+  have hsd : Measurable fun s => secondDifference F X s := by
+    unfold secondDifference; fun_prop
+  have hptw : ∀ s ∈ Ioi R, ‖secondDifference F X s * gammaTransportKernel s‖
+      ≤ 4 * M * gammaTransportKernel s := by
+    intro s hs
+    have hpos : 0 < s := lt_trans hR hs
+    have hkpos := gammaTransportKernel_pos hpos
+    rw [Real.norm_eq_abs, abs_mul, abs_of_pos hkpos]
+    exact mul_le_mul_of_nonneg_right (abs_secondDifference_le_of_bounded hF X s) hkpos.le
+  have hint : IntegrableOn (fun s => secondDifference F X s * gammaTransportKernel s) (Ioi R) := by
+    refine Integrable.mono' hdom (hsd.mul measurable_gammaTransportKernel).aestronglyMeasurable ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with s hs
+    exact hptw s hs
+  calc |∫ s in Ioi R, secondDifference F X s * gammaTransportKernel s|
+      ≤ ∫ s in Ioi R, ‖secondDifference F X s * gammaTransportKernel s‖ := by
+        rw [← Real.norm_eq_abs]
+        exact norm_integral_le_integral_norm _
+    _ ≤ ∫ s in Ioi R, 4 * M * gammaTransportKernel s := by
+        refine setIntegral_mono_on hint.norm hdom measurableSet_Ioi fun s hs => hptw s hs
+    _ = 4 * M * ∫ s in Ioi R, gammaTransportKernel s := integral_const_mul _ _
+    _ = 4 * M * (-Real.log (1 - Real.exp (-R))) := by
+        rw [integral_Ioi_gammaTransportKernel hR]
+
 end GaloisForLFunctions.HTGeometry
