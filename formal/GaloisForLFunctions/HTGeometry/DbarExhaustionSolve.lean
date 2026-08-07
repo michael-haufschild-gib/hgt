@@ -64,8 +64,8 @@ def DbarPrimitiveOn (E : ℕ → Set (Fin n → ℂ)) (f : SetForm n) (q m : ℕ
 
 /-- The Dolbeault system is solvable from one stage of an exhaustion to the previous one, in every
 degree. -/
-def DbarStageSolvable (E : ℕ → Set (Fin n → ℂ)) : Prop :=
-  ∀ (m q : ℕ) (g : SetForm n), SmoothSetForm g → SetFormDeg (q + 1) g →
+def DbarStageSolvable (E : ℕ → Set (Fin n → ℂ)) (X : Set (Fin n → ℂ)) : Prop :=
+  ∀ (m q : ℕ) (g : SetForm n), SmoothSetFormOn g X → SetFormDeg (q + 1) g →
     (∀ S : Finset (Fin n), ∀ z ∈ E (m + 1), setDbar g S z = 0) →
     ∃ w : SetForm n, SmoothSetForm w ∧ SetFormDeg q w ∧
       ∀ S : Finset (Fin n), ∀ z ∈ E m, setDbar w S z = g S z
@@ -74,8 +74,9 @@ def DbarStageSolvable (E : ℕ → Set (Fin n → ℂ)) : Prop :=
 the next stage without changing it on the previous one.  The correction is the differential of a
 primitive of the difference of the two solutions, which exists because that difference is closed
 and of degree `q + 1 ≥ 1`. -/
-theorem dbarPrimitiveOn_step {E : ℕ → Set (Fin n → ℂ)} (hEmono : ∀ m, E m ⊆ E (m + 1))
-    (hsolve : DbarStageSolvable E) {f : SetForm n} (hCf : SmoothSetForm f) {q : ℕ}
+theorem dbarPrimitiveOn_step {E : ℕ → Set (Fin n → ℂ)} {X : Set (Fin n → ℂ)}
+    (hEmono : ∀ m, E m ⊆ E (m + 1))
+    (hsolve : DbarStageSolvable E X) {f : SetForm n} (hCf : SmoothSetFormOn f X) {q : ℕ}
     (hdeg : SetFormDeg (q + 2) f)
     (hclosed : ∀ (m : ℕ) (S : Finset (Fin n)), ∀ z ∈ E m, setDbar f S z = 0)
     (m : ℕ) (u : SetForm n) (hu : DbarPrimitiveOn E f q m u) :
@@ -85,11 +86,12 @@ theorem dbarPrimitiveOn_step {E : ℕ → Set (Fin n → ℂ)} (hEmono : ∀ m, 
   obtain ⟨v, hCv, hdv, hveq⟩ :=
     hsolve (m + 2) (q + 1) f hCf hdeg (fun S z hz => hclosed (m + 3) S z hz)
   have hCg : SmoothSetForm (setFormSub v u) := hCv.sub hCu
+  have hCgOn : SmoothSetFormOn (setFormSub v u) X := hCg.smoothOn X
   have hdg : SetFormDeg (q + 1) (setFormSub v u) := hdv.sub hdu
   have hgclosed : ∀ S : Finset (Fin n), ∀ z ∈ E (m + 1), setDbar (setFormSub v u) S z = 0 := by
     intro S z hz
     rw [setDbar_sub hCv hCu S z, hveq S z (hEmono (m + 1) hz), hueq S z hz, sub_self]
-  obtain ⟨w, hCw, hdw, hweq⟩ := hsolve m q _ hCg hdg hgclosed
+  obtain ⟨w, hCw, hdw, hweq⟩ := hsolve m q _ hCgOn hdg hgclosed
   refine ⟨setFormSub v (setDbar w), ⟨hCv.sub (setDbar_smooth hCw), hdv.sub (setDbar_deg hdw),
     fun S z hz => ?_⟩, fun S z hz => ?_⟩
   · rw [setDbar_sub hCv (setDbar_smooth hCw) S z,
@@ -105,9 +107,9 @@ The stagewise solutions are stabilized by subtracting the differential of a prim
 successive differences, so they are eventually constant at every point; the pointwise limit is
 smooth because it agrees with one of them on a neighbourhood of each point. -/
 theorem setDbar_exhaustion_solve {E : ℕ → Set (Fin n → ℂ)} (hEopen : ∀ m, IsOpen (E m))
-    (hEmono : ∀ m, E m ⊆ E (m + 1)) (hsolve : DbarStageSolvable E)
-    {X : Set (Fin n → ℂ)} (hEsub : ∀ m, E m ⊆ X) (hEcover : ∀ z ∈ X, ∃ m, z ∈ E m)
-    {q : ℕ} {f : SetForm n} (hCf : SmoothSetForm f) (hdeg : SetFormDeg (q + 2) f)
+    (hEmono : ∀ m, E m ⊆ E (m + 1)) {X : Set (Fin n → ℂ)} (hsolve : DbarStageSolvable E X)
+    (hEsub : ∀ m, E m ⊆ X) (hEcover : ∀ z ∈ X, ∃ m, z ∈ E m)
+    {q : ℕ} {f : SetForm n} (hCf : SmoothSetFormOn f X) (hdeg : SetFormDeg (q + 2) f)
     (hclosed : ∀ S : Finset (Fin n), ∀ z ∈ X, setDbar f S z = 0) :
     ∃ u : SetForm n, SmoothSetFormOn u X ∧ SetFormDeg (q + 1) u ∧
       ∀ S : Finset (Fin n), ∀ z ∈ X, setDbar u S z = f S z := by
@@ -216,8 +218,11 @@ theorem mem_polydiscExhaustion (z : Fin n → ℂ) : ∃ m : ℕ, z ∈ polydisc
   exact lt_trans (lt_of_le_of_lt (norm_le_pi_norm z i) hm) (by linarith)
 
 /-- The Dolbeault system is solvable from one polydisc of the exhaustion to the previous one. -/
-theorem dbarStageSolvable_polydiscExhaustion : DbarStageSolvable (polydiscExhaustion n) := by
-  intro m q g hCg hdg hgclosed
+theorem dbarStageSolvable_polydiscExhaustion :
+    DbarStageSolvable (polydiscExhaustion n) Set.univ := by
+  intro m q g hCgOn hdg hgclosed
+  have hCg : SmoothSetForm g := fun S =>
+    contDiff_iff_contDiffAt.2 fun z => hCgOn S z (Set.mem_univ z)
   have hρ : ∀ _ : Fin n, (0 : ℝ) < (m : ℝ) + 1 := fun _ => by positivity
   have hρr : ∀ _ : Fin n, ((m : ℝ) + 1) < (m : ℝ) + 2 := fun _ => by linarith
   have hsub : polydisc (fun _ : Fin n => (0 : ℂ)) (fun _ => (m : ℝ) + 2)
@@ -242,7 +247,8 @@ theorem setDbar_global_solve {q : ℕ} {f : SetForm n} (hCf : SmoothSetForm f)
     setDbar_exhaustion_solve (E := polydiscExhaustion n) (isOpen_polydiscExhaustion n)
       (polydiscExhaustion_mono n) dbarStageSolvable_polydiscExhaustion
       (X := Set.univ) (fun _ => Set.subset_univ _)
-      (fun z _ => mem_polydiscExhaustion z) hCf hdeg (fun S z _ => hclosed S z)
+      (fun z _ => mem_polydiscExhaustion z) (hCf.smoothOn Set.univ) hdeg
+      (fun S z _ => hclosed S z)
   refine ⟨u, fun S => contDiff_iff_contDiffAt.2 fun z => hCu S z (Set.mem_univ z), hdu,
     fun S z => hueq S z (Set.mem_univ z)⟩
 
@@ -262,8 +268,9 @@ theorem puncturedExhaustion_subset (n m : ℕ) : puncturedExhaustion n m ⊆ pun
   exact norm_ne_zero_iff.1 (ne_of_gt (lt_trans hpos h))
 
 /-- The Dolbeault system is solvable from one polyannulus of the exhaustion to the previous one. -/
-theorem dbarStageSolvable_puncturedExhaustion : DbarStageSolvable (puncturedExhaustion n) := by
-  intro m q g hCg hdg hgclosed
+theorem dbarStageSolvable_puncturedExhaustion :
+    DbarStageSolvable (puncturedExhaustion n) (puncturedSpace n) := by
+  intro m q g hCgOn hdg hgclosed
   have ha : ∀ _ : Fin n, (0 : ℝ) ≤ 1 / ((m : ℝ) + 3) := fun _ => by positivity
   have haa' : ∀ _ : Fin n, 1 / ((m : ℝ) + 3) < 1 / ((m : ℝ) + 2) := fun _ => by
     rw [div_lt_div_iff₀ (by positivity) (by positivity)]
@@ -272,24 +279,50 @@ theorem dbarStageSolvable_puncturedExhaustion : DbarStageSolvable (puncturedExha
     rw [div_lt_iff₀ (by positivity)]
     nlinarith [Nat.cast_nonneg (α := ℝ) m]
   have hb'b : ∀ _ : Fin n, ((m : ℝ) + 2) < (m : ℝ) + 3 := fun _ => by linarith
+  set K : Set (Fin n → ℂ) :=
+    closedPolyannulus (fun _ : Fin n => 1 / ((m : ℝ) + 3)) (fun _ : Fin n => (m : ℝ) + 3) with hK
+  have hKsub : K ⊆ puncturedSpace n := by
+    intro z hz i hcon
+    have h := (hz i).1
+    rw [hcon, norm_zero] at h
+    have : (0 : ℝ) < 1 / ((m : ℝ) + 3) := by positivity
+    linarith
+  obtain ⟨G, V, hVopen, hKV, hCG, hGeq, hGzero⟩ :=
+    exists_contDiff_family_eqOn (h := g) (K := K) (W := puncturedSpace n)
+      (isCompact_closedPolyannulus _ _) isOpen_puncturedSpace hKsub hCgOn
+  have hGdeg : SetFormDeg (q + 1) G := fun S hS z => hGzero S z (hdg S hS z)
+  have hGloc : ∀ (S : Finset (Fin n)), ∀ z ∈ V, setDbar G S z = setDbar g S z := by
+    intro S z hz
+    exact setDbar_congr_on_isOpen hVopen (fun T y hy => hGeq T y hy) hz S
+  have hannK : ∀ z ∈ productDomain (fun _ : Fin n => annulus (1 / ((m : ℝ) + 3)) ((m : ℝ) + 3)),
+      z ∈ K := fun z hz i => ⟨(hz i).1.le, (hz i).2.le⟩
   have hcast : ∀ z : Fin n → ℂ,
       z ∈ productDomain (fun _ : Fin n => annulus (1 / ((m : ℝ) + 3)) ((m : ℝ) + 3)) →
       z ∈ puncturedExhaustion n (m + 1) := by
     intro z hz i
-    have h := hz i
     have h1 : (((m + 1 : ℕ) : ℝ) + 2) = (m : ℝ) + 3 := by push_cast; ring
     rw [h1]
-    exact h
+    exact hz i
   obtain ⟨w, hCw, hdw, hweq⟩ :=
     setDbar_polyannulus_solve (a := fun _ => 1 / ((m : ℝ) + 3)) (a' := fun _ => 1 / ((m : ℝ) + 2))
       (b' := fun _ => (m : ℝ) + 2) (b := fun _ => (m : ℝ) + 3)
-      ha haa' ha'b' hb'b hCg (hdg.empty (Nat.succ_ne_zero q)) hdg
-      (fun S z hz => hgclosed S z (hcast z hz))
-  exact ⟨w, hCw, hdw, hweq⟩
+      ha haa' ha'b' hb'b hCG (hGdeg.empty (Nat.succ_ne_zero q)) hGdeg
+      (fun S z hz => by
+        rw [hGloc S z (hKV (hannK z hz))]
+        exact hgclosed S z (hcast z hz))
+  refine ⟨w, hCw, hdw, fun S z hz => ?_⟩
+  have hzK : z ∈ K := by
+    refine fun i => ⟨?_, ?_⟩
+    · refine le_trans ?_ (hz i).1.le
+      rw [div_le_div_iff₀ (by positivity) (by positivity)]
+      linarith
+    · exact le_trans (hz i).2.le (by linarith)
+  rw [hweq S z hz]
+  exact hGeq S z (hKV hzK)
 
 /-- **The Dolbeault system in degree at least two is globally solvable on `(ℂ^×)^n`.** -/
-theorem setDbar_punctured_solve {q : ℕ} {f : SetForm n} (hCf : SmoothSetForm f)
-    (hdeg : SetFormDeg (q + 2) f)
+theorem setDbar_punctured_solve {q : ℕ} {f : SetForm n}
+    (hCf : SmoothSetFormOn f (puncturedSpace n)) (hdeg : SetFormDeg (q + 2) f)
     (hclosed : ∀ S : Finset (Fin n), ∀ z ∈ puncturedSpace n, setDbar f S z = 0) :
     ∃ u : SetForm n, SmoothSetFormOn u (puncturedSpace n) ∧ SetFormDeg (q + 1) u ∧
       ∀ S : Finset (Fin n), ∀ z ∈ puncturedSpace n, setDbar u S z = f S z :=
@@ -418,12 +451,13 @@ theorem setDbar_global_solve_one {f : SetForm n} (hCf : SmoothSetForm f) (hdeg :
   · rw [setDbar_pointForm_of_card_ne_one u₀ hS z, hdeg S hS z]
 
 /-- **A `∂̄`-closed form of degree one on `(ℂ^×)^n` is exact.** -/
-theorem setDbar_punctured_solve_one {f : SetForm n} (hCf : SmoothSetForm f) (hdeg : SetFormDeg 1 f)
+theorem setDbar_punctured_solve_one {f : SetForm n}
+    (hCf : SmoothSetFormOn f (puncturedSpace n)) (hdeg : SetFormDeg 1 f)
     (hclosed : ∀ S : Finset (Fin n), ∀ z ∈ puncturedSpace n, setDbar f S z = 0) :
     ∃ u : SetForm n, SmoothSetFormOn u (puncturedSpace n) ∧ SetFormDeg 0 u ∧
       ∀ S : Finset (Fin n), ∀ z ∈ puncturedSpace n, setDbar u S z = f S z := by
   obtain ⟨u₀, hCu₀, hu₀⟩ :=
-    dbar_punctured_solve (f := fun k => f {k}) (fun k => hCf _)
+    dbar_punctured_solve (f := fun k => f {k}) (fun k z hz => hCf {k} z hz)
       (fun j k z hz => dzbarAt_comm_of_setDbar_zero hclosed j k z hz)
   refine ⟨pointForm u₀, ?_, setFormDeg_pointForm u₀, fun S z hz => ?_⟩
   · intro S z hz
@@ -455,8 +489,8 @@ theorem setDbar_exact_global {q : ℕ} {f : SetForm n} (hCf : SmoothSetForm f)
   | succ j => exact setDbar_global_solve hCf hdeg hclosed
 
 /-- **Exactness of the Dolbeault complex on `(ℂ^×)^n` in every positive degree.** -/
-theorem setDbar_exact_punctured {q : ℕ} {f : SetForm n} (hCf : SmoothSetForm f)
-    (hdeg : SetFormDeg (q + 1) f)
+theorem setDbar_exact_punctured {q : ℕ} {f : SetForm n}
+    (hCf : SmoothSetFormOn f (puncturedSpace n)) (hdeg : SetFormDeg (q + 1) f)
     (hclosed : ∀ S : Finset (Fin n), ∀ z ∈ puncturedSpace n, setDbar f S z = 0) :
     ∃ u : SetForm n, SmoothSetFormOn u (puncturedSpace n) ∧ SetFormDeg q u ∧
       ∀ S : Finset (Fin n), ∀ z ∈ puncturedSpace n, setDbar u S z = f S z := by

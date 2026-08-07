@@ -1130,10 +1130,8 @@ generalized to an arbitrary primitive in
 ### Remaining
 
 1. **`(6)`** is proved for an arbitrary directed system of character stages given by exponent
-   matrices with injective covering maps: the colimit of the stage cohomologies is the exterior
-   power of the colimit of the covering spaces.  What is not formalized is the identification of
-   that system with the filtered category `I_F` of pairs `(W, L)` itself — the indexing bookkeeping,
-   which the card fixes by definition and which needs no further mathematics.
+   matrices with injective covering maps, **and now for the index category `I_F` itself**; see the
+   entry below.
 2. **`(7)`**, the relative cell statement.  Of its two named ingredients, the exactness of filtered
    colimits is now proved; what is left is Cartan theorem B at the finite Stein stages, which needs
    coherent analytic sheaves and Dolbeault cohomology of a complex manifold.  Mathlib has neither, and
@@ -1141,3 +1139,47 @@ generalized to an arbitrary primitive in
    statement needed is `H^q(Z, O_Z) = 0` for `q ≥ 1` on `Z = (ℂ^×)^r`, since the sheaves of the cell
    filtration are free there; the path to it runs through the Cauchy–Pompeiu formula, the
    Dolbeault–Grothendieck lemma, and sheaf cohomology on complex manifolds.
+- 2026-08-07 — Formalized Cartan's theorem B, the second named ingredient of `(7)` and the one the
+  card leans on at each finite character stage.  `RHTower.deningerHolomorphic_ext_eq_zero_punctured`
+  gives `H^{q+1}((ℂ^×)^n, O) = 0` for every `q ≥ 0`, unconditionally, in the corpus's sheaf
+  cohomology `Ext(deningerOpenFree U, F, n)`; `RHTower.deningerHolomorphic_ext_eq_zero` is the same
+  statement for `ℂ^n`.  Both are assembled from a Dolbeault resolution built as actual sheaves —
+  `deningerFormSheaf` and `deningerClosedFormSheaf` on the domain regarded as its own space — whose
+  steps are short exact (`deningerFormStep_shortExact`: the closed forms are an explicit kernel of
+  the differential, and the differential is an epimorphism by the local `∂̄`-lemma on a polydisc)
+  and whose terms are fine hence acyclic (`deningerFine_acyclicOn` over the smooth multipliers, with
+  smooth partitions of unity from `deningerHasPartitions_smooth`).  The analytic input is the global
+  `∂̄`-lemma in every positive degree, `setDbar_exact_global` and `setDbar_exact_punctured`.  With
+  the exactness of filtered colimits already banked, both named ingredients of `(7)` are now
+  formalized.
+- 2026-08-07 — Formalized the index category `I_F` itself, closing the last item of `(6)`.
+  `formal/GaloisForLFunctions/RHTower/DeningerLatticeIndex.lean`; axiom audit
+  `propext, Classical.choice, Quot.sound`.
+
+  The card's pairs `(W, L)` carry no more information than `L`: the stage `Z_{W,L} = Hom(L, ℂ^×)`
+  does not mention `W`, and `W` is the rational span of `L`.  So `RHTower.DeningerIndex V` is the
+  poset of finitely generated subgroups of a rational vector space, and everything the colimit
+  theorem asks for is proved of it:
+
+  * `deningerRatTorsionFree` — a rational vector space is torsion free over `ℤ`, since a nonzero
+    integer becomes invertible in `ℚ`.  With finite generation this gives `deningerIndexFree`: every
+    stage is free of finite rank over the principal ideal domain `ℤ`, hence has a basis
+    `deningerIndexBasis` and a rank `deningerIndexRank`.
+  * `deningerIndexDirected` — **the index category is directed**, because the sum of two finitely
+    generated subgroups is finitely generated.  This is the filteredness the card asserts.
+  * `deningerIndexMatrix` — the exponent matrix of an inclusion, the coordinates of the smaller
+    basis in the larger.  `deningerIndexMatrix_comp` and `_id` are the cocycle conditions; they come
+    from `LinearMap.toMatrix_comp` and `toMatrix_id`, i.e. from uniqueness of coordinates, so no
+    coherent choice of bases is needed — independent choices already compose.
+  * `deningerIndexCovering_injective` — **the covering maps are injective.**  This is the one point
+    with content.  The inclusion is injective over `ℤ`; a chosen basis is therefore `ℚ`-independent
+    in the ambient space (`LinearIndependent.iff_fractionRing` — an integral independence inside a
+    vector space over the fraction field is a rational one), so the exponent matrix is injective
+    over `ℚ`, where an injection splits.  The splitting is a matrix of rational numbers, and the
+    *same* matrix splits the map over `ℂ`.  That is what makes the complexified inclusion injective
+    without any rank or minor argument.
+  * `deningerIndexDirectedSystem`, `deningerIndexCohomologyDirectLimitEquiv` — the stages form a
+    directed system and **the colimit of their cohomologies is the exterior power of the colimit of
+    the covering spaces**, for the index category itself.
+
+  With this, both named ingredients of `(7)` and both items of `(6)` are formalized.

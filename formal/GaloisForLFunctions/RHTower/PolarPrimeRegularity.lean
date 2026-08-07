@@ -131,8 +131,10 @@ theorem primeObservable_polar_regular_at_pole (L : ℝ) :
 theorem RH_of_polarPrimeObservable_regular (κ : ℂ) (W : ℂ → ℂ) (hWcont : Continuous W)
     (hWne : ∀ ρ : ℂ, 1 / 2 < ρ.re → W (ρ + 1 / 2) ≠ 0)
     (hreg : ∀ a : ℂ, 1 < a.re → ∃ M : ℂ, Tendsto (polarPrimeObservable κ W) (𝓝[≠] a) (𝓝 M)) :
-    ∀ ρ : ℂ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1 / 2 := by
-  intro ρ hζρ hρ1
+    RiemannHypothesis := by
+  rw [riemannHypothesis_iff_forall_zero_re_le_half]
+  intro ρ hζρ
+  have hρ1 : ρ ≠ 1 := riemannZeta_zero_ne_one hζρ
   by_contra h
   have hgt : 1 / 2 < ρ.re := not_le.mp h
   have hre : 1 < (ρ + 1 / 2).re := by rw [Complex.add_re]; simp; linarith
@@ -148,7 +150,7 @@ theorem RH_of_polarPrimeObservable_regular (κ : ℂ) (W : ℂ → ℂ) (hWcont 
   have hwin : Tendsto (windowObservable W) (𝓝[≠] (ρ + 1 / 2)) (𝓝 (M - κ * riemannZeta ρ)) := by
     refine (hM.sub hpolar).congr (fun s => ?_)
     simp only [polarPrimeObservable]; ring
-  exact windowObservable_no_limit W hρ1 hζρ hWcont.continuousAt (hWne ρ hgt) ⟨_, hwin⟩
+  exact windowObservable_no_limit W hζρ hWcont.continuousAt (hWne ρ hgt) ⟨_, hwin⟩
 
 /-- Converse (satisfiability under RH).  If `ζ` has no zeros with `Re > ½` then the renormalized
 observable is regular at *every* point of `Re s > 1` — including `s = 3/2`, where the polar term supplies
@@ -156,7 +158,7 @@ the cancellation (`polarPrimeObservable_regular_at_pole`).  Off `3/2`, `windowOb
 RH and the polar term `κ·ζ(s-½)` is continuous (`a-½ ≠ 1`), so their sum is regular. -/
 theorem polarPrimeObservable_regular_of_RH (κ : ℂ) (W : ℂ → ℂ) (hWdiff : Differentiable ℂ W)
     (hW32 : W (3 / 2) = -κ)
-    (hRH : ∀ ρ : ℂ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1 / 2) :
+    (hRH : RiemannHypothesis) :
     ∀ a : ℂ, 1 < a.re → ∃ M : ℂ, Tendsto (polarPrimeObservable κ W) (𝓝[≠] a) (𝓝 M) := by
   intro a ha
   by_cases ha32 : a = 3 / 2
@@ -178,7 +180,7 @@ regularity of the renormalized observable `κ·ζ(s-½) + W(s)·(-ζ'/ζ)(s-½)`
 **no excluded point**: the polar term cancels `ζ`'s pole at `s = 3/2`. -/
 theorem RH_iff_polarPrimeObservable_regular (κ : ℂ) (W : ℂ → ℂ) (hWdiff : Differentiable ℂ W)
     (hWne : ∀ ρ : ℂ, 1 / 2 < ρ.re → W (ρ + 1 / 2) ≠ 0) (hW32 : W (3 / 2) = -κ) :
-    (∀ ρ : ℂ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1 / 2)
+    RiemannHypothesis
       ↔ (∀ a : ℂ, 1 < a.re → ∃ M : ℂ, Tendsto (polarPrimeObservable κ W) (𝓝[≠] a) (𝓝 M)) :=
   ⟨polarPrimeObservable_regular_of_RH κ W hWdiff hW32,
     RH_of_polarPrimeObservable_regular κ W hWdiff.continuous hWne⟩
@@ -188,7 +190,7 @@ observable `8α²·ζ(s-½) + primeObservable L s` (`α = 1 - e^{-L/2}`) is regu
 tent window `W(s) = -2·A_L(s-1)²` is entire, nonvanishing on the off-critical shifts
 (`rectangularWindowAmplitude_ne_zero`), and matches `W(3/2) = -8α² = -κ`. -/
 theorem RH_iff_primeObservable_polar_regular (L : ℝ) (hL : 0 < L) :
-    (∀ ρ : ℂ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1 / 2)
+    RiemannHypothesis
       ↔ (∀ a : ℂ, 1 < a.re → ∃ M : ℂ,
           Tendsto (fun s => 8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2 * riemannZeta (s - 1 / 2)
             + primeObservable L s) (𝓝[≠] a) (𝓝 M)) := by
@@ -231,14 +233,15 @@ polar counterterm `κ·ζ(s-½)` is continuous there (`ρ ≠ 1`), so the prime 
 This closed meromorphic form carries no error term, so the statement holds on the whole plane with no
 strip restriction — the detection primitive for two-width divisor recovery. -/
 theorem polarPrimeObservable_no_limit (κ : ℂ) (W : ℂ → ℂ) (hWcont : Continuous W) {ρ : ℂ}
-    (hζρ : riemannZeta ρ = 0) (hρ1 : ρ ≠ 1) (hWne : W (ρ + 1 / 2) ≠ 0) :
+    (hζρ : riemannZeta ρ = 0) (hWne : W (ρ + 1 / 2) ≠ 0) :
     ¬ ∃ M : ℂ, Tendsto (polarPrimeObservable κ W) (𝓝[≠] (ρ + 1 / 2)) (𝓝 M) := by
+  have hρ1 : ρ ≠ 1 := riemannZeta_zero_ne_one hζρ
   have hζshift : ContinuousAt (fun s => κ * riemannZeta (s - 1 / 2)) (ρ + 1 / 2) := by
     have hsd : DifferentiableAt ℂ (fun s : ℂ => s - 1 / 2) (ρ + 1 / 2) := differentiableAt_id.sub_const _
     have hζρd : DifferentiableAt ℂ riemannZeta (ρ + 1 / 2 - 1 / 2) := by
       rw [show ρ + 1 / 2 - 1 / 2 = ρ by ring]; exact differentiableAt_riemannZeta hρ1
     exact continuousAt_const.mul (hζρd.comp (ρ + 1 / 2) hsd).continuousAt
-  have hwin_no := windowObservable_no_limit W hρ1 hζρ hWcont.continuousAt hWne
+  have hwin_no := windowObservable_no_limit W hζρ hWcont.continuousAt hWne
   intro hlim
   rw [show (polarPrimeObservable κ W)
       = (fun s => windowObservable W s + κ * riemannZeta (s - 1 / 2))
@@ -288,7 +291,7 @@ they do not affect regularity, and the renormalized-observable criterion
 `RH_iff_primeObservable_polar_regular` supplies the equivalence — the moving-tent card's headline
 theorem in its verbatim `Pcal_L` statement. -/
 theorem RH_iff_PcalObservable_regular (L : ℝ) (hL : 0 < L) :
-    (∀ ρ : ℂ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1 / 2)
+    RiemannHypothesis
       ↔ (∀ a : ℂ, 1 < a.re → ∃ M : ℂ, Tendsto (PcalObservable L) (𝓝[≠] a) (𝓝 M)) := by
   rw [RH_iff_primeObservable_polar_regular L hL]
   refine forall_congr' (fun a => imp_congr_right (fun ha => ?_))
@@ -301,7 +304,7 @@ theorem RH_iff_PcalObservable_regular (L : ℝ) (hL : 0 < L) :
 so RH is equivalent to regularity of the renormalized sharp observable on **all** of `Re s > 1` (with no
 excluded point — the linear sharp window, versus the tent's squared window). -/
 theorem RH_iff_sharpWindowPolar_regular (L : ℝ) (hL : 0 < L) :
-    (∀ ρ : ℂ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1 / 2)
+    RiemannHypothesis
       ↔ (∀ a : ℂ, 1 < a.re → ∃ M : ℂ,
           Tendsto (fun s => 4 * (1 - (Real.exp (-(L / 2)) : ℂ)) * riemannZeta (s - 1 / 2)
             + -2 * rectangularWindowAmplitude L (s - 1)

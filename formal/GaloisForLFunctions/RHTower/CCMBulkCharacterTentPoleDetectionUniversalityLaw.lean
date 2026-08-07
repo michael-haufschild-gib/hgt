@@ -54,11 +54,6 @@ theorem ccmBulkCharacter_nonzero_forces_tentPoleUniversality
   have hρ0 : 0 < ρ.re := by
     rw [hρre]
     norm_num
-  have hρ1 : ρ ≠ 1 := by
-    intro h
-    have hre := congrArg Complex.re h
-    rw [hρre] at hre
-    norm_num at hre
   have hρhalf : ρ ≠ 1 / 2 := by
     intro h
     apply hrate
@@ -70,7 +65,7 @@ theorem ccmBulkCharacter_nonzero_forces_tentPoleUniversality
       rectangularWindowAmplitude (k - m) (ρ - 1 / 2) ≠ 0 := by
     simpa [ρ] using hrect
   exact PcalObservable_no_limit_of_amplitude_ne
-    (k - m) (sub_nonneg.mpr hmk) hρzero hρ1 hρ0 hρhalf hρamp
+    (k - m) (sub_nonneg.mpr hmk) hρzero hρ0 hρhalf hρamp
 
 end
 

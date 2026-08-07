@@ -65,8 +65,12 @@ theorem xi_eq_mul_completedRiemannZeta {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1)
 
 /-- The archimedean factor is nonvanishing in the right half-plane, so the completed function is the
 product of that factor with `ζ`. -/
-theorem completedRiemannZeta_eq_Gammaℝ_mul {s : ℂ} (hs0 : s ≠ 0) (hspos : 0 < s.re) :
+theorem completedRiemannZeta_eq_Gammaℝ_mul {s : ℂ} (hspos : 0 < s.re) :
     completedRiemannZeta s = Complex.Gammaℝ s * riemannZeta s := by
+  have hs0 : s ≠ 0 := by
+    intro h
+    rw [h] at hspos
+    norm_num at hspos
   rw [riemannZeta_def_of_ne_zero hs0]
   field_simp [Complex.Gammaℝ_ne_zero_of_re_pos hspos]
 
@@ -103,7 +107,7 @@ theorem factorial_mul_rpow_le_norm_xi (m : ℕ) :
     rw [hnat]
     exact one_le_norm_riemannZeta_natCast (by omega)
   have hfac : xi s = s * (s - 1) / 2 * (Complex.Gammaℝ s * riemannZeta s) := by
-    rw [xi_eq_mul_completedRiemannZeta hs0 hs1, completedRiemannZeta_eq_Gammaℝ_mul hs0 hspos]
+    rw [xi_eq_mul_completedRiemannZeta hs0 hs1, completedRiemannZeta_eq_Gammaℝ_mul hspos]
   have hGam : Complex.Gammaℝ s = (Real.pi : ℂ) ^ (-((m : ℂ) + 1)) * (m.factorial : ℂ) :=
     Gammaℝ_two_mul_natSucc m
   have hpiNorm : ‖(Real.pi : ℂ) ^ (-((m : ℂ) + 1))‖ = Real.pi ^ (-((m : ℝ) + 1)) := by

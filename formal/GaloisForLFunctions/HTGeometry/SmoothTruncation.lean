@@ -1,5 +1,6 @@
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Analysis.Calculus.ContDiff.Basic
+import Mathlib.Geometry.Manifold.PartitionOfUnity
 
 /-!
 # Truncating a locally smooth function to a globally smooth one
@@ -66,5 +67,68 @@ theorem exists_contDiff_eventuallyEq {h : E → F} {u : Set E} (hu : IsOpen u) {
       rw [mem_ball] at hy
       exact le_of_lt hy
     rw [hone, one_smul]
+
+
+section Family
+
+open Metric
+
+variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+/-- **A family of functions smooth on an open set is globally smooth after truncation**, and the
+truncation agrees with the family on an open neighbourhood of any compact subset.  One cutoff, equal
+to one near the compact set and supported in the open set, is used for the whole family. -/
+theorem exists_contDiff_family_eqOn {ι : Type*} {h : ι → E → F} {K W : Set E}
+    (hK : IsCompact K) (hW : IsOpen W) (hKW : K ⊆ W)
+    (hh : ∀ (i : ι), ∀ z ∈ W, ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (h i) z) :
+    ∃ (g : ι → E → F) (V : Set E), IsOpen V ∧ K ⊆ V ∧
+      (∀ i, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (g i)) ∧ (∀ (i : ι), ∀ z ∈ V, g i z = h i z) ∧
+      ∀ (i : ι) (z : E), h i z = 0 → g i z = 0 := by
+  classical
+  obtain ⟨L, hLc, hKL, hLW⟩ := exists_compact_between hK hW hKW
+  obtain ⟨L', hL'c, hKL', hL'L⟩ := exists_compact_between hK isOpen_interior hKL
+  obtain ⟨χ, hχ0, hχ1, -⟩ :=
+    exists_contMDiffMap_zero_one_of_isClosed (modelWithCornersSelf ℝ E) (n := ⊤)
+      (s := (interior L)ᶜ) (t := L') isOpen_interior.isClosed_compl hL'c.isClosed
+      (Set.disjoint_left.2 fun a ha hb => ha (hL'L hb))
+  have hχsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (χ : E → ℝ) :=
+    contMDiff_iff_contDiff.1 χ.contMDiff
+  refine ⟨fun i => Set.indicator W (fun z => (χ z) • h i z), interior L', isOpen_interior, hKL',
+    ?_, ?_, ?_⟩
+  · intro i
+    rw [contDiff_iff_contDiffAt]
+    intro y
+    by_cases hy : y ∈ W
+    · have heq : ∀ᶠ z in nhds y,
+          Set.indicator W (fun z => (χ z) • h i z) z = (fun z => (χ z) • h i z) z :=
+        Filter.eventually_of_mem (hW.mem_nhds hy) fun z hz => Set.indicator_of_mem hz _
+      refine ContDiffAt.congr_of_eventuallyEq ?_ heq
+      exact hχsmooth.contDiffAt.smul (hh i y hy)
+    · have hyL : y ∈ Lᶜ := fun hyL => hy (hLW hyL)
+      have heq : ∀ᶠ z in nhds y,
+          Set.indicator W (fun z => (χ z) • h i z) z = (fun _ : E => (0 : F)) z := by
+        refine Filter.eventually_of_mem ((hLc.isClosed.isOpen_compl).mem_nhds hyL)
+          fun z hz => ?_
+        by_cases hzW : z ∈ W
+        · rw [Set.indicator_of_mem hzW]
+          have hzL : z ∈ (interior L)ᶜ := fun hzi => hz (interior_subset hzi)
+          rw [hχ0 hzL]
+          exact zero_smul _ _
+        · rw [Set.indicator_of_notMem hzW]
+      exact ContDiffAt.congr_of_eventuallyEq contDiffAt_const heq
+  · intro i z hz
+    have hzL' : z ∈ L' := interior_subset hz
+    have hzW : z ∈ W := hLW (interior_subset (hL'L hzL'))
+    show Set.indicator W (fun z => (χ z) • h i z) z = h i z
+    rw [Set.indicator_of_mem hzW, hχ1 hzL']
+    exact one_smul _ _
+  · intro i z hz0
+    show Set.indicator W (fun z => (χ z) • h i z) z = 0
+    by_cases hzW : z ∈ W
+    · rw [Set.indicator_of_mem hzW, hz0, smul_zero]
+    · rw [Set.indicator_of_notMem hzW]
+
+end Family
 
 end HTGeometry

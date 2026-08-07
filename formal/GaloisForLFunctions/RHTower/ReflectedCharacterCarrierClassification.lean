@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ReflectedCharacterBocksteinRH
+import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 
 /-!
 # What the reflected-character carrier hypothesis actually says
@@ -116,15 +117,15 @@ theorem riemannHypothesis_of_nonzero_reflectedCharacterCarrier_via_norm
   rw [hαβ]
 
 /-- **Re-encoding verdict.**  Under the two calibrations, the scalar hypothesis of the consumer is
-*equivalent* to the critical-line conclusion at every zero.  The reflected-character programme
-therefore restates the Riemann hypothesis at this point; it does not reduce it to anything
-weaker. -/
+*equivalent* to the Riemann hypothesis itself: the critical-line conclusion at every `xi` zero is
+`RiemannHypothesis` (`riemannHypothesis_iff_xi_zero_re_eq_half`).  The reflected-character programme
+therefore restates RH at this point; it does not reduce it to anything weaker. -/
 theorem reflectedCharacterNorm_eq_iff_criticalLine
     (q : B) (α β : ℂ → B →ₐ[ℂ] ℂ)
     (hsourceInverse : ∀ rho, ‖α rho q‖ = Real.exp (1 / 2 - rho.re))
     (hanalyticAdjoint : ∀ rho, ‖β rho q‖ = Real.exp (rho.re - 1 / 2)) :
-    (∀ rho, xi rho = 0 → ‖α rho q‖ = ‖β rho q‖) ↔
-      (∀ rho, xi rho = 0 → rho.re = 1 / 2) := by
+    (∀ rho, xi rho = 0 → ‖α rho q‖ = ‖β rho q‖) ↔ RiemannHypothesis := by
+  rw [riemannHypothesis_iff_xi_zero_re_eq_half]
   constructor
   · intro h rho hzero
     exact criticalLine_of_reflectedCharacterNorm_eq (hsourceInverse rho)

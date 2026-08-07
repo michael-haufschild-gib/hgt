@@ -22,11 +22,22 @@ open CategoryTheory TopologicalSpace Opposite TopCat Complex
 variable {n : ℕ}
 
 /-- An open subset of `ℂ^n`, as a topological space. -/
-noncomputable def deningerSpace (Ω : Opens (Fin n → ℂ)) : TopCat.{0} :=
+noncomputable abbrev deningerSpace (Ω : Opens (Fin n → ℂ)) : TopCat.{0} :=
   TopCat.of ↥(Ω : Set (Fin n → ℂ))
 
 noncomputable instance (Ω : Opens (Fin n → ℂ)) : MetricSpace (deningerSpace Ω) :=
   inferInstanceAs (MetricSpace ↥(Ω : Set (Fin n → ℂ)))
+
+noncomputable instance (Ω : Opens (Fin n → ℂ)) : ChartedSpace (Fin n → ℂ) ↥(deningerSpace Ω) :=
+  inferInstanceAs (ChartedSpace (Fin n → ℂ) ↥Ω)
+
+instance (Ω : Opens (Fin n → ℂ)) : LocallyCompactSpace ↥(deningerSpace Ω) :=
+  (Ω.2 : IsOpen (Ω : Set (Fin n → ℂ))).locallyCompactSpace
+
+instance (Ω : Opens (Fin n → ℂ)) :
+    IsManifold (modelWithCornersSelf ℝ (Fin n → ℂ)) ((⊤ : ℕ∞) : WithTop ℕ∞)
+      ↥(deningerSpace Ω) :=
+  inferInstanceAs (IsManifold (modelWithCornersSelf ℝ (Fin n → ℂ)) ((⊤ : ℕ∞) : WithTop ℕ∞) ↥Ω)
 
 section Ambient
 

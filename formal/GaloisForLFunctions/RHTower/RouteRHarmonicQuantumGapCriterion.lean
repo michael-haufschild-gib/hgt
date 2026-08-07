@@ -115,15 +115,16 @@ theorem tendsto_profileAverage_criticalWall_zero_iff
 
 /-! ## Sharpened gap: one subsequence of real parts -/
 
-/-- A sequence converging to a value of unit real modulus is not frequently
-below a threshold under one. -/
-theorem not_frequently_abs_re_le_of_unit_limit {F : ℕ → ℂ} {r : ℝ} (hr : r < 1)
-    {c : ℂ} (hc : |c.re| = 1) (hlim : Tendsto F atTop (𝓝 c))
-    (hfreq : ∃ᶠ N in atTop, |(F N).re| ≤ r) : False := by
-  have hre : Tendsto (fun N => |(F N).re|) atTop (𝓝 |c.re|) :=
+/-- A family converging along any nontrivial filter to a value of unit real
+modulus is not frequently below a threshold under one. -/
+theorem not_frequently_abs_re_le_of_unit_limit {α : Type*} {l : Filter α}
+    [l.NeBot] {F : α → ℂ} {r : ℝ} (hr : r < 1)
+    {c : ℂ} (hc : |c.re| = 1) (hlim : Tendsto F l (𝓝 c))
+    (hfreq : ∃ᶠ x in l, |(F x).re| ≤ r) : False := by
+  have hre : Tendsto (fun x => |(F x).re|) l (𝓝 |c.re|) :=
     ((Complex.continuous_re.tendsto c).comp hlim).abs
   rw [hc] at hre
-  obtain ⟨N, hle, hlt⟩ :=
+  obtain ⟨x, hle, hlt⟩ :=
     (hfreq.and_eventually (hre.eventually_const_lt hr)).exists
   linarith
 

@@ -81,6 +81,15 @@ theorem IsHalfPlaneRational.sub {f g : ℂ → ℂ}
   simp only [Polynomial.eval_sub, Polynomial.eval_mul]
   field_simp
 
+theorem IsHalfPlaneRational.neg {f : ℂ → ℂ} (hf : IsHalfPlaneRational f) :
+    IsHalfPlaneRational (fun z => -f z) := by
+  obtain ⟨P, Q, T, hQ, hT, hrel⟩ := hf
+  refine ⟨-P, Q, T, hQ, hT, fun z hz hzT hQz => ?_⟩
+  show -f z = _
+  rw [hrel z hz hzT hQz]
+  simp only [Polynomial.eval_neg]
+  ring
+
 theorem IsHalfPlaneRational.const_mul {f : ℂ → ℂ} (c : ℂ) (hf : IsHalfPlaneRational f) :
     IsHalfPlaneRational (fun z => c * f z) := by
   obtain ⟨P, Q, T, hQ, hT, hrel⟩ := hf

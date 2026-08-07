@@ -59,14 +59,14 @@ theorem sub_const_punctured_tendsto (a c : ℂ) :
 open right half-plane (`rectangularWindowAmplitude_ne_zero`).  So no off-critical pole cancels, and the
 residue reads off the exact analytic multiplicity `m(ρ)`. -/
 theorem offcritical_residue (L : ℝ) (hL : 0 < L) {ρ : ℂ}
-    (hρ1 : ρ ≠ 1) (hρre : 1 / 2 < ρ.re) (hζρ : riemannZeta ρ = 0) :
+    (hρre : 1 / 2 < ρ.re) (hζρ : riemannZeta ρ = 0) :
     ∃ m : ℕ, 1 ≤ m ∧
       Tendsto (fun s => (s - (ρ + 1 / 2)) *
           (-2 * (rectangularWindowAmplitude L (s - 1)) ^ 2
             * (-deriv riemannZeta (s - 1 / 2) / riemannZeta (s - 1 / 2))))
         (𝓝[≠] (ρ + 1 / 2)) (𝓝 (2 * (m : ℂ) * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ 2))
       ∧ (2 * (m : ℂ) * (rectangularWindowAmplitude L (ρ - 1 / 2)) ^ 2 ≠ 0) := by
-  obtain ⟨m, hm1, hzres⟩ := neg_logDeriv_zeta_zero_residue hρ1 hζρ
+  obtain ⟨m, hm1, hzres⟩ := neg_logDeriv_zeta_zero_residue hζρ
   refine ⟨m, hm1, ?_, ?_⟩
   · have hshift : Tendsto (fun s : ℂ => s - 1 / 2) (𝓝[≠] (ρ + 1 / 2)) (𝓝[≠] ρ) := by
       have := sub_const_punctured_tendsto (ρ + 1 / 2) (1 / 2)

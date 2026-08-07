@@ -51,9 +51,10 @@ theorem PcalCorrection_continuousAt_gt_half (L : ℝ) (hL : 0 ≤ L) {a : ℂ}
 the widened `HL` holomorphy), so the pole is inherited entirely from the prime channel
 (`windowObservable_no_limit`). -/
 theorem PcalObservable_no_limit_of_amplitude_ne (L : ℝ) (hL : 0 ≤ L) {ρ : ℂ}
-    (hζρ : riemannZeta ρ = 0) (hρ1 : ρ ≠ 1) (hρ0 : 0 < ρ.re) (hρhalf : ρ ≠ 1 / 2)
+    (hζρ : riemannZeta ρ = 0) (hρ0 : 0 < ρ.re) (hρhalf : ρ ≠ 1 / 2)
     (hA : rectangularWindowAmplitude L (ρ - 1 / 2) ≠ 0) :
     ¬ ∃ M : ℂ, Tendsto (PcalObservable L) (𝓝[≠] (ρ + 1 / 2)) (𝓝 M) := by
+  have hρ1 : ρ ≠ 1 := riemannZeta_zero_ne_one hζρ
   set W : ℂ → ℂ := fun s => -2 * (rectangularWindowAmplitude L (s - 1)) ^ 2 with hWdef
   have e2 : ((1 / 2 : ℂ)).re = 1 / 2 := by
     rw [show (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) by norm_num, Complex.ofReal_re]
@@ -74,7 +75,7 @@ theorem PcalObservable_no_limit_of_amplitude_ne (L : ℝ) (hL : 0 ≤ L) {ρ : �
     simp only [hWdef]
     rw [show ρ + 1 / 2 - 1 = ρ - 1 / 2 by ring]
     exact mul_ne_zero (by norm_num) (pow_ne_zero 2 hA)
-  have hwin_no := windowObservable_no_limit W hρ1 hζρ hWcont.continuousAt hWne
+  have hwin_no := windowObservable_no_limit W hζρ hWcont.continuousAt hWne
   intro hlim
   rw [show (PcalObservable L) = (fun s => windowObservable W s
       + (8 * (1 - (Real.exp (-(L / 2)) : ℂ)) ^ 2 * riemannZeta (s - 1 / 2) + PcalCorrection L s))
@@ -89,14 +90,14 @@ single width can miss a critical-line zero where its amplitude `A_L(iγ)` vanish
 widths never share such a zero (`sharpAmplitude_not_both_zero`), so the joint pole divisor of the two
 observables is the entire nontrivial zeta divisor. -/
 theorem tent_twoWidth_divisor_recovery {L₁ L₂ : ℝ} (hL₁ : 0 < L₁) (hL₂ : 0 < L₂)
-    (hirr : Irrational (L₁ / L₂)) {ρ : ℂ} (hζρ : riemannZeta ρ = 0) (hρ1 : ρ ≠ 1)
+    (hirr : Irrational (L₁ / L₂)) {ρ : ℂ} (hζρ : riemannZeta ρ = 0)
     (hρ0 : 0 < ρ.re) (hρhalf : ρ ≠ 1 / 2) :
     (¬ ∃ M : ℂ, Tendsto (PcalObservable L₁) (𝓝[≠] (ρ + 1 / 2)) (𝓝 M))
       ∨ (¬ ∃ M : ℂ, Tendsto (PcalObservable L₂) (𝓝[≠] (ρ + 1 / 2)) (𝓝 M)) := by
   have hw : ρ - 1 / 2 ≠ 0 := sub_ne_zero.mpr hρhalf
   rcases sharpAmplitude_not_both_zero hL₁ hL₂ hirr hw with hA | hA
-  · exact Or.inl (PcalObservable_no_limit_of_amplitude_ne L₁ hL₁.le hζρ hρ1 hρ0 hρhalf hA)
-  · exact Or.inr (PcalObservable_no_limit_of_amplitude_ne L₂ hL₂.le hζρ hρ1 hρ0 hρhalf hA)
+  · exact Or.inl (PcalObservable_no_limit_of_amplitude_ne L₁ hL₁.le hζρ hρ0 hρhalf hA)
+  · exact Or.inr (PcalObservable_no_limit_of_amplitude_ne L₂ hL₂.le hζρ hρ0 hρhalf hA)
 
 /-- **Sharp-window two-width complete divisor recovery.**  For irrationally related widths `L₁, L₂`,
 every nontrivial zeta zero `ρ` (`ρ ≠ 1`, `ρ ≠ ½`) — critical-line ones included — is a genuine pole of at
@@ -106,7 +107,7 @@ incommensurable widths never share an amplitude zero (`sharpAmplitude_not_both_z
 divisor is the entire nontrivial zeta divisor.  Cleaner than the tent version: the closed meromorphic
 form needs no error-term holomorphy, hence no strip restriction (`Re ρ > 0` not required). -/
 theorem sharpObservable_twoWidth_divisor_recovery {L₁ L₂ : ℝ} (hL₁ : 0 < L₁) (hL₂ : 0 < L₂)
-    (hirr : Irrational (L₁ / L₂)) {ρ : ℂ} (hζρ : riemannZeta ρ = 0) (hρ1 : ρ ≠ 1) (hρhalf : ρ ≠ 1 / 2) :
+    (hirr : Irrational (L₁ / L₂)) {ρ : ℂ} (hζρ : riemannZeta ρ = 0) (hρhalf : ρ ≠ 1 / 2) :
     (¬ ∃ M : ℂ, Tendsto (polarPrimeObservable (4 * (1 - (Real.exp (-(L₁ / 2)) : ℂ)))
         (fun s => -2 * rectangularWindowAmplitude L₁ (s - 1))) (𝓝[≠] (ρ + 1 / 2)) (𝓝 M))
       ∨ (¬ ∃ M : ℂ, Tendsto (polarPrimeObservable (4 * (1 - (Real.exp (-(L₂ / 2)) : ℂ)))
@@ -116,10 +117,10 @@ theorem sharpObservable_twoWidth_divisor_recovery {L₁ L₂ : ℝ} (hL₁ : 0 <
     (((rectangularWindowAmplitude_differentiable L).comp
       (differentiable_id.sub_const 1)).const_mul (-2)).continuous
   rcases sharpAmplitude_not_both_zero hL₁ hL₂ hirr hw with hA | hA
-  · refine Or.inl (polarPrimeObservable_no_limit _ _ (hWcont L₁) hζρ hρ1 ?_)
+  · refine Or.inl (polarPrimeObservable_no_limit _ _ (hWcont L₁) hζρ ?_)
     show -2 * rectangularWindowAmplitude L₁ (ρ + 1 / 2 - 1) ≠ 0
     rw [show ρ + 1 / 2 - 1 = ρ - 1 / 2 by ring]; exact mul_ne_zero (by norm_num) hA
-  · refine Or.inr (polarPrimeObservable_no_limit _ _ (hWcont L₂) hζρ hρ1 ?_)
+  · refine Or.inr (polarPrimeObservable_no_limit _ _ (hWcont L₂) hζρ ?_)
     show -2 * rectangularWindowAmplitude L₂ (ρ + 1 / 2 - 1) ≠ 0
     rw [show ρ + 1 / 2 - 1 = ρ - 1 / 2 by ring]; exact mul_ne_zero (by norm_num) hA
 

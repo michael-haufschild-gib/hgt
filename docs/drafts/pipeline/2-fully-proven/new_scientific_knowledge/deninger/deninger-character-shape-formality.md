@@ -536,8 +536,12 @@ a direct limit but not bilinear ones; this is what the product on a colimit alge
   `TorusCoverSystem`: choosing, for each lattice `L`, a basis identifying `Hom(L,ℝ)` with `ℝ^{rk L}`,
   which turns restriction along `L ⊆ L'` into an integer matrix.  Everything after that choice is a
   theorem here — `torusCoverSystemOfMatrices` takes the matrices to the tower of tori — and
-  everything before it too (`deningerLatticeFree`, `deningerFGSubmodule_directed`).  What is missing
-  is only the choice itself and the identification of the restriction matrices.
+  everything before it too (`deningerLatticeFree`, `deningerFGSubmodule_directed`).  That last
+  step is now done too: `RHTower.deningerTorusTower` makes the choice — `Module.finBasis` on
+  each lattice, legitimate because `deningerLatticeFree` makes them free of finite rank — and
+  `torusCoverSystemOfBases` turns an inclusion into the transpose of its matrix, so
+  `RHTower.deningerTorusFormality_isQuasiIso` is `(2)` for the whole lattice filtration of the
+  unit space, unconditionally.  `(2)` is therefore completely formalized.
 - `(3)` and `(4)` are statements about free `E_∞` `Hℝ`-algebras.  mathlib has no `E_∞`-algebras and
   no CDGA homotopy theory.  What survives is the algebraic content of "a free commutative algebra
   on generators in odd degree one is the exterior algebra": that is the universal property of
@@ -627,3 +631,9 @@ vanishes, the free algebra on the zero object is the unit, and tensoring over th
 identity — are proved in
 `formal/GaloisForLFunctions/RHTower/DeningerRankCollapseSpectralConsequences.lean`.  The card stays
 at stage 2 for `(4)`, which is one of its own `[PROVED HERE]` labels.
+- 2026-08-07 — Closed the last non-`E_∞` gap of `(2)`: the dictionary between the lattice poset and
+  a tower of tori.  `deningerTorusTower` chooses `Module.finBasis` on each lattice — legitimate
+  because `deningerLatticeFree` makes them free of finite rank — and `torusCoverSystemOfBases`
+  turns an inclusion into the transpose of its matrix; `deningerTorusFormality_isQuasiIso` is then
+  `(2)` for the whole filtration.  What remains on this card is only `(3)`--`(6)`, which are
+  statements about free `E_∞` `Hℝ`-algebras.

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.EMCarrier
 import GaloisForLFunctions.RHTower.MollifierDetection
+import GaloisForLFunctions.RHTower.ReflectionCocycleClass
 
 /-!
 # Zero detection: at a zeta zero the mollified detection polynomial is large
@@ -126,8 +127,9 @@ from `−1` by exactly the mollified Euler–Maclaurin remainder:
 
 `detPolyC N y ρ + 1 = M_y(ρ)·(−N^(1−ρ)/(ρ−1) + ρ·emTail N ρ)`. -/
 theorem detPolyC_add_one_eq_of_zeta_eq_zero {N y : ℕ} (hN : 1 ≤ N) (hy : 1 ≤ y) {ρ : ℂ}
-    (hσ : 0 < ρ.re) (hρ1 : ρ ≠ 1) (hzero : riemannZeta ρ = 0) :
+    (hσ : 0 < ρ.re) (hzero : riemannZeta ρ = 0) :
     detPolyC N y ρ + 1 = mollifierC y ρ * (-(emPole N ρ) + ρ * emTail N ρ) := by
+  have hρ1 : ρ ≠ 1 := riemannZeta_zero_ne_one hzero
   have hrep := zeta_eq_emCarrier_sub hN hσ hρ1
   rw [hzero] at hrep
   have hD : dirichletPoly N ρ = -(emPole N ρ) + ρ * emTail N ρ := by
@@ -138,10 +140,11 @@ theorem detPolyC_add_one_eq_of_zeta_eq_zero {N y : ℕ} (hN : 1 ≤ N) (hy : 1 �
 
 /-- The mollified remainder bound, entirely explicit. -/
 theorem norm_detPolyC_add_one_le {N y : ℕ} (hN : 1 ≤ N) (hy : 1 ≤ y) {ρ : ℂ}
-    (hσ : 0 < ρ.re) (hρ1 : ρ ≠ 1) (hzero : riemannZeta ρ = 0) :
+    (hσ : 0 < ρ.re) (hzero : riemannZeta ρ = 0) :
     ‖detPolyC N y ρ + 1‖ ≤
       ‖mollifierC y ρ‖ * (‖emPole N ρ‖ + ‖ρ‖ * (N : ℝ) ^ (-ρ.re) / ρ.re) := by
-  rw [detPolyC_add_one_eq_of_zeta_eq_zero hN hy hσ hρ1 hzero, norm_mul]
+  have hρ1 : ρ ≠ 1 := riemannZeta_zero_ne_one hzero
+  rw [detPolyC_add_one_eq_of_zeta_eq_zero hN hy hσ hzero, norm_mul]
   refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
   refine le_trans (norm_add_le _ _) ?_
   rw [norm_neg, norm_mul, mul_div_assoc]
@@ -153,10 +156,10 @@ most `1/2`, the detection polynomial has modulus at least `1/2` there.  This is 
 zero-density argument consumes: a zero of `ζ` becomes a large value of an explicit finite Dirichlet
 polynomial. -/
 theorem half_le_norm_detPolyC {N y : ℕ} (hN : 1 ≤ N) (hy : 1 ≤ y) {ρ : ℂ}
-    (hσ : 0 < ρ.re) (hρ1 : ρ ≠ 1) (hzero : riemannZeta ρ = 0)
+    (hσ : 0 < ρ.re) (hzero : riemannZeta ρ = 0)
     (hsmall : ‖mollifierC y ρ‖ * (‖emPole N ρ‖ + ‖ρ‖ * (N : ℝ) ^ (-ρ.re) / ρ.re) ≤ 1 / 2) :
     1 / 2 ≤ ‖detPolyC N y ρ‖ := by
-  have hb := le_trans (norm_detPolyC_add_one_le hN hy hσ hρ1 hzero) hsmall
+  have hb := le_trans (norm_detPolyC_add_one_le hN hy hσ hzero) hsmall
   have htri : (1 : ℝ) ≤ ‖detPolyC N y ρ + 1‖ + ‖detPolyC N y ρ‖ := by
     have h := norm_sub_le (detPolyC N y ρ + 1) (detPolyC N y ρ)
     simpa using h
@@ -192,11 +195,11 @@ then the finite Dirichlet polynomial `detPolyC N y` has modulus at least `1/2` a
 is elementary in `N`, `y`, `re ρ` and `‖ρ‖`; no analytic input beyond the Euler–Maclaurin carrier is
 used. -/
 theorem half_le_norm_detPolyC_of_explicit {N y : ℕ} (hN : 1 ≤ N) (hy : 1 ≤ y) {ρ : ℂ}
-    (hσ : 0 < ρ.re) (hρ1 : ρ ≠ 1) (hzero : riemannZeta ρ = 0)
+    (hσ : 0 < ρ.re) (hzero : riemannZeta ρ = 0)
     (hsmall : (∑ m ∈ Finset.Icc 1 y, (m : ℝ) ^ (-ρ.re))
         * ((N : ℝ) ^ (1 - ρ.re) / ‖ρ - 1‖ + ‖ρ‖ * (N : ℝ) ^ (-ρ.re) / ρ.re) ≤ 1 / 2) :
     1 / 2 ≤ ‖detPolyC N y ρ‖ := by
-  refine half_le_norm_detPolyC hN hy hσ hρ1 hzero (le_trans ?_ hsmall)
+  refine half_le_norm_detPolyC hN hy hσ hzero (le_trans ?_ hsmall)
   have hrem : 0 ≤ ‖emPole N ρ‖ + ‖ρ‖ * (N : ℝ) ^ (-ρ.re) / ρ.re := by
     have h1 : (0 : ℝ) ≤ ‖ρ‖ * (N : ℝ) ^ (-ρ.re) / ρ.re := by positivity
     have h2 : (0 : ℝ) ≤ ‖emPole N ρ‖ := norm_nonneg _
@@ -210,10 +213,10 @@ theorem half_le_norm_detPolyC_of_explicit {N y : ℕ} (hN : 1 ≤ N) (hy : 1 ≤
 /-- The same bound in the form used downstream: a zero with `re ρ ≥ σ` and the remainder controlled
 gives a detecting value of size `1/2`. -/
 theorem exists_detection_value {N y : ℕ} (hN : 1 ≤ N) (hy : 1 ≤ y) {σ : ℝ} {ρ : ℂ}
-    (hσ0 : 0 < σ) (hρσ : σ ≤ ρ.re) (hρ1 : ρ ≠ 1) (hzero : riemannZeta ρ = 0)
+    (hσ0 : 0 < σ) (hρσ : σ ≤ ρ.re) (hzero : riemannZeta ρ = 0)
     (hsmall : ‖mollifierC y ρ‖ * (‖emPole N ρ‖ + ‖ρ‖ * (N : ℝ) ^ (-ρ.re) / ρ.re) ≤ 1 / 2) :
     ∃ V : ℝ, 0 < V ∧ V ≤ ‖detPolyC N y ρ‖ :=
-  ⟨1 / 2, by norm_num, half_le_norm_detPolyC hN hy (lt_of_lt_of_le hσ0 hρσ) hρ1 hzero hsmall⟩
+  ⟨1 / 2, by norm_num, half_le_norm_detPolyC hN hy (lt_of_lt_of_le hσ0 hρσ) hzero hsmall⟩
 
 
 /-! ### The parameter range: the criterion is satisfiable for every `σ > 1/2`
@@ -295,14 +298,14 @@ monotone transfer with the explicit criterion: under the two `σ`-level bounds, 
 `re ρ ≥ σ` and `T ≤ ‖ρ − 1‖`, `‖ρ‖ ≤ 2T` gives a detecting value. -/
 theorem half_le_norm_detPolyC_of_box {N y : ℕ} {σ T S : ℝ} {ρ : ℂ}
     (hN : 1 ≤ N) (hy : 1 ≤ y)
-    (hσ0 : 0 < σ) (hσ1 : σ ≤ 1) (hρσ : σ ≤ ρ.re) (hρ1 : ρ ≠ 1)
+    (hσ0 : 0 < σ) (hσ1 : σ ≤ 1) (hρσ : σ ≤ ρ.re)
     (hT0 : 0 < T) (hγ : T ≤ ‖ρ - 1‖) (hnorm : ‖ρ‖ ≤ 2 * T)
     (hS : (∑ m ∈ Finset.Icc 1 y, (m : ℝ) ^ (-σ)) ≤ S) (hS1 : 1 ≤ S)
     (hA : S * (N : ℝ) ^ (1 - σ) ≤ T / 4)
     (hB : S * (2 * T) * (N : ℝ) ^ (-σ) / σ ≤ 1 / 4)
     (hzero : riemannZeta ρ = 0) :
     1 / 2 ≤ ‖detPolyC N y ρ‖ :=
-  half_le_norm_detPolyC_of_explicit hN hy (lt_of_lt_of_le hσ0 hρσ) hρ1 hzero
+  half_le_norm_detPolyC_of_explicit hN hy (lt_of_lt_of_le hσ0 hρσ) hzero
     (detection_remainder_le_half hN hy hσ0 hσ1 hρσ hT0 hγ hnorm hS hS1 hA hB)
 
 

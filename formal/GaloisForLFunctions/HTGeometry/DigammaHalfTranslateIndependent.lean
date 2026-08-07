@@ -1,5 +1,4 @@
-import GaloisForLFunctions.HTGeometry.DifferenceTwoOrbitBrick
-import Mathlib.Analysis.SpecialFunctions.Gamma.Digamma
+import GaloisForLFunctions.HTGeometry.DigammaTranslatesIndependent
 import Mathlib.FieldTheory.RatFunc.Basic
 
 /-!
@@ -26,14 +25,6 @@ namespace GaloisForLFunctions.HTGeometry
 
 open Polynomial
 
-/-- The set where a polynomial's translate is a root is finite. -/
-theorem finite_setOf_translate_isRoot {Q : Polynomial ℂ} (hQ : Q ≠ 0) (a : ℂ) :
-    {z : ℂ | Q.eval (z + a) = 0}.Finite := by
-  have hroots : {x : ℂ | Q.IsRoot x}.Finite := Polynomial.finite_setOf_isRoot hQ
-  have hinj : Function.Injective (fun z : ℂ => z + a) := fun x y hxy => by
-    simpa using hxy
-  exact Set.Finite.preimage hinj.injOn hroots
-
 /-- **Half-translate digamma independence, cofinite form.** If a `ℂ`-combination of `ψ(z)` and
 `ψ(z+1/2)` agrees with a rational function in lowest terms on a right half-plane off a finite
 exceptional set and off the denominator's zeros, both coefficients vanish. -/
@@ -43,108 +34,51 @@ theorem digamma_half_translate_independent_of_cofinite {E O : ℂ} {P Q : Polyno
       E * Complex.digamma z + O * Complex.digamma (z + 1 / 2) = P.eval z / Q.eval z) :
     E = 0 ∧ O = 0 := by
   classical
-  set A : Polynomial ℂ := C E * (X + C (1 / 2 : ℂ)) + C O * X with hA_def
-  have hAeval : ∀ z : ℂ, A.eval z = E * (z + 1 / 2) + O * z := by
-    intro z
-    simp [hA_def]
-  have hTshift : ((fun z : ℂ => z + 1) ⁻¹' T).Finite := by
-    have hinj : Function.Injective (fun z : ℂ => z + 1) := fun x y hxy => by simpa using hxy
-    exact Set.Finite.preimage hinj.injOn hT
-  set S : Set ℂ :=
-    {z : ℂ | 0 < z.re} \
-      ({z : ℂ | Q.eval (z + 0) = 0} ∪ {z : ℂ | Q.eval (z + 1) = 0} ∪
-        (T ∪ (fun z : ℂ => z + 1) ⁻¹' T)) with hS_def
-  have hSinf : S.Infinite := by
-    refine Set.Infinite.sdiff ?_
-      (((finite_setOf_translate_isRoot hQ 0).union
-        (finite_setOf_translate_isRoot hQ 1)).union (hT.union hTshift))
-    apply Set.Infinite.mono (s := (fun t : ℝ => (t : ℂ)) '' (Set.Ioi 0))
-    · rintro z ⟨t, ht, rfl⟩
-      simpa using ht
-    · exact (Set.Ioi_infinite 0).image Complex.ofReal_injective.injOn
-  have hnegNat : ∀ z : ℂ, 0 < z.re → ∀ m : ℕ, z ≠ -(m : ℂ) := by
-    intro z hz m hzm
-    have := congrArg Complex.re hzm
-    simp only [Complex.neg_re, Complex.natCast_re] at this
-    have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
-    rw [this] at hz
-    linarith
-  have hcross : ∀ z ∈ S,
-      (z - 0) ^ (0 + 1) * (z - (-(1 / 2) : ℂ)) ^ (0 + 1) *
-          (P.eval (z + 1) * Q.eval z - P.eval z * Q.eval (z + 1))
-        = A.eval z * (Q.eval z * Q.eval (z + 1)) := by
-    intro z hz
-    obtain ⟨hzre, hzbad⟩ := hz
-    simp only [Set.mem_union, Set.mem_setOf_eq, Set.mem_preimage, not_or] at hzbad
-    obtain ⟨⟨hQ0, hQ1⟩, hT0, hT1⟩ := hzbad
-    have hQz : Q.eval z ≠ 0 := by simpa using hQ0
-    have hQz1 : Q.eval (z + 1) ≠ 0 := hQ1
-    have hzre' : (0 : ℝ) < z.re := hzre
-    have hz1re : 0 < (z + 1).re := by
-      rw [Complex.add_re, Complex.one_re]; linarith
-    have hzne : z ≠ 0 := by
-      intro h0
-      rw [h0] at hzre'
-      simp at hzre'
-    have hhalfne : z + 1 / 2 ≠ 0 := by
-      intro h0
-      have hre0 := congrArg Complex.re h0
-      simp only [Complex.add_re, Complex.zero_re] at hre0
-      have : z.re = -(1 / 2 : ℂ).re := by linarith
-      rw [this] at hzre'
-      norm_num at hzre'
-    have hstep1 : Complex.digamma (z + 1) = Complex.digamma z + z⁻¹ :=
-      Complex.digamma_apply_add_one z (hnegNat z hzre)
-    have hstep2 : Complex.digamma (z + 1 / 2 + 1) =
-        Complex.digamma (z + 1 / 2) + (z + 1 / 2)⁻¹ := by
-      refine Complex.digamma_apply_add_one (z + 1 / 2) (hnegNat (z + 1 / 2) ?_)
-      rw [Complex.add_re]
-      have h2 : ((1 : ℂ) / 2).re = 1 / 2 := by norm_num
-      rw [h2]
-      linarith
-    have hz := h z hzre hT0 hQz
-    have hz1 := h (z + 1) hz1re hT1 hQz1
-    rw [show z + 1 + 1 / 2 = z + 1 / 2 + 1 by ring, hstep1, hstep2] at hz1
-    rw [eq_div_iff hQz] at hz
-    rw [eq_div_iff hQz1] at hz1
-    have hzinv : z * z⁻¹ = 1 := mul_inv_cancel₀ hzne
-    have hhinv : (z + 1 / 2) * (z + 1 / 2)⁻¹ = 1 := mul_inv_cancel₀ hhalfne
-    rw [hAeval]
-    linear_combination (-(z * (z + 1 / 2) * Q.eval z)) * hz1 +
-      (z * (z + 1 / 2) * Q.eval (z + 1)) * hz +
-      (E * (z + 1 / 2) * Q.eval z * Q.eval (z + 1)) * hzinv +
-      (O * z * Q.eval z * Q.eval (z + 1)) * hhinv
-  have hAzero : A = 0 := by
-    refine difference_two_orbit_pole_free_of_eval (c₀ := 0) (c₁ := -(1 / 2))
-      (n := 0) (k := 0) hQ hco ?_ ?_ hSinf hcross
-    · intro m hm
-      have hre := congrArg Complex.re hm
-      simp only [Complex.sub_re, Complex.zero_re, Complex.neg_re, Complex.intCast_re] at hre
-      have h2 : ((1 : ℂ) / 2).re = 1 / 2 := by norm_num
-      rw [h2] at hre
-      have hint : (2 * m : ℤ) = 1 := by
-        have : (2 : ℝ) * (m : ℝ) = 1 := by linarith
-        exact_mod_cast this
-      omega
-    · refine le_trans (Polynomial.natDegree_add_le _ _) ?_
-      refine max_le ?_ ?_
-      · refine le_trans (Polynomial.natDegree_C_mul_le _ _) ?_
-        refine le_trans (Polynomial.natDegree_add_le _ _) ?_
-        simp
-      · refine le_trans (Polynomial.natDegree_C_mul_le _ _) ?_
-        simp
-  have hE : E = 0 := by
-    have h0 := congrArg (Polynomial.eval (0 : ℂ)) hAzero
-    rw [hAeval] at h0
-    simp only [Polynomial.eval_zero] at h0
-    have : E * (1 / 2 : ℂ) = 0 := by linear_combination h0
-    simpa using this
-  refine ⟨hE, ?_⟩
-  have h1 := congrArg (Polynomial.eval (1 : ℂ)) hAzero
-  rw [hAeval] at h1
-  simp only [Polynomial.eval_zero] at h1
-  rw [hE] at h1
-  linear_combination h1
+  have hhalf : ∀ m : ℤ, ((1 : ℂ) / 2) ≠ (m : ℂ) := by
+    intro m hc
+    have hre := congrArg Complex.re hc
+    have h2 : ((1 : ℂ) / 2).re = 1 / 2 := by norm_num
+    rw [h2, Complex.intCast_re] at hre
+    have hint : (2 * m : ℤ) = 1 := by
+      have : (2 : ℝ) * (m : ℝ) = 1 := by linarith
+      exact_mod_cast this
+    omega
+  set a : Fin 2 → ℂ := ![0, 1 / 2] with ha
+  set Ev : Fin 2 → ℂ := ![E, O] with hEv
+  have ha0 : a 0 = 0 := by simp [ha]
+  have ha1 : a 1 = 1 / 2 := by simp [ha]
+  have hfin2 : ∀ i : Fin 2, i = 0 ∨ i = 1 := by
+    intro i
+    rcases i with ⟨v, hv⟩
+    interval_cases v
+    · exact Or.inl rfl
+    · exact Or.inr rfl
+  have hsep : ∀ i j : Fin 2, i ≠ j → ∀ m : ℤ, a i - a j ≠ (m : ℂ) := by
+    intro i j hij m hc
+    rcases hfin2 i with hi | hi <;> rcases hfin2 j with hj | hj <;> subst hi <;> subst hj
+    · exact hij rfl
+    · rw [ha0, ha1] at hc
+      exact hhalf (-m) (by push_cast; linear_combination -hc)
+    · rw [ha0, ha1] at hc
+      exact hhalf m (by linear_combination hc)
+    · exact hij rfl
+  have hmain : ∀ z : ℂ, (∀ i, 0 < (z + a i).re) → z ∉ T → Q.eval z ≠ 0 →
+      ∑ i, Ev i * Complex.digamma (z + a i) = P.eval z / Q.eval z := by
+    intro z hz hzT hQz
+    have hz0 : 0 < z.re := by
+      have := hz 0
+      rwa [ha0, add_zero] at this
+    rw [Fin.sum_univ_two, ha0, ha1, add_zero]
+    have hE0 : Ev 0 = E := by simp [hEv]
+    have hE1 : Ev 1 = O := by simp [hEv]
+    rw [hE0, hE1]
+    exact h z hz0 hzT hQz
+  have hkey := digamma_translates_independent hsep hQ hco hT hmain
+  refine ⟨?_, ?_⟩
+  · have := hkey 0
+    simpa [hEv] using this
+  · have := hkey 1
+    simpa [hEv] using this
 
 /-- **Half-translate digamma independence.** -/
 theorem digamma_half_translate_independent {E O : ℂ} {P Q : Polynomial ℂ}

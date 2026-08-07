@@ -31,7 +31,6 @@ theorem deningerExtendFun_apply (ρ : ↥(deningerSpace Ω) → ℝ)
     (x : ↥(deningerSpace Ω)) : deningerExtendFun ρ (x.1 : Fin n → ℂ) = ρ x := by
   have hx : (x.1 : Fin n → ℂ) ∈ (Ω : Set (Fin n → ℂ)) := x.2
   simp only [deningerExtendFun, dif_pos hx]
-  exact congrArg ρ (Subtype.ext rfl)
 
 theorem deningerExtendFun_add (ρ σ : ↥(deningerSpace Ω) → ℝ) (z : Fin n → ℂ) :
     deningerExtendFun (fun x => ρ x + σ x) z
@@ -164,5 +163,318 @@ noncomputable def deningerFormFineAction (Ω : Opens (Fin n → ℂ)) (q : ℕ) 
     rw [hρ y.1 y.2, Complex.ofReal_zero, zero_mul]
 
 end FineAction
+
+
+section Partitions
+
+variable {Ω : Opens (Fin n → ℂ)}
+
+noncomputable instance : SigmaCompactSpace ↥(deningerSpace Ω) :=
+  sigmaCompactSpace_of_locallyCompact_secondCountable
+
+/-- Every open set of the domain contains a relatively compact open neighbourhood of each of its
+points. -/
+theorem deningerExists_relCompact {V : Opens ↥(deningerSpace Ω)} {x : ↥(deningerSpace Ω)}
+    (hx : x ∈ V) : ∃ W : Opens ↥(deningerSpace Ω),
+      x ∈ W ∧ W ≤ V ∧ IsCompact (closure (W : Set ↥(deningerSpace Ω))) := by
+  obtain ⟨L, hLc, hxL, hLV⟩ :=
+    exists_compact_between (isCompact_singleton (x := x)) V.2 (Set.singleton_subset_iff.2 hx)
+  refine ⟨⟨interior L, isOpen_interior⟩, hxL rfl, fun z hz => hLV (interior_subset hz), ?_⟩
+  refine hLc.of_isClosed_subset isClosed_closure ?_
+  exact le_trans (closure_mono interior_subset) (le_of_eq hLc.isClosed.closure_eq)
+
+/-- The extension by zero of a section of the domain, in the form used by the manifold library. -/
+theorem deningerExtendFun_eq_extend (ρ : ↥(deningerSpace Ω) → ℝ) :
+    deningerExtendFun ρ = Function.extend Subtype.val ρ 0 := by
+  funext z
+  by_cases h : z ∈ (Ω : Set (Fin n → ℂ))
+  · have h1 : deningerExtendFun ρ z = ρ ⟨z, h⟩ := dif_pos h
+    have h2 : Function.extend Subtype.val ρ 0 z = ρ ⟨z, h⟩ :=
+      Subtype.val_injective.extend_apply ρ 0 ⟨z, h⟩
+    rw [h1, h2]
+  · have h1 : deningerExtendFun ρ z = 0 := dif_neg h
+    have h2 : Function.extend Subtype.val ρ 0 z = 0 := by
+      refine Function.extend_apply' _ _ _ ?_
+      rintro ⟨y, rfl⟩
+      exact h y.2
+    rw [h1, h2]
+
+/-- **The smooth functions on the domain admit partitions of unity.** -/
+theorem deningerHasPartitions_smooth (Ω : Opens (Fin n → ℂ)) :
+    DeningerHasPartitions (DeningerSmoothMult Ω) := by
+  classical
+  intro V hV
+  choose W hxW hWV hWc using fun x : ↥(deningerSpace Ω) => deningerExists_relCompact (hV x)
+  obtain ⟨f, hfsub⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (I := modelWithCornersSelf ℝ (Fin n → ℂ)) (M := ↥(deningerSpace Ω))
+    isClosed_univ (fun x => (W x : Set ↥(deningerSpace Ω))) (fun x => (W x).2)
+    (fun y _ => Set.mem_iUnion.2 ⟨y, hxW y⟩)
+  have hmem : ∀ i, (⟨f i, (f i).contMDiff.continuous⟩ : C(deningerSpace Ω, ℝ)) ∈ DeningerSmoothMult Ω := by
+    intro i x
+    have hcs : HasCompactSupport (f i) :=
+      hWc i |>.of_isClosed_subset isClosed_closure (le_trans (hfsub i) subset_closure)
+    have hsm : ContMDiff (modelWithCornersSelf ℝ (Fin n → ℂ)) (modelWithCornersSelf ℝ ℝ)
+        ((⊤ : ℕ∞) : WithTop ℕ∞) (Function.extend Subtype.val (f i) 0) :=
+      ContMDiff.extend_zero hcs (f i).contMDiff
+    refine ⟨Function.extend Subtype.val (f i) 0, contMDiff_iff_contDiff.1 hsm, ?_⟩
+    filter_upwards with z
+    rw [deningerExtendFun_eq_extend]
+    rfl
+  refine ⟨fun i => ⟨⟨f i, (f i).contMDiff.continuous⟩, hmem i⟩, ?_, ?_, ?_⟩
+  · intro i
+    exact le_trans (hfsub i) (hWV i)
+  · exact f.locallyFinite.closure
+  · intro x
+    exact f.sum_eq_one (Set.mem_univ x)
+
+end Partitions
+
+
+section GlobalPlane
+
+/-- When the domain is the whole space, every ambient point lies in the ambient open set of `⊤`. -/
+theorem deningerAmb_top_mem (z : Fin n → ℂ) :
+    z ∈ deningerAmb (⊤ : Opens (deningerSpace (⊤ : Opens (Fin n → ℂ)))) :=
+  ⟨⟨z, trivial⟩, trivial, rfl⟩
+
+variable {q : ℕ}
+  {h : ↥(⊤ : Opens (deningerSpace (⊤ : Opens (Fin n → ℂ)))) → DeningerFormVal n}
+
+/-- On the whole space a section is a globally smooth form. -/
+theorem deningerFlip_smoothSetForm (hh : DeningerFormPred q h) :
+    SmoothSetForm (deningerFlip (deningerExtend h)) := by
+  intro S
+  rw [contDiff_iff_contDiffAt]
+  intro z
+  obtain ⟨g, hg, hgd, hgeq⟩ := hh.2 (deningerPt (deningerAmb_top_mem z))
+  refine ContDiffAt.congr_of_eventuallyEq (hg S).contDiffAt ?_
+  filter_upwards [hgeq] with y hy
+  exact hy S
+
+/-- On the whole space a section of degree `q` gives a form of degree `q`. -/
+theorem deningerFlip_setFormDeg (hh : DeningerFormPred q h) :
+    SetFormDeg q (deningerFlip (deningerExtend h)) := by
+  intro S hS z
+  show deningerExtend h z S = 0
+  rw [deningerExtend_of_mem h (deningerAmb_top_mem z)]
+  exact hh.1 _ S hS
+
+/-- **The Dolbeault differential is surjective on global sections over `ℂ^n`.** -/
+theorem deningerFormDbar_globalSurjective (q : ℕ) :
+    Function.Surjective (ConcreteCategory.hom
+      ((deningerFormDbar (⊤ : Opens (Fin n → ℂ)) q).1.app
+        (op (⊤ : Opens (deningerSpace (⊤ : Opens (Fin n → ℂ))))))) := by
+  intro hsec
+  have hC : SmoothSetForm (deningerFlip (deningerExtend hsec.1)) :=
+    deningerFlip_smoothSetForm hsec.2.1
+  have hd : SetFormDeg (q + 1) (deningerFlip (deningerExtend hsec.1)) :=
+    deningerFlip_setFormDeg hsec.2.1
+  have hcl : ∀ (S : Finset (Fin n)) (z : Fin n → ℂ),
+      setDbar (deningerFlip (deningerExtend hsec.1)) S z = 0 := by
+    intro S z
+    have := hsec.2.2 (deningerPt (deningerAmb_top_mem z)) S
+    rwa [deningerPt_val (deningerAmb_top_mem z)] at this
+  obtain ⟨u, hCu, hud, hu⟩ := setDbar_exact_global hC hd hcl
+  refine ⟨⟨fun y => fun S => u S (y.1.1 : Fin n → ℂ),
+    ⟨fun y S hS => hud S hS _, fun y => ⟨u, hCu, hud, ?_⟩⟩⟩, ?_⟩
+  · filter_upwards [(deningerAmb
+      (⊤ : Opens (deningerSpace (⊤ : Opens (Fin n → ℂ))))).2.mem_nhds
+        (deningerAmb_mem_of_mem y)] with z hz
+    intro S
+    rw [deningerExtend_of_mem _ hz]
+    rfl
+  · refine Subtype.ext (funext fun y => funext fun S => ?_)
+    have hmodel : ∀ᶠ z in nhds ((y.1.1 : Fin n → ℂ)), ∀ S,
+        deningerExtend (fun w : ↥(⊤ : Opens (deningerSpace (⊤ : Opens (Fin n → ℂ)))) =>
+          fun S => u S (w.1.1 : Fin n → ℂ)) z S = u S z := by
+      filter_upwards [(deningerAmb
+        (⊤ : Opens (deningerSpace (⊤ : Opens (Fin n → ℂ))))).2.mem_nhds
+          (deningerAmb_mem_of_mem y)] with z hz
+      intro S
+      rw [deningerExtend_of_mem _ hz]
+      rfl
+    show setDbar (deningerFlip (deningerExtend
+      (fun w : ↥(⊤ : Opens (deningerSpace (⊤ : Opens (Fin n → ℂ)))) =>
+        fun S => u S (w.1.1 : Fin n → ℂ)))) S (y.1.1 : Fin n → ℂ) = _
+    rw [deningerSetDbar_model hmodel S, hu S (y.1.1 : Fin n → ℂ)]
+    show deningerExtend hsec.1 (y.1.1 : Fin n → ℂ) S = hsec.1 y S
+    rw [deningerExtend_of_mem hsec.1 (deningerAmb_mem_of_mem y)]
+    exact congrArg (fun w => hsec.1 w S) (deningerPt_eq y)
+
+end GlobalPlane
+
+
+section CartanB
+
+open CategoryTheory.Abelian
+
+universe w
+
+variable [CategoryTheory.HasExt.{w}
+  (TopCat.Sheaf AddCommGrpCat.{0} (deningerSpace (⊤ : Opens (Fin n → ℂ))))]
+
+/-- **Cartan's theorem B for `ℂ^n`.**  The sheaf of holomorphic functions — the closed smooth forms
+of degree zero — has no higher cohomology.  The Dolbeault resolution is short exact, its terms are
+fine hence acyclic, and its sections surject because the `∂̄` equation is globally solvable. -/
+theorem deningerHolomorphic_ext_eq_zero (q : ℕ)
+    (x : deningerSheafCohomology.{w}
+      (⊤ : Opens (deningerSpace (⊤ : Opens (Fin n → ℂ))))
+      (deningerClosedFormSheaf (⊤ : Opens (Fin n → ℂ)) 0) (q + 1)) : x = 0 :=
+  deningerResolution_ext_eq_zero
+    (K := fun i => deningerClosedFormSheaf (⊤ : Opens (Fin n → ℂ)) i)
+    (A := fun i => deningerFormSheaf (⊤ : Opens (Fin n → ℂ)) i)
+    (ι := fun i => deningerFormIncl (⊤ : Opens (Fin n → ℂ)) i)
+    (π := fun i => deningerFormDbar (⊤ : Opens (Fin n → ℂ)) i)
+    (hzero := fun i => deningerFormIncl_comp_dbar (⊤ : Opens (Fin n → ℂ)) i)
+    (fun i => deningerFormStep_shortExact (⊤ : Opens (Fin n → ℂ)) i) ⊤
+    (fun i => deningerFine_acyclicOn (deningerHasPartitions_smooth (⊤ : Opens (Fin n → ℂ)))
+      (deningerFormFineAction (⊤ : Opens (Fin n → ℂ)) i))
+    (fun i => deningerFormDbar_globalSurjective i) q 0 x
+
+/-- **The higher cohomology of the structure sheaf of `ℂ^n` is a subsingleton.** -/
+theorem deningerHolomorphic_subsingleton_cohomology (q : ℕ) :
+    Subsingleton (deningerSheafCohomology.{w}
+      (⊤ : Opens (deningerSpace (⊤ : Opens (Fin n → ℂ))))
+      (deningerClosedFormSheaf (⊤ : Opens (Fin n → ℂ)) 0) (q + 1)) :=
+  ⟨fun a b => by
+    rw [deningerHolomorphic_ext_eq_zero q a, deningerHolomorphic_ext_eq_zero q b]⟩
+
+end CartanB
+
+
+section Punctured
+
+/-- The punctured space as an open set of `ℂ^n`. -/
+def deningerPunctured (n : ℕ) : Opens (Fin n → ℂ) :=
+  ⟨puncturedSpace n, isOpen_puncturedSpace⟩
+
+theorem deningerAmb_top_punctured {z : Fin n → ℂ} (hz : z ∈ puncturedSpace n) :
+    z ∈ deningerAmb (⊤ : Opens (deningerSpace (deningerPunctured n))) :=
+  ⟨⟨z, hz⟩, trivial, rfl⟩
+
+theorem deningerAmb_top_punctured_subset {z : Fin n → ℂ}
+    (hz : z ∈ deningerAmb (⊤ : Opens (deningerSpace (deningerPunctured n)))) :
+    z ∈ puncturedSpace n := by
+  obtain ⟨y, -, rfl⟩ := hz
+  exact y.2
+
+variable {q : ℕ}
+  {h : ↥(⊤ : Opens (deningerSpace (deningerPunctured n))) → DeningerFormVal n}
+
+theorem deningerFlip_smoothOn_punctured (hh : DeningerFormPred q h) :
+    SmoothSetFormOn (deningerFlip (deningerExtend h)) (puncturedSpace n) := by
+  intro S z hz
+  obtain ⟨g, hg, hgd, hgeq⟩ := hh.2 (deningerPt (deningerAmb_top_punctured hz))
+  refine ContDiffAt.congr_of_eventuallyEq (hg S).contDiffAt ?_
+  filter_upwards [hgeq] with y hy
+  exact hy S
+
+theorem deningerFlip_setFormDeg_punctured (hh : DeningerFormPred q h) :
+    SetFormDeg q (deningerFlip (deningerExtend h)) := by
+  intro S hS z
+  show deningerExtend h z S = 0
+  by_cases hz : z ∈ deningerAmb (⊤ : Opens (deningerSpace (deningerPunctured n)))
+  · rw [deningerExtend_of_mem h hz]
+    exact hh.1 _ S hS
+  · rw [deningerExtend, dif_neg hz]
+    rfl
+
+/-- **The Dolbeault differential is surjective on global sections over `(ℂ^×)^n`.** -/
+theorem deningerFormDbar_globalSurjective_punctured (q : ℕ) :
+    Function.Surjective (ConcreteCategory.hom
+      ((deningerFormDbar (deningerPunctured n) q).1.app
+        (op (⊤ : Opens (deningerSpace (deningerPunctured n)))))) := by
+  intro hsec
+  have hC : SmoothSetFormOn (deningerFlip (deningerExtend hsec.1)) (puncturedSpace n) :=
+    deningerFlip_smoothOn_punctured hsec.2.1
+  have hd : SetFormDeg (q + 1) (deningerFlip (deningerExtend hsec.1)) :=
+    deningerFlip_setFormDeg_punctured hsec.2.1
+  have hcl : ∀ (S : Finset (Fin n)), ∀ z ∈ puncturedSpace n,
+      setDbar (deningerFlip (deningerExtend hsec.1)) S z = 0 := by
+    intro S z hz
+    have := hsec.2.2 (deningerPt (deningerAmb_top_punctured hz)) S
+    rwa [deningerPt_val (deningerAmb_top_punctured hz)] at this
+  obtain ⟨u, hCu, hud, hu⟩ := setDbar_exact_punctured hC hd hcl
+  set sect : ↥(⊤ : Opens (deningerSpace (deningerPunctured n))) → DeningerFormVal n :=
+    fun y => fun S => u S (y.1.1 : Fin n → ℂ) with hsect
+  -- a global smooth model of the primitive near each point
+  have hmodel : ∀ y : ↥(⊤ : Opens (deningerSpace (deningerPunctured n))),
+      ∃ G : SetForm n, SmoothSetForm G ∧ SetFormDeg q G ∧
+        ∃ V : Set (Fin n → ℂ), IsOpen V ∧ (y.1.1 : Fin n → ℂ) ∈ V ∧
+          ∀ S, ∀ z ∈ V, G S z = u S z := by
+    intro y
+    have hy : (y.1.1 : Fin n → ℂ) ∈ puncturedSpace n := y.1.2
+    obtain ⟨G, V, hVopen, hKV, hCG, hGeq, hGzero⟩ :=
+      exists_contDiff_family_eqOn (h := u) (K := {(y.1.1 : Fin n → ℂ)})
+        (W := puncturedSpace n) isCompact_singleton isOpen_puncturedSpace
+        (Set.singleton_subset_iff.2 hy) hCu
+    exact ⟨G, hCG, fun S hS z => hGzero S z (hud S hS z), V, hVopen, hKV rfl, hGeq⟩
+  refine ⟨⟨sect, ⟨fun y S hS => hud S hS _, fun y => ?_⟩⟩, ?_⟩
+  · obtain ⟨G, hCG, hGd, V, hVopen, hyV, hGeq⟩ := hmodel y
+    refine ⟨G, hCG, hGd, ?_⟩
+    filter_upwards [(hVopen.inter (deningerAmb
+      (⊤ : Opens (deningerSpace (deningerPunctured n)))).2).mem_nhds
+        ⟨hyV, deningerAmb_mem_of_mem y⟩] with z hz
+    intro S
+    rw [deningerExtend_of_mem _ hz.2, hGeq S z hz.1]
+    rfl
+  · refine Subtype.ext (funext fun y => funext fun S => ?_)
+    obtain ⟨G, hCG, hGd, V, hVopen, hyV, hGeq⟩ := hmodel y
+    have hmod : ∀ᶠ z in nhds ((y.1.1 : Fin n → ℂ)), ∀ S,
+        deningerExtend sect z S = G S z := by
+      filter_upwards [(hVopen.inter (deningerAmb
+        (⊤ : Opens (deningerSpace (deningerPunctured n)))).2).mem_nhds
+          ⟨hyV, deningerAmb_mem_of_mem y⟩] with z hz
+      intro T
+      rw [deningerExtend_of_mem _ hz.2, hGeq T z hz.1]
+      rfl
+    show setDbar (deningerFlip (deningerExtend sect)) S (y.1.1 : Fin n → ℂ) = _
+    rw [deningerSetDbar_model hmod S]
+    have hGu : setDbar G S (y.1.1 : Fin n → ℂ) = setDbar u S (y.1.1 : Fin n → ℂ) :=
+      setDbar_congr_on_isOpen hVopen (fun T z hz => hGeq T z hz) hyV S
+    rw [hGu, hu S (y.1.1 : Fin n → ℂ) y.1.2]
+    show deningerExtend hsec.1 (y.1.1 : Fin n → ℂ) S = hsec.1 y S
+    rw [deningerExtend_of_mem hsec.1 (deningerAmb_mem_of_mem y)]
+    exact congrArg (fun w => hsec.1 w S) (deningerPt_eq y)
+
+end Punctured
+
+section CartanBPunctured
+
+open CategoryTheory.Abelian
+
+universe w
+
+/-- **Cartan's theorem B for `(ℂ^×)^n`.**  The sheaf of holomorphic functions on the punctured
+space has no higher cohomology. -/
+theorem deningerHolomorphic_ext_eq_zero_punctured
+    [CategoryTheory.HasExt.{w}
+      (TopCat.Sheaf AddCommGrpCat.{0} (deningerSpace (deningerPunctured n)))] (q : ℕ)
+    (x : deningerSheafCohomology.{w}
+      (⊤ : Opens (deningerSpace (deningerPunctured n)))
+      (deningerClosedFormSheaf (deningerPunctured n) 0) (q + 1)) : x = 0 :=
+  deningerResolution_ext_eq_zero
+    (K := fun i => deningerClosedFormSheaf (deningerPunctured n) i)
+    (A := fun i => deningerFormSheaf (deningerPunctured n) i)
+    (ι := fun i => deningerFormIncl (deningerPunctured n) i)
+    (π := fun i => deningerFormDbar (deningerPunctured n) i)
+    (hzero := fun i => deningerFormIncl_comp_dbar (deningerPunctured n) i)
+    (fun i => deningerFormStep_shortExact (deningerPunctured n) i) ⊤
+    (fun i => deningerFine_acyclicOn (deningerHasPartitions_smooth (deningerPunctured n))
+      (deningerFormFineAction (deningerPunctured n) i))
+    (fun i => deningerFormDbar_globalSurjective_punctured i) q 0 x
+
+/-- **The higher cohomology of the structure sheaf of `(ℂ^×)^n` is a subsingleton.** -/
+theorem deningerHolomorphic_subsingleton_cohomology_punctured
+    [CategoryTheory.HasExt.{w}
+      (TopCat.Sheaf AddCommGrpCat.{0} (deningerSpace (deningerPunctured n)))] (q : ℕ) :
+    Subsingleton (deningerSheafCohomology.{w}
+      (⊤ : Opens (deningerSpace (deningerPunctured n)))
+      (deningerClosedFormSheaf (deningerPunctured n) 0) (q + 1)) :=
+  ⟨fun a b => by
+    rw [deningerHolomorphic_ext_eq_zero_punctured q a,
+      deningerHolomorphic_ext_eq_zero_punctured q b]⟩
+
+end CartanBPunctured
 
 end RHTower

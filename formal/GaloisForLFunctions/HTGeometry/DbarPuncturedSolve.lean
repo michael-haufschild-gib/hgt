@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.PolyannulusRunge
 import GaloisForLFunctions.HTGeometry.DbarGlobalSolve
+import GaloisForLFunctions.HTGeometry.SmoothTruncation
 
 /-!
 # Solving `∂̄` on a product of punctured planes
@@ -167,7 +168,8 @@ theorem puncturedClosed_subset (n m : ℕ) :
 
 /-- **The corrected sequence of local solutions on the punctured space.** -/
 theorem exists_dbar_punctured_sequence {f : Fin n → (Fin n → ℂ) → ℂ}
-    (hCf : ∀ j, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (f j))
+    (hCf : ∀ (j : Fin n), ∀ z ∈ puncturedSpace n,
+      ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (f j) z)
     (hclosed : ∀ (j j' : Fin n), ∀ z ∈ puncturedSpace n,
       dzbarAt (f j) j' z = dzbarAt (f j') j z) :
     ∃ v : ℕ → (Fin n → ℂ) → ℂ,
@@ -196,8 +198,34 @@ theorem exists_dbar_punctured_sequence {f : Fin n → (Fin n → ℂ) → ℂ}
       rw [div_lt_iff₀ (by positivity)]
       nlinarith [Nat.cast_nonneg (α := ℝ) m]
     have h4 : ∀ _i : Fin n, (m : ℝ) + 2 < (m : ℝ) + 3 := fun _ => by linarith
-    exact dbar_polyannulus_solve h1 h2 h3 h4 hCf
-      (fun j j' z hz => hclosed j j' z (hsub m hz))
+    set K : Set (Fin n → ℂ) :=
+      closedPolyannulus (fun _ : Fin n => 1 / ((m : ℝ) + 3)) (fun _ : Fin n => (m : ℝ) + 3) with hK
+    have hKsub : K ⊆ puncturedSpace n := by
+      intro z hz i hcon
+      have h := (hz i).1
+      rw [hcon, norm_zero] at h
+      have : (0 : ℝ) < 1 / ((m : ℝ) + 3) := by positivity
+      linarith
+    have hannK : productDomain (fun _ : Fin n => annulus (1 / ((m : ℝ) + 3)) ((m : ℝ) + 3)) ⊆ K :=
+      fun z hz i => ⟨(hz i).1.le, (hz i).2.le⟩
+    obtain ⟨F, V, hVopen, hKV, hCF, hFeq, -⟩ :=
+      exists_contDiff_family_eqOn (h := f) (K := K) (W := puncturedSpace n)
+        (isCompact_closedPolyannulus _ _) isOpen_puncturedSpace hKsub hCf
+    have hFloc : ∀ (j j' : Fin n), ∀ z ∈ V, dzbarAt (F j) j' z = dzbarAt (f j) j' z := by
+      intro j j' z hz
+      refine dzbarAt_congr_of_eventuallyEq ?_
+      exact Filter.eventually_of_mem (hVopen.mem_nhds hz) fun y hy => hFeq j y hy
+    obtain ⟨w, hCw, hw⟩ := dbar_polyannulus_solve h1 h2 h3 h4 hCF (fun j j' z hz => by
+      rw [hFloc j j' z (hKV (hannK hz)), hFloc j' j z (hKV (hannK hz))]
+      exact hclosed j j' z (hsub m hz))
+    refine ⟨w, hCw, fun j z hz => ?_⟩
+    have hzK : z ∈ K := by
+      refine fun i => ⟨?_, ?_⟩
+      · refine le_trans ?_ (hz i).1.le
+        rw [div_le_div_iff₀ (by positivity) (by positivity)]
+        linarith
+      · exact le_trans (hz i).2.le (by linarith)
+    rw [hw j z hz, hFeq j z (hKV hzK)]
   choose u hCu hu using hstep
   have hdu : ∀ m : ℕ, Differentiable ℝ (fun z => u (m + 1) z - u m z) := fun m =>
     ((hCu (m + 1)).differentiable (by simp)).sub ((hCu m).differentiable (by simp))
@@ -359,7 +387,8 @@ theorem puncturedExhaustion_subset_closed (n m : ℕ) :
 locally uniformly, their differences are holomorphic by Weierstrass' theorem, and the limit solves
 the system on the whole punctured space. -/
 theorem dbar_punctured_solve {f : Fin n → (Fin n → ℂ) → ℂ}
-    (hCf : ∀ j, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (f j))
+    (hCf : ∀ (j : Fin n), ∀ z ∈ puncturedSpace n,
+      ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (f j) z)
     (hclosed : ∀ (j j' : Fin n), ∀ z ∈ puncturedSpace n,
       dzbarAt (f j) j' z = dzbarAt (f j') j z) :
     ∃ u : (Fin n → ℂ) → ℂ,

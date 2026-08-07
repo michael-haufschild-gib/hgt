@@ -109,8 +109,33 @@ Subsumes (machine-checked connectors exist):
     The corpus already had the SINGLE-orbit version `difference_single_pole_free` in
     `HolderDifferenceBricks` (engine of its Hoelder/hypertranscendence proof); two orbits is what the
     parity problem needs since poles of psi(s/2) and psi((s+1)/2) differ by a half-integer.
+    `difference_multi_orbit_pole_free` now covers ANY finite family of pairwise incommensurable
+    orbit centres (single- and two-orbit are d = 1, 2); same pinch, product coprimality, degree bound
+    `A.natDegree < sum (n i + 1)`.
+    RELATED CORPUS ASSET (different formulation, do not confuse): `HTGeometry/OrbitResidueVector.lean`
+    gives the combinatorial obstruction — a finitely supported coefficient datum is not a translation
+    coboundary when its orbit-residue vector is nonzero.  That is about finite DATA; the bricks are
+    about RATIONAL FUNCTIONS with unknown poles.  Deriving the bricks from it would need a
+    principal-part bridge (partial fractions for `RatFunc`), which the corpus does not have.
   * `GaloisForLFunctions/HTGeometry/DigammaHalfTranslateIndependent.lean` —
     `digamma_half_translate_independent`: psi(z) and psi(z+1/2) are linearly independent over C(z).
+  * `GaloisForLFunctions/HTGeometry/DigammaTranslatesIndependent.lean` —
+    `digamma_translates_independent`: ANY finite family of digamma translates `psi(z + a i)` with
+    pairwise incommensurable shifts (no two differing by an integer) is linearly independent over
+    the rational functions.  Half-translate case is d = 2, shifts 0 and 1/2.  Proof: shift by 1,
+    partial-fraction numerator `digammaResidueNumerator` of degree < d, then
+    `difference_multi_orbit_pole_free_of_eval` with centres `-a i`; residues extracted by
+    evaluating the numerator at `-a i`.
+    This is what a degree-d archimedean factor `prod_j Gamma(s/2 + kappa_j)` needs to run the
+    parity/rationality dichotomy, not just zeta's degree-1 factor.
+    `digamma_halfArgument_modes_independent` (same file) is the half-argument form for a product of
+    `Gammaℝ (s + kappa_j)` factors: the modes `psi((s + kappa_j)/2)` are independent over the
+    rational functions as soon as no two exponents differ by an EVEN integer.  Completed zeta is
+    d = 1; the parity-dichotomy pair is d = 2 with kappa = (0,1).
+    `digamma_half_translate_independent_of_cofinite` is now DERIVED from
+    `digamma_translates_independent` (d = 2, shifts 0 and 1/2); its bespoke proof was deleted.
+    Import edge reversed: brick -> DigammaTranslatesIndependent -> DigammaHalfTranslateIndependent,
+    with `finite_setOf_translate_isRoot` moved down into the brick file.
   Three strengths available: lowest terms; lowest terms off a finite exceptional set
   (`..._of_cofinite`); arbitrary quotient off a finite exceptional set (`..._of_quotient`, reduces
   via `RatFunc.num`/`RatFunc.denom`).  Use `..._of_quotient` in applications — no coprimality
@@ -144,6 +169,82 @@ Subsumes (machine-checked connectors exist):
   `xiTransverseShiftArchimedeanCorrection_even_of_ladderRegular` on the whole ladder and
   `xiPairwiseShiftReflectionCocycle_eq_explicit` — explicit rational reflection cocycle for every
   same-parity integral pair, valid at the reflected point in the LEFT half-plane.
+  DISCHARGE: `archLadderRegular_of_re_not_int` — both ladder conditions force an INTEGER real part,
+  so a non-integral real part discharges them with no positivity requirement.  Hence
+  `archLadderRegular_strip_add_nat` and `archLadderRegular_strip_reflect`: at any point of the open
+  critical strip (in particular at every Xi zero, via `xi_divisor_support_re_mem_open_unit`) all
+  side conditions vanish — see the `..._of_strip` forms.
+  Endpoint order `b <= a` also discharged via truncated Nat subtraction plus
+  `xiEvenShiftPrimeCorrection_zero` (no if-then-else in the conclusion): `..._eq_explicit_symm`.
+- `archFactor_ne_zero_iff : archFactor s <> 0 <-> s <> 1 AND (for all n : Nat, s <> -(2n))`.
+  Sharp, no positivity, no strip.  The corpus only had `archFactor_ne_zero_strip`
+  (`0 < re AND re < 1`) or `archFactor_ne_zero` with a supplied `Gammaℝ s <> 0`.
+  Corollaries: `archFactor_ne_zero_of_re_pos` (strip UPPER bound discharged; reaches `re > 1`,
+  where the corpus had no nonvanishing lemma) and `archFactor_ne_zero_of_ladderRegular`
+  (no nonvanishing side condition anywhere on the even ladder).
+- `logDeriv_Gammaℝ_off_poles` and `logDeriv_Gammaℝ_translate_off_poles` (ArchLadderRegular.lean):
+  `logDeriv Gammaℝ w = psi(w/2)/2 - log(pi)/2` needing only the pole condition, and the translated
+  form `logDeriv (fun z => Gammaℝ (z + kappa)) s = psi((s+kappa)/2)/2 - log(pi)/2`.
+  The corpus's `logDeriv_Gammaℝ_of_re_pos` (ReflectionCocycleArchimedean) assumes `0 < re w`.
+  The translated form is the digamma mode of a completed L-function factor `Gammaℝ(s + kappa)` —
+  the input shape of `digamma_halfArgument_modes_independent`.
+- `logDeriv_Gammaℝ_reflect_off_poles` (ArchLadderRegular.lean): the archimedean reflection cocycle
+  `logDeriv (z -> Gammaℝ z / Gammaℝ (1-z)) s = psi(s/2)/2 + psi((1-s)/2)/2 - log pi`, valid wherever
+  both Gamma factors are off their poles (so also `re > 1` and `re < 0`).  The corpus derives this
+  only LOCALLY, as an EventuallyEq near 3/4 buried inside `archReflCocycle_curvature_ne_zero`
+  (ReflectionCocycleArchimedean.lean), and only where `s` and `1-s` both have positive real part.
+  Helper `Gammaℝ_ne_zero_off_poles` extracted too.
+- `logDeriv_archFactor_add_reflect`: `logDeriv archFactor s + logDeriv archFactor (1-s) =
+  logDeriv (z -> Gammaℝ z / Gammaℝ (1-z)) s`.  The rational part `1/s + 1/(s-1)` of the completed
+  archimedean factor CANCELS EXACTLY against its reflection, so the polynomial factor `s(s-1)/2`
+  contributes nothing to the reflection defect — the whole defect is the pure Gamma weld.
+- CAPSTONE `logDeriv_Gammaℝ_translates_independent` (ArchLadderRegular.lean): no C-combination of
+  `logDeriv (z -> Gammaℝ (z + kappa_j))` is a rational function unless trivial, provided no two
+  exponents differ by an EVEN integer.  The constant `-log(pi)/2` in every factor is absorbed into
+  the rational side via `IsCoprime.add_mul_left_left` (coprimality survives adding a multiple of Q),
+  so it obstructs nothing.  This is the archimedean-side independence for an arbitrary completed
+  L-function Gamma factor.
+- pointwise even-shift defect identification (corpus has it only as an upper-end germ):
+  `xiEvenShiftPrimeDefect_eq_xiTransverseShiftPrimeDefect_of_ladderRegular` / `..._of_strip`.
+- `GaloisForLFunctions/RHTower/CompletedSplitRightHalfPlane.lean`:
+  `logDeriv_completed_split_of_re_pos` and
+  `seamFluxCochain_eq_infinitePrimeFlux_add_archimedean_of_re_pos` — hypotheses `0 < s.re`,
+  `s <> 1`, `riemannZeta s <> 0`.  The strip upper bound `re < 1` was used ONLY to get `s <> 1`.
+  Unifies the corpus's two regional statements (strip form in
+  `CompletedFluxPrimeArchDecomposition`, absolute-convergence form
+  `seamFluxCochain_eq_prime_add_archimedean_of_one_lt_re` in `XiRelativeResolventFlux`) into one.
+  On `1 <= s.re` the zeta side condition DISCHARGES via mathlib's
+  `riemannZeta_ne_zero_of_one_le_re` (already used in RHTower by
+  `xi_ne_zero_of_one_le_re` in `RHLadderTheory`, but not in the seam layer):
+  `logDeriv_completed_split_of_one_le_re`,
+  `seamFluxCochain_eq_infinitePrimeFlux_add_archimedean_of_one_le_re` are hypothesis-free apart
+  from `s <> 1`.  These reach the LINE `re = 1`, which neither corpus regional statement covers.
+- `logDeriv_riemannZeta_add_reflect_of_strip` (CompletedSplitRightHalfPlane.lean): the classical
+  reflection formula `zeta'/zeta(s) + zeta'/zeta(1-s) = log(pi) - psi(s/2)/2 - psi((1-s)/2)/2`
+  on the open strip away from zeros at s and 1-s.  The corpus had NO zeta log-derivative reflection
+  identity (checked).  Proof = corpus strip seam split at s and 1-s + `logDeriv_xi_reciprocity`
+  + `logDeriv_archFactor_add_reflect` + `logDeriv_Gammaℝ_reflect_off_poles`, one `linear_combination`.
+  Also `logDeriv_completed_split_off_poles` (positivity discharged to the pole condition).
+- `logDeriv_riemannZeta_add_reflect_criticalLine` (s = 1/2 + it) and
+  `re_logDeriv_riemannZeta_criticalLine`:
+  `2 * Re(zeta'/zeta(1/2+it)) = log(pi) - Re psi(1/4 + it/2)`, away from zeros; the second
+  nonvanishing hypothesis discharges by conjugation.  Uses `logDeriv_riemannZeta_conj` (proved in
+  RHTower from mathlib `riemannZeta_conj` + `deriv_conj_conj`; PNTPlus has its own vendored copy
+  `logDerivZeta_conj'` which RHTower does NOT import) and the corpus's
+  `ReflectedDigammaAnomaly.digamma_conj` (HTGeometry).
+- `isOpen_setOf_offPoles` (ArchLadderRegular.lean): `{z | forall m, z/2 <> -m}` is OPEN (poles march
+  off to infinity; finitely many are near any point).  mathlib has no such lemma.  This unblocked
+  `analyticAt_Gammaℝ_off_poles`, `analyticAt_archFactor_off_poles` (corpus only had
+  `archFactor_analyticOnNhd_re_pos`), and then the OFF-POLES seam decomposition
+  `seamFluxCochain_eq_infinitePrimeFlux_add_archimedean_off_poles` and reflection
+  `logDeriv_riemannZeta_add_reflect_off_poles` — valid on the whole plane except s = 0, 1, the
+  ladder -2n and its reflection 1+2n.  The strip form is now a COROLLARY.
+- `re_logDeriv_riemannZeta_criticalLine_le`: `2 Re(zeta'/zeta(1/2+it)) <= log(pi) - Re psi(1/4)`,
+  unconditional (away from the zero at that point).  Uses the corpus's
+  `re_logDeriv_Gammaℝ_real_le` (DigammaVerticalMinimum): Re logDeriv Gammaℝ is minimised on the
+  real axis.
+- discharged redundant `s <> 0` from `completedRiemannZeta_eq_Gammaℝ_mul` (XiRealAxisGrowth).
+  NOT done: same redundancy in `logDeriv_archFactor_closed` — 18 call sites, unlocks nothing.
 
 ## Scope boundary
 
@@ -153,3 +254,95 @@ centering, and symbol laws for any new weighted family of completed-Xi translate
 
 All four modules build; `#print axioms` on every named law = `propext, Classical.choice, Quot.sound`.
 Card: `docs/drafts/pipeline/3-formalized/shift-divisor-value-reflection.md`.
+
+## Zeta zero-locus reflection (plane-wide)
+
+`RHTower/ReflectionCocycleClass.lean` §7 had the strip forms
+`riemannZeta_one_sub_eq_gammaRatio_mul` and `riemannZeta_one_sub_eq_zero_iff`. The strip was used
+only to keep `Γ_ℝ(s)` and `Γ_ℝ(1−s)` nonzero, so both are now corollaries of
+`…_of_Gammaℝ_ne_zero` root forms whose hypotheses are exactly those two nonvanishings — which
+themselves force `s ≠ 0` and `s ≠ 1` because `Γ_ℝ` vanishes on the nonpositive even integers.
+Ladder-form corollaries `…_off_poles` match the archimedean layer's calling convention.
+
+New, absent from mathlib and the corpus:
+- `riemannZeta_ne_zero_of_re_lt_zero` — no zeros with `Re s < 0` beyond `−2, −4, −6, …`.
+- `riemannZeta_eq_zero_iff_of_re_lt_zero` — the zero locus left of the strip is exactly that ladder.
+mathlib has only `riemannZeta_neg_two_mul_nat_add_one` (the forward direction).
+
+Hypotheses discharged in `CompletedSplitRightHalfPlane.lean`:
+- `logDeriv_riemannZeta_add_reflect_off_poles` no longer takes `s ≠ 0`, `s ≠ 1` (index `0` of the
+  two ladder hypotheses gives them).
+- both mirror theorems no longer take nonvanishing at the mirror point.
+- `logDeriv_riemannZeta_add_reflect_of_one_lt_re`: reflection identity with **no** nonvanishing
+  hypothesis, valid for `Re s > 1` away from the odd integers.
+
+Audit note: the `GaloisForLFunctions.RHTower` umbrella is red for an unrelated reason — another
+agent's `RHTower.deningerExtendFun` is declared in both `DeningerResidueSequence` and
+`DeningerDolbeaultFine`. Audited instead by building every direct dependent of
+`ReflectionCocycleClass`; all clean.
+
+## Zeta zero-locus classification and the ζ/ξ bridge
+
+`ReflectionCocycleClass.lean` now closes the classification of ζ's zeros outside the strip.
+`riemannZeta_ne_zero_of_re_le_zero` covers `Re s ≤ 0` (the endpoint `s = 0` needs no hypothesis —
+`riemannZeta_zero : ζ(0) = -1/2`), giving `riemannZeta_zero_re_mem_Ioo`: every nontrivial zero of ζ
+lies in the OPEN critical strip. Also `riemannZeta_zero_trivial_or_mem_strip` (global dichotomy) and
+`riemannZeta_zero_ne_one`.
+
+This is the connector the corpus was missing: `0 < ρ.re` and `ρ.re < 1` appear as *hypotheses* on a
+ζ zero in BurnolCoPoisson*, CCMBVMuntzSummation, ZeroDetectionEM, TentDivisorRecovery and others.
+They are now derivable from `riemannZeta ρ = 0` + nontriviality.
+
+New module `RHTower/ZetaXiZeroCorrespondence.lean`:
+- `xi_eq_zero_iff_riemannZeta_eq_zero_and_nontrivial` — global, no strip hypothesis either side.
+  (`xi_eq_zero_iff` in RiemannTower.lean is the gated version: needs `0 < Re s`, `s ≠ 1`.)
+- `riemannZeta_eq_zero_iff_xi_or_trivial`.
+- `riemannHypothesis_iff_forall_nontrivial_zero` — mathlib's RH def carries a redundant `s ≠ 1`.
+- `riemannHypothesis_iff_xi_zero_re_eq_half` — RH = "every ξ zero has Re = 1/2"; the corpus's
+  `rh_iff_xi_ne_zero_right` half-plane restriction is removable.
+
+Already corpus-owned, do not rebuild: `xi_zero_re_mem_open_unit` (BornTemperatureFactorType),
+`xi_zero_re_lt_one`, `xi_ne_zero_of_one_le_re` (RHLadderTheory), `xi_zero_re_eq_half_of_RH`.
+
+## The `ρ ≠ 1` discharge across the prime-polar RH criterion family
+
+`riemannZeta_zero_ne_one` (ReflectionCocycleClass, no nontriviality needed — it follows from
+`riemannZeta_zero_re_lt_one`, i.e. contraposed Euler-product nonvanishing) makes the premise
+`ρ ≠ 1` redundant wherever it sits beside `riemannZeta ρ = 0`. Discharged at the root
+`ZetaLogDerivResidue.neg_logDeriv_zeta_zero_residue` and cascaded through:
+
+WindowRHCriterion, PrimePolarResidueCancellation, PrimePolarRHCriterion, PolarPrimeRegularity,
+TentDivisorRecovery, CCMBulkCharacterTentPoleDetectionUniversalityLaw, ZeroDetectionEM (5 theorems).
+
+Effect on the RH criteria: all six `RH_iff_*` / `RH_of_*` statements in this family previously read
+`∀ ρ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1/2`. They now read `∀ ρ, riemannZeta ρ = 0 → ρ.re ≤ 1/2`.
+Equivalent propositions, but the criterion no longer carries the clause.
+
+`ZetaLogDerivResidue.lean` now imports `ReflectionCocycleClass` (checked cycle-free with an import
+closure walk; RCC's closure is 105 modules and contains none of this family).
+
+Repo-wide check after the edit: zero remaining occurrences of the old form.
+
+## The criterion family now states RiemannHypothesis itself
+
+`riemannHypothesis_iff_forall_zero_re_le_half` (ReflectionCocycleClass):
+
+  RiemannHypothesis ↔ ∀ ρ, riemannZeta ρ = 0 → ρ.re ≤ 1/2
+
+Nothing is excluded on the right: trivial zeros have Re < 0 ≤ 1/2 outright, the pole is not a zero
+(`riemannZeta_zero_ne_one`), and at a nontrivial zero the one-sided bound becomes equality because
+`1 - ρ` is a zero too (`riemannZeta_one_sub_eq_zero_iff_off_poles`) and carries the same bound.
+
+Consequence: the prime-polar / window criterion family previously stated an RH-*shaped* proposition
+with no formal link to mathlib's `RiemannHypothesis`. All of them now literally say
+`RiemannHypothesis`:
+
+  RH_of_windowObservable_regular, RH_of_sharpWindow_regular, RH_of_primeObservable_regular,
+  RH_of_polarPrimeObservable_regular, RH_iff_windowObservable_regular, RH_iff_sharpWindow_regular,
+  RH_iff_polarPrimeObservable_regular, RH_iff_primeObservable_polar_regular,
+  RH_iff_PcalObservable_regular, RH_iff_sharpWindowPolar_regular,
+  windowObservable_regular_of_RH, polarPrimeObservable_regular_of_RH.
+
+Trap when doing this: a `RH_of_*` whose proof delegates to another `RH_of_*` must NOT get the
+`rw [riemannHypothesis_iff_forall_zero_re_le_half]` prelude — the delegate already returns
+`RiemannHypothesis` (hit this in RH_of_sharpWindow_regular).

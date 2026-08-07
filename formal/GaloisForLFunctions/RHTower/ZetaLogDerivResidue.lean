@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.RHTower.ReflectionCocycleClass
 
 /-!
 # The residue of `-ζ'/ζ` at the pole `s = 1`
@@ -208,9 +209,10 @@ multiplicity of the zero: `(s-ρ)·(-ζ'/ζ)(s) → -m`.  Obtained by factoring 
 `{1}ᶜ`, using that `ζ` is not identically zero since `ζ(2) ≠ 0`) and applying
 `logDeriv_residue_of_factorization`.  This turns each off-critical zeta zero into a pole of the
 prime–polar continuation with residue proportional to its multiplicity. -/
-theorem neg_logDeriv_zeta_zero_residue {ρ : ℂ} (hρ1 : ρ ≠ 1) (hζρ : riemannZeta ρ = 0) :
+theorem neg_logDeriv_zeta_zero_residue {ρ : ℂ} (hζρ : riemannZeta ρ = 0) :
     ∃ m : ℕ, 1 ≤ m ∧ Tendsto (fun s => (s - ρ) * (-deriv riemannZeta s / riemannZeta s))
       (𝓝[≠] ρ) (𝓝 (-(m : ℂ))) := by
+  have hρ1 : ρ ≠ 1 := riemannZeta_zero_ne_one hζρ
   have hpreconn : IsPreconnected ({(1 : ℂ)}ᶜ : Set ℂ) :=
     (isConnected_compl_singleton_of_one_lt_rank
       (by rw [Complex.rank_real_complex]; norm_num) 1).isPreconnected

@@ -6511,6 +6511,37 @@ positive norm and leaves the already-controlled `p^-2` remainder.  Without an ex
 and a uniform moving-antiscale estimate, this is still
 `WEIGHTED-PRIME-DILATION-INCREMENT-CANCELLATION`.
 
+## 2026-08-07 Route R canonical `(2,3)` Gamma/cap comparison
+
+The first-wall profile lane remains a criterion re-encoding even after enlarging its admissible
+error class from `l1` to `l1 + o(1/p)`.  Bounded prime-depth covariance is now formally classified
+the same way: local certificate existence is equivalent to the Hodge-mate coefficient vanishing,
+and its global form is equivalent to RH.
+
+A different producer has now been located inside the literal cross-prime source.  Let `GammaPort_23`
+be the already-constructed reflection-odd Calderón--Witt Gamma transport evaluated on the canonical
+ordered `(2,3)` Milnor-incidence witness, cooriented by its source half-height difference, and
+landed with the nonzero Xi Cartier leading coefficient.  Let `G_23>0` be its source coorientation
+gauge.  The new division-free comparison is
+
+```text
+G_23(rho) * (primeLogCap_2(rho) - primeLogCap_3(rho))
+  = (-13/36) * GammaPort_23(rho).
+```
+
+This is formalized unconditionally in
+`RHTower/RouteRTwoThreeGammaCapComparison.lean`.  It identifies the paper's unique positive
+physical port with Route R's fixed physical cap obstruction, rather than merely matching zero
+sets.  `GammaPort_23(rho)=0` is equivalent to neutral centered grade; global vanishing is equivalent
+to RH.
+
+**Revised Route R first open premise.**  Construct a source-derived singular Cartier/Stokes
+cochain homotopy proving that the fixed Cartier landing of
+`deningerCalderonWittGammaReflectionOddScalarTransport` annihilates the canonical `(2,3)` exact
+incidence witness.  Milnor-incidence membership alone is insufficient because the constructed
+transport is nonzero on that witness off neutral grade.  Ordinary Arakelov exactness, cofinal
+reader bounds, bounded covariance, and an asserted descent law cannot supply the homotopy.
+
 The scalar sieve hazards `a_{P_{j-1}}/p_j` also telescope to one, but they do not close the Hall
 alternative: a uniform moving-window lift to `R_X^gr`, collision-quotiented interval Hall, and
 cross-anchor incoming-load control remain missing.  Full card and Lean:

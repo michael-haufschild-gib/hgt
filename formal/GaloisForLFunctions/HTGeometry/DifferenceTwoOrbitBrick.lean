@@ -27,6 +27,14 @@ namespace GaloisForLFunctions.HTGeometry
 
 open Polynomial
 
+/-- The set where a polynomial's translate is a root is finite. -/
+theorem finite_setOf_translate_isRoot {Q : Polynomial ℂ} (hQ : Q ≠ 0) (a : ℂ) :
+    {z : ℂ | Q.eval (z + a) = 0}.Finite := by
+  have hroots : {x : ℂ | Q.IsRoot x}.Finite := Polynomial.finite_setOf_isRoot hQ
+  have hinj : Function.Injective (fun z : ℂ => z + a) := fun x y hxy => by
+    simpa using hxy
+  exact Set.Finite.preimage hinj.injOn hroots
+
 /-- **Orbit pinch.** If the cross-multiplied shift-difference identity has a numerator factor `B`
 vanishing on the orbit `t + ℤ` only at `t` itself, then `q` has no root in that orbit. -/
 theorem q_eval_ne_zero_of_orbit {p q A B : Polynomial ℂ} (hq : q ≠ 0)
@@ -172,6 +180,91 @@ theorem difference_two_orbit_pole_free {p q A : Polynomial ℂ} {c₀ c₁ : ℂ
     ring
   have := Polynomial.natDegree_le_of_dvd hBA hA
   omega
+
+/-- **Multi-orbit difference brick.** A rational function has no unit-shift difference whose pole
+part is spread over any finite family of pairwise incommensurable `ℤ`-orbits.  The single-orbit and
+two-orbit forms are the cases `d = 1` and `d = 2`. -/
+theorem difference_multi_orbit_pole_free {p q A : Polynomial ℂ} {d : ℕ}
+    {c : Fin d → ℂ} {n : Fin d → ℕ} (hq : q ≠ 0) (hco : IsCoprime p q)
+    (hsep : ∀ i j : Fin d, i ≠ j → ∀ m : ℤ, c i - c j ≠ (m : ℂ))
+    (hdeg : A.natDegree < ∑ i, (n i + 1))
+    (h : (∏ i, (X - C (c i)) ^ (n i + 1)) *
+          (p.comp (X + C 1) * q - p * q.comp (X + C 1))
+        = A * (q * q.comp (X + C 1))) :
+    A = 0 := by
+  classical
+  have hpz : ∀ z : ℂ, q.eval z = 0 → p.eval z ≠ 0 := by
+    intro z hqz hpz
+    obtain ⟨a, b, hab⟩ := hco
+    have := congrArg (Polynomial.eval z) hab
+    simp only [eval_add, eval_mul, eval_one, hpz, hqz, mul_zero, add_zero] at this
+    exact one_ne_zero this.symm
+  set B : Polynomial ℂ := ∏ i, (X - C (c i)) ^ (n i + 1) with hB_def
+  have hBeval : ∀ z : ℂ, B.eval z = ∏ i, (z - c i) ^ (n i + 1) := by
+    intro z
+    rw [hB_def, Polynomial.eval_prod]
+    exact Finset.prod_congr rfl fun i _ => by simp
+  have horb : ∀ i : Fin d, ∀ m : ℤ, q.eval (c i + (m : ℂ)) ≠ 0 := by
+    intro i
+    refine q_eval_ne_zero_of_orbit hq hpz h (c i) ?_
+    intro m hm
+    rw [hBeval] at hm
+    obtain ⟨j, -, hj⟩ := Finset.prod_eq_zero_iff.mp hm
+    have hzero : c i + (m : ℂ) - c j = 0 :=
+      pow_eq_zero_iff (by omega : n j + 1 ≠ 0) |>.mp hj
+    by_cases hij : j = i
+    · subst hij
+      have : ((m : ℂ)) = 0 := by linear_combination hzero
+      exact_mod_cast this
+    · exact absurd (show c i - c j = ((-m : ℤ) : ℂ) by push_cast; linear_combination hzero)
+        (hsep i j (fun hc => hij hc.symm) (-m))
+  have hshiftEval : ∀ z : ℂ, (q.comp (X + C 1)).eval z = q.eval (z + 1) := by
+    intro z
+    simp [eval_comp]
+  have hcop : IsCoprime B (q * q.comp (X + C 1)) := by
+    refine IsCoprime.prod_left fun i _ => IsCoprime.pow_left ?_
+    refine (isCoprime_X_sub_C_of_eval_ne_zero ?_).mul_right
+      (isCoprime_X_sub_C_of_eval_ne_zero ?_)
+    · simpa using horb i 0
+    · rw [hshiftEval]
+      simpa using horb i 1
+  have hdvd : B ∣ A * (q * q.comp (X + C 1)) := ⟨_, h.symm⟩
+  have hBA : B ∣ A := hcop.dvd_of_dvd_mul_right hdvd
+  by_contra hA
+  have hdegB : B.natDegree = ∑ i, (n i + 1) := by
+    rw [hB_def, Polynomial.natDegree_prod _ _ fun i _ => pow_ne_zero _ (X_sub_C_ne_zero (c i))]
+    exact Finset.sum_congr rfl fun i _ => by
+      rw [Polynomial.natDegree_pow, Polynomial.natDegree_X_sub_C, mul_one]
+  have := Polynomial.natDegree_le_of_dvd hBA hA
+  omega
+
+/-- **Multi-orbit brick from a pointwise identity.** -/
+theorem difference_multi_orbit_pole_free_of_eval {p q A : Polynomial ℂ} {d : ℕ}
+    {c : Fin d → ℂ} {n : Fin d → ℕ} (hq : q ≠ 0) (hco : IsCoprime p q)
+    (hsep : ∀ i j : Fin d, i ≠ j → ∀ m : ℤ, c i - c j ≠ (m : ℂ))
+    (hdeg : A.natDegree < ∑ i, (n i + 1))
+    {S : Set ℂ} (hS : S.Infinite)
+    (heval : ∀ z ∈ S, (∏ i, (z - c i) ^ (n i + 1)) *
+          (p.eval (z + 1) * q.eval z - p.eval z * q.eval (z + 1))
+        = A.eval z * (q.eval z * q.eval (z + 1))) :
+    A = 0 := by
+  refine difference_multi_orbit_pole_free hq hco hsep hdeg ?_
+  have hpoly : (∏ i, (X - C (c i)) ^ (n i + 1)) *
+        (p.comp (X + C 1) * q - p * q.comp (X + C 1))
+      - A * (q * q.comp (X + C 1)) = 0 := by
+    apply Polynomial.eq_zero_of_infinite_isRoot
+    refine hS.mono ?_
+    intro z hz
+    have hval := heval z hz
+    have hprod : (∏ i, (X - C (c i)) ^ (n i + 1) : Polynomial ℂ).eval z
+        = ∏ i, (z - c i) ^ (n i + 1) := by
+      rw [Polynomial.eval_prod]
+      exact Finset.prod_congr rfl fun i _ => by simp
+    simp only [Set.mem_setOf_eq, Polynomial.IsRoot, eval_sub, eval_mul, eval_comp,
+      eval_add, eval_X, eval_C]
+    rw [hprod] at *
+    linear_combination hval
+  linear_combination hpoly
 
 /-- **Two-orbit brick from a pointwise identity.** An analytic shift-difference relation holding on
 any infinite set of complex numbers already forces the pole-part numerator to vanish. -/

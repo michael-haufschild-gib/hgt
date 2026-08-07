@@ -30,10 +30,10 @@ noncomputable def primeObservable (L : ℝ) (s : ℂ) : ℂ :=
 /-- **Off-critical detection.**  A zeta zero `ρ` with `Re ρ > 1/2` makes the observable have a genuine
 singularity at `s = ρ + ½`: it tends to no finite limit there. -/
 theorem primeObservable_no_limit (L : ℝ) (hL : 0 < L) {ρ : ℂ}
-    (hρ1 : ρ ≠ 1) (hρre : 1 / 2 < ρ.re) (hζρ : riemannZeta ρ = 0) :
+    (hρre : 1 / 2 < ρ.re) (hζρ : riemannZeta ρ = 0) :
     ¬ ∃ M : ℂ, Tendsto (primeObservable L) (𝓝[≠] (ρ + 1 / 2)) (𝓝 M) := by
   rintro ⟨M, hM⟩
-  obtain ⟨m, hm1, hres, hne⟩ := offcritical_residue L hL hρ1 hρre hζρ
+  obtain ⟨m, hm1, hres, hne⟩ := offcritical_residue L hL hρre hζρ
   have ha : Tendsto (fun s : ℂ => s - (ρ + 1 / 2)) (𝓝[≠] (ρ + 1 / 2)) (𝓝 0) :=
     ((continuous_id.sub continuous_const).tendsto' (ρ + 1 / 2) 0 (by simp)).mono_left
       nhdsWithin_le_nhds
@@ -49,10 +49,12 @@ off-critical zero gives a genuine singularity at `s = ρ + ½ ≠ 3/2` (`primeOb
 exclusion loses no detection and regularity forecloses those zeros. -/
 theorem RH_of_primeObservable_regular (L : ℝ) (hL : 0 < L)
     (hreg : ∀ a : ℂ, 1 < a.re → a ≠ 3 / 2 → ∃ M : ℂ, Tendsto (primeObservable L) (𝓝[≠] a) (𝓝 M)) :
-    ∀ ρ : ℂ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1 / 2 := by
-  intro ρ hζρ hρ1
+    RiemannHypothesis := by
+  rw [riemannHypothesis_iff_forall_zero_re_le_half]
+  intro ρ hζρ
+  have hρ1 : ρ ≠ 1 := riemannZeta_zero_ne_one hζρ
   by_contra h
   have hgt : 1 / 2 < ρ.re := not_le.mp h
   have hre : 1 < (ρ + 1 / 2).re := by rw [Complex.add_re]; simp; linarith
   have hne32 : ρ + 1 / 2 ≠ 3 / 2 := fun heq => hρ1 (by linear_combination heq)
-  exact primeObservable_no_limit L hL hρ1 hgt hζρ (hreg (ρ + 1 / 2) hre hne32)
+  exact primeObservable_no_limit L hL hgt hζρ (hreg (ρ + 1 / 2) hre hne32)

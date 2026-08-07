@@ -104,7 +104,7 @@ functions. That fact is now proved.
 
 | Module | Content |
 |---|---|
-| `HTGeometry/DifferenceTwoOrbitBrick.lean` | a rational function has no unit-shift difference whose pole part sits on two `ℤ`-orbits with incommensurable base points |
+| `HTGeometry/DifferenceTwoOrbitBrick.lean` | a rational function has no unit-shift difference whose pole part sits on finitely many pairwise incommensurable `ℤ`-orbits (`difference_multi_orbit_pole_free`); the corpus's single-orbit brick and the two-orbit form are `d = 1, 2` |
 | `HTGeometry/DigammaHalfTranslateIndependent.lean` | `ψ(z)` and `ψ(z+1/2)` are linearly independent over `ℂ(z)` |
 
 The corpus already had the single-orbit brick (`difference_single_pole_free` in
@@ -173,6 +173,79 @@ even translation) — as `ArchLadderRegular s`, stable under even translation. C
 - `xiPairwiseShiftReflectionCocycle_eq_explicit` — the previously blocked item: an **explicit rational
   reflection cocycle for every same-parity integral pair**. The reflected point `1 − a − s` sits in
   the left half-plane, which is exactly what the old domain restriction could not reach.
+- `xiPairwiseCenteredShiftPrimeDifference_eq_explicit` — half-cocycle centering subtracts the average
+  of the rational telescope at the point and at its reflection, so the completed-Xi content of the
+  centered value is the raw logarithmic-derivative difference alone. The corpus's shift-two centering
+  (`XiShiftPrimeReflectionCocycle`) is the pair `(2,0)`.
+
+### Side conditions discharged
+
+`archLadderRegular_of_re_not_int` — both ladder conditions force the real part to be an integer, so a
+**non-integral real part discharges them together**, with no positivity requirement at all. Hence:
+
+- `archLadderRegular_strip_add_nat` — every natural translate of a point of the open critical strip;
+- `archLadderRegular_strip_reflect` — every reflection `1 − a − ρ` of such a point.
+
+Both real parts land strictly between consecutive integers. Consequently the same-parity explicit
+laws hold at any strip point with **only** the strip hypothesis — which at a Xi zero is itself a
+corpus theorem (`xi_divisor_support_re_mem_open_unit`):
+`xiPairwiseShiftReflectionCocycle_eq_explicit_of_strip`,
+`xiPairwiseShiftPrimeDifference_eq_explicit_of_strip`,
+`xiPairwiseCenteredShiftPrimeDifference_eq_explicit_of_strip`.
+
+The even-shift defect identification follows the same path:
+`xiEvenShiftPrimeDefect_eq_xiTransverseShiftPrimeDefect_of_ladderRegular` holds on the whole ladder
+and `..._of_strip` at every strip point. The corpus records this identification only as an upper-end
+germ; it is a pointwise identity wherever the real part is not an integer.
+
+Unrelated hygiene: `completedRiemannZeta_eq_Gammaℝ_mul` carried a redundant `s ≠ 0` alongside
+`0 < Re s`; the premise is discharged and its two call sites updated.
+
+### Archimedean nonvanishing, sharpened
+
+The corpus proves `archFactor z ≠ 0` only on the strip (`archFactor_ne_zero_strip`, hypothesis
+`0 < Re z ∧ Re z < 1`) or from a supplied `Γ_ℝ z ≠ 0`. The sharp statement needs no positivity at all:
+
+    archFactor_ne_zero_iff : archFactor s ≠ 0 ↔ s ≠ 1 ∧ ∀ n : ℕ, s ≠ -(2n)
+
+`archFactor` vanishes exactly at `1` and at the poles of `Γ(s/2)`; `s ≠ 0` is subsumed by the `n = 0`
+clause. Two premises fall out of it:
+
+- `archFactor_ne_zero_of_re_pos` — the strip's **upper** bound `Re z < 1` was only ever used to get
+  `z ≠ 1`, so `0 < Re z` plus `z ≠ 1` suffices. This reaches the region `Re s > 1` where the ladder
+  work lives and where the corpus previously had no nonvanishing lemma at all.
+- `archFactor_ne_zero_of_ladderRegular` — ladder regularity already implies nonvanishing, so no
+  separate side condition is needed anywhere on the even ladder, reflected points included.
+
+### The completed split, unified
+
+The strip form of the completed logarithmic-derivative split uses its upper bound `Re s < 1` for one
+thing only: to know `s ≠ 1`. With sharp archimedean nonvanishing the bound goes away
+(`RHTower/CompletedSplitRightHalfPlane.lean`):
+
+- `logDeriv_completed_split_of_re_pos` — `0 < Re s`, `s ≠ 1`, `riemannZeta s ≠ 0`;
+- `seamFluxCochain_eq_infinitePrimeFlux_add_archimedean_of_re_pos` — the prime/archimedean
+  decomposition of the seam flux on the same region.
+
+The corpus records the strip case (`seamFluxCochain_eq_infinitePrimeFlux_add_archimedean`) and the
+absolute-convergence case (`seamFluxCochain_eq_prime_add_archimedean_of_one_lt_re`) as two separate
+theorems for two disjoint regions. Both are instances of this one, which also covers the gap between
+them (`Re s = 1` excepting `s = 1`, and the rest of `Re s > 0`).
+
+On `Re s ≥ 1` the zeta side condition discharges outright, by classical non-vanishing
+(`riemannZeta_ne_zero_of_one_le_re`), giving hypothesis-free forms
+`logDeriv_completed_split_of_one_le_re` and
+`seamFluxCochain_eq_infinitePrimeFlux_add_archimedean_of_one_le_re`. These reach the **line**
+`Re s = 1`, which neither regional statement covers — one needs `Re s < 1`, the other `Re s > 1` —
+and which is exactly where the classical non-vanishing theorem lives.
+
+### Endpoint order discharged
+
+`xiPairwiseShiftArchimedeanCorrectionDifference_eq_explicit_symm` and
+`xiPairwiseShiftPrimeDifference_eq_explicit_symm` drop the `b ≤ a` premise with no case split in the
+conclusion: truncated `ℕ` subtraction makes exactly one of the two telescopes nonempty, and
+`xiEvenShiftPrimeCorrection 0 = 0` kills the other. The regularity hypothesis moves to `s + min a b`,
+which is the point the formula actually reads.
 
 ## Faithfulness
 

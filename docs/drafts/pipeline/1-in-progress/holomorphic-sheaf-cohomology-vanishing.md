@@ -1336,3 +1336,105 @@ differentiability.
    `O_Ω = deningerClosedFormSheaf Ω 0`.
 
 Axiom audit for everything landed: `propext, Classical.choice, Quot.sound`.
+
+## Cartan's theorem B for `ℂ^n`, closed (2026-08-07)
+
+  `RHTower.deningerHolomorphic_ext_eq_zero (q : ℕ)
+     (x : deningerSheafCohomology ⊤ (deningerClosedFormSheaf ⊤ 0) (q + 1)) : x = 0`
+
+unconditional, axioms `propext, Classical.choice, Quot.sound`.  `H^{q+1}(ℂ^n, O) = 0` in the
+corpus's own sheaf cohomology `Ext(deningerOpenFree U, F, n)`, for every `q ≥ 0`.
+
+The three inputs that closed it:
+
+- **Smooth partitions of unity** — `deningerHasPartitions_smooth`.  Refine the given cover to
+  relatively compact opens (`exists_compact_between` on a singleton, then take the interior; the
+  closure is a closed subset of a compact set).  `SmoothPartitionOfUnity.exists_isSubordinate` on the
+  manifold `↥Ω` then yields members with `tsupport` inside a compact set, so `HasCompactSupport`
+  holds and `ContMDiff.extend_zero` gives smoothness of the extension by zero **on `ℂ^n`**, which
+  `contMDiff_iff_contDiff` turns into `ContDiff ℝ ⊤` — a global model, i.e. membership in
+  `DeningerSmoothMult Ω`.  `deningerExtendFun_eq_extend` identifies the corpus's extension with
+  `Function.extend Subtype.val · 0`.  Instances needed and now supplied on `deningerSpace Ω`:
+  `ChartedSpace`, `LocallyCompactSpace`, `IsManifold`, `SigmaCompactSpace` (the last via
+  `sigmaCompactSpace_of_locallyCompact_secondCountable`); `deningerSpace` had to become an `abbrev`
+  so instance search sees through it.
+- **Global solvability on sections** — `deningerFormDbar_globalSurjective`.  Over `ℂ^n` every
+  ambient point lies in the ambient open set of `⊤`, so a section that agrees with a smooth model
+  near each point is `ContDiffAt` everywhere, hence `ContDiff` by `contDiff_iff_contDiffAt`: the
+  section *is* a globally smooth `SetForm`.  `setDbar_exact_global` then produces the primitive,
+  which is again a section because it is globally smooth.
+- **The assembly** — `deningerResolution_ext_eq_zero` with the Dolbeault resolution, its
+  short exactness, `deningerFine_acyclicOn` of the fine form sheaves, and the surjectivity above.
+
+**The punctured case, and exactly what it needs.**  `(ℂ^×)^n` fails only at the second input:
+`setDbar_exact_punctured` asks for a form smooth on all of `ℂ^n`, and the extension by zero of a
+section on the punctured space is not smooth across the boundary.  The fix is local, not structural:
+every stage of `puncturedExhaustion` is a polyannulus whose closure is compact inside the punctured
+space, so it suffices to truncate.  Build
+
+  `exists_smooth_setForm_eq_on` — for `K` compact inside an open `W` on which `F` is coefficientwise
+  `ContDiffAt`, a globally smooth `G` agreeing with `F` on a neighbourhood of `K`,
+
+from `exists_smooth_zero_one_of_isClosed` applied to `K` and the complement of the interior of a
+compact neighbourhood of `K` in `W` (so `tsupport χ ⊆ W`), with the same two-open-cover smoothness
+argument as `HTGeometry.exists_contDiff_eventuallyEq`.  Feeding the truncation into
+`setDbar_polyannulus_solve` gives `DbarStageSolvable (puncturedExhaustion n)` for merely locally
+smooth closed forms, and `setDbar_exhaustion_solve` then runs unchanged.
+
+## Cartan's theorem B for `(ℂ^×)^n`, closed (2026-08-07)
+
+  `RHTower.deningerHolomorphic_ext_eq_zero_punctured (q : ℕ)
+     (x : deningerSheafCohomology ⊤ (deningerClosedFormSheaf (deningerPunctured n) 0) (q+1)) :
+     x = 0`
+
+unconditional, axioms `propext, Classical.choice, Quot.sound`.  This is the statement the Deninger
+pro-Stein card consumes: the finite character stages are `(ℂ^×)^r`, and their structure sheaves —
+and hence their finite free modules — have no higher cohomology.
+
+**What had to be generalized, and why it was a local repair.**  The whole `∂̄` apparatus was written
+for forms smooth on all of `ℂ^n`, but a section over the punctured space extends by zero only, and
+that extension is not smooth across the boundary.  The fix is truncation, and it enters at exactly
+three places:
+
+- `HTGeometry.exists_contDiff_family_eqOn` — a family of functions smooth on an open set `W` is,
+  after one cutoff equal to one near a compact `K ⊆ W` and supported in `W`, globally smooth and
+  unchanged on an open neighbourhood of `K`; and the truncation kills whatever the family killed,
+  which is what preserves the degree of a form.  Built from
+  `exists_contMDiffMap_zero_one_of_isClosed` between `K` and the complement of a compact
+  neighbourhood, with the same two-open-cover smoothness argument as
+  `exists_contDiff_eventuallyEq`.
+- `exists_dbar_punctured_sequence` (degree one, the Runge case) used global smoothness in exactly
+  one place — the call to `dbar_polyannulus_solve` at each stage.  Truncating on the closed
+  polyannulus of that stage replaces it, and `dbar_punctured_solve` now needs only `ContDiffAt` on
+  the punctured space.
+- `DbarStageSolvable` now carries the ambient set and takes `SmoothSetFormOn g X`;
+  `dbarStageSolvable_puncturedExhaustion` truncates on `closedPolyannulus (1/(m+3)) (m+3)`, and
+  `dbarStageSolvable_polydiscExhaustion` needs no truncation at all because
+  `SmoothSetFormOn g univ` *is* `SmoothSetForm g` by `contDiff_iff_contDiffAt`.
+
+So `setDbar_exact_punctured` now assumes only `SmoothSetFormOn f (puncturedSpace n)`, which is what
+a sheaf section provides, and `deningerFormDbar_globalSurjective_punctured` follows; the primitive
+is turned back into a section by taking a global model near each point with the same truncation
+lemma applied to a singleton.
+
+Both capstones are in place:
+
+  `deningerHolomorphic_ext_eq_zero`           : `H^{q+1}(ℂ^n, O) = 0`
+  `deningerHolomorphic_ext_eq_zero_punctured` : `H^{q+1}((ℂ^×)^n, O) = 0`
+
+## The cell-induction step of `(7)` (2026-08-07)
+
+Two more consequences of the covariant `Ext` sequence, in `RHTower/DeningerAcyclicResolution.lean`,
+are exactly what the pro-Stein card's induction over a finite relative cell filtration consumes:
+
+- `deningerAcyclicOn_middle` — **acyclicity is two-out-of-three**: if the sub- and quotient sheaves
+  of a short exact sequence are acyclic on an open set, so is the middle term.  A class of the
+  middle term in degree `n+1` dies in the quotient, hence comes from the subsheaf, where it is zero.
+- `deningerSections_surjective_of_acyclic` — **sections are exact when the subsheaf is acyclic**:
+  the obstruction to lifting a section of the quotient is its connecting image in `H^1` of the
+  subsheaf.  Proved through the corepresentation, with `deningerExt_addEquiv₀_mk₀` supplying the
+  inverse of `mk₀` in degree zero.
+
+Together with `deningerHolomorphic_ext_eq_zero_punctured` these give the card's step verbatim: a
+subquotient of the semi-free filtration is acyclic for global sections, so the attachment of derived
+sections is the attachment of sections, and the induction closes.

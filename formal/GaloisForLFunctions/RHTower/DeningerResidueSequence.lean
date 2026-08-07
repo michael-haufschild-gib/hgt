@@ -65,13 +65,13 @@ theorem deningerProjCLM_single_last :
   rw [Pi.single_apply, if_neg (Fin.castSucc_lt_last i).ne]
 
 /-- Extending a constant form along the projection that forgets the last coordinate. -/
-noncomputable def deningerExtendFun (α : (Fin r → ℂ) [⋀^Fin n]→L[ℂ] ℂ) :
+noncomputable def deningerExtendAlternating (α : (Fin r → ℂ) [⋀^Fin n]→L[ℂ] ℂ) :
     (Fin (r + 1) → ℂ) [⋀^Fin n]→L[ℂ] ℂ :=
   α.compContinuousLinearMap (deningerProjCLM r)
 
-theorem deningerExtendFun_apply (α : (Fin r → ℂ) [⋀^Fin n]→L[ℂ] ℂ)
+theorem deningerExtendAlternating_apply (α : (Fin r → ℂ) [⋀^Fin n]→L[ℂ] ℂ)
     (v : Fin n → (Fin (r + 1) → ℂ)) :
-    deningerExtendFun α v = α fun a => deningerProjCLM r (v a) := rfl
+    deningerExtendAlternating α v = α fun a => deningerProjCLM r (v a) := rfl
 
 /-- The residue of a constant form along the last coordinate. -/
 noncomputable def deningerResidueFun (α : (Fin (r + 1) → ℂ) [⋀^Fin (n + 1)]→L[ℂ] ℂ) :
@@ -89,7 +89,7 @@ theorem deningerResidueFun_apply (α : (Fin (r + 1) → ℂ) [⋀^Fin (n + 1)]�
 /-- **Extending a constant form along the projection**, as a linear map. -/
 noncomputable def deningerExtendForm (r n : ℕ) :
     ((Fin r → ℂ) [⋀^Fin n]→L[ℂ] ℂ) →ₗ[ℂ] ((Fin (r + 1) → ℂ) [⋀^Fin n]→L[ℂ] ℂ) where
-  toFun := deningerExtendFun
+  toFun := deningerExtendAlternating
   map_add' α β := by
     ext v
     rfl
@@ -109,7 +109,7 @@ noncomputable def deningerResidueForm (r n : ℕ) :
     rfl
 
 theorem deningerExtendForm_eq (α : (Fin r → ℂ) [⋀^Fin n]→L[ℂ] ℂ) :
-    deningerExtendForm r n α = deningerExtendFun α := rfl
+    deningerExtendForm r n α = deningerExtendAlternating α := rfl
 
 theorem deningerResidueForm_eq (α : (Fin (r + 1) → ℂ) [⋀^Fin (n + 1)]→L[ℂ] ℂ) :
     deningerResidueForm r n α = deningerResidueFun α := rfl
@@ -131,7 +131,7 @@ theorem deningerResidue_comp_extend (α : (Fin r → ℂ) [⋀^Fin (n + 1)]→L[
     deningerResidueForm r n (deningerExtendForm r (n + 1) α) = 0 := by
   ext v
   rw [deningerResidueForm_eq, deningerResidueFun_apply, deningerExtendForm_eq,
-    deningerExtendFun_apply]
+    deningerExtendAlternating_apply]
   refine (ContinuousMultilinearMap.map_coord_zero α.toContinuousMultilinearMap 0 ?_).trans ?_
   · show deningerProjCLM r ((Fin.cons (Pi.single (Fin.last r) (1 : ℂ) : Fin (r + 1) → ℂ)
       (fun a => deningerInclCLM r (v a)) : Fin (n + 1) → (Fin (r + 1) → ℂ)) 0) = 0
@@ -145,7 +145,7 @@ theorem deningerExtendForm_injective : Function.Injective (deningerExtendForm r 
   ext v
   have hv := congrArg (fun A : (Fin (r + 1) → ℂ) [⋀^Fin n]→L[ℂ] ℂ =>
     A fun a => deningerInclCLM r (v a)) hα
-  simp only [deningerExtendForm_eq, deningerExtendFun_apply, deningerProj_incl] at hv
+  simp only [deningerExtendForm_eq, deningerExtendAlternating_apply, deningerProj_incl] at hv
   rw [hv]
   rfl
 
@@ -195,7 +195,7 @@ theorem deningerResidue_exact (α : (Fin (r + 1) → ℂ) [⋀^Fin (n + 1)]→L[
   simp only [hbasis]
   show α (fun a => (Pi.single (φ a) (1 : ℂ) : Fin (r + 1) → ℂ)) =
     deningerExtendForm r (n + 1) β fun a => (Pi.single (φ a) (1 : ℂ) : Fin (r + 1) → ℂ)
-  rw [deningerExtendForm_eq, deningerExtendFun_apply]
+  rw [deningerExtendForm_eq, deningerExtendAlternating_apply]
   by_cases hlast : ∀ a, φ a ≠ Fin.last r
   · have hproj : ∀ a, deningerProjCLM r (Pi.single (φ a) (1 : ℂ) : Fin (r + 1) → ℂ) =
         (Pi.single ((φ a).castPred (hlast a)) (1 : ℂ) : Fin r → ℂ) :=

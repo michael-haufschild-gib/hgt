@@ -89,6 +89,46 @@ theorem deningerExt_one_eq_zero_of_lift {S : ShortComplex (TopCat.Sheaf AddCommG
     hS.comp_extClass]
   apply Ext.comp_zero
 
+/-- The degree-zero correspondence between `Ext` classes and morphisms is inverse to `mk₀`. -/
+theorem deningerExt_addEquiv₀_mk₀ {A B : TopCat.Sheaf AddCommGrpCat.{u} X} (φ : A ⟶ B) :
+    Ext.addEquiv₀ (Ext.mk₀.{w} φ) = φ :=
+  (AddEquiv.eq_symm_apply Ext.addEquiv₀).mp rfl
+
+/-- **Acyclicity is a two-out-of-three property in a short exact sequence.**  If the sub- and
+quotient sheaves are acyclic then so is the middle term: a class of the middle term in degree
+`n + 1` dies in the quotient, hence comes from the subsheaf, where it is zero. -/
+theorem deningerAcyclicOn_middle {S : ShortComplex (TopCat.Sheaf AddCommGrpCat.{u} X)}
+    (hS : S.ShortExact) (U : Opens X) (h1 : DeningerAcyclicOn.{w} S.X₁ U)
+    (h3 : DeningerAcyclicOn.{w} S.X₃ U) : DeningerAcyclicOn.{w} S.X₂ U := by
+  intro n x
+  obtain ⟨x₁, hx₁⟩ :=
+    Ext.covariant_sequence_exact₂ (deningerOpenFree U) hS x (h3 n _)
+  rw [← hx₁, h1 n x₁]
+  apply Ext.zero_comp
+
+/-- **Sections are exact on a short exact sequence with acyclic subsheaf.**  The obstruction to
+lifting a section of the quotient is its image under the connecting map, which lands in the first
+cohomology of the subsheaf. -/
+theorem deningerSections_surjective_of_acyclic
+    {S : ShortComplex (TopCat.Sheaf AddCommGrpCat.{u} X)} (hS : S.ShortExact) (U : Opens X)
+    (h1 : DeningerAcyclicOn.{w} S.X₁ U) :
+    Function.Surjective (ConcreteCategory.hom (S.g.1.app (op U))) := by
+  intro s
+  set x₃ : Ext.{w} (deningerOpenFree U) S.X₃ 0 :=
+    Ext.addEquiv₀.symm ((deningerOpenFreeHomEquiv U S.X₃).symm s) with hx₃
+  obtain ⟨x₂, hx₂⟩ :=
+    Ext.covariant_sequence_exact₃ (deningerOpenFree U) hS x₃ (zero_add 1) (h1 0 _)
+  refine ⟨deningerOpenFreeHomEquiv U S.X₂ (Ext.addEquiv₀ x₂), ?_⟩
+  rw [← deningerOpenFreeHomEquiv_naturality_right]
+  have hmk : Ext.addEquiv₀ (Ext.mk₀ (Ext.addEquiv₀ x₂ ≫ S.g)) = Ext.addEquiv₀ x₂ ≫ S.g :=
+    deningerExt_addEquiv₀_mk₀ _
+  have h1' : Ext.mk₀ (Ext.addEquiv₀ x₂ ≫ S.g) = x₃ := by
+    rw [← Ext.mk₀_comp_mk₀, Ext.mk₀_addEquiv₀_apply]
+    exact hx₂
+  have hcomp : Ext.addEquiv₀ x₂ ≫ S.g = Ext.addEquiv₀ x₃ := by
+    rw [← hmk, h1']
+  rw [hcomp, hx₃, AddEquiv.apply_symm_apply, Equiv.apply_symm_apply]
+
 section Resolution
 
 variable {K A : ℕ → TopCat.Sheaf AddCommGrpCat.{u} X} {ι : ∀ i, K i ⟶ A i}

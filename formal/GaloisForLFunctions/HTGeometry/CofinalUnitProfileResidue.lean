@@ -152,6 +152,62 @@ theorem norm_stageAverage_ofReal {f : ι → ℝ} (hs : Summable fun i => w i * 
     ‖stageAverage w (fun i => (f i : ℂ))‖ = |∑' i, w i * f i| := by
   rw [stageAverage_ofReal hs, Complex.norm_real, Real.norm_eq_abs]
 
+/-! ### The effective single-stage deviation bound -/
+
+theorem norm_stageTerm_le (hstage : IsUnitStage h w) (a : ι → ℂ) (i : ι) :
+    ‖(w i : ℂ) * a i‖ ≤ ‖a i‖ := by
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (hstage.nonneg i)]
+  exact mul_le_of_le_one_left (norm_nonneg _) (hstage.le_one i)
+
+theorem summable_stageTerm (hstage : IsUnitStage h w) {a : ι → ℂ}
+    (ha : Summable a) : Summable fun i => (w i : ℂ) * a i :=
+  Summable.of_norm (Summable.of_nonneg_of_le (fun _ => norm_nonneg _)
+    (fun i => norm_stageTerm_le hstage a i) ha.norm)
+
+/-- A unit stage evaluates the reference weight to one. -/
+theorem hasSum_stageReference (hstage : IsUnitStage h w) :
+    HasSum (fun i => (w i : ℂ) * (h i : ℂ)) 1 := by
+  have h1 := Complex.hasSum_ofReal.mpr hstage.hasSum_mass
+  simpa [Complex.ofReal_mul] using h1
+
+theorem stageAverage_eq_add_remainder (hstage : IsUnitStage h w) {a : ι → ℂ}
+    {c : ℂ} (hres : HasReferenceResidue h a c) :
+    stageAverage w a = c + stageAverage w (fun i => a i - c * (h i : ℂ)) := by
+  have hb : Summable fun i => a i - c * (h i : ℂ) := hres
+  have href : HasSum (fun i => c * ((w i : ℂ) * (h i : ℂ))) c := by
+    simpa using (hasSum_stageReference hstage).mul_left c
+  have hrem := (summable_stageTerm hstage hb).hasSum
+  refine ((href.add hrem).congr_fun fun i => ?_).tsum_eq
+  ring
+
+/-- **Effective single-stage bound.**  The deviation of a stage average from the
+residue is at most the mass of the summable part outside any finite set the stage
+already avoids.  Taking `c = 0` recovers the plain vanishing estimate. -/
+theorem norm_stageAverage_sub_residue_le (hstage : IsUnitStage h w) {a : ι → ℂ}
+    {c : ℂ} (hres : HasReferenceResidue h a c) (s : Finset ι)
+    (hs : ∀ i ∈ s, w i = 0) :
+    ‖stageAverage w a - c‖ ≤
+      ∑' i : { x // x ∉ (s : Set ι) }, ‖a i - c * (h i : ℂ)‖ := by
+  have hb : Summable fun i => a i - c * (h i : ℂ) := hres
+  have hterm := summable_stageTerm hstage hb
+  have hnorm : Summable fun i => ‖(w i : ℂ) * (a i - c * (h i : ℂ))‖ :=
+    hterm.norm
+  have hzero : ∑ i ∈ s, ‖(w i : ℂ) * (a i - c * (h i : ℂ))‖ = 0 :=
+    Finset.sum_eq_zero fun i hi => by simp [hs i hi]
+  have hsplit := hnorm.sum_add_tsum_subtype_compl s
+  rw [hzero, zero_add] at hsplit
+  rw [stageAverage_eq_add_remainder hstage hres, add_sub_cancel_left]
+  calc ‖stageAverage w (fun i => a i - c * (h i : ℂ))‖ ≤
+        ∑' i, ‖(w i : ℂ) * (a i - c * (h i : ℂ))‖ :=
+        norm_tsum_le_tsum_norm hnorm
+    _ = ∑' i : { x // x ∉ (s : Set ι) },
+          ‖(w i : ℂ) * (a i - c * (h i : ℂ))‖ := hsplit.symm
+    _ ≤ ∑' i : { x // x ∉ (s : Set ι) }, ‖a i - c * (h i : ℂ)‖ :=
+        (hnorm.subtype _).tsum_le_tsum
+          (fun i => norm_stageTerm_le hstage
+            (fun j => a j - c * (h j : ℂ)) (i : ι)) (hb.norm.subtype _)
+
 end Stage
 
 section Profile
@@ -163,21 +219,17 @@ theorem IsCofinalUnitProfile.isUnitStage (hmu : IsCofinalUnitProfile h mu)
   ⟨hmu.nonneg N, hmu.le_one N, hmu.hasSum_mass N⟩
 
 theorem norm_profileTerm_le (hmu : IsCofinalUnitProfile h mu) (N : ℕ)
-    (a : ι → ℂ) (i : ι) : ‖(mu N i : ℂ) * a i‖ ≤ ‖a i‖ := by
-  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_nonneg (hmu.nonneg N i)]
-  exact mul_le_of_le_one_left (norm_nonneg _) (hmu.le_one N i)
+    (a : ι → ℂ) (i : ι) : ‖(mu N i : ℂ) * a i‖ ≤ ‖a i‖ :=
+  norm_stageTerm_le (hmu.isUnitStage N) a i
 
 theorem summable_profileTerm (hmu : IsCofinalUnitProfile h mu) {a : ι → ℂ}
     (ha : Summable a) (N : ℕ) : Summable fun i => (mu N i : ℂ) * a i :=
-  Summable.of_norm (Summable.of_nonneg_of_le (fun _ => norm_nonneg _)
-    (fun i => norm_profileTerm_le hmu N a i) ha.norm)
+  summable_stageTerm (hmu.isUnitStage N) ha
 
 /-- Every stage of a unit profile evaluates the reference weight to one. -/
 theorem hasSum_profileReference (hmu : IsCofinalUnitProfile h mu) (N : ℕ) :
-    HasSum (fun i => (mu N i : ℂ) * (h i : ℂ)) 1 := by
-  have h1 := Complex.hasSum_ofReal.mpr (hmu.hasSum_mass N)
-  simpa [Complex.ofReal_mul] using h1
+    HasSum (fun i => (mu N i : ℂ) * (h i : ℂ)) 1 :=
+  hasSum_stageReference (hmu.isUnitStage N)
 
 theorem profileAverage_reference (hmu : IsCofinalUnitProfile h mu) (N : ℕ) :
     profileAverage mu N (fun i => (h i : ℂ)) = 1 :=
@@ -496,6 +548,57 @@ theorem HasReferenceResidue.mod (hh : ∀ i, 0 ≤ h i) {a : ι → ℂ} {c : �
     fun ε hε => ⟨∅, Set.finite_empty, fun i _ => by
       simpa using mul_nonneg hε.le (hh i)⟩,
     fun i => by ring⟩
+
+/-! ### The negligible fields form a subspace, and so does the enlarged domain -/
+
+theorem IsCofinitelyNegligible.add {b b' : ι → ℂ}
+    (hb : IsCofinitelyNegligible h b) (hb' : IsCofinitelyNegligible h b') :
+    IsCofinitelyNegligible h fun i => b i + b' i := by
+  intro ε hε
+  obtain ⟨s, hs, hbs⟩ := hb (ε / 2) (by positivity)
+  obtain ⟨s', hs', hbs'⟩ := hb' (ε / 2) (by positivity)
+  refine ⟨s ∪ s', hs.union hs', fun i hi => ?_⟩
+  have hi1 : i ∉ s := fun h => hi (Or.inl h)
+  have hi2 : i ∉ s' := fun h => hi (Or.inr h)
+  calc ‖b i + b' i‖ ≤ ‖b i‖ + ‖b' i‖ := norm_add_le _ _
+    _ ≤ ε / 2 * h i + ε / 2 * h i := add_le_add (hbs i hi1) (hbs' i hi2)
+    _ = ε * h i := by ring
+
+theorem IsCofinitelyNegligible.const_mul (hh : ∀ i, 0 ≤ h i) {b : ι → ℂ}
+    (hb : IsCofinitelyNegligible h b) (k : ℂ) :
+    IsCofinitelyNegligible h fun i => k * b i := by
+  intro ε hε
+  rcases eq_or_ne k 0 with hk | hk
+  · exact ⟨∅, Set.finite_empty, fun i _ => by
+      simpa [hk] using mul_nonneg hε.le (hh i)⟩
+  · have hkpos : 0 < ‖k‖ := norm_pos_iff.mpr hk
+    obtain ⟨s, hs, hbs⟩ := hb (ε / ‖k‖) (by positivity)
+    refine ⟨s, hs, fun i hi => ?_⟩
+    calc ‖k * b i‖ = ‖k‖ * ‖b i‖ := norm_mul _ _
+      _ ≤ ‖k‖ * (ε / ‖k‖ * h i) :=
+          mul_le_mul_of_nonneg_left (hbs i hi) hkpos.le
+      _ = ε * h i := by field_simp
+
+theorem HasReferenceResidueMod.add {a a' : ι → ℂ} {c c' : ℂ}
+    (ha : HasReferenceResidueMod h a c)
+    (ha' : HasReferenceResidueMod h a' c') :
+    HasReferenceResidueMod h (fun i => a i + a' i) (c + c') := by
+  obtain ⟨b₁, b₂, hb₁, hb₂, hdec⟩ := ha
+  obtain ⟨b₁', b₂', hb₁', hb₂', hdec'⟩ := ha'
+  refine ⟨fun i => b₁ i + b₁' i, fun i => b₂ i + b₂' i,
+    Summable.add hb₁ hb₁', hb₂.add hb₂', fun i => ?_⟩
+  have h1 := hdec i
+  have h2 := hdec' i
+  linear_combination h1 + h2
+
+theorem HasReferenceResidueMod.const_mul (hh : ∀ i, 0 ≤ h i) {a : ι → ℂ}
+    {c : ℂ} (ha : HasReferenceResidueMod h a c) (k : ℂ) :
+    HasReferenceResidueMod h (fun i => k * a i) (k * c) := by
+  obtain ⟨b₁, b₂, hb₁, hb₂, hdec⟩ := ha
+  refine ⟨fun i => k * b₁ i, fun i => k * b₂ i,
+    Summable.mul_left k hb₁, hb₂.const_mul hh k, fun i => ?_⟩
+  have h1 := hdec i
+  linear_combination k * h1
 
 theorem profileAverage_add {f g : ι → ℂ} {N : ℕ}
     (hf : Summable fun i => (mu N i : ℂ) * f i)

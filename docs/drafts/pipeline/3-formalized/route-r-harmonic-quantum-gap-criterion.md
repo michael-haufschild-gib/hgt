@@ -345,3 +345,73 @@ sequence-level form, replacing the earlier specialized private lemma),
 This enlarges what a producer may hand in; it does not reopen the lane. The fourth-pass classification
 stands: the criterion is equivalent to RH per zero, and the enlargement changes the admissible error
 class, not the difficulty.
+
+## 2026-08-07 — the Euler sieve is subsumed, concretely
+
+The first pass claimed the restarted Euler sieve was "one instance" of the universal reading law but
+never proved it. It is now a theorem.
+
+New module `RHTower/RouteRCofinalSieveIsUnitProfile.lean` (`lake build` green, 11303 jobs, axioms
+`[propext, Classical.choice, Quot.sound]`, in the umbrella):
+
+- `routeRCofinalSieveProfile e N p` — the restarted sieve density transported from the tail index to
+  the primes: the prime at tail position `n` carries `D(N,n)`, and primes before the restart carry
+  nothing.
+- `isCofinalUnitProfile_routeRCofinalSieveProfile` — **the restarted Euler sieve is a bounded cofinal
+  unit profile.** Unit mass transports along the injective tail enumeration by
+  `Function.Injective.hasSum_iff`, using the sieve's own `hasSum_routeRCofinalSieveWeight`; escape is
+  immediate because a prime before the restart carries weight zero.
+- `profileAverage_routeRCofinalSieveProfile` — the sieve reporter *is* the profile average, via
+  `Function.Injective.tsum_eq`.
+- `tendsto_routeRCofinalSieveHarmonicReporter_of_residue` — the sieve's coefficient-recovery theorem
+  as a corollary of the universal law. Nothing about the Euler product is used: only boundedness, unit
+  prime-harmonic mass, and cofinal escape.
+- `tendsto_routeRCofinalSieveHarmonicReporter_of_residueMod` — and the sieve reporter therefore also
+  reads the enlarged domain `ell^1 + o(1/p)`, which its own development never covered.
+
+The subsumption is genuine rather than a renaming: the sieve's telescoping Euler-product argument is
+replaced by three abstract properties, and the reporter inherits a strictly larger domain than it was
+built with.
+
+## 2026-08-07 — the enlarged domain is a subspace
+
+The `ell^1` domain was known to be a subspace (`HasReferenceResidue.add`, `.const_mul`). The enlarged
+domain `ell^1 + o(1/p)` was not, which left the residue functional without an algebraic home on the
+domain where it is actually used.
+
+`[PROVED HERE]` in `HTGeometry/CofinalUnitProfileResidue`:
+
+- `IsCofinitelyNegligible.add` — split the tolerance in half and take the union of the two finite
+  exceptional sets.
+- `IsCofinitelyNegligible.const_mul` — scale the tolerance by `‖k‖`, with the zero scalar handled
+  separately since `‖0‖ ≤ ε·h` needs `h ≥ 0`.
+- `HasReferenceResidueMod.add`, `HasReferenceResidueMod.const_mul` — hence the enlarged domain is a
+  subspace and the residue is linear on it.
+
+This mirrors, on the harmonic side, the subspace structure established for the weighted Euler layers
+in `weighted-euler-layers-are-subspaces.md`: on both sides the ideal is now known to be a subspace not
+containing the reference, which is exactly what makes the residue a coordinate rather than merely a
+limit.
+
+`lake build` green, axioms `[propext, Classical.choice, Quot.sound]`; all four dependent modules
+rebuild clean.
+
+## 2026-08-07 — the sieve profile is a probability distribution on the first-divisor index
+
+The identification promised in the prime-valuation card is now a theorem rather than a remark.
+
+New module `RHTower/RouteRSieveWeightIsEventMass.lean` (`lake build` green, 11306 jobs, axioms
+`[propext, Classical.choice, Quot.sound]`, in the umbrella):
+
+- `firstDivisorEvent e N n` — the event, in the prime-valuation product sector, that the first `n`
+  primes of the tail at `N` have valuation zero and the next one divides.
+- `primeValuationMeasure_firstDivisorEvent` — **its mass is exactly `w_{N,n}`**, the restarted Euler
+  sieve weight. The cylinder product formula returns `(∏_{k<n}(1 - 1/p_{N+k})) · (1/p_{N+n})`, using
+  `μ_p({0}) = 1 - 1/p` and `μ_p({0}ᶜ) = 1/p`.
+- `hasSum_toReal_primeValuationMeasure_firstDivisorEvent` — the masses sum to one, so **the index of
+  the first dividing tail prime is almost surely defined**.
+
+That last statement is the corpus's telescoping identity `∑_n w_{N,n} = 1` read probabilistically: the
+identity that made the sieve a *bounded cofinal unit profile* in the first place is the normalisation
+of an honest distribution. The profile layer, the sieve layer and the valuation sector are one object
+seen three ways — combinatorially, analytically, and measure-theoretically.

@@ -225,7 +225,7 @@ theorem xi_ofReal_one_add_eq_boseMellin {a : ℝ} (ha : 0 < a) :
     simp only [Complex.ofReal_re]
     linarith
   rw [xi_eq_mul_completedRiemannZeta hne0 hne1,
-    completedRiemannZeta_eq_Gammaℝ_mul hne0 hrepos, Complex.Gammaℝ_def]
+    completedRiemannZeta_eq_Gammaℝ_mul hrepos, Complex.Gammaℝ_def]
   have hzeta : riemannZeta (((1 + a : ℝ) : ℂ)) = ((realZetaSeries (1 + a) : ℝ) : ℂ) := by
     rw [← ofReal_realZetaSeries (s := 1 + a) (by linarith)]
   have hhalf : (((1 + a : ℝ) : ℂ)) / 2 = (((1 + a) / 2 : ℝ) : ℂ) := by push_cast; ring

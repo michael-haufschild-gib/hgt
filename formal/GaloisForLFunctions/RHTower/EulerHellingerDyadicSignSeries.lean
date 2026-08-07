@@ -66,7 +66,7 @@ theorem hasSum_neg_log_one_sub_rpow {p : ℕ} (hp : p.Prime) {σ : ℝ} (hσ : 0
   exact hlt
 
 /-- The local term of the Euler logarithm series in prime-power coordinates. -/
-theorem pow_rpow_neg_eq {p : ℕ} (hp : p.Prime) (σ : ℝ) (k : ℕ) :
+theorem pow_rpow_neg_eq {p : ℕ} (_hp : p.Prime) (σ : ℝ) (k : ℕ) :
     ((p : ℝ) ^ (-σ)) ^ (k + 1) = (p : ℝ) ^ (-σ * ((k : ℝ) + 1)) := by
   have hp0 : (0 : ℝ) ≤ (p : ℝ) := by positivity
   rw [← Real.rpow_natCast ((p : ℝ) ^ (-σ)) (k + 1), ← Real.rpow_mul hp0]

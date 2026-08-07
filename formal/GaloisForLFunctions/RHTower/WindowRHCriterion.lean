@@ -22,11 +22,11 @@ open Filter Topology
 namespace RHTower
 
 
-theorem neg_logDeriv_zeta_shifted_residue {ρ : ℂ} (hρ1 : ρ ≠ 1) (hζρ : riemannZeta ρ = 0) :
+theorem neg_logDeriv_zeta_shifted_residue {ρ : ℂ} (hζρ : riemannZeta ρ = 0) :
     ∃ m : ℕ, 1 ≤ m ∧ Tendsto (fun s => (s - (ρ + 1 / 2)) *
         (-deriv riemannZeta (s - 1 / 2) / riemannZeta (s - 1 / 2)))
       (𝓝[≠] (ρ + 1 / 2)) (𝓝 (-(m : ℂ))) := by
-  obtain ⟨m, hm1, hres⟩ := neg_logDeriv_zeta_zero_residue hρ1 hζρ
+  obtain ⟨m, hm1, hres⟩ := neg_logDeriv_zeta_zero_residue hζρ
   refine ⟨m, hm1, ?_⟩
   have hshift : Tendsto (fun s : ℂ => s - 1 / 2) (𝓝[≠] (ρ + 1 / 2)) (𝓝[≠] ρ) := by
     have := sub_const_punctured_tendsto (ρ + 1 / 2) (1 / 2)
@@ -40,11 +40,11 @@ noncomputable def windowObservable (W : ℂ → ℂ) (s : ℂ) : ℂ :=
 /-- **General off-critical detection.**  For any window multiplier `W` continuous and nonzero at `ρ+½`,
 a zeta zero `ρ` with `Re ρ > ½` makes `windowObservable W` have a genuine singularity at `s = ρ+½`. -/
 theorem windowObservable_no_limit (W : ℂ → ℂ) {ρ : ℂ}
-    (hρ1 : ρ ≠ 1) (hζρ : riemannZeta ρ = 0)
+    (hζρ : riemannZeta ρ = 0)
     (hWcont : ContinuousAt W (ρ + 1 / 2)) (hWne : W (ρ + 1 / 2) ≠ 0) :
     ¬ ∃ M : ℂ, Tendsto (windowObservable W) (𝓝[≠] (ρ + 1 / 2)) (𝓝 M) := by
   rintro ⟨M, hM⟩
-  obtain ⟨m, hm1, hres⟩ := neg_logDeriv_zeta_shifted_residue hρ1 hζρ
+  obtain ⟨m, hm1, hres⟩ := neg_logDeriv_zeta_shifted_residue hζρ
   have ha : Tendsto (fun s : ℂ => s - (ρ + 1 / 2)) (𝓝[≠] (ρ + 1 / 2)) (𝓝 0) :=
     ((continuous_id.sub continuous_const).tendsto' (ρ + 1 / 2) 0 (by simp)).mono_left
       nhdsWithin_le_nhds
@@ -72,13 +72,15 @@ theorem RH_of_windowObservable_regular (W : ℂ → ℂ) (hWcont : Continuous W)
     (hWne : ∀ ρ : ℂ, 1 / 2 < ρ.re → W (ρ + 1 / 2) ≠ 0)
     (hreg : ∀ a : ℂ, 1 < a.re → a ≠ 3 / 2 →
       ∃ M : ℂ, Tendsto (windowObservable W) (𝓝[≠] a) (𝓝 M)) :
-    ∀ ρ : ℂ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1 / 2 := by
-  intro ρ hζρ hρ1
+    RiemannHypothesis := by
+  rw [riemannHypothesis_iff_forall_zero_re_le_half]
+  intro ρ hζρ
+  have hρ1 : ρ ≠ 1 := riemannZeta_zero_ne_one hζρ
   by_contra h
   have hgt : 1 / 2 < ρ.re := not_le.mp h
   have hre : 1 < (ρ + 1 / 2).re := by rw [Complex.add_re]; simp; linarith
   have hne32 : ρ + 1 / 2 ≠ 3 / 2 := fun heq => hρ1 (by linear_combination heq)
-  exact windowObservable_no_limit W hρ1 hζρ hWcont.continuousAt (hWne ρ hgt)
+  exact windowObservable_no_limit W hζρ hWcont.continuousAt (hWne ρ hgt)
     (hreg (ρ + 1 / 2) hre hne32)
 
 /-- **The sharp bounded-variation-window RH criterion** — the instance for
@@ -87,7 +89,7 @@ theorem RH_of_sharpWindow_regular (L : ℝ) (hL : 0 < L)
     (hreg : ∀ a : ℂ, 1 < a.re → a ≠ 3 / 2 →
       ∃ M : ℂ, Tendsto (windowObservable (fun s => rectangularWindowAmplitude L (s - 1)))
         (𝓝[≠] a) (𝓝 M)) :
-    ∀ ρ : ℂ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1 / 2 := by
+    RiemannHypothesis := by
   refine RH_of_windowObservable_regular _
     ((rectangularWindowAmplitude_differentiable L).continuous.comp (continuous_id.sub continuous_const))
     (fun ρ hρ => rectangularWindowAmplitude_ne_zero hL ?_) hreg
@@ -105,7 +107,7 @@ every point of `Re s > 1` other than `s = 3/2`.  Because `Re(a-½) > ½` and `a 
 `ζ(a-½) ≠ 0` and `a-½ ≠ 1`, the factor `-ζ'/ζ(a-½)` is holomorphic there
 (`differentiableAt_neg_logDeriv_riemannZeta`), and `W` is continuous. -/
 theorem windowObservable_regular_of_RH (W : ℂ → ℂ) (hWcont : Continuous W)
-    (hRH : ∀ ρ : ℂ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1 / 2) :
+    (hRH : RiemannHypothesis) :
     ∀ a : ℂ, 1 < a.re → a ≠ 3 / 2 →
       ∃ M : ℂ, Tendsto (windowObservable W) (𝓝[≠] a) (𝓝 M) := by
   intro a ha ha32
@@ -116,7 +118,7 @@ theorem windowObservable_regular_of_RH (W : ℂ → ℂ) (hWcont : Continuous W)
       rw [show (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) by norm_num, Complex.ofReal_re]
     rw [e2]; linarith
   have hane0 : riemannZeta (a - 1 / 2) ≠ 0 := fun hz => by
-    have := hRH (a - 1 / 2) hz ha1; linarith
+    have := riemannHypothesis_iff_forall_zero_re_le_half.mp hRH (a - 1 / 2) hz; linarith
   have hg : DifferentiableAt ℂ
       (fun s => -deriv riemannZeta (s - 1 / 2) / riemannZeta (s - 1 / 2)) a :=
     (differentiableAt_neg_logDeriv_riemannZeta ha1 hane0).comp a
@@ -132,7 +134,7 @@ zeros with `Re > ½`) is **equivalent** to regularity of `windowObservable W` on
 `windowObservable_regular_of_RH`. -/
 theorem RH_iff_windowObservable_regular (W : ℂ → ℂ) (hWcont : Continuous W)
     (hWne : ∀ ρ : ℂ, 1 / 2 < ρ.re → W (ρ + 1 / 2) ≠ 0) :
-    (∀ ρ : ℂ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1 / 2)
+    RiemannHypothesis
       ↔ (∀ a : ℂ, 1 < a.re → a ≠ 3 / 2 →
           ∃ M : ℂ, Tendsto (windowObservable W) (𝓝[≠] a) (𝓝 M)) :=
   ⟨windowObservable_regular_of_RH W hWcont,
@@ -142,7 +144,7 @@ theorem RH_iff_windowObservable_regular (W : ℂ → ℂ) (hWcont : Continuous W
 `bounded-variation-prime-window-divisor-tomography`: RH ⟺ the sharp-window observable
 `A_L(s-1)·(-ζ'/ζ)(s-½)` is regular on `Re s > 1` off `s = 3/2`. -/
 theorem RH_iff_sharpWindow_regular (L : ℝ) (hL : 0 < L) :
-    (∀ ρ : ℂ, riemannZeta ρ = 0 → ρ ≠ 1 → ρ.re ≤ 1 / 2)
+    RiemannHypothesis
       ↔ (∀ a : ℂ, 1 < a.re → a ≠ 3 / 2 →
           ∃ M : ℂ, Tendsto (windowObservable (fun s => rectangularWindowAmplitude L (s - 1)))
             (𝓝[≠] a) (𝓝 M)) := by

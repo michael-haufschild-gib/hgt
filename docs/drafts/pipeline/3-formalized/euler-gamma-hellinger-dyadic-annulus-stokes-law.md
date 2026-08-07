@@ -1,7 +1,7 @@
 # Euler--Gamma--Hellinger dyadic annulus and cofinal-confluence fracture
 
 - **ID:** `euler-gamma-hellinger-dyadic-annulus-stokes-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT SOURCE-CURRENT BRIDGE / IRREGULAR-BOUNDARY DIAGNOSTIC
 - **Scientific status:** `[PAPER-PROVED] [CORPUS-NEW BRIDGE]`
   `[EXTERNAL NOVELTY UNVERIFIED] [NOT RH] [NO COMPUTATION]`
@@ -901,3 +901,142 @@ after which `sum_(p<=t) 1/p = log log t + M + o(1)` splits the integral into
 substitution `u = delta log t` and the `-gamma` integral above), `M . 2^(-delta) -> M`, and a
 vanishing error term.  Comparing the two limits gives `M = gamma + sum_p (log(1-1/p)+1/p)`, hence
 Mertens' third theorem and `(25)`.
+
+#### Section 5 complete: `(25)` is unconditional in Lean
+
+The whole of section 5's boxed law is now formalized, `#print axioms` clean (only `propext`,
+`Classical.choice`, `Quot.sound`).  Seven new modules close the two inputs recorded above.
+
+```text
+RHTower/MertensConstantIdentification.lean                                     -- M2, Abelian half
+  mertensErrorTail t                  = sum_(p<=t) 1/p - log log t - M, tends to 0;
+  integrableOn_rpow_mul_mertensErrorTail : the Abel weight integrates the error;
+  primeZeta_split                     : P(1+delta) splits into log-log, constant and error parts;
+  tendsto_primeZeta_add_log_abelian   : P(s) + log(s-1) -> M - gamma;
+  mertensSecondConstant_eq            : M = gamma - D(1) = gamma + sum_p (log(1-1/p)+1/p).
+
+RHTower/MertensThirdTheorem.lean                                               -- M3
+  mertensPrimeProduct N               = prod_(p <= N) (1 - 1/p);
+  log_mertensPrimeProduct             : log a_N = B_N - A(N);
+  tendsto_primeLogDefectPartial       : B_N -> -D(1);
+  tendsto_mertensPrimeProduct_mul_log : a_N log N -> e^(-gamma).       -- Mertens' third theorem
+
+RHTower/PrimeRecipBelowWindow.lean
+  primeRecipBelow N                   = sum_(p < N) 1/p;
+  tendsto_primeRecipBelow_sub_logLog  : A(N) - log log N -> M;
+  powerWindowIndex theta N            = floor(N^theta) + 1;
+  tendsto_primeRecipBelow_window      : A(N) - A(N^theta) -> -log theta.
+
+RHTower/EulerHellingerLocalGrowthBounds.lean
+  neg_log_one_sub_le_of_le            : -log(1-x) <= (1-q)^(-1) x for x <= q < 1;
+  localSewingLog_le                   : local cost <= K_c p^(2c-1);
+  localSewingLog_ge                   : local cost >= (1/2) p^(2c-1) once p^c >= 6.
+
+RHTower/EulerHellingerSewingLogRatio.lean
+  logReflectedSewingBelow_le          : L_N(c) <= K_c N^(2c) A(N);
+  logReflectedSewingBelow_ge          : L_N(c) >= (1/2) N^(2c theta) (A(N) - A(N^theta));
+  tendsto_log_logReflectedSewing_div_log : log L_N(c) / log N -> 2c.
+
+RHTower/EulerHellingerAcceleratedBoundary.lean
+  mertensPrimeProductBelow N          = prod_(p < N) (1 - 1/p);
+  tendsto_mertensPrimeProductBelow_mul_log : a_N log N -> e^(-gamma) in the half-open convention;
+  tendsto_mertensProduct_mul_log_logReflectedSewing :
+    a_N log L_N(c) -> 2 e^(-gamma) c.                                          -- (25)
+```
+
+The lower half of the growth rate uses only the fixed power window `[N^theta, N)`, whose reciprocal
+prime mass is `-log theta > 0` by Mertens' second theorem; letting `theta` approach `1` inside the
+order topology gives `2c` exactly.  No prime number theorem enters `(25)`.
+
+Equation `(24)`, the sharp prime--Wold asymptotic `L_x(c) = x^(2c)/(2c log x)(1+o(1))`, is a
+statement imported from the parent card `prime-wold-accelerated-type-modular-drift-law.md`; it is
+sharper than what `(25)` consumes.  It is formalized separately from the corpus's own unconditional
+prime number theorem with error term.
+
+#### Section 5 complete: `(24)` is unconditional in Lean as well
+
+The sharp prime--Wold asymptotic is no longer imported.  It is proved here from the corpus's own
+unconditional prime number theorem in Chebyshev form (`chebyshev_asymptotic''`), by Abel summation
+of the prime power against `theta`.  Six further modules, `#print axioms` clean.
+
+```text
+HTGeometry/RpowPartialSumBound.lean
+  rpow_succ_sub_rpow_ge        : a n^(a-1) <= n^a - (n-1)^a, by weighted AM-GM;
+  sum_rpow_sub_one_le          : sum_(n<=M) n^(a-1) <= M^a/a  for 0 < a < 1.
+
+HTGeometry/LogWeightedRpowIntegral.lean
+  logRpowIntegral a x          = int_2^x t^(a-1)/log t dt;
+  logSqRpowIntegral a x        = int_2^x t^(a-1)/log^2 t dt;
+  integral_rpowDivLog_le/_ge   : the logarithm is pinned on each window;
+  tendsto_logRpowIntegral      : J(x) . a log x / x^a -> 1     (split at x^(1-eps));
+  tendsto_logSqRpowIntegral    : K(x) . log x / x^a -> 0.
+
+RHTower/PrimeRpowAbelSummation.lean
+  primeLogWeight n             = Lambda-free prime log mass;  its partial sums are theta;
+  rpowDivLog a t               = t^(a-1)/log t, the Abel weight;
+  derivRpowDivLog, mul_derivRpowDivLog : t f'(t) = (a-1) t^(a-1)/log t - t^(a-1)/log^2 t;
+  abelKernel, abs_abelKernel_le        : |t f'(t)| <= C_a t^(a-1)/log t;
+  primeRpowSumIoc_eq           : sum_(2<p<=x) p^(a-1) = f(x)theta(x) - f(2)theta(2)
+                                 - int_2^x f'(t) theta(t) dt.
+
+RHTower/PrimeRpowSumAsymptotic.lean
+  tendsto_abelRemainder        : the g-weighted Abel remainder is o(x^a/log x);
+  tendsto_primeRpowSumIoc      : sum_(2<p<=x) p^(a-1) . a log x / x^a -> 1.
+
+RHTower/EulerHellingerLocalFirstOrder.lean
+  localFirstPower p c          = the first prime power of the local series;
+  localSewingTerm_le           : every prime power is <= (p^(2c-1))^(k+1);
+  localSewingLog_sub_firstPower_le : the higher prime powers sum to a geometric tail;
+  abs_localSewingLog_sub_rpow_le   : |localSewingLog p c - p^(2c-1)| <= K_c p^(alpha-1),
+                                     alpha = max (4c-1) c < 2c.
+
+RHTower/EulerHellingerPrimeWoldAsymptotic.lean
+  primeRpowSumBelow a N        = sum_(p<N) p^(a-1);
+  sum_primesBelow_rpow_le      : sum_(p<N) p^(alpha-1) <= N^alpha/alpha;
+  tendsto_primeRpowSumBelow    : the half-open prime power sum has the same asymptotic;
+  abs_logReflectedSewing_sub_primeRpowSum_le : |L_N(c) - sum_(p<N) p^(2c-1)| = O(N^alpha);
+  tendsto_logReflectedSewing_mul_log_div_rpow :
+    L_N(c) . 2c log N / N^(2c) -> 1.                                            -- (24)
+```
+
+Section 5 is therefore fully formalized: `(24)` from the prime number theorem, `(25)` from
+Mertens' first, second and third theorems, independently of `(24)`.
+
+## Formal audit
+
+Every proved statement of this card is formalized in Lean 4 (mathlib v4.32.2) with no premises, no
+added axioms, and no `sorry`.  `#print axioms` on each capstone returns exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+| Card equation | Lean declaration |
+|---|---|
+| `(5)` dyadic Euler-log identity | `RHTower.logReflectedSewingBelow_eq` |
+| `(6)` strict positivity | `RHTower.localSewingLog_pos`, `RHTower.logReflectedSewingBelow_pos` |
+| `(10)` quadrant annulus | `RHTower.logReflectedSewingBelow_eq_laplace_annulus` |
+| `(11)` annulus pairing | `RHTower.logReflectedSewingBelow_eq_cosh_pairing` |
+| `(12)` vanishing to order two | `RHTower.iteratedDeriv_two_logReflectedSewing` |
+| `(13)` cubic coefficient | `RHTower.iteratedDeriv_three_logReflectedSewing_eq_tsum` |
+| `(17)` shrinking-window profile | `RHTower.tendsto_logReflectedSewing_criticalWindow` |
+| `(18)` window remainder | `RHTower.abs_orientedHellingerDyadicProfile_sub_cube_le` |
+| `(23)` window measure law | `RHTower.tendsto_confluenceWindowPairing` |
+| `(24)` prime--Wold asymptotic | `RHTower.tendsto_logReflectedSewing_mul_log_div_rpow` |
+| `(25)` accelerated boundary | `RHTower.tendsto_mertensProduct_mul_log_logReflectedSewing` |
+| `(27)` Gamma half-height moment | `RHTower.gammaSewnSynchronizedEulerHalfHeightSecondMoment_eq` |
+| `(28)` local factorization | `RHTower.cubicAnnulusPrimeCurrent_eq_woldActivation_mul_secondMoment` |
+
+Reusable infrastructure built for this card and now available to the whole corpus:
+
+| Statement | Lean declaration |
+|---|---|
+| `int_0^infty (log t) e^(-t) dt = -gamma` | `HTGeometry.integral_log_mul_exp_neg_Ioi` |
+| Mertens' second theorem with constant | `RHTower.tendsto_primeRecipSum_sub_logLog` |
+| the Mertens constant `M = gamma + sum_p (log(1-1/p)+1/p)` | `RHTower.mertensSecondConstant_eq` |
+| Mertens' third theorem `prod (1-1/p) log x -> e^(-gamma)` | `RHTower.tendsto_mertensPrimeProduct_mul_log` |
+| the prime power-window reciprocal mass | `RHTower.tendsto_primeRecipBelow_window` |
+| `sum_(n<=M) n^(a-1) <= M^a/a` for `0<a<1` | `HTGeometry.sum_rpow_sub_one_le` |
+| `int_2^x t^(a-1)/log t dt ~ x^a/(a log x)` | `HTGeometry.tendsto_logRpowIntegral` |
+| Abel summation of `p^(a-1)` against `theta` | `RHTower.primeRpowSumIoc_eq` |
+| `sum_(p<=x) p^(a-1) ~ x^a/(a log x)` | `RHTower.tendsto_primeRpowSumIoc` |
+
+The five unchecked gates are construction tasks for the RH-bearing chain map `(26)`, not
+formalization gaps: `(26)` is not proved on paper and is explicitly flagged as unproved.

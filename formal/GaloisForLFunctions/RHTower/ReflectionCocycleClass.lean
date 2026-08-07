@@ -29,6 +29,7 @@ import GaloisForLFunctions.RHTower.WeldClassTable
 import GaloisForLFunctions.RHTower.DegreeZeroOffline
 import GaloisForLFunctions.RHTower.IntegralFEPolynomial
 import Mathlib.NumberTheory.LSeries.RiemannZeta
+import Mathlib.NumberTheory.LSeries.Dirichlet
 import Mathlib.Analysis.SpecialFunctions.Gamma.Deligne
 
 noncomputable section
@@ -365,19 +366,19 @@ theorem conductorClass_ne_zero {Q : ℕ} (hQ : 2 ≤ Q) : weldClassHom (Real.log
 
 /-! ### §7 Zeta's reflection cocycle is purely archimedean -/
 
-/-- **Exact open-strip zeta value reflection.** Throughout the open critical strip, including at
-zeta zeros, reflection multiplies `ζ(s)` by the pure archimedean ratio
-`Gammaℝ(s)/Gammaℝ(1-s)`. This is the denominator-free value law underlying the zeta cocycle; no
-zeta nonvanishing premise is needed. -/
-theorem riemannZeta_one_sub_eq_gammaRatio_mul {s : ℂ}
-    (h0 : 0 < s.re) (h1 : s.re < 1) :
+/-- **Zeta value reflection wherever the archimedean factors are regular.** Reflection multiplies
+`ζ(s)` by the pure archimedean ratio `Gammaℝ(s)/Gammaℝ(1-s)`. The sharp hypothesis is nonvanishing
+of the two `Γ_ℝ` factors: it already forces `s ≠ 0` and `s ≠ 1`, since `Γ_ℝ` vanishes at every
+nonpositive even integer. No zeta nonvanishing premise is needed, and the identity holds at zeta
+zeros. -/
+theorem riemannZeta_one_sub_eq_gammaRatio_mul_of_Gammaℝ_ne_zero {s : ℂ}
+    (hΓs : Complex.Gammaℝ s ≠ 0) (hΓ1 : Complex.Gammaℝ (1 - s) ≠ 0) :
     riemannZeta (1 - s) =
       (Complex.Gammaℝ s / Complex.Gammaℝ (1 - s)) * riemannZeta s := by
-  have hsne : s ≠ 0 := by intro h; rw [h] at h0; simp at h0
-  have h1re : 0 < (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
-  have h1ne : (1 - s) ≠ 0 := by intro h; rw [h] at h1re; simp at h1re
-  have hΓs : Complex.Gammaℝ s ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos h0
-  have hΓ1 : Complex.Gammaℝ (1 - s) ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos h1re
+  have hsne : s ≠ 0 := fun h =>
+    hΓs (Complex.Gammaℝ_eq_zero_iff.mpr ⟨0, by rw [h]; norm_num⟩)
+  have h1ne : (1 : ℂ) - s ≠ 0 := fun h =>
+    hΓ1 (Complex.Gammaℝ_eq_zero_iff.mpr ⟨0, by rw [h]; norm_num⟩)
   have key : ∀ z : ℂ, z ≠ 0 → Complex.Gammaℝ z ≠ 0 →
       Complex.Gammaℝ z * riemannZeta z = completedRiemannZeta z := by
     intro z hz hΓz
@@ -387,16 +388,225 @@ theorem riemannZeta_one_sub_eq_gammaRatio_mul {s : ℂ}
   field_simp [hΓ1]
   linear_combination hfe
 
+/-- **Zeta-zero reflection wherever the archimedean factors are regular.** Functional-equation
+reflection preserves the zeta zero locus exactly; the archimedean multiplier is a ratio of two
+nonzero numbers. -/
+theorem riemannZeta_one_sub_eq_zero_iff_of_Gammaℝ_ne_zero {s : ℂ}
+    (hΓs : Complex.Gammaℝ s ≠ 0) (hΓ1 : Complex.Gammaℝ (1 - s) ≠ 0) :
+    riemannZeta (1 - s) = 0 ↔ riemannZeta s = 0 := by
+  rw [riemannZeta_one_sub_eq_gammaRatio_mul_of_Gammaℝ_ne_zero hΓs hΓ1]
+  simp [hΓs, hΓ1]
+
+/-- Both archimedean factors of the reflection multiplier are nonzero as soon as neither `s` nor
+`1 - s` sits on the pole ladder of `Γ_ℝ`, the nonpositive even integers. -/
+theorem Gammaℝ_pair_ne_zero_off_poles {s : ℂ}
+    (hs : ∀ m : ℕ, s / 2 ≠ -(m : ℂ)) (h1s : ∀ m : ℕ, (1 - s) / 2 ≠ -(m : ℂ)) :
+    Complex.Gammaℝ s ≠ 0 ∧ Complex.Gammaℝ (1 - s) ≠ 0 := by
+  constructor
+  · intro h
+    obtain ⟨n, hn⟩ := Complex.Gammaℝ_eq_zero_iff.mp h
+    exact hs n (by rw [hn]; ring)
+  · intro h
+    obtain ⟨n, hn⟩ := Complex.Gammaℝ_eq_zero_iff.mp h
+    exact h1s n (by rw [hn]; ring)
+
+/-- **Zeta value reflection off the two pole ladders.** -/
+theorem riemannZeta_one_sub_eq_gammaRatio_mul_off_poles {s : ℂ}
+    (hs : ∀ m : ℕ, s / 2 ≠ -(m : ℂ)) (h1s : ∀ m : ℕ, (1 - s) / 2 ≠ -(m : ℂ)) :
+    riemannZeta (1 - s) =
+      (Complex.Gammaℝ s / Complex.Gammaℝ (1 - s)) * riemannZeta s :=
+  riemannZeta_one_sub_eq_gammaRatio_mul_of_Gammaℝ_ne_zero
+    (Gammaℝ_pair_ne_zero_off_poles hs h1s).1 (Gammaℝ_pair_ne_zero_off_poles hs h1s).2
+
+/-- **Zeta-zero reflection off the two pole ladders.** The zero locus of `ζ` is invariant under
+`s ↦ 1 - s` on the whole plane minus the even ladder `-2m` and its reflection `1 + 2m`. -/
+theorem riemannZeta_one_sub_eq_zero_iff_off_poles {s : ℂ}
+    (hs : ∀ m : ℕ, s / 2 ≠ -(m : ℂ)) (h1s : ∀ m : ℕ, (1 - s) / 2 ≠ -(m : ℂ)) :
+    riemannZeta (1 - s) = 0 ↔ riemannZeta s = 0 :=
+  riemannZeta_one_sub_eq_zero_iff_of_Gammaℝ_ne_zero
+    (Gammaℝ_pair_ne_zero_off_poles hs h1s).1 (Gammaℝ_pair_ne_zero_off_poles hs h1s).2
+
+/-- **Exact open-strip zeta value reflection.** The open strip keeps both `Γ_ℝ` factors in the
+right half-plane, where they are nonvanishing. -/
+theorem riemannZeta_one_sub_eq_gammaRatio_mul {s : ℂ}
+    (h0 : 0 < s.re) (h1 : s.re < 1) :
+    riemannZeta (1 - s) =
+      (Complex.Gammaℝ s / Complex.Gammaℝ (1 - s)) * riemannZeta s := by
+  have h1re : 0 < (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
+  exact riemannZeta_one_sub_eq_gammaRatio_mul_of_Gammaℝ_ne_zero
+    (Complex.Gammaℝ_ne_zero_of_re_pos h0) (Complex.Gammaℝ_ne_zero_of_re_pos h1re)
+
 /-- **Open-strip zeta-zero reflection.** Functional-equation reflection preserves the zeta zero
 locus exactly; the archimedean multiplier is nowhere zero in the open strip. -/
 theorem riemannZeta_one_sub_eq_zero_iff {s : ℂ}
     (h0 : 0 < s.re) (h1 : s.re < 1) :
     riemannZeta (1 - s) = 0 ↔ riemannZeta s = 0 := by
-  rw [riemannZeta_one_sub_eq_gammaRatio_mul h0 h1]
   have h1re : 0 < (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
-  have hΓs : Complex.Gammaℝ s ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos h0
-  have hΓ1 : Complex.Gammaℝ (1 - s) ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos h1re
-  simp [hΓs, hΓ1]
+  exact riemannZeta_one_sub_eq_zero_iff_of_Gammaℝ_ne_zero
+    (Complex.Gammaℝ_ne_zero_of_re_pos h0) (Complex.Gammaℝ_ne_zero_of_re_pos h1re)
+
+/-- **No zeros of `ζ` in the closed left half-plane beyond the trivial ones.** For `Re s ≤ 0` the
+reflected point has `Re (1 - s) ≥ 1`, where `ζ` is nonvanishing by the Euler product; reflection
+carries that nonvanishing back, provided `s` itself is off the pole ladder of `Γ_ℝ` — i.e. provided
+`s` is neither `0` nor one of the trivial zeros `-2, -4, -6, …`. At `s = 0` the value `ζ(0) = -1/2`
+settles it directly, so no hypothesis beyond nontriviality is needed. -/
+theorem riemannZeta_ne_zero_of_re_le_zero {s : ℂ} (hre : s.re ≤ 0)
+    (htriv : ∀ n : ℕ, s ≠ -(2 * ((n : ℂ) + 1))) :
+    riemannZeta s ≠ 0 := by
+  rcases eq_or_ne s 0 with rfl | hs0
+  · rw [riemannZeta_zero]; norm_num
+  · have h1re : 1 ≤ (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
+    have hΓ1 : Complex.Gammaℝ (1 - s) ≠ 0 :=
+      Complex.Gammaℝ_ne_zero_of_re_pos (by linarith)
+    have hΓs : Complex.Gammaℝ s ≠ 0 := by
+      intro h
+      obtain ⟨n, hn⟩ := Complex.Gammaℝ_eq_zero_iff.mp h
+      cases n with
+      | zero => exact hs0 (by rw [hn]; norm_num)
+      | succ k => exact htriv k (by rw [hn]; push_cast; ring)
+    intro h
+    exact riemannZeta_ne_zero_of_one_le_re h1re
+      ((riemannZeta_one_sub_eq_zero_iff_of_Gammaℝ_ne_zero hΓs hΓ1).mpr h)
+
+/-- **No zeros of `ζ` to the left of the strip beyond the trivial ones.** -/
+theorem riemannZeta_ne_zero_of_re_lt_zero {s : ℂ} (hre : s.re < 0)
+    (htriv : ∀ n : ℕ, s ≠ -(2 * ((n : ℂ) + 1))) :
+    riemannZeta s ≠ 0 :=
+  riemannZeta_ne_zero_of_re_le_zero hre.le htriv
+
+/-- **The zero locus of `ζ` in the closed left half-plane is exactly the trivial ladder.** -/
+theorem riemannZeta_eq_zero_iff_of_re_le_zero {s : ℂ} (hre : s.re ≤ 0) :
+    riemannZeta s = 0 ↔ ∃ n : ℕ, s = -(2 * ((n : ℂ) + 1)) := by
+  constructor
+  · intro h
+    by_contra hc
+    exact riemannZeta_ne_zero_of_re_le_zero hre (fun n hn => hc ⟨n, hn⟩) h
+  · rintro ⟨n, rfl⟩
+    rw [show -(2 * ((n : ℂ) + 1)) = -2 * ((n : ℂ) + 1) by ring]
+    exact riemannZeta_neg_two_mul_nat_add_one n
+
+/-- **The zero locus of `ζ` left of the strip is exactly the trivial ladder.** -/
+theorem riemannZeta_eq_zero_iff_of_re_lt_zero {s : ℂ} (hre : s.re < 0) :
+    riemannZeta s = 0 ↔ ∃ n : ℕ, s = -(2 * ((n : ℂ) + 1)) :=
+  riemannZeta_eq_zero_iff_of_re_le_zero hre.le
+
+/-- **A zero of `ζ` lies strictly left of `Re s = 1`.** Euler-product nonvanishing, contraposed;
+no nontriviality is needed for this edge. -/
+theorem riemannZeta_zero_re_lt_one {s : ℂ} (hz : riemannZeta s = 0) : s.re < 1 := by
+  by_contra hc
+  exact riemannZeta_ne_zero_of_one_le_re (not_lt.mp hc) hz
+
+/-- **A zero of `ζ` is not the pole.** -/
+theorem riemannZeta_zero_ne_one {s : ℂ} (hz : riemannZeta s = 0) : s ≠ 1 := by
+  intro h
+  have := riemannZeta_zero_re_lt_one hz
+  rw [h, Complex.one_re] at this
+  exact absurd this (lt_irrefl 1)
+
+/-- **A nontrivial zero of `ζ` lies strictly right of `Re s = 0`.** -/
+theorem riemannZeta_zero_re_pos {s : ℂ} (hz : riemannZeta s = 0)
+    (htriv : ∀ n : ℕ, s ≠ -(2 * ((n : ℂ) + 1))) :
+    0 < s.re := by
+  by_contra hc
+  exact riemannZeta_ne_zero_of_re_le_zero (not_lt.mp hc) htriv hz
+
+/-- **Every nontrivial zero of `ζ` lies in the open critical strip.** The right-hand edge is the
+Euler-product nonvanishing on `Re s ≥ 1`; the left-hand edge is its reflection. This is the
+connector that turns the strip membership of a zero from a hypothesis into a consequence. -/
+theorem riemannZeta_zero_re_mem_Ioo {s : ℂ} (hz : riemannZeta s = 0)
+    (htriv : ∀ n : ℕ, s ≠ -(2 * ((n : ℂ) + 1))) :
+    0 < s.re ∧ s.re < 1 :=
+  ⟨riemannZeta_zero_re_pos hz htriv, riemannZeta_zero_re_lt_one hz⟩
+
+/-- **Global dichotomy for the zero locus of `ζ`.** Every zero is either one of the trivial zeros
+`-2, -4, -6, …` or lies in the open critical strip. -/
+theorem riemannZeta_zero_trivial_or_mem_strip {s : ℂ} (hz : riemannZeta s = 0) :
+    (∃ n : ℕ, s = -(2 * ((n : ℂ) + 1))) ∨ (0 < s.re ∧ s.re < 1) := by
+  by_cases h : ∃ n : ℕ, s = -(2 * ((n : ℂ) + 1))
+  · exact Or.inl h
+  · exact Or.inr (riemannZeta_zero_re_mem_Ioo hz fun n hn => h ⟨n, hn⟩)
+
+/-- **The Riemann hypothesis as a one-sided bound at every zero.** Nothing has to be excluded: the
+trivial zeros lie far to the left and satisfy `Re ρ ≤ 1/2` outright, the pole is not a zero, and at a
+nontrivial zero the functional equation turns the one-sided bound into equality, because `1 - ρ` is
+then a zero as well and carries the same bound. -/
+theorem riemannHypothesis_iff_forall_zero_re_le_half :
+    RiemannHypothesis ↔ ∀ ρ : ℂ, riemannZeta ρ = 0 → ρ.re ≤ 1 / 2 := by
+  constructor
+  · intro hRH ρ hz
+    by_cases ht : ∃ n : ℕ, ρ = -2 * ((n : ℂ) + 1)
+    · obtain ⟨n, rfl⟩ := ht
+      rw [show (-2 * ((n : ℂ) + 1)) = ((-2 * ((n : ℝ) + 1) : ℝ) : ℂ) by push_cast; ring,
+        Complex.ofReal_re]
+      have hn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+      linarith
+    · exact le_of_eq (hRH ρ hz ht (riemannZeta_zero_ne_one hz))
+  · intro h ρ hz ht _
+    obtain ⟨h0, h1⟩ := riemannZeta_zero_re_mem_Ioo hz fun n hn => ht ⟨n, by rw [hn]; ring⟩
+    have hs : ∀ m : ℕ, ρ / 2 ≠ -(m : ℂ) := by
+      intro m hc
+      have he : ρ = ((-(2 * (m : ℝ)) : ℝ) : ℂ) := by push_cast; linear_combination 2 * hc
+      rw [he, Complex.ofReal_re] at h0
+      have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
+      linarith
+    have h1s : ∀ m : ℕ, (1 - ρ) / 2 ≠ -(m : ℂ) := by
+      intro m hc
+      have he : ρ = ((1 + 2 * (m : ℝ) : ℝ) : ℂ) := by push_cast; linear_combination -2 * hc
+      rw [he, Complex.ofReal_re] at h1
+      have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
+      linarith
+    have hle := h (1 - ρ) ((riemannZeta_one_sub_eq_zero_iff_off_poles hs h1s).mpr hz)
+    rw [Complex.sub_re, Complex.one_re] at hle
+    have hle2 := h ρ hz
+    linarith
+
+/-- **The Riemann hypothesis as a zero-free half-plane for `ζ`.** The `ξ`-side form of this is the
+corpus's `rh_iff_xi_ne_zero_right`; this is the statement for `ζ` itself, where no completion factor
+intervenes. -/
+theorem riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re :
+    RiemannHypothesis ↔ ∀ s : ℂ, 1 / 2 < s.re → riemannZeta s ≠ 0 := by
+  rw [riemannHypothesis_iff_forall_zero_re_le_half]
+  constructor
+  · intro h s hs hz
+    exact absurd (h s hz) (not_le.mpr hs)
+  · intro h ρ hz
+    by_contra hc
+    exact h ρ (not_le.mp hc) hz
+
+/-- **The Riemann hypothesis as a zero-free left half of the strip.** Reflection exchanges the two
+halves, so forbidding zeros on either side of the critical line is the same statement. -/
+theorem riemannHypothesis_iff_riemannZeta_ne_zero_of_re_lt_half :
+    RiemannHypothesis ↔ ∀ s : ℂ, 0 < s.re → s.re < 1 / 2 → riemannZeta s ≠ 0 := by
+  have key : ∀ {s : ℂ}, riemannZeta s = 0 → 0 < s.re → s.re < 1 →
+      riemannZeta (1 - s) = 0 := by
+    intro s hz h0 h1
+    have hs : ∀ m : ℕ, s / 2 ≠ -(m : ℂ) := by
+      intro m hc
+      have he : s = ((-(2 * (m : ℝ)) : ℝ) : ℂ) := by push_cast; linear_combination 2 * hc
+      rw [he, Complex.ofReal_re] at h0
+      have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
+      linarith
+    have h1s : ∀ m : ℕ, (1 - s) / 2 ≠ -(m : ℂ) := by
+      intro m hc
+      have he : s = ((1 + 2 * (m : ℝ) : ℝ) : ℂ) := by push_cast; linear_combination -2 * hc
+      rw [he, Complex.ofReal_re] at h1
+      have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
+      linarith
+    exact (riemannZeta_one_sub_eq_zero_iff_off_poles hs h1s).mpr hz
+  rw [riemannHypothesis_iff_forall_zero_re_le_half]
+  constructor
+  · intro h s h0 hhalf hz
+    have hlt1 : s.re < 1 := riemannZeta_zero_re_lt_one hz
+    have hrefl := h (1 - s) (key hz h0 hlt1)
+    rw [Complex.sub_re, Complex.one_re] at hrefl
+    linarith
+  · intro h ρ hz
+    by_contra hc
+    have hgt : 1 / 2 < ρ.re := not_le.mp hc
+    have hlt1 : ρ.re < 1 := riemannZeta_zero_re_lt_one hz
+    refine h (1 - ρ) ?_ ?_ (key hz (by linarith) hlt1) <;>
+      · rw [Complex.sub_re, Complex.one_re]; linarith
+
 
 /-- **Unconditional open-strip zeta cocycle normal form.** The totalized reflection cocycle of
 `ζ` is the archimedean Gamma ratio off the zeta zero locus and is zero exactly on that locus. This
