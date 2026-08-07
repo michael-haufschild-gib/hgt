@@ -269,3 +269,47 @@ projective/trace-class/determinant consequences.
   by each signed greedy band mode and prove its normalized separation tends to zero.
 - Verified with foreground `lake env lean GaloisForLFunctions/RHTower/ProlateBandJointSpectrum.lean`
   (exit 0), then wired module into `GaloisForLFunctions.RHTower` umbrella.
+
+### 2026-08-07: sharp Gaussian and Hermite polynomial tails
+
+- Added `GaussianMonomialTailAsymptotic.lean`.  Proved integrability and the moving-tail derivative,
+  then used the at-infinity L'Hôpital theorem to obtain the exact leading constant `1/(2b)` for
+  every monomial Gaussian tail of degree at least two, together with the separate degree-zero law.
+- Added `GaussianPolynomialTailAsymptotic.lean`.  Lifted the scalar result to every nonzero real
+  polynomial of degree at least two: after division by `a^(d-1) exp(-b a^2)`, the tail converges
+  exactly to `leadingCoeff/(2b)`.
+- Specialized the polynomial theorem to products and squares of the self-dual Hermite polynomials,
+  proving exact one-sided tail constants `2^(m+n)/(4*pi)` and `2^(2n)/(4*pi)`.  These are the
+  leading entries required for the finite Hermite leakage Gram asymptotics behind fixed-index Fuchs
+  mode selection.
+- Verified both modules with foreground `lake env lean <file>` checks, cached their `.olean`
+  artifacts, and wired them into the `GaloisForLFunctions.RHTower` umbrella.
+
+### 2026-08-07: exact normalized Hermite truncation tails
+
+- Added `HermiteTruncationTailAsymptotic.lean`.  Converted the polynomial Gaussian laws into exact
+  two-sided truncation asymptotics for the actual normalized step-four Hermite trial vectors.
+- For every positive Hermite index `j`, proved that the squared cutoff defect divided by
+  `a^(8*j - 1) exp(-2*pi*a^2)` converges to
+  `2^(8*j)/(2*pi*‖hermiteEven j‖^2)`; proved the degree-zero law separately with scale
+  `a⁻¹ exp(-2*pi*a^2)` and constant `1/(2*pi*‖hermiteEven 0‖^2)`.
+- This removes the earlier exponent loss in the finite Hermite trial envelope: individual trial
+  leakage now has its correct `exp(-2*pi*a^2)` asymptotic.  It remains weaker than the true Fuchs
+  leakage exponent `exp(-4*pi*a^2)`, so fixed-index separation decay still requires a sharper
+  fixed-depth trial family or the global endpoint-response/WKB bridge.
+- Verified and cached the module with foreground `lake env lean <file>` and wired it into the
+  `GaloisForLFunctions.RHTower` umbrella.
+
+### 2026-08-07: sharp finite-depth signed trial envelope
+
+- Extended `HermiteTruncationTailAsymptotic.lean` with a unified ground/positive-index sharp scale,
+  proved its monotonicity in Hermite index for aperture at least one, and aggregated all
+  `(n+1)` normalized tails without losing the exponent.
+- Added `ConstrainedProlateSignedSharpTrial.lean`.  The true unsigned leakage and the true signed
+  leakage `1 - evenProlateSignedValue(a,n)^2` are now eventually bounded unconditionally by an
+  explicit positive finite-depth constant times the top Hermite scale.
+- For `n>0` the exposed rate is `a^(8*n-1) exp(-2*pi*a^2)`; for `n=0` it is
+  `a⁻¹ exp(-2*pi*a^2)`.  This replaces the old lossy `exp(-pi*a^2)/a` estimate throughout the
+  signed trial route while recording explicitly that the Fuchs exponent remains stronger.
+- Verified and cached both modules with foreground `lake env lean <file>` checks and wired the new
+  signed module into the `GaloisForLFunctions.RHTower` umbrella.

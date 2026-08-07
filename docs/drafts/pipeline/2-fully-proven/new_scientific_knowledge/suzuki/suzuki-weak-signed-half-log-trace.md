@@ -135,7 +135,8 @@ A'(L)=P F(L)/(4L^(3/2))                                 (11)
 (The constant is 4, not 2: differentiating `Y/(2sqrt(L))` gives
 `F/(2sqrt(L))-Y/(4L^(3/2))=[2LF-Y]/(4L^(3/2))`.  The normalisation
 `A=Y/(2sqrt(L))` is the one forced by `(13)`, since it is the one for
-which `A` and `H` share a limit, and it is also the one used at `(28)`.)
+which `A` and `H` share a limit, and it is the one that makes the display
+preceding `(28)`, `P f/sqrt(L)=2[H-A]`, correct.)
 
 distributionally and the bounded source is integrable against
 \(L^{-3/2}\), `(10)` implies

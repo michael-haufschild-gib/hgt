@@ -617,3 +617,60 @@ tensoring with `ℂ` every divisor becomes infinitely divisible and the root spe
 `tripticOrbitCharge_mul` is the homomorphism hypothesis of the abstract Kummer classification
 (`hasSourceRootModuloKernel_iff_content_dvd`); what still separates the two is surjectivity of the
 divisor map, i.e. realization of an arbitrary finite integral divisor by a translated gamma product.
+
+## Lean status — the augmentation law `(A2)` and the charge law `(A4)`
+
+The residue theorem needed for `(A2)` is now in the tree, for poles of **arbitrary order** — mathlib
+has no complex residue at all, and the vendored `PNTPlus` rectangle residue theorem is restricted to
+simple poles by an explicit `HasSimplePolesOn` hypothesis.
+
+`GaloisForLFunctions/HTGeometry/MeromorphicPrincipalPart.lean` (wired, axiom-clean):
+
+    exists_taylor_remainder        finite Taylor expansion with analytic remainder, in the
+                                   `taylorCoeffZero` normalization
+    principalPart                  the truncated principal part of a meromorphic germ, written with
+                                   inverse natural powers, so it is analytic off the pole and
+                                   vanishes at it
+    analyticAt_principalPart
+    eq_add_principalPart           **the principal-part splitting**: off `a`, a function whose
+                                   clearing shift `t ↦ tᵏ f(a+t)` is analytic at `0` is an analytic
+                                   germ at `a` plus its principal part truncated at `k`
+
+`GaloisForLFunctions/HTGeometry/RectangleResidueTheorem.lean` (wired, axiom-clean):
+
+    hIntegral_of_primitive, vIntegral_of_primitive
+    rectangleIntegral_eq_zero_of_primitive
+                                   the four-edge fundamental theorem of calculus
+    invPowPrimitive, hasDerivAt_invPowPrimitive
+    rectangleIntegral_inv_pow_eq_zero
+                                   `∮ (s-p)^{-m} = 0` for `m ≥ 2`, from the single-valued primitive
+                                   `(s-p)^{1-m}/(1-m)`
+    principalTail, analyticAt_principalTail, rectangleIntegral_principalTail_eq_zero
+    principalPart_eq_tail_add_residue
+    rectangleIntegral'_principalPart
+                                   the boundary integral of a principal part is its order-one
+                                   Laurent coefficient
+    rectangleBorderIntegrable_finset_sum, rectangleIntegral_finset_sum
+    rectangleIntegral'_eq_sum_laurentCoeff
+                                   **the residue theorem on a rectangle, poles of arbitrary order**
+
+`GaloisForLFunctions/HTGeometry/TripticAugmentationLaw.lean` (wired, axiom-clean):
+
+    vIntegral_period_eq            the two vertical edges cancel by `1`-periodicity
+    hIntegral_top_eq               the top edge exceeds the bottom by exactly `C`
+    triptic_augmentation_law :
+      for `U` `1`-periodic with `U(s+τ) = U s + C` and `Im τ > 0`, meromorphic on the closed
+      rectangle of width `1` and height `Im τ` with finitely many interior poles,
+
+        ∑ p ∈ P, laurentCoeff U p (-1) = -C / (2πi)
+
+    triptic_charge_law :
+      if `logDeriv Y` gains `2πin` under `τ`, then `∑ p ∈ P, ord(Y, p) = -n`
+
+That is `(A2)` and `(A4)` verbatim.  No oblique contour was needed: because `1` lies in the lattice,
+the axis-parallel rectangle of width `1` and height `Im τ` is already a fundamental domain of
+`ℤ + ℤτ`, so the card's parallelogram argument runs on a rectangle, where mathlib's Cauchy theorem
+applies directly.  Interval integrability along the shifted bottom edge is *derived* from
+`1`-periodicity plus analyticity on the border, not assumed.
+
+`#print axioms` reports `[propext, Classical.choice, Quot.sound]` for every declaration above.

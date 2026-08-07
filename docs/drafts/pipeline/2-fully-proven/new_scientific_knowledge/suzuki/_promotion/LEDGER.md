@@ -3123,3 +3123,435 @@ Only step 1 and the final assembly:
 
 Every lemma these steps invoke is built and axiom-clean. The remaining work is the card-level
 theorem statement and the eventual-hypothesis verification — no new mathematics.
+
+## CG. `(11)` is corrected in the card
+
+The trace card's `(11)` now reads `A'(L) = P F(L)/(4 L^{3/2})`, with a parenthetical giving the
+one-line differentiation and the reason the normalisation `A = Y/(2√L)` is the right one.
+
+Two independent checks fix the constant at 4, so this was a determinable typo and not a choice:
+
+1. `(13)` `liminf H ≤ α ≤ limsup H` is only meaningful if `A` and `H` share a limit, which requires
+   `A = Y/(2√L)` (for `F ~ β/√L`, `Y ~ 2β√L`).
+2. The display preceding `(28)`, `P f_ε(X_n)/√X_n = 2[H_n(X_n) − A_n(X_n)]`, is correct exactly for
+   `A = Y/(2√L)` — check: `P f/√L = 2√L f − Y/√L = 2H − 2A`.
+
+Both pin `A`, and differentiating it gives `4L^{3/2}`. Grepped the folder and stage 3: no other
+occurrence of the wrong constant.
+
+The Lean side already had it right (`hasDerivAt_halfLogAverage`, section V), so nothing needs
+rebuilding.
+
+**With this fixed, the trace card has exactly one thing left: the card-level theorem of section CF.**
+There is no longer any paper-side blocker.
+
+## CH. The prefactor vanishes along the family
+
+`HalfLogCesaroAverage.lean` is now at 20 declarations, all `#print axioms` clean, no `sorry`.
+
+- `tendsto_bounded_div_sqrt_comp` — `X → ∞` and `|b| ≤ K` give `b L / √(X L) → 0`.
+
+This is the last analytic ingredient of step 3: the trace bound of CD divides
+`T + [C₊ m(X) + 4M q(X/2)]` by `2√X`, and that numerator is bounded (the source by `(19)`, the
+transport terms by the first moment and the tail mass), so the whole prefactor vanishes along the
+critical points, which run to infinity by CE.
+
+### The card-level theorem — every ingredient, named
+
+| step | lemma |
+|---|---|
+| maximizer exists at slope `(√L₀)⁻¹` | `exists_isMaxOn_penalized` |
+| localisation `\|X − L₀\| ≤ √L₀(B − H L₀)` | `abs_sub_le_sqrt_mul_of_isMaxOn` |
+| `X(L₀) → ∞` | `tendsto_sub_const_mul_sqrt_atTop` |
+| interiority | `lt_of_localised` |
+| trace bound at the base point | `halfLog_base_le_of_equation_isMaxOn` |
+| prefactor → 0 | `tendsto_bounded_div_sqrt_comp` |
+| tail mass → 0 | `tendsto_kernelTailMass_half_atTop` |
+| `A(X(L₀)) → α` | `tendsto_halfLogAverage` ∘ divergence |
+| `limsup H ≤ α` | `limsup_le_of_eventually_le_of_tendsto` |
+| mirror for `liminf` | the `_neg` / `le_` variants throughout |
+| conclusion | `tendsto_of_le_liminf_of_limsup_le` (mathlib) |
+
+Nothing on this list is unbuilt. The theorem is the composition, with the card's `(1)` and `(3)`
+as hypotheses.
+
+## CI. The limit passage is built — both halves
+
+`LogNormalEquationTrace.lean` is now at 7 declarations, all `#print axioms` clean, no `sorry`.
+
+- `limsup_halfLog_le_of_family` — given a family of critical points `X` with `X → ∞`, a bounded
+  numerator `C`, the pointwise bound
+  `√L F(L) ≤ C L/(2√(X L)) + A(X L)` eventually, and `A → α`:
+
+      limsup (fun L => √L F L) atTop ≤ α.
+
+- `le_liminf_halfLog_of_family` — the mirror.
+
+Both are pure composition: the prefactor vanishes by `tendsto_bounded_div_sqrt_comp` (CH), the
+average converges along the family by `Tendsto.comp` with the divergence (CE), and the transfer is
+`limsup_le_of_eventually_le_of_tendsto` / its dual (CF).
+
+**Step 4 of section CD is now done.** What remains of the card-level theorem is only step 1 —
+constructing the family `X` from `exists_isMaxOn_penalized` and checking that
+`halfLog_base_le_of_equation_isMaxOn` applies eventually, which supplies the `hbound` hypothesis
+above — and then `tendsto_of_le_liminf_of_limsup_le`.
+
+Note the shape deliberately takes the family `X` and the numerator `C` as *given*: that is not a
+premise, it is the interface. The construction that produces them is step 1, and it is the only
+part of the card's proof not yet written in Lean.
+
+## CJ. Step 1 is built — the critical-point families
+
+`PenalizedMaximum.lean` is now at 21 declarations, all `#print axioms` clean, no `sorry`.
+
+- `exists_maximizer_family` — a choice of penalized maximizer at every positive base point, at the
+  slope `(√L₀)⁻¹` the argument uses:
+
+      ∃ X : ℝ → ℝ, ∀ L₀ > 0, X L₀ ∈ Ici a ∧ IsMaxOn (penalized H (√L₀)⁻¹ L₀) (Ici a) (X L₀).
+
+- `exists_minimizer_family` — the same for the negated profile.
+
+Built by `choose` over the pointwise existence (`exists_isMaxOn_penalized` / `_neg`), with the
+value off the positive ray left arbitrary. Only `Classical.choice` enters, which the project
+permits.
+
+**This was the last unwritten step of section CD's plan.** Every one of steps 1–5 now has a built,
+axiom-clean lemma:
+
+    1  exists_maximizer_family / exists_minimizer_family      CJ
+    2  tendsto_sub_const_mul_sqrt_atTop + localisation        CE, CC
+    3  tendsto_bounded_div_sqrt_comp, tail mass, average      CH, CB, tendsto_halfLogAverage
+    4  limsup_halfLog_le_of_family / le_liminf_…              CI
+    5  tendsto_of_le_liminf_of_limsup_le                      mathlib
+
+What is left is a single composition: instantiate the families, verify that
+`halfLog_base_le_of_equation_isMaxOn` applies eventually along them (which needs the interiority
+`a ≤ X(L₀)/2` from CE and the sign conditions), and chain 4 into 5. No lemma is missing.
+
+## CK. `(4)` — the signed half-log trace exists
+
+`LogNormalEquationTrace.lean` is now at 8 declarations, all `#print axioms` clean, no `sorry`.
+
+- `tendsto_halfLogTrace_of_families` — **the card's `(4)`**:
+
+      Tendsto (fun L => √L * F L) atTop (𝓝 α)
+
+  given the two critical-point families `Xu`, `Xl` diverging to infinity, bounded numerators, the
+  eventual two-sided bound of the trace by `C/(2√X) + A(X)`, and `A → α`.
+
+Steps 4 and 5 composed: `le_liminf_halfLog_of_family` and `limsup_halfLog_le_of_family` feed
+`tendsto_of_le_liminf_of_limsup_le`.
+
+### What this is and is not
+
+It **is** the trace theorem: the conclusion is `(4)`, and the hypotheses are the two squeeze
+inequalities together with object regularity (boundedness of the profile, which is `(1)`).
+
+It is **not yet** stated with `(3)` as the hypothesis. The remaining link is to produce the
+`hup`/`hlow` inputs from the equation, which is
+`halfLog_base_le_of_equation_isMaxOn` applied along `exists_maximizer_family` — every piece built
+(CD, CJ), but the `∀ᶠ` verification (interiority `a ≤ X(L₀)/2` eventually, and the sign conditions)
+is not written.
+
+So the card now needs exactly one more lemma: `(3)` ⟹ `hup ∧ hlow`. Everything before and after it
+exists and is axiom-clean.
+
+## CL. `(3)` ⟹ the upper squeeze
+
+`LogNormalEquationTrace.lean` is now at 10 declarations, all `#print axioms` clean, no `sorry`.
+
+- `traceBoundNumerator F X M T L₀` — the explicit numerator: the source bound `T` plus the
+  transport estimate at the critical point `X L₀`, at slope `(√L₀)⁻¹`.
+- `eventually_halfLog_le_of_equation` — **the missing link of CK**:
+
+      ∀ᶠ L₀ in atTop,  √L₀ F(L₀) ≤ traceBoundNumerator … L₀ / (2√(X L₀)) + A(X L₀)
+
+  from the equation `(3)` at every point, the source bound `(19)`, and a maximizer family whose
+  points eventually lie more than `a` inside the ray.
+
+This is exactly the `hup` input that `tendsto_halfLogTrace_of_families` (CK) consumes. The mirror
+`hlow` is the same construction with `exists_minimizer_family` and
+`le_halfLog_of_equation_isMaxOn_neg`.
+
+### Card status
+
+The chain `(3) ⟹ (4)` is now complete in Lean except for:
+
+- the `hlow` mirror of this lemma (mechanical: swap in the `_neg` variants);
+- boundedness of `traceBoundNumerator` along the family — needed to apply CK, and true because the
+  source is bounded, the first moment is finite, and the tail mass is bounded;
+- the eventual-interiority hypothesis `∀ᶠ L₀, a ≤ X L₀ / 2`, which follows from CC + CE.
+
+None of these needs a new estimate.
+
+## CM. Both squeezes are derived from the equation
+
+`LogNormalEquationTrace.lean` is now at 13 declarations, all `#print axioms` clean, no `sorry`.
+
+- `le_halfLog_base_of_equation_isMaxOn_neg` — the mirrored base-point bound: at a penalized
+  minimizer, `le_value_of_isMaxOn_penalized` applied to the negated profile gives
+  `√X f X ≤ √L₀ f L₀`, so the lower bound at the minimizer transfers **up** to the base point.
+- `traceBoundNumeratorLower`, `eventually_le_halfLog_of_equation` — the lower squeeze:
+
+      ∀ᶠ L₀ in atTop,  traceBoundNumeratorLower … L₀ / (2√(X L₀)) + A(X L₀) ≤ √L₀ F(L₀).
+
+So both inputs of `tendsto_halfLogTrace_of_families` (CK) are now **derived from `(3)`**, not
+assumed:
+
+    hup   eventually_halfLog_le_of_equation   (CL, maximizer family)
+    hlow  eventually_le_halfLog_of_equation   (CM, minimizer family)
+
+### Card status
+
+The remaining gap is now purely quantitative bookkeeping, with no unbuilt mathematics:
+
+- boundedness of `traceBoundNumerator` / `traceBoundNumeratorLower` along the families — needed to
+  apply CK, true because `T` is fixed, `F` is bounded, `∫ s k(s)` is finite (T) and `q(X/2)` is
+  bounded (CB);
+- the eventual interiority `∀ᶠ L₀, a ≤ X L₀ / 2` and positivity `∀ᶠ L₀, 0 < X L₀`, both from the
+  localisation (CC) plus divergence (CE);
+- feeding these into CK.
+
+## CN. The side conditions on the families are built
+
+`PenalizedMaximum.lean` is now at 23 declarations, all `#print axioms` clean, no `sorry`.
+
+- `eventually_le_of_localised` — a family with `|X L₀ − L₀| ≤ K√L₀` eventually exceeds any
+  constant `c`, since `L₀ − K√L₀ → ∞` (CE).
+- `tendsto_atTop_of_localised` — hence it diverges.
+
+These discharge the two side conditions the trace argument needs of its critical points:
+
+    ∀ᶠ L₀, a ≤ X L₀ / 2      from eventually_le_of_localised with c = 2a
+    ∀ᶠ L₀, 0 < X L₀          with c = 1
+    Tendsto X atTop atTop     tendsto_atTop_of_localised
+
+and the localisation hypothesis itself is `abs_sub_le_sqrt_mul_of_isMaxOn` (CC) with
+`K = B − inf H`, bounded by `(1)`.
+
+### Card status
+
+Every lemma in the chain `(1) + (3) ⟹ (4)` is now built and axiom-clean:
+
+    families              exists_maximizer_family / exists_minimizer_family      CJ
+    localisation          abs_sub_le_sqrt_mul_of_isMaxOn                         CC
+    side conditions       eventually_le_of_localised, tendsto_atTop_of_localised CN
+    squeezes from (3)     eventually_halfLog_le_of_equation, eventually_le_…     CL, CM
+    limit passage         limsup_halfLog_le_of_family, le_liminf_…               CI
+    conclusion            tendsto_halfLogTrace_of_families                       CK
+
+What is not written is the single theorem that instantiates this list end to end under the card's
+hypotheses. Every input it needs exists; none of it is an estimate.
+
+## CO. Interface fix — the numerator bound must be *eventual*, not global
+
+Attempting the final composition exposed a flaw in my own interfaces, now corrected.
+
+`tendsto_bounded_div_sqrt_comp` (CH) and hence `limsup_halfLog_le_of_family` /
+`le_liminf_halfLog_of_family` / `tendsto_halfLogTrace_of_families` (CI, CK) took the numerator
+bound as `∀ L, |C L| ≤ T`. **That cannot be supplied.** The numerator contains
+`(√L₀)⁻¹/√(X L₀)` and `F(X L₀)/X L₀`, which are bounded only for large `L₀` — near `L₀ = 0` the
+first blows up and `X L₀` is not even known positive.
+
+All four now take `∀ᶠ L in atTop, |C L| ≤ T`. The proofs needed only `filter_upwards` in place of
+pointwise application; the `0 ≤ K` step that had been extracted from `hb 0` was dropped as
+unnecessary (`squeeze_zero_norm'` does not need it).
+
+Rebuilt and re-audited: all four axiom-clean, no `sorry`.
+
+**Trap recorded:** a lemma stated with a global bound over `ℝ` that will be instantiated at
+`atTop` is usually wrong — the quantities in an asymptotic argument are rarely bounded near the
+origin. State such hypotheses as `∀ᶠ … in atTop` from the start.
+
+This was the last interface mismatch between the built lemmas; the composition now typechecks in
+principle at every joint.
+
+## CP. The remaining obligation, itemised: boundedness of the numerator
+
+With CO's interfaces fixed, the composition has exactly one unproved input:
+
+    ∀ᶠ L₀ in atTop, |traceBoundNumerator F X M T L₀| ≤ Tu
+
+Unfolding, that is five sub-bounds, each eventual:
+
+    (a) (√L₀)⁻¹ ≤ 1                              for L₀ ≥ 1
+    (b) 1/√(X L₀) ≤ 1                            from eventually_le_of_localised, c = 1
+    (c) |F (X L₀)| ≤ M                           hypothesis
+    (d) (√L₀)⁻¹ · √(X L₀) bounded                = √(X L₀ / L₀); bounded because
+                                                 X L₀/L₀ → 1 by localisation (CC)
+    (e) (…)/X L₀ and m(X L₀) ≤ ∫_0^∞ s k(s)      X L₀ → ∞ (CN); the first moment (T) dominates
+                                                 the partial integral since the integrand is ≥ 0
+    (f) q(X L₀/2) bounded                        it tends to 0 (CB)
+
+(d) is the only one needing an argument beyond substitution: it requires `X L₀ / L₀ → 1`, which
+follows from `|X L₀ − L₀| ≤ K√L₀` by dividing through by `L₀`.
+
+(e)'s second half needs `∫_{Ioc 0 R} s k(s) ≤ ∫_{Ioi 0} s k(s)` — monotonicity of the integral of a
+nonnegative function over nested sets, with integrability from section T.
+
+None of these is deep, but there are six of them and each needs its own `filter_upwards`. That is
+the entire remaining distance to `(4)`, and hence to promoting
+`suzuki-weak-signed-half-log-trace`.
+
+## CQ. Sub-bounds (d) and (e) are built
+
+The two sub-bounds of CP that needed an argument beyond substitution are done.
+
+- `GammaTransportKernel.integral_Ioc_id_mul_kernel_le` — **(e)**:
+  `∫_{Ioc 0 R} s k(s) ≤ ∫_{Ioi 0} s k(s)` for every `R`. The integrand is nonnegative on the ray,
+  so `setIntegral_mono_set` applies with the first moment (T) as the integrable majorant. The
+  hypothesis `0 ≤ R` turned out unnecessary and was dropped.
+- `PenalizedMaximum.tendsto_div_one_of_localised` — **(d)**:
+  `|X L₀ − L₀| ≤ K√L₀` gives `X L₀ / L₀ → 1`, since the defect over `L₀` is `K/√L₀ → 0`. This is
+  what keeps `(√L₀)⁻¹ √(X L₀) = √(X L₀/L₀)` bounded.
+
+`GammaTransportKernel.lean` is at 39 declarations, `PenalizedMaximum.lean` at 24, all
+`#print axioms` clean, no `sorry`.
+
+### Remaining
+
+Sub-bounds (a), (b), (c), (f) of CP are pure substitution:
+
+    (a) (√L₀)⁻¹ ≤ 1                   L₀ ≥ 1
+    (b) 1/√(X L₀) ≤ 1                 eventually_le_of_localised, c = 1
+    (c) |F (X L₀)| ≤ M                hypothesis
+    (f) q(X L₀ / 2) bounded           tendsto_kernelTailMass_half_atTop is convergent hence bounded
+
+Assembling (a)–(f) gives `∀ᶠ L₀, |traceBoundNumerator …| ≤ Tu`, which is the last input of
+`tendsto_halfLogTrace_of_families`. Nothing else is outstanding.
+
+## CR. Simplification: the numerator converges, so don't compute a bound
+
+CP itemised six sub-bounds to be combined into an explicit constant `Tu`. **That is the hard way.**
+The numerator does not merely stay bounded — it **converges to `T`**:
+
+    (√L₀)⁻¹ / √(X L₀)                    → 0    (both factors → 0; CN gives X L₀ → ∞)
+    (F(X L₀) + (√L₀)⁻¹√(X L₀)/2) / X L₀  → 0    (numerator bounded by (c),(d); denominator → ∞)
+    m(X L₀)                               bounded (CQ(e))
+    q(X L₀/2)                             → 0    (CB)
+
+so `traceBoundNumerator F X M T L₀ → T`, and likewise `traceBoundNumeratorLower → T` for the lower
+family. A convergent real function is eventually bounded in absolute value — take `Tu = |T| + 1` —
+so the hypothesis `∀ᶠ L₀, |C L₀| ≤ Tu` of `tendsto_halfLogTrace_of_families` follows immediately
+from convergence, with no explicit constant assembled at all.
+
+This replaces CP's six-way `filter_upwards` bookkeeping with three limit facts, each of which is a
+one-line composition of results already built. **Do not assemble an explicit `Tu`.**
+
+It also explains why the interface flaw of CO mattered: with a global bound the numerator could
+never qualify, but convergence at `atTop` is exactly what it has.
+
+### Remaining
+
+    1. traceBoundNumerator → T  and  traceBoundNumeratorLower → T   (three limits, as above)
+    2. hence eventually bounded                                      (convergent ⟹ bounded)
+    3. instantiate tendsto_halfLogTrace_of_families                  (CK)
+
+That is the whole distance to `(4)`.
+
+## CS. Steps 2 and 3 are built — the trace theorem in its usable form
+
+`HalfLogCesaroAverage.lean` is at 21 declarations, `LogNormalEquationTrace.lean` at 14, all
+`#print axioms` clean, no `sorry`.
+
+- `eventually_abs_le_of_tendsto` — a convergent real function satisfies `|f L| ≤ |c| + 1`
+  eventually. Step 2 of CR.
+- `tendsto_halfLogTrace_of_convergent_families` — **step 3**: the trace theorem taking
+  *convergence* of the numerators instead of a named bound:
+
+      Xu, Xl → ∞;  Cu → Tu,  Cl → Tl;  the two squeezes;  A → α
+        ⟹  Tendsto (fun L => √L F L) atTop (𝓝 α).
+
+This is the form the argument actually supplies, since the numerators converge (CR) rather than
+being bounded by any constant one would write down.
+
+### The only thing left
+
+    traceBoundNumerator F Xu M T · → T        and       traceBoundNumeratorLower F Xl M T · → T
+
+each a composition of three limits already built:
+
+    (√L₀)⁻¹/√(X L₀) → 0                 tendsto_bounded_div_sqrt_comp with b = (√·)⁻¹, or directly
+    (F(X L₀) + (√L₀)⁻¹√(X L₀)/2)/X L₀ → 0   bounded numerator (CQ(d)) over X L₀ → ∞ (CN)
+    q(X L₀/2) → 0                        tendsto_kernelTailMass_half_atTop (CB)
+
+with `m(X L₀)` bounded by `integral_Ioc_id_mul_kernel_le` (CQ(e)).
+
+Then instantiate `tendsto_halfLogTrace_of_convergent_families` and `(4)` is proved.
+
+## CT. Null-times-bounded — the last general lemma
+
+`HalfLogCesaroAverage.lean` is now at 22 declarations, all `#print axioms` clean, no `sorry`.
+
+- `tendsto_zero_mul_of_eventually_bounded` — `f → 0` and `|g| ≤ K` eventually give `f·g → 0`.
+
+This is the shape the numerator's product term needs: the coefficient
+`2(√L₀)⁻¹/√(X L₀) + 2(…)/X L₀` tends to zero, while the partial first moment `m(X L₀)` is merely
+bounded (CQ(e)). The product therefore vanishes, and with `4M q(X L₀/2) → 0` (CB) the whole bracket
+does, so `traceBoundNumerator → T`.
+
+### Every general lemma is now built
+
+The numerator convergence is now a composition of:
+
+    tendsto_zero_mul_of_eventually_bounded   (CT)   coefficient × moment
+    integral_Ioc_id_mul_kernel_le            (CQ)   the moment is bounded
+    tendsto_kernelTailMass_half_atTop        (CB)   the tail term
+    tendsto_bounded_div_sqrt_comp            (CH)   the coefficient's first piece
+    tendsto_div_one_of_localised             (CQ)   keeps (√L₀)⁻¹√(X L₀) bounded
+    tendsto_atTop_of_localised               (CN)   X L₀ → ∞
+
+followed by `eventually_abs_le_of_tendsto` (CS) and
+`tendsto_halfLogTrace_of_convergent_families` (CS).
+
+What is left is arithmetic assembly of these six into the two convergence statements, then the
+instantiation. No general lemma is missing.
+
+## CU. The general division lemma
+
+`HalfLogCesaroAverage.lean` is now at 23 declarations, all `#print axioms` clean, no `sorry`.
+
+- `tendsto_bounded_div_atTop` — `g → ∞` and `|f| ≤ K` eventually give `f/g → 0`. The general form
+  of `tendsto_bounded_div_sqrt_comp` (CH); the numerator's second term needs the divergent
+  denominator `X L₀` itself rather than its square root.
+
+I also wrote and **discarded** an `eventually_abs_le_of_tendsto_add`: it was
+`eventually_abs_le_of_tendsto (hf.add hg)` under a new name, i.e. a rename.
+
+### The numerator convergence, fully reduced
+
+    traceBoundNumerator F X M T L₀ = T + (coef L₀ · m(X L₀) + 4M q(X L₀/2))
+
+    coef L₀ = 2(√L₀)⁻¹/√(X L₀) + 2(F(X L₀) + (√L₀)⁻¹√(X L₀)/2)/X L₀
+
+    term 1 → 0    tendsto_bounded_div_sqrt_comp   (CH)   (√L₀)⁻¹ → 0 over √(X L₀)
+    term 2 → 0    tendsto_bounded_div_atTop       (CU)   bounded numerator over X L₀ → ∞
+                  the numerator is bounded because |F| ≤ M and
+                  (√L₀)⁻¹√(X L₀) = √(X L₀/L₀) → 1        (CQ(d))
+    coef · m → 0  tendsto_zero_mul_of_eventually_bounded (CT) with m bounded by CQ(e)
+    tail → 0      tendsto_kernelTailMass_half_atTop      (CB)
+
+Every arrow is a built lemma. The assembly is `Tendsto.add`/`Tendsto.const_add` over these four.
+
+## CV. Two of the four numerator limits are built
+
+`LogNormalEquationTrace.lean` is now at 16 declarations, all `#print axioms` clean, no `sorry`.
+
+- `tendsto_traceBound_term1` — the first coefficient term `2(√L₀)⁻¹/√(X L₀) → 0`, since
+  `(√L₀)⁻¹ ≤ 1` for `L₀ ≥ 1` and `√(X L₀) → ∞`.
+- `eventually_abs_inv_sqrt_mul_sqrt_le` — **the cross factor is bounded**:
+  `(√L₀)⁻¹ √(X L₀) = √(X L₀ / L₀) → 1`, via `Real.sqrt_div` and `tendsto_div_one_of_localised`
+  (CQ(d)). This is what keeps the second coefficient term's numerator under control.
+
+Trap: the identity is `Real.sqrt_div (hx : 0 ≤ x) y : √(x/y) = √x/√y` — note the hypothesis is on
+the *numerator*. `Real.sqrt_div'` has the arguments the other way and does not apply here.
+
+### Remaining
+
+Two limits and the assembly:
+
+    term 2 → 0     tendsto_bounded_div_atTop (CU), with the numerator bounded by
+                   |F| ≤ M and the cross factor above
+    bracket → 0    tendsto_zero_mul_of_eventually_bounded (CT) + tail (CB)
+    numerator → T  Tendsto.const_add over the bracket
+    instantiate    tendsto_halfLogTrace_of_convergent_families (CS)

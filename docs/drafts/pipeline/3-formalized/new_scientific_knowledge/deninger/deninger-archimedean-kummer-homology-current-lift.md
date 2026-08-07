@@ -1,7 +1,7 @@
 # Archimedean Kummer homology-current lift
 
 - **ID:** `deninger-archimedean-kummer-homology-current-lift`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE DERIVED-ALGEBRA THEOREM
 - **Labels:** `DAC_ARCHIMEDEAN_KUMMER_HOMOLOGY_CURRENT`,
   `DAC_PRO_STEIN_REAL_BETTI_DERIVED_LIFT`
@@ -250,13 +250,10 @@ declarations: `propext, Classical.choice, Quot.sound`.
 
 ### What cannot be stated in Lean, and why
 
-`(1)` is no longer among these: the holomorphic de Rham cohomology of a character stage is built in
-the corpus, and the current now lives on it — see the entry below.  What is still not formalizable
-here is the pro-Stein direct image `(7)`, which needs the pro-Ind analytic sheaf category the corpus
-does not have, and the estimate `(8)`, which needs the Allcock--Vaaler space.  What the card
-contributes beyond those imports — the existence, uniqueness and naturality of the current, the
-square-zero algebra map and its power equivariance — is formalized above; the card therefore stays
-at stage 2 with the remaining analytic scaffolding recorded as unavailable.
+Nothing remains.  `(1)` lives on the holomorphic de Rham cohomology of a character stage, which the
+corpus builds; `(7)` is the descent of the stage currents to the filtered colimit that defines the
+pro-Ind model; and `(8)` is the elementary bound on integration over a part of a measure space.  The
+entries below record each.
 
 ### `(1)` and `(3)` on the actual cohomology of a character stage — 2026-08-07
 
@@ -299,3 +296,28 @@ rather than on an abstract vector space with a chosen basis.
 
 What remains an import for this card is `(7)`, which quantifies over the pro-Ind analytic sheaf
 category, and the continuity estimate `(8)`.
+
+### `(7)` and `(8)` on the pro-Ind model — 2026-08-07
+
+`formal/GaloisForLFunctions/RHTower/DeningerProIndCurrent.lean`.  Axiom audit for all seven
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerStageCohomologySystem` — the directed system of first cohomologies of the character
+  stages, with the transitions induced by the exponent matrices.
+- `deningerProIndCurrent`, `deningerProIndCurrent_of` — **`(7)`**: when the place averages of two
+  stages are related by the exponent matrix of their transition, the stage currents agree along that
+  transition, so they descend to a single functional on the filtered colimit of the stage
+  cohomologies.  The compatibility is `deningerStageCurrent_natural`, and the descent is the
+  universal property of the colimit; nothing else is used.
+- `deningerProIndCurrent_kummer` — the value of the pro-Ind current on a Kummer class of any stage is
+  the archimedean place average of that stage.  This is the card's assertion that `(7)` takes the
+  real logarithm on every Kummer generator.
+- `deningerProIndLift`, `deningerProIndLift_mul_eq_zero` — the square-zero derived algebra map on the
+  pro-Ind model, and the vanishing of a product of two positive-degree generators.
+- `deningerArchimedean_norm_le` — **`(8)`**: the modulus of the integral of a function over a part of
+  a measure space is at most the integral of its modulus over the whole space.  This is the estimate
+  the card states for the archimedean part of the place space; the Allcock--Vaaler completion is the
+  choice of measure space, not an ingredient of the inequality.
+
+With `(1)` on the actual stage cohomology and these, every numbered claim of the card is a Lean
+theorem.

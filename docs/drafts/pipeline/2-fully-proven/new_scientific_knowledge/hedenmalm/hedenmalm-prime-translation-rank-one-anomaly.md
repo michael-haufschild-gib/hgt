@@ -455,6 +455,7 @@ source class `GaloisForLFunctions.HTGeometry.PositiveDensitySource`.  Every decl
 | `(13)`,`(14)` | integer theta series and the literal Mellin expansion | `HedenmalmThetaSeries.ThetaSeriesSource`, `HedenmalmThetaSeries.mellinTail`, `HedenmalmThetaSeries.mellinTail_expChart`, `HedenmalmThetaSeries.tail_eq_tsum_mellinTail` |
 | `(15)` | reflection `R f_z = f_(-z)` and conjugation `conj f_z = f_(-conj z)` | `sourceModeI_neg`, `sourceModeU_neg`, `sourceModeF_neg`, `conj_sourceModeI`, `conj_sourceModeU`, `conj_sourceModeF` |
 | `(16)` | geometric multiplicity one | `eq_of_sourceEquation` |
+| `(12)` | **`B f_z = -z^(-1) f_z` for the Riemann source, with every endpoint datum discharged** | `HedenmalmThetaSource.sourceInverse_sourceModeF_eq_smul_theta` (from `integrable_sourceModeF`, `tendsto_sourceModeU_atBot`, `integral_sourceModeF`) |
 | `(17)`,`(18)` | conormal jets and the triangular prime law | `sourceEvaluationJet`, `sourceEvaluationJet_zero`, `sourceEvaluationJet_integerShift` |
 
 `(16)` is formalized in its exact analytic form: any two solutions of the same inhomogeneous

@@ -666,3 +666,63 @@ Paper and unconditional Lean:
 `../3-formalized/new_scientific_knowledge/route-e-moving-terminal-kernel-resonance.md` and
 `RHTower/RouteEMovingTerminalKernelResonance.lean`.  Targeted build `9721/9721`; axioms only
 `propext`, `Classical.choice`, and `Quot.sound`.
+
+## 2026-08-07 terminal-leg and multilinear resonance closure
+
+The previous inverse-square theorem left two escape labels too broad.  A cross-scale entry may
+have one terminal coordinate and one remote coordinate; a signed nonquadratic source may have more
+than two seam factors.  Both regular classes now have a complete physical-frequency bound.
+
+If every nonzero entry of an entrywise absolutely summable complex kernel has **at least one**
+coordinate in the terminal log-band, then at (t_Y=\pi/\log Y),
+
+\[
+ \boxed{
+ \left|\sum_{p,q}K^{(Y)}_{pq}(1+p^{it_Y})
+       \overline{(1+q^{it_Y})}\right|
+ \le2\pi\eta\sum_{p,q}|K^{(Y)}_{pq}|.
+ }
+\]
+
+The other coordinate is unrestricted.  Therefore terminal-by-remote cross-scale coupling still
+needs ℓ1 mass (Ω_C(\log Y)) on a fixed-ratio terminal interval.  Remote-by-remote terms do
+not represent a terminal boundary response without a separate source connector.
+
+For an arbitrary finite leg set (I), every entrywise-ℓ1 signed monomial with one selected
+terminal leg obeys
+
+\[
+ \left|\sum_aK_a\prod_{j\in I}(1+p_{a,j}^{it_Y})\right|
+ \le\pi\eta,2^{|I|}\sum_a|K_a|,
+\]
+
+and if all legs are terminal the right side sharpens to
+
+\[
+ (\pi\eta)^{|I|}\sum_a|K_a|.
+\]
+
+Thus fixed-arity signed/nonquadratic terminal-shell sums are not an independent regular escape.
+Survivors are now exact: canonical mass divergence/renormalization; a component with no terminal
+leg plus a genuine cutoff connector; arity growing with aperture strongly enough to beat the
+resonance factor; or relation-valued/pre-norm cancellation not reducible to an absolutely
+summable monomial expansion.
+
+The diffuse Fisher codiagonal remains a legitimate noncompact candidate because its mass migrates
+in ordinary-integer index and its formula has no prime terminal seam.  The grade-recurrent cube
+remains a legitimate growing-arity relation candidate.  Neither supplies the missing signed
+physical connector: the former lacks a theorem into (D_{\rm anti}) or within-parity variation;
+the latter lacks cross-anchor co-degree/interval Hall expansion and weighted endpoint flux.
+
+**Revised exact hard core:**
+`GIBBS-SINGULAR-OR-GROWING-ARITY-PHYSICAL-TRANSVERSE-SOURCE`.  Prove from one literal
+ordinary-integer source either a canonically renormalized noncompact/mass-divergent carrier or the
+physical capacity of the explicit growing-arity cube, and in either case derive
+(D_{\rm anti}) or within-parity variation at physical-power strength with recurrence weights,
+prime-dilation intervals, and alternating finite-volume signs retained.  `OPEN-SOURCE-001`, Route
+E, and RH remain open.
+
+Paper and unconditional Lean:
+`../3-formalized/new_scientific_knowledge/route-e-terminal-leg-multilinear-resonance.md` and
+`RHTower/RouteETerminalLegMultilinearResonance.lean`.  Targeted build `9722/9722`; axioms only
+`propext`, `Classical.choice`, and `Quot.sound`.

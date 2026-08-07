@@ -305,3 +305,67 @@ itself — a doubly periodic meromorphic function with prescribed lattice — fo
 already owns the theta layer (`EllipticThetaLogComparison`, `EllipticThetaCoordinateDivisor`,
 `EllipticThetaLogComparisonRigidity`, and
 `differentiallyAlgebraic_of_lattice_periodic_meromorphicNF`).
+
+
+## Closed: the rectangle residue theorem and the augmentation law
+
+The card-2 gap `(A2)` is closed.  What it needed was a residue theorem valid for poles of arbitrary
+order; the vendored `PNTPlus` one is restricted to simple poles, and mathlib has no complex residue.
+Three new modules supply it:
+
+```text
+HTGeometry/MeromorphicPrincipalPart.lean   eq_add_principalPart — the principal-part splitting
+HTGeometry/RectangleResidueTheorem.lean    rectangleIntegral'_eq_sum_laurentCoeff — the residue
+                                             theorem on a rectangle, any pole order
+HTGeometry/TripticAugmentationLaw.lean     triptic_augmentation_law (A2), triptic_charge_law (A4)
+```
+
+The mechanism for the higher-order part is the single-valued primitive `(s-p)^{1-m}/(1-m)` on
+`ℂ ∖ {p}`, against which the four edges of a rectangle telescope to zero.  The card's period
+parallelogram was replaced by the axis-parallel rectangle of width `1` and height `Im τ`, which is a
+fundamental domain of `ℤ + ℤτ` because `1` is a period — so no oblique contour is needed anywhere.
+
+`rectangleIntegral'_eq_sum_laurentCoeff` is reusable well beyond this card: it is the first general
+residue theorem in the tree.
+
+
+## Closed: the Gevrey normalization change (card 9, §3)
+
+`Γ(1 + s k)` and `(k!)^s` differ by a geometric factor, and both directions of that comparison come
+from log-convexity of `Γ` — no Stirling estimate.  The two Wendel-type shift bounds
+
+```text
+Γ(x)(x + s - M)^s ≤ Γ(x + s) ≤ Γ(x)(x + M)^s
+```
+
+telescope along `x = 1 + s k` against `k!`.
+
+```text
+HTGeometry/GammaFactorialNormalization.lean   Gamma_add_le_mul_rpow, mul_rpow_le_Gamma_add,
+                                              Gamma_le_pow_mul_factorial_rpow,
+                                              exists_pow_mul_factorial_rpow_le_Gamma
+HTGeometry/GevreyFactorialNormalization.lean  gevrey_exact_order_factorial — (9), (11), (12) in the
+                                              card's own `(k!)^s` normalization
+```
+
+Card 9's §3 is therefore fully formal.  What is left on that card is the Barnes expansion and
+Sibuya--Ramis.
+
+
+## Closed: the four compact Euclidean currents
+
+`HTGeometry/EuclideanOrbifoldCurrents.lean` gives the transported current of every compact parabolic
+signature as an exact identity in an arbitrary differential field, from the Weierstrass relation and
+the chain rule alone:
+
+```text
+(2,2,2,2)  y = ℘    (y′)² = (4y³ - g₂y - g₃)(u′)²
+(3,3,3)    y = ℘′   2(y′)³ = 27(y² + g₃)²(u′)³
+(2,4,4)    y = ℘²   (y′)⁴ = 16y³(4y - g₂)²(u′)⁴
+(2,3,6)    y = ℘³   (y′)⁶ = 729y⁴(4y - g₃)³(u′)⁶
+```
+
+The "uniformizing coordinate" that these cards were waiting on is therefore not needed as an
+existence theorem: the coordinate of each signature is an explicit function of `℘` whose degree
+equals the order of the rotation in the deck group, and the current transports by algebra.  All six
+parabolic signatures now have a formal transported current.

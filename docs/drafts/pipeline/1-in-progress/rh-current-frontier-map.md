@@ -6745,3 +6745,48 @@ Paper and unconditional Lean:
 `../3-formalized/new_scientific_knowledge/route-e-moving-terminal-kernel-resonance.md` and
 `RHTower/RouteEMovingTerminalKernelResonance.lean`.  Targeted build `9721/9721`; axioms only
 `propext`, `Classical.choice`, and `Quot.sound`.
+
+## 2026-08-07 Route E terminal-leg and finite-arity closure
+
+The terminal resonance now covers genuine cross-scale boundary entries and signed multilinear
+forms.  If every nonzero entry of an entrywise absolutely summable complex cross-prime kernel has
+at least one terminal coordinate, then at (t_Y=\pi/\log Y),
+
+\[
+ \left|\sum_{p,q}K^{(Y)}_{pq}(1+p^{it_Y})
+       \overline{(1+q^{it_Y})}\right|
+ \le2\pi\eta\sum_{p,q}|K^{(Y)}_{pq}|.
+\]
+
+The other coordinate may be at any prime scale.  For fixed-ratio terminal width this forces
+ℓ1 mass (Ω(\log Y)), so “cross-scale” is not sufficient when every entry still touches the
+boundary.  More generally, an arbitrary finite-arity signed monomial sum with one source-selected
+terminal leg is at most
+
+\[
+ \pi\eta,2^d\sum_a|K_a|,
+\]
+
+and an all-terminal (d)-leg sum is at most
+
+\[
+ (\pi\eta)^d\sum_a|K_a|.
+\]
+
+No positivity, Hermitian, diagonal, aperture-independence, or coefficient-sign premise is used.
+Consequently fixed-arity entrywise-ℓ1 nonquadratic terminal-shell cancellation is also excluded.
+
+**Current exact Route E hard core:**
+`GIBBS-SINGULAR-OR-GROWING-ARITY-PHYSICAL-TRANSVERSE-SOURCE`.  Remaining viable producers are a
+canonically renormalized mass-divergent/noncompact integer source, or the explicit growing-arity
+grade-recurrent relation with physical cross-anchor capacity and co-moving endpoint flux.  Either
+must still yield (D_{\rm anti}) or within-parity variation at physical-power strength.  A
+remote-by-remote kernel is not a boundary source without that connector.  The diffuse Fisher
+codiagonal passes the noncompactness test but has no signed cutoff connector; the entropy-spread
+cube passes the growing-arity test but has no interval-Hall theorem.  `OPEN-SOURCE-001`, Route E,
+and RH remain open.
+
+Paper and unconditional Lean:
+`../3-formalized/new_scientific_knowledge/route-e-terminal-leg-multilinear-resonance.md` and
+`RHTower/RouteETerminalLegMultilinearResonance.lean`.  Targeted build `9722/9722`; axioms only
+`propext`, `Classical.choice`, and `Quot.sound`.

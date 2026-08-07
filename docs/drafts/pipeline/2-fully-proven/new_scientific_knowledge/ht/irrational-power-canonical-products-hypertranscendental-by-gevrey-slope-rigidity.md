@@ -381,3 +381,42 @@ used to translate `Γ(1 + sk)` into `(k!)^s`.
 What remains of §3 is therefore only the normalization change (two-sided Stirling for `Γ` against
 the factorial), and of the card the two genuine analytic layers: the Barnes expansion `(4)`--`(6)`
 that produces the closed modulus, and the Sibuya--Ramis exact-order theorem.
+
+## Lean progress — §3 is closed in the card's own factorial normalization
+
+The normalization change no longer needs Stirling.  The two Gevrey scales `Γ(1 + s k)` and `(k!)^s`
+differ by a factor that is itself geometric, and both directions follow from log-convexity of `Γ`
+alone.
+
+`GaloisForLFunctions/HTGeometry/GammaFactorialNormalization.lean` (wired, axiom-clean):
+
+    Gamma_add_nat              `Γ(x+N) = Γ(x) ∏_{i<N}(x+i)`
+    prod_range_add_le, le_prod_range_add
+    Gamma_add_le_mul_rpow      **upper shift bound** `Γ(x+s) ≤ Γ(x)(x+M)^s`, from Hölder for `Γ`
+                               with the split `x + s = (1 - s/M)·x + (s/M)·(x+M)`
+    mul_rpow_le_Gamma_add      **lower shift bound** `Γ(x)(x+s-M)^s ≤ Γ(x+s)`, from the mirrored
+                               split `x = (1 - s/M)(x+s) + (s/M)(x+s-M)`
+    Gamma_le_pow_mul_factorial_rpow
+                               `Γ(1 + s k) ≤ ((1+M+s)^s)^k (k!)^s` — the upper shift bound
+                               telescoped along `x = 1 + s k`, using
+                               `1 + s k + M ≤ (1 + M + s)(k+1)`
+    exists_const_of_eventually finitely many exceptional indices absorbed into the constant
+    exists_pow_mul_factorial_rpow_le_Gamma
+                               `∃ c a > 0, c a^k (k!)^s ≤ Γ(1 + s k)` — the lower shift bound
+                               telescoped above the threshold `k ≥ ⌈2(M-1)/s⌉`, where
+                               `1 + s(k+1) - M ≥ (s/2)(k+1)`
+
+`GaloisForLFunctions/HTGeometry/GevreyFactorialNormalization.lean` (wired, axiom-clean):
+
+    gevrey_exact_order_factorial :
+      for irrational `s > 0` and tail coefficients with the closed modulus `(8)`,
+
+        ∃ C A > 0, ∀ k, |b k| ≤ C A^k (k!)^s                             (9)
+        ∃ c a > 0, {k | c a^k (k!)^s ≤ |b k|} is infinite                (11)
+
+That is `(9)` and `(11)` verbatim, hence `(12)`: the exact Gevrey order is `s`.  Stirling is not
+used anywhere; the card's appeal to it is replaceable by log-convexity, because the comparison is
+only needed up to a geometric factor.
+
+Remaining on this card: the Barnes expansion `(4)`--`(6)` producing the closed modulus `(8)`, and
+the Sibuya--Ramis exact-order theorem of §5.

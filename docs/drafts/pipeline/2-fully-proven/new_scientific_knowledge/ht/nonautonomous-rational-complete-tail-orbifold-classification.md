@@ -716,3 +716,32 @@ So for the compact signatures the deck-group algebra is done; what those four si
 is only the uniformizing coordinate — a doubly periodic meromorphic function with prescribed
 lattice.  The multiplicative analogue (`LogarithmicDerivativeFixedField.lean`) had no counterpart in
 the tree, which is why it had to be built.
+
+## The four compact Euclidean currents, exactly
+
+`GaloisForLFunctions/HTGeometry/EuclideanOrbifoldCurrents.lean` (wired, axiom-clean):
+
+    weierstrass_square_current      `(2,2,2,2)`, coordinate `y = ℘`:
+                                      `(y′)² = (4y³ - g₂y - g₃)(u′)²`
+    weierstrass_square_current_div  its quotient form `(u′)² = (y′)²/(4y³ - g₂y - g₃)`
+    weierstrass_cubic_current       `(3,3,3)`, hexagonal lattice `g₂ = 0`, coordinate `y = ℘′`:
+                                      `2(y′)³ = 27(y² + g₃)²(u′)³`
+    weierstrass_quartic_current     `(2,4,4)`, square lattice `g₃ = 0`, coordinate `y = ℘²`:
+                                      `(y′)⁴ = 16y³(4y - g₂)²(u′)⁴`
+    weierstrass_sextic_current      `(2,3,6)`, hexagonal lattice `g₂ = 0`, coordinate `y = ℘³`:
+                                      `(y′)⁶ = 729y⁴(4y - g₃)³(u′)⁶`
+
+Each is the card's "on the affine universal cover, `ω_i` is a nonzero scalar multiple of a power of
+the translation-invariant Maurer–Cartan form" made explicit for one compact signature, in the same
+style as the `(2,2,∞)` Chebyshev identity.  The invariant coordinate of each signature is the
+indicated function of `℘`, whose degree matches the order of the rotation in the deck group: `℘` has
+degree `2`, `℘′` degree `3`, `℘²` degree `4`, `℘³` degree `6`.
+
+No uniformization theorem and no analysis is used.  The hypotheses are the Weierstrass relation
+`q² = 4p³ - g₂p - g₃` and the chain rules `p′ = q·u′`, `q′ = (6p² - g₂/2)·u′`, so each statement is
+an identity in an arbitrary differential field; the exponent pattern of the right-hand side is the
+cone-point divisor of the signature.
+
+With this, every parabolic signature of the classification has its transported current formalized:
+`(∞,∞)` by `iInter_powAdjoin_eq_logDerivField`, `(2,2,∞)` by `logDeriv_sq_eq_chebyshev_current`, and
+the four compact ones here.
