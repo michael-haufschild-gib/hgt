@@ -1474,3 +1474,21 @@ the difference summed against `2^{j(1−σ)}`, whose mass sits at `j ≍ log₂N
 Both remaining devices are now present: this and the per-block sieve levels.  What is left is to state the
 truncated block sum with the block-dependent coefficient constant — `sieveMeanSquare_coeffBlock_le` currently
 takes a single `A` — and then the accounting.
+
+## The block estimate with a block-dependent coefficient constant
+
+`RHTower/Sieve/BlockSieveMeanSquare.lean` generalised (green, axiom-clean; the previous statement survives as a
+corollary).
+
+`sieveMeanSquare_coeffBlock_le_of_bound` takes any uniform bound `Bc` on the block's coefficients:
+
+`sieveMeanSquare a_j (Icc 1 M) σ z Y ≤ (primes of the block)·(count max)·(Bc²·2^{−2σj})`,
+
+and `sieveMeanSquare_coeffBlock_le` is the case `Bc = A(j+1)log 2` of a logarithmic bound.  The nonnegativity of
+`Bc` turned out to be unnecessary — the square supplies it — so the generalisation has one hypothesis fewer than
+the special case it replaces.
+
+This is what lets the two remaining devices meet.  For the outer weight, `Bc` is now the block-damped constant
+`(j+1)log 2/log⌊N/2^{j+1}⌋` of the previous entry rather than the constant `(1/log 2)(j+1)log 2`, and the
+`(log₂N − j)` in its denominator is the logarithm the accounting was missing.  For the inner weight, `Bc` is the
+logarithmic case unchanged.
