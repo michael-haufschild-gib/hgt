@@ -968,3 +968,41 @@ nonnegative).  Substituted for both weights — `A = 1/log 2` outside, `A = 1` i
 
 That is the optimisation the programme now faces, and it is a question about explicit real functions with no
 number theory left in it.
+
+## A loss found in the evaluation: the prime saving was thrown away
+
+Auditing the assembled bound against the trivial bound `N log N` exposes a defect that is not in the chain
+but in the *evaluation* of the last step.
+
+`sieveMeanSquare_le_of_norm_le_log` bounds the mean square with **no primality hypothesis** — the docstring
+says so proudly — and the caps `sum_Icc_logSq_rpow_neg_le` then run over all integers `n ≤ N`.  But
+
+`∑_{n ≤ N} (log n)²n^{-w} ≍ 2/(w−1)³`   while   `∑_{p ≤ N} (log p)²p^{-w} ≍ 1/(w−1)²`,
+
+so dropping the prime restriction costs a full factor `1/(w−1)`, which at `σ = 1 + 1/log N` is `log N`.  The
+prime support of the two weights is exactly the resource the argument lives on, and the current evaluation
+discards it at the last step.  With it discarded the analytic term is of size `N(log N)⁴` where the trivial
+bound is `N log N`; the chain is therefore correct but not yet a mean value theorem.
+
+**The fix, and the shape of the missing brick.**  Keep the prime restriction and use Chebyshev's `θ` per
+dyadic block.  For a prime `p` put `j = ⌊log₂ p⌋`, so `2^j ≤ p < 2^{j+1}`; then
+
+`(log p)²p^{−w} ≤ (log p)·((j+1) log 2)·2^{−jw}`,
+
+and summing over the fibre `{p : ⌊log₂ p⌋ = j}` the factor `∑_{p ∈ fibre} log p ≤ θ(2^{j+1}) ≤ 2^{j+1} log 4`
+is where the saving enters — the block holds `≈ 2^j/j` primes, not `2^j` integers.  Summing the blocks,
+
+`∑_{p ≤ N} (log p)²p^{−w} ≤ 2 log 2 log 4 · ∑_{j ≥ 0} (j+1) r^j = 2 log 2 log 4 (1/(1−r) + r/(1−r)²)`,
+`r = 2^{1−w} < 1`,
+
+uniformly in `N`.  Every input exists in the corpus: `sum_log_primesLE_le` for `θ`, `Nat.pow_log_le_self` and
+`Nat.lt_pow_succ_log_self` for the block, `Finset.sum_fiberwise_of_maps_to` for the grouping, and mathlib's
+geometric sums for the tail.  This replaces the integer caps in `sieveMeanSquare_le_sieveBound` and restores
+the logarithm.
+
+A second parameter obstruction, visible once the saving is restored: the Selberg count is
+`2·(window)/log Y + E + z` with `E = Y²e^{4c}(log z)⁴`, and the additive terms `E + z` are multiplied by the
+whole coefficient mass, so they force `z` small (`z ≈ (log N)^{1/2}` and `Y` bounded is admissible).  Because
+the count is sharp only when `log Y ≈ log p`, a single sieve level cannot serve the whole prime range: the
+prime range must itself be split dyadically, with the level chosen per block.  That is the same dyadic
+decomposition as above, so the two obstructions are resolved by one construction.
