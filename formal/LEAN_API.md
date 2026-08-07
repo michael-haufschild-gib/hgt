@@ -7,7 +7,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 70703 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 70717 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
 | `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 57725 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
@@ -41617,6 +41617,20 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `differentiable_bandTransform` | `GaloisForLFunctions.RHTower.ProlateDiagonalization` | `formal/GaloisForLFunctions/RHTower/ProlateDiagonalization.lean:27` | The band transform of a `C¹` input is everywhere differentiable. |
 | theorem | `differentiable_deriv_bandTransform` | `GaloisForLFunctions.RHTower.ProlateDiagonalization` | `formal/GaloisForLFunctions/RHTower/ProlateDiagonalization.lean:31` |  |
 | theorem | `bandTransform_eigen_smul_on` | `GaloisForLFunctions.RHTower.ProlateDiagonalization` | `formal/GaloisForLFunctions/RHTower/ProlateDiagonalization.lean:41` | The band transform is scalar on prolate eigenlines.** If `ψ` is a pointwise prolate eigenfunction, then on every compact subinterval of the band where `ψ` does not vanish the trans |
+| def | `xiSumPhase` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:22` | Sum of the two exterior Liouville phases in the first radial row. |
+| def | `xiSumSpeed` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:26` | Derivative of `xiSumPhase`. |
+| def | `xiSumSecond` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:30` | Second derivative of `xiSumPhase`. |
+| theorem | `hasDerivAt_xiSumPhase` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:33` |  |
+| theorem | `hasDerivAt_xiSumSpeed` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:41` |  |
+| theorem | `one_add_le_xiSumSpeed` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:53` |  |
+| theorem | `xiSumSecond_nonpos` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:61` |  |
+| theorem | `continuousOn_xiSumSecond` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:68` |  |
+| theorem | `continuousOn_xiSumPhase` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:78` |  |
+| theorem | `abs_integral_firstRow_sum_le` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:84` | The sum phase has speed at least `c(1+k)` and decreasing derivative. |
+| def | `firstRowLeadingProduct` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:146` | Product of the two leading cosine profiles in the first radial row. |
+| theorem | `ampFourth_mul_eq_ampFourthRoot` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:152` |  |
+| theorem | `firstRowLeadingProduct_eq_phase_sum` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:175` |  |
+| theorem | `abs_integral_firstRowLeadingProduct_le` | `GaloisForLFunctions.RHTower.ProlateDunsterBesselOffDiagonal` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean:208` | Both leading phases cancel on a fixed exterior interval. |
 | theorem | `nfWeight_mul_xiAmplitude_eq_lgAmplitude` | `GaloisForLFunctions.RHTower.ProlateDunsterComparisonBridge` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterComparisonBridge.lean:19` | The normal-form weight times Dunster's displayed amplitude is exactly the comparison amplitude. |
 | theorem | `comparisonSol_prolateNormalForm_eq_div_xiAmplitude` | `GaloisForLFunctions.RHTower.ProlateDunsterComparisonBridge` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterComparisonBridge.lean:51` | The pole-uniform comparison unknown is exactly `R / A_s`. |
 | def | `xiAmplitudeDeriv` | `GaloisForLFunctions.RHTower.ProlateDunsterComparisonBridge` | `formal/GaloisForLFunctions/RHTower/ProlateDunsterComparisonBridge.lean:65` | Derivative of Dunster's amplitude, written in the form whose endpoint boundedness is visible. |

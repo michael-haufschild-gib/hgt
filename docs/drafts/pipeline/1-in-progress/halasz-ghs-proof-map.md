@@ -197,3 +197,31 @@ Its proof is a dyadic decomposition of the prime range in `u = log p/log N`: on 
 `P_j = (N^{1−2^{−j}}, N^{1−2^{−j−1}}]` one has `1/log(N/p) ≤ 2^{j+1}/log N`, while `MertensBlock` gives
 that block's mass as `2^{−j−1} log N + O(1)`; each block therefore contributes `1 + O(2^{j}/log N)`, and
 the number of blocks that are nonempty is `≍ log log N`. Nothing else in step 2 is missing.
+
+## Eighth brick: step 2, the second application of the recursion
+
+`RHTower/Sieve/MultiplicativePrimeAverage.lean` (green, axiom-clean, wired):
+
+* `norm_sum_Icc_sub_prime_average_le` — **the averaged recursion**, the prime-only recursion divided by
+  `log N`:
+
+  `‖S_f(N) − (∑_{p ≤ N} f(p) log p S_f(⌊N/p⌋))/log N‖ ≤ (9 + mertensTail)·N/log N`   (`N ≥ 2`);
+
+* `norm_prime_average_le` — the prime average at its trivial size, `≤ N log N + O(N)`;
+* `norm_sum_primes_sub_double_average_le` — **step 2**: replacing every inner `S_f(⌊N/p⌋)` by its own
+  prime average, for any chosen prime range `P` with `⌊N/p⌋ ≥ 2`, costs exactly the sum of the individual
+  averaging errors `∑_{p ∈ P} log p · (9 + mertensTail)·⌊N/p⌋/log⌊N/p⌋`.
+
+The result is the double prime average — the triple multiplicative convolution GHS feed to
+Cauchy–Schwarz. `P` and the condition `⌊N/p⌋ ≥ 2` are choices of range, not assumptions about `f`.
+
+### The one arithmetic estimate that remains for step 2
+
+`∑_{p ≤ N} (log p)/(p · log⌊N/p⌋) ≪ log log N`, for which there is a decomposition needing no real
+powers at all: group the primes by the **dyadic size of the quotient**,
+
+`B_j = {p : 2^j ≤ ⌊N/p⌋ < 2^{j+1}} = {p : ⌊N/2^{j+1}⌋ < p ≤ ⌊N/2^j⌋}`,
+
+an interval of integers with integer endpoints. On `B_j` one has `log⌊N/p⌋ ≥ j log 2`, while
+`MertensBlock` gives the block mass `log⌊N/2^j⌋ − log⌊N/2^{j+1}⌋ + O(1) = log 2 + O(1)`. So block `j`
+contributes `O(1/j)`, and the harmonic sum over `j ≤ log₂ N` is `O(log log N)`.
