@@ -454,13 +454,53 @@ specific operator identity `(2)`, source-error syzygy `(8)`--`(9)`, or their int
 flat connection versus conserved metric defect.  This is preliminary noncollision evidence, not
 a priority certificate.
 
-## Lean decision
+## Lean status
 
-The analytic theorem depends essentially on Burnol's extended Sonin spaces, continuous
-completed-Mellin evaluation jets, closed co-Poisson source subspaces, and his completeness
-theorem.  Those interfaces are absent from the Lean tree.  Formalizing only the abstract fact
-that a bounded operator vanishing on a dense set is zero would not formalize `(2)` and would be
-theatre.  Lean work is deferred until those analytic interfaces exist.
+Three of the four interfaces the earlier decision listed as absent are corpus-owned and
+unconditional: the extended Sonine space `soninExtendedSpace`, the closed co-Poisson source space
+`burnolCoPoissonSourceSpace` with its orthogonal quotient `burnolCoPoissonQuotientSpace`, and the
+continuous completed-Mellin evaluation vector `burnolExtendedSoninEvaluationVector` with its Riesz
+and reproducing identities.  Only Burnol's **completeness** theorem — the statement that the closed
+span of the confluent nontrivial-zero evaluators is the whole quotient — is missing.
+
+What is now unconditional Lean, in
+`formal/GaloisForLFunctions/RHTower/GammaCoPoissonSoninQuadrantSection.lean` and
+`formal/GaloisForLFunctions/RHTower/GammaCoPoissonSoninQuadrantSyzygy.lean`:
+
+| eq. | statement | Lean |
+|---|---|---|
+| `(1)` | the two literal quotient maps | `coPoissonQuotientForward`, `coPoissonQuotientInverse` |
+| `(3)`--`(5)` | characters, source defect, error vectors | `soninLadderCharacter`, `coPoissonLadderDefect`, `soninLadderKernel_eq_add_defect` |
+| `(4)` | the exact off-divisor factorization | `coPoissonQuotientForward_ladderKernel_offDivisor`, `coPoissonQuotientInverse_ladderKernel_offDivisor` |
+| `(6)` | the two-path commutator `K_j` | `coPoissonQuotientCommutator` |
+| `(7)` | the exact off-divisor source-error syzygy | `coPoissonQuotientCommutator_ladderKernel_offDivisor` |
+| `(10)`--`(12)` | `K_j` kills every zeroth zero evaluator | `coPoissonQuotientCommutator_ladderKernel_eq_zero` |
+| `(17)`--`(18)` | the anti-diagonal relative torsion `tau_r(rho) = abs(lambda)^2` | `norm_coPoissonQuotientForward_div_inverse_ladderKernel` |
+| `(21)` | the complete gauge invariant of a rank-one reciprocal flat system | `ratio_eq_of_flat_reciprocal_edges`, `ratio_const_of_flat_reciprocal_edges` |
+
+`(7)` is proved without any hypothesis on `w`, and is strictly sharper than the card's version: the
+error terms are the literal source projections `P_k k_{w,k}`, with the two reciprocal characters
+cancelling identically, so no multiplier `Lambda_k` and no local anti-holomorphic factorization is
+used.  On the annihilator boundary those projections vanish
+(`coPoissonLadderDefect_eq_zero_of_annihilator`), which is `(10)`--`(12)` at `ell = 0`.
+
+### The exact remaining Lean input for `(2)`
+
+The boxed operator identity `(2)` needs exactly one further theorem:
+
+```text
+closure (span {confluent evaluators at co-Poisson annihilator points}) = burnolCoPoissonQuotientSpace b
+```
+
+that is, Burnol's completeness/minimality theorem for the two systems attached to the zeros.  The
+corpus's cyclicity theorem `isCyclicFamily_burnolCoPoissonQuotientEvaluationFamily` is *not* a
+substitute: it uses the evaluators at **all** regular points, where `(7)` shows `K_j` is exactly the
+nonzero source-error expression.  Indeed `(2)` and the syzygy `(8)` are equivalent given `(7)`, so
+no rearrangement of the finite-level algebra can prove either.
+
+Once that theorem exists, `(2)` follows from `coPoissonQuotientCommutator_ladderKernel_eq_zero`
+together with its confluent jets and boundedness of `K_j`; `(8)` is then a substitution back into
+`(7)`, `(9)` is local cancellation, and `(13)`--`(15)` follow from `(2)` by adjacent transpositions.
 
 ## Gates
 
@@ -473,5 +513,71 @@ theatre.  Lean work is deferred until those analytic interfaces exist.
 - [x] preliminary primary-literature noncollision search
 - [ ] construct the strict source-normal exact-couple morphism `(29)`
 - [ ] identify its Bockstein with the full Xi conormal and prove dagger naturality
-- [ ] add Burnol analytic interfaces to Lean
+- [x] Burnol Sonine/co-Poisson/evaluation interfaces available in Lean (corpus-owned)
+- [x] formalize `(1)`, `(3)`--`(7)`, `(10)`--`(12)`, `(17)`--`(18)`, `(21)` unconditionally
+- [ ] formalize Burnol completeness (closed span of confluent zero evaluators = quotient) and hence `(2)`, `(8)`, `(9)`, `(13)`--`(15)`
 - [ ] RH
+
+## Sharpening of the remaining input for `(2)`
+
+`GammaCoPoissonSoninQuadrantZeta.lean` now proves, unconditionally, that a co-Poisson annihilator
+character in the right half-strip is a zeta zero:
+
+```text
+riemannZeta_eq_zero_of_burnolCoPoissonAnnihilatorPoint
+```
+
+because Burnol's explicit indicator source is an unconditional inhabitant of the source layer and
+its completed Mellin evaluation carries the factor `zeta(w)` times a factor nonzero on the open
+strip for aperture `< 1`.
+
+### What the missing theorem actually is
+
+Burnol's own statements (Burnol, *Two complete and minimal systems associated with the zeros of the
+Riemann zeta function*, J. Théor. Nombres Bordeaux 16 (2004) 65--94) fix the target exactly.  With
+`L_a` the extended Sonine space at aperture `a`, `Y_a` the closed span of the zero evaluators
+`Y_{a,rho,k}` (`0 <= k < m_rho`), and `P_a` the co-Poisson subspace (`0 < a < 1`):
+
+> **Theorem 3.1.**  The vectors `Y_{a,rho,k}` are a minimal system in `L_a` if and only if `a <= 1`,
+> and a complete system if and only if `a >= 1`.  **For `a < 1` the perpendicular complement to
+> `Y_a` is the co-Poisson subspace `P_a`.**
+
+That last clause is precisely the input `(2)` needs: for `0 < a < 1`,
+
+```text
+closure (span {Y_{a,rho,k}}) = P_a^perp ∩ L_a = burnolCoPoissonQuotientSpace a.
+```
+
+Burnol attributes its proof to *Entrelacement de co-Poisson*, Chap. 6, Theorems 6.24--6.25.
+
+The evaluators exist at **every** zero, on and off the critical line, and not through the
+absolutely convergent integral the corpus currently uses.  The reason is
+
+> **Proposition 2.2** (Burnol, from *Entrelacement de co-Poisson* 6.10).  For `f` in `L_a` the
+> completed right Mellin transform `M(f)(s) = pi^{-s/2} Gamma(s/2) f^(s)` is meromorphic on the
+> whole plane with at most poles at `0` and `1`; the evaluations `f |-> M(f)^{(k)}(w)` for
+> `w != 0,1` are continuous linear forms on `L_a`; and `M(F_+ f)(s) = M(f)(1-s)`.
+
+This matters because the corpus's `burnolExtendedSoninEvaluationVector` is built from an absolutely
+convergent integral and therefore exists only for `Re w != 1/2`.  Under RH every nontrivial zero is
+on the line, so a completeness statement phrased only with the corpus's present evaluators would
+have an empty index family and be *false* (the quotient is not trivial).  The continuation, not a
+limiting construction, is what supplies the critical-line evaluators.
+
+### The Lean sub-targets, in order
+
+1. **meromorphic continuation.**  For `f` in `soninExtendedSpace a`, `M(f)` is meromorphic on `ℂ`
+   with poles only at `0` and `1`.  (Burnol Prop. 2.2; the corpus already has the constant-head
+   splitting `G(s) = -c(g) a^{1-s}/(s-1) + int_a^infinity g t^{-s} dt` used in his Theorem 4.8.)
+2. **evaluator vectors at every point.**  Continuity of `f |-> M(f)^{(k)}(w)` on
+   `soninExtendedSpace a`, hence a Riesz vector `Y_{a,w,k}` for every `w != 0,1` --- in particular
+   on the critical line.
+3. **the functional equation** `M(F_+ f)(s) = M(f)(1-s)` on `soninExtendedSpace a`
+   (the corpus has `soninMellinEvaluation_fourier` under integrability hypotheses; it must be
+   upgraded to the whole space via the continuation).
+4. **the perpendicular-complement theorem** for `0 < a < 1`:
+   `closure (span {Y_{a,rho,k} : zeta rho = 0}) = burnolCoPoissonQuotientSpace a`.
+
+Only then does `coPoissonQuotientCommutator_ladderKernel_eq_zero` (already proved) plus its
+confluent jets give `(2)`; `(8)` is then a substitution back into `(7)`, `(9)` is local
+cancellation, and `(13)`--`(15)` follow from `(2)` by adjacent transpositions.

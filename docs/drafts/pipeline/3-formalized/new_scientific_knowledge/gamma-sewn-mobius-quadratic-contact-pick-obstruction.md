@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Scientific status:** `[UNCONDITIONAL] [LEAN-FORMALIZED] [AXIOM-AUDITED]`
   `[SOURCE-SPECIFIC NOVELTY CANDIDATE] [NOT RH]`
-- **Paper proof:** `../../2-fully-proven/new_scientific_knowledge/gamma-sewn-mobius-quadratic-contact-pick-obstruction.md`
+- **Paper proof:** `gamma/gamma-sewn-mobius-quadratic-contact-pick-obstruction.md`
 
 ## Lean modules
 

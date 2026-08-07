@@ -42,6 +42,22 @@ theorem zetaResidueUnit_ne_zero_iff {s : ℂ} (hs : s ≠ 1) :
   have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr hs
   simp [zetaResidueUnit, Function.update_of_ne hs, hs1]
 
+/-- **The Riemann hypothesis as nonvanishing of the entire zeta unit.**  Off the pole the unit
+`(s-1)·ζ(s)` vanishes exactly where `ζ` does, and at the pole itself it takes the residue value, so
+no exclusion is needed on the right of the critical line. -/
+theorem riemannHypothesis_iff_zetaResidueUnit_ne_zero :
+    RiemannHypothesis ↔ ∀ s : ℂ, 1 / 2 < s.re → zetaResidueUnit s ≠ 0 := by
+  rw [riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re]
+  constructor
+  · intro h s hs
+    rcases eq_or_ne s 1 with rfl | hne
+    · rw [zetaResidueUnit_one]; norm_num
+    · exact (zetaResidueUnit_ne_zero_iff hne).mpr (h s hs)
+  · intro h s hs
+    rcases eq_or_ne s 1 with rfl | hne
+    · exact riemannZeta_ne_zero_of_one_le_re (by simp)
+    · exact (zetaResidueUnit_ne_zero_iff hne).mp (h s hs)
+
 /-- `invZeta` is differentiable wherever the entire unit is nonvanishing. -/
 theorem differentiableAt_invZeta {s : ℂ} (h : zetaResidueUnit s ≠ 0) :
     DifferentiableAt ℂ invZeta s :=

@@ -1,4 +1,5 @@
 import Mathlib.Probability.ProductMeasure
+import Mathlib.Probability.Independence.InfinitePi
 import Mathlib.Probability.Distributions.Geometric
 import GaloisForLFunctions.HTGeometry.PrimeSieveDensityTelescope
 import GaloisForLFunctions.HTGeometry.ConditioningTotalVariation
@@ -275,5 +276,70 @@ theorem ae_exists_valuation_ne_zero (e : ℕ ≃ Nat.Primes) :
     by_contra hp
     exact hk ⟨p, hp⟩
   exact Set.mem_singleton_iff.mpr (funext hall)
+
+/-! ## The sector is the independent-valuations model -/
+
+/-- Reading off the valuation at one prime pushes the sector forward to that
+prime's local law. -/
+theorem measurePreserving_eval_primeValuation (p : Nat.Primes) :
+    MeasurePreserving (Function.eval p) primeValuationMeasure
+      (primeValuationLaw p) :=
+  measurePreserving_eval_infinitePi primeValuationLaw p
+
+/-- **A prime divides with probability exactly `1 / p`.**  The probabilistic form
+of the local sieve factor. -/
+theorem primeValuationMeasure_divides (p : Nat.Primes) :
+    primeValuationMeasure {k | k p ≠ 0} =
+      ENNReal.ofReal ((((p : ℕ) : ℝ))⁻¹) := by
+  have hpre : Function.eval p ⁻¹' ({0}ᶜ) = {k : ∀ _ : Nat.Primes, ℕ | k p ≠ 0} := by
+    ext k
+    simp [Function.eval]
+  have hmap := (measurePreserving_eval_primeValuation p).measure_preimage
+    ((measurableSet_singleton 0).compl).nullMeasurableSet
+  rw [hpre] at hmap
+  rw [hmap, primeValuationLaw_compl_zero]
+
+/-- Complementarily, a prime fails to divide with probability `1 - 1/p`. -/
+theorem primeValuationMeasure_not_divides (p : Nat.Primes) :
+    primeValuationMeasure {k | k p = 0} =
+      ENNReal.ofReal (1 - (((p : ℕ) : ℝ))⁻¹) := by
+  have hpre : Function.eval p ⁻¹' ({0} : Set ℕ) =
+      {k : ∀ _ : Nat.Primes, ℕ | k p = 0} := by
+    ext k
+    simp [Function.eval]
+  have hmap := (measurePreserving_eval_primeValuation p).measure_preimage
+    (measurableSet_singleton 0).nullMeasurableSet
+  rw [hpre] at hmap
+  rw [hmap, primeValuationLaw_zero]
+
+/-- **The valuations at distinct primes are independent.**  This is the
+probabilistic content of the Euler product, and it is what makes the cylinder mass
+a product of local factors. -/
+theorem iIndepFun_primeValuation :
+    ProbabilityTheory.iIndepFun
+      (fun (p : Nat.Primes) (k : ∀ _ : Nat.Primes, ℕ) => k p)
+      primeValuationMeasure :=
+  ProbabilityTheory.iIndepFun_infinitePi (X := fun _ => id) fun _ => measurable_id
+
+/-- The event that every prime in `P` divides. -/
+def primeValuationDividedCylinder (P : Finset Nat.Primes) :
+    Set (∀ _ : Nat.Primes, ℕ) :=
+  Set.pi (↑P) fun _ => {0}ᶜ
+
+/-- **Every prime in `P` divides with probability `∏_{p ∈ P} 1 / p`.**  The
+reciprocal of the product of the primes: the density of the multiples of their
+product. -/
+theorem primeValuationMeasure_dividedCylinder (P : Finset Nat.Primes) :
+    primeValuationMeasure (primeValuationDividedCylinder P) =
+      ENNReal.ofReal (∏ p ∈ P, (((p : ℕ) : ℝ))⁻¹) := by
+  have hpi := Measure.infinitePi_pi (μ := primeValuationLaw) (s := P)
+    (t := fun _ : Nat.Primes => ({0}ᶜ : Set ℕ))
+    (fun p _ => (measurableSet_singleton 0).compl)
+  rw [primeValuationMeasure, primeValuationDividedCylinder, hpi,
+    ENNReal.ofReal_prod_of_nonneg]
+  · exact Finset.prod_congr rfl fun p _ => primeValuationLaw_compl_zero p
+  · intro p _
+    have := one_lt_prime_cast p
+    positivity
 
 end GaloisForLFunctions.HTGeometry

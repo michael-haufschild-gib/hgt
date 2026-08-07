@@ -47,6 +47,18 @@ theorem squarefreePartition_eq_zero_iff_riemannZeta_eq_zero
   have hz2 : riemannZeta (2 * s) ≠ 0 := riemannZeta_ne_zero_of_one_lt_re h2re
   simp [squarefreePartition, hz2]
 
+/-- **The Riemann hypothesis as nonvanishing of the squarefree partition.**  On `Re s > 1/2` the
+squarefree partition `zeta(s)/zeta(2s)` vanishes exactly where `zeta` does, and RH is exactly the
+absence of zeta zeros there. -/
+theorem riemannHypothesis_iff_squarefreePartition_ne_zero :
+    RiemannHypothesis ↔ ∀ s : ℂ, 1 / 2 < s.re → squarefreePartition s ≠ 0 := by
+  rw [_root_.RHTower.riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re]
+  constructor
+  · intro h s hs hzero
+    exact h s hs ((squarefreePartition_eq_zero_iff_riemannZeta_eq_zero hs).mp hzero)
+  · intro h s hs hzero
+    exact h s hs ((squarefreePartition_eq_zero_iff_riemannZeta_eq_zero hs).mpr hzero)
+
 /-- Division by the doubled zeta factor preserves the complete local zeta divisor, including
 multiplicity, at every strict-right point away from the Euler pole. -/
 theorem squarefreePartition_meromorphicOrderAt_eq_riemannZeta

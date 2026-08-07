@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiAutomorphicRealCoronaSmoothness
+import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 
 /-!
 # Higher-degree completed-zeta powers have nonsmooth Real corona
@@ -29,6 +30,18 @@ theorem xiPowerCompletion_zero_iff {d : ℕ} (hd : d ≠ 0) (s : ℂ) :
     exact pow_ne_zero d hxi hzero
   · intro hxi
     simp [xiPowerCompletion, hxi, hd]
+
+/-- **The Riemann hypothesis reads off any positive isobaric power.**  Taking a positive power
+neither creates nor destroys zeros, so the critical-line statement for `ξ^d` is RH itself, for every
+`d ≠ 0`. -/
+theorem riemannHypothesis_iff_xiPowerCompletion_zero_re_eq_half {d : ℕ} (hd : d ≠ 0) :
+    RiemannHypothesis ↔ ∀ s : ℂ, xiPowerCompletion d s = 0 → s.re = 1 / 2 := by
+  rw [riemannHypothesis_iff_xi_zero_re_eq_half]
+  constructor
+  · intro h s hs
+    exact h s ((xiPowerCompletion_zero_iff hd s).mp hs)
+  · intro h s hs
+    exact h s ((xiPowerCompletion_zero_iff hd s).mpr hs)
 
 theorem xiPowerCompletion_one_sub (d : ℕ) (s : ℂ) :
     xiPowerCompletion d (1 - s) = xiPowerCompletion d s := by

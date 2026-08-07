@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeArchThetaAtomLikelihoodRatio
 import GaloisForLFunctions.RHTower.XiHedenmalmBoundaryValueProblem
+import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 import Mathlib.Analysis.MellinTransform
 
 /-!
@@ -315,5 +316,24 @@ theorem thetaGamma_centered_log_character (alpha : ℂ) (x : ℝ) :
       Complex.exp (-I * alpha * (x : ℂ)) := by
   congr 1
   ring
+
+/-- **The Riemann hypothesis as a critical-line law for the Stokes annihilation.**  The completed
+Euler multiplier kills the Gamma Stokes jump exactly on the `ξ` divisor, and every `ξ` zero lies in
+the open critical strip, so RH is precisely the statement that annihilation can only happen on the
+critical line. -/
+theorem riemannHypothesis_iff_stokes_annihilation_criticalLine :
+    RiemannHypothesis ↔
+      ∀ s : ℂ, 0 < s.re → s.re < 1 → ∀ t : ℝ, 0 < t →
+        riemannZeta s *
+            (thetaGammaCausalStokesMode s t - thetaGammaAntiCausalStokesMode s t) = 0 →
+          s.re = 1 / 2 := by
+  rw [riemannHypothesis_iff_xi_zero_re_eq_half]
+  constructor
+  · intro h s h0 h1 t ht hann
+    exact h s ((thetaGamma_completedEuler_kills_stokes_iff_xi_zero ⟨h0, h1⟩ ht).mp hann)
+  · intro h ρ hz
+    obtain ⟨h0, h1⟩ := xi_zero_re_mem_open_unit hz
+    exact h ρ h0 h1 1 one_pos
+      ((thetaGamma_completedEuler_kills_stokes_iff_xi_zero ⟨h0, h1⟩ one_pos).mpr hz)
 
 end RHTower

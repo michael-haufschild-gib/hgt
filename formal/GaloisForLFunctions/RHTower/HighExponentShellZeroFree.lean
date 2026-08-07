@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.MFreeLadder
 import GaloisForLFunctions.RHTower.GammaInvGrowth
+import GaloisForLFunctions.RHTower.ReflectionCocycleClass
 
 /-!
 # High-exponent shells: a zero-free multiplier and the full zeta divisor
@@ -484,6 +485,19 @@ theorem riemannZeta_mul_shellMultiplier_eq_zero_iff
     · exact h'
     · exact absurd h' (shellMultiplier_ne_zero hm hs)
   · intro h; rw [h, zero_mul]
+
+/-- **The Riemann hypothesis as nonvanishing of the shell current.**  The shell multiplier is
+zero-free on `re s > 1/2`, so the shell current and `ζ` have the same zero set there and RH is
+exactly the absence of that zero set. -/
+theorem riemannHypothesis_iff_riemannZeta_mul_shellMultiplier_ne_zero {m : ℕ} (hm : 12 ≤ m) :
+    RiemannHypothesis ↔
+      ∀ s : ℂ, 1 / 2 < s.re → riemannZeta s * shellMultiplier m s ≠ 0 := by
+  rw [riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re]
+  constructor
+  · intro h s hs hzero
+    exact h s hs ((riemannZeta_mul_shellMultiplier_eq_zero_iff hm hs).mp hzero)
+  · intro h s hs hzero
+    exact h s hs ((riemannZeta_mul_shellMultiplier_eq_zero_iff hm hs).mpr hzero)
 
 /-- **Additive splitting of the shell logarithmic current.**  Wherever `ζ` itself does not
 vanish, the logarithmic derivative of the shell current is the zeta logarithmic derivative plus

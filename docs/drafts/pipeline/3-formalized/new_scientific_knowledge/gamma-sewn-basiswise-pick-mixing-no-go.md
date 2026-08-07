@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Scientific status:** `[UNCONDITIONAL LEAN] [ARBITRARY HILBERT DIMENSION]`
   `[NOVELTY UNVERIFIED] [NOT RH]`
-- **Paper proof:** `../../2-fully-proven/new_scientific_knowledge/gamma-sewn-basiswise-pick-mixing-no-go.md`
+- **Paper proof:** `gamma/gamma-sewn-basiswise-pick-mixing-no-go.md`
 
 ## Formal declarations
 

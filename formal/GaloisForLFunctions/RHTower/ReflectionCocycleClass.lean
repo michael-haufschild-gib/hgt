@@ -573,6 +573,16 @@ theorem riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re :
     by_contra hc
     exact h ρ (not_le.mp hc) hz
 
+/-- **The Riemann hypothesis as nonvanishing on the right half of the critical strip.** Outside the
+strip `ζ` is nonvanishing for free, so a criterion only has to be checked where zeros can be. -/
+theorem riemannHypothesis_iff_riemannZeta_ne_zero_of_mem_upper_strip :
+    RiemannHypothesis ↔ ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 → riemannZeta s ≠ 0 := by
+  rw [riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re]
+  refine ⟨fun h s hlo _ => h s hlo, fun h s hlo hz => ?_⟩
+  rcases lt_or_ge s.re 1 with h1 | h1
+  · exact h s hlo h1 hz
+  · exact riemannZeta_ne_zero_of_one_le_re h1 hz
+
 /-- **The Riemann hypothesis as a zero-free left half of the strip.** Reflection exchanges the two
 halves, so forbidding zeros on either side of the critical line is the same statement. -/
 theorem riemannHypothesis_iff_riemannZeta_ne_zero_of_re_lt_half :

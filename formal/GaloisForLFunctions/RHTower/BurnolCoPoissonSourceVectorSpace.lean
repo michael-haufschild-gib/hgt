@@ -107,5 +107,23 @@ theorem inner_eq_zero_on_burnolCoPoissonVectorSpace_iff {b : ℝ} (hb : 0 < b) (
   · intro hz u hu
     exact inner_eq_zero_of_mem_burnolCoPoissonVectorSpace hb hlo hhi hz u hu
 
+/-- **The Riemann hypothesis as non-orthogonality of the Riesz evaluator to the co-Poisson span.**
+On the right half of the critical strip, orthogonality of the evaluator to the whole span is exactly
+a zero of `ζ`; outside the strip `ζ` is nonvanishing for free.  So RH holds precisely when, at every
+`w` with `1/2 < re w < 1`, some co-Poisson vector is detected by the evaluator at `w`.  The aperture
+`b` is arbitrary in `(0, 1)`: the criterion is equivalent to RH for each of them separately. -/
+theorem riemannHypothesis_iff_exists_burnolCoPoisson_inner_ne_zero {b : ℝ} (hb : 0 < b)
+    (hb1 : b < 1) :
+    RiemannHypothesis ↔
+      ∀ (w : ℂ) (hlo : 1 / 2 < w.re) (hhi : w.re < 1),
+        ∃ u : soninExtendedSpace b, u ∈ burnolCoPoissonVectorSpace b ∧
+          ⟪burnolExtendedSoninEvaluationVector w b hlo hhi hb, u⟫_ℂ ≠ 0 := by
+  rw [riemannHypothesis_iff_riemannZeta_ne_zero_of_mem_upper_strip]
+  constructor
+  · intro h w hlo hhi
+    exact exists_mem_burnolCoPoissonVectorSpace_inner_ne_zero hb hb1 hlo hhi (h w hlo hhi)
+  · intro h w hlo hhi hz
+    obtain ⟨u, hu, hne⟩ := h w hlo hhi
+    exact hne (inner_eq_zero_of_mem_burnolCoPoissonVectorSpace hb hlo hhi hz u hu)
 
 end RHTower

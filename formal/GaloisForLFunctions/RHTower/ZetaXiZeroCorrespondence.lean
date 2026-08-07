@@ -86,4 +86,22 @@ theorem riemannHypothesis_iff_xi_zero_re_eq_half :
     rw [mem_rightHalf, h s hz] at hs
     exact absurd hs (lt_irrefl _)
 
+/-- **The Riemann hypothesis as `ξ` having no zeros left of the critical line.** The corpus's
+`rh_iff_xi_ne_zero_right` is the mirror statement; `xi_one_sub` exchanges the two sides, so either
+half-plane alone carries the whole hypothesis. -/
+theorem riemannHypothesis_iff_xi_ne_zero_of_re_lt_half :
+    RiemannHypothesis ↔ ∀ s : ℂ, s.re < 1 / 2 → xi s ≠ 0 := by
+  rw [riemannHypothesis_iff_xi_zero_re_eq_half]
+  constructor
+  · intro h s hs hz
+    rw [h s hz] at hs
+    exact absurd hs (lt_irrefl _)
+  · intro h ρ hz
+    by_contra hne
+    rcases lt_or_gt_of_ne hne with hlt | hgt
+    · exact h ρ hlt hz
+    · refine h (1 - ρ) ?_ (by rw [xi_one_sub]; exact hz)
+      rw [Complex.sub_re, Complex.one_re]
+      linarith
+
 end RHTower

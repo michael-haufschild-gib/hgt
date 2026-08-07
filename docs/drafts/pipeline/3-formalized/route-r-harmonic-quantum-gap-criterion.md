@@ -415,3 +415,27 @@ That last statement is the corpus's telescoping identity `∑_n w_{N,n} = 1` rea
 identity that made the sieve a *bounded cofinal unit profile* in the first place is the normalisation
 of an honest distribution. The profile layer, the sieve layer and the valuation sector are one object
 seen three ways — combinatorially, analytically, and measure-theoretically.
+
+## 2026-08-07 — the first-divisor events partition the sector
+
+New module `RHTower/RouteRFirstDivisorPartition.lean`, elaborating cleanly under `lake env lean` and
+wired into the umbrella:
+
+- `measurableSet_firstDivisorEvent`
+- `pairwise_disjoint_firstDivisorEvent` — distinct events disagree about the valuation at the earlier
+  of the two distinguished primes.
+- `primeValuationMeasure_iUnion_firstDivisorEvent = 1` — their union has full measure.
+
+So the restarted Euler sieve profile is not merely a sequence of event masses that happens to sum to
+one: it is the **law of a random index**, the position of the first dividing prime in the tail. The
+telescoping identity that made the sieve a bounded cofinal unit profile is that law's normalisation.
+
+Also added, on the sector side (`HTGeometry/PrimeValuationSector`, `lake build` green, 2995 jobs):
+
+- `measurePreserving_eval_primeValuation` — reading the valuation at one prime pushes the sector
+  forward to that prime's local law, so the sector really is the independent-valuations model.
+- `primeValuationMeasure_divides` — **a prime divides with probability exactly `1/p`**, the
+  probabilistic form of the local sieve factor; and `primeValuationMeasure_not_divides` for the
+  complement.
+
+Axioms `[propext, Classical.choice, Quot.sound]` on all of these.

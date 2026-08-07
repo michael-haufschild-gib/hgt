@@ -346,3 +346,94 @@ with no formal link to mathlib's `RiemannHypothesis`. All of them now literally 
 Trap when doing this: a `RH_of_*` whose proof delegates to another `RH_of_*` must NOT get the
 `rw [riemannHypothesis_iff_forall_zero_re_le_half]` prelude — the delegate already returns
 `RiemannHypothesis` (hit this in RH_of_sharpWindow_regular).
+
+## Zero-free half-plane forms of RH, and the reflected-character verdict
+
+In ReflectionCocycleClass:
+- `riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re` — RH ↔ `∀ s, 1/2 < Re s → ζ(s) ≠ 0`.
+  The corpus had only the ξ-side `rh_iff_xi_ne_zero_right`.
+- `riemannHypothesis_iff_riemannZeta_ne_zero_of_re_lt_half` — RH ↔ `∀ s, 0 < Re s < 1/2 → ζ(s) ≠ 0`.
+  Reflection exchanges the halves, so forbidding zeros on either side is the same statement.
+
+`ReflectedCharacterCarrierClassification.reflectedCharacterNorm_eq_iff_criticalLine` stated its
+re-encoding verdict as `… ↔ (∀ rho, xi rho = 0 → rho.re = 1/2)`. That right side IS
+`RiemannHypothesis` (`riemannHypothesis_iff_xi_zero_re_eq_half`), so the verdict now says so
+directly. That file now imports ZetaXiZeroCorrespondence (cycle-checked).
+
+Build note: this module sits under ~9750 jobs of dependencies and other agents hold the lake lock;
+the Bash tool caps at 10 min, so the build needed six successive resumed invocations. lake resumes
+from cache, so this is just repetition, not rework.
+
+## The Burnol co-Poisson layer becomes an RH criterion
+
+`riemannHypothesis_iff_riemannZeta_ne_zero_of_mem_upper_strip` (ReflectionCocycleClass):
+RH ↔ `∀ s, 1/2 < Re s < 1 → ζ(s) ≠ 0`. Outside the strip ζ is nonvanishing for free, so a criterion
+only has to be checked where zeros can be — this is the form that matches criteria stated on the
+open strip.
+
+`riemannHypothesis_iff_exists_burnolCoPoisson_inner_ne_zero` (BurnolCoPoissonSourceVectorSpace):
+RH ↔ at every `w` with `1/2 < Re w < 1` some co-Poisson vector is detected by the Riesz evaluator.
+The Burnol layer already had both halves (`inner_eq_zero_of_mem_burnolCoPoissonVectorSpace` and
+`exists_mem_burnolCoPoissonVectorSpace_inner_ne_zero`, packaged as
+`inner_eq_zero_on_burnolCoPoissonVectorSpace_iff`) but NO RiemannHypothesis-level statement at all
+— grep for RiemannHypothesis in Burnol*.lean returned nothing. The upper-strip form is what closes
+it. Aperture `b` is arbitrary in (0,1); the criterion is equivalent to RH for each b separately.
+
+Blocked, do NOT retry: dropping `hhi : w.re < 1` from the Burnol inner-product theorems. It is not a
+mere premise there — `burnolExtendedSoninEvaluationVector w b hlo hhi hb` is proof-carrying and
+takes `hhi` as an argument, so the hypothesis occurs in the STATEMENT. Only the four theorems where
+`w.re < 1` appears solely in hypotheses could be discharged
+(integral_Ioi_burnolCoPoisson_subWindow{,_pair}_cpow_eq_zero,
+soninMellinEvaluation_burnolCoPoissonSource_eq_zero, mellin_arithmeticSum_eq_zero_of_zeta_eq_zero),
+via `riemannZeta_zero_re_lt_one`.
+
+## Systematic sweep: per-point zero-criteria with no RH statement
+
+Search recipe that found these (reusable): scan RHTower theorem headers for an iff whose one side is
+`riemannZeta w = 0` / `xi w = 0` (or `≠ 0`), then split by whether the FILE mentions
+`RiemannHypothesis` at all. 33 hits, 17 of them in files with no RH statement anywhere — each is a
+complete two-sided law with no bridge to RH.
+
+Closed this round:
+- `riemannHypothesis_iff_xi_ne_zero_of_re_lt_half` (ZetaXiZeroCorrespondence) — RH ↔ ξ has no zeros
+  LEFT of the line. Mirror of the corpus's `rh_iff_xi_ne_zero_right`; `xi_one_sub` exchanges them.
+- `riemannHypothesis_iff_squarefreePartition_ne_zero` (SquarefreeFixedCurrentLocalization, namespace
+  GaloisForLFunctions — needs the `_root_.RHTower.` prefix) — RH ↔ ζ(s)/ζ(2s) ≠ 0 on Re s > 1/2.
+- `riemannHypothesis_iff_xiPowerCompletion_zero_re_eq_half` (XiPowerAutomorphicRealCoronaSmoothness)
+  — RH is read off ξ^d for every d ≠ 0.
+- `riemannHypothesis_iff_stokes_annihilation_criticalLine`
+  (EulerHedenmalmGammaStokesTransgression) — RH ↔ the completed Euler multiplier can kill the Gamma
+  Stokes jump only on the critical line. Backward direction picks t = 1; any positive t works.
+
+Still open in that list (candidates for later rounds): the three
+`CompletedPrimeFluxFittingAttachment.xiCanonicalFittingSeamAt_*_iff`, `XiThetaEndpointResidual`,
+`HighExponentShellZeroFree`, `MFreeTwinNoGo`, `Sieve/InvZetaRegular`, `SeamStripRamification`,
+the two `XiCTaylorMovingPositive...ChargeScreenedAt_iff_xi_ne_zero` (these two are stated on
+Re σ < 1/2, so `riemannHypothesis_iff_xi_ne_zero_of_re_lt_half` is the matching bridge — but they
+carry schedule/gauge hypotheses that must be threaded).
+
+Note: EulerHedenmalmGammaStokesTransgression emits a pre-existing `Try this: ring_nf` suggestion on
+`lake env lean`; it is not an error and the module builds clean.
+
+## Three more RH criteria from the sweep (Re s > 1/2 family)
+
+All three had a per-point iff with a zeta zero and no RH statement in the file; the bridge is
+`riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re`.
+
+- `RHTower.Sieve.riemannHypothesis_iff_zetaResidueUnit_ne_zero` — RH ↔ the entire unit `(s-1)·ζ(s)`
+  is nonvanishing on Re s > 1/2. No exclusion at s = 1 is needed: `zetaResidueUnit_one` is the
+  residue value, and mathlib's junk `ζ(1)` is nonzero, so both directions close at the pole.
+- `RHTower.riemannHypothesis_iff_dyadicMFreeZetaRung_zero_ne_zero` — RH ↔ the base dyadic rung
+  ζ(s)/ζ(2s) is nonvanishing on Re s > 1/2.
+- `RHTower.riemannHypothesis_iff_riemannZeta_mul_shellMultiplier_ne_zero` (m ≥ 12) — RH ↔ the shell
+  current is nonvanishing on Re s > 1/2.
+
+HighExponentShellZeroFree and MFreeTwinNoGo gained an `import ReflectionCocycleClass`
+(cycle-checked); Sieve/InvZetaRegular already had it transitively.
+
+Remaining from the sweep, not yet closed: the three
+`CompletedPrimeFluxFittingAttachment.xiCanonicalFittingSeamAt_*_iff`, `XiThetaEndpointResidual`,
+`SeamStripRamification` (that one is a ξ/ζ bridge, not a new criterion), and the two
+`XiCTaylorMovingPositive...ChargeScreenedAt_iff_xi_ne_zero` (stated on Re σ < 1/2 — the matching
+bridge is `riemannHypothesis_iff_xi_ne_zero_of_re_lt_half`, but schedule/gauge hypotheses must be
+threaded into the criterion rather than discharged).

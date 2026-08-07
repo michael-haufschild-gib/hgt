@@ -337,3 +337,25 @@ and no Hellinger machinery** (its `Kakutani` files are Riesz–Markov–Kakutani
 gate needs either a general Kakutani proof or a bespoke strong law for independent
 non-identically-distributed variables — mathlib's `strong_law_ae` is iid only. Recorded rather than
 attempted, since that card is flagged `[NOT RH]`.
+
+### Pass — independence is the reason the sector works
+
+`HTGeometry/PrimeValuationSector.lean`, two additions:
+
+- `iIndepFun_primeValuation` — **the valuations at distinct primes are independent random
+  variables** under `primeValuationMeasure`. Instantiates mathlib's
+  `ProbabilityTheory.iIndepFun_infinitePi` at the identity family. This is the probabilistic content
+  of the Euler product, and it is what makes every cylinder mass factor into local terms: the
+  formula `primeValuationMeasure_cylinder = ofReal (sieveDensity P)` is no longer a computation but
+  a consequence of independence plus the two local masses `μ_p{0} = 1 − 1/p`, `μ_p{0}ᶜ = 1/p`.
+- `primeValuationMeasure_dividedCylinder` — every prime of a finite set `P` divides with probability
+  `∏_{p ∈ P} 1/p`, i.e. the density of the multiples of `∏ P`. The complementary cylinder to
+  `primeValuationCylinder`, and the second of the two arithmetic densities the sector reproduces.
+
+`lake build GaloisForLFunctions.HTGeometry.PrimeValuationSector` green (3008 jobs), axioms
+`[propext, Classical.choice, Quot.sound]` for both.
+
+`RHTower/RouteRFirstDivisorPartition.lean` now also has its cached olean
+(`lake build` green, 11307 jobs; `primeValuationMeasure_iUnion_firstDivisorEvent` and
+`pairwise_disjoint_firstDivisorEvent` axiom-clean), so the whole first-divisor layer —
+event masses, pairwise disjointness, total mass one — is built and reachable from the umbrella.

@@ -5732,8 +5732,15 @@ import GaloisForLFunctions.HTGeometry.SmoothPeriodicDGA
 import GaloisForLFunctions.HTGeometry.CDGA
 import GaloisForLFunctions.HTGeometry.CDGAModule
 import GaloisForLFunctions.HTGeometry.CDGAFreeCell
+import GaloisForLFunctions.HTGeometry.CDGAShift
+import GaloisForLFunctions.HTGeometry.CDGAShiftQuasiIso
 import GaloisForLFunctions.HTGeometry.CDGATensor
 import GaloisForLFunctions.HTGeometry.CDGACellTower
+import GaloisForLFunctions.HTGeometry.CDGATensorSingle
+import GaloisForLFunctions.HTGeometry.CDGAUnital
+import GaloisForLFunctions.HTGeometry.CDGARelTensor
+import GaloisForLFunctions.HTGeometry.CDGAUnitor
+import GaloisForLFunctions.HTGeometry.CDGARelTensorUnit
 import GaloisForLFunctions.HTGeometry.CDGATensorLeft
 import GaloisForLFunctions.HTGeometry.CDGACellInvariance
 import GaloisForLFunctions.HTGeometry.CDGADerivedTensor

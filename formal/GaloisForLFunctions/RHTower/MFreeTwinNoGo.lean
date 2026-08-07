@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.MFreeTower
 import GaloisForLFunctions.RHTower.RiemannTower
+import GaloisForLFunctions.RHTower.ReflectionCocycleClass
 
 /-!
 # The m-free dilation telescope is one-channel on the right half-plane
@@ -66,6 +67,17 @@ theorem dyadicMFreeZetaRung_zero_iff_base {s : ℂ} (hs : 1 / 2 < s.re) :
     simp [dyadicMFreeZetaRung]
   rw [hrung]
   exact div_eq_zero_iff.trans (or_iff_left hden)
+
+/-- **The Riemann hypothesis as nonvanishing of the base rung.**  The doubled zeta denominator is
+zero-free on `re s > 1/2`, so the base rung carries exactly the zeta zeros there. -/
+theorem riemannHypothesis_iff_dyadicMFreeZetaRung_zero_ne_zero :
+    RiemannHypothesis ↔ ∀ s : ℂ, 1 / 2 < s.re → dyadicMFreeZetaRung 0 s ≠ 0 := by
+  rw [riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re]
+  constructor
+  · intro h s hs hzero
+    exact h s hs ((dyadicMFreeZetaRung_zero_iff_base hs).mp hzero)
+  · intro h s hs hzero
+    exact h s hs ((dyadicMFreeZetaRung_zero_iff_base hs).mpr hzero)
 
 /-- Every finite depth-subproduct avoiding rung zero is zero-free on the right half-plane. -/
 theorem dyadicMFreeZetaSubproduct_ne_zero {K : Finset ℕ} (hzero : 0 ∉ K) {s : ℂ}

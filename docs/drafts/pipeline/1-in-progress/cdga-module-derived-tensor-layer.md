@@ -305,3 +305,228 @@ All unconditional; axioms `propext, Classical.choice, Quot.sound`.
   bookkeeping.
 * With a resolution in hand, `− ⊗^L −` can be defined and shown independent of the resolution, by
   applying the two invariance theorems in turn.
+
+## The tensor product over the algebra
+
+A gap the earlier entries did not name: `tensorModule P Q` is the tensor product over the **ground
+ring**, with the algebra acting through the left factor.  That is the right object for `− ⊗_R −`,
+but the card's `(5)` — derived base change — needs `− ⊗_A −`, and so does any statement in which the
+free cells `freeCellModule A V k = A[−k] ⊗ V` are supposed to be cheap: over `R` they are not.
+
+`CDGATensorSingle.lean` and `CDGARelTensor.lean` supply it.
+
+* `tensorSingle p z` — the element of a graded tensor product supported at a single bidegree.  The
+  carrier is a product over the finitely many decompositions of the total degree, so this is
+  available, and each of the three structure maps sends such an element to *one* other such element
+  (`tensorDL_tensorSingle`, `tensorDR_tensorSingle`, `tensorAct_tensorSingle`,
+  `tensorD_tensorSingle`).  That is what makes single-bidegree elements the right generators for
+  describing subobjects.
+* `relTensorRelator hα hβ hn hn' x m v` — the relator `(−1)^{|x||m|} (x·m) ⊗ v − m ⊗ (x·v)`, a left
+  module being a right module through `m · x = (−1)^{|x||m|} x · m`.  The two target degrees are
+  supplied as separate parameters, which is what lets a *differentiated* factor be placed where the
+  Leibniz rule puts it — without that the statement cannot even be typed, because `c + 1 + a` and
+  `c + a + 1` are different terms and hence different types.
+
+The two stability computations are the content:
+
+* **`tensorAct_relTensorRelator`** — the action carries a relator to a *single* relator, with no
+  sign: `y · rel(x, m, v) = rel(x, y·m, v)`.  The sign of graded commutativity in the algebra
+  (`(−1)^{|x||y|}`, from moving `x` past `y`) cancels exactly against the change in the relator's own
+  sign when `m` is replaced by `y·m`.
+* **`tensorD_relTensorRelator`** — the differential carries a relator to a combination of three,
+  `d(rel(x,m,v)) = (−1)^{|m|} rel(dx,m,v) + rel(x,dm,v) + (−1)^{|m|+|x|} rel(x,m,dv)`.  Both sides
+  expand to the same six single-bidegree terms; the three signs are forced.
+
+Hence `relTensorRel` is stable, and:
+
+* **`relTensorModule P Q`** — the tensor product over the algebra, a differential graded module.
+* `relTensorProj` — the projection from the tensor product over the ground ring, with
+  `relTensorProj_relator` recording that the defining relation does hold downstairs.
+* **`relTensorMapLeft`** — functoriality in the left variable, with `relTensorProj_naturality`.
+
+All unconditional; axioms `propext, Classical.choice, Quot.sound`.
+
+## Next
+
+The invariance theorems proved earlier are for `⊗_R` and do **not** transfer to `⊗_A` by formal
+nonsense — the quotient is not exact.  What makes `⊗_A` computable is the free cell:
+
+1. `relTensorModule P (CDGAStructure.selfModule A) ≅ P` — the unitor.  This is the base case, and
+   it is where the relation does real work: every `m ⊗ x` is rewritten to `(±x·m) ⊗ 1`.
+2. `relTensorModule P (freeCellModule A V k) ≅ P[−k] ⊗_R V` — the cell case, which follows from the
+   unitor and the fact that `freeCellModule A V k` is `A[−k] ⊗_R V`.
+3. With 1 and 2, the `hcell` hypothesis of `tensorMapLeft_tower_isQuasiIsoFull` becomes discharegable
+   for free cells, and the tower theorem becomes a statement about arbitrary semi-free modules
+   rather than about a supplied tower.
+
+## The algebra has no unit — and now it can have one
+
+A structural fact the layer had not recorded, and which blocks the plan above as stated:
+**`CDGAStructure` has no unit.**  Its fields are the product, the differential, bilinearity,
+associativity, graded commutativity and Leibniz — nothing else.  It is a commutative differential
+graded algebra in the *non-unital* sense, which is all the formality comparison ever needed.
+
+That matters here, because without a unit `M ⊗_A A ≅ M` is simply false, and `freeCellModule A V k`
+is free only in the non-unital sense.  So step 1 of the previous plan is not a lemma to be proved,
+it is a hypothesis to be supplied.
+
+`CDGAUnital.lean` supplies it, additively — nothing already built changes:
+
+* `CDGAUnit A` — a degree-zero element with `one_mul` and `d_one`.  `mul_one` is then a theorem, by
+  graded commutativity: the sign is `(−1)^{b·0} = 1`.
+* `CDGAModuleUnital u P` — the action of the unit is the identity.  This is genuinely extra data on
+  a module, not a consequence.
+* `selfModule_unital`, `twisted_unital`, `tensorModule_unital`, `prod_unital` — unitality is
+  inherited by the algebra over itself, by a cell attachment, by the tensor product (through the
+  left factor) and by a direct sum.
+
+Also landed, in `CDGATensorSingle.lean`: **`tensorIndexEquiv`** and the `Fintype` instance it gives.
+The decompositions of a total degree `n` are indexed by their first component, so they form a finite
+type equivalent to `Fin (n+1)`.  This is what allows a *sum over all bidegrees* — needed for any map
+out of a graded tensor product, the unitor included.
+
+Axioms: `propext, Quot.sound` for the unit lemmas and the index equivalence,
+`propext, Classical.choice, Quot.sound` for `tensorModule_unital`.
+
+## Next
+
+With `CDGAUnit`, `CDGAModuleUnital` and the finite bidegree index in place, the unitor is now
+writable: `unitorTo` sums the right action `m ⊗ x ↦ (−1)^{|x||m|} x · m` over the finitely many
+bidegrees, kills the relators by construction, and is inverse to `m ↦ m ⊗ 1` exactly when the
+action is unital.  After that the free-cell computation and the discharge of `hcell` follow as
+described above.
+
+## The unitor
+
+`CDGAUnitor.lean` closes the base case: **a module tensored over the algebra with the algebra is the
+module**, as a full quasi-isomorphism, whenever the algebra has a unit acting as the identity.
+
+* `rightActₗ P h : M a ⊗ X c → M n` — the right action `m · x = (−1)^{|x||m|} x · m` on one
+  bidegree, built by `TensorProduct.lift` from a bilinear map.
+* `unitorToₗ P n` — its **sum over all bidegrees**, which is exactly what `tensorIndexEquiv`'s
+  `Fintype` instance makes possible.
+* `unitorToₗ_relTensorRelator` — the right action kills the relators.  Worth naming why: on the
+  relator of `x, m, v` the two terms differ by moving `v` past `x` inside the algebra
+  (sign `(−1)^{|v||x|}`) and by the change in the relator's own sign, and those two signs are equal
+  — the exponents `|x||m| + |v|(|x|+|m|) + |v||x|` and `(|x|+|v|)|m|` differ by `2|v||x|`.
+* `relUnitorTo` — hence a map out of the quotient, and `relUnitorEquiv` — a **degreewise linear
+  isomorphism**, with `unitorFromₗ u n : m ↦ m ⊗ 1` as the inverse.  The non-trivial half is
+  `relUnitor_single`: `m ⊗ x` is rewritten to `(±x·m) ⊗ 1` *by the relation itself*, with `v := 1`
+  and `x · 1 = x` from `CDGAUnit.mul_one`.
+* `unitorToₗ_tensorAct` and `unitorToₗ_tensorD` — the unitor is equivariant and a chain map.  The
+  first is the same sign cancellation as in `tensorAct_relTensorRelator`; the second is Leibniz,
+  with the two terms picking up `(−1)^{|x||m|}` and `(−1)^{|x||m|+|x|}`.
+* **`relUnitorHom`** and **`relUnitorHom_isQuasiIsoFull`**.
+
+A note on a constraint discovered while writing this: `TensorCarrier` is universe-monomorphic in its
+two arguments, so the unitor is stated with the algebra and the module in the *same* universe.  That
+is no loss in practice — the cards' algebras and modules are both over `ℝ` — but it is why
+`CDGAUnitor.lean` declares `X : ℕ → Type w` rather than `Type v`.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+## Next
+
+The remaining step of the free-cell computation is
+`relTensorModule P (freeCellModule A V k) ≅ P[−k] ⊗_R V`.  With the unitor in hand this is the
+statement that `freeCellModule A V k` *is* `A[−k] ⊗_R V` as a module over the algebra, so the
+relative tensor product distributes: `M ⊗_A (A[−k] ⊗_R V) ≅ (M ⊗_A A)[−k] ⊗_R V`.  After it, the
+`hcell` hypothesis of `tensorMapLeft_tower_isQuasiIsoFull` is dischargeable for free cells and the
+tower theorem applies to arbitrary semi-free modules.
+
+## Invariance of `− ⊗_A A`
+
+`CDGARelTensorUnit.lean`.  The unitor is natural in the module (`unitorToₗ_tensorMapLeft`,
+`relUnitorHom_naturality`), so the square
+
+```
+    M ⊗_A A  ──unitor──▶  M
+       │                  │
+   φ ⊗ A                  φ
+       ▼                  ▼
+   M' ⊗_A A ──unitor──▶  M'
+```
+
+commutes, and both horizontals are full quasi-isomorphisms.  Two out of three then gives both
+directions:
+
+* **`relTensorMapLeft_selfModule_isQuasiIsoFull`** — `− ⊗_A A` preserves full quasi-isomorphisms;
+* **`isQuasiIsoFull_of_relTensorMapLeft_selfModule`** — and reflects them.
+
+This is the base case of invariance for the tensor product over the algebra, and the first place
+where the whole chain — relators, quotient, unit, unitor — is used end to end.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+## The degree shift
+
+`CDGAShift.lean`.  Shifting a module up by `k` places its degree `a` in degree `a + k` and puts
+nothing below `k`.  Indexing by the subtype `{a // a + k = n}` — the same device `FreeCellCarrier`
+already used — keeps truncated subtraction out of every dependent position, and the component below
+the shift is an *empty product*, so the bottom of the complex is trivial with no separate case in
+the carrier.
+
+* `ShiftCarrier`, `shiftD`, `shiftAct` and their computation rules, `shiftD_d`, `shiftAct_assoc`,
+  `shiftD_act`, and **`shiftModule P k`**.
+* **`shiftMap φ k`** — the shift of a morphism.
+* `shiftIndexUnique`, `shiftIndex_isEmpty`, `shiftCarrier_subsingleton`, **`shiftEval`** — above the
+  shift the index of a degree is unique and the component *is* the original module; below it, the
+  component is trivial.
+* **`freeCellCarrier_eq_shift`** — the free cell is literally the shift of the algebra tensored with
+  the coefficient module: `FreeCellCarrier X V k = ShiftCarrier (fun a => X a ⊗ V) k`, by `rfl`.
+  This is what makes the shift the right tool for the cell computation rather than a detour.
+
+Axioms: `propext, Quot.sound` throughout — no choice anywhere in this file.
+
+## Next, and the obstruction in it
+
+The remaining statement is that `shiftMap φ k` is a full quasi-isomorphism when `φ` is.  It is true,
+and the shape of the proof is clear — three regimes, matched by the three parts of
+`IsQuasiIsoFull`:
+
+* `n + 1 < k`: everything is trivial, both cohomologies vanish;
+* `n + 1 = k`: `H` of the shift is `cocycles 0` of the original, matched by the degree-zero half of
+  `IsQuasiIsoFull` — which is exactly why that half had to exist;
+* `n + 1 > k`: `H^n` of the shift is `H^{n-k}` of the original.
+
+The obstruction is not mathematical but syntactic, and worth recording because it will recur:
+`shiftD P k (j + k)` lands in `ShiftCarrier M k (j + k + 1)`, while the statement wants
+`ShiftCarrier M k ((j + 1) + k)`.  `j + k + 1` and `j + 1 + k` are propositionally but **not**
+definitionally equal, so `shiftEval` cannot be applied on the nose and a transport is needed.  The
+fix that generalises is the one already used for `relTensorRelator`: state the comparison with the
+target degree as a *parameter* plus an equation, rather than as a computed expression.
+
+## The shift preserves quasi-isomorphisms
+
+`CDGAShiftQuasiIso.lean`.  The obstruction recorded above is resolved exactly as predicted — by
+carrying the target degree as a parameter with an equation:
+
+* **`shiftEvalAt k j n (h : j + k = n)`** — the component of a shift above the shift, at an
+  *arbitrary* witness of the degree.  With this, `shiftEvalAt_shiftD` states
+  `shiftEvalAt k (j+1) (n+1) (shiftD f) = P.d j (shiftEvalAt k j n f)` with no cast: the target
+  degree is the literal `n + 1`, not the computed `j + k + 1`.  Likewise `shiftEvalAt_shiftAct` and
+  `shiftEvalAt_shiftMap`.
+* `shiftD_eq_zero_iff`, **`shiftCocyclesEquiv`** and its naturality — above the shift the cocycles
+  are the cocycles.
+* `shiftCocyclesEquiv_mem_coboundaries`, **`shiftCohomologyEquiv`** and its naturality — and the
+  cohomology is the cohomology.
+* `shiftCoboundaries_eq_bot`, **`shiftBottomCohomologyEquiv`** — at the bottom of the shift there
+  are no coboundaries, so the cohomology there is the module of degree-zero *cocycles*.
+* **`shiftMap_isQuasiIsoFull`** — the shift preserves full quasi-isomorphisms.
+
+The proof splits into three regimes and they are matched, one each, by the three parts of
+`IsQuasiIsoFull`:
+
+| regime | cohomology of the shift | matched by |
+|---|---|---|
+| `n + 1 < k` | trivial | subsingleton |
+| `n + 1 = k` | `cocycles 0` of the original | the degree-zero half |
+| `n + 1 > k` | `H^{n-k}` of the original | `IsQuasiIso` |
+
+This is the sharpest justification yet for having introduced `IsQuasiIsoFull` rather than working
+with `IsQuasiIso`: **the shift moves what was degree-zero cocycle data into ordinary cohomology**, so
+a notion of quasi-isomorphism blind to degree zero is not stable under shifting.  With `IsQuasiIso`
+alone the middle regime would be unprovable.
+
+Axioms: `propext, Classical.choice, Quot.sound` (`shiftCocyclesEquiv` needs only
+`propext, Quot.sound`).
