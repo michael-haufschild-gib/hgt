@@ -94,6 +94,7 @@ theorem abs_pinnedKernelSlice_le {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) (u : ℝ
   by_cases h : u ≤ t <;> simp only [h, if_true, if_false] <;>
     rw [abs_le] <;> constructor <;> linarith [ht.1, ht.2]
 
+
 /-! ### The Hilbert--Schmidt energy in source coordinates -/
 
 variable (S : PositiveDensitySource)
@@ -245,6 +246,78 @@ completed source transform, `ℓ_z(k) = Ξ_C(z)`.  Together with
 `A + z` — this is the scalar corner of the Grushin reduction. -/
 theorem sourceEvaluation_k (z : ℂ) :
     sourceEvaluation z (fun x => (S.k x : ℂ)) = HedenmalmQuantile.xiC S z := rfl
+
+
+/-! ### The kernel field of the source inverse
+
+The row `K(t, ·) = i q(t)(1_{· ≤ t} - t)` of the source inverse, as an element of `L²(0,1)` for
+each fixed `t`.  Its squared norm is `q(t)² t(1-t)`, so the field is square integrable exactly when
+the theta-tail integral `M ∫ p(1-p)/k` converges; that is the input required by the corpus kernel
+theorem `RHTower.isHilbertSchmidt_kernelOperator`. -/
+
+/-- The kernel row of the source inverse at the parameter `t`. -/
+def pinnedKernelFun (t u : ℝ) : ℂ :=
+  Complex.I * ((quantileSpeed S t : ℝ) : ℂ) * ((pinnedKernelSlice t u : ℝ) : ℂ)
+
+theorem norm_pinnedKernelFun {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) (u : ℝ) :
+    ‖pinnedKernelFun S t u‖ ≤ quantileSpeed S t := by
+  have hq := (quantileSpeed_pos S t).le
+  have h1 := abs_pinnedKernelSlice_le ht u
+  rw [pinnedKernelFun, norm_mul, norm_mul, Complex.norm_I, one_mul, Complex.norm_real,
+    Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hq]
+  nlinarith [abs_nonneg (pinnedKernelSlice t u)]
+
+theorem measurable_pinnedKernelFun (t : ℝ) : Measurable (pinnedKernelFun S t) := by
+  refine measurable_const.mul ?_
+  refine Complex.measurable_ofReal.comp ?_
+  refine Measurable.sub ?_ measurable_const
+  exact measurable_const.ite (measurableSet_le measurable_id measurable_const) measurable_const
+
+theorem memLp_pinnedKernelFun {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) :
+    MemLp (pinnedKernelFun S t) 2 unitIntervalMeasure :=
+  MemLp.of_bound (measurable_pinnedKernelFun S t).aestronglyMeasurable (quantileSpeed S t)
+    (Filter.Eventually.of_forall fun u => norm_pinnedKernelFun S ht u)
+
+/-- The kernel row as an actual vector of `L²(0,1)`. -/
+def pinnedKernelVec {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) : Lp ℂ 2 unitIntervalMeasure :=
+  (memLp_pinnedKernelFun S ht).toLp _
+
+theorem norm_sq_lp_eq_integral (f : Lp ℂ 2 unitIntervalMeasure) :
+    ((‖f‖ ^ 2 : ℝ) : ℂ) = ∫ u, ((‖f u‖ ^ 2 : ℝ) : ℂ) ∂unitIntervalMeasure := by
+  have hinner : (inner ℂ f f : ℂ) = ((‖f‖ ^ 2 : ℝ) : ℂ) := by
+    have h := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) f
+    push_cast
+    exact h
+  rw [← hinner, MeasureTheory.L2.inner_def]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+  show (inner ℂ (f u) (f u) : ℂ) = ((‖f u‖ ^ 2 : ℝ) : ℂ)
+  rw [RCLike.inner_apply', HedenmalmQuantile.conj_mul_self_eq]
+
+/-- **The row energy of the source inverse.**  Each kernel row has squared norm
+`q(t)² t(1-t)`. -/
+theorem norm_sq_pinnedKernelVec {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1) :
+    ‖pinnedKernelVec S (Ioo_subset_Icc_self ht)‖ ^ 2
+      = quantileSpeed S t ^ 2 * (t * (1 - t)) := by
+  have hcoe := MemLp.coeFn_toLp (memLp_pinnedKernelFun S (Ioo_subset_Icc_self ht))
+  have hpt : ∀ u : ℝ, ‖pinnedKernelFun S t u‖ ^ 2
+      = quantileSpeed S t ^ 2 * pinnedKernelSlice t u ^ 2 := by
+    intro u
+    rw [pinnedKernelFun, norm_mul, norm_mul, Complex.norm_I, one_mul, Complex.norm_real,
+      Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
+      abs_of_nonneg (quantileSpeed_pos S t).le, mul_pow, sq_abs]
+  have hC : ((‖pinnedKernelVec S (Ioo_subset_Icc_self ht)‖ ^ 2 : ℝ) : ℂ)
+      = ((quantileSpeed S t ^ 2 * (t * (1 - t)) : ℝ) : ℂ) := by
+    rw [norm_sq_lp_eq_integral]
+    have hcongr : (fun u => ((‖(pinnedKernelVec S (Ioo_subset_Icc_self ht)) u‖ ^ 2 : ℝ) : ℂ))
+        =ᵐ[unitIntervalMeasure]
+        fun u => ((quantileSpeed S t ^ 2 * pinnedKernelSlice t u ^ 2 : ℝ) : ℂ) := by
+      filter_upwards [hcoe] with u hu
+      show ((‖(pinnedKernelVec S (Ioo_subset_Icc_self ht)) u‖ ^ 2 : ℝ) : ℂ) = _
+      rw [show (pinnedKernelVec S (Ioo_subset_Icc_self ht) : ℝ → ℂ) u
+          = pinnedKernelFun S t u from hu, hpt u]
+    rw [integral_congr_ae hcongr, integral_complex_ofReal, unitIntervalMeasure_eq,
+      MeasureTheory.integral_const_mul, integral_pinnedKernelSlice_sq ht]
+  exact_mod_cast hC
 
 
 end HedenmalmHilbertSchmidt

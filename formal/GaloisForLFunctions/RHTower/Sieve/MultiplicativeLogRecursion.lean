@@ -318,7 +318,7 @@ theorem abs_sum_Icc_le_of_smaller_scales (f : ArithmeticFunction ℝ) (hf1 : Inv
   have hN0 : (0 : ℝ) ≤ (N : ℝ) := Nat.cast_nonneg N
   have hlogN : (0 : ℝ) ≤ Real.log (N : ℝ) := Real.log_nonneg (by exact_mod_cast hN)
   have hmain := abs_sum_Icc_mul_log_sub_sum_primes_le' f hf1 hf hbdd N
-  have hterm : ∀ p ∈ Finset.Icc 1 N with Nat.Prime p,
+  have hterm : ∀ p ∈ Finset.filter (fun p => Nat.Prime p) (Finset.Icc 1 N),
       |f p * Real.log (p : ℝ) * ∑ m ∈ Finset.Icc 1 (N / p), f m|
         ≤ ε * (N : ℝ) * (Real.log (p : ℝ) / (p : ℝ)) := by
     intro p hp
@@ -345,7 +345,6 @@ theorem abs_sum_Icc_le_of_smaller_scales (f : ArithmeticFunction ℝ) (hf1 : Inv
     have hval : Real.log (p : ℝ) * (ε * ((N : ℝ) / (p : ℝ)))
         = ε * (N : ℝ) * (Real.log (p : ℝ) / (p : ℝ)) := by
       field_simp
-      ring
     linarith [hchain, hval.le, hval.ge]
   have hP : |∑ p ∈ Finset.Icc 1 N with Nat.Prime p,
         f p * Real.log (p : ℝ) * ∑ m ∈ Finset.Icc 1 (N / p), f m|
