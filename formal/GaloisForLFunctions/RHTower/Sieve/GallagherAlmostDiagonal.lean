@@ -14,12 +14,12 @@ is supported on pairs whose logarithms are within `δ`.  Bounding `Re(a_n conj a
 
 and Gallagher's lemma turns this into a mean value theorem for the Dirichlet polynomial:
 
-`∫_{-W}^{W} ‖∑_n a_n n^{2πiw}‖² dw ≤ (5/(4δ)) ∑_n ‖a_n‖² · #{m : |log n - log m| < δ}`,   `2πδW ≤ 1`.
+`∫_{-W}^{W} ‖∑_n a_n n^{2πiw}‖² dw ≤ (5/(4δ)) ∑_n ‖a_n‖² · #{m : |log n - log m| < δ}`,  `2πδW ≤ 1`.
 
 The arithmetic content is now a single count: how many indices of the support lie in a multiplicative
 window of ratio `e^δ`.  For a sparse support — the primes, say — that count is far smaller than the
-number of indices, and the resulting bound is correspondingly sharper than the classical mean value
-theorem, whose error term `O(N ∑‖a_n‖²)` knows nothing about the support.
+number of indices, and the bound is correspondingly sharper than the classical mean value theorem, whose
+error term `O(N ∑‖a_n‖²)` knows nothing about the support.
 -/
 
 noncomputable section
@@ -30,10 +30,10 @@ open MeasureTheory Set Finset
 
 /-- The number of indices of `s` whose logarithm is within `δ` of `log n`. -/
 noncomputable def logNeighbourCount (s : Finset ℕ) (δ : ℝ) (n : ℕ) : ℕ :=
-  #{m ∈ s | |Real.log n - Real.log m| < δ}
+  #(s.filter fun m : ℕ => |Real.log (n : ℝ) - Real.log (m : ℝ)| < δ)
 
 /-- The kernel of the quadratic form is dominated by `δ` on the near-diagonal and vanishes off it. -/
-theorem max_sub_abs_le_indicator {δ : ℝ} (hδ : 0 < δ) (x : ℝ) :
+theorem max_sub_abs_le_indicator {δ : ℝ} (x : ℝ) :
     max (δ - |x|) 0 ≤ δ * (if |x| < δ then (1 : ℝ) else 0) := by
   by_cases h : |x| < δ
   · rw [if_pos h, mul_one]
@@ -41,22 +41,36 @@ theorem max_sub_abs_le_indicator {δ : ℝ} (hδ : 0 < δ) (x : ℝ) :
     · rw [max_eq_right hle]
       linarith
     · rw [max_eq_left hle]
-      have : 0 ≤ |x| := abs_nonneg x
+      have hx : 0 ≤ |x| := abs_nonneg x
       linarith
   · rw [if_neg h, mul_zero]
     have hge : δ ≤ |x| := not_lt.mp h
-    exact max_eq_right (by linarith)
+    have hzero : max (δ - |x|) 0 = 0 := max_eq_right (by linarith)
+    rw [hzero]
 
 /-- **The almost-diagonal bound for a logarithmic short-interval mean square.** -/
-theorem integral_normSq_logWindowSum_le_count (a : ℕ → ℂ) (s : Finset ℕ) {δ : ℝ} (hδ : 0 < δ) :
+theorem integral_normSq_logWindowSum_le_count (a : ℕ → ℂ) (s : Finset ℕ) (δ : ℝ) :
     (∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ 2)
       ≤ δ * ∑ n ∈ s, (logNeighbourCount s δ n : ℝ) * ‖a n‖ ^ 2 := by
-  classical
   rw [integral_normSq_logWindowSum]
+  have hcount : ∀ n : ℕ,
+      (∑ m ∈ s, (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0))
+        = (logNeighbourCount s δ n : ℝ) := by
+    intro n
+    rw [logNeighbourCount, Finset.sum_boole]
+  have hcount' : ∀ m : ℕ,
+      (∑ n ∈ s, (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0))
+        = (logNeighbourCount s δ m : ℝ) := by
+    intro m
+    rw [← hcount m]
+    refine Finset.sum_congr rfl fun n _ => ?_
+    rw [abs_sub_comm]
   have hterm : ∀ n ∈ s, ∀ m ∈ s,
       (a n * (starRingEnd ℂ) (a m)).re * max (δ - |Real.log n - Real.log m|) 0
-        ≤ δ * ((‖a n‖ ^ 2 + ‖a m‖ ^ 2) / 2)
-            * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0) := by
+        ≤ (δ / 2) * (‖a n‖ ^ 2
+              * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0))
+          + (δ / 2) * (‖a m‖ ^ 2
+              * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0)) := by
     intro n _ m _
     have hre : (a n * (starRingEnd ℂ) (a m)).re ≤ (‖a n‖ ^ 2 + ‖a m‖ ^ 2) / 2 := by
       have h1 : (a n * (starRingEnd ℂ) (a m)).re ≤ ‖a n * (starRingEnd ℂ) (a m)‖ :=
@@ -66,7 +80,7 @@ theorem integral_normSq_logWindowSum_le_count (a : ℕ → ℂ) (s : Finset ℕ)
       have h3 : ‖a n‖ * ‖a m‖ ≤ (‖a n‖ ^ 2 + ‖a m‖ ^ 2) / 2 := by
         nlinarith [sq_nonneg (‖a n‖ - ‖a m‖)]
       linarith [h1, h2.le, h2.ge, h3]
-    have hker := max_sub_abs_le_indicator hδ (Real.log n - Real.log m)
+    have hker := max_sub_abs_le_indicator (δ := δ) (Real.log n - Real.log m)
     have hkernonneg : (0 : ℝ) ≤ max (δ - |Real.log n - Real.log m|) 0 := le_max_right _ _
     have hsum : (0 : ℝ) ≤ (‖a n‖ ^ 2 + ‖a m‖ ^ 2) / 2 := by positivity
     calc (a n * (starRingEnd ℂ) (a m)).re * max (δ - |Real.log n - Real.log m|) 0
@@ -75,22 +89,56 @@ theorem integral_normSq_logWindowSum_le_count (a : ℕ → ℂ) (s : Finset ℕ)
       _ ≤ ((‖a n‖ ^ 2 + ‖a m‖ ^ 2) / 2)
             * (δ * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0)) :=
           mul_le_mul_of_nonneg_left hker hsum
-      _ = δ * ((‖a n‖ ^ 2 + ‖a m‖ ^ 2) / 2)
-            * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0) := by ring
-  refine le_trans (Finset.sum_le_sum fun n hn => Finset.sum_le_sum fun m hm =>
-    hterm n hn m hm) ?_
-  -- split the symmetric bound into its two halves
-  have hsplit : ∀ n ∈ s, ∑ m ∈ s, δ * ((‖a n‖ ^ 2 + ‖a m‖ ^ 2) / 2)
-        * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0)
-      = (δ / 2) * (‖a n‖ ^ 2 * (logNeighbourCount s δ n : ℝ))
-        + (δ / 2) * ∑ m ∈ s, ‖a m‖ ^ 2
-            * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0) := by
-    intro n _
-    rw [Finset.mul_sum, ← Finset.sum_add_distrib]
-    · refine Finset.sum_congr rfl fun m _ => ?_
-      ring
-    all_goals skip
-  sorry
+      _ = (δ / 2) * (‖a n‖ ^ 2
+              * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0))
+          + (δ / 2) * (‖a m‖ ^ 2
+              * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0)) := by ring
+  refine le_trans (Finset.sum_le_sum fun n hn =>
+    Finset.sum_le_sum fun m hm => hterm n hn m hm) ?_
+  have hsplit : (∑ n ∈ s, ∑ m ∈ s,
+        ((δ / 2) * (‖a n‖ ^ 2 * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0))
+          + (δ / 2) * (‖a m‖ ^ 2 * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0))))
+      = (∑ n ∈ s, ∑ m ∈ s,
+            (δ / 2) * (‖a n‖ ^ 2 * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0)))
+        + ∑ n ∈ s, ∑ m ∈ s,
+            (δ / 2) * (‖a m‖ ^ 2 * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0)) := by
+    rw [← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl fun n _ => Finset.sum_add_distrib
+  rw [hsplit]
+  have hfirst : (∑ n ∈ s, ∑ m ∈ s,
+        (δ / 2) * (‖a n‖ ^ 2 * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0)))
+      = (δ / 2) * ∑ n ∈ s, (logNeighbourCount s δ n : ℝ) * ‖a n‖ ^ 2 := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun n _ => ?_
+    rw [← Finset.mul_sum, ← Finset.mul_sum, hcount n]
+    ring
+  have hsecond : (∑ n ∈ s, ∑ m ∈ s,
+        (δ / 2) * (‖a m‖ ^ 2 * (if |Real.log n - Real.log m| < δ then (1 : ℝ) else 0)))
+      = (δ / 2) * ∑ n ∈ s, (logNeighbourCount s δ n : ℝ) * ‖a n‖ ^ 2 := by
+    rw [Finset.sum_comm, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun m _ => ?_
+    rw [← Finset.mul_sum, ← Finset.mul_sum, hcount' m]
+    ring
+  rw [hfirst, hsecond]
+  linarith
+
+/-- **The almost-diagonal mean value theorem for a Dirichlet polynomial.**  Gallagher's lemma against
+the near-diagonal bound: the frequency mean square is controlled by the coefficients weighted by the
+number of their multiplicative neighbours. -/
+theorem integral_Icc_normSq_logPoly_le_count (a : ℕ → ℂ) (s : Finset ℕ) {δ W : ℝ}
+    (hδ : 0 < δ) (hWδ : 2 * Real.pi * δ * W ≤ 1) :
+    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2)
+      ≤ (5 / (4 * δ)) * ∑ n ∈ s, (logNeighbourCount s δ n : ℝ) * ‖a n‖ ^ 2 := by
+  have h1 := integral_Icc_normSq_logPoly_le_window a s hδ hWδ
+  have h2 := integral_normSq_logWindowSum_le_count a s δ
+  have hc : (0 : ℝ) ≤ 5 / (4 * δ ^ 2) := by positivity
+  have h3 : (5 / (4 * δ ^ 2)) * ∫ u : ℝ, ‖logWindowSum a s δ u‖ ^ 2
+      ≤ (5 / (4 * δ ^ 2)) * (δ * ∑ n ∈ s, (logNeighbourCount s δ n : ℝ) * ‖a n‖ ^ 2) :=
+    mul_le_mul_of_nonneg_left h2 hc
+  have hid : (5 / (4 * δ ^ 2)) * (δ * ∑ n ∈ s, (logNeighbourCount s δ n : ℝ) * ‖a n‖ ^ 2)
+      = (5 / (4 * δ)) * ∑ n ∈ s, (logNeighbourCount s δ n : ℝ) * ‖a n‖ ^ 2 := by
+    field_simp
+  linarith [h1, h3, hid.le, hid.ge]
 
 end RHTower.Sieve
 

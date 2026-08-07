@@ -105,7 +105,8 @@ theorem two_thirds_mul_sqrt_le_xiEndpointPhase_endpoint_collar {s x : ℝ}
             (Real.sqrt (x ^ 2 - 1) * (1 - (x ^ 2 - 1) / 6)) := by
       exact mul_le_mul hA (mul_le_mul_of_nonneg_left hF hroot0) (by positivity)
         (Real.sqrt_nonneg _)
-    convert hmul using 1 <;> ring
+    convert hmul using 1
+    all_goals ring
   have hlog := GaloisForLFunctions.HTGeometry.sqrt_mul_one_sub_le_endpointLog hx1.le
   have hphase := sqrt_one_sub_mul_endpointLog_le_xiEndpointPhase hs0 hs1 hx1.le
   exact hAF.trans ((mul_le_mul_of_nonneg_left hlog (Real.sqrt_nonneg _)).trans hphase)
@@ -230,6 +231,34 @@ theorem abs_lgBesselModel2_le_endpoint_envelope {s c x : ℝ}
   have hmodel := (abs_lgBesselModel_le_log_envelope s c x).2
   have hlog := abs_log_le_self_add_inv hu0
   linarith
+
+/-- Endpoint logarithm at the matching point is `O(c^-1)`, uniformly in `s`. -/
+theorem endpointLog_crossing_le_twenty_div_seven_c {s c : ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c) :
+    GaloisForLFunctions.HTGeometry.endpointLog (dunsterEndpointCrossing c)
+      ≤ 20 / (7 * c) := by
+  let B := dunsterEndpointCrossing c
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
+  have hB1 : 1 < B := dunsterEndpointCrossing_gt_one hc0
+  have hdsmall : B ^ 2 - 1 ≤ 3 / 20 := dunsterEndpointCrossing_sq_sub_one_le hc
+  have hlogLower := GaloisForLFunctions.HTGeometry.sqrt_mul_one_sub_le_endpointLog hB1.le
+  have hlog0 : 0 ≤ GaloisForLFunctions.HTGeometry.endpointLog B := by
+    have hfac : 0 ≤ 1 - (B ^ 2 - 1) / 6 := by linarith
+    exact (mul_nonneg (Real.sqrt_nonneg _) hfac).trans hlogLower
+  have hA : (7 / 10 : ℝ) ≤ Real.sqrt (1 - s) := by
+    rw [Real.le_sqrt (by norm_num) (by linarith)]
+    nlinarith
+  have hphase := sqrt_one_sub_mul_endpointLog_le_xiEndpointPhase hs0 hs1 hB1.le
+  have hlower : (7 / 10 : ℝ) * GaloisForLFunctions.HTGeometry.endpointLog B
+      ≤ xiEndpointPhase s B :=
+    (mul_le_mul_of_nonneg_right hA hlog0).trans hphase
+  have hupper : c * xiEndpointPhase s B ≤ 2 :=
+    c_mul_xiEndpointPhase_crossing_le_two hs0 hs1 hc
+  have hscaled := mul_le_mul_of_nonneg_left hlower hc0.le
+  dsimp only [B] at hscaled hupper ⊢
+  have hc7 : 0 < 7 * c := by positivity
+  rw [le_div_iff₀ hc7]
+  nlinarith
 
 end GaloisForLFunctions.RHTower
 

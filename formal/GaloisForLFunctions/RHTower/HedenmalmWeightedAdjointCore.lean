@@ -66,11 +66,7 @@ theorem hasDerivAt_sourceWeightC (x : ℝ) :
 
 /-! ### The weighted pairing -/
 
-/-- **The weighted formal symmetry of the Hedenmalm pair.**  On compactly supported
-differentiable data,
-
-`⟨D f, g⟩_{H_k} = ⟨f, L g⟩_{H_k}`,  with `L = D + i k'/k`. -/
-theorem integral_weighted_symmetry {f g f' g' : ℝ → ℂ}
+theorem integral_weighted_symmetry_core {f g f' g' : ℝ → ℂ}
     (hf : ∀ x, HasDerivAt f (f' x) x) (hg : ∀ x, HasDerivAt g (g' x) x)
     (hfc : Continuous f) (hgc : Continuous g)
     (hfc' : Continuous f') (hgc' : Continuous g')
@@ -118,8 +114,13 @@ theorem integral_weighted_symmetry {f g f' g' : ℝ → ℂ}
       continuous_sourceWeightC sourceWeightC_ne_zero
   have hLs : HasCompactSupport
       (fun x => (-Complex.I * f' x) * (starRingEnd ℂ) (g x) / sourceWeightC x) := by
-    have : HasCompactSupport (fun x => -Complex.I * f' x) := hfs'.mul_left
-    exact (this.mul_right).div_right
+    have hrw : (fun x => (-Complex.I * f' x) * (starRingEnd ℂ) (g x) / sourceWeightC x)
+        = fun x => ((-Complex.I * f' x) * (starRingEnd ℂ) (g x)) * (sourceWeightC x)⁻¹ := by
+      funext x
+      rw [div_eq_mul_inv]
+    rw [hrw]
+    have h1 : HasCompactSupport (fun x => -Complex.I * f' x) := hfs'.mul_left
+    exact (h1.mul_right).mul_right
   have hRcont : Continuous
       (fun x => f x * (starRingEnd ℂ) (-Complex.I * g' x
         + Complex.I * ((sourceLogDeriv x : ℝ) : ℂ) * g x) / sourceWeightC x) := by
@@ -129,8 +130,15 @@ theorem integral_weighted_symmetry {f g f' g' : ℝ → ℂ}
       ((continuous_const.mul (Complex.continuous_ofReal.comp continuous_sourceLogDeriv)).mul hgc)
   have hRs : HasCompactSupport
       (fun x => f x * (starRingEnd ℂ) (-Complex.I * g' x
-        + Complex.I * ((sourceLogDeriv x : ℝ) : ℂ) * g x) / sourceWeightC x) :=
-    (hfs.mul_right).div_right
+        + Complex.I * ((sourceLogDeriv x : ℝ) : ℂ) * g x) / sourceWeightC x) := by
+    have hrw : (fun x => f x * (starRingEnd ℂ) (-Complex.I * g' x
+          + Complex.I * ((sourceLogDeriv x : ℝ) : ℂ) * g x) / sourceWeightC x)
+        = fun x => (f x * (starRingEnd ℂ) (-Complex.I * g' x
+          + Complex.I * ((sourceLogDeriv x : ℝ) : ℂ) * g x)) * (sourceWeightC x)⁻¹ := by
+      funext x
+      rw [div_eq_mul_inv]
+    rw [hrw]
+    exact (hfs.mul_right).mul_right
   have hpt : ∀ x, (-Complex.I * f' x) * (starRingEnd ℂ) (g x) / sourceWeightC x
       - f x * (starRingEnd ℂ) (-Complex.I * g' x
           + Complex.I * ((sourceLogDeriv x : ℝ) : ℂ) * g x) / sourceWeightC x
@@ -148,10 +156,28 @@ theorem integral_weighted_symmetry {f g f' g' : ℝ → ℂ}
     rw [hconj, ha, hF']
     field_simp
     ring
-  have hsub := MeasureTheory.integral_sub (hLcont.integrable_of_hasCompactSupport hLs)
-    (hRcont.integrable_of_hasCompactSupport hRs)
-  rw [← sub_eq_zero, hsub, integral_congr_ae (Filter.Eventually.of_forall hpt),
+  have hsub := MeasureTheory.integral_sub
+    (hLcont.integrable_of_hasCompactSupport (μ := (volume : Measure ℝ)) hLs)
+    (hRcont.integrable_of_hasCompactSupport (μ := (volume : Measure ℝ)) hRs)
+  rw [← sub_eq_zero, ← hsub, integral_congr_ae (Filter.Eventually.of_forall hpt),
     MeasureTheory.integral_const_mul, hzero, mul_zero]
+
+
+/-- **The weighted formal symmetry of the Hedenmalm pair.**  For `f` in the compactly supported
+`C¹` core and any `C¹` function `g`,
+
+`⟨D f, g⟩_{H_k} = ⟨f, L g⟩_{H_k}`,  with `L = D + i k'/k`. -/
+theorem integral_weighted_symmetry {f g : ℝ → ℂ}
+    (hf : ContDiff ℝ 1 f) (hg : ContDiff ℝ 1 g) (hfs : HasCompactSupport f) :
+    (∫ x, (-Complex.I * deriv f x) * (starRingEnd ℂ) (g x) / sourceWeightC x)
+      = ∫ x, f x * (starRingEnd ℂ) (-Complex.I * deriv g x
+          + Complex.I * ((sourceLogDeriv x : ℝ) : ℂ) * g x) / sourceWeightC x :=
+  integral_weighted_symmetry_core
+    (fun x => (hf.differentiable (by simp) x).hasDerivAt)
+    (fun x => (hg.differentiable (by simp) x).hasDerivAt)
+    hf.continuous hg.continuous
+    (hf.continuous_deriv (by simp)) (hg.continuous_deriv (by simp))
+    hfs hfs.deriv
 
 /-! ### The half-density conjugation -/
 
@@ -173,17 +199,15 @@ theorem hasDerivAt_halfDensity_mul {f f' : ℝ → ℂ} (hf : ∀ x, HasDerivAt 
       (((sourceDeriv x / (2 * Real.sqrt (thetaCuspFullSource x)) : ℝ) : ℂ)) x :=
     hsq.ofReal_comp
   refine (hsqC.mul (hf x)).congr_deriv ?_
-  have hsqrtne : (Real.sqrt (thetaCuspFullSource x) : ℝ) ≠ 0 := hsqrtpos.ne'
-  have hsqrtsq : Real.sqrt (thetaCuspFullSource x) * Real.sqrt (thetaCuspFullSource x)
-      = thetaCuspFullSource x := Real.mul_self_sqrt hkpos.le
-  have hkne : (thetaCuspFullSource x : ℝ) ≠ 0 := hkpos.ne'
   have hgoal : ((sourceDeriv x / (2 * Real.sqrt (thetaCuspFullSource x)) : ℝ) : ℂ)
       = ((Real.sqrt (thetaCuspFullSource x) : ℝ) : ℂ) * ((sourceLogDeriv x / 2 : ℝ) : ℂ) := by
     rw [← Complex.ofReal_mul]
     congr 1
-    rw [sourceLogDeriv, ← hsqrtsq]
+    set s := Real.sqrt (thetaCuspFullSource x) with hs
+    have hsne : s ≠ 0 := hsqrtpos.ne'
+    have hss : s * s = thetaCuspFullSource x := Real.mul_self_sqrt hkpos.le
+    rw [sourceLogDeriv, ← hss]
     field_simp
-    ring
   rw [hgoal]
   ring
 

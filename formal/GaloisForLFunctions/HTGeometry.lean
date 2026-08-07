@@ -5877,3 +5877,4 @@ import GaloisForLFunctions.HTGeometry.GagliardoFourierConstant
 import GaloisForLFunctions.HTGeometry.GammaTransportKernel
 import GaloisForLFunctions.HTGeometry.HalfLogCesaroAverage
 import GaloisForLFunctions.HTGeometry.GammaJumpFormPairing
+import GaloisForLFunctions.HTGeometry.JumpFormAdjointness

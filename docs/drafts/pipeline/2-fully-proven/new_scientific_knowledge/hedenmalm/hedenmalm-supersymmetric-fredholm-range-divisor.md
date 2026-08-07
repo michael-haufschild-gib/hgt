@@ -427,10 +427,26 @@ theorem of calculus on the whole line applied to the tilted product `u(x) e^(i a
 hypotheses are exactly the vanishing of that product at both ends, which is what membership of
 `u` in the weighted space supplies.
 
+**Weighted adjoint core.**  `formal/GaloisForLFunctions/RHTower/HedenmalmWeightedAdjointCore.lean`
+(namespace `RHTower.HedenmalmThetaSource`) proves the core content of `(3)` and `(12)` at the
+actual arithmetic source, with no hypothesis on the source.
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(2)` | the logarithmic derivative `a = k'/k` is continuous | `sourceDeriv`, `hasDerivAt_thetaCuspFullSource`, `continuous_sourceDeriv`, `sourceLogDeriv`, `continuous_sourceLogDeriv` |
+| `(11)` | **the weighted formal symmetry `<D f, g>_(H_k) = <f, L g>_(H_k)`** on compactly supported differentiable data | `integral_weighted_symmetry` |
+| `(12)` | **the half-density conjugation** `(k^(1/2) f)' = k^(1/2)(f' + (a/2) f)` | `hasDerivAt_halfDensity_mul` |
+
+`integral_weighted_symmetry` is a single integration by parts: `f conj(g)/k` has compact support,
+so its derivative integrates to zero by the improper fundamental theorem of calculus, and the
+three terms of that derivative are exactly the difference of the two sides.
+
 Still missing in Lean, and requiring genuine unbounded-operator infrastructure that mathlib does
-not carry: the weighted adjoint identity `(3)`, closedness and the Fredholm index `-1` in `(4)`,
-compactness of the resolvent, the Witten square `(8)`, the supersymmetric Dirac operator `(9)`,
-and strict positivity of the Hermitian square `(10)`.
+not carry: the passage from the formal symmetry `(11)` to the operator identity `A^* = L` after
+closure in `(3)`, closedness and the Fredholm index `-1` in `(4)`, compactness of the resolvent,
+the Witten square `(8)`, the supersymmetric Dirac operator `(9)`, and strict positivity of the
+Hermitian square `(10)`.  mathlib supplies `LinearPMap.adjoint`, `LinearPMap.closure` and
+`LinearPMap.IsClosable`, but no Fredholm theory for unbounded operators.
 
 ## Gates
 

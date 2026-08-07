@@ -555,6 +555,44 @@ theorem shiftRightFst_surjective (hp1 : p.1.1 = q.1.1 + 1) (hp2 : p.1.2 = q.1.2)
     simp only [shiftRightFst]
     omega
 
+theorem sum_shiftLeftFst {M' : Type*} [AddCommGroup M'] (hp1 : p.1.1 = q.1.1 + 1)
+    (hp2 : p.1.2 = q.1.2) (F : Splitting a b q → M') (G : Splitting (a + 1) b p → M')
+    (hzero : ∀ uv : Splitting (a + 1) b p, uv.1.1.1.1 = 0 → G uv = 0)
+    (hFG : ∀ rs : Splitting a b q, F rs = G (shiftLeftFst hp1 hp2 rs)) :
+    (∑ rs : Splitting a b q, F rs) = ∑ uv : Splitting (a + 1) b p, G uv := by
+  classical
+  rw [← Finset.sum_filter_of_ne
+    (p := fun uv : Splitting (a + 1) b p => uv.1.1.1.1 ≠ 0)
+    (fun uv _ hne h0 => hne (hzero uv h0))]
+  refine Finset.sum_bij (fun rs _ => shiftLeftFst hp1 hp2 rs) (fun rs _ => ?_)
+    (fun rs _ rs' _ he => shiftLeftFst_injective hp1 hp2 rs rs' he) (fun uv huv => ?_)
+    (fun rs _ => hFG rs)
+  · refine Finset.mem_filter.2 ⟨Finset.mem_univ _, ?_⟩
+    show (shiftLeftFst hp1 hp2 rs).1.1.1.1 ≠ 0
+    simp only [shiftLeftFst]
+    omega
+  · obtain ⟨rs, hrs⟩ := shiftLeftFst_surjective hp1 hp2 uv (Finset.mem_filter.1 huv).2
+    exact ⟨rs, Finset.mem_univ _, hrs⟩
+
+theorem sum_shiftRightFst {M' : Type*} [AddCommGroup M'] (hp1 : p.1.1 = q.1.1 + 1)
+    (hp2 : p.1.2 = q.1.2) (F : Splitting a b q → M') (G : Splitting a (b + 1) p → M')
+    (hzero : ∀ uv : Splitting a (b + 1) p, uv.1.2.1.1 = 0 → G uv = 0)
+    (hFG : ∀ rs : Splitting a b q, F rs = G (shiftRightFst hp1 hp2 rs)) :
+    (∑ rs : Splitting a b q, F rs) = ∑ uv : Splitting a (b + 1) p, G uv := by
+  classical
+  rw [← Finset.sum_filter_of_ne
+    (p := fun uv : Splitting a (b + 1) p => uv.1.2.1.1 ≠ 0)
+    (fun uv _ hne h0 => hne (hzero uv h0))]
+  refine Finset.sum_bij (fun rs _ => shiftRightFst hp1 hp2 rs) (fun rs _ => ?_)
+    (fun rs _ rs' _ he => shiftRightFst_injective hp1 hp2 rs rs' he) (fun uv huv => ?_)
+    (fun rs _ => hFG rs)
+  · refine Finset.mem_filter.2 ⟨Finset.mem_univ _, ?_⟩
+    show (shiftRightFst hp1 hp2 rs).1.2.1.1 ≠ 0
+    simp only [shiftRightFst]
+    omega
+  · obtain ⟨rs, hrs⟩ := shiftRightFst_surjective hp1 hp2 uv (Finset.mem_filter.1 huv).2
+    exact ⟨rs, Finset.mem_univ _, hrs⟩
+
 end Shift
 
 end External

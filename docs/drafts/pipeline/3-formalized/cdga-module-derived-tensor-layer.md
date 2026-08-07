@@ -1480,3 +1480,15 @@ The one real obstacle in the summand step is dependent rewriting: identifying
 hits a motive problem.  The way through is to destructure the indices into naturals first and
 introduce the complement as a variable — `obtain ⟨c, rfl⟩ : ∃ c, p₁ = r₁ + c` — after which every
 identification is a rewrite of a natural number inside `X (…)`, whose motive is type-correct.
+
+### The reindexings the Leibniz rule needs
+
+`shiftLeftFst`, `shiftRightFst`, their injectivity and surjectivity, and **`sum_shiftLeftFst`**,
+**`sum_shiftRightFst`**: raising one coordinate of one part of a splitting is a bijection onto the
+part of the target where that coordinate is positive, and the complement contributes nothing.
+
+`Finset.sum_bij` is the right tool here rather than `sum_nbij'`: the inverse map would have to
+subtract one from a coordinate, and a *total* inverse cannot be written when the source splitting
+type is empty.  With `sum_bij` the preimage is produced inside an existential, where the subtraction
+is harmless — it never enters a dependent position.  `Finset.sum_filter_of_ne` discards the
+complement, whose terms vanish because a half-differential is zero in degree zero.

@@ -64,3 +64,23 @@ Every ingredient is in the corpus; the work is the bookkeeping.
 Nothing on this card is conditional and nothing may become conditional: no step assumes a bound on `S`
 or on `F_x`. `L(x)` is a *definition*, not a hypothesis — it is a finite supremum-sum over the
 frequency grid, computable from `f` alone.
+
+## Second brick: the almost-diagonal mean value theorem
+
+`RHTower/Sieve/GallagherAlmostDiagonal.lean` (green, axiom-clean, wired):
+
+* `logNeighbourCount s δ n = #{m ∈ s : |log n − log m| < δ}`;
+* `integral_normSq_logWindowSum_le_count` — `∫_ℝ ‖∑_{u < log n ≤ u+δ} a_n‖² du ≤ δ ∑_n (count n)‖a_n‖²`,
+  from the corpus's *exact* quadratic form `integral_normSq_logWindowSum` by
+  `Re(a_n conj a_m) ≤ (‖a_n‖²+‖a_m‖²)/2` and `(δ−|Δ|)₊ ≤ δ·1_{|Δ|<δ}`. No hypothesis on `δ` at all;
+* `integral_Icc_normSq_logPoly_le_count` — **the mean value theorem**:
+
+  `∫_{−W}^{W} ‖∑_n a_n n^{2πiw}‖² dw ≤ (5/(4δ)) ∑_n (count n) ‖a_n‖²`,   `2πδW ≤ 1`.
+
+All arithmetic is now inside a single count. For `s` a set of primes and `δ` small this count is `O(1)`
+for most `n`, whereas the classical mean value theorem's error `O(N ∑‖a_n‖²)` is blind to the support —
+that difference is exactly `Λ(n)` versus `Λ(n)²` in GHS Lemma 1.
+
+Remaining for Lemma 1: bound `logNeighbourCount` for a prime support by the corpus's Brun–Titchmarsh
+count (`Sieve/PrimeWindowUpper.card_primes_Ioc_le_explicit`), then specialise
+`a_n = c_n Λ(n)/n`.
