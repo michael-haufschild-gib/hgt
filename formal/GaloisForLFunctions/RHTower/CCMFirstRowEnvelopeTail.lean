@@ -139,8 +139,9 @@ theorem envelopeTail_le_invPow32 {c x : ℝ} (hc : 0 ≤ c) (hx : 1 ≤ x) :
         exact hroot
     _ = invPow32 x := mul_one _
 
-theorem integrableOn_envelopeTail {c a : ℝ} (hc : 0 ≤ c) (ha : 0 < a) (ha1 : 1 ≤ a) :
+theorem integrableOn_envelopeTail {c a : ℝ} (hc : 0 ≤ c) (ha1 : 1 ≤ a) :
     IntegrableOn (envelopeTail c) (Ioi a) volume := by
+  have ha : 0 < a := lt_of_lt_of_le zero_lt_one ha1
   refine MeasureTheory.Integrable.mono' (integrableOn_invPow32 ha)
     (measurable_envelopeTail c).aestronglyMeasurable ?_
   filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with x hx
@@ -159,7 +160,7 @@ theorem integral_Ioi_two_envelopeTail_le {c : ℝ} (hc : 1 ≤ c) :
   have hmono : (∫ x in Ioi (2 : ℝ), envelopeTail c x)
       ≤ ∫ x in Ioi (2 : ℝ), invPow32 x / Real.sqrt c := by
     refine MeasureTheory.setIntegral_mono_on
-      (integrableOn_envelopeTail hc0.le (by norm_num) (by norm_num)) hcomp measurableSet_Ioi ?_
+      (integrableOn_envelopeTail hc0.le (by norm_num)) hcomp measurableSet_Ioi ?_
     intro x hx
     have hx2 : (2 : ℝ) < x := hx
     have hsq : (1 : ℝ) ≤ x ^ 2 - 1 := by nlinarith
@@ -284,10 +285,10 @@ theorem integral_Ioi_envelopeTail_le {c : ℝ} (hc : 1 ≤ c) :
     refine Set.disjoint_left.mpr fun x hx hx' => ?_
     exact absurd hx'.out (not_lt.mpr hx.2)
   have hI1 : IntegrableOn (envelopeTail c) (Ioc 1 2) volume := by
-    have h := integrableOn_envelopeTail (c := c) hc0.le (by norm_num : (0:ℝ) < 1) (le_refl 1)
+    have h := integrableOn_envelopeTail (c := c) hc0.le (le_refl 1)
     exact h.mono_set (fun x hx => hx.1)
   have hI2 : IntegrableOn (envelopeTail c) (Ioi 2) volume := by
-    have h := integrableOn_envelopeTail (c := c) hc0.le (by norm_num : (0:ℝ) < 1) (le_refl 1)
+    have h := integrableOn_envelopeTail (c := c) hc0.le (le_refl 1)
     exact h.mono_set (fun x hx => lt_trans (by norm_num : (1:ℝ) < 2) hx)
   have hsplit : (∫ x in Ioi (1 : ℝ), envelopeTail c x)
       = (∫ x in Ioc (1 : ℝ) 2, envelopeTail c x) + ∫ x in Ioi (2 : ℝ), envelopeTail c x := by
@@ -539,7 +540,7 @@ theorem integrableOn_envelopeProduct {s c k : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 
     linarith
   have hdom : IntegrableOn
       (fun x : ℝ => 2 / (k * Real.sqrt c) * envelopeTail (c / Real.sqrt 2) x) (Ioi 1) volume :=
-    (integrableOn_envelopeTail (by positivity) (by norm_num : (0:ℝ) < 1) (le_refl 1)).const_mul _
+    (integrableOn_envelopeTail (by positivity) (le_refl 1)).const_mul _
   refine MeasureTheory.Integrable.mono' hdom
     ((continuousOn_envelopeProduct hs0 hs1 hc0.le hk).aestronglyMeasurable measurableSet_Ioi) ?_
   filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with x hx
@@ -565,7 +566,7 @@ theorem integral_Ioi_envelopeProduct_le {s c k : ℝ} (hs0 : 0 ≤ s) (hs1 : s �
     linarith
   have hdom : IntegrableOn
       (fun x : ℝ => 2 / (k * Real.sqrt c) * envelopeTail (c / Real.sqrt 2) x) (Ioi 1) volume :=
-    (integrableOn_envelopeTail (by positivity) (by norm_num : (0:ℝ) < 1) (le_refl 1)).const_mul _
+    (integrableOn_envelopeTail (by positivity) (le_refl 1)).const_mul _
   have hmono : (∫ x in Ioi (1 : ℝ), envelopeProduct s c k x)
       ≤ ∫ x in Ioi (1 : ℝ), 2 / (k * Real.sqrt c) * envelopeTail (c / Real.sqrt 2) x := by
     refine MeasureTheory.setIntegral_mono_on (integrableOn_envelopeProduct hs0 hs1 hc hk) hdom

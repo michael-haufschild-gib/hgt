@@ -14,7 +14,7 @@ The trace law itself lives in
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`.  Its extension across the
 relative ideal, the aperture flag law, the Burnol conductor, the logarithm of position, and the
 refinement law are spread over the Sonin stack; the paper card carries the complete
-statement-to-declaration table for all 545 named declarations.  The principal chapters are:
+statement-to-declaration table for all 554 named declarations.  The principal chapters are:
 
 | Chapter | Module |
 |---|---|
@@ -29,6 +29,7 @@ statement-to-declaration table for all 545 named declarations.  The principal ch
 | Theorem Q, refinement loss `(31)`–`(34)` | `SoninApertureFlagChain.lean`, `SoninFlagChainStrict.lean`, `SoninFlagChainQuantitative.lean` |
 | Theorem R, the layer read by the extended trace `(54)` | `SoninApertureLayerExtendedTrace.lean` |
 | Theorem S, the four mixed blocks `(57)`–`(59)` | `SoninMixedBlockPolarizationSplit.lean`, `SoninMixedPhysicalBlockNonvanishing.lean`, `SoninMixedFourierBlockNonvanishing.lean` |
+| the terminal conductor no-go | `SoninBurnolConductorNoFloor.lean` |
 | the completion no-gos and the summability criterion | `SoninBurnolCompletionNoFloor.lean`, `SoninFixedChannelNoFloor.lean`, `SoninChannelAnnulusBound.lean`, `SoninCompletionUnboundedRequirement.lean`, `SoninCompletionEnergyThreshold.lean`, `SoninCompletionSummabilityCriterion.lean` |
 
 ## Formal theorem chain
@@ -77,6 +78,16 @@ statement-to-declaration table for all 545 named declarations.  The principal ch
     `not_bddBelow_soninCompletedPacketValueVar_of_bddAbove` together with
     `tendsto_hsNormSq_soninApertureCoupling_atTop` excludes every completion bounded above on the
     scales.
+13. `exists_linear_hsNormSq_soninApertureCoupling` gives the coupling energy a positive slope in
+    the scale, so `not_bddBelow_soninCompletedPacketValueVar_of_log_cap` closes every completion
+    obeying a logarithmic cap.
+14. `evenBurnolConductorChannel` is the full Burnol conductor — logarithm of position plus
+    logarithm of frequency, each on its own tower at an independent and arbitrary height —
+    self-adjoint by `adjoint_evenBurnolConductorChannel`, and
+    `not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily` proves no completion
+    assembled from it restores the floor.  `..._of_sublinear_channel_add` makes the excluded class
+    closed under sums and `exists_carrier_halfwidth_schedule` inhabits the schedule's two scale
+    conditions, so the no-go is neither an instance nor vacuous.
 
 ## Meaning
 
@@ -90,22 +101,24 @@ position on a dense domain, whose archimedean defect is noncompact.
 
 ## Scope
 
-This is the principal cyclic/source-value connector together with its aperture and conductor layers.
-It does not prove the completed lower floor and does not prove RH.  What remains is a single
-summability comparison between one explicit divergent coupling-energy sequence and the archimedean
-contribution.
+This is the principal cyclic/source-value connector together with its aperture and conductor layers,
+and the terminal verdict on the completion: there is no completed lower floor from the Burnol
+conductor.  It does not prove RH, and it does not exclude some hypothetical channel family with
+Hilbert--Schmidt norms growing linearly in the scale — it shows that the conductor is not one.
 
 ## Verification
 
 - `lake env lean` passes on every module named above;
-- `#print axioms` on all 547 declarations named by the paper card returns only `propext`,
+- `#print axioms` on all 554 declarations named by the paper card, and on the 8 of
+  `SoninBurnolConductorNoFloor.lean`, returns only `propext`,
   `Classical.choice`, and `Quot.sound`;
 - every module is imported by `GaloisForLFunctions.RHTower`;
 - no `sorry`, `admit`, project `axiom`, `opaque`, or `unsafe` declaration is introduced.
 
 ## Remaining frontier
 
-Burnol completion and the completed lower floor: by
-`not_bddBelow_soninCompletedPacketValueVar_of_bddAbove` a surviving completion must grow with the
-scale at least as fast as the coupling energy, and by `bddBelow_soninCompletedPacketValueVar_iff`
-its excess over that energy must be summable.
+None on this card: every gate is closed, the last one negatively.  What a completion would still
+have to be is pinned by `frequently_slope_lt_hsNorm_of_bddBelow` — a channel family whose
+Hilbert--Schmidt norms beat a definite positive multiple of the scale infinitely often.  The Burnol
+conductor is not such a family, and no other candidate is exhibited in the corpus or in Burnol's
+construction, so the weld is retired rather than merely unresolved.

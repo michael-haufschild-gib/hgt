@@ -85,7 +85,7 @@ the missing RH theorem.
 ## Verification
 
 - `lake env lean` passes on every module listed above;
-- `#print axioms` on all 165 declarations named by the paper card, and on all 21 declarations of
+- `#print axioms` on all 186 declarations named by the paper card, and on all 21 declarations of
   `SoninNormalizedPacket.lean`, returns only `propext`, `Classical.choice`, and `Quot.sound`;
 - `SoninNormalizedPacket` is imported by `GaloisForLFunctions.RHTower`.
 

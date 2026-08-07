@@ -307,9 +307,10 @@ function has no zero within distance `1` of the central point `½` (in the
 right half-plane, away from the pole).  Machine-checked from the theta
 series through Jensen's inequality, with no numerics and no zero-location
 input. -/
-theorem riemannZeta_ne_zero_of_dist_le_one {s : ℂ} (hs0 : s ≠ 0)
+theorem riemannZeta_ne_zero_of_dist_le_one {s : ℂ}
     (hs1 : s ≠ 1) (hre : 0 < s.re) (hd : ‖s - 1 / 2‖ ≤ 1) :
     riemannZeta s ≠ 0 := by
+  have hs0 : s ≠ 0 := fun h => by rw [h, Complex.zero_re] at hre; exact absurd hre (lt_irrefl 0)
   intro hzero
   have hΛ : completedRiemannZeta s = 0 := by
     have hζ := riemannZeta_def_of_ne_zero hs0

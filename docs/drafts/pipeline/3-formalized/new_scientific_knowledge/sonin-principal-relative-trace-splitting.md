@@ -15,6 +15,7 @@
 - `formal/GaloisForLFunctions/RHTower/TraceClassOperatorTrace.lean`
 - `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeTraceSplitting.lean`
 - `formal/GaloisForLFunctions/RHTower/SoninFinitePartUniqueness.lean`
+- `formal/GaloisForLFunctions/RHTower/SoninBurnolConductorNoFloor.lean`
 
 ## Formal theorem chain
 
@@ -49,6 +50,9 @@
    `finitePart_ofQuadraticCorner_eq_anomaly` are `(4)`–`(5)`: the finite part of the Gram
    combination is the logarithmic orbital trace plus the exact residual anomaly, whose linearity in
    the coefficient matrix is `soninFinitePrimeAnomaly_zero`, `_add`, `_smul`.
+10. `evenBurnolConductorChannel` and
+    `not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily` settle the card's last gate
+    negatively: the full Burnol conductor cannot complete this splitting to a coercive functional.
 
 ## Meaning
 
@@ -66,14 +70,17 @@ aperture pair has a genuine prime whose restriction defect leaves this class.
 
 ## Verification
 
-- `lake env lean` passes on all five modules;
-- `#print axioms` on all 50 declarations named by the paper card returns only `propext`,
+- `lake env lean` passes on all six modules;
+- `#print axioms` on all 52 declarations named by the paper card returns only `propext`,
   `Classical.choice`, and `Quot.sound`;
-- all four modules are imported by `GaloisForLFunctions.RHTower`.
+- all six modules are imported by `GaloisForLFunctions.RHTower`.
 
 ## Remaining frontier
 
-The Burnol-completed coercivity question, constrained but not settled: the bare aperture channel is
-unbounded below (`not_exists_lower_bound_soninAperturePacketCurvature_re_opTrace`) and any working
-completion must be unbounded above along the unit-weight packet family
-(`not_bddAbove_of_lower_bound_completion`).
+None: the Burnol-completed coercivity question is settled negatively.  The bare aperture channel is
+unbounded below (`not_exists_lower_bound_soninAperturePacketCurvature_re_opTrace`), any working
+completion would have to be unbounded above along the unit-weight packet family
+(`not_bddAbove_of_lower_bound_completion`), and the full Burnol conductor is not —
+`not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily` in
+`SoninBurnolConductorNoFloor.lean` bounds its contribution by a constant plus a logarithm of the
+scale at every pair of tower heights, against a linearly growing coupling energy.

@@ -18,9 +18,9 @@
 The terminal-test side of `(13)` additionally uses
 `SoninAperturePacketCurvatureTrace.lean`, `SoninUnboundedSourcePacket.lean`,
 `SoninBurnolCompletionNoFloor.lean`, `SoninFixedChannelNoFloor.lean`,
-`SoninChannelAnnulusBound.lean`, `SoninCompletionSummabilityCriterion.lean`, and
-`SoninCouplingEnergyGrowth.lean`.  The paper card carries the full
-statement-to-declaration table.
+`SoninChannelAnnulusBound.lean`, `SoninCompletionSummabilityCriterion.lean`,
+`SoninCouplingEnergyGrowth.lean`, and `SoninBurnolConductorNoFloor.lean`.  The paper card carries
+the full statement-to-declaration table.
 
 ## Formal theorem chain
 
@@ -42,8 +42,17 @@ statement-to-declaration table.
 
 The earlier relative-ideal cofinalization remains impossible: lost layers are genuinely
 noncompact.  But the stronger enlarged-principal obstruction is false.  Existing Sonin normal
-states already carry those layers, and their cyclic mass is exactly conserved.  Remaining
-aperture datum is only the ordinary trace of the trace-class curvature counterterm.
+states already carry those layers, and their cyclic mass is exactly conserved.
+
+The one aperture datum this left — the ordinary trace of the trace-class curvature counterterm — is
+now settled, and negatively.  `evenBurnolConductorChannel` in `SoninBurnolConductorNoFloor.lean` is
+the full Burnol conductor, logarithm of position plus logarithm of frequency at independent and
+arbitrary tower heights, and
+`not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily` shows its contribution on the
+source packets is a constant plus a logarithm of the scale.  The curvature trace it must cancel is
+minus a coupling energy that grows linearly in the scale.  So the terminal test `(13)` resolves to
+its second branch: an unconditional unbounded-below sequence survives the Burnol subtraction in
+every form, and the Suzuki--Burnol weld is retired.
 
 ## Verification state
 

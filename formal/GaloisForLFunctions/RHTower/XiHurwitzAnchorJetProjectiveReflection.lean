@@ -144,8 +144,8 @@ theorem xi_re_eq_half_of_anchorJetProjectiveReflectionCompatible
     by_cases hr : r = 0
     · subst r
       simp only [iteratedDeriv_zero]
-      rw [continuedHzeta_xiZero_at_one hrefstrip.1 href1 hzref,
-        continuedHzeta_xiZero_at_one hconjstrip.1 hconj1 hzconj, mul_zero]
+      rw [continuedHzeta_xiZero_at_one hzref,
+        continuedHzeta_xiZero_at_one hzconj, mul_zero]
     · rw [GaloisForLFunctions.iteratedDeriv_const_mul_field,
         hcompat r (Nat.pos_of_ne_zero hr)]
       beta_reduce

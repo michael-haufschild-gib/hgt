@@ -375,10 +375,11 @@ theorem polygamma_apply_add_nat (r N : ℕ) {z : ℂ} (hz : 0 < z.re) :
 For height at least one, every exponent `m+2` is dominated by the already-established quadratic
 kernel. -/
 theorem norm_polygammaKernel_sum_le (m N : ℕ) {σ t : ℝ}
-    (hσ : 0 < σ) (ht : 0 < t) (ht1 : 1 ≤ t) :
+    (hσ : 0 < σ) (ht1 : 1 ≤ t) :
     ‖∑ n ∈ Finset.range N,
         ((((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)) ^ (m + 2))⁻¹)‖ ≤
       1 / t ^ 2 + Real.pi / (2 * t) := by
+  have ht : 0 < t := lt_of_lt_of_le zero_lt_one ht1
   calc
     ‖∑ n ∈ Finset.range N,
         ((((σ : ℂ) + (t : ℂ) * Complex.I + (n : ℂ)) ^ (m + 2))⁻¹)‖
@@ -414,7 +415,7 @@ theorem norm_polygammaKernel_sum_le (m N : ℕ) {σ t : ℝ}
 
 /-- Explicit all-orders vertical polygamma bound. -/
 theorem norm_iteratedDeriv_digamma_vertical_le (m : ℕ) {σ t : ℝ}
-    (hσ : 0 < σ) (ht : 0 < t) (ht1 : 1 ≤ t) :
+    (hσ : 0 < σ) (ht1 : 1 ≤ t) :
     ‖iteratedDeriv (m + 1) Complex.digamma
         ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤
       (m + 1).factorial * (1 / t ^ 2 + Real.pi / (2 * t)) := by
@@ -429,7 +430,7 @@ theorem norm_iteratedDeriv_digamma_vertical_le (m : ℕ) {σ t : ℝ}
           (m + 1).factorial * E := by
     intro N
     have hrec := polygamma_apply_add_nat (m + 1) N hz
-    have hsum := norm_polygammaKernel_sum_le m N hσ ht ht1
+    have hsum := norm_polygammaKernel_sum_le m N hσ ht1
     have hsum' : ‖∑ n ∈ Finset.range N, ((z + (n : ℂ)) ^ (m + 2))⁻¹‖ ≤ E := by
       simpa [z, E, add_assoc] using hsum
     have heq : iteratedDeriv (m + 1) Complex.digamma z =
@@ -468,7 +469,7 @@ theorem iteratedDeriv_digamma_vertical_tendsto_zero (m : ℕ) {σ : ℝ}
   rw [tendsto_zero_iff_norm_tendsto_zero]
   apply squeeze_zero' (Filter.Eventually.of_forall fun _ => norm_nonneg _)
   · filter_upwards [eventually_ge_atTop (1 : ℝ)] with t ht
-    exact norm_iteratedDeriv_digamma_vertical_le m hσ (lt_of_lt_of_le zero_lt_one ht) ht
+    exact norm_iteratedDeriv_digamma_vertical_le m hσ ht
   · have hinv : Tendsto (fun t : ℝ => t⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
     have h1 : Tendsto (fun t : ℝ => 1 / t ^ 2) atTop (nhds 0) := by
       simpa [one_div, inv_pow] using hinv.pow 2

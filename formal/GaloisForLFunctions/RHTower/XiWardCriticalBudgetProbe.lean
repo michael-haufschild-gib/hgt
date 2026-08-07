@@ -925,8 +925,9 @@ theorem xi_ne_zero_of_im_sq_le {s : ℂ} (him : s.im ^ 2 ≤ 32) : xi s ≠ 0 :=
 Riemann zeta function has no zero of ordinate at most `√32 > 5.6`.  The bound
 is certified from the theta representation alone: no zero of `ζ` is located
 numerically anywhere in the argument. -/
-theorem riemannZeta_ne_zero_of_im_sq_le {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1)
+theorem riemannZeta_ne_zero_of_im_sq_le {s : ℂ} (hs1 : s ≠ 1)
     (hre : 0 < s.re) (him : s.im ^ 2 ≤ 32) : riemannZeta s ≠ 0 := by
+  have hs0 : s ≠ 0 := fun h => by rw [h, Complex.zero_re] at hre; exact absurd hre (lt_irrefl 0)
   intro hzero
   have hΛ : completedRiemannZeta s = 0 := by
     have hζ := riemannZeta_def_of_ne_zero hs0

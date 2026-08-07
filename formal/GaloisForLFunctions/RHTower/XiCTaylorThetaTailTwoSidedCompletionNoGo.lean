@@ -102,8 +102,7 @@ theorem xiCTaylorCenteredPoint_mem_thetaCuspFourierLaplaceStrip
 /-- The literal two-sided theta completion preserves the full finite Taylor divisor charge. -/
 theorem xiCTaylor_twoSidedThetaGaugeTransferCharge_tendsto
     {N : ℕ → ℕ} (hN : XiCTaylorSuperaccurateSchedule N)
-    {sigma : ℂ} (hsigma0 : 0 < sigma.re) (hsigma1 : sigma.re < 1)
-    (hXi : xi sigma = 0) :
+    {sigma : ℂ} (hXi : xi sigma = 0) :
     Tendsto
       (fun n : ℕ =>
         xiTaylorAnisotropicHorizontalStep sigma n *
@@ -114,6 +113,8 @@ theorem xiCTaylor_twoSidedThetaGaugeTransferCharge_tendsto
             (logDeriv thetaCuspTailTwoSidedPhaseValue
               (xiCTaylorAnisotropicCenteredPoint sigma n)).im))
       atTop (nhds ((analyticOrderAt xi sigma).toNat : ℝ)) := by
+  have hsigma0 : 0 < sigma.re := xi_zero_re_pos hXi
+  have hsigma1 : sigma.re < 1 := xi_zero_re_lt_one hXi
   have hzstrip :=
     xiCTaylorCenteredPoint_mem_thetaCuspFourierLaplaceStrip
       hsigma0 hsigma1
@@ -129,10 +130,11 @@ theorem xiCTaylor_twoSidedThetaGaugeTransferCharge_tendsto
 /-- A nonzero Xi divisor cannot be screened by the literal two-sided theta completion. -/
 theorem not_xiCTaylor_twoSidedThetaGaugeChargeScreenedAt
     {N : ℕ → ℕ} (hN : XiCTaylorSuperaccurateSchedule N)
-    {sigma : ℂ} (hsigma0 : 0 < sigma.re) (hsigma1 : sigma.re < 1)
-    (hXi : xi sigma = 0) :
+    {sigma : ℂ} (hXi : xi sigma = 0) :
     ¬ XiCTaylorMeromorphicGaugeChargeScreenedAt
       N thetaCuspTailTwoSidedPhaseValue sigma := by
+  have hsigma0 : 0 < sigma.re := xi_zero_re_pos hXi
+  have hsigma1 : sigma.re < 1 := xi_zero_re_lt_one hXi
   have hzstrip :=
     xiCTaylorCenteredPoint_mem_thetaCuspFourierLaplaceStrip
       hsigma0 hsigma1

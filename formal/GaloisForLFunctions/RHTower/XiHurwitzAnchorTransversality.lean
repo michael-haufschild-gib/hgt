@@ -1,5 +1,6 @@
 import GaloisForLFunctions.Hurwitz.AnchorTransversality
 import GaloisForLFunctions.RHTower.RiemannTower
+import GaloisForLFunctions.RHTower.EMAnnulusSupply
 
 /-!
 # Every Xi zero is a transverse Hurwitz anchor zero
@@ -19,9 +20,14 @@ namespace RHTower
 
 /-- Every positive-real Xi zero gives a zero of its frozen-exponent continued Hurwitz function at
 the canonical shift. -/
-theorem continuedHzeta_xiZero_at_one {rho : ℂ} (hrho : 0 < rho.re)
-    (hrho1 : rho ≠ 1) (hzero : xi rho = 0) :
+theorem continuedHzeta_xiZero_at_one {rho : ℂ} (hzero : xi rho = 0) :
     continuedHzeta rho 1 = 0 := by
+  have hrho : 0 < rho.re := xi_zero_re_pos hzero
+  have hrho1 : rho ≠ 1 := by
+    intro h
+    have := xi_zero_re_lt_one hzero
+    rw [h, Complex.one_re] at this
+    exact absurd this (lt_irrefl 1)
   rw [continuedHzeta_at_one]
   exact (xi_eq_zero_iff hrho hrho1).mp hzero
 
@@ -40,13 +46,13 @@ theorem continuedHzeta_xiZero_deriv_at_one_ne_zero {rho : ℂ} (hrho : 0 < rho.r
 
 /-- **Unconditional transverse-anchor law.**  The frozen-exponent Hurwitz function attached to
 any positive-real Xi zero has a simple zero at `a = 1`, even when the Xi zero itself is multiple. -/
-theorem analyticOrderAt_continuedHzeta_xiZero_at_one {rho : ℂ} (hrho : 0 < rho.re)
-    (hrho1 : rho ≠ 1) (hzero : xi rho = 0) :
+theorem analyticOrderAt_continuedHzeta_xiZero_at_one {rho : ℂ} (hzero : xi rho = 0) :
     analyticOrderAt (continuedHzeta rho) 1 = 1 := by
+  have hrho : 0 < rho.re := xi_zero_re_pos hzero
   have han : AnalyticAt ℂ (continuedHzeta rho) 1 :=
     continuedHzeta_analyticAt_one hrho
   exact han.analyticOrderAt_eq_one_of_zero_deriv_ne_zero
-    (continuedHzeta_xiZero_at_one hrho hrho1 hzero)
+    (continuedHzeta_xiZero_at_one hzero)
     (continuedHzeta_xiZero_deriv_at_one_ne_zero hrho)
 
 end RHTower

@@ -225,11 +225,14 @@ theorem sum_rpow_neg_le_of_lt_one {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) {N 
 `σ = 1 − 1/log N` the first group is `O(log N)`, so this is the logarithmic bound extended to the
 left of `re = 1`. -/
 theorem norm_riemannZeta_le_truncated_of_lt_one {w : ℂ} (hσ0 : 0 < w.re) (hσ1 : w.re < 1)
-    (hwne1 : w ≠ 1) {N : ℕ} (hN : 2 ≤ N) :
+    {N : ℕ} (hN : 2 ≤ N) :
     ‖riemannZeta w‖
       ≤ (1 + ((N : ℝ) ^ (1 - w.re) - 1) / (1 - w.re) + (N : ℝ) ^ (-w.re))
         + (N : ℝ) ^ (1 - w.re) / ‖w - 1‖
         + ‖w‖ * ((N : ℝ) ^ (-w.re) / w.re) := by
+  have hwne1 : w ≠ 1 := fun h => by
+    rw [h, Complex.one_re] at hσ1
+    exact absurd hσ1 (lt_irrefl 1)
   have hN1 : 1 ≤ N := by omega
   refine le_trans (norm_riemannZeta_le_truncated hσ0 hwne1 hN1) ?_
   have hsum := sum_rpow_neg_le_of_lt_one hσ0 hσ1 hN

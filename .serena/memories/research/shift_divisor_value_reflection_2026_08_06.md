@@ -523,3 +523,20 @@ Unfolding gives `R_phys(ρ) = 2 sinh((2 re ρ − 1) log 6)`. Its Lean type is
 `DeningerOrdinaryIntegerEnd` applied to `B₆` — the name is a convention. Consequently
 `R_phys(B₆) = τ₆(B₆) = 0` unfolds to `re ρ = 1/2` for every ξ-zero, i.e. RH verbatim, with no
 source-algebra content on the left to derive it from.
+
+## ξ-zero strip-premise sweep closed
+
+Remaining four theorems discharged:
+- `XiCTaylorThetaTailTwoSidedCompletionNoGo`: both `xiCTaylor_twoSidedThetaGaugeTransferCharge_tendsto`
+  and `not_xiCTaylor_twoSidedThetaGaugeChargeScreenedAt` lost BOTH `0 < re sigma` and `re sigma < 1`.
+- `XiHurwitzAnchorTransversality`: `continuedHzeta_xiZero_at_one` and
+  `analyticOrderAt_continuedHzeta_xiZero_at_one` lost `0 < re rho` AND `rho ≠ 1` (the latter from
+  `xi_zero_re_lt_one`). Needed an `EMAnnulusSupply` import; the two external call sites in
+  `XiHurwitzAnchorJetProjectiveReflection` were updated.
+
+Note `continuedHzeta_xiZero_deriv_at_one_ne_zero` keeps its `0 < re rho`: it has no ξ-zero
+hypothesis, so there is nothing to derive it from. That is the correct stopping point for this sweep.
+
+Sweep recipe worth reusing: for each theorem head, take the text after the last `) :` and test
+whether a candidate premise's binder name occurs there. If it does not, the premise is proof-only
+and can be discharged from a sibling hypothesis; if it does, it is part of the statement and cannot.

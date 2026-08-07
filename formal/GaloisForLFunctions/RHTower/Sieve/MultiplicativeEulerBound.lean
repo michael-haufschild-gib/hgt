@@ -40,7 +40,7 @@ theorem twistedSummand_one (hf1 : f 1 = 1) : twistedSummand f s 1 = 1 := by
 
 theorem natCast_cpow_mul (m n : ℕ) :
     ((m * n : ℕ) : ℂ) ^ (-s) = ((m : ℕ) : ℂ) ^ (-s) * ((n : ℕ) : ℂ) ^ (-s) := by
-  have h : ((m * n : ℕ) : ℂ) = (((m : ℝ) * (n : ℝ) : ℝ) : ℂ) := by
+  have h : ((m * n : ℕ) : ℂ) = (((m : ℝ) : ℂ)) * (((n : ℝ) : ℂ)) := by
     push_cast
     ring
   rw [h, Complex.mul_cpow_ofReal_nonneg m.cast_nonneg n.cast_nonneg,
@@ -60,9 +60,9 @@ theorem norm_twistedSummand_le (hbdd : ∀ n, ‖f n‖ ≤ 1) {n : ℕ} (hn : 0
   rw [twistedSummand, norm_mul, h1]
   exact mul_le_of_le_one_left (Real.rpow_nonneg (Nat.cast_nonneg n) _) (hbdd n)
 
-theorem summable_nat_rpow_neg (hs : 1 < s.re) :
-    Summable (fun n : ℕ => ((n : ℝ)) ^ (-s.re)) := by
-  refine (Real.summable_nat_rpow_inv.mpr hs).congr fun n => ?_
+theorem summable_nat_rpow_neg {σ : ℝ} (hσ : 1 < σ) :
+    Summable (fun n : ℕ => ((n : ℝ)) ^ (-σ)) := by
+  refine (Real.summable_nat_rpow_inv.mpr hσ).congr fun n => ?_
   rw [Real.rpow_neg (Nat.cast_nonneg n)]
 
 theorem summable_norm_twistedSummand (hbdd : ∀ n, ‖f n‖ ≤ 1) (hs : 1 < s.re) :
@@ -158,8 +158,8 @@ theorem norm_tsum_localFactor_le (hf1 : f 1 = 1) (hbdd : ∀ n, ‖f n‖ ≤ 1)
       have h1 : (0 : ℝ) < 1 - q := by linarith
       rw [inv_le_comm₀ h1 (by norm_num : (0:ℝ) < 2)]
       linarith
-    rw [hval]
-    have := mul_le_mul_of_nonneg_left hinv (sq_nonneg q)
+    rw [hval] at hle
+    have hstep2 := mul_le_mul_of_nonneg_left hinv (sq_nonneg q)
     linarith
   -- the main step
   have hnormp : ‖twistedSummand f s p‖ ≤ q := by
@@ -170,41 +170,47 @@ theorem norm_tsum_localFactor_le (hf1 : f 1 = 1) (hbdd : ∀ n, ‖f n‖ ≤ 1)
       Complex.abs_re_le_norm _
     have h2 := abs_le.mp h1
     linarith [h2.1]
-  set a : ℝ := (twistedSummand f s p).re + ‖twistedSummand f s p‖ ^ 2 with hadef
-  set b : ℝ := ‖∑' e : ℕ, twistedSummand f s (p ^ (e + 2))‖ with hbdef
-  have hb0 : 0 ≤ b := norm_nonneg _
-  have hstep : ‖∑' e : ℕ, twistedSummand f s (p ^ e)‖ ≤ Real.exp a + b := by
+  have hb0 : (0 : ℝ) ≤ ‖∑' e : ℕ, twistedSummand f s (p ^ (e + 2))‖ := norm_nonneg _
+  have hstep : ‖∑' e : ℕ, twistedSummand f s (p ^ e)‖ ≤
+      Real.exp ((twistedSummand f s p).re + ‖twistedSummand f s p‖ ^ 2)
+        + ‖∑' e : ℕ, twistedSummand f s (p ^ (e + 2))‖ := by
     rw [hsplit, ← add_assoc]
-    exact le_trans (norm_add_le _ _)
-      (add_le_add_right (norm_one_add_le_exp (twistedSummand f s p)) _)
-  have hfold : Real.exp a + b ≤ Real.exp (a + b * Real.exp (-a)) := by
-    have hcancel : Real.exp a * (b * Real.exp (-a)) = b := by
-      rw [← mul_assoc, mul_comm (Real.exp a) b, mul_assoc, ← Real.exp_add]
+    refine le_trans (norm_add_le _ _) ?_
+    linarith [norm_one_add_le_exp (twistedSummand f s p)]
+  have hfold : ∀ A B : ℝ, 0 ≤ B → Real.exp A + B ≤ Real.exp (A + B * Real.exp (-A)) := by
+    intro A B hB
+    have hcancel : Real.exp A * (B * Real.exp (-A)) = B := by
+      rw [← mul_assoc, mul_comm (Real.exp A) B, mul_assoc, ← Real.exp_add]
       simp
-    have h1 : 1 + b * Real.exp (-a) ≤ Real.exp (b * Real.exp (-a)) := by
-      have := Real.add_one_le_exp (b * Real.exp (-a))
+    have h1 : 1 + B * Real.exp (-A) ≤ Real.exp (B * Real.exp (-A)) := by
+      have := Real.add_one_le_exp (B * Real.exp (-A))
       linarith
-    calc Real.exp a + b = Real.exp a * (1 + b * Real.exp (-a)) := by
+    calc Real.exp A + B = Real.exp A * (1 + B * Real.exp (-A)) := by
           rw [mul_add, mul_one, hcancel]
-      _ ≤ Real.exp a * Real.exp (b * Real.exp (-a)) :=
-          mul_le_mul_of_nonneg_left h1 (Real.exp_pos a).le
-      _ = Real.exp (a + b * Real.exp (-a)) := (Real.exp_add _ _).symm
-  have hexpa : Real.exp (-a) ≤ 2 := by
-    have hna : -a ≤ 1 / 2 := by
-      have h1 : (0:ℝ) ≤ ‖twistedSummand f s p‖ ^ 2 := sq_nonneg _
-      rw [hadef]
+      _ ≤ Real.exp A * Real.exp (B * Real.exp (-A)) :=
+          mul_le_mul_of_nonneg_left h1 (Real.exp_pos A).le
+      _ = Real.exp (A + B * Real.exp (-A)) := (Real.exp_add _ _).symm
+  have hexpa :
+      Real.exp (-((twistedSummand f s p).re + ‖twistedSummand f s p‖ ^ 2)) ≤ 2 := by
+    have hna : -((twistedSummand f s p).re + ‖twistedSummand f s p‖ ^ 2) ≤ 1 / 2 := by
+      have h1 : (0 : ℝ) ≤ ‖twistedSummand f s p‖ ^ 2 := sq_nonneg _
       linarith
     exact le_trans (Real.exp_le_exp.mpr hna) exp_half_le_two
-  have hfinal : a + b * Real.exp (-a) ≤
-      (twistedSummand f s p).re + 5 * x ^ (-(2 * σ)) := by
-    have h1 : ‖twistedSummand f s p‖ ^ 2 ≤ q ^ 2 :=
-      pow_le_pow_left (norm_nonneg _) hnormp 2
+  have hfinal : ((twistedSummand f s p).re + ‖twistedSummand f s p‖ ^ 2)
+      + ‖∑' e : ℕ, twistedSummand f s (p ^ (e + 2))‖ *
+        Real.exp (-((twistedSummand f s p).re + ‖twistedSummand f s p‖ ^ 2))
+      ≤ (twistedSummand f s p).re + 5 * x ^ (-(2 * σ)) := by
+    have h1 : ‖twistedSummand f s p‖ ^ 2 ≤ q ^ 2 := by
+      have h0 := norm_nonneg (twistedSummand f s p)
+      nlinarith [hnormp]
     have hq2nn : (0 : ℝ) ≤ 2 * q ^ 2 := by positivity
-    have h2 : b * Real.exp (-a) ≤ (2 * q ^ 2) * 2 :=
+    have h2 : ‖∑' e : ℕ, twistedSummand f s (p ^ (e + 2))‖ *
+        Real.exp (-((twistedSummand f s p).re + ‖twistedSummand f s p‖ ^ 2))
+        ≤ (2 * q ^ 2) * 2 :=
       mul_le_mul htail hexpa (Real.exp_pos _).le hq2nn
-    rw [hadef, ← hq2]
+    rw [← hq2]
     linarith
-  exact le_trans hstep (le_trans hfold (Real.exp_le_exp.mpr hfinal))
+  exact le_trans hstep (le_trans (hfold _ _ hb0) (Real.exp_le_exp.mpr hfinal))
 
 /-! ## The prime-power excess is an absolute constant -/
 
@@ -262,6 +268,182 @@ theorem tsum_primes_rpow_two_le {σ : ℝ} (hσ : 1 ≤ σ) :
     (Summable.tsum_le_tsum (fun p => rpow_two_le_inv_sq hσ p.2)
       (summable_primes_rpow_two hσ) summable_primes_inv_sq)
     tsum_primes_inv_sq_le
+
+
+/-! ## The Euler bound for the whole series -/
+
+set_option maxHeartbeats 1000000 in
+/-- **The Euler bound for a bounded multiplicative Dirichlet series.**  The whole series, prime
+powers included, is damped by the real part of its prime sum, at the cost of one absolute
+constant. -/
+theorem norm_tsum_twistedSummand_le_exp
+    (hf1 : f 1 = 1) (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n)
+    (hbdd : ∀ n, ‖f n‖ ≤ 1) (hs : 1 < s.re) :
+    ‖∑' n : ℕ, twistedSummand f s n‖ ≤
+      Real.exp ((∑' p : Nat.Primes, (twistedSummand f s (p : ℕ)).re) + 5 / 2) := by
+  classical
+  have hs0 : s ≠ 0 := by
+    intro h
+    rw [h] at hs
+    simp at hs
+    linarith
+  have hs2 : 1 < 2 * s.re := by linarith
+  have hsum := summable_norm_twistedSummand hbdd hs
+  have hmul' : ∀ {m n : ℕ}, Nat.Coprime m n →
+      twistedSummand f s (m * n) = twistedSummand f s m * twistedSummand f s n :=
+    fun h => twistedSummand_mul hmul h
+  -- the Euler product, as convergence of partial products over the primes below `n`
+  have hE := EulerProduct.eulerProduct (f := twistedSummand f s) (twistedSummand_one hf1)
+    hmul' hsum (twistedSummand_zero hs0)
+  have hEn := hE.norm
+  simp only [norm_prod] at hEn
+  -- the exponent, as a function on the naturals supported on the primes
+  set g : ℕ → ℝ := fun n =>
+    (twistedSummand f s n).re + 5 * ((n : ℝ)) ^ (-(2 * s.re)) with hg
+  set c : ℕ → ℝ := fun n => if n.Prime then g n else 0 with hc
+  have hrpowsum : Summable (fun n : ℕ => ((n : ℝ)) ^ (-(2 * s.re))) :=
+    summable_nat_rpow_neg hs2
+  have hcsum : Summable c := by
+    refine Summable.of_norm_bounded (g := fun n : ℕ =>
+      ‖twistedSummand f s n‖ + 5 * ((n : ℝ)) ^ (-(2 * s.re)))
+      (hsum.add (hrpowsum.mul_left 5)) fun n => ?_
+    have hrnn : (0 : ℝ) ≤ ((n : ℝ)) ^ (-(2 * s.re)) :=
+      Real.rpow_nonneg (Nat.cast_nonneg n) _
+    by_cases hp : n.Prime
+    · have hre : |(twistedSummand f s n).re| ≤ ‖twistedSummand f s n‖ :=
+        Complex.abs_re_le_norm _
+      have : ‖c n‖ ≤ |(twistedSummand f s n).re| + 5 * ((n : ℝ)) ^ (-(2 * s.re)) := by
+        rw [hc]
+        simp only [if_pos hp, hg]
+        refine le_trans (norm_add_le _ _) ?_
+        have h5 : ‖5 * ((n : ℝ)) ^ (-(2 * s.re))‖ = 5 * ((n : ℝ)) ^ (-(2 * s.re)) := by
+          rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+        rw [h5, Real.norm_eq_abs]
+      linarith
+    · rw [hc]
+      simp only [if_neg hp, norm_zero]
+      have h0 : (0 : ℝ) ≤ ‖twistedSummand f s n‖ := norm_nonneg _
+      positivity
+  have hCt := hcsum.hasSum.tendsto_sum_nat
+  -- the exponential side
+  have hprimesBelow : ∀ n : ℕ, ∑ i ∈ Finset.range n, c i = ∑ p ∈ Nat.primesBelow n, g p := by
+    intro n
+    rw [Nat.primesBelow, Finset.sum_filter]
+  have hexpT : Filter.Tendsto
+      (fun n : ℕ => Real.exp (∑ i ∈ Finset.range n, c i)) Filter.atTop
+      (𝓝 (Real.exp (∑' n : ℕ, c n))) :=
+    (Real.continuous_exp.tendsto _).comp hCt
+  have hexpP : Filter.Tendsto
+      (fun n : ℕ => ∏ p ∈ Nat.primesBelow n, Real.exp (g p)) Filter.atTop
+      (𝓝 (Real.exp (∑' n : ℕ, c n))) := by
+    refine hexpT.congr fun n => ?_
+    rw [hprimesBelow n, Real.exp_sum]
+  -- termwise comparison of the two nets
+  have hcompare : ∀ n : ℕ,
+      (∏ p ∈ Nat.primesBelow n, ‖∑' e : ℕ, twistedSummand f s (p ^ e)‖)
+        ≤ ∏ p ∈ Nat.primesBelow n, Real.exp (g p) := by
+    intro n
+    refine Finset.prod_le_prod (fun p _ => norm_nonneg _) fun p hp => ?_
+    exact norm_tsum_localFactor_le hf1 hbdd hs (Nat.prime_of_mem_primesBelow hp)
+  have hmain : ‖∑' n : ℕ, twistedSummand f s n‖ ≤ Real.exp (∑' n : ℕ, c n) :=
+    le_of_tendsto_of_tendsto' hEn hexpP hcompare
+  -- identify the exponent
+  have hnormsub : Summable (fun p : Nat.Primes => ‖twistedSummand f s (p : ℕ)‖) :=
+    hsum.comp_injective fun a b h => Subtype.ext h
+  have hresum : Summable (fun p : Nat.Primes => (twistedSummand f s (p : ℕ)).re) :=
+    Summable.of_norm_bounded (g := fun p : Nat.Primes => ‖twistedSummand f s (p : ℕ)‖)
+      hnormsub fun p => by
+        rw [Real.norm_eq_abs]
+        exact Complex.abs_re_le_norm _
+  have hrsum : Summable (fun p : Nat.Primes => 5 * ((((p : ℕ)) : ℝ)) ^ (-(2 * s.re))) :=
+    (summable_primes_rpow_two (le_of_lt hs)).mul_left 5
+  have hsupp : Function.support c ⊆ Set.range (fun p : Nat.Primes => (p : ℕ)) := by
+    intro n hn
+    have hprime : n.Prime := by
+      by_contra hnp
+      exact hn (by rw [hc]; simp only [if_neg hnp])
+    exact ⟨⟨n, hprime⟩, rfl⟩
+  have hcoe : ∑' n : ℕ, c n = ∑' p : Nat.Primes, g (p : ℕ) := by
+    rw [← Function.Injective.tsum_eq (f := c) (g := fun p : Nat.Primes => (p : ℕ))
+      (fun a b h => Subtype.ext h) hsupp]
+    exact tsum_congr fun p => by rw [hc]; simp only [if_pos p.2]
+  have hsplit : ∑' p : Nat.Primes, g (p : ℕ) =
+      (∑' p : Nat.Primes, (twistedSummand f s (p : ℕ)).re) +
+        ∑' p : Nat.Primes, 5 * ((((p : ℕ)) : ℝ)) ^ (-(2 * s.re)) := by
+    rw [hg]
+    exact hresum.tsum_add hrsum
+  have htailbound : ∑' p : Nat.Primes, 5 * ((((p : ℕ)) : ℝ)) ^ (-(2 * s.re)) ≤ 5 / 2 := by
+    rw [tsum_mul_left]
+    have := tsum_primes_rpow_two_le (le_of_lt hs)
+    linarith
+  refine le_trans hmain (Real.exp_le_exp.mpr ?_)
+  rw [hcoe, hsplit]
+  linarith
+
+/-! ## The bound in distance form -/
+
+/-- The prime sum at an abscissa, `P(σ) = ∑_p p^{-σ}`. -/
+noncomputable def primeAbscissaSum (σ : ℝ) : ℝ :=
+  ∑' p : Nat.Primes, ((((p : ℕ)) : ℝ)) ^ (-σ)
+
+/-- The distance of `f` from the character at `s`, weighted at the abscissa `Re s`.  Termwise this is
+`p^{-Re s}(1 - Re(f(p) p^{-i Im s}))`, written so that no polar decomposition is needed. -/
+noncomputable def mulDistSqTsum (f : ℕ → ℂ) (s : ℂ) : ℝ :=
+  ∑' p : Nat.Primes,
+    (((((p : ℕ)) : ℝ)) ^ (-s.re) - (twistedSummand f s (p : ℕ)).re)
+
+theorem summable_primes_rpow_neg {σ : ℝ} (hσ : 1 < σ) :
+    Summable (fun p : Nat.Primes => ((((p : ℕ)) : ℝ)) ^ (-σ)) :=
+  (summable_nat_rpow_neg hσ).comp_injective fun _ _ h => Subtype.ext h
+
+theorem mulDistSqTsum_term_nonneg (hbdd : ∀ n, ‖f n‖ ≤ 1) (p : Nat.Primes) :
+    0 ≤ ((((p : ℕ)) : ℝ)) ^ (-s.re) - (twistedSummand f s (p : ℕ)).re := by
+  have h1 : (twistedSummand f s (p : ℕ)).re ≤ ‖twistedSummand f s (p : ℕ)‖ :=
+    Complex.re_le_norm _
+  have h2 := norm_twistedSummand_le hbdd (s := s) p.2.pos
+  linarith
+
+theorem summable_mulDistSqTsum (hbdd : ∀ n, ‖f n‖ ≤ 1) (hs : 1 < s.re) :
+    Summable (fun p : Nat.Primes =>
+      ((((p : ℕ)) : ℝ)) ^ (-s.re) - (twistedSummand f s (p : ℕ)).re) := by
+  have hre : Summable (fun p : Nat.Primes => (twistedSummand f s (p : ℕ)).re) :=
+    Summable.of_norm_bounded
+      (g := fun p : Nat.Primes => ‖twistedSummand f s (p : ℕ)‖)
+      ((summable_norm_twistedSummand hbdd hs).comp_injective fun a b h => Subtype.ext h)
+      fun p => by
+        rw [Real.norm_eq_abs]
+        exact Complex.abs_re_le_norm _
+  exact (summable_primes_rpow_neg hs).sub hre
+
+theorem mulDistSqTsum_nonneg (hbdd : ∀ n, ‖f n‖ ≤ 1) (_hs : 1 < s.re) :
+    0 ≤ mulDistSqTsum f s := by
+  rw [mulDistSqTsum]
+  exact tsum_nonneg fun p => mulDistSqTsum_term_nonneg hbdd p
+
+/-- The prime sum of the twisted real parts is the abscissa sum minus the distance. -/
+theorem tsum_re_twistedSummand_eq_sub (hbdd : ∀ n, ‖f n‖ ≤ 1) (hs : 1 < s.re) :
+    (∑' p : Nat.Primes, (twistedSummand f s (p : ℕ)).re) =
+      primeAbscissaSum s.re - mulDistSqTsum f s := by
+  have hre : Summable (fun p : Nat.Primes => (twistedSummand f s (p : ℕ)).re) :=
+    Summable.of_norm_bounded
+      (g := fun p : Nat.Primes => ‖twistedSummand f s (p : ℕ)‖)
+      ((summable_norm_twistedSummand hbdd hs).comp_injective fun a b h => Subtype.ext h)
+      fun p => by
+        rw [Real.norm_eq_abs]
+        exact Complex.abs_re_le_norm _
+  rw [primeAbscissaSum, mulDistSqTsum, (summable_primes_rpow_neg hs).tsum_sub hre]
+  ring
+
+/-- **The Euler bound in distance form.**  Every unit of distance from the character costs the series
+one factor of `e^{-1}`, against the trivial size `exp(P(σ))`.  This is the shape Halász's method
+consumes at `σ = 1 + 1/log x`, where `P(σ)` is of order `log log x`. -/
+theorem norm_tsum_twistedSummand_le_exp_sub_dist
+    (hf1 : f 1 = 1) (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n)
+    (hbdd : ∀ n, ‖f n‖ ≤ 1) (hs : 1 < s.re) :
+    ‖∑' n : ℕ, twistedSummand f s n‖ ≤
+      Real.exp (primeAbscissaSum s.re - mulDistSqTsum f s + 5 / 2) := by
+  have h := norm_tsum_twistedSummand_le_exp hf1 hmul hbdd hs
+  rwa [tsum_re_twistedSummand_eq_sub hbdd hs] at h
 
 end
 

@@ -743,3 +743,37 @@ which by `freeCellModule_eq` splits into two statements that are each worth havi
 
 Composed with `relUnitorHom` these give the free-cell case, and then the `⊗_A` tower theorem applies
 to any tower of free cells — which is what semi-free over the algebra means.
+
+## Tensoring commutes with the degree shift
+
+`CDGATensorShift.lean`.  A bidegree of `M ⊗ N[−k]` in total degree `n` with second index below `k`
+contributes nothing; one with second index `b + k` is the bidegree `(a, b)` of `M ⊗ N` in total
+degree `n − k`.  So the two carriers agree.
+
+* `tensorShiftMap` — the comparison, built from `shiftEvalAt` in the second factor.
+* `tensorShift_component_subsingleton` — below the shift the tensor factor is trivial.
+* **`tensorShiftMap_bijective`** — injective and surjective, proved separately rather than by
+  exhibiting a two-sided inverse.
+
+Axioms: `propext, Quot.sound` — no choice.
+
+The technique that made it go through, and the reason it is recorded: the correspondence *has* to
+mention `p.2 - k`, and truncated subtraction in a dependent index is the standard trap.  The pattern
+that defuses it is to let the subtraction appear **only inside the definition**, and in every proof
+to destructure the degree with `Nat.le.dest` (`obtain ⟨γ, rfl⟩ : ∃ γ, γ + k = b`) so that the
+subtraction is gone before any rewriting starts.  Where a definition's subtraction must still be
+matched — in the surjectivity proof — the `gen` idiom does it: generalise over the subtracted value
+together with an equation, `obtain rfl` inside, and discharge the outer call with `by omega`.
+
+Two smaller traps, both cost a cycle:
+* `obtain rfl : δ = γ` substitutes `γ := δ`, not the other way round, so the rest of the proof must
+  be written in the *surviving* name.
+* `omega` cannot see through `(⟨n - k, _⟩ : {a // a + k = n}).1`; a `show` restating the goal in
+  plain arithmetic first is what unblocks it.
+
+## Next
+
+`⊗_A` commutes with a constant tensor: `M ⊗_A (N ⊗_R V) ≅ (M ⊗_A N) ⊗_R V`, where the finite
+bidegree index (`tensorIndexEquiv`) makes the `Pi`-`⊗` exchange available via
+`TensorProduct.piRight` and `TensorProduct.comm`.  Then `tensorShiftMap` and that exchange, composed
+with `relUnitorHom`, give the free-cell computation and hence `hcell` for `⊗_A`.

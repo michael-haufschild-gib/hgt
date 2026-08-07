@@ -20,6 +20,7 @@
 - `formal/GaloisForLFunctions/RHTower/SoninApertureLayerAlgebra.lean`
 - `formal/GaloisForLFunctions/RHTower/SoninApertureCurvatureTrace.lean`
 - `formal/GaloisForLFunctions/RHTower/SoninApertureDefectNonadditive.lean`
+- `formal/GaloisForLFunctions/RHTower/SoninBurnolConductorNoFloor.lean`
 
 ## Formal theorem chain
 
@@ -64,6 +65,9 @@
 19. `exists_scale_evenSoninApertureRestrictionCurvature_ne_zero` and
     `exists_scale_evenSoninApertureRestrictionDefect_ne_add` show the anomaly is real: at an actual
     dilation scale the curvature is nonzero, so the defect is genuinely non-additive.
+20. `evenBurnolConductorChannel` is the full Burnol conductor at independent tower heights, and
+    `not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily` shows no completion assembled
+    from it restores the floor — the terminal no-go for this source class.
 
 ## Verdict and survivor
 
@@ -81,13 +85,19 @@ proof of RH and not a no-go for every possible enlarged principal algebra.
 ## Verification
 
 - direct `lake env lean` checks passed for every module listed above;
-- `#print axioms` on all 62 declarations named by the paper card returns only `propext`,
+- `#print axioms` on all 70 declarations named by the paper card, and on the 8 of
+  `SoninBurnolConductorNoFloor.lean`, returns only `propext`,
   `Classical.choice`, and `Quot.sound`;
 - every module is imported by `GaloisForLFunctions.RHTower`;
 - no `sorry`, `admit`, project `axiom`, `opaque`, or `unsafe` declaration is introduced.
 
 ## Remaining frontier
 
-Compute the ordinary trace of the aperture curvature and compare it with the cutoff-dependent
-Burnol conductor cocycle on the genuine semilocal graph. Exact cancellation advances to the signed
-completed lower floor; mismatch gives a terminal no-go for this source class.
+None: the comparison this card left open has been run, and it is a mismatch.  The ordinary trace of
+the aperture curvature is exactly minus the coupling energy
+(`re_opTrace_evenSoninApertureRestrictionCurvature_eq_neg_hsNormSq`), that energy grows linearly in
+the scale (`exists_linear_hsNormSq_soninApertureCoupling`), and the Burnol conductor's contribution
+on the source packets is only a constant plus a logarithm
+(`not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily`, `SoninBurnolConductorNoFloor.lean`).
+So there is no cancellation and no completed lower floor: this is the terminal no-go for the source
+class, not an advance toward RH.

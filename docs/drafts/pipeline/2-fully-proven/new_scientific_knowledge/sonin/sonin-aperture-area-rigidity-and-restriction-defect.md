@@ -331,6 +331,7 @@ trace-class restriction compatibility unconditionally in the chamber relevant to
 | the ordinary trace of the curvature: exactly minus the coupling energy, hence nonpositive, and zero exactly when the coupling vanishes | `evenSoninApertureSuccessiveLayerTransition`, `re_opTrace_evenSoninApertureRestrictionCurvature_eq_neg_hsNormSq`, `re_opTrace_evenSoninApertureRestrictionCurvature_nonpos`, `re_opTrace_evenSoninApertureRestrictionCurvature_eq_zero_iff` |
 | `(22)`--`(23)`: the exact retained/lost/total shell splitting and cyclic-mass conservation | `soninApertureRetainedLayerWindow`, `soninApertureCyclicLostLayerWindow`, `soninApertureTotalLayerWindow`, `soninApertureTotalLayerWindow_operator_eq_retained_add_lost`, `soninAperture_cyclicMass_conservation`, `soninAperture_cyclicMass_cocycle` |
 | strictness: at an actual dilation scale the curvature is nonzero, so the defect is not additive | `exists_scale_evenSoninApertureRestrictionCurvature_ne_zero`, `exists_scale_evenSoninApertureRestrictionDefect_ne_add` |
+| **the completed-coercivity no-go**: the full Burnol conductor at independent tower heights fails to restore the floor, so the residual is never cancelled and the source class is retired | `evenBurnolConductorChannel`, `adjoint_evenBurnolConductorChannel`, `norm_evenBurnolConductorChannel_apply_le`, `not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily`, `not_bddBelow_soninCompletedPacketValueVar_of_sublinear_channel_add`, `exists_carrier_halfwidth_schedule` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninApertureAreaRigidity.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninApertureRestrictionDefect.lean`,
@@ -380,7 +381,7 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninApertureAreaRigidity.lean`,
       scale at which the curvature operator `(21)` is nonzero, so the restriction defect is *not*
       additive.  This upgrades the definite sign of `Tr Kappa` to strict negativity at a witness
       scale, using the cofinal nonannihilation of the successive-layer coupling.
-- [ ] cancellation of the remaining trace-class residual — note that by
+- [x] cancellation of the remaining trace-class residual — note that by
       `not_isCompactOperator_conductorDilationDefect` no trace-class counterterm can do it, so this
       has to be the regularized extended-trace pairing rather than a subtraction.  Sharpened:
       `soninBurnolApertureCounterterm_curvature_eq_zero` in
@@ -398,8 +399,22 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninApertureAreaRigidity.lean`,
       instance of an entire inert class.  Widened again in
       `SoninCompletionUnboundedRequirement.lean`: no counterterm *bounded above on the packet
       family* restores a floor, even a packet-dependent one, so the regularized pairing must be
-      unbounded above along that family.
-- [ ] prove completed coercivity or terminally retire the source class
+      unbounded above along that family.  **Resolved negatively**: the regularized pairing against
+      the conductor is *not* unbounded above.
+      `not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily` in
+      `SoninBurnolConductorNoFloor.lean` bounds the full conductor's contribution on the source
+      packets by a constant plus a logarithm of the scale, at every pair of tower heights, so
+      neither form of the Burnol term cancels the residual.
+- [x] **completed coercivity — the source class is terminally retired.**  The disjunction resolves
+      to retirement.  The aperture side supplies no floor and is unbounded below
+      (`not_exists_lower_bound_soninAperturePacketCurvature_re_opTrace`), and the archimedean side
+      cannot supply one either: the Burnol conductor's contribution on the source packets is
+      sublinear in the scale (`not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily`)
+      while the coupling energy is linear (`exists_linear_hsNormSq_soninApertureCoupling`).  The
+      excluded class is closed under sums
+      (`not_bddBelow_soninCompletedPacketValueVar_of_sublinear_channel_add`), so no finite assembly
+      of the corpus's channels escapes, and the hypothesis class is inhabited
+      (`exists_carrier_halfwidth_schedule`), so the no-go is not vacuous.
 
 ## Log
 

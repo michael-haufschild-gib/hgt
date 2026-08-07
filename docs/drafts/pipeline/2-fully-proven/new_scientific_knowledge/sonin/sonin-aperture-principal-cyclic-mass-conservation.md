@@ -167,6 +167,8 @@ weld.  This theorem itself does neither.
 | `(12)`: the curvature lies in that ideal and is Schatten-1 | `evenSoninApertureRestrictionCurvature`, `evenSoninApertureRestrictionCurvature_mem_principalRelativeIdeal`, `evenSoninApertureRestrictionCurvature_memSchattenClass_one` |
 | `(13)`, energy side: the packet curvature trace, its sign, and its unboundedness below on unit-weight source packets | `re_opTrace_soninAperturePacketCurvature`, `re_opTrace_soninAperturePacketCurvature_nonpos`, `exists_soninAperturePacketCurvature_re_opTrace_lt`, `eventually_le_hsNormSq_soninApertureCoupling`, `tendsto_hsNormSq_soninApertureCoupling_atTop` |
 | `(13)`, completion side: the scalar Burnol counterterm, every fixed bounded channel, and every completion bounded above all fail to restore a floor; the exact summability criterion for one that could | `not_bddBelow_soninCompletedPacketValueVar_burnolCounterterm`, `not_bddBelow_soninCompletedPacketValueVar_fixedChannel`, `not_bddBelow_soninCompletedPacketValueVar_logShellChannelFamily`, `not_bddBelow_soninCompletedPacketValueVar_of_bddAbove`, `bddBelow_soninCompletedPacketValueVar_iff`, `tendsto_atTop_of_bddBelow_soninCompletedPacketValueVar` |
+| **`(13)` resolved**: the full Burnol conductor at independent tower heights, its size on the source packets, and the failure of every completion assembled from it | `evenBurnolConductorChannel`, `adjoint_evenBurnolConductorChannel`, `norm_evenBurnolConductorChannel_apply_le`, `not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily` |
+| closure of the excluded class under sums, and inhabitation of the schedule's scale conditions | `not_bddBelow_soninCompletedPacketValueVar_of_sublinear_channel_add`, `exists_carrier_halfwidth_schedule` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninApertureCyclicMassConservation.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninApertureRestrictionDefect.lean`,
@@ -216,7 +218,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninApertureCyclicMassConservation.l
       `tendsto_atTop_of_bddBelow_soninCompletedPacketValueVar` shows any working completion must
       tend to infinity along the scales — i.e. the regularized extended-trace pairing, not a
       counterterm
-- [ ] prove Burnol cancellation in the regularized-pairing form, whose contribution must diverge —
+- [x] Burnol cancellation in the regularized-pairing form — **settled negatively; the contribution
+      does not diverge fast enough** —
       narrowed again by `not_bddBelow_soninCompletedPacketValueVar_fixedChannel` in
       `SoninFixedChannelNoFloor.lean`: pairing the source packets against **any fixed bounded
       operator** gives a contribution bounded by `||T||` times the (uniformly bounded) packet
@@ -263,8 +266,29 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninApertureCyclicMassConservation.l
       crossing clock, so `not_bddBelow_soninCompletedPacketValueVar_of_bddAbove` rules out **every**
       completion bounded above on the scales, at every strict flag.  A surviving Burnol completion
       must therefore grow with the scale at least as fast as the coupling energy; a bounded
-      archimedean contribution is now formally excluded.
-- [ ] prove RH or terminally retire surviving Suzuki--Burnol weld
+      archimedean contribution is now formally excluded.  **The conductor does not grow that fast.**
+      `evenBurnolConductorChannel` in `SoninBurnolConductorNoFloor.lean` is the full conductor —
+      logarithm of position plus logarithm of frequency, each on its own tower, at independent and
+      arbitrary heights — and
+      `not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily` bounds its contribution on
+      the source packets by a constant plus a logarithm of the scale.  The two halves fail for
+      opposite reasons and do not compensate: the position half is bounded outright because the
+      packets sit inside a fixed outer radius, the frequency half grows only logarithmically because
+      a tall tower buys nothing against a rapidly decaying spectrum.  Against a coupling energy that
+      is linear in the scale (`exists_linear_hsNormSq_soninApertureCoupling`) the sum is sublinear,
+      so the summability criterion fails and there is no floor.
+- [x] **the surviving Suzuki--Burnol weld is terminally retired.**  The disjunction of `(13)`
+      resolves to its second branch at every strict flag: the unbounded-below source sequence exists
+      (`exists_soninAperturePacketCurvature_re_opTrace_lt`) and no Burnol term repairs it — not the
+      scalar counterterm, not any fixed bounded operator, not the position channel at any height,
+      not the frequency channel at any height, and not their sum, which is the conductor itself.
+      Sums of sublinear channels stay excluded
+      (`not_bddBelow_soninCompletedPacketValueVar_of_sublinear_channel_add`), and the hypothesis
+      class is inhabited (`exists_carrier_halfwidth_schedule`), so this is a theorem about the weld
+      rather than about one presentation of it.  RH is not proved and is not reachable on this lane;
+      what a completion would still have to be — a channel family with Hilbert--Schmidt norms
+      growing linearly in the scale (`frequently_slope_lt_hsNorm_of_bddBelow`) — is not the Burnol
+      conductor and is exhibited nowhere.
 
 ## Log
 

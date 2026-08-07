@@ -72,8 +72,9 @@ theorem critical_screw_bounds {gam t : ℝ} (hg : gam ≠ 0) :
 
 /-- **The rate.**  Off the critical line the amplitude grows exponentially in the aperture, with
 exponent exactly the horizontal deviation. -/
-theorem amplitude_strictMono {z : ℂ} (hz : z ≠ 0) (hre : 0 < z.re) {t₁ t₂ : ℝ} (h : t₁ < t₂) :
+theorem amplitude_strictMono {z : ℂ} (hre : 0 < z.re) {t₁ t₂ : ℝ} (h : t₁ < t₂) :
     Real.exp (t₁ * z.re) / (2 * normSq z) < Real.exp (t₂ * z.re) / (2 * normSq z) := by
+  have hz : z ≠ 0 := fun h => by rw [h, Complex.zero_re] at hre; exact absurd hre (lt_irrefl 0)
   have hns : 0 < normSq z := normSq_pos.mpr hz
   have hlt : Real.exp (t₁ * z.re) < Real.exp (t₂ * z.re) :=
     Real.exp_lt_exp.mpr (by nlinarith)
