@@ -1357,3 +1357,26 @@ square, so a polynomial `T` in `N` suffices.
 of the argument, which is independent of the kernel treatment.  The remaining step is to assemble them as
 `GhsStepFour` assembles the global versions, and then to redo the parameter accounting with `Wsup ≍ N` in place
 of `C ≍ N(log N)⁶` — where the previous cap came from.
+
+## The truncated mean square in the two frequency variables
+
+`RHTower/Sieve/TruncatedMeanSquareChange.lean` (green, axiom-clean, wired).
+
+`integral_Icc_normSq_LSeries_eq` :
+
+`∫_{|y| ≤ T} ‖L(a,σ+iy)‖² dy = 2π ∫_{|w| ≤ T/2π} ‖logPoly (a_n n^{−σ}) s w‖² dw`
+
+for finitely supported `a` — an exact identity, not an inequality.  The Perron passage delivers its integral in
+`y` (frequency `n^{−iy}`), the corpus's truncated mean value theorem is stated in `w` (frequency `n^{2πiw}`),
+and on a symmetric interval the substitution `y = −2πw` carries one to the other: the reflection is absorbed by
+the symmetry and the scaling costs the Jacobian `2π`.
+
+Mechanically this is `integral_Icc_eq_integral_Ioc` to reach an interval integral, then
+`intervalIntegral.integral_comp_div` and `integral_comp_neg`, with `neg_div` to align `−y/2π` with `−(y/2π)`
+before the substitution — the two differ syntactically and the rewrite fails without it.
+
+With this the truncated route can consume `integral_Icc_normSq_logPoly_le_prime_sieve` directly: that theorem's
+window parameter `W` is `T/2π`, and its hypothesis `2πδW ≤ 1` fixes the neighbour scale `δ = 1/(2πW) = 1/T`,
+so a large truncation height gives a *narrow* multiplicative window — where the Selberg sieve's short-interval
+count is strongest.  That is the opposite regime from the Lorentzian route, whose `δ = 1/2π` was fixed, and it
+is the next thing to exploit.
