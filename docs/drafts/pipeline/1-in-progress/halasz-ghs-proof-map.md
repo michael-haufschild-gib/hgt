@@ -1634,3 +1634,29 @@ piece uses the trivial bound over the whole range, which is what made the previo
 The pieces to supply now are the two corpus facts the corpus's own assembly already uses:
 `norm_tsum_twistedSummand_le_of_far` for `M₂` and `volume_halaszLargeValues_le` for the measure of `S` — with the
 mean square over `S` bounded by the window mean value theorem at width `|S|` rather than at width `T`.
+
+## The mean square over a short set
+
+`HTGeometry/WeightedHolder.lean` and `RHTower/Sieve/LSeriesTrivialSize.lean` (both green, axiom-clean).
+
+* `integral_normSq_le_measure_mul_sq` — for any measure and any set of finite measure,
+  `∫_S ‖g‖² ∂μ ≤ μ.real S · B²` when `‖g‖ ≤ B`.  No nonnegativity of `B` is needed: it follows at any point of
+  `S`, and on the empty set both sides vanish.
+* `integral_normSq_LSeries_le_measure` — the instance for a finitely supported series, with `B` the `ℓ¹` mass of
+  the damped coefficients.
+
+This is the estimate that turns "the exceptional window is short" into a saving, and it completes the two
+ingredients of the split:
+
+| piece | bound on `L(f)` | bound on the mean squares |
+|---|---|---|
+| `S` = large-value set ∩ `[−T,T]` | trivial, `(1+1/(σ−1))e^{7/2}` | `volume.real S · (ℓ¹)²` — small because `S` is short (`volume_halaszLargeValues_le`) |
+| `Sᶜ` | damped, `…e^{−δ²}` — **by definition of `S`** | window mean value theorem at width `T` |
+
+Note the economy on the complement: `S` is *defined* as the set where the damped bound fails, so on `Sᶜ` that
+bound holds definitionally and `norm_tsum_twistedSummand_le_of_far` is not needed at the point of use — it is
+what makes `S` small, inside `volume_halaszLargeValues_le`.
+
+What remains is to instantiate `norm_integral_mul_three_le_split` with this `S`, which needs the measurability of
+the large-value set (its defining inequality is continuous in `t`, so it is open in the subspace, hence
+measurable) and the arithmetic of choosing `δ` against `logSqWeight z`.

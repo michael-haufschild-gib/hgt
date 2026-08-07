@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.LSeriesBlockDecomposition
+import GaloisForLFunctions.RHTower.Sieve.GhsStepFour
+import GaloisForLFunctions.HTGeometry.WeightedHolder
 /-!
 # The trivial size of a finitely supported Dirichlet series
 
@@ -57,6 +59,25 @@ theorem norm_LSeries_mul_three_le {a b f : ℕ → ℂ} {sa sb : Finset ℕ} {Mf
     (norm_LSeries_le_sum_of_support hsb0 hsuppb σ y) (norm_nonneg _)
     (sum_norm_mul_rpow_nonneg a sa σ)) (hMf y) (norm_nonneg _) ?_
   exact mul_nonneg (sum_norm_mul_rpow_nonneg a sa σ) (sum_norm_mul_rpow_nonneg b sb σ)
+
+end RHTower.Sieve
+end
+
+noncomputable section
+namespace RHTower.Sieve
+open Complex MeasureTheory Finset
+
+/-- **The mean square of a finitely supported series over a short set.**  Its trivial size is the `ℓ¹` mass of
+the damped coefficients, so on a set of finite measure the mean square is at most the measure times the square
+of that mass.  This is how the shortness of the exceptional window becomes a saving. -/
+theorem integral_normSq_LSeries_le_measure {a : ℕ → ℂ} {s : Finset ℕ} (hs0 : 0 ∉ s)
+    (hsupp : ∀ n : ℕ, a n ≠ 0 → n ∈ s) (σ : ℝ) {S : Set ℝ} (hSfin : volume S ≠ ⊤) :
+    (∫ y in S, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2)
+      ≤ volume.real S * (∑ n ∈ s, ‖a n‖ * (n : ℝ) ^ (-σ)) ^ 2 := by
+  refine GaloisForLFunctions.HTGeometry.integral_normSq_le_measure_mul_sq
+    (Continuous.aestronglyMeasurable ?_) ?_ hSfin
+  · exact continuous_LSeries_line_of_support hs0 hsupp σ
+  · exact fun y => norm_LSeries_le_sum_of_support hs0 hsupp σ y
 
 end RHTower.Sieve
 end

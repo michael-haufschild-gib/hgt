@@ -334,3 +334,33 @@ theorem norm_integral_mul_three_le_split {g₁ g₂ g₃ W : α → ℂ} {S : Se
 
 end GaloisForLFunctions.HTGeometry
 end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open MeasureTheory
+
+variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
+
+/-- **The mean square over a short set.**  A bounded function's mean square over a set of finite measure is at
+most the measure times the square of the bound: the estimate that converts "the exceptional window is short"
+into a saving. -/
+theorem integral_normSq_le_measure_mul_sq {g : α → ℂ} (hm : AEStronglyMeasurable g μ) {S : Set α}
+    {B : ℝ} (hB : ∀ y, ‖g y‖ ≤ B) (hSfin : μ S ≠ ⊤) :
+    (∫ y in S, ‖g y‖ ^ 2 ∂μ) ≤ μ.real S * B ^ 2 := by
+  have hsq : ∀ y, ‖g y‖ ^ 2 ≤ B ^ 2 := fun y =>
+    pow_le_pow_left₀ (norm_nonneg _) (hB y) 2
+  have hconst : IntegrableOn (fun _ : α => B ^ 2) S μ :=
+    integrableOn_const (by simp [hSfin])
+  have hint : IntegrableOn (fun y => ‖g y‖ ^ 2) S μ := by
+    refine Integrable.mono' hconst (hm.norm.pow 2).restrict ?_
+    filter_upwards with y
+    have h0 : (0 : ℝ) ≤ ‖g y‖ ^ 2 := by positivity
+    rw [Real.norm_eq_abs, abs_of_nonneg h0]
+    exact hsq y
+  have hmono : (∫ y in S, ‖g y‖ ^ 2 ∂μ) ≤ ∫ _y in S, B ^ 2 ∂μ :=
+    integral_mono hint hconst (fun y => hsq y)
+  refine hmono.trans (le_of_eq ?_)
+  rw [MeasureTheory.setIntegral_const, smul_eq_mul]
+
+end GaloisForLFunctions.HTGeometry
+end
