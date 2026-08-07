@@ -2134,3 +2134,22 @@ in the height, which is the Montgomery–Halász gain and exactly what a mean-va
 This closes the analytic half of the programme in a form that can beat the trivial bound.  What remains is to feed it
 the two prime polynomials of the Granville–Harper–Soundararajan convolution, whose `ℓ²` masses the dyadic Chebyshev
 cap already controls, and to fix the parameters.
+
+## The first moment on an arbitrary interval
+
+`RHTower/Sieve/DirichletFirstMomentShift.lean` (green, axiom-clean, wired).
+
+* `dirPoly_translate` — `D(t₀+t)` is the polynomial with coefficients `a_i e^{i t₀ log(i+1)}` at `t`;
+* `norm_dirPoly_twist_coeff` — the twist is unimodular;
+* `integral_norm_dirPoly_le_largeValues_shift` — hence the large-values first moment holds on **every** interval of
+  length `2nΔ`:
+
+  `∫_{t₀}^{t₀+2nΔ} ‖D(t)‖ dt ≤ 2Δ·√(n·((2n+1)Δ + 4N(1+log N))(1/Δ + 2 log N)·∑‖a_i‖²)`.
+
+The `ℓ²` mass is unchanged by the twist, so the right-hand side is the same for every `t₀`.  In particular the bound
+applies to `[−T, T]`, which is the range a Perron integral runs over — the canonical interval `[Δ/2, Δ/2+2nΔ]` of the
+composition was an artefact of matching the corpus's `hlow`/`hhigh`, and this removes it.
+
+`intervalIntegral.integral_comp_add_left` does the shift; the twist is what keeps the bound's right-hand side fixed.
+One incidental: `ring` failed on the exponent identity where `ring_nf` succeeded, which Lean itself suggested — the
+two differ on goals with casts inserted by `push_cast`.
