@@ -1114,3 +1114,25 @@ weighted mean square, so `√(mean square of L(a))≤ ∑_j √(mean square of L
 choose its own sieve level.  What remains is to choose those levels — on the block `2^j ≤ p < 2^{j+1}` the
 Selberg count is sharp at `log Y ≈ j log 2`, i.e. `Y ≈ 2^{j/2}` with `z ≈ 2^j` — and to sum the resulting
 `(j+1)`-indexed series, which is the geometric-type sum the dyadic cap already handles.
+
+## The mean square block by block, with a free level per block
+
+`RHTower/Sieve/BlockMeanSquare.lean` (green, axiom-clean, wired).
+
+* `sqrt_integral_lorentz_normSq_LSeries_le_sum_blocks` :
+  `√(∫‖L(a,σ+iy)‖²dy/(1+y²)) ≤ ∑_j √(∫‖L(a_j,σ+iy)‖²dy/(1+y²))`, `a_j` carried by `2^j ≤ n < 2^{j+1}`.
+* `sqrt_integral_lorentz_normSq_LSeries_le_sum_prime_sieve` — the same with each block's mean square
+  discharged by the Selberg sieve **at its own level**:
+
+  `√(∫‖L(a,σ+iy)‖²dy/(1+y²)) ≤ ∑_j √(25π²·sieveMeanSquare a_j (Icc 1 M) σ (z_j) (Y_j))`,
+
+  the levels being arbitrary functions of the block index, with only admissibility assumed of each.
+
+This is the last structural device the route needed.  The Selberg count's main term `2(window)/log Y` is sharp
+only when `log Y` matches the logarithm of the primes in play; on the block that logarithm is `j log 2`, so
+the level may now be chosen as `Y_j ≈ 2^{j/2}`, `z_j ≈ 2^j`, and the additive errors `E_j + z_j` — which
+previously forced one global compromise — are charged per block against a block whose coefficient mass is
+itself geometrically small.
+
+**All devices are now in the corpus.**  What is left is arithmetic: substituting a concrete level sequence and
+summing the `j`-indexed series, in the same style as the dyadic Chebyshev cap.
