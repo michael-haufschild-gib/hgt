@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CDGA
+import GaloisForLFunctions.HTGeometry.CDGAFreeExterior
 import GaloisForLFunctions.HTGeometry.SmoothPeriodicDGA
 
 /-!
@@ -38,22 +39,16 @@ theorem exteriorMulOf_zero_right {M : Type*} [AddCommGroup M] [Module 𝕜 M] {a
   have h0 : (0 : ⋀[𝕜]^b M) = (0 : 𝕜) • (0 : ⋀[𝕜]^b M) := by rw [zero_smul]
   rw [h0, exteriorMulOf_smul_right, zero_smul]
 
-/-- **The exterior algebra of the dual of the covering space, with zero differential.** -/
+/-- **The exterior algebra of the dual of the covering space, with zero differential**: the free
+commutative differential graded algebra on that dual placed in degree one. -/
 noncomputable def exteriorCDGA (𝕜 : Type u) [RCLike 𝕜] (r : ℕ) :
-    CDGAStructure 𝕜 (fun n => ⋀[𝕜]^n (Module.Dual 𝕜 (Fin r → 𝕜))) where
-  mul h y z := exteriorMulOf h y z
-  d _ _ := 0
-  mul_add_left h := exteriorMulOf_add_left h
-  mul_add_right h := exteriorMulOf_add_right h
-  mul_smul_left h c := exteriorMulOf_smul_left h c
-  mul_smul_right h c := exteriorMulOf_smul_right h c
-  mul_assoc h₁ h₂ h₃ h₄ := exteriorMulOf_assoc h₁ h₂ h₃ h₄
-  mul_comm h h' := exteriorMulOf_comm h h'
-  d_add _ _ _ := (add_zero (0 : ⋀[𝕜]^_ (Module.Dual 𝕜 (Fin r → 𝕜)))).symm
-  d_smul _ c _ := (smul_zero c).symm
-  d_d _ _ := rfl
-  d_mul h x y := by
-    rw [exteriorMulOf_zero_left, exteriorMulOf_zero_right, smul_zero, add_zero]
+    CDGAStructure 𝕜 (fun n => ⋀[𝕜]^n (Module.Dual 𝕜 (Fin r → 𝕜))) :=
+  exteriorModuleCDGA 𝕜 (Module.Dual 𝕜 (Fin r → 𝕜))
+
+/-- The unit of the exterior algebra of the dual. -/
+noncomputable def exteriorCDGAUnit (𝕜 : Type u) [RCLike 𝕜] (r : ℕ) :
+    CDGAUnit (exteriorCDGA 𝕜 r) :=
+  exteriorModuleCDGAUnit 𝕜 (Module.Dual 𝕜 (Fin r → 𝕜))
 
 /-- **The de Rham algebra of the torus**: the smooth periodic forms with the wedge product and the
 exterior derivative. -/
