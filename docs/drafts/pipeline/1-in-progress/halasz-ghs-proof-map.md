@@ -2019,3 +2019,31 @@ With that bridge the chain is complete and contains no window and no measure:
 so the `√` carries `T/Δ·T/Δ ≍ T²/Δ²` against the `ℓ²` mass of the prime coefficients — and `Δ` cancels against the
 prefactor.  That is the Montgomery–Halász shape, and unlike every earlier attempt in this programme it has no term
 in which the trivial size multiplies a length.
+
+## The bridge: cell maximisers as an indexed sequence with a uniform gap
+
+`HTGeometry/CellMaxDiscretisation.lean` (appended; green, axiom-clean).
+
+`exists_gap_sequence_of_cells` — for cell maximisers `c` and any residue `r`,
+
+`∃ lam : ℕ → ℝ`, with `∀ i, lam i + Δ ≤ lam (i+1)`, and `lam j = c (2j + r)` whenever `2j + r < m`.
+
+The sequence is `lam j = if 2j + r < m then c (2j+r) else a + (2j+r)Δ`: inside the range consecutive terms are
+maximisers of cells two apart, hence separated by a full cell; past it the fallback is an arithmetic progression of
+step `2Δ`; and at the boundary the last maximiser is at most `a + (2j+r+1)Δ`, one cell below the first fallback
+term.  So the gap holds at **every** index, which is what the corpus's large-values estimate requires — it quantifies
+over all `i`, not only those below the range.
+
+Taking `r = 0` and `r = 1` gives the two parity families.  This is the last formulation gap between the
+discretisation and `DirichletLargeValuesL1.sum_norm_dirPoly_le_sqrt`; what remains to connect them is bookkeeping of
+the two remaining mismatches:
+
+* the corpus's estimate is stated for frequencies in `[0,T]` with `hlow : δ/2 ≤ lam 0` and `hhigh : lam R + δ/2 ≤ T`,
+  while the discretisation runs over `[−T,T]` — a shift, harmless because translating the frequency twists the
+  coefficients without changing their moduli (`LSeries_translate`, and the `ℓ²` mass in the estimate is a sum of
+  moduli);
+* the estimate is stated for `dirPoly` (coefficients indexed by `Fin N`), while the chain carries `LSeries` of a
+  finitely supported sequence — and `logPoly_eq_dirPoly` together with `LSeries_eq_logPoly_of_support` already
+  connects those two.
+
+Both are conversions the corpus already owns; neither is a new estimate.

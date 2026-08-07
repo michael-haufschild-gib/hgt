@@ -168,3 +168,46 @@ theorem exists_spaced_families_integral_le {F : ℝ → ℝ} (hF : Continuous F)
 
 end GaloisForLFunctions.HTGeometry
 end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open Finset
+
+/-- **From cell maximisers to an indexed sequence with a uniform gap.**  Taking every second cell and continuing by
+an arithmetic progression past the range gives a sequence whose consecutive terms differ by at least the cell
+length — the form a large-values estimate consumes, which is stated for an indexed family with a gap at every
+index. -/
+theorem exists_gap_sequence_of_cells {c : ℕ → ℝ} {a Δ : ℝ} (hΔ : 0 < Δ) {m : ℕ}
+    (hc : ∀ k, k < m → c k ∈ Set.Icc (a + (k : ℝ) * Δ) (a + ((k : ℝ) + 1) * Δ)) (r : ℕ) :
+    ∃ lam : ℕ → ℝ, (∀ i, lam i + Δ ≤ lam (i + 1))
+      ∧ (∀ j, 2 * j + r < m → lam j = c (2 * j + r)) := by
+  classical
+  refine ⟨fun j => if 2 * j + r < m then c (2 * j + r) else a + ((2 * j + r : ℕ) : ℝ) * Δ,
+    fun i => ?_, fun j hj => by simp [hj]⟩
+  by_cases h1 : 2 * i + r < m
+  · by_cases h2 : 2 * (i + 1) + r < m
+    · simp only [if_pos h1, if_pos h2]
+      have hup := (hc (2 * i + r) h1).2
+      have hlow := (hc (2 * (i + 1) + r) h2).1
+      have hcast : ((2 * i + r : ℕ) : ℝ) + 1 + 1 ≤ ((2 * (i + 1) + r : ℕ) : ℝ) := by
+        push_cast
+        ring_nf
+        linarith
+      nlinarith [hup, hlow, hΔ.le, hcast]
+    · simp only [if_pos h1, if_neg h2]
+      have hup := (hc (2 * i + r) h1).2
+      have hcast : ((2 * i + r : ℕ) : ℝ) + 1 + 1 ≤ ((2 * (i + 1) + r : ℕ) : ℝ) := by
+        push_cast
+        ring_nf
+        linarith
+      nlinarith [hup, hΔ.le, hcast]
+  · have h2 : ¬(2 * (i + 1) + r < m) := by omega
+    simp only [if_neg h1, if_neg h2]
+    have hcast : ((2 * i + r : ℕ) : ℝ) + 1 ≤ ((2 * (i + 1) + r : ℕ) : ℝ) := by
+      push_cast
+      ring_nf
+      linarith
+    nlinarith [hΔ.le, hcast]
+
+end GaloisForLFunctions.HTGeometry
+end
