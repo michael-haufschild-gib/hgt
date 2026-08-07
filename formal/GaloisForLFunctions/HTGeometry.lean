@@ -497,6 +497,8 @@ import GaloisForLFunctions.HTGeometry.CDGATensorConstExchange
 import GaloisForLFunctions.HTGeometry.CDGATensorLeft
 import GaloisForLFunctions.HTGeometry.CDGATensorShift
 import GaloisForLFunctions.HTGeometry.CDGATensorShiftHom
+import GaloisForLFunctions.HTGeometry.CDGAFreeCellLift
+import GaloisForLFunctions.HTGeometry.CDGAFreeCellTwist
 import GaloisForLFunctions.HTGeometry.CDGASemiFreeCover
 import GaloisForLFunctions.HTGeometry.CDGAFreeCover
 import GaloisForLFunctions.HTGeometry.CDGATwistedExtend

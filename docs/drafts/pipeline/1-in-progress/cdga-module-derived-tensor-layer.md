@@ -1226,3 +1226,39 @@ stage, a cell along each cocycle of the tower whose image is a coboundary — th
 that coboundary is the `CDGATwistedLift` datum.  `twistedExtend` and `freeCellExtend` are exactly
 the two universal properties that step needs; what is left is the bookkeeping of the interleaved
 induction and the convergence of the colimit.
+
+## Attaching a cell along cocycles, and carrying a comparison across it
+
+`CDGAFreeCellTwist.lean` — `freeCellTwistₗ`, `freeCellTwistₗ_apply`, **`freeCellTwist`**: a twisting
+cochain on `A[−k] ⊗ V` is exactly a linear map `V → Z^{k+1}` of the base.  The Koszul sign is not a
+choice: `τ_act` forces `τ(x ⊗ v) = (−1)^{|x|} x · τ(v)`, and with that sign `τ_d` is equivalent to
+`d(τ v) = 0`.
+
+`CDGAFreeCellExtend.lean` gained `freeCellExtendₗ_act`, the equivariance of the extension, which
+needs no assumption on the generators — only `map_d` does.  That is what lets the same construction
+serve as the null-homotopy datum.
+
+`CDGAFreeCellLift.lean` — **`freeCellTwistedLift`**, **`freeCellAttachExtend`**: if the images under
+a comparison of the attaching cocycles are coboundaries, a choice of primitives extends the
+comparison across the attachment.  The sign bookkeeping works out to an `add_comm`: the Leibniz term
+`(−1)^a x · d(g v)` becomes `(−1)^a x · ε(w v)`, which is exactly the image of the twist.
+
+So both halves of a relative cell construction are now available as universal properties:
+
+| step | datum | construction |
+|---|---|---|
+| attach a cell | `w : V → Z^{k+1}(S)` | `freeCellTwist` |
+| map out of the base | `g : V → Z^k(P)` | `freeCellExtend` |
+| carry a comparison across | primitives for `ε ∘ w` | `freeCellTwistedLift` |
+| assemble the tower | compatible family | `colimModuleLift` |
+
+Axioms: `propext, Quot.sound`.
+
+## Next
+
+The killing tower: at stage `j`, attach one cell for each pair `(c, v)` with `c` a cocycle of the
+stage and `v` a primitive for its image, using `freeCellTwist` for the attachment and
+`freeCellTwistedLift` for the extension of the comparison.  The colimit comparison is then injective
+on cohomology, because a cocycle killed in the target is already visible at some stage and was made
+a coboundary at the next one; combined with `coverColimMap_cohomologyMap_surjective` that gives a
+semi-free resolution.

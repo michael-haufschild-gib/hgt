@@ -332,10 +332,35 @@ skew term, so the weighted norm current is conserved.  Formalization should cert
 current and its zero-current consequence without introducing an abstract proposition equivalent
 to `(14)`.
 
-The present formal tree still lacks the Bochner Fourier transform, the logarithmic jump
-multiplier, and the completed Suzuki seam carrier.  Until those are added, Lean can certify the
-frequency ODE/current and Liouville algebra, but not yet the literal transform passage from
-`(1)` to `(8)`.
+**`(9)` and its cancellation `(11)` are now formal**, in
+
+```text
+formal/GaloisForLFunctions/HTGeometry/SkewFrequencyCurrent.lean
+```
+
+```text
+inner_self_im_eq_zero_of_isSelfAdjoint            ⟪S v, v⟫ is real
+re_inner_I_smul_isSelfAdjoint_eq_zero             (11): Re⟪i • S v, v⟫ = 0
+re_inner_real_smul_I_smul_isSelfAdjoint_eq_zero   the (c·i) shape the equation produces
+re_inner_real_smul_self                           Re⟪(r:ℝ) • x, x⟫ = r ‖x‖²
+hasDerivAt_normSq_path                            d/dt ‖f t‖² = 2 Re⟪f'(t), f(t)⟫
+hasDerivAt_radialCurrent                          (9): d/dη [η ‖f η‖²] = 0
+radialCurrent_const_of_hasDerivAt                 constancy on an open preconnected set
+radialCurrent_const_Ioi, radialCurrent_const_Iio  (10): |η| ‖f η‖² is constant on each
+                                                  half-line
+```
+
+The cancellation is stated for an arbitrary bounded self-adjoint `S`, which is the card's own
+point: the exact Gamma multiplier is not estimated, smoothed, or declared lower order — it
+survives in full and still contributes no radial mass, and the same holds for the literal prime-seam
+adjacency.
+
+The one remaining Lean item on this card is `(14)`, the `L²` Liouville conclusion: from `(10)`,
+`‖f η‖² = C/η` on the positive ray, and `∫_1^∞ C/η dη` diverges unless `C = 0`, so square
+integrability forces `f = 0` on each half-line.  The divergence is `integrableOn_Ioi_rpow_iff` at
+exponent `-1`.  Neither needs the Bochner Fourier transform,
+the logarithmic jump multiplier, or the completed seam carrier; those are needed only for the
+separate transform passage from `(1)` to `(8)`.
 
 ## Gates
 
@@ -347,7 +372,7 @@ frequency ODE/current and Liouville algebra, but not yet the literal transform p
 - [x] nonconormal high-frequency homogeneous escape removed
 - [x] explicit Gamma propagator and first strip singularity identified
 - [x] hostile source-domain and \(H^1\) limits recorded
-- [ ] formalize frequency-current theorem in Lean
+- [x] formalize frequency-current theorem in Lean
 - [ ] construct literal completed self-adjoint valuation seam carrier
 - [ ] prove trace-zero homogeneous component is \(L^2(dL;X)\)
 - [ ] prove forced Gamma-strip decay \(e^{-\sigma L}\), \(\sigma>1/2\)

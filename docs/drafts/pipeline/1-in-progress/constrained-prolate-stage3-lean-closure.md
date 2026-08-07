@@ -118,3 +118,10 @@ projective/trace-class/determinant consequences.
   the same separation value have the same band eigenvalue and are scalar multiples on the entire
   real line.  Thus regular angular label fixes radial continuation uniquely; no independent
   exterior branch choice remains.  `lake env lean ProlateSeparationSimplicity.lean` passes.
+- 2026-08-07 — added exact radial endpoint and Hermite-scale equations.  The radial bridge now
+  proves `2 Phi'(1) = (s c²-c²) Phi(1)` for every live mode.  Separation energy also gives the
+  Rayleigh identity for `s = -chi/c²`.  New `ProlateHermiteRescale.lean` constructs the genuine
+  central profile `u(xi)=Phi(xi/√c)` and proves
+  `H u + c s u = (xi² u'' + 2 xi u')/c` pointwise, with global smoothness, evenness, and
+  `s ≥ 0`, for every live signed mode.  This is the exact true-operator input to the future
+  Hermite compactness/label proof; no model family is substituted.  Per-file checks pass.

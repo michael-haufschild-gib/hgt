@@ -111,3 +111,33 @@ That completes the three bricks named as the successor task: truncation error, p
 and the mean-square estimate carrying the `e^{-δ²}` saving. What is still open is the optimisation over
 `V` and the parameter choice — the arithmetic that decides whether this route reaches `o(N)`, which the
 pointwise route provably cannot. No decay is claimed yet.
+
+## Third no-go: the mean-square input cannot help in the regime that needs it
+
+Optimising the third brick before writing any more Lean. With `M = damped + trunc`,
+`A = (T + 4L(1+log L))·S` and `S = ∑|aₙ|² = O(1)`, the bound `V·T + M·A/V²` is minimised at
+`V = (2MA/T)^{1/3}`, giving
+
+`∫₀^T ‖F_L‖ ≲ T^{2/3}(M·A)^{1/3}`.
+
+Compare with the pointwise bound `T·M` (which `HalaszUniformDistance` already gives):
+
+* if `L log L ≲ T`, then `A ≍ T·S` and the mean-square bound is `T(M S)^{1/3}` — better than `T·M`
+  exactly when `M² > S`, i.e. when the damping is *weak*;
+* if `L log L ≫ T`, then `A ≍ L log L·S` and the mean-square bound is `T^{2/3}(M L log L S)^{1/3}`, which
+  beats `T·M` only when `L log L < T·M²`.
+
+Halász's application needs `T` polylogarithmic in `x` and `L ≍ x`, so `L log L ≍ x log x` while
+`T·M² ≍ (log x)^{A+2}e^{-2δ²}`. The second condition fails by a power of `x`: **in the regime of the
+application the mean-square estimate is far worse than the pointwise one.** Sharpening the mean-value
+theorem does not change this — Montgomery–Vaughan's error is `(T + O(L))∑|aₙ|²`, still `O(L)`, so the
+level-set measure is bounded by `L·S/V²` rather than `T·S/V²` whenever `T ≪ L`.
+
+So the contour-plus-mean-value shape cannot reach Halász's `(1+M)e^{-M}` either. What Halász's own proof
+uses instead is the *multiplicative factorisation* of `f` — the Granville–Harper–Soundararajan recursion
+on `S(x)`, which never forms a Dirichlet polynomial of length `x` and never invokes a mean-value theorem
+at a short height. That is a different proof, and it is the honest next target for anyone continuing.
+
+The three bricks remain correct and reusable — `DirichletTruncationError`,
+`TwistedSeriesAsDirichletPoly`, `HalaszMeanSquare` (whose range-restricted mean-value bound is a strict
+generalisation of the corpus's) — but they do not close the gap, and this card claims no decay.

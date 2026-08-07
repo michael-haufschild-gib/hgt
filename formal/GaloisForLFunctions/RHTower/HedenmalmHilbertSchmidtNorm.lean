@@ -230,6 +230,15 @@ theorem sourceInverse_sourceModeF_eq_smul {z : ℂ} (hz : z ≠ 0)
   field_simp
 
 
+
+/-- **The Grushin scalar corner.**  The cokernel conormal evaluated on the source is exactly the
+completed source transform, `ℓ_z(k) = Ξ_C(z)`.  Together with
+`HedenmalmFredholmRange.integral_range_pairing` — which says `ℓ_z` annihilates the range of
+`A + z` — this is the scalar corner of the Grushin reduction. -/
+theorem sourceEvaluation_k (z : ℂ) :
+    sourceEvaluation z (fun x => (S.k x : ℂ)) = HedenmalmQuantile.xiC S z := rfl
+
+
 end HedenmalmHilbertSchmidt
 
 end

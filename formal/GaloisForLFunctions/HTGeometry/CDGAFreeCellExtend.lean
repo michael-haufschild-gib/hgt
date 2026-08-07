@@ -76,6 +76,38 @@ theorem freeCell_subsingleton {n : ℕ} (h : n < k) :
     Subsingleton (FreeCellCarrier (R := R) X V k n) :=
   shiftCarrier_subsingleton (M := fun a => TensorProduct R (X a) V) h
 
+/-- The extension is equivariant.  This needs no assumption on the generators. -/
+theorem freeCellExtendₗ_act {c b n : ℕ} (h : c + b = n) (x : X c)
+    (z : FreeCellCarrier (R := R) X V k b) :
+    freeCellExtendₗ P k g n ((freeCellModule A V k).act h x z)
+      = P.act h x (freeCellExtendₗ P k g b z) := by
+  by_cases hb : k ≤ b
+  · obtain ⟨a, ha⟩ : ∃ a, a + k = b := ⟨b - k, by omega⟩
+    have hn : c + a + k = n := by omega
+    rw [freeCellExtendₗ_apply P k g ha z, freeCellExtendₗ_apply P k g hn]
+    have hz : (freeCellModule A V k).act h x z ⟨c + a, hn⟩
+        = TensorProduct.map (A.mulₗ (rfl : c + a = c + a) x) LinearMap.id (z ⟨a, ha⟩) := by
+      show shiftAct (tensorConstModule (CDGAStructure.selfModule A) V) k h x z ⟨c + a, hn⟩ = _
+      rw [shiftAct_apply_add (tensorConstModule (CDGAStructure.selfModule A) V) k h x z ha hn]
+      rfl
+    rw [hz]
+    induction (z ⟨a, ha⟩) using TensorProduct.induction_on with
+    | zero =>
+        rw [map_zero, map_zero, map_zero]
+        exact ((P.actₗ h x).map_zero).symm
+    | tmul y v =>
+        rw [TensorProduct.map_tmul, TensorProduct.lift.tmul, TensorProduct.lift.tmul]
+        exact P.act_assoc (rfl : c + a = c + a) hn ha h x y (g v)
+    | add w w' hw hw' =>
+        rw [map_add, map_add, map_add, hw, hw']
+        exact ((P.actₗ h x).map_add _ _).symm
+  · haveI := freeCell_subsingleton (R := R) (X := X) (V := V) (k := k) (n := b) (by omega)
+    rw [show z = 0 from Subsingleton.elim _ _]
+    rw [show (freeCellModule A V k).act h x (0 : FreeCellCarrier (R := R) X V k b) = 0 from
+      ((freeCellModule A V k).actₗ h x).map_zero,
+      (freeCellExtendₗ P k g n).map_zero, (freeCellExtendₗ P k g b).map_zero]
+    exact ((P.actₗ h x).map_zero).symm
+
 variable (hg : ∀ v, P.d k (g v) = 0)
 
 include hg
@@ -85,34 +117,7 @@ noncomputable def freeCellExtend : CDGAModuleHom (freeCellModule A V k) P where
   toFun n z := freeCellExtendₗ P k g n z
   map_add n z z' := map_add (freeCellExtendₗ P k g n) z z'
   map_smul n c z := map_smul (freeCellExtendₗ P k g n) c z
-  map_act := by
-    intro c b n h x z
-    by_cases hb : k ≤ b
-    · obtain ⟨a, ha⟩ : ∃ a, a + k = b := ⟨b - k, by omega⟩
-      have hn : c + a + k = n := by omega
-      rw [freeCellExtendₗ_apply P k g ha z, freeCellExtendₗ_apply P k g hn]
-      have hz : (freeCellModule A V k).act h x z ⟨c + a, hn⟩
-          = TensorProduct.map (A.mulₗ (rfl : c + a = c + a) x) LinearMap.id (z ⟨a, ha⟩) := by
-        show shiftAct (tensorConstModule (CDGAStructure.selfModule A) V) k h x z ⟨c + a, hn⟩ = _
-        rw [shiftAct_apply_add (tensorConstModule (CDGAStructure.selfModule A) V) k h x z ha hn]
-        rfl
-      rw [hz]
-      induction (z ⟨a, ha⟩) using TensorProduct.induction_on with
-      | zero =>
-          rw [map_zero, map_zero, map_zero]
-          exact ((P.actₗ h x).map_zero).symm
-      | tmul y v =>
-          rw [TensorProduct.map_tmul, TensorProduct.lift.tmul, TensorProduct.lift.tmul]
-          exact P.act_assoc (rfl : c + a = c + a) hn ha h x y (g v)
-      | add w w' hw hw' =>
-          rw [map_add, map_add, map_add, hw, hw']
-          exact ((P.actₗ h x).map_add _ _).symm
-    · haveI := freeCell_subsingleton (R := R) (X := X) (V := V) (k := k) (n := b) (by omega)
-      rw [show z = 0 from Subsingleton.elim _ _]
-      rw [show (freeCellModule A V k).act h x (0 : FreeCellCarrier (R := R) X V k b) = 0 from
-        ((freeCellModule A V k).actₗ h x).map_zero,
-        (freeCellExtendₗ P k g n).map_zero, (freeCellExtendₗ P k g b).map_zero]
-      exact ((P.actₗ h x).map_zero).symm
+  map_act h x z := freeCellExtendₗ_act P k g h x z
   map_d := by
     intro n z
     by_cases hn : k ≤ n

@@ -1,7 +1,7 @@
 # Two prime theta-interval anomalies generate the complete Xi normal module
 
 - **ID:** `hedenmalm-two-prime-theta-interval-normal-frame`
-- **Stage:** 2-fully-proven / needs literature and Lean audit
+- **Stage:** 2-fully-proven / interval transgression and cocycle law formalized
 - **Type:** THEOREM / SOURCE-NORMAL PRIME FRAME / ESSENTIAL COMPACT-BOUNDARY SYMBOL
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:**
@@ -394,9 +394,29 @@ source combining them with the Hedenmalm translation commutator, the Xi conormal
 essential compact reciprocal symbol.  Novelty remains unverified and attaches only to that exact
 conjunction.
 
+
+## Lean status
+
+`[PARTIAL]`  `formal/GaloisForLFunctions/RHTower/HedenmalmIntervalAnomaly.lean`
+(namespace `RHTower.HedenmalmIntervalAnomaly`), built on the rank-one anomaly module
+`RHTower/HedenmalmPrimeTranslationAnomaly.lean` of the parent card.  All declarations are
+`#print axioms`-clean.
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(3)` | the rank-one anomaly vectors `r_n` | `HedenmalmPrimeTranslation.integerAnomaly` |
+| `(4)` | exact interval transgression `r_n(x) = i n^(-1/2) integral_x^(x+log n) k` | `intervalMass`, `mass_mul_cdfFun_sub`, `integerAnomaly_eq_intervalMass` |
+| `(5a)` | multiplicative Wess--Zumino law `r_(mn) = n^(-1/2) r_m + T_m r_n` | `intervalMass_add`, `integerAnomaly_mul` |
+
+Still missing: the divisor factorization `(5)` `hat r_n = q_n Xi_C` and the centered
+positive window `(6)`--`(7)`, the two-prime no-common-zero theorem, the conormal generation
+statement, the two bounded self-adjoint channels, the essential compact-boundary symbol, and the
+three frame obstructions.
+
 ## Gates
 
 - [x] exact rank-one anomaly integrated to a theta interval
+- [x] Lean interval transgression `(4)` and multiplicative cocycle law `(5a)`
 - [x] centered positive even prime-window source constructed
 - [x] exact `a_n XiC` factorization proved
 - [x] exact multiplicative anomaly cocycle proved

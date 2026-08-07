@@ -579,3 +579,26 @@ hzero : that value is 0, via `hcancel : η * (2 * (-(1/(2η)) * X)) = -X` by `fi
 ```
 
 So the whole theorem is one lemma away, and that lemma is a two-line complex-scalar computation.
+
+### I.3 `(9)` is closed
+
+`hasDerivAt_radialCurrent` proves `d/dη [η ‖f η‖²] = 0` for the skew frequency equation with an
+arbitrary bounded self-adjoint block.  The blocking sub-goal of I.2 was resolved by isolating it as
+`re_inner_real_smul_self` — a standalone lemma compiles where the same rewrite chain inside the
+larger proof did not.  The other trap was `hasDerivAt_id η` producing `id η` rather than `η`,
+fixed by `simp only [id_eq]`.
+
+Left on `suzuki-gamma-skew-frequency-flux-liouville`: `(10)` (constancy on each half-line from the
+vanishing derivative — `constant_of_has_deriv_right_zero` on `Ioi 0` and `Iio 0`) and `(14)` (the
+`L²` Liouville conclusion, immediate from `(10)` since `|η|^{-1}` is not integrable at either end).
+
+### I.4 `(10)` is closed; only `(14)` remains
+
+`radialCurrent_const_Ioi` / `radialCurrent_const_Iio` give `|η| ‖f η‖²` constant on each half-line,
+via `IsOpen.is_const_of_deriv_eq_zero` on `Ioi 0` and `Iio 0` (both open and preconnected).
+
+`(14)` is then: set `C = 1 * ‖f 1‖²`; by `(10)`, `‖f η‖² = C/η` for `η > 0`; if `C > 0` this
+contradicts `IntegrableOn (fun η => ‖f η‖²) (Ioi 0)` because `∫_1^∞ dη/η` diverges
+(`integrableOn_Ioi_rpow_iff` at exponent `-1`).  Hence `C = 0` and `f` vanishes on the ray; the
+negative ray is symmetric.  That closes `suzuki-gamma-skew-frequency-flux-liouville`, whose other
+gates are all research.

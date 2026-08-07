@@ -1,8 +1,8 @@
 # Burnol general reciprocal-seed landing
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Route:** R
-- **Claim label:** `[THEOREM — PAPER PROVED; LEAN OPEN]`
+- **Claim label:** `[LEAN-PROVED]`
 - **Target:** explicit squarefull Stokes summability producer
 
 ## Frozen claim
@@ -57,7 +57,24 @@ input seed is only specified almost everywhere.
    `F(P g)=P(g^vee)` almost everywhere.  Fourier involutivity on the even
    carrier and `(g^vee)^vee=g` give involutivity.
 
-## Route-R consequence after formalization
+## Formalization
+
+Lean modules:
+
+- `RHTower/BurnolCoPoissonReciprocalSeedLanding.lean`
+- `RHTower/GammaCoPoissonSoninActualZeroEscape.lean`
+
+Main unconditional theorems:
+
+- `integrable_coPoissonReciprocalSeed`
+- `burnolCoPoissonRightSum_congr_ae`
+- `fourierUnitary_burnolCoPoissonSource_eq_reciprocalSum`
+- `BurnolCoPoissonSource.reciprocal`
+- `burnolCoPoissonAnnihilatorPoint_of_riemannZeta_eq_zero`
+- `coPoissonLadderAnnihilator_iff_riemannZeta_eq_zero`
+- `norm_coPoissonLadderKernel_max_le_of_riemannZeta_eq_zero`
+
+## Route-R consequence
 
 At a zeta zero, the general-seed Mellin factorization annihilates every source
 vector.  Reciprocal landing makes each cosine generator another source vector,
