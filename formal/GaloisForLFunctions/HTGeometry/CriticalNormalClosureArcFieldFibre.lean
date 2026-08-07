@@ -11,16 +11,22 @@ private abbrev ArcValuationRing
     (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :=
   CriticalNormalClosureArcValuationRing K m n hm hn
 
+/-- Critical fibre in the actual normal closure, written using the integral common-scale tails. -/
+abbrev CriticalNormalClosureArcFieldFibre
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :=
+  criticalFibre (criticalNormalClosure K m n) m n
+    ((criticalNormalClosureArcRawTail K hm hn).map
+      (ArcValuationRing K m n hm hn).subtype)
+    ((criticalNormalClosureArcReciprocalTail K hm hn).map
+      (ArcValuationRing K m n hm hn).subtype)
+
 /-- An actual geometric sheet, expressed against the integral tails at the chosen arc place. -/
 noncomputable def criticalGeometricSheetToArcFieldFibre
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
     {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
     criticalGeometricSheet K m n →
-      criticalFibre (criticalNormalClosure K m n) m n
-        ((criticalNormalClosureArcRawTail K hm hn).map
-          (ArcValuationRing K m n hm hn).subtype)
-        ((criticalNormalClosureArcReciprocalTail K hm hn).map
-          (ArcValuationRing K m n hm hn).subtype) := by
+      CriticalNormalClosureArcFieldFibre K hm hn := by
   intro σ
   change criticalFibre (criticalNormalClosure K m n) m n
     ((criticalNormalClosureArcRawTail K hm hn).map

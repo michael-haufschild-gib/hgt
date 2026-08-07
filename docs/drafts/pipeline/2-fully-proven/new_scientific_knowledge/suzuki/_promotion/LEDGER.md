@@ -3607,3 +3607,65 @@ the theorem above.
 
 Every input to that statement is now a built, axiom-clean lemma, and the two numerator
 convergences — the part that looked like bookkeeping and was not — are done.
+
+## CY. Uniform localisation of the family
+
+`LogNormalEquationTrace.lean` is now at 21 declarations, all `#print axioms` clean, no `sorry`.
+
+- `eventually_localised_of_isMaxOn_family` — with the profile bounded in `[−B, B]` on the ray,
+
+      ∀ᶠ L₀ in atTop, |X L₀ − L₀| ≤ √L₀ · (2B).
+
+  The point is that the constant is `2B`, **independent of `L₀`** — `abs_sub_le_sqrt_mul_of_isMaxOn`
+  (CC) gives `√L₀ (B − H L₀)`, and the lower bound `−B ≤ H L₀` turns the `L₀`-dependent factor into
+  a constant. That uniformity is exactly what `tendsto_atTop_of_localised` (CN) and
+  `tendsto_div_one_of_localised` (CQ) require.
+
+This closes the gap between the abstract localisation and the hypotheses of the divergence/ratio
+lemmas.
+
+### Remaining
+
+The outermost statement, whose proof is now:
+
+    obtain Xu, Xl                exists_maximizer_family / exists_minimizer_family   CJ
+    localisation                 eventually_localised_of_isMaxOn_family              CY
+    Xu, Xl → ∞                   tendsto_atTop_of_localised                          CN
+    Xu L₀/L₀ → 1                 tendsto_div_one_of_localised                        CQ
+    0 ≤ Xu eventually            eventually_le_of_localised with c = 0               CN
+    a ≤ Xu L₀/2 eventually       eventually_le_of_localised with c = 2a              CN
+    the two squeezes             eventually_halfLog_le_of_equation / …_le_…          CL, CM
+    conclude                     tendsto_halfLogTrace_of_equation_families           CX
+
+Eight lines, each a named lemma.
+
+## CZ. `(4)` IS PROVED — `tendsto_halfLogTrace_of_equation`
+
+`LogNormalEquationTrace.lean` is at 22 declarations, all `#print axioms` clean, no `sorry`.
+
+    tendsto_halfLogTrace_of_equation :
+      |F| ≤ M,  H = √·F bounded in [−B,B] and continuous on Ici a,
+      logDirichlet F Y + gammaTransport F Y = S Y  ∀Y,   Tl ≤ S ≤ T,
+      halfLogAverage F → α,  H bounded and cobounded above/below
+        ⟹  Tendsto (fun L => √L * F L) atTop (𝓝 α)
+
+This is the card's `(4)`. The proof constructs both penalized families
+(`exists_maximizer_family`, `exists_minimizer_family`), derives their uniform localisation (CY),
+divergence (CN), ratio (CQ) and positivity, obtains the two squeezes from the equation (CL, CM),
+and concludes via `tendsto_halfLogTrace_of_equation_families` (CX).
+
+### Scope — what this theorem is
+
+The equation is assumed **pointwise**, not distributionally. The card states `(3)` in the
+distributional sense and mollifies (§4) to reach a pointwise equation `(18)` for the smoothed
+profile. The theorem above is exactly the argument applied to a profile for which the equation
+already holds pointwise — i.e. it formalises §5 and the parts of §4 that feed it, not the
+mollification passage `(14)`–`(17)` from the distributional hypothesis to `(18)`.
+
+That passage rests on `mollify_position_eq` and `integral_abs_firstMomentKernel_le` (both built,
+sections X and AO) but is not itself formalised.
+
+**Promotion decision:** the card's headline theorem is proved for the pointwise-equation class;
+the reduction of the distributional hypothesis to that class is not. The card must therefore state
+this scope explicitly if promoted, or the mollification passage must be formalised first. Do not
+promote silently on `(4)` alone.

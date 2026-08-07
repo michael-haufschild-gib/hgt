@@ -313,3 +313,24 @@ projective/trace-class/determinant consequences.
   signed trial route while recording explicitly that the Fuchs exponent remains stronger.
 - Verified and cached both modules with foreground `lake env lean <file>` checks and wired the new
   signed module into the `GaloisForLFunctions.RHTower` umbrella.
+
+### 2026-08-07: fixed-depth Kaiser packet tail infrastructure
+
+- Added `BandKaiserModulatedTrial.lean`.  Defined cosine-modulated Kaiser--Bessel packets, proved
+  their exact Fourier transform is the average of two translated base transforms, and bounded the
+  packet spectral density by the arithmetic mean of the translated base densities.
+- Proved an aperture-independent inner-edge transform bound directly from the exact odd-factorial
+  Kaiser series.  This controls the thin portion shifted back inside the band without discarding
+  the oscillatory cancellation responsible for the Fuchs clock.
+- Added `BandKaiserShiftedTail.lean`.  For every shift of size at most `1/(2*pi*c)`, decomposed the
+  shifted tail pointwise into the translated global Cauchy envelope plus a measurable edge term,
+  integrated it, and obtained an explicit polynomial tail bound.  The same bound now holds for
+  every small cosine-modulated Kaiser packet.
+- This is the first correct-exponent fixed-depth trial infrastructure: finite combinations retain
+  polynomial tail mass against exponentially large in-band energy, hence can deliver
+  `exp(-2*c+o(c))` concentration once their finite Gram conditioning is closed.
+- Verified and cached both modules with foreground `lake env lean <file>` checks and wired them into
+  the `GaloisForLFunctions.RHTower` umbrella.
+- Audited the aggregate Hermite envelope, true signed leakage envelope, modulated transform, shifted
+  tail, and modulated packet-tail capstones with `#print axioms`; each reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.

@@ -179,6 +179,100 @@ theorem integral_weighted_symmetry {f g : ℝ → ℂ}
     (hf.continuous_deriv (by simp)) (hg.continuous_deriv (by simp))
     hfs hfs.deriv
 
+
+/-! ### The formal Witten positivity -/
+
+/-- **The second-order bulk is the energy form on the core.**  The weighted symmetry with `g = D f`
+turns `⟨f, L D f⟩_{H_k}` into `⟨D f, D f⟩_{H_k}`, the nonnegative energy.  This is the formal
+content of `L D = A^* A ≥ 0`. -/
+theorem integral_weighted_witten {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfs : HasCompactSupport f) :
+    (∫ x, (-Complex.I * deriv f x) * (starRingEnd ℂ) (-Complex.I * deriv f x)
+        / sourceWeightC x)
+      = ∫ x, f x * (starRingEnd ℂ) (-Complex.I * deriv (fun t => -Complex.I * deriv f t) x
+          + Complex.I * ((sourceLogDeriv x : ℝ) : ℂ) * (-Complex.I * deriv f x))
+        / sourceWeightC x := by
+  have hderiv : ContDiff ℝ 1 (deriv f) := ((contDiff_succ_iff_deriv).mp hf).2.2
+  have hg : ContDiff ℝ 1 (fun t : ℝ => -Complex.I * deriv f t) := contDiff_const.mul hderiv
+  exact integral_weighted_symmetry (hf.of_le (by norm_num)) hg hfs
+
+/-- The energy form is real and nonnegative. -/
+theorem integral_weighted_energy_nonneg (f' : ℝ → ℂ) :
+    (∫ x, (-Complex.I * f' x) * (starRingEnd ℂ) (-Complex.I * f' x) / sourceWeightC x)
+      = ((∫ x, ‖f' x‖ ^ 2 / thetaCuspFullSource x : ℝ) : ℂ) := by
+  rw [← integral_complex_ofReal]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  have hk : ((thetaCuspFullSource x : ℝ) : ℂ) ≠ 0 := by
+    exact_mod_cast (thetaCuspFullSource_pos x).ne'
+  have hzz : (-Complex.I * f' x) * (starRingEnd ℂ) (-Complex.I * f' x)
+      = ((‖f' x‖ ^ 2 : ℝ) : ℂ) := by
+    have h := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (E := ℂ) (-Complex.I * f' x)
+    rw [RCLike.inner_apply'] at h
+    rw [norm_mul, norm_neg, Complex.norm_I, one_mul] at h
+    rw [mul_comm]
+    push_cast
+    exact h
+  show (-Complex.I * f' x) * (starRingEnd ℂ) (-Complex.I * f' x)
+      / ((thetaCuspFullSource x : ℝ) : ℂ)
+    = ((‖f' x‖ ^ 2 / thetaCuspFullSource x : ℝ) : ℂ)
+  rw [hzz, Complex.ofReal_div]
+
+
+
+/-! ### The supersymmetric Dirac operator on the core -/
+
+/-- The weighted pairing `⟨u, v⟩_{H_k} = ∫ u conj(v) / k`. -/
+def weightedPair (u v : ℝ → ℂ) : ℂ :=
+  ∫ x, u x * (starRingEnd ℂ) (v x) / sourceWeightC x
+
+/-- The differential expression `D = -i ∂`. -/
+def sourceD (f : ℝ → ℂ) (x : ℝ) : ℂ := -Complex.I * deriv f x
+
+/-- The weighted formal adjoint `L = D + i k'/k`. -/
+def sourceL (g : ℝ → ℂ) (x : ℝ) : ℂ :=
+  -Complex.I * deriv g x + Complex.I * ((sourceLogDeriv x : ℝ) : ℂ) * g x
+
+theorem weightedPair_D_left {f g : ℝ → ℂ} (hf : ContDiff ℝ 1 f) (hg : ContDiff ℝ 1 g)
+    (hfs : HasCompactSupport f) :
+    weightedPair (sourceD f) g = weightedPair f (sourceL g) :=
+  integral_weighted_symmetry hf hg hfs
+
+/-- The conjugate form of the symmetry: `⟨L g, f⟩ = ⟨g, D f⟩`. -/
+theorem conj_weightedPair_integrand (a b : ℂ) (x : ℝ) :
+    (starRingEnd ℂ) (a * (starRingEnd ℂ) b / sourceWeightC x)
+      = b * (starRingEnd ℂ) a / sourceWeightC x := by
+  show (starRingEnd ℂ) (a * (starRingEnd ℂ) b / ((thetaCuspFullSource x : ℝ) : ℂ))
+    = b * (starRingEnd ℂ) a / ((thetaCuspFullSource x : ℝ) : ℂ)
+  rw [map_div₀, map_mul, Complex.conj_ofReal, Complex.conj_conj]
+  ring
+
+/-- The conjugate form of the symmetry: `⟨L g, f⟩ = ⟨g, D f⟩`. -/
+theorem weightedPair_L_left {f g : ℝ → ℂ} (hf : ContDiff ℝ 1 f) (hg : ContDiff ℝ 1 g)
+    (hfs : HasCompactSupport f) :
+    weightedPair (sourceL g) f = weightedPair g (sourceD f) := by
+  have h := integral_weighted_symmetry hf hg hfs
+  have hL : ∀ x : ℝ, sourceL g x * (starRingEnd ℂ) (f x) / sourceWeightC x
+      = (starRingEnd ℂ) (f x * (starRingEnd ℂ) (sourceL g x) / sourceWeightC x) :=
+    fun x => (conj_weightedPair_integrand (f x) (sourceL g x) x).symm
+  have hR : ∀ x : ℝ, g x * (starRingEnd ℂ) (sourceD f x) / sourceWeightC x
+      = (starRingEnd ℂ) (sourceD f x * (starRingEnd ℂ) (g x) / sourceWeightC x) :=
+    fun x => (conj_weightedPair_integrand (sourceD f x) (g x) x).symm
+  rw [weightedPair, weightedPair,
+    integral_congr_ae (Filter.Eventually.of_forall hL),
+    integral_congr_ae (Filter.Eventually.of_forall hR),
+    integral_conj, integral_conj]
+  exact congrArg (starRingEnd ℂ) h.symm
+
+/-- **The supersymmetric Dirac operator is formally symmetric on the core.**  Two applications of
+the weighted symmetry, one in each channel. -/
+theorem weightedPair_dirac_symmetry {f₁ g₁ f₂ g₂ : ℝ → ℂ}
+    (hf₁ : ContDiff ℝ 1 f₁) (hg₁ : ContDiff ℝ 1 g₁)
+    (hf₂ : ContDiff ℝ 1 f₂) (hg₂ : ContDiff ℝ 1 g₂)
+    (hf₁s : HasCompactSupport f₁) (hf₂s : HasCompactSupport f₂) :
+    weightedPair (sourceL g₁) f₂ + weightedPair (sourceD f₁) g₂
+      = weightedPair g₁ (sourceD f₂) + weightedPair f₁ (sourceL g₂) := by
+  rw [weightedPair_L_left hf₂ hg₁ hf₂s, weightedPair_D_left hf₁ hg₂ hf₁s]
+
+
 /-! ### The half-density conjugation -/
 
 /-- **The half-density conjugation.**  Multiplying by `k^{1/2}` turns the plain derivative into the

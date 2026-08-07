@@ -312,3 +312,19 @@ theorem exteriorMulOf_map (h : p + q = n) (f : M →ₗ[R] N) (y : ⋀[R]^p M) (
 end Functorial
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+variable {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] {p q n : ℕ}
+
+theorem exteriorMulOf_zero_left' (h : p + q = n) (z : ⋀[R]^q M) :
+    exteriorMulOf h (0 : ⋀[R]^p M) z = 0 := by
+  have h0 : (0 : ⋀[R]^p M) = (0 : R) • (0 : ⋀[R]^p M) := (zero_smul R _).symm
+  rw [h0, exteriorMulOf_smul_left, zero_smul]
+
+theorem exteriorMulOf_zero_right' (h : p + q = n) (y : ⋀[R]^p M) :
+    exteriorMulOf h y (0 : ⋀[R]^q M) = 0 := by
+  have h0 : (0 : ⋀[R]^q M) = (0 : R) • (0 : ⋀[R]^q M) := (zero_smul R _).symm
+  rw [h0, exteriorMulOf_smul_right, zero_smul]
+
+end GaloisForLFunctions.HTGeometry

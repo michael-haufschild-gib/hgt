@@ -464,4 +464,81 @@ theorem tendsto_halfLogTrace_of_equation_families
     (tendsto_traceBoundNumeratorLower hFb hXl)
     hup hlow hA hb hb' hcb hcb'
 
+open Filter MeasureTheory Set in
+/-- **The family is uniformly localised.**  With the profile bounded in `[−B, B]` on the ray, the
+maximizer sits within `2B√L₀` of its base point — a bound with no `L₀`-dependent constant, which is
+what the divergence and ratio lemmas require. -/
+theorem eventually_localised_of_isMaxOn_family {H X : ℝ → ℝ} {a B : ℝ}
+    (hHup : ∀ L ∈ Ici a, H L ≤ B) (hHlow : ∀ L ∈ Ici a, -B ≤ H L)
+    (hXmax : ∀ L₀ : ℝ, 0 < L₀ →
+      IsMaxOn (penalized H (Real.sqrt L₀)⁻¹ L₀) (Ici a) (X L₀))
+    (hXmem : ∀ L₀ : ℝ, 0 < L₀ → X L₀ ∈ Ici a) :
+    ∀ᶠ L₀ in atTop, |X L₀ - L₀| ≤ Real.sqrt L₀ * (2 * B) := by
+  filter_upwards [eventually_gt_atTop (0:ℝ), eventually_ge_atTop a] with L₀ hL₀ hmem
+  have hloc := abs_sub_le_sqrt_mul_of_isMaxOn hL₀ (hXmax L₀ hL₀) hmem (hHup _ (hXmem L₀ hL₀))
+  have hlow := hHlow L₀ hmem
+  have hs : 0 ≤ Real.sqrt L₀ := Real.sqrt_nonneg _
+  nlinarith [hloc, hlow, hs]
+
+/-! ## The signed half-log trace theorem
+
+Assembling everything: from the logarithmic normal equation with a bounded source, a bounded
+half-log profile, and convergence of the averaged trace, the signed half-log trace exists and
+equals the limit of the average.
+
+The two penalized families — a maximum family and a minimum family — are constructed here, their
+localisation, divergence, ratio and positivity are read off, the equation supplies the two squeeze
+inequalities, and the limit passage concludes.
+-/
+
+open Filter MeasureTheory Set in
+/-- **The signed half-log trace exists.**  For a bounded profile satisfying the logarithmic normal
+equation with a bounded source, whose averaged trace converges to `α`, the half-log trace
+`√L F(L)` converges to `α`. -/
+theorem tendsto_halfLogTrace_of_equation
+    {F S : ℝ → ℝ} {a α M T Tl B : ℝ}
+    (hFb : ∀ x, |F x| ≤ M) (hmeas : Measurable F) (hFpos : ∀ x, 0 ≤ F x)
+    (hHcont : ContinuousOn (fun L => Real.sqrt L * F L) (Ici a))
+    (hHup : ∀ L ∈ Ici a, Real.sqrt L * F L ≤ B)
+    (hHlow : ∀ L ∈ Ici a, -B ≤ Real.sqrt L * F L)
+    (hnear : ∀ Y, IntegrableOn (fun s => secondDifference F Y s * gammaTransportKernel s)
+      (Ioc 0 (Y / 2)))
+    (hnumlow : ∀ L₀ Y, ∀ s, 0 ≤ s → s ≤ Y / 2 →
+      0 ≤ F Y - (Real.sqrt L₀)⁻¹ * s / Real.sqrt Y)
+    (heq : ∀ Y, logDirichlet F Y + gammaTransport F Y = S Y)
+    (hSu : ∀ Y, S Y ≤ T) (hSl : ∀ Y, Tl ≤ S Y)
+    (hA : Tendsto (halfLogAverage F) atTop (nhds α))
+    (hb : IsBoundedUnder (· ≤ ·) atTop fun L => Real.sqrt L * F L)
+    (hb' : IsBoundedUnder (· ≥ ·) atTop fun L => Real.sqrt L * F L)
+    (hcb : IsCoboundedUnder (· ≤ ·) atTop fun L => Real.sqrt L * F L)
+    (hcb' : IsCoboundedUnder (· ≥ ·) atTop fun L => Real.sqrt L * F L) :
+    Tendsto (fun L => Real.sqrt L * F L) atTop (nhds α) := by
+  obtain ⟨Xu, hXu⟩ := exists_maximizer_family (B := B) hHcont hHup
+  obtain ⟨Xl, hXl⟩ := exists_minimizer_family (B := B) hHcont hHlow
+  have hlocu := eventually_localised_of_isMaxOn_family hHup hHlow
+    (fun L₀ h => (hXu L₀ h).2) (fun L₀ h => (hXu L₀ h).1)
+  have hlocl := eventually_localised_of_isMaxOn_family
+    (H := fun L => -(Real.sqrt L * F L))
+    (fun L hL => by simpa using neg_le_neg (hHlow L hL))
+    (fun L hL => by simpa using neg_le_neg (hHup L hL))
+    (fun L₀ h => (hXl L₀ h).2) (fun L₀ h => (hXl L₀ h).1)
+  have hXudiv := tendsto_atTop_of_localised hlocu
+  have hXldiv := tendsto_atTop_of_localised hlocl
+  have hratio := tendsto_div_one_of_localised hlocu
+  have hXunn : ∀ᶠ L₀ in atTop, 0 ≤ Xu L₀ := eventually_le_of_localised hlocu 0
+  have hXupos : ∀ᶠ L₀ in atTop, 0 < Xu L₀ := by
+    filter_upwards [eventually_le_of_localised hlocu 1] with L₀ h; linarith
+  have hXlpos : ∀ᶠ L₀ in atTop, 0 < Xl L₀ := by
+    filter_upwards [eventually_le_of_localised hlocl 1] with L₀ h; linarith
+  have hXuint : ∀ᶠ L₀ in atTop, a ≤ Xu L₀ / 2 := by
+    filter_upwards [eventually_le_of_localised hlocu (2 * a)] with L₀ h; linarith
+  have hXlint : ∀ᶠ L₀ in atTop, a ≤ Xl L₀ / 2 := by
+    filter_upwards [eventually_le_of_localised hlocl (2 * a)] with L₀ h; linarith
+  have hup := eventually_halfLog_le_of_equation (X := Xu) hFb hmeas hFpos hnear heq hSu
+    (fun L₀ h => (hXu L₀ h).2) hXuint hXupos
+  have hlow := eventually_le_halfLog_of_equation (X := Xl) hFb hmeas hnear hnumlow heq hSl
+    (fun L₀ h => (hXl L₀ h).2) hXlint hXlpos
+  exact tendsto_halfLogTrace_of_equation_families hFb hXudiv hXldiv hratio hXunn
+    hup hlow hA hb hb' hcb hcb'
+
 end GaloisForLFunctions.HTGeometry

@@ -824,3 +824,29 @@ So `det₂` OF THE ACTUAL SOURCE INVERSE is now a defined, nonvanishing Lean obj
 Statement (8) is finally EXPRESSIBLE:
 `thetaFredholmDet (-z) = XiC z / XiC 0` (check the sign against the `det₂(1 - wK)` convention).
 What remains is only its PROOF — the trace formula.  All plumbing is done.
+
+## Card 7 (8) is now ONE analytic identification (2026-08-07)
+
+Added: `differentiableOn_thetaFredholmDet`, `logDeriv_thetaFredholmDet`
+(= `HilbertSchmidt.logDeriv_fredholmDet` at `thetaKernelMatrix`).
+
+And `HilbertSchmidt.fredholmDet_weld` is EXACTLY the finishing tool:
+given `L` holomorphic and nonvanishing on `ball 0 r` with
+`logDeriv L = -resolventTrace K` there, it concludes `det₂(1 - zK) = c · L z`.
+
+So (8) needs NOTHING further from determinant theory.  The single remaining obligation is
+    `HilbertSchmidt.resolventTrace thetaKernelMatrix z = -Xi_C'(z)/Xi_C(z)`  (up to sign/shift),
+i.e. the trace formula, which is the research content.  Everything else is instantiation.
+
+## Card 6 (8) at the formal/core level CLOSED (2026-08-07)
+
+`HedenmalmWeightedAdjointCore`: `integral_weighted_witten` — apply `integral_weighted_symmetry`
+with `g := D f` (NOT with f and g swapped, which was my first, wrong, attempt) to get
+`⟨f, L D f⟩ = ⟨D f, D f⟩`; plus `integral_weighted_energy_nonneg` showing the energy form equals
+`∫ ‖f'‖²/k`, real and nonnegative.  That is the formal content of `L D = A*A ≥ 0`.
+
+`ContDiff ℝ 1 (deriv f)` from `ContDiff ℝ 2 f` is `((contDiff_succ_iff_deriv).mp hf).2.2`.
+`sourceWeightC` will not `rw` when applied — use `show`.
+
+Card 6 (8) still lacks the OPERATOR statement (self-adjointness of the closure, compact resolvent);
+that part still needs the unbounded-Fredholm layer.

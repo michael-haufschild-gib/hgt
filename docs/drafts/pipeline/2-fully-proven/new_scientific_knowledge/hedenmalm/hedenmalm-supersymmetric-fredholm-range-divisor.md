@@ -445,6 +445,7 @@ carries none.
 |---|---|---|
 | `(4)` | the exponential ceiling forces `1/k` to be non-integrable | `not_integrableOn_exp_Ioi`, `not_integrable_exp_abs`, `not_integrable_inv_thetaSource` |
 | `(4)` | **no nonzero constant is square integrable against `k^(-1)`**, so the formal kernel is trivial | `not_integrable_const_mul_inv_thetaSource` |
+| `(8)` | **the formal Witten identity `<f, L D f> = <D f, D f>` on the compactly supported `C^2` core**, and the energy form is real and nonnegative | `integral_weighted_witten`, `integral_weighted_energy_nonneg` |
 
 `integral_weighted_symmetry` is a single integration by parts: `f conj(g)/k` has compact support,
 so its derivative integrates to zero by the improper fundamental theorem of calculus, and the
