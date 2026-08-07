@@ -1132,3 +1132,45 @@ Attacking cards one at a time in card order will keep hitting these same four wa
 order is to build 1–4 as infrastructure first, then the cluster promotes in a batch. Item 1 is
 partly built (`GagliardoFourierConstant.lean`, `MonotoneTranslationModulus.lean`); items 2–4 are
 untouched.
+
+## R. Prerequisite 2 started — the Gamma transport kernel
+
+New module `formal/GaloisForLFunctions/HTGeometry/GammaTransportKernel.lean`, wired into the
+`HTGeometry` umbrella. 8 declarations, all `#print axioms` clean.
+
+    gammaTransportKernel s = 1 / (exp s − 1)
+    secondDifference F L s = 2 F L − F (L+s) − F (L−s)
+
+The kernel's two regimes, each proved separately:
+
+- `gammaTransportKernel_pos`.
+- `gammaTransportKernel_le_inv` — **the simple pole**: `1/(e^s − 1) ≤ 1/s`, straight from
+  `Real.add_one_le_exp`.
+- `gammaTransportKernel_le_two_mul_exp_neg` — **the exponential tail**: for `s ≥ 1`, `e^s ≥ 2`, so
+  subtracting one costs at most a factor two and the kernel is `≤ 2e^{−s}`.
+- `integrableOn_gammaTransportKernel_Ioi_one` — the kernel is integrable on `(1, ∞)`.
+- `abs_secondDifference_le_of_bounded` — `|2F(L) − F(L+s) − F(L−s)| ≤ 4M` for `|F| ≤ M`.
+- `integrableOn_transport_integrand_Ioi_one` — **the far half of well-definedness**: for a bounded
+  measurable profile the transport integrand is integrable on `(1, ∞)`, dominated by `8M e^{−s}`.
+
+### What is left on prerequisite 2
+
+The **near half**: at the origin the second difference must vanish to second order to beat the
+simple pole. The target is
+
+    |2F(L) − F(L+s) − F(L−s)| ≤ 2 M s²        for  ‖F''‖ ≤ M,
+
+proved by applying `Convex.norm_image_sub_le_of_norm_hasDerivWithin_le` twice — once to get `F'`
+Lipschitz with constant `M`, then to `g t = 2F(L) − F(L+t) − F(L−t)`, whose derivative
+`F'(L−t) − F'(L+t)` is bounded by `2Mt ≤ 2Ms` on `[0,s]`. The constant-bound form gives `2Ms²`
+rather than the sharp `Ms²`; that is harmless, since any `O(s²)` kills a simple pole.
+
+Then `integrableOn_transport_integrand_Ioo_zero_one` follows by domination against `2Ms² · (1/s)
+= 2Ms`, and the two halves glue exactly as in
+`integrableOn_gagliardoIntegrand_Ioi_zero` (`Ioi 0 = Ioo 0 1 ∪ Ici 1`, then `Ioi_ae_eq_Ici.symm`).
+
+Traps: `Real.one_lt_exp_iff_pos` does not exist here — use `Real.exp_lt_exp.mpr` and rewrite
+`Real.exp_zero`. `div_le_div_iff` is now `div_le_div_iff₀`. `exp_neg_integrableOn_Ioi a ha` produces
+`fun x => rexp (-1 * x)`, not `rexp (-x)`; convert with `simpa only [neg_one_mul]`. For
+`|2a − b − c| ≤ 4M`, go through `abs_le.mp` on each bound and `constructor <;> linarith` rather than
+chaining triangle inequalities — `abs_sub` does not mean `|a − b| ≤ |a| + |b|` in this mathlib.

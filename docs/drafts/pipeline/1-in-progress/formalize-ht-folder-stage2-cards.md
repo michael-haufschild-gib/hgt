@@ -18,7 +18,7 @@ prove its properties rather than assuming them.
 | card | state |
 |---|---|
 | `nonautonomous-ht-tail-projective-time-law` | **DONE — promoted to 3-formalized** |
-| `triptic-orbit-residue-reciprocity` | in progress — needs the orbital principal-part layer |
+| `triptic-orbit-residue-reciprocity` | **core theorem formalized** — `triptic_orbit_residue_reciprocity`; multiplicative corollary open |
 | `triptic-ht-kummer-content-root-classification` | pending — child of the reciprocity card |
 | `hypertranscendental-pair-localization-noncompression` | pending — algebraic core exists |
 | `nonautonomous-rational-first-order-tail-orbifold-law` | pending |
@@ -80,3 +80,40 @@ What is missing and has to be built:
 4. the mixed-quadrant corner identities, which feed `corner_reciprocity`.
 
 Item 2 is the only genuinely analytic step; items 1, 3, 4 are bookkeeping once 1 exists.
+
+
+## Closed: the orbital principal-part layer and triptic reciprocity
+
+Three new modules, wired and axiom-clean:
+
+```text
+HTGeometry/MeromorphicLaurentTranslation.lean   translation equivariance, punctured-germ congruence,
+                                                 vanishing at analytic points, linearity, and
+                                                 LOCAL FINITENESS of the principal-part support
+HTGeometry/TripticCornerAccumulation.lean       the compensating index `-⌈n Im τ / Im σ⌉`, the
+                                                 mixed-quadrant accumulation law, and finiteness of
+                                                 the nonzero coefficients along a lattice orbit
+HTGeometry/TripticOrbitResidueReciprocity.lean  discrete telescoping plus the reciprocity theorem
+```
+
+Capstone: `triptic_orbit_residue_reciprocity`.
+
+**Reusable pattern.** "Poles cannot accumulate" arguments: reduce the points into a compact
+fundamental region by lattice translations under which the coefficient is invariant, prove the
+reduced points pairwise distinct from ℤ-independence of the periods, then contradict
+`finite_setOf_laurentCoeff_ne_zero_of_bounded`.  Packaged twice already.
+
+## Next concrete steps
+
+1. **Local argument principle** — `laurentCoeff (logDeriv f) a (-1) = meromorphicOrderAt f a`.
+   Route: `meromorphicOrderAt_eq_int_iff` gives `f =ᶠ[𝓝[≠]a] (z-a)^n • g` with `g` analytic and
+   `g a ≠ 0`; `logDeriv` is a punctured-germ invariant; `logDeriv_mul` splits it into `n/(z-a)`
+   plus an analytic term; and `laurentCoeff (fun z => c/(z-a)) a (-1) = c` is the clearing exponent
+   `k = 2` computation.  mathlib has no residue at all, so this is the argument principle's local
+   form and is worth building for its own sake.
+2. With `1`, that card's **multiplicative divisor reciprocity** `D_τ(Y) = D_σ(Y)` is a direct
+   corollary of `triptic_orbit_residue_reciprocity` applied to `F = logDeriv Y` at `ℓ = -1`.
+3. The augmentation law `(A2)` needs a residue theorem on a parallelogram; `PNTPlus` has only a
+   simple-pole rectangle version.
+4. Then audit `triptic-ht-kummer-content-root-classification` and
+   `hypertranscendental-pair-localization-noncompression` against their existing Lean cores.

@@ -483,3 +483,63 @@ Formalizing the finite group-algebra equality would certify only the last formal
 - 2026-07-10 — Proved their equality through two independent normal forms and differential-translation freeness.
 - 2026-07-10 — Proved completeness, exact annihilators, spectra, realization, and the boundary matroid.
 - 2026-07-10 — Distinguished the theorem from one-curve orbital/panorbital summability and from multiplicative gamma-gerbe cohomology.
+
+## Lean status — the reciprocity theorem is formalized unconditionally
+
+The "Lean formalization boundary" section above is retired: it claimed that the analytic content
+requires elliptic principal parts and two elliptic function fields, none of which exist in the local
+Lean tree.  In fact the direct proof needs only the Laurent coefficients of a meromorphic germ, and
+the corpus already owned those (`MeromorphicLaurentCoefficient.lean`).  What was missing were three
+properties of that transform and the two geometric reduction arguments; all are now built.
+
+`GaloisForLFunctions/HTGeometry/MeromorphicLaurentTranslation.lean` (wired, axiom-clean):
+
+    laurentCoeff_comp_add         translation equivariance of the Laurent transform
+    laurentCoeff_congr            the coefficients depend only on the punctured germ
+    laurentCoeff_eq_zero_of_analyticAt
+    laurentCoeff_eq_zero_of_meromorphicOrderAt_nonneg
+    meromorphicOrderAt_neg_of_laurentCoeff_ne_zero
+                                  a nonzero negative coefficient forces a pole
+    finite_setOf_laurentCoeff_ne_zero_of_bounded
+                                  **local finiteness**: only finitely many points of a bounded set
+                                  carry a nonzero principal-part coefficient
+    laurentCoeff_add, laurentCoeff_sub, laurentCoeff_add_const
+    laurentCoeff_shiftDiff        the coefficients of `z ↦ f(z+h) - f(z)` are the differences
+    laurentCoeff_add_zsmul_of_period
+
+`GaloisForLFunctions/HTGeometry/TripticCornerAccumulation.lean` (wired, axiom-clean):
+
+    cornerIndex                   `m = -⌈n·Im τ / Im σ⌉`, the compensating index
+    cornerIndex_im_bound          it keeps `n·Im τ + m·Im σ` inside `(-Im σ, 0]`
+    cornerIndex_tendsto_atBot     and drives `m → -∞`
+    laurentCoeff_add_intCast      integer translation invariance from `1`-periodicity
+    laurentCoeff_const_eq_zero_of_mixedQuadrant
+                                  **the mixed-quadrant accumulation law**: a `1`-periodic
+                                  coefficient constant on a mixed quadrant has that constant zero
+    finite_setOf_laurentCoeff_ne_zero_orbit
+                                  **finitely many nonzero coefficients along a lattice orbit**
+
+`GaloisForLFunctions/HTGeometry/TripticOrbitResidueReciprocity.lean` (wired, axiom-clean):
+
+    eq_of_forall_ge_increment_zero, eq_of_forall_le_increment_zero
+    sum_Ico_increment_telescope, exists_symmetric_bound_of_finite_support
+    triptic_orbit_residue_reciprocity :
+      for `F` meromorphic on `ℂ`, `1`-periodic, with constant mixed difference, and for `τ, σ` in
+      the upper half plane with `1, τ, σ` independent over `ℤ`,
+
+        ∑ᶠ m : ℤ, laurentCoeff (Δ_σ F) (p + m·σ) ℓ = ∑ᶠ n : ℤ, laurentCoeff (Δ_τ F) (p + n·τ) ℓ
+
+      for every base point `p` and every negative index `ℓ`.
+
+That is the card's reciprocity theorem verbatim, one `(g, ℓ)` coordinate at a time, and the
+coordinatewise form is exactly what the card states as the equivalent formulation.  The proof is the
+card's own: the discrete separability core (`DiscreteOrbitReciprocity.lean`) is now fed by proved
+analytic inputs instead of hypotheses.
+
+`#print axioms` reports `[propext, Classical.choice, Quot.sound]` for every declaration above, and
+`lake build GaloisForLFunctions.HTGeometry` succeeds.
+
+Still to formalize on this card: the augmentation law `(A2)`, which needs a residue theorem on a
+parallelogram; and the completeness, DA/HT, annihilator, matroid and multiplicative-classification
+consequences, which the card already flags as resting on the independently unaudited elliptic-gamma
+atomic theorem.

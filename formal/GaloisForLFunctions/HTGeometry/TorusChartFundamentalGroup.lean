@@ -150,6 +150,50 @@ theorem map_eq_zpow_torusChartFundamentalGenerators
   refine ⟨a, b, ?_⟩
   rw [map_mul, map_zpow, map_zpow]
 
+/-- **Exact finite cyclic character data.**  A surjective character from the torus-affine
+chart to a nontrivial finite cyclic group is determined by exponent images of the two coordinate
+loops, and those exponents are not both divisible by the target order. -/
+theorem exists_cyclicCharacterExponents_not_both_dvd
+    {H : Type*} [Group H] [Finite H] [Nontrivial H] [IsCyclic H]
+    (k : ℕ) (φ : FundamentalGroup (ComplexTorusAffineChart k) 1 →* H)
+    (hφ : Function.Surjective φ) :
+    ∃ z : H, ∃ a b : ℤ,
+      Subgroup.zpowers z = ⊤ ∧
+      φ (torusChartFirstFundamentalGenerator k) = z ^ a ∧
+      φ (torusChartSecondFundamentalGenerator k) = z ^ b ∧
+      ¬ ((Nat.card H : ℤ) ∣ a ∧ (Nat.card H : ℤ) ∣ b) := by
+  obtain ⟨z, hz⟩ :=
+    isCyclic_iff_exists_zpowers_eq_top.mp (inferInstance : IsCyclic H)
+  have hfirst_mem :
+      φ (torusChartFirstFundamentalGenerator k) ∈ Subgroup.zpowers z := by
+    rw [hz]
+    exact Subgroup.mem_top _
+  have hsecond_mem :
+      φ (torusChartSecondFundamentalGenerator k) ∈ Subgroup.zpowers z := by
+    rw [hz]
+    exact Subgroup.mem_top _
+  obtain ⟨a, ha⟩ := hfirst_mem
+  obtain ⟨b, hb⟩ := hsecond_mem
+  refine ⟨z, a, b, hz, ha.symm, hb.symm, ?_⟩
+  intro hdiv
+  have horder : orderOf z = Nat.card H :=
+    orderOf_eq_card_of_forall_mem_zpowers (fun x ↦ by rw [hz]; exact Subgroup.mem_top x)
+  have hza : z ^ a = 1 :=
+    orderOf_dvd_iff_zpow_eq_one.mp (by simpa [horder] using hdiv.1)
+  have hzb : z ^ b = 1 :=
+    orderOf_dvd_iff_zpow_eq_one.mp (by simpa [horder] using hdiv.2)
+  have hfirst_one : φ (torusChartFirstFundamentalGenerator k) = 1 :=
+    ha.symm.trans hza
+  have hsecond_one : φ (torusChartSecondFundamentalGenerator k) = 1 :=
+    hb.symm.trans hzb
+  have hmap_one : ∀ g, φ g = 1 := by
+    intro g
+    obtain ⟨i, j, hg⟩ := map_eq_zpow_torusChartFundamentalGenerators k φ g
+    simpa [hfirst_one, hsecond_one] using hg
+  obtain ⟨x, hx⟩ := exists_ne (1 : H)
+  obtain ⟨g, rfl⟩ := hφ x
+  exact hx (hmap_one g)
+
 end
 
 end GaloisForLFunctions.HTGeometry

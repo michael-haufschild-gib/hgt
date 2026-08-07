@@ -5871,3 +5871,4 @@ import GaloisForLFunctions.HTGeometry.GeneralisedVonMangoldt
 import GaloisForLFunctions.HTGeometry.TranslationModulus
 import GaloisForLFunctions.HTGeometry.MonotoneTranslationModulus
 import GaloisForLFunctions.HTGeometry.GagliardoFourierConstant
+import GaloisForLFunctions.HTGeometry.GammaTransportKernel
