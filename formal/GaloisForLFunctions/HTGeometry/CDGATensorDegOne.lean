@@ -151,6 +151,21 @@ theorem tensorRightDegOne_zero_map (n : ℕ) (F : TensorCarrier (R := R) M N n) 
       rw [TensorProduct.map_zero_right, LinearMap.zero_apply, smul_zero]
       rfl
 
+/-- The right-factor construction is additive in the family of maps. -/
+theorem tensorRightDegOne_add_map (f g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1)) (n : ℕ)
+    (F : TensorCarrier (R := R) M N n) :
+    tensorRightDegOne (M := M) (fun b => f b + g b) n F
+      = tensorRightDegOne (M := M) f n F + tensorRightDegOne (M := M) g n F := by
+  funext p
+  obtain ⟨⟨a, b⟩, h⟩ := p
+  cases b with
+  | zero => rw [tensorRightDegOne_zero]; exact (add_zero (0 : TensorProduct R (M a) (N' 0))).symm
+  | succ b' =>
+      show ((-1 : R)) ^ a • TensorProduct.map LinearMap.id (f b' + g b')
+        (F ⟨(a, b'), by omega⟩) = _
+      rw [TensorProduct.map_add_right, LinearMap.add_apply, smul_add]
+      rfl
+
 variable {N'' : ℕ → Type w} [∀ n, AddCommGroup (N'' n)] [∀ n, Module R (N'' n)]
 
 /-- **Two degree-one maps on the right factor compose without a sign**: the two Koszul signs are the

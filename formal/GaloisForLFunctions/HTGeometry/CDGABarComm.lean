@@ -90,4 +90,66 @@ theorem barMulTail_second {p q m : ℕ} (h : p + q + 1 = m) (g : W →ₗ[R] W')
           rw [hV, hV']
       | tmul y z => rfl
 
+section Componentwise
+
+variable {N N' : ℕ → Type u} [∀ n, AddCommGroup (N n)] [∀ n, Module R (N n)]
+  [∀ n, AddCommGroup (N' n)] [∀ n, Module R (N' n)]
+
+/-- **The head after a tail of a tail, at one outer split, is the combined map.** -/
+theorem barHead_tailtail_term (n c r : ℕ) (hp : c + (r + 1) = n + 1 + 1) (a a' : ℕ)
+    (hs : a + a' + 1 = c) (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1))
+    (F : TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε) N) n) (hix : a + (a' + r) = n) :
+    barHeadTermₗ ε N' (n + 1) c (r + 1) hp a a' hs
+        (tensorRightDegOneₗ (M := barShiftFamily ε)
+          (fun b => tensorRightDegOneₗ (M := barShiftFamily ε) g b) n F)
+      = ((-1 : R)) ^ (a + a') • barMulTail ε hs (g r)
+        (TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε a))
+          (barProj (M := barShiftFamily ε) (N := N) ⟨(a', r), rfl⟩) (F ⟨(a, a' + r), hix⟩)) := by
+  rw [barHeadTermₗ_eq_comp]
+  rw [show tensorRightDegOneₗ (M := barShiftFamily ε)
+        (fun b => tensorRightDegOneₗ (M := barShiftFamily ε) g b) n F ⟨(a, a' + (r + 1)), by omega⟩
+      = ((-1 : R)) ^ a • TensorProduct.map LinearMap.id
+        (tensorRightDegOneₗ (M := barShiftFamily ε) g (a' + r)) (F ⟨(a, a' + r), hix⟩) from
+      tensorRightDegOneₗ_succ (M := barShiftFamily ε)
+        (fun b => tensorRightDegOneₗ (M := barShiftFamily ε) g b) n a (a' + r) F _]
+  rw [map_smul, map_smul, map_smul, ← LinearMap.comp_apply, ← TensorProduct.map_comp,
+    LinearMap.comp_id,
+    show (barProj (M := barShiftFamily ε) (N := N') ⟨(a', r + 1), rfl⟩).comp
+        (tensorRightDegOneₗ (M := barShiftFamily ε) g (a' + r))
+      = ((-1 : R)) ^ a' • (TensorProduct.map (LinearMap.id (R := R)
+          (M := barShiftFamily ε a')) (g r)).comp
+        (barProj (M := barShiftFamily ε) (N := N) ⟨(a', r), rfl⟩) from by
+      refine LinearMap.ext fun V => ?_
+      show tensorRightDegOneₗ (M := barShiftFamily ε) g (a' + r) V ⟨(a', r + 1), rfl⟩ = _
+      rw [tensorRightDegOneₗ_succ]
+      rfl,
+    TensorProduct.map_smul_right, LinearMap.smul_apply, map_smul, map_smul, smul_smul, ← pow_add]
+  refine congrArg (fun z => ((-1 : R)) ^ (a + a') • z) ?_
+  have hsplit : TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε a))
+        ((TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε a')) (g r)).comp
+          (barProj (M := barShiftFamily ε) (N := N) ⟨(a', r), rfl⟩))
+      = (TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε a))
+          (TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε a')) (g r))).comp
+        (TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε a))
+          (barProj (M := barShiftFamily ε) (N := N) ⟨(a', r), rfl⟩)) := by
+    rw [← TensorProduct.map_comp, LinearMap.comp_id]
+  rw [hsplit, LinearMap.comp_apply]
+  exact barMulTail_first ε hs (g r) _
+
+/-- **A tail after the head, at one outer split, is the combined map.** -/
+theorem barHead_tail_term (n c r : ℕ) (hq : c + r = n + 1) (a a' : ℕ) (hs : a + a' + 1 = c)
+    (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1))
+    (F : TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε) N) n) (hix : a + (a' + r) = n) :
+    TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε c)) (g r)
+        (barHeadTermₗ ε N n c r hq a a' hs F)
+      = barMulTail ε hs (g r)
+        (TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε a))
+          (barProj (M := barShiftFamily ε) (N := N) ⟨(a', r), rfl⟩) (F ⟨(a, a' + r), hix⟩)) := by
+  rw [barHeadTermₗ_eq_comp]
+  exact barMulTail_second ε hs (g r) _
+
+end Componentwise
+
 end GaloisForLFunctions.HTGeometry
