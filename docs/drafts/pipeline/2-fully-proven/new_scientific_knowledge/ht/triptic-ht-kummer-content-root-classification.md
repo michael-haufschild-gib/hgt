@@ -315,3 +315,47 @@ so the shift order is supported at one index and sums to `1`.
 
 So the outstanding Lean input for this card is the convergence and zero set of that double product —
 not any group theory, and not any unformalized classical theorem.
+
+## Lean progress — the realizing source is built, with its exact divisor
+
+The elliptic gamma function is now in the tree, constructed as a ratio of exponential cone products,
+with its quadrant divisor computed exactly.
+
+`GaloisForLFunctions/HTGeometry/ExpConeProduct.lean` (wired, axiom-clean):
+
+    expChar, norm_expChar, expChar_eq_one_iff
+    coneFactor, coneProduct                     `Φ(z) = ∏_{j,k ≥ 0}(1 - e(j a + k b + z))`
+    summable_norm_coneFactor_sub_one            geometric domination `A^j B^k`, `A,B < 1`
+    multipliable_coneFactor
+    coneProduct_eq_zero_iff                     the product vanishes exactly where a factor does
+    hasProdLocallyUniformlyOn_coneFactor
+    differentiable_coneProduct                  **the cone product is entire**
+    conePunctured, coneProduct_eq_factor_mul_punctured, conePunctured_ne_zero,
+      differentiable_conePunctured
+    hasDerivAt_coneFactor, analyticOrderAt_coneFactor_eq_one
+    analyticOrderAt_coneProduct_eq_one          **simple zeros**, at a point with one vanishing
+                                                factor
+
+`GaloisForLFunctions/HTGeometry/EllipticGammaConeDivisor.lean` (wired, axiom-clean):
+
+    IndepPeriods                                `ℤ`-independence of `1, a, b`
+    coneFactor_index_unique                     under independence a zero comes from one index
+    analyticOrderAt_coneProduct_of_zero         hence every zero of `Φ` is simple
+    meromorphicOrderAt_coneProduct
+    ellipticGammaCone                           `Γ(z) = Φ(a + b - z)/Φ(z)`
+    coneProduct_orbit_eq_zero_iff               **the pole half line**: `Φ(m·b) = 0 ↔ m ≤ 0`
+    coneProduct_num_orbit_ne_zero               the numerator misses that orbit entirely
+    meromorphicOrderAt_ellipticGammaCone_orbit  `ord(Γ, m·b) = -1` for `m ≤ 0`, `0` otherwise
+    shiftOrder_ellipticGammaCone_orbit          the shift order is `1` at `m = 0` and `0` elsewhere
+    tripticOrbitCharge_ellipticGammaCone :      **`D_Γ = [0]`**
+    ellipticGammaConeTranslate,
+      tripticOrbitCharge_ellipticGammaConeTranslate :  **`D_{Γ(·-g)} = [g]`**
+    PeriodGroupMem, tripticOrbitCharge_ellipticGammaCone_of_notMem :
+      the charge vanishes on every orbit off the class
+
+So the card's surjectivity input — "the normalized elliptic-gamma source has divisor `[0]`, and
+translation realizes `[g]`" — is now a proved Lean statement, and it composes with
+`addMonoidHom_surjective_of_single`.
+
+What remains on this card is the identification of the kernel: statement `(4)`, `Y` is
+differentially algebraic exactly when `D_Y = 0`.

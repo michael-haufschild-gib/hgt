@@ -369,3 +369,22 @@ The "uniformizing coordinate" that these cards were waiting on is therefore not 
 existence theorem: the coordinate of each signature is an explicit function of `℘` whose degree
 equals the order of the rotation in the deck group, and the current transports by algebra.  All six
 parabolic signatures now have a formal transported current.
+
+
+## Closed: the elliptic gamma source and its quadrant divisor
+
+Built from scratch (mathlib has no elliptic gamma, and the corpus had only its shift-quotient
+algebra, never the function):
+
+```text
+HTGeometry/ExpConeProduct.lean            the double product ∏_{j,k≥0}(1 - e(ja + kb + z)):
+                                          geometric convergence, entirety, zero set, simple zeros
+HTGeometry/EllipticGammaConeDivisor.lean  Γ = Φ(a+b-z)/Φ(z), its exact quadrant divisor, and
+                                          D_Γ = [0], D_{Γ(·-g)} = [g], charge 0 off the class
+```
+
+The mechanism that makes the charge nonzero is that the divisor meets each `b`-orbit in a *half
+line* (`ord = -1` for `m ≤ 0`, `0` for `m > 0`), so its shift differences are supported at the single
+index `m = 0`.  A theta function would give charge `0`: its divisor meets each orbit finitely and the
+telescoping sum vanishes.  That is why the elliptic gamma, and not a theta function, is the
+realizing source.

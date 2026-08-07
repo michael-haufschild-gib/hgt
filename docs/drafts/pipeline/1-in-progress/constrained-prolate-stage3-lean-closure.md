@@ -349,3 +349,20 @@ projective/trace-class/determinant consequences.
   module into the `GaloisForLFunctions.RHTower` umbrella.  Remaining trial-space gate is a
   quantitative Gram lower bound; fixed-index Fuchs constants still require true operator/ODE
   identification and endpoint matching.
+
+### 2026-08-07: general sub-band Kaiser translations
+
+- Added `BandKaiserGeneralShiftTail.lean`.  Replaced the thin `O(c^-1)` translation restriction by
+  the full exact range `|2*pi*w| <= c`.
+- Proved that a translated exterior frequency which crosses back into the band has squared depth at
+  most `2*c*|2*pi*w|`, and bounded its transform by the corresponding exact positive
+  odd-factorial series.
+- Integrated the pointwise decomposition to obtain explicit shifted and cosine-packet tail bounds.
+  Also proved the depth series is bounded by `2*exp(1+sqrt D)`, exposing the
+  `exp(O(sqrt(c|q|)))` edge cost for angular shift `q`.
+- Refactored `BandKaiserFinitePacket.lean` around an envelope-independent integrated
+  Cauchy--Schwarz theorem, then added the general-shift finite-span bound retaining every packet's
+  exact depth envelope.  This permits `o(c)` packet separation, removing the artificial
+  near-coincidence forced by the old shift window and materially improves the Gram-conditioning
+  route.
+- Both modules pass foreground `lake env lean <file>` checks and are wired into the RHTower umbrella.

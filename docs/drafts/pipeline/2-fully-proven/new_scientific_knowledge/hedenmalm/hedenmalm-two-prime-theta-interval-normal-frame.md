@@ -451,6 +451,9 @@ strengthens the corpus Kronecker theorem to arbitrarily large times, and
 | — | **Kronecker recurrence at arbitrarily large times** | `GaloisForLFunctions.kronecker_approx_atTop` |
 | `(24)` | the sine is dominated by the character defect | `abs_sin_le_norm_expChar_sub_one`, `sq_frameSymbol_le` |
 | `(25)` | **for every finite prime set the diagonal sum of squares drops below any tolerance at arbitrarily large times** | `exists_gt_sum_sq_frameSymbol_lt` |
+| `(9)` | the zero set `2 pi k / log n` of `a_n`: nonvanishing and square-summable reciprocals | `centeredMultiplierZero`, `centeredMultiplierZero_ne_zero`, `summable_inv_sq_centeredMultiplierZero`, `centeredZero`, `summable_inv_sq_centeredZero` |
+| `(13)` | **the genus-one canonical product over those zeros exists**, is entire, and vanishes only there (first input to the conormal generation clause) | `centeredCanonicalProduct`, `hasProdLocallyUniformlyOn_centeredCanonicalProduct`, `analyticOnNhd_centeredCanonicalProduct`, `centeredCanonicalProduct_ne_zero` |
+| `(9)`,`(13)` | **the two divisors agree off the origin**: `a_n(z) = 0` iff `z` is one of the prescribed zeros | `centeredMultiplier_eq_zero_iff_mem_zeros` |
 | `(24)` | the pointwise ceiling `b_p(t)^2 <= 4/p` | `sq_rpow_neg_half`, `sq_frameSymbol_le_four_div`, `summable_weighted_frameSymbol` |
 | `(26)`,`(27)` | **the summably weighted all-prime diagonal sum drops below any tolerance at arbitrarily large times** | `exists_gt_tsum_weighted_frameSymbol_lt` |
 

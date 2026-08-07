@@ -214,3 +214,32 @@ its headline vanishing remains an import.
   and at `a⁻¹`, using the unit identity `(-a)(1 - a⁻¹) = 1 - a`.  This does not close either card:
   the amplitude card's `(1)` is an import from Gallauer and Borel, and the rank-collapse card needs
   Milnor--Witt `K`-theory and the Witt ring on top of this.
+
+### Milnor--Witt `K`-theory is now built — 2026-08-07
+
+`formal/GaloisForLFunctions/HTGeometry/MilnorWittKTheory.lean`.  Axiom audit for all thirteen
+declarations: `propext, Classical.choice, Quot.sound`.
+
+The absence of Milnor--Witt `K`-theory is named here as a reason a statement cannot be written down.
+Morel's presentation is elementary and is now built, in the same shape as the corpus's Milnor
+`K`-theory: the free `ℤ`-algebra on a symbol `[u]` for every unit together with one further symbol
+`η`, modulo the four relations.
+
+- `MilnorWittGen`, `MilnorWittRel`, `MilnorWittK`, `mwMk` — the generators, **Morel's four
+  relations** (Steinberg `[u][1-u] = 0`, twisted additivity `[uv] = [u] + [v] + η[u][v]`, the
+  centrality of `η`, and the hyperbolic relation `η(η[-1] + 2) = 0`), and the ring.
+- `mwSymbol`, `mwEta`, `mwSymbol_mul`, `mwSymbol_mul_oneSub`, `mwEta_mul_symbol`,
+  `mwEta_hyperbolic` — the generators and the four relations as theorems about them.
+- `mwSymbol_one` — **the symbol of `1` vanishes**, whenever the field has a unit other than `1`.
+  This is genuine content, not a relation: multiplying twisted additivity on the left by `η[1]` turns
+  its left side into `[1]` and its right side into `η[1]·η[u][1-u]`, which the Steinberg relation
+  kills.  The hypothesis is necessary — over the field with two elements the argument has no `u` to
+  use.
+- `mwUnitForm`, `mwUnitForm_mul` — the unit form `⟨u⟩ = 1 + η[u]` and its behaviour on products.
+- `mwToMilnor`, `mwToMilnor_symbol`, `mwToMilnor_eta` — **killing `η` gives Milnor `K`-theory**:
+  twisted additivity becomes ordinary additivity, centrality and the hyperbolic relation become
+  `0 = 0`, and Steinberg is Steinberg.
+
+What this does not build is the Milnor--Witt *sheaf* theory — the oriented fundamental class, its
+determinant twist and the Gysin map — which is what the remaining geometric statements need.  The
+ring itself is no longer a gap.

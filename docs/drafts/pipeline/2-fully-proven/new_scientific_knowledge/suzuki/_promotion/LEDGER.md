@@ -3700,3 +3700,92 @@ None of these is a theorem stated elsewhere in the corpus. `hAint` is the closes
 derives `(10)` from `(3)` by testing against `L^{-3/2}`, using the jump-form pairing (sections
 Z, AA). Formalising that derivation would discharge `hAint` too; until then it is card data, and
 must be recorded as such.
+
+## DB. `hAint` reduced to the card's `(10)`
+
+`LogNormalEquationTrace.lean` is at 30 declarations, all `#print axioms` clean, no `sorry`.
+
+- `integrableOn_inv_weight` — `L^{-3/2}` is integrable on any terminal ray.
+- `integrableOn_bounded_div_weight` — a bounded numerator over `4L^{3/2}` is integrable there.
+- `integrableOn_logDirichlet_weight_of_equation` — **the reduction**: from the equation and a
+  bounded source,
+
+      IntegrableOn (fun L => gammaTransport F L / (4L√L)) (Ioi L₀)      -- the card's (10)
+        ⟹ IntegrableOn (fun L => logDirichlet F L / (4L√L)) (Ioi L₀)    -- hAint
+
+  The source half is automatic (bounded over `L^{3/2}`); only the transport half is `(10)`.
+
+So `hAint` is no longer a free hypothesis: it is `(10)` plus arithmetic. The card's own derivation
+of `(10)` is the jump-form pairing against `w_M(L) = 1_{[L₀,M]}(L)L^{-3/2}`, for which the
+convergence machinery is built (sections Z, AA) but the pairing-to-integrability step is not.
+
+### Hypothesis inventory of the card-level theorem, after DA and DB
+
+    object regularity   hFb hFcont hmeas hFpos hHcont hHup hHlow
+    card (1)            hHup hHlow (same)
+    card (3)            heq
+    card (19)           hSu hSl
+    card (18)           hnear
+    sign condition      hnumlow
+    card (10)           hR   (via integrableOn_logDirichlet_weight_of_equation)
+
+Every remaining hypothesis is either regularity of the object or a numbered assertion of the card
+itself. None is a theorem proved elsewhere in the corpus.
+
+## DC. `(17)` is formalized — the mollified Dirichlet operator
+
+`LogNormalEquationTrace.lean` is at 31 declarations, all `#print axioms` clean, no `sorry`.
+
+- `logDirichlet_mollify` — **the card's `(17)`**:
+
+      logDirichlet (ρ * F) L = ρ * (logDirichlet F) L + 2 · (s ρ) * F L,
+
+  from `mollify_position_eq` (section X) plus linearity of the mollification.
+
+This is the operator half of the mollification passage `(14)`–`(17)` that section CZ flagged as the
+gap between the card's distributional `(3)` and the pointwise `(18)` the trace theorem consumes.
+
+**Its one remaining input** is `hY`: the primitive commutes with convolution,
+`ρ * Y_F = Y_{ρ*F}` — the card's `(16)`. That is a genuine theorem (Fubini on
+`∫ρ(t)∫_0^{L−t}F`), not object data, so carrying it as a hypothesis is a premise and must be
+discharged. It is the only such premise left anywhere in this chain.
+
+### Status of the mollification passage
+
+    (15) R_full commutes with convolution     translation invariance — not yet stated
+    (16) Y commutes with convolution          hY above — needs Fubini, not built
+    (17) the position defect                  logDirichlet_mollify — BUILT
+    (14) the mollifier family                 BumpMollifierFamily — BUILT
+
+So `(17)` and `(14)` are done, `(15)` and `(16)` are not. `(16)` is the premise to discharge next.
+
+## DD. `(16)` as I stated it is not correct — read the card's definition
+
+Attempting to discharge `hY` shows the hypothesis I wrote is **not the card's `(16)` and is false in
+general.**
+
+I stated `hY : mollify ρ (halfLinePrimitive F) L = halfLinePrimitive (mollify ρ F) L`. Unfolding
+the right side by Fubini gives
+
+    ∫_0^L (∫ ρ(t) F(x−t) dt) dx = ∫ ρ(t) (∫_0^L F(x−t) dx) dt = ∫ ρ(t) (∫_{−t}^{L−t} F) dt,
+
+whereas the left side is `∫ ρ(t) (∫_0^{L−t} F) dt`. These differ by `∫ ρ(t) (∫_{−t}^0 F) dt`, which
+does not vanish for a mollifier supported on both sides of the origin.
+
+**What the card actually says** (§4): *"Write `Y_f(L) = ∫_{−∞}^L f(t)dt`. Since `Y_f = 1_{[0,∞)} * f`,
+primitive formation also commutes with convolution."* So the card uses
+
+- the **full** primitive of the **zero-extended** profile `f`, not the half-line primitive of `F`;
+- and the commutation is **associativity of convolution** (`ρ * (1 * f) = 1 * (ρ * f)`), not a
+  direct Fubini computation.
+
+For the zero extension the two agree — `Y_f(L) = ∫_0^L F` for `L ≥ 0` — but the *identity* only
+holds in the convolution formulation, because that is what makes the shifted lower limit harmless.
+
+**Action for whoever continues:** restate `logDirichlet_mollify` in terms of `zeroExtend F`
+(already in `GammaTransportKernel`, section AB) and its full primitive, then discharge the
+commutation by convolution associativity. Do not attempt `(16)` for `halfLinePrimitive` directly —
+it is false.
+
+This is the fourth time this session that reading the card's own wording corrected a plan derived
+from its equation numbers alone (cf. AV, BF, CR).
