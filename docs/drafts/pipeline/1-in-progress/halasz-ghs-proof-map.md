@@ -477,3 +477,29 @@ Both are elementary: `‖y^s‖ = y^{Re s}`, and `‖s‖` is at least `|Re s|` 
 With the three segment bounds in place, what is left of Perron's lemma is purely the residue calculus:
 the rectangle `[−A, σ] × [−T, T]` winds once around `s = 0` with residue `1` when `y > 1`, and the
 rectangle `[σ, A] × [−T, T]` contains no pole when `y < 1`.
+
+## Eighteenth brick: the residue of the Perron kernel
+
+`RHTower/Sieve/PerronKernelResidue.lean` (green, axiom-clean, wired):
+
+`RectangleIntegral' (fun s => y^s/s) z w = 1` for every rectangle whose interior contains `0`, `y > 0`.
+
+The principal part of `y^s/s` at the origin is exactly `1/s`, because the slope `(y^s − 1)/s` tends to
+`log y` — that is `hasStrictDerivAt_const_cpow` plus `hasDerivAt_iff_tendsto_slope` plus
+`Filter.Tendsto.isBigO_one`.  The residue theorem itself is **PNTPlus's**
+`ResidueTheoremOnRectangleWithSimplePole'`, reused as is; only the principal part of this kernel is new.
+
+### Perron's lemma is now a finite assembly
+
+The rectangle integral is the difference of the two vertical edges plus the two horizontal ones.  With
+
+* `rectangleIntegral'_cpow_div_eq_one` — the rectangle value is `1` when `0` is inside (`y > 1` case,
+  rectangle `[−A, σ] × [−T, T]`), and `0` when it is not (`y < 1` case, rectangle `[σ, A] × [−T, T]`,
+  by `HolomorphicOn.vanishesOnRectangle`, also PNTPlus);
+* `norm_integral_vertical_edge_cpow_le` — the far edge is `≤ 2T·y^{∓A}/A → 0`;
+* `norm_integral_horizontal_le`, `norm_integral_horizontal_le'` — each horizontal piece is
+  `≤ y^σ/(T|log y|)`, uniformly in `A`,
+
+Perron's lemma
+`|(1/2πi)∫_{σ−iT}^{σ+iT} y^s ds/s − 1_{y>1}| ≤ y^σ/(πT|log y|)`
+follows by letting `A → ∞`.  Every ingredient is in the tree; what remains is the limit bookkeeping.
