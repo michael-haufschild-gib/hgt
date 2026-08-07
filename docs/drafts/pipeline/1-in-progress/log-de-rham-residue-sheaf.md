@@ -34,7 +34,31 @@ On the split chart of the residue-square card, `W × ℂ` with divisor `D = W ×
 4. Acyclicity of the terms, from Cartan's theorem B for free sheaves already proved, and the
    filtered passage already proved.
 
+## The algebraic form, and why it is a tensor product
+
+The local structure "every logarithmic form is uniquely `α + (dz/z) ∧ β`" says exactly that the
+logarithmic algebra is the ordinary one with **one closed generator of degree one and vanishing
+square adjoined**.  Adjoining such a generator is tensoring with the exterior algebra on a free
+module of rank one, and the corpus owns both halves already: `tensorCDGA`, the tensor product of two
+commutative differential graded algebras, and `exteriorModuleCDGA`, the exterior algebra of a module
+graded by its exterior powers.  So the logarithmic algebra needs no new construction — only the
+observation that above degree one the exterior powers of a rank-one module vanish, which is what
+makes the tensor product have exactly two nonzero bidegrees in each degree: the ordinary forms and
+the ones carrying `d log z`.
+
 ## Status
 
-Not started.  The card exists so that the two analytic cards' remaining obstruction is a named
-object with a plan rather than a sentence.
+Landed: `formal/GaloisForLFunctions/HTGeometry/LogDeRhamAlgebra.lean`.  Axiom audit for all five
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `exteriorPower_rank_one_eq_bot` — **`⋀^j R = 0` for `j ≥ 2`**: a wedge of two elements of `R` is a
+  multiple of the square of the class of `1`, which the exterior algebra kills.
+- `logCDGA` — **the logarithmic de Rham algebra**, as a commutative differential graded algebra.
+- `logCDGAUnit`, `logInclusion` — its unit and the inclusion of the ordinary forms.
+- `logDlog` — **the class of `d log z`**, the adjoined generator, in degree one.
+
+Remaining: the Poincaré residue as the projection onto the bidegree carrying `d log z`, which needs
+the identification `⋀^1 M ≅ M` (mathlib has no such equivalence; it is the alternating-map
+correspondence in one argument); the residue sequence and its exactness, which is then the vanishing
+above; and the passage from the algebra to the sheaf, which the corpus's local-predicate machinery
+supports.

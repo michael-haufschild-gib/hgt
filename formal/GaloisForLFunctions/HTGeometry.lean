@@ -493,6 +493,7 @@ import GaloisForLFunctions.HTGeometry.CDGAFreeCoefficients
 import GaloisForLFunctions.HTGeometry.CDGAFreeCoefficientsInfinite
 import GaloisForLFunctions.HTGeometry.CDGAFreeCover
 import GaloisForLFunctions.HTGeometry.CDGAFreeExterior
+import GaloisForLFunctions.HTGeometry.LogDeRhamAlgebra
 import GaloisForLFunctions.HTGeometry.CDGAGround
 import GaloisForLFunctions.HTGeometry.CDGAGroundModule
 import GaloisForLFunctions.HTGeometry.CDGALeftUnitor
