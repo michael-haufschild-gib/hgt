@@ -31,7 +31,7 @@ variable {L : Type u} [Lattice L] [BoundedOrder L]
 abbrev spanningIndex (p : L) : Type u := {V : properPart L // V ∈ spanning p}
 
 /-- The base of the cover: the full subcomplex on the elements that do not span with `p`. -/
-def coverBase (p : L) : (nerve (properPart L)).Subcomplex := nerveSubcomplex (notSpanning p)
+def nerveCoverBase (p : L) : (nerve (properPart L)).Subcomplex := nerveSubcomplex (notSpanning p)
 
 /-- The pieces of the cover: the stars of the elements that do span with `p`. -/
 def coverPiece (p : L) (a : spanningIndex p) : (nerve (properPart L)).Subcomplex :=
@@ -42,8 +42,8 @@ theorem coverPiece_eq (p : L) :
   rfl
 
 /-- **The base and the pieces cover.** -/
-theorem coverBase_sup_iSup_coverPiece (p : L) :
-    coverBase p ⊔ ⨆ a : spanningIndex p, coverPiece p a = ⊤ :=
+theorem nerveCoverBase_sup_iSup_coverPiece (p : L) :
+    nerveCoverBase p ⊔ ⨆ a : spanningIndex p, coverPiece p a = ⊤ :=
   nerveSubcomplex_notSpanning_sup_iSup_star p
 
 /-- The fold of the base onto the atom. -/
@@ -65,10 +65,10 @@ def notSpanningJoinAtom (p : L) :
 
 /-- **The base of the cover is contractible.**  Everything that fails to span with `p` retracts onto
 `p` by joining with it. -/
-theorem isZero_homology_coverBase {p : L} (hp : IsAtom p) (hptop : p < ⊤)
+theorem isZero_homology_nerveCoverBase {p : L} (hp : IsAtom p) (hptop : p < ⊤)
     {C : Type*} [Category C] [Limits.HasCoproducts.{u} C] [Preadditive C]
     [CategoryWithHomology C] (R : C) (i : ℕ) (hi : 1 ≤ i) :
-    Limits.IsZero (((coverBase p : (nerve (properPart L)).Subcomplex) : SSet.{u}).homology R i) := by
+    Limits.IsZero (((nerveCoverBase p : (nerve (properPart L)).Subcomplex) : SSet.{u}).homology R i) := by
   refine Limits.IsZero.of_iso ?_ (nerveSubcomplexHomologyIso _ R i)
   refine isZero_homology_of_conical
     (⟨⟨p, hp.1.bot_lt, hptop⟩, by
@@ -92,17 +92,17 @@ theorem isZero_homology_famSSet_coverPiece (p : L)
 variable [IsModularLattice L]
 
 /-- **Two pieces meet only inside the base.** -/
-theorem coverPiece_inter_le_coverBase {p : L} (hp : IsAtom p) (a b : spanningIndex p) (hab : a ≠ b) :
-    coverPiece p a ⊓ coverPiece p b ≤ coverBase p := by
-  rw [coverPiece, coverPiece, coverBase, ← nerveSubcomplex_inter]
+theorem coverPiece_inter_le_nerveCoverBase {p : L} (hp : IsAtom p) (a b : spanningIndex p) (hab : a ≠ b) :
+    coverPiece p a ⊓ coverPiece p b ≤ nerveCoverBase p := by
+  rw [coverPiece, coverPiece, nerveCoverBase, ← nerveSubcomplex_inter]
   exact nerveSubcomplex_mono (star_inter_star_subset_notSpanning hp a.2 b.2
     (fun h => hab (Subtype.ext h)))
 
 /-- **The base meets a piece exactly in the elements strictly below its centre.** -/
-theorem coverBase_inter_coverPiece {p : L} (hp : IsAtom p) (a : spanningIndex p) :
-    coverBase p ⊓ coverPiece p a
+theorem nerveCoverBase_inter_coverPiece {p : L} (hp : IsAtom p) (a : spanningIndex p) :
+    nerveCoverBase p ⊓ coverPiece p a
       = nerveSubcomplex {U : properPart L | U < (a : properPart L)} := by
-  rw [coverBase, coverPiece, ← nerveSubcomplex_inter, notSpanning_inter_star hp a.2]
+  rw [nerveCoverBase, coverPiece, ← nerveSubcomplex_inter, notSpanning_inter_star hp a.2]
 
 section
 
@@ -115,14 +115,14 @@ theorem isZero_homology_nerve_properPart {p : L} (hp : IsAtom p) (hptop : p < �
     [Nonempty (spanningIndex p)] (R : C) (i j : ℕ) (hij : (ComplexShape.down ℕ).Rel i j)
     (hi : 1 ≤ i)
     (hmono : Mono (HomologicalComplex.homologyMap
-      (mvFamChainFst (nerve (properPart L)) R (coverBase p) (coverPiece p)) j)) :
+      (mvFamChainFst (nerve (properPart L)) R (nerveCoverBase p) (coverPiece p)) j)) :
     Limits.IsZero ((nerve (properPart L)).homology R i) := by
-  have hzero := isZero_homology_famSup (nerve (properPart L)) R (coverBase p) (coverPiece p)
-    (fun a b hab => coverPiece_inter_le_coverBase hp a b hab) i j hij
-    (isZero_homology_coverBase hp hptop R i hi)
+  have hzero := isZero_homology_famSup (nerve (properPart L)) R (nerveCoverBase p) (coverPiece p)
+    (fun a b hab => coverPiece_inter_le_nerveCoverBase hp a b hab) i j hij
+    (isZero_homology_nerveCoverBase hp hptop R i hi)
     (isZero_homology_famSSet_coverPiece p R i hi) hmono
-  rw [show famSup (nerve (properPart L)) (coverBase p) (coverPiece p) = ⊤ from
-    coverBase_sup_iSup_coverPiece p] at hzero
+  rw [show famSup (nerve (properPart L)) (nerveCoverBase p) (coverPiece p) = ⊤ from
+    nerveCoverBase_sup_iSup_coverPiece p] at hzero
   exact Limits.IsZero.of_iso hzero
     ((SSet.homologyFunctor R i).mapIso (SSet.Subcomplex.topIso (nerve (properPart L))).symm)
 

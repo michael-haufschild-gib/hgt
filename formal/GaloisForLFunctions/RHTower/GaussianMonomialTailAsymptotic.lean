@@ -56,9 +56,7 @@ theorem hasDerivAt_gaussianMonomialTail
       (hfcont.stronglyMeasurableAtFilter volume (nhds a)) hfcont.continuousAt
   have hmodel : HasDerivAt
       (fun t : ℝ => (∫ x in Ioi 0, f x) - ∫ x in 0..t, f x) (-f a) a := by
-    have hc : HasDerivAt (fun _ : ℝ => ∫ x in Ioi 0, f x) 0 a :=
-      hasDerivAt_const a _
-    exact hc.sub hprimitive
+    exact hprimitive.const_sub (∫ x in Ioi 0, f x)
   have heq :
       (fun t : ℝ => ∫ x in Ioi t, f x) =ᶠ[nhds a]
         (fun t : ℝ => (∫ x in Ioi 0, f x) - ∫ x in 0..t, f x) := by
@@ -145,23 +143,21 @@ theorem tendsto_gaussianMonomialTail_div_leading
       (fun a : ℝ => (-1 : ℝ) /
         (((m - 1 : ℕ) : ℝ) * (a ^ 2)⁻¹ - 2 * b))
       atTop (nhds ((-1 : ℝ) / (0 - 2 * b))) :=
-    tendsto_const_nhds.div hden (by positivity)
+    tendsto_const_nhds.div hden (by linarith)
   have hratio : Tendsto (fun a => F' a / G' a) atTop (nhds (1 / (2 * b))) := by
-    convert hratioModel using 1
-    · apply funext
-      intro a
-      dsimp only [F', G']
-      by_cases ha : a = 0
-      · subst a
-        simp [hm]
-      have hpow : a ^ m = a ^ (m - 2) * a ^ 2 := by
-        calc
-          a ^ m = a ^ ((m - 2) + 2) := by congr 1 <;> omega
-          _ = a ^ (m - 2) * a ^ 2 := by rw [pow_add]
-      rw [hpow]
-      field_simp [ha, Real.exp_ne_zero]
+    have hlim : (-1 : ℝ) / (0 - 2 * b) = 1 / (2 * b) := by
+      field_simp [hb.ne']
       ring
-    · field_simp [hb.ne']
+    rw [hlim] at hratioModel
+    refine hratioModel.congr' ?_
+    filter_upwards [eventually_ne_atTop (0 : ℝ)] with a ha
+    dsimp only [F', G']
+    have hpow : a ^ m = a ^ (m - 2) * a ^ 2 := by
+      calc
+        a ^ m = a ^ ((m - 2) + 2) := by congr 1 <;> omega
+        _ = a ^ (m - 2) * a ^ 2 := by rw [pow_add]
+    rw [hpow]
+    field_simp [ha, Real.exp_ne_zero]
   exact HasDerivAt.lhopital_zero_atTop hF' hG' hG'ne hF0 hG0 hratio
 
 /-- Sharp degree-zero Gaussian tail asymptotic. -/

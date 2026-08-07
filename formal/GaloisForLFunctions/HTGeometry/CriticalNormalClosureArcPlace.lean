@@ -94,6 +94,25 @@ noncomputable instance criticalNormalClosureArcIntegralClosure_faithfulSMul
       congrArg (algebraMap (CriticalNormalClosureArcIntegralClosure K m n hm hn)
         (criticalNormalClosure K m n)) hxy
 
+noncomputable instance criticalNormalClosureArcIntegralClosure_scalarTower
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
+    IsScalarTower (CriticalNormalClosureArcBaseRing K m n hm hn)
+      (CriticalNormalClosureArcIntegralClosure K m n hm hn)
+      (criticalNormalClosure K m n) :=
+  IsScalarTower.of_algebraMap_eq fun _ => rfl
+
+/-- The direct action of the base DVR on the normal closure is the observation-field inclusion. -/
+theorem criticalNormalClosureArcBase_algebraMap_apply
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    (m n : ℕ) (hm : 0 < m) (hn : 0 < n)
+    (r : CriticalNormalClosureArcBaseRing K m n hm hn) :
+    algebraMap (CriticalNormalClosureArcBaseRing K m n hm hn)
+      (criticalNormalClosure K m n) r =
+    algebraMap (CriticalNormalClosureArcBaseField K m n)
+      (criticalNormalClosure K m n)
+      (r : CriticalNormalClosureArcBaseField K m n) := rfl
+
 /-- Chosen prime of the integral closure above the common-scale arc maximal ideal. -/
 noncomputable def criticalNormalClosureArcPrime
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
@@ -205,6 +224,45 @@ noncomputable instance criticalNormalClosureArcValuationRing_isLocalization
       (criticalNormalClosure K m n)
       (criticalNormalClosureArcHeightOne K m n hm hn))
   infer_instance
+
+/-- The canonical lift of a base-DVR element to the localized integral closure has its expected
+value in the normal-closure field.  This cached tower identity keeps downstream coordinate proofs
+independent of the implementation of the two localization algebra maps. -/
+theorem criticalNormalClosureArcBase_toValuationRing_coe
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    (m n : ℕ) (hm : 0 < m) (hn : 0 < n)
+    (r : CriticalNormalClosureArcBaseRing K m n hm hn) :
+    (((algebraMap (CriticalNormalClosureArcIntegralClosure K m n hm hn)
+        (CriticalNormalClosureArcValuationRing K m n hm hn)
+        (algebraMap (CriticalNormalClosureArcBaseRing K m n hm hn)
+          (CriticalNormalClosureArcIntegralClosure K m n hm hn) r)) :
+      CriticalNormalClosureArcValuationRing K m n hm hn) :
+      criticalNormalClosure K m n) =
+    algebraMap (CriticalNormalClosureArcBaseField K m n)
+      (criticalNormalClosure K m n)
+      (r : CriticalNormalClosureArcBaseField K m n) := by
+  calc
+    _ = algebraMap (CriticalNormalClosureArcIntegralClosure K m n hm hn)
+        (criticalNormalClosure K m n)
+        (algebraMap (CriticalNormalClosureArcBaseRing K m n hm hn)
+          (CriticalNormalClosureArcIntegralClosure K m n hm hn) r) := by
+      change algebraMap (CriticalNormalClosureArcValuationRing K m n hm hn)
+        (criticalNormalClosure K m n)
+        (algebraMap (CriticalNormalClosureArcIntegralClosure K m n hm hn)
+          (CriticalNormalClosureArcValuationRing K m n hm hn)
+          (algebraMap (CriticalNormalClosureArcBaseRing K m n hm hn)
+            (CriticalNormalClosureArcIntegralClosure K m n hm hn) r)) = _
+      rw [← IsScalarTower.algebraMap_apply
+        (CriticalNormalClosureArcIntegralClosure K m n hm hn)
+        (CriticalNormalClosureArcValuationRing K m n hm hn)
+        (criticalNormalClosure K m n)]
+    _ = algebraMap (CriticalNormalClosureArcBaseRing K m n hm hn)
+        (criticalNormalClosure K m n) r := by
+      rw [IsScalarTower.algebraMap_apply
+        (CriticalNormalClosureArcBaseRing K m n hm hn)
+        (CriticalNormalClosureArcIntegralClosure K m n hm hn)
+        (criticalNormalClosure K m n)]
+    _ = _ := criticalNormalClosureArcBase_algebraMap_apply K m n hm hn r
 
 noncomputable instance criticalNormalClosureArcValuationRing_isDiscreteValuationRing
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]

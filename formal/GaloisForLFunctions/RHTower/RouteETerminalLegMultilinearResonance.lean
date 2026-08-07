@@ -16,8 +16,6 @@ namespace RHTower.Sieve
 
 noncomputable section
 
-set_option maxHeartbeats 1000000
-
 /-- A quadratic kernel entry with at least one terminal coordinate is inverse-linearly suppressed
 at physical antiscale resonance.  The other coordinate may lie at any prime scale. -/
 theorem norm_routeEStaticAbsoluteKernelTerm_terminalLeg_pi_div_log_le

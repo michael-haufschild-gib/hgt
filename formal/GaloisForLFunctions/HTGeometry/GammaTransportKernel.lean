@@ -832,4 +832,18 @@ theorem tendsto_kernelTailMass_half_atTop :
     Tendsto (fun X : ℝ => -Real.log (1 - Real.exp (-(X / 2)))) atTop (nhds 0) :=
   tendsto_kernelTailMass_atTop.comp (tendsto_id.atTop_div_const (by norm_num : (0:ℝ) < 2))
 
+open MeasureTheory Set in
+/-- **The partial first moment is dominated by the full one.**  The integrand is nonnegative on the
+ray, so restricting the window only decreases the integral.  This is what makes the near-window
+constant uniform in the critical point. -/
+theorem integral_Ioc_id_mul_kernel_le (R : ℝ) :
+    (∫ s in Ioc (0:ℝ) R, s * gammaTransportKernel s)
+      ≤ ∫ s in Ioi (0:ℝ), s * gammaTransportKernel s := by
+  refine setIntegral_mono_set integrableOn_id_mul_gammaTransportKernel_Ioi_zero ?_ ?_
+  · filter_upwards [ae_restrict_mem measurableSet_Ioi] with s hs
+    have hs0 : 0 < s := mem_Ioi.mp hs
+    have hk := gammaTransportKernel_pos hs0
+    exact le_of_lt (mul_pos hs0 hk)
+  · exact Filter.Eventually.of_forall fun x hx => hx.1
+
 end GaloisForLFunctions.HTGeometry

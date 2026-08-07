@@ -372,4 +372,94 @@ theorem tendsto_sub_const_mul_sqrt_atTop (K : ℝ) :
   have hsq : Real.sqrt L * Real.sqrt L = L := Real.mul_self_sqrt hL
   nlinarith [hsq]
 
+/-! ## The critical-point families
+
+Choosing a maximizer for every base point gives a family `X : ℝ → ℝ` with the maximizing property
+at each positive `L₀`, at the slope `(√L₀)⁻¹` the argument uses.  The value off the positive ray is
+irrelevant and is left arbitrary.
+-/
+
+open Set in
+/-- **The maximizer family.**  A choice of penalized maximizer at every positive base point. -/
+theorem exists_maximizer_family {H : ℝ → ℝ} {a B : ℝ}
+    (hcont : ContinuousOn H (Ici a)) (hB : ∀ L ∈ Ici a, H L ≤ B) :
+    ∃ X : ℝ → ℝ, ∀ L₀ : ℝ, 0 < L₀ →
+      X L₀ ∈ Ici a ∧ IsMaxOn (penalized H (Real.sqrt L₀)⁻¹ L₀) (Ici a) (X L₀) := by
+  have h : ∀ L₀ : ℝ, ∃ x : ℝ, 0 < L₀ →
+      x ∈ Ici a ∧ IsMaxOn (penalized H (Real.sqrt L₀)⁻¹ L₀) (Ici a) x := by
+    intro L₀
+    by_cases hL₀ : 0 < L₀
+    · have hs : 0 < Real.sqrt L₀ := Real.sqrt_pos.mpr hL₀
+      have hδ : 0 < (Real.sqrt L₀)⁻¹ := inv_pos.mpr hs
+      obtain ⟨x, hx, hmax⟩ := exists_isMaxOn_penalized (B := B) (L₀ := L₀) hδ hcont hB
+      exact ⟨x, fun _ => ⟨hx, hmax⟩⟩
+    · exact ⟨a, fun hc => absurd hc hL₀⟩
+  choose X hX using h
+  exact ⟨X, hX⟩
+
+open Set in
+/-- **The minimizer family**, as a maximizer family for the negated profile. -/
+theorem exists_minimizer_family {H : ℝ → ℝ} {a B : ℝ}
+    (hcont : ContinuousOn H (Ici a)) (hB : ∀ L ∈ Ici a, -B ≤ H L) :
+    ∃ X : ℝ → ℝ, ∀ L₀ : ℝ, 0 < L₀ →
+      X L₀ ∈ Ici a ∧
+        IsMaxOn (penalized (fun x => -H x) (Real.sqrt L₀)⁻¹ L₀) (Ici a) (X L₀) := by
+  have h : ∀ L₀ : ℝ, ∃ x : ℝ, 0 < L₀ →
+      x ∈ Ici a ∧ IsMaxOn (penalized (fun x => -H x) (Real.sqrt L₀)⁻¹ L₀) (Ici a) x := by
+    intro L₀
+    by_cases hL₀ : 0 < L₀
+    · have hs : 0 < Real.sqrt L₀ := Real.sqrt_pos.mpr hL₀
+      have hδ : 0 < (Real.sqrt L₀)⁻¹ := inv_pos.mpr hs
+      obtain ⟨x, hx, hmax⟩ :=
+        exists_isMaxOn_penalized_neg (B := B) (L₀ := L₀) hδ hcont hB
+      exact ⟨x, fun _ => ⟨hx, hmax⟩⟩
+    · exact ⟨a, fun hc => absurd hc hL₀⟩
+  choose X hX using h
+  exact ⟨X, hX⟩
+
+/-! ## Consequences of localisation
+
+A family localised within `K√L₀` of the base point eventually exceeds any constant, and therefore
+diverges.  These are the two side conditions the trace argument needs of its critical points.
+-/
+
+open Filter in
+/-- **A localised family eventually exceeds any constant.** -/
+theorem eventually_le_of_localised {X : ℝ → ℝ} {K : ℝ}
+    (hloc : ∀ᶠ L₀ in atTop, |X L₀ - L₀| ≤ Real.sqrt L₀ * K) (c : ℝ) :
+    ∀ᶠ L₀ in atTop, c ≤ X L₀ := by
+  have hdiv := tendsto_sub_const_mul_sqrt_atTop K
+  filter_upwards [hloc, hdiv.eventually_ge_atTop c] with L₀ h1 h2
+  have h3 := (abs_le.mp h1).1
+  have hcomm : Real.sqrt L₀ * K = K * Real.sqrt L₀ := mul_comm _ _
+  linarith [h3, hcomm.le, hcomm.ge]
+
+open Filter in
+/-- **A localised family diverges.** -/
+theorem tendsto_atTop_of_localised {X : ℝ → ℝ} {K : ℝ}
+    (hloc : ∀ᶠ L₀ in atTop, |X L₀ - L₀| ≤ Real.sqrt L₀ * K) :
+    Tendsto X atTop atTop :=
+  tendsto_atTop.mpr fun c => eventually_le_of_localised hloc c
+
+open Filter in
+/-- **A localised family is asymptotically the identity.**  `|X L₀ − L₀| ≤ K√L₀` gives
+`X L₀ / L₀ → 1`, since the defect over `L₀` is `K/√L₀`.  This is what keeps `(√L₀)⁻¹ √(X L₀)`
+bounded. -/
+theorem tendsto_div_one_of_localised {X : ℝ → ℝ} {K : ℝ}
+    (hloc : ∀ᶠ L₀ in atTop, |X L₀ - L₀| ≤ Real.sqrt L₀ * K) :
+    Tendsto (fun L₀ => X L₀ / L₀) atTop (nhds 1) := by
+  have hmaj : Tendsto (fun L₀ : ℝ => K / Real.sqrt L₀) atTop (nhds 0) :=
+    Filter.Tendsto.div_atTop tendsto_const_nhds Real.tendsto_sqrt_atTop
+  have hsub : Tendsto (fun L₀ => X L₀ / L₀ - 1) atTop (nhds 0) := by
+    refine squeeze_zero_norm' ?_ hmaj
+    filter_upwards [hloc, eventually_gt_atTop (0:ℝ)] with L₀ h1 hL₀
+    have hs : 0 < Real.sqrt L₀ := Real.sqrt_pos.mpr hL₀
+    have hsq : Real.sqrt L₀ * Real.sqrt L₀ = L₀ := Real.mul_self_sqrt hL₀.le
+    have hrw : X L₀ / L₀ - 1 = (X L₀ - L₀) / L₀ := by field_simp
+    rw [Real.norm_eq_abs, hrw, abs_div, abs_of_pos hL₀, div_le_div_iff₀ hL₀ hs]
+    nlinarith [h1, hsq, hs, abs_nonneg (X L₀ - L₀)]
+  have := hsub.add (tendsto_const_nhds (x := (1:ℝ)))
+  rw [zero_add] at this
+  exact this.congr fun L₀ => by ring
+
 end GaloisForLFunctions.HTGeometry

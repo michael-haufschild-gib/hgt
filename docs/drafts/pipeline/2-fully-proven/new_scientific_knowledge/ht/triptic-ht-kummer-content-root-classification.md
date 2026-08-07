@@ -280,3 +280,38 @@ tensoring with `ℂ` every divisor becomes infinitely divisible and the root spe
 `tripticOrbitCharge_mul` is the homomorphism hypothesis of the abstract Kummer classification
 (`hasSourceRootModuloKernel_iff_content_dvd`); what still separates the two is surjectivity of the
 divisor map, i.e. realization of an arbitrary finite integral divisor by a translated gamma product.
+
+## Lean progress — surjectivity reduced to single-class realization
+
+`GaloisForLFunctions/HTGeometry/SourceDivisorSurjectivity.lean` (wired, axiom-clean):
+
+    addMonoidHom_surjective_of_single
+      a homomorphism into `ℤ[G] = G →₀ ℤ` whose image contains every generator `[g]` is surjective
+    hasSourceRootModuloKernel_iff_content_dvd_of_single
+      the Kummer root classification, with the surjectivity hypothesis replaced by single-class
+      realization
+    sourceQuotientEquiv
+      the effective quotient `M/ker D ≃+ ℤ[G]` under the same hypothesis
+
+This is exactly the card's surjectivity argument — "translation realizes `[g]` for every `g`,
+products add divisors, integer powers provide signed multiplicities" — carried out once and for all
+on the free abelian group, by induction on the `Finsupp` support.  The card's remaining Lean
+obligation is therefore the single statement
+
+    ∀ g : G, ∃ Y ∈ M, D_Y = [g].
+
+### What that realization needs, precisely
+
+The realizing source cannot be a theta function.  For a source whose zero divisor meets each
+`σ`-orbit in finitely many points, the orbital sum
+
+    ∑ᶠ m : ℤ, (ord(Y, p + mσ + σ) - ord(Y, p + mσ))
+
+telescopes to zero.  A nonzero orbital charge requires the zero divisor to meet the orbit in a
+*half-line*, i.e. the quadrant-shaped divisor of the elliptic gamma function
+`Γ(z; τ, σ) = ∏_{j,k ≥ 0} (1 - e((j+1)τ + (k+1)σ - z)) / (1 - e(jτ + kσ + z))`, whose zeros lie at
+`-jτ - kσ + ℤ` with `j, k ≥ 0`.  Along a `σ`-orbit that order is `1` for `m ≥ 0` and `0` for `m < 0`,
+so the shift order is supported at one index and sums to `1`.
+
+So the outstanding Lean input for this card is the convergence and zero set of that double product —
+not any group theory, and not any unformalized classical theorem.

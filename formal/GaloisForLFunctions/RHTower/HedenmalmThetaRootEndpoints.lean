@@ -315,6 +315,76 @@ theorem XiC_eq_zero_of_solution_const {α c : ℂ} (hc : c ≠ 0) (hα : |α.im|
   rwa [xiC_thetaSource hα] at h
 
 
+
+/-- **The total mass of the source mode at a divisor point.**  Integrating the source equation
+across the line, with both boundary values zero, gives `∫ u_z = -M/z`. -/
+theorem integral_sourceModeU {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSource z = 0)
+    (hz0 : z ≠ 0) :
+    (∫ x : ℝ, sourceModeU thetaSource z x) = -(thetaSource.mass : ℂ) / z := by
+  have hIz : Complex.I * z ≠ 0 := mul_ne_zero Complex.I_ne_zero hz0
+  have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
+  have hu : Integrable (sourceModeU thetaSource z) (volume : Measure ℝ) :=
+    integrable_sourceModeU hz hzero
+  have hkC : Integrable (fun x : ℝ => ((thetaSource.k x : ℝ) : ℂ)) (volume : Measure ℝ) :=
+    thetaSource.integrable_k.ofReal
+  have hderiv : ∀ x : ℝ, HasDerivAt (sourceModeU thetaSource z)
+      (-(Complex.I * z) * sourceModeU thetaSource z x
+        - Complex.I * ((thetaSource.k x : ℝ) : ℂ)) x :=
+    hasDerivAt_sourceModeU thetaSource (hasShiftedTail_thetaSource hz)
+  have hint : Integrable (fun x : ℝ => -(Complex.I * z) * sourceModeU thetaSource z x
+      - Complex.I * ((thetaSource.k x : ℝ) : ℂ)) (volume : Measure ℝ) :=
+    (hu.const_mul _).sub (hkC.const_mul _)
+  have hzeroInt := MeasureTheory.integral_of_hasDerivAt_of_tendsto hderiv hint
+    (tendsto_sourceModeU_atBot hz hzero) (tendsto_sourceModeU_atTop hz hzero)
+  rw [sub_zero] at hzeroInt
+  rw [MeasureTheory.integral_sub (hu.const_mul _) (hkC.const_mul _),
+    MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul] at hzeroInt
+  have hmass : (∫ x : ℝ, ((thetaSource.k x : ℝ) : ℂ)) = ((thetaSource.mass : ℝ) : ℂ) := by
+    rw [integral_complex_ofReal]
+    rfl
+  rw [hmass] at hzeroInt
+  have hsolve : Complex.I * z * (∫ x : ℝ, sourceModeU thetaSource z x)
+      = -(Complex.I * ((thetaSource.mass : ℝ) : ℂ)) := by
+    linear_combination -hzeroInt
+  have hJ : (∫ x : ℝ, sourceModeU thetaSource z x)
+      = -(Complex.I * ((thetaSource.mass : ℝ) : ℂ)) / (Complex.I * z) := by
+    rw [eq_div_iff hIz]
+    linear_combination hsolve
+  rw [hJ]
+  have hIne : Complex.I ≠ 0 := Complex.I_ne_zero
+  field_simp
+
+
+
+theorem integrable_sourceModeF {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSource z = 0) :
+    Integrable (sourceModeF thetaSource z) (volume : Measure ℝ) := by
+  have h := (integrable_sourceModeU hz hzero).const_mul (-z)
+  refine h.congr ?_
+  filter_upwards with x
+  exact (sourceModeF_eq thetaSource x).symm
+
+theorem integral_sourceModeF {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSource z = 0)
+    (hz0 : z ≠ 0) :
+    (∫ x : ℝ, sourceModeF thetaSource z x) = ((thetaSource.mass : ℝ) : ℂ) := by
+  have h : (∫ x : ℝ, sourceModeF thetaSource z x)
+      = -z * ∫ x : ℝ, sourceModeU thetaSource z x := by
+    rw [← MeasureTheory.integral_const_mul]
+    exact integral_congr_ae (Filter.Eventually.of_forall fun x => sourceModeF_eq thetaSource x)
+  rw [h, integral_sourceModeU hz hzero hz0]
+  field_simp
+
+/-- **The right mode of the Riemann source is an eigenvector of the source inverse**, with
+eigenvalue `-1/z`, at every zero of the completed Riemann function.  No hypothesis on the source
+remains. -/
+theorem sourceInverse_sourceModeF_eq_smul_theta {z : ℂ} (hz : |z.im| < 1)
+    (hzero : xiC thetaSource z = 0) (hz0 : z ≠ 0) (x : ℝ) :
+    sourceInverse thetaSource (sourceModeF thetaSource z) x
+      = (-z⁻¹) * sourceModeF thetaSource z x :=
+  HedenmalmHilbertSchmidt.sourceInverse_sourceModeF_eq_smul thetaSource hz0
+    (hasShiftedTail_thetaSource hz) (integrable_sourceModeF hz hzero)
+    (tendsto_sourceModeU_atBot hz hzero) (integral_sourceModeF hz hzero hz0) x
+
+
 end HedenmalmThetaSource
 
 end

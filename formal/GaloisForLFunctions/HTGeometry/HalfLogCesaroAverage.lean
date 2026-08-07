@@ -331,4 +331,71 @@ theorem le_liminf_of_eventually_le_of_tendsto {H g : ℝ → ℝ} {α : ℝ}
   have h1 : liminf g atTop ≤ liminf H atTop := liminf_le_liminf hle hb' hb
   rwa [hg.liminf_eq] at h1
 
+/-! ## The prefactor vanishes along the family
+
+The trace bound divides a bounded quantity by `2√X`, where `X` is the critical point.  Since the
+critical points run to infinity, that prefactor vanishes — uniformly in whatever bounded numerator
+the source and transport estimates produce.
+-/
+
+open Filter in
+/-- **A bounded numerator over `√X` vanishes when `X → ∞`.** -/
+theorem tendsto_bounded_div_sqrt_comp {X b : ℝ → ℝ} {K : ℝ}
+    (hX : Tendsto X atTop atTop) (hb : ∀ᶠ L in atTop, |b L| ≤ K) :
+    Tendsto (fun L => b L / Real.sqrt (X L)) atTop (nhds 0) := by
+  have hsq : Tendsto (fun L => Real.sqrt (X L)) atTop atTop :=
+    Real.tendsto_sqrt_atTop.comp hX
+  have hmaj : Tendsto (fun L => K / Real.sqrt (X L)) atTop (nhds 0) :=
+    Filter.Tendsto.div_atTop tendsto_const_nhds hsq
+  refine squeeze_zero_norm' ?_ hmaj
+  filter_upwards [hsq.eventually_gt_atTop 0, hb] with L hL hbL
+  rw [Real.norm_eq_abs, abs_div, abs_of_pos hL]
+  exact div_le_div_of_nonneg_right hbL hL.le
+
+open Filter in
+/-- **A convergent function is eventually bounded.**  This is what supplies the numerator bound of
+the trace argument: the numerator converges, so no explicit constant need be assembled. -/
+theorem eventually_abs_le_of_tendsto {f : ℝ → ℝ} {c : ℝ}
+    (hf : Tendsto f atTop (nhds c)) : ∀ᶠ L in atTop, |f L| ≤ |c| + 1 := by
+  rw [Metric.tendsto_atTop] at hf
+  obtain ⟨N, hN⟩ := hf 1 zero_lt_one
+  filter_upwards [eventually_ge_atTop N] with L hL
+  have hd := hN L hL
+  rw [Real.dist_eq] at hd
+  have hsplit : f L = (f L - c) + c := by ring
+  calc |f L| = |(f L - c) + c| := by rw [← hsplit]
+    _ ≤ |f L - c| + |c| := abs_add_le _ _
+    _ ≤ |c| + 1 := by linarith
+
+open Filter in
+/-- **Null times bounded is null.**  The shape the numerator's product term needs: the coefficient
+tends to zero while the partial first moment is merely bounded. -/
+theorem tendsto_zero_mul_of_eventually_bounded {f g : ℝ → ℝ} {K : ℝ}
+    (hf : Tendsto f atTop (nhds 0)) (hg : ∀ᶠ L in atTop, |g L| ≤ K) :
+    Tendsto (fun L => f L * g L) atTop (nhds 0) := by
+  have habs : Tendsto (fun L => |f L|) atTop (nhds 0) := by
+    have h := hf.abs
+    rwa [abs_zero] at h
+  have hK : Tendsto (fun L => |f L| * K) atTop (nhds 0) := by
+    have := habs.mul_const K
+    rwa [zero_mul] at this
+  refine squeeze_zero_norm' ?_ hK
+  filter_upwards [hg] with L hL
+  rw [Real.norm_eq_abs, abs_mul]
+  exact mul_le_mul_of_nonneg_left hL (abs_nonneg _)
+
+open Filter in
+/-- **Bounded over divergent is null.**  The general form of `tendsto_bounded_div_sqrt_comp`; the
+numerator's second term needs it with the divergent denominator `X L₀` itself rather than its
+square root. -/
+theorem tendsto_bounded_div_atTop {f g : ℝ → ℝ} {K : ℝ}
+    (hg : Tendsto g atTop atTop) (hf : ∀ᶠ L in atTop, |f L| ≤ K) :
+    Tendsto (fun L => f L / g L) atTop (nhds 0) := by
+  have hmaj : Tendsto (fun L => K / g L) atTop (nhds 0) :=
+    Filter.Tendsto.div_atTop tendsto_const_nhds hg
+  refine squeeze_zero_norm' ?_ hmaj
+  filter_upwards [hg.eventually_gt_atTop 0, hf] with L hL hfL
+  rw [Real.norm_eq_abs, abs_div, abs_of_pos hL]
+  exact div_le_div_of_nonneg_right hfL hL.le
+
 end GaloisForLFunctions.HTGeometry

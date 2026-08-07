@@ -3555,3 +3555,55 @@ Two limits and the assembly:
     bracket → 0    tendsto_zero_mul_of_eventually_bounded (CT) + tail (CB)
     numerator → T  Tendsto.const_add over the bracket
     instantiate    tendsto_halfLogTrace_of_convergent_families (CS)
+
+## CW. The numerator converges — assembled
+
+`LogNormalEquationTrace.lean` is now at 18 declarations, all `#print axioms` clean, no `sorry`.
+
+- `tendsto_traceBound_term2` — the second coefficient term vanishes: bounded numerator
+  (`|F| ≤ M` plus the cross factor of CV) over `X L₀ → ∞`.
+- `tendsto_traceBoundNumerator` — **`traceBoundNumerator F X M T · → T`**, assembled from:
+
+      term1 + term2 → 0                    CV, CW
+      × bounded partial first moment → 0   tendsto_zero_mul_of_eventually_bounded (CT),
+                                           bound from integral_Ioc_id_mul_kernel_le (CQ)
+      + tail → 0                            tendsto_kernelTailMass_atTop ∘ (X/2 → ∞)  (CB)
+      T + (…) → T                           Tendsto.const_add
+
+Its hypotheses are exactly: `|F| ≤ M`, `X → ∞`, `X L₀/L₀ → 1`, and `0 ≤ X L₀` eventually — all
+supplied for the maximizer family by CC (localisation), CN (divergence and positivity) and
+CQ(d) (the ratio).
+
+### Remaining
+
+The mirrored `traceBoundNumeratorLower → T` — identical assembly with `f X/(2X)` in place of the
+second coefficient term, which is *simpler* (no cross factor) — and then instantiating
+`tendsto_halfLogTrace_of_convergent_families` (CS) with both.
+
+## CX. `(4)` is proved with the numerator bounds discharged
+
+`LogNormalEquationTrace.lean` is now at 20 declarations, all `#print axioms` clean, no `sorry`.
+
+- `tendsto_traceBoundNumeratorLower` — the mirrored numerator also converges to the source bound;
+  simpler than the maximizer version, since its second coefficient term `F(X)/(2X)` has no cross
+  factor.
+- `tendsto_halfLogTrace_of_equation_families` — **the trace theorem with nothing assumed about the
+  numerators**:
+
+      |F| ≤ M;  Xu, Xl → ∞;  Xu L₀/L₀ → 1;  0 ≤ Xu eventually;
+      the two squeezes;  A → α;  H bounded/cobounded
+        ⟹  Tendsto (fun L => √L F L) atTop (𝓝 α).
+
+The numerator convergence hypotheses of `tendsto_halfLogTrace_of_convergent_families` are now
+*derived* (CW, CX), not assumed. Every hypothesis that remains is either object regularity or one
+of the two squeezes, and the squeezes themselves come from `(3)` by CL and CM.
+
+### What is left
+
+Only the outermost statement: assume the card's `(1)` and `(3)`, obtain the two families from
+`exists_maximizer_family` / `exists_minimizer_family` (CJ), derive their `→ ∞`, ratio and
+positivity properties from the localisation (CC, CN, CQ), obtain the squeezes from CL/CM, and apply
+the theorem above.
+
+Every input to that statement is now a built, axiom-clean lemma, and the two numerator
+convergences — the part that looked like bookkeeping and was not — are done.

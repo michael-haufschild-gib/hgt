@@ -567,3 +567,260 @@ another purpose.
    beyond mathlib's `LinearPMap.adjoint/closure/IsClosable`.
 
 ## Tree verified green at end of session: `lake build` of all 21 new modules — 9113 jobs, EXIT=0.
+
+## OPEN PUZZLE — the `SeparableSpace` instance (three verified facts, 2026-08-07)
+
+1. `lake env lean GaloisForLFunctions/RHTower/SoninTimeBandHilbertSchmidt.lean` compiles FROM
+   SOURCE, exit 0.  So `hsNormSq_fullToRestrictedTimeBandFourier_eq_rectangleArea` really does
+   discharge `[TopologicalSpace.SeparableSpace RealL2]` in that file's context.
+2. In a scratch file that imports that module, `infer_instance` for
+   `TopologicalSpace.SeparableSpace RealL2` FAILS (also for the unfolded `Lp ℂ 2 volume`, also with
+   `synthInstance.maxHeartbeats 1000000`).
+3. mathlib has NO `SeparableSpace (Lp …)` instance
+   (`grep -rn "SeparableSpace (Lp" .lake/packages/mathlib/Mathlib/` — nothing), and the corpus
+   declares none (`grep -rn "SeparableSpace" GaloisForLFunctions` — only binders, no instances).
+
+These three cannot all be true under a naive reading, so something context-dependent is going on.
+RESOLVE THIS FIRST before writing any `SeparableSpace` instance — it gates the operator-level form
+of card 7 (5) (`hsNormSq thetaKernelOperator = M ∫ p(1-p)/k`) and any use of
+`hsInner_kernelOperator` at `thetaSource`.
+Suggested probe: add `set_option trace.Meta.synthInstance true in` immediately before
+`hsNormSq_fullToRestrictedTimeBandFourier_eq_rectangleArea` in the Sonin file itself and read which
+instance fires.
+
+## SEPARABILITY PUZZLE SOLVED — and card 7 (5) closed at the operator level (2026-08-07)
+
+The missing ingredient is `local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩`.
+With that in scope, `TopologicalSpace.SeparableSpace (Lp ℂ 2 μ)` RESOLVES and
+`hsNormSq_kernelOperator_eq_norm_sq` applies.  That is why the Sonin file works (it declares the
+Fact locally at lines 32 and 325) and why every scratch test failed.
+`infer_instance` for `SeparableSpace (Lp …)` will still look like it fails unless the Fact is
+present — always add the Fact instance to any module using the kernel-operator HS lemmas.
+
+Consequence, now proved in `HedenmalmThetaTrace.lean`:
+`hsNormSq_thetaKernelOperator : hsNormSq thetaKernelOperator = M * ∫ tailEnergyDensity thetaSource`
+— card 7 statement (5) at the OPERATOR level, unconditionally.
+
+Route: `hsNormSq_kernelOperator_eq_norm_sq` → `HTGeometry.norm_l2_sq_eq_integral_norm_sq`
+(namespace is bare `HTGeometry`, not `GaloisForLFunctions.HTGeometry`) → a.e. rewrite with
+`MemLp.coeFn_toLp` + `norm_pinnedKernelField` + `norm_sq_pinnedSliceVec` → `restrict_Ioo_eq_restrict_Icc`
+→ `integral_quantileSpeed_sq_slice`.
+Trap: `rw [hc]` needs `pinnedKernelL2` unfolded first (`rw [pinnedKernelL2, hc, …]` after a `show`).
+
+## The last endpoint datum of card 4 (12) / card 7 (6)-converse is COMPUTED (2026-08-07)
+
+`HedenmalmThetaRootEndpoints.integral_sourceModeU`:
+at a zero of `Ξ_C` with `|Im z| < 1` and `z ≠ 0`,
+    `∫_ℝ u_z = -M / z`.
+Proof: integrate the source ODE across the line.  `hasDerivAt_sourceModeU` gives
+`u' = -(I z) u - I k`; `integral_of_hasDerivAt_of_tendsto` with the two boundary limits (both
+proved) makes `∫ u' = 0`, and `∫ (k : ℂ) = (M : ℂ)` via `integral_complex_ofReal`.
+
+So all THREE endpoint data of `sourceInverse_sourceModeF` are now available at `thetaSource`:
+`Integrable (sourceModeF …)` (from `integrable_sourceModeU`),
+`Tendsto (sourceModeU …) atBot 0` (from `tendsto_sourceModeU_atBot`), and the total mass.
+CAUTION: `sourceInverse_sourceModeF` wants `hmass : ∫ sourceModeF = M`, and
+`sourceModeF = -z • sourceModeU`, so `∫ sourceModeF = -z · (-M/z) = M` — CHECK THE SIGN when wiring
+it up; the eigenvector statement `B f_z = -z⁻¹ f_z` should then be unconditional at `thetaSource`.
+
+Trap: for the final algebra do NOT `field_simp` then `linear_combination` — derive
+`J = -(I·M)/(I·z)` by `rw [eq_div_iff hIz]; linear_combination hsolve`, then `field_simp`.
+
+## Card 7 (6) point-spectrum equivalence is now UNCONDITIONAL IN BOTH DIRECTIONS (2026-08-07)
+
+`HedenmalmThetaRootEndpoints`:
+`integrable_sourceModeF`, `integral_sourceModeF` (= M — the sign works out),
+`sourceInverse_sourceModeF_eq_smul_theta : B f_z = -z⁻¹ f_z` at every zero of Ξ_C with
+|Im z| < 1, z ≠ 0, NO hypothesis on the source.
+Together with `XiC_eq_zero_of_solution_const` (the ⟹ half) this closes the point-spectrum content
+of card 7 (6) and card 4 (12) at the actual arithmetic source.
+
+What is still open in (6) is ONLY the multiplicity clause (order of Ξ_C = algebraic multiplicity),
+which — see the structural note above — is the same problem as (8) and reduces to the trace formula.
+
+## WHY card 7 (8) is hard — the two routes, analysed (2026-08-07)
+
+(8) `det₂(I + zB) = Ξ_C(z)/Ξ_C(0)` is the single remaining blocker for cards 4, 7 and 8.
+There are exactly two classical routes and BOTH need something the corpus lacks.
+
+ROUTE A — Plemelj / power traces.
+`logDeriv_fredholmDet` gives `logDeriv det₂(1 - wK) = -resolventTrace K w`, and
+`resolventTrace K w = ∑_{n≥1} wⁿ tr(K^{n+1})`.  Matching against `-Ξ_C'/Ξ_C` expanded by the
+Hadamard product needs the POWER-TRACE FORMULA `tr(Bᵐ) = ∑_j λ_jᵐ`, i.e. **Lidskii for a
+NON-self-adjoint trace-class operator**.  The corpus has `HTGeometry/LidskiiSelfAdjoint.lean`
+(self-adjoint only, built from a signed-step Gram–Schmidt); `B` is not self-adjoint (`RBR = -B`).
+The Hadamard side IS available: `RHTower/XiHadamardFactorization.lean`
+(`xiCanonicalProduct_multipliable`, `xiCanonicalProduct_factorization_at_support`,
+`xiCanonicalProduct_analyticOrderAt_eq_XiC`).
+
+ROUTE B — Grushin / Schur determinant.
+`HTGeometry/SourceGrushinInverse.lean` gives only KERNEL equivalence
+(`exists_sourceGrushinPencil_kernel_iff_eigen`), NOT a determinant identity.  Turning it into (8)
+needs the bordered pencil to factor as `(invertible) ∘ diag(I, Ξ_C(z)/Ξ_C(0))` AND a
+multiplicativity law for `det₂` — but `det₂` is only multiplicative up to
+`exp(-tr((A-I)(B-I)))`, so a correction term must be computed.
+
+CONCLUSION: (8) is not blocked by plumbing.  It needs either non-self-adjoint Lidskii or the
+Grushin–Schur determinant factorisation with its `det₂` correction term.  Both are research-level.
+Do not restart this by looking for a missing library — the audit is complete.
+
+## Card 7 (9) reduced to ONE Fubini (2026-08-07)
+
+`tr(B²) = opTrace (B ∘L B) = hsInner (B†) B`, and `hsInner_kernelOperator` evaluates that as a
+single integral AS SOON AS `B†` is exhibited as a kernel operator.  For the pinned kernel the
+transposed field is EXPLICIT:
+
+    pinnedKernelFun S t u = i q(t) (1_{u ≤ t} − t)
+    conj (pinnedKernelFun S u t) = −i q(u) (1_{t ≤ u} − u)
+
+so `B†` is the kernel operator whose row at `t` is `u ↦ −i q(u)(1_{t ≤ u} − u)`.
+That row IS in `L²(0,1)`: its energy is `∫ q(u)² (1_{t≤u} − u)² du`, and near `u = 0` the
+integrand is `(q²u(1−u))·u/(1−u)` while near `u = 1` it is `(q²u(1−u))·(1−u)/u` — both the finite
+HS integrand `q²u(1−u)` times a bounded factor.  So `hasFiniteKernelEnergy_thetaSource` already
+supplies the integrability.
+
+REMAINING STEP: prove `adjoint (kernelOperator μ K) = kernelOperator μ K^T` for this explicit
+transposed field, i.e. `⟪B f, g⟫ = ⟪f, B^T g⟫`, which is ONE Fubini on `(0,1)²` with
+square-integrable kernels (finite measure, so `MeasureTheory.integral_integral_swap` applies with
+the product-integrability bound `‖K(t,u)‖‖f u‖‖g t‖`).
+Then `tr(B²) = ∫ ⟪…⟫` and (9) closes against `integral_sq_quantileFun`.
+This is a bounded, non-research build — unlike (8).
+
+## First step of the (9) Fubini is built (2026-08-07)
+
+`HedenmalmThetaTrace.integral_norm_sq_pinnedKernelFun (S) (ht : t ∈ Ioo 0 1) :`
+`∫ u, ‖pinnedKernelFun S t u‖² ∂unitIntervalMeasure = q(t)² · t(1−t)`
+— the row energy as an HONEST INTEGRAL of the kernel function rather than an `Lp` norm.  Derived
+from `norm_sq_lp_eq_integral` + `norm_sq_pinnedKernelVec` + `MemLp.coeFn_toLp`; the only trap is
+that `pinnedKernelVec` must be unfolded (`rw [pinnedKernelVec, hu]`) before the coeFn rewrite bites.
+
+Remaining chain for (9):
+1. Tonelli on `(0,1)²` for `‖pinnedKernelFun S t u‖²` to get
+   `∫∫ ‖k‖² = ∫ q(t)² t(1−t) dt` = the HS energy (uses the lemma just built as the inner integral).
+2. `MemLp (uncurry pinnedKernelFun) 2 (μ.prod μ)` from step 1.
+3. Product integrability of `(t,u) ↦ conj(k(t,u)) conj(f u) g(t)` by Cauchy–Schwarz on the product.
+4. `integral_integral_swap` ⟹ `⟪B f, g⟫ = ⟪f, Bᵀ g⟫` ⟹ `adjoint B = kernelOperator Kᵀ`.
+5. `hsInner_kernelOperator` at `(Kᵀ, K)` ⟹ `tr(B²)` as a double integral; close against
+   `integral_sq_quantileFun`.
+
+## (9) chain: steps 1-3 built (2026-08-07)
+
+In `HedenmalmThetaTrace.lean`:
+* `integral_norm_sq_pinnedKernelFun` — inner row energy as an explicit integral;
+* `measurable_quantileSpeed`, `measurable_uncurry_pinnedKernelFun` — joint measurability on the
+  square (the indicator via `measurableSet_le measurable_snd measurable_fst`);
+* `integrable_sq_norm_uncurry_pinnedKernelFun` — **the kernel is square integrable on `(0,1)²`**.
+
+KEY MOVE for that last one: do NOT go through ℝ≥0∞/`lintegral_prod`.  Use
+`MeasureTheory.integrable_prod_iff hmeas`, whose two obligations are exactly
+(a) a.e. row-wise integrability (`memLp_two_iff_integrable_sq_norm` on `memLp_pinnedKernelFun`) and
+(b) integrability of the row energy — which IS `HasFiniteKernelEnergy` after rewriting with
+`integral_norm_sq_pinnedKernelFun`.  No ENNReal plumbing at all.
+
+Remaining for (9): product integrability of `(t,u) ↦ conj k(t,u) · conj f(u) · g(t)` by
+Cauchy–Schwarz/Hölder on the product (both factors now known `L²`), then
+`integral_integral_swap` ⟹ `adjoint B = kernelOperator Kᵀ`, then `hsInner_kernelOperator`.
+
+## (9) step 4 — the tools are confirmed present (2026-08-07)
+
+`MeasureTheory.MemLp.integrable_mul` EXISTS (verified) — Hölder for conjugate exponents, so
+`k · (conj f ⊗ g)` is product-integrable once BOTH factors are `MemLp … 2 (μ.prod μ)`.
+* factor 1 is done: `integrable_sq_norm_uncurry_pinnedKernelFun` + `memLp_two_iff_integrable_sq_norm`.
+* factor 2 (the TENSOR `(t,u) ↦ conj (f u) * g t`) still to build: same
+  `integrable_prod_iff` pattern on `‖·‖² = |f u|²|g t|²`, whose two obligations are
+  (a) rows: const × integrable, (b) `Integrable (fun t => ‖f‖² |g t|²)`.
+  The only real risk there is the product-measure a.e.-strong-measurability of `fun p => f p.2`
+  and `fun p => g p.1` — look for `AEStronglyMeasurable.comp_snd` / `.comp_fst` (or
+  `.fst` / `.snd`) BEFORE hand-rolling it.
+Then `integral_integral_swap` gives `⟪B f, g⟫ = ⟪f, Bᵀ g⟫`, hence `adjoint B = kernelOperator Kᵀ`,
+and `hsInner_kernelOperator` finishes (9) against `integral_sq_quantileFun`.
+
+## (9) step 4 COMPLETE (2026-08-07)
+
+`HedenmalmThetaTrace.memLp_tensor (f g : Lp ℂ 2 unitIntervalMeasure) :`
+`MemLp (fun p : ℝ × ℝ => conj (f p.2) * g p.1) 2 (μ.prod μ)`.
+Both product-measurability lemmas exist and are the right ones:
+`AEStronglyMeasurable.comp_snd` and `.comp_fst`.
+Same `integrable_prod_iff` pattern as the kernel case; `RCLike.norm_conj` handles the conjugate.
+Traps: `AEStronglyMeasurable.pow` takes a NAT exponent (`(h.norm).pow 2`), not a measurability
+proof — `pow_const` does not exist on `AEStronglyMeasurable`.
+
+With `MemLp.integrable_mul` this gives product integrability of
+`(t,u) ↦ conj k(t,u) · conj f(u) · g(t)`, i.e. (9) step 4 is DONE.
+Remaining: step 5 `integral_integral_swap` ⟹ `adjoint B = kernelOperator Kᵀ`
+(needs the transposed field defined and shown to be an `Lp` element — its rows are
+`u ↦ conj (pinnedKernelFun S u t)`, energy finite by the SAME product square-integrability read in
+the other order), then step 6 `hsInner_kernelOperator`.
+
+## (9) step 5a built; a real elaboration wall found (2026-08-07)
+
+BUILT: `integrable_sq_norm_swap_pinnedKernelFun (S) (hfin) :`
+`Integrable (fun p : ℝ × ℝ => ‖pinnedKernelFun S p.2 p.1‖^2) (μ.prod μ)`
+— one line, `(integrable_sq_norm_uncurry_pinnedKernelFun S hfin).swap`
+(`MeasureTheory.Integrable.swap` exists; `measurePreserving_swap` does NOT).
+
+WALL (RESOLVED — see below): extracting the a.e. row statement
+`∀ᵐ t, Integrable (fun u => ‖pinnedKernelFun S u t‖^2) μ`
+from `(integrable_prod_iff hmeas).mp (…swap…)` DOES NOT ELABORATE — `isDefEq` times out even at
+`maxHeartbeats 1000000`.  The problem is unifying `integrable_prod_iff`'s `f (x, y)` shape against
+`fun p => ‖k p.2 p.1‖^2`; raising heartbeats does not help, so do NOT just bump the limit.
+NEXT ATTEMPT: introduce `F : ℝ × ℝ → ℝ := fun p => ‖pinnedKernelFun S p.2 p.1‖ ^ 2` with `set`,
+state `hmeas`/`hswap` about `F`, apply `integrable_prod_iff` to `F` alone, and only afterwards
+`filter_upwards` and beta-reduce with a `show`.  The unfinished lemma was REMOVED from the tree
+rather than left broken; `integrable_sq_norm_swap_pinnedKernelFun` is kept and compiles.
+
+### The wall was self-inflicted — `Integrable.prod_left_ae` does it in one line
+`MeasureTheory.Integrable.prod_left_ae : Integrable f (μ.prod ν) → ∀ᵐ y ∂ν, Integrable (fun x => f (x,y)) μ`.
+Applied to the UNSWAPPED `integrable_sq_norm_uncurry_pinnedKernelFun`, this IS
+`∀ᵐ t, Integrable (fun u => ‖pinnedKernelFun S u t‖²) μ` — no swap, no `integrable_prod_iff`, no
+`set`, no heartbeat bump.  Built as `ae_integrable_sq_norm_transpose_row`.
+LESSON: when `integrable_prod_iff` will not elaborate, look for the dedicated projection lemma
+(`Integrable.prod_left_ae` / `.prod_right_ae`) before fighting the unifier.
+
+## (9) step 6 — the remaining design decision (2026-08-07)
+
+All five preceding steps are built.  Step 6 is a DEFINITIONAL choice, not a proof gap:
+
+`Kᵀ(t) f = ∫ u, conj (pinnedKernelFun S u t) * f u du = ⟪w_t, f⟫` with
+`w_t (u) = pinnedKernelFun S u t`  (because `innerSL ℂ w f = ∫ conj (w u) * f u`).
+`w_t ∈ L²` holds only for A.E. `t` (`ae_integrable_sq_norm_transpose_row`), so the field
+`t ↦ Kᵀ(t)` must be defined by a case split — `MemLp.toLp` where the row is `L²`, `0` elsewhere —
+and then shown a.e. equal to the honest transpose.  Decide that construction deliberately; it is
+the only remaining piece before `integral_integral_swap` gives `adjoint B = kernelOperator Kᵀ` and
+`hsInner_kernelOperator` closes (9) against `integral_sq_quantileFun`.
+
+Alternative worth weighing first: state (9) directly as the DOUBLE INTEGRAL
+`opTrace (B ∘L B) = ∬ k(t,u) k(u,t) dt du` and prove that from `opTrace_comp_eq_hsInner` plus the
+product Fubini, skipping the adjoint-as-kernel-operator construction entirely.
+
+## Gate to the matrix model is named (2026-08-07)
+
+`HedenmalmThetaTrace.separableSpace_unitIntervalL2 :`
+`TopologicalSpace.SeparableSpace (Lp ℂ 2 unitIntervalMeasure)` — `inferInstance`, valid only
+because the module declares `local instance : Fact ((2 : ENNReal) ≠ ⊤)`.
+This is the prerequisite for `HilbertSchmidtMatrix` (`toOperator` / `matrixOf`) and hence for
+`fredholmDet`, i.e. for even STATING card 7 (8).
+
+Route to (8), for the record:
+1. separable ⟹ countable Hilbert basis ⟹ isometry `Lp ℂ 2 unitIntervalMeasure ≃ₗᵢ ℓ²(ι)`;
+2. transport `thetaKernelOperator` and take `matrixOf` (`isHS_matrixOf` gives `IsHS`);
+3. `fredholmDet (matrixOf B̃) z` is then defined, and (8) is
+   `fredholmDet (matrixOf B̃) (-z) = XiC z / XiC 0` (sign per `det₂(1 - wK)` convention);
+4. the mathematical content is the trace formula — see the structural note above.
+Steps 1-2 are plumbing; step 4 is the research.
+
+## Card 7 (8): the object now EXISTS in Lean (2026-08-07)
+
+`HedenmalmThetaTrace.lean` now carries the whole coordinate bridge:
+`thetaIndex` (+ `Countable` from `orthonormal.countable_index`, needs separability;
+`DecidableEq` by `Classical.decEq`), `thetaCoord` (= `hsBasis.repr`),
+`thetaKernelMatrixOperator` (conjugate `B` by `thetaCoord`),
+`isHilbertSchmidt_thetaKernelMatrixOperator` (`comp_left`/`comp_right` of the isometries),
+`thetaKernelMatrix := HilbertSchmidt.matrixOf …`, `isHS_thetaKernelMatrix`,
+`thetaFredholmDet z := HilbertSchmidt.fredholmDet thetaKernelMatrix z`,
+`thetaFredholmDet_ne_zero`.
+
+So `det₂` OF THE ACTUAL SOURCE INVERSE is now a defined, nonvanishing Lean object.
+Statement (8) is finally EXPRESSIBLE:
+`thetaFredholmDet (-z) = XiC z / XiC 0` (check the sign against the `det₂(1 - wK)` convention).
+What remains is only its PROOF — the trace formula.  All plumbing is done.

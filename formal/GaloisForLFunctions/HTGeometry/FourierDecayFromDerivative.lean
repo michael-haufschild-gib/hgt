@@ -39,7 +39,7 @@ theorem norm_fourier_mul_le_integral_norm_deriv {f : ℝ → ℂ}
   exact hbound
 
 /-- Every transform is bounded by the `L¹` norm of its input. -/
-theorem norm_fourier_le_integral_norm (f : ℝ → ℂ) (ξ : ℝ) :
+theorem norm_fourierReal_le_integral_norm (f : ℝ → ℂ) (ξ : ℝ) :
     ‖fourier f ξ‖ ≤ ∫ t, ‖f t‖ :=
   VectorFourier.norm_fourierIntegral_le_integral_norm _ _ _ _ _
 
@@ -53,7 +53,7 @@ theorem memSobolevWeight_of_integrable_deriv {s : ℝ} (hs0 : 0 ≤ s) (hs : s <
   have hK : (0 : ℝ) ≤ (∫ t, ‖deriv f t‖) / (2 * π) := by
     have hpi : (0 : ℝ) < 2 * π := by positivity
     exact div_nonneg (integral_nonneg fun _ => norm_nonneg _) hpi.le
-  refine memSobolevWeight_of_decay hs0 hs hM hK ?_ (fun ξ => norm_fourier_le_integral_norm f ξ) ?_
+  refine memSobolevWeight_of_decay hs0 hs hM hK ?_ (fun ξ => norm_fourierReal_le_integral_norm f ξ) ?_
   · exact (VectorFourier.fourierIntegral_continuous Real.continuous_fourierChar
       (by fun_prop) hf).aestronglyMeasurable
   · intro ξ hξ

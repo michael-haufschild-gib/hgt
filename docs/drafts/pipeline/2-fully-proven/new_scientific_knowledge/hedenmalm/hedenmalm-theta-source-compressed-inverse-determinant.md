@@ -347,6 +347,8 @@ whole layer at the actual arithmetic source, so the statements below carry **no 
 | `(1)` | **`B` is Hilbert--Schmidt for the Riemann source** | `isHilbertSchmidt_thetaKernelOperator` |
 | `(1)` | `B` is compact for the Riemann source | `isCompactOperator_thetaKernelOperator` |
 | `(5)` | **the Hilbert--Schmidt energy in closed form for the Riemann source**: `norm B squared_HS = M integral p(1-p)/k` | `hsNormSq_thetaKernelOperator` |
+| `(8)` | the coordinate model: the quantile space is separable, so `B` transports to `l^2` and has a Hilbert--Schmidt kernel matrix | `separableSpace_unitIntervalL2`, `thetaIndex`, `thetaCoord`, `thetaKernelMatrixOperator`, `isHilbertSchmidt_thetaKernelMatrixOperator`, `thetaKernelMatrix`, `isHS_thetaKernelMatrix` |
+| `(8)` | **the regularized determinant of the source pencil is defined and nowhere zero** | `thetaFredholmDet`, `thetaFredholmDet_ne_zero` |
 | `(7)` | `R B R = -B` for the Riemann source | `thetaSource_even`, `sourceInverse_sourceReflection_theta` |
 | `(6)` | **a source solution with any nonzero coefficient forces `Xi_C(alpha) = 0`**, unconditionally | `XiC_eq_zero_of_solution_const` |
 | `(6)` | the source mode at a divisor point is integrable and vanishes at both ends | `integrable_sourceModeU`, `tendsto_sourceModeU_atBot`, `tendsto_sourceModeU_atTop` |
