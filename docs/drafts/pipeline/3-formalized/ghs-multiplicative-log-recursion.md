@@ -76,3 +76,28 @@ where a distance hypothesis on the values `f(p)` acts. That is the next gate.
 Route E's dependency chain terminates at `MRBilinear`, i.e. at Matomäki–Radziwiłł, which needs Halász's
 theorem as an input. This card reopens the road to Halász after the contour route was closed, so it is
 upstream of the Route E wall, not a new claim about RH.
+
+## The universal law behind it
+
+The weight `Λ_f` is the logarithmic derivative of the Dirichlet ring, and this is now proved as such:
+
+| Declaration | Statement |
+|---|---|
+| `pmul_log_mul` | `L(f*g) = L(f)*g + f*L(g)` for `L f = f·log` — the **Leibniz rule**: `log` is additive on the antidiagonal |
+| `vonMangoldtOf_one` | `Λ_1 = 0` |
+| `vonMangoldtOf_mul` | `Λ_{f*g} = Λ_f + Λ_g` — **the weight turns convolution into addition** |
+| `vonMangoldtOf_zeta` | `Λ_ζ = Λ` |
+| `pmul_moebius_log`, `vonMangoldtOf_moebius` | `μ·log = μ * (−Λ)`, i.e. `Λ_μ = −Λ` |
+| `vonMangoldtOf_eq_pmul_vonMangoldt` | `Λ_f = f·Λ` for completely multiplicative `f` |
+
+So `f ↦ Λ_f` is a homomorphism from the units of the Dirichlet ring to the additive group of arithmetic
+functions, and the three classical weights are its values at the three classical units: `Λ` at `ζ`, `−Λ`
+at `μ` (forced by `μ * ζ = 1` and additivity), and `f·Λ` at a completely multiplicative `f`.
+
+The recursion is the *same* swap in every case. Its Möbius instance,
+`sum_Icc_moebius_mul_log_eq`, is the classical identity
+
+`∑_{n ≤ N} μ(n) log n = −∑_{d ≤ N} Λ(d)·M(⌊N/d⌋)`
+
+and carries **no hypotheses at all**; the completely multiplicative instance carries only the two that
+define the class, `f(mn) = f(m)f(n)` and `|f(n)| ≤ 1`.
