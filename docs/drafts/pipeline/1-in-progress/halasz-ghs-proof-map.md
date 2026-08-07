@@ -336,3 +336,28 @@ partial sum is a triple convolution, and Perron applies to `∑_{m ≤ N} d(m)` 
 The remaining obstacle is that `d` is not bounded — its coefficients carry two logarithms — so the
 corpus's smoothed Perron identity (stated for `‖a n‖ ≤ 1`) needs its hypothesis relaxed to polynomial
 growth. That is the next brick.
+
+## Fourteenth brick: step 4's outer Perron passage
+
+`RHTower/Sieve/TripleConvolutionPerron.lean` (green, axiom-clean, wired):
+
+`2π ∑ₙ (a ⍟ (b ⍟ c))(n)·w(n) = ∫_ℝ L(a,s_y)·L(b,s_y)·L(c,s_y)·W(s_y) dy`,   `s_y = σ + iy`, `σ > 1`,
+
+with `w` the smoothing weight and `W` its Mellin transform.  The only hypotheses are `LSeriesSummable` for
+each factor at `σ` — **no boundedness of the coefficients**, which is essential: the convolution produced
+by two applications of the log recursion carries two logarithms.
+
+The premise that looked like the obstacle was already discharged inside the corpus:
+
+* `RHTower.Sieve.tsum_mul_smoothWeight_eq_integral_summable` (`Sieve/PerronSummable`) is exactly the
+  smoothed Perron identity with the boundedness hypothesis replaced by absolute summability — the
+  generalisation this card said was "the next brick" was already there;
+* `RHTower.Sieve.summable_norm_mul_rpow_of_LSeriesSummable` (`Sieve/VonMangoldtPerron`) is the glue
+  converting `LSeriesSummable` into that form (my duplicate of it was deleted before commit);
+* mathlib's `LSeriesSummable.convolution` and `LSeries_convolution'` supply the summability and the
+  product identity.
+
+So the whole outer passage is assembly, and step 4 now has both of its analytic inputs: this identity and
+`integral_lorentz_normSq_logPoly_le_prime_sieve` (Lemma 1 over the whole line).  What remains is the
+Cauchy–Schwarz assembly itself, the definition of `L(x)`, and the smoothing-versus-sharp-cutoff error at
+`H = N/(log N)³`.
