@@ -201,6 +201,33 @@ theorem card_primeFactors_mul_log_two_le_log {n : ℕ} (hn : 1 ≤ n) :
   have hlog := Real.log_le_log hpos hR
   rwa [Real.log_pow] at hlog
 
+/-- **The triple convolution's coefficients are polylogarithmic, with constants.**  For prime-supported
+`a, b` with `‖a_p‖ ≤ A log p`, `‖b_q‖ ≤ B log q` and `‖c‖ ≤ 1`,
+
+`‖(a ⍟ (b ⍟ c))(n)‖ ≤ A·B·(log n)⁴/(log 2)²`. -/
+theorem norm_convolution_triple_le_log_pow_const {a b c : ℕ → ℂ} {A B : ℝ}
+    (hA : 0 ≤ A) (hB : 0 ≤ B)
+    (ha : ∀ p : ℕ, a p ≠ 0 → Nat.Prime p) (haB : ∀ p : ℕ, ‖a p‖ ≤ A * Real.log p)
+    (hb : ∀ q : ℕ, b q ≠ 0 → Nat.Prime q) (hbB : ∀ q : ℕ, ‖b q‖ ≤ B * Real.log q)
+    (hc : ∀ k : ℕ, ‖c k‖ ≤ 1) {n : ℕ} (hn : 1 ≤ n) :
+    ‖(LSeries.convolution a (LSeries.convolution b c)) n‖
+      ≤ A * B * ((Real.log n) ^ 4 / (Real.log 2) ^ 2) := by
+  have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
+  have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have hlogn : (0 : ℝ) ≤ Real.log n := Real.log_nonneg hnR
+  have hωle : (n.primeFactors.card : ℝ) ≤ Real.log n / Real.log 2 := by
+    rw [le_div_iff₀ hlog2]
+    exact card_primeFactors_mul_log_two_le_log hn
+  refine (norm_convolution_triple_prime_support_le_const hA hB ha haB hb hbB hc hn).trans ?_
+  refine mul_le_mul_of_nonneg_left ?_ (mul_nonneg hA hB)
+  have hsq : (n.primeFactors.card : ℝ) ^ 2 ≤ (Real.log n / Real.log 2) ^ 2 :=
+    pow_le_pow_left₀ (Nat.cast_nonneg _) hωle 2
+  calc (n.primeFactors.card : ℝ) ^ 2 * (Real.log n) ^ 2
+      ≤ (Real.log n / Real.log 2) ^ 2 * (Real.log n) ^ 2 :=
+        mul_le_mul_of_nonneg_right hsq (by positivity)
+    _ = (Real.log n) ^ 4 / (Real.log 2) ^ 2 := by
+        field_simp
+
 /-- **The triple convolution's coefficients are polylogarithmic, explicitly.**  For prime-supported
 `a, b` with `‖a_p‖ ≤ log p`, `‖b_q‖ ≤ log q` and `‖c‖ ≤ 1`,
 

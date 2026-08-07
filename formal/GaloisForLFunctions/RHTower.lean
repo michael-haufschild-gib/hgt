@@ -120,6 +120,8 @@ import GaloisForLFunctions.RHTower.BandFormBridge
 import GaloisForLFunctions.RHTower.BandFrequencyWindow
 import GaloisForLFunctions.RHTower.BandKaiserBounds
 import GaloisForLFunctions.RHTower.BandKaiserContinuity
+import GaloisForLFunctions.RHTower.BandKaiserModulatedTrial
+import GaloisForLFunctions.RHTower.BandKaiserShiftedTail
 import GaloisForLFunctions.RHTower.BandKaiserTail
 import GaloisForLFunctions.RHTower.BandKaiserTrial
 import GaloisForLFunctions.RHTower.BandLeakageEnvelope
@@ -6142,3 +6144,4 @@ import GaloisForLFunctions.RHTower.Sieve.PerronKernelResidue
 import GaloisForLFunctions.RHTower.Sieve.PerronVerticalBound
 import GaloisForLFunctions.RHTower.Sieve.PrimeSupportedConvolutionBound
 import GaloisForLFunctions.RHTower.Sieve.ConvolutionSmoothingError
+import GaloisForLFunctions.RHTower.Sieve.GhsCoefficients

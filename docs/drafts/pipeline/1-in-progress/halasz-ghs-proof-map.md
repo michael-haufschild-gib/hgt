@@ -622,3 +622,32 @@ brick) → vertical integral (`tsum_mul_smoothWeight_convolution_eq_integral`) �
 (`integral_lorentz_normSq_logPoly_le_prime_sieve`) and Lorentzian mean square
 (`integral_lorentz_normSq_logPoly_le_count`).  No step is conditional and no step needs an arithmetic
 input that is not already in the tree.
+
+## Twenty-third brick: the GHS coefficient sequences, and the uniform smoothing law
+
+`RHTower/Sieve/GhsCoefficients.lean` (green, axiom-clean, wired) names the three sequences that the two
+applications of the logarithmic recursion produce, for any `f` with `‖f‖ ≤ 1`:
+
+* `ghsOuter f N p = f(p)·log p/log⌊N/p⌋` on primes with `⌊N/p⌋ ≥ 2`, zero elsewhere;
+* `ghsInner f q = f(q)·log q` on primes, zero elsewhere;
+* `f` itself.
+
+`norm_ghsOuter_le : ‖ghsOuter f N p‖ ≤ (1/log 2)·log p` — the denominator is at least `log 2` on the
+support — and `norm_ghsInner_le : ‖ghsInner f q‖ ≤ log q`, both with prime support, whence
+
+`norm_ghsTriple_le : ‖(ghsOuter f N ⍟ (ghsInner f ⍟ f))(n)‖ ≤ (log n)⁴/(log 2)³`.
+
+To make this usable the polylogarithmic bounds were generalised to carry constants
+(`norm_convolution_prime_support_le_const`, `norm_convolution_triple_prime_support_le_const`,
+`norm_convolution_triple_le_log_pow_const`: `‖a_p‖ ≤ A log p`, `‖b_q‖ ≤ B log q` give
+`A·B·(log n)⁴/(log 2)²`); the unit-constant statements survive as one-line corollaries.  The constant is
+not cosmetic — in the dyadic quotient window `2^m ≤ ⌊N/p⌋` the outer weight obeys
+`‖a_p‖ ≤ log p/(m log 2)`, so the constant *improves* with the block index.
+
+`ConvolutionSmoothingError.lean` was refactored under the law it was an instance of:
+
+`norm_weighted_sub_partialSum_le_uniform` — window length times any uniform coefficient bound on
+`(K, ⌊K+H⌋]`, for an arbitrary coefficient sequence.
+
+Both the general triple convolution and the GHS instance are now one-line corollaries of it
+(`… ≤ (⌊K+H⌋ − K)·(log⌊K+H⌋)⁴/(log 2)²` and `… /(log 2)³`).
