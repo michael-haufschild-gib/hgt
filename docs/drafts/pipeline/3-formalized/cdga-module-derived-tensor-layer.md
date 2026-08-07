@@ -1453,10 +1453,18 @@ Two things were needed to make the round-trip identities go through, and both ar
   cannot see the hypotheses mentioning the variable — `clear` them inside the `have` — or `subst`
   refuses with "occurs at".
 
-**Leibniz** is what is left.  It needs a differential on the *external* tensor product first:
-`tensorDL` and `tensorDR` use only the two differentials, but their signatures force both factors to
-be modules over one algebra, so the external version has to be stated separately before
-`tensorPair_dL` and `tensorPair_dR` can be summed against it.
+The external differential is built: **`zeroActModule`**, **`extTensorD`**, `extTensorD_d`.  The
+signatures of `tensorDL` and `tensorDR` ask for two modules over one algebra even though their
+bodies use only the two differentials; rather than duplicate them, the second algebra is made an
+`A`-module with **zero action** — every module axiom is then an identity between zeros except the
+two for the differential, which are the algebra's own.  So the external differential of a tensor
+product of algebras *is* `tensorD` of two modules, and `d² = 0` comes for free.
+
+**Leibniz is what is left.**  At an output bidegree the left side is `tensorDL + tensorDR` of a sum
+over splittings, and each term expands by `tensorPair_dL` and `tensorPair_dR` into two; the right
+side is a sum over the splittings of the two shifted degrees.  The matching is four groups of terms
+under the index shifts `r ↦ r + e` on each coordinate, with the out-of-range terms vanishing.  No
+new sign identity is involved — all four are already proved.
 
 None of the three needs a new sign identity; the signs are all in `tensorPair_comm`,
 `tensorPair_assoc`, `tensorPair_dL` and `tensorPair_dR`.
