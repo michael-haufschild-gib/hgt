@@ -522,3 +522,23 @@ generalised to `T ≠ 0` with `|T|` in the denominator first.
 Remaining for the full lemma: the `y > 1` half — the same argument with the rectangle `[−A, σ] × [−T, T]`,
 whose interior contains the origin, so the boundary value is the residue `1` (already proved as
 `rectangleIntegral'_cpow_div_eq_one`) instead of `0`.
+
+## Twentieth brick: Perron's lemma is complete
+
+`RHTower/Sieve/PerronVerticalBound.lean` now carries both halves, for `σ > 0`, `T > 0`:
+
+* `norm_vertical_perron_le_of_lt_one` — `0 < y < 1`:
+  `‖∫_{−T}^{T} y^{σ+it}/(σ+it) dt‖ ≤ 2y^σ/(|T||log y|)`;
+* `norm_vertical_perron_sub_two_pi_le_of_one_lt` — `y > 1`:
+  `‖∫_{−T}^{T} y^{σ+it}/(σ+it) dt − 2π‖ ≤ 2y^σ/(|T| log y)`.
+
+The constant is `2π`, not `2πi`: the contour integral `∫_{σ−iT}^{σ+iT} … ds` equals `i∫_{−T}^{T} … dt`, so
+the `i` cancels against the `1/2πi` of the normalisation.  The two proofs are the same rectangle argument
+in mirror image — to the right of the line (no pole, boundary value `0`) and to the left (pole at the
+origin, boundary value `2πi` by `rectangleIntegral'_cpow_div_eq_one`) — with the far vertical edge killed
+by `y^{∓A} → 0` and each horizontal side bounded uniformly in `A`.
+
+**Every analytic device the GHS chain needs is now in the corpus.** Steps 1–3 are complete; step 4 has its
+Perron passage for a triple convolution, the weighted Cauchy–Schwarz split, the prime-supported mean
+square, the Lorentzian mean square, the smoothing-window error, and now Perron's lemma with the sharp
+`1/s` kernel, whose error is a global Dirichlet-series sum rather than a short-interval divisor estimate.

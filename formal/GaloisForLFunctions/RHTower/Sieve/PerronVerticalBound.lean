@@ -111,5 +111,106 @@ theorem norm_vertical_perron_le_of_lt_one {y : ℝ} (hy0 : 0 < y) (hy : y < 1) {
   filter_upwards [eventually_ge_atTop σ] with A hA
   exact hkey A hA
 
+/-- **Perron's lemma above the cutoff.**  For `y > 1` the truncated vertical integral of `y^s/s` is `2π`
+up to `O(y^σ/(T log y))`: the rectangle to the left of the line contains the pole at the origin, so its
+boundary value is `2πi` times the residue. -/
+theorem norm_vertical_perron_sub_two_pi_le_of_one_lt {y : ℝ} (hy : 1 < y) {σ T : ℝ}
+    (hσ : 0 < σ) (hT : 0 < T) :
+    ‖(∫ t in (-T)..T, ((y : ℂ) ^ ((σ : ℂ) + (t : ℝ) * Complex.I))
+          / ((σ : ℂ) + (t : ℝ) * Complex.I)) - 2 * (Real.pi : ℂ)‖
+      ≤ 2 * (y ^ σ / (|T| * Real.log y)) := by
+  have hy0 : (0 : ℝ) < y := by linarith
+  set f : ℂ → ℂ := fun s => (y : ℂ) ^ s / s with hf
+  have hTne : T ≠ 0 := hT.ne'
+  have hkey : ∀ A : ℝ, 0 < A →
+      ‖(∫ t in (-T)..T, f ((σ : ℂ) + (t : ℝ) * Complex.I)) - 2 * (Real.pi : ℂ)‖
+        ≤ 2 * (y ^ σ / (|T| * Real.log y)) + 2 * T * (y ^ (-A) / |(-A : ℝ)|) := by
+    intro A hApos
+    set z : ℂ := ((-A : ℝ) : ℂ) + ((-T : ℝ) : ℝ) * Complex.I with hz
+    set w : ℂ := (σ : ℂ) + ((T : ℝ) : ℝ) * Complex.I with hw
+    have hzre : z.re = -A := by simp [hz]
+    have hzim : z.im = -T := by simp [hz]
+    have hwre : w.re = σ := by simp [hw]
+    have hwim : w.im = T := by simp [hw]
+    have hre : z.re ≤ w.re := by rw [hzre, hwre]; linarith
+    have him : z.im ≤ w.im := by rw [hzim, hwim]; linarith
+    have hnhds : Rectangle z w ∈ 𝓝 (0 : ℂ) := by
+      rw [rectangle_mem_nhds_iff, hzre, hzim, hwre, hwim,
+        Set.uIoo_of_le (by linarith : (-A : ℝ) ≤ σ),
+        Set.uIoo_of_le (by linarith : (-T : ℝ) ≤ T)]
+      refine ⟨?_, ?_⟩
+      · simp only [Set.mem_preimage, Complex.zero_re, Set.mem_Ioo]
+        constructor <;> linarith
+      · simp only [Set.mem_preimage, Complex.zero_im, Set.mem_Ioo]
+        constructor <;> linarith
+    have hres := rectangleIntegral'_cpow_div_eq_one hy0 hre him hnhds
+    have h2pi : (2 * (Real.pi : ℂ) * Complex.I) ≠ 0 := by
+      simp [Real.pi_ne_zero, Complex.I_ne_zero]
+    have hrect : RectangleIntegral f z w = 2 * (Real.pi : ℂ) * Complex.I := by
+      rw [RectangleIntegral', smul_eq_mul, one_div,
+        inv_mul_eq_iff_eq_mul₀ h2pi, mul_one] at hres
+      exact hres
+    rw [RectangleIntegral, hzre, hzim, hwre, hwim] at hrect
+    have hVeq : VIntegral f σ (-T) T - 2 * (Real.pi : ℂ) * Complex.I
+        = -(HIntegral f (-A) σ (-T)) + HIntegral f (-A) σ T + VIntegral f (-A) (-T) T := by
+      linear_combination hrect
+    have hnormV : ‖VIntegral f σ (-T) T - 2 * (Real.pi : ℂ) * Complex.I‖
+        = ‖(∫ t in (-T)..T, f ((σ : ℂ) + (t : ℝ) * Complex.I)) - 2 * (Real.pi : ℂ)‖ := by
+      rw [VIntegral]
+      have hfac : Complex.I • (∫ t in (-T)..T, f ((σ : ℂ) + (t : ℝ) * Complex.I))
+            - 2 * (Real.pi : ℂ) * Complex.I
+          = Complex.I * ((∫ t in (-T)..T, f ((σ : ℂ) + (t : ℝ) * Complex.I))
+              - 2 * (Real.pi : ℂ)) := by
+        rw [smul_eq_mul]
+        ring
+      rw [hfac, norm_mul, Complex.norm_I, one_mul]
+    rw [← hnormV, hVeq]
+    have hb1 : ‖HIntegral f (-A) σ (-T)‖ ≤ y ^ σ / (|(-T : ℝ)| * Real.log y) := by
+      rw [HIntegral]
+      exact norm_integral_horizontal_le hy (by simpa using hTne) (by linarith)
+    have hb2 : ‖HIntegral f (-A) σ T‖ ≤ y ^ σ / (|T| * Real.log y) := by
+      rw [HIntegral]
+      exact norm_integral_horizontal_le hy hTne (by linarith)
+    have hb3 : ‖VIntegral f (-A) (-T) T‖ ≤ 2 * T * (y ^ (-A) / |(-A : ℝ)|) := by
+      rw [VIntegral, norm_smul, Complex.norm_I, one_mul]
+      exact norm_integral_vertical_edge_cpow_le hy0 (by simpa using hApos.ne') hT.le
+    rw [abs_neg] at hb1
+    calc ‖-(HIntegral f (-A) σ (-T)) + HIntegral f (-A) σ T + VIntegral f (-A) (-T) T‖
+        ≤ ‖-(HIntegral f (-A) σ (-T)) + HIntegral f (-A) σ T‖
+            + ‖VIntegral f (-A) (-T) T‖ := norm_add_le _ _
+      _ ≤ (‖HIntegral f (-A) σ (-T)‖ + ‖HIntegral f (-A) σ T‖)
+            + ‖VIntegral f (-A) (-T) T‖ := by
+          have := norm_add_le (-(HIntegral f (-A) σ (-T))) (HIntegral f (-A) σ T)
+          rw [norm_neg] at this
+          linarith
+      _ ≤ (y ^ σ / (|T| * Real.log y) + y ^ σ / (|T| * Real.log y))
+            + 2 * T * (y ^ (-A) / |(-A : ℝ)|) := by linarith [hb1, hb2, hb3]
+      _ = 2 * (y ^ σ / (|T| * Real.log y)) + 2 * T * (y ^ (-A) / |(-A : ℝ)|) := by ring
+  have hlim : Tendsto (fun A : ℝ =>
+      2 * (y ^ σ / (|T| * Real.log y)) + 2 * T * (y ^ (-A) / |(-A : ℝ)|)) atTop
+      (𝓝 (2 * (y ^ σ / (|T| * Real.log y)))) := by
+    have hinv : Tendsto (fun A : ℝ => (y⁻¹) ^ A) atTop (𝓝 0) := by
+      have hinvpos : (0 : ℝ) < y⁻¹ := inv_pos.mpr hy0
+      refine tendsto_rpow_atTop_of_base_lt_one (y⁻¹) (by linarith) ?_
+      rw [inv_lt_one_iff₀]
+      right
+      exact hy
+    have hneg : Tendsto (fun A : ℝ => y ^ (-A)) atTop (𝓝 0) := by
+      refine hinv.congr fun A => ?_
+      rw [Real.inv_rpow hy0.le, ← Real.rpow_neg hy0.le]
+    have hsq : Tendsto (fun A : ℝ => y ^ (-A) / |(-A : ℝ)|) atTop (𝓝 0) := by
+      refine squeeze_zero' (Filter.Eventually.of_forall fun A => by positivity) ?_ hneg
+      filter_upwards [eventually_ge_atTop (1 : ℝ)] with A hA
+      have hA0 : (1 : ℝ) ≤ |(-A : ℝ)| := by
+        rw [abs_neg, abs_of_nonneg (by linarith : (0:ℝ) ≤ A)]
+        exact hA
+      rw [div_le_iff₀ (by linarith : (0:ℝ) < |(-A : ℝ)|)]
+      nlinarith [Real.rpow_nonneg hy0.le (-A), hA0]
+    have := (hsq.const_mul (2 * T)).const_add (2 * (y ^ σ / (|T| * Real.log y)))
+    simpa using this
+  refine ge_of_tendsto hlim ?_
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with A hA
+  exact hkey A hA
+
 end RHTower.Sieve
 end
