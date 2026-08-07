@@ -4256,3 +4256,386 @@ theorem needs the `open` repeated, or the errors read as missing imports.
 Step 3's majorant is `|ρ(t)| · transportMajorant K M s`, integrable on the product by
 `Integrable.comp_fst` and `Integrable.comp_snd` — the same pattern as `integral_mollify_swap` (DI),
 but with the *second* factor infinite and the majorant carrying the decay instead.
+
+## DV. `(15)` step 3 — the transport Fubini is built
+
+`LogNormalEquationTrace.lean` is at 53 declarations, all `#print axioms` clean, no `sorry`.
+
+- `integral_transport_swap` —
+
+      ∫ t, ρ(t) ∫_{Ioi 0} secondDifference f (L−t) s · k(s) ds
+        = ∫_{Ioi 0} ∫ t, ρ(t) (secondDifference f (L−t) s · k(s)) dt ds
+
+  Product integrability from `Integrable.mul_prod` with majorant
+  `|ρ(t)| · transportMajorant K M s`.  Unlike `(16)`'s Fubini (DI), neither factor's domain is
+  bounded, so the **majorant carries the decay** rather than the measure being finite — this is why
+  DT's uniformity in the base point was essential.
+
+Trap: the two-branch bound needs `0 < s`, which holds only a.e. on the product.  Getting there:
+`rw [show (volume : Measure ℝ) = volume.restrict univ by simp, Measure.prod_restrict]` and then
+`ae_restrict_mem (MeasurableSet.univ.prod measurableSet_Ioi)`.  `Measure.prod_restrict` will not
+fire unless *both* factors are presented as restrictions.
+
+### `(15)` — one step left
+
+    4. compose: gammaTransport (ρ * f) L = mollify ρ (gammaTransport f) L
+
+from `secondDifference_mollify` (DR) rewriting the inner integrand, then `integral_transport_swap`
+(DV) exchanging, then folding the definitions of `gammaTransport` and `mollify`.
+
+## DW. `(15)` IS PROVED — the mollification passage is complete
+
+`LogNormalEquationTrace.lean` is at 54 declarations, all `#print axioms` clean, no `sorry`.
+
+- `gammaTransport_mollify` — **the card's `(15)`**:
+
+      gammaTransport (ρ * f) = ρ * (gammaTransport f)
+
+  Hypotheses: `ρ` continuous of compact support; `f` continuous, Lipschitz, bounded — exactly the
+  conditions under which `gammaTransport` is defined at all (section S).  **Object regularity
+  only.**
+
+### The mollification passage `(14)`–`(17)` is now complete
+
+    (14) mollifier family                    BumpMollifierFamily          BUILT
+    (15) R_full commutes with convolution    gammaTransport_mollify       BUILT  ← DW
+    (16) Y commutes with convolution         mollify_fullPrimitive        BUILT
+    (17) the position defect                 fullLogDirichlet_mollify'    BUILT, hypothesis-free
+
+All four are axiom-clean and carry only object regularity.  This closes the gap recorded in section
+CZ between the card's distributional `(3)` and the pointwise `(18)` that the trace theorem consumes:
+`(15)`+`(16)`+`(17)` are precisely the identities that convert the equation for `f` into the
+equation for `f_ε`.
+
+### What remains on `suzuki-weak-signed-half-log-trace`
+
+Assembling `(18)` itself — combining `(15)`, `(16)`, `(17)` into
+
+    fullLogDirichlet f_ε + gammaTransport f_ε = G_ε + C_ε
+
+from the equation for `f` — and then feeding it to the trace theorem
+`tendsto_halfLogTrace_of_equation_of_integrable` (DA).  That is arithmetic on the three identities;
+no new estimate is involved.
+
+## DX. `(18)`'s assembly needs one more continuity — `gammaTransport f`
+
+Assembling `(18)` from `(15)`, `(16)`, `(17)` is arithmetic *except* for one step that needs a
+lemma nobody has built.
+
+The assembly is:
+
+    mollify ρ S L = mollify ρ (fullLogDirichlet f + gammaTransport f) L        by (3), pointwise
+                  = mollify ρ (fullLogDirichlet f) L + mollify ρ (gammaTransport f) L
+                  = [fullLogDirichlet (ρ*f) L − 2 (s ρ)*f L] + gammaTransport (ρ*f) L   (17)+(15)
+
+giving `(18)` with `G_ε = ρ * S` and `C_ε = 2 (s ρ) * f`.
+
+**The second line is the obstruction.**  Splitting the mollification of a sum requires both
+summands' mollification integrals to converge separately — `mollify_add` (in
+`MollifierPositionCommutator`) needs each summand **continuous**.  `fullLogDirichlet f` is
+continuous (`continuous_fullPrimitive`, DQ).  **`gammaTransport f` is not known to be.**
+
+So one lemma is missing: `Continuous (gammaTransport f)` for `f` continuous, Lipschitz and bounded.
+It should follow from continuity under the integral sign with the uniform majorant
+`transportMajorant` (DU) — `MeasureTheory.continuous_of_dominated` with the `s`-integrand continuous
+in the base point for each `s`, dominated uniformly.  Every input to that argument exists; only the
+application is unwritten.
+
+That is the single remaining item before `(18)`, and hence before the card's chain
+`(1)+(3) ⟹ (4)` is complete end to end.
+
+## DY. `(18)` IS PROVED — the distributional-to-pointwise passage is closed
+
+`LogNormalEquationTrace.lean` is at 56 declarations, all `#print axioms` clean, no `sorry`.
+
+- `continuous_gammaTransport` — the transport operator is continuous in the base point, by
+  `continuous_of_dominated` with the uniform majorant of DT/DU.  This was DX's missing lemma.
+- `mollified_equation` — **the card's `(18)`**:
+
+      fullLogDirichlet (ρ*f) L + gammaTransport (ρ*f) L
+        = (ρ * S) L + 2 · (s ρ) * f L
+
+  from the equation for `f`, by `(15)`, `(16)`, `(17)` and linearity of mollification.  Every
+  hypothesis is object regularity of `ρ` and `f`; the three commutation identities are **applied,
+  not assumed**.
+
+### The passage `(14)`–`(18)` is complete
+
+    (14) mollifier family        BumpMollifierFamily
+    (15) R_full commutes         gammaTransport_mollify
+    (16) Y commutes              mollify_fullPrimitive
+    (17) position defect         fullLogDirichlet_mollify'
+    (18) the mollified equation  mollified_equation           ← DY
+
+All axiom-clean, all carrying only object regularity.  Section CZ's scope caveat — that the trace
+theorem was proved for the pointwise-equation class while the card assumes the distributional one —
+**is now discharged**: `(18)` is exactly the reduction, and it is proved.
+
+### What remains
+
+Connecting `(18)`'s conclusion to the trace theorem's hypothesis.  The trace theorem
+(`tendsto_halfLogTrace_of_equation_of_integrable`, DA) consumes
+`logDirichlet F Y + gammaTransport F Y = S Y` for the *half-line* operator, while `(18)` produces
+the *full-primitive* one for the mollified profile.  The bridge (DE) converts between them on
+`L ≥ 0` for a zero extension — so the final step is choosing which profile the trace theorem is
+applied to, and it is a statement-level decision, not a new proof.
+
+## DZ. The final connection is a constant shift — not a new theorem
+
+Connecting `(18)` to the trace theorem is cleaner than DY suggested.  The two operators differ by a
+**constant**, not by a function of the base point:
+
+    logDirichlet g Y  −  fullLogDirichlet g Y  =  fullPrimitive g Y − halfLinePrimitive g Y
+                                                =  ∫_{Iic 0} g          for Y ≥ 0
+
+because `fullPrimitive g Y = ∫_{Iic 0} g + ∫_{Ioc 0 Y} g` and the second term is
+`halfLinePrimitive g Y`.  The offset `c = ∫_{Iic 0} g` does not depend on `Y`.
+
+For `g = mollify ρ f` — which vanishes below `−ε`, not below `0` — this offset is
+`∫_{Icc (−ε) 0} g`, finite and fixed.  So `(18)` transfers verbatim to the half-line operator with
+the source shifted by that constant:
+
+    logDirichlet (ρ*f) Y + gammaTransport (ρ*f) Y = (ρ*S) Y + 2 (sρ)*f Y + c
+
+and a constant shift is harmless to the trace theorem, whose only use of the source is the bound
+`Tl ≤ S ≤ T` (which shifts with it).
+
+**What must be written:** generalise `fullPrimitive_sub` and `integrableOn_Iic_of_vanishing` from
+"vanishes below `0`" to "vanishes below `c`" — both proofs are unchanged apart from the constant —
+then instantiate at `L' = 0` to get the offset identity.  Nothing else stands between `(18)` and
+the trace theorem.
+
+## EA. `(18)` reaches the trace theorem's operator
+
+`LogNormalEquationTrace.lean` is at 60 declarations, all `#print axioms` clean, no `sorry`.
+
+- `integrableOn_Iic_of_vanishing'`, `fullPrimitive_sub'` — the DP lemmas generalised from
+  "vanishes below `0`" to "vanishes below `c`", which is what the mollified profile satisfies.
+- `logDirichlet_eq_fullLogDirichlet_add` — **the two operators differ by the constant**
+  `∫_{Iic 0} f`, for `L ≥ 0`.
+- `mollified_equation_halfLine` — **`(18)` in the form the trace theorem consumes**:
+
+      logDirichlet (ρ*f) L + gammaTransport (ρ*f) L
+        = [(ρ*S) L + 2 (sρ)*f L] + ∫_{Iic 0} (ρ*f)        for L ≥ 0.
+
+  The constant offset is harmless: the trace theorem uses the source only through the bound
+  `Tl ≤ S ≤ T`, which shifts with it.
+
+### The chain is complete
+
+    (1)+(3) for f  ⟶  (14)–(18) for f_ε  ⟶  logDirichlet form  ⟶  trace theorem  ⟶  (4)
+
+Every link is built and axiom-clean.  `suzuki-weak-signed-half-log-trace`'s mathematical content is
+formalized end to end, with all hypotheses object regularity or the card's own numbered assertions.
+
+**Before promoting**, one bookkeeping item remains: instantiate the trace theorem at
+`F := mollify ρ f` using `mollified_equation_halfLine` as its `heq`, and check the remaining
+hypotheses (`(1)`, `(10)`, `(19)`) hold for the mollified profile — `(19)` is section 4's uniform
+bound and `(20)` its critical-profile bound, both already built (`sqrt_mul_abs_mollify_le`).
+
+## EB. The last mismatch: `heq` is stated globally but holds only on the ray
+
+Instantiating the trace theorem at `F := mollify ρ f` exposes a hypothesis of **my own** theorem
+that is stronger than the argument needs.
+
+`tendsto_halfLogTrace_of_equation_of_integrable` (DA) takes
+
+    heq : ∀ Y, logDirichlet F Y + gammaTransport F Y = S Y
+
+quantified over **all** `Y`.  But `mollified_equation_halfLine` (EA) supplies it only for `Y ≥ 0`,
+because the offset identity `logDirichlet = fullLogDirichlet + const` holds only there.  And the
+card itself asserts `(18)` only on a terminal half-line.
+
+**The trace theorem does not need the global form.**  Its uses of `heq` are all at the critical
+points `X(L₀)`, which satisfy `X(L₀) ≥ a` — and `a > 0` — eventually, and at base points `L₀ ≥ a`.
+So `heq` can be weakened to
+
+    heq : ∀ Y, a ≤ Y → logDirichlet F Y + gammaTransport F Y = S Y
+
+**Fix:** thread the restriction through `halfLog_le_of_equation_isMaxOn` (CA) →
+`eventually_halfLog_le_of_equation` (CL) → `tendsto_halfLogTrace_of_equation` (CX) → DA.  Each
+already works inside a `filter_upwards` where `a ≤ L₀` and `a ≤ X L₀` are available, so the change
+is mechanical: replace `heq _` by `heq _ (proof of the bound)` at four call sites.
+
+This is the last item.  Once `heq` is restricted, `mollified_equation_halfLine` instantiates the
+trace theorem directly and `suzuki-weak-signed-half-log-trace` is formalized end to end.
+
+Worth noting: a hypothesis quantified over all of `ℝ` in an asymptotic theorem is the same smell as
+section CO's global-vs-eventual bound.  Both times the fix was to restrict to where the argument
+actually lives.
+
+## EC. THE CHAIN IS CLOSED — `tendsto_halfLogTrace_mollified`
+
+`LogNormalEquationTrace.lean` is at 61 declarations, all `#print axioms` clean, no `sorry`.
+
+Two changes closed it:
+
+1. **`heq` restricted to the ray.**  The trace theorem and its four dependents took
+   `∀ Y, logDirichlet F Y + gammaTransport F Y = S Y` globally; they now take
+   `∀ Y, a ≤ Y → …`, matching both what the card asserts and what `mollified_equation_halfLine`
+   supplies.  The source bounds `hSu`/`hSl` were restricted the same way.  Each proof already ran
+   inside a `filter_upwards` where the bound was available, so the change was four call sites.
+2. **`tendsto_halfLogTrace_mollified`** — the instantiation:
+
+      equation for f  +  object regularity of ρ, f, ρ*f
+        ⟹  Tendsto (fun L => √L · (ρ*f) L) atTop (𝓝 (A(L₀) + ∫_{L₀}^∞ P(ρ*f)/(4L^{3/2})))
+
+`suzuki-weak-signed-half-log-trace` is now formalized end to end: `(1)`+`(3)` for the profile,
+through `(14)`–`(18)` for the mollification, to `(4)` for the trace.  Every hypothesis is object
+regularity or one of the card's own numbered assertions; no hypothesis is a theorem proved elsewhere
+in the corpus.
+
+### Promotion
+
+The card can be promoted once a `-formalized.md` companion is written citing:
+
+    tendsto_halfLogTrace_mollified            the card's (4), end to end
+    mollified_equation_halfLine               (18) in half-line form
+    mollified_equation                        (18)
+    gammaTransport_mollify                    (15)
+    mollify_fullPrimitive                     (16)
+    fullLogDirichlet_mollify'                 (17)
+    BumpMollifierFamily.*                     (14)
+    tendsto_halfLogAverage                    (12)
+    halfLogAverage_le / le_halfLogAverage     (13)
+    hasDerivAt_halfLogAverage                 (11), constant corrected to 4L^{3/2}
+    integral_Ioi_gammaTransportKernel         (6)
+    integrableOn_id_mul_…_Ioi_zero            (9)
+    exists_isMaxOn_penalized etc.             (22)–(24)
+
+and noting the `(11)` correction made in section CG.
+
+## ED. The parent card reduces to the one just promoted
+
+`suzuki-exact-log-remainder-signed-trace-rigidity` (the parent of
+`suzuki-weak-signed-half-log-trace`) has the **same conclusion** — `(3)` `beta = lim H` exists — and
+its hypothesis is the equation in *half-line* form:
+
+    (1)  J u = P F + R_half F + q F,        q(L) = −log(1 − e^{−L})
+
+But that is precisely the child card's `(7)`, and `(7)`'s content is already built:
+
+    gammaTransport (zeroExtend F) L
+      = ∫_{Ioc 0 L} k(s)[F(L) − F(L−s)] ds  +  ∫_{Ioi L} k(s)[F(L) − 0] ds
+      = R_half F (L)                        +  q(L) F(L)
+
+the second equality being `integral_Ioi_gammaTransportKernel_reflect` (section AB), which is
+already axiom-clean.
+
+**So the parent reduces to the child.**  What must be written is the splitting
+
+    gammaTransport (zeroExtend F) L = R_half F L + q L * F L
+
+— domain additivity `Ioi 0 = Ioc 0 L ∪ Ioi L` (the same split as `gammaTransport_split`, DL) applied
+to the *one-sided* decomposition of the second difference — after which the parent's `(1)` becomes
+the child's equation and `tendsto_halfLogTrace_mollified` (EC) applies verbatim.
+
+This is the natural next promotion: no new estimate, and the two hardest inputs (`(6)` and the
+reflection identity) are built.
+
+## EE. The one-sided decomposition — first step of the parent card
+
+`LogNormalEquationTrace.lean` is at 66 declarations, all `#print axioms` clean, no `sorry`.
+
+    forwardDifference f L s  = f L − f (L+s)
+    backwardDifference f L s = f L − f (L−s)
+
+- `secondDifference_eq_add` — the symmetric second difference is their sum.
+- `abs_forwardDifference_mul_kernel_le_near` — `|forwardDifference · k| ≤ K` for `s > 0`:
+  the Lipschitz bound cancels the pole on one side alone, so **each half is separately
+  integrable** — this is what makes the half-line form `R_half F + q F` meaningful at all.
+- `abs_forwardDifference_mul_kernel_le_far` — `≤ 4M e^{−s}` for `s ≥ 1`.
+
+The backward versions are the mirror (`f (L−s)` in place of `f (L+s)`), with identical proofs.
+
+### Path to promoting `suzuki-exact-log-remainder-signed-trace-rigidity`
+
+    1. backward bounds (mirror of the above)
+    2. integrability of each one-sided piece on Ioi 0, from the two bounds and
+       transportMajorant-style splitting (DU)
+    3. gammaTransport (zeroExtend F) L = (forward integral) + (backward integral)
+       by integral_add on the two pieces, using secondDifference_eq_add
+    4. backward integral = ∫_{Ioc 0 L} k(s)(F L − F(L−s)) ds + q(L) F(L)
+       by gammaTransport_split at radius L and integral_Ioi_gammaTransportKernel_reflect (AB)
+    5. hence the parent's (1); then tendsto_halfLogTrace_mollified (EC) applies verbatim.
+
+Step 4's second half is already built (AB).  Steps 1–3 are mechanical repeats of work in this file.
+
+## EF. Steps 1–2 for the parent card are built
+
+`LogNormalEquationTrace.lean` is at 69 declarations, all `#print axioms` clean, no `sorry`.
+
+- `abs_backwardDifference_mul_kernel_le_near` / `_far` — the mirror bounds, `K` and `4M e^{−s}`.
+- `integrableOn_forwardDifference_kernel` — **each one-sided piece is separately integrable on
+  `Ioi 0`**, dominated by `transportMajorant K M` (DU), whose constants `2K` and `8M e^{−s}` are
+  exactly twice the one-sided ones.
+
+Reusing `transportMajorant` rather than defining a one-sided variant is why step 2 was three lines:
+the two-sided majorant already dominates each half.
+
+### Remaining for `suzuki-exact-log-remainder-signed-trace-rigidity`
+
+    3. gammaTransport f L = (forward integral) + (backward integral)
+       — integral_add on the two pieces, via secondDifference_eq_add (EE)
+    4. backward integral = ∫_{Ioc 0 L} k(s)(F L − F(L−s)) ds + q(L) F(L)
+       — gammaTransport_split at radius L, then integral_Ioi_gammaTransportKernel_reflect (AB)
+    5. the parent's (1), then tendsto_halfLogTrace_mollified (EC)
+
+The backward integrability mirror of `integrableOn_forwardDifference_kernel` is needed for step 3
+and is the same three lines with `backwardDifference` substituted.
+
+## EG. Two cards promoted — 72/31
+
+`suzuki-exact-log-remainder-signed-trace-rigidity` joins `suzuki-weak-signed-half-log-trace` in
+stage 3.  Its `(1)` is `gammaTransport_eq_halfLine_add_boundary`, built from the one-sided
+decomposition (EE, EF) and the reflection identity (AB).
+
+`LogNormalEquationTrace.lean` is at 73 declarations, all `#print axioms` clean, no `sorry`.
+
+### Downstream
+
+Only one remaining stage-2 card cites either of the two just promoted:
+`suzuki-scalar-analytic-forcing-trace-zero-h1`.  It uses `(5)` — the trace's existence, now
+formalized — but its own conclusion `(7)` `exp(σL) F ∈ H¹(L₁,∞)` is a *weighted Sobolev* statement
+requiring the differentiated equation `(9)` `(2L+R_full)F' + F = G'`.  That needs the transport
+operator applied to `F'`, i.e. a derivative passing through the kernel integral — differentiation
+under the integral sign with the same uniform majorant machinery (DT/DU).  Not close, but the
+majorant layer transfers.
+
+### What the transport layer now supports
+
+The `GammaTransportKernel` + `PenalizedMaximum` + `LogNormalEquationTrace` layer (≈170 declarations)
+is the reusable core for every card phrased in the log coordinate with the Gamma kernel.  Its
+capabilities:
+
+    kernel bounds, tail mass, first moment, partial moments
+    well-definedness on Lipschitz profiles; one-sided and symmetric decompositions
+    mollification: all four commutation identities, hypothesis-free
+    penalized maxima: existence, localisation, interiority, one-sided inequalities, mirrored
+    the half-log average: derivative, comparison, convergence, limit transfer
+    the trace theorem itself, end to end
+
+Cards in the remaining 31 that are phrased in these terms should be costed against this list first.
+
+## EH. Two more cards' cores built
+
+`suzuki-interior-seam-indicial-dipole-exclusion` — **PROMOTED** (73/30).  Its content is a 2×2
+eigenvalue computation; `HTGeometry/InteriorSeamIndicialMatrix.lean` proves `(3)`–`(6)`.  Note the
+injectivity `(5)` does *not* go through the eigenvalues: eliminating between the two relations gives
+`β₊ · 4τ(1−τ) = 0`, positive on the range.  The eigenvalues are recorded because the card states
+them, not because the proof needs them.
+
+`suzuki-prime-normal-binomial-resolvent` — `HTGeometry/PrimeNormalBinomialResolvent.lean` proves,
+in the spectral coordinate:
+
+    primeNormalProfile t β L = β (L − t/2)^{−1/2}
+
+    hasDerivAt_primeNormalProfile        the derivative
+    primeNormalProfile_equation          (1)  (2L − t) F' + F = 0
+    tendsto_sqrt_mul_primeNormalProfile  (3)  √L F → β
+    primeNormalCoeff, _eq, _pos          (4)'s coefficients binom(2k,k)/8^k
+
+**Triage lesson.**  Not every remaining card needs the transport layer.  This one and the indicial
+one are elementary once the right coordinate is chosen — the first is linear algebra on `ℝ²`, the
+second an rpow computation.  Scan the remaining cards' `## 1. Result` for *computational* content
+before assuming an analytic build.

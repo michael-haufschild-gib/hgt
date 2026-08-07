@@ -264,4 +264,105 @@ theorem tripticOrbitCharge_ellipticGammaCone_of_notMem {a b : ℂ} (ha : 0 < a.i
     simp
   rw [finsum_congr hterm, finsum_zero]
 
+/-! ### The half-line law at an arbitrary period point -/
+
+/-- **The general pole half line.**  Along the `b`-orbit of a period point `c + d·a + e·b`, the cone
+product vanishes exactly for `d ≤ 0` and `m ≤ -e`. -/
+theorem coneProduct_periodPoint_orbit_eq_zero_iff {a b : ℂ} (ha : 0 < a.im) (hb : 0 < b.im)
+    (hindep : IndepPeriods a b) (c d e m : ℤ) :
+    coneProduct a b (((c : ℂ) + (d : ℂ) * a + (e : ℂ) * b) + (m : ℂ) * b) = 0
+      ↔ (d ≤ 0 ∧ m ≤ -e) := by
+  rw [coneProduct_eq_zero_iff' ha hb]
+  constructor
+  · rintro ⟨j, k, m', hm'⟩
+    have hz : ((c - m' : ℤ) : ℂ) + (((j : ℤ) + d) : ℤ) * a + (((k : ℤ) + e + m) : ℤ) * b = 0 := by
+      push_cast
+      linear_combination hm'
+    obtain ⟨-, h2, h3⟩ := hindep _ _ _ hz
+    omega
+  · rintro ⟨hd, hm⟩
+    refine ⟨(-d).toNat, (-(e + m)).toNat, c, ?_⟩
+    have hdn : (((-d).toNat : ℕ) : ℤ) = -d := Int.toNat_of_nonneg (by omega)
+    have hen : (((-(e + m)).toNat : ℕ) : ℤ) = -(e + m) := Int.toNat_of_nonneg (by omega)
+    have hdc : (((-d).toNat : ℕ) : ℂ) = -(d : ℂ) := by exact_mod_cast hdn
+    have hec : (((-(e + m)).toNat : ℕ) : ℂ) = -((e : ℂ) + (m : ℂ)) := by exact_mod_cast hen
+    rw [hdc, hec]
+    ring
+
+/-- **The general zero half line.**  Along the same orbit, the numerator vanishes exactly for
+`1 ≤ d` and `1 - e ≤ m`. -/
+theorem coneProduct_num_periodPoint_orbit_eq_zero_iff {a b : ℂ} (ha : 0 < a.im) (hb : 0 < b.im)
+    (hindep : IndepPeriods a b) (c d e m : ℤ) :
+    coneProduct a b (a + b - (((c : ℂ) + (d : ℂ) * a + (e : ℂ) * b) + (m : ℂ) * b)) = 0
+      ↔ (1 ≤ d ∧ 1 - e ≤ m) := by
+  rw [coneProduct_eq_zero_iff' ha hb]
+  constructor
+  · rintro ⟨j, k, m', hm'⟩
+    have hz : ((-c - m' : ℤ) : ℂ) + (((j : ℤ) + 1 - d) : ℤ) * a
+        + (((k : ℤ) + 1 - e - m) : ℤ) * b = 0 := by
+      push_cast
+      linear_combination hm'
+    obtain ⟨-, h2, h3⟩ := hindep _ _ _ hz
+    omega
+  · rintro ⟨hd, hm⟩
+    refine ⟨(d - 1).toNat, (e + m - 1).toNat, -c, ?_⟩
+    have hdn : (((d - 1).toNat : ℕ) : ℤ) = d - 1 := Int.toNat_of_nonneg (by omega)
+    have hen : (((e + m - 1).toNat : ℕ) : ℤ) = e + m - 1 := Int.toNat_of_nonneg (by omega)
+    have hdc : (((d - 1).toNat : ℕ) : ℂ) = (d : ℂ) - 1 := by exact_mod_cast hdn
+    have hec : (((e + m - 1).toNat : ℕ) : ℂ) = (e : ℂ) + (m : ℂ) - 1 := by exact_mod_cast hen
+    rw [hdc, hec]
+    push_cast
+    ring
+
+/-- **The order of the elliptic gamma function along the orbit of a period point.** -/
+theorem meromorphicOrderAt_ellipticGammaCone_periodPoint {a b : ℂ} (ha : 0 < a.im) (hb : 0 < b.im)
+    (hindep : IndepPeriods a b) (c d e m : ℤ) :
+    meromorphicOrderAt (ellipticGammaCone a b)
+        (((c : ℂ) + (d : ℂ) * a + (e : ℂ) * b) + (m : ℂ) * b)
+      = (if 1 ≤ d ∧ 1 - e ≤ m then 1 else 0) - (if d ≤ 0 ∧ m ≤ -e then 1 else 0) := by
+  set z : ℂ := ((c : ℂ) + (d : ℂ) * a + (e : ℂ) * b) + (m : ℂ) * b with hz
+  have hnum : MeromorphicAt (fun w => coneProduct a b (a + b - w)) z :=
+    ((differentiable_ellipticGammaConeNum ha hb).analyticAt z).meromorphicAt
+  have hden : MeromorphicAt (coneProduct a b) z :=
+    ((differentiable_coneProduct ha hb).analyticAt z).meromorphicAt
+  rw [ellipticGammaCone, meromorphicOrderAt_div hnum hden]
+  have hnumorder : meromorphicOrderAt (fun w => coneProduct a b (a + b - w)) z
+      = if 1 ≤ d ∧ 1 - e ≤ m then 1 else 0 := by
+    have han : AnalyticAt ℂ (fun w => coneProduct a b (a + b - w)) z :=
+      (differentiable_ellipticGammaConeNum ha hb).analyticAt z
+    by_cases hcase : 1 ≤ d ∧ 1 - e ≤ m
+    · rw [if_pos hcase, han.meromorphicOrderAt_eq]
+      have hval : coneProduct a b (a + b - z) = 0 :=
+        (coneProduct_num_periodPoint_orbit_eq_zero_iff ha hb hindep c d e m).mpr hcase
+      have hsimple : analyticOrderAt (fun w => coneProduct a b (a + b - w)) z = 1 := by
+        obtain ⟨n₀, hn₀⟩ := (coneProduct_eq_zero_iff ha hb (a + b - z)).mp hval
+        have huniq : ∀ n : ℕ × ℕ, n ≠ n₀ → coneFactor a b n (a + b - z) ≠ 0 :=
+          fun n hn hc => hn (coneFactor_index_unique hindep hc hn₀)
+        have hcomp : (fun w => coneProduct a b (a + b - w))
+            = (coneProduct a b) ∘ (fun w => a + b - w) := rfl
+        rw [hcomp]
+        have hderiv : deriv (fun w : ℂ => a + b - w) z = -1 := by
+          simp [(((hasDerivAt_id z).const_sub (a + b)).deriv)]
+        rw [analyticOrderAt_comp_of_deriv_ne_zero (by fun_prop) (by
+          rw [hderiv]
+          norm_num)]
+        exact analyticOrderAt_coneProduct_eq_one ha hb hn₀ huniq
+      rw [hsimple]
+      rfl
+    · rw [if_neg hcase, han.meromorphicOrderAt_eq]
+      have hval : coneProduct a b (a + b - z) ≠ 0 := fun h =>
+        hcase ((coneProduct_num_periodPoint_orbit_eq_zero_iff ha hb hindep c d e m).mp h)
+      rw [(analyticOrderAt_eq_zero (𝕜 := ℂ) (E := ℂ)
+        (f := fun w : ℂ => coneProduct a b (a + b - w)) (z₀ := z)).mpr (Or.inr hval)]
+      rfl
+  have hdenorder : meromorphicOrderAt (coneProduct a b) z
+      = if d ≤ 0 ∧ m ≤ -e then 1 else 0 := by
+    rw [meromorphicOrderAt_coneProduct ha hb hindep]
+    by_cases hcase : d ≤ 0 ∧ m ≤ -e
+    · rw [if_pos ((coneProduct_periodPoint_orbit_eq_zero_iff ha hb hindep c d e m).mpr hcase),
+        if_pos hcase]
+    · rw [if_neg (fun h => hcase
+        ((coneProduct_periodPoint_orbit_eq_zero_iff ha hb hindep c d e m).mp h)), if_neg hcase]
+  rw [hnumorder, hdenorder]
+
 end GaloisForLFunctions.HTGeometry

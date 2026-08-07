@@ -2,8 +2,8 @@
 
 ## Formal research map of HTGeometry, HilbertMetric, and RHTower
 
-**Corpus cutoff:** 4 August 2026, committed Lean snapshot
-`af23c0451d8ed289615213e89771d17cf912bcd7`. “Formal corpus” means declarations reachable from the
+**Corpus cutoff:** 7 August 2026, committed Lean snapshot
+`cedc3dd04d91c9a05bc7446c98c9dcca4c5107e3`. “Formal corpus” means declarations reachable from the
 three area umbrellas at that snapshot; unwired or uncommitted work-in-progress files are not counted
 as established frontier results. Later paper-only results are labeled provisionally rather than
 silently promoted to formal closure.
@@ -68,11 +68,16 @@ Calderón--Witt incidence, ordinary-integer BV boundary, actual Burnol/Deninger 
 resolved Route-R chain provenance are constructed. A literal rational-adelic degree-one cyclic-bar
 source object now also maps before divisor specialization to the ordered physical two-leg landing; its
 ordinary-prime tensor atom has trace one, multiplicity remains filtered, and the physical paracyclic
-defect has exact residue `(delta_n(rho)-1)c_rho`. The open core is therefore no longer “construct
-some chain map” or even “construct a pre-divisor physical comparison.” It is the source theorem
-making this measured physical defect null-homologous in the literal arithmetic cyclic complex—or
-equivalently the singular boundary side of the strict Green--BV comparison whose fixed physical
-reader kills target boundaries—without erasing the prime detector or assuming `K_n(s)=0`.
+defect has exact residue `(delta_n(rho)-1)c_rho`. These are endpoint detectors, not the missing
+source producer. The actual pro-Stein arithmetic residue-fibre complex and its strict Poisson model
+are already constructed with `H^1=M_zeta`. The first open source object is the global closed
+Calderón relation through actual Tate--Milnor/prime/real incidence, together with its Hodge-symmetric
+nuclear almost-involution. Meyer full trace cancels the reflection-odd Paugam wedge, so no
+source-natural orientation-free scalar Green--Paugam cocycle exists before this relation produces a
+Hardy orientation. Green-energy
+radical exactness must then kill the chirality kernel; polar sign gives exact Hardy projectors;
+only their oriented trace can be compared with Paugam, followed by resolvent-faithful completion. The
+measured physical defect is the sharp final RH-equivalent test and may not be used as a premise.
 
 Route R's source, joint-depth Hilbert/Krein carrier, Gamma completion, and regular and singular
 source-to-Xi landings are closed. Positive or nonnegative Gamma shorting cannot annihilate an
@@ -145,11 +150,13 @@ The shortest current chains are:
   carrying the retained rational-adelic prime-isotropy boundary from the positive resolved frame
   to the fixed same-fibre physical Xi conormal; transported positivity, Stokes flatness, strict
   resolved chain provenance, and the source-pure norm-conservative selection theorem already hold;
-- Route L: construct the joint full-Cauchy chain map on the strict nuclear arithmetic relevant
-  complex and prove its homotopy fibre is endpoint-only; then identify the resulting faithful
-  source Green form with the Meyer/Paugam Hardy form on a resolvent-faithful Hodge--Schwartz core;
-  the measured Green--BV/two-prime defect is the sharp RH-equivalent endpoint test, not the
-  missing source producer;
+- Route L: construct the global source Calderón relation and Hodge-symmetric nuclear
+  almost-involution on the already-proved strict arithmetic-relevant/Poisson coefficient; prove
+  Green-energy radical/chirality-kernel exactness; use polar sign to obtain an oriented Hardy trace;
+  then compare that trace with Paugam and preserve a resolvent-faithful Hodge--Schwartz core.
+  Full-Cauchy/Bessel comparison is one
+  optional sufficient proof of the radical statement, not the first source theorem. The measured
+  Green--BV/two-prime defect is the sharp RH-equivalent endpoint test, not a premise;
 - Route E: define an explicit source-predeclared physical relation `R_X` on the squarefree central
   normal Wold face, then prove its joint interval-Hall expansion and co-moving zero/one-large-prime
   cutoff flux at square-root scale;
@@ -440,7 +447,7 @@ marked explicitly; all others remain live at their stated open core.
 | I | retired | exact collision with Route C2 width |
 | J | retired | unrenormalized and residual Julia-capacity mechanisms are closed; successor changes primitive |
 | K | retired | all-order continuation is Route P |
-| L | open | strict nuclear full-Cauchy chain map with endpoint-only homotopy fibre; then full-packet Green/Paugam comparison and resolvent-faithful Hodge--Schwartz completion. `XI_BV_GREEN_STOKES_STRICT_DESCENT` and its fixed two-prime restriction are the sharp RH-equivalent endpoint tests, not source premises |
+| L | open | global Tate--Milnor/prime/real Calderón relation and Hodge-symmetric nuclear almost-involution on the constructed relevant coefficient; then Green-radical/chirality-kernel exactness, polar-sign Hardy orientation, oriented Paugam trace comparison, and resolvent-faithful Hodge--Schwartz completion. Full-Cauchy/Bessel conservativity is an optional sufficient radical proof, not an endpoint-only-fibre requirement. `XI_BV_GREEN_STOKES_STRICT_DESCENT` and its fixed two-prime restriction are sharp RH-equivalent endpoint tests, not source premises |
 | M | terminalized coordinate | anchored cofinal flatness is exactly RH |
 | N | open | uniform source-domain prime-normal sub-log-square bound |
 | O | open | source-derived low-energy profile exhaustion/reduced-resolvent control of the entire restricted-Weil ground space; then orient the surviving boundary channel or prove the true floor nonnegative |
@@ -459,7 +466,7 @@ zero-fed spectra, or determinant limits:
 |---|---|---|
 | pre-projection principal-relative current | Route-J energy divergence, diagonal-retention, and endpoint-completeness theorems exclude every advertised post-projection capacity repair | positive survivor of retired J; a new route if constructed |
 | nonseparable prime/depth--divisor arithmetic differential | `θ(i,j)=m_iλ_j-m_jλ_i` has exact curvature `-log(2)/8`, no vertex potential, and no clock-difference representation; crossed BV/clock occupation legs produce an independent equal-grade graded-`det2` counterboundary; resolved frames carry a positive definite parallel Hermitian metric; its fixed-source excess is the exact square `a²θ(i,j)²|c|²/(λ_i²λ_j²)` | constructed Route R corrected square, positive resolved Stokes polarization, and sharp fixed-Cartier descent obstruction; source rigidity of the two metrics remains open |
-| strict nuclear full-Cauchy recollement before Hilbert reduction | the finite Calderon--Witt source has `H^1=0`, while the physical landing reads the exact Burnol/Deninger radial defect; spectral middle cohomology must therefore arise only after relevant-complex formation without a new cofinal middle-fibre class | live Route L source core; prove endpoint-only Cauchy fibre, then Green/Paugam and resolvent comparison |
+| source Calderón orientation on the strict relevant-complex comparison | the pro-Stein residue-fibre coefficient and strict three-term Poisson model already give `H^1=M_zeta`; finite Calderon--Witt incidence has `H^1=0`; Meyer full character cancels the reflection-odd Paugam wedge; and its positive reciprocal regulator form pulls back to zero on genuine middle cycles | live Route L source core; construct global closed incidence relation and chirality, prove its Green radical/kernel, scalarize by polar sign, then compare the oriented trace with Paugam and prove resolvent-faithful Hodge completion |
 | prelimit noncompact one-corner incidence | the lower Fisher cutoff corner carries exactly four critical energy units, the critical channel converges weakly but not strongly, every fixed compact synthesis kills it, and every internal Xi jet has a physical `ell2` horizon | live unlettered CCM-FU lane; construct the moving Gamma/Sonin/Hodge incidence and identify its Ward column |
 | exact closed CCM class-space quotient with Real/Clifford structure | the literal nonunital strong cyclic target, closed restriction quotient, descended invertible Lefschetz action, even Real structure, nonzero Haar--Mellin separator, exact Real-parity no-go, and canonical anti-Real `iL` survivor are constructed | concrete C1-CCM carrier; bivariant/intersection pairing, Hodge sign, and Weil-form identification remain open |
 | moving, all-order, provenance-preserving carrier | finite Möbius/Wold moments are parity-blind and fixed finite selectors are saturated | live Routes E and P at distinct source laws |
@@ -476,7 +483,8 @@ The fixed source/Cartier metric differs on the literal vertical conormal by one 
 nonnegative BV--Wold square; global vanishing of that square is RH. What does not exist is source
 rigidity identifying the transported metric field with that fixed same-fibre metric. Route L
 likewise has an exact RH-equivalent two-prime endpoint test, but its upstream producer is the
-strict nuclear full-Cauchy recollement law followed by Green/Paugam and resolvent comparison. The
+Green/cup/trace refinement of the constructed relevant-complex comparison, followed by positive
+energy-radical and resolvent-faithful Hodge descent. The
 post-J pre-projection current is only a falsifiable successor class until a literal
 source object and unconditional handoff are built. Its construction must be recorded as a new
 route unless it is literally Route R, not used to reopen J. The ambient discrete-connection
@@ -3528,7 +3536,7 @@ Retired route card:
 Retired regular Clifford/full-source subroute:
 `../5-failed/xi-reciprocal-clifford-square-source-rh.md`.
 
-### Route L — Deninger/Hodge/cohomological realization [OPEN — STRICT NUCLEAR FULL-CAUCHY RECOLLEMENT / GREEN--PAUGAM COMPARISON]
+### Route L — Deninger/Hodge/cohomological realization [OPEN — SOURCE CALDERÓN/HARDY DESCENT]
 
 **Endpoint family.** Oriented Hodge, Weil-transport, dense-range, resolvent, and
 divisor-spectrum inclusions, all conditionally implying RH.
@@ -3543,24 +3551,34 @@ literal arithmetic relevant complex
 → RH.
 ```
 
-**Current dependency-closed status.** Route L remains open, but existence of an unspecified
-arithmetic complex or generic chain map is no longer its last mile. The completed Green source,
-explicit primitive, coefficient-faithful Calderón--Witt incidence, ordinary BV boundary, physical
-Burnol/Deninger reader, and adjacent Route-R rational-adelic relative complex with strict resolved
-Xi chain provenance now exist. Deninger's full arithmetic relevant complex remains a legitimate
-longer-horizon realization program, but the following broad construction list is upstream rather
-than the authoritative first open theorem:
+**Current dependency-closed status.** Route L remains open, but the arithmetic coefficient is no
+longer missing. `DAC_DERIVED_STRATUM_KUMMER_ARITHMETIC_COEFFICIENT` constructs it as the pro-Stein
+derived fibre of the strict finite/real residue map. The square-zero Poisson amalgamation gives the
+strict three-term model
 
-1. sheafified unit-amalgamated Milnor/Milnor--Witt derived-section comparison, coherent
-   Rost--Schmid/signature descent, and arithmetic three-degree Postnikov localization;
-2. conservative full-Cauchy boundary classification and all-place Green-form summability on the
-   actual mixed nuclear source topology;
-3. source cup/trace comparison with Paugam and odd coefficient parity before spectral
-   decomposition;
-4. positive harmonic Hodge completion faithful on generalized Meyer spectral jets;
-5. packetwise Lefschetz/determinant comparison giving the one-way Xi-divisor inclusion.
+```text
+C^0 = C + H_cap  --(a,f) |-> (Zf,0)-->  C^1 = H_- + P_Q
+                    --(g,u) |-> pr(u)--> C^2 = D_Ar,Q,
+```
 
-Items 4--5 contain the RH-bearing second Riemann bilinear relation; declaring a divisor-indexed
+with `H^0=C`, `H^1=M_zeta`, and `H^2=C(-1)`. Its flow, three-term operations, cup surface, and
+endpoints are Lean-formalized. The remaining dependency chain is therefore:
+
+1. **first open source object:** construct global closed Lagrangian Calderón relation through
+   actual Tate--Milnor/prime/real incidence and its Hodge-symmetric nuclear almost-involution;
+2. prove source Green energy is closable with radical exactly closed middle-boundary space, kill
+   chirality kernel, and use polar sign to obtain exact Hardy projectors. Full-packet Cauchy/Bessel
+   conservativity is one sufficient method for this clause, not a required endpoint-only
+   homotopy-fibre theorem;
+3. compare oriented Hardy half-trace with Paugam. Meyer common `Z`/Fourier correction computes
+   full character but cannot supply this orientation because full trace cancels reflection-odd
+   wedge;
+4. prove harmonic Hodge--Schwartz core is dense in nuclear Meyer quotient and preserved by
+   every off-axis centered resolvent;
+5. apply already-formalized purity implications. The physical Green--BV and fixed two-prime
+   transports are sharp RH-equivalent endpoint tests, not source inputs.
+
+Clauses 2--3 contain the RH-bearing second Riemann bilinear relation; declaring a divisor-indexed
 Hilbert space or a positive ambient coefficient does not discharge them. Exact new local closure:
 prime-circle modes are uniformly coercive; signed two-prime Kummer bounded transform has dense
 nonclosed range and zero reduced cokernel; energy normalization cancels the cup small divisor;
@@ -4345,7 +4363,7 @@ countertransport, and bare non-erasure cannot prove this singular specialization
 coefficient-faithful reader already exhibits its exact failure on the ordinary boundary. Declaring
 the physical vector a boundary merely relocates or erases `K_n`. This square is therefore the
 sharp endpoint obstruction, not an upstream mechanism: any direct proof of its missing
-compatibility must be sourced by the strict nuclear recollement, Green/Paugam comparison, and
+compatibility must be sourced by the strict nuclear recollement, source Calderón orientation, and
 resolvent-faithful Hodge realization described below. Source formation, Green primitive, BV
 boundary, resolved complex, strict Route-R chain provenance, pre-divisor ordered physical
 comparison, residue computation, physical radial comparison, and coefficient-faithful incidence
@@ -4405,26 +4423,41 @@ cochain for every parameter, including every off-line parameter.  Its surviving 
 quadratic mate curvature.  Generic Hopf-cyclic repair does not help: modular pairs in involution
 and stable anti-Yetter--Drinfeld coefficients explicitly allow non-unimodular modular weights.
 
-**Current source open core — `DAC_FULL_CAUCHY_RECOLLEMENT_FIBRE_ENDPOINT_LAW`.** The finite
-Calderon--Witt oriented source already has
-`H^1=0` and `H^2=C`; it supplies the canonical boundary `w_23` and its sharp reader, but cannot
-itself carry Xi spectral middle cohomology.  Deninger's unique producer must therefore occur after
-strict nuclear relevant-complex formation, before Hilbert reduction: construct the joint
-full-Cauchy chain map from the actual Rost--Schmid/real-signature totalization and prove that its
-homotopy fibre is endpoint-only,
+**8 August 2026 correction — scalar chain transgression is ill-typed.** The former
+`DAC_FULL_CAUCHY_RECOLLEMENT_FIBRE_ENDPOINT_LAW` is retired as an
+authoritative frontier. It promoted the optional raw-coarse Rost--Schmid/signature two-column
+comparison to the definition of the relevant coefficient. The actual carrier is already the
+pro-Stein residue fibre above, and its strict Poisson comparison already gives `H^1=M_zeta`.
 
-```text
-Fib(R_Cauchy)  ~=  C[0] + C(-1)[-2].
-```
+The subsequently proposed `DAC_RELEVANT_GREEN_PAUGAM_CHAIN_TRANSGRESSION` is now also retired.
+Paugam's scalar pairing is trace of `F*JG-G*JF` on one oriented half of discrete spectral
+suspension; it is not a scalar degreewise cocycle on raw `C_PZ`. For its reflection-pair integrand
+`A_rho`, one has `A_(1-rho)=-A_rho`, so Meyer's reflection-complete virtual character annihilates
+it identically. Common `Z`/Fourier cutoff corrections therefore cannot supply missing half-sector.
+Full proof and positive survivor are recorded in
+`../5-failed/deninger-relevant-green-paugam-chain-transgression.md`.
 
-Its vanishing middle fibre makes full Cauchy restriction conservative on arithmetic `H^1`;
-local Dirichlet positivity then
-gives the faithful global Green form.  The remaining RH-bearing comparison is to identify that
-source Green form with the actual Meyer/Paugam Hardy form and preserve a nuclear Hodge--Schwartz
-resolvent core.  Restriction of this global comparison to `w_23` is precisely
-`XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`.  Raw prime evaluation, unreduced
-`closure(range)/range` torsion, a divisor-selected admitted set, generic self-duality, or an
-assumption that the Green vector lies in the defect kernel receives no closure credit.
+**Current source open core — `DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`.** Construct
+global closed Lagrangian Calderón relation on existing relevant coefficient, through every
+Tate--Milnor, prime-cusp, real-apex, residue, and corestriction attachment. It must produce a
+Hodge-symmetric almost-involution `S` with nuclear defect `S^2-1`. Then
+`DAC_GLOBAL_GREEN_ENERGY_RADICAL` must prove geometrically defined Hodge energy is nonnegative
+with radical exactly closed middle boundaries and hence kill `ker S`.
+The already-formalized full-packet block/Bessel machinery gives one possible proof if actual
+arithmetic restrictions are constructed with simultaneous kernel equal to those boundaries.
+Neither this method nor Route L requires the stronger endpoint-only full-Cauchy fibre equivalence.
+Polar sign then constructs exact `Pi_+`; only at that point is scalar source trace
+`Tr(Pi_+ lambda(F*JG-G*JF))` defined and available for comparison with Paugam's upper-sector trace.
+Finally `DAC_ARITHMETIC_HODGE_SCHWARTZ_RESOLVENT_CORE` must retain every Meyer strong-dual jet.
+
+Finite Calderon--Witt data cannot replace this chain. Its local/all-prime incidence complexes have
+zero `H^1`, and the grading theorem proves its positive reciprocal regulator form pulls back to
+zero on every endpoint-global middle cycle. It remains a transverse/degree-two source and the
+canonical endpoint witness `w_23`, not the middle Hodge metric. Restricting the eventual global
+comparison to `w_23` is precisely `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`. Raw prime
+evaluation, unreduced `closure(range)/range` torsion, a divisor-selected admitted set, generic
+self-duality, or an assumption that the Green vector lies in the defect kernel receives no closure
+credit.
 
 ### Route M — Gamma–Jacobi singular reader [FORMALIZED — TERMINALIZED]
 
@@ -5633,12 +5666,15 @@ equivalent wrapper around one of them does not advance source acquisition.
    reflection discriminant to vanish. If it is not the existing Route-R current, it must receive
    separate route ownership. Backlog card:
    `../0-backlog/post-j-preprojection-principal-relative-current.md`.
-3. **Route L strict nuclear full-Cauchy recollement.** Construct the joint full-Cauchy restriction
-   on the actual Rost--Schmid/real-signature relevant complex and prove
-   `Fib(R_Cauchy) ~= C[0] + C(-1)[-2]`, with no cofinal `lim^1` middle anomaly. Then prove the
-   full-packet Green/Paugam comparison and resolvent-faithful Hodge completion. The ordered
-   physical comparison, residue `(delta_n(rho)-1)c_rho`, trace-one prime detector, and fixed
-   two-prime boundary remain the final RH-equivalent test and may not be erased.
+3. **Route L source Calderón/Hardy descent.** On the already-constructed pro-Stein
+   residue-fibre coefficient and strict `H^1=M_zeta` Poisson model, construct global closed
+   Calderón relation and Hodge-symmetric nuclear almost-involution. Prove exact Green-energy
+   radical and chirality-kernel vanishing, form exact Hardy projectors by polar sign, compare their
+   oriented trace with Paugam, and build resolvent-faithful Hodge--Schwartz core.
+   Full-Cauchy/Bessel conservativity is an optional
+   sufficient radical argument, not an endpoint-only-fibre requirement. The ordered physical
+   comparison, residue `(delta_n(rho)-1)c_rho`, trace-one prime detector, and fixed two-prime
+   boundary remain the final RH-equivalent test and may not be erased.
 4. **CCM-FU prelimit noncompact incidence.** Construct the moving contractive family carrying the
    joined lower Fisher corner and physical all-jet horizon through Gamma/co-Poisson/Hodge descent
    to the continued Xi Ward column while preserving its exact four-unit energy.
@@ -5678,11 +5714,10 @@ equivalent wrapper around one of them does not advance source acquisition.
     new route exposed by retired Route F, not a repair inside it.
 14. **All-degree prime--archimedean form.** Construct source-built Hankel positivity and
     reconstruction beyond Route D's retired finite mechanism.
-15. **Deninger relevant-complex realization.** Extend the now-formalized punctured-plane primitive
-    decomposition and one-dimensional `c·dlog z+dH` cohomology line to the instantiated
-    rational-Witt arithmetic model with the literal relevant coefficient complex, nuclear
-    topology, cup/trace/Hodge maps, and a source-faithful comparison whose closed middle boundary
-    is the arithmetic kernel. This is upstream of, and must feed, Route L's exact Stokes theorem.
+15. **Deninger Calderón-domain realization.** On now-instantiated rational-Witt relevant
+    coefficient and strict Poisson comparison, construct literal unbounded/nuclear Hodge domain,
+    global incidence Calderón relation, oriented trace class, and closed-middle-boundary kernel
+    theorem. Additive relevant-complex realization itself is already closed.
 16. **Critical Plücker continuation.** Carry the proved finite-prime/Euler-boundary normal-cone
     diagonal from `Re(s)>1` to critical Möbius data without importing the Mertens estimate.
 17. **Singular Hedenmalm completion.** Construct the source-defined closed relation and prove
@@ -5721,8 +5756,8 @@ the following status.
   constructs its rotation-invariant trace, trace-one ordinary-prime atom, ordered pre-divisor
   physical comparison, filtered Xi-jet landing, residue detector, and exact paracyclic
   transgression. Its formal claim map explicitly leaves physical endpoint descent unproved; the
-  current audit relocates the first source theorem upstream to strict nuclear full-Cauchy
-  recollement.
+  current audit locates the first source theorem at global Calderón relation and Hodge-symmetric
+  nuclear almost-involution on already-constructed strict relevant complex.
   The independent prime-isotropy relative complex and period-one Stokes regulator supply strict
   resolved provenance but still do not prove endpoint descent or scalar Cartier descent.
 - `real-corona-isotropy-clifford-transgression-law` and the exact nonunital CCM modules establish
@@ -5921,11 +5956,14 @@ The first unresolved theorem is therefore route-dependent but consistently pre-s
 - Route L's finite/source-normal boundary mechanisms are exhausted: completed Green primitive,
   BV boundary, resolved complex, strict Route-R provenance, ordered pre-divisor comparison, exact
   residue, trace-one detector, and coefficient-faithful Burnol/Deninger landing exist, while the
-  finite oriented source has `H^1=0` and the linear dagger defect is exact even off-line. The first
-  source theorem is now strict nuclear full-Cauchy recollement with endpoint-only fibre. Its
-  consequence must then pass through full-packet Green/Paugam comparison and a resolvent-faithful
-  Hodge--Schwartz core. The fixed reader's failure is the final RH-bearing radial coefficient, not
-  an admissible hypothesis for the source theorem.
+  finite oriented source has `H^1=0` and the linear dagger defect is exact even off-line. The
+  pro-Stein relevant coefficient, strict Poisson comparison, and `H^1=M_zeta` are also already
+  constructed. The first source theorem is now global closed incidence Calderón relation and its
+  Hodge-symmetric nuclear almost-involution. Exact Green-energy radical must kill its chirality
+  kernel; polar sign then supplies oriented Hardy trace that can be compared with Paugam, followed
+  by a resolvent-faithful Hodge--Schwartz core. Full-Cauchy/Bessel conservativity remains one sufficient
+  radical proof, not a required endpoint-only fibre. The fixed reader's failure is the final
+  RH-bearing radial coefficient, not an admissible hypothesis for the source theorem.
 - The unlettered CCM-FU lane needs a prelimit cofinal noncompact incidence from the joined lower
   Fisher corner and admitted physical jet horizon to the continued Xi Ward column. Its exact
   four-unit source budget, weak/non-strong critical escape, compact-synthesis no-go, and all-jet
@@ -5961,7 +5999,8 @@ both unconditional and useful, the corpus has formalized or scheduled its precis
 content. No located primary source supplies Route R's global two-orientation source nonerasure
 law, C1-CCM's
 positive bivariant/intersection pairing on the exact recipient, the post-J pre-projection current,
-Route L's strict nuclear full-Cauchy recollement and Green/Paugam comparison, CCM-FU's prelimit
+Route L's global incidence Calderón relation, Green-radical/chirality-kernel theorem, oriented
+Paugam trace comparison, and resolvent-faithful Hodge completion, CCM-FU's prelimit
 noncompact Ward incidence, Route E's
 explicit physical `R_X` and central-Hall/co-moving-flux theorem, or another live route's first open
 premise.
@@ -5975,8 +6014,10 @@ the moving-prime comparison for `n≥19` is open.
 > prime-isotropy provenance, literal physical comparison, and nonzero source detectors are largely
 > built. What is not built is an arithmetic law forcing the retained reflection-odd horizontal
 > class to vanish before scalarization. Route R asks for source-derived global nonerasure of both
-> constructed variable-ideal physical specializations; Route L asks first for strict nuclear
-> full-Cauchy recollement, then Green/Paugam and resolvent-faithful comparison to its fixed
+> constructed variable-ideal physical specializations; Route L asks first for global incidence
+> Calderón relation and Hodge-symmetric almost-involution on its constructed relevant coefficient,
+> then Green-radical/chirality-kernel exactness, oriented Paugam trace comparison, and
+> resolvent-faithful comparison to its fixed
 > two-prime endpoint test; CCM-FU for a moving noncompact four-unit Ward
 > incidence; C1-CCM for the positive intersection pairing. These are distinct realizations of one
 > polarized-conservativity problem, not interchangeable routine lemmas.

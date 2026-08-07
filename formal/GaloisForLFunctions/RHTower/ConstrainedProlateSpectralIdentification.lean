@@ -22,7 +22,7 @@ theorem evenProlateConcentrationValue_eq_signedValue_sq
       (ContinuousLinearMap.energyOp (evenTimeBandFourier a)) n =
     ContinuousLinearMap.sgVal (evenTimeBandFourier a) n ^ 2
   rw [← ContinuousLinearMap.singVal_sq]
-  have habs := ContinuousLinearMap.abs_sgVal_eq_singVal
+  have habs := abs_sgVal_eq_singVal
     (isCompactOperator_evenTimeBandFourier a ha)
     (ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp
       (adjoint_evenTimeBandFourier a)) n
@@ -35,4 +35,3 @@ theorem evenProlateLeakageValue_eq_signedValue_leakage
   rw [evenProlateLeakageValue, evenProlateConcentrationValue_eq_signedValue_sq a ha n]
 
 end RHTower
-

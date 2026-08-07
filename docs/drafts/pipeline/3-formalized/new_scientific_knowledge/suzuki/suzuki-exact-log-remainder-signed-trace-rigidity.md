@@ -1,7 +1,7 @@
 # Exact logarithmic remainder forces a signed half-log trace
 
 - **ID:** `suzuki-exact-log-remainder-signed-trace-rigidity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / SOURCE-BEARING BOUNDARY RIGIDITY
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT AN RH PROOF]`

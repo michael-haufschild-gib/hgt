@@ -88,10 +88,15 @@ The correct arithmetic construction has three levels:
 3. exact orthogonal Hardy projectors on the completed positive Hodge
    Hilbert space.
 
-Level 2 suffices for Green/cup trace comparison because nuclear trace
-is hereditary and cyclic.  Level 3 is required for Hodge positivity
-and skew-adjointness.  It must be constructed from source Dirichlet
-energy, not assumed on Meyer's Fréchet quotient.
+Level 2 suffices for Meyer's virtual-character trace and for a
+relative trace-class representative because nuclear trace is
+hereditary and cyclic.  It does **not** supply Paugam's scalar cup:
+the reflection-complete character cancels Paugam's antisymmetrized
+wedge, whereas his nondegenerate form retains one oriented spectral
+half.  Level 3, plus comparison of its source orientation with that
+spectral half, is required for scalar cup comparison, Hodge
+positivity, and skew-adjointness.  It must be constructed from source
+Dirichlet energy, not assumed on Meyer's Fréchet quotient.
 
 ## Hostile audit
 
@@ -102,6 +107,9 @@ energy, not assumed on Meyer's Fréchet quotient.
 - An exact projector may exist after Hodge Hilbert completion; that is
   a separate arithmetic theorem.
 - Nuclear almost-complementation gives traceability, not positivity.
+- Meyer's (H_+) source embedding is not Paugam's upper-imaginary
+  discrete spectral sector; the shared plus notation must not be
+  used as an identification.
 - No zeta zero, RH premise, CCM object, or numerical computation
   enters.
 

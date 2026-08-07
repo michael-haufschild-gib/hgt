@@ -162,8 +162,12 @@ consequences.
    Under the trace map, its logarithmic derivative produces the
    \(p^k\)-orbit distribution with coefficient \(\log p\).
 
-6. **Cup compatibility.**  The leafwise cup product and arithmetic
-   trace transport to Paugam's source trace pairing on \(M_\zeta\).
+6. **Oriented cup compatibility.**  Leafwise cup product and
+   arithmetic Green trace first define an orientation-twisted Real relative
+   class on the source Calderón relation.  After Green-radical
+   exactness produces exact Hardy projectors, its oriented half-trace
+   transports to Paugam's pairing on \(M_\zeta\).  Full Meyer trace
+   cannot be used: reflection mates cancel the alternating wedge.
 
 7. **Topology.**  The transported differential is strict with closed
    range.  The resulting quotient topology is Meyer's nuclear Frechet
@@ -267,7 +271,8 @@ Proved independently of `(2)`:
 
 Open:
 
-- source-geometric cup/trace comparison with Paugam's pairing;
+- global source Calderón relation, chirality-kernel theorem, and resulting oriented cup/trace
+  comparison with Paugam's pairing;
 - source construction of the odd coefficient parity before spectral
   decomposition;
 - packetwise geometric Lefschetz identification;

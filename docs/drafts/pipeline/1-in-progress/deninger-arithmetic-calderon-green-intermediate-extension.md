@@ -132,9 +132,10 @@ with a closed differential \(Q\), satisfying the following clauses.
    The degree-one differential is the already-proved source flow sum
    \(Z=\sum_{n\ge1}(\phi^{\log n})^*\).
 
-5. **Green supertrace identity.**  The global Green--Stokes boundary
-   pairing equals the convolution supertrace defining Paugam's
-   unconditional form:
+5. **Oriented Green supertrace identity.**  After the closed source
+   relation has produced an exact completed Hardy projector, the
+   global Green--Stokes boundary pairing equals the oriented
+   convolution trace defining Paugam's unconditional form:
    \[
     \int_{\mathcal F}\alpha\wedge\beta
     =
@@ -143,16 +144,19 @@ with a closed differential \(Q\), satisfying the following clauses.
     =
     \psi([F],[G]).                                             \tag{5}
    \]
-   Equality is proved on the nuclear cochain core from Poisson
-   summation, residue/corestriction, and the real Fourier boundary,
-   before taking any spectral decomposition.
+   Equality is proved from Poisson summation,
+   residue/corestriction, and the real Fourier boundary, with the
+   source Hardy orientation retained.  It cannot be stated as a
+   scalar identity before that orientation exists: the
+   reflection-complete Meyer character annihilates the
+   antisymmetrized integrand.
    `DAC_MEYER_TOEPLITZ_GREEN_TRANSGRESSION` identifies the exact
    multiplicative boundary cocycle and the required \(Z\)/Fourier
    correction terms.
    `DAC_MEYER_POISSON_NUCLEAR_POLARIZATION_PAIR` shows why the source
    object must be a closed relation/almost-projector modulo the
    nuclear ideal, not an assumed complemented splitting.  The
-   remaining completion/sector statement is
+   resulting completion/sector statement is
    `DAC_ARITHMETIC_CALDERON_PAUGAM_HARDY_COMPARISON`.
 
 6. **Positive Hodge completion.**  The local stars and coefficient

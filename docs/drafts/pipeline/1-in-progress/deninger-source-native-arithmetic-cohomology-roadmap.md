@@ -452,8 +452,10 @@ Deninger--Singhof prove for a dense-leaf Kähler--Riemann foliation with
 - **Open Hodge gate:** global arithmetic Calderón incidence relation
   and `DAC_ARITHMETIC_CALDERON_PAUGAM_HARDY_COMPARISON`: glue strict
   finite Hardy projectors into Meyer's nuclear almost-polarization,
-  construct exact projectors after Hodge completion, identify the
-  hereditary relative trace with Paugam's cup form, construct
+  prove Green-radical/chirality-kernel exactness, and construct exact
+  projectors after Hodge completion.  Meyer's full hereditary trace
+  cancels the reflection-odd Paugam wedge; compare Paugam's cup only
+  with the resulting oriented Hardy half-trace.  Then construct
   `DAC_ARITHMETIC_HODGE_SCHWARTZ_RESOLVENT_CORE`, and obtain the
   positive Hodge form on \(M_\zeta\).  Dense off-axis source-resolvent
   stability sees all Meyer generalized jets directly in the strong

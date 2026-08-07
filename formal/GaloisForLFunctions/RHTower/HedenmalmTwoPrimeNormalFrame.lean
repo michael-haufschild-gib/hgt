@@ -374,11 +374,6 @@ theorem analyticOrderAt_centeredMultiplier_eq_one {n : ℕ} (hn : 2 ≤ n)
     (deriv_centeredMultiplier_ne_zero hn k)
 
 
-end HedenmalmThetaSource
-
-end
-
-end RHTower
 
 /-! ### The essential-singular pair on a root block -/
 

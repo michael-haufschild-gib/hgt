@@ -127,11 +127,19 @@ one-dimensional boundary transgression that its smooth suspension
 must produce.  Formula `(5)` identifies the missing global incidence
 correction before any spectral decomposition.
 
-What remains is not discovery of a trace formula.  It is construction
-of a global Calderón/Hardy polarization relation whose nuclear
-relative trace realizes Paugam's alternating pairing, followed by a
-positive completion on which that relation becomes an exact orthogonal
-splitting.
+What remains is not discovery of the full trace formula.  It is
+construction of a global Calderón/Hardy polarization relation and a
+source-derived reflection orientation.  The complete Meyer character
+cannot itself realize Paugam's alternating pairing: on the integrand
+
+\[
+ \widehat F(\rho)\widehat G(1-\rho)
+ -\widehat G(\rho)\widehat F(1-\rho)
+\]
+
+the two reflection mates cancel.  Positive completion must first turn
+the source relation into an exact orthogonal splitting; only its
+oriented half-trace can be compared with Paugam.
 
 ## Hostile audit
 
@@ -143,6 +151,9 @@ splitting.
   bornological/Fréchet setting.
 - Paugam's upper/lower projector and Hodge positivity are not supplied
   by this theorem.
+- The full character supplied here annihilates the reflection-odd
+  Paugam wedge; treating `(5)` as the missing scalar cup is impossible,
+  not merely unproved.
 - No zeta zero, RH premise, CCM object, or numerical computation
   enters.
 
@@ -192,9 +203,9 @@ is proved here is everything the card itself proves.
 
 ### Remaining
 
-Nothing the card proves.  Meyer's Toeplitz trace lemma `(1)`, the nuclearity of the two correction
-operators `(5)` and the resulting prime-plus-real Weil character are published analytic inputs;
-mathlib has no bornological or nuclear Fréchet framework in which to restate them.  The card's own
-closing paragraph — construction of a global Calderón/Hardy polarization relation whose nuclear
-relative trace realizes Paugam's pairing, and a positive completion making it an orthogonal
-splitting — stays open.
+Nothing the card proves.  Meyer's Toeplitz trace lemma `(1)`, nuclearity of the two correction
+operators `(5)`, and resulting prime-plus-real Weil character are published analytic inputs;
+mathlib has no bornological or nuclear Fréchet framework in which to restate them.  Global
+Calderón/Hardy relation, faithful positive completion, source orientation, and comparison of its
+oriented half-trace with Paugam stay open.  Full relative trace from `(5)` cannot substitute: it
+cancels Paugam's reflection-odd wedge.

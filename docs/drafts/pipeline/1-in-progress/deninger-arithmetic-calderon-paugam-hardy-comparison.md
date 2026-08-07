@@ -195,6 +195,67 @@ ensures it sees every generalized zeta-zero functional.  Meyer's
 spectral theorem
 then yields RH, including exclusion of off-line generalized blocks.
 
+## Corrected first subgate: source Calderón orientation before scalar trace
+
+Arithmetic carrier and additive Poisson comparison are no longer conjectural.  Pro-Stein residue
+fibre is strictly represented by
+
+\[
+ C^0=\mathbb C\oplus H_\cap,
+ \qquad C^1=H_-\oplus P_{\mathbb Q},
+ \qquad C^2=D_{\mathrm{Ar},\mathbb Q},
+\]
+
+with `H^1=M_zeta`.  This does not yet provide global source Hodge domain or oriented trace.
+
+Former first subgate `DAC_RELEVANT_GREEN_PAUGAM_CHAIN_TRANSGRESSION` is retired.  It postulated a
+scalar `Omega_Meyer/Paugam` on raw Poisson--zeta cochains before a Hardy sector existed.  Paugam's
+number-field formula is instead
+
+\[
+ \psi(F,G)=
+ \operatorname{Tr}\!\left(F*JG-G*JF\mid H^1_{d,+}\right),     \tag{8}
+\]
+
+after discrete spectral suspension and choice of one conjugation-exchanged half.  Meyer's cutoff
+corrections compute full virtual character and do not construct (H^1_{d,+}).
+
+This distinction is forced.  At a reflection pair put
+
+\[
+ A_\rho(F,G)=
+ \widehat F(\rho)\widehat G(1-\rho)
+ -\widehat G(\rho)\widehat F(1-\rho).
+\]
+
+Then (A_{1-\rho}=-A_\rho).  Hence reflection-complete Meyer trace of this integrand is zero,
+whereas Paugam's oriented half-trace `(8)` is nondegenerate.  Swapping halves negates `(8)`, so no
+nonzero scalar pairing descends from unoriented raw complex.  Full proof and positive survivor are
+recorded in `../5-failed/deninger-relevant-green-paugam-chain-transgression.md`.
+
+First open source object is therefore clauses 2--4 of
+`DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`:
+
+1. glue local Kummer, prime-cusp, and real-apex Calderón data through every Tate--Milnor and
+   residue/corestriction attachment to a closed global Lagrangian relation;
+2. construct its Hodge-symmetric nuclear almost-involution (S), with (S^2-1) nuclear;
+3. prove `DAC_GLOBAL_GREEN_ENERGY_RADICAL` and resulting
+   `DAC_ARITHMETIC_CALDERON_GLOBAL_CHIRALITY_KERNEL`, so (C=S|S|^{-1}) and
+   \(\Pi_\pm=(1\pm C)/2\) exist;
+4. define oriented source trace
+   \[
+     \Omega_C(F,G)=
+     \operatorname{Tr}\!\left(
+       \Pi_+\lambda(F*JG-G*JF)
+     \right)                                                  \tag{9}
+   \]
+   and prove its discrete comparison with `(8)`.
+
+Before step 3, an orientation-twisted Real relative trace class attached to closed relation is a correctly
+typed intermediate target; it is not yet a scalar Paugam pairing.  Full-packet Cauchy/Bessel
+conservativity remains one optional proof of energy radical, not definition of source object.
+After `(9)`, remaining analytic gate is `DAC_ARITHMETIC_HODGE_SCHWARTZ_RESOLVENT_CORE`.
+
 ## Exact proof program
 
 1. Construct finite field/place/lattice Calderón projectors and prove
@@ -283,3 +344,7 @@ then yields RH, including exclusion of off-line generalized blocks.
   Hodge--Schwartz core preserved by off-axis resolvents.  This acts
   directly on Meyer's strong-dual jets and removes pointwise
   Hilbert-boundedness from the minimal hypothesis.
+- 2026-08-08 — Retired pre-sector scalar chain transgression.  Primary Meyer/Paugam formulas and
+  reflection-pair cancellation show full Meyer character annihilates Paugam wedge.  Reordered
+  dependency through global source Calderón relation, Green-radical/chirality-kernel exactness,
+  polar-sign Hardy orientation, and only then scalar Paugam trace comparison.

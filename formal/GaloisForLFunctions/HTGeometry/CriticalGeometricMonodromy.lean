@@ -18,7 +18,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option synthInstance.maxHeartbeats 100000
+set_option synthInstance.maxHeartbeats 200000
+set_option maxHeartbeats 1000000
 
 /-- An algebraic closure containing the actual critical source field. -/
 abbrev criticalSourceAlgebraicClosure (K : Type*) [Field K] (m n : ℕ) :=
@@ -30,10 +31,7 @@ noncomputable instance criticalObservationAlgebraicClosureAlgebra
     (K : Type*) [Field K] (m n : ℕ) :
     Algebra (criticalObservationField K m n)
       (criticalSourceAlgebraicClosure K m n) :=
-  ((algebraMap (criticalSourceField K m n)
-      (criticalSourceAlgebraicClosure K m n)).comp
-    (algebraMap (criticalObservationField K m n)
-      (criticalSourceField K m n))).toAlgebra
+  AlgebraicClosure.instAlgebra (criticalSourceField K m n)
 
 /-- Normal closure of the actual critical source field over the actual observation field. -/
 abbrev criticalNormalClosure (K : Type*) [Field K] (m n : ℕ) :=

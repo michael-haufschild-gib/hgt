@@ -1,7 +1,7 @@
 # Bounded weak Suzuki zero modes have signed half-log traces
 
 - **ID:** `suzuki-weak-signed-half-log-trace`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / WEAK-TO-TRACE REGULARITY
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT AN RH PROOF]`

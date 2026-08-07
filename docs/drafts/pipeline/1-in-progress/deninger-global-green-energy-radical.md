@@ -136,9 +136,10 @@ orthogonal model or that cross-prime Milnor/cup incidence preserves its maximum-
 \(U:E\to\ell^2(\mathbb P)\) pulls the already-summable local family back to an operator-norm
 summable family on \(E\); pullback commutes with the unordered sum. The transported energy is
 nonnegative and its radical is exactly \(\ker U\). Therefore cross-prime incidence need not satisfy
-a second termwise maximum-tail proof. The exact arithmetic target is now a bounded comparison map
-whose kernel is the closed middle-boundary subspace. Constructing such a map remains the
-conservative full-Cauchy boundary-classification problem, not functional-analysis bookkeeping.
+a second termwise maximum-tail proof. A sufficient arithmetic target is a bounded comparison map
+whose kernel is the closed middle-boundary subspace. Constructing such a map is one concrete
+full-packet Cauchy/Bessel proof of the radical theorem, not a necessary definition of the Green
+form and not Route L's first source theorem.
 
 There is also a formal obstruction to using only this scalar comparison. Packet averaging is a
 bounded functional, and its pulled-back positive Green energy is exactly `Av_p(f)^2`; its radical
@@ -170,9 +171,9 @@ zero-radical theorems specialize unconditionally to these fibres. This removes f
 divisor-adapted target metric. It still does not construct arithmetic full-Cauchy restriction maps
 into Haar \(L^2\), prove their Bessel estimate, or classify their simultaneous kernel.
 
-Cauchy restriction descent is also abstractly complete.  If each
+Cauchy restriction descent is also abstractly complete. If this proof method is used and each
 full Cauchy restriction carries global boundaries to local
-boundaries, it descends to quotient cohomology.  The single remaining
+boundaries, it descends to quotient cohomology. Its remaining
 conservativity statement is
 \[
  [\text{CONJECTURE}]

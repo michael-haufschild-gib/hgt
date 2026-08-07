@@ -1,7 +1,7 @@
 # Suzuki interior seams have no half-log corona; the borderline dipole creates a forced jump
 
 - **ID:** `suzuki-interior-seam-indicial-dipole-exclusion`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT PAIRED INDICIAL CLASSIFICATION / INTERIOR-CORONA EXCLUSION
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`

@@ -398,3 +398,22 @@ projective/trace-class/determinant consequences.
 - This closes the true `-2` leakage exponent for explicit fixed-depth trial spaces.  Transfer to the
   ordered true prolate leakage values still needs the finite-dimensional trial-subspace bridge;
   exact Fuchs polynomial constants still require fixed-index ODE/endpoint identification.
+
+### 2026-08-07: Kaiser trial spaces reach the true prolate spectrum
+
+- Added `BandKaiserL2Trial.lean`.  Constructed the exact even `L²` Kaiser combination, proved its
+  support, norm, Fourier representative, retained energy, spectral-tail identity, physical
+  dilation conjugation, and uniform real time-band defect estimate.
+- Added `BandKaiserComplexTrial.lean`.  Proved real and Fourier-truncated pairings have zero
+  imaginary part, complexified every coefficient vector without loss, built the complex-linear
+  physical synthesis, and proved it injective from the explicit packet energy lower bound.
+- Added `BandKaiserTrialSpace.lean`.  Proved eventual injectivity and exact dimension of every
+  fixed-depth packet range, then applied the true Courant--Fischer form interface.
+- New closed capstones prove, for every fixed index `n`, both the true concentration leakage and
+  actual signed greedy leakage are eventually at most `exp(-2*pi*a^2)`.  The more precise theorem
+  retains the full arbitrary `exp(-(2-epsilon)*2*pi*a^2)` clock.
+- Fixed the namespace reference in `ConstrainedProlateSpectralIdentification.lean`; its existing
+  signed/concentration spectrum identification now compiles against the present tree.
+- All new modules pass foreground `lake env lean <file>` checks.  This closes the previously open
+  finite-dimensional trial-subspace bridge.  Exact Fuchs polynomial constants and classical mode
+  identification remain open.

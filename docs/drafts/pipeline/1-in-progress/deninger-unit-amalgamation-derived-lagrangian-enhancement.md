@@ -144,10 +144,13 @@ The source unit-amalgamation diagram has the following enhancement.
    Rost--Schmid totalization.
 
 7. **Analytic comparison.**  On the nuclear Poisson core,
-   \(\omega_{\mathrm{arith}}\) equals the Green--Stokes form.  Under
-   the strict Poisson relevant-complex comparison, it becomes
-   Paugam's convolution supertrace pairing, not merely an unspecified
-   nondegenerate alternating form.
+   \(\omega_{\mathrm{arith}}\) equals the Green--Stokes form and
+   defines an orientation-twisted Real relative trace class.  After source Green
+   radical kills the chirality kernel and polar sign constructs exact
+   Hardy projectors, its oriented half-trace becomes Paugam's
+   convolution pairing.  It cannot become Paugam's scalar form before
+   that step: reflection-complete Meyer trace cancels the alternating
+   wedge.
 
 ## Why this supplies the missing cross-ray terms
 

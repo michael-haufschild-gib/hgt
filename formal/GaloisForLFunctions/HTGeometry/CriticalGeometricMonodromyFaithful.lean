@@ -12,7 +12,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option synthInstance.maxHeartbeats 100000
+set_option synthInstance.maxHeartbeats 200000
 set_option maxHeartbeats 1000000
 
 /-- The Galois action of the actual normal closure on the actual geometric sheets is faithful. -/
@@ -27,14 +27,14 @@ theorem criticalNormalClosureAction_injective
       (criticalSourceField K m n) := inferInstance
   letI : IsScalarTower (criticalObservationField K m n)
       (criticalSourceField K m n) (criticalSourceAlgebraicClosure K m n) :=
-    IsScalarTower.of_algebraMap_eq' rfl
+    AlgebraicClosure.instIsScalarTower (criticalSourceField K m n)
   letI : Algebra.IsAlgebraic (criticalObservationField K m n)
       (criticalSourceAlgebraicClosure K m n) :=
     Algebra.IsAlgebraic.trans (criticalObservationField K m n)
       (criticalSourceField K m n) (criticalSourceAlgebraicClosure K m n)
   letI : Normal (criticalObservationField K m n)
-      (criticalSourceAlgebraicClosure K m n) where
-    splits' _ := IsAlgClosed.splits _
+      (criticalSourceAlgebraicClosure K m n) :=
+    { splits' _ := IsAlgClosed.splits _ }
   letI : Normal (criticalObservationField K m n)
       (criticalNormalClosure K m n) :=
     normalClosure.normal (criticalObservationField K m n)
@@ -55,10 +55,6 @@ theorem criticalNormalClosureAction_injective
         intro x y hx hy
         simp only [Set.mem_setOf_eq] at hx hy ⊢
         rw [map_mul, map_mul, hx, hy]
-      neg_mem' := by
-        intro x hx
-        simp only [Set.mem_setOf_eq] at hx ⊢
-        rw [map_neg, map_neg, hx]
       inv_mem' := by
         intro x hx
         simp only [Set.mem_setOf_eq] at hx ⊢
@@ -66,7 +62,7 @@ theorem criticalNormalClosureAction_injective
       algebraMap_mem' := by
         intro x
         simp only [Set.mem_setOf_eq]
-        rw [map_algebraMap, map_algebraMap] }
+        exact (σ.commutes x).trans (τ.commutes x).symm }
   have hle : IntermediateField.normalClosure
       (criticalObservationField K m n) (criticalSourceField K m n)
       (criticalNormalClosure K m n) ≤ M := by

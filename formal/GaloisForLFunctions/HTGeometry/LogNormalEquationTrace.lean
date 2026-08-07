@@ -215,7 +215,8 @@ theorem eventually_halfLog_le_of_equation
     (hFb : ∀ x, |F x| ≤ M) (hmeas : Measurable F) (hFpos : ∀ x, 0 ≤ F x)
     (hnear : ∀ Y, IntegrableOn (fun s => secondDifference F Y s * gammaTransportKernel s)
       (Ioc 0 (Y / 2)))
-    (heq : ∀ Y, logDirichlet F Y + gammaTransport F Y = S Y) (hS : ∀ Y, S Y ≤ T)
+    (heq : ∀ Y, a ≤ Y → logDirichlet F Y + gammaTransport F Y = S Y)
+    (hS : ∀ Y, a ≤ Y → S Y ≤ T)
     (hXmax : ∀ L₀ : ℝ, 0 < L₀ →
       IsMaxOn (penalized (fun L => Real.sqrt L * F L) (Real.sqrt L₀)⁻¹ L₀) (Ici a) (X L₀))
     (hXint : ∀ᶠ L₀ in atTop, a ≤ X L₀ / 2)
@@ -227,7 +228,7 @@ theorem eventually_halfLog_le_of_equation
     with L₀ hint hpos hL₀ hmem
   have hδ : (0:ℝ) ≤ (Real.sqrt L₀)⁻¹ := by positivity
   exact halfLog_base_le_of_equation_isMaxOn hpos hδ (hFpos _) hFb hmeas (hnear _)
-    (hXmax L₀ hL₀) hint hmem (heq _) (hS _)
+    (hXmax L₀ hL₀) hint hmem (heq _ (by linarith)) (hS _ (by linarith))
 
 open Filter MeasureTheory Set in
 /-- **The mirrored base-point bound.**  At a penalized minimizer the value at the base point
@@ -266,7 +267,8 @@ theorem eventually_le_halfLog_of_equation
       (Ioc 0 (Y / 2)))
     (hnum : ∀ L₀ Y, ∀ s, 0 ≤ s → s ≤ Y / 2 →
       0 ≤ F Y - (Real.sqrt L₀)⁻¹ * s / Real.sqrt Y)
-    (heq : ∀ Y, logDirichlet F Y + gammaTransport F Y = S Y) (hS : ∀ Y, T ≤ S Y)
+    (heq : ∀ Y, a ≤ Y → logDirichlet F Y + gammaTransport F Y = S Y)
+    (hS : ∀ Y, a ≤ Y → T ≤ S Y)
     (hXmax : ∀ L₀ : ℝ, 0 < L₀ →
       IsMaxOn (penalized (fun L => -(Real.sqrt L * F L)) (Real.sqrt L₀)⁻¹ L₀) (Ici a) (X L₀))
     (hXint : ∀ᶠ L₀ in atTop, a ≤ X L₀ / 2)
@@ -277,7 +279,7 @@ theorem eventually_le_halfLog_of_equation
     with L₀ hint hpos hL₀ hmem
   have hδ : (0:ℝ) ≤ (Real.sqrt L₀)⁻¹ := by positivity
   exact le_halfLog_base_of_equation_isMaxOn_neg hpos hδ hFb hmeas (hnear _) (hnum L₀ _)
-    (hXmax L₀ hL₀) hint hmem (heq _) (hS _)
+    (hXmax L₀ hL₀) hint hmem (heq _ (by linarith)) (hS _ (by linarith))
 
 open Filter in
 /-- **The trace theorem in the form the argument supplies.**  The numerators converge rather than
@@ -540,8 +542,8 @@ theorem tendsto_halfLogTrace_of_equation
       (Ioc 0 (Y / 2)))
     (hnumlow : ∀ L₀ Y, ∀ s, 0 ≤ s → s ≤ Y / 2 →
       0 ≤ F Y - (Real.sqrt L₀)⁻¹ * s / Real.sqrt Y)
-    (heq : ∀ Y, logDirichlet F Y + gammaTransport F Y = S Y)
-    (hSu : ∀ Y, S Y ≤ T) (hSl : ∀ Y, Tl ≤ S Y)
+    (heq : ∀ Y, a ≤ Y → logDirichlet F Y + gammaTransport F Y = S Y)
+    (hSu : ∀ Y, a ≤ Y → S Y ≤ T) (hSl : ∀ Y, a ≤ Y → Tl ≤ S Y)
     (hA : Tendsto (halfLogAverage F) atTop (nhds α)) :
     Tendsto (fun L => Real.sqrt L * F L) atTop (nhds α) := by
   have hb := isBoundedUnder_le_of_eventually_le hHup
@@ -598,8 +600,8 @@ theorem tendsto_halfLogTrace_of_equation_of_integrable
       (Ioc 0 (Y / 2)))
     (hnumlow : ∀ L₀' Y, ∀ s, 0 ≤ s → s ≤ Y / 2 →
       0 ≤ F Y - (Real.sqrt L₀')⁻¹ * s / Real.sqrt Y)
-    (heq : ∀ Y, logDirichlet F Y + gammaTransport F Y = S Y)
-    (hSu : ∀ Y, S Y ≤ T) (hSl : ∀ Y, Tl ≤ S Y)
+    (heq : ∀ Y, a ≤ Y → logDirichlet F Y + gammaTransport F Y = S Y)
+    (hSu : ∀ Y, a ≤ Y → S Y ≤ T) (hSl : ∀ Y, a ≤ Y → Tl ≤ S Y)
     (hL₀ : 0 < L₀)
     (hAint : IntegrableOn (fun L => logDirichlet F L / (4 * L * Real.sqrt L)) (Ioi L₀)) :
     Tendsto (fun L => Real.sqrt L * F L) atTop
@@ -652,14 +654,14 @@ open MeasureTheory Set in
 automatic; only the transport half is the card's `(10)`. -/
 theorem integrableOn_logDirichlet_weight_of_equation {F S : ℝ → ℝ} {L₀ C : ℝ}
     (hL₀ : 0 < L₀) (hSmeas : Measurable S) (hSbd : ∀ L, |S L| ≤ C)
-    (heq : ∀ Y, logDirichlet F Y + gammaTransport F Y = S Y)
+    (heq : ∀ Y, L₀ ≤ Y → logDirichlet F Y + gammaTransport F Y = S Y)
     (hR : IntegrableOn (fun L => gammaTransport F L / (4 * L * Real.sqrt L)) (Ioi L₀)) :
     IntegrableOn (fun L => logDirichlet F L / (4 * L * Real.sqrt L)) (Ioi L₀) := by
   have hS := integrableOn_bounded_div_weight (S := S) hL₀ hSmeas hSbd
   have hdiff := hS.sub hR
   refine hdiff.congr ?_
-  filter_upwards [ae_restrict_mem measurableSet_Ioi] with L _
-  have h := heq L
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with L hL
+  have h := heq L (le_of_lt hL)
   have hsub : S L - gammaTransport F L = logDirichlet F L := by linarith
   show S L / (4 * L * Real.sqrt L) - gammaTransport F L / (4 * L * Real.sqrt L)
     = logDirichlet F L / (4 * L * Real.sqrt L)
@@ -1091,5 +1093,546 @@ theorem abs_secondDifference_mul_kernel_le_far {f : ℝ → ℝ} {M : ℝ}
       ≤ (4 * M) * (2 * Real.exp (-s)) := by
         refine mul_le_mul hsd htail hk.le (by linarith)
     _ = 8 * M * Real.exp (-s) := by ring
+
+open MeasureTheory Set in
+/-- The uniform majorant of the transport integrand. -/
+noncomputable def transportMajorant (K M : ℝ) (s : ℝ) : ℝ :=
+  if s ≤ 1 then 2 * K else 8 * M * Real.exp (-s)
+
+open MeasureTheory Set in
+theorem integrableOn_transportMajorant (K M : ℝ) :
+    IntegrableOn (transportMajorant K M) (Ioi 0) := by
+  have hsplit : Ioi (0:ℝ) = Ioc 0 1 ∪ Ioi 1 := by
+    ext x
+    simp only [mem_Ioi, mem_union, mem_Ioc]
+    constructor
+    · intro hx
+      rcases le_or_gt x 1 with h | h
+      · exact Or.inl ⟨hx, h⟩
+      · exact Or.inr h
+    · rintro (⟨h, _⟩ | h)
+      · exact h
+      · linarith
+  have h1 : IntegrableOn (transportMajorant K M) (Ioc 0 1) := by
+    have hfin : IsFiniteMeasure (volume.restrict (Ioc (0:ℝ) 1)) := by
+      constructor; simp
+    have hc : IntegrableOn (fun _ : ℝ => 2 * K) (Ioc (0:ℝ) 1) := integrable_const _
+    refine hc.congr ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
+    unfold transportMajorant
+    rw [if_pos hx.2]
+  have h2 : IntegrableOn (transportMajorant K M) (Ioi 1) := by
+    have hbase : IntegrableOn (fun s : ℝ => Real.exp (-s)) (Ioi 1) := by
+      have h := exp_neg_integrableOn_Ioi (1 : ℝ) zero_lt_one
+      simpa only [neg_one_mul] using h
+    have hc : IntegrableOn (fun s : ℝ => 8 * M * Real.exp (-s)) (Ioi 1) :=
+      hbase.const_mul _
+    refine hc.congr ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    unfold transportMajorant
+    rw [if_neg (by simp only [not_le]; exact hx)]
+  rw [hsplit]
+  exact h1.union h2
+
+open MeasureTheory Set Function in
+/-- **`(15)` step 3: the transport Fubini.**  The product integrand is dominated by
+`|ρ(t)| · transportMajorant K M s`, integrable on the product by `Integrable.mul_prod` — the
+majorant carries the decay, since neither factor's domain is bounded. -/
+theorem integral_transport_swap {ρ f : ℝ → ℝ} {K M : ℝ}
+    (hρ : Continuous ρ) (hcρ : HasCompactSupport ρ) (hfc : Continuous f)
+    (hK : ∀ x y, |f x - f y| ≤ K * |x - y|) (hM : ∀ x, |f x| ≤ M) (L : ℝ) :
+    (∫ t, ρ t * ∫ s in Ioi (0:ℝ), secondDifference f (L - t) s * gammaTransportKernel s)
+      = ∫ s in Ioi (0:ℝ), ∫ t, ρ t * (secondDifference f (L - t) s * gammaTransportKernel s) := by
+  have hρint : Integrable ρ := hρ.integrable_of_hasCompactSupport hcρ
+  have hdom : Integrable (fun p : ℝ × ℝ => |ρ p.1| * transportMajorant K M p.2)
+      ((volume : Measure ℝ).prod (volume.restrict (Ioi (0:ℝ)))) :=
+    Integrable.mul_prod hρint.abs (integrableOn_transportMajorant K M)
+  have hmeas : AEStronglyMeasurable
+      (uncurry fun t s => ρ t * (secondDifference f (L - t) s * gammaTransportKernel s))
+      ((volume : Measure ℝ).prod (volume.restrict (Ioi (0:ℝ)))) := by
+    refine Measurable.aestronglyMeasurable ?_
+    have h1 : Measurable fun p : ℝ × ℝ => ρ p.1 := hρ.measurable.comp measurable_fst
+    have h2 : Measurable fun p : ℝ × ℝ => secondDifference f (L - p.1) p.2 := by
+      unfold secondDifference
+      fun_prop
+    exact h1.mul (h2.mul (measurable_gammaTransportKernel.comp measurable_snd))
+  have hint : Integrable
+      (uncurry fun t s => ρ t * (secondDifference f (L - t) s * gammaTransportKernel s))
+      ((volume : Measure ℝ).prod (volume.restrict (Ioi (0:ℝ)))) := by
+    refine hdom.mono' hmeas ?_
+    have hae : ∀ᵐ p : ℝ × ℝ ∂((volume : Measure ℝ).prod (volume.restrict (Ioi (0:ℝ)))),
+        (0:ℝ) < p.2 := by
+      rw [show (volume : Measure ℝ) = volume.restrict univ by simp,
+        MeasureTheory.Measure.prod_restrict]
+      filter_upwards [ae_restrict_mem (MeasurableSet.univ.prod measurableSet_Ioi)] with p hp
+      exact hp.2
+    filter_upwards [hae] with p hs
+    show ‖ρ p.1 * (secondDifference f (L - p.1) p.2 * gammaTransportKernel p.2)‖
+      ≤ |ρ p.1| * transportMajorant K M p.2
+    rw [Real.norm_eq_abs, abs_mul]
+    refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+    unfold transportMajorant
+    by_cases hle : p.2 ≤ 1
+    · rw [if_pos hle]
+      exact abs_secondDifference_mul_kernel_le_near hK hs
+    · rw [if_neg hle]
+      exact abs_secondDifference_mul_kernel_le_far hM (le_of_lt (not_le.mp hle))
+  rw [← MeasureTheory.integral_integral_swap hint]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+  exact (MeasureTheory.integral_const_mul (ρ t) _).symm
+
+open MeasureTheory Set in
+/-- **The card's `(15)`.**  The transport operator commutes with mollification:
+
+    gammaTransport (ρ * f) = ρ * (gammaTransport f).
+
+Hypotheses are object regularity only — `ρ` continuous of compact support, `f` continuous, Lipschitz
+and bounded, the same conditions under which `gammaTransport` is defined at all. -/
+theorem gammaTransport_mollify {ρ f : ℝ → ℝ} {K M : ℝ}
+    (hρ : Continuous ρ) (hcρ : HasCompactSupport ρ) (hfc : Continuous f)
+    (hK : ∀ x y, |f x - f y| ≤ K * |x - y|) (hM : ∀ x, |f x| ≤ M) (L : ℝ) :
+    gammaTransport (mollify ρ f) L = mollify ρ (gammaTransport f) L := by
+  have hstep1 : gammaTransport (mollify ρ f) L
+      = ∫ s in Ioi (0:ℝ), (∫ t, ρ t * secondDifference f (L - t) s) * gammaTransportKernel s := by
+    unfold gammaTransport
+    refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
+    rw [secondDifference_mollify hρ hfc hcρ L s]
+    rfl
+  have hstep2 : (∫ s in Ioi (0:ℝ),
+        (∫ t, ρ t * secondDifference f (L - t) s) * gammaTransportKernel s)
+      = ∫ s in Ioi (0:ℝ), ∫ t, ρ t * (secondDifference f (L - t) s * gammaTransportKernel s) := by
+    refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
+    rw [← MeasureTheory.integral_mul_const]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+    ring
+  rw [hstep1, hstep2, ← integral_transport_swap hρ hcρ hfc hK hM L]
+  rfl
+
+open MeasureTheory Set in
+/-- **The transport operator is continuous in the base point.**  Continuity under the integral
+sign, with the uniform majorant of DT/DU supplying the domination.  This is what lets the
+mollification of the equation be split summand by summand. -/
+theorem continuous_gammaTransport {f : ℝ → ℝ} {K M : ℝ} (hfc : Continuous f)
+    (hK : ∀ x y, |f x - f y| ≤ K * |x - y|) (hM : ∀ x, |f x| ≤ M) :
+    Continuous (gammaTransport f) := by
+  have hae : ∀ᵐ s ∂(volume.restrict (Ioi (0:ℝ))), (0:ℝ) < s :=
+    ae_restrict_mem measurableSet_Ioi
+  refine MeasureTheory.continuous_of_dominated (bound := transportMajorant K M) ?_ ?_
+    (integrableOn_transportMajorant K M) ?_
+  · intro L
+    refine Measurable.aestronglyMeasurable ?_
+    have h1 : Measurable fun s => secondDifference f L s := by
+      unfold secondDifference; fun_prop
+    exact h1.mul measurable_gammaTransportKernel
+  · intro L
+    filter_upwards [hae] with s hs
+    rw [Real.norm_eq_abs]
+    unfold transportMajorant
+    by_cases hle : s ≤ 1
+    · rw [if_pos hle]; exact abs_secondDifference_mul_kernel_le_near hK hs
+    · rw [if_neg hle]; exact abs_secondDifference_mul_kernel_le_far hM (le_of_lt (not_le.mp hle))
+  · filter_upwards with s
+    unfold secondDifference
+    fun_prop
+
+/-! ## `(18)`: the mollified equation
+
+Mollifying the logarithmic normal equation and applying `(15)`, `(16)`, `(17)` gives the same
+equation for the smoothed profile, with the source picking up the first-moment defect.  This is the
+step that converts the card's hypothesis on `f` into a *pointwise* equation for `f_ε`.
+-/
+
+open MeasureTheory Set in
+/-- **The card's `(18)`.**  `P f_ε + R_full f_ε = G_ε + C_ε` with `G_ε = ρ * G` and
+`C_ε = 2 (s ρ) * f`.  Every hypothesis is object regularity of `ρ` and `f`; the three commutation
+identities are applied, not assumed. -/
+theorem mollified_equation {ρ f S : ℝ → ℝ} {ε K M : ℝ}
+    (hρ : Continuous ρ) (hcρ : HasCompactSupport ρ) (hsupp : ∀ t, ε < |t| → ρ t = 0)
+    (hfc : Continuous f) (hK : ∀ x y, |f x - f y| ≤ K * |x - y|) (hM : ∀ x, |f x| ≤ M)
+    (hfz : ∀ y, y < 0 → f y = 0)
+    (heq : ∀ Y, fullLogDirichlet f Y + gammaTransport f Y = S Y) (L : ℝ) :
+    fullLogDirichlet (mollify ρ f) L + gammaTransport (mollify ρ f) L
+      = mollify ρ S L + 2 * mollify (firstMomentKernel ρ) f L := by
+  have hM0 : 0 ≤ M := le_trans (abs_nonneg (f 0)) (hM 0)
+  have hPc := continuous_fullPrimitive hM0 hfc.measurable hM hfz
+  have hDc : Continuous (fullLogDirichlet f) := by
+    unfold fullLogDirichlet
+    exact (continuous_const.mul continuous_id).mul hfc |>.sub hPc
+  have hTc := continuous_gammaTransport hfc hK hM
+  have h17 := fullLogDirichlet_mollify' hρ hcρ hsupp hfc hM hfz L
+  have h15 := gammaTransport_mollify hρ hcρ hfc hK hM L
+  have hsum : mollify ρ S L
+      = mollify ρ (fullLogDirichlet f) L + mollify ρ (gammaTransport f) L := by
+    have hcongr : mollify ρ S L
+        = mollify ρ (fun y => fullLogDirichlet f y + gammaTransport f y) L := by
+      unfold mollify
+      refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+      show ρ t * S (L - t) = ρ t * (fullLogDirichlet f (L - t) + gammaTransport f (L - t))
+      rw [heq (L - t)]
+    rw [hcongr, ← mollify_add ρ (fullLogDirichlet f) (gammaTransport f) hρ hDc hTc hcρ L]
+  linarith [h17, h15, hsum]
+
+/-! ## The two operators differ by a constant
+
+`logDirichlet` uses the half-line primitive, `fullLogDirichlet` the full one.  For a profile
+vanishing below any threshold the difference is `∫_{Iic 0} f`, independent of the base point — so
+the mollified equation transfers between the two forms with only a constant shift of the source.
+-/
+
+open MeasureTheory Set in
+/-- Integrability on `Iic L` for a profile vanishing below an arbitrary threshold. -/
+theorem integrableOn_Iic_of_vanishing' {f : ℝ → ℝ} {M c : ℝ}
+    (hf : Measurable f) (hfb : ∀ x, |f x| ≤ M) (hfz : ∀ y, y < c → f y = 0) (L : ℝ) :
+    IntegrableOn f (Iic L) := by
+  have heq : (Iic L).indicator f = (Icc c L).indicator f := by
+    funext x
+    by_cases h1 : x ≤ L
+    · by_cases h2 : c ≤ x
+      · rw [Set.indicator_of_mem (mem_Iic.mpr h1),
+          Set.indicator_of_mem (Set.mem_Icc.mpr ⟨h2, h1⟩)]
+      · rw [Set.indicator_of_mem (mem_Iic.mpr h1),
+          Set.indicator_of_notMem (by simp only [mem_Icc, not_and]; intro hc; exact absurd hc h2)]
+        exact hfz x (not_le.mp h2)
+    · rw [Set.indicator_of_notMem (by simpa using h1),
+        Set.indicator_of_notMem (by simp only [mem_Icc, not_and]; intro _; exact h1)]
+  have hIcc : IntegrableOn f (Icc c L) := by
+    have hfin : IsFiniteMeasure (volume.restrict (Icc c L)) := by
+      constructor; simp
+    exact Integrable.mono' (integrable_const M) hf.aestronglyMeasurable
+      (Filter.Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact hfb x)
+  rw [← MeasureTheory.integrable_indicator_iff measurableSet_Iic, heq,
+    MeasureTheory.integrable_indicator_iff measurableSet_Icc]
+  exact hIcc
+
+open MeasureTheory Set in
+/-- The primitive's increment, for a profile vanishing below an arbitrary threshold. -/
+theorem fullPrimitive_sub' {f : ℝ → ℝ} {M c : ℝ}
+    (hf : Measurable f) (hfb : ∀ x, |f x| ≤ M) (hfz : ∀ y, y < c → f y = 0)
+    {L' L : ℝ} (h : L' ≤ L) :
+    fullPrimitive f L - fullPrimitive f L' = ∫ x in Ioc L' L, f x := by
+  have hsplit : Iic L = Iic L' ∪ Ioc L' L := by
+    ext x
+    simp only [mem_Iic, mem_union, mem_Ioc]
+    constructor
+    · intro hx
+      rcases le_or_gt x L' with hc | hc
+      · exact Or.inl hc
+      · exact Or.inr ⟨hc, hx⟩
+    · rintro (hc | ⟨_, hc⟩)
+      · linarith
+      · exact hc
+  have hdisj : Disjoint (Iic L') (Ioc L' L) := by
+    rw [Set.disjoint_left]
+    intro x hx hx'
+    exact absurd hx' (by simp only [mem_Ioc, not_and]; intro hc; linarith [mem_Iic.mp hx])
+  have h1 : IntegrableOn f (Iic L') := integrableOn_Iic_of_vanishing' hf hfb hfz L'
+  have h2 : IntegrableOn f (Ioc L' L) :=
+    (integrableOn_Iic_of_vanishing' hf hfb hfz L).mono_set fun x hx => mem_Iic.mpr hx.2
+  unfold fullPrimitive
+  rw [hsplit, setIntegral_union hdisj measurableSet_Ioc h1 h2]
+  ring
+
+open MeasureTheory Set in
+/-- **The two operators differ by the constant `∫_{Iic 0} f`.** -/
+theorem logDirichlet_eq_fullLogDirichlet_add {f : ℝ → ℝ} {M c : ℝ}
+    (hf : Measurable f) (hfb : ∀ x, |f x| ≤ M) (hfz : ∀ y, y < c → f y = 0)
+    {L : ℝ} (hL : 0 ≤ L) :
+    logDirichlet f L = fullLogDirichlet f L + fullPrimitive f 0 := by
+  have h := fullPrimitive_sub' hf hfb hfz hL
+  unfold logDirichlet fullLogDirichlet halfLinePrimitive
+  rw [intervalIntegral.integral_of_le hL]
+  linarith [h]
+
+open MeasureTheory Set in
+/-- **`(18)` in half-line form.**  The mollified equation transfers to the operator the trace
+theorem consumes, with the source shifted by the constant `∫_{Iic 0} (ρ * f)`. -/
+theorem mollified_equation_halfLine {ρ f S : ℝ → ℝ} {ε K M Mρ : ℝ}
+    (hρ : Continuous ρ) (hcρ : HasCompactSupport ρ) (hsupp : ∀ t, ε < |t| → ρ t = 0)
+    (hfc : Continuous f) (hK : ∀ x y, |f x - f y| ≤ K * |x - y|) (hM : ∀ x, |f x| ≤ M)
+    (hfz : ∀ y, y < 0 → f y = 0)
+    (hmb : ∀ x, |mollify ρ f x| ≤ Mρ) (hmm : Measurable (mollify ρ f))
+    (heq : ∀ Y, fullLogDirichlet f Y + gammaTransport f Y = S Y)
+    {L : ℝ} (hL : 0 ≤ L) :
+    logDirichlet (mollify ρ f) L + gammaTransport (mollify ρ f) L
+      = (mollify ρ S L + 2 * mollify (firstMomentKernel ρ) f L)
+        + fullPrimitive (mollify ρ f) 0 := by
+  have h18 := mollified_equation hρ hcρ hsupp hfc hK hM hfz heq L
+  have hoff := logDirichlet_eq_fullLogDirichlet_add (c := -ε) hmm hmb
+    (fun y hy => mollify_eq_zero_of_lt hsupp hfz hy) hL
+  linarith [h18, hoff]
+
+/-! ## The card's theorem, end to end
+
+The equation for the profile, mollified by `(14)`–`(18)`, transferred to the half-line operator, and
+fed to the trace theorem.  Every step is a lemma of this file or of the transport/penalized-maximum
+layers, and every hypothesis is object regularity or one of the card's own numbered assertions.
+-/
+
+open Filter MeasureTheory Set in
+/-- **The signed half-log trace of a mollified profile.**  The card's chain end to end: the
+equation for `f`, mollified by `(14)`–`(18)`, fed to the trace theorem. -/
+theorem tendsto_halfLogTrace_mollified
+    {ρ f S : ℝ → ℝ} {ε K M Mρ a T Tl B L₀ : ℝ}
+    (hρ : Continuous ρ) (hcρ : HasCompactSupport ρ) (hsupp : ∀ t, ε < |t| → ρ t = 0)
+    (hfc : Continuous f) (hK : ∀ x y, |f x - f y| ≤ K * |x - y|) (hM : ∀ x, |f x| ≤ M)
+    (hfz : ∀ y, y < 0 → f y = 0)
+    (heq : ∀ Y, fullLogDirichlet f Y + gammaTransport f Y = S Y)
+    (hmb : ∀ x, |mollify ρ f x| ≤ Mρ) (hmm : Measurable (mollify ρ f))
+    (hmc : Continuous (mollify ρ f)) (hmpos : ∀ x, 0 ≤ mollify ρ f x)
+    (ha : 0 ≤ a)
+    (hHcont : ContinuousOn (fun L => Real.sqrt L * mollify ρ f L) (Ici a))
+    (hHup : ∀ L ∈ Ici a, Real.sqrt L * mollify ρ f L ≤ B)
+    (hHlow : ∀ L ∈ Ici a, -B ≤ Real.sqrt L * mollify ρ f L)
+    (hnear : ∀ Y, IntegrableOn
+      (fun s => secondDifference (mollify ρ f) Y s * gammaTransportKernel s) (Ioc 0 (Y / 2)))
+    (hnumlow : ∀ L₀' Y, ∀ s, 0 ≤ s → s ≤ Y / 2 →
+      0 ≤ mollify ρ f Y - (Real.sqrt L₀')⁻¹ * s / Real.sqrt Y)
+    (hSu : ∀ Y, a ≤ Y →
+      (mollify ρ S Y + 2 * mollify (firstMomentKernel ρ) f Y)
+        + fullPrimitive (mollify ρ f) 0 ≤ T)
+    (hSl : ∀ Y, a ≤ Y → Tl ≤
+      (mollify ρ S Y + 2 * mollify (firstMomentKernel ρ) f Y)
+        + fullPrimitive (mollify ρ f) 0)
+    (hL₀ : 0 < L₀)
+    (hAint : IntegrableOn
+      (fun L => logDirichlet (mollify ρ f) L / (4 * L * Real.sqrt L)) (Ioi L₀)) :
+    Tendsto (fun L => Real.sqrt L * mollify ρ f L) atTop
+      (nhds (halfLogAverage (mollify ρ f) L₀
+        + ∫ x in Ioi L₀, logDirichlet (mollify ρ f) x / (4 * x * Real.sqrt x))) :=
+  tendsto_halfLogTrace_of_equation_of_integrable hmb hmm hmpos hmc hHcont hHup hHlow hnear hnumlow
+    (fun _ hY => mollified_equation_halfLine hρ hcρ hsupp hfc hK hM hfz hmb hmm heq
+      (le_trans ha hY))
+    hSu hSl hL₀ hAint
+
+/-! ## The one-sided decomposition
+
+The symmetric second difference splits into a forward and a backward one-sided difference.  Each is
+separately integrable against the kernel — the Lipschitz bound cancels the pole on either side —
+which is what lets the transport operator be written in the parent card's half-line form
+`R_half F + q F`.
+-/
+
+/-- The forward one-sided difference of the transport operator. -/
+noncomputable def forwardDifference (f : ℝ → ℝ) (L s : ℝ) : ℝ := f L - f (L + s)
+
+/-- The backward one-sided difference. -/
+noncomputable def backwardDifference (f : ℝ → ℝ) (L s : ℝ) : ℝ := f L - f (L - s)
+
+theorem secondDifference_eq_add (f : ℝ → ℝ) (L s : ℝ) :
+    secondDifference f L s = forwardDifference f L s + backwardDifference f L s := by
+  unfold secondDifference forwardDifference backwardDifference
+  ring
+
+theorem abs_forwardDifference_mul_kernel_le_near {f : ℝ → ℝ} {K : ℝ}
+    (hK : ∀ x y, |f x - f y| ≤ K * |x - y|) {L s : ℝ} (hs : 0 < s) :
+    |forwardDifference f L s * gammaTransportKernel s| ≤ K := by
+  have hk : 0 < gammaTransportKernel s := gammaTransportKernel_pos hs
+  have hd : |forwardDifference f L s| ≤ K * s := by
+    unfold forwardDifference
+    have h := hK L (L + s)
+    rw [show |L - (L + s)| = s by rw [show L - (L + s) = -s by ring, abs_neg,
+      abs_of_pos hs]] at h
+    exact h
+  have hinv := gammaTransportKernel_le_inv hs
+  have hK0 : 0 ≤ K := by
+    have h := hK 1 0
+    rw [show |(1:ℝ) - 0| = 1 by norm_num, mul_one] at h
+    linarith [abs_nonneg (f 1 - f 0)]
+  rw [abs_mul, abs_of_pos hk]
+  calc |forwardDifference f L s| * gammaTransportKernel s
+      ≤ (K * s) * (1 / s) := mul_le_mul hd hinv hk.le (by positivity)
+    _ = K := by field_simp
+
+theorem abs_forwardDifference_mul_kernel_le_far {f : ℝ → ℝ} {M : ℝ}
+    (hM : ∀ x, |f x| ≤ M) {L s : ℝ} (hs : 1 ≤ s) :
+    |forwardDifference f L s * gammaTransportKernel s| ≤ 4 * M * Real.exp (-s) := by
+  have hs0 : 0 < s := by linarith
+  have hk : 0 < gammaTransportKernel s := gammaTransportKernel_pos hs0
+  have hM0 : 0 ≤ M := le_trans (abs_nonneg (f 0)) (hM 0)
+  have hd : |forwardDifference f L s| ≤ 2 * M := by
+    unfold forwardDifference
+    have h1 := abs_le.mp (hM L)
+    have h2 := abs_le.mp (hM (L + s))
+    rw [abs_le]; constructor <;> linarith
+  have htail := gammaTransportKernel_le_two_mul_exp_neg hs
+  rw [abs_mul, abs_of_pos hk]
+  calc |forwardDifference f L s| * gammaTransportKernel s
+      ≤ (2 * M) * (2 * Real.exp (-s)) := mul_le_mul hd htail hk.le (by linarith)
+    _ = 4 * M * Real.exp (-s) := by ring
+
+open MeasureTheory Set in
+theorem abs_backwardDifference_mul_kernel_le_near {f : ℝ → ℝ} {K : ℝ}
+    (hK : ∀ x y, |f x - f y| ≤ K * |x - y|) {L s : ℝ} (hs : 0 < s) :
+    |backwardDifference f L s * gammaTransportKernel s| ≤ K := by
+  have hk : 0 < gammaTransportKernel s := gammaTransportKernel_pos hs
+  have hd : |backwardDifference f L s| ≤ K * s := by
+    unfold backwardDifference
+    have h := hK L (L - s)
+    rw [show |L - (L - s)| = s by rw [show L - (L - s) = s by ring, abs_of_pos hs]] at h
+    exact h
+  have hinv := gammaTransportKernel_le_inv hs
+  have hK0 : 0 ≤ K := by
+    have h := hK 1 0
+    rw [show |(1:ℝ) - 0| = 1 by norm_num, mul_one] at h
+    linarith [abs_nonneg (f 1 - f 0)]
+  rw [abs_mul, abs_of_pos hk]
+  calc |backwardDifference f L s| * gammaTransportKernel s
+      ≤ (K * s) * (1 / s) := mul_le_mul hd hinv hk.le (by positivity)
+    _ = K := by field_simp
+
+open MeasureTheory Set in
+theorem abs_backwardDifference_mul_kernel_le_far {f : ℝ → ℝ} {M : ℝ}
+    (hM : ∀ x, |f x| ≤ M) {L s : ℝ} (hs : 1 ≤ s) :
+    |backwardDifference f L s * gammaTransportKernel s| ≤ 4 * M * Real.exp (-s) := by
+  have hs0 : 0 < s := by linarith
+  have hk : 0 < gammaTransportKernel s := gammaTransportKernel_pos hs0
+  have hM0 : 0 ≤ M := le_trans (abs_nonneg (f 0)) (hM 0)
+  have hd : |backwardDifference f L s| ≤ 2 * M := by
+    unfold backwardDifference
+    have h1 := abs_le.mp (hM L)
+    have h2 := abs_le.mp (hM (L - s))
+    rw [abs_le]; constructor <;> linarith
+  have htail := gammaTransportKernel_le_two_mul_exp_neg hs
+  rw [abs_mul, abs_of_pos hk]
+  calc |backwardDifference f L s| * gammaTransportKernel s
+      ≤ (2 * M) * (2 * Real.exp (-s)) := mul_le_mul hd htail hk.le (by linarith)
+    _ = 4 * M * Real.exp (-s) := by ring
+
+open MeasureTheory Set in
+/-- **Each one-sided piece is separately integrable.**  Dominated by `transportMajorant`, whose
+constants are twice the one-sided ones. -/
+theorem integrableOn_forwardDifference_kernel {f : ℝ → ℝ} {K M : ℝ}
+    (hfc : Continuous f) (hK : ∀ x y, |f x - f y| ≤ K * |x - y|) (hM : ∀ x, |f x| ≤ M) (L : ℝ) :
+    IntegrableOn (fun s => forwardDifference f L s * gammaTransportKernel s) (Ioi 0) := by
+  have hK0 : 0 ≤ K := by
+    have h := hK 1 0
+    rw [show |(1:ℝ) - 0| = 1 by norm_num, mul_one] at h
+    linarith [abs_nonneg (f 1 - f 0)]
+  have hM0 : 0 ≤ M := le_trans (abs_nonneg (f 0)) (hM 0)
+  have hmeas : Measurable fun s => forwardDifference f L s * gammaTransportKernel s := by
+    unfold forwardDifference
+    exact ((continuous_const.sub (hfc.comp (continuous_const.add continuous_id))).measurable).mul
+      measurable_gammaTransportKernel
+  refine Integrable.mono' (integrableOn_transportMajorant K M) hmeas.aestronglyMeasurable ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with s hs
+  rw [Real.norm_eq_abs]
+  unfold transportMajorant
+  by_cases hle : s ≤ 1
+  · rw [if_pos hle]
+    linarith [abs_forwardDifference_mul_kernel_le_near hK (L := L) (mem_Ioi.mp hs)]
+  · rw [if_neg hle]
+    nlinarith [abs_forwardDifference_mul_kernel_le_far hM (L := L) (le_of_lt (not_le.mp hle)),
+      Real.exp_pos (-s), hM0]
+
+open MeasureTheory Set in
+theorem integrableOn_backwardDifference_kernel {f : ℝ → ℝ} {K M : ℝ}
+    (hfc : Continuous f) (hK : ∀ x y, |f x - f y| ≤ K * |x - y|) (hM : ∀ x, |f x| ≤ M) (L : ℝ) :
+    IntegrableOn (fun s => backwardDifference f L s * gammaTransportKernel s) (Ioi 0) := by
+  have hK0 : 0 ≤ K := by
+    have h := hK 1 0
+    rw [show |(1:ℝ) - 0| = 1 by norm_num, mul_one] at h
+    linarith [abs_nonneg (f 1 - f 0)]
+  have hM0 : 0 ≤ M := le_trans (abs_nonneg (f 0)) (hM 0)
+  have hmeas : Measurable fun s => backwardDifference f L s * gammaTransportKernel s := by
+    unfold backwardDifference
+    exact ((continuous_const.sub (hfc.comp (continuous_const.sub continuous_id))).measurable).mul
+      measurable_gammaTransportKernel
+  refine Integrable.mono' (integrableOn_transportMajorant K M) hmeas.aestronglyMeasurable ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with s hs
+  rw [Real.norm_eq_abs]
+  unfold transportMajorant
+  by_cases hle : s ≤ 1
+  · rw [if_pos hle]
+    linarith [abs_backwardDifference_mul_kernel_le_near hK (L := L) (mem_Ioi.mp hs)]
+  · rw [if_neg hle]
+    nlinarith [abs_backwardDifference_mul_kernel_le_far hM (L := L) (le_of_lt (not_le.mp hle)),
+      Real.exp_pos (-s), hM0]
+
+open MeasureTheory Set in
+/-- **The transport operator splits into its two one-sided halves.**  Each is separately
+integrable, so the sum may be taken apart — this is what the parent card's half-line form
+`R_half F + q F` requires. -/
+theorem gammaTransport_eq_add {f : ℝ → ℝ} {K M : ℝ}
+    (hfc : Continuous f) (hK : ∀ x y, |f x - f y| ≤ K * |x - y|) (hM : ∀ x, |f x| ≤ M) (L : ℝ) :
+    gammaTransport f L
+      = (∫ s in Ioi (0:ℝ), forwardDifference f L s * gammaTransportKernel s)
+        + ∫ s in Ioi (0:ℝ), backwardDifference f L s * gammaTransportKernel s := by
+  have hf := integrableOn_forwardDifference_kernel hfc hK hM L
+  have hb := integrableOn_backwardDifference_kernel hfc hK hM L
+  unfold gammaTransport
+  rw [← MeasureTheory.integral_add hf hb]
+  refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
+  show secondDifference f L s * gammaTransportKernel s
+    = forwardDifference f L s * gammaTransportKernel s
+      + backwardDifference f L s * gammaTransportKernel s
+  rw [secondDifference_eq_add]
+  ring
+
+open MeasureTheory Set in
+/-- **The backward half is the half-line remainder plus the boundary term.**  Beyond `s = L` the
+reflected argument has left the support, so the integrand is `k(s) F(L)` and its integral is
+`q(L) F(L)`; this is the card's `(1)` boundary correction. -/
+theorem integral_backwardDifference_split {F : ℝ → ℝ} {K M L : ℝ} (hL : 0 < L)
+    (hfc : Continuous (zeroExtend F))
+    (hK : ∀ x y, |zeroExtend F x - zeroExtend F y| ≤ K * |x - y|)
+    (hM : ∀ x, |zeroExtend F x| ≤ M) :
+    (∫ s in Ioi (0:ℝ), backwardDifference (zeroExtend F) L s * gammaTransportKernel s)
+      = (∫ s in Ioc (0:ℝ) L, backwardDifference (zeroExtend F) L s * gammaTransportKernel s)
+        + (-Real.log (1 - Real.exp (-L))) * zeroExtend F L := by
+  have hsplit : Ioi (0:ℝ) = Ioc 0 L ∪ Ioi L := by
+    ext x
+    simp only [mem_Ioi, mem_union, mem_Ioc]
+    constructor
+    · intro hx
+      rcases le_or_gt x L with h | h
+      · exact Or.inl ⟨hx, h⟩
+      · exact Or.inr h
+    · rintro (⟨h, _⟩ | h)
+      · exact h
+      · linarith
+  have hdisj : Disjoint (Ioc (0:ℝ) L) (Ioi L) := by
+    rw [Set.disjoint_left]
+    intro x hx hx'
+    exact absurd hx.2 (not_le.mpr hx')
+  have hall := integrableOn_backwardDifference_kernel hfc hK hM L
+  have h1 : IntegrableOn
+      (fun s => backwardDifference (zeroExtend F) L s * gammaTransportKernel s) (Ioc 0 L) :=
+    hall.mono_set fun x hx => mem_Ioi.mpr hx.1
+  have h2 : IntegrableOn
+      (fun s => backwardDifference (zeroExtend F) L s * gammaTransportKernel s) (Ioi L) :=
+    hall.mono_set fun x hx => mem_Ioi.mpr (lt_trans hL hx)
+  rw [hsplit, setIntegral_union hdisj measurableSet_Ioi h1 h2]
+  congr 1
+  have hfar : (∫ s in Ioi L, backwardDifference (zeroExtend F) L s * gammaTransportKernel s)
+      = ∫ s in Ioi L, gammaTransportKernel s * zeroExtend F L := by
+    refine setIntegral_congr_fun measurableSet_Ioi fun s hs => ?_
+    unfold backwardDifference
+    rw [zeroExtend_reflect_eq_zero (mem_Ioi.mp hs), sub_zero]
+    ring
+  rw [hfar, MeasureTheory.integral_mul_const, integral_Ioi_gammaTransportKernel hL]
+
+/-! ## The half-line normal form
+
+The parent card states the equation with the *half-line* remainder and an explicit boundary term
+`q(L) F(L)`.  That is the whole-line transport operator on the zero extension, decomposed into its
+two one-sided halves with the backward half split at `s = L`.
+-/
+
+open MeasureTheory Set in
+/-- **The parent card's `(1)`.**  The whole-line transport operator on the zero extension is the
+half-line remainder plus the boundary term `q(L) F(L)`. -/
+theorem gammaTransport_eq_halfLine_add_boundary {F : ℝ → ℝ} {K M L : ℝ} (hL : 0 < L)
+    (hfc : Continuous (zeroExtend F))
+    (hK : ∀ x y, |zeroExtend F x - zeroExtend F y| ≤ K * |x - y|)
+    (hM : ∀ x, |zeroExtend F x| ≤ M) :
+    gammaTransport (zeroExtend F) L
+      = ((∫ s in Ioi (0:ℝ),
+            forwardDifference (zeroExtend F) L s * gammaTransportKernel s)
+          + ∫ s in Ioc (0:ℝ) L,
+            backwardDifference (zeroExtend F) L s * gammaTransportKernel s)
+        + (-Real.log (1 - Real.exp (-L))) * zeroExtend F L := by
+  rw [gammaTransport_eq_add hfc hK hM L,
+    integral_backwardDifference_split hL hfc hK hM]
+  ring
 
 end GaloisForLFunctions.HTGeometry

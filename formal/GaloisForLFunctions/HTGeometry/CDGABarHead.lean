@@ -92,7 +92,7 @@ theorem barHead_apply (n : ℕ)
     (F : TensorCarrier (R := R) (barShiftFamily ε)
       (TensorCarrier (R := R) (barShiftFamily ε) Z) n)
     (p : {ce : ℕ × ℕ // ce.1 + ce.2 = n + 1}) :
-    barHead ε Z n F p
+    barHeadₗ ε Z n F p
       = ∑ s : BarSplit p.1.1, barHeadTermₗ ε Z n p.1.1 p.1.2 p.2 s.1.1 s.1.2 s.2 F := by
   show barHeadTermSum ε Z n p F = _
   rw [barHeadTermSum, LinearMap.sum_apply]

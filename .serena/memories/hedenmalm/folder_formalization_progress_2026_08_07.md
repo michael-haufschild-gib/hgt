@@ -1051,3 +1051,259 @@ TRAPS hit:
   `simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hx` first.
 - `field_simp at h; rcases h with h|h` on a real equation can make `rcases` attempt dependent
   elimination on `Quot.mk CauSeq.equiv`; multiply through with `congrArg` instead.
+
+## CARD 5 PROMOTED TO STAGE 3 (2026-08-07)
+
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/hedenmalm/`
+`hedenmalm-two-prime-theta-interval-normal-frame.md` + `-formalized.md` companion.
+Last additions: `(8)` evenness/reality (`centeredMultiplierE_neg`, `centeredMultiplierE_conj`),
+`(11)` conormal module (`principalCotangentEquiv`, `xiConormalEquiv`),
+`(12)` generation (`span_windowCotangent_eq_top`),
+`(21)` (`essential_pair_ne_zero`).
+**4 of 11 cards now in stage 3.**
+
+## THE FOLDER HAS 11 CARDS, NOT 9
+
+Two more were added to stage 2 since the earlier count:
+`theta-compact-boundary-flux-energy.md`, `theta-compact-squared-seam-pencil.md`.
+Both already have their Lean targets built
+(`HedenmalmThetaCompactFluxEnergy.lean`, `HedenmalmThetaSquaredSeamPencil.lean`).
+
+## CONCURRENCY WARNING — MULTIPLE CLAUDE SESSIONS SHARE THIS TREE
+
+At least five `claude` processes run against `/Users/michael/Documents/code/hgt` simultaneously.
+Observed this session:
+- `HedenmalmThetaCompactFluxEnergy.lean` grew from 97 to 267 lines WHILE I was writing a module
+  proving the same theorem (`Re<R2 v_q,v_q> = 2 M Im(z) E_q`).  I deleted my duplicate
+  `HedenmalmThetaCompactBoundaryFlux.lean`; the other session's version is better (it has the
+  general-`z` lemma `inner_pinnedBoundaryCLM_thetaDivisorEigenmode`).
+- Another session already built `HedenmalmTwoPrimeBezoutGrowthNoGo.lean` on top of my
+  `HedenmalmTwoPrimeBezout.lean` within minutes of my creating it.
+- Other sessions run `git add`/`git commit`, so my new files appear already tracked.
+
+RULES ADOPTED:
+1. NEVER rewrite a whole file with `python3`/`cat >` unless this session created it in this
+   session.  Use the `Edit` tool (targeted replacement) for umbrellas and shared modules.
+2. Re-read a shared file immediately before editing; `wc -l` it first if it was read long ago.
+3. `test -f` before any `cat >` (already a rule; it did not catch this case because the
+   collision was in a DIFFERENT file that grew).
+4. Before starting a card, check `find GaloisForLFunctions -name '*.lean' -newermt '<1h ago>'`
+   to see where other sessions are working.
+5. The memory ledger goes stale fast.  Card 9 was recorded as "untouched, one gate"; it is in
+   fact ~95 % formalized by other sessions, with only the closability/domain theorem and the
+   closed-form Guinand-Weil prime formula open.
+
+## NEW GENERAL ASSETS BUILT THIS SESSION (all axiom-clean)
+
+| module | content |
+|---|---|
+| `HTGeometry/EntireInterpolation.lean` | `exists_entire_interpolation` — Mittag-Leffler |
+| `HTGeometry/EntireBezout.lean` | `exists_entire_quotient` (analytic division), `exists_entire_bezout` (Wedderburn) |
+| `HTGeometry/PrincipalConormal.lean` | `principalCotangentEquiv` — `R/(g) ≃ (g)/(g)²` |
+| `HTGeometry/UnboundedFredholm.lean` | `LinearPMap.kernel`, `.rangeSubmodule`, `.IsFredholm`, `.index`, `index_eq_neg_one_of_injective_of_range_eq_ker`, `isFredholm_of_injective_of_range_eq_ker` |
+| `RHTower/HedenmalmTwoPrimeBezout.lean` | `centeredMultiplierE` + `exists_two_prime_bezout` |
+| `RHTower/HedenmalmTwoPrimeIdeal.lean` | `(14)`, `(17)`, `(11)`, `(12)` |
+
+`UnboundedFredholm` is the abstract half of card 6's missing layer.  Card 6's `(4)` now reduces to
+two CONCRETE analytic facts at the theta source:
+  (a) `ker (A + alpha) = ⊥` on `H_k`;
+  (b) `range (A + alpha) = ker φ_alpha` where `φ_alpha f = ∫ f conj(g_alpha)/k`.
+The corpus already has `⊆` of (b) (`integral_range_pairing`) and the explicit solution
+(`twoEndedSolution_equation`); what is missing is that the solution lies in `H_k`.
+
+Lean traps added: `IsClosed` is SHADOWED inside `namespace LinearPMap` by `LinearPMap.IsClosed`
+— write `_root_.IsClosed`.  `LinearPMap.ker`/`LinearPMap.range` DO NOT EXIST in mathlib.
+
+## Card 7 (9): the quantile calibration half is BUILT (2026-08-07)
+
+`RHTower/HedenmalmQuantileSliceMoment.lean` — `abs_pinnedKernelSlice_le_weight`,
+`sliceDominant`, `integrable_sliceDominant`,
+`integrable_quantileSpeed_mul_pinnedKernelSlice`, `sliceMoment`,
+`sliceMoment_sub_of_le`, `sliceMoment_add_quantileFun_eq`.
+
+KEY ANALYTIC POINT: `q` is NOT integrable on `(0,1)` (∫q = ∫dx = ∞), so no naive splitting of
+`∫ q(t)(1_{s≤t} − t) dt` is allowed.  The working domination is
+  `|1_{s≤t} − t| ≤ t(1−t)/min(s,1−s)`   (proved: `abs_pinnedKernelSlice_le_weight`)
+combined with AM-GM `q·w ≤ (q²w + w)/2` for `w = t(1−t) ≥ 0`, so the integrand is dominated by
+`(q²t(1−t) + t(1−t))/(2 min(s,1−s))`, integrable by `HasFiniteKernelEnergy` plus a constant.
+NO Cauchy-Schwarz needed.
+
+THE REMAINING TWO STEPS OF (9), in order:
+1. Pin the constant: `∫₀¹ sliceMoment S s ds = 0`, giving `sliceMoment S s = -Q s`.
+   Fubini on `(0,1)²`; the product integrand `q(t)(1_{s≤t}−t)` has
+   `∫₀¹|1_{s≤t}−t| ds = 2t(1−t)`, so the iterated absolute integral is `∫ 2q(t)t(1−t) < ∞`.
+   WARNING: there is NO uniform-in-`s` dominating function (`t(1−t)/min(s,1−s)` is not
+   `s`-integrable, and `|1_{s≤t}−t| ≤ 1` gives the non-integrable `q`), so this must go through
+   Tonelli on the iterated integral, not through `Integrable.mono'`.
+   Then `∫₀¹Q = 0` (`integral_quantileFun`) fixes the constant to 0.
+2. `tr(B²) = ∬ K(t,u)K(u,t)`.  Derivation that AVOIDS constructing the adjoint as a kernel
+   operator: `opTrace (B∘B) = ∑_i ⟪e_i, B(B e_i)⟫`; write `B f (t) = ⟪y_t, f⟫`, so
+   `⟪e_i,B(Be_i)⟫ = ∬ conj(e_i(t)) conj(y_t(u)) ⟪y_u,e_i⟫ du dt`, and Parseval
+   `∑_i ⟪y_u,e_i⟫ conj(e_i(t)) = conj(y_u(t))` collapses the sum.  With `K(t,u) = conj(y_t(u))`
+   this is `∬ K(t,u)K(u,t)`.
+   Then `K(t,u)K(u,t) = q(t)q(u)(min(t,u) − t u)` (the `-i` squares to `-1` and the sign flips),
+   and `min(t,u) − tu = ∫₀¹ (1_{s≤t}−t)(1_{s≤u}−u) ds`, so Fubini gives
+   `∫₀¹ (sliceMoment S s)² ds = ∫₀¹ Q² = M⁻¹∫x²k` — which is `integral_sq_quantileFun`.
+
+## Card 7 (9) STEP 1 IS CLOSED — the constant is pinned (2026-08-08)
+
+`sliceMoment_eq_neg_quantileFun : sliceMoment thetaSource s = -Q s` for `s ∈ Ioo 0 1`.
+
+**The Fubini was NOT needed.**  The additive constant is pinned by reflection instead:
+- `quantileFun_one_sub : Q (1-s) = -Q s`   (from `cdfFun_neg` + `quantile_cdfFun`)
+- `quantileSpeed_one_sub : q (1-t) = q t`  (k even)
+- `sliceMoment_one_sub (s) : sliceMoment (1-s) = -sliceMoment s`
+  (via `intervalIntegral.integral_comp_sub_left` with `d = 1`, `a = 0`, `b = 1`; the two integrands
+  differ only at `t = s`, a null set — filter on `t ≠ s` AND `t ≠ 1`, because `quantileSpeed_one_sub`
+  needs `t ∈ Ioo 0 1` and `Ι 0 1 = Ioc 0 1` contains 1)
+- combined with `sliceMoment_add_quantileFun_eq` (constancy) at `s` and `1-s`: `2(F+Q) = 0`.
+
+Also banked: `integral_sq_sliceMoment : ∫₀¹ (sliceMoment s)² = M⁻¹∫x²k`.
+
+**(9) IS NOW EXACTLY ONE STATEMENT**: `thetaTraceSq = ∬ K(t,u)K(u,t) dt du`.
+Then `K(t,u)K(u,t) = q(t)q(u)(min(t,u) − tu)` and
+`min(t,u) − tu = ∫₀¹(1_{s≤t}−t)(1_{s≤u}−u)ds` gives `∫₀¹(sliceMoment s)² ds` by Fubini,
+which `integral_sq_sliceMoment` evaluates.
+
+Lean traps added:
+- `le_of_not_le` no longer exists; use `not_le.mp h |>.le`.
+- `ae_iff.mpr (by simp)` proves `∀ᵐ t, t ≠ c` directly; do not hand-build it from
+  `measure_singleton` (the `NullSingletonClass` instance gets stuck on metavariables).
+- `continuousOn_quantileSpeed` is AMBIGUOUS (both `HedenmalmHilbertSchmidt` and
+  `HedenmalmQuantile` export it); qualify it.
+
+## Card 7 (9): the transposed row is BUILT (2026-08-08)
+
+`RHTower/HedenmalmTransposeKernelField.lean` — `transposeKernelFun`,
+`transposeKernelFun_eq_conj`, `norm_transposeKernelFun`, `measurable_transposeKernelFun`,
+`memLp_transposeKernelFun`, `transposeKernelVec`, `transposeKernelVec_coeFn`.
+
+Orientation, so nobody re-derives it wrongly:
+`pinnedKernelFun S t u = i q(t) (1_{u≤t} − t)` is `K(t,u)`, the row of `B` at `t`.
+`(B* g)(t) = ∫ conj(K(u,t)) g(u) du`, so the row of `B*` at `t` is
+`transposeKernelFun S t u = conj(K(u,t)) = -i q(u)(1_{t≤u} − u)` — the speed is at `u`, INSIDE the
+vector, not an outside scalar.  That is why the corpus template
+(`pinnedKernelVec_eq_smul` + `continuous_pinnedSliceVec`) does NOT transfer: `q ∉ L²(0,1)`
+(`∫q² = ∫ M/k dx = ∞`), so the row cannot be split into two L² pieces.
+The energy is finite only through `abs_pinnedKernelSlice_le_weight` plus `u(1−u) ≤ 1/4`.
+
+REMAINING for (9), in order:
+1. `t ↦ transposeKernelVec t` is L²-continuous on `(0,1)`:
+   `‖v_t − v_{t'}‖² = ∫_{Ico t' t} q(u)² du`, continuous because `q` is continuous on `(0,1)`
+   so `q²` is locally integrable there and its primitive is continuous.
+2. hence `AEStronglyMeasurable`, then `MemLp … 2` for the FIELD
+   `t ↦ innerSL ℂ (conj-adjusted transposeKernelVec t)` — total energy
+   `∫_t ‖v_t‖² dt = ∫_u q(u)² u(1−u) du` (one Fubini, or dominate).
+3. `adjoint thetaKernelOperator = kernelOperator μ transposeKernelL2`.
+4. `thetaTraceSq = hsInner (adjoint B) B` (BUILT: `thetaTraceSq_eq_hsInner`) and then
+   `hsInner_kernelOperator` (BUILT, `RHTower/KernelOperatorPolarization.lean`) gives the double
+   integral; `integral_sq_sliceMoment` finishes.
+
+## Card 7 (9): the transposed family is L²-CONTINUOUS (2026-08-08)
+
+Added to `RHTower/HedenmalmTransposeKernelField.lean`:
+`norm_sq_transposeKernelFun_sub`, `integral_norm_sq_transposeKernelFun_sub`,
+`transposeVec` (TOTAL function, `dif_pos` on `Ioo 0 1`, else 0), `transposeVec_coeFn`,
+`norm_sq_transposeVec_sub`, `norm_sq_transposeVec_sub'`,
+`setIntegral_quantileSpeed_sq_le`, `continuousOn_transposeVec`.
+
+The mechanism: `‖v_t − v_{t'}‖² = ∫_{Ico t' t} q²`, and on a compact `[a,b] ⊂ (0,1)` the
+continuous `q²` is bounded by some `C`, so `‖v_t − v_{t₀}‖² ≤ C|t−t₀|`.  NO primitive/FTC needed —
+just `setIntegral_mono_on` against the constant.  Take `a = t₀/2`, `b = (t₀+1)/2`.
+
+REMAINING for (9):
+1. `transposeKernelField S hfin t := innerSL ℂ (-(transposeVec S hfin t))`.
+   The sign is right because `conj (transposeKernelFun S t u) = -transposeKernelFun S t u`
+   (the function is `i` times a real), so the Riesz vector of the functional
+   `f ↦ ∫ transposeKernelFun S t u * f u du` is exactly `-transposeVec S hfin t`.
+   `ContinuousOn` then `AEStronglyMeasurable` exactly as `aestronglyMeasurable_pinnedKernelField`.
+2. `MemLp (transposeKernelField …) 2 μ`: `‖field t‖ = ‖v_t‖`, and
+   `∫_t ‖v_t‖² dt = ∫_u q(u)² u(1−u) du` — this DOES need the product measure, but in the order
+   with `u` OUTSIDE: `f(u,t) = q(u)² slice(u,t)²` has
+   - a.e. `u`: `Integrable (fun t => …)` (bounded × probability measure);
+   - `Integrable (fun u => ∫_t f(u,t) dt) = Integrable (fun u => q(u)² u(1−u))` = `HasFiniteKernelEnergy`
+     (using `integral_pinnedKernelSlice_sq` in the form `∫_t slice(u,t)² dt = u(1−u)`).
+   Then `Integrable.integral_prod_left` gives `Integrable (fun t => ∫_u f(u,t) du)`.
+   NOTE: there is NO uniform bound on `‖v_t‖²` — it blows up as `t → 0` or `1` — so the product
+   route is unavoidable here.
+3. `adjoint thetaKernelOperator = kernelOperator μ transposeKernelL2`.
+4. `thetaTraceSq_eq_hsInner` + `hsInner_kernelOperator` + `integral_sq_sliceMoment` finish.
+
+## Card 7 (9): the ADJOINT FIELD IS BUILT (2026-08-08)
+
+`RHTower/HedenmalmTransposeKernelField.lean` now has the full field:
+`conj_transposeKernelFun`, `transposeKernelField`, `transposeKernelField_apply`,
+`norm_transposeKernelField`, `continuousOn_transposeKernelField`,
+`aestronglyMeasurable_transposeKernelField`, `norm_sq_transposeVec`,
+`measurable_uncurry_slice_sq`, `memLp_transposeKernelField`, `transposeKernelL2`.
+
+`transposeKernelField S hfin t := innerSL ℂ (-(transposeVec S hfin t))` — the minus sign is forced
+by `conj_transposeKernelFun : conj (K*(t,u)) = -K*(t,u)`.
+
+The energy proof: `∫_t ‖v_t‖² dt` is a genuine product-measure statement (no uniform bound; the
+energy diverges at both endpoints).  It goes through `integrable_prod_iff` with the FIRST variable
+outside — inner integral `q(u)²∫_t slice(u,t)²dt = q(u)²u(1−u)`, outer integrability is exactly
+`HasFiniteKernelEnergy` — then `Integrable.integral_prod_right` transposes it.
+
+TRAPS:
+- `integrable_prod_iff` DOES cause an isDefEq timeout if the a.e.-slice measurability is supplied by
+  `(uncurry-measurable).comp measurable_prodMk_left`.  Prove the slice measurability DIRECTLY for
+  fixed `u` (`Measurable.ite measurableSet_Iic …`) and it goes through; `maxHeartbeats 2000000`
+  is still needed on the declaration.
+- `set_option … in` must come BEFORE the docstring, not between docstring and `theorem`.
+- `measurable_prodMk_left` has no argument named `a`.
+
+REMAINING for (9) — ONE STEP:
+`adjoint thetaKernelOperator = kernelOperator unitIntervalMeasure (transposeKernelL2 …)`.
+Use `ContinuousLinearMap.eq_adjoint_iff`: reduce to
+`⟪(kernelOperator T) f, g⟫ = ⟪f, B g⟫`, which is the Fubini
+`∬ K(u,t) conj(f u) g(t)` in the two orders.  Integrability of the 2-D integrand:
+`memLp_tensor` (in `HedenmalmThetaTrace.lean`) + `integrable_sq_norm_uncurry_pinnedKernelFun`
++ `MemLp.integrable_mul`.
+Then `thetaTraceSq_eq_hsInner` + `hsInner_kernelOperator` + `integral_sq_sliceMoment` close (9).
+
+## Card 7 (9): THE ADJOINT IDENTIFICATION IS PROVED (2026-08-08)
+
+`adjoint_kernelOperator_eq (S) (hfin) :`
+`  adjoint (kernelOperator μ (pinnedKernelL2 S hfin)) = kernelOperator μ (transposeKernelL2 S hfin)`
+
+This was the structural blocker of (9) since the start.  Proof: `ContinuousLinearMap.eq_adjoint_iff`
+then the Fubini `integral_integral_swap` on
+`F t u = pinnedKernelFun S u t * conj(f u) * g t`, whose product-integrability is
+`(memLp_swap_pinnedKernelFun).integrable_mul (memLp_tensor f g)`.
+Support lemmas added: `kernelOperator_ae_of_field` (general coeFn of a kernel operator),
+`transposeKernelL2_coeFn`, `pinnedKernelL2_coeFn`, `memLp_swap_pinnedKernelFun`,
+`neg_mul_pinnedKernelSlice`.
+
+TRAP: `rw [transposeKernelL2]` / `rw [pinnedKernelL2]` FAIL ("failed to rewrite using equation
+theorems") — these are `MemLp.toLp` defs.  Use a `coeFn` lemma (`MemLp.coeFn_toLp` stated ABOUT the
+def) and `rw [show … from h]` instead.
+
+REMAINING for (9) — the double-integral evaluation only:
+`thetaTraceSq_eq_hsInner` + `hsInner_kernelOperator` give
+`tr(B²) = ∫_t ⟪toDual.symm (pinnedKernelL2 t), toDual.symm (transposeKernelL2 t)⟫ dt`.
+The Riesz vectors are `-(i q(t)) • pinnedSliceVec t` and `-(transposeVec t)`, so this is
+`∫_t (-i q(t)) ∫_u slice(t,u) (-i q(u)) slice(u,t) du dt = -∬ q(t)q(u) slice(t,u)slice(u,t)`.
+Then `neg_mul_pinnedKernelSlice` (off-diagonal; the diagonal is null) gives
+`∬ q(t)q(u)(min(t,u) − t u)`, and
+`min(t,u) − tu = ∫₀¹ pinnedKernelSlice t s * pinnedKernelSlice u s ds`
+(check by the four sign cases; each `∫₀¹ 1_{s≤c} ds = c` for `c ∈ [0,1]`)
+turns it into `∫₀¹ (sliceMoment s)² ds = integral_sq_sliceMoment`.
+
+## Card 7 (9): the covariance decomposition is PROVED (2026-08-08)
+
+`integral_pinnedKernelSlice_mul (ht) (hu) (hle : t ≤ u) : ∫₀¹ slice(t,s) slice(u,s) ds = t(1-u)`
+`integral_pinnedKernelSlice_mul_min (ht) (hu) : ∫₀¹ slice(t,s) slice(u,s) ds = min t u - t u`
+
+Proof is the corpus `integral_pinnedKernelSlice_sq` template with a THREE-way split
+`Ioo 0 1 = Ioc 0 t ∪ Ioc t u ∪ Ioo u 1` (do it as two nested two-way splits), the integrand
+constant on each piece: `(1-t)(1-u)`, `-t(1-u)`, `t u`, with measures `t`, `u-t`, `1-u`.
+`Measure.integrableOn_of_bounded` supplies integrability on each piece.
+TRAP: `hint _ measurableSet_Ioc …` cannot infer the set; name it.
+
+EVERY INGREDIENT OF (9) IS NOW FORMALIZED.  What is left is only the two assembly interchanges:
+(a) evaluate `hsInner_kernelOperator` at the two Riesz vectors
+    (`-(i q(t)) • pinnedSliceVec t` and `-transposeVec t`) to reach
+    `-∬ q(t)q(u) slice(t,u) slice(u,t)`;
+(b) Fubini the `ds`-decomposition to reach `∫₀¹ (sliceMoment s)² ds`,
+    then `integral_sq_sliceMoment`.

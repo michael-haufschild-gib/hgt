@@ -291,6 +291,30 @@ theorem norm_sq_sub_norm_sq_timeBand_kaiserPhysicalGridEven {m : ℕ}
       ‖FourierTransform.fourier (bandTrunc (kaiserGridCombination c b)) ξ‖ ^ 2) = _
   rw [kaiserBandRadius_two_pi_mul_sq]
 
+/-- The normalized Kaiser bandwidth tends to infinity with the physical aperture. -/
+theorem tendsto_two_pi_mul_sq_atTop :
+    Tendsto (fun a : ℝ => 2 * Real.pi * a ^ 2) atTop atTop := by
+  have hsq : Tendsto (fun a : ℝ => a ^ 2) atTop atTop :=
+    Filter.tendsto_pow_atTop (by norm_num)
+  exact hsq.const_mul_atTop (by positivity : 0 < 2 * Real.pi)
+
+/-- Every real vector in the physical fixed-depth Kaiser span satisfies the correct exponential
+time-band defect estimate, uniformly in its coefficients. -/
+theorem eventually_exp_mul_timeBand_defect_kaiserPhysicalGridEven_le {m : ℕ}
+    (hm : 0 < m) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ a : ℝ in atTop, ∀ (ha : 0 < a) (b : Fin m → ℝ),
+      Real.exp ((2 - ε) * (2 * Real.pi * a ^ 2)) *
+          (‖kaiserPhysicalGridEven a ha b‖ ^ 2 -
+            ‖evenTimeBandFourier a (kaiserPhysicalGridEven a ha b)‖ ^ 2) ≤
+        ‖kaiserPhysicalGridEven a ha b‖ ^ 2 := by
+  have hpacket := tendsto_two_pi_mul_sq_atTop.eventually
+    (eventually_exp_mul_kaiserGridSpectralTail_le_energy hm hε)
+  filter_upwards [hpacket] with a haPacket
+  intro ha b
+  rw [norm_sq_sub_norm_sq_timeBand_kaiserPhysicalGridEven ha,
+    norm_sq_kaiserPhysicalGridEven ha]
+  exact haPacket b
+
 end RHTower
 
 end

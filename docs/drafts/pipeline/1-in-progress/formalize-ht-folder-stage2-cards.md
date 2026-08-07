@@ -447,10 +447,97 @@ TaylorPartialSumApproximation                        the approximation step of M
 | helson-universal-ht-arbitrary-divisor-orthogonality | Pong 5.9's conclusion; Andersson's Mittag-Leffler theorem; Saksman–Webb/Seip |
 | irrational-power-canonical-products | the Barnes expansion `(4)`–`(6)`; Sibuya–Ramis |
 
-### The next shared asset
+### The next shared asset — Mittag-Leffler on `ℂ`
 
-Mittag-Leffler on `ℂ` — prescribed principal parts — feeds Andersson (card 8) and the normal form
-(cards 2, 3, 4).  The approximation step is built (`exists_partialSum_approx`); what remains is the
-convergence engine (`∑ (P_n − Q_n)` converges locally uniformly off the pole set, and the sum is
-meromorphic with the prescribed principal parts), which follows the same
-`TendstoLocallyUniformlyOn.differentiableOn` pattern already used for the cone product.
+Prescribed principal parts feed Andersson (card 8) and the normal form (cards 2, 3, 4).  Two of the
+three ingredients are built:
+
+```text
+TaylorPartialSumApproximation.lean   exists_partialSum_approx — a function holomorphic on a closed
+                                     disc is uniformly within ε of a Cauchy partial sum on any
+                                     strictly smaller disc
+MittagLefflerConvergence.lean        summable_of_growing_radii — pointwise summability once the
+                                       radii pass the point
+                                     differentiableOn_seriesTail — the tail is holomorphic on a disc
+                                       where all its terms are (Weierstrass M-test plus
+                                       `TendstoLocallyUniformlyOn.differentiableOn`)
+                                     tsum_eq_head_add_seriesTail — the head–tail splitting that
+                                       exhibits the sum as meromorphic with exactly the prescribed
+                                       principal parts
+```
+
+**The assembly is now complete.**  `MittagLefflerConstruction.lean` (wired, axiom-clean):
+
+```text
+differentiable_partialSum            Cauchy partial sums are entire
+exists_entire_approx                 the approximation, with real radii
+exists_mittagLeffler_corrections     an entire `Q n` within `2⁻ⁿ` of `P n` on the disc of radius
+                                       `‖a n‖/2`
+summable_mittagLeffler               the corrected series converges at every point
+mittagLeffler                        `f(z) = ∑ (P n z − Q n z)`
+exists_mittagLeffler_cutoff          a cutoff past every pole meeting a given disc
+mittagLeffler_eq_head_add_tail       the head–tail decomposition
+differentiableOn_mittagLeffler_tail  the tail is holomorphic on the disc
+differentiableOn_mittagLeffler_sub_head
+differentiableAt_mittagLeffler_sub   **`f − P n₀` is holomorphic at `a n₀`**: the Mittag-Leffler
+                                       theorem on `ℂ`, prescribed principal parts realized
+```
+
+Hypotheses are the data only: poles tending to infinity, distinct, nonzero, with principal parts
+holomorphic off their own pole.  Mathlib has no Mittag-Leffler theorem, so this is a new asset; it
+is the analytic input Andersson's theorem needs on card 8, and the construction the principal-part
+normal form needs on cards 2, 3 and 4.
+
+
+## Closed: Weierstrass factorization on `ℂ`
+
+The multiplicative counterpart of Mittag-Leffler.  Mathlib has no general Weierstrass theorem, and
+the corpus previously owned only *fixed-genus* products under summability hypotheses
+(`canonicalProductE1_analytic` needs `∑ ‖aₙ‖⁻² < ∞`; `barnesConeProduct` fixes the genus at the cone
+rank).  Letting the genus of the `n`-th factor be `n` removes every hypothesis but `‖aₙ‖ → ∞`.
+
+`HTGeometry/WeierstrassFactorizationTheorem.lean` (wired, axiom-clean):
+
+```text
+weierstrassLogBound_le_one                 the genus constant is at most 1, uniformly in the genus
+norm_weierstrassFactor_sub_one_le_uniform  hence ‖E_p(w) − 1‖ ≤ e·‖w‖^{p+1} on the half disc
+weierstrassGenusFactorAt, weierstrassGenusProduct
+finite_setOf_norm_lt                       only finitely many zeros meet any disc
+hasProdLocallyUniformlyOn_weierstrassGenusFactorAt
+differentiable_weierstrassGenusProduct     **the product is entire**
+weierstrassFactor_eq_zero_iff, weierstrassGenusFactorAt_eq_zero_iff
+summable_norm_weierstrassGenusFactorAt_sub_one, multipliable_weierstrassGenusFactorAt
+weierstrassGenusProduct_eq_zero_iff        **it vanishes exactly at the prescribed points**
+```
+
+Hypotheses are the data only: the points are nonzero and tend to infinity.  Together with
+Mittag-Leffler this gives both halves of the prescribed-divisor toolkit — zeros by a product, poles
+by a series — which is what an arbitrary-divisor realization theorem is built from.
+
+
+## Closed: realization of a prescribed divisor on `ℂ`
+
+With Weierstrass and Mittag-Leffler both in place, an arbitrary divisor on `ℂ` is realized by a
+quotient of two Weierstrass products.
+
+`HTGeometry/PrescribedDivisorRealization.lean` (wired, axiom-clean):
+
+```text
+divisorFunction                              the quotient of the two products
+exists_notMem_range                          no countable family exhausts the plane
+analyticOrderAt_weierstrassGenusProduct_ne_top
+meromorphicOrderAt_weierstrassGenusProduct_ne_top
+                                             the products are nowhere locally zero
+meromorphicOn_divisorFunction                the quotient is meromorphic on `ℂ`
+meromorphicOrderAt_divisorFunction           its order is the difference of the two orders
+meromorphicOrderAt_divisorFunction_eq_zero   a unit away from both sequences
+meromorphicOrderAt_divisorFunction_pos       **zero exactly on the first sequence**
+meromorphicOrderAt_divisorFunction_neg       **pole exactly on the second sequence**
+```
+
+Multiplicities are encoded by repetitions in the sequences.  The hypotheses are the data only: both
+sequences nonzero, tending to infinity, and disjoint from one another.
+
+This is the divisor-realization engine that card 8's Andersson input and cards 2–4's normal form
+both need; what those still add on top is the *arithmetic* side — that the realizing function can be
+taken to be a Helson zeta function, respectively an elliptic-gamma product.

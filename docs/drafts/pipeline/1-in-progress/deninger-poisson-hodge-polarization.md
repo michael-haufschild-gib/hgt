@@ -409,9 +409,14 @@ The conjecture fails if:
 5. Prove `DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`:
    the total arithmetic Cauchy relation is closed Lagrangian, its
    harmonic complement realizes the nuclear quotient faithfully, and
-   its Green supertrace is Paugam's cup pairing.  Do not use the zero
-   ordinary critical-\(L^2\) cokernel.
-6. Prove the harmonic comparison is cup-isometric and strict.
+   its Hodge-symmetric almost-involution has nuclear defect.  Prove
+   Green-radical/chirality-kernel exactness and form exact Hardy
+   projectors by polar sign.  Do not use the zero ordinary
+   critical-\(L^2\) cokernel.
+6. Prove the oriented Hardy half-trace is Paugam's cup pairing and the
+   harmonic comparison is cup-isometric and strict.  Meyer's full
+   trace cannot supply this step because reflection mates cancel the
+   alternating wedge.
 7. Decide, before any divisor evaluation, whether comparison lands in
    raw \(M_\zeta\) or the functorial associated graded `(7)`.
 8. Prove that the harmonic metric escapes the

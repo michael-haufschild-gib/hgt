@@ -1,4 +1,6 @@
-# Route L full-Cauchy recollement frontier — 2026-08-07
+# RETIRED Route L full-Cauchy recollement frontier — wrong carrier (2026-08-07)
+
+> Superseded by `mem:route_l/retired_relevant_green_paugam_frontier_2026_08_07`. Actual relevant coefficient and `H^1=M_zeta` were already formalized; endpoint-only full-Cauchy fibre is not authoritative.
 
 ## Exact reorientation
 
@@ -8,7 +10,7 @@ Linear source-reversal minus analytic-dagger defect is a mixed coboundary of the
 
 Dense nonclosed Kummer range and closure(range)/range torsion are not admissible substitutes for Deninger reduced/Hausdorff cohomology. Correct carrier is strict nuclear Poisson-zeta/relevant complex before Hilbert reduction.
 
-## Frozen source theorem
+## Retired false source theorem (wrong carrier; do not pursue)
 
 `DAC_FULL_CAUCHY_RECOLLEMENT_FIBRE_ENDPOINT_LAW`:
 
@@ -18,7 +20,7 @@ Fib(R_Cauchy) ≃ C[0] ⊕ C(-1)[-2].
 
 Then H^1(Fib)=0 and H^1(R_Cauchy) is injective. Falsifier: any strict/cofinal middle fibre class, especially lim^1, kills the conjecture and may not be erased by Hilbert closure.
 
-Card: `docs/drafts/pipeline/1-in-progress/deninger-full-cauchy-recollement-fibre-endpoint-law.md`.
+Card: `docs/drafts/pipeline/5-failed/deninger-full-cauchy-recollement-fibre-endpoint-law.md`.
 
 ## Formal reduction
 

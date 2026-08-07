@@ -367,6 +367,75 @@ trace formula itself.
 | `(9)` | `tr(B^2) = <B^dagger, B>_HS`, bounded by the Hilbert--Schmidt energy | `thetaTraceSq_eq_hsInner`, `norm_thetaTraceSq_le` |
 | `(1)`,`(9)` | **`B^2` is trace class**, and so is the positive energy `B^dagger B`, whose trace is the Hilbert--Schmidt energy | `isTraceClass_thetaKernelOperator_sq`, `isTraceClass_adjoint_comp_thetaKernelOperator`, `re_opTrace_adjoint_comp_thetaKernelOperator` |
 
+**Trace calibration, the quantile half.**
+`formal/GaloisForLFunctions/RHTower/HedenmalmQuantileSliceMoment.lean`
+(namespace `RHTower.HedenmalmThetaSource`).
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(9)` | the slice is dominated by the interval weight, `abs(1_(s<=t) - t) <= t(1-t)/min(s,1-s)` | `abs_pinnedKernelSlice_le_weight` |
+| `(9)` | **the slice moment integrand is integrable** although `q` itself is not | `sliceDominant`, `integrable_sliceDominant`, `integrable_quantileSpeed_mul_pinnedKernelSlice` |
+| `(9)` | the slice moment `s |-> integral of q(t)(1_(s<=t) - t) dt` | `sliceMoment` |
+| `(9)` | **it moves exactly like the quantile**: its increment is minus the increment of `Q` | `sliceMoment_sub_of_le` |
+| `(9)` | equivalently `sliceMoment + Q` is constant on the open interval | `sliceMoment_add_quantileFun_eq` |
+| `(9)` | the quantile of the even theta source is odd, and its speed symmetric | `quantileFun_one_sub`, `quantileSpeed_one_sub` |
+| `(9)` | **the slice moment is odd under reflection**, which pins the additive constant | `sliceMoment_one_sub` |
+| `(9)` | **`sliceMoment S s = -Q(s)`**, unconditionally | `sliceMoment_eq_neg_quantileFun` |
+| `(9)` | **the trace calibration in quantile form**: the mean square of the slice moment is the source variance | `integral_sq_sliceMoment` |
+
+The domination is the only delicate point: `q` is not integrable on the unit interval, but
+`q(t) t(1-t)` is dominated by half the sum of the finite kernel energy `q(t)^2 t(1-t)` and
+`t(1-t)`.  The additive constant is pinned without any Fubini, by the reflection symmetry of the
+even source: `Q(1-s) = -Q(s)`, `q(1-t) = q(t)`, and the change of variables `t -> 1-t` turns the
+slice at `1-s` into minus the slice at `s`, so `sliceMoment` is odd while `sliceMoment + Q` is
+constant, forcing both to be `0`.
+
+**Transposed rows.**  `formal/GaloisForLFunctions/RHTower/HedenmalmTransposeKernelField.lean`
+starts the adjoint side.
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(9)` | the transposed row `u |-> conj K(u,t) = -i q(u)(1_(t<=u) - u)` | `transposeKernelFun`, `transposeKernelFun_eq_conj`, `norm_transposeKernelFun` |
+| `(9)` | **it is square integrable at every interior parameter**, by the slice weight bound | `memLp_transposeKernelFun` |
+| `(9)` | the transposed row as an `L^2` vector | `transposeKernelVec`, `transposeKernelVec_coeFn`, `transposeVec`, `transposeVec_coeFn` |
+| `(9)` | **its `L^2` increment is the quantile energy of the interval between the parameters** | `norm_sq_transposeKernelFun_sub`, `integral_norm_sq_transposeKernelFun_sub`, `norm_sq_transposeVec_sub`, `norm_sq_transposeVec_sub'` |
+| `(9)` | the quantile energy of a subinterval is controlled by its length | `setIntegral_quantileSpeed_sq_le` |
+| `(9)` | **the transposed rows form an `L^2`-continuous family** | `continuousOn_transposeVec` |
+| `(9)` | the transposed kernel field, and that it integrates against the transposed row | `transposeKernelField`, `transposeKernelField_apply`, `norm_transposeKernelField` |
+| `(9)` | it is continuous, hence strongly measurable | `continuousOn_transposeKernelField`, `aestronglyMeasurable_transposeKernelField` |
+| `(9)` | **the transposed field has finite energy**, so the adjoint is an honest kernel operator | `memLp_transposeKernelField`, `transposeKernelL2` |
+| `(9)` | **the adjoint of the source inverse IS the transposed kernel operator** | `adjoint_kernelOperator_eq` |
+| `(9)` | off the diagonal, `-K(t,u)K(u,t)/(q(t)q(u)) = min(t,u) - t u` | `neg_mul_pinnedKernelSlice` |
+| `(9)` | **the covariance decomposition** `min(t,u) - t u = integral of slice(t,s) slice(u,s) ds` | `integral_pinnedKernelSlice_mul`, `integral_pinnedKernelSlice_mul_min` |
+
+Unlike the pinned row, the transposed row carries the quantile speed *inside* the vector, so it
+cannot be split as a scalar times a continuous slice family: `q` itself is not in `L^2` of the unit
+interval (`integral of q^2 = integral of M/k dx` diverges).  The energy is finite only because the
+slice vanishes at both ends, which is exactly what the bound
+`|1_(t<=u) - u| <= u(1-u)/min(t,1-t)` supplies, together with `u(1-u) <= 1/4`.
+
+The energy of the transposed field is not uniformly bounded --- it diverges at both endpoints,
+because `q` is not in `L^2` --- so its finiteness is a genuine product-measure statement.  It is
+proved with the *first* variable outside: for a fixed `u` the inner integral is
+`q(u)^2 integral of (1_(t<=u) - u)^2 dt = q(u)^2 u(1-u)`, whose integrability is exactly
+`HasFiniteKernelEnergy`, and `Integrable.integral_prod_right` then transposes it.
+
+With the adjoint identified, `tr(B^2) = <B†, B>_HS` (`thetaTraceSq_eq_hsInner`) feeds directly into
+the polarized kernel formula `hsInner_kernelOperator` of
+`formal/GaloisForLFunctions/RHTower/KernelOperatorPolarization.lean`, whose Riesz vectors here are
+`-(i q(t)) . slice(t, .)` and `-transposeVec t`.  What remains of `(9)` is the evaluation of the
+resulting double integral:
+
+```text
+tr(B^2) = double integral of q(t) q(u) (min(t,u) - t u),
+```
+
+using `neg_mul_pinnedKernelSlice` off the diagonal (the diagonal is null in the product) and then
+the covariance decomposition `integral_pinnedKernelSlice_mul_min`, which turns it into
+`integral of (sliceMoment s)^2 ds` --- and `integral_sq_sliceMoment` already evaluates that to the
+source variance.  Every ingredient is now formalized; only the two interchanges that assemble them
+remain.
+
 Corpus assets to use for the remaining items, rather than rebuilding them:
 `ContinuousLinearMap.IsHilbertSchmidt` (`HTGeometry/HilbertSchmidtOperator.lean`),
 `IsHilbertSchmidt.isCompactOperator` (`HTGeometry/HilbertSchmidtCompact.lean`), and
