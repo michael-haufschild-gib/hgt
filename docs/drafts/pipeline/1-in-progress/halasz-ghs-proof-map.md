@@ -1567,3 +1567,45 @@ Nothing in the chain assumes an estimate, and every statement above is proved.  
 of choosing `σ, T, H` and the level sequence, and summing the `j`-indexed series — the step whose two previous
 attempts (the global Lorentzian accounting, and the modulus at the block endpoint) both failed for reasons now
 recorded and repaired.
+
+## The accounting again, and a structural correction: the mean square complements the distance, it does not replace it
+
+Doing the truncated accounting honestly settles what the mean-square route can and cannot do on its own.
+
+With the chosen levels and both dampings, per block `j`:
+
+* the count's main term contributes `(5T/4)·2·2^{j+1}S_T/log Y_j` with `S_T = e^{1/T} − e^{−1/T} ≤ 3/T`, so the
+  `T` cancels and the term is `≍ 2^{j}/(j log 2)`;
+* `E_j = O(2^{j/4}j⁴)` and `z_j = O(2^{j/2})` are subordinate;
+* with `#primes ≍ 2^{j+2}/j` and the damping `2^{−2σj}`, the block's sum is `≍ Bc_j²·2^{2j(1−σ)}/j²`, whose
+  square root is `≍ Bc_j·2^{j(1−σ)}/j`.
+
+At `σ = 1 + 1/log N` the factor `2^{j(1−σ)} = e^{−j log 2/log N}` lies in `[e^{−1}, 1]` across the whole range
+`j ≤ log₂N` — it does not decay.  So
+
+* outer block sum, with `Bc_j ≍ (j+1)/(log₂N − j)`: `≍ ∑_j 1/(log₂N − j) ≍ log log N`;
+* inner block sum, with `Bc_j ≍ (j+1)log 2`: `≍ ∑_j 1 ≍ log N`.
+
+Their product is `≍ log N·log log N`, and with the Euler factor `≍ log N` and `Wsup ≍ N` the analytic term is
+`≍ N(log N)²log log N`.  Since the paper half equates the smoothed sum with `S(N)·log N`, this gives
+`S(N) ≲ N log N log log N` — weaker than the trivial `S(N) ≤ N`.
+
+**The diagnosis is structural, not arithmetic.**  The Euler factor enters as `‖L(f,σ+iy)‖ ≤ (1+1/(σ−1))e^{7/2}`,
+the *maximum* size of the series, applied at every height.  That is the trivial bound, and no mean-square
+estimate of the other two factors can recover a saving from it: in Granville–Harper–Soundararajan the mean
+square is what controls the contribution *away from the exceptional frequency*, while the exceptional frequency
+is where the distance bound does the work.  Lemma 1 complements the dichotomy; it does not replace it.
+
+The corpus's own `HalaszPerronAssembly.norm_tsum_mul_smoothWeight_le` already has the right architecture: the
+damped bound `exp(7/2 + 2(σ−1)(log z + log 4) − δ²)` off one window (`norm_tsum_twistedSummand_le_of_far`), the
+trivial bound on the window, and `volume_halaszLargeValues_le` for the window's measure.  What my assembly
+should do is the same split with Cauchy–Schwarz on the *complement*:
+
+* off the window: three-factor inequality with `M` the **damped** Euler bound — the `e^{−δ²}` is the saving;
+* on the window: Cauchy–Schwarz over a set of measure `O(δ/log z)`, where the truncated mean square is
+  correspondingly small.
+
+Both pieces are instances of `norm_integral_mul_three_le_sup_mul_sqrt_measure` at `μ = volume.restrict S`, since
+that lemma is stated for an arbitrary measure and takes the bound on `g₃` as a hypothesis.  So the next brick is
+not a new device but a second instantiation of one already built, together with the corpus's large-value window
+measure.  **Recorded so the next attempt starts from the dichotomy rather than from the trivial bound.**
