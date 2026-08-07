@@ -6181,3 +6181,4 @@ import GaloisForLFunctions.RHTower.Sieve.DichotomySplitAssembly
 import GaloisForLFunctions.RHTower.Sieve.HalaszDichotomyInstance
 import GaloisForLFunctions.RHTower.Sieve.HalaszWindowWeightBound
 import GaloisForLFunctions.RHTower.Sieve.LSeriesTranslate
+import GaloisForLFunctions.RHTower.Sieve.WindowMeanSquareDiameter

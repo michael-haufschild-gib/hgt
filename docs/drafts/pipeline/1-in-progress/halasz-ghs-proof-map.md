@@ -1823,3 +1823,32 @@ which is proportional to `W` — not to `W·(ℓ¹)²`.  With `W ≍ δ/log z` t
 The remaining step is to re-derive the split with the window bounded this way — the split lemma itself is
 unchanged, only the estimate fed to it on `S` — and then the balance is `δ/log z` against `e^{−δ²}`, which
 `δ ≍ √(log log N)` solves with room to spare.
+
+## The window mean square, by the sieve at the window's own width
+
+`RHTower/Sieve/WindowMeanSquareDiameter.lean` (green, axiom-clean, wired).
+
+* `subset_Icc_of_diameter` — a set of diameter `R` is empty or contained in a ball of radius `R` about one of its
+  points;
+* `integral_Icc_shift` — shifting the interval of integration to the origin;
+* `integral_normSq_LSeries_le_of_diameter` — hence, for any set of diameter `R`,
+
+  `∫_S ‖L(a,σ+it)‖² dt ≤ 2π(5R/4)·∑_n (2(n(e^{1/R} − e^{−1/R}) + 1)/log Y + E + z)·‖a_n n^{−σ}‖²`.
+
+Proportional to `R` **and to the sieve mass**, in place of the trivial `R·(ℓ¹ mass)²` — the loss diagnosed two
+entries ago.  The empty case is handled separately (both sides nonnegative), and the frequency translation is
+absorbed by the coefficients.
+
+Applied to the exceptional window, whose diameter the corpus bounds by
+`2√(2π²δ²/logSqWeight z) ≤ 4√2 πδ/log z` (`abs_sub_le_of_norm_gt`, `logSqWeight_ge_quarter`), the window term of
+the dichotomy is now
+
+`(log N)·N·√(2π(5R/4)·sieve a)·√(2π(5R/4)·sieve b)   with R ≍ δ/log z`,
+
+i.e. `≍ (log N)·N·(δ/log z)·(sieve mass)` — no `T`, no `(ℓ¹)²`.  Against the off-window term
+`(log N)e^{−δ²}·N·(sieve mass)` the balance is `δ/log z` versus `e^{−δ²}`, and `δ ≍ √(log log N)` gives a saving
+of `1/log log N` in the first against `1/log N` in the second.
+
+Both terms are now genuinely smaller than the main term, which is what the whole architecture was for.  What
+remains is to state the split with this window bound in place — the split lemma is unchanged, only its input on
+`S` — and to fix the parameters.
