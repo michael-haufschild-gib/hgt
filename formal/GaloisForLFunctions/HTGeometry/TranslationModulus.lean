@@ -12,7 +12,7 @@ The shear `(s, x) ↦ x + s` pushes the strip measure forward to `h • volume`,
 the composed modulus measurable in the first place.
 -/
 
-open MeasureTheory
+open MeasureTheory Set
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -59,5 +59,35 @@ theorem integral_integral_shear_eq (g : ℝ → ℝ) {h : ℝ} (hh : 0 ≤ h) :
     rw [measureReal_def, Real.volume_Ioc, ENNReal.toReal_ofReal (by linarith)]
     ring
   rw [hvol, smul_eq_mul]
+
+/-- **Linear `L¹` modulus of continuity.**  A function with integrable derivative has translation
+modulus at most the shift times the `L¹` norm of the derivative.  Writing the increment as
+`∫₀^h f'(x+s) ds` and swapping the order of integration is the whole proof; no bounded variation
+and no Stieltjes integration by parts enters. -/
+theorem integral_norm_translation_le (f : ℝ → ℝ) (hf : Differentiable ℝ f) (hfc : Continuous (deriv f))
+    (hf' : Integrable (deriv f)) {h : ℝ} (hh : 0 ≤ h)
+    (hint : Integrable (fun x => ‖f (x + h) - f x‖)) :
+    (∫ x : ℝ, ‖f (x + h) - f x‖) ≤ h * ∫ x : ℝ, ‖deriv f x‖ := by
+  have hjoint := integrable_uncurry_norm_shear (deriv f) hf' h
+  have hptw : ∀ x : ℝ, ‖f (x + h) - f x‖ ≤ ∫ s in Ioc (0:ℝ) h, ‖deriv f (x + s)‖ := by
+    intro x
+    have hrep : (∫ s in (0:ℝ)..h, deriv f (x + s)) = f (x + h) - f x := by
+      rw [intervalIntegral.integral_comp_add_left (fun t => deriv f t) x,
+        intervalIntegral.integral_eq_sub_of_hasDerivAt
+          (fun t _ => (hf t).hasDerivAt) (hfc.intervalIntegrable _ _)]
+      ring_nf
+    rw [← hrep, ← intervalIntegral.integral_of_le hh]
+    exact intervalIntegral.norm_integral_le_abs_integral_norm.trans (le_of_eq (by
+      rw [abs_of_nonneg (intervalIntegral.integral_nonneg hh (fun _ _ => norm_nonneg _))]))
+  have hswapInt : Integrable (Function.uncurry fun (x s : ℝ) => ‖deriv f (x + s)‖)
+      (volume.prod (volume.restrict (Ioc (0:ℝ) h))) := hjoint.swap
+  have houter : Integrable (fun x => ∫ s in Ioc (0:ℝ) h, ‖deriv f (x + s)‖) :=
+    MeasureTheory.Integrable.integral_prod_left hswapInt
+  have hswap : (∫ x : ℝ, ∫ s in Ioc (0:ℝ) h, ‖deriv f (x + s)‖) = h * ∫ x : ℝ, ‖deriv f x‖ := by
+    rw [← integral_integral_swap hjoint]
+    exact integral_integral_shear_eq (deriv f) hh
+  calc (∫ x : ℝ, ‖f (x + h) - f x‖)
+      ≤ ∫ x : ℝ, ∫ s in Ioc (0:ℝ) h, ‖deriv f (x + s)‖ := integral_mono hint houter hptw
+    _ = h * ∫ x : ℝ, ‖deriv f x‖ := hswap
 
 end GaloisForLFunctions.HTGeometry

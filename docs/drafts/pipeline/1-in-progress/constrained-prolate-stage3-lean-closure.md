@@ -135,3 +135,18 @@ projective/trace-class/determinant consequences.
 - Strengthened the signed-mode radial witness with exact endpoint nonvanishing, without analytic,
   asymptotic, or spectral-identification premises.
 - Verified with `lake env lean GaloisForLFunctions/RHTower/ProlateEndpointNonvanishing.lean`.
+
+### 2026-08-07: canonical radial normalization and exact Dunster endpoint bridge
+
+- Added `ProlateRadialNormalization.lean`.  Every live signed mode now supplies a smooth even
+  exterior radial solution normalized by its proved-nonzero endpoint value, with `R(1)=1`, exact
+  endpoint slope `2 R'(1)=c²(s-1)`, exact global prolate equation, and exact exterior radial ODE.
+- Added `ProlateDunsterComparisonBridge.lean`.  Proved the exact amplitude identity
+  `nfWeight(x) * xiAmplitude(s,x) = lgAmplitude(s,x)`, hence the existing comparison solution is
+  literally `R(x)/xiAmplitude(s,x)`.
+- Proved a quantitative two-sided endpoint squeeze for `xiAmplitude^4`, then the unconditional
+  right-endpoint limit `xiAmplitude(s,x) -> 1` for `0 ≤ s ≤ 1/2`.
+- Consequently every continuous endpoint-normalized radial profile satisfies
+  `comparisonSol(prolateNormalFormSol R,s,x) -> 1` as `x -> 1+`.  This fixes the regular Dunster
+  branch normalization and is the required input for eliminating the logarithmic second branch.
+- Verified both new modules with foreground `lake env lean <file>` checks.

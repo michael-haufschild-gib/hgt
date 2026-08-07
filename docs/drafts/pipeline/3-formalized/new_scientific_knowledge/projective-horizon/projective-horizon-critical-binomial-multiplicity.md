@@ -1,9 +1,9 @@
 # Critical projective-horizon multiplicity is binomial
 
 - **ID:** `projective-horizon-critical-binomial-multiplicity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / EXACT CRITICAL-FIBER ENUMERATION
-- **Scientific status:** `[PROVED ON PAPER] [FORMAL CORE COMPLETE] [NOVELTY PROVISIONAL]`
+- **Scientific status:** `[PROVED ON PAPER] [FULLY FORMALIZED] [NOVELTY PROVISIONAL]`
 - **Parents:** `projective-horizon-finite-jet-page-transition`,
   `projective-horizon-page-capacity-law`
 - **Lane:** source-pure hypertranscendental geometry; enumerative topology
@@ -267,19 +267,18 @@ the Padé–Hankel hypersurface `det (padeHankel p m n) ≠ 0`.  Over any jet in
 channel lifts uniquely, so `nat_card_criticalFibre_prod_transverse_channels_of_det` counts one
 longitudinal and any number of transverse channels by `criticalHorizonMultiplicity m n` itself.
 
-**What is still open** is the *sharp* count for a fully generic observation with `m, n >= 2`.  There
-the completed jet has degree up to `L-1` rather than `m`, the truncated equation no longer closes to
-an exact factorization, and the divisor bijection is unavailable.  Every elimination-based bound
-above is loose for one structural reason: pairwise elimination discards the bilinearity that makes
-the honest answer binomial.  That bilinearity is itself now machine-checked —
-`BilinearFibreSystem.degreeOf_bilinSysPoly_inl` and `_inr` prove the pre-elimination system has
-bidegree `(1,1)`, and `criticalFibre_coeff_eq` gives its `m+n` scalar equations in explicit bilinear
-form — so what remains is exactly the multihomogeneous Bezout count for a bidegree-`(1,1)` system on
-`P^m x P^n`, whose hypotheses are now verified and whose conclusion needs intersection theory that
-mathlib does not have.
+**The fully generic sharp count is now closed.**  `GenericCriticalLaurentFibre.lean` constructs an
+explicit algebraically independent critical observation over an algebraically closed
+characteristic-zero Laurent field and proves that its fibre has exactly
+`criticalHorizonMultiplicity m n = choose (m+n) m` points for every `m,n>=1`.  The proof does not
+postulate multiprojective Bezout: `LaurentCriticalFibreIntegrality.lean` proves that every Laurent
+solution is integral by separate projective normalization and boundary exclusion, identifies the
+Laurent fibre with the power-series fibre, and transfers the exact adic count.  The observation's
+algebraic independence and its equality with the actual raw/reciprocal tail coefficients are both
+machine-checked.  Thus the generic point, not merely special packet regimes, realizes `(2)`.
 
-What remains at paper level besides that is only the topological identification of the fibre points
-with Grassmannian Schubert cells, which the card explicitly does not claim.
+The card does not claim a canonical bijection between these generic fibre points and individual
+Grassmannian Schubert cells; only their exact cardinalities are identified.
 
 ## Novelty audit
 
@@ -2908,6 +2907,21 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   GaloisForLFunctions.HTGeometry.PureCriticalFactorizationAlgebra` (`3167` jobs), and scratch axiom
   audit pass with only `[propext, Classical.choice, Quot.sound]`.
 
-  Exact next dependency: construct the saturated/Segre projective family and apply finite-near-the-
-  pure-fibre plus Nakayama to obtain generic length at most this special-fibre dimension.  Existing
-  `exists_injective_deformed_fibre` supplies the matching `choose(m+n,m)` lower bound.
+  The saturated/Segre bridge can be bypassed by a valuative generic direction.  The closing modules
+  are `AdicCriticalFibreExact.lean`, `PowerSeriesCriticalDeformation.lean`,
+  `LaurentSeriesNormalization.lean`, `CriticalBiprojectiveBoundary.lean`,
+  `LaurentCriticalFibreIntegrality.lean`, `PowerSeriesCommonScaleIndependence.lean`, and
+  `GenericCriticalLaurentFibre.lean`.  They prove, unconditionally:
+
+  - exact `choose(m+n,m)` count over the complete power-series deformation;
+  - no Laurent point escapes the power-series lattice, using projective normalization and the
+    literal boundary equations;
+  - a bijection between power-series and Laurent critical fibres;
+  - algebraic independence of the common-scale generic observation;
+  - identification of those generic coordinates with the actual observed tail coefficients; and
+  - `nat_card_criticalGenericLaurentFibre`, the closed generic multiplicity theorem for all positive
+    depths.
+
+  Direct foreground checks are warning-free.  Scratch `#print axioms` audits report only
+  `[propext, Classical.choice, Quot.sound]`; no project axiom, `sorry`, `admit`, `opaque`, or
+  `unsafe` declaration enters the proof.

@@ -320,6 +320,41 @@ theorem norm_sq_pinnedKernelVec {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1) :
   exact_mod_cast hC
 
 
+
+/-- The pinned slice vector `1_{Iic t} - t·1` of `L²(0,1)`. -/
+def pinnedSliceVec (t : ℝ) : Lp ℂ 2 unitIntervalMeasure :=
+  indicatorConstLp 2 (measurableSet_Iic (a := t)) (measure_ne_top unitIntervalMeasure _) (1 : ℂ)
+    - ((t : ℂ)) • pinnedOne
+
+theorem pinnedSliceVec_coeFn (t : ℝ) :
+    (pinnedSliceVec t : ℝ → ℂ) =ᵐ[unitIntervalMeasure]
+      fun u => ((pinnedKernelSlice t u : ℝ) : ℂ) := by
+  filter_upwards [Lp.coeFn_sub
+      (indicatorConstLp 2 (measurableSet_Iic (a := t))
+        (measure_ne_top unitIntervalMeasure _) (1 : ℂ)) (((t : ℂ)) • pinnedOne),
+    indicatorConstLp_coeFn (p := 2) (μ := unitIntervalMeasure)
+      (hs := measurableSet_Iic (a := t)) (hμs := measure_ne_top unitIntervalMeasure _) (c := (1 : ℂ)),
+    Lp.coeFn_smul ((t : ℂ)) pinnedOne, pinnedOne_coeFn] with u h1 h2 h3 h4
+  show (pinnedSliceVec t : ℝ → ℂ) u = _
+  rw [pinnedSliceVec, h1, h2, h3, h4]
+  simp only [Pi.smul_apply, smul_eq_mul, mul_one, Set.indicator_apply, Set.mem_Iic]
+  rw [pinnedKernelSlice]
+  by_cases h : u ≤ t <;> simp [h]
+
+/-- **The kernel row is a scalar multiple of the pinned slice vector.**  This exhibits the kernel
+field as the product of the measurable scalar `i q(t)` with the `L²`-continuous slice family. -/
+theorem pinnedKernelVec_eq_smul {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) :
+    pinnedKernelVec S ht = (Complex.I * ((quantileSpeed S t : ℝ) : ℂ)) • pinnedSliceVec t := by
+  apply Lp.ext
+  filter_upwards [MemLp.coeFn_toLp (memLp_pinnedKernelFun S ht),
+    Lp.coeFn_smul (Complex.I * ((quantileSpeed S t : ℝ) : ℂ)) (pinnedSliceVec t),
+    pinnedSliceVec_coeFn t] with u h1 h2 h3
+  show (pinnedKernelVec S ht : ℝ → ℂ) u = _
+  rw [pinnedKernelVec, h1, h2]
+  simp only [Pi.smul_apply, smul_eq_mul]
+  rw [h3, pinnedKernelFun]
+
+
 end HedenmalmHilbertSchmidt
 
 end
