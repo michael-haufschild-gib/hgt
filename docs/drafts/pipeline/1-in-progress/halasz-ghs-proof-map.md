@@ -1334,3 +1334,26 @@ master inequality, with none of the `(N/H)²` that the global quadratic-decay bo
 route still needs is the tail: `‖∫_{|y| > T} g₁g₂g₃W‖`, where the trivial bound `‖g₁g₂g₃‖ ≤ (Euler)³` meets the
 kernel's decay through `integral_compl_Icc_inv_one_add_sq_le` — the same split the corpus's own Halász assembly
 performs.
+
+## The truncated master inequality
+
+`RHTower/Sieve/TruncatedVerticalSplit.lean` (green, axiom-clean, wired).
+
+* `norm_integral_compl_Icc_le` — beyond height `T` the integrand is bounded by its trivial size times the
+  kernel's decay, whose integral is `π − 2 arctan T` (the corpus's `integral_compl_Icc_inv_one_add_sq_le`);
+* `norm_integral_le_truncated_add_tail` — the split of the vertical integral at height `T`;
+* `norm_integral_mul_three_le_truncated_add_tail` :
+
+  `‖∫_ℝ g₁g₂g₃W‖ ≤ M·Wsup·(∫_{|y|≤T}‖g₁‖²)^{1/2}(∫_{|y|≤T}‖g₂‖²)^{1/2} + Mg·C·(π − 2 arctan T)`.
+
+The point of the shape: the truncated part sees only `Wsup`, the *uniform* size of the kernel on a bounded
+height range — for a smoothed cutoff `(N+H)^σ/σ ≍ N`, with no `(N/H)²` — while the quadratic-decay constant
+`C ≍ N^σ(N/H)²`, which capped the global route, is confined to the tail and multiplied by `π − 2 arctan T`.
+Choosing `T` large enough that `C(π − 2 arctan T) ≍ C/T` is small costs only `log T` in the truncated mean
+square, so a polynomial `T` in `N` suffices.
+
+**The truncated route now has all its devices**: this inequality, the truncated prime-supported mean square
+(`integral_Icc_normSq_logPoly_le_prime_sieve`, over `Icc (−W) W`), the Perron identity, and the recursion half
+of the argument, which is independent of the kernel treatment.  The remaining step is to assemble them as
+`GhsStepFour` assembles the global versions, and then to redo the parameter accounting with `Wsup ≍ N` in place
+of `C ≍ N(log N)⁶` — where the previous cap came from.
