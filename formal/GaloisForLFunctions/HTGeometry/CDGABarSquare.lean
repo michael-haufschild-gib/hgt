@@ -255,6 +255,69 @@ theorem barTriple_cancel (n c e : ℕ) (hp : c + e = n + 1 + 1) (t : BarTriple c
           barTriple_deg hp t⟩)) = 0 :=
   barMul_cancel ε _ _ _ _ _
 
+/-- The target degree, from an outer split and a split of its first part. -/
+theorem barSplit_first_eq {a a' c : ℕ} (hs : a + a' + 1 = c) (s' : BarSplit a) :
+    s'.1.1 + s'.1.2 + 1 + a' + 1 = c := by
+  obtain ⟨⟨u, u'⟩, hu⟩ := s'
+  have h : u + u' + 1 = a := hu
+  show u + u' + 1 + a' + 1 = c
+  omega
+
+/-- The component read, from an outer split and a split of its first part. -/
+theorem barSplit_first_deg {a a' c e n : ℕ} (hs : a + a' + 1 = c) (hp : c + e = n + 1 + 1)
+    (s' : BarSplit a) : s'.1.1 + (s'.1.2 + (a' + e)) = n := by
+  obtain ⟨⟨u, u'⟩, hu⟩ := s'
+  have h : u + u' + 1 = a := hu
+  show u + (u' + (a' + e)) = n
+  omega
+
+/-- Tensoring a finite sum of maps with the identity. -/
+theorem tensorMap_id_sum {M N N' : Type u} [AddCommGroup M] [Module R M] [AddCommGroup N]
+    [Module R N] [AddCommGroup N'] [Module R N'] {ι : Type*} (s : Finset ι)
+    (g : ι → (N →ₗ[R] N')) :
+    TensorProduct.map (LinearMap.id (R := R) (M := M)) (∑ i ∈ s, g i)
+      = ∑ i ∈ s, TensorProduct.map (LinearMap.id (R := R) (M := M)) (g i) := by
+  classical
+  refine Finset.induction_on s ?_ ?_
+  · rw [Finset.sum_empty, Finset.sum_empty, TensorProduct.map_zero_right]
+  · intro i s hi ih
+    rw [Finset.sum_insert hi, Finset.sum_insert hi, TensorProduct.map_add_right, ih]
+
+/-- **The head applied twice, at one outer split, is a sum of first bracketings.** -/
+theorem barHead_head_outer (n c e : ℕ) (hp : c + e = n + 1 + 1) (a a' : ℕ) (hs : a + a' + 1 = c)
+    (F : TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε) Z)) n) :
+    barHeadTermₗ ε Z (n + 1) c e hp a a' hs
+        (barHeadₗ ε (TensorCarrier (R := R) (barShiftFamily ε) Z) n F)
+      = ∑ s' : BarSplit a, barMulFirstTwo ε (W := Z e)
+        (rfl : s'.1.1 + s'.1.2 + 1 = s'.1.1 + s'.1.2 + 1) (barSplit_first_eq hs s')
+        (barTele ε Z s'.1.1 s'.1.2 a' e
+          (F ⟨(s'.1.1, s'.1.2 + (a' + e)), barSplit_first_deg hs hp s'⟩)) := by
+  rw [barHeadTermₗ_eq_comp, barHead_apply, map_sum, map_sum, map_sum]
+  refine Finset.sum_congr rfl fun s' _ => ?_
+  obtain ⟨⟨u, u'⟩, hu⟩ := s'
+  have hua : u + u' + 1 = a := hu
+  subst hua
+  rw [barHeadTermₗ_eq_comp]
+  exact barHead_first_comp u u' a' e _ hs (F ⟨(u, u' + (a' + e)), by omega⟩)
+
+/-- The target degree, from an outer split and a split of its second part. -/
+theorem barSplit_second_eq {a a' c : ℕ} (hs : a + a' + 1 = c) (s'' : BarSplit a') :
+    a + (s''.1.1 + s''.1.2 + 1) + 1 = c := by
+  obtain ⟨⟨v, v'⟩, hv⟩ := s''
+  have h : v + v' + 1 = a' := hv
+  show a + (v + v' + 1) + 1 = c
+  omega
+
+/-- The component read, from an outer split and a split of its second part. -/
+theorem barSplit_second_deg {a a' c e n : ℕ} (hs : a + a' + 1 = c) (hp : c + e = n + 1 + 1)
+    (s'' : BarSplit a') : a + (s''.1.1 + (s''.1.2 + e)) = n := by
+  obtain ⟨⟨v, v'⟩, hv⟩ := s''
+  have h : v + v' + 1 = a' := hv
+  show a + (v + (v' + e)) = n
+  omega
+
 end Assembly
 
 end Identification

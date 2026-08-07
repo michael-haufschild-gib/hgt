@@ -150,14 +150,22 @@ head and `R` the right-factor degree-one construction, the square expands into f
   three shifted factors separated.  `barHeadTermₗ` was also rebuilt to multiply straight into the
   target degree, so no transport along an identification of degrees appears anywhere.
 
-  What remains is Lean plumbing and no longer mathematics: identifying the composite
-  *outer term ∘ inner term* with `barMulFirstTwo ∘ barTele`, and *outer term ∘ tail term* with
-  `(-1)^u • barMulLastTwo ∘ barTele`.  Both are equalities of composites of `TensorProduct.map`,
-  the associator and two projections, true because the projections act on the innermost factor and
-  the multiplications on the outer ones.  The obstacle met so far is mechanical: reducing to pure
-  tensors needs the *same* projected subterm to be abstracted on both sides at once, and `set` does
-  not abstract it in the composite spelling that `barTele` unfolds to.  The fix is to state the
-  identification as an equality of linear maps and descend with `TensorProduct.ext'` at each layer,
-  rather than to induct on an element.
+  Both identifications are **proved**, in the same module: `barProj_comm_mul` — the projection of the
+  innermost factor commutes past a multiplication of the outer two, which is the only thing
+  separating the head applied twice from the first bracketing — then `barHead_first_comp` and
+  `barHead_second_comp`.  The second needs no commutation at all: the tail multiplies exactly where
+  the telescope's projections already are.  `barTriple_cancel` puts them together with
+  `barMul_cancel`: every triple of degrees the two multiplications consume contributes one term to
+  each half, both applied to the same component of the argument, and the two add to zero.
+
+  `barHead_head_outer` expands the head-applied-twice half at one outer split into a sum of first
+  bracketings over the splits of its first part.
+
+What is left is the mirror expansion of the head-after-the-tail half, and then the reindexing of the
+two double sums onto `BarTriple`.  The mirror expansion needs the argument's index rewritten from
+`(a, a' + e)` to `(a, b' + 1)` so that the tail's defining equation applies, and that index sits in
+a dependent position, so it has to be moved with `congrArg` on the whole application rather than
+with `rw` on the index.  Everything mathematical — the sign, the associativity, the cancellation,
+both identifications, the reindexing bijections — is proved.
 
 Everything the statement quantifies over is defined, and one of the four terms is proved.
