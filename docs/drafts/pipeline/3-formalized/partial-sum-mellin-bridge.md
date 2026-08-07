@@ -1,54 +1,39 @@
-# The Dirichlet series as a Mellin transform of its partial sums
+# The Mertens function as the Mellin datum of `1/ζ`
 
 - **ID:** partial-sum-mellin-bridge
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Statement:** For `f : ℕ → ℂ` with `f 0 = 0` and `‖f n‖ ≤ 1`, and `Re s > 1`,
+- **Statement:** for `Re s > 1`,
 
-  `L(f, s) = s · ∫_1^∞ S_f(⌊t⌋) · t^(-s-1) dt`,   `S_f(m) = ∑_{k ≤ m} f(k)`.
+  `1/ζ(s) = s ∫_1^∞ M(⌊t⌋) t^(-(s+1)) dt`,   `M(m) = ∑_{k ≤ m} μ(k)`.
 
-  Two instances, both unconditional:
+## Correction of an earlier version of this card
 
-  * `ζ(s) = s ∫_1^∞ ⌊t⌋ t^(-s-1) dt`;
-  * `1/ζ(s) = s ∫_1^∞ M(⌊t⌋) t^(-s-1) dt`, `M` the Mertens function.
+The general integral representation — a Dirichlet series as `s` times the Mellin transform of the partial
+sums of its coefficients — is **mathlib's**, `LSeries_eq_mul_integral` and `LSeries_eq_mul_integral'`
+(`Mathlib/NumberTheory/LSeries/SumCoeff.lean`), and its zeta instance is **the corpus's**,
+`RHTower.riemannZeta_eq_mul_integral_floor` (`RHTower/FractionalPartZeta.lean`). An earlier version of
+this card claimed both as new; they were re-proofs and have been deleted. What survives, and is new, is
+the Möbius instance, three lines from `‖μ‖ ≤ 1` and `RHTower.LSeries_moebius_eq_inv_riemannZeta`.
+
+The search that would have found the general theorem is a grep for the *conclusion shape*
+(`s * ∫ t in Ioi 1`, `Icc 1 ⌊t⌋₊`) in mathlib's `NumberTheory/LSeries` and in the corpus — not a query
+about "Mellin transform of a partial sum", which is the concept name and appears nowhere in it.
 
 ## Module
 
 `formal/GaloisForLFunctions/RHTower/Sieve/PartialSumMellinBridge.lean` —
-`LSeries_eq_mul_integral_sum_Icc`, `riemannZeta_eq_mul_integral_floor`,
-`inv_riemannZeta_eq_mul_integral_mertens`, plus `norm_sum_Icc_zero_le`.
-
-## What it is built from
-
-Nothing analytic was rebuilt. mathlib's improper Abel summation
-(`tendsto_sum_mul_atTop_nhds_one_sub_integral₀`) does the interchange; the corpus's own cpow lemmas
-(`RHTower.differentiableAt_ofReal_cpow_neg`, `RHTower.deriv_ofReal_cpow_neg` from
-`ZetaPartialSumStrip`) discharge the differentiability and the derivative; `RHTower.zetaSeriesCoeff`
-and `RHTower.sum_zetaCoeff` give the zeta instance; `RHTower.LSeries_moebius_eq_inv_riemannZeta`
-(`SquarefreeMoebiusNormalization`) gives the Mertens instance. The three hypotheses of the Abel
-theorem — the limit `n^(-s) S(n) → 0`, the domination `deriv · S = O(t^(-σ))`, and integrability at
-infinity — are discharged from `‖S_f(m)‖ ≤ m` alone.
+`inv_riemannZeta_eq_mul_integral_mertens`.
 
 ## Why it matters
 
-The kernel attached to the vertical line here is `1/s`, decaying like `1/|t|`. Every earlier Perron
-passage in the corpus goes through a *smoothed* cutoff, whose kernel is the Mellin transform of the
-smoothing profile: that is what forced the two integrations by parts and the `∫‖W‖ ≍ N log N` estimate
-behind the `(log N)²` loss of the pointwise Halász route
-(`halasz-programme-session-index.md`, no-go 1). The bridge is exact — no truncation error, no smoothing
-profile, no parameter `H` — and it holds for every bounded coefficient sequence.
+The kernel attached to the vertical line is `1/s`, decaying like `1/|t|`. Every other Perron passage in
+the corpus goes through a *smoothed* cutoff, whose kernel is the Mellin transform of the smoothing
+profile: that is what forced the two integrations by parts and the `∫‖W‖ ≍ N log N` estimate behind the
+`(log N)²` loss of the pointwise Halász route (`halasz-programme-session-index.md`, no-go 1).
 
 It is also the identity underlying the Mertens-type criteria: `M(x) = O(x^θ)` makes the right-hand side
-of the second instance converge for `Re s > θ`. No criterion is stated here — the corpus's own audit
+converge for `Re s > θ`. No criterion is stated — the corpus's own audit
 (`rh-criterion-reencoding-template`) records that re-encoding RH as another criterion does not advance
 the proof — but the identity is the unconditional half that any such argument consumes, and it was
 missing.
-
-## Next
-
-The mean-square input named by no-go 3, in the form free of the length obstruction: Plancherel for the
-Mellin transform on the line `Re s = σ > 1`,
-
-`∫_0^∞ ‖S_f(e^u)‖² e^(-2σu) du = (1/2π) ∫_ℝ ‖L(f, σ+iτ)/(σ+iτ)‖² dτ`,
-
-whose right-hand side pairs the corpus's damped Euler bound against an *integrable* kernel.

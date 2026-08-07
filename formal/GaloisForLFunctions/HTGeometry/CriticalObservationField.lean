@@ -263,6 +263,20 @@ theorem postcriticalRawFieldElement_transcendental_criticalSourceField
         (Set.range (fun j : Fin (m + n) => criticalAmbientRaw K m n (j : ℕ))))
       (genericJetField K (m + n))).2 halg)
 
+/-- The new raw coordinate is also transcendental over the smaller critical observation field. -/
+theorem postcriticalRawFieldElement_transcendental_criticalObservationField
+    (K : Type*) [Field K] (m n : ℕ) :
+    Transcendental (criticalObservationField K m n)
+      (postcriticalRawFieldElement K m n) := by
+  let A := criticalObservationField K m n
+  let B := criticalSourceField K m n
+  have hAB : A ≤ B := criticalObservationField_le_criticalSourceField K
+  letI : Algebra A B := (IntermediateField.inclusion hAB).toAlgebra
+  haveI : IsScalarTower A B (genericJetField K (m + n)) :=
+    .of_algebraMap_eq fun _ => rfl
+  exact (postcriticalRawFieldElement_transcendental_criticalSourceField K m n).restrictScalars
+    (IntermediateField.inclusion_injective hAB)
+
 /-- The canonical fraction-field map is the underlying map of `genericJetEquiv`. -/
 theorem genericJetFieldMap_eq_coe_genericJetEquiv
     (K : Type*) [Field K] (N : ℕ) (x : genericJetAlgebra K N) :

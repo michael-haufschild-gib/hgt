@@ -120,4 +120,51 @@ theorem two_mul_norm_fourier_le_translationDistance (f : ℝ → ℂ) (hf : Inte
   rw [hsub] at hbd
   simpa using hbd
 
+/-! ## The symbol of the difference operator
+
+Translating multiplies the transform by a character, so the first difference has Fourier symbol
+`1 − e^{2πihξ}`.  Subtraction must be routed through `fourierIntegral_add` together with
+`fourierIntegral_const_smul` at `-1`: this toolchain has no `fourierIntegral_sub`.
+-/
+
+/-- The transform of a translate is the character times the transform. -/
+theorem fourier_translate (f : ℝ → ℂ) (h ξ : ℝ) :
+    fourier (fun x => f (x + h)) ξ
+      = ((Real.fourierChar (h * ξ) : Circle) : ℂ) * fourier f ξ := by
+  have hval := congrFun (VectorFourier.fourierIntegral_comp_add_right (E := ℂ) Real.fourierChar
+    (volume : Measure ℝ) (innerₗ ℝ) f h) ξ
+  have hin : ((innerₗ ℝ) h ξ : ℝ) = h * ξ := by
+    simp only [innerₗ]
+    simp [innerₛₗ, mul_comm]
+  rw [hin] at hval
+  have hgoal : fourier (fun x => f (x + h)) ξ
+      = (Real.fourierChar (h * ξ) : Circle) • fourier f ξ := hval
+  rw [hgoal, Circle.smul_def, smul_eq_mul]
+
+/-- **The symbol of the first difference.**  The transform of `f − f(·+h)` is `(1 − e^{2πihξ})`
+times the transform of `f`. -/
+theorem fourier_sub_translate (f : ℝ → ℂ) (hf : Integrable f) (h ξ : ℝ) :
+    fourier (fun x => f x - f (x + h)) ξ
+      = (1 - ((Real.fourierChar (h * ξ) : Circle) : ℂ)) * fourier f ξ := by
+  have hft : Integrable (fun x => f (x + h)) := hf.comp_add_right h
+  have hneg : Integrable (fun x => -f (x + h)) := hft.neg
+  have hadd := congrFun (VectorFourier.fourierIntegral_add (E := ℂ) (e := Real.fourierChar)
+    (μ := (volume : Measure ℝ)) (L := innerₗ ℝ) Real.continuous_fourierChar (by fun_prop)
+    hf hneg) ξ
+  have hnegf : fourier (fun x => -f (x + h)) ξ = -fourier (fun x => f (x + h)) ξ := by
+    have hsm := congrFun (VectorFourier.fourierIntegral_const_smul (E := ℂ) Real.fourierChar
+      (volume : Measure ℝ) (innerₗ ℝ) (fun x => f (x + h)) (-1 : ℂ)) ξ
+    have hs : ((-1 : ℂ) • (fun x => f (x + h))) = (fun x => -f (x + h)) := by
+      funext x; simp
+    rw [hs] at hsm
+    simp only [Pi.smul_apply, neg_smul, one_smul] at hsm
+    exact hsm
+  have hrw : (fun x => f x - f (x + h)) = (fun x => f x + -f (x + h)) := by
+    funext x; ring
+  rw [hrw]
+  have h2 : fourier (fun x => f x + -f (x + h)) ξ
+      = fourier f ξ + fourier (fun x => -f (x + h)) ξ := hadd
+  rw [h2, hnegf, fourier_translate f h ξ]
+  ring
+
 end GaloisForLFunctions.HTGeometry

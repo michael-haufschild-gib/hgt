@@ -106,7 +106,8 @@ theorem norm_sq_sourceModeU_le {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSou
   have h := norm_sourceModeU_le hz hzero x
   have hsq : ‖sourceModeU thetaSource z x‖ ^ 2
       ≤ (thetaBound / (1 - |z.im|) * Real.exp (-|x|)) ^ 2 := by
-    refine pow_le_pow_left (norm_nonneg _) h 2
+    have hnn := norm_nonneg (sourceModeU thetaSource z x)
+    nlinarith [h, hnn]
   refine le_trans hsq (le_of_eq ?_)
   rw [mul_pow, ← Real.exp_nat_mul]
   congr 2
@@ -178,7 +179,6 @@ theorem rootModeEndpoints_thetaSource {z : ℂ} (hz : |z.im| < 1)
         = (thetaSource.k x / thetaSource.mass) *
           (‖sourceModeU thetaSource z x‖ ^ 2 / (thetaSource.mass * thetaSource.k x))
       field_simp
-      ring
     refine MeasureTheory.IntegrableOn.congr_fun (hiff.mpr hright) (fun t ht => ?_)
       measurableSet_Ioo
     show ‖sourceModeU thetaSource z (thetaSource.quantileFun t)‖ ^ 2
@@ -188,7 +188,6 @@ theorem rootModeEndpoints_thetaSource {z : ℂ} (hz : |z.im| < 1)
     have hk : thetaSource.k (thetaSource.quantileFun t) ≠ 0 :=
       (thetaSource.pos_k _).ne'
     field_simp
-    ring
   · -- value
     have hmeas : AEStronglyMeasurable
         (fun x : ℝ => (-Complex.I / (thetaSource.mass : ℂ)) * sourceModeU thetaSource z x)
@@ -200,26 +199,27 @@ theorem rootModeEndpoints_thetaSource {z : ℂ} (hz : |z.im| < 1)
         ≤ thetaBound / (1 - |z.im|) / thetaSource.mass ^ 2 * thetaSource.k x := by
       intro x
       have hgap : (0 : ℝ) < 1 - |z.im| := by linarith
-      have hu := norm_sourceModeU_le hz hzero x
-      have hexp : Real.exp (-|x|) ≤ 1 := by
-        rw [Real.exp_le_one_iff]
-        simp
       have hCnn : 0 ≤ thetaBound / (1 - |z.im|) := div_nonneg thetaBound_nonneg hgap.le
+      have hn : 0 ≤ thetaSource.normalized x := div_nonneg (thetaSource.pos_k x).le hM.le
       have hu' : ‖sourceModeU thetaSource z x‖ ≤ thetaBound / (1 - |z.im|) := by
-        refine le_trans hu ?_
+        refine le_trans (norm_sourceModeU_le hz hzero x) ?_
+        have hexp : Real.exp (-|x|) ≤ 1 := by
+          rw [Real.exp_le_one_iff]
+          simp
         nlinarith [Real.exp_pos (-|x|)]
-      rw [norm_smul, norm_mul, norm_div, norm_neg, Complex.norm_I, Complex.norm_real,
-        Real.norm_eq_abs, abs_of_pos hM, Real.norm_eq_abs,
-        abs_of_nonneg (div_nonneg (thetaSource.pos_k x).le hM.le)]
-      have hkx : 0 ≤ thetaSource.k x := (thetaSource.pos_k x).le
-      have : thetaSource.k x / thetaSource.mass * (1 / thetaSource.mass
-          * ‖sourceModeU thetaSource z x‖)
-          ≤ thetaSource.k x / thetaSource.mass * (1 / thetaSource.mass
-            * (thetaBound / (1 - |z.im|))) := by
-        gcongr
-      refine le_trans this (le_of_eq ?_)
-      field_simp
-      ring
+      have hnorm : ‖thetaSource.normalized x •
+          ((-Complex.I / (thetaSource.mass : ℂ)) * sourceModeU thetaSource z x)‖
+          = thetaSource.normalized x * (‖sourceModeU thetaSource z x‖ / thetaSource.mass) := by
+        rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hn, norm_mul, norm_div, norm_neg,
+          Complex.norm_I, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hM]
+        ring
+      rw [hnorm]
+      calc thetaSource.normalized x * (‖sourceModeU thetaSource z x‖ / thetaSource.mass)
+          ≤ thetaSource.normalized x * ((thetaBound / (1 - |z.im|)) / thetaSource.mass) :=
+            mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hu' hM.le) hn
+        _ = thetaBound / (1 - |z.im|) / thetaSource.mass ^ 2 * thetaSource.k x := by
+            show thetaSource.k x / thetaSource.mass * _ = _
+            field_simp
     have hright : Integrable (fun x : ℝ => thetaSource.normalized x •
         ((-Complex.I / (thetaSource.mass : ℂ)) * sourceModeU thetaSource z x))
         (volume : Measure ℝ) := by
@@ -227,8 +227,12 @@ theorem rootModeEndpoints_thetaSource {z : ℂ} (hz : |z.im| < 1)
         (thetaSource.integrable_k.const_mul
           (thetaBound / (1 - |z.im|) / thetaSource.mass ^ 2)) ?_ ?_
       · refine (Continuous.aestronglyMeasurable ?_)
-        refine Continuous.smul ?_ (continuous_const.mul hcont)
-        exact thetaSource.continuous_k.div_const _
+        have h1 : Continuous thetaSource.normalized :=
+          thetaSource.continuous_k.div_const thetaSource.mass
+        have h2 : Continuous fun x : ℝ =>
+            (-Complex.I / (thetaSource.mass : ℂ)) * sourceModeU thetaSource z x :=
+          continuous_const.mul hcont
+        exact h1.smul h2
       · filter_upwards with x
         exact hbdd x
     refine MeasureTheory.IntegrableOn.congr_fun (hiff.mpr hright) (fun t ht => ?_)

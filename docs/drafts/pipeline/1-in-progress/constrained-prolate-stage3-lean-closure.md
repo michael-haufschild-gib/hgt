@@ -203,3 +203,17 @@ projective/trace-class/determinant consequences.
 - Strengthened `CCMRadialProlateDefect.lean` to expose the exact Gronwall constant used by its
   interior approximation theorem.  This removes the last hidden existential coefficient before
   the uniform actual-profile-to-leading-Bessel transfer.
+
+### 2026-08-07: unconditional uniform actual-to-Dunster transfer
+
+- Added a fixed, globally chosen common Bessel-envelope constant in
+  `CCMFirstRowDunsterModel.lean`; interior estimates no longer return a parameter-dependent hidden
+  envelope witness.
+- Strengthened `CCMRadialProlateDefect.lean` so its approximation theorem exposes both that fixed
+  constant and the exact Volterra--Gronwall constant.
+- Added `ProlateDunsterUniformTransfer.lean`.  Proved the matching-point datum is at most `33`, the
+  exact Gronwall constant is uniformly bounded, and the genuine endpoint-normalized radial
+  comparison profile satisfies a fixed `O(1/c)` error bound against the regular Bessel model on
+  every interval beyond `B(c)`.
+- This is the previously missing actual-PSWF-to-leading-Dunster-model theorem required by the
+  radial leakage, weak-measure, off-diagonal, and arithmetic projective-limit cards.

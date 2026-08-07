@@ -1662,3 +1662,31 @@ half-period case. That is the pattern to copy; do not look for a `_sub` lemma.
 The Plancherel/Tonelli step, now reduced to: (a) the translate-symbol identity above, by the
 add/neg route; (b) Plancherel `∫|Δ_h u|² = ∫ |symbol|²|û|²`; (c) Tonelli to exchange `dh` and `dξ`,
 after which `integral_gagliardoIntegrand_scaling` supplies `c_s |ξ|^{2s}` pointwise in `ξ`.
+
+## AH. Piece (a) of prerequisite 1 is built
+
+`FourierDecayFromDerivative.lean` gains two declarations, both `#print axioms` clean:
+
+- `fourier_translate` — `𝓕(f(·+h))(ξ) = e^{2πihξ} · f̂(ξ)`.
+- `fourier_sub_translate` — **the symbol of the first difference**:
+  `𝓕(f − f(·+h))(ξ) = (1 − e^{2πihξ}) · f̂(ξ)`.
+
+Built by the add/neg route flagged in section AG, since `VectorFourier.fourierIntegral_sub` does
+not exist here: `fourierIntegral_add` on `f + (−f(·+h))`, with the negation supplied by
+`fourierIntegral_const_smul` at `(-1 : ℂ)`. Only `Integrable f` is assumed — object regularity.
+
+Combined with `normSq_one_sub_fourierChar` (section AG), the squared modulus of this symbol is
+`4 sin²(πhξ)`, i.e. the Gagliardo numerator. So for each fixed `h` the Fourier side of the
+difference-quotient integrand is fully identified.
+
+Trap: after `rw [Circle.smul_def]` the goal still carries `•` rather than `*`; finish with
+`smul_eq_mul`.
+
+### Prerequisite 1 — remaining
+
+(b) Plancherel `∫|Δ_h u|² dx = ∫ |1 − e^{2πihξ}|² |û(ξ)|² dξ` — mathlib's `L²` Fourier isometry.
+(c) Tonelli to exchange `dh` and `dξ`, then `integral_gagliardoIntegrand_scaling` gives
+`c_s |ξ|^{2s}` pointwise in `ξ`.
+
+Piece (a) is done; (b) is an instantiation of an existing isometry, (c) is the only genuinely
+two-variable step left in this prerequisite.

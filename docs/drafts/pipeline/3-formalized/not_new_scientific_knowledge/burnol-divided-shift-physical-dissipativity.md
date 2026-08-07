@@ -1,8 +1,8 @@
 # Burnol divided-shift physical dissipativity
 
 - **ID:** `burnol-divided-shift-physical-dissipativity`
-- **Stage:** 2-fully-proven
-- **Type:** `[PAPER-PROVED] [REDISCOVERED BRIDGE]` / Route R reduction
+- **Stage:** 3-formalized
+- **Type:** `[LEAN-PROVED] [REDISCOVERED] [BRIDGE]` / Route R reduction
 - **Exact claim:** fixed-source projection flatness is equivalent to nonpositivity of one explicit
   physical dilation-autocorrelation port at every right-half Xi divisor point.
 
@@ -19,7 +19,7 @@ Burnol's completed-Mellin Riesz evaluator.  No corpus theorem identifies those t
    the divided shift of any nonzero source vector has nonzero source projection off the line.
 2. `[CIRCULAR]` The evaluator and divided shift agree modulo the source orthogonal complement.
    Killing mechanism: this equality immediately gives the existing flatness endpoint and hence RH.
-3. `[PAPER-PROVED]` The spectral divided shift is the physical one-sided dilation resolvent, and
+3. `[LEAN-PROVED]` The spectral divided shift is the physical one-sided dilation resolvent, and
    source flatness is equivalent to nonpositivity of its single fixed-source autocorrelation port.
    This does not identify the shift with the evaluator.  It changes the producer's codomain from a
    Hilbert-space vector equality to one real scalar inequality of the form output by an oriented
@@ -150,3 +150,28 @@ The existing RH consumer then closes RH from physical dissipativity.
 
 These sources provide Sonine/co-Poisson and Mellin-dilation mechanisms.  They do not supply the
 new Route R source-side nonpositive Stokes sign.
+
+## Lean certificate
+
+Module:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolDividedShiftPhysicalDissipativity.lean
+```
+
+Exact declarations:
+
+```text
+integral_burnolShiftWeight_mul_mellinCharacter
+integrable_burnolMellinLaplaceKernel_mul_inner
+burnolShift_eq_burnolMellinDividedShift
+burnolDividedShiftPhysicalPort_eq_inner_mellin
+re_burnolDividedShiftPhysicalPort_eq
+re_burnolDividedShiftPhysicalPort_pos
+burnolXiDividedShiftSourceFlatness_iff_physicalDissipativity
+riemannHypothesis_of_burnolXiDividedShiftPhysicalDissipativity
+```
+
+All declarations are unconditional.  `[OPEN CORE]` remains derivation of
+`BurnolXiDividedShiftPhysicalDissipativity` from pre-divisor rational-adelic/Euler--Gamma--Stokes
+structure; no such hypothesis is hidden in the comparison or positivity proofs.

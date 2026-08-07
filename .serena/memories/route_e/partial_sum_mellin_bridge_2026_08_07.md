@@ -1,26 +1,23 @@
-# The partial-sum Mellin bridge is built (2026-08-07)
+# The Mellin integral representation is MATHLIB's, not ours (2026-08-07)
 
-`RHTower/Sieve/PartialSumMellinBridge.lean`, green, axiom-clean, umbrella-wired.
+**`LSeries_eq_mul_integral` and `LSeries_eq_mul_integral'` are in mathlib**
+(`Mathlib/NumberTheory/LSeries/SumCoeff.lean`):
 
-`LSeries_eq_mul_integral_sum_Icc (hf0 : f 0 = 0) (hbdd : ∀ n, ‖f n‖ ≤ 1) (hs : 1 < s.re)` —
-`L(f,s) = s ∫_{Ioi 1} (∑_{k ∈ Icc 0 ⌊t⌋₊} f k) · t^(-s-1)`.
-Instances: `riemannZeta_eq_mul_integral_floor`, `inv_riemannZeta_eq_mul_integral_mertens`
-(`1/ζ(s) = s ∫ M(⌊t⌋) t^{-s-1}`).
+`L(f,s) = s ∫_{Ioi 1} (∑_{k ∈ Icc 1 ⌊t⌋₊} f k) t^{-(s+1)}` whenever the partial sums are `O(n^r)` and
+`r < Re s`. The zeta instance is the corpus's `RHTower.riemannZeta_eq_mul_integral_floor`
+(`RHTower/FractionalPartZeta.lean`), which already calls the mathlib lemma.
 
-Reuse map (do not rebuild any of these):
-- mathlib `tendsto_sum_mul_atTop_nhds_one_sub_integral₀` (Mathlib/NumberTheory/AbelSummation.lean) is
-  improper Abel summation; the corpus's `primeZeta_eq_abel_integral` (RHTower/PrimeZetaAbelRepresentation)
-  is the real-valued template for discharging its five hypotheses.
-- `RHTower.differentiableAt_ofReal_cpow_neg`, `RHTower.deriv_ofReal_cpow_neg` (ZetaPartialSumStrip) are
-  the cpow-in-a-real-variable lemmas; `RHTower.zetaSeriesCoeff`, `RHTower.sum_zetaCoeff` the ζ
-  coefficients; `RHTower.LSeries_moebius_eq_inv_riemannZeta` (SquarefreeMoebiusNormalization) the 1/ζ
-  identity. `RHTower.Mertens.*` (RHTower/MertensFirst) is a different module from Sieve/MertensFirst.
-- mathlib `LSeriesSummable_of_bounded_of_one_lt_re` for summability of a bounded series.
+I re-proved both from mathlib's Abel summation before finding them, and deleted the duplicates. The
+only new content is `RHTower.Sieve.inv_riemannZeta_eq_mul_integral_mertens`:
+`1/ζ(s) = s ∫ M(⌊t⌋) t^{-(s+1)}` for `Re s > 1`, three lines from `‖μ‖ ≤ 1` and
+`RHTower.LSeries_moebius_eq_inv_riemannZeta` (`SquarefreeMoebiusNormalization`).
 
-Why it was worth building: the vertical kernel is `1/s`, decaying like `1/|t|`, whereas every earlier
-Perron passage in the corpus is *smoothed* and its kernel costs the `∫‖W‖ ≍ N log N` that produced the
-`(log N)²` loss of the pointwise Halász route. The bridge is exact — no truncation, no smoothing profile.
+**The search that finds such things:** grep for the *conclusion shape* — `s * ∫ t in Ioi 1`,
+`Icc 1 ⌊t⌋₊`, `=O[atTop] fun n => (n : ℝ) ^ r` — in `.lake/packages/mathlib/Mathlib/NumberTheory/LSeries/`
+and in `GaloisForLFunctions/`. A `formal_tools.py research` query about the *concept*
+("Mellin transform of a partial sum", "summatory function") finds nothing, because neither mathlib nor
+the corpus names it that way. Same failure mode as the Halász recursion earlier the same day
+(`sum_mul_log_eq_vonMangoldt` in Sieve/DivisorSwap).
 
-Traps: `squeeze_zero_norm` names its majorant `a`, not `g`; `← Real.rpow_one t` rewrites every `t` in the
-goal (use `Real.rpow_add_one`); `Complex.norm_real` yields the *real* norm, so follow with
-`Real.norm_eq_abs`.
+Still useful to remember: the vertical kernel here is `1/s` (decay `1/|t|`), whereas every *smoothed*
+Perron passage in the corpus carries a kernel that costs `∫‖W‖ ≍ N log N`.
