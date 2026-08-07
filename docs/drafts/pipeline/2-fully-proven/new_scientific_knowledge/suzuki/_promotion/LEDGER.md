@@ -1278,3 +1278,42 @@ Traps: `le_or_lt` does not resolve here — use `lt_or_ge` and name the branches
 `fun x => log (1 - x)`); bind the inner continuity to a named `have` first. `Filter.Tendsto.comp`
 yields a `∘` form that `simpa` cannot reconcile with a lambda — use `Filter.Tendsto.log` directly
 and `rwa [Real.log_one]`.
+
+## V. `(11)` closed — and the card's constant is wrong
+
+New module `formal/GaloisForLFunctions/HTGeometry/HalfLogCesaroAverage.lean`, wired into the
+`HTGeometry` umbrella. 5 declarations, all `#print axioms` clean.
+
+    halfLinePrimitive F L = ∫_0^L F
+    logDirichlet F L      = 2 L F L − Y L
+    halfLogAverage F L    = Y L / (2 √L)
+
+- `hasDerivAt_halfLinePrimitive` — FTC for a continuous profile.
+- `hasDerivAt_halfLogAverage` — the derivative of the average.
+
+**Discrepancy in `suzuki-weak-signed-half-log-trace` `(11)`.** The card states both
+
+    A(L) = Y(L)/(2√L)        and        A'(L) = P F(L)/(2 L^{3/2}).
+
+These two are inconsistent. Differentiating `Y/(2√L)` gives
+
+    A'(L) = F(L)/(2√L) − Y(L)/(4L^{3/2}) = [2L F(L) − Y(L)] / (4 L^{3/2}) = P F(L)/(4 L^{3/2}),
+
+a factor 2 smaller than the card claims. The correct pairings are
+`(A = Y/(2√L), A' = PF/(4L^{3/2}))` or `(A = Y/√L, A' = PF/(2L^{3/2}))`.
+
+**The formalized version keeps `A = Y/(2√L)` and corrects the derivative to `4L^{3/2}`**, because
+that normalisation is the one the theorem needs: for `F ~ β/√L` it gives `Y ~ 2β√L`, hence
+`A → β`, the *same* limit as `H = √L F`. Step `(13)` `liminf H ≤ α ≤ limsup H` is only meaningful
+with this normalisation, so the derivative constant is the typo, not the definition of `A`.
+
+The card must be corrected before it is promoted — the paper statement as written is false.
+
+### Remaining on prerequisite 4
+
+- `(12)`→`(13)` the weighted Cesàro comparison `liminf H ≤ α ≤ limsup H`.
+- §4's mollification commutator.
+
+Trap: after `field_simp` the goal carries `√L ^ 2` rather than `L`; `nlinarith` will not close it.
+Supply `hsq2 : Real.sqrt L ^ 2 = L := Real.sq_sqrt hL.le` and finish with
+`linear_combination 4 * halfLinePrimitive F L * hsq2`.

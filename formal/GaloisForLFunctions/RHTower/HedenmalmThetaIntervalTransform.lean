@@ -47,9 +47,7 @@ theorem intervalMass_le_exp {L : ℝ} (hL : 0 ≤ L) (x : ℝ) :
       rw [abs_of_nonpos (by linarith : x - t ≤ 0)]
       linarith
     have habs : |x| - L ≤ |t| := by
-      have : |x| ≤ |t| + |x - t| := by
-        calc |x| = |t + (x - t)| := by ring_nf
-          _ ≤ |t| + |x - t| := abs_add _ _
+      have h := abs_sub_abs_le_abs_sub x t
       linarith
     have hexp : Real.exp (-|t|) ≤ Real.exp L * Real.exp (-|x|) := by
       rw [← Real.exp_add]
@@ -61,9 +59,11 @@ theorem intervalMass_le_exp {L : ℝ} (hL : 0 ≤ L) (x : ℝ) :
       _ = thetaBound * Real.exp L * Real.exp (-|x|) := by ring
   have hconst : IntegrableOn (fun _ : ℝ => thetaBound * Real.exp L * Real.exp (-|x|))
       (Ioc x (x + L)) volume := by
-    refine integrableOn_const.2 (Or.inr ?_)
-    rw [Real.volume_Ioc]
-    exact ENNReal.ofReal_lt_top
+    refine Measure.integrableOn_of_bounded
+      (M := |thetaBound * Real.exp L * Real.exp (-|x|)|)
+      (by rw [Real.volume_Ioc]; exact ENNReal.ofReal_ne_top) aestronglyMeasurable_const ?_
+    filter_upwards with t
+    rw [Real.norm_eq_abs]
   have hle := setIntegral_mono_on thetaSource.integrable_k.integrableOn hconst
     measurableSet_Ioc hbound
   rw [setIntegral_const, Measure.real, Real.volume_Ioc,
@@ -108,14 +108,29 @@ theorem hasDerivAt_windowFun {L : ℝ} (hL : 0 ≤ L) (x : ℝ) :
   have hbase := hasDerivAt_setIntegral_Iic hkcont hkC
   have hshift : HasDerivAt (fun t : ℝ => ∫ y in Iic (t + L), (thetaSource.k y : ℂ))
       ((thetaSource.k (x + L) : ℂ)) x := by
-    have h := (hbase (x + L)).comp x ((hasDerivAt_id x).add_const L)
-    simpa using h
+    have hinner : HasDerivAt (fun t : ℝ => t + L) 1 x := by
+      simpa using (hasDerivAt_id x).add_const L
+    have hb : HasDerivAt (fun t : ℝ => ∫ y in Iic t, (thetaSource.k y : ℂ))
+        ((thetaSource.k (x + L) : ℂ)) ((fun t : ℝ => t + L) x) := hbase (x + L)
+    have h := hb.comp x hinner
+    simpa [Function.comp_def] using h
   have hmain := hshift.sub (hbase x)
   refine hmain.congr_of_eventuallyEq ?_
   filter_upwards with t
   exact windowFun_eq_sub hL t
 
 /-! ### Integrability and the boundary terms -/
+
+theorem continuous_windowFun {L : ℝ} (hL : 0 ≤ L) : Continuous (windowFun L) := by
+  have h : Continuous fun x : ℝ =>
+      thetaSource.mass * (thetaSource.cdfFun (x + L) - thetaSource.cdfFun x) :=
+    continuous_const.mul ((thetaSource.continuous_cdfFun.comp
+      (continuous_id.add continuous_const)).sub thetaSource.continuous_cdfFun)
+  refine (Complex.continuous_ofReal.comp h).congr fun x => ?_
+  show ((thetaSource.mass * (thetaSource.cdfFun (x + L) - thetaSource.cdfFun x) : ℝ) : ℂ)
+    = windowFun L x
+  rw [windowFun, mass_mul_cdfFun_sub thetaSource (by linarith : x ≤ x + L)]
+
 
 /-- The dominating profile of the window against the source character. -/
 theorem norm_windowFun_sourceChar_le {L : ℝ} (hL : 0 ≤ L) {z : ℂ} (hz : |z.im| < 1) (x : ℝ) :
@@ -131,9 +146,8 @@ theorem norm_windowFun_sourceChar_le {L : ℝ} (hL : 0 ≤ L) {z : ℂ} (hz : |z
   rw [norm_mul, norm_sourceChar]
   calc ‖windowFun L x‖ * Real.exp (-z.im * x)
       ≤ ((L * (thetaBound * Real.exp L)) * Real.exp (-|x|)) * Real.exp (|z.im| * |x|) := by
-        gcongr
-        · exact Real.exp_pos _ |>.le
-        · exact norm_windowFun hL x
+        refine mul_le_mul (norm_windowFun hL x) hkey (Real.exp_pos _).le ?_
+        positivity
     _ = (L * (thetaBound * Real.exp L)) * Real.exp (-((1 - |z.im|) * |x|)) := by
         rw [mul_assoc, ← Real.exp_add]
         congr 2
@@ -144,21 +158,7 @@ theorem integrable_windowFun_sourceChar {L : ℝ} (hL : 0 ≤ L) {z : ℂ} (hz :
   have hcpos : (0 : ℝ) < 1 - |z.im| := by linarith
   refine Integrable.mono'
     ((integrable_exp_neg_mul_abs hcpos).const_mul (L * (thetaBound * Real.exp L))) ?_ ?_
-  · refine (Continuous.aestronglyMeasurable ?_)
-    refine Continuous.mul ?_ (continuous_sourceChar z)
-    refine Complex.continuous_ofReal.comp ?_
-    have : Continuous fun x : ℝ =>
-        (∫ y in Iic (x + L), thetaSource.k y) - ∫ y in Iic x, thetaSource.k y := by
-      have hkcont : Continuous (fun y : ℝ => (thetaSource.k y : ℂ)) :=
-        Complex.continuous_ofReal.comp thetaSource.continuous_k
-      have hkC : Integrable (fun y : ℝ => (thetaSource.k y : ℂ)) (volume : Measure ℝ) :=
-        thetaSource.integrable_k.ofReal
-      exact ((thetaSource.continuous_cdfFun.comp (continuous_id.add continuous_const)).sub
-        thetaSource.continuous_cdfFun).const_smul (0 : ℝ) |>.congr fun _ => rfl
-    exact ((thetaSource.continuous_cdfFun.comp (continuous_id.add continuous_const)).sub
-      thetaSource.continuous_cdfFun).mul continuous_const |>.congr fun x => by
-        rw [← mass_mul_cdfFun_sub thetaSource (by linarith : x ≤ x + L)]
-        ring
+  · exact ((continuous_windowFun hL).mul (continuous_sourceChar z)).aestronglyMeasurable
   · filter_upwards with x
     exact norm_windowFun_sourceChar_le hL hz x
 
@@ -185,6 +185,27 @@ theorem tendsto_windowFun_sourceChar {L : ℝ} (hL : 0 ≤ L) {z : ℂ} (hz : |z
 
 /-! ### The translated source integral -/
 
+theorem sourceChar_add (z : ℂ) (x L : ℝ) :
+    sourceChar z (x + L) = sourceChar z x * Complex.exp (Complex.I * z * (L : ℂ)) := by
+  rw [sourceChar, sourceChar, ← Complex.exp_add]
+  congr 1
+  push_cast
+  ring
+
+theorem shifted_char_factor (c : ℂ) (L : ℝ) (z : ℂ) (x : ℝ) :
+    c * sourceChar z x
+      = Complex.exp (-(Complex.I * z * (L : ℂ))) * (c * sourceChar z (x + L)) := by
+  have hcancel : Complex.exp (-(Complex.I * z * (L : ℂ)))
+      * Complex.exp (Complex.I * z * (L : ℂ)) = 1 := by
+    rw [← Complex.exp_add]
+    simp
+  rw [sourceChar_add]
+  calc c * sourceChar z x = c * sourceChar z x * 1 := by ring
+    _ = Complex.exp (-(Complex.I * z * (L : ℂ)))
+        * (c * (sourceChar z x * Complex.exp (Complex.I * z * (L : ℂ)))) := by
+        rw [← hcancel]; ring
+
+
 theorem integral_shifted_k_sourceChar {L : ℝ} {z : ℂ} (hz : |z.im| < 1) :
     (∫ x : ℝ, (thetaSource.k (x + L) : ℂ) * sourceChar z x)
       = Complex.exp (-(Complex.I * z * (L : ℂ))) * XiC z := by
@@ -194,11 +215,7 @@ theorem integral_shifted_k_sourceChar {L : ℝ} {z : ℂ} (hz : |z.im| < 1) :
       = Complex.exp (-(Complex.I * z * (L : ℂ)))
         * ((thetaSource.k (x + L) : ℂ) * sourceChar z (x + L)) := by
     intro x
-    rw [sourceChar, sourceChar, ← mul_assoc, mul_comm (Complex.exp (-(Complex.I * z * (L : ℂ))))]
-    rw [mul_assoc, ← Complex.exp_add]
-    congr 2
-    push_cast
-    ring
+    exact shifted_char_factor (thetaSource.k (x + L) : ℂ) L z x
   rw [integral_congr_ae (Filter.Eventually.of_forall hpt), MeasureTheory.integral_const_mul]
   congr 1
   rw [MeasureTheory.integral_add_right_eq_self
@@ -240,19 +257,20 @@ theorem integral_windowFun_sourceChar {L : ℝ} (hL : 0 ≤ L) {z : ℂ} (hz : |
         = Complex.exp (-(Complex.I * z * (L : ℂ)))
           * ((thetaSource.k (x + L) : ℂ) * sourceChar z (x + L)) := by
       intro x
-      rw [sourceChar, sourceChar, ← mul_assoc, mul_comm (Complex.exp (-(Complex.I * z * (L : ℂ))))]
-      rw [mul_assoc, ← Complex.exp_add]
-      congr 2
-      push_cast
-      ring
+      exact shifted_char_factor (thetaSource.k (x + L) : ℂ) L z x
     exact (hcomp.const_mul _).congr (Filter.Eventually.of_forall fun x => (hpt x).symm)
   have hwin := integrable_windowFun_sourceChar hL hz
+  have hdiff : Integrable
+      (fun x : ℝ => ((thetaSource.k (x + L) : ℂ) - (thetaSource.k x : ℂ)) * sourceChar z x)
+      (volume : Measure ℝ) := by
+    refine (hkshift.sub hk).congr (Filter.Eventually.of_forall fun x => ?_)
+    show (thetaSource.k (x + L) : ℂ) * sourceChar z x - (thetaSource.k x : ℂ) * sourceChar z x
+      = ((thetaSource.k (x + L) : ℂ) - (thetaSource.k x : ℂ)) * sourceChar z x
+    ring
   have hderivInt : Integrable
       (fun x : ℝ => ((thetaSource.k (x + L) : ℂ) - (thetaSource.k x : ℂ)) * sourceChar z x
-        + Complex.I * z * (windowFun L x * sourceChar z x)) (volume : Measure ℝ) := by
-    refine Integrable.add ?_ (hwin.const_mul _)
-    refine (hkshift.sub hk).congr (Filter.Eventually.of_forall fun x => ?_)
-    ring
+        + Complex.I * z * (windowFun L x * sourceChar z x)) (volume : Measure ℝ) :=
+    hdiff.add (hwin.const_mul _)
   obtain ⟨hbot, htop⟩ := tendsto_windowFun_sourceChar hL hz
   have hzero := MeasureTheory.integral_of_hasDerivAt_of_tendsto hprod hderivInt hbot htop
   rw [sub_self] at hzero
@@ -260,8 +278,7 @@ theorem integral_windowFun_sourceChar {L : ℝ} (hL : 0 ≤ L) {z : ℂ} (hz : |
         * sourceChar z x)
       + Complex.I * z * ∫ x : ℝ, windowFun L x * sourceChar z x = 0 := by
     rw [← MeasureTheory.integral_const_mul,
-      ← MeasureTheory.integral_add ((hkshift.sub hk).congr
-        (Filter.Eventually.of_forall fun x => by ring)) (hwin.const_mul _)]
+      ← MeasureTheory.integral_add hdiff (hwin.const_mul _)]
     exact hzero
   have hfirst : (∫ x : ℝ, ((thetaSource.k (x + L) : ℂ) - (thetaSource.k x : ℂ))
         * sourceChar z x)
@@ -274,8 +291,11 @@ theorem integral_windowFun_sourceChar {L : ℝ} (hL : 0 ≤ L) {z : ℂ} (hz : |
       ← xiC, xiC_thetaSource hz]
     ring
   rw [hfirst] at hsplit
-  field_simp
-  linear_combination -hsplit
+  have hJ : (∫ x : ℝ, windowFun L x * sourceChar z x) * (Complex.I * z)
+      = (1 - Complex.exp (-(Complex.I * z * (L : ℂ)))) * XiC z := by
+    linear_combination -hsplit
+  rw [div_mul_eq_mul_div, eq_div_iff hIz]
+  exact hJ
 
 end HedenmalmThetaSource
 

@@ -202,7 +202,7 @@ variable (A : CDGAStructure R X) (B : CDGAStructure R Y)
 to the two coordinates of the output.  Indexing the product by splittings rather than by a bidegree
 of one factor keeps truncated subtraction out of every dependent position, which is what makes the
 three laws reindexing arguments rather than transport arguments. -/
-def Splitting (a b : ℕ) {n : ℕ} (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) : Type :=
+abbrev Splitting (a b : ℕ) {n : ℕ} (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) : Type :=
   {rs : {ab : ℕ × ℕ // ab.1 + ab.2 = a} × {ab : ℕ × ℕ // ab.1 + ab.2 = b} //
     rs.1.1.1 + rs.2.1.1 = p.1.1 ∧ rs.1.1.2 + rs.2.1.2 = p.1.2}
 
@@ -329,36 +329,36 @@ def splitReassoc {a b c m q n : ℕ} (h₁ : a + b = m) (h₃ : b + c = q)
     {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}}
     (x : (ts : Splitting m c p) × Splitting a b ts.1.1) :
     (us : Splitting a q p) × Splitting b c us.1.2 :=
-  match x with
-  | ⟨⟨⟨_, t⟩, hu1, hu2⟩, ⟨⟨r, s⟩, hr1, hr2⟩⟩ =>
-      ⟨⟨(r, ⟨(s.1.1 + t.1.1, s.1.2 + t.1.2), by
-            have hs := s.2
-            have ht := t.2
-            simp only at hs ht ⊢
-            omega⟩), by
-          have hs := s.2
-          have ht := t.2
-          simp only at hs ht hu1 hu2 hr1 hr2 ⊢
-          omega⟩,
-        ⟨(s, t), ⟨rfl, rfl⟩⟩⟩
+  ⟨⟨(x.2.1.1, ⟨(x.2.1.2.1.1 + x.1.1.2.1.1, x.2.1.2.1.2 + x.1.1.2.1.2), by
+        have h4 := x.2.1.2.2
+        have h5 := x.1.1.2.2
+        simp only at h4 h5 ⊢
+        omega⟩), by
+      have h4 := x.2.2.1
+      have h5 := x.2.2.2
+      have h6 := x.1.2.1
+      have h7 := x.1.2.2
+      simp only at h4 h5 h6 h7 ⊢
+      omega⟩,
+    ⟨(x.2.1.2, x.1.1.2), ⟨rfl, rfl⟩⟩⟩
 
 /-- The inverse reassociation. -/
 def splitReassocInv {a b c m q n : ℕ} (h₁ : a + b = m) (h₃ : b + c = q)
     {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}}
     (y : (us : Splitting a q p) × Splitting b c us.1.2) :
     (ts : Splitting m c p) × Splitting a b ts.1.1 :=
-  match y with
-  | ⟨⟨⟨r, _⟩, hu1, hu2⟩, ⟨⟨s, t⟩, hs1, hs2⟩⟩ =>
-      ⟨⟨(⟨(r.1.1 + s.1.1, r.1.2 + s.1.2), by
-            have hr := r.2
-            have hs := s.2
-            simp only at hr hs ⊢
-            omega⟩, t), by
-          have hr := r.2
-          have hs := s.2
-          simp only at hr hs hu1 hu2 hs1 hs2 ⊢
-          omega⟩,
-        ⟨(r, s), ⟨rfl, rfl⟩⟩⟩
+  ⟨⟨(⟨(y.1.1.1.1.1 + y.2.1.1.1.1, y.1.1.1.1.2 + y.2.1.1.1.2), by
+        have h4 := y.1.1.1.2
+        have h5 := y.2.1.1.2
+        simp only at h4 h5 ⊢
+        omega⟩, y.2.1.2), by
+      have h4 := y.1.2.1
+      have h5 := y.1.2.2
+      have h6 := y.2.2.1
+      have h7 := y.2.2.2
+      simp only at h4 h5 h6 h7 ⊢
+      omega⟩,
+    ⟨(y.1.1.1, y.2.1.1), ⟨rfl, rfl⟩⟩⟩
 
 theorem splitReassoc_inv {a b c m q n : ℕ} (h₁ : a + b = m) (h₃ : b + c = q)
     {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}}
@@ -373,7 +373,7 @@ theorem splitReassoc_inv {a b c m q n : ℕ} (h₁ : a + b = m) (h₃ : b + c = 
   have hu : u = ⟨(r.1.1 + s.1.1, r.1.2 + s.1.2), hm⟩ := by
     refine Subtype.ext (Prod.ext ?_ ?_) <;> simp only at hr1 hr2 ⊢ <;> omega
   subst hu
-  simp only [splitReassoc, splitReassocInv]
+  rfl
 
 theorem splitReassocInv_inv {a b c m q n : ℕ} (h₁ : a + b = m) (h₃ : b + c = q)
     {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}}
@@ -388,7 +388,44 @@ theorem splitReassocInv_inv {a b c m q n : ℕ} (h₁ : a + b = m) (h₃ : b + c
   have hv : v = ⟨(s.1.1 + t.1.1, s.1.2 + t.1.2), hq⟩ := by
     refine Subtype.ext (Prod.ext ?_ ?_) <;> simp only at hs1 hs2 ⊢ <;> omega
   subst hv
-  simp only [splitReassoc, splitReassocInv]
+  rfl
+
+/-- **Associativity of the product**: both sides are sums over triples of bidegrees adding up to the
+output, and reassociating a triple matches the summands. -/
+theorem tensorAlgMul_assoc {a b c m q n : ℕ} (h₁ : a + b = m) (h₂ : m + c = n)
+    (h₃ : b + c = q) (h₄ : a + q = n)
+    (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b)
+    (k : TensorCarrier (R := R) X Y c) :
+    tensorAlgMul A B h₂ (tensorAlgMul A B h₁ f g) k
+      = tensorAlgMul A B h₄ f (tensorAlgMul A B h₃ g k) := by
+  funext p
+  have hL : (∑ ts : Splitting m c p, splittingTerm A B (tensorAlgMul A B h₁ f g) k ts)
+      = ∑ ts : Splitting m c p, ∑ rs : Splitting a b ts.1.1,
+          tensorPairₗ A B ts.2.1 ts.2.2 (splittingTerm A B f g rs) (k ts.1.2) := by
+    refine Finset.sum_congr rfl fun ts _ => ?_
+    show tensorPairₗ A B ts.2.1 ts.2.2
+      (∑ rs : Splitting a b ts.1.1, splittingTerm A B f g rs) (k ts.1.2) = _
+    rw [map_sum, LinearMap.sum_apply]
+  have hR : (∑ us : Splitting a q p, splittingTerm A B f (tensorAlgMul A B h₃ g k) us)
+      = ∑ us : Splitting a q p, ∑ vw : Splitting b c us.1.2,
+          tensorPairₗ A B us.2.1 us.2.2 (f us.1.1) (splittingTerm A B g k vw) := by
+    refine Finset.sum_congr rfl fun us _ => ?_
+    show tensorPairₗ A B us.2.1 us.2.2 (f us.1.1)
+      (∑ vw : Splitting b c us.1.2, splittingTerm A B g k vw) = _
+    rw [map_sum]
+  show (∑ ts : Splitting m c p, splittingTerm A B (tensorAlgMul A B h₁ f g) k ts)
+    = ∑ us : Splitting a q p, splittingTerm A B f (tensorAlgMul A B h₃ g k) us
+  rw [hL, hR, Finset.sum_sigma', Finset.sum_sigma']
+  refine Finset.sum_nbij' (fun x => splitReassoc h₁ h₃ x) (fun y => splitReassocInv h₁ h₃ y)
+    (fun x hx => ?_) (fun y hy => ?_)
+    (fun x _ => splitReassoc_inv h₁ h₃ x) (fun y _ => splitReassocInv_inv h₁ h₃ y) ?_
+  · exact Finset.mem_sigma.2 ⟨Finset.mem_univ _, Finset.mem_univ _⟩
+  · exact Finset.mem_sigma.2 ⟨Finset.mem_univ _, Finset.mem_univ _⟩
+  · intro x _
+    exact tensorPair_assoc A B x.2.2.1 x.2.2.2 x.1.2.1 x.1.2.2
+      (splitReassoc h₁ h₃ x).2.2.1 (splitReassoc h₁ h₃ x).2.2.2
+      (splitReassoc h₁ h₃ x).1.2.1 (splitReassoc h₁ h₃ x).1.2.2
+      (f x.2.1.1) (g x.2.1.2) (k x.1.1.2)
 
 end Convolution
 
