@@ -767,3 +767,25 @@ What the corpus's model does not carry above this is the `E_∞` coherence: `rel
 `exteriorModuleCDGA` are commutative on the nose, a strictly stronger structure than `E_∞`, which
 over a field of characteristic zero is equivalent to it — the reason the card invokes rational
 homotopy theory at all.
+
+### `(5)` and `(6)` in the direction the equivalence runs — 2026-08-07
+
+`formal/GaloisForLFunctions/HTGeometry/CDGADerivedBaseChange.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The card's equivalence `(4)` runs `𝒫 → C^*_sh`, so the base change of `(5)` is against a morphism
+*out of* the base algebra, and the comparison it produces is a zig-zag rather than a single map —
+which is what a derived equivalence is when it is not realized by a strict morphism.  Both legs are
+now theorems.
+
+- `derivedBaseChangeLeftLeg`, `derivedBaseChangeRightLeg` — the two legs: the semi-free resolution
+  followed by the left unitor `𝒜 ⊗_𝒜 F ≅ F ≅ 𝒦`, and base change along the equivalence
+  `𝒜 ⊗_𝒜 F → 𝒞 ⊗_𝒜 F`.
+- `derivedBaseChange_zigZag` — **`(5)`**: both legs are quasi-isomorphisms.  The left one because
+  the resolution is one and the unitor is an isomorphism; the right one because the resolution is
+  semi-free, which is exactly the flatness the derived tensor product needs.  Taking cohomology of
+  the zig-zag gives **`(6)`**, since the target has zero differential and so is its own cohomology.
+
+Together with `relTensorCDGA`, which puts the algebra structure on the relative tensor product, and
+`CDGAHom.restrictHom`, which makes an algebra over the base into a module over it, this is the
+card's Milnor-amalgamation corollary in the corpus's model.

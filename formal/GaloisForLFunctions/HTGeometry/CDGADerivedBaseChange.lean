@@ -46,4 +46,32 @@ theorem derivedBaseChange_unit (C : CDGAModuleStructure A N)
   exact CDGAModuleHom.IsQuasiIso.comp
     (CDGAModuleHom.IsQuasiIso.comp (resolutionMap_isQuasiIso K hK) hunit.2) hbase.2
 
+/-- The left leg of the derived base-change comparison: the resolution tensored with the algebra
+itself, compared with the module. -/
+noncomputable def derivedBaseChangeLeftLeg (K : CDGAModuleStructure A M) :
+    CDGAModuleHom (relTensorModule (CDGAStructure.selfModule A) (resolution K)) K :=
+  (resolutionMap K).comp (relLeftUnitorHom (resolution K))
+
+/-- The right leg of the derived base-change comparison: base change along a morphism out of the
+algebra. -/
+noncomputable def derivedBaseChangeRightLeg (C : CDGAModuleStructure A N)
+    (ψ : CDGAModuleHom (CDGAStructure.selfModule A) C) (K : CDGAModuleStructure A M) :
+    CDGAModuleHom (relTensorModule (CDGAStructure.selfModule A) (resolution K))
+      (relTensorModule C (resolution K)) :=
+  relTensorMapLeft ψ (resolution K)
+
+/-- **`C ⊗^{L}_A K ≃ K` for a module `C` equivalent to the algebra, in the direction the equivalence
+runs**: a zig-zag through the semi-free resolution, both of whose legs are quasi-isomorphisms.  The
+left leg is the resolution followed by the left unitor; the right leg is base change along the
+equivalence, which is a quasi-isomorphism because the resolution is semi-free. -/
+theorem derivedBaseChange_zigZag (C : CDGAModuleStructure A N)
+    (ψ : CDGAModuleHom (CDGAStructure.selfModule A) C) (u : CDGAUnit A)
+    (hC : CDGAModuleUnital u C) (hψ : ψ.IsQuasiIsoFull) (K : CDGAModuleStructure A M)
+    (hK : CDGAModuleUnital u K) :
+    (derivedBaseChangeLeftLeg K).IsQuasiIso ∧ (derivedBaseChangeRightLeg C ψ K).IsQuasiIso := by
+  refine ⟨CDGAModuleHom.IsQuasiIso.comp (resolutionMap_isQuasiIso K hK)
+    (relLeftUnitorHom_isQuasiIsoFull (resolution K) u (resolution_unital K u)).2, ?_⟩
+  exact (relTensorMapLeft_resolution_isQuasiIsoFull K (CDGAStructure.selfModule A) C ψ u
+    (selfModule_unital u) hC hψ).2
+
 end GaloisForLFunctions.HTGeometry
