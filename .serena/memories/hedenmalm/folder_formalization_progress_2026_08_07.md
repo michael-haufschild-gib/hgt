@@ -93,3 +93,47 @@ pieces left.
 - **`linear_combination` against `hI : I*I = -1`: never guess the coefficient.  Read the residual
   goal, factor it as `c · (I² + 1)`, and use `c`.**  Same for `hexp`-style side relations.
 - Bash cwd persists; `cd formal` once, and re-`cd` after any `cd` to the repo root.
+
+## Update — unconditional instantiation built (2026-08-07, later)
+
+New module `formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceUnconditional.lean`
+(wired into `RHTower.lean`, compiles clean).  It closes the "everything is stated over a
+hypothesis class" objection:
+
+- `thetaCuspFullSource_pos : ∀ x, 0 < thetaCuspFullSource x`  (new global positivity: `>0` half
+  from `thetaCuspFullSource_pos_of_pos`, `<0` half from `thetaCuspFullSource_neg`, seam from
+  `thetaCuspFullSource_zero_pos_for_cold_seam`).
+- `thetaSource : PositiveDensitySource` — k := `thetaCuspFullSource`,
+  continuity from `contDiff_thetaCuspFullSource`, integrability from `thetaCuspSchwartzReal`.
+- `thetaSource_even`, `thetaBound := thetaCuspDerivativeExpConstant 0`, `thetaSource_le`,
+  `tendsto_thetaSource_atBot/atTop`.
+- `hasShiftedTail_thetaSource : |z.im| < 1 → HasShiftedTail thetaSource z`.
+- `xiC_thetaSource : |z.im| < 1 → xiC thetaSource z = XiC z`
+  (via `thetaCuspFourierLaplace_eq_XiC_on_strip` at `-z`, then `XiC_even`).
+- `thetaMetricOperator` + `denseRange_thetaMetricOperator`,
+  `not_boundedBelow_thetaMetricOperator`, `inner_thetaMetricOperator_quantileUnitary`.
+- Unconditional card forms: `sourceInverse_sourceReflection_theta` (RBR = -B),
+  `XiC_eq_zero_of_solution`, `sourceModeI_eq_neg_tail_iff_XiC`, `sourceModeI_neg_theta`,
+  `intervalMass_neg_theta`, `centeredWindow_neg_theta`.
+
+Card 7 statement (1) chain finished in `HedenmalmHilbertSchmidtNorm.lean`:
+`norm_sq_pinnedSliceVec`, `pinnedKernelField`, `pinnedKernelField_apply`,
+`norm_pinnedKernelField`, `continuousOn_quantileSpeed`, `continuousOn_pinnedKernelField`,
+`aestronglyMeasurable_pinnedKernelField`, `HasFiniteKernelEnergy`, `memLp_pinnedKernelField`,
+`pinnedKernelL2`, `isHilbertSchmidt_pinnedKernelOperator`,
+`isCompactOperator_pinnedKernelOperator`.
+
+### The one remaining analytic obligation of statement (1)
+`HasFiniteKernelEnergy thetaSource`, i.e. `∫₀¹ q² t(1-t) dt = M ∫ p(1-p)/k < ∞`.
+PROVEN ROUTE (elementary, no Gamma integrals needed), for x ≥ 1:
+1. upper: `k(y) ≤ (1+W)·4π² e^{9y/2} e^{-π e^{2y}}` for y ≥ 0
+   (`thetaCuspFullSource_sub_first_le` + `2πt⁴ - 3t² ≤ 2πt⁴`).
+2. lower: `k(x) ≥ 2π² e^{9x/2} e^{-π e^{2x}}` for x ≥ 0
+   (term₁ ≤ tsum since all terms ≥ 0, and `2πe^{4x} - 3e^{2x} ≥ π e^{4x}` for x ≥ 0).
+3. convexity `e^{2y} ≥ e^{2x}(1 + 2(y-x))` for y ≥ x, so
+   `e^{-πe^{2y}} ≤ e^{-πe^{2x}} e^{-2π e^{2x}(y-x)}`.
+4. for x ≥ 1, `2πe^{2x} - 9/2 ≥ πe^{2x}`, so `∫_x^∞ k ≤ C e^{9x/2}e^{-πe^{2x}}/(π e^{2x})`.
+5. divide: `(1-p(x))/k(x) ≤ C' e^{-2x}` on `[1,∞)`; evenness gives `[-∞,-1]`; the middle is
+   continuous on a compact.
+Do NOT try `k = H'` in closed form — the elementary primitive leaves a `+1/4 e^{x/2}θ̃` residue
+(this is the `(D² - 1/4)` of the reflection law), so it does not close.

@@ -1044,3 +1044,44 @@ Fourier computation `∫_ℝ |e^{2πihξ} − 1|² |h|^{-(1+2s)} dh = c_s |ξ|^{
 `c_s` for `0 < s < 1`. Build that constant first; it is the whole content.
 
 Do not promote the card until `(14)` lands. Sections 1–3 alone are not the card.
+
+## O. The Gagliardo constant exists — `(14)`, first half
+
+New module `formal/GaloisForLFunctions/HTGeometry/GagliardoFourierConstant.lean`, wired into the
+`HTGeometry` umbrella. 9 declarations, all `#print axioms` clean.
+
+The phase modulus, elementary and exact:
+
+- `sin_sq_half` — `sin²(x/2) = 1/2 − cos x/2`, from `Real.cos_two_mul` and the Pythagorean identity
+  (mathlib has no `Real.sin_sq_half` / `Real.cos_sq_half` in this toolchain).
+- `normSq_exp_mul_I_sub_one` — `|e^{iθ} − 1|² = 2 − 2cos θ`.
+- `normSq_exp_mul_I_sub_one_eq_four_mul_sin_sq` — `|e^{iθ} − 1|² = 4 sin²(θ/2)`.
+
+The convergence of the constant, with both tails separated and each tied to its own endpoint of
+the exponent strip:
+
+- `gagliardoIntegrand s h = 4 sin²(πh) · h^{−(1+2s)}`.
+- `gagliardoIntegrand_le_near_zero` — near the origin `sin²` cancels two powers, leaving
+  `4π² h^{1−2s}`; integrable iff **`s < 1`**.
+- `gagliardoIntegrand_le_near_infty` — near infinity the sine is bounded, leaving `4 h^{−(1+2s)}`;
+  integrable iff **`s > 0`**.
+- `integrableOn_gagliardoIntegrand_Ioo`, `integrableOn_gagliardoIntegrand_Ioi`,
+  `integrableOn_gagliardoIntegrand_Ioi_zero` — the constant `c_s` exists on the whole positive ray
+  exactly for `0 < s < 1`.
+
+Traps: `rw [integrableOn_Ioi_rpow_iff …]` fails when the goal has already unfolded to
+`Integrable … (volume.restrict …)`; state the base fact as its own `IntegrableOn` `have` and
+`.const_mul` it. `ℝ` has no `Top`, so split the ray as `Ioi 0 = Ioo 0 1 ∪ Ici 1` and move `Ici`
+to `Ioi` with `Ioi_ae_eq_Ici.symm` through `IntegrableOn.congr_set_ae`.
+
+### `(14)`, what is left
+
+Still missing is the *scaling law and the Plancherel step*:
+
+1. `∫_0^∞ 4 sin²(πhξ) h^{−(1+2s)} dh = c_s |ξ|^{2s}` — substitute `h ↦ h/|ξ|`; needs the rpow
+   change-of-variables for the dilation, not just the existence proved above.
+2. Plancherel applied to `û(ξ)(e^{2πihξ} − 1)`, then Tonelli to exchange `dh` and `dξ`.
+
+Only after both does `(14)` `log⟨D⟩u ∈ L²` follow, and only then may the two-port card be
+promoted. `c_s > 0` is also still to prove (the integrand is positive on a set of positive
+measure); it is needed for the reverse inequality, not for the direction the card uses.

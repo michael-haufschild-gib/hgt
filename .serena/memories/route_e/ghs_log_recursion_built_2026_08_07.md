@@ -1,30 +1,39 @@
-# GHS log recursion is built (2026-08-07)
+# The prime-only form of Halász's recursion (2026-08-07)
 
-`RHTower/Sieve/MultiplicativeLogRecursion` + `HTGeometry/GeneralisedVonMangoldt`, both green,
-axiom-clean, umbrella-wired.
+## The corpus already owned more than expected — check these before writing anything log-weighted
 
-Entry point: `abs_sum_Icc_mul_log_sub_sum_primes_le'` —
-`|S_f(N) log N − ∑_{p ≤ N} f(p) log p S_f(⌊N/p⌋)| ≤ (9 + RHTower.Mertens.mertensTail) · N`
-for bounded completely multiplicative `f`.  The only hypotheses are `f (m*n) = f m * f n` and
-`|f n| ≤ 1` — the definition of the class.  Do NOT state the recursion through
-`vonMangoldtOf`/`dirichletInverse`: that drags in an `Invertible (f 1)` argument for nothing, since for
-completely multiplicative `f` the weight is the concrete `f·Λ`.  And do not add premises about `S_f`
-itself (e.g. "ε-small at all smaller scales"): such a premise is a fact about the object, cannot be
-discharged, and makes the theorem conditional.
+- `RHTower.Sieve.sum_mul_log_eq_vonMangoldt` (Sieve/DivisorSwap.lean) — **Halász's recursion**
+  `∑_{m≤N} f(m) log m = ∑_{d≤N} Λ(d) f(d) S_f(⌊N/d⌋)` for completely multiplicative `f : ℕ → ℂ`.
+  Do not restate it over ℝ; ℂ is more general.
+- `RHTower.Sieve.sum_divisors_swap` — the divisor swap it rests on.
+- `RHTower.pmul_log_mul` (RHTower/DirichletLogDerivation.lean) — the **real** Leibniz rule for pointwise
+  `log`; `HTGeometry.logWeight_leibniz` is the complex one. Selberg's identity is already derived there
+  as `vonMangoldt_pmul_log_add_mul_self`.
+- `RHTower.Sieve.moebius_pmul_log`, `RHTower.Sieve.sum_moebius_mul_log_eq`,
+  `RHTower.Sieve.one_pmul_log` (Sieve/MoebiusLogRecursion.lean) — the Möbius instance, already done.
+- `RHTower.Mertens.tail_bounded` (RHTower/MertensFirst.lean, a *different* module from
+  Sieve/MertensFirst.lean) — `∑_{d≤N, ¬prime} Λ(d)/d ≤ 8 + mertensTail`.
+- `RHTower.Sieve.le_log_factorial` (Sieve/MertensFirst.lean) — `N log N − N ≤ log N!`.
 
-Built entirely from assets that already existed for other purposes:
-- `ArithmeticFunction.self_mul_dirichletInverse` (mathlib) gives `f·log = f * Λ_f` in three lines.
-- `RHTower.sum_Icc_mul_apply` (DirichletSummatorySwap) is the hyperbola swap.
-- `RHTower.Sieve.le_log_factorial` (Sieve/MertensFirst) is the log-shift cost `N log N − log N! ≤ N`.
-- `RHTower.Mertens.tail_bounded` (RHTower/MertensFirst — a *different* module from
-  Sieve/MertensFirst) bounds `∑_{d ≤ N, ¬prime} Λ(d)/d ≤ 8 + mertensTail`; this is exactly the
-  prime-power excess of the recursion. Do not reprove it by reindexing `(p,e) ↦ p^e`.
+I wrote duplicates of the first four before finding them and had to delete them. The search that finds
+them is `formal_tools.py research "divisor swap log recursion"` plus `ls GaloisForLFunctions/RHTower/Sieve`
+— not a `research` query about the *application* (Halász, Selberg, prime-power tail).
+
+## What was actually missing, and is now built
+
+`RHTower/Sieve/MultiplicativeLogRecursion.lean` (ℂ-valued, green, axiom-clean):
+entry point `norm_sum_Icc_mul_log_sub_sum_primes_le'` —
+`‖S_f(N) log N − ∑_{p≤N} f(p) log p S_f(⌊N/p⌋)‖ ≤ (9 + RHTower.Mertens.mertensTail) · N`,
+hypotheses only `f (a*b) = f a * f b` and `‖f n‖ ≤ 1`. Steps: log-shift via `le_log_factorial`
+(cost ≤ N), prime-power excess via `tail_bounded` (cost ≤ (8+mertensTail)N).
+
+`HTGeometry/GeneralisedVonMangoldt.lean` + `RHTower/Sieve/VonMangoldtWeightAdditive.lean`:
+the weight `Λ_f = f⁻¹ * (f·log)` with `f·log = f * Λ_f`, uniqueness, `Λ_ζ = Λ`, `Λ_f = f·Λ` for
+completely multiplicative `f`, `|Λ_f| ≤ Λ`, and the universal law **`Λ_{f*g} = Λ_f + Λ_g`, `Λ_1 = 0`**
+(from the existing Leibniz rule). So `Λ`, `−Λ` and `f·Λ` are one law's values at `ζ`, `μ`, `f`.
 
 Claims no decay, and cannot: the identity is tight for `f = 1`. Its value is that the remaining gate has
-no Dirichlet polynomial of length `x` and no short-height mean-value theorem — so the three contour-route
-no-gos (`halasz_route_loses_log_squared_*`, `mean_square_wrong_regime_no_go_*`) do not apply to it — and
-the prime sum is *signed*, so cancellation survives. The absolute-value forms
-(`abs_sum_Icc_mul_log_le`, `..._le_primes`) are strictly weaker and provably cannot give decay.
-
-Traps hit: `N !` does not parse without `open Nat` (use `Nat.factorial N`); `abs_add` is now
-`abs_add_le`; `Finset.sum_sub_distrib` is the forward splitting direction.
+no Dirichlet polynomial of length `x` and no short-height mean-value theorem — so the contour-route
+no-gos do not apply — and the prime sum is *signed*. Absolute-value forms were deleted: they are
+saturated by `f = 1`. Premises about `S_f` itself (ε-small at smaller scales) were deleted too: such a
+premise cannot be discharged, so the theorem would be conditional.
