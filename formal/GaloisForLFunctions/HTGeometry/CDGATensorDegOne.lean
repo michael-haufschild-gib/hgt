@@ -129,6 +129,15 @@ def tensorRightDegOneₗ (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1)) (n : ℕ) :
   map_add' := tensorRightDegOne_add g n
   map_smul' := tensorRightDegOne_smul g n
 
+@[simp] theorem tensorRightDegOneₗ_zero (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1)) (n a : ℕ)
+    (F : TensorCarrier (R := R) M N n) (h : (a, 0).1 + (a, 0).2 = n + 1) :
+    tensorRightDegOneₗ (M := M) g n F ⟨(a, 0), h⟩ = 0 := rfl
+
+@[simp] theorem tensorRightDegOneₗ_succ (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1)) (n a b : ℕ)
+    (F : TensorCarrier (R := R) M N n) (h : (a, b + 1).1 + (a, b + 1).2 = n + 1) :
+    tensorRightDegOneₗ (M := M) g n F ⟨(a, b + 1), h⟩
+      = ((-1 : R)) ^ a • TensorProduct.map LinearMap.id (g b) (F ⟨(a, b), by omega⟩) := rfl
+
 /-- The right-factor construction of the zero family is zero. -/
 theorem tensorRightDegOne_zero_map (n : ℕ) (F : TensorCarrier (R := R) M N n) :
     tensorRightDegOne (M := M) (fun b => (0 : N b →ₗ[R] N' (b + 1))) n F = 0 := by

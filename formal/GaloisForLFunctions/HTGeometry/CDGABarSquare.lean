@@ -327,6 +327,72 @@ theorem barProj_comp_head (b' a' e : ℕ) (hq : a' + e = b' + 1) :
   rw [LinearMap.comp_apply, LinearMap.sum_apply]
   exact barHead_apply ε Z b' V ⟨(a', e), by omega⟩
 
+/-- The head after the tail, at one outer split whose second part and the trailing degree leave a
+successor.  Stated with the index already a successor, so that the tail's defining equation applies
+without moving anything. -/
+theorem barHead_tail_succ (n c e : ℕ) (hp : c + e = n + 1 + 1) (a a' b' : ℕ)
+    (hs : a + a' + 1 = c) (hb : a' + e = b' + 1) (hix : a + (b' + 1) = n + 1)
+    (F : TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε) Z)) n) :
+    (TensorProduct.map (augIdealShiftMulOfTensor ε hs) (LinearMap.id (R := R) (M := Z e)))
+        ((TensorProduct.assoc R (barShiftFamily ε a) (barShiftFamily ε a') (Z e)).symm
+          ((TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε a))
+              (barProj (M := barShiftFamily ε) (N := Z) (n := b' + 1) ⟨(a', e), hb⟩))
+            (tensorRightDegOneₗ (M := barShiftFamily ε) (fun b => barHeadₗ ε Z b) n F
+              ⟨(a, b' + 1), hix⟩)))
+      = ∑ s'' : BarSplit a', ((-1 : R)) ^ a • barMulLastTwo ε (W := Z e)
+        (rfl : s''.1.1 + s''.1.2 + 1 = s''.1.1 + s''.1.2 + 1) (barSplit_second_eq hs s'')
+        (barTele ε Z a s''.1.1 s''.1.2 e
+          (F ⟨(a, s''.1.1 + (s''.1.2 + e)), barSplit_second_deg hs hp s''⟩)) := by
+  rw [tensorRightDegOneₗ_succ, map_smul, map_smul, map_smul,
+    ← LinearMap.comp_apply, ← TensorProduct.map_comp, LinearMap.comp_id,
+    show (barProj (M := barShiftFamily ε) (N := Z) (n := b' + 1) ⟨(a', e), hb⟩).comp
+        (barHeadₗ ε Z b')
+      = ∑ s'' : BarSplit a', barHeadTermₗ ε Z b' a' e (by omega) s''.1.1 s''.1.2 s''.2 from
+      barProj_comp_head b' a' e hb,
+    tensorMap_id_sum, LinearMap.sum_apply, map_sum, map_sum, Finset.smul_sum]
+  refine Finset.sum_congr rfl fun s'' _ => ?_
+  obtain ⟨⟨v, v'⟩, hv⟩ := s''
+  have hva : v + v' + 1 = a' := hv
+  subst hva
+  have hbv : b' = v + (v' + e) := by omega
+  subst hbv
+  exact congrArg (fun z => ((-1 : R)) ^ a • z)
+    (barHead_second_comp a v v' e c (v + v' + 1) rfl hs (by omega)
+      (F ⟨(a, v + (v' + e)), by omega⟩))
+
+/-- **The head after the tail, at one outer split, is a sum of second bracketings.** -/
+theorem barHead_tail_outer (n c e : ℕ) (hp : c + e = n + 1 + 1) (a a' : ℕ) (hs : a + a' + 1 = c)
+    (F : TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε) Z)) n) :
+    barHeadTermₗ ε Z (n + 1) c e hp a a' hs
+        (tensorRightDegOneₗ (M := barShiftFamily ε) (fun b => barHeadₗ ε Z b) n F)
+      = ∑ s'' : BarSplit a', ((-1 : R)) ^ a • barMulLastTwo ε (W := Z e)
+        (rfl : s''.1.1 + s''.1.2 + 1 = s''.1.1 + s''.1.2 + 1) (barSplit_second_eq hs s'')
+        (barTele ε Z a s''.1.1 s''.1.2 e
+          (F ⟨(a, s''.1.1 + (s''.1.2 + e)), barSplit_second_deg hs hp s''⟩)) := by
+  rw [barHeadTermₗ_eq_comp]
+  cases e with
+  | succ e' =>
+      exact barHead_tail_succ n c (e' + 1) hp a a' (a' + e') hs (by omega) (by omega) F
+  | zero =>
+      cases a' with
+      | succ a'' =>
+          exact barHead_tail_succ n c 0 hp a (a'' + 1) a'' hs (by omega) (by omega) F
+      | zero =>
+          have hempty : (Finset.univ : Finset (BarSplit 0)) = ∅ := by
+            refine Finset.eq_empty_of_forall_notMem ?_
+            rintro ⟨⟨v, v'⟩, hv⟩ -
+            have hvv : v + v' + 1 = 0 := hv
+            omega
+          rw [hempty, Finset.sum_empty,
+            show tensorRightDegOneₗ (M := barShiftFamily ε) (fun b => barHeadₗ ε Z b) n F
+                ⟨(a, 0 + 0), by omega⟩ = 0 from
+              tensorRightDegOneₗ_zero (M := barShiftFamily ε) (fun b => barHeadₗ ε Z b) n a F _,
+            map_zero, map_zero, map_zero]
+
 end Assembly
 
 end Identification
