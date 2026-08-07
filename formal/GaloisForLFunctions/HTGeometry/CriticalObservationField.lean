@@ -80,14 +80,15 @@ theorem criticalAmbientRecip_mem_criticalSourceField
             criticalAmbientRaw_mem_criticalSourceField K hj
           have hinv : criticalAmbientRecip K m n 0 =
               (criticalAmbientRaw K m n 0)⁻¹ := by
-            exact eq_inv_of_mul_eq_one_right hmul
+            apply eq_inv_of_mul_eq_one_right
+            simpa [criticalAmbientRaw, criticalAmbientRecip, genericRecip] using hmul
           rw [hinv]
           exact (criticalSourceField K m n).inv_mem hraw
       | k + 1 =>
           rw [criticalAmbientRecip, genericRecip, map_mul, map_neg, map_sum]
           refine (criticalSourceField K m n).mul_mem
             ((criticalSourceField K m n).neg_mem ?_) ?_
-          · simpa [criticalAmbientRecip] using
+          · simpa [criticalAmbientRecip, genericRecip] using
               (ih 0 (by omega) (by omega : 0 < m + n))
           · refine (criticalSourceField K m n).sum_mem fun i hi => ?_
             rw [map_mul]
@@ -104,7 +105,7 @@ theorem criticalAmbientRecip_mem_criticalSourceField
 
 /-- The critical observation field is contained in the actual critical source field. -/
 theorem criticalObservationField_le_criticalSourceField
-    (K : Type*) [Field K] {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    (K : Type*) [Field K] {m n : ℕ} :
     criticalObservationField K m n ≤ criticalSourceField K m n := by
   rw [criticalObservationField, IntermediateField.adjoin_le_iff]
   rintro _ ⟨s, rfl⟩

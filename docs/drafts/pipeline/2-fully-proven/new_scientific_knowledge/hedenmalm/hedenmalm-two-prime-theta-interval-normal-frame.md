@@ -413,9 +413,22 @@ conjunction.
 | — | **prime-2 / prime-3 no common zero**, raw and centered | `eq_zero_of_log_three_eq_log_two`, `no_common_zero_two_three`, `no_common_zero_centered_two_three` |
 | `(6)` | the centered window `c_n = -i S_(L_n/2) r_n`, strictly positive and even | `centeredWindow`, `centeredWindow_eq`, `centeredWindow_pos`, `intervalMass_pos`, `cdfFun_neg`, `intervalMass_neg`, `centeredWindow_neg` |
 
-Still missing: the factorization `hat r_n = q_n Xi_C` itself (a Fubini interchange against the
-interval indicator; the multiplier and its zero set are already in place), the decay of `(6)`,
-the no-common-zero theorem, the conormal generation
+**Unconditional divisor factorization.**  `formal/GaloisForLFunctions/RHTower/HedenmalmThetaIntervalTransform.lean`
+(namespace `RHTower.HedenmalmThetaSource`) proves the factorization at the actual arithmetic
+source, with no hypothesis: one integration by parts on the line, the window derivative
+`k(. + L) - k`, and the vanishing of the boundary terms from the exponential decay of the source.
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(4)` | the sliding window inherits the source decay | `intervalMass_le_exp`, `norm_windowFun`, `continuous_windowFun` |
+| `(4)` | the window derivative is `k(. + L) - k` | `windowFun_eq_sub`, `hasDerivAt_windowFun` |
+| `(5)` | boundary terms vanish; the window transform converges | `norm_windowFun_sourceChar_le`, `integrable_windowFun_sourceChar`, `tendsto_windowFun_sourceChar` |
+| `(5)` | translated source integral `= e^(-izL) Xi_C` | `sourceChar_add`, `shifted_char_factor`, `integral_shifted_k_sourceChar` |
+| `(5)` | **`hat w_L(z) = (1 - e^(-izL))/(iz) Xi_C(z)`** | `integral_windowFun_sourceChar` |
+| `(5)` | **`hat r_n = q_n Xi_C`** | `integral_integerAnomaly_sourceChar` |
+| `(7)` | **`hat c_n = a_n Xi_C`** | `integral_centeredWindow_sourceChar` |
+
+Still missing: the conormal generation
 statement, the two bounded self-adjoint channels, the essential compact-boundary symbol, and the
 three frame obstructions.
 

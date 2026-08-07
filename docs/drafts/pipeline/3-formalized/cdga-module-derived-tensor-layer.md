@@ -1435,16 +1435,28 @@ Axioms: `propext, Classical.choice, Quot.sound`.
 
 ### What remains for the tensor product of algebras
 
-Graded commutativity is done.  Two laws are left:
+Graded commutativity **and associativity** are done — `tensorAlgMul_comm`, `splitReassoc`,
+`splitReassocInv`, `splitReassoc_inv`, `splitReassocInv_inv`, **`tensorAlgMul_assoc`**.  After
+`Finset.sum_sigma'` both sides are sums over triples of bidegrees adding up to the output, and the
+reassociation of a triple is the bijection `Finset.sum_nbij'` wants; `tensorPair_assoc` matches the
+summands.
 
-* **associativity** — after `Finset.sum_sigma`, both sides are sums over triples `(r, s, t)` whose
-  three bidegrees add up to the output; the bijection
-  `Σ (ts : Splitting m c p), Splitting a b ts.1.1 ≃ Σ (us : Splitting a q p), Splitting b c us.1.2`
-  is the reassociation of a triple, and `tensorPair_assoc` matches the summands.
-* **Leibniz** — this one needs a differential on the *external* tensor product first.  `tensorDL`
-  and `tensorDR` use only the two differentials, but their signatures force both factors to be
-  modules over one algebra, so the external version has to be stated separately before
-  `tensorPair_dL` and `tensorPair_dR` can be summed against it.
+Two things were needed to make the round-trip identities go through, and both are worth recording:
+
+* **define the reassociation by projections, not by `match`.**  Pattern-matching on a `Sigma` of
+  subtypes produces a `match` that does not iota-reduce even with the scrutinee in constructor form
+  and even with the index type an `abbrev`; written with projections the round trip is closed by
+  `rfl` after one substitution.
+* **substitute the middle index.**  After destructuring, the two sides differ only in the middle
+  bidegree, which is a *variable*; `subst`ing it against `⟨(r₁+s₁, r₂+s₂), _⟩` makes both sides
+  syntactically equal.  The proof carried by that bidegree has to be produced by an `omega` that
+  cannot see the hypotheses mentioning the variable — `clear` them inside the `have` — or `subst`
+  refuses with "occurs at".
+
+**Leibniz** is what is left.  It needs a differential on the *external* tensor product first:
+`tensorDL` and `tensorDR` use only the two differentials, but their signatures force both factors to
+be modules over one algebra, so the external version has to be stated separately before
+`tensorPair_dL` and `tensorPair_dR` can be summed against it.
 
 None of the three needs a new sign identity; the signs are all in `tensorPair_comm`,
 `tensorPair_assoc`, `tensorPair_dL` and `tensorPair_dR`.
