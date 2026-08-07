@@ -1230,3 +1230,34 @@ Sizes for the summation (`RHTower/Sieve/BlockSieveLevels.lean`, appended):
 Against the block's main term `≈ 2^j/j` both `E_j` and `z_j` are now negligible, which is what the choice has
 to achieve.  The summand's dominant factor is therefore `2^j/j·(j+1)²·2^{−2σj}`, whose square root is
 `2^{j(1/2−σ)}(j+1)/√j`; summing over `j ≤ log₂M` is again a geometric-type series.
+
+## Accounting the block sum: a deficit of two logarithms, and where they must come from
+
+With the corrected levels the block summand can be tracked exactly.  Two identities help: `log 4 = 2 log 2`
+makes the count factor `2^{j+1}·log 4/(j log 2) = 2^{j+2}/j` exactly, and `log Y_j ≥ ((j+1)/16)log 2` (a single
+bound valid for every `j`, from `log Y_j ≥ log 2` for `j ≤ 15` and `log Y_j ≥ ((j−7)/8)log 2` beyond).  Then
+
+* the count's main term is `2·2^{j+1}S/log Y_j ≤ 64S·2^j/((j+1) log 2)`;
+* `E_j = O(2^{j/4}(j+1)⁴)` and `z_j = O(2^{j/2})`, both subordinate;
+* so the block bound is `≍ A²·((j+1)/j)·2^{2j(1−σ)}`, and its square root `≍ A·2^{j(1−σ)}`;
+* summing, `∑_{j ≤ log₂M} 2^{j(1−σ)} ≤ 1/(1−2^{1−σ})`, which at `σ = 1 + 1/log M` is `≍ log M/log 2`.
+
+So each block sum is `≍ A log M`, the product of the two is `≍ (log M)²`, and with the Euler factor `log M`
+and the kernel constant `C ≍ N` the analytic term is `≍ N(log M)³` against a main term `N log N`.  **The
+deficit is two logarithms.**  Both have identified sources:
+
+1. **The outer weight's own damping is being discarded.**  `ghsOuter f N p = f(p)log p/log⌊N/p⌋`, and
+   `norm_ghsOuter_le` bounds `1/log⌊N/p⌋ ≤ 1/log 2` — a constant.  On the block `2^j ≤ p < 2^{j+1}` the true
+   factor is `1/log⌊N/2^{j+1}⌋ ≍ 1/((log₂N − j) log 2)`, so keeping it block-refined weights the `j`-th block
+   by `1/(log₂N − j)`.  Summed against `2^{j(1−σ)}`, whose mass sits at `j ≍ log₂N`, this is worth a
+   logarithm.  The missing brick is `norm_ghsOuter_le_block`.
+2. **The kernel constant's dependence on the smoothing width is not exposed.**
+   `exists_bound_mellin_smoothWeight_line` produces *some* `C` with `‖W(σ+iy)‖ ≤ C/(1+y²)`, and the assembly
+   treats it as a black box; the accounting above uses only `C ≍ N^σ ≍ N`.  A cutoff of width `H` has a
+   transform decaying from height `1/H`, so the honest constant should carry a factor `H/N` against the
+   trivial `N^σ`, and `H = N/(log N)⁶` would then give back several logarithms.  Whether the corpus's `C` can
+   be sharpened this way is the question to settle next; if it cannot, the route caps at `N(log N)³` and the
+   smoothing must be replaced by a sharper kernel.
+
+Neither is an obstruction of principle, and both are local to one lemma.  Recording them here so the next step
+attacks the right lemma rather than re-deriving the accounting.
