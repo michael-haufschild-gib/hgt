@@ -449,3 +449,26 @@ bounded-variation function lies in `H^s(ℝ)` for every `0 < s < 1/2`. Route the
 then the Gagliardo/Besov characterisation `∫ ‖u(·+h) − u‖₂² |h|^{-1-2s} dh < ∞`. mathlib has
 `eVariationOn`/`BoundedVariationOn` but not the fractional Sobolev characterisation, so that
 characterisation is the piece to build; the translation estimate itself is elementary.
+
+```text
+HTGeometry/SobolevWeightDecay.lean   the s < 1/2 threshold: a transform bounded and decaying at
+                                     order one is square integrable against (1+ξ²)^s
+```
+
+Section H's remaining piece is now only the **bounded-variation input**: for compactly supported
+`BV u`, `‖û(ξ)‖ ≤ ‖u‖₁` and `‖û(ξ)‖ ≤ TV(u)/(2π|ξ|)`.  The second is one Stieltjes integration by
+parts. mathlib has `eVariationOn`/`BoundedVariationOn` and the Fourier transform, but not that
+estimate; it is the single missing lemma for both
+`suzuki-two-port-return-redundancy-and-interior-null-core` section 4 and
+`suzuki-carleman-flat-port-weighted-strip-barrier`.
+
+```text
+HTGeometry/FourierDecayFromDerivative.lean   ‖f̂‖·2π|ξ| ≤ ‖f'‖₁ and ‖f̂‖ ≤ ‖f‖₁, hence Sobolev
+                                             membership below one half from an integrable
+                                             derivative
+```
+
+Section H is reduced to one step: extend `norm_fourier_mul_le_integral_norm_deriv` from
+`Differentiable ℝ f` to bounded variation, by Stieltjes integration by parts.  The card's flat
+profile is monotone with infinite one-sided derivative at the endpoint, so it needs the `BV` form;
+everything downstream of that estimate is already proved.

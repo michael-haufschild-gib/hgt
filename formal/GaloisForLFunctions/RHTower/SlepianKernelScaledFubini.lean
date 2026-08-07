@@ -529,6 +529,19 @@ theorem eigenExtension_bandClass_eq_self_of_bandEigen
   rw [eigenExtension_bandClass_eq_inv_mul_bandTransform c lam hΦ x, heig x]
   field_simp
 
+/-- Pointwise equality on the closed unit band gives equality of the corresponding `L²` band
+classes.  This is the converse direction to `eqOn_of_bandClass_eq`. -/
+theorem bandClass_eq_of_eqOn_Icc {Phi Psi : ℝ → ℝ}
+    (hPhi : Continuous Phi) (hPsi : Continuous Psi)
+    (hEq : Set.EqOn Phi Psi (Set.Icc (-1 : ℝ) 1)) :
+    GaloisForLFunctions.RHTower.bandClass Phi hPhi =
+      GaloisForLFunctions.RHTower.bandClass Psi hPsi := by
+  apply Lp.ext
+  filter_upwards [GaloisForLFunctions.RHTower.coeFn_bandClass Phi hPhi,
+    GaloisForLFunctions.RHTower.coeFn_bandClass Psi hPsi] with x hxPhi hxPsi
+  rw [hxPhi, hxPsi]
+  exact hEq x x.property
+
 /-- The Slepian band transform preserves evenness. -/
 theorem even_bandTransform (c : ℝ) {Φ : ℝ → ℝ} (_hΦ : Continuous Φ)
     (hΦeven : Function.Even Φ) : Function.Even (bandTransform c Φ) := by
@@ -678,6 +691,89 @@ theorem isSymmetric_prolateOnEvenEigenspace
   exact GaloisForLFunctions.RHTower.isSymmetric_prolateOnEigenspace hc hlam
     (⟨f.1, f.2.1⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam)
     (⟨g.1, g.2.1⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam)
+
+/-- Eigenvectors of the even prolate action with the same separation value are proportional.
+Thus every separation eigenspace inside a fixed live even band eigenspace is one-dimensional. -/
+theorem prolateOnEvenEigenspace_eigenvectors_proportional
+    {c lam chi : ℝ} (hc : 0 < c) (hlam : lam ≠ 0)
+    {f g : evenBandEigenspace c lam}
+    (hf : prolateOnEvenEigenspace hc hlam f = chi • f)
+    (hg : prolateOnEvenEigenspace hc hlam g = chi • g)
+    (hg0 : g ≠ 0) :
+    ∃ mu : ℝ, f = mu • g := by
+  let bf : GaloisForLFunctions.RHTower.bandEigenspace c lam := ⟨f.1, f.2.1⟩
+  let bg : GaloisForLFunctions.RHTower.bandEigenspace c lam := ⟨g.1, g.2.1⟩
+  let Phi : ℝ → ℝ := GaloisForLFunctions.RHTower.eigenRep c lam bf
+  let Psi : ℝ → ℝ := GaloisForLFunctions.RHTower.eigenRep c lam bg
+  have hPf : GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam bf = chi • bf := by
+    apply Subtype.ext
+    exact congrArg (fun w : evenBandEigenspace c lam => w.1) hf
+  have hPg : GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam bg = chi • bg := by
+    apply Subtype.ext
+    exact congrArg (fun w : evenBandEigenspace c lam => w.1) hg
+  have hPhiProlate : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x := by
+    have hrep := congrArg
+      (fun w : GaloisForLFunctions.RHTower.bandEigenspace c lam =>
+        GaloisForLFunctions.RHTower.eigenRep c lam w) hPf
+    rw [eigenRep_prolateOnEigenspace hc hlam] at hrep
+    intro x
+    have hx := congrFun hrep x
+    have hsmul : GaloisForLFunctions.RHTower.eigenRep c lam (chi • bf) x =
+        chi * GaloisForLFunctions.RHTower.eigenRep c lam bf x :=
+      GaloisForLFunctions.RHTower.eigenExtension_smul c lam chi bf x
+    rw [hsmul] at hx
+    exact hx
+  have hPsiProlate : ∀ x : ℝ, prolateSLAction c Psi x = chi * Psi x := by
+    have hrep := congrArg
+      (fun w : GaloisForLFunctions.RHTower.bandEigenspace c lam =>
+        GaloisForLFunctions.RHTower.eigenRep c lam w) hPg
+    rw [eigenRep_prolateOnEigenspace hc hlam] at hrep
+    intro x
+    have hx := congrFun hrep x
+    have hsmul : GaloisForLFunctions.RHTower.eigenRep c lam (chi • bg) x =
+        chi * GaloisForLFunctions.RHTower.eigenRep c lam bg x :=
+      GaloisForLFunctions.RHTower.eigenExtension_smul c lam chi bg x
+    rw [hsmul] at hx
+    exact hx
+  have hPsiNe : Psi ≠ 0 := by
+    intro hzero
+    have hclass := GaloisForLFunctions.RHTower.bandClass_eigenRep hlam bg
+    have hclassZero : GaloisForLFunctions.RHTower.bandClass Psi
+        (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bg) = 0 := by
+      have hstep := GaloisForLFunctions.RHTower.bandClass_congr
+        (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bg)
+        continuous_const hzero
+      rw [hstep]
+      exact GaloisForLFunctions.RHTower.bandClass_zero _
+    apply hg0
+    apply Subtype.ext
+    rw [← hclass]
+    exact hclassZero
+  obtain ⟨mu, hEq⟩ := eqOn_Icc_const_mul_of_even_joint_prolate_eigen
+    (GaloisForLFunctions.RHTower.contDiff_eigenRep hc hlam bf)
+    (GaloisForLFunctions.RHTower.contDiff_eigenRep hc hlam bg)
+    hPsiNe f.2.2 g.2.2 hlam
+    (GaloisForLFunctions.RHTower.bandTransform_eigenRep hlam bg)
+    hPhiProlate hPsiProlate
+  have hscaled : Continuous (fun x : ℝ => mu * Psi x) := by fun_prop
+  have hclassEq : GaloisForLFunctions.RHTower.bandClass Phi
+      (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bf) =
+      GaloisForLFunctions.RHTower.bandClass (fun x => mu * Psi x) hscaled :=
+    bandClass_eq_of_eqOn_Icc
+      (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bf) hscaled hEq
+  have hval : f.1 = mu • g.1 := by
+    calc
+      f.1 = GaloisForLFunctions.RHTower.bandClass Phi
+          (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bf) :=
+        (GaloisForLFunctions.RHTower.bandClass_eigenRep hlam bf).symm
+      _ = GaloisForLFunctions.RHTower.bandClass (fun x => mu * Psi x) hscaled := hclassEq
+      _ = mu • GaloisForLFunctions.RHTower.bandClass Psi
+          (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bg) :=
+        GaloisForLFunctions.RHTower.bandClass_smul
+          (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bg) mu hscaled
+      _ = mu • g.1 := by
+        rw [GaloisForLFunctions.RHTower.bandClass_eigenRep hlam bg]
+  exact ⟨mu, Subtype.ext hval⟩
 
 /-- Every nonzero even Slepian band eigenvector carries a nonzero smooth even joint
 band/prolate eigenfunction. -/

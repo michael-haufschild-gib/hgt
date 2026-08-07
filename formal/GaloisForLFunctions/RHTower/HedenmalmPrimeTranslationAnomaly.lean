@@ -217,6 +217,362 @@ theorem sourceEvaluation_integerShift (z : ℂ) (f : ℝ → ℂ) {n : ℕ} (hn 
   rw [Real.rpow_def_of_pos hnpos]
   ring_nf
 
+
+/-! ### The anomaly vectors are nonzero -/
+
+theorem shiftAnomaly_eq (a x : ℝ) :
+    shiftAnomaly S a x
+      = Complex.I * (((S.mass * (S.cdfFun (x - a) - S.cdfFun x) : ℝ)) : ℂ) := by
+  have hkC : Integrable (fun y => (S.k y : ℂ)) (volume : Measure ℝ) := S.integrable_k.ofReal
+  have hkshift : Integrable (fun y => (S.k (y - a) : ℂ)) (volume : Measure ℝ) := by
+    have := hkC.comp_sub_right a
+    exact this
+  rw [shiftAnomaly, sourcePrimitive,
+    MeasureTheory.integral_sub hkshift.integrableOn hkC.integrableOn,
+    setIntegral_Iic_comp_sub (fun y => (S.k y : ℂ)) a x]
+  congr 1
+  rw [integral_complex_ofReal, integral_complex_ofReal, ← Complex.ofReal_sub]
+  congr 1
+  have hM : S.mass ≠ 0 := S.mass_ne_zero
+  show (∫ y in Iic (x - a), S.k y) - ∫ y in Iic x, S.k y
+    = S.mass * ((∫ y in Iic (x - a), S.k y) / S.mass - (∫ y in Iic x, S.k y) / S.mass)
+  field_simp
+
+/-- **The real-translation anomaly vanishes only for the trivial shift.** -/
+theorem shiftAnomaly_eq_zero_iff (a : ℝ) :
+    (∀ x, shiftAnomaly S a x = 0) ↔ a = 0 := by
+  constructor
+  · intro h
+    by_contra hne
+    have h0 := h 0
+    rw [shiftAnomaly_eq] at h0
+    have hzero : S.cdfFun (0 - a) - S.cdfFun 0 = 0 := by
+      have : ((S.mass * (S.cdfFun (0 - a) - S.cdfFun 0) : ℝ) : ℂ) = 0 := by
+        simpa [Complex.I_ne_zero] using h0
+      have hr : S.mass * (S.cdfFun (0 - a) - S.cdfFun 0) = 0 := by exact_mod_cast this
+      rcases mul_eq_zero.mp hr with hm | hc
+      · exact absurd hm S.mass_ne_zero
+      · exact hc
+    have heq : S.cdfFun (0 - a) = S.cdfFun 0 := by linarith
+    exact hne (by
+      have := S.strictMono_cdfFun.injective heq
+      linarith)
+  · rintro rfl
+    intro x
+    rw [shiftAnomaly_eq]
+    simp
+
+theorem integerAnomaly_eq (n : ℕ) (x : ℝ) :
+    integerAnomaly S n x
+      = Complex.I * ((((n : ℝ) ^ (-(1 / 2 : ℝ))) * S.mass
+          * (S.cdfFun (x + Real.log n) - S.cdfFun x) : ℝ) : ℂ) := by
+  have hkC : Integrable (fun y => (S.k y : ℂ)) (volume : Measure ℝ) := S.integrable_k.ofReal
+  have hkbase : Integrable (fun y : ℝ => (S.k (y + Real.log n) : ℂ)) (volume : Measure ℝ) :=
+    hkC.comp_add_right (Real.log n)
+  set c : ℂ := (((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) with hc
+  have hkshift : Integrable (fun y => integerShift n (fun w => (S.k w : ℂ)) y)
+      (volume : Measure ℝ) := hkbase.const_mul _
+  rw [integerAnomaly, sourcePrimitive,
+    MeasureTheory.integral_sub hkshift.integrableOn ((hkC.const_mul c).integrableOn),
+    MeasureTheory.integral_const_mul]
+  have hkshift' : (∫ y in Iic x, integerShift n (fun w => (S.k w : ℂ)) y)
+      = c * ∫ y in Iic (x + Real.log n), (S.k y : ℂ) := by
+    show (∫ y in Iic x, c * (S.k (y + Real.log n) : ℂ)) = _
+    rw [MeasureTheory.integral_const_mul, setIntegral_Iic_comp_add (fun y => (S.k y : ℂ))]
+  rw [hkshift']
+  congr 1
+  rw [integral_complex_ofReal, integral_complex_ofReal, hc, ← Complex.ofReal_mul,
+    ← Complex.ofReal_mul, ← Complex.ofReal_sub]
+  congr 1
+  have hM : S.mass ≠ 0 := S.mass_ne_zero
+  show (n : ℝ) ^ (-(1 / 2 : ℝ)) * (∫ y in Iic (x + Real.log n), S.k y)
+      - (n : ℝ) ^ (-(1 / 2 : ℝ)) * ∫ y in Iic x, S.k y
+    = (n : ℝ) ^ (-(1 / 2 : ℝ)) * S.mass
+      * ((∫ y in Iic (x + Real.log n), S.k y) / S.mass - (∫ y in Iic x, S.k y) / S.mass)
+  field_simp
+
+/-- **The integer-shift anomaly vanishes only for `n = 1`.** -/
+theorem integerAnomaly_eq_zero_iff {n : ℕ} (hn : 0 < n) :
+    (∀ x, integerAnomaly S n x = 0) ↔ n = 1 := by
+  have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hpow : (0 : ℝ) < (n : ℝ) ^ (-(1 / 2 : ℝ)) := Real.rpow_pos_of_pos hnpos _
+  constructor
+  · intro h
+    have h0 := h 0
+    rw [integerAnomaly_eq] at h0
+    have hr : (n : ℝ) ^ (-(1 / 2 : ℝ)) * S.mass
+        * (S.cdfFun (0 + Real.log n) - S.cdfFun 0) = 0 := by
+      have : (((n : ℝ) ^ (-(1 / 2 : ℝ)) * S.mass
+          * (S.cdfFun (0 + Real.log n) - S.cdfFun 0) : ℝ) : ℂ) = 0 := by
+        simpa [Complex.I_ne_zero] using h0
+      exact_mod_cast this
+    have hcdf : S.cdfFun (0 + Real.log n) = S.cdfFun 0 := by
+      rcases mul_eq_zero.mp hr with hpm | hc
+      · rcases mul_eq_zero.mp hpm with hp | hm
+        · exact absurd hp hpow.ne'
+        · exact absurd hm S.mass_ne_zero
+      · linarith
+    have hlog : Real.log n = 0 := by
+      have := S.strictMono_cdfFun.injective hcdf
+      linarith
+    have hone : (n : ℝ) = 1 := by
+      have := Real.exp_log hnpos
+      rw [hlog, Real.exp_zero] at this
+      exact this.symm
+    exact_mod_cast hone
+  · rintro rfl
+    intro x
+    rw [integerAnomaly_eq]
+    simp
+
+/-! ### The conormal jets and the triangular prime law -/
+
+theorem cpow_neg_dirichletExponent (z : ℂ) {n : ℕ} (hn : 0 < n) :
+    ((n : ℂ) ^ (-(dirichletExponent z)))
+      = (((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)
+        * Complex.exp (-(Complex.I * z) * ((Real.log n : ℝ) : ℂ)) := by
+  have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hnne : ((n : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hn.ne'
+  rw [Complex.cpow_def_of_ne_zero hnne, dirichletExponent]
+  have hlog : Complex.log ((n : ℕ) : ℂ) = ((Real.log n : ℝ) : ℂ) := by
+    rw [← Complex.ofReal_natCast]
+    exact (Complex.ofReal_log hnpos.le).symm
+  rw [hlog, show ((Real.log n : ℝ) : ℂ) * -(1 / 2 + Complex.I * z)
+      = ((-(1 / 2 : ℝ) * Real.log n : ℝ) : ℂ) + -(Complex.I * z) * ((Real.log n : ℝ) : ℂ) by
+    push_cast
+    ring, Complex.exp_add]
+  congr 1
+  rw [← Complex.ofReal_exp]
+  congr 1
+  rw [Real.rpow_def_of_pos hnpos]
+  ring_nf
+
+/-- The `j`-th Fourier--Laplace jet `ℓ_z^{[j]}(f) = ∫ (i x)^j f(x) e^{i z x} dx`. -/
+def sourceEvaluationJet (z : ℂ) (j : ℕ) (f : ℝ → ℂ) : ℂ :=
+  ∫ x : ℝ, (Complex.I * (x : ℂ)) ^ j * f x * HedenmalmQuantile.sourceChar z x
+
+theorem sourceEvaluationJet_zero (z : ℂ) (f : ℝ → ℂ) :
+    sourceEvaluationJet z 0 f = sourceEvaluation z f := by
+  rw [sourceEvaluationJet, sourceEvaluation]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show (Complex.I * (x : ℂ)) ^ 0 * f x * HedenmalmQuantile.sourceChar z x
+    = f x * HedenmalmQuantile.sourceChar z x
+  rw [pow_zero, one_mul]
+
+/-- **The triangular prime law for the conormal jets.**  The `j`-th jet transforms under the
+normalized integer shift by the Dirichlet character times a triangular combination of the lower
+jets whose coefficients are powers of the logarithmic prime. -/
+theorem sourceEvaluationJet_integerShift (z : ℂ) (j : ℕ) (f : ℝ → ℂ) {n : ℕ} (hn : 0 < n)
+    (hint : ∀ r ∈ Finset.range (j + 1),
+      Integrable (fun y : ℝ => (Complex.I * (y : ℂ)) ^ r * f y * HedenmalmQuantile.sourceChar z y)
+        (volume : Measure ℝ)) :
+    sourceEvaluationJet z j (integerShift n f)
+      = ((n : ℂ) ^ (-(dirichletExponent z))) *
+        ∑ r ∈ Finset.range (j + 1), sourceEvaluationJet z r f
+          * (-(Complex.I * ((Real.log n : ℝ) : ℂ))) ^ (j - r) * (j.choose r : ℂ) := by
+  set L : ℝ := Real.log n with hL
+  set c : ℂ := (((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) with hc
+  set e : ℂ := Complex.exp (-(Complex.I * z) * ((L : ℝ) : ℂ)) with he
+  have hpull : sourceEvaluationJet z j (integerShift n f)
+      = c * ∫ x : ℝ, (Complex.I * (x : ℂ)) ^ j * f (x + L)
+          * HedenmalmQuantile.sourceChar z x := by
+    rw [sourceEvaluationJet, ← MeasureTheory.integral_const_mul]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+    show (Complex.I * (x : ℂ)) ^ j * (c * f (x + L)) * HedenmalmQuantile.sourceChar z x = _
+    ring
+  have hshift : (∫ x : ℝ, (Complex.I * (x : ℂ)) ^ j * f (x + L)
+        * HedenmalmQuantile.sourceChar z x)
+      = ∫ y : ℝ, (Complex.I * ((y : ℂ) - (L : ℂ))) ^ j * f y
+        * HedenmalmQuantile.sourceChar z (y - L) := by
+    have h := MeasureTheory.integral_add_right_eq_self (μ := (volume : Measure ℝ))
+      (fun y : ℝ => (Complex.I * ((y : ℂ) - (L : ℂ))) ^ j * f y
+        * HedenmalmQuantile.sourceChar z (y - L)) L
+    rw [← h]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+    show (Complex.I * (x : ℂ)) ^ j * f (x + L) * HedenmalmQuantile.sourceChar z x
+      = (Complex.I * ((((x + L : ℝ)) : ℂ) - (L : ℂ))) ^ j * f (x + L)
+        * HedenmalmQuantile.sourceChar z ((x + L) - L)
+    congr 2
+    · push_cast
+      ring
+    · norm_num
+  have hexpand : (∫ y : ℝ, (Complex.I * ((y : ℂ) - (L : ℂ))) ^ j * f y
+        * HedenmalmQuantile.sourceChar z (y - L))
+      = e * ∑ r ∈ Finset.range (j + 1), sourceEvaluationJet z r f
+          * (-(Complex.I * ((L : ℝ) : ℂ))) ^ (j - r) * (j.choose r : ℂ) := by
+    have hsum : ∀ y : ℝ, (Complex.I * ((y : ℂ) - (L : ℂ))) ^ j * f y
+        * HedenmalmQuantile.sourceChar z (y - L)
+        = ∑ r ∈ Finset.range (j + 1),
+          e * ((Complex.I * (y : ℂ)) ^ r * f y * HedenmalmQuantile.sourceChar z y
+            * (-(Complex.I * ((L : ℝ) : ℂ))) ^ (j - r) * (j.choose r : ℂ)) := by
+      intro y
+      have hchar : HedenmalmQuantile.sourceChar z (y - L)
+          = HedenmalmQuantile.sourceChar z y * e := sourceChar_sub z y L
+      have hbin : (Complex.I * ((y : ℂ) - (L : ℂ))) ^ j
+          = ∑ r ∈ Finset.range (j + 1), (Complex.I * (y : ℂ)) ^ r
+            * (-(Complex.I * ((L : ℝ) : ℂ))) ^ (j - r) * (j.choose r : ℂ) := by
+        rw [show Complex.I * ((y : ℂ) - (L : ℂ))
+            = Complex.I * (y : ℂ) + -(Complex.I * ((L : ℝ) : ℂ)) by ring]
+        exact add_pow _ _ j
+      rw [hchar, hbin, Finset.sum_mul, Finset.sum_mul]
+      refine Finset.sum_congr rfl fun r _ => ?_
+      ring
+    rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hsum)]
+    rw [MeasureTheory.integral_finsetSum _ (fun r hr =>
+      (((hint r hr).mul_const ((-(Complex.I * ((L : ℝ) : ℂ))) ^ (j - r))).mul_const
+        ((j.choose r : ℂ))).const_mul e)]
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun r _ => ?_
+    rw [show (fun a : ℝ => e * ((Complex.I * (a : ℂ)) ^ r * f a
+          * HedenmalmQuantile.sourceChar z a
+          * (-(Complex.I * ((L : ℝ) : ℂ))) ^ (j - r) * (j.choose r : ℂ)))
+        = fun a : ℝ => (e * ((-(Complex.I * ((L : ℝ) : ℂ))) ^ (j - r) * (j.choose r : ℂ)))
+          * ((Complex.I * (a : ℂ)) ^ r * f a * HedenmalmQuantile.sourceChar z a) from
+      funext fun a => by ring]
+    rw [MeasureTheory.integral_const_mul, sourceEvaluationJet]
+    ring
+  rw [hpull, hshift, hexpand, cpow_neg_dirichletExponent z hn, ← hc, ← he, ← mul_assoc]
+
+
+/-! ### The explicit source-normalized right mode -/
+
+theorem hasDerivAt_setIntegral_Iic {g : ℝ → ℂ} (hg : Continuous g) (hgi : Integrable g)
+    (x : ℝ) : HasDerivAt (fun t => ∫ y in Iic t, g y) (g x) x := by
+  have hsplit : ∀ t : ℝ, (∫ y in Iic t, g y)
+      = (∫ y in Iic (0 : ℝ), g y) + ∫ y in (0 : ℝ)..t, g y := by
+    intro t
+    rcases le_total (0 : ℝ) t with ht | ht
+    · rw [intervalIntegral.integral_of_le ht, ← MeasureTheory.setIntegral_union
+        (Iic_disjoint_Ioc le_rfl) measurableSet_Ioc hgi.integrableOn hgi.integrableOn,
+        Iic_union_Ioc_eq_Iic ht]
+    · rw [intervalIntegral.integral_of_ge ht]
+      have hs : (∫ y in Iic (0 : ℝ), g y) = (∫ y in Iic t, g y) + ∫ y in Ioc t (0 : ℝ), g y := by
+        rw [← MeasureTheory.setIntegral_union (Iic_disjoint_Ioc le_rfl) measurableSet_Ioc
+          hgi.integrableOn hgi.integrableOn, Iic_union_Ioc_eq_Iic ht]
+      rw [hs]
+      ring
+  have h : HasDerivAt (fun t => ∫ y in (0 : ℝ)..t, g y) (g x) x :=
+    (hg.integral_hasStrictDerivAt 0 x).hasDerivAt
+  refine (h.const_add (∫ y in Iic (0 : ℝ), g y)).congr_of_eventuallyEq ?_
+  filter_upwards with t
+  exact hsplit t
+
+/-- The source primitive `I_z(x) = ∫_{-∞}^x k(y) e^{i z y} dy`. -/
+def sourceModeI (z : ℂ) (x : ℝ) : ℂ :=
+  ∫ y in Iic x, (S.k y : ℂ) * HedenmalmQuantile.sourceChar z y
+
+/-- The source-pointed mode `u_z(x) = -i e^{-i z x} I_z(x)`. -/
+def sourceModeU (z : ℂ) (x : ℝ) : ℂ :=
+  -Complex.I * Complex.exp (-(Complex.I * z) * (x : ℂ)) * sourceModeI S z x
+
+/-- The right mode `f_z = -z u_z`. -/
+def sourceModeF (z : ℂ) (x : ℝ) : ℂ := -z * sourceModeU S z x
+
+theorem hasDerivAt_sourceModeI {z : ℂ} (hz : HedenmalmQuantile.HasShiftedTail S z) (x : ℝ) :
+    HasDerivAt (sourceModeI S z) ((S.k x : ℂ) * HedenmalmQuantile.sourceChar z x) x := by
+  refine hasDerivAt_setIntegral_Iic ?_ (HedenmalmQuantile.integrable_k_sourceChar S hz) x
+  exact (Complex.continuous_ofReal.comp S.continuous_k).mul
+    (HedenmalmQuantile.continuous_sourceChar z)
+
+/-- **The source-pointed mode solves the Hedenmalm equation** `(-i ∂ + z) u_z = -k`. -/
+theorem hasDerivAt_sourceModeU {z : ℂ} (hz : HedenmalmQuantile.HasShiftedTail S z) (x : ℝ) :
+    HasDerivAt (sourceModeU S z)
+      (-(Complex.I * z) * sourceModeU S z x - Complex.I * (S.k x : ℂ)) x := by
+  have hI := hasDerivAt_sourceModeI S hz x
+  have hE : HasDerivAt (fun t : ℝ => Complex.exp (-(Complex.I * z) * (t : ℂ)))
+      (-(Complex.I * z) * Complex.exp (-(Complex.I * z) * (x : ℂ))) x := by
+    have hlin : HasDerivAt (fun t : ℝ => -(Complex.I * z) * ((t : ℝ) : ℂ))
+        (-(Complex.I * z)) x := by
+      simpa using (hasDerivAt_id x).ofReal_comp.const_mul (-(Complex.I * z))
+    have := hlin.cexp
+    refine this.congr_deriv ?_
+    ring
+  have hprod := ((hE.mul hI).const_mul (-Complex.I))
+  have hfun : (fun y : ℝ => -Complex.I *
+      ((fun t : ℝ => Complex.exp (-(Complex.I * z) * (t : ℂ))) * sourceModeI S z) y)
+      = sourceModeU S z := by
+    funext y
+    show -Complex.I * (Complex.exp (-(Complex.I * z) * (y : ℂ)) * sourceModeI S z y) = _
+    rw [sourceModeU]
+    ring
+  rw [hfun] at hprod
+  refine hprod.congr_deriv ?_
+  have hEχ : Complex.exp (-(Complex.I * z) * (x : ℂ)) * HedenmalmQuantile.sourceChar z x = 1 := by
+    rw [HedenmalmQuantile.sourceChar, ← Complex.exp_add]
+    simp
+  rw [sourceModeU]
+  have hrw : -Complex.I * (-(Complex.I * z) * Complex.exp (-(Complex.I * z) * (x : ℂ))
+        * sourceModeI S z x
+      + Complex.exp (-(Complex.I * z) * (x : ℂ)) * ((S.k x : ℂ)
+        * HedenmalmQuantile.sourceChar z x))
+      = -(Complex.I * z) * (-Complex.I * Complex.exp (-(Complex.I * z) * (x : ℂ))
+        * sourceModeI S z x)
+        - Complex.I * ((S.k x : ℂ)
+          * (Complex.exp (-(Complex.I * z) * (x : ℂ)) * HedenmalmQuantile.sourceChar z x)) := by
+    ring
+  rw [hrw, hEχ, mul_one]
+
+/-- **The Hedenmalm source equation** in the form `(A + z) u_z = -k`. -/
+theorem sourceModeU_equation (z : ℂ) (x : ℝ) :
+    -Complex.I * (-(Complex.I * z) * sourceModeU S z x - Complex.I * (S.k x : ℂ))
+        + z * sourceModeU S z x
+      = -(S.k x : ℂ) := by
+  have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
+  linear_combination (sourceModeU S z x * z + (S.k x : ℂ)) * hI
+
+/-- **The eigen-relation of the right mode**, `(I + z B) f_z = 0` in pointwise form:
+`f_z = -z u_z` and `u_z` is the value of the source inverse on `f_z` whenever the mode vanishes at
+both ends. -/
+theorem sourceModeF_eq {z : ℂ} (x : ℝ) : sourceModeF S z x = -z * sourceModeU S z x := rfl
+
+
+
+/-- The derivative field of the source-pointed mode. -/
+def sourceModeD (z : ℂ) (y : ℝ) : ℂ :=
+  -(Complex.I * z) * sourceModeU S z y - Complex.I * (S.k y : ℂ)
+
+theorem sourceModeF_eq_neg_I_mul_D (z : ℂ) (y : ℝ) :
+    sourceModeF S z y = -Complex.I * sourceModeD S z y + (S.k y : ℂ) := by
+  have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
+  rw [sourceModeF, sourceModeD]
+  linear_combination (-(sourceModeU S z y * z) - (S.k y : ℂ)) * hI
+
+theorem sourceModeD_eq (z : ℂ) (y : ℝ) :
+    sourceModeD S z y = Complex.I * (sourceModeF S z y - (S.k y : ℂ)) := by
+  rw [sourceModeF, sourceModeD]
+  ring
+
+/-- **The eigen-relation of the explicit right mode.**  When the mode vanishes at `-∞` and carries
+the full source mass, the source inverse acts on `f_z` by `-z⁻¹`. -/
+theorem sourceInverse_sourceModeF {z : ℂ} (hz : HedenmalmQuantile.HasShiftedTail S z)
+    (hint : Integrable (sourceModeF S z) (volume : Measure ℝ))
+    (hbot : Filter.Tendsto (sourceModeU S z) Filter.atBot (nhds 0))
+    (hmass : (∫ x, sourceModeF S z x) = (S.mass : ℂ)) (x : ℝ) :
+    HedenmalmQuantile.sourceInverse S (sourceModeF S z) x = sourceModeU S z x := by
+  have hkC : Integrable (fun y => (S.k y : ℂ)) (volume : Measure ℝ) := S.integrable_k.ofReal
+  have hMne : ((S.mass : ℝ) : ℂ) ≠ 0 := by exact_mod_cast S.mass_ne_zero
+  have hD : Integrable (sourceModeD S z) (volume : Measure ℝ) := by
+    refine ((hint.sub hkC).const_mul Complex.I).congr ?_
+    filter_upwards with y
+    exact (sourceModeD_eq S z y).symm
+  have hderiv : ∀ y ∈ Iic x, HasDerivAt (sourceModeU S z) (sourceModeD S z y) y :=
+    fun y _ => hasDerivAt_sourceModeU S hz y
+  have hftc : (∫ y in Iic x, sourceModeD S z y) = sourceModeU S z x - 0 :=
+    MeasureTheory.integral_Iic_of_hasDerivAt_of_tendsto' hderiv hD.integrableOn hbot
+  have hsplit : (∫ y in Iic x, sourceModeF S z y)
+      = -Complex.I * (∫ y in Iic x, sourceModeD S z y) + ∫ y in Iic x, (S.k y : ℂ) := by
+    rw [← MeasureTheory.integral_const_mul, ← MeasureTheory.integral_add
+      ((hD.const_mul (-Complex.I)).integrableOn) hkC.integrableOn]
+    refine setIntegral_congr_fun measurableSet_Iic fun y _ => ?_
+    exact sourceModeF_eq_neg_I_mul_D S z y
+  rw [HedenmalmQuantile.sourceInverse,
+    MeasureTheory.integral_sub hint.integrableOn ((hkC.const_mul _).integrableOn),
+    MeasureTheory.integral_const_mul, hmass, hsplit, hftc]
+  field_simp
+  have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
+  linear_combination (-(sourceModeU S z x)) * hI
+
+
 end HedenmalmPrimeTranslation
 
 end

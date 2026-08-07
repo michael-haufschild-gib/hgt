@@ -73,7 +73,7 @@ noncomputable def segrePairMarginal (m n : ℕ) :
     (Fin (m + 1) × Fin (n + 1) →₀ ℕ) →+ (BiprojVar m n →₀ ℕ) where
   toFun z := Finsupp.sumFinsuppEquivProdFinsupp.symm
     (Finsupp.mapDomain Prod.fst z, Finsupp.mapDomain Prod.snd z)
-  map_zero' := by ext x <;> cases x <;> simp
+  map_zero' := by ext x; cases x <;> simp
   map_add' a b := by
     ext x
     cases x with
@@ -147,8 +147,6 @@ theorem exists_segrePairMarginal_eq (m n : ℕ) (e : segreExponentSubmonoid m n)
         (Finsupp.mapDomain Prod.fst (Multiset.toFinsupp s),
          Finsupp.mapDomain Prod.snd (Multiset.toFinsupp s))) = lr
   rw [Finsupp.sumFinsuppEquivProdFinsupp.apply_symm_apply]
-  change (Finsupp.mapDomain Prod.fst (Multiset.toFinsupp s),
-      Finsupp.mapDomain Prod.snd (Multiset.toFinsupp s)) = lr
   apply Prod.ext
   · change Finsupp.mapDomain Prod.fst (Multiset.toFinsupp s) = lr.1
     rw [mapDomain_toFinsupp, hs₁, Finsupp.toMultiset_toFinsupp]

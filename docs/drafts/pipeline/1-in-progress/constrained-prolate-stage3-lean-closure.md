@@ -88,3 +88,8 @@ projective/trace-class/determinant consequences.
   depth.  `lake env lean GaloisForLFunctions/RHTower/ProlateFourierSignSectors.lean` passes.  The
   remaining numbering gate is conversion of these eigenvalue counts into signed-greedy indices,
   followed by Sturm separation for classical `4j` / `4j+2` labels.
+- 2026-08-07 — closed signed-greedy multiplicity conversion.  Spectral exhaustion now returns an
+  index with nonzero eigenvector coefficient, permitting induction in the orthogonal complement of
+  already selected greedy vectors.  Each fixed Hermite depth eventually supplies injective maps
+  `Fin (n+1) → ℕ` to distinct positive and distinct negative `evenProlateSignedValue` entries.
+  Remaining numbering gate is solely classical Sturm separation and degree identification.

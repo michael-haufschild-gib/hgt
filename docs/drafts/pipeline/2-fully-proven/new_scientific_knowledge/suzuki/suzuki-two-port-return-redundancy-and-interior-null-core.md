@@ -290,9 +290,42 @@ supplies.  Formalizing it did not require the analytic graph construction, becau
 construction enters only through the reconstruction identity `(2)`, which is a hypothesis of the
 statement in exactly the way the card states it.
 
-Section 4's explicit flat profile and its `H^s` membership for `s < 1/2` remain paper mathematics:
-they need the Besov/Sobolev embedding of compactly supported bounded-variation functions, which is
-not in the formal tree.  No Lean theorem here assumes it.
+Section 4's `H^s` criterion is now formal, in
+
+```text
+formal/GaloisForLFunctions/HTGeometry/SobolevWeightDecay.lean
+```
+
+```text
+MemSobolevWeight                 square integrability against the weight (1+ξ²)^s
+normSq_le_of_bounded_of_decay    a transform bounded by M and by K/|ξ| obeys
+                                 ‖F ξ‖² ≤ (2M²+2K²)/(1+ξ²)
+integrable_sobolevWeight_decay   (1+ξ²)^{s-1} is integrable on the line exactly for s < 1/2
+memSobolevWeight_of_decay        hence such a transform lies in every weight below one half
+```
+
+This is the exact threshold the section uses.  The two bounds it consumes are themselves theorems,
+in
+
+```text
+formal/GaloisForLFunctions/HTGeometry/FourierDecayFromDerivative.lean
+```
+
+```text
+norm_fourier_le_integral_norm            ‖f̂(ξ)‖ ≤ ‖f‖₁
+norm_fourier_mul_le_integral_norm_deriv  ‖f̂(ξ)‖ · 2π|ξ| ≤ ‖f'‖₁
+memSobolevWeight_of_integrable_deriv     hence f̂ lies in every Sobolev weight below one half
+```
+
+So an integrable function with integrable derivative — which is what a monotone bounded profile on
+a compact collar is, its total variation being exactly `‖f'‖₁` — meets the criterion, and `1/2` is
+the borderline precisely because the decay is of order one.
+
+What remains for the specific flat profile is the differentiability hypothesis at the endpoint
+itself: `exp(-sqrt(log(1/r)))` has an infinite one-sided derivative there, so it is covered by the
+bounded-variation form of the estimate rather than the differentiable form proved here.  Extending
+`norm_fourier_mul_le_integral_norm_deriv` from `Differentiable` to `BV` is one Stieltjes
+integration by parts.  No Lean theorem here assumes it.
 
 ## Gates
 

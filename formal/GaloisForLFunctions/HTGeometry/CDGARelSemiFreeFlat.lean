@@ -29,9 +29,9 @@ theorem relTensorMapLeft_freeTowerColim_isQuasiIsoFull (u : CDGAUnit A)
     (hP : CDGAModuleUnital u P) (hP' : CDGAModuleUnital u P') (φ : CDGAModuleHom P P')
     (hφ : φ.IsQuasiIsoFull)
     {V₀ : Type w} [AddCommGroup V₀] [Module R V₀]
-    {ι₀ : Type w} [Fintype ι₀] [DecidableEq ι₀] (b₀ : Module.Basis ι₀ R V₀) (k₀ : ℕ)
+    {ι₀ : Type w} [DecidableEq ι₀] (b₀ : Module.Basis ι₀ R V₀) (k₀ : ℕ)
     {V : ℕ → Type w} [∀ i, AddCommGroup (V i)] [∀ i, Module R (V i)]
-    {ιc : ℕ → Type w} [∀ i, Fintype (ιc i)] [∀ i, DecidableEq (ιc i)]
+    {ιc : ℕ → Type w} [∀ i, DecidableEq (ιc i)]
     (b : ∀ i, Module.Basis (ιc i) R (V i)) (deg : ℕ → ℕ)
     (τ : ∀ (i : ℕ)
       (S : CDGAModuleStructure A

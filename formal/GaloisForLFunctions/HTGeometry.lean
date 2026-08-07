@@ -494,6 +494,8 @@ import GaloisForLFunctions.HTGeometry.CDGATensorConstExchange
 import GaloisForLFunctions.HTGeometry.CDGATensorLeft
 import GaloisForLFunctions.HTGeometry.CDGATensorShift
 import GaloisForLFunctions.HTGeometry.CDGATensorShiftHom
+import GaloisForLFunctions.HTGeometry.CDGAFreeCoefficientsInfinite
+import GaloisForLFunctions.HTGeometry.CDGAModuleFinsupp
 import GaloisForLFunctions.HTGeometry.CDGARelSemiFreeFlat
 import GaloisForLFunctions.HTGeometry.CDGARelTensorColimit
 import GaloisForLFunctions.HTGeometry.CDGARelTensorRight
@@ -5822,3 +5824,7 @@ import GaloisForLFunctions.HTGeometry.AtomicJumpForm
 import GaloisForLFunctions.HTGeometry.MollifierPositionCommutator
 import GaloisForLFunctions.HTGeometry.HadamardFinitePart
 import GaloisForLFunctions.HTGeometry.TwoPortReturnRedundancy
+import GaloisForLFunctions.HTGeometry.SobolevWeightDecay
+import GaloisForLFunctions.HTGeometry.ProductTailZeroOne
+import GaloisForLFunctions.HTGeometry.FourierDecayFromDerivative
+import GaloisForLFunctions.HTGeometry.GraphFluxStabilityEstimate

@@ -1,79 +1,82 @@
-# Hedenmalm folder → stage 3: progress log (2026-08-07)
+# Hedenmalm folder → stage 3: progress log (2026-08-07).  NOT FINISHED — 3 of 9 moved.
 
 Task: formalize unconditionally in Lean every proven statement in the 9 cards of
 `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/hedenmalm/`, then `git mv` each to
 `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/hedenmalm/` with an
-`<id>-formalized.md` companion.  **NOT FINISHED — 3 of 9 moved.**
+`<id>-formalized.md` companion.
 
-## DONE — 3 of 9 in stage 3
+## IN STAGE 3 (3 cards, each with a companion certificate)
 
-1. **`hedenmalm-quantile-volterra-universal-boundary-defect`** — every numbered statement
-   `(1)`–`(16)` newly formalized in 9 modules (see companion for the full table):
-   `HTGeometry/WeightedDensityL2.lean`, `HTGeometry/PositiveDensityQuantile.lean`,
-   `HTGeometry/BoundedMultiplierHilbert.lean`, `RHTower/HedenmalmQuantileNormalForm.lean`,
-   `RHTower/HedenmalmQuantileMetric.lean`, `RHTower/HedenmalmQuantileBoundaryFlux.lean`,
-   `RHTower/HedenmalmQuantileRootMode.lean`, `RHTower/HedenmalmQuantileDivisorCharge.lean`
-   (+ the pre-existing `HedenmalmPinnedVolterraBoundaryDefect`).
-2. **`hedenmalm-reflection-folded-dirac-source-defect`** — was already fully formalized; audited
-   (all names resolve, 20 `#print axioms` clean) and moved.
-3. **`hedenmalm-theta-flat-borel-holonomy-law`** — was already fully formalized; audited (51/53
-   backticked names resolve; the 2 exceptions are an open-core marker and a math symbol; 12 axioms
-   clean) and moved.
+1. `hedenmalm-quantile-volterra-universal-boundary-defect` — all of `(1)`–`(16)` newly formalized.
+2. `hedenmalm-reflection-folded-dirac-source-defect` — pre-existing Lean; audited and moved.
+3. `hedenmalm-theta-flat-borel-holonomy-law` — pre-existing Lean; audited and moved.
 
-## IN PROGRESS — card 4: `hedenmalm-prime-translation-rank-one-anomaly`
+## STILL IN STAGE 2 (6 cards)
 
-New module `RHTower/HedenmalmPrimeTranslationAnomaly.lean` (compiles, wired, axiom-clean) proves:
-- `setIntegral_Iic_comp_sub` / `_add` — translation of half-line integrals;
-- `sourceFunctional_sourceShift`, `sourceFunctional_integerShift`;
-- **`sourceInverse_sourceShift`** = card `(7)`, the rank-one real-translation commutator;
-- **`sourceInverse_integerShift`** = card `(8)`, the normalized-integer version;
-- `sourceChar_sub`, **`sourceEvaluation_integerShift`** = card `(10)`, the literal Dirichlet
-  character `n^{-s(z)}` with `dirichletExponent z = 1/2 + i z`.
+### 4. `hedenmalm-prime-translation-rank-one-anomaly` — PARTIALLY FORMALIZED
+Module `RHTower/HedenmalmPrimeTranslationAnomaly.lean` (builds, wired, axiom-clean) now has a
+`## Lean status` table on the card.  Formalized: `(3)`–`(12)`, `(17)`, `(18)` —
+`sourceInverse_sourceShift` (7), `sourceInverse_integerShift` (8),
+`shiftAnomaly_eq_zero_iff` / `integerAnomaly_eq_zero_iff` (nonvanishing),
+`sourceEvaluation_integerShift` (10), `hasDerivAt_sourceModeU` + `sourceModeU_equation` (11)/(24),
+`sourceInverse_sourceModeF` (12), `sourceEvaluationJet_integerShift` (18).
+**Missing:** `(14)` integer Mellin expansion (needs the theta series of `k`, not just positivity);
+`(15)` reflection package (needs an evenness hypothesis + a set-reflection change of variables:
+`∫_{Iic(-x)} k(y)e^{-izy} = xiC z - ∫_{Iic x} k e^{izy}`); `(16)` `dim ker = 1` — **blocked on card 6**
+(it quotes the parent Fredholm theorem).
 
-STILL TO DO on that card: `r_a ≠ 0` / `r_n ≠ 0` (no nonzero real period), the explicit right mode
-`(11)`–`(12)`, the integer Mellin expansion `(14)` (needs the theta series), reflection package
-`(15)`, `dim ker = 1` `(16)`, and the jet law `(17)`–`(18)` (binomial; easy once the jets are
-defined by the integral formula).
+### 5. `hedenmalm-two-prime-theta-interval-normal-frame` — none
+Needs: integrated rank-one anomaly over a theta interval, `a_n XiC` factorization, sinc multipliers
+for `log 2`/`log 3` with no common zero, frame obstructions.  Builds directly on module 4.
 
-## REMAINING 5 further CARDS
+### 6. `hedenmalm-supersymmetric-fredholm-range-divisor` — none (`[OPEN]` on the card)
+The keystone: unbounded weighted first-order operator on `L²(ℝ,k⁻¹dx)`, closed range, Fredholm
+index, exact `Xi` cokernel coordinate, Witten square.  Cards 4 `(16)`, 5 and 7 depend on it.
 
-| card | Lean state | missing machinery |
-|---|---|---|
-| `hedenmalm-pair-weil-polarization-law` | large | ONE gate: extend the prime+Gamma equality from the Cauchy/resolvent core to the **full Guinand–Weil test algebra in closed form**.  Existing: `XiWeilPolarization`, `XiWeilResolventSource`, `XiWeilHilbertCore`, `XiQuotientRealDecay`, `XiHorizontalStripDecay`, `primeArchSourceRelativeTrace_eq_xiRelativeResolventTrace` |
-| `hedenmalm-theta-source-compressed-inverse-determinant` | `HTGeometry.SourceGrushinInverse` only | Hilbert–Schmidt integral operators, regularized determinant `det₂`, genus-one Hadamard product |
-| `hedenmalm-supersymmetric-fredholm-range-divisor` | **none** | unbounded weighted first-order operator, closed range, Fredholm index, Witten square |
-| `hedenmalm-essential-inverse-flow-prime-tomography` | none | punctured Riesz trace, essential inverse flow, von Mangoldt weld |
-| `hedenmalm-two-prime-theta-interval-normal-frame` | none | sinc multipliers for `log 2`/`log 3`, no common zero, frame obstruction |
+### 7. `hedenmalm-theta-source-compressed-inverse-determinant` — only `HTGeometry.SourceGrushinInverse`
+Needs Hilbert–Schmidt integral operators with kernels, the regularized determinant `det₂`, and the
+genus-one Hadamard product.  mathlib has none of these.
 
-## Key reusable infrastructure now available
+### 8. `hedenmalm-essential-inverse-flow-prime-tomography` — none
+Needs the punctured Riesz trace of the essential inverse flow and the von Mangoldt weld.
 
-- `PositiveDensitySource` (k continuous/positive/integrable) with mass, normalized law, `cdfFun`
-  (C¹, derivative `k/M`, strictly mono onto `(0,1)`), `quantileFun` (two-sided inverse,
-  `hasDerivAt_quantileFun` gives `Q' = q`), both measure-transport laws, `integrable_law_iff`,
-  `integrableOn_comp_quantileFun_iff`, witness `gaussianSource`.
-- `weightedDensityUnitary : L²(μ.withDensity w) ≃ₗᵢ L²(μ)`.
-- `HedenmalmQuantile.sourceInverse` = the explicit Hedenmalm inverse `B`;
-  `HedenmalmQuantile.sourceChar z x = exp(i z x)`; `HedenmalmQuantile.xiC`.
-- General-measure self-adjointness/injectivity/dense-range for `lpBoundedMulCLM`
-  (`BoundedMultiplierHilbert`).
-- `HTGeometry.QuantileCoupling.map_quantile_eq` (inverse-transform sampling; mathlib has none).
-- `HTGeometry.LogarithmicResidueQuantization.logDeriv_residue_of_meromorphicOrder`.
+### 9. `hedenmalm-pair-weil-polarization-law` — large existing Lean, ONE open gate
+Extend the prime+Gamma equality from the Cauchy/resolvent core (`XiWeilResolventSource`,
+`primeArchSourceRelativeTrace_eq_xiRelativeResolventTrace`) to the **full Guinand–Weil test algebra
+in closed form**.  All other gates are checked.
 
-## Lean traps hit (v4.32)
+## Recommended order for the next session
+6 → 7 → 4-remainder → 5 → 8 → 9 (card 6 unblocks 4, 5 and 7).
+
+## Reusable infrastructure built here
+
+- `HTGeometry/PositiveDensityQuantile.lean`: `structure PositiveDensitySource`; `mass`,
+  `normalized`, `law`, `cdfFun` (C¹, derivative `k/M`, `strictMono_cdfFun`, `cdfFun_mem_Ioo`,
+  `surjOn_cdfFun`), `quantileFun` (`quantile_cdfFun`, `cdfFun_quantile`), both transport laws,
+  `integrable_law_iff`, `integrableOn_comp_quantileFun_iff`, witness `gaussianSource`.
+- `HTGeometry/WeightedDensityL2.lean`: `weightedDensityUnitary : L²(μ.withDensity w) ≃ₗᵢ L²(μ)`.
+- `HTGeometry/BoundedMultiplierHilbert.lean`: general-measure self-adjointness / injectivity /
+  dense range for `lpBoundedMulCLM`.
+- `RHTower/HedenmalmQuantile*`: `quantileUnitary`, `sourceInverse`, `sourceChar`, `xiC`,
+  `HasShiftedTail`, `quantileSpeed`, `metricSymbol`, `metricOperator`, `rootH`/`rootG`/`rootA`,
+  `hasDerivAt_quantileFun`.
+- `RHTower/HedenmalmPrimeTranslationAnomaly.lean`: `setIntegral_Iic_comp_sub/_add`,
+  `hasDerivAt_setIntegral_Iic` (FTC for `Iic`-primitives), `sourceEvaluationJet`.
+
+## Lean traps (v4.32)
 
 - `AEStronglyMeasurable.div` needs `ContinuousDiv`, absent for ℂ — use `mul` + `Continuous.inv₀`.
-- `field_simp` needs the `≠ 0` hypothesis in the local context; substituting `(M:ℂ) = √M*√M` before
-  `field_simp` is what closes the mass algebra.
-- `Complex.reCLM.hasFDerivAt.comp_hasDerivAt` fails on ℝ-target instance paths; stay in ℂ with
-  `HasDerivAt.star` and `conj w * w = ((‖w‖^2 : ℝ) : ℂ)`.
-- `star` vs `starRingEnd ℂ` are defeq: `show` converts, `rw` does not.
-- `Integrable.star` does not exist; build it as `⟨conj∘f measurable, h.2.congr'⟩`.
-- `Set.uIcc_subset_Ioo` does not exist; use `Set.ordConnected_Ioo.uIcc_subset`.
-- `rw [someDef]` fails for defs applied to arguments — use `show` (defeq) instead.
-- `integral_add_right_eq_self` needs `(μ := volume)` or the instance search gets stuck.
+- `field_simp` needs the `≠ 0` hypothesis in context; substituting `(M:ℂ) = √M*√M` first closes the
+  mass algebra.
+- Stay in ℂ for derivatives of `‖·‖²`: use `HasDerivAt.star` and `conj w * w = ((‖w‖^2:ℝ):ℂ)`;
+  `Complex.reCLM.hasFDerivAt.comp_hasDerivAt` fails on ℝ-target instance paths.
+- `star` vs `starRingEnd ℂ` are defeq — `show` converts, `rw` does not.
+- `Integrable.star` does not exist; `⟨conj∘f measurable, h.2.congr'⟩`.
+- `Set.uIcc_subset_Ioo` does not exist — `Set.ordConnected_Ioo.uIcc_subset`.
+- `rw [someDef]` fails for defs applied to arguments — use `show`.
+- `integral_add_right_eq_self` / `Integrable.comp_add_right` need `(μ := volume)` or explicit type
+  ascriptions, else instance search gets stuck.
+- Annotate integral binders `∫ x : ℝ, …` when the integrand casts `x` to ℂ.
+- `MeasureTheory.integral_Iic_of_hasDerivAt_of_tendsto'` is the improper FTC on `Iic`.
 - Bash cwd persists between calls: `cd formal` once; after any `cd` to the repo root, greps against
   `GaloisForLFunctions/...` silently return nothing.
-- `scripts/formal_tools.py lint` currently reports 4 pre-existing unreachable RHTower modules
-  (`ConstrainedProlateSpectralIdentification`, `ProlateFourierSignSectors`,
-  `RouteRSquarefullStokesSummabilityProducer`, `SlepianKernelScaledFubini`) — not from this work.
-  Another agent was editing `HTGeometry.lean` concurrently.

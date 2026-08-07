@@ -1,7 +1,7 @@
 # Prime-translation rank-one anomaly of the Hedenmalm compact source operator
 
 - **ID:** `hedenmalm-prime-translation-rank-one-anomaly`
-- **Stage:** 2-fully-proven / needs literature and Lean audit
+- **Stage:** 2-fully-proven / partially formalized; awaiting the parent Fredholm card
 - **Type:** THEOREM / FIBREWISE ORDINARY-INTEGER INCIDENCE LANDING
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:**
@@ -434,6 +434,31 @@ combined theorem remains `[NOVELTY UNVERIFIED]` pending an independent operator-
 8. **Raw anomaly is fibrewise exact.**  Its Fourier transform is divisible by `XiC`; the entire
    multiplicity jet below the first normal order vanishes.  Only the source-normal quotient in the
    successor theorem survives.
+
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/HedenmalmPrimeTranslationAnomaly.lean` (namespace
+`RHTower.HedenmalmPrimeTranslation`) formalizes the source core over the general positive-density
+source class `GaloisForLFunctions.HTGeometry.PositiveDensitySource`.  Every declaration below has
+`#print axioms` equal to `[propext, Classical.choice, Quot.sound]`.
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(3)`,`(4)` | `ell`, `V`, `B = V P` | `sourceFunctional`, `sourcePrimitive`, `HedenmalmQuantile.sourceInverse` |
+| `(5)`,`(6)` | real and normalized integer shifts | `sourceShift`, `integerShift`, `sourceFunctional_sourceShift`, `sourceFunctional_integerShift` |
+| `(7)` | rank-one real-translation commutator | `sourceInverse_sourceShift` |
+| `(8)` | rank-one integer-shift commutator | `sourceInverse_integerShift` |
+| `(7)`,`(8)` | the anomaly vectors are nonzero | `shiftAnomaly_eq`, `shiftAnomaly_eq_zero_iff`, `integerAnomaly_eq`, `integerAnomaly_eq_zero_iff` |
+| `(9)`,`(10)` | the literal ordinary-integer character `n^(-s(z))` | `sourceEvaluation`, `dirichletExponent`, `sourceEvaluation_integerShift`, `cpow_neg_dirichletExponent` |
+| `(11)`,`(24)` | the explicit mode and `(A+z)u_z = -k` | `sourceModeI`, `sourceModeU`, `sourceModeF`, `hasDerivAt_sourceModeI`, `hasDerivAt_sourceModeU`, `sourceModeU_equation` |
+| `(12)` | `B f_z = -z^(-1) f_z` | `sourceInverse_sourceModeF` (with the two endpoint data: `f_z` integrable, `u_z -> 0` at `-infinity`, and total mass `M`) |
+| `(17)`,`(18)` | conormal jets and the triangular prime law | `sourceEvaluationJet`, `sourceEvaluationJet_zero`, `sourceEvaluationJet_integerShift` |
+
+Still missing in Lean: the literal integer Mellin expansion `(14)` (it needs the theta series of the
+Hedenmalm source, not only its positivity), the reflection package `(15)`, and the geometric
+multiplicity statement `(16)`, which quotes the parent Fredholm theorem of
+`hedenmalm-supersymmetric-fredholm-range-divisor.md` and therefore cannot be closed before that
+card is formalized.
 
 ## Gates
 

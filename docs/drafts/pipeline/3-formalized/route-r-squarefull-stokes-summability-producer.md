@@ -1,8 +1,8 @@
 # Route R squarefull Stokes summability producer
 
 - **ID:** route-r-squarefull-stokes-summability-producer
-- **Stage:** 2-fully-proven (file move pending)
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** Route R squarefull-tail Gamma--Cartier index
 - **Statement:** The reflected difference of the explicit local level-two Euler activation masses is summable exactly when the squarefull-tail projection is balanced.
 
@@ -30,7 +30,7 @@ At `sigma = Re(rho)`, this must be equivalent to
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem, targeted build green, axiom audit PASS
+- [x] 2 → 3 formalized: Lean theorem, targeted build green, axiom audit PASS
 - [ ] 3 → 4 publication-ready: standalone paper and external novelty audit
 
 ## Conjecture loop
@@ -145,7 +145,50 @@ same-fibre norm, or source-dagger identity enters the proof.
 - **Boundary:** this theorem does not prove the coefficient summable at Xi zeros. That remains the
   independent source theorem.
 
+## Lean formalization
+
+Module:
+
+```text
+GaloisForLFunctions.RHTower.RouteRSquarefullStokesSummabilityProducer
+```
+
+Principal declarations:
+
+```text
+routeREulerSquarefullLocalMass
+diagonalActivationMeasure_squarefull_toReal_eq_localMass
+routeREulerGammaSquarefullStokesCoefficient
+routeREulerGammaSquarefullStokesCoefficient_reflection
+summable_routeREulerGammaSquarefullStokesCoefficient_iff
+routeREulerGammaSquarefullStokesSummable_iff_tailBalanced
+routeREulerGammaSquarefullStokesSummable_iff_port_eq_zero
+routeRTwoThreeGammaArithmeticCorona_globalization_iff_squarefullStokesSummable
+```
+
+Audit:
+
+- `lake env lean GaloisForLFunctions/RHTower/RouteRSquarefullStokesSummabilityProducer.lean`: PASS;
+- `lake build GaloisForLFunctions.RHTower.RouteRSquarefullStokesSummabilityProducer`: PASS;
+- axiom audit: `[propext, Classical.choice, Quot.sound]`;
+- wired into `GaloisForLFunctions.RHTower` umbrella;
+- whole-tree lint reached only four unrelated concurrent umbrella omissions:
+  `ConstrainedProlateSpectralIdentification`, `ProlateFourierSignSectors`,
+  `SlepianKernelScaledFubini`, and `HTGeometry.SobolevWeightDecay`. No lint error names this module.
+
+Exact remaining producer theorem is now
+
+```text
+forall rho : XiDivisorSupport,
+  RouteREulerGammaSquarefullStokesSummable rho
+```
+
+Equivalently: prove the explicit reflected level-two diagonal boundary is trace-class/`ℓ¹` from
+pre-divisor rational-adelic/Euler--Gamma Stokes structure. This is strictly narrower and more
+source-compatible than comparing full GNS representations or singular tail states.
+
 ## Log
 
 - 2026-08-07 — created in 1-in-progress after three producer conjectures failed; C4 survived.
 - 2026-08-07 — dependency-closed paper proof completed; ready for Lean formalization.
+- 2026-08-07 — formalized, module-only build and axiom audit passed; umbrella wired.

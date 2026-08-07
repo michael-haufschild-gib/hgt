@@ -75,6 +75,24 @@ theorem exists_negative_eigenpair_of_re_inner_neg {S : H →L[ℂ] H}
   obtain ⟨v, hv⟩ := heigenvalue.exists_hasEigenvector
   exact ⟨c, v, hcneg, hv.2, hv.apply_eq_smul⟩
 
+/-- A positive quadratic witness for a compact self-adjoint operator produces a genuine positive
+real eigenpair. -/
+theorem exists_positive_eigenpair_of_re_inner_pos {S : H →L[ℂ] H}
+    (hcpt : IsCompactOperator S) (hsym : S.IsSymmetric) {x : H}
+    (hx : 0 < RCLike.re (inner ℂ (S x) x)) :
+    ∃ (c : ℝ) (v : H), 0 < c ∧ v ≠ 0 ∧ S v = (c : ℂ) • v := by
+  have hneg : RCLike.re (inner ℂ ((-S) x) x) < 0 := by
+    simpa using (neg_lt_zero.mpr hx)
+  have hsymneg : (-S).IsSymmetric := by
+    intro u v
+    change inner ℂ (-(S u)) v = inner ℂ u (-(S v))
+    rw [inner_neg_left, inner_neg_right]
+    exact congrArg Neg.neg (hsym u v)
+  obtain ⟨c, v, hcneg, hv0, hv⟩ :=
+    exists_negative_eigenpair_of_re_inner_neg hcpt.neg hsymneg hneg
+  refine ⟨-c, v, neg_pos.mpr hcneg, hv0, ?_⟩
+  simpa [neg_smul] using congrArg Neg.neg hv
+
 /-- Negative quadratic form forces a negative member of the complete signed-greedy spectrum. -/
 theorem exists_sgVal_neg_of_re_inner_neg {S : H →L[ℂ] H}
     (hcpt : IsCompactOperator S) (hsym : S.IsSymmetric) {x : H}
@@ -325,6 +343,83 @@ theorem exists_orthonormal_positive_eigenfamily_of_finrank_le {S : H →L[ℂ] H
   refine ⟨-c, neg_pos.mpr hc, ?_⟩
   simpa [neg_smul] using congrArg Neg.neg hceig
 
+/-- A positive quadratic trial space contributes at least its dimension many distinct positive
+entries to the signed-greedy spectrum. -/
+theorem exists_injective_positive_sgVal_indices_of_finrank_le {S : H →L[ℂ] H}
+    (hcpt : IsCompactOperator S) (hsym : S.IsSymmetric) (V : Submodule ℂ H) {m : ℕ}
+    (hm : m ≤ Module.finrank ℂ V)
+    (hpos : ∀ x : H, x ∈ V → x ≠ 0 → 0 < RCLike.re (inner ℂ (S x) x)) :
+    ∃ r : Fin m → ℕ, Function.Injective r ∧ ∀ i, 0 < sgVal S (r i) := by
+  revert hm
+  induction m with
+  | zero =>
+      intro _hm
+      refine ⟨fun i => Fin.elim0 i, ?_, ?_⟩
+      · intro i
+        exact Fin.elim0 i
+      · intro i
+        exact Fin.elim0 i
+  | succ m ih =>
+      intro hm
+      have hdim : m < Module.finrank ℂ V := lt_of_lt_of_le (Nat.lt_succ_self m) hm
+      obtain ⟨r, hrinj, hrpos⟩ := ih (Nat.le_of_lt hdim)
+      let w : ℕ → H := fun k =>
+        if hk : k < m then sgVec S (r ⟨k, hk⟩) else 0
+      obtain ⟨x, hxV, hx0, hxorth⟩ :=
+        exists_mem_ne_zero_orthogonal_of_finrank_lt V w m hdim
+      have hxr : ∀ i, inner ℂ (sgVec S (r i)) x = 0 := by
+        intro i
+        simpa [w, i.isLt] using hxorth (i : ℕ) i.isLt
+      let g : Fin m → H := fun i => sgVec S (r i)
+      set W : Submodule ℂ H := (Submodule.span ℂ (Set.range g))ᗮ with hW
+      have hxW : x ∈ W := by
+        rw [hW, Submodule.mem_orthogonal_span_iff]
+        rintro u ⟨i, rfl⟩
+        exact hxr i
+      have hWinv : ∀ y ∈ W, S y ∈ W := by
+        intro y hy
+        rw [hW, Submodule.mem_orthogonal_span_iff] at hy ⊢
+        rintro u ⟨i, rfl⟩
+        have h1 : inner ℂ (g i) (S y) = inner ℂ (S (g i)) y :=
+          (hsym (g i) y).symm
+        rw [h1, show S (g i) = ((sgVal S (r i) : ℝ) : ℂ) • g i by
+          exact apply_sgVec S (r i), inner_smul_left, hy (g i) ⟨i, rfl⟩, mul_zero]
+      set Sw : W →L[ℂ] W := S.restrict hWinv with hSw
+      have hSw_apply : ∀ z : W, (Sw z : H) = S (z : H) := fun z => rfl
+      have hSw_compact : IsCompactOperator Sw := hcpt.restrict' hWinv
+      have hSw_symm : Sw.IsSymmetric := hsym.restrict_invariant hWinv
+      let xW : W := ⟨x, hxW⟩
+      have hxposW : 0 < RCLike.re (inner ℂ (Sw xW) xW) := by
+        rw [Submodule.coe_inner, hSw_apply]
+        exact hpos x hxV hx0
+      obtain ⟨c, v, hc, hv0, hv⟩ :=
+        exists_positive_eigenpair_of_re_inner_pos hSw_compact hSw_symm hxposW
+      have hv0H : (v : H) ≠ 0 := by
+        intro h
+        exact hv0 (Subtype.ext h)
+      have hvH : S (v : H) = (c : ℂ) • (v : H) := by
+        have h := congrArg (Subtype.val : W → H) hv
+        rw [hSw_apply] at h
+        simpa only [Submodule.coe_smul] using h
+      obtain ⟨n, hnval, hninner⟩ :=
+        exists_sgVal_eq_of_eigenvalue_and_inner_ne_zero hcpt hsym hv0H hvH
+          (Complex.ofReal_ne_zero.mpr (ne_of_gt hc))
+      have hnreal : sgVal S n = c := by exact_mod_cast hnval
+      have hnpos : 0 < sgVal S n := hnreal.symm ▸ hc
+      have hnrange : n ∉ Set.range r := by
+        rintro ⟨i, rfl⟩
+        apply hninner
+        have hvW : (v : H) ∈ (Submodule.span ℂ (Set.range g))ᗮ := by
+          rw [← hW]
+          exact v.2
+        exact (Submodule.mem_orthogonal_span_iff.mp hvW) (g i) ⟨i, rfl⟩
+      let r' : Fin (m + 1) → ℕ := Fin.cons n r
+      refine ⟨r', Fin.cons_injective_of_injective hnrange hrinj, ?_⟩
+      intro i
+      refine Fin.cases ?_ (fun j => ?_) i
+      · simpa [r'] using hnpos
+      · simpa [r'] using hrpos j
+
 end ContinuousLinearMap
 
 namespace RHTower
@@ -473,6 +568,36 @@ theorem eventually_exists_orthonormal_negative_evenProlateEigenfamily (n : ℕ) 
     (ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp
       (adjoint_evenTimeBandFourier a))
     (hermiteNegativeTrialSpace n) (by rw [finrank_hermiteNegativeTrialSpace]) hneg
+
+/-- At fixed depth, `n+1` distinct entries of the actual signed-greedy prolate spectrum are
+eventually positive. -/
+theorem eventually_exists_injective_positive_evenProlateSignedIndices (n : ℕ) :
+    ∀ᶠ a : ℝ in atTop,
+      ∃ r : Fin (n + 1) → ℕ, Function.Injective r ∧
+        ∀ i, 0 < evenProlateSignedValue a (r i) := by
+  filter_upwards [eventually_gt_atTop (0 : ℝ),
+    eventually_strictlyPositiveOn_hermiteTrialSpace n] with a ha hpos
+  simpa only [evenProlateSignedValue] using
+    (ContinuousLinearMap.exists_injective_positive_sgVal_indices_of_finrank_le
+      (isCompactOperator_evenTimeBandFourier a ha)
+      (ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp
+        (adjoint_evenTimeBandFourier a))
+      (hermiteTrialSpace n) (by rw [finrank_hermiteTrialSpace]) hpos)
+
+/-- At fixed depth, `n+1` distinct entries of the actual signed-greedy prolate spectrum are
+eventually negative. -/
+theorem eventually_exists_injective_negative_evenProlateSignedIndices (n : ℕ) :
+    ∀ᶠ a : ℝ in atTop,
+      ∃ r : Fin (n + 1) → ℕ, Function.Injective r ∧
+        ∀ i, evenProlateSignedValue a (r i) < 0 := by
+  filter_upwards [eventually_gt_atTop (0 : ℝ),
+    eventually_strictlyNegativeOn_hermiteNegativeTrialSpace n] with a ha hneg
+  simpa only [evenProlateSignedValue] using
+    (ContinuousLinearMap.exists_injective_negative_sgVal_indices_of_finrank_le
+      (isCompactOperator_evenTimeBandFourier a ha)
+      (ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp
+        (adjoint_evenTimeBandFourier a))
+      (hermiteNegativeTrialSpace n) (by rw [finrank_hermiteNegativeTrialSpace]) hneg)
 
 /-- Each fixed positive Hermite mode becomes an approximate `+1` eigenvector. -/
 theorem tendsto_norm_hermiteEvenUnit_sub_timeBand (j : ℕ) :

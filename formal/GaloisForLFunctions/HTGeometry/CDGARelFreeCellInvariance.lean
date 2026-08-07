@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.CDGARelTensorShiftHom
 import GaloisForLFunctions.HTGeometry.CDGARelTensorConstHom
 import GaloisForLFunctions.HTGeometry.CDGARelTensorUnit
-import GaloisForLFunctions.HTGeometry.CDGAFreeCoefficients
+import GaloisForLFunctions.HTGeometry.CDGAFreeCoefficientsInfinite
 import GaloisForLFunctions.HTGeometry.CDGARelTensorTower
 
 /-!
@@ -33,12 +33,12 @@ variable {R : Type w} [CommRing R] {X : ℕ → Type w} [∀ n, AddCommGroup (X 
 theorem relTensorMapLeft_freeCell_isQuasiIsoFull (u : CDGAUnit A)
     (hP : CDGAModuleUnital u P) (hP' : CDGAModuleUnital u P') (φ : CDGAModuleHom P P')
     (hφ : φ.IsQuasiIsoFull) {V : Type w} [AddCommGroup V] [Module R V]
-    {ι : Type w} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι R V) (k : ℕ) :
+    {ι : Type w} [DecidableEq ι] (b : Module.Basis ι R V) (k : ℕ) :
     (relTensorMapLeft φ (freeCellModule A V k)).IsQuasiIsoFull := by
   have h0 : (relTensorMapLeft φ (CDGAStructure.selfModule A)).IsQuasiIsoFull :=
     relTensorMapLeft_selfModule_isQuasiIsoFull P P' u hP hP' φ hφ
   have h1 : (tensorConstMap (relTensorMapLeft φ (CDGAStructure.selfModule A)) V).IsQuasiIsoFull :=
-    tensorConstMap_isQuasiIsoFull _ h0 b
+    tensorConstMap_isQuasiIsoFull_of_basis _ h0 b
   have h2 : ((relTensorMapLeft φ (tensorConstModule (CDGAStructure.selfModule A) V)).comp
       (relTensorConstHom P (CDGAStructure.selfModule A) (V := V))).IsQuasiIsoFull := by
     rw [relTensorConstHom_naturality P P' (CDGAStructure.selfModule A) φ]
@@ -67,9 +67,9 @@ theorem relTensorMapLeft_freeTower_isQuasiIsoFull (u : CDGAUnit A)
     (hP : CDGAModuleUnital u P) (hP' : CDGAModuleUnital u P') (φ : CDGAModuleHom P P')
     (hφ : φ.IsQuasiIsoFull)
     {V₀ : Type w} [AddCommGroup V₀] [Module R V₀]
-    {ι₀ : Type w} [Fintype ι₀] [DecidableEq ι₀] (b₀ : Module.Basis ι₀ R V₀) (k₀ : ℕ)
+    {ι₀ : Type w} [DecidableEq ι₀] (b₀ : Module.Basis ι₀ R V₀) (k₀ : ℕ)
     {V : ℕ → Type w} [∀ i, AddCommGroup (V i)] [∀ i, Module R (V i)]
-    {ι : ℕ → Type w} [∀ i, Fintype (ι i)] [∀ i, DecidableEq (ι i)]
+    {ι : ℕ → Type w} [∀ i, DecidableEq (ι i)]
     (b : ∀ i, Module.Basis (ι i) R (V i)) (deg : ℕ → ℕ)
     (τ : ∀ (i : ℕ)
       (S : CDGAModuleStructure A
