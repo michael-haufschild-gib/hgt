@@ -223,6 +223,84 @@ theorem exists_orthonormal_negative_eigenfamily_of_finrank_le {S : H →L[ℂ] H
       refine Fin.cases ⟨c, hc, huEig⟩ (fun j => ?_) i
       exact heig j
 
+/-- A negative quadratic trial space contributes at least its dimension many distinct negative
+entries to the signed-greedy spectrum.  The distinctness is the multiplicity-sensitive part:
+each induction step works in the orthogonal complement of all previously selected greedy vectors. -/
+theorem exists_injective_negative_sgVal_indices_of_finrank_le {S : H →L[ℂ] H}
+    (hcpt : IsCompactOperator S) (hsym : S.IsSymmetric) (V : Submodule ℂ H) {m : ℕ}
+    (hm : m ≤ Module.finrank ℂ V)
+    (hneg : ∀ x : H, x ∈ V → x ≠ 0 → RCLike.re (inner ℂ (S x) x) < 0) :
+    ∃ r : Fin m → ℕ, Function.Injective r ∧ ∀ i, sgVal S (r i) < 0 := by
+  revert hm
+  induction m with
+  | zero =>
+      intro _hm
+      refine ⟨fun i => Fin.elim0 i, ?_, ?_⟩
+      · intro i
+        exact Fin.elim0 i
+      · intro i
+        exact Fin.elim0 i
+  | succ m ih =>
+      intro hm
+      have hdim : m < Module.finrank ℂ V := lt_of_lt_of_le (Nat.lt_succ_self m) hm
+      obtain ⟨r, hrinj, hrneg⟩ := ih (Nat.le_of_lt hdim)
+      let w : ℕ → H := fun k =>
+        if hk : k < m then sgVec S (r ⟨k, hk⟩) else 0
+      obtain ⟨x, hxV, hx0, hxorth⟩ :=
+        exists_mem_ne_zero_orthogonal_of_finrank_lt V w m hdim
+      have hxr : ∀ i, inner ℂ (sgVec S (r i)) x = 0 := by
+        intro i
+        simpa [w, i.isLt] using hxorth (i : ℕ) i.isLt
+      let g : Fin m → H := fun i => sgVec S (r i)
+      set W : Submodule ℂ H := (Submodule.span ℂ (Set.range g))ᗮ with hW
+      have hxW : x ∈ W := by
+        rw [hW, Submodule.mem_orthogonal_span_iff]
+        rintro u ⟨i, rfl⟩
+        exact hxr i
+      have hWinv : ∀ y ∈ W, S y ∈ W := by
+        intro y hy
+        rw [hW, Submodule.mem_orthogonal_span_iff] at hy ⊢
+        rintro u ⟨i, rfl⟩
+        have h1 : inner ℂ (g i) (S y) = inner ℂ (S (g i)) y :=
+          (hsym (g i) y).symm
+        rw [h1, show S (g i) = ((sgVal S (r i) : ℝ) : ℂ) • g i by
+          exact apply_sgVec S (r i), inner_smul_left, hy (g i) ⟨i, rfl⟩, mul_zero]
+      set Sw : W →L[ℂ] W := S.restrict hWinv with hSw
+      have hSw_apply : ∀ z : W, (Sw z : H) = S (z : H) := fun z => rfl
+      have hSw_compact : IsCompactOperator Sw := hcpt.restrict' hWinv
+      have hSw_symm : Sw.IsSymmetric := hsym.restrict_invariant hWinv
+      let xW : W := ⟨x, hxW⟩
+      have hxnegW : RCLike.re (inner ℂ (Sw xW) xW) < 0 := by
+        rw [Submodule.coe_inner, hSw_apply]
+        exact hneg x hxV hx0
+      obtain ⟨c, v, hc, hv0, hv⟩ :=
+        exists_negative_eigenpair_of_re_inner_neg hSw_compact hSw_symm hxnegW
+      have hv0H : (v : H) ≠ 0 := by
+        intro h
+        exact hv0 (Subtype.ext h)
+      have hvH : S (v : H) = (c : ℂ) • (v : H) := by
+        have h := congrArg (Subtype.val : W → H) hv
+        rw [hSw_apply] at h
+        simpa only [Submodule.coe_smul] using h
+      obtain ⟨n, hnval, hninner⟩ :=
+        exists_sgVal_eq_of_eigenvalue_and_inner_ne_zero hcpt hsym hv0H hvH
+          (Complex.ofReal_ne_zero.mpr (ne_of_lt hc))
+      have hnreal : sgVal S n = c := by exact_mod_cast hnval
+      have hnneg : sgVal S n < 0 := hnreal.trans_lt hc
+      have hnrange : n ∉ Set.range r := by
+        rintro ⟨i, rfl⟩
+        apply hninner
+        have hvW : (v : H) ∈ (Submodule.span ℂ (Set.range g))ᗮ := by
+          rw [← hW]
+          exact v.2
+        exact (Submodule.mem_orthogonal_span_iff.mp hvW) (g i) ⟨i, rfl⟩
+      let r' : Fin (m + 1) → ℕ := Fin.cons n r
+      refine ⟨r', Fin.cons_injective_of_injective hnrange hrinj, ?_⟩
+      intro i
+      refine Fin.cases ?_ (fun j => ?_) i
+      · simpa [r'] using hnneg
+      · simpa [r'] using hrneg j
+
 /-- A positive quadratic trial space of dimension at least `m` forces `m` orthonormal genuine
 positive eigenvectors. -/
 theorem exists_orthonormal_positive_eigenfamily_of_finrank_le {S : H →L[ℂ] H}

@@ -148,3 +148,20 @@ statement the corpus's squarefree Gibbs pushforward layer computes on finite pal
 - 2026-08-07 — dichotomy generalized to arbitrary local targets; `geometricMeasure_Ici` added
   (mathlib gap); level structure of the sector proved. All modules `lake build` green (9343 jobs),
   axioms `[propext, Classical.choice, Quot.sound]`, `formal_tools.py lint` clean.
+
+## The critical model read at level two
+
+`RHTower/EulerActivationLevelCascade.lean`, appended (9339 jobs, exit 0, axiom-clean):
+
+- `criticalEulerProductMeasure_finiteSquarefull` — **the critical Euler source is squarefree away from a
+  finite set of primes**: at `σ = 1` the level-two boundary `σ = 1/2` is already passed, so the
+  squarefull part is almost surely finite.
+- `criticalEulerProductMeasure_finiteLevel (2 ≤ m)` — the same at every level `m ≥ 2`.
+
+Both are direct instantiations of the cascade at `σ = 1` through the bridge
+`eulerActivationProductMeasure_one`, so they are statements about the corpus's *own* critical model that
+it did not previously contain: it had almost-sure infinite occupancy at the edge and almost-sure finite
+occupancy above it, but nothing about the multiplicities. Together with
+`criticalEulerProductMeasure_infinite_occupancy` this pins the critical source exactly — infinitely many
+occupied primes, all but finitely many of them simple, i.e. the same carrier shape proved for the
+prime-valuation sector.
