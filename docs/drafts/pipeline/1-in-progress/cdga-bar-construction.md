@@ -124,6 +124,16 @@ head and `R` the right-factor degree-one construction, the square expands into f
   `formal/GaloisForLFunctions/HTGeometry/CDGATensorDegOne.lean` shows that two degree-one maps on the
   right factor compose *without* a sign — the two Koszul signs are the same and cancel — so the term
   vanishes exactly by the inductive hypothesis `barD (k-1) (b+1) ∘ barD k b = 0`.
+* **The shifted multiplication needed a sign, and did not have one.**  Working the cancellation out
+  showed the construction as first built was wrong: with `μ(sa, sb) = s(ab)` the two bracketings of
+  three factors are *equal*, so the two terms add rather than cancel and `d²` is not zero.  The
+  correct shifted product carries the sign of the shifted degree of its first factor,
+  `μ(sa, sb) = (-1)^{|sa|} s(ab)`; then the two bracketings differ by exactly `-(-1)^{|sa|}`, which
+  is the sign the tail contributes.  `augIdealShiftMulOf` and **`augIdealShiftMulOf_assoc`** in
+  `CDGABarMul.lean` carry the sign and prove that identity.  Keeping the target degree a parameter
+  with an equation, rather than fixing it as `a + a' + 1`, is what lets associativity be stated at
+  all — otherwise the two sides sit in `(p+q+1)+r+1+1` and `p+(q+r+1)+1+1`, which are equal but not
+  definitionally so.
 * The first three must cancel against each other.  `H ∘ H` produces `μ(μ(a₁,a₂),a₃)`, the head of
   `H ∘ R(barD)` produces `μ(a₁,μ(a₂,a₃))`, and these cancel by associativity of the ideal's product
   against the sign of the shift; the remaining terms of `H ∘ R(barD)` cancel `R(barD) ∘ H` term by
