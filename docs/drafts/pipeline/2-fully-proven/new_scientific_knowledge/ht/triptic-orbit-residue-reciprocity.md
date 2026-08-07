@@ -543,3 +543,19 @@ Still to formalize on this card: the augmentation law `(A2)`, which needs a resi
 parallelogram; and the completeness, DA/HT, annihilator, matroid and multiplicative-classification
 consequences, which the card already flags as resting on the independently unaudited elliptic-gamma
 atomic theorem.
+
+## Lean status — the local argument principle
+
+`GaloisForLFunctions/HTGeometry/MeromorphicLogDerivResidue.lean` (wired, axiom-clean):
+
+    laurentCoeff_const_div_sub          the residue of `c/(z-a)` is `c`
+    logDeriv_eventuallyEq_of_nhdsNE     the logarithmic derivative is a punctured-germ invariant
+    logDeriv_sub_zpow                   `logDeriv (w ↦ (w-a)^n) z = n/(z-a)`
+    laurentCoeff_logDeriv_eq_order :
+      for `f` meromorphic at `a` of finite order `n`,
+        laurentCoeff (logDeriv f) a (-1) = n
+
+This is the local form of the argument principle — mathlib has no complex residue at all — and it
+is what converts the additive reciprocity theorem at index `ℓ = -1` into the card's multiplicative
+divisor statement: the order-one orbit-residue divisors of `δ Y / Y` are the zero/pole order
+divisors of the two shift quotients.

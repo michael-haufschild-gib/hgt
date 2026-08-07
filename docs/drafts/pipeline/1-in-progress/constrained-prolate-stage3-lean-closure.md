@@ -161,3 +161,17 @@ projective/trace-class/determinant consequences.
 - Proved exact homogeneous branch rigidity: any fixed linear combination of the two model branches
   with finite endpoint-normalized limit one has coefficients `(1,0)`.
 - Verified with `lake env lean GaloisForLFunctions/RHTower/ProlateDunsterRegularBranch.lean`.
+
+### 2026-08-07: endpoint Dunster Wronskian data
+
+- Strengthened `ProlateDunsterComparisonBridge.lean` with an unconditional eventual bound for the
+  derivative of every transformed endpoint-normalized radial profile.
+- Added `ProlateDunsterEndpointWronskian.lean`.  Proved `lgWeight -> 0`, the exact logarithmic phase
+  identity, and `(x^2-1)|log(c xi_s(x))| -> 0` at the singular endpoint.
+- Used those limits to prove `lgWeight * K(c xi_s) -> 0` despite the logarithmic singularity, and
+  evaluated the two actual-profile weighted Wronskians at the endpoint as `0` and `pi/4`.
+- Specialized both results to the exact comparison transform `R/xiAmplitude` of every smooth
+  endpoint-normalized radial prolate profile.  No boundary-value premise for the transformed
+  solution remains.
+- Verified `ProlateDunsterComparisonBridge.lean`, `ProlateDunsterRegularBranch.lean`, and
+  `ProlateDunsterEndpointWronskian.lean` with foreground `lake env lean <file>` checks.

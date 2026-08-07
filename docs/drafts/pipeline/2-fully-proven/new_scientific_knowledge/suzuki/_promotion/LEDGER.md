@@ -1211,3 +1211,39 @@ or by `integrableOn_const` (which does not resolve here). Supply the instance by
 2. Gamma transport kernel as an operator — **closed** for Lipschitz profiles.
 3. Carleman estimates on a weighted strip — untouched.
 4. Weak signed half-log trace — untouched.
+
+## T. Prerequisite 4 started — the kernel's finite first moment
+
+`GammaTransportKernel.lean` is now at 16 declarations, all `#print axioms` clean.
+
+`suzuki-weak-signed-half-log-trace` `(9)` needs two facts. **One of them the corpus already owns**:
+
+    ∫_0^∞ |w(L+s) − w(L)| dL ≤ s · Var(w)
+
+is precisely `MonotoneTranslationModulus.integral_abs_translate_sub_le_variation` from section M.
+Do not rebuild it. The other half is now built here:
+
+- `id_mul_gammaTransportKernel_le` — for `s ≥ 1`, `s·k(s) ≤ 4e^{−s/2}`; the linear factor is
+  absorbed by half the exponential decay, using `s ≤ 2e^{s/2}` from `Real.add_one_le_exp`.
+- `integrableOn_id_mul_gammaTransportKernel_Ioo` — at the origin the factor `s` exactly cancels the
+  simple pole, leaving `s·k(s) ≤ 1`.
+- `integrableOn_id_mul_gammaTransportKernel_Ioi_one`, and
+  `integrableOn_id_mul_gammaTransportKernel_Ioi_zero` — **`(9)`**: `∫_0^∞ s k(s) ds < ∞`.
+
+So the jump-form pairing `E_R(F,w)` of `(8)` is absolutely convergent for bounded `F` and BV `w`:
+both of its inputs are now formalized.
+
+### Remaining on prerequisite 4
+
+- `(6)` `∫_L^∞ k(s) ds = −log(1 − e^{−L})` — an exact identity; this is what makes `(7)`
+  `R_full f = R_half F + qF` the statement that the boundary correction is just the missing
+  negative half-line.
+- `(11)` `A(L) = Y(L)/(2√L)` with `A'(L) = P F(L)/(2L^{3/2})` distributionally.
+- `(12)`→`(13)` the weighted Cesàro comparison `liminf H ≤ α ≤ limsup H`.
+- §4's mollification: `R_full` commutes with convolution, `Y` commutes with convolution, and only
+  multiplication by `L` fails to — the commutator is the whole content.
+
+Trap: in the calc chain for `id_mul_gammaTransportKernel_le`, neither `rw [hinv]; ring` nor
+`linear_combination` closes `2*(2*e^{s/2}*e^{-s/2})*e^{-s/2} = 4*e^{-s/2}` — the association is
+wrong for `rw`. Prove `s * e^{-s/2} ≤ 2` as its own `have` (via `mul_assoc, hinv, mul_one`) and
+finish the step with `nlinarith`.

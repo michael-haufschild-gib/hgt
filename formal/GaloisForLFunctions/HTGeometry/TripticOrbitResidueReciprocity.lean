@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DiscreteOrbitReciprocity
+import GaloisForLFunctions.HTGeometry.MeromorphicLogDerivResidue
 import GaloisForLFunctions.HTGeometry.TripticCornerAccumulation
 
 /-!
@@ -282,6 +283,67 @@ theorem triptic_orbit_residue_reciprocity
     ring
   rw [hsumB, hsumA]
   linear_combination hcorner₂ - hcorner₁
+
+
+/-- The residue of the logarithmic derivative, read as an integer order. -/
+theorem laurentCoeff_logDeriv_eq_untop {Y : ℂ → ℂ} (hY : MeromorphicOn Y Set.univ)
+    (hfin : ∀ w : ℂ, meromorphicOrderAt Y w ≠ ⊤) (v : ℂ) :
+    laurentCoeff (logDeriv Y) v (-1) = (((meromorphicOrderAt Y v).untop₀ : ℤ) : ℂ) := by
+  obtain ⟨n, hn⟩ := WithTop.ne_top_iff_exists.mp (hfin v)
+  have hord : meromorphicOrderAt Y v = (n : ℤ) := hn.symm
+  rw [laurentCoeff_logDeriv_eq_order (hY v (Set.mem_univ v)) hord, hord]
+  simp
+
+/-- **Multiplicative triptic reciprocity.**  The two orbital divisors of the shift quotients of a
+`1`-periodic meromorphic function whose triptic multiplicative cocycle is an exponential character
+agree: the total zero/pole order of `Y(·+σ)/Y` along a `σ`-orbit equals the total zero/pole order of
+`Y(·+τ)/Y` along the corresponding `τ`-orbit. -/
+theorem triptic_multiplicative_divisor_reciprocity
+    {Y : ℂ → ℂ} {τ σ : ℂ}
+    (hY : MeromorphicOn Y Set.univ)
+    (hfin : ∀ w : ℂ, meromorphicOrderAt Y w ≠ ⊤)
+    (hYper : ∀ z : ℂ, Y (z + 1) = Y z)
+    {Cst : ℂ} (hmixed : ∀ z : ℂ, logDeriv Y (z + τ + σ) - logDeriv Y (z + τ)
+      - logDeriv Y (z + σ) + logDeriv Y z = Cst)
+    (hτ : 0 < τ.im) (hσ : 0 < σ.im)
+    (hindep : ∀ n m j : ℤ, (n : ℂ) * τ + (m : ℂ) * σ + (j : ℂ) = 0 → n = 0 ∧ m = 0 ∧ j = 0)
+    (p : ℂ) :
+    ∑ᶠ m : ℤ, ((((meromorphicOrderAt Y (p + (m : ℂ) * σ + σ)).untop₀
+        - (meromorphicOrderAt Y (p + (m : ℂ) * σ)).untop₀ : ℤ) : ℂ))
+      = ∑ᶠ n : ℤ, ((((meromorphicOrderAt Y (p + (n : ℂ) * τ + τ)).untop₀
+        - (meromorphicOrderAt Y (p + (n : ℂ) * τ)).untop₀ : ℤ) : ℂ)) := by
+  have hlogmero : MeromorphicOn (logDeriv Y) Set.univ := fun z _ =>
+    ((hY z (Set.mem_univ z)).deriv).div (hY z (Set.mem_univ z))
+  have hper : ∀ z : ℂ, logDeriv Y (z + 1) = logDeriv Y z := by
+    intro z
+    have hfun : (fun w : ℂ => Y (w + 1)) = Y := funext hYper
+    have hd : deriv Y (z + 1) = deriv Y z := by
+      have h := deriv_comp_add_const (f := Y) (a := (1 : ℂ)) z
+      rw [hfun] at h
+      exact h.symm
+    rw [logDeriv_apply, logDeriv_apply, hd, hYper z]
+  have hrec := triptic_orbit_residue_reciprocity hlogmero hper hmixed hτ hσ hindep p
+    (ℓ := (-1 : ℤ)) (by norm_num)
+  have hσterm : ∀ m : ℤ,
+      laurentCoeff (fun z => logDeriv Y (z + σ) - logDeriv Y z) (p + (m : ℂ) * σ) (-1)
+        = ((((meromorphicOrderAt Y (p + (m : ℂ) * σ + σ)).untop₀
+            - (meromorphicOrderAt Y (p + (m : ℂ) * σ)).untop₀ : ℤ) : ℂ)) := by
+    intro m
+    rw [laurentCoeff_shiftDiff hlogmero σ _ (-1),
+      laurentCoeff_logDeriv_eq_untop hY hfin, laurentCoeff_logDeriv_eq_untop hY hfin]
+    push_cast
+    ring
+  have hτterm : ∀ n : ℤ,
+      laurentCoeff (fun z => logDeriv Y (z + τ) - logDeriv Y z) (p + (n : ℂ) * τ) (-1)
+        = ((((meromorphicOrderAt Y (p + (n : ℂ) * τ + τ)).untop₀
+            - (meromorphicOrderAt Y (p + (n : ℂ) * τ)).untop₀ : ℤ) : ℂ)) := by
+    intro n
+    rw [laurentCoeff_shiftDiff hlogmero τ _ (-1),
+      laurentCoeff_logDeriv_eq_untop hY hfin, laurentCoeff_logDeriv_eq_untop hY hfin]
+    push_cast
+    ring
+  rw [← finsum_congr hσterm, ← finsum_congr hτterm]
+  exact hrec
 
 end Reciprocity
 

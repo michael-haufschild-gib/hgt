@@ -329,6 +329,24 @@ card.  All declarations are `#print axioms`-clean.
 | `(6)` | a divisor point is an eigenvalue: `B f_z = -z^(-1) f_z` | `sourceInverse_sourceModeF_eq_smul` |
 | `(6)` | an eigenvector forces a zero, for any nonzero source coefficient | `xiC_eq_zero_of_solution_const` |
 | `(7)` | reflection law `R B R = -B` for an even source | `sourceReflection`, `sourceFunctional_sourceReflection`, `sourceInverse_sourceReflection` |
+| `(4)` | the kernel row as an `L^2` vector, energy `q(t)^2 t(1-t)` | `pinnedKernelFun`, `pinnedKernelVec`, `norm_sq_pinnedKernelVec` |
+| `(1)` | the kernel field `t |-> K(t,.)` is `L^2`-continuous | `pinnedSliceVec`, `norm_pinnedSliceVec_sub_le`, `continuous_pinnedSliceVec` |
+| `(1)` | the assembled field of functionals | `pinnedKernelField`, `pinnedKernelField_apply`, `pinnedKernelL2` |
+| `(1)` | **`B` is Hilbert--Schmidt**, and compact | `isHilbertSchmidt_pinnedKernelOperator`, `isCompactOperator_pinnedKernelOperator` |
+
+**Unconditional layer.**  `formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceUnconditional.lean`
+and `.../HedenmalmThetaKernelEnergy.lean` (namespace `RHTower.HedenmalmThetaSource`) instantiate the
+whole layer at the actual arithmetic source, so the statements below carry **no hypothesis at all**.
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(2)` | the theta-cusp state is a positive density source | `thetaCuspFullSource_pos`, `thetaSource` |
+| `(1)` | `Xi_C` is its completed transform on `|Im z| < 1` | `xiC_thetaSource`, `hasShiftedTail_thetaSource` |
+| `(5)` | **the theta-tail energy converges**: `M integral p(1-p)/k < infinity` | `integrable_tailEnergyDensity_thetaSource`, `hasFiniteKernelEnergy_thetaSource` |
+| `(5)` | the doubly exponential squeeze behind it | `thetaEnvelope`, `thetaCuspFullSource_le_envelope`, `thetaCuspFullSource_ge_envelope`, `thetaEnvelope_le_shift`, `integral_Ioi_thetaCuspFullSource_le` |
+| `(1)` | **`B` is Hilbert--Schmidt for the Riemann source** | `isHilbertSchmidt_thetaKernelOperator` |
+| `(1)` | `B` is compact for the Riemann source | `isCompactOperator_thetaKernelOperator` |
+| `(7)` | `R B R = -B` for the Riemann source | `thetaSource_even`, `sourceInverse_sourceReflection_theta` |
 
 Corpus assets to use for the remaining items, rather than rebuilding them:
 `ContinuousLinearMap.IsHilbertSchmidt` (`HTGeometry/HilbertSchmidtOperator.lean`),
@@ -338,7 +356,7 @@ turns an `L2` field of continuous functionals into an actual Hilbert--Schmidt op
 
 Both directions of the point-spectrum half of `(6)` are therefore available in explicit form.
 
-Still missing: the assembled Hilbert--Schmidt operator `(1)`, the **multiplicity clause** of
+Still missing: the **multiplicity clause** of
 `(6)` (the Grushin reduction to `diag(I, Xi_C)`; this clause is what
 `hedenmalm-prime-translation-rank-one-anomaly.md` cites for its Jordan length), the regularized
 determinant identity `(8)` --- no general `det_2` exists in the corpus or in mathlib, only the

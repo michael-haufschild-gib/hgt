@@ -133,4 +133,34 @@ theorem squarefree_det_rectangularSchurToeplitz [DecidableEq K] {n m : ℕ} (hn 
     Squarefree ((rectangularSchurToeplitz (schurVar K (n + m - 1)) n m).det) :=
   (irreducible_det_rectangularSchurToeplitz hn hm).squarefree
 
+/-! ## The actual generic point of the ramification divisor -/
+
+/-- The principal ideal defining a positive rectangular-Schur divisor is prime. -/
+theorem rectangularSchurDivisorIdeal_isPrime [DecidableEq K] {n' m' : ℕ}
+    (hn : 0 < n') (hm : 0 < m') :
+    (Ideal.span ({
+      (rectangularSchurToeplitz (schurVar K (n' + m' - 1 + 2))
+        (n' + 1) (m' + 1)).det} :
+      Set (MvPolynomial (Fin (n' + m' - 1 + 2)) K))).IsPrime := by
+  apply Ideal.isPrime_span_singleton_of_prime
+  rw [← UniqueFactorizationMonoid.irreducible_iff_prime]
+  simpa [show n' + m' - 1 + 2 = (n' + 1) + (m' + 1) - 1 by omega] using
+    (irreducible_det_rectangularSchurToeplitz (K := K)
+      (n := n' + 1) (m := m' + 1) (by omega) (by omega))
+
+/-- **The corner cofactor survives at the generic point of the Schur divisor.**  This is the exact
+ring-theoretic meaning of excluding the proper cofactor locus: its residue class in the divisor's
+coordinate ring is nonzero. -/
+theorem rectangularSchurCofactor_ne_zero_in_divisorRing [DecidableEq K]
+    {n' m' : ℕ} (hn : 0 < n') (hm : 0 < m') :
+    Ideal.Quotient.mk
+        (Ideal.span ({
+          (rectangularSchurToeplitz (schurVar K (n' + m' - 1 + 2))
+            (n' + 1) (m' + 1)).det} :
+          Set (MvPolynomial (Fin (n' + m' - 1 + 2)) K)))
+        ((rectangularSchurToeplitz (schurVar K (n' + m' - 1 + 2))
+          (n' + 1) (m' + 1)).submatrix (Fin.last m').succAbove Fin.succ).det ≠ 0 := by
+  rw [ne_eq, Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton]
+  exact not_dvd_det_submatrix_rectangularSchur hn hm
+
 end GaloisForLFunctions.HTGeometry

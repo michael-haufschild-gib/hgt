@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CDGATensorSingle
 import Mathlib.LinearAlgebra.TensorProduct.Associator
+import Mathlib.Data.Fintype.Prod
 
 /-!
 # The Koszul product on a bidegree of a tensor product of algebras
@@ -197,152 +198,130 @@ section Convolution
 
 variable (A : CDGAStructure R X) (B : CDGAStructure R Y)
 
-open scoped Classical in
-/-- One summand of the product of two elements of the tensor product: the Koszul product of the
-component of the first factor at `r` with the matching component of the second. -/
-noncomputable def tensorAlgTerm {a b n : ℕ} (h : a + b = n)
+/-- **A splitting of an output bidegree**: a bidegree of each factor whose two coordinates add up
+to the two coordinates of the output.  Indexing the product by splittings rather than by a bidegree
+of one factor keeps truncated subtraction out of every dependent position, which is what makes the
+three laws reindexing arguments rather than transport arguments. -/
+def Splitting (a b : ℕ) {n : ℕ} (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) : Type :=
+  {rs : {ab : ℕ × ℕ // ab.1 + ab.2 = a} × {ab : ℕ × ℕ // ab.1 + ab.2 = b} //
+    rs.1.1.1 + rs.2.1.1 = p.1.1 ∧ rs.1.1.2 + rs.2.1.2 = p.1.2}
+
+instance splittingDecidableEq (a b : ℕ) {n : ℕ} (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) :
+    DecidableEq (Splitting a b p) :=
+  inferInstanceAs (DecidableEq {_rs : _ × _ // _})
+
+instance splittingFintype (a b : ℕ) {n : ℕ}
+    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) : Fintype (Splitting a b p) :=
+  Subtype.fintype _
+
+/-- One summand of the product: the Koszul product of the two components a splitting names. -/
+noncomputable def splittingTerm {a b n : ℕ} {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}}
     (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b)
-    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) :
-    TensorProduct R (X p.1.1) (Y p.1.2) :=
-  if hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2 then
-    tensorPairₗ A B (show r.1.1 + (p.1.1 - r.1.1) = p.1.1 by omega)
-      (show r.1.2 + (p.1.2 - r.1.2) = p.1.2 by omega)
-      (f r)
-      (g ⟨(p.1.1 - r.1.1, p.1.2 - r.1.2), by
-        have h1 := r.2
-        have h2 := p.2
-        simp only at h1 h2 ⊢
-        omega⟩)
-  else 0
+    (rs : Splitting a b p) : TensorProduct R (X p.1.1) (Y p.1.2) :=
+  tensorPairₗ A B rs.2.1 rs.2.2 (f rs.1.1) (g rs.1.2)
 
-open scoped Classical in
-theorem tensorAlgTerm_add_left {a b n : ℕ} (h : a + b = n)
-    (f f' : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b)
-    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) :
-    tensorAlgTerm A B h (f + f') g p r
-      = tensorAlgTerm A B h f g p r + tensorAlgTerm A B h f' g p r := by
-  by_cases hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2
-  · simp only [tensorAlgTerm, dif_pos hr, tensorCarrier_add_apply, map_add,
-      LinearMap.add_apply]
-  · simp only [tensorAlgTerm, dif_neg hr, add_zero]
-
-open scoped Classical in
-theorem tensorAlgTerm_add_right {a b n : ℕ} (h : a + b = n)
-    (f : TensorCarrier (R := R) X Y a) (g g' : TensorCarrier (R := R) X Y b)
-    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) :
-    tensorAlgTerm A B h f (g + g') p r
-      = tensorAlgTerm A B h f g p r + tensorAlgTerm A B h f g' p r := by
-  by_cases hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2
-  · simp only [tensorAlgTerm, dif_pos hr, tensorCarrier_add_apply, map_add]
-  · simp only [tensorAlgTerm, dif_neg hr, add_zero]
-
-open scoped Classical in
-theorem tensorAlgTerm_smul_left {a b n : ℕ} (h : a + b = n) (c : R)
-    (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b)
-    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) :
-    tensorAlgTerm A B h (c • f) g p r = c • tensorAlgTerm A B h f g p r := by
-  by_cases hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2
-  · simp only [tensorAlgTerm, dif_pos hr, tensorCarrier_smul_apply, map_smul,
-      LinearMap.smul_apply]
-  · simp only [tensorAlgTerm, dif_neg hr, smul_zero]
-
-open scoped Classical in
-theorem tensorAlgTerm_smul_right {a b n : ℕ} (h : a + b = n) (c : R)
-    (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b)
-    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) :
-    tensorAlgTerm A B h f (c • g) p r = c • tensorAlgTerm A B h f g p r := by
-  by_cases hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2
-  · simp only [tensorAlgTerm, dif_pos hr, tensorCarrier_smul_apply, map_smul]
-  · simp only [tensorAlgTerm, dif_neg hr, smul_zero]
-
-/-- **The product of two elements of a tensor product of algebras**: the sum, over the ways of
-splitting the output bidegree, of the Koszul products of the matching components. -/
-noncomputable def tensorAlgMul {a b n : ℕ} (h : a + b = n)
+/-- **The product of two elements of a tensor product of algebras**: the sum over the splittings of
+each output bidegree. -/
+noncomputable def tensorAlgMul {a b n : ℕ} (_h : a + b = n)
     (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b) :
     TensorCarrier (R := R) X Y n :=
-  fun p => ∑ r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}, tensorAlgTerm A B h f g p r
+  fun p => ∑ rs : Splitting a b p, splittingTerm A B f g rs
 
 theorem tensorAlgMul_add_left {a b n : ℕ} (h : a + b = n)
     (f f' : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b) :
     tensorAlgMul A B h (f + f') g = tensorAlgMul A B h f g + tensorAlgMul A B h f' g := by
   funext p
-  show (∑ r, tensorAlgTerm A B h (f + f') g p r) = _
+  show (∑ rs : Splitting a b p, splittingTerm A B (f + f') g rs) = _
   rw [tensorCarrier_add_apply]
-  show (∑ r, tensorAlgTerm A B h (f + f') g p r)
-    = (∑ r, tensorAlgTerm A B h f g p r) + ∑ r, tensorAlgTerm A B h f' g p r
+  show (∑ rs : Splitting a b p, splittingTerm A B (f + f') g rs)
+    = (∑ rs : Splitting a b p, splittingTerm A B f g rs)
+      + ∑ rs : Splitting a b p, splittingTerm A B f' g rs
   rw [← Finset.sum_add_distrib]
-  exact Finset.sum_congr rfl fun r _ => tensorAlgTerm_add_left A B h f f' g p r
+  refine Finset.sum_congr rfl fun rs _ => ?_
+  show tensorPairₗ A B rs.2.1 rs.2.2 ((f + f') rs.1.1) (g rs.1.2) = _
+  rw [tensorCarrier_add_apply, map_add, LinearMap.add_apply]
+  rfl
 
 theorem tensorAlgMul_add_right {a b n : ℕ} (h : a + b = n)
     (f : TensorCarrier (R := R) X Y a) (g g' : TensorCarrier (R := R) X Y b) :
     tensorAlgMul A B h f (g + g') = tensorAlgMul A B h f g + tensorAlgMul A B h f g' := by
   funext p
-  show (∑ r, tensorAlgTerm A B h f (g + g') p r) = _
+  show (∑ rs : Splitting a b p, splittingTerm A B f (g + g') rs) = _
   rw [tensorCarrier_add_apply]
-  show (∑ r, tensorAlgTerm A B h f (g + g') p r)
-    = (∑ r, tensorAlgTerm A B h f g p r) + ∑ r, tensorAlgTerm A B h f g' p r
+  show (∑ rs : Splitting a b p, splittingTerm A B f (g + g') rs)
+    = (∑ rs : Splitting a b p, splittingTerm A B f g rs)
+      + ∑ rs : Splitting a b p, splittingTerm A B f g' rs
   rw [← Finset.sum_add_distrib]
-  exact Finset.sum_congr rfl fun r _ => tensorAlgTerm_add_right A B h f g g' p r
+  refine Finset.sum_congr rfl fun rs _ => ?_
+  show tensorPairₗ A B rs.2.1 rs.2.2 (f rs.1.1) ((g + g') rs.1.2) = _
+  rw [tensorCarrier_add_apply, map_add]
+  rfl
 
 theorem tensorAlgMul_smul_left {a b n : ℕ} (h : a + b = n) (c : R)
     (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b) :
     tensorAlgMul A B h (c • f) g = c • tensorAlgMul A B h f g := by
   funext p
-  show (∑ r, tensorAlgTerm A B h (c • f) g p r) = _
+  show (∑ rs : Splitting a b p, splittingTerm A B (c • f) g rs) = _
   rw [tensorCarrier_smul_apply]
-  show (∑ r, tensorAlgTerm A B h (c • f) g p r) = c • ∑ r, tensorAlgTerm A B h f g p r
+  show (∑ rs : Splitting a b p, splittingTerm A B (c • f) g rs)
+    = c • ∑ rs : Splitting a b p, splittingTerm A B f g rs
   rw [Finset.smul_sum]
-  exact Finset.sum_congr rfl fun r _ => tensorAlgTerm_smul_left A B h c f g p r
+  refine Finset.sum_congr rfl fun rs _ => ?_
+  show tensorPairₗ A B rs.2.1 rs.2.2 ((c • f) rs.1.1) (g rs.1.2) = _
+  rw [tensorCarrier_smul_apply, map_smul, LinearMap.smul_apply]
+  rfl
 
 theorem tensorAlgMul_smul_right {a b n : ℕ} (h : a + b = n) (c : R)
     (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b) :
     tensorAlgMul A B h f (c • g) = c • tensorAlgMul A B h f g := by
   funext p
-  show (∑ r, tensorAlgTerm A B h f (c • g) p r) = _
+  show (∑ rs : Splitting a b p, splittingTerm A B f (c • g) rs) = _
   rw [tensorCarrier_smul_apply]
-  show (∑ r, tensorAlgTerm A B h f (c • g) p r) = c • ∑ r, tensorAlgTerm A B h f g p r
+  show (∑ rs : Splitting a b p, splittingTerm A B f (c • g) rs)
+    = c • ∑ rs : Splitting a b p, splittingTerm A B f g rs
   rw [Finset.smul_sum]
-  exact Finset.sum_congr rfl fun r _ => tensorAlgTerm_smul_right A B h c f g p r
+  refine Finset.sum_congr rfl fun rs _ => ?_
+  show tensorPairₗ A B rs.2.1 rs.2.2 (f rs.1.1) ((c • g) rs.1.2) = _
+  rw [tensorCarrier_smul_apply, map_smul]
+  rfl
 
-open scoped Classical in
-/-- The complementary index: what is left of an output bidegree after removing a bidegree of the
-left factor. -/
-noncomputable def coIndex (b : ℕ) {n : ℕ} (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n})
-    {a : ℕ} (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) : {ab : ℕ × ℕ // ab.1 + ab.2 = b} :=
-  if hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2 ∧ a + b = n then
-    ⟨(p.1.1 - r.1.1, p.1.2 - r.1.2), by
-      have h1 : r.1.1 + r.1.2 = a := r.2
-      have h2 : p.1.1 + p.1.2 = n := p.2
-      obtain ⟨hr1, hr2, hab⟩ := hr
-      simp only
+/-- **The swap of a splitting**, an involution between the splittings for the two orders of the
+factors. -/
+def splittingSwap {a b n : ℕ} {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}} (rs : Splitting a b p) :
+    Splitting b a p :=
+  ⟨(rs.1.2, rs.1.1), by
+    refine ⟨?_, ?_⟩
+    · have h := rs.2.1
+      show rs.1.2.1.1 + rs.1.1.1.1 = p.1.1
+      omega
+    · have h := rs.2.2
+      show rs.1.2.1.2 + rs.1.1.1.2 = p.1.2
       omega⟩
-  else ⟨(0, b), by simp⟩
 
-open scoped Classical in
-theorem coIndex_apply {a b n : ℕ} (hab : a + b = n)
-    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a})
-    (hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2) :
-    (coIndex b p r).1 = (p.1.1 - r.1.1, p.1.2 - r.1.2) := by
-  rw [coIndex, dif_pos ⟨hr.1, hr.2, hab⟩]
+theorem splittingSwap_swap {a b n : ℕ} {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}}
+    (rs : Splitting a b p) : splittingSwap (splittingSwap rs) = rs := rfl
 
-open scoped Classical in
-theorem coIndex_fits {a b n : ℕ} (hab : a + b = n)
-    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a})
-    (hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2) :
-    (coIndex b p r).1.1 ≤ p.1.1 ∧ (coIndex b p r).1.2 ≤ p.1.2 := by
-  rw [coIndex_apply hab p r hr]
-  exact ⟨Nat.sub_le _ _, Nat.sub_le _ _⟩
-
-open scoped Classical in
-theorem coIndex_coIndex {a b n : ℕ} (hab : a + b = n) (hba : b + a = n)
-    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a})
-    (hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2) :
-    coIndex a p (coIndex b p r) = r := by
-  refine Subtype.ext ?_
-  rw [coIndex_apply hba p (coIndex b p r) (coIndex_fits hab p r hr), coIndex_apply hab p r hr]
-  have h1 : r.1.1 + r.1.2 = a := r.2
-  have h2 : p.1.1 + p.1.2 = n := p.2
-  refine Prod.ext ?_ ?_ <;> simp only <;> omega
+/-- **Graded commutativity of the product**: the swap of splittings matches the summands, and each
+matching pair differs by the sign of the two total degrees. -/
+theorem tensorAlgMul_comm {a b n : ℕ} (h : a + b = n) (h' : b + a = n)
+    (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b) :
+    tensorAlgMul A B h f g = ((-1 : R)) ^ (a * b) • tensorAlgMul A B h' g f := by
+  funext p
+  show (∑ rs : Splitting a b p, splittingTerm A B f g rs)
+    = ((-1 : R)) ^ (a * b) • ∑ sr : Splitting b a p, splittingTerm A B g f sr
+  rw [Finset.smul_sum]
+  refine Finset.sum_nbij' (fun rs => splittingSwap rs) (fun sr => splittingSwap sr)
+    (fun _ _ => Finset.mem_univ _) (fun _ _ => Finset.mem_univ _)
+    (fun _ _ => splittingSwap_swap _) (fun _ _ => splittingSwap_swap _) ?_
+  intro rs _
+  show tensorPairₗ A B rs.2.1 rs.2.2 (f rs.1.1) (g rs.1.2)
+    = ((-1 : R)) ^ (a * b) • tensorPairₗ A B (splittingSwap rs).2.1 (splittingSwap rs).2.2
+      (g rs.1.2) (f rs.1.1)
+  have hr : rs.1.1.1.1 + rs.1.1.1.2 = a := rs.1.1.2
+  have hs : rs.1.2.1.1 + rs.1.2.1.2 = b := rs.1.2.2
+  rw [tensorPair_comm A B rs.2.1 rs.2.2 (splittingSwap rs).2.1 (splittingSwap rs).2.2
+    (f rs.1.1) (g rs.1.2), hr, hs]
+  rfl
 
 end Convolution
 

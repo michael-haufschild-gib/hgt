@@ -201,6 +201,94 @@ theorem integrableOn_transport_integrand_Ioi_zero {F : ℝ → ℝ} {K M : ℝ} 
   rw [hsplit]
   exact (integrableOn_transport_integrand_Ioo_zero_one hK0 hK hmeas L).union hIci
 
+/-! ## The kernel has a finite first moment
+
+The pairing that produces the averaged trace converges because `∫_0^∞ s k(s) ds < ∞`.  Near the
+origin the simple pole is exactly cancelled by the factor `s`, leaving a bounded integrand; past
+`s = 1` the exponential decay wins against the linear factor.
+-/
+
+/-- Past the origin the linear factor is absorbed by half the exponential decay. -/
+theorem id_mul_gammaTransportKernel_le {s : ℝ} (hs : 1 ≤ s) :
+    s * gammaTransportKernel s ≤ 4 * Real.exp (-(s / 2)) := by
+  have hs0 : (0 : ℝ) < s := by linarith
+  have hker := gammaTransportKernel_le_two_mul_exp_neg hs
+  have hlin : s ≤ 2 * Real.exp (s / 2) := by
+    have h := Real.add_one_le_exp (s / 2)
+    linarith
+  have hkpos : 0 < gammaTransportKernel s := gammaTransportKernel_pos hs0
+  have hE : Real.exp (-s) = Real.exp (-(s / 2)) * Real.exp (-(s / 2)) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  have hinv : Real.exp (s / 2) * Real.exp (-(s / 2)) = 1 := by
+    rw [← Real.exp_add]
+    simp
+  have hepos : 0 < Real.exp (-(s / 2)) := Real.exp_pos _
+  have hkey : s * Real.exp (-(s / 2)) ≤ 2 := by
+    have hmul := mul_le_mul_of_nonneg_right hlin hepos.le
+    rwa [mul_assoc, hinv, mul_one] at hmul
+  calc s * gammaTransportKernel s
+      ≤ s * (2 * Real.exp (-s)) := mul_le_mul_of_nonneg_left hker hs0.le
+    _ = 2 * (s * Real.exp (-(s / 2))) * Real.exp (-(s / 2)) := by rw [hE]; ring
+    _ ≤ 2 * 2 * Real.exp (-(s / 2)) := by nlinarith [hkey, hepos]
+    _ = 4 * Real.exp (-(s / 2)) := by ring
+
+/-- **The first moment converges past the origin.** -/
+theorem integrableOn_id_mul_gammaTransportKernel_Ioi_one :
+    IntegrableOn (fun s => s * gammaTransportKernel s) (Ioi 1) := by
+  have hbase : IntegrableOn (fun s : ℝ => Real.exp (-(s / 2))) (Ioi 1) := by
+    have h := exp_neg_integrableOn_Ioi (1 : ℝ) (by norm_num : (0:ℝ) < 1/2)
+    refine h.congr_fun (fun s _ => ?_) measurableSet_Ioi
+    ring_nf
+  have hdom : IntegrableOn (fun s : ℝ => 4 * Real.exp (-(s / 2))) (Ioi 1) := hbase.const_mul 4
+  refine MeasureTheory.Integrable.mono' hdom
+    ((measurable_id.mul measurable_gammaTransportKernel)).aestronglyMeasurable ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with s hs
+  have hs1 : (1 : ℝ) ≤ s := le_of_lt hs
+  have hkpos : 0 < gammaTransportKernel s := gammaTransportKernel_pos (by linarith)
+  rw [Real.norm_eq_abs, abs_of_pos (by positivity)]
+  exact id_mul_gammaTransportKernel_le hs1
+
+/-- **The first moment converges at the origin**, where the factor `s` exactly cancels the pole. -/
+theorem integrableOn_id_mul_gammaTransportKernel_Ioo :
+    IntegrableOn (fun s => s * gammaTransportKernel s) (Ioo 0 1) := by
+  have hdom : IntegrableOn (fun _ : ℝ => (1 : ℝ)) (Ioo 0 1) := by
+    have : IsFiniteMeasure (volume.restrict (Ioo (0 : ℝ) 1)) := by
+      constructor
+      simp
+    exact integrable_const _
+  refine MeasureTheory.Integrable.mono' hdom
+    ((measurable_id.mul measurable_gammaTransportKernel)).aestronglyMeasurable ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioo] with s hs
+  have hspos : (0 : ℝ) < s := hs.1
+  have hkpos : 0 < gammaTransportKernel s := gammaTransportKernel_pos hspos
+  rw [Real.norm_eq_abs, abs_of_pos (by positivity)]
+  have hbd : s * gammaTransportKernel s ≤ s * (1 / s) :=
+    mul_le_mul_of_nonneg_left (gammaTransportKernel_le_inv hspos) hspos.le
+  calc s * gammaTransportKernel s ≤ s * (1 / s) := hbd
+    _ = 1 := by field_simp
+
+/-- **The kernel has a finite first moment.**  This is what makes the bounded-variation pairing
+that produces the averaged trace absolutely convergent. -/
+theorem integrableOn_id_mul_gammaTransportKernel_Ioi_zero :
+    IntegrableOn (fun s => s * gammaTransportKernel s) (Ioi 0) := by
+  have hsplit : Ioi (0 : ℝ) = Ioo 0 1 ∪ Ici 1 := by
+    ext x
+    simp only [mem_Ioi, mem_union, mem_Ioo, mem_Ici]
+    constructor
+    · intro hx
+      rcases lt_or_ge x 1 with h | h
+      · exact Or.inl ⟨hx, h⟩
+      · exact Or.inr h
+    · rintro (⟨h1, _⟩ | h1)
+      · exact h1
+      · linarith
+  have hIci : IntegrableOn (fun s => s * gammaTransportKernel s) (Ici 1) :=
+    integrableOn_id_mul_gammaTransportKernel_Ioi_one.congr_set_ae Ioi_ae_eq_Ici.symm
+  rw [hsplit]
+  exact integrableOn_id_mul_gammaTransportKernel_Ioo.union hIci
+
 /-- The Gamma transport operator. -/
 noncomputable def gammaTransport (F : ℝ → ℝ) (L : ℝ) : ℝ :=
   ∫ s in Ioi (0 : ℝ), secondDifference F L s * gammaTransportKernel s

@@ -105,13 +105,10 @@ reduced points pairwise distinct from ℤ-independence of the periods, then cont
 
 ## Next concrete steps
 
-1. **Local argument principle** — `laurentCoeff (logDeriv f) a (-1) = meromorphicOrderAt f a`.
-   Route: `meromorphicOrderAt_eq_int_iff` gives `f =ᶠ[𝓝[≠]a] (z-a)^n • g` with `g` analytic and
-   `g a ≠ 0`; `logDeriv` is a punctured-germ invariant; `logDeriv_mul` splits it into `n/(z-a)`
-   plus an analytic term; and `laurentCoeff (fun z => c/(z-a)) a (-1) = c` is the clearing exponent
-   `k = 2` computation.  mathlib has no residue at all, so this is the argument principle's local
-   form and is worth building for its own sake.
-2. With `1`, that card's **multiplicative divisor reciprocity** `D_τ(Y) = D_σ(Y)` is a direct
+1. **Local argument principle** — DONE.  `HTGeometry/MeromorphicLogDerivResidue.lean`,
+   `laurentCoeff_logDeriv_eq_order : laurentCoeff (logDeriv f) a (-1) = n` when
+   `meromorphicOrderAt f a = n`.  Wired, axiom-clean.
+2. Next: that card's **multiplicative divisor reciprocity** `D_τ(Y) = D_σ(Y)` is a direct
    corollary of `triptic_orbit_residue_reciprocity` applied to `F = logDeriv Y` at `ℓ = -1`.
 3. The augmentation law `(A2)` needs a residue theorem on a parallelogram; `PNTPlus` has only a
    simple-pole rectangle version.

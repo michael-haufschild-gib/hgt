@@ -137,3 +137,25 @@ PROVEN ROUTE (elementary, no Gamma integrals needed), for x ≥ 1:
    continuous on a compact.
 Do NOT try `k = H'` in closed form — the elementary primitive leaves a `+1/4 e^{x/2}θ̃` residue
 (this is the `(D² - 1/4)` of the reflection law), so it does not close.
+
+## Card 7 statement (1) is CLOSED and UNCONDITIONAL (2026-08-07)
+
+`formal/GaloisForLFunctions/RHTower/HedenmalmThetaKernelEnergy.lean` (wired, builds, axiom-clean).
+The route recorded above was executed exactly and works:
+`thetaEnvelope x = e^{9x/2} e^{-π e^{2x}}`; `thetaEnvelopeUpper/Lower`;
+`thetaCuspFullSource_le_envelope` (x ≥ 0), `thetaCuspFullSource_ge_envelope` (x > 0),
+`thetaEnvelope_le_shift`, `thetaCuspFullSource_le_shift`,
+`integral_Ioi_exp_neg_shift` (= 1/a, by improper FTC), `integral_Ioi_thetaCuspFullSource_le`,
+`one_sub_cdfFun`, `tailEnergyDensity_le` (≤ C e^{-2x} on [1,∞)), `tailEnergyDensity_neg`
+(evenness), `tailEnergyDensity_le_abs`, `integrable_tailEnergyDensity_thetaSource`,
+`hasFiniteKernelEnergy_thetaSource`, `isHilbertSchmidt_thetaKernelOperator`,
+`isCompactOperator_thetaKernelOperator`.
+
+Traps hit: `div_le_div` is now `div_le_div₀`; `IntegrableOn.congr_fun` needs the fully qualified
+name once the term came from `Integrable.const_mul`; `Tendsto.congr` goals carry `id t`, so `ring`
+fails — use `simp [sub_eq_add_neg]`; `field_simp` often closes the goal, so a trailing `ring`
+becomes "no goals".
+
+Card 7 remaining: (6) multiplicity clause (analytic Fredholm multiplicity + Grushin reduction to
+diag(I, Ξ_C)) — this is what card 4 (16) cites; (8) det₂ (absent from corpus AND mathlib);
+(9) tr(B²) = M⁻¹∫x²k.
