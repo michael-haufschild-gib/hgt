@@ -1262,3 +1262,35 @@ stage and `v` a primitive for its image, using `freeCellTwist` for the attachmen
 on cohomology, because a cocycle killed in the target is already visible at some stage and was made
 a coboundary at the next one; combined with `coverColimMap_cohomologyMap_surjective` that gives a
 semi-free resolution.
+
+## A structural obstruction in `towerMod`, and what it forces
+
+The killing half cannot be expressed with the tower machinery as it stands.  `towerCarrier` takes
+the family of cells `C : ℕ → ℕ → Type` as an *input*, so `towerMod` fixes every cell before the
+recursion starts; only the twist at stage `i` may depend on `towerMod … i`.  But the cell that kills
+the kernel at stage `i` has to be free on the cocycles *of that stage*, so its coefficient module
+depends on `towerMod … i` — which the signature forbids.
+
+The fix is a stage object carrying its own instances, so that carrier, structure and comparison are
+produced by a single recursion:
+
+```
+structure DGStage (A : CDGAStructure R X) (P : CDGAModuleStructure A M) where
+  carrier : ℕ → Type w
+  group   : ∀ n, AddCommGroup (carrier n)
+  smul    : ∀ n, Module R (carrier n)
+  str     : CDGAModuleStructure A carrier
+  cmp     : CDGAModuleHom str P
+```
+
+with a step which attaches the free cell on `{(c, v) | c ∈ Z(str), cmp c = d v}` using
+`freeCellTwist`, and extends `cmp` across it with `freeCellTwistedLift`.  The colimit is then taken
+over the sequence `step^[i] init`, and `relTensorMapLeft_freeTowerColim_isQuasiIsoFull` still
+applies because each stage is still a twisted extension by a free cell — the flatness theorem never
+used the fact that the cells were chosen in advance.
+
+Everything that step needs is now built and unconditional:
+`freeCellTwist`, `freeCellExtend`, `freeCellTwistedLift`, `twistedExtend`, `colimModuleLift`,
+`coverColimMap_cohomologyMap_surjective`.  What is left is the bundled recursion, the two
+convergence arguments (a cocycle of the colimit lives at a stage; a coboundary of the target is
+killed at the next one), and the assembly.

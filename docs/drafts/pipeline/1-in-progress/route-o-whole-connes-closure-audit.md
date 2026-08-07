@@ -212,7 +212,7 @@ whole-line jump identity and moving-mollifier extremal transfer. Every completed
 signed endpoint traces. The live E1 gate is now exactly `SUZUKI-TRACE-ZERO-H1`: prove that a
 completed zero mode with both traces zero belongs to `H1_0(-a,a)`. The exact homogeneous
 nonconormal escape has now been removed in
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-gamma-skew-frequency-flux-liouville.md`:
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-gamma-skew-frequency-flux-liouville.md`:
 the literal Gamma jump multiplier and bounded self-adjoint prime coupling are skew after
 frequency differentiation, forcing conservation of `|eta| ||Fhat(eta)||^2`; an `L2(dL)`
 homogeneous seam state is therefore zero.

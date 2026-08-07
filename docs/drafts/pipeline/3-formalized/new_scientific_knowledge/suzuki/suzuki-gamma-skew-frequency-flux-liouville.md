@@ -1,7 +1,7 @@
 # Exact Gamma-skew frequency flux excludes \(L^2\) homogeneous Suzuki seam coronas
 
 - **ID:** `suzuki-gamma-skew-frequency-flux-liouville`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper) / EXACT NONCONORMAL SEAM RIGIDITY
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
@@ -348,6 +348,7 @@ hasDerivAt_radialCurrent                          (9): d/dη [η ‖f η‖²] =
 radialCurrent_const_of_hasDerivAt                 constancy on an open preconnected set
 radialCurrent_const_Ioi, radialCurrent_const_Iio  (10): |η| ‖f η‖² is constant on each
                                                   half-line
+eq_zero_of_integrable_radialCurrent               (14): a square-integrable solution vanishes
 ```
 
 The cancellation is stated for an arbitrary bounded self-adjoint `S`, which is the card's own
@@ -355,10 +356,14 @@ point: the exact Gamma multiplier is not estimated, smoothed, or declared lower 
 survives in full and still contributes no radial mass, and the same holds for the literal prime-seam
 adjacency.
 
-The one remaining Lean item on this card is `(14)`, the `L²` Liouville conclusion: from `(10)`,
-`‖f η‖² = C/η` on the positive ray, and `∫_1^∞ C/η dη` diverges unless `C = 0`, so square
-integrability forces `f = 0` on each half-line.  The divergence is `integrableOn_Ioi_rpow_iff` at
-exponent `-1`.  Neither needs the Bochner Fourier transform,
+`(14)` is proved the way section 4 states it: the conserved current gives `‖f η‖² = C/η` on the
+positive ray, and `∫_1^∞ dη/η` diverges unless `C = 0`, so square integrability forces `f = 0`
+there; the negative ray is symmetric.  The divergence is `integrableOn_Ioi_rpow_iff` at exponent
+`-1`.
+
+Sections 3 and 4 are therefore unconditional in Lean.  What remains on this card is the transform
+passage from `(1)` to `(8)` — the Bochner Fourier transform, the logarithmic jump multiplier, and
+the completed Suzuki seam carrier — which is a separate claim, and the research gates below.  Neither needs the Bochner Fourier transform,
 the logarithmic jump multiplier, or the completed seam carrier; those are needed only for the
 separate transform passage from `(1)` to `(8)`.
 

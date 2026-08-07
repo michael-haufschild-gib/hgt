@@ -378,7 +378,7 @@ after zero extension, so moving mollifiers justify penalized extrema in the weak
 gate is now trace-zero `H1_0` regularity.
 
 The nonconormal homogeneous part of that gate has now been closed in
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-gamma-skew-frequency-flux-liouville.md`.
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-gamma-skew-frequency-flux-liouville.md`.
 For the literal whole-line remainder, the Fourier multiplier is
 
 ```text

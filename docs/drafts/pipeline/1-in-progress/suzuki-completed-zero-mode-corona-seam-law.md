@@ -614,7 +614,7 @@ solutions. Every completed zero mode therefore has both signed endpoint traces. 
 is trace-zero regularity: prove that vanishing traces force membership in `H1_0`.
 
 The exact remainder no longer leaves an arbitrary nonconormal homogeneous escape. In
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-gamma-skew-frequency-flux-liouville.md`,
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-gamma-skew-frequency-flux-liouville.md`,
 its full Gamma Fourier multiplier is retained. Differentiation turns that multiplier and every
 bounded self-adjoint prime-seam adjacency into a skew frequency generator, so
 
