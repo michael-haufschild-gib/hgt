@@ -1740,3 +1740,30 @@ remaining arithmetic worth attempting:
 
 So `δ` trades a linear cost in the window against an exponential gain off it — the classical Halász balance,
 now available in the corpus in a form where both terms are explicit.
+
+## The window measure with the frequency weight evaluated
+
+`RHTower/Sieve/HalaszWindowWeightBound.lean` (green, axiom-clean, wired).
+
+* `logSqWeight_ge_quarter` — `logSqWeight z = (log z)²/2 − 39 log z − 25 ≥ (log z)²/4` once `log z ≥ 160`; the
+  threshold is what absorbs the linear terms (`160²/4 = 6400 ≥ 39·160 + 25`);
+* `halaszWindowMeasureBound_le` —
+  `halaszWindowMeasureBound T z δ ≤ (2T log z/π + 1)·(4√2 πδ/log z)`.
+
+Multiplied by the trivial size, the window term is of order `T δ`, so the exceptional window costs a term
+**linear** in the distance level while off the window the series is damped by `e^{−δ²}`.  That is the Halász
+balance, and both sides of it are now explicit theorems of the corpus.
+
+Substituting into the dichotomy instance, the truncated integral is at most
+
+`(log N)·N·(8√2 Tδ + 4√2 πδ/log z)·(ℓ¹a)(ℓ¹b) + (log N)e^{−δ²}·N·√(sieve a)√(sieve b)`
+
+up to the constants carried by the theorems.  The `ℓ¹` masses of the two prime weights are `O((log N)²)` at `σ`
+near `1`, and the sieve sums are as computed earlier, so the balance to strike is
+
+`T δ (log N)^{O(1)}   against   e^{−δ²}(log N)^{O(1)}`,
+
+which is solved by `δ ≍ √(log log N)` provided `T` is at most a power of `log N` — and `T` only needs to be large
+enough for the tail `C/T` of the height split, where `C ≍ N^σ(N/H)²` forces `T ≳ (N/H)²`.  That is the last
+constraint to check: it wants `H` close to `N`, while the smoothing error wants `H` small, and whether the two
+are compatible is now a finite computation with all constants in hand.
