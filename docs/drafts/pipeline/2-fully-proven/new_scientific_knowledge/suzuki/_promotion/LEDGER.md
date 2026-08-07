@@ -3789,3 +3789,192 @@ it is false.
 
 This is the fourth time this session that reading the card's own wording corrected a plan derived
 from its equation numbers alone (cf. AV, BF, CR).
+
+## DE. The zeroExtend bridge is built
+
+`LogNormalEquationTrace.lean` is at 33 declarations, all `#print axioms` clean, no `sorry`.
+
+- `integral_Iic_zeroExtend` — `∫_{Iic L} zeroExtend F = ∫_{Ioc 0 L} F`.  The negative part
+  contributes nothing and the origin is null, so the full primitive of the zero extension collapses
+  to the positive part.  Proved with
+  `setIntegral_eq_of_subset_of_ae_sdiff_eq_zero` (note: the `_diff_` spelling is deprecated).
+- `integral_Iic_zeroExtend_eq_halfLinePrimitive` — **the bridge**: for `L ≥ 0`,
+
+      ∫_{Iic L} zeroExtend F = halfLinePrimitive F L.
+
+This is what makes DD's reformulation usable. The mollified-primitive identity `(16)` must be
+stated for `∫_{Iic ·} zeroExtend F` — where Fubini goes through cleanly, since the lower limit is
+`−∞` and shifting the variable does not move it — and the bridge then transports the conclusion
+back to `halfLinePrimitive`, which is what `logDirichlet` is defined in terms of.
+
+### Remaining on the mollification passage
+
+    (14) mollifier family                    BUILT   BumpMollifierFamily
+    (15) R_full commutes with convolution    not stated
+    (16) Y commutes with convolution         the Fubini step, now unblocked by DE
+    (17) the position defect                 BUILT   logDirichlet_mollify (caution in its docstring)
+
+`(16)` is now a direct Fubini computation on `∫ρ(t)(∫_{Iic (L−t)} f)dt` versus
+`∫_{Iic L}(∫ρ(t) f(x−t)dt)dx`, with no boundary mismatch. Once it is proved, the caution on
+`logDirichlet_mollify` can be removed and its `hY` discharged.
+
+## DF. The window translation — the reason `(16)` needs the zero extension
+
+`LogNormalEquationTrace.lean` is at 34 declarations, all `#print axioms` clean, no `sorry`.
+
+- `setIntegral_Iic_sub_right` — `∫_{Iic L} f(x−t) dx = ∫_{Iic (L−t)} f`.
+
+  Proved by passing to indicators and using `integral_sub_right_eq_self` on the whole line, then
+  matching the two indicators pointwise (`x ∈ Iic L ↔ x − t ∈ Iic (L−t)`).
+
+**This lemma is the precise reason DD's correction was needed.** The analogous statement for
+`Ioc 0 L` is false: translation moves the lower limit `0`, but leaves `−∞` fixed. So the mollified
+primitive identity `(16)` holds for the full primitive of the zero extension and not for the
+half-line primitive — exactly as the card says and as section DD recorded.
+
+### `(16)` is now a two-step proof
+
+    ∫ ρ(t) (∫_{Iic (L−t)} f) dt                             the mollified primitive
+      = ∫ ρ(t) (∫_{Iic L} f(x−t) dx) dt                     setIntegral_Iic_sub_right   ← DF
+      = ∫_{Iic L} (∫ ρ(t) f(x−t) dt) dx                     Fubini / integral_integral_swap
+      = ∫_{Iic L} (mollify ρ f) x                           definition
+
+Only the Fubini interchange remains, with product integrability from `ρ` continuous of compact
+support and `f` bounded measurable. Then the bridge (DE) returns the statement to
+`halfLinePrimitive`, `hY` in `logDirichlet_mollify` is discharged, and its docstring caution comes
+off.
+
+## DG. `(16)`'s Fubini needs a support truncation — `f` is not integrable
+
+Setting up the interchange for `(16)` exposes an obstruction that must be handled, not assumed
+away.
+
+`integral_integral_swap` needs the product integrand integrable on `volume ×ˢ volume.restrict
+(Iic L)`. The natural bound is `|ρ(t) f(x−t)| ≤ M |ρ(t)|`, but `Iic L` has **infinite measure**, so
+that bound integrates to `∞`. The alternative — `∫_{Iic L}|f(x−t)|dx ≤ ‖f‖₁` — needs `f ∈ L¹`, and
+**the card's profile is not**: `√L F(L)` bounded gives `|F| ≲ L^{−1/2}`, whose integral over
+`(0,∞)` diverges.
+
+**The resolution is the support, not an integrability hypothesis.** With `f = zeroExtend F`, `f`
+vanishes below `0`, and with `ρ` supported in `[−ε, ε]` the convolution `ρ * f` vanishes below
+`−ε`. So
+
+    ∫_{Iic L} (ρ * f) = ∫_{Icc (−ε) L} (ρ * f)     and     ∫_{Iic (L−t)} f = ∫_{Icc 0 (L−t)} f,
+
+both over **bounded** windows, where the product integrand is integrable and Fubini applies.
+
+So `(16)` is:
+
+    1. truncate both sides to bounded windows using the supports        ← not yet built
+    2. Fubini on the bounded window                                      ← standard once truncated
+    3. `setIntegral_Iic_sub_right` (DF) to align the shifted windows     ← BUILT
+    4. `integral_Iic_zeroExtend_eq_halfLinePrimitive` (DE) to return     ← BUILT
+
+Step 1 is the remaining piece. Note this is a *third* consequence of the same fact — that the
+half-line geometry is what makes this passage delicate — after DD (the false identity) and DF (the
+translation). Do not attempt Fubini on `Iic` directly; truncate first.
+
+## DH. The support truncation is built — step 1 of `(16)`
+
+`LogNormalEquationTrace.lean` is at 35 declarations, all `#print axioms` clean, no `sorry`.
+
+- `setIntegral_Iic_eq_Icc_of_vanishing` — a function vanishing below `c` integrates over `Iic L`
+  exactly as over `Icc c L`.  No hypothesis `c ≤ L` is needed: if `L < c` both sides are zero, so
+  the binder was dropped.
+
+This is step 1 of DG's four, and the step that makes `(16)` provable despite the profile not being
+integrable: it replaces the infinite-measure window `Iic L` by the bounded `Icc c L`, on which the
+product integrand *is* integrable and Fubini applies.
+
+### `(16)` — status of the four steps
+
+    1. truncate to bounded windows      setIntegral_Iic_eq_Icc_of_vanishing      BUILT  (DH)
+    2. Fubini on the bounded window      integral_integral_swap                   remaining
+    3. align the shifted windows         setIntegral_Iic_sub_right                BUILT  (DF)
+    4. return to halfLinePrimitive       integral_Iic_zeroExtend_eq_…             BUILT  (DE)
+
+Three of four built. Step 2 now has a bounded domain in the `x` variable and a compactly supported
+`ρ` in the `t` variable, so the product integrand is dominated by `M·|ρ(t)|·1_{Icc c L}(x)`, which
+is integrable on the product — the obstruction of DG is removed.
+
+## DI. Step 2 is built — all four steps of `(16)` now exist
+
+`LogNormalEquationTrace.lean` is at 36 declarations, all `#print axioms` clean, no `sorry`.
+
+- `integral_mollify_swap` — **the Fubini interchange on a bounded window**:
+
+      ∫ t, ρ(t) · (∫_{Icc c L} f(x−t) dx)  =  ∫_{Icc c L} (∫ t, ρ(t) f(x−t) dt) dx.
+
+  The product integrand is dominated by `M ‖ρ(t)‖`, which is integrable on the product because the
+  restricted measure is finite (`Integrable.comp_fst`). That domination is only available because
+  DH truncated the window — on `Iic L` it fails, as DG recorded.
+
+### `(16)` — all four steps built
+
+    1. truncate to bounded windows      setIntegral_Iic_eq_Icc_of_vanishing      DH
+    2. Fubini on the bounded window      integral_mollify_swap                    DI
+    3. align the shifted windows         setIntegral_Iic_sub_right                DF
+    4. return to halfLinePrimitive       integral_Iic_zeroExtend_eq_…             DE
+
+What remains is composing them into the statement `ρ * Y_f = Y_{ρ*f}` for `f = zeroExtend F`, then
+using it to discharge `hY` in `logDirichlet_mollify` and remove that lemma's docstring caution.
+
+Trap: `Integrable.comp_fst` is the lemma that lifts a first-factor function to the product when the
+second factor is finite; building `HasFiniteIntegral` by hand through `lintegral_mono` leaves an
+unsynthesizable metavariable for the majorant.
+
+## DJ. `(16)`'s composition — the exact proof, and the one subtlety in it
+
+All four components are built (DE, DF, DH, DI). The composition is:
+
+    goal:  mollify ρ (fun L => ∫_{Iic L} f) L₀  =  ∫_{Iic L₀} (mollify ρ f)
+
+    RHS = ∫_{Icc (−ε) L₀} (mollify ρ f)            DH, since mollify ρ f vanishes below −ε
+        = ∫_{Icc (−ε) L₀} ∫ t, ρ(t) f(x−t) dt      definition of mollify
+        = ∫ t, ρ(t) (∫_{Icc (−ε) L₀} f(x−t) dx)    DI (reversed)
+        = ∫ t, ρ(t) (∫_{Iic L₀} f(x−t) dx)         DH again, per t, a.e.
+        = ∫ t, ρ(t) (∫_{Iic (L₀−t)} f)             DF
+        = LHS                                       definition of mollify
+
+**The subtlety.** The truncation constant in the fourth line depends on `t`: `f(x−t)` vanishes for
+`x < t`, not for `x < −ε`. It is uniform only because `ρ(t) = 0` for `|t| > ε`, so the integrand is
+zero outside `t ∈ [−ε, ε]`, where `t ≥ −ε` gives the uniform bound. That line must therefore be an
+`integral_congr_ae` over `t` conditioned on `|t| ≤ ε`, **not** a pointwise rewrite — the identity is
+false for `|t| > ε` and true only because `ρ` kills those `t`.
+
+Same for the first line: `mollify ρ f` vanishes below `−ε` because `f` vanishes below `0` and `ρ`
+is supported in `[−ε, ε]`; that needs its own small lemma
+(`∀ x < −ε, mollify ρ f x = 0`), provable by `setIntegral_eq_zero_of_forall_eq_zero` on the
+integrand.
+
+Once composed: discharge `hY` in `logDirichlet_mollify` via the bridge (DE), delete its docstring
+caution, and `(16)` is closed.
+
+## DK. `(16)` IS PROVED
+
+`LogNormalEquationTrace.lean` is at 38 declarations, all `#print axioms` clean, no `sorry`.
+
+- `mollify_eq_zero_of_lt` — the mollification of a profile vanishing below `0` by a mollifier
+  supported in `[−ε,ε]` vanishes below `−ε`.  This is what makes the truncation constant uniform.
+- `mollify_fullPrimitive` — **the card's `(16)`**:
+
+      mollify ρ (fun L => ∫_{Iic L} f) L₀ = ∫_{Iic L₀} (mollify ρ f)
+
+  for `ρ` continuous, compactly supported in `[−ε,ε]`, and `f` bounded measurable vanishing below
+  `0`.
+
+The proof is exactly DJ's plan: truncate both sides to `Icc (−ε) L₀` (DH + the support lemma),
+Fubini there (DI), untruncate per `t` — as an `integral_congr_ae` conditioned on `|t| ≤ ε`, since
+the identity is false for larger `t` and holds only because `ρ` kills them — and translate the
+window (DF).
+
+### Mollification passage status
+
+    (14) mollifier family                    BUILT   BumpMollifierFamily
+    (15) R_full commutes with convolution    not stated
+    (16) Y commutes with convolution         BUILT   mollify_fullPrimitive   ← DK
+    (17) the position defect                 BUILT   logDirichlet_mollify
+
+`(17)`'s `hY` can now be discharged for the zero-extended profile: combine `mollify_fullPrimitive`
+with the bridge `integral_Iic_zeroExtend_eq_halfLinePrimitive` (DE).  Only `(15)` — translation
+invariance of the transport operator — remains unstated.

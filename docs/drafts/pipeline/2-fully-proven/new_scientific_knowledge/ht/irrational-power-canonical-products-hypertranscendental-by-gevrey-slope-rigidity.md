@@ -420,3 +420,35 @@ only needed up to a geometric factor.
 
 Remaining on this card: the Barnes expansion `(4)`--`(6)` producing the closed modulus `(8)`, and
 the Sibuya--Ramis exact-order theorem of §5.
+
+## Lean progress — §3 is now unconditional: `(8)` is derived, not assumed
+
+The closed modulus `(8)` was a hypothesis of the §3 theorems.  It is now a theorem, derived from the
+functional equation of `ζ` (which mathlib owns) together with `cos(π/2 + x) = -sin x`.  No
+asymptotic analysis enters.
+
+`GaloisForLFunctions/HTGeometry/ZetaTailClosedModulus.lean` (wired, axiom-clean):
+
+    norm_riemannZeta_one_sub_ofReal   the functional equation in modulus form on the real axis
+    norm_riemannZeta_neg_eq           **`(8)`**:
+                                        `|ζ(-sk)| = 2|sin(π s k/2)| Γ(1+sk) |ζ(1+sk)| / (2π)^{1+sk}`
+    riemannZeta_ofReal_eq_tsum,
+      norm_riemannZeta_ofReal_eq_tsum,
+      summable_zeta_terms
+    one_le_norm_riemannZeta_ofReal    `1 ≤ ζ(σ)` for real `σ > 1`
+    norm_riemannZeta_ofReal_le        `ζ` is antitone on the real axis above `1`
+    zetaTailModulus, zetaTailFactor   the tail modulus and its zeta factor, normalized at `k = 0`
+    zetaTailModulus_eq                the closed modulus, valid at every index
+    gevrey_exact_order_zetaTail :
+      **for every irrational `s > 0`, with no further hypothesis,**
+
+        ∃ C A > 0, ∀ k, |ζ(-sk)| ≤ C A^k (k!)^s                          (9)
+        ∃ c a > 0, {k | c a^k (k!)^s ≤ |ζ(-sk)|} is infinite              (11)
+
+So `(9)`, `(11)` and `(12)` are formal with no hypotheses at all: the exact Gevrey order of the
+irrational-power zeta tail is `s`.  The index `k = 0` is normalized away, as the card's tail
+`R̂_s(t) = ∑_{k ≥ 1} b_k t^k` starts at `k = 1`.
+
+Sections 1 and 3 of this card are therefore fully formal.  What remains is `(4)`–`(6)`: the
+identification of those coefficients as the asymptotic expansion of `D^m log W_s`, and the
+Sibuya--Ramis exact-order theorem of §5.

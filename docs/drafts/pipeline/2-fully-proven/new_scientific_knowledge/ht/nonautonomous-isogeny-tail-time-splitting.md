@@ -1415,3 +1415,19 @@ So for the compact signatures the deck-group algebra is done; what those four si
 is only the uniformizing coordinate — a doubly periodic meromorphic function with prescribed
 lattice.  The multiplicative analogue (`LogarithmicDerivativeFixedField.lean`) had no counterpart in
 the tree, which is why it had to be built.
+
+## Correction — the compact signatures no longer need a uniformization input
+
+The note above saying the compact signatures "still need the uniformizing coordinate" is stale.
+`GaloisForLFunctions/HTGeometry/EuclideanOrbifoldCurrents.lean` (wired, axiom-clean) gives the
+transported current of every compact parabolic signature as an exact identity in an arbitrary
+differential field, from the Weierstrass relation and the chain rule alone:
+
+    weierstrass_square_current    `(2,2,2,2)`, `y = ℘`:  `(y′)² = (4y³ - g₂y - g₃)(u′)²`
+    weierstrass_cubic_current     `(3,3,3)`,  `y = ℘′`: `2(y′)³ = 27(y² + g₃)²(u′)³`
+    weierstrass_quartic_current   `(2,4,4)`,  `y = ℘²`: `(y′)⁴ = 16y³(4y - g₂)²(u′)⁴`
+    weierstrass_sextic_current    `(2,3,6)`,  `y = ℘³`: `(y′)⁶ = 729y⁴(4y - g₃)³(u′)⁶`
+
+The invariant coordinate of each signature is an explicit function of `℘` whose degree matches the
+order of the rotation in the deck group.  No existence theorem for a doubly periodic function is
+needed: the identity is algebraic in the Weierstrass relation.

@@ -366,3 +366,21 @@ projective/trace-class/determinant consequences.
   near-coincidence forced by the old shift window and materially improves the Gram-conditioning
   route.
 - Both modules pass foreground `lake env lean <file>` checks and are wired into the RHTower umbrella.
+
+### 2026-08-07: conditioned Kaiser packet energy and Rayleigh clock
+
+- Added `BandKaiserTransformSeparation.lean`.  Proved the sharp central lower scale
+  `exp(c)/(2*c) <= T_c(0)` and the middle-band separation estimate
+  `T_c(q) <= 8*exp(-q^2/(2*c))*T_c(0)`.
+- Added `BandKaiserPacketConditioning.lean` on the explicit angular grid
+  `q_j=(j+1)*sqrt(c*sqrt(c))`.  Proved exact product-to-sum readings, diagonal lower bound, and
+  off-diagonal suppression by `8*exp(-sqrt(c)/2)` relative to central scale.
+- Added `BandKaiserPacketEnergy.lean`.  A maximal-coefficient diagonal-dominance argument and
+  integral Cauchy--Schwarz give the uniform whole-span bound
+  `(sum b_j^2)*exp(c)^2 <= 128*m*c^2*physicalEnergy`.
+- Added `BandKaiserPacketRayleigh.lean`.  Specialized the exact general shifted-tail envelope to
+  the conditioned grid and proved
+  `exp(c)^2*spectralTail <= 128*m*c^2*edgeEnvelope*physicalEnergy` for every coefficient vector.
+- All four modules pass foreground `lake env lean <file>` checks.  Remaining Kaiser gate is to prove
+  the explicit edge envelope is subexponential, which turns this quantitative inequality into the
+  logarithmic leakage rate `-2`.

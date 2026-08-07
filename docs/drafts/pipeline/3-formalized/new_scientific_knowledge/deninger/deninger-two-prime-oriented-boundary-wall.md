@@ -1,13 +1,13 @@
 # Deninger two-prime oriented boundary wall
 
 - **ID:** `deninger-two-prime-oriented-boundary-wall`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / exact Route-L frontier reduction
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY-PROVISIONAL] [NOT RH]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY-PROVISIONAL] [NOT RH]`
 - **Source:** `DeningerCalderonWittOrientedSource`,
   `DeningerOneSidedFramedMateCurvatureTransgression`, and the current Route-L
   source-null-homology wall
-- **Lean target:**
+- **Lean:**
   `formal/GaloisForLFunctions/RHTower/DeningerCalderonWittTwoPrimeOrientationBoundaryWall.lean`
 
 ## Statement
@@ -203,6 +203,14 @@ injectivity argument or the parent exact-sequence algebra.
 - [x] exact statement and dependency-closed proof
 - [x] RH consumer and circularity boundary stated
 - [x] explicit off-line hyperbolic countermodel to bare duality
-- [ ] unconditional Lean certificate
-- [ ] targeted axiom/lint/module audit
+- [x] unconditional Lean certificate
+- [x] targeted axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
+- [x] module wired into `RHTower.lean`
+- [ ] clean repository-wide lint (currently blocked by unrelated concurrently added unreachable modules)
 
+## Log
+
+- 2026-08-07 -- Proved paper theorem, formalized canonical two-prime Green boundary,
+  prime-indexed physical reporter, exact gain readout, critical-line equivalence, and
+  nonzero-calibration stability. Direct `lake env lean` passed. Generated module `.olean`
+  after building only missing `ChebyshevPsiPowerLogPNT.olean`; no full build was run.

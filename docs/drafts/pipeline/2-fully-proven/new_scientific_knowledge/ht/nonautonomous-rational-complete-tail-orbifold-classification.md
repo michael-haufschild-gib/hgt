@@ -745,3 +745,52 @@ cone-point divisor of the signature.
 With this, every parabolic signature of the classification has its transported current formalized:
 `(∞,∞)` by `iInter_powAdjoin_eq_logDerivField`, `(2,2,∞)` by `logDeriv_sq_eq_chebyshev_current`, and
 the four compact ones here.
+
+## Lean progress — the two expansion steps of the proof
+
+`GaloisForLFunctions/HTGeometry/ExpandingProtocolVanishing.lean` (wired, axiom-clean):
+
+    eq_zero_of_expanding_degree_law     §1: there is no nonconstant order-zero tail — a degree
+                                        obeying `deg a₀ = deg P_n · deg a_n` with `deg P_n ≥ 2^n`
+                                        at every depth is zero
+    eventually_eq_zero_of_expanding_bound
+                                        §2: transient zeros disappear — multiplicities obeying
+                                        `2^n · Z_n ≤ Z_0` vanish from some depth on
+
+Both are the arithmetic core of their sections: a fixed natural number cannot dominate `2^n` for
+every `n`.  Every map of the protocol has degree at least two, so the composite degree is at least
+`2^n`, and that is the only property used.
+
+## Lean progress — the symbol comparison of §1
+
+`GaloisForLFunctions/HTGeometry/VerticalSymbolTransformation.lean` (wired, axiom-clean):
+
+    leadingCoeff_comp_scaling      the leading coefficient after `v ↦ a v` is `a^{deg}` times the
+                                   original
+    symbolDegree, symbolCoeff      the vertical symbol of a coprime pair: an integer degree and a
+                                   leading coefficient
+    symbolDegree_comp_scaling      the degree is invariant under the fibrewise scaling
+    symbolCoeff_comp_scaling       **`q ↦ a^k q`**: the leading coefficient transforms as a
+                                   `k`-differential, with `k` its own symbol degree
+    symbol_comparison              the two conclusions together
+    symbolDegree_const_of_protocol **`k` is phase-independent** along the whole protocol
+
+This is the mechanism of "comparing symbols in `(3)` gives `(1)`": the exponent of the fibre
+coordinate at vertical infinity is preserved by every phase map, so a single `k` serves all phases,
+and the leading coefficients then satisfy exactly the pullback law `R_i^* ω_{i+1} = ω_i` of a
+`k`-differential.  Only the two properties of the substitution are used — that it is a scaling of
+the fibre coordinate by a nonzero factor.
+
+## Lean progress — §3's quantization step `(8)`
+
+Added to `ExpandingProtocolVanishing.lean` (wired, axiom-clean):
+
+    weight_quantization    once the prefix degree exceeds the finite exceptional bound `B`, a
+                           shifted tensor order is `0` or a positive divisor of `ℓ`
+
+Both alternatives of the card's argument reduce to the same inequality `deg(P)·|a| ≤ B` with
+`|a| ≥ 1`, which contradicts `B < deg(P)`.  With `(8)` formal, and the bridge from pole orders to
+the parabolic condition already formal (`parabolicSphereSignature_of_pole_orders`, together with
+`parabolic_triple_classification` and `hyperbolic_signature_gap`), §3 of the proof is complete:
+late weights quantize, the pole orders sum to `2ℓ`, and the resulting signature is one of the six
+Euclidean ones.

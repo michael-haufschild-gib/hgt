@@ -391,3 +391,39 @@ B** on `ℂ^n` and `(ℂ^×)^n` and for free analytic sheaves of finite rank, an
 and filtered passage of a cell filtration.  The single remaining geometric object is the logarithmic
 de Rham complex with its Poincaré residue, as a morphism of sheaves; it has its own card,
 `docs/drafts/pipeline/1-in-progress/log-de-rham-residue-sheaf.md`.
+
+### The logarithmic de Rham complex and its residue, built — 2026-08-07
+
+`formal/GaloisForLFunctions/HTGeometry/LogDeRhamAlgebra.lean`.  Axiom audit for all seventeen
+declarations: `propext, Classical.choice, Quot.sound` or less.
+
+The remaining geometric obstruction named above was the logarithmic de Rham complex with its
+Poincaré residue.  Its algebraic content is now built, and it needed no new construction, only the
+right identification: "every logarithmic form is uniquely `α + (dz/z) ∧ β`" says the logarithmic
+algebra is the ordinary one with **one closed generator of degree one and vanishing square
+adjoined**, which is the tensor product with the exterior algebra on a free module of rank one —
+both halves already in the corpus.
+
+- `exteriorPower_rank_one_eq_bot`, `exteriorPower_rank_one_subsingleton`,
+  `tensorProduct_eq_zero_of_subsingleton_right`, `logCarrier_high_eq_zero` — **a logarithmic form has
+  exactly two nonzero bidegrees**, because a wedge of two elements of a rank-one module is a multiple
+  of the square of the class of `1`, which the exterior algebra kills.  This is the unique-expression
+  statement `(7)`.
+- `logCDGA`, `logCDGAUnit`, `logInclusion`, `logDlog` — **the logarithmic de Rham algebra** `(6)`, as
+  a commutative differential graded algebra, with its unit, the inclusion of the ordinary forms, and
+  the class of `d log z`.
+- `exteriorιₗ`, `exteriorOneToBase`, `exteriorOneEquiv`, `exteriorZeroOne`, `exteriorZeroToBase`,
+  `exteriorZero_eq_smul_one`, `exteriorZeroEquiv` — the identifications `⋀^1 M ≅ M` and `⋀^0 M ≅ R`.
+  mathlib has the alternating-map correspondence but neither of these instances of it.
+- `logResidue`, `logResidue_inclusion`, `logResidue_surjective` — **the Poincaré residue**: the
+  component at the bidegree carrying the generator.  An ordinary form has no residue, and every form
+  of the divisor is a residue.
+- `logResidueEquiv`, `logZeroEquiv`, `logZeroEquiv_symm`, `logResidue_eq_zero_iff` — **exactness of
+  the residue sequence** `0 → Ω^• → Ω^•(log D) → Ω^{•-1} → 0`.
+- `logResidueEquiv_map_d`, `logResidue_d` — **the residue is a morphism of complexes**, with no sign:
+  the logarithmic differential has no component differentiating the adjoined generator because that
+  generator is closed.
+
+What is left of the geometric side is only the passage from this algebra to a sheaf on the chart,
+which the corpus's local-predicate machinery supports; the card's own card for the object is
+`docs/drafts/pipeline/1-in-progress/log-de-rham-residue-sheaf.md`.

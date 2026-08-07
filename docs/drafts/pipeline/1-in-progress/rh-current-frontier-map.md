@@ -4352,6 +4352,39 @@ identifies this model with the arithmetic Deninger completion or transports its 
 flow, cup product, or spectrum, so this closes generic angular topology, not arithmetic
 comparison or spectral realization.
 
+**7 August 2026 finite-boundary reorientation.** The phrase “source-null-homology” no longer
+denotes a missing source object, a missing homology theory, or an infinite-prime construction.
+`DeningerCalderonWittTwoPrimeOrientationBoundaryWall.lean` constructs the normalized global
+prime-orientation cochains `j_2(1),j_3(1)`, their canonical top Green witness
+
+```text
+w_23 = H(j_2(1)-j_3(1)),        D w_23 = j_2(1)-j_3(1),
+```
+
+and the finite-support prime-indexed physical reporter `L_s`. Its exact value is
+
+```text
+L_s(D w_23) = deningerHalfDensityMateGain(2,s)
+              - deningerHalfDensityMateGain(3,s),
+L_s(D w_23)=0  iff  Re(s)=1/2.
+```
+
+Multiplication by the nonzero first Xi jet preserves this equivalence. Hence full completed
+Green--BV descent is stronger than necessary: Route L closes once the actual singular
+Gamma/co-Poisson transport is proved boundary-compatible on this one fixed, pre-divisor,
+prime-2/prime-3 Green boundary while retaining both prime labels and the leading Xi jet. This
+sharpened core is
+`XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`, a concrete subproblem of
+`XI_BV_GREEN_STOKES_STRICT_DESCENT`. Source exactness alone does not prove it; the physical
+reporter is boundary-blind on `w_23` exactly at the desired critical-line endpoint.
+
+Adjacent-grade Hellinger--Beta coface, finite telescoping, raw completed-norm Xi landing, and
+multiplicity retention are already constructed. One-marginal closed graph descent cannot finish:
+a nonzero conserved endpoint charge appears as a vertical element in graph closure, so graph is
+not closed. Likewise global principal-parts object `O[Xi^{-1}]/O` is not an ordinary rigid
+carrier; only finite Cartier layers are perfect. Neither completion language nor generic
+Ind/Pro/Tate duality changes finite two-prime obstruction above.
+
 ### Route M — Gamma–Jacobi singular reader [FORMALIZED — TERMINALIZED]
 
 **Closed predecessor: cyclic scalar reader.** Route M's own completed Euler clock and exact
