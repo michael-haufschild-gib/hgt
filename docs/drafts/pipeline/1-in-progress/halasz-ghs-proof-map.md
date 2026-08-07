@@ -225,3 +225,30 @@ powers at all: group the primes by the **dyadic size of the quotient**,
 an interval of integers with integer endpoints. On `B_j` one has `log⌊N/p⌋ ≥ j log 2`, while
 `MertensBlock` gives the block mass `log⌊N/2^j⌋ − log⌊N/2^{j+1}⌋ + O(1) = log 2 + O(1)`. So block `j`
 contributes `O(1/j)`, and the harmonic sum over `j ≤ log₂ N` is `O(log log N)`.
+
+## Ninth brick: the `log log` estimate, and step 2 is complete
+
+`RHTower/Sieve/PrimeLogQuotientSum.lean` (green, axiom-clean, wired):
+
+`∑_{p ≤ N, ⌊N/p⌋ ≥ 2} (log p)/(p · log⌊N/p⌋) ≤ ((log 3 + 2C)/log 2)·(1 + log⌊log₂ N⌋)`,
+`C = (log 4 + 4) + (8 + mertensTail)`.
+
+That is `O(log log N)`, which is what step 2's error budget needs, and the proof uses **no real powers at
+all**:
+
+* `two_pow_le_div_iff` — `2^j ≤ ⌊N/p⌋ ↔ p ≤ ⌊N/2^j⌋`, so the dyadic fibre of the quotient is an
+  interval of integers with integer endpoints;
+* `logQuotient_fiber_subset` — `{p : Nat.log 2 ⌊N/p⌋ = j} ⊆ (⌊N/2^{j+1}⌋, ⌊N/2^j⌋]`;
+* `div_two_pow_le` — the endpoints are within a factor `3`: `⌊N/2^j⌋ ≤ 2⌊N/2^{j+1}⌋ + 1`;
+* `sum_logQuotientFiber_prime_log_div_le` — hence each fibre's Mertens mass is `≤ log 3 + 2C`, the top
+  fibre being empty of primes;
+* `sum_prime_log_div_inv_log_quotient_le` — on the fibre `log⌊N/p⌋ ≥ j log 2`, so fibre `j` contributes
+  `O(1/j)`, and `Finset.sum_fiberwise_of_maps_to` plus the corpus's own
+  `sum_Icc_one_div_le_one_add_log` turn the total into a harmonic sum over `j ≤ log₂ N`.
+
+**Step 2 of the GHS skeleton is now complete**: `norm_sum_primes_sub_double_average_le` reduces its error
+to exactly this sum (after `⌊N/p⌋ ≤ N/p`), and this card's estimate bounds it by `O(N log log N)`, i.e.
+`O(N log log N/log N)` after the division by `log N` — GHS's error term.
+
+Remaining: step 3 (the dyadic partition of the prime range, now pure bookkeeping over `MertensBlock`) and
+step 4's outer Perron passage.

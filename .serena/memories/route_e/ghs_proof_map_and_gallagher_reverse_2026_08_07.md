@@ -79,3 +79,18 @@ kernel Lorentzian by `exists_bound_mellin_smoothWeight_line`) is the candidate, 
 
 Remaining in the GHS skeleton: steps 2-3 (second recursion application + dyadic prime partition, both
 Mertens bookkeeping) and the outer Perron passage for `S_k(x)`.
+
+## Update 4: steps 2 and its arithmetic are done
+
+- `RHTower/Sieve/MultiplicativePrimeAverage.lean` — the averaged recursion (divide the prime-only
+  recursion by `log N`) and its second application, giving the double prime average (triple convolution)
+  with error `∑_{p ∈ P} log p (9+T)⌊N/p⌋/log⌊N/p⌋`.
+- `RHTower/Sieve/PrimeLogQuotientSum.lean` — that error is `O(N log log N)`:
+  `∑_{p, ⌊N/p⌋≥2} (log p)/(p log⌊N/p⌋) ≤ ((log 3 + 2C)/log 2)(1 + log⌊log₂N⌋)`.
+  **Proof mechanism worth remembering:** group primes by `Nat.log 2 ⌊N/p⌋`. The fibre is an interval of
+  integers with integer endpoints because `2^j ≤ ⌊N/p⌋ ↔ p ≤ ⌊N/2^j⌋` (`Nat.le_div_iff_mul_le` twice);
+  the endpoints are within a factor 3 (`⌊N/2^j⌋ ≤ 2⌊N/2^{j+1}⌋+1`), so `MertensBlock` gives mass
+  `≤ log 3 + 2C` per fibre; `log⌊N/p⌋ ≥ j log 2` on the fibre; `Finset.sum_fiberwise_of_maps_to` plus the
+  corpus's `sum_Icc_one_div_le_one_add_log` (Sieve/HarmonicLogBound — do NOT restate it, I did and had to
+  delete it) give the harmonic sum. No `rpow` anywhere.
+- Trap: `∀ x ∈ s with p, ...` is not valid binder syntax; write `∀ x ∈ Finset.filter p s, ...`.
