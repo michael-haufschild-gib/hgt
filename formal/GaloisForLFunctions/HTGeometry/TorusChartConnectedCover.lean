@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteAbelianCyclicQuotient
-import GaloisForLFunctions.HTGeometry.FundamentalGroupTopologicalGroup
+import GaloisForLFunctions.HTGeometry.TorusChartFundamentalGroup
 import Mathlib.GroupTheory.GroupAction.Transitive
 
 /-!
@@ -62,7 +62,24 @@ def IsNontrivialCyclicTorusChartMonodromyQuotient
   letI : CommGroup (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range :=
     torusChartMonodromyRangeCommGroup p cov
   IsCyclic ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N) ∧
-    Nontrivial ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N)
+  Nontrivial ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N)
+
+/-- A cyclic monodromy quotient together with its exact two coordinate-loop exponents. -/
+def HasNontrivialCyclicTorusChartCharacter
+    (N : Subgroup (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range) : Prop :=
+  letI : CommGroup (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range :=
+    torusChartMonodromyRangeCommGroup p cov
+  ∃ z : (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N,
+    ∃ a b : ℤ,
+      Subgroup.zpowers z = ⊤ ∧
+      QuotientGroup.mk' N
+          ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).rangeRestrict
+            (torusChartFirstFundamentalGenerator k)) = z ^ a ∧
+      QuotientGroup.mk' N
+          ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).rangeRestrict
+            (torusChartSecondFundamentalGenerator k)) = z ^ b ∧
+      ¬ ((Nat.card ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N) : ℤ) ∣ a ∧
+        (Nat.card ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N) : ℤ) ∣ b)
 
 /-- **Cyclic reduction for a connected finite topological cover of the torus chart.**  Every
 nontrivial such cover has a maximal proper monodromy subgroup with nontrivial cyclic quotient. -/
@@ -80,5 +97,40 @@ theorem connectedFiniteTorusChartCover_exists_nontrivial_cyclic_quotient
   simpa [IsNontrivialCyclicTorusChartMonodromyQuotient] using
     (exists_nontrivial_cyclic_quotient
       (A := (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range))
+
+/-- **Exact Kummer-character reduction for a finite connected torus-chart cover.**  Every
+nontrivial connected finite cover supplies a nontrivial finite cyclic quotient and an exponent
+pair for the two coordinate meridians which is nonzero modulo the quotient order. -/
+theorem connectedFiniteTorusChartCover_exists_nontrivial_cyclic_character
+    [PathConnectedSpace E]
+    [Finite (p ⁻¹' {(1 : ComplexTorusAffineChart k)})]
+    [Nontrivial (p ⁻¹' {(1 : ComplexTorusAffineChart k)})] :
+    ∃ N : Subgroup (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range,
+      IsCoatom N ∧ HasNontrivialCyclicTorusChartCharacter p cov N := by
+  obtain ⟨N, hN, hcyc⟩ :=
+    connectedFiniteTorusChartCover_exists_nontrivial_cyclic_quotient p cov
+  letI : CommGroup (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range :=
+    torusChartMonodromyRangeCommGroup p cov
+  have hcyc' :
+      IsCyclic ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N) ∧
+        Nontrivial ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N) := by
+    simpa [IsNontrivialCyclicTorusChartMonodromyQuotient] using hcyc
+  letI : IsCyclic ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N) := hcyc'.1
+  letI : Nontrivial ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N) := hcyc'.2
+  let ρ := cov.monodromyPerm (1 : ComplexTorusAffineChart k)
+  let φ : FundamentalGroup (ComplexTorusAffineChart k) 1 →*
+      ρ.range ⧸ N := (QuotientGroup.mk' N).comp ρ.rangeRestrict
+  have hφ : Function.Surjective φ :=
+    (QuotientGroup.mk'_surjective N).comp ρ.rangeRestrict_surjective
+  obtain ⟨z, a, b, hz, ha, hb, hab⟩ :=
+    exists_cyclicCharacterExponents_not_both_dvd k φ hφ
+  refine ⟨N, hN, ?_⟩
+  simpa [HasNontrivialCyclicTorusChartCharacter, ρ, φ] using
+    (show ∃ z, ∃ a b, Subgroup.zpowers z = ⊤ ∧
+        φ (torusChartFirstFundamentalGenerator k) = z ^ a ∧
+        φ (torusChartSecondFundamentalGenerator k) = z ^ b ∧
+        ¬ ((Nat.card (ρ.range ⧸ N) : ℤ) ∣ a ∧
+          (Nat.card (ρ.range ⧸ N) : ℤ) ∣ b) from
+      ⟨z, a, b, hz, ha, hb, hab⟩)
 
 end GaloisForLFunctions.HTGeometry

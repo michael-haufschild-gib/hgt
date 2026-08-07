@@ -118,4 +118,91 @@ theorem integrableOn_transport_integrand_Ioi_one {F : ℝ → ℝ} {M : ℝ} (hM
   exact mul_le_mul (abs_secondDifference_le_of_bounded hF L s)
     (gammaTransportKernel_le_two_mul_exp_neg hs1) hkpos.le (by linarith)
 
+/-! ## The near-origin half
+
+At the origin the second difference vanishes to first order already, which is enough: paired
+against a simple pole it leaves a *bounded* integrand.  Second-order vanishing is not needed, so a
+Lipschitz profile suffices and no second derivative enters.
+-/
+
+/-- **The second difference of a Lipschitz profile vanishes linearly.**  Grouping the three terms
+into two increments gives `|2F(L) − F(L+s) − F(L−s)| ≤ 2K|s|`. -/
+theorem abs_secondDifference_le_of_lipschitz {F : ℝ → ℝ} {K : ℝ}
+    (hK : ∀ x y, |F x - F y| ≤ K * |x - y|) (L s : ℝ) :
+    |secondDifference F L s| ≤ 2 * K * |s| := by
+  unfold secondDifference
+  have hd1 : |L - (L + s)| = |s| := by
+    rw [show L - (L + s) = -s by ring, abs_neg]
+  have hd2 : |L - (L - s)| = |s| := by
+    rw [show L - (L - s) = s by ring]
+  have h1 : |F L - F (L + s)| ≤ K * |s| := by
+    have h := hK L (L + s)
+    rwa [hd1] at h
+  have h2 : |F L - F (L - s)| ≤ K * |s| := by
+    have h := hK L (L - s)
+    rwa [hd2] at h
+  have hsplit : 2 * F L - F (L + s) - F (L - s)
+      = (F L - F (L + s)) + (F L - F (L - s)) := by ring
+  rw [hsplit]
+  calc |(F L - F (L + s)) + (F L - F (L - s))|
+      ≤ |F L - F (L + s)| + |F L - F (L - s)| := abs_add_le _ _
+    _ ≤ K * |s| + K * |s| := add_le_add h1 h2
+    _ = 2 * K * |s| := by ring
+
+/-- **The near half of well-definedness.**  On `(0,1)` the transport integrand of a Lipschitz
+profile is bounded by the constant `2K`: the linear vanishing of the second difference exactly
+cancels the simple pole. -/
+theorem integrableOn_transport_integrand_Ioo_zero_one {F : ℝ → ℝ} {K : ℝ} (hK0 : 0 ≤ K)
+    (hK : ∀ x y, |F x - F y| ≤ K * |x - y|) (hmeas : Measurable F) (L : ℝ) :
+    IntegrableOn (fun s => secondDifference F L s * gammaTransportKernel s) (Ioo 0 1) := by
+  have hsd : Measurable fun s => secondDifference F L s := by
+    unfold secondDifference
+    fun_prop
+  have hdom : IntegrableOn (fun _ : ℝ => 2 * K) (Ioo 0 1) := by
+    have : IsFiniteMeasure (volume.restrict (Ioo (0 : ℝ) 1)) := by
+      constructor
+      simp
+    exact integrable_const _
+  refine MeasureTheory.Integrable.mono' hdom
+    (hsd.mul measurable_gammaTransportKernel).aestronglyMeasurable ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioo] with s hs
+  have hspos : (0 : ℝ) < s := hs.1
+  have hkpos : 0 < gammaTransportKernel s := gammaTransportKernel_pos hspos
+  have habs : |s| = s := abs_of_pos hspos
+  rw [Real.norm_eq_abs, abs_mul, abs_of_pos hkpos]
+  have hbd : |secondDifference F L s| * gammaTransportKernel s ≤ 2 * K * |s| * (1 / s) := by
+    refine mul_le_mul (abs_secondDifference_le_of_lipschitz hK L s)
+      (gammaTransportKernel_le_inv hspos) hkpos.le ?_
+    rw [habs]
+    positivity
+  calc |secondDifference F L s| * gammaTransportKernel s
+      ≤ 2 * K * |s| * (1 / s) := hbd
+    _ = 2 * K := by rw [habs]; field_simp
+
+/-- **The transport operator is well defined on Lipschitz profiles.**  Both tails converge, so the
+integrand is integrable on the whole positive ray.  The kernel's simple pole is cancelled by the
+second difference at the origin and its exponential decay handles infinity. -/
+theorem integrableOn_transport_integrand_Ioi_zero {F : ℝ → ℝ} {K M : ℝ} (hK0 : 0 ≤ K) (hM : 0 ≤ M)
+    (hK : ∀ x y, |F x - F y| ≤ K * |x - y|) (hF : ∀ x, |F x| ≤ M) (hmeas : Measurable F) (L : ℝ) :
+    IntegrableOn (fun s => secondDifference F L s * gammaTransportKernel s) (Ioi 0) := by
+  have hsplit : Ioi (0 : ℝ) = Ioo 0 1 ∪ Ici 1 := by
+    ext x
+    simp only [mem_Ioi, mem_union, mem_Ioo, mem_Ici]
+    constructor
+    · intro hx
+      rcases lt_or_ge x 1 with h | h
+      · exact Or.inl ⟨hx, h⟩
+      · exact Or.inr h
+    · rintro (⟨h1, _⟩ | h1)
+      · exact h1
+      · linarith
+  have hIci : IntegrableOn (fun s => secondDifference F L s * gammaTransportKernel s) (Ici 1) :=
+    (integrableOn_transport_integrand_Ioi_one hM hF hmeas L).congr_set_ae Ioi_ae_eq_Ici.symm
+  rw [hsplit]
+  exact (integrableOn_transport_integrand_Ioo_zero_one hK0 hK hmeas L).union hIci
+
+/-- The Gamma transport operator. -/
+noncomputable def gammaTransport (F : ℝ → ℝ) (L : ℝ) : ℝ :=
+  ∫ s in Ioi (0 : ℝ), secondDifference F L s * gammaTransportKernel s
+
 end GaloisForLFunctions.HTGeometry

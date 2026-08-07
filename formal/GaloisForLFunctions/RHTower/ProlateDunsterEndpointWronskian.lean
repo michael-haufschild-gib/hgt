@@ -272,4 +272,36 @@ theorem lgBessel2Wronskian_tendsto_pi_div_four_at_endpoint
   filter_upwards with x
   ring
 
+/-- Endpoint-normalized radial profiles have zero weighted Wronskian against the regular
+Bessel branch at the singular endpoint. -/
+theorem prolateComparison_lgBesselWronskian_tendsto_zero
+    {s c : ℝ} {R DR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hRc : ContinuousAt R 1) (hDRc : ContinuousAt DR 1) (hR1 : R 1 = 1)
+    (hR : ∀ x : ℝ, 1 < x → HasDerivAt R (DR x) x) :
+    Tendsto (fun x : ℝ => lgWeight s x *
+        (comparisonSol (prolateNormalFormSol R) s x * lgBesselModelDeriv s c x -
+          comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s x *
+            lgBesselModel s c x))
+      (nhdsWithin 1 (Ioi 1)) (nhds 0) := by
+  exact lgBesselWronskian_tendsto_zero_at_endpoint hs0 hs1
+    (comparisonSol_prolateNormalForm_tendsto_one_at_endpoint hs0 hs1 hRc hR1)
+    (lgWeight_mul_comparisonSolDeriv_tendsto_zero hs0 hs1 hRc hDRc hR)
+
+/-- Endpoint-normalized radial profiles have weighted Wronskian `pi/4` against the
+logarithmic Bessel branch at the singular endpoint. -/
+theorem prolateComparison_lgBessel2Wronskian_tendsto_pi_div_four
+    {s c : ℝ} {R DR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c)
+    (hRc : ContinuousAt R 1) (hDRc : ContinuousAt DR 1) (hR1 : R 1 = 1)
+    (hR : ∀ x : ℝ, 1 < x → HasDerivAt R (DR x) x) :
+    Tendsto (fun x : ℝ => lgWeight s x *
+        (comparisonSol (prolateNormalFormSol R) s x * lgBesselModel2Deriv s c x -
+          comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s x *
+            lgBesselModel2 s c x))
+      (nhdsWithin 1 (Ioi 1)) (nhds (Real.pi / 4)) := by
+  apply lgBessel2Wronskian_tendsto_pi_div_four_at_endpoint hs0 hs1 hc
+    (comparisonSol_prolateNormalForm_tendsto_one_at_endpoint hs0 hs1 hRc hR1)
+  exact eventually_bounded_comparisonSolDeriv hs0 hs1 hRc hDRc hR
+
 end GaloisForLFunctions.RHTower

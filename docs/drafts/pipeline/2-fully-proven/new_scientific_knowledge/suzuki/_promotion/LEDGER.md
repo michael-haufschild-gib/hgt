@@ -1174,3 +1174,40 @@ Traps: `Real.one_lt_exp_iff_pos` does not exist here — use `Real.exp_lt_exp.mp
 `fun x => rexp (-1 * x)`, not `rexp (-x)`; convert with `simpa only [neg_one_mul]`. For
 `|2a − b − c| ≤ 4M`, go through `abs_le.mp` on each bound and `constructor <;> linarith` rather than
 chaining triangle inequalities — `abs_sub` does not mean `|a − b| ≤ |a| + |b|` in this mathlib.
+
+## S. Prerequisite 2 closed — the transport operator is well defined
+
+`GammaTransportKernel.lean` now carries 12 declarations, all `#print axioms` clean.
+
+**The near half needed far less than section R predicted.** R planned a second-order bound
+`|2F(L) − F(L+s) − F(L−s)| ≤ 2Ms²` via two applications of
+`Convex.norm_image_sub_le_of_norm_hasDerivWithin_le`, requiring a bounded second derivative. That
+is unnecessary. Paired against a *simple* pole, first-order vanishing already leaves a bounded
+integrand:
+
+    |2F(L) − F(L+s) − F(L−s)| · 1/(e^s − 1)  ≤  2K|s| · 1/s  =  2K.
+
+So a **Lipschitz** profile suffices and no second derivative enters anywhere. Do not rebuild the
+`C²` estimate for this purpose.
+
+- `abs_secondDifference_le_of_lipschitz` — group the three terms as
+  `(F L − F(L+s)) + (F L − F(L−s))`; each increment is `≤ K|s|`.
+- `integrableOn_transport_integrand_Ioo_zero_one` — the near half: the integrand is bounded by the
+  constant `2K` on `(0,1)`.
+- `integrableOn_transport_integrand_Ioi_zero` — **well-definedness**: both halves glued over
+  `Ioi 0 = Ioo 0 1 ∪ Ici 1`.
+- `gammaTransport F L = ∫ s in Ioi 0, secondDifference F L s * gammaTransportKernel s` — the
+  operator itself.
+
+Trap: constants are not integrable on `Ioo 0 1` by `exact?`, by `(integrable_const c).restrict`,
+or by `integrableOn_const` (which does not resolve here). Supply the instance by hand:
+`have : IsFiniteMeasure (volume.restrict (Ioo (0:ℝ) 1)) := by constructor; simp` then
+`exact integrable_const _`.
+
+### Prerequisite status after this session
+
+1. Plancherel `H^s` equivalence — **partial**: constant `c_s` exists (`0<s<1`) and is pointwise
+   positive; scaling law, Tonelli exchange and the Plancherel step remain.
+2. Gamma transport kernel as an operator — **closed** for Lipschitz profiles.
+3. Carleman estimates on a weighted strip — untouched.
+4. Weak signed half-log trace — untouched.
