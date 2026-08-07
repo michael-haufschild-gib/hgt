@@ -1544,3 +1544,26 @@ With them the truncated block decomposition is an instantiation: `μ = volume.re
 `(∫_{|y| ≤ T} ‖L(a,σ+iy)‖²)^{1/2} ≤ ∑_j (∫_{|y| ≤ T} ‖L(a_j,σ+iy)‖²)^{1/2}`,
 
 each block then carrying its own sieve level and, for the outer weight, its own damping.
+
+## The truncated mean square, block by block
+
+`RHTower/Sieve/TruncatedBlockMeanSquare.lean` (green, axiom-clean, wired).
+
+* `sqrt_integral_Icc_normSq_LSeries_le_sum_blocks` —
+  `(∫_{|y| ≤ T}‖L(a,σ+iy)‖²)^{1/2} ≤ ∑_j (∫_{|y| ≤ T}‖L(a_j,σ+iy)‖²)^{1/2}`, Minkowski over the restricted
+  measure;
+* `sqrt_integral_Icc_normSq_LSeries_le_sum_block_sieve` — each block discharged by the Selberg sieve at a level
+  free to depend on the block:
+  `≤ ∑_j √(truncSieveSum a_j (Icc 1 M) σ T (z_j) (Y_j))`.
+
+This is the truncated counterpart of the Lorentzian block sum, and with it **the truncated route has every
+device the global one had, plus the two savings the global one could not use**:
+
+* the mean squares are multiplied by `Wsup ≍ N`, not by `C ≍ N^σ(N/H)²`;
+* the sieve level is chosen per block, where the count is sharp;
+* the outer weight keeps its own damping per block.
+
+Nothing in the chain assumes an estimate, and every statement above is proved.  What remains is the arithmetic
+of choosing `σ, T, H` and the level sequence, and summing the `j`-indexed series — the step whose two previous
+attempts (the global Lorentzian accounting, and the modulus at the block endpoint) both failed for reasons now
+recorded and repaired.
