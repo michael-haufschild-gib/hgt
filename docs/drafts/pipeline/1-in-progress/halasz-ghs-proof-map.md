@@ -1689,3 +1689,27 @@ now present:**
 The next step is the assembly, and then the accounting — which this time has the `e^{−δ²}` saving off the window
 and the factor `volume S ≍ (T log z/π + 1)·δ/√(logSqWeight z)` on it, the two quantities that the previous
 accounting lacked entirely.
+
+## The dichotomy split, assembled
+
+`RHTower/Sieve/DichotomySplitAssembly.lean` (green, axiom-clean, wired).
+
+`norm_integral_Icc_mul_three_le_dichotomy` — for **any** threshold `c ≥ 0`, with `S` the set of heights where the
+bounded factor exceeds `c`:
+
+`‖∫_{|y| ≤ T} L(a)L(b)L(f)·W‖
+    ≤ (1+1/(σ−1))e^{7/2}·Wsup·√(|S|(ℓ¹a)²)·√(|S|(ℓ¹b)²) + c·Wsup·√(sieve a)·√(sieve b)`.
+
+On `S` the third factor keeps only its trivial size, but the mean squares are charged to `|S|` — the measure of
+`S` inside the height range — by the short-set estimate.  Off `S` the factor is at most `c` *by the definition of
+`S`*, and the mean squares are the Selberg-sieve ones, reached after enlarging `Sᶜ ∩ [−T,T]` to `[−T,T]`
+(`setIntegral_mono_set`, the integrand being nonnegative).
+
+The statement is parameterised by `c` and says nothing about the dichotomy; that is deliberate.  Choosing
+`c = (1 + 1/(σ−1))exp(7/2 + 2(σ−1)(log z + log 4) − δ²)` makes it the dichotomy, with
+`volume_halaszLargeValues_le` bounding `|S|` by `(2T log z/π + 1)·2√(2π²δ²/logSqWeight z)`.  **This is the shape
+in which the mean square finally buys something**: the trivial size appears only against a short set, and the
+long range carries the `e^{−δ²}` damping.
+
+The remaining work is the arithmetic of `δ, z, T, σ, H` in this expression — the first accounting in this
+programme that has both savings available at once.
