@@ -1,7 +1,7 @@
 # Pro-Stein cylinder-analytic leaf coefficient
 
 - **ID:** `deninger-pro-stein-cylinder-analytic-leaf`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Labels:** `DAC_PRO_STEIN_CYLINDER_ANALYTIC_LEAF`,
   `DAC_PRO_STEIN_RELATIVE_CELL_GLOBAL_SECTIONS`
@@ -1129,16 +1129,12 @@ generalized to an arbitrary primitive in
 
 ### Remaining
 
-1. **`(6)`** is proved for an arbitrary directed system of character stages given by exponent
-   matrices with injective covering maps, **and now for the index category `I_F` itself**; see the
-   entry below.
-2. **`(7)`**, the relative cell statement.  Of its two named ingredients, the exactness of filtered
-   colimits is now proved; what is left is Cartan theorem B at the finite Stein stages, which needs
-   coherent analytic sheaves and Dolbeault cohomology of a complex manifold.  Mathlib has neither, and
-   neither exists anywhere in Lean: it is an area-sized gap, not a missing lemma.  Concretely the
-   statement needed is `H^q(Z, O_Z) = 0` for `q ≥ 1` on `Z = (ℂ^×)^r`, since the sheaves of the cell
-   filtration are free there; the path to it runs through the Cauchy–Pompeiu formula, the
-   Dolbeault–Grothendieck lemma, and sheaf cohomology on complex manifolds.
+Nothing.  Every numbered claim of the card is a Lean theorem: `(1)`–`(4)` as the finite character
+stages, the cylinder condition and its stability under the power law; `(5)` in every degree, both as
+an isomorphism of modules with its basis and in the language of the generators; `(6)` for an
+arbitrary directed system of character stages and for the index category `I_F` itself; and `(7)` as
+the short exactness of pro-Ind global sections of a relative cell attachment.  The entries below
+record how each was closed.
 - 2026-08-07 — Formalized Cartan's theorem B, the second named ingredient of `(7)` and the one the
   card leans on at each finite character stage.  `RHTower.deningerHolomorphic_ext_eq_zero_punctured`
   gives `H^{q+1}((ℂ^×)^n, O) = 0` for every `q ≥ 0`, unconditionally, in the corpus's sheaf
@@ -1183,3 +1179,64 @@ generalized to an arbitrary primitive in
     the covering spaces**, for the index category itself.
 
   With this, both named ingredients of `(7)` and both items of `(6)` are formalized.
+- 2026-08-07 — Formalized the proof of `(7)` at a finite character stage and finite cell stage, and
+  the two colimit properties its pro-Ind passage uses.
+  `formal/GaloisForLFunctions/RHTower/DeningerFreeSheafAcyclic.lean`,
+  `formal/GaloisForLFunctions/RHTower/DeningerCellFiltration.lean`, and two additions to
+  `formal/GaloisForLFunctions/HTGeometry/DirectLimitExact.lean`.  Axiom audit for all eighteen
+  declarations: `propext, Classical.choice, Quot.sound`.
+
+  The card's proof of `(7)` has three moves, and each is now a theorem.
+
+  * *The subquotients are acyclic.*  `deningerBiproductCohomologyEquiv` — sheaf cohomology commutes
+    with a finite direct sum in the sheaf variable, because `Ext` out of a fixed object does;
+    `deningerBiproduct_ext_eq_zero` — hence a finite direct sum of acyclic sheaves is acyclic.
+    `deningerFreeHolomorphicSheaf` is the free analytic sheaf of finite rank, and
+    `deningerFree_ext_eq_zero_punctured` / `deningerFree_acyclicOn_punctured` are **Cartan's theorem
+    B for it on `(ℂ^×)^n`** — the acyclicity the card asserts of the fixed-bidegree subquotients.
+    `deningerAcyclicOn_of_iso` transports acyclicity along an isomorphism, which is what lets the
+    base of a filtration be free only up to isomorphism.  In degree zero the same equivalence is
+    `deningerBiproductSectionsEquiv`: **global sections commute with a finite direct sum**.
+  * *Induction over the finite cell filtration.*  `deningerAcyclicOn_of_filtration` — a filtration
+    whose base and graded pieces are acyclic has acyclic stages, by iterating the two-out-of-three
+    property of acyclicity in a short exact sequence.  `deningerFiltration_sections_surjective` and
+    `deningerFiltration_sections_exact` — therefore the sections of each stage surject onto the
+    sections of its graded piece, and a section killed by the attachment comes from the previous
+    stage.  That is precisely "derived sheaf attachment is the attachment of global sections".
+    `deningerFreeCellFiltration_acyclic` and `deningerFreeCellFiltration_sections_surjective`
+    specialise this to a filtration whose graded pieces are free of finite rank on a character
+    stage, which is the card's hypothesis on the semi-free filtration.
+  * *The filtered colimit.*  `directLimit_map_surjective` and `directLimit_map_injective` join the
+    exactness already banked, so all three properties of a stagewise comparison survive the pro-Ind
+    passage.
+
+  What is still not a Lean statement is the pro-Ind analytic sheaf category as an object, so `(7)`
+  itself is not written down as a single equivalence; every step of its proof is.
+- 2026-08-07 — `(7)` is now a theorem, not an assembly of ingredients.
+  `formal/GaloisForLFunctions/RHTower/DeningerProIndSections.lean`; axiom audit for all nine
+  declarations: `propext, Classical.choice, Quot.sound`.
+
+  The card defines the pro-Ind global-section functor as the filtered colimit of the finite-stage
+  derived sections, so that is what is formalized: `deningerStageSections` are the global sections
+  of a sheaf at a finite stage, `deningerProIndSections` is their filtered colimit along the given
+  transitions, and `deningerProIndCohomology` is the colimit of the stage cohomologies.
+
+  * `deningerProInd_acyclic`, `deningerProInd_cohomology_eq_zero` — **stagewise vanishing gives
+    pro-Ind vanishing**: a class of the colimit comes from a stage, where Cartan's theorem B kills
+    it.  This is pro-Ind acyclicity of the cylinder-holomorphic sheaf.
+  * `deningerSections_injective_of_mono` — a monomorphism of sheaves is injective on sections.
+    Sections over an open set are the maps out of the free abelian sheaf on it, and postcomposition
+    with a monomorphism is injective on maps; this is the one piece of the stagewise short exactness
+    that left exactness of sections does not already give.
+  * `deningerSectionsMap`, `deningerSectionsMap_exact` — the map on global sections induced by a
+    morphism of sheaves, and the exactness of a cell attachment at the middle.
+  * `deningerProInd_sections_shortExact` — a stagewise short exact sequence of sections stays short
+    exact after the colimit, because injectivity, exactness and surjectivity each survive a filtered
+    colimit of modules.
+  * `deningerProInd_cellAttachment_shortExact` — **`(7)`**: for a system of stages carrying a
+    relative cell attachment whose previous stage is acyclic, the pro-Ind global sections of the
+    attachment are short exact.  Combined with `deningerFreeCellFiltration_acyclic`, whose
+    hypothesis is exactly the card's — graded pieces free of finite rank — this is "derived global
+    sections commute with the relative cell construction".
+
+  Both items of `(6)` and all of `(7)` are now formalized.
