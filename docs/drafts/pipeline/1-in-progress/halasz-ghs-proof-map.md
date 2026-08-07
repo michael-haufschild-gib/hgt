@@ -864,3 +864,32 @@ Both halves of the programme are now closed in Lean, and they meet at this inequ
   `‖∑_{n≤K} d(n)‖ ≤ (that)/2π + H` for the sharp cutoff.
 
 The only remaining input is arithmetic: evaluating `sieveMeanSquare` at the natural parameters.
+
+## The master bound: the whole chain in one inequality
+
+`RHTower/Sieve/HalaszGhsMasterBound.lean` (green, axiom-clean, wired).
+
+`exists_norm_sum_Icc_mul_log_le` — for totally multiplicative `f` with `f(1) = 1`, `‖f‖ ≤ 1`, every `N ≥ 2`,
+every width `H > 0`, every `σ > 1` and every admissible sieve level `Y ≤ z`:
+
+`‖∑_{n ≤ N} f(n)‖·log N`
+  `≤ [(9+c)N + N log 4 + (9+c)N(B/log 2)(1 + log log₂ N)]`
+  `+ (H+1)·(log⌊N+H⌋)⁴/(log 2)³`
+  `+ (1/2π)·(1 + 1/(σ−1))e^{7/2}·C·√(25π²·sieve a)·√(25π²·sieve b)`.
+
+Supporting bricks: `sum_range_convolution_eq_sum_Icc` (a convolution vanishes at `0`, so the two ranges
+agree) and `norm_tsum_ghs_smoothWeight_sub_sum_Icc_le` (the real-cutoff window law at `N ∈ ℕ`, with the
+polylogarithmic coefficient bound as its uniform constant).
+
+**The Granville–Harper–Soundararajan chain is discharged end to end in Lean, unconditionally.**  Every term
+is explicit, no hypothesis assumes an estimate, and the three groups of errors are the recursion errors
+`O(N log log N)`, the smoothing error, and the analytic term.
+
+The remaining input is arithmetic: evaluating
+
+`sieveMeanSquare a s σ z Y = ∑_{n ∈ s} (2(n(e^δ−e^{−δ})+1)/log Y + selbergFibreError z Y + z)·‖a_n n^{−σ}‖²`
+
+at the natural parameters.  This is where a saving in `N` is created, and it is a prime-sum computation of
+the kind the corpus's Mertens layer already supports — the mean square of the outer weight is
+`∑_p (log p/log⌊N/p⌋)²p^{−2σ}` against a linear sieve count, and it is that pairing which produces the
+`(1+M)e^{−M}` shape of the sharp theorem.
