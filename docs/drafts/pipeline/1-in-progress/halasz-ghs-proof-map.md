@@ -916,3 +916,26 @@ Both sums converge for `σ > 1`; the first is the one that grows as `σ ↓ 1`, 
 
 with no arithmetic content — no primes, no divisor functions, no short-interval estimates.  Each is a
 Dirichlet-type sum of `(log n)²n^{-w}` and is bounded by the corresponding tail integral.
+
+## The last analytic input: the logarithmically weighted partial zeta cap
+
+`RHTower/Sieve/LogSqZetaCap.lean` (green, axiom-clean, wired).
+
+`sum_Icc_logSq_rpow_neg_le` — a squared logarithm is absorbed by a power: `log t ≤ t^δ/δ` at
+`δ = (w−1)/4` turns `n^{−w}(log n)²` into `(16/(w−1)²)n^{−(w+1)/2}`, and the corpus's partial zeta cap
+(`RHTower.sum_Icc_rpow_neg_le`, reused, not rebuilt) finishes:
+
+`∑_{n ≤ N} n^{−w}(log n)² ≤ (16/(w−1)²)·(1 + 2/(w−1))`,   `w > 1`, uniformly in `N`.
+
+At the two exponents of the sieve majorant:
+
+`∑_{n ≤ N} n^{1−2σ}(log n)² ≤ (16/(2σ−2)²)(1 + 2/(2σ−2))`   (`sum_Icc_logSq_rpow_one_sub_two_mul_le`),
+`∑_{n ≤ N} n^{−2σ}(log n)² ≤ (16/(2σ−1)²)(1 + 2/(2σ−1))`   (`sum_Icc_logSq_rpow_neg_two_mul_le`).
+
+At `σ = 1 + 1/log N` the first is of size `(log N)³` and the second is bounded.
+
+**Every analytic input of the chain is now evaluated.**  From the master bound, the two sieve mean squares
+are bounded by these caps, so the whole right-hand side is an explicit function of `N, H, σ, z, Y` alone.
+The programme's remaining task is the parameter optimisation: choosing `σ`, the sieve level `Y ≤ z` and the
+smoothing width `H` so that the sum of the three error groups beats the trivial bound `N log N` — the point
+at which the argument becomes a mean value theorem rather than a chain of identities.

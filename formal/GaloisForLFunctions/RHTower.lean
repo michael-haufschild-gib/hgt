@@ -5713,6 +5713,7 @@ import GaloisForLFunctions.RHTower.XiLogDerivReporterRankNullity
 import GaloisForLFunctions.RHTower.XiMassAdjacentPrimeDifference
 import GaloisForLFunctions.RHTower.XiMassAdjacentPrimeMask
 import GaloisForLFunctions.RHTower.XiMassAdjacentPrimeQuotient
+import GaloisForLFunctions.RHTower.XiMassFullAdjacentPrimeGraph
 import GaloisForLFunctions.RHTower.XiMassArchimedeanUniformBound
 import GaloisForLFunctions.RHTower.XiMassBottomEdge
 import GaloisForLFunctions.RHTower.XiMassBottomPrimeAtomization
@@ -6150,3 +6151,4 @@ import GaloisForLFunctions.RHTower.ZetaVerticalSqrtBound
 import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 import GaloisForLFunctions.RHTower.ZetaZeroFreeRegion
 import GaloisForLFunctions.RHTower.Sieve.SieveMeanSquareZetaSums
+import GaloisForLFunctions.RHTower.Sieve.LogSqZetaCap
