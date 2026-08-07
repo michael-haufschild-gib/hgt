@@ -134,10 +134,19 @@ head and `R` the right-factor degree-one construction, the square expands into f
   with an equation, rather than fixing it as `a + a' + 1`, is what lets associativity be stated at
   all — otherwise the two sides sit in `(p+q+1)+r+1+1` and `p+(q+r+1)+1+1`, which are equal but not
   definitionally so.
-* The first three must cancel against each other.  `H ∘ H` produces `μ(μ(a₁,a₂),a₃)`, the head of
-  `H ∘ R(barD)` produces `μ(a₁,μ(a₂,a₃))`, and these cancel by associativity of the ideal's product
-  against the sign of the shift; the remaining terms of `H ∘ R(barD)` cancel `R(barD) ∘ H` term by
-  term.  Formalising this means expanding the head's finite sum twice and reindexing the double sum,
-  which is the one genuinely long computation left in this card.
+* The first three cancel against each other, and **the cancellation itself is now proved**.
+  `formal/GaloisForLFunctions/HTGeometry/CDGABarCancel.lean` defines the two composites
+  `barMulFirstTwo` and `barMulLastTwo` — multiply the first two of three adjacent shifted factors
+  then the result with the third, against multiply the last two then the first with the result — and
+  **`barMul_cancel`** proves that the first plus `(-1)^p` times the second is zero, for an arbitrary
+  element of the triple tensor, not only for a pure one.  On a pure tensor it is
+  `augIdealShiftMulOf_cancel`; the general case is three nested inductions, since the middle factors
+  are themselves tensor products.
+
+  What remains is bookkeeping and no longer mathematics: expanding the head's finite sum twice,
+  reindexing the two double sums over the common triples `(u, u', w)` with `u + u' + w + 2 = c` —
+  the outer-then-inner split `(a,a'),(u,u')` maps to `(u,u',a')`, the outer-then-tail split
+  `(a,a'),(v,v')` maps to `(a,v,v')`, and both read the *same* component of the argument — and
+  applying `barMul_cancel` termwise.
 
 Everything the statement quantifies over is defined, and one of the four terms is proved.

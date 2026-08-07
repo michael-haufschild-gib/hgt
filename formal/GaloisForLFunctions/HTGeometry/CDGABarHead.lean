@@ -84,4 +84,28 @@ noncomputable def barHead (n : ℕ)
     TensorCarrier (R := R) (barShiftFamily ε) Z (n + 1) :=
   barHeadₗ ε Z n F
 
+/-- The head, componentwise: a finite sum over the splits of the first degree. -/
+theorem barHead_apply (n : ℕ)
+    (F : TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε) Z) n)
+    (p : {ce : ℕ × ℕ // ce.1 + ce.2 = n + 1}) :
+    barHead ε Z n F p
+      = ∑ s : BarSplit p.1.1, barHeadTermₗ ε Z n p.1.1 p.1.2 p.2 s.1.1 s.1.2 s.2 F := by
+  show barHeadTermSum ε Z n p F = _
+  rw [barHeadTermSum, LinearMap.sum_apply]
+
+/-- One term of the head, on the component it reads. -/
+theorem barHeadTermₗ_apply (n c e : ℕ) (hp : c + e = n + 1) (a a' : ℕ) (hs : a + a' + 1 = c)
+    (F : TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε) Z) n) :
+    barHeadTermₗ ε Z n c e hp a a' hs F
+      = hs ▸ (TensorProduct.map (augIdealShiftMulTensor ε a a') LinearMap.id
+        ((TensorProduct.assoc R (barShiftFamily ε a) (barShiftFamily ε a') (Z e)).symm
+          (TensorProduct.map LinearMap.id
+            (LinearMap.proj (R := R) (φ := fun q : {ab : ℕ × ℕ // ab.1 + ab.2 = a' + e} =>
+              TensorProduct R (barShiftFamily ε q.1.1) (Z q.1.2)) ⟨(a', e), rfl⟩)
+            (F ⟨(a, a' + e), by omega⟩)))) := by
+  cases hs
+  rfl
+
 end GaloisForLFunctions.HTGeometry

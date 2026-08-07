@@ -106,6 +106,37 @@ theorem augIdealShiftMulOf_assoc {p q r m m' n : ℕ} (h₁ : p + q + 1 = m) (h�
       _ = -((-1 : R)) ^ q := by rw [hsq]; ring
   rw [← pow_add, hL, hR]
 
+/-- The multiplication of shifted elements into a prescribed degree, as a bilinear map. -/
+def augIdealShiftMulOfₗ {a a' n : ℕ} (h : a + a' + 1 = n) :
+    augIdealCarrier ε (a + 1) →ₗ[R] augIdealCarrier ε (a' + 1) →ₗ[R] augIdealCarrier ε (n + 1) :=
+  LinearMap.mk₂ R (fun x y => augIdealShiftMulOf ε h x y)
+    (fun x x' y => by
+      show augIdealShiftMulOf ε h (x + x') y = _
+      rw [augIdealShiftMulOf, augIdealMul_add_left, smul_add]; rfl)
+    (fun c x y => by
+      show augIdealShiftMulOf ε h (c • x) y = _
+      rw [augIdealShiftMulOf, augIdealMul_smul_left, smul_comm]; rfl)
+    (fun x y y' => by
+      show augIdealShiftMulOf ε h x (y + y') = _
+      rw [augIdealShiftMulOf, augIdealMul_add_right, smul_add]; rfl)
+    (fun c x y => by
+      show augIdealShiftMulOf ε h x (c • y) = _
+      rw [augIdealShiftMulOf, augIdealMul_smul_right, smul_comm]; rfl)
+
+@[simp] theorem augIdealShiftMulOfₗ_apply {a a' n : ℕ} (h : a + a' + 1 = n)
+    (x : augIdealCarrier ε (a + 1)) (y : augIdealCarrier ε (a' + 1)) :
+    augIdealShiftMulOfₗ ε h x y = augIdealShiftMulOf ε h x y := rfl
+
+/-- The same, out of the tensor product. -/
+noncomputable def augIdealShiftMulOfTensor {a a' n : ℕ} (h : a + a' + 1 = n) :
+    TensorProduct R (augIdealCarrier ε (a + 1)) (augIdealCarrier ε (a' + 1)) →ₗ[R]
+      augIdealCarrier ε (n + 1) :=
+  TensorProduct.lift (augIdealShiftMulOfₗ ε h)
+
+@[simp] theorem augIdealShiftMulOfTensor_tmul {a a' n : ℕ} (h : a + a' + 1 = n)
+    (x : augIdealCarrier ε (a + 1)) (y : augIdealCarrier ε (a' + 1)) :
+    augIdealShiftMulOfTensor ε h (x ⊗ₜ[R] y) = augIdealShiftMulOf ε h x y := rfl
+
 /-- **The cancellation that makes the bar differential square to zero.**  Multiplying the first two
 of three shifted factors and then the result with the third, against multiplying the last two and
 then the first with the result — the second weighted by the sign the tail of the bar differential
