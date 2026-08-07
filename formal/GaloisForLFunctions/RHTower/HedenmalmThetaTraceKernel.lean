@@ -112,6 +112,262 @@ theorem thetaTraceSq_eq_double_integral :
           * (-(pinnedKernelSlice t u * pinnedKernelSlice u t)) by ring,
       neg_mul_pinnedKernelSlice htu]
 
+
+/-! ### The first interchange -/
+
+theorem measurable_uncurry_abs_slice (S : PositiveDensitySource) :
+    Measurable (fun p : ℝ × ℝ => quantileSpeed S p.1 * |pinnedKernelSlice p.1 p.2|) := by
+  have hmq : Measurable (quantileSpeed S) :=
+    measurable_const.div (S.continuous_k.measurable.comp S.measurable_quantileFun)
+  have hset : MeasurableSet {p : ℝ × ℝ | p.2 ≤ p.1} :=
+    measurableSet_le measurable_snd measurable_fst
+  have hite : Measurable (fun p : ℝ × ℝ => if p.2 ≤ p.1 then (1 : ℝ) else 0) :=
+    Measurable.ite hset measurable_const measurable_const
+  exact (hmq.comp measurable_fst).mul ((hite.sub measurable_fst).abs)
+
+theorem integrable_poly_unitInterval :
+    Integrable (fun t : ℝ => t * (1 - t)) unitIntervalMeasure := by
+  refine Integrable.mono' (integrable_const 1) ?_ ?_
+  · exact ((continuous_id.mul (continuous_const.sub continuous_id)).aestronglyMeasurable)
+  · filter_upwards [ae_unitIntervalMeasure_mem_Ioo] with t ht
+    obtain ⟨ht0, ht1⟩ := ht
+    rw [Real.norm_eq_abs, abs_of_nonneg (by nlinarith)]
+    nlinarith
+
+theorem integrable_quantileSpeed_mul_poly (S : PositiveDensitySource)
+    (hfin : HasFiniteKernelEnergy S) :
+    Integrable (fun u => quantileSpeed S u * (2 * (u * (1 - u)))) unitIntervalMeasure := by
+  have hmq : Measurable (quantileSpeed S) :=
+    measurable_const.div (S.continuous_k.measurable.comp S.measurable_quantileFun)
+  refine Integrable.mono' (hfin.add integrable_poly_unitInterval) ?_ ?_
+  · exact (hmq.mul (measurable_const.mul
+      (measurable_id.mul (measurable_const.sub measurable_id)))).aestronglyMeasurable
+  · filter_upwards [ae_unitIntervalMeasure_mem_Ioo] with u hu
+    have hq : 0 < quantileSpeed S u := quantileSpeed_pos S u
+    have hw : 0 ≤ u * (1 - u) := by nlinarith [hu.1, hu.2]
+    rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    simp only [Pi.add_apply]
+    nlinarith [sq_nonneg (quantileSpeed S u - 1), hw]
+
+set_option maxHeartbeats 2000000 in
+theorem integrable_uncurry_abs_slice (S : PositiveDensitySource)
+    (hfin : HasFiniteKernelEnergy S) :
+    Integrable (fun p : ℝ × ℝ => quantileSpeed S p.1 * |pinnedKernelSlice p.1 p.2|)
+      (unitIntervalMeasure.prod unitIntervalMeasure) := by
+  rw [integrable_prod_iff (measurable_uncurry_abs_slice S).aestronglyMeasurable]
+  refine ⟨?_, ?_⟩
+  · filter_upwards [ae_unitIntervalMeasure_mem_Ioo] with u hu
+    refine Integrable.mono' (integrable_const (quantileSpeed S u)) ?_ ?_
+    · have hite : Measurable (fun s : ℝ => if s ≤ u then (1 : ℝ) else 0) :=
+        Measurable.ite (measurableSet_le measurable_id measurable_const)
+          measurable_const measurable_const
+      exact (measurable_const.mul ((hite.sub measurable_const).abs)).aestronglyMeasurable
+    · filter_upwards with s
+      have h1 : |pinnedKernelSlice u s| ≤ 1 :=
+        abs_pinnedKernelSlice_le (Ioo_subset_Icc_self hu) s
+      have hq : 0 < quantileSpeed S u := quantileSpeed_pos S u
+      rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+      nlinarith [abs_nonneg (pinnedKernelSlice u s)]
+  · refine (integrable_quantileSpeed_mul_poly S hfin).congr ?_
+    filter_upwards [ae_unitIntervalMeasure_mem_Ioo] with u hu
+    have hpt : ∀ s : ℝ, ‖quantileSpeed S u * |pinnedKernelSlice u s|‖
+        = quantileSpeed S u * |pinnedKernelSlice u s| := by
+      intro s
+      have hq : 0 < quantileSpeed S u := quantileSpeed_pos S u
+      rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    rw [integral_congr_ae (Filter.Eventually.of_forall hpt),
+      MeasureTheory.integral_const_mul, unitIntervalMeasure_eq,
+      integral_abs_pinnedKernelSlice hu]
+
+
+
+set_option maxHeartbeats 2000000 in
+/-- **The first interchange.**  Pairing the covariance kernel against the quantile speed produces
+the slice moment. -/
+theorem integral_quantileSpeed_min_sub (S : PositiveDensitySource)
+    (hfin : HasFiniteKernelEnergy S) {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1) :
+    (∫ u, quantileSpeed S u * (min t u - t * u) ∂unitIntervalMeasure)
+      = ∫ s, pinnedKernelSlice t s * sliceMoment S s ∂unitIntervalMeasure := by
+  have hmq : Measurable (quantileSpeed S) :=
+    measurable_const.div (S.continuous_k.measurable.comp S.measurable_quantileFun)
+  have hset : MeasurableSet {p : ℝ × ℝ | p.2 ≤ p.1} :=
+    measurableSet_le measurable_snd measurable_fst
+  have hslice2 : Measurable (fun p : ℝ × ℝ => pinnedKernelSlice p.1 p.2) :=
+    (Measurable.ite hset measurable_const measurable_const).sub measurable_fst
+  have hslice1 : Measurable (fun p : ℝ × ℝ => pinnedKernelSlice t p.2) :=
+    (Measurable.ite (measurableSet_le measurable_snd measurable_const)
+      measurable_const measurable_const).sub measurable_const
+  have hswapint : Integrable (Function.uncurry
+      (fun u s : ℝ => quantileSpeed S u * pinnedKernelSlice t s * pinnedKernelSlice u s))
+      (unitIntervalMeasure.prod unitIntervalMeasure) := by
+    refine Integrable.mono' (integrable_uncurry_abs_slice S hfin) ?_ ?_
+    · exact (((hmq.comp measurable_fst).mul hslice1).mul hslice2).aestronglyMeasurable
+    · filter_upwards with p
+      have h1 : |pinnedKernelSlice t p.2| ≤ 1 :=
+        abs_pinnedKernelSlice_le (Ioo_subset_Icc_self ht) p.2
+      have hq : 0 < quantileSpeed S p.1 := quantileSpeed_pos S p.1
+      show ‖quantileSpeed S p.1 * pinnedKernelSlice t p.2 * pinnedKernelSlice p.1 p.2‖
+        ≤ quantileSpeed S p.1 * |pinnedKernelSlice p.1 p.2|
+      rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_pos hq]
+      have h2 : 0 ≤ |pinnedKernelSlice p.1 p.2| := abs_nonneg _
+      nlinarith [mul_nonneg hq.le h2, abs_nonneg (pinnedKernelSlice t p.2)]
+  have hL : (∫ u, quantileSpeed S u * (min t u - t * u) ∂unitIntervalMeasure)
+      = ∫ u, ∫ s, quantileSpeed S u * pinnedKernelSlice t s * pinnedKernelSlice u s
+        ∂unitIntervalMeasure ∂unitIntervalMeasure := by
+    refine integral_congr_ae ?_
+    filter_upwards [ae_unitIntervalMeasure_mem_Ioo] with u hu
+    have hin : (∫ s, quantileSpeed S u * pinnedKernelSlice t s * pinnedKernelSlice u s
+          ∂unitIntervalMeasure)
+        = quantileSpeed S u * ∫ s, pinnedKernelSlice t s * pinnedKernelSlice u s
+          ∂unitIntervalMeasure := by
+      rw [← MeasureTheory.integral_const_mul]
+      exact integral_congr_ae (Filter.Eventually.of_forall fun s => by ring)
+    rw [hin, unitIntervalMeasure_eq, integral_pinnedKernelSlice_mul_min ht hu]
+  have hR : (∫ s, pinnedKernelSlice t s * sliceMoment S s ∂unitIntervalMeasure)
+      = ∫ s, ∫ u, quantileSpeed S u * pinnedKernelSlice t s * pinnedKernelSlice u s
+        ∂unitIntervalMeasure ∂unitIntervalMeasure := by
+    refine integral_congr_ae (Filter.Eventually.of_forall fun s => ?_)
+    simp only [sliceMoment]
+    rw [← MeasureTheory.integral_const_mul]
+    exact integral_congr_ae (Filter.Eventually.of_forall fun u => by ring)
+  rw [hL, hR]
+  exact integral_integral_swap hswapint
+
+
+
+/-! ### The second interchange -/
+
+theorem measurable_uncurry_slice_quantile :
+    Measurable (Function.uncurry (fun s t : ℝ =>
+      quantileSpeed thetaSource t * pinnedKernelSlice t s
+        * (-thetaSource.quantileFun s))) := by
+  have hmq : Measurable (quantileSpeed thetaSource) := measurable_const.div
+    (thetaSource.continuous_k.measurable.comp thetaSource.measurable_quantileFun)
+  have hset : MeasurableSet {p : ℝ × ℝ | p.1 ≤ p.2} :=
+    measurableSet_le measurable_fst measurable_snd
+  have hslice : Measurable (fun p : ℝ × ℝ => pinnedKernelSlice p.2 p.1) :=
+    (Measurable.ite hset measurable_const measurable_const).sub measurable_snd
+  exact ((hmq.comp measurable_snd).mul hslice).mul
+    ((thetaSource.measurable_quantileFun.comp measurable_fst).neg)
+
+theorem integrable_abs_quantileFun_thetaSource :
+    Integrable (fun s => |thetaSource.quantileFun s|) unitIntervalMeasure := by
+  rw [unitIntervalMeasure_eq]
+  exact integrableOn_quantileFun_thetaSource.abs
+
+theorem integrable_sq_quantileFun_thetaSource :
+    Integrable (fun s => thetaSource.quantileFun s ^ 2) unitIntervalMeasure := by
+  rw [unitIntervalMeasure_eq]
+  exact integrableOn_sq_quantileFun_thetaSource
+
+set_option maxHeartbeats 2000000 in
+theorem integrable_uncurry_slice_quantile :
+    Integrable (Function.uncurry (fun s t : ℝ =>
+      quantileSpeed thetaSource t * pinnedKernelSlice t s
+        * (-thetaSource.quantileFun s)))
+      (unitIntervalMeasure.prod unitIntervalMeasure) := by
+  have hhalf : (1 / 2 : ℝ) ∈ Ioo (0 : ℝ) 1 := by constructor <;> norm_num
+  set A : ℝ := absSliceMoment thetaSource (1 / 2) with hA
+  set B : ℝ := |thetaSource.quantileFun (1 / 2)| with hB
+  rw [integrable_prod_iff measurable_uncurry_slice_quantile.aestronglyMeasurable]
+  refine ⟨?_, ?_⟩
+  · filter_upwards [ae_unitIntervalMeasure_mem_Ioo] with s hs
+    simp only [Function.uncurry]
+    exact (integrable_quantileSpeed_mul_pinnedKernelSlice thetaSource
+      hasFiniteKernelEnergy_thetaSource hs).mul_const _
+  · have hdom : Integrable
+        (fun s => (A + B) * |thetaSource.quantileFun s| + thetaSource.quantileFun s ^ 2)
+        unitIntervalMeasure :=
+      (integrable_abs_quantileFun_thetaSource.const_mul (A + B)).add
+        integrable_sq_quantileFun_thetaSource
+    refine Integrable.mono' hdom
+      (measurable_uncurry_slice_quantile.aestronglyMeasurable.norm.integral_prod_right') ?_
+    filter_upwards [ae_unitIntervalMeasure_mem_Ioo] with s hs
+    simp only [Function.uncurry]
+    have hval : (∫ t, ‖quantileSpeed thetaSource t * pinnedKernelSlice t s
+          * (-thetaSource.quantileFun s)‖ ∂unitIntervalMeasure)
+        = |thetaSource.quantileFun s| * absSliceMoment thetaSource s := by
+      simp only [absSliceMoment]
+      rw [← MeasureTheory.integral_const_mul]
+      refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+      show ‖quantileSpeed thetaSource t * pinnedKernelSlice t s
+          * (-thetaSource.quantileFun s)‖
+        = |thetaSource.quantileFun s| * (quantileSpeed thetaSource t
+          * |pinnedKernelSlice t s|)
+      rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_neg,
+        abs_of_pos (quantileSpeed_pos thetaSource t)]
+      ring
+    have hle := absSliceMoment_le thetaSource hasFiniteKernelEnergy_thetaSource hs hhalf
+    have hQ : 0 ≤ |thetaSource.quantileFun s| := abs_nonneg _
+    have htri : |thetaSource.quantileFun s - thetaSource.quantileFun (1 / 2)|
+        ≤ |thetaSource.quantileFun s| + B := by
+      rw [hB]
+      exact abs_sub _ _
+    rw [Real.norm_eq_abs, abs_of_nonneg (integral_nonneg fun t => norm_nonneg _), hval]
+    nlinarith [sq_abs (thetaSource.quantileFun s)]
+
+
+
+set_option maxHeartbeats 2000000 in
+/-- **The double kernel integral is the source variance.** -/
+theorem integral_double_min_sub_eq :
+    (∫ t, ∫ u, quantileSpeed thetaSource t * quantileSpeed thetaSource u * (min t u - t * u)
+        ∂unitIntervalMeasure ∂unitIntervalMeasure)
+      = ∫ s, thetaSource.quantileFun s ^ 2 ∂unitIntervalMeasure := by
+  have hstep1 : (∫ t, ∫ u, quantileSpeed thetaSource t * quantileSpeed thetaSource u
+        * (min t u - t * u) ∂unitIntervalMeasure ∂unitIntervalMeasure)
+      = ∫ t, ∫ s, quantileSpeed thetaSource t * pinnedKernelSlice t s
+        * (-thetaSource.quantileFun s) ∂unitIntervalMeasure ∂unitIntervalMeasure := by
+    refine integral_congr_ae ?_
+    filter_upwards [ae_unitIntervalMeasure_mem_Ioo] with t ht
+    have h1 : (∫ u, quantileSpeed thetaSource t * quantileSpeed thetaSource u
+          * (min t u - t * u) ∂unitIntervalMeasure)
+        = quantileSpeed thetaSource t
+          * ∫ u, quantileSpeed thetaSource u * (min t u - t * u) ∂unitIntervalMeasure := by
+      rw [← MeasureTheory.integral_const_mul]
+      exact integral_congr_ae (Filter.Eventually.of_forall fun u => by ring)
+    have h2 := integral_quantileSpeed_min_sub thetaSource hasFiniteKernelEnergy_thetaSource ht
+    have h3 : (∫ s, pinnedKernelSlice t s * sliceMoment thetaSource s ∂unitIntervalMeasure)
+        = ∫ s, pinnedKernelSlice t s * (-thetaSource.quantileFun s) ∂unitIntervalMeasure := by
+      refine integral_congr_ae ?_
+      filter_upwards [ae_unitIntervalMeasure_mem_Ioo] with s hs
+      rw [sliceMoment_eq_neg_quantileFun hs]
+    have h4 : (∫ s, quantileSpeed thetaSource t * pinnedKernelSlice t s
+          * (-thetaSource.quantileFun s) ∂unitIntervalMeasure)
+        = quantileSpeed thetaSource t * ∫ s, pinnedKernelSlice t s
+          * (-thetaSource.quantileFun s) ∂unitIntervalMeasure := by
+      rw [← MeasureTheory.integral_const_mul]
+      exact integral_congr_ae (Filter.Eventually.of_forall fun s => by ring)
+    rw [h1, h2, h3, h4]
+  rw [hstep1, ← integral_integral_swap integrable_uncurry_slice_quantile]
+  refine integral_congr_ae ?_
+  filter_upwards [ae_unitIntervalMeasure_mem_Ioo] with s hs
+  have h5 : (∫ t, quantileSpeed thetaSource t * pinnedKernelSlice t s
+        * (-thetaSource.quantileFun s) ∂unitIntervalMeasure)
+      = (-thetaSource.quantileFun s) * sliceMoment thetaSource s := by
+    simp only [sliceMoment]
+    rw [← MeasureTheory.integral_const_mul]
+    exact integral_congr_ae (Filter.Eventually.of_forall fun t => by ring)
+  show (∫ t, quantileSpeed thetaSource t * pinnedKernelSlice t s
+      * (-thetaSource.quantileFun s) ∂unitIntervalMeasure) = _
+  rw [h5, sliceMoment_eq_neg_quantileFun hs]
+  ring
+
+set_option maxHeartbeats 2000000 in
+/-- **The trace calibration.**  The first nontrivial trace invariant of the compressed source
+inverse is the source variance:  `tr(B²) = M⁻¹ ∫ x² k(x) dx`. -/
+theorem thetaTraceSq_eq_source_variance :
+    thetaTraceSq
+      = ((thetaSource.mass⁻¹ * ∫ x : ℝ, x ^ 2 * thetaCuspFullSource x : ℝ) : ℂ) := by
+  rw [thetaTraceSq_eq_double_integral]
+  have hinner : ∀ t : ℝ, (∫ u, ((quantileSpeed thetaSource t * quantileSpeed thetaSource u
+        * (min t u - t * u) : ℝ) : ℂ) ∂unitIntervalMeasure)
+      = (((∫ u, quantileSpeed thetaSource t * quantileSpeed thetaSource u * (min t u - t * u)
+        ∂unitIntervalMeasure : ℝ)) : ℂ) := fun t => integral_complex_ofReal
+  rw [integral_congr_ae (Filter.Eventually.of_forall hinner), integral_complex_ofReal,
+    integral_double_min_sub_eq, unitIntervalMeasure_eq, integral_sq_quantileFun]
+
+
 end HedenmalmThetaSource
 
 end

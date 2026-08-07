@@ -416,6 +416,8 @@ starts the adjoint side.
 | `(9)` | the absolute slice mass `2 u (1-u)`, the majorant of the first interchange | `integral_abs_pinnedKernelSlice` |
 | `(9)` | the Riesz vectors of the two kernel fields | `toDual_symm_innerSL`, `toDual_symm_pinnedKernelField`, `toDual_symm_transposeKernelField`, `inner_riesz_eq` |
 | `(9)` | **`tr(B^2)` is the double kernel integral** `double integral of q(t) q(u) (min(t,u) - t u)` --- the quantile form of `2 integral over x<y of p(x)(1-p(y))` | `thetaTraceSq_eq_double_integral` |
+| `(9)` | the two interchanges and their product integrability | `integrable_uncurry_abs_slice`, `integral_quantileSpeed_min_sub`, `integrable_uncurry_slice_quantile`, `integral_double_min_sub_eq` |
+| `(9)` | **the trace calibration: `tr(B^2) = M^(-1) integral of x^2 k(x) dx`** | `thetaTraceSq_eq_source_variance` |
 
 Unlike the pinned row, the transposed row carries the quantile speed *inside* the vector, so it
 cannot be split as a scalar times a continuous slice family: `q` itself is not in `L^2` of the unit
@@ -429,17 +431,18 @@ proved with the *first* variable outside: for a fixed `u` the inner integral is
 `q(u)^2 integral of (1_(t<=u) - u)^2 dt = q(u)^2 u(1-u)`, whose integrability is exactly
 `HasFiniteKernelEnergy`, and `Integrable.integral_prod_right` then transposes it.
 
-The first displayed equality of `(9)` is therefore proved:
+**Statement `(9)` is closed.**  Both displayed equalities are proved:
 
 ```text
-tr(B^2) = double integral of q(t) q(u) (min(t,u) - t u),
+tr(B^2) = double integral of q(t) q(u) (min(t,u) - t u) = (1/M) integral of x^2 k(x) dx.
 ```
 
-which is exactly `2 integral over x<y of p(x)(1-p(y)) dx dy` after the quantile change of variables.
-What remains is the second equality, `= (1/M) integral of x^2 k(x) dx`.  Every ingredient of it is
-formalized: substituting the covariance decomposition `integral_pinnedKernelSlice_mul_min` and
-interchanging twice gives `integral of (sliceMoment s)^2 ds`, and `integral_sq_sliceMoment` evaluates
-that to the source variance.  Only the two Fubini interchanges are left.
+The first is `thetaTraceSq_eq_double_integral`, the second `thetaTraceSq_eq_source_variance`.  The
+second goes through two interchanges.  The first, `integral_quantileSpeed_min_sub`, dominates
+`q(u) slice(t,s) slice(u,s)` by `q(u) |slice(u,s)|` and takes `u` outside, where the inner integral
+is the absolute slice mass `2 u (1-u)`.  The second takes `s` outside --- with `t` outside the
+iterated bound diverges, because `q` is not integrable --- and its majorant is
+`|Q(s)| (A + |Q(s) - Q(1/2)|)`, integrable because `Q` lies in `L^1` and `L^2` of the unit interval.
 
 Corpus assets to use for the remaining items, rather than rebuilding them:
 `ContinuousLinearMap.IsHilbertSchmidt` (`HTGeometry/HilbertSchmidtOperator.lean`),
@@ -464,12 +467,9 @@ problem.
 
 Still missing: the **multiplicity clause** of
 `(6)` (the Grushin reduction to `diag(I, Xi_C)`; this clause is what
-`hedenmalm-prime-translation-rank-one-anomaly.md` cites for its Jordan length), the identification
-`(8)` of the regularized determinant with `Xi_C(z)/Xi_C(0)`, and the
-trace calibration `(9)`.  Both ends of `(9)` are now formalized --- the source variance
-`M^(-1) integral of x^2 k` in quantile form, and the well-posedness of `tr(B^2)` on the operator
-side --- so what is left of `(9)` is the *equality* between them, i.e. the kernel evaluation of the
-diagonal sum.  The corpus trace layer that makes this reachable is
+`hedenmalm-prime-translation-rank-one-anomaly.md` cites for its Jordan length) and the
+identification `(8)` of the regularized determinant with `Xi_C(z)/Xi_C(0)`.  The trace calibration
+`(9)` is **proved**.  The corpus trace layer that makes this reachable is
 `HTGeometry/HilbertSchmidtTrace.lean` (`opTrace`, `opTrace_comp_eq_hsInner`,
 `opTrace_comp_eq_tsum_basis`, `opTrace_comp_comm`, `norm_opTrace_comp_le`, and the kernel weld
 `HilbertSchmidt.opTrace_toOperator_comp`) --- it must not be rebuilt.
@@ -483,6 +483,7 @@ diagonal sum.  The corpus trace layer that makes this reachable is
 - [x] analytic multiplicity preserved
 - [x] exact normalized `det_2 = XiC`
 - [x] parity and trace calibration
+- [x] Lean trace calibration `(9)`: `tr(B^2) = M^(-1) integral of x^2 k`
 - [x] target-fed collision audit
 - [x] no RH or positivity overclaim
 - [x] bounded Grushin factorization, reciprocal eigenvalue law, and compactness transfer in Lean

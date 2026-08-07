@@ -90,6 +90,54 @@ theorem logDeriv_coneProduct_eq_tsum {a b : ℂ} (ha : 0 < a.im) (hb : 0 < b.im)
     (fun n => (differentiable_coneFactor a b n).differentiableOn)
     (summable_logDeriv_coneFactor ha hb z) hmult hprod
 
+/-! ### The elliptic gamma source -/
+
+/-- The elliptic gamma source `Ψ = δ log Γ`. -/
+def ellipticGammaSource (a b : ℂ) : ℂ → ℂ := logDeriv (ellipticGammaCone a b)
+
+/-- A period of a function is a period of its logarithmic derivative. -/
+theorem logDeriv_of_periodic {f : ℂ → ℂ} {p : ℂ} (hper : ∀ w, f (w + p) = f w) (z : ℂ) :
+    logDeriv f (z + p) = logDeriv f z := by
+  have hfun : (fun w => f (w + p)) = f := funext hper
+  have hd : deriv (fun w : ℂ => f (w + p)) z = deriv f (z + p) := deriv_comp_add_const f p z
+  rw [hfun] at hd
+  rw [logDeriv_apply, logDeriv_apply, ← hd, hper]
+
+/-- **The source is `1`-periodic.** -/
+theorem ellipticGammaSource_periodic (a b : ℂ) (z : ℂ) :
+    ellipticGammaSource a b (z + 1) = ellipticGammaSource a b z :=
+  logDeriv_of_periodic (ellipticGammaCone_periodic a b) z
+
+/-- **The source splits into two cone sources.**  Off the zeros of both cone products,
+`Ψ(z) = -(log Φ)′(a + b - z) - (log Φ)′(z)`. -/
+theorem ellipticGammaSource_eq_sub {a b : ℂ} (ha : 0 < a.im) (hb : 0 < b.im) {z : ℂ}
+    (hnum : coneProduct a b (a + b - z) ≠ 0) (hden : coneProduct a b z ≠ 0) :
+    ellipticGammaSource a b z
+      = -(logDeriv (coneProduct a b) (a + b - z)) - logDeriv (coneProduct a b) z := by
+  have hnumdiff : DifferentiableAt ℂ (fun w => coneProduct a b (a + b - w)) z :=
+    (differentiable_ellipticGammaConeNum ha hb) z
+  have hdendiff : DifferentiableAt ℂ (coneProduct a b) z := (differentiable_coneProduct ha hb) z
+  have hsplit : ellipticGammaSource a b z
+      = logDeriv (fun w => coneProduct a b (a + b - w)) z - logDeriv (coneProduct a b) z := by
+    rw [ellipticGammaSource, ellipticGammaCone]
+    exact logDeriv_div z hnum hden hnumdiff hdendiff
+  rw [hsplit]
+  congr 1
+  have hd : deriv (fun w => coneProduct a b (a + b - w)) z
+      = -deriv (coneProduct a b) (a + b - z) := by
+    have hinner : HasDerivAt (fun w : ℂ => a + b - w) (-1) z := by
+      simpa using (hasDerivAt_id z).const_sub (a + b)
+    have houter : HasDerivAt (coneProduct a b) (deriv (coneProduct a b) (a + b - z))
+        (a + b - z) := ((differentiable_coneProduct ha hb) (a + b - z)).hasDerivAt
+    have hcomp := houter.comp z hinner
+    rw [Function.comp_def] at hcomp
+    have hval : deriv (fun w => coneProduct a b (a + b - w)) z
+        = deriv (coneProduct a b) (a + b - z) * -1 := hcomp.deriv
+    rw [hval]
+    ring
+  rw [logDeriv_apply, logDeriv_apply, hd]
+  field_simp
+
 end
 
 end GaloisForLFunctions.HTGeometry

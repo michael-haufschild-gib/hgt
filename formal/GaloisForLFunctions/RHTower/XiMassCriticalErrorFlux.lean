@@ -633,7 +633,7 @@ theorem fourier_xiMassHalfShifted_eq_expFourier_two_pi (f : ℝ → ℂ) (w : �
   rw [mul_comm]
   congr 1
   push_cast
-  ring
+  ring_nf
 
 theorem integral_xiMassHalfWeightedFourier_eq_pointValue
     {a σ : ℝ} (hhalf : 1 / 2 < a) (hσ : 0 < σ) (u : ℝ) :
@@ -729,7 +729,7 @@ theorem stripFourier_xiMassAnalyticTest_neg
   push_cast
   rw [xiMassAnalyticTest_neg]
   congr 1
-  ring
+  ring_nf
 
 theorem xiMassPolarKernel_eq_halfWeighted_add_reflect
     (a σ u h : ℝ) :

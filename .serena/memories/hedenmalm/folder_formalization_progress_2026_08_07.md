@@ -1397,3 +1397,50 @@ ALL inputs of the last Fubini of (9) are now in the tree.  What is left is only:
   `absSliceMoment s := ∫_t q(t)|slice(t,s)| dt ≤ absSliceMoment (1/2) + |Q s − Q(1/2)|`
   (immediate from `abs_pinnedKernelSlice_sub` + `integral_quantileSpeed_indicator_Ico`
    + `quantileFun_le_quantileFun`), then the two interchanges.
+
+## Card 7 (9): the last majorant is BUILT (2026-08-08)
+
+`absSliceMoment S s := ∫_t q(t) |slice(t,s)| dt`
+`absSliceMoment_le : absSliceMoment S s ≤ absSliceMoment S c + |Q s − Q c|`
+plus `integrable_quantileSpeed_mul_abs_pinnedKernelSlice` and `integrableOn_quantileSpeed_Ico`.
+
+Mechanism: `|slice(t,s)| ≤ 1_{Ico(min s c, max s c)}(t) + |slice(t,c)|` (triangle inequality on
+`abs_pinnedKernelSlice_sub`), integrate, and `integral_quantileSpeed_indicator_Ico` +
+`quantileFun_le_quantileFun` turn the indicator term into `|Q s − Q c|`.
+
+TRAPS: `abs_add` is now `abs_add_le`.  `integral_mono` produces the goal in the Pi-add form
+`∫ (f + g) x`; `simp only [Pi.add_apply]` before `rw [integral_add …]`.
+
+EVERY INPUT of card 7 (9) IS NOW IN THE TREE.  The remaining work is exactly two Fubini
+interchanges, with their integrability now available:
+ (A) `∫_u q(u)(min(t,u)−tu) du = ∫_s slice(t,s) · sliceMoment s ds`
+     dominate `q(u)slice(t,s)slice(u,s)` by `q(u)|slice(u,s)|`, whose `u`-outer iterated integral
+     is `∫_u q(u)·2u(1−u) du` (`integral_abs_pinnedKernelSlice` + AM-GM against `hfin`).
+ (B) `∫_t q(t) ∫_s slice(t,s) sliceMoment s ds dt = ∫_s (sliceMoment s)² ds`
+     take `s` OUTSIDE (with `t` outside the iterated bound diverges); the `s`-inner integral is
+     `|Q s| · absSliceMoment s ≤ |Q s|(A + |Q s| + |Q(1/2)|)`, integrable by
+     `integrableOn_quantileFun_thetaSource` and `integrableOn_sq_quantileFun_thetaSource`.
+Then `integral_sq_sliceMoment` gives `M⁻¹∫x²k` and (9) is closed.
+
+## CARD 7 STATEMENT (9) IS CLOSED (2026-08-08)
+
+`thetaTraceSq_eq_source_variance : thetaTraceSq = ((M⁻¹ ∫ x² k(x) dx : ℝ) : ℂ)`
+in `RHTower/HedenmalmThetaTraceKernel.lean`, together with
+`thetaTraceSq_eq_double_integral` (the first displayed equality) and the two interchanges
+`integral_quantileSpeed_min_sub`, `integral_double_min_sub_eq` with their product integrability
+`integrable_uncurry_abs_slice`, `integrable_uncurry_slice_quantile`.
+
+The two interchanges, and why the ORDER matters:
+- FIRST (`u` outside): dominate `q(u) slice(t,s) slice(u,s)` by `q(u)|slice(u,s)|`; the inner
+  integral is `∫_s |slice(u,s)| ds = 2u(1−u)` (`integral_abs_pinnedKernelSlice`), so the outer is
+  `∫ q(u)·2u(1−u) du`, finite by AM-GM against `HasFiniteKernelEnergy`.
+- SECOND (`s` outside — with `t` outside the iterated bound DIVERGES since `∫q = ∞`): majorant
+  `|Q s|(A + |Q s − Q(1/2)|)` from `absSliceMoment_le`, integrable because `Q ∈ L¹ ∩ L²`
+  (`integrableOn_quantileFun_thetaSource`, `integrableOn_sq_quantileFun_thetaSource`).
+  Stated with `-Q` in place of `sliceMoment` so the integrand is manifestly measurable.
+
+TRAPS: after `rw [integrable_prod_iff …]` the goals carry `Function.uncurry` beta-redexes —
+`simp only [Function.uncurry]` before any `rw`/`exact`.  `AEStronglyMeasurable.integral_prod_right'`
+supplies the measurability of `fun x => ∫ y, ‖f (x,y)‖`.
+
+CARD 7 NOW NEEDS ONLY `(6)`-multiplicity and `(8)`.  Card 4's sole blocker is `(6)`-multiplicity.

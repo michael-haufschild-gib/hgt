@@ -5991,3 +5991,4 @@ import GaloisForLFunctions.HTGeometry.ZetaShiftDecomposition
 import GaloisForLFunctions.HTGeometry.ZetaTailClosedModulus
 import GaloisForLFunctions.HTGeometry.ZetaUpperEndHypertranscendence
 import GaloisForLFunctions.HTGeometry.ZetaVerticalAlmostPeriodic
+import GaloisForLFunctions.HTGeometry.PrimeNormalFlowResolvent

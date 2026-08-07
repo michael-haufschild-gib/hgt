@@ -816,3 +816,15 @@ divisors, integer powers give signed multiplicities" is formal for the gamma tra
 `Ψ = δ log Γ` is the difference of two such series, one at `z` and one at `a + b - z`.  This is the
 object the principal-part normal form `F − R_trip(F)Ψ ∈ Mer_DA` is written in, now available as an
 explicit convergent series rather than as a name.
+
+Added to the same module (wired, axiom-clean):
+
+    ellipticGammaSource            `Ψ = δ log Γ`, as a definition rather than a name
+    logDeriv_of_periodic           a period of a function is a period of its logarithmic derivative
+    ellipticGammaSource_periodic   **`Ψ(z+1) = Ψ(z)`**
+    ellipticGammaSource_eq_sub     **`Ψ(z) = -(log Φ)′(a+b-z) - (log Φ)′(z)`**, the splitting into
+                                   two convergent atom series
+
+So `Ψ` is now a constructed object with its `1`-periodicity proved and its two-series expansion
+available.  Its mixed difference is the logarithmic derivative of the cocycle `-e(-z)`, i.e. the
+constant `-2πi`, which is the statement that `Ψ` itself lies in the mixed-constraint class `Q`.

@@ -27,9 +27,10 @@ def criticalReciprocalNumerator (K : Type*) [Field K] (L : ℕ) :
     ℕ → MvPolynomial (Fin L) K
   | 0 => 1
   | k + 1 =>
-      -∑ i ∈ Finset.range (k + 1),
-        finiteRawX K L (i + 1) * criticalReciprocalNumerator K L (k - i) *
-          finiteRawX K L 0 ^ i
+      -∑ i : Fin (k + 1),
+        finiteRawX K L ((i : ℕ) + 1) *
+          criticalReciprocalNumerator K L (k - (i : ℕ)) *
+            finiteRawX K L 0 ^ (i : ℕ)
 termination_by k => k
 decreasing_by omega
 
@@ -66,16 +67,17 @@ theorem aeval_criticalReciprocalNumerator_testPoint
       · simp [criticalReciprocalNumerator]
       · rw [criticalReciprocalNumerator, map_neg, map_sum]
         simp only [map_mul, map_pow]
-        rw [Finset.sum_eq_single 0]
+        rw [Finset.sum_eq_single (⟨0, by omega⟩ : Fin (k + 1))]
         · rw [aeval_finiteRawX_succ K (by omega), if_pos rfl,
             Nat.sub_zero, ih k (by omega) (by omega),
             aeval_finiteRawX_zero K (by omega), pow_zero, mul_one, one_mul]
           rw [pow_succ]
           ring
-        · intro i hi hi0
-          have hi' : i < k + 1 := Finset.mem_range.mp hi
-          rw [aeval_finiteRawX_succ K (by omega), if_neg hi0, zero_mul, zero_mul]
-        · simp
+        · intro i _ hi0
+          have hi0' : (i : ℕ) ≠ 0 := fun h => hi0 (Fin.ext h)
+          rw [aeval_finiteRawX_succ K (by omega), if_neg hi0', zero_mul, zero_mul]
+        · intro hnot
+          exact (hnot (Finset.mem_univ (⟨0, by omega⟩ : Fin (k + 1)))).elim
 
 /-- For `m ≥ 2`, the reciprocal numerator does not vanish identically on `x_m=0`. -/
 theorem criticalReciprocalNumerator_not_mem_coordDivisor
@@ -94,6 +96,50 @@ theorem criticalReciprocalNumerator_not_mem_coordDivisor
   rw [hcoord] at hdvd
   exact (pow_ne_zero k (neg_ne_zero.mpr one_ne_zero)) (zero_dvd_iff.mp hdvd)
 
+/-- The constant actual reciprocal coordinate is the inverse raw constant coordinate. -/
+theorem criticalSourceRecip_zero_eq_inv
+    (K : Type*) [Field K] {m n : ℕ} (hL : 0 < m + n) :
+    criticalSourceRecip K m n ⟨0, hL⟩ =
+      (criticalSourceRaw K m n ⟨0, hL⟩)⁻¹ := by
+  have hmul := congrArg (genericJetFieldMap K (m + n))
+    (genericRaw_zero_mul_inv K (m + n))
+  rw [map_mul, map_one] at hmul
+  apply Subtype.ext
+  apply eq_inv_of_mul_eq_one_right
+  simpa [criticalSourceRecip, criticalSourceRaw, criticalAmbientRaw,
+    criticalAmbientRecip, genericRecip] using hmul
+
+/-- Actual reciprocal coordinates obey the ordinary truncated inverse recurrence internally in
+the source field. -/
+theorem criticalSourceRecip_succ
+    (K : Type*) [Field K] {m n k : ℕ} (hk : k + 1 < m + n) :
+    criticalSourceRecip K m n ⟨k + 1, hk⟩ =
+      -criticalSourceRecip K m n ⟨0, by omega⟩ *
+        ∑ i : Fin (k + 1),
+          criticalSourceRaw K m n ⟨(i : ℕ) + 1, by omega⟩ *
+            criticalSourceRecip K m n ⟨k - (i : ℕ), by omega⟩ := by
+  apply (criticalSourceField K m n).val.injective
+  simp only [map_neg, map_mul, map_sum]
+  change genericJetFieldMap K (m + n) (genericRecip K (m + n) (k + 1)) =
+    -genericJetFieldMap K (m + n) (genericRecip K (m + n) 0) *
+      ∑ i : Fin (k + 1),
+        genericJetFieldMap K (m + n) (genericRaw K (m + n) ((i : ℕ) + 1)) *
+          genericJetFieldMap K (m + n) (genericRecip K (m + n) (k - (i : ℕ)))
+  conv_lhs => rw [genericRecip]
+  rw [map_mul, map_neg, map_sum]
+  simp only [map_mul]
+  rw [← Fin.sum_univ_eq_sum_range]
+  rw [genericRecip]
+
+/-- Evaluating a present finite raw variable at the actual raw source coordinates returns that
+coordinate. -/
+@[simp] theorem aeval_criticalSourceRaw_finiteRawX
+    (K : Type*) [Field K] {m n j : ℕ} (hj : j < m + n) :
+    MvPolynomial.aeval (criticalSourceRaw K m n)
+        (finiteRawX K (m + n) j) =
+      criticalSourceRaw K m n ⟨j, hj⟩ := by
+  rw [finiteRawX, dif_pos hj, MvPolynomial.aeval_X]
+
 /-- Actual reciprocal coefficients equal the cleared numerator divided by the expected power of
 the actual raw constant coordinate. -/
 theorem criticalSourceRecip_eq_numerator_div
@@ -110,41 +156,42 @@ theorem criticalSourceRecip_eq_numerator_div
   | h k ih =>
       rcases k with _ | k
       · rw [criticalReciprocalNumerator, map_one, pow_one, one_div]
-        have hmul := congrArg (genericJetFieldMap K (m + n))
-          (genericRaw_zero_mul_inv K (m + n))
-        rw [map_mul, map_one] at hmul
-        apply Subtype.ext
-        apply eq_inv_of_mul_eq_one_right
-        simpa [criticalSourceRecip, criticalSourceRaw, criticalAmbientRaw,
-          criticalAmbientRecip, genericRecip] using hmul
+        exact criticalSourceRecip_zero_eq_inv K (by omega)
       · have hk' : k + 1 < m + n := by omega
-        rw [criticalReciprocalNumerator, map_neg, map_sum]
+        rw [criticalSourceRecip_succ K hk',
+          criticalSourceRecip_zero_eq_inv K (by omega),
+          criticalReciprocalNumerator, map_neg, map_sum]
         simp only [map_mul, map_pow]
-        apply Subtype.ext
-        change genericJetFieldMap K (m + n)
-            (genericRecip K (m + n) (k + 1)) = _
-        rw [genericRecip, map_mul, map_neg, map_sum]
-        simp only [criticalSourceRaw, criticalAmbientRaw, map_neg, map_mul, map_sum, map_pow]
-        have hinv : genericJetFieldMap K (m + n) (genericInv K (m + n)) =
-            (criticalAmbientRaw K m n 0)⁻¹ := by
-          apply eq_inv_of_mul_eq_one_right
-          simpa [criticalAmbientRaw] using congrArg
-            (genericJetFieldMap K (m + n)) (genericRaw_zero_mul_inv K (m + n))
-        rw [hinv]
-        simp only [criticalAmbientRaw]
-        rw [div_eq_iff (pow_ne_zero (k + 2) (by
-          simpa [criticalSourceRaw, criticalAmbientRaw] using hs))]
+        rw [show k + 1 + 1 = k + 2 by omega]
+        rw [eq_div_iff (pow_ne_zero (k + 2) (by
+          simpa using hs))]
         rw [Finset.mul_sum]
+        rw [Finset.sum_mul, ← Finset.sum_neg_distrib]
         apply Finset.sum_congr rfl
-        intro i hi
-        have hi' : i < k + 1 := Finset.mem_range.mp hi
-        have hki : k - i < m + n := by omega
-        have hrec := ih (k - i) (by omega) hki
-        apply_fun Subtype.val at hrec
-        simp only [criticalSourceRecip, criticalSourceRaw, criticalAmbientRaw,
-          Subtype.coe_div, Subtype.coe_pow] at hrec
-        rw [hrec]
+        intro i _
+        have hki : k - (i : ℕ) < m + n := by omega
+        have hrec := ih (k - (i : ℕ)) (by omega) hki
+        rw [hrec hs,
+          aeval_criticalSourceRaw_finiteRawX K (by omega : (i : ℕ) + 1 < m + n),
+          aeval_criticalSourceRaw_finiteRawX K (by omega : 0 < m + n)]
         field_simp
+        have hi_le : (i : ℕ) ≤ k := Nat.le_of_lt_succ i.isLt
+        have hpow : criticalSourceRaw K m n ⟨0, by omega⟩ *
+              criticalSourceRaw K m n ⟨0, by omega⟩ ^ (k - (i : ℕ) + 1) *
+                criticalSourceRaw K m n ⟨0, by omega⟩ ^ (i : ℕ) =
+            criticalSourceRaw K m n ⟨0, by omega⟩ ^ (k + 2) := by
+          calc
+            _ = criticalSourceRaw K m n ⟨0, by omega⟩ ^ 1 *
+                  criticalSourceRaw K m n ⟨0, by omega⟩ ^ (k - (i : ℕ) + 1) *
+                    criticalSourceRaw K m n ⟨0, by omega⟩ ^ (i : ℕ) := by rw [pow_one]
+            _ = criticalSourceRaw K m n ⟨0, by omega⟩ ^
+                  (1 + (k - (i : ℕ) + 1)) *
+                    criticalSourceRaw K m n ⟨0, by omega⟩ ^ (i : ℕ) := by
+                      rw [← pow_add]
+            _ = criticalSourceRaw K m n ⟨0, by omega⟩ ^
+                  (1 + (k - (i : ℕ) + 1) + (i : ℕ)) := by rw [← pow_add]
+            _ = _ := by congr 1; omega
+        rw [← hpow]
         ring
 
 end

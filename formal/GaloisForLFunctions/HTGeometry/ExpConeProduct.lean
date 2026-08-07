@@ -470,4 +470,81 @@ theorem coneProduct_comm (a b : ℂ) (z : ℂ) : coneProduct a b z = coneProduct
   simp [Equiv.prodComm]
   ring
 
+/-! ### The single-index product is entire -/
+
+theorem differentiable_singleFactor (b : ℂ) (k : ℕ) :
+    Differentiable ℂ (singleFactor b k) := by
+  unfold singleFactor expChar
+  fun_prop
+
+theorem hasProdLocallyUniformlyOn_singleFactor {b : ℂ} (hb : 0 < b.im) :
+    HasProdLocallyUniformlyOn (singleFactor b) (singleProduct b) Set.univ := by
+  classical
+  apply hasProdLocallyUniformlyOn_of_forall_compact isOpen_univ
+  intro K _ hK
+  obtain ⟨C, hC⟩ := hK.bddAbove_image (continuous_norm (E := ℂ)).continuousOn
+  set R : ℝ := max C 0 with hR
+  have hRnn : (0 : ℝ) ≤ R := le_max_right _ _
+  have hKR : ∀ z ∈ K, ‖z‖ ≤ R := fun z hz =>
+    (hC (Set.mem_image_of_mem _ hz)).trans (le_max_left _ _)
+  set B : ℝ := Real.exp (-(2 * Real.pi) * b.im) with hB
+  have hBpos : 0 ≤ B := (Real.exp_pos _).le
+  have hB1 : B < 1 := by rw [hB, Real.exp_lt_one_iff]; nlinarith [Real.pi_pos]
+  set u : ℕ → ℝ := fun k => Real.exp (2 * Real.pi * R) * B ^ k with hu
+  have husum : Summable u := (summable_geometric_of_lt_one hBpos hB1).mul_left _
+  have hbound : ∀ᶠ k : ℕ in cofinite, ∀ z ∈ K, ‖singleFactor b k z - 1‖ ≤ u k := by
+    refine Filter.Eventually.of_forall fun k z hz => ?_
+    rw [norm_singleFactor_sub_one, hu]
+    refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+    refine Real.exp_le_exp.mpr ?_
+    have him : |z.im| ≤ R := (abs_im_le_norm z).trans (hKR z hz)
+    nlinarith [Real.pi_pos, abs_le.mp him]
+  have hcont : ∀ k : ℕ, ContinuousOn (fun z => singleFactor b k z - 1) K := fun k =>
+    ((differentiable_singleFactor b k).continuous.sub continuous_const).continuousOn
+  have hprod := Summable.hasProdUniformlyOn_one_add hK husum hbound hcont
+  have heq : (fun (k : ℕ) (z : ℂ) => 1 + (singleFactor b k z - 1)) = singleFactor b := by
+    funext k z; ring
+  have heq2 : (fun z : ℂ => ∏' k : ℕ, (1 + (singleFactor b k z - 1))) = singleProduct b := by
+    funext z
+    rw [singleProduct]
+    exact tprod_congr fun k => by ring
+  rw [heq, heq2] at hprod
+  exact hprod
+
+/-- **The single-index product is entire.** -/
+theorem differentiable_singleProduct {b : ℂ} (hb : 0 < b.im) :
+    Differentiable ℂ (singleProduct b) := by
+  have ht : TendstoLocallyUniformlyOn
+      (fun (S : Finset ℕ) (z : ℂ) => ∏ k ∈ S, singleFactor b k z)
+      (singleProduct b) atTop Set.univ :=
+    hasProdLocallyUniformlyOn_iff_tendstoLocallyUniformlyOn.mp
+      (hasProdLocallyUniformlyOn_singleFactor hb)
+  have hd : ∀ᶠ S : Finset ℕ in atTop,
+      DifferentiableOn ℂ (fun z => ∏ k ∈ S, singleFactor b k z) Set.univ := by
+    filter_upwards with S
+    exact DifferentiableOn.fun_finsetProd fun k _ =>
+      (differentiable_singleFactor b k).differentiableOn
+  have := ht.differentiableOn hd isOpen_univ
+  exact fun z => this.differentiableAt (by simp)
+
+/-- The single-index product vanishes exactly where a factor does. -/
+theorem singleProduct_eq_zero_iff {b : ℂ} (hb : 0 < b.im) (z : ℂ) :
+    singleProduct b z = 0 ↔ ∃ k : ℕ, singleFactor b k z = 0 := by
+  constructor
+  · intro h
+    by_contra hcon
+    simp only [not_exists] at hcon
+    have hne : ∀ k : ℕ, 1 + (singleFactor b k z - 1) ≠ 0 := by
+      intro k
+      have heq : (1 : ℂ) + (singleFactor b k z - 1) = singleFactor b k z := by ring
+      rw [heq]
+      exact hcon k
+    have hprod : ∏' k : ℕ, (1 + (singleFactor b k z - 1)) ≠ 0 :=
+      tprod_one_add_ne_zero_of_summable hne (summable_norm_singleFactor_sub_one hb z)
+    apply hprod
+    rw [← h, singleProduct]
+    exact tprod_congr fun k => by ring
+  · intro h
+    exact tprod_of_exists_eq_zero h
+
 end GaloisForLFunctions.HTGeometry
