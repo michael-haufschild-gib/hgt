@@ -1325,3 +1325,17 @@ coordinate, and the deck group acts on that coordinate by scaling.  The last ste
 instance is that a scaling-invariant element of `F⟨ℓ⟩(y)` lies in `F⟨ℓ⟩`: writing it as `P(y)/Q(y)`
 with `P, Q` coprime, invariance forces `P(aY) = λ P(Y)` and `Q(aY) = λ Q(Y)`, so both are monomials
 of equal degree; in characteristic zero a single scalar with `a^i ≠ a^j` for `i ≠ j` suffices.
+
+`GaloisForLFunctions/HTGeometry/ScalingInvariantRationalFunction.lean` (wired, axiom-clean) is the
+polynomial core of the last step:
+
+    scaling_eigenvalue_eq_pow                  a scaling eigenvector has eigenvalue `a^{deg}`
+    eq_monomial_of_comp_scaling                such an eigenvector is a monomial
+    natDegree_comp_scaling, comp_scaling_ne_zero, exists_scaling_eigenvalue
+    natDegree_eq_zero_of_scaling_invariant :
+      a coprime pair `P, Q` with `P(aX)·Q = P·Q(aX)` and pairwise distinct powers of `a` has
+      `deg P = deg Q = 0`
+
+so a scaling-invariant element of `L(y)` is a constant of `L`.  What remains is the bridge:
+writing `x ∈ F⟨ℓ⟩(y)` as `P(y)/Q(y)` with `P, Q` coprime over `F⟨ℓ⟩`, transporting
+`σ x = x` into that polynomial identity through transcendence of `y`, and reading off `x ∈ F⟨ℓ⟩`.

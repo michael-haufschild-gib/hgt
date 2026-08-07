@@ -1527,3 +1527,23 @@ the whole output, so `Finset.sum_eq_single_of_mem` applies with the other terms 
 
 Axioms: `propext, Classical.choice, Quot.sound` (`tensorPairₗ_naturality` needs only
 `propext, Quot.sound`).
+
+## The algebra layer reaches the module layer
+
+`CDGATensorAlgebraBridge.lean` — **`zeroActHom`**, **`tensorMapLeft_zeroActHom_constCellTower`**.
+
+Forgetting the action of an algebra on itself turns a morphism of commutative differential graded
+algebras into a morphism of differential graded modules with zero action, over any base algebra
+whatever.  Under that forgetting, the comparison induced on a tensor product of algebras *is* the
+module-level comparison in the left variable — the differential of a tensor product of algebras
+being `tensorD` of two zero-action modules — so every invariance theorem of the module layer applies
+to it unchanged.  The cell-tower theorem is recorded in that form:
+
+> if the right factor is a tower of cells for the ground ring and the comparison of left factors is
+> a full quasi-isomorphism, then so is the comparison of tensor products.
+
+Universes are the only friction: `CDGAConstCellTensor` puts the ground ring in the same universe as
+the modules, so the bridge must too.
+
+Axioms: `propext, Quot.sound` for `zeroActHom`; `propext, Classical.choice, Quot.sound` for the
+invariance.

@@ -5,7 +5,10 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
+| Kind | Location | Context | Text |
+|---|---|---|---|
+| proof-debt | `formal/GaloisForLFunctions/RHTower/Sieve/LorentzianMeanSquare.lean:163` | `theorem integral_lorentz_normSq_logPoly_le_count` | `sorry` |
+| proof-debt | `formal/GaloisForLFunctions/RHTower/Sieve/LorentzianMeanSquare.lean:164` | `theorem integral_lorentz_normSq_logPoly_le_count` | `sorry` |
 
 ## Large Files
 
@@ -17,8 +20,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
 | 6316 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularDivision/StructuredCircuit.lean` |
 | 6194 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Decomposition.lean` |
-| 6094 | `formal/GaloisForLFunctions/RHTower.lean` |
-| 5887 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 6096 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 5889 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 5058 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 4763 | `formal/GaloisForLFunctions/HTGeometry/GaussianTorsionLanguageTailLock.lean` |
 | 4479 | `formal/GaloisForLFunctions/QuantumAlg/Core/Components/EncodedBitGates.lean` |

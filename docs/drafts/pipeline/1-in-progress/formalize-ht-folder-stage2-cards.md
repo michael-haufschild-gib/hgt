@@ -164,3 +164,18 @@ data only.  Every card boundary note deferring to it is stale.
 3. Cards 5 and 6 still need parabolic-orbifold uniformization and the complete-tail identification.
 4. Card 8 needs Pong 5.9, Andersson's arbitrary-divisor theorem and Saksman–Webb/Seip.
 5. Card 9 needs Barnes asymptotics and the Sibuya–Ramis exact Gevrey-order theorem.
+
+
+## Built this cycle (card 7, `G_m` instance)
+
+```text
+HTGeometry/FreeDifferentialScalingAutomorphism.lean   the deck automorphism `y ↦ a·y`, constructed
+HTGeometry/LogarithmicDerivativeFixedField.lean       it fixes `ℓ = y′/y` and all of `F⟨ℓ⟩`;
+                                                       `F⟨ℓ⟩(y) = F⟨y⟩`; `y` transcendental over `F⟨ℓ⟩`
+HTGeometry/ScalingInvariantRationalFunction.lean      a scaling-invariant coprime fraction is constant
+```
+
+Remaining bridge for the `G_m` fixed-field theorem: write `x ∈ F⟨ℓ⟩(y)` as `P(y)/Q(y)` with `P, Q`
+coprime over `F⟨ℓ⟩` (via `RatFunc.algEquivOfTranscendental` and the corpus's `ratFuncEval`),
+transport `σ x = x` to `P(aY)·Q = P·Q(aY)` using transcendence of `y`, then apply
+`natDegree_eq_zero_of_scaling_invariant`.

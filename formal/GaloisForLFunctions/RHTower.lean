@@ -6094,3 +6094,4 @@ import GaloisForLFunctions.RHTower.Sieve.PartialSumMellinBridge
 import GaloisForLFunctions.RHTower.Sieve.GallagherReverse
 import GaloisForLFunctions.RHTower.Sieve.GallagherAlmostDiagonal
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogWindowCount
+import GaloisForLFunctions.RHTower.Sieve.LorentzianMeanSquare

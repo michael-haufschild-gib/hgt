@@ -129,6 +129,64 @@ theorem compactNormalMultiplier_root (n : ℕ) (ζ : ℂ) :
   congr 1
   rw [inv_neg, inv_inv, neg_neg]
 
+
+/-! ### The first-order normalized frame symbol -/
+
+/-- The frame symbol `b_n(t) = t a_n(t) = 2 n^{-1/2} sin(t log n / 2)`. -/
+def frameSymbol (n : ℕ) (t : ℝ) : ℝ :=
+  2 * ((n : ℝ) ^ (-(1 / 2 : ℝ))) * Real.sin (t * Real.log n / 2)
+
+/-- **The first-order normalization of the multiplier.**  Removing the common first-order decay
+leaves a bounded pure sine. -/
+theorem mul_centeredMultiplier_eq_frameSymbol (n : ℕ) {t : ℝ} (ht : t ≠ 0) :
+    (t : ℂ) * centeredMultiplier n (t : ℂ) = ((frameSymbol n t : ℝ) : ℂ) := by
+  have htc : (t : ℂ) ≠ 0 := by exact_mod_cast ht
+  rw [centeredMultiplier_eq_sin n htc, frameSymbol]
+  have hsin : Complex.sin ((t : ℂ) * ((Real.log n / 2 : ℝ) : ℂ))
+      = ((Real.sin (t * Real.log n / 2) : ℝ) : ℂ) := by
+    rw [show (t : ℂ) * ((Real.log n / 2 : ℝ) : ℂ) = ((t * Real.log n / 2 : ℝ) : ℂ) by
+      push_cast; ring]
+    rw [← Complex.ofReal_sin]
+  rw [hsin]
+  field_simp
+  push_cast
+  ring
+
+theorem abs_frameSymbol_le (n : ℕ) (t : ℝ) :
+    |frameSymbol n t| ≤ 2 * ((n : ℝ) ^ (-(1 / 2 : ℝ))) := by
+  have hpow : (0 : ℝ) ≤ (n : ℝ) ^ (-(1 / 2 : ℝ)) := Real.rpow_nonneg (Nat.cast_nonneg n) _
+  rw [frameSymbol, abs_mul]
+  have h1 : |2 * ((n : ℝ) ^ (-(1 / 2 : ℝ)))| = 2 * ((n : ℝ) ^ (-(1 / 2 : ℝ))) := by
+    rw [abs_of_nonneg (by positivity)]
+  rw [h1]
+  nlinarith [Real.abs_sin_le_one (t * Real.log n / 2), abs_nonneg (Real.sin (t * Real.log n / 2))]
+
+/-- **The multiplier decays like `1/|t|` on the real axis.**  This is the first frame
+obstruction: the analytic frame has no uniform lower bound as a bounded Fourier multiplier. -/
+theorem norm_centeredMultiplier_le (n : ℕ) {t : ℝ} (ht : t ≠ 0) :
+    ‖centeredMultiplier n (t : ℂ)‖ ≤ 2 * ((n : ℝ) ^ (-(1 / 2 : ℝ))) / |t| := by
+  have habs : ‖(t : ℂ)‖ = |t| := by
+    rw [Complex.norm_real, Real.norm_eq_abs]
+  have hpos : 0 < |t| := abs_pos.mpr ht
+  have h := mul_centeredMultiplier_eq_frameSymbol n ht
+  have hnorm : |t| * ‖centeredMultiplier n (t : ℂ)‖ = |frameSymbol n t| := by
+    rw [← habs, ← norm_mul, h, Complex.norm_real, Real.norm_eq_abs]
+  rw [le_div_iff₀ hpos, mul_comm]
+  rw [hnorm]
+  exact abs_frameSymbol_le n t
+
+/-- **The two-prime frame symbol pair tends to zero.**  Both multipliers vanish at infinity on the
+real axis, so no Bezout pair for them is bounded there. -/
+theorem tendsto_norm_centeredMultiplier_atTop (n : ℕ) :
+    Tendsto (fun t : ℝ => ‖centeredMultiplier n (t : ℂ)‖) atTop (𝓝 0) := by
+  have hdom : Tendsto (fun t : ℝ => 2 * ((n : ℝ) ^ (-(1 / 2 : ℝ))) / |t|) atTop (𝓝 0) := by
+    have habs : Tendsto (fun t : ℝ => |t|) atTop atTop := tendsto_abs_atTop_atTop
+    exact Filter.Tendsto.div_atTop tendsto_const_nhds habs
+  refine squeeze_zero' (Filter.Eventually.of_forall fun t => norm_nonneg _) ?_ hdom
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
+  exact norm_centeredMultiplier_le n (ne_of_gt ht)
+
+
 end HedenmalmThetaSource
 
 end

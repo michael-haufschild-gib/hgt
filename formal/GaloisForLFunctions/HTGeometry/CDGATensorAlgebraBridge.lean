@@ -14,11 +14,11 @@ invariance theorem proved for `− ⊗ −` on modules applies verbatim to a ten
 * `HTGeometry.tensorCDGAMap_isQuasiIsoFull_of_constCellTower` : invariance for a cell tower.
 -/
 
-universe u w
+universe w
 
 namespace GaloisForLFunctions.HTGeometry
 
-variable {R : Type u} [CommRing R]
+variable {R : Type w} [CommRing R]
   {X₀ : ℕ → Type w} [∀ n, AddCommGroup (X₀ n)] [∀ n, Module R (X₀ n)] {A₀ : CDGAStructure R X₀}
   {X : ℕ → Type w} [∀ n, AddCommGroup (X n)] [∀ n, Module R (X n)]
   {X' : ℕ → Type w} [∀ n, AddCommGroup (X' n)] [∀ n, Module R (X' n)]

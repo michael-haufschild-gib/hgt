@@ -439,6 +439,8 @@ source, with no hypothesis: one integration by parts on the line, the window der
 | `(16)` | **two literal primes retain every `Xi` point and its exact multiplicity** | `two_prime_retains_analyticOrder`, `two_prime_retains_divisor` |
 | `(18)`,`(19)` | the compact reciprocal multiplier `A_n(mu) = 2 n^(-1/2) mu sin(L_n/(2 mu))` | `compactNormalMultiplier`, `compactNormalMultiplier_eq` |
 | `(20)` | `A_n(-1/zeta) = a_n(zeta)` on every root block | `compactNormalMultiplier_root` |
+| `(23)` | the first-order normalized frame symbol `b_n(t) = t a_n(t) = 2 n^(-1/2) sin(t log n / 2)` | `frameSymbol`, `mul_centeredMultiplier_eq_frameSymbol`, `abs_frameSymbol_le` |
+| `(22)` | **the multiplier decays like `1/abs t`, so `abs a_2 + abs a_3 -> 0`** | `norm_centeredMultiplier_le`, `tendsto_norm_centeredMultiplier_atTop` |
 
 **Positive-kernel self-adjoint channels.**  `formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeChannels.lean`
 (namespace `RHTower.HedenmalmThetaSource`).
@@ -457,7 +459,16 @@ Still missing: the conormal generation statement `(13)`--`(14)`.  This needs Wed
 for entire functions --- two entire functions without a common zero generate the unit ideal, which
 requires Weierstrass products and Mittag-Leffler interpolation.  It is absent from the corpus and
 from mathlib, and it is the one real infrastructure gap left on this card; the analytic-cokernel
-half of `(17)` rests on it.  Also missing: the three frame obstructions.
+half of `(17)` rests on it.
+
+Of the three frame obstructions, the first --- `(22)`/`(23)`, no bounded Bezout pair on the real
+axis --- is now formalized.  The two Kronecker obstructions `(25)` and `(27)` are not yet built,
+but both of their inputs already exist in the corpus:
+`GaloisForLFunctions.linearIndependent_log_primes` (rational independence of the prime logarithms)
+and `GaloisForLFunctions.kronecker_approx` in `HTGeometry/KroneckerWeylDensity.lean`.  What
+`kronecker_approx` still lacks for `(25)` is a lower bound on the approximating time: its Bohr-mean
+contradiction only uses the tail, so the same proof gives `for all T, exists t > T`, but that
+strengthened form has to be stated and proved.
 
 ## Gates
 

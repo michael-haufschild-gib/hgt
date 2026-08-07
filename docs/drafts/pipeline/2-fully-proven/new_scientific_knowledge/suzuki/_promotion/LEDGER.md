@@ -1807,3 +1807,54 @@ applied at fixed `h`. The corpus's `L2FourierMultiplier` provides it for `Lp` el
 (`norm_fourierL2_apply`); what is missing is only the bridge from a concrete `u : ℝ → ℂ` to its
 `Lp` class. Everything downstream of that bridge — Tonelli, the scaling law, the constant — is
 built.
+
+## AM. The concrete-to-`Lp` bridge is a corpus idiom, not a missing theorem
+
+Checked before building. The corpus already carries three worked instances of exactly the bridge
+prerequisite 1 needs — a concrete function, its `Lp` class, and the agreement of the `L²` Fourier
+transform with the honest integral:
+
+    HTGeometry/ApertureFourierPairing.apertureFourier_toLp
+    HTGeometry/GaussianSchwartz.fourier_gaussianSchwartz_toLp
+    HTGeometry/HermiteFourierEigen.fourier_hermiteSchwartz_toLp
+
+The idiom in all three is the same and should be copied verbatim:
+
+    rw [<the Lp-level identity>]
+    refine integral_congr_ae ?_
+    filter_upwards [hf.coeFn_toLp] with x hx
+    rw [hx]
+
+i.e. `MemLp.coeFn_toLp` gives `(hf.toLp f : ℝ → ℂ) =ᵐ f`, and every passage between the `Lp`
+element and the concrete function is that one `filter_upwards`. There is **no missing theorem**
+here; the remaining work on the `∫∫ … dx` form is this rewrite applied to
+`norm_fourierL2_apply`, and it is bookkeeping of a shape the corpus has already done three times.
+
+Note for whoever continues: the conversion factor `integral_normSq_differenceSymbol` (section AL)
+is stated pointwise in `ξ` and needs none of this. Only the fully integrated
+`∫∫ |u(x+h) − u(x)|² |h|^{−(1+2s)} dh dx = c_s ∫ |û|² |ξ|^{2s}` does.
+
+## AN. Correction: the trace card does have an unknown left
+
+Section AL/AM and the session summary said `suzuki-weak-signed-half-log-trace` had "no unknowns
+left" and needed only composition. **That is wrong.** Tracing the card's logic:
+
+- `(12)` gives `α = lim A` exists — built (`tendsto_halfLogAverage`).
+- `(13)` gives `liminf H ≤ α ≤ limsup H` — built (`halfLogAverage_le`, `le_halfLogAverage`).
+
+But `(4)` asserts `lim √L F(L) = β` **exists**. A two-sided bound `liminf H ≤ α ≤ limsup H` does
+*not* produce a limit: it is consistent with `liminf H < limsup H`, i.e. with `H` oscillating
+around `α` forever. Convergence of the average never implies convergence of the sequence — that is
+the classical Cesàro gap, and it is exactly what §4's mollification argument exists to close.
+
+So the genuine remaining obligation on this card is the **squeeze `liminf H = limsup H`**, and its
+mechanism is §4: mollify, use that `R_full` and `Y` commute with convolution while multiplication
+by `L` does not, and let the commutator defect (`MollifierPositionCommutator.mollify_position_eq`,
+which is `O(ε)` because the first-moment kernel has mass `ε`) vanish as `ε → 0`. The commutator is
+built; the limiting argument that turns it into an oscillation bound on `H` is not.
+
+**Do not attempt the assembly as a pure composition of `(12)` and `(13)`.** It cannot work, and
+any proof that appears to do it has an error.
+
+Same caution for `suzuki-two-port-return-redundancy`: check whether its `(14)` really follows from
+the integrated Gagliardo identity alone before assuming that card is one rewrite from done.

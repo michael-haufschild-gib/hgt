@@ -73,4 +73,39 @@ theorem mollify_add (ρ u v : ℝ → ℝ) (hρ : Continuous ρ) (hu : Continuou
   simp only [mul_add]
   exact integral_add h1 h2
 
+/-! ## The commutator defect is of order the mollifier width
+
+Multiplication by the coordinate is the only operation that fails to commute with mollification,
+and its defect is mollification against the first-moment kernel.  For a mollifier of unit mass
+supported within `ε` of the origin that kernel has `L¹` mass at most `ε`, so the defect vanishes
+linearly in the width.  This is the quantitative statement a squeeze argument consumes.
+-/
+
+/-- **The first-moment kernel is of order the width.**  A unit-mass mollifier supported in
+`[−ε, ε]` has first-moment kernel of `L¹` mass at most `ε`. -/
+theorem integral_abs_firstMomentKernel_le {ρ : ℝ → ℝ} {ε : ℝ}
+    (hnn : ∀ t, 0 ≤ ρ t) (hsupp : ∀ t, ε < |t| → ρ t = 0)
+    (hint : Integrable ρ) (hmass : (∫ t, ρ t) = 1) :
+    (∫ t, |firstMomentKernel ρ t|) ≤ ε := by
+  have hpt : ∀ t : ℝ, |firstMomentKernel ρ t| ≤ ε * ρ t := by
+    intro t
+    unfold firstMomentKernel
+    rw [abs_mul, abs_of_nonneg (hnn t)]
+    rcases le_or_gt |t| ε with ht | ht
+    · exact mul_le_mul_of_nonneg_right ht (hnn t)
+    · rw [hsupp t ht]
+      simp
+  have hdom : Integrable fun t => ε * ρ t := hint.const_mul ε
+  have hmeas : AEStronglyMeasurable (fun t => |firstMomentKernel ρ t|) volume := by
+    unfold firstMomentKernel
+    exact (aestronglyMeasurable_id.mul hint.aestronglyMeasurable).norm
+  have hIint : Integrable fun t => |firstMomentKernel ρ t| := by
+    refine Integrable.mono' hdom hmeas ?_
+    filter_upwards with t
+    rw [Real.norm_eq_abs, abs_abs]
+    exact hpt t
+  have hmono : (∫ t, |firstMomentKernel ρ t|) ≤ ∫ t, ε * ρ t :=
+    integral_mono hIint hdom hpt
+  rwa [integral_const_mul, hmass, mul_one] at hmono
+
 end GaloisForLFunctions.HTGeometry
