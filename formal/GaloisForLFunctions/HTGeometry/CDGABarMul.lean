@@ -106,4 +106,17 @@ theorem augIdealShiftMulOf_assoc {p q r m m' n : ℕ} (h₁ : p + q + 1 = m) (h�
       _ = -((-1 : R)) ^ q := by rw [hsq]; ring
   rw [← pow_add, hL, hR]
 
+/-- **The cancellation that makes the bar differential square to zero.**  Multiplying the first two
+of three shifted factors and then the result with the third, against multiplying the last two and
+then the first with the result — the second weighted by the sign the tail of the bar differential
+contributes — add up to zero. -/
+theorem augIdealShiftMulOf_cancel {p q r m m' n : ℕ} (h₁ : p + q + 1 = m) (h₂ : m + r + 1 = n)
+    (h₃ : q + r + 1 = m') (h₄ : p + m' + 1 = n) (x : augIdealCarrier ε (p + 1))
+    (y : augIdealCarrier ε (q + 1)) (z : augIdealCarrier ε (r + 1)) :
+    augIdealShiftMulOf ε h₂ (augIdealShiftMulOf ε h₁ x y) z
+      + ((-1 : R)) ^ p • augIdealShiftMulOf ε h₄ x (augIdealShiftMulOf ε h₃ y z) = 0 := by
+  rw [augIdealShiftMulOf_assoc ε h₁ h₂ h₃ h₄ x y z, ← add_smul]
+  have hzero : (-((-1 : R)) ^ p) + ((-1 : R)) ^ p = 0 := by ring
+  rw [hzero, zero_smul]
+
 end GaloisForLFunctions.HTGeometry
