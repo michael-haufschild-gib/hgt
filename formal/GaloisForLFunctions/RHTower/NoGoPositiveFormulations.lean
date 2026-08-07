@@ -258,7 +258,7 @@ theorem odd_strip_zero_activates_mirror_em_certificates {ρ : ℂ}
 odd ξ-zero in the strip, every finite Euler atlas is a unit at the point while
 the Euler-Maclaurin carrier certificate is activated. -/
 theorem odd_strip_zero_certificate_and_prime_invisibility {ρ : ℂ}
-    (h0 : 0 < ρ.re) (hz : xi ρ = 0)
+    (hz : xi ρ = 0)
     {m : ℕ} (hm : analyticOrderAt xi ρ = m) (hodd : Odd m)
     {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p) :
     analyticOrderAt (eulerPartial P) ρ = 0 ∧
@@ -281,6 +281,7 @@ theorem odd_strip_zero_certificate_and_prime_invisibility {ρ : ℂ}
               p (θ + 2 * Real.pi) = p θ) →
             ∫ θ in (-(Real.pi / 2))..(3 * Real.pi / 2 + 2 * Real.pi),
               doubledTrace (-1) V θ * p θ = 0 := by
+  have h0 : 0 < ρ.re := xi_zero_re_pos hz
   have h1 : ρ.re < 1 := xi_zero_re_lt_one hz
   exact ⟨eulerPartial_orderAt_zero hP h0,
     xi_zero_order_ne_zero hz,
@@ -295,7 +296,7 @@ atoms: prime-local source maps are zero, finite Euler atlases are units, the
 divisor-jet quotient. -/
 theorem pinned_sigma_sources_exhausted_positive {R Sigma : Type*} [CommRing R] (m : ℕ)
     (u : Polynomial R) (hjet : Sigma → Polynomial R)
-    {ρ : ℂ} (hs : 0 < ρ.re) (hz : xi ρ = 0)
+    {ρ : ℂ} (hz : xi ρ = 0)
     {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p)
     {A : ℕ → ℕ} (hA : SigmaSourceMap A ρ) :
     (∀ p, 2 ≤ p → A p = 0) ∧
@@ -303,7 +304,7 @@ theorem pinned_sigma_sources_exhausted_positive {R Sigma : Type*} [CommRing R] (
       analyticOrderAt xi ρ ≠ 0 ∧
       ¬ HasNontrivialSigmaJet m
         (fun p => (((Polynomial.X : Polynomial R) ^ m) * u) * hjet p) :=
-  pinnedSigmaDivisorSources_killed m u hjet hs hz hP hA
+  pinnedSigmaDivisorSources_killed m u hjet hz hP hA
 
 /-- **Additive carrier versus multiplicative source, positive mismatch.**  If
 an Euler-Maclaurin split is present at a strip ξ-zero, the additive carrier
@@ -312,7 +313,7 @@ and multiplicative sigma jet remains zero. -/
 theorem additive_carrier_multiplicative_source_mismatch_positive
     {R Sigma : Type*} [CommRing R] (m : ℕ)
     (u0 : Polynomial R) (hjet : Sigma → Polynomial R)
-    {ρ : ℂ} (hs : 0 < ρ.re) (hz : xi ρ = 0)
+    {ρ : ℂ} (hz : xi ρ = 0)
     {A : ℕ → ℕ} (hA : SigmaSourceMap A ρ)
     {r₀ R₀ : ℝ} {N : ℕ} {zs : List ℂ} {u : ℂ → ℂ}
     (hdata : EMSplitData ρ r₀ R₀ N zs u) :
@@ -320,6 +321,6 @@ theorem additive_carrier_multiplicative_source_mismatch_positive
       1 ≤ zs.length ∧
       ¬ HasNontrivialSigmaJet m
         (fun p => (((Polynomial.X : Polynomial R) ^ m) * u0) * hjet p) :=
-  pinnedSigmaDivisorSources_mismatch_with_emSplit m u0 hjet hs hz hA hdata
+  pinnedSigmaDivisorSources_mismatch_with_emSplit m u0 hjet hz hA hdata
 
 end RHTower

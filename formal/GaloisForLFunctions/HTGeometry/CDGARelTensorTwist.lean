@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CDGARelTensor
+import GaloisForLFunctions.HTGeometry.CDGACellInvariance
 
 /-!
 # The twist of a cell attachment descends to the tensor product over the algebra
@@ -11,6 +12,7 @@ cell attachment has the twist it should.
 * `HTGeometry.tensorSigmaR_tensorSingle` : the right-factor family on a single-bidegree element.
 * `HTGeometry.tensorSigmaR_relTensorRelator` : its value on a relator.
 * `HTGeometry.relTensorTwistR` : the descended twist.
+* `HTGeometry.relTensorProdRightHom` : tensoring over the algebra commutes with attaching a cell.
 -/
 
 universe u v w
@@ -242,6 +244,217 @@ theorem tensorProdRight_relTensorRelator (t : CDGATwist Q Qc) {c a b n α β : �
       ← sub_eq_add_neg]
     rfl
 
+/-- A relator is linear in its cell argument, so it vanishes there. -/
+theorem relTensorRelator_zero {c a b n α β : ℕ} (hα : c + a = α) (hβ : c + b = β)
+    (hn : (α, b).1 + (α, b).2 = n) (hn' : (a, β).1 + (a, β).2 = n) (x : X c) (m : M a) :
+    relTensorRelator P Q hα hβ hn hn' x m (0 : N b) = 0 := by
+  simp only [relTensorRelator]
+  rw [show Q.act hβ x (0 : N b) = 0 from (Q.actₗ hβ x).map_zero,
+    TensorProduct.tmul_zero, TensorProduct.tmul_zero, tensorSingle_zero, tensorSingle_zero,
+    smul_zero, sub_zero]
+
+/-- The preimage of a relator of the first factor is a relator of the cell attachment. -/
+theorem mem_relTensorRel_of_fst (t : CDGATwist Q Qc) (n : ℕ) (r : TensorCarrier (R := R) M N n)
+    (hr : r ∈ relTensorRel P Q n) :
+    (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).symm (r, 0)
+      ∈ relTensorRel P (CDGAModuleStructure.twisted Q Qc t) n := by
+  refine Submodule.span_induction
+    (p := fun g _ => (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).symm (g, 0)
+      ∈ relTensorRel P (CDGAModuleStructure.twisted Q Qc t) n) ?_ ?_ ?_ ?_ hr
+  · rintro g ⟨c, a, b, α, β, hα, hβ, hn, hn', x, m, v, rfl⟩
+    have hsplit := tensorProdRight_relTensorRelator P Q Qc t hα hβ hn hn' x m (v, (0 : C b))
+    rw [show ((v, (0 : C b)) : N b × C b).1 = v from rfl,
+      show ((v, (0 : C b)) : N b × C b).2 = 0 from rfl,
+      relTensorRelator_zero P Qc hα hβ hn hn' x m] at hsplit
+    rw [← hsplit, LinearEquiv.symm_apply_apply]
+    exact relTensorRelator_mem P (CDGAModuleStructure.twisted Q Qc t) hα hβ hn hn' x m (v, 0)
+  · rw [show ((0 : TensorCarrier (R := R) M N n), (0 : TensorCarrier (R := R) M C n))
+        = 0 from rfl, map_zero (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).symm]
+    exact Submodule.zero_mem _
+  · intro g g' _ _ hg hg'
+    rw [show ((g + g' : TensorCarrier (R := R) M N n),
+        (0 : TensorCarrier (R := R) M C n)) = (g, 0) + (g', 0) from by
+      refine Prod.ext rfl ?_
+      exact (add_zero _).symm, map_add (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).symm]
+    exact Submodule.add_mem _ hg hg'
+  · intro r' g _ hg
+    rw [show ((r' • g : TensorCarrier (R := R) M N n),
+        (0 : TensorCarrier (R := R) M C n)) = r' • (g, 0) from by
+      refine Prod.ext rfl ?_
+      exact (smul_zero _).symm, map_smul (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).symm]
+    exact Submodule.smul_mem _ _ hg
+
+/-- The preimage of a relator of the second factor is a relator of the cell attachment. -/
+theorem mem_relTensorRel_of_snd (t : CDGATwist Q Qc) (n : ℕ) (r : TensorCarrier (R := R) M C n)
+    (hr : r ∈ relTensorRel P Qc n) :
+    (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).symm (0, r)
+      ∈ relTensorRel P (CDGAModuleStructure.twisted Q Qc t) n := by
+  refine Submodule.span_induction
+    (p := fun g _ => (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).symm (0, g)
+      ∈ relTensorRel P (CDGAModuleStructure.twisted Q Qc t) n) ?_ ?_ ?_ ?_ hr
+  · rintro g ⟨c, a, b, α, β, hα, hβ, hn, hn', x, m, v, rfl⟩
+    have hsplit := tensorProdRight_relTensorRelator P Q Qc t hα hβ hn hn' x m ((0 : N b), v)
+    rw [show (((0 : N b), v) : N b × C b).1 = 0 from rfl,
+      show (((0 : N b), v) : N b × C b).2 = v from rfl,
+      relTensorRelator_zero P Q hα hβ hn hn' x m] at hsplit
+    rw [← hsplit, LinearEquiv.symm_apply_apply]
+    exact relTensorRelator_mem P (CDGAModuleStructure.twisted Q Qc t) hα hβ hn hn' x m (0, v)
+  · rw [show ((0 : TensorCarrier (R := R) M N n), (0 : TensorCarrier (R := R) M C n))
+        = 0 from rfl, map_zero (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).symm]
+    exact Submodule.zero_mem _
+  · intro g g' _ _ hg hg'
+    rw [show ((0 : TensorCarrier (R := R) M N n),
+        (g + g' : TensorCarrier (R := R) M C n)) = (0, g) + (0, g') from by
+      refine Prod.ext ?_ rfl
+      exact (add_zero _).symm, map_add (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).symm]
+    exact Submodule.add_mem _ hg hg'
+  · intro r' g _ hg
+    rw [show ((0 : TensorCarrier (R := R) M N n),
+        (r' • g : TensorCarrier (R := R) M C n)) = r' • (0, g) from by
+      refine Prod.ext ?_ rfl
+      exact (smul_zero _).symm, map_smul (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).symm]
+    exact Submodule.smul_mem _ _ hg
+
+/-- **A class of the cell attachment is trivial exactly when both of its components are.**  This is
+where the linearity of a relator in its cell argument is used: the image of the relator submodule
+contains each factor separately, hence the whole product. -/
+theorem relTensorRel_of_prodRight (t : CDGATwist Q Qc) (n : ℕ)
+    (z : TensorCarrier (R := R) M (fun k => N k × C k) n)
+    (h1 : (tensorProdRight (R := R) (M := M) (N := N) (C := C) n z).1 ∈ relTensorRel P Q n)
+    (h2 : (tensorProdRight (R := R) (M := M) (N := N) (C := C) n z).2 ∈ relTensorRel P Qc n) :
+    z ∈ relTensorRel P (CDGAModuleStructure.twisted Q Qc t) n := by
+  have hz : z = (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).symm
+        ((tensorProdRight (R := R) (M := M) (N := N) (C := C) n z).1,
+          (0 : TensorCarrier (R := R) M C n))
+      + (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).symm
+        ((0 : TensorCarrier (R := R) M N n),
+          (tensorProdRight (R := R) (M := M) (N := N) (C := C) n z).2) := by
+    refine (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).injective ?_
+    rw [LinearEquiv.map_add, LinearEquiv.apply_symm_apply, LinearEquiv.apply_symm_apply]
+    refine Prod.ext ?_ ?_
+    · exact (add_zero _).symm
+    · exact (zero_add _).symm
+  rw [hz]
+  exact Submodule.add_mem _ (mem_relTensorRel_of_fst P Q Qc t n _ h1)
+    (mem_relTensorRel_of_snd P Q Qc t n _ h2)
+
 end Splitting
+
+section Comparison
+
+variable (P : CDGAModuleStructure A M) (Q : CDGAModuleStructure A N)
+  (Qc : CDGAModuleStructure A C)
+
+/-- The comparison of a cell attachment with the attachment of the comparisons, before descent. -/
+noncomputable def relTensorProdRightMap (n : ℕ) :
+    TensorCarrier (R := R) M (fun k => N k × C k) n →ₗ[R]
+      (RelTensorCarrier P Q n × RelTensorCarrier P Qc n) :=
+  (LinearMap.prodMap (relTensorRel P Q n).mkQ (relTensorRel P Qc n).mkQ).comp
+    (tensorProdRight (R := R) (M := M) (N := N) (C := C) n).toLinearMap
+
+@[simp] theorem relTensorProdRightMap_apply (n : ℕ)
+    (z : TensorCarrier (R := R) M (fun k => N k × C k) n) :
+    relTensorProdRightMap P Q Qc n z
+      = (Submodule.Quotient.mk (tensorProdRight (R := R) (M := M) (N := N) (C := C) n z).1,
+         Submodule.Quotient.mk (tensorProdRight (R := R) (M := M) (N := N) (C := C) n z).2) :=
+  rfl
+
+/-- The comparison kills the relations of the cell attachment. -/
+theorem relTensorProdRightMap_ker (t : CDGATwist Q Qc) (n : ℕ)
+    (z : TensorCarrier (R := R) M (fun k => N k × C k) n)
+    (hz : z ∈ relTensorRel P (CDGAModuleStructure.twisted Q Qc t) n) :
+    relTensorProdRightMap P Q Qc n z = 0 := by
+  refine Submodule.span_induction
+    (p := fun g _ => relTensorProdRightMap P Q Qc n g = 0) ?_ ?_ ?_ ?_ hz
+  · rintro g ⟨c, a, b, α, β, hα, hβ, hn, hn', x, m, v, rfl⟩
+    rw [relTensorProdRightMap_apply,
+      tensorProdRight_relTensorRelator P Q Qc t hα hβ hn hn' x m v]
+    refine Prod.ext ?_ ?_
+    · exact (Submodule.Quotient.mk_eq_zero _).2
+        (relTensorRelator_mem P Q hα hβ hn hn' x m v.1)
+    · exact (Submodule.Quotient.mk_eq_zero _).2
+        (relTensorRelator_mem P Qc hα hβ hn hn' x m v.2)
+  · exact map_zero _
+  · intro g g' _ _ hg hg'
+    rw [map_add, hg, hg', add_zero]
+  · intro r g _ hg
+    rw [map_smul, hg, smul_zero]
+
+/-- **Tensoring over the algebra commutes with attaching a cell.** -/
+noncomputable def relTensorProdRightHom (t : CDGATwist Q Qc) :
+    CDGAModuleHom (relTensorModule P (CDGAModuleStructure.twisted Q Qc t))
+      (CDGAModuleStructure.twisted (relTensorModule P Q) (relTensorModule P Qc)
+        (relTensorTwistR P Q Qc t)) where
+  toFun n f := Submodule.liftQ _ (relTensorProdRightMap P Q Qc n)
+    (fun g hg => relTensorProdRightMap_ker P Q Qc t n g hg) f
+  map_add n f f' := by
+    refine Quotient.inductionOn₂' f f' fun z z' => ?_
+    exact map_add (relTensorProdRightMap P Q Qc n) z z'
+  map_smul n r f := by
+    refine Quotient.inductionOn' f fun z => ?_
+    exact map_smul (relTensorProdRightMap P Q Qc n) r z
+  map_act h x f := by
+    refine Quotient.inductionOn' f fun z => ?_
+    show relTensorProdRightMap P Q Qc _
+        (tensorAct P (CDGAModuleStructure.twisted Q Qc t) h x z) = _
+    rw [relTensorProdRightMap_apply, tensorProdRight_tensorAct]
+    rfl
+  map_d n f := by
+    refine Quotient.inductionOn' f fun z => ?_
+    show relTensorProdRightMap P Q Qc (n + 1)
+        (tensorD P (CDGAModuleStructure.twisted Q Qc t) n z) = _
+    rw [relTensorProdRightMap_apply,
+      show tensorD P (CDGAModuleStructure.twisted Q Qc t) n z
+          = tensorDL P (CDGAModuleStructure.twisted Q Qc t) n z
+            + tensorDR P (CDGAModuleStructure.twisted Q Qc t) n z from rfl,
+      map_add, tensorProdRight_tensorDL, tensorProdRight_tensorDR]
+    refine Prod.ext ?_ rfl
+    show Submodule.Quotient.mk (tensorDL P Q n _ + (tensorDR P Q n _ + tensorSigmaR _ n _))
+      = Submodule.Quotient.mk (tensorD P Q n _) + Submodule.Quotient.mk (tensorSigmaR _ n _)
+    rw [← Submodule.Quotient.mk_add]
+    exact congrArg _ (add_assoc _ _ _).symm
+
+@[simp] theorem relTensorProdRightHom_mk (t : CDGATwist Q Qc) (n : ℕ)
+    (z : TensorCarrier (R := R) M (fun k => N k × C k) n) :
+    (relTensorProdRightHom P Q Qc t).toFun n (Submodule.Quotient.mk z)
+      = relTensorProdRightMap P Q Qc n z := rfl
+
+/-- **The comparison is a degreewise bijection.** -/
+theorem relTensorProdRightHom_bijective (t : CDGATwist Q Qc) (n : ℕ) :
+    Function.Bijective ((relTensorProdRightHom P Q Qc t).toFun n) := by
+  constructor
+  · refine fun a b => Quotient.inductionOn₂' a b fun z z' hzz => ?_
+    have h1 : Submodule.Quotient.mk
+          (tensorProdRight (R := R) (M := M) (N := N) (C := C) n z).1
+        = (Submodule.Quotient.mk
+          (tensorProdRight (R := R) (M := M) (N := N) (C := C) n z').1
+          : RelTensorCarrier P Q n) := congrArg Prod.fst hzz
+    have h2 : Submodule.Quotient.mk
+          (tensorProdRight (R := R) (M := M) (N := N) (C := C) n z).2
+        = (Submodule.Quotient.mk
+          (tensorProdRight (R := R) (M := M) (N := N) (C := C) n z').2
+          : RelTensorCarrier P Qc n) := congrArg Prod.snd hzz
+    refine (Submodule.Quotient.eq _).2 ?_
+    refine relTensorRel_of_prodRight P Q Qc t n (z - z') ?_ ?_
+    · rw [map_sub]
+      exact (Submodule.Quotient.eq _).1 h1
+    · rw [map_sub]
+      exact (Submodule.Quotient.eq _).1 h2
+  · rintro ⟨u, v⟩
+    refine Quotient.inductionOn' u fun zu => ?_
+    refine Quotient.inductionOn' v fun zv => ?_
+    refine ⟨Submodule.Quotient.mk
+      ((tensorProdRight (R := R) (M := M) (N := N) (C := C) n).symm (zu, zv)), ?_⟩
+    show relTensorProdRightMap P Q Qc n _ = _
+    rw [relTensorProdRightMap_apply, LinearEquiv.apply_symm_apply]
+    rfl
+
+/-- **Tensoring over the algebra with a cell attachment is a full quasi-isomorphism onto the cell
+attachment of the tensor products.** -/
+theorem relTensorProdRightHom_isQuasiIsoFull (t : CDGATwist Q Qc) :
+    (relTensorProdRightHom P Q Qc t).IsQuasiIsoFull :=
+  CDGAModuleHom.IsQuasiIsoFull.of_bijective (relTensorProdRightHom_bijective P Q Qc t)
+
+end Comparison
 
 end GaloisForLFunctions.HTGeometry

@@ -1595,18 +1595,35 @@ completed contribution by `log` of the outer radius, while the schedule's scale 
 energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
-**Open.**  By 6 and 7 the gate is one rate comparison: does `hsNormSq Z_r` exceed
-`log(outer radius)` by a fixed amount at all large scales?  The divergence in 3 carries no rate — it
-gives `hsNormSq Z_r > N - 1` for each `N` eventually, each `N` with its own threshold.  A rate needs
-an orthonormal family whose size grows with the scale and which the coupling does not contract.  The
-shell-cell family cannot serve: its vectors are nonnegative indicators, so their spectrum sits at the
-origin, exactly where the layer term forbids it.  The family must be modulated — packets on disjoint
-sub-annuli — and the missing input is the quantitative dependence of a Meyer profile's spectral tail
-on the width of its annulus.  First step taken: `soninScaledAnnulusBump` is a *rescaled fixed*
-profile, with `soninScaledAnnulusBump_scaling` an exact identity, so its transform at half-width
-`delta` is `delta` times the reference transform at `delta` times the frequency.  The corpus's
-`soninAnnulusBump` cannot do this — its `ContDiffBump` radii depend on the annulus and mathlib's bump
-family is abstract, so two widths have unrelated profiles.
+**The rate comparison the gate asked for is now settled.**  It asked whether `hsNormSq Z_r` exceeds
+`log(outer radius)` by a fixed amount at all large scales.  It does:
+`exists_linear_hsNormSq_soninApertureCoupling` gives a positive slope in the scale, and
+`eventually_log_add_le_linear` puts every logarithm eventually below every positive multiple of the
+argument, so `not_bddBelow_soninCompletedPacketValueVar_of_log_cap` closes every completion obeying
+the logarithmic cap.  The modulated family the rate needed was the missing input, and it was built:
+`soninScaledAnnulusBump` is a *rescaled fixed* profile, with `soninScaledAnnulusBump_scaling` an
+exact identity, so `orthonormal_soninShellCutPacket` supplies `N` orthonormal packets at one carrier
+and `exists_schedule_card_sub_le_hsNormSq_soninApertureCoupling` turns them into the linear rate.
+
+**Terminal: the Burnol conductor is closed, in full.**  The two halves were closed separately —
+position by `not_bddBelow_soninCompletedPacketValueVar_logShellChannelFamily`, frequency by
+`not_bddBelow_soninCompletedPacketValueVar_fourierLogShellChannelFamily` — but a conductor is their
+*sum*, and neither statement covers it.  `evenBurnolConductorChannel` is that sum, self-adjoint by
+`adjoint_evenBurnolConductorChannel`, with both tower heights free and independent, and
+`not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily` shows no completion assembled from
+it restores the floor.  The mechanism is that the two failures do not compensate: the position half
+is bounded outright because the packets sit inside a fixed outer radius, the frequency half grows
+only logarithmically because a tall tower buys nothing against a rapidly decaying spectrum, and a
+constant plus a logarithm is still sublinear against a linearly growing energy.  The general form is
+`not_bddBelow_soninCompletedPacketValueVar_of_sublinear_channel_add`: the excluded class is closed
+under sums, so no finite assembly of sublinear channels escapes.  The hypothesis class is inhabited
+— `exists_carrier_halfwidth_schedule` exhibits carriers and half-widths meeting both scale
+conditions at once, the carrier running while the support shrinks at exactly compensating rates.
+
+What is *not* excluded is a hypothetical channel family whose Hilbert--Schmidt norms grow at least
+linearly in the scale (`frequently_slope_lt_hsNorm_of_bddBelow` states the requirement).  No such
+family is the Burnol conductor, and none is exhibited anywhere in the corpus or in Burnol's
+construction; the weld itself is retired.
 
 ## Gates
 
@@ -1638,7 +1655,18 @@ family is abstract, so two widths have unrelated profiles.
 - [x] density of the band-supported core, hence the logarithm of position on a dense domain
       (Theorem P)
 - [x] quantitative refinement loss along an arbitrary chain (Theorem Q)
-- [ ] Burnol completion and completed lower floor
+- [x] **Burnol completion and completed lower floor — terminally retired.**  The rate comparison the
+      gate rested on is proved (`exists_linear_hsNormSq_soninApertureCoupling`,
+      `eventually_log_add_le_linear`, `not_bddBelow_soninCompletedPacketValueVar_of_log_cap`), and
+      the conductor itself is closed in full: `evenBurnolConductorChannel` is the logarithm of
+      position plus the logarithm of frequency at independent tower heights, and
+      `not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily` in
+      `SoninBurnolConductorNoFloor.lean` shows no completion assembled from it restores the floor.
+      The two halves fail for opposite reasons and do not compensate — the position half is bounded
+      outright on the fixed annulus, the frequency half grows only logarithmically — and a constant
+      plus a logarithm is sublinear against a linearly growing coupling energy.  The excluded class
+      is closed under sums (`..._of_sublinear_channel_add`), and the hypothesis class is inhabited
+      (`exists_carrier_halfwidth_schedule`), so the no-go is neither an instance nor vacuous.
 
 ## Lean
 
@@ -1647,6 +1675,8 @@ family is abstract, so two widths have unrelated profiles.
 | `(1)` the canonical logarithmic weight of a live window, and the zero/live state trace | `soninLiveWindowCyclicLogWeight`, `soninWindowStateCyclicLogTrace` |
 | `(2)` state cyclicity (its floor/ceiling swap step `(5)` is internal to the proof) | `soninWindowStateCyclicLogTrace_compose_comm`, `soninWindowStateCyclicLogTrace_rotate_three` |
 | `(6)` the extended trace of a principal-relative operator | `SoninPrincipalRelativeOperator.extendedTrace` |
+| **the terminal conductor no-go**: the full Burnol conductor as one self-adjoint channel at independent tower heights, its size bound, and the failure of every completion assembled from it | `evenBurnolConductorChannel`, `adjoint_evenFourierLogShellChannel`, `adjoint_evenBurnolConductorChannel`, `norm_evenBurnolConductorChannel_apply_le`, `not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily` |
+| the excluded class is closed under sums, and the schedule's two scale conditions are simultaneously satisfiable so the no-go is not vacuous | `not_bddBelow_soninCompletedPacketValueVar_of_sublinear_channel_add`, `exists_carrier_halfwidth_schedule` |
 | `(3)` Gram diagonalization | `soninGramFactorPrincipalCyclicTrace_eq_ite` |
 | `(4)` prime-power flux | `soninPrimePowerPrincipalCyclicTraceDensity_eq_fluxCoefficient` |
 | `(7)` relative-ideal closure | `soninWindowState_operator_mul_principalRelativeEq` (pre-existing) |

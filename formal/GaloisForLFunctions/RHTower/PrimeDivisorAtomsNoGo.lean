@@ -81,10 +81,10 @@ theorem xi_zero_order_ne_zero {ρ : ℂ} (hz : xi ρ = 0) : analyticOrderAt xi �
 /-- **The prime grading detects none of the multiplicity.**  At a strip zero of ξ the prime-atlas
 order is `0` while the ξ-order is nonzero: no finite `{σ_p}`-graded piece of the divisor is nonempty,
 so no such grading can be finer than — or even see — the multiplicity. -/
-theorem no_sigma_graded_refinement {ρ : ℂ} (hs : 0 < ρ.re) (hz : xi ρ = 0)
+theorem no_sigma_graded_refinement {ρ : ℂ} (hz : xi ρ = 0)
     {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p) :
     analyticOrderAt (eulerPartial P) ρ = 0 ∧ analyticOrderAt xi ρ ≠ 0 :=
-  ⟨eulerPartial_orderAt_zero hP hs, xi_zero_order_ne_zero hz⟩
+  ⟨eulerPartial_orderAt_zero hP (xi_zero_re_pos hz), xi_zero_order_ne_zero hz⟩
 
 /-! ### §3 The source map from `{σ_p}` into local divisor atoms is the zero map -/
 
@@ -131,11 +131,12 @@ theorem sigmaSourceMap_iff_eq_zero_on_primes {A : ℕ → ℕ} {ρ : ℂ} (hs : 
 The multiplicative (prime) side sources **zero** divisor atoms exactly where the additive side
 sources `m ≥ 1`.  The source map from `{σ_p}` into local divisor atoms is the zero map on the
 divisor. -/
-theorem source_atom_mismatch {ρ : ℂ} (hs : 0 < ρ.re) (hz : xi ρ = 0)
+theorem source_atom_mismatch {ρ : ℂ} (hz : xi ρ = 0)
     {A : ℕ → ℕ} (hA : SigmaSourceMap A ρ)
     {r₀ R : ℝ} {N : ℕ} {zs : List ℂ} {u : ℂ → ℂ} (hdata : EMSplitData ρ r₀ R N zs u) :
     (∀ p, 2 ≤ p → A p = 0) ∧ 1 ≤ zs.length :=
-  ⟨sigma_source_map_trivial hs hA, emSplit_length_pos_at_xi_zero hz hdata⟩
+  ⟨sigma_source_map_trivial (xi_zero_re_pos hz) hA,
+    emSplit_length_pos_at_xi_zero hz hdata⟩
 
 /-! ### §4 Disjoint carriers: prime content and the divisor never share a point -/
 

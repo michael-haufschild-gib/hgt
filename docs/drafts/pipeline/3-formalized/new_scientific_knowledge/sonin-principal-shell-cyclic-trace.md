@@ -98,7 +98,7 @@ contribution.
 ## Verification
 
 - `lake env lean` passes on every module named above;
-- `#print axioms` on all 545 declarations named by the paper card returns only `propext`,
+- `#print axioms` on all 547 declarations named by the paper card returns only `propext`,
   `Classical.choice`, and `Quot.sound`;
 - every module is imported by `GaloisForLFunctions.RHTower`;
 - no `sorry`, `admit`, project `axiom`, `opaque`, or `unsafe` declaration is introduced.

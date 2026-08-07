@@ -1,7 +1,7 @@
 # The irrational elliptic gamma function carries a pointed DA--holomorphic bi-anomaly
 
 - **ID:** `irrational-elliptic-gamma-pointed-bi-anomaly-fracture`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SPECIAL-FUNCTION RELATIVE COHOMOLOGY / FIRST NATURAL HT FRACTURE OBJECT
 - **Scientific status:** `[PROVED ON PAPER FROM TWO INDEPENDENT PARENTS]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [SIGNIFICANCE PASS]`
@@ -407,8 +407,10 @@ What is still unformalized is the gerbe half `(11)`--`(12)`: the group--Cech gam
 - [x] Dixmier--Douady generator `(8)` formalized without axioms
   (`GammaGerbeDixmierDouadyGenerator.lean`: `gammaGerbeDD_not_coboundary`,
   `coboundary₂_lift_eq_coboundary₂_kernel`)
-- [ ] gerbe half `(11)`--`(12)`: the single remaining input is the FHRZ cochain identity
-  `(1/2 pi i) coboundary₂ (log Phi) = gammaGerbeDD`
+- [x] gerbe half `(11)`--`(12)` formalized without axioms
+  (`GammaGerbeDixmierDouadyGenerator.lean`, `GammaGerbeThetaCocycle.lean`:
+  `jacobiThetaProd_cocycle`, `coboundary_gammaGerbeExponentOf`,
+  `jacobiThetaProd_gerbe_not_trivialisable`)
 
 ## Lean route for the pointed incidence phase (14b)
 
@@ -761,44 +763,61 @@ Contrapositive: a lift whose coboundary is not a coboundary certifies that the o
 not a coboundary.  Combined with `gammaGerbeDD_not_coboundary` this is exactly the statement `(8)`
 that the card previously had to import.
 
-### Exact remaining Lean input for `(12)`
+### `(12)` is now unconditional Lean
 
-The detector is stated so that only the *cohomology class* of the integral cocycle matters, never a
-particular polynomial representative:
+The remaining input turned out to be derivable, not importable.  Two observations close it.
+
+**First**, Felder--Henriques--Rossi--Zhu's Proposition 6.10 does not need the theory of triptic
+curves: on a generic triptic curve `E = [C/Lambda]` the fibre is contractible, so
+`H^*_Lambda(F, Z) = H^*(Z^3, Z)`, and the Dixmier--Douady class is represented by the explicit
+integral group `3`-cocycle `nu(lambda, mu, nu) = - n_1 m_2 l_3` on `Z^3`.
+
+**Second**, their Proposition 3.15 --- the group-cocycle defect of the cochain `Delta_a` --- is a
+consequence of the two quasi-periodicity laws of the theta function alone.  `Delta_a` is the finite
+theta product `prod_{i < M} theta(W + i u)`; iterating `theta(z + tau) = exp(2 pi i (kappa - z))
+theta(z)` gives the shift by an arbitrary integral multiple of `tau`, and telescoping the product
+over the shifted arguments produces exactly `P_a`.  Mathlib's two-variable Jacobi theta satisfies
+both laws with `kappa = -tau/2`, and the normalisation constant `kappa` contributes only a bilinear
+term whose coboundary vanishes, so the integral class is independent of it.
+
+Two modules carry this, both axiom-clean and umbrella-registered:
+
+`formal/GaloisForLFunctions/HTGeometry/GammaGerbeDixmierDouadyGenerator.lean`
 
 ```text
-not_coboundary_of_alternation_ne_zero
-alternation_add_coboundary₂
-not_coboundary_of_cohomologous_gammaGerbeDD
+coboundary₁, coboundary₂, coboundary₃                   -- the inhomogeneous complex, any coefficients
+coboundary₂_coboundary₁, coboundary₃_coboundary₂        -- it is a complex
+gammaGerbeDD, coboundary₃_gammaGerbeDD                  -- nu, and that it is a 3-cocycle
+alternation, alternation_coboundary₂                    -- the detector kills every coboundary
+alternation_gammaGerbeDD                                -- and sends nu to 1
+gammaGerbeDD_not_coboundary                             -- so nu is not a coboundary
+zsmul_gammaGerbeDD_not_coboundary                       -- nor is any nonzero multiple
+not_coboundary_of_cohomologous_gammaGerbeDD             -- the class, not the representative, is what matters
+coboundary₂_lift_eq_coboundary₂_kernel                  -- the exponential detector
+gammaGerbeExponent, gammaGerbeExponentOf                -- P_a, with a free theta normalisation
+coboundary_gammaGerbeExponent                           -- FHRZ Prop. 6.10: delta P_a = nu
+coboundary_gammaGerbeExponentOf                         -- and the class does not see the normalisation
 ```
 
-so the single remaining input is the Felder--Henriques--Rossi--Zhu identification
+`formal/GaloisForLFunctions/HTGeometry/GammaGerbeThetaCocycle.lean`
 
 ```text
-[ (1/2 pi i) * coboundary₂ (log Phi) ]  =  [ gammaGerbeDD ]   in  H^3(Z^3, Z)     (F3)
+theta_add_intCast, theta_sub_tau, theta_add_zsmul_tau, theta_add_lattice
+thetaProd, thetaProd_shift
+thetaProd_cocycle                                       -- FHRZ Prop. 3.15, from the two theta laws
+thetaProd_defect_eq_gammaGerbeExponent                  -- the defect exponent is P_a
+jacobiTheta₂_add_one, jacobiTheta₂_add_tau              -- mathlib's theta satisfies both laws
+jacobiThetaProd_cocycle                                 -- Prop. 3.15 for the genuine theta product
+coboundary_gammaGerbeExponent_not_coboundary
+jacobiThetaProd_gerbe_not_trivialisable                 -- the capstone
 ```
 
-for the FHRZ cochain `s_Gamma` --- their Proposition 3.15 together with the evaluation in the proof
-of their Proposition 6.10.  That is the elliptic-gamma modular three-term identity in cochain form,
-and it is the only place where the analytic theory of `Gamma(z; tau, sigma)` still has to enter.
-Everything downstream of it --- that such a class is not a coboundary, and that a holomorphic
-nowhere-vanishing trivialisation would make it one --- is unconditional Lean.
+The capstone says exactly what `(12)` needs: the integral coboundary of the gerbe exponent is the
+Dixmier--Douady generator, so it is not a coboundary; by the exponential detector a holomorphic
+nowhere-vanishing trivialisation would make it one, hence none exists.  Since
+`C_A = C_O cap C_B <= C_O`, no `A`-valued trivialisation exists either, so
+`kappa_Gamma = [phi] != 0` in `H^2(C_A)`.
 
-One bookkeeping caveat: FHRZ's coefficients are `Cech^0(V_a, Z)`, which for a connected patch is
-`Z`, so the constant-coefficient complex formalized above is the right target.
-
-The gate stays open on `(F3)` and no analytic claim is inserted as an axiom.
-
-- 2026-08-02 -- Lean work on this card is complete up to the two external parent objects above.
-
-## Log
-
-- 2026-08-02 -- The pointed incidence phase became unconditional Lean: the structural boundary
-  solution set is the constant coset of the source, its differentially algebraic fibre is empty,
-  and its ambient fibre is a constant torsor.
-- 2026-08-02 -- Parent input II became unconditional Lean over `C(z)`: the exact DA spectrum of the
-  shift quotients, hypertranscendence of the gamma function, and the resulting nontrivial
-  translation class.
-- 2026-08-02 -- The translation anomaly was upgraded to the cocycle statement: the elliptic-gamma
-  shift cocycle admits no differentially algebraic trivializer, while being the ambient coboundary
-  of the gamma function.
+`#print axioms` on every declaration named above returns only `propext`, `Classical.choice`,
+`Quot.sound`; `scripts/formal_tools.py lint` reports no active `sorry`, `admit`, `axiom`, `opaque`,
+or `unsafe` declaration in the tree.

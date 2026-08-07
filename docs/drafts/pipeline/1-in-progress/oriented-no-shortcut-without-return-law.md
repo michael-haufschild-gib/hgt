@@ -167,9 +167,23 @@ are dependency-closed and formalized unconditionally.
    one additive approximation error.  The continuum of anchors therefore
    adds no witness entropy.  See
    `../3-formalized/circuit-word-anchor-rephasing-law.md`.
+5. `[FALSIFIED]` One centered Gaussian reporter: subtracting total signed mass
+   kills action zero but its kernel tends to minus one at large action, so the
+   far signed sector remains unsuppressed.
+6. `[LEAN-PROVED] [FRONTIER BRIDGE] [NOVELTY UNVERIFIED]` Dyadic Gaussian
+   action-shell certificate: adjacent Gaussian scales erase every exact
+   replica collision, suppress both near-zero and far action, and telescope
+   exactly.  Any Gaussian-window excess over the collision plateau forces one
+   of finitely many collision-free dyadic shells to be large, modulo an
+   explicit terminal gap remainder.  See
+   `../3-formalized/dyadic-gaussian-action-shell-certificate.md`.
 
-The surviving `[OPEN CORE]` is strictly narrower than `(2)`: prove a quenched
-growing-replica bound for **zero-anchor traceless targets in one fixed finite
-word dictionary of enlarged depth `r+s`**, strong enough to beat its exact
-cardinality.  Neither lag ambiguity nor adaptive continuum selectors remain
-in that statement.
+The surviving `[OPEN CORE]` is strictly narrower than `(2)`: prove a quenched,
+shellwise growing-replica bound for **zero-anchor traceless targets in one
+fixed finite word dictionary of enlarged depth `r+s`**, strong enough to beat
+its exact cardinality after a finite dyadic-scale union.  This union is
+logarithmic in the required action-resolution ratio, but controlling that ratio
+still requires a quenched lower bound on the nonzero replica gap.  Scalar
+recurrence, lag ambiguity, adaptive continuum selectors, and the positive
+near-action crowding floor have been removed from the reporter on which that
+remaining shellwise bound must act.

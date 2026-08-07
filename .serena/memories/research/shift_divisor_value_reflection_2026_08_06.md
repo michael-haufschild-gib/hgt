@@ -487,3 +487,39 @@ A sweep for `P(s) ↔ s.re = 1/2` returns 109 hits in RHTower. Each would mechan
 criterion by quantifying over ξ zeros, but see [[rh-criterion-reencoding-template]]: ~96 producers
 are one identity re-encoded. Adding 100 such theorems is padding, not content. Only add an RH-level
 statement when the file's mechanism is genuinely distinct AND the file has no RH statement at all.
+
+## ξ-zero strip premises discharged (2026-08-07)
+
+`EMAnnulusSupply.xi_zero_re_lt_one` had a redundant `h0 : 0 < ρ.re`: the `by_contra` branch supplies
+`1 ≤ ρ.re`, which gives `0 < ρ.re` for free. Now hypothesis-free, and its 13 call sites updated.
+Added `xi_zero_re_pos` there too (reflect with `xi_one_sub`, then apply the previous lemma to `1-ρ`)
+— no new imports needed in either case.
+
+With those two, `0 < ρ.re` beside `xi ρ = 0` is redundant everywhere it is not in the statement.
+Discharged in: SigmaDivisorExhaustion (2), PrimeDivisorAtomsNoGo (2), NoGoPositiveFormulations (3),
+WeldKreinRateBlindness (2). WeldKreinRateBlindness sits in namespace GaloisForLFunctions.RHTower and
+must call `_root_.RHTower.xi_zero_re_pos`.
+
+Still open in that sweep: XiCTaylorThetaTailTwoSidedCompletionNoGo (2 theorems, both `0<re` and
+`re<1`) and XiHurwitzAnchorTransversality (2 theorems; there BOTH `0 < re rho` and `rho ≠ 1` are
+derivable from the ξ-zero). XiHurwitzAnchorTransversality needs an EMAnnulusSupply import
+(cycle-checked safe).
+
+## User steer on what counts as advancing the RH chain (2026-08-07)
+
+The user's Route R endpoint is `R_phys(B₆) = τ₆(B₆)` derived from pre-divisor source structure.
+Explicitly NOT advancing: another cyclic reader, rewriting the fracture, Wold-vs-Sonin coefficient
+comparison, characterizing critical-line vanishing, another conditional criterion. The dense-ideal
+direction is discarded. So the whole `riemannHypothesis_iff_*` family built earlier this session is
+re-encoding and must not be described as progress on the chain.
+
+Diagnostic found while reading that layer (NOT formalized — build was interrupted, edit reverted):
+`routeRDeningerBVGreenReflectedBoundary rho` is *defined* as
+`6 * (E₆(ρ) − E₆(1 − star ρ))` with
+`deningerOrdinaryIntegerBVGreenStokesBoundaryEvaluation n s = n⁻¹ (1 − g(n,s)⁻¹)` and
+`deningerHalfDensityMateGain n s = exp((2 re s − 1) log n)`.
+Unfolding gives `R_phys(ρ) = 2 sinh((2 re ρ − 1) log 6)`. Its Lean type is
+`XiDivisorSupport → ℝ`: it takes NO operator argument, so it is not a reader of
+`DeningerOrdinaryIntegerEnd` applied to `B₆` — the name is a convention. Consequently
+`R_phys(B₆) = τ₆(B₆) = 0` unfolds to `re ρ = 1/2` for every ξ-zero, i.e. RH verbatim, with no
+source-algebra content on the left to derive it from.

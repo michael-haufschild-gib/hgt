@@ -101,3 +101,50 @@ carrier into the critical model.
 ## Log
 - 2026-08-07 — created directly in 3-formalized; three modules built green, axiom-clean; the two
   pre-existing Euler occupancy theorems are now the two one-directional shadows of the `iff`.
+
+## Generalization — the dichotomy is a statement about local targets, not about occupancy
+
+`ProductOccupancyDichotomy.lean` was refactored so that the law is proved once for an arbitrary local
+target family `t : ι → Set ℕ`:
+
+- `localHitSet t k = {i | k i ∈ t i}`, `localEvent t i = {k | k i ∈ t i}`;
+- `infinitePi_localEvent`, `iIndepSet_localEvent`, `limsup_localEvent`,
+  `measure_infiniteHit_eq_one_iff`, `measure_finiteHit_eq_one_iff`, and the `ae` forms.
+
+Occupancy is the case `t_i = {0}ᶜ`; every previously stated occupancy theorem is retained verbatim as
+a one-line corollary, so the two instance modules were unaffected. No measurability hypotheses are
+needed anywhere: `ℕ` is discrete, so `MeasurableSet.of_discrete` discharges them.
+
+This is what makes the law nontrivial rather than a repackaging: reading it at other levels gives
+statements that occupancy alone cannot express.
+
+## The level structure of a random valuation vector
+
+`formal/GaloisForLFunctions/HTGeometry/GeometricTailMass.lean` — `geometricMeasure_Ici`: a geometric
+law with success probability `p` needs at least `m` further failures with probability exactly
+`(1-p)^m`. Proved by the one-step atom recursion `μ {k | m ≤ k} = μ {m} + μ {k | m+1 ≤ k}` and
+cancellation, so no tail series is summed. This was a mathlib gap.
+
+`formal/GaloisForLFunctions/HTGeometry/PrimeValuationLevelStructure.lean`:
+
+- `primeValuationLaw_Ici` — the valuation at `p` reaches level `m` with probability exactly `p^{-m}`.
+- `tsum_primeValuationLaw_Ici_ne_top (hm : 2 ≤ m)` — above level one the local masses are summable
+  (comparison with `∑_p p^{-2}`, via `Nat.Primes.summable_rpow`).
+- `primeValuationMeasure_finite_level`, `ae_finite_level` — for every `m ≥ 2`, almost every
+  configuration has only finitely many primes of multiplicity `≥ m`.
+- `ae_finite_squarefull` — **almost every configuration is squarefree away from a finite set of
+  primes.**
+- `ae_primeValuation_level_structure` — **the complete level structure:** almost surely
+  `{p | 2 ≤ v_p}` is finite *and* `{p | v_p = 1}` is infinite. With
+  `primeValuationMeasure_infiniteSupport` this pins the carrier of the sector exactly: infinitely many
+  prime divisors, all but finitely many of them simple.
+
+So level one is the exact threshold of the dichotomy for this sector: it is the only level at which
+the local masses diverge. The repeated part of a random valuation vector is always finite, which is
+the probabilistic reason the squarefree kernel carries the whole asymptotic content — the same
+statement the corpus's squarefree Gibbs pushforward layer computes on finite palettes.
+
+## Log addendum
+- 2026-08-07 — dichotomy generalized to arbitrary local targets; `geometricMeasure_Ici` added
+  (mathlib gap); level structure of the sector proved. All modules `lake build` green (9343 jobs),
+  axioms `[propext, Classical.choice, Quot.sound]`, `formal_tools.py lint` clean.

@@ -269,3 +269,48 @@ Lean closes the literal Hochschild presentation, constructs the nonzero normaliz
 classifiers for physical descent.  The remaining open premise is only the coefficient-faithful
 equality between this source cyclic quotient and Route R's fixed same-fibre physical marginal.
 That equality is not implied by source cyclicity; the classifier proves it is RH-equivalent.
+
+## 2026-08-07 — the requested fixed-reader comparison unfolds to RH itself
+
+Target as stated: a source theorem giving `R_phys(B_6) = tau_6(B_6)`, derived independently from
+pre-divisor source structure; since `tau_6(B_6) = 0`, that would close the endpoint.
+
+Unfolding the corpus's own definitions (all read in situ):
+
+- `deningerHalfDensityMateGain n s = Real.exp ((2*s.re - 1) * Real.log n)`
+  (`DeningerOneSidedFramedMateCurvatureTransgression.lean:134`) — strictly positive, and a function of
+  `Re s` alone.
+- `deningerOrdinaryIntegerBVGreenStokesBoundaryEvaluation n s = n⁻¹ * (1 - gain⁻¹)`
+  (`DeningerOrdinaryIntegerBVGreenStokesRadialComparison.lean:213`).
+- `deningerHalfDensityMateGain_reflection`: the reflection `s ↦ 1 - s̄` inverts the gain.
+- `deningerOrdinaryIntegerBVGreenStokes_reflectedDifference` +
+  `deningerTensorSquareRadialMateCurvature_eq_sinh`:
+
+  `routeRDeningerBVGreenReflectedBoundary rho = 2 * sinh ((2*Re rho - 1) * log 6)`.
+
+So the physical value on `B_6` is an **odd, strictly increasing function of `Re rho - 1/2`**, and the
+requested identity `R_phys(B_6) = tau_6(B_6)` reads, after unfolding,
+
+`sinh ((2*Re rho - 1) * log 6) = 0`, i.e. `Re rho = 1/2`.
+
+Consequences for the endpoint:
+
+1. **It is not a comparison.** The operator side carries no `rho`: `B_6` is a fixed element,
+   `tau_6(B_6) = 0` identically, and every pair-cyclic reader gives `0`
+   (`deningerDegreeSixBVGreenBoundary_eq_zero_of_pair_cyclic`). The physical side is a strictly
+   monotone function of `Re rho`. Equating them at a given `rho` *is* the critical-line statement at
+   that `rho` — there is no intermediate content that source structure could supply.
+2. **No strictly weaker law can imply it.** Any law implying the comparison for every
+   `rho : XiDivisorSupport` implies RH, so it is at least as strong as RH; "strictly weaker and
+   sufficient" is impossible for this target.
+3. **The residual content is a sign, not an identity.** The zero set is stable under `rho ↦ 1 - rho̅`,
+   and `R_phys` is antisymmetric under that involution: `R_phys(1 - rho̅) = -R_phys(rho)`,
+   unconditionally. Hence `R_phys ≡ 0` on the zero set iff `R_phys ≥ 0` on the zero set. Any proposed
+   positive-unit or manifestly-nonnegative representation of `R_phys(B_6)` therefore contradicts the
+   antisymmetry unless the value is zero — which is why every attempted positive representation in
+   this lane has carried the sign instead of removing it.
+
+This does not advance the Lean chain and nothing here is claimed as an advance. It closes the search
+for a *source-side* producer of the comparison: the endpoint requires an analytic one-sided input on
+the divisor side (`Re rho ≤ 1/2` for Xi-zeros, which with the functional equation is RH), and no
+Hochschild, cyclic-reader, trace, or gauge statement about `B_6` can carry it.

@@ -113,11 +113,11 @@ theorem sigmaSourceMap_weldFEKreinGram_zero {A : ℕ → ℕ} {ρ : ℂ} (hs : 0
 /-- **Finite-source activation obstruction.**  At a `xi`-zero every finite prime-sourced FE block
 is zero while the `xi`-divisor order is nonzero. -/
 theorem sigmaSourceMap_weldFEKrein_divisor_mismatch {A : ℕ → ℕ} {ρ : ℂ}
-    (hs : 0 < ρ.re) (hz : _root_.RHTower.xi ρ = 0)
+    (hz : _root_.RHTower.xi ρ = 0)
     (hA : _root_.RHTower.SigmaSourceMap A ρ) :
     (∀ p, 2 ≤ p → weldFEKreinGram ((A p : ℝ) * Real.log p) = 0) ∧
       analyticOrderAt _root_.RHTower.xi ρ ≠ 0 :=
-  ⟨sigmaSourceMap_weldFEKreinGram_zero hs hA,
+  ⟨sigmaSourceMap_weldFEKreinGram_zero (_root_.RHTower.xi_zero_re_pos hz) hA,
     _root_.RHTower.xi_zero_order_ne_zero hz⟩
 
 /-- The complete factorwise divisor-order datum: all individual Euler-factor orders together with
@@ -144,14 +144,14 @@ theorem factorwiseWeldOrderProfile_eq_zero {ρ : ℂ} (hs : 0 < ρ.re) :
 
 /-- **No factorwise divisor assembler.**  At a `xi`-zero, no zero-preserving function of all local
 Euler-factor orders and the archimedean order can recover the completed divisor order. -/
-theorem no_factorwiseWeldOrderAssembler_at_xi_zero {ρ : ℂ} (hs : 0 < ρ.re)
+theorem no_factorwiseWeldOrderAssembler_at_xi_zero {ρ : ℂ}
     (hz : _root_.RHTower.xi ρ = 0) :
     ¬ ∃ assemble : FactorwiseWeldOrderProfile → ℕ∞,
         assemble 0 = 0 ∧
           assemble (factorwiseWeldOrderProfile ρ) =
             analyticOrderAt _root_.RHTower.xi ρ := by
   rintro ⟨assemble, hzero, hrecover⟩
-  rw [factorwiseWeldOrderProfile_eq_zero hs, hzero] at hrecover
+  rw [factorwiseWeldOrderProfile_eq_zero (_root_.RHTower.xi_zero_re_pos hz), hzero] at hrecover
   exact _root_.RHTower.xi_zero_order_ne_zero hz hrecover.symm
 
 end GaloisForLFunctions.RHTower

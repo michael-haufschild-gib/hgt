@@ -632,3 +632,114 @@ A note on process, recorded because it cost time: `⟨(c', k), by omega⟩` insi
 expected type already fixes the proof term makes `omega` fail with "no goals to be solved" — the
 proof field is unified rather than elaborated.  Naming the index proof with a `have` first avoids
 it, and is what the `map_d` field does.
+
+## The cell-attachment machinery over the quotient
+
+`CDGARelTensorTwist.lean` — the `⊗_A` mirror of `tensorProdRightHom`, up to the comparison itself.
+
+* `tensorSigmaR_tensorSingle` — the right-factor family on a single-bidegree element.
+* **`tensorSigmaR_relTensorRelator`** — the induced twist carries a relator to a *scalar multiple of
+  a relator*: `tensorSigmaR (t.τₗ) (rel(x,m,v)) = (−1)^{|m|+|x|} rel(x, m, τ v)`.  The reason is
+  exact: the sign the twisting cochain picks up against the algebra (`CDGATwist.τ_act`) is precisely
+  the sign the relator changes by when `v` is replaced by `τ v`, one degree up.
+* `relTensorRel_tensorSigmaR` — hence the relations are stable, and
+* **`relTensorTwistR P Q Qc t : CDGATwist (relTensorModule P Q) (relTensorModule P Qc)`** — the twist
+  of a cell attachment **descends to the tensor product over the algebra**, with all four axioms
+  inherited from `tensorTwistR` by `Quotient.inductionOn`.
+* `tensorProdRight_tensorSingle` and **`tensorProdRight_relTensorRelator`** — a relator of a cell
+  attachment **splits into the pair of relators of the two factors**.  This works because the action
+  on `twisted Q Qc t` is componentwise — the twist enters only the differential — so nothing mixes,
+  and it is the computation the comparison isomorphism will rest on.
+
+Axioms: `propext, Classical.choice, Quot.sound`; the two splitting lemmas need only
+`propext, Quot.sound`.
+
+## Next
+
+`relTensorProdRightHom`: the descended comparison
+
+  `relTensorModule P (twisted Q Qc t) ≅ twisted (relTensorModule P Q) (relTensorModule P Qc)
+     (relTensorTwistR P Q Qc t)`.
+
+The map is `Submodule.liftQ` of `(mk × mk) ∘ tensorProdRight`; surjectivity is immediate.
+Injectivity is where `tensorProdRight_relTensorRelator` is used, and the argument is short but worth
+recording so it is not rediscovered: a relator is *linear in* `v`, so `rel(x,m,0) = 0`, hence
+`tensorProdRight (rel(x,m,(v₁,0))) = (rel(x,m,v₁), 0)`.  The image of the relator submodule
+therefore contains `rel₁ × 0` and `0 × rel₂` separately, so it is the full product `rel₁ × rel₂` and
+not merely the diagonal-like span the generators first suggest.  With that, the quotient of the
+product is the product of the quotients and the comparison is bijective.
+
+## `relTensorProdRightHom` — the `⊗_A` mirror is complete
+
+`CDGARelTensorTwist.lean` now carries the comparison itself.
+
+* `relTensorRelator_zero` — a relator is linear in its cell argument, so it vanishes there.
+* `mem_relTensorRel_of_fst`, `mem_relTensorRel_of_snd` — the preimage of a relator of *either*
+  factor is a relator of the cell attachment, obtained by padding the cell argument with a zero in
+  the other slot.
+* **`relTensorRel_of_prodRight`** — hence a class of the cell attachment is trivial exactly when
+  both of its components are.  This is the step where the naive guess is wrong: the generators of
+  the relator submodule of `P ⊗ (Q ⊕ C)` map to *pairs* `(rel(x,m,v₁), rel(x,m,v₂))`, and the span
+  of those looks smaller than `rel₁ × rel₂`.  It is not, because a relator is linear in `v`, so
+  `rel(x,m,(v₁,0)) ↦ (rel(x,m,v₁), 0)` and the two factors are hit separately.
+* `relTensorProdRightMap`, `relTensorProdRightMap_ker`, **`relTensorProdRightHom`** — the descended
+  comparison, as a map of differential graded modules, with `relTensorProdRightHom_bijective` and
+  **`relTensorProdRightHom_isQuasiIsoFull`**.
+
+So **tensoring over the algebra commutes with attaching a cell**, and the `⊗_A` side now has the
+same three pieces the `⊗_R` side has: the twist (`relTensorTwistR`), the comparison
+(`relTensorProdRightHom`), and the base case (`relTensorMapLeft_selfModule_isQuasiIsoFull`).
+
+Axioms: `propext, Classical.choice, Quot.sound`; the splitting and preimage lemmas need only
+`propext, Quot.sound`.
+
+## Next
+
+The `⊗_A` tower theorem: with `relTensorProdRightHom` in hand, the argument that produced
+`tensorMapLeft_tower_isQuasiIsoFull` runs again verbatim over the quotient — conjugate the
+comparison, apply `IsQuasiIsoFull.twistedMap₂`, then two out of three, and induct up the tower.
+The one new ingredient is naturality of `relTensorProdRightHom` in the tensored factor, which is the
+`⊗_A` analogue of `tensorProdRightHom_naturality` and follows from `relTensorMapLeft`'s definition
+on representatives.
+
+## The `⊗_A` tower theorem
+
+`CDGARelTensorTower.lean`.
+
+* `relTensorTwistR_compat` — the comparison intertwines the descended twists (from
+  `tensorMapLeft_tensorSigmaR`, on representatives).
+* **`relTensorProdRightHom_naturality`** — the comparison is natural in the tensored factor.  It is
+  obtained by applying `mk × mk` to `tensorProdRightHom_naturality`: the whole content is already
+  upstairs, and descent adds nothing.
+* **`relTensorMapLeft_twisted_isQuasiIsoFull`** — tensoring over the algebra against a cell
+  attachment preserves full quasi-isomorphisms.
+* **`relTensorMapLeft_tower_isQuasiIsoFull`** — and against a whole tower.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+Both invariance theorems now exist in parallel, with the same shape and the same three inputs:
+
+| | `⊗_R` | `⊗_A` |
+|---|---|---|
+| twist | `tensorTwistR` | `relTensorTwistR` |
+| comparison | `tensorProdRightHom` | `relTensorProdRightHom` |
+| one cell | `tensorMapLeft_twisted_isQuasiIsoFull` | `relTensorMapLeft_twisted_isQuasiIsoFull` |
+| tower | `tensorMapLeft_tower_isQuasiIsoFull` | `relTensorMapLeft_tower_isQuasiIsoFull` |
+| cells discharged | `constCellModule` (done) | `freeCellModule` (open) |
+
+## Next
+
+The remaining asymmetry is the last row.  For `⊗_R` the `hcell` hypothesis is discharged outright
+(`tensorMapLeft_constCell_isQuasiIsoFull`).  For `⊗_A` the natural cells are the `A`-free ones, and
+discharging `hcell` for them needs the free-cell computation
+
+  `relTensorModule P (freeCellModule A V k) ≅ shiftModule (tensorConstModule P V) k`,
+
+which by `freeCellModule_eq` splits into two statements that are each worth having on their own:
+
+1. `⊗_A` commutes with the degree shift: `M ⊗_A (N[−k]) ≅ (M ⊗_A N)[−k]`;
+2. `⊗_A` commutes with a constant tensor: `M ⊗_A (N ⊗_R V) ≅ (M ⊗_A N) ⊗_R V`, for which the finite
+   bidegree index (`tensorIndexEquiv`) is what makes the `Pi`-`⊗` exchange available.
+
+Composed with `relUnitorHom` these give the free-cell case, and then the `⊗_A` tower theorem applies
+to any tower of free cells — which is what semi-free over the algebra means.

@@ -3,6 +3,8 @@ import Mathlib.Data.Int.Order.Basic
 import Mathlib.Data.Fin.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Abel
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Tactic.FinCases
 
 /-!
@@ -12,10 +14,10 @@ For a triptic curve `E = [ℂ/Λ]` with `Λ` of rank three the fibre is contract
 equivariant cohomology reduces to the group cohomology of `ℤ³`, and the Dixmier–Douady class of the
 gamma gerbe is represented by the explicit integral group `3`-cocycle
 
-`ν(α, β, γ) = - β₁ γ₂ α₃`.
+`ν(λ, μ, ν) = - n₁ m₂ ℓ₃`,   `λ = Σ ℓᵢ αᵢ`, `μ = Σ mᵢ αᵢ`, `ν = Σ nᵢ αᵢ`.
 
 This file proves, with no analytic input, that `ν` is a `3`-cocycle and is not a coboundary: the
-alternation on the standard basis kills every coboundary and sends `ν` to `-1`.  Since that
+alternation on the standard basis kills every coboundary and sends `ν` to `1`.  Since that
 alternation is an additive map to `ℤ`, the class of `ν` generates the image, so `ν` represents a
 generator of `H³(ℤ³, ℤ) ≅ ℤ`.
 
@@ -107,9 +109,10 @@ def alternation (f : TripticLattice → TripticLattice → TripticLattice → �
     f (basisVec 1) (basisVec 0) (basisVec 2) - f (basisVec 0) (basisVec 2) (basisVec 1) -
       f (basisVec 2) (basisVec 1) (basisVec 0)
 
-/-- **The Dixmier–Douady cocycle of the gamma gerbe.** -/
+/-- **The Dixmier–Douady cocycle of the gamma gerbe**, `ν(λ,μ,ν) = -n₁ m₂ ℓ₃` in the
+Felder–Henriques–Rossi–Zhu framing. -/
 def gammaGerbeDD : TripticLattice → TripticLattice → TripticLattice → ℤ :=
-  fun a b c => -(b 0 * c 1 * a 2)
+  fun a b c => -(c 0 * b 1 * a 2)
 
 /-- The gamma-gerbe Dixmier–Douady cochain is a group `3`-cocycle. -/
 theorem coboundary₃_gammaGerbeDD : coboundary₃ gammaGerbeDD = 0 := by
@@ -129,8 +132,8 @@ theorem alternation_coboundary₂ (g : TripticLattice → TripticLattice → ℤ
     show basisVec 1 + basisVec 2 = basisVec 2 + basisVec 1 from add_comm _ _]
   ring
 
-/-- **The alternation of the gamma-gerbe cocycle is `-1`.** -/
-theorem alternation_gammaGerbeDD : alternation gammaGerbeDD = -1 := by
+/-- **The alternation of the gamma-gerbe cocycle is `1`.** -/
+theorem alternation_gammaGerbeDD : alternation gammaGerbeDD = 1 := by
   simp [alternation, gammaGerbeDD]
 
 /-- **The gamma-gerbe Dixmier–Douady cocycle is not a coboundary.** -/
@@ -161,8 +164,7 @@ theorem zsmul_gammaGerbeDD_not_coboundary {n : ℤ} (hn : n ≠ 0) :
   rintro ⟨g, hg⟩
   have h : alternation (fun a b c => n * gammaGerbeDD a b c) = 0 := by
     rw [hg, alternation_coboundary₂]
-  rw [alternation_zsmul, alternation_gammaGerbeDD] at h
-  simp only [mul_neg, mul_one, neg_eq_zero] at h
+  rw [alternation_zsmul, alternation_gammaGerbeDD, mul_one] at h
   exact hn h
 
 /-- **The detector in its robust form.**  A `3`-cochain with nonzero alternation is not a
@@ -191,6 +193,61 @@ theorem not_coboundary_of_cohomologous_gammaGerbeDD
   refine not_coboundary_of_alternation_ne_zero ?_
   rw [hf, alternation_add_coboundary₂, alternation_gammaGerbeDD]
   decide
+
+/-! ## The gamma-gerbe exponent and its coboundary -/
+
+/-- The exponent of the group-direction component of the gamma-gerbe cocycle, in the framing
+`(α₁, α₂, α₃)` with `αᵢ(x)` recorded as `A i`.  For `μ = Σ mᵢ αᵢ` and `ν = Σ nᵢ αᵢ`,
+
+`P(μ, ν; w) = (n₁ m₂ / α₃) [ w + ((2m₁ + n₁ - 1)/2) α₁ + ((m₂ - 1)/2) α₂ + (1/2) α₃ ]`. -/
+def gammaGerbeExponent (A : Fin 3 → ℂ) (w : ℂ) (m n : TripticLattice) : ℂ :=
+  ((n 0 : ℂ) * (m 1 : ℂ)) / A 2 *
+    (w + ((2 * (m 0 : ℂ) + (n 0 : ℂ) - 1) / 2) * A 0 +
+      (((m 1 : ℂ) - 1) / 2) * A 1 + (1 / 2) * A 2)
+
+/-- The pairing `λ(x) = Σ ℓᵢ αᵢ(x)` of a lattice element with the frame. -/
+def framePairing (A : Fin 3 → ℂ) (l : TripticLattice) : ℂ :=
+  (l 0 : ℂ) * A 0 + (l 1 : ℂ) * A 1 + (l 2 : ℂ) * A 2
+
+/-- The gerbe exponent with a general theta normalisation constant `κ`; `κ = -1/2` is the
+Felder–Henriques–Rossi–Zhu normalisation. -/
+def gammaGerbeExponentOf (A : Fin 3 → ℂ) (κ : ℂ) (w : ℂ) (m n : TripticLattice) : ℂ :=
+  ((n 0 : ℂ) * (m 1 : ℂ)) / A 2 *
+    (w + ((2 * (m 0 : ℂ) + (n 0 : ℂ) - 1) / 2) * A 0 +
+      (((m 1 : ℂ) - 1) / 2) * A 1 - κ * A 2)
+
+theorem gammaGerbeExponentOf_neg_half (A : Fin 3 → ℂ) (w : ℂ) (m n : TripticLattice) :
+    gammaGerbeExponentOf A (-(1 / 2)) w m n = gammaGerbeExponent A w m n := by
+  unfold gammaGerbeExponentOf gammaGerbeExponent
+  ring
+
+/-- **The Dixmier–Douady computation, for any theta normalisation.**  The normalisation constant
+contributes a bilinear term whose coboundary vanishes, so the integral class does not depend on
+it. -/
+theorem coboundary_gammaGerbeExponentOf (A : Fin 3 → ℂ) (hA : A 2 ≠ 0) (κ w : ℂ)
+    (l m n : TripticLattice) :
+    -gammaGerbeExponentOf A κ (w + framePairing A l) m n +
+        gammaGerbeExponentOf A κ w (l + m) n -
+      gammaGerbeExponentOf A κ w l (m + n) + gammaGerbeExponentOf A κ w l m =
+      ((gammaGerbeDD l m n : ℤ) : ℂ) := by
+  simp only [gammaGerbeExponentOf, framePairing, gammaGerbeDD, Pi.add_apply]
+  push_cast
+  field_simp
+  ring
+
+/-- **The Dixmier–Douady computation.**  The group coboundary of the gamma-gerbe exponent, with the
+translation acting on the fibre coordinate, is the integral cocycle `ν`.  This is the identity
+behind Felder–Henriques–Rossi–Zhu's determination of the class. -/
+theorem coboundary_gammaGerbeExponent (A : Fin 3 → ℂ) (hA : A 2 ≠ 0) (w : ℂ)
+    (l m n : TripticLattice) :
+    -gammaGerbeExponent A (w + framePairing A l) m n +
+        gammaGerbeExponent A w (l + m) n -
+      gammaGerbeExponent A w l (m + n) + gammaGerbeExponent A w l m =
+      ((gammaGerbeDD l m n : ℤ) : ℂ) := by
+  simp only [gammaGerbeExponent, framePairing, gammaGerbeDD, Pi.add_apply]
+  push_cast
+  field_simp
+  ring
 
 end GerbeCharacteristic
 

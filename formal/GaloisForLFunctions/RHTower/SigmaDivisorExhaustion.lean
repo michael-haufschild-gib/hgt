@@ -30,7 +30,7 @@ data currently present in the pinned `{sigma_p}` lanes do not yield a divisor re
 than multiplicity. -/
 theorem pinnedSigmaDivisorSources_killed {R Sigma : Type*} [CommRing R] (m : ℕ)
     (u : Polynomial R) (hjet : Sigma → Polynomial R)
-    {ρ : ℂ} (hs : 0 < ρ.re) (hz : xi ρ = 0)
+    {ρ : ℂ} (hz : xi ρ = 0)
     {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p)
     {A : ℕ → ℕ} (hA : SigmaSourceMap A ρ) :
     (∀ p, 2 ≤ p → A p = 0) ∧
@@ -38,6 +38,7 @@ theorem pinnedSigmaDivisorSources_killed {R Sigma : Type*} [CommRing R] (m : ℕ
       analyticOrderAt xi ρ ≠ 0 ∧
       ¬ HasNontrivialSigmaJet m
         (fun p => (((Polynomial.X : Polynomial R) ^ m) * u) * hjet p) := by
+  have hs : 0 < ρ.re := xi_zero_re_pos hz
   exact ⟨sigma_source_map_trivial hs hA,
     eulerPartial_orderAt_zero hP hs,
     xi_zero_order_ne_zero hz,
@@ -48,7 +49,7 @@ carrier sees at least one local zero atom, while every prime-local source map an
 multiplicative sigma jet remains zero. -/
 theorem pinnedSigmaDivisorSources_mismatch_with_emSplit {R Sigma : Type*} [CommRing R] (m : ℕ)
     (u0 : Polynomial R) (hjet : Sigma → Polynomial R)
-    {ρ : ℂ} (hs : 0 < ρ.re) (hz : xi ρ = 0)
+    {ρ : ℂ} (hz : xi ρ = 0)
     {A : ℕ → ℕ} (hA : SigmaSourceMap A ρ)
     {r₀ R₀ : ℝ} {N : ℕ} {zs : List ℂ} {u : ℂ → ℂ}
     (hdata : EMSplitData ρ r₀ R₀ N zs u) :
@@ -56,6 +57,7 @@ theorem pinnedSigmaDivisorSources_mismatch_with_emSplit {R Sigma : Type*} [CommR
       1 ≤ zs.length ∧
       ¬ HasNontrivialSigmaJet m
         (fun p => (((Polynomial.X : Polynomial R) ^ m) * u0) * hjet p) := by
+  have hs : 0 < ρ.re := xi_zero_re_pos hz
   exact ⟨sigma_source_map_trivial hs hA,
     emSplit_length_pos_at_xi_zero hz hdata,
     no_nontrivialSigmaJet_of_unit_multiplicative m u0 hjet⟩

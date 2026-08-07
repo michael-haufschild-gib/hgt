@@ -5744,6 +5744,7 @@ import GaloisForLFunctions.HTGeometry.CDGATensorSingle
 import GaloisForLFunctions.HTGeometry.CDGAUnital
 import GaloisForLFunctions.HTGeometry.CDGARelTensor
 import GaloisForLFunctions.HTGeometry.CDGARelTensorTwist
+import GaloisForLFunctions.HTGeometry.CDGARelTensorTower
 import GaloisForLFunctions.HTGeometry.CDGAUnitor
 import GaloisForLFunctions.HTGeometry.CDGARelTensorUnit
 import GaloisForLFunctions.HTGeometry.CDGATensorLeft
@@ -5778,3 +5779,6 @@ import GaloisForLFunctions.HTGeometry.CircuitWordAnchorRephasingLaw
 import GaloisForLFunctions.HTGeometry.GammaGerbeDixmierDouadyGenerator
 import GaloisForLFunctions.HTGeometry.GeometricTailMass
 import GaloisForLFunctions.HTGeometry.PrimeValuationLevelStructure
+import GaloisForLFunctions.HTGeometry.DyadicGaussianActionShellCertificate
+import GaloisForLFunctions.HTGeometry.TracelessReplicaDyadicActionShellLaw
+import GaloisForLFunctions.HTGeometry.GammaGerbeThetaCocycle

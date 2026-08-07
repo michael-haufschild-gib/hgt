@@ -238,13 +238,17 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeIdeal.lean`,
       evaluates it as the logarithmic length of the intersection, hence commutative
       (`..._comm`), not merely cyclic.  The full principal-relative system carries the same reader
       by `SoninPrincipalRelativeOperator.extendedTrace_compose_comm`.
-- [ ] Burnol-completed coercivity or terminal no-go — the bare aperture channel is now known to be
-      unbounded below (`not_exists_lower_bound_soninAperturePacketCurvature_re_opTrace`), so any
-      coercivity must come entirely from the Burnol conductor, not from the aperture side.  This
-      constrains the remaining question but does not settle it: the completed functional is the
-      sum, and its coercivity is still open.  Constrained further by
-      `not_bddAbove_of_lower_bound_completion`: the conductor's contribution must be unbounded
-      above along the unit-weight packet family, so a bounded archimedean term cannot work.
+- [x] **Burnol-completed coercivity — terminal no-go.**  The bare aperture channel is unbounded
+      below (`not_exists_lower_bound_soninAperturePacketCurvature_re_opTrace`), so any coercivity
+      had to come entirely from the Burnol conductor; and
+      `not_bddAbove_of_lower_bound_completion` showed the conductor's contribution would have to be
+      unbounded above along the unit-weight packet family.  It is not:
+      `not_bddBelow_soninCompletedPacketValueVar_burnolConductorFamily` in
+      `SoninBurnolConductorNoFloor.lean` proves that the full conductor
+      `evenBurnolConductorChannel` — logarithm of position plus logarithm of frequency, at any pair
+      of tower heights — contributes at most a constant plus a logarithm of the scale, while the
+      coupling energy grows linearly.  So the completed functional has no lower floor and the
+      source class is retired, not merely constrained.
 
 ## Log
 
