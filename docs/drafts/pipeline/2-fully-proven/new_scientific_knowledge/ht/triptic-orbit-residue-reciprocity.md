@@ -559,3 +559,25 @@ This is the local form of the argument principle — mathlib has no complex resi
 is what converts the additive reciprocity theorem at index `ℓ = -1` into the card's multiplicative
 divisor statement: the order-one orbit-residue divisors of `δ Y / Y` are the zero/pole order
 divisors of the two shift quotients.
+
+## Lean status — multiplicative triptic reciprocity
+
+Added to `TripticOrbitResidueReciprocity.lean` (wired, axiom-clean):
+
+    laurentCoeff_logDeriv_eq_untop            the residue of `δY/Y` at a point is the order of `Y`
+    triptic_multiplicative_divisor_reciprocity :
+      for `Y` meromorphic on `ℂ`, nowhere locally zero, `1`-periodic, whose triptic multiplicative
+      cocycle has constant logarithmic derivative,
+
+        ∑ᶠ m : ℤ, ord(Y, p + mσ + σ) - ord(Y, p + mσ)
+          = ∑ᶠ n : ℤ, ord(Y, p + nτ + τ) - ord(Y, p + nτ)
+
+The summands are exactly the zero/pole orders of the two shift quotients `A_τ = Y(·+σ)/Y` and
+`A_σ = Y(·+τ)/Y`, so this is the card's `D_τ(Y) = D_σ(Y)`.  The meromorphy of `δY/Y` and its
+`1`-periodicity are derived from those of `Y`, not assumed.
+
+Both unconditional theorems of the card — additive and multiplicative reciprocity — are therefore
+formalized.  The remaining statements (completeness, exact DA/HT criterion, annihilator and
+spectrum, boundary matroid, and the DA/HT half of the multiplicative classification) rest, as the
+card's own boundary note 4 records, on the independently unaudited elliptic-gamma atomic theorem,
+and are not unconditional on paper either.

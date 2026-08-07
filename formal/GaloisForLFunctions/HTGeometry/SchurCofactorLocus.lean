@@ -144,9 +144,10 @@ theorem rectangularSchurDivisorIdeal_isPrime [DecidableEq K] {n' m' : ℕ}
       Set (MvPolynomial (Fin (n' + m' - 1 + 2)) K))).IsPrime := by
   apply Ideal.isPrime_span_singleton_of_prime
   rw [← UniqueFactorizationMonoid.irreducible_iff_prime]
-  simpa [show n' + m' - 1 + 2 = (n' + 1) + (m' + 1) - 1 by omega] using
-    (irreducible_det_rectangularSchurToeplitz (K := K)
-      (n := n' + 1) (m := m' + 1) (by omega) (by omega))
+  have hL : n' + m' - 1 + 2 = n' + 1 + m' := by omega
+  rw [hL]
+  simpa using (irreducible_det_rectangularSchurToeplitz (K := K)
+    (n := n' + 1) (m := m' + 1) (by omega) (by omega))
 
 /-- **The corner cofactor survives at the generic point of the Schur divisor.**  This is the exact
 ring-theoretic meaning of excluding the proper cofactor locus: its residue class in the divisor's

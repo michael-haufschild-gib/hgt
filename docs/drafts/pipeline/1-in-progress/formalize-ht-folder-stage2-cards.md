@@ -18,7 +18,7 @@ prove its properties rather than assuming them.
 | card | state |
 |---|---|
 | `nonautonomous-ht-tail-projective-time-law` | **DONE — promoted to 3-formalized** |
-| `triptic-orbit-residue-reciprocity` | **core theorem formalized** — `triptic_orbit_residue_reciprocity`; multiplicative corollary open |
+| `triptic-orbit-residue-reciprocity` | **both unconditional theorems formalized** — additive and multiplicative reciprocity |
 | `triptic-ht-kummer-content-root-classification` | pending — child of the reciprocity card |
 | `hypertranscendental-pair-localization-noncompression` | pending — algebraic core exists |
 | `nonautonomous-rational-first-order-tail-orbifold-law` | pending |
@@ -108,8 +108,9 @@ reduced points pairwise distinct from ℤ-independence of the periods, then cont
 1. **Local argument principle** — DONE.  `HTGeometry/MeromorphicLogDerivResidue.lean`,
    `laurentCoeff_logDeriv_eq_order : laurentCoeff (logDeriv f) a (-1) = n` when
    `meromorphicOrderAt f a = n`.  Wired, axiom-clean.
-2. Next: that card's **multiplicative divisor reciprocity** `D_τ(Y) = D_σ(Y)` is a direct
-   corollary of `triptic_orbit_residue_reciprocity` applied to `F = logDeriv Y` at `ℓ = -1`.
+2. **Multiplicative divisor reciprocity** — DONE.
+   `triptic_multiplicative_divisor_reciprocity`, from the additive theorem at `ℓ = -1` plus the
+   local argument principle.  Wired, axiom-clean.
 3. The augmentation law `(A2)` needs a residue theorem on a parallelogram; `PNTPlus` has only a
    simple-pole rectangle version.
 4. Then audit `triptic-ht-kummer-content-root-classification` and

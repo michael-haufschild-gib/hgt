@@ -1402,29 +1402,49 @@ which `tensorIndexFintype` already knows is finite.  Associativity and commutati
 reindexing arguments on top of `tensorPair_assoc` and `tensorPair_comm`; the Leibniz rule is
 `tensorPair_dL` and `tensorPair_dR` summed, matched against `tensorD`'s two halves.
 
-## The convolution product itself
+## The convolution product, indexed by splittings
 
-`CDGATensorAlgebra.lean` gained `tensorAlgTerm`, its four linearity lemmas, **`tensorAlgMul`**, and
-`tensorAlgMul_add_left`, `_add_right`, `_smul_left`, `_smul_right`.
+`CDGATensorAlgebra.lean` — **`Splitting`**, `splittingFintype`, `splittingTerm`,
+**`tensorAlgMul`**, its four bilinearity lemmas, `splittingSwap`, and
+**`tensorAlgMul_comm`**.
 
-The product of two elements of the tensor product is, at each output bidegree, the sum over the
-bidegrees `r` of the left factor's total degree of the Koszul product of `f r` with the matching
-component of `g`, taken to be zero when `r` does not fit inside the output.  The index set is
-`tensorIndexFintype`, so the sum is finite; the `dite` on "`r` fits" is a condition on indices
-alone, which is why all four linearity laws split cleanly into the two branches.
+The product of two elements of a tensor product of algebras is, at each output bidegree, a sum over
+the ways of splitting that bidegree between the two factors.  The first attempt indexed the sum by a
+bidegree of the *left* factor and recovered the right one by subtraction; that is fatal, because the
+subtraction sits in a dependent position and the reindexing step then needs to identify
+`p − (p − r)` with `r` *inside* `f (…)`, which changes the argument's type and defeats `rw` with a
+motive error.
+
+Indexing by the splitting itself —
+
+```
+Splitting a b p := {rs // rs.1.1.1 + rs.2.1.1 = p.1.1 ∧ rs.1.1.2 + rs.2.1.2 = p.1.2}
+```
+
+— removes every subtraction.  Graded commutativity is then the *swap* of a splitting, a definitional
+involution, and `Finset.sum_nbij'` plus `tensorPair_comm` closes it in three lines.  This is the
+same principle the shift layer records ("subtype indexing to avoid ℕ truncated subtraction in
+dependent positions"), and it is worth stating as a rule: **carry the complement, never recompute
+it.**
+
+One import was missing and its absence is invisible in the error message: `Fintype (α × β)` lives in
+`Mathlib.Data.Fintype.Prod`, and without it the instance search fails with no hint that an import is
+the cause.
 
 Axioms: `propext, Classical.choice, Quot.sound`.
 
 ### What remains for the tensor product of algebras
 
-Three laws, all reindexing on top of the bidegree lemmas already proved:
+Graded commutativity is done.  Two laws are left:
 
-* **associativity** — a double sum over `(r, s)` on each side; the two index sets are in bijection
-  by `(r, s) ↦ (r + s, s)`, and the summands correspond by `tensorPair_assoc`;
-* **graded commutativity** — the involution `r ↦ p − r` matches the summands by `tensorPair_comm`;
-* **Leibniz** — `tensorD`'s two halves are summed against `tensorPair_dL` and `tensorPair_dR`, with
-  the boundary terms (where a shifted index leaves the range) vanishing because the corresponding
-  `dite` is false.
+* **associativity** — after `Finset.sum_sigma`, both sides are sums over triples `(r, s, t)` whose
+  three bidegrees add up to the output; the bijection
+  `Σ (ts : Splitting m c p), Splitting a b ts.1.1 ≃ Σ (us : Splitting a q p), Splitting b c us.1.2`
+  is the reassociation of a triple, and `tensorPair_assoc` matches the summands.
+* **Leibniz** — this one needs a differential on the *external* tensor product first.  `tensorDL`
+  and `tensorDR` use only the two differentials, but their signatures force both factors to be
+  modules over one algebra, so the external version has to be stated separately before
+  `tensorPair_dL` and `tensorPair_dR` can be summed against it.
 
 None of the three needs a new sign identity; the signs are all in `tensorPair_comm`,
 `tensorPair_assoc`, `tensorPair_dL` and `tensorPair_dR`.
