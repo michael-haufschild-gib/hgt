@@ -695,3 +695,21 @@ cutoff with polylogarithmic coefficients.
 lines instead of seventy, and the Möbius statement above it is unchanged.  The GHS route can take `C` to be
 the polylogarithmic coefficient bound at a real cutoff `x`, which is what its parameter choices
 (`H = x/(log x)⁶`) actually require.
+
+## Twenty-sixth brick: the Perron passage, for the actual sequences
+
+`RHTower/Sieve/GhsSummability.lean` (green, axiom-clean, wired).
+
+`LSeriesSummable_of_norm_le_const_mul_log` — coefficients with `‖a_n‖ ≤ C·log n` are absolutely summable
+on every line `Re s > 1`.  The proof is explicit rather than asymptotic: `log x ≤ x^ε/ε`, applied with
+`ε = (Re s − 1)/2`, gives `a = O(n^ε)` and mathlib's `LSeriesSummable_of_isBigO_rpow` finishes.
+
+Instantiated at the two prime weights (`LSeriesSummable_ghsOuter`, `LSeriesSummable_ghsInner`) and combined
+with `LSeriesSummable_of_bounded_of_one_lt_re` for `f`, this discharges every hypothesis of the triple
+Perron identity, giving
+
+`tsum_mul_smoothWeight_ghs_eq_integral` :
+`2π ∑ₙ (a ⍟ (b ⍟ f))(n) w(n) = ∫_ℝ L(a,σ+iy)·L(b,σ+iy)·L(f,σ+iy)·W(σ+iy) dy`
+
+for every `f` with `‖f‖ ≤ 1`, every cutoff `N > 0`, width `H > 0` and every `σ > 1`.  The Perron step of
+step 4 is now stated for the sequences the log recursion produces, not for abstract summable factors.
