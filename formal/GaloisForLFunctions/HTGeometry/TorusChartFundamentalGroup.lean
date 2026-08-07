@@ -16,25 +16,28 @@ namespace GaloisForLFunctions.HTGeometry
 
 open Path
 
+noncomputable section
+
 /-- Period lattice of the complex exponential. -/
 abbrev ComplexExponentialPeriodLattice :=
   AddSubgroup.zmultiples (2 * Real.pi * Complex.I)
 
 /-- Complex exponential with codomain written as the unit group. -/
-noncomputable def complexExpUnits (z : ℂ) : Units ℂ :=
-  Units.mk0 z.exp z.exp_ne_zero
+def complexExpUnits : ℂ → Units ℂ :=
+  (unitsHomeomorphNeZero (G₀ := ℂ)).symm ∘
+    fun z ↦ (⟨z.exp, z.exp_ne_zero⟩ : {w : ℂ // w ≠ 0})
 
 /-- The exponential map to `ℂˣ` is the quotient universal cover by its period lattice. -/
 theorem complexExpUnits_isAddQuotientCoveringMap :
     IsAddQuotientCoveringMap complexExpUnits ComplexExponentialPeriodLattice := by
-  convert Complex.isAddQuotientCoveringMap_exp.homeomorph_comp
-    (unitsHomeomorphNeZero (G₀ := ℂ)).symm using 1
-  ext z
-  rfl
+  exact Complex.isAddQuotientCoveringMap_exp.homeomorph_comp
+    (unitsHomeomorphNeZero (G₀ := ℂ)).symm
 
 /-- Zero in the universal cover lies over the unit basepoint. -/
 noncomputable def complexExpUnitsBasepoint : complexExpUnits ⁻¹' {(1 : Units ℂ)} :=
-  ⟨0, by ext; simp [complexExpUnits]⟩
+  ⟨0, by
+    apply (unitsHomeomorphNeZero (G₀ := ℂ)).injective
+    simp [complexExpUnits]⟩
 
 /-- The fundamental group of `ℂˣ` is cyclic, obtained from the exponential universal cover. -/
 theorem isCyclic_fundamentalGroup_complexUnits :
@@ -71,7 +74,8 @@ noncomputable def fundamentalGroupComplexTorusAffineChartEquiv (k : ℕ) :
   letI : SimplyConnectedSpace (Multiplicative (Fin k → ℂ)) :=
     simplyConnectedSpace_complexAffineMultiplicative k
   letI : Unique (FundamentalGroup (Multiplicative (Fin k → ℂ)) 1) :=
-    ⟨1, fun _ ↦ Subsingleton.elim _ _⟩
+    { default := 1
+      uniq := fun _ ↦ Subsingleton.elim _ _ }
   exact
     (fundamentalGroupProdMulEquiv (1 : Units ℂ) (1 : Units ℂ ×
       Multiplicative (Fin k → ℂ))).symm |>.trans
@@ -100,20 +104,27 @@ theorem exists_eq_zpow_torusChartFundamentalGenerators (k : ℕ)
       torusChartSecondFundamentalGenerator k ^ b := by
   let e := fundamentalGroupComplexTorusAffineChartEquiv k
   have h₁ : ∃ a : ℤ, (e g).1 = complexUnitsFundamentalGenerator ^ a := by
-    simpa [Subgroup.mem_zpowers_iff] using
-      (show (e g).1 ∈ Subgroup.zpowers complexUnitsFundamentalGenerator by
-        rw [zpowers_complexUnitsFundamentalGenerator]
-        exact Subgroup.mem_top _)
+    have hmem : (e g).1 ∈ Subgroup.zpowers complexUnitsFundamentalGenerator := by
+      rw [zpowers_complexUnitsFundamentalGenerator]
+      exact Subgroup.mem_top _
+    obtain ⟨a, ha⟩ := hmem
+    exact ⟨a, ha.symm⟩
   have h₂ : ∃ b : ℤ, (e g).2 = complexUnitsFundamentalGenerator ^ b := by
-    simpa [Subgroup.mem_zpowers_iff] using
-      (show (e g).2 ∈ Subgroup.zpowers complexUnitsFundamentalGenerator by
-        rw [zpowers_complexUnitsFundamentalGenerator]
-        exact Subgroup.mem_top _)
+    have hmem : (e g).2 ∈ Subgroup.zpowers complexUnitsFundamentalGenerator := by
+      rw [zpowers_complexUnitsFundamentalGenerator]
+      exact Subgroup.mem_top _
+    obtain ⟨b, hb⟩ := hmem
+    exact ⟨b, hb.symm⟩
   obtain ⟨a, ha⟩ := h₁
   obtain ⟨b, hb⟩ := h₂
   refine ⟨a, b, e.injective ?_⟩
-  simp [e, torusChartFirstFundamentalGenerator,
-    torusChartSecondFundamentalGenerator, ha, hb]
+  rw [map_mul, map_zpow, map_zpow]
+  change e g =
+    (complexUnitsFundamentalGenerator, 1) ^ a *
+      (1, complexUnitsFundamentalGenerator) ^ b
+  apply Prod.ext
+  · simpa using ha
+  · simpa using hb
 
 /-- Every group-valued monodromy representation of the chart is determined by two exponent
 images. -/
@@ -124,6 +135,7 @@ theorem map_eq_zpow_torusChartFundamentalGenerators
     ∃ a b : ℤ, φ g = φ (torusChartFirstFundamentalGenerator k) ^ a *
       φ (torusChartSecondFundamentalGenerator k) ^ b := by
   obtain ⟨a, b, rfl⟩ := exists_eq_zpow_torusChartFundamentalGenerators k g
-  exact ⟨a, b, by simp⟩
+  refine ⟨a, b, ?_⟩
+  rw [map_mul, map_zpow, map_zpow]
 
 end GaloisForLFunctions.HTGeometry

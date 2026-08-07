@@ -304,6 +304,46 @@ theorem tensorAlgMul_smul_right {a b n : ℕ} (h : a + b = n) (c : R)
   rw [Finset.smul_sum]
   exact Finset.sum_congr rfl fun r _ => tensorAlgTerm_smul_right A B h c f g p r
 
+open scoped Classical in
+/-- The complementary index: what is left of an output bidegree after removing a bidegree of the
+left factor. -/
+noncomputable def coIndex (b : ℕ) {n : ℕ} (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n})
+    {a : ℕ} (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) : {ab : ℕ × ℕ // ab.1 + ab.2 = b} :=
+  if hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2 ∧ a + b = n then
+    ⟨(p.1.1 - r.1.1, p.1.2 - r.1.2), by
+      have h1 : r.1.1 + r.1.2 = a := r.2
+      have h2 : p.1.1 + p.1.2 = n := p.2
+      obtain ⟨hr1, hr2, hab⟩ := hr
+      simp only
+      omega⟩
+  else ⟨(0, b), by simp⟩
+
+open scoped Classical in
+theorem coIndex_apply {a b n : ℕ} (hab : a + b = n)
+    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a})
+    (hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2) :
+    (coIndex b p r).1 = (p.1.1 - r.1.1, p.1.2 - r.1.2) := by
+  rw [coIndex, dif_pos ⟨hr.1, hr.2, hab⟩]
+
+open scoped Classical in
+theorem coIndex_fits {a b n : ℕ} (hab : a + b = n)
+    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a})
+    (hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2) :
+    (coIndex b p r).1.1 ≤ p.1.1 ∧ (coIndex b p r).1.2 ≤ p.1.2 := by
+  rw [coIndex_apply hab p r hr]
+  exact ⟨Nat.sub_le _ _, Nat.sub_le _ _⟩
+
+open scoped Classical in
+theorem coIndex_coIndex {a b n : ℕ} (hab : a + b = n) (hba : b + a = n)
+    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a})
+    (hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2) :
+    coIndex a p (coIndex b p r) = r := by
+  refine Subtype.ext ?_
+  rw [coIndex_apply hba p (coIndex b p r) (coIndex_fits hab p r hr), coIndex_apply hab p r hr]
+  have h1 : r.1.1 + r.1.2 = a := r.2
+  have h2 : p.1.1 + p.1.2 = n := p.2
+  refine Prod.ext ?_ ?_ <;> simp only <;> omega
+
 end Convolution
 
 end GaloisForLFunctions.HTGeometry

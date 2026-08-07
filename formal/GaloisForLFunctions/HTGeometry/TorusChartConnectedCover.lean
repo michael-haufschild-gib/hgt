@@ -55,6 +55,15 @@ theorem nontrivial_monodromyRange_of_connectedCover [PathConnectedSpace E]
   apply he
   rw [← hg, h, one_smul]
 
+/-- A monodromy subgroup cuts out a nontrivial cyclic quotient, using the canonical commutative
+group structure on the torus-chart monodromy image. -/
+def IsNontrivialCyclicTorusChartMonodromyQuotient
+    (N : Subgroup (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range) : Prop :=
+  letI : CommGroup (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range :=
+    torusChartMonodromyRangeCommGroup p cov
+  IsCyclic ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N) ∧
+    Nontrivial ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N)
+
 /-- **Cyclic reduction for a connected finite topological cover of the torus chart.**  Every
 nontrivial such cover has a maximal proper monodromy subgroup with nontrivial cyclic quotient. -/
 theorem connectedFiniteTorusChartCover_exists_nontrivial_cyclic_quotient
@@ -63,12 +72,13 @@ theorem connectedFiniteTorusChartCover_exists_nontrivial_cyclic_quotient
     [Nontrivial (p ⁻¹' {(1 : ComplexTorusAffineChart k)})] :
     ∃ N : Subgroup (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range,
       IsCoatom N ∧
-        IsCyclic ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N) ∧
-        Nontrivial ((cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range ⧸ N) := by
+        IsNontrivialCyclicTorusChartMonodromyQuotient p cov N := by
   letI : CommGroup (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range :=
     torusChartMonodromyRangeCommGroup p cov
   letI : Nontrivial (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range :=
     nontrivial_monodromyRange_of_connectedCover p cov
-  exact exists_nontrivial_cyclic_quotient
+  simpa [IsNontrivialCyclicTorusChartMonodromyQuotient] using
+    (exists_nontrivial_cyclic_quotient
+      (A := (cov.monodromyPerm (1 : ComplexTorusAffineChart k)).range))
 
 end GaloisForLFunctions.HTGeometry

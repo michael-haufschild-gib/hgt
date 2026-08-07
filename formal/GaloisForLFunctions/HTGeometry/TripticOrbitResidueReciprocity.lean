@@ -44,7 +44,7 @@ theorem eq_of_forall_le_increment_zero {d : ℤ → ℂ} {N : ℤ}
   | pred k hk ih =>
       have hstep := h (k - 1) (by omega)
       rw [show k - 1 + 1 = k from by ring] at hstep
-      rw [hstep, ih]
+      rw [← hstep, ih]
 
 /-- Telescoping over a symmetric integer interval. -/
 theorem sum_Ico_increment_telescope (d : ℤ → ℂ) (N : ℕ) :
@@ -58,7 +58,7 @@ theorem sum_Ico_increment_telescope (d : ℤ → ℂ) (N : ℕ) :
     refine Finset.sum_nbij' (i := fun n => (n + (N : ℤ)).toNat)
       (j := fun j => (j : ℤ) - (N : ℤ)) ?_ ?_ ?_ ?_ ?_
     · intro n hn
-      simp only [Finset.mem_Ico] at hn ⊢
+      simp only [Finset.mem_Ico, Finset.mem_range] at hn ⊢
       omega
     · intro j hj
       simp only [Finset.mem_range] at hj
@@ -86,7 +86,7 @@ theorem exists_symmetric_bound_of_finite_support {A : ℤ → ℂ}
     ∃ N : ℕ, ∀ n : ℤ, ((N : ℤ) ≤ n ∨ n < -(N : ℤ)) → A n = 0 := by
   classical
   obtain ⟨s, hs⟩ := hA.exists_finset
-  obtain ⟨M, hM⟩ : ∃ M : ℕ, ∀ n ∈ s, |n| < (M : ℤ) := by
+  obtain ⟨M, hM⟩ : ∃ M : ℕ, ∀ n ∈ s, n.natAbs < M := by
     refine ⟨(s.image fun n => n.natAbs).sup id + 1, fun n hn => ?_⟩
     have : n.natAbs ≤ (s.image fun n => n.natAbs).sup id :=
       Finset.le_sup (f := id) (Finset.mem_image_of_mem _ hn)

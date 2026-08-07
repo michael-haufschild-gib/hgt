@@ -1085,3 +1085,16 @@ Still missing is the *scaling law and the Plancherel step*:
 Only after both does `(14)` `log⟨D⟩u ∈ L²` follow, and only then may the two-port card be
 promoted. `c_s > 0` is also still to prove (the integrand is positive on a set of positive
 measure); it is needed for the reverse inequality, not for the direction the card uses.
+
+## P. Strict positivity of the integrand
+
+`gagliardoIntegrand_pos` — the integrand is strictly positive on the whole unit window `0 < h < 1`,
+since `sin(πh)` vanishes only at the integers (`Real.sin_pos_of_pos_of_lt_pi`). Axiom-clean.
+
+This is the pointwise half of `c_s > 0`. The remaining step is measure-theoretic: a nonnegative
+integrable function that is strictly positive on a set of positive measure has positive integral.
+Route it through `setIntegral_pos_iff_support_of_nonneg_ae` (name unverified on this toolchain —
+check before use), with `Ioo 0 1 ⊆ Ioi 0` supplying the positive-measure set.
+
+Note `(mul_lt_mul_left Real.pi_pos).mpr` fails here (`MulRightStrictMono ℝ` does not synthesize);
+`nlinarith [Real.pi_pos]` does the same job.

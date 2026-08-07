@@ -155,4 +155,22 @@ theorem integrableOn_gagliardoIntegrand_Ioi_zero {s : ℝ} (hs0 : 0 < s) (hs1 : 
   rw [hsplit]
   exact (integrableOn_gagliardoIntegrand_Ioo hs1).union hIci
 
+/-! ## Strict positivity of the constant
+
+The integrand is strictly positive on the whole unit window, because `sin(πh)` vanishes only at the
+integers.  Positivity of `c_s` is what makes the Fourier description of the Sobolev weight
+equivalent to the difference-quotient one rather than merely dominated by it.
+-/
+
+/-- The integrand is strictly positive on the unit window: `sin(πh)` has no zero there. -/
+theorem gagliardoIntegrand_pos {s h : ℝ} (hh0 : 0 < h) (hh1 : h < 1) :
+    0 < gagliardoIntegrand s h := by
+  unfold gagliardoIntegrand
+  have hsin : 0 < Real.sin (Real.pi * h) := by
+    refine Real.sin_pos_of_pos_of_lt_pi (by positivity) ?_
+    nlinarith [Real.pi_pos]
+  have hw : (0 : ℝ) < h ^ (-(1 + 2 * s)) := Real.rpow_pos_of_pos hh0 _
+  have hnum : (0 : ℝ) < 4 * Real.sin (Real.pi * h) ^ 2 := by positivity
+  exact mul_pos hnum hw
+
 end GaloisForLFunctions.HTGeometry
