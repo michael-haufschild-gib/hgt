@@ -2,7 +2,8 @@
 
 ## Status
 
-Paper proof complete. Lean target: `HedenmalmThetaSquaredSeamPencil.lean`.
+Stage 3-formalized.  Lean: `HedenmalmThetaSquaredSeamPencil.lean`; certificate
+`theta-compact-squared-seam-pencil-formalized.md`.
 
 ## Statement
 

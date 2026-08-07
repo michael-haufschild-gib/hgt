@@ -1,6 +1,6 @@
 # Theta compact boundary-flux energy
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized (certificate: `theta-compact-boundary-flux-energy-formalized.md`)
 - **Type:** THEOREM
 - **Lean target:** `formal/GaloisForLFunctions/RHTower/HedenmalmThetaCompactFluxEnergy.lean`
 

@@ -1,6 +1,6 @@
 # Theta compact source-entropy boundary weld
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized (certificate: `theta-compact-source-entropy-boundary-weld-formalized.md`)
 - **Type:** THEOREM
 - **Lean target:** `formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceEntropyBoundaryWeld.lean`
 
