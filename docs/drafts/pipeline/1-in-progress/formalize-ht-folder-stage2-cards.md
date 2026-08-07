@@ -199,3 +199,25 @@ single scalar `a = 2`.
 
 Also added `parabolic_triple_classification` to `ParabolicSignatureClassification.lean`, the
 reciprocal form another session's `TriangleSignatureTrichotomy.lean` consumes.
+
+
+## Built this cycle (cards 5, 6, 9)
+
+```text
+HTGeometry/HyperbolicSignatureGap.lean      hyperbolic_signature_gap — the Hurwitz `1/42` gap for
+                                             arbitrary sphere signatures with cusps, plus
+                                             degree_le_of_hyperbolic_defect, the card's `(22)`
+HTGeometry/IrrationalSineSubsequence.lean   infinite_setOf_half_le_abs_sin — an irrational rotation
+                                             is far from the integers infinitely often, by a
+                                             doubling argument needing neither equidistribution nor
+                                             pigeonhole; this is the card-9 sharpness step `(10)`
+```
+
+Remaining, per card, in rough order of cost:
+
+- card 2: the augmentation law `(A2)` — needs a parallelogram residue theorem
+- cards 3, 4: surjectivity of the divisor map / the exact-image realization
+- cards 5, 6: parabolic-orbifold uniformization and the complete-tail identification
+- card 7: a Rosenlicht-type quotient for a general connected commutative algebraic group
+- card 8: Pong 5.9, Andersson's arbitrary-divisor theorem, Saksman--Webb/Seip
+- card 9: two-sided Stirling for `Γ(1 + sk)` against `(k!)^s`, then Sibuya--Ramis and Barnes

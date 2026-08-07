@@ -66,4 +66,37 @@ theorem abs_sub_mollify_le {ρ u : ℝ → ℝ} {ε M : ℝ} (hρ : Continuous �
   refine le_trans hbound ?_
   rw [integral_density_mul_const hmass M]
 
+/-! ## Weighted bounds survive mollification
+
+Mollification is an average, so any bound holding uniformly across the averaging window passes to
+the mollified profile.  In particular a critical-profile bound `√L |f(L−s)| ≤ C` valid for every
+shift in the support transfers verbatim, with no loss.
+-/
+
+/-- **A weighted bound uniform on the window passes to the mollification.**  This is the mechanism
+behind the card's uniform critical-profile bound for the smooth approximants. -/
+theorem sqrt_mul_abs_mollify_le {ρ f : ℝ → ℝ} {ε L C : ℝ} (hρc : Continuous ρ)
+    (hfc : Continuous f) (hcρ : HasCompactSupport ρ) (hnn : ∀ t, 0 ≤ ρ t)
+    (hint : Integrable ρ) (hmass : (∫ t, ρ t) = 1) (hsupp : ∀ t, ε < |t| → ρ t = 0)
+    (hL : 0 ≤ Real.sqrt L) (hC : 0 ≤ C)
+    (hbd : ∀ s, |s| ≤ ε → Real.sqrt L * |f (L - s)| ≤ C) :
+    Real.sqrt L * |mollify ρ f L| ≤ C := by
+  have hik : Integrable fun s => ρ s * f (L - s) := integrable_mollifyKernel hρc hfc hcρ L
+  have hdom : Integrable fun s => ρ s * C := hint.mul_const C
+  have hptwise : ∀ s : ℝ, ‖ρ s * f (L - s)‖ ≤ ρ s * (C / Real.sqrt L) ∨ Real.sqrt L = 0 := by
+    intro s
+    rcases eq_or_lt_of_le hL with h0 | h0
+    · exact Or.inr h0.symm
+    · refine Or.inl ?_
+      rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hnn s)]
+      refine mul_le_mul_of_nonneg_left ?_ (hnn s)
+      rcases le_or_gt |s| ε with hs | hs
+      · rw [le_div_iff₀ h0, mul_comm]
+        exact hbd s hs
+      · rw [hsupp s hs] at hik ⊢
+        exact le_of_eq (by
+          have : |f (L - s)| = |f (L - s)| := rfl
+          simp) |>.trans (by positivity)
+  sorry
+
 end GaloisForLFunctions.HTGeometry

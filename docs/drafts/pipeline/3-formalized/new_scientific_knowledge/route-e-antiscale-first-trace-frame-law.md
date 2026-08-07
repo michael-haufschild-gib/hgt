@@ -153,6 +153,25 @@ The moving terminal resonance (t=\pi/\log z) aligns the terminal window, but ear
 the global frame energy in `(5)`.  The terminal resonance no-go and the global frame theorem are
 compatible: one is local in prime scale, the other retains all reciprocal-prime weights.
 
+### Sharp harmonic ceiling
+
+The frame is globally coercive but cannot by itself generate a power of the physical scale.  For
+every \(t\),
+
+\[
+ \boxed{
+ \sum_{p\in P}{|1+\chi_t(p)|^2\over p}
+ \le 4\sum_{p\in P}{1\over p}.
+ }                                                           \tag{5a}
+\]
+
+Equality holds at \(t=0\).  Thus complete cofinal frame mass is only
+\(4\log\log z+O(1)\).  Exponentiating independent harmonic contractions can produce at most
+powers of \(\log z\), precisely the already-known scale-invariant
+\(\prod_{p\le z}(p-1)/(p+1)\) baseline.  A claim that \((5)\) alone yields \(x^{1/2}\) invents
+missing mass.  Any power gain must come from nonproduct moving-boundary dependence of literal
+integer source.
+
 ## 4. Order-free batch dispersion
 
 Let (S,P) be disjoint finite prime sets.  For (T\subseteq P), put
@@ -216,34 +235,38 @@ order independence.
 
 ## 5. New exact frontier
 
-Equations `(1)`--`(3)` close the scalar Bockstein question negatively.  Equations `(4)`--`(5)`
-prove that a **common linear Mellin phase** cannot realize global harmonic antiscale coherence.
-Equation `(7)` removes the changing-prefix ambiguity by placing a whole prime block over one base
-current.
+Equations \((1)\)--\((3)\) close scalar Bockstein question negatively.  Equations
+\((4)\)--\((5)\) prove that a **common linear Mellin phase** cannot realize global harmonic
+antiscale coherence, while \((5a)\) proves that this frame alone remains logarithmic.  Equation
+\((7)\) removes changing-prefix ambiguity by placing a whole prime block over one base current.
 
 The surviving hard theorem is now:
 
-> **`GIBBS-BATCH-TO-HARMONIC-ANTISCALE-FRAME`.**  At the physical moving aperture, decompose the
-> common-prefix leaf packet in `(7)` into a log-frequency component to which `(5)` applies and a
-> remainder whose weighted batch energy is (x^{1-o(1)}) below the leaf energy.  The construction
-> must retain the Gibbs weights (w_T), the full subset checkerboard, and the moving prime blocks.
+> **`GIBBS-MOVING-BOUNDARY-NONPRODUCT-FRAME`.**  At the physical moving aperture, prove that the
+> literal Gibbs leaf law in \((7)\) has a boundary-correlation component, absent from its
+> reciprocal-prime product approximation, whose checkerboard dispersion is
+> \(1-x^{1-o(1)}\) of relevant leaf energy.  Proof must retain Gibbs weights \(w_T\), full subset
+> checkerboard, and moving prime blocks.
 
-This is not `(A1)` restated: `(5)` is an independently proved arithmetic frame inequality, while
-the open handoff is a concrete nonlinear-to-linear spectral transport for the literal Gibbs leaf
-packet.  It must prove both:
+This is not \((A1)\) restated: \((5)\) is an independently proved arithmetic frame inequality,
+\((5a)\) fixes its exact ceiling, and \((7)\) is an independently proved source batch identity.
+Open handoff is concrete failure of harmonic product approximation at multiplicative cutoff.  It
+must prove all three:
 
 1. prefix stabilization inside a batch, so the seams are observations of one common log signal;
-2. high-log-frequency control strong enough to prevent the terminal resonance from carrying the
-   whole leaf energy.
+2. high-log-frequency control strong enough to prevent terminal resonance from carrying whole
+   leaf energy;
+3. a quantitative moving-boundary correlation supplying missing power beyond \(\sum 1/p\).
 
-Neither clause follows from endpoint identity `(A7)`.  Generic Fourier truncation is insufficient:
-the truncation error must be controlled in the physical Gibbs weight and at strict-half scale.
+None follows from endpoint identity \((A7)\).  Generic Fourier truncation is insufficient, and a
+product Bernoulli approximation is provably too weak by \((5a)\).  This returns load-bearing
+problem to integer boundary interaction isolated independently by physical Hall lane.
 
 ## Hostile audit
 
 1. `(2)` is a classification/no-go, not Route E closure.
-2. `(5)` has only harmonic logarithmic size.  It becomes useful only through repeated batch
-   dispersion; exponentiating it by fiat would be theatre.
+2. \((5)\) has only harmonic logarithmic size, sharply certified by \((5a)\).  Repeating or
+   exponentiating it yields only log powers; claiming a physical power would be theatre.
 3. The character-distance phase is common across primes.  Actual one-step Gibbs seams have changing
    prefixes; `(7)` is the exact infrastructure needed to address that mismatch.
 4. The terminal resonance remains real.  Any high-frequency remainder estimate that assumes it
@@ -260,7 +283,9 @@ Formalize unconditionally:
 - scalar Bockstein classification `(2)` and antiscale restriction `(3)`;
 - harmonic frame identity `(4)` and uniform lower bound `(5)` from
   `Sieve.MoebiusUniformFrequency`;
+- sharp harmonic ceiling \((5a)\);
 - finite weighted batch dispersion algebra `(7)` and its exact null space.
 
-The source-specific subset expansion `(6)` may reuse the existing Gibbs insertion recursion.  No
-new analytic assumption is permitted.
+Source-specific subset expansion \((6)\), source batch polarization \((7)\), and checkerboard null
+space are formalized by reusing existing Gibbs insertion recursion.  No new analytic assumption
+is permitted.

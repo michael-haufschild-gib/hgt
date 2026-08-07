@@ -2038,3 +2038,120 @@ Corrected status of the trace card:
 This is the third time this session a "one step left" estimate has been too optimistic (see AN for
 the second). The pattern: I have been costing the remainder from the machinery I just built rather
 than from the card's actual hypotheses. Check what a lemma *consumes*, not only what it produces.
+
+## AU. The uniform-modulus route cannot work — check the card's §4 before building further
+
+Attempting the modulus of section AT shows the route is **not viable as set up**, and this must be
+recorded before anyone builds on sections AP–AS.
+
+For `H(L) = √L F(L)` and a shift `t`,
+
+    H(y) − H(y−t) = √y (F(y) − F(y−t)) + (√y − √(y−t)) F(y−t),
+
+so even for `F` bounded and Lipschitz the first term is `O(√y · |t|)`: it **grows with `y`**. There
+is no uniform-in-`L` modulus for `H` at fixed width `ε`, and the same amplification defeats
+mollifying `F` instead (`|H − H_ε|(L) = √L |F − F_ε|(L)`).
+
+Therefore `tendsto_of_forall_uniform_approx` (AP) — which demands a bound uniform in `L` — cannot
+be fed from a modulus of `F` by this route. The lemmas of AP–AS are correct and reusable, but
+**their applicability to this card is unverified**, and my reconstruction of §4's mechanism (mollify,
+bound the commutator defect, squeeze) is probably not what the card actually does.
+
+Before any further work on `suzuki-weak-signed-half-log-trace`:
+
+1. Read §4 and §5 of the card in full and identify what the mollification is actually *for*. The
+   `O(ε)` commutator may be there to justify distributional manipulations, not to drive a squeeze.
+2. Identify where `liminf H = limsup H` actually comes from. It is not from a uniform modulus.
+3. Only then decide whether AP–AS are on the path or are orphans.
+
+The honest state of this card is therefore weaker than sections AR–AS suggest: the components
+listed there are built, but the *argument* connecting them to `(4)` is not established, and the
+one I assumed is now known to be unsound.
+
+## AV. §4–§5 read: the mechanism is a penalized maximum, not a squeeze
+
+Read the card. The `liminf = limsup` step is **not** a uniform-modulus squeeze — it is an
+Ekeland-style *penalized maximum* argument (§5, "moving-mollifier penalized maxima"):
+
+    M = limsup H;  pick L_n → ∞ with H(L_n) → M
+    (21) choose ε_n < 1/n with √L_n |f_{ε_n}(L_n) − F(L_n)| < 1/n
+    (22) let X_n maximize   H_n(L) − δ_n |L − L_n|,   H_n = √L f_{ε_n},  δ_n = L_n^{−1/2}
+    (23) |X_n − L_n| = O(√L_n),  X_n/L_n → 1,  H_n(X_n) → M
+    (24) at the interior maximizer:  H_n(X_n ± s) ≤ H_n(X_n) + δ_n s
+
+The equation is then evaluated at the maximizer. No uniform-in-`L` modulus is used anywhere, which
+is consistent with section AU's finding that none exists.
+
+**Consequences for what was built.**
+
+- *Survives and is used*: `mollify_position_eq` is exactly the card's `(17)`
+  `P f_ε = ρ_ε*(P f) + 2∫ s ρ_ε(s) f(L−s) ds` — the position commutator, with the factor `2` coming
+  from `P = 2L· − Y`. `integral_abs_firstMomentKernel_le` bounds that defect. `BumpMollifierFamily`
+  supplies the `ρ_{ε_n}`. `(19)`'s uniform source bound follows from unit mass.
+- *Orphans for this card*: `tendsto_of_forall_uniform_approx` (AP), `abs_sub_mollify_le` /
+  `abs_sub_mollify_bump_le` (AQ), `tendsto_of_defect_div_sqrt` (AR). They are correct and
+  reusable, but they are **not** on this card's path. Do not try to route `(4)` through them.
+
+**The actual next build** is `(22)`–`(24)`: existence of a maximizer for `H_n(L) − δ_n|L − L_n|` on
+a terminal half-line (continuity plus the penalty forcing a maximum), its interiority for large
+`n`, and the one-sided inequalities `(24)` that an interior maximum gives. That is a self-contained
+piece of real analysis and is the right next target — not more mollification machinery.
+
+Standing correction, third instance this session: I built four sections of machinery from a guessed
+mechanism instead of reading §4–§5 first. **Read the card's proof before building its lemmas.**
+
+## AW. `(24)` is built — the penalized-maximum inequality
+
+New module `formal/GaloisForLFunctions/HTGeometry/PenalizedMaximum.lean`, wired into the
+`HTGeometry` umbrella. 3 declarations, all `#print axioms` clean.
+
+    penalized H δ L₀ L = H L − δ |L − L₀|
+
+- `le_of_isMaxOn_penalized` — at a maximizer `X` of the penalized profile, `H y ≤ H X + δ|y − X|`
+  for every `y` in the set: moving away can gain at most what the penalty charges. Proof is the
+  reverse triangle inequality `|y−L₀| − |X−L₀| ≤ |y−X|`.
+- `le_of_isMaxOn_penalized_shift` — **the card's `(24)`** in the symmetric form the argument uses:
+
+      H(X + t) ≤ H X + δ t   and   H(X − t) ≤ H X + δ t      (t ≥ 0).
+
+This is the first piece built *after* reading the card's actual §5 mechanism rather than a guessed
+one, and unlike sections AP–AS it is directly on the path.
+
+### `suzuki-weak-signed-half-log-trace` — remaining, from the card's own §5
+
+- `(22)` existence of a maximizer `X_n` for `H_n(L) − δ_n|L − L_n|` on a terminal half-line. The
+  penalty forces `→ −∞`, so a continuous bounded `H_n` attains the max on a compact subinterval;
+  standard, not yet written.
+- `(23)` the localisation `|X_n − L_n| = O(√L_n)`, `X_n/L_n → 1`, `H_n(X_n) → M`, from `(20)`+`(21)`.
+- interiority of the maximizer for large `n` (needed before `(24)` applies).
+- the final step: evaluate the mollified equation `(18)` at `X_n` using `(24)` and conclude
+  `M ≤ liminf H`.
+
+Note `(24)` is stated for an arbitrary set `s`, so it applies verbatim once `(22)`'s maximizer is
+produced on whatever terminal interval is convenient.
+
+## AX. `(22)` is built — the maximizer exists
+
+`PenalizedMaximum.lean` gains `exists_isMaxOn_penalized`, axiom-clean:
+
+    H continuous on [a,∞),  H ≤ B there,  δ > 0
+      ⟹  ∃ X ∈ [a,∞),  IsMaxOn (fun L => H L − δ|L − L₀|) [a,∞) X
+
+The radius is explicit: beyond `R = max a (L₀ + (B − Φ a)/δ + 1)` the penalty puts `Φ` strictly
+below its endpoint value `Φ a`, so a maximum over the compact `Icc a R`
+(`IsCompact.exists_isMaxOn`) is global on the whole ray.
+
+With `le_of_isMaxOn_penalized_shift` (AW) this closes both `(22)` and `(24)` of the card's §5.
+
+### `suzuki-weak-signed-half-log-trace` — remaining
+
+- `(23)` the localisation `|X_n − L_n| = O(√L_n)`, `X_n/L_n → 1`, `H_n(X_n) → M`, from `(20)`+`(21)`.
+- interiority of `X_n` for large `n` (so that both `X_n ± s` lie in the ray, which `(24)` needs).
+- the concluding step: evaluate the mollified equation `(18)` at `X_n` under `(24)` and derive
+  `M ≤ liminf H`.
+
+`(23)` is the next target and is the last piece that is more than bookkeeping: it needs `(20)`'s
+weighted bound `√L |f_ε(L)| ≤ C sup_{|s|≤1} √(L/(L−s)) ‖H‖_∞`, which is not yet built either.
+
+Trap: `unfold_let` is not a tactic in this toolchain. Use `rw [h]` on the defining equation from
+`set … with h`, then `unfold` the definition.

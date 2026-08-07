@@ -6547,3 +6547,69 @@ alternative: a uniform moving-window lift to `R_X^gr`, collision-quotiented inte
 cross-anchor incoming-load control remain missing.  Full card and Lean:
 `../3-formalized/route-e-critical-gibbs-sieve-normalization-wall.md` and
 `RHTower/GibbsCriticalSieveNormalizationWall.lean`.
+
+## 2026-08-07 Route E antiscale first-trace frame law
+
+`OPEN-SOURCE-001` remains open, but the proposed scalar first-trace continuation is now closed
+negatively and the correct multichannel object is exact.
+
+For one prime insertion, the antiscale/same-sign coordinates
+
+\[
+ a={\psi_S(x)-\psi_S(px)\over2},\qquad
+ s={\psi_S(x)+\psi_S(px)\over2}
+\]
+
+diagonalize normalized insertion:
+
+\[
+ \psi_{S\cup p}(x)=a+\alpha_{S,p}(x)s.                    \tag{E-CHANNEL}
+\]
+
+Antiscale coordinate has unit coefficient.  Every scalar normalization Bockstein
+\[
+ {q\psi_S-q'\psi_{S\cup p}\over q-q'},\qquad q'=\lambda q,
+\]
+is \(a+c_{\lambda,p}s\), hence is identity on \(s=0\).  Scalar sieve-density or Euler
+renormalization cannot remove antiscale escape.
+
+The expanded character-distance corpus gives the exact all-prime harmonic frame
+
+\[
+ \sum_{p\le z}{|1+p^{it}|^2\over p}
+ =2D(-1,\chi_t;p\le z)^2,
+\]
+
+with a uniform lower bound on the permitted frequency window.  This proves global frustration of
+any common antiscale Mellin phase.  It also has the sharp upper ceiling
+\[
+ \sum_{p\le z}{|1+p^{it}|^2\over p}\le4\sum_{p\le z}{1\over p},
+\]
+attained at \(t=0\).  Therefore the complete common-phase frame contains only harmonic
+\(\log\log z\) mass; it cannot manufacture the \(x^{1/2}\) power.  Pretentious distance reduces
+frequency escape but does not reduce Route E to Halász theory.
+
+For disjoint base \(S\) and prime batch \(P\), the exact source expansion now yields an order-free
+weighted batch variance:
+
+\[
+ {J_{S\cup P}(x)^2\over Z_{S\cup P}(x)}
+ +{1\over2W}\sum_{T,U\subseteq P}w_Tw_U(g_T-g_U)^2
+ =\sum_{T\subseteq P}w_Tg_T^2,
+\]
+
+where \(w_T=Z_S(m_Tx)\), \(g_T=(-1)^{|T|}\psi_S(m_Tx)\), and \(W=\sum_Tw_T\).  Residual is zero
+exactly for one common-prefix checkerboard
+\(\psi_S(m_Tx)=(-1)^{|T|}c\).  Thus changing insertion prefixes are no longer an ambiguity.
+
+**Current Route E source premise:**
+`GIBBS-MOVING-BOUNDARY-NONPRODUCT-FRAME`.  Prove that literal Gibbs weights at moving
+multiplicative boundary depart from reciprocal-prime product law strongly enough that batch
+checkerboard dispersion supplies a physical power beyond harmonic ceiling.  This requires one
+joint theorem for prefix stabilization, terminal resonance control, and cutoff correlation.  It
+is the analytic batch counterpart of physical Hall lane's cross-anchor interval expansion; no
+equivalence between those two open formulations is claimed.
+
+Paper and unconditional Lean:
+`../3-formalized/new_scientific_knowledge/route-e-antiscale-first-trace-frame-law.md` and
+`RHTower/GibbsAntiscaleFirstTraceFrame.lean`.

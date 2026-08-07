@@ -342,3 +342,23 @@ layers decompose into pieces of very different cost, and two of them are ordinar
 
 Doing `1` and `2` first makes the eventual statement of `3` precise and gives the card a real Lean
 surface instead of none.
+
+## Lean progress — the irrationality-sharpness step is closed
+
+`GaloisForLFunctions/HTGeometry/IrrationalSineSubsequence.lean` (wired, axiom-clean):
+
+    abs_cos_ge_of_abs_sin_lt          `|sin x| < 1/2` forces `|cos x| ≥ 4/5`
+    abs_sin_two_mul_ge                so doubling multiplies the sine by at least `8/5`
+    sin_eq_zero_of_forall_dyadic_lt   if every dyadic multiple of `k` has small sine, the sine at
+                                      `k` vanishes
+    infinite_setOf_half_le_abs_sin       for irrational `α`, `{k : ℕ | 1/2 ≤ |sin (π α k)|}` is
+                                         infinite
+    infinite_setOf_half_le_abs_sin_half  the same in the card's normalization `π s k / 2`
+
+This is `(10)` of §3, the only place irrationality of `s` enters and the reason the exact Gevrey
+order is irrational.  The proof needs no equidistribution and no pigeonhole: if `|sin(π α k)|` were
+below `1/2` at every dyadic multiple of one `k`, the doubling identity would multiply it by `8/5`
+each time, so it must vanish, making `α k` an integer and `α` rational.
+
+Remaining for `(9)` and `(11)`: two-sided Stirling for `Γ(1 + sk)` against `(k!)^s`, together with
+the `ζ` functional equation (mathlib has the latter).  Then `(12)` is immediate.

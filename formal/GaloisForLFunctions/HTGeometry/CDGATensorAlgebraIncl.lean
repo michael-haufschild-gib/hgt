@@ -51,4 +51,34 @@ theorem tensorAlgMul_tensorSingle {a b n : ℕ} (h : a + b = n)
         (tensorSingle (M := X) (N := Y) s w rs.1.2) = 0
       rw [tensorSingle_ne _ hr, map_zero, LinearMap.zero_apply]
 
+/-- **Off the sum of the two bidegrees the product of two single-bidegree elements vanishes.** -/
+theorem tensorAlgMul_tensorSingle_ne {a b n : ℕ} (h : a + b = n)
+    (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) (s : {ab : ℕ × ℕ // ab.1 + ab.2 = b})
+    (z : TensorProduct R (X r.1.1) (Y r.1.2)) (w : TensorProduct R (X s.1.1) (Y s.1.2))
+    (p : {ab : ℕ × ℕ // ab.1 + ab.2 = n})
+    (hne : ¬(r.1.1 + s.1.1 = p.1.1 ∧ r.1.2 + s.1.2 = p.1.2)) :
+    tensorAlgMul A B h (tensorSingle (M := X) (N := Y) r z)
+        (tensorSingle (M := X) (N := Y) s w) p = 0 := by
+  show (∑ rs : Splitting a b p, splittingTerm A B (tensorSingle (M := X) (N := Y) r z)
+    (tensorSingle (M := X) (N := Y) s w) rs) = 0
+  refine Finset.sum_eq_zero fun rs _ => ?_
+  by_cases hr : rs.1.1 = r
+  · have e1 : rs.1.1.1.1 + rs.1.2.1.1 = p.1.1 := rs.2.1
+    have e2 : rs.1.1.1.2 + rs.1.2.1.2 = p.1.2 := rs.2.2
+    have h3 : rs.1.1.1.1 = r.1.1 := by rw [hr]
+    have h4 : rs.1.1.1.2 = r.1.2 := by rw [hr]
+    have hs : rs.1.2 ≠ s := by
+      intro hs
+      refine hne ⟨?_, ?_⟩
+      · rw [← h3, ← show rs.1.2.1.1 = s.1.1 by rw [hs]]
+        exact e1
+      · rw [← h4, ← show rs.1.2.1.2 = s.1.2 by rw [hs]]
+        exact e2
+    show tensorPairₗ A B rs.2.1 rs.2.2 (tensorSingle (M := X) (N := Y) r z rs.1.1)
+      (tensorSingle (M := X) (N := Y) s w rs.1.2) = 0
+    rw [tensorSingle_ne _ hs, map_zero]
+  · show tensorPairₗ A B rs.2.1 rs.2.2 (tensorSingle (M := X) (N := Y) r z rs.1.1)
+      (tensorSingle (M := X) (N := Y) s w rs.1.2) = 0
+    rw [tensorSingle_ne _ hr, map_zero, LinearMap.zero_apply]
+
 end GaloisForLFunctions.HTGeometry

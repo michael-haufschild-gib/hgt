@@ -298,3 +298,21 @@ The enumerated datatype `ParabolicSphereSignature` was previously a convention; 
 be the complete solution set of the parabolic (zero orbifold Euler characteristic) equation.  This
 is the step the card's proof calls "the weights define a parabolic orbifold" together with the list
 of Euclidean signatures.
+
+## Lean progress — the Hurwitz gap for arbitrary sphere signatures
+
+`GaloisForLFunctions/HTGeometry/HyperbolicSignatureGap.lean` (wired, axiom-clean):
+
+    half_le_cone_defect, two_thirds_le_cone_defect, cone_defect_lt_one
+    half_length_le_sum_defect, sum_defect_lt_length
+    hyperbolic_signature_gap :
+      if `2 < c + ∑ (1 - 1/ν)` with every `ν ≥ 2`, then `2 + 1/42 ≤ c + ∑ (1 - 1/ν)`
+
+This is `(21)` of the complete-tail card, generalized from triples to arbitrary signatures with
+cusps: the corpus already owned the delicate three-cone case (`hurwitz_triple_sum_le`), and every
+other case is a counting bound (five cones, or four with one order at least three, already overshoot
+`2` by more than `1/42`).
+
+Together with `parabolic_signature_classification` this closes the Euler-characteristic trichotomy
+input of the classification: hyperbolic signatures are bounded away from parabolic by `1/42`, and
+the parabolic ones are exactly the six recorded signatures.

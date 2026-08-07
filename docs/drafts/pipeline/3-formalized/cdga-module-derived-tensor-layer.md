@@ -1578,8 +1578,17 @@ worth remembering: when a goal about splittings is pure cancellation, give the t
 
 Axioms: `propext, Classical.choice, Quot.sound`.
 
+**`tensorAlgMul_tensorSingle_ne`** is the companion: off the sum of the two bidegrees the product
+vanishes, because every splitting misses one of the two supports.
+
 ## Next
 
-The two inclusions `A → A ⊗ B` and `B → A ⊗ B` (the generator lemma above is exactly what their
-multiplicativity needs), and then the relative tensor product of *algebras* over a base algebra —
-the layer's `⊗_A` is still a module construction.
+The two inclusions `A → A ⊗ B` and `B → A ⊗ B`.  Their multiplicativity is exactly the two lemmas
+above — the product of `x ⊗ 1` with `y ⊗ 1` is a one-term sum and vanishes off the diagonal — and
+their compatibility with the differential is the observation that the second half-differential kills
+`x ⊗ 1` because `d1 = 0`.  What makes them fiddly is not the mathematics but the index case split:
+the value of a single-bidegree element at an arbitrary bidegree wants an `if`-shaped helper, and the
+four combinations of `p₁, p₂` being zero or a successor each need their own half-differential lemma.
+
+After that, the relative tensor product of *algebras* over a base algebra — the layer's `⊗_A` is
+still a module construction.

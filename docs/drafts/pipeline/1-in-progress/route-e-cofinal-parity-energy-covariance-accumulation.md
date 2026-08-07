@@ -397,3 +397,94 @@ cross-anchor incoming-load control.
 Paper proof and unconditional Lean:
 `../3-formalized/route-e-critical-gibbs-sieve-normalization-wall.md` and
 `RHTower/GibbsCriticalSieveNormalizationWall.lean`.
+
+## 2026-08-07 antiscale first-trace and batch-frame audit
+
+The scalar first-trace continuation left by the sieve-normalization wall is now exactly classified.
+For one insertion, let
+
+\[
+ a={\psi_S(x)-\psi_S(px)\over2},\qquad
+ s={\psi_S(x)+\psi_S(px)\over2}.
+\]
+
+Then the normalized enlarged current is
+
+\[
+ \boxed{\psi_{S\cup p}(x)=a+\alpha_{S,p}(x)s.}            \tag{A17}
+\]
+
+The antiscale coordinate \(a\) is transmitted with coefficient exactly one.  If a scalar
+normalization changes by \(q'=\lambda q\), \(\lambda\ne1\), its first-normal reader is
+
+\[
+ \boxed{
+ {q\psi_S(x)-q'\psi_{S\cup p}(x)\over q-q'}
+ =a+{1-\lambda\alpha_{S,p}(x)\over1-\lambda}s.
+ }                                                         \tag{A18}
+\]
+
+Hence it restricts to the identity when \(\psi_S(px)=-\psi_S(x)\).  No scalar sieve-density,
+Euler-baseline, or first-trace Bockstein can cancel exact antiscale coherence; viable
+countertransport must be multichannel and cross-prime.
+
+New character-distance theorems do supply one unconditional global multichannel fact.  For
+\(\chi_t(p)=e^{it\log p}\),
+
+\[
+ \sum_{p\le z}{|1+\chi_t(p)|^2\over p}
+ =2D(-1,\chi_t;p\le z)^2
+ \ge2(\log\log z-7\log\log T-C)                           \tag{A19}
+\]
+
+uniformly on the corpus frequency window.  Thus a common Mellin phase cannot occupy the antiscale
+null direction at all primes.  But this frame has the sharp ceiling
+
+\[
+ \sum_{p\le z}{|1+\chi_t(p)|^2\over p}
+ \le4\sum_{p\le z}{1\over p},                             \tag{A20}
+\]
+
+with equality at \(t=0\).  Its entire mass is only logarithmic in \(\log z\), so independent
+harmonic contraction recovers at most log powers—the already-known
+\(\prod(p-1)/(p+1)\) baseline—not the missing physical power.
+
+Changing prefixes are removed exactly by a finite batch law.  For disjoint \(S,P\), define
+
+\[
+ m_T=\prod_{p\in T}p,\quad
+ w_T=Z_S(m_Tx),\quad
+ g_T=(-1)^{|T|}\psi_S(m_Tx),\quad
+ W=\sum_{T\subseteq P}w_T.
+\]
+
+Then
+
+\[
+ Z_{S\cup P}(x)=W,\qquad J_{S\cup P}(x)=\sum_Tw_Tg_T,
+\]
+
+and the order-free polarization is
+
+\[
+ \boxed{
+ {J_{S\cup P}(x)^2\over Z_{S\cup P}(x)}
+ +{1\over2W}\sum_{T,U}w_Tw_U(g_T-g_U)^2
+ =\sum_Tw_Tg_T^2.
+ }                                                         \tag{A21}
+\]
+
+Its residual vanishes exactly when one common prefix current follows the full checkerboard
+\(\psi_S(m_Tx)=(-1)^{|T|}c\).  This is stronger infrastructure than the one-step escape
+description: all insertion orders have one common batch residual.
+
+**Revised first open premise.**
+`GIBBS-MOVING-BOUNDARY-NONPRODUCT-FRAME`: prove that literal Gibbs batch weights at the moving
+multiplicative cutoff have a nonproduct boundary-correlation component whose checkerboard
+dispersion supplies the missing physical power beyond the harmonic ceiling \((A20)\).  Required
+proof must control prefix stabilization, terminal high-frequency resonance, and boundary
+correlation in one estimate.  A Bernoulli/pretentious product approximation cannot close Route E.
+
+Paper and Lean:
+`../3-formalized/new_scientific_knowledge/route-e-antiscale-first-trace-frame-law.md` and
+`RHTower/GibbsAntiscaleFirstTraceFrame.lean`.  `OPEN-SOURCE-001` and RH remain open.

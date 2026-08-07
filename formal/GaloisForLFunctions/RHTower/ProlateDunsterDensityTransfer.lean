@@ -430,7 +430,7 @@ theorem integral_Ioi_radialProlateBesselDensity_le
           ≤ Real.pi * lgBesselCommonEnvelopeConstant ^ 2 * profileWeight s x := hB
       _ ≤ Real.pi * lgBesselCommonEnvelopeConstant ^ 2 * (4 * profileDensity x) :=
         mul_le_mul_of_nonneg_left hW hcoef
-      _ = K * profileDensity x := by rw [K]; ring
+      _ = K * profileDensity x := by dsimp [K]; ring
   calc
     (∫ x in Ioi a, radialProlateBesselDensity s c x)
         ≤ ∫ x in Ioi a, K * profileDensity x := hmono

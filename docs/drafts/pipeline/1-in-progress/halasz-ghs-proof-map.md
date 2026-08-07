@@ -158,3 +158,14 @@ That is **GHS Lemma 1 over the whole frequency line**: a prime-supported mean sq
 What remains of the skeleton: steps 2 and 3 (the second application of the recursion and the dyadic
 partition of the prime range, both Mertens bookkeeping over corpus assets), and the outer Perron passage
 extracting `S_k(x)` from its Dirichlet series.
+
+## Seventh brick: Mertens on a block
+
+`RHTower/Sieve/MertensBlock.lean` — subtracting two instances of the corpus's `mertens_first_prime`:
+
+`|∑_{y < p ≤ z} (log p)/p − (log z − log y)| ≤ 2C`,   `C = (log 4 + 4) + (8 + mertensTail)`,
+
+with the one-sided form `sum_Ioc_prime_log_div_le`. This is what the dyadic partition of step 3 consumes:
+on `P_k = (x^{1−e^{1−k}}, x^{1−e^{−k}}]` the block sum is `(e−1)e^{−k} log x + O(1)`, so the blocks carry
+geometrically decreasing mass and only `log(100 log x/L(x))` of them matter — the mechanism behind
+Halász's `1 + M` prefactor.
