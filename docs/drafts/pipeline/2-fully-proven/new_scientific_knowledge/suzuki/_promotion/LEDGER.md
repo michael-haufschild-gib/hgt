@@ -472,3 +472,58 @@ Section H is reduced to one step: extend `norm_fourier_mul_le_integral_norm_deri
 `Differentiable ℝ f` to bounded variation, by Stieltjes integration by parts.  The card's flat
 profile is monotone with infinite one-sided derivative at the endpoint, so it needs the `BV` form;
 everything downstream of that estimate is already proved.
+
+```text
+HTGeometry/GraphFluxStabilityEstimate.lean   (15), (16), (10) of primitive-flux-nonnormal-graph-
+                                             reduction: the scalar closure of the flux system and
+                                             the nonnormal numerical-range bound
+```
+
+`suzuki-primitive-flux-nonnormal-graph-reduction` is now reduced to `(13)` alone — the Fourier
+resolvent estimate `σ‖Y‖₂ ≤ ‖(∂_L − σ)Y‖₂` for a weighted flux supported in `[L₀,∞)`.  That is a
+Plancherel statement about one derivative, not about the source.
+
+```text
+HTGeometry/ShiftedDerivativeCoercivity.lean   d/dt ‖Y t‖² = 2 Re(Y'(t) conj Y(t)) — the cross-term
+                                              identity behind (13)
+```
+
+Route for `(13)` now that the cross-term derivative is available, **without Plancherel**: for
+compactly supported `C¹` `Y`,
+
+```text
+‖Y' − σY‖₂² = ‖Y'‖₂² − 2σ ∫ Re(Y' conj Y) + σ²‖Y‖₂²
+            = ‖Y'‖₂² + σ²‖Y‖₂²          (the middle integral is ∫ d/dt‖Y‖², hence 0)
+            ≥ σ²‖Y‖₂².
+```
+
+The vanishing is `intervalIntegral.integral_deriv_eq_sub'` over an interval containing the support,
+with `‖Y‖²` zero at both endpoints. That closes `(13)` and with it
+`suzuki-primitive-flux-nonnormal-graph-reduction`.
+
+## I. Route for `suzuki-gamma-skew-frequency-flux-liouville` `(9)`--`(13)`
+
+The frequency-current conservation is abstract Hilbert-space calculus, not Gamma analysis.  For
+`f : ℝ → E` with
+
+```text
+HasDerivAt f (-(1/(2η)) • f η + (Complex.I/2) • S (f η)) η,   S self-adjoint,
+```
+
+the two ingredients are
+
+1. `Re ⟪I • S v, v⟫ = 0` for self-adjoint `S` — because `⟪S v, v⟫` is real and `I` times a real
+   number is purely imaginary.  This is the load-bearing cancellation `(11)`: the exact Gamma
+   multiplier survives in full and transports phase only.
+2. `d/dη ‖f η‖² = 2 Re ⟪f'(η), f(η)⟫` — the vector form of `hasDerivAt_normSq_comp`, already proved
+   for `ℂ` in `HTGeometry/ShiftedDerivativeCoercivity.lean`; the general form needs
+   `HasDerivAt.inner` plus `re` of the conjugate-symmetry identity.
+
+Together they give `d/dη ‖f‖² = -‖f‖²/η`, hence `d/dη [η ‖f η‖²] = 0`, which is `(9)`; `(10)` is
+its integral form and `(13)` is the same computation with the forcing retained.  The `L²` Liouville
+conclusion `(14)` then follows from `(10)` because `|η|^{-1}` is not integrable at either end — an
+elementary step once `(10)` is available.
+
+Nothing in `(9)`--`(14)` needs the Bochner Fourier transform, the logarithmic jump multiplier, or
+the completed seam carrier that the card's Lean-decision section lists; those are needed only for
+the passage from `(1)` to `(8)`, which is the card's own separate claim.

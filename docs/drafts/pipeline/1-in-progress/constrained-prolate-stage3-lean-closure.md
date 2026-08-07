@@ -93,3 +93,16 @@ projective/trace-class/determinant consequences.
   already selected greedy vectors.  Each fixed Hermite depth eventually supplies injective maps
   `Fin (n+1) → ℕ` to distinct positive and distinct negative `evenProlateSignedValue` entries.
   Remaining numbering gate is solely classical Sturm separation and degree identification.
+- 2026-08-07 — lifted compact-interior ODE uniqueness into the live even band eigenspaces.
+  `bandEigenvalue_eq_of_same_even_prolate_eigen` proves that one regular even separation value
+  cannot belong to two distinct nonzero band eigenvalues.  New module
+  `ProlateSeparationSimplicity.lean` proves proportionality of same-separation eigenvectors and
+  `finrank ≤ 1` for every separation eigenspace inside a fixed live band eigenspace.  Both modules
+  pass `lake env lean`.  Remaining classical-label gate is Sturm eigenvalue existence/order and
+  degree/zero-count identification.
+- 2026-08-07 — closed the angular-to-exterior equation bridge.  Slepian commutation now propagates
+  a joint mode's prolate equation from `[-1,1]` to the whole real line after cancellation of its
+  nonzero band eigenvalue.  `exists_joint_prolate_band_eigen` and both signed-mode wrappers return
+  global ODE solutions.  New `ProlateRadialODEBridge.lean` converts the sign convention exactly to
+  the radial equation with `s = -chi/c²`, so every live signed mode is now an admissible exact input
+  to the existing Dunster/Volterra comparison.  Per-file `lake env lean` checks pass.

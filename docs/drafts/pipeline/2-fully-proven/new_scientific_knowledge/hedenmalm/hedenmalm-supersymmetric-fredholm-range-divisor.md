@@ -1,7 +1,7 @@
 # Hedenmalm's theta pencil is a supersymmetric Fredholm range divisor
 
 - **ID:** `hedenmalm-supersymmetric-fredholm-range-divisor`
-- **Stage:** 2-fully-proven / needs literature and Lean audit
+- **Stage:** 2-fully-proven / range-divisor half formalized; unbounded-operator half open
 - **Type:** THEOREM / FREDHOLM--WITTEN REINTERPRETATION
 - **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Parents:** Hedenmalm's theta boundary problem;
@@ -407,11 +407,30 @@ Primary references:
 
 ## Lean status
 
-`[OPEN]` No Lean theorem is claimed.  The exact result requires weighted unbounded first-order
-operators, their maximal adjoints, compact-resolvent Witten squares, and a Fredholm range theorem.
-Formalizing only the finite-dimensional Fredholm alternative would be a weaker support wrapper and
-would not certify this theorem.  Lean work should begin only after the project's unbounded-operator
-surface is audited for an exact implementation of `(2)`--`(18)`.
+`[PARTIAL]`  `formal/GaloisForLFunctions/RHTower/HedenmalmFredholmRangeDivisor.lean`
+(namespace `RHTower.HedenmalmFredholmRange`) formalizes the **range-divisor half** of the theorem
+in explicit integral form over the general source class
+`GaloisForLFunctions.HTGeometry.PositiveDensitySource`.  Every declaration has `#print axioms`
+equal to `[propext, Classical.choice, Quot.sound]`.
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(5)` | the cokernel vector `g_alpha(x) = k(x) e^(-i conj(alpha) x)` | `cokernelVector` |
+| `(5)` | its weighted pairing weight is the plain character | `conj_cokernelVector_div` |
+| `(5)` | it annihilates the range of `A + alpha` | `integral_range_pairing` |
+| `(6)` | solvability forces `Xi_C(alpha) = 0` | `xiC_eq_zero_of_solution` |
+| `(6)`,`(7)` | the two-ended function is an explicit solution | `twoEndedSolution_equation`, `hasDerivAt_twoEndedSolution` (with `HedenmalmPrimeTranslation.sourceModeU`, `sourceModeD`) |
+| `(7)` | the two formulas agree exactly at a zero | `sourceModeI_eq_neg_tail_iff`, `setIntegral_Iic_add_Ioi` |
+
+`integral_range_pairing` and `xiC_eq_zero_of_solution` are proved by the improper fundamental
+theorem of calculus on the whole line applied to the tilted product `u(x) e^(i alpha x)`; the
+hypotheses are exactly the vanishing of that product at both ends, which is what membership of
+`u` in the weighted space supplies.
+
+Still missing in Lean, and requiring genuine unbounded-operator infrastructure that mathlib does
+not carry: the weighted adjoint identity `(3)`, closedness and the Fredholm index `-1` in `(4)`,
+compactness of the resolvent, the Witten square `(8)`, the supersymmetric Dirac operator `(9)`,
+and strict positivity of the Hermitian square `(10)`.
 
 ## Gates
 
@@ -426,7 +445,9 @@ surface is audited for an exact implementation of `(2)`--`(18)`.
 - [x] algebraic essential source-normal conormal frame and nonannihilation constructed
 - [x] finite/summable diagonal Hilbert-frame completion excluded
 - [ ] independent specialist novelty audit
-- [ ] audit exact Lean unbounded-operator feasibility
+- [x] audit exact Lean unbounded-operator feasibility
+- [x] Lean cokernel conormal `(5)` and exact Fredholm alternative `(6)`--`(7)` in
+      explicit integral form
 - [ ] formalize the full weighted Fredholm theorem
 - [ ] construct the essential chiral Hodge transmutation
 - [ ] deduce and formalize RH

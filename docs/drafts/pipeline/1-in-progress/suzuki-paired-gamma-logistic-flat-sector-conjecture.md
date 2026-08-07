@@ -40,7 +40,7 @@ See `suzuki-exponential-orbit-hatano-nelson-hard-wall.md`.
 
 **Subsequent positive reduction.** The hard wall applies to the direct frequency fundamental
 matrix, not to every formulation of the primitive-forced equation.
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-primitive-flux-nonnormal-graph-reduction.md`
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-primitive-flux-nonnormal-graph-reduction.md`
 introduces
 
 ```text

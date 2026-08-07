@@ -914,7 +914,7 @@ elliptic spectrum, so its group grows exponentially on one frequency tail. This 
 stable/unstable Evans matching gate for the direct frequency proof.
 
 The primitive-forced equation has a second formulation, proved in
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-primitive-flux-nonnormal-graph-reduction.md`.
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-primitive-flux-nonnormal-graph-reduction.md`.
 With \(Y=(2L+R-B)F-G\), it becomes a first-order graph system whose weighted a priori estimate
 uses only \(\|B\|\), not the group \(\exp(-ixB/2)\). The flat-tempered theorem in
 `../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-flat-primitive-flux-volterra-liouville.md`
@@ -950,7 +950,7 @@ decay. At that stage the remaining core was root-derivative propagation, literal
 and exact physical root dipole/flux matching. Degree-\(m\) moments and
 biweighted dichotomy remain alternative obligations of the direct Hardy architecture.
 
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-complementary-primitive-flux-derivative-recovery.md`
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-complementary-primitive-flux-derivative-recovery.md`
 now closes root-derivative propagation. The \(M\) and \(I-M\) primitive fluxes are exactly the two
 cutoffs of the uncut flux, so their rough prime primitives cancel before weak derivative
 coercivity. The remaining finite-type source gates are literal paired assembly, physical-root

@@ -573,6 +573,160 @@ theorem sourceInverse_sourceModeF {z : ℂ} (hz : HedenmalmQuantile.HasShiftedTa
   linear_combination (-(sourceModeU S z x)) * hI
 
 
+
+/-! ### Reflection and conjugation of the source mode -/
+
+theorem setIntegral_Iic_comp_neg (g : ℝ → ℂ) (x : ℝ) :
+    ∫ y in Iic (-x), g y = ∫ u in Ici x, g (-u) := by
+  have h1 : ∫ y in Iic (-x), g y = ∫ y, (Iic (-x)).indicator g y := by
+    rw [integral_indicator measurableSet_Iic]
+  have h2 : ∫ u in Ici x, g (-u) = ∫ u, (Ici x).indicator (fun u => g (-u)) u := by
+    rw [integral_indicator measurableSet_Ici]
+  rw [h1, h2, ← integral_neg_eq_self (fun y => (Iic (-x)).indicator g y) volume]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+  show (Iic (-x)).indicator g (-u) = (Ici x).indicator (fun u => g (-u)) u
+  by_cases hu : u ∈ Ici x
+  · rw [Set.indicator_of_mem hu, Set.indicator_of_mem (show -u ∈ Iic (-x) by
+      simp only [mem_Ici] at hu; simp only [mem_Iic]; linarith)]
+  · rw [Set.indicator_of_notMem hu, Set.indicator_of_notMem (show -u ∉ Iic (-x) by
+      simp only [mem_Ici] at hu
+      simp only [mem_Iic]
+      intro h
+      exact hu (by linarith))]
+
+theorem setIntegral_Ici_eq_sub {g : ℝ → ℂ} (hg : Integrable g (volume : Measure ℝ)) (x : ℝ) :
+    (∫ u in Ici x, g u) = (∫ u, g u) - ∫ u in Iic x, g u := by
+  have hIci : (∫ u in Ici x, g u) = ∫ u in Ioi x, g u :=
+    setIntegral_congr_set (Filter.EventuallyEq.symm Ioi_ae_eq_Ici)
+  have h : (∫ y in Iic x, g y) + ∫ y in Ioi x, g y = ∫ y, g y := by
+    rw [← MeasureTheory.setIntegral_union (Iic_disjoint_Ioi le_rfl) measurableSet_Ioi
+      hg.integrableOn hg.integrableOn, Iic_union_Ioi, setIntegral_univ]
+  rw [hIci]
+  linear_combination h
+
+/-- **Reflection of the source primitive.**  Evenness of the source turns the reflected primitive
+into the complementary tail. -/
+theorem sourceModeI_neg (hk : ∀ x, S.k (-x) = S.k x) {z : ℂ}
+    (hz : HedenmalmQuantile.HasShiftedTail S z) (x : ℝ) :
+    sourceModeI S (-z) (-x) = HedenmalmQuantile.xiC S z - sourceModeI S z x := by
+  have hint := HedenmalmQuantile.integrable_k_sourceChar S hz
+  rw [sourceModeI, setIntegral_Iic_comp_neg]
+  have hpt : ∀ u : ℝ, (S.k (-u) : ℂ) * HedenmalmQuantile.sourceChar (-z) (-u)
+      = (S.k u : ℂ) * HedenmalmQuantile.sourceChar z u := by
+    intro u
+    rw [hk u, HedenmalmQuantile.sourceChar, HedenmalmQuantile.sourceChar]
+    congr 2
+    push_cast
+    ring
+  rw [setIntegral_congr_fun measurableSet_Ici (fun u _ => hpt u),
+    setIntegral_Ici_eq_sub hint x, HedenmalmQuantile.xiC, sourceModeI]
+
+/-- **Reflection of the source-pointed mode** at a zero of the source transform. -/
+theorem sourceModeU_neg (hk : ∀ x, S.k (-x) = S.k x) {z : ℂ}
+    (hz : HedenmalmQuantile.HasShiftedTail S z) (hzero : HedenmalmQuantile.xiC S z = 0) (x : ℝ) :
+    sourceModeU S (-z) (-x) = -sourceModeU S z x := by
+  rw [sourceModeU, sourceModeU, sourceModeI_neg S hk hz x, hzero]
+  have hexp : Complex.exp (-(Complex.I * -z) * ((-x : ℝ) : ℂ))
+      = Complex.exp (-(Complex.I * z) * (x : ℂ)) := by
+    congr 1
+    push_cast
+    ring
+  rw [hexp]
+  ring
+
+/-- **The reflection package `R f_z = f_{-z}`** at a zero of the source transform. -/
+theorem sourceModeF_neg (hk : ∀ x, S.k (-x) = S.k x) {z : ℂ}
+    (hz : HedenmalmQuantile.HasShiftedTail S z) (hzero : HedenmalmQuantile.xiC S z = 0) (x : ℝ) :
+    sourceModeF S (-z) (-x) = sourceModeF S z x := by
+  rw [sourceModeF, sourceModeF, sourceModeU_neg S hk hz hzero x]
+  ring
+
+/-- **Conjugation of the source primitive.**  The source is real, so conjugation reflects the
+spectral parameter through the imaginary axis. -/
+theorem conj_sourceModeI (z : ℂ) (x : ℝ) :
+    (starRingEnd ℂ) (sourceModeI S z x) = sourceModeI S (-(starRingEnd ℂ) z) x := by
+  rw [sourceModeI, sourceModeI, ← integral_conj]
+  refine setIntegral_congr_fun measurableSet_Iic fun y _ => ?_
+  rw [map_mul, Complex.conj_ofReal, HedenmalmQuantile.sourceChar, HedenmalmQuantile.sourceChar,
+    ← Complex.exp_conj]
+  congr 2
+  simp only [map_mul, Complex.conj_I, Complex.conj_ofReal]
+  ring
+
+/-- **Conjugation of the source-pointed mode.** -/
+theorem conj_sourceModeU (z : ℂ) (x : ℝ) :
+    (starRingEnd ℂ) (sourceModeU S z x) = -sourceModeU S (-(starRingEnd ℂ) z) x := by
+  rw [sourceModeU, sourceModeU, map_mul, map_mul, ← Complex.exp_conj, conj_sourceModeI]
+  have hexp : (starRingEnd ℂ) (-(Complex.I * z) * (x : ℂ))
+      = -(Complex.I * -(starRingEnd ℂ) z) * (x : ℂ) := by
+    simp only [map_mul, map_neg, Complex.conj_I, Complex.conj_ofReal]
+    ring
+  rw [hexp]
+  simp only [map_neg, Complex.conj_I]
+  ring
+
+/-- **Conjugation of the right mode**, `conj f_z = f_{-conj z}`. -/
+theorem conj_sourceModeF (z : ℂ) (x : ℝ) :
+    (starRingEnd ℂ) (sourceModeF S z x) = sourceModeF S (-(starRingEnd ℂ) z) x := by
+  rw [sourceModeF, sourceModeF, map_mul, map_neg, conj_sourceModeU]
+  ring
+
+
+
+/-! ### Geometric multiplicity one -/
+
+/-- **Uniqueness for the source equation.**  Two solutions of the same inhomogeneous Hedenmalm
+equation whose tilted difference vanishes at one end coincide.  This is the geometric
+multiplicity-one statement: the eigenspace of the source inverse at a divisor point is a line. -/
+theorem eq_of_sourceEquation {z c : ℂ} {u v u' v' : ℝ → ℂ}
+    (hu : ∀ x, HasDerivAt u (u' x) x) (hv : ∀ x, HasDerivAt v (v' x) x)
+    (heu : ∀ x, -Complex.I * u' x + z * u x = c * (S.k x : ℂ))
+    (hev : ∀ x, -Complex.I * v' x + z * v x = c * (S.k x : ℂ))
+    (hbot : Filter.Tendsto (fun x => (u x - v x) * HedenmalmQuantile.sourceChar z x)
+      Filter.atBot (nhds 0)) :
+    ∀ x, u x = v x := by
+  have hchar : ∀ x : ℝ, HasDerivAt (HedenmalmQuantile.sourceChar z)
+      (Complex.I * z * HedenmalmQuantile.sourceChar z x) x := by
+    intro x
+    have hlin : HasDerivAt (fun t : ℝ => Complex.I * z * ((t : ℝ) : ℂ)) (Complex.I * z) x := by
+      simpa using (hasDerivAt_id x).ofReal_comp.const_mul (Complex.I * z)
+    have := hlin.cexp
+    refine this.congr_deriv ?_
+    rw [HedenmalmQuantile.sourceChar]
+    ring
+  have hzero : ∀ x : ℝ,
+      HasDerivAt (fun t => (u t - v t) * HedenmalmQuantile.sourceChar z t) 0 x := by
+    intro x
+    have h := ((hu x).sub (hv x)).mul (hchar x)
+    refine h.congr_deriv ?_
+    have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
+    have hx : -Complex.I * (u' x - v' x) + z * (u x - v x) = 0 := by
+      have h1 := heu x
+      have h2 := hev x
+      linear_combination h1 - h2
+    simp only [Pi.sub_apply]
+    linear_combination (Complex.I * HedenmalmQuantile.sourceChar z x) * hx
+      + (HedenmalmQuantile.sourceChar z x * (u' x - v' x)) * hI
+  have hdiff : Differentiable ℝ (fun t => (u t - v t) * HedenmalmQuantile.sourceChar z t) :=
+    fun x => (hzero x).differentiableAt
+  have hconst : ∀ x y : ℝ, (u x - v x) * HedenmalmQuantile.sourceChar z x
+      = (u y - v y) * HedenmalmQuantile.sourceChar z y :=
+    is_const_of_deriv_eq_zero hdiff (fun x => (hzero x).deriv)
+  have hallzero : ∀ x : ℝ, (u x - v x) * HedenmalmQuantile.sourceChar z x = 0 := by
+    intro x
+    have hc : Filter.Tendsto
+        (fun _ : ℝ => (u x - v x) * HedenmalmQuantile.sourceChar z x) Filter.atBot
+        (nhds ((u x - v x) * HedenmalmQuantile.sourceChar z x)) := tendsto_const_nhds
+    have hc' := hbot.congr (fun y => hconst y x)
+    exact tendsto_nhds_unique hc hc'
+  intro x
+  have hne : HedenmalmQuantile.sourceChar z x ≠ 0 := Complex.exp_ne_zero _
+  have := hallzero x
+  rcases mul_eq_zero.mp this with h | h
+  · exact sub_eq_zero.mp h
+  · exact absurd h hne
+
+
 end HedenmalmPrimeTranslation
 
 end

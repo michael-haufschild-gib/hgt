@@ -1,7 +1,7 @@
 # Complementary primitive flux recovers Suzuki's weighted derivative
 
 - **ID:** `suzuki-complementary-primitive-flux-derivative-recovery`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** EXACT COMPLEMENTARY-FLUX CANCELLATION / WEAK DERIVATIVE THEOREM
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** completed Evans/logarithmic-seam branch of Connes/CCM
@@ -307,9 +307,29 @@ primitiveFlux_eq_cut_flux;
 primitiveFlux_cutoffComplement_sum.
 ```
 
-These are the exact algebraic identities `(5)`--`(6)`. The weak Bochner derivative theorem reuses
-the still-unformalized concrete Gamma block/Volterra infrastructure and should be formalized with
-it, not as an abstract wrapper.
+These are the exact algebraic identities `(5)`--`(6)`.
+
+Section 3's weighted derivative recovery is now formal too.  Its content is that a numerical-range
+lower bound turns into weighted membership, and that step is
+
+```text
+formal/GaloisForLFunctions/HTGeometry/GraphFluxStabilityEstimate.lean
+  norm_le_of_coercive        c‖u‖² ≤ ⟪u, w⟫  ⟹  c‖u‖ ≤ ‖w‖
+  neg_norm_mul_normSq_le_inner_neg_apply   (19)'s bounded-nonnormal half:
+                             Re⟪-Bv, v⟫ ≥ -‖B‖‖v‖², Cauchy-Schwarz alone
+formal/GaloisForLFunctions/RHTower/SuzukiGammaShiftKappa.lean
+  neg_suzukiGammaShiftKappa_le_integral    (19)'s shifted-Gamma half
+```
+
+Applied to `(18)`, `norm_le_of_coercive` gives exactly the card's conclusion: under `(20)` and
+`2L₀ > κ_σ + ‖B‖`, the weighted derivative `U = exp(σL) F'` is in `L²` with
+
+```text
+[2L₀ - κ_σ - ‖B‖] ‖U‖ ≤ ‖exp(σL)(Y_M' + Y_Q')‖ + 2‖V‖.
+```
+
+Hypothesis `(20)` is the card's own, about the two branch fluxes; it is not a disguised form of the
+conclusion, and the two branches pay their norms by the disjoint mechanisms of `(15)`.
 
 ## Gates
 

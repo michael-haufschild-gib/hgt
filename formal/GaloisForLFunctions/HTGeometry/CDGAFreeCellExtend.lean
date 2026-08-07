@@ -47,10 +47,12 @@ noncomputable def freeCellExtendₗ (n : ℕ) : FreeCellCarrier (R := R) X V k n
     { toFun := fun z => TensorProduct.lift (freeCellBil P k g (show n - k + k = n by omega))
         (z ⟨n - k, by omega⟩)
       map_add' := fun z z' => by
-        show TensorProduct.lift _ (z ⟨n - k, by omega⟩ + z' ⟨n - k, by omega⟩) = _
+        have hnk : n - k + k = n := by omega
+        show TensorProduct.lift _ (z ⟨n - k, hnk⟩ + z' ⟨n - k, hnk⟩) = _
         rw [map_add]
       map_smul' := fun c z => by
-        show TensorProduct.lift _ (c • z ⟨n - k, by omega⟩) = _
+        have hnk : n - k + k = n := by omega
+        show TensorProduct.lift _ (c • z ⟨n - k, hnk⟩) = _
         rw [map_smul]
         rfl }
   else 0
@@ -109,8 +111,8 @@ noncomputable def freeCellExtend : CDGAModuleHom (freeCellModule A V k) P where
       rw [show z = 0 from Subsingleton.elim _ _]
       rw [show (freeCellModule A V k).act h x (0 : FreeCellCarrier (R := R) X V k b) = 0 from
         ((freeCellModule A V k).actₗ h x).map_zero,
-        (freeCellExtendₗ P k g n).map_zero, (freeCellExtendₗ P k g b).map_zero,
-        (P.actₗ h x).map_zero]
+        (freeCellExtendₗ P k g n).map_zero, (freeCellExtendₗ P k g b).map_zero]
+      exact ((P.actₗ h x).map_zero).symm
   map_d := by
     intro n z
     by_cases hn : k ≤ n
@@ -137,12 +139,42 @@ noncomputable def freeCellExtend : CDGAModuleHom (freeCellModule A V k) P where
       rw [show z = 0 from Subsingleton.elim _ _,
         show (freeCellModule A V k).d n (0 : FreeCellCarrier (R := R) X V k n) = 0 from
           ((freeCellModule A V k).dₗ n).map_zero,
-        (freeCellExtendₗ P k g (n + 1)).map_zero, (freeCellExtendₗ P k g n).map_zero,
-        (P.dₗ n).map_zero]
+        (freeCellExtendₗ P k g (n + 1)).map_zero, (freeCellExtendₗ P k g n).map_zero]
+      exact ((P.dₗ n).map_zero).symm
 
 @[simp] theorem freeCellExtend_toFun (n : ℕ) (z : FreeCellCarrier (R := R) X V k n) :
     (freeCellExtend P k g hg).toFun n z = freeCellExtendₗ P k g n z := rfl
 
 end Extend
+
+section Generator
+
+variable (u : CDGAUnit A) (k : ℕ)
+
+/-- **The generator of a free cell attached to a vector**: the unit tensored with that vector, in
+the bottom degree of the cell. -/
+noncomputable def freeCellGen (v : V) : FreeCellCarrier (R := R) X V k k :=
+  (shiftEvalAt (R := R) (M := fun a => TensorProduct R (X a) V) k 0 k
+    (Nat.zero_add k)).symm (u.one ⊗ₜ[R] v)
+
+theorem freeCellGen_apply (v : V) :
+    freeCellGen (R := R) (X := X) u k v ⟨0, Nat.zero_add k⟩ = u.one ⊗ₜ[R] v :=
+  (shiftEvalAt (R := R) (M := fun a => TensorProduct R (X a) V) k 0 k
+    (Nat.zero_add k)).apply_symm_apply _
+
+variable (P : CDGAModuleStructure A M) (hP : CDGAModuleUnital u P) (g : V →ₗ[R] M k)
+  (hg : ∀ v, P.d k (g v) = 0)
+
+include hP hg
+
+/-- **The extension takes the prescribed value on a generator.** -/
+theorem freeCellExtend_gen (v : V) :
+    (freeCellExtend P k g hg).toFun k (freeCellGen (R := R) (X := X) u k v) = g v := by
+  rw [freeCellExtend_toFun,
+    freeCellExtendₗ_apply P k g (Nat.zero_add k) (freeCellGen (R := R) (X := X) u k v),
+    freeCellGen_apply, TensorProduct.lift.tmul, freeCellBil_apply]
+  exact hP.act_one k (g v)
+
+end Generator
 
 end GaloisForLFunctions.HTGeometry

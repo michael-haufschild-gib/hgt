@@ -189,34 +189,34 @@ theorem integrable_id_squarefreeClockLaw {σ : ℝ} (hσ : 1 < σ) :
     (dirichletTotal_squarefreeWeight_pos hσ) (summable_squarefreeWeight_logMul_rpow hσ)
 
 /-- The weight supported on squares which reads a given weight at the square root. -/
-def sqrtWeight (f : ℕ → ℝ) (n : ℕ) : ℝ := if n = (Nat.sqrt n) ^ 2 then f (Nat.sqrt n) else 0
+def squareSupportedWeight (f : ℕ → ℝ) (n : ℕ) : ℝ := if n = (Nat.sqrt n) ^ 2 then f (Nat.sqrt n) else 0
 
-@[simp] theorem sqrtWeight_sq (f : ℕ → ℝ) (d : ℕ) : sqrtWeight f (d ^ 2) = f d := by
-  rw [sqrtWeight, Nat.sqrt_eq' d, if_pos rfl]
+@[simp] theorem squareSupportedWeight_sq (f : ℕ → ℝ) (d : ℕ) : squareSupportedWeight f (d ^ 2) = f d := by
+  rw [squareSupportedWeight, Nat.sqrt_eq' d, if_pos rfl]
 
-theorem sqrtWeight_eq_zero_of_notMem_range {f : ℕ → ℝ} {n : ℕ}
-    (hn : n ∉ Set.range fun d : ℕ => d ^ 2) : sqrtWeight f n = 0 := by
-  rw [sqrtWeight, if_neg]
+theorem squareSupportedWeight_eq_zero_of_notMem_range {f : ℕ → ℝ} {n : ℕ}
+    (hn : n ∉ Set.range fun d : ℕ => d ^ 2) : squareSupportedWeight f n = 0 := by
+  rw [squareSupportedWeight, if_neg]
   intro hsq
   exact hn ⟨Nat.sqrt n, hsq.symm⟩
 
 /-- **Square substitution for a real Dirichlet series.**  A weight supported on the squares has the
 Dirichlet series of its square root at twice the abscissa. -/
-theorem tsum_sqrtWeight (f : ℕ → ℝ) (σ : ℝ) :
-    (∑' n : ℕ, sqrtWeight f n * (n : ℝ) ^ (-σ))
+theorem tsum_squareSupportedWeight (f : ℕ → ℝ) (σ : ℝ) :
+    (∑' n : ℕ, squareSupportedWeight f n * (n : ℝ) ^ (-σ))
       = ∑' d : ℕ, f d * (d : ℝ) ^ (-(2 * σ)) := by
   have hinj : Function.Injective fun d : ℕ => d ^ 2 :=
     Nat.pow_left_injective (by norm_num)
-  have hsupp : Function.support (fun n : ℕ => sqrtWeight f n * (n : ℝ) ^ (-σ))
+  have hsupp : Function.support (fun n : ℕ => squareSupportedWeight f n * (n : ℝ) ^ (-σ))
       ⊆ Set.range fun d : ℕ => d ^ 2 := by
     intro n hn
     by_contra hcon
     refine hn ?_
-    show sqrtWeight f n * (n : ℝ) ^ (-σ) = 0
-    rw [sqrtWeight_eq_zero_of_notMem_range hcon, zero_mul]
+    show squareSupportedWeight f n * (n : ℝ) ^ (-σ) = 0
+    rw [squareSupportedWeight_eq_zero_of_notMem_range hcon, zero_mul]
   rw [← hinj.tsum_eq hsupp]
   refine tsum_congr fun d => ?_
-  rw [sqrtWeight_sq]
+  rw [squareSupportedWeight_sq]
   by_cases hd : d = 0
   · subst hd
     rcases eq_or_ne σ 0 with hσ | hσ
@@ -381,8 +381,8 @@ theorem sum_divisors_sqrtMoebius {n : ℕ} (hn : n ≠ 0) :
     ring
 
 theorem sqrtMoebius_real (n : ℕ) :
-    ((sqrtMoebius n : ℤ) : ℝ) = sqrtWeight (fun d => ((moebius d : ℤ) : ℝ)) n := by
-  rw [sqrtMoebius, sqrtWeight]
+    ((sqrtMoebius n : ℤ) : ℝ) = squareSupportedWeight (fun d => ((moebius d : ℤ) : ℝ)) n := by
+  rw [sqrtMoebius, squareSupportedWeight]
   by_cases h : n = (Nat.sqrt n) ^ 2
   · rw [if_pos h, if_pos h]
   · rw [if_neg h, if_neg h]
@@ -438,7 +438,7 @@ theorem ofReal_dirichletTotal_squarefreeWeight_eq {σ : ℝ} (hσ : 1 < σ) :
       (by simp [sqrtMoebius])]
     have hcongr : (∑' n : ℕ, ((sqrtMoebius n : ℤ) : ℝ) * (n : ℝ) ^ (-σ))
         = ∑' d : ℕ, ((moebius d : ℤ) : ℝ) * (d : ℝ) ^ (-(2 * σ)) := by
-      rw [← tsum_sqrtWeight (fun d => ((moebius d : ℤ) : ℝ)) σ]
+      rw [← tsum_squareSupportedWeight (fun d => ((moebius d : ℤ) : ℝ)) σ]
       exact tsum_congr fun n => by rw [sqrtMoebius_real]
     rw [hcongr]
     have h2 : (1 : ℝ) < 2 * σ := by linarith

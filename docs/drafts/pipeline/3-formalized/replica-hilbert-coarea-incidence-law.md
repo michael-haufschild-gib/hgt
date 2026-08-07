@@ -1,8 +1,8 @@
 # Replica--Hilbert coarea incidence law
 
 - **ID:** replica-hilbert-coarea-incidence
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** static-local-complexity-law.md; quenched-observer-spectral-action-law.md
 - **Statement:** After exact returns are removed, the complete approximate-circuit incidence mass is bounded by one growing-replica projection moment, while the projector rank is exactly the homogeneous Hilbert function of the occupied projective endpoint image.
 
@@ -26,7 +26,7 @@ controllable geometry rather than rename it.
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem `replicaHilbert_completeIncidence_bound`, `lake build` green, axiom audit PASS
+- [x] 2 → 3 formalized: Lean theorem `replicaHilbert_completeIncidence_bound`, `lake build` green, axiom audit PASS
 - [ ] 3 → 4 publication-ready: integrated into universal quantum-recurrence master paper after external novelty audit
 
 ## Frozen conjecture
@@ -96,7 +96,7 @@ Veronese layers remember nonlinear image geometry that one-copy linearization de
 
 ### C2 — replica target-span projection law
 
-**Status:** active.  Pointwise proof route:
+**Status:** `[PROVED HERE] [LEAN-PROVED]`.  Pointwise proof route:
 
 1. `z^(⊗r) ∈ S_r(Z)`;
 2. orthogonal projection preserves its inner product with that vector;
@@ -111,7 +111,7 @@ because every source point is still integrated in `q_r`.
 
 ### C3 — Hilbert image law
 
-**Status:** `[PROVED HERE]` bridge to existing corpus.
+**Status:** `[PROVED HERE] [LEAN-PROVED]` bridge to existing corpus.
 
 Duality between degree-`r` homogeneous evaluation and the span of Veronese vectors identifies
 `rank S_r(Z)` with the homogeneous Hilbert function of the distinct occupied projective image.
@@ -259,9 +259,34 @@ sharply than its Haar benchmark or proving approach to that benchmark.
 - **New insight:** source multiplicity and target complexity are different objects.  The first is a
   moment measure; the second is a projective Hilbert function.  The former should not be normalized
   away and the latter should not be replaced by circuit-label count.
-- **Status:** dependency-closed paper proof complete; Lean implementation active.
+- **Status:** dependency-closed paper proof and Lean formalization complete.
+
+## Lean verification
+
+- Module:
+  `formal/GaloisForLFunctions/HTGeometry/ReplicaHilbertCoareaIncidenceLaw.lean`.
+- Capstone: `replicaHilbert_completeIncidence_bound`.
+- Exact components:
+  - `finitePureStateFidelity_pow_le_replicaTargetProjectionMass`;
+  - `completePureStateTargetCapture_subset_replicaProjectionMass`;
+  - `measure_completePureStateTargetCapture_le_replicaProjectionMoment`;
+  - `replicaTargetHilbertNumber_eq_finrank_span`;
+  - `replicaTargetProjectionMass_duplicated` and
+    `replicaTargetHilbertNumber_duplicated`;
+  - `replicaTargetProjectionMass_withZero` and
+    `replicaTargetHilbertNumber_withZero`.
+- `lake build GaloisForLFunctions.HTGeometry.ReplicaHilbertCoareaIncidenceLaw`:
+  PASS on 2026-08-07.
+- Axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`.
+- Global formal lint reached this module through the `HTGeometry` umbrella and reported no forbidden
+  declaration in it.  The global command remains red because four concurrently added unrelated
+  modules are not yet reachable from their area umbrellas:
+  `ConstrainedProlateSpectralIdentification`, `ProlateFourierSignSectors`,
+  `SlepianKernelScaledFubini`, and `ShiftedDerivativeCoercivity`.
 
 ## Log
 
 - 2026-08-07 — created directly in Stage 1 after internal corpus audit and conjecture C0/C1 failures.
 - 2026-08-07 — C2/C3 paper proof closed; promoted to Stage 2.
+- 2026-08-07 — complete-union, quenched moment, Hilbert-rank, duplicate-label, and return-zero laws
+  formalized; promoted to Stage 3.

@@ -57,3 +57,20 @@ map. Every module below is `lake build` green, axiom-clean
 The mean-square input of no-go 1, applied to the truncated Dirichlet polynomial rather than the full
 series. Everything else in Layer B — Euler bound, trivial size, distance bridge, Perron assembly — is
 needed by that route unchanged.
+
+## First brick of the successor task
+
+`RHTower/Sieve/DirichletTruncationError.lean` (9023 jobs, exit 0, axiom-clean, wired):
+
+- `tsum_tail_rpow_neg_le` — `∑_{n > L} n^{-σ} ≤ L^{1-σ}/(σ−1)`, by the integral test from `L`
+  (`AntitoneOn.tsum_comp_add_le_integral` + `integral_Ioi_rpow_of_lt`), reusing
+  `antitoneOn_rpow_neg_Ici`.
+- `norm_tsum_sub_sum_range_le`, `norm_tsum_sub_sum_range_le_pow` — **the truncation error**:
+
+  `‖∑_n f(n)n^{-s} − ∑_{n ≤ L} f(n)n^{-s}‖ ≤ ∑_{n>L} n^{-σ} ≤ L^{1-σ}/(σ−1)`.
+
+Every mean-square estimate in the corpus (`DirichletIntegralMeanValue`,
+`DirichletMeasureLargeValues`) is stated for a Dirichlet *polynomial* of finite length, whereas the Euler
+bound is about the whole series; this is the passage between them, and it was missing. At
+`σ = 1 + A/log L` the error is `e^{-A}(log L)/A`, so the truncation is harmless once the polynomial is
+longer than the abscissa's reciprocal scale — which is the regime the mean-square route works in.

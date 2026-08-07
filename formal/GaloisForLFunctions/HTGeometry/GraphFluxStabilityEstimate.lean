@@ -54,6 +54,18 @@ section
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
+/-- **Coercivity gives a norm bound.**  If the quadratic form of a state against its image is at
+least `c ‖u‖²`, the state is bounded by its image over `c`.  This is the step that turns a
+numerical-range lower bound into weighted membership of a derivative. -/
+theorem norm_le_of_coercive {c : ℝ} {u w : E} (h : c * ‖u‖ ^ 2 ≤ inner ℝ u w) :
+    c * ‖u‖ ≤ ‖w‖ := by
+  rcases eq_or_ne u 0 with rfl | hu
+  · simp
+  · have hupos : 0 < ‖u‖ := norm_pos_iff.mpr hu
+    have hcs : inner ℝ u w ≤ ‖u‖ * ‖w‖ :=
+      le_trans (le_abs_self _) (abs_real_inner_le_norm u w)
+    nlinarith [h, hcs]
+
 /-- **No symmetry is needed.**  For a bounded operator the real part of `⟪-B v, v⟫` is at least
 `-‖B‖ ‖v‖²`, by Cauchy–Schwarz alone. -/
 theorem neg_norm_mul_normSq_le_inner_neg_apply (B : E →L[ℝ] E) (v : E) :

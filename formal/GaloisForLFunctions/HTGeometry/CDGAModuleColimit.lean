@@ -204,6 +204,8 @@ omit [IsDirectedOrder ι] [Nonempty ι]
         ((Θ i).toFun n m) :=
   Module.DirectLimit.map_apply_of _ _ _
 
+omit [∀ n : ℕ, DirectedSystem (fun i => M i n) fun i j h => moduleDegTransition φ n i j h]
+  [∀ n : ℕ, DirectedSystem (fun i => N i n) fun i j h => moduleDegTransition ψ n i j h] in
 @[simp] theorem colimModuleHomFun_colimOf (n : ℕ) (i : ι) (m : M i n) :
     colimModuleHomFun φ ψ Θ hΘ n ((colimModuleOf φ i).toFun n m)
       = (colimModuleOf ψ i).toFun n ((Θ i).toFun n m) :=
@@ -228,5 +230,61 @@ noncomputable def colimModuleHom : CDGAModuleHom (colimModule φ) (colimModule �
       (Θ i).map_d n u]
 
 end ColimitHom
+
+section Universal
+
+variable {R : Type u} [CommRing R] {X : ℕ → Type v} [∀ n, AddCommGroup (X n)]
+  [∀ n, Module R (X n)] {A : CDGAStructure R X}
+  {ι : Type v'} [Preorder ι] [IsDirectedOrder ι] [Nonempty ι] [DecidableEq ι]
+  {M : ι → ℕ → Type w} [∀ i n, AddCommGroup (M i n)] [∀ i n, Module R (M i n)]
+  {P : ∀ i, CDGAModuleStructure A (M i)} (φ : ∀ i j, i ≤ j → CDGAModuleHom (P i) (P j))
+  [∀ n : ℕ, DirectedSystem (fun i => M i n) fun i j h => moduleDegTransition φ n i j h]
+  {K : ℕ → Type w} [∀ n, AddCommGroup (K n)] [∀ n, Module R (K n)]
+  (S : CDGAModuleStructure A K) (Θ : ∀ i, CDGAModuleHom (P i) S)
+  (hΘ : ∀ (i j : ι) (hij : i ≤ j) (n : ℕ) (m : M i n),
+    (Θ j).toFun n ((φ i j hij).toFun n m) = (Θ i).toFun n m)
+
+include hΘ
+
+/-- The map out of the colimit determined by a compatible family, in a degree. -/
+noncomputable def colimModuleLiftFun (n : ℕ) : colimModuleDeg φ n →ₗ[R] K n :=
+  Module.DirectLimit.lift R ι _ _ (fun i => (Θ i).mapₗ n) (fun i j hij m => hΘ i j hij n m)
+
+omit [∀ n : ℕ, DirectedSystem (fun i => M i n) fun i j h => moduleDegTransition φ n i j h] in
+@[simp] theorem colimModuleLiftFun_colimOf (n : ℕ) (i : ι) (m : M i n) :
+    colimModuleLiftFun φ S Θ hΘ n ((colimModuleOf φ i).toFun n m) = (Θ i).toFun n m := by
+  rw [colimModuleOf_eq]
+  simp only [colimModuleLiftFun, Module.DirectLimit.lift_of]
+  rfl
+
+/-- **The universal property of the colimit**: a family of morphisms out of the stages which is
+compatible with the transitions defines a morphism out of the colimit. -/
+noncomputable def colimModuleLift : CDGAModuleHom (colimModule φ) S where
+  toFun n z := colimModuleLiftFun φ S Θ hΘ n z
+  map_add n z z' := map_add (colimModuleLiftFun φ S Θ hΘ n) z z'
+  map_smul n c z := map_smul (colimModuleLiftFun φ S Θ hΘ n) c z
+  map_act := by
+    intro c a n h x z
+    obtain ⟨i, m, rfl⟩ := colimModuleOf_exists φ a z
+    show colimModuleLiftFun φ S Θ hΘ n
+        (colimModuleAct φ h x ((colimModuleOf φ i).toFun a m))
+      = S.act h x (colimModuleLiftFun φ S Θ hΘ a ((colimModuleOf φ i).toFun a m))
+    rw [colimModuleAct_colimOf, colimModuleLiftFun_colimOf, colimModuleLiftFun_colimOf]
+    exact (Θ i).map_act h x m
+  map_d := by
+    intro n z
+    obtain ⟨i, m, rfl⟩ := colimModuleOf_exists φ n z
+    show colimModuleLiftFun φ S Θ hΘ (n + 1)
+        (colimModuleD φ n ((colimModuleOf φ i).toFun n m))
+      = S.d n (colimModuleLiftFun φ S Θ hΘ n ((colimModuleOf φ i).toFun n m))
+    rw [colimModuleD_colimOf, colimModuleLiftFun_colimOf, colimModuleLiftFun_colimOf]
+    exact (Θ i).map_d n m
+
+omit [∀ n : ℕ, DirectedSystem (fun i => M i n) fun i j h => moduleDegTransition φ n i j h] in
+@[simp] theorem colimModuleLift_colimOf (n : ℕ) (i : ι) (m : M i n) :
+    (colimModuleLift φ S Θ hΘ).toFun n ((colimModuleOf φ i).toFun n m) = (Θ i).toFun n m :=
+  colimModuleLiftFun_colimOf φ S Θ hΘ n i m
+
+end Universal
 
 end GaloisForLFunctions.HTGeometry

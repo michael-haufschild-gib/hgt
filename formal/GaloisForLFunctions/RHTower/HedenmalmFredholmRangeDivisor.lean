@@ -121,7 +121,7 @@ theorem twoEndedSolution_equation (α : ℂ) (x : ℝ) :
       = -Complex.I * (S.k x : ℂ) := by
   have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
   rw [sourceModeD]
-  linear_combination (Complex.I * (S.k x : ℂ) - α * sourceModeU S α x) * hI
+  linear_combination (Complex.I * (α * sourceModeU S α x + (S.k x : ℂ))) * hI
 
 theorem hasDerivAt_twoEndedSolution {α : ℂ} (hz : HasShiftedTail S α) (x : ℝ) :
     HasDerivAt (fun t => Complex.I * sourceModeU S α t) (Complex.I * sourceModeD S α x) x :=

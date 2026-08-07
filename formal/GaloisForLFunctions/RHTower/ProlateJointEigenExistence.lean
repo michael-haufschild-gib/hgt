@@ -421,6 +421,45 @@ theorem isSymmetric_prolateOnEigenspace {c lam : ℝ} (hc : 0 < c) (hlam : lam �
 
 /-! ## The joint eigenfunction -/
 
+/-- A nonzero global band eigenrelation propagates a prolate eigenrelation from the aperture to
+the whole real line.  Slepian commutation computes the prolate action of the band transform from
+values of the original prolate action only on `[-1,1]`; the global band eigenrelation then lets us
+cancel the nonzero band eigenvalue. -/
+theorem prolateSLAction_eq_global_of_band_eigen_of_eqOn_Icc
+    {c lam chi : ℝ} {Phi : ℝ → ℝ}
+    (hlam : lam ≠ 0)
+    (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
+    (hband : ∀ x, bandTransform c Phi x = lam * Phi x)
+    (hprolate : ∀ x ∈ Icc (-1 : ℝ) 1, prolateSLAction c Phi x = chi * Phi x) :
+    ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x := by
+  have h1 : Differentiable ℝ Phi := (contDiff_infty_iff_deriv.mp hsm).1
+  have hd : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (deriv Phi) :=
+    (contDiff_infty_iff_deriv.mp hsm).2
+  have h2 : Differentiable ℝ (deriv Phi) := (contDiff_infty_iff_deriv.mp hd).1
+  have h2c : Continuous (deriv (deriv Phi)) :=
+    (contDiff_infty_iff_deriv.mp hd).2.continuous
+  have hbandFun : bandTransform c Phi = fun y => lam * Phi y := funext hband
+  intro x
+  have hcomm := _root_.RHTower.slepian_commutation c x h1 h2 h2c
+  have hright :
+      (∫ y in (-1 : ℝ)..1, sincKernelSmooth c x y * prolateSLAction c Phi y)
+        = chi * bandTransform c Phi x := by
+    calc
+      (∫ y in (-1 : ℝ)..1, sincKernelSmooth c x y * prolateSLAction c Phi y)
+          = ∫ y in (-1 : ℝ)..1, chi * (sincKernelSmooth c x y * Phi y) := by
+              refine intervalIntegral.integral_congr fun y hy => ?_
+              rw [uIcc_of_le (by norm_num : (-1 : ℝ) ≤ 1)] at hy
+              rw [hprolate y hy]
+              ring
+      _ = chi * bandTransform c Phi x := by
+        rw [intervalIntegral.integral_const_mul]
+        rfl
+  rw [hbandFun, prolateSLAction_const_mul lam h1 h2 x, hright, hband x] at hcomm
+  apply mul_left_cancel₀ hlam
+  calc
+    lam * prolateSLAction c Phi x = chi * (lam * Phi x) := hcomm
+    _ = lam * (chi * Phi x) := by ring
+
 /-- **Every band eigenvalue carries a joint eigenfunction.**  The prolate action is a symmetric operator
 on the finite-dimensional band eigenspace, so it has an eigenvector there: a band eigenfunction that also
 solves the prolate differential equation on the band. -/
@@ -428,7 +467,7 @@ theorem exists_joint_prolate_band_eigen {c lam : ℝ} (hc : 0 < c) (hlam : lam �
     {ψ₀ : RealIntervalL2 (-1 : ℝ) 1} (hψ₀ : bandOperatorL2 c ψ₀ = lam • ψ₀) (hne : ψ₀ ≠ 0) :
     ∃ (Φ : ℝ → ℝ) (χ : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ ∧ Φ ≠ 0
       ∧ (∀ x, bandTransform c Φ x = lam * Φ x)
-      ∧ (∀ x ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ x = χ * Φ x) := by
+      ∧ (∀ x : ℝ, prolateSLAction c Φ x = χ * Φ x) := by
   haveI hfd : FiniteDimensional ℝ (bandEigenspace c lam) := finiteDimensional_bandEigenspace hlam
   haveI hnt : Nontrivial (bandEigenspace c lam) := by
     refine nontrivial_of_ne ⟨ψ₀, mem_bandEigenspace_iff.mpr hψ₀⟩ 0 ?_
@@ -465,7 +504,9 @@ theorem exists_joint_prolate_band_eigen {c lam : ℝ} (hc : 0 < c) (hlam : lam �
       rw [← bandClass_eigenRep hlam v,
         bandClass_smul (continuous_eigenRep c lam v) χ hmulcont]
     rw [hsmul] at hcoe
-    exact eqOn_of_bandClass_eq _ _ hcoe
+    have hIcc := eqOn_of_bandClass_eq _ _ hcoe
+    exact prolateSLAction_eq_global_of_band_eigen_of_eqOn_Icc hlam
+      (contDiff_eigenRep hc hlam v) (bandTransform_eigenRep hlam v) hIcc
 
 end GaloisForLFunctions.RHTower
 

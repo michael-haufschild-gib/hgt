@@ -540,7 +540,7 @@ theorem bandClass_eq_of_eqOn_Icc {Phi Psi : ℝ → ℝ}
   filter_upwards [GaloisForLFunctions.RHTower.coeFn_bandClass Phi hPhi,
     GaloisForLFunctions.RHTower.coeFn_bandClass Psi hPsi] with x hxPhi hxPsi
   rw [hxPhi, hxPsi]
-  exact hEq x x.property
+  exact hEq x.property
 
 /-- The Slepian band transform preserves evenness. -/
 theorem even_bandTransform (c : ℝ) {Φ : ℝ → ℝ} (_hΦ : Continuous Φ)
@@ -691,89 +691,6 @@ theorem isSymmetric_prolateOnEvenEigenspace
   exact GaloisForLFunctions.RHTower.isSymmetric_prolateOnEigenspace hc hlam
     (⟨f.1, f.2.1⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam)
     (⟨g.1, g.2.1⟩ : GaloisForLFunctions.RHTower.bandEigenspace c lam)
-
-/-- Eigenvectors of the even prolate action with the same separation value are proportional.
-Thus every separation eigenspace inside a fixed live even band eigenspace is one-dimensional. -/
-theorem prolateOnEvenEigenspace_eigenvectors_proportional
-    {c lam chi : ℝ} (hc : 0 < c) (hlam : lam ≠ 0)
-    {f g : evenBandEigenspace c lam}
-    (hf : prolateOnEvenEigenspace hc hlam f = chi • f)
-    (hg : prolateOnEvenEigenspace hc hlam g = chi • g)
-    (hg0 : g ≠ 0) :
-    ∃ mu : ℝ, f = mu • g := by
-  let bf : GaloisForLFunctions.RHTower.bandEigenspace c lam := ⟨f.1, f.2.1⟩
-  let bg : GaloisForLFunctions.RHTower.bandEigenspace c lam := ⟨g.1, g.2.1⟩
-  let Phi : ℝ → ℝ := GaloisForLFunctions.RHTower.eigenRep c lam bf
-  let Psi : ℝ → ℝ := GaloisForLFunctions.RHTower.eigenRep c lam bg
-  have hPf : GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam bf = chi • bf := by
-    apply Subtype.ext
-    exact congrArg (fun w : evenBandEigenspace c lam => w.1) hf
-  have hPg : GaloisForLFunctions.RHTower.prolateOnEigenspace hc hlam bg = chi • bg := by
-    apply Subtype.ext
-    exact congrArg (fun w : evenBandEigenspace c lam => w.1) hg
-  have hPhiProlate : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x := by
-    have hrep := congrArg
-      (fun w : GaloisForLFunctions.RHTower.bandEigenspace c lam =>
-        GaloisForLFunctions.RHTower.eigenRep c lam w) hPf
-    rw [eigenRep_prolateOnEigenspace hc hlam] at hrep
-    intro x
-    have hx := congrFun hrep x
-    have hsmul : GaloisForLFunctions.RHTower.eigenRep c lam (chi • bf) x =
-        chi * GaloisForLFunctions.RHTower.eigenRep c lam bf x :=
-      GaloisForLFunctions.RHTower.eigenExtension_smul c lam chi bf x
-    rw [hsmul] at hx
-    exact hx
-  have hPsiProlate : ∀ x : ℝ, prolateSLAction c Psi x = chi * Psi x := by
-    have hrep := congrArg
-      (fun w : GaloisForLFunctions.RHTower.bandEigenspace c lam =>
-        GaloisForLFunctions.RHTower.eigenRep c lam w) hPg
-    rw [eigenRep_prolateOnEigenspace hc hlam] at hrep
-    intro x
-    have hx := congrFun hrep x
-    have hsmul : GaloisForLFunctions.RHTower.eigenRep c lam (chi • bg) x =
-        chi * GaloisForLFunctions.RHTower.eigenRep c lam bg x :=
-      GaloisForLFunctions.RHTower.eigenExtension_smul c lam chi bg x
-    rw [hsmul] at hx
-    exact hx
-  have hPsiNe : Psi ≠ 0 := by
-    intro hzero
-    have hclass := GaloisForLFunctions.RHTower.bandClass_eigenRep hlam bg
-    have hclassZero : GaloisForLFunctions.RHTower.bandClass Psi
-        (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bg) = 0 := by
-      have hstep := GaloisForLFunctions.RHTower.bandClass_congr
-        (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bg)
-        continuous_const hzero
-      rw [hstep]
-      exact GaloisForLFunctions.RHTower.bandClass_zero _
-    apply hg0
-    apply Subtype.ext
-    rw [← hclass]
-    exact hclassZero
-  obtain ⟨mu, hEq⟩ := eqOn_Icc_const_mul_of_even_joint_prolate_eigen
-    (GaloisForLFunctions.RHTower.contDiff_eigenRep hc hlam bf)
-    (GaloisForLFunctions.RHTower.contDiff_eigenRep hc hlam bg)
-    hPsiNe f.2.2 g.2.2 hlam
-    (GaloisForLFunctions.RHTower.bandTransform_eigenRep hlam bg)
-    hPhiProlate hPsiProlate
-  have hscaled : Continuous (fun x : ℝ => mu * Psi x) := by fun_prop
-  have hclassEq : GaloisForLFunctions.RHTower.bandClass Phi
-      (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bf) =
-      GaloisForLFunctions.RHTower.bandClass (fun x => mu * Psi x) hscaled :=
-    bandClass_eq_of_eqOn_Icc
-      (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bf) hscaled hEq
-  have hval : f.1 = mu • g.1 := by
-    calc
-      f.1 = GaloisForLFunctions.RHTower.bandClass Phi
-          (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bf) :=
-        (GaloisForLFunctions.RHTower.bandClass_eigenRep hlam bf).symm
-      _ = GaloisForLFunctions.RHTower.bandClass (fun x => mu * Psi x) hscaled := hclassEq
-      _ = mu • GaloisForLFunctions.RHTower.bandClass Psi
-          (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bg) :=
-        GaloisForLFunctions.RHTower.bandClass_smul
-          (GaloisForLFunctions.RHTower.continuous_eigenRep c lam bg) mu hscaled
-      _ = mu • g.1 := by
-        rw [GaloisForLFunctions.RHTower.bandClass_eigenRep hlam bg]
-  exact ⟨mu, Subtype.ext hval⟩
 
 /-- Every nonzero even Slepian band eigenvector carries a nonzero smooth even joint
 band/prolate eigenfunction. -/
@@ -930,7 +847,7 @@ theorem exists_joint_prolate_band_eigen_of_signedMode
         (∀ x : ℝ,
           bandTransform (2 * Real.pi * a ^ 2) Φ x =
             evenProlateSignedValue a n ^ 2 * Φ x) ∧
-        (∀ x ∈ Set.Icc (-1 : ℝ) 1,
+        (∀ x : ℝ,
           prolateSLAction (2 * Real.pi * a ^ 2) Φ x = η * Φ x) := by
   obtain ⟨ψ₀, hψ₀ne, hψ₀eig, _hψ₀even⟩ :=
     exists_realIntervalL2_bandEigen_of_signedMode ha n hvalue
@@ -1244,6 +1161,50 @@ theorem eqOn_Icc_const_mul_of_even_joint_prolate_eigen
     rw [closure_Ioo (by norm_num : (-1 : ℝ) ≠ 1)]
   rw [hclosure]
   exact hEqIoo.closure hPhi1.continuous hscaled1.continuous
+
+/-- A nontrivial regular even separation mode cannot carry two different live band eigenvalues.
+Together with aperture ODE uniqueness, one separation value determines one band eigenline. -/
+theorem bandEigenvalue_eq_of_same_even_prolate_eigen
+    {c lamPhi lamPsi chi : ℝ} {Phi Psi : ℝ → ℝ}
+    (hPhiSmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
+    (hPsiSmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Psi)
+    (hPhiNe : Phi ≠ 0) (hPsiNe : Psi ≠ 0)
+    (hPhiEven : Function.Even Phi) (hPsiEven : Function.Even Psi)
+    (hlamPhi : lamPhi ≠ 0) (hlamPsi : lamPsi ≠ 0)
+    (hPhiBand : ∀ x : ℝ, bandTransform c Phi x = lamPhi * Phi x)
+    (hPsiBand : ∀ x : ℝ, bandTransform c Psi x = lamPsi * Psi x)
+    (hPhiProlate : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x)
+    (hPsiProlate : ∀ x : ℝ, prolateSLAction c Psi x = chi * Psi x) :
+    lamPhi = lamPsi := by
+  obtain ⟨mu, hEq⟩ := eqOn_Icc_const_mul_of_even_joint_prolate_eigen
+    hPhiSmooth hPsiSmooth hPsiNe hPhiEven hPsiEven hlamPsi hPsiBand
+    hPhiProlate hPsiProlate
+  have hPhi0 : Phi 0 ≠ 0 := value_zero_ne_of_even_joint_prolate_band_eigen
+    hPhiSmooth hPhiNe hPhiEven hlamPhi hPhiBand hPhiProlate
+  have hPsi0 : Psi 0 ≠ 0 := value_zero_ne_of_even_joint_prolate_band_eigen
+    hPsiSmooth hPsiNe hPsiEven hlamPsi hPsiBand hPsiProlate
+  have hEq0 : Phi 0 = mu * Psi 0 := hEq (by norm_num)
+  have hmu : mu ≠ 0 := by
+    intro hzero
+    apply hPhi0
+    rw [hEq0, hzero, zero_mul]
+  have hBandProp : bandTransform c Phi 0 = mu * bandTransform c Psi 0 := by
+    rw [bandTransform, bandTransform, ← intervalIntegral.integral_const_mul]
+    apply intervalIntegral.integral_congr
+    intro y hy
+    have hyIcc : y ∈ Set.Icc (-1 : ℝ) 1 := by
+      simpa [Set.uIcc_of_le (by norm_num : (-1 : ℝ) ≤ 1)] using hy
+    change sincKernelSmooth c 0 y * Phi y =
+      mu * (sincKernelSmooth c 0 y * Psi y)
+    rw [hEq hyIcc]
+    ring
+  have heq : (mu * Psi 0) * lamPhi = (mu * Psi 0) * lamPsi := by
+    calc
+      (mu * Psi 0) * lamPhi = lamPhi * Phi 0 := by rw [hEq0]; ring
+      _ = bandTransform c Phi 0 := (hPhiBand 0).symm
+      _ = mu * bandTransform c Psi 0 := hBandProp
+      _ = (mu * Psi 0) * lamPsi := by rw [hPsiBand]; ring
+  exact mul_left_cancel₀ (mul_ne_zero hmu hPsi0) heq
 
 /-- A nontrivial regular even prolate solution cannot vanish at the symmetry center. -/
 theorem value_zero_ne_of_even_prolate_eigen

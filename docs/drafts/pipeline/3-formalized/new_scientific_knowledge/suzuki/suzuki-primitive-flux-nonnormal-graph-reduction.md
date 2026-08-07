@@ -1,7 +1,7 @@
 # Primitive flux removes Suzuki's nonnormal frequency group from the weighted graph estimate
 
 - **ID:** `suzuki-primitive-flux-nonnormal-graph-reduction`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** EXACT FLUX SYSTEM / NONNORMAL WEIGHTED UNIQUENESS THEOREM
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** completed Evans/logarithmic-seam branch of Connes/CCM
@@ -254,9 +254,43 @@ primitiveFlux_absorption_mul;
 primitiveFlux_absorption_div.
 ```
 
-These certify the exact derivative cancellation and denominator-free absorption core. The full
-Bochner-\(L^2\) estimate `(15)` waits for the concrete paired flux graph object; wrapping the two
-analytic norm hypotheses in an abstract structure would add no source knowledge.
+These certify the exact derivative cancellation and denominator-free absorption core.
+
+Section 3's stability estimate is now formal, in
+
+```text
+formal/GaloisForLFunctions/HTGeometry/GraphFluxStabilityEstimate.lean
+```
+
+```text
+graphFlux_state_bound                     (15): c‖V‖ ≤ ‖Y‖+‖G‖ and σ‖Y‖ ≤ d‖V‖+‖H‖ with
+                                          d/σ < c force ‖V‖ ≤ (c-d/σ)⁻¹(‖G‖+σ⁻¹‖H‖)
+graphFlux_flux_bound                      (16): ‖Y‖ ≤ σ⁻¹(d‖V‖+‖H‖)
+neg_norm_mul_normSq_le_inner_neg_apply    (10): Re⟪-Bv,v⟫ ≥ -‖B‖‖v‖², by Cauchy-Schwarz alone,
+                                          with no symmetry or normality of B
+```
+
+The card's own remark that "the proof uses only its norm" is exactly why `(15)`--`(16)` formalize
+as scalar statements: the whole content is that coercivity beating the coupling closes the loop
+between `(12)` and `(13)`, and no property of the operators beyond their norms enters.  `(13)` is formal too, and it needs no Fourier transform, in
+
+```text
+formal/GaloisForLFunctions/HTGeometry/ShiftedDerivativeCoercivity.lean
+```
+
+```text
+hasDerivAt_normSq_comp    d/dt ‖Y t‖² = 2 Re(Y'(t) conj Y(t))
+normSq_shifted            ‖a - σb‖² = ‖a‖² - σ·2Re(a conj b) + σ²‖b‖²
+integral_cross_eq_zero    the cross term integrates to zero on a compactly supported path
+sq_mul_integral_normSq_le (13): σ² ∫‖Y‖² ≤ ∫‖Y' - σY‖²
+```
+
+One integration by parts does it: the cross term is `∫ d/dt ‖Y‖²`, which vanishes because the path
+is compactly supported, leaving `‖Y' - σY‖₂² = ‖Y'‖₂² + σ²‖Y‖₂²`.  The card's route through
+Fourier transformation in `L` is one way to see `(13)`; it is not needed.
+
+Chained with `neg_suzukiGammaShiftKappa_le_integral` (which supplies `(9)`) and `(10)` above, the
+whole of section 3 — `(9)`--`(16)` — is now unconditional in Lean.
 
 ## Gates
 

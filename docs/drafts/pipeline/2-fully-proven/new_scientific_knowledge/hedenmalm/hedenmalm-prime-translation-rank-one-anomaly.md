@@ -452,13 +452,28 @@ source class `GaloisForLFunctions.HTGeometry.PositiveDensitySource`.  Every decl
 | `(9)`,`(10)` | the literal ordinary-integer character `n^(-s(z))` | `sourceEvaluation`, `dirichletExponent`, `sourceEvaluation_integerShift`, `cpow_neg_dirichletExponent` |
 | `(11)`,`(24)` | the explicit mode and `(A+z)u_z = -k` | `sourceModeI`, `sourceModeU`, `sourceModeF`, `hasDerivAt_sourceModeI`, `hasDerivAt_sourceModeU`, `sourceModeU_equation` |
 | `(12)` | `B f_z = -z^(-1) f_z` | `sourceInverse_sourceModeF` (with the two endpoint data: `f_z` integrable, `u_z -> 0` at `-infinity`, and total mass `M`) |
+| `(13)`,`(14)` | integer theta series and the literal Mellin expansion | `HedenmalmThetaSeries.ThetaSeriesSource`, `HedenmalmThetaSeries.mellinTail`, `HedenmalmThetaSeries.mellinTail_expChart`, `HedenmalmThetaSeries.tail_eq_tsum_mellinTail` |
+| `(15)` | reflection `R f_z = f_(-z)` and conjugation `conj f_z = f_(-conj z)` | `sourceModeI_neg`, `sourceModeU_neg`, `sourceModeF_neg`, `conj_sourceModeI`, `conj_sourceModeU`, `conj_sourceModeF` |
+| `(16)` | geometric multiplicity one | `eq_of_sourceEquation` |
 | `(17)`,`(18)` | conormal jets and the triangular prime law | `sourceEvaluationJet`, `sourceEvaluationJet_zero`, `sourceEvaluationJet_integerShift` |
 
-Still missing in Lean: the literal integer Mellin expansion `(14)` (it needs the theta series of the
-Hedenmalm source, not only its positivity), the reflection package `(15)`, and the geometric
-multiplicity statement `(16)`, which quotes the parent Fredholm theorem of
-`hedenmalm-supersymmetric-fredholm-range-divisor.md` and therefore cannot be closed before that
-card is formalized.
+`(16)` is formalized in its exact analytic form: any two solutions of the same inhomogeneous
+Hedenmalm equation whose tilted difference vanishes at one end coincide, so the eigenspace of the
+source inverse at a divisor point is a line.  The Jordan-length half of `(16)` (algebraic
+multiplicity `m`) quotes the analytic Fredholm multiplicity of the parent card
+`hedenmalm-supersymmetric-fredholm-range-divisor.md`.
+
+`(14)` is formalized in
+`formal/GaloisForLFunctions/RHTower/HedenmalmThetaSeriesExpansion.lean` for a source presented by
+its integer series (`structure ThetaSeriesSource`): the single-term identity is the exponential
+change of variables `t = n e^y` (`mellinTail_expChart`) and the interchange of the sum with the
+integral is `MeasureTheory.integral_tsum`, whose two hypotheses are carried explicitly.
+
+The one sentence of this card that is **not** self-contained is the Jordan-*length* half of `(16)`:
+the card's own proof reads "analytic Fredholm multiplicity is the order `m` of `XiC`", which is the
+multiplicity clause of the parent card
+`hedenmalm-theta-source-compressed-inverse-determinant.md`.  That clause is not yet in Lean, so
+this card waits on it; everything the card proves itself is formalized.
 
 ## Gates
 
@@ -471,6 +486,9 @@ card is formalized.
 - [x] reflection and conjugation internalized
 - [x] geometric multiplicity one and full Jordan length proved
 - [x] prime logarithmic conormal jets proved
+- [x] Lean: rank-one anomaly `(7)`--`(8)`, nonvanishing, character `(10)`, right mode
+      `(11)`--`(12)`, reflection/conjugation `(15)`, geometric multiplicity one `(16)`,
+      conormal jets `(17)`--`(18)`
 - [x] raw anomaly proved divisor-exact
 - [x] nonzero source-normal successor extracted
 - [ ] independent analytic/operator hostile audit
