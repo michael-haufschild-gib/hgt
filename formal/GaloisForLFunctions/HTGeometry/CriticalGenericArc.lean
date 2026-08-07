@@ -171,9 +171,8 @@ theorem criticalObservationArcEmbedding_raw_sub_shift
   rw [map_sub, criticalObservationArcEmbedding_raw]
   simp [criticalArcObservation, laurentCriticalObservation,
     powerSeriesCriticalObservation, criticalDirectionConstants]
-  rw [IsScalarTower.algebraMap_apply K
-    (PowerSeries (CriticalArcConstants K m n))
-    ((CriticalArcConstants K m n)⸨X⸩)]
+  rw [HahnSeries.algebraMap_apply']
+  exact add_sub_cancel_right _ _
 
 /-- The reciprocal observation coordinate minus its affine shift is its common-scale term. -/
 theorem criticalObservationArcEmbedding_recip_sub_shift
@@ -190,9 +189,8 @@ theorem criticalObservationArcEmbedding_recip_sub_shift
   rw [map_sub, criticalObservationArcEmbedding_recip]
   simp [criticalArcObservation, laurentCriticalObservation,
     powerSeriesCriticalObservation, criticalDirectionConstants]
-  rw [IsScalarTower.algebraMap_apply K
-    (PowerSeries (CriticalArcConstants K m n))
-    ((CriticalArcConstants K m n)⸨X⸩)]
+  rw [HahnSeries.algebraMap_apply']
+  exact add_sub_cancel_right _ _
 
 /-- Pullback of the Laurent valuation along the common-scale observation-field embedding. -/
 noncomputable def criticalObservationArcValuation
@@ -213,13 +211,26 @@ theorem criticalObservationArcValuation_raw_sub_shift
             (criticalObservationShift K (m := m) (n := n)
               (Sum.inl i : Fin n ⊕ Fin m))) =
       WithZero.exp (-1 : ℤ) := by
-  rw [criticalObservationArcValuation, Valuation.comap_apply,
-    criticalObservationArcEmbedding_raw_sub_shift K hm hn]
-  rw [powerSeriesDeformParam, map_mul, PowerSeries.coe_X,
-    LaurentSeries.valuation_X_pow (CriticalArcConstants K m n) 1,
-    laurent_valuation_coe_powerSeries_eq_one_of_constantCoeff_ne_zero]
-  · simp
-  · simpa using criticalArcDirection_ne_zero K m n (Sum.inl i)
+  rw [criticalObservationArcValuation, Valuation.comap_apply]
+  change Valued.v (criticalObservationArcEmbedding K hm hn
+    (criticalObservationRaw K m n i -
+      algebraMap K (criticalObservationField K m n)
+        (criticalObservationShift K (m := m) (n := n)
+          (Sum.inl i : Fin n ⊕ Fin m)))) = _
+  rw [criticalObservationArcEmbedding_raw_sub_shift K hm hn]
+  have hX : Valued.v
+      (algebraMap (PowerSeries (CriticalArcConstants K m n))
+        ((CriticalArcConstants K m n)⸨X⸩) PowerSeries.X) =
+      WithZero.exp (-1 : ℤ) := by
+    simpa using LaurentSeries.valuation_X_pow (CriticalArcConstants K m n) 1
+  have hC : Valued.v
+      (algebraMap (PowerSeries (CriticalArcConstants K m n))
+        ((CriticalArcConstants K m n)⸨X⸩)
+        (PowerSeries.C (criticalArcRawDirection K m n i))) = 1 := by
+    apply laurent_valuation_coe_powerSeries_eq_one_of_constantCoeff_ne_zero
+    simpa [criticalArcRawDirection] using
+      criticalArcDirection_ne_zero K m n (Sum.inl i)
+  rw [powerSeriesDeformParam, map_mul, Valuation.map_mul, hX, hC, mul_one]
 
 /-- Every reciprocal deformation coordinate has valuation exactly that of the common uniformizer. -/
 theorem criticalObservationArcValuation_recip_sub_shift
@@ -231,13 +242,26 @@ theorem criticalObservationArcValuation_recip_sub_shift
             (criticalObservationShift K (m := m) (n := n)
               (Sum.inr j : Fin n ⊕ Fin m))) =
       WithZero.exp (-1 : ℤ) := by
-  rw [criticalObservationArcValuation, Valuation.comap_apply,
-    criticalObservationArcEmbedding_recip_sub_shift K hm hn]
-  rw [powerSeriesDeformParam, map_mul, PowerSeries.coe_X,
-    LaurentSeries.valuation_X_pow (CriticalArcConstants K m n) 1,
-    laurent_valuation_coe_powerSeries_eq_one_of_constantCoeff_ne_zero]
-  · simp
-  · simpa using criticalArcDirection_ne_zero K m n (Sum.inr j)
+  rw [criticalObservationArcValuation, Valuation.comap_apply]
+  change Valued.v (criticalObservationArcEmbedding K hm hn
+    (criticalObservationRecip K m n j -
+      algebraMap K (criticalObservationField K m n)
+        (criticalObservationShift K (m := m) (n := n)
+          (Sum.inr j : Fin n ⊕ Fin m)))) = _
+  rw [criticalObservationArcEmbedding_recip_sub_shift K hm hn]
+  have hX : Valued.v
+      (algebraMap (PowerSeries (CriticalArcConstants K m n))
+        ((CriticalArcConstants K m n)⸨X⸩) PowerSeries.X) =
+      WithZero.exp (-1 : ℤ) := by
+    simpa using LaurentSeries.valuation_X_pow (CriticalArcConstants K m n) 1
+  have hC : Valued.v
+      (algebraMap (PowerSeries (CriticalArcConstants K m n))
+        ((CriticalArcConstants K m n)⸨X⸩)
+        (PowerSeries.C (criticalArcReciprocalDirection K m n j))) = 1 := by
+    apply laurent_valuation_coe_powerSeries_eq_one_of_constantCoeff_ne_zero
+    simpa [criticalArcReciprocalDirection] using
+      criticalArcDirection_ne_zero K m n (Sum.inr j)
+  rw [powerSeriesDeformParam, map_mul, Valuation.map_mul, hX, hC, mul_one]
 
 noncomputable instance criticalObservationArcValuation_isNontrivial
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
@@ -255,7 +279,8 @@ noncomputable instance criticalObservationArcValuation_isNontrivial
     rw [criticalObservationArcValuation_raw_sub_shift K hm hn, map_zero] at hval
     exact WithZero.exp_ne_zero hval
   · rw [criticalObservationArcValuation_raw_sub_shift K hm hn]
-    simp
+    have hneg : (-1 : ℤ) < 0 := by omega
+    simpa only [WithZero.exp_zero] using (WithZero.exp_lt_exp.mpr hneg)
 
 /-- Discrete valuation ring cut out on the actual observation field by the generic arc. -/
 abbrev CriticalObservationArcValuationRing

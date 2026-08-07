@@ -347,6 +347,8 @@ whole layer at the actual arithmetic source, so the statements below carry **no 
 | `(1)` | **`B` is Hilbert--Schmidt for the Riemann source** | `isHilbertSchmidt_thetaKernelOperator` |
 | `(1)` | `B` is compact for the Riemann source | `isCompactOperator_thetaKernelOperator` |
 | `(7)` | `R B R = -B` for the Riemann source | `thetaSource_even`, `sourceInverse_sourceReflection_theta` |
+| `(9)` | the first source moment vanishes (evenness) | `integrable_mul_thetaSource`, `integral_mul_thetaSource_eq_zero`, `integral_quantileFun` |
+| `(9)` | **the source variance in quantile coordinates**, `integral over (0,1) of Q^2 = M^(-1) integral of x^2 k` | `integral_sq_quantileFun` |
 
 Corpus assets to use for the remaining items, rather than rebuilding them:
 `ContinuousLinearMap.IsHilbertSchmidt` (`HTGeometry/HilbertSchmidtOperator.lean`),
@@ -361,7 +363,9 @@ Still missing: the **multiplicity clause** of
 `hedenmalm-prime-translation-rank-one-anomaly.md` cites for its Jordan length), the regularized
 determinant identity `(8)` --- no general `det_2` exists in the corpus or in mathlib, only the
 diagonal Fredholm product layer of `RHTower/ArithmeticDilationDeterminantZeros.lean` --- and the
-trace calibration `(9)`.
+trace calibration `(9)` --- of which the right-hand side, the source variance
+`M^(-1) integral of x^2 k`, is now formalized in quantile form; what is missing is the trace side
+`tr(B^2)`, which needs the trace-class layer.
 
 ## Gates
 

@@ -1660,7 +1660,24 @@ to `f γ` and `g γ`, which is exactly the content of `restrictModule`'s `act_as
 
 Axioms: `propext, Classical.choice, Quot.sound`.
 
-What is left is the descent itself: span induction to lift the relator statement to the whole
-relation submodule, then `Submodule.liftQ` in each variable in turn.
+**`relTensorRel_tensorAlgMul_left`**, **`relTensorRel_tensorAlgMul_right`**: the relations really
+are a two-sided ideal.  The left statement is span induction over the relation submodule, with the
+generator case expanding the second factor as a sum of single-bidegree elements and then inducting
+on each pure tensor; the right statement is the left one composed with graded commutativity, which
+costs only a scalar.
+
+`relAlgMulPre`, `relAlgMulRight`, `relAlgMulLeftPre`, **`relAlgMul`**, and
+
+> **`relTensorCDGA` : the relative tensor product of two algebras over a base algebra is a
+> commutative differential graded algebra.**
+
+The descent is two `Submodule.liftQ`s in sequence — first in the second variable at a fixed
+representative, then in the first variable, where the quotient map being killed is an equality of
+*linear maps* and so is checked by `LinearMap.ext` followed by `Quotient.inductionOn'`.  Every
+algebra axiom then follows from the corresponding axiom of `tensorCDGA` by
+`Quotient.inductionOn'` on each argument, and `d_mul` is `tensorAlgMul_extTensorD` — the
+differential of the quotient being the descent of the same `tensorD`.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
 
 Axioms: `propext, Classical.choice, Quot.sound`.

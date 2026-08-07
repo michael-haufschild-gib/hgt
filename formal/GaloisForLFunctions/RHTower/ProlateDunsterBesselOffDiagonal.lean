@@ -1395,7 +1395,7 @@ theorem abs_intervalIntegral_firstRowRadialProduct_le_endpoint
   calc
     |E| = |(E - B) + (B - L) + L| := by ring_nf
     _ ≤ |E - B| + |B - L| + |L| := by
-      exact (abs_add _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
+      exact (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
     _ ≤ compactExactFirstRowProductError s c k a * |b - a| +
         compactFirstRowProductError s c k a * |b - a| +
         (1 / Real.pi) *
@@ -1403,6 +1403,88 @@ theorem abs_intervalIntegral_firstRowRadialProduct_le_endpoint
             4 / 3 * Real.sqrt (Real.sqrt 2) / k * (a - 1) ^ ((3 : ℝ) / 4) +
             4 * ampFourthRoot s k a / (c * (1 + k))) :=
       add_le_add (add_le_add hExact hBessel) hLeading
+
+/-- Quantitative full-ray decomposition into endpoint, oscillatory compact block, and tail. -/
+theorem abs_integral_Ioi_firstRowRadialProduct_full_le
+    {s c k a b : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k)
+    (hc5 : 5 ≤ c) (hcOsc : 3 * k ≤ c)
+    (ha : 1 < a) (hab : a ≤ b)
+    (haCross : dunsterEndpointCrossing c ≤ a)
+    (hbStationary : Real.sqrt (1 + 2 / k ^ 2) ≤ b)
+    (hcxi : 1 ≤ c * xiEndpointPhase s a)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    |∫ x in Ioi (1 : ℝ), firstRowRadialProduct c R k x| ≤
+      (1 / 2 : ℝ) *
+          (9 / (8 * c) +
+            4 * radialProlateDensityEnvelopeConstant * (radialAngle a / Real.pi) +
+            radialProlateDensityEnvelopeConstant * profileWeight s k * (a - 1)) +
+        (compactExactFirstRowProductError s c k a * |b - a| +
+          compactFirstRowProductError s c k a * |b - a| +
+          (1 / Real.pi) *
+            (170 / (Real.sqrt c * k ^ 2) +
+              4 / 3 * Real.sqrt (Real.sqrt 2) / k * (a - 1) ^ ((3 : ℝ) / 4) +
+              4 * ampFourthRoot s k a / (c * (1 + k)))) +
+        4 * radialProlateDensityEnvelopeConstant *
+          ∫ x in Ioi b, profileDensity x := by
+  have hb : 1 < b := ha.trans_le hab
+  have hcrossb : dunsterEndpointCrossing c ≤ b := haCross.trans hab
+  have hhead := abs_integral_firstRowRadialProduct_endpoint_le
+    hs0 hs1 hk hc5 ha haCross hR1 hR hDR hode
+  have hmid := abs_intervalIntegral_firstRowRadialProduct_le_endpoint
+    hs0 hs1 hk hc5 hcOsc hab ha haCross hbStationary hcxi hR1 hR hDR hode
+  have htail := abs_integral_Ioi_firstRowRadialProduct_le
+    hs0 hs1 hk hc5 hb hcrossb hR1 hR hDR hode
+  have hRc : Continuous R := continuous_iff_continuousAt.mpr fun x => (hR x).continuousAt
+  have hcont : Continuous (firstRowRadialProduct c R k) := by
+    unfold firstRowRadialProduct radialProlateRescaledProfile
+    fun_prop
+  have hIntHead : IntervalIntegrable (firstRowRadialProduct c R k) volume (1 : ℝ) a :=
+    hcont.intervalIntegrable 1 a
+  have hIntMid : IntervalIntegrable (firstRowRadialProduct c R k) volume a b :=
+    hcont.intervalIntegrable a b
+  have hIntOneB : IntervalIntegrable (firstRowRadialProduct c R k) volume (1 : ℝ) b :=
+    hcont.intervalIntegrable 1 b
+  have hIoc : IntegrableOn (firstRowRadialProduct c R k) (Ioc (1 : ℝ) b) := by
+    rwa [← intervalIntegrable_iff_integrableOn_Ioc_of_le hb.le]
+  have hIoi := integrableOn_firstRowRadialProduct_Ioi
+    hs0 hs1 hk hc5 hb hcrossb hR1 hR hDR hode
+  have hsplitTail : (∫ x in Ioi (1 : ℝ), firstRowRadialProduct c R k x) =
+      (∫ x in (1 : ℝ)..b, firstRowRadialProduct c R k x) +
+        ∫ x in Ioi b, firstRowRadialProduct c R k x := by
+    rw [intervalIntegral.integral_of_le hb.le]
+    rw [← Ioc_union_Ioi_eq_Ioi hb.le]
+    exact setIntegral_union Ioc_disjoint_Ioi_same measurableSet_Ioi hIoc hIoi
+  have hsplitCompact : (∫ x in (1 : ℝ)..b, firstRowRadialProduct c R k x) =
+      (∫ x in (1 : ℝ)..a, firstRowRadialProduct c R k x) +
+        ∫ x in a..b, firstRowRadialProduct c R k x := by
+    exact (intervalIntegral.integral_add_adjacent_intervals hIntHead hIntMid).symm
+  rw [hsplitTail, hsplitCompact]
+  calc
+    |((∫ x in (1 : ℝ)..a, firstRowRadialProduct c R k x) +
+          ∫ x in a..b, firstRowRadialProduct c R k x) +
+        ∫ x in Ioi b, firstRowRadialProduct c R k x|
+        ≤ |∫ x in (1 : ℝ)..a, firstRowRadialProduct c R k x| +
+            |∫ x in a..b, firstRowRadialProduct c R k x| +
+              |∫ x in Ioi b, firstRowRadialProduct c R k x| := by
+          exact (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
+    _ ≤ (1 / 2 : ℝ) *
+          (9 / (8 * c) +
+            4 * radialProlateDensityEnvelopeConstant * (radialAngle a / Real.pi) +
+            radialProlateDensityEnvelopeConstant * profileWeight s k * (a - 1)) +
+        (compactExactFirstRowProductError s c k a * |b - a| +
+          compactFirstRowProductError s c k a * |b - a| +
+          (1 / Real.pi) *
+            (170 / (Real.sqrt c * k ^ 2) +
+              4 / 3 * Real.sqrt (Real.sqrt 2) / k * (a - 1) ^ ((3 : ℝ) / 4) +
+              4 * ampFourthRoot s k a / (c * (1 + k)))) +
+        4 * radialProlateDensityEnvelopeConstant *
+          ∫ x in Ioi b, profileDensity x :=
+      add_le_add (add_le_add hhead hmid) htail
 
 /-- Exact endpoint-normalized first-row radial product cancellation on every fixed compact
 exterior interval. -/

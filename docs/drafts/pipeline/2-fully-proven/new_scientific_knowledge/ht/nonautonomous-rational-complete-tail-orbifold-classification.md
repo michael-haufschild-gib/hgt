@@ -678,3 +678,19 @@ separates two exponents, which is why the family form of the scaling-invariance 
 
 Uniformization is therefore required only for the compact signatures `(2,2,2,2)`, `(2,3,6)`,
 `(2,4,4)`, `(3,3,3)` and the mixed `(2,2,∞)`.
+
+## The `(2,2,∞)` current, exactly
+
+`GaloisForLFunctions/HTGeometry/ChebyshevQuadraticCurrent.lean` (wired, axiom-clean):
+
+    deriv_add_inv                        `(w + w⁻¹)′ = w′(w² - 1)/w²`
+    add_inv_sq_sub_four                  `(w + w⁻¹)² - 4 = (w² - 1)²/w²`
+    logDeriv_sq_eq_chebyshev_current     **`(w′/w)² = y′²/(y² - 4)` for `y = w + w⁻¹`**
+    logDeriv_inv                         the deck involution negates `w′/w`
+    add_inv_involutive                   and fixes the Chebyshev coordinate
+
+This is the card's "rational quadratic differential with simple poles at the two order-two points
+and a double pole at the cusp, transported up to scalar", written as an exact identity: the square
+of the Maurer--Cartan current upstairs *is* the quadratic differential `y′²/(y² - 4)` downstairs,
+whose denominator vanishes exactly at the two cone points `y = ±2`.  The square is the right object
+because the involution negates the current, so only its square descends.

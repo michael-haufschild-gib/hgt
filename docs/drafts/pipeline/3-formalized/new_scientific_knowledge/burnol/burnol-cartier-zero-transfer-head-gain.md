@@ -101,6 +101,10 @@ xiDivisor_burnolCartierZeroTransfer_mem_soninExtendedSpace
 xiDivisor_burnolCartierZeroTransfer_fixed_head
 xiDivisor_burnolCartierZeroTransfer_fixed_cosine_head
 one_lt_norm_burnolCartierForwardHeadGain
+norm_burnolCartierCosineHeadGain_lt_one
+norm_burnolCartierCosineHeadGain_mul_forward_eq_one
+burnolCartierHeadGain_sq_defect_pos
+xiDivisor_burnolCartierHeadGain_strict_reciprocal_asymmetry
 burnolXiForwardReflectedCartierStokesSewing_iff_cartierZeroTransferForwardHeadNorm
 riemannHypothesis_of_burnolXiCartierZeroTransferForwardHeadNormConservation
 ```
@@ -114,4 +118,3 @@ Axiom audit for endpoint declarations: `[propext, Classical.choice, Quot.sound]`
 - [x] conjecture/attack loop
 - [x] dependency-closed Lean formalization
 - [x] umbrella, targeted module build, axiom audit
-

@@ -341,6 +341,60 @@ theorem one_lt_norm_burnolCartierForwardHeadGain
     nlinarith
   nlinarith [norm_nonneg rho, norm_nonneg ((1 : ℂ) - rho)]
 
+/-- Off the critical line the cosine-side Cartier head gain is strictly contractive.  Thus the
+global isometry cannot identify the two aperture heads; it must move the missing mass into the
+cosine tail. -/
+theorem norm_burnolCartierCosineHeadGain_lt_one
+    {rho : ℂ} (hright : 1 / 2 < rho.re) (hlt : rho.re < 1) :
+    ‖burnolCartierCosineHeadGain rho‖ < 1 := by
+  have hrho : rho ≠ 0 := by
+    intro hzero
+    rw [hzero] at hright
+    norm_num at hright
+  rw [burnolCartierCosineHeadGain_eq_inv_conj_forwardHeadGain hrho,
+    norm_inv, norm_conj]
+  exact inv_lt_one_of_one_lt₀
+    (one_lt_norm_burnolCartierForwardHeadGain hright hlt)
+
+/-- The forward and cosine Cartier head gains have exactly reciprocal norms throughout the
+open right half of the critical strip. -/
+theorem norm_burnolCartierCosineHeadGain_mul_forward_eq_one
+    {rho : ℂ} (hright : 1 / 2 < rho.re) (hlt : rho.re < 1) :
+    ‖burnolCartierCosineHeadGain rho‖ *
+        ‖burnolCartierForwardHeadGain rho‖ = 1 := by
+  have hrho : rho ≠ 0 := by
+    intro hzero
+    rw [hzero] at hright
+    norm_num at hright
+  rw [burnolCartierCosineHeadGain_eq_inv_conj_forwardHeadGain hrho,
+    norm_inv, norm_conj, inv_mul_cancel₀]
+  exact (zero_lt_one.trans
+    (one_lt_norm_burnolCartierForwardHeadGain hright hlt)).ne'
+
+/-- The oriented head-mass defect is strictly positive off the critical line. -/
+theorem burnolCartierHeadGain_sq_defect_pos
+    {rho : ℂ} (hright : 1 / 2 < rho.re) (hlt : rho.re < 1) :
+    0 < ‖burnolCartierForwardHeadGain rho‖ ^ 2 -
+      ‖burnolCartierCosineHeadGain rho‖ ^ 2 := by
+  have hf := one_lt_norm_burnolCartierForwardHeadGain hright hlt
+  have hc := norm_burnolCartierCosineHeadGain_lt_one hright hlt
+  nlinarith [norm_nonneg (burnolCartierForwardHeadGain rho),
+    norm_nonneg (burnolCartierCosineHeadGain rho)]
+
+/-- Every hypothetical right-half Xi divisor carries strict reciprocal aperture-head asymmetry.
+Any successful forward/reflected sewing must therefore transfer a nonzero head defect through the
+tails rather than identify the two heads. -/
+theorem xiDivisor_burnolCartierHeadGain_strict_reciprocal_asymmetry
+    (rho : XiDivisorSupport) (hright : 1 / 2 < (rho : ℂ).re) :
+    1 < ‖burnolCartierForwardHeadGain (rho : ℂ)‖ ∧
+      ‖burnolCartierCosineHeadGain (rho : ℂ)‖ < 1 ∧
+      ‖burnolCartierCosineHeadGain (rho : ℂ)‖ *
+        ‖burnolCartierForwardHeadGain (rho : ℂ)‖ = 1 := by
+  have hlt := xiDivisor_re_lt_one_of_half_lt rho hright
+  exact ⟨one_lt_norm_burnolCartierForwardHeadGain hright hlt,
+    norm_burnolCartierCosineHeadGain_lt_one hright hlt,
+    norm_burnolCartierCosineHeadGain_mul_forward_eq_one hright hlt⟩
+
 /-- Source-side producer reduced to conservation of the single explicit fixed forward head. -/
 def BurnolXiCartierZeroTransferForwardHeadNormConservation : Prop :=
   ∀ (rho : XiDivisorSupport) (_h : 1 / 2 < (rho : ℂ).re),

@@ -2692,3 +2692,36 @@ direction the analogous condition was `0 ≤ f X`; here it is the stronger
 
 Note `abs_integral_transport_far_le` needs no mirroring — it bounds an absolute value, so it
 supplies both the upper and the lower far estimate. Only the near window is direction-sensitive.
+
+## BR. Mirrored backward weight removal — no correction term needed
+
+`PenalizedMaximum.lean` is now at 16 declarations, all `#print axioms` clean, no `sorry`.
+
+- `le_of_weighted_ge_backward` — from `√X f X − δ s ≤ √(X−s) f(X−s)` with `0 ≤ s ≤ X/2` and
+  `0 ≤ f X − δ s/√X`,
+
+      f X − δ s/√X  ≤  f(X − s).
+
+**No correction term appears.** Going backward from a *lower* bound the square-root ratio works
+*for* the estimate: dividing a nonnegative quotient by the smaller root `√(X−s) ≤ √X` only
+increases it. Contrast the maximizer direction, where backward was the hard case and needed the
+sharp expansion `(1−u)^{−1/2} ≤ 1 + 2u` (section BF).
+
+So the two directions are hard in opposite places:
+
+| | maximizer (upper bounds) | minimizer (lower bounds) |
+|---|---|---|
+| forward `X+s` | free | needs `√(1+u) ≤ 1 + u/2` and `(1+u)⁻¹ ≥ 1−u` |
+| backward `X−s` | needs `(1−u)^{−1/2} ≤ 1 + 2u` | free |
+
+Both weight-removal pairs are now built.
+
+### Remaining
+
+- the mirrored second-difference bound (an **upper** bound at a penalized minimizer), assembled from
+  `le_of_weighted_ge_forward` and `le_of_weighted_ge_backward` exactly as
+  `neg_le_secondDifference_of_weighted` was assembled from the maximizer pair;
+- its near-window integral version;
+- `tendsto_of_le_liminf_of_limsup_le`.
+
+The far tail needs nothing further (section BQ: `abs_integral_transport_far_le` is two-sided).

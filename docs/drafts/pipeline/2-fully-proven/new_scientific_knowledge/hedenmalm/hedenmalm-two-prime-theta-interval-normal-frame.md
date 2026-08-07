@@ -467,11 +467,21 @@ strengthens the corpus Kronecker theorem to arbitrarily large times, and
 | `(17)` | **the two bounded self-adjoint prime channels** | `channelOperator`, `channelOperator_inner` |
 | `(17)` | the common real symbol zero set is exactly the real `Xi` divisor | `channelSymbol_eq_zero_iff` |
 
-Still missing: the conormal generation statement `(13)`--`(14)`.  This needs Wedderburn/Cartan B
-for entire functions --- two entire functions without a common zero generate the unit ideal, which
-requires Weierstrass products and Mittag-Leffler interpolation.  It is absent from the corpus and
-from mathlib, and it is the one real infrastructure gap left on this card; the analytic-cokernel
-half of `(17)` rests on it.
+Still missing: the conormal generation statement `(13)`--`(14)`.  This needs Wedderburn's lemma
+for entire functions --- two entire functions without a common zero generate the unit ideal.
+
+The Weierstrass half of that build is **already in the corpus** and must not be rebuilt:
+`RHTower.canonicalProductE1Indexed_hasProdLocallyUniformlyOn`
+(`RHTower/CanonicalProduct.lean`) gives local uniform convergence of the genus-one product
+`prod E_1(z / a_i)` for any family of nonzero `a_i` with `sum 1 / norm (a_i) ^ 2` summable, and
+`HTGeometry/MovingCanonicalProduct.lean` supplies `movingCanonicalProduct_eq_zero_iff` together
+with the `analyticOrderAt` computations at each zero.  The zeros of `a_n` are
+`2 pi k / log n`, `k` a nonzero integer, all simple and growing linearly, so that hypothesis is met.
+
+What is genuinely absent from both the corpus and mathlib is the **interpolation** half:
+Mittag-Leffler, i.e. an entire function with prescribed finite jets on a discrete set.  Wedderburn
+needs exactly that (an entire `b` agreeing with `1/f` to the right order at each zero of `g`), and
+the analytic-cokernel half of `(17)` rests on it.
 
 **All three frame obstructions are formalized**: `(22)`/`(23)` (no bounded Bezout pair on the real
 axis), `(25)` (the finite-prime Kronecker obstruction) and `(26)`/`(27)` (the summably weighted

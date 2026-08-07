@@ -1,9 +1,9 @@
 # Route E static all-prime antiscale-frame dichotomy
 
 - **ID:** `ROUTE-E-STATIC-ANTISCALE-FRAME-DICHOTOMY-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[EXHAUSTIVE PRODUCER-CLASS NO-GO]` / `[POSITIVE ROUTE CONSTRAINT]`
-- **Scientific status:** `[PAPER-PROVED] [INTERNAL COLLISION-AUDITED] [EXTERNAL AUDIT OMITTED BY INSTRUCTION]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [INTERNAL COLLISION-AUDITED] [EXTERNAL AUDIT OMITTED BY INSTRUCTION]`
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
 - **RH used:** no
 - **Computation used:** no
@@ -130,8 +130,23 @@ Combined with the parity-coarse determinant law, mere nonproductness is still in
 survivor must act transversely to \(D_{\rm np}\) and produce \(D_{\rm anti}\) or same-parity
 variation at physical-power strength.
 
-## Formalization target
+## Lean certificate
 
-Formalize the all-prime summable case, zero-frequency summability equivalence, and final
-no-fixed-weight theorem using `KroneckerApproxRecurrence`, `linearIndependent_log_primes`, and the
-existing antiscale character definitions.  No analytic or RH hypothesis is permitted.
+Module:
+`formal/GaloisForLFunctions/RHTower/RouteEStaticAntiscaleFrameDichotomy.lean`.
+
+Unconditional declarations:
+
+- `routeEStaticAntiscaleTerm_le_four_mass`;
+- `summable_routeEStaticAntiscaleTerm`;
+- `summable_routeEStaticAntiscaleTerm_zero_iff`;
+- `exists_gt_tsum_routeEStaticAntiscaleTerm_lt`;
+- `not_exists_finite_uniformly_coercive_routeEStaticAntiscaleFrame`.
+
+The theorem is over the complete `Nat.Primes` index and uses an actual `tsum`; it is not a finite
+surrogate.  Targeted audit:
+`lake build GaloisForLFunctions.RHTower.RouteEStaticAntiscaleFrameDichotomy` passed `9719/9719`.
+`#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.  Module is wired into
+`GaloisForLFunctions.RHTower`.  Global lint found no proof debt in this module and did find
+unrelated concurrent umbrella omissions in newly added Prolate and HTGeometry modules; those are
+outside this card's write scope.

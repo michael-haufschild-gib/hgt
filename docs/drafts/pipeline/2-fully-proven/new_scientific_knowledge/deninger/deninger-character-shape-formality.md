@@ -694,3 +694,17 @@ What that gives the card: the comparison in `(5)` can now be carried as a morphi
 rather than of modules, so `(6)` is available as a statement about graded rings.  What it does not
 yet give is the *relative* tensor product of algebras over a base algebra — the layer's `⊗_A` is
 still a module construction — nor the `E_∞` coherence above it.
+
+### The relative tensor product of algebras is built
+
+The entry above listed the relative tensor product of algebras over a base as the piece the card
+still needed beyond the module level.  It is now built: `CDGAHom.restrictModule` (an algebra over a
+base is a module over it), `tensorAlgMul_relTensorRelator` (the relations are an ideal, with the
+sign `(−1)^{(c+b)a'}` forced by moving the cell past the first factor), and **`relTensorCDGA`** —
+the relative tensor product of two algebras over a base algebra is again a commutative differential
+graded algebra.
+
+So `𝒞^M_{F,ℝ} = C^*_{sh} ⊗^{\mathbb L}_{𝒫} 𝒦^M` can be formed *as an algebra* in the corpus's model,
+its underlying module being the layer's `⊗_A` applied to the two restrictions, and `(6)` is a
+statement about graded rings.  What is still absent is only the `E_∞` coherence above the
+commutative-differential-graded model — the bar construction and its spectral sequence.

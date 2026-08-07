@@ -307,4 +307,29 @@ theorem le_of_weighted_ge_forward {f : ℝ → ℝ} {X s δ : ℝ} (hX : 0 < X) 
     exact mul_le_mul_of_nonneg_left hinv hnum
   linarith [hfin, hlower, hdiv]
 
+/-- **Mirrored backward weight removal.**  Going backward from a lower bound the square-root ratio
+works *for* the estimate — dividing by the smaller root only increases a nonnegative quotient — so
+no correction term appears at all:  `f X − δ s/√X ≤ f(X − s)`. -/
+theorem le_of_weighted_ge_backward {f : ℝ → ℝ} {X s δ : ℝ} (hX : 0 < X) (hs : 0 ≤ s)
+    (hsX : s ≤ X / 2) (hnum : 0 ≤ f X - δ * s / Real.sqrt X)
+    (hw : Real.sqrt X * f X - δ * s ≤ Real.sqrt (X - s) * f (X - s)) :
+    f X - δ * s / Real.sqrt X ≤ f (X - s) := by
+  have hsq : 0 < Real.sqrt X := Real.sqrt_pos.mpr hX
+  have hXs0 : 0 < X - s := by linarith
+  have hXs : 0 < Real.sqrt (X - s) := Real.sqrt_pos.mpr hXs0
+  have hmono : Real.sqrt (X - s) ≤ Real.sqrt X := Real.sqrt_le_sqrt (by linarith)
+  have hnum' : 0 ≤ Real.sqrt X * f X - δ * s := by
+    have heq : Real.sqrt X * (f X - δ * s / Real.sqrt X) = Real.sqrt X * f X - δ * s := by
+      field_simp
+    nlinarith [hnum, hsq, heq]
+  have hdiv : (Real.sqrt X * f X - δ * s) / Real.sqrt (X - s) ≤ f (X - s) := by
+    rw [div_le_iff₀ hXs]
+    linarith [hw]
+  have hge : (Real.sqrt X * f X - δ * s) / Real.sqrt X
+      ≤ (Real.sqrt X * f X - δ * s) / Real.sqrt (X - s) :=
+    div_le_div_of_nonneg_left hnum' hXs hmono
+  have hval : (Real.sqrt X * f X - δ * s) / Real.sqrt X = f X - δ * s / Real.sqrt X := by
+    field_simp
+  linarith [hdiv, hge, hval.le, hval.ge]
+
 end GaloisForLFunctions.HTGeometry

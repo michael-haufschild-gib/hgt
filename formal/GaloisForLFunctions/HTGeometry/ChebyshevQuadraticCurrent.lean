@@ -25,6 +25,7 @@ noncomputable section
 
 variable {E : Type*} [Field E] [CharZero E] [Differential E]
 
+omit [CharZero E] in
 /-- The derivative of the Chebyshev coordinate. -/
 theorem deriv_add_inv {w : E} (hw : w ≠ 0) :
     (w + w⁻¹)′ = w′ * (w ^ 2 - 1) / w ^ 2 := by
@@ -34,12 +35,14 @@ theorem deriv_add_inv {w : E} (hw : w ≠ 0) :
   field_simp
   ring
 
+omit [CharZero E] [Differential E] in
 /-- The Chebyshev coordinate squared, minus four. -/
 theorem add_inv_sq_sub_four {w : E} (hw : w ≠ 0) :
     (w + w⁻¹) ^ 2 - 4 = (w ^ 2 - 1) ^ 2 / w ^ 2 := by
   field_simp
   ring
 
+omit [CharZero E] in
 /-- **The quadratic current of the `(2,2,∞)` signature.**  The square of the logarithmic derivative
 upstairs is the quadratic differential `y′²/(y² - 4)` in the Chebyshev coordinate. -/
 theorem logDeriv_sq_eq_chebyshev_current {w : E} (hw : w ≠ 0) (hw1 : w ^ 2 - 1 ≠ 0) :
@@ -47,8 +50,8 @@ theorem logDeriv_sq_eq_chebyshev_current {w : E} (hw : w ≠ 0) (hw1 : w ^ 2 - 1
   rw [deriv_add_inv hw, add_inv_sq_sub_four hw]
   have hw2 : (w : E) ^ 2 ≠ 0 := pow_ne_zero _ hw
   field_simp
-  ring
 
+omit [CharZero E] in
 /-- The deck involution negates the logarithmic derivative, hence fixes its square. -/
 theorem logDeriv_inv {w : E} (hw : w ≠ 0) :
     (w⁻¹)′ / w⁻¹ = -(w′ / w) := by
@@ -57,8 +60,9 @@ theorem logDeriv_inv {w : E} (hw : w ≠ 0) :
   rw [hinv]
   field_simp
 
+omit [CharZero E] [Differential E] in
 /-- The Chebyshev coordinate is invariant under the deck involution. -/
-theorem add_inv_involutive {w : E} (hw : w ≠ 0) :
+theorem add_inv_involutive (w : E) :
     w⁻¹ + (w⁻¹)⁻¹ = w + w⁻¹ := by
   rw [inv_inv]
   ring

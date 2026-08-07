@@ -657,4 +657,24 @@ theorem neg_le_gammaTransport_of_maximizer {f : ℝ → ℝ} {X δ M : ℝ} (hX 
   rw [hsplit]
   linarith [hnearbd, hfarlow]
 
+/-! ## The mirrored near-shift bound
+
+At a penalized *minimizer* the same construction bounds the second difference from **above**.  The
+two weight-removal directions enter with their roles swapped relative to the maximizer case, and
+both resulting terms again carry a factor `s`.
+-/
+
+/-- **The mirrored near-shift bound.**  At a penalized minimizer of the weighted profile, the
+unweighted second difference is at most `2δs/√X + (f X − δs/√X)·s/(2X)` for `0 ≤ s ≤ X/2`. -/
+theorem secondDifference_le_of_weighted {f : ℝ → ℝ} {X s δ : ℝ} (hX : 0 < X) (hs : 0 ≤ s)
+    (hsX : s ≤ X / 2) (hnum : 0 ≤ f X - δ * s / Real.sqrt X)
+    (hp : Real.sqrt X * f X - δ * s ≤ Real.sqrt (X + s) * f (X + s))
+    (hm : Real.sqrt X * f X - δ * s ≤ Real.sqrt (X - s) * f (X - s)) :
+    secondDifference f X s
+      ≤ 2 * (δ * s / Real.sqrt X) + (f X - δ * s / Real.sqrt X) * (s / (2 * X)) := by
+  have hfwd := le_of_weighted_ge_forward hX hs hnum hp
+  have hbwd := le_of_weighted_ge_backward hX hs hsX hnum hm
+  unfold secondDifference
+  nlinarith [hfwd, hbwd]
+
 end GaloisForLFunctions.HTGeometry
