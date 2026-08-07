@@ -51,7 +51,7 @@ theorem eq_monomial_of_comp_scaling {a : L}
       by_contra hne
       have hc := hcoeff i
       rw [hlam, mul_comm (a ^ P.natDegree)] at hc
-      exact hsep i P.natDegree hi (mul_right_cancel₀ hne hc)
+      exact hsep i P.natDegree hi (mul_left_cancel₀ hne hc)
     simp [hzero, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, hi]
 
 /-- The substitution `X ↦ aX` preserves degrees. -/
@@ -68,6 +68,14 @@ theorem comp_scaling_ne_zero {a : L} (ha : a ≠ 0) {R : Polynomial L} (hR : R �
   have h0 := congrArg (fun T : Polynomial L => T.coeff R.natDegree) hc
   simp only [Polynomial.comp_C_mul_X_coeff, Polynomial.coeff_zero] at h0
   exact mul_ne_zero (Polynomial.leadingCoeff_ne_zero.mpr hR) (pow_ne_zero _ ha) h0
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Polynomial
+
+variable {L : Type*} [Field L]
 
 /-- A polynomial dividing its own scaling is a scaling eigenvector. -/
 theorem exists_scaling_eigenvalue {a : L} (ha : a ≠ 0) {R : Polynomial L} (hR : R ≠ 0)

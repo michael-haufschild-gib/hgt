@@ -48,19 +48,19 @@ theorem thetaRootEnergy_pos {z : ℂ} (hz : |z.im| < 1)
     intro t
     exact mul_nonneg (quantileSpeed_pos thetaSource t).le (sq_nonneg _)
   have hE_nonneg : 0 ≤ thetaRootEnergy z := by
-    exact integral_nonneg_of_ae (ae_restrict_of_forall fun t _ => hf_nonneg t)
+    exact integral_nonneg_of_ae (Filter.Eventually.of_forall hf_nonneg)
   by_contra hE_not_pos
   have hE_zero : thetaRootEnergy z = 0 :=
     le_antisymm (not_lt.mp hE_not_pos) hE_nonneg
   have hf_ae : f =ᵐ[volume.restrict (Ioo (0 : ℝ) 1)] 0 := by
     apply (setIntegral_eq_zero_iff_of_nonneg_ae
-      (ae_restrict_of_forall fun t _ => hf_nonneg t) he.integrableEnergy).mp
+      (Filter.Eventually.of_forall hf_nonneg) he.integrableEnergy).mp
     simpa [thetaRootEnergy, f] using hE_zero
   have hf_cont : ContinuousOn f (Ioo (0 : ℝ) 1) :=
     (continuousOn_quantileSpeed thetaSource).mul
       ((continuousOn_rootH thetaSource (hasShiftedTail_thetaSource hz)).norm.pow 2)
   have hf_eq_zero : EqOn f 0 (Ioo (0 : ℝ) 1) := by
-    apply MeasureTheory.eqOn_of_ae_eq hf_ae hf_cont continuousOn_const
+    apply Measure.eqOn_of_ae_eq hf_ae hf_cont continuousOn_const
     simpa [isOpen_Ioo.interior_eq] using
       (subset_closure : Ioo (0 : ℝ) 1 ⊆ closure (Ioo (0 : ℝ) 1))
   have hroot_zero : ∀ t ∈ Ioo (0 : ℝ) 1, rootH thetaSource z t = 0 := by
@@ -78,7 +78,7 @@ theorem thetaRootEnergy_pos {z : ℂ} (hz : |z.im| < 1)
     filter_upwards [Ioo_mem_nhds ht0.1 ht0.2] with t ht
     exact hroot_zero t ht
   have hderiv_zero : HasDerivAt (rootH thetaSource z) 0 t0 := by
-    exact (hasDerivAt_const t0 (0 : ℂ)).congr_of_eventuallyEq hlocal.symm
+    exact (hasDerivAt_const t0 (0 : ℂ)).congr_of_eventuallyEq hlocal
   have hode := hasDerivAt_rootH_ode thetaSource (hasShiftedTail_thetaSource hz) ht0
   have hroot_t0 : rootH thetaSource z t0 = 0 := hroot_zero t0 ht0
   have hderiv_neg_one : HasDerivAt (rootH thetaSource z) (-1) t0 := by
@@ -116,7 +116,6 @@ theorem thetaRootFlux_eq_neg_half_entropy_mul_energy {z : ℂ}
   rw [rootFlux_identity_thetaSource hz hzero,
     reflectedEntropy_centered_eq_two_im]
   simp [thetaRootEnergy]
-  ring
 
 /-- **Faithful flux law.** At every completed-transform zero, ordered-correlation flux neutrality
 is exactly reality of the Hedenmalm spectral parameter. -/

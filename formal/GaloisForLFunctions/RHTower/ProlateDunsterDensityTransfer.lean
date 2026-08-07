@@ -64,8 +64,9 @@ theorem xiAmplitude_sq_div_phase_eq_pi_mul_profileWeight
   rw [hweight, hampFourth]
   have hsq : xiAmplitude s x ^ 2 =
       xiEndpointPhase s x / Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) := by
-    apply sq_eq_sq₀ hamp.le (div_nonneg hphase.le hsqrt.le)
-    rw [sq_div, hfourth, Real.sq_sqrt hprod.le]
+    apply (sq_eq_sq₀ (sq_nonneg _) (div_nonneg hphase.le hsqrt.le)).mp
+    rw [show (xiAmplitude s x ^ 2) ^ 2 = xiAmplitude s x ^ 4 by ring,
+      hfourth, sq_div, Real.sq_sqrt hprod.le]
     field_simp
   rw [hsq]
   field_simp
@@ -156,11 +157,15 @@ theorem radialProlateDensity_le_profileWeight
   have hRabs : |R x| ≤ xiAmplitude s x *
       (((1 + K) * C) / Real.sqrt (c * xiEndpointPhase s x)) := by
     have heq : |R x| = xiAmplitude s x * |R x / xiAmplitude s x| := by
-      rw [← abs_mul, abs_of_pos hamp]
-      field_simp
+      calc
+        |R x| = |xiAmplitude s x * (R x / xiAmplitude s x)| := by
+          congr 1
+          field_simp
+        _ = |xiAmplitude s x| * |R x / xiAmplitude s x| := abs_mul _ _
+        _ = xiAmplitude s x * |R x / xiAmplitude s x| := by rw [abs_of_pos hamp]
     rw [heq]
     exact mul_le_mul_of_nonneg_left hU hamp.le
-  have hsq := sq_le_sq₀ (abs_nonneg (R x)) hRabs
+  have hsq := (sq_le_sq₀ (abs_nonneg (R x)) (by positivity)).2 hRabs
   have hweight := xiAmplitude_sq_div_phase_eq_pi_mul_profileWeight hs0 hs1 hxx
   rw [radialProlateDensity, radialProlateDensityEnvelopeConstant]
   have hRsq : R x ^ 2 = |R x| ^ 2 := (sq_abs (R x)).symm
@@ -241,7 +246,8 @@ theorem abs_radialProlateDensity_sub_besselDensity_le
       c * xiAmplitude s x ^ 2 *
         ((R x / xiAmplitude s x - besselJ0 (c * xiEndpointPhase s x)) *
           (R x / xiAmplitude s x + besselJ0 (c * xiEndpointPhase s x))) := by
-    rw [radialProlateDensity, radialProlateBesselDensity, Real.sq_sqrt hc0.le]
+    rw [radialProlateDensity, radialProlateBesselDensity]
+    simp only [mul_pow, Real.sq_sqrt hc0.le]
     field_simp
     ring
   rw [hfac, abs_mul, abs_mul, abs_mul, abs_of_pos hc0, abs_of_pos (sq_pos_of_pos hamp)]
@@ -255,8 +261,14 @@ theorem abs_radialProlateDensity_sub_besselDensity_le
             (((K + 2) * C) / Real.sqrt (c * xiEndpointPhase s x))) :=
       mul_le_mul_of_nonneg_left hprod (mul_nonneg hc0.le (sq_nonneg _))
     _ = (Real.pi * K * (K + 2) * C ^ 2 / c) * profileWeight s x := by
-      rw [Real.sq_sqrt (mul_pos hc0 hphase).le, hweight]
-      field_simp
+      have hrootSq : Real.sqrt (c * xiEndpointPhase s x) ^ 2 =
+          c * xiEndpointPhase s x := Real.sq_sqrt (mul_pos hc0 hphase).le
+      have hAmp : xiAmplitude s x ^ 2 =
+          Real.pi * profileWeight s x * xiEndpointPhase s x := by
+        rw [div_eq_iff hphase.ne'] at hweight
+        linarith
+      rw [hAmp]
+      field_simp [hrootSq, hc0.ne', hphase.ne']
       ring
     _ = (radialProlateDensityTransferConstant / c) * profileWeight s x := by rfl
 
