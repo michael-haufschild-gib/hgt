@@ -2178,3 +2178,24 @@ cells and an `ℓ²` mass.
 For the two prime weights of the convolution the `ℓ²` masses are `∑_p (log p)²p^{−2σ}` and
 `∑_p (log p/log⌊N/p⌋)²p^{−2σ}`, both bounded by the dyadic Chebyshev cap `sum_prime_logSq_rpow_neg_le` at
 `w = 2σ`.  Feeding those in, together with the Perron identity and the smoothing connector, is what remains.
+
+## The first moment of the inner prime weight
+
+`RHTower/Sieve/GhsInnerFirstMoment.lean` (green, axiom-clean, wired).
+
+* `sum_fin_normSq_damped_eq` — the `ℓ²` mass over `Fin M` is the sum over `[1, M]`, via the corpus's
+  `sum_fin_eq_sum_Icc` (found rather than rebuilt — it is in `DirichletIntegralMeanValue`, where the mean value
+  theorem needed the same reindexing);
+* `integral_norm_LSeries_ghsInner_le` :
+
+  `∫_{|y| ≤ nΔ} ‖L(b, σ+iy)‖ dy ≤ 2Δ·√(n·((2n+1)Δ + 4M(1+log M))(1/Δ + 2 log M)·cap(2σ))`
+
+  for the inner weight `b = ghsInner f M`, with `cap` the dyadic Chebyshev bound `sieveCapPrime`.
+
+Every quantity on the right is explicit in `n, Δ, M, σ`: no window, no measure, and no trivial size of the series.
+The coefficients vanish off the primes and are at most `log p` on them, so the mass is bounded by the prime sum the
+cap controls.
+
+**This is the first bound in the programme that is both about the actual GHS weights and free of every structural
+defect diagnosed along the way.**  The outer weight follows the same route with its block-damped bound in place of
+`log q`, and then the two feed the Perron identity.

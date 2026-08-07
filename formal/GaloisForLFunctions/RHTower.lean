@@ -6186,3 +6186,4 @@ import GaloisForLFunctions.RHTower.Sieve.WindowMeanSquareDiameter
 import GaloisForLFunctions.RHTower.Sieve.DirichletFirstMomentLargeValues
 import GaloisForLFunctions.RHTower.Sieve.DirichletFirstMomentShift
 import GaloisForLFunctions.RHTower.Sieve.LSeriesFirstMomentLargeValues
+import GaloisForLFunctions.RHTower.Sieve.GhsInnerFirstMoment
