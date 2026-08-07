@@ -63,3 +63,19 @@ factor. What still needs a Perron passage is the *outer* extraction of `S_k(x)` 
 series; the corpus's exact smoothed identity (`SmoothWeightPerron.tsum_mul_smoothWeight_eq_integral`,
 kernel Lorentzian by `exists_bound_mellin_smoothWeight_line`) is the candidate, with a smoothing scale
 `H = N/(log N)³` making the sharp-cutoff error `O(N/log N)`.
+
+## Update 3: GHS Lemma 1 is built, over the whole line
+
+- `RHTower/Sieve/LorentzianDirPoly.lean` — the Lorentzian MVT in the `dirPoly` frequency variable via the
+  corpus's `logPoly_eq_dirPoly`; substitution `t = 2πw` costs `2π`, weight improves (`1+4π²w² ≥ 1+w²`).
+  Change of variables: `MeasureTheory.Measure.integral_comp_mul_left` (inside `namespace Measure`).
+- `RHTower/Sieve/LorentzianPrimeSupport.lean` — `logPoly_eq_logPoly_filter` (drop vanishing coefficients)
+  turns the index-set count into the **support** count; for a prime-supported coefficient sequence the
+  sieve then discharges it. `integral_lorentz_normSq_logPoly_le_prime_sieve` IS GHS Lemma 1 with no
+  truncation of the frequency line.
+- `RHTower/Sieve/MertensBlock.lean` — Mertens' first theorem on a block `(y, z]`, by subtracting two
+  instances of `RHTower.Mertens.mertens_first_prime`. Needed by GHS steps 2 and 3.
+  `Finset.Icc_union_Ioc_eq_Icc` does NOT exist; prove the split by `ext a; simp [...]; omega`.
+
+Remaining in the GHS skeleton: steps 2-3 (second recursion application + dyadic prime partition, both
+Mertens bookkeeping) and the outer Perron passage for `S_k(x)`.
