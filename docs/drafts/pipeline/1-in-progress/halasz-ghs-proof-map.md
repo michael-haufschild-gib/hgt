@@ -273,3 +273,22 @@ convolution is `O(2^i x)` — geometric in `i`, which is what makes the low bloc
 (`sum_logQuotientFiber_prime_log_div_le`) up to the constant.
 
 No real powers anywhere in the blocking: `2^m ≤ ⌊N/p⌋ ↔ p ≤ ⌊N/2^m⌋` does all the work.
+
+## Eleventh brick: step 3's trivial bound per window
+
+`RHTower/Sieve/TripleConvolutionWindow.lean` (green, axiom-clean, wired):
+
+* `norm_inner_double_le` — the inner double sum at its trivial size:
+  `‖∑_{q ≤ M} f(q) log q · S_f(⌊M/q⌋)‖ ≤ M(log M + C)`, by Mertens' first theorem against `‖S_f‖ ≤ ·`;
+* `norm_window_triple_le` — **the window's contribution**: for `1 ≤ m ≤ n`,
+
+  `‖∑_{p : 2^m ≤ ⌊N/p⌋ < 2^n} f(p) log p/log⌊N/p⌋ · (inner double sum at ⌊N/p⌋)‖
+      ≤ (1 + C/log 2)·N·(((n − m) + 1)·log 2 + 2C)`.
+
+The two factors are exactly GHS's: the inner sum contributes `⌊N/p⌋ log⌊N/p⌋`, which cancels the outer
+`1/log⌊N/p⌋` and leaves `N·(log p)/p`; summing that over the window is the window's Mertens mass. With
+`m = 2^i`, `n = 2^{i+1}` the bound is `O(2^i N)` — geometric in the block index, so all blocks below the
+analytic range sum to `O(2^{i₀} N)`, which is `O(N·L(x))` for the right cut `i₀`.
+
+Step 3 now needs only the choice of the cut and the summation of the two regimes; step 4's outer Perron
+passage is the one analytic ingredient still missing.

@@ -2454,6 +2454,7 @@ import GaloisForLFunctions.RHTower.HedenmalmQuantileRootMode
 import GaloisForLFunctions.RHTower.HedenmalmRankOneDilationObstruction
 import GaloisForLFunctions.RHTower.HedenmalmRankTwoTangentInertia
 import GaloisForLFunctions.RHTower.HedenmalmSourceHilbertGramClosedGraphNoGo
+import GaloisForLFunctions.RHTower.HedenmalmSourceKernelTrivial
 import GaloisForLFunctions.RHTower.HedenmalmThetaEigenODE
 import GaloisForLFunctions.RHTower.HedenmalmThetaEigenTransform
 import GaloisForLFunctions.RHTower.HedenmalmThetaIntervalTransform
@@ -3523,6 +3524,7 @@ import GaloisForLFunctions.RHTower.RouteBThreePhaseLog
 import GaloisForLFunctions.RHTower.RouteBTransversal
 import GaloisForLFunctions.RHTower.RouteBTwoField
 import GaloisForLFunctions.RHTower.RouteBTwoPhaseJacobian
+import GaloisForLFunctions.RHTower.RouteEStaticAntiscaleFrameDichotomy
 import GaloisForLFunctions.RHTower.RouteRAdelicDefectCharacterBlindness
 import GaloisForLFunctions.RHTower.RouteRBoundedPrimeDepthCovarianceProducer
 import GaloisForLFunctions.RHTower.RouteRCocycleTransportNonErasure
@@ -6111,3 +6113,4 @@ import GaloisForLFunctions.RHTower.Sieve.LorentzianPrimeSupport
 import GaloisForLFunctions.RHTower.Sieve.MertensBlock
 import GaloisForLFunctions.RHTower.Sieve.MultiplicativePrimeAverage
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogQuotientSum
+import GaloisForLFunctions.RHTower.Sieve.TripleConvolutionWindow
