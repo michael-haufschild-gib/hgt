@@ -1,7 +1,8 @@
 # Nonautonomous HT tails form a projective local system over time
 
 - **ID:** `nonautonomous-ht-tail-projective-time-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `nonautonomous-ht-tail-projective-time-law-formalized.md`
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** The persistent field of any time-dependent sequence of injective scalar
@@ -186,8 +187,9 @@ checks pass, and axiom reports contain only `propext`, `Classical.choice`, and `
 - [x] 0 -> 1: nonautonomous tail and projective-time claim isolated
 - [x] 1 -> 2: complete proof with classical parents separated
 - [x] exact two-coordinate Schwarzian phase transport formalized and autonomous duplication removed
-- [x] 2 -> 3: phase-tail isomorphism, Schwarzian transport, differential Luroth and the phase
-  generator are all formalized
+- [x] 2 -> 3: phase-tail isomorphism, Schwarzian transport, differential Luroth, the phase
+  generator, its hypertranscendence, the projective transition and its `PGL_2` uniqueness are all
+  formalized, unconditionally, in one theorem over the constructed free differential field
 - [ ] 3 -> 4: external novelty audit and standalone manuscript
 
 ## Lean progress — the scalar dichotomy of part 2, first half
@@ -2861,3 +2863,72 @@ from "a generator exists" to "the generator is differentially transcendental", w
 proved (`hypertranscendentalOver_of_notMem_bot`) and whose only obstacle is presentation plumbing.
 Work on this card should resume with the one-page pointwise proof above; further cycles are better
 spent on cards whose open content is mathematical.
+
+## The card is closed: one unconditional theorem carries `(1)`–`(6)`
+
+The remaining wording refinement of `(3)` -- "a generator exists" to "the generator is
+differentially transcendental" -- is proved, and with it the whole numbered theorem is a single
+Lean statement with no mathematical hypotheses.
+
+`GaloisForLFunctions/HTGeometry/FreeDifferentialFieldPresentation.lean` (wired, axiom-clean) takes
+the route the previous cycle recommended and avoids every instance clash by never transporting a
+derivation:
+
+    differentialJetEval, differentialJetFieldEval   evaluation of jet polynomials at the jets of a
+                                                    differentially independent element, extended to
+                                                    the fraction field by the localization property
+    jetPolyEval_jetDeriv                            the evaluation intertwines the coordinate
+                                                    advance with the derivation, on polynomials
+    jetFieldEval_deriv                              and hence on fractions, by clearing one
+                                                    denominator and cancelling
+    jetFieldEval_surjective                         the evaluation is onto as soon as the element
+                                                    generates the differential field
+    hypertranscendentalOver_of_notMem_bot_of_free   **every nonconstant element of a singly and
+                                                    freely differentially generated field is
+                                                    hypertranscendental over the base**
+
+`NonautonomousTailHypertranscendence.lean` applies it to the tail:
+`exists_nonautonomousTail_hypertranscendental_generator` -- each nontrivial phase tail is
+`C⟨u⟩` for a *differentially transcendental* `u`.  That is the card's `(3)` verbatim.
+
+`MutualGeneratorMobius.lean` supplies `(4)` in its honest two-field form -- the transition relates
+generators of two *different* tails, so the corpus's automorphism version did not apply:
+
+    hasScalarDifferentialOrder_zero_of_mutual   two differential generators of one field have
+                                                scalar differential order zero over each other
+                                                (the two orders compose to the order of `u` over
+                                                itself, which is zero)
+    mutual_generator_mobius                     hence each is an ordinary rational function of the
+                                                other, and degree-one Luroth makes the pair
+                                                fractional-linear
+    mobius_coefficients_unique                  **the coefficient matrix is unique up to a scalar**,
+                                                which is the uniqueness in `PGL_2(C)` asserted by
+                                                `(4)` and previously unformalized
+
+`NonautonomousProjectiveTimeLaw.lean` assembles the tail statements:
+`map_differentialAdjoin`, `differentialAdjoin_map_generator`,
+`nonautonomousTail_projective_transition` `(4)`,
+`nonautonomousTail_schwarzian_transport` `(6)`,
+`schwarzian_eq_of_differentialAdjoin_eq` (the generator-independence half of `(5)`),
+`schwarzian_generator_ne_constant` (the nonconstancy half of `(5)`).
+
+`FreeDifferentialProtocolTimeLaw.lean` removes the structural hypotheses altogether by
+instantiating at the constructed free differential rational field `C⟨y⟩ = JetField C Unit`, where
+the base is a field of constants, the generator is differentially independent, and its jets
+generate everything -- all proved, none assumed:
+
+    freeDifferentialProtocol_projective_time_law
+      (φ : ℕ → JetField C Unit →ₐ[C] JetField C Unit) (hφ : ∀ i x, φ i x′ = (φ i x)′) :
+        exact phase transport
+        ∧ ( every tail is the base field
+          ∨ ∃ u : ℕ → JetField C Unit,
+              every u i hypertranscendental,
+              differentialAdjoin C {u i} = nonautonomousTail φ i,
+              a projective transition at every phase,
+              its coefficient matrix unique up to a scalar,
+              φ i (schwarzian (u (i+1))) = schwarzian (u i),
+              schwarzian (u i) never a base constant )
+
+Its only inputs are the protocol and the statement that the protocol commutes with the derivation,
+which is what "differential protocol" means.  `#print axioms` reports
+`[propext, Classical.choice, Quot.sound]`.

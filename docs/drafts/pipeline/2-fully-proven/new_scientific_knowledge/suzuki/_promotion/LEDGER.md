@@ -920,3 +920,52 @@ by its a.e. form for an `AC` function.  In mathlib that is
 continuity on the closed interval and integrability of the derivative) — exactly the hypotheses the
 monotone bounded profile satisfies.  Everything downstream of the FTC step is unchanged, since
 `integral_integral_shear_eq` and the swap never touch differentiability.
+
+## K. Premise discharge pass (session 3)
+
+The user's rule is that a hypothesis which is *itself an available theorem* must be chained, not
+assumed. Object regularity (`Continuous u`, `IsSelfAdjoint S`, a defining differential equation)
+is not a premise and stays.
+
+| Was assumed | Now | Where |
+|---|---|---|
+| integrability of both `jumpForm` integrands | proved from `Continuous u` + `HasCompactSupport u` | `HTGeometry/AtomicJumpForm.lean` — new `hasCompactSupport_truncPos` |
+| `(13)` `σ‖Y‖₂ ≤ d‖V‖+‖H‖` | derived from coercivity + the flux equation | `HTGeometry/GraphFluxStabilityEstimate.lean` — new `sigma_mul_l2_le_of_flux_equation`, `graphFlux_state_bound_of_flux_equation`, resting on new `abs_mul_sqrt_integral_normSq_le` in `ShiftedDerivativeCoercivity.lean` |
+
+Re-examined and **kept** as object regularity, not premises:
+
+- `SkewFrequencyCurrent.hasDerivAt_radialCurrent` and the `radialCurrent_const_*` / Liouville
+  family take the skew frequency equation. That equation is not proved elsewhere in the tree; it
+  *defines* the solution class the theorem quantifies over ("a square-integrable solution
+  vanishes"). Deleting it makes the statements false, so it stays.
+
+Genuine remaining premise, unchanged:
+
+- `RHTower/SuzukiRestrictedWeilForm.weilSmoothBlock` carries Suzuki's `r''` as a kernel
+  parameter. The corpus does not own `r''`, so `restrictedWeilForm` defines the *shape* of the
+  restricted Weil form, not Suzuki's specific form. No card certificate may claim otherwise.
+
+## L. `suzuki-two-port-return-redundancy-and-interior-null-core` — exact remaining gap
+
+Sections 1–3 (the redundancy theorem `(3)`,`(4)`,`(5)`, and the commutator identity `(7)`–`(9)`)
+are carried by `HTGeometry/TwoPortReturnRedundancy.lean`. Section 4 is not yet closed. It needs
+the chain `(11)` → `(12)` → `(13)` → `(14)`:
+
+    ‖u(·+h) − u‖₂² ≤ ‖u(·+h) − u‖₁ ‖u(·+h) − u‖_∞ ≤ 2‖u‖_∞ Var(u) |h|
+
+The one missing input is the **L¹ modulus bound for a bounded-variation function**,
+
+    ∫ |u(x+h) − u(x)| dx ≤ Var(u) · |h|,
+
+which neither mathlib nor the corpus owns. Checked: mathlib has `eVariationOn`,
+`MonotoneOn.eVariationOn_le`, `eVariationOn.sum_le`; the corpus BV layer is
+`HTGeometry/BoundedVariationRiemannSum.lean`, `HTGeometry/FiniteMonotonicityVariation.lean`
+(`boundedVariationOn_of_piecewise_monotone`), `RHTower/BVPrimeWindowQuadrature.lean` — none has a
+translation estimate.
+
+Do **not** route this through `TranslationModulus.integral_norm_translation_le`: that assumes
+`Differentiable ℝ f`, and the card's profile `F(L)=exp(−√L)`, `u(a−r)=F(log(1/r))` has infinite
+one-sided derivative at the endpoint. The profile *is* monotone on the endpoint collar, so
+`boundedVariationOn_of_piecewise_monotone` is the right entry point: prove the telescoping L¹
+bound for a monotone-on-`[c,d]`, zero-outside function first, then transfer along the cutoff via
+`BoundedVariationOn.mul_of_norm_le_of_lipschitzOn`.
