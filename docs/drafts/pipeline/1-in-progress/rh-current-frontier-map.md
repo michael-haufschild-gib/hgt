@@ -6613,3 +6613,37 @@ equivalence between those two open formulations is claimed.
 Paper and unconditional Lean:
 `../3-formalized/new_scientific_knowledge/route-e-antiscale-first-trace-frame-law.md` and
 `RHTower/GibbsAntiscaleFirstTraceFrame.lean`.
+
+## 2026-08-07 Route E parity-coarse exhaustive escape theorem
+
+Order-free batch dispersion now splits exactly into three nonnegative terms. With even/odd
+batch masses W_plus, W_minus, unsigned current numerators K_plus, K_minus, and within-class
+variances V_plus, V_minus, define the coarse defect
+
+    C = (W_plus W_minus)/(W_plus + W_minus)
+        * (K_plus/W_plus + K_minus/W_minus)^2.
+
+Then, for every nonempty disjoint prime batch,
+
+    J_(S union P)(x)^2 / Z_(S union P)(x)
+      + V_plus + V_minus + C
+      = sum_(T subset P) Z_S(m_T x) psi_S(m_T x)^2.
+
+This is exhaustive: small batch residual forces both same-parity variances and coarse antiscale
+defect small. Exact escape forces psi_S(m_T x) constant inside even and odd classes and forces
+those class means to be negatives. No unclassified leafwise escape remains.
+
+**Sharper current source premise:**
+`GIBBS-PARITY-CLASS-RIGIDITY-BREAKING`. Prove physical-power strength for at least one of
+V_plus, V_minus, or C, relative to leaf energy, at a cofinal moving batch with literal Gibbs
+weights. Terminal-shell resonance can collapse one parity mass; any proof must either prevent
+that collapse or extract same-parity variation first.
+
+Fresh Halász--GHS/Lorentzian mean-square infrastructure can address frequency-averaged
+same-parity variation, but its existing exponent remains x^(1-o(1)), not square-root scale.
+It reduces one analytic subclause only if coupled to a new physical-power moving-boundary
+conversion.
+
+Paper and unconditional Lean:
+`../3-formalized/new_scientific_knowledge/route-e-parity-coarse-grained-batch-rigidity.md` and
+`RHTower/GibbsBatchParityCoarseGraining.lean`. `OPEN-SOURCE-001` and RH remain open.

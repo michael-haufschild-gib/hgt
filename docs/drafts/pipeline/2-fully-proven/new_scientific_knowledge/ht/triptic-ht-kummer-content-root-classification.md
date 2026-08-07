@@ -261,3 +261,22 @@ conditions on the shift family.  There is no assumed theorem.  `#print axioms` r
 So the consequences on this card that were labelled conditional on that parent are conditional on
 nothing external: what remains for them is Lean derivation work inside this corpus, not an
 unformalized classical input.
+
+## Lean progress — the integral channel of the common divisor
+
+Added to `GaloisForLFunctions/HTGeometry/TripticSourceDivisor.lean` (wired, axiom-clean):
+
+    intCast_finsum                                     casting an integer unrestricted sum
+    triptic_multiplicative_divisor_reciprocity_int     **reciprocity in ℤ, not only after
+                                                       complexification**
+    laurentCoeff_shiftDiff_logDeriv                    the order-one coefficient is the shift order
+    finite_support_shiftOrder                          the orbital divisor is finitely supported
+    tripticOrbitCharge                                 the integral orbital charge `∑ᶠ` of a source
+    tripticOrbitCharge_mul                             **additive under multiplication of sources**
+    tripticOrbitCharge_shift                           invariant along the orbit direction
+
+The integral channel is exactly what the Kummer-content card argues is load-bearing: after
+tensoring with `ℂ` every divisor becomes infinitely divisible and the root spectrum disappears.
+`tripticOrbitCharge_mul` is the homomorphism hypothesis of the abstract Kummer classification
+(`hasSourceRootModuloKernel_iff_content_dvd`); what still separates the two is surjectivity of the
+divisor map, i.e. realization of an arbitrary finite integral divisor by a translated gamma product.

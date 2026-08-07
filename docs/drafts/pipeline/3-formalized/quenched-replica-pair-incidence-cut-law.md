@@ -153,3 +153,14 @@ choose a physically correct recurrence relation `R`, bound its mass sharply, and
 decay of the occupied-image compressed kernel on `R^c` strongly enough to beat `h_r`.  Global replica
 purity is retired as the wrong upper-bound invariant because it restores source pairs the occupied
 compression was designed to discard.
+
+## Verification
+
+- `lake env lean GaloisForLFunctions/HTGeometry/QuenchedReplicaPairIncidenceLaw.lean`: PASS.
+- `lake build GaloisForLFunctions.HTGeometry.QuenchedReplicaPairIncidenceLaw`: PASS, 8658 jobs.
+- Axiom audit of pair identity, exact cut, capstone, and return-removal theorem: only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- Formal forbidden-token scan: PASS.
+- Area umbrella import: wired through `GaloisForLFunctions.HTGeometry`.
+- Global lint reports no error in this module.  Repository lint remains red on unrelated concurrently
+  added, unwired `RHTower` Prolate modules.

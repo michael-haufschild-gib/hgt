@@ -164,4 +164,54 @@ theorem le_of_weighted_le_forward {f : ℝ → ℝ} {X s δ : ℝ} (hX : 0 < X) 
     field_simp
   linarith [hstep, hstep2, hval.le, hval.ge]
 
+/-! ## The sharp square-root expansion
+
+Backward weight removal needs more than a constant factor: a bound `f(X−s) ≤ √2 (…)` leaves a term
+proportional to `f(X)` that does not vanish, so the second difference is not controlled.  The sharp
+expansion `(1−u)^{−1/2} ≤ 1 + 2u` on `u ≤ 1/2` is what makes the backward term differ from the
+forward one by `O(s/X)` rather than by a constant.
+-/
+
+/-- **The sharp expansion.**  `(1 − u)^{−1/2} ≤ 1 + 2u` for `0 ≤ u ≤ 1/2`.  Equivalent to
+`u(4u² − 3) ≤ 0` after squaring, which holds since `4u² ≤ 1 < 3` on that range. -/
+theorem inv_sqrt_one_sub_le {u : ℝ} (h0 : 0 ≤ u) (h1 : u ≤ 1/2) :
+    (Real.sqrt (1 - u))⁻¹ ≤ 1 + 2 * u := by
+  have hpos : (0:ℝ) < 1 - u := by linarith
+  have hs : 0 < Real.sqrt (1 - u) := Real.sqrt_pos.mpr hpos
+  have hsq : Real.sqrt (1 - u) ^ 2 = 1 - u := Real.sq_sqrt hpos.le
+  have hle1 : Real.sqrt (1 - u) ≤ 1 := by
+    nlinarith [hsq, hs]
+  rw [inv_eq_one_div, div_le_iff₀ hs]
+  nlinarith [hsq, hs, hle1]
+
+/-- **Backward weight removal.**  Going backward the square-root ratio exceeds one, and the sharp
+expansion keeps the excess proportional to `s/X` rather than a constant — which is what leaves the
+second difference controlled. -/
+theorem le_of_weighted_le_backward {f : ℝ → ℝ} {X s δ : ℝ} (hX : 0 < X) (hs : 0 ≤ s)
+    (hsX : s ≤ X / 2) (hδ : 0 ≤ δ) (hf : 0 ≤ f X)
+    (hw : Real.sqrt (X - s) * f (X - s) ≤ Real.sqrt X * f X + δ * s) :
+    f (X - s) ≤ (f X + δ * s / Real.sqrt X) * (1 + 2 * (s / X)) := by
+  have hsq : 0 < Real.sqrt X := Real.sqrt_pos.mpr hX
+  have hu0 : 0 ≤ s / X := div_nonneg hs hX.le
+  have hu1 : s / X ≤ 1 / 2 := by rw [div_le_div_iff₀ hX (by norm_num : (0:ℝ) < 2)]; linarith
+  have hone : (0:ℝ) < 1 - s / X := by linarith
+  have hrs : 0 < Real.sqrt (1 - s / X) := Real.sqrt_pos.mpr hone
+  have hprod : X * (1 - s / X) = X - s := by field_simp
+  have hfac : Real.sqrt (X - s) = Real.sqrt X * Real.sqrt (1 - s / X) := by
+    rw [← hprod, Real.sqrt_mul hX.le]
+  have hXs : 0 < Real.sqrt (X - s) := by rw [hfac]; positivity
+  have hnum : 0 ≤ f X + δ * s / Real.sqrt X := by positivity
+  have hstep : f (X - s) ≤ (Real.sqrt X * f X + δ * s) / Real.sqrt (X - s) := by
+    rw [le_div_iff₀ hXs]
+    linarith [hw]
+  have hval : (Real.sqrt X * f X + δ * s) / Real.sqrt (X - s)
+      = (f X + δ * s / Real.sqrt X) * (Real.sqrt (1 - s / X))⁻¹ := by
+    rw [hfac]
+    field_simp
+  rw [hval] at hstep
+  have hinv := inv_sqrt_one_sub_le hu0 hu1
+  calc f (X - s) ≤ (f X + δ * s / Real.sqrt X) * (Real.sqrt (1 - s / X))⁻¹ := hstep
+    _ ≤ (f X + δ * s / Real.sqrt X) * (1 + 2 * (s / X)) :=
+        mul_le_mul_of_nonneg_left hinv hnum
+
 end GaloisForLFunctions.HTGeometry

@@ -40,6 +40,102 @@ def routeEBatchParityCoarseDefect {ι : Type*} (s : Finset ι)
   let Kn := routeEBatchClassNumerator s (fun i => ¬ c i) w value
   (Wn * Kp + Wp * Kn) ^ 2 / ((Wp + Wn) * Wp * Wn)
 
+/-- Total mass in parity-class coordinates. -/
+def routeEBatchParityTotalMass {ι : Type*} (s : Finset ι)
+    (c : ι → Prop) [DecidablePred c] (w : ι → ℝ) : ℝ :=
+  routeEBatchClassMass s c w +
+    routeEBatchClassMass s (fun i => ¬ c i) w
+
+/-- Unsigned value numerator in parity-class coordinates. -/
+def routeEBatchParityUnsignedNumerator {ι : Type*} (s : Finset ι)
+    (c : ι → Prop) [DecidablePred c] (w value : ι → ℝ) : ℝ :=
+  routeEBatchClassNumerator s c w value +
+    routeEBatchClassNumerator s (fun i => ¬ c i) w value
+
+/-- Checkerboard-signed value numerator in parity-class coordinates. -/
+def routeEBatchParitySignedNumerator {ι : Type*} (s : Finset ι)
+    (c : ι → Prop) [DecidablePred c] (w value : ι → ℝ) : ℝ :=
+  routeEBatchClassNumerator s c w value -
+    routeEBatchClassNumerator s (fun i => ¬ c i) w value
+
+/-- Difference between positive- and negative-class masses. -/
+def routeEBatchParityMassImbalance {ι : Type*} (s : Finset ι)
+    (c : ι → Prop) [DecidablePred c] (w : ι → ℝ) : ℝ :=
+  routeEBatchClassMass s c w -
+    routeEBatchClassMass s (fun i => ¬ c i) w
+
+/-- Determinant detecting failure of opposite parity-class means. -/
+def routeEBatchParityAntiscaleDeterminant {ι : Type*} (s : Finset ι)
+    (c : ι → Prop) [DecidablePred c] (w value : ι → ℝ) : ℝ :=
+  routeEBatchParityTotalMass s c w *
+      routeEBatchParityUnsignedNumerator s c w value -
+    routeEBatchParityMassImbalance s c w *
+      routeEBatchParitySignedNumerator s c w value
+
+/-- Companion determinant detecting inequality of the two unsigned
+parity-class means; it vanishes for an exactly factorized class response. -/
+def routeEBatchParityNonproductDeterminant {ι : Type*} (s : Finset ι)
+    (c : ι → Prop) [DecidablePred c] (w value : ι → ℝ) : ℝ :=
+  routeEBatchParityTotalMass s c w *
+      routeEBatchParitySignedNumerator s c w value -
+    routeEBatchParityMassImbalance s c w *
+      routeEBatchParityUnsignedNumerator s c w value
+
+/-- The antiscale determinant is twice the coarse same-direction numerator. -/
+theorem routeEBatchParityAntiscaleDeterminant_eq
+    {ι : Type*} (s : Finset ι) (c : ι → Prop) [DecidablePred c]
+    (w value : ι → ℝ) :
+    routeEBatchParityAntiscaleDeterminant s c w value =
+      2 * (routeEBatchClassMass s (fun i => ¬ c i) w *
+          routeEBatchClassNumerator s c w value +
+        routeEBatchClassMass s c w *
+          routeEBatchClassNumerator s (fun i => ¬ c i) w value) := by
+  unfold routeEBatchParityAntiscaleDeterminant routeEBatchParityTotalMass
+    routeEBatchParityUnsignedNumerator routeEBatchParityMassImbalance
+    routeEBatchParitySignedNumerator
+  ring
+
+/-- The companion determinant is twice the cross-class mean-difference
+numerator and vanishes when both unsigned class means agree. -/
+theorem routeEBatchParityNonproductDeterminant_eq
+    {ι : Type*} (s : Finset ι) (c : ι → Prop) [DecidablePred c]
+    (w value : ι → ℝ) :
+    routeEBatchParityNonproductDeterminant s c w value =
+      2 * (routeEBatchClassMass s (fun i => ¬ c i) w *
+          routeEBatchClassNumerator s c w value -
+        routeEBatchClassMass s c w *
+          routeEBatchClassNumerator s (fun i => ¬ c i) w value) := by
+  unfold routeEBatchParityNonproductDeterminant routeEBatchParityTotalMass
+    routeEBatchParityUnsignedNumerator routeEBatchParityMassImbalance
+    routeEBatchParitySignedNumerator
+  ring
+
+/-- The coarse defect is the squared antiscale determinant divided by the
+exact parity-balance discriminant. -/
+theorem routeEBatchParityCoarseDefect_eq_antiscaleDeterminant
+    {ι : Type*} (s : Finset ι) (c : ι → Prop) [DecidablePred c]
+    (w value : ι → ℝ)
+    (hp : routeEBatchClassMass s c w ≠ 0)
+    (hn : routeEBatchClassMass s (fun i => ¬ c i) w ≠ 0)
+    (ht : routeEBatchParityTotalMass s c w ≠ 0) :
+    routeEBatchParityCoarseDefect s c w value =
+      routeEBatchParityAntiscaleDeterminant s c w value ^ 2 /
+        (routeEBatchParityTotalMass s c w *
+          (routeEBatchParityTotalMass s c w ^ 2 -
+            routeEBatchParityMassImbalance s c w ^ 2)) := by
+  have hdisc : routeEBatchParityTotalMass s c w ^ 2 -
+      routeEBatchParityMassImbalance s c w ^ 2 ≠ 0 := by
+    rw [routeEBatchParityTotalMass, routeEBatchParityMassImbalance]
+    have hfour : (4 : ℝ) * routeEBatchClassMass s c w *
+        routeEBatchClassMass s (fun i => ¬ c i) w ≠ 0 :=
+      mul_ne_zero (mul_ne_zero (by norm_num) hp) hn
+    convert hfour using 1 <;> ring
+  rw [routeEBatchParityAntiscaleDeterminant_eq]
+  unfold routeEBatchParityCoarseDefect routeEBatchParityTotalMass
+    routeEBatchParityMassImbalance
+  field_simp [hp, hn, ht, hdisc]
+  ring
+
 /-- Scalar two-class polarization underlying the parity coarse graining. -/
 theorem routeEScalarParityCoarseIdentity
     (Wp Wn Kp Kn : ℝ) (hp : Wp ≠ 0) (hn : Wn ≠ 0)

@@ -2357,3 +2357,67 @@ loss backward (section BD), then integrate against `k(s)` over `Ioc 0 (X/2)` usi
 
 Every asset for this is now built; what is unwritten is the near-half estimate itself and the final
 combination. The card stays in stage 2.
+
+## BF. Correction to BD: the √2 route fails; the sharp expansion is built
+
+Section BD suggested the backward weight removal could be done with a constant `√2` loss. **It
+cannot.** Working the near-half estimate out:
+
+    f(X+s) ≤ f X + δs/√X                    (forward, free)
+    f(X−s) ≤ √2 (f X + δs/√X)               (the √2 route)
+    ⟹ secondDifference f X s ≥ (1 − √2) f X − (1 + √2) δs/√X
+
+The term `(1 − √2) f X` is negative and **does not vanish** with `s` or `X`. A constant-factor loss
+destroys the second difference, because the second difference is a *cancellation* — the two shifted
+values must be compared to `f X` with matching constants, not merely bounded by it.
+
+The card's "elementary expansion of `(X ± s)^{−1/2}`" is therefore essential, and is now built:
+
+- `inv_sqrt_one_sub_le` — `(1 − u)^{−1/2} ≤ 1 + 2u` for `0 ≤ u ≤ 1/2`. After squaring this is
+  `u(4u² − 3) ≤ 0`, true since `4u² ≤ 1 < 3` on the range.
+
+With `u = s/X` and `s ≤ X/2` this gives `(X − s)^{−1/2} ≤ X^{−1/2}(1 + 2s/X)`, so the backward term
+differs from the forward one by `O(s/X)` rather than by a constant — and the `O(s/X)` correction
+does vanish, which is what the argument needs.
+
+### Remaining
+
+Assemble the near-half bound from `le_of_weighted_le_forward` and `inv_sqrt_one_sub_le`, integrate
+over `Ioc 0 (X/2)` against `k(s)` (finite first moment), add the far half `4M q(X/2)` from BE, and
+combine with `(18)`–`(20)`. `suzuki-weak-signed-half-log-trace` stays in stage 2.
+
+## BG. Backward weight removal is built — both directions now match
+
+`PenalizedMaximum.lean` is now at 10 declarations, all `#print axioms` clean.
+
+- `le_of_weighted_le_backward` — from `√(X−s) f(X−s) ≤ √X f X + δ s` with `0 ≤ s ≤ X/2`,
+
+      f(X − s) ≤ (f X + δ s/√X) · (1 + 2 s/X).
+
+  Route: `√(X−s) = √X · √(1 − s/X)` (via `X·(1 − s/X) = X − s`), then `inv_sqrt_one_sub_le`.
+
+With `le_of_weighted_le_forward` this closes the weight conversion in both directions, and the
+asymmetry is exactly the harmless factor `(1 + 2s/X)` rather than section BD's fatal constant.
+Combining them,
+
+    secondDifference f X s ≥ −2 δ s/√X − 2 (s/X)(f X + δ s/√X)
+
+for `0 ≤ s ≤ X/2`: every term carries a factor `s`, so integrating against `k(s)` uses the finite
+first moment (section T) and the bound is `O(δ/√X) + O(1/X)`, both vanishing as `X → ∞`.
+
+### `suzuki-weak-signed-half-log-trace` — remaining
+
+The near-half integral bound (assemble the display above and integrate over `Ioc 0 (X/2)`), then
+the final combination with `(18)`, `(19)`, `(20)` and the far half of BE. Every analytic ingredient
+is now built and axiom-clean; what is unwritten is these two assembly steps.
+
+Full asset list for §4–§5, all axiom-clean:
+
+    (17) mollify_position_eq                      (22) exists_isMaxOn_penalized
+    (19) integral_bumpMollifier + unit mass       (23) abs_sub_isMaxOn_penalized_le,
+    (20) sqrt_mul_abs_mollify_le                       le_value_of_isMaxOn_penalized
+    (21) BumpMollifierFamily                      (24) le_of_isMaxOn_penalized_shift
+    weight removal: le_of_weighted_le_forward / _backward, inv_sqrt_one_sub_le
+    transport: neg_le_secondDifference_of_one_sided, integrable_transport_lower_bound,
+               abs_integral_transport_far_le
+    interiority: lt_of_localised

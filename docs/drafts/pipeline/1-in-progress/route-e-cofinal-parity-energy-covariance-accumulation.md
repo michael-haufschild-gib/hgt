@@ -488,3 +488,66 @@ correlation in one estimate.  A Bernoulli/pretentious product approximation cann
 Paper and Lean:
 `../3-formalized/new_scientific_knowledge/route-e-antiscale-first-trace-frame-law.md` and
 `RHTower/GibbsAntiscaleFirstTraceFrame.lean`.  `OPEN-SOURCE-001` and RH remain open.
+
+## 2026-08-07 parity-coarse batch rigidity
+
+The \(2^{|P|}\)-leaf residual in (A21) now has an exact exhaustive two-class decomposition.
+Write
+
+\[
+ W_\pm=\sum_{\substack{T\subseteq P\\ |T|\ {\rm even/odd}}}w_T,\qquad
+ K_\pm=\sum_{\substack{T\subseteq P\\ |T|\ {\rm even/odd}}}
+   w_T\psi_S(m_Tx),
+\]
+
+and let \(\mathcal V_\pm\) be weighted within-class variances of
+\(\psi_S(m_Tx)\).  For \(P\ne\varnothing\), both class masses are positive.  Coarse
+antiscale defect is
+
+\[
+ \mathcal C_{S,P}(x)
+ ={W_+W_-\over W_++W_-}
+ \left({K_+\over W_+}+{K_-\over W_-}\right)^2
+ ={(W_-K_++W_+K_-)^2\over (W_++W_-)W_+W_-}.             \tag{A22}
+\]
+
+Exact two-class polarization gives
+
+\[
+ \boxed{
+ {J_{S\cup P}(x)^2\over Z_{S\cup P}(x)}
+ +\mathcal V_+(x)+\mathcal V_-(x)+\mathcal C_{S,P}(x)
+ =\sum_{T\subseteq P}w_T\psi_S(m_Tx)^2.
+ }                                                        \tag{A23}
+\]
+
+All three added terms are nonnegative.  Consequently, if batch residual is at most
+\(\eta\), then separately
+
+\[
+ \mathcal V_+\le\eta,\qquad \mathcal V_-\le\eta,\qquad
+ \mathcal C_{S,P}\le\eta.                                \tag{A24}
+\]
+
+Zero residual is equivalent to constancy of \(\psi_S(m_Tx)\) inside each parity class together
+with opposite even/odd class means.  Thus no hidden fourth escape exists among individual
+leaves: every near checkerboard must simultaneously satisfy same-parity rigidity and coarse
+antiscale opposition.
+
+This is a genuine reduction, not closure.  Revised source task is exhaustive disjunction:
+
+> **GIBBS-PARITY-CLASS-RIGIDITY-BREAKING.**  At a cofinal moving batch, prove a
+> physical-power lower bound for at least one of \(\mathcal V_+\), \(\mathcal V_-\), or
+> \(\mathcal C_{S,P}\), relative to leaf energy in (A23), while retaining literal Gibbs
+> weights and parity balance.
+
+New Halász--GHS/Lorentzian prime-supported mean-square stack may help with frequency-averaged
+same-parity variation, but its sharp Halász scale is only \(x^{1-o(1)}\).  It does not by itself
+supply missing square-root exponent, nor control parity-mass collapse in (A22).  Creditable use
+requires new conversion from its frequency average to one term of (A23) at physical-power
+strength.
+
+Paper and unconditional Lean:
+`../3-formalized/new_scientific_knowledge/route-e-parity-coarse-grained-batch-rigidity.md` and
+`RHTower/GibbsBatchParityCoarseGraining.lean`.  Targeted build `9712/9712`; axioms only
+`propext`, `Classical.choice`, and `Quot.sound`.  `OPEN-SOURCE-001` and RH remain open.
