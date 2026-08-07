@@ -1799,3 +1799,27 @@ estimate — applies verbatim.  That is the next brick, and it is elementary.
 
 Recorded before attempting it, so the next pass starts from the diameter and the translated sieve rather than
 from the covering and the trivial size.
+
+## Translating the frequency twists the coefficients
+
+`RHTower/Sieve/LSeriesTranslate.lean` (green, axiom-clean, wired).  This is the device the previous entry named as
+missing.
+
+* `norm_natCast_cpow_im` — the twist `n^{−it₀}` is unimodular;
+* `LSeries_translate` — `L(a, σ+i(t₀+u)) = L(a_n n^{−it₀}, σ+iu)`;
+* `integral_Icc_normSq_LSeries_translate` — hence the mean square over an interval centred at `t₀` is the mean
+  square of the twisted coefficients over an interval centred at `0`;
+* `integral_Icc_normSq_LSeries_translate_le_prime_sieve` — and the sieve bound for it is the bound for the
+  **untwisted** coefficients: the twist is invisible to any estimate that sees only moduli.
+
+So the window of the dichotomy can be estimated by the window mean value theorem at its own width `W`:
+
+`∫_{|u| ≤ W} ‖L(a,σ+i(t₀+u))‖² du ≤ 2π(5W/4)·∑_n (2(n(e^{1/W} − e^{−1/W}) + 1)/log Y + E + z)‖a_n n^{−σ}‖²`,
+
+which is proportional to `W` — not to `W·(ℓ¹)²`.  With `W ≍ δ/log z` the diameter of the large-value set
+(`abs_sub_le_of_norm_gt`), the window term becomes `≍ (δ/log z)·(sieve mass)` instead of
+`(Tδ)·(ℓ¹ mass)²`: both the spurious `T` and the square of the `ℓ¹` mass are gone.
+
+The remaining step is to re-derive the split with the window bounded this way — the split lemma itself is
+unchanged, only the estimate fed to it on `S` — and then the balance is `δ/log z` against `e^{−δ²}`, which
+`δ ≍ √(log log N)` solves with room to spare.
