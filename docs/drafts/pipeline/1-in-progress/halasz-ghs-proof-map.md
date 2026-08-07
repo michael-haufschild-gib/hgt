@@ -1136,3 +1136,18 @@ itself geometrically small.
 
 **All devices are now in the corpus.**  What is left is arithmetic: substituting a concrete level sequence and
 summing the `j`-indexed series, in the same style as the dyadic Chebyshev cap.
+
+## The three quantities of a dyadic block
+
+`RHTower/Sieve/DyadicBlockQuantities.lean` (green, axiom-clean, wired).
+
+* `norm_coeffBlock_le_block_bound` — a logarithmic coefficient bound becomes the **constant** `A(j+1)log 2`
+  on the block, so a block's coefficients are bounded rather than log-weighted;
+* `rpow_neg_le_block_rpow` — `n^{−c} ≤ 2^{−cj}` on the block, the damping at the left endpoint;
+* `card_prime_block_le` — the block holds at most `2^{j+1}log 4/(j log 2)` primes, Chebyshev's `θ` divided by
+  the least logarithm of the block.  This is the block's length over its logarithm: the saving the sieve is
+  supposed to produce, here for free from `sum_log_primesLE_le`.
+
+Together they turn a block's sieve mean square into a product of powers of `2^j` and polynomials in `j`,
+which is what makes the block sum a geometric-type series — the same shape the dyadic Chebyshev cap already
+sums.
