@@ -2228,3 +2228,29 @@ ways to close that gap, both available:
 The second is the GHS shape and the estimates for it are all present; the first is a fallback that still beats the
 trivial bound if the coefficient masses are small enough.  Deciding between them is the next step, and it is a
 choice about which bound to compose rather than a missing device.
+
+## The product needs no Cauchy–Schwarz: it is a single series
+
+Considering how to handle the product of the two prime polynomials settles the question in a way that removes a step
+rather than adding one.  `L(a, s)·L(b, s) = L(a ⍟ b, s)` — mathlib's `LSeries_convolution'` — and `a ⍟ b` is again a
+*finitely supported* sequence, carried by the products of two primes in `[1, M²]`.  So the general first-moment
+bound `integral_norm_LSeries_le_largeValues`, which needs only finite support, applies to the product **directly**:
+
+`∫_{|y| ≤ nΔ} ‖L(a,σ+iy)L(b,σ+iy)‖ dy ≤ 2Δ·√(n·((2n+1)Δ + 4M²(1+log M²))(1/Δ + 2 log M²)·(ℓ² mass of a ⍟ b))`.
+
+No Cauchy–Schwarz, no splitting into two mean squares, and no trivial size anywhere.  This is better than both
+options recorded last round.
+
+**The one missing brick is the `ℓ²` mass of the convolution.**  For prime-supported `a, b` the coefficients of
+`a ⍟ b` are carried by `pq`, and
+
+`∑_k ‖(a ⍟ b)(k)‖²k^{−2σ} ≤ 2·(∑_p ‖a_p‖²p^{−2σ})·(∑_q ‖b_q‖²q^{−2σ})`,
+
+the factor `2` covering the two orderings of a product of distinct primes and the diagonal `p = q` contributing once.
+Each factor is then the dyadic Chebyshev cap.  The inequality is Cauchy–Schwarz on the divisor sum followed by the
+observation that a product of two primes has at most two such factorisations — elementary, and it is the last
+estimate the route needs.
+
+Recorded as the specification.  Note that this also retires the `dampedL1`/`truncSieveSum` pair from the truncated
+step 4: with the product handled as one series, the two mean squares of that assembly are replaced by a single mass,
+and the Euler factor multiplies nothing of length.
