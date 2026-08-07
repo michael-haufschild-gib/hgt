@@ -94,3 +94,21 @@ Mertens bookkeeping) and the outer Perron passage for `S_k(x)`.
   corpus's `sum_Icc_one_div_le_one_add_log` (Sieve/HarmonicLogBound — do NOT restate it, I did and had to
   delete it) give the harmonic sum. No `rpow` anywhere.
 - Trap: `∀ x ∈ s with p, ...` is not valid binder syntax; write `∀ x ∈ Finset.filter p s, ...`.
+
+## Update 5: steps 1-3 of the GHS skeleton are complete
+
+- `Sieve/TripleConvolutionWindow.lean` — `norm_inner_double_le` (inner double sum ≤ M(log M + C)) and
+  `norm_window_triple_le`: one dyadic window of the triple convolution is `O(N(n−m+1))`. The inner
+  `log M` cancels the outer `1/log⌊N/p⌋`, so the window contribution IS N times the window's Mertens mass.
+- `Sieve/DoubleAverageSplit.lean` — `filter_large_quotient_eq` (`2^n ≤ ⌊N/p⌋ ↔ p ≤ ⌊N/2^n⌋`, so the
+  large-quotient primes are an initial segment), `sum_split_at_quotient_threshold`, `doubleAverageTerm`,
+  and `norm_double_average_sub_initial_le`: the double average equals its restriction to `p ≤ ⌊N/2^n⌋`
+  plus `O(N n)`.
+
+**Design win worth remembering:** GHS's summation over double-exponential blocks
+`(x^{1−e^{1−k}}, x^{1−e^{−k}}]` is unnecessary. Because the quotient-window mass bound is additive in
+`n − m`, the union of all discarded blocks is a *single* window `2 ≤ ⌊N/p⌋ < 2^n`, bounded in one step by
+`O(N n)`; their discarded part `xL/100` is the case `n ≍ L`. No real powers appear anywhere in steps 1-3.
+
+Only step 4's outer Perron passage remains (extract the initial-segment sum from its Dirichlet series);
+candidate is `SmoothWeightPerron.tsum_mul_smoothWeight_eq_integral` with `H = N/(log N)³`.
