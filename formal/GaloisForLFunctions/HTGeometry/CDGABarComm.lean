@@ -209,6 +209,36 @@ theorem barMulD_cancel {p q m : ℕ} (h : p + q + 1 = m)
           rw [TensorProduct.smul_tmul', ← TensorProduct.add_tmul, ← TensorProduct.add_tmul,
             augIdealShiftMulOf_leibniz ε h x y, TensorProduct.zero_tmul]
 
+section InternalDifferential
+
+/-- The internal differential of a tensor stage, as its two halves. -/
+theorem barPower_succ_d (k n : ℕ) (F : (barPower ε (k + 1)).carrier n) :
+    (barPower ε (k + 1)).d n F
+      = tensorDL ((augIdealShift ε).module (groundCDGA R))
+          ((barPower ε k).module (groundCDGA R)) n F
+        + tensorDR ((augIdealShift ε).module (groundCDGA R))
+          ((barPower ε k).module (groundCDGA R)) n F := rfl
+
+/-- The internal differential of a stage, on one bidegree, differentiating the first factor. -/
+theorem barStage_dL (Zc : Cochain R) (n a b : ℕ)
+    (F : TensorCarrier (R := R) (barShiftFamily ε) Zc.carrier n)
+    (h : (a + 1, b).1 + (a + 1, b).2 = n + 1) :
+    tensorDL ((augIdealShift ε).module (groundCDGA R)) (Zc.module (groundCDGA R)) n F
+        ⟨(a + 1, b), h⟩
+      = TensorProduct.map (augIdealShiftD ε a) (LinearMap.id (R := R) (M := Zc.carrier b))
+        (F ⟨(a, b), by omega⟩) := rfl
+
+/-- The same, differentiating the second factor. -/
+theorem barStage_dR (Zc : Cochain R) (n a b : ℕ)
+    (F : TensorCarrier (R := R) (barShiftFamily ε) Zc.carrier n)
+    (h : (a, b + 1).1 + (a, b + 1).2 = n + 1) :
+    tensorDR ((augIdealShift ε).module (groundCDGA R)) (Zc.module (groundCDGA R)) n F
+        ⟨(a, b + 1), h⟩
+      = ((-1 : R)) ^ a • TensorProduct.map
+        (LinearMap.id (R := R) (M := barShiftFamily ε a)) (Zc.d b) (F ⟨(a, b), by omega⟩) := rfl
+
+end InternalDifferential
+
 section Componentwise
 
 variable {N N' : ℕ → Type u} [∀ n, AddCommGroup (N n)] [∀ n, Module R (N n)]
