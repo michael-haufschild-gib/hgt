@@ -761,3 +761,32 @@ its damped coefficients, and the kernel is integrable.
 
 **Step 4 is now one substitution away from assembled**: the master inequality's three hypotheses are held
 by the Euler bound, the kernel decay bound and the two prime-supported mean squares, all present.
+
+## Step 4 is assembled
+
+`RHTower/Sieve/EulerBoundLSeries.lean` and `RHTower/Sieve/GhsStepFour.lean` (green, axiom-clean, wired).
+
+Two preparatory connectors:
+
+* `LSeries_eq_tsum_twistedSummand` — away from `s = 0` the corpus's twisted-summand series *is* `LSeries`
+  (they differ only at `n = 0`, where one inserts `0` and the other carries `0^{-s} = 0`); hence
+  `norm_LSeries_le_trivial`: `‖L(f,s)‖ ≤ (1 + 1/(σ−1))e^{7/2}` for bounded multiplicative `f`.
+* The inner prime weight now carries a cutoff, `ghsInner f M q = f(q)log q` for primes `q ≤ M`, so both
+  prime weights have finite support (`ghsOuter_mem_Icc`: its condition forces `2p ≤ N`; `ghsInner_mem_Icc`).
+  This is what makes the Dirichlet-polynomial mean squares applicable to them, and it is faithful to the
+  argument, whose second recursion runs over `q ≤ N/p ≤ N`.
+
+The assembly, `exists_norm_tsum_ghs_smoothWeight_le`:
+
+`2π‖∑ₙ (a ⍟ (b ⍟ f))(n)w(n)‖ ≤ (1 + 1/(σ−1))e^{7/2} · C · (√(25π²·sieve a)·√(25π²·sieve b))`
+
+for every bounded multiplicative `f`, every `N₀, M`, cutoff data `N, H`, every `σ > 1` and every admissible
+sieve level `Y ≤ z`, with `C` the quadratic-decay constant of the smoothing kernel and
+`sieveMeanSquare a s σ z Y` the Selberg-sieve majorant of the mean square of a prime-supported polynomial
+on the line.
+
+Every input is a named unconditional theorem of the corpus: the triple Perron identity, absolute convergence
+of logarithmically bounded coefficients, the Euler bound, the master three-factor Cauchy–Schwarz inequality,
+and GHS Lemma 1 on the Perron line.  **What remains is not a device but a computation**: choosing
+`σ = 1 + 1/log x`, the sieve level, `H`, and evaluating the two sieve sums — the first of which is where
+the `(1+M)e^{-M}` shape of the sharp Halász theorem finally appears.
