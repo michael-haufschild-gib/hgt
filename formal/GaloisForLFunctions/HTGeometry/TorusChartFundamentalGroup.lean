@@ -129,8 +129,14 @@ theorem exists_eq_zpow_torusChartFundamentalGenerators (k : ℕ)
   refine ⟨a, b, e.injective ?_⟩
   rw [map_mul, map_zpow, map_zpow, hfirst, hsecond]
   apply Prod.ext
-  · simpa using ha
-  · simpa using hb
+  · change (e g).1 = complexUnitsFundamentalGenerator ^ a *
+      (1 : FundamentalGroup (Units ℂ) 1) ^ b
+    rw [one_zpow, mul_one]
+    exact ha
+  · change (e g).2 = (1 : FundamentalGroup (Units ℂ) 1) ^ a *
+      complexUnitsFundamentalGenerator ^ b
+    rw [one_zpow, one_mul]
+    exact hb
 
 /-- Every group-valued monodromy representation of the chart is determined by two exponent
 images. -/
