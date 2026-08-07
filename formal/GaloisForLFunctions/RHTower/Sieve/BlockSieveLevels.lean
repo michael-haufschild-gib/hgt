@@ -17,13 +17,15 @@ noncomputable section
 namespace RHTower.Sieve
 open Finset
 
-/-- The sieve level on the dyadic block `2^j ≤ n < 2^{j+1}`: a fourth of the block's logarithm, kept at least
-`2` so that its logarithm is positive.  The fourth is what keeps the Selberg fibre error `Y²(log z)⁴` below
-the block's main term. -/
-def blockSieveLevel (j : ℕ) : ℕ := max 2 (2 ^ (j / 4))
+/-- The sieve level on the dyadic block `2^j ≤ n < 2^{j+1}`: an eighth of the block's logarithm, kept at least
+`2` so that its logarithm is positive.  The eighth is what keeps the Selberg fibre error `Y²e^{4c}(log z)⁴`
+below the block's main term `2^{j+1}·2 sinh δ/log Y`. -/
+def blockSieveLevel (j : ℕ) : ℕ := max 2 (2 ^ (j / 8))
 
-/-- The sieve modulus on the block: its right endpoint. -/
-def blockSieveModulus (j : ℕ) : ℕ := 2 ^ (j + 1)
+/-- The sieve modulus on the block: the square root of the block's length, kept at least `2`.  The modulus
+enters the count *additively*, so it must stay far below the block's length — taking it to be the block's right
+endpoint would make the count worse than counting every integer of the block. -/
+def blockSieveModulus (j : ℕ) : ℕ := max 2 (2 ^ (j / 2))
 
 theorem one_le_blockSieveLevel (j : ℕ) : 1 ≤ blockSieveLevel j := by
   rw [blockSieveLevel]
@@ -31,16 +33,14 @@ theorem one_le_blockSieveLevel (j : ℕ) : 1 ≤ blockSieveLevel j := by
 
 theorem two_le_blockSieveLevel (j : ℕ) : 2 ≤ blockSieveLevel j := le_max_left 2 _
 
-theorem two_le_blockSieveModulus (j : ℕ) : 2 ≤ blockSieveModulus j := by
-  rw [blockSieveModulus]
-  calc 2 = 2 ^ 1 := by norm_num
-    _ ≤ 2 ^ (j + 1) := Nat.pow_le_pow_right (by norm_num) (by omega)
+theorem two_le_blockSieveModulus (j : ℕ) : 2 ≤ blockSieveModulus j := le_max_left 2 _
 
 theorem blockSieveLevel_le_blockSieveModulus (j : ℕ) :
     blockSieveLevel j ≤ blockSieveModulus j := by
   rw [blockSieveLevel, blockSieveModulus]
-  refine max_le (two_le_blockSieveModulus j) ?_
-  exact Nat.pow_le_pow_right (by norm_num) (by omega)
+  refine max_le (le_max_left 2 _) ?_
+  refine le_trans (Nat.pow_le_pow_right (by norm_num) (by omega : j / 8 ≤ j / 2)) ?_
+  exact le_max_right 2 _
 
 theorem log_blockSieveLevel_pos (j : ℕ) : 0 < Real.log (blockSieveLevel j) := by
   have h2 : (2 : ℝ) ≤ ((blockSieveLevel j : ℕ) : ℝ) := by
@@ -113,6 +113,62 @@ theorem sqrt_integral_lorentz_normSq_LSeries_le_block_sum_explicit {a : ℕ → 
     exact sieveMeanSquare_coeffBlock_le hA haB hprime M hj.1 hσ (blockSieveModulus j)
       (blockSieveLevel j) (two_le_blockSieveModulus j) (log_blockSieveLevel_pos j)
   linarith [Finset.sum_le_sum hrest]
+
+end RHTower.Sieve
+end
+
+noncomputable section
+namespace RHTower.Sieve
+open Finset
+
+/-- The level's logarithm grows linearly in the block index: `log Y_j ≥ ((j−7)/8)·log 2`, and it is never
+below `log 2`. -/
+theorem log_blockSieveLevel_ge (j : ℕ) :
+    ((j : ℝ) - 7) / 8 * Real.log 2 ≤ Real.log (blockSieveLevel j) := by
+  have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
+  have hpow : (2 : ℕ) ^ (j / 8) ≤ blockSieveLevel j := by
+    rw [blockSieveLevel]
+    exact le_max_right 2 _
+  have hR : ((2 : ℝ) ^ (j / 8 : ℕ)) ≤ ((blockSieveLevel j : ℕ) : ℝ) := by
+    have : ((2 ^ (j / 8) : ℕ) : ℝ) ≤ ((blockSieveLevel j : ℕ) : ℝ) := by exact_mod_cast hpow
+    simpa using this
+  have hlg := Real.log_le_log (by positivity) hR
+  rw [Real.log_pow] at hlg
+  refine le_trans ?_ hlg
+  have hdiv : ((j : ℝ) - 7) / 8 ≤ ((j / 8 : ℕ) : ℝ) := by
+    have hmul : j ≤ 8 * (j / 8) + 7 := by omega
+    have hmulR : (j : ℝ) ≤ 8 * ((j / 8 : ℕ) : ℝ) + 7 := by exact_mod_cast hmul
+    linarith
+  exact mul_le_mul_of_nonneg_right hdiv hlog2.le
+
+/-- The level is at most twice the eighth power root of the block's length, so its square is at most
+`4·2^{j/4}`: the fibre error `Y²e^{4c}(log z)⁴` is therefore `O(2^{j/4}·j⁴)`, far below the block's main term. -/
+theorem blockSieveLevel_le_two_mul (j : ℕ) :
+    ((blockSieveLevel j : ℕ) : ℝ) ≤ 2 * (2 : ℝ) ^ (j / 8 : ℕ) := by
+  have hone : (1 : ℝ) ≤ (2 : ℝ) ^ (j / 8 : ℕ) := one_le_pow₀ (by norm_num)
+  rw [blockSieveLevel]
+  rcases le_total ((2 : ℕ) ^ (j / 8)) 2 with h | h
+  · rw [max_eq_left h]
+    norm_num
+    linarith
+  · rw [max_eq_right h]
+    have hR : ((2 ^ (j / 8) : ℕ) : ℝ) = (2 : ℝ) ^ (j / 8 : ℕ) := by push_cast; ring
+    rw [hR]
+    linarith
+
+/-- The modulus is at most twice the square root of the block's length. -/
+theorem blockSieveModulus_le_two_mul (j : ℕ) :
+    ((blockSieveModulus j : ℕ) : ℝ) ≤ 2 * (2 : ℝ) ^ (j / 2 : ℕ) := by
+  have hone : (1 : ℝ) ≤ (2 : ℝ) ^ (j / 2 : ℕ) := one_le_pow₀ (by norm_num)
+  rw [blockSieveModulus]
+  rcases le_total ((2 : ℕ) ^ (j / 2)) 2 with h | h
+  · rw [max_eq_left h]
+    norm_num
+    linarith
+  · rw [max_eq_right h]
+    have hR : ((2 ^ (j / 2) : ℕ) : ℝ) = (2 : ℝ) ^ (j / 2 : ℕ) := by push_cast; ring
+    rw [hR]
+    linarith
 
 end RHTower.Sieve
 end

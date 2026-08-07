@@ -1205,3 +1205,28 @@ why the modulus is `2^{j+1}` and not `2^j` (at `j = 0` the latter is `1 < 2 = Y_
 by a closed expression in `σ` and `M`.  Each summand is `√` of a product of powers of `2^j` and polynomials in
 `j`; the `j`-dependence of `log Y_j = ⌊j/4⌋ log 2` is the only non-elementary piece, and it is bounded below by
 `(j−3)log 2/4`, which is enough.
+
+## Correction to the level choice: the modulus enters additively
+
+Estimating the block summand at the levels of the previous entry exposed an error in that choice.  The Selberg
+count is `2(window)/log Y + E + z`, and the modulus `z` enters **additively**: with `z_j = 2^{j+1}`, the
+block's right endpoint, the count is at least `2^{j+1}`, which is worse than counting *every integer* of the
+block.  The choice was self-defeating — it satisfied admissibility (`Y_j ≤ z_j` for all `j`, which is what
+pushed it up to the endpoint) at the cost of the entire saving.
+
+The scales are now
+
+`blockSieveLevel j = max 2 (2^{⌊j/8⌋})`,   `blockSieveModulus j = max 2 (2^{⌊j/2⌋})`,
+
+so `z_j ≈ 2^{j/2}`, far below the block's length `2^j`, and `Y_j ≈ 2^{j/8} ≤ z_j` keeps admissibility on every
+block.  All four conditions still hold for all `j` and the block-sum theorems are unchanged.
+
+Sizes for the summation (`RHTower/Sieve/BlockSieveLevels.lean`, appended):
+
+* `log_blockSieveLevel_ge` — `log Y_j ≥ ((j−7)/8)·log 2`, so the count's main term is `O(2^j/j)`;
+* `blockSieveLevel_le_two_mul` — `Y_j ≤ 2·2^{⌊j/8⌋}`, so `E_j = Y_j²e^{4c}(log z_j)⁴ = O(2^{j/4}j⁴)`;
+* `blockSieveModulus_le_two_mul` — `z_j ≤ 2·2^{⌊j/2⌋}`.
+
+Against the block's main term `≈ 2^j/j` both `E_j` and `z_j` are now negligible, which is what the choice has
+to achieve.  The summand's dominant factor is therefore `2^j/j·(j+1)²·2^{−2σj}`, whose square root is
+`2^{j(1/2−σ)}(j+1)/√j`; summing over `j ≤ log₂M` is again a geometric-type series.
