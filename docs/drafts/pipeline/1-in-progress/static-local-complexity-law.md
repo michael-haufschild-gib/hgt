@@ -5229,3 +5229,22 @@ receive a new title and an independent significance audit.
   `../3-formalized/return-shell-replica-coarea-incidence-law.md`.  This does
   not close O4: genuinely transverse radius-one shells still require the
   ordinary-local-Hamiltonian compressed-kernel estimate.
+- 2026-08-07 -- Removed the remaining return/nonreturn cross-pair
+  contamination from the incidence-normalized coarea frontier.  For every
+  independently fixed measurable source return set `R`, restrict the quenched
+  measure to `R^c` before forming the occupied-image covariance.  Complete
+  shortcut mass now obeys the Lean-proved scalar law
+  `P(E_a) <= P(R) + a^(-r) sqrt(h_r A_(r,Z)(mu;R))`, where
+  `A_(r,Z)(mu;R) = integral_(R^c x R^c) k_(r,Z)`.  Thus return mass is paid
+  once with coefficient one; every pair left for anti-concentration has two
+  off-return endpoints.  Source fibre sheets, complete occupied target image,
+  duplicate invariance, and exact-return zero invariance are retained.
+  Arbitrary optimization over `R` was explicitly rejected as circular because
+  `R = E_a` trivializes the action; the return filtration must be fixed by a
+  target-independent physical recurrence observable.  Module:
+  `HTGeometry/QuenchedReplicaReturnExcisionLaw.lean`; card:
+  `../3-formalized/return-excised-replica-coarea-incidence-law.md`.  Exact
+  remaining local-physics core is now genuinely off return: choose a physical
+  return level with small `P(R)` and prove growing-replica decay of
+  `A_(r,Z)(mu;R)` for the ordinary fixed-`q` Gaussian static ensemble strongly
+  enough to beat `h_r`.

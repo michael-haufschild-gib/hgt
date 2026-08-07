@@ -351,4 +351,25 @@ theorem abs_sub_le_sqrt_mul_of_isMaxOn {H : ℝ → ℝ} {L₀ X B : ℝ} {s : S
   rw [hrw] at h
   exact h
 
+/-! ## The maximizer runs to infinity
+
+Localisation puts the maximizer within `K√L₀` of the base point, so it is at least `L₀ − K√L₀`,
+which tends to infinity with `L₀`.  Hence every quantity that vanishes at infinity vanishes along
+the family of maximizers.
+-/
+
+open Filter in
+/-- **`L − K√L → ∞`.**  Factoring as `√L(√L − K)`, both factors tend to infinity. -/
+theorem tendsto_sub_const_mul_sqrt_atTop (K : ℝ) :
+    Tendsto (fun L : ℝ => L - K * Real.sqrt L) atTop atTop := by
+  have hs : Tendsto (fun L : ℝ => Real.sqrt L) atTop atTop := Real.tendsto_sqrt_atTop
+  have hsk : Tendsto (fun L : ℝ => Real.sqrt L - K) atTop atTop :=
+    tendsto_atTop_add_const_right _ (-K) hs
+  have hprod : Tendsto (fun L : ℝ => Real.sqrt L * (Real.sqrt L - K)) atTop atTop :=
+    hs.atTop_mul_atTop₀ hsk
+  refine hprod.congr' ?_
+  filter_upwards [eventually_ge_atTop (0:ℝ)] with L hL
+  have hsq : Real.sqrt L * Real.sqrt L = L := Real.mul_self_sqrt hL
+  nlinarith [hsq]
+
 end GaloisForLFunctions.HTGeometry

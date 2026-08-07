@@ -218,6 +218,23 @@ projective/trace-class/determinant consequences.
 - This is the previously missing actual-PSWF-to-leading-Dunster-model theorem required by the
   radial leakage, weak-measure, off-diagonal, and arithmetic projective-limit cards.
 
+### 2026-08-07: canonical signed-mode radial family
+
+- Added `ProlateCanonicalRadialFamily.lean`.  For every aperture and fixed signed-greedy index it
+  chooses a concrete endpoint-normalized smooth even joint band/prolate mode, with a zero fallback
+  outside the eventually live region.
+- Proved eventual exactness: endpoint normalization, nonnegative radial separation, first and
+  second derivatives, global angular equation, and global exterior radial equation all hold for
+  the canonical family.
+- Connected the canonical family to the full-ray weak arcsine-density and first-row off-diagonal
+  theorems.  Both consequences now require only the single explicit fixed-index statement
+  `Tendsto (fun a => (signedModeRadialData a n).s) atTop (nhds 0)`.
+- Generalized the Dunster weak-limit and off-diagonal interfaces to eventual exact radial data, so
+  zero fallback at finitely many apertures introduces no premise or choice artifact.
+- Verified `ProlateCanonicalRadialFamily.lean`, `ProlateDunsterBesselOffDiagonal.lean`,
+  `ProlateDunsterWeakLimit.lean`, and `ProlateCCMArcsineWeakLimit.lean` with foreground
+  `lake env lean <file>` checks.
+
 ### 2026-08-07: exact radial density transfer and global weak tail law
 
 - Added `ProlateDunsterDensityTransfer.lean`.  Squared the exact uniform profile estimate without
@@ -238,3 +255,17 @@ projective/trace-class/determinant consequences.
 - Proved exact endpoint-density identities, endpoint collar mass control, product tail integrability, full-tail bounds, and the compact/edge/vanishing-budget decomposition.
 - Closed `tendsto_integral_Ioi_firstRowRadialProduct`: every fixed off-diagonal row product tends to zero for exact endpoint-normalized radial prolate solutions whenever `c → ∞` and `s → 0`.
 - Verified in foreground with `lake env lean GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean` (exit 0).
+
+### 2026-08-07: finite-band joint prolate spectrum
+
+- Added `ProlateBandJointSpectrum.lean`.  Every live even finite-band eigenspace now has a canonical
+  finite orthonormal basis of simultaneous finite-band and prolate differential eigenvectors.
+- Proved the basis separation values are injective and strictly decreasing in basis order, using the
+  previously formalized one-dimensionality of every regular-even separation eigenspace.
+- Extracted globally smooth, nonzero, even joint profiles satisfying both exact differential
+  equations on the whole real line, and proved every joint separation value is nonpositive.
+- This resolves internal multiplicity without assuming finite-band eigenvalue simplicity.  Remaining
+  fixed-index gate is asymptotic mode selection: identify which ordered separation line is selected
+  by each signed greedy band mode and prove its normalized separation tends to zero.
+- Verified with foreground `lake env lean GaloisForLFunctions/RHTower/ProlateBandJointSpectrum.lean`
+  (exit 0), then wired module into `GaloisForLFunctions.RHTower` umbrella.

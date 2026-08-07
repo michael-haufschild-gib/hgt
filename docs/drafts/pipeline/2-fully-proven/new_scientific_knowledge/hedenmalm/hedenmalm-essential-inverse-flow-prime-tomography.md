@@ -332,6 +332,8 @@ preliminary noncollision result; `[NOVELTY UNVERIFIED]` remains mandatory.
 | `(5)` | the fixed-width amplitude `A_L` and the Weil sample `F_(a,L)` | `weilWidthAmplitude`, `weilFixedWidthSample` |
 | `(3)`,`(5)` | the common closed form of both on a root block | `rootBlockForm`, `essentialFlowSymbol_eq_rootBlockForm`, `weilFixedWidthSample_eq_rootBlockForm` |
 | `(3)`,`(5)` | **`Phi_(a,L)(-1/z) = F_(a,L)(i z)`**: the symbol reproduces the Weil sample on every root block | `essentialFlowSymbol_root` |
+| `(2)` | the compact eigenvalue in both spectral coordinates, `mu = -1/z = -i/w` at `w = i z` | `compactEigenvalue_eq_of_spectralParameter` |
+| `(2)` | `Xi_C(z) = 0` is `Xi(1/2 + w) = 0` at `w = i z` | `xiC_eq_xi_shift`, `xiC_eq_zero_iff_xi_shift` |
 
 This is the spectral-sample matching of the card at the level of the symbols, which is what `(5)`
 compares term by term; it needs no operator theory.  The parent compact reciprocal coordinate is

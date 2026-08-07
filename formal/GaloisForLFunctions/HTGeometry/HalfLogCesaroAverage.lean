@@ -306,4 +306,29 @@ theorem le_halfLog_of_le_logDirichlet {f : ℝ → ℝ} {X R : ℝ} (hX : 0 < X)
   rw [hexp]
   linarith [h]
 
+/-! ## Transferring a convergent bound to the limits
+
+An eventual pointwise bound by a convergent function bounds the corresponding limit.  This is the
+step that turns the pointwise trace estimate at each base point into a bound on the upper (resp.
+lower) limit, with no subsequence extraction.
+-/
+
+open Filter in
+/-- **An eventual upper bound by a convergent function bounds the upper limit.** -/
+theorem limsup_le_of_eventually_le_of_tendsto {H g : ℝ → ℝ} {α : ℝ}
+    (hle : ∀ᶠ L in atTop, H L ≤ g L) (hg : Tendsto g atTop (nhds α))
+    (hb : IsCoboundedUnder (· ≤ ·) atTop H) (hb' : IsBoundedUnder (· ≤ ·) atTop g) :
+    limsup H atTop ≤ α := by
+  have h1 : limsup H atTop ≤ limsup g atTop := limsup_le_limsup hle hb hb'
+  rwa [hg.limsup_eq] at h1
+
+open Filter in
+/-- **An eventual lower bound by a convergent function bounds the lower limit.** -/
+theorem le_liminf_of_eventually_le_of_tendsto {H g : ℝ → ℝ} {α : ℝ}
+    (hle : ∀ᶠ L in atTop, g L ≤ H L) (hg : Tendsto g atTop (nhds α))
+    (hb : IsCoboundedUnder (· ≥ ·) atTop H) (hb' : IsBoundedUnder (· ≥ ·) atTop g) :
+    α ≤ liminf H atTop := by
+  have h1 : liminf g atTop ≤ liminf H atTop := liminf_le_liminf hle hb' hb
+  rwa [hg.liminf_eq] at h1
+
 end GaloisForLFunctions.HTGeometry

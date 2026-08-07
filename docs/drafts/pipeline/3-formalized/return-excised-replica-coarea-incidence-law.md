@@ -1,10 +1,10 @@
 # Return-excised replica coarea-incidence law
 
 - **ID:** `return-excised-replica-coarea-incidence-law`
-- **Stage:** 2 -- fully proven on paper
-- **Type:** THEOREM (paper)
+- **Stage:** 3 -- formalized in Lean 4
+- **Type:** THEOREM (Lean)
 - **Parent:** `../3-formalized/quenched-replica-pair-incidence-cut-law.md`
-- **Status:** `[PROVED HERE] [LEAN TARGET FROZEN] [APPLICATION NOVELTY UNVERIFIED]`
+- **Status:** `[PROVED HERE] [LEAN-PROVED] [APPLICATION NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-07
 - **Statement:** Removing a measurable recurrence set before forming the occupied-image replica covariance bounds all remaining shortcut coarea mass by the pair action on the return-free square, while the removed recurrence mass is paid exactly once.
 
@@ -24,7 +24,7 @@ invariance, and exact-return removal.
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack sequence and Door passport fixed
 - [x] 1 -> 2 fully-proven: dependency-closed paper proof below
-- [ ] 2 -> 3 formalized: Lean theorem `quenchedReplica_returnExcisedCoareaIncidence_bound`
+- [x] 2 -> 3 formalized: Lean theorem `quenchedReplica_returnExcisedCoareaIncidence_bound`
 - [ ] 3 -> 4 publication-ready: only after ordinary-local-Hamiltonian decay and external novelty audit
 
 ## Frozen notation
@@ -153,6 +153,17 @@ nu x nu = (mu x mu)|_(R^c x R^c).                           (3)
 Substituting `(2)--(3)` into `(1)` proves `(CUT2)` and `(REA)`.  This proof uses no independence,
 spectral-gap, transversality, random-matrix, or locality premise.
 
+Since `nu_R(E_a) a^r >= 0`, taking the nonnegative square root of `(CUT2)` and using `(CUT1)` gives
+the scalar return-cut law
+
+```text
+mu(E_a) <= mu(R) +
+  sqrt(h_r(Z) A_(r,Z)(mu;R)) / a^r.                         (CUT3)
+```
+
+Thus recurrence mass appears with coefficient one: it is not squared, paired with off-return
+points, or multiplied by occupied-image rank.
+
 ## Information retained
 
 1. **Fibre-sheet multiplicity.**  Restriction deletes precisely points in `R`; it never quotients
@@ -207,17 +218,32 @@ local-Hamiltonian ensemble such that both terms beat shallow-circuit occupied-im
 - **Door 3:** formalize mass cut, restricted pair identity, duplicate invariance, zero invariance,
   and capstone.
 
-## Lean target
+## Lean realization
 
 - Module: `GaloisForLFunctions.HTGeometry.QuenchedReplicaReturnExcisionLaw`
 - Definition: `returnExcisedReplicaIncidenceAction`
 - Mass cut: `measureReal_capture_le_return_add_restrict_compl`
 - Product action: `returnExcisedReplicaIncidenceAction_eq_restrictProduct`
 - Capstone: `quenchedReplica_returnExcisedCoareaIncidence_bound`
+- Scalar capstone: `measureReal_capture_le_return_add_sqrt_action`
 - Invariances: duplicate target labels and exact-return zero residue
+
+## Verification
+
+- `lake env lean GaloisForLFunctions/HTGeometry/QuenchedReplicaReturnExcisionLaw.lean`: PASS.
+- `lake build GaloisForLFunctions.HTGeometry.QuenchedReplicaReturnExcisionLaw`: PASS, 8659 jobs.
+- Axiom audit of product restriction, mass cut, squared capstone, scalar capstone, duplicate
+  invariance, and zero invariance: only `propext`, `Classical.choice`, and `Quot.sound`.
+- Module wired through `GaloisForLFunctions.HTGeometry`.
+- Global formal lint reaches this module and reports no error in it.  Repository lint remains red on
+  unrelated concurrently added, unwired `RHTower` Prolate modules and unrelated `HTGeometry`
+  modules.
 
 ## Log
 
 - 2026-08-07 -- C0 pair-relation cut attacked; mixed return/nonreturn pairs identified as the exact
   defect.  C1--C2 dependency-closed proof completed.  C3 arbitrary min-cut rejected as circular;
   target-independent return-filtration survivor frozen for formalization.
+- 2026-08-07 -- Return-free product action, one-time recurrence payment, complete squared law,
+  scalar square-root law, duplicate invariance, and exact-return zero invariance formalized and
+  audited; promoted to Stage 3.

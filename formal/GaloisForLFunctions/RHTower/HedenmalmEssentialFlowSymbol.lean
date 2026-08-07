@@ -100,6 +100,27 @@ theorem essentialFlowSymbol_root (a L : ℝ) {z : ℂ} (hz : z ≠ 0) :
     essentialFlowSymbol a L (-z⁻¹) = weilFixedWidthSample a L (Complex.I * z) := by
   rw [essentialFlowSymbol_eq_rootBlockForm a L hz, weilFixedWidthSample_eq_rootBlockForm a L hz]
 
+
+/-! ### The spectral coordinates of the root block -/
+
+/-- **The spectral parameter of a root block.**  With `w = i z` the compact eigenvalue
+`mu = -1/z` is also `-i/w`. -/
+theorem compactEigenvalue_eq_of_spectralParameter {z : ℂ} (hz : z ≠ 0) :
+    -z⁻¹ = -Complex.I / (Complex.I * z) := by
+  have hI : Complex.I ≠ 0 := Complex.I_ne_zero
+  field_simp
+
+/-- **The two zero conditions agree.**  `Xi_C(z) = 0` is `Xi(1/2 + w) = 0` at `w = i z`. -/
+theorem xiC_eq_xi_shift (z : ℂ) : XiC z = xi (1 / 2 + Complex.I * z) := by
+  rw [XiC]
+  congr 1
+  ring
+
+theorem xiC_eq_zero_iff_xi_shift (z : ℂ) :
+    XiC z = 0 ↔ xi (1 / 2 + Complex.I * z) = 0 := by
+  rw [xiC_eq_xi_shift]
+
+
 end HedenmalmThetaSource
 
 end

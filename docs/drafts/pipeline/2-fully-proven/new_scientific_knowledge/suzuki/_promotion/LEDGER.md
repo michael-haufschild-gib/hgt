@@ -3072,3 +3072,54 @@ Revised remaining work for `(4)`:
 5. `tendsto_of_le_liminf_of_limsup_le`.
 
 Only steps 1–2 involve any construction, and both are direct instantiations of built results.
+
+## CE. Step 2 is built — the maximizer runs to infinity
+
+`PenalizedMaximum.lean` is now at 19 declarations, all `#print axioms` clean, no `sorry`.
+
+- `tendsto_sub_const_mul_sqrt_atTop` — `L − K√L → ∞`, by factoring as `√L(√L − K)`.
+
+Combined with `abs_sub_le_sqrt_mul_of_isMaxOn` (CC), which gives `X ≥ L₀ − √L₀(B − H L₀)`, this is
+step 2 of section CD's plan: the maximizer `X(L₀)` tends to infinity with `L₀` whenever the value
+gap `B − H L₀` is bounded. Hence every factor that vanishes at infinity — the tail mass (CB), the
+`1/√X` prefactor (AR) — vanishes along the family.
+
+### Remaining for `(4)`
+
+Steps 1, 3, 4, 5 of section CD, all instantiations:
+
+1. produce `X(L₀)` — `exists_isMaxOn_penalized` at slope `(√L₀)⁻¹`;
+3. the right-hand side of `halfLog_base_le_of_equation_isMaxOn` tends to `α`;
+4. conclude `limsup H ≤ α`, and symmetrically `α ≤ liminf H`;
+5. `tendsto_of_le_liminf_of_limsup_le`.
+
+Every ingredient of every step is now a built, axiom-clean lemma or a mathlib result. What is left
+is assembling them into the card-level theorem with the card's hypotheses `(1)` and `(3)` — and
+that assembly must be written as a single theorem deriving `(4)`, not as a lemma taking the bounds
+as hypotheses (AT, BN, BV).
+
+## CF. Steps 3–4 are built — the limit transfer
+
+`HalfLogCesaroAverage.lean` is now at 19 declarations, all `#print axioms` clean, no `sorry`.
+
+- `limsup_le_of_eventually_le_of_tendsto` — an eventual upper bound by a convergent function bounds
+  the upper limit: `H ≤ᶠ g`, `g → α` ⟹ `limsup H ≤ α`.
+- `le_liminf_of_eventually_le_of_tendsto` — the mirror for the lower limit.
+
+These combine `limsup_le_limsup` with `Tendsto.limsup_eq` (and duals) and carry the
+cobounded/bounded side conditions, so they are glue rather than a rename of a single mathlib
+result. With `halfLog_base_le_of_equation_isMaxOn` (CD) supplying the pointwise bound at every base
+point and `tendsto_sub_const_mul_sqrt_atTop` (CE) making the maximizer diverge, this is steps 3 and
+4 of section CD's plan.
+
+### `suzuki-weak-signed-half-log-trace` — what is left
+
+Only step 1 and the final assembly:
+
+- for each large `L₀`, produce `X(L₀)` — a direct application of `exists_isMaxOn_penalized` at
+  slope `(√L₀)⁻¹`, with `B` the profile's upper bound from `(1)`;
+- verify the hypotheses of `halfLog_base_le_of_equation_isMaxOn` hold eventually along `L₀`;
+- apply CF, then `tendsto_of_le_liminf_of_limsup_le`.
+
+Every lemma these steps invoke is built and axiom-clean. The remaining work is the card-level
+theorem statement and the eventual-hypothesis verification — no new mathematics.

@@ -454,3 +454,116 @@ factorization, plus `tendsto_opTrace_pow_add_two_zero_of_isHilbertSchmidt_norm_l
 version.  Build `hsInner (kernelOperator μ K) (kernelOperator μ L) = ⟪K, L⟫_{L²(μ; E*)}`; then
 `tr(B²) = ⟨B†, B⟩_HS` evaluates to the kernel double integral and (9) closes against
 `integral_sq_quantileFun`.
+
+## The card 7 (9) bridge is BUILT (2026-08-07)
+
+NEW: `formal/GaloisForLFunctions/RHTower/KernelOperatorPolarization.lean` (wired, builds,
+axiom-clean):
+* `inner_kernelOperator_apply` — ⟪K̂ e, L̂ e⟫ = ∫ ⟪K x e, L x e⟫ dμ (polarizes the private
+  `norm_kernelOperator_apply_sq` of the Sonin file);
+* `norm_sq_kernelOperator_apply` — the PUBLIC diagonal case (the Sonin one is `private`);
+* `hsInner_kernelOperator` — **⟪K̂, L̂⟫_HS = ∫ ⟪y_L(x), y_K(x)⟫ dμ** where `y = toDual.symm`.
+
+NOTE the argument ORDER SWAP: `toDual.symm` is conjugate linear, so the L-vector comes first.
+`E →L[ℂ] ℂ` has NO `InnerProductSpace` instance in mathlib, so the pairing MUST be written on the
+Riesz vectors — do not try to state it as `⟪K, L⟫` on the dual Lp.
+
+Traps: `L2.integrable_inner` needs `(𝕜 := ℂ)` explicitly; `MemLp.toLp` needs its function argument
+explicitly; `omit [CompleteSpace E] in` must come BEFORE the docstring, not between docstring and
+theorem; `MemLp.integrable_sq_norm` does not exist — use
+`(memLp_two_iff_integrable_sq_norm h.1).mp h`.
+
+Next step for card 7 (9): specialize `hsInner_kernelOperator` at `K = L = pinnedKernelL2 thetaSource`,
+combine with `thetaTraceSq_eq_hsInner` and the adjoint kernel, and match against
+`integral_sq_quantileFun`.
+
+## Blocker found for the operator-level form of card 7 (5) (2026-08-07)
+
+To get `hsNormSq thetaKernelOperator = M ∫ p(1-p)/k` one applies
+`RHTower.hsNormSq_kernelOperator_eq_norm_sq`, which requires
+`[TopologicalSpace.SeparableSpace E]` with `E = Lp ℂ 2 unitIntervalMeasure`.
+**That instance does NOT resolve** (`infer_instance` fails).  Supplying it is the first step:
+`unitIntervalMeasure = volume.restrict (Icc 0 1)` is a finite Borel measure on ℝ, so the standard
+route is `MeasureTheory.Lp.instSeparableSpace`-style — find the exact mathlib instance and its
+`CountablyGenerated`/`SecondCountableTopology` side conditions, then declare it once (probably in
+`HedenmalmPinnedVolterraBoundaryDefect.lean` next to `unitIntervalMeasure`) so every later module
+gets it.
+
+Everything else for that statement is already in hand:
+`HTGeometry.norm_l2_sq_eq_integral_norm_sq`, `norm_pinnedKernelField`, `norm_sq_pinnedSliceVec`,
+`integral_quantileSpeed_sq_slice`.
+
+### VERIFIED separability finding (supersedes the note above)
+`infer_instance` for `SeparableSpace (Lp ℂ 2 volume)` and for
+`SeparableSpace (Lp ℂ 2 unitIntervalMeasure)` BOTH fail in a scratch file.
+BUT `RHTower.hsNormSq_fullToRestrictedTimeBandFourier_eq_rectangleArea`
+(`SoninTimeBandHilbertSchmidt.lean:448`) applies `hsNormSq_kernelOperator_eq_norm_sq`
+with `E = RealL2 = Lp ℂ 2 volume` and COMPILES.  So the instance is obtainable somehow.
+Before writing a new instance, find out how that theorem elaborates (`set_option pp.all true`,
+or check whether some import supplies it) — given that four "missing" claims this session were
+wrong, assume it is present until proven otherwise.
+
+Verified with raised `maxHeartbeats` and `synthInstance.maxHeartbeats`:
+`SeparableSpace (Lp ℂ 2 volume)` FAILS, and
+`SeparableSpace (Lp ℂ 2 unitIntervalMeasure)` FAILS, including when the goal is the exact
+application `hsNormSq_kernelOperator_eq_norm_sq _ _` at `thetaKernelOperator`.
+Yet `RHTower.hsNormSq_fullToRestrictedTimeBandFourier_eq_rectangleArea` compiles with
+`E = RealL2 = Lp ℂ 2 volume`.  UNEXPLAINED.
+NEXT SESSION: run `set_option trace.Meta.synthInstance true` inside
+`SoninTimeBandHilbertSchmidt.lean` at line 448 to see which instance fires there; copy that path.
+Do NOT write a fresh `SeparableSpace` instance before doing this — a duplicate instance is exactly
+the kind of change that broke the tree earlier this session.
+
+## Card 8 statement (2) CLOSED (2026-08-07)
+
+Added to `HedenmalmEssentialFlowSymbol.lean`:
+`compactEigenvalue_eq_of_spectralParameter` (μ = −1/z = −i/w at w = iz) and
+`xiC_eq_xi_shift` / `xiC_eq_zero_iff_xi_shift` (XiC z = xi(1/2 + i z); note `XiC` is DEFINED as
+`xi (1/2 + z * Complex.I)` in `RHTower/XiEntireReal.lean:22`, so this is a `congr 1; ring`).
+
+Card 8 now has (2), (3) and the term-level content of (5).  Everything else on the card rests on
+the parent card 7's Riesz-projection layer.
+
+## Card 7 (6) forward half is now UNCONDITIONAL (2026-08-07)
+
+Added to `HedenmalmThetaRootEndpoints.lean`:
+`integrable_sourceModeU`, `tendsto_sourceModeU_atBot`, `tendsto_sourceModeU_atTop`
+(all one line each from `norm_sourceModeU_le`), and
+`XiC_eq_zero_of_solution_const` — the ⟹ half of the divisor equivalence at the actual source.
+
+The ⟸ half (`sourceInverse_sourceModeF_eq_smul`) still needs its `hmass` hypothesis
+`∫ sourceModeF thetaSource z = M` discharged; that is a normalisation computation, NOT free —
+it is the one remaining hypothesis on that side.  The other three
+(`HasShiftedTail`, `Integrable (sourceModeF …)`, `Tendsto (sourceModeU …) atBot 0`) are now all
+available as theorems above.
+
+## STRUCTURAL CONCLUSION: card 7 (6) and (8) are ONE problem (2026-08-07)
+
+Because `det₂` already exists in the corpus, the natural formalization of "algebraic multiplicity"
+is the ORDER OF VANISHING OF `det₂(I + zB)`.  With that definition:
+
+* (6)'s multiplicity clause becomes `analyticOrderAt (fun z => det₂(I+zB)) z₀ = analyticOrderAt XiC z₀`;
+* which follows immediately from (8), `det₂(I+zB) = Ξ_C(z)/Ξ_C(0)`.
+
+So **(6) and (8) collapse to a single identification**, and that identification reduces via the
+Plemelj identity `logDeriv_fredholmDet` to a TRACE FORMULA
+
+    resolventTrace B z  =  -Ξ_C'(z)/Ξ_C(z)   (up to the regularisation shift),
+
+which is the real mathematical content and is NOT a Lean-plumbing problem.  Note `fredholmDet`
+converges only on `‖z‖·‖K‖_HS < 1`, so an analytic-continuation step is also needed.
+
+Do NOT attack (6) by building Riesz projections — that is a strictly harder route to the same
+statement.  `resolvent` DOES exist in mathlib (verified) if Riesz projections are ever wanted for
+another purpose.
+
+## Recommended order of attack for the three absent layers
+1. The trace formula above (closes card 7 (6)+(8), unblocks card 4 (16) and card 8).  Hardest
+   mathematically but needs no new infrastructure — only `fredholmDet`, `resolventTrace`,
+   `HilbertSchmidtMatrix` bridge, all present.
+2. Mittag-Leffler interpolation (closes card 5 (13)/(14)/(17)).  Pure infrastructure; the
+   Weierstrass half is present (`canonicalProductE1Indexed_hasProdLocallyUniformlyOn`).
+3. Unbounded Fredholm (card 6 (4)-index, (8)-(10)).  Largest, and nothing in the corpus to build on
+   beyond mathlib's `LinearPMap.adjoint/closure/IsClosable`.
+
+## Tree verified green at end of session: `lake build` of all 21 new modules — 9113 jobs, EXIT=0.

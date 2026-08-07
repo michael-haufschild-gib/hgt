@@ -111,6 +111,12 @@ theorem criticalNormalClosureArcPrime_isMaximal
     (S := CriticalNormalClosureArcIntegralClosure K m n hm hn)
     (IsLocalRing.maximalIdeal (CriticalNormalClosureArcBaseRing K m n hm hn)))).1
 
+noncomputable instance criticalNormalClosureArcPrime_isPrime
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
+    (criticalNormalClosureArcPrime K m n hm hn).IsPrime :=
+  (criticalNormalClosureArcPrime_isMaximal K m n hm hn).isPrime
+
 theorem criticalNormalClosureArcPrime_liesOver
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
     (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
@@ -162,6 +168,43 @@ noncomputable def CriticalNormalClosureArcValuationRing
   IsDedekindDomain.HeightOneSpectrum.valuationSubringAtPrime
     (criticalNormalClosure K m n)
     (criticalNormalClosureArcHeightOne K m n hm hn)
+
+noncomputable instance criticalNormalClosureArcValuationRing_algebraIntegralClosure
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
+    Algebra (CriticalNormalClosureArcIntegralClosure K m n hm hn)
+      (CriticalNormalClosureArcValuationRing K m n hm hn) := by
+  change Algebra (CriticalNormalClosureArcIntegralClosure K m n hm hn)
+    (IsDedekindDomain.HeightOneSpectrum.valuationSubringAtPrime
+      (criticalNormalClosure K m n)
+      (criticalNormalClosureArcHeightOne K m n hm hn))
+  infer_instance
+
+noncomputable instance criticalNormalClosureArcValuationRing_scalarTower
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
+    IsScalarTower (CriticalNormalClosureArcIntegralClosure K m n hm hn)
+      (CriticalNormalClosureArcValuationRing K m n hm hn)
+      (criticalNormalClosure K m n) := by
+  change IsScalarTower (CriticalNormalClosureArcIntegralClosure K m n hm hn)
+    (IsDedekindDomain.HeightOneSpectrum.valuationSubringAtPrime
+      (criticalNormalClosure K m n)
+      (criticalNormalClosureArcHeightOne K m n hm hn))
+    (criticalNormalClosure K m n)
+  infer_instance
+
+noncomputable instance criticalNormalClosureArcValuationRing_isLocalization
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    (m n : ℕ) (hm : 0 < m) (hn : 0 < n) :
+    IsLocalization
+      (criticalNormalClosureArcPrime K m n hm hn).primeCompl
+      (CriticalNormalClosureArcValuationRing K m n hm hn) := by
+  change IsLocalization
+    (criticalNormalClosureArcHeightOne K m n hm hn).asIdeal.primeCompl
+    (IsDedekindDomain.HeightOneSpectrum.valuationSubringAtPrime
+      (criticalNormalClosure K m n)
+      (criticalNormalClosureArcHeightOne K m n hm hn))
+  infer_instance
 
 noncomputable instance criticalNormalClosureArcValuationRing_isDiscreteValuationRing
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]

@@ -270,6 +270,51 @@ theorem rootFlux_identity_thetaSource {z : ℂ} (hz : |z.im| < 1)
   rootFlux_identity thetaSource (hasShiftedTail_thetaSource hz)
     (rootModeEndpoints_thetaSource hz hzero)
 
+
+/-! ### The source mode at a divisor point -/
+
+theorem integrable_sourceModeU {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSource z = 0) :
+    Integrable (sourceModeU thetaSource z) (volume : Measure ℝ) := by
+  have hgap : (0 : ℝ) < 1 - |z.im| := by linarith
+  refine Integrable.mono'
+    ((integrable_exp_neg_mul_abs (by norm_num : (0:ℝ) < 1)).const_mul
+      (thetaBound / (1 - |z.im|))) (continuous_sourceModeU hz).aestronglyMeasurable ?_
+  filter_upwards with x
+  rw [one_mul]
+  exact norm_sourceModeU_le hz hzero x
+
+theorem tendsto_sourceModeU_atBot {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSource z = 0) :
+    Tendsto (sourceModeU thetaSource z) atBot (𝓝 0) := by
+  have habs : Tendsto (fun x : ℝ => -|x|) atBot atBot :=
+    tendsto_neg_atTop_atBot.comp tendsto_abs_atBot_atTop
+  have hdom : Tendsto
+      (fun x : ℝ => thetaBound / (1 - |z.im|) * Real.exp (-|x|)) atBot (𝓝 0) := by
+    simpa using (Real.tendsto_exp_atBot.comp habs).const_mul (thetaBound / (1 - |z.im|))
+  exact squeeze_zero_norm (fun x => norm_sourceModeU_le hz hzero x) hdom
+
+theorem tendsto_sourceModeU_atTop {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSource z = 0) :
+    Tendsto (sourceModeU thetaSource z) atTop (𝓝 0) := by
+  have habs : Tendsto (fun x : ℝ => -|x|) atTop atBot :=
+    tendsto_neg_atTop_atBot.comp tendsto_abs_atTop_atTop
+  have hdom : Tendsto
+      (fun x : ℝ => thetaBound / (1 - |z.im|) * Real.exp (-|x|)) atTop (𝓝 0) := by
+    simpa using (Real.tendsto_exp_atBot.comp habs).const_mul (thetaBound / (1 - |z.im|))
+  exact squeeze_zero_norm (fun x => norm_sourceModeU_le hz hzero x) hdom
+
+/-- **A source solution with any nonzero coefficient forces a zero of the completed Riemann
+function.**  This is the forward half of the divisor equivalence, with no hypothesis on the
+source. -/
+theorem XiC_eq_zero_of_solution_const {α c : ℂ} (hc : c ≠ 0) (hα : |α.im| < 1) {u u' : ℝ → ℂ}
+    (hderiv : ∀ x, HasDerivAt u (u' x) x)
+    (heq : ∀ x, -Complex.I * u' x + α * u x = c * ((thetaCuspFullSource x : ℝ) : ℂ))
+    (hbot : Tendsto (fun x => u x * sourceChar α x) atBot (𝓝 0))
+    (htop : Tendsto (fun x => u x * sourceChar α x) atTop (𝓝 0)) :
+    XiC α = 0 := by
+  have h := HedenmalmHilbertSchmidt.xiC_eq_zero_of_solution_const thetaSource hc hderiv heq
+    (hasShiftedTail_thetaSource hα) hbot htop
+  rwa [xiC_thetaSource hα] at h
+
+
 end HedenmalmThetaSource
 
 end

@@ -77,5 +77,40 @@ theorem norm_weighted_sub_partialSum_le_window {a : ℕ → ℂ} {H : ℝ} (hH :
   rw [Finset.mem_Ioc]
   exact ⟨by omega, hn.2⟩
 
+
+/-- Cauchy–Schwarz for a finite `ℓ¹` mass against the `ℓ²` mass. -/
+theorem sum_norm_le_sqrt_card_mul_sqrt_sum_normSq (s : Finset ℕ) (a : ℕ → ℂ) :
+    (∑ n ∈ s, ‖a n‖) ≤ Real.sqrt (s.card) * Real.sqrt (∑ n ∈ s, ‖a n‖ ^ 2) := by
+  have hcs : (∑ n ∈ s, ‖a n‖) ^ 2 ≤ (s.card : ℝ) * ∑ n ∈ s, ‖a n‖ ^ 2 :=
+    sq_sum_le_card_mul_sum_sq
+  have hnn : (0 : ℝ) ≤ ∑ n ∈ s, ‖a n‖ := Finset.sum_nonneg fun n _ => norm_nonneg _
+  have hsq : (∑ n ∈ s, ‖a n‖) = Real.sqrt ((∑ n ∈ s, ‖a n‖) ^ 2) := (Real.sqrt_sq hnn).symm
+  rw [hsq, ← Real.sqrt_mul (Nat.cast_nonneg _)]
+  exact Real.sqrt_le_sqrt hcs
+
+/-- **The smoothing error against the window's `ℓ²` mass.**  Cauchy–Schwarz turns the window's `ℓ¹`
+mass into `√H` times its `ℓ²` mass, so a mean-square bound for the coefficients suffices: no
+short-interval mean value theorem for the coefficients themselves is needed. -/
+theorem norm_weighted_sub_partialSum_le_sqrt {a : ℕ → ℂ} {H : ℝ} (hH : 0 < H) (K m : ℕ)
+    (hm : (K : ℝ) + H ≤ (m : ℝ)) :
+    ‖(∑ n ∈ Finset.range m, a n * ((smoothWeight (K : ℝ) H (n : ℝ) : ℝ) : ℂ))
+        - ∑ n ∈ Finset.range (K + 1), a n‖
+      ≤ Real.sqrt H
+          * Real.sqrt (∑ n ∈ Finset.Ioc K ⌊(K : ℝ) + H⌋₊, ‖a n‖ ^ 2) := by
+  refine le_trans (norm_weighted_sub_partialSum_le_window hH K m hm) ?_
+  refine le_trans (sum_norm_le_sqrt_card_mul_sqrt_sum_normSq _ a) ?_
+  refine mul_le_mul_of_nonneg_right ?_ (Real.sqrt_nonneg _)
+  refine Real.sqrt_le_sqrt ?_
+  rw [Nat.card_Ioc]
+  have hfl : ((⌊(K : ℝ) + H⌋₊ : ℕ) : ℝ) ≤ (K : ℝ) + H :=
+    Nat.floor_le (by positivity)
+  have hKle : K ≤ ⌊(K : ℝ) + H⌋₊ := by
+    refine Nat.le_floor ?_
+    linarith
+  have hcast : ((⌊(K : ℝ) + H⌋₊ - K : ℕ) : ℝ) = ((⌊(K : ℝ) + H⌋₊ : ℕ) : ℝ) - (K : ℝ) := by
+    rw [Nat.cast_sub hKle]
+  rw [hcast]
+  linarith
+
 end GaloisForLFunctions.HTGeometry
 end

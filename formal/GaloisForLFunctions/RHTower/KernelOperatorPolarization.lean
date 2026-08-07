@@ -89,7 +89,8 @@ theorem hsInner_kernelOperator [TopologicalSpace.SeparableSpace E]
     (memLp_two_iff_integrable_sq_norm (hML i).1).mp (hML i)
   have hint : ∀ i, Integrable (fun x => (inner ℂ (K x (b i)) (L x (b i)) : ℂ)) μ := by
     intro i
-    have h := MeasureTheory.L2.integrable_inner ((hMK i).toLp _) ((hML i).toLp _)
+    have h := MeasureTheory.L2.integrable_inner (𝕜 := ℂ)
+      ((hMK i).toLp (fun x => K x (b i))) ((hML i).toLp (fun x => L x (b i)))
     refine h.congr ?_
     filter_upwards [(hMK i).coeFn_toLp, (hML i).coeFn_toLp] with x h1 h2
     rw [h1, h2]
@@ -108,8 +109,9 @@ theorem hsInner_kernelOperator [TopologicalSpace.SeparableSpace E]
             norm_inner_le_norm _ _
         _ ≤ (‖K x (b i)‖ ^ 2 + ‖L x (b i)‖ ^ 2) / 2 := by
             nlinarith [sq_nonneg (‖K x (b i)‖ - ‖L x (b i)‖)]
-    have hle := integral_mono ((hint i).norm)
-      ((hsqKint i).add (hsqLint i)).div_const 2 hb
+    have hdom : Integrable (fun x => (‖K x (b i)‖ ^ 2 + ‖L x (b i)‖ ^ 2) / 2) μ := by
+      simpa using ((hsqKint i).add (hsqLint i)).div_const 2
+    have hle := integral_mono ((hint i).norm) hdom hb
     calc (∫ x, ‖(inner ℂ (K x (b i)) (L x (b i)) : ℂ)‖ ∂μ)
         ≤ ∫ x, (‖K x (b i)‖ ^ 2 + ‖L x (b i)‖ ^ 2) / 2 ∂μ := hle
       _ = ((∫ x, ‖K x (b i)‖ ^ 2 ∂μ) + ∫ x, ‖L x (b i)‖ ^ 2 ∂μ) / 2 := by

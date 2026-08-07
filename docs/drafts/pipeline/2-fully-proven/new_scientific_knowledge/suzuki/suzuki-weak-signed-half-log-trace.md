@@ -129,8 +129,13 @@ Since
 
 ```text
 A(L)=Y(L)/(2sqrt(L)),
-A'(L)=P F(L)/(2L^(3/2))                                 (11)
+A'(L)=P F(L)/(4L^(3/2))                                 (11)
 ```
+
+(The constant is 4, not 2: differentiating `Y/(2sqrt(L))` gives
+`F/(2sqrt(L))-Y/(4L^(3/2))=[2LF-Y]/(4L^(3/2))`.  The normalisation
+`A=Y/(2sqrt(L))` is the one forced by `(13)`, since it is the one for
+which `A` and `H` share a limit, and it is also the one used at `(28)`.)
 
 distributionally and the bounded source is integrable against
 \(L^{-3/2}\), `(10)` implies

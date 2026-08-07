@@ -347,6 +347,8 @@ whole layer at the actual arithmetic source, so the statements below carry **no 
 | `(1)` | **`B` is Hilbert--Schmidt for the Riemann source** | `isHilbertSchmidt_thetaKernelOperator` |
 | `(1)` | `B` is compact for the Riemann source | `isCompactOperator_thetaKernelOperator` |
 | `(7)` | `R B R = -B` for the Riemann source | `thetaSource_even`, `sourceInverse_sourceReflection_theta` |
+| `(6)` | **a source solution with any nonzero coefficient forces `Xi_C(alpha) = 0`**, unconditionally | `XiC_eq_zero_of_solution_const` |
+| `(6)` | the source mode at a divisor point is integrable and vanishes at both ends | `integrable_sourceModeU`, `tendsto_sourceModeU_atBot`, `tendsto_sourceModeU_atTop` |
 | `(9)` | the first source moment vanishes (evenness) | `integrable_mul_thetaSource`, `integral_mul_thetaSource_eq_zero`, `integral_quantileFun` |
 | `(9)` | **the source variance in quantile coordinates**, `integral over (0,1) of Q^2 = M^(-1) integral of x^2 k` | `integral_sq_quantileFun` |
 | `(9)` | **`tr(B^2)` is well posed**: the diagonal series converges over every Hilbert basis and its sum is basis independent | `thetaKernelOperator`, `thetaTraceSq`, `summable_thetaTraceSq_diag`, `thetaTraceSq_eq_tsum_basis` |
