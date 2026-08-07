@@ -1056,3 +1056,21 @@ constant `C` is of size `N`, giving `≈ N(log N)³/log Y` — still a factor `(
 per-block sieve level of the second obstruction recorded above: split the prime range dyadically, take
 `Y ≈ 2^{j/2}` on the block `2^j ≤ p < 2^{j+1}`, and the linear cap's `(log N)²` is met by a `1/j` from each
 block rather than a single global `1/log Y`.  That is the next construction, and it is the last one.
+
+## Minkowski for the weighted mean square: blocks may carry their own parameters
+
+`HTGeometry/WeightedCauchySchwarz.lean` restructured (green, axiom-clean; all statements unchanged, the old
+proof now delegates).
+
+* `integral_mul_mul_weight_le_sqrt_mul_sqrt` — the weighted Cauchy–Schwarz inequality in the form of the
+  integral of the moduli, `∫ ‖g₁‖‖g₂‖‖W‖ ≤ √(∫‖g₁‖²‖W‖)·√(∫‖g₂‖²‖W‖)`.  This was the Hölder step buried
+  inside the old proof; exposing it removes the duplication, and
+  `norm_integral_mul_mul_le_sqrt_mul_sqrt` is now four lines on top of it.
+* `integrable_normSq_add_mul_weight` — the weighted mean square of a sum is integrable when both parts are.
+* `sqrt_integral_normSq_add_mul_weight_le` — **Minkowski's inequality for the weighted mean square**:
+  `√(∫‖g₁+g₂‖²‖W‖) ≤ √(∫‖g₁‖²‖W‖) + √(∫‖g₂‖²‖W‖)`, the cross term handled by the exposed
+  Cauchy–Schwarz step, so no `L²` space is constructed and no `withDensity` measure is needed.
+
+This is the device the per-block sieve level requires: a Dirichlet polynomial may be split into blocks, each
+block's mean square estimated with **its own** sieve level `Y_j ≈ 2^{j/2}`, and the results added.  The excess
+factor `(log N)²/log Y` identified above becomes `∑_j (1/j)`-shaped instead of a single global `1/log Y`.

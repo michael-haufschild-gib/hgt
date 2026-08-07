@@ -22,14 +22,15 @@ noncomputable section
 namespace GaloisForLFunctions.HTGeometry
 open MeasureTheory
 
-/-- **Cauchy–Schwarz for a weighted vertical integral.**  A product of two factors against a weight is
-bounded by the two weighted mean squares. -/
-theorem norm_integral_mul_mul_le_sqrt_mul_sqrt {g₁ g₂ W : ℝ → ℂ}
+/-- **The weighted Cauchy–Schwarz inequality, in the form of the integral of the moduli.**  This is the step
+that the vertical-integral bound uses through the triangle inequality, and it is also what makes the weighted
+`L²` quantity subadditive. -/
+theorem integral_mul_mul_weight_le_sqrt_mul_sqrt {g₁ g₂ W : ℝ → ℂ}
     (hm1 : AEStronglyMeasurable g₁ volume) (hm2 : AEStronglyMeasurable g₂ volume)
     (hmW : AEStronglyMeasurable W volume)
     (h1 : Integrable fun y => ‖g₁ y‖ ^ 2 * ‖W y‖)
     (h2 : Integrable fun y => ‖g₂ y‖ ^ 2 * ‖W y‖) :
-    ‖∫ y : ℝ, g₁ y * g₂ y * W y‖
+    (∫ y : ℝ, ‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖)
       ≤ Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖)
           * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖) := by
   set F : ℝ → ℝ := fun y => ‖g₁ y‖ * Real.sqrt ‖W y‖ with hF
@@ -46,12 +47,10 @@ theorem norm_integral_mul_mul_le_sqrt_mul_sqrt {g₁ g₂ W : ℝ → ℂ}
     have hsq : Real.sqrt ‖W y‖ ^ 2 = ‖W y‖ := Real.sq_sqrt (norm_nonneg _)
     calc (‖g₂ y‖ * Real.sqrt ‖W y‖) ^ 2 = ‖g₂ y‖ ^ 2 * (Real.sqrt ‖W y‖) ^ 2 := by ring
       _ = ‖g₂ y‖ ^ 2 * ‖W y‖ := by rw [hsq]
-  have hFm : AEStronglyMeasurable F volume := by
-    refine (hm1.norm).mul ?_
-    exact (Real.continuous_sqrt.comp_aestronglyMeasurable hmW.norm)
-  have hGm : AEStronglyMeasurable G volume := by
-    refine (hm2.norm).mul ?_
-    exact (Real.continuous_sqrt.comp_aestronglyMeasurable hmW.norm)
+  have hFm : AEStronglyMeasurable F volume :=
+    (hm1.norm).mul (Real.continuous_sqrt.comp_aestronglyMeasurable hmW.norm)
+  have hGm : AEStronglyMeasurable G volume :=
+    (hm2.norm).mul (Real.continuous_sqrt.comp_aestronglyMeasurable hmW.norm)
   have hFint : Integrable fun y => ‖F y‖ ^ 2 := by
     refine h1.congr (Filter.Eventually.of_forall fun y => ?_)
     dsimp only
@@ -62,32 +61,44 @@ theorem norm_integral_mul_mul_le_sqrt_mul_sqrt {g₁ g₂ W : ℝ → ℂ}
     rw [Real.norm_eq_abs, sq_abs, hGsq]
   have hFLp : MemLp F 2 volume := (memLp_two_iff_integrable_sq_norm hFm).mpr hFint
   have hGLp : MemLp G 2 volume := (memLp_two_iff_integrable_sq_norm hGm).mpr hGint
-  have hFnn : 0 ≤ᵐ[volume] F := Filter.Eventually.of_forall fun y => by
-    rw [hF]; positivity
-  have hGnn : 0 ≤ᵐ[volume] G := Filter.Eventually.of_forall fun y => by
-    rw [hG]; positivity
+  have hFnn : 0 ≤ᵐ[volume] F := Filter.Eventually.of_forall fun y => by rw [hF]; positivity
+  have hGnn : 0 ≤ᵐ[volume] G := Filter.Eventually.of_forall fun y => by rw [hG]; positivity
   have hcs := integral_mul_le_Lp_mul_Lq_of_nonneg Real.HolderConjugate.two_two hFnn hGnn
     (by simpa using hFLp) (by simpa using hGLp)
-  have hpt : ∀ y : ℝ, ‖g₁ y * g₂ y * W y‖ = F y * G y := by
+  have hpt : ∀ y : ℝ, ‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖ = F y * G y := by
     intro y
-    rw [hF, hG, norm_mul, norm_mul]
+    rw [hF, hG]
     have hsq : Real.sqrt ‖W y‖ * Real.sqrt ‖W y‖ = ‖W y‖ := Real.mul_self_sqrt (norm_nonneg _)
     calc ‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖
         = ‖g₁ y‖ * ‖g₂ y‖ * (Real.sqrt ‖W y‖ * Real.sqrt ‖W y‖) := by rw [hsq]
       _ = ‖g₁ y‖ * Real.sqrt ‖W y‖ * (‖g₂ y‖ * Real.sqrt ‖W y‖) := by ring
-  have hnorm : ‖∫ y : ℝ, g₁ y * g₂ y * W y‖ ≤ ∫ y : ℝ, F y * G y := by
-    refine le_trans (norm_integral_le_integral_norm _) (le_of_eq ?_)
-    exact integral_congr_ae (Filter.Eventually.of_forall hpt)
-  refine le_trans hnorm (le_trans hcs (le_of_eq ?_))
-  have hFpow : (∫ y : ℝ, F y ^ (2:ℝ)) = ∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖ := by
+  rw [integral_congr_ae (Filter.Eventually.of_forall hpt)]
+  refine hcs.trans (le_of_eq ?_)
+  have hFpow : (∫ y : ℝ, F y ^ (2 : ℝ)) = ∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖ := by
     refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
     dsimp only
     rw [Real.rpow_two, hFsq]
-  have hGpow : (∫ y : ℝ, G y ^ (2:ℝ)) = ∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖ := by
+  have hGpow : (∫ y : ℝ, G y ^ (2 : ℝ)) = ∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖ := by
     refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
     dsimp only
     rw [Real.rpow_two, hGsq]
   rw [hFpow, hGpow, Real.sqrt_eq_rpow, Real.sqrt_eq_rpow]
+
+/-- **Cauchy–Schwarz for a weighted vertical integral.**  A product of two factors against a weight is
+bounded by the two weighted mean squares. -/
+theorem norm_integral_mul_mul_le_sqrt_mul_sqrt {g₁ g₂ W : ℝ → ℂ}
+    (hm1 : AEStronglyMeasurable g₁ volume) (hm2 : AEStronglyMeasurable g₂ volume)
+    (hmW : AEStronglyMeasurable W volume)
+    (h1 : Integrable fun y => ‖g₁ y‖ ^ 2 * ‖W y‖)
+    (h2 : Integrable fun y => ‖g₂ y‖ ^ 2 * ‖W y‖) :
+    ‖∫ y : ℝ, g₁ y * g₂ y * W y‖
+      ≤ Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖)
+          * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖) := by
+  refine le_trans (norm_integral_le_integral_norm _) ?_
+  have hpt : ∀ y : ℝ, ‖g₁ y * g₂ y * W y‖ = ‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖ := fun y => by
+    rw [norm_mul, norm_mul]
+  rw [integral_congr_ae (Filter.Eventually.of_forall hpt)]
+  exact integral_mul_mul_weight_le_sqrt_mul_sqrt hm1 hm2 hmW h1 h2
 
 end GaloisForLFunctions.HTGeometry
 end
@@ -259,6 +270,107 @@ theorem norm_integral_mul_three_le_sup_mul_lorentz {g₁ g₂ g₃ W : ℝ → �
           * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * (1 + y ^ 2)⁻¹))) := by ring
     _ = M * C * (Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * (1 + y ^ 2)⁻¹)
           * Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * (1 + y ^ 2)⁻¹)) := by rw [hsq]; ring
+
+end GaloisForLFunctions.HTGeometry
+end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open MeasureTheory
+
+/-- The weighted mean square of a sum is integrable when both parts are. -/
+theorem integrable_normSq_add_mul_weight {g₁ g₂ W : ℝ → ℂ}
+    (hm1 : AEStronglyMeasurable g₁ volume) (hm2 : AEStronglyMeasurable g₂ volume)
+    (hmW : AEStronglyMeasurable W volume)
+    (h1 : Integrable fun y => ‖g₁ y‖ ^ 2 * ‖W y‖)
+    (h2 : Integrable fun y => ‖g₂ y‖ ^ 2 * ‖W y‖) :
+    Integrable fun y => ‖g₁ y + g₂ y‖ ^ 2 * ‖W y‖ := by
+  have hmaj : Integrable fun y : ℝ => 2 * (‖g₁ y‖ ^ 2 * ‖W y‖) + 2 * (‖g₂ y‖ ^ 2 * ‖W y‖) :=
+    (h1.const_mul 2).add (h2.const_mul 2)
+  refine Integrable.mono' hmaj (((hm1.add hm2).norm.pow 2).mul hmW.norm) ?_
+  filter_upwards with y
+  have htri : ‖g₁ y + g₂ y‖ ≤ ‖g₁ y‖ + ‖g₂ y‖ := norm_add_le _ _
+  have hsq : ‖g₁ y + g₂ y‖ ^ 2 ≤ 2 * ‖g₁ y‖ ^ 2 + 2 * ‖g₂ y‖ ^ 2 := by
+    have h := pow_le_pow_left₀ (norm_nonneg _) htri 2
+    nlinarith [sq_nonneg (‖g₁ y‖ - ‖g₂ y‖), norm_nonneg (g₁ y), norm_nonneg (g₂ y)]
+  have h0 : (0 : ℝ) ≤ ‖g₁ y + g₂ y‖ ^ 2 * ‖W y‖ := by positivity
+  rw [Real.norm_eq_abs, abs_of_nonneg h0]
+  calc ‖g₁ y + g₂ y‖ ^ 2 * ‖W y‖ ≤ (2 * ‖g₁ y‖ ^ 2 + 2 * ‖g₂ y‖ ^ 2) * ‖W y‖ :=
+        mul_le_mul_of_nonneg_right hsq (norm_nonneg _)
+    _ = 2 * (‖g₁ y‖ ^ 2 * ‖W y‖) + 2 * (‖g₂ y‖ ^ 2 * ‖W y‖) := by ring
+
+/-- **Minkowski's inequality for a weighted mean square.**  The quantity `(∫ ‖g‖²‖W‖)^{1/2}` is subadditive:
+
+`(∫ ‖g₁+g₂‖²‖W‖)^{1/2} ≤ (∫ ‖g₁‖²‖W‖)^{1/2} + (∫ ‖g₂‖²‖W‖)^{1/2}`.
+
+The cross term is handled by the weighted Cauchy–Schwarz inequality, so no `L²` space is constructed.  This
+is what lets a Dirichlet polynomial be split into blocks and each block estimated with its own parameters. -/
+theorem sqrt_integral_normSq_add_mul_weight_le {g₁ g₂ W : ℝ → ℂ}
+    (hm1 : AEStronglyMeasurable g₁ volume) (hm2 : AEStronglyMeasurable g₂ volume)
+    (hmW : AEStronglyMeasurable W volume)
+    (h1 : Integrable fun y => ‖g₁ y‖ ^ 2 * ‖W y‖)
+    (h2 : Integrable fun y => ‖g₂ y‖ ^ 2 * ‖W y‖) :
+    Real.sqrt (∫ y : ℝ, ‖g₁ y + g₂ y‖ ^ 2 * ‖W y‖)
+      ≤ Real.sqrt (∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖)
+          + Real.sqrt (∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖) := by
+  set A₁ : ℝ := ∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖ with hA₁
+  set A₂ : ℝ := ∫ y : ℝ, ‖g₂ y‖ ^ 2 * ‖W y‖ with hA₂
+  have hA₁0 : 0 ≤ A₁ := by
+    rw [hA₁]
+    exact integral_nonneg fun y => by positivity
+  have hA₂0 : 0 ≤ A₂ := by
+    rw [hA₂]
+    exact integral_nonneg fun y => by positivity
+  have hcross := integral_mul_mul_weight_le_sqrt_mul_sqrt hm1 hm2 hmW h1 h2
+  have hint := integrable_normSq_add_mul_weight hm1 hm2 hmW h1 h2
+  have hcrossint : Integrable fun y : ℝ => ‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖ := by
+    have hmaj : Integrable fun y : ℝ => (‖g₁ y‖ ^ 2 * ‖W y‖ + ‖g₂ y‖ ^ 2 * ‖W y‖) := h1.add h2
+    refine Integrable.mono' hmaj (((hm1.norm).mul (hm2.norm)).mul hmW.norm) ?_
+    filter_upwards with y
+    have h0 : (0 : ℝ) ≤ ‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖ := by positivity
+    rw [Real.norm_eq_abs, abs_of_nonneg h0]
+    have hab : ‖g₁ y‖ * ‖g₂ y‖ ≤ ‖g₁ y‖ ^ 2 + ‖g₂ y‖ ^ 2 := by
+      nlinarith [sq_nonneg (‖g₁ y‖ - ‖g₂ y‖)]
+    calc ‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖ ≤ (‖g₁ y‖ ^ 2 + ‖g₂ y‖ ^ 2) * ‖W y‖ :=
+          mul_le_mul_of_nonneg_right hab (norm_nonneg _)
+      _ = ‖g₁ y‖ ^ 2 * ‖W y‖ + ‖g₂ y‖ ^ 2 * ‖W y‖ := by ring
+  have hexpand : (∫ y : ℝ, ‖g₁ y + g₂ y‖ ^ 2 * ‖W y‖)
+      ≤ A₁ + 2 * (∫ y : ℝ, ‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖) + A₂ := by
+    have hbound : ∀ y : ℝ, ‖g₁ y + g₂ y‖ ^ 2 * ‖W y‖
+        ≤ ‖g₁ y‖ ^ 2 * ‖W y‖ + 2 * (‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖) + ‖g₂ y‖ ^ 2 * ‖W y‖ := by
+      intro y
+      have htri : ‖g₁ y + g₂ y‖ ≤ ‖g₁ y‖ + ‖g₂ y‖ := norm_add_le _ _
+      have hsq : ‖g₁ y + g₂ y‖ ^ 2 ≤ (‖g₁ y‖ + ‖g₂ y‖) ^ 2 :=
+        pow_le_pow_left₀ (norm_nonneg _) htri 2
+      calc ‖g₁ y + g₂ y‖ ^ 2 * ‖W y‖ ≤ ((‖g₁ y‖ + ‖g₂ y‖) ^ 2) * ‖W y‖ :=
+            mul_le_mul_of_nonneg_right hsq (norm_nonneg _)
+        _ = ‖g₁ y‖ ^ 2 * ‖W y‖ + 2 * (‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖) + ‖g₂ y‖ ^ 2 * ‖W y‖ := by ring
+    have hIntSum : Integrable fun y : ℝ => ‖g₁ y‖ ^ 2 * ‖W y‖
+        + 2 * (‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖) + ‖g₂ y‖ ^ 2 * ‖W y‖ :=
+      (h1.add (hcrossint.const_mul 2)).add h2
+    have hsplit : (∫ y : ℝ, ‖g₁ y‖ ^ 2 * ‖W y‖
+          + 2 * (‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖) + ‖g₂ y‖ ^ 2 * ‖W y‖)
+        = A₁ + 2 * (∫ y : ℝ, ‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖) + A₂ := by
+      have hAB : Integrable fun y : ℝ => ‖g₁ y‖ ^ 2 * ‖W y‖
+          + 2 * (‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖) := h1.add (hcrossint.const_mul 2)
+      have hcm : Integrable fun y : ℝ => 2 * (‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖) :=
+        hcrossint.const_mul 2
+      rw [integral_add hAB h2, integral_add h1 hcm, integral_const_mul, hA₁, hA₂]
+    have hmono := integral_mono hint hIntSum hbound
+    rw [hsplit] at hmono
+    exact hmono
+  have hfinal : (∫ y : ℝ, ‖g₁ y + g₂ y‖ ^ 2 * ‖W y‖)
+      ≤ (Real.sqrt A₁ + Real.sqrt A₂) ^ 2 := by
+    have hsq1 : Real.sqrt A₁ ^ 2 = A₁ := Real.sq_sqrt hA₁0
+    have hsq2 : Real.sqrt A₂ ^ 2 = A₂ := Real.sq_sqrt hA₂0
+    have hcross' : (∫ y : ℝ, ‖g₁ y‖ * ‖g₂ y‖ * ‖W y‖) ≤ Real.sqrt A₁ * Real.sqrt A₂ := by
+      rw [hA₁, hA₂]
+      exact hcross
+    nlinarith [hexpand, hcross', hsq1, hsq2]
+  calc Real.sqrt (∫ y : ℝ, ‖g₁ y + g₂ y‖ ^ 2 * ‖W y‖)
+      ≤ Real.sqrt ((Real.sqrt A₁ + Real.sqrt A₂) ^ 2) := Real.sqrt_le_sqrt hfinal
+    _ = Real.sqrt A₁ + Real.sqrt A₂ := by
+        rw [Real.sqrt_sq (by positivity)]
 
 end GaloisForLFunctions.HTGeometry
 end
