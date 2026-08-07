@@ -713,3 +713,27 @@ Perron identity, giving
 
 for every `f` with `‖f‖ ≤ 1`, every cutoff `N > 0`, width `H > 0` and every `σ > 1`.  The Perron step of
 step 4 is now stated for the sequences the log recursion produces, not for abstract summable factors.
+
+## Twenty-seventh brick: the mean square in the Perron variable
+
+`RHTower/Sieve/LorentzianLSeriesLine.lean` (green, axiom-clean, wired).
+
+The mean-square estimates of the corpus live in the Gallagher variable `w` (frequency `n^{2πiw}`); the
+Perron passage delivers its integral in `y` (frequency `n^{-iy}`).  Three steps bridge them:
+
+* `natCast_cpow_neg_eq` — the polar split `n^{-(σ+iy)} = n^{-σ}·e^{-iy log n}`, obtained from the corpus's
+  `natCast_cpow_neg_eq_mul` and `conj_charFn` rather than re-derived;
+* `LSeries_eq_logPoly_of_support` — a **finitely supported Dirichlet series is a Dirichlet polynomial**:
+  `L(a, σ+iy) = logPoly (a_n n^{-σ}) s (-y/2π)`;
+* `integral_lorentz_comp_neg_div_le` — the reflection and rescaling `y = -2πw` sends the weight `1/(1+y²)`
+  to `2π/(1+4π²w²)`, dominated by `2π/(1+w²)`; stated for an arbitrary nonnegative continuous `F`, so it is
+  reusable for any Lorentzian-weighted quantity, not just this mean square.
+
+Consequences, in the variable the Perron integral uses:
+
+`integral_lorentz_normSq_LSeries_le_count`  :
+`∫_ℝ ‖L(a,σ+iy)‖² dy/(1+y²) ≤ 25π² ∑_{n ∈ s} #{m ∈ s : |log n − log m| < 1/2π}·‖a_n n^{-σ}‖²`;
+
+`integral_lorentz_normSq_LSeries_le_prime_sieve` — the same with the count discharged by the Selberg sieve
+for prime-supported coefficients.  This is GHS Lemma 1 on the Perron line, with the damping `n^{-σ}`
+carried inside the coefficients where the Cauchy–Schwarz split needs it.
