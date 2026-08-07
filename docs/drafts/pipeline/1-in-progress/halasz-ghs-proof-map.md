@@ -810,3 +810,28 @@ The left side is what the Perron and mean-square steps estimate; the right side 
 the logarithmic recursion produce.  With this identity the two halves of the programme are the same object,
 and the chain from `(∑_{n≤N} f(n))·log N` to the sieve mean squares is closed except for the numerical choice
 of `σ, z, Y, H` and the evaluation of the two sieve sums.
+
+## The second application of the recursion, with its error evaluated
+
+`RHTower/Sieve/SecondLogRecursion.lean` (green, axiom-clean, wired).
+
+* `norm_log_mul_partialSum_sub_inner_le` — at one prime: dividing the recursion at scale `⌊N/p⌋` by
+  `log⌊N/p⌋` and weighting by `f(p)log p`,
+  `‖f(p)log p·S(N/p) − (f(p)log p/log⌊N/p⌋)·T(N/p)‖ ≤ (9 + mertensTail)·(log p/log⌊N/p⌋)·⌊N/p⌋`,
+  where `T` is the inner prime average.  The condition `⌊N/p⌋ ≥ 2` is exactly what keeps the divisor
+  positive — the same condition that defines the support of `ghsOuter`.
+* `norm_sum_primes_sub_double_prime_average_le` — the same summed over the outer primes.
+* `sum_prime_log_div_log_quotient_mul_quotient_le` — the total weighted error against the dyadic
+  quotient-window estimate: `∑_p (log p/log⌊N/p⌋)·⌊N/p⌋ ≤ N·(B/log 2)·(1 + log log₂ N)`.
+* `norm_sum_primes_sub_double_prime_average_le_explicit` — hence the second application costs
+  `O(N log log N)` against a main term of size `N log N`.
+
+The saving of the second application is therefore a full logarithm up to `log log`, and it is the dyadic
+quotient-window blocking that delivers it — no double-exponential dissection of the prime range is needed,
+which is where the original argument spends a factor.
+
+**The paper chain is now complete in Lean from `(∑_{n ≤ N} f(n))·log N` to the sieve mean squares**: step 1
+(`norm_sum_Icc_mul_log_sub_sum_primes_le'`), step 2 (this module), the join
+(`sum_Icc_ghsTriple_eq_prime_double_average`), and step 4 (`exists_norm_tsum_ghs_smoothWeight_le`) with the
+smoothing connector (`norm_partialSum_le_of_smoothed_bound`).  What is left is the arithmetic evaluation of
+`sieveMeanSquare` at the natural parameters.

@@ -6162,3 +6162,4 @@ import GaloisForLFunctions.RHTower.Sieve.EulerBoundLSeries
 import GaloisForLFunctions.RHTower.Sieve.GhsStepFour
 import GaloisForLFunctions.RHTower.Sieve.ConvolutionSummatorySwap
 import GaloisForLFunctions.RHTower.Sieve.GhsRecursionJoin
+import GaloisForLFunctions.RHTower.Sieve.SecondLogRecursion
