@@ -1781,3 +1781,29 @@ never names.** No card in this folder may be promoted on the strength of its `Le
 
 Applies to all ten remaining cards that cite `GaloisForLFunctions` (grep the folder); each needs an
 equation-by-equation audit before any promotion claim.
+
+## AL. The conversion factor is assembled
+
+`GagliardoFourierConstant.lean` is now at 19 declarations, all `#print axioms` clean.
+
+- `integral_normSq_differenceSymbol` — **the conversion factor**, pointwise in the frequency and
+  with no `L²` bookkeeping at all:
+
+      ∫_{h>0} ‖1 − e^{2πihξ}‖² h^{−(1+2s)} dh  =  c_s · ξ^{2s}          (ξ > 0)
+
+  Proved by rewriting the squared symbol as the Gagliardo numerator (`normSq_differenceSymbol`) and
+  applying the scaling law. `c_s` is finite exactly on `0 < s < 1` and its integrand is positive on
+  the unit window, both established above.
+
+This is the scalar heart of the difference-quotient/Fourier equivalence, and it needed **no `Lp`
+coercions** — the previous entry's "assembly requires carrying `L²` representatives" applies only
+to the final `∫∫ … dx` form, not to the conversion factor itself. Stating the identity pointwise in
+`ξ` sidesteps the bookkeeping entirely.
+
+### What the `∫∫ … dx` form still needs
+
+Only the step from `∫ ‖u(x+h) − u(x)‖² dx` to `∫ ‖symbol(h,ξ)‖² ‖û(ξ)‖² dξ`, i.e. Plancherel
+applied at fixed `h`. The corpus's `L2FourierMultiplier` provides it for `Lp` elements
+(`norm_fourierL2_apply`); what is missing is only the bridge from a concrete `u : ℝ → ℂ` to its
+`Lp` class. Everything downstream of that bridge — Tonelli, the scaling law, the constant — is
+built.

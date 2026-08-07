@@ -69,14 +69,6 @@ theorem comp_scaling_ne_zero {a : L} (ha : a ≠ 0) {R : Polynomial L} (hR : R �
   simp only [Polynomial.comp_C_mul_X_coeff, Polynomial.coeff_zero] at h0
   exact mul_ne_zero (Polynomial.leadingCoeff_ne_zero.mpr hR) (pow_ne_zero _ ha) h0
 
-end GaloisForLFunctions.HTGeometry
-
-namespace GaloisForLFunctions.HTGeometry
-
-open Polynomial
-
-variable {L : Type*} [Field L]
-
 /-- A polynomial dividing its own scaling is a scaling eigenvector. -/
 theorem exists_scaling_eigenvalue {a : L} (ha : a ≠ 0) {R : Polynomial L} (hR : R ≠ 0)
     (hdvd : R ∣ R.comp (Polynomial.C a * Polynomial.X)) :
@@ -91,8 +83,9 @@ theorem exists_scaling_eigenvalue {a : L} (ha : a ≠ 0) {R : Polynomial L} (hR 
     rw [hS, Polynomial.natDegree_mul hR hSne] at h1
     omega
   refine ⟨S.coeff 0, ?_⟩
-  rw [hS, Polynomial.eq_C_of_natDegree_eq_zero hdeg]
-  ring
+  calc R.comp (Polynomial.C a * Polynomial.X) = R * S := hS
+    _ = R * Polynomial.C (S.coeff 0) := by rw [← Polynomial.eq_C_of_natDegree_eq_zero hdeg]
+    _ = Polynomial.C (S.coeff 0) * R := by ring
 
 /-- **A scaling-invariant coprime fraction has constant numerator and denominator.** -/
 theorem natDegree_eq_zero_of_scaling_invariant {a : L} (ha : a ≠ 0)
