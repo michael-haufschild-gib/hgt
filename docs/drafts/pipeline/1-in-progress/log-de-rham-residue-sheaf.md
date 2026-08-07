@@ -78,6 +78,12 @@ declarations: `propext, Classical.choice, Quot.sound`.
   exterior degree at least two vanishes, the bidegree carrying the generator is killed by the
   hypothesis, and what is left is the ordinary bidegree.
 
-Remaining: the anticommutation of the residue with the differential, which makes it a morphism of
-complexes after the standard sign, and the passage from the algebra to the sheaf, which the corpus's
-local-predicate machinery supports.
+- `logResidueEquiv_map_d`, `logResidue_d` — **the residue commutes with the differential**, so it is
+  a morphism of complexes.  No sign appears: the logarithmic differential has no component
+  differentiating the adjoined generator, because that generator is closed, so the right half of the
+  tensor differential vanishes identically.
+
+Remaining: the passage from the algebra to the sheaf, which the corpus's local-predicate machinery
+supports.  The algebraic content of `(6)`--`(7)` of the residue-square card — the logarithmic
+complex, the unique expression `α + (dz/z) ∧ β`, the Poincaré residue `β`, and the residue sequence
+— is complete.

@@ -309,6 +309,54 @@ theorem logResidue_eq_zero_iff (A : CDGAStructure R X) (k : ℕ)
   · rintro ⟨x, rfl⟩
     exact logResidue_inclusion A k x
 
+/-- The residue commutes with the differential through the bidegree it reads. -/
+theorem logResidueEquiv_map_d (A : CDGAStructure R X) (k : ℕ)
+    (z : TensorProduct R (X k) (⋀[R]^1 R)) :
+    logResidueEquiv (X := X) (k + 1) (TensorProduct.map (A.dₗ k) LinearMap.id z)
+      = A.d k (logResidueEquiv (X := X) k z) := by
+  induction z using TensorProduct.induction_on with
+  | zero =>
+      rw [map_zero, map_zero, map_zero]
+      exact ((A.dₗ k).map_zero).symm
+  | tmul x w =>
+      show (TensorProduct.rid R (X (k + 1)))
+        (TensorProduct.congr (LinearEquiv.refl R (X (k + 1))) (exteriorOneEquiv R R)
+          (A.d k x ⊗ₜ[R] w)) = _
+      rw [TensorProduct.congr_tmul, TensorProduct.rid_tmul]
+      show ((exteriorOneEquiv R R) w) • A.d k x
+        = A.d k ((TensorProduct.rid R (X k))
+          (TensorProduct.congr (LinearEquiv.refl R (X k)) (exteriorOneEquiv R R) (x ⊗ₜ[R] w)))
+      rw [TensorProduct.congr_tmul, TensorProduct.rid_tmul]
+      exact (A.d_smul k ((exteriorOneEquiv R R) w) x).symm
+  | add z z' hz hz' =>
+      rw [map_add, map_add, hz, hz', map_add, A.d_add]
+
+/-- **The residue commutes with the differential.**  The logarithmic differential has no component
+differentiating the adjoined generator, because that generator is closed, so the residue is a
+morphism of complexes. -/
+theorem logResidue_d (A : CDGAStructure R X) (k : ℕ)
+    (F : TensorCarrier (R := R) X (fun n => ⋀[R]^n R) (k + 1)) :
+    logResidue (X := X) (k + 1) ((logCDGA A).d (k + 1) F)
+      = A.d k (logResidue (X := X) k F) := by
+  have hcomp : ((logCDGA A).d (k + 1) F) ⟨(k + 1, 1), by omega⟩
+      = TensorProduct.map (A.dₗ k) LinearMap.id (F ⟨(k, 1), by omega⟩) := by
+    show (tensorDL (CDGAStructure.selfModule A)
+            (zeroActModule (A := A) (exteriorModuleCDGA R R)) (k + 1) F
+          + tensorDR (CDGAStructure.selfModule A)
+            (zeroActModule (A := A) (exteriorModuleCDGA R R)) (k + 1) F)
+        ⟨(k + 1, 1), by omega⟩ = _
+    rw [tensorCarrier_add_apply, tensorDL_succ, tensorDR_succ]
+    have hzero : (zeroActModule (A := A) (exteriorModuleCDGA R R)).dₗ 0
+        = (0 : (⋀[R]^0 R) →ₗ[R] (⋀[R]^1 R)) := by
+      refine LinearMap.ext fun w => ?_
+      rfl
+    rw [hzero]
+    show TensorProduct.map (A.dₗ k) LinearMap.id (F ⟨(k, 1), by omega⟩)
+      + ((-1 : R)) ^ (k + 1) • TensorProduct.map LinearMap.id
+        (0 : (⋀[R]^0 R) →ₗ[R] (⋀[R]^1 R)) (F ⟨(k + 1, 0), by omega⟩) = _
+    rw [TensorProduct.map_zero_right, LinearMap.zero_apply, smul_zero, add_zero]
+  rw [logResidue_eq_equiv, hcomp, logResidueEquiv_map_d, ← logResidue_eq_equiv]
+
 end LogAlgebra
 
 end GaloisForLFunctions.HTGeometry
