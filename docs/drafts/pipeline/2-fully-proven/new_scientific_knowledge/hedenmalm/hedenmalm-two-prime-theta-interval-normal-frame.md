@@ -440,10 +440,24 @@ source, with no hypothesis: one integration by parts on the line, the window der
 | `(18)`,`(19)` | the compact reciprocal multiplier `A_n(mu) = 2 n^(-1/2) mu sin(L_n/(2 mu))` | `compactNormalMultiplier`, `compactNormalMultiplier_eq` |
 | `(20)` | `A_n(-1/zeta) = a_n(zeta)` on every root block | `compactNormalMultiplier_root` |
 
-Still missing: the conormal generation statement `(13)`--`(14)` (this needs Wedderburn/Cartan B
-for entire functions: two entire functions without a common zero generate the unit ideal --- absent
-from the corpus and from mathlib), the two bounded self-adjoint convolution channels and the
-cokernel `(17)` that rests on `(14)`, and the three frame obstructions.
+**Positive-kernel self-adjoint channels.**  `formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeChannels.lean`
+(namespace `RHTower.HedenmalmThetaSource`).
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(6)` | the centered window is a positive even kernel with exponential envelope | `centeredWindow_eq_cdf`, `continuous_centeredWindow`, `centeredWindow_nonneg`, `centeredWindow_le_exp` |
+| `(6)` | **it is integrable**, so it is an honest convolution kernel | `integrable_centeredWindow` |
+| `(7)` | its real Fourier symbol, and the closed form `hat c_n = a_n Xi_C` | `channelSymbol`, `channelSymbol_eq_integral`, `measurable_channelSymbol` |
+| `(8)` | **the symbol is real** (kernel real and even) | `conj_channelSymbol` |
+| — | the symbol is bounded by the total mass of the kernel | `norm_channelSymbol_le` |
+| `(17)` | **the two bounded self-adjoint prime channels** | `channelOperator`, `channelOperator_inner` |
+| `(17)` | the common real symbol zero set is exactly the real `Xi` divisor | `channelSymbol_eq_zero_iff` |
+
+Still missing: the conormal generation statement `(13)`--`(14)`.  This needs Wedderburn/Cartan B
+for entire functions --- two entire functions without a common zero generate the unit ideal, which
+requires Weierstrass products and Mittag-Leffler interpolation.  It is absent from the corpus and
+from mathlib, and it is the one real infrastructure gap left on this card; the analytic-cokernel
+half of `(17)` rests on it.  Also missing: the three frame obstructions.
 
 ## Gates
 

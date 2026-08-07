@@ -1763,3 +1763,21 @@ What remains is **assembly**, not new mathematics: composing these into the sing
 
 which requires carrying the `L²` representative through `Lp` coercions — bookkeeping that is
 genuinely fiddly in Lean but introduces no new analytic content.
+
+## AK. Spot-check: a card's `Lean:` line covers 2 of ~25 equations
+
+`suzuki-coordinate-cutoff-primitive-flux-identity` carries
+
+    - **Lean:** `GaloisForLFunctions.RHTower.SuzukiCoordinateCutoffPrimitiveFlux`
+
+which reads as if the card were formalized. It is not. That module contains **two** theorems —
+`primitiveCutoffFlux_pointwise` (the card's `(2)`) and
+`primitiveCutoffFlux_with_zeroOrder_pointwise` (`(3)`) — while the card states equations `(1)`
+through `(25)` plus `(51)`, across four sections including finite-recurrence event bounds.
+
+This is the failure mode recorded in `card-lean-tables-can-be-stale-or-absent`: a `Lean:` line
+names a module that exists and compiles, but covers a fraction of the card. **Audit statements,
+never names.** No card in this folder may be promoted on the strength of its `Lean:` line.
+
+Applies to all ten remaining cards that cite `GaloisForLFunctions` (grep the folder); each needs an
+equation-by-equation audit before any promotion claim.

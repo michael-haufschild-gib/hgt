@@ -315,7 +315,7 @@ theorem criticalSourceRaw_adjoin_eq_top
   have hb : (b : genericJetField K (m + n)) ∈
       IntermediateField.adjoin K
         (Set.range (fun j : Fin (m + n) => criticalAmbientRaw K m n (j : ℕ))) := by
-    simpa [criticalSourceField] using b.property
+    simp [criticalSourceField]
   let p : ∀ z, z ∈ IntermediateField.adjoin K
       (Set.range (fun j : Fin (m + n) => criticalAmbientRaw K m n (j : ℕ))) → Prop :=
     fun z hz => (⟨z, by simpa [criticalSourceField] using hz⟩ :

@@ -222,3 +222,21 @@ Real.sqrt (...)` FIRST, then rewrite the bare `k`.
 Card 6 remaining: the passage from formal symmetry to `A^* = L` after closure (3), closedness +
 index −1 (4), compact resolvent, Witten square (8), SUSY Dirac (9), strict positivity (10).
 mathlib has `LinearPMap.adjoint/closure/IsClosable` but NO unbounded Fredholm theory.
+
+## Card 5 channels CLOSED (2026-08-07)
+
+`formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeChannels.lean` (wired, builds,
+axiom-clean).  Statements (6) kernel properties, (7) symbol, (8) reality, (17) the two bounded
+self-adjoint channels + the symbol zero set = real Xi divisor.
+
+KEY MOVE: do NOT build convolution operators.  Define the channel on the FOURIER side as
+`lpBoundedMulCLM` by the symbol `channelSymbol n t = centeredMultiplier n t * XiC t`; the corpus
+multiplier layer then gives boundedness and self-adjointness for free
+(`lpBoundedMulCLM_inner_general` needs only `conj φ = φ`).
+Measurability of the symbol is free from the CLOSED FORM (measurable division), not from the
+integral; the integral representation (`channelSymbol_eq_integral`, valid for t ≠ 0) is used only
+for the bound and the reality.  At t = 0 the symbol is 0 by the `/z` convention, which is harmless
+({0} is null) and makes both proofs a two-case split.
+
+Traps: `MeasureTheory.integral_conj` does not exist — the name is bare `integral_conj`.
+`Real.rpow_nonneg` takes the base nonnegativity FIRST.
