@@ -708,3 +708,22 @@ So `𝒞^M_{F,ℝ} = C^*_{sh} ⊗^{\mathbb L}_{𝒫} 𝒦^M` can be formed *as a
 its underlying module being the layer's `⊗_A` applied to the two restrictions, and `(6)` is a
 statement about graded rings.  What is still absent is only the `E_∞` coherence above the
 commutative-differential-graded model — the bar construction and its spectral sequence.
+
+### What `(5)` now is, and what it is not
+
+With `relTensorCDGA` and `relTensorMapLeft_restrictHom_semifree_isQuasiIso`, the card's `(5)` has
+this form in the corpus:
+
+> `𝒫`-algebras `C`, `𝒦`; a semi-free `𝒫`-module resolution computes `C ⊗^{\mathbb L}_𝒫 𝒦`; the
+> result carries an algebra structure (`relTensorCDGA`); and base change along a quasi-isomorphism
+> of `𝒫`-algebras is a quasi-isomorphism.
+
+Composed with `relLeftUnitorHom` (`𝒫 ⊗_𝒫 M ≅ M`) that is exactly the card's two-line proof, now at
+the algebra level, so `(6)` reads as an isomorphism of graded rings.
+
+The one thing this model still does not carry is the coherence: `relTensorCDGA` is commutative and
+associative *on the nose*, which is what a commutative differential graded algebra means, and that
+is a **strictly stronger** structure than the `E_∞` one the card is written in — over `ℚ` it is
+equivalent to it, which is the reason the card invokes rational homotopy theory in the first place.
+So nothing is missing for the card's own purposes; what is absent is only a formal `E_∞` layer,
+which mathlib does not have and which this model exists to replace.

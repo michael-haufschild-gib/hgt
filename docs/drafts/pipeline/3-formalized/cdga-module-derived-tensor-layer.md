@@ -1699,3 +1699,19 @@ base change, all reduced to statements already proved for modules.
 
 Axioms: `propext, Quot.sound` for `restrictHom`; `propext, Classical.choice, Quot.sound` for the
 rest.
+
+## Derived base change over a base algebra, instantiated
+
+`CDGARelAlgebraFlat.lean` — **`relTensorMapLeft_restrictHom_freeTower_isQuasiIso`**,
+**`relTensorMapLeft_restrictHom_semifree_isQuasiIso`**.
+
+The two flatness theorems of the module layer — a tower of free cells and its colimit — instantiated
+at a morphism of algebras over a base algebra.  This is the form the statement takes when a derived
+tensor product over the base is computed by a semi-free resolution: tensoring the resolution over
+the base with a quasi-isomorphism of algebras over that base is again a quasi-isomorphism.
+
+Nothing new is proved here; the point is that after `restrictHom` the algebra-level statement *is*
+the module-level one, so the instantiation is a projection (`.2`) of an already-proved
+`IsQuasiIsoFull`.
+
+Axioms: `propext, Classical.choice, Quot.sound`.

@@ -232,3 +232,9 @@ projective/trace-class/determinant consequences.
   it does not assert the false pointwise convergence of oscillatory squared densities.
 - Both new modules pass foreground `lake env lean <file>` checks; dependency `.olean` artifacts
   were regenerated for continued module work.
+### 2026-08-07: full exterior off-diagonal cancellation
+
+- Extended `formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean` from compact-interval cancellation to the full radial ray.
+- Proved exact endpoint-density identities, endpoint collar mass control, product tail integrability, full-tail bounds, and the compact/edge/vanishing-budget decomposition.
+- Closed `tendsto_integral_Ioi_firstRowRadialProduct`: every fixed off-diagonal row product tends to zero for exact endpoint-normalized radial prolate solutions whenever `c → ∞` and `s → 0`.
+- Verified in foreground with `lake env lean GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean` (exit 0).

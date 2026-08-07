@@ -2875,3 +2875,88 @@ by `tendsto_halfLogAverage` — so both sides converge to `α`.
 Only the limit passage: instantiate the two critical-point families, apply the two displays above,
 and conclude `limsup H ≤ α ≤ liminf H`, then `tendsto_of_le_liminf_of_limsup_le`. Every inequality
 in the chain is now a built, axiom-clean lemma; what remains is quantifier bookkeeping over `n`.
+
+## BX. The equation is used — trace bounds from `(18)`
+
+New module `formal/GaloisForLFunctions/HTGeometry/LogNormalEquationTrace.lean`, wired into the
+`HTGeometry` umbrella. 2 declarations, both `#print axioms` clean.
+
+- `halfLog_le_of_equation` — from `logDirichlet f X + gammaTransport f X = S`, `S ≤ T` and
+  `−B ≤ gammaTransport f X`:
+
+      √X f(X) ≤ (T + B)/(2√X) + A(X).
+
+- `le_halfLog_of_equation` — the mirror, with the transport term bounded above.
+
+**This is where the equation is actually consumed.** Everything else in the chain is an estimate
+about one of the two operators separately; these two lemmas are the only place `(18)` enters.
+Instantiate `T` from `(19)` (`‖G‖_∞ + 2‖f‖_∞`) and `B` from `neg_le_gammaTransport_of_maximizer` /
+`gammaTransport_le_of_minimizer`.
+
+### `suzuki-weak-signed-half-log-trace` — remaining
+
+Only the limit passage. Given the maximizer family `X_n` with `δ_n = L_n^{−1/2} → 0`, `X_n → ∞`:
+
+    √X_n f_{ε_n}(X_n) ≤ (T + B_n)/(2√X_n) + A_{ε_n}(X_n),
+
+with `B_n` bounded (BU) and `A_{ε_n}(X_n) → α` (BW, `tendsto_halfLogAverage`), so the right side
+tends to `α`; with `H_n(X_n) → M` on the left this gives `M ≤ α`. Symmetrically `α ≤ liminf H`.
+Then `tendsto_of_le_liminf_of_limsup_le`.
+
+The limit step itself is `le_of_tendsto_of_tendsto'` from mathlib — do not wrap it. What must be
+written is the construction of the two families and the verification that each hypothesis of
+`halfLog_le_of_equation` / `le_halfLog_of_equation` holds along them.
+
+## BY. Premise audit — the maximizer inequalities are now chained, not assumed
+
+`GammaTransportKernel.lean` is now at 34 declarations, all `#print axioms` clean, no `sorry`.
+
+`neg_le_gammaTransport_of_maximizer` (BM) took the two one-sided inequalities `hp`/`hm` as
+hypotheses. **They are not assumptions** — they are `le_of_isMaxOn_penalized_shift` applied at the
+maximizer, a theorem built in section AW. Carrying them as hypotheses is exactly the pattern the
+project forbids.
+
+- `neg_le_gammaTransport_of_isMaxOn` — the chained form. Hypotheses are now only:
+  `IsMaxOn (penalized (fun L => √L f L) δ L₀) (Ici a) X` (the object: `X` is a maximizer),
+  `a ≤ X/2` (the window stays in the ray), boundedness, measurability, and the near integrability
+  that `(18)` supplies. No derived inequality is assumed.
+
+### Remaining premise audit on this chain
+
+Still carrying inputs that are theorems elsewhere:
+
+- `gammaTransport_le_of_minimizer` (BU) takes `hp`/`hm`/`hnum` — the mirror chaining through
+  `le_of_isMaxOn_penalized_neg_shift` is not yet written.
+- `halfLog_le_of_equation` / `le_halfLog_of_equation` (BX) take `hB : −B ≤ gammaTransport f X`,
+  which is now `neg_le_gammaTransport_of_isMaxOn`. Chain it.
+
+Legitimate object regularity, to keep: `Continuous f`, `Measurable f`, `∀ x, |f x| ≤ M`,
+`IsMaxOn …` (defines the point), the equation itself, and the near integrability (BJ — it is what
+`(18)` asserts, not something derivable).
+
+## BZ. Both transport bounds now chain from `IsMaxOn`
+
+`GammaTransportKernel.lean` is now at 35 declarations, all `#print axioms` clean, no `sorry`.
+
+- `gammaTransport_le_of_isMaxOn_neg` — the mirror of BY: both one-sided inequalities are derived
+  from `IsMaxOn (penalized (fun L => −(√L f L)) δ L₀) (Ici a) X`, not assumed.
+
+Premise status of the transport layer:
+
+| | assumed before | now |
+|---|---|---|
+| maximizer side | `hp`, `hm` one-sided inequalities | `IsMaxOn` + `a ≤ X/2` |
+| minimizer side | `hp`, `hm` one-sided inequalities | `IsMaxOn` (negated) + `a ≤ X/2` |
+
+Remaining hypotheses on both are object regularity or `(18)`-supplied: `Continuous`/`Measurable f`,
+`|f x| ≤ M`, the near integrability (BJ), and on the minimizer side `hnum`, the positivity of
+`f X − δs/√X` — that one is genuinely object data (a condition on the profile at the point), not a
+theorem stated elsewhere, so it stays.
+
+### Remaining premise to discharge
+
+`halfLog_le_of_equation` / `le_halfLog_of_equation` (BX) still take
+`hB : −B ≤ gammaTransport f X` and `hB : gammaTransport f X ≤ B`. Those are now exactly
+`neg_le_gammaTransport_of_isMaxOn` and `gammaTransport_le_of_isMaxOn_neg`. Chaining them gives
+trace bounds whose only inputs are the equation, the maximizer/minimizer property, and object
+regularity — which is the form the card-level derivation should consume.

@@ -695,17 +695,24 @@ of the Maurer--Cartan current upstairs *is* the quadratic differential `y′²/(
 whose denominator vanishes exactly at the two cone points `y = ±2`.  The square is the right object
 because the involution negates the current, so only its square descends.
 
-## The additive deck group, for the compact signatures
+## Correction — the additive deck group is already corpus-owned
 
-`GaloisForLFunctions/HTGeometry/TranslationInvariantRationalFunction.lean` (wired, axiom-clean):
+The compact signatures have the additive group as universal cover and translations as deck
+transformations.  That rigidity is **already in the tree** and must not be rebuilt:
 
-    natDegree_eq_zero_of_comp_X_add_C          a polynomial fixed by one nonzero translation is
-                                               constant
-    natDegree_eq_zero_of_translation_invariant a translation-invariant coprime fraction has constant
-                                               numerator and denominator
+    HTGeometry/RatFuncTranslationFixedField.lean
+      ratFuncTranslation_fixed_eq_constant          a translation-invariant rational function is a
+                                                    constant, for one nonzero shift in char 0
+      fixedField_zpowers_ratFuncTranslationAction   its fixed-field form
+    HTGeometry/ScalarAdditiveDifferentialTorsor.lean
+      scalarDerivativeField, scalarAdditiveTorsorRatFuncEquiv
+      scalarDifferentialTranslationEquivDerivative  the translation automorphisms
+      scalarDifferentialTranslationEquiv_fixed_on_derivativeField
+      fixedField_zpowers_scalarDifferentialTranslation_one
+                                                    **unit translation fixes exactly `F⟨q′⟩`**
+      DifferentialAlgEquiv.fixed_on_scalarDerivativeField_of_fixed_deriv
 
-The compact signatures have the additive group of the plane as universal cover and translations as
-deck transformations, so this is the rigidity statement they need, playing the role the scaling
-statement plays for the cusp signature.  In characteristic zero **one** nonzero translation already
-suffices: the derivative of a fixed polynomial is fixed too, so induction on the degree reduces to
-the degree-one case, where `P(X + c) = P + C(a c)` moves unless `a c = 0`.
+So for the compact signatures the deck-group algebra is done; what those four signatures still need
+is only the uniformizing coordinate — a doubly periodic meromorphic function with prescribed
+lattice.  The multiplicative analogue (`LogarithmicDerivativeFixedField.lean`) had no counterpart in
+the tree, which is why it had to be built.

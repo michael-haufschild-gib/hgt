@@ -755,4 +755,57 @@ theorem gammaTransport_le_of_minimizer {f : ℝ → ℝ} {X δ M : ℝ} (hX : 0 
   rw [hsplit]
   linarith [hnearbd, hfarup]
 
+/-! ## The transport bound directly from the maximizer
+
+The bound above takes the two one-sided inequalities as inputs.  They are not assumptions: they are
+`le_of_isMaxOn_penalized_shift` applied at the maximizer.  The version below chains them, so the
+only hypotheses left are that `X` maximizes the penalized weighted profile and that the window
+`[X − X/2, X + X/2]` stays inside the ray.
+-/
+
+/-- **The transport lower bound from the maximizer itself.**  No one-sided inequality is assumed —
+both are derived from `IsMaxOn`. -/
+theorem neg_le_gammaTransport_of_isMaxOn {f : ℝ → ℝ} {X δ M L₀ a : ℝ}
+    (hX : 0 < X) (hδ : 0 ≤ δ) (hf : 0 ≤ f X) (hFb : ∀ x, |f x| ≤ M) (hmeas : Measurable f)
+    (hnear : IntegrableOn (fun s => secondDifference f X s * gammaTransportKernel s)
+      (Ioc 0 (X / 2)))
+    (hmax : IsMaxOn (penalized (fun L => Real.sqrt L * f L) δ L₀) (Ici a) X)
+    (ha : a ≤ X / 2) :
+    -((2 * δ / Real.sqrt X + 2 * (f X + δ * Real.sqrt X / 2) / X)
+        * (∫ s in Ioc (0:ℝ) (X / 2), s * gammaTransportKernel s)
+      + 4 * M * (-Real.log (1 - Real.exp (-(X / 2))))) ≤ gammaTransport f X := by
+  refine neg_le_gammaTransport_of_maximizer hX hδ hf hFb hmeas hnear ?_ ?_
+  · intro s hs0 hsX
+    have hp : X + s ∈ Ici a := by simp only [mem_Ici]; linarith
+    have hm : X - s ∈ Ici a := by simp only [mem_Ici]; linarith
+    exact (le_of_isMaxOn_penalized_shift hmax hδ hs0 hp hm).1
+  · intro s hs0 hsX
+    have hp : X + s ∈ Ici a := by simp only [mem_Ici]; linarith
+    have hm : X - s ∈ Ici a := by simp only [mem_Ici]; linarith
+    exact (le_of_isMaxOn_penalized_shift hmax hδ hs0 hp hm).2
+
+/-- **The transport upper bound from the minimizer itself.**  The mirror of
+`neg_le_gammaTransport_of_isMaxOn`: both one-sided inequalities are derived from `IsMaxOn` applied
+to the negated weighted profile, not assumed. -/
+theorem gammaTransport_le_of_isMaxOn_neg {f : ℝ → ℝ} {X δ M L₀ a : ℝ}
+    (hX : 0 < X) (hδ : 0 ≤ δ) (hFb : ∀ x, |f x| ≤ M) (hmeas : Measurable f)
+    (hnear : IntegrableOn (fun s => secondDifference f X s * gammaTransportKernel s)
+      (Ioc 0 (X / 2)))
+    (hnum : ∀ s, 0 ≤ s → s ≤ X / 2 → 0 ≤ f X - δ * s / Real.sqrt X)
+    (hmax : IsMaxOn (penalized (fun L => -(Real.sqrt L * f L)) δ L₀) (Ici a) X)
+    (ha : a ≤ X / 2) :
+    gammaTransport f X
+      ≤ (2 * δ / Real.sqrt X + f X / (2 * X))
+          * (∫ s in Ioc (0:ℝ) (X / 2), s * gammaTransportKernel s)
+        + 4 * M * (-Real.log (1 - Real.exp (-(X / 2)))) := by
+  refine gammaTransport_le_of_minimizer hX hδ hFb hmeas hnear hnum ?_ ?_
+  · intro s hs0 hsX
+    have hp : X + s ∈ Ici a := by simp only [mem_Ici]; linarith
+    have hm : X - s ∈ Ici a := by simp only [mem_Ici]; linarith
+    exact (le_of_isMaxOn_penalized_neg_shift hmax hδ hs0 hp hm).1
+  · intro s hs0 hsX
+    have hp : X + s ∈ Ici a := by simp only [mem_Ici]; linarith
+    have hm : X - s ∈ Ici a := by simp only [mem_Ici]; linarith
+    exact (le_of_isMaxOn_penalized_neg_shift hmax hδ hs0 hp hm).2
+
 end GaloisForLFunctions.HTGeometry
