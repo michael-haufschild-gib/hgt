@@ -383,6 +383,7 @@ trace formula itself.
 | `(9)` | **the second absolute moment of the source is finite**, so the quantile map is square integrable | `integrable_sq_mul_thetaSource`, `integrableOn_sq_quantileFun_thetaSource` |
 | `(9)` | the quantile map is monotone | `quantileFun_le_quantileFun` |
 | `(9)` | the slice increment is an interval indicator | `abs_pinnedKernelSlice_sub` |
+| `(9)` | **the absolute slice moment moves at most by the quantile increment** --- the majorant of the last interchange | `absSliceMoment`, `integrable_quantileSpeed_mul_abs_pinnedKernelSlice`, `integrableOn_quantileSpeed_Ico`, `absSliceMoment_le` |
 | `(9)` | the quantile of the even theta source is odd, and its speed symmetric | `quantileFun_one_sub`, `quantileSpeed_one_sub` |
 | `(9)` | **the slice moment is odd under reflection**, which pins the additive constant | `sliceMoment_one_sub` |
 | `(9)` | **`sliceMoment S s = -Q(s)`**, unconditionally | `sliceMoment_eq_neg_quantileFun` |

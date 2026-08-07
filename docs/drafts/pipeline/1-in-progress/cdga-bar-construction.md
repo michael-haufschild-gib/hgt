@@ -209,12 +209,36 @@ no factors — and `barCounit_totalD` says it is a morphism of complexes: the gr
 differential, and nothing can be multiplied down into it, so every contribution to that component
 vanishes.  Axiom audit `propext, Classical.choice, Quot.sound`.
 
-## What is left on this card
+## The cross term of the total differential
 
-`barTotalD` squares to zero on each of its three pieces separately — `d_int² = 0` comes with the
-tensor product, `barD_sq` is proved above — but the **cross term** `barD ∘ d_int + d_int ∘ barD = 0`
-is not.  It is the Leibniz rule for the shifted product against the internal differential, a fourth
-cancellation of the same kind as the three already built: the head differentiated is the sum of its
-two factors differentiated, with the sign the shift contributes, and those match the two ways the
-internal differential of the tensor product can act.  Everything it needs — `augIdealMul_leibniz`,
-`augIdealShiftMulOf`, `tensorDL`/`tensorDR` and the telescope machinery — is in place.
+`barTotalD` squares to zero on each of its pieces separately — `d_int² = 0` comes with the tensor
+product, `barD_sq` is proved above — and the **cross term** `barD ∘ d_int + d_int ∘ barD = 0` now has
+all of its mathematics proved:
+
+- `augIdealShiftMulOf_leibniz` in `CDGABarMul.lean` — **the Leibniz rule on the shift**.  The signs
+  are forced, not chosen: the shift negates the differential and the shifted product carries the sign
+  of its first factor, and the two conspire so that the ideal's Leibniz rule becomes exactly this.
+- `barMulD_cancel` in `CDGABarComm.lean` — the same on an arbitrary element of a triple tensor.
+- The fourth term of the expansion, where the internal differential acts *past* the multiplication on
+  the trailing factor, needs nothing new: it is `barMulTail_cancel`, whose signs `(-1)^{p+q}` and
+  `(-1)^m` with `m = p + q + 1` are precisely the ones that appear.
+- `barPower_succ_d`, `barStage_dL`, `barStage_dR` expose the stage differential and its two halves
+  componentwise.
+
+### What the assembly actually requires
+
+Unlike the three cancellations of `barD² = 0`, this one is **not termwise**.  Writing the target
+component as `(c, e)`:
+
+* the outer half that differentiates the merged slot is indexed by the splits of `c - 1`, since the
+  head produced degree `c - 1` and the differential raised it;
+* the inner half is indexed by the splits of `c`, and for each split `(a, a')` it contributes two
+  terms — differentiate the first slot, which is zero when `a = 0`, and differentiate everything
+  after it, which splits again into the second slot and the coefficient family.
+
+`barMulD_cancel` at a split `(p, q)` of `c - 1` relates the outer term there to the inner terms at
+`(p + 1, q)` and at `(p, q + 1)` — three *different* indices.  The two reindexings
+`(p,q) ↦ (p+1,q)` and `(p,q) ↦ (p,q+1)` from the splits of `c - 1` into the splits of `c` overlap and
+each miss one boundary case, and exactly those boundary terms vanish.  So the assembly is a
+telescoping sum, not the `Finset.sum_nbij'` pattern used three times above; that is the one genuinely
+new piece of bookkeeping left on this card.
