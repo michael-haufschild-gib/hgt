@@ -37,7 +37,10 @@ theorem complexExpUnits_isAddQuotientCoveringMap :
 noncomputable def complexExpUnitsBasepoint : complexExpUnits ⁻¹' {(1 : Units ℂ)} :=
   ⟨0, by
     apply (unitsHomeomorphNeZero (G₀ := ℂ)).injective
-    simp [complexExpUnits]⟩
+    simp only [complexExpUnits, Function.comp_apply, Homeomorph.apply_symm_apply,
+      Complex.exp_zero]
+    apply Subtype.ext
+    rfl⟩
 
 /-- The fundamental group of `ℂˣ` is cyclic, obtained from the exponential universal cover. -/
 theorem isCyclic_fundamentalGroup_complexUnits :
@@ -117,11 +120,14 @@ theorem exists_eq_zpow_torusChartFundamentalGenerators (k : ℕ)
     exact ⟨b, hb.symm⟩
   obtain ⟨a, ha⟩ := h₁
   obtain ⟨b, hb⟩ := h₂
+  have hfirst : e (torusChartFirstFundamentalGenerator k) =
+      (complexUnitsFundamentalGenerator, 1) := by
+    simp [e, torusChartFirstFundamentalGenerator]
+  have hsecond : e (torusChartSecondFundamentalGenerator k) =
+      (1, complexUnitsFundamentalGenerator) := by
+    simp [e, torusChartSecondFundamentalGenerator]
   refine ⟨a, b, e.injective ?_⟩
-  rw [map_mul, map_zpow, map_zpow]
-  change e g =
-    (complexUnitsFundamentalGenerator, 1) ^ a *
-      (1, complexUnitsFundamentalGenerator) ^ b
+  rw [map_mul, map_zpow, map_zpow, hfirst, hsecond]
   apply Prod.ext
   · simpa using ha
   · simpa using hb
@@ -137,5 +143,7 @@ theorem map_eq_zpow_torusChartFundamentalGenerators
   obtain ⟨a, b, rfl⟩ := exists_eq_zpow_torusChartFundamentalGenerators k g
   refine ⟨a, b, ?_⟩
   rw [map_mul, map_zpow, map_zpow]
+
+end
 
 end GaloisForLFunctions.HTGeometry

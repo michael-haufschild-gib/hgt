@@ -1098,3 +1098,37 @@ check before use), with `Ioo 0 1 ⊆ Ioi 0` supplying the positive-measure set.
 
 Note `(mul_lt_mul_left Real.pi_pos).mpr` fails here (`MulRightStrictMono ℝ` does not synthesize);
 `nlinarith [Real.pi_pos]` does the same job.
+
+## Q. Survey of the remaining 33 — they are one cluster, not 33 independent cards
+
+Ranking the remaining cards by unresolved backticked identifiers is useless here: 15 of the 33 have
+**zero** Lean identifiers in them. They are paper cards written in mathematical notation, so the
+index tells you nothing about how close they are. Closeness has to be read off the mathematics.
+
+Direct inspection of `suzuki-scalar-analytic-forcing-trace-zero-h1` (one of the shortest, 281
+lines) shows the actual shape of the residue. Its **Inputs** line names four other cards, *all four
+of which are themselves still in stage 2*: `suzuki-weak-signed-half-log-trace`,
+`suzuki-forced-gamma-upper-strip-gluing`, `suzuki-gamma-wall-block-hardy-and-derivative-scattering`,
+`suzuki-gamma-weighted-tail-coercivity`. Its own statement needs the exact Gamma transport kernel
+
+    (R_full F)(L) = ∫_0^∞ [2F(L) − F(L+s) − F(L−s)] / (exp s − 1) ds
+
+as a distributional operator, a signed half-log trace `β = lim √L F(L)`, and a weighted `H¹`
+conclusion `exp(σL) F ∈ H¹` for `0 < σ < min(1, δ)`.
+
+**The conclusion that matters for planning.** The 70 cards already promoted were the ones the
+corpus could carry. The remaining 33 are a single dependency cluster around Suzuki's completed
+zero-mode problem, and they share a small set of deep analytic prerequisites that neither mathlib
+nor the corpus owns:
+
+1. the Plancherel equivalence of the difference-quotient and Fourier descriptions of `H^s`
+   (blocks the two-port card; sections M–P above got as far as the constant `c_s`);
+2. the Gamma transport kernel `R_full` as a distributional operator, with its pole structure —
+   the "exponent one is sharp" claim is *the first pole of the exact Gamma transport*;
+3. Carleman estimates on a weighted strip;
+4. the weak signed half-log trace theorem.
+
+Attacking cards one at a time in card order will keep hitting these same four walls. The efficient
+order is to build 1–4 as infrastructure first, then the cluster promotes in a batch. Item 1 is
+partly built (`GagliardoFourierConstant.lean`, `MonotoneTranslationModulus.lean`); items 2–4 are
+untouched.
