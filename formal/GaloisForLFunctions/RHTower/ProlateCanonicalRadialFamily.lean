@@ -27,8 +27,8 @@ theorem tendsto_signedModeRadialBandwidth_atTop :
     Tendsto signedModeRadialBandwidth atTop atTop := by
   have hsq : Tendsto (fun a : ℝ => a ^ 2) atTop atTop :=
     Filter.tendsto_pow_atTop (by norm_num)
-  simpa [signedModeRadialBandwidth] using
-    hsq.const_mul_atTop (by positivity : 0 < 2 * Real.pi)
+  change Tendsto (fun a : ℝ => 2 * Real.pi * a ^ 2) atTop atTop
+  exact hsq.const_mul_atTop (by positivity : 0 < 2 * Real.pi)
 
 /-- Data selected from the endpoint-normalized radial existence theorem. -/
 structure SignedModeRadialData where
@@ -136,13 +136,15 @@ theorem tendsto_integral_Ioi_signedModeRadialDensity
     (hs : Tendsto (fun a : ℝ => (signedModeRadialData a n).s) atTop (nhds 0))
     {b : ℝ} (hb : 1 < b) :
     Tendsto (fun a : ℝ => ∫ x in Ioi b,
-      radialProlateDensity (signedModeRadialBandwidth a) (signedModeRadialData a n).R x)
+      GaloisForLFunctions.RHTower.radialProlateDensity
+        (signedModeRadialBandwidth a) (signedModeRadialData a n).R x)
       atTop
       (nhds ((∫ x in Ioi b, _root_.RHTower.radialLeakageDensity x) / Real.pi)) := by
   let D : ℝ → SignedModeRadialData := fun a => signedModeRadialData a n
   let DR : ℝ → ℝ → ℝ := fun a => deriv (D a).R
   let DDR : ℝ → ℝ → ℝ := fun a => deriv (deriv (D a).R)
   exact GaloisForLFunctions.RHTower.tendsto_integral_Ioi_radialProlateDensity_to_ccmLeakage
+    (R := fun a => (D a).R) (DR := DR) (DDR := DDR)
     tendsto_signedModeRadialBandwidth_atTop hs
     (eventually_signedModeRadialData_s_nonneg n)
     (by simpa [D] using eventually_signedModeRadialData_R_one n)
@@ -157,12 +159,13 @@ theorem tendsto_integral_Ioi_signedModeFirstRowRadialProduct
     (hs : Tendsto (fun a : ℝ => (signedModeRadialData a n).s) atTop (nhds 0))
     {k : ℝ} (hk : 2 ≤ k) :
     Tendsto (fun a : ℝ => ∫ x in Ioi (1 : ℝ),
-      firstRowRadialProduct (signedModeRadialBandwidth a)
+      GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
         (signedModeRadialData a n).R k x) atTop (nhds 0) := by
   let D : ℝ → SignedModeRadialData := fun a => signedModeRadialData a n
   let DR : ℝ → ℝ → ℝ := fun a => deriv (D a).R
   let DDR : ℝ → ℝ → ℝ := fun a => deriv (deriv (D a).R)
   exact GaloisForLFunctions.RHTower.tendsto_integral_Ioi_firstRowRadialProduct
+    (R := fun a => (D a).R) (DR := DR) (DDR := DDR)
     tendsto_signedModeRadialBandwidth_atTop hs
     (eventually_signedModeRadialData_s_nonneg n)
     (by simpa [D] using eventually_signedModeRadialData_R_one n)

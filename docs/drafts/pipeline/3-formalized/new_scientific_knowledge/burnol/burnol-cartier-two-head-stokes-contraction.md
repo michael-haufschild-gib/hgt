@@ -1,9 +1,9 @@
 # Burnol Cartier two-head Stokes contraction
 
 - **ID:** `burnol-cartier-two-head-stokes-contraction`
-- **Stage:** 1 — in progress
+- **Stage:** 3 — formalized in Lean 4
 - **Route:** R
-- **Scientific status:** `[PAPER-PROVED SURVIVOR] [LEAN-PENDING]`
+- **Scientific status:** `[PAPER-PROVED SURVIVOR] [LEAN-PROVED]`
 - **Open producer:** pre-divisor Euler--Gamma--Stokes non-amplification of the fixed two-head
   polarization.
 
@@ -83,9 +83,9 @@ one coordinate is unnecessary; a full GNS or same-fibre metric comparison is unn
    transfer makes every off-line value strictly expansive.  This is a smaller and more natural
    Stokes producer than separate forward-head conservation.
 
-## Lean target
+## Lean formalization
 
-Create `RHTower/BurnolCartierZeroTransferHeadPolarization.lean` containing:
+Module `RHTower/BurnolCartierZeroTransferHeadPolarization.lean` contains:
 
 - canonical forward and cosine head coefficient functions on `soninExtendedSpace a`;
 - recovery of literal constant heads;
@@ -99,3 +99,13 @@ The remaining scientific core after formalization is exact and singular: prove t
 two-head non-amplification from pre-divisor Euler--Gamma--Stokes structure.  It must not be assumed
 from ambient isometry, Sonin membership, critical-line placement, or RH.
 
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/BurnolCartierZeroTransferHeadPolarization.lean
+lake build GaloisForLFunctions.RHTower.BurnolCartierZeroTransferHeadPolarization
+python3 scripts/formal_tools.py lint
+```
+
+All pass.  Audited capstones depend only on `[propext, Classical.choice, Quot.sound]`.  Module is
+wired into `GaloisForLFunctions/RHTower.lean`.

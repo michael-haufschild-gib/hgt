@@ -1679,11 +1679,11 @@ theorem tendsto_integral_firstRowRadialProduct
         ((∫ x in a..b, firstRowRadialProduct (c i) (R i) k x) -
           ∫ x in a..b, firstRowBesselProduct (s i) (c i) k x))
       (by
-        filter_upwards [hs0, hsHalf, hc5, hcrossa, hcxi]
-          with i hsi0 hsi1 hci hcrossi hcxii
+        filter_upwards [hs0, hsHalf, hc5, hcrossa, hcxi, hR1, hR, hDR, hode]
+          with i hsi0 hsi1 hci hcrossi hcxii hR1i hRi hDRi hodei
         exact abs_intervalIntegral_firstRowRadialProduct_sub_bessel_le
           hsi0 hsi1 hk hci hab ha hcrossi hcxii
-            (hR1 i) (hR i) (hDR i) (hode i))
+            hR1i hRi hDRi hodei)
       hmajor
   simpa only [sub_add_cancel, zero_add] using hdiff.add hbessel
 
@@ -1694,10 +1694,10 @@ theorem tendsto_integral_Ioi_firstRowRadialProduct
     {R DR DDR : ι → ℝ → ℝ}
     (hc : Tendsto c l atTop) (hs : Tendsto s l (nhds 0))
     (hs0 : ∀ᶠ i in l, 0 ≤ s i)
-    (hR1 : ∀ i, R i 1 = 1)
-    (hR : ∀ (i : ι) (t : ℝ), HasDerivAt (R i) (DR i t) t)
-    (hDR : ∀ (i : ι) (t : ℝ), HasDerivAt (DR i) (DDR i t) t)
-    (hode : ∀ (i : ι) (t : ℝ), (t ^ 2 - 1) * DDR i t + 2 * t * DR i t
+    (hR1 : ∀ᶠ i in l, R i 1 = 1)
+    (hR : ∀ᶠ i in l, ∀ t, HasDerivAt (R i) (DR i t) t)
+    (hDR : ∀ᶠ i in l, ∀ t, HasDerivAt (DR i) (DDR i t) t)
+    (hode : ∀ᶠ i in l, ∀ t, (t ^ 2 - 1) * DDR i t + 2 * t * DR i t
       - (s i * c i ^ 2 - c i ^ 2 * t ^ 2) * R i t = 0)
     {k : ℝ} (hk : 2 ≤ k) :
     Tendsto (fun i => ∫ x in Ioi (1 : ℝ),

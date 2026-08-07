@@ -75,4 +75,31 @@ theorem le_halfLog_of_equation_isMaxOn_neg {f : ℝ → ℝ} {X δ M L₀ a S T 
   le_halfLog_of_equation hX heq hS
     (gammaTransport_le_of_isMaxOn_neg hX hδ hFb hmeas hnear hnum hmax ha)
 
+/-! ## The bound transfers to the base point
+
+The maximizer dominates the base point by construction, so the trace bound at the maximizer is
+also a bound at the base point.  This removes any need to extract a subsequence realising the upper
+limit: the estimate holds at *every* base point, so it bounds the upper limit directly.
+-/
+
+open MeasureTheory Set in
+/-- **The trace at the base point is bounded.**  Chaining `le_value_of_isMaxOn_penalized` with the
+trace bound at the maximizer. -/
+theorem halfLog_base_le_of_equation_isMaxOn {f : ℝ → ℝ} {X δ M L₀ a S T : ℝ}
+    (hX : 0 < X) (hδ : 0 ≤ δ) (hf : 0 ≤ f X) (hFb : ∀ x, |f x| ≤ M) (hmeas : Measurable f)
+    (hnear : IntegrableOn (fun s => secondDifference f X s * gammaTransportKernel s)
+      (Ioc 0 (X / 2)))
+    (hmax : IsMaxOn (penalized (fun L => Real.sqrt L * f L) δ L₀) (Ici a) X)
+    (ha : a ≤ X / 2) (hL₀ : L₀ ∈ Ici a)
+    (heq : logDirichlet f X + gammaTransport f X = S) (hS : S ≤ T) :
+    Real.sqrt L₀ * f L₀
+      ≤ (T + ((2 * δ / Real.sqrt X + 2 * (f X + δ * Real.sqrt X / 2) / X)
+              * (∫ s in Ioc (0:ℝ) (X / 2), s * gammaTransportKernel s)
+            + 4 * M * (-Real.log (1 - Real.exp (-(X / 2))))))
+          / (2 * Real.sqrt X) + halfLogAverage f X := by
+  have hbase : Real.sqrt L₀ * f L₀ ≤ Real.sqrt X * f X :=
+    le_value_of_isMaxOn_penalized hmax hδ hL₀
+  exact hbase.trans
+    (halfLog_le_of_equation_isMaxOn hX hδ hf hFb hmeas hnear hmax ha heq hS)
+
 end GaloisForLFunctions.HTGeometry

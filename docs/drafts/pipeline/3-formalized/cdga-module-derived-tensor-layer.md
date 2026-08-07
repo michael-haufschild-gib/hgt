@@ -1715,3 +1715,24 @@ the module-level one, so the instantiation is a projection (`.2`) of an already-
 `IsQuasiIsoFull`.
 
 Axioms: `propext, Classical.choice, Quot.sound`.
+
+## The ground ring as an algebra
+
+`CDGAGround.lean` — `groundCarrierSubsingleton`, **`groundCDGA`**, **`groundCDGAUnit`**.
+
+The ground ring placed in degree zero, carried by `ConstCellCarrier R 0`, with zero differential.
+The product is the product of `R` in the only degree where anything lives; every identity involving
+the differential holds because its target is concentrated away from degree zero and is therefore a
+subsingleton.  Graded commutativity needs the observation that the sign is `(−1)^{a·b}` with
+`a = b = 0` forced by the output degree — substituting those before touching the exponent is what
+makes it a one-line `ring`.
+
+One Lean point worth keeping: the subsingleton fact must be a **theorem**, not an instance — its
+hypothesis `n ≠ 0` appears in no instance-implicit position, so as an instance it is unusable and
+Lean rejects it; the algebra's four differential axioms then supply it explicitly with
+`@Subsingleton.elim _ (groundCarrierSubsingleton R (by omega)) _ _`.
+
+This is the unit object of the tensor product of algebras and the target of an augmentation, which
+is what an augmented algebra — the input to a bar construction — is defined against.
+
+Axioms: `propext, Quot.sound`.

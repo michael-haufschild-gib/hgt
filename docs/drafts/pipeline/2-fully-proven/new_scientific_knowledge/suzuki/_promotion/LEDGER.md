@@ -3016,3 +3016,59 @@ All three are now either theorems or immediate from built bounds. The limit pass
 unproved ingredient left — what remains is constructing the two critical-point families from the
 card's hypotheses and applying `le_of_tendsto_of_tendsto'` and
 `tendsto_of_le_liminf_of_limsup_le`.
+
+## CC. `(23)` at the card's slope — the `O(√L₀)` displacement
+
+`PenalizedMaximum.lean` is now at 18 declarations, all `#print axioms` clean, no `sorry`.
+
+- `abs_sub_le_sqrt_mul_of_isMaxOn` — with the penalty slope taken to be `(√L₀)⁻¹`, the abstract
+  localisation of section BA becomes
+
+      |X − L₀| ≤ √L₀ · (B − H L₀),
+
+  i.e. the card's `(23)` displacement `|X_n − L_n| = O(√L_n)`, the factor `(B − H L_n)` being
+  bounded because `H L_n → M`.
+
+This is the last piece of `(23)` stated at the card's actual parameters rather than abstractly.
+
+### `suzuki-weak-signed-half-log-trace` — the remaining work, precisely
+
+Everything is now built except the construction of the two families and the limit passage. To
+write it one needs, for each `n`:
+
+    L_n → ∞ chosen with H(L_n) → M = limsup H              (from limsup, mathlib)
+    ε_n < 1/n with the mollification defect small at L_n   (BumpMollifierFamily + abs_sub_mollify_le)
+    X_n from exists_isMaxOn_penalized at slope (√L_n)⁻¹    (AX)
+    |X_n − L_n| ≤ √L_n (B − H_n(L_n))                      (CC)
+    interiority of X_n for large n                         (lt_of_localised, AR)
+    the trace bound at X_n                                 (CA)
+    all three factors → 0                                  (CB, T, AR)
+
+then `le_of_tendsto_of_tendsto'` and `tendsto_of_le_liminf_of_limsup_le` (both mathlib). No
+unproved ingredient remains; the work is the construction and the bookkeeping.
+
+## CD. The subsequence extraction is unnecessary
+
+`LogNormalEquationTrace.lean` is now at 5 declarations, all `#print axioms` clean, no `sorry`.
+
+- `halfLog_base_le_of_equation_isMaxOn` — chaining `le_value_of_isMaxOn_penalized` (the maximizer
+  dominates the base point) with the trace bound at the maximizer gives a bound **at the base
+  point**:
+
+      √L₀ f(L₀) ≤ (T + [C₊ m(X) + 4M q(X/2)])/(2√X) + A(X).
+
+**This removes the hardest remaining step.** Section CC's plan began "choose `L_n → ∞` with
+`H(L_n) → M = limsup H`" — a subsequence extraction realising the upper limit, which is the
+filter-level construction that made the remaining work look delicate. It is not needed: the
+estimate holds at *every* base point `L₀`, so it bounds `H(L₀)` for all large `L₀` directly, and
+hence bounds `limsup H` without ever naming a maximising sequence.
+
+Revised remaining work for `(4)`:
+
+1. for each `L₀` large, produce the maximizer `X = X(L₀)` (AX) at slope `(√L₀)⁻¹`;
+2. note `X(L₀) → ∞` as `L₀ → ∞` from the localisation (CC);
+3. the right-hand side above tends to `α` (CB, T, AR, `tendsto_halfLogAverage`);
+4. therefore `limsup H ≤ α`; symmetrically `α ≤ liminf H`;
+5. `tendsto_of_le_liminf_of_limsup_le`.
+
+Only steps 1–2 involve any construction, and both are direct instantiations of built results.

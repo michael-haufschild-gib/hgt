@@ -1,9 +1,9 @@
 # Route E moving terminal-kernel antiscale resonance
 
 - **ID:** `ROUTE-E-MOVING-TERMINAL-KERNEL-RESONANCE-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[QUANTITATIVE MOVING PRODUCER-CLASS NO-GO]` / `[POSITIVE MASS-SPREAD CONSTRAINT]`
-- **Scientific status:** `[PAPER-PROVED] [INTERNAL COLLISION-AUDITED] [EXTERNAL AUDIT OMITTED BY INSTRUCTION]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [INTERNAL COLLISION-AUDITED] [EXTERNAL AUDIT OMITTED BY INSTRUCTION]`
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
 - **RH used:** no
 - **Computation used:** no
@@ -88,7 +88,20 @@ A viable moving quadratic Route E source must do at least one of the following:
 It must additionally produce \(D_{\rm anti}\) or within-parity variation at physical-power
 strength.  “Moving off-diagonal kernel” without a mass/spread audit is no longer sufficient.
 
-## Formalization target
+## Lean certificate
 
-Formalize terminal-log-band seam bound, pair-term majorant, complete `tsum` inequality, and explicit
-smallness corollary over `Nat.Primes × Nat.Primes`.
+Module:
+`formal/GaloisForLFunctions/RHTower/RouteEMovingTerminalKernelResonance.lean`.
+
+Unconditional declarations:
+
+- `norm_routeEAntiscaleSeam_pi_div_log_le`;
+- `norm_routeEStaticAbsoluteKernelTerm_pi_div_log_le`;
+- `norm_tsum_routeEStaticAbsoluteKernelTerm_pi_div_log_le`;
+- `norm_tsum_routeEStaticAbsoluteKernelTerm_pi_div_log_lt`.
+
+The theorem retains an actual complete complex `tsum` over `Nat.Primes × Nat.Primes` and uses the
+explicit physical frequency `Real.pi / Real.log Y`.  Targeted audit:
+`lake build GaloisForLFunctions.RHTower.RouteEMovingTerminalKernelResonance` passed `9721/9721`.
+`#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.  Module is wired into
+`GaloisForLFunctions.RHTower`; it contains no proof-debt declarations.

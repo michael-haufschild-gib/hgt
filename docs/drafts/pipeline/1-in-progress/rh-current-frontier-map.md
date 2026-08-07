@@ -6710,3 +6710,38 @@ Paper and unconditional Lean:
 `RHTower/RouteEStaticAntiscaleFrameDichotomy.lean`, and
 `RHTower/RouteEStaticAbsoluteKernelRecurrence.lean`.  Targeted builds `9719/9719`, `9720/9720`;
 axioms only `propext`, `Classical.choice`, and `Quot.sound`.  Route E and RH are not claimed.
+
+## 2026-08-07 Route E moving terminal-band inverse-square obstruction
+
+The static recurrence no-go now extends to a quantitative physical-frequency statement for moving
+kernels.  If \(K^{(Y)}_{pq}\) is any entrywise absolutely summable complex kernel supported where
+both coordinates lie in relative log-band
+
+\[
+ 0\le\log Y-\log p\le\eta\log Y,
+\]
+
+then at \(t_Y=\pi/\log Y\),
+
+\[
+ \left|\sum_{p,q}K^{(Y)}_{pq}(1+p^{it_Y})
+       \overline{(1+q^{it_Y})}\right|
+ \le(\pi\eta)^2\sum_{p,q}|K^{(Y)}_{pq}|.
+\]
+
+This uses explicit terminal antiscale resonance, not arbitrarily late Kronecker return.  It covers
+aperture-dependent, non-Hermitian, indefinite off-diagonal kernels.  Therefore “moving” is still
+not sufficient: coercivity on a fixed-ratio terminal band forces at least \((\log Y)^2\) entrywise
+mass, canonical singular renormalization, or cross-scale coupling.  Harmonic terminal frames fail
+by a full logarithmic power beyond their available mass.
+
+**Current exact Route E hard core:** construct from literal ordinary-integer source a cross-scale
+or canonically renormalized mass-divergent moving carrier that survives this inverse-square law and
+then proves \(D_{\rm anti}\) or within-parity variation at physical-power strength.  Equivalent
+signed/nonquadratic terminal-shell cancellation remains allowed.  Static kernels and regular
+terminal-band moving kernels are now formally excluded; `OPEN-SOURCE-001` and RH remain open.
+
+Paper and unconditional Lean:
+`../3-formalized/new_scientific_knowledge/route-e-moving-terminal-kernel-resonance.md` and
+`RHTower/RouteEMovingTerminalKernelResonance.lean`.  Targeted build `9721/9721`; axioms only
+`propext`, `Classical.choice`, and `Quot.sound`.

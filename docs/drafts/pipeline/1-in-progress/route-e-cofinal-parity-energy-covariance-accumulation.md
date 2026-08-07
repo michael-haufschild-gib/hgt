@@ -628,3 +628,41 @@ theorems.  Paper and unconditional Lean:
 `RHTower/RouteEStaticAntiscaleFrameDichotomy.lean`, and
 `RHTower/RouteEStaticAbsoluteKernelRecurrence.lean`.  Targeted builds pass `9719/9719` and
 `9720/9720`; axioms only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## 2026-08-07 moving terminal-kernel inverse-square law
+
+The first moving continuation is now quantitatively classified.  For \(Y>1\), let a complex
+aperture-dependent kernel \(K^{(Y)}_{pq}\) be supported where both prime coordinates obey
+
+\[
+ 0\le\log Y-\log p\le\eta\log Y.
+\]
+
+No positivity, Hermitian symmetry, diagonal structure, or aperture independence is assumed.  At
+the explicit physical antiscale frequency \(t_Y=\pi/\log Y\), complete ordered-pair energy obeys
+
+\[
+ \boxed{
+ \left|\sum_{p,q}K^{(Y)}_{pq}(1+p^{it_Y})
+          \overline{(1+q^{it_Y})}\right|
+ \le (\pi\eta)^2\sum_{p,q}|K^{(Y)}_{pq}|.
+ }
+\]
+
+This follows from unit-circle chord bound
+\(|1+p^{it_Y}|\le\pi\eta\) on terminal log-band and absolute `tsum` control.  Thus moving support
+does not by itself escape antiscale coherence.  Uniform positive coercivity requires terminal
+entrywise mass at least \(\gg\eta^{-2}\), or logarithmically cross-scale entries outside band.
+For fixed-ratio terminal window \((Y/C,Y]\), \(\eta=(\log C)/(\log Y)\), so any such regular
+kernel needs \(\ell^1\) mass \(\gg(\log Y)^2\); harmonic/logarithmic terminal mass is insufficient.
+
+This sharpens current hard core again: a viable moving source must be **mass-divergent and
+canonically renormalized**, or genuinely cross-scale, or signed/nonquadratic before norm.  Explicit
+grade-recurrent cube relation's annular reservoir and source co-moving diffuse codiagonal pass this
+necessary escape test only because they spread/migrate source mass; neither currently proves
+antiscale-transverse physical capacity.  `OPEN-SOURCE-001` remains open.
+
+Paper and unconditional Lean:
+`../3-formalized/new_scientific_knowledge/route-e-moving-terminal-kernel-resonance.md` and
+`RHTower/RouteEMovingTerminalKernelResonance.lean`.  Targeted build `9721/9721`; axioms only
+`propext`, `Classical.choice`, and `Quot.sound`.

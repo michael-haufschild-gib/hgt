@@ -332,4 +332,23 @@ theorem le_of_weighted_ge_backward {f : ℝ → ℝ} {X s δ : ℝ} (hX : 0 < X)
     field_simp
   linarith [hdiv, hge, hval.le, hval.ge]
 
+/-! ## Localisation at the card's slope
+
+Taking the penalty slope to be `L₀^{−1/2}` turns the abstract localisation into the displacement
+bound the transport argument needs: the maximizer sits within `√L₀` times the value gap of the base
+point, i.e. `O(√L₀)` whenever the profile's values there converge.
+-/
+
+/-- **Localisation at slope `1/√L₀`.**  `|X − L₀| ≤ √L₀ (B − H L₀)` — the card's `O(√L₀)`. -/
+theorem abs_sub_le_sqrt_mul_of_isMaxOn {H : ℝ → ℝ} {L₀ X B : ℝ} {s : Set ℝ} (hL₀ : 0 < L₀)
+    (hmax : IsMaxOn (penalized H (Real.sqrt L₀)⁻¹ L₀) s X) (hL₀mem : L₀ ∈ s) (hB : H X ≤ B) :
+    |X - L₀| ≤ Real.sqrt L₀ * (B - H L₀) := by
+  have hsq : 0 < Real.sqrt L₀ := Real.sqrt_pos.mpr hL₀
+  have hδ : 0 < (Real.sqrt L₀)⁻¹ := by positivity
+  have h := abs_sub_isMaxOn_penalized_le hmax hδ hL₀mem hB
+  have hrw : (B - H L₀) / (Real.sqrt L₀)⁻¹ = Real.sqrt L₀ * (B - H L₀) := by
+    field_simp
+  rw [hrw] at h
+  exact h
+
 end GaloisForLFunctions.HTGeometry
