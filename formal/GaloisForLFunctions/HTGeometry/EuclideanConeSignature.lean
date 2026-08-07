@@ -36,23 +36,20 @@ theorem euclidean_cone_triple {a b c : ℕ} (ha : 2 ≤ a) (hab : a ≤ b) (hbc 
   have hpb : (0 : ℚ) < 1 / (b : ℚ) := by positivity
   have hale : a ≤ 3 := by
     by_contra hcon
-    push_neg at hcon
-    have h4 : (4 : ℚ) ≤ (a : ℚ) := by exact_mod_cast hcon
+    have h4 : (4 : ℚ) ≤ (a : ℚ) := by exact_mod_cast (by omega : 4 ≤ a)
     have hle : (1 : ℚ) / (a : ℚ) ≤ 1 / 4 := one_div_le_one_div_of_le (by norm_num) h4
     linarith
   interval_cases a
   · -- `a = 2`
     have hble : b ≤ 4 := by
       by_contra hcon
-      push_neg at hcon
-      have h5 : (5 : ℚ) ≤ (b : ℚ) := by exact_mod_cast hcon
+      have h5 : (5 : ℚ) ≤ (b : ℚ) := by exact_mod_cast (by omega : 5 ≤ b)
       have hle : (1 : ℚ) / (b : ℚ) ≤ 1 / 5 := one_div_le_one_div_of_le (by norm_num) h5
       have hlec : (1 : ℚ) / (c : ℚ) ≤ 1 / 5 := le_trans h2 hle
       rw [show ((2 : ℕ) : ℚ) = 2 from by norm_num] at heq
       linarith
     have hbge : 3 ≤ b := by
       by_contra hcon
-      push_neg at hcon
       have hb2 : b = 2 := by omega
       subst hb2
       rw [show ((2 : ℕ) : ℚ) = 2 from by norm_num] at heq
@@ -83,8 +80,7 @@ theorem euclidean_cone_triple {a b c : ℕ} (ha : 2 ≤ a) (hab : a ≤ b) (hbc 
   · -- `a = 3`
     have hble : b ≤ 3 := by
       by_contra hcon
-      push_neg at hcon
-      have h4 : (4 : ℚ) ≤ (b : ℚ) := by exact_mod_cast hcon
+      have h4 : (4 : ℚ) ≤ (b : ℚ) := by exact_mod_cast (by omega : 4 ≤ b)
       have hle : (1 : ℚ) / (b : ℚ) ≤ 1 / 4 := one_div_le_one_div_of_le (by norm_num) h4
       have hlec : (1 : ℚ) / (c : ℚ) ≤ 1 / 4 := le_trans h2 hle
       rw [show ((3 : ℕ) : ℚ) = 3 from by norm_num] at heq
@@ -234,13 +230,12 @@ theorem parabolic_signature_classification (c : ℕ) (l : List ℕ)
     · -- three cones
       obtain ⟨a, b, d, rfl⟩ := List.length_eq_three.mp hlen
       simp only [List.pairwise_cons, List.mem_cons, List.not_mem_nil, or_false,
-        forall_eq_or_imp, forall_eq, List.Pairwise.nil, and_true, true_and] at hsorted
+        forall_eq_or_imp, forall_eq, List.Pairwise.nil, and_true] at hsorted
       have hab : a ≤ b := hsorted.1.1
       have hbd : b ≤ d := hsorted.2.1
       have ha : 2 ≤ a := h2 a (by simp)
       have hsum : (1 : ℚ) / a + 1 / b + 1 / d = 1 := by
-        simp only [List.map_cons, List.sum_cons, List.map_nil, List.sum_nil, add_zero,
-          List.length_cons, List.length_nil, Nat.cast_zero, Nat.cast_ofNat] at hSval
+        simp only [List.map_cons, List.sum_cons, List.map_nil, List.sum_nil, add_zero] at hSval
         push_cast at hSval
         linarith
       rcases euclidean_cone_triple ha hab hbd hsum with h | h | h
@@ -256,8 +251,7 @@ theorem parabolic_signature_classification (c : ℕ) (l : List ℕ)
       have hd : 2 ≤ d := h2 d (by simp)
       have he : 2 ≤ e := h2 e (by simp)
       have hsum : (1 : ℚ) / a + 1 / b + 1 / d + 1 / e = 2 := by
-        simp only [List.map_cons, List.sum_cons, List.map_nil, List.sum_nil, add_zero,
-          List.length_cons, List.length_nil, Nat.cast_zero, Nat.cast_ofNat] at hSval
+        simp only [List.map_cons, List.sum_cons, List.map_nil, List.sum_nil, add_zero] at hSval
         push_cast at hSval
         linarith
       obtain ⟨h1, h2', h3, h4⟩ := cone_quad_eq_two ha hb hd he hsum

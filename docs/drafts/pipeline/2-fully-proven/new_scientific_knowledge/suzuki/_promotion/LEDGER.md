@@ -1550,3 +1550,20 @@ Traps: `integral_add_right_eq_self` needs `(μ := volume)` supplied or the
 must be done **forward** (`integral_congr_ae` to the subtracted shape, then `integral_sub` twice
 left-to-right); rewriting backwards fails because the intermediate carries a `Pi`-form
 `(fun x => …) - (fun L => …)` that will not match the lambda.
+
+## AD. Audit state at end of session
+
+All nine modules touched this session build together and are `#print axioms` clean:
+
+    MonotoneTranslationModulus  GagliardoFourierConstant  GammaTransportKernel
+    HalfLogCesaroAverage        GammaJumpFormPairing      JumpFormAdjointness
+    AtomicJumpForm              GraphFluxStabilityEstimate ShiftedDerivativeCoercivity
+
+`lake build GaloisForLFunctions.HTGeometry` (full umbrella) currently **fails**, on
+`HTGeometry/CDGATensorAlgebra.lean`. That file is not mine: it belongs to the concurrent CDGA work
+(last commit `3c2052215`, and it is presently *modified in the working tree*, i.e. mid-edit).
+`lake env lean` on it reports only unused-variable warnings, so the failure is transient build
+state from the other agent's session, not a break introduced here. Do not "fix" it and do not
+`git checkout` it.
+
+Re-run the umbrella audit once that file settles.

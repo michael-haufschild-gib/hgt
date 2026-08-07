@@ -1290,6 +1290,22 @@ theorem integral_lgWeight_abs_defect_envelope_le {s c C A B : ℝ} (hs0 : 0 ≤ 
 
 /-! ## Equation (14) in approximation form for the actual radial mode -/
 
+/-- Total weighted Wronskian datum at the left endpoint of the interior Dunster interval. -/
+def radialProlateVolterraDatum (s c A : ℝ) (R DR : ℝ → ℝ) : ℝ :=
+  |lgWeight s A * (comparisonSol (prolateNormalFormSol R) s A * lgBesselModelDeriv s c A
+      - comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s A
+        * lgBesselModel s c A)|
+    + |lgWeight s A *
+      (comparisonSol (prolateNormalFormSol R) s A * lgBesselModel2Deriv s c A
+        - comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s A
+          * lgBesselModel2 s c A)|
+
+/-- Explicit Grönwall constant used in the actual radial Dunster approximation. -/
+def radialProlateVolterraK (s c A : ℝ) (R DR : ℝ → ℝ) (C : ℝ) : ℝ :=
+  radialProlateVolterraDatum s c A R DR *
+      Real.exp (2 * C ^ 2 / (c * besselWronskian (c * xiEndpointPhase s A)) * 127) /
+    besselWronskian (c * xiEndpointPhase s A)
+
 /-- **Dunster's expansion `(14)` for the actual radial prolate mode, in approximation form.**  Under the
 hypotheses of the envelope bound, the Liouville–Green transform of the radial mode is a *fixed* linear
 combination of the two Bessel model solutions, up to `O(c^{-1})` times the common envelope:
@@ -1308,7 +1324,12 @@ theorem abs_radialProlate_sub_model_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
     (hDR : ∀ x ∈ Set.Icc A B, HasDerivAt DR (DDR x) x)
     (hode : ∀ x ∈ Set.Icc A B,
       (x ^ 2 - 1) * DDR x + 2 * x * DR x - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0) :
-    ∃ C K : ℝ, 0 ≤ C ∧ 0 ≤ K ∧ ∀ x ∈ Set.Icc A B,
+    ∃ C K : ℝ, 0 ≤ C ∧ 0 ≤ K ∧
+      (∀ s' c' x' : ℝ, 1 ≤ c' * xiEndpointPhase s' x' →
+        |lgBesselModel s' c' x'| ≤ C / Real.sqrt (c' * xiEndpointPhase s' x') ∧
+        |lgBesselModel2 s' c' x'| ≤ C / Real.sqrt (c' * xiEndpointPhase s' x')) ∧
+      K = radialProlateVolterraK s c A R DR C ∧
+      ∀ x ∈ Set.Icc A B,
       |comparisonSol (prolateNormalFormSol R) s x * besselWronskian (c * xiEndpointPhase s A)
           - ((lgWeight s A * (comparisonSol (prolateNormalFormSol R) s A
                   * lgBesselModel2Deriv s c A
@@ -1411,7 +1432,8 @@ theorem abs_radialProlate_sub_model_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
     exact (((((continuousOn_lgWeight hs0 hs1).mono hIoi).mul
       ((continuousOn_lgNormalFormDefect_radialProlate hs0 hs1).mono hIoi)).mul
       ((hUcont.mono hxsub).mul (hV.mono hIoi)))).intervalIntegrable
-  refine ⟨C, K, hC0, hK0, ?_⟩
+  refine ⟨C, K, hC0, hK0, hC, ?_, ?_⟩
+  · rw [hKdef, hSdef, radialProlateVolterraK, radialProlateVolterraDatum]
   refine abs_perturbed_sub_model_le (a := fun t : ℝ => lgNormalFormDefect s c (radialProlateQ s c) t)
     (E := fun t : ℝ => C / Real.sqrt (c * xiEndpointPhase s t)) (K := K)
     (M := 127 * C ^ 2 / c) hs0 hs1 hc hA hAB hK0 (by positivity) hU hDU hEnv hUb

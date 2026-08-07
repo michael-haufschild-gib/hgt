@@ -47,14 +47,14 @@ private theorem abs_radialEndpointRegularIntegrand_le {s c x : ℝ} {R DR DDR : 
     exact abs_besselJ0_le_one _
   have hm := lgWeight_mul_abs_defect_le (c := c) hs0 hs1 hx1
   have hm0 := (lgWeight_pos hs0 hs1 hx1).le
-  rw [radialEndpointRegularIntegrand, abs_mul, abs_mul, abs_of_nonneg hm0]
+  simp only [radialEndpointRegularIntegrand, abs_mul, abs_of_nonneg hm0]
   have hUV : |comparisonSol (prolateNormalFormSol R) s x| * |lgBesselModel s c x|
       ≤ 2 := by
     have := mul_le_mul hU hV (abs_nonneg _) (by norm_num : (0 : ℝ) ≤ 2)
     nlinarith
   have hmul := mul_le_mul hm hUV (by positivity : (0 : ℝ) ≤
     |comparisonSol (prolateNormalFormSol R) s x| * |lgBesselModel s c x|) (by norm_num)
-  nlinarith
+  simpa only [abs_mul] using hmul
 
 private theorem abs_radialEndpointLogIntegrand_le {s c x : ℝ} {R DR DDR : ℝ → ℝ}
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c)
@@ -73,7 +73,7 @@ private theorem abs_radialEndpointLogIntegrand_le {s c x : ℝ} {R DR DDR : ℝ 
   have hV := abs_lgBesselModel2_le_endpoint_envelope hs0 hs1 hc hx1 hx2
   have hm := lgWeight_mul_abs_defect_le (c := c) hs0 hs1 hx1
   have hm0 := (lgWeight_pos hs0 hs1 hx1).le
-  rw [radialEndpointLogIntegrand, abs_mul, abs_mul, abs_of_nonneg hm0]
+  simp only [radialEndpointLogIntegrand, abs_mul, abs_of_nonneg hm0]
   have hEnv0 : 0 ≤ 4 + 3 / (2 * c * Real.sqrt (x ^ 2 - 1)) := by positivity
   have hUV : |comparisonSol (prolateNormalFormSol R) s x| * |lgBesselModel2 s c x|
       ≤ 2 * (4 + 3 / (2 * c * Real.sqrt (x ^ 2 - 1))) :=
@@ -86,11 +86,11 @@ private theorem abs_radialEndpointLogIntegrand_le {s c x : ℝ} {R DR DDR : ℝ 
     field_simp [hc0.ne', hsqrt0.ne']
     ring
   rw [← hmajorant]
-  exact hmul
+  simpa only [abs_mul] using hmul
 
 private theorem continuousOn_radialEndpointRegularIntegrand {s c A B : ℝ}
-    {R DR DDR : ℝ → ℝ}
-    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hA : 1 < A) (hAB : A ≤ B)
+    {R DR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hA : 1 < A) (_hAB : A ≤ B)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) :
     ContinuousOn (radialEndpointRegularIntegrand s c R) (Icc A B) := by
   have hsub : Icc A B ⊆ Ioi (1 : ℝ) := fun t ht => lt_of_lt_of_le hA ht.1
@@ -101,8 +101,8 @@ private theorem continuousOn_radialEndpointRegularIntegrand {s c A B : ℝ}
       (hU.mul ((continuousOn_lgBesselModel hs0).mono hsub)))
 
 private theorem continuousOn_radialEndpointLogIntegrand {s c A B : ℝ}
-    {R DR DDR : ℝ → ℝ}
-    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hA : 1 < A) (hAB : A ≤ B)
+    {R DR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hA : 1 < A) (_hAB : A ≤ B)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) :
     ContinuousOn (radialEndpointLogIntegrand s c R) (Icc A B) := by
   have hsub : Icc A B ⊆ Ioi (1 : ℝ) := fun t ht => lt_of_lt_of_le hA ht.1
@@ -122,7 +122,7 @@ private theorem abs_integral_radialEndpointRegularIntegrand_le {s c A B : ℝ}
     (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
       - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
     |∫ t in A..B, radialEndpointRegularIntegrand s c R t| ≤ 80 * (B - A) := by
-  have hfcont := continuousOn_radialEndpointRegularIntegrand hs0 hs1 hA hAB hR
+  have hfcont := continuousOn_radialEndpointRegularIntegrand (c := c) hs0 hs1 hA hAB hR
   have hnorm := intervalIntegral.norm_integral_le_integral_norm
     (f := radialEndpointRegularIntegrand s c R) hAB
   have hmono : (∫ t in A..B, |radialEndpointRegularIntegrand s c R t|)
@@ -140,8 +140,10 @@ private theorem continuousOn_radialEndpointLogMajorant {c : ℝ} (hc : 0 < c) :
     Real.continuous_sqrt.comp_continuousOn (by fun_prop)
   have hsqrtne : ∀ t ∈ Ioi (1 : ℝ), Real.sqrt (t ^ 2 - 1) ≠ 0 := by
     intro t ht
+    have ht1 : (1 : ℝ) < t := ht
     exact (Real.sqrt_pos.mpr (by nlinarith)).ne'
-  rw [radialEndpointLogMajorant]
+  change ContinuousOn (fun x : ℝ => 320 + (120 / c) *
+    (1 / Real.sqrt (x ^ 2 - 1))) (Ioi (1 : ℝ))
   exact continuousOn_const.add (continuousOn_const.mul
     (continuousOn_const.div hsqrt hsqrtne))
 
@@ -162,7 +164,7 @@ private theorem abs_integral_radialEndpointLogIntegrand_le {s c A B : ℝ}
   have hsub : uIcc A B ⊆ Ioi (1 : ℝ) := by
     rw [uIcc_of_le hAB]
     exact fun t ht => lt_of_lt_of_le hA ht.1
-  have hfcont := continuousOn_radialEndpointLogIntegrand hs0 hs1 hc0 hA hAB hR
+  have hfcont := continuousOn_radialEndpointLogIntegrand (c := c) hs0 hs1 hc0 hA hAB hR
   have hgcont := (continuousOn_radialEndpointLogMajorant hc0).mono hsub
   have hnorm := intervalIntegral.norm_integral_le_integral_norm
     (f := radialEndpointLogIntegrand s c R) hAB
@@ -228,12 +230,13 @@ theorem abs_radialProlate_regularCoefficient_crossing_le {s c : ℝ} {R DR DDR :
       hR1 hR hDR hode
     have hBsub : B - 1 = 9 / (8 * c ^ 2) := dunsterEndpointCrossing_sub_one
     have hfinal : |∫ t in A..B, radialEndpointRegularIntegrand s c R t| ≤ 18 / c := by
-      have hstep : 80 * (B - A) ≤ 80 * (B - 1) := by linarith
+      have hstep : 80 * (B - A) ≤ 80 * (B - 1) :=
+        mul_le_mul_of_nonneg_left (by linarith) (by norm_num)
       have hconst : 80 * (B - 1) ≤ 18 / c := by
         rw [hBsub]
-        have hcne : c ≠ 0 := hc0.ne'
-        rw [div_le_iff₀ hc0]
-        field_simp [hcne]
+        have heq : 80 * (9 / (8 * c ^ 2)) = 90 / c ^ 2 := by ring
+        have hrhs : 18 / c = (18 * c) / c ^ 2 := by field_simp [hc0.ne']
+        rw [heq, hrhs, div_le_div_iff₀ (sq_pos_of_pos hc0) (sq_pos_of_pos hc0)]
         nlinarith
       exact hraw.trans (hstep.trans hconst)
     exact (abs_le.mp hfinal)
@@ -274,9 +277,11 @@ theorem abs_radialProlate_logCoefficient_sub_pi_div_four_crossing_le
       hR1 hR hDR hode
     have hlogA := endpointLog_nonneg hA.le
     have hlogB := endpointLog_crossing_le_twenty_div_seven_c hs0 hs1 hc
+    dsimp only [B] at hlogB
     have hBsub : B - 1 = 9 / (8 * c ^ 2) := dunsterEndpointCrossing_sub_one
     have hfirst : 320 * (B - A) ≤ 360 / c ^ 2 := by
-      have hstep : 320 * (B - A) ≤ 320 * (B - 1) := by linarith
+      have hstep : 320 * (B - A) ≤ 320 * (B - 1) :=
+        mul_le_mul_of_nonneg_left (by linarith) (by norm_num)
       calc
         320 * (B - A) ≤ 320 * (B - 1) := hstep
         _ = 360 / c ^ 2 := by rw [hBsub]; ring

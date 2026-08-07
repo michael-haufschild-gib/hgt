@@ -186,3 +186,20 @@ projective/trace-class/determinant consequences.
 - Proved exact endpoint-anchored reconstruction: transformed radial solution equals regular Bessel
   model plus two correction terms whose coefficients are precisely transported defect integrals.
 - Verified with `lake env lean GaloisForLFunctions/RHTower/ProlateDunsterEndpointVolterra.lean`.
+
+### 2026-08-07: explicit zero-free matching collar and coefficient bounds
+
+- Added `ProlateRadialEndpointFlux.lean`: exact exterior flux identity, positivity-implies-
+  monotonicity, a uniform derivative lower bound, and a strict zero-free collar under
+  `3 c^2 (B-1) < 5`.
+- Added `ProlateDunsterEndpointCrossing.lean`: deterministic matching point
+  `B(c)=1+9/(8c^2)`; for `c>=5`, proved `1<B<=11/10`, collar inclusion, and
+  `1<=c xi_s(B)` for every `0<=s<=1/2`.
+- Added `ProlateRadialEndpointBounds.lean`: proved `0<R<=1`, Dunster amplitude `A_s>=1/2`, exact
+  transform bound `|U|<=2`, `c xi_s(B)<=2`, and an integrable logarithmic Bessel envelope.
+- Added `ProlateDunsterEndpointCoefficientBounds.lean`: transported endpoint limits through the
+  explicit collar and proved, for the genuine endpoint-normalized radial profile,
+  `|F_regular(B)|<=18/c` and `|F_log(B)-pi/4|<=141/c`.
+- Strengthened `CCMRadialProlateDefect.lean` to expose the exact Gronwall constant used by its
+  interior approximation theorem.  This removes the last hidden existential coefficient before
+  the uniform actual-profile-to-leading-Bessel transfer.

@@ -593,7 +593,349 @@ theorem sum_shiftRightFst {M' : Type*} [AddCommGroup M'] (hp1 : p.1.1 = q.1.1 + 
   · obtain ⟨rs, hrs⟩ := shiftRightFst_surjective hp1 hp2 uv (Finset.mem_filter.1 huv).2
     exact ⟨rs, Finset.mem_univ _, hrs⟩
 
+/-- Raise the second coordinate of the left part of a splitting. -/
+def shiftLeftSnd (hp1 : p.1.1 = q.1.1) (hp2 : p.1.2 = q.1.2 + 1) (rs : Splitting a b q) :
+    Splitting (a + 1) b p :=
+  ⟨(⟨(rs.1.1.1.1, rs.1.1.1.2 + 1), by
+      have h := rs.1.1.2
+      simp only at h ⊢
+      omega⟩, rs.1.2), by
+    refine ⟨?_, ?_⟩
+    · have h := rs.2.1
+      simp only at h ⊢
+      omega
+    · have h := rs.2.2
+      simp only at h ⊢
+      omega⟩
+
+/-- Raise the second coordinate of the right part of a splitting. -/
+def shiftRightSnd (hp1 : p.1.1 = q.1.1) (hp2 : p.1.2 = q.1.2 + 1) (rs : Splitting a b q) :
+    Splitting a (b + 1) p :=
+  ⟨(rs.1.1, ⟨(rs.1.2.1.1, rs.1.2.1.2 + 1), by
+      have h := rs.1.2.2
+      simp only at h ⊢
+      omega⟩), by
+    refine ⟨?_, ?_⟩
+    · have h := rs.2.1
+      simp only at h ⊢
+      omega
+    · have h := rs.2.2
+      simp only at h ⊢
+      omega⟩
+
+theorem sum_shiftLeftSnd {M' : Type*} [AddCommGroup M'] (hp1 : p.1.1 = q.1.1)
+    (hp2 : p.1.2 = q.1.2 + 1) (F : Splitting a b q → M') (G : Splitting (a + 1) b p → M')
+    (hzero : ∀ uv : Splitting (a + 1) b p, uv.1.1.1.2 = 0 → G uv = 0)
+    (hFG : ∀ rs : Splitting a b q, F rs = G (shiftLeftSnd hp1 hp2 rs)) :
+    (∑ rs : Splitting a b q, F rs) = ∑ uv : Splitting (a + 1) b p, G uv := by
+  classical
+  rw [← Finset.sum_filter_of_ne
+    (p := fun uv : Splitting (a + 1) b p => uv.1.1.1.2 ≠ 0)
+    (fun uv _ hne h0 => hne (hzero uv h0))]
+  refine Finset.sum_bij (fun rs _ => shiftLeftSnd hp1 hp2 rs) (fun rs _ => ?_)
+    (fun rs _ rs' _ he => ?_) (fun uv huv => ?_) (fun rs _ => hFG rs)
+  · refine Finset.mem_filter.2 ⟨Finset.mem_univ _, ?_⟩
+    show (shiftLeftSnd hp1 hp2 rs).1.1.1.2 ≠ 0
+    simp only [shiftLeftSnd]
+    omega
+  · have h1 := congrArg (fun z : Splitting (a + 1) b p => z.1.1.1.1) he
+    have h2 := congrArg (fun z : Splitting (a + 1) b p => z.1.1.1.2) he
+    have h3 := congrArg (fun z : Splitting (a + 1) b p => z.1.2) he
+    simp only [shiftLeftSnd] at h1 h2 h3
+    refine Subtype.ext (Prod.ext (Subtype.ext (Prod.ext ?_ ?_)) h3) <;> omega
+  · have hu : uv.1.1.1.2 ≠ 0 := (Finset.mem_filter.1 huv).2
+    obtain ⟨k, hk⟩ : ∃ k, uv.1.1.1.2 = k + 1 := ⟨uv.1.1.1.2 - 1, by omega⟩
+    refine ⟨⟨(⟨(uv.1.1.1.1, k), by
+        have h := uv.1.1.2
+        simp only at h ⊢
+        omega⟩, uv.1.2), ?_⟩, Finset.mem_univ _, ?_⟩
+    · refine ⟨?_, ?_⟩
+      · have h := uv.2.1
+        simp only at h ⊢
+        omega
+      · have h := uv.2.2
+        simp only at h ⊢
+        omega
+    · refine Subtype.ext (Prod.ext (Subtype.ext (Prod.ext rfl ?_)) rfl)
+      simp only [shiftLeftSnd]
+      omega
+
+theorem sum_shiftRightSnd {M' : Type*} [AddCommGroup M'] (hp1 : p.1.1 = q.1.1)
+    (hp2 : p.1.2 = q.1.2 + 1) (F : Splitting a b q → M') (G : Splitting a (b + 1) p → M')
+    (hzero : ∀ uv : Splitting a (b + 1) p, uv.1.2.1.2 = 0 → G uv = 0)
+    (hFG : ∀ rs : Splitting a b q, F rs = G (shiftRightSnd hp1 hp2 rs)) :
+    (∑ rs : Splitting a b q, F rs) = ∑ uv : Splitting a (b + 1) p, G uv := by
+  classical
+  rw [← Finset.sum_filter_of_ne
+    (p := fun uv : Splitting a (b + 1) p => uv.1.2.1.2 ≠ 0)
+    (fun uv _ hne h0 => hne (hzero uv h0))]
+  refine Finset.sum_bij (fun rs _ => shiftRightSnd hp1 hp2 rs) (fun rs _ => ?_)
+    (fun rs _ rs' _ he => ?_) (fun uv huv => ?_) (fun rs _ => hFG rs)
+  · refine Finset.mem_filter.2 ⟨Finset.mem_univ _, ?_⟩
+    show (shiftRightSnd hp1 hp2 rs).1.2.1.2 ≠ 0
+    simp only [shiftRightSnd]
+    omega
+  · have h1 := congrArg (fun z : Splitting a (b + 1) p => z.1.2.1.1) he
+    have h2 := congrArg (fun z : Splitting a (b + 1) p => z.1.2.1.2) he
+    have h3 := congrArg (fun z : Splitting a (b + 1) p => z.1.1) he
+    simp only [shiftRightSnd] at h1 h2 h3
+    refine Subtype.ext (Prod.ext h3 (Subtype.ext (Prod.ext ?_ ?_))) <;> omega
+  · have hv : uv.1.2.1.2 ≠ 0 := (Finset.mem_filter.1 huv).2
+    obtain ⟨k, hk⟩ : ∃ k, uv.1.2.1.2 = k + 1 := ⟨uv.1.2.1.2 - 1, by omega⟩
+    refine ⟨⟨(uv.1.1, ⟨(uv.1.2.1.1, k), by
+        have h := uv.1.2.2
+        simp only at h ⊢
+        omega⟩), ?_⟩, Finset.mem_univ _, ?_⟩
+    · refine ⟨?_, ?_⟩
+      · have h := uv.2.1
+        simp only at h ⊢
+        omega
+      · have h := uv.2.2
+        simp only at h ⊢
+        omega
+    · refine Subtype.ext (Prod.ext rfl (Subtype.ext (Prod.ext rfl ?_)))
+      simp only [shiftRightSnd]
+      omega
+
 end Shift
+
+section Leibniz
+
+variable (A : CDGAStructure R X) (B : CDGAStructure R Y)
+
+theorem tensorDL_of_fst_zero {M N : ℕ → Type w} [∀ n, AddCommGroup (M n)] [∀ n, Module R (M n)]
+    [∀ n, AddCommGroup (N n)] [∀ n, Module R (N n)] {A' : CDGAStructure R X}
+    (P : CDGAModuleStructure A' M) (Q : CDGAModuleStructure A' N) (n : ℕ)
+    (f : TensorCarrier (R := R) M N n) (u : {ab : ℕ × ℕ // ab.1 + ab.2 = n + 1})
+    (hu : u.1.1 = 0) : tensorDL P Q n f u = 0 := by
+  obtain ⟨⟨u₁, u₂⟩, h2⟩ := u
+  simp only at hu
+  subst hu
+  exact tensorDL_zero _ _ _ _ f h2
+
+/-- **The Leibniz rule for the first half-differential.** -/
+theorem tensorAlgMul_tensorDL {a b n : ℕ} (h : a + b = n) (hl : a + 1 + b = n + 1)
+    (hr : a + (b + 1) = n + 1)
+    (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b) :
+    tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) n (tensorAlgMul A B h f g)
+      = tensorAlgMul A B hl
+          (tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f) g
+        + ((-1 : R)) ^ a • tensorAlgMul A B hr f
+          (tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g) := by
+  funext p
+  obtain ⟨⟨p₁, p₂⟩, hp⟩ := p
+  rw [tensorCarrier_add_apply, tensorCarrier_smul_apply]
+  cases p₁ with
+  | zero =>
+      rw [tensorDL_zero]
+      have hL : (∑ uv : Splitting (a + 1) b ⟨(0, p₂), hp⟩,
+          splittingTerm A B (tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f)
+            g uv) = 0 := by
+        refine Finset.sum_eq_zero fun uv _ => ?_
+        have hu : uv.1.1.1.1 = 0 := by
+          have h1 := uv.2.1
+          simp only at h1
+          omega
+        show tensorPairₗ A B uv.2.1 uv.2.2
+          (tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f uv.1.1)
+          (g uv.1.2) = 0
+        rw [tensorDL_of_fst_zero _ _ a f uv.1.1 hu, map_zero, LinearMap.zero_apply]
+      have hR : (∑ uv : Splitting a (b + 1) ⟨(0, p₂), hp⟩,
+          splittingTerm A B f
+            (tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g) uv) = 0 := by
+        refine Finset.sum_eq_zero fun uv _ => ?_
+        have hv : uv.1.2.1.1 = 0 := by
+          have h1 := uv.2.1
+          simp only at h1
+          omega
+        show tensorPairₗ A B uv.2.1 uv.2.2 (f uv.1.1)
+          (tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g uv.1.2) = 0
+        rw [tensorDL_of_fst_zero _ _ b g uv.1.2 hv, map_zero]
+      rw [show tensorAlgMul A B hl
+          (tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f) g
+          ⟨(0, p₂), hp⟩ = 0 from hL,
+        show tensorAlgMul A B hr f
+          (tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g)
+          ⟨(0, p₂), hp⟩ = 0 from hR, smul_zero, add_zero]
+  | succ α =>
+      have hq : (α, p₂).1 + (α, p₂).2 = n := by simp only at hp ⊢; omega
+      rw [tensorDL_succ]
+      show TensorProduct.map ((CDGAStructure.selfModule A).dₗ α) LinearMap.id
+          (∑ rs : Splitting a b ⟨(α, p₂), hq⟩, splittingTerm A B f g rs) = _
+      rw [map_sum]
+      have hsplit : ∀ rs : Splitting a b ⟨(α, p₂), hq⟩,
+          TensorProduct.map ((CDGAStructure.selfModule A).dₗ α) LinearMap.id
+            (splittingTerm A B f g rs)
+          = tensorPairₗ A B (show rs.1.1.1.1 + 1 + rs.1.2.1.1 = α + 1 by
+                have := rs.2.1; simp only at this ⊢; omega) rs.2.2
+              (TensorProduct.map (A.dₗ rs.1.1.1.1) LinearMap.id (f rs.1.1)) (g rs.1.2)
+            + ((-1 : R)) ^ a • tensorPairₗ A B (show rs.1.1.1.1 + (rs.1.2.1.1 + 1) = α + 1 by
+                have := rs.2.1; simp only at this ⊢; omega) rs.2.2
+              (f rs.1.1) (TensorProduct.map (A.dₗ rs.1.2.1.1) LinearMap.id (g rs.1.2)) := by
+        intro rs
+        have hra : rs.1.1.1.1 + rs.1.1.1.2 = a := rs.1.1.2
+        rw [show ((-1 : R)) ^ a = ((-1 : R)) ^ (rs.1.1.1.1 + rs.1.1.1.2) by rw [hra]]
+        exact tensorPair_dL A B rs.2.1 rs.2.2 _ _ (f rs.1.1) (g rs.1.2)
+      rw [Finset.sum_congr rfl fun rs _ => hsplit rs, Finset.sum_add_distrib, ← Finset.smul_sum]
+      refine congrArg₂ (· + ·) ?_ (congrArg (fun z => ((-1 : R)) ^ a • z) ?_)
+      · refine sum_shiftLeftFst (a := a) (b := b) (q := ⟨(α, p₂), hq⟩) (p := ⟨(α + 1, p₂), hp⟩)
+          rfl rfl _ _ (fun uv hu => ?_) (fun rs => ?_)
+        · show tensorPairₗ A B uv.2.1 uv.2.2
+            (tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f uv.1.1)
+            (g uv.1.2) = 0
+          rw [tensorDL_of_fst_zero _ _ a f uv.1.1 hu, map_zero, LinearMap.zero_apply]
+        · show tensorPairₗ A B _ _ (TensorProduct.map (A.dₗ rs.1.1.1.1) LinearMap.id (f rs.1.1))
+            (g rs.1.2) = tensorPairₗ A B _ _
+            (tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f
+              (shiftLeftFst rfl rfl rs).1.1) (g (shiftLeftFst rfl rfl rs).1.2)
+          rfl
+      · refine sum_shiftRightFst (a := a) (b := b) (q := ⟨(α, p₂), hq⟩) (p := ⟨(α + 1, p₂), hp⟩)
+          rfl rfl _ _ (fun uv hv => ?_) (fun rs => ?_)
+        · show tensorPairₗ A B uv.2.1 uv.2.2 (f uv.1.1)
+            (tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g uv.1.2) = 0
+          rw [tensorDL_of_fst_zero _ _ b g uv.1.2 hv, map_zero]
+        · rfl
+
+theorem tensorDR_of_snd_zero {M N : ℕ → Type w} [∀ n, AddCommGroup (M n)] [∀ n, Module R (M n)]
+    [∀ n, AddCommGroup (N n)] [∀ n, Module R (N n)] {A' : CDGAStructure R X}
+    (P : CDGAModuleStructure A' M) (Q : CDGAModuleStructure A' N) (n : ℕ)
+    (f : TensorCarrier (R := R) M N n) (u : {ab : ℕ × ℕ // ab.1 + ab.2 = n + 1})
+    (hu : u.1.2 = 0) : tensorDR P Q n f u = 0 := by
+  obtain ⟨⟨u₁, u₂⟩, h2⟩ := u
+  simp only at hu
+  subst hu
+  exact tensorDR_zero _ _ _ _ f h2
+
+/-- **The Leibniz rule for the second half-differential.** -/
+theorem tensorAlgMul_tensorDR {a b n : ℕ} (h : a + b = n) (hl : a + 1 + b = n + 1)
+    (hr : a + (b + 1) = n + 1)
+    (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b) :
+    tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) n (tensorAlgMul A B h f g)
+      = tensorAlgMul A B hl
+          (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f) g
+        + ((-1 : R)) ^ a • tensorAlgMul A B hr f
+          (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g) := by
+  funext p
+  obtain ⟨⟨p₁, p₂⟩, hp⟩ := p
+  rw [tensorCarrier_add_apply, tensorCarrier_smul_apply]
+  cases p₂ with
+  | zero =>
+      rw [tensorDR_zero]
+      have hL : (∑ uv : Splitting (a + 1) b ⟨(p₁, 0), hp⟩,
+          splittingTerm A B (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f)
+            g uv) = 0 := by
+        refine Finset.sum_eq_zero fun uv _ => ?_
+        have hu : uv.1.1.1.2 = 0 := by
+          have h1 := uv.2.2
+          simp only at h1
+          omega
+        show tensorPairₗ A B uv.2.1 uv.2.2
+          (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f uv.1.1)
+          (g uv.1.2) = 0
+        rw [tensorDR_of_snd_zero _ _ a f uv.1.1 hu, map_zero, LinearMap.zero_apply]
+      have hR : (∑ uv : Splitting a (b + 1) ⟨(p₁, 0), hp⟩,
+          splittingTerm A B f
+            (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g) uv) = 0 := by
+        refine Finset.sum_eq_zero fun uv _ => ?_
+        have hv : uv.1.2.1.2 = 0 := by
+          have h1 := uv.2.2
+          simp only at h1
+          omega
+        show tensorPairₗ A B uv.2.1 uv.2.2 (f uv.1.1)
+          (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g uv.1.2) = 0
+        rw [tensorDR_of_snd_zero _ _ b g uv.1.2 hv, map_zero]
+      rw [show tensorAlgMul A B hl
+          (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f) g
+          ⟨(p₁, 0), hp⟩ = 0 from hL,
+        show tensorAlgMul A B hr f
+          (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g)
+          ⟨(p₁, 0), hp⟩ = 0 from hR, smul_zero, add_zero]
+  | succ β =>
+      have hq : (p₁, β).1 + (p₁, β).2 = n := by simp only at hp ⊢; omega
+      rw [tensorDR_succ]
+      show ((-1 : R)) ^ p₁ • TensorProduct.map LinearMap.id
+          ((zeroActModule (A := A) B).dₗ β)
+          (∑ rs : Splitting a b ⟨(p₁, β), hq⟩, splittingTerm A B f g rs) = _
+      rw [map_sum, Finset.smul_sum]
+      have hsplit : ∀ rs : Splitting a b ⟨(p₁, β), hq⟩,
+          ((-1 : R)) ^ p₁ • TensorProduct.map LinearMap.id
+              ((zeroActModule (A := A) B).dₗ β) (splittingTerm A B f g rs)
+          = ((-1 : R)) ^ rs.1.1.1.1 • tensorPairₗ A B rs.2.1
+                (show rs.1.1.1.2 + 1 + rs.1.2.1.2 = β + 1 by
+                  have := rs.2.2; simp only at this ⊢; omega)
+                (TensorProduct.map LinearMap.id (B.dₗ rs.1.1.1.2) (f rs.1.1)) (g rs.1.2)
+            + ((-1 : R)) ^ a • (((-1 : R)) ^ rs.1.2.1.1 • tensorPairₗ A B rs.2.1
+                (show rs.1.1.1.2 + (rs.1.2.1.2 + 1) = β + 1 by
+                  have := rs.2.2; simp only at this ⊢; omega)
+                (f rs.1.1) (TensorProduct.map LinearMap.id (B.dₗ rs.1.2.1.2) (g rs.1.2))) := by
+        intro rs
+        have hp1 : rs.1.1.1.1 + rs.1.2.1.1 = p₁ := rs.2.1
+        have hra : rs.1.1.1.1 + rs.1.1.1.2 = a := rs.1.1.2
+        show ((-1 : R)) ^ p₁ • TensorProduct.map LinearMap.id (B.dₗ β)
+            (tensorPairₗ A B rs.2.1 rs.2.2 (f rs.1.1) (g rs.1.2)) = _
+        rw [tensorPair_dR A B rs.2.1 rs.2.2 _ _ (f rs.1.1) (g rs.1.2), smul_add, smul_smul,
+          smul_smul, smul_smul, ← pow_add, ← pow_add, ← pow_add]
+        refine congrArg₂ (· + ·) ?_ ?_
+        · congr 1
+          refine neg_one_pow_eq_of_even_add _ _ (rs.1.1.1.1 + rs.1.2.1.1) ?_
+          omega
+        · congr 1
+          refine neg_one_pow_eq_of_even_add _ _ (rs.1.1.1.1 + rs.1.2.1.1 + rs.1.1.1.2) ?_
+          omega
+      rw [Finset.sum_congr rfl fun rs _ => hsplit rs, Finset.sum_add_distrib, ← Finset.smul_sum]
+      refine congrArg₂ (· + ·) ?_ (congrArg (fun z => ((-1 : R)) ^ a • z) ?_)
+      · refine sum_shiftLeftSnd (a := a) (b := b) (q := ⟨(p₁, β), hq⟩) (p := ⟨(p₁, β + 1), hp⟩)
+          rfl rfl _ _ (fun uv hu => ?_) (fun rs => ?_)
+        · show tensorPairₗ A B uv.2.1 uv.2.2
+            (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f uv.1.1)
+            (g uv.1.2) = 0
+          rw [tensorDR_of_snd_zero _ _ a f uv.1.1 hu, map_zero, LinearMap.zero_apply]
+        · show ((-1 : R)) ^ rs.1.1.1.1 • tensorPairₗ A B _ _ _ (g rs.1.2)
+            = tensorPairₗ A B _ _
+              (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f
+                (shiftLeftSnd rfl rfl rs).1.1) (g (shiftLeftSnd rfl rfl rs).1.2)
+          rw [show (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f
+              (shiftLeftSnd rfl rfl rs).1.1)
+            = ((-1 : R)) ^ rs.1.1.1.1 • TensorProduct.map LinearMap.id (B.dₗ rs.1.1.1.2)
+              (f rs.1.1) from rfl, LinearMap.map_smul₂]
+      · refine sum_shiftRightSnd (a := a) (b := b) (q := ⟨(p₁, β), hq⟩) (p := ⟨(p₁, β + 1), hp⟩)
+          rfl rfl _ _ (fun uv hv => ?_) (fun rs => ?_)
+        · show tensorPairₗ A B uv.2.1 uv.2.2 (f uv.1.1)
+            (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g uv.1.2) = 0
+          rw [tensorDR_of_snd_zero _ _ b g uv.1.2 hv, map_zero]
+        · show ((-1 : R)) ^ rs.1.2.1.1 • tensorPairₗ A B _ _ (f rs.1.1) _
+            = tensorPairₗ A B _ _ (f (shiftRightSnd rfl rfl rs).1.1)
+              (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g
+                (shiftRightSnd rfl rfl rs).1.2)
+          rw [show (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g
+              (shiftRightSnd rfl rfl rs).1.2)
+            = ((-1 : R)) ^ rs.1.2.1.1 • TensorProduct.map LinearMap.id (B.dₗ rs.1.2.1.2)
+              (g rs.1.2) from rfl]
+          exact ((tensorPairₗ A B rs.2.1 (show rs.1.1.1.2 + (rs.1.2.1.2 + 1) = β + 1 by
+            have := rs.2.2; simp only at this ⊢; omega) (f rs.1.1)).map_smul _ _).symm
+
+/-- **The Leibniz rule for the product on a tensor product of algebras.** -/
+theorem tensorAlgMul_extTensorD {a b n : ℕ} (h : a + b = n) (hl : a + 1 + b = n + 1)
+    (hr : a + (b + 1) = n + 1)
+    (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b) :
+    extTensorD A B n (tensorAlgMul A B h f g)
+      = tensorAlgMul A B hl (extTensorD A B a f) g
+        + ((-1 : R)) ^ a • tensorAlgMul A B hr f (extTensorD A B b g) := by
+  show tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) n
+      (tensorAlgMul A B h f g)
+    + tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) n
+      (tensorAlgMul A B h f g) = _
+  rw [tensorAlgMul_tensorDL A B h hl hr f g, tensorAlgMul_tensorDR A B h hl hr f g]
+  show _ = tensorAlgMul A B hl
+      (tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f
+        + tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f) g
+    + ((-1 : R)) ^ a • tensorAlgMul A B hr f
+      (tensorDL (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g
+        + tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g)
+  rw [tensorAlgMul_add_left, tensorAlgMul_add_right, smul_add]
+  abel
+
+end Leibniz
 
 end External
 
