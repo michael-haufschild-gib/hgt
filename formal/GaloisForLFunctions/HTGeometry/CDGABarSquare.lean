@@ -116,6 +116,93 @@ noncomputable abbrev barProj {M N : ℕ → Type u} [∀ n, AddCommGroup (M n)] 
   LinearMap.proj (R := R) (φ := fun q : {ab : ℕ × ℕ // ab.1 + ab.2 = n} =>
     TensorProduct R (M q.1.1) (N q.1.2)) p
 
+/-- **The projection of the innermost factor commutes past a multiplication of the outer two.**
+This is the only thing separating the head applied twice from the first bracketing of the telescope:
+the multiplications act on the outer factors and the projection on the inner one. -/
+theorem barProj_comm_mul (u u' w e : ℕ)
+    (T : TensorProduct R (barShiftFamily ε u)
+      (TensorProduct R (barShiftFamily ε u')
+        (TensorCarrier (R := R) (barShiftFamily ε) Z (w + e)))) :
+    (TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε (u + u' + 1)))
+        (barProj (M := barShiftFamily ε) (N := Z) ⟨(w, e), rfl⟩))
+        ((TensorProduct.map (augIdealShiftMulOfTensor ε (rfl : u + u' + 1 = u + u' + 1))
+            (LinearMap.id (R := R)
+              (M := TensorCarrier (R := R) (barShiftFamily ε) Z (w + e))))
+          ((TensorProduct.assoc R (barShiftFamily ε u) (barShiftFamily ε u')
+            (TensorCarrier (R := R) (barShiftFamily ε) Z (w + e))).symm T))
+      = (TensorProduct.map (augIdealShiftMulOfTensor ε (rfl : u + u' + 1 = u + u' + 1))
+          (LinearMap.id (R := R) (M := TensorProduct R (barShiftFamily ε w) (Z e))))
+        ((TensorProduct.assoc R (barShiftFamily ε u) (barShiftFamily ε u')
+            (TensorProduct R (barShiftFamily ε w) (Z e))).symm
+          (TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε u))
+            (TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε u'))
+              (barProj (M := barShiftFamily ε) (N := Z) ⟨(w, e), rfl⟩)) T)) := by
+  induction T using TensorProduct.induction_on with
+  | zero => simp only [map_zero]
+  | add T T' hT hT' =>
+      simp only [map_add]
+      rw [hT, hT']
+  | tmul x V =>
+      induction V using TensorProduct.induction_on with
+      | zero => simp only [TensorProduct.tmul_zero, map_zero]
+      | add V V' hV hV' =>
+          simp only [TensorProduct.tmul_add, map_add]
+          rw [hV, hV']
+      | tmul y P => rfl
+
+/-- **The head applied twice, at one pair of splits, is the first bracketing of the telescope.** -/
+theorem barHead_first_comp (u u' w e c : ℕ) (hs : u + u' + 1 + w + 1 = c)
+    (G : TensorProduct R (barShiftFamily ε u)
+      (TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε) Z) (u' + (w + e)))) :
+    (TensorProduct.map (augIdealShiftMulOfTensor ε hs) (LinearMap.id (R := R) (M := Z e)))
+        ((TensorProduct.assoc R (barShiftFamily ε (u + u' + 1)) (barShiftFamily ε w) (Z e)).symm
+          ((TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε (u + u' + 1)))
+              (barProj (M := barShiftFamily ε) (N := Z) ⟨(w, e), rfl⟩))
+            ((TensorProduct.map (augIdealShiftMulOfTensor ε (rfl : u + u' + 1 = u + u' + 1))
+                (LinearMap.id (R := R)
+                  (M := TensorCarrier (R := R) (barShiftFamily ε) Z (w + e))))
+              ((TensorProduct.assoc R (barShiftFamily ε u) (barShiftFamily ε u')
+                  (TensorCarrier (R := R) (barShiftFamily ε) Z (w + e))).symm
+                ((TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε u))
+                    (barProj (M := barShiftFamily ε)
+                      (N := TensorCarrier (R := R) (barShiftFamily ε) Z) ⟨(u', w + e), rfl⟩))
+                  G)))))
+      = barMulFirstTwo ε (W := Z e) (rfl : u + u' + 1 = u + u' + 1) hs
+        (barTele ε Z u u' w e G) := by
+  rw [barProj_comm_mul]
+  have htele : (TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε u))
+        (TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε u'))
+          (barProj (M := barShiftFamily ε) (N := Z) ⟨(w, e), rfl⟩)))
+      ((TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε u))
+        (barProj (M := barShiftFamily ε)
+          (N := TensorCarrier (R := R) (barShiftFamily ε) Z) ⟨(u', w + e), rfl⟩)) G)
+      = barTele ε Z u u' w e G := by
+    rw [← LinearMap.comp_apply, ← TensorProduct.map_comp, LinearMap.comp_id]
+    rfl
+  rw [htele]
+  rfl
+
+/-- **The head after the tail, at one pair of splits, is the second bracketing of the telescope.**
+Here nothing has to be commuted: the tail multiplies inside the second factor, exactly where the
+telescope's projections already are. -/
+theorem barHead_second_comp (u u' w e c m' : ℕ) (h₃ : u' + w + 1 = m') (h₄ : u + m' + 1 = c)
+    (hq : m' + e = u' + (w + e) + 1)
+    (G : TensorProduct R (barShiftFamily ε u)
+      (TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε) Z) (u' + (w + e)))) :
+    (TensorProduct.map (augIdealShiftMulOfTensor ε h₄) (LinearMap.id (R := R) (M := Z e)))
+        ((TensorProduct.assoc R (barShiftFamily ε u) (barShiftFamily ε m') (Z e)).symm
+          (TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε u))
+            (barHeadTermₗ ε Z (u' + (w + e)) m' e hq u' w h₃) G))
+      = barMulLastTwo ε (W := Z e) h₃ h₄ (barTele ε Z u u' w e G) := by
+  induction G using TensorProduct.induction_on with
+  | zero => simp only [map_zero]
+  | add G G' hG hG' =>
+      simp only [map_add]
+      rw [hG, hG']
+  | tmul x M => rfl
+
 end Identification
 
 end GaloisForLFunctions.HTGeometry
