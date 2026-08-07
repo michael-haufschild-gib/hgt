@@ -151,3 +151,25 @@ target after that target has been assigned to the first term.
 until `(2)`, its local-ensemble decay, and all four Brown--Susskind consequences
 are dependency-closed and formalized unconditionally.
 
+## Conjecturing loop — 2026-08-07
+
+1. `[FALSIFIED]` Static growing-Krylov load: exact easy past targets retain
+   order-one carrier mass because the carrier forgets lag.
+2. `[LEAN-PROVED] [BRIDGE]` Lag-resolved shortcut dichotomy: every target
+   union splits into one permitted-anchor return tube plus anchor-orthogonal
+   residuals; exact past-orbit targets have residual zero.  See
+   `../3-formalized/lag-resolved-static-choi-shortcut-dichotomy-law.md`.
+3. `[FALSIFIED]` Directly applying fixed-target replica bounds to all translated
+   residuals: anchor selection is continuous and Hamiltonian-dependent, so the
+   translated family is adaptive and cannot be unioned as a fixed dictionary.
+4. `[LEAN-PROVED] [BRIDGE]` Circuit-word anchor rephasing: inverse-closed gates
+   absorb every anchor translation into a single depth-`r+s` word tube with
+   one additive approximation error.  The continuum of anchors therefore
+   adds no witness entropy.  See
+   `../3-formalized/circuit-word-anchor-rephasing-law.md`.
+
+The surviving `[OPEN CORE]` is strictly narrower than `(2)`: prove a quenched
+growing-replica bound for **zero-anchor traceless targets in one fixed finite
+word dictionary of enlarged depth `r+s`**, strong enough to beat its exact
+cardinality.  Neither lag ambiguity nor adaptive continuum selectors remain
+in that statement.

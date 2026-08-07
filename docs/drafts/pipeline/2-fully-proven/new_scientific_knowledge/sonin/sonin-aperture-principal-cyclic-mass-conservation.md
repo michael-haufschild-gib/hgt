@@ -2,6 +2,7 @@
 
 - **ID:** `sonin-aperture-principal-cyclic-mass-conservation`
 - **Stage:** 2-fully-proven
+- **Formalized companion:** `../../../3-formalized/new_scientific_knowledge/sonin-aperture-principal-cyclic-mass-conservation.md`
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[PROVED HERE] [SOURCE THEOREM] [NOT RH]`
 - **Parent:** `sonin-aperture-area-rigidity-and-restriction-defect.md`

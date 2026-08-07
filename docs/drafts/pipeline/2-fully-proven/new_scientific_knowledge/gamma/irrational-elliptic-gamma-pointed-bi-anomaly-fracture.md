@@ -404,7 +404,11 @@ What is still unformalized is the gerbe half `(11)`--`(12)`: the group--Cech gam
   (`EllipticGammaPointedIncidencePhase.lean`)
 - [x] DA translation anomaly `(9)`--`(10)` and the pointed class `(13)` formalized without axioms
   (`EllipticGammaTranslationAnomalyRationalBase.lean`)
-- [ ] gerbe half `(11)`--`(12)` formalized without axioms
+- [x] Dixmier--Douady generator `(8)` formalized without axioms
+  (`GammaGerbeDixmierDouadyGenerator.lean`: `gammaGerbeDD_not_coboundary`,
+  `coboundary₂_lift_eq_coboundary₂_kernel`)
+- [ ] gerbe half `(11)`--`(12)`: the single remaining input is the FHRZ cochain identity
+  `(1/2 pi i) coboundary₂ (log Phi) = gammaGerbeDD`
 
 ## Lean route for the pointed incidence phase (14b)
 
@@ -719,15 +723,71 @@ quotients are differentially algebraic -- which they are, being theta functions.
 the group direction can detect `(12)`; the class lives in the mixed Cech-group bidegree and is
 detected only by the gerbe.
 
-Closing `(12)` therefore requires importing, not deriving, two external parent objects:
+Closing `(12)` therefore requires importing, not deriving, the Felder--Henriques--Rossi--Zhu
+group--Cech cochain on the explicit invariant cover together with its Dixmier--Douady computation.
+No substitute detector exists in the group direction, by the triviality just cited.
 
-1. the Felder--Henriques--Rossi--Zhu group--Cech cochain on the explicit invariant cover, with its
-   exponential-rational cocycle;
-2. the Dixmier--Douady computation identifying its class with the generator `(8)`.
+### The Dixmier--Douady half is now unconditional Lean
 
-Neither is a corollary of anything in this corpus, and no substitute detector exists in the group
-direction, by the triviality just cited.  The gate stays open and no analytic claim is inserted as
-an axiom.
+Reading FHRZ closes most of that gap.  Their Proposition 6.10 does **not** need the theory of
+triptic curves as such: for a generic triptic curve `E = [C/Lambda]` the fibre is contractible, so
+`H^*_{Lambda}(F, Z) = H^*(Z^3, Z)`, and the cocycle representing `c(G)` is the explicit **integral
+group `3`-cocycle on `Z^3`**
+
+```text
+nu(alpha, beta, gamma) = - beta_1 gamma_2 alpha_3 .
+```
+
+`formal/GaloisForLFunctions/HTGeometry/GammaGerbeDixmierDouadyGenerator.lean` (axiom-clean, umbrella
+registered) proves, with no analytic input at all:
+
+```text
+coboundary₁, coboundary₂, coboundary₃                    -- the inhomogeneous complex, any coefficients
+coboundary₂_coboundary₁, coboundary₃_coboundary₂         -- it is a complex
+gammaGerbeDD                                             -- the cocycle nu
+coboundary₃_gammaGerbeDD                                 -- nu is a 3-cocycle
+alternation                                              -- pairing with the top exterior power
+alternation_coboundary₂                                  -- the alternation kills every coboundary
+alternation_gammaGerbeDD                                 -- and sends nu to -1
+gammaGerbeDD_not_coboundary                              -- so nu is not a coboundary
+zsmul_gammaGerbeDD_not_coboundary                        -- and neither is any nonzero multiple
+coboundary₂_lift_eq_coboundary₂_kernel                   -- the exponential detector
+```
+
+The last one is the bridge `(F2)`: for a surjective coefficient homomorphism `E` --- the exponential
+`O -> O^x` on a cover with simply connected patches, with kernel the integers --- a cocycle that is
+a coboundary in the target has an integral class which is a coboundary in the kernel-valued complex.
+Contrapositive: a lift whose coboundary is not a coboundary certifies that the original cocycle is
+not a coboundary.  Combined with `gammaGerbeDD_not_coboundary` this is exactly the statement `(8)`
+that the card previously had to import.
+
+### Exact remaining Lean input for `(12)`
+
+The detector is stated so that only the *cohomology class* of the integral cocycle matters, never a
+particular polynomial representative:
+
+```text
+not_coboundary_of_alternation_ne_zero
+alternation_add_coboundary₂
+not_coboundary_of_cohomologous_gammaGerbeDD
+```
+
+so the single remaining input is the Felder--Henriques--Rossi--Zhu identification
+
+```text
+[ (1/2 pi i) * coboundary₂ (log Phi) ]  =  [ gammaGerbeDD ]   in  H^3(Z^3, Z)     (F3)
+```
+
+for the FHRZ cochain `s_Gamma` --- their Proposition 3.15 together with the evaluation in the proof
+of their Proposition 6.10.  That is the elliptic-gamma modular three-term identity in cochain form,
+and it is the only place where the analytic theory of `Gamma(z; tau, sigma)` still has to enter.
+Everything downstream of it --- that such a class is not a coboundary, and that a holomorphic
+nowhere-vanishing trivialisation would make it one --- is unconditional Lean.
+
+One bookkeeping caveat: FHRZ's coefficients are `Cech^0(V_a, Z)`, which for a connected patch is
+`Z`, so the constant-coefficient complex formalized above is the right target.
+
+The gate stays open on `(F3)` and no analytic claim is inserted as an axiom.
 
 - 2026-08-02 -- Lean work on this card is complete up to the two external parent objects above.
 

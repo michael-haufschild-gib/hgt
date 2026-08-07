@@ -1,9 +1,9 @@
 # Lag-resolved static-Choi shortcut dichotomy law
 
 - **ID:** `lag-resolved-static-choi-shortcut-dichotomy-law`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** deterministic recurrence/shortcut decomposition
-- **Status:** `[PAPER-PROVED] [BRIDGE]`
+- **Status:** `[LEAN-PROVED] [BRIDGE]`
 - **Parent:** `oriented-no-shortcut-without-return-law.md`
 - **Date:** 2026-08-07
 
@@ -150,3 +150,17 @@ The paper proof is dependency closed.  The exact remaining `[OPEN CORE]` is a
 quenched growing-replica upper bound for the second term of `(2)`, uniform over
 the finite circuit dictionary and its permitted anchor choices, strong enough
 to survive the circuit union.
+
+## Lean verification
+
+- File:
+  `formal/GaloisForLFunctions/RHTower/LagResolvedStaticChoiShortcutDichotomyLaw.lean`
+- Main theorem:
+  `iUnion_staticChoiOverlapCaptureSet_subset_anchorReturnTube_union_residual`
+- Exact supporting laws:
+  `staticChoiTarget_capture_anchor_or_residual_budget`,
+  `staticChoiAnchorResidual_self_eq_zero`,
+  `staticChoiPhaseShift_anchorResidual_eq_tracelessResidual`, and
+  `norm_inner_staticSpectralChoiVector_eq_survival_lag`.
+- Verification: `lake env lean` passed on the module.
+- Axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`.

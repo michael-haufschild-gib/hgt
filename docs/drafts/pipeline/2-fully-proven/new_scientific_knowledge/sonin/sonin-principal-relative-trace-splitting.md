@@ -2,6 +2,7 @@
 
 - **ID:** `sonin-principal-relative-trace-splitting`
 - **Stage:** 2-fully-proven
+- **Formalized companion:** `../../../3-formalized/new_scientific_knowledge/sonin-principal-relative-trace-splitting.md`
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[PAPER-PROVED] [CORPUS-NEW WELD] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:** `sonin-principal-shell-cyclic-trace.md`,

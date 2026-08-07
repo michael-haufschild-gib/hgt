@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SoninCouplingNonannihilation
 import GaloisForLFunctions.RHTower.SoninCouplingPartialUnitary
+import GaloisForLFunctions.RHTower.SoninMellinBlindness
 
 /-!
 # The unit-norm wavepacket family
@@ -21,7 +22,7 @@ set_option maxHeartbeats 1000000
 namespace RHTower
 
 open MeasureTheory Filter
-open scoped Topology
+open scoped Topology ContDiff
 
 /-- Dividing a vector by another's norm divides its own norm by that number.  The degenerate case
 is harmless: both sides vanish when the divisor does. -/
@@ -224,5 +225,77 @@ theorem tendsto_norm_soninApertureCoupling_adjoint_soninNormalizedDilatedPacket_
   refine hdiv.congr fun n => ?_
   simp only [Pi.div_apply]
   rw [soninNormalizedDilatedPacket, map_smul, map_smul, norm_invNorm_smul_sub]
+
+/-- The unit-norm wavepacket as a function on the line, so that its Poisson admissibility can be
+read pointwise. -/
+def soninNormalizedPacketFun (b c : ℝ) (hb : 0 < b) (hbc : b < c) (κ : ℝ) : ℝ → ℝ :=
+  fun x => (‖soninPacketEven b c hb hbc κ‖)⁻¹ * soninPacket b c hbc κ x
+
+theorem soninNormalizedPacketFun_even (b c : ℝ) (hb : 0 < b) (hbc : b < c) (κ x : ℝ) :
+    soninNormalizedPacketFun b c hb hbc κ (-x) = soninNormalizedPacketFun b c hb hbc κ x := by
+  rw [soninNormalizedPacketFun, soninNormalizedPacketFun, soninPacket_even]
+
+theorem contDiff_soninNormalizedPacketFun (b c : ℝ) (hb : 0 < b) (hbc : b < c) (κ : ℝ) :
+    ContDiff ℝ ∞ (soninNormalizedPacketFun b c hb hbc κ) :=
+  contDiff_const.mul (contDiff_soninPacket b c hbc κ)
+
+theorem hasCompactSupport_soninNormalizedPacketFun (b c : ℝ) (hb : 0 < b) (hbc : b < c) (κ : ℝ) :
+    HasCompactSupport (soninNormalizedPacketFun b c hb hbc κ) :=
+  (hasCompactSupport_soninPacket b c hb hbc κ).mul_left
+
+/-- **First Meyer condition on the unit family.**  The unit packet still vanishes at the origin. -/
+theorem soninNormalizedPacketFun_zero (b c : ℝ) (hb : 0 < b) (hbc : b < c) (κ : ℝ) :
+    soninNormalizedPacketFun b c hb hbc κ 0 = 0 := by
+  rw [soninNormalizedPacketFun, soninPacket_zero b c hb hbc κ, mul_zero]
+
+/-- **Second Meyer condition on the unit family.**  The unit packet still has zero total integral,
+so its transform vanishes at the origin. -/
+theorem integral_soninNormalizedPacketFun (b c : ℝ) (hb : 0 < b) (hbc : b < c) (κ : ℝ) :
+    ∫ x : ℝ, soninNormalizedPacketFun b c hb hbc κ x = 0 := by
+  simp only [soninNormalizedPacketFun]
+  rw [MeasureTheory.integral_const_mul, integral_soninPacket b c hb hbc κ, mul_zero]
+
+/-- The unit-norm vector is the `L²` class of the unit-norm function, so the two readings of the
+normalized packet agree. -/
+theorem soninNormalizedPacket_coeFn (b c : ℝ) (hb : 0 < b) (hbc : b < c) (κ : ℝ) :
+    ((soninNormalizedPacket b c hb hbc κ : evenSubspace) : ℝ → ℂ) =ᵐ[volume]
+      fun x : ℝ => (soninNormalizedPacketFun b c hb hbc κ x : ℂ) := by
+  have hsmul : ((soninNormalizedPacket b c hb hbc κ : evenSubspace) : SoninL2) =
+      ((‖soninPacketEven b c hb hbc κ‖ : ℂ))⁻¹ • soninPacketL2 b c hb hbc κ := rfl
+  rw [hsmul]
+  filter_upwards [Lp.coeFn_smul ((‖soninPacketEven b c hb hbc κ‖ : ℂ))⁻¹
+    (soninPacketL2 b c hb hbc κ), soninPacketL2_coeFn b c hb hbc κ] with x hx hval
+  rw [hx, Pi.smul_apply, hval, smul_eq_mul, soninNormalizedPacketFun]
+  push_cast
+  ring
+
+/-- The unit packet's Mellin transform. -/
+def soninNormalizedPacketMellin (b c : ℝ) (hb : 0 < b) (hbc : b < c) (s : ℂ) (κ : ℝ) : ℂ :=
+  ((‖soninPacketEven b c hb hbc κ‖ : ℂ))⁻¹ * soninPacketMellin b c hbc s κ
+
+/-- **`(4c)` on the unit family.**  Every fixed Mellin exponent is blind to the unit wavepacket to
+all polynomial orders in the carrier frequency. -/
+theorem tendsto_pow_mul_norm_soninNormalizedPacketMellin
+    (b c : ℝ) (hb : 0 < b) (hbc : b < c) (s : ℂ) (N : ℕ)
+    (w : ℕ → ℝ) (hw : Tendsto w atTop atTop) :
+    Tendsto (fun n : ℕ =>
+        w n ^ N * ‖soninNormalizedPacketMellin b c hb hbc s (2 * Real.pi * w n)‖)
+      atTop (𝓝 0) := by
+  have hfreq : Tendsto (fun n : ℕ => 2 * Real.pi * w n) atTop atTop :=
+    Filter.Tendsto.const_mul_atTop (by positivity : (0 : ℝ) < 2 * Real.pi) hw
+  have hraw : Tendsto (fun n : ℕ =>
+      w n ^ N * ‖soninPacketMellin b c hbc s (2 * Real.pi * w n)‖) atTop (𝓝 0) := by
+    simpa [Function.comp_def] using
+      (tendsto_pow_mul_norm_soninPacketMellin b c hb hbc s N).comp hw
+  have hnorm := tendsto_norm_soninPacketEven b c hb hbc _ hfreq
+  have hLne : Real.sqrt ((2 : ℝ)⁻¹ * ∫ x : ℝ, soninAnnulusBump b c hbc x ^ 2) ≠ 0 :=
+    (sqrt_half_energy_pos b c hb hbc).ne'
+  have hdiv := hraw.div hnorm hLne
+  rw [zero_div] at hdiv
+  refine hdiv.congr fun n => ?_
+  simp only [Pi.div_apply]
+  rw [soninNormalizedPacketMellin, norm_mul, norm_inv, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (norm_nonneg _)]
+  field_simp
 
 end RHTower

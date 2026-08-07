@@ -2,6 +2,7 @@
 
 - **ID:** `sonin-principal-shell-cyclic-trace`
 - **Stage:** 2-fully-proven
+- **Formalized companion:** `../../../3-formalized/new_scientific_knowledge/sonin-principal-shell-cyclic-trace.md`
 - **Type:** THEOREM / source-specific principal finite-part descent
 - **Scientific status:** `[CORPUS-NEW] [EXTERNAL NOVELTY PROVISIONAL] [NOT RH]`
 - **Parents:** `CCMSoninFiniteWordNormalForm.lean`,

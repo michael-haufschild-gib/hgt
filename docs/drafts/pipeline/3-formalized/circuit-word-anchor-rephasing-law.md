@@ -1,9 +1,9 @@
 # Circuit-word anchor rephasing law
 
 - **ID:** `circuit-word-anchor-rephasing-law`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** deterministic circuit/recurrence bridge
-- **Status:** `[PAPER-PROVED] [BRIDGE]`
+- **Status:** `[LEAN-PROVED] [BRIDGE]`
 - **Parent:** `lag-resolved-static-choi-shortcut-dichotomy-law.md`
 - **Date:** 2026-08-07
 
@@ -111,3 +111,14 @@ The argument is dependency closed.  Exact `[OPEN CORE]` after `(1)` is now:
 prove a quenched growing-replica upper bound for zero-anchor traceless targets
 in one finite word dictionary of depth `r+s`, strong enough to beat that
 dictionary's cardinality.
+
+## Lean verification
+
+- File:
+  `formal/GaloisForLFunctions/HTGeometry/CircuitWordAnchorRephasingLaw.lean`
+- Main theorems:
+  `HasCircuitWordApproximation.inv_mul_of_inverseClosed` and
+  `hasCircuitWordApproximation_anchorRephased_family`.
+- Verification: `lake env lean` passed on the module.
+- Axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`; the exact
+  inverse-word value theorem uses only `propext`.

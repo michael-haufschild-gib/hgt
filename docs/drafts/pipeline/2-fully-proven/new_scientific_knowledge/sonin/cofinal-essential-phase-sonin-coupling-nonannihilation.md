@@ -2,6 +2,7 @@
 
 - **ID:** `cofinal-essential-phase-sonin-coupling-nonannihilation`
 - **Stage:** 2-fully-proven
+- **Formalized companion:** `../../../3-formalized/new_scientific_knowledge/cofinal-essential-phase-sonin-coupling-nonannihilation.md`
 - **Type:** THEOREM (paper) / SOURCE-TEST BOUNDARY CONSTRUCTION
 - **Scientific status:** `[PROVED HERE] [CORPUS-NEW] [EXTERNAL NOVELTY PROVISIONAL] [NOT RH]`
 - **Parents:** `sonin-principal-shell-cyclic-trace.md`,
@@ -417,6 +418,11 @@ External novelty remains provisional pending a broader bibliography and citation
 - [x] 0 → 1 in-progress: exact source-pure statement and attack identified
 - [x] 1 → 2 fully-proven: complete unconditional paper proof, `[PROVED HERE]`
 - [x] 2 → 3 formalized: explicit smooth compact-annulus wavepacket and all five limit lemmas in Lean
+- [x] the statement's own **normalized** family, not only the raw profile — `SoninNormalizedPacket.lean`
+      builds `w = u/‖u‖` and its inverse dilate, proves both are unit vectors and that the raw
+      packet is eventually nonzero, carries both Meyer conditions across the normalization, and
+      restates `(3)`, `(4)`, `(4a)`, `(4b)`, `(4c)` for the unit family — so `‖Z_r w_r‖ → 1` is a
+      theorem about the packets the card actually defines
 - [ ] 3 → 4 publication-ready: standalone paper, external novelty audit, Lean certificate
 
 ## Lean plan
@@ -552,6 +558,14 @@ Formalized so far (all unconditional, `#print axioms` clean, wired into `GaloisF
 | 9 | `(20)`, `(21)` and the strictly positive class norms inside the Banach corona | `soninCoronaClass_soninCouplingFamily`, `soninCoronaClass_soninAdjointCouplingFamily`, `norm_soninCoronaClass_soninPacketFamily_pos`, `norm_soninCoronaClass_soninDilatedPacketFamily_pos` |
 | 9 | clock pullback: reindexing is linear, contractive, isometric for a surjective clock, and descends to the corona along an escaping clock | `soninReindex`, `norm_soninReindex_le`, `norm_soninReindex`, `soninReindexₗ`, `soninCoronaReindex` |
 
+| 10 | **the unit family `w = u/‖u‖` of `(1)` itself**, and its inverse dilate `v = U_{1/r}w`; the dilate of the normalization is the normalization of the dilate | `soninNormalizedPacket`, `soninNormalizedDilatedPacket`, `soninNormalizedDilatedPacket_eq` |
+| 10 | both are genuine unit vectors, and the raw packet is eventually nonzero along an escaping clock so the normalization is never degenerate | `norm_soninNormalizedPacket`, `norm_soninNormalizedDilatedPacket`, `eventually_soninPacketEven_ne_zero`, `eventually_norm_soninNormalizedPacket_eq_one` |
+| 10 | the unit packet read as a function, with **both Meyer conditions** `w(0)=0` and `∫w=0`, evenness, smoothness, compact support, and the identification of its `L²` class with the unit vector | `soninNormalizedPacketFun`, `soninNormalizedPacketFun_zero`, `integral_soninNormalizedPacketFun`, `soninNormalizedPacketFun_even`, `contDiff_soninNormalizedPacketFun`, `hasCompactSupport_soninNormalizedPacketFun`, `soninNormalizedPacket_coeFn` |
+| 10 | **`(3)` on the unit family**: `‖Z_r w_r − U_{1/r} w_r‖ → 0` | `tendsto_norm_soninApertureCoupling_soninNormalizedPacket_sub` |
+| 10 | **`(4)` on the unit family**: `‖Z_r w_r‖ → 1` | `tendsto_norm_soninApertureCoupling_apply_soninNormalizedPacket` |
+| 10 | **`(4a)` and `(4b)` on the unit family**: adjoint and coupling are mutually inverse on the two unit classes | `tendsto_norm_adjoint_soninApertureCoupling_soninNormalizedDilatedPacket_sub`, `tendsto_norm_adjoint_mul_soninApertureCoupling_soninNormalizedPacket_sub`, `tendsto_norm_soninApertureCoupling_adjoint_soninNormalizedDilatedPacket_sub` |
+| 10 | **`(4c)` on the unit family**: every fixed Mellin exponent is blind to the unit packet to all polynomial orders | `soninNormalizedPacketMellin`, `tendsto_pow_mul_norm_soninNormalizedPacketMellin` |
+
 Files: `formal/GaloisForLFunctions/RHTower/SoninAnnulusBump.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninAnnulusPacket.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCosineRiemannLebesgue.lean`,
@@ -592,7 +606,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninAnnulusBump.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninNoAperturePacketFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBoundaryCorona.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBoundaryTransition.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCoronaBanach.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCoronaBanach.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninNormalizedPacket.lean`.
 
 Note the family is read along a sequence `kappa : N -> R` tending to infinity, matching the card's
 own integer-clock phrasing; that is also what the corpus's compact-operator lemma expects.

@@ -5,12 +5,22 @@
 - **Type:** THEOREM (Lean)
 - **Scientific status:** `[LEAN-PROVED] [SOURCE THEOREM] [NOT RH]`
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/sonin-aperture-principal-cyclic-mass-conservation.md`
+  `../../2-fully-proven/new_scientific_knowledge/sonin/sonin-aperture-principal-cyclic-mass-conservation.md`
+- **Status:** unconditional; no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
 
 ## Lean modules
 
 - `formal/GaloisForLFunctions/RHTower/SoninApertureRestrictionDefect.lean`
 - `formal/GaloisForLFunctions/RHTower/SoninApertureCyclicMassConservation.lean`
+- `formal/GaloisForLFunctions/RHTower/SoninLayerWindowNormalForm.lean`
+- `formal/GaloisForLFunctions/RHTower/SoninEulerTripleShellOverlap.lean`
+
+The terminal-test side of `(13)` additionally uses
+`SoninAperturePacketCurvatureTrace.lean`, `SoninUnboundedSourcePacket.lean`,
+`SoninBurnolCompletionNoFloor.lean`, `SoninFixedChannelNoFloor.lean`,
+`SoninChannelAnnulusBound.lean`, `SoninCompletionSummabilityCriterion.lean`, and
+`SoninCouplingEnergyGrowth.lean`.  The paper card carries the full
+statement-to-declaration table.
 
 ## Formal theorem chain
 
@@ -37,7 +47,9 @@ aperture datum is only the ordinary trace of the trace-class curvature counterte
 
 ## Verification state
 
-- direct `lake env lean GaloisForLFunctions/RHTower/SoninApertureCyclicMassConservation.lean`
-  passed;
-- module imported by `RHTower.lean` and `RiemannHypothesisSOTA2026.lean`;
-- final cached module build, axiom print, and lint remain for final audit.
+- direct `lake env lean` passed on every module listed above;
+- `#print axioms` on all 23 declarations realizing `(1)`–`(12)`, and on the 23 declarations named
+  by the paper card for the terminal test `(13)`, returns only `propext`, `Classical.choice`, and
+  `Quot.sound`;
+- every module is imported by `GaloisForLFunctions.RHTower`;
+- no `sorry`, `admit`, project `axiom`, `opaque`, or `unsafe` declaration is introduced.

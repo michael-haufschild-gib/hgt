@@ -4,7 +4,8 @@
 - **Stage:** 3-formalized
 - **Scientific status:** `[LEAN-PROVED] [CORPUS-NEW WELD] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/sonin-aperture-area-rigidity-and-restriction-defect.md`
+  `../../2-fully-proven/new_scientific_knowledge/sonin/sonin-aperture-area-rigidity-and-restriction-defect.md`
+- **Status:** unconditional; no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
 
 ## Lean modules
 
@@ -14,6 +15,11 @@
 - `formal/GaloisForLFunctions/RHTower/SoninApertureCyclicMassConservation.lean`
 - `formal/GaloisForLFunctions/RHTower/SoninApertureAreaRigidity.lean`
 - `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeApertureNoGo.lean`
+- `formal/GaloisForLFunctions/RHTower/SoninApertureDefectPositivity.lean`
+- `formal/GaloisForLFunctions/RHTower/SoninLayerWindowNormalForm.lean`
+- `formal/GaloisForLFunctions/RHTower/SoninApertureLayerAlgebra.lean`
+- `formal/GaloisForLFunctions/RHTower/SoninApertureCurvatureTrace.lean`
+- `formal/GaloisForLFunctions/RHTower/SoninApertureDefectNonadditive.lean`
 
 ## Formal theorem chain
 
@@ -47,6 +53,17 @@
     aperture curvature in Schatten-1.
 15. `soninApertureTotalLayerWindow_operator_eq_retained_add_lost` proves exact shell conservation.
 16. `soninAperture_cyclicMass_conservation` proves exact conservation of orbital mass `log r`.
+17. `evenCentralSoninQuadraticCorner_restrictionDefect_isPositive` and
+    `reApplyInnerSelf_restrictionDefect_nonneg` prove the diagonal defect is a positive operator,
+    and `evenCentralSoninQuadraticCorner_restrictionDefect_eq_zero_iff` /
+    `evenCentralSoninQuadraticCorner_compress_eq_iff` give the exactness criterion: restriction is
+    exact precisely when the lost-layer transition vanishes.
+18. `re_opTrace_evenSoninApertureRestrictionCurvature_eq_neg_hsNormSq` identifies the ordinary
+    trace of the curvature as minus the successive-layer coupling energy, hence
+    `..._nonpos` and `..._eq_zero_iff`.
+19. `exists_scale_evenSoninApertureRestrictionCurvature_ne_zero` and
+    `exists_scale_evenSoninApertureRestrictionDefect_ne_add` show the anomaly is real: at an actual
+    dilation scale the curvature is nonzero, so the defect is genuinely non-additive.
 
 ## Verdict and survivor
 
@@ -63,8 +80,10 @@ proof of RH and not a no-go for every possible enlarged principal algebra.
 
 ## Verification
 
-- direct `lake env lean` checks passed for all five modules;
-- key `#print axioms` outputs contain only `propext`, `Classical.choice`, and `Quot.sound`;
+- direct `lake env lean` checks passed for every module listed above;
+- `#print axioms` on all 62 declarations named by the paper card returns only `propext`,
+  `Classical.choice`, and `Quot.sound`;
+- every module is imported by `GaloisForLFunctions.RHTower`;
 - no `sorry`, `admit`, project `axiom`, `opaque`, or `unsafe` declaration is introduced.
 
 ## Remaining frontier

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.CDGATensor
 import GaloisForLFunctions.HTGeometry.CDGAConstCell
 import GaloisForLFunctions.HTGeometry.CDGAFreeCoefficients
+import GaloisForLFunctions.HTGeometry.CDGADerivedTensor
 
 /-!
 # Tensoring with a single-degree cell
@@ -15,7 +16,9 @@ the comparison is a map of differential graded modules and not merely of graded 
 * `HTGeometry.constCellTensorEquiv` : the comparison, degreewise.
 * `HTGeometry.constCellTensorHom` : it is a map of differential graded modules.
 * `HTGeometry.tensorMapLeft_constCell_isQuasiIsoFull` : tensoring with a single-degree cell with
-  free coefficients preserves full quasi-isomorphisms.
+  free coefficients preserves full quasi-isomorphisms — the `hcell` hypothesis of the tower theorem.
+* `HTGeometry.tensorMapLeft_constCellTower_isQuasiIsoFull` : hence the derived tensor product against
+  a tower of such cells is invariant.
 -/
 
 universe v w
@@ -116,5 +119,174 @@ def constCellTensorEquiv (k n : ℕ) :
     constCellTensorEquiv (R := R) (M := M) (V := V) k n f q
       = TensorProduct.map LinearMap.id ((constCellEval k : ConstCellCarrier V k k →ₗ[R] V))
         (f ⟨(q.1, k), by have := q.2; omega⟩) := rfl
+
+section Hom
+
+variable (P : CDGAModuleStructure A M)
+
+/-- The right half-differential vanishes on a tensor product with a single-degree cell, because the
+cell has zero differential. -/
+theorem tensorDR_constCell (k n a b : ℕ)
+    (f : TensorCarrier (R := R) (M := M) (N := ConstCellCarrier V k) n)
+    (h : (a, b).1 + (a, b).2 = n + 1) :
+    tensorDR P (constCellModule A V k) n f ⟨(a, b), h⟩ = 0 := by
+  cases b with
+  | zero => rw [tensorDR_zero]
+  | succ b' =>
+      rw [tensorDR_succ]
+      have hz : ((constCellModule A V k).dₗ b' : ConstCellCarrier V k b' →ₗ[R]
+          ConstCellCarrier V k (b' + 1)) = 0 := LinearMap.ext fun _ => rfl
+      rw [hz]
+      have hmap : TensorProduct.map (LinearMap.id : M a →ₗ[R] M a)
+          (0 : ConstCellCarrier V k b' →ₗ[R] ConstCellCarrier V k (b' + 1)) = 0 := by
+        refine TensorProduct.ext' fun m z => ?_
+        rw [TensorProduct.map_tmul]
+        show m ⊗ₜ[R] (0 : ConstCellCarrier V k (b' + 1)) = 0
+        rw [TensorProduct.tmul_zero]
+      rw [hmap, LinearMap.zero_apply, smul_zero]
+
+/-- **The comparison is a map of differential graded modules.** -/
+def constCellTensorHom (k : ℕ) :
+    CDGAModuleHom (tensorModule P (constCellModule A V k))
+      (shiftModule (tensorConstModule P V) k) where
+  toFun n f := constCellTensorEquiv (R := R) (M := M) (V := V) k n f
+  map_add n f g := map_add (constCellTensorEquiv (R := R) (M := M) (V := V) k n) f g
+  map_smul n c f := map_smul (constCellTensorEquiv (R := R) (M := M) (V := V) k n) c f
+  map_act := by
+    intro bA nS mS h x f
+    funext q
+    obtain ⟨c', hc'⟩ := q
+    show TensorProduct.map LinearMap.id (constCellEval k : ConstCellCarrier V k k →ₗ[R] V)
+        (tensorAct P (constCellModule A V k) h x f ⟨(c', k), by omega⟩)
+      = shiftAct (tensorConstModule P V) k h x
+        (constCellTensorEquiv (R := R) (M := M) (V := V) k nS f) ⟨c', hc'⟩
+    by_cases hb : bA ≤ c'
+    · obtain ⟨i, hi⟩ : ∃ i, bA + i = c' := Nat.le.dest hb
+      rw [tensorAct_apply_eq P (constCellModule A V k) h x f hi (by omega) (by omega),
+        shiftAct_apply_eq (tensorConstModule P V) k h x _ hi (by omega) hc']
+      show TensorProduct.map LinearMap.id (constCellEval k : ConstCellCarrier V k k →ₗ[R] V)
+          (TensorProduct.map (P.actₗ hi x) LinearMap.id (f ⟨(i, k), by omega⟩))
+        = TensorProduct.map (P.actₗ hi x) LinearMap.id
+          (TensorProduct.map LinearMap.id
+            (constCellEval k : ConstCellCarrier V k k →ₗ[R] V) (f ⟨(i, k), by omega⟩))
+      have hcomm : (TensorProduct.map (LinearMap.id : M c' →ₗ[R] M c')
+              (constCellEval k : ConstCellCarrier V k k →ₗ[R] V)).comp
+            (TensorProduct.map (P.actₗ hi x)
+              (LinearMap.id : ConstCellCarrier V k k →ₗ[R] ConstCellCarrier V k k))
+          = (TensorProduct.map (P.actₗ hi x) (LinearMap.id : V →ₗ[R] V)).comp
+            (TensorProduct.map (LinearMap.id : M i →ₗ[R] M i)
+              (constCellEval k : ConstCellCarrier V k k →ₗ[R] V)) := by
+        rw [← TensorProduct.map_comp, ← TensorProduct.map_comp, LinearMap.id_comp,
+          LinearMap.comp_id, LinearMap.id_comp, LinearMap.comp_id]
+      exact congrArg (fun L => L (f ⟨(i, k), by omega⟩)) hcomm
+    · rw [tensorAct_of_lt P (constCellModule A V k) h x f (by omega) hb,
+        shiftAct_of_lt (tensorConstModule P V) k h x _ hc' hb, map_zero]
+  map_d := by
+    intro n f
+    funext q
+    obtain ⟨c', hc'⟩ := q
+    have hck : (c', k).1 + (c', k).2 = n + 1 := by omega
+    show TensorProduct.map LinearMap.id (constCellEval k : ConstCellCarrier V k k →ₗ[R] V)
+        (tensorD P (constCellModule A V k) n f ⟨(c', k), hck⟩)
+      = shiftD (tensorConstModule P V) k n
+        (constCellTensorEquiv (R := R) (M := M) (V := V) k n f) ⟨c', hc'⟩
+    have hsplit : tensorD P (constCellModule A V k) n f ⟨(c', k), hck⟩
+        = tensorDL P (constCellModule A V k) n f ⟨(c', k), hck⟩ := by
+      show tensorDL P (constCellModule A V k) n f ⟨(c', k), hck⟩
+        + tensorDR P (constCellModule A V k) n f ⟨(c', k), hck⟩ = _
+      rw [tensorDR_constCell P k n c' k f hck, add_zero]
+    rw [hsplit]
+    cases c' with
+    | zero => rw [tensorDL_zero, map_zero, shiftD_zero]
+    | succ a' =>
+        have hak : (a', k).1 + (a', k).2 = n := by omega
+        rw [tensorDL_succ, shiftD_succ]
+        show TensorProduct.map LinearMap.id (constCellEval k : ConstCellCarrier V k k →ₗ[R] V)
+            (TensorProduct.map (P.dₗ a') LinearMap.id (f ⟨(a', k), hak⟩))
+          = TensorProduct.map (P.dₗ a') LinearMap.id
+            (TensorProduct.map LinearMap.id
+              (constCellEval k : ConstCellCarrier V k k →ₗ[R] V) (f ⟨(a', k), hak⟩))
+        have hcomm : (TensorProduct.map (LinearMap.id : M (a' + 1) →ₗ[R] M (a' + 1))
+                (constCellEval k : ConstCellCarrier V k k →ₗ[R] V)).comp
+              (TensorProduct.map (P.dₗ a')
+                (LinearMap.id : ConstCellCarrier V k k →ₗ[R] ConstCellCarrier V k k))
+            = (TensorProduct.map (P.dₗ a') (LinearMap.id : V →ₗ[R] V)).comp
+              (TensorProduct.map (LinearMap.id : M a' →ₗ[R] M a')
+                (constCellEval k : ConstCellCarrier V k k →ₗ[R] V)) := by
+          rw [← TensorProduct.map_comp, ← TensorProduct.map_comp, LinearMap.id_comp,
+            LinearMap.comp_id, LinearMap.id_comp, LinearMap.comp_id]
+        exact congrArg (fun L => L (f ⟨(a', k), hak⟩)) hcomm
+
+theorem constCellTensorHom_bijective (k n : ℕ) :
+    Function.Bijective ((constCellTensorHom (V := V) P k).toFun n) :=
+  (constCellTensorEquiv (R := R) (M := M) (V := V) k n).bijective
+
+end Hom
+
+section Invariance
+
+variable {P : CDGAModuleStructure A M} {P' : CDGAModuleStructure A M'}
+
+/-- The comparison is natural in the module. -/
+theorem constCellTensorHom_naturality (φ : CDGAModuleHom P P') (k : ℕ) :
+    (constCellTensorHom (V := V) P' k).comp (tensorMapLeft φ (constCellModule A V k))
+      = (shiftMap (tensorConstMap φ V) k).comp (constCellTensorHom (V := V) P k) := by
+  refine CDGAModuleHom.hom_ext fun n f => ?_
+  funext q
+  obtain ⟨c', hc'⟩ := q
+  have hck : (c', k).1 + (c', k).2 = n := by omega
+  show TensorProduct.map LinearMap.id (constCellEval k : ConstCellCarrier V k k →ₗ[R] V)
+      (TensorProduct.map (φ.mapₗ c') LinearMap.id (f ⟨(c', k), hck⟩))
+    = TensorProduct.map (φ.mapₗ c') LinearMap.id
+      (TensorProduct.map LinearMap.id
+        (constCellEval k : ConstCellCarrier V k k →ₗ[R] V) (f ⟨(c', k), hck⟩))
+  have hcomm : (TensorProduct.map (LinearMap.id : M' c' →ₗ[R] M' c')
+          (constCellEval k : ConstCellCarrier V k k →ₗ[R] V)).comp
+        (TensorProduct.map (φ.mapₗ c')
+          (LinearMap.id : ConstCellCarrier V k k →ₗ[R] ConstCellCarrier V k k))
+      = (TensorProduct.map (φ.mapₗ c') (LinearMap.id : V →ₗ[R] V)).comp
+        (TensorProduct.map (LinearMap.id : M c' →ₗ[R] M c')
+          (constCellEval k : ConstCellCarrier V k k →ₗ[R] V)) := by
+    rw [← TensorProduct.map_comp, ← TensorProduct.map_comp, LinearMap.id_comp,
+      LinearMap.comp_id, LinearMap.id_comp, LinearMap.comp_id]
+  exact congrArg (fun L => L (f ⟨(c', k), hck⟩)) hcomm
+
+/-- **Tensoring with a single-degree cell with free coefficients preserves full
+quasi-isomorphisms.**  This is the `hcell` hypothesis of the tower theorem, for the cells of a
+tower that is semi-free over the ground ring. -/
+theorem tensorMapLeft_constCell_isQuasiIsoFull (φ : CDGAModuleHom P P') (hφ : φ.IsQuasiIsoFull)
+    {ι : Type w} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι R V) (k : ℕ) :
+    (tensorMapLeft φ (constCellModule A V k)).IsQuasiIsoFull := by
+  have hP : (constCellTensorHom (V := V) P k).IsQuasiIsoFull :=
+    CDGAModuleHom.IsQuasiIsoFull.of_bijective (constCellTensorHom_bijective P k)
+  have hP' : (constCellTensorHom (V := V) P' k).IsQuasiIsoFull :=
+    CDGAModuleHom.IsQuasiIsoFull.of_bijective (constCellTensorHom_bijective P' k)
+  have h1 : ((constCellTensorHom (V := V) P' k).comp
+      (tensorMapLeft φ (constCellModule A V k))).IsQuasiIsoFull := by
+    rw [constCellTensorHom_naturality φ k]
+    exact CDGAModuleHom.IsQuasiIsoFull.comp (freeCellFunctor_isQuasiIsoFull φ hφ b k) hP
+  exact CDGAModuleHom.IsQuasiIsoFull.of_comp_right h1 hP'
+
+/-- **The derived tensor product against a tower of single-degree cells with free coefficients is
+invariant.**  Both hypotheses of the tower theorem are now available: the base is assumed, and the
+cells are discharged by `tensorMapLeft_constCell_isQuasiIsoFull`.  A tower of such cells is what
+"semi-free over the ground ring" means. -/
+theorem tensorMapLeft_constCellTower_isQuasiIsoFull (φ : CDGAModuleHom P P')
+    (hφ : φ.IsQuasiIsoFull)
+    {Mb : ℕ → Type w} [∀ n, AddCommGroup (Mb n)] [∀ n, Module R (Mb n)]
+    (P₀ : CDGAModuleStructure A Mb)
+    {W : ℕ → Type w} [∀ i, AddCommGroup (W i)] [∀ i, Module R (W i)]
+    {kk : ℕ → ℕ} {ι : ℕ → Type w} [∀ i, Fintype (ι i)] [∀ i, DecidableEq (ι i)]
+    (bb : ∀ i, Module.Basis (ι i) R (W i))
+    (τ : ∀ (i : ℕ) (S : CDGAModuleStructure A
+        (towerCarrier Mb (fun j => ConstCellCarrier (W j) (kk j)) i)),
+      CDGATwist S (constCellModule A (W i) (kk i)))
+    (h₀ : (tensorMapLeft φ P₀).IsQuasiIsoFull) :
+    ∀ i, (tensorMapLeft φ
+      (towerMod P₀ (fun j => constCellModule A (W j) (kk j)) τ i)).IsQuasiIsoFull :=
+  tensorMapLeft_tower_isQuasiIsoFull P P' φ P₀ (fun j => constCellModule A (W j) (kk j)) τ h₀
+    (fun i => tensorMapLeft_constCell_isQuasiIsoFull φ hφ (bb i) (kk i))
+
+end Invariance
 
 end GaloisForLFunctions.HTGeometry

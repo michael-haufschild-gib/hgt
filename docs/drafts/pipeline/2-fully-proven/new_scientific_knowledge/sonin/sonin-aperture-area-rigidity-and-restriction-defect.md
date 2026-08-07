@@ -2,6 +2,7 @@
 
 - **ID:** `sonin-aperture-area-rigidity-and-restriction-defect`
 - **Stage:** 2-fully-proven
+- **Formalized companion:** `../../../3-formalized/new_scientific_knowledge/sonin-aperture-area-rigidity-and-restriction-defect.md`
 - **Type:** THEOREM / SOURCE NO-GO WITH POSITIVE SURVIVOR
 - **Scientific status:** `[PAPER-PROVED] [CORPUS-NEW WELD] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parent:** `sonin-principal-relative-trace-splitting.md`

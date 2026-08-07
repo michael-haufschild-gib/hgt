@@ -603,3 +603,32 @@ that the bidegree components with second index `≠ k` are trivial — which fol
 bijection and `freeCellFunctor_isQuasiIsoFull`, two out of three gives
 `(tensorMapLeft φ (constCellModule A V k)).IsQuasiIsoFull`, which is exactly the `hcell` hypothesis
 of `tensorMapLeft_tower_isQuasiIsoFull`.
+
+## `hcell` is discharged — the tower theorem is now unconditional for ground-ring semi-free towers
+
+`CDGAConstCellTensor.lean` closes the loop.
+
+* `tensorProduct_subsingleton_right` — a tensor product with a trivial module is trivial.
+* **`constCellTensorEquiv`** — `TensorCarrier M (ConstCellCarrier V k) n ≃ₗ ShiftCarrier (M · ⊗ V) k n`.
+  All bidegree components with second index `≠ k` are trivial, so the product over bidegrees
+  collapses to the product over `{a // a + k = n}`.
+* `tensorDR_constCell` — **the right half-differential vanishes identically** on a tensor product
+  with a single-degree cell, because the cell has zero differential.  This is the whole reason the
+  graded comparison upgrades to a map of *differential* graded modules: only `tensorDL` survives,
+  and that is exactly `shiftD` of the constant tensor.
+* **`constCellTensorHom`** and `constCellTensorHom_bijective`, `constCellTensorHom_naturality`.
+* **`tensorMapLeft_constCell_isQuasiIsoFull`** — tensoring with a single-degree cell with free
+  coefficients preserves full quasi-isomorphisms.  **This is the `hcell` hypothesis of
+  `tensorMapLeft_tower_isQuasiIsoFull`.**
+* **`tensorMapLeft_constCellTower_isQuasiIsoFull`** — hence, for a tower whose cells are modules
+  concentrated in single degrees with free coefficients of finite rank, the derived tensor product
+  is invariant given only invariance at the base.  A tower of such cells is what *semi-free over the
+  ground ring* means.
+
+All unconditional; axioms `propext, Classical.choice, Quot.sound` (the comparison itself needs only
+`propext, Quot.sound`).
+
+A note on process, recorded because it cost time: `⟨(c', k), by omega⟩` inside a `show` whose
+expected type already fixes the proof term makes `omega` fail with "no goals to be solved" — the
+proof field is unified rather than elaborated.  Naming the index proof with a `have` first avoids
+it, and is what the `map_d` field does.

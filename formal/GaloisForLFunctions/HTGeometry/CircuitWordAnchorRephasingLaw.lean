@@ -15,13 +15,16 @@ namespace GaloisForLFunctions.HTGeometry
 
 /-- Reverse a gate word and replace every gate by its designated inverse. -/
 def circuitInverseWord {gate : Type*}
-    (inverseGate : gate → gate) (w : List gate) : List gate :=
-  w.reverse.map inverseGate
+    (inverseGate : gate → gate) : List gate → List gate
+  | [] => []
+  | g :: w => circuitInverseWord inverseGate w ++ [inverseGate g]
 
 @[simp] theorem length_circuitInverseWord
     {gate : Type*} (inverseGate : gate → gate) (w : List gate) :
     (circuitInverseWord inverseGate w).length = w.length := by
-  simp [circuitInverseWord]
+  induction w with
+  | nil => simp [circuitInverseWord]
+  | cons g w ih => simp [circuitInverseWord, ih]
 
 /-- An inverse-closed generator evaluates the reversed inverse word to the
 group inverse of the original word value. -/
@@ -35,7 +38,8 @@ theorem circuitWordValue_circuitInverseWord
   induction w with
   | nil => simp [circuitInverseWord, circuitWordValue]
   | cons g w ih =>
-      simp [circuitInverseWord, circuitWordValue, ih, hinverse]
+      rw [circuitInverseWord, circuitWordValue_append, ih]
+      simp [circuitWordValue, hinverse]
 
 /-- **Circuit-word anchor rephasing.**  Approximation tubes are closed under
 inverse-left translation, with additive word budget and additive error. -/
@@ -86,4 +90,3 @@ theorem hasCircuitWordApproximation_anchorRephased_family
     hinverse hmul hinvDist (htarget w)
 
 end GaloisForLFunctions.HTGeometry
-
