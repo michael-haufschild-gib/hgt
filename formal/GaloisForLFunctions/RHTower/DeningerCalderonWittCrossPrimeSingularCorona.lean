@@ -98,7 +98,6 @@ theorem deningerCalderonWittCrossPrimePacketHorizon_not_mem_arithmeticCore :
   have hsource :
       deningerCalderonWittCrossPrimeSourceSpanToPacketHilbert x =
         deningerCalderonWittCrossPrimeAlgebraicPacketToHilbert a := by
-    change deningerCalderonWittCrossPrimeSourceSpanToPacketHilbert x = _
     rw [show x =
         deningerCalderonWittCrossPrimeFinsuppEquivAlgebraicSourceSpan a by
       exact
@@ -110,7 +109,7 @@ theorem deningerCalderonWittCrossPrimePacketHorizon_not_mem_arithmeticCore :
   have hcoord := congrArg
     (fun z : DeningerCalderonWittCrossPrimePacketHilbert => z i) hx
   rw [deningerCalderonWittCrossPrimeAlgebraicPacketToHilbert_apply,
-    Finsupp.not_mem_support_iff.mp hi] at hcoord
+    Finsupp.notMem_support_iff.mp hi] at hcoord
   exact
     deningerCalderonWittCrossPrimePacketHorizon_apply_ne_zero i hcoord.symm
 
