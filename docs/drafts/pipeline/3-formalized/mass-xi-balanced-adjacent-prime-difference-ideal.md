@@ -2,8 +2,9 @@
 
 ## Status
 
-- Lane: `1-in-progress`
+- Lane: `3-formalized`
 - Conjecture: `C38`
+- Result: `[LEAN-PROVED] [BOUNDED-IDEAL ENLARGED] [SCALAR CLASS SURVIVES] [NOT RH]`
 - Parent: C37 integer-dilation prime-mask ideal
 - Target: `docs/reports/mass-shifted-spectral-trace-route.md`, §9.3 exact open core
 
@@ -79,11 +80,11 @@ absolute summability without PNT, Bertrand, or any prime-gap estimate.
 
 ### C. Quotient target
 
-Package the pair sequence as an actual prime mask
+Reverse-normalize the pair sequence and package it as an actual bounded prime mask
 
 ```text
-w_adj(p_{2n})   = t_{2n+1}/t_{2n},
-w_adj(p_{2n+1}) = -1.
+v_adj(p_{2n})   = 1,
+v_adj(p_{2n+1}) = -t_{2n}/t_{2n+1}.
 ```
 
 Prove its masked layer equals `∑' n, B_n`, is uniformly bounded, and classify
@@ -97,7 +98,8 @@ class must be equivalent to the valuation-one bound and hence RH.
 
 ## Falsification gates
 
-1. Numerical identity and telescoping majorant must hold far beyond floating error.
+1. Exact algebraic identity and telescoping majorant must be proved symbolically; no numerical
+   evidence is accepted.
 2. Lean must prove Fourier Lipschitz with the actual integral definition and no new assumptions.
 3. Lean must prove absolute summability from the ordered-prime enumeration without importing PNT.
 4. The adjacent mask must be structurally outside finite Euler-power dilation: it couples two
@@ -137,6 +139,7 @@ mass survives.
 - `XiMassStripFourierLipschitz.lean` — proved: actual integral frequency-Lipschitz law, uniform in
   vertical height
 - `XiMassAdjacentPrimeDifference.lean`
+- `XiMassAdjacentPrimeMask.lean`
 - `XiMassAdjacentPrimeQuotient.lean`
 
 All proofs must be unconditional; final capstones must expose only standard quotient/classical
@@ -147,3 +150,10 @@ axioms under `#print axioms`.
 - 2026-08-06 — opened from C37 phase-transition survivor; exact conjecture and fail gates fixed.
 - 2026-08-06 — C38-A formalized as
   `norm_stripFourier_xiMassAnalyticTest_sub_le`; proof acts directly on the integral.
+- 2026-08-07 — C38-B formalized: balanced adjacent atoms are absolutely summable with an exact
+  quarter-exponential telescope and a vertical-height-independent bound.
+- 2026-08-07 — C38-C formalized. Bertrand bounds the reverse-normalized actual mask by `2`; Lean
+  proves exact flattening of paired atoms back to the prime layer and the `32 J_sigma E_0` bound.
+- 2026-08-07 — Exact quotient classification formalized: adjoining the adjacent-prime direction
+  preserves fixed-line boundedness and leaves the scalar valuation-one class, hence the RH open
+  core, unchanged. C38 closes as a positive bounded-ideal survivor plus a sharp no-go.

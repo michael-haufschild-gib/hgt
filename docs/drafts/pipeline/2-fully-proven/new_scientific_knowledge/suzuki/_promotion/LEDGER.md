@@ -3978,3 +3978,172 @@ window (DF).
 `(17)`'s `hY` can now be discharged for the zero-extended profile: combine `mollify_fullPrimitive`
 with the bridge `integral_Iic_zeroExtend_eq_halfLinePrimitive` (DE).  Only `(15)` — translation
 invariance of the transport operator — remains unstated.
+
+## DL. `hY` holds only on `L₀ ≥ ε` — a fifth consequence of the half-line geometry
+
+Discharging `hY` from `(16)` + the bridge does **not** work unconditionally, and the reason is worth
+recording before someone writes it.
+
+`(16)` is stated for `∫_{Iic ·} (zeroExtend F)`.  The bridge (DE) converts that to
+`halfLinePrimitive F` **only for nonnegative arguments**.  But `mollify ρ G L₀` evaluates `G` at
+`L₀ − t` for `t` across the mollifier's support, so it reaches `L₀ − ε`.  For `L₀ < ε` that is
+negative, and there the two primitives genuinely differ:
+
+    ∫_{Iic L} zeroExtend F = 0            for L < 0
+    halfLinePrimitive F L = ∫_0^L F ≠ 0   for L < 0
+
+So `hY` is **false near the origin** and true for `L₀ ≥ ε`, where every shifted argument
+`L₀ − t ≥ 0`.
+
+This is fine for the card: `(18)` is asserted only "for points whose `ε`-neighbourhood lies in the
+half-line on which `(3)` holds", i.e. exactly `L₀ ≥ L_0 + ε`.  The Lean statement must carry that
+restriction.
+
+**Action.** Restate `logDirichlet_mollify` with the hypothesis `ε ≤ L₀` (plus the mollifier's
+support bound), and discharge `hY` inside it from `mollify_fullPrimitive` (DK) and
+`integral_Iic_zeroExtend_eq_halfLinePrimitive` (DE), applied pointwise in `t` under
+`integral_congr_ae` conditioned on `|t| ≤ ε` — the same pattern as `(16)`'s untruncation step.
+
+Fifth instance of the same underlying fact (cf. DD, DF, DG, DJ): **every identity in this passage
+that involves the primitive needs an explicit `L₀ ≥ ε` or a zero-extension, because the half-line's
+endpoint does not commute with translation.**
+
+## DM. The resolution: `logDirichlet` must use the full primitive in the mollified identity
+
+DL proposed restating `logDirichlet_mollify` with `ε ≤ L₀`.  Working that out shows the restriction
+fixes the **left** side but not the **right**.
+
+    left:   mollify ρ (halfLinePrimitive f) L₀ = mollify ρ (∫_{Iic ·} f) L₀
+            ✓ for L₀ ≥ ε, since every shifted argument L₀ − t ≥ 0 and the bridge (DE) applies
+
+    right:  ∫_{Iic L₀} (mollify ρ f)  ≟  halfLinePrimitive (mollify ρ f) L₀
+            ✗ — they differ by ∫_{Iic 0} (mollify ρ f), which is nonzero on [−ε, 0]
+
+The obstruction is that `mollify ρ f` does **not** vanish below `0`; it vanishes below `−ε`
+(section DK).  So the bridge cannot be applied on the right at any `L₀`.
+
+**Resolution.**  The card is consistent because it uses `Y_f(L) = ∫_{−∞}^L f` *throughout* — for
+both `f` and `f_ε` — never the half-line primitive.  The Lean statement must do the same: define
+
+    fullPrimitive f L      = ∫ x in Iic L, f x
+    fullLogDirichlet f L   = 2 L f L − fullPrimitive f L
+
+and prove `fullLogDirichlet (ρ * f) = ρ * (fullLogDirichlet f) + 2 (s ρ) * f` — for which `(16)` is
+already exactly the primitive half and `mollify_position_eq` the position half.  The bridge (DE)
+then converts `fullLogDirichlet f` to `logDirichlet f` on `L ≥ 0` **for the unmollified profile
+only**, which is all the argument needs, since `(18)` is an equation about `f_ε` and the trace
+theorem consumes `logDirichlet` of the *original* `F`.
+
+Sixth and last instance of the same fact.  The correct invariant to state once: **use the full
+primitive for anything that gets mollified; convert to the half-line primitive only at the very
+end, on the unmollified profile, where `L ≥ 0` makes them agree.**
+
+## DN. `(17)` IS PROVED IN ITS CORRECT FORM — `hY` discharged
+
+`LogNormalEquationTrace.lean` is at 42 declarations, all `#print axioms` clean, no `sorry`.
+
+    fullPrimitive f L      = ∫ x in Iic L, f x
+    fullLogDirichlet f L   = 2 L f L − fullPrimitive f L
+
+- `fullPrimitive_eq_halfLinePrimitive` — the two agree on `L ≥ 0` for a zero extension (DE).
+- `mollify_fullPrimitive_eq` — `(16)` restated on `fullPrimitive` (DK, definitionally).
+- `fullLogDirichlet_mollify` — **the card's `(17)`**:
+
+      fullLogDirichlet (ρ * f) L = ρ * (fullLogDirichlet f) L + 2 (s ρ) * f L
+
+  with **`hY` derived, not assumed**.  The primitive half is `mollify_fullPrimitive_eq`, the
+  position half is `mollify_position_eq`.  No range restriction is needed, because the full
+  primitive commutes with translation everywhere — which was the point of DM.
+
+The earlier `logDirichlet_mollify` (with its docstring caution and its unsatisfiable `hY`) is
+superseded.  Keep it or delete it, but do not build on it.
+
+### Mollification passage
+
+    (14) mollifier family                    BUILT   BumpMollifierFamily
+    (15) R_full commutes with convolution    not stated
+    (16) Y commutes with convolution         BUILT   mollify_fullPrimitive
+    (17) the position defect                 BUILT   fullLogDirichlet_mollify   ← DN
+
+Remaining hypothesis in `(17)`: `hPc : Continuous (fullPrimitive f)`.  That is object regularity of
+a genuinely different kind — continuity of the primitive — and is provable for bounded measurable
+`f` vanishing below `0` (it equals `∫_{Icc 0 L} f`, continuous in `L`).  Discharging it is the next
+step; `(15)` is the last unstated item.
+
+## DO. Discharging `hPc` — the plan, and why it is not just `fun_prop`
+
+`hPc : Continuous (fullPrimitive f)` is the last hypothesis of `(17)` that is not card data.  It is
+provable, but not by any continuity tactic: `fullPrimitive f L = ∫_{Iic L} f` is an integral over a
+*varying, unbounded* window, and `fun_prop` has nothing to say about it.
+
+The route is **Lipschitz, not continuity**:
+
+    |fullPrimitive f L − fullPrimitive f L'| = |∫_{Ioc L' L} f| ≤ M (L − L')     for L' ≤ L
+
+so `fullPrimitive f` is `M`-Lipschitz, hence continuous (`LipschitzWith.continuous`).
+
+Two supporting facts are needed and neither is built:
+
+1. `IntegrableOn f (Iic L)` for `f` bounded measurable vanishing below `0`.  Not automatic —
+   `Iic L` has infinite measure.  It follows from `setIntegral_Iic_eq_Icc_of_vanishing` (DH) in
+   integrability form: the integral over `Iic L` reduces to `Icc 0 L`, which is finite measure with
+   a bounded integrand.  The reduction lemma for *integrability* (as opposed to the integral's
+   value) is the missing piece.
+2. The additivity `∫_{Iic L} f − ∫_{Iic L'} f = ∫_{Ioc L' L} f`, from
+   `setIntegral_union` on `Iic L = Iic L' ∪ Ioc L' L` given (1).
+
+Then `|∫_{Ioc L' L} f| ≤ M (L − L')` by `norm_setIntegral_le_of_norm_le_const` with the finite
+measure of `Ioc L' L`.
+
+This is the last item before `(17)` is hypothesis-free; `(15)` remains unstated after it.
+
+## DP. Two of the three steps to `hPc` are built
+
+`LogNormalEquationTrace.lean` is at 44 declarations, all `#print axioms` clean, no `sorry`.
+
+- `integrableOn_Iic_of_vanishing` — a bounded measurable profile vanishing below the origin is
+  integrable on every `Iic L`.  Proved by showing the two indicators are **pointwise equal**,
+  `(Iic L).indicator f = (Icc 0 L).indicator f` — not merely a.e. equal — then transferring
+  integrability through `integrable_indicator_iff`.
+- `fullPrimitive_sub` — the increment `fullPrimitive f L − fullPrimitive f L' = ∫_{Ioc L' L} f`
+  for `L' ≤ L`, by `setIntegral_union` on `Iic L = Iic L' ∪ Ioc L' L`.
+
+**Remaining:** the Lipschitz bound itself,
+
+    |fullPrimitive f L − fullPrimitive f L'| ≤ M |L − L'|,
+
+from `fullPrimitive_sub` plus `norm_setIntegral_le_of_norm_le_const` on `Ioc L' L` (whose measure is
+`ENNReal.ofReal (L − L')`).  Then `LipschitzWith.continuous` gives `hPc`.
+
+Note when writing it: `LipschitzWith.of_dist_le_mul` presents the goal as
+`|P L' − P L| ≤ K |L' − L|` with the arguments in the *opposite* order to `fullPrimitive_sub`, so
+an `abs_sub_comm` is needed before rewriting, and the `L ≤ L'` branch needs the symmetric argument
+rather than being closed by the same rewrite.
+
+## DQ. `(17)` IS HYPOTHESIS-FREE — `hPc` discharged
+
+`LogNormalEquationTrace.lean` is at 47 declarations, all `#print axioms` clean, no `sorry`.
+
+- `abs_fullPrimitive_sub_le` — `|fullPrimitive f L − fullPrimitive f L'| ≤ M (L − L')`.
+- `continuous_fullPrimitive` — **`hPc` discharged**: the full primitive of a bounded measurable
+  profile vanishing below the origin is `M`-Lipschitz, hence continuous.
+- `fullLogDirichlet_mollify'` — **the card's `(17)` with every derived input chained**:
+
+      fullLogDirichlet (ρ * f) L = ρ * (fullLogDirichlet f) L + 2 (s ρ) * f L
+
+  Hypotheses: `ρ` continuous, compactly supported, supported in `[−ε,ε]`; `f` continuous, bounded,
+  vanishing below `0`.  **All object regularity.**  Nothing derived is assumed.
+
+Traps: the bound from `norm_setIntegral_le_of_norm_le_const` is stated with `volume.real`, not
+`(volume _).toReal` — route through `MeasureTheory.measureReal_def`.  And
+`LipschitzWith.of_dist_le_mul` with `K = ⟨M, hM⟩` leaves a coercion that `simp only [NNReal.coe_mk]`
+cannot see through; use an explicit `show`.
+
+### Mollification passage
+
+    (14) mollifier family                    BUILT   BumpMollifierFamily
+    (15) R_full commutes with convolution    not stated
+    (16) Y commutes with convolution         BUILT   mollify_fullPrimitive
+    (17) the position defect                 BUILT, hypothesis-free   fullLogDirichlet_mollify'
+
+`(15)` is the only unstated item of the passage.

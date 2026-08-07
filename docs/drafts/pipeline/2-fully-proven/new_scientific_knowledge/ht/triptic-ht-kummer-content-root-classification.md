@@ -392,3 +392,23 @@ The cancellation is exact and needs no analysis beyond the shift relations: in
 
 every cone product cancels against a partner, leaving `P(-z)P(z+b)` against `P(z)P(b-z)`, whose
 ratio is `(1 - e(-z))/(1 - e(z)) = -e(-z)`.
+
+## Lean progress — the orbital charge is a class function on `G`
+
+`GaloisForLFunctions/HTGeometry/TripticChargeClassFunction.lean` (wired, axiom-clean):
+
+    meromorphicOrderAt_of_period       a period of a function is a period of its order
+    shiftOrder_of_period               hence of every shift order
+    tripticOrbitCharge_of_period       **`1`-invariance**, from `1`-periodicity of the source
+    tripticOrbitCharge_of_shiftOrder_invariant
+                                       **`τ`-invariance**, from `τ`-invariance of the shift-quotient
+                                       divisor — the exact content of the mixed-cocycle condition,
+                                       since an exponential character has no zeros or poles
+    eq_of_add_zsmul                    one period upgrades to all its integer multiples
+    tripticOrbitCharge_of_periodGroup  **the charge is constant on classes of `H₃ = ℤ + ℤτ + ℤσ`**
+
+This is the well-definedness of `D_Y` as an element of `ℤ[G]`, `G = ℂ/H₃`: the three directions have
+three different reasons, and only the `τ` one uses the defining cocycle condition of the source
+class.  Together with `tripticOrbitCharge_mul` (additivity) and the elliptic-gamma realization it
+completes every input of the abstract Kummer classification except finiteness of the class support
+and the identification of the kernel with the differentially algebraic members.

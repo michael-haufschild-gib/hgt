@@ -397,7 +397,7 @@ conjunction.
 
 ## Lean status
 
-`[PARTIAL]`  `formal/GaloisForLFunctions/RHTower/HedenmalmIntervalAnomaly.lean`
+`[FORMALIZED]`  `formal/GaloisForLFunctions/RHTower/HedenmalmIntervalAnomaly.lean`
 (namespace `RHTower.HedenmalmIntervalAnomaly`), built on the rank-one anomaly module
 `RHTower/HedenmalmPrimeTranslationAnomaly.lean` of the parent card.  All declarations are
 `#print axioms`-clean.
@@ -471,21 +471,48 @@ strengthens the corpus Kronecker theorem to arbitrarily large times, and
 | `(17)` | **the two bounded self-adjoint prime channels** | `channelOperator`, `channelOperator_inner` |
 | `(17)` | the common real symbol zero set is exactly the real `Xi` divisor | `channelSymbol_eq_zero_iff` |
 
-Still missing: the conormal generation statement `(13)`--`(14)`.  This needs Wedderburn's lemma
-for entire functions --- two entire functions without a common zero generate the unit ideal.
+**The conormal generation statement `(13)`--`(14)` and the analytic cokernel `(17)` are proved.**
+Three new modules carry them.
 
-The Weierstrass half of that build is **already in the corpus** and must not be rebuilt:
-`RHTower.canonicalProductE1Indexed_hasProdLocallyUniformlyOn`
-(`RHTower/CanonicalProduct.lean`) gives local uniform convergence of the genus-one product
-`prod E_1(z / a_i)` for any family of nonzero `a_i` with `sum 1 / norm (a_i) ^ 2` summable, and
-`HTGeometry/MovingCanonicalProduct.lean` supplies `movingCanonicalProduct_eq_zero_iff` together
-with the `analyticOrderAt` computations at each zero.  The zeros of `a_n` are
-`2 pi k / log n`, `k` a nonzero integer, all simple and growing linearly, so that hypothesis is met.
+`formal/GaloisForLFunctions/HTGeometry/EntireInterpolation.lean`:
 
-What is genuinely absent from both the corpus and mathlib is the **interpolation** half:
-Mittag-Leffler, i.e. an entire function with prescribed finite jets on a discrete set.  Wedderburn
-needs exactly that (an entire `b` agreeing with `1/f` to the right order at each zero of `g`), and
-the analytic-cokernel half of `(17)` rests on it.
+| # | statement | Lean declaration |
+|---|---|---|
+| — | **Mittag-Leffler interpolation**: arbitrary values may be prescribed at the simple zeros of an entire function when they are nonzero and escape to infinity | `exists_entire_interpolation` |
+
+`formal/GaloisForLFunctions/HTGeometry/EntireBezout.lean`:
+
+| # | statement | Lean declaration |
+|---|---|---|
+| — | **analytic division**: an entire function whose analytic order dominates that of a nonzero entire `g` everywhere is an entire multiple of `g` | `exists_entire_quotient` |
+| `(13)` | **Wedderburn's lemma**: two entire functions without a common zero, the zeros of the first simple, nonzero and escaping, generate the unit ideal | `exists_entire_bezout` |
+
+`formal/GaloisForLFunctions/RHTower/HedenmalmTwoPrimeBezout.lean`
+(namespace `RHTower.HedenmalmThetaSource`):
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(7)` | the entire representative of `a_n`, with the removable singularity at the origin filled in, and its value `n^{-1/2} log n` there | `centeredMultiplierE`, `differentiable_centeredMultiplierE`, `centeredMultiplierE_eq`, `centeredMultiplierE_at_zero` |
+| `(9)` | its zero set is exactly the nonzero part of the progression `2 pi k / log n` | `centeredMultiplierE_eq_zero_iff` |
+| `(9)` | those zeros are simple, injectively indexed, and escape to infinity | `deriv_centeredMultiplierE_ne_zero`, `injective_centeredZero`, `tendsto_norm_centeredZero_cofinite` |
+| `(13)` | **the two-prime Bezout identity** `b_2 a_2 + b_3 a_3 = 1` with `b_2`, `b_3` entire | `exists_two_prime_bezout` |
+
+`formal/GaloisForLFunctions/RHTower/HedenmalmTwoPrimeIdeal.lean`
+(namespace `RHTower.HedenmalmThetaSource`):
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(13)` | the Bezout identity inside the entire-function algebra | `exists_entire_two_prime_bezout` |
+| `(14)` | **the two prime windows generate the Xi ideal**, `(hat c_2, hat c_3) = (Xi_C)` | `span_entireCenteredWindow_eq_xiIdeal` |
+| `(17)` | the range of the two-prime row map is the Xi ideal | `windowRow`, `range_windowRow` |
+| `(17)` | **the analytic cokernel is `O(C)/(Xi_C)`** | `twoPrimeCokernelEquiv` |
+
+The interpolation series is the classical one, `sum_i c_i (z / w_i)^{N_i} dslope F w_i z / F'(w_i)`,
+with the exponents `N_i` chosen index by index so that the `i`-th term is dominated by a summable
+majorant on the disc of radius `‖w_i‖ / 2`; on a fixed disc that domination holds for all but
+finitely many `i`.  Division uses the meromorphic normal form: the pointwise quotient has
+non-negative divisor, hence its normal form is analytic, and the factorization propagates from a
+punctured neighbourhood of a non-zero of the divisor by the identity theorem.
 
 **All three frame obstructions are formalized**: `(22)`/`(23)` (no bounded Bezout pair on the real
 axis), `(25)` (the finite-prime Kronecker obstruction) and `(26)`/`(27)` (the summably weighted

@@ -4385,6 +4385,41 @@ not closed. Likewise global principal-parts object `O[Xi^{-1}]/O` is not an ordi
 carrier; only finite Cartier layers are perfect. Neither completion language nor generic
 Ind/Pro/Tate duality changes finite two-prime obstruction above.
 
+**Anti-theatre producer audit.** The open-core name above is the logical endpoint, not yet a
+source mechanism.  Three tempting formulations do not move the frontier.  First, declaring a
+closed Hodge-admission set containing the dense completed Green range is pointwise equivalent to
+the critical-line conclusion.  Second, rational-Witt Frobenius/Verschiebung, cyclic coinvariants,
+and generic Cartier functoriality admit the off-line physical gain and merely isolate its exact
+Bockstein mismatch.  Third, bilateral distributional regularity is insufficient: an off-line
+one-sided character and its reflection glue to a smooth prime-circle Poisson state; the surviving
+defect is failure of the prime generator to lie in that state's multiplicative domain.
+
+The linear “secondary Bockstein/dagger” formulation is now rejected.  On the actual failure-nerve
+edge, source reversal minus analytic dagger is the mixed coboundary of the constant identity
+cochain for every parameter, including every off-line parameter.  Its surviving Gamma reporter is
+quadratic mate curvature.  Generic Hopf-cyclic repair does not help: modular pairs in involution
+and stable anti-Yetter--Drinfeld coefficients explicitly allow non-unimodular modular weights.
+
+There is a second structural correction.  The finite Calderon--Witt oriented source already has
+`H^1=0` and `H^2=C`; it supplies the canonical boundary `w_23` and its sharp reader, but cannot
+itself carry Xi spectral middle cohomology.  Deninger's unique producer must therefore occur after
+strict nuclear relevant-complex formation, before Hilbert reduction: construct the joint
+full-Cauchy chain map from the actual Rost--Schmid/real-signature totalization and prove that its
+homotopy fibre is endpoint-only,
+
+```text
+Fib(R_Cauchy)  ~=  C[0] + C(-1)[-2].
+```
+
+This is frozen as `DAC_FULL_CAUCHY_RECOLLEMENT_FIBRE_ENDPOINT_LAW`.  Its vanishing middle fibre
+makes full Cauchy restriction conservative on arithmetic `H^1`; local Dirichlet positivity then
+gives the faithful global Green form.  The remaining RH-bearing comparison is to identify that
+source Green form with the actual Meyer/Paugam Hardy form and preserve a nuclear Hodge--Schwartz
+resolvent core.  Restriction of this global comparison to `w_23` is precisely
+`XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`.  Raw prime evaluation, unreduced
+`closure(range)/range` torsion, a divisor-selected admitted set, generic self-duality, or an
+assumption that the Green vector lies in the defect kernel receives no closure credit.
+
 ### Route M — Gamma–Jacobi singular reader [FORMALIZED — TERMINALIZED]
 
 **Closed predecessor: cyclic scalar reader.** Route M's own completed Euler clock and exact

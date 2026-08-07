@@ -452,3 +452,30 @@ irrational-power zeta tail is `s`.  The index `k = 0` is normalized away, as the
 Sections 1 and 3 of this card are therefore fully formal.  What remains is `(4)`–`(6)`: the
 identification of those coefficients as the asymptotic expansion of `D^m log W_s`, and the
 Sibuya--Ramis exact-order theorem of §5.
+
+## Lean progress — §4's algebraic half and §5's slope obstruction
+
+`GaloisForLFunctions/HTGeometry/BarnesRemainderDATransfer.lean` (wired, axiom-clean):
+
+    differentialAlgebraicOver_eulerLogDeriv    §4.1: `x W′/W` is DA whenever `W` is
+    differentialAlgebraicOver_eulerEigen       §4.2: `x y′ = (1/s) y` makes `y` DA — the affine
+                                               first-order law with base coefficient `1/(s x)`
+    differentialAlgebraicOver_barnesRemainder  §4.3–4.4: subtracting the power, the polynomial part
+                                               and the constant leaves a DA remainder
+    differentialAlgebraicOver_barnesRemainder_of_eulerEigen
+                                               the same with the power presented by its equation
+
+Every step is a closure property of differential algebraicity, all of which the corpus already owns
+(`differentialAlgebraicOver_add/sub/mul/div/deriv`, `differentialAlgebraicOver_of_deriv_eq_base_mul_add`).
+
+`GaloisForLFunctions/HTGeometry/NewtonSlopeRationality.lean` (wired, axiom-clean):
+
+    exists_rat_inv_lattice_slope       the reciprocal of a slope between lattice points is rational
+    not_irrational_inv_lattice_slope
+    not_lattice_slope_of_irrational    **§5's obstruction**: an irrational number is not the
+                                       reciprocal of a Newton-polygon slope
+
+So the two ends of §4–§5 are formal: the algebraic transfer down to the remainder, and the
+arithmetic rigidity that an irrational exact Gevrey order contradicts.  What is not yet formal is
+the analytic bridge between them — the passage from the asymptotic expansion `(5)`–`(6)` to the
+formal-series identity `(15)`, and the Sibuya--Ramis theorem itself.

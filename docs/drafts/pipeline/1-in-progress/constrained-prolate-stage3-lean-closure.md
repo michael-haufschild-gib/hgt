@@ -384,3 +384,17 @@ projective/trace-class/determinant consequences.
 - All four modules pass foreground `lake env lean <file>` checks.  Remaining Kaiser gate is to prove
   the explicit edge envelope is subexponential, which turns this quantitative inequality into the
   logarithmic leakage rate `-2`.
+
+### 2026-08-07: unconditional fixed-depth Kaiser exponent
+
+- Added `BandKaiserPacketEnvelope.lean`.  Proved the exact grid identities
+  `q_step=c^(3/4)` and `sqrt(2*m*c*q_step)=sqrt(2*m)*c^(7/8)`.
+- Bounded the complete finite edge envelope by an explicit polynomial times
+  `exp(2+2*sqrt(2*m)*c^(7/8))`, then proved every full Rayleigh prefactor is eventually bounded by
+  `exp(epsilon*c)` for arbitrary positive `epsilon`.
+- Combined this with the quantitative Rayleigh theorem: for every fixed positive packet count and
+  every `epsilon>0`, eventually every vector in the full packet span satisfies
+  `exp((2-epsilon)*c)*spectralTail <= physicalEnergy`.
+- This closes the true `-2` leakage exponent for explicit fixed-depth trial spaces.  Transfer to the
+  ordered true prolate leakage values still needs the finite-dimensional trial-subspace bridge;
+  exact Fuchs polynomial constants still require fixed-index ODE/endpoint identification.
