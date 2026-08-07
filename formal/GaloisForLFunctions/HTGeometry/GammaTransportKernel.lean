@@ -387,4 +387,36 @@ theorem integral_Ioi_gammaTransportKernel {L : ℝ} (hL : 0 < L) :
 noncomputable def gammaTransport (F : ℝ → ℝ) (L : ℝ) : ℝ :=
   ∫ s in Ioi (0 : ℝ), secondDifference F L s * gammaTransportKernel s
 
+/-! ## The boundary correction is the missing half-line
+
+Extending a half-line profile by zero and running the *translation-invariant* operator over the
+whole line produces, beyond `s = L`, a term in which the reflected argument has already left the
+support.  There the second difference contributes `F(L)` alone, and integrating the kernel over
+`(L, ∞)` returns exactly `q(L) = −log(1 − e^{−L})`.
+
+So the boundary term `q·F` of the half-line operator is not a correction added by hand: it is the
+part of the whole-line operator that sees the zero extension.
+-/
+
+/-- The extension of a half-line profile by zero. -/
+noncomputable def zeroExtend (F : ℝ → ℝ) (x : ℝ) : ℝ := if 0 ≤ x then F x else 0
+
+/-- Past the reflection point the zero extension has already vanished. -/
+theorem zeroExtend_reflect_eq_zero {F : ℝ → ℝ} {L s : ℝ} (hs : L < s) :
+    zeroExtend F (L - s) = 0 := by
+  unfold zeroExtend
+  rw [if_neg]
+  linarith
+
+/-- **The boundary term is the tail of the kernel.**  Beyond `s = L` the reflected argument has
+left the support, so the integrand is `k(s) F(L)` and its integral is `q(L) F(L)`. -/
+theorem integral_Ioi_gammaTransportKernel_reflect {F : ℝ → ℝ} {L : ℝ} (hL : 0 < L) :
+    (∫ s in Ioi L, gammaTransportKernel s * (F L - zeroExtend F (L - s)))
+      = -Real.log (1 - Real.exp (-L)) * F L := by
+  have hcongr : (∫ s in Ioi L, gammaTransportKernel s * (F L - zeroExtend F (L - s)))
+      = ∫ s in Ioi L, gammaTransportKernel s * F L := by
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi fun s hs => ?_
+    rw [zeroExtend_reflect_eq_zero (mem_Ioi.mp hs), sub_zero]
+  rw [hcongr, MeasureTheory.integral_mul_const, integral_Ioi_gammaTransportKernel hL]
+
 end GaloisForLFunctions.HTGeometry

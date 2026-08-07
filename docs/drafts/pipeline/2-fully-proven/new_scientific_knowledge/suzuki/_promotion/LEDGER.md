@@ -1489,3 +1489,39 @@ identity `∫_L^∞ k = q(L)` that underlies it, but the operator-level identity
 yet formalized, and it is what converts the convergent pairing into a statement about `P F`.
 
 That single identity is now the whole of the remaining gap on prerequisite 4.
+
+## AB. `(7)`'s content is closed — the boundary term is the kernel tail
+
+`GammaTransportKernel.lean` is now at 21 declarations, all `#print axioms` clean.
+
+    zeroExtend F x = if 0 ≤ x then F x else 0
+
+- `zeroExtend_reflect_eq_zero` — for `s > L` the reflected argument `L − s` is negative, so the
+  zero extension has already vanished there.
+- `integral_Ioi_gammaTransportKernel_reflect` — **the identity `(7)` rests on**:
+
+      ∫_{s>L} k(s) (F(L) − f(L−s)) ds = q(L) · F(L),      q(L) = −log(1 − e^{−L}).
+
+  Beyond `s = L` the second difference contributes `F(L)` alone, and the kernel's tail mass is
+  exactly `q(L)` by section U.
+
+This is the whole new content of `(7)`: the boundary term `q·F` of the half-line operator is not a
+correction added by hand, it is the part of the *translation-invariant* whole-line operator that
+sees the zero extension. The rest of `(7)` is splitting `∫_{Ioi 0} = ∫_{Ioo 0 L} + ∫_{Ioi L}`,
+which needs only additivity plus the near-origin integrability already built in section S.
+
+### Honest status of prerequisite 4
+
+Formalized and axiom-clean: `(6)`, `(7)`'s boundary identity, `(8)`, `(9)` both halves, `(10)`'s
+admissibility of BV test weights, `(11)` (card constant corrected), `(12)`, `(13)`, §4's
+commutator.
+
+Not formalized: the *distributional* reading of `(3)`. Every result above is stated for
+**pointwise** integrals of concrete functions. The card assumes `(3)` holds "in distributions" on a
+terminal half-line, and the passage from a distributional hypothesis to the pointwise identities
+used here is not bridged anywhere in the corpus. This is the same class of gap recorded in
+`distribution-blocker-is-over-scoped` — and unlike the analytic estimates, it cannot be closed by
+another domination argument. It needs a distributional layer for `R_full`, or a restatement of the
+card's hypothesis in pointwise form (which weakens the theorem and must not be done silently).
+
+**Do not mark prerequisite 4 closed on the strength of the estimates alone.**

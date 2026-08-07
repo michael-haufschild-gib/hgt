@@ -83,7 +83,7 @@ theorem abs_comparisonSol_prolateNormalForm_le_two_to_crossing
   have hA := one_half_le_xiAmplitude_endpoint_collar hs0 hs1 hx1 (le_trans hx2 hB2)
   have hApos := xiAmplitude_pos hs0 hs1 hx1
   rw [comparisonSol_prolateNormalForm_eq_div_xiAmplitude hs0 hs1 hx1,
-    abs_of_pos hRx.1, div_le_iff₀ hApos]
+    abs_div, abs_of_pos hRx.1, abs_of_pos hApos, div_le_iff₀ hApos]
   nlinarith
 
 /-- Uniform lower phase bracket used to integrate the inverse logarithmic envelope. -/
@@ -121,6 +121,115 @@ theorem abs_log_le_self_add_inv {u : ℝ} (hu : 0 < u) :
   · have h := Real.log_le_sub_one_of_pos hu
     have hinv : 0 < u⁻¹ := inv_pos.mpr hu
     linarith
+
+/-- The Bessel argument remains at most two throughout the explicit endpoint layer. -/
+theorem c_mul_xiEndpointPhase_crossing_le_two {s c : ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c) :
+    c * xiEndpointPhase s (dunsterEndpointCrossing c) ≤ 2 := by
+  let delta : ℝ := 9 / (8 * c ^ 2)
+  let B : ℝ := 1 + delta
+  let d : ℝ := B ^ 2 - 1
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
+  have hc2 : 25 ≤ c ^ 2 := by nlinarith
+  have hden : 0 < 8 * c ^ 2 := by positivity
+  have hdelta0 : 0 ≤ delta := by dsimp [delta]; positivity
+  have hdeltale : delta ≤ 1 / 20 := by
+    dsimp [delta]
+    rw [div_le_iff₀ hden]
+    nlinarith
+  have hdeltasq : delta ^ 2 ≤ delta / 20 := by
+    have := mul_nonneg hdelta0 (sub_nonneg.mpr hdeltale)
+    nlinarith
+  have hB : B = dunsterEndpointCrossing c := by rfl
+  have hB0 : 0 ≤ B := by dsimp [B]; linarith
+  have hBle : B ≤ 11 / 10 := by
+    rw [hB]
+    exact dunsterEndpointCrossing_le_eleven_tenths hc
+  have hd0 : 0 ≤ d := by dsimp [d, B]; nlinarith
+  have hcd : c ^ 2 * d ≤ 5 / 2 := by
+    have hcne : c ^ 2 ≠ 0 := pow_ne_zero 2 hc0.ne'
+    have hcdelta : c ^ 2 * delta = 9 / 8 := by
+      dsimp [delta]
+      field_simp [hcne]
+    have hdform : d = 2 * delta + delta ^ 2 := by
+      dsimp [d, B]
+      ring
+    rw [hdform]
+    have hstep : 2 * delta + delta ^ 2 ≤ (41 / 20 : ℝ) * delta := by
+      nlinarith
+    calc
+      c ^ 2 * (2 * delta + delta ^ 2)
+          ≤ c ^ 2 * ((41 / 20 : ℝ) * delta) :=
+            mul_le_mul_of_nonneg_left hstep (sq_nonneg c)
+      _ = (41 / 20 : ℝ) * (c ^ 2 * delta) := by ring
+      _ = (41 / 20 : ℝ) * (9 / 8) := by rw [hcdelta]
+      _ ≤ 5 / 2 := by norm_num
+  have hBsq : B ^ 2 ≤ (11 / 10 : ℝ) ^ 2 :=
+    pow_le_pow_left₀ hB0 hBle 2
+  have hproduct : c ^ 2 * B ^ 2 * d ≤ 4 := by
+    have hmul := mul_le_mul hBsq hcd (mul_nonneg (sq_nonneg c) hd0) (by positivity)
+    norm_num at hmul ⊢
+    nlinarith
+  have hsqrt : Real.sqrt d ^ 2 = d := Real.sq_sqrt hd0
+  have hgeom : c * B * Real.sqrt d ≤ 2 := by
+    have hgeom0 : 0 ≤ c * B * Real.sqrt d := by positivity
+    have hsq : (c * B * Real.sqrt d) ^ 2 = c ^ 2 * B ^ 2 * d := by
+      calc
+        (c * B * Real.sqrt d) ^ 2 = c ^ 2 * B ^ 2 * Real.sqrt d ^ 2 := by ring
+        _ = c ^ 2 * B ^ 2 * d := by rw [hsqrt]
+    nlinarith
+  have hphase := xiEndpointPhase_le_sqrt_mul_endpointLog hs0 hs1
+    (dunsterEndpointCrossing_gt_one hc0).le
+  have hsqrtNum : Real.sqrt (B ^ 2 - s) ≤ B := by
+    rw [Real.sqrt_le_iff]
+    exact ⟨hB0, by nlinarith⟩
+  have hlog := GaloisForLFunctions.HTGeometry.endpointLog_le_sqrt
+    (dunsterEndpointCrossing_gt_one hc0).le
+  rw [← hB] at hphase hlog ⊢
+  change GaloisForLFunctions.HTGeometry.endpointLog B ≤ Real.sqrt d at hlog
+  have hlog0 : 0 ≤ GaloisForLFunctions.HTGeometry.endpointLog B := by
+    have hlower := GaloisForLFunctions.HTGeometry.sqrt_mul_one_sub_le_endpointLog
+      (show 1 ≤ B by linarith)
+    change Real.sqrt d * (1 - d / 6) ≤
+      GaloisForLFunctions.HTGeometry.endpointLog B at hlower
+    have hdsmall : d ≤ 3 / 20 := by
+      dsimp [d]
+      rw [hB]
+      exact dunsterEndpointCrossing_sq_sub_one_le hc
+    exact (mul_nonneg (Real.sqrt_nonneg _) (by linarith)).trans hlower
+  have htoGeom : xiEndpointPhase s B ≤ B * Real.sqrt d :=
+    hphase.trans (mul_le_mul hsqrtNum hlog hlog0 hB0)
+  exact (mul_le_mul_of_nonneg_left htoGeom hc0.le).trans (by
+    simpa only [mul_assoc] using hgeom)
+
+/-- Integrable endpoint envelope for the logarithmic Bessel branch. -/
+theorem abs_lgBesselModel2_le_endpoint_envelope {s c x : ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c)
+    (hx1 : 1 < x) (hx2 : x ≤ dunsterEndpointCrossing c) :
+    |lgBesselModel2 s c x| ≤
+      4 + 3 / (2 * c * Real.sqrt (x ^ 2 - 1)) := by
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
+  have hB1 := (dunsterEndpointCrossing_gt_one hc0).le
+  have hB2 := dunsterEndpointCrossing_le_eleven_tenths hc
+  have hphase0 := xiEndpointPhase_pos hs0 hs1 hx1
+  have hu0 : 0 < c * xiEndpointPhase s x := mul_pos hc0 hphase0
+  have hphaseMono := xiEndpointPhase_le_of_le hs0 hs1 hx1.le hx2
+  have hu2 : c * xiEndpointPhase s x ≤ 2 :=
+    (mul_le_mul_of_nonneg_left hphaseMono hc0.le).trans
+      (c_mul_xiEndpointPhase_crossing_le_two hs0 hs1 hc)
+  have hd0 : 0 < x ^ 2 - 1 := by nlinarith
+  have hsqrt0 : 0 < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hd0
+  have hphaseLower := two_thirds_mul_sqrt_le_xiEndpointPhase_endpoint_collar
+    hs0 hs1 hx1 (le_trans hx2 hB2)
+  have hinv : (c * xiEndpointPhase s x)⁻¹
+      ≤ 3 / (2 * c * Real.sqrt (x ^ 2 - 1)) := by
+    rw [show (c * xiEndpointPhase s x)⁻¹ = 1 / (c * xiEndpointPhase s x) by
+      simp only [one_div]]
+    rw [div_le_div_iff₀ hu0 (by positivity : 0 < 2 * c * Real.sqrt (x ^ 2 - 1))]
+    nlinarith [mul_le_mul_of_nonneg_left hphaseLower hc0.le]
+  have hmodel := (abs_lgBesselModel_le_log_envelope s c x).2
+  have hlog := abs_log_le_self_add_inv hu0
+  linarith
 
 end GaloisForLFunctions.RHTower
 

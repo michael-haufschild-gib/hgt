@@ -465,6 +465,98 @@ theorem extTensorD_d (A : CDGAStructure R X) (B : CDGAStructure R Y) (n : ℕ)
     (f : TensorCarrier (R := R) X Y n) : extTensorD A B (n + 1) (extTensorD A B n f) = 0 :=
   (tensorModule (CDGAStructure.selfModule A) (zeroActModule (A := A) B)).d_d n f
 
+section Shift
+
+variable {a b n : ℕ} {q : {pq : ℕ × ℕ // pq.1 + pq.2 = n}} {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n + 1}}
+
+/-- Raise the first coordinate of the left part of a splitting. -/
+def shiftLeftFst (hp1 : p.1.1 = q.1.1 + 1) (hp2 : p.1.2 = q.1.2) (rs : Splitting a b q) :
+    Splitting (a + 1) b p :=
+  ⟨(⟨(rs.1.1.1.1 + 1, rs.1.1.1.2), by
+      have h := rs.1.1.2
+      simp only at h ⊢
+      omega⟩, rs.1.2), by
+    refine ⟨?_, ?_⟩
+    · have h := rs.2.1
+      simp only at h ⊢
+      omega
+    · have h := rs.2.2
+      simp only at h ⊢
+      omega⟩
+
+/-- Raise the first coordinate of the right part of a splitting. -/
+def shiftRightFst (hp1 : p.1.1 = q.1.1 + 1) (hp2 : p.1.2 = q.1.2) (rs : Splitting a b q) :
+    Splitting a (b + 1) p :=
+  ⟨(rs.1.1, ⟨(rs.1.2.1.1 + 1, rs.1.2.1.2), by
+      have h := rs.1.2.2
+      simp only at h ⊢
+      omega⟩), by
+    refine ⟨?_, ?_⟩
+    · have h := rs.2.1
+      simp only at h ⊢
+      omega
+    · have h := rs.2.2
+      simp only at h ⊢
+      omega⟩
+
+theorem shiftLeftFst_injective (hp1 : p.1.1 = q.1.1 + 1) (hp2 : p.1.2 = q.1.2)
+    (rs rs' : Splitting a b q) (he : shiftLeftFst hp1 hp2 rs = shiftLeftFst hp1 hp2 rs') :
+    rs = rs' := by
+  have h1 := congrArg (fun z : Splitting (a + 1) b p => z.1.1.1.1) he
+  have h2 := congrArg (fun z : Splitting (a + 1) b p => z.1.1.1.2) he
+  have h3 := congrArg (fun z : Splitting (a + 1) b p => z.1.2) he
+  simp only [shiftLeftFst] at h1 h2 h3
+  refine Subtype.ext (Prod.ext (Subtype.ext (Prod.ext ?_ ?_)) h3) <;> omega
+
+theorem shiftRightFst_injective (hp1 : p.1.1 = q.1.1 + 1) (hp2 : p.1.2 = q.1.2)
+    (rs rs' : Splitting a b q) (he : shiftRightFst hp1 hp2 rs = shiftRightFst hp1 hp2 rs') :
+    rs = rs' := by
+  have h1 := congrArg (fun z : Splitting a (b + 1) p => z.1.2.1.1) he
+  have h2 := congrArg (fun z : Splitting a (b + 1) p => z.1.2.1.2) he
+  have h3 := congrArg (fun z : Splitting a (b + 1) p => z.1.1) he
+  simp only [shiftRightFst] at h1 h2 h3
+  refine Subtype.ext (Prod.ext h3 (Subtype.ext (Prod.ext ?_ ?_))) <;> omega
+
+theorem shiftLeftFst_surjective (hp1 : p.1.1 = q.1.1 + 1) (hp2 : p.1.2 = q.1.2)
+    (uv : Splitting (a + 1) b p) (hu : uv.1.1.1.1 ≠ 0) :
+    ∃ rs : Splitting a b q, shiftLeftFst hp1 hp2 rs = uv := by
+  obtain ⟨k, hk⟩ : ∃ k, uv.1.1.1.1 = k + 1 := ⟨uv.1.1.1.1 - 1, by omega⟩
+  refine ⟨⟨(⟨(k, uv.1.1.1.2), by
+      have h := uv.1.1.2
+      simp only at h ⊢
+      omega⟩, uv.1.2), ?_⟩, ?_⟩
+  · refine ⟨?_, ?_⟩
+    · have h := uv.2.1
+      simp only at h ⊢
+      omega
+    · have h := uv.2.2
+      simp only at h ⊢
+      omega
+  · refine Subtype.ext (Prod.ext (Subtype.ext (Prod.ext ?_ rfl)) rfl)
+    simp only [shiftLeftFst]
+    omega
+
+theorem shiftRightFst_surjective (hp1 : p.1.1 = q.1.1 + 1) (hp2 : p.1.2 = q.1.2)
+    (uv : Splitting a (b + 1) p) (hv : uv.1.2.1.1 ≠ 0) :
+    ∃ rs : Splitting a b q, shiftRightFst hp1 hp2 rs = uv := by
+  obtain ⟨k, hk⟩ : ∃ k, uv.1.2.1.1 = k + 1 := ⟨uv.1.2.1.1 - 1, by omega⟩
+  refine ⟨⟨(uv.1.1, ⟨(k, uv.1.2.1.2), by
+      have h := uv.1.2.2
+      simp only at h ⊢
+      omega⟩), ?_⟩, ?_⟩
+  · refine ⟨?_, ?_⟩
+    · have h := uv.2.1
+      simp only at h ⊢
+      omega
+    · have h := uv.2.2
+      simp only at h ⊢
+      omega
+  · refine Subtype.ext (Prod.ext rfl (Subtype.ext (Prod.ext ?_ rfl)))
+    simp only [shiftRightFst]
+    omega
+
+end Shift
+
 end External
 
 end GaloisForLFunctions.HTGeometry
