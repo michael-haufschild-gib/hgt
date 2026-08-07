@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CDGABarCancel
+import GaloisForLFunctions.HTGeometry.CDGABarDifferential
 
 /-!
 # The double sum of the bar square
@@ -392,6 +393,98 @@ theorem barHead_tail_outer (n c e : ℕ) (hp : c + e = n + 1 + 1) (a a' : ℕ) (
                 ⟨(a, 0 + 0), by omega⟩ = 0 from
               tensorRightDegOneₗ_zero (M := barShiftFamily ε) (fun b => barHeadₗ ε Z b) n a F _,
             map_zero, map_zero, map_zero]
+
+theorem barTripleOfFirst_bijective {c : ℕ} :
+    Function.Bijective (barTripleOfFirst (c := c)) :=
+  Function.bijective_iff_has_inverse.2
+    ⟨barFirstOfTriple, barFirstOfTriple_barTripleOfFirst, barTripleOfFirst_barFirstOfTriple⟩
+
+theorem barTripleOfSecond_bijective {c : ℕ} :
+    Function.Bijective (barTripleOfSecond (c := c)) :=
+  Function.bijective_iff_has_inverse.2
+    ⟨barSecondOfTriple, barSecondOfTriple_barTripleOfSecond, barTripleOfSecond_barSecondOfTriple⟩
+
+/-- **The square of the bar differential vanishes on three factors**, componentwise: the head
+applied twice and the head after the tail cancel. -/
+theorem barHead_sq_add (n c e : ℕ) (hp : c + e = n + 1 + 1)
+    (F : TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε) Z)) n) :
+    barHeadₗ ε Z (n + 1)
+        (barHeadₗ ε (TensorCarrier (R := R) (barShiftFamily ε) Z) n F) ⟨(c, e), hp⟩
+      + barHeadₗ ε Z (n + 1)
+        (tensorRightDegOneₗ (M := barShiftFamily ε) (fun b => barHeadₗ ε Z b) n F)
+        ⟨(c, e), hp⟩ = 0 := by
+  rw [barHead_apply, barHead_apply]
+  simp only [barHead_head_outer, barHead_tail_outer]
+  rw [Finset.sum_sigma' Finset.univ (fun _ => Finset.univ), Finset.sum_sigma' Finset.univ
+    (fun _ => Finset.univ)]
+  rw [Finset.sum_nbij'
+    (s := Finset.univ.sigma fun _ : BarSplit c => (Finset.univ : Finset _))
+    (t := Finset.univ.sigma fun _ : BarSplit c => (Finset.univ : Finset _))
+    (f := fun τ : (s : BarSplit c) × BarSplit s.1.2 =>
+      ((-1 : R)) ^ τ.1.1.1 • barMulLastTwo ε (W := Z e)
+        (rfl : τ.2.1.1 + τ.2.1.2 + 1 = τ.2.1.1 + τ.2.1.2 + 1) (barSplit_second_eq τ.1.2 τ.2)
+        (barTele ε Z τ.1.1.1 τ.2.1.1 τ.2.1.2 e
+          (F ⟨(τ.1.1.1, τ.2.1.1 + (τ.2.1.2 + e)), barSplit_second_deg τ.1.2 hp τ.2⟩)))
+    (g := fun σ : (s : BarSplit c) × BarSplit s.1.1 =>
+      ((-1 : R)) ^ (barSecondOfTriple (barTripleOfFirst σ)).1.1.1 • barMulLastTwo ε (W := Z e)
+        (rfl : (barSecondOfTriple (barTripleOfFirst σ)).2.1.1
+            + (barSecondOfTriple (barTripleOfFirst σ)).2.1.2 + 1
+          = (barSecondOfTriple (barTripleOfFirst σ)).2.1.1
+            + (barSecondOfTriple (barTripleOfFirst σ)).2.1.2 + 1)
+        (barSplit_second_eq (barSecondOfTriple (barTripleOfFirst σ)).1.2
+          (barSecondOfTriple (barTripleOfFirst σ)).2)
+        (barTele ε Z (barSecondOfTriple (barTripleOfFirst σ)).1.1.1
+          (barSecondOfTriple (barTripleOfFirst σ)).2.1.1
+          (barSecondOfTriple (barTripleOfFirst σ)).2.1.2 e
+          (F ⟨((barSecondOfTriple (barTripleOfFirst σ)).1.1.1,
+            (barSecondOfTriple (barTripleOfFirst σ)).2.1.1
+              + ((barSecondOfTriple (barTripleOfFirst σ)).2.1.2 + e)),
+            barSplit_second_deg (barSecondOfTriple (barTripleOfFirst σ)).1.2 hp
+              (barSecondOfTriple (barTripleOfFirst σ)).2⟩)))
+    (fun τ => barFirstOfTriple (barTripleOfSecond τ))
+    (fun σ => barSecondOfTriple (barTripleOfFirst σ))
+    (fun a _ => Finset.mem_sigma.2 ⟨Finset.mem_univ _, Finset.mem_univ _⟩)
+    (fun a _ => Finset.mem_sigma.2 ⟨Finset.mem_univ _, Finset.mem_univ _⟩)
+    (fun a _ => by
+      rw [barTripleOfFirst_barFirstOfTriple, barSecondOfTriple_barTripleOfSecond])
+    (fun a _ => by
+      rw [barTripleOfSecond_barSecondOfTriple, barFirstOfTriple_barTripleOfFirst])
+    (fun a _ => by
+      rw [barTripleOfFirst_barFirstOfTriple, barSecondOfTriple_barTripleOfSecond])]
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_eq_zero fun σ _ => ?_
+  exact barTriple_cancel n c e hp (barTripleOfFirst σ) F
+
+/-- **The head applied twice and the head after the tail cancel**, as maps. -/
+theorem barHead_sq (n : ℕ)
+    (F : TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε) Z)) n) :
+    barHeadₗ ε Z (n + 1)
+        (barHeadₗ ε (TensorCarrier (R := R) (barShiftFamily ε) Z) n F
+          + tensorRightDegOneₗ (M := barShiftFamily ε) (fun b => barHeadₗ ε Z b) n F) = 0 := by
+  rw [map_add]
+  funext p
+  obtain ⟨⟨c, e⟩, hp⟩ := p
+  exact barHead_sq_add n c e hp F
+
+/-- **The bar differential squares to zero on three factors.** -/
+theorem barD_two_sq (n : ℕ) (F : (barPower ε 3).carrier n) :
+    barD ε 1 (n + 1) (barD ε 2 n F) = 0 := by
+  have htail : (fun b => barD ε 1 b)
+      = fun b => barHeadₗ ε (barPower ε 0).carrier b := funext fun b => barD_one_eq ε b
+  have hd2 : barD ε 2 n F
+      = (show TensorCarrier (R := R) (barShiftFamily ε)
+            (TensorCarrier (R := R) (barShiftFamily ε) (barPower ε 0).carrier) (n + 1) from
+          barHeadₗ ε (barPower ε 1).carrier n F)
+        + tensorRightDegOneₗ (M := barShiftFamily ε)
+          (fun b => barHeadₗ ε (barPower ε 0).carrier b) n F := by
+    rw [barD_succ, ← htail]
+    rfl
+  rw [barD_one_eq, hd2]
+  exact barHead_sq (Z := (barPower ε 0).carrier) n F
 
 end Assembly
 

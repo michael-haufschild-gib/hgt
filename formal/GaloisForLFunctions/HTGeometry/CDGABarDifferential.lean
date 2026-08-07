@@ -45,6 +45,9 @@ theorem barD_one (n : ℕ) (F : (barPower ε 2).carrier n) :
       (barPower ε 0).carrier (b + 1))) from funext fun b => barD_zero ε b,
     tensorRightDegOne_zero_map, add_zero]
 
+theorem barD_one_eq (n : ℕ) : barD ε 1 n = barHeadₗ ε (barPower ε 0).carrier n :=
+  LinearMap.ext fun F => barD_one ε n F
+
 /-- **The bar differential of two factors is killed by the next one**, which has nothing left to
 multiply. -/
 theorem barD_comp_zero (n : ℕ) (F : (barPower ε 2).carrier n) :

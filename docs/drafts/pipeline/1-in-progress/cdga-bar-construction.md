@@ -161,11 +161,23 @@ head and `R` the right-factor degree-one construction, the square expands into f
   `barHead_head_outer` expands the head-applied-twice half at one outer split into a sum of first
   bracketings over the splits of its first part.
 
-What is left is the mirror expansion of the head-after-the-tail half, and then the reindexing of the
-two double sums onto `BarTriple`.  The mirror expansion needs the argument's index rewritten from
-`(a, a' + e)` to `(a, b' + 1)` so that the tail's defining equation applies, and that index sits in
-a dependent position, so it has to be moved with `congrArg` on the whole application rather than
-with `rw` on the index.  Everything mathematical — the sign, the associativity, the cancellation,
-both identifications, the reindexing bijections — is proved.
+`barHead_tail_outer` expands the other half the same way.  The tail's defining equation only applies
+when the degree it reads is a successor, and that degree is a *sum* sitting in a dependent position;
+neither `set` nor `rw` can move it, because the subtype's proof depends on it.  The case analysis
+therefore goes on the summands — first on the trailing degree, then on the split's second part — and
+each branch makes the sum a successor definitionally, so nothing has to be moved at all.
+
+`barHead_sq_add` then reindexes the two double sums onto each other with `Finset.sum_nbij'`, using
+the two triple bijections composed, and cancels them term by term with `barTriple_cancel`.
+`barHead_sq` is the same as an identity of maps, and **`barD_two_sq` is `d² = 0` for the bar
+differential on three factors** — the first case with content, since on two factors the tail is zero.
+
+## Status of `d² = 0`
+
+Proved for three factors.  The general statement is an induction on the number of factors whose
+inductive step needs, besides everything above, that two multiplications at distance at least two
+commute — the terms `H ∘ R(R(barD))` against `R(barD) ∘ H` — which is the second of the two classical
+cancellations and is not yet built.  The tail-against-tail term is already discharged in general by
+`tensorRightDegOne_comp`.
 
 Everything the statement quantifies over is defined, and one of the four terms is proved.
