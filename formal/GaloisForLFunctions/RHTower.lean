@@ -6168,3 +6168,4 @@ import GaloisForLFunctions.RHTower.Sieve.BlockSieveLevels
 import GaloisForLFunctions.RHTower.Sieve.TruncatedVerticalSplit
 import GaloisForLFunctions.RHTower.Sieve.TruncatedMeanSquareChange
 import GaloisForLFunctions.RHTower.Sieve.TruncatedPrimeSieveMeanSquare
+import GaloisForLFunctions.RHTower.Sieve.LSeriesTrivialSize

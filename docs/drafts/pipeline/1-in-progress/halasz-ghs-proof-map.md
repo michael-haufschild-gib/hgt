@@ -1406,3 +1406,23 @@ So `T` is free up to `T(E+z)` staying below the leading term — and the truncat
 `C ≍ N^σ(N/H)²` and `E + z ≍ Y²(log z)⁴ + z` are polynomially separated once `H` is a fixed power of `N` and the
 sieve level is a small power.  That is the balance the final accounting has to strike, and unlike the global
 route there is now a window in which both constraints hold.
+
+## The trivial size of a finitely supported series
+
+`RHTower/Sieve/LSeriesTrivialSize.lean` (green, axiom-clean, wired).
+
+* `norm_LSeries_le_sum_of_support` — `‖L(a,σ+iy)‖ ≤ ∑_{n ∈ s} ‖a_n‖n^{−σ}`, uniformly in `y`: every phase has
+  modulus one, so the polar split of `natCast_cpow_neg_eq` plus `Complex.norm_exp_ofReal_mul_I` reduces the
+  bound to the `ℓ¹` mass of the damped coefficients;
+* `norm_LSeries_mul_three_le` — the product of three series, two finitely supported and one merely bounded, is
+  at most the product of the two `ℓ¹` masses and the bound.
+
+This is the constant `Mg` that the tail of the truncated master inequality consumes.  No mean square appears
+there: the tail is charged to the trivial size of the integrand against the kernel's decay, which is why a
+crude `ℓ¹` bound suffices for it while the truncated part carries the sieve.
+
+With this, all the inputs of the truncated assembly are in the corpus: the Perron identity, the truncated master
+inequality, the uniform kernel bound (`norm_perronKernel_le`), the decay constant
+(`exists_bound_mellin_smoothWeight_line`), the Euler bound, this `ℓ¹` bound, and the truncated prime-sieve mean
+square.  Assembling them is the next step, and then the accounting with `Wsup ≍ N` — the quantity that replaces
+the `C ≍ N(log N)⁶` which capped the global route.
