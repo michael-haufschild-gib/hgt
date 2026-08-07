@@ -25,13 +25,7 @@ theorem tsum_mul_smoothWeight_eq_sum_range {a : ℕ → ℂ} {H : ℝ} (hH : 0 <
     (hm : (K : ℝ) + H ≤ (m : ℝ)) :
     ∑' n : ℕ, a n * ((HTGeometry.smoothWeight (K : ℝ) H (n : ℝ) : ℝ) : ℂ)
       = ∑ n ∈ Finset.range m, a n * ((HTGeometry.smoothWeight (K : ℝ) H (n : ℝ) : ℝ) : ℂ) := by
-  refine tsum_eq_sum fun n hn => ?_
-  have hnm : m ≤ n := by
-    by_contra hlt
-    exact hn (Finset.mem_range.2 (by omega))
-  have hnR : (m : ℝ) ≤ (n : ℝ) := by exact_mod_cast hnm
-  rw [HTGeometry.smoothWeight_eq_zero hH (by linarith)]
-  simp
+  exact HTGeometry.tsum_mul_smoothWeight_eq_sum_range_real hH m hm
 
 /-- The window `(K, ⌊K+H⌋]` is no longer than its width. -/
 theorem card_smoothing_window_le {K : ℕ} {H : ℝ} (hH : 0 < H) :

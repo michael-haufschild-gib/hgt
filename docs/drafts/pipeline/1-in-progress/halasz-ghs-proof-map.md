@@ -674,3 +674,24 @@ The third is a pure connector: its hypothesis is verbatim the conclusion of the 
 This closes a premise that has been open in the corpus since the Halász assembly was built: the existing
 route produced a bound only for the smoothed sum, and every application needs the sharp one.  It also
 serves the GHS route, whose Perron step consumes the same window bound with polylogarithmic coefficients.
+
+## Twenty-fifth brick: the smooth-versus-sharp comparison, as one law
+
+The corpus had two half-devices for the same comparison: `HTGeometry.SmoothWeightWindow` handled a
+*natural* cutoff `K` with an arbitrary `ℓ¹` window mass, and `RHTower/Sieve/SmoothVsSharp` handled a *real*
+cutoff `N` but only for unimodular coefficients.  Neither covered what the routes actually need — a real
+cutoff with polylogarithmic coefficients.
+
+`HTGeometry/SmoothWeightWindow.lean` now carries the law both are cases of:
+
+* `tsum_mul_smoothWeight_eq_sum_range_real` — the cutoff vanishes past `N + H`, so the weighted series is a
+  finite sum (real `N`);
+* `norm_weighted_sub_partialSum_le_window_real` — the difference lives on `(⌊N⌋, ⌊N+H⌋]`;
+* `card_window_real_le` — that window holds at most `H + 1` integers;
+* `norm_tsum_mul_smoothWeight_sub_partialSum_le_window` and `…_le_width` — for any uniform bound `C` on
+  the window coefficients, the smoothing costs at most `(⌊N+H⌋ − ⌊N⌋)·C ≤ (H+1)·C`.
+
+`SmoothVsSharp.norm_tsum_smoothWeight_sub_sum_le_of_norm_le_one` is now the `C = 1` case, proved in three
+lines instead of seventy, and the Möbius statement above it is unchanged.  The GHS route can take `C` to be
+the polylogarithmic coefficient bound at a real cutoff `x`, which is what its parameter choices
+(`H = x/(log x)⁶`) actually require.
