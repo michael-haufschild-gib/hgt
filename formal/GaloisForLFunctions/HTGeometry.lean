@@ -470,6 +470,7 @@ import GaloisForLFunctions.HTGeometry.BumpMollifierFamily
 import GaloisForLFunctions.HTGeometry.C4KoszulTorModule
 import GaloisForLFunctions.HTGeometry.CDGA
 import GaloisForLFunctions.HTGeometry.CDGAAugmentation
+import GaloisForLFunctions.HTGeometry.CDGAAugmentationIdealAlgebra
 import GaloisForLFunctions.HTGeometry.CDGACellInvariance
 import GaloisForLFunctions.HTGeometry.CDGACellTower
 import GaloisForLFunctions.HTGeometry.CDGACellTowerColimit

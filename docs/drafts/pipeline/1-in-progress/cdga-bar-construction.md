@@ -1,0 +1,47 @@
+# The bar construction of an augmented commutative differential graded algebra
+
+- **ID:** `cdga-bar-construction`
+- **Stage:** 1-in-progress
+- **Type:** INFRASTRUCTURE
+- **Parents:** `cdga-module-derived-tensor-layer`,
+  `deninger-derived-rank-quotient-universal-property`,
+  `deninger-selective-positive-cell-h0-preservation`,
+  `deninger-character-shape-formality`
+
+## Why
+
+Three deninger cards record the same remaining gap in the same words: "the `E_∞` coherence, the bar
+construction and its spectral sequence".  The corpus's substitute for `E_∞` is the commutative
+differential graded model, which is now complete — free algebras on degree-one generators, relative
+tensor products of algebras over a base, semi-free resolutions, flatness and derived base change.
+The bar construction is the one object of that model still missing, and it is what the cards use to
+pass from the underived shadow to the connectivity statements.
+
+## What is to be built
+
+Let `A` be a unital commutative differential graded algebra over `R` with an augmentation
+`ε : A → R`, and let `Ā = ker ε` be the augmentation ideal.  Assume `A` connected, that is `Ā`
+concentrated in degrees `≥ 1`, so that the shift `sĀ` with `(sĀ)^n = Ā^{n+1}` stays in
+nonnegative degrees.  The bar construction is
+
+    B(A) = ⨁_{k ≥ 0} (sĀ)^{⊗ k}
+
+with the differential `d = d_int + d_bar`, where `d_int` is the internal differential of `Ā` with the
+sign of the shift and `d_bar` multiplies adjacent factors.
+
+## Steps
+
+1. **The augmentation ideal as a non-unital algebra.**  `augIdealCarrier` and `augIdealModule` are
+   built; what is missing is the multiplication `Ā^a → Ā^b → Ā^{a+b}` and its bilinearity,
+   associativity, graded commutativity and Leibniz rule.  `[LANDED]`
+2. **The shift of the ideal**, `(sĀ)^n = Ā^{n+1}`, with the induced differential and the sign.
+3. **The iterated tensor power** `(sĀ)^{⊗k}`, by recursion on `k` using the corpus's
+   `TensorCarrier`, which is already a product over the decompositions of the degree and therefore
+   the direct sum in each degree.
+4. **The total object** `⨁_k (sĀ)^{⊗k}` in each degree.
+5. **The two differentials** and `d² = 0`.
+6. **The augmentation and the counit**, and the comparison `B(A) → R`.
+
+## Status
+
+Step 1 landed: `formal/GaloisForLFunctions/HTGeometry/CDGAAugmentationIdealAlgebra.lean`.
