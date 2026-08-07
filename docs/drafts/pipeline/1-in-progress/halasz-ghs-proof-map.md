@@ -1492,3 +1492,35 @@ This is what lets the two remaining devices meet.  For the outer weight, `Bc` is
 `(j+1)log 2/log⌊N/2^{j+1}⌋` of the previous entry rather than the constant `(1/log 2)(j+1)log 2`, and the
 `(log₂N − j)` in its denominator is the logarithm the accounting was missing.  For the inner weight, `Bc` is the
 logarithmic case unchanged.
+
+## The outer weight's block estimate, with its damping
+
+`RHTower/Sieve/GhsOuterBlockEstimate.lean` (green, axiom-clean, wired).
+
+* `norm_coeffBlock_ghsOuter_le` — the outer weight's block is bounded by `(j+1)log 2/log⌊N/2^{j+1}⌋`
+  (zero off the block, the block bound on it);
+* `sieveMeanSquare_coeffBlock_ghsOuter_le` — the block estimate with that constant, a one-line instance of
+  the generalised block lemma.
+
+Since `log⌊N/2^{j+1}⌋ ≥ (⌊log₂N⌋ − j − 1)log 2`, the `j`-th block's constant is `≍ (j+1)/(log₂N − j)`.  The
+geometric weight `2^{−2σj}` puts the block sum's mass at `j ≍ log₂N`, which is exactly where this damping is
+strongest — the factor a constant bound discards.
+
+**Both logarithms of the accounting are now carried by theorems.**  The route's inventory is complete:
+
+| device | theorem |
+|---|---|
+| paper half, `O(N log log N)` | `norm_sum_Icc_mul_log_sub_ghsTriple_le` |
+| sharp ← smoothed | `norm_partialSum_le_of_smoothed_bound` |
+| Perron identity | `tsum_mul_smoothWeight_ghs_eq_integral` |
+| truncated step 4, `Wsup ≍ N` | `exists_norm_tsum_ghs_smoothWeight_le_truncated` |
+| truncated mean square | `integral_Icc_normSq_LSeries_le_prime_sieve` |
+| block decomposition + Minkowski | `sqrt_integral_lorentz_normSq_LSeries_le_sum_blocks`, `sqrt_integral_normSq_sum_mul_weight_le` |
+| per-block levels | `blockSieveLevel`, `blockSieveModulus` |
+| block estimate, block-dependent constant | `sieveMeanSquare_coeffBlock_le_of_bound` |
+| outer damping per block | this module |
+
+What remains is arithmetic only: the truncated analogue of the block decomposition (Minkowski over
+`volume.restrict (Icc (−T) T)` rather than the Lorentzian weight — the finite-sum Minkowski is already stated for
+an arbitrary weight, so this is an instantiation), and then summing the `j`-indexed series with the two dampings
+in place.
