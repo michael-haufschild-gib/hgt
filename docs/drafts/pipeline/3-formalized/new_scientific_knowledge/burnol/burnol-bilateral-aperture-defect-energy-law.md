@@ -2,6 +2,7 @@
 
 - **ID:** `burnol-bilateral-aperture-defect-energy-law`
 - **Stage:** 3-formalized
+- **Formalized companion:** `burnol-bilateral-aperture-defect-energy-law-formalized.md`
 - **Type:** THEOREM (paper), `[VALUE RELATION] [RH INTERFACE]`
 - **Scientific status:** `[PROVED HERE] [NOT AN RH PROOF]`
 - **Parents:** normalized Mellin dilation covariance; the projected evaluator transport in

@@ -161,8 +161,6 @@ theorem cutoffFinitePart_eq {a x ε : ℝ} (v : ℝ → ℝ) (hv : Continuous v)
     rw [intervalIntegral.integral_const_mul]
   have hker := integral_punctured_inv_dist hxa hax hε hleft hright
   rw [cutoffFinitePart, cutoffDividedDifference, hsplitL, hsplitR, hconstL, hconstR]
-  first
-    | linear_combination (v x) * hker
-    | linear_combination (-(v x)) * hker
+  linear_combination (v x) * hker
 
 end GaloisForLFunctions.HTGeometry

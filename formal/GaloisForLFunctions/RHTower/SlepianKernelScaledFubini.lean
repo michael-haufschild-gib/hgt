@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.SlepianKernelFubini
 import GaloisForLFunctions.RHTower.ConstrainedProlatePointwiseRepresentative
 import GaloisForLFunctions.RHTower.ProlateJointEigenExistence
+import GaloisForLFunctions.RHTower.ProlateDiagonalization
 import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.Analysis.ODE.ExistUnique
 import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
@@ -1147,5 +1148,88 @@ theorem eqOn_Icc_const_mul_of_even_joint_prolate_eigen
     rw [closure_Ioo (by norm_num : (-1 : ℝ) ≠ 1)]
   rw [hclosure]
   exact hEqIoo.closure hPhi1.continuous hscaled1.continuous
+
+/-- A nontrivial regular even prolate solution cannot vanish at the symmetry center. -/
+theorem value_zero_ne_of_even_prolate_eigen
+    {c chi : ℝ} {Phi : ℝ → ℝ}
+    (hPhiSmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
+    (hPhiEven : Function.Even Phi)
+    (hPhiProlate : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x)
+    (hPhiInterior : ∃ x ∈ Set.Ioo (-1 : ℝ) 1, Phi x ≠ 0) :
+    Phi 0 ≠ 0 := by
+  intro hPhi0
+  have hPhi1 : Differentiable ℝ Phi := (contDiff_infty_iff_deriv.mp hPhiSmooth).1
+  have hPhi2 : Differentiable ℝ (deriv Phi) :=
+    (contDiff_infty_iff_deriv.mp (contDiff_infty_iff_deriv.mp hPhiSmooth).2).1
+  have hzeroProlate : ∀ x : ℝ,
+      prolateSLAction c (fun _ : ℝ => 0) x = chi * (fun _ : ℝ => 0) x := by
+    intro x
+    simp [prolateSLAction]
+  have hzeroIoo : Set.EqOn Phi (fun _ : ℝ => 0) (Set.Ioo (-1 : ℝ) 1) :=
+    eqOn_Ioo_of_prolateSLAction_eq_of_value_deriv_eq
+      hPhi1 hPhi2 (by fun_prop) (by fun_prop) hPhiProlate hzeroProlate
+      (by simpa using hPhi0) (by simp [deriv_zero_of_even hPhiEven])
+  obtain ⟨x, hx, hne⟩ := hPhiInterior
+  exact hne (by simpa using hzeroIoo hx)
+
+/-- **Global aperture diagonalization.**  Every nontrivial smooth even solution of the regular
+prolate equation spans an invariant line of the Slepian band transform on all of `[-1,1]`.
+Unlike the quotient/Wronskian argument, this theorem needs no zero-free subinterval: equality of
+the value and derivative at the center and ODE uniqueness propagate across every interior zero. -/
+theorem bandTransform_eq_smul_on_Icc_of_even_prolate_eigen
+    {c chi : ℝ} {Phi : ℝ → ℝ}
+    (hPhiSmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
+    (hPhiEven : Function.Even Phi)
+    (hPhiProlate : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x)
+    (hPhiInterior : ∃ x ∈ Set.Ioo (-1 : ℝ) 1, Phi x ≠ 0) :
+    ∃ mu : ℝ, ∀ x ∈ Set.Icc (-1 : ℝ) 1, bandTransform c Phi x = mu * Phi x := by
+  have hPhi1 : Differentiable ℝ Phi := (contDiff_infty_iff_deriv.mp hPhiSmooth).1
+  have hPhiDerivSmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (deriv Phi) :=
+    (contDiff_infty_iff_deriv.mp hPhiSmooth).2
+  have hPhi2 : Differentiable ℝ (deriv Phi) :=
+    (contDiff_infty_iff_deriv.mp hPhiDerivSmooth).1
+  have hPhi2c : Continuous (deriv (deriv Phi)) :=
+    (contDiff_infty_iff_deriv.mp hPhiDerivSmooth).2.continuous
+  have hPhi0 := value_zero_ne_of_even_prolate_eigen
+    hPhiSmooth hPhiEven hPhiProlate hPhiInterior
+  have hBand1 : Differentiable ℝ (bandTransform c Phi) :=
+    differentiable_bandTransform c hPhi1.continuous
+  have hBand2 : Differentiable ℝ (deriv (bandTransform c Phi)) :=
+    differentiable_deriv_bandTransform c hPhi1.continuous
+  have hBandEven : Function.Even (bandTransform c Phi) :=
+    even_bandTransform c hPhi1.continuous hPhiEven
+  have hBandProlate : ∀ x : ℝ,
+      prolateSLAction c (bandTransform c Phi) x = chi * bandTransform c Phi x :=
+    fun x => slepian_commutation_eigen
+      c x hPhi1 hPhi2 hPhi2c hPhiProlate
+  let mu : ℝ := bandTransform c Phi 0 / Phi 0
+  have hscaled1 : Differentiable ℝ (fun x => mu * Phi x) := by fun_prop
+  have hscaledDeriv : deriv (fun x => mu * Phi x) = fun x => mu * deriv Phi x := by
+    funext x
+    exact deriv_const_mul mu (hPhi1 x)
+  have hscaled2 : Differentiable ℝ (deriv (fun x => mu * Phi x)) := by
+    rw [hscaledDeriv]
+    fun_prop
+  have hscaledProlate : ∀ x : ℝ,
+      prolateSLAction c (fun y => mu * Phi y) x = chi * (mu * Phi x) := by
+    intro x
+    rw [GaloisForLFunctions.RHTower.prolateSLAction_const_mul mu hPhi1 hPhi2 x,
+      hPhiProlate x]
+    ring
+  have hvalue : bandTransform c Phi 0 = mu * Phi 0 := by
+    dsimp [mu]
+    field_simp
+  have hderiv : deriv (bandTransform c Phi) 0 = deriv (fun x => mu * Phi x) 0 := by
+    rw [hscaledDeriv]
+    simp [deriv_zero_of_even hBandEven, deriv_zero_of_even hPhiEven]
+  have hEqIoo : Set.EqOn (bandTransform c Phi) (fun x => mu * Phi x)
+      (Set.Ioo (-1 : ℝ) 1) :=
+    eqOn_Ioo_of_prolateSLAction_eq_of_value_deriv_eq
+      hBand1 hBand2 hscaled1 hscaled2 hBandProlate hscaledProlate hvalue hderiv
+  refine ⟨mu, ?_⟩
+  have hclosure : Set.Icc (-1 : ℝ) 1 = closure (Set.Ioo (-1 : ℝ) 1) := by
+    rw [closure_Ioo (by norm_num : (-1 : ℝ) ≠ 1)]
+  rw [hclosure]
+  exact hEqIoo.closure hBand1.continuous hscaled1.continuous
 
 end RHTower

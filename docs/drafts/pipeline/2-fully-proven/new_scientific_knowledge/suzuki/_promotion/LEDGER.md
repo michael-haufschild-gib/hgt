@@ -101,6 +101,8 @@ RHTower/SuzukiSupportPrunedSeamCarrierBounds.lean    adjoint law, norm bounds, p
 RHTower/SuzukiGammaShiftKappa.lean                   kappa_sigma finiteness, integrated
                                                      numerical-range bound, multiplier form
 HTGeometry/MollifierPositionCommutator.lean          the position commutator of a mollifier
+HTGeometry/HadamardFinitePart.lean                   punctured Cauchy kernel in closed form and
+                                                     the exact cutoff finite-part split
 ```
 
 All eight are wired into their area umbrella, build green, and are axiom-clean.
@@ -249,7 +251,10 @@ whole input). What is missing is only the `lp` norm of a finite orthogonal famil
 
 Each of these is named by several cards at once, so building one closes part of several.
 
-1. **Hadamard finite part on an interval.**
+1. **Hadamard finite part on an interval.**  *(Done — `HTGeometry/HadamardFinitePart.lean`.)*
+   What remains on top of it: the `ε → 0` limit of `cutoffDividedDifference` for a Lipschitz
+   weight (dominated convergence against the constant Lipschitz bound), and then the operator-level
+   statement `(4)`, which needs `A_a`.
    `Pf ∫_{-a}^{a} v(y)/|x−y| dy = ∫ (v(y)−v(x))/|x−y| dy + v(x) log(a²−x²)`.
    Definition: `lim_{ε→0} (∫_{|x−y|>ε} v/|x−y| + 2 v(x) log ε)`. The proof is the exact
    computation `∫_{(-a,a), |y−x|>ε} dy/|x−y| = log(a²−x²) − 2 log ε` plus dominated convergence
@@ -298,3 +303,37 @@ Each of these is named by several cards at once, so building one closes part of 
 `suzuki-residual-overcrowding-entire-pair-closure` — `(19)` is false on the corpus's
 order-isomorphism carrier model. It must first be restated for the analytic (Hermite–Biehler /
 Herglotz) carrier class, which is itself a construction the corpus does not yet have.
+
+### D5. `suzuki-arithmetic-tangent-inverse-moment-holography` — Theorem A route
+
+None of the six target declarations exists yet; `suzukiDonoghueTransform` and
+`suzukiFourierLivsic` are not defined anywhere either, so the module has to introduce them.
+`suzukiUpperCayleyInv` and `suzukiHerglotz` do exist
+(`RHTower/SuzukiFiniteApertureHermiteBiehler.lean`), and `herglotzOfCayley` with its derivative is
+in `RHTower/SuzukiDonoghueHerglotzTransform.lean`.
+
+Theorem A is self-contained real/complex analysis and does **not** need the operator:
+
+```text
+R ν z = ∫ (t - z)⁻¹ dν t                    Cauchy transform of a measure
+m ν z = z + (z^2 + 1) * R ν z               Donoghue transform            (1)
+q ν n = ∫ t^(-2n) dν t                      inverse even moments          (2)
+```
+
+- `(13)` `iteratedDeriv j (R ν) 0 = j ! * ∫ t^(-j-1) dν` — differentiation under the integral for a
+  measure whose support is separated from `0`; the `j`-th `z`-derivative of `(t − z)⁻¹` is
+  `j! (t − z)^(-j-1)`, dominated on a small disc by `j! δ^(-j-1)`.
+- `(5)` `iteratedDeriv (2n+1) (m ν) 0 / (2n+1)! = q ν n + q ν (n+1)` — Leibniz on `(1 + z²) R`,
+  only the zeroth and second derivatives of `1 + z²` survive at `0`; the `n = 0` case picks up
+  `q 0 = 1` from the leading `z`.
+- `(6)` the recursion, `(10)` the first two values — corollaries of `(5)`.
+- `(7)` pushforward moments: `∫ y^n d(ν.map (t ↦ t^(-2))) = q ν n`, by
+  `MeasureTheory.integral_map`; combined with the corpus's own
+  `HTGeometry/CompactMomentDeterminacy.lean` (`ext_of_forall_integral_pow_eq`) this gives the
+  determinacy claim with no new analysis.
+- `(8)`–`(9)` dilation invariance of `κ n = q n / q 1 ^ n`: `q` scales by `c^(-2n)` under
+  `t ↦ c t`, again by `integral_map`.
+- `(12)` the free-clock values need `coth`/`tan` Taylor coefficients at `0`.
+
+Theorem B `(15)`–`(24)` is the part that needs `A_a`; it should stay paper-level, and the card
+already says so.

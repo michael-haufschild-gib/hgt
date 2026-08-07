@@ -401,3 +401,37 @@ covering step lacked. Completing repair (1) now needs only `L ≍ log log(2+|t�
 one-line upper bound for `|ζ|`, for which `ZetaTruncated.norm_riemannZeta_le_log_uniform`
 (`‖ζ w‖ ≤ 2 + e log N + e/‖w−1‖ + 2e`) is the corpus's explicit form; then the triangle inequality of
 `DistanceTriangle` turns it into uniqueness of the close frequency over the whole range.
+
+## Corrected diagnosis — the loss is in the prefactor, not the exceptional set
+
+The repair list above is wrong about *which* step loses. Costing the route again, more carefully:
+
+**The exceptional set is not the problem, and neither repair is needed.** The corpus's
+`MoebiusUniformFrequency.exists_mulDistSqPair_ge_uniform` is a lower bound *uniform over `|t| ≤ T`* —
+that is exactly the `M = min_{|t| ≤ T} D(f, n^{it}; z)²` of Halász's statement. With `δ² = M` the
+hypothesis of `norm_tsum_twistedSummand_le_of_far` holds at **every** `t`, so the damped bound is
+pointwise on the whole range: there is no exceptional frequency, no window, no covering. The
+`HalaszLargeValueWindow` / `DiameterCoveringMeasure` layer is not needed for this route at all (it
+remains a correct general statement, and `DiameterCoveringMeasure` is reusable, but it is not on the
+critical path).
+
+**Where the route really loses: a factor `log²N`.** With the damped bound holding pointwise,
+
+`2π‖∑ₙ f(n)w(n)‖ ≤ damped · ∫_ℝ ‖W‖`,  `damped ≍ (log N)·e^{-M}`,  `∫_ℝ ‖W‖ ≍ N²/H`.
+
+Two integrations by parts give `‖W(σ+iy)‖ ≲ (N+H)^{σ+1}/(H‖s(s+1)‖)`, so the kernel mass is `≍ N²/H`;
+with the natural `H = N/log N` this is `N log N`. Hence `‖∑ₙ f(n)w(n)‖ ≲ N (log N)² e^{-M}`, and `o(N)`
+requires `M > 2 log log N`. But for `f = μ` the true size is `M ≈ log log N`, which is exactly what
+Halász's `(1+M)e^{-M}` consumes — his bound has prefactor `(1+M) ≍ log log N`, not `(log N)²`.
+
+**The reason is structural.** Bounding `∫ ‖F‖‖W‖ ≤ (sup ‖F‖)·∫‖W‖` throws away all cancellation in `F`
+across the range. Halász's proof instead bounds `∫ ‖F‖` by a *mean-value* estimate — in the corpus's
+terms, `DirichletMeasureLargeValues.integral_norm_dirPoly_halasz` (`∫₀^T‖F‖ ≤ V·T + M·|{‖F‖ ≥ V}|`)
+together with `DirichletIntegralMeanValue` — which uses `∑|aₙ|²`, not `sup‖F‖`. That is the missing
+ingredient, and it is a different theorem, not a constant.
+
+So the state of this thread is: an unconditional, fully explicit chain that reproves the *shape* of
+Halász's estimate and is `(log N)²` weaker than it; the gap is precisely the mean-square input. Nothing
+in the chain is wasted — the Euler bound, the trivial size, the distance bridge and the Perron assembly
+are all exactly what the mean-value route also needs — but no decay follows from what is built, and the
+earlier "two upgrades" note is superseded by this one.

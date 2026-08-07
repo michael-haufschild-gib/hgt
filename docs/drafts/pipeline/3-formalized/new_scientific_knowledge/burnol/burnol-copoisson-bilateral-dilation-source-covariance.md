@@ -2,6 +2,7 @@
 
 - **ID:** `burnol-copoisson-bilateral-dilation-source-covariance`
 - **Stage:** 3-formalized
+- **Formalized companion:** `burnol-copoisson-bilateral-dilation-source-covariance-formalized.md`
 - **Type:** `[LITERATURE] [BRIDGE] [PAPER-PROVED]`
 - **Route:** R, Gamma–co-Poisson–Sonin source-normal landing
 - **Lean target:** `RHTower/BurnolCoPoissonDilationSourceCovariance.lean`

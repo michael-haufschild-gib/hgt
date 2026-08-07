@@ -2,6 +2,7 @@
 
 - **ID:** `burnol-copoisson-quotient-bilateral-order-rh-law`
 - **Stage:** 3-formalized
+- **Formalized companion:** `burnol-copoisson-quotient-bilateral-order-rh-law-formalized.md`
 - **Type:** THEOREM (paper), `[SOURCE-PURE RH PREDECESSOR] [OPERATOR ORDER]`
 - **Scientific status:** `[PROVED HERE] [NOT AN RH PROOF]`
 - **Parents:** Burnol's co-Poisson orthogonal-complement theorem; normalized forward/inverse

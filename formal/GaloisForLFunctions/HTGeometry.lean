@@ -492,6 +492,7 @@ import GaloisForLFunctions.HTGeometry.CDGATensorConstExchange
 import GaloisForLFunctions.HTGeometry.CDGATensorLeft
 import GaloisForLFunctions.HTGeometry.CDGATensorShift
 import GaloisForLFunctions.HTGeometry.CDGATensorShiftHom
+import GaloisForLFunctions.HTGeometry.CDGATensorColimit
 import GaloisForLFunctions.HTGeometry.DirectLimitPi
 import GaloisForLFunctions.HTGeometry.CDGACellTowerColimit
 import GaloisForLFunctions.HTGeometry.CDGAModuleColimitQuasiIso
@@ -5814,3 +5815,4 @@ import GaloisForLFunctions.HTGeometry.ZetaUpperEndHypertranscendence
 import GaloisForLFunctions.HTGeometry.ZetaVerticalAlmostPeriodic
 import GaloisForLFunctions.HTGeometry.AtomicJumpForm
 import GaloisForLFunctions.HTGeometry.MollifierPositionCommutator
+import GaloisForLFunctions.HTGeometry.HadamardFinitePart

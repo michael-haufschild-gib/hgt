@@ -164,5 +164,12 @@ The resulting constructive route is recorded in
 - [x] exact completed source-defect recurrence
 - [x] radical requirement and symmetric contradiction endpoint
 - [x] positive successor formulated from the obstruction
-- [ ] formalize only after a source-side Sonine/completion interface exists in Lean
+- [x] formalize the completed side: maximal-domain membership of the source and of every first
+      divided vector, the exact completed source-defect recurrence `(9)`, both nonvanishing
+      statements, and the symmetric radical endpoint `(10)`,`(11)`
+      (`BurnolHedenmalmCompletionDomain.lean`, `XiHedenmalmSymmetricMultiplicity.lean`)
+- [x] formalize the algebraic transport step `(3)` of the uncompleted exclusion and its
+      contrapositive consumer (`BurnolHedenmalmUncompletedDomain.lean`)
+- [ ] formalize the classical input `(4)`: zeta is not square integrable on the critical line
+      (route and Lean plan in `../../1-in-progress/zeta-not-square-integrable-critical-line.md`)
 

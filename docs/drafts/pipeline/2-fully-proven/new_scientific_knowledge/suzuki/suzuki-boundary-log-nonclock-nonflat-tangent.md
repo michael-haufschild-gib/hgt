@@ -241,9 +241,31 @@ Formalized, unconditionally:
 5. nonzero-mode source forces a nonzero cross-tangent somewhere;
 6. equality with Suzuki's explicit free carrier at all clock samples forces pure zero mode.
 
+**Theorem A's kernel mechanism `(7)`--`(8)` is now formal**, in
+
+```text
+formal/GaloisForLFunctions/HTGeometry/HadamardFinitePart.lean
+```
+
+```text
+integral_left_inv_sub          ∫_{-a}^{x-ε} dy/(x-y) = log (x+a) - log ε
+integral_right_inv_sub         ∫_{x+ε}^{a} dy/(y-x) = log (a-x) - log ε
+integral_punctured_inv_dist    their sum is log (a² - x²) - 2 log ε
+cutoffFinitePart               the cutoff finite part of the Cauchy kernel against a weight
+cutoffDividedDifference        the cutoff divided-difference integral
+cutoffFinitePart_eq            (7): finite part = divided difference + v(x) log (a² - x²)
+```
+
+`cutoffFinitePart_eq` holds **for every cutoff separately**, with no limit taken, so the
+logarithmic coefficient `v(x)` is exhibited as an exact cutoff-independent invariant of the kernel
+rather than as the value of a limit.  That is precisely the claim that the endpoint logarithmic
+coefficient `-e^x/2` of `(4)` cannot be altered by the finitely many prime shifts or by the smooth
+archimedean remainder: each of those contributes a bounded term with finite one-sided endpoint
+limits and none of them carries a `log ε`.
+
 Concrete construction of Suzuki's unbounded `A_a`, form domain, and distribution kernel remains
 outside current Lean source layer; analytic Theorem A is paper-proved here and its exact reusable
-boundary and sampling mechanisms are formalized without axioms.
+kernel, boundary and sampling mechanisms are formalized without axioms.
 
 ## 7. Hostile audit
 

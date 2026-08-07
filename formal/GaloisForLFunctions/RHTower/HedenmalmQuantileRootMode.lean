@@ -142,7 +142,7 @@ theorem integral_sourceChar_comp_quantile (z : ℂ) :
 def rootA (z : ℂ) (t : ℝ) : ℂ := ∫ u in (0 : ℝ)..t, sourceChar z (S.quantileFun u)
 
 /-- The integrating factor `exp(-i z Q t)`. -/
-def rootFactor (z : ℂ) (t : ℝ) : ℂ := Complex.exp (-(Complex.I * z * (S.quantileFun t : ℂ)))
+def rootFactor (z : ℂ) (t : ℝ) : ℂ := Complex.exp (-(Complex.I * z) * (S.quantileFun t : ℂ))
 
 /-- The pinned primitive of the root mode, `h(t) = -exp(-i z Q t) A(t)`. -/
 def rootH (z : ℂ) (t : ℝ) : ℂ := -(rootFactor S z t * rootA S z t)
@@ -180,7 +180,6 @@ theorem rootMode_relation {z : ℂ} (hz : z ≠ 0) (t : ℝ) :
     Complex.I * ((quantileSpeed S t : ℝ) : ℂ) * rootH S z t = (-z⁻¹) * rootG S z t := by
   rw [rootH, rootG]
   field_simp
-  ring
 
 /-! ### The differential equation -/
 
@@ -193,13 +192,11 @@ theorem hasDerivAt_rootFactor {z : ℂ} {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1) :
     HasDerivAt (rootFactor S z)
       (-(Complex.I * z * ((quantileSpeed S t : ℝ) : ℂ)) * rootFactor S z t) t := by
   have hQ := hasDerivAt_quantileFun_complex S ht
-  have hlin : HasDerivAt (fun s : ℝ => -(Complex.I * z * ((S.quantileFun s : ℝ) : ℂ)))
-      (-(Complex.I * z * ((quantileSpeed S t : ℝ) : ℂ))) t := by
-    simpa using ((hQ.const_mul (Complex.I * z)).neg)
-  have := hlin.cexp
-  rw [rootFactor]
-  convert this using 1
-  rw [rootFactor]
+  have hlin : HasDerivAt (fun s : ℝ => -(Complex.I * z) * ((S.quantileFun s : ℝ) : ℂ))
+      (-(Complex.I * z) * ((quantileSpeed S t : ℝ) : ℂ)) t := hQ.const_mul _
+  have hexp := hlin.cexp
+  refine hexp.congr_deriv ?_
+  show rootFactor S z t * (-(Complex.I * z) * ((quantileSpeed S t : ℝ) : ℂ)) = _
   ring
 
 theorem intervalIntegrable_sourceChar_comp_quantile {z : ℂ} (hz : HasShiftedTail S z)
@@ -243,7 +240,7 @@ theorem rootODE_two_point {z m : ℂ} {h : ℝ → ℂ}
     (hz : HasShiftedTail S z) {a b : ℝ} (ha : a ∈ Ioo (0 : ℝ) 1) (hb : b ∈ Ioo (0 : ℝ) 1) :
     (rootFactor S z b)⁻¹ * h b - (rootFactor S z a)⁻¹ * h a
       = -m * ∫ u in a..b, sourceChar z (S.quantileFun u) := by
-  have hsub : uIcc a b ⊆ Ioo (0 : ℝ) 1 := Set.uIcc_subset_Ioo ha hb
+  have hsub : uIcc a b ⊆ Ioo (0 : ℝ) 1 := Set.ordConnected_Ioo.uIcc_subset ha hb
   have hFinv : ∀ t : ℝ, (rootFactor S z t)⁻¹ = sourceChar z (S.quantileFun t) := by
     intro t
     rw [rootFactor, sourceChar, ← Complex.exp_neg]
@@ -263,22 +260,268 @@ theorem rootODE_two_point {z m : ℂ} {h : ℝ → ℂ}
         (sourceChar z (S.quantileFun t) * (Complex.I * z * ((quantileSpeed S t : ℝ) : ℂ))) t := by
       refine hE.congr_of_eventuallyEq ?_
       filter_upwards with s
-      exact (hFinv s).symm
+      exact hFinv s
     have hmul := hEinv.mul (hderiv t htIoo)
     refine hmul.congr_deriv ?_
     rw [hFinv t]
     ring
   have hcont : IntervalIntegrable (fun t => -m * sourceChar z (S.quantileFun t)) volume a b := by
     have hbase : IntervalIntegrable (fun u => sourceChar z (S.quantileFun u)) volume a b := by
-      rw [intervalIntegrable_iff_integrableOn_uIoc]
+      rw [intervalIntegrable_iff]
       refine (integrableOn_sourceChar_comp_quantile S hz).mono_set ?_
-      intro u hu
-      have : u ∈ uIcc a b := Set.mem_uIcc_of_le (le_of_lt hu.1) hu.2
-      exact hsub this
+      exact fun u hu => hsub (Set.uIoc_subset_uIcc hu)
     exact hbase.const_mul _
   have := intervalIntegral.integral_eq_sub_of_hasDerivAt hderivF hcont
   rw [intervalIntegral.integral_const_mul] at this
   exact this.symm
+
+/-! ### The energy balance of the root mode -/
+
+theorem rootG_eq {z : ℂ} (t : ℝ) :
+    rootG S z t = -(Complex.I * z * ((quantileSpeed S t : ℝ) : ℂ)) * rootH S z t := by
+  rw [rootG, rootH]
+  ring
+
+theorem hasDerivAt_rootH_ode {z : ℂ} (hz : HasShiftedTail S z) {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1) :
+    HasDerivAt (rootH S z)
+      (-(Complex.I * z * ((quantileSpeed S t : ℝ) : ℂ)) * rootH S z t - 1) t := by
+  have h := hasDerivAt_rootH S hz ht
+  rwa [rootG_eq] at h
+
+/-- The pointwise energy balance of a solution of the pinned differential equation. -/
+theorem energy_deriv_identity (z q h : ℂ) (hq : (starRingEnd ℂ) q = q) :
+    (starRingEnd ℂ) (-(Complex.I * z * q) * h - 1) * h
+      + (starRingEnd ℂ) h * (-(Complex.I * z * q) * h - 1)
+      = 2 * ((z.im : ℝ) : ℂ) * q * ((starRingEnd ℂ) h * h)
+        - (h + (starRingEnd ℂ) h) := by
+  have hII : Complex.I * Complex.I = -1 := Complex.I_mul_I
+  have hzc : (starRingEnd ℂ) z = z - 2 * ((z.im : ℝ) : ℂ) * Complex.I := by
+    have hsc := Complex.sub_conj z
+    push_cast at hsc
+    linear_combination -hsc
+  simp only [map_sub, map_mul, map_neg, map_one, Complex.conj_I, hq, hzc]
+  linear_combination (-2 * ((z.im : ℝ) : ℂ) * q * ((starRingEnd ℂ) h) * h) * hII
+
+theorem hasDerivAt_rootEnergy {z : ℂ} (hz : HasShiftedTail S z) {t : ℝ}
+    (ht : t ∈ Ioo (0 : ℝ) 1) :
+    HasDerivAt (fun s => (starRingEnd ℂ) (rootH S z s) * rootH S z s)
+      (2 * ((z.im : ℝ) : ℂ) * ((quantileSpeed S t : ℝ) : ℂ) *
+          ((starRingEnd ℂ) (rootH S z t) * rootH S z t)
+        - (rootH S z t + (starRingEnd ℂ) (rootH S z t))) t := by
+  have hode := hasDerivAt_rootH_ode S hz ht
+  have hstar := hode.star
+  have hmul := hstar.mul hode
+  refine hmul.congr_deriv ?_
+  exact energy_deriv_identity z ((quantileSpeed S t : ℝ) : ℂ) (rootH S z t)
+    (Complex.conj_ofReal _)
+
+theorem conj_mul_self_eq (w : ℂ) : (starRingEnd ℂ) w * w = ((‖w‖ ^ 2 : ℝ) : ℂ) := by
+  rw [mul_comm, Complex.mul_conj]
+  norm_cast
+  exact Complex.normSq_eq_norm_sq w
+
+/-! ### Continuity of the mode on the open interval -/
+
+theorem continuousOn_quantileSpeed : ContinuousOn (quantileSpeed S) (Ioo (0 : ℝ) 1) := by
+  refine ContinuousOn.div continuousOn_const
+    (S.continuous_k.comp_continuousOn (continuousOn_quantileFun S)) ?_
+  intro _ _
+  exact (S.pos_k _).ne'
+
+theorem continuousOn_rootH {z : ℂ} (hz : HasShiftedTail S z) :
+    ContinuousOn (rootH S z) (Ioo (0 : ℝ) 1) := fun _ ht =>
+  ((hasDerivAt_rootH S hz ht).continuousAt).continuousWithinAt
+
+/-- The integrand of the energy balance. -/
+def rootBalance (z : ℂ) (t : ℝ) : ℂ :=
+  2 * ((z.im : ℝ) : ℂ) * ((quantileSpeed S t : ℝ) : ℂ) * ((‖rootH S z t‖ ^ 2 : ℝ) : ℂ)
+    - (rootH S z t + (starRingEnd ℂ) (rootH S z t))
+
+theorem continuousOn_rootBalance {z : ℂ} (hz : HasShiftedTail S z) :
+    ContinuousOn (rootBalance S z) (Ioo (0 : ℝ) 1) := by
+  unfold rootBalance
+  have hH := continuousOn_rootH S hz
+  refine ContinuousOn.sub ?_ ?_
+  · refine ContinuousOn.mul (ContinuousOn.mul continuousOn_const ?_) ?_
+    · exact Complex.continuous_ofReal.comp_continuousOn (continuousOn_quantileSpeed S)
+    · exact Complex.continuous_ofReal.comp_continuousOn (hH.norm.pow 2)
+  · exact hH.add (Complex.continuous_conj.comp_continuousOn hH)
+
+/-- **The exact two-point energy balance of the root mode.** -/
+theorem rootEnergy_two_point {z : ℂ} (hz : HasShiftedTail S z) {a b : ℝ}
+    (ha : a ∈ Ioo (0 : ℝ) 1) (hb : b ∈ Ioo (0 : ℝ) 1) :
+    ((‖rootH S z b‖ ^ 2 : ℝ) : ℂ) - ((‖rootH S z a‖ ^ 2 : ℝ) : ℂ)
+      = ∫ t in a..b, rootBalance S z t := by
+  have hsub : uIcc a b ⊆ Ioo (0 : ℝ) 1 := Set.ordConnected_Ioo.uIcc_subset ha hb
+  have hderiv : ∀ t ∈ uIcc a b,
+      HasDerivAt (fun s => (starRingEnd ℂ) (rootH S z s) * rootH S z s) (rootBalance S z t) t := by
+    intro t htmem
+    have h := hasDerivAt_rootEnergy S hz (hsub htmem)
+    rwa [conj_mul_self_eq] at h
+  have hint : IntervalIntegrable (rootBalance S z) volume a b :=
+    ((continuousOn_rootBalance S hz).mono hsub).intervalIntegrable
+  have h := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
+  rw [conj_mul_self_eq, conj_mul_self_eq] at h
+  exact h.symm
+
+/-! ### The ordered-correlation flux identity -/
+
+/-- An interior exhaustion of the open unit interval. -/
+def interiorSeq (n : ℕ) : ℝ := 1 / ((n : ℝ) + 2)
+
+theorem interiorSeq_pos (n : ℕ) : 0 < interiorSeq n := by
+  rw [interiorSeq]
+  positivity
+
+theorem interiorSeq_le_half (n : ℕ) : interiorSeq n ≤ 1 / 2 := by
+  rw [interiorSeq, div_le_div_iff (by positivity) (by norm_num)]
+  have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+  linarith
+
+theorem antitone_interiorSeq : Antitone interiorSeq := by
+  intro m n hmn
+  rw [interiorSeq, interiorSeq]
+  apply one_div_le_one_div_of_le (by positivity)
+  exact add_le_add_right (Nat.cast_le.mpr hmn) 2
+
+theorem tendsto_interiorSeq : Tendsto interiorSeq atTop (𝓝 0) := by
+  have h : Tendsto (fun n : ℕ => 1 / ((n : ℝ) + 1)) atTop (𝓝 0) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  have h2 : Tendsto (fun n : ℕ => ((n : ℝ) + 2)) atTop atTop := by
+    apply Filter.tendsto_atTop_add_const_right
+    exact tendsto_natCast_atTop_atTop
+  simpa [interiorSeq] using h2.inv_tendsto_atTop
+
+theorem iUnion_interiorIoc :
+    (⋃ n : ℕ, Ioc (interiorSeq n) (1 - interiorSeq n)) = Ioo (0 : ℝ) 1 := by
+  ext t
+  simp only [mem_iUnion, mem_Ioc, mem_Ioo]
+  constructor
+  · rintro ⟨n, h1, h2⟩
+    exact ⟨lt_trans (interiorSeq_pos n) h1,
+      lt_of_le_of_lt h2 (by linarith [interiorSeq_pos n])⟩
+  · rintro ⟨h0, h1⟩
+    have hpos : 0 < min t (1 - t) := lt_min h0 (by linarith)
+    obtain ⟨n, hn⟩ := (tendsto_interiorSeq.eventually (eventually_lt_nhds hpos)).exists
+    exact ⟨n, lt_of_lt_of_le hn (min_le_left _ _),
+      by have := lt_of_lt_of_le hn (min_le_right _ _); linarith⟩
+
+theorem monotone_interiorIoc :
+    Monotone fun n : ℕ => Ioc (interiorSeq n) (1 - interiorSeq n) := by
+  intro m n hmn t ht
+  refine ⟨lt_of_le_of_lt (antitone_interiorSeq hmn) ht.1, ?_⟩
+  have := antitone_interiorSeq hmn
+  linarith [ht.2]
+
+/-- The endpoint data of a root mode: the exact source-tail input the flux identity uses. -/
+structure RootModeEndpoints (z : ℂ) : Prop where
+  integrableEnergy :
+    IntegrableOn (fun t => quantileSpeed S t * ‖rootH S z t‖ ^ 2) (Ioo (0 : ℝ) 1) volume
+  integrableValue : IntegrableOn (rootH S z) (Ioo (0 : ℝ) 1) volume
+  tendstoLeft : Tendsto (fun t => ‖rootH S z t‖ ^ 2) (𝓝[>] (0 : ℝ)) (𝓝 0)
+  tendstoRight : Tendsto (fun t => ‖rootH S z t‖ ^ 2) (𝓝[<] (1 : ℝ)) (𝓝 0)
+
+theorem integrableOn_rootBalance {z : ℂ} (he : RootModeEndpoints S z) :
+    IntegrableOn (rootBalance S z) (Ioo (0 : ℝ) 1) volume := by
+  have h1 : IntegrableOn (fun t => 2 * ((z.im : ℝ) : ℂ) * ((quantileSpeed S t : ℝ) : ℂ) *
+      ((‖rootH S z t‖ ^ 2 : ℝ) : ℂ)) (Ioo (0 : ℝ) 1) volume := by
+    have := (he.integrableEnergy.ofReal).const_mul (2 * ((z.im : ℝ) : ℂ))
+    refine this.congr ?_
+    filter_upwards with t
+    push_cast
+    ring
+  have h2 : IntegrableOn (fun t => rootH S z t + (starRingEnd ℂ) (rootH S z t))
+      (Ioo (0 : ℝ) 1) volume := by
+    refine he.integrableValue.add ?_
+    exact (Complex.continuous_conj.measurable.comp_aemeasurable
+      he.integrableValue.aemeasurable).aestronglyMeasurable.integrable_of_norm_le
+      he.integrableValue (by filter_upwards with t; simp)
+  exact h1.sub h2
+
+/-- **The ordered-correlation flux identity.**  The real part of the ordered correlation of the
+root mode is the negative of the imaginary spectral part times its quantile energy. -/
+theorem rootFlux_identity {z : ℂ} (hz : HasShiftedTail S z) (he : RootModeEndpoints S z) :
+    (∫ t in Ioo (0 : ℝ) 1, -(rootH S z t)).re
+      = -(z.im) * ∫ t in Ioo (0 : ℝ) 1, quantileSpeed S t * ‖rootH S z t‖ ^ 2 := by
+  -- the balance integrates to zero over the whole interval
+  have hzero : ∫ t in Ioo (0 : ℝ) 1, rootBalance S z t = 0 := by
+    have hlim : Tendsto (fun n : ℕ => ∫ t in Ioc (interiorSeq n) (1 - interiorSeq n),
+        rootBalance S z t) atTop (𝓝 (∫ t in Ioo (0 : ℝ) 1, rootBalance S z t)) := by
+      have h := MeasureTheory.tendsto_setIntegral_of_monotone
+        (fun n : ℕ => measurableSet_Ioc) monotone_interiorIoc
+        (by rw [iUnion_interiorIoc]; exact integrableOn_rootBalance S he)
+      rwa [iUnion_interiorIoc] at h
+    have hmemL : ∀ n : ℕ, interiorSeq n ∈ Ioo (0 : ℝ) 1 := fun n =>
+      ⟨interiorSeq_pos n, lt_of_le_of_lt (interiorSeq_le_half n) (by norm_num)⟩
+    have hmemR : ∀ n : ℕ, 1 - interiorSeq n ∈ Ioo (0 : ℝ) 1 := fun n =>
+      ⟨by linarith [interiorSeq_le_half n], by linarith [interiorSeq_pos n]⟩
+    have heq : ∀ n : ℕ, ∫ t in Ioc (interiorSeq n) (1 - interiorSeq n), rootBalance S z t
+        = ((‖rootH S z (1 - interiorSeq n)‖ ^ 2 : ℝ) : ℂ)
+          - ((‖rootH S z (interiorSeq n)‖ ^ 2 : ℝ) : ℂ) := by
+      intro n
+      rw [← intervalIntegral.integral_of_le (by linarith [interiorSeq_le_half n]),
+        ← rootEnergy_two_point S hz (hmemL n) (hmemR n)]
+    have hL : Tendsto (fun n : ℕ => ‖rootH S z (interiorSeq n)‖ ^ 2) atTop (𝓝 0) := by
+      refine he.tendstoLeft.comp ?_
+      exact tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ tendsto_interiorSeq
+        (Filter.Eventually.of_forall fun n => interiorSeq_pos n)
+    have hR : Tendsto (fun n : ℕ => ‖rootH S z (1 - interiorSeq n)‖ ^ 2) atTop (𝓝 0) := by
+      refine he.tendstoRight.comp ?_
+      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_
+        (Filter.Eventually.of_forall fun n => by
+          simp only [mem_Iio]
+          linarith [interiorSeq_pos n])
+      simpa using (tendsto_const_nhds (x := (1 : ℝ)) (f := atTop)).sub tendsto_interiorSeq
+    have hlim2 : Tendsto (fun n : ℕ => ∫ t in Ioc (interiorSeq n) (1 - interiorSeq n),
+        rootBalance S z t) atTop (𝓝 0) := by
+      refine Filter.Tendsto.congr (fun n => (heq n).symm) ?_
+      have := ((Complex.continuous_ofReal.tendsto 0).comp hR).sub
+        ((Complex.continuous_ofReal.tendsto 0).comp hL)
+      simpa using this
+    exact tendsto_nhds_unique hlim hlim2
+  -- split the balance
+  have hsplit : ∫ t in Ioo (0 : ℝ) 1, rootBalance S z t
+      = 2 * ((z.im : ℝ) : ℂ) *
+          ((∫ t in Ioo (0 : ℝ) 1, quantileSpeed S t * ‖rootH S z t‖ ^ 2 : ℝ) : ℂ)
+        - ((∫ t in Ioo (0 : ℝ) 1, rootH S z t)
+          + (starRingEnd ℂ) (∫ t in Ioo (0 : ℝ) 1, rootH S z t)) := by
+    have h1 : IntegrableOn (fun t => 2 * ((z.im : ℝ) : ℂ) * ((quantileSpeed S t : ℝ) : ℂ) *
+        ((‖rootH S z t‖ ^ 2 : ℝ) : ℂ)) (Ioo (0 : ℝ) 1) volume := by
+      have := (he.integrableEnergy.ofReal).const_mul (2 * ((z.im : ℝ) : ℂ))
+      refine this.congr ?_
+      filter_upwards with t
+      push_cast
+      ring
+    have h2 : IntegrableOn (fun t => rootH S z t + (starRingEnd ℂ) (rootH S z t))
+        (Ioo (0 : ℝ) 1) volume := by
+      refine he.integrableValue.add ?_
+      exact (Complex.continuous_conj.measurable.comp_aemeasurable
+        he.integrableValue.aemeasurable).aestronglyMeasurable.integrable_of_norm_le
+        he.integrableValue (by filter_upwards with t; simp)
+    unfold rootBalance
+    rw [MeasureTheory.integral_sub h1 h2,
+      MeasureTheory.integral_add he.integrableValue
+        (by exact (Complex.continuous_conj.measurable.comp_aemeasurable
+          he.integrableValue.aemeasurable).aestronglyMeasurable.integrable_of_norm_le
+          he.integrableValue (by filter_upwards with t; simp)),
+      integral_conj]
+    congr 1
+    rw [← integral_complex_ofReal, ← MeasureTheory.integral_const_mul]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+    push_cast
+    ring
+  rw [hzero] at hsplit
+  have hre := congrArg Complex.re hsplit.symm
+  simp only [Complex.sub_re, Complex.zero_re] at hre
+  rw [MeasureTheory.integral_neg, Complex.neg_re]
+  have hadd : (∫ t in Ioo (0 : ℝ) 1, rootH S z t)
+      + (starRingEnd ℂ) (∫ t in Ioo (0 : ℝ) 1, rootH S z t)
+      = ((2 * (∫ t in Ioo (0 : ℝ) 1, rootH S z t).re : ℝ) : ℂ) :=
+    Complex.add_conj _
+  rw [hadd] at hre
+  simp only [Complex.ofReal_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+    Complex.re_ofNat, Complex.im_ofNat] at hre
+  linarith [hre]
 
 end HedenmalmQuantile
 

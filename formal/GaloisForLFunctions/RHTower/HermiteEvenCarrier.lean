@@ -126,6 +126,97 @@ theorem orthonormal_hermiteEvenUnit (m : ℕ) :
       inner_hermiteEven_eq_zero hne
     rw [hinner, hcoe, hcoe, inner_smul_left, inner_smul_right, hzero, mul_zero, mul_zero]
 
+/-! ## The negative step-four sector -/
+
+/-- The `j`-th member of the complementary even Hermite subfamily.  Its Hermite index is
+`4j + 2`, so its Fourier eigenvalue is `-1`. -/
+def hermiteEvenNegative (j : ℕ) : evenSubspace :=
+  ⟨hermiteL2 (4 * j + 2), by
+    have h : 4 * j + 2 = 2 * (2 * j + 1) := by ring
+    rw [h]
+    exact hermiteL2_mem_evenSubspace (2 * j + 1)⟩
+
+@[simp] theorem coe_hermiteEvenNegative (j : ℕ) :
+    (hermiteEvenNegative j : SoninL2) = hermiteL2 (4 * j + 2) := rfl
+
+/-- **The even Fourier transform negates the `4j+2` Hermite functions.** -/
+theorem evenFourierTransform_hermiteEvenNegative (j : ℕ) :
+    evenFourierTransform (hermiteEvenNegative j) = -hermiteEvenNegative j := by
+  apply Subtype.ext
+  rw [coe_evenFourierTransform_apply, coe_hermiteEvenNegative]
+  have h := GaloisForLFunctions.fourier_hermiteSchwartz_toLp (4 * j + 2)
+  have h4 : ((-Complex.I) ^ 4 : ℂ) = 1 := by
+    have hII : Complex.I * Complex.I = -1 := Complex.I_mul_I
+    calc ((-Complex.I) ^ 4 : ℂ) =
+          (Complex.I * Complex.I) * (Complex.I * Complex.I) := by ring
+      _ = 1 := by rw [hII]; ring
+  have h2 : ((-Complex.I) ^ 2 : ℂ) = -1 := by
+    have hII : Complex.I * Complex.I = -1 := Complex.I_mul_I
+    calc ((-Complex.I) ^ 2 : ℂ) = Complex.I * Complex.I := by ring
+      _ = -1 := hII
+  have hpow : ((-Complex.I) ^ (4 * j + 2) : ℂ) = -1 := by
+    rw [pow_add, pow_mul, h4, one_pow, h2, one_mul]
+  rw [hpow, neg_one_smul] at h
+  exact h
+
+theorem hermiteEvenNegative_ne_zero (j : ℕ) : hermiteEvenNegative j ≠ 0 := by
+  intro hzero
+  have hcoe : hermiteL2 (4 * j + 2) = 0 := congrArg Subtype.val hzero
+  exact GaloisForLFunctions.hermiteSchwartz_toLp_ne_zero (4 * j + 2) hcoe
+
+/-- The normalized negative step-four Hermite family. -/
+def hermiteEvenNegativeUnit (j : ℕ) : evenSubspace :=
+  ((‖hermiteEvenNegative j‖ : ℂ))⁻¹ • hermiteEvenNegative j
+
+theorem norm_hermiteEvenNegativeUnit (j : ℕ) : ‖hermiteEvenNegativeUnit j‖ = 1 :=
+  norm_smul_inv_norm (hermiteEvenNegative_ne_zero j)
+
+theorem evenFourierTransform_hermiteEvenNegativeUnit (j : ℕ) :
+    evenFourierTransform (hermiteEvenNegativeUnit j) = -hermiteEvenNegativeUnit j := by
+  rw [hermiteEvenNegativeUnit, map_smul, evenFourierTransform_hermiteEvenNegative, smul_neg]
+
+theorem inner_hermiteEvenNegative_eq_zero {i j : ℕ} (hij : i ≠ j) :
+    inner ℂ (hermiteEvenNegative i) (hermiteEvenNegative j) = 0 := by
+  have hne : 4 * i + 2 ≠ 4 * j + 2 := by omega
+  exact GaloisForLFunctions.inner_hermiteSchwartz_toLp_eq_zero hne
+
+/-- Positive and negative step-four Hermite sectors are mutually orthogonal. -/
+theorem inner_hermiteEven_hermiteEvenNegative_eq_zero (i j : ℕ) :
+    inner ℂ (hermiteEven i) (hermiteEvenNegative j) = 0 := by
+  have hne : 4 * i ≠ 4 * j + 2 := by omega
+  exact GaloisForLFunctions.inner_hermiteSchwartz_toLp_eq_zero hne
+
+/-- **The normalized `4j+2` Hermite family is orthonormal in the even carrier.** -/
+theorem orthonormal_hermiteEvenNegativeUnit (m : ℕ) :
+    Orthonormal ℂ (fun j : Fin m => hermiteEvenNegativeUnit (j : ℕ)) := by
+  constructor
+  · intro j
+    exact norm_hermiteEvenNegativeUnit _
+  · intro i j hij
+    have hne : (i : ℕ) ≠ (j : ℕ) := fun h => hij (Fin.ext h)
+    have hcoe : ∀ k : ℕ, ((hermiteEvenNegativeUnit k : evenSubspace) : SoninL2)
+        = ((‖hermiteEvenNegative k‖ : ℂ))⁻¹ •
+            ((hermiteEvenNegative k : evenSubspace) : SoninL2) := fun _ => rfl
+    have hinner : inner ℂ (hermiteEvenNegativeUnit (i : ℕ))
+        (hermiteEvenNegativeUnit (j : ℕ)) =
+          inner ℂ ((hermiteEvenNegativeUnit (i : ℕ) : evenSubspace) : SoninL2)
+            ((hermiteEvenNegativeUnit (j : ℕ) : evenSubspace) : SoninL2) := rfl
+    have hzero : inner ℂ ((hermiteEvenNegative (i : ℕ) : evenSubspace) : SoninL2)
+        ((hermiteEvenNegative (j : ℕ) : evenSubspace) : SoninL2) = 0 :=
+      inner_hermiteEvenNegative_eq_zero hne
+    rw [hinner, hcoe, hcoe, inner_smul_left, inner_smul_right, hzero, mul_zero, mul_zero]
+
+theorem inner_hermiteEvenUnit_hermiteEvenNegativeUnit_eq_zero (i j : ℕ) :
+    inner ℂ (hermiteEvenUnit i) (hermiteEvenNegativeUnit j) = 0 := by
+  have hzero : inner ℂ ((hermiteEven i : evenSubspace) : SoninL2)
+      ((hermiteEvenNegative j : evenSubspace) : SoninL2) = 0 :=
+    inner_hermiteEven_hermiteEvenNegative_eq_zero i j
+  change inner ℂ
+    (((‖hermiteEven i‖ : ℂ))⁻¹ • ((hermiteEven i : evenSubspace) : SoninL2))
+    (((‖hermiteEvenNegative j‖ : ℂ))⁻¹ •
+      ((hermiteEvenNegative j : evenSubspace) : SoninL2)) = 0
+  rw [inner_smul_left, inner_smul_right, hzero, mul_zero, mul_zero]
+
 /-! ## The aperture truncation error -/
 
 /-- The truncation error of any even carrier vector is its `L²` mass outside the aperture. -/
@@ -232,6 +323,47 @@ theorem norm_hermiteEvenUnit_sub_timeBand_le (a : ℝ) (j : ℕ) :
     (ContinuousLinearMap.norm_sq_eq_of_isIdempotent_symmetric
       (evenIndicatorCutoff_apply_apply a) (evenIndicatorCutoff_symmetric a))
     hfix
+
+/-- Each negative step-four Hermite vector is an approximate `-1` eigenvector of the compressed
+Fourier block, with error controlled by twice its aperture truncation error. -/
+theorem norm_hermiteEvenNegativeUnit_add_timeBand_le (a : ℝ) (j : ℕ) :
+    ‖hermiteEvenNegativeUnit j + evenTimeBandFourier a (hermiteEvenNegativeUnit j)‖
+      ≤ 2 * ‖hermiteEvenNegativeUnit j -
+        evenIndicatorCutoff a (hermiteEvenNegativeUnit j)‖ := by
+  let U : evenSubspace →L[ℂ] evenSubspace := -evenFourierTransform
+  have hU : ∀ x : evenSubspace, ‖U x‖ = ‖x‖ := by
+    intro x
+    rw [show U x = -evenFourierTransform x from rfl, norm_neg,
+      evenFourierTransform_isometry]
+  have hfix : U (hermiteEvenNegativeUnit j) = hermiteEvenNegativeUnit j := by
+    rw [show U (hermiteEvenNegativeUnit j) =
+      -evenFourierTransform (hermiteEvenNegativeUnit j) from rfl,
+      evenFourierTransform_hermiteEvenNegativeUnit, neg_neg]
+  have hmain := ContinuousLinearMap.norm_sub_proj_unitary_proj_le hU
+    (ContinuousLinearMap.norm_sq_eq_of_isIdempotent_symmetric
+      (evenIndicatorCutoff_apply_apply a) (evenIndicatorCutoff_symmetric a)) hfix
+  rw [show evenIndicatorCutoff a
+      (U (evenIndicatorCutoff a (hermiteEvenNegativeUnit j))) =
+        -evenTimeBandFourier a (hermiteEvenNegativeUnit j) by
+      rw [show U (evenIndicatorCutoff a (hermiteEvenNegativeUnit j)) =
+        -evenFourierTransform (evenIndicatorCutoff a (hermiteEvenNegativeUnit j)) from rfl,
+        map_neg, evenTimeBandFourier_apply_eq], sub_neg_eq_add] at hmain
+  exact hmain
+
+theorem tendsto_norm_hermiteEvenNegativeUnit_add_timeBand (j : ℕ) :
+    Tendsto (fun a : ℝ =>
+      ‖hermiteEvenNegativeUnit j + evenTimeBandFourier a (hermiteEvenNegativeUnit j)‖)
+      atTop (nhds 0) := by
+  have hbound : Tendsto (fun a : ℝ =>
+      2 * ‖hermiteEvenNegativeUnit j -
+        evenIndicatorCutoff a (hermiteEvenNegativeUnit j)‖) atTop (nhds 0) := by
+    simpa using (tendsto_norm_sub_cut (hermiteEvenNegativeUnit j)).const_mul 2
+  refine squeeze_zero' ?_ ?_
+    hbound
+  · filter_upwards with a
+    exact norm_nonneg _
+  filter_upwards with a
+  exact norm_hermiteEvenNegativeUnit_add_timeBand_le a j
 
 /-- **The leakage bound from the step-four Hermite trial space.**  An `(n+1)`-member family with
 truncation error at most `η` caps the `n`-th leakage of the true compressed Fourier block. -/

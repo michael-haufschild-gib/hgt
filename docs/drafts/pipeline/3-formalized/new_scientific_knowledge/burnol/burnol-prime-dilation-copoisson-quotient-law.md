@@ -2,6 +2,7 @@
 
 - **ID:** `burnol-prime-dilation-copoisson-quotient-law`
 - **Stage:** 3-formalized
+- **Formalized companion:** `burnol-prime-dilation-copoisson-quotient-law-formalized.md`
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** normalized Mellin dilation covariance; Burnol's continuous Sonine evaluators and

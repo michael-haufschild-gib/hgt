@@ -1091,3 +1091,19 @@ Its three steps, and the state of each:
 
 Until then the flatness theorem covers every finite stage of a semi-free filtration, which is what
 a relative cell construction of finite length needs.
+
+## Step 2 of the exchange is done
+
+`DirectLimitPi.lean` — `piTransition`, `piDirectedSystem`, `directLimitPiMap`, injectivity,
+surjectivity, **`directLimitPi`**: a *finite* product commutes with a filtered colimit of modules.
+
+Both halves are the same observation: a finite family of stages has a common upper bound.  For
+injectivity the bound must be taken over `insert i (image j univ)`, not `image j univ` — with an
+empty index type the latter is empty and the resulting bound need not dominate the stage the element
+came from.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+Remaining for `M ⊗_A colim N ≅ colim (M ⊗_A N)`: assemble step 1 (`TensorProduct.directLimitRight`,
+mathlib) with step 2 over the bidegrees of a fixed total degree — which are finite, by
+`tensorIndexFintype` — and then descend through the relations.

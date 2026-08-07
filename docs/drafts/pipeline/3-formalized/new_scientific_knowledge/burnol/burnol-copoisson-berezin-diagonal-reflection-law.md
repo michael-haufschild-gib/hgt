@@ -2,6 +2,7 @@
 
 - **ID:** `burnol-copoisson-berezin-diagonal-reflection-law`
 - **Stage:** 3-formalized
+- **Formalized companion:** `burnol-copoisson-berezin-diagonal-reflection-law-formalized.md`
 - **Type:** THEOREM (paper), `[TOP-DOWN INTERFACE DISCHARGE]`, `[VALUE RELATION]`
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** Burnol's continuous-evaluation theorem and co-Poisson orthogonal-complement theorem;

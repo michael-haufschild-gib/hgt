@@ -2,6 +2,7 @@
 
 - **ID:** `burnol-sonin-off-axis-aperture-type-rigidity`
 - **Stage:** 3-formalized
+- **Formalized companion:** `burnol-sonin-off-axis-aperture-type-rigidity-formalized.md`
 - **Type:** THEOREM / HOSTILE ROUTE AUDIT
 - **Scientific status:** `[CORPUS-NEW SYNTHESIS] [PRELIMINARY EXTERNAL NONCOLLISION] [NOT RH]`
 - **Parents:**
