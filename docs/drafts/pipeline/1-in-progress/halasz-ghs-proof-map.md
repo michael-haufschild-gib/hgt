@@ -893,3 +893,26 @@ at the natural parameters.  This is where a saving in `N` is created, and it is 
 the kind the corpus's Mertens layer already supports — the mean square of the outer weight is
 `∑_p (log p/log⌊N/p⌋)²p^{−2σ}` against a linear sieve count, and it is that pairing which produces the
 `(1+M)e^{−M}` shape of the sharp theorem.
+
+## The sieve mean square reduced to two zeta-type sums
+
+`RHTower/Sieve/SieveMeanSquareZetaSums.lean` (green, axiom-clean, wired).
+
+`sieveMeanSquare_le_of_norm_le_log` — the Selberg majorant `2(n·2 sinh δ + 1)/log Y + E + z` is linear in
+`n`, so against coefficients with `‖a_n‖ ≤ A log n` it splits into exactly two sums:
+
+`sieveMeanSquare a s σ z Y
+    ≤ (4 sinh δ/log Y)·A²·∑_{n ∈ s} n^{1−2σ}(log n)² + (2/log Y + E + z)·A²·∑_{n ∈ s} n^{−2σ}(log n)²`.
+
+The statement needs no positivity of `A` (the square supplies it) and no primality: only the coefficient
+bound, `1 ≤ n` on the index set, `2 ≤ z` and `log Y > 0`.
+
+Instantiations: `sieveMeanSquare_ghsInner_le` with `A = 1`, `sieveMeanSquare_ghsOuter_le` with `A = 1/log 2`.
+
+Both sums converge for `σ > 1`; the first is the one that grows as `σ ↓ 1`, being of size `(log N)²` at
+`σ = 1 + 1/log N`.  **The remaining analytic input of the whole programme is now exactly two sums**:
+
+`∑_{n ≤ N} n^{1−2σ}(log n)²`   and   `∑_{n ≤ N} n^{−2σ}(log n)²`,
+
+with no arithmetic content — no primes, no divisor functions, no short-interval estimates.  Each is a
+Dirichlet-type sum of `(log n)²n^{-w}` and is bounded by the corresponding tail integral.
