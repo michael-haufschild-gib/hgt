@@ -34,6 +34,26 @@ theorem radialProlate_ode_of_prolateSLAction_eq
   field_simp [hc] at hx ⊢
   nlinarith
 
+/-- The singular radial endpoint fixes the derivative of every smooth prolate solution. -/
+theorem two_mul_deriv_one_eq_of_prolateSLAction_eq
+    {c chi : ℝ} {Phi : ℝ → ℝ}
+    (heig : prolateSLAction c Phi 1 = chi * Phi 1) :
+    2 * deriv Phi 1 = -(chi + c ^ 2) * Phi 1 := by
+  simp only [prolateSLAction] at heig
+  norm_num at heig ⊢
+  nlinarith
+
+/-- Endpoint relation in the radial sign convention `chi = -s c²`. -/
+theorem two_mul_deriv_one_eq_radial
+    {c chi : ℝ} (hc : c ≠ 0) {Phi : ℝ → ℝ}
+    (heig : prolateSLAction c Phi 1 = chi * Phi 1) :
+    2 * deriv Phi 1 =
+      (radialSeparationRatio c chi * c ^ 2 - c ^ 2) * Phi 1 := by
+  rw [two_mul_deriv_one_eq_of_prolateSLAction_eq heig]
+  dsimp [radialSeparationRatio]
+  field_simp [hc]
+  ring
+
 /-- Every live signed finite-Fourier mode supplies an exact smooth even global solution of the
 radial prolate equation at bandwidth `2πa²`.  No Dunster approximation or asymptotic hypothesis is
 used here. -/
@@ -49,6 +69,8 @@ theorem exists_global_even_radialProlate_of_signedMode
           prolateSLAction (2 * Real.pi * a ^ 2) Phi x = chi * Phi x) ∧
         s = radialSeparationRatio (2 * Real.pi * a ^ 2) chi ∧
         0 ≤ s ∧
+        2 * deriv Phi 1 =
+          (s * (2 * Real.pi * a ^ 2) ^ 2 - (2 * Real.pi * a ^ 2) ^ 2) * Phi 1 ∧
         (∀ x : ℝ,
           (x ^ 2 - 1) * deriv (deriv Phi) x + 2 * x * deriv Phi x
             - (s * (2 * Real.pi * a ^ 2) ^ 2
@@ -62,10 +84,11 @@ theorem exists_global_even_radialProlate_of_signedMode
   have hchi : chi ≤ 0 :=
     GaloisForLFunctions.RHTower.prolateSeparation_nonpos_of_global_joint
       (pow_ne_zero 2 hvalue) hsm hne hband heig
-  refine ⟨Phi, chi, radialSeparationRatio c chi, hsm, hne, heven, ?_, ?_, rfl, ?_, ?_⟩
+  refine ⟨Phi, chi, radialSeparationRatio c chi, hsm, hne, heven, ?_, ?_, rfl, ?_, ?_, ?_⟩
   · simpa [c] using hband
   · simpa [c] using heig
   · exact div_nonneg (neg_nonneg.mpr hchi) (sq_nonneg c)
+  · simpa [c] using two_mul_deriv_one_eq_radial hc (heig 1)
   · simpa [c] using radialProlate_ode_of_prolateSLAction_eq hc heig
 
 end RHTower

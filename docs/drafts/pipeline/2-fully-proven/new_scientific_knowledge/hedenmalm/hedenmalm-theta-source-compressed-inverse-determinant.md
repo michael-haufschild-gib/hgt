@@ -326,6 +326,8 @@ card.  All declarations are `#print axioms`-clean.
 | `(4)` | the pinned kernel slice `1_(y<=x) - p(x)` | `pinnedKernelSlice` |
 | `(5)` | inner slice energy `t(1-t)` | `integral_pinnedKernelSlice_sq` |
 | `(5)` | Hilbert--Schmidt energy `= M integral p(1-p)/k` | `integral_quantileSpeed_sq_slice`, `tailEnergyDensity` |
+| `(6)` | a divisor point is an eigenvalue: `B f_z = -z^(-1) f_z` | `sourceInverse_sourceModeF_eq_smul` |
+| `(6)` | an eigenvector forces a zero, for any nonzero source coefficient | `xiC_eq_zero_of_solution_const` |
 | `(7)` | reflection law `R B R = -B` for an even source | `sourceReflection`, `sourceFunctional_sourceReflection`, `sourceInverse_sourceReflection` |
 
 Corpus assets to use for the remaining items, rather than rebuilding them:
@@ -334,8 +336,10 @@ Corpus assets to use for the remaining items, rather than rebuilding them:
 `RHTower.isHilbertSchmidt_kernelOperator` (`RHTower/SoninTimeBandHilbertSchmidt.lean`), which
 turns an `L2` field of continuous functionals into an actual Hilbert--Schmidt operator.
 
-Still missing: the assembled Hilbert--Schmidt operator `(1)`, the point-spectrum equivalence and
-its **multiplicity clause** `(6)` (the Grushin reduction to `diag(I, Xi_C)`; this clause is what
+Both directions of the point-spectrum half of `(6)` are therefore available in explicit form.
+
+Still missing: the assembled Hilbert--Schmidt operator `(1)`, the **multiplicity clause** of
+`(6)` (the Grushin reduction to `diag(I, Xi_C)`; this clause is what
 `hedenmalm-prime-translation-rank-one-anomaly.md` cites for its Jordan length), the regularized
 determinant identity `(8)` --- no general `det_2` exists in the corpus or in mathlib, only the
 diagonal Fredholm product layer of `RHTower/ArithmeticDilationDeterminantZeros.lean` --- and the

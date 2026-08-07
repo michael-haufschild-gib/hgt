@@ -90,3 +90,24 @@ longer than the abscissa's reciprocal scale — which is the regime the mean-squ
 With the truncation error of the previous brick, the corpus's mean-square machinery now applies to a
 bounded multiplicative Dirichlet series. The remaining step of the successor task is the optimisation
 itself — feeding `integral_norm_dirPoly_halasz` the damped sup bound and choosing `V`.
+
+## Third brick: the mean-square estimate with the damped sup
+
+`RHTower/Sieve/HalaszMeanSquare.lean` (9081 jobs, exit 0, axiom-clean, wired):
+
+- `integral_norm_dirPoly_le_of_sup_on`, `integral_norm_dirPoly_halasz_on` — the corpus's mean-value bound
+  with the sup hypothesis **weakened to the range** `Ioc 0 T`. The original proof evaluates the sup only
+  inside the integral, so the global hypothesis was never needed; the restricted form is what a damped
+  bound can supply. (The `0 ≤ M` side condition also turns out to be unnecessary in the first form.)
+- `integral_norm_dirPoly_twisted_halasz` — **the mean-square input the no-go asked for**:
+
+  `∫₀^T ‖F_L‖ ≤ V·T + (damped + L^{1-σ}/(σ−1))·(T + 4L(1+log L))·∑|aₙ|² / V²`
+
+  where `damped = (1+1/(σ−1))e^{7/2+shift−δ²}` comes from the uniform distance bound and the truncation
+  error from the first brick. The sup that multiplies the level-set measure is now the *damped* size, not
+  the trivial `∑|aₙ| ≍ log L`, and `∑|aₙ|²` is `O(1)` uniformly in `L`.
+
+That completes the three bricks named as the successor task: truncation error, polynomial identification,
+and the mean-square estimate carrying the `e^{-δ²}` saving. What is still open is the optimisation over
+`V` and the parameter choice — the arithmetic that decides whether this route reaches `o(N)`, which the
+pointwise route provably cannot. No decay is claimed yet.

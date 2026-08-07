@@ -156,6 +156,42 @@ theorem prolateSeparation_nonpos_of_global_joint
     (bandClass_ne_zero_of_global_band_eigen hsm.continuous hlam hne hband)
     (fun x _ => heig x)
 
+/-- Exact Rayleigh identity for the radial separation ratio `-chi/c²`. -/
+theorem neg_separation_div_sq_mul_integral_sq_eq
+    {c chi : ℝ} (hc : c ≠ 0) {Phi : ℝ → ℝ}
+    (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
+    (heig : ∀ x ∈ Icc (-1 : ℝ) 1, prolateSLAction c Phi x = chi * Phi x) :
+    (-chi / c ^ 2) * (∫ x in (-1 : ℝ)..1, Phi x ^ 2) =
+      (∫ x in (-1 : ℝ)..1, (1 - x ^ 2) * (deriv Phi x) ^ 2) / c ^ 2
+        + ∫ x in (-1 : ℝ)..1, x ^ 2 * Phi x ^ 2 := by
+  have h1 : Differentiable ℝ Phi := (contDiff_infty_iff_deriv.mp hsm).1
+  have hd : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (deriv Phi) :=
+    (contDiff_infty_iff_deriv.mp hsm).2
+  have h2 : Differentiable ℝ (deriv Phi) := (contDiff_infty_iff_deriv.mp hd).1
+  have h2c : Continuous (deriv (deriv Phi)) :=
+    (contDiff_infty_iff_deriv.mp hd).2.continuous
+  have henergy := integral_mul_prolateSLAction_eq_neg_energy (c := c) h1 h2 h2c
+  have heigen : (∫ x in (-1 : ℝ)..1, Phi x * prolateSLAction c Phi x)
+      = chi * ∫ x in (-1 : ℝ)..1, Phi x ^ 2 := by
+    calc
+      (∫ x in (-1 : ℝ)..1, Phi x * prolateSLAction c Phi x)
+          = ∫ x in (-1 : ℝ)..1, chi * Phi x ^ 2 := by
+              refine intervalIntegral.integral_congr fun x hx => ?_
+              rw [uIcc_of_le (by norm_num : (-1 : ℝ) ≤ 1)] at hx
+              rw [heig x hx]
+              ring
+      _ = chi * ∫ x in (-1 : ℝ)..1, Phi x ^ 2 := by
+        rw [intervalIntegral.integral_const_mul]
+  have hpotential :
+      (∫ x in (-1 : ℝ)..1, c ^ 2 * x ^ 2 * Phi x ^ 2) =
+        c ^ 2 * ∫ x in (-1 : ℝ)..1, x ^ 2 * Phi x ^ 2 := by
+    rw [← intervalIntegral.integral_const_mul]
+    refine intervalIntegral.integral_congr fun x _ => ?_
+    ring
+  rw [heigen, hpotential] at henergy
+  field_simp [hc]
+  nlinarith
+
 end GaloisForLFunctions.RHTower
 
 end

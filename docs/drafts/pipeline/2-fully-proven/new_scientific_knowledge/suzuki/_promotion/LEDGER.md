@@ -552,3 +552,30 @@ The only fiddly step is `Re ⟪(r : ℝ) • x, y⟫ = r * Re ⟪x, y⟫` for a 
 product (`real_inner_smul_left` is for real spaces; the complex form needs `inner_smul_left` plus
 `Complex.conj_ofReal`), and then `HasDerivAt.mul` for the product `η · ‖f η‖²`.  `(10)` is the
 integral form; `(14)` follows because `|η|^{-1}` is not integrable at either end.
+
+### I.2 State of the `(9)` assembly
+
+Attempted and reverted twice; the tree is green and sorry-free.  The blocking step is small and
+specific — write it down before retrying:
+
+```text
+hval : (⟪(↑r) • f η + (↑c * I) • S (f η), f η⟫_ℂ).re = r * ‖f η‖²      for r : ℝ
+```
+
+The rewrite chain `inner_add_left, Complex.add_re, hcross, add_zero, inner_smul_left,
+Complex.conj_ofReal, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, hself` leaves a residual
+goal that neither `ring` nor `simp` closes.  Diagnose it by stating `hval` as a standalone
+`example` with the goal printed, rather than inside the larger proof where the error message is
+truncated.  Likely cause: `hself` rewrites one occurrence of `(⟪f η, f η⟫).re` but the `.im`
+factor introduced by `Complex.mul_re` is not syntactically `0 * _` after `Complex.ofReal_im`.
+
+Everything else in the assembly is verified to work:
+
+```text
+hsq   := hasDerivAt_normSq_path h                     ✓
+hid   := hasDerivAt_id η                              ✓
+hprod := hid.mul hsq                                  ✓  (value 1*‖f‖² + η*(2*(r*‖f‖²)))
+hzero : that value is 0, via `hcancel : η * (2 * (-(1/(2η)) * X)) = -X` by `field_simp`, then `ring`
+```
+
+So the whole theorem is one lemma away, and that lemma is a two-line complex-scalar computation.
