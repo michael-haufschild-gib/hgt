@@ -410,7 +410,7 @@ gives full jump Pick positivity and RH.
 
 Paper and Lean:
 
-- `../2-fully-proven/new_scientific_knowledge/suzuki-global-local-compound-bezoutian-weld.md`;
+- `../3-formalized/new_scientific_knowledge/suzuki/suzuki-global-local-compound-bezoutian-weld.md`;
 - `formal/GaloisForLFunctions/RHTower/SuzukiGlobalLocalCompoundBezoutianWeld.lean`.
 
 ## 2026-07-22 rooted midpoint Lorentz sharpening

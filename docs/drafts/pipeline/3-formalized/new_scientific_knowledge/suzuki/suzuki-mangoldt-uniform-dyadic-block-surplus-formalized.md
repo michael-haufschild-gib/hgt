@@ -2,7 +2,7 @@
 
 - **ID:** `suzuki-mangoldt-uniform-dyadic-block-surplus`
 - **Stage:** 3 -- formalized in Lean 4
-- **Paper proof:** `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-mangoldt-uniform-dyadic-block-surplus.md`
+- **Paper proof:** `./suzuki-mangoldt-uniform-dyadic-block-surplus.md`
 - **Lean modules:** `GaloisForLFunctions.HTGeometry.TiltedTentGeometricBracketMinimax`;
   `GaloisForLFunctions.RHTower.SuzukiMangoldtApexCrossPrimeBlock`
 - **Status:** unconditional

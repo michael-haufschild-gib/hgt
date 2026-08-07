@@ -1,5 +1,7 @@
 # Suzuki global-local compound Bezoutian weld
 
+- **Stage:** 3 — formalized in Lean 4
+- **Formalized companion:** `./suzuki-global-local-compound-bezoutian-weld-formalized.md`
 ## Status
 
 `[PROVED ON PAPER: THEOREMS A--C] [FORMALIZED] [CONJECTURE: GRAM OPEN CORE] [SOURCE-PURE] [NO RH PREMISE]`

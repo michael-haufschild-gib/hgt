@@ -6,7 +6,7 @@
 - **Status:** `[OPEN CORE CORRECTED] [SOURCE-PURE] [NO RH PREMISE]`
 - **Parent:** `suzuki-jump-kernel-loewner-growth.md`
 - **Algebraic precursor:**
-  `../2-fully-proven/new_scientific_knowledge/suzuki-global-local-compound-bezoutian-weld.md`
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-global-local-compound-bezoutian-weld.md`
 
 ## Actual corpus frontier
 
@@ -186,7 +186,7 @@ Only cancelled residual may be squared and passed cofinally.
   source, placing exact `d^2` Neumann debt in Robin current rather than raw Bianchi bulk.  Correct
   open core is `SUZUKI-MARKED-WEIL-ROBIN-CD`: factor marked sewing of these exact two channels,
   without splitting prime atoms or replacing signed Weil exterior by positive part.  Paper/Lean:
-  `../2-fully-proven/new_scientific_knowledge/suzuki-causal-weil-robin-green-identity.md`.
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-causal-weil-robin-green-identity.md`.
 - 2026-07-22 — formal audit completed: direct source check and targeted SOTA build `9448/9448`
   pass; all new declarations use only standard Lean axioms.  This closes source-coordinate
   uncertainty but not sign: sole frontier remains positive Green-Gram realization of marked
@@ -207,7 +207,7 @@ Only cancelled residual may be squared and passed cofinally.
   `SUZUKI-CAUSAL-ENTRY-SCHUR-WARD`: prove one complete mixed Robin + near-entry + universal-far +
   polar--Gamma compound kernel is a positive source Gram, paying exact `d^2` and holonomy Schur
   debt.  Any diagonal/direct-sum prime construction is formally impossible.  Paper/Lean:
-  `../2-fully-proven/new_scientific_knowledge/suzuki-affine-sewn-weil-robin-far-tail-factorization.md`.
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-affine-sewn-weil-robin-far-tail-factorization.md`.
 - 2026-07-22 — exact Gram equality requirement weakened.  Corpus fixed-width rectangular screw
   curvature proves RH from mere eventual lower boundedness on `a=log(n)/2`.  Therefore for any
   nonnegative explicit source energy `E_L(n)`, it is enough to lower-bound Ward defect

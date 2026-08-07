@@ -51,9 +51,7 @@ theorem tsum_shift_rpow_neg_le {σ : ℝ} (hσ : 1 < σ) :
     have h := integral_Ioi_rpow_of_lt (a := -σ) (by linarith : -σ < -1)
       (by norm_num : (0:ℝ) < 1)
     rw [show (((1 : ℕ) : ℝ)) = (1 : ℝ) by norm_num, h, Real.one_rpow]
-    have hneg : -σ + 1 = -(σ - 1) := by ring
-    rw [hneg]
-    ring
+    rw [show (-σ + 1) = -(σ - 1) by ring, neg_div, div_neg, neg_neg]
   have hmain := AntitoneOn.tsum_comp_add_le_integral 1 hanti hint hnn
   rw [hval] at hmain
   exact hmain
@@ -131,5 +129,38 @@ theorem primeAbscissaSum_le {σ : ℝ} (hσ : 1 < σ) :
   have habs := abs_le.mp hlog
   rw [primeAbscissaSum_eq_tsum_re]
   linarith [habs.1, habs.2]
+
+/-! ## The Euler bound with the trivial size made explicit -/
+
+section
+
+variable {f : ℕ → ℂ} {s : ℂ}
+
+/-- **The Halász input.**  For `Re s > 1` a bounded multiplicative Dirichlet series is at most its
+trivial size `1 + 1/(Re s − 1)` times `e^{−D²}`, where `D²` is its distance from the character at
+`s`.  At `Re s = 1 + 1/log x` the trivial size is `1 + log x`, so a distance exceeding
+`log log x` is what produces decay. -/
+theorem norm_tsum_twistedSummand_le_mul_exp_neg_dist
+    (hf1 : f 1 = 1) (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n)
+    (hbdd : ∀ n, ‖f n‖ ≤ 1) (hs : 1 < s.re) :
+    ‖∑' n : ℕ, twistedSummand f s n‖ ≤
+      (1 + 1 / (s.re - 1)) * Real.exp (7 / 2 - mulDistSqTsum f s) := by
+  have hpos : 0 < 1 + 1 / (s.re - 1) := by
+    have h1 : 0 < s.re - 1 := by linarith
+    positivity
+  have hP := primeAbscissaSum_le hs
+  have hlog : Real.exp (Real.log (1 + 1 / (s.re - 1)) + 1 - mulDistSqTsum f s + 5 / 2)
+      = (1 + 1 / (s.re - 1)) * Real.exp (7 / 2 - mulDistSqTsum f s) := by
+    rw [show Real.log (1 + 1 / (s.re - 1)) + 1 - mulDistSqTsum f s + 5 / 2
+        = Real.log (1 + 1 / (s.re - 1)) + (7 / 2 - mulDistSqTsum f s) by ring,
+      Real.exp_add, Real.exp_log hpos]
+  calc ‖∑' n : ℕ, twistedSummand f s n‖
+      ≤ Real.exp (primeAbscissaSum s.re - mulDistSqTsum f s + 5 / 2) :=
+        norm_tsum_twistedSummand_le_exp_sub_dist hf1 hmul hbdd hs
+    _ ≤ Real.exp (Real.log (1 + 1 / (s.re - 1)) + 1 - mulDistSqTsum f s + 5 / 2) :=
+        Real.exp_le_exp.mpr (by linarith)
+    _ = (1 + 1 / (s.re - 1)) * Real.exp (7 / 2 - mulDistSqTsum f s) := hlog
+
+end
 
 end RHTower.Sieve

@@ -5,7 +5,7 @@
 - **Parent:**
   `suzuki-positive-arch-mangoldt-quadrature-deficit.md`
 - **Positive survivor:**
-  `../2-fully-proven/new_scientific_knowledge/suzuki-mangoldt-apex-lock-rigidity.md`
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-mangoldt-apex-lock-rigidity.md`
 
 ## Killed conjecture
 

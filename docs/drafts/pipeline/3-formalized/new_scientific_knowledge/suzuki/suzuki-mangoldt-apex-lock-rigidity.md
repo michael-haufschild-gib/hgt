@@ -1,6 +1,7 @@
 # Suzuki Mangoldt apex-lock rigidity
 
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized in Lean 4
+- **Formalized companion:** `./suzuki-mangoldt-apex-lock-rigidity-formalized.md`
 - **Type:** source-specific rigidity / positive no-go survivor
 - **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
 - **Computation used:** no

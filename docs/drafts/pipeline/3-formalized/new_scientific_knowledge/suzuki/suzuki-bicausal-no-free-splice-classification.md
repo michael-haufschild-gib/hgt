@@ -1,7 +1,8 @@
 # Suzuki bicausal no-free-splice classification
 
 - **ID:** `suzuki-bicausal-no-free-splice-classification`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized in Lean 4
+- **Formalized companion:** `./suzuki-bicausal-no-free-splice-classification-formalized.md`
 - **Type:** UNIVERSAL TRANSPORT CLASSIFICATION / SHARP NO-GO SURVIVOR
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NOT RH]`
   `[APPLICATION NOVELTY UNVERIFIED]`

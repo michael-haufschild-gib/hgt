@@ -88,3 +88,40 @@ Every unit of distance from the character costs the series one factor of `e^{-1}
 size. At `σ = 1 + 1/log x` the trivial term is of order `log log x`, which is why a distance surplus
 above `log log x` is what produces decay — the mechanism the corpus's
 `MoebiusUniformFrequency`/`HalaszWindow` layer supplies on the distance side.
+
+## The trivial size, and the Halász input in closed form
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PrimeAbscissaSumBound.lean` (9022 jobs, exit 0,
+axiom-clean).
+
+The Euler bound is only as good as an upper bound for `P(σ) = ∑_p p^{-σ}`. Bounding `P` by the whole
+`ζ`-sum would give `1/(σ−1) = log x` and make the estimate vacuous; the correct size is logarithmic,
+and the `ζ`-Euler product supplies it:
+
+- `antitoneOn_rpow_neg`, `tsum_shift_rpow_neg_le` — the `p`-series value bound
+  `∑_{n ≥ 2} n^{-σ} ≤ 1/(σ−1)`, via mathlib's integral test
+  (`AntitoneOn.tsum_comp_add_le_integral`) and `integral_Ioi_rpow_of_lt`.
+- `zetaHalfPlaneBound_le`, `norm_riemannZeta_real_le` — hence `ζ(σ) ≤ 1 + 1/(σ−1)`, reusing the
+  corpus's `HTGeometry` half-plane bound rather than reproving the `ζ`-series estimate.
+- `primeAbscissaSum_eq_tsum_re`, `tsum_primes_norm_cpow_sq_le` — the real-abscissa prime sum written as
+  the corpus's `∑'_p Re(p^{-s})`, with the prime-inverse-square defect bounded by the module's own
+  `tsum_primes_rpow_two_le`.
+- `primeAbscissaSum_le` — **`P(σ) ≤ log(1 + 1/(σ−1)) + 1`**, from
+  `ZetaLogPrimeSum.abs_log_norm_riemannZeta_sub_tsum_re_le` (`|log‖ζ‖ − ∑_p Re(p^{-s})| ≤ ∑_p ‖p^{-s}‖²`).
+  At `σ = 1 + 1/log x` this is `log log x + O(1)`.
+- `norm_tsum_twistedSummand_le_mul_exp_neg_dist` — **the Halász input in closed form**:
+
+  `‖∑_n f(n) n^{-s}‖ ≤ (1 + 1/(Re s − 1)) · exp(7/2 − D²(f,s))`.
+
+The series is at most its trivial size times `e^{-D²}`. Every constant is explicit and absolute, and
+nothing about `f` beyond `|f| ≤ 1` and multiplicativity on coprime arguments is used.
+
+## Remaining on this path
+
+1. **Bridge to the corpus's finite distance.** `MultiplicativeDistance.mulDistSq f t P` is weighted by
+   `1/p` at `σ = 1`; `mulDistSqTsum` is weighted by `p^{-σ}`. `PrimeSigmaShift.abs_sum_weight_shift_le`
+   is exactly the conversion (free at `σ = 1 + 1/log z`), and needs the polar split
+   `p^{-s} = p^{-σ}·p^{-it}` (`Complex.cpow_add` + `Complex.ofReal_cpow`, both now used in this module).
+2. **Integrate over `t`.** With the closed form above, Halász's mean-value theorem needs the measure of
+   the set where `D²` is small — which is what `HalaszWindow`/`HalaszUniqueClose` control — against the
+   Perron kernel of `SmoothWeightPerron`.

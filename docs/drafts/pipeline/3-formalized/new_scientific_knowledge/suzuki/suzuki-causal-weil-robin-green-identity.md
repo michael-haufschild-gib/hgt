@@ -1,7 +1,8 @@
 # Suzuki causal Weil--Robin Green identity
 
 - **ID:** `suzuki-causal-weil-robin-green-identity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
+- **Formalized companion:** `./suzuki-causal-weil-robin-green-identity-formalized.md`
 - **Type:** RH-FRONTIER REPRESENTATION THEOREM / POSITIVE SURVIVOR
 - **Scientific status:** `[PAPER-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`

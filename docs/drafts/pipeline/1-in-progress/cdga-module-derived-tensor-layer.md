@@ -807,3 +807,57 @@ What remains is to check that the relators correspond under each of the two exch
 kind of computation as `tensorProdRight_relTensorRelator`, which was short once the single-bidegree
 lemmas were available.  After that `hcell` for `⊗_A` follows exactly as
 `tensorMapLeft_constCell_isQuasiIsoFull` did for `⊗_R`, and the last row of the parity table closes.
+
+## The relator correspondence under the shift
+
+`CDGATensorShift.lean` gained **`tensorShiftMap_tensorSingle`** — the shift comparison sends a
+single-bidegree element to a single-bidegree element, one degree lower — and
+`CDGARelTensorShift.lean` uses it for
+
+* **`tensorShiftMap_relTensorRelator`** — a relator of a tensor product with a shifted factor is a
+  relator, one degree lower.  The shift moves the cell argument but changes neither the sign nor the
+  shape, because the action on a shift *is* the action read off above the shift
+  (`shiftEvalAt_shiftAct`), and that lemma is the only input beyond the single-bidegree transport.
+
+This is the first of the two relator correspondences the free-cell computation needs, and it
+confirms the pattern: once the single-bidegree transport lemma exists, the relator statement is
+three rewrites.
+
+Axioms: `propext, Quot.sound` for the transport, `propext, Classical.choice, Quot.sound` for the
+relator statement.
+
+## Next
+
+The second correspondence, for `tensorConstExchange`: a relator of `M ⊗ (N ⊗ V)` is the image of a
+relator of `M ⊗ N` tensored with `V`.  Then the two correspondences give stability of the relations
+under both exchanges, the exchanges descend to the quotients, and — composed with `relUnitorHom` —
+the free-cell computation for `⊗_A` follows, discharging `hcell` there.
+
+## The relator correspondence under the constant exchange
+
+`CDGARelTensorConst.lean` — the second of the two correspondences.
+
+* `assoc_tmul_right` — associativity on an element tensored with a fixed vector is adjoining that
+  vector; proved by induction on the element.
+* `tensorConstExchange_tmul`, **`tensorConstExchange_tensorSingle`** — the exchange on a pure tensor
+  and on a single-bidegree element.
+* **`tensorConstExchange_relTensorRelator`** — a relator tensored with a coefficient is a relator
+  with that coefficient adjoined to the cell argument: nothing else changes, because the action on
+  `N ⊗ V` acts on `N` and carries `V` along, which is exactly what the exchange does.
+
+Both relator correspondences the free-cell computation needs are now proved, and the pattern held
+again: single-bidegree transport first, relator statement in three rewrites.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+## Next
+
+With the two correspondences the relations are stable under each exchange, so each exchange descends
+to the quotient — the descent is `Submodule.liftQ` plus the span induction already written twice in
+this layer (`relTensorRel_tensorSigmaR`, `relTensorProdRightMap_ker`).  Composing the two descents
+with `relUnitorHom` gives
+
+  `relTensorModule P (freeCellModule A V k) ≅ shiftModule (tensorConstModule P V) k`,
+
+and then `hcell` for `⊗_A` follows exactly as `tensorMapLeft_constCell_isQuasiIsoFull` did for
+`⊗_R`, closing the last row of the parity table.

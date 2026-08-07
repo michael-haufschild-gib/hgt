@@ -1,5 +1,7 @@
 # Suzuki--Mangoldt macroscopic prime-block surplus
 
+- **Stage:** 3 — formalized in Lean 4
+- **Formalized companion:** `./suzuki-mangoldt-macroscopic-prime-block-surplus-formalized.md`
 - **Status:** Stage 2 — dependency-closed paper proof
 - **Labels:** `[NEW]` `[SUZUKI]` `[SOURCE-SPECIFIC]` `[UNCONDITIONAL]`
 - **Stage 1 card:** `docs/drafts/pipeline/1-in-progress/suzuki-mangoldt-macroscopic-prime-block-surplus.md`

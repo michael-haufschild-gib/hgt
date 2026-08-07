@@ -2,7 +2,7 @@
 
 - **Status:** Stage 3 -- formalized in Lean 4
 - **Labels:** `[NEW]` `[SUZUKI]` `[SOURCE-SPECIFIC]` `[UNCONDITIONAL]`
-- **Stage 2 proof:** `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-mangoldt-macroscopic-prime-block-surplus.md`
+- **Stage 2 proof:** `./suzuki-mangoldt-macroscopic-prime-block-surplus.md`
 - **Universal module:** `formal/GaloisForLFunctions/HTGeometry/TiltedTentRightFlank.lean`
 - **Suzuki module:** `formal/GaloisForLFunctions/RHTower/SuzukiMangoldtMacroscopicPrimeBlock.lean`
 

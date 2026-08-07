@@ -1,7 +1,8 @@
 # Suzuki affine-sewn Weil--Robin far-tail factorization
 
 - **ID:** `suzuki-affine-sewn-weil-robin-far-tail-factorization`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
+- **Formalized companion:** `./suzuki-affine-sewn-weil-robin-far-tail-factorization-formalized.md`
 - **Type:** exact source theorem / obstruction / corrected RH frontier
 - **Status:** `[PAPER-PROVED] [UNCONDITIONAL] [SOURCE-SPECIFIC] [NOT RH]`
 - **Parents:** `suzuki-causal-weil-robin-green-identity.md`,

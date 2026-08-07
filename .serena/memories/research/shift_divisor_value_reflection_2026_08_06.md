@@ -567,3 +567,27 @@ needed `have ht : 0 < t := lt_of_lt_of_le zero_lt_one ht1` re-introduced inside 
 
 Deliberately NOT done: `XiShiftPrimeExposure.logDeriv_archFactor_closed` (drop `h0` from `0 < re s`)
 — 18 call sites and it unlocks nothing; cosmetic only.
+
+## Premise-discharge seam is worked out
+
+Second pass over the arithmetic pairs (`2 ≤ n ⟹ 1 ≤ n / 0 < n`, `1 ≤ n ⟹ n ≠ 0`,
+`0 < x ⟹ x ≠ 0 / 0 ≤ x`, `1 < x ⟹ 0 < x / 1 ≤ x`) found only two more, both now discharged:
+- `GammaCoPoissonSoninQuadrantCharge.log_norm_soninLadderCharacter_eq_zero_iff` — dropped `0 < r`.
+- `HTGeometry.lowerDegree_max_ge_ratio_factor` (namespace `GaloisForLFunctions`, NOT
+  `GaloisForLFunctions.HTGeometry`) — dropped `0 < D`; 2 call sites in DATaylorLogRatioResonance and
+  HierarchicalResonanceBreaking.
+
+Script bug worth remembering: sweep2.py first reported "total 0" because of a stray
+`im.group(1) not in head[:m.start(3)]` guard referencing a group of the wrong regex. A zero result
+right after a comparable sweep found 7 is a signal to re-check the script, not to conclude the seam
+is clean.
+
+Dead-hypothesis sweep (binder name appearing nowhere in conclusion or body) is NOT actionable:
+3934 raw hits, dominated by false positives — the binder regex matches type ascriptions like
+`(1 : ℝ)` and `(volume)`, and context-scavenging tactics (linarith/omega/positivity/simp_all) use
+hypotheses without naming them. Reliable detection would need removing each binder and building.
+Do not chase this without a real Lean-level unused-hypothesis check.
+
+Status: the mechanically detectable redundant-premise patterns in RHTower and HTGeometry are now
+closed. Remaining known-but-declined: `XiShiftPrimeExposure.logDeriv_archFactor_closed` (18 call
+sites, cosmetic).

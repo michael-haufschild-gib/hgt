@@ -33,7 +33,7 @@ displacement commutator through new restricted-Weil/Robin/Gamma structure, not c
 two-flank geometry or overlap bookkeeping.
 
 Paper proof:
-`docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-bicausal-no-free-splice-classification.md`.
+`docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki/suzuki-bicausal-no-free-splice-classification.md`.
 
 ## New insight
 

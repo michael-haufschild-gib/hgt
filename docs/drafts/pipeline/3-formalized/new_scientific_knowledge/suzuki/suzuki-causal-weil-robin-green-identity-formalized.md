@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/suzuki-causal-weil-robin-green-identity.md`
+  `./suzuki-causal-weil-robin-green-identity.md`
 - **Lean module:**
   `formal/GaloisForLFunctions/RHTower/SuzukiCausalWeilRobinGreenIdentity.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`

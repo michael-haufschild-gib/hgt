@@ -51,11 +51,11 @@ renormalization, finite border, and “positive remainder” outside square cann
 ## Paper and Lean status
 
 - Paper proof:
-  `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-critical-rooted-bianchi-cofinal-no-go.md`.
+  `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki/suzuki-critical-rooted-bianchi-cofinal-no-go.md`.
 - Lean proof:
   `formal/GaloisForLFunctions/RHTower/SuzukiCriticalRootedBianchiCofinalNoGo.lean`.
 - Formal certificate:
-  `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki-critical-rooted-bianchi-cofinal-no-go.md`.
+  `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki/suzuki-critical-rooted-bianchi-cofinal-no-go-formalized.md`.
 
 `NO POSITIVE SALVAGE FOUND` does not apply: finite-aperture cancel-before-limit survivor is exact
 and strictly stronger architecturally.

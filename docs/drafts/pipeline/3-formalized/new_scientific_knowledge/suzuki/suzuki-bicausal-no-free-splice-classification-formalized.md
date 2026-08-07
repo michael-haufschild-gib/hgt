@@ -4,7 +4,7 @@
 - **Stage:** 3 — formalized in Lean 4
 - **Status:** `[LEAN-PROVED] [UNCONDITIONAL] [NO RH PREMISE] [NOT RH]`
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/suzuki-bicausal-no-free-splice-classification.md`
+  `./suzuki-bicausal-no-free-splice-classification.md`
 - **Formal module:**
   `formal/GaloisForLFunctions/RHTower/SuzukiBicausalNoFreeSplice.lean`
 

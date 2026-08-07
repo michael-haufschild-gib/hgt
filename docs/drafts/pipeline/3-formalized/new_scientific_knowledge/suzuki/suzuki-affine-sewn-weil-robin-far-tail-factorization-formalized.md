@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/suzuki-affine-sewn-weil-robin-far-tail-factorization.md`
+  `./suzuki-affine-sewn-weil-robin-far-tail-factorization.md`
 - **Lean module:**
   `formal/GaloisForLFunctions/RHTower/SuzukiAffineSewnWeilRobinFarTailFactorization.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`

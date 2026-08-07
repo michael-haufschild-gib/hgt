@@ -1,6 +1,7 @@
 # Suzuki Mangoldt log-Haar bi-causal transport
 
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized in Lean 4
+- **Formalized companion:** `./suzuki-mangoldt-log-haar-bicausal-transport-formalized.md`
 - **Type:** positive transport / frontier localization
 - **Status:** `[PROVED HERE] [SOURCE-SPECIFIC] [NOVELTY NOT EXTERNALLY CERTIFIED]`
 - **Computation used:** no

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.CDGATensor
+import GaloisForLFunctions.HTGeometry.CDGATensorSingle
 import GaloisForLFunctions.HTGeometry.CDGAShiftQuasiIso
 
 /-!
@@ -140,6 +140,40 @@ theorem tensorShiftMap_surjective (k n : ℕ) :
         TensorProduct.map_id]
     exact congrArg (fun L => L (g ⟨n - k, hnk⟩ ⟨(a, δ), hδ⟩)) hcomp
   exact gen (γ + k - k) (by omega) (by omega) (by omega)
+
+/-- **The comparison sends a single-bidegree element to a single-bidegree element.** -/
+theorem tensorShiftMap_tensorSingle (k n : ℕ) {a γ : ℕ}
+    (h : (a, γ + k).1 + (a, γ + k).2 = n)
+    (z : TensorProduct R (M a) (ShiftCarrier N k (γ + k)))
+    (r : {a' : ℕ // a' + k = n}) :
+    tensorShiftMap (R := R) (M := M) (N := N) k n
+        (tensorSingle (N := ShiftCarrier N k) ⟨(a, γ + k), h⟩ z) r
+      = tensorSingle (N := N)
+        (⟨(a, γ), by have := r.2; omega⟩ : {ab : ℕ × ℕ // ab.1 + ab.2 = r.1})
+        (TensorProduct.map LinearMap.id
+          ((shiftEvalAt (R := R) (M := N) k γ (γ + k) rfl :
+            ShiftCarrier N k (γ + k) →ₗ[R] N γ)) z) := by
+  funext p'
+  obtain ⟨⟨a', γ'⟩, hp'⟩ := p'
+  have hr := r.2
+  have hidx : (a', γ' + k).1 + (a', γ' + k).2 = n := by omega
+  have hrγ : (a, γ).1 + (a, γ).2 = r.1 := by omega
+  show TensorProduct.map LinearMap.id
+      ((shiftEvalAt (R := R) (M := N) k γ' (γ' + k) rfl :
+        ShiftCarrier N k (γ' + k) →ₗ[R] N γ'))
+      (tensorSingle (N := ShiftCarrier N k) ⟨(a, γ + k), h⟩ z ⟨(a', γ' + k), hidx⟩)
+    = tensorSingle (N := N) ⟨(a, γ), hrγ⟩
+      (TensorProduct.map LinearMap.id
+        ((shiftEvalAt (R := R) (M := N) k γ (γ + k) rfl :
+          ShiftCarrier N k (γ + k) →ₗ[R] N γ)) z) ⟨(a', γ'), hp'⟩
+  by_cases hc : a' = a ∧ γ' = γ
+  · obtain ⟨rfl, rfl⟩ := hc
+    rw [tensorSingle_same, tensorSingle_same]
+  · rw [tensorSingle_ne _ (by
+      rw [Ne, tensorIndex_eq_iff]
+      omega), map_zero, tensorSingle_ne _ (by
+      rw [Ne, tensorIndex_eq_iff]
+      omega)]
 
 theorem tensorShiftMap_bijective (k n : ℕ) :
     Function.Bijective (tensorShiftMap (R := R) (M := M) (N := N) k n) :=

@@ -6,7 +6,7 @@
 
 ## Paper source
 
-`docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-critical-rooted-bianchi-cofinal-no-go.md`
+`./suzuki-critical-rooted-bianchi-cofinal-no-go.md`
 
 ## Lean source
 

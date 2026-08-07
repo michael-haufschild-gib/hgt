@@ -6,7 +6,7 @@
 
 ## Paper source
 
-`docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-global-local-compound-bezoutian-weld.md`
+`./suzuki-global-local-compound-bezoutian-weld.md`
 
 ## Lean source
 

@@ -5,7 +5,7 @@
 - **Imported by:** `GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026`
 - **Status:** `[LEAN-PROVED] [AXIOM-CLEAN] [NOVELTY UNVERIFIED]`
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/suzuki-mangoldt-apex-lock-rigidity.md`
+  `./suzuki-mangoldt-apex-lock-rigidity.md`
 
 ## Formal theorem surface
 

@@ -1,7 +1,8 @@
 # Suzuki coherent response vanishing-gain law
 
 - **ID:** `suzuki-coherent-response-gain-no-go`
-- **Stage:** 2 — fully proved
+- **Stage:** 3 — formalized in Lean 4
+- **Formalized companion:** `./suzuki-coherent-response-gain-no-go-formalized.md`
 - **Type:** SOURCE-SPECIFIC NO-GO / SHARP BOUNDARY LAW
 - **Scientific status:** `[PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[EXTERNAL NOVELTY UNVERIFIED] [NOT AN RH PROOF]`

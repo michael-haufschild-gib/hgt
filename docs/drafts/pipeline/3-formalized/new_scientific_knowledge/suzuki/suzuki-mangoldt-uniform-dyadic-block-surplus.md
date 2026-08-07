@@ -1,7 +1,8 @@
 # Sharp geometric-bracket minimax and Suzuki--Mangoldt absolute block-surplus law
 
 - **ID:** `suzuki-mangoldt-uniform-dyadic-block-surplus`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 — formalized in Lean 4
+- **Formalized companion:** `./suzuki-mangoldt-uniform-dyadic-block-surplus-formalized.md`
 - **Status:** unconditional; Lean formalization completed in the paired Stage 3 card
 - **Novelty:** corpus-new exact universal law and sharp Suzuki specialization; external priority not certified
 - **Scope:** source side of `SUZUKI-APEX-BLOCK-TRANSPORT`

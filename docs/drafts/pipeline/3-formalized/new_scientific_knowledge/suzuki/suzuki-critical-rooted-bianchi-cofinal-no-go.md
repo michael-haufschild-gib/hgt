@@ -1,7 +1,8 @@
 # Suzuki critical rooted Bianchi cofinal no-go
 
 - **ID:** `suzuki-critical-rooted-bianchi-cofinal-no-go`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized in Lean 4
+- **Formalized companion:** `./suzuki-critical-rooted-bianchi-cofinal-no-go-formalized.md`
 - **Type:** hostile audit of `SUZUKI-ROOTED-MIDPOINT-COMPOUND-GRAM`
 - **Status:** `[PAPER-PROVED] [SOURCE-PURE] [NO RH PREMISE] [NOVELTY UNVERIFIED]`
 - **Parent:** `suzuki-rooted-midpoint-compound-gram.md`
