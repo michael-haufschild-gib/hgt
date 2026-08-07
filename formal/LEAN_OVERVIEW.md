@@ -41,7 +41,7 @@ Use this as the quick map before opening large proof files.
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
 | 6316 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularDivision/StructuredCircuit.lean` |
 | 6194 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Decomposition.lean` |
-| 6024 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 6026 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 5769 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 5058 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 4763 | `formal/GaloisForLFunctions/HTGeometry/GaussianTorsionLanguageTailLock.lean` |
