@@ -703,4 +703,393 @@ theorem logDirichlet_mollify {ρ F : ℝ → ℝ} (hρ : Continuous ρ) (hF : Co
   rw [← hY, hlin, hpos]
   ring
 
+/-! ## The zero extension and the primitive
+
+Section DD of the promotion ledger records that the mollified-primitive identity must be stated for
+the *full* primitive of the zero extension, not the half-line primitive of the profile: the
+half-line version is false for a two-sided mollifier because the lower limit of integration is
+pinned at the origin.
+
+The bridge below is what makes the reformulation usable: on the nonnegative ray the full primitive
+of the zero extension *is* the half-line primitive.
+-/
+
+open MeasureTheory Set in
+/-- The full primitive of the zero extension collapses to an integral over the positive part.  The
+negative part contributes nothing, and the origin is a null set. -/
+theorem integral_Iic_zeroExtend (F : ℝ → ℝ) (L : ℝ) :
+    (∫ x in Iic L, zeroExtend F x) = ∫ x in Ioc (0:ℝ) L, F x := by
+  have hsub : Ioc (0:ℝ) L ⊆ Iic L := fun x hx => mem_Iic.mpr hx.2
+  have hdiff : ∀ᵐ x : ℝ, x ∈ Iic L \ Ioc (0:ℝ) L → zeroExtend F x = 0 := by
+    have hne : ∀ᵐ x : ℝ, x ≠ 0 := by
+      rw [MeasureTheory.ae_iff]; simp
+    filter_upwards [hne] with x hx hmem
+    simp only [Set.mem_sdiff, mem_Iic, mem_Ioc, not_and] at hmem
+    have hx0 : x ≤ 0 := by
+      by_contra hc
+      exact absurd hmem.1 (hmem.2 (not_le.mp hc))
+    unfold zeroExtend
+    rw [if_neg (by cases lt_or_eq_of_le hx0 with | inl h => linarith | inr h => exact absurd h hx)]
+  rw [setIntegral_eq_of_subset_of_ae_sdiff_eq_zero measurableSet_Iic.nullMeasurableSet hsub hdiff]
+  refine setIntegral_congr_fun measurableSet_Ioc fun x hx => ?_
+  unfold zeroExtend
+  rw [if_pos hx.1.le]
+
+
+open MeasureTheory Set in
+/-- **The bridge.**  On the nonnegative ray the full primitive of the zero extension is the
+half-line primitive of the profile. -/
+theorem integral_Iic_zeroExtend_eq_halfLinePrimitive {F : ℝ → ℝ} {L : ℝ} (hL : 0 ≤ L) :
+    (∫ x in Iic L, zeroExtend F x) = halfLinePrimitive F L := by
+  rw [integral_Iic_zeroExtend F L]
+  unfold halfLinePrimitive
+  rw [intervalIntegral.integral_of_le hL]
+
+open MeasureTheory Set in
+/-- **Translating a lower-unbounded window.**  `∫_{Iic L} f(x−t) dx = ∫_{Iic (L−t)} f`.  This is the
+step that fails for `Ioc 0 L` — the lower limit `−∞` is fixed by translation, the lower limit `0` is
+not — and it is why `(16)` must be stated for the full primitive of the zero extension. -/
+theorem setIntegral_Iic_sub_right (f : ℝ → ℝ) (L t : ℝ) :
+    (∫ x in Iic L, f (x - t)) = ∫ u in Iic (L - t), f u := by
+  have h := MeasureTheory.integral_indicator (μ := volume)
+    (f := fun x => f (x - t)) (s := Iic L) measurableSet_Iic
+  have h2 := MeasureTheory.integral_indicator (μ := volume)
+    (f := f) (s := Iic (L - t)) measurableSet_Iic
+  rw [← h, ← h2, ← MeasureTheory.integral_sub_right_eq_self
+    (fun x => Set.indicator (Iic (L - t)) f x) t]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show (Iic L).indicator (fun y => f (y - t)) x = (Iic (L - t)).indicator f (x - t)
+  by_cases hx : x ∈ Iic L
+  · rw [Set.indicator_of_mem hx, Set.indicator_of_mem (by simpa using (mem_Iic.mp hx))]
+  · rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem (by simpa using hx)]
+
+open MeasureTheory Set in
+/-- **Truncating a lower-unbounded window at the support.**  A function vanishing below `c`
+integrates over `Iic L` exactly as over `Icc c L` — a *bounded* window, where Fubini applies.  This
+is the step that makes `(16)` provable despite the profile not being integrable. -/
+theorem setIntegral_Iic_eq_Icc_of_vanishing {g : ℝ → ℝ} (c L : ℝ)
+    (hzero : ∀ x, x < c → g x = 0) :
+    (∫ x in Iic L, g x) = ∫ x in Icc c L, g x := by
+  have hsub : Icc c L ⊆ Iic L := fun x hx => mem_Iic.mpr hx.2
+  refine setIntegral_eq_of_subset_of_ae_sdiff_eq_zero measurableSet_Iic.nullMeasurableSet hsub ?_
+  filter_upwards with x hx
+  simp only [Set.mem_sdiff, mem_Iic, mem_Icc, not_and] at hx
+  exact hzero x (by by_contra hcon; exact absurd hx.1 (hx.2 (not_lt.mp hcon)))
+
+open MeasureTheory Set Function in
+/-- **The Fubini interchange on a bounded window.**  With the outer window bounded and `ρ`
+compactly supported, the product integrand is dominated by `M ‖ρ(t)‖`, which is integrable on the
+product because the restricted measure is finite.  This is step 2 of `(16)`. -/
+theorem integral_mollify_swap {ρ f : ℝ → ℝ} {c L M : ℝ}
+    (hρ : Continuous ρ) (hcρ : HasCompactSupport ρ)
+    (hf : Measurable f) (hfb : ∀ x, |f x| ≤ M) :
+    (∫ t, ρ t * ∫ x in Icc c L, f (x - t))
+      = ∫ x in Icc c L, ∫ t, ρ t * f (x - t) := by
+  have hMnn : 0 ≤ M := le_trans (abs_nonneg (f 0)) (hfb 0)
+  have hρint : Integrable ρ := hρ.integrable_of_hasCompactSupport hcρ
+  have hfin : IsFiniteMeasure (volume.restrict (Icc c L)) := by
+    constructor
+    simp
+  have hmeas : AEStronglyMeasurable (uncurry fun t x => ρ t * f (x - t))
+      ((volume : Measure ℝ).prod (volume.restrict (Icc c L))) := by
+    refine Measurable.aestronglyMeasurable ?_
+    exact (hρ.measurable.comp measurable_fst).mul
+      (hf.comp (measurable_snd.sub measurable_fst))
+  have hdom : Integrable (fun p : ℝ × ℝ => M * ‖ρ p.1‖)
+      ((volume : Measure ℝ).prod (volume.restrict (Icc c L))) :=
+    Integrable.comp_fst (hρint.norm.const_mul M) (volume.restrict (Icc c L))
+  have hint : Integrable (uncurry fun t x => ρ t * f (x - t))
+      ((volume : Measure ℝ).prod (volume.restrict (Icc c L))) := by
+    refine hdom.mono' hmeas ?_
+    filter_upwards with p
+    show ‖ρ p.1 * f (p.2 - p.1)‖ ≤ M * ‖ρ p.1‖
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, mul_comm M]
+    exact mul_le_mul_of_nonneg_left (hfb _) (abs_nonneg _)
+  rw [← MeasureTheory.integral_integral_swap hint]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+  exact (MeasureTheory.integral_const_mul (ρ t) _).symm
+
+open MeasureTheory in
+/-- **The mollification inherits a shifted support.**  If the profile vanishes below `0` and the
+mollifier is supported in `[−ε, ε]`, the mollification vanishes below `−ε`.  This is what makes the
+truncation constant of `(16)` uniform in `t`. -/
+theorem mollify_eq_zero_of_lt {ρ f : ℝ → ℝ} {ε x : ℝ}
+    (hsupp : ∀ t, ε < |t| → ρ t = 0) (hfz : ∀ y, y < 0 → f y = 0) (hx : x < -ε) :
+    mollify ρ f x = 0 := by
+  unfold mollify
+  refine integral_eq_zero_of_ae (Filter.Eventually.of_forall fun t => ?_)
+  show ρ t * f (x - t) = 0
+  by_cases ht : ε < |t|
+  · rw [hsupp t ht, zero_mul]
+  · have ht' : |t| ≤ ε := not_lt.mp ht
+    have hlt : x - t < 0 := by
+      have h := abs_le.mp ht'
+      linarith [h.1]
+    rw [hfz _ hlt, mul_zero]
+
+/-! ## `(16)`: the primitive commutes with mollification
+
+Stated for the *full* primitive of a profile vanishing on the negatives — the form in which it is
+true.  The proof truncates both sides to a bounded window (uniform in the shift because the
+mollifier has bounded support), applies Fubini there, and translates the window back.
+-/
+
+open MeasureTheory Set in
+/-- **The card's `(16)`.**  `ρ * Y_f = Y_{ρ*f}` for the full primitive of a profile supported in
+`[0,∞)`. -/
+theorem mollify_fullPrimitive {ρ f : ℝ → ℝ} {ε M : ℝ}
+    (hρ : Continuous ρ) (hcρ : HasCompactSupport ρ)
+    (hsupp : ∀ t, ε < |t| → ρ t = 0)
+    (hf : Measurable f) (hfb : ∀ x, |f x| ≤ M) (hfz : ∀ y, y < 0 → f y = 0) (L₀ : ℝ) :
+    mollify ρ (fun L => ∫ x in Iic L, f x) L₀ = ∫ x in Iic L₀, mollify ρ f x := by
+  have hRHS : (∫ x in Iic L₀, mollify ρ f x) = ∫ x in Icc (-ε) L₀, mollify ρ f x :=
+    setIntegral_Iic_eq_Icc_of_vanishing (-ε) L₀
+      (fun x hx => mollify_eq_zero_of_lt hsupp hfz hx)
+  have hswap : (∫ x in Icc (-ε) L₀, mollify ρ f x)
+      = ∫ t, ρ t * ∫ x in Icc (-ε) L₀, f (x - t) :=
+    (integral_mollify_swap hρ hcρ hf hfb).symm
+  have hun : (∫ t, ρ t * ∫ x in Icc (-ε) L₀, f (x - t))
+      = ∫ t, ρ t * ∫ x in Iic L₀, f (x - t) := by
+    refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+    show ρ t * (∫ x in Icc (-ε) L₀, f (x - t)) = ρ t * ∫ x in Iic L₀, f (x - t)
+    by_cases ht : ε < |t|
+    · rw [hsupp t ht, zero_mul, zero_mul]
+    · have ht' : |t| ≤ ε := not_lt.mp ht
+      have hlow : ∀ x, x < -ε → f (x - t) = 0 := by
+        intro x hx
+        refine hfz _ ?_
+        have h := abs_le.mp ht'
+        linarith [h.1]
+      rw [setIntegral_Iic_eq_Icc_of_vanishing (-ε) L₀ hlow]
+  have halign : (∫ t, ρ t * ∫ x in Iic L₀, f (x - t))
+      = ∫ t, ρ t * ∫ x in Iic (L₀ - t), f x := by
+    refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+    show ρ t * (∫ x in Iic L₀, f (x - t)) = ρ t * ∫ x in Iic (L₀ - t), f x
+    rw [setIntegral_Iic_sub_right f L₀ t]
+  rw [hRHS, hswap, hun, halign]
+  rfl
+
+/-! ## The full-primitive form of the operator
+
+Everything that gets mollified must be phrased with the primitive from `−∞`: the half-line
+primitive does not commute with translation, and the mollification of a profile supported in
+`[0,∞)` is supported only in `[−ε,∞)`, so no range restriction repairs it.  The conversion to the
+half-line primitive happens once, at the end, on the *unmollified* profile where `L ≥ 0` makes the
+two agree.
+-/
+
+open MeasureTheory Set in
+/-- The primitive from `−∞`, the form used throughout the mollification passage. -/
+noncomputable def fullPrimitive (f : ℝ → ℝ) (L : ℝ) : ℝ := ∫ x in Iic L, f x
+
+/-- The logarithmic Dirichlet operator built on the full primitive. -/
+noncomputable def fullLogDirichlet (f : ℝ → ℝ) (L : ℝ) : ℝ :=
+  2 * L * f L - fullPrimitive f L
+
+theorem fullPrimitive_eq_halfLinePrimitive {F : ℝ → ℝ} {L : ℝ} (hL : 0 ≤ L) :
+    fullPrimitive (zeroExtend F) L = halfLinePrimitive F L :=
+  integral_Iic_zeroExtend_eq_halfLinePrimitive hL
+
+theorem mollify_fullPrimitive_eq {ρ f : ℝ → ℝ} {ε M : ℝ}
+    (hρ : Continuous ρ) (hcρ : HasCompactSupport ρ)
+    (hsupp : ∀ t, ε < |t| → ρ t = 0)
+    (hf : Measurable f) (hfb : ∀ x, |f x| ≤ M) (hfz : ∀ y, y < 0 → f y = 0) (L : ℝ) :
+    mollify ρ (fullPrimitive f) L = fullPrimitive (mollify ρ f) L :=
+  mollify_fullPrimitive hρ hcρ hsupp hf hfb hfz L
+
+open MeasureTheory Set in
+/-- **The card's `(17)` in its correct form.**  Stated for the full primitive throughout, so no
+range restriction is needed and `hY` is *derived* rather than assumed: the primitive half is
+`mollify_fullPrimitive_eq` and the position half is `mollify_position_eq`. -/
+theorem fullLogDirichlet_mollify {ρ f : ℝ → ℝ} {ε M : ℝ}
+    (hρ : Continuous ρ) (hcρ : HasCompactSupport ρ) (hsupp : ∀ t, ε < |t| → ρ t = 0)
+    (hfc : Continuous f) (hfm : Measurable f) (hfb : ∀ x, |f x| ≤ M)
+    (hfz : ∀ y, y < 0 → f y = 0) (hPc : Continuous (fullPrimitive f)) (L : ℝ) :
+    fullLogDirichlet (mollify ρ f) L
+      = mollify ρ (fullLogDirichlet f) L + 2 * mollify (firstMomentKernel ρ) f L := by
+  have hpos := mollify_position_eq ρ f hρ hfc hcρ L
+  have hY := mollify_fullPrimitive_eq hρ hcρ hsupp hfm hfb hfz L
+  have hlin : mollify ρ (fun Y => 2 * Y * f Y - fullPrimitive f Y) L
+      = 2 * mollify ρ (fun y => y * f y) L - mollify ρ (fullPrimitive f) L := by
+    unfold mollify
+    rw [← MeasureTheory.integral_const_mul, ← MeasureTheory.integral_sub]
+    · refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+      show ρ t * (2 * (L - t) * f (L - t) - fullPrimitive f (L - t))
+        = 2 * (ρ t * ((L - t) * f (L - t))) - ρ t * fullPrimitive f (L - t)
+      ring
+    · exact (integrable_mollifyKernel hρ (continuous_id.mul hfc) hcρ L).const_mul 2
+    · exact integrable_mollifyKernel hρ hPc hcρ L
+  unfold fullLogDirichlet
+  rw [← hY, hlin, hpos]
+  ring
+
+/-! ## Continuity of the full primitive
+
+`fullPrimitive f` is an integral over a varying unbounded window, so no continuity tactic applies.
+It is in fact Lipschitz: the difference over `[L', L]` is bounded by `M (L − L')`.
+-/
+
+open MeasureTheory Set in
+/-- A bounded measurable profile vanishing below the origin is integrable on every `Iic L`, because
+the window reduces to `Icc 0 L`. -/
+theorem integrableOn_Iic_of_vanishing {f : ℝ → ℝ} {M : ℝ}
+    (hf : Measurable f) (hfb : ∀ x, |f x| ≤ M) (hfz : ∀ y, y < 0 → f y = 0) (L : ℝ) :
+    IntegrableOn f (Iic L) := by
+  have heq : (Iic L).indicator f = (Icc 0 L).indicator f := by
+    funext x
+    by_cases h1 : x ≤ L
+    · by_cases h2 : (0:ℝ) ≤ x
+      · rw [Set.indicator_of_mem (mem_Iic.mpr h1), Set.indicator_of_mem (Set.mem_Icc.mpr ⟨h2, h1⟩)]
+      · rw [Set.indicator_of_mem (mem_Iic.mpr h1),
+          Set.indicator_of_notMem (by simp only [mem_Icc, not_and]; intro hc; exact absurd hc h2)]
+        exact hfz x (not_le.mp h2)
+    · rw [Set.indicator_of_notMem (by simpa using h1),
+        Set.indicator_of_notMem (by simp only [mem_Icc, not_and]; intro _; exact h1)]
+  have hIcc : IntegrableOn f (Icc (0:ℝ) L) := by
+    have hfin : IsFiniteMeasure (volume.restrict (Icc (0:ℝ) L)) := by
+      constructor; simp
+    exact Integrable.mono' (integrable_const M) hf.aestronglyMeasurable
+      (Filter.Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact hfb x)
+  rw [← MeasureTheory.integrable_indicator_iff measurableSet_Iic, heq,
+    MeasureTheory.integrable_indicator_iff measurableSet_Icc]
+  exact hIcc
+
+open MeasureTheory Set in
+/-- The increment of the full primitive is the integral over the intervening window. -/
+theorem fullPrimitive_sub {f : ℝ → ℝ} {M : ℝ}
+    (hf : Measurable f) (hfb : ∀ x, |f x| ≤ M) (hfz : ∀ y, y < 0 → f y = 0)
+    {L' L : ℝ} (h : L' ≤ L) :
+    fullPrimitive f L - fullPrimitive f L' = ∫ x in Ioc L' L, f x := by
+  have hsplit : Iic L = Iic L' ∪ Ioc L' L := by
+    ext x
+    simp only [mem_Iic, mem_union, mem_Ioc]
+    constructor
+    · intro hx
+      rcases le_or_gt x L' with hc | hc
+      · exact Or.inl hc
+      · exact Or.inr ⟨hc, hx⟩
+    · rintro (hc | ⟨_, hc⟩)
+      · linarith
+      · exact hc
+  have hdisj : Disjoint (Iic L') (Ioc L' L) := by
+    rw [Set.disjoint_left]
+    intro x hx hx'
+    exact absurd hx' (by simp only [mem_Ioc, not_and]; intro hc; linarith [mem_Iic.mp hx])
+  have h1 : IntegrableOn f (Iic L') := integrableOn_Iic_of_vanishing hf hfb hfz L'
+  have h2 : IntegrableOn f (Ioc L' L) :=
+    (integrableOn_Iic_of_vanishing hf hfb hfz L).mono_set fun x hx => mem_Iic.mpr hx.2
+  unfold fullPrimitive
+  rw [hsplit, setIntegral_union hdisj measurableSet_Ioc h1 h2]
+  ring
+
+open MeasureTheory Set in
+/-- The full primitive's increment is bounded by the profile's bound times the window length. -/
+theorem abs_fullPrimitive_sub_le {f : ℝ → ℝ} {M : ℝ}
+    (hf : Measurable f) (hfb : ∀ x, |f x| ≤ M) (hfz : ∀ y, y < 0 → f y = 0) {L' L : ℝ}
+    (h : L' ≤ L) : |fullPrimitive f L - fullPrimitive f L'| ≤ M * (L - L') := by
+  rw [fullPrimitive_sub hf hfb hfz h]
+  have hfin : volume (Ioc L' L) < ⊤ := by
+    rw [Real.volume_Ioc]; exact ENNReal.ofReal_lt_top
+  have hb := norm_setIntegral_le_of_norm_le_const (C := M) hfin
+    (fun x _ => by rw [Real.norm_eq_abs]; exact hfb x)
+  rw [MeasureTheory.measureReal_def, Real.volume_Ioc,
+    ENNReal.toReal_ofReal (by linarith), Real.norm_eq_abs] at hb
+  exact hb
+
+open MeasureTheory Set in
+/-- **`hPc` discharged.**  The full primitive of a bounded measurable profile vanishing below the
+origin is Lipschitz, hence continuous. -/
+theorem continuous_fullPrimitive {f : ℝ → ℝ} {M : ℝ} (hM : 0 ≤ M)
+    (hf : Measurable f) (hfb : ∀ x, |f x| ≤ M) (hfz : ∀ y, y < 0 → f y = 0) :
+    Continuous (fullPrimitive f) := by
+  refine LipschitzWith.continuous (K := ⟨M, hM⟩) (LipschitzWith.of_dist_le_mul fun L' L => ?_)
+  rw [Real.dist_eq, Real.dist_eq]
+  show |fullPrimitive f L' - fullPrimitive f L| ≤ M * |L' - L|
+  rcases le_total L' L with h | h
+  · rw [abs_sub_comm (fullPrimitive f L'), abs_sub_comm L' L,
+      abs_of_nonneg (by linarith : (0:ℝ) ≤ L - L')]
+    exact abs_fullPrimitive_sub_le hf hfb hfz h
+  · rw [abs_of_nonneg (by linarith : (0:ℝ) ≤ L' - L)]
+    exact abs_fullPrimitive_sub_le hf hfb hfz h
+
+open MeasureTheory Set in
+/-- **The card's `(17)`, hypothesis-free.**  Every input is object regularity of the profile: the
+continuity of the full primitive is derived, not assumed. -/
+theorem fullLogDirichlet_mollify' {ρ f : ℝ → ℝ} {ε M : ℝ}
+    (hρ : Continuous ρ) (hcρ : HasCompactSupport ρ) (hsupp : ∀ t, ε < |t| → ρ t = 0)
+    (hfc : Continuous f) (hfb : ∀ x, |f x| ≤ M) (hfz : ∀ y, y < 0 → f y = 0) (L : ℝ) :
+    fullLogDirichlet (mollify ρ f) L
+      = mollify ρ (fullLogDirichlet f) L + 2 * mollify (firstMomentKernel ρ) f L := by
+  have hM : 0 ≤ M := le_trans (abs_nonneg (f 0)) (hfb 0)
+  exact fullLogDirichlet_mollify hρ hcρ hsupp hfc hfc.measurable hfb hfz
+    (continuous_fullPrimitive hM hfc.measurable hfb hfz) L
+
+/-! ## `(15)`: the transport operator commutes with mollification
+
+The transport operator is built from translations, so its second difference passes through a
+convolution unchanged: the second difference of a mollification is the mollification of the second
+difference.  This is the pointwise heart of `(15)`; integrating it against the kernel is a Fubini
+step of the same shape as `(16)`.
+-/
+
+open MeasureTheory in
+/-- **The second difference commutes with mollification.** -/
+theorem secondDifference_mollify {ρ f : ℝ → ℝ} (hρ : Continuous ρ) (hf : Continuous f)
+    (hcρ : HasCompactSupport ρ) (L s : ℝ) :
+    secondDifference (mollify ρ f) L s = mollify ρ (fun y => secondDifference f y s) L := by
+  have i0 := integrable_mollifyKernel hρ hf hcρ L
+  have i1 := integrable_mollifyKernel hρ hf hcρ (L + s)
+  have i2 := integrable_mollifyKernel hρ hf hcρ (L - s)
+  unfold secondDifference mollify
+  have e1 : Integrable (fun t => 2 * (ρ t * f (L - t)) - ρ t * f (L + s - t)) :=
+    (i0.const_mul 2).sub i1
+  rw [← MeasureTheory.integral_const_mul,
+    ← MeasureTheory.integral_sub ((i0.const_mul 2)) i1,
+    ← MeasureTheory.integral_sub e1 i2]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+  show 2 * (ρ t * f (L - t)) - ρ t * f (L + s - t) - ρ t * f (L - s - t)
+    = ρ t * (2 * f (L - t) - f (L - t + s) - f (L - t - s))
+  rw [show L - t + s = L + s - t by ring, show L - t - s = L - s - t by ring]
+  ring
+
+/-! ## The uniform majorant for `(15)`
+
+The transport integrand is bounded, **uniformly in the base point**, by a constant near the origin
+and by an exponential beyond.  Uniformity is what makes the Fubini majorant for `(15)` exist: the
+base point is the convolution variable, so a `y`-dependent bound would be useless.
+-/
+
+/-- Near the origin the Lipschitz bound cancels the pole, leaving the constant `2K`. -/
+theorem abs_secondDifference_mul_kernel_le_near {f : ℝ → ℝ} {K : ℝ}
+    (hK : ∀ x y, |f x - f y| ≤ K * |x - y|) {y s : ℝ} (hs : 0 < s) :
+    |secondDifference f y s * gammaTransportKernel s| ≤ 2 * K := by
+  have hk : 0 < gammaTransportKernel s := gammaTransportKernel_pos hs
+  have hsd := abs_secondDifference_le_of_lipschitz hK y s
+  have hinv := gammaTransportKernel_le_inv hs
+  rw [abs_mul, abs_of_pos hk]
+  have hK0 : 0 ≤ K := by
+    have h := hK 1 0
+    rw [show |(1:ℝ) - 0| = 1 by norm_num, mul_one] at h
+    linarith [abs_nonneg (f 1 - f 0)]
+  rw [abs_of_pos hs] at hsd
+  calc |secondDifference f y s| * gammaTransportKernel s
+      ≤ (2 * K * s) * (1 / s) := by
+        refine mul_le_mul hsd hinv hk.le (by positivity)
+    _ = 2 * K := by field_simp
+
+/-- Beyond `s = 1` boundedness and the exponential tail give `8M e^{−s}`. -/
+theorem abs_secondDifference_mul_kernel_le_far {f : ℝ → ℝ} {M : ℝ}
+    (hM : ∀ x, |f x| ≤ M) {y s : ℝ} (hs : 1 ≤ s) :
+    |secondDifference f y s * gammaTransportKernel s| ≤ 8 * M * Real.exp (-s) := by
+  have hs0 : 0 < s := by linarith
+  have hk : 0 < gammaTransportKernel s := gammaTransportKernel_pos hs0
+  have hsd := abs_secondDifference_le_of_bounded hM y s
+  have htail := gammaTransportKernel_le_two_mul_exp_neg hs
+  have hM0 : 0 ≤ M := le_trans (abs_nonneg (f 0)) (hM 0)
+  rw [abs_mul, abs_of_pos hk]
+  calc |secondDifference f y s| * gammaTransportKernel s
+      ≤ (4 * M) * (2 * Real.exp (-s)) := by
+        refine mul_le_mul hsd htail hk.le (by linarith)
+    _ = 8 * M * Real.exp (-s) := by ring
+
 end GaloisForLFunctions.HTGeometry

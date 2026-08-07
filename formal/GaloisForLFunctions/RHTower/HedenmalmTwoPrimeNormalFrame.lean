@@ -321,6 +321,85 @@ theorem hasDerivAt_centeredMultiplier (n : ℕ) {w : ℂ} (hw : w ≠ 0) :
   exact centeredMultiplier_eq_sin n hz
 
 
+
+/-- At the `k`-th zero the phase is an integer multiple of `pi`. -/
+theorem centeredZero_mul_halfLog {n : ℕ} (hn : 2 ≤ n) (k : {j : ℤ // j ≠ 0}) :
+    centeredZero n k * ((Real.log n / 2 : ℝ) : ℂ) = (((Real.pi * ((k : ℤ) : ℝ)) : ℝ) : ℂ) := by
+  have hn1 : (1 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hlog : 0 < Real.log n := Real.log_pos hn1
+  rw [centeredZero, centeredMultiplierZero, ← Complex.ofReal_mul]
+  congr 1
+  field_simp
+
+/-- **The derivative of the centered multiplier at one of its zeros is nonzero.**  At `w_k` the
+phase is `pi k`, so the sine vanishes while the cosine is `(-1)^k`, and the quotient rule leaves
+`2 c l cos(pi k) / w_k`. -/
+theorem deriv_centeredMultiplier_ne_zero {n : ℕ} (hn : 2 ≤ n) (k : {j : ℤ // j ≠ 0}) :
+    deriv (centeredMultiplier n) (centeredZero n k) ≠ 0 := by
+  have hw : centeredZero n k ≠ 0 := centeredZero_ne_zero hn k
+  have hnpos : 0 < n := by omega
+  have hnR : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hnpos
+  have hn1 : (1 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hlog : 0 < Real.log n := Real.log_pos hn1
+  have hprod := centeredZero_mul_halfLog hn k
+  have hsin : Complex.sin (centeredZero n k * ((Real.log n / 2 : ℝ) : ℂ)) = 0 := by
+    rw [hprod, ← Complex.ofReal_sin]
+    have hr : Real.sin (Real.pi * ((k : ℤ) : ℝ)) = 0 := by
+      rw [mul_comm]; exact Real.sin_int_mul_pi _
+    rw [hr, Complex.ofReal_zero]
+  have hcosne : Complex.cos (centeredZero n k * ((Real.log n / 2 : ℝ) : ℂ)) ≠ 0 := by
+    rw [hprod, ← Complex.ofReal_cos]
+    have hr : Real.cos (Real.pi * ((k : ℤ) : ℝ)) = (-1 : ℝ) ^ (k : ℤ) := by
+      rw [mul_comm]; exact Real.cos_int_mul_pi _
+    rw [hr]
+    exact Complex.ofReal_ne_zero.mpr (zpow_ne_zero _ (by norm_num))
+  have hd := hasDerivAt_centeredMultiplier n hw
+  rw [hd.deriv, hsin]
+  have hc : ((((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ)) : ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr (Real.rpow_pos_of_pos hnR _).ne'
+  have hl : ((Real.log n / 2 : ℝ) : ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr (div_pos hlog two_pos).ne'
+  simp only [mul_zero, zero_mul, sub_zero]
+  exact div_ne_zero
+    (mul_ne_zero (mul_ne_zero (mul_ne_zero two_ne_zero hc) (mul_ne_zero hcosne hl)) hw)
+    (pow_ne_zero _ hw)
+
+/-- **The zeros of the centered multiplier are simple.** -/
+theorem analyticOrderAt_centeredMultiplier_eq_one {n : ℕ} (hn : 2 ≤ n)
+    (k : {j : ℤ // j ≠ 0}) :
+    analyticOrderAt (centeredMultiplier n) (centeredZero n k) = 1 :=
+  (analyticAt_centeredMultiplier n (centeredZero_ne_zero hn k)
+      ).analyticOrderAt_eq_one_of_zero_deriv_ne_zero
+    ((centeredMultiplier_eq_zero_iff_mem_zeros hn (centeredZero_ne_zero hn k)).mpr ⟨k, rfl⟩)
+    (deriv_centeredMultiplier_ne_zero hn k)
+
+
+end HedenmalmThetaSource
+
+end
+
+end RHTower
+
+/-! ### The essential-singular pair on a root block -/
+
+/-- **The essential-singular pair is nonzero on every root block.**  At a zero of `Xi_C` the two
+compact normal multipliers, evaluated at the compact spectral parameter `mu = -1/zeta`, do not both
+annihilate a nonzero mode.  This is clause `(21)`. -/
+theorem essential_pair_ne_zero {E : Type*} [AddCommGroup E] [Module ℂ E] [NoZeroSMulDivisors ℂ E]
+    {ζ : ℂ} (hζ : XiC ζ = 0) {f : E} (hf : f ≠ 0) :
+    (compactNormalMultiplier 2 (-ζ⁻¹) • f, compactNormalMultiplier 3 (-ζ⁻¹) • f)
+      ≠ ((0 : E), (0 : E)) := by
+  have hz : ζ ≠ 0 := fun h => XiC_zero_ne (h ▸ hζ)
+  rw [compactNormalMultiplier_root, compactNormalMultiplier_root]
+  intro hpair
+  have h2 : centeredMultiplier 2 ζ • f = 0 := congrArg Prod.fst hpair
+  have h3 : centeredMultiplier 3 ζ • f = 0 := congrArg Prod.snd hpair
+  rcases smul_eq_zero.mp h2 with hc2 | hf0
+  · rcases smul_eq_zero.mp h3 with hc3 | hf0
+    · exact hz (no_common_zero_centered_two_three hc2 hc3)
+    · exact hf hf0
+  · exact hf hf0
+
 end HedenmalmThetaSource
 
 end

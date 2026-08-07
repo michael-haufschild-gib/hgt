@@ -17,6 +17,7 @@ the other end.  Dividing its square by the source leaves one integrable theta en
 -/
 
 open Complex Real MeasureTheory Set Filter Topology
+open scoped ENNReal NNReal
 
 namespace RHTower
 
@@ -138,6 +139,7 @@ theorem sourceModeFWeightedEnergyDensity_le_right {z : ℂ} (hz : |z.im| < 1)
   have hnum : ‖sourceModeF thetaSource z x‖ ^ 2 ≤
       ‖z‖ ^ 2 * thetaEnvelopeUpper ^ 2 * thetaEnvelope x ^ 2 := by
     rw [sourceModeF, norm_mul, norm_neg]
+    rw [mul_pow]
     have hbound_nonneg : 0 ≤ thetaEnvelopeUpper * thetaEnvelope x :=
       (mul_pos thetaEnvelopeUpper_pos (thetaEnvelope_pos x)).le
     have hsq : ‖sourceModeU thetaSource z x‖ ^ 2 ≤
@@ -225,20 +227,30 @@ theorem integrable_sourceModeFWeightedEnergyDensity {z : ℂ} (hz : |z.im| < 1)
       _ = C * thetaEnvelope 1 *
           (Real.exp a * Real.exp (-a * |x|)) := by rw [Real.exp_add]
       _ = (C * thetaEnvelope 1 * Real.exp a) * Real.exp (-a * |x|) := by ring
-  have hmeas := (continuous_sourceModeFWeightedEnergyDensity hz).aestronglyMeasurable
+  have hmeas : AEStronglyMeasurable (sourceModeFWeightedEnergyDensity z)
+      (volume : Measure ℝ) :=
+    (continuous_sourceModeFWeightedEnergyDensity hz).aestronglyMeasurable
   have hleft : IntegrableOn (sourceModeFWeightedEnergyDensity z) (Iic (-1 : ℝ)) volume := by
-    refine Integrable.mono' hmajor.integrableOn hmeas ?_
+    refine Integrable.mono' hmajor.integrableOn
+      (hmeas.mono_measure Measure.restrict_le_self) ?_
     filter_upwards [ae_restrict_mem measurableSet_Iic] with x hx
+    change x ≤ -1 at hx
     rw [Real.norm_eq_abs, abs_of_nonneg (sourceModeFWeightedEnergyDensity_nonneg z x)]
-    exact htail x (by rw [abs_of_nonpos (by linarith : x ≤ 0)]; linarith)
+    have hx0 : x ≤ 0 := by linarith
+    have habs : 1 ≤ |x| := by rw [abs_of_nonpos hx0]; linarith
+    exact htail x habs
   have hmid : IntegrableOn (sourceModeFWeightedEnergyDensity z) (Ioc (-1 : ℝ) 1) volume :=
     ((continuous_sourceModeFWeightedEnergyDensity hz).integrableOn_Icc
       (a := (-1 : ℝ)) (b := 1)).mono_set Ioc_subset_Icc_self
   have hright : IntegrableOn (sourceModeFWeightedEnergyDensity z) (Ioi (1 : ℝ)) volume := by
-    refine Integrable.mono' hmajor.integrableOn hmeas ?_
+    refine Integrable.mono' hmajor.integrableOn
+      (hmeas.mono_measure Measure.restrict_le_self) ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    change 1 < x at hx
     rw [Real.norm_eq_abs, abs_of_nonneg (sourceModeFWeightedEnergyDensity_nonneg z x)]
-    exact htail x (by rw [abs_of_nonneg (by linarith : 0 ≤ x)]; linarith)
+    have hx0 : 0 ≤ x := by linarith
+    have habs : 1 ≤ |x| := by rw [abs_of_nonneg hx0]; linarith
+    exact htail x habs
   have hunion : (Iic (-1 : ℝ)) ∪ (Ioc (-1 : ℝ) 1 ∪ Ioi 1) = univ := by
     rw [Ioc_union_Ioi_eq_Ioi (by norm_num : (-1 : ℝ) ≤ 1), Iic_union_Ioi]
   rw [← integrableOn_univ, ← hunion]
@@ -290,12 +302,15 @@ theorem pinnedKernelField_apply_eq_pinnedVolterraFun (S : PositiveDensitySource)
         fun u => (Iic t).indicator (fun u => f u) u - (t : ℂ) * f u := by
       filter_upwards [pinnedSliceVec_coeFn t] with u hu
       rw [hu, RCLike.inner_apply', pinnedKernelSlice]
-      by_cases hut : u ≤ t <;> simp [hut]
+      by_cases hut : u ≤ t <;> simp [hut] <;> ring
     rw [integral_congr_ae hcoe,
       MeasureTheory.integral_sub ((integrable_coe f).indicator measurableSet_Iic)
         ((integrable_coe f).const_mul (t : ℂ)),
       MeasureTheory.integral_const_mul]
-  rw [pinnedKernelField, inner_smul_left, hinner]
+  rw [pinnedKernelField]
+  change (inner ℂ
+      ((-(Complex.I * (quantileSpeed S t : ℂ))) • pinnedSliceVec t) f : ℂ) = _
+  rw [inner_smul_left, hinner]
   simp only [map_neg, map_mul, Complex.conj_I, Complex.conj_ofReal]
   ring
 
@@ -305,14 +320,14 @@ theorem pinnedKernelOperator_ae (S : PositiveDensitySource) (hfin : HasFiniteKer
     kernelOperator (E := Lp ℂ 2 unitIntervalMeasure) unitIntervalMeasure
         (pinnedKernelL2 S hfin) f =ᵐ[unitIntervalMeasure]
       fun t => pinnedKernelField S t f := by
-  filter_upwards [
+  have hholder :=
     (evalBilinear (𝕜 := ℂ) (E := Lp ℂ 2 unitIntervalMeasure)).coeFn_holder
       (r := (2 : ENNReal)) (pinnedKernelL2 S hfin)
-      (Lp.const ∞ unitIntervalMeasure f),
-    (memLp_pinnedKernelField S hfin).coeFn_toLp,
-    Lp.coeFn_const (p := ∞) unitIntervalMeasure f
-  ] with t hholder hfield hconst
-  rw [kernelOperator, kernelOperatorMap_apply, hholder, pinnedKernelL2, hfield, hconst]
+      (Lp.const ∞ unitIntervalMeasure f)
+  have hfield := (memLp_pinnedKernelField S hfin).coeFn_toLp
+  have hconst := Lp.coeFn_const (p := ∞) unitIntervalMeasure f
+  filter_upwards [hholder, hfield, hconst] with t hholderT hfieldT hconstT
+  rw [kernelOperator, kernelOperatorMap_apply, hholderT, pinnedKernelL2, hfieldT, hconstT]
   simp [evalBilinear]
 
 /-- The source inverse depends only on the Lebesgue almost-everywhere class of its input. -/
@@ -347,13 +362,23 @@ theorem thetaDivisorSourceVector_ne_zero (z : ℂ) (hz : |z.im| < 1)
   intro hv
   have hae := thetaDivisorSourceVector_ae z hz hzero
   rw [hv] at hae
-  have hfzero : sourceModeF thetaSource z =ᵐ[(volume : Measure ℝ)] fun _ => 0 := by
-    filter_upwards [hae] with x hx
-    simpa using hx.symm
+  have hzeroWeighted :
+      ((0 : SourceSpace thetaSource) : ℝ → ℂ) =ᵐ[
+        (volume : Measure ℝ).withDensity
+          (realDensity (sourceWeight thetaSource))] fun _ => 0 :=
+    Lp.coeFn_zero ℂ 2 _
+  have hzeroLeb :
+      ((0 : SourceSpace thetaSource) : ℝ → ℂ) =ᵐ[(volume : Measure ℝ)] fun _ => 0 :=
+    (withDensity_realDensity_ae_eq (measurable_sourceWeight thetaSource)
+      (sourceWeight_pos thetaSource)).mp hzeroWeighted
+  have hfzero : sourceModeF thetaSource z =ᵐ[(volume : Measure ℝ)] fun _ => 0 :=
+    hae.symm.trans hzeroLeb
   have hmass := integral_sourceModeF_thetaSource_eq_mass hz hzero
   have hmassZero : (thetaSource.mass : ℂ) = 0 := by
     rw [← hmass, integral_congr_ae hfzero, integral_zero]
-  exact (by exact_mod_cast thetaSource.mass_ne_zero) hmassZero
+  have hmassNe : (thetaSource.mass : ℂ) ≠ 0 := by
+    exact_mod_cast thetaSource.mass_ne_zero
+  exact hmassNe hmassZero
 
 /-- Pullback of the canonical representative along the theta quantile. -/
 theorem thetaDivisorSourceVector_quantile_ae (z : ℂ) (hz : |z.im| < 1)
@@ -385,8 +410,10 @@ def thetaDivisorEigenvector (z : ℂ) (hz : |z.im| < 1)
 theorem thetaDivisorEigenvector_ne_zero (z : ℂ) (hz : |z.im| < 1)
     (hzero : xiC thetaSource z = 0) :
     thetaDivisorEigenvector z hz hzero ≠ 0 := by
-  exact (quantileUnitary thetaSource).injective.ne
-    (thetaDivisorSourceVector_ne_zero z hz hzero)
+  intro hzeroVector
+  apply thetaDivisorSourceVector_ne_zero z hz hzero
+  apply (quantileUnitary thetaSource).injective
+  simpa only [thetaDivisorEigenvector, map_zero] using hzeroVector
 
 /-- **Unconditional compact divisor eigenmode.** Every zero of the completed theta transform in
 its natural strip is a nonzero eigenmode of one fixed compact operator constructed from the theta
@@ -395,9 +422,11 @@ theorem thetaCompactSourceInverse_eigen (z : ℂ) (hz : |z.im| < 1)
     (hzero : xiC thetaSource z = 0) :
     thetaCompactSourceInverse (thetaDivisorEigenvector z hz hzero) =
       (-z⁻¹) • thetaDivisorEigenvector z hz hzero := by
+  let g : Lp ℂ 2 unitIntervalMeasure := thetaDivisorEigenvector z hz hzero
+  change thetaCompactSourceInverse g = (-z⁻¹) • g
   apply Lp.ext
   let v : SourceSpace thetaSource := thetaDivisorSourceVector z hz hzero
-  let g : Lp ℂ 2 unitIntervalMeasure := thetaDivisorEigenvector z hz hzero
+  have hgv : g = quantileUnitary thetaSource v := by rfl
   have hv : (v : ℝ → ℂ) =ᵐ[(volume : Measure ℝ)] sourceModeF thetaSource z :=
     thetaDivisorSourceVector_ae z hz hzero
   have hvq : (fun t => v (thetaSource.quantileFun t)) =ᵐ[unitIntervalMeasure]
@@ -406,16 +435,15 @@ theorem thetaCompactSourceInverse_eigen (z : ℂ) (hz : |z.im| < 1)
   filter_upwards [pinnedKernelOperator_ae thetaSource hasFiniteKernelEnergy_thetaSource g,
     ae_unitIntervalMeasure_mem_Ioo, quantileUnitary_ae thetaSource v, hvq,
     Lp.coeFn_smul (-z⁻¹) g] with t hoperator ht hg hvqt hsmul
-  change (thetaCompactSourceInverse g : ℝ → ℂ) t = ((-z⁻¹) • g : ℝ → ℂ) t
+  rw [hsmul]
+  change (thetaCompactSourceInverse g : ℝ → ℂ) t = (-z⁻¹) * g t
   rw [thetaCompactSourceInverse, hoperator,
     pinnedKernelField_apply_eq_pinnedVolterraFun]
-  rw [← quantileTransform_sourceInverse_eq_pinned v ht]
+  rw [hgv]
+  rw [← quantileTransform_sourceInverse_eq_pinned thetaSource v ht]
+  unfold quantileTransform
   rw [sourceInverse_congr_ae thetaSource hv (thetaSource.quantileFun t),
     sourceInverse_sourceModeF_eq_smul_thetaSource hz hzero]
-  rw [hsmul]
-  change quantileTransform thetaSource
-      (fun x => (-z⁻¹) * sourceModeF thetaSource z x) t = (-z⁻¹) * g t
-  unfold quantileTransform
   rw [hg, hvqt]
   ring
 

@@ -125,6 +125,170 @@ theorem abs_kaiserPacketRow_ge {m : ℕ} {c : ℝ}
   change |b i| * T / 4 ≤ _
   linarith
 
+theorem kaiserCosTrial_packetFrequency_eq {m : ℕ} (c x : ℝ) (j : Fin m) :
+    kaiserCosTrial c (kaiserPacketFrequency c j) x =
+      kaiserTrial c x * Real.cos (kaiserPacketAngularFrequency c j * x) := by
+  rw [kaiserCosTrial, kaiserPacketFrequency]
+  congr 2
+  field_simp [Real.pi_ne_zero]
+
+theorem continuous_kaiserGridCombination {m : ℕ} (c : ℝ) (b : Fin m → ℝ) :
+    Continuous (kaiserGridCombination c b) :=
+  continuous_kaiserCosCombination c (kaiserPacketFrequency c) b
+
+/-- Applying a packet row is exactly integration against its cosine reporter. -/
+theorem integral_kaiserGridCombination_mul_cos_eq_row {m : ℕ}
+    (c : ℝ) (b : Fin m → ℝ) (i : Fin m) :
+    (∫ x in (-1 : ℝ)..1,
+      kaiserGridCombination c b x *
+        Real.cos (kaiserPacketAngularFrequency c i * x)) =
+      kaiserPacketRow c b i := by
+  have hterm : ∀ j : Fin m, IntervalIntegrable
+      (fun x : ℝ => b j * kaiserCosTrial c (kaiserPacketFrequency c j) x *
+        Real.cos (kaiserPacketAngularFrequency c i * x)) volume (-1) 1 := by
+    intro j
+    exact ((continuous_const.mul
+      (continuous_kaiserCosTrial c (kaiserPacketFrequency c j))).mul
+        (Real.continuous_cos.comp (continuous_const.mul continuous_id))).intervalIntegrable
+          (μ := volume) (-1) 1
+  change (∫ x in (-1 : ℝ)..1,
+      (∑ j, b j * kaiserCosTrial c (kaiserPacketFrequency c j) x) *
+        Real.cos (kaiserPacketAngularFrequency c i * x)) =
+    ∑ j, b j * kaiserPacketReading c (kaiserPacketAngularFrequency c i)
+      (kaiserPacketAngularFrequency c j)
+  have hdistribute : (fun x : ℝ =>
+      (∑ j, b j * kaiserCosTrial c (kaiserPacketFrequency c j) x) *
+        Real.cos (kaiserPacketAngularFrequency c i * x)) =
+      (fun x : ℝ => ∑ j,
+        b j * kaiserCosTrial c (kaiserPacketFrequency c j) x *
+          Real.cos (kaiserPacketAngularFrequency c i * x)) := by
+    funext x
+    exact Finset.sum_mul
+      (s := (Finset.univ : Finset (Fin m)))
+      (f := fun j => b j * kaiserCosTrial c (kaiserPacketFrequency c j) x)
+      (a := Real.cos (kaiserPacketAngularFrequency c i * x))
+  rw [hdistribute, intervalIntegral.integral_finsetSum (fun j _ => hterm j)]
+  apply Finset.sum_congr rfl
+  intro j _
+  calc
+    (∫ x in (-1 : ℝ)..1,
+        b j * kaiserCosTrial c (kaiserPacketFrequency c j) x *
+          Real.cos (kaiserPacketAngularFrequency c i * x)) =
+        ∫ x in (-1 : ℝ)..1, b j *
+          (kaiserCosTrial c (kaiserPacketFrequency c j) x *
+            Real.cos (kaiserPacketAngularFrequency c i * x)) := by
+      congr 1
+      funext x
+      ring
+    _ = b j * (∫ x in (-1 : ℝ)..1,
+        kaiserCosTrial c (kaiserPacketFrequency c j) x *
+          Real.cos (kaiserPacketAngularFrequency c i * x)) := by
+      rw [intervalIntegral.integral_const_mul]
+    _ = b j * kaiserPacketReading c (kaiserPacketAngularFrequency c i)
+        (kaiserPacketAngularFrequency c j) := by
+      congr 1
+      rw [kaiserPacketReading]
+      simp_rw [kaiserCosTrial_packetFrequency_eq]
+
+/-- One packet reading is controlled by twice the physical energy of the combination. -/
+theorem kaiserPacketRow_sq_le_two_mul_energy {m : ℕ}
+    (c : ℝ) (b : Fin m → ℝ) (i : Fin m) :
+    kaiserPacketRow c b i ^ 2 ≤
+      2 * ∫ x in (-1 : ℝ)..1, kaiserGridCombination c b x ^ 2 := by
+  let f : ℝ → ℝ := kaiserGridCombination c b
+  let g : ℝ → ℝ := fun x => Real.cos (kaiserPacketAngularFrequency c i * x)
+  have hfcont : Continuous f := continuous_kaiserGridCombination c b
+  have hgcont : Continuous g :=
+    Real.continuous_cos.comp (continuous_const.mul continuous_id)
+  have hfsq : Integrable (fun x => f x ^ 2) (volume.restrict (Ioc (-1 : ℝ) 1)) :=
+    (hfcont.pow 2).integrableOn_Ioc
+  have hgsq : Integrable (fun x => g x ^ 2) (volume.restrict (Ioc (-1 : ℝ) 1)) :=
+    (hgcont.pow 2).integrableOn_Ioc
+  have hcs := _root_.HTGeometry.sq_integral_mul_le_integral_sq_mul_integral_sq
+    (μ := volume.restrict (Ioc (-1 : ℝ) 1))
+    hfcont.aestronglyMeasurable hgcont.aestronglyMeasurable hfsq hgsq
+  have hle : (-1 : ℝ) ≤ 1 := by norm_num
+  rw [← intervalIntegral.integral_of_le hle,
+    ← intervalIntegral.integral_of_le hle,
+    ← intervalIntegral.integral_of_le hle] at hcs
+  have hgBound : (∫ x in (-1 : ℝ)..1, g x ^ 2) ≤ 2 := by
+    have hgInt : IntervalIntegrable (fun x => g x ^ 2) volume (-1) 1 :=
+      (hgcont.pow 2).intervalIntegrable (μ := volume) (-1) 1
+    have honeInt : IntervalIntegrable (fun _x : ℝ => (1 : ℝ)) volume (-1) 1 :=
+      intervalIntegrable_const
+    calc
+      (∫ x in (-1 : ℝ)..1, g x ^ 2) ≤ ∫ _x in (-1 : ℝ)..1, (1 : ℝ) := by
+        apply intervalIntegral.integral_mono_on hle hgInt honeInt
+        intro x _
+        dsimp only [g]
+        nlinarith [Real.neg_one_le_cos (kaiserPacketAngularFrequency c i * x),
+          Real.cos_le_one (kaiserPacketAngularFrequency c i * x)]
+      _ = 2 := by norm_num
+  have henergy0 : 0 ≤ ∫ x in (-1 : ℝ)..1, f x ^ 2 :=
+    intervalIntegral.integral_nonneg hle fun _ _ => sq_nonneg _
+  have hrow : (∫ x in (-1 : ℝ)..1, f x * g x) = kaiserPacketRow c b i := by
+    exact integral_kaiserGridCombination_mul_cos_eq_row c b i
+  rw [hrow] at hcs
+  change kaiserPacketRow c b i ^ 2 ≤ 2 * ∫ x in (-1 : ℝ)..1, f x ^ 2
+  calc
+    kaiserPacketRow c b i ^ 2 ≤
+        (∫ x in (-1 : ℝ)..1, f x ^ 2) * (∫ x in (-1 : ℝ)..1, g x ^ 2) := hcs
+    _ ≤ (∫ x in (-1 : ℝ)..1, f x ^ 2) * 2 :=
+      mul_le_mul_of_nonneg_left hgBound henergy0
+    _ = 2 * ∫ x in (-1 : ℝ)..1, f x ^ 2 := by ring
+
+/-- Uniform physical-energy lower bound for every vector in the conditioned packet span. -/
+theorem exp_sq_mul_coeffEnergy_le_kaiserGridEnergy {m : ℕ} (hm : 0 < m) {c : ℝ}
+    (hc : 1 ≤ c) (hscale : 8 * (m : ℝ) ^ 2 ≤ Real.sqrt c)
+    (hsmall : 32 * (m : ℝ) * Real.exp (-(Real.sqrt c / 2)) ≤ 1)
+    (b : Fin m → ℝ) :
+    (∑ j, b j ^ 2) * Real.exp c ^ 2 ≤
+      128 * (m : ℝ) * c ^ 2 *
+        (∫ x in (-1 : ℝ)..1, kaiserGridCombination c b x ^ 2) := by
+  obtain ⟨i, hi⟩ := exists_max_abs_kaiserPacketCoefficient hm b
+  let T : ℝ := kaiserAngularTransform c 0
+  let E : ℝ := ∫ x in (-1 : ℝ)..1, kaiserGridCombination c b x ^ 2
+  have hT : Real.exp c / (2 * c) ≤ T :=
+    exp_div_two_c_le_kaiserAngularTransform_zero hc
+  have hT0 : 0 ≤ T := (kaiserAngularTransform_zero_pos (one_pos.trans_le hc)).le
+  have hc0 : 0 ≤ c := zero_le_one.trans hc
+  have hcoeff := sum_sq_kaiserPacketCoefficient_le b i hi
+  have hrow := abs_kaiserPacketRow_ge hc hscale hsmall b i hi
+  change |b i| * T / 4 ≤ |kaiserPacketRow c b i| at hrow
+  have hrowCS : kaiserPacketRow c b i ^ 2 ≤ 2 * E :=
+    kaiserPacketRow_sq_le_two_mul_energy c b i
+  have hleft0 : 0 ≤ |b i| * T / 4 := by positivity
+  have hrowSq := pow_le_pow_left₀ hleft0 hrow 2
+  rw [sq_abs] at hrowSq
+  have henergy0 : 0 ≤ E :=
+    intervalIntegral.integral_nonneg (by norm_num) fun _ _ => sq_nonneg _
+  change (∑ j, b j ^ 2) * Real.exp c ^ 2 ≤ 128 * (m : ℝ) * c ^ 2 * E
+  have hTscaled : Real.exp c ≤ 2 * c * T := by
+    have hcpos : 0 < 2 * c := by positivity
+    simpa [mul_comm] using (div_le_iff₀ hcpos).mp hT
+  have hexpSq := pow_le_pow_left₀ (Real.exp_pos c).le hTscaled 2
+  have hcombined := hrowSq.trans hrowCS
+  have haT : |b i| ^ 2 * T ^ 2 ≤ 32 * E := by
+    nlinarith
+  have hcoeffT := mul_le_mul_of_nonneg_right hcoeff (sq_nonneg T)
+  have hST : (∑ j, b j ^ 2) * T ^ 2 ≤ 32 * (m : ℝ) * E := by
+    calc
+      (∑ j, b j ^ 2) * T ^ 2 ≤ ((m : ℝ) * |b i| ^ 2) * T ^ 2 := hcoeffT
+      _ = (m : ℝ) * (|b i| ^ 2 * T ^ 2) := by ring
+      _ ≤ (m : ℝ) * (32 * E) :=
+        mul_le_mul_of_nonneg_left haT (Nat.cast_nonneg m)
+      _ = 32 * (m : ℝ) * E := by ring
+  have hcoeff0 : 0 ≤ ∑ j, b j ^ 2 :=
+    Finset.sum_nonneg fun j _ => sq_nonneg (b j)
+  calc
+    (∑ j, b j ^ 2) * Real.exp c ^ 2 ≤
+        (∑ j, b j ^ 2) * (2 * c * T) ^ 2 :=
+      mul_le_mul_of_nonneg_left hexpSq hcoeff0
+    _ = 4 * c ^ 2 * ((∑ j, b j ^ 2) * T ^ 2) := by ring
+    _ ≤ 4 * c ^ 2 * (32 * (m : ℝ) * E) :=
+      mul_le_mul_of_nonneg_left hST (by positivity)
+    _ = 128 * (m : ℝ) * c ^ 2 * E := by ring
+
 end GaloisForLFunctions.RHTower
 
 end

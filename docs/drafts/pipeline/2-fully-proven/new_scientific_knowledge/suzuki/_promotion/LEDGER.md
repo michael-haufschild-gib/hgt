@@ -4147,3 +4147,88 @@ cannot see through; use an explicit `show`.
     (17) the position defect                 BUILT, hypothesis-free   fullLogDirichlet_mollify'
 
 `(15)` is the only unstated item of the passage.
+
+## DR. `(15)`'s pointwise heart is built
+
+`LogNormalEquationTrace.lean` is at 48 declarations, all `#print axioms` clean, no `sorry`.
+
+- `secondDifference_mollify` — **the second difference commutes with mollification**:
+
+      secondDifference (ρ * f) L s = ρ * (fun y => secondDifference f y s) L
+
+  for `ρ` continuous compactly supported and `f` continuous.  Only object regularity.
+
+This is the pointwise heart of `(15)`: the transport operator is built from translations, so its
+second difference passes through a convolution unchanged.
+
+**What remains of `(15)`** is integrating this against the kernel and exchanging:
+
+    gammaTransport (ρ * f) L = ∫_{Ioi 0} secondDifference (ρ*f) L s · k(s) ds
+                             = ∫_{Ioi 0} (∫ ρ(t) secondDifference f (L−t) s dt) k(s) ds
+                             = ∫ ρ(t) (∫_{Ioi 0} secondDifference f (L−t) s · k(s) ds) dt
+                             = mollify ρ (gammaTransport f) L
+
+The interchange is Fubini on `Ioi 0 × ℝ`.  Integrability there needs the near-origin bound — the
+second difference vanishing linearly (section S, `abs_secondDifference_le_of_lipschitz`) against the
+kernel's simple pole — so `f` must be Lipschitz, not merely continuous.  That is the same
+hypothesis `gammaTransport`'s own well-definedness already requires, so it costs nothing new.
+
+Trap: `integral_sub` twice in a row leaves a `Pi`-form `(fun x => …) - (fun t => …)` that the second
+rewrite cannot match; bind the intermediate integrand to a named `have` first.
+
+## DS. `(15)`'s Fubini — the uniform majorant it needs
+
+The interchange for `(15)` is on `Ioi 0 × ℝ` with integrand `ρ(t) · secondDifference f (L−t) s ·
+k(s)`.  Unlike `(16)`, neither factor's domain is bounded, so the majorant must be genuinely
+integrable in `s`, **uniformly in `t`**.
+
+The majorant exists and is already implicit in section S:
+
+    |secondDifference f y s| · k(s) ≤ 2K            for 0 < s ≤ 1   (Lipschitz, kills the pole)
+                                    ≤ 8M e^{−s}     for s > 1       (bounded × exponential tail)
+
+both **independent of `y`**, hence of `t`.  So take
+
+    g s = 2K · 1_{Ioc 0 1}(s) + 8M · exp (−s)
+
+which is integrable on `Ioi 0` (finite-measure piece plus `exp_neg_integrableOn_Ioi`), and the
+product majorant is `|ρ(t)| · g(s)`, integrable on `volume ×ˢ volume.restrict (Ioi 0)` by
+`Integrable.comp_fst`/`comp_snd` and `ρ ∈ L¹`.
+
+Concretely what must be written:
+
+1. `abs_secondDifference_mul_kernel_le` — the two-branch uniform bound above, from
+   `abs_secondDifference_le_of_lipschitz` (S) + `gammaTransportKernel_le_inv` (R) on `(0,1]`, and
+   `abs_secondDifference_le_of_bounded` (R) + `gammaTransportKernel_le_two_mul_exp_neg` (R) beyond;
+2. `integrableOn_transportMajorant` — `g` is integrable on `Ioi 0`;
+3. the product integrability, then `integral_integral_swap`;
+4. compose with `secondDifference_mollify` (DR) to get
+   `gammaTransport (ρ * f) = mollify ρ (gammaTransport f)`.
+
+Every ingredient of step 1 is built; steps 2–4 are assembly. `f` must be Lipschitz and bounded —
+exactly what `gammaTransport`'s own well-definedness already assumes (section S).
+
+## DT. `(15)`'s uniform majorant — step 1 built
+
+`LogNormalEquationTrace.lean` is at 50 declarations, all `#print axioms` clean, no `sorry`.
+
+- `abs_secondDifference_mul_kernel_le_near` — for `0 < s`,
+  `|secondDifference f y s · k(s)| ≤ 2K`, from the Lipschitz bound cancelling the simple pole.
+- `abs_secondDifference_mul_kernel_le_far` — for `s ≥ 1`,
+  `|secondDifference f y s · k(s)| ≤ 8M e^{−s}`.
+
+**Both are uniform in the base point `y`**, which is the whole point: `y` is the convolution
+variable in `(15)`, so a `y`-dependent bound would be useless as a Fubini majorant.
+
+Note the near bound holds on all of `Ioi 0`, not just `(0,1]` — the Lipschitz estimate does not
+degrade — so the majorant can be taken as `min (2K) (8M e^{−s})` or simply
+`2K · 1_{Ioc 0 1} + 8M e^{−s}`, whichever is easier to prove integrable.
+
+Trap: `K ≥ 0` is not free from `∀ x y, |f x − f y| ≤ K |x − y|` — instantiating at `x = y` gives
+`0 ≤ 0`.  Use `x = 1, y = 0`, where `|1 − 0| = 1`.
+
+### Steps remaining for `(15)`
+
+    2. g s = 2K · 1_{Ioc 0 1}(s) + 8M e^{−s} integrable on Ioi 0
+    3. product integrability on volume ×ˢ volume.restrict (Ioi 0), then integral_integral_swap
+    4. compose with secondDifference_mollify (DR)

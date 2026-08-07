@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.InverseJetNumerator
+import GaloisForLFunctions.HTGeometry.TruncatedCompatibilityFibre
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 
 /-!
@@ -56,6 +57,24 @@ theorem coeff_mem_intermediateField_of_dvd_truncated_inverse
             rw [← hrec j hk, ← mul_assoc, inv_mul_cancel₀ hFzero, one_mul]
           rw [heq]
           exact S.mul_mem (S.inv_mem (hF 0)) hrhs
+
+/-- Two truncated inverses of a polynomial with nonzero constant coefficient agree coefficientwise
+below the horizon. -/
+theorem coeff_eq_of_dvd_truncated_inverse
+    {E : Type*} [Field E] {L : ℕ} {F G H : E[X]}
+    (hFzero : F.coeff 0 ≠ 0)
+    (hG : (X : E[X]) ^ L ∣ F * G - 1)
+    (hH : (X : E[X]) ^ L ∣ F * H - 1)
+    {k : ℕ} (hk : k < L) :
+    G.coeff k = H.coeff k := by
+  have hmul : (X : E[X]) ^ L ∣ F * (G - H) := by
+    rw [show F * (G - H) = (F * G - 1) - (F * H - 1) by ring]
+    exact dvd_sub hG hH
+  have hdiff : (X : E[X]) ^ L ∣ G - H :=
+    dvd_of_mul_dvd_of_coeff_zero_ne_zero hFzero hmul
+  have hz := (Polynomial.X_pow_dvd_iff.mp hdiff) k hk
+  rw [Polynomial.coeff_sub] at hz
+  exact sub_eq_zero.mp hz
 
 end
 

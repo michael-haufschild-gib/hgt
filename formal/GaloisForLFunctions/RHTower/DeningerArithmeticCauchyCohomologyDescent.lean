@@ -209,6 +209,43 @@ theorem mapH1_mk (x : C.cycles1) :
       Submodule.Quotient.mk (F.mapCycles1 x) :=
   rfl
 
+/--
+**Middle conservativity from exact homotopy fibre.**  A class in the
+kernel of `H¹(F)` is represented by a source cocycle `x` whose image
+has a target primitive `y`.  If every such fibre cocycle `(x,y)`
+lifts from one source degree-zero cochain, then the induced map on
+middle cohomology is injective.
+
+This is the three-term, elementwise form of
+`H¹(Fib F) = 0 → Function.Injective H¹(F)`.  The paired lifting
+hypothesis includes the degree-zero compatibility; no separate
+surjectivity assumption on `F.map0` is hidden.
+-/
+theorem mapH1_injective_of_fiberH1_exact
+    (hfiber : ∀ (x : A1) (y : B0),
+      C.d1 x = 0 →
+      F.map1 x = D.d0 y →
+      ∃ a : A0, C.d0 a = x ∧ F.map0 a = y) :
+    Function.Injective F.mapH1 := by
+  have hkernel : ∀ q : C.H1, F.mapH1 q = 0 → q = 0 := by
+    intro q hq
+    let BC := C.boundaries1.comap C.cycles1.subtype
+    let BD := D.boundaries1.comap D.cycles1.subtype
+    obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective BC q
+    rw [mapH1_mk] at hq
+    have hlocal : F.mapCycles1 x ∈ BD :=
+      (Submodule.Quotient.mk_eq_zero BD).1 hq
+    change F.map1 (x : A1) ∈ D.boundaries1 at hlocal
+    obtain ⟨y, hy⟩ := hlocal
+    obtain ⟨a, ha, _⟩ := hfiber (x : A1) y x.2 hy.symm
+    apply (Submodule.Quotient.mk_eq_zero BC).2
+    change (x : A1) ∈ C.boundaries1
+    exact ⟨a, ha⟩
+  intro q r hqr
+  apply sub_eq_zero.mp
+  apply hkernel (q - r)
+  rw [map_sub, hqr, sub_self]
+
 /-- Degree-two boundaries map to degree-two boundaries. -/
 theorem map2_mem_boundaries
     (x : A2) (hx : x ∈ C.boundaries2) :

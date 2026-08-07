@@ -1006,3 +1006,48 @@ Remaining for the simplicity lemma: evaluate that derivative at `w_k`, where `si
 `AnalyticAt.analyticOrderAt_eq_one_of_zero_deriv_ne_zero`.
 Need `w_k * l = π k` — immediate from `centeredZero`/`centeredMultiplierZero` and
 `l = log n / 2` (watch the `Real.log` cast trap: never `push_cast` through it).
+
+## PLAN A IS COMPLETE (2026-08-07): card 5's (13)/(14)/(17)-cokernel are proved
+
+Four new modules, all axiom-clean on [propext, Classical.choice, Quot.sound]:
+
+1. `HTGeometry/EntireInterpolation.lean` — `exists_entire_interpolation`.
+   **Mittag-Leffler interpolation at simple zeros.**  Series
+   `sum_i c_i (z/w_i)^{N_i} * dslope F (w_i) z / deriv F (w_i)`.
+   Key mathlib tools: `dslope` + `Complex.differentiableOn_dslope` (entire term, kills the
+   removable singularity), `tendstoUniformlyOn_tsum_of_cofinite_eventually` (the M-test only needs
+   the bound for COFINITELY many indices — this is what makes the per-disc argument work),
+   `TendstoLocallyUniformlyOn.differentiableOn`, `tsum_eq_single`.
+   Choice of `N_i`: `exists_pow_lt_of_lt_one` with tolerance `u i / (A i + 1)`.
+   Majorant on a general countable index: `exists_injective_nat` then `(1/2)^(e i)`,
+   summable by `Summable.comp_injective`.
+
+2. `HTGeometry/EntireBezout.lean` — `exists_entire_quotient`, `exists_entire_bezout`.
+   **Analytic division** via the meromorphic normal form:
+   `toMeromorphicNFOn (f/g) univ`, `meromorphicNFOn_toMeromorphicNFOn`,
+   `MeromorphicOn.divisor_of_toMeromorphicNFOn`, `meromorphicOrderAt_div`,
+   `MeromorphicNFOn.divisor_nonneg_iff_analyticOnNhd`, then
+   `MeromorphicOn.toMeromorphicNFOn_eq_self_on_nhdsNE` + the identity theorem
+   (`AnalyticOnNhd.eqOn_of_preconnected_of_frequently_eq`) to get the global factorization.
+   **Wedderburn** = interpolate `1/g` at the zeros of `f`, then divide `1 - a g` by `f`.
+
+3. `RHTower/HedenmalmTwoPrimeBezout.lean` — `centeredMultiplierE` (the ENTIRE representative;
+   the corpus `centeredMultiplier` has the Lean junk value 0 at the origin, NOT `n^{-1/2} log n`),
+   `exists_two_prime_bezout`.
+
+4. `RHTower/HedenmalmTwoPrimeIdeal.lean` — `span_entireCenteredWindow_eq_xiIdeal` (14),
+   `range_windowRow`, `twoPrimeCokernelEquiv` (17).  Reuses the corpus `DeningerEntire`
+   subalgebra and `deningerEntireXiIdeal` from `DeningerEntireQuotientCohomology.lean`.
+
+TRAPS hit:
+- `((hasDerivAt_id w).mul_const l).csin` leaves `id x * l` and `1 * l`; clean with
+  `simp only [id_eq, one_mul] at h; exact h`.
+- `pow_le_pow_left` is now `pow_le_pow_left₀`.
+- `ENat.one_le_iff_ne_zero` deprecated -> `Order.one_le_iff_ne_zero`.
+- `ENat.map_eq_top_iff` takes NO argument.
+- `Ideal.span_le` will not fire on `deningerEntireXiIdeal ≤ _`; unfold the def first, or use
+  `Ideal.span_singleton_le_iff_mem`.
+- `rcases hx with rfl | rfl` on `x ∈ ({a, b} : Set _)` needs
+  `simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hx` first.
+- `field_simp at h; rcases h with h|h` on a real equation can make `rcases` attempt dependent
+  elimination on `Quot.mk CauSeq.equiv`; multiply through with `congrArg` instead.

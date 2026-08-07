@@ -412,3 +412,16 @@ three different reasons, and only the `τ` one uses the defining cocycle conditi
 class.  Together with `tripticOrbitCharge_mul` (additivity) and the elliptic-gamma realization it
 completes every input of the abstract Kummer classification except finiteness of the class support
 and the identification of the kernel with the differentially algebraic members.
+
+Added to the same module (wired, axiom-clean):
+
+    meromorphicOrderAt_eq_zero_of_untop₀
+    finite_setOf_meromorphicOrderAt_ne_zero  the divisor of a meromorphic function meets every
+                                             compact set finitely
+    finite_setOf_shiftOrder_ne_zero          hence so does the shift-order support: a base point
+                                             carries charge only if the source has a zero or pole at
+                                             it or at its `σ`-translate
+
+With `H₃`-invariance and compact local finiteness together, the charge is a well-defined finitely
+supported function on `G` once a bounded fundamental domain is chosen, which is the last structural
+input of `D : M → ℤ[G]`.
