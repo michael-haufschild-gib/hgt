@@ -6178,3 +6178,4 @@ import GaloisForLFunctions.RHTower.Sieve.GhsOuterBlockEstimate
 import GaloisForLFunctions.RHTower.Sieve.TruncatedBlockMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.HalaszWindowMeasurable
 import GaloisForLFunctions.RHTower.Sieve.DichotomySplitAssembly
+import GaloisForLFunctions.RHTower.Sieve.HalaszDichotomyInstance

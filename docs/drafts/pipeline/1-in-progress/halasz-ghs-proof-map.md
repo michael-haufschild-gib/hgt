@@ -1713,3 +1713,30 @@ long range carries the `e^{−δ²}` damping.
 
 The remaining work is the arithmetic of `δ, z, T, σ, H` in this expression — the first accounting in this
 programme that has both savings available at once.
+
+## The dichotomy substituted: both savings present at once
+
+`RHTower/Sieve/HalaszDichotomyInstance.lean` (green, axiom-clean, wired).
+
+`norm_integral_Icc_mul_three_le_halasz`, with `halaszDampedBound σ z δ` and `halaszWindowMeasureBound T z δ`
+naming the two corpus quantities:
+
+`‖∫_{|y| ≤ T} L(a)L(b)L(f)W‖
+    ≤ (1+1/(σ−1))e^{7/2}·Wsup·(window measure)·(ℓ¹a)(ℓ¹b)
+      + (damped bound)·Wsup·√(sieve a)·√(sieve b)`.
+
+Taking the split's threshold to be the damped size makes its exceptional window the corpus's large-value set, so
+`volume_halaszLargeValues_le` applies; `ENNReal.toReal_le_of_le_ofReal` converts its `ENNReal` bound to the real
+one the estimate needs.  The two square roots of `|S|(ℓ¹)²` combine into `|S|·(ℓ¹a)(ℓ¹b)` exactly, not up to a
+constant.
+
+**Both savings are present simultaneously** — the trivial size only against a short window, the `e^{−δ²}` damping
+over the whole range.  That is the property the two collapsed accountings lacked, and it is what makes the
+remaining arithmetic worth attempting:
+
+* first term: `(log N)·N·[(2T log z/π + 1)·2√(2π²δ²/logSqWeight z)]·(ℓ¹a)(ℓ¹b)`, and `logSqWeight z ≍ (log z)²/2`,
+  so the bracket is `≍ Tδ log z·(1/log z) = Tδ`;
+* second term: `(log N)e^{−δ²}·N·√(sieve a)√(sieve b)`, with the sieve sums as computed before.
+
+So `δ` trades a linear cost in the window against an exponential gain off it — the classical Halász balance,
+now available in the corpus in a form where both terms are explicit.
