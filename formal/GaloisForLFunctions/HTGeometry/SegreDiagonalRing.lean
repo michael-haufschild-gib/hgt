@@ -76,10 +76,12 @@ noncomputable def segrePairMarginal (m n : ℕ) :
   map_add' a b := by
     ext x
     cases x with
-    | inl i => exact DFunLike.congr_fun
-        ((Finsupp.mapDomain.addMonoidHom Prod.fst).map_add a b) i
-    | inr j => exact DFunLike.congr_fun
-        ((Finsupp.mapDomain.addMonoidHom Prod.snd).map_add a b) j
+    | inl i =>
+        exact congrArg (fun z : Fin (m + 1) →₀ ℕ => z i)
+          ((Finsupp.mapDomain.addMonoidHom Prod.fst).map_add a b)
+    | inr j =>
+        exact congrArg (fun z : Fin (n + 1) →₀ ℕ => z j)
+          ((Finsupp.mapDomain.addMonoidHom Prod.snd).map_add a b)
 
 @[simp] theorem segrePairMarginal_single (m n : ℕ)
     (i : Fin (m + 1)) (j : Fin (n + 1)) (c : ℕ) :
@@ -87,6 +89,70 @@ noncomputable def segrePairMarginal (m n : ℕ) :
       Finsupp.single (Sum.inl i) c + Finsupp.single (Sum.inr j) c := by
   ext x
   cases x <;> simp [segrePairMarginal]
+
+/-- Two multisets of equal cardinality can be paired without changing either marginal. -/
+theorem exists_multiset_pairing {I J : Type*} (a : Multiset I) (b : Multiset J)
+    (h : a.card = b.card) :
+    ∃ s : Multiset (I × J), s.map Prod.fst = a ∧ s.map Prod.snd = b := by
+  induction a using Multiset.induction_on generalizing b with
+  | empty =>
+      have hb : b = 0 := Multiset.card_eq_zero.mp h.symm
+      exact ⟨0, by simp [hb]⟩
+  | @cons i a ih =>
+      have hb : b ≠ 0 := by
+        intro hb
+        simp [hb] at h
+      obtain ⟨j, hj⟩ := Multiset.exists_mem_of_ne_zero hb
+      obtain ⟨b, rfl⟩ := Multiset.exists_cons_of_mem hj
+      have hab : a.card = b.card := by simpa using h
+      obtain ⟨s, hs₁, hs₂⟩ := ih b hab
+      exact ⟨(i, j) ::ₘ s, by simp [hs₁, hs₂]⟩
+
+/-- Pushing forward a multiset's multiplicity vector is the multiplicity vector of its image. -/
+theorem mapDomain_toFinsupp {I J : Type*} [DecidableEq I] [DecidableEq J]
+    (f : I → J) (s : Multiset I) :
+    Finsupp.mapDomain f (Multiset.toFinsupp s) = Multiset.toFinsupp (s.map f) := by
+  induction s using Multiset.induction_on with
+  | empty => simp
+  | cons a s ih =>
+      rw [show Multiset.toFinsupp (a ::ₘ s) =
+        Finsupp.single a 1 + Multiset.toFinsupp s by
+          rw [← Multiset.toFinsupp_singleton, ← Multiset.toFinsupp_add]
+          rfl]
+      rw [Finsupp.mapDomain_add, Finsupp.mapDomain_single, ih]
+      rw [← Multiset.toFinsupp_singleton, ← Multiset.toFinsupp_add, Multiset.map_cons]
+      rfl
+
+/-- Every balanced exponent vector is a marginal sum of degree-one pair exponents. -/
+theorem exists_segrePairMarginal_eq (m n : ℕ) (e : segreExponentSubmonoid m n) :
+    ∃ z : Fin (m + 1) × Fin (n + 1) →₀ ℕ, segrePairMarginal m n z = e.1 := by
+  classical
+  let lr := Finsupp.sumFinsuppEquivProdFinsupp e.1
+  have hsum : lr.1.sum (fun _ c => c) = lr.2.sum (fun _ c => c) := by
+    have h := e.2
+    change (Finsupp.weight biprojectiveWeight e.1).1 =
+      (Finsupp.weight biprojectiveWeight e.1).2 at h
+    rw [weight_biprojectiveWeight] at h
+    simpa [lr] using h
+  have hcard : (Finsupp.toMultiset lr.1).card = (Finsupp.toMultiset lr.2).card := by
+    rw [Finsupp.card_toMultiset, Finsupp.card_toMultiset]
+    exact hsum
+  obtain ⟨s, hs₁, hs₂⟩ := exists_multiset_pairing
+    (Finsupp.toMultiset lr.1) (Finsupp.toMultiset lr.2) hcard
+  refine ⟨Multiset.toFinsupp s, ?_⟩
+  apply Finsupp.sumFinsuppEquivProdFinsupp.injective
+  change Finsupp.sumFinsuppEquivProdFinsupp
+      (Finsupp.sumFinsuppEquivProdFinsupp.symm
+        (Finsupp.mapDomain Prod.fst (Multiset.toFinsupp s),
+         Finsupp.mapDomain Prod.snd (Multiset.toFinsupp s))) = lr
+  rw [Finsupp.sumFinsuppEquivProdFinsupp.apply_symm_apply]
+  change (Finsupp.mapDomain Prod.fst (Multiset.toFinsupp s),
+      Finsupp.mapDomain Prod.snd (Multiset.toFinsupp s)) = lr
+  apply Prod.ext
+  · change Finsupp.mapDomain Prod.fst (Multiset.toFinsupp s) = lr.1
+    rw [mapDomain_toFinsupp, hs₁, Finsupp.toMultiset_toFinsupp]
+  · change Finsupp.mapDomain Prod.snd (Multiset.toFinsupp s) = lr.2
+    rw [mapDomain_toFinsupp, hs₂, Finsupp.toMultiset_toFinsupp]
 
 /-- Degree-`d` part of the standard graded Segre coordinate ring. -/
 noncomputable abbrev SegreDiagonalPiece (K : Type*) [Field K] (m n d : ℕ) :=

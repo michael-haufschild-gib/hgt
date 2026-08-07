@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.HermiteEvenCarrier
 import GaloisForLFunctions.RHTower.ConstrainedProlateSignedSpectrum
+import GaloisForLFunctions.HTGeometry.GreedyCourantFischer
 import Mathlib.Analysis.InnerProductSpace.StarOrder
 
 /-!
@@ -110,6 +111,101 @@ theorem exists_sgVal_pos_of_re_inner_pos {S : H →L[ℂ] H}
   refine ⟨n, ?_⟩
   have hnreal : sgVal S n = -c := by exact_mod_cast hn
   rwa [hnreal]
+
+/-- A negative quadratic trial space of dimension at least `m` forces `m` orthonormal genuine
+negative eigenvectors.  This is the finite-dimensional negative-index half of the min–max
+principle, proved directly by repeatedly restricting to the orthogonal complement of the
+eigenvectors already found. -/
+theorem exists_orthonormal_negative_eigenfamily_of_finrank_le {S : H →L[ℂ] H}
+    (hcpt : IsCompactOperator S) (hsym : S.IsSymmetric) (V : Submodule ℂ H) {m : ℕ}
+    (hm : m ≤ Module.finrank ℂ V)
+    (hneg : ∀ x : H, x ∈ V → x ≠ 0 → RCLike.re (inner ℂ (S x) x) < 0) :
+    ∃ e : Fin m → H, Orthonormal ℂ e ∧
+      ∀ i, ∃ c : ℝ, c < 0 ∧ S (e i) = (c : ℂ) • e i := by
+  revert hm
+  induction m with
+  | zero =>
+      intro _hm
+      refine ⟨fun i => Fin.elim0 i, Orthonormal.of_isEmpty _, ?_⟩
+      intro i
+      exact Fin.elim0 i
+  | succ m ih =>
+      intro hm
+      have hdim : m < Module.finrank ℂ V := lt_of_lt_of_le (Nat.lt_succ_self m) hm
+      obtain ⟨e, he, heig⟩ := ih (Nat.le_of_lt hdim)
+      let w : ℕ → H := fun k => if hk : k < m then e ⟨k, hk⟩ else 0
+      obtain ⟨x, hxV, hx0, hxorth⟩ :=
+        exists_mem_ne_zero_orthogonal_of_finrank_lt V w m hdim
+      have hxe : ∀ i, inner ℂ (e i) x = 0 := by
+        intro i
+        simpa [w, i.isLt] using hxorth (i : ℕ) i.isLt
+      set W : Submodule ℂ H := (Submodule.span ℂ (Set.range e))ᵊ with hW
+      have hxW : x ∈ W := by
+        rw [hW, Submodule.mem_orthogonal_span_iff]
+        rintro u ⟨i, rfl⟩
+        exact hxe i
+      have hWinv : ∀ y ∈ W, S y ∈ W := by
+        intro y hy
+        rw [hW, Submodule.mem_orthogonal_span_iff] at hy ⊢
+        rintro u ⟨i, rfl⟩
+        obtain ⟨c, _hc, hceig⟩ := heig i
+        have h1 : inner ℂ (e i) (S y) = inner ℂ (S (e i)) y :=
+          (hsym (e i) y).symm
+        rw [h1, hceig, inner_smul_left, hy (e i) ⟨i, rfl⟩, mul_zero]
+      set Sw : W →L[ℂ] W := S.restrict hWinv with hSw
+      have hSw_apply : ∀ z : W, (Sw z : H) = S (z : H) := fun z => rfl
+      have hSw_compact : IsCompactOperator Sw := hcpt.restrict' hWinv
+      have hSw_symm : Sw.IsSymmetric := hsym.restrict_invariant hWinv
+      let xW : W := ⟨x, hxW⟩
+      have hxnegW : RCLike.re (inner ℂ (Sw xW) xW) < 0 := by
+        rw [Submodule.coe_inner, hSw_apply]
+        exact hneg x hxV hx0
+      obtain ⟨c, v, hc, hv0, hv⟩ :=
+        exists_negative_eigenpair_of_re_inner_neg hSw_compact hSw_symm hxnegW
+      let uW : W := ((‖v‖ : ℂ))⁻¹ • v
+      have huNorm : ‖uW‖ = 1 := norm_smul_inv_norm hv0
+      have huEigW : Sw uW = (c : ℂ) • uW := by
+        dsimp [uW]
+        rw [map_smul, hv, smul_comm]
+      have huOrth : ∀ i, inner ℂ (uW : H) (e i) = 0 := by
+        intro i
+        have huW := uW.2
+        rw [hW, Submodule.mem_orthogonal_span_iff] at huW
+        have heu : inner ℂ (e i) (uW : H) = 0 := huW (e i) ⟨i, rfl⟩
+        rw [inner_conj_symm, heu, map_zero]
+      have huEig : S (uW : H) = (c : ℂ) • (uW : H) := by
+        have h := congrArg (Subtype.val : W → H) huEigW
+        rw [hSw_apply] at h
+        simpa only [Submodule.coe_smul] using h
+      refine ⟨Matrix.vecCons (uW : H) e,
+        orthonormal_vecCons_iff.mpr ⟨huNorm, huOrth, he⟩, ?_⟩
+      intro i
+      refine Fin.cases ⟨c, hc, huEig⟩ (fun j => ?_) i
+      exact heig j
+
+/-- A positive quadratic trial space of dimension at least `m` forces `m` orthonormal genuine
+positive eigenvectors. -/
+theorem exists_orthonormal_positive_eigenfamily_of_finrank_le {S : H →L[ℂ] H}
+    (hcpt : IsCompactOperator S) (hsym : S.IsSymmetric) (V : Submodule ℂ H) {m : ℕ}
+    (hm : m ≤ Module.finrank ℂ V)
+    (hpos : ∀ x : H, x ∈ V → x ≠ 0 → 0 < RCLike.re (inner ℂ (S x) x)) :
+    ∃ e : Fin m → H, Orthonormal ℂ e ∧
+      ∀ i, ∃ c : ℝ, 0 < c ∧ S (e i) = (c : ℂ) • e i := by
+  have hsymneg : (-S).IsSymmetric := by
+    intro u v
+    change inner ℂ (-(S u)) v = inner ℂ u (-(S v))
+    rw [inner_neg_left, inner_neg_right]
+    exact congrArg Neg.neg (hsym u v)
+  have hneg : ∀ x : H, x ∈ V → x ≠ 0 →
+      RCLike.re (inner ℂ ((-S) x) x) < 0 := by
+    intro x hxV hx0
+    simpa using (neg_lt_zero.mpr (hpos x hxV hx0))
+  obtain ⟨e, he, heig⟩ :=
+    exists_orthonormal_negative_eigenfamily_of_finrank_le hcpt.neg hsymneg V hm hneg
+  refine ⟨e, he, fun i => ?_⟩
+  obtain ⟨c, hc, hceig⟩ := heig i
+  refine ⟨-c, neg_pos.mpr hc, ?_⟩
+  simpa [neg_smul] using congrArg Neg.neg hceig
 
 end ContinuousLinearMap
 
@@ -229,6 +325,36 @@ theorem eventually_strictlyNegativeOn_hermiteNegativeTrialSpace (n : ℕ) :
       norm_nonneg (f + evenTimeBandFourier a f), norm_nonneg f]
   exact ContinuousLinearMap.re_inner_neg_of_norm_add_lt_norm
     (evenTimeBandFourier a) f hdefect
+
+/-- At every fixed depth, the actual even prolate block eventually has `n+1` orthonormal
+positive eigenvectors.  Unlike a one-vector sign witness, this records spectral multiplicity. -/
+theorem eventually_exists_orthonormal_positive_evenProlateEigenfamily (n : ℕ) :
+    ∀ᶠ a : ℝ in atTop,
+      ∃ e : Fin (n + 1) → evenSubspace, Orthonormal ℂ e ∧
+        ∀ i, ∃ c : ℝ, 0 < c ∧
+          evenTimeBandFourier a (e i) = (c : ℂ) • e i := by
+  filter_upwards [eventually_gt_atTop (0 : ℝ),
+    eventually_strictlyPositiveOn_hermiteTrialSpace n] with a ha hpos
+  exact ContinuousLinearMap.exists_orthonormal_positive_eigenfamily_of_finrank_le
+    (isCompactOperator_evenTimeBandFourier a ha)
+    (ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp
+      (adjoint_evenTimeBandFourier a))
+    (hermiteTrialSpace n) (by rw [finrank_hermiteTrialSpace]) hpos
+
+/-- At every fixed depth, the actual even prolate block eventually has `n+1` orthonormal
+negative eigenvectors.  This is the multiplicity-sensitive negative Hermite sector. -/
+theorem eventually_exists_orthonormal_negative_evenProlateEigenfamily (n : ℕ) :
+    ∀ᶠ a : ℝ in atTop,
+      ∃ e : Fin (n + 1) → evenSubspace, Orthonormal ℂ e ∧
+        ∀ i, ∃ c : ℝ, c < 0 ∧
+          evenTimeBandFourier a (e i) = (c : ℂ) • e i := by
+  filter_upwards [eventually_gt_atTop (0 : ℝ),
+    eventually_strictlyNegativeOn_hermiteNegativeTrialSpace n] with a ha hneg
+  exact ContinuousLinearMap.exists_orthonormal_negative_eigenfamily_of_finrank_le
+    (isCompactOperator_evenTimeBandFourier a ha)
+    (ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp
+      (adjoint_evenTimeBandFourier a))
+    (hermiteNegativeTrialSpace n) (by rw [finrank_hermiteNegativeTrialSpace]) hneg
 
 /-- Each fixed positive Hermite mode becomes an approximate `+1` eigenvector. -/
 theorem tendsto_norm_hermiteEvenUnit_sub_timeBand (j : ℕ) :

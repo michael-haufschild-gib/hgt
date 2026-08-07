@@ -66,8 +66,9 @@ def commutator (a P : H →ₗ[R] H) : H →ₗ[R] H := a ∘ₗ P - P ∘ₗ a
 on its exterior part. -/
 theorem proj_commutator_apply (a P : H →ₗ[R] H) (hP : P ∘ₗ P = P) (c : H) :
     P (commutator a P c) = -(P (a (c - P c))) := by
-  have hPP : P (P c) = P c := by
-    have := congrArg (fun T => T c) hP
+  have hPP : ∀ z : H, P (P z) = P z := by
+    intro z
+    have := congrArg (fun T => T z) hP
     simpa using this
   simp only [commutator, LinearMap.sub_apply, LinearMap.comp_apply, map_sub]
   rw [hPP]
@@ -78,8 +79,7 @@ low-pass parts are negatives of each other.  This is the exact sense in which th
 the parametrix carries no new information. -/
 theorem highPass_eq_neg_lowPass {X Y Z : H} (hsum : X + Y = Z) (hZ : Z = 0) : X = -Y := by
   rw [hZ] at hsum
-  linarith_or_polyrith_placeholder
-  where linarith_or_polyrith_placeholder : True := trivial
+  exact eq_neg_of_add_eq_zero_left hsum
 
 end
 

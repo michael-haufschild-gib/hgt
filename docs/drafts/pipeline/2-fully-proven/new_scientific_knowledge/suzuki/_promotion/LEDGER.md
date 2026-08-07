@@ -395,3 +395,16 @@ Thirteen new modules total across both sessions, all umbrella-wired, built green
 explicit definition and `IsRestrictedWeilRepresentative` replaces every `A_a u = w`.  The cards
 that parked on "the actual restricted-Weil operator has not been constructed" can now be attacked
 directly; what each still needs is its own computation, not the operator.
+
+```text
+HTGeometry/TwoPortReturnRedundancy.lean   sections 1-3 of two-port-return-redundancy: the
+                                          exterior evaluation condition is the support condition,
+                                          the three-condition collapse, and the cutoff commutator
+                                          identity for an idempotent
+```
+
+Remaining on `suzuki-two-port-return-redundancy-and-interior-null-core`: section 4's `H^s`
+membership of a compactly supported bounded-variation function for `s < 1/2`.  That is a clean
+self-contained target — the `‖u(·+h) − u‖₂² ≤ ‖u(·+h) − u‖₁ ‖u(·+h) − u‖_∞` interpolation the card
+displays, plus the Fourier characterization of `H^s` — and it is worth building as reusable
+`HTGeometry` infrastructure since the Carleman-barrier card needs the same profile.

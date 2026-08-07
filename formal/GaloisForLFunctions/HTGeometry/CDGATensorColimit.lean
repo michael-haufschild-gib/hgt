@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable {R : Type u} [CommRing R] {X : ℕ → Type v} [∀ n, AddCommGroup (X n)]
   [∀ n, Module R (X n)] {A : CDGAStructure R X}
   {M : ℕ → Type w} [∀ n, AddCommGroup (M n)] [∀ n, Module R (M n)]
-  {ι : Type w} [Preorder ι] [IsDirectedOrder ι] [Nonempty ι] [DecidableEq ι]
+  {ι : Type} [Preorder ι] [IsDirectedOrder ι] [Nonempty ι] [DecidableEq ι]
   {N : ι → ℕ → Type w} [∀ i n, AddCommGroup (N i n)] [∀ i n, Module R (N i n)]
   {Q : ∀ i, CDGAModuleStructure A (N i)} (ψ : ∀ i j, i ≤ j → CDGAModuleHom (Q i) (Q j))
 

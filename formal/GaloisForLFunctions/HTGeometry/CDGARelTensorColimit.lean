@@ -20,10 +20,15 @@ namespace GaloisForLFunctions.HTGeometry
 variable {R : Type u} [CommRing R] {X : ℕ → Type v} [∀ n, AddCommGroup (X n)]
   [∀ n, Module R (X n)] {A : CDGAStructure R X}
   {M : ℕ → Type w} [∀ n, AddCommGroup (M n)] [∀ n, Module R (M n)]
-  {ι : Type w} [Preorder ι] [IsDirectedOrder ι] [Nonempty ι] [DecidableEq ι]
+  {ι : Type} [Preorder ι] [IsDirectedOrder ι] [Nonempty ι] [DecidableEq ι]
   {N : ι → ℕ → Type w} [∀ i n, AddCommGroup (N i n)] [∀ i n, Module R (N i n)]
   {Q : ∀ i, CDGAModuleStructure A (N i)} (P : CDGAModuleStructure A M)
   (ψ : ∀ i j, i ≤ j → CDGAModuleHom (Q i) (Q j))
+
+/-- The system of tensor products over the algebra, as differential graded modules. -/
+noncomputable def relTensorSystem (i j : ι) (h : i ≤ j) :
+    CDGAModuleHom (relTensorModule P (Q i)) (relTensorModule P (Q j)) :=
+  relTensorMapRight P (ψ i j h)
 
 /-- The transitions of the system of tensor products over the algebra. -/
 noncomputable def relTensorDegTransition (n : ℕ) (i j : ι) (h : i ≤ j) :
@@ -72,10 +77,15 @@ instance relTensorDirectedSystem (n : ℕ) :
     refine Quotient.inductionOn' f fun z => ?_
     exact congrArg Submodule.Quotient.mk (tensorMapRight_comp_apply P ψ hij hjk n z)
 
+instance relTensorSystemDirectedSystem (n : ℕ) :
+    DirectedSystem (fun i => RelTensorCarrier P (Q i) n)
+      fun i j h => moduleDegTransition (relTensorSystem P ψ) n i j h :=
+  inferInstanceAs (DirectedSystem (fun i => RelTensorCarrier P (Q i) n)
+    fun i j h => relTensorDegTransition P ψ n i j h)
+
 /-- The comparison from the colimit of the quotients to the quotient over the colimit. -/
 noncomputable def relTensorColimMap (n : ℕ) :
-    Module.DirectLimit (fun i => RelTensorCarrier P (Q i) n) (relTensorDegTransition P ψ n)
-      →ₗ[R] RelTensorCarrier P (colimModule ψ) n :=
+    colimModuleDeg (relTensorSystem P ψ) n →ₗ[R] RelTensorCarrier P (colimModule ψ) n :=
   Module.DirectLimit.lift R ι _ _
     (fun i => (relTensorMapRight P (colimModuleOf ψ i)).mapₗ n)
     (fun i j hij f => by
@@ -93,9 +103,9 @@ noncomputable def relTensorColimMap (n : ℕ) :
 omit [∀ n : ℕ, DirectedSystem (fun i => N i n) fun i j h => moduleDegTransition ψ n i j h] in
 @[simp] theorem relTensorColimMap_of (n : ℕ) (i : ι) (f : RelTensorCarrier P (Q i) n) :
     relTensorColimMap P ψ n
-        (Module.DirectLimit.of R ι (fun i => RelTensorCarrier P (Q i) n)
-          (relTensorDegTransition P ψ n) i f)
+        ((colimModuleOf (relTensorSystem P ψ) i).toFun n f)
       = (relTensorMapRight P (colimModuleOf ψ i)).toFun n f := by
+  rw [colimModuleOf_eq]
   simp only [relTensorColimMap, Module.DirectLimit.lift_of]
   rfl
 
@@ -163,15 +173,14 @@ theorem relTensorColimMap_surjective (n : ℕ) :
   have hz : (tensorMapRight P (colimModuleOf ψ i)).toFun n w = z := by
     rw [← tensorColimEquiv_eq_tensorMapRight P ψ n i w, hw]
     exact (tensorColimEquiv ψ n).apply_symm_apply z
-  refine ⟨Module.DirectLimit.of R ι (fun i => RelTensorCarrier P (Q i) n)
-    (relTensorDegTransition P ψ n) i (Submodule.Quotient.mk w), ?_⟩
+  refine ⟨(colimModuleOf (relTensorSystem P ψ) i).toFun n (Submodule.Quotient.mk w), ?_⟩
   rw [relTensorColimMap_of]
   exact congrArg Submodule.Quotient.mk hz
 
 theorem relTensorColimMap_injective (n : ℕ) :
     Function.Injective (relTensorColimMap P ψ n) := by
   refine (injective_iff_map_eq_zero _).2 fun ξ hξ => ?_
-  obtain ⟨i, f, rfl⟩ := Module.DirectLimit.exists_of ξ
+  obtain ⟨i, f, rfl⟩ := colimModuleOf_exists (relTensorSystem P ψ) n ξ
   revert hξ
   refine Quotient.inductionOn' f fun z hz => ?_
   rw [relTensorColimMap_of] at hz
@@ -209,24 +218,97 @@ theorem relTensorColimMap_injective (n : ℕ) :
       ∈ relTensorRel P (Q l) n := by
     rw [hl]
     exact relTensorRel_map_right P (ψ j l (hjk.trans hkl)) n y hy
-  have hof : Module.DirectLimit.of R ι (fun i => RelTensorCarrier P (Q i) n)
-      (relTensorDegTransition P ψ n) l
-      (relTensorDegTransition P ψ n i l (hik.trans hkl) (Submodule.Quotient.mk z))
-    = Module.DirectLimit.of R ι (fun i => RelTensorCarrier P (Q i) n)
-      (relTensorDegTransition P ψ n) i (Submodule.Quotient.mk z) :=
-    Module.DirectLimit.of_f
-  show Module.DirectLimit.of R ι (fun i => RelTensorCarrier P (Q i) n)
-      (relTensorDegTransition P ψ n) i (Submodule.Quotient.mk z) = 0
-  rw [← hof, show relTensorDegTransition P ψ n i l (hik.trans hkl) (Submodule.Quotient.mk z)
+  have hof : (colimModuleOf (relTensorSystem P ψ) l).toFun n
+      ((relTensorSystem P ψ i l (hik.trans hkl)).toFun n (Submodule.Quotient.mk z))
+    = (colimModuleOf (relTensorSystem P ψ) i).toFun n (Submodule.Quotient.mk z) :=
+    colimModuleOf_trans (relTensorSystem P ψ) (hik.trans hkl) n _
+  show (colimModuleOf (relTensorSystem P ψ) i).toFun n (Submodule.Quotient.mk z) = 0
+  rw [← hof, show (relTensorSystem P ψ i l (hik.trans hkl)).toFun n (Submodule.Quotient.mk z)
       = (0 : RelTensorCarrier P (Q l) n) from
     (Submodule.Quotient.mk_eq_zero _).2 hstage]
-  exact map_zero _
+  exact ((colimModuleOf (relTensorSystem P ψ) l).mapₗ n).map_zero
 
 /-- **The tensor product over the algebra commutes with a filtered colimit.** -/
 noncomputable def relTensorColimEquiv (n : ℕ) :
-    Module.DirectLimit (fun i => RelTensorCarrier P (Q i) n) (relTensorDegTransition P ψ n)
-      ≃ₗ[R] RelTensorCarrier P (colimModule ψ) n :=
+    colimModuleDeg (relTensorSystem P ψ) n ≃ₗ[R] RelTensorCarrier P (colimModule ψ) n :=
   LinearEquiv.ofBijective (relTensorColimMap P ψ n)
     ⟨relTensorColimMap_injective P ψ n, relTensorColimMap_surjective P ψ n⟩
+
+/-- **The comparison is a morphism of differential graded modules.** -/
+noncomputable def relTensorColimHom :
+    CDGAModuleHom (colimModule (relTensorSystem P ψ)) (relTensorModule P (colimModule ψ)) where
+  toFun n f := relTensorColimMap P ψ n f
+  map_add n f f' := map_add (relTensorColimMap P ψ n) f f'
+  map_smul n c f := map_smul (relTensorColimMap P ψ n) c f
+  map_act := by
+    intro c a m h x f
+    obtain ⟨i, g, rfl⟩ := colimModuleOf_exists (relTensorSystem P ψ) a f
+    show relTensorColimMap P ψ m (colimModuleAct (relTensorSystem P ψ) h x _)
+      = relTensorAct P (colimModule ψ) h x (relTensorColimMap P ψ a _)
+    rw [colimModuleAct_colimOf, relTensorColimMap_of, relTensorColimMap_of]
+    exact (relTensorMapRight P (colimModuleOf ψ i)).map_act h x g
+  map_d := by
+    intro n f
+    obtain ⟨i, g, rfl⟩ := colimModuleOf_exists (relTensorSystem P ψ) n f
+    show relTensorColimMap P ψ (n + 1) (colimModuleD (relTensorSystem P ψ) n _)
+      = relTensorD P (colimModule ψ) n (relTensorColimMap P ψ n _)
+    rw [colimModuleD_colimOf, relTensorColimMap_of, relTensorColimMap_of]
+    exact (relTensorMapRight P (colimModuleOf ψ i)).map_d n g
+
+theorem relTensorColimHom_isQuasiIsoFull : (relTensorColimHom P ψ).IsQuasiIsoFull :=
+  CDGAModuleHom.IsQuasiIsoFull.of_bijective fun n =>
+    ⟨relTensorColimMap_injective P ψ n, relTensorColimMap_surjective P ψ n⟩
+
+section Naturality
+
+variable {M' : ℕ → Type w} [∀ n, AddCommGroup (M' n)] [∀ n, Module R (M' n)]
+  (P' : CDGAModuleStructure A M') (φ : CDGAModuleHom P P')
+
+/-- The two functorialities commute on the tensor product over the algebra. -/
+theorem relTensorMapLeft_relTensorMapRight {i j : ι} (hij : i ≤ j) (n : ℕ)
+    (f : RelTensorCarrier P (Q i) n) :
+    (relTensorMapLeft φ (Q j)).toFun n ((relTensorSystem P ψ i j hij).toFun n f)
+      = (relTensorSystem P' ψ i j hij).toFun n ((relTensorMapLeft φ (Q i)).toFun n f) := by
+  refine Quotient.inductionOn' f fun z => ?_
+  refine congrArg Submodule.Quotient.mk ?_
+  exact congrFun (congrArg (fun H : CDGAModuleHom (tensorModule P (Q i)) (tensorModule P' (Q j)) =>
+    H.toFun n) (tensorMapLeft_comp_tensorMapRight φ (Q i) (Q j) (ψ i j hij))) z
+
+/-- The comparison of the colimits is natural in the left variable. -/
+theorem relTensorColimHom_naturality :
+    (relTensorMapLeft φ (colimModule ψ)).comp (relTensorColimHom P ψ)
+      = (relTensorColimHom P' ψ).comp (colimModuleHom (relTensorSystem P ψ)
+          (relTensorSystem P' ψ) (fun i => relTensorMapLeft φ (Q i))
+          (fun i j hij n f => relTensorMapLeft_relTensorMapRight P ψ P' φ hij n f)) := by
+  refine CDGAModuleHom.hom_ext fun n ξ => ?_
+  obtain ⟨i, f, rfl⟩ := colimModuleOf_exists (relTensorSystem P ψ) n ξ
+  refine Quotient.inductionOn' f fun z => ?_
+  show (relTensorMapLeft φ (colimModule ψ)).toFun n
+      (relTensorColimMap P ψ n
+        ((colimModuleOf (relTensorSystem P ψ) i).toFun n (Submodule.Quotient.mk z)))
+    = relTensorColimMap P' ψ n (colimModuleHomFun (relTensorSystem P ψ) (relTensorSystem P' ψ)
+        (fun i => relTensorMapLeft φ (Q i))
+        (fun i j hij n f => relTensorMapLeft_relTensorMapRight P ψ P' φ hij n f) n
+        ((colimModuleOf (relTensorSystem P ψ) i).toFun n (Submodule.Quotient.mk z)))
+  rw [relTensorColimMap_of, colimModuleHomFun_of, relTensorColimMap_of]
+  refine congrArg Submodule.Quotient.mk ?_
+  exact congrFun (congrArg
+    (fun H : CDGAModuleHom (tensorModule P (Q i)) (tensorModule P' (colimModule ψ)) => H.toFun n)
+    (tensorMapLeft_comp_tensorMapRight φ (Q i) (colimModule ψ) (colimModuleOf ψ i))) z
+
+/-- **Tensoring the colimit over the algebra preserves full quasi-isomorphisms** as soon as every
+stage does. -/
+theorem relTensorMapLeft_colim_isQuasiIsoFull
+    (hstage : ∀ i, (relTensorMapLeft φ (Q i)).IsQuasiIsoFull) :
+    (relTensorMapLeft φ (colimModule ψ)).IsQuasiIsoFull := by
+  have h1 : (colimModuleHom (relTensorSystem P ψ) (relTensorSystem P' ψ)
+      (fun i => relTensorMapLeft φ (Q i))
+      (fun i j hij n f => relTensorMapLeft_relTensorMapRight P ψ P' φ hij n f)).IsQuasiIsoFull :=
+    colimModuleHom_isQuasiIsoFull _ _ _ _ hstage
+  have h2 := CDGAModuleHom.IsQuasiIsoFull.comp (relTensorColimHom_isQuasiIsoFull P' ψ) h1
+  rw [← relTensorColimHom_naturality P ψ P' φ] at h2
+  exact CDGAModuleHom.IsQuasiIsoFull.of_comp_left h2 (relTensorColimHom_isQuasiIsoFull P ψ)
+
+end Naturality
 
 end GaloisForLFunctions.HTGeometry

@@ -137,6 +137,39 @@ noncomputable def colimModuleOf (i : ι) : CDGAModuleHom (P i) (colimModule φ) 
   map_act h x m := (colimModuleAct_of φ h x i m).symm
   map_d n m := (colimModuleD_of φ n i m).symm
 
+omit [∀ n : ℕ, DirectedSystem (fun i => M i n) fun i j h => moduleDegTransition φ n i j h] in
+theorem colimModuleOf_eq (i : ι) (n : ℕ) (m : M i n) :
+    (colimModuleOf φ i).toFun n m
+      = Module.DirectLimit.of R ι (fun i => M i n) (moduleDegTransition φ n) i m := rfl
+
+omit [∀ n : ℕ, DirectedSystem (fun i => M i n) fun i j h => moduleDegTransition φ n i j h] in
+@[simp] theorem colimModuleD_colimOf (n : ℕ) (i : ι) (m : M i n) :
+    colimModuleD φ n ((colimModuleOf φ i).toFun n m)
+      = (colimModuleOf φ i).toFun (n + 1) ((P i).d n m) := colimModuleD_of φ n i m
+
+omit [∀ n : ℕ, DirectedSystem (fun i => M i n) fun i j h => moduleDegTransition φ n i j h] in
+@[simp] theorem colimModuleAct_colimOf {b c n : ℕ} (h : b + c = n) (x : X b) (i : ι) (m : M i c) :
+    colimModuleAct φ h x ((colimModuleOf φ i).toFun c m)
+      = (colimModuleOf φ i).toFun n ((P i).act h x m) := colimModuleAct_of φ h x i m
+
+omit [∀ n : ℕ, DirectedSystem (fun i => M i n) fun i j h => moduleDegTransition φ n i j h] in
+/-- Every element of the colimit comes from a stage. -/
+theorem colimModuleOf_exists (n : ℕ) (z : colimModuleDeg φ n) :
+    ∃ (i : ι) (m : M i n), (colimModuleOf φ i).toFun n m = z :=
+  Module.DirectLimit.exists_of z
+
+omit [∀ n : ℕ, DirectedSystem (fun i => M i n) fun i j h => moduleDegTransition φ n i j h] in
+/-- The canonical maps from the stages are compatible with the transitions. -/
+theorem colimModuleOf_trans {i j : ι} (hij : i ≤ j) (n : ℕ) (m : M i n) :
+    (colimModuleOf φ j).toFun n ((φ i j hij).toFun n m) = (colimModuleOf φ i).toFun n m :=
+  Module.DirectLimit.of_f
+
+/-- An element that vanishes in the colimit already vanishes at a later stage. -/
+theorem colimModuleOf_eq_zero {i : ι} {n : ℕ} {m : M i n}
+    (h : (colimModuleOf φ i).toFun n m = 0) :
+    ∃ (j : ι) (hij : i ≤ j), (φ i j hij).toFun n m = 0 :=
+  Module.DirectLimit.of.zero_exact h
+
 end Colimit
 
 section ColimitHom

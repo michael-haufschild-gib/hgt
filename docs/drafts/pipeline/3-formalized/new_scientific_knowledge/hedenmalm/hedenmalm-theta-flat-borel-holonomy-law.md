@@ -1,9 +1,10 @@
 # Hedenmalm's flat theta tail has an exact positive Borel holonomy
 
 - **ID:** `hedenmalm-theta-flat-borel-holonomy-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / ESSENTIAL-TAIL FUNCTIONAL CALCULUS / CONTINUOUS SONIN CONNECTOR
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED HERE] [LEAN FORMALIZED] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
+- **Formalized companion:** `hedenmalm-theta-flat-borel-holonomy-law-formalized.md`
 - **Parents:**
   - `hedenmalm-reflection-folded-dirac-source-defect.md`;
   - `prime-tail-hedenmalm-wiener-hopf-transgression.md`;

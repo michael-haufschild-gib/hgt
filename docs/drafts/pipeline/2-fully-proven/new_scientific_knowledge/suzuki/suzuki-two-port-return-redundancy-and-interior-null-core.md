@@ -261,14 +261,38 @@ and the only remaining discriminator is the literal interior null equation. (17)
 This prevents another layer of source-reconstruction work from being mistaken for progress on
 the RH-bearing scale gap.  External priority is unaudited.
 
-## 8. Lean decision
+## 8. Lean certificate
 
-The redundancy `(2)`--`(5)` is elementary once the analytic graph construction exists, but that
-construction is not represented in Lean.  Formalizing a generic projection wrapper would not
-certify graph membership `(10)`--`(14)` or the source-specific fact that exterior evaluation is
-the reconstructed support equation.  No Lean module is added for this theorem.  The next faithful
-formal target is the literal supported multiplier nullspace or a source-specific theorem that
-rules out its flat trace-zero sector.
+Sections 1--3 are formalized unconditionally in
+
+```text
+formal/GaloisForLFunctions/HTGeometry/TwoPortReturnRedundancy.lean
+```
+
+```text
+exterior_evaluation_of_support   (3): P u = u and u = Ev c + u_low force
+                                 (Ev c + u_low) - P (Ev c + u_low) = 0
+interior_return_eq               (4): b = A u gives P b = P A u
+twoPortReturn_iff                (5): support ∧ exterior evaluation ∧ interior return
+                                 ↔ support ∧ interior equation
+twoPortReturn_iff_of_residual    the same with the residual named as the card writes it
+commutator, proj_commutator_apply
+                                 (9): for idempotent P, P [a,P] c = -P a (1-P) c, so the cross
+                                 block imposes nothing on (1-P) c
+highPass_eq_neg_lowPass          (8): a vanishing full pass makes the high- and low-pass parts
+                                 negatives of each other
+```
+
+The statements are proved for an arbitrary linear map and idempotent on an arbitrary module, which
+is the right generality: the theorem is a *logical* classification of the three conditions, and it
+therefore applies verbatim to whichever concrete multiplier `p_a(D)` and cutoff `chi` the source
+supplies.  Formalizing it did not require the analytic graph construction, because the
+construction enters only through the reconstruction identity `(2)`, which is a hypothesis of the
+statement in exactly the way the card states it.
+
+Section 4's explicit flat profile and its `H^s` membership for `s < 1/2` remain paper mathematics:
+they need the Besov/Sobolev embedding of compactly supported bounded-variation functions, which is
+not in the formal tree.  No Lean theorem here assumes it.
 
 ## Gates
 
