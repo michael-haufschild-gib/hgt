@@ -542,3 +542,35 @@ by `y^{∓A} → 0` and each horizontal side bounded uniformly in `A`.
 Perron passage for a triple convolution, the weighted Cauchy–Schwarz split, the prime-supported mean
 square, the Lorentzian mean square, the smoothing-window error, and now Perron's lemma with the sharp
 `1/s` kernel, whose error is a global Dirichlet-series sum rather than a short-interval divisor estimate.
+
+## Correction: the coefficients are polylog, so no divisor estimate is needed anywhere
+
+The no-go recorded above ("every smoothed route needs a short-interval divisor estimate") rested on
+`‖d(n)‖ ≲ (log x)² d₃(n)`.  **That over-estimates the triple convolution.**  Two of its three factors are
+supported on primes, so a factorisation `n = pqk` contributing to `d(n)` is determined by a *pair of prime
+divisors* of `n`:
+
+`‖d(n)‖ ≤ ∑_{p, q prime, pq ∣ n} (log p)(log q) ≤ (ω(n)·log n)² ≤ (log n)⁴/(log 2)²`,
+
+using `ω(n) ≤ log n/log 2`.  The coefficients are therefore **polylogarithmic pointwise** — there is no
+divisor function in them at all.
+
+Consequences:
+
+* the fine-smoothing error `∑_{x<n≤x+H} ‖d(n)‖ ≪ H(log x)⁴` is `≤ x/(log x)²` already at
+  `H = x/(log x)⁶`, with no arithmetic input;
+* the near-diagonal block of the truncated Perron error, `∑_{|n−x| ≤ x/T} ‖d(n)‖ ≪ (x/T)(log x)⁴`, is
+  likewise small at `T = (log x)⁶`;
+* so **both** routes are viable, and neither needs Shiu's theorem or the Piltz asymptotic.
+
+The truncated Perron lemma proved above is still worth having (it is the sharp classical device, and it is
+the one that keeps `T` a free parameter), but the chain no longer depends on it: the exact smoothed
+identity `tsum_mul_smoothWeight_convolution_eq_integral` together with
+`norm_weighted_sub_partialSum_le_window` suffices.
+
+The corpus does own Dirichlet's divisor asymptotic with power saving —
+`RHTower.abs_sum_div_sub_dirichlet_le`, `|∑_{d ≤ N}⌊N/d⌋ − N log N − (2γ−1)N| ≤ 20√N` — so a `d₂`
+short-interval bound is available by differencing if some later step wants it.  It is not needed here.
+
+**Next brick:** the pointwise bound above, `‖(a ⍟ (b ⍟ c))(n)‖ ≤ (ω(n) log n)²` for prime-supported `a, b`
+with `‖a_p‖ ≤ log p`, `‖b_q‖ ≤ log q`, `‖c‖ ≤ 1`.
