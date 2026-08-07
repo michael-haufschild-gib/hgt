@@ -370,7 +370,18 @@ AND REAL SIGNATURE REMAIN OPEN`.
 ### What cannot be stated in Lean, and why
 
 The geometry: the log-toric Stein chart `(2)`--`(3)`, the logarithmic de Rham complex `(6)`, Cartan
-theorem B and the acyclicity/filtered passage `(12)`--`(14)`.  mathlib has no Stein theory, no
-coherent-sheaf cohomology and no logarithmic de Rham complex, so those steps have no formal
-counterpart; the residue square itself is formalized in the split coordinate the card computes in.
-The card therefore stays at stage 2.
+theorem B and the acyclicity/filtered passage `(12)`--`(14)`.  Two thirds of that sentence are no
+longer true.  **Cartan's theorem B is proved in the corpus** — `deningerHolomorphic_ext_eq_zero` on
+`ℂ^n`, `deningerHolomorphic_ext_eq_zero_punctured` on `(ℂ^×)^n`, and
+`deningerFree_ext_eq_zero_punctured` for free analytic sheaves of finite rank — over sheaf
+cohomology built as `Ext` out of the free abelian sheaf on an open set, with acyclic resolutions,
+fine sheaves and smooth partitions of unity.  **The acyclicity and filtered passage of
+`(12)`--`(14)` are proved** as `deningerAcyclicOn_of_filtration`,
+`deningerFiltration_sections_surjective`, `deningerFiltration_sections_exact` and the three
+direct-limit theorems `directLimit_map_exact`, `_surjective`, `_injective`.
+
+What is genuinely missing is the logarithmic de Rham complex `(6)` itself, as a sheaf, with the
+Poincaré residue as a morphism of sheaves; the residue square is formalized in the split coordinate
+the card computes in.  That object has its own card,
+`docs/drafts/pipeline/1-in-progress/log-de-rham-residue-sheaf.md`.  The card stays at stage 2 on
+that account alone.

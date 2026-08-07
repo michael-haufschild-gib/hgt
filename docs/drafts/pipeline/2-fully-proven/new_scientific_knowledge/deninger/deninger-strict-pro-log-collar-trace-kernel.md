@@ -381,3 +381,13 @@ card's analytic scaffolding is now formalized.  What remains genuinely absent is
 side: the logarithmic residue sequence `(1)`--`(2)` in its sheaf-theoretic form needs coherent
 sheaves and the logarithmic de Rham complex of a log-toric chart, neither of which exists in
 mathlib.  The card stays at stage 2 on that account alone.
+
+### The geometric obstruction, restated — 2026-08-07
+
+The record above says the sheaf-theoretic form of `(1)`--`(2)` "needs coherent sheaves and
+logarithmic de Rham complexes".  Coherent-sheaf cohomology is no longer missing: the corpus builds
+sheaf cohomology as `Ext` out of the free abelian sheaf on an open set, proves **Cartan's theorem
+B** on `ℂ^n` and `(ℂ^×)^n` and for free analytic sheaves of finite rank, and proves the acyclicity
+and filtered passage of a cell filtration.  The single remaining geometric object is the logarithmic
+de Rham complex with its Poincaré residue, as a morphism of sheaves; it has its own card,
+`docs/drafts/pipeline/1-in-progress/log-de-rham-residue-sheaf.md`.
