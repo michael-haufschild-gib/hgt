@@ -476,6 +476,7 @@ import GaloisForLFunctions.HTGeometry.CDGACellTower
 import GaloisForLFunctions.HTGeometry.CDGACellTowerColimit
 import GaloisForLFunctions.HTGeometry.CDGACochain
 import GaloisForLFunctions.HTGeometry.CDGABarMul
+import GaloisForLFunctions.HTGeometry.CDGABarHead
 import GaloisForLFunctions.HTGeometry.CDGAColimit
 import GaloisForLFunctions.HTGeometry.CDGAColimitQuasiIso
 import GaloisForLFunctions.HTGeometry.CDGAConstCell

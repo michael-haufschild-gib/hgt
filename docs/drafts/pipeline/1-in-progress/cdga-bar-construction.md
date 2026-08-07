@@ -85,5 +85,18 @@ factors it has two parts, and both are now within reach.
   `TensorProduct.assoc` followed by the multiplication in the first two slots.  No graded associator
   is needed.
 
-What remains for step 5 is therefore the shifted multiplication `sĀ^a ⊗ sĀ^{a'} → sĀ^{a+a'+1}` as a
-linear map, the finite sum above, and `d² = 0`.
+Both pieces of step 5's head are now landed as well.
+
+- `formal/GaloisForLFunctions/HTGeometry/CDGABarMul.lean` — `augIdealShiftMulₗ`,
+  `augIdealShiftMulTensor`: **the multiplication of two shifted elements**, of shifted degrees `a`
+  and `a'`, landing in shifted degree `a + a' + 1`, as a bilinear map and out of the tensor product.
+- `formal/GaloisForLFunctions/HTGeometry/CDGABarHead.lean` — `BarSplit` with its `Fintype`
+  instance, `barHeadTerm` and **`barHead`**: the head of the bar differential, the finite sum over
+  the splits `a + a' + 1 = c` of "project the inner factor at `(a', e)`, reassociate with the
+  ordinary associator of tensor products, multiply the first two slots".
+
+What remains for step 5 is the linearity of `barHead`, the total differential
+`d_int + barHead + (id ⊗ d_bar)` assembled by recursion on the number of factors, and `d² = 0` —
+the double-sum cancellation between the head applied twice, which uses associativity of the ideal's
+product, and the cross terms between the head and the internal differential, which use the Leibniz
+rule.
