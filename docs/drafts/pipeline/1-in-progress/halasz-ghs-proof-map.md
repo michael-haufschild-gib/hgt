@@ -1524,3 +1524,23 @@ What remains is arithmetic only: the truncated analogue of the block decompositi
 `volume.restrict (Icc (−T) T)` rather than the Lorentzian weight — the finite-sum Minkowski is already stated for
 an arbitrary weight, so this is an instantiation), and then summing the `j`-indexed series with the two dampings
 in place.
+
+## Minkowski over an arbitrary measure, unweighted
+
+`HTGeometry/WeightedHolder.lean` (appended; green, axiom-clean).
+
+* `integrable_normSq_add_measure`, `sqrt_integral_normSq_add_le_measure` — the two-term case;
+* `integrable_normSq_sum_measure`, `sqrt_integral_normSq_sum_le_measure` —
+  `(∫‖∑_i g_i‖² ∂μ)^{1/2} ≤ ∑_i (∫‖g_i‖² ∂μ)^{1/2}` over an arbitrary `Finset` and an arbitrary measure.
+
+These are the unweighted (`W ≡ 1`) versions of the weighted family, proved from the general-measure
+Cauchy–Schwarz rather than from the weighted Minkowski: for the truncated route the weight is the *measure*
+(`volume.restrict (Icc (−T) T)`), not a function, so the unweighted statement over a general measure is the
+right shape and is simpler than the weighted one over `volume`.
+
+With them the truncated block decomposition is an instantiation: `μ = volume.restrict (Icc (−T) T)` and
+`g_j = L(a_j, σ+i·)` give
+
+`(∫_{|y| ≤ T} ‖L(a,σ+iy)‖²)^{1/2} ≤ ∑_j (∫_{|y| ≤ T} ‖L(a_j,σ+iy)‖²)^{1/2}`,
+
+each block then carrying its own sieve level and, for the outer weight, its own damping.

@@ -171,3 +171,124 @@ theorem norm_integral_mul_three_le_sup_mul_sqrt_measure {g₁ g₂ g₃ W : α �
 
 end GaloisForLFunctions.HTGeometry
 end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open MeasureTheory Finset
+
+variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
+
+/-- The mean square of a sum is integrable when both parts' are. -/
+theorem integrable_normSq_add_measure {g₁ g₂ : α → ℂ}
+    (hm1 : AEStronglyMeasurable g₁ μ) (hm2 : AEStronglyMeasurable g₂ μ)
+    (h1 : Integrable (fun y => ‖g₁ y‖ ^ 2) μ) (h2 : Integrable (fun y => ‖g₂ y‖ ^ 2) μ) :
+    Integrable (fun y => ‖g₁ y + g₂ y‖ ^ 2) μ := by
+  have hmaj : Integrable (fun y => 2 * ‖g₁ y‖ ^ 2 + 2 * ‖g₂ y‖ ^ 2) μ :=
+    (h1.const_mul 2).add (h2.const_mul 2)
+  refine Integrable.mono' hmaj ((hm1.add hm2).norm.pow 2) ?_
+  filter_upwards with y
+  have htri : ‖g₁ y + g₂ y‖ ≤ ‖g₁ y‖ + ‖g₂ y‖ := norm_add_le _ _
+  have hsq := pow_le_pow_left₀ (norm_nonneg (g₁ y + g₂ y)) htri 2
+  have h0 : (0 : ℝ) ≤ ‖g₁ y + g₂ y‖ ^ 2 := by positivity
+  rw [Real.norm_eq_abs, abs_of_nonneg h0]
+  nlinarith [sq_nonneg (‖g₁ y‖ - ‖g₂ y‖), norm_nonneg (g₁ y), norm_nonneg (g₂ y)]
+
+/-- **Minkowski's inequality for a mean square, over an arbitrary measure.** -/
+theorem sqrt_integral_normSq_add_le_measure {g₁ g₂ : α → ℂ}
+    (hm1 : AEStronglyMeasurable g₁ μ) (hm2 : AEStronglyMeasurable g₂ μ)
+    (h1 : Integrable (fun y => ‖g₁ y‖ ^ 2) μ) (h2 : Integrable (fun y => ‖g₂ y‖ ^ 2) μ) :
+    Real.sqrt (∫ y, ‖g₁ y + g₂ y‖ ^ 2 ∂μ)
+      ≤ Real.sqrt (∫ y, ‖g₁ y‖ ^ 2 ∂μ) + Real.sqrt (∫ y, ‖g₂ y‖ ^ 2 ∂μ) := by
+  set A₁ : ℝ := ∫ y, ‖g₁ y‖ ^ 2 ∂μ with hA₁
+  set A₂ : ℝ := ∫ y, ‖g₂ y‖ ^ 2 ∂μ with hA₂
+  have hA₁0 : 0 ≤ A₁ := by
+    rw [hA₁]; exact integral_nonneg fun y => by positivity
+  have hA₂0 : 0 ≤ A₂ := by
+    rw [hA₂]; exact integral_nonneg fun y => by positivity
+  have hcross := integral_mul_le_sqrt_mul_sqrt_measure hm1 hm2 h1 h2
+  have hcrossint := integrable_mul_norm_of_integrable_sq hm1 hm2 h1 h2
+  have hint := integrable_normSq_add_measure hm1 hm2 h1 h2
+  have hIntSum : Integrable (fun y => ‖g₁ y‖ ^ 2 + 2 * (‖g₁ y‖ * ‖g₂ y‖) + ‖g₂ y‖ ^ 2) μ :=
+    (h1.add (hcrossint.const_mul 2)).add h2
+  have hsplit : (∫ y, ‖g₁ y‖ ^ 2 + 2 * (‖g₁ y‖ * ‖g₂ y‖) + ‖g₂ y‖ ^ 2 ∂μ)
+      = A₁ + 2 * (∫ y, ‖g₁ y‖ * ‖g₂ y‖ ∂μ) + A₂ := by
+    have hAB : Integrable (fun y => ‖g₁ y‖ ^ 2 + 2 * (‖g₁ y‖ * ‖g₂ y‖)) μ :=
+      h1.add (hcrossint.const_mul 2)
+    have hcm : Integrable (fun y => 2 * (‖g₁ y‖ * ‖g₂ y‖)) μ := hcrossint.const_mul 2
+    rw [integral_add hAB h2, integral_add h1 hcm, integral_const_mul, hA₁, hA₂]
+  have hbound : ∀ y, ‖g₁ y + g₂ y‖ ^ 2
+      ≤ ‖g₁ y‖ ^ 2 + 2 * (‖g₁ y‖ * ‖g₂ y‖) + ‖g₂ y‖ ^ 2 := by
+    intro y
+    have htri : ‖g₁ y + g₂ y‖ ≤ ‖g₁ y‖ + ‖g₂ y‖ := norm_add_le _ _
+    have hsq := pow_le_pow_left₀ (norm_nonneg (g₁ y + g₂ y)) htri 2
+    nlinarith [hsq]
+  have hmono := integral_mono hint hIntSum hbound
+  rw [hsplit] at hmono
+  have hfinal : (∫ y, ‖g₁ y + g₂ y‖ ^ 2 ∂μ) ≤ (Real.sqrt A₁ + Real.sqrt A₂) ^ 2 := by
+    have hsq1 : Real.sqrt A₁ ^ 2 = A₁ := Real.sq_sqrt hA₁0
+    have hsq2 : Real.sqrt A₂ ^ 2 = A₂ := Real.sq_sqrt hA₂0
+    have hcross' : (∫ y, ‖g₁ y‖ * ‖g₂ y‖ ∂μ) ≤ Real.sqrt A₁ * Real.sqrt A₂ := by
+      rw [hA₁, hA₂]; exact hcross
+    nlinarith [hmono, hcross', hsq1, hsq2]
+  calc Real.sqrt (∫ y, ‖g₁ y + g₂ y‖ ^ 2 ∂μ)
+      ≤ Real.sqrt ((Real.sqrt A₁ + Real.sqrt A₂) ^ 2) := Real.sqrt_le_sqrt hfinal
+    _ = Real.sqrt A₁ + Real.sqrt A₂ := by rw [Real.sqrt_sq (by positivity)]
+
+/-- The mean square of a finite sum is integrable when each part's is. -/
+theorem integrable_normSq_sum_measure {ι : Type*} (s : Finset ι) (g : ι → α → ℂ)
+    (hm : ∀ i ∈ s, AEStronglyMeasurable (g i) μ)
+    (h : ∀ i ∈ s, Integrable (fun y => ‖g i y‖ ^ 2) μ) :
+    Integrable (fun y => ‖∑ i ∈ s, g i y‖ ^ 2) μ := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+      have hma : AEStronglyMeasurable (g a) μ := hm a (Finset.mem_insert_self a s)
+      have hmsum : AEStronglyMeasurable (fun y => ∑ i ∈ s, g i y) μ := by
+        have h' := Finset.aestronglyMeasurable_sum s fun i hi =>
+          hm i (Finset.mem_insert_of_mem hi)
+        have heq : (∑ i ∈ s, g i) = fun y => ∑ i ∈ s, g i y := by
+          funext y; simp [Finset.sum_apply]
+        rwa [heq] at h'
+      have hia : Integrable (fun y => ‖g a y‖ ^ 2) μ := h a (Finset.mem_insert_self a s)
+      have hisum : Integrable (fun y => ‖∑ i ∈ s, g i y‖ ^ 2) μ :=
+        ih (fun i hi => hm i (Finset.mem_insert_of_mem hi))
+          (fun i hi => h i (Finset.mem_insert_of_mem hi))
+      have hcomb := integrable_normSq_add_measure hma hmsum hia hisum
+      refine hcomb.congr (Filter.Eventually.of_forall fun y => ?_)
+      dsimp only
+      rw [Finset.sum_insert ha]
+
+/-- **Minkowski's inequality for a finite sum, over an arbitrary measure.** -/
+theorem sqrt_integral_normSq_sum_le_measure {ι : Type*} (s : Finset ι) (g : ι → α → ℂ)
+    (hm : ∀ i ∈ s, AEStronglyMeasurable (g i) μ)
+    (h : ∀ i ∈ s, Integrable (fun y => ‖g i y‖ ^ 2) μ) :
+    Real.sqrt (∫ y, ‖∑ i ∈ s, g i y‖ ^ 2 ∂μ)
+      ≤ ∑ i ∈ s, Real.sqrt (∫ y, ‖g i y‖ ^ 2 ∂μ) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+      have hma : AEStronglyMeasurable (g a) μ := hm a (Finset.mem_insert_self a s)
+      have hmsum : AEStronglyMeasurable (fun y => ∑ i ∈ s, g i y) μ := by
+        have h' := Finset.aestronglyMeasurable_sum s fun i hi =>
+          hm i (Finset.mem_insert_of_mem hi)
+        have heq : (∑ i ∈ s, g i) = fun y => ∑ i ∈ s, g i y := by
+          funext y; simp [Finset.sum_apply]
+        rwa [heq] at h'
+      have hia : Integrable (fun y => ‖g a y‖ ^ 2) μ := h a (Finset.mem_insert_self a s)
+      have hisum : Integrable (fun y => ‖∑ i ∈ s, g i y‖ ^ 2) μ :=
+        integrable_normSq_sum_measure s g (fun i hi => hm i (Finset.mem_insert_of_mem hi))
+          (fun i hi => h i (Finset.mem_insert_of_mem hi))
+      have hcongr : (∫ y, ‖∑ i ∈ insert a s, g i y‖ ^ 2 ∂μ)
+          = ∫ y, ‖g a y + ∑ i ∈ s, g i y‖ ^ 2 ∂μ := by
+        refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+        dsimp only
+        rw [Finset.sum_insert ha]
+      rw [hcongr, Finset.sum_insert ha]
+      have hrest := ih (fun i hi => hm i (Finset.mem_insert_of_mem hi))
+        (fun i hi => h i (Finset.mem_insert_of_mem hi))
+      linarith [sqrt_integral_normSq_add_le_measure hma hmsum hia hisum, hrest]
+
+end GaloisForLFunctions.HTGeometry
+end
