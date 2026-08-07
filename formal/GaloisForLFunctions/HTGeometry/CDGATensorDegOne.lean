@@ -129,4 +129,34 @@ def tensorRightDegOneₗ (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1)) (n : ℕ) :
   map_add' := tensorRightDegOne_add g n
   map_smul' := tensorRightDegOne_smul g n
 
+variable {N'' : ℕ → Type w} [∀ n, AddCommGroup (N'' n)] [∀ n, Module R (N'' n)]
+
+/-- **Two degree-one maps on the right factor compose without a sign**: the two Koszul signs are the
+same and cancel.  In particular the right-factor construction squares to zero whenever the maps do.
+-/
+theorem tensorRightDegOne_comp (f : ∀ b : ℕ, N b →ₗ[R] N' (b + 1))
+    (g : ∀ b : ℕ, N' b →ₗ[R] N'' (b + 1)) (hgf : ∀ b : ℕ, (g (b + 1)).comp (f b) = 0) (n : ℕ)
+    (F : TensorCarrier (R := R) M N n) :
+    tensorRightDegOne (M := M) g (n + 1) (tensorRightDegOne (M := M) f n F) = 0 := by
+  funext p
+  obtain ⟨⟨a, b⟩, h⟩ := p
+  cases b with
+  | zero => rw [tensorRightDegOne_zero]; rfl
+  | succ b' =>
+      cases b' with
+      | zero =>
+          show ((-1 : R)) ^ a • TensorProduct.map LinearMap.id (g 0)
+            (tensorRightDegOne (M := M) f n F ⟨(a, 0), by omega⟩) = _
+          rw [tensorRightDegOne_zero, map_zero, smul_zero]
+          rfl
+      | succ b'' =>
+          show ((-1 : R)) ^ a • TensorProduct.map LinearMap.id (g (b'' + 1))
+            (tensorRightDegOne (M := M) f n F ⟨(a, b'' + 1), by omega⟩) = _
+          have heven : ((-1 : R)) ^ (a + a) = 1 := Even.neg_one_pow ⟨a, rfl⟩
+          rw [tensorRightDegOne_succ, map_smul, smul_smul, ← pow_add, heven,
+            one_smul, ← LinearMap.comp_apply,
+            ← TensorProduct.map_comp, LinearMap.comp_id, hgf b'',
+            TensorProduct.map_zero_right, LinearMap.zero_apply]
+          rfl
+
 end GaloisForLFunctions.HTGeometry
