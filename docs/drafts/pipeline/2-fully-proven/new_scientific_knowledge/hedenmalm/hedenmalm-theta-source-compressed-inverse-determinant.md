@@ -1,7 +1,7 @@
 # The Hedenmalm theta source has an intrinsic compact reciprocal-divisor operator
 
 - **ID:** `hedenmalm-theta-source-compressed-inverse-determinant`
-- **Stage:** 2-fully-proven / needs literature and Lean audit
+- **Stage:** 2-fully-proven / weighted kernel layer formalized; determinant layer open
 - **Type:** THEOREM / SOURCE-DERIVED HILBERT--SCHMIDT EVANS OPERATOR
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Lean core:** `GaloisForLFunctions.HTGeometry.SourceGrushinInverse`
@@ -308,6 +308,39 @@ its Hilbert--Schmidt kernel, or identify its determinant with `XiC`.  Initial se
 triangular integration-operator models with rank-one imaginary part, but no source-specific theorem
 matching `(3)`--`(8)`.  Novelty remains unverified pending a focused operator-theory audit.
 
+
+## Lean status
+
+`[PARTIAL]`  Two layers exist.
+
+**Bounded algebraic core.** `GaloisForLFunctions.HTGeometry.SourceGrushinInverse` gives the
+Grushin factorization `G_z G_0^(-1) = I + z B`, the reciprocal eigenvalue law
+`ker(I+zB) = ker(B + z^(-1))` away from the origin, and compactness transfer.
+
+**Concrete weighted layer.** `formal/GaloisForLFunctions/RHTower/HedenmalmHilbertSchmidtNorm.lean`
+(namespace `RHTower.HedenmalmHilbertSchmidt`), built on the quantile normal form of the sibling
+card.  All declarations are `#print axioms`-clean.
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(4)` | the pinned kernel slice `1_(y<=x) - p(x)` | `pinnedKernelSlice` |
+| `(5)` | inner slice energy `t(1-t)` | `integral_pinnedKernelSlice_sq` |
+| `(5)` | Hilbert--Schmidt energy `= M integral p(1-p)/k` | `integral_quantileSpeed_sq_slice`, `tailEnergyDensity` |
+| `(7)` | reflection law `R B R = -B` for an even source | `sourceReflection`, `sourceFunctional_sourceReflection`, `sourceInverse_sourceReflection` |
+
+Corpus assets to use for the remaining items, rather than rebuilding them:
+`ContinuousLinearMap.IsHilbertSchmidt` (`HTGeometry/HilbertSchmidtOperator.lean`),
+`IsHilbertSchmidt.isCompactOperator` (`HTGeometry/HilbertSchmidtCompact.lean`), and
+`RHTower.isHilbertSchmidt_kernelOperator` (`RHTower/SoninTimeBandHilbertSchmidt.lean`), which
+turns an `L2` field of continuous functionals into an actual Hilbert--Schmidt operator.
+
+Still missing: the assembled Hilbert--Schmidt operator `(1)`, the point-spectrum equivalence and
+its **multiplicity clause** `(6)` (the Grushin reduction to `diag(I, Xi_C)`; this clause is what
+`hedenmalm-prime-translation-rank-one-anomaly.md` cites for its Jordan length), the regularized
+determinant identity `(8)` --- no general `det_2` exists in the corpus or in mathlib, only the
+diagonal Fredholm product layer of `RHTower/ArithmeticDilationDeterminantZeros.lean` --- and the
+trace calibration `(9)`.
+
 ## Gates
 
 - [x] source-only construction; no Xi-zero index in the definition
@@ -321,5 +354,7 @@ matching `(3)`--`(8)`.  Novelty remains unverified pending a focused operator-th
 - [x] no RH or positivity overclaim
 - [x] bounded Grushin factorization, reciprocal eigenvalue law, and compactness transfer in Lean
 - [ ] focused Livsic/triangular-model novelty audit
-- [ ] formalize the concrete weighted-`L²` construction and Hilbert--Schmidt determinant in Lean
+- [x] Lean pinned kernel `(4)`, Hilbert--Schmidt energy `(5)`, and reflection law `(7)`
+- [ ] formalize the assembled Hilbert--Schmidt operator, the multiplicity clause of `(6)`,
+      and the regularized determinant `(8)` in Lean
 - [ ] prove source-specific spectral reality

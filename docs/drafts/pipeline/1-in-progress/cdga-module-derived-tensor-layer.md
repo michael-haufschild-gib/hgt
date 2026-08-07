@@ -1173,3 +1173,56 @@ from the operand's own type, not from the expected type.  Two things do:
 monomorphic, so the index of a colimit that is going to be tensored must satisfy `v' ≤ w`.  Lean has
 no such constraint, but `max 0 w = w` holds definitionally, so declaring the index in `Type 0` —
 which covers `ℕ`, hence every tower — is both sufficient and universe-clean.
+
+## Free cells of arbitrary rank
+
+`CDGAModuleFinsupp.lean` — `pick` (a choice of witness which sends zero to zero, so that supports
+stay finite), **`finsuppModule`**, `finsuppMap`, **`finsuppMap_isQuasiIsoFull`**: the direct sum of
+copies of a differential graded module, and that a direct sum of full quasi-isomorphisms is one.
+
+`CDGAFreeCoefficientsInfinite.lean` — `finsuppScalarRight_map`, **`tensorConstFinsuppHom`**,
+**`tensorConstMap_isQuasiIsoFull_of_basis`**, `freeCellFunctor_isQuasiIsoFull_of_basis`.
+
+This removes `Fintype` from the free-cell hypotheses: `relTensorMapLeft_freeCell_isQuasiIsoFull`,
+`relTensorMapLeft_freeTower_isQuasiIsoFull` and `relTensorMapLeft_freeTowerColim_isQuasiIsoFull` now
+hold for cells of arbitrary rank.  The finite version went through `ι → R` (a product); the general
+one has to go through `ι →₀ R` (a sum), which is why a separate direct-sum layer was needed.
+
+Every coefficientwise argument in that layer has the same shape: the condition is coefficientwise,
+and a witness chosen by `pick` vanishes wherever the coefficient does, so the witness family is
+again finitely supported.
+
+## The universal properties, and the covering tower
+
+`CDGAFreeCellExtend.lean` — **`freeCellExtend`**, `freeCellGen`, **`freeCellExtend_gen`**: a
+morphism out of `A[−k] ⊗ V` is exactly a linear map `V → Z^k`.  The cocycle condition is forced: the
+Leibniz rule produces the term `(−1)^a x · d(g v)`, which must vanish for the extension to commute
+with the differential.
+
+`CDGAModuleColimit.lean` gained **`colimModuleLift`** — the universal property of the colimit.
+
+`CDGATwistedExtend.lean` — `CDGATwistedLift`, **`twistedExtend`**, `twistedExtend_comp_inl`: a
+morphism out of a cell attachment is a morphism out of the base together with an equivariant map out
+of the cell whose failure to commute with the differential is exactly the image of the twist — the
+null-homotopy the attachment records.
+
+`CDGAFreeCover.lean` — `CDGATwist.zero`, `CDGATwistedLift.ofHom`, **`cocycleCover`**,
+`cocycleCover_gen`, `freeCellGen_mem_cocycles`.
+
+`CDGASemiFreeCover.lean` — **`coverTower`**, `coverMap`, `coverMap_trans`, **`coverColimMap`**,
+**`coverColimMap_surjective_on_cocycles`**, `coverColimMap_cocyclesMap_zero_surjective`,
+**`coverColimMap_cohomologyMap_surjective`**.
+
+> Every differential graded module receives a comparison from a semi-free module which is surjective
+> on the cocycles of every degree, hence on cohomology and on the degree-zero cocycles.
+
+Axioms: `propext, Classical.choice, Quot.sound` (`freeCellExtend`, `twistedExtend` and
+`freeCellGen_mem_cocycles` need only `propext, Quot.sound`).
+
+## Next
+
+The other half of a resolution: make the comparison *injective* on cohomology by attaching, at each
+stage, a cell along each cocycle of the tower whose image is a coboundary — the null-homotopy of
+that coboundary is the `CDGATwistedLift` datum.  `twistedExtend` and `freeCellExtend` are exactly
+the two universal properties that step needs; what is left is the bookkeeping of the interleaved
+induction and the convergence of the colimit.

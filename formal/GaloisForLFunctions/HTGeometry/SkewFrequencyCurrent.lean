@@ -63,13 +63,39 @@ theorem hasDerivAt_normSq_path {f : ℝ → F} {f' : F} {x : ℝ} (h : HasDerivA
   have hnorm : (fun t => ‖f t‖ ^ 2) = fun t => (inner ℂ (f t) (f t) : ℂ).re := by
     funext t
     rw [inner_self_eq_norm_sq_to_K]
-    norm_num
+    norm_cast
   have hval : ((inner ℂ (f x) f' : ℂ) + (inner ℂ f' (f x) : ℂ)).re =
       2 * (inner ℂ f' (f x) : ℂ).re := by
     rw [← inner_conj_symm f' (f x), Complex.add_re, Complex.conj_re]
     ring
   rw [hnorm, ← hval]
   exact hre
+
+/-- **Frequency-current conservation.**  A path obeying the skew frequency equation has constant
+radial current `η ‖f η‖²`: the self-adjoint block contributes nothing, so the whole derivative
+comes from the explicit radial term and cancels it exactly. -/
+theorem hasDerivAt_radialCurrent [CompleteSpace F] {S : F →L[ℂ] F} (hS : IsSelfAdjoint S)
+    {f : ℝ → F} {η c : ℝ} (hη : η ≠ 0)
+    (h : HasDerivAt f ((((-(1 / (2 * η)) : ℝ)) : ℂ) • f η + ((c : ℂ) * Complex.I) • S (f η)) η) :
+    HasDerivAt (fun t => t * ‖f t‖ ^ 2) 0 η := by
+  have hsq := hasDerivAt_normSq_path h
+  have hself : (inner ℂ (f η) (f η) : ℂ).re = ‖f η‖ ^ 2 := by
+    rw [inner_self_eq_norm_sq_to_K]
+    norm_cast
+  have hcross := re_inner_real_smul_I_smul_isSelfAdjoint_eq_zero hS c (f η)
+  have hval : (inner ℂ ((((-(1 / (2 * η)) : ℝ)) : ℂ) • f η +
+        ((c : ℂ) * Complex.I) • S (f η)) (f η) : ℂ).re =
+      -(1 / (2 * η)) * ‖f η‖ ^ 2 := by
+    rw [inner_add_left, Complex.add_re, hcross, add_zero, inner_smul_left,
+      Complex.conj_ofReal, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, hself]
+    ring
+  rw [hval] at hsq
+  have hid : HasDerivAt (fun t : ℝ => t) 1 η := hasDerivAt_id η
+  have hprod := hid.mul hsq
+  have hzero : (1 : ℝ) * ‖f η‖ ^ 2 + η * (2 * (-(1 / (2 * η)) * ‖f η‖ ^ 2)) = 0 := by
+    field_simp
+  rw [hzero] at hprod
+  exact hprod
 
 end
 

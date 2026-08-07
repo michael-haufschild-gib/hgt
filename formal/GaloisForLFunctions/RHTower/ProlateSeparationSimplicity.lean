@@ -13,6 +13,45 @@ noncomputable section
 
 namespace RHTower
 
+/-- A regular even separation value determines one live band eigenvalue and one entire exterior
+eigenline.  Aperture ODE uniqueness gives proportionality on `[-1,1]`; the two global band
+eigenrelations then propagate that proportionality to every real point. -/
+theorem eq_const_mul_of_same_even_joint_prolate_eigen
+    {c lamPhi lamPsi chi : ℝ} {Phi Psi : ℝ → ℝ}
+    (hPhiSmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
+    (hPsiSmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Psi)
+    (hPhiNe : Phi ≠ 0) (hPsiNe : Psi ≠ 0)
+    (hPhiEven : Function.Even Phi) (hPsiEven : Function.Even Psi)
+    (hlamPhi : lamPhi ≠ 0) (hlamPsi : lamPsi ≠ 0)
+    (hPhiBand : ∀ x : ℝ, bandTransform c Phi x = lamPhi * Phi x)
+    (hPsiBand : ∀ x : ℝ, bandTransform c Psi x = lamPsi * Psi x)
+    (hPhiProlate : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x)
+    (hPsiProlate : ∀ x : ℝ, prolateSLAction c Psi x = chi * Psi x) :
+    lamPhi = lamPsi ∧ ∃ mu : ℝ, Phi = fun x => mu * Psi x := by
+  have hlam : lamPhi = lamPsi := bandEigenvalue_eq_of_same_even_prolate_eigen
+    hPhiSmooth hPsiSmooth hPhiNe hPsiNe hPhiEven hPsiEven hlamPhi hlamPsi
+    hPhiBand hPsiBand hPhiProlate hPsiProlate
+  obtain ⟨mu, hEq⟩ := eqOn_Icc_const_mul_of_even_joint_prolate_eigen
+    hPhiSmooth hPsiSmooth hPsiNe hPhiEven hPsiEven hlamPsi hPsiBand
+    hPhiProlate hPsiProlate
+  have hBandProp : ∀ x : ℝ, bandTransform c Phi x = mu * bandTransform c Psi x := by
+    intro x
+    rw [bandTransform, bandTransform, ← intervalIntegral.integral_const_mul]
+    refine intervalIntegral.integral_congr fun y hy => ?_
+    have hyIcc : y ∈ Set.Icc (-1 : ℝ) 1 := by
+      simpa [Set.uIcc_of_le (by norm_num : (-1 : ℝ) ≤ 1)] using hy
+    change sincKernelSmooth c x y * Phi y =
+      mu * (sincKernelSmooth c x y * Psi y)
+    rw [hEq hyIcc]
+    ring
+  refine ⟨hlam, mu, funext fun x => ?_⟩
+  apply mul_left_cancel₀ hlamPhi
+  calc
+    lamPhi * Phi x = bandTransform c Phi x := (hPhiBand x).symm
+    _ = mu * bandTransform c Psi x := hBandProp x
+    _ = mu * (lamPsi * Psi x) := by rw [hPsiBand x]
+    _ = lamPhi * (mu * Psi x) := by rw [hlam]; ring
+
 /-- Eigenvectors of the even prolate action with the same separation value are proportional. -/
 theorem prolateOnEvenEigenspace_eigenvectors_proportional
     {c lam chi : ℝ} (hc : 0 < c) (hlam : lam ≠ 0)

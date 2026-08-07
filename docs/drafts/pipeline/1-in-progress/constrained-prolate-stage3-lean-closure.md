@@ -106,3 +106,15 @@ projective/trace-class/determinant consequences.
   global ODE solutions.  New `ProlateRadialODEBridge.lean` converts the sign convention exactly to
   the radial equation with `s = -chi/c²`, so every live signed mode is now an admissible exact input
   to the existing Dunster/Volterra comparison.  Per-file `lake env lean` checks pass.
+- 2026-08-07 — proved exact separation-energy sign.  New
+  `ProlateSeparationEnergy.lean` derives the boundary-term-free identity
+  `∫Phi·P_c Phi = -∫(1-x²)|Phi'|² - ∫c²x²|Phi|²`, proves the quadratic form is
+  nonpositive, and proves every nonzero global joint mode has `chi ≤ 0`.  Consequently the radial
+  ratio `s = -chi/c²` returned by `ProlateRadialODEBridge.lean` is unconditionally nonnegative.
+  Both modules pass `lake env lean`.  Remaining Dunster input includes the eventual upper bound
+  `s ≤ 1/2`, which belongs to fixed-label Hermite/Sturm control.
+- 2026-08-07 — strengthened separation simplicity to the exterior ray.
+  `eq_const_mul_of_same_even_joint_prolate_eigen` proves that two live smooth even joint modes with
+  the same separation value have the same band eigenvalue and are scalar multiples on the entire
+  real line.  Thus regular angular label fixes radial continuation uniquely; no independent
+  exterior branch choice remains.  `lake env lean ProlateSeparationSimplicity.lean` passes.

@@ -527,3 +527,28 @@ elementary step once `(10)` is available.
 Nothing in `(9)`--`(14)` needs the Bochner Fourier transform, the logarithmic jump multiplier, or
 the completed seam carrier that the card's Lean-decision section lists; those are needed only for
 the passage from `(1)` to `(8)`, which is the card's own separate claim.
+
+### I.1 Both ingredients of `(9)` are now proved
+
+`HTGeometry/SkewFrequencyCurrent.lean` carries
+
+```text
+inner_self_im_eq_zero_of_isSelfAdjoint            ⟪S v, v⟫ is real
+re_inner_I_smul_isSelfAdjoint_eq_zero             (11): Re⟪i • S v, v⟫ = 0
+re_inner_real_smul_I_smul_isSelfAdjoint_eq_zero   the (c·i) form the equation produces
+hasDerivAt_normSq_path                            d/dt ‖f t‖² = 2 Re⟪f'(t), f(t)⟫ in a complex
+                                                  Hilbert space, via HasDerivAt.inner
+```
+
+What is left is the two-line assembly:
+
+```text
+d/dη ‖f‖² = 2 Re⟪-(1/(2η)) • f η, f η⟫ + 2 Re⟪(c i) • S(f η), f η⟫
+          = -‖f η‖²/η + 0
+d/dη [η ‖f η‖²] = ‖f η‖² + η · (-‖f η‖²/η) = 0.
+```
+
+The only fiddly step is `Re ⟪(r : ℝ) • x, y⟫ = r * Re ⟪x, y⟫` for a real scalar in a complex inner
+product (`real_inner_smul_left` is for real spaces; the complex form needs `inner_smul_left` plus
+`Complex.conj_ofReal`), and then `HasDerivAt.mul` for the product `η · ‖f η‖²`.  `(10)` is the
+integral form; `(14)` follows because `|η|^{-1}` is not integrable at either end.

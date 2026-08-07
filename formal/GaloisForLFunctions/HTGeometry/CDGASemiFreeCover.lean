@@ -142,6 +142,21 @@ theorem coverColimMap_surjective_on_cocycles (k : ℕ) (z : P.cocycles k) :
   · rw [coverColimMap, colimModuleLift_colimOf]
     exact coverMap_coverGen P u hP k z
 
+/-- **The comparison is surjective on the cocycles of degree zero.** -/
+theorem coverColimMap_cocyclesMap_zero_surjective :
+    Function.Surjective ((coverColimMap P).cocyclesMap 0) := by
+  intro z
+  obtain ⟨y, hy, hyz⟩ := coverColimMap_surjective_on_cocycles P u hP 0 z
+  exact ⟨⟨y, hy⟩, Subtype.ext hyz⟩
+
+/-- **The comparison is surjective on cohomology.** -/
+theorem coverColimMap_cohomologyMap_surjective (n : ℕ) :
+    Function.Surjective ((coverColimMap P).cohomologyMap n) := by
+  intro c
+  refine Quotient.inductionOn' c fun z => ?_
+  obtain ⟨y, hy, hyz⟩ := coverColimMap_surjective_on_cocycles P u hP (n + 1) z
+  exact ⟨Submodule.Quotient.mk ⟨y, hy⟩, congrArg Submodule.Quotient.mk (Subtype.ext hyz)⟩
+
 end Generators
 
 end GaloisForLFunctions.HTGeometry

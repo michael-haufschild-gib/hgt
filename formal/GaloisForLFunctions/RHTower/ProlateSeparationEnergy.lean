@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ProlateRadialODEBridge
+import GaloisForLFunctions.RHTower.SlepianKernelScaledFubini
 
 /-!
 # Energy sign of the prolate separation parameter
@@ -155,25 +155,6 @@ theorem prolateSeparation_nonpos_of_global_joint
   prolateSeparation_nonpos hsm
     (bandClass_ne_zero_of_global_band_eigen hsm.continuous hlam hne hband)
     (fun x _ => heig x)
-
-/-- The radial separation ratio attached to every live joint mode is nonnegative. -/
-theorem radialSeparationRatio_nonneg_of_joint
-    {c lam chi : ℝ} (hc : 0 < c) (hlam : lam ≠ 0)
-    {f : bandEigenspace c lam}
-    (hf0 : f ≠ 0)
-    (heig : ∀ x ∈ Icc (-1 : ℝ) 1,
-      prolateSLAction c (eigenRep c lam f) x = chi * eigenRep c lam f x) :
-    0 ≤ _root_.RHTower.radialSeparationRatio c chi := by
-  have hsm := contDiff_eigenRep hc hlam f
-  have hclass : bandClass (eigenRep c lam f) hsm.continuous ≠ 0 := by
-    intro hzero
-    apply hf0
-    apply Subtype.ext
-    rw [← bandClass_eigenRep hlam f]
-    exact hzero
-  have hchi := prolateSeparation_nonpos hsm hclass heig
-  dsimp [_root_.RHTower.radialSeparationRatio]
-  exact div_nonneg (neg_nonneg.mpr hchi) (sq_nonneg c)
 
 end GaloisForLFunctions.RHTower
 

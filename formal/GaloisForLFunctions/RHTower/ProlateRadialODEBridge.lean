@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SlepianKernelScaledFubini
+import GaloisForLFunctions.RHTower.ProlateSeparationEnergy
 import GaloisForLFunctions.RHTower.CCMRadialProlateDefect
 
 /-!
@@ -48,6 +48,7 @@ theorem exists_global_even_radialProlate_of_signedMode
         (∀ x : ℝ,
           prolateSLAction (2 * Real.pi * a ^ 2) Phi x = chi * Phi x) ∧
         s = radialSeparationRatio (2 * Real.pi * a ^ 2) chi ∧
+        0 ≤ s ∧
         (∀ x : ℝ,
           (x ^ 2 - 1) * deriv (deriv Phi) x + 2 * x * deriv Phi x
             - (s * (2 * Real.pi * a ^ 2) ^ 2
@@ -58,9 +59,13 @@ theorem exists_global_even_radialProlate_of_signedMode
   have hc : c ≠ 0 := by
     dsimp [c]
     positivity
-  refine ⟨Phi, chi, radialSeparationRatio c chi, hsm, hne, heven, ?_, ?_, rfl, ?_⟩
+  have hchi : chi ≤ 0 :=
+    GaloisForLFunctions.RHTower.prolateSeparation_nonpos_of_global_joint
+      (pow_ne_zero 2 hvalue) hsm hne hband heig
+  refine ⟨Phi, chi, radialSeparationRatio c chi, hsm, hne, heven, ?_, ?_, rfl, ?_, ?_⟩
   · simpa [c] using hband
   · simpa [c] using heig
+  · exact div_nonneg (neg_nonneg.mpr hchi) (sq_nonneg c)
   · simpa [c] using radialProlate_ode_of_prolateSLAction_eq hc heig
 
 end RHTower
