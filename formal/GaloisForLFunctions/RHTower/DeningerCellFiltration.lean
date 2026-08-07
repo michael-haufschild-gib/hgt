@@ -37,6 +37,23 @@ abbrev deningerFiltrationStep (f : ∀ i, F i ⟶ F (i + 1)) (g : ∀ i, F (i + 
     (hzero : ∀ i, f i ≫ g i = 0) (i : ℕ) : ShortComplex (TopCat.Sheaf AddCommGrpCat.{u} X) :=
   ShortComplex.mk (f i) (g i) (hzero i)
 
+omit [CategoryTheory.HasExt.{w} (TopCat.Sheaf AddCommGrpCat.{u} X)] in
+/-- **A monomorphism of sheaves is injective on sections.**  Sections over an open set are the maps
+out of the free abelian sheaf on it, and postcomposition with a monomorphism is injective on maps. -/
+theorem deningerSections_injective_of_mono {F G : TopCat.Sheaf AddCommGrpCat.{u} X} (φ : F ⟶ G)
+    [Mono φ] (U : Opens X) :
+    Function.Injective (fun a : ToType (F.1.obj (op U)) => φ.hom.app (op U) a) := by
+  intro a b hab
+  have hcancel : (deningerOpenFreeHomEquiv U F).symm a ≫ φ
+      = (deningerOpenFreeHomEquiv U F).symm b ≫ φ := by
+    refine (deningerOpenFreeHomEquiv U G).injective ?_
+    rw [deningerOpenFreeHomEquiv_naturality_right, deningerOpenFreeHomEquiv_naturality_right,
+      Equiv.apply_symm_apply, Equiv.apply_symm_apply]
+    exact hab
+  have heq := (cancel_mono φ).1 hcancel
+  have := congrArg (deningerOpenFreeHomEquiv U F) heq
+  rwa [Equiv.apply_symm_apply, Equiv.apply_symm_apply] at this
+
 /-- **A finite filtration with acyclic graded pieces has acyclic stages.**  Each stage is the middle
 term of a short exact sequence whose ends are the previous stage and the graded piece, and acyclicity
 is a two-out-of-three property there. -/
