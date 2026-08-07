@@ -435,3 +435,25 @@ Halász's estimate and is `(log N)²` weaker than it; the gap is precisely the m
 in the chain is wasted — the Euler bound, the trivial size, the distance bridge and the Perron assembly
 are all exactly what the mean-value route also needs — but no decay follows from what is built, and the
 earlier "two upgrades" note is superseded by this one.
+
+## The correct final form of the pointwise route
+
+`formal/GaloisForLFunctions/RHTower/Sieve/HalaszUniformDistance.lean` (9075 jobs, exit 0, axiom-clean).
+
+Acting on the corrected diagnosis: a distance lower bound *uniform over the range* — which is what
+`min_{|t| ≤ T} D(f, n^{it}; z)²` is — makes the damped bound hold at every frequency, so the window
+machinery drops out.
+
+- `norm_tsum_twistedSummand_le_damped_of_uniform` — under
+  `∀ t, |t| ≤ T → δ ≤ √(mulDistSqPair f (charFn t) (primesLE z))`, the damped bound holds at each such
+  `t`.
+- `norm_tsum_mul_smoothWeight_le_of_uniform` — **the window-free Perron estimate**:
+
+  `∃ C ≥ 0, 2π‖∑ₙ f(n)w(n)‖ ≤ ((N+H)^σ/σ)·damped·2T + trivial·C·(π − 2 arctan T)`.
+
+This is strictly sharper than `HalaszPerronAssembly`'s form: the term that cost `T·δ` is gone, and the
+range contributes only at the damped size. It is the honest endpoint of the pointwise route.
+
+Its size is `N(log N)²e^{-M}` after the natural parameter choices, i.e. `(log N)²` weaker than Halász's
+`(1+M)e^{-M}` — the deficiency identified in the corrected diagnosis, which no sharpening of the
+pointwise argument can remove.

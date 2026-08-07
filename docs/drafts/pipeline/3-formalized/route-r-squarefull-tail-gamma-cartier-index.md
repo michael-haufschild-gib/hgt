@@ -1,6 +1,6 @@
 # Route R squarefull-tail Gamma–Cartier index
 
-Status: `[PAPER-PROVED; LEAN-PENDING]`
+Status: `[FORMALIZED]`
 
 ## Frontier
 
@@ -52,7 +52,7 @@ Consequently the reflected pair has exactly three states:
 
 ```text
 sigma < 1/2 : (mu_sigma(E2), mu_(1-sigma)(E2)) = (0,1)
-sigma = 1/2 : (mu_sigma(E2), mu_(1-sigma)(E2)) = (1,1)
+sigma = 1/2 : (mu_sigma(E2), mu_(1-sigma)(E2)) = (0,0)
 sigma > 1/2 : (mu_sigma(E2), mu_(1-sigma)(E2)) = (1,0).
 ```
 
@@ -113,3 +113,33 @@ routeREulerGammaSquarefullTailBalanced_iff_port_eq_zero
 routeRTwoThreeGammaArithmeticCorona_global_eq_local_iff_squarefullTailBalanced
 ```
 
+## Formalization result
+
+Implemented in
+`formal/GaloisForLFunctions/RHTower/RouteRSquarefullTailGammaCartierIndex.lean` and wired into the
+`RHTower` umbrella.
+
+Additional proved survivor:
+
+```text
+eulerActivationProductMeasure_reflected_mutuallySingular_of_ne_half
+```
+
+Thus the same explicit projection both detects the port-zero locus and witnesses reflected source
+mutual singularity everywhere off that locus.
+
+Audit:
+
+- `lake env lean GaloisForLFunctions/RHTower/RouteRSquarefullTailGammaCartierIndex.lean`: passed;
+- `lake build GaloisForLFunctions.RHTower.RouteRSquarefullTailGammaCartierIndex`: passed;
+- formal lint gate: passed;
+- principal theorem axioms: `[propext, Classical.choice, Quot.sound]`.
+
+Remaining open producer, now minimal and source-native:
+
+```text
+forall rho, RouteREulerGammaSquarefullTailBalanced rho
+```
+
+It must be derived independently from pre-divisor Euler–Gamma Stokes structure. This card proves no
+such balance and makes no RH claim.

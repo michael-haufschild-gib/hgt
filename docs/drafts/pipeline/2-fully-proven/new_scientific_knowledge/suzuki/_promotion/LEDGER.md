@@ -337,3 +337,44 @@ q ν n = ∫ t^(-2n) dν t                      inverse even moments          (2
 
 Theorem B `(15)`–`(24)` is the part that needs `A_a`; it should stay paper-level, and the card
 already says so.
+
+## E. The restricted Weil form is now an explicit Lean definition
+
+`formal/GaloisForLFunctions/RHTower/SuzukiRestrictedWeilForm.lean` assembles Suzuki's kernel
+
+`k = −½ Pf(1/|t|) − (2A+1) δ₀ − ∑_{n ≤ e^{2a}} Λ(n)/√n (δ_{log n} + δ_{−log n}) − r''`
+
+into the form `Q(u, φ)` as a *definition*, with all four blocks explicit:
+
+```text
+cauchyFinitePart               the cutoff-free Hadamard finite part at an interior point
+weilFinitePartBlock            −½ ∫ (finite part) φ
+weilScalarBlock                −(2A+1) ⟪u, φ⟫
+weilPrimeBlock                 −∑ Λ(n)/√n (⟪u(·+log n), φ⟫ + ⟪u(·−log n), φ⟫)
+weilRegularBlock               −screwRegularForm u φ   (corpus's regular screw kernel)
+restrictedWeilForm             their sum
+IsRestrictedWeilRepresentative what a card means by `A_a u = w`
+weilPrimeBlock_eq_jumpForms    the prime block is ∑ Λ(n)/√n J_{log n}(u,φ) − 2(∑ Λ(n)/√n)⟪u,φ⟫
+weilPrimeBlock_jumpPart_nonneg its jump part is nonnegative against a truncation
+cutoffFinitePart_eq_of_split   the cutoff-independence of the logarithmic coefficient
+cauchyFinitePart_log_coefficient
+```
+
+**This removes the "unbounded operator `A_a` is not represented in Lean" blocker at the level the
+cards actually use it.** No Friedrichs extension and no spectral theorem is involved: a card's
+`A_a u = w` becomes `IsRestrictedWeilRepresentative a A s u w`, a statement about an explicit
+integral pairing. The reusable inputs are `HTGeometry/HadamardFinitePart.lean` (the finite part),
+`HTGeometry/AtomicJumpForm.lean` (the translation pairs and their positivity), and the corpus's own
+`RHTower/SuzukiScrewCorrelationPairing.lean` / `SuzukiExplicitScrewRegularKernel.lean` (the regular
+kernel and its shear identity).
+
+Next steps on top of it, in order:
+
+1. `cauchyFinitePart` for `u = exp`: compute the divided-difference integrals' endpoint behaviour
+   and conclude Theorem A `(4)`–`(6)` of `suzuki-boundary-log-nonclock-nonflat-tangent` as a
+   representative statement.
+2. The two-port redundancy `(2)`–`(5)` of
+   `suzuki-two-port-return-redundancy-and-interior-null-core`, which the card says is elementary
+   once the form exists.
+3. `(4)` of `suzuki-neumann-dominated-shift-cone-obstruction` — the strong-resolvent limit — in the
+   resolvent coordinate, reusing `RHTower/SuzukiStrongResolventLimit.lean`.

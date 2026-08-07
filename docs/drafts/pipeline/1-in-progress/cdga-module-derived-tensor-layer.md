@@ -1107,3 +1107,24 @@ Axioms: `propext, Classical.choice, Quot.sound`.
 Remaining for `M ⊗_A colim N ≅ colim (M ⊗_A N)`: assemble step 1 (`TensorProduct.directLimitRight`,
 mathlib) with step 2 over the bidegrees of a fixed total degree — which are finite, by
 `tensorIndexFintype` — and then descend through the relations.
+
+## Step 1 + 2 assembled
+
+`CDGATensorColimit.lean` — `tensorFamilyTransition`, `tensorFamilyDirectedSystem`,
+**`tensorColimEquiv`**, `tensorColimEquiv_of`: the graded tensor product commutes with a filtered
+colimit, in each total degree.
+
+Two mechanical points that will recur when the same is done over the algebra:
+
+* mathlib's `M ◁ f` is `local notation`, so the `DirectedSystem` instance it carries is not found
+  for a named definition with the same unfolding; the instance has to be re-declared by
+  `inferInstanceAs`.
+* the `.symm` direction of `TensorProduct.directLimitRight` cannot be rewritten with, because the
+  index family of its target is spelled with the notation.  Turning the goal round with
+  `LinearEquiv.symm_apply_eq` puts the forward lemma in the rewritable position, and the residual
+  index mismatch is closed by `rfl`.
+
+Universes: `TensorCarrier` is monomorphic in its two families, so the index type of the colimit must
+live in the same universe as the modules — the file declares `ι : Type w`.
+
+Axioms: `propext, Classical.choice, Quot.sound`.

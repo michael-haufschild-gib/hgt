@@ -25,65 +25,80 @@ Put
 phi(y) = frac(e^y) e^(-y/2),   y in R.                                   (1)
 ```
 
-`phi in L²(R)`: substituting `x = e^y`,
-`integral |phi|^2 dy = integral_0^infinity frac(x)^2 x^(-2) dx`, which converges at both ends.
-
-The corpus already owns the fractional-part Mellin identity: for `0 < Re s < 1`,
+Both `phi in L^1(R)` and `phi in L^2(R)`: substituting `x = e^y`,
 
 ```text
-integral_0^infinity frac(x) x^(-s-1) dx = 1/(s-1) - zeta(s)/s.           (2)
+integral |phi| dy = integral_0^infinity frac(x) x^(-3/2) dx,
+integral |phi|^2 dy = integral_0^infinity frac(x)^2 x^(-2) dx,           (2)
 ```
 
-Substituting `x = e^y` and `s = 1/2 + 2 pi i xi` turns `(2)` into the Fourier transform of `phi`:
+and both converge, because `frac(x) = x` near `0` and `frac(x) <= 1` near infinity.  The corpus
+owns the substitution as `integral_Ioi_eq_integral_exp_smul` and
+`integrableOn_Ioi_iff_integrable_exp_smul`.
+
+The corpus also owns the exact fractional-part Mellin identity: for `0 < Re w < 1`,
 
 ```text
-Fourier(phi)(xi) = 1/(s-1) - zeta(s)/s,     s = 1/2 + 2 pi i xi.         (3)
+integral_0^infinity frac(x) x^(-(w+1)) dx = - zeta(w)/w.                 (3)
 ```
 
-Both terms of the right side of `(3)` are separately `L²` exactly when `zeta` is, and `1/(s-1)` is
-`L²` unconditionally, so
+Substituting `x = e^y` and `w = 1/2 + 2 pi i xi` turns `(3)` into the Fourier transform of `phi`:
 
 ```text
-zeta in L²(line)  <->  s Fourier(phi)(xi) - 1  in L²(dxi).               (4)
+Fourier(phi)(xi) = - zeta(w)/w,     w = 1/2 + 2 pi i xi.                 (4)
 ```
 
-Indeed `s/(s-1) = 1 + 1/(s-1)` and `s Fourier(phi) = (1/2) Fourier(phi) + 2 pi i xi Fourier(phi)`,
-and `(1/2)Fourier(phi)` is `L²`.
+There is no extra pole term: the two halves `(0,1]` and `(1,infinity)` of `(3)` cancel it exactly.
 
-Now suppose the right side of `(4)` holds and let `g` be its inverse Fourier transform, `g in L²`.
-Plancherel against a Schwartz test function `chi` gives, using
-`Fourier(chi')(xi) = 2 pi i xi Fourier(chi)(xi)` and Fourier inversion at the origin,
+**Step A.**  If `zeta` is square integrable on the critical line then `Fourier(phi)` is
+*integrable*, by Cauchy--Schwarz against `1/|w|`:
 
 ```text
-integral g conj(chi) = - integral phi conj(chi') - c conj(chi(0))         (5)
+integral |Fourier(phi)| dxi = integral |zeta(w)|/|w| dxi
+  <= (integral |zeta(w)|^2 dxi)^(1/2) (integral |w|^(-2) dxi)^(1/2) < infinity.   (5)
 ```
 
-for every Schwartz `chi`.  Restricting to `chi` supported in a small interval around `log 2`, which
-excludes the origin, kills the last term:
+**Step B.**  With `phi` and `Fourier(phi)` both integrable, Fourier inversion holds at every
+continuity point of `phi`:
 
 ```text
-integral phi conj(chi') = - integral g conj(chi).                         (6)
+FourierInv(Fourier(phi))(y) = phi(y)   whenever phi is continuous at y.   (6)
 ```
 
-So `phi` has weak derivative `-g in L²` near `log 2`.  Take `chi = chi_eps` a smooth bump rising on
-`(log 2 - eps, log 2)` and falling on `(log 2, log 2 + eps)`.  Then
+Write `psi = FourierInv(Fourier(phi))`.  Since `Fourier(phi)` is integrable, `psi` is *continuous
+everywhere*.
+
+**Step C.**  `phi` is continuous at every `y` with `e^y` not an integer, and there
 
 ```text
-|integral g conj(chi_eps)| <= ||g||_{L²(I_eps)} sqrt(2 eps) -> 0,         (7)
-integral phi conj(chi_eps') -> phi(log 2 -) - phi(log 2 +) = 1/sqrt 2.    (8)
+phi(y) = (e^y - n) e^(-y/2)   for   n < e^y < n+1.                        (7)
 ```
 
-`(8)` holds because `frac(e^y)` is continuous on each side of `log 2` and jumps by `-1` there, so
-`phi` jumps by `-e^(-(log 2)/2) = -1/sqrt 2`.  Together `(6)`, `(7)`, `(8)` are contradictory, so
-the right side of `(4)` fails and `(Z)` holds.
+Take `y_k = log 2 - 1/(k+1)` and `z_k = log 2 + 1/(k+1)`.  For large `k`, `1 < e^(y_k) < 2` and
+`2 < e^(z_k) < 3`, so by `(6)`,`(7)`
+
+```text
+psi(y_k) = (e^(y_k) - 1) e^(-y_k/2) -> 1/sqrt 2,
+psi(z_k) = (e^(z_k) - 2) e^(-z_k/2) -> 0.                                 (8)
+```
+
+Both sequences tend to `log 2` and `psi` is continuous, so `psi(log 2)` equals both `1/sqrt 2` and
+`0`.  That is absurd, so the hypothesis of Step A fails and `(Z)` holds.
+
+This is much cheaper than the mean-square asymptotic: it needs no Sobolev theory, no Hardy space,
+no Phragmen--Lindelof and no approximate functional equation --- only the corpus's fractional-part
+identity, the log substitution, `L^1` Fourier inversion, and the single jump of `frac` at `2`.
 
 ## Corpus assets already available
 
 ```text
 formal/GaloisForLFunctions/RHTower/FractionalPartZeta.lean      -- the identity (2)
 formal/GaloisForLFunctions/RHTower/SoninL2Model.lean            -- fourierUnitary on L²(R)
-Mathlib/Analysis/Fourier/LpSpace.lean                           -- Plancherel for L²
-Mathlib/Analysis/Distribution/SchwartzSpace/Fourier.lean        -- Schwartz Fourier calculus
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonBerezinFaithful.lean
+  integral_Ioi_eq_integral_exp_smul, integrableOn_Ioi_iff_integrable_exp_smul  -- the substitution
+Mathlib/Analysis/Fourier/Inversion.lean
+  MeasureTheory.Integrable.fourierInv_fourier_eq                 -- inversion at continuity points
+Mathlib/Analysis/Fourier/FourierTransform.lean                   -- fourier_eq, 𝓕 and 𝓕⁻
 ```
 
 ## Consumer already in Lean
@@ -101,8 +116,9 @@ not_memLp_coordinate_dividedZetaLine
 ## Gates
 
 - [x] the algebraic transport step and its contrapositive consumer (Lean)
-- [ ] `phi in L²(R)` and the substituted Fourier identity `(3)`
-- [ ] the equivalence `(4)`
-- [ ] the weak-derivative identity `(5)`--`(6)` from Plancherel
-- [ ] the mollifier contradiction `(7)`--`(8)`
+- [ ] `phi in L^1(R) cap L^2(R)` via the log substitution `(2)`
+- [ ] the Fourier identity `(4)` from the corpus fractional-part identity `(3)`
+- [ ] Step A: Cauchy--Schwarz integrability of `Fourier(phi)` `(5)`
+- [ ] Step B: continuity of `psi` and inversion at continuity points `(6)`
+- [ ] Step C: the two-sided jump contradiction `(7)`,`(8)`
 - [ ] `(Z)`, and with it the uncompleted domain exclusion of the parent card

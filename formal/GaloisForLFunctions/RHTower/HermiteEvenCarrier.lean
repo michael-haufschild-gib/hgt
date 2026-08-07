@@ -365,6 +365,70 @@ theorem tendsto_norm_hermiteEvenNegativeUnit_add_timeBand (j : ℕ) :
   filter_upwards with a
   exact norm_hermiteEvenNegativeUnit_add_timeBand_le a j
 
+/-- The positive Hermite trial space with `n+1` mutually orthogonal `+1` Fourier modes. -/
+def hermiteTrialSpace (n : ℕ) : Submodule ℂ evenSubspace :=
+  Submodule.span ℂ (Set.range (fun j : Fin (n + 1) => hermiteEvenUnit (j : ℕ)))
+
+/-- The negative Hermite trial space with `n+1` mutually orthogonal `-1` Fourier modes. -/
+def hermiteNegativeTrialSpace (n : ℕ) : Submodule ℂ evenSubspace :=
+  Submodule.span ℂ
+    (Set.range (fun j : Fin (n + 1) => hermiteEvenNegativeUnit (j : ℕ)))
+
+theorem finrank_hermiteNegativeTrialSpace (n : ℕ) :
+    Module.finrank ℂ (hermiteNegativeTrialSpace n) = n + 1 :=
+  ContinuousLinearMap.finrank_span_orthonormal
+    (orthonormal_hermiteEvenNegativeUnit (n + 1))
+
+/-- Individual positive-sector truncation estimates aggregate to a uniform approximation of the
+identity on the whole positive Hermite trial space. -/
+theorem norm_sq_sub_timeBand_le_of_hermite_trial (a : ℝ) (n : ℕ) {η : ℝ}
+    (hη : ∀ j : Fin (n + 1),
+      ‖hermiteEvenUnit (j : ℕ) -
+        evenIndicatorCutoff a (hermiteEvenUnit (j : ℕ))‖ ≤ η)
+    {f : evenSubspace} (hf : f ∈ hermiteTrialSpace n) :
+    ‖f - evenTimeBandFourier a f‖ ^ 2
+      ≤ ((n + 1 : ℕ) * (2 * η) ^ 2) * ‖f‖ ^ 2 := by
+  let R : evenSubspace →L[ℂ] evenSubspace :=
+    ContinuousLinearMap.id ℂ evenSubspace - evenTimeBandFourier a
+  have hR : ∀ x : evenSubspace, R x = x - evenTimeBandFourier a x := by
+    intro x
+    rw [show R = ContinuousLinearMap.id ℂ evenSubspace - evenTimeBandFourier a from rfl,
+      _root_.sub_apply, ContinuousLinearMap.id_apply]
+  have hdefect : ∀ j : Fin (n + 1),
+      ‖R (hermiteEvenUnit (j : ℕ))‖ ≤ 2 * η := by
+    intro j
+    rw [hR]
+    exact (norm_hermiteEvenUnit_sub_timeBand_le a (j : ℕ)).trans
+      (mul_le_mul_of_nonneg_left (hη j) (by norm_num))
+  have hmain := ContinuousLinearMap.norm_sq_apply_le_of_orthonormal_span
+    (orthonormal_hermiteEvenUnit (n + 1)) R hdefect hf
+  rwa [hR] at hmain
+
+/-- Individual negative-sector truncation estimates aggregate to a uniform approximation of
+`-I` on the whole negative Hermite trial space. -/
+theorem norm_sq_add_timeBand_le_of_negative_hermite_trial (a : ℝ) (n : ℕ) {η : ℝ}
+    (hη : ∀ j : Fin (n + 1),
+      ‖hermiteEvenNegativeUnit (j : ℕ) -
+        evenIndicatorCutoff a (hermiteEvenNegativeUnit (j : ℕ))‖ ≤ η)
+    {f : evenSubspace} (hf : f ∈ hermiteNegativeTrialSpace n) :
+    ‖f + evenTimeBandFourier a f‖ ^ 2
+      ≤ ((n + 1 : ℕ) * (2 * η) ^ 2) * ‖f‖ ^ 2 := by
+  let R : evenSubspace →L[ℂ] evenSubspace :=
+    ContinuousLinearMap.id ℂ evenSubspace + evenTimeBandFourier a
+  have hR : ∀ x : evenSubspace, R x = x + evenTimeBandFourier a x := by
+    intro x
+    rw [show R = ContinuousLinearMap.id ℂ evenSubspace + evenTimeBandFourier a from rfl,
+      _root_.add_apply, ContinuousLinearMap.id_apply]
+  have hdefect : ∀ j : Fin (n + 1),
+      ‖R (hermiteEvenNegativeUnit (j : ℕ))‖ ≤ 2 * η := by
+    intro j
+    rw [hR]
+    exact (norm_hermiteEvenNegativeUnit_add_timeBand_le a (j : ℕ)).trans
+      (mul_le_mul_of_nonneg_left (hη j) (by norm_num))
+  have hmain := ContinuousLinearMap.norm_sq_apply_le_of_orthonormal_span
+    (orthonormal_hermiteEvenNegativeUnit (n + 1)) R hdefect hf
+  rwa [hR] at hmain
+
 /-- **The leakage bound from the step-four Hermite trial space.**  An `(n+1)`-member family with
 truncation error at most `η` caps the `n`-th leakage of the true compressed Fourier block. -/
 theorem evenProlateLeakageValue_le_of_hermite_trial (a : ℝ) (n : ℕ) {η : ℝ} (hη0 : 0 ≤ η)
@@ -424,10 +488,6 @@ theorem re_inner_evenProlateLeakage_le (a : ℝ) {g : evenSubspace}
     (fun x => evenFourierTransform_isometry x) hpyth hfix
   rw [re_inner_evenProlateLeakage, evenTimeBandFourier_apply_eq]
   linarith
-
-/-- The step-four Hermite trial space of dimension `n + 1`. -/
-def hermiteTrialSpace (n : ℕ) : Submodule ℂ evenSubspace :=
-  Submodule.span ℂ (Set.range (fun j : Fin (n + 1) => hermiteEvenUnit (j : ℕ)))
 
 /-- The aggregate squared truncation error of the trial family. -/
 noncomputable def hermiteTrialDefect (a : ℝ) (n : ℕ) : ℝ :=

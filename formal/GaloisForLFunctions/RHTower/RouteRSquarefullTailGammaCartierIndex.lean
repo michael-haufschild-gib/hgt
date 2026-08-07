@@ -109,12 +109,13 @@ theorem eulerActivationProductMeasure_reflected_finiteSquarefull_eq_iff
       rw [hleft, hright] at hmass
       exact (one_ne_zero hmass).elim
   · intro heq
+    subst σ
     have hleft :=
-      (eulerActivationProductMeasure_finiteSquarefull_eq_one_iff hσ).2 (by linarith)
+      eulerActivationProductMeasure_finiteSquarefull_eq_zero_of_le_half hσ (by norm_num)
     have hright :=
-      (eulerActivationProductMeasure_finiteSquarefull_eq_one_iff href).2 (by linarith)
-    change eulerActivationProductMeasure hσ.le routeREulerSquarefullTailEvent = 1 at hleft
-    change eulerActivationProductMeasure href.le routeREulerSquarefullTailEvent = 1 at hright
+      eulerActivationProductMeasure_finiteSquarefull_eq_zero_of_le_half href (by norm_num)
+    change eulerActivationProductMeasure hσ.le routeREulerSquarefullTailEvent = 0 at hleft
+    change eulerActivationProductMeasure href.le routeREulerSquarefullTailEvent = 0 at hright
     rw [hleft, hright]
 
 /-- Below the center, the finite-squarefull event is an explicit singularity
