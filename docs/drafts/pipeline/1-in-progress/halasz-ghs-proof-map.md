@@ -1031,3 +1031,28 @@ Against the integer cap this is smaller by `1/(w−1)`, so the factor discarded 
 mean-square split restated over the prime-filtered index set — the coefficients are supported on primes, so
 `∑_{n ∈ Icc 1 M}` may be replaced by `∑_{p ∈ Icc 1 M with p.Prime}` at no cost, which is the missing
 bookkeeping step.
+
+## The master bound with the prime saving kept
+
+`RHTower/Sieve/HalaszPrimeSavingBound.lean` (green, axiom-clean, wired).
+
+* `sieveMeanSquare_eq_filter_prime` — for prime-supported coefficients the majorant only sees the primes, so
+  the index set of the split may be cut down to them at no cost.  This is the bookkeeping step that was
+  missing; with it the *existing* split (which takes an arbitrary index set) delivers prime-restricted sums,
+  so nothing had to be re-proved.
+* `sieveBoundPrime A σ z Y = (4 sinh δ/log Y)·A²·cap(2σ−1) + (2/log Y + E + z)·A²·cap(2σ)` with
+  `cap(w) = 2 log 2 log 4 ((1−2^{1−w})⁻¹ + 2^{1−w}/(1−2^{1−w})²)` (`sieveCapPrime`).
+* `sieveMeanSquare_le_sieveBoundPrime`, and `exists_norm_sum_Icc_mul_log_le_sieveBoundPrime`: the master
+  bound verbatim with these caps in place of the integer ones.
+
+Each cap is smaller than its integer counterpart by `1/(w−1)`, so at `σ = 1 + 1/log N` the linear term is
+`(log N)²` where it was `(log N)³`.  Tracking the whole analytic term at that `σ`: the Euler factor is
+`(1 + log N)e^{7/2}`, the two square roots contribute `25π²·(log N)²/log Y` between them, and the kernel
+constant `C` is of size `N`, giving `≈ N(log N)³/log Y` — still a factor `(log N)²/log Y` above the trivial
+`N log N`.
+
+**What that isolates.**  The remaining excess is exactly the `1/log Y` of the sieve count against the
+`(log N)²` of the linear cap.  The sieve count is sharp only when `log Y ≈ log p`, so the fix is the
+per-block sieve level of the second obstruction recorded above: split the prime range dyadically, take
+`Y ≈ 2^{j/2}` on the block `2^j ≤ p < 2^{j+1}`, and the linear cap's `(log N)²` is met by a `1/j` from each
+block rather than a single global `1/log Y`.  That is the next construction, and it is the last one.
