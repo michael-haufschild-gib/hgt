@@ -460,3 +460,30 @@ Tree verified clean first: lint reports no errors, the `deningerExtendFun` dupli
 The 17-candidate sweep from the previous round is now fully closed. `SeamStripRamification.
 xi_zero_iff_zeta_zero_of_mem_strip` was the only entry needing nothing: it is a ξ/ζ bridge already
 subsumed by `xi_eq_zero_iff_riemannZeta_eq_zero_and_nontrivial`, not a new criterion.
+
+## `w.re < 1` discharged in the Burnol/CCM Mellin layer
+
+`riemannZeta_zero_re_lt_one` removes the upper strip premise wherever it sits beside a zeta-zero
+hypothesis AND does not occur in the statement. Classifier used: extract each theorem head, take the
+text after the last `) :`, and test whether the binder name appears there — BLOCKED if it does.
+
+Discharged (5): `soninMellinEvaluation_burnolCoPoissonSource_eq_zero`,
+`integral_Ioi_burnolCoPoisson_subWindow_pair_cpow_eq_zero`,
+`integral_Ioi_burnolCoPoisson_subWindow_cpow_eq_zero`,
+`soninMellinEvaluation_coPoissonSubWindowSonin_eq_zero`,
+`mellin_arithmeticSum_eq_zero_of_zeta_eq_zero` (namespace GaloisForLFunctions.RHTower — needs the
+`_root_.RHTower.` prefix).
+
+Two classifier false positives, do NOT try to discharge them: `SeamStripRamification.
+xi_zero_iff_zeta_zero_of_mem_strip` and `GammaCoPoissonSoninQuadrantZeta.
+riemannZeta_eq_zero_of_burnolCoPoissonAnnihilatorPoint` — in both the zeta-zero is the CONCLUSION,
+not a hypothesis, so there is nothing to discharge from.
+
+Imports added: ReflectionCocycleClass into BurnolCoPoissonSubWindow and CCMBVMuntzSummation.
+
+## Do not mass-produce critical-line criteria
+
+A sweep for `P(s) ↔ s.re = 1/2` returns 109 hits in RHTower. Each would mechanically yield an RH
+criterion by quantifying over ξ zeros, but see [[rh-criterion-reencoding-template]]: ~96 producers
+are one identity re-encoded. Adding 100 such theorems is padding, not content. Only add an RH-level
+statement when the file's mechanism is genuinely distinct AND the file has no RH statement at all.

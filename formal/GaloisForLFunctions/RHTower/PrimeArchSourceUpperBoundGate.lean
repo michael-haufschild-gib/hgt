@@ -35,7 +35,7 @@ theorem riemannHypothesis_of_continuedPrimeArchUpperImBoundedAbove
   intro ρ hρ hzero
   have hρgt : 1 / 2 < ρ.re := mem_rightHalf.mp hρ
   have hρpos : 0 < ρ.re := lt_trans (by norm_num) hρgt
-  have hρlt : ρ.re < 1 := xi_zero_re_lt_one hρpos hzero
+  have hρlt : ρ.re < 1 := xi_zero_re_lt_one hzero
   let σ : ℂ := 1 - ρ
   have hσzero : xi σ = 0 := by
     dsimp only [σ]

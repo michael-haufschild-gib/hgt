@@ -575,3 +575,31 @@ with free coefficients — which is the definition of semi-free over the ground 
 Note that the `A`-free cells (`freeCellModule`) are the right cells for `⊗_A`, not for `⊗_R`: over
 the ground ring, `M ⊗_R A[−k] ⊗ V` involves `H(M ⊗_R A)`, not `H(M)`.  The two programmes need
 different cells, and both cell types are now built.
+
+## The single-degree cell
+
+`CDGAConstCell.lean`.  The cells of a tower semi-free over the *ground ring* are modules
+concentrated in one degree with zero differential **and zero action** — and that really is a
+legitimate `CDGAModuleStructure`, because every axiom becomes an identity between zeros, the Leibniz
+rule included.  Indexing the concentration by `PLift (n = k)` makes the wrong-degree component an
+empty product, so it is trivial with no separate case, exactly as in `ShiftCarrier`.
+
+* `ConstCellCarrier`, **`constCellModule A V k`**, `constCellCarrier_subsingleton`.
+* `constCellEvalEquiv` — in its own degree the cell is the coefficient module; `constCellConst` is
+  the embedding the other way.
+
+Axioms: `propext, Quot.sound`.
+
+## Next
+
+One comparison remains before `hcell` is discharged outright:
+
+  `tensorModule P (constCellModule A V k) ≃ shiftModule (tensorConstModule P V) k`,
+
+degreewise and naturally in `P`.  Both sides are `M^{n−k} ⊗ V` in degree `n`.  The content is only
+that the bidegree components with second index `≠ k` are trivial — which follows from
+`constCellCarrier_subsingleton` and the fact that a tensor product with a trivial module is trivial
+— so the product over all bidegrees collapses to the product over `{a // a + k = n}`.  With that
+bijection and `freeCellFunctor_isQuasiIsoFull`, two out of three gives
+`(tensorMapLeft φ (constCellModule A V k)).IsQuasiIsoFull`, which is exactly the `hcell` hypothesis
+of `tensorMapLeft_tower_isQuasiIsoFull`.

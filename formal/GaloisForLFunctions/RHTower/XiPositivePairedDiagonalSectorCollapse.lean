@@ -142,7 +142,7 @@ theorem riemannHypothesis_of_continuedPrimeArchPositiveExteriorPairedDiagonalNon
   intro rho hrho hzero
   have hrhoGt : 1 / 2 < rho.re := mem_rightHalf.mp hrho
   have hrhoPos : 0 < rho.re := lt_trans (by norm_num) hrhoGt
-  have hrhoLt : rho.re < 1 := xi_zero_re_lt_one hrhoPos hzero
+  have hrhoLt : rho.re < 1 := xi_zero_re_lt_one hzero
   have hrhoIm : rho.im ≠ 0 := by
     intro him
     have heq : rho = (rho.re : ℂ) := by

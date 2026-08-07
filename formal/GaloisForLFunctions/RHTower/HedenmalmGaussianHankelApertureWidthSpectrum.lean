@@ -185,7 +185,7 @@ theorem xiZeroHalfPlaneBound_of_hedenmalmGaussianHankelTailCone
   have hdAlpha : alpha < d := by dsimp only [d]; linarith
   have hdPos : 0 < d := lt_of_le_of_lt halpha hdAlpha
   have hrhoPos : 0 < rho.re := by linarith
-  have hrhoOne : rho.re < 1 := xi_zero_re_lt_one hrhoPos hzero
+  have hrhoOne : rho.re < 1 := xi_zero_re_lt_one hzero
   have hdHalf : d < 1 / 2 := by dsimp only [d]; linarith
   let z0 : ℂ := (b : ℂ) - (d : ℂ) * I
   have hz0 : XiC z0 = 0 := by

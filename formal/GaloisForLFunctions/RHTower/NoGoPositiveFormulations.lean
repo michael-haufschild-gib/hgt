@@ -281,7 +281,7 @@ theorem odd_strip_zero_certificate_and_prime_invisibility {ρ : ℂ}
               p (θ + 2 * Real.pi) = p θ) →
             ∫ θ in (-(Real.pi / 2))..(3 * Real.pi / 2 + 2 * Real.pi),
               doubledTrace (-1) V θ * p θ = 0 := by
-  have h1 : ρ.re < 1 := xi_zero_re_lt_one h0 hz
+  have h1 : ρ.re < 1 := xi_zero_re_lt_one hz
   exact ⟨eulerPartial_orderAt_zero hP h0,
     xi_zero_order_ne_zero hz,
     carrier_mass_zero_at_odd_xi_order h0 h1 hm hodd⟩

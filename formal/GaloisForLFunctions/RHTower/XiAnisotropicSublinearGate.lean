@@ -37,7 +37,7 @@ theorem riemannHypothesis_of_xiAnisotropicLogDerivSublinearUpper
   intro rho hrho hzero
   have hrhoHalf : 1 / 2 < rho.re := mem_rightHalf.mp hrho
   have hrhoPos : 0 < rho.re := lt_trans (by norm_num) hrhoHalf
-  have hrhoOne : rho.re < 1 := xi_zero_re_lt_one hrhoPos hzero
+  have hrhoOne : rho.re < 1 := xi_zero_re_lt_one hzero
   let sigma : ℂ := 1 - rho
   have hsigmaZero : xi sigma = 0 := by
     dsimp only [sigma]

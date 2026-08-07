@@ -114,7 +114,7 @@ theorem summable_diagonalActivationOccupancy_iff {σ : ℝ} (hσ : 0 ≤ σ) :
   constructor
   · intro h
     by_contra hσ1
-    push_neg at hσ1
+    have hσle : σ ≤ 1 := not_lt.mp hσ1
     refine Nat.Primes.not_summable_one_div ?_
     refine Summable.of_nonneg_of_le (fun p => ?_) (fun p => ?_) (h.mul_left 2)
     · have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.2.pos

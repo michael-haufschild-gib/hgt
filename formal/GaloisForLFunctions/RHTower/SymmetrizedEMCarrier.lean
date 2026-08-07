@@ -423,7 +423,7 @@ theorem rhLadder_of_sem_split_multiplicity (k : ℕ)
   intro ρ hρ h0
   have hρre : 0 < ρ.re := lt_trans (by norm_num) (mem_rightHalf.mp hρ)
   obtain ⟨r₀, R, N, zs, u, hdata⟩ :=
-    semSplitData_exists ρ hρre (xi_zero_re_lt_one hρre h0)
+    semSplitData_exists ρ hρre (xi_zero_re_lt_one h0)
   have hdvd : 2 ^ k ∣ (analyticOrderAt xi ρ).toNat := by
     rw [semSplitData_count_eq hdata]
     exact hpar ρ hρ h0 r₀ R N zs u hdata

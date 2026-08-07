@@ -1,7 +1,7 @@
 # Gamma--co-Poisson--Sonin full-quotient flatness and source-error syzygy
 
 - **ID:** `gamma-copoisson-sonin-full-quotient-flatness-syzygy`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / RH INTERFACE
 - **Scientific status:** `[CORPUS-NEW] [PAPER-PROVED] [PRELIMINARY EXTERNAL NONCOLLISION] [NOT RH]`
 - **Parent:** `gamma-copoisson-sonin-independent-quadrant-boundary-transgression.md`
@@ -456,16 +456,32 @@ a priority certificate.
 
 ## Lean status
 
-Three of the four interfaces the earlier decision listed as absent are corpus-owned and
-unconditional: the extended Sonine space `soninExtendedSpace`, the closed co-Poisson source space
-`burnolCoPoissonSourceSpace` with its orthogonal quotient `burnolCoPoissonQuotientSpace`, and the
-continuous completed-Mellin evaluation vector `burnolExtendedSoninEvaluationVector` with its Riesz
-and reproducing identities.  Only Burnol's **completeness** theorem — the statement that the closed
-span of the confluent nontrivial-zero evaluators is the whole quotient — is missing.
+**The card is formalized unconditionally, and `(2)` is proved by a different and stronger argument
+than the paper's.**  Burnol's completeness theorem is *not* needed.
 
-What is now unconditional Lean, in
-`formal/GaloisForLFunctions/RHTower/GammaCoPoissonSoninQuadrantSection.lean` and
-`formal/GaloisForLFunctions/RHTower/GammaCoPoissonSoninQuadrantSyzygy.lean`:
+### The mechanism: aperture monotonicity of the source space
+
+The paper deduces `(2)` from the vanishing of `K_j` on the confluent zero evaluators plus Burnol's
+theorem that their closed span is the whole quotient.  That route needs evaluators on the critical
+line and a deep completeness statement.  The Lean proof instead uses a property of the source space
+itself:
+
+```text
+U_r C_b  ⊆  C_{r⁻¹ b},        U_r^* C_b  ⊆  C_{r⁻¹ b}          (r ≥ 1)
+```
+
+Both normalized dilations lower the closed co-Poisson source space one aperture step.  This is
+elementary: the co-Poisson sum intertwines with the seed dilation,
+`√ρ · P_g(ρ t) = P_h(t)` for `h(u) = √ρ g(ρu)`, and for `r⁻¹ ≤ ρ ≤ r` the dilated seed's window
+`[b/ρ, 1/(ρb)]` still sits inside `[r⁻¹b, (r⁻¹b)⁻¹]`.  Formalized in
+`formal/GaloisForLFunctions/RHTower/BurnolCoPoissonSourceDilation.lean`.
+
+Consequently, for `x` in the quotient two apertures up, both `U_r x` and `U_r^* x` are already
+orthogonal to `C_{j+1}`, so the source correction inside the middle projection drops out of both
+composite paths and each of them acts on `Y_{j+2}` exactly as the projection `E_j`.  Hence the two
+paths agree.  This is strictly stronger than `(2)`: it identifies the common value.
+
+### The formal inventory
 
 | eq. | statement | Lean |
 |---|---|---|
@@ -474,33 +490,35 @@ What is now unconditional Lean, in
 | `(4)` | the exact off-divisor factorization | `coPoissonQuotientForward_ladderKernel_offDivisor`, `coPoissonQuotientInverse_ladderKernel_offDivisor` |
 | `(6)` | the two-path commutator `K_j` | `coPoissonQuotientCommutator` |
 | `(7)` | the exact off-divisor source-error syzygy | `coPoissonQuotientCommutator_ladderKernel_offDivisor` |
+| **`(2)`** | **full-quotient flatness** | **`coPoissonQuotientCommutator_eq_zero`** |
+|  | its sharpened form: both paths are `E_j` | `coPoissonQuotientForward_inverse_eq_projection`, `coPoissonQuotientInverse_forward_eq_projection` |
+| `(8)`--`(9)` | the source-error syzygy, already in cancelled form | `coPoissonSourceErrorSyzygy` |
 | `(10)`--`(12)` | `K_j` kills every zeroth zero evaluator | `coPoissonQuotientCommutator_ladderKernel_eq_zero` |
-| `(17)`--`(18)` | the anti-diagonal relative torsion `tau_r(rho) = abs(lambda)^2` | `norm_coPoissonQuotientForward_div_inverse_ladderKernel` |
+| `(13)` | the word composite | `coPoissonWordOp` |
+| `(14)` | path independence and `‖T_{p,q}‖ ≤ 1` | `coPoissonWordOp_congr_perm`, `norm_coPoissonWordOp_apply_le` |
+| `(15)` | the endpoint action on the boundary section | `coPoissonWordOp_ladderKernel` |
+| `(16)`--`(18)` | the anti-diagonal relative torsion `τ_r(ρ) = abs(λ)²` | `norm_coPoissonQuotientForward_div_inverse_ladderKernel` |
+| `(19)`--`(20)` | the determinant character, trivial on `p = q` | `coPoissonEndpointScalar_ratio` |
 | `(21)` | the complete gauge invariant of a rank-one reciprocal flat system | `ratio_eq_of_flat_reciprocal_edges`, `ratio_const_of_flat_reciprocal_edges` |
 
-`(7)` is proved without any hypothesis on `w`, and is strictly sharper than the card's version: the
-error terms are the literal source projections `P_k k_{w,k}`, with the two reciprocal characters
-cancelling identically, so no multiplier `Lambda_k` and no local anti-holomorphic factorization is
-used.  On the annihilator boundary those projections vanish
-(`coPoissonLadderDefect_eq_zero_of_annihilator`), which is `(10)`--`(12)` at `ell = 0`.
+Modules: `GammaCoPoissonSoninQuadrantSection.lean`, `GammaCoPoissonSoninQuadrantSyzygy.lean`,
+`BurnolCoPoissonSourceDilation.lean`, `GammaCoPoissonSoninQuadrantFlatness.lean`, all registered in
+the `GaloisForLFunctions.RHTower` umbrella.
 
-### The exact remaining Lean input for `(2)`
+Two places where the Lean statement is sharper than the card's:
 
-The boxed operator identity `(2)` needs exactly one further theorem:
+- `(7)` is proved with **no** hypothesis on `w`: the error terms are the literal source projections
+  `P_k k_{w,k}`, with the two reciprocal characters cancelling identically, so no multiplier
+  `Λ_k` and no local anti-holomorphic factorization appears.  `(9)` is therefore not a separate
+  step: `(8)` is already the cancelled identity.
+- `(2)` is proved without Burnol completeness, and in the sharper form "both paths equal `E_j`".
 
-```text
-closure (span {confluent evaluators at co-Poisson annihilator points}) = burnolCoPoissonQuotientSpace b
-```
+`#print axioms` on every declaration named above returns only `propext`, `Classical.choice`,
+`Quot.sound`; `scripts/formal_tools.py lint` reports no active `sorry`, `admit`, `axiom`, `opaque`,
+or `unsafe` declaration in the tree.
 
-that is, Burnol's completeness/minimality theorem for the two systems attached to the zeros.  The
-corpus's cyclicity theorem `isCyclicFamily_burnolCoPoissonQuotientEvaluationFamily` is *not* a
-substitute: it uses the evaluators at **all** regular points, where `(7)` shows `K_j` is exactly the
-nonzero source-error expression.  Indeed `(2)` and the syzygy `(8)` are equivalent given `(7)`, so
-no rearrangement of the finite-level algebra can prove either.
-
-Once that theorem exists, `(2)` follows from `coPoissonQuotientCommutator_ladderKernel_eq_zero`
-together with its confluent jets and boundedness of `K_j`; `(8)` is then a substitution back into
-`(7)`, `(9)` is local cancellation, and `(13)`--`(15)` follow from `(2)` by adjacent transpositions.
+The open gates below are successor-programme items (the strict source-normal exact-couple morphism,
+its Bockstein identification, and RH); they are not part of the theorem certified here.
 
 ## Gates
 
@@ -511,112 +529,10 @@ together with its confluent jets and boundedness of `K_j`; `(8)` is then a subst
 - [x] anti-diagonal relative torsion and its exact charge calibration proved
 - [x] connection flatness separated from Hermitian nonmetricity
 - [x] preliminary primary-literature noncollision search
+- [x] Burnol Sonine/co-Poisson/evaluation interfaces available in Lean (corpus-owned)
+- [x] `(1)`, `(3)`--`(9)`, `(10)`--`(21)` formalized unconditionally in Lean
+- [x] `(2)` proved in Lean **without** Burnol completeness, by aperture monotonicity of the
+      co-Poisson source space under both normalized dilations
 - [ ] construct the strict source-normal exact-couple morphism `(29)`
 - [ ] identify its Bockstein with the full Xi conormal and prove dagger naturality
-- [x] Burnol Sonine/co-Poisson/evaluation interfaces available in Lean (corpus-owned)
-- [x] formalize `(1)`, `(3)`--`(7)`, `(10)`--`(12)`, `(17)`--`(18)`, `(21)` unconditionally
-- [ ] formalize Burnol completeness (closed span of confluent zero evaluators = quotient) and hence `(2)`, `(8)`, `(9)`, `(13)`--`(15)`
 - [ ] RH
-
-## Bilateral source-covariance reduction
-
-The pre-divisor source layer now gives an unconditional stronger simplification. Both normalized
-dilation orientations send the literal closed co-Poisson source at aperture `a` into the source at
-`a/r`. Hilbert adjunction therefore sends the quotient source-orthogonal at `a/r` back into the
-source-orthogonal at `a`. Consequently, on the actual quotient domain,
-
-```text
-E_a (U_r y)      = P_a (U_r y)
-E_a (U_r^* y)    = P_a (U_r^* y),       y in Y_(a/r),
-```
-
-where `E_a` is the co-Poisson quotient projection and `P_a` the plain extended-Sonin projection.
-Lean proves these as `coPoissonQuotientInverse_eq_soninProjection_of_mem_next` and
-`coPoissonQuotientForward_eq_soninProjection_of_mem_next` in
-`BurnolCoPoissonQuotientDilationCollapse.lean`.
-
-This deletes the co-Poisson source-projection correction from both physical Gamma orientations.
-The exact-couple morphism `(29)` must now identify the first-trace edge with one pure Sonin
-aperture-leakage Bockstein and prove inverse/dagger equality there. Burnol completeness is still
-needed for the full operator-flatness statement `(2)`, but it is not needed for this reduction.
-
-## Sharpening of the remaining input for `(2)`
-
-`GammaCoPoissonSoninQuadrantZeta.lean` now proves, unconditionally, that a co-Poisson annihilator
-character in the right half-strip is a zeta zero:
-
-```text
-riemannZeta_eq_zero_of_burnolCoPoissonAnnihilatorPoint
-```
-
-because Burnol's explicit indicator source is an unconditional inhabitant of the source layer and
-its completed Mellin evaluation carries the factor `zeta(w)` times a factor nonzero on the open
-strip for aperture `< 1`.
-
-### What the missing theorem actually is
-
-Burnol's own statements (Burnol, *Two complete and minimal systems associated with the zeros of the
-Riemann zeta function*, J. Théor. Nombres Bordeaux 16 (2004) 65--94) fix the target exactly.  With
-`L_a` the extended Sonine space at aperture `a`, `Y_a` the closed span of the zero evaluators
-`Y_{a,rho,k}` (`0 <= k < m_rho`), and `P_a` the co-Poisson subspace (`0 < a < 1`):
-
-> **Theorem 3.1.**  The vectors `Y_{a,rho,k}` are a minimal system in `L_a` if and only if `a <= 1`,
-> and a complete system if and only if `a >= 1`.  **For `a < 1` the perpendicular complement to
-> `Y_a` is the co-Poisson subspace `P_a`.**
-
-That last clause is precisely the input `(2)` needs: for `0 < a < 1`,
-
-```text
-closure (span {Y_{a,rho,k}}) = P_a^perp ∩ L_a = burnolCoPoissonQuotientSpace a.
-```
-
-Burnol attributes its proof to *Entrelacement de co-Poisson*, Chap. 6, Theorems 6.24--6.25.
-
-The evaluators exist at **every** zero, on and off the critical line, and not through the
-absolutely convergent integral the corpus currently uses.  The reason is
-
-> **Proposition 2.2** (Burnol, from *Entrelacement de co-Poisson* 6.10).  For `f` in `L_a` the
-> completed right Mellin transform `M(f)(s) = pi^{-s/2} Gamma(s/2) f^(s)` is meromorphic on the
-> whole plane with at most poles at `0` and `1`; the evaluations `f |-> M(f)^{(k)}(w)` for
-> `w != 0,1` are continuous linear forms on `L_a`; and `M(F_+ f)(s) = M(f)(1-s)`.
-
-This matters because the corpus's `burnolExtendedSoninEvaluationVector` is built from an absolutely
-convergent integral and therefore exists only for `Re w != 1/2`.  Under RH every nontrivial zero is
-on the line, so a completeness statement phrased only with the corpus's present evaluators would
-have an empty index family and be *false* (the quotient is not trivial).  The continuation, not a
-limiting construction, is what supplies the critical-line evaluators.
-
-### The Lean sub-targets, in order
-
-1. **meromorphic continuation.**  For `f` in `soninExtendedSpace a`, `M(f)` is meromorphic on `ℂ`
-   with poles only at `0` and `1`.  (Burnol Prop. 2.2; the corpus already has the constant-head
-   splitting `G(s) = -c(g) a^{1-s}/(s-1) + int_a^infinity g t^{-s} dt` used in his Theorem 4.8.)
-2. **evaluator vectors at every point.**  Continuity of `f |-> M(f)^{(k)}(w)` on
-   `soninExtendedSpace a`, hence a Riesz vector `Y_{a,w,k}` for every `w != 0,1` --- in particular
-   on the critical line.
-3. **the functional equation** `M(F_+ f)(s) = M(f)(1-s)` on `soninExtendedSpace a`
-   (the corpus has `soninMellinEvaluation_fourier` under integrability hypotheses; it must be
-   upgraded to the whole space via the continuation).
-4. **the perpendicular-complement theorem** for `0 < a < 1`:
-   `closure (span {Y_{a,rho,k} : zeta rho = 0}) = burnolCoPoissonQuotientSpace a`.
-
-Only then does `coPoissonQuotientCommutator_ladderKernel_eq_zero` (already proved) plus its
-confluent jets give `(2)`; `(8)` is then a substitution back into `(7)`, `(9)` is local
-cancellation, and `(13)`--`(15)` follow from `(2)` by adjacent transpositions.
-
-### First brick of sub-target 1
-
-`formal/GaloisForLFunctions/RHTower/BurnolSoninMellinHeadTail.lean` (axiom-clean, umbrella
-registered) proves the starting identity of Burnol's Theorem 4.8:
-
-```text
-integral_Ioc_soninMellinKernel        -- int_(0,a] t^(-w) dt = a^(1-w)/(1-w)  for Re w < 1
-soninMellinEvaluation_head_tail       -- M(f)(w) = P(w) * ( c * a^(1-w)/(1-w) + int_a^infinity f t^(-w) dt )
-```
-
-The head term is already meromorphic on the whole plane with its only singularity the simple pole at
-`w = 1`, so the entire analytic burden of the continuation sits on the tail integral.  The tail
-converges absolutely for `Re w > 1/2`, which continues `M(f)` to `{Re w > 1/2} \ {1}`; crossing the
-critical line needs Burnol's entire functions `C_a(u, 1-s) = F_+(1_{t>a} t^{-s})(u)` from
-*Sur les "espaces de Sonine" associés par de Branges à la transformation de Fourier*, which is the
-next brick.

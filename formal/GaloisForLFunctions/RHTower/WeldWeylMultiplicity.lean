@@ -91,7 +91,7 @@ theorem rhLadder_of_semDyadicWeylModel (k : ℕ)
   intro ρ hρ hzero
   have h0 : 0 < ρ.re := lt_trans (by norm_num) (mem_rightHalf.mp hρ)
   obtain ⟨r₀, R, N, zs, u, hsplit⟩ :=
-    semSplitData_exists ρ h0 (xi_zero_re_lt_one h0 hzero)
+    semSplitData_exists ρ h0 (xi_zero_re_lt_one hzero)
   obtain ⟨M⟩ := hmodel ρ hρ hzero r₀ R N zs u hsplit
   rw [semSplitData_count_eq hsplit]
   exact M.pow_dvd_holeCount

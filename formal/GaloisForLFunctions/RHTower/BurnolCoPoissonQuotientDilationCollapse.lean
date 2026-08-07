@@ -61,14 +61,22 @@ theorem burnolCoPoissonQuotientProjection_eq_soninProjection_of_mem_sourceOrthog
   letI : Fact (0 < b) := ⟨hb⟩
   letI : CompleteSpace (burnolCoPoissonSourceSpace b) :=
     (isClosed_burnolCoPoissonSourceSpace b).completeSpace_coe
+  letI : CompleteSpace
+      ((soninExtendedSpace b ⊓ (burnolCoPoissonSourceSpace b)ᗮ) :
+        Submodule ℂ evenSubspace) :=
+    ((isClosed_soninExtendedSpace hb).inter
+      (Submodule.isClosed_orthogonal (burnolCoPoissonSourceSpace b))).completeSpace_coe
   letI : CompleteSpace (burnolCoPoissonQuotientSpace b) :=
     (isClosed_burnolCoPoissonQuotientSpace hb).completeSpace_coe
   change (burnolCoPoissonQuotientSpace b).starProjection f =
     (soninExtendedSpace b).starProjection f
-  rw [burnolCoPoissonQuotientSpace,
+  have hproj :=
     GaloisForLFunctions.HTGeometry.starProjection_inf_orthogonal_apply
-      (burnolCoPoissonSourceSpace_le_soninExtendedSpace hb),
-    (burnolCoPoissonSourceSpace b).starProjection_apply_eq_zero_iff.mpr hf, sub_zero]
+      (M := burnolCoPoissonSourceSpace b) (K := soninExtendedSpace b)
+      (burnolCoPoissonSourceSpace_le_soninExtendedSpace hb) f
+  rw [(burnolCoPoissonSourceSpace b).starProjection_apply_eq_zero_iff.mpr hf,
+    sub_zero] at hproj
+  exact hproj
 
 /-- Both co-Poisson quotient projections collapse to Sonin projections after bilateral dilation
 of an actual next-aperture quotient vector. -/

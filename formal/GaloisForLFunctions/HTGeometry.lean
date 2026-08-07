@@ -5735,6 +5735,8 @@ import GaloisForLFunctions.HTGeometry.CDGAFreeCell
 import GaloisForLFunctions.HTGeometry.CDGAShift
 import GaloisForLFunctions.HTGeometry.CDGAShiftQuasiIso
 import GaloisForLFunctions.HTGeometry.CDGATensorConst
+import GaloisForLFunctions.HTGeometry.CDGAConstCell
+import GaloisForLFunctions.HTGeometry.CDGAConstCellTensor
 import GaloisForLFunctions.HTGeometry.CDGAFreeCoefficients
 import GaloisForLFunctions.HTGeometry.CDGATensor
 import GaloisForLFunctions.HTGeometry.CDGACellTower
@@ -5769,3 +5771,5 @@ import GaloisForLFunctions.HTGeometry.OneStepKrylovCarrierLaw
 import GaloisForLFunctions.HTGeometry.TracelessReplicaCancellationLaw
 import GaloisForLFunctions.HTGeometry.RpowPartialSumBound
 import GaloisForLFunctions.HTGeometry.LogWeightedRpowIntegral
+import GaloisForLFunctions.HTGeometry.ProductOccupancyDichotomy
+import GaloisForLFunctions.HTGeometry.PrimeValuationInfiniteSupport

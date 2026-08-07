@@ -148,6 +148,37 @@ A lower floor proves RH through the existing completed source endpoint.  An unco
 unbounded-below sequence on that exact normalized source family kills the surviving Suzuki--Burnol
 weld.  This theorem itself does neither.
 
+## Lean
+
+| Statement | Declaration |
+|---|---|
+| `(1)`: the three canonical scale-one live windows at aperture `b` | `soninScaleOneShellWindow`, `soninApertureRetainedLayerWindow`, `soninApertureCyclicLostLayerWindow`, `soninApertureTotalLayerWindow` |
+| `(2)`: a scale-one live window represents its two-polarization shell **exactly** as bounded operators, not modulo compacts; the cutoff-nesting inputs `(A_t-A_s)(1-A_a)=A_t-A_s` and its Fourier twin | `soninScaleOneShellWindow_operator`, `evenIndicatorCutoff_shellComplementProduct`, `evenFourierCutoff_shellComplementProduct`, `evenTwoPolarizationShell` |
+| `(2)` for the three windows | `soninApertureRetainedLayerWindow_operator`, `soninApertureCyclicLostLayerWindow_operator`, `soninApertureTotalLayerWindow_operator` |
+| `(3)`: exact operator conservation, an equality of bounded operators | `soninApertureTotalLayerWindow_operator_eq_retained_add_lost` |
+| `(4)`: the faithful cyclic reader of a scale-one live window is logarithmic width | `soninLiveWindowCyclicLogWeight_scaleOneShell` |
+| `(5)`: the lost channel carries `log b - log a`, independently of the crossing scale `r` | `soninLiveWindowCyclicLogWeight_apertureCyclicLostLayer` |
+| `(6)`--`(7)`: retained and total masses, and exact cyclic-mass conservation | `soninLiveWindowCyclicLogWeight_apertureRetainedLayer`, `soninLiveWindowCyclicLogWeight_apertureTotalLayer`, `soninAperture_cyclicMass_conservation` |
+| `(8)`: the transferred mass is an additive one-cocycle on every nested triple | `soninAperture_cyclicMass_cocycle` |
+| `(9)`: the aperture restriction defect | `evenSoninApertureRestrictionDefect` |
+| `(10)`: the exact compressed cocycle for arbitrary nested `b ≤ c` | `evenSoninApertureRestrictionDefect_compressed_cocycle` |
+| `(11)`: additivity modulo the concrete principal-relative ideal, through the crossing-chamber lost-shell normal form | `evenSoninApertureRestrictionDefect_principalRelative_cocycle`, `evenCentralSoninQuadraticCorner_restrictionDefect_principalRelativeEq_shell`, `evenSoninApertureLayer_principalRelativeEq_window` |
+| `(12)`: the curvature lies in that ideal and is Schatten-1 | `evenSoninApertureRestrictionCurvature`, `evenSoninApertureRestrictionCurvature_mem_principalRelativeIdeal`, `evenSoninApertureRestrictionCurvature_memSchattenClass_one` |
+| `(13)`, energy side: the packet curvature trace, its sign, and its unboundedness below on unit-weight source packets | `re_opTrace_soninAperturePacketCurvature`, `re_opTrace_soninAperturePacketCurvature_nonpos`, `exists_soninAperturePacketCurvature_re_opTrace_lt`, `eventually_le_hsNormSq_soninApertureCoupling`, `tendsto_hsNormSq_soninApertureCoupling_atTop` |
+| `(13)`, completion side: the scalar Burnol counterterm, every fixed bounded channel, and every completion bounded above all fail to restore a floor; the exact summability criterion for one that could | `not_bddBelow_soninCompletedPacketValueVar_burnolCounterterm`, `not_bddBelow_soninCompletedPacketValueVar_fixedChannel`, `not_bddBelow_soninCompletedPacketValueVar_logShellChannelFamily`, `not_bddBelow_soninCompletedPacketValueVar_of_bddAbove`, `bddBelow_soninCompletedPacketValueVar_iff`, `tendsto_atTop_of_bddBelow_soninCompletedPacketValueVar` |
+
+Files: `formal/GaloisForLFunctions/RHTower/SoninApertureCyclicMassConservation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninApertureRestrictionDefect.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLayerWindowNormalForm.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninEulerTripleShellOverlap.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninAperturePacketCurvatureTrace.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninUnboundedSourcePacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionSummabilityCriterion.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`.
+
 ## Gates
 
 - [x] prior aperture and normal-state trace corpus audited

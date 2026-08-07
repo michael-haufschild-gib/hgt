@@ -106,7 +106,7 @@ theorem rhLadder_iff_semHoleFittingCharge_zero (k : ℕ) :
   · intro h ρ hρ hzero
     have h0 : 0 < ρ.re := lt_trans (by norm_num) (mem_rightHalf.mp hρ)
     obtain ⟨r₀, R, N, zs, u, hdata⟩ :=
-      semSplitData_exists ρ h0 (xi_zero_re_lt_one h0 hzero)
+      semSplitData_exists ρ h0 (xi_zero_re_lt_one hzero)
     have hcharge := h ρ hρ hzero r₀ R N zs u hdata
     have hdvd := (integralJetCharge_semHoleDefectZ_eq_zero_iff hdata (by omega)).mp hcharge
     rwa [← semSplitData_count_eq hdata] at hdvd
@@ -209,7 +209,7 @@ theorem not_rhLadder_iff_exists_semHoleFittingCharge_ne_zero (k : ℕ) :
     rintro ⟨ρ, hρ, hzero, hnotdvd⟩
     have h0 : 0 < ρ.re := lt_trans (by norm_num) (mem_rightHalf.mp hρ)
     obtain ⟨r₀, R, N, zs, u, hdata⟩ :=
-      semSplitData_exists ρ h0 (xi_zero_re_lt_one h0 hzero)
+      semSplitData_exists ρ h0 (xi_zero_re_lt_one hzero)
     refine ⟨ρ, hρ, hzero, r₀, R, N, zs, u, hdata, ?_⟩
     intro hcharge
     have hdvd := (integralJetCharge_semHoleDefectZ_eq_zero_iff hdata (by omega)).mp hcharge

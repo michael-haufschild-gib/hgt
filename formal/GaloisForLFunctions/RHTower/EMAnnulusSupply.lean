@@ -26,14 +26,22 @@ open Complex Metric Filter
 
 /-- A ξ-zero with positive real part has real part below one: ζ is zero-free on
 `re ≥ 1` and ξ(1) = 1/2. -/
-theorem xi_zero_re_lt_one {ρ : ℂ} (h0 : 0 < ρ.re) (hzero : xi ρ = 0) : ρ.re < 1 := by
+theorem xi_zero_re_lt_one {ρ : ℂ} (hzero : xi ρ = 0) : ρ.re < 1 := by
   by_contra hge
   have hge' : 1 ≤ ρ.re := not_lt.mp hge
+  have h0 : 0 < ρ.re := lt_of_lt_of_le zero_lt_one hge'
   have hρ1 : ρ ≠ 1 := by
     intro h
     rw [h, xi_one] at hzero
     norm_num at hzero
   exact riemannZeta_ne_zero_of_one_le_re hge' ((xi_eq_zero_iff h0 hρ1).mp hzero)
+
+/-- A ξ-zero has positive real part: reflection sends it to a ξ-zero, which lies below the line
+`re = 1` by the previous lemma. -/
+theorem xi_zero_re_pos {ρ : ℂ} (hzero : xi ρ = 0) : 0 < ρ.re := by
+  have h := xi_zero_re_lt_one (ρ := 1 - ρ) (by rw [xi_one_sub]; exact hzero)
+  rw [Complex.sub_re, Complex.one_re] at h
+  linarith
 
 /-! ### §2 The completed EM member -/
 
@@ -264,7 +272,7 @@ theorem rhLadder_of_em_split_multiplicity (k : ℕ)
   intro ρ hρ h0
   have hρre : 0 < ρ.re := lt_trans (by norm_num) (mem_rightHalf.mp hρ)
   obtain ⟨r₀, R, N, zs, u, hdata⟩ :=
-    emSplitData_exists ρ hρre (xi_zero_re_lt_one hρre h0)
+    emSplitData_exists ρ hρre (xi_zero_re_lt_one h0)
   have hdvd : 2 ^ k ∣ (analyticOrderAt xi ρ).toNat := by
     rw [emSplitData_count_eq hdata]
     exact hpar ρ hρ h0 r₀ R N zs u hdata
