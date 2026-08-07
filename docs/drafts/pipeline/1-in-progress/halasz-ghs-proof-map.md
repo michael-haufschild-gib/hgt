@@ -1660,3 +1660,32 @@ what makes `S` small, inside `volume_halaszLargeValues_le`.
 What remains is to instantiate `norm_integral_mul_three_le_split` with this `S`, which needs the measurability of
 the large-value set (its defining inequality is continuous in `t`, so it is open in the subspace, hence
 measurable) and the arithmetic of choosing `δ` against `logSqWeight z`.
+
+## The large-value window as a measurable set
+
+`RHTower/Sieve/HalaszWindowMeasurable.lean` (green, axiom-clean, wired).
+
+* `isOpen_halaszLargeValues`, `measurableSet_halaszLargeValues` — the exceptional set
+  `{t | (damped bound) < ‖L(f,σ+it)‖}` is a strict inequality between a constant and a continuous function of
+  the frequency (`continuous_tsum_twistedSummand`), hence open and measurable;
+* `volume_inter_Icc_ne_top` — intersected with a bounded height range it has finite measure;
+* `norm_tsum_twistedSummand_le_of_not_mem` — off the set the damped bound holds, by definition of the set.
+
+These are exactly the side conditions `norm_integral_mul_three_le_split` requires: a measurable `S`, finite
+measure, and a bound on the third factor on each piece.  **Every ingredient of the dichotomy-shaped assembly is
+now present:**
+
+| ingredient | theorem |
+|---|---|
+| the split itself | `norm_integral_mul_three_le_split` |
+| `S` measurable, finite | this module |
+| damped bound off `S` | this module (definitional) |
+| measure of `S` | `volume_halaszLargeValues_le` (corpus) |
+| mean square on `S` | `integral_normSq_LSeries_le_measure` |
+| mean square off `S` | `integral_Icc_normSq_LSeries_le_prime_sieve` |
+| uniform kernel bound | `norm_perronKernel_le` |
+| Perron identity | `tsum_mul_smoothWeight_ghs_eq_integral` |
+
+The next step is the assembly, and then the accounting — which this time has the `e^{−δ²}` saving off the window
+and the factor `volume S ≍ (T log z/π + 1)·δ/√(logSqWeight z)` on it, the two quantities that the previous
+accounting lacked entirely.
