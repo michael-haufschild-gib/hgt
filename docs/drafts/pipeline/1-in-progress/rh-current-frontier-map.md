@@ -145,9 +145,11 @@ The shortest current chains are:
   carrying the retained rational-adelic prime-isotropy boundary from the positive resolved frame
   to the fixed same-fibre physical Xi conormal; transported positivity, Stokes flatness, strict
   resolved chain provenance, and the source-pure norm-conservative selection theorem already hold;
-- Route L: prove source-null-homology of the now explicitly measured physical paracyclic defect,
-  equivalently construct the singular boundary side of the Green--BV square so the existing
-  Burnol/Deninger reader annihilates it without erasing the ordinary-prime detector;
+- Route L: construct the joint full-Cauchy chain map on the strict nuclear arithmetic relevant
+  complex and prove its homotopy fibre is endpoint-only; then identify the resulting faithful
+  source Green form with the Meyer/Paugam Hardy form on a resolvent-faithful Hodge--Schwartz core;
+  the measured Green--BV/two-prime defect is the sharp RH-equivalent endpoint test, not the
+  missing source producer;
 - Route E: define an explicit source-predeclared physical relation `R_X` on the squarefree central
   normal Wold face, then prove its joint interval-Hall expansion and co-moving zero/one-large-prime
   cutoff flux at square-root scale;
@@ -438,7 +440,7 @@ marked explicitly; all others remain live at their stated open core.
 | I | retired | exact collision with Route C2 width |
 | J | retired | unrenormalized and residual Julia-capacity mechanisms are closed; successor changes primitive |
 | K | retired | all-order continuation is Route P |
-| L | open | source-null-homology of the measured physical paracyclic defect, equivalently the singular boundary compatibility in `XI_BV_GREEN_STOKES_STRICT_DESCENT`; pre-divisor physical comparison, residue, and strict resolved provenance are already constructed |
+| L | open | strict nuclear full-Cauchy chain map with endpoint-only homotopy fibre; then full-packet Green/Paugam comparison and resolvent-faithful Hodge--Schwartz completion. `XI_BV_GREEN_STOKES_STRICT_DESCENT` and its fixed two-prime restriction are the sharp RH-equivalent endpoint tests, not source premises |
 | M | terminalized coordinate | anchored cofinal flatness is exactly RH |
 | N | open | uniform source-domain prime-normal sub-log-square bound |
 | O | open | source-derived low-energy profile exhaustion/reduced-resolvent control of the entire restricted-Weil ground space; then orient the surviving boundary channel or prove the true floor nonnegative |
@@ -457,7 +459,7 @@ zero-fed spectra, or determinant limits:
 |---|---|---|
 | pre-projection principal-relative current | Route-J energy divergence, diagonal-retention, and endpoint-completeness theorems exclude every advertised post-projection capacity repair | positive survivor of retired J; a new route if constructed |
 | nonseparable prime/depth--divisor arithmetic differential | `θ(i,j)=m_iλ_j-m_jλ_i` has exact curvature `-log(2)/8`, no vertex potential, and no clock-difference representation; crossed BV/clock occupation legs produce an independent equal-grade graded-`det2` counterboundary; resolved frames carry a positive definite parallel Hermitian metric; its fixed-source excess is the exact square `a²θ(i,j)²|c|²/(λ_i²λ_j²)` | constructed Route R corrected square, positive resolved Stokes polarization, and sharp fixed-Cartier descent obstruction; source rigidity of the two metrics remains open |
-| source-first chain descent rather than post hoc cohomology | the ordinary Wold/BV Hochschild boundary exists, but physical landing reads exactly the nonzero Burnol/Deninger radial defect | live Route L open core |
+| strict nuclear full-Cauchy recollement before Hilbert reduction | the finite Calderon--Witt source has `H^1=0`, while the physical landing reads the exact Burnol/Deninger radial defect; spectral middle cohomology must therefore arise only after relevant-complex formation without a new cofinal middle-fibre class | live Route L source core; prove endpoint-only Cauchy fibre, then Green/Paugam and resolvent comparison |
 | prelimit noncompact one-corner incidence | the lower Fisher cutoff corner carries exactly four critical energy units, the critical channel converges weakly but not strongly, every fixed compact synthesis kills it, and every internal Xi jet has a physical `ell2` horizon | live unlettered CCM-FU lane; construct the moving Gamma/Sonin/Hodge incidence and identify its Ward column |
 | exact closed CCM class-space quotient with Real/Clifford structure | the literal nonunital strong cyclic target, closed restriction quotient, descended invertible Lefschetz action, even Real structure, nonzero Haar--Mellin separator, exact Real-parity no-go, and canonical anti-Real `iL` survivor are constructed | concrete C1-CCM carrier; bivariant/intersection pairing, Hodge sign, and Weil-form identification remain open |
 | moving, all-order, provenance-preserving carrier | finite Möbius/Wold moments are parity-blind and fixed finite selectors are saturated | live Routes E and P at distinct source laws |
@@ -473,8 +475,9 @@ the retained class with value one.
 The fixed source/Cartier metric differs on the literal vertical conormal by one explicit
 nonnegative BV--Wold square; global vanishing of that square is RH. What does not exist is source
 rigidity identifying the transported metric field with that fixed same-fibre metric. Route L
-likewise has an exact tail to RH but not its strict
-descent. The post-J pre-projection current is only a falsifiable successor class until a literal
+likewise has an exact RH-equivalent two-prime endpoint test, but its upstream producer is the
+strict nuclear full-Cauchy recollement law followed by Green/Paugam and resolvent comparison. The
+post-J pre-projection current is only a falsifiable successor class until a literal
 source object and unconditional handoff are built. Its construction must be recorded as a new
 route unless it is literally Route R, not used to reopen J. The ambient discrete-connection
 formalism is classical; the exact BV--Wold arithmetic coupling is recorded by the corpus as new
@@ -3525,7 +3528,7 @@ Retired route card:
 Retired regular Clifford/full-source subroute:
 `../5-failed/xi-reciprocal-clifford-square-source-rh.md`.
 
-### Route L — Deninger/Hodge/cohomological realization [OPEN — PHYSICAL SOURCE-NULL-HOMOLOGY / SINGULAR BOUNDARY]
+### Route L — Deninger/Hodge/cohomological realization [OPEN — STRICT NUCLEAR FULL-CAUCHY RECOLLEMENT / GREEN--PAUGAM COMPARISON]
 
 **Endpoint family.** Oriented Hodge, Weil-transport, dense-range, resolvent, and
 divisor-spectrum inclusions, all conditionally implying RH.
@@ -4304,7 +4307,7 @@ closed, but physical landing fails to descend through it by exactly the retained
 coefficient. A cyclic source trace kills `B_n`; the physical conormal marginal kills it exactly
 on the critical line.
 
-**Open core — `XI_BV_GREEN_STOKES_STRICT_DESCENT`.** Construct, source-first and before divisor
+**RH-equivalent endpoint obstruction — `XI_BV_GREEN_STOKES_STRICT_DESCENT`.** Construct, source-first and before divisor
 specialization, the missing singular boundary compatibility in the comparison square
 
 ```text
@@ -4340,11 +4343,13 @@ force that value to zero for every Xi divisor and hence prove RH.
 Generic mapping-cone exactness, Koszul compatibility, cyclicity, KMS untwisting, covariant
 countertransport, and bare non-erasure cannot prove this singular specialization: the
 coefficient-faithful reader already exhibits its exact failure on the ordinary boundary. Declaring
-the physical vector a boundary merely relocates or erases `K_n`. Route L is open at
-source-null-homology/singular boundary compatibility between the already-built resolved and
-physical geometries, not at source formation, Green primitive, BV boundary, resolved complex,
-strict Route-R chain provenance, pre-divisor ordered physical comparison, residue computation,
-physical radial comparison, or coefficient-faithful incidence landing.
+the physical vector a boundary merely relocates or erases `K_n`. This square is therefore the
+sharp endpoint obstruction, not an upstream mechanism: any direct proof of its missing
+compatibility must be sourced by the strict nuclear recollement, Green/Paugam comparison, and
+resolvent-faithful Hodge realization described below. Source formation, Green primitive, BV
+boundary, resolved complex, strict Route-R chain provenance, pre-divisor ordered physical
+comparison, residue computation, physical radial comparison, and coefficient-faithful incidence
+landing are already closed.
 The generic contraction hypotheses are now instantiated unconditionally on
 `ℓ²(ℕ,ℝ)`: the unilateral shift is an eigenvector-free linear isometry, its range is
 orthogonal to the first basis vector, and the unit sphere is contractible. No theorem
@@ -4370,10 +4375,10 @@ L_s(D w_23)=0  iff  Re(s)=1/2.
 ```
 
 Multiplication by the nonzero first Xi jet preserves this equivalence. Hence full completed
-Green--BV descent is stronger than necessary: Route L closes once the actual singular
+Green--BV descent is stronger than necessary: Route L's final endpoint closes once the actual singular
 Gamma/co-Poisson transport is proved boundary-compatible on this one fixed, pre-divisor,
 prime-2/prime-3 Green boundary while retaining both prime labels and the leading Xi jet. This
-sharpened core is
+sharpened endpoint test is
 `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`, a concrete subproblem of
 `XI_BV_GREEN_STOKES_STRICT_DESCENT`. Source exactness alone does not prove it; the physical
 reporter is boundary-blind on `w_23` exactly at the desired critical-line endpoint.
@@ -4400,7 +4405,8 @@ cochain for every parameter, including every off-line parameter.  Its surviving 
 quadratic mate curvature.  Generic Hopf-cyclic repair does not help: modular pairs in involution
 and stable anti-Yetter--Drinfeld coefficients explicitly allow non-unimodular modular weights.
 
-There is a second structural correction.  The finite Calderon--Witt oriented source already has
+**Current source open core — `DAC_FULL_CAUCHY_RECOLLEMENT_FIBRE_ENDPOINT_LAW`.** The finite
+Calderon--Witt oriented source already has
 `H^1=0` and `H^2=C`; it supplies the canonical boundary `w_23` and its sharp reader, but cannot
 itself carry Xi spectral middle cohomology.  Deninger's unique producer must therefore occur after
 strict nuclear relevant-complex formation, before Hilbert reduction: construct the joint
@@ -4411,8 +4417,8 @@ homotopy fibre is endpoint-only,
 Fib(R_Cauchy)  ~=  C[0] + C(-1)[-2].
 ```
 
-This is frozen as `DAC_FULL_CAUCHY_RECOLLEMENT_FIBRE_ENDPOINT_LAW`.  Its vanishing middle fibre
-makes full Cauchy restriction conservative on arithmetic `H^1`; local Dirichlet positivity then
+Its vanishing middle fibre makes full Cauchy restriction conservative on arithmetic `H^1`;
+local Dirichlet positivity then
 gives the faithful global Green form.  The remaining RH-bearing comparison is to identify that
 source Green form with the actual Meyer/Paugam Hardy form and preserve a nuclear Hodge--Schwartz
 resolvent core.  Restriction of this global comparison to `w_23` is precisely
@@ -5627,11 +5633,12 @@ equivalent wrapper around one of them does not advance source acquisition.
    reflection discriminant to vanish. If it is not the existing Route-R current, it must receive
    separate route ownership. Backlog card:
    `../0-backlog/post-j-preprojection-principal-relative-current.md`.
-3. **Route L source-null-homology.** Prove that the explicitly measured physical paracyclic defect
-   is null-homologous in the literal arithmetic cyclic source, equivalently supply the missing
-   singular boundary compatibility in the Green `tensor BV` square. The ordered physical
-   comparison, residue `(delta_n(rho)-1)c_rho`, and trace-one prime detector already exist and may
-   not be erased.
+3. **Route L strict nuclear full-Cauchy recollement.** Construct the joint full-Cauchy restriction
+   on the actual Rost--Schmid/real-signature relevant complex and prove
+   `Fib(R_Cauchy) ~= C[0] + C(-1)[-2]`, with no cofinal `lim^1` middle anomaly. Then prove the
+   full-packet Green/Paugam comparison and resolvent-faithful Hodge completion. The ordered
+   physical comparison, residue `(delta_n(rho)-1)c_rho`, trace-one prime detector, and fixed
+   two-prime boundary remain the final RH-equivalent test and may not be erased.
 4. **CCM-FU prelimit noncompact incidence.** Construct the moving contractive family carrying the
    joined lower Fisher corner and physical all-jet horizon through Gamma/co-Poisson/Hodge descent
    to the continued Xi Ward column while preserving its exact four-unit energy.
@@ -5713,9 +5720,11 @@ the following status.
   the literal degree-one cyclic-bar source object. `MobiusThetaSourceDaggerMinimalBoundaryLaw.lean`
   constructs its rotation-invariant trace, trace-one ordinary-prime atom, ordered pre-divisor
   physical comparison, filtered Xi-jet landing, residue detector, and exact paracyclic
-  transgression. Its formal claim map explicitly leaves physical source-null-homology unproved.
+  transgression. Its formal claim map explicitly leaves physical endpoint descent unproved; the
+  current audit relocates the first source theorem upstream to strict nuclear full-Cauchy
+  recollement.
   The independent prime-isotropy relative complex and period-one Stokes regulator supply strict
-  resolved provenance but still do not prove that homology statement or scalar Cartier descent.
+  resolved provenance but still do not prove endpoint descent or scalar Cartier descent.
 - `real-corona-isotropy-clifford-transgression-law` and the exact nonunital CCM modules establish
   recipient nontriviality, Real-parity obstruction, and the canonical `iL` survivor. They advance
   C1-CCM's carrier, not its missing trace-pairing positivity.
@@ -5909,12 +5918,14 @@ The first unresolved theorem is therefore route-dependent but consistently pre-s
 - Retired Route J has no open premise. A different pre-projection principal-relative current is a
   corpus-native new-route candidate; it belongs to Route R only if its literal source and handoff
   are the existing Route-R construction.
-- Route L needs source-null-homology of the measured physical paracyclic defect, equivalently the
-  missing singular boundary compatibility in its Green--BV square. Completed Green source and
-  primitive, BV boundary, resolved complex, strict Route-R chain provenance, ordered pre-divisor
-  physical comparison, exact residue, trace-one prime detector, Burnol/Deninger reader, and
-  coefficient-faithful landing exist. The missing law must make that fixed reader boundary-blind
-  without erasing its detector; failure is exactly the RH-bearing radial coefficient.
+- Route L's finite/source-normal boundary mechanisms are exhausted: completed Green primitive,
+  BV boundary, resolved complex, strict Route-R provenance, ordered pre-divisor comparison, exact
+  residue, trace-one detector, and coefficient-faithful Burnol/Deninger landing exist, while the
+  finite oriented source has `H^1=0` and the linear dagger defect is exact even off-line. The first
+  source theorem is now strict nuclear full-Cauchy recollement with endpoint-only fibre. Its
+  consequence must then pass through full-packet Green/Paugam comparison and a resolvent-faithful
+  Hodge--Schwartz core. The fixed reader's failure is the final RH-bearing radial coefficient, not
+  an admissible hypothesis for the source theorem.
 - The unlettered CCM-FU lane needs a prelimit cofinal noncompact incidence from the joined lower
   Fisher corner and admitted physical jet horizon to the continued Xi Ward column. Its exact
   four-unit source budget, weak/non-strong critical escape, compact-synthesis no-go, and all-jet
@@ -5950,7 +5961,8 @@ both unconditional and useful, the corpus has formalized or scheduled its precis
 content. No located primary source supplies Route R's global two-orientation source nonerasure
 law, C1-CCM's
 positive bivariant/intersection pairing on the exact recipient, the post-J pre-projection current,
-Route L's physical source-null-homology, CCM-FU's prelimit noncompact Ward incidence, Route E's
+Route L's strict nuclear full-Cauchy recollement and Green/Paugam comparison, CCM-FU's prelimit
+noncompact Ward incidence, Route E's
 explicit physical `R_X` and central-Hall/co-moving-flux theorem, or another live route's first open
 premise.
 
@@ -5963,8 +5975,9 @@ the moving-prime comparison for `n≥19` is open.
 > prime-isotropy provenance, literal physical comparison, and nonzero source detectors are largely
 > built. What is not built is an arithmetic law forcing the retained reflection-odd horizontal
 > class to vanish before scalarization. Route R asks for source-derived global nonerasure of both
-> constructed variable-ideal physical specializations;
-> Route L for physical source-null-homology; CCM-FU for a moving noncompact four-unit Ward
+> constructed variable-ideal physical specializations; Route L asks first for strict nuclear
+> full-Cauchy recollement, then Green/Paugam and resolvent-faithful comparison to its fixed
+> two-prime endpoint test; CCM-FU for a moving noncompact four-unit Ward
 > incidence; C1-CCM for the positive intersection pairing. These are distinct realizations of one
 > polarized-conservativity problem, not interchangeable routine lemmas.
 

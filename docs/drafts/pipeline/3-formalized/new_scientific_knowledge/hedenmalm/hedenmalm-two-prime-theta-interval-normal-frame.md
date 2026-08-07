@@ -1,7 +1,7 @@
 # Two prime theta-interval anomalies generate the complete Xi normal module
 
 - **ID:** `hedenmalm-two-prime-theta-interval-normal-frame`
-- **Stage:** 2-fully-proven / interval transgression and cocycle law formalized
+- **Stage:** 3-formalized
 - **Type:** THEOREM / SOURCE-NORMAL PRIME FRAME / ESSENTIAL COMPACT-BOUNDARY SYMBOL
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:**
@@ -439,6 +439,7 @@ source, with no hypothesis: one integration by parts on the line, the window der
 | `(16)` | **two literal primes retain every `Xi` point and its exact multiplicity** | `two_prime_retains_analyticOrder`, `two_prime_retains_divisor` |
 | `(18)`,`(19)` | the compact reciprocal multiplier `A_n(mu) = 2 n^(-1/2) mu sin(L_n/(2 mu))` | `compactNormalMultiplier`, `compactNormalMultiplier_eq` |
 | `(20)` | `A_n(-1/zeta) = a_n(zeta)` on every root block | `compactNormalMultiplier_root` |
+| `(21)` | **the essential-singular pair does not annihilate a nonzero root mode** | `essential_pair_ne_zero` |
 | `(23)` | the first-order normalized frame symbol `b_n(t) = t a_n(t) = 2 n^(-1/2) sin(t log n / 2)` | `frameSymbol`, `mul_centeredMultiplier_eq_frameSymbol`, `abs_frameSymbol_le` |
 | `(22)` | **the multiplier decays like `1/abs t`, so `abs a_2 + abs a_3 -> 0`** | `norm_centeredMultiplier_le`, `tendsto_norm_centeredMultiplier_atTop` |
 
@@ -495,6 +496,7 @@ Three new modules carry them.
 | `(7)` | the entire representative of `a_n`, with the removable singularity at the origin filled in, and its value `n^{-1/2} log n` there | `centeredMultiplierE`, `differentiable_centeredMultiplierE`, `centeredMultiplierE_eq`, `centeredMultiplierE_at_zero` |
 | `(9)` | its zero set is exactly the nonzero part of the progression `2 pi k / log n` | `centeredMultiplierE_eq_zero_iff` |
 | `(9)` | those zeros are simple, injectively indexed, and escape to infinity | `deriv_centeredMultiplierE_ne_zero`, `injective_centeredZero`, `tendsto_norm_centeredZero_cofinite` |
+| `(8)` | **the multiplier is even and real**, `a_n(-z) = a_n(z)` and `a_n(conj z) = conj a_n(z)` | `centeredMultiplierE_neg`, `centeredMultiplierE_conj` |
 | `(13)` | **the two-prime Bezout identity** `b_2 a_2 + b_3 a_3 = 1` with `b_2`, `b_3` entire | `exists_two_prime_bezout` |
 
 `formal/GaloisForLFunctions/RHTower/HedenmalmTwoPrimeIdeal.lean`
@@ -503,6 +505,10 @@ Three new modules carry them.
 | # | statement | Lean declaration |
 |---|---|---|
 | `(13)` | the Bezout identity inside the entire-function algebra | `exists_entire_two_prime_bezout` |
+| — | **entire functions have no zero divisors** (the identity theorem) | `deningerEntire_cancel`, `deningerEntireXi_cancel` |
+| `(11)` | **the conormal module of a principal divisor**, `I/I^2 ≃ R/(g)` | `GaloisForLFunctions.HTGeometry.principalCotangentEquiv` |
+| `(11)` | **the Xi conormal module is the Xi comparison quotient** | `xiConormalEquiv` |
+| `(12)` | **the two prime window classes generate `I/I^2`** | `windowCotangent`, `span_windowCotangent_eq_top` |
 | `(14)` | **the two prime windows generate the Xi ideal**, `(hat c_2, hat c_3) = (Xi_C)` | `span_entireCenteredWindow_eq_xiIdeal` |
 | `(17)` | the range of the two-prime row map is the Xi ideal | `windowRow`, `range_windowRow` |
 | `(17)` | **the analytic cokernel is `O(C)/(Xi_C)`** | `twoPrimeCokernelEquiv` |
@@ -539,6 +545,7 @@ head with tolerance `delta / 2` and weight ceiling `sum over P of omega_p`.
 - [x] summably weighted all-prime diagonal frame obstruction proved
 - [x] preliminary corpus noncollision audit
 - [x] preliminary external noncollision search
+- [x] Lean conormal generation, Bezout identity and analytic cokernel
 - [ ] independent specialist literature audit
 - [ ] closed strict boundary realization of `(19)`
 - [ ] positive self-adjoint divisor spectrum

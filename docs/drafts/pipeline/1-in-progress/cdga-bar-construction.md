@@ -115,8 +115,19 @@ the direct sum over the number of factors of the tensor powers of the shifted id
 differential, which keeps the number of factors, plus the bar differential, which lowers it by one),
 `barTotalD`, and `barTotalD_of`, its value on a single factor.
 
-What remains is `d² = 0`: the double-sum cancellation of the head against itself, which is
-associativity of the ideal's product together with the sign of the shift, and the cross terms
-between the head and the internal differential, which are the Leibniz rule.  Everything the
-statement quantifies over is now defined, so the remaining work is a computation rather than a
-construction.
+What remains is `d² = 0`.  Writing the recursive step as `barD (k+1) = H_k + R(barD k)`, with `H` the
+head and `R` the right-factor degree-one construction, the square expands into four terms:
+
+    H ∘ H  +  H ∘ R(barD)  +  R(barD) ∘ H  +  R(barD) ∘ R(barD)
+
+* The last term is **discharged**: `tensorRightDegOne_comp` in
+  `formal/GaloisForLFunctions/HTGeometry/CDGATensorDegOne.lean` shows that two degree-one maps on the
+  right factor compose *without* a sign — the two Koszul signs are the same and cancel — so the term
+  vanishes exactly by the inductive hypothesis `barD (k-1) (b+1) ∘ barD k b = 0`.
+* The first three must cancel against each other.  `H ∘ H` produces `μ(μ(a₁,a₂),a₃)`, the head of
+  `H ∘ R(barD)` produces `μ(a₁,μ(a₂,a₃))`, and these cancel by associativity of the ideal's product
+  against the sign of the shift; the remaining terms of `H ∘ R(barD)` cancel `R(barD) ∘ H` term by
+  term.  Formalising this means expanding the head's finite sum twice and reindexing the double sum,
+  which is the one genuinely long computation left in this card.
+
+Everything the statement quantifies over is defined, and one of the four terms is proved.

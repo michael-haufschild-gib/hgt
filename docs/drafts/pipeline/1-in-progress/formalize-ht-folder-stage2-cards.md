@@ -406,3 +406,51 @@ mathlib's `tprod` Fubini needs a `CommGroup`, which `ℂ` under multiplication i
 
 So for cards 2 and 3, `Γ ∈ M` with `D_Γ = [0]` is fully formal.  The single remaining input on both
 is the kernel identification: `Y` is differentially algebraic exactly when `D_Y = 0`.
+
+
+## State of the programme, and the exact remaining inputs
+
+Everything below is wired into `GaloisForLFunctions.HTGeometry` and `#print axioms`-clean.
+
+### Built this round
+
+```text
+MeromorphicPrincipalPart / RectangleResidueTheorem   general residue theorem, any pole order
+TripticAugmentationLaw                               (A2), (A4)
+GammaFactorialNormalization / GevreyFactorialNormalization / ZetaTailClosedModulus
+                                                     card 9 §3, unconditional, both normalizations
+EuclideanOrbifoldCurrents                            the four compact parabolic currents
+SourceDivisorSurjectivity                            surjectivity from single-class realization
+ExpConeProduct / EllipticGammaConeDivisor / EllipticGammaConeCocycle
+                                                     the elliptic gamma function, its quadrant
+                                                     divisor, periodicity and mixed cocycle
+TripticChargeClassFunction                           the charge is an `H₃`-class function, with
+                                                     compact local finiteness
+ExpandingProtocolVanishing                           §1 degree law, §2 transient zeros,
+                                                     §3 quantization, Riemann–Hurwitz trapping
+VerticalSymbolTransformation                         §1 symbol comparison
+BarnesRemainderDATransfer                            card 9 §4, algebraic half
+NewtonSlopeRationality                               card 9 §5, arithmetic half
+TaylorPartialSumApproximation                        the approximation step of Mittag-Leffler
+```
+
+### What each card still needs, precisely
+
+| Card | Remaining input |
+|---|---|
+| triptic-orbit-residue-reciprocity | the principal-part normal form `F − R_trip(F)Ψ ∈ Mer_DA`, hence `Y` DA ⟺ `D_Y = 0` |
+| triptic-ht-kummer-content-root-classification | the same kernel identification; plus the `Finsupp` packaging of `D` |
+| hypertranscendental-pair-localization-noncompression | the multiple elliptic gamma of order `d−1` and the exact-image theorem |
+| nonautonomous-rational-first-order-tail-orbifold-law | §4: the isogeny-tail identification of the late tail with the invariant Maurer–Cartan field |
+| nonautonomous-rational-complete-tail-orbifold-classification | the same, plus Casale's groupoid classification as an input to §2 |
+| nonautonomous-isogeny-tail-time-splitting | Rosenlicht-type quotient for a general connected commutative algebraic group |
+| helson-universal-ht-arbitrary-divisor-orthogonality | Pong 5.9's conclusion; Andersson's Mittag-Leffler theorem; Saksman–Webb/Seip |
+| irrational-power-canonical-products | the Barnes expansion `(4)`–`(6)`; Sibuya–Ramis |
+
+### The next shared asset
+
+Mittag-Leffler on `ℂ` — prescribed principal parts — feeds Andersson (card 8) and the normal form
+(cards 2, 3, 4).  The approximation step is built (`exists_partialSum_approx`); what remains is the
+convergence engine (`∑ (P_n − Q_n)` converges locally uniformly off the pole set, and the sum is
+meromorphic with the prescribed principal parts), which follows the same
+`TendstoLocallyUniformlyOn.differentiableOn` pattern already used for the cone product.

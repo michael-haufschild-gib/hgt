@@ -4232,3 +4232,27 @@ Trap: `K ≥ 0` is not free from `∀ x y, |f x − f y| ≤ K |x − y|` — in
     2. g s = 2K · 1_{Ioc 0 1}(s) + 8M e^{−s} integrable on Ioi 0
     3. product integrability on volume ×ˢ volume.restrict (Ioi 0), then integral_integral_swap
     4. compose with secondDifference_mollify (DR)
+
+## DU. `(15)` step 2 — the majorant is integrable
+
+`LogNormalEquationTrace.lean` is at 52 declarations, all `#print axioms` clean, no `sorry`.
+
+    transportMajorant K M s = if s ≤ 1 then 2 K else 8 M exp (−s)
+
+- `integrableOn_transportMajorant` — integrable on `Ioi 0`: constant on the finite-measure piece
+  `Ioc 0 1`, exponential on `Ioi 1`, glued by `IntegrableOn.union`.
+
+With DT's two uniform bounds this dominates `|secondDifference f y s · k(s)|` for every base point
+`y`, which is what the product integrability of `(15)` needs.
+
+Trap (third time this session): `open … in` scopes to **one** declaration.  A `def` followed by a
+theorem needs the `open` repeated, or the errors read as missing imports.
+
+### `(15)` — remaining
+
+    3. product integrability on volume ×ˢ volume.restrict (Ioi 0), then integral_integral_swap
+    4. compose with secondDifference_mollify (DR)
+
+Step 3's majorant is `|ρ(t)| · transportMajorant K M s`, integrable on the product by
+`Integrable.comp_fst` and `Integrable.comp_snd` — the same pattern as `integral_mollify_swap` (DI),
+but with the *second* factor infinite and the majorant carrying the decay instead.
