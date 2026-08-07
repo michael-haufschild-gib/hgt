@@ -64,11 +64,26 @@ or less.
   degree `n + 1` of the ideal with the differential negated; and `barPower`, **the `k`-fold tensor
   power of the shifted ideal**, by recursion on `k`.
 
-## What step 5 needs that does not exist yet
+## Step 5: the bar differential
 
 The bar differential maps `(sĀ)^{⊗(k+1)} → (sĀ)^{⊗k}` and *raises* the total degree by one, since
 multiplying two shifted elements of degrees `a` and `b` gives an element of `Ā` in degree
-`a + b + 2`, which is degree `a + b + 1` after the shift.  So it is the multiplication
-`sĀ ⊗ sĀ → sĀ`, a map of degree one, applied in the first two slots.  The corpus's `tensorMapLeft`
-tensors a *degree-zero* morphism with the identity; what is needed is the same for a degree-one map,
-with the sign that the Koszul convention forces.  That is the next object to build.
+`a + b + 2`, which is degree `a + b + 1` after the shift.  Written recursively on the number of
+factors it has two parts, and both are now within reach.
+
+- The tail part, `id ⊗ d_bar`, is a degree-one map on the *right* factor with the Koszul sign of the
+  degree of the left one.  **Landed**: `formal/GaloisForLFunctions/HTGeometry/CDGATensorDegOne.lean`
+  — `tensorLeftDegOne`, `tensorRightDegOne` and their linear forms, the generalisation of the two
+  half-differentials of a tensor product from a differential to an arbitrary degree-one family.
+- The head part multiplies the outer factor with the first factor of the inner tensor product.  It
+  looked as though this needed a graded associator for `TensorCarrier`, which the corpus does not
+  have and which would need the distribution of a tensor product over a finite product of
+  decompositions.  It does not: `TensorCarrier` is a *product over decompositions*, so the component
+  of the result at a decomposition `(c, e)` is a finite sum over `a + a' = c - 1` of terms obtained
+  by projecting the inner factor at `(a', e)` — projection out of the second factor of a tensor
+  product is `TensorProduct.map id (proj _)`, which is linear — and then applying mathlib's ordinary
+  `TensorProduct.assoc` followed by the multiplication in the first two slots.  No graded associator
+  is needed.
+
+What remains for step 5 is therefore the shifted multiplication `sĀ^a ⊗ sĀ^{a'} → sĀ^{a+a'+1}` as a
+linear map, the finite sum above, and `d² = 0`.

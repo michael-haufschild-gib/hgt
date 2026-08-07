@@ -526,6 +526,7 @@ import GaloisForLFunctions.HTGeometry.CDGATensorAlgebraIncl
 import GaloisForLFunctions.HTGeometry.CDGATensorAlgebraMap
 import GaloisForLFunctions.HTGeometry.CDGATensorAlgebraUnit
 import GaloisForLFunctions.HTGeometry.CDGATensorColimit
+import GaloisForLFunctions.HTGeometry.CDGATensorDegOne
 import GaloisForLFunctions.HTGeometry.CDGATensorConst
 import GaloisForLFunctions.HTGeometry.CDGATensorConstExchange
 import GaloisForLFunctions.HTGeometry.CDGATensorConstHom

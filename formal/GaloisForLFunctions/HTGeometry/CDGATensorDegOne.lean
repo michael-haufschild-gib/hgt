@@ -1,0 +1,132 @@
+import GaloisForLFunctions.HTGeometry.CDGATensor
+
+/-!
+# Tensoring a map of degree one with the identity
+
+A family of linear maps raising the degree by one, tensored with the identity on the second factor,
+gives a map of tensor products raising the total degree by one.  On the second factor the same
+construction carries the Koszul sign of the degree of the first.  These are the two half-maps of
+which the total differential of a tensor product is the special case where the map is a
+differential, and they are what a bar differential — the multiplication of two adjacent factors,
+which raises the total degree by one after a shift — is built from.
+
+* `HTGeometry.tensorLeftDegOne` : a degree-one map on the left factor.
+* `HTGeometry.tensorRightDegOne` : a degree-one map on the right factor, with the Koszul sign.
+-/
+
+universe u w
+
+namespace GaloisForLFunctions.HTGeometry
+
+open TensorProduct
+
+variable {R : Type u} [CommRing R]
+  {M : ℕ → Type w} [∀ n, AddCommGroup (M n)] [∀ n, Module R (M n)]
+  {M' : ℕ → Type w} [∀ n, AddCommGroup (M' n)] [∀ n, Module R (M' n)]
+  {N : ℕ → Type w} [∀ n, AddCommGroup (N n)] [∀ n, Module R (N n)]
+  {N' : ℕ → Type w} [∀ n, AddCommGroup (N' n)] [∀ n, Module R (N' n)]
+
+/-- **A degree-one map on the left factor, tensored with the identity.** -/
+def tensorLeftDegOne (f : ∀ a : ℕ, M a →ₗ[R] M' (a + 1)) (n : ℕ)
+    (F : TensorCarrier (R := R) M N n) : TensorCarrier (R := R) M' N (n + 1) :=
+  fun p =>
+    match p with
+    | ⟨(0, _), _⟩ => 0
+    | ⟨(a + 1, b), h⟩ =>
+        TensorProduct.map (f a) LinearMap.id (F ⟨(a, b), by omega⟩)
+
+@[simp] theorem tensorLeftDegOne_zero (f : ∀ a : ℕ, M a →ₗ[R] M' (a + 1)) (n b : ℕ)
+    (F : TensorCarrier (R := R) M N n) (h : (0, b).1 + (0, b).2 = n + 1) :
+    tensorLeftDegOne (N := N) f n F ⟨(0, b), h⟩ = 0 := rfl
+
+@[simp] theorem tensorLeftDegOne_succ (f : ∀ a : ℕ, M a →ₗ[R] M' (a + 1)) (n a b : ℕ)
+    (F : TensorCarrier (R := R) M N n) (h : (a + 1, b).1 + (a + 1, b).2 = n + 1) :
+    tensorLeftDegOne (N := N) f n F ⟨(a + 1, b), h⟩
+      = TensorProduct.map (f a) LinearMap.id (F ⟨(a, b), by omega⟩) := rfl
+
+theorem tensorLeftDegOne_add (f : ∀ a : ℕ, M a →ₗ[R] M' (a + 1)) (n : ℕ)
+    (F G : TensorCarrier (R := R) M N n) :
+    tensorLeftDegOne (N := N) f n (F + G)
+      = tensorLeftDegOne f n F + tensorLeftDegOne f n G := by
+  funext p
+  obtain ⟨⟨a, b⟩, h⟩ := p
+  cases a with
+  | zero => rw [tensorLeftDegOne_zero]; exact (add_zero (0 : TensorProduct R (M' 0) (N b))).symm
+  | succ a' =>
+      show TensorProduct.map (f a') LinearMap.id ((F + G) ⟨(a', b), by omega⟩) = _
+      rw [tensorCarrier_add_apply, map_add]
+      rfl
+
+theorem tensorLeftDegOne_smul (f : ∀ a : ℕ, M a →ₗ[R] M' (a + 1)) (n : ℕ) (c : R)
+    (F : TensorCarrier (R := R) M N n) :
+    tensorLeftDegOne (N := N) f n (c • F) = c • tensorLeftDegOne f n F := by
+  funext p
+  obtain ⟨⟨a, b⟩, h⟩ := p
+  cases a with
+  | zero => rw [tensorLeftDegOne_zero]; exact (smul_zero c).symm
+  | succ a' =>
+      show TensorProduct.map (f a') LinearMap.id ((c • F) ⟨(a', b), by omega⟩) = _
+      rw [tensorCarrier_smul_apply, map_smul]
+      rfl
+
+/-- The degree-one map on the left factor, as a linear map. -/
+def tensorLeftDegOneₗ (f : ∀ a : ℕ, M a →ₗ[R] M' (a + 1)) (n : ℕ) :
+    TensorCarrier (R := R) M N n →ₗ[R] TensorCarrier (R := R) M' N (n + 1) where
+  toFun := tensorLeftDegOne f n
+  map_add' := tensorLeftDegOne_add f n
+  map_smul' := tensorLeftDegOne_smul f n
+
+/-- **A degree-one map on the right factor, tensored with the identity**, with the Koszul sign of
+the degree of the left factor. -/
+def tensorRightDegOne (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1)) (n : ℕ)
+    (F : TensorCarrier (R := R) M N n) : TensorCarrier (R := R) M N' (n + 1) :=
+  fun p =>
+    match p with
+    | ⟨(_, 0), _⟩ => 0
+    | ⟨(a, b + 1), h⟩ =>
+        ((-1 : R)) ^ a • TensorProduct.map LinearMap.id (g b) (F ⟨(a, b), by omega⟩)
+
+@[simp] theorem tensorRightDegOne_zero (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1)) (n a : ℕ)
+    (F : TensorCarrier (R := R) M N n) (h : (a, 0).1 + (a, 0).2 = n + 1) :
+    tensorRightDegOne (M := M) g n F ⟨(a, 0), h⟩ = 0 := rfl
+
+@[simp] theorem tensorRightDegOne_succ (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1)) (n a b : ℕ)
+    (F : TensorCarrier (R := R) M N n) (h : (a, b + 1).1 + (a, b + 1).2 = n + 1) :
+    tensorRightDegOne (M := M) g n F ⟨(a, b + 1), h⟩
+      = ((-1 : R)) ^ a • TensorProduct.map LinearMap.id (g b) (F ⟨(a, b), by omega⟩) := rfl
+
+theorem tensorRightDegOne_add (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1)) (n : ℕ)
+    (F G : TensorCarrier (R := R) M N n) :
+    tensorRightDegOne (M := M) g n (F + G)
+      = tensorRightDegOne g n F + tensorRightDegOne g n G := by
+  funext p
+  obtain ⟨⟨a, b⟩, h⟩ := p
+  cases b with
+  | zero => rw [tensorRightDegOne_zero]; exact (add_zero (0 : TensorProduct R (M a) (N' 0))).symm
+  | succ b' =>
+      show ((-1 : R)) ^ a • TensorProduct.map LinearMap.id (g b')
+        ((F + G) ⟨(a, b'), by omega⟩) = _
+      rw [tensorCarrier_add_apply, map_add, smul_add]
+      rfl
+
+theorem tensorRightDegOne_smul (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1)) (n : ℕ) (c : R)
+    (F : TensorCarrier (R := R) M N n) :
+    tensorRightDegOne (M := M) g n (c • F) = c • tensorRightDegOne g n F := by
+  funext p
+  obtain ⟨⟨a, b⟩, h⟩ := p
+  cases b with
+  | zero => rw [tensorRightDegOne_zero]; exact (smul_zero c).symm
+  | succ b' =>
+      show ((-1 : R)) ^ a • TensorProduct.map LinearMap.id (g b')
+        ((c • F) ⟨(a, b'), by omega⟩) = _
+      rw [tensorCarrier_smul_apply, map_smul, smul_comm]
+      rfl
+
+/-- The degree-one map on the right factor, as a linear map. -/
+def tensorRightDegOneₗ (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1)) (n : ℕ) :
+    TensorCarrier (R := R) M N n →ₗ[R] TensorCarrier (R := R) M N' (n + 1) where
+  toFun := tensorRightDegOne g n
+  map_add' := tensorRightDegOne_add g n
+  map_smul' := tensorRightDegOne_smul g n
+
+end GaloisForLFunctions.HTGeometry
