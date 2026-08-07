@@ -203,6 +203,60 @@ theorem barHead_second_comp (u u' w e c m' : ℕ) (h₃ : u' + w + 1 = m') (h₄
       rw [hG, hG']
   | tmul x M => rfl
 
+/-- One term of the head, as the outer map applied to the component it reads. -/
+theorem barHeadTermₗ_eq_comp (n c e : ℕ) (hp : c + e = n + 1) (a a' : ℕ) (hs : a + a' + 1 = c)
+    (V : TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε) Z) n) :
+    barHeadTermₗ ε Z n c e hp a a' hs V
+      = (TensorProduct.map (augIdealShiftMulOfTensor ε hs) (LinearMap.id (R := R) (M := Z e)))
+        ((TensorProduct.assoc R (barShiftFamily ε a) (barShiftFamily ε a') (Z e)).symm
+          ((TensorProduct.map (LinearMap.id (R := R) (M := barShiftFamily ε a))
+              (barProj (M := barShiftFamily ε) (N := Z) ⟨(a', e), rfl⟩))
+            (V ⟨(a, a' + e), by omega⟩))) := rfl
+
+section Assembly
+
+/-- The outer split a triple determines when the first two factors are multiplied first. -/
+theorem barTriple_first_eq {c : ℕ} (t : BarTriple c) :
+    t.1.1 + t.1.2.1 + 1 + t.1.2.2 + 1 = c := by
+  obtain ⟨⟨a, b, d⟩, ht⟩ := t
+  have h : a + b + d + 2 = c := ht
+  show a + b + 1 + d + 1 = c
+  omega
+
+/-- The outer split a triple determines when the last two factors are multiplied first. -/
+theorem barTriple_second_eq {c : ℕ} (t : BarTriple c) :
+    t.1.1 + (t.1.2.1 + t.1.2.2 + 1) + 1 = c := by
+  obtain ⟨⟨a, b, d⟩, ht⟩ := t
+  have h : a + b + d + 2 = c := ht
+  show a + (b + d + 1) + 1 = c
+  omega
+
+/-- The component of the argument a triple reads. -/
+theorem barTriple_deg {n c e : ℕ} (hp : c + e = n + 1 + 1) (t : BarTriple c) :
+    t.1.1 + (t.1.2.1 + (t.1.2.2 + e)) = n := by
+  obtain ⟨⟨a, b, d⟩, ht⟩ := t
+  have h : a + b + d + 2 = c := ht
+  show a + (b + (d + e)) = n
+  omega
+
+/-- **The two halves of the bar square cancel, triple by triple.** -/
+theorem barTriple_cancel (n c e : ℕ) (hp : c + e = n + 1 + 1) (t : BarTriple c)
+    (F : TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε) Z) ) n) :
+    barMulFirstTwo ε (W := Z e) (rfl : t.1.1 + t.1.2.1 + 1 = t.1.1 + t.1.2.1 + 1)
+        (barTriple_first_eq t)
+        (barTele ε Z t.1.1 t.1.2.1 t.1.2.2 e (F ⟨(t.1.1, t.1.2.1 + (t.1.2.2 + e)),
+          barTriple_deg hp t⟩))
+      + ((-1 : R)) ^ t.1.1 • barMulLastTwo ε (W := Z e)
+        (rfl : t.1.2.1 + t.1.2.2 + 1 = t.1.2.1 + t.1.2.2 + 1) (barTriple_second_eq t)
+        (barTele ε Z t.1.1 t.1.2.1 t.1.2.2 e (F ⟨(t.1.1, t.1.2.1 + (t.1.2.2 + e)),
+          barTriple_deg hp t⟩)) = 0 :=
+  barMul_cancel ε _ _ _ _ _
+
+end Assembly
+
 end Identification
 
 end GaloisForLFunctions.HTGeometry
