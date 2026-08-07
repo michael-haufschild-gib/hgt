@@ -20,7 +20,7 @@ set_option maxHeartbeats 1000000
 /-- An adic valuation on a field induces the additive integer order on its unit group; inversion
 changes mathlib's `exp (-ord)` convention into the usual positive order convention. -/
 noncomputable def valuationOrderHom {F : Type*} [Field F]
-    (v : Valuation F ℤᵐ⁰) : Fˣ →* Multiplicative ℤ :=
+    (v : Valuation F (WithZero (Multiplicative ℤ))) : Fˣ →* Multiplicative ℤ :=
   MonoidHom.mk'
     (fun u => ((v (u : F)).unzero ((Valuation.ne_zero_iff v).2 u.ne_zero))⁻¹)
     (fun a b => by
@@ -40,7 +40,8 @@ abbrev criticalRawCoordinateLocalRing
 /-- Adic valuation of the raw rational function field along `x_i=0`. -/
 noncomputable def criticalRawCoordinateFieldValuation
     (K : Type*) [Field K] (m n : ℕ) (i : Fin (m + n)) :
-    Valuation (FractionRing (criticalRawCoordinateRing K m n)) ℤᵐ⁰ :=
+    Valuation (FractionRing (criticalRawCoordinateRing K m n))
+      (WithZero (Multiplicative ℤ)) :=
   let A := criticalRawCoordinateLocalRing K m n i
   (IsDiscreteValuationRing.maximalIdeal A).valuation
     (FractionRing (criticalRawCoordinateRing K m n))
@@ -48,7 +49,7 @@ noncomputable def criticalRawCoordinateFieldValuation
 /-- Transported raw coordinate valuation on the actual critical source field. -/
 noncomputable def criticalSourceRawCoordinateValuation
     (K : Type*) [Field K] (m n : ℕ) (i : Fin (m + n)) :
-    Valuation (criticalSourceField K m n) ℤᵐ⁰ :=
+    Valuation (criticalSourceField K m n) (WithZero (Multiplicative ℤ)) :=
   Valuation.comap (criticalSourceFieldEquiv K m n).symm.toRingHom
     (criticalRawCoordinateFieldValuation K m n i)
 
@@ -69,12 +70,7 @@ theorem criticalSourceFieldEquiv_algebraMap_apply
       MvPolynomial.aeval (criticalSourceRaw K m n) p := by
   let hAI := algebraicIndependent_criticalSourceRaw K m n
   have h := hAI.aevalEquivField_algebraMap_apply_coe p
-  rw [criticalSourceFieldEquiv, AlgEquiv.trans_apply]
-  change (((algebraicIndependent_criticalSourceRaw K m n).aevalEquivField
-      (algebraMap _ (FractionRing (criticalRawCoordinateRing K m n)) p) :
-        IntermediateField.adjoin K (Set.range (criticalSourceRaw K m n))) :
-      criticalSourceField K m n) = _
-  exact h
+  simpa [criticalSourceFieldEquiv] using h
 
 /-- A coordinate polynomial outside `x_i=0` has adic valuation one (divisorial order zero). -/
 theorem criticalRawCoordinateFieldValuation_algebraMap_eq_one

@@ -498,3 +498,10 @@ this card waits on it; everything the card proves itself is formalized.
 - [ ] closed untwisted boundary descent
 - [ ] positive self-adjoint realization
 - [ ] RH
+
+**Blocker card (2026-08-08).**  The clause this card waits on is itself blocked on one missing
+object, now tracked at `docs/drafts/pipeline/1-in-progress/entire-regularized-fredholm-determinant.md`:
+the *entire* Hilbert--Carleman determinant.  The corpus `HilbertSchmidt.fredholmDet` is
+`exp(-fredholmExp)` on the disc `|z| * ‖K‖_HS < 1` and is nowhere zero by construction, so it cannot
+carry any identity whose other side has zeros.  Algebraic multiplicity is the order of vanishing of
+the entire determinant, so that object is exactly what the multiplicity clause needs.

@@ -346,7 +346,8 @@ theorem orthonormal_hermiteL2Unit : Orthonormal ℂ hermiteL2Unit := by
     exact norm_smul_inv_norm
       (GaloisForLFunctions.hermiteSchwartz_toLp_ne_zero n)
   · intro i j hij
-    have hzero := GaloisForLFunctions.inner_hermiteSchwartz_toLp_eq_zero hij
+    have hzero : inner ℂ (hermiteL2 i) (hermiteL2 j) = 0 :=
+      GaloisForLFunctions.inner_hermiteSchwartz_toLp_eq_zero hij
     change inner ℂ
       (((‖hermiteL2 i‖ : ℂ))⁻¹ • hermiteL2 i)
       (((‖hermiteL2 j‖ : ℂ))⁻¹ • hermiteL2 j) = 0
@@ -372,131 +373,5 @@ theorem hermiteL2UnitSpan_orthogonal_eq_bot :
 def hermiteL2HilbertBasis : HilbertBasis ℕ ℂ SoninL2 :=
   HilbertBasis.mkOfOrthogonalEqBot orthonormal_hermiteL2Unit
     hermiteL2UnitSpan_orthogonal_eq_bot
-
-instance completeSpace_evenFourierPositiveSubspace :
-    CompleteSpace evenFourierPositiveSubspace :=
-  isClosed_evenFourierPositiveSubspace.completeSpace_coe
-
-instance completeSpace_evenFourierNegativeSubspace :
-    CompleteSpace evenFourierNegativeSubspace :=
-  isClosed_evenFourierNegativeSubspace.completeSpace_coe
-
-/-- Normalized `h_(4j)` as a vector in the positive Fourier sector. -/
-def positiveHermiteL2Unit (j : ℕ) : evenFourierPositiveSubspace :=
-  ⟨hermiteEvenUnit j, (mem_evenFourierPositiveSubspace_iff _).mpr
-    (evenFourierTransform_hermiteEvenUnit j)⟩
-
-/-- Normalized `h_(4j+2)` as a vector in the negative Fourier sector. -/
-def negativeHermiteL2Unit (j : ℕ) : evenFourierNegativeSubspace :=
-  ⟨hermiteEvenNegativeUnit j, (mem_evenFourierNegativeSubspace_iff _).mpr
-    (evenFourierTransform_hermiteEvenNegativeUnit j)⟩
-
-theorem orthonormal_positiveHermiteL2Unit : Orthonormal ℂ positiveHermiteL2Unit := by
-  constructor
-  · intro j
-    exact norm_hermiteEvenUnit j
-  · intro i j hij
-    change inner ℂ (hermiteEvenUnit i) (hermiteEvenUnit j) = 0
-    have hzero := inner_hermiteEven_eq_zero hij
-    have hinner : inner ℂ (hermiteEvenUnit i) (hermiteEvenUnit j) =
-        inner ℂ ((hermiteEvenUnit i : evenSubspace) : SoninL2)
-          ((hermiteEvenUnit j : evenSubspace) : SoninL2) := rfl
-    rw [hinner]
-    change inner ℂ
-      (((‖hermiteEven i‖ : ℂ))⁻¹ • ((hermiteEven i : evenSubspace) : SoninL2))
-      (((‖hermiteEven j‖ : ℂ))⁻¹ • ((hermiteEven j : evenSubspace) : SoninL2)) = 0
-    rw [inner_smul_left, inner_smul_right, hzero, mul_zero, mul_zero]
-
-theorem orthonormal_negativeHermiteL2Unit : Orthonormal ℂ negativeHermiteL2Unit := by
-  constructor
-  · intro j
-    exact norm_hermiteEvenNegativeUnit j
-  · intro i j hij
-    change inner ℂ (hermiteEvenNegativeUnit i) (hermiteEvenNegativeUnit j) = 0
-    have hzero := inner_hermiteEvenNegative_eq_zero hij
-    have hinner : inner ℂ (hermiteEvenNegativeUnit i) (hermiteEvenNegativeUnit j) =
-        inner ℂ ((hermiteEvenNegativeUnit i : evenSubspace) : SoninL2)
-          ((hermiteEvenNegativeUnit j : evenSubspace) : SoninL2) := rfl
-    rw [hinner]
-    change inner ℂ
-      (((‖hermiteEvenNegative i‖ : ℂ))⁻¹ •
-        ((hermiteEvenNegative i : evenSubspace) : SoninL2))
-      (((‖hermiteEvenNegative j‖ : ℂ))⁻¹ •
-        ((hermiteEvenNegative j : evenSubspace) : SoninL2)) = 0
-    rw [inner_smul_left, inner_smul_right, hzero, mul_zero, mul_zero]
-
-theorem positiveHermiteL2UnitSpan_orthogonal_eq_bot :
-    Submodule.orthogonal
-      (Submodule.span ℂ (Set.range positiveHermiteL2Unit)) = ⊥ := by
-  rw [Submodule.eq_bot_iff]
-  intro u hu
-  have hamb : (u : evenSubspace) ∈ Submodule.orthogonal positiveHermiteL2Span := by
-    rw [positiveHermiteL2Span, Submodule.mem_orthogonal_span_iff]
-    rintro _ ⟨j, rfl⟩
-    have hj := hu (positiveHermiteL2Unit j)
-      (Submodule.subset_span (Set.mem_range_self j))
-    change inner ℂ (hermiteEvenUnit j) (u : evenSubspace) = 0 at hj
-    rw [hermiteEvenUnit, inner_smul_left] at hj
-    have hnormReal : ‖hermiteEven j‖ ≠ 0 :=
-      norm_ne_zero_iff.mpr (hermiteEven_ne_zero j)
-    have hnormComplex : ((‖hermiteEven j‖ : ℝ) : ℂ) ≠ 0 :=
-      Complex.ofReal_ne_zero.mpr hnormReal
-    exact (mul_eq_zero.mp hj).resolve_left
-      (star_ne_zero.mpr (inv_ne_zero hnormComplex))
-  have hneg : (u : evenSubspace) ∈ evenFourierNegativeSubspace := by
-    rw [← positiveHermiteL2Span_orthogonal_eq_negativeSubspace]
-    exact hamb
-  have hpos := (mem_evenFourierPositiveSubspace_iff (u : evenSubspace)).mp u.property
-  have hneg' := (mem_evenFourierNegativeSubspace_iff (u : evenSubspace)).mp hneg
-  have hEq : (u : evenSubspace) = -(u : evenSubspace) := hpos.symm.trans hneg'
-  have hadd : (u : evenSubspace) + u = 0 := by rw [hEq, neg_add_cancel]
-  have hsmul : (2 : ℂ) • (u : evenSubspace) = 0 := by
-    simpa [two_smul] using hadd
-  have hu0 : (u : evenSubspace) = 0 :=
-    (smul_eq_zero.mp hsmul).resolve_left (by norm_num)
-  exact Subtype.ext hu0
-
-theorem negativeHermiteL2UnitSpan_orthogonal_eq_bot :
-    Submodule.orthogonal
-      (Submodule.span ℂ (Set.range negativeHermiteL2Unit)) = ⊥ := by
-  rw [Submodule.eq_bot_iff]
-  intro u hu
-  have hamb : (u : evenSubspace) ∈ Submodule.orthogonal negativeHermiteL2Span := by
-    rw [negativeHermiteL2Span, Submodule.mem_orthogonal_span_iff]
-    rintro _ ⟨j, rfl⟩
-    have hj := hu (negativeHermiteL2Unit j)
-      (Submodule.subset_span (Set.mem_range_self j))
-    change inner ℂ (hermiteEvenNegativeUnit j) (u : evenSubspace) = 0 at hj
-    rw [hermiteEvenNegativeUnit, inner_smul_left] at hj
-    have hnormReal : ‖hermiteEvenNegative j‖ ≠ 0 :=
-      norm_ne_zero_iff.mpr (hermiteEvenNegative_ne_zero j)
-    have hnormComplex : ((‖hermiteEvenNegative j‖ : ℝ) : ℂ) ≠ 0 :=
-      Complex.ofReal_ne_zero.mpr hnormReal
-    exact (mul_eq_zero.mp hj).resolve_left
-      (star_ne_zero.mpr (inv_ne_zero hnormComplex))
-  have hpos : (u : evenSubspace) ∈ evenFourierPositiveSubspace := by
-    rw [← negativeHermiteL2Span_orthogonal_eq_positiveSubspace]
-    exact hamb
-  have hpos' := (mem_evenFourierPositiveSubspace_iff (u : evenSubspace)).mp hpos
-  have hneg := (mem_evenFourierNegativeSubspace_iff (u : evenSubspace)).mp u.property
-  have hEq : (u : evenSubspace) = -(u : evenSubspace) := hpos'.symm.trans hneg
-  have hadd : (u : evenSubspace) + u = 0 := by rw [hEq, neg_add_cancel]
-  have hsmul : (2 : ℂ) • (u : evenSubspace) = 0 := by
-    simpa [two_smul] using hadd
-  have hu0 : (u : evenSubspace) = 0 :=
-    (smul_eq_zero.mp hsmul).resolve_left (by norm_num)
-  exact Subtype.ext hu0
-
-/-- The normalized `h_(4j)` form a Hilbert basis of the positive Fourier sector. -/
-def positiveHermiteL2HilbertBasis :
-    HilbertBasis ℕ ℂ evenFourierPositiveSubspace :=
-  HilbertBasis.mkOfOrthogonalEqBot orthonormal_positiveHermiteL2Unit
-    positiveHermiteL2UnitSpan_orthogonal_eq_bot
-
-/-- The normalized `h_(4j+2)` form a Hilbert basis of the negative Fourier sector. -/
-def negativeHermiteL2HilbertBasis :
-    HilbertBasis ℕ ℂ evenFourierNegativeSubspace :=
-  HilbertBasis.mkOfOrthogonalEqBot orthonormal_negativeHermiteL2Unit
-    negativeHermiteL2UnitSpan_orthogonal_eq_bot
 
 end RHTower

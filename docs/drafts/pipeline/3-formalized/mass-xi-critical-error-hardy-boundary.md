@@ -92,6 +92,19 @@ converge by integrability, so subtraction from finite source identity proves
 Prime(H) - ErrorFlux(H) -> 2*pi*g(-i/2).
 ```
 
+Applying same contour shift to derivative kernel, with one extra physical moment, gives
+
+```text
+|F'(H)| <= C'(a,sigma,u,d) exp(-dH).
+```
+
+Therefore `E(H)F'(H)` is absolutely integrable on positive ray and finite currents converge to
+source-defined infinite integral. Adding limits yields exact completed-source formula
+
+```text
+Prime(H) -> 2*pi*g(-i/2) + integral_(0,infinity) E(h) F'(h) dh.
+```
+
 No RH-strength input occurs.
 
 ## New knowledge
@@ -101,7 +114,7 @@ to explicit evaluation at the archimedean pole. C39 cumulative weights and termi
 not intrinsic obstructions. Exact surviving open object is centered completed-error current
 
 ```text
-integral_(0,H] criticalMellinCompletedError(h) * F'(h) dh.
+integral_(0,infinity) criticalMellinCompletedError(h) * F'(h) dh.
 ```
 
 C40 Kaiser synthesis remains possible, but should target this centered current rather than raw
@@ -121,6 +134,10 @@ cumulative prime coordinates.
   `tendsto_xiMassCompletedError_terminal_zero`
 - Cofinal reduction:
   `tendsto_xiMassPrimePartial_sub_completedErrorFlux_atTop`
+- Absolute current integrability:
+  `integrableOn_xiMassCompletedErrorFlux`
+- Exact infinite source decomposition:
+  `tendsto_xiMassCriticalPrimePartialSource_atTop`
 - Axioms: `propext`, `Classical.choice`, `Quot.sound` only.
 
 ## Log

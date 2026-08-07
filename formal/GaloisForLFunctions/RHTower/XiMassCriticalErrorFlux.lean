@@ -21,10 +21,12 @@ analytic mass test at the archimedean pole, with height-independent norm
 unconditionally. Its proof uses the corpus bound for half-weighted von-Mangoldt mass and an
 interior strip shift, not a numerical estimate or an RH-strength remainder.
 
-Consequently the prime partial source minus the centered error current converges to the explicit
-archimedean boundary value. This removes the cumulative square-root main mass and cofinal terminal
-flux from the mass-shifted spectral-face open core. Uniform control of the surviving centered
-error current remains the exact arithmetic problem; no boundedness or RH hypothesis is assumed.
+The derivative kernel has matching interior-shift decay, so the centered error current is
+absolutely integrable for every fixed complex time. Consequently the prime partial source
+converges to explicit archimedean boundary value plus this source-defined infinite current. This
+removes cumulative square-root main mass and cofinal terminal flux from mass-shifted spectral-face
+open core. Uniform control in vertical height of surviving centered current remains exact
+arithmetic problem; no boundedness or RH hypothesis is assumed.
 -/
 
 open Complex Filter MeasureTheory Set Topology
@@ -916,6 +918,309 @@ theorem tendsto_xiMassPrimePartial_sub_completedErrorFlux_atTop
       (show 0 < a by linarith) hσ hH u]
     ring
   simpa using hmain.congr' heq
+
+/-- Interior contour-shift decay for the true frequency derivative of the mass Fourier profile. -/
+theorem norm_xiMassFourierDerivative_deepShift_le
+    {a σ d : ℝ} (hd0 : 0 ≤ d) (hda : d < a) (hσ : 0 < σ) (u w : ℝ) :
+    ‖xiMassFourierDerivative a σ u w‖ ≤
+      Real.exp (|u| * d - w * d) *
+        ∫ x : ℝ, (|x| + d) * Real.exp (-(σ * |x|)) := by
+  let τ : ℂ := (σ : ℂ) + u * I
+  let Q : ℂ → ℂ := fun z =>
+    (xiMassAnalyticTest a τ z * Complex.exp (-(I * (w : ℂ) * z))) * (-(I * z))
+  have ha : 0 < a := lt_of_le_of_lt hd0 hda
+  have hdiff : ∀ z : ℂ, |z.im| ≤ d → DifferentiableAt ℂ Q z := by
+    intro z hz
+    have hmem : z ∈ xiMassStrip a := lt_of_le_of_lt hz hda
+    exact ((hasDerivAt_xiMassAnalyticTest ha τ hmem).differentiableAt.mul
+      (by fun_prop)).mul (by fun_prop)
+  have hrough : ∀ z : ℂ, |z.im| ≤ d →
+      ‖Q z‖ ≤
+        (Real.exp ((|τ.im| + |w|) * d) * (2 / σ + d)) *
+          Real.exp (-((σ / 2) * |z.re|)) := by
+    intro z hz
+    have hk := norm_xiMassFourierKernel_le (τ := τ) hda
+      (by simpa [τ] using hσ) w hz
+    have hk' :
+        ‖xiMassAnalyticTest a τ z * Complex.exp (-(I * (w : ℂ) * z))‖ ≤
+          Real.exp ((|τ.im| + |w|) * d) * Real.exp (-(σ * |z.re|)) := by
+      simpa [τ] using hk
+    have hnormz : ‖z‖ ≤ |z.re| + d := by
+      calc
+        ‖z‖ ≤ |z.re| + |z.im| := Complex.norm_le_abs_re_add_abs_im z
+        _ ≤ |z.re| + d := add_le_add le_rfl hz
+    have hmoment := pow_abs_mul_exp_neg_le hσ 1 z.re
+    have hmoment' : |z.re| * Real.exp (-(σ * |z.re|)) ≤
+        (2 / σ) * Real.exp (-((σ / 2) * |z.re|)) := by
+      simpa only [pow_one, Nat.factorial_one, Nat.cast_one, mul_one] using hmoment
+    have hexp : Real.exp (-(σ * |z.re|)) ≤
+        Real.exp (-((σ / 2) * |z.re|)) := by
+      rw [Real.exp_le_exp]
+      nlinarith [abs_nonneg z.re]
+    dsimp only [Q]
+    rw [norm_mul]
+    rw [show ‖-(I * z)‖ = ‖z‖ by
+      rw [norm_neg, norm_mul, Complex.norm_I, one_mul]]
+    calc
+      ‖xiMassAnalyticTest a τ z * Complex.exp (-(I * (w : ℂ) * z))‖ * ‖z‖ ≤
+          (Real.exp ((|τ.im| + |w|) * d) * Real.exp (-(σ * |z.re|))) *
+            (|z.re| + d) := by
+              exact mul_le_mul hk' hnormz (norm_nonneg _)
+                (mul_nonneg (Real.exp_nonneg _) (Real.exp_nonneg _))
+      _ = Real.exp ((|τ.im| + |w|) * d) *
+          ((|z.re| + d) * Real.exp (-(σ * |z.re|))) := by ring
+      _ ≤ Real.exp ((|τ.im| + |w|) * d) *
+          ((2 / σ + d) * Real.exp (-((σ / 2) * |z.re|))) := by
+            apply mul_le_mul_of_nonneg_left _ (Real.exp_nonneg _)
+            calc
+              (|z.re| + d) * Real.exp (-(σ * |z.re|)) =
+                  |z.re| * Real.exp (-(σ * |z.re|)) +
+                    d * Real.exp (-(σ * |z.re|)) := by ring
+              _ ≤ (2 / σ) * Real.exp (-((σ / 2) * |z.re|)) +
+                  d * Real.exp (-((σ / 2) * |z.re|)) :=
+                    add_le_add hmoment' (mul_le_mul_of_nonneg_left hexp hd0)
+              _ = (2 / σ + d) * Real.exp (-((σ / 2) * |z.re|)) := by ring
+      _ = (Real.exp ((|τ.im| + |w|) * d) * (2 / σ + d)) *
+          Real.exp (-((σ / 2) * |z.re|)) := by ring
+  have hshift := integral_horizontal_shift_neg_of_decay hd0 (by positivity : 0 < σ / 2)
+    hdiff hrough
+  have hB : Integrable (fun x : ℝ => (|x| + d) * Real.exp (-(σ * |x|))) := by
+    have h1 := integrable_abs_mul_exp_neg_mul_abs hσ
+    have h2 := (integrable_exp_neg_mul_abs hσ).const_mul d
+    rw [show (fun x : ℝ => (|x| + d) * Real.exp (-(σ * |x|))) =
+        fun x : ℝ => |x| * Real.exp (-(σ * |x|)) +
+          d * Real.exp (-(σ * |x|)) by
+      funext x
+      ring]
+    exact h1.add h2
+  have hmajor : Integrable (fun x : ℝ =>
+      Real.exp (|u| * d - w * d) *
+        ((|x| + d) * Real.exp (-(σ * |x|)))) := hB.const_mul _
+  have hright : (∫ x : ℝ, Q (x : ℂ)) = xiMassFourierDerivative a σ u w := by
+    rw [xiMassFourierDerivative]
+    apply MeasureTheory.integral_congr_ae
+    filter_upwards with x
+    dsimp only [Q, τ]
+    ring
+  rw [hright] at hshift
+  rw [← hshift]
+  calc
+    ‖∫ x : ℝ, Q ((x : ℂ) - (d : ℂ) * I)‖ ≤
+        ∫ x : ℝ, Real.exp (|u| * d - w * d) *
+          ((|x| + d) * Real.exp (-(σ * |x|))) := by
+      apply norm_integral_le_of_norm_le hmajor
+      refine ae_of_all _ fun x => ?_
+      have hzmem : ((x : ℂ) - (d : ℂ) * I) ∈ xiMassStrip a := by
+        change |(((x : ℂ) - (d : ℂ) * I).im)| < a
+        simpa [abs_of_nonneg hd0] using hda
+      have hg := norm_xiMassAnalyticTest_le
+        (τ := τ) ha (by simpa [τ] using hσ.le) hzmem
+      have hzre : ((x : ℂ) - (d : ℂ) * I).re = x := by simp
+      have hzim : ((x : ℂ) - (d : ℂ) * I).im = -d := by simp
+      rw [hzre, hzim, abs_neg, abs_of_nonneg hd0] at hg
+      have hnormz : ‖(x : ℂ) - (d : ℂ) * I‖ ≤ |x| + d := by
+        calc
+          ‖(x : ℂ) - (d : ℂ) * I‖ ≤
+              |((x : ℂ) - (d : ℂ) * I).re| +
+                |((x : ℂ) - (d : ℂ) * I).im| :=
+            Complex.norm_le_abs_re_add_abs_im _
+          _ = |x| + d := by simp [abs_of_nonneg hd0]
+      dsimp only [Q]
+      rw [norm_mul, norm_mul, Complex.norm_exp, norm_neg, norm_mul,
+        Complex.norm_I, one_mul]
+      have hphase : (-(I * (w : ℂ) * ((x : ℂ) - (d : ℂ) * I))).re = -w * d := by
+        simp [Complex.mul_re, Complex.mul_im]
+      rw [hphase]
+      calc
+        ‖xiMassAnalyticTest a τ ((x : ℂ) - (d : ℂ) * I)‖ *
+            Real.exp (-w * d) * ‖(x : ℂ) - (d : ℂ) * I‖ ≤
+          (Real.exp (-σ * |x| + |u| * d) * Real.exp (-w * d)) *
+            (|x| + d) := by
+              exact mul_le_mul
+                (mul_le_mul_of_nonneg_right (by simpa [τ] using hg) (Real.exp_nonneg _))
+                hnormz (norm_nonneg _)
+                (mul_nonneg (Real.exp_nonneg _) (Real.exp_nonneg _))
+        _ = Real.exp (|u| * d - w * d) *
+            ((|x| + d) * Real.exp (-(σ * |x|))) := by
+              rw [← Real.exp_add]
+              rw [show (-σ * |x| + |u| * d) + -w * d =
+                  (|u| * d - w * d) + -(σ * |x|) by ring,
+                Real.exp_add]
+              ring
+    _ = Real.exp (|u| * d - w * d) *
+        ∫ x : ℝ, (|x| + d) * Real.exp (-(σ * |x|)) := by
+      rw [MeasureTheory.integral_const_mul]
+
+/-- The true mass Fourier derivative is continuous on the real frequency line. -/
+theorem continuous_xiMassFourierDerivative
+    {a σ : ℝ} (ha : 0 < a) (hσ : 0 < σ) (u : ℝ) :
+    Continuous (fun h : ℝ => xiMassFourierDerivative a σ u h) := by
+  let g : ℝ → ℂ := fun x => xiMassAnalyticTest a ((σ : ℂ) + u * I) x
+  let g1 : ℝ → ℂ := fun x => g x * (-(I * (x : ℂ)))
+  have hgcont : Continuous g := by
+    rw [continuous_iff_continuousAt]
+    intro x
+    have hz : HasDerivAt (fun y : ℝ => (y : ℂ)) 1 x := by
+      change HasDerivAt (⇑Complex.ofRealCLM) 1 x
+      exact Complex.ofRealCLM.hasDerivAt
+    have hmem : (x : ℂ) ∈ xiMassStrip a := by
+      change |((x : ℂ)).im| < a
+      simpa using ha
+    exact ((hasDerivAt_xiMassAnalyticTest ha _ hmem).comp x hz).continuousAt
+  have hg1cont : Continuous g1 := by
+    dsimp only [g1]
+    fun_prop
+  have hg1bound : ∀ x : ℝ,
+      ‖g1 x‖ ≤ (2 / σ) * Real.exp (-((σ / 2) * |x|)) := by
+    intro x
+    have hmem : (x : ℂ) ∈ xiMassStrip a := by
+      change |((x : ℂ)).im| < a
+      simpa using ha
+    have hg := norm_xiMassAnalyticTest_le
+      (τ := ((σ : ℂ) + u * I)) ha (by simpa using hσ.le) hmem
+    have hmoment := pow_abs_mul_exp_neg_le hσ 1 x
+    have hmoment' : |x| * Real.exp (-(σ * |x|)) ≤
+        (2 / σ) * Real.exp (-((σ / 2) * |x|)) := by
+      simpa only [pow_one, Nat.factorial_one, Nat.cast_one, mul_one] using hmoment
+    have hnormIx : ‖-(I * (x : ℂ))‖ = |x| := by
+      rw [norm_neg, norm_mul, Complex.norm_I, one_mul, Complex.norm_real,
+        Real.norm_eq_abs]
+    dsimp only [g1]
+    rw [norm_mul, hnormIx]
+    calc
+      ‖g x‖ * |x| ≤ Real.exp (-(σ * |x|)) * |x| :=
+        mul_le_mul_of_nonneg_right (by simpa [g] using hg) (abs_nonneg x)
+      _ = |x| * Real.exp (-(σ * |x|)) := by ring
+      _ ≤ (2 / σ) * Real.exp (-(σ / 2 * |x|)) := hmoment'
+  have hderivEq : (fun h : ℝ => xiMassFourierDerivative a σ u h) =
+      fun h : ℝ => expFourier g1 (h : ℂ) := by
+    funext h
+    rw [xiMassFourierDerivative, expFourier]
+    apply MeasureTheory.integral_congr_ae
+    filter_upwards with x
+    simp only [g1, g]
+    ring
+  rw [hderivEq, continuous_iff_continuousAt]
+  intro h
+  have hw : |((h : ℂ)).im| < σ / 2 := by simpa using (show 0 < σ / 2 by positivity)
+  have hout := hasDerivAt_expFourier hg1cont.aestronglyMeasurable
+    (show 0 ≤ 2 / σ by positivity) hg1bound hw
+  have hin : HasDerivAt (fun y : ℝ => (y : ℂ)) 1 h := by
+    change HasDerivAt (⇑Complex.ofRealCLM) 1 h
+    exact Complex.ofRealCLM.hasDerivAt
+  exact (hout.comp h hin).continuousAt
+
+/-- The centered completed-error current is absolutely integrable for every fixed complex time. -/
+theorem integrableOn_xiMassCompletedErrorFlux
+    {a σ : ℝ} (hhalf : 1 / 2 < a) (hσ : 0 < σ) (u : ℝ) :
+    IntegrableOn
+      (fun h : ℝ => (criticalMellinCompletedError h : ℂ) *
+        xiMassFourierDerivative a σ u h)
+      (Ioi 0) := by
+  let d : ℝ := (a + 1 / 2) / 2
+  let δ : ℝ := d - 1 / 2
+  let J : ℝ := ∫ x : ℝ, (|x| + d) * Real.exp (-(σ * |x|))
+  let K : ℝ := 2 * Real.exp (|u| * d) * J
+  have hd0 : 0 ≤ d := by dsimp [d]; linarith
+  have hda : d < a := by dsimp [d]; linarith
+  have hδ : 0 < δ := by dsimp [δ, d]; linarith
+  have hJ0 : 0 ≤ J := by
+    dsimp [J]
+    apply MeasureTheory.integral_nonneg
+    intro x
+    exact mul_nonneg (add_nonneg (abs_nonneg _) hd0) (Real.exp_nonneg _)
+  have hK0 : 0 ≤ K := by dsimp [K]; positivity
+  have hlin0 := integrableOn_rpow_mul_exp_neg_mul_rpow
+    (s := (1 : ℝ)) (p := (1 : ℝ)) (b := δ) (by norm_num) (by norm_num) hδ
+  have hlin : IntegrableOn (fun h : ℝ => h * Real.exp (-δ * h)) (Ioi 0) := by
+    refine hlin0.congr_fun ?_ measurableSet_Ioi
+    intro h hh
+    simp
+  have hexp : IntegrableOn (fun h : ℝ => Real.exp (-δ * h)) (Ioi 0) := by
+    simpa using integrableOn_exp_mul_Ioi (show -δ < 0 by linarith) 0
+  have hpoly : IntegrableOn
+      (fun h : ℝ => (h + 1) * Real.exp (-δ * h)) (Ioi 0) := by
+    rw [show (fun h : ℝ => (h + 1) * Real.exp (-δ * h)) =
+        (fun h : ℝ => h * Real.exp (-δ * h)) +
+          fun h : ℝ => Real.exp (-δ * h) by
+      funext h
+      simp only [Pi.add_apply]
+      ring]
+    exact hlin.add hexp
+  have hmajor : IntegrableOn
+      (fun h : ℝ => K * ((h + 1) * Real.exp (-δ * h))) (Ioi 0) :=
+    hpoly.const_mul K
+  have hEmeas : Measurable criticalMellinCompletedError := by
+    rw [show criticalMellinCompletedError = fun h : ℝ =>
+        4 * Real.sinh (h / 2) - criticalMellinPrimeMass h by
+      funext h
+      exact criticalMellinCompletedError_eq_polar_sub_primeMass h]
+    exact (Real.continuous_sinh.comp (continuous_id.div_const 2)).const_mul 4
+      |>.measurable.sub measurable_criticalMellinPrimeMass
+  have hmeas : AEStronglyMeasurable
+      (fun h : ℝ => (criticalMellinCompletedError h : ℂ) *
+        xiMassFourierDerivative a σ u h) := by
+    exact ((Complex.measurable_ofReal.comp hEmeas).mul
+      (continuous_xiMassFourierDerivative (show 0 < a by linarith) hσ u).measurable)
+      |>.aestronglyMeasurable
+  apply Integrable.mono' hmajor hmeas.restrict
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
+  rw [mem_Ioi] at hh
+  have hE := abs_criticalMellinCompletedError_le_log_sqrt hh.le
+  have hD := norm_xiMassFourierDerivative_deepShift_le hd0 hda hσ u h
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
+  calc
+    |criticalMellinCompletedError h| * ‖xiMassFourierDerivative a σ u h‖ ≤
+        (2 * (h + 1) * Real.exp (h / 2)) *
+          (Real.exp (|u| * d - h * d) * J) := by
+            apply mul_le_mul hE hD (norm_nonneg _)
+            positivity
+    _ = K * ((h + 1) * Real.exp (-δ * h)) := by
+      have hexpid : Real.exp (h / 2) * Real.exp (|u| * d - h * d) =
+          Real.exp (|u| * d) * Real.exp (-(d - 1 / 2) * h) := by
+        rw [← Real.exp_add, ← Real.exp_add]
+        congr 1
+        ring
+      dsimp [K, δ]
+      calc
+        2 * (h + 1) * Real.exp (h / 2) *
+            (Real.exp (|u| * d - h * d) * J) =
+          2 * (h + 1) * J *
+            (Real.exp (h / 2) * Real.exp (|u| * d - h * d)) := by ring
+        _ = 2 * (h + 1) * J *
+            (Real.exp (|u| * d) * Real.exp (-(d - 1 / 2) * h)) := by rw [hexpid]
+        _ = 2 * Real.exp (|u| * d) * J *
+            ((h + 1) * Real.exp (-(d - 1 / 2) * h)) := by ring
+
+/-- Infinite centered completed-error current on the positive logarithmic ray. -/
+def xiMassCompletedErrorFlux (a σ u : ℝ) : ℂ :=
+  ∫ h in Ioi (0 : ℝ),
+    (criticalMellinCompletedError h : ℂ) * xiMassFourierDerivative a σ u h
+
+/-- Finite centered error currents converge to the absolutely convergent infinite current. -/
+theorem tendsto_xiMassCompletedErrorFluxPartial_atTop
+    {a σ : ℝ} (hhalf : 1 / 2 < a) (hσ : 0 < σ) (u : ℝ) :
+    Tendsto (fun H : ℝ => xiMassCompletedErrorFluxPartial a σ u H) atTop
+      (𝓝 (xiMassCompletedErrorFlux a σ u)) := by
+  have hlim := intervalIntegral_tendsto_integral_Ioi (μ := volume) (0 : ℝ)
+    (integrableOn_xiMassCompletedErrorFlux hhalf hσ u) tendsto_id
+  refine hlim.congr' ?_
+  filter_upwards [eventually_ge_atTop (0 : ℝ)] with H hH
+  simp only [id_eq]
+  rw [xiMassCompletedErrorFluxPartial, intervalIntegral.integral_of_le hH]
+
+/-- Exact infinite completed-source decomposition: prime source is pole value plus error current. -/
+theorem tendsto_xiMassCriticalPrimePartialSource_atTop
+    {a σ : ℝ} (hhalf : 1 / 2 < a) (hσ : 0 < σ) (u : ℝ) :
+    Tendsto (fun H : ℝ => xiMassCriticalPrimePartialSource a σ u H) atTop
+      (𝓝 ((2 * Real.pi : ℂ) *
+          xiMassAnalyticTest a ((σ : ℂ) + u * I) xiMassArchPole +
+        xiMassCompletedErrorFlux a σ u)) := by
+  have hcenter := tendsto_xiMassPrimePartial_sub_completedErrorFlux_atTop hhalf hσ u
+  have hflux := tendsto_xiMassCompletedErrorFluxPartial_atTop hhalf hσ u
+  have hsum := hcenter.add hflux
+  refine hsum.congr' ?_
+  exact Eventually.of_forall fun H => by ring
 
 end
 

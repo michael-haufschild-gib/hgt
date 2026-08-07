@@ -828,3 +828,43 @@ Added to the same module (wired, axiom-clean):
 So `Ψ` is now a constructed object with its `1`-periodicity proved and its two-series expansion
 available.  Its mixed difference is the logarithmic derivative of the cocycle `-e(-z)`, i.e. the
 constant `-2πi`, which is the statement that `Ψ` itself lies in the mixed-constraint class `Q`.
+
+## Lean progress — the two shift laws for the source, and the atom cancellation
+
+Added to `ExpConeProduct.lean` and `EllipticGammaConeSource.lean` (wired, axiom-clean):
+
+    differentiable_singleFactor, hasProdLocallyUniformlyOn_singleFactor
+    differentiable_singleProduct       **the single-index product `P` is entire**
+    singleProduct_eq_zero_iff
+    logDeriv_comp_add_const
+    logDeriv_singleProduct_shift       `(log P)′(w) = (log(1 - e(w)))′ + (log P)′(w + b)`
+    logDeriv_coneProduct_shift         `(log Φ)′(w) = (log P)′(w) + (log Φ)′(w + a)`
+    logDeriv_one_sub_expChar           `(log(1 - e(w)))′ = -2πi·e(w)/(1 - e(w))`
+    expChar_atom_sum                   **`e(z)/(1 - e(z)) + e(-z)/(1 - e(-z)) = -1`**
+
+These are the four ingredients of the mixed-difference computation.  Writing `S = (log Φ)′` and
+`T = (log P)′`, the eight terms of `Ψ(z+a+b) + Ψ(z) - Ψ(z+a) - Ψ(z+b)` pair off under the first
+shift law into `-T(z) + T(z+b) - T(-z) + T(b-z)`; the second shift law turns that into
+`-L(z) - L(-z)` with `L(w) = -2πi·e(w)/(1 - e(w))`; and the atom identity evaluates it to `-2πi`.
+
+So the mixed difference of `Ψ` is the constant `-2πi`, which is exactly the membership
+`Ψ ∈ Q` that the normal form is stated against — now reduced to assembling four proved identities
+rather than to any analytic input.
+
+## Lean progress — `Ψ ∈ Q` is proved
+
+`ellipticGammaSource_mixed_difference` (wired, axiom-clean):
+
+    Ψ(z+a+b) + Ψ(z) - Ψ(z+a) - Ψ(z+b) = -2πi
+
+off the zeros of the eight cone products and four single-index products involved, and off the two
+points where `e(±z) = 1`.  Together with `ellipticGammaSource_periodic` this is exactly the
+membership of the source in the mixed-constraint class:
+
+    Δ_1 Ψ = 0,   Δ_a Δ_b Ψ = -2πi ∈ ℂ.
+
+The proof is the three-stage collapse the card describes, now carried out mechanically: the eight
+cone-source terms pair off under `logDeriv_coneProduct_shift` into four single-index terms; those
+pair off under `logDeriv_singleProduct_shift` into two atoms; and `expChar_atom_sum` evaluates the
+two atoms to `-1`, giving the constant `-2πi`.  No analytic input beyond the two product shift
+relations is used.

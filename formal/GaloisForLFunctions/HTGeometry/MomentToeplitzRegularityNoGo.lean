@@ -19,17 +19,17 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 private lemma reverse_ratio_le_pow
-    {a : ℕ → ℝ} (ha : ∀ n, 0 < a n) {eps : ℝ} {N : ℕ}
+    {a : ℕ → ℝ} {eps : ℝ} {N : ℕ} (ha : ∀ n, N ≤ n → 0 < a n)
     (hratio : ∀ n, N ≤ n → a n / a (n + 1) ≤ eps) :
     ∀ s k : ℕ, N ≤ s → a s / a (s + k) ≤ eps ^ k := by
   intro s k hs
   induction k generalizing s with
-  | zero => simp [ha s |>.ne']
+  | zero => simp [(ha s hs).ne']
   | succ k ih =>
       have hfirst := hratio s hs
       have hrest := ih (s + 1) (by omega)
-      have hpos : 0 < a (s + 1) := ha _
-      have hend : 0 < a (s + 1 + k) := ha _
+      have hpos : 0 < a (s + 1) := ha _ (by omega)
+      have hend : 0 < a (s + 1 + k) := ha _ (by omega)
       rw [pow_succ]
       calc
         a s / a (s + (k + 1)) =
@@ -38,7 +38,7 @@ private lemma reverse_ratio_le_pow
               field_simp
         _ ≤ eps * eps ^ k :=
           mul_le_mul hfirst hrest (div_nonneg hpos.le hend.le)
-            (le_trans (div_pos (ha s) hpos).le hfirst)
+            (le_trans (div_pos (ha s hs) hpos).le hfirst)
         _ = eps ^ k * eps := by ring
 
 private lemma sum_fin_reverse_pow_le_two_mul
@@ -71,7 +71,7 @@ private lemma sum_fin_reverse_pow_le_two_mul
 /-- Counterweights cancelling every Hankel opening cannot stay bounded when adjacent moment
 ratios vanish. -/
 theorem hankelToeplitzCounterweight_not_bounded_of_ratio_tendsto_zero
-    (moment : ℕ → ℝ) (hpos : ∀ n, 0 < moment n)
+    (moment : ℕ → ℝ) (hpos : ∀ n, 0 < n → 0 < moment n)
     (hratio : Tendsto (fun n => moment n / moment (n + 1)) atTop (nhds 0)) :
     ¬ ∃ B : ℝ, ∀ n, |hankelToeplitzCounterweight moment n| ≤ B := by
   rintro ⟨B, hB⟩
@@ -85,18 +85,23 @@ theorem hankelToeplitzCounterweight_not_bounded_of_ratio_tendsto_zero
     nlinarith
   have hevent : ∀ᶠ n : ℕ in atTop, moment n / moment (n + 1) < eps :=
     (tendsto_order.1 hratio).2 eps heps0
-  obtain ⟨N, hN⟩ := eventually_atTop.1 hevent
+  obtain ⟨N₀, hN₀⟩ := eventually_atTop.1 hevent
+  let N := max N₀ 1
   let n := N
-  have hopen := hankelToeplitzCounterweight_opening_cancellation moment n (hpos _).ne'
+  have hopen := hankelToeplitzCounterweight_opening_cancellation moment n
+    (hpos _ (by omega)).ne'
   have hratioN : ∀ j, N ≤ j → moment j / moment (j + 1) ≤ eps := by
     intro j hj
-    exact (hN j hj).le
+    exact (hN₀ j (le_trans (le_max_left _ _) hj)).le
+  have htailpos : ∀ j, N ≤ j → 0 < moment j := by
+    intro j hj
+    exact hpos j (lt_of_lt_of_le zero_lt_one (le_trans (le_max_right _ _) hj))
   have hterm : ∀ i : Fin (n + 1),
       moment ((n + 1) + (i : ℕ) + 2) / moment (2 * (n + 1) + 2) ≤
         eps ^ ((n + 1) - (i : ℕ)) := by
     intro i
     have hs : N ≤ (n + 1) + (i : ℕ) + 2 := by dsimp [n]; omega
-    have h := reverse_ratio_le_pow hpos hratioN
+    have h := reverse_ratio_le_pow htailpos hratioN
       ((n + 1) + (i : ℕ) + 2) ((n + 1) - (i : ℕ)) hs
     rw [show 2 * (n + 1) + 2 =
       (n + 1) + (i : ℕ) + 2 + ((n + 1) - (i : ℕ)) by omega]
@@ -106,7 +111,7 @@ theorem hankelToeplitzCounterweight_not_bounded_of_ratio_tendsto_zero
         moment ((n + 1) + (i : ℕ) + 2) / moment (2 * (n + 1) + 2)) ≤ 2 * eps := by
     exact le_trans (Finset.sum_le_sum fun i _ => hterm i)
       (sum_fin_reverse_pow_le_two_mul heps0.le hepshalf n)
-  have hmq : 0 < moment (2 * (n + 1) + 2) := hpos _
+  have hmq : 0 < moment (2 * (n + 1) + 2) := hpos _ (by omega)
   have habs :
       moment (2 * (n + 1) + 2) ≤
         2 * B * ∑ i : Fin (n + 1), moment ((n + 1) + (i : ℕ) + 2) := by
@@ -127,12 +132,12 @@ theorem hankelToeplitzCounterweight_not_bounded_of_ratio_tendsto_zero
               exact (Finset.abs_sum_le_sum_abs _ _).trans_eq (by
                 apply Finset.sum_congr rfl
                 intro i hi
-                rw [abs_mul, abs_of_pos (hpos _)])
+                rw [abs_mul, abs_of_pos (hpos _ (by omega))])
       _ ≤ 2 * ∑ i : Fin (n + 1),
           B * moment ((n + 1) + (i : ℕ) + 2) := by
             apply mul_le_mul_of_nonneg_left _ (by positivity : (0 : ℝ) ≤ 2)
             exact Finset.sum_le_sum fun i _ =>
-              mul_le_mul_of_nonneg_right (hB _) (hpos _).le
+              mul_le_mul_of_nonneg_right (hB _) (hpos _ (by omega)).le
       _ = 2 * B * ∑ i : Fin (n + 1), moment ((n + 1) + (i : ℕ) + 2) := by
             rw [← Finset.mul_sum]
             ring

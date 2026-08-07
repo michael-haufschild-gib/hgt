@@ -1444,3 +1444,52 @@ TRAPS: after `rw [integrable_prod_iff …]` the goals carry `Function.uncurry` b
 supplies the measurability of `fun x => ∫ y, ‖f (x,y)‖`.
 
 CARD 7 NOW NEEDS ONLY `(6)`-multiplicity and `(8)`.  Card 4's sole blocker is `(6)`-multiplicity.
+
+## CORRECTION (2026-08-08): the corpus `fredholmDet` is DISC-LOCAL and NOWHERE ZERO
+
+`HilbertSchmidt.fredholmDet K z := Complex.exp (-fredholmExp K z)` where
+`fredholmExp K z = ∑_{n≥2} zⁿ/n · tr(Kⁿ)` converges ONLY for `‖z‖ · hsNorm K < 1`.
+Hence `fredholmDet_ne_zero` is literally `Complex.exp_ne_zero`, and
+`fredholmDet_weld` concludes only `∀ z ∈ ball 0 r, fredholmDet K z = c * L z`.
+
+**Card 7 `(8)` (`det₂(I+zB) = Ξ_C(z)/Ξ_C(0)`) therefore CANNOT be proved with it** — the right-hand
+side vanishes at every Xi zero, the left-hand side never vanishes.  My earlier ledger entry
+"(8) is reduced to one identification; `fredholmDet_weld` finishes it" was WRONG, and the card said
+the same; both are now corrected.
+
+What IS reachable with the corpus objects: the disc-local identity
+`fredholmDet thetaKernelMatrix z = c · Ξ_C(z)/Ξ_C(0)` for `|z| < 1/‖B‖_HS`, still requiring
+`resolventTrace thetaKernelMatrix = −Ξ_C'/Ξ_C` there.
+
+The GLOBAL `(8)` needs the ENTIRE Hilbert–Carleman determinant (exterior-power series
+`∑ zⁿ tr(Λⁿ K)`, order-2 entire, zeros = reciprocal eigenvalues).  Absent from corpus AND mathlib.
+It is ALSO what `(6)`-multiplicity needs, since algebraic multiplicity = order of vanishing of that
+determinant.  So cards 4, 7, 8 all sit behind ONE missing layer: the entire regularized determinant.
+
+Process lesson (again): a corpus `def` whose name matches the mathematics is not the mathematics.
+`fredholmDet` is named for `det₂` but is only its local exponential representative.  READ THE DEF.
+
+## The missing layer now has its own card (2026-08-08)
+
+`docs/drafts/pipeline/1-in-progress/entire-regularized-fredholm-determinant.md`
+— the entire Hilbert–Carleman determinant, with the exact obstruction, the classification of the
+corpus object, the blocked-clause table for cards 4/7/8, and the two routes
+(Plemelj–Smithies recursion + Carleman bound; exterior powers + Hadamard).
+Cards 4 and 8 now carry a pointer to it.
+
+STATE OF THE FOLDER (11 cards):
+  stage 3 (4): quantile-volterra, reflection-folded-dirac, theta-flat-borel-holonomy,
+               two-prime-theta-interval-normal-frame
+  stage 2 (7): prime-translation-rank-one-anomaly      — blocked on the entire det₂ (via card 7)
+               supersymmetric-fredholm-range-divisor   — needs the weighted unbounded Fredholm theorem
+               theta-source-compressed-inverse-determinant — (6)-mult + (8), both = entire det₂
+               essential-inverse-flow-prime-tomography — all inherited from card 7
+               pair-weil-polarization-law              — closability/domain + closed-form Guinand–Weil
+               theta-compact-boundary-flux-energy      — worked by ANOTHER SESSION; looked complete
+               theta-compact-squared-seam-pencil       — worked by ANOTHER SESSION; looked complete
+
+So the 7 remaining cards reduce to THREE research-level layers:
+  (I)   the entire regularized determinant   → cards 4, 7, 8
+  (II)  unbounded weighted Fredholm theory   → card 6   (abstract half BUILT: HTGeometry/UnboundedFredholm.lean)
+  (III) closability + closed-form Guinand–Weil → card 9
+plus promotion of the two theta-compact cards, which another session appears to have finished.

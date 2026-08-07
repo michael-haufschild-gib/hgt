@@ -351,11 +351,30 @@ whole layer at the actual arithmetic source, so the statements below carry **no 
 | `(8)` | **the regularized determinant of the source pencil is defined and nowhere zero** | `thetaFredholmDet`, `thetaFredholmDet_ne_zero` |
 | `(8)` | it is holomorphic on the Hilbert--Schmidt disc, and satisfies the **Plemelj identity** `logDeriv det_2 = -resolventTrace` | `differentiableOn_thetaFredholmDet`, `logDeriv_thetaFredholmDet` |
 
-`(8)` is therefore reduced to a single analytic identification: matching
-`HilbertSchmidt.resolventTrace thetaKernelMatrix` with `-Xi_C'/Xi_C`.  The corpus weld
-`HilbertSchmidt.fredholmDet_weld` then delivers `det_2 = c * L` for any nonvanishing holomorphic
-`L` with that logarithmic derivative, so no further determinant machinery is needed --- only the
-trace formula itself.
+**Correction (2026-08-08).**  An earlier version of this section said that `(8)` was reduced to the
+single identification `resolventTrace = -Xi_C'/Xi_C`, with `HilbertSchmidt.fredholmDet_weld`
+supplying the rest.  That is **false for the global statement**.  The corpus object
+`HilbertSchmidt.fredholmDet K z` is *defined* as `exp(-fredholmExp K z)`, where the exponent series
+`sum over n >= 2 of z^n/n * tr(K^n)` converges only on the disc `|z| * ‖K‖_HS < 1`.  It is therefore
+nowhere zero by construction (`fredholmDet_ne_zero` is literally `Complex.exp_ne_zero`), and
+`fredholmDet_weld` concludes only `for all z in ball 0 r, fredholmDet K z = c * L z`.
+
+Since `Xi_C(z)/Xi_C(0)` vanishes at every `Xi` zero, the global identity `(8)` cannot hold for the
+corpus object at all.  What the corpus objects can give is the **disc-local** identity
+
+```text
+fredholmDet thetaKernelMatrix z = c * Xi_C(z) / Xi_C(0)   for |z| < 1 / ‖B‖_HS,
+```
+
+which is still a genuine theorem and still needs the trace formula
+`resolventTrace thetaKernelMatrix = -Xi_C'/Xi_C` on that disc.
+
+The **global** `(8)` needs the entire Hilbert--Carleman determinant --- the exterior-power series
+`det_2(1 - zK) = sum over n of z^n tr(Lambda^n K)` with its regularisation, an entire function of
+order two whose zeros are the reciprocal eigenvalues.  That object exists in neither the corpus nor
+mathlib and is a missing layer of the same size as the Weierstrass/interpolation layer built for the
+two-prime frame card.  It is also what the multiplicity clause of `(6)` needs, since "algebraic
+multiplicity" is the order of vanishing of that determinant.
 | `(7)` | `R B R = -B` for the Riemann source | `thetaSource_even`, `sourceInverse_sourceReflection_theta` |
 | `(6)` | **a source solution with any nonzero coefficient forces `Xi_C(alpha) = 0`**, unconditionally | `XiC_eq_zero_of_solution_const` |
 | `(6)` | the source mode at a divisor point is integrable and vanishes at both ends | `integrable_sourceModeU`, `tendsto_sourceModeU_atBot`, `tendsto_sourceModeU_atTop` |
