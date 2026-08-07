@@ -1456,3 +1456,21 @@ Everything is now in place for the accounting that the global route failed:
 With `Wsup ≍ N` in place of `N(log N)⁶` the earlier deficit of `(log N)⁸` becomes `(log N)²`, and the two
 remaining logarithms are the ones already identified: the outer weight's discarded `1/log⌊N/p⌋` damping, and the
 per-block sieve levels.  Both devices exist; the next step is to combine them in this truncated form.
+
+## The outer weight's own damping, kept block by block
+
+`RHTower/Sieve/GhsOuterBlockDamping.lean` (green, axiom-clean, wired).  This closes the first of the two
+logarithms identified in the accounting.
+
+* `norm_ghsOuter_le_block` — on the block `2^j ≤ p < 2^{j+1}`,
+  `‖a_p‖ ≤ (j+1)log 2/log⌊N/2^{j+1}⌋`.  The numerator is the block's upper endpoint, the denominator the
+  complementary scale at that endpoint, and `Nat.div_le_div_left` supplies the monotonicity in between.
+* `log_div_block_ge` — `log⌊N/2^{j+1}⌋ ≥ (⌊log₂N⌋ − j − 1)·log 2`, from `⌊N/2^{j+1}⌋ ≥ 2^{⌊log₂N⌋−j−1}`.
+
+So the `j`-th block's coefficient constant is `≍ (j+1)/(log₂N − j)`: small for the early blocks, large only for
+the last few — where the block is short and the sieve count small.  A global bound can only say `1/log 2`, and
+the difference summed against `2^{j(1−σ)}`, whose mass sits at `j ≍ log₂N`, is a logarithm.
+
+Both remaining devices are now present: this and the per-block sieve levels.  What is left is to state the
+truncated block sum with the block-dependent coefficient constant — `sieveMeanSquare_coeffBlock_le` currently
+takes a single `A` — and then the accounting.
