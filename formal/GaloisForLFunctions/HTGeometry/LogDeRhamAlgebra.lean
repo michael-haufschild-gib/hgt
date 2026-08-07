@@ -168,6 +168,23 @@ theorem logCarrier_high_eq_zero {n : ℕ}
   haveI := exteriorPower_rank_one_subsingleton (R := R) p.1.2 hp
   exact tensorProduct_eq_zero_of_subsingleton_right (F p)
 
+/-- **The residue is onto.**  The form `x ∧ d log z` has residue `x`. -/
+theorem logResidue_surjective (k : ℕ) : Function.Surjective (logResidue (R := R) (X := X) k) := by
+  intro x
+  refine ⟨tensorSingle (M := X) (N := fun n => ⋀[R]^n R)
+    (⟨(k, 1), by omega⟩ : {ab : ℕ × ℕ // ab.1 + ab.2 = k + 1})
+    (x ⊗ₜ[R] exteriorιₗ R R (1 : R)), ?_⟩
+  show (TensorProduct.rid R (X k))
+    (TensorProduct.map LinearMap.id (exteriorOneEquiv R R).toLinearMap
+      (tensorSingle (M := X) (N := fun n => ⋀[R]^n R)
+        (⟨(k, 1), by omega⟩ : {ab : ℕ × ℕ // ab.1 + ab.2 = k + 1})
+        (x ⊗ₜ[R] exteriorιₗ R R (1 : R)) ⟨(k, 1), by omega⟩)) = x
+  rw [tensorSingle_same]
+  show (TensorProduct.rid R (X k)) (x ⊗ₜ[R] (exteriorOneEquiv R R) (exteriorιₗ R R (1 : R))) = x
+  have hone : (exteriorOneEquiv R R) (exteriorιₗ R R (1 : R)) = (1 : R) :=
+    exteriorOneToBase_ι R R (1 : R)
+  rw [hone, TensorProduct.rid_tmul, one_smul]
+
 end LogAlgebra
 
 end GaloisForLFunctions.HTGeometry
