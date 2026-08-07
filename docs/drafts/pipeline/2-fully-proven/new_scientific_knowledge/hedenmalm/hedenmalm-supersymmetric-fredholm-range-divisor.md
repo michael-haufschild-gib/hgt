@@ -446,16 +446,19 @@ carries none.
 | `(4)` | the exponential ceiling forces `1/k` to be non-integrable | `not_integrableOn_exp_Ioi`, `not_integrable_exp_abs`, `not_integrable_inv_thetaSource` |
 | `(4)` | **no nonzero constant is square integrable against `k^(-1)`**, so the formal kernel is trivial | `not_integrable_const_mul_inv_thetaSource` |
 | `(8)` | **the formal Witten identity `<f, L D f> = <D f, D f>` on the compactly supported `C^2` core**, and the energy form is real and nonnegative | `integral_weighted_witten`, `integral_weighted_energy_nonneg` |
+| `(9)` | the weighted pairing, `D` and `L`, and **the formal symmetry of the supersymmetric Dirac operator** on the core | `weightedPair`, `sourceD`, `sourceL`, `weightedPair_D_left`, `weightedPair_L_left`, `weightedPair_dirac_symmetry` |
+| `(10)` | **strictness: the shifted pencil has no compactly supported null datum**, so `H_alpha > 0` on the core | `eq_zero_of_shifted_kernel` |
 
 `integral_weighted_symmetry` is a single integration by parts: `f conj(g)/k` has compact support,
 so its derivative integrates to zero by the improper fundamental theorem of calculus, and the
 three terms of that derivative are exactly the difference of the two sides.
 
-Still missing in Lean, and requiring genuine unbounded-operator infrastructure that mathlib does
-not carry: the passage from the formal symmetry `(11)` to the operator identity `A^* = L` after
-closure in `(3)`, closedness and the Fredholm index `-1` in `(4)`, compactness of the resolvent,
-the Witten square `(8)`, the supersymmetric Dirac operator `(9)`, and strict positivity of the
-Hermitian square `(10)`.  mathlib supplies `LinearPMap.adjoint`, `LinearPMap.closure` and
+Every statement of this card now has its **formal (core-level) content** in Lean.  What is still
+missing is uniformly the passage from the core identity to the operator statement after closure:
+`A^* = L` in `(3)`, closedness and the Fredholm index `-1` in `(4)`, compactness of the resolvent,
+self-adjointness of the Witten square `(8)` and of the Dirac operator `(9)`, and strict positivity
+of `(10)` as an operator inequality.  That passage needs genuine unbounded-operator infrastructure
+--- Fredholm index and compact resolvent for `LinearPMap` --- which mathlib does not carry.  mathlib supplies `LinearPMap.adjoint`, `LinearPMap.closure` and
 `LinearPMap.IsClosable`, but no Fredholm theory for unbounded operators.
 
 ## Gates

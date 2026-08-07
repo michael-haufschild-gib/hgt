@@ -334,3 +334,18 @@ projective/trace-class/determinant consequences.
 - Audited the aggregate Hermite envelope, true signed leakage envelope, modulated transform, shifted
   tail, and modulated packet-tail capstones with `#print axioms`; each reports only `propext`,
   `Classical.choice`, and `Quot.sound`.
+
+### 2026-08-07: finite Kaiser spans inherit the packet tail
+
+- Added `BandKaiserFinitePacket.lean`.  Defined arbitrary finite real combinations of
+  cosine-modulated Kaiser packets and proved continuity and evenness of every combination.
+- Proved a pointwise spectral Cauchy--Schwarz estimate for the actual Fourier transforms: combination
+  density is at most coefficient energy times the sum of individual packet densities.
+- Integrated that estimate over the exact complement of the prolate band.  Whenever every packet
+  shift lies in the established allowed window, the full span has tail bounded by coefficient
+  energy times packet count times the common explicit polynomial envelope.
+- Verified in foreground with
+  `lake env lean GaloisForLFunctions/RHTower/BandKaiserFinitePacket.lean` (exit 0) and wired the
+  module into the `GaloisForLFunctions.RHTower` umbrella.  Remaining trial-space gate is a
+  quantitative Gram lower bound; fixed-index Fuchs constants still require true operator/ODE
+  identification and endpoint matching.

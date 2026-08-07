@@ -3669,3 +3669,34 @@ sections X and AO) but is not itself formalised.
 the reduction of the distributional hypothesis to that class is not. The card must therefore state
 this scope explicitly if promoted, or the mollification passage must be formalised first. Do not
 promote silently on `(4)` alone.
+
+## DA. Premise audit of the card-level theorem — five discharged
+
+`LogNormalEquationTrace.lean` is at 27 declarations, all `#print axioms` clean, no `sorry`.
+
+Auditing `tendsto_halfLogTrace_of_equation` against "no hypotheses that are themselves theorems":
+
+**Discharged (were premises, now derived):**
+
+| was | now |
+|---|---|
+| `hb`, `hb'`, `hcb`, `hcb'` filter boundedness | `isBoundedUnder_le_of_eventually_le` etc., from `(1)` |
+| `hA : halfLogAverage F → α` | `tendsto_halfLogAverage`, i.e. the card's `(12)` |
+
+`tendsto_halfLogTrace_of_equation_of_integrable` is the fully chained form: the limit is the
+**explicit value** `A(L₀) + ∫_{L₀}^∞ P F/(4L^{3/2})`, not a free parameter `α`.
+
+**Remaining hypotheses, all object regularity or card data:**
+
+    hFb, hFcont, hmeas, hFpos      the profile: bounded, continuous, measurable, nonnegative
+    hHcont, hHup, hHlow            the card's (1): H continuous and bounded on the ray
+    hnear                          integrability of the transport integrand — what (18) asserts
+    hnumlow                        the sign condition at the minimizer
+    heq                            the card's (3): the equation itself
+    hSu, hSl                       the card's (19): the source is bounded
+    hL₀, hAint                     the card's (10): P F/(4L^{3/2}) integrable on a terminal ray
+
+None of these is a theorem stated elsewhere in the corpus. `hAint` is the closest call — the card
+derives `(10)` from `(3)` by testing against `L^{-3/2}`, using the jump-form pairing (sections
+Z, AA). Formalising that derivation would discharge `hAint` too; until then it is card data, and
+must be recorded as such.

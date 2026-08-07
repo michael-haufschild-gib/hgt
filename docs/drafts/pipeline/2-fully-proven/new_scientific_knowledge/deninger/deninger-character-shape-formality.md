@@ -727,3 +727,43 @@ is a **strictly stronger** structure than the `E_∞` one the card is written in
 equivalent to it, which is the reason the card invokes rational homotopy theory in the first place.
 So nothing is missing for the card's own purposes; what is absent is only a formal `E_∞` layer,
 which mathlib does not have and which this model exists to replace.
+
+### `(3)` and `(4)`: the free algebra on degree-one generators is the exterior algebra — 2026-08-07
+
+`formal/GaloisForLFunctions/HTGeometry/CDGATotalAlgebra.lean` and
+`formal/GaloisForLFunctions/HTGeometry/CDGAFreeExterior.lean`.  Axiom audit for all sixteen
+declarations: `propext, Classical.choice, Quot.sound`.
+
+The entry above recorded `(3)` and `(4)` as statements about free `E_∞` `Hℝ`-algebras with no
+counterpart in Lean, leaving only "the algebraic content" as the universal property of
+`ExteriorAlgebra`.  That is no longer the situation: the free construction now exists in the
+corpus's model, with the universal property stated for commutative differential graded algebras
+rather than for plain algebras.
+
+- `CDGATotalCarrier`, `CDGATotal`, `cdgaTotalOf`, `cdgaTotalOf_mul` — **the total algebra of a
+  unital commutative differential graded algebra**: summing the degrees gives an associative unital
+  `R`-algebra, since the graded product is bilinear, associative and unital.  It is a graded ring,
+  not a graded *commutative* ring — the product commutes only up to the Koszul sign — which is
+  exactly the distinction the card's rational-homotopy argument turns on.  The family is carried by
+  a type synonym so that the algebra and its unit are visible to instance resolution.
+- `exteriorModuleCDGA`, `exteriorModuleCDGAUnit` — the exterior powers of a module with the product
+  of the exterior algebra and the zero differential, as a commutative differential graded algebra
+  with its unit.
+- `freeExteriorCDGAHom`, `freeExteriorCDGAHom_ι`, `freeExteriorCDGAHom_unique` — **`(3)`**: the
+  exterior algebra is free on a module placed in degree one.  A linear map from the module into the
+  degree-one cocycles of a unital algebra whose values have vanishing squares extends to a morphism
+  of commutative differential graded algebras, and to exactly one.  Existence goes through the total
+  algebra: the map lands in its degree one, the exterior algebra's own universal property gives an
+  algebra map, and the image of the `n`-th exterior power lies in degree `n` because that power is
+  spanned by wedges of `n` vectors; the values are cocycles by the Leibniz rule.  Uniqueness is the
+  same span with multiplicativity.
+- `exteriorCDGA` is now *defined* as `exteriorModuleCDGA` on the dual of the covering space, with
+  `exteriorCDGAUnit` its unit, so the source of the formality comparison is literally the free
+  algebra on the degree-one Kummer generators.  With `torusFormality_isQuasiIso` and
+  `deningerTorusFormality_isQuasiIso` — already the card's `(2)` — this is **`(4)`**: the map out of
+  the free algebra on the invariant degree-one forms is a quasi-isomorphism.
+
+What the corpus's model does not carry above this is the `E_∞` coherence: `relTensorCDGA` and
+`exteriorModuleCDGA` are commutative on the nose, a strictly stronger structure than `E_∞`, which
+over a field of characteristic zero is equivalent to it — the reason the card invokes rational
+homotopy theory at all.
