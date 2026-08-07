@@ -14,7 +14,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option synthInstance.maxHeartbeats 100000
+set_option synthInstance.maxHeartbeats 200000
 set_option maxHeartbeats 1000000
 
 /-- Any two actual geometric sheets differ by an automorphism of the actual normal closure. -/
@@ -32,14 +32,14 @@ theorem criticalNormalClosureAction_transitive
       (criticalSourceField K m n) := inferInstance
   letI : IsScalarTower (criticalObservationField K m n)
       (criticalSourceField K m n) (criticalSourceAlgebraicClosure K m n) :=
-    IsScalarTower.of_algebraMap_eq' rfl
+    AlgebraicClosure.instIsScalarTower (criticalSourceField K m n)
   letI : Algebra.IsAlgebraic (criticalObservationField K m n)
       (criticalSourceAlgebraicClosure K m n) :=
     Algebra.IsAlgebraic.trans (criticalObservationField K m n)
       (criticalSourceField K m n) (criticalSourceAlgebraicClosure K m n)
   letI : Normal (criticalObservationField K m n)
-      (criticalSourceAlgebraicClosure K m n) where
-    splits' _ := IsAlgClosed.splits _
+      (criticalSourceAlgebraicClosure K m n) :=
+    { splits' _ := IsAlgClosed.splits _ }
   letI : Normal (criticalObservationField K m n)
       (criticalNormalClosure K m n) :=
     normalClosure.normal (criticalObservationField K m n)

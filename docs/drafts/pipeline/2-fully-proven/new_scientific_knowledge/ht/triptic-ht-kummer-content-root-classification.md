@@ -425,3 +425,35 @@ Added to the same module (wired, axiom-clean):
 With `H₃`-invariance and compact local finiteness together, the charge is a well-defined finitely
 supported function on `G` once a bounded fundamental domain is chosen, which is the last structural
 input of `D : M → ℤ[G]`.
+
+## Lean progress — finite order everywhere, and the half-line law at every period point
+
+`GaloisForLFunctions/HTGeometry/EllipticGammaConeOrder.lean` (wired, axiom-clean):
+
+    exists_notMem_of_countable                    a countable set is not the plane
+    analyticOrderAt_ne_top_of_countable_zeroSet   an entire function with countable zero set is
+                                                  nowhere locally zero
+    withTop_sub_ne_top                            a difference of finite orders is finite
+    countable_coneProduct_zeroSet                 the zero set is indexed by `ℕ × ℕ × ℤ`
+    countable_ellipticGammaConeNum_zeroSet
+    meromorphicOn_ellipticGammaCone
+    meromorphicOrderAt_ellipticGammaCone_ne_top   **the order of `Γ` is finite everywhere**
+
+Finiteness of the order is precisely the hypothesis `tripticOrbitCharge_mul` needs, so the divisor
+map is now known to be additive on the realizing sources.
+
+Added to `EllipticGammaConeDivisor.lean` (wired, axiom-clean):
+
+    coneProduct_periodPoint_orbit_eq_zero_iff      **the general pole half line**: along the
+                                                   `b`-orbit of `c + d·a + e·b`, the denominator
+                                                   vanishes exactly for `d ≤ 0` and `m ≤ -e`
+    coneProduct_num_periodPoint_orbit_eq_zero_iff  and the numerator exactly for `1 ≤ d`,
+                                                   `1 - e ≤ m`
+    meromorphicOrderAt_ellipticGammaCone_periodPoint
+                                                   the order along that orbit, as the difference of
+                                                   the two indicator conditions
+
+The two half lines are disjoint (`d ≥ 1` against `d ≤ 0`), and in both regimes the shift difference
+is supported at the single index `m = -e`.  So the charge is `1` on the orbit of *every* period
+point, not only the origin — which is the statement that `D_Γ` is the class `[0]` in `ℤ[G]` rather
+than a base-point-dependent number.

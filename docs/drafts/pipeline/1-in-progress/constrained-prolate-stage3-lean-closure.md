@@ -417,3 +417,26 @@ projective/trace-class/determinant consequences.
 - All new modules pass foreground `lake env lean <file>` checks.  This closes the previously open
   finite-dimensional trial-subspace bridge.  Exact Fuchs polynomial constants and classical mode
   identification remain open.
+
+### 2026-08-08: logarithmically refined true ground leakage
+
+- Added `BandEvenTrialCarrier.lean`, a reusable exact bridge from any continuous normalized even
+  interval trial to the physical even `L²` carrier, including support, norm, Fourier energy,
+  dilation conjugation, and exact time-band defect identities.
+- Added `BandKaiserCentralEnergy.lean`.  Integrated a central angular-frequency window of width
+  `sqrt(c)` and proved the physical Kaiser energy lower bound of order `exp(2*c)/c^(3/2)`.
+- Added `BandKaiserGroundTrueLeakage.lean`.  Transported this lower bound through the actual
+  time-band Fourier operator and Courant--Fischer interface, proving an unconditional true signed
+  ground leakage bound of order `c^(3/2)*exp(-2*c)`.
+- Added `BandKaiserLogTail.lean`.  Split the exact exterior sine-quotient transform into an edge
+  strip, logarithmic middle region, and inverse-square far region.  Proved the full physical tail
+  bound `(8 + 4*log(c))/(pi*c)` for every `c >= 2`.
+- Added `BandKaiserGroundLogLeakage.lean`.  Combined sharp tail, central energy, exact physical
+  carrier, and true spectral min--max bridge to prove
+  `1 - evenProlateSignedValue(a,0)^2 <=
+  16*c*(2+log(c))/sqrt(c)*exp(-2*(c-1))`, where `c=2*pi*a^2`.
+- Every module passes foreground `lake env lean <file>`.  `#print axioms` for the physical tail,
+  true ground leakage, signed ground leakage, and eventual capstone reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.  This closes the actual ground-spectrum upper bound to
+  within one logarithm of Fuchs's sharp prefactor; matching lower bound, logarithm removal, and
+  fixed higher-mode identification remain open.

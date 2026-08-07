@@ -342,7 +342,7 @@ theorem meromorphicOrderAt_ellipticGammaCone_periodPoint {a b : ℂ} (ha : 0 < a
             = (coneProduct a b) ∘ (fun w => a + b - w) := rfl
         rw [hcomp]
         have hderiv : deriv (fun w : ℂ => a + b - w) z = -1 := by
-          simp [(((hasDerivAt_id z).const_sub (a + b)).deriv)]
+          simp
         rw [analyticOrderAt_comp_of_deriv_ne_zero (by fun_prop) (by
           rw [hderiv]
           norm_num)]

@@ -368,8 +368,9 @@ theorem integral_tail_kaiser_log_le {c : ℝ} (hc : 2 ≤ c) :
       · exact Or.inl (lt_of_not_ge hξ)
       · exact Or.inr (lt_of_not_ge hξ)
   have hdens : Integrable (kaiserPhysicalDensity c) := by
-    simpa only [kaiserPhysicalDensity] using
-      integrable_norm_sq_fourier_bandTrunc (continuous_kaiserTrial c)
+    change Integrable (fun ξ : ℝ =>
+      ‖FourierTransform.fourier (bandTrunc (kaiserTrial c)) ξ‖ ^ 2)
+    exact integrable_norm_sq_fourier_bandTrunc (continuous_kaiserTrial c)
   have hsplit : (∫ ξ in (Icc (-r) r)ᶜ, kaiserPhysicalDensity c ξ) =
       (∫ ξ in Iio (-r), kaiserPhysicalDensity c ξ) +
         ∫ ξ in Ioi r, kaiserPhysicalDensity c ξ := by

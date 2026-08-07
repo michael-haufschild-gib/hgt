@@ -407,6 +407,8 @@ starts the adjoint side.
 | `(9)` | **the adjoint of the source inverse IS the transposed kernel operator** | `adjoint_kernelOperator_eq` |
 | `(9)` | off the diagonal, `-K(t,u)K(u,t)/(q(t)q(u)) = min(t,u) - t u` | `neg_mul_pinnedKernelSlice` |
 | `(9)` | **the covariance decomposition** `min(t,u) - t u = integral of slice(t,s) slice(u,s) ds` | `integral_pinnedKernelSlice_mul`, `integral_pinnedKernelSlice_mul_min` |
+| `(9)` | the Riesz vectors of the two kernel fields | `toDual_symm_innerSL`, `toDual_symm_pinnedKernelField`, `toDual_symm_transposeKernelField`, `inner_riesz_eq` |
+| `(9)` | **`tr(B^2)` is the double kernel integral** `double integral of q(t) q(u) (min(t,u) - t u)` --- the quantile form of `2 integral over x<y of p(x)(1-p(y))` | `thetaTraceSq_eq_double_integral` |
 
 Unlike the pinned row, the transposed row carries the quantile speed *inside* the vector, so it
 cannot be split as a scalar times a continuous slice family: `q` itself is not in `L^2` of the unit
@@ -420,21 +422,17 @@ proved with the *first* variable outside: for a fixed `u` the inner integral is
 `q(u)^2 integral of (1_(t<=u) - u)^2 dt = q(u)^2 u(1-u)`, whose integrability is exactly
 `HasFiniteKernelEnergy`, and `Integrable.integral_prod_right` then transposes it.
 
-With the adjoint identified, `tr(B^2) = <B†, B>_HS` (`thetaTraceSq_eq_hsInner`) feeds directly into
-the polarized kernel formula `hsInner_kernelOperator` of
-`formal/GaloisForLFunctions/RHTower/KernelOperatorPolarization.lean`, whose Riesz vectors here are
-`-(i q(t)) . slice(t, .)` and `-transposeVec t`.  What remains of `(9)` is the evaluation of the
-resulting double integral:
+The first displayed equality of `(9)` is therefore proved:
 
 ```text
 tr(B^2) = double integral of q(t) q(u) (min(t,u) - t u),
 ```
 
-using `neg_mul_pinnedKernelSlice` off the diagonal (the diagonal is null in the product) and then
-the covariance decomposition `integral_pinnedKernelSlice_mul_min`, which turns it into
-`integral of (sliceMoment s)^2 ds` --- and `integral_sq_sliceMoment` already evaluates that to the
-source variance.  Every ingredient is now formalized; only the two interchanges that assemble them
-remain.
+which is exactly `2 integral over x<y of p(x)(1-p(y)) dx dy` after the quantile change of variables.
+What remains is the second equality, `= (1/M) integral of x^2 k(x) dx`.  Every ingredient of it is
+formalized: substituting the covariance decomposition `integral_pinnedKernelSlice_mul_min` and
+interchanging twice gives `integral of (sliceMoment s)^2 ds`, and `integral_sq_sliceMoment` evaluates
+that to the source variance.  Only the two Fubini interchanges are left.
 
 Corpus assets to use for the remaining items, rather than rebuilding them:
 `ContinuousLinearMap.IsHilbertSchmidt` (`HTGeometry/HilbertSchmidtOperator.lean`),

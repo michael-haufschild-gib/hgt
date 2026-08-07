@@ -1307,3 +1307,30 @@ EVERY INGREDIENT OF (9) IS NOW FORMALIZED.  What is left is only the two assembl
     `-∬ q(t)q(u) slice(t,u) slice(u,t)`;
 (b) Fubini the `ds`-decomposition to reach `∫₀¹ (sliceMoment s)² ds`,
     then `integral_sq_sliceMoment`.
+
+## Card 7 (9): FIRST DISPLAYED EQUALITY PROVED (2026-08-08)
+
+`RHTower/HedenmalmThetaTraceKernel.lean`:
+`thetaTraceSq_eq_double_integral : thetaTraceSq = ∬ q(t) q(u) (min(t,u) − t u) du dt`
+— i.e. `tr(B²) = 2∫_{x<y} p(x)(1−p(y)) dx dy` in quantile coordinates.
+
+Chain: `thetaTraceSq_eq_hsInner` → `adjoint_kernelOperator_eq` → `hsInner_kernelOperator`
+→ Riesz vectors (`toDual_symm_innerSL`; `toDual ℂ E v = innerSL ℂ v` is proved by `ext y; rfl`)
+→ `inner_riesz_eq` → `neg_mul_pinnedKernelSlice` off the diagonal (`{u = t}` is null under
+`unitIntervalMeasure`; get it by `ae_restrict_of_ae (ae_iff.mpr (by simp))`).
+
+TRAP: `rw [transposeKernelFun]` fails ("failed to rewrite using equation theorems") even though it
+is a plain def; `simp only [transposeKernelFun]` works.
+
+REMAINING for (9): only the SECOND displayed equality,
+`∬ q(t)q(u)(min(t,u) − tu) = M⁻¹∫x²k`.
+Substitute `integral_pinnedKernelSlice_mul_min` and interchange twice:
+  `∫_u q(u)(min(t,u)−tu) du = ∫_s slice(t,s) · sliceMoment s ds`   (Fubini in (u,s))
+  `∫_t q(t) ∫_s slice(t,s) sliceMoment s ds dt = ∫_s (sliceMoment s)² ds`  (Fubini in (t,s))
+then `integral_sq_sliceMoment`.
+For the product integrability the useful bound is
+`∫_u q(u)|slice(u,s)| du ≤ A + |Q(s) − Q(1/2)|` with `A = ∫_u q(u)|slice(u,1/2)| du`,
+because `|slice(u,s)| ≤ 1_{[min(s,1/2),max(s,1/2))}(u) + |slice(u,1/2)|` and
+`∫ q · 1_{[a,b)} = Q(b) − Q(a)`; `Q ∈ L¹(0,1)` via `integrableOn_comp_quantileFun_iff`
+(ALREADY IN THE CORPUS, `HTGeometry/PositiveDensityQuantile.lean`) applied to `g = id`,
+whose right-hand side is `integrable_mul_thetaSource`.
