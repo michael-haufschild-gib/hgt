@@ -242,3 +242,58 @@ component as `(c, e)`:
 each miss one boundary case, and exactly those boundary terms vanish.  So the assembly is a
 telescoping sum, not the `Finset.sum_nbij'` pattern used three times above; that is the one genuinely
 new piece of bookkeeping left on this card.
+
+## The cross term: proved
+
+`barD_comm_d` in `formal/GaloisForLFunctions/HTGeometry/CDGABarTotal.lean` — **the bar differential
+and the internal differential anticommute**, unconditionally, for every stage and every degree.
+Axiom audit `propext, Classical.choice, Quot.sound`.
+
+The assembly turned out not to need a telescope.  Writing the target component as `(c, e)` and
+`c = m + 1`, the three sums are indexed by the splits of `m`, of `c` with a nonzero first part, and
+of `c` with a nonzero second part; the last two are in bijection with the first under
+`(p, q) ↦ (p + 1, q)` and `(p, q) ↦ (p, q + 1)`, and the terms outside the images vanish because a
+degree-one map has no component in degree zero.  So it is three reindexings, each of which is
+`Finset.sum_image` against `Finset.sum_subset`, and then `barMulD_cancel` termwise.
+
+- `formal/GaloisForLFunctions/HTGeometry/CDGABarLeibniz.lean` — `barSplitLeft`, `barSplitRight` and
+  their injectivity; `sum_barSplitLeft`, `sum_barSplitRight`, the two reindexings of a sum over the
+  splits of a successor; `barStageDL`, the internal differential of a stage on its outer shifted
+  factor; `barLeibnizArg`, the component of the argument all three terms read;
+  `barHeadTermₗ_eq_mulTail`, one term of the head as the multiplication of the first two of three
+  separated factors; `barHead_leibniz_left_term`, `barHead_leibniz_right_term`,
+  `barHead_leibniz_right_vanish`; and **`barHead_leibniz_apply`**, the Leibniz cancellation of the
+  head against the internal differential, componentwise, for an arbitrary coefficient family.
+- `formal/GaloisForLFunctions/HTGeometry/CDGATensorDegOne.lean` —
+  **`tensorLeftDegOne_tensorRightDegOne_add`**: a degree-one map on the left factor and one on the
+  right anticommute, the general form of `tensorDL_tensorDR_add`; and
+  **`tensorRightDegOne_comp_add`**: two pairs of degree-one maps on the right factor whose
+  composites cancel do so after tensoring, since the Koszul signs are the same in both orders.
+- `formal/GaloisForLFunctions/HTGeometry/CDGABarTotal.lean` — `barPower_succ_d_split` and
+  `barPower_succ_succ_d_split`, the internal differential of a stage as its two halves in the
+  spelling instance synthesis produces; `barTotal_regroup`, the regrouping of the eight terms of the
+  cross term into the four groups that cancel; **`barD_comm_d`**; `barTotalComponent_zero`,
+  `barTotalComponent_succ`, `barTotalD_of_sq`; **`barTotalD_sq`**; and **`barComplex`**.
+
+The inductive step splits the source differential into three — differentiate the outer shifted
+factor, differentiate the outer factor of what follows, differentiate the rest — and the bar
+differential into head and tail, giving eight terms in four groups:
+
+| group | proved by |
+|---|---|
+| head after the outer differential, head after the second differential, and the differential of the merged slot | `barHead_leibniz_apply` |
+| head after the trailing differential, and the trailing differential after the head | `barHead_comm_tail_apply` |
+| tail after the outer differential, and the outer differential after the tail | `tensorLeftDegOne_tensorRightDegOne_add` |
+| tail after the inner differential, and the inner differential after the tail | `tensorRightDegOne_comp_add` with the inductive hypothesis |
+
+## Step 5 complete
+
+**`barTotalD_sq`**: the total differential of the bar construction squares to zero.  On the tensor
+power with `k` factors the square has three components — `k`, where it is the internal differential
+squared; `k - 2`, where it is the bar differential squared, `barD_sq`; and `k - 1`, where it is the
+cross term `barD_comm_d`.
+
+**`barComplex`** packages the whole thing: `B(A) = ⨁_k (sĀ)^{⊗k}` with `d = d_int + d_bar` is a
+cochain complex, and `barCounit` is a morphism from it to the ground complex.  Every step of the
+card is now formalised unconditionally; axiom audit for every declaration is
+`propext, Classical.choice, Quot.sound` or less.
