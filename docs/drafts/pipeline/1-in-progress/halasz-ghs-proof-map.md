@@ -1380,3 +1380,29 @@ window parameter `W` is `T/2π`, and its hypothesis `2πδW ≤ 1` fixes the nei
 so a large truncation height gives a *narrow* multiplicative window — where the Selberg sieve's short-interval
 count is strongest.  That is the opposite regime from the Lorentzian route, whose `δ = 1/2π` was fixed, and it
 is the next thing to exploit.
+
+## The truncated mean square of a prime-supported series, on the Perron line
+
+`RHTower/Sieve/TruncatedPrimeSieveMeanSquare.lean` (green, axiom-clean, wired).
+
+`integral_Icc_normSq_LSeries_le_prime_sieve` :
+
+`∫_{|y| ≤ T} ‖L(a,σ+iy)‖² dy ≤ 2π·(5T/4)·∑_n (2(n(e^{1/T} − e^{−1/T}) + 1)/log Y + E + z)·‖a_n n^{−σ}‖²`
+
+for prime-supported finitely supported `a`.  Built by the change of variables, then `logPoly_eq_logPoly_filter`
+to cut the index set down to the nonzero coefficients — whose elements are prime, which is what the window
+theorem demands (it needs *every* index prime, not merely the support) — then the sum enlarged back to `s`
+because the terms are nonnegative.
+
+**Two features of this bound decide the route.**  The scale is sharp: the window theorem's hypothesis
+`2πδW ≤ 1` at `W = T/2π` is an equality when `δ = 1/T`, so truncation height and window width are reciprocal.
+And the factor `5T/4` in front is cancelled by `e^{1/T} − e^{−1/T} ≍ 2/T` inside, so
+
+* the leading term is `≍ ∑_n n‖a_n n^{−σ}‖²/log Y`, **independent of `T`**;
+* only the additive part `(5T/4)(E + z)·∑‖a_n n^{−σ}‖²` grows with `T`.
+
+So `T` is free up to `T(E+z)` staying below the leading term — and the truncated master inequality's tail costs
+`Mg·C/T`, which wants `T` large.  The two constraints pull in opposite directions but with room between them:
+`C ≍ N^σ(N/H)²` and `E + z ≍ Y²(log z)⁴ + z` are polynomially separated once `H` is a fixed power of `N` and the
+sieve level is a small power.  That is the balance the final accounting has to strike, and unlike the global
+route there is now a window in which both constraints hold.
