@@ -296,4 +296,25 @@ theorem lintegral_gagliardo_swap {s : ℝ} {G : ℝ → ENNReal} (hG : Measurabl
   refine Measurable.aemeasurable ?_
   exact (measurable_gagliardoKernel s).mul (hG.comp measurable_snd)
 
+/-! ## The conversion factor
+
+Assembling the symbol modulus with the scaling law gives the conversion factor between the two
+descriptions of the fractional weight, pointwise in the frequency and with no `L²` bookkeeping:
+integrating the squared symbol against the fractional weight returns `c_s |ξ|^{2s}`.
+-/
+
+/-- **The conversion factor.**  For each positive frequency, the squared difference symbol
+integrated against the fractional weight is `c_s ξ^{2s}`.  This is the scalar identity that makes
+the difference-quotient and Fourier descriptions of the weight the same object; `c_s` is finite and
+the integrand positive on the unit window by the results above. -/
+theorem integral_normSq_differenceSymbol {s ξ : ℝ} (hξ : 0 < ξ) :
+    (∫ h in Ioi (0 : ℝ), ‖differenceSymbol h ξ‖ ^ 2 * h ^ (-(1 + 2 * s)))
+      = ξ ^ (2 * s) * ∫ h in Ioi (0 : ℝ), gagliardoIntegrand s h := by
+  have hcongr : (∫ h in Ioi (0 : ℝ), ‖differenceSymbol h ξ‖ ^ 2 * h ^ (-(1 + 2 * s)))
+      = ∫ h in Ioi (0 : ℝ), 4 * Real.sin (Real.pi * (ξ * h)) ^ 2 * h ^ (-(1 + 2 * s)) := by
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi fun h _ => ?_
+    rw [normSq_differenceSymbol, mul_comm h ξ]
+  rw [hcongr]
+  exact integral_gagliardoIntegrand_scaling hξ
+
 end GaloisForLFunctions.HTGeometry

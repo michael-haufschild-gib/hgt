@@ -56,10 +56,12 @@ theorem xiAmplitude_sq_div_phase_eq_pi_mul_profileWeight
   have hfourth := xiAmplitude_pow_four hs0 hs1 hx
   have hweight := profileWeight_eq_ampFourth_sq hs1 hx
   have hampFourth := ampFourth_sq hs1 hx
-  have hprod : 0 < (x ^ 2 - 1) * (x ^ 2 - s) := by nlinarith
+  have hleft : 0 < x ^ 2 - 1 := by nlinarith
+  have hright : 0 < x ^ 2 - s := by nlinarith
+  have hprod : 0 < (x ^ 2 - 1) * (x ^ 2 - s) := mul_pos hleft hright
   have hsqrt : 0 < Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) :=
     Real.sqrt_pos.mpr hprod
-  rw [hweight, hampFourth, profileWeight]
+  rw [hweight, hampFourth]
   have hsq : xiAmplitude s x ^ 2 =
       xiEndpointPhase s x / Real.sqrt ((x ^ 2 - 1) * (x ^ 2 - s)) := by
     apply sq_eq_sq₀ hamp.le (div_nonneg hphase.le hsqrt.le)
@@ -87,7 +89,7 @@ theorem abs_radialProlate_sub_besselProfile_le
     dunsterEndpointCrossing_gt_one (lt_of_lt_of_le (by norm_num) hc)
   have hxx : 1 < x := hA1.trans_le hx
   have htransfer := abs_radialProlate_sub_regularModel_le
-    hs0 hs1 hc (B := x) le_rfl hR1 hR hDR hode ⟨hx, le_rfl⟩
+    hs0 hs1 hc (B := x) hx hR1 hR hDR hode ⟨hx, le_rfl⟩
   rw [comparisonSol_prolateNormalForm_eq_div_xiAmplitude hs0 hs1 hxx,
     lgBesselModel] at htransfer
   have hamp : 0 < xiAmplitude s x := xiAmplitude_pos hs0 hs1 hxx
@@ -122,7 +124,7 @@ theorem radialProlateDensity_le_profileWeight
   have hmodel := (lgBesselCommonEnvelopeConstant_spec s c x hv).1
   rw [lgBesselModel] at hmodel
   have htransfer := abs_radialProlate_sub_regularModel_le
-    hs0 hs1 hc (B := x) le_rfl hR1 hR hDR hode ⟨hx, le_rfl⟩
+    hs0 hs1 hc (B := x) hx hR1 hR hDR hode ⟨hx, le_rfl⟩
   rw [comparisonSol_prolateNormalForm_eq_div_xiAmplitude hs0 hs1 hxx,
     lgBesselModel] at htransfer
   have hK0 : 0 ≤ K := radialProlateUniformTransferConstant_nonneg
@@ -201,7 +203,7 @@ theorem abs_radialProlateDensity_sub_besselDensity_le
   have hmodel := (lgBesselCommonEnvelopeConstant_spec s c x hv).1
   rw [lgBesselModel] at hmodel
   have htransfer := abs_radialProlate_sub_regularModel_le
-    hs0 hs1 hc (B := x) le_rfl hR1 hR hDR hode ⟨hx, le_rfl⟩
+    hs0 hs1 hc (B := x) hx hR1 hR hDR hode ⟨hx, le_rfl⟩
   rw [comparisonSol_prolateNormalForm_eq_div_xiAmplitude hs0 hs1 hxx,
     lgBesselModel] at htransfer
   have hK0 : 0 ≤ K := radialProlateUniformTransferConstant_nonneg
@@ -258,24 +260,23 @@ theorem abs_radialProlateDensity_sub_besselDensity_le
       ring
     _ = (radialProlateDensityTransferConstant / c) * profileWeight s x := by rfl
 
-/-- The `s`-dependent profile weight is uniformly dominated by twice the limiting density. -/
-theorem profileWeight_le_two_mul_profileDensity
+/-- The `s`-dependent profile weight is uniformly dominated by four times the limiting density. -/
+theorem profileWeight_le_four_mul_profileDensity
     {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
-    profileWeight s x ≤ 2 * profileDensity x := by
+    profileWeight s x ≤ 4 * profileDensity x := by
   have hdiff := abs_profileWeight_sub_density_le hs0 hs1 hx
   have hden : 0 < x ^ 2 - s := by nlinarith
-  have hratio : 3 * s / (x ^ 2 - s) ≤ 1 := by
-    rw [div_le_one hden]
+  have hratio : 3 * s / (x ^ 2 - s) ≤ 3 := by
+    rw [div_le_iff₀ hden]
     nlinarith
   have hD0 : 0 ≤ profileDensity x := profileDensity_nonneg hx.le
   have hupper : profileWeight s x - profileDensity x ≤
       3 * s * profileDensity x / (x ^ 2 - s) := (abs_le.mp hdiff).2
-  have hsmall : 3 * s * profileDensity x / (x ^ 2 - s) ≤ profileDensity x := by
+  have hsmall : 3 * s * profileDensity x / (x ^ 2 - s) ≤ 3 * profileDensity x := by
     calc
       3 * s * profileDensity x / (x ^ 2 - s) =
           (3 * s / (x ^ 2 - s)) * profileDensity x := by ring
-      _ ≤ 1 * profileDensity x := mul_le_mul_of_nonneg_right hratio hD0
-      _ = profileDensity x := one_mul _
+      _ ≤ 3 * profileDensity x := mul_le_mul_of_nonneg_right hratio hD0
   linarith
 
 end GaloisForLFunctions.RHTower

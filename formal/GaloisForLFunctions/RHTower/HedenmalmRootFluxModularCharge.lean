@@ -151,3 +151,10 @@ end HedenmalmThetaSource
 end
 
 end RHTower
+
+#print axioms RHTower.HedenmalmThetaSource.thetaRootEnergy_pos
+#print axioms RHTower.HedenmalmThetaSource.reflectedEntropy_centered_eq_two_im
+#print axioms RHTower.HedenmalmThetaSource.reflectedEntropy_centered_eq_zero_iff
+#print axioms RHTower.HedenmalmThetaSource.thetaRootFlux_eq_neg_half_entropy_mul_energy
+#print axioms RHTower.HedenmalmThetaSource.thetaRootFlux_eq_zero_iff_im_eq_zero
+#print axioms RHTower.HedenmalmThetaSource.thetaRootFlux_eq_zero_iff_reflectedEntropy_eq_zero

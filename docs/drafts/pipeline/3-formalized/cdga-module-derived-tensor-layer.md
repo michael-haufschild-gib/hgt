@@ -1509,3 +1509,21 @@ subtract one from a coordinate, and a *total* inverse cannot be written when the
 type is empty.  With `sum_bij` the preimage is produced inside an existential, where the subtraction
 is harmless — it never enters a dependent position.  `Finset.sum_filter_of_ne` discards the
 complement, whose terms vanish because a half-differential is zero in degree zero.
+
+## The tensor product of algebras is functorial, and unital
+
+`CDGATensorAlgebraMap.lean` — `tensorAlgMapₗ`, **`tensorPairₗ_naturality`**, `tensorAlgMapₗ_mul`,
+`tensorAlgMapₗ_extTensorD`, **`tensorCDGAMap`**: a pair of morphisms of commutative differential
+graded algebras induces one on the tensor products.  Multiplicativity is checked one splitting at a
+time — the Koszul sign depends only on degrees, so it passes through untouched — and compatibility
+with the differential is the module-level statement, the external differential being `tensorD` of
+two modules.
+
+`CDGATensorAlgebraUnit.lean` — `splittingZeroSubsingleton`, `tensorAlgOne`, **`tensorCDGAUnit`**:
+`1 ⊗ 1` is a unit for the tensor product.  The proof of `one_mul` is a one-term sum: a splitting
+whose left part has total degree zero is *unique*, its left part being `(0,0)` and its right part
+the whole output, so `Finset.sum_eq_single_of_mem` applies with the other terms excluded by
+`Subsingleton.elim` rather than by a vanishing argument.
+
+Axioms: `propext, Classical.choice, Quot.sound` (`tensorPairₗ_naturality` needs only
+`propext, Quot.sound`).
