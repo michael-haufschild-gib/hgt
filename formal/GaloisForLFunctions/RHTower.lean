@@ -1668,6 +1668,7 @@ import GaloisForLFunctions.RHTower.DeningerResolvedDefectHellingerGammaBalancedC
 import GaloisForLFunctions.RHTower.DeningerRestrictedPrimeAcyclic
 import GaloisForLFunctions.RHTower.DeningerRestrictedPrimeGluing
 import GaloisForLFunctions.RHTower.DeningerProIndSections
+import GaloisForLFunctions.RHTower.DeningerProIndCurrent
 import GaloisForLFunctions.RHTower.DeningerRestrictedPrimeSheaf
 import GaloisForLFunctions.RHTower.DeningerRetractCohomology
 import GaloisForLFunctions.RHTower.DeningerRetractVanishing
@@ -6140,3 +6141,4 @@ import GaloisForLFunctions.RHTower.Sieve.TripleConvolutionPerron
 import GaloisForLFunctions.RHTower.Sieve.PerronKernelResidue
 import GaloisForLFunctions.RHTower.Sieve.PerronVerticalBound
 import GaloisForLFunctions.RHTower.Sieve.PrimeSupportedConvolutionBound
+import GaloisForLFunctions.RHTower.Sieve.ConvolutionSmoothingError
