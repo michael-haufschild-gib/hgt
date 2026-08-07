@@ -84,3 +84,28 @@ that difference is exactly `Λ(n)` versus `Λ(n)²` in GHS Lemma 1.
 Remaining for Lemma 1: bound `logNeighbourCount` for a prime support by the corpus's Brun–Titchmarsh
 count (`Sieve/PrimeWindowUpper.card_primes_Ioc_le_explicit`), then specialise
 `a_n = c_n Λ(n)/n`.
+
+## Third brick: the arithmetic input of Lemma 1 is discharged
+
+`RHTower/Sieve/PrimeLogWindowCount.lean` (green, axiom-clean, wired):
+
+* `logNeighbourCount_le_card_prime_Ioc` — a multiplicative window `|log n − log m| < δ` around `n`
+  consists of integers of the single interval `(⌊n e^{−δ}⌋, ⌊n e^{δ}⌋]`;
+* `logNeighbourCount_le_sieve` — hence, for a prime support, the corpus's Selberg-sieve short-interval
+  count applies:
+
+  `#{p ∈ s : |log n − log p| < δ} ≤ 2(n(e^δ − e^{−δ}) + 1)/log Y + selbergFibreError z Y + z`
+
+  for every sieve level `1 ≤ Y ≤ z`, `2 ≤ z` — reusing `RHTower.Sieve.card_prime_Ioc_le`;
+* `integral_Icc_normSq_logPoly_le_prime_sieve` — **the prime-supported mean value theorem**:
+
+  `∫_{−W}^{W} ‖∑_{p ∈ s} a_p p^{2πiw}‖² dw
+     ≤ (5/(4δ)) ∑_{p ∈ s} (2(p(e^δ − e^{−δ}) + 1)/log Y + selbergFibreError z Y + z) ‖a_p‖²`.
+
+With `a_p = c_p (log p)/p` and `log Y ≍ (log p)/3` the main term per prime is `≍ ‖c_p‖² (log p)/p`: that
+is GHS Lemma 1's right-hand side, `∑ |a_n|² Λ(n)/n`, and the `δ` cancels between the `(5/(4δ))` of
+Gallagher and the `e^δ − e^{−δ} ≍ 2δ` of the window. The one logarithm of saving over the count of
+*integers* in the window is precisely the difference between `Λ(n)` and `Λ(n)²`.
+
+Steps 2 and 3 of the skeleton (the second application of the recursion, and the dyadic partition of the
+prime range) and the truncated Perron formula of step 4 remain.

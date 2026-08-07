@@ -325,7 +325,7 @@ theorem tensorAlgMul_comm {a b n : ℕ} (h : a + b = n) (h' : b + a = n)
 
 /-- **Reassociating a splitting of a splitting.**  Both sides of associativity are sums over triples
 of bidegrees adding up to the output; this is the reassociation of such a triple. -/
-def splitReassoc {a b c m q n : ℕ} (h₁ : a + b = m) (h₃ : b + c = q)
+def splitReassoc {a b c m q n : ℕ} (_h₁ : a + b = m) (h₃ : b + c = q)
     {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}}
     (x : (ts : Splitting m c p) × Splitting a b ts.1.1) :
     (us : Splitting a q p) × Splitting b c us.1.2 :=
@@ -470,7 +470,7 @@ section Shift
 variable {a b n : ℕ} {q : {pq : ℕ × ℕ // pq.1 + pq.2 = n}} {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n + 1}}
 
 /-- Raise the first coordinate of the left part of a splitting. -/
-def shiftLeftFst (hp1 : p.1.1 = q.1.1 + 1) (hp2 : p.1.2 = q.1.2) (rs : Splitting a b q) :
+def shiftLeftFst (hp1 : p.1.1 = q.1.1 + 1) (_hp2 : p.1.2 = q.1.2) (rs : Splitting a b q) :
     Splitting (a + 1) b p :=
   ⟨(⟨(rs.1.1.1.1 + 1, rs.1.1.1.2), by
       have h := rs.1.1.2
@@ -485,7 +485,7 @@ def shiftLeftFst (hp1 : p.1.1 = q.1.1 + 1) (hp2 : p.1.2 = q.1.2) (rs : Splitting
       omega⟩
 
 /-- Raise the first coordinate of the right part of a splitting. -/
-def shiftRightFst (hp1 : p.1.1 = q.1.1 + 1) (hp2 : p.1.2 = q.1.2) (rs : Splitting a b q) :
+def shiftRightFst (hp1 : p.1.1 = q.1.1 + 1) (_hp2 : p.1.2 = q.1.2) (rs : Splitting a b q) :
     Splitting a (b + 1) p :=
   ⟨(rs.1.1, ⟨(rs.1.2.1.1 + 1, rs.1.2.1.2), by
       have h := rs.1.2.2
@@ -594,7 +594,7 @@ theorem sum_shiftRightFst {M' : Type*} [AddCommGroup M'] (hp1 : p.1.1 = q.1.1 + 
     exact ⟨rs, Finset.mem_univ _, hrs⟩
 
 /-- Raise the second coordinate of the left part of a splitting. -/
-def shiftLeftSnd (hp1 : p.1.1 = q.1.1) (hp2 : p.1.2 = q.1.2 + 1) (rs : Splitting a b q) :
+def shiftLeftSnd (_hp1 : p.1.1 = q.1.1) (_hp2 : p.1.2 = q.1.2 + 1) (rs : Splitting a b q) :
     Splitting (a + 1) b p :=
   ⟨(⟨(rs.1.1.1.1, rs.1.1.1.2 + 1), by
       have h := rs.1.1.2
@@ -609,7 +609,7 @@ def shiftLeftSnd (hp1 : p.1.1 = q.1.1) (hp2 : p.1.2 = q.1.2 + 1) (rs : Splitting
       omega⟩
 
 /-- Raise the second coordinate of the right part of a splitting. -/
-def shiftRightSnd (hp1 : p.1.1 = q.1.1) (hp2 : p.1.2 = q.1.2 + 1) (rs : Splitting a b q) :
+def shiftRightSnd (_hp1 : p.1.1 = q.1.1) (_hp2 : p.1.2 = q.1.2 + 1) (rs : Splitting a b q) :
     Splitting a (b + 1) p :=
   ⟨(rs.1.1, ⟨(rs.1.2.1.1, rs.1.2.1.2 + 1), by
       have h := rs.1.2.2
@@ -873,15 +873,13 @@ theorem tensorAlgMul_tensorDR {a b n : ℕ} (h : a + b = n) (hl : a + 1 + b = n 
         have hra : rs.1.1.1.1 + rs.1.1.1.2 = a := rs.1.1.2
         show ((-1 : R)) ^ p₁ • TensorProduct.map LinearMap.id (B.dₗ β)
             (tensorPairₗ A B rs.2.1 rs.2.2 (f rs.1.1) (g rs.1.2)) = _
-        rw [tensorPair_dR A B rs.2.1 rs.2.2 _ _ (f rs.1.1) (g rs.1.2), smul_add, smul_smul,
-          smul_smul, smul_smul, ← pow_add, ← pow_add, ← pow_add]
-        refine congrArg₂ (· + ·) ?_ ?_
-        · congr 1
-          refine neg_one_pow_eq_of_even_add _ _ (rs.1.1.1.1 + rs.1.2.1.1) ?_
-          omega
-        · congr 1
-          refine neg_one_pow_eq_of_even_add _ _ (rs.1.1.1.1 + rs.1.2.1.1 + rs.1.1.1.2) ?_
-          omega
+        rw [tensorPair_dR A B rs.2.1 rs.2.2 _ _ (f rs.1.1) (g rs.1.2), smul_add]
+        simp only [smul_smul, ← pow_add]
+        have e1 : ((-1 : R)) ^ (p₁ + rs.1.2.1.1) = ((-1 : R)) ^ rs.1.1.1.1 :=
+          neg_one_pow_eq_of_even_add _ _ (rs.1.1.1.1 + rs.1.2.1.1) (by omega)
+        have e2 : ((-1 : R)) ^ (p₁ + rs.1.1.1.2) = ((-1 : R)) ^ (a + rs.1.2.1.1) :=
+          neg_one_pow_eq_of_even_add _ _ (rs.1.1.1.1 + rs.1.2.1.1 + rs.1.1.1.2) (by omega)
+        rw [e1, e2]
       rw [Finset.sum_congr rfl fun rs _ => hsplit rs, Finset.sum_add_distrib, ← Finset.smul_sum]
       refine congrArg₂ (· + ·) ?_ (congrArg (fun z => ((-1 : R)) ^ a • z) ?_)
       · refine sum_shiftLeftSnd (a := a) (b := b) (q := ⟨(p₁, β), hq⟩) (p := ⟨(p₁, β + 1), hp⟩)
@@ -890,29 +888,23 @@ theorem tensorAlgMul_tensorDR {a b n : ℕ} (h : a + b = n) (hl : a + 1 + b = n 
             (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f uv.1.1)
             (g uv.1.2) = 0
           rw [tensorDR_of_snd_zero _ _ a f uv.1.1 hu, map_zero, LinearMap.zero_apply]
-        · show ((-1 : R)) ^ rs.1.1.1.1 • tensorPairₗ A B _ _ _ (g rs.1.2)
+        · show ((-1 : R)) ^ rs.1.1.1.1 • tensorPairₗ A B _ _
+              (TensorProduct.map LinearMap.id (B.dₗ rs.1.1.1.2) (f rs.1.1)) (g rs.1.2)
             = tensorPairₗ A B _ _
-              (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f
-                (shiftLeftSnd rfl rfl rs).1.1) (g (shiftLeftSnd rfl rfl rs).1.2)
-          rw [show (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) a f
-              (shiftLeftSnd rfl rfl rs).1.1)
-            = ((-1 : R)) ^ rs.1.1.1.1 • TensorProduct.map LinearMap.id (B.dₗ rs.1.1.1.2)
-              (f rs.1.1) from rfl, LinearMap.map_smul₂]
+              (((-1 : R)) ^ rs.1.1.1.1 • TensorProduct.map LinearMap.id (B.dₗ rs.1.1.1.2)
+                (f rs.1.1)) (g rs.1.2)
+          exact (LinearMap.map_smul₂ _ _ _ _).symm
       · refine sum_shiftRightSnd (a := a) (b := b) (q := ⟨(p₁, β), hq⟩) (p := ⟨(p₁, β + 1), hp⟩)
           rfl rfl _ _ (fun uv hv => ?_) (fun rs => ?_)
         · show tensorPairₗ A B uv.2.1 uv.2.2 (f uv.1.1)
             (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g uv.1.2) = 0
           rw [tensorDR_of_snd_zero _ _ b g uv.1.2 hv, map_zero]
-        · show ((-1 : R)) ^ rs.1.2.1.1 • tensorPairₗ A B _ _ (f rs.1.1) _
-            = tensorPairₗ A B _ _ (f (shiftRightSnd rfl rfl rs).1.1)
-              (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g
-                (shiftRightSnd rfl rfl rs).1.2)
-          rw [show (tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g
-              (shiftRightSnd rfl rfl rs).1.2)
-            = ((-1 : R)) ^ rs.1.2.1.1 • TensorProduct.map LinearMap.id (B.dₗ rs.1.2.1.2)
-              (g rs.1.2) from rfl]
-          exact ((tensorPairₗ A B rs.2.1 (show rs.1.1.1.2 + (rs.1.2.1.2 + 1) = β + 1 by
-            have := rs.2.2; simp only at this ⊢; omega) (f rs.1.1)).map_smul _ _).symm
+        · show ((-1 : R)) ^ rs.1.2.1.1 • tensorPairₗ A B _ _ (f rs.1.1)
+              (TensorProduct.map LinearMap.id (B.dₗ rs.1.2.1.2) (g rs.1.2))
+            = tensorPairₗ A B _ _ (f rs.1.1)
+              (((-1 : R)) ^ rs.1.2.1.1 • TensorProduct.map LinearMap.id (B.dₗ rs.1.2.1.2)
+                (g rs.1.2))
+          exact (map_smul _ _ _).symm
 
 /-- **The Leibniz rule for the product on a tensor product of algebras.** -/
 theorem tensorAlgMul_extTensorD {a b n : ℕ} (h : a + b = n) (hl : a + 1 + b = n + 1)
@@ -934,6 +926,30 @@ theorem tensorAlgMul_extTensorD {a b n : ℕ} (h : a + b = n) (hl : a + 1 + b = 
         + tensorDR (CDGAStructure.selfModule A) (zeroActModule (A := A) B) b g)
   rw [tensorAlgMul_add_left, tensorAlgMul_add_right, smul_add]
   abel
+
+/-- **The tensor product of two commutative differential graded algebras.**  The product pairs
+bidegrees with the Koszul sign and sums over the splittings of the output; the differential is the
+external one. -/
+noncomputable def tensorCDGA : CDGAStructure R (TensorCarrier (R := R) X Y) where
+  mul h x y := tensorAlgMul A B h x y
+  d n := extTensorD A B n
+  mul_add_left h x x' y := tensorAlgMul_add_left A B h x x' y
+  mul_add_right h x y y' := tensorAlgMul_add_right A B h x y y'
+  mul_smul_left h c x y := tensorAlgMul_smul_left A B h c x y
+  mul_smul_right h c x y := tensorAlgMul_smul_right A B h c x y
+  mul_assoc h₁ h₂ h₃ h₄ x y z := tensorAlgMul_assoc A B h₁ h₂ h₃ h₄ x y z
+  mul_comm h h' x y := tensorAlgMul_comm A B h h' x y
+  d_add n x y := tensorD_add (CDGAStructure.selfModule A) (zeroActModule (A := A) B) n x y
+  d_smul n c x := tensorD_smul (CDGAStructure.selfModule A) (zeroActModule (A := A) B) n c x
+  d_d n x := extTensorD_d A B n x
+  d_mul h x y := tensorAlgMul_extTensorD A B h _ _ x y
+
+@[simp] theorem tensorCDGA_mul {a b n : ℕ} (h : a + b = n)
+    (x : TensorCarrier (R := R) X Y a) (y : TensorCarrier (R := R) X Y b) :
+    (tensorCDGA A B).mul h x y = tensorAlgMul A B h x y := rfl
+
+@[simp] theorem tensorCDGA_d (n : ℕ) (x : TensorCarrier (R := R) X Y n) :
+    (tensorCDGA A B).d n x = extTensorD A B n x := rfl
 
 end Leibniz
 

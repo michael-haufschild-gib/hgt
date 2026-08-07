@@ -64,10 +64,11 @@ theorem integral_Ioi_exp_neg_mul {b x : ℝ} (hb : 0 < b) :
 theorem norm_k_sourceChar_le (z : ℂ) (y : ℝ) :
     ‖(thetaSource.k y : ℂ) * sourceChar z y‖
       ≤ thetaBound * Real.exp (-|y|) * Real.exp (-z.im * y) := by
-  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_nonneg (thetaCuspFullSource_pos y).le, norm_sourceChar]
-  refine mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le
-  exact le_trans (le_abs_self _) (abs_thetaCuspFullSource_le y)
+  have h1 : ‖((thetaSource.k y : ℝ) : ℂ)‖ ≤ thetaBound * Real.exp (-|y|) := by
+    rw [Complex.norm_real, Real.norm_eq_abs]
+    exact abs_thetaCuspFullSource_le y
+  rw [norm_mul, norm_sourceChar]
+  exact mul_le_mul_of_nonneg_right h1 (Real.exp_pos _).le
 
 /-- **The left bound.**  On the negative half-line the source primitive decays like
 `e^{(1-Im z)x}`. -/
@@ -149,7 +150,6 @@ theorem norm_exp_neg_I_mul (z : ℂ) (x : ℝ) :
   rw [Complex.norm_exp]
   congr 1
   simp [Complex.mul_re, Complex.mul_im]
-  ring
 
 /-- **The source mode decays exponentially at both ends at a zero of the completed transform.** -/
 theorem norm_sourceModeU_le {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSource z = 0) (x : ℝ) :
@@ -171,9 +171,11 @@ theorem norm_sourceModeU_le {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSource
       mul_le_mul_of_nonneg_left hle (Real.exp_pos _).le
     have hcollapse : Real.exp (z.im * x) * (thetaBound * Real.exp ((1 - z.im) * x) / (1 - z.im))
         = thetaBound / (1 - z.im) * Real.exp x := by
-      rw [div_eq_mul_inv, div_eq_mul_inv, ← mul_assoc, ← Real.exp_add]
-      ring_nf
-      rw [show z.im * x + (1 - z.im) * x = x by ring]
+      rw [show thetaBound * Real.exp ((1 - z.im) * x) / (1 - z.im)
+            = (thetaBound / (1 - z.im)) * Real.exp ((1 - z.im) * x) by ring,
+        ← mul_assoc, mul_comm (Real.exp (z.im * x)) (thetaBound / (1 - z.im)), mul_assoc,
+        ← Real.exp_add]
+      congr 2
       ring
     have hmono : thetaBound / (1 - z.im) ≤ thetaBound / (1 - |z.im|) := by
       refine div_le_div_of_nonneg_left hCnn hgap ?_
@@ -196,9 +198,11 @@ theorem norm_sourceModeU_le {z : ℂ} (hz : |z.im| < 1) (hzero : xiC thetaSource
       mul_le_mul_of_nonneg_left hle (Real.exp_pos _).le
     have hcollapse : Real.exp (z.im * x) * (thetaBound * Real.exp (-(1 + z.im) * x) / (1 + z.im))
         = thetaBound / (1 + z.im) * Real.exp (-x) := by
-      rw [div_eq_mul_inv, div_eq_mul_inv, ← mul_assoc, ← Real.exp_add]
-      ring_nf
-      rw [show z.im * x + -(1 + z.im) * x = -x by ring]
+      rw [show thetaBound * Real.exp (-(1 + z.im) * x) / (1 + z.im)
+            = (thetaBound / (1 + z.im)) * Real.exp (-(1 + z.im) * x) by ring,
+        ← mul_assoc, mul_comm (Real.exp (z.im * x)) (thetaBound / (1 + z.im)), mul_assoc,
+        ← Real.exp_add]
+      congr 2
       ring
     have hmono : thetaBound / (1 + z.im) ≤ thetaBound / (1 - |z.im|) := by
       refine div_le_div_of_nonneg_left hCnn hgap ?_

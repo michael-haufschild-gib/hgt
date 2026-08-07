@@ -30,3 +30,17 @@ cap and the decay.
 
 Next brick: GHS Lemma 1 = this + Cauchy–Schwarz per window + the corpus's Brun–Titchmarsh count
 (`Sieve/BrunTitchmarsh`, `Sieve/PrimeWindowUpper.card_primes_Ioc_le_explicit`).
+
+## Update: the arithmetic side of GHS Lemma 1 is built
+
+`RHTower/Sieve/GallagherAlmostDiagonal.lean` — `logNeighbourCount s δ n = #{m ∈ s : |log n − log m| < δ}`,
+`integral_normSq_logWindowSum_le_count` (no hypothesis on δ at all), and
+`integral_Icc_normSq_logPoly_le_count` (the mean value theorem with the count as its only arithmetic).
+
+`RHTower/Sieve/PrimeLogWindowCount.lean` — `logNeighbourCount_le_sieve` discharges the count for a prime
+support using the corpus's `RHTower.Sieve.card_prime_Ioc_le` (Sieve/PrimeInterval; the clean
+Brun–Titchmarsh shape with `selbergFibreError z Y + z`), and
+`integral_Icc_normSq_logPoly_le_prime_sieve` assembles the prime-supported mean value theorem.
+
+The δ cancels: Gallagher contributes `5/(4δ)` and the window length contributes `e^δ − e^{−δ} ≍ 2δ`.
+With `log Y ≍ (log p)/3` the per-prime weight is `≍ (log p)/p` — GHS Lemma 1's `Λ(n)/n`, not `Λ(n)²/n`.

@@ -99,6 +99,24 @@ theorem logNeighbourCount_le_sieve (s : Finset ℕ) (hs : ∀ m ∈ s, m.Prime)
     gcongr
   linarith [hsubR, hcard, hmain]
 
+
+/-- **The prime-supported mean value theorem.**  The almost-diagonal mean value theorem with its
+neighbour count discharged by the Selberg sieve: for coefficients supported on primes the frequency mean
+square is bounded by the coefficients weighted by a *short-interval prime count*, which carries one
+logarithm of saving over the number of integers in the window. -/
+theorem integral_Icc_normSq_logPoly_le_prime_sieve (a : ℕ → ℂ) (s : Finset ℕ)
+    (hs : ∀ m ∈ s, m.Prime) {δ W : ℝ} (hδ : 0 < δ) (hWδ : 2 * Real.pi * δ * W ≤ 1)
+    (z Y : ℕ) (hY : 1 ≤ Y) (hYz : Y ≤ z) (hz : 2 ≤ z) (hlog : 0 < Real.log Y) :
+    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2)
+      ≤ (5 / (4 * δ)) * ∑ n ∈ s,
+          (2 * ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) + 1) / Real.log Y
+            + selbergFibreError z Y + (z : ℝ)) * ‖a n‖ ^ 2 := by
+  refine le_trans (integral_Icc_normSq_logPoly_le_count a s hδ hWδ) ?_
+  refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun n hn => ?_) (by positivity)
+  have hn1 : 1 ≤ n := (hs n hn).one_lt.le.trans' (by norm_num)
+  exact mul_le_mul_of_nonneg_right
+    (logNeighbourCount_le_sieve s hs hδ.le hn1 z Y hY hYz hz hlog) (by positivity)
+
 end RHTower.Sieve
 
 end

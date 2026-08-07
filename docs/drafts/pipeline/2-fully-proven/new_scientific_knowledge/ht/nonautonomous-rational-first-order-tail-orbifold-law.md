@@ -274,3 +274,27 @@ axiom.  No build was run for this audit because all three exact modules already 
 - [ ] 2 -> 3: Laurent-symbol extraction, tensor quantization, and phase-tail membership are
       formalized; parabolic-orbifold uniformization and complete-tail identification remain
 - [ ] 3 -> 4: standalone manuscript and independent specialist audit
+
+## Lean progress — the Euclidean signature classification is closed
+
+`GaloisForLFunctions/HTGeometry/EuclideanConeSignature.lean` (wired, axiom-clean):
+
+    euclidean_cone_triple            the only weakly increasing integer triples ≥ 2 with
+                                     reciprocal sum 1 are (2,3,6), (2,4,4), (3,3,3)
+    cone_pair_eq_two, cone_quad_eq_two
+    sum_one_sub_inv, sum_inv_le_half_length, sum_inv_pos
+    parabolic_signature_classification :
+      c + ∑ (1 - 1/ν_i) = 2 with every ν_i ≥ 2 and the list weakly increasing forces
+      (c, list) ∈ {(2, []), (1, [2,2]), (0, [2,2,2,2]), (0, [2,3,6]), (0, [2,4,4]), (0, [3,3,3])}
+
+`GaloisForLFunctions/HTGeometry/ParabolicSignatureClassification.lean` (wired, axiom-clean):
+
+    ParabolicSphereSignature.euclidean          each recorded signature solves the equation
+    ParabolicSphereSignature.coneOrders_spec    its cone list is sorted with entries ≥ 2
+    exists_parabolicSphereSignature             every solution is one of the six
+    parabolicSphereSignature_iff                **the six signatures are exactly the solutions**
+
+The enumerated datatype `ParabolicSphereSignature` was previously a convention; it is now proved to
+be the complete solution set of the parabolic (zero orbifold Euler characteristic) equation.  This
+is the step the card's proof calls "the weights define a parabolic orbifold" together with the list
+of Euclidean signatures.

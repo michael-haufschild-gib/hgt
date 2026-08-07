@@ -1567,3 +1567,45 @@ state from the other agent's session, not a break introduced here. Do not "fix" 
 `git checkout` it.
 
 Re-run the umbrella audit once that file settles.
+
+## AE. Prerequisite 3 started — the Carleman estimate is the coercivity estimate
+
+New module `formal/GaloisForLFunctions/HTGeometry/CarlemanWeightedStrip.lean`, wired into the
+`HTGeometry` umbrella. 8 declarations, all `#print axioms` clean.
+
+**The Carleman estimate needs no new analysis.** Conjugating by the exponential weight turns the
+derivative into the *shifted* derivative,
+
+    (e^{σt} u)' − σ (e^{σt} u) = e^{σt} u',
+
+so `ShiftedDerivativeCoercivity.sq_mul_integral_normSq_le` — already in the corpus since section K
+— transfers verbatim:
+
+    carleman_weighted_estimate :  σ² ∫ e^{2σt} ‖u‖²  ≤  ∫ e^{2σt} ‖u'‖².
+
+Constant `1/σ`, uniform in the weight. No Fourier transform, no Plancherel; the entire content is
+the single integration by parts already banked.
+
+- `hasDerivAt_carlemanWeight`, `hasDerivAt_carlemanConjugate`, `deriv_carlemanConjugate` — the
+  conjugation derivative.
+- `deriv_carlemanConjugate_sub` — **the shift is exactly cancelled**; this is the identity that
+  makes Carleman and coercivity the same theorem.
+- `normSq_carlemanConjugate`, `hasCompactSupport_carlemanConjugate` — transport of the norm and
+  the support.
+
+Hypotheses are object regularity only (`Differentiable ℝ u`, `Continuous (deriv u)`,
+`HasCompactSupport u`) — no premises.
+
+### Prerequisite status
+
+1. Plancherel `H^s` equivalence — partial (constant `c_s` built and positive; scaling law, Tonelli,
+   Plancherel step remain).
+2. Gamma transport operator — closed.
+3. Carleman on a weighted strip — **exponential-weight case closed on the line**. What the cards
+   additionally need is the *strip* version (a second variable, and a boundary term), not a new
+   mechanism: the conjugation identity above is the whole engine.
+4. Weak signed half-log trace — all components closed, including the tested form of the operator;
+   the card-level assembly remains.
+
+Trap: `rw` under an `integral_congr_ae` binder needs the goal beta-reduced first — insert an
+explicit `show` of the pointwise identity before rewriting, or the pattern will not be found.
