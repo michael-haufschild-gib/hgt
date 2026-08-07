@@ -2725,3 +2725,127 @@ Both weight-removal pairs are now built.
 - `tendsto_of_le_liminf_of_limsup_le`.
 
 The far tail needs nothing further (section BQ: `abs_integral_transport_far_le` is two-sided).
+
+## BS. The mirrored second-difference bound is built
+
+`GammaTransportKernel.lean` is now at 31 declarations, all `#print axioms` clean, no `sorry`.
+
+- `secondDifference_le_of_weighted` — at a penalized **minimizer** of the weighted profile,
+
+      secondDifference f X s  ≤  2 δ s/√X  +  (f X − δ s/√X) · s/(2X)      for 0 ≤ s ≤ X/2.
+
+  Assembled from `le_of_weighted_ge_forward` and `le_of_weighted_ge_backward` exactly as
+  `neg_le_secondDifference_of_weighted` was assembled from the maximizer pair. Both terms carry a
+  factor `s`, so the kernel's first moment again absorbs them.
+
+Note the mirrored bound is *simpler* than the maximizer one: there the correction was
+`2(s/X)(f X + δs/√X)`, here it is `(f X − δs/√X)·s/(2X)` — a factor 4 smaller and already linear in
+`s`, so **no separate linearisation step is needed** (contrast section BI, where the maximizer
+bound had a quadratic term that had to be collapsed).
+
+### Remaining
+
+- the mirrored near-window integral (the analogue of `neg_le_integral_transport_near`);
+- assembling it with the two-sided far tail into an **upper** bound on `gammaTransport f X`;
+- `tendsto_of_le_liminf_of_limsup_le`.
+
+Each is the mirror of a result already built, and the mirrored side has no step that the maximizer
+side did not also have.
+
+## BT. The mirrored near-window integral is built
+
+`GammaTransportKernel.lean` is now at 32 declarations, all `#print axioms` clean, no `sorry`.
+
+- `integral_transport_near_le` — at a penalized minimizer, on the window `(0, X/2]`,
+
+      ∫ secondDifference f X s · k(s) ds  ≤  (2δ/√X + f X/(2X)) · ∫ s k(s) ds.
+
+  The pointwise bound of BS is linearised inside the proof by
+  `(f X − δs/√X) ≤ f X` — no separate lemma needed, unlike the maximizer side (BI). As there, the
+  integrability of the transport integrand is hypothesis, supplied by the equation (BJ).
+
+Both directions of the near window now exist:
+
+    maximizer   neg_le_integral_transport_near   ≥ −C₊ ∫ s k(s) ds,  C₊ = 2δ/√X + 2(f X + δ√X/2)/X
+    minimizer   integral_transport_near_le       ≤  C₋ ∫ s k(s) ds,  C₋ = 2δ/√X + f X/(2X)
+
+with the far tail two-sided already (`abs_integral_transport_far_le`, BE/BQ).
+
+### Remaining
+
+- assemble the minimizer side into an **upper** bound on `gammaTransport f X` (the mirror of
+  `neg_le_gammaTransport_of_maximizer`, using the same `gammaTransport_split`);
+- `tendsto_of_le_liminf_of_limsup_le`.
+
+Both `C₊` and `C₋` are `O(δ) + O(1/X)`, so along `δ_n → 0`, `X_n → ∞` the transport term is squeezed
+to zero from both sides — which is the mechanism that forces `limsup H ≤ α ≤ liminf H`.
+
+## BU. Both transport bounds now exist — the mirrored chain is complete
+
+`GammaTransportKernel.lean` is now at 33 declarations, all `#print axioms` clean, no `sorry`.
+
+- `gammaTransport_le_of_minimizer` — the mirror of `neg_le_gammaTransport_of_maximizer`:
+
+      gammaTransport f X  ≤  (2δ/√X + f X/(2X)) · ∫_0^{X/2} s k(s) ds  +  4 M q(X/2).
+
+  Same `gammaTransport_split`, same two-sided far tail, only the near window differs.
+
+**The transport operator is now pinned from both sides at the respective critical points:**
+
+    at a penalized maximizer:  gammaTransport f X  ≥ −[ C₊ · m(X) + 4 M q(X/2) ]
+    at a penalized minimizer:  gammaTransport f X  ≤ +[ C₋ · m(X) + 4 M q(X/2) ]
+
+with `m(X) = ∫_0^{X/2} s k(s) ds ≤ ∫_0^∞ s k(s) ds < ∞`, `C₊ = 2δ/√X + 2(f X + δ√X/2)/X`,
+`C₋ = 2δ/√X + f X/(2X)`, and `q(X/2) = −log(1 − e^{−X/2})`. Along `δ_n → 0`, `X_n → ∞` with `f`
+bounded, every one of these vanishes.
+
+### `suzuki-weak-signed-half-log-trace` — remaining
+
+Only the card-level derivation: state `(1)` and `(3)`, run `exists_isMaxOn_penalized` /
+`exists_isMaxOn_penalized_neg` to get the two critical-point families, feed the two displays above
+into `(18)` with `(19)`/`(20)`, and pass to the limit to get `limsup H ≤ α` and `α ≤ liminf H`;
+then `tendsto_of_le_liminf_of_limsup_le` (mathlib) gives `(4)`.
+
+Every analytic input on both sides is now built and axiom-clean. No estimate remains.
+
+## BV. The card-level theorem — exact shape, and why it was not written here
+
+Every analytic ingredient exists (BU). What is left is a **modelling** task, not an estimate, and
+it is the one thing that must not be improvised at the end of a session.
+
+The trap to avoid: a theorem of the form
+
+    theorem tendsto_halfLogTrace (hup : limsup H ≤ α) (hlow : α ≤ liminf H) … : Tendsto H atTop (𝓝 α)
+
+is a **rename of `tendsto_of_le_liminf_of_limsup_le`**, not the card. `(4)` is only formalized when
+`hup` and `hlow` are *derived* from the card's `(1)` and `(3)`. This is the same objection recorded
+in AT and BN; it has now been declined three times and must be declined again.
+
+**What the real statement needs.** Hypotheses modelling the card:
+
+    F : ℝ → ℝ, continuous, bounded by M
+    L₀ > 0, and H = fun L => √L * F L bounded above and below on Ici L₀        -- (1)
+    a source G with ‖G‖_∞ finite
+    for every ε ∈ (0,1] and every L whose ε-neighbourhood lies in Ici L₀:      -- (18)
+      logDirichlet (mollify (bumpMollifier hε) F) L
+        + gammaTransport (mollify (bumpMollifier hε) F) L
+        = mollify (bumpMollifier hε) G L + 2 * mollify (firstMomentKernel (bumpMollifier hε)) F L
+
+Conclusion: `∃ β, Tendsto (fun L => √L * F L) atTop (𝓝 β)`.
+
+Derivation skeleton, all inputs built:
+
+1. `(12)` `tendsto_halfLogAverage` gives `α = lim A`.
+2. Maximizer: `exists_isMaxOn_penalized` on `H_ε` with `δ = L₀^{-1/2}`, `lt_of_localised` for
+   interiority, `le_of_isMaxOn_penalized_shift` for `(24)`, then
+   `neg_le_gammaTransport_of_maximizer` bounds the transport term; substituting into `(18)` and
+   using `(19)`/`(20)` (`sqrt_mul_abs_mollify_le`) gives `limsup H ≤ α`.
+3. Minimizer: the same with `exists_isMaxOn_penalized_neg`,
+   `le_of_isMaxOn_penalized_neg_shift`, `gammaTransport_le_of_minimizer`, giving `α ≤ liminf H`.
+4. `tendsto_of_le_liminf_of_limsup_le`.
+
+Write steps 2 and 3 as two lemmas taking the `(18)` hypothesis, then the capstone. Do **not**
+collapse them into one statement with `hup`/`hlow` as hypotheses.
+
+`suzuki-weak-signed-half-log-trace` remains in stage 2 until that theorem exists and is
+axiom-clean.

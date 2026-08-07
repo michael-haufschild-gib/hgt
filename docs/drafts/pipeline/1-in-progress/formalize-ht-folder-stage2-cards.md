@@ -283,3 +283,23 @@ form of the scaling-invariance theorem (the deck group is the roots of unity, an
 unity separates two exponents).
 
 Uniformization is now needed only for `(2,2,∞)`, `(2,2,2,2)`, `(2,3,6)`, `(2,4,4)`, `(3,3,3)`.
+
+
+## Built: the two deck-group rigidity statements
+
+```text
+HTGeometry/ScalingInvariantRationalFunction.lean       multiplicative deck group (single scalar and
+                                                        separating family)
+HTGeometry/TranslationInvariantRationalFunction.lean   additive deck group (one nonzero translation
+                                                        suffices in characteristic zero)
+HTGeometry/ChebyshevQuadraticCurrent.lean              `(w′/w)² = y′²/(y² - 4)` for `y = w + w⁻¹`,
+                                                        the `(2,2,∞)` transported current
+```
+
+Between them these cover the deck groups of all six Euclidean signatures: `G_m` and its roots of
+unity for `(∞,∞)`, the dihedral extension for `(2,2,∞)`, and translations for the four compact
+lattice signatures.  What is still missing for the compact ones is the *uniformizing coordinate*
+itself — a doubly periodic meromorphic function with prescribed lattice — for which the corpus
+already owns the theta layer (`EllipticThetaLogComparison`, `EllipticThetaCoordinateDivisor`,
+`EllipticThetaLogComparisonRigidity`, and
+`differentiallyAlgebraic_of_lattice_periodic_meromorphicNF`).

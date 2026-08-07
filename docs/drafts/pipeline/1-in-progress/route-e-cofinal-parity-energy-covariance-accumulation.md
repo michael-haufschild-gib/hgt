@@ -578,3 +578,53 @@ Paper and unconditional Lean:
 `../3-formalized/new_scientific_knowledge/route-e-parity-coarse-grained-batch-rigidity.md` and
 `RHTower/GibbsBatchParityCoarseGraining.lean`.  Targeted build `9712/9712`; axioms only
 `propext`, `Classical.choice`, and `Quot.sound`.  `OPEN-SOURCE-001` and RH remain open.
+
+## 2026-08-07 static all-prime regular-kernel closure
+
+Two cofinal recurrence theorems now remove the full static regular-kernel continuation, not only
+one selected weight.  For arbitrary fixed nonnegative weights \(\omega_p\), set
+
+\[
+ \mathcal F_\omega(t)=\sum_p{\omega_p\over p}|1+e^{it\log p}|^2.
+\]
+
+If \(\sum_p\omega_p/p<\infty\), then for every \(\delta>0,T\) there is \(t>T\) with
+\(\mathcal F_\omega(t)<\delta\).  If that mass is not summable, the form is already nonsummable
+at \(t=0\), where every term is exactly \(4\omega_p/p\).  Hence no fixed nonnegative diagonal
+all-prime weight is both everywhere finite and uniformly coercive.
+
+The stronger cross-prime theorem removes regular off-diagonal repair.  For every arbitrary complex
+kernel \(K_{pq}\) with
+
+\[
+ \sum_{p,q}|K_{pq}|<\infty,
+\]
+
+the complete ordered-pair form
+
+\[
+ \mathcal Q_K(t)=\sum_{p,q}K_{pq}(1+p^{it})\overline{(1+q^{it})}
+\]
+
+is absolutely convergent and, for every \(\delta>0,T\), has some \(t>T\) with
+\(|\mathcal Q_K(t)|<\delta\).  Positivity, Hermitian symmetry, finite rank, and diagonality are not
+used.  Proof chooses one finite pair head, recurs every prime in both coordinate projections to
+phase \(-1\), and controls complete tail by entrywise absolute mass.
+
+This is class closure, not `OPEN-SOURCE-001`.  Bare “off-diagonal” is no longer an adequate
+survivor.  Revised hard core is:
+
+> **GIBBS-MOVING-OR-SINGULAR-ANTISCALE-TRANSVERSE-SOURCE.**  Derive from literal ordinary-integer
+> Gibbs/co-Poisson source either a moving boundary kernel tied to physical aperture, or a
+> non-absolutely-summable singular cross-prime principal part with canonical source
+> renormalization, and prove that it produces \(D_{\rm anti}\) or within-parity variation at
+> physical-power strength before terminal antiscale resonance is scalarized.
+
+Static diagonal and entrywise-absolutely-summable off-diagonal frames cannot meet that premise.
+Signed nonquadratic cancellation across moving terminal shells remains logically outside these
+theorems.  Paper and unconditional Lean:
+`../3-formalized/new_scientific_knowledge/route-e-static-antiscale-frame-dichotomy.md`,
+`../3-formalized/new_scientific_knowledge/route-e-static-absolute-kernel-recurrence.md`,
+`RHTower/RouteEStaticAntiscaleFrameDichotomy.lean`, and
+`RHTower/RouteEStaticAbsoluteKernelRecurrence.lean`.  Targeted builds pass `9719/9719` and
+`9720/9720`; axioms only `propext`, `Classical.choice`, and `Quot.sound`.

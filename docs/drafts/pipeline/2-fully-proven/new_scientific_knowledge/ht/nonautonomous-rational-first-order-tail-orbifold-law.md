@@ -395,3 +395,18 @@ and a double pole at the cusp, transported up to scalar", written as an exact id
 of the Maurer--Cartan current upstairs *is* the quadratic differential `y′²/(y² - 4)` downstairs,
 whose denominator vanishes exactly at the two cone points `y = ±2`.  The square is the right object
 because the involution negates the current, so only its square descends.
+
+## The additive deck group, for the compact signatures
+
+`GaloisForLFunctions/HTGeometry/TranslationInvariantRationalFunction.lean` (wired, axiom-clean):
+
+    natDegree_eq_zero_of_comp_X_add_C          a polynomial fixed by one nonzero translation is
+                                               constant
+    natDegree_eq_zero_of_translation_invariant a translation-invariant coprime fraction has constant
+                                               numerator and denominator
+
+The compact signatures have the additive group of the plane as universal cover and translations as
+deck transformations, so this is the rigidity statement they need, playing the role the scaling
+statement plays for the cusp signature.  In characteristic zero **one** nonzero translation already
+suffices: the derivative of a fixed polynomial is fixed too, so induction on the degree reduces to
+the degree-one case, where `P(X + c) = P + C(a c)` moves unless `a c = 0`.

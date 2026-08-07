@@ -6665,3 +6665,48 @@ antiscale opposition. Only D_anti dissipates coarse current. Therefore proving a
 component merely nonproduct is insufficient: it may be aligned entirely with antiscale escape.
 Current hard core is antiscale-transverse boundary determinant or within-parity variation at
 physical-power strength.
+
+## 2026-08-07 Route E static all-prime regular-kernel closure
+
+`OPEN-SOURCE-001` remains open, but every fixed regular antiscale-frame continuation is now
+closed.  For arbitrary nonnegative static weights \(\omega_p\), the all-prime diagonal form
+
+\[
+ \mathcal F_\omega(t)=\sum_p{\omega_p\over p}|1+p^{it}|^2
+\]
+
+has an exhaustive dichotomy: summable reciprocal-prime mass implies arbitrarily small values at
+arbitrarily large frequencies by finite-head Kronecker recurrence plus summable-tail control;
+nonsummable mass makes the form nonsummable already at \(t=0\).
+
+More strongly, for every complex cross-prime kernel with \(\sum_{p,q}|K_{pq}|<\infty\),
+
+\[
+ \mathcal Q_K(t)=\sum_{p,q}K_{pq}(1+p^{it})\overline{(1+q^{it})}
+\]
+
+is absolutely convergent and satisfies
+
+\[
+ \forall\delta>0\ \forall T\ \exists t>T:\quad |\mathcal Q_K(t)|<\delta.
+\]
+
+No positivity, Hermitian symmetry, finite-rank, or diagonal assumption is used.  Thus a static
+off-diagonal matrix with entrywise finite mass is no more viable than a static diagonal weight.
+This genuinely shrinks source space: surviving quadratic producer must move with physical
+boundary, or contain a non-absolutely-summable singular principal part with canonical
+source-defined renormalization.  A signed nonquadratic terminal-shell cancellation also remains
+outside theorem.
+
+**Revised exact Route E hard core:**
+`GIBBS-MOVING-OR-SINGULAR-ANTISCALE-TRANSVERSE-SOURCE`.  Construct from literal ordinary-integer
+Gibbs/co-Poisson source a moving or singular cross-prime law, then prove physical-power production
+of \(D_{\rm anti}\) or within-parity variation while retaining recurrence weights, prime-dilation
+intervals, and finite-volume signs.  Merely labeling a carrier “off-diagonal” no longer qualifies.
+
+Paper and unconditional Lean:
+`../3-formalized/new_scientific_knowledge/route-e-static-antiscale-frame-dichotomy.md`,
+`../3-formalized/new_scientific_knowledge/route-e-static-absolute-kernel-recurrence.md`,
+`RHTower/RouteEStaticAntiscaleFrameDichotomy.lean`, and
+`RHTower/RouteEStaticAbsoluteKernelRecurrence.lean`.  Targeted builds `9719/9719`, `9720/9720`;
+axioms only `propext`, `Classical.choice`, and `Quot.sound`.  Route E and RH are not claimed.

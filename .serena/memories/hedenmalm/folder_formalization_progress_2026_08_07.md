@@ -336,3 +336,57 @@ The formal kernel of D is the constants, and `∫ 1/k = ∞` for the theta sourc
 `0 < thetaBound` is NOT free: get it from `abs_thetaCuspFullSource_le 0` plus
 `thetaCuspFullSource_pos 0`, and note `thetaBound` is a def for
 `thetaCuspDerivativeExpConstant 0` — `linarith` needs a `show` to see through it.
+
+## CORRECTION (2026-08-07): the Weierstrass half is NOT missing
+
+Earlier notes said card 5 (13)/(14) needs "Weierstrass products + Mittag-Leffler".  Only the
+SECOND is absent.  The corpus already owns the genus-one canonical product:
+
+* `RHTower.canonicalProductE1Indexed_hasProdLocallyUniformlyOn (a) (ha : ∀ i, a i ≠ 0)
+  (hsum : Summable fun i => 1 / ‖a i‖ ^ 2) : HasProdLocallyUniformlyOn … Set.univ`
+  in `RHTower/CanonicalProduct.lean`;
+* `HTGeometry/MovingCanonicalProduct.lean` — `movingCanonicalProduct_eq_zero_iff` and the
+  `analyticOrderAt` computations at each zero;
+* `HTGeometry/MovingEvenCanonicalProduct.lean` — the even version.
+
+The zeros of `a_n` are `2πk/log n`, k ≠ 0, simple, growing linearly, so `∑ 1/|zero|²` converges
+and the hypothesis is met directly.
+
+What is genuinely absent from corpus AND mathlib: **Mittag-Leffler interpolation** — an entire
+function with prescribed finite jets on a discrete set.  Wedderburn needs precisely that (an
+entire `b` agreeing with `1/f` to order `m_z` at each zero `z` of `g`; then
+`b f + ((1 - b f)/g) g = 1`).  That is the single remaining build for card 5.
+
+## Card 7 (9): the variance side CLOSED (2026-08-07)
+
+`formal/GaloisForLFunctions/RHTower/HedenmalmSourceMoments.lean` (wired, builds, axiom-clean):
+`integrable_mul_thetaSource`, `integral_mul_thetaSource_eq_zero` (first moment = 0 by evenness),
+`integral_quantileFun` (= 0), `integral_sq_quantileFun` (∫₀¹ Q² = M⁻¹∫x²k).
+
+One line of work once you see it: `integral_comp_quantile S (fun x => x^j)` IS the moment
+transfer.  Reuse `integrable_thetaCuspSecondMoment` (PrimeArchThetaFirstMoment.lean) and
+`integrable_abs_mul_exp_neg_mul_abs` (WeightedEulerStripFourierAnalytic.lean) — do not rebuild
+either.
+
+Card 7 (9) still needs the OPERATOR side `tr(B²)`, i.e. the trace-class layer.
+
+## MAJOR CORRECTION (2026-08-07): the corpus ALREADY HAS the trace-class layer
+
+`formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtTrace.lean` exists and contains:
+`opTrace`, `inner_comp_apply`, `summable_inner_diag_comp`, `opTrace_comp_eq_hsInner`,
+`opTrace_comp_eq_tsum_basis` (BASIS INDEPENDENCE), `opTrace_comp_comm` (CYCLICITY),
+`norm_opTrace_comp_le`, `opTrace_adjoint_comp_self`, `re_opTrace_adjoint_comp_self`,
+and the kernel weld `HilbertSchmidt.opTrace_toOperator_comp`.
+Also `ContinuousLinearMap.hsInner` (operator level) in `HilbertSchmidtOperator.lean:321`.
+
+So "trace class is missing" was WRONG.  Card 7 (9)'s operator side is now built on it:
+`formal/GaloisForLFunctions/RHTower/HedenmalmThetaTrace.lean` — `thetaKernelOperator`,
+`thetaTraceSq`, `summable_thetaTraceSq_diag`, `thetaTraceSq_eq_tsum_basis`,
+`thetaTraceSq_eq_hsInner`, `norm_thetaTraceSq_le`.
+What is left of (9) is only the EQUALITY of the two sides (kernel evaluation of the diagonal sum).
+
+### PROCESS FAILURE TO NOT REPEAT
+I created `HTGeometry/HilbertSchmidtTrace.lean` with `cat >` WITHOUT CHECKING IT EXISTED, and
+destroyed the file; `TwoProjectionHilbertSchmidtEnergy.lean` imports it and broke.
+Recovered with `git show HEAD:<path> > <path>` (NOT `git checkout`, which is banned here).
+ALWAYS `ls`/`test -f` a target path before `cat >` in this tree.

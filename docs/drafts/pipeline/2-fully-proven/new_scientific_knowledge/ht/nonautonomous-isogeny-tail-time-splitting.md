@@ -1393,3 +1393,18 @@ separates two exponents, which is why the family form of the scaling-invariance 
 
 Uniformization is therefore required only for the compact signatures `(2,2,2,2)`, `(2,3,6)`,
 `(2,4,4)`, `(3,3,3)` and the mixed `(2,2,∞)`.
+
+## The additive deck group, for the compact signatures
+
+`GaloisForLFunctions/HTGeometry/TranslationInvariantRationalFunction.lean` (wired, axiom-clean):
+
+    natDegree_eq_zero_of_comp_X_add_C          a polynomial fixed by one nonzero translation is
+                                               constant
+    natDegree_eq_zero_of_translation_invariant a translation-invariant coprime fraction has constant
+                                               numerator and denominator
+
+The compact signatures have the additive group of the plane as universal cover and translations as
+deck transformations, so this is the rigidity statement they need, playing the role the scaling
+statement plays for the cusp signature.  In characteristic zero **one** nonzero translation already
+suffices: the derivative of a fixed polynomial is fixed too, so induction on the degree reduces to
+the degree-one case, where `P(X + c) = P + C(a c)` moves unless `a c = 0`.

@@ -1486,6 +1486,158 @@ theorem abs_integral_Ioi_firstRowRadialProduct_full_le
           ∫ x in Ioi b, profileDensity x :=
       add_le_add (add_le_add hhead hmid) htail
 
+/-- Non-vanishing part of the endpoint/compact estimate.  It is made arbitrarily small by
+moving the compact cut down to the band edge. -/
+def firstRowRadialEdgeBudget (s k a : ℝ) : ℝ :=
+  (1 / 2 : ℝ) *
+      (4 * radialProlateDensityEnvelopeConstant * (radialAngle a / Real.pi) +
+        radialProlateDensityEnvelopeConstant * profileWeight s k * (a - 1)) +
+    (1 / Real.pi) *
+      (4 / 3 * Real.sqrt (Real.sqrt 2) / k * (a - 1) ^ ((3 : ℝ) / 4))
+
+/-- Terms which vanish for fixed endpoint and tail cuts as the prolate parameter grows. -/
+def firstRowRadialVanishingBudget (s c k a b : ℝ) : ℝ :=
+  (1 / 2 : ℝ) * (9 / (8 * c)) +
+    compactExactFirstRowProductError s c k a * |b - a| +
+    compactFirstRowProductError s c k a * |b - a| +
+    (1 / Real.pi) *
+      (170 / (Real.sqrt c * k ^ 2) +
+        4 * ampFourthRoot s k a / (c * (1 + k)))
+
+theorem tendsto_firstRowRadialEdgeBudget_fixed
+    {ι : Type*} {l : Filter ι} {s : ι → ℝ}
+    (hs : Tendsto s l (nhds 0)) {k a : ℝ} (hk : 2 ≤ k) (ha : 1 < a) :
+    Tendsto (fun i => firstRowRadialEdgeBudget (s i) k a) l
+      (nhds (firstRowRadialEdgeBudget 0 k a)) := by
+  have hk1 : 1 < k := lt_of_lt_of_le (by norm_num) hk
+  have hweight := tendsto_profileWeight_fixed_radius hs hk1
+  have hvar : Tendsto (fun i =>
+      radialProlateDensityEnvelopeConstant * profileWeight (s i) k * (a - 1)) l
+      (nhds (radialProlateDensityEnvelopeConstant * profileWeight 0 k * (a - 1))) :=
+    (hweight.const_mul radialProlateDensityEnvelopeConstant).mul_const (a - 1)
+  have hconst1 : Tendsto (fun _ : ι =>
+      4 * radialProlateDensityEnvelopeConstant * (radialAngle a / Real.pi)) l
+      (nhds (4 * radialProlateDensityEnvelopeConstant * (radialAngle a / Real.pi))) :=
+    tendsto_const_nhds
+  have hfirst := (hconst1.add hvar).const_mul (1 / 2)
+  have hconst2 : Tendsto (fun _ : ι =>
+      (1 / Real.pi) *
+        (4 / 3 * Real.sqrt (Real.sqrt 2) / k * (a - 1) ^ ((3 : ℝ) / 4))) l
+      (nhds ((1 / Real.pi) *
+        (4 / 3 * Real.sqrt (Real.sqrt 2) / k * (a - 1) ^ ((3 : ℝ) / 4)))) :=
+    tendsto_const_nhds
+  simpa [firstRowRadialEdgeBudget] using hfirst.add hconst2
+
+/-- The limiting edge budget vanishes as the cut approaches the band edge from either side. -/
+theorem tendsto_firstRowRadialEdgeBudget_at_one (k : ℝ) :
+    Tendsto (fun a : ℝ => firstRowRadialEdgeBudget 0 k a) (nhds 1) (nhds 0) := by
+  have hangleRaw : Tendsto (fun a : ℝ => radialAngle a / Real.pi) (nhds 1)
+      (nhds (radialAngle 1 / Real.pi)) :=
+    continuous_radialAngle.continuousAt.tendsto.div_const Real.pi
+  have hangle : Tendsto (fun a : ℝ => radialAngle a / Real.pi) (nhds 1) (nhds 0) := by
+    simpa [radialAngle_one] using hangleRaw
+  have hdelta : Tendsto (fun a : ℝ => a - 1) (nhds 1) (nhds 0) := by
+    simpa using (continuousAt_id.sub_const (1 : ℝ) :
+      Tendsto (fun a : ℝ => a - 1) (nhds 1) (nhds (1 - 1)))
+  have hrpow0 : Tendsto (fun t : ℝ => t ^ ((3 : ℝ) / 4)) (nhds 0) (nhds 0) := by
+    simpa [Real.zero_rpow (by norm_num : (3 : ℝ) / 4 ≠ 0)] using
+      (Real.continuousAt_rpow_const 0 ((3 : ℝ) / 4) (Or.inr (by norm_num))).tendsto
+  have hrpow : Tendsto (fun a : ℝ => (a - 1) ^ ((3 : ℝ) / 4))
+      (nhds 1) (nhds 0) := hrpow0.comp hdelta
+  have hangleTerm := hangle.const_mul (4 * radialProlateDensityEnvelopeConstant)
+  have hlinearTerm := hdelta.const_mul
+    (radialProlateDensityEnvelopeConstant * profileWeight 0 k)
+  have hfirst := (hangleTerm.add hlinearTerm).const_mul (1 / 2)
+  have hpowerTerm := hrpow.const_mul
+    ((1 / Real.pi) * (4 / 3 * Real.sqrt (Real.sqrt 2) / k))
+  have hsum : Tendsto (fun a : ℝ =>
+      (1 / 2 : ℝ) *
+          (4 * radialProlateDensityEnvelopeConstant * (radialAngle a / Real.pi) +
+            radialProlateDensityEnvelopeConstant * profileWeight 0 k * (a - 1)) +
+        (1 / Real.pi) * (4 / 3 * Real.sqrt (Real.sqrt 2) / k) *
+          (a - 1) ^ ((3 : ℝ) / 4)) (nhds 1) (nhds 0) := by
+    simpa using hfirst.add hpowerTerm
+  have heq : (fun a : ℝ => firstRowRadialEdgeBudget 0 k a) = fun a : ℝ =>
+      (1 / 2 : ℝ) *
+          (4 * radialProlateDensityEnvelopeConstant * (radialAngle a / Real.pi) +
+            radialProlateDensityEnvelopeConstant * profileWeight 0 k * (a - 1)) +
+        (1 / Real.pi) * (4 / 3 * Real.sqrt (Real.sqrt 2) / k) *
+          (a - 1) ^ ((3 : ℝ) / 4) := by
+    funext a
+    rw [firstRowRadialEdgeBudget]
+    ring
+  rw [heq]
+  exact hsum
+
+theorem tendsto_firstRowRadialVanishingBudget_zero
+    {ι : Type*} {l : Filter ι} {c s : ι → ℝ}
+    (hc : Tendsto c l atTop) (hs : Tendsto s l (nhds 0))
+    (hs0 : ∀ᶠ i in l, 0 ≤ s i)
+    {k a b : ℝ} (hk : 2 ≤ k) (ha : 1 < a) :
+    Tendsto (fun i => firstRowRadialVanishingBudget (s i) (c i) k a b)
+      l (nhds 0) := by
+  have hinv : Tendsto (fun i => (c i)⁻¹) l (nhds 0) :=
+    tendsto_inv_atTop_zero.comp hc
+  have hcollar : Tendsto (fun i => (1 / 2 : ℝ) * (9 / (8 * c i))) l (nhds 0) := by
+    convert hinv.const_mul (9 / 16) using 1 <;>
+      simp [div_eq_mul_inv] <;> ring
+  have hExact := (tendsto_compactExactFirstRowProductError_zero hc hs hs0 hk ha).mul_const
+    |b - a|
+  have hBessel := (tendsto_compactFirstRowProductError_zero hc hs hs0 hk ha).mul_const
+    |b - a|
+  have hsqrt : Tendsto (fun i => Real.sqrt (c i)) l atTop :=
+    Real.tendsto_sqrt_atTop.comp hc
+  have hk2 : 0 < k ^ 2 := by positivity
+  have hden1 : Tendsto (fun i => Real.sqrt (c i) * k ^ 2) l atTop :=
+    hsqrt.atTop_mul_const hk2
+  have hterm1 : Tendsto (fun i => 170 / (Real.sqrt (c i) * k ^ 2)) l (nhds 0) :=
+    Tendsto.div_atTop tendsto_const_nhds hden1
+  have hka : 1 < k * a := mapsTo_mul_left_Ioi hk ha
+  have hAa := tendsto_ampFourth_fixed_radius hs ha
+  have hAka := tendsto_ampFourth_fixed_radius hs hka
+  have hAmp : Tendsto (fun i => ampFourthRoot (s i) k a) l
+      (nhds (ampFourth 0 a * ampFourth 0 (k * a))) := by
+    have hmul := hAa.mul hAka
+    apply hmul.congr'
+    filter_upwards [hs.eventually
+      (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1 / 2))] with i hsi
+    exact ampFourth_mul_eq_ampFourthRoot hsi.le hk ha
+  have h1k : 0 < 1 + k := by linarith
+  have hden2 : Tendsto (fun i => c i * (1 + k)) l atTop :=
+    hc.atTop_mul_const h1k
+  have hnum2 : Tendsto (fun i => 4 * ampFourthRoot (s i) k a) l
+      (nhds (4 * (ampFourth 0 a * ampFourth 0 (k * a)))) := hAmp.const_mul 4
+  have hterm2 : Tendsto
+      (fun i => 4 * ampFourthRoot (s i) k a / (c i * (1 + k))) l (nhds 0) :=
+    Tendsto.div_atTop hnum2 hden2
+  have hosc := (hterm1.add hterm2).const_mul (1 / Real.pi)
+  simpa [firstRowRadialVanishingBudget] using
+    ((hcollar.add hExact).add hBessel).add hosc
+
+/-- Full-ray estimate in the two-budget form used by the limiting argument. -/
+theorem abs_integral_Ioi_firstRowRadialProduct_budget_le
+    {s c k a b : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k)
+    (hc5 : 5 ≤ c) (hcOsc : 3 * k ≤ c)
+    (ha : 1 < a) (hab : a ≤ b)
+    (haCross : dunsterEndpointCrossing c ≤ a)
+    (hbStationary : Real.sqrt (1 + 2 / k ^ 2) ≤ b)
+    (hcxi : 1 ≤ c * xiEndpointPhase s a)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    |∫ x in Ioi (1 : ℝ), firstRowRadialProduct c R k x| ≤
+      firstRowRadialEdgeBudget s k a + firstRowRadialVanishingBudget s c k a b +
+        4 * radialProlateDensityEnvelopeConstant *
+          ∫ x in Ioi b, profileDensity x := by
+  have h := abs_integral_Ioi_firstRowRadialProduct_full_le
+    hs0 hs1 hk hc5 hcOsc ha hab haCross hbStationary hcxi hR1 hR hDR hode
+  refine h.trans_eq ?_
+  rw [firstRowRadialEdgeBudget, firstRowRadialVanishingBudget]
+  ring
+
 /-- Exact endpoint-normalized first-row radial product cancellation on every fixed compact
 exterior interval. -/
 theorem tendsto_integral_firstRowRadialProduct
@@ -1534,6 +1686,85 @@ theorem tendsto_integral_firstRowRadialProduct
             (hR1 i) (hR i) (hDR i) (hode i))
       hmajor
   simpa only [sub_add_cancel, zero_add] using hdiff.add hbessel
+
+/-- **Full exterior off-diagonal cancellation.**  Every endpoint-normalized exact radial
+prolate solution has asymptotically vanishing first-row overlap on the entire exterior ray. -/
+theorem tendsto_integral_Ioi_firstRowRadialProduct
+    {ι : Type*} {l : Filter ι} {c s : ι → ℝ}
+    {R DR DDR : ι → ℝ → ℝ}
+    (hc : Tendsto c l atTop) (hs : Tendsto s l (nhds 0))
+    (hs0 : ∀ᶠ i in l, 0 ≤ s i)
+    (hR1 : ∀ i, R i 1 = 1)
+    (hR : ∀ (i : ι) (t : ℝ), HasDerivAt (R i) (DR i t) t)
+    (hDR : ∀ (i : ι) (t : ℝ), HasDerivAt (DR i) (DDR i t) t)
+    (hode : ∀ (i : ι) (t : ℝ), (t ^ 2 - 1) * DDR i t + 2 * t * DR i t
+      - (s i * c i ^ 2 - c i ^ 2 * t ^ 2) * R i t = 0)
+    {k : ℝ} (hk : 2 ≤ k) :
+    Tendsto (fun i => ∫ x in Ioi (1 : ℝ),
+      firstRowRadialProduct (c i) (R i) k x) l (nhds 0) := by
+  rw [Metric.tendsto_nhds]
+  intro eps heps
+  have hEdgeWithin : Tendsto (fun a : ℝ => firstRowRadialEdgeBudget 0 k a)
+      (nhdsWithin 1 (Ioi 1)) (nhds 0) :=
+    (tendsto_firstRowRadialEdgeBudget_at_one k).mono_left inf_le_left
+  have hEdgeSmall : ∀ᶠ a : ℝ in nhdsWithin 1 (Ioi 1),
+      firstRowRadialEdgeBudget 0 k a < eps / 3 :=
+    hEdgeWithin.eventually (eventually_lt_nhds (by positivity : 0 < eps / 3))
+  have hEdgeMem : ∀ᶠ a : ℝ in nhdsWithin 1 (Ioi 1), a ∈ Ioi (1 : ℝ) :=
+    self_mem_nhdsWithin
+  obtain ⟨a, ha, hEdgeA⟩ := (hEdgeMem.and hEdgeSmall).exists
+  have hTailTendsto : Tendsto (fun b : ℝ =>
+      4 * radialProlateDensityEnvelopeConstant *
+        ∫ x in Ioi b, profileDensity x) atTop (nhds 0) := by
+    simpa using tendsto_integral_Ioi_profileDensity_atTop_zero.const_mul
+      (4 * radialProlateDensityEnvelopeConstant)
+  have hTailSmall : ∀ᶠ b : ℝ in atTop,
+      4 * radialProlateDensityEnvelopeConstant *
+        ∫ x in Ioi b, profileDensity x < eps / 3 :=
+    hTailTendsto.eventually (eventually_lt_nhds (by positivity : 0 < eps / 3))
+  have hCutLarge : ∀ᶠ b : ℝ in atTop,
+      max a (Real.sqrt (1 + 2 / k ^ 2)) ≤ b :=
+    eventually_ge_atTop (max a (Real.sqrt (1 + 2 / k ^ 2)))
+  obtain ⟨b, hTailB, hCutB⟩ := (hTailSmall.and hCutLarge).exists
+  have hab : a ≤ b := le_max_left _ _ |>.trans hCutB
+  have hbStationary : Real.sqrt (1 + 2 / k ^ 2) ≤ b :=
+    (le_max_right _ _).trans hCutB
+  let T : ℝ := 4 * radialProlateDensityEnvelopeConstant *
+    ∫ x in Ioi b, profileDensity x
+  have hEdge := tendsto_firstRowRadialEdgeBudget_fixed hs hk ha
+  have hVanish := tendsto_firstRowRadialVanishingBudget_zero hc hs hs0 hk ha
+    (b := b)
+  have hMajor : Tendsto (fun i =>
+      firstRowRadialEdgeBudget (s i) k a +
+        firstRowRadialVanishingBudget (s i) (c i) k a b + T) l
+      (nhds (firstRowRadialEdgeBudget 0 k a + 0 + T)) := by
+    simpa using (hEdge.add hVanish).add tendsto_const_nhds
+  have hLimit : firstRowRadialEdgeBudget 0 k a + 0 + T < eps := by
+    dsimp [T]
+    linarith
+  have hMajorSmall : ∀ᶠ i in l,
+      firstRowRadialEdgeBudget (s i) k a +
+        firstRowRadialVanishingBudget (s i) (c i) k a b + T < eps :=
+    hMajor.eventually (eventually_lt_nhds hLimit)
+  have hsHalf : ∀ᶠ i in l, s i ≤ 1 / 2 :=
+    (hs.eventually (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1 / 2))).mono
+      fun _ hi => hi.le
+  have hc5 : ∀ᶠ i in l, 5 ≤ c i := hc.eventually (eventually_ge_atTop 5)
+  have hcOsc : ∀ᶠ i in l, 3 * k ≤ c i :=
+    hc.eventually (eventually_ge_atTop (3 * k))
+  have hcross := tendsto_dunsterEndpointCrossing_comp_atTop_one hc
+  have hcrossA : ∀ᶠ i in l, dunsterEndpointCrossing (c i) ≤ a :=
+    (hcross.eventually (eventually_lt_nhds ha)).mono fun _ hi => hi.le
+  have harg := tendsto_c_mul_xiEndpointPhase_fixed_radius_atTop hc hs hs0 ha
+  have hcxi : ∀ᶠ i in l, 1 ≤ c i * xiEndpointPhase (s i) a :=
+    harg.eventually (eventually_ge_atTop 1)
+  filter_upwards [hs0, hsHalf, hc5, hcOsc, hcrossA, hcxi, hMajorSmall]
+    with i hsi0 hsi1 hci5 hciOsc hcrossi hcxii hmajori
+  have hbound := abs_integral_Ioi_firstRowRadialProduct_budget_le
+    hsi0 hsi1 hk hci5 hciOsc ha hab hcrossi hbStationary hcxii
+      (hR1 i) (hR i) (hDR i) (hode i)
+  rw [Real.dist_eq, sub_zero]
+  exact hbound.trans_lt (by simpa [T] using hmajori)
 
 
 end GaloisForLFunctions.RHTower

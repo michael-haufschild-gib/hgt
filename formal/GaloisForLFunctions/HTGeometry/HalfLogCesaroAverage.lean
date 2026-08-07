@@ -271,4 +271,39 @@ theorem tendsto_of_defect_div_sqrt {G H : ℝ → ℝ} {α C : ℝ}
   rw [Real.norm_eq_abs]
   exact hbd L
 
+/-! ## From the operator to the half-log trace
+
+The logarithmic Dirichlet operator is `2L f(L) − Y(L)`, and dividing by `2√L` turns it into the
+half-log trace minus the averaged trace.  So a bound on the operator at a point is exactly a bound
+on the trace there, offset by the average — which is how the equation controls the profile.
+-/
+
+/-- **An upper bound on the operator is an upper bound on the trace.** -/
+theorem halfLog_le_of_logDirichlet_le {f : ℝ → ℝ} {X R : ℝ} (hX : 0 < X)
+    (h : logDirichlet f X ≤ R) :
+    Real.sqrt X * f X ≤ R / (2 * Real.sqrt X) + halfLogAverage f X := by
+  have hsq : 0 < Real.sqrt X := Real.sqrt_pos.mpr hX
+  have hsqsq : Real.sqrt X * Real.sqrt X = X := Real.mul_self_sqrt hX.le
+  unfold logDirichlet at h
+  unfold halfLogAverage
+  rw [← add_div, le_div_iff₀ (by positivity : (0:ℝ) < 2 * Real.sqrt X)]
+  have hexp : Real.sqrt X * f X * (2 * Real.sqrt X) = 2 * X * f X := by
+    linear_combination 2 * f X * hsqsq
+  rw [hexp]
+  linarith [h]
+
+/-- **A lower bound on the operator is a lower bound on the trace.** -/
+theorem le_halfLog_of_le_logDirichlet {f : ℝ → ℝ} {X R : ℝ} (hX : 0 < X)
+    (h : R ≤ logDirichlet f X) :
+    R / (2 * Real.sqrt X) + halfLogAverage f X ≤ Real.sqrt X * f X := by
+  have hsq : 0 < Real.sqrt X := Real.sqrt_pos.mpr hX
+  have hsqsq : Real.sqrt X * Real.sqrt X = X := Real.mul_self_sqrt hX.le
+  unfold logDirichlet at h
+  unfold halfLogAverage
+  rw [← add_div, div_le_iff₀ (by positivity : (0:ℝ) < 2 * Real.sqrt X)]
+  have hexp : Real.sqrt X * f X * (2 * Real.sqrt X) = 2 * X * f X := by
+    linear_combination 2 * f X * hsqsq
+  rw [hexp]
+  linarith [h]
+
 end GaloisForLFunctions.HTGeometry

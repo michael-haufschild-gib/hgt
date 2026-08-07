@@ -3,7 +3,7 @@
 - **ID:** `return-shell-replica-coarea-incidence-law`
 - **Stage:** 3 — formalized
 - **Type:** theorem / failure-driven frontier advance
-- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [AXIOM-AUDIT PENDING] [APPLICATION NOVELTY UNVERIFIED]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [AXIOM-AUDITED] [APPLICATION NOVELTY UNVERIFIED]`
 - **Parent:** `../1-in-progress/oriented-no-shortcut-without-return-law.md`
 - **Date:** 2026-08-07
 
@@ -232,8 +232,17 @@ Static-Choi module:
 - `norm_sq_staticChoiReturnShellResidualTarget_le`
 - `measure_completeStaticChoiReturnShellCapture_le_projectionMoment`
 
-Both owning files pass foreground `lake env lean`.  Final module builds, axiom audit, formal lint,
-and umbrella audit remain to be recorded below.
+Both owning files pass foreground `lake env lean`.  The downstream capstone module
+`GaloisForLFunctions.RHTower.StaticChoiReturnShellCoareaIncidenceLaw` also passes its final
+`lake build`.  `#print axioms` on the six public capstones reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+Both modules are imported by their owning umbrellas and their imported modules build.  The full
+repository umbrella aggregation is presently red for unrelated declaration collisions already in
+the shared tree: `HTGeometry` sees `coverBase` from both `CDGASemiFreeCover` and
+`BuildingCoverVanishing`; `RHTower` sees `deriv_zero_of_even` from both
+`SlepianKernelScaledFubini` and `HardyZ`.  Global formal lint likewise reports unrelated concurrently
+added unwired modules; neither new module contains a forbidden declaration.
 
 ## Gates
 
@@ -242,8 +251,8 @@ and umbrella audit remain to be recorded below.
 - [x] Abstract Lean theorem.
 - [x] Static-Choi anchor-residual bridge.
 - [x] Duplicate and exact-return-zero invariance.
-- [ ] Final module builds.
-- [ ] Axiom audit.
-- [ ] Formal lint and umbrella reachability.
-- [ ] External expert priority audit.
-
+- [x] Final capstone module build.
+- [x] Axiom audit.
+- [x] Own-file forbidden-token lint and umbrella imports.
+- [ ] Repository-wide lint and umbrella aggregation (blocked by unrelated shared-tree defects above).
+- [x] Current literature audit; theorem-level expert priority audit remains desirable.

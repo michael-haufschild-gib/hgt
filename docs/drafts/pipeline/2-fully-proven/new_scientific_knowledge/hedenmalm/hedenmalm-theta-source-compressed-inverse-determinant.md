@@ -349,6 +349,8 @@ whole layer at the actual arithmetic source, so the statements below carry **no 
 | `(7)` | `R B R = -B` for the Riemann source | `thetaSource_even`, `sourceInverse_sourceReflection_theta` |
 | `(9)` | the first source moment vanishes (evenness) | `integrable_mul_thetaSource`, `integral_mul_thetaSource_eq_zero`, `integral_quantileFun` |
 | `(9)` | **the source variance in quantile coordinates**, `integral over (0,1) of Q^2 = M^(-1) integral of x^2 k` | `integral_sq_quantileFun` |
+| `(9)` | **`tr(B^2)` is well posed**: the diagonal series converges over every Hilbert basis and its sum is basis independent | `thetaKernelOperator`, `thetaTraceSq`, `summable_thetaTraceSq_diag`, `thetaTraceSq_eq_tsum_basis` |
+| `(9)` | `tr(B^2) = <B^dagger, B>_HS`, bounded by the Hilbert--Schmidt energy | `thetaTraceSq_eq_hsInner`, `norm_thetaTraceSq_le` |
 
 Corpus assets to use for the remaining items, rather than rebuilding them:
 `ContinuousLinearMap.IsHilbertSchmidt` (`HTGeometry/HilbertSchmidtOperator.lean`),
@@ -363,9 +365,13 @@ Still missing: the **multiplicity clause** of
 `hedenmalm-prime-translation-rank-one-anomaly.md` cites for its Jordan length), the regularized
 determinant identity `(8)` --- no general `det_2` exists in the corpus or in mathlib, only the
 diagonal Fredholm product layer of `RHTower/ArithmeticDilationDeterminantZeros.lean` --- and the
-trace calibration `(9)` --- of which the right-hand side, the source variance
-`M^(-1) integral of x^2 k`, is now formalized in quantile form; what is missing is the trace side
-`tr(B^2)`, which needs the trace-class layer.
+trace calibration `(9)`.  Both ends of `(9)` are now formalized --- the source variance
+`M^(-1) integral of x^2 k` in quantile form, and the well-posedness of `tr(B^2)` on the operator
+side --- so what is left of `(9)` is the *equality* between them, i.e. the kernel evaluation of the
+diagonal sum.  The corpus trace layer that makes this reachable is
+`HTGeometry/HilbertSchmidtTrace.lean` (`opTrace`, `opTrace_comp_eq_hsInner`,
+`opTrace_comp_eq_tsum_basis`, `opTrace_comp_comm`, `norm_opTrace_comp_le`, and the kernel weld
+`HilbertSchmidt.opTrace_toOperator_comp`) --- it must not be rebuilt.
 
 ## Gates
 
