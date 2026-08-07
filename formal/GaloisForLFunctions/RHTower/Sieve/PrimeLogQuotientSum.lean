@@ -232,5 +232,150 @@ theorem sum_prime_log_div_inv_log_quotient_le (N : ℕ) (hN : 2 ≤ N) :
   rw [hval]
   refine mul_le_mul_of_nonneg_left (sum_Icc_one_div_le_one_add_log J) (by positivity)
 
+/-- A window of dyadic quotient sizes is an interval of integers. -/
+theorem quotient_window_subset {N m n : ℕ} :
+    {p ∈ Finset.Icc 1 N | Nat.Prime p ∧ 2 ^ m ≤ N / p ∧ N / p < 2 ^ n}
+      ⊆ Finset.Ioc (N / 2 ^ n) (N / 2 ^ m) := by
+  intro p hp
+  rw [Finset.mem_filter, Finset.mem_Icc] at hp
+  obtain ⟨⟨hp1, hpN⟩, _, hlow, hhigh⟩ := hp
+  rw [Finset.mem_Ioc]
+  refine ⟨?_, (two_pow_le_div_iff hp1).1 hlow⟩
+  by_contra hcon
+  rw [not_lt] at hcon
+  exact absurd ((two_pow_le_div_iff hp1).2 hcon) (not_le.mpr hhigh)
+
+/-- The two endpoints of a dyadic quotient window are within a factor `2^{n-m}`, and one unit. -/
+theorem div_two_pow_le_window {N m n : ℕ} (hmn : m ≤ n) :
+    N / 2 ^ m ≤ 2 ^ (n - m) * (N / 2 ^ n) + 2 ^ (n - m) := by
+  have hsplit : N / 2 ^ n = N / 2 ^ m / 2 ^ (n - m) := by
+    rw [Nat.div_div_eq_div_mul, ← pow_add]
+    congr 2
+    omega
+  rw [hsplit]
+  have hpos : 0 < 2 ^ (n - m) := by positivity
+  have h1 := Nat.div_add_mod (N / 2 ^ m) (2 ^ (n - m))
+  have h2 := Nat.mod_lt (N / 2 ^ m) hpos
+  omega
+
+
+/-- **The Mertens mass of a dyadic quotient window.**  A window `2^m ≤ ⌊N/p⌋ < 2^n` of primes carries
+mass `(n - m)·log 2 + O(1)`: the geometric blocking of the prime range in the dyadic scale of the
+quotient. -/
+theorem sum_quotient_window_prime_log_div_le (N m n : ℕ) (hmn : m ≤ n) :
+    (∑ p ∈ Finset.Icc 1 N with (Nat.Prime p ∧ 2 ^ m ≤ N / p ∧ N / p < 2 ^ n),
+        Real.log (p : ℝ) / (p : ℝ))
+      ≤ ((n : ℝ) - (m : ℝ) + 1) * Real.log 2
+        + 2 * ((Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)) := by
+  classical
+  set C : ℝ := (Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail) with hC
+  have hCnn : 0 ≤ C := by
+    rw [hC]
+    have h1 : (0:ℝ) ≤ Real.log 4 := Real.log_nonneg (by norm_num)
+    have h2 : (0:ℝ) ≤ RHTower.Mertens.mertensTail := by
+      rw [RHTower.Mertens.mertensTail]
+      exact tsum_nonneg fun i => by positivity
+    linarith
+  have hlog2 : (0:ℝ) < Real.log 2 := Real.log_pos (by norm_num)
+  have hnm : ((n - m : ℕ) : ℝ) = (n : ℝ) - (m : ℝ) := by
+    rw [Nat.cast_sub hmn]
+  have hnn : ∀ p ∈ Finset.filter Nat.Prime (Finset.Ioc (N / 2 ^ n) (N / 2 ^ m)),
+      (0:ℝ) ≤ Real.log (p : ℝ) / (p : ℝ) := by
+    intro p hp
+    rw [Finset.mem_filter] at hp
+    have hp1 : 1 ≤ p := hp.2.one_lt.le.trans' (by norm_num)
+    have hlogp : (0:ℝ) ≤ Real.log (p : ℝ) := Real.log_nonneg (by exact_mod_cast hp1)
+    positivity
+  have hstep : (∑ p ∈ Finset.Icc 1 N with (Nat.Prime p ∧ 2 ^ m ≤ N / p ∧ N / p < 2 ^ n),
+        Real.log (p : ℝ) / (p : ℝ))
+      ≤ ∑ p ∈ Finset.Ioc (N / 2 ^ n) (N / 2 ^ m) with Nat.Prime p,
+          Real.log (p : ℝ) / (p : ℝ) := by
+    refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun p hp _ => hnn p hp)
+    intro p hp
+    rw [Finset.mem_filter] at hp ⊢
+    exact ⟨quotient_window_subset (by rw [Finset.mem_filter]; exact hp), hp.2.1⟩
+  refine hstep.trans ?_
+  rcases Nat.eq_zero_or_pos (N / 2 ^ n) with hzero | hpos
+  · -- the top window: bound by all primes up to the upper endpoint
+    rcases Nat.eq_zero_or_pos (N / 2 ^ m) with hzero' | hpos'
+    · have hempty : Finset.Ioc (N / 2 ^ n) (N / 2 ^ m) = ∅ := by
+        rw [hzero, hzero']
+        simp
+      rw [hempty]
+      simp only [Finset.filter_empty, Finset.sum_empty]
+      have hnmnn : (0:ℝ) ≤ (n : ℝ) - (m : ℝ) := by
+        rw [← hnm]
+        positivity
+      nlinarith [hCnn, hlog2, hnmnn]
+    · have hIcc : Finset.Ioc (N / 2 ^ n) (N / 2 ^ m) = Finset.Icc 1 (N / 2 ^ m) := by
+        rw [hzero]
+        ext a
+        simp only [Finset.mem_Ioc, Finset.mem_Icc]
+        omega
+      rw [hIcc]
+      have hmert := RHTower.Mertens.mertens_first_prime (N / 2 ^ m) hpos'
+      rw [abs_le] at hmert
+      have hsmall : N / 2 ^ m < 2 ^ (n - m) := by
+        have hNlt : N < 2 ^ n := by
+          by_contra hcon
+          rw [not_lt] at hcon
+          have : 1 ≤ N / 2 ^ n := (Nat.one_le_div_iff (by positivity)).2 hcon
+          omega
+        have hpow : (2 : ℕ) ^ n = 2 ^ m * 2 ^ (n - m) := by
+          rw [← pow_add]
+          congr 1
+          omega
+        by_contra hcon
+        rw [not_lt] at hcon
+        have hge : 2 ^ m * 2 ^ (n - m) ≤ N := by
+          calc 2 ^ m * 2 ^ (n - m) ≤ 2 ^ m * (N / 2 ^ m) :=
+                Nat.mul_le_mul_left _ hcon
+            _ = (N / 2 ^ m) * 2 ^ m := by ring
+            _ ≤ N := Nat.div_mul_le_self N (2 ^ m)
+        rw [← hpow] at hge
+        omega
+      have hlogsmall : Real.log ((N / 2 ^ m : ℕ) : ℝ) ≤ ((n : ℝ) - (m : ℝ)) * Real.log 2 := by
+        have hle : ((N / 2 ^ m : ℕ) : ℝ) ≤ ((2 ^ (n - m) : ℕ) : ℝ) := by
+          have : (N / 2 ^ m : ℕ) ≤ 2 ^ (n - m) := le_of_lt hsmall
+          exact_mod_cast this
+        have hlog := Real.log_le_log (by exact_mod_cast hpos') hle
+        rw [Nat.cast_pow, Real.log_pow, hnm] at hlog
+        exact hlog
+      linarith [hmert.2, hlogsmall]
+  · -- a generic window: Mertens on the interval, endpoints within `2^{n-m+1}`
+    have hle : N / 2 ^ n ≤ N / 2 ^ m := by
+      have hsplit : N / 2 ^ n = N / 2 ^ m / 2 ^ (n - m) := by
+        rw [Nat.div_div_eq_div_mul, ← pow_add]
+        congr 2
+        omega
+      rw [hsplit]
+      exact Nat.div_le_self _ _
+    have hmert := sum_Ioc_prime_log_div_le hpos hle
+    have hnat : N / 2 ^ m ≤ 2 ^ (n - m + 1) * (N / 2 ^ n) := by
+      have hwin := div_two_pow_le_window (N := N) (m := m) (n := n) hmn
+      have h1 : 1 ≤ N / 2 ^ n := hpos
+      have hpow : (2 : ℕ) ^ (n - m + 1) = 2 ^ (n - m) * 2 := by
+        rw [pow_succ]
+      rw [hpow]
+      nlinarith [hwin, h1]
+    have hlogdiff : Real.log ((N / 2 ^ m : ℕ) : ℝ) - Real.log ((N / 2 ^ n : ℕ) : ℝ)
+        ≤ ((n : ℝ) - (m : ℝ) + 1) * Real.log 2 := by
+      have hypos : (0:ℝ) < ((N / 2 ^ n : ℕ) : ℝ) := by exact_mod_cast hpos
+      have hxnat : 0 < N / 2 ^ m := lt_of_lt_of_le hpos hle
+      have hxpos : (0:ℝ) < ((N / 2 ^ m : ℕ) : ℝ) := by exact_mod_cast hxnat
+      have hcast : ((N / 2 ^ m : ℕ) : ℝ)
+          ≤ ((2 : ℝ) ^ (n - m + 1)) * ((N / 2 ^ n : ℕ) : ℝ) := by
+        have h : ((N / 2 ^ m : ℕ) : ℝ) ≤ ((2 ^ (n - m + 1) * (N / 2 ^ n) : ℕ) : ℝ) := by
+          exact_mod_cast hnat
+        rwa [Nat.cast_mul, Nat.cast_pow, Nat.cast_ofNat] at h
+      have hlog := Real.log_le_log hxpos hcast
+      rw [Real.log_mul (by positivity) hypos.ne', Real.log_pow] at hlog
+      have hexp : ((n - m + 1 : ℕ) : ℝ) = (n : ℝ) - (m : ℝ) + 1 := by
+        push_cast [hnm]
+        ring
+      rw [hexp] at hlog
+      linarith
+    linarith [hmert, hlogdiff]
+
 end RHTower.Sieve
 end

@@ -252,3 +252,24 @@ to exactly this sum (after `⌊N/p⌋ ≤ N/p`), and this card's estimate bounds
 
 Remaining: step 3 (the dyadic partition of the prime range, now pure bookkeeping over `MertensBlock`) and
 step 4's outer Perron passage.
+
+## Tenth brick: the geometric blocking of step 3, without real powers
+
+GHS partition the primes into `P_k = (x^{1−e^{1−k}}, x^{1−e^{−k}}]`, whose Mertens mass decays like
+`e^{−k} log x`.  The same blocking is available with **integer** endpoints: a window of dyadic quotient
+sizes.  Appended to `RHTower/Sieve/PrimeLogQuotientSum.lean`:
+
+* `quotient_window_subset` — `{p : 2^m ≤ ⌊N/p⌋ < 2^n} ⊆ (⌊N/2^n⌋, ⌊N/2^m⌋]`;
+* `div_two_pow_le_window` — `⌊N/2^m⌋ ≤ 2^{n−m}⌊N/2^n⌋ + 2^{n−m}`, so the endpoints are within
+  `2^{n−m+1}`;
+* `sum_quotient_window_prime_log_div_le` — **the window's Mertens mass**:
+
+  `∑_{p : 2^m ≤ ⌊N/p⌋ < 2^n} (log p)/p ≤ ((n − m) + 1)·log 2 + 2C`.
+
+Taking `m = 2^i`, `n = 2^{i+1}` gives exactly GHS's geometric blocks: block `i` has mass `≍ 2^i log 2`,
+and on it `log⌊N/p⌋ ≥ 2^i log 2`, so the trivial bound for the corresponding piece of the triple
+convolution is `O(2^i x)` — geometric in `i`, which is what makes the low blocks summable and leaves only
+`O(log(log x/L))` blocks for the analytic estimate.  This subsumes the `n = m+1` case
+(`sum_logQuotientFiber_prime_log_div_le`) up to the constant.
+
+No real powers anywhere in the blocking: `2^m ≤ ⌊N/p⌋ ↔ p ≤ ⌊N/2^m⌋` does all the work.
