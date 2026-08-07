@@ -440,3 +440,21 @@ whose proof is a contour shift plus the residue at `s = 0`.  PNTPlus supplies th
 (`Rectangle`, `ResidueCalcOnRectangles`, `RectangleIntegral`) but its own Perron file works with the
 absolutely integrable kernel `x^s/(s(s+1))`, which is route 2 and therefore not usable here.  This is the
 one remaining analytic development of the whole chain, and it is classical and unconditional.
+
+## Seventeenth brick: the horizontal segments of the truncated Perron contour
+
+`HTGeometry/PerronKernelSegments.lean` (green, axiom-clean, wired) — the first piece of Perron's lemma:
+
+* `integral_exp_mul_const` — `∫_a^b e^{uL} du = (e^{bL} − e^{aL})/L`;
+* `norm_integral_horizontal_le` — for `y > 1`, `T > 0`, `−A ≤ σ`:
+
+  `‖∫_{−A}^{σ} y^{u+iT}/(u+iT) du‖ ≤ y^σ/(T log y)`,   **uniformly in `A`**.
+
+On the horizontal segment the kernel is elementary: `‖y^s‖ = y^{Re s}` and `‖s‖ ≥ T`, so the integrand is
+at most `y^u/T` and the `u`-integral is at most `y^σ/log y`.  This is precisely the estimate that produces
+Perron's `min(1, 1/(T|log y|))` factor — the factor whose absence in the smoothed routes forced them to
+need a short-interval divisor estimate.
+
+Remaining for Perron's lemma: the contour shift itself (residue `1` at `s = 0` for `y > 1`, none for
+`y < 1`) and the vanishing of the left edge as `A → ∞`.  PNTPlus's `Rectangle` and
+`ResidueCalcOnRectangles` are the intended tools.
