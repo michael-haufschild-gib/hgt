@@ -211,3 +211,57 @@ theorem exists_gap_sequence_of_cells {c : ℕ → ℝ} {a Δ : ℝ} (hΔ : 0 < �
 
 end GaloisForLFunctions.HTGeometry
 end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open Finset
+
+/-- **Reindexing the even cells.**  The even indices below `m` are `2j` for `j < ⌈m/2⌉`. -/
+theorem sum_filter_even_eq_sum_range {M : Type*} [AddCommMonoid M] (m : ℕ) (g : ℕ → M) :
+    ∑ k ∈ {k ∈ Finset.range m | k % 2 = 0}, g k = ∑ j ∈ Finset.range ((m + 1) / 2), g (2 * j) := by
+  classical
+  refine Finset.sum_nbij' (i := fun k => k / 2) (j := fun j => 2 * j) ?_ ?_ ?_ ?_ ?_
+  · intro k hk
+    rw [Finset.mem_filter, Finset.mem_range] at hk
+    rw [Finset.mem_range]
+    omega
+  · intro j hj
+    rw [Finset.mem_range] at hj
+    rw [Finset.mem_filter, Finset.mem_range]
+    omega
+  · intro k hk
+    rw [Finset.mem_filter, Finset.mem_range] at hk
+    omega
+  · intro j _
+    omega
+  · intro k hk
+    rw [Finset.mem_filter, Finset.mem_range] at hk
+    have : 2 * (k / 2) = k := by omega
+    rw [this]
+
+/-- **Reindexing the odd cells.**  The odd indices below `m` are `2j+1` for `j < ⌊m/2⌋`. -/
+theorem sum_filter_odd_eq_sum_range {M : Type*} [AddCommMonoid M] (m : ℕ) (g : ℕ → M) :
+    ∑ k ∈ {k ∈ Finset.range m | ¬(k % 2 = 0)}, g k
+      = ∑ j ∈ Finset.range (m / 2), g (2 * j + 1) := by
+  classical
+  refine Finset.sum_nbij' (i := fun k => k / 2) (j := fun j => 2 * j + 1) ?_ ?_ ?_ ?_ ?_
+  · intro k hk
+    rw [Finset.mem_filter, Finset.mem_range] at hk
+    rw [Finset.mem_range]
+    omega
+  · intro j hj
+    rw [Finset.mem_range] at hj
+    rw [Finset.mem_filter, Finset.mem_range]
+    omega
+  · intro k hk
+    rw [Finset.mem_filter, Finset.mem_range] at hk
+    omega
+  · intro j _
+    omega
+  · intro k hk
+    rw [Finset.mem_filter, Finset.mem_range] at hk
+    have : 2 * (k / 2) + 1 = k := by omega
+    rw [this]
+
+end GaloisForLFunctions.HTGeometry
+end

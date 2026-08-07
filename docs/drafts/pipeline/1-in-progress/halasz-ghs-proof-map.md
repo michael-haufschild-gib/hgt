@@ -2047,3 +2047,33 @@ the two remaining mismatches:
   connects those two.
 
 Both are conversions the corpus already owns; neither is a new estimate.
+
+## Reindexing the parity families
+
+`HTGeometry/CellMaxDiscretisation.lean` (appended; green, axiom-clean).
+
+* `sum_filter_even_eq_sum_range` — `∑_{k < m, k even} g k = ∑_{j < ⌈m/2⌉} g (2j)`;
+* `sum_filter_odd_eq_sum_range` — `∑_{k < m, k odd} g k = ∑_{j < ⌊m/2⌋} g (2j+1)`.
+
+Both for an arbitrary additive monoid, by `Finset.sum_nbij'` with the inverse pair `k ↦ k/2`, `j ↦ 2j` (resp.
+`2j+1`), every side condition discharged by `omega`.
+
+This is the last piece of index bookkeeping: the discretisation delivers sums over parity-filtered ranges, the
+corpus's large-values estimate consumes `∑_{r ∈ range (R+1)}`, and these identities convert one to the other with
+`R + 1 = ⌈m/2⌉` and `⌊m/2⌋`.
+
+**Inventory for the Montgomery–Halász route.**  All of the following are now in the corpus and unconditional:
+
+| step | theorem |
+|---|---|
+| integral → cell maxima | `exists_cell_max_integral_le` |
+| maxima → two spaced families | `exists_spaced_families_integral_le`, `cell_points_spaced` |
+| spaced family → indexed gap sequence | `exists_gap_sequence_of_cells` |
+| parity sums → `range (R+1)` sums | this entry |
+| spaced sum of a polynomial → `ℓ²` mass | `sum_norm_dirPoly_le_sqrt` (corpus, pre-existing) |
+| `LSeries` → `logPoly` → `dirPoly` | `LSeries_eq_logPoly_of_support`, `logPoly_eq_dirPoly` |
+| frequency shift | `LSeries_translate` |
+
+What remains is to compose them, which is a single (long) chain of rewrites with no estimate left to prove, and then
+the parameter choice — where, for the first time in this programme, the bound to optimise has no term in which a
+trivial size multiplies a length.
