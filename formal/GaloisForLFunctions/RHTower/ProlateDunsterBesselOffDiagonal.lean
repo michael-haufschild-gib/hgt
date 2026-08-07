@@ -797,6 +797,332 @@ def radialProlateRescaledProfile (c : ℝ) (R : ℝ → ℝ) (x : ℝ) : ℝ :=
 def firstRowRadialProduct (c : ℝ) (R : ℝ → ℝ) (k x : ℝ) : ℝ :=
   radialProlateRescaledProfile c R x * radialProlateRescaledProfile c R (k * x)
 
+/-! ## Endpoint and tail control for the exact product -/
+
+/-- Exact mass of the limiting density between the band edge and a finite radius. -/
+theorem integral_Ioc_profileDensity_eq_radialAngle_div_pi {a : ℝ} (ha : 1 ≤ a) :
+    (∫ x in Ioc (1 : ℝ) a, profileDensity x) = radialAngle a / Real.pi := by
+  have hint : IntervalIntegrable profileDensity volume (1 : ℝ) a := by
+    rw [intervalIntegrable_iff_integrableOn_Ioc_of_le ha]
+    exact integrableOn_profileDensity.mono_set Ioc_subset_Ioi_self
+  have hcont : ContinuousOn (fun t : ℝ => radialAngle t / Real.pi) (Icc 1 a) :=
+    (continuous_radialAngle.div_const Real.pi).continuousOn
+  have hderiv : ∀ t ∈ Ioo (1 : ℝ) a,
+      HasDerivWithinAt (fun u : ℝ => radialAngle u / Real.pi)
+        (profileDensity t) (Ioi t) t :=
+    fun t ht => (hasDerivAt_radialAngle_div_pi ht.1).hasDerivWithinAt
+  have hprimitive := intervalIntegral.integral_eq_sub_of_hasDeriv_right_of_le
+    ha hcont hderiv hint
+  rw [← intervalIntegral.integral_of_le ha, hprimitive, radialAngle_one]
+  ring
+
+theorem radialProlateRescaledProfile_sq_eq_density
+    {c x : ℝ} {R : ℝ → ℝ} (hc : 0 ≤ c) :
+    radialProlateRescaledProfile c R x ^ 2 = radialProlateDensity c R x := by
+  rw [radialProlateRescaledProfile, radialProlateDensity, mul_pow, Real.sq_sqrt hc]
+
+/-- Arithmetic-geometric mean domination by the two exact marginal densities. -/
+theorem abs_firstRowRadialProduct_le_average_density
+    {c k x : ℝ} {R : ℝ → ℝ} (hc : 0 ≤ c) :
+    |firstRowRadialProduct c R k x| ≤
+      (1 / 2 : ℝ) *
+        (radialProlateDensity c R x + radialProlateDensity c R (k * x)) := by
+  let P := radialProlateRescaledProfile c R x
+  let Q := radialProlateRescaledProfile c R (k * x)
+  have hamgm := two_mul_le_add_sq |P| |Q|
+  have hP := radialProlateRescaledProfile_sq_eq_density (R := R) (x := x) hc
+  have hQ := radialProlateRescaledProfile_sq_eq_density (R := R) (x := k * x) hc
+  change P ^ 2 = radialProlateDensity c R x at hP
+  change Q ^ 2 = radialProlateDensity c R (k * x) at hQ
+  change |P * Q| ≤ _
+  rw [abs_mul]
+  have hP' : |P| ^ 2 = radialProlateDensity c R x := by rw [sq_abs, hP]
+  have hQ' : |Q| ^ 2 = radialProlateDensity c R (k * x) := by rw [sq_abs, hQ]
+  rw [← hP', ← hQ']
+  nlinarith
+
+/-- Exact endpoint density mass: the elementary collar costs `O(c⁻¹)` and the remaining
+mass is dominated by the limiting arcsine profile. -/
+theorem integral_radialProlateDensity_endpoint_le
+    {s c a : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 5 ≤ c)
+    (ha : 1 < a) (hcrossa : dunsterEndpointCrossing c ≤ a)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    (∫ x in (1 : ℝ)..a, radialProlateDensity c R x) ≤
+      9 / (8 * c) +
+        4 * radialProlateDensityEnvelopeConstant * (radialAngle a / Real.pi) := by
+  let B := dunsterEndpointCrossing c
+  let K := radialProlateDensityEnvelopeConstant
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
+  have hB1 : 1 < B := dunsterEndpointCrossing_gt_one hc0
+  have hBa : B ≤ a := hcrossa
+  have hRc : Continuous R := continuous_iff_continuousAt.mpr fun x => (hR x).continuousAt
+  have hDcont : Continuous (radialProlateDensity c R) := by
+    unfold radialProlateDensity
+    fun_prop
+  have hDint : ∀ p q : ℝ, IntervalIntegrable (radialProlateDensity c R) volume p q :=
+    fun p q => hDcont.intervalIntegrable p q
+  have hcollar : (∫ x in (1 : ℝ)..B, radialProlateDensity c R x) ≤ 9 / (8 * c) := by
+    have hmono : (∫ x in (1 : ℝ)..B, radialProlateDensity c R x) ≤ ∫ _ in (1 : ℝ)..B, c := by
+      refine intervalIntegral.integral_mono_on hB1.le (hDint 1 B)
+        intervalIntegrable_const fun x hx => ?_
+      have hunit := radialProlate_unit_bounds_to_crossing hs0 hs1 hc hR1 hR hDR hode hx
+      rw [radialProlateDensity]
+      have hsq : R x ^ 2 ≤ 1 := by nlinarith [sq_nonneg (R x - 1)]
+      simpa using mul_le_mul_of_nonneg_left hsq hc0.le
+    calc
+      (∫ x in (1 : ℝ)..B, radialProlateDensity c R x)
+          ≤ ∫ _ in (1 : ℝ)..B, c := hmono
+      _ = c * (B - 1) := by simp only [intervalIntegral.integral_const]; ring
+      _ = 9 / (8 * c) := by
+        dsimp [B, dunsterEndpointCrossing]
+        field_simp
+        ring
+  have hEnvInt : IntervalIntegrable
+      (fun x : ℝ => 4 * K * profileDensity x) volume B a := by
+    rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hBa]
+    exact (integrableOn_profileDensity.mono_set
+      (fun x hx => hB1.trans hx.1)).const_mul (4 * K)
+  have hext : (∫ x in B..a, radialProlateDensity c R x) ≤
+      4 * K * (radialAngle a / Real.pi) := by
+    have hmono : (∫ x in B..a, radialProlateDensity c R x) ≤
+        ∫ x in B..a, 4 * K * profileDensity x := by
+      refine intervalIntegral.integral_mono_on hBa (hDint B a) hEnvInt fun x hx => ?_
+      have hdens := radialProlateDensity_le_profileWeight hs0 hs1 hc
+        hR1 hR hDR hode hx.1
+      have hweight := profileWeight_le_four_mul_profileDensity hs0 hs1 (hB1.trans_le hx.1)
+      have hK0 := radialProlateDensityEnvelopeConstant_nonneg
+      calc
+        radialProlateDensity c R x ≤ K * profileWeight s x := hdens
+        _ ≤ K * (4 * profileDensity x) := mul_le_mul_of_nonneg_left hweight hK0
+        _ = 4 * K * profileDensity x := by ring
+    have hsubset : Ioc B a ⊆ Ioc (1 : ℝ) a := fun x hx => ⟨hB1.trans hx.1, hx.2⟩
+    have hglobal : IntegrableOn (fun x : ℝ => 4 * K * profileDensity x) (Ioi 1) :=
+      integrableOn_profileDensity.const_mul (4 * K)
+    have htarget : IntegrableOn (fun x : ℝ => 4 * K * profileDensity x) (Ioc (1 : ℝ) a) :=
+      hglobal.mono_set Ioc_subset_Ioi_self
+    have hnonneg : ∀ᵐ x ∂volume.restrict (Ioc (1 : ℝ) a),
+        0 ≤ 4 * K * profileDensity x := by
+      filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
+      exact mul_nonneg (mul_nonneg (by norm_num) radialProlateDensityEnvelopeConstant_nonneg)
+        (profileDensity_nonneg hx.1.le)
+    calc
+      (∫ x in B..a, radialProlateDensity c R x)
+          ≤ ∫ x in B..a, 4 * K * profileDensity x := hmono
+      _ = ∫ x in Ioc B a, 4 * K * profileDensity x :=
+        intervalIntegral.integral_of_le hBa
+      _ ≤ ∫ x in Ioc (1 : ℝ) a, 4 * K * profileDensity x := by
+        exact setIntegral_mono_set htarget hnonneg (Eventually.of_forall hsubset)
+      _ = 4 * K * (radialAngle a / Real.pi) := by
+        rw [integral_const_mul, integral_Ioc_profileDensity_eq_radialAngle_div_pi ha.le]
+  have hsplit := (intervalIntegral.integral_add_adjacent_intervals
+    (hDint 1 B) (hDint B a)).symm
+  change (∫ x in (1 : ℝ)..a, radialProlateDensity c R x) ≤
+    9 / (8 * c) + 4 * K * (radialAngle a / Real.pi)
+  rw [hsplit]
+  exact add_le_add hcollar hext
+
+/-- On the endpoint interval the dilated marginal already lies in the uniform exterior region. -/
+theorem radialProlateDensity_dilate_endpoint_le
+    {s c k x : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hc : 5 ≤ c)
+    (hx : 1 ≤ x)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    radialProlateDensity c R (k * x) ≤
+      radialProlateDensityEnvelopeConstant * profileWeight s k := by
+  have hk1 : 1 < k := lt_of_lt_of_le (by norm_num) hk
+  have hkx : 1 < k * x := by nlinarith
+  have hk_le : k ≤ k * x := by nlinarith
+  have hcrossUpper := dunsterEndpointCrossing_le_eleven_tenths hc
+  have hcross : dunsterEndpointCrossing c ≤ k * x := by nlinarith
+  have hdens := radialProlateDensity_le_profileWeight hs0 hs1 hc
+    hR1 hR hDR hode hcross
+  have hanti := profileWeight_antitoneOn hs1
+    (show k ∈ Ioi (1 : ℝ) from hk1)
+    (show k * x ∈ Ioi (1 : ℝ) from hkx) hk_le
+  exact hdens.trans (mul_le_mul_of_nonneg_left hanti
+    radialProlateDensityEnvelopeConstant_nonneg)
+
+/-- Endpoint contribution of the exact first-row product. -/
+theorem abs_integral_firstRowRadialProduct_endpoint_le
+    {s c k a : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hc : 5 ≤ c)
+    (ha : 1 < a) (hcrossa : dunsterEndpointCrossing c ≤ a)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    |∫ x in (1 : ℝ)..a, firstRowRadialProduct c R k x| ≤
+      (1 / 2 : ℝ) *
+        (9 / (8 * c) +
+          4 * radialProlateDensityEnvelopeConstant * (radialAngle a / Real.pi) +
+          radialProlateDensityEnvelopeConstant * profileWeight s k * (a - 1)) := by
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
+  have hRc : Continuous R := continuous_iff_continuousAt.mpr fun x => (hR x).continuousAt
+  have hProdCont : Continuous (firstRowRadialProduct c R k) := by
+    unfold firstRowRadialProduct radialProlateRescaledProfile
+    fun_prop
+  have hD1Cont : Continuous (radialProlateDensity c R) := by
+    unfold radialProlateDensity
+    fun_prop
+  have hD2Cont : Continuous (fun x => radialProlateDensity c R (k * x)) := by
+    exact hD1Cont.comp (continuous_const.mul continuous_id)
+  let A : ℝ → ℝ := fun x => (1 / 2 : ℝ) *
+    (radialProlateDensity c R x + radialProlateDensity c R (k * x))
+  have hAint : IntervalIntegrable A volume (1 : ℝ) a := by
+    dsimp [A]
+    exact ((hD1Cont.intervalIntegrable 1 a).add
+      (hD2Cont.intervalIntegrable 1 a)).const_mul (1 / 2)
+  have hmono : (∫ x in (1 : ℝ)..a, |firstRowRadialProduct c R k x|) ≤
+      ∫ x in (1 : ℝ)..a, A x := by
+    refine intervalIntegral.integral_mono_on ha.le
+      (hProdCont.intervalIntegrable 1 a).abs hAint fun x _ => ?_
+    exact abs_firstRowRadialProduct_le_average_density hc0.le
+  have hD1 := integral_radialProlateDensity_endpoint_le hs0 hs1 hc ha hcrossa
+    hR1 hR hDR hode
+  have hD2 : (∫ x in (1 : ℝ)..a, radialProlateDensity c R (k * x)) ≤
+      radialProlateDensityEnvelopeConstant * profileWeight s k * (a - 1) := by
+    have hconst : IntervalIntegrable
+        (fun _ : ℝ => radialProlateDensityEnvelopeConstant * profileWeight s k)
+        volume (1 : ℝ) a := intervalIntegrable_const
+    have hm : (∫ x in (1 : ℝ)..a, radialProlateDensity c R (k * x)) ≤
+        ∫ _ in (1 : ℝ)..a,
+          radialProlateDensityEnvelopeConstant * profileWeight s k := by
+      refine intervalIntegral.integral_mono_on ha.le
+        (hD2Cont.intervalIntegrable 1 a) hconst fun x hx => ?_
+      exact radialProlateDensity_dilate_endpoint_le hs0 hs1 hk hc hx.1
+        hR1 hR hDR hode
+    rw [intervalIntegral.integral_const, smul_eq_mul] at hm
+    convert hm using 1 <;> ring
+  calc
+    |∫ x in (1 : ℝ)..a, firstRowRadialProduct c R k x|
+        ≤ ∫ x in (1 : ℝ)..a, |firstRowRadialProduct c R k x| :=
+          intervalIntegral.abs_integral_le_integral_abs ha.le
+    _ ≤ ∫ x in (1 : ℝ)..a, A x := hmono
+    _ = (1 / 2 : ℝ) *
+        ((∫ x in (1 : ℝ)..a, radialProlateDensity c R x) +
+          ∫ x in (1 : ℝ)..a, radialProlateDensity c R (k * x)) := by
+      dsimp [A]
+      rw [intervalIntegral.integral_const_mul,
+        intervalIntegral.integral_add (hD1Cont.intervalIntegrable 1 a)
+          (hD2Cont.intervalIntegrable 1 a)]
+    _ ≤ (1 / 2 : ℝ) *
+        (9 / (8 * c) +
+          4 * radialProlateDensityEnvelopeConstant * (radialAngle a / Real.pi) +
+          radialProlateDensityEnvelopeConstant * profileWeight s k * (a - 1)) := by
+      gcongr
+
+/-- On a strict tail, the exact product is dominated by one fixed multiple of the limiting
+profile density. -/
+theorem abs_firstRowRadialProduct_le_profileDensity
+    {s c k b x : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hc : 5 ≤ c)
+    (hb : 1 < b) (hcrossb : dunsterEndpointCrossing c ≤ b) (hx : b ≤ x)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    |firstRowRadialProduct c R k x| ≤
+      4 * radialProlateDensityEnvelopeConstant * profileDensity x := by
+  let K := radialProlateDensityEnvelopeConstant
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
+  have hx1 : 1 < x := hb.trans_le hx
+  have hk0 : 0 < k := by linarith
+  have hkx1 : 1 < k * x := mapsTo_mul_left_Ioi hk hx1
+  have hxkx : x ≤ k * x := by nlinarith
+  have hd1 := radialProlateDensity_le_profileWeight hs0 hs1 hc
+    hR1 hR hDR hode (hcrossb.trans hx)
+  have hd2raw := radialProlateDensity_le_profileWeight hs0 hs1 hc
+    hR1 hR hDR hode (hcrossb.trans (hx.trans hxkx))
+  have hanti := profileWeight_antitoneOn hs1
+    (show x ∈ Ioi (1 : ℝ) from hx1)
+    (show k * x ∈ Ioi (1 : ℝ) from hkx1) hxkx
+  have hK0 : 0 ≤ K := radialProlateDensityEnvelopeConstant_nonneg
+  have hd2 : radialProlateDensity c R (k * x) ≤ K * profileWeight s x :=
+    hd2raw.trans (mul_le_mul_of_nonneg_left hanti hK0)
+  have hprod := abs_firstRowRadialProduct_le_average_density (R := R) (k := k) (x := x) hc0.le
+  have hweight := profileWeight_le_four_mul_profileDensity hs0 hs1 hx1
+  calc
+    |firstRowRadialProduct c R k x|
+        ≤ (1 / 2 : ℝ) *
+          (radialProlateDensity c R x + radialProlateDensity c R (k * x)) := hprod
+    _ ≤ K * profileWeight s x := by nlinarith
+    _ ≤ K * (4 * profileDensity x) := mul_le_mul_of_nonneg_left hweight hK0
+    _ = 4 * K * profileDensity x := by ring
+
+/-- Integrability of the exact first-row product on every tail beyond the Dunster matching point. -/
+theorem integrableOn_firstRowRadialProduct_Ioi
+    {s c k b : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hc : 5 ≤ c)
+    (hb : 1 < b) (hcrossb : dunsterEndpointCrossing c ≤ b)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    IntegrableOn (firstRowRadialProduct c R k) (Ioi b) := by
+  let K := radialProlateDensityEnvelopeConstant
+  have hsub : Ioi b ⊆ Ioi (1 : ℝ) := Ioi_subset_Ioi hb.le
+  have hdom : IntegrableOn (fun x : ℝ => 4 * K * profileDensity x) (Ioi b) :=
+    (integrableOn_profileDensity.mono_set hsub).const_mul (4 * K)
+  have hRc : Continuous R := continuous_iff_continuousAt.mpr fun x => (hR x).continuousAt
+  have hcont : Continuous (firstRowRadialProduct c R k) := by
+    unfold firstRowRadialProduct radialProlateRescaledProfile
+    fun_prop
+  refine Integrable.mono' hdom
+    (hcont.continuousOn.aestronglyMeasurable measurableSet_Ioi) ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+  rw [Real.norm_eq_abs]
+  exact abs_firstRowRadialProduct_le_profileDensity hs0 hs1 hk hc hb hcrossb hx.le
+    hR1 hR hDR hode
+
+/-- Uniform tail integral bound for the exact product. -/
+theorem abs_integral_Ioi_firstRowRadialProduct_le
+    {s c k b : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hc : 5 ≤ c)
+    (hb : 1 < b) (hcrossb : dunsterEndpointCrossing c ≤ b)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    |∫ x in Ioi b, firstRowRadialProduct c R k x| ≤
+      4 * radialProlateDensityEnvelopeConstant *
+        ∫ x in Ioi b, profileDensity x := by
+  let K := radialProlateDensityEnvelopeConstant
+  have hprod := integrableOn_firstRowRadialProduct_Ioi hs0 hs1 hk hc hb hcrossb
+    hR1 hR hDR hode
+  have hsub : Ioi b ⊆ Ioi (1 : ℝ) := Ioi_subset_Ioi hb.le
+  have hdom : IntegrableOn (fun x : ℝ => 4 * K * profileDensity x) (Ioi b) :=
+    (integrableOn_profileDensity.mono_set hsub).const_mul (4 * K)
+  have hmono : (∫ x in Ioi b, |firstRowRadialProduct c R k x|) ≤
+      ∫ x in Ioi b, 4 * K * profileDensity x := by
+    apply integral_mono_ae hprod.abs hdom
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    exact abs_firstRowRadialProduct_le_profileDensity hs0 hs1 hk hc hb hcrossb hx.le
+      hR1 hR hDR hode
+  calc
+    |∫ x in Ioi b, firstRowRadialProduct c R k x|
+        = ‖∫ x in Ioi b, firstRowRadialProduct c R k x‖ := (Real.norm_eq_abs _).symm
+    _ ≤ ∫ x in Ioi b, ‖firstRowRadialProduct c R k x‖ :=
+      norm_integral_le_integral_norm _
+    _ = ∫ x in Ioi b, |firstRowRadialProduct c R k x| := by
+      apply setIntegral_congr_fun measurableSet_Ioi
+      intro x _
+      exact Real.norm_eq_abs _
+    _ ≤ ∫ x in Ioi b, 4 * K * profileDensity x := hmono
+    _ = 4 * K * ∫ x in Ioi b, profileDensity x := by rw [integral_const_mul]
+
 /-- Uniform compact exact-to-Bessel profile error supplied by Dunster transfer. -/
 def compactExactProfileError (s c a : ℝ) : ℝ :=
   (radialProlateUniformTransferConstant * lgBesselCommonEnvelopeConstant / c) *
@@ -1030,6 +1356,53 @@ theorem abs_intervalIntegral_firstRowRadialProduct_sub_bessel_le
   rw [Real.norm_eq_abs]
   exact abs_firstRowRadialProduct_sub_bessel_le hs0 hs1 hk hc haCross ha hx.1.le
     hcxi hR1 hR hDR hode
+
+/-- Explicit compact bound valid even when the left endpoint precedes the stationary window. -/
+theorem abs_intervalIntegral_firstRowRadialProduct_le_endpoint
+    {s c k a b : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k)
+    (hc5 : 5 ≤ c) (hcOsc : 3 * k ≤ c)
+    (hab : a ≤ b) (ha : 1 < a)
+    (haCross : dunsterEndpointCrossing c ≤ a)
+    (hbStationary : Real.sqrt (1 + 2 / k ^ 2) ≤ b)
+    (hcxi : 1 ≤ c * xiEndpointPhase s a)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    |∫ x in a..b, firstRowRadialProduct c R k x| ≤
+      compactExactFirstRowProductError s c k a * |b - a| +
+        compactFirstRowProductError s c k a * |b - a| +
+        (1 / Real.pi) *
+          (170 / (Real.sqrt c * k ^ 2) +
+            4 / 3 * Real.sqrt (Real.sqrt 2) / k * (a - 1) ^ ((3 : ℝ) / 4) +
+            4 * ampFourthRoot s k a / (c * (1 + k))) := by
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc5
+  have hExact := abs_intervalIntegral_firstRowRadialProduct_sub_bessel_le
+    hs0 hs1 hk hc5 hab ha haCross hcxi hR1 hR hDR hode
+  have hBessel := abs_intervalIntegral_firstRowBesselProduct_sub_leading_le
+    hs0 hs1 hk hc0 hab ha hcxi
+  have hLeading := abs_integral_firstRowLeadingProduct_le_endpoint
+    hs0 hs1 hk hcOsc hab ha hbStationary
+  let E := ∫ x in a..b, firstRowRadialProduct c R k x
+  let B := ∫ x in a..b, firstRowBesselProduct s c k x
+  let L := ∫ x in a..b, firstRowLeadingProduct s c k x
+  change |E| ≤ _
+  change |E - B| ≤ _ at hExact
+  change |B - L| ≤ _ at hBessel
+  change |L| ≤ _ at hLeading
+  calc
+    |E| = |(E - B) + (B - L) + L| := by ring_nf
+    _ ≤ |E - B| + |B - L| + |L| := by
+      exact (abs_add _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
+    _ ≤ compactExactFirstRowProductError s c k a * |b - a| +
+        compactFirstRowProductError s c k a * |b - a| +
+        (1 / Real.pi) *
+          (170 / (Real.sqrt c * k ^ 2) +
+            4 / 3 * Real.sqrt (Real.sqrt 2) / k * (a - 1) ^ ((3 : ℝ) / 4) +
+            4 * ampFourthRoot s k a / (c * (1 + k))) :=
+      add_le_add (add_le_add hExact hBessel) hLeading
 
 /-- Exact endpoint-normalized first-row radial product cancellation on every fixed compact
 exterior interval. -/

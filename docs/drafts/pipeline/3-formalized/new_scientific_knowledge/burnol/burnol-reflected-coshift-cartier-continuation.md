@@ -11,8 +11,10 @@
 ## Goal
 
 Replace the unspecified “opposite Stokes sign” in Route R by a constructed source object.  The
-remaining source theorem must compare the forward physical port with this fixed reflected Cartier
-continuation.  It no longer gets to choose an auxiliary vector, representation, or sign convention.
+The follow-on zero-transfer theorem reduces comparison of forward physical port with this fixed
+reflected Cartier continuation to conservation of one explicit fixed forward-head norm. It no
+longer gets to choose an auxiliary vector, representation, sign convention, or global Hilbert
+comparison.
 
 ## Gates
 
@@ -166,15 +168,17 @@ forward physical port Pi(rho)
 reflected Cartier port Pi_ref(rho) = -Pi(rho).
 ```
 
-It is now sufficient to prove, from pre-divisor Euler--Gamma--Stokes sewing, that the forward
-physical lift and the reflected zero-divided source have the same fixed-source boundary reading at
-an Xi divisor.  Equality and `(6)` imply `Re Pi(rho)<=0`, so the existing endpoint closes RH.
-
-This comparison is still `[OPEN CORE]`; it is not assumed or hidden in the construction.
+The follow-on module `BurnolCartierZeroTransferHeadGain` constructs the isometric zero-transfer,
+proves its literal Xi-source landing, and computes its forward head gain as
+`conj(rho)/(1-rho)`. Its norm is one exactly when `Re rho=1/2`, and Lean proves that conservation of
+this one local head norm is equivalent to the global sewing statement above. The remaining
+`[OPEN CORE]` is therefore a pre-divisor law conserving this explicit local coefficient; it is not
+assumed or hidden in either construction.
 
 ## Hostile audit
 
-- This does **not** prove RH.  Forward/reflected Stokes sewing at Xi zeros remains unproved.
+- This does **not** prove RH. Separate conservation of the fixed forward-head norm at Xi zeros
+  remains unproved; it is equivalent to forward/reflected Stokes sewing.
 - Equation `(1)` is elementary operator theory; no novelty is claimed for the scalar identity.
 - New corpus content is the exact synthesis: independent left-half Cartier continuation,
   coefficient-faithful uniqueness, fixed negative port, and landing of that negative continuation

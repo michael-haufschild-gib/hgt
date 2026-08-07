@@ -437,6 +437,15 @@ actual arithmetic source, with no hypothesis on the source.
 | `(11)` | **the weighted formal symmetry `<D f, g>_(H_k) = <f, L g>_(H_k)`** on compactly supported differentiable data | `integral_weighted_symmetry` |
 | `(12)` | **the half-density conjugation** `(k^(1/2) f)' = k^(1/2)(f' + (a/2) f)` | `hasDerivAt_halfDensity_mul` |
 
+`formal/GaloisForLFunctions/RHTower/HedenmalmSourceKernelTrivial.lean` supplies the analytic
+reason for `ker A = 0` in `(4)`: the formal kernel of `D` is the constants, and the weighted space
+carries none.
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(4)` | the exponential ceiling forces `1/k` to be non-integrable | `not_integrableOn_exp_Ioi`, `not_integrable_exp_abs`, `not_integrable_inv_thetaSource` |
+| `(4)` | **no nonzero constant is square integrable against `k^(-1)`**, so the formal kernel is trivial | `not_integrable_const_mul_inv_thetaSource` |
+
 `integral_weighted_symmetry` is a single integration by parts: `f conj(g)/k` has compact support,
 so its derivative integrates to zero by the improper fundamental theorem of calculus, and the
 three terms of that derivative are exactly the difference of the two sides.

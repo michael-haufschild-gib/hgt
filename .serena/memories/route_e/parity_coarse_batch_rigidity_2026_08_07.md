@@ -45,4 +45,5 @@ OPEN-SOURCE-001 and RH remain open.
 - Active card and frontier map updated.
 - Module wired into formal/GaloisForLFunctions/RHTower.lean.
 - Direct lean pass; targeted build 9712/9712; #print axioms only propext, Classical.choice, Quot.sound.
+- Repository-wide `python3 scripts/formal_tools.py lint` passed.
 - No full build run.

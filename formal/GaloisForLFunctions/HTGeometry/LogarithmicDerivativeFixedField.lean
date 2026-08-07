@@ -473,6 +473,62 @@ theorem mem_logDerivField_of_mem_powAdjoin [CharZero F]
   intro t
   exact scalingAutomorphism_fixes_powAdjoin hF (hA0 t) hy hytop t.2.2 (hx t.1.1)
 
+
+/-- The logarithmic derivative already lives in the differential field of any positive power. -/
+theorem logDeriv_mem_powAdjoin [CharZero F] {y : E} (hy0 : y ≠ 0) {d : ℕ} (hd : d ≠ 0) :
+    y′ / y ∈ differentialAdjoin F ({y ^ d} : Set E) := by
+  classical
+  set L : IntermediateField F E := differentialAdjoin F ({y ^ d} : Set E) with hL
+  have hmem : (y ^ d) ∈ L := subset_differentialAdjoin F _ rfl
+  have hderivmem : ((y ^ d)′) ∈ L := derivationClosed_differentialAdjoin F _ hmem
+  have hpow0 : (y : E) ^ d ≠ 0 := pow_ne_zero _ hy0
+  have hcast : (d : E) = algebraMap F E (d : F) := by
+    simp
+  have hdF : (d : F) ≠ 0 := Nat.cast_ne_zero.mpr hd
+  have hdE : algebraMap F E (d : F) ≠ 0 := by
+    intro h
+    exact hdF ((algebraMap F E).injective (by rw [h, map_zero]))
+  have hleib : ((y : E) ^ d)′ = algebraMap F E (d : F) * y ^ (d - 1) * y′ := by
+    have h := Differential.deriv.leibniz_pow y d
+    simp only [nsmul_eq_mul, smul_eq_mul] at h
+    rw [h, ← hcast]
+    ring
+  have hquot : ((y : E) ^ d)′ / (y ^ d) = algebraMap F E (d : F) * (y′ / y) := by
+    rw [hleib]
+    have hsplit : (y : E) ^ d = y ^ (d - 1) * y := by
+      rw [← pow_succ]
+      congr 1
+      omega
+    rw [hsplit]
+    field_simp
+  have hval : y′ / y = (algebraMap F E (d : F))⁻¹ * (((y : E) ^ d)′ / (y ^ d)) := by
+    rw [hquot, ← mul_assoc, inv_mul_cancel₀ hdE, one_mul]
+  rw [hval]
+  refine L.mul_mem ?_ (L.div_mem hderivmem hmem)
+  rw [← map_inv₀]
+  exact L.algebraMap_mem _
+
+/-- **The cusp branch, as an equality.**  The intersection of the differential fields of the powers
+`y ^ D n` along a degree sequence carrying roots of unity of unbounded order is exactly the
+differential field of the logarithmic derivative. -/
+theorem iInter_powAdjoin_eq_logDerivField [CharZero F]
+    (hF : ∀ a : F, (algebraMap F E a)′ = 0)
+    {y : E} (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+    (hytop : differentialAdjoin F ({y} : Set E) = ⊤) (hy0 : y ≠ 0)
+    {D : ℕ → ℕ} (hD : ∀ n, D n ≠ 0)
+    (hroots : ∀ N : ℕ, ∃ n : ℕ, ∃ w : F, w ≠ 0 ∧ w ^ D n = 1 ∧
+      ∀ k : ℕ, 0 < k → k ≤ N → w ^ k ≠ 1) :
+    {x : E | ∀ n : ℕ, x ∈ differentialAdjoin F ({y ^ D n} : Set E)}
+      = (differentialAdjoin F ({y′ / y} : Set E) : Set E) := by
+  ext x
+  constructor
+  · intro hx
+    exact mem_logDerivField_of_mem_powAdjoin hF hy hytop hy0 hx hroots
+  · intro hx n
+    exact differentialAdjoin_le F
+      (by simpa using logDeriv_mem_powAdjoin (F := F) hy0 (hD n))
+      (derivationClosed_differentialAdjoin F _) hx
+
 end
 
 end GaloisForLFunctions.HTGeometry

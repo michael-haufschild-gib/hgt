@@ -285,3 +285,54 @@ needing a "scale a linearly independent family" lemma.
 Remaining for card 5 frame obstructions: only (27), the summably weighted all-prime form.
 Route: head/tail split with `tendsto_tsum_compl_atTop_zero` on `∑ ω_p/p`, then
 `exists_gt_sum_sq_frameSymbol_lt` on the head.
+
+## Card 5: ALL THREE frame obstructions CLOSED (2026-08-07)
+
+`HedenmalmPrimeFrameObstruction.lean` now also has
+`sq_rpow_neg_half` ((x^(-1/2))² = x⁻¹), `sq_frameSymbol_le_four_div` (b_p(t)² ≤ 4/p),
+`summable_weighted_frameSymbol`, and
+`exists_gt_tsum_weighted_frameSymbol_lt` — statements (24), (26), (27).
+
+Traps: `tsum_le_tsum` is now `Summable.tsum_le_tsum`.
+`tendsto_tsum_compl_atTop_zero` needs the function given EXPLICITLY (HO unification fails on the
+triple coercion `((p : Nat.Primes) : ℕ) : ℝ`).
+`Summable.sum_add_tsum_compl` produces the complement subtype as `↥(↑P)ᶜ`, NOT `{q // q ∉ P}`;
+they are defeq, so restate the tail bound with `:= htailbound` in the `↥(↑P)ᶜ` shape before
+`linarith` — linarith will not match the two spellings.
+
+Card 5 remaining: ONLY (13)/(14) conormal generation + the (17) analytic cokernel that rests on it.
+Both need Wedderburn/Cartan B for entire functions (Weierstrass product + Mittag-Leffler
+interpolation) — absent from corpus and mathlib.
+
+## Card 8 STARTED: symbol layer closed (2026-08-07)
+
+`formal/GaloisForLFunctions/RHTower/HedenmalmEssentialFlowSymbol.lean` (wired, builds,
+axiom-clean): `essentialFlowSymbol a L μ = 2μ(sin(a/μ) − sin((a−L)/μ))`,
+`weilWidthAmplitude`, `weilFixedWidthSample`, `rootBlockForm`, and the two matching lemmas giving
+`essentialFlowSymbol_root : Φ_{a,L}(−1/z) = F_{a,L}(i z)` — card 8 statements (3) and the
+term-level content of (5).  No operator theory needed.
+
+METHOD that made it work: do NOT try to prove the identity in one `field_simp`/`linear_combination`.
+Introduce a `rootBlockForm` closed form and prove each side equals it separately.  The LHS side
+needs `Complex.sin_neg` + `Complex.sin` + four `congr 1; ring` exponent rewrites, then
+`field_simp; ring`.  The RHS side needs `hinv : (I*z)⁻¹ = -I * z⁻¹` (via `Complex.inv_I`),
+`hinv' : (-(I*z))⁻¹ = I * z⁻¹`, and `← hUX`, `← hVY` to split `exp((a−L)(Iz))` into products;
+then plain `ring` — NO `I*I = -1` is needed on either side once the inverses are rewritten.
+
+Trap: after `Complex.sin` unfolds, the exponent appears as `(-(↑a * z)) * Complex.I`, not
+`-(↑a * z * Complex.I)`; state the rewrite lemmas in the first shape.
+
+Card 8 remaining: everything resting on the parent's missing Riesz-projection/trace layer —
+(1), (4), (5) as a divisor sum, (6).
+
+## Card 6: the ker A = 0 half of (4) CLOSED (2026-08-07)
+
+`formal/GaloisForLFunctions/RHTower/HedenmalmSourceKernelTrivial.lean` (wired, builds,
+axiom-clean): `not_integrableOn_exp_Ioi`, `not_integrable_exp_abs`,
+`not_integrable_inv_thetaSource`, `not_integrable_const_mul_inv_thetaSource`.
+The formal kernel of D is the constants, and `∫ 1/k = ∞` for the theta source (from
+`k ≤ thetaBound · e^{−|x|}`), so no nonzero constant lies in `H_k`.
+
+`0 < thetaBound` is NOT free: get it from `abs_thetaCuspFullSource_le 0` plus
+`thetaCuspFullSource_pos 0`, and note `thetaBound` is a def for
+`thetaCuspDerivativeExpConstant 0` — `linarith` needs a `show` to see through it.

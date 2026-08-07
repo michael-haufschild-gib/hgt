@@ -239,4 +239,72 @@ theorem exists_isMaxOn_penalized_neg {H : ℝ → ℝ} {δ L₀ a B : ℝ} (hδ 
   have := hB L hL
   linarith
 
+/-! ## Auxiliary expansions for the mirrored direction
+
+The maximizer direction needed `(1−u)^{−1/2} ≤ 1 + 2u`.  The minimizer direction divides by the
+*larger* root instead, so it needs the two companion estimates below: the square root of `1+u` is
+at most `1 + u/2`, and the reciprocal of `1+u` is at least `1−u`.
+-/
+
+/-- `√(1+u) ≤ 1 + u/2` for `u ≥ 0`; squaring gives `1 + u ≤ 1 + u + u²/4`. -/
+theorem sqrt_one_add_le {u : ℝ} (hu : 0 ≤ u) : Real.sqrt (1 + u) ≤ 1 + u / 2 := by
+  have h1 : (0:ℝ) ≤ 1 + u := by linarith
+  have h2 : (0:ℝ) ≤ 1 + u / 2 := by linarith
+  rw [show (1 : ℝ) + u / 2 = Real.sqrt ((1 + u / 2) ^ 2) by
+    rw [Real.sqrt_sq h2]]
+  refine Real.sqrt_le_sqrt ?_
+  nlinarith [sq_nonneg u]
+
+/-- `1 − u ≤ (1+u)⁻¹` for `u ≥ 0`; clearing the denominator gives `1 − u² ≤ 1`. -/
+theorem one_sub_le_inv_one_add {u : ℝ} (hu : 0 ≤ u) : 1 - u ≤ (1 + u)⁻¹ := by
+  have hpos : (0:ℝ) < 1 + u := by linarith
+  have h : (1 - u) * (1 + u) ≤ 1 := by nlinarith [sq_nonneg u]
+  have hd : (1 - u) * (1 + u) / (1 + u) ≤ 1 / (1 + u) := by gcongr
+  rw [mul_div_assoc, div_self (ne_of_gt hpos), mul_one, one_div] at hd
+  exact hd
+
+/-- **Mirrored forward weight removal.**  From a *lower* bound on the weighted profile, a lower
+bound on the profile itself, with the correction `1 − s/(2X)` supplied by `sqrt_one_add_le` and
+`one_sub_le_inv_one_add`.  The nonnegativity of `f X − δs/√X` is what lets the division reverse the
+inequality correctly. -/
+theorem le_of_weighted_ge_forward {f : ℝ → ℝ} {X s δ : ℝ} (hX : 0 < X) (hs : 0 ≤ s)
+    (hnum : 0 ≤ f X - δ * s / Real.sqrt X)
+    (hw : Real.sqrt X * f X - δ * s ≤ Real.sqrt (X + s) * f (X + s)) :
+    (f X - δ * s / Real.sqrt X) * (1 - s / (2 * X)) ≤ f (X + s) := by
+  have hsq : 0 < Real.sqrt X := Real.sqrt_pos.mpr hX
+  have hu : 0 ≤ s / X := div_nonneg hs hX.le
+  have hprod : X * (1 + s / X) = X + s := by field_simp
+  have hfac : Real.sqrt (X + s) = Real.sqrt X * Real.sqrt (1 + s / X) := by
+    rw [← hprod, Real.sqrt_mul hX.le]
+  have hXs : 0 < Real.sqrt (X + s) := by rw [hfac]; positivity
+  have hroot : Real.sqrt (1 + s / X) ≤ 1 + s / (2 * X) := by
+    have h := sqrt_one_add_le hu
+    have : s / X / 2 = s / (2 * X) := by ring
+    linarith [h, this.le, this.ge]
+  have hnum' : 0 ≤ Real.sqrt X * f X - δ * s := by
+    have : Real.sqrt X * (f X - δ * s / Real.sqrt X) = Real.sqrt X * f X - δ * s := by
+      field_simp
+    nlinarith [hnum, hsq, this]
+  have hdiv : (Real.sqrt X * f X - δ * s) / Real.sqrt (X + s) ≤ f (X + s) := by
+    rw [div_le_iff₀ hXs]
+    linarith [hw]
+  have hbig : Real.sqrt (X + s) ≤ Real.sqrt X * (1 + s / (2 * X)) := by
+    rw [hfac]
+    exact mul_le_mul_of_nonneg_left hroot hsq.le
+  have hupos : 0 < 1 + s / (2 * X) := by positivity
+  have hlower : (f X - δ * s / Real.sqrt X) / (1 + s / (2 * X))
+      ≤ (Real.sqrt X * f X - δ * s) / Real.sqrt (X + s) := by
+    have heq : (Real.sqrt X * f X - δ * s) = Real.sqrt X * (f X - δ * s / Real.sqrt X) := by
+      field_simp
+    rw [heq, hfac]
+    rw [div_le_div_iff₀ hupos (by positivity)]
+    have hstep : Real.sqrt (1 + s / X) ≤ 1 + s / (2 * X) := hroot
+    nlinarith [hnum, hsq, hstep, Real.sqrt_nonneg (1 + s / X)]
+  have hfin : (f X - δ * s / Real.sqrt X) * (1 - s / (2 * X))
+      ≤ (f X - δ * s / Real.sqrt X) / (1 + s / (2 * X)) := by
+    rw [div_eq_mul_inv]
+    have hinv := one_sub_le_inv_one_add (u := s / (2 * X)) (by positivity)
+    exact mul_le_mul_of_nonneg_left hinv hnum
+  linarith [hfin, hlower, hdiv]
+
 end GaloisForLFunctions.HTGeometry

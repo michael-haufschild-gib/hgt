@@ -273,3 +273,13 @@ vanishing of the rectangle integral of `(z-p)^{-k}` for `k ≥ 2`, provable from
 `(z-p)^{1-k}/(1-k)` by four applications of the fundamental theorem of calculus);
 Rosenlicht quotients (card 7's general `(2)`); Pong's conclusion and the Helson inputs (card 8);
 and Barnes plus Sibuya--Ramis (card 9).
+
+
+## Closed: the cusp branch of the orbifold cards
+
+`iInter_powAdjoin_eq_logDerivField` — the tail of a degree-expanding power protocol is exactly
+`F⟨y′/y⟩`.  This is the `(∞,∞)` signature, reached with no uniformization input, via the family
+form of the scaling-invariance theorem (the deck group is the roots of unity, and no single root of
+unity separates two exponents).
+
+Uniformization is now needed only for `(2,2,∞)`, `(2,2,2,2)`, `(2,3,6)`, `(2,4,4)`, `(3,3,3)`.

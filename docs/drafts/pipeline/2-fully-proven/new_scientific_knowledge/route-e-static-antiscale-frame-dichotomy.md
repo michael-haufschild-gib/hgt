@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** `[EXHAUSTIVE PRODUCER-CLASS NO-GO]` / `[POSITIVE ROUTE CONSTRAINT]`
 - **Scientific status:** `[PAPER-PROVED] [INTERNAL COLLISION-AUDITED] [EXTERNAL AUDIT OMITTED BY INSTRUCTION]`
-- **Parent:** `../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
+- **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
 - **RH used:** no
 - **Computation used:** no
 

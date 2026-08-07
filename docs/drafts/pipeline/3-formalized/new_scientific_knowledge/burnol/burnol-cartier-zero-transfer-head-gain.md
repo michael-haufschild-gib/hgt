@@ -1,7 +1,7 @@
 # Burnol Cartier zero-transfer head gain
 
 - **ID:** `burnol-cartier-zero-transfer-head-gain`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** `[LEAN-PROVED] [NEW SCIENTIFIC KNOWLEDGE] [ROUTE R FRONTIER]`
 - **Exact claim:** the Cauchy divided shift generates a canonical isometric Blaschke zero-transfer;
   at every right-half Xi divisor its value on the fixed `[1/2,1]` co-Poisson atom is an actual
@@ -82,7 +82,30 @@ prove that pre-divisor conservation law.
   but it is a local coefficient law rather than the previous global Hilbert-port sewing.
 - General Blaschke zero transfer is standard de Branges/Hardy theory. Novelty claim is restricted
   to the coefficient-faithful Route R synthesis with the literal fixed co-Poisson atom and its two
-  exact aperture phases.
+  exact aperture gains.
+
+## Lean certificate
+
+Module:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCartierZeroTransferHeadGain.lean
+```
+
+Principal declarations:
+
+```text
+burnolCartierZeroTransfer
+norm_sub_centered_burnolMellinDividedShift
+xiDivisor_burnolCartierZeroTransfer_mem_soninExtendedSpace
+xiDivisor_burnolCartierZeroTransfer_fixed_head
+xiDivisor_burnolCartierZeroTransfer_fixed_cosine_head
+one_lt_norm_burnolCartierForwardHeadGain
+burnolXiForwardReflectedCartierStokesSewing_iff_cartierZeroTransferForwardHeadNorm
+riemannHypothesis_of_burnolXiCartierZeroTransferForwardHeadNormConservation
+```
+
+Axiom audit for endpoint declarations: `[propext, Classical.choice, Quot.sound]`.
 
 ## Gates
 
@@ -90,4 +113,5 @@ prove that pre-divisor conservation law.
 - [x] primary-literature collision audit
 - [x] conjecture/attack loop
 - [x] dependency-closed Lean formalization
-- [ ] umbrella, targeted module build, axiom audit
+- [x] umbrella, targeted module build, axiom audit
+

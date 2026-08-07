@@ -2637,3 +2637,58 @@ That is mechanical but not free: roughly the six results from BD–BM restated w
 inequalities. Once done, `tendsto_of_le_liminf_of_limsup_le` (mathlib, section BN) closes `(4)`.
 
 `suzuki-weak-signed-half-log-trace` remains in stage 2.
+
+## BP. Auxiliary expansions for the mirrored direction
+
+`PenalizedMaximum.lean` is now at 14 declarations, all `#print axioms` clean, no `sorry`.
+
+The maximizer direction divides by the *smaller* root and needed `(1−u)^{−1/2} ≤ 1 + 2u`
+(section BF). The minimizer direction divides by the *larger* root, so it needs two different
+estimates, now built:
+
+- `sqrt_one_add_le` — `√(1+u) ≤ 1 + u/2` for `u ≥ 0`. Squaring: `1 + u ≤ 1 + u + u²/4`.
+- `one_sub_le_inv_one_add` — `1 − u ≤ (1+u)⁻¹` for `u ≥ 0`. Clearing the denominator: `1 − u² ≤ 1`.
+
+Together they give the mirrored weight removal: from `√(X+s) f(X+s) ≥ √X f X − δ s` with the
+numerator nonnegative,
+
+    f(X + s)  ≥  (f X − δ s/√X) · (1 − s/(2X)),
+
+since `√(X+s) ≤ √X(1 + s/(2X))` and `(1 + s/(2X))⁻¹ ≥ 1 − s/(2X)`.
+
+Note the asymmetry with the maximizer case is genuine: there the correction was `1 + 2u`, here it
+is `1 − u/2`. Neither can be substituted for the other, and both are needed because the argument
+runs in both directions (section BN).
+
+### Remaining
+
+The mirrored weight-removal lemmas themselves, then the mirrored transport chain
+(`neg_le_secondDifference_of_weighted` upward, `…_near`, `…_of_maximizer`), then
+`tendsto_of_le_liminf_of_limsup_le`. `suzuki-weak-signed-half-log-trace` stays in stage 2.
+
+## BQ. Mirrored forward weight removal is built
+
+`PenalizedMaximum.lean` is now at 15 declarations, all `#print axioms` clean, no `sorry`.
+
+- `le_of_weighted_ge_forward` — from a **lower** bound on the weighted profile,
+
+      √X f X − δ s ≤ √(X+s) f(X+s)     ⟹     (f X − δ s/√X)(1 − s/(2X)) ≤ f(X+s),
+
+  provided `f X − δ s/√X ≥ 0`. Route: `√(X+s) = √X √(1+s/X) ≤ √X(1 + s/(2X))` by `sqrt_one_add_le`,
+  then `(1 + s/(2X))⁻¹ ≥ 1 − s/(2X)` by `one_sub_le_inv_one_add`.
+
+The nonnegativity hypothesis is essential and is *not* cosmetic: dividing a possibly-negative
+numerator by a larger denominator increases it, so the inequality would reverse. In the maximizer
+direction the analogous condition was `0 ≤ f X`; here it is the stronger
+`0 ≤ f X − δ s/√X`, because the penalty is subtracted rather than added.
+
+### Remaining
+
+- mirrored **backward** weight removal (`X − s`, dividing by the *smaller* root, so the correction
+  will again be of `(1 + …)` type rather than `(1 − …)`);
+- the mirrored transport chain: second-difference **upper** bound, near-window integral, far tail
+  (`abs_integral_transport_far_le` is two-sided already, so it serves both directions unchanged);
+- `tendsto_of_le_liminf_of_limsup_le`.
+
+Note `abs_integral_transport_far_le` needs no mirroring — it bounds an absolute value, so it
+supplies both the upper and the lower far estimate. Only the near window is direction-sensitive.
