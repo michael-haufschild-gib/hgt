@@ -1767,3 +1767,35 @@ which is solved by `δ ≍ √(log log N)` provided `T` is at most a power of `l
 enough for the tail `C/T` of the height split, where `C ≍ N^σ(N/H)²` forces `T ≳ (N/H)²`.  That is the last
 constraint to check: it wants `H` close to `N`, while the smoothing error wants `H` small, and whether the two
 are compatible is now a finite computation with all constants in hand.
+
+## The window term is still too lossy: it needs the sieve, not the trivial size
+
+Balancing the two terms of the dichotomy instance exposes a third loss, in the *window* term this time.
+
+With `H = N/(log N)^k` the kernel's decay constant is `C ≍ N(log N)^{2k}`, so the tail `Mg·C·(π − 2 arctan T) ≍
+Mg·C/T` demands `T ≳ (log N)^{2k+4}` (with `Mg ≍ (log N)^5`).  But the window term, as currently bounded, is
+
+`(log N)·N·(8√2 Tδ)·(ℓ¹a)(ℓ¹b) ≍ N(log N)^5·Tδ`,
+
+which demands `Tδ ≪ (log N)^{−4}`.  The two are incompatible: the tail wants `T` large, the window wants it
+small.
+
+**Two separate losses in the window term, both repairable, and the corpus already owns the repairs.**
+
+1. *The measure bound is the cell-covering one, not the diameter.*  `volume_halaszLargeValues_le` bounds the
+   window by `(2T log z/π + 1)·2√(2π²δ²/logSqWeight z)` — a union of `O(T log z)` cells.  But
+   `HalaszLargeValueWindow.abs_sub_le_of_norm_gt` proves all large values lie within a *single* window of
+   diameter `O(δ/log z)`: the set is one short interval, and its measure is `O(δ/log z)` with no `T` at all.
+2. *The mean square on the window is bounded by measure × (ℓ¹ mass)².*  That is the trivial bound, lossy by the
+   square of the coefficient mass: `(ℓ¹)² ≍ (log N)⁴` where the sieve mean square is `≍ (log N)²`.  On an
+   interval the right estimate is the corpus's window mean value theorem at the interval's own width, which is
+   proportional to the width rather than to the width times `(ℓ¹)²`.
+
+Repair 2 needs one device the corpus lacks: the window is centred at the exceptional frequency `t₀`, not at `0`,
+while `integral_Icc_normSq_logPoly_le_prime_sieve` is stated on `Icc (−W) W`.  The fix is **translation
+invariance of the mean square**: `L(a, σ+i(t₀+u))` is the polynomial with coefficients `a_n n^{−it₀}` evaluated
+at `u`, and those have the same moduli, so every coefficient-modulus bound — in particular the whole sieve
+estimate — applies verbatim.  That is the next brick, and it is elementary.
+
+Recorded before attempting it, so the next pass starts from the diameter and the translated sieve rather than
+from the covering and the trivial size.
