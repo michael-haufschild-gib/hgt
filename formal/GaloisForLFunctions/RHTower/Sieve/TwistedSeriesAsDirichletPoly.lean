@@ -51,7 +51,7 @@ theorem sum_range_twistedSummand_eq_dirPoly {f : ℕ → ℂ} (hf0 : f 0 = 0) (�
   rw [twistedSummand, natCast_cpow_neg_eq_mul _ (by omega : 0 < k + 1),
     re_ofReal_add_mul_I, im_ofReal_add_mul_I, conj_charFn]
   push_cast
-  ring
+  ring_nf
 
 /-- The coefficient square-sum is bounded uniformly in the length. -/
 theorem sum_norm_sq_twistedTruncCoeff_le {f : ℕ → ℂ} (hbdd : ∀ n, ‖f n‖ ≤ 1)

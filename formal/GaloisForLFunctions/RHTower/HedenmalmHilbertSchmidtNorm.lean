@@ -64,7 +64,7 @@ theorem integral_pinnedKernelSlice_sq {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1) :
   have hint : ∀ s : Set ℝ, MeasurableSet s → volume s ≠ ⊤ →
       IntegrableOn (fun u => pinnedKernelSlice t u ^ 2) s volume := by
     intro s hs hfin
-    refine Measure.integrableOn_of_bounded hfin hmeas ?_
+    refine Measure.integrableOn_of_bounded (M := (1 : ℝ)) hfin hmeas ?_
     filter_upwards with u
     exact hbdd u
   have h1 : IntegrableOn (fun u => pinnedKernelSlice t u ^ 2) (Ioc 0 t) volume :=
@@ -123,7 +123,6 @@ theorem integral_quantileSpeed_sq_slice :
       = S.mass * tailEnergyDensity S x
     rw [show S.normalized x = S.k x / S.mass from rfl, tailEnergyDensity]
     field_simp
-    ring
   rw [← hleft, hmain, hright]
 
 end HedenmalmHilbertSchmidt

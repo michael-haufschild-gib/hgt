@@ -1,6 +1,8 @@
 # Cofinal Gamma Bockstein all-order Schatten wall
 
+- **ID:** `cofinal-gamma-bockstein-all-order-schatten-wall`
 - **Stage:** 3-formalized
+- **Formalized companion:** `cofinal-gamma-bockstein-all-order-schatten-wall-formalized.md`
 - **Type:** exact classification / positive survivor
 - **Formal module:** `GaloisForLFunctions/RHTower/PrimeGammaCofinalBocksteinSchattenWall.lean`
 

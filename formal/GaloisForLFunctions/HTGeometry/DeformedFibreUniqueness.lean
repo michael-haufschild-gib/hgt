@@ -29,7 +29,7 @@ theorem CoeffMem.sub {J : Ideal S} {p q : S[X]} (hp : CoeffMem J p)
 
 /-- A polynomial below the horizon that is divisible by the horizon is zero, over any nontrivial
 coefficient ring. -/
-theorem eq_zero_of_X_pow_dvd_of_natDegree_lt [Nontrivial S] {L : ℕ} {p : S[X]}
+theorem eq_zero_of_X_pow_dvd_of_natDegree_lt_of_commRing [Nontrivial S] {L : ℕ} {p : S[X]}
     (hdvd : (X : S[X]) ^ L ∣ p) (hdeg : p.natDegree < L) : p = 0 := by
   have hmod : p %ₘ X ^ L = 0 :=
     (Polynomial.modByMonic_eq_zero_iff_dvd (monic_X_pow (R := S) L)).2 hdvd
@@ -123,7 +123,7 @@ theorem deformed_factorisation_unique [Nontrivial S] (I : Ideal S) [IsHausdorff 
       rw [this]
       exact dvd_sub hdivHR hdivR
     have hsmallzero : H + R₀ = 0 :=
-      eq_zero_of_X_pow_dvd_of_natDegree_lt hdivSmall
+      eq_zero_of_X_pow_dvd_of_natDegree_lt_of_commRing hdivSmall
         (lt_of_le_of_lt (Polynomial.natDegree_add_le _ _) (max_lt hHdeg hR₀deg))
     have hHeq : H = -R₀ := by linear_combination hsmallzero
     have hHmem : CoeffMem (I ^ (k + 1)) H := by

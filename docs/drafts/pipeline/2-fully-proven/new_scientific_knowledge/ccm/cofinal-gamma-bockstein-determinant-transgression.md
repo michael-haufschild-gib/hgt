@@ -1,6 +1,8 @@
 # Cofinal Gamma Bockstein determinant transgression
 
+- **ID:** `cofinal-gamma-bockstein-determinant-transgression`
 - **Stage:** 3-formalized
+- **Formalized companion:** `cofinal-gamma-bockstein-determinant-transgression-formalized.md`
 - **Type:** exact source/physical comparison and corrected-determinant no-go
 - **Formal module:** `GaloisForLFunctions/RHTower/PrimeGammaCofinalBocksteinDeterminantTransgression.lean`
 

@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.DeformedCriticalObservation
 import GaloisForLFunctions.HTGeometry.DeformedFibreUniqueness
 import GaloisForLFunctions.HTGeometry.MvPowerSeriesMaximalIdeal
 import GaloisForLFunctions.HTGeometry.PureCriticalFactorizationAlgebra
+import GaloisForLFunctions.HTGeometry.PureFibreUnramified
 import GaloisForLFunctions.HTGeometry.TruncatedCompatibilityFibre
 
 /-!
@@ -61,6 +62,14 @@ private theorem polynomial_map_eq_zero_of_coeffMem_ker
   rw [Polynomial.coeff_map, Polynomial.coeff_zero]
   exact (RingHom.mem_ker).1 (hp i)
 
+private theorem polynomial_map_constantCoeff_eq_zero_of_coeffMem_deformIdeal
+    (K : Type*) [Field K] (m n : ℕ) {p : (deformBase K m n)[X]}
+    (hp : CoeffMem (deformIdeal K m n) p) :
+    p.map (MvPowerSeries.constantCoeff (σ := Fin n ⊕ Fin m ⊕ Unit) (R := K)) = 0 := by
+  apply polynomial_map_eq_zero_of_coeffMem_ker
+  rw [← MvPowerSeries.span_range_X_eq_ker_constantCoeff]
+  exact hp
+
 private theorem map_rawDeformation_constantCoeff (K : Type*) [Field K] (m n : ℕ) :
     (rawDeformation K m n).map
       (MvPowerSeries.constantCoeff (σ := Fin n ⊕ Fin m ⊕ Unit) (R := K)) = 0 := by
@@ -75,6 +84,27 @@ private theorem map_reciprocalDeformation_constantCoeff
   apply polynomial_map_eq_zero_of_coeffMem_ker
   rw [← MvPowerSeries.span_range_X_eq_ker_constantCoeff]
   exact coeffMem_reciprocalDeformation K m n
+
+private theorem map_deformedRawTail_constantCoeff
+    (K : Type*) [Field K] (m n : ℕ) :
+    (deformedRawTail K m n).map
+      (MvPowerSeries.constantCoeff (σ := Fin n ⊕ Fin m ⊕ Unit) (R := K)) = X ^ m := by
+  rw [deformedRawTail, Polynomial.map_add, Polynomial.map_pow, Polynomial.map_X,
+    map_rawDeformation_constantCoeff, add_zero]
+
+private theorem map_deformedReciprocalTail_constantCoeff
+    (K : Type*) [Field K] (m n : ℕ) :
+    (deformedReciprocalTail K m n).map
+      (MvPowerSeries.constantCoeff (σ := Fin n ⊕ Fin m ⊕ Unit) (R := K)) = X ^ n := by
+  rw [deformedReciprocalTail, Polynomial.map_add, Polynomial.map_pow, Polynomial.map_X,
+    map_reciprocalDeformation_constantCoeff, add_zero]
+
+private theorem map_C_then_constantCoeff
+    (K : Type*) [Field K] (m n : ℕ) (p : K[X]) :
+    (p.map (MvPowerSeries.C : K →+* deformBase K m n)).map
+      (MvPowerSeries.constantCoeff (σ := Fin n ⊕ Fin m ⊕ Unit) (R := K)) = p := by
+  ext i
+  simp
 
 /-- Constant lift of a polynomial over the residue field. -/
 noncomputable def deformConstantLift (K : Type*) [Field K] (m n : ℕ)
@@ -184,7 +214,7 @@ noncomputable def deformedCriticalFibreReduction
     ⟨pureCriticalCyclicPolynomial_natDegree (m + n),
       pureCriticalCyclicPolynomial_monic (by omega)⟩
   have hzero : A * B - pureCriticalCyclicPolynomial (K := K) (m + n) = 0 :=
-    eq_zero_of_X_pow_dvd_of_natDegree_lt hdvdDifference
+    eq_zero_of_X_pow_dvd_of_natDegree_lt_of_commRing hdvdDifference
       (hprod.natDegree_sub_lt (by omega) htarget)
   exact ⟨(Polynomial.MonicDegreeEq.mk A hAmonic hAdeg,
       Polynomial.MonicDegreeEq.mk B hBmonic hBdeg), sub_eq_zero.mp hzero⟩
@@ -284,27 +314,25 @@ theorem deformedCriticalFibreReduction_injective
   have hQ'deg : Q'.natDegree < n :=
     natDegree_deformRemainder_lt K hn q.2.2.1
   have hAform : A = X ^ m + deformConstantLift K m n p.1.1 := by
-    dsimp only [A, A₀, ε, φ, deformedRawTail]
-    rw [Polynomial.map_add, Polynomial.map_add, Polynomial.map_pow, Polynomial.map_X,
-      map_rawDeformation_constantCoeff, add_zero, Polynomial.map_add, Polynomial.map_pow,
-      Polynomial.map_X]
+    dsimp only [A, A₀, ε, φ]
+    rw [Polynomial.map_add, map_deformedRawTail_constantCoeff, Polynomial.map_add,
+      Polynomial.map_pow, Polynomial.map_X]
+    dsimp only [deformConstantLift]
     ring
   have hBform : B = X ^ n + deformConstantLift K m n p.1.2 := by
-    dsimp only [B, B₀, ε, φ, deformedReciprocalTail]
-    rw [Polynomial.map_add, Polynomial.map_add, Polynomial.map_pow, Polynomial.map_X,
-      map_reciprocalDeformation_constantCoeff, add_zero, Polynomial.map_add,
+    dsimp only [B, B₀, ε, φ]
+    rw [Polynomial.map_add, map_deformedReciprocalTail_constantCoeff, Polynomial.map_add,
       Polynomial.map_pow, Polynomial.map_X]
+    dsimp only [deformConstantLift]
     ring
   have hAformq : A = X ^ m + deformConstantLift K m n q.1.1 := by
     rw [hAform]
-    congr 2
-    dsimp only [deformConstantLift]
-    rw [hresA]
+    simpa only [deformConstantLift] using
+      congrArg (fun r : K[X] => (X : (deformBase K m n)[X]) ^ m + r.map φ) hresA
   have hBformq : B = X ^ n + deformConstantLift K m n q.1.2 := by
     rw [hBform]
-    congr 2
-    dsimp only [deformConstantLift]
-    rw [hresB]
+    simpa only [deformConstantLift] using
+      congrArg (fun r : K[X] => (X : (deformBase K m n)[X]) ^ n + r.map φ) hresB
   have hfullAp : A + rawDeformation K m n + P =
       p.1.1 + deformedRawTail K m n := by
     rw [hAform]
@@ -340,7 +368,7 @@ theorem deformedCriticalFibreReduction_injective
       dsimp only [deformConstantLift]
       rw [hresA]
     rw [hlift] at this
-    exact sub_right_injective this
+    exact sub_left_injective this
   have hpsecond : p.1.2 = q.1.2 := by
     have := huniq.2
     dsimp only [Q, Q', deformRemainder] at this
@@ -348,8 +376,132 @@ theorem deformedCriticalFibreReduction_injective
       dsimp only [deformConstantLift]
       rw [hresB]
     rw [hlift] at this
-    exact sub_right_injective this
+    exact sub_left_injective this
   apply Subtype.ext
   exact Prod.ext hpfirst hpsecond
+
+/-- Every pure monic factorisation has a point in the universal deformed critical fibre above it. -/
+theorem deformedCriticalFibreReduction_surjective
+    (K : Type*) [Field K] [CharZero K] {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    Function.Surjective (deformedCriticalFibreReduction K hm hn) := by
+  classical
+  haveI : IsAdicComplete (deformIdeal K m n) (deformBase K m n) := inferInstanceAs
+    (IsAdicComplete (Ideal.span (Set.range (MvPowerSeries.X :
+      Fin n ⊕ Fin m ⊕ Unit → MvPowerSeries (Fin n ⊕ Fin m ⊕ Unit) K)))
+      (MvPowerSeries (Fin n ⊕ Fin m ⊕ Unit) K))
+  intro r
+  let ε : deformBase K m n →+* K :=
+    MvPowerSeries.constantCoeff (σ := Fin n ⊕ Fin m ⊕ Unit) (R := K)
+  let φ : K →+* deformBase K m n := MvPowerSeries.C
+  let A₀ : K[X] := (r.1.1 : K[X])
+  let B₀ : K[X] := (r.1.2 : K[X])
+  let A : (deformBase K m n)[X] := A₀.map φ
+  let B : (deformBase K m n)[X] := B₀.map φ
+  have hAmonic : A.Monic := r.1.1.monic.map φ
+  have hBmonic : B.Monic := r.1.2.monic.map φ
+  have hAdeg : A.natDegree = m := by
+    dsimp only [A]
+    rw [Polynomial.natDegree_map φ]
+    exact r.1.1.natDegree
+  have hBdeg : B.natDegree = n := by
+    dsimp only [B]
+    rw [Polynomial.natDegree_map φ]
+    exact r.1.2.natDegree
+  have hcop : IsCoprime A B := by
+    exact (isCoprime_of_pureFactorisation
+      (Nat.cast_ne_zero.2 (by omega : m + n ≠ 0)) r.2).map (Polynomial.mapRingHom φ)
+  have hbase : (X : (deformBase K m n)[X]) ^ (m + n) ∣ inversionError A B := by
+    have heq : inversionError A B = (X : (deformBase K m n)[X]) ^ (m + n) := by
+      dsimp only [A, B, A₀, B₀, inversionError]
+      rw [← Polynomial.map_mul, r.2, pureCriticalCyclicPolynomial,
+        Polynomial.map_add, Polynomial.map_one, Polynomial.map_pow, Polynomial.map_X,
+        add_sub_cancel_left]
+    rw [heq]
+  obtain ⟨P, Q, hPdeg, hQdeg, hPmem, hQmem, hdvd⟩ :=
+    exists_deformed_factorisation (deformIdeal K m n) hm hn hAmonic hAdeg
+      (le_of_eq hBdeg) hcop (coeffMem_rawDeformation K m n)
+      (coeffMem_reciprocalDeformation K m n) hbase
+  let lowA : (deformBase K m n)[X] := A - X ^ m + P
+  let lowB : (deformBase K m n)[X] := B - X ^ n + Q
+  have hAminus : (A - X ^ m).natDegree < m :=
+    (show A.IsMonicOfDegree m from ⟨hAdeg, hAmonic⟩).natDegree_sub_lt
+      (Nat.ne_of_gt hm)
+      (show (X ^ m : (deformBase K m n)[X]).IsMonicOfDegree m from
+        ⟨Polynomial.natDegree_X_pow m, Polynomial.monic_X_pow m⟩)
+  have hBminus : (B - X ^ n).natDegree < n :=
+    (show B.IsMonicOfDegree n from ⟨hBdeg, hBmonic⟩).natDegree_sub_lt
+      (Nat.ne_of_gt hn)
+      (show (X ^ n : (deformBase K m n)[X]).IsMonicOfDegree n from
+        ⟨Polynomial.natDegree_X_pow n, Polynomial.monic_X_pow n⟩)
+  have hlowAnat : lowA.natDegree < m := by
+    dsimp only [lowA]
+    exact lt_of_le_of_lt (Polynomial.natDegree_add_le _ _) (max_lt hAminus hPdeg)
+  have hlowBnat : lowB.natDegree < n := by
+    dsimp only [lowB]
+    exact lt_of_le_of_lt (Polynomial.natDegree_add_le _ _) (max_lt hBminus hQdeg)
+  have hlowAdeg : lowA.degree < (m : ℕ) :=
+    lt_of_le_of_lt Polynomial.degree_le_natDegree (by exact_mod_cast hlowAnat)
+  have hlowBdeg : lowB.degree < (n : ℕ) :=
+    lt_of_le_of_lt Polynomial.degree_le_natDegree (by exact_mod_cast hlowBnat)
+  have hfullB : lowB + deformedReciprocalTail K m n =
+      B + reciprocalDeformation K m n + Q := by
+    dsimp only [lowB, deformedReciprocalTail]
+    ring
+  have hfullA' : lowA + deformedRawTail K m n =
+      A + rawDeformation K m n + P := by
+    dsimp only [lowA, deformedRawTail]
+    ring
+  have hfibre : (X : (deformBase K m n)[X]) ^ (m + n) ∣
+      criticalLowProduct (deformedRawTail K m n) (deformedReciprocalTail K m n)
+        lowA lowB - 1 := by
+    apply (dvd_criticalLowProduct_sub_one_iff_mul_sub_one
+      (X_pow_dvd_deformedRawTail K m n)
+      (X_pow_dvd_deformedReciprocalTail K m n) lowA lowB).2
+    rw [hfullA', hfullB]
+    exact hdvd
+  let z : criticalFibre (deformBase K m n) m n
+      (deformedRawTail K m n) (deformedReciprocalTail K m n) :=
+    ⟨(lowA, lowB), hlowAdeg, hlowBdeg, hfibre⟩
+  refine ⟨z, ?_⟩
+  have hPzero : P.map ε = 0 :=
+    polynomial_map_constantCoeff_eq_zero_of_coeffMem_deformIdeal K m n hPmem
+  have hQzero : Q.map ε = 0 :=
+    polynomial_map_constantCoeff_eq_zero_of_coeffMem_deformIdeal K m n hQmem
+  have hreduceA : (lowA + deformedRawTail K m n).map ε = A₀ := by
+    rw [hfullA']
+    dsimp only [A, φ]
+    rw [Polynomial.map_add, Polynomial.map_add, hPzero, add_zero,
+      map_rawDeformation_constantCoeff, add_zero, map_C_then_constantCoeff]
+  have hreduceB : (lowB + deformedReciprocalTail K m n).map ε = B₀ := by
+    rw [hfullB]
+    dsimp only [B, φ]
+    rw [Polynomial.map_add, Polynomial.map_add, hQzero, add_zero,
+      map_reciprocalDeformation_constantCoeff, add_zero, map_C_then_constantCoeff]
+  apply Subtype.ext
+  apply Prod.ext
+  · apply Subtype.ext
+    exact hreduceA
+  · apply Subtype.ext
+    exact hreduceB
+
+/-- The universal deformed critical fibre is equivalent to the pure monic factorisation fibre. -/
+noncomputable def deformedCriticalFibreEquivPureFactorization
+    (K : Type*) [Field K] [CharZero K] {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    criticalFibre (deformBase K m n) m n
+        (deformedRawTail K m n) (deformedReciprocalTail K m n) ≃
+      MonicFactorization (pureCriticalCyclicPolynomial (K := K) (m + n)) m n :=
+  Equiv.ofBijective (deformedCriticalFibreReduction K hm hn)
+    ⟨deformedCriticalFibreReduction_injective K hm hn,
+      deformedCriticalFibreReduction_surjective K hm hn⟩
+
+/-- **Exact binomial multiplicity of the universal deformed critical fibre.** -/
+theorem nat_card_deformedCriticalFibre
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    Nat.card (criticalFibre (deformBase K m n) m n
+      (deformedRawTail K m n) (deformedReciprocalTail K m n)) =
+      criticalHorizonMultiplicity m n := by
+  rw [Nat.card_congr (deformedCriticalFibreEquivPureFactorization K hm hn)]
+  exact nat_card_pureCriticalMonicFactorization (by omega)
 
 end GaloisForLFunctions.HTGeometry

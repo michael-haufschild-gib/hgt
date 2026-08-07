@@ -135,7 +135,7 @@ theorem integral_norm_tsum_twistedSummand_le
       (2 * T * Real.log (z : ℝ) / Real.pi + 1) *
         (2 * Real.sqrt (2 * Real.pi ^ 2 * δ ^ 2 / logSqWeight z)) := by
     have hAeq : Set.Icc (-T) T ∩ A = A ∩ Set.Icc (-T) T := inter_comm _ _
-    have hbound := volume_largeValues_le hf1 hmul hbdd hσ hz2 hδ hW hT
+    have hbound := volume_halaszLargeValues_le hf1 hmul hbdd hσ hz2 hδ hW hT
     rw [hAeq]
     have hfin : ENNReal.ofReal ((2 * T * Real.log (z : ℝ) / Real.pi + 1) *
         (2 * Real.sqrt (2 * Real.pi ^ 2 * δ ^ 2 / logSqWeight z))) ≠ ⊤ :=

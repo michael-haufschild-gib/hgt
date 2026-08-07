@@ -74,3 +74,19 @@ Every mean-square estimate in the corpus (`DirichletIntegralMeanValue`,
 bound is about the whole series; this is the passage between them, and it was missing. At
 `σ = 1 + A/log L` the error is `e^{-A}(log L)/A`, so the truncation is harmless once the polynomial is
 longer than the abscissa's reciprocal scale — which is the regime the mean-square route works in.
+
+## Second brick: the truncation is a Dirichlet polynomial
+
+`RHTower/Sieve/TwistedSeriesAsDirichletPoly.lean` (9071 jobs, exit 0, axiom-clean, wired):
+
+- `twistedTruncCoeff f σ L : Fin L → ℂ` — the coefficients `f(k+1)(k+1)^{-σ}`, with
+  `norm_twistedTruncCoeff_le`.
+- `sum_range_twistedSummand_eq_dirPoly` — **the identification**:
+  `∑_{n ≤ L} f(n)n^{-(σ+it)} = dirPoly L (twistedTruncCoeff f σ L) (-t)`, by the polar split of
+  `DistanceAbscissaBridge` (the abscissa goes into the coefficients, the frequency flips sign).
+- `sum_norm_sq_twistedTruncCoeff_le` — `∑_k ‖a_k‖² ≤ ∑_n n^{-2σ}`, uniformly in `L`: exactly the
+  quantity `volume_largeValues_le` and `DirichletIntegralMeanValue` consume.
+
+With the truncation error of the previous brick, the corpus's mean-square machinery now applies to a
+bounded multiplicative Dirichlet series. The remaining step of the successor task is the optimisation
+itself — feeding `integral_norm_dirPoly_halasz` the damped sup bound and choosing `V`.

@@ -106,7 +106,7 @@ theorem abs_sub_le_of_norm_gt
 /-- **The measure of the large-value set on a long range.**  Cover `[-T, T]` by cells of length
 `π / log z`; inside each cell the large-value set has diameter at most `√(2π²δ²/logSqWeight z)`, so its
 measure is at most `(2T log z/π + 1)` times twice that. -/
-theorem volume_largeValues_le
+theorem volume_halaszLargeValues_le
     (hf1 : f 1 = 1) (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n)
     (hbdd : ∀ n, ‖f n‖ ≤ 1) {σ : ℝ} (hσ : 1 < σ) {z : ℕ} (hz2 : 2 ≤ z)
     {δ : ℝ} (hδ : 0 ≤ δ) (hW : 0 < logSqWeight z) {T : ℝ} (hT : 0 ≤ T) :

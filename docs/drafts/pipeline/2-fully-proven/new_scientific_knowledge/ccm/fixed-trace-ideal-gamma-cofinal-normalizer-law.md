@@ -1,5 +1,8 @@
 # Fixed-trace-ideal Gamma cofinal normalizer law
 
+- **ID:** `fixed-trace-ideal-gamma-cofinal-normalizer-law`
+- **Stage:** 3-formalized
+- **Formalized companion:** `fixed-trace-ideal-gamma-cofinal-normalizer-law-formalized.md`
 - **Status:** `[PAPER PROOF COMPLETE] [LEAN FORMALIZED] [TARGET BUILD PASSED] [AXIOM AUDITED] [NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 - **Route:** R / rational-adelic Stokes to fixed physical Xi quotient
 - **Target module:**
