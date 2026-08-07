@@ -289,6 +289,100 @@ theorem integrableOn_id_mul_gammaTransportKernel_Ioi_zero :
   rw [hsplit]
   exact integrableOn_id_mul_gammaTransportKernel_Ioo.union hIci
 
+/-! ## The exact tail integral
+
+The kernel has an elementary primitive: `log(1 − e^{−s})` differentiates to `1/(e^s − 1)`.  So the
+tail integral is exactly `q(L) = −log(1 − e^{−L})`.  This identity is what makes the boundary
+correction of the half-line operator precisely the missing negative half-line of the
+translation-invariant one.
+-/
+
+/-- **The kernel's primitive.**  `log(1 − e^{−s})` differentiates to the transport kernel. -/
+theorem hasDerivAt_log_one_sub_exp_neg {s : ℝ} (hs : 0 < s) :
+    HasDerivAt (fun t => Real.log (1 - Real.exp (-t))) (gammaTransportKernel s) s := by
+  have hexp : HasDerivAt (fun t : ℝ => Real.exp (-t)) (-Real.exp (-s)) s := by
+    have h := (hasDerivAt_neg s).exp
+    have hv : Real.exp (-s) * (-1) = -Real.exp (-s) := by ring
+    rwa [hv] at h
+  have hinner : HasDerivAt (fun t : ℝ => 1 - Real.exp (-t)) (Real.exp (-s)) s := by
+    have h := (hasDerivAt_const s (1 : ℝ)).sub hexp
+    have hv : (0 : ℝ) - -Real.exp (-s) = Real.exp (-s) := by ring
+    rwa [hv] at h
+  have hgt : 1 < Real.exp s := by
+    have h : Real.exp 0 < Real.exp s := Real.exp_lt_exp.mpr hs
+    rwa [Real.exp_zero] at h
+  have hne : 1 - Real.exp (-s) ≠ 0 := by
+    have hlt : Real.exp (-s) < 1 := by
+      have h : Real.exp (-s) < Real.exp 0 := Real.exp_lt_exp.mpr (by linarith)
+      rwa [Real.exp_zero] at h
+    linarith
+  have hcomp := (Real.hasDerivAt_log hne).comp s hinner
+  have hval : (1 - Real.exp (-s))⁻¹ * Real.exp (-s) = gammaTransportKernel s := by
+    unfold gammaTransportKernel
+    have hprod : Real.exp (-s) * Real.exp s = 1 := by
+      rw [← Real.exp_add]
+      simp
+    have hne2 : Real.exp s - 1 ≠ 0 := by linarith
+    rw [inv_mul_eq_div, div_eq_div_iff hne hne2]
+    linear_combination hprod
+  rwa [hval] at hcomp
+
+/-- The kernel is integrable on every ray that stays off the pole. -/
+theorem integrableOn_gammaTransportKernel_Ioi {L : ℝ} (hL : 0 < L) :
+    IntegrableOn gammaTransportKernel (Ioi L) := by
+  rcases lt_or_ge L 1 with h | h
+  case inr =>
+    exact integrableOn_gammaTransportKernel_Ioi_one.mono_set fun x hx => lt_of_le_of_lt h hx
+  · have hsplit : Ioi L = Ioc L 1 ∪ Ioi 1 := by
+      ext x
+      simp only [mem_Ioi, mem_union, mem_Ioc]
+      constructor
+      · intro hx
+        rcases lt_or_ge 1 x with hx1 | hx1
+        · exact Or.inr hx1
+        · exact Or.inl ⟨hx, hx1⟩
+      · rintro (⟨h1, _⟩ | h1)
+        · exact h1
+        · linarith
+    have hIoc : IntegrableOn gammaTransportKernel (Ioc L 1) := by
+      have hfin : IsFiniteMeasure (volume.restrict (Ioc L 1)) := by
+        constructor
+        simp
+      have hdom : IntegrableOn (fun _ : ℝ => 1 / L) (Ioc L 1) := integrable_const _
+      refine MeasureTheory.Integrable.mono' hdom
+        measurable_gammaTransportKernel.aestronglyMeasurable ?_
+      filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
+      have hxpos : (0 : ℝ) < x := lt_trans hL hx.1
+      rw [Real.norm_eq_abs, abs_of_pos (gammaTransportKernel_pos hxpos)]
+      exact (gammaTransportKernel_le_inv hxpos).trans (one_div_le_one_div_of_le hL hx.1.le)
+    rw [hsplit]
+    exact hIoc.union integrableOn_gammaTransportKernel_Ioi_one
+
+/-- **The exact tail integral.**  `∫_L^∞ k(s) ds = −log(1 − e^{−L})`. -/
+theorem integral_Ioi_gammaTransportKernel {L : ℝ} (hL : 0 < L) :
+    (∫ s in Ioi L, gammaTransportKernel s) = -Real.log (1 - Real.exp (-L)) := by
+  have hcont : ContinuousWithinAt (fun t => Real.log (1 - Real.exp (-t))) (Ici L) L := by
+    have hne : 1 - Real.exp (-L) ≠ 0 := by
+      have hlt : Real.exp (-L) < 1 := by
+        have h : Real.exp (-L) < Real.exp 0 := Real.exp_lt_exp.mpr (by linarith)
+        rwa [Real.exp_zero] at h
+      linarith
+    have hinnerc : ContinuousAt (fun t : ℝ => 1 - Real.exp (-t)) L := by fun_prop
+    exact (hinnerc.log hne).continuousWithinAt
+  have hderiv : ∀ x ∈ Ioi L, HasDerivAt (fun t => Real.log (1 - Real.exp (-t)))
+      (gammaTransportKernel x) x := fun x hx =>
+    hasDerivAt_log_one_sub_exp_neg (lt_trans hL hx)
+  have hint : IntegrableOn gammaTransportKernel (Ioi L) := integrableOn_gammaTransportKernel_Ioi hL
+  have hlim : Filter.Tendsto (fun t => Real.log (1 - Real.exp (-t))) Filter.atTop (nhds 0) := by
+    have hexp : Filter.Tendsto (fun t : ℝ => 1 - Real.exp (-t)) Filter.atTop (nhds 1) := by
+      have h := Real.tendsto_exp_neg_atTop_nhds_zero
+      simpa using (tendsto_const_nhds.sub h)
+    have h2 := hexp.log (by norm_num : (1 : ℝ) ≠ 0)
+    rwa [Real.log_one] at h2
+  have hmain := integral_Ioi_of_hasDerivAt_of_tendsto hcont hderiv hint hlim
+  rw [hmain]
+  ring
+
 /-- The Gamma transport operator. -/
 noncomputable def gammaTransport (F : ℝ → ℝ) (L : ℝ) : ℝ :=
   ∫ s in Ioi (0 : ℝ), secondDifference F L s * gammaTransportKernel s

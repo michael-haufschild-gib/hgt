@@ -1247,3 +1247,34 @@ Trap: in the calc chain for `id_mul_gammaTransportKernel_le`, neither `rw [hinv]
 `linear_combination` closes `2*(2*e^{s/2}*e^{-s/2})*e^{-s/2} = 4*e^{-s/2}` — the association is
 wrong for `rw`. Prove `s * e^{-s/2} ≤ 2` as its own `have` (via `mul_assoc, hinv, mul_one`) and
 finish the step with `nlinarith`.
+
+## U. `(6)` closed — the exact tail integral
+
+`GammaTransportKernel.lean` is now at 19 declarations, all `#print axioms` clean.
+
+- `hasDerivAt_log_one_sub_exp_neg` — **the kernel has an elementary primitive**: `log(1 − e^{−s})`
+  differentiates to `1/(e^s − 1)`. The identification of the chain-rule value with the kernel is
+  `exp(−s)/(1 − exp(−s)) = 1/(exp s − 1)`, closed by `div_eq_div_iff` then
+  `linear_combination hprod` with `hprod : exp(−s)·exp(s) = 1`.
+- `integrableOn_gammaTransportKernel_Ioi` — the kernel is integrable on `Ioi L` for every `L > 0`
+  (off the pole): for `L ≥ 1` restrict the existing tail result; for `L < 1` split as
+  `Ioc L 1 ∪ Ioi 1` and dominate the near piece by the constant `1/L`.
+- `integral_Ioi_gammaTransportKernel` — **`(6)`**: `∫_L^∞ k(s) ds = −log(1 − e^{−L})`, by
+  `integral_Ioi_of_hasDerivAt_of_tendsto`, with `log(1 − e^{−t}) → log 1 = 0` at infinity.
+
+This is the identity that makes `(7)` `R_full f = R_half F + qF` meaningful: `q(L)` *is* the tail
+mass of the kernel, so the half-line operator's apparent boundary correction is exactly the missing
+negative half-line of the translation-invariant one.
+
+### Remaining on prerequisite 4
+
+- `(11)` `A(L) = Y(L)/(2√L)` with `A'(L) = P F(L)/(2L^{3/2})` distributionally.
+- `(12)`→`(13)` the weighted Cesàro comparison `liminf H ≤ α ≤ limsup H`.
+- §4's mollification commutator: `R_full` and `Y` commute with convolution; only multiplication by
+  `L` does not, and that commutator is the content.
+
+Traps: `le_or_lt` does not resolve here — use `lt_or_ge` and name the branches with `case inr =>`.
+`ContinuousAt.log (by fun_prop) hne` lets `fun_prop` pick the wrong function (it unified against
+`fun x => log (1 - x)`); bind the inner continuity to a named `have` first. `Filter.Tendsto.comp`
+yields a `∘` form that `simpa` cannot reconcile with a lambda — use `Filter.Tendsto.log` directly
+and `rwa [Real.log_one]`.

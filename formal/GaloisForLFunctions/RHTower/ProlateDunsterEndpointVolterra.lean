@@ -100,6 +100,33 @@ theorem tendsto_integral_lgBessel2Wronskian_at_endpoint
   simpa only [W] using (integral_lgBessel2Wronskian hs0 hs1 hc hAle hA
     (fun x hx => hU x (hsub hx)) (fun x hx => hDU x (hsub hx)) hint).symm
 
+/-- Endpoint-anchored regular-branch defect integral, represented by its exact transported
+Wronskian value. -/
+def lgEndpointRegularIntegral (s c : ℝ) (U DU : ℝ → ℝ) (x : ℝ) : ℝ :=
+  lgWeight s x * (U x * lgBesselModelDeriv s c x - DU x * lgBesselModel s c x)
+
+/-- Endpoint-anchored logarithmic-branch defect integral, represented after subtracting the
+endpoint Green constant. -/
+def lgEndpointLogIntegral (s c : ℝ) (U DU : ℝ → ℝ) (x : ℝ) : ℝ :=
+  lgWeight s x * (U x * lgBesselModel2Deriv s c x - DU x * lgBesselModel2 s c x)
+    - Real.pi / 4
+
+/-- Exact endpoint-anchored Volterra reconstruction.  The unperturbed term is the regular Bessel
+branch and both correction coefficients are the transported improper defect integrals. -/
+theorem lgEndpointVolterraReconstruction
+    {s c x : ℝ} {U DU : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hx : 1 < x) :
+    U x = lgBesselModel s c x +
+      (lgEndpointLogIntegral s c U DU x * lgBesselModel s c x -
+        lgEndpointRegularIntegral s c U DU x * lgBesselModel2 s c x) /
+          (Real.pi / 4) := by
+  have hrec := lgReconstruction_eq (U := U) (DU := DU) hs0 hs1 hx hc
+  rw [besselWronskian_eq_pi_div_four
+    (mul_pos hc (xiEndpointPhase_pos hs0 hs1 hx))] at hrec
+  rw [hrec, lgEndpointLogIntegral, lgEndpointRegularIntegral]
+  field_simp [Real.pi_ne_zero]
+  ring
+
 /-- First endpoint-anchored transport law for an actual radial prolate solution. -/
 theorem radialProlate_tendsto_integral_lgBesselWronskian_at_endpoint
     {s c B : ℝ} {R DR DDR : ℝ → ℝ}

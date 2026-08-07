@@ -175,3 +175,14 @@ projective/trace-class/determinant consequences.
   solution remains.
 - Verified `ProlateDunsterComparisonBridge.lean`, `ProlateDunsterRegularBranch.lean`, and
   `ProlateDunsterEndpointWronskian.lean` with foreground `lake env lean <file>` checks.
+
+### 2026-08-07: endpoint-anchored Volterra equation
+
+- Added `ProlateDunsterEndpointVolterra.lean`.
+- Passed both finite-interval Wronskian transport laws to `x=1+` as improper interval-integral
+  limits, using endpoint constants `0` and `pi/4`; no endpoint integrability assumption is needed.
+- Specialized both improper transport laws to exact smooth endpoint-normalized radial prolate
+  solutions and the concrete `lgNormalFormDefect`.
+- Proved exact endpoint-anchored reconstruction: transformed radial solution equals regular Bessel
+  model plus two correction terms whose coefficients are precisely transported defect integrals.
+- Verified with `lake env lean GaloisForLFunctions/RHTower/ProlateDunsterEndpointVolterra.lean`.

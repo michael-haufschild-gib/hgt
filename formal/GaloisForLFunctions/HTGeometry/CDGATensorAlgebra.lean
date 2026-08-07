@@ -323,6 +323,73 @@ theorem tensorAlgMul_comm {a b n : ℕ} (h : a + b = n) (h' : b + a = n)
     (f rs.1.1) (g rs.1.2), hr, hs]
   rfl
 
+/-- **Reassociating a splitting of a splitting.**  Both sides of associativity are sums over triples
+of bidegrees adding up to the output; this is the reassociation of such a triple. -/
+def splitReassoc {a b c m q n : ℕ} (h₁ : a + b = m) (h₃ : b + c = q)
+    {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}}
+    (x : (ts : Splitting m c p) × Splitting a b ts.1.1) :
+    (us : Splitting a q p) × Splitting b c us.1.2 :=
+  match x with
+  | ⟨⟨⟨_, t⟩, hu1, hu2⟩, ⟨⟨r, s⟩, hr1, hr2⟩⟩ =>
+      ⟨⟨(r, ⟨(s.1.1 + t.1.1, s.1.2 + t.1.2), by
+            have hs := s.2
+            have ht := t.2
+            simp only at hs ht ⊢
+            omega⟩), by
+          have hs := s.2
+          have ht := t.2
+          simp only at hs ht hu1 hu2 hr1 hr2 ⊢
+          omega⟩,
+        ⟨(s, t), ⟨rfl, rfl⟩⟩⟩
+
+/-- The inverse reassociation. -/
+def splitReassocInv {a b c m q n : ℕ} (h₁ : a + b = m) (h₃ : b + c = q)
+    {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}}
+    (y : (us : Splitting a q p) × Splitting b c us.1.2) :
+    (ts : Splitting m c p) × Splitting a b ts.1.1 :=
+  match y with
+  | ⟨⟨⟨r, _⟩, hu1, hu2⟩, ⟨⟨s, t⟩, hs1, hs2⟩⟩ =>
+      ⟨⟨(⟨(r.1.1 + s.1.1, r.1.2 + s.1.2), by
+            have hr := r.2
+            have hs := s.2
+            simp only at hr hs ⊢
+            omega⟩, t), by
+          have hr := r.2
+          have hs := s.2
+          simp only at hr hs hu1 hu2 hs1 hs2 ⊢
+          omega⟩,
+        ⟨(r, s), ⟨rfl, rfl⟩⟩⟩
+
+theorem splitReassoc_inv {a b c m q n : ℕ} (h₁ : a + b = m) (h₃ : b + c = q)
+    {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}}
+    (x : (ts : Splitting m c p) × Splitting a b ts.1.1) :
+    splitReassocInv h₁ h₃ (splitReassoc h₁ h₃ x) = x := by
+  obtain ⟨⟨⟨u, t⟩, hu1, hu2⟩, ⟨⟨r, s⟩, hr1, hr2⟩⟩ := x
+  have hm : (r.1.1 + s.1.1) + (r.1.2 + s.1.2) = m := by
+    clear hu1 hu2 hr1 hr2
+    have hr : r.1.1 + r.1.2 = a := r.2
+    have hs : s.1.1 + s.1.2 = b := s.2
+    omega
+  have hu : u = ⟨(r.1.1 + s.1.1, r.1.2 + s.1.2), hm⟩ := by
+    refine Subtype.ext (Prod.ext ?_ ?_) <;> simp only at hr1 hr2 ⊢ <;> omega
+  subst hu
+  simp only [splitReassoc, splitReassocInv]
+
+theorem splitReassocInv_inv {a b c m q n : ℕ} (h₁ : a + b = m) (h₃ : b + c = q)
+    {p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}}
+    (y : (us : Splitting a q p) × Splitting b c us.1.2) :
+    splitReassoc h₁ h₃ (splitReassocInv h₁ h₃ y) = y := by
+  obtain ⟨⟨⟨r, v⟩, hu1, hu2⟩, ⟨⟨s, t⟩, hs1, hs2⟩⟩ := y
+  have hq : (s.1.1 + t.1.1) + (s.1.2 + t.1.2) = q := by
+    clear hu1 hu2 hs1 hs2
+    have hs : s.1.1 + s.1.2 = b := s.2
+    have ht : t.1.1 + t.1.2 = c := t.2
+    omega
+  have hv : v = ⟨(s.1.1 + t.1.1, s.1.2 + t.1.2), hq⟩ := by
+    refine Subtype.ext (Prod.ext ?_ ?_) <;> simp only at hs1 hs2 ⊢ <;> omega
+  subst hv
+  simp only [splitReassoc, splitReassocInv]
+
 end Convolution
 
 end GaloisForLFunctions.HTGeometry
