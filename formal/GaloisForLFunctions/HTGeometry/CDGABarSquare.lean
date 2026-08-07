@@ -318,6 +318,15 @@ theorem barSplit_second_deg {a a' c e n : ℕ} (hs : a + a' + 1 = c) (hp : c + e
   show a + (v + (v' + e)) = n
   omega
 
+/-- The component of the inner head that the outer term reads, as a sum over splits. -/
+theorem barProj_comp_head (b' a' e : ℕ) (hq : a' + e = b' + 1) :
+    (barProj (M := barShiftFamily ε) (N := Z) ⟨(a', e), hq.symm ▸ rfl⟩).comp
+        (barHeadₗ ε Z b')
+      = ∑ s'' : BarSplit a', barHeadTermₗ ε Z b' a' e (by omega) s''.1.1 s''.1.2 s''.2 := by
+  refine LinearMap.ext fun V => ?_
+  rw [LinearMap.comp_apply, LinearMap.sum_apply]
+  exact barHead_apply ε Z b' V ⟨(a', e), by omega⟩
+
 end Assembly
 
 end Identification
