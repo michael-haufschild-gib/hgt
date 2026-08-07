@@ -159,3 +159,20 @@ becomes "no goals".
 Card 7 remaining: (6) multiplicity clause (analytic Fredholm multiplicity + Grushin reduction to
 diag(I, Ξ_C)) — this is what card 4 (16) cites; (8) det₂ (absent from corpus AND mathlib);
 (9) tr(B²) = M⁻¹∫x²k.
+
+## Card 5 statements (5) and (7) CLOSED and UNCONDITIONAL (2026-08-07)
+
+`formal/GaloisForLFunctions/RHTower/HedenmalmThetaIntervalTransform.lean` (wired, builds,
+axiom-clean).  `hat r_n = q_n Ξ_C` and `hat c_n = a_n Ξ_C` for the actual theta source, on
+|Im z| < 1, z ≠ 0.  Do NOT use 2-D Fubini: the working route is ONE integration by parts on the
+line with `integral_of_hasDerivAt_of_tendsto`, using
+`W_L(x) = ∫_x^{x+L} k`, `W_L' = k(·+L) − k`, boundary terms killed by
+`intervalMass_le_exp : W_L(x) ≤ (L·thetaBound·e^L)·e^{−|x|}`.
+The corpus already owned `shiftMultiplier` and `centeredMultiplier` with exactly the right
+shapes — do not redefine them.
+
+Traps: `HasDerivAt.comp` refuses to unify the composition point here — use
+`HasDerivAt.comp_add_const x L h`.  `abs_add` is gone; use `abs_sub_abs_le_abs_sub`.
+`integrableOn_const` now takes autoParams — use `Measure.integrableOn_of_bounded` instead.
+`Continuous.congr` leaves a `Function.comp` redex — insert `show`.
+For `linear_combination` after this integration by parts the coefficient is **+1**, not −1.

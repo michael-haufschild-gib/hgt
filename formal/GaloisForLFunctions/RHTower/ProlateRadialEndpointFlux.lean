@@ -36,7 +36,7 @@ theorem hasDerivAt_radialProlateFlux {s c x : ℝ} {R DR DDR : ℝ → ℝ}
       - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0) :
     HasDerivAt (radialProlateFlux DR) (c ^ 2 * (s - x ^ 2) * R x) x := by
   have hw : HasDerivAt (fun t : ℝ => t ^ 2 - 1) (2 * x) x := by
-    convert ((hasDerivAt_id x).pow 2).sub_const 1 using 1 <;> ring
+    simpa [pow_two, mul_comm] using ((hasDerivAt_id x).pow 2).sub_const 1
   have hflux := hw.mul hDR
   rw [show radialProlateFlux DR = fun t : ℝ => (t ^ 2 - 1) * DR t by rfl]
   refine hflux.congr_deriv ?_
@@ -44,7 +44,7 @@ theorem hasDerivAt_radialProlateFlux {s c x : ℝ} {R DR DDR : ℝ → ℝ}
 
 /-- Exact endpoint flux representation.  The endpoint term vanishes algebraically. -/
 theorem radialProlateFlux_eq_integral {s c x : ℝ} {R DR DDR : ℝ → ℝ}
-    (hx : 1 ≤ x)
+    (_hx : 1 ≤ x)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
     (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
@@ -56,7 +56,7 @@ theorem radialProlateFlux_eq_integral {s c x : ℝ} {R DR DDR : ℝ → ℝ}
   have hint : IntervalIntegrable (fun t : ℝ => c ^ 2 * (s - t ^ 2) * R t) volume 1 x := by
     apply Continuous.intervalIntegrable
     exact (continuous_const.mul (continuous_const.sub (continuous_id.pow 2))).mul
-      (fun t => (hR t).continuousAt).continuous
+      (continuous_iff_continuousAt.mpr fun t => (hR t).continuousAt)
   have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
   simpa using hFTC.symm
 
@@ -73,8 +73,8 @@ theorem radialProlateFlux_nonpos_of_nonnegative {s c x : ℝ} {R DR DDR : ℝ �
   have hnonneg : 0 ≤ ∫ t in 1..x, -(c ^ 2 * (s - t ^ 2) * R t) := by
     refine intervalIntegral.integral_nonneg hx fun t ht => ?_
     have hcoef : s - t ^ 2 ≤ 0 := by nlinarith [ht.1]
-    exact neg_nonneg.mpr (mul_nonpos_of_nonneg_of_nonpos (sq_nonneg c)
-      (mul_nonpos_of_nonpos_of_nonneg hcoef (hpos t ht)))
+    exact neg_nonneg.mpr (mul_nonpos_of_nonpos_of_nonneg
+      (mul_nonpos_of_nonneg_of_nonpos (sq_nonneg c) hcoef) (hpos t ht))
   rw [intervalIntegral.integral_neg] at hnonneg
   linarith
 
@@ -103,11 +103,15 @@ theorem radialProlate_antitoneOn_of_nonnegative {s c B : ℝ} {R DR DDR : ℝ �
     (hpos : ∀ t ∈ Icc (1 : ℝ) B, 0 ≤ R t) :
     AntitoneOn R (Icc (1 : ℝ) B) := by
   refine antitoneOn_of_deriv_nonpos (convex_Icc _ _)
-    ((fun t => (hR t).continuousAt).continuous.continuousOn)
-    ((fun t => (hR t).differentiableAt).differentiableOn) fun x hx => ?_
+    (continuous_iff_continuousAt.mpr (fun t => (hR t).continuousAt)).continuousOn
+    (show DifferentiableOn ℝ R (Icc (1 : ℝ) B) from
+      (show Differentiable ℝ R from fun t => (hR t).differentiableAt).differentiableOn).mono
+        interior_subset
+    fun x hx => ?_
   rw [interior_Icc] at hx
   have hposx : ∀ t ∈ Icc (1 : ℝ) x, 0 ≤ R t := fun t ht =>
     hpos t ⟨ht.1, le_trans ht.2 hx.2.le⟩
+  rw [(hR x).deriv]
   exact radialProlate_deriv_nonpos_of_nonnegative hs hx.1 hR hDR hode hposx
 
 /-- Quantitative derivative bound in the endpoint collar.  The constant `3/5` is uniform in
@@ -126,7 +130,7 @@ theorem radialProlate_deriv_lower_bound_endpoint_collar {s c x : ℝ} {R DR DDR 
   have hint : IntervalIntegrable (fun t : ℝ => c ^ 2 * (s - t ^ 2) * R t) volume 1 x := by
     apply Continuous.intervalIntegrable
     exact (continuous_const.mul (continuous_const.sub (continuous_id.pow 2))).mul
-      (fun t => (hR t).continuousAt).continuous
+      (continuous_iff_continuousAt.mpr fun t => (hR t).continuousAt)
   have hconst : IntervalIntegrable (fun _t : ℝ => -(c ^ 2 * x ^ 2)) volume 1 x :=
     intervalIntegrable_const
   have hintegral : (∫ _t in 1..x, -(c ^ 2 * x ^ 2))
@@ -152,11 +156,12 @@ theorem radialProlate_deriv_lower_bound_endpoint_collar {s c x : ℝ} {R DR DDR 
   rw [hfactor] at hdrop
   have hxsub : 0 < x - 1 := by linarith
   have hcancel : -(c ^ 2 * x ^ 2) ≤ (x + 1) * DR x := by
-    exact (mul_le_mul_left hxsub).mp (by
-      simpa only [mul_assoc] using hdrop)
+    apply le_of_mul_le_mul_left (a := x - 1) _ hxsub
+    simpa only [mul_assoc, mul_left_comm, mul_comm] using hdrop
   have hratio : x ^ 2 ≤ (3 / 5 : ℝ) * (x + 1) := by nlinarith
   have hxplus : 0 < x + 1 := by linarith
-  nlinarith [mul_nonneg (sq_nonneg c) hratio]
+  have hratio_c := mul_le_mul_of_nonneg_left hratio (sq_nonneg c)
+  nlinarith
 
 /-- Integrating the collar derivative bound gives an explicit lower bound for every nonnegative
 endpoint-normalized solution. -/
@@ -170,8 +175,9 @@ theorem radialProlate_value_lower_bound_endpoint_collar {s c x : ℝ} {R DR DDR 
     (hpos : ∀ t ∈ Icc (1 : ℝ) x, 0 ≤ R t) :
     1 - (3 / 5 : ℝ) * c ^ 2 * (x - 1) ≤ R x := by
   have hderiv : ∀ t ∈ uIcc (1 : ℝ) x, HasDerivAt R (DR t) t := fun t _ => hR t
-  have hint : IntervalIntegrable DR volume 1 x :=
-    (fun t => (hDR t).continuousAt).continuous.intervalIntegrable
+  have hint : IntervalIntegrable DR volume 1 x := by
+    apply Continuous.intervalIntegrable
+    exact continuous_iff_continuousAt.mpr fun t => (hDR t).continuousAt
   have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
   have hlower : ∀ t ∈ Icc (1 : ℝ) x, -(3 / 5 : ℝ) * c ^ 2 ≤ DR t := by
     intro t ht
@@ -194,7 +200,7 @@ theorem radialProlate_value_lower_bound_endpoint_collar {s c x : ℝ} {R DR DDR 
 /-- **Explicit zero-free collar.**  If `3 c^2 (B-1) < 5`, an endpoint-normalized low-separation
 radial solution is strictly positive on `[1,B]`. -/
 theorem radialProlate_pos_endpoint_collar {s c B : ℝ} {R DR DDR : ℝ → ℝ}
-    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hB1 : 1 ≤ B) (hB2 : B ≤ 11 / 10)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (_hB1 : 1 ≤ B) (hB2 : B ≤ 11 / 10)
     (hshort : 3 * c ^ 2 * (B - 1) < 5)
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
@@ -204,19 +210,19 @@ theorem radialProlate_pos_endpoint_collar {s c B : ℝ} {R DR DDR : ℝ → ℝ}
     ∀ x ∈ Icc (1 : ℝ) B, 0 < R x := by
   intro x hx
   by_contra hnot
-  push_neg at hnot
-  have hcont : Continuous R := (fun t => (hR t).continuousAt).continuous
+  push Not at hnot
+  have hcont : Continuous R := continuous_iff_continuousAt.mpr fun t => (hR t).continuousAt
   have hzero_exists : ∃ z ∈ Icc (1 : ℝ) x, R z = 0 := by
     have hzero_mem : (0 : ℝ) ∈ uIcc (R 1) (R x) := by
-      rw [hR1, uIcc_of_ge hnot]
+      rw [hR1, uIcc_of_ge (by linarith : R x ≤ (1 : ℝ))]
       exact ⟨hnot, zero_le_one⟩
     obtain ⟨z, hz, hzeq⟩ :=
-      (intermediate_value_uIcc (hcont.continuousOn.mono (uIcc_subset_uIcc hB1 hx.2))). hzero_mem
+      (intermediate_value_uIcc hcont.continuousOn) hzero_mem
     refine ⟨z, ?_, hzeq⟩
     simpa only [uIcc_of_le hx.1] using hz
   let H : Set ℝ := Icc (1 : ℝ) B ∩ {t : ℝ | R t = 0}
   have hHclosed : IsClosed H := isClosed_Icc.inter (isClosed_eq hcont continuous_const)
-  have hHcompact : IsCompact H := hHclosed.isCompact
+  have hHcompact : IsCompact H := isCompact_Icc.inter_right (isClosed_eq hcont continuous_const)
   have hHne : H.Nonempty := by
     obtain ⟨z, hz, hzeq⟩ := hzero_exists
     exact ⟨z, ⟨⟨hz.1, le_trans hz.2 hx.2⟩, hzeq⟩⟩
@@ -226,12 +232,12 @@ theorem radialProlate_pos_endpoint_collar {s c B : ℝ} {R DR DDR : ℝ → ℝ}
   have hpos : ∀ t ∈ Icc (1 : ℝ) y, 0 ≤ R t := by
     intro t ht
     by_contra htneg
-    push_neg at htneg
+    push Not at htneg
     have hzero_mem : (0 : ℝ) ∈ uIcc (R 1) (R t) := by
-      rw [hR1, uIcc_of_ge htneg.le]
+      rw [hR1, uIcc_of_ge (by linarith : R t ≤ (1 : ℝ))]
       exact ⟨htneg.le, zero_le_one⟩
     obtain ⟨z, hz, hzeq⟩ :=
-      (intermediate_value_uIcc (hcont.continuousOn.mono (uIcc_subset_uIcc hB1 hyIcc.2))). hzero_mem
+      (intermediate_value_uIcc hcont.continuousOn) hzero_mem
     have hzIcc : z ∈ Icc (1 : ℝ) t := by
       simpa only [uIcc_of_le ht.1] using hz
     have hzH : z ∈ H := ⟨⟨hzIcc.1, le_trans (le_trans hzIcc.2 ht.2) hyIcc.2⟩, hzeq⟩

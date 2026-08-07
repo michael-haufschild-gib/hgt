@@ -1351,3 +1351,46 @@ the rpow is `0`, so the pointwise inequality is simply false there. Exclude it w
 `Icc 0 L` after `integral_mono_ae_restrict`, so use `measurableSet_Icc`, not `measurableSet_uIcc`.
 For `t^{-1/2} = 1/√t` go through `Real.sqrt_eq_rpow, one_div, ← Real.rpow_neg`; `Real.rpow_neg_one`
 does not apply.
+
+## X. §4's commutator was already in the corpus — prerequisite 4's components are complete
+
+Before building the mollification commutator I checked, and the corpus already owns it:
+
+    HTGeometry/MollifierPositionCommutator.lean
+      mollify ρ u x            = ∫ t, ρ t * u (x − t)
+      firstMomentKernel ρ t    = t * ρ t
+      mollify_position_eq      : mollify ρ (fun y => y * u y) x
+                                   = x * mollify ρ u x − mollify (firstMomentKernel ρ) u x
+
+That is exactly §4's statement that only multiplication by `L` fails to commute with convolution,
+and that the defect is convolution against the first-moment kernel. Integrability is discharged
+from `Continuous ρ`, `Continuous u`, `HasCompactSupport ρ` — no premises. Axiom-clean. **Do not
+rebuild it.**
+
+`R_full` and `Y` commuting with convolution are the translation-invariance half of §4 and need no
+commutator at all.
+
+### Prerequisite 4 component status
+
+| Card step | Where |
+|---|---|
+| `(6)` `∫_L^∞ k = −log(1−e^{−L})` | `GammaTransportKernel.integral_Ioi_gammaTransportKernel` |
+| `(9)` `∫ s k(s) ds < ∞` | `GammaTransportKernel.integrableOn_id_mul_gammaTransportKernel_Ioi_zero` |
+| `(9)` `∫\|w(L+s)−w(L)\|dL ≤ s Var(w)` | `MonotoneTranslationModulus.integral_abs_translate_sub_le_variation` |
+| `(11)` `A′ = P F/(4L^{3/2})` | `HalfLogCesaroAverage.hasDerivAt_halfLogAverage` (card constant corrected) |
+| `(12)`→`(13)` | `HalfLogCesaroAverage.halfLogAverage_le`, `le_halfLogAverage` |
+| §4 commutator | `MollifierPositionCommutator.mollify_position_eq` (pre-existing) |
+
+Every *component* of prerequisite 4 is now formalized and axiom-clean. What is not yet formalized
+is the **assembly**: the card's actual conclusion `(4)` `lim √L F(L) = β` from hypotheses `(1)`
+and `(3)`. That assembly needs the distributional pairing `(8)` `E_R(F,w)` against the truncated
+weights `w_M(L) = 1_{[L_0,M]}(L) L^{−3/2}` of `(10)`, which is where the components meet — and it
+is a genuine step, not glue.
+
+### Prerequisite status overall
+
+1. Plancherel `H^s` equivalence — partial (constant `c_s` built; scaling law, Tonelli, Plancherel
+   step remain).
+2. Gamma transport operator — closed.
+3. Carleman estimates on a weighted strip — untouched.
+4. Weak signed half-log trace — all components closed; assembly remains.
