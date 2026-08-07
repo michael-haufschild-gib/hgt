@@ -62,20 +62,40 @@ Namespace `RHTower.HedenmalmQuantile` unless stated otherwise.
 | `(16)` | `<R2 g,g> = abs a_in squared - abs a_out squared` | `RHTower.inner_pinnedBoundaryCLM_eq_amplitudes`, `inner_pinnedBoundaryCLM_eq_zero_iff_amplitudes` |
 | — | no injective bounded symmetrizer | `RHTower.no_injective_pinnedVolterra_anticommutator` |
 
-## Hypotheses used, and why they are the exact ones
+## The two analytic inputs are theorems, not hypotheses
 
-Two analytic inputs appear as named hypotheses rather than being derived, because they are
-properties of the *specific* source and not of the general positive-density class.
+Over the general positive-density class two analytic inputs appear as named hypotheses:
 
-- `HasShiftedTail S z`: integrability of `k(x) e^{-Im(z) x}`.  This is exactly the convergence of
-  `Xi_C` at `z`, and it is what makes `A(t) = integral of exp(i z Q)` a locally absolutely
-  continuous primitive.
+- `HasShiftedTail S z`: integrability of `k(x) e^{-Im(z) x}`, exactly the convergence of `Xi_C`
+  at `z`, which makes `A(t) = integral of exp(i z Q)` a locally absolutely continuous primitive.
 - `RootModeEndpoints S z`: integrability of the mode energy and of the mode, together with the
-  vanishing of the mode energy at both endpoints.  This is the endpoint datum the card's own
-  derivation of `(11)` uses (`h(0) = h(1) = 0` for a genuine `L2` eigenvector); for Hedenmalm's
-  theta source it is supplied by the compressed-inverse theorem, not by the normal form.
+  vanishing of the mode energy at both endpoints.
 
-Without those hypotheses the corresponding statements are still available in exact two-point form:
+**Both are discharged at the actual arithmetic source.**  `formal/GaloisForLFunctions/RHTower/`
+supplies the instance `HedenmalmThetaSource.thetaSource` and
+
+| input | discharged by |
+|---|---|
+| `HasShiftedTail thetaSource z` for `abs (Im z) < 1` | `HedenmalmThetaSourceUnconditional.hasShiftedTail_thetaSource` |
+| `xiC thetaSource = XiC` on that strip | `HedenmalmThetaSourceUnconditional.xiC_thetaSource` |
+| two-sided decay of the source mode at a zero | `HedenmalmThetaRootModeDecay.norm_sourceModeU_le` |
+| `rootA` is the source primitive in quantile coordinates | `HedenmalmThetaRootEndpoints.rootA_eq_sourceModeI`, `rootH_eq_sourceModeU`, `norm_rootH_eq` |
+| the two quantile boundary limits | `tendsto_quantileFun_nhdsGT_zero`, `tendsto_quantileFun_nhdsLT_one` |
+| `RootModeEndpoints thetaSource z` for `abs (Im z) < 1` and `XiC z = 0` | `HedenmalmThetaRootEndpoints.rootModeEndpoints_thetaSource` |
+
+so `(11)` holds for the Riemann source with no hypothesis on the source at all:
+
+```text
+rootFlux_identity_thetaSource
+  : abs (Im z) < 1 -> XiC z = 0 ->
+    (integral over (0,1) of -h)  .re  =  -(Im z) * integral over (0,1) of q * norm h squared
+```
+
+`XiC z = 0` is not a convenience: without it the mode does **not** vanish at `t -> 1` when
+`Im z > 0`, so the endpoint bundle is false off the divisor.  This is exactly how the card uses
+the identity.
+
+Without those inputs the corresponding statements are still available in exact two-point form:
 `rootODE_two_point` and `rootEnergy_two_point` hold between any two interior points with no
 endpoint input at all.
 

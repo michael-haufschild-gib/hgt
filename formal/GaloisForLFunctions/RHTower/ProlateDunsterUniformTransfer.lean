@@ -36,7 +36,8 @@ theorem radialProlateVolterraDatum_crossing_le {s c : ℝ} {R DR DDR : ℝ → �
   let Flog : ℝ := lgWeight s A *
     (U A * lgBesselModel2Deriv s c A - DU A * lgBesselModel2 s c A)
   have hFlog : Flog = lgEndpointLogIntegral s c U DU A + Real.pi / 4 := by
-    rw [Flog, lgEndpointLogIntegral]
+    dsimp [Flog]
+    rw [lgEndpointLogIntegral]
     ring
   have hpi : |Real.pi / 4| ≤ 1 := by
     rw [abs_of_pos (by positivity : 0 < Real.pi / 4)]
@@ -49,7 +50,11 @@ theorem radialProlateVolterraDatum_crossing_le {s c : ℝ} {R DR DDR : ℝ → �
     nlinarith
   rw [radialProlateVolterraDatum]
   change |lgEndpointRegularIntegral s c U DU A| + |Flog| ≤ 33
-  linarith
+  calc
+    |lgEndpointRegularIntegral s c U DU A| + |Flog|
+        ≤ 18 / c + (141 / c + 1) := add_le_add hreg hFlogAbs
+    _ = 159 / c + 1 := by ring
+    _ ≤ 33 := by linarith
 
 /-- Explicit uniform bound for the interior Grönwall constant. -/
 theorem radialProlateVolterraK_crossing_le {s c C : ℝ} {R DR DDR : ℝ → ℝ}
@@ -75,7 +80,9 @@ theorem radialProlateVolterraK_crossing_le {s c C : ℝ} {R DR DDR : ℝ → ℝ
   have hDatum := radialProlateVolterraDatum_crossing_le hs0 hs1 hc hR1 hR hDR hode
   change radialProlateVolterraDatum s c A R DR ≤ 33 at hDatum
   have hcW : (15 / 4 : ℝ) ≤ c * W := by
-    exact mul_le_mul hc hWlower (by norm_num) (by norm_num)
+    have hmul := mul_le_mul hc hWlower (by norm_num : (0 : ℝ) ≤ 3 / 4) hc0.le
+    norm_num at hmul ⊢
+    exact hmul
   have hden : 0 < c * W := mul_pos hc0 hWpos
   have hexponent : 2 * C ^ 2 / (c * W) * 127 ≤ 68 * C ^ 2 := by
     rw [div_mul_eq_mul_div, div_le_iff₀ hden]
@@ -89,8 +96,9 @@ theorem radialProlateVolterraK_crossing_le {s c C : ℝ} {R DR DDR : ℝ → ℝ
     mul_le_mul hDatum hexp (Real.exp_nonneg _) (by norm_num)
   have hrhs : 33 * Real.exp (68 * C ^ 2)
       ≤ 44 * Real.exp (68 * C ^ 2) * W := by
-    have hmul := mul_le_mul_of_nonneg_left hWlower
-      (mul_nonneg (by norm_num : (0 : ℝ) ≤ 44) (Real.exp_nonneg _))
+    have hmul : 44 * Real.exp (68 * C ^ 2) * (3 / 4 : ℝ)
+        ≤ 44 * Real.exp (68 * C ^ 2) * W :=
+      mul_le_mul_of_nonneg_left hWlower (by positivity)
     nlinarith
   rw [radialProlateVolterraK]
   change radialProlateVolterraDatum s c A R DR *
@@ -146,7 +154,9 @@ theorem abs_radialProlate_sub_regularModel_le {s c B x : ℝ} {R DR DDR : ℝ �
   subst C'
   have hK := radialProlateVolterraK_crossing_le (C := C)
     hs0 hs1 hc hR1 hR hDR hode
-  rw [hKeq] at hK
+  have hKactual : K ≤ 44 * Real.exp (68 * C ^ 2) := by
+    rw [hKeq]
+    simpa only [A, C] using hK
   have hphaseMono := xiEndpointPhase_le_of_le hs0 hs1 hA1.le hx.1
   have hcxi : 1 ≤ c * xiEndpointPhase s x := by
     have := mul_le_mul_of_nonneg_left hphaseMono hc0.le
@@ -178,14 +188,22 @@ theorem abs_radialProlate_sub_regularModel_le {s c B x : ℝ} {R DR DDR : ℝ �
     have h2 : |Freg * lgBesselModel2 s c x| ≤ (18 / c) * E x := by
       rw [abs_mul]
       exact mul_le_mul hFreg (by simpa [E, C] using hmodels.2) (abs_nonneg _) (by positivity)
-    exact (abs_sub_le _ _).trans (by
-      have := add_le_add h1 h2
-      convert this using 1 <;> ring)
+    have htri : |Ilog * lgBesselModel s c x - Freg * lgBesselModel2 s c x|
+        ≤ |Ilog * lgBesselModel s c x| + |Freg * lgBesselModel2 s c x| := by
+      rw [sub_eq_add_neg]
+      simpa only [abs_neg] using
+        abs_add_le (Ilog * lgBesselModel s c x) (-(Freg * lgBesselModel2 s c x))
+    exact htri.trans (by
+      have hsum := add_le_add h1 h2
+      convert hsum using 1 <;> ring)
   have happx := happ x hx
   rw [hW] at happx
-  change |U x * (Real.pi / 4) -
-      ((Flog) * lgBesselModel s c x - Freg * lgBesselModel2 s c x)|
-      ≤ 2 * (K * (127 * C ^ 2 / c)) * E x at happx
+  have happform : |U x * (Real.pi / 4) -
+      (Flog * lgBesselModel s c x - Freg * lgBesselModel2 s c x)|
+      ≤ 2 * (K * (127 * C ^ 2 / c)) * E x := by
+    dsimp [Flog, Freg, Ilog, U, DU, C, E]
+    rw [lgEndpointLogIntegral, lgEndpointRegularIntegral]
+    convert happx using 1 <;> ring
   have hscaled : |(Real.pi / 4) * (U x - lgBesselModel s c x)|
       ≤ (2 * (44 * Real.exp (68 * C ^ 2) * (127 * C ^ 2)) + 159) / c * E x := by
     have hid : (Real.pi / 4) * (U x - lgBesselModel s c x) =
@@ -200,12 +218,15 @@ theorem abs_radialProlate_sub_regularModel_le {s c B x : ℝ} {R DR DDR : ℝ �
         ≤ (2 * (44 * Real.exp (68 * C ^ 2) * (127 * C ^ 2)) / c) * E x := by
       have hcoef : 2 * (K * (127 * C ^ 2 / c))
           ≤ 2 * (44 * Real.exp (68 * C ^ 2) * (127 * C ^ 2)) / c := by
-        have hmul := mul_le_mul_of_nonneg_right hK
+        have hmul := mul_le_mul_of_nonneg_right hKactual
           (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2 * 127)
             (div_nonneg (sq_nonneg C) hc0.le))
-        convert hmul using 1 <;> ring
+        calc
+          2 * (K * (127 * C ^ 2 / c)) = K * (2 * 127 * (C ^ 2 / c)) := by ring
+          _ ≤ 44 * Real.exp (68 * C ^ 2) * (2 * 127 * (C ^ 2 / c)) := hmul
+          _ = 2 * (44 * Real.exp (68 * C ^ 2) * (127 * C ^ 2)) / c := by ring
       exact mul_le_mul_of_nonneg_right hcoef hE0
-    have hsum := add_le_add (happx.trans hpert) hcombo
+    have hsum := add_le_add (happform.trans hpert) hcombo
     convert hsum using 1 <;> ring
   have habsW : |Real.pi / 4| = Real.pi / 4 := abs_of_pos (by positivity)
   rw [abs_mul, habsW] at hscaled

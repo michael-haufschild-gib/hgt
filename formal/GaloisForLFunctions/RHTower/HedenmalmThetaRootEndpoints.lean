@@ -259,6 +259,17 @@ theorem rootModeEndpoints_thetaSource {z : ℂ} (hz : |z.im| < 1)
     filter_upwards [hIoo'] with t ht
     exact (hnormsq t ht).symm
 
+
+/-- **The quantile flux identity at a zero of the completed transform, unconditionally.**
+Both hypotheses of the general flux identity are now theorems about the arithmetic source. -/
+theorem rootFlux_identity_thetaSource {z : ℂ} (hz : |z.im| < 1)
+    (hzero : xiC thetaSource z = 0) :
+    (∫ t in Ioo (0 : ℝ) 1, -(rootH thetaSource z t)).re
+      = -(z.im) * ∫ t in Ioo (0 : ℝ) 1,
+          quantileSpeed thetaSource t * ‖rootH thetaSource z t‖ ^ 2 :=
+  rootFlux_identity thetaSource (hasShiftedTail_thetaSource hz)
+    (rootModeEndpoints_thetaSource hz hzero)
+
 end HedenmalmThetaSource
 
 end

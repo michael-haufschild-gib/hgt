@@ -101,3 +101,30 @@ PROVEN ROUTE (analysed, not yet built).  `rootH S z t = -(1/M) · sourceModeU S 
   `integrableEnergy` because `∫ q ‖rootH‖² = M⁻² ∫ ‖u(x)‖² dx` after the quantile change of
   variables, and `‖u‖ ≤ C e^{-|x|}`;
   `tendstoLeft/Right` from `Tendsto Q (𝓝[>]0) atBot` / `(𝓝[<]1) atTop` composed with the bound.
+
+## CLOSED 2026-08-07: `RootModeEndpoints thetaSource z` is now a theorem
+
+`formal/GaloisForLFunctions/RHTower/HedenmalmThetaRootModeDecay.lean` and
+`.../HedenmalmThetaRootEndpoints.lean` (both wired, build, axiom-clean).
+
+Decay layer: `integral_Iic_exp_mul`, `integral_Ioi_exp_neg_mul`, `norm_k_sourceChar_le`,
+`norm_sourceModeI_le_left`, `norm_sourceModeI_le_right`, `norm_exp_neg_I_mul`,
+`norm_sourceModeU_le` (‖u_z(x)‖ ≤ C/(1−|Im z|) · e^{−|x|}).
+
+Bridge layer: `rootA_eq_sourceModeI` (uses the ALREADY EXISTING
+`HedenmalmQuantile.setIntegral_comp_quantile` — do not rebuild the truncated change of
+variables), `rootH_eq_sourceModeU`, `norm_rootH_eq`,
+`tendsto_quantileFun_nhdsGT_zero`, `tendsto_quantileFun_nhdsLT_one`,
+`continuous_sourceModeU`, `norm_sq_sourceModeU_le`, `integrable_norm_sq_sourceModeU`,
+`tendsto_norm_sq_sourceModeU`, and finally
+`rootModeEndpoints_thetaSource` + `rootFlux_identity_thetaSource`.
+
+So NO assumption hypothesis remains anywhere in the Hedenmalm quantile layer.  Card 1's
+companion has been rewritten to say so.
+
+Traps: `pow_le_pow_left` is gone — use `nlinarith [h, norm_nonneg _]` for `a² ≤ b²`.
+`Ioo_mem_nhdsWithin_Ioi/Iio` are now `Ioo_mem_nhdsGT` / `Ioo_mem_nhdsLT`.
+`Continuous.smul` will parse `continuous_const.mul h` as a Pi-mul — bind it to a named `have`
+with the explicit lambda type first.
+`linear_combination` coefficient for `rootH_eq_sourceModeU` is `-(sourceModeI …)`, not the
+exp-weighted guess.
