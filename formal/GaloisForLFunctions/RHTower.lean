@@ -6156,3 +6156,4 @@ import GaloisForLFunctions.RHTower.Sieve.LogSqZetaCap
 import GaloisForLFunctions.RHTower.Sieve.HalaszExplicitParameters
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogSqZetaCap
 import GaloisForLFunctions.RHTower.Sieve.HalaszPrimeSavingBound
+import GaloisForLFunctions.RHTower.Sieve.LSeriesBlockDecomposition

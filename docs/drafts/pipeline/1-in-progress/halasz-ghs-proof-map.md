@@ -1091,3 +1091,26 @@ With this the per-block estimate is available in the form the argument needs: wr
 `∑_j` over dyadic blocks, its Lorentzian mean square is at most `(∑_j √(block j))²`, and each block may be
 sieved at its own level.  What remains for the block route is the decomposition itself — `L(a, σ+iy)` as the
 finite sum of the `L` of the blocks, which is the fibrewise splitting of a finite sum and needs no analysis.
+
+## The block decomposition of a Dirichlet polynomial
+
+`RHTower/Sieve/LSeriesBlockDecomposition.lean` (green, axiom-clean, wired).
+
+* `LSeries_eq_sum_term_of_support` — a finitely supported Dirichlet series is the finite sum of its terms,
+  with no condition at `0` (the term there vanishes either way).
+* `coeffBlock a κ j = a·1_{κ = j}` with `coeffBlock_support`, `norm_coeffBlock_le`, `coeffBlock_prime`:
+  restriction only kills coefficients, so support, size bounds and primality are all inherited.
+* `LSeries_eq_sum_blocks` — for any index map whose image on the support lies in a finite `u`,
+  `L(a, t) = ∑_{j ∈ u} L(a·1_{κ = j}, t)`.
+* `LSeries_eq_sum_dyadic_blocks` — the instance `κ = ⌊log₂ ·⌋`, `u = range(⌊log₂ M⌋+1)`: the blocks are the
+  ranges `2^j ≤ n < 2^{j+1}`.
+
+The name `coeffBlock` was chosen after finding a matrix-valued `blockRestrict` already in
+`HTGeometry/ProjectiveHorizonJetDeterminant.lean`: different namespace, so no build error, but a module
+opening both would have been ambiguous.
+
+**Both halves of the per-block route are now in place**: the decomposition here and Minkowski for the
+weighted mean square, so `√(mean square of L(a))≤ ∑_j √(mean square of L(a_j))` with each block free to
+choose its own sieve level.  What remains is to choose those levels — on the block `2^j ≤ p < 2^{j+1}` the
+Selberg count is sharp at `log Y ≈ j log 2`, i.e. `Y ≈ 2^{j/2}` with `z ≈ 2^j` — and to sum the resulting
+`(j+1)`-indexed series, which is the geometric-type sum the dyadic cap already handles.
