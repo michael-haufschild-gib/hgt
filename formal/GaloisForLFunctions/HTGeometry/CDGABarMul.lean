@@ -150,4 +150,56 @@ theorem augIdealShiftMulOf_cancel {p q r m m' n : ℕ} (h₁ : p + q + 1 = m) (h
   have hzero : (-((-1 : R)) ^ p) + ((-1 : R)) ^ p = 0 := by ring
   rw [hzero, zero_smul]
 
+/-- **The Leibniz rule on the shift.**  Differentiating a product of two shifted elements, against
+differentiating each factor — the second with the sign of the first's shifted degree — sums to zero.
+The signs are forced: the shift negates the differential and the shifted product carries the sign of
+its first factor, and the two conspire so that the Leibniz rule of the ideal becomes this. -/
+theorem augIdealShiftMulOf_leibniz {p q n : ℕ} (h : p + q + 1 = n)
+    (x : augIdealCarrier ε (p + 1)) (y : augIdealCarrier ε (q + 1)) :
+    augIdealShiftD ε n (augIdealShiftMulOf ε h x y)
+      + augIdealShiftMulOf ε (show p + 1 + q + 1 = n + 1 by omega) (augIdealShiftD ε p x) y
+      + ((-1 : R)) ^ p • augIdealShiftMulOf ε (show p + (q + 1) + 1 = n + 1 by omega) x
+        (augIdealShiftD ε q y) = 0 := by
+  have hleib := augIdealMul_leibniz ε (show p + 1 + (q + 1) = n + 1 by omega) x y
+  have h1 : augIdealShiftD ε n (augIdealShiftMulOf ε h x y)
+      = -(((-1 : R)) ^ p • (augIdealMul ε (show p + 1 + 1 + (q + 1) = n + 1 + 1 by omega)
+            ((augIdealModule ε).d (p + 1) x) y
+          + ((-1 : R)) ^ (p + 1) • augIdealMul ε
+            (show p + 1 + (q + 1 + 1) = n + 1 + 1 by omega) x ((augIdealModule ε).d (q + 1) y))) := by
+    show -(augIdealModule ε).d (n + 1) (((-1 : R)) ^ p •
+      augIdealMul ε (show p + 1 + (q + 1) = n + 1 by omega) x y) = _
+    rw [(augIdealModule ε).d_smul, hleib]
+  have h2 : augIdealShiftMulOf ε (show p + 1 + q + 1 = n + 1 by omega) (augIdealShiftD ε p x) y
+      = ((-1 : R)) ^ p • augIdealMul ε (show p + 1 + 1 + (q + 1) = n + 1 + 1 by omega)
+        ((augIdealModule ε).d (p + 1) x) y := by
+    show ((-1 : R)) ^ (p + 1) • augIdealMul ε (show p + 1 + 1 + (q + 1) = n + 1 + 1 by omega)
+      (-(augIdealModule ε).d (p + 1) x) y = _
+    rw [show (-(augIdealModule ε).d (p + 1) x) = ((-1 : R)) • (augIdealModule ε).d (p + 1) x from
+      (neg_one_smul R _).symm, augIdealMul_smul_left, smul_smul, ← pow_succ]
+    have hpp : ((-1 : R)) ^ (p + 1 + 1) = ((-1 : R)) ^ p := by
+      rw [pow_succ, pow_succ]
+      ring
+    rw [hpp]
+  have hsc : ((-1 : R)) ^ p * ((-1 : R)) ^ p * (-1 : R) = -1 := by
+    have hh : ((-1 : R)) ^ p * ((-1 : R)) ^ p = 1 := by
+      rw [← pow_add]
+      exact Even.neg_one_pow ⟨p, rfl⟩
+    rw [hh, one_mul]
+  have h3 : ((-1 : R)) ^ p • augIdealShiftMulOf ε (show p + (q + 1) + 1 = n + 1 by omega) x
+        (augIdealShiftD ε q y)
+      = -augIdealMul ε (show p + 1 + (q + 1 + 1) = n + 1 + 1 by omega) x
+        ((augIdealModule ε).d (q + 1) y) := by
+    show ((-1 : R)) ^ p • (((-1 : R)) ^ p • augIdealMul ε
+      (show p + 1 + (q + 1 + 1) = n + 1 + 1 by omega) x (-(augIdealModule ε).d (q + 1) y)) = _
+    rw [show (-(augIdealModule ε).d (q + 1) y) = ((-1 : R)) • (augIdealModule ε).d (q + 1) y from
+        (neg_one_smul R _).symm,
+      augIdealMul_smul_right, smul_smul, smul_smul, hsc, neg_one_smul]
+  rw [h1, h2, h3]
+  rw [smul_add, smul_smul, ← pow_add]
+  have hpar : ((-1 : R)) ^ (p + (p + 1)) = -1 := by
+    rw [show p + (p + 1) = (p + p) + 1 by omega, pow_succ, Even.neg_one_pow ⟨p, rfl⟩, one_mul]
+  rw [hpar]
+  simp only [neg_smul, one_smul]
+  abel
+
 end GaloisForLFunctions.HTGeometry
