@@ -1261,3 +1261,34 @@ deficit is two logarithms.**  Both have identified sources:
 
 Neither is an obstruction of principle, and both are local to one lemma.  Recording them here so the next step
 attacks the right lemma rather than re-deriving the accounting.
+
+## The kernel constant read off, and a structural cap on the global-line route
+
+Reading `exists_bound_mellin_smoothWeight` (`HTGeometry/SmoothWeightMellin.lean:542`) settles item 2 of the
+previous entry, and the answer is worse than assumed.  The constant produced there is
+
+`C = M·|N + H + 1 − N/2|`,   `M = C_j/H^{j+1}·(N+H+1)^{σmax+j}`,
+
+so for the quadratic decay `j = 1` used by the Lorentzian route, `C ≍ N^{σ+2}/H² = N^σ·(N/H)²`.  The
+`(N/H)²` is a *penalty*, not the hoped-for gain: the transform's quadratic decay is bought by two derivatives
+of the cutoff, each costing `1/H`.
+
+That caps the global-line route.  The smoothing error is `≍ H(log N)⁴`, forcing `H ≪ N/(log N)³`, at which
+point `C ≍ N(log N)⁶`, and with the Euler factor `log N` and the two block sums `(log M)²` the analytic term
+is `≍ N(log N)⁹`.  Increasing `H` to shrink `C` increases the smoothing error linearly, and the two cannot be
+balanced below `N log N`: **the Lorentzian mean-square route, applied to the whole line, cannot beat the
+trivial bound.**  This is a structural cap of the device combination, not a bookkeeping loss.
+
+**The corpus's own Halász assembly already avoids it.**  `HalaszPerronAssembly.norm_tsum_mul_smoothWeight_le`
+splits the vertical integral at height `T`: on `[−T, T]` it uses the *uniform* kernel bound
+`‖W‖ ≤ (N+H)^σ/σ ≍ N` — no `(N/H)²` — and beyond `T` it uses the decay, where the large constant is harmless
+because the tail integral is small.  The mean-square treatment must be applied the same way: Cauchy–Schwarz on
+`[−T, T]` against the uniform bound, with the tail bounded by the kernel's decay.  The corpus has the
+truncated mean square for exactly this (`integral_Icc_normSq_logPoly_le_prime_sieve`, over `Icc (−W) W`), and
+`integral_compl_Icc_inv_one_add_sq_le` for the tail.
+
+**Next brick, and a subsumption.**  The three-factor master inequality and the weighted Cauchy–Schwarz family
+are stated for `volume` on the line.  The truncated route needs them on `volume.restrict (Icc (−T) T)`, and
+the proofs use nothing but Hölder for the measure at hand: restating the family for an arbitrary measure `μ`
+subsumes both the global and the truncated case, with the present statements recovered by `μ = volume`.  That
+is the next step, followed by the truncated assembly.
