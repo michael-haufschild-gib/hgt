@@ -107,3 +107,67 @@ theorem norm_integral_mul_mul_le_sqrt_mul_sqrt_measure {g₁ g₂ W : α → ℂ
 
 end GaloisForLFunctions.HTGeometry
 end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open MeasureTheory
+
+variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
+
+/-- **Cauchy–Schwarz without a weight, over an arbitrary measure.**  The weighted inequality at `W ≡ 1`. -/
+theorem integral_mul_le_sqrt_mul_sqrt_measure {g₁ g₂ : α → ℂ}
+    (hm1 : AEStronglyMeasurable g₁ μ) (hm2 : AEStronglyMeasurable g₂ μ)
+    (h1 : Integrable (fun y => ‖g₁ y‖ ^ 2) μ) (h2 : Integrable (fun y => ‖g₂ y‖ ^ 2) μ) :
+    (∫ y, ‖g₁ y‖ * ‖g₂ y‖ ∂μ)
+      ≤ Real.sqrt (∫ y, ‖g₁ y‖ ^ 2 ∂μ) * Real.sqrt (∫ y, ‖g₂ y‖ ^ 2 ∂μ) := by
+  have h := integral_mul_mul_weight_le_sqrt_mul_sqrt_measure (W := fun _ : α => (1 : ℂ))
+    hm1 hm2 aestronglyMeasurable_const (by simpa using h1) (by simpa using h2)
+  simpa using h
+
+/-- The product of two moduli is integrable when both mean squares are. -/
+theorem integrable_mul_norm_of_integrable_sq {g₁ g₂ : α → ℂ}
+    (hm1 : AEStronglyMeasurable g₁ μ) (hm2 : AEStronglyMeasurable g₂ μ)
+    (h1 : Integrable (fun y => ‖g₁ y‖ ^ 2) μ) (h2 : Integrable (fun y => ‖g₂ y‖ ^ 2) μ) :
+    Integrable (fun y => ‖g₁ y‖ * ‖g₂ y‖) μ := by
+  refine Integrable.mono' (h1.add h2) ((hm1.norm).mul (hm2.norm)) ?_
+  filter_upwards with y
+  have h0 : (0 : ℝ) ≤ ‖g₁ y‖ * ‖g₂ y‖ := by positivity
+  simp only [Pi.add_apply]
+  rw [Real.norm_eq_abs, abs_of_nonneg h0]
+  nlinarith [sq_nonneg (‖g₁ y‖ - ‖g₂ y‖)]
+
+/-- **The three-factor inequality with a uniformly bounded weight.**  Two factors in mean square, one bounded
+pointwise, and the weight bounded uniformly:
+
+`‖∫ g₁g₂g₃W ∂μ‖ ≤ M·Wsup·(∫‖g₁‖² ∂μ)^{1/2}(∫‖g₂‖² ∂μ)^{1/2}`.
+
+On a bounded height range this is the form a smoothed Perron kernel supports with `Wsup = (N+H)^σ/σ`, which
+carries none of the penalty of its global quadratic-decay bound. -/
+theorem norm_integral_mul_three_le_sup_mul_sqrt_measure {g₁ g₂ g₃ W : α → ℂ} {M Wsup : ℝ}
+    (hm1 : AEStronglyMeasurable g₁ μ) (hm2 : AEStronglyMeasurable g₂ μ)
+    (hM0 : 0 ≤ M) (hW0 : 0 ≤ Wsup) (hM : ∀ y, ‖g₃ y‖ ≤ M) (hW : ∀ y, ‖W y‖ ≤ Wsup)
+    (h1 : Integrable (fun y => ‖g₁ y‖ ^ 2) μ) (h2 : Integrable (fun y => ‖g₂ y‖ ^ 2) μ) :
+    ‖∫ y, g₁ y * g₂ y * g₃ y * W y ∂μ‖
+      ≤ M * Wsup * (Real.sqrt (∫ y, ‖g₁ y‖ ^ 2 ∂μ) * Real.sqrt (∫ y, ‖g₂ y‖ ^ 2 ∂μ)) := by
+  classical
+  have hcross := integrable_mul_norm_of_integrable_sq hm1 hm2 h1 h2
+  refine le_trans (norm_integral_le_integral_norm _) ?_
+  have hbound : ∀ y, ‖g₁ y * g₂ y * g₃ y * W y‖ ≤ M * Wsup * (‖g₁ y‖ * ‖g₂ y‖) := by
+    intro y
+    rw [norm_mul, norm_mul, norm_mul]
+    calc ‖g₁ y‖ * ‖g₂ y‖ * ‖g₃ y‖ * ‖W y‖
+        ≤ ‖g₁ y‖ * ‖g₂ y‖ * M * Wsup := by
+          refine mul_le_mul (mul_le_mul_of_nonneg_left (hM y) (by positivity)) (hW y)
+            (norm_nonneg _) (by positivity)
+      _ = M * Wsup * (‖g₁ y‖ * ‖g₂ y‖) := by ring
+  have hmono : (∫ y, ‖g₁ y * g₂ y * g₃ y * W y‖ ∂μ)
+      ≤ ∫ y, M * Wsup * (‖g₁ y‖ * ‖g₂ y‖) ∂μ := by
+    refine integral_mono_of_nonneg (Filter.Eventually.of_forall fun y => norm_nonneg _)
+      (hcross.const_mul (M * Wsup)) (Filter.Eventually.of_forall hbound)
+  refine hmono.trans ?_
+  rw [integral_const_mul]
+  refine mul_le_mul_of_nonneg_left ?_ (mul_nonneg hM0 hW0)
+  exact integral_mul_le_sqrt_mul_sqrt_measure hm1 hm2 h1 h2
+
+end GaloisForLFunctions.HTGeometry
+end

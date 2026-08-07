@@ -1312,3 +1312,25 @@ Perron kernel obeys the uniform bound `‖W‖ ≤ (N+H)^σ/σ ≍ N`, with none
 quadratic-decay bound carries.  That is the route the corpus's own Halász assembly takes, and the truncated
 mean square (`integral_Icc_normSq_logPoly_le_prime_sieve`) and tail estimate
 (`integral_compl_Icc_inv_one_add_sq_le`) are already in place for it.
+
+## The three-factor inequality with a uniformly bounded weight
+
+`HTGeometry/WeightedHolder.lean` (appended; green, axiom-clean).
+
+* `integral_mul_le_sqrt_mul_sqrt_measure` — Cauchy–Schwarz without a weight, the weighted inequality at
+  `W ≡ 1`;
+* `integrable_mul_norm_of_integrable_sq` — the product of two moduli is integrable when both mean squares are;
+* `norm_integral_mul_three_le_sup_mul_sqrt_measure` :
+
+  `‖∫ g₁g₂g₃W ∂μ‖ ≤ M·Wsup·(∫‖g₁‖² ∂μ)^{1/2}(∫‖g₂‖² ∂μ)^{1/2}`   for `‖g₃‖ ≤ M`, `‖W‖ ≤ Wsup`.
+
+All three for an arbitrary measure.  The nonnegativity of `M` and `Wsup` is taken as data rather than derived
+from the pointwise bounds, since on an empty domain the bounds are vacuous while the conclusion still needs
+them — a reminder that "a bound on a norm is nonnegative" is only available where there is a point to evaluate
+at.
+
+Instantiated at `μ = volume.restrict (Icc (−T) T)` and `Wsup = (N+H)^σ/σ` this is the truncated analogue of the
+master inequality, with none of the `(N/H)²` that the global quadratic-decay bound carries.  What the truncated
+route still needs is the tail: `‖∫_{|y| > T} g₁g₂g₃W‖`, where the trivial bound `‖g₁g₂g₃‖ ≤ (Euler)³` meets the
+kernel's decay through `integral_compl_Icc_inv_one_add_sq_le` — the same split the corpus's own Halász assembly
+performs.
