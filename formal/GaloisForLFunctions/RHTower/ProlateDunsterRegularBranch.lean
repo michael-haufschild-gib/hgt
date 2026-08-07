@@ -85,7 +85,7 @@ theorem xiEndpointPhase_tendsto_zero_at_endpoint
       (nhdsWithin 1 (Ioi 1)) (nhds 0) := by
     have hcont : ContinuousAt (fun x : ℝ => x ^ 2 - 1) 1 := by fun_prop
     convert hcont.tendsto.mono_left
-      (show nhdsWithin (1 : ℝ) (Ioi 1) ≤ nhds 1 from inf_le_left) using 1 <;> norm_num
+      (show nhdsWithin (1 : ℝ) (Ioi 1) ≤ nhds 1 from inf_le_left) using 1; norm_num
   have hsqrt : Tendsto (fun x : ℝ => Real.sqrt (x ^ 2 - 1))
       (nhdsWithin 1 (Ioi 1)) (nhds 0) := by
     simpa only [Function.comp_def, Real.sqrt_zero] using

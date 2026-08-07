@@ -122,6 +122,131 @@ theorem xiC_thetaSource {z : ℂ} (hz : |z.im| < 1) : xiC thetaSource z = XiC z 
     ring
   rw [hrw, hFL, XiC_even]
 
+
+/-! ### Uniform bound and decay -/
+
+/-- The uniform bound of the theta source. -/
+def thetaBound : ℝ := thetaCuspDerivativeExpConstant 0
+
+theorem thetaBound_nonneg : 0 ≤ thetaBound := thetaCuspDerivativeExpConstant_nonneg 0
+
+/-- **The theta source is uniformly bounded.** -/
+theorem thetaSource_le (x : ℝ) : thetaSource.k x ≤ thetaBound := by
+  have h := abs_thetaCuspFullSource_le x
+  have h1 : Real.exp (-|x|) ≤ 1 := by
+    rw [Real.exp_le_one_iff]
+    simp
+  calc thetaSource.k x ≤ |thetaCuspFullSource x| := le_abs_self _
+    _ ≤ thetaBound * Real.exp (-|x|) := h
+    _ ≤ thetaBound * 1 := by gcongr; exact thetaBound_nonneg
+    _ = thetaBound := mul_one _
+
+/-- **The theta source vanishes at both ends of the line.** -/
+theorem tendsto_thetaSource_atBot : Tendsto thetaSource.k atBot (𝓝 0) := by
+  have habs : Tendsto (fun x : ℝ => -|x|) atBot atBot :=
+    tendsto_neg_atTop_atBot.comp tendsto_abs_atBot_atTop
+  have hexp : Tendsto (fun x : ℝ => Real.exp (-|x|)) atBot (𝓝 0) :=
+    Real.tendsto_exp_atBot.comp habs
+  have hbd : Tendsto (fun x : ℝ => thetaBound * Real.exp (-|x|)) atBot (𝓝 0) := by
+    simpa using hexp.const_mul thetaBound
+  refine squeeze_zero_norm (fun x => ?_) hbd
+  simpa [thetaBound, Real.norm_eq_abs] using abs_thetaCuspFullSource_le x
+
+theorem tendsto_thetaSource_atTop : Tendsto thetaSource.k atTop (𝓝 0) := by
+  have habs : Tendsto (fun x : ℝ => -|x|) atTop atBot :=
+    tendsto_neg_atTop_atBot.comp tendsto_abs_atTop_atTop
+  have hexp : Tendsto (fun x : ℝ => Real.exp (-|x|)) atTop (𝓝 0) :=
+    Real.tendsto_exp_atBot.comp habs
+  have hbd : Tendsto (fun x : ℝ => thetaBound * Real.exp (-|x|)) atTop (𝓝 0) := by
+    simpa using hexp.const_mul thetaBound
+  refine squeeze_zero_norm (fun x => ?_) hbd
+  simpa [thetaBound, Real.norm_eq_abs] using abs_thetaCuspFullSource_le x
+
+/-! ### The canonical metric of the Riemann source -/
+
+theorem norm_metricSymbol_thetaSource_le (t : ℝ) :
+    ‖metricSymbol thetaSource t‖ ≤ thetaBound / thetaSource.mass :=
+  norm_metricSymbol_le thetaSource thetaSource_le t
+
+theorem thetaMetricBound_nonneg : 0 ≤ thetaBound / thetaSource.mass :=
+  div_nonneg thetaBound_nonneg thetaSource.mass_pos.le
+
+/-- **The canonical singular metric of the Riemann source.** -/
+def thetaMetricOperator : Lp ℂ 2 unitIntervalMeasure →L[ℂ] Lp ℂ 2 unitIntervalMeasure :=
+  metricOperator thetaSource thetaMetricBound_nonneg norm_metricSymbol_thetaSource_le
+
+/-- **The metric of the Riemann source has dense range** — unconditionally. -/
+theorem denseRange_thetaMetricOperator : DenseRange thetaMetricOperator :=
+  metricOperator_denseRange thetaSource thetaMetricBound_nonneg norm_metricSymbol_thetaSource_le
+
+/-- **The metric of the Riemann source is not bounded below** — unconditionally.  Its inverse is
+the genuinely singular direction of the quantile normal form. -/
+theorem not_boundedBelow_thetaMetricOperator :
+    ¬ ∃ ε : ℝ, 0 < ε ∧
+      ∀ f : Lp ℂ 2 unitIntervalMeasure, ε * ‖f‖ ≤ ‖thetaMetricOperator f‖ :=
+  not_boundedBelow_metricOperator thetaSource tendsto_thetaSource_atBot
+    thetaMetricBound_nonneg norm_metricSymbol_thetaSource_le
+
+/-- **The metric pairing in quantile coordinates**, unconditionally. -/
+theorem inner_thetaMetricOperator_quantileUnitary (f : SourceSpace thetaSource) :
+    (inner ℂ (thetaMetricOperator (quantileUnitary thetaSource f))
+      (quantileUnitary thetaSource f) : ℂ)
+      = (((∫ x, ‖(f x : ℂ)‖ ^ 2) / thetaSource.mass : ℝ) : ℂ) :=
+  inner_metricOperator_quantileUnitary thetaSource thetaMetricBound_nonneg
+    norm_metricSymbol_thetaSource_le f
+
+/-! ### Unconditional forms of the source laws -/
+
+open HedenmalmFredholmRange
+
+/-- **The reflection law of the Riemann source inverse**, unconditionally: `R B R = -B`. -/
+theorem sourceInverse_sourceReflection_theta {f : ℝ → ℂ}
+    (hf : Integrable f (volume : Measure ℝ)) (x : ℝ) :
+    sourceInverse thetaSource (sourceReflection f) (-x)
+      = -sourceInverse thetaSource f x :=
+  HedenmalmHilbertSchmidt.sourceInverse_sourceReflection thetaSource thetaSource_even hf x
+
+/-- **The exact Fredholm alternative for the Riemann source.**  A two-ended solution of the
+Hedenmalm source equation exists only at a zero of the completed Riemann function. -/
+theorem XiC_eq_zero_of_solution {α : ℂ} (hα : |α.im| < 1) {u u' : ℝ → ℂ}
+    (hderiv : ∀ x, HasDerivAt u (u' x) x)
+    (heq : ∀ x, -Complex.I * u' x + α * u x = -Complex.I * (thetaCuspFullSource x : ℂ))
+    (hbot : Tendsto (fun x => u x * sourceChar α x) atBot (𝓝 0))
+    (htop : Tendsto (fun x => u x * sourceChar α x) atTop (𝓝 0)) :
+    XiC α = 0 := by
+  have h := xiC_eq_zero_of_solution thetaSource hderiv heq (hasShiftedTail_thetaSource hα)
+    hbot htop
+  rwa [xiC_thetaSource hα] at h
+
+/-- **The two formulas of the two-ended solution agree exactly at a zero of `Ξ_C`.** -/
+theorem sourceModeI_eq_neg_tail_iff_XiC {α : ℂ} (hα : |α.im| < 1) (x : ℝ) :
+    sourceModeI thetaSource α x
+      = -∫ y in Ioi x, (thetaCuspFullSource y : ℂ) * sourceChar α y ↔ XiC α = 0 := by
+  have h := sourceModeI_eq_neg_tail_iff thetaSource (hasShiftedTail_thetaSource hα) x
+  rw [xiC_thetaSource hα] at h
+  exact h
+
+/-- **The reflection law for the source modes of the Riemann source**, unconditionally. -/
+theorem sourceModeI_neg_theta {z : ℂ} (hz : |z.im| < 1) (x : ℝ) :
+    sourceModeI thetaSource (-z) (-x)
+      = XiC z - sourceModeI thetaSource z x := by
+  have h := sourceModeI_neg thetaSource thetaSource_even (hasShiftedTail_thetaSource hz) x
+  rwa [xiC_thetaSource hz] at h
+
+/-! ### Unconditional forms of the interval laws -/
+
+open HedenmalmIntervalAnomaly
+
+/-- **The reflection law of the theta interval mass**, unconditionally. -/
+theorem intervalMass_neg_theta {a b : ℝ} (hab : a ≤ b) :
+    intervalMass thetaSource (-b) (-a) = intervalMass thetaSource a b :=
+  intervalMass_neg thetaSource thetaSource_even hab
+
+/-- **The centered two-prime window of the Riemann source is reflection invariant.** -/
+theorem centeredWindow_neg_theta {n : ℕ} (hn : 1 ≤ n) (x : ℝ) :
+    centeredWindow thetaSource n (-x) = centeredWindow thetaSource n x :=
+  centeredWindow_neg thetaSource thetaSource_even hn x
+
 end HedenmalmThetaSource
 
 end

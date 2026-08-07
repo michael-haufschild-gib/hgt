@@ -257,6 +257,82 @@ theorem log_sqrt_one_add_sq_le {s : ℝ} (hs : 0 < s) (ξ : ℝ) :
         gcongr
     _ = 2 ^ (s / 2) / s * (1 + |ξ| ^ s) := by ring
 
+/-! ## Transfer along a Lipschitz cutoff
+
+A monotone endpoint profile is multiplied by a smooth cutoff before it is used.  Multiplication by
+a bounded Lipschitz factor preserves a linear `L¹` modulus, because the Leibniz splitting
+
+`Δ_h(uφ) = u(·+h) Δ_hφ + φ Δ_h u`
+
+costs the cutoff only its Lipschitz constant times the shift.  So the cutoff cannot destroy the
+estimate, and the profile keeps its Sobolev membership after truncation.
+-/
+
+/-- The Leibniz splitting of a translation difference of a product. -/
+theorem abs_translate_sub_mul_le {u φ : ℝ → ℝ} {Mu Mφ L h : ℝ} (x : ℝ)
+    (hu : ∀ y, |u y| ≤ Mu) (hφ : ∀ y, |φ y| ≤ Mφ)
+    (hlip : ∀ y z, |φ y - φ z| ≤ L * |y - z|) (hh : 0 ≤ h) :
+    |u (x + h) * φ (x + h) - u x * φ x| ≤ Mu * L * h + Mφ * |u (x + h) - u x| := by
+  have hsplit : u (x + h) * φ (x + h) - u x * φ x
+      = u (x + h) * (φ (x + h) - φ x) + φ x * (u (x + h) - u x) := by ring
+  have hd : |(x + h) - x| = h := by
+    rw [show (x + h) - x = h by ring, abs_of_nonneg hh]
+  have hlip' : |φ (x + h) - φ x| ≤ L * h := by
+    have hxy := hlip (x + h) x
+    rwa [hd] at hxy
+  have h1 : |u (x + h) * (φ (x + h) - φ x)| ≤ Mu * (L * h) := by
+    rw [abs_mul]
+    exact mul_le_mul (hu _) hlip' (abs_nonneg _) (le_trans (abs_nonneg _) (hu (x + h)))
+  have h2 : |φ x * (u (x + h) - u x)| ≤ Mφ * |u (x + h) - u x| := by
+    rw [abs_mul]
+    exact mul_le_mul_of_nonneg_right (hφ x) (abs_nonneg _)
+  rw [hsplit]
+  calc |u (x + h) * (φ (x + h) - φ x) + φ x * (u (x + h) - u x)|
+      ≤ |u (x + h) * (φ (x + h) - φ x)| + |φ x * (u (x + h) - u x)| := abs_add_le _ _
+    _ ≤ Mu * (L * h) + Mφ * |u (x + h) - u x| := add_le_add h1 h2
+    _ = Mu * L * h + Mφ * |u (x + h) - u x| := by ring
+
+/-- **A Lipschitz cutoff preserves a linear `L¹` modulus.**  The truncated monotone profile still
+has translation modulus linear in the shift, with a constant that adds the cutoff's Lipschitz cost
+on the window to the profile's own variation. -/
+theorem integral_abs_translate_sub_mul_le {u φ : ℝ → ℝ} (hu : Monotone u)
+    (hφ : Continuous φ) {a b h Mu Mφ L V : ℝ} (hab : a ≤ b) (hh : 0 ≤ h)
+    (hub : ∀ y, |u y| ≤ Mu) (hφb : ∀ y, |φ y| ≤ Mφ)
+    (hlip : ∀ y z, |φ y - φ z| ≤ L * |y - z|) (hMφ : 0 ≤ Mφ)
+    (hV : u (b + h) - u a ≤ V) :
+    (∫ x in a..b, |u (x + h) * φ (x + h) - u x * φ x|)
+      ≤ Mu * L * h * (b - a) + Mφ * (V * h) := by
+  have hdiffint : IntervalIntegrable (fun x => |u (x + h) - u x|) volume a b :=
+    (intervalIntegrable_translate_sub hu h a b).abs
+  have hmajint : IntervalIntegrable
+      (fun x => Mu * L * h + Mφ * |u (x + h) - u x|) volume a b :=
+    intervalIntegrable_const.add (hdiffint.const_mul Mφ)
+  have hmeas : Measurable fun x => |u (x + h) * φ (x + h) - u x * φ x| :=
+    (((monotone_comp_add_right hu h).measurable.mul
+      (hφ.comp (continuous_id.add continuous_const)).measurable).sub
+      (hu.measurable.mul hφ.measurable)).abs
+  have hlhsint : IntervalIntegrable
+      (fun x => |u (x + h) * φ (x + h) - u x * φ x|) volume a b := by
+    refine IntervalIntegrable.mono_fun hmajint hmeas.aestronglyMeasurable ?_
+    filter_upwards with x
+    have hpt := abs_translate_sub_mul_le x hub hφb hlip hh
+    have hnn : 0 ≤ Mu * L * h + Mφ * |u (x + h) - u x| :=
+      le_trans (abs_nonneg _) hpt
+    simp only [Real.norm_eq_abs, abs_abs, abs_of_nonneg hnn]
+    exact hpt
+  have hmono : (∫ x in a..b, |u (x + h) * φ (x + h) - u x * φ x|)
+      ≤ ∫ x in a..b, (Mu * L * h + Mφ * |u (x + h) - u x|) :=
+    intervalIntegral.integral_mono_on hab hlhsint hmajint fun x _ =>
+      abs_translate_sub_mul_le x hub hφb hlip hh
+  have hval : (∫ x in a..b, (Mu * L * h + Mφ * |u (x + h) - u x|))
+      = Mu * L * h * (b - a) + Mφ * ∫ x in a..b, |u (x + h) - u x| := by
+    rw [intervalIntegral.integral_add intervalIntegrable_const (hdiffint.const_mul Mφ),
+      intervalIntegral.integral_const, intervalIntegral.integral_const_mul, smul_eq_mul]
+    ring
+  rw [hval] at hmono
+  have hL1 := integral_abs_translate_sub_le_variation hu (a := a) (b := b) hh hV
+  nlinarith [hmono, hL1, hMφ]
+
 end MonotoneTranslation
 
 end GaloisForLFunctions.HTGeometry

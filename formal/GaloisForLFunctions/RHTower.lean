@@ -353,6 +353,7 @@ import GaloisForLFunctions.RHTower.BurnolCoPoissonSourceVectorSpace
 import GaloisForLFunctions.RHTower.BurnolCoPoissonSubWindow
 import GaloisForLFunctions.RHTower.BurnolCoPoissonSubWindowIndependence
 import GaloisForLFunctions.RHTower.BurnolCoPoissonSubWindowSource
+import GaloisForLFunctions.RHTower.BurnolDividedShiftSourceLeakage
 import GaloisForLFunctions.RHTower.BurnolCoPoissonWindowIndicator
 import GaloisForLFunctions.RHTower.BurnolFormalizedCards
 import GaloisForLFunctions.RHTower.BurnolFormalizedCards
@@ -6077,3 +6078,4 @@ import GaloisForLFunctions.RHTower.ZetaVerticalSqrtBound
 import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 import GaloisForLFunctions.RHTower.ZetaZeroFreeRegion
 import GaloisForLFunctions.RHTower.Sieve.MultiplicativeLogRecursion
+import GaloisForLFunctions.RHTower.Sieve.VonMangoldtWeightAdditive

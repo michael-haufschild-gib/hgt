@@ -193,4 +193,117 @@ theorem tensorPair_dR {a₁ a₂ b₁ b₂ n₁ n₂ : ℕ} (h₁ : a₁ + b₁ 
 
 end Pair
 
+section Convolution
+
+variable (A : CDGAStructure R X) (B : CDGAStructure R Y)
+
+open scoped Classical in
+/-- One summand of the product of two elements of the tensor product: the Koszul product of the
+component of the first factor at `r` with the matching component of the second. -/
+noncomputable def tensorAlgTerm {a b n : ℕ} (h : a + b = n)
+    (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b)
+    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) :
+    TensorProduct R (X p.1.1) (Y p.1.2) :=
+  if hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2 then
+    tensorPairₗ A B (show r.1.1 + (p.1.1 - r.1.1) = p.1.1 by omega)
+      (show r.1.2 + (p.1.2 - r.1.2) = p.1.2 by omega)
+      (f r)
+      (g ⟨(p.1.1 - r.1.1, p.1.2 - r.1.2), by
+        have h1 := r.2
+        have h2 := p.2
+        simp only at h1 h2 ⊢
+        omega⟩)
+  else 0
+
+open scoped Classical in
+theorem tensorAlgTerm_add_left {a b n : ℕ} (h : a + b = n)
+    (f f' : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b)
+    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) :
+    tensorAlgTerm A B h (f + f') g p r
+      = tensorAlgTerm A B h f g p r + tensorAlgTerm A B h f' g p r := by
+  by_cases hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2
+  · simp only [tensorAlgTerm, dif_pos hr, tensorCarrier_add_apply, map_add,
+      LinearMap.add_apply]
+  · simp only [tensorAlgTerm, dif_neg hr, add_zero]
+
+open scoped Classical in
+theorem tensorAlgTerm_add_right {a b n : ℕ} (h : a + b = n)
+    (f : TensorCarrier (R := R) X Y a) (g g' : TensorCarrier (R := R) X Y b)
+    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) :
+    tensorAlgTerm A B h f (g + g') p r
+      = tensorAlgTerm A B h f g p r + tensorAlgTerm A B h f g' p r := by
+  by_cases hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2
+  · simp only [tensorAlgTerm, dif_pos hr, tensorCarrier_add_apply, map_add]
+  · simp only [tensorAlgTerm, dif_neg hr, add_zero]
+
+open scoped Classical in
+theorem tensorAlgTerm_smul_left {a b n : ℕ} (h : a + b = n) (c : R)
+    (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b)
+    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) :
+    tensorAlgTerm A B h (c • f) g p r = c • tensorAlgTerm A B h f g p r := by
+  by_cases hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2
+  · simp only [tensorAlgTerm, dif_pos hr, tensorCarrier_smul_apply, map_smul,
+      LinearMap.smul_apply]
+  · simp only [tensorAlgTerm, dif_neg hr, smul_zero]
+
+open scoped Classical in
+theorem tensorAlgTerm_smul_right {a b n : ℕ} (h : a + b = n) (c : R)
+    (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b)
+    (p : {pq : ℕ × ℕ // pq.1 + pq.2 = n}) (r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}) :
+    tensorAlgTerm A B h f (c • g) p r = c • tensorAlgTerm A B h f g p r := by
+  by_cases hr : r.1.1 ≤ p.1.1 ∧ r.1.2 ≤ p.1.2
+  · simp only [tensorAlgTerm, dif_pos hr, tensorCarrier_smul_apply, map_smul]
+  · simp only [tensorAlgTerm, dif_neg hr, smul_zero]
+
+/-- **The product of two elements of a tensor product of algebras**: the sum, over the ways of
+splitting the output bidegree, of the Koszul products of the matching components. -/
+noncomputable def tensorAlgMul {a b n : ℕ} (h : a + b = n)
+    (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b) :
+    TensorCarrier (R := R) X Y n :=
+  fun p => ∑ r : {ab : ℕ × ℕ // ab.1 + ab.2 = a}, tensorAlgTerm A B h f g p r
+
+theorem tensorAlgMul_add_left {a b n : ℕ} (h : a + b = n)
+    (f f' : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b) :
+    tensorAlgMul A B h (f + f') g = tensorAlgMul A B h f g + tensorAlgMul A B h f' g := by
+  funext p
+  show (∑ r, tensorAlgTerm A B h (f + f') g p r) = _
+  rw [tensorCarrier_add_apply]
+  show (∑ r, tensorAlgTerm A B h (f + f') g p r)
+    = (∑ r, tensorAlgTerm A B h f g p r) + ∑ r, tensorAlgTerm A B h f' g p r
+  rw [← Finset.sum_add_distrib]
+  exact Finset.sum_congr rfl fun r _ => tensorAlgTerm_add_left A B h f f' g p r
+
+theorem tensorAlgMul_add_right {a b n : ℕ} (h : a + b = n)
+    (f : TensorCarrier (R := R) X Y a) (g g' : TensorCarrier (R := R) X Y b) :
+    tensorAlgMul A B h f (g + g') = tensorAlgMul A B h f g + tensorAlgMul A B h f g' := by
+  funext p
+  show (∑ r, tensorAlgTerm A B h f (g + g') p r) = _
+  rw [tensorCarrier_add_apply]
+  show (∑ r, tensorAlgTerm A B h f (g + g') p r)
+    = (∑ r, tensorAlgTerm A B h f g p r) + ∑ r, tensorAlgTerm A B h f g' p r
+  rw [← Finset.sum_add_distrib]
+  exact Finset.sum_congr rfl fun r _ => tensorAlgTerm_add_right A B h f g g' p r
+
+theorem tensorAlgMul_smul_left {a b n : ℕ} (h : a + b = n) (c : R)
+    (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b) :
+    tensorAlgMul A B h (c • f) g = c • tensorAlgMul A B h f g := by
+  funext p
+  show (∑ r, tensorAlgTerm A B h (c • f) g p r) = _
+  rw [tensorCarrier_smul_apply]
+  show (∑ r, tensorAlgTerm A B h (c • f) g p r) = c • ∑ r, tensorAlgTerm A B h f g p r
+  rw [Finset.smul_sum]
+  exact Finset.sum_congr rfl fun r _ => tensorAlgTerm_smul_left A B h c f g p r
+
+theorem tensorAlgMul_smul_right {a b n : ℕ} (h : a + b = n) (c : R)
+    (f : TensorCarrier (R := R) X Y a) (g : TensorCarrier (R := R) X Y b) :
+    tensorAlgMul A B h f (c • g) = c • tensorAlgMul A B h f g := by
+  funext p
+  show (∑ r, tensorAlgTerm A B h f (c • g) p r) = _
+  rw [tensorCarrier_smul_apply]
+  show (∑ r, tensorAlgTerm A B h f (c • g) p r) = c • ∑ r, tensorAlgTerm A B h f g p r
+  rw [Finset.smul_sum]
+  exact Finset.sum_congr rfl fun r _ => tensorAlgTerm_smul_right A B h c f g p r
+
+end Convolution
+
 end GaloisForLFunctions.HTGeometry

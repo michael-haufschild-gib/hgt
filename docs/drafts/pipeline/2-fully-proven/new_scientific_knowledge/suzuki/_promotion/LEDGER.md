@@ -1010,3 +1010,37 @@ Traps hit, for reuse:
 Still open on the two-port card: transferring this monotone estimate along the smooth endpoint
 cutoff (`BoundedVariationOn.mul_of_norm_le_of_lipschitzOn` in
 `HTGeometry/BoundedVariationRiemannSum.lean`), and `(13)` `log⟨ξ⟩ ≤ C_s(1+|ξ|^s)`.
+
+## N. `(13)` and the cutoff transfer are closed
+
+`MonotoneTranslationModulus.lean` now carries 19 theorems, all `#print axioms` clean.
+
+- `max_one_abs_rpow_le`, `one_add_sq_le_two_mul_max_sq`, `log_sqrt_one_add_sq_le` — **`(13)`**
+  `log⟨ξ⟩ ≤ C_s (1 + |ξ|^s)` for every `s > 0`, with the explicit constant `C_s = 2^{s/2}/s`.
+  `max_one_abs_rpow_le` needs no sign condition on `s` at all; the hypothesis was dropped.
+- `abs_translate_sub_mul_le`, `integral_abs_translate_sub_mul_le` — the **cutoff transfer**.
+  The Leibniz splitting `Δ_h(uφ) = u(·+h) Δ_hφ + φ Δ_h u` costs a bounded Lipschitz cutoff only
+  `Lip(φ)·h` on the window, so the truncated profile keeps a linear `L¹` modulus with constant
+  `Mu·L·(b−a) + Mφ·V`. This is the step the card asserts as "the smooth cutoff adds finite
+  variation".
+
+### What still blocks promotion of the two-port card
+
+Section 4's chain is `(11) → (12) → (13) → (14)`. Steps `(11)`, `(12)`, `(13)` and the cutoff
+transfer are now formalized. **`(14)` `log⟨D⟩u ∈ L²` is not.** The missing link is the
+identification of the Gagliardo seminorm
+
+    ∫∫ |u(x+h) − u(x)|² / |h|^{1+2s} dh dx     with     ∫ (1+ξ²)^s |û(ξ)|² dξ,
+
+i.e. the Plancherel equivalence between the difference-quotient and Fourier definitions of `H^s`.
+mathlib does not have it, and neither does the corpus — `HTGeometry/SobolevWeightDecay.lean`
+defines `MemSobolevWeight` on the Fourier side only, and the corpus route into it
+(`memSobolevWeight_of_integrable_deriv`) goes through an integrable derivative, which this profile
+does not have.
+
+That equivalence is the single remaining obligation for this card. It is a genuine theorem, not a
+restatement: one direction is Plancherel applied to `û(ξ)(e^{2πihξ} − 1)`, followed by the exact
+Fourier computation `∫_ℝ |e^{2πihξ} − 1|² |h|^{-(1+2s)} dh = c_s |ξ|^{2s}` with a finite positive
+`c_s` for `0 < s < 1`. Build that constant first; it is the whole content.
+
+Do not promote the card until `(14)` lands. Sections 1–3 alone are not the card.

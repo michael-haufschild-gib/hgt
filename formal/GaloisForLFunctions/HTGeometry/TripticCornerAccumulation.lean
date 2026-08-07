@@ -67,23 +67,22 @@ theorem cornerIndex_tendsto_atBot {τ σ : ℂ} (hτ : 0 < τ.im) (hσ : 0 < σ.
   have := hmain M n hn'
   omega
 
-end GaloisForLFunctions.HTGeometry
 
 /-- A `1`-periodic principal-part coefficient is invariant under every integer translation. -/
 theorem laurentCoeff_add_intCast {F : ℂ → ℂ} {ℓ : ℤ}
     (hper : ∀ z : ℂ, laurentCoeff F (z + 1) ℓ = laurentCoeff F z ℓ) (z : ℂ) (j : ℤ) :
     laurentCoeff F (z + (j : ℂ)) ℓ = laurentCoeff F z ℓ := by
   induction j using Int.induction_on with
-  | hz => simp
-  | hp k ih =>
+  | zero => simp
+  | succ k ih =>
       have hstep : z + ((k : ℤ) + 1 : ℤ) = (z + ((k : ℤ) : ℂ)) + 1 := by push_cast; ring
       rw [hstep, hper, ih]
-  | hn k ih =>
+  | pred k ih =>
       have hstep : (z + ((-(k : ℤ) - 1 : ℤ) : ℂ)) + 1 = z + ((-(k : ℤ) : ℤ) : ℂ) := by
         push_cast; ring
       have h := hper (z + ((-(k : ℤ) - 1 : ℤ) : ℂ))
       rw [hstep, ih] at h
-      exact h
+      exact h.symm
 
 /-- **Mixed-quadrant accumulation.**  A `1`-periodic principal-part coefficient that is constant on
 a mixed quadrant of the rank-three pattern `p + nτ + mσ` has that constant equal to zero. -/
@@ -127,14 +126,14 @@ theorem laurentCoeff_const_eq_zero_of_mixedQuadrant
       _ ≤ |p.im| + σ.im := by linarith
   have hre : ∀ n : ℕ, |(w n).re| ≤ 1 := by
     intro n
-    have hwre : (w n).re = (q n).re - (⌊(q n).re⌋ : ℝ) := by
-      simp [hw, hjj, Complex.add_re, Complex.intCast_re]
+    have hwre : (w n).re = Int.fract ((q n).re) := by
+      simp only [hw, hjj, Complex.add_re, Int.cast_neg, Complex.neg_re, Complex.intCast_re,
+        Int.fract]
+      ring
     rw [hwre, abs_le]
     constructor
-    · have := Int.floor_le ((q n).re)
-      linarith
-    · have := Int.lt_floor_add_one ((q n).re)
-      linarith
+    · linarith [Int.fract_nonneg ((q n).re)]
+    · linarith [Int.fract_lt_one ((q n).re)]
   have hball : ∀ n : ℕ, w n ∈ Metric.closedBall (0 : ℂ) M := by
     intro n
     simp only [Metric.mem_closedBall, dist_zero_right]
@@ -180,3 +179,5 @@ theorem laurentCoeff_const_eq_zero_of_mixedQuadrant
     exact ⟨hball n, by rw [hvalue n hn]; exact hv⟩
   have hIci : (Set.Ici N').Finite := Set.Finite.of_finite_image (hfin.subset hmaps) hinj
   exact (Set.Ici_infinite N') hIci
+
+end GaloisForLFunctions.HTGeometry
