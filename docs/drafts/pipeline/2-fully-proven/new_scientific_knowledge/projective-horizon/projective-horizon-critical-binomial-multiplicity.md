@@ -2813,3 +2813,30 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   to the fibre: that the `m+n` bidegree-`(1,1)` compatibility forms are a regular sequence when the
   intersection is finite, Koszul exactness for that sequence, and the surjectivity of evaluation at
   the finitely many points in large bidegree.  That chain is the remaining open core.
+
+- 2026-08-07 — **The actual bigraded pieces and their dimensions.**  New module
+  `formal/GaloisForLFunctions/HTGeometry/BiprojectiveGradedPiece.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `BiprojVar m n` is the disjoint union of the `m+1` and `n+1` homogeneous-coordinate variables;
+  `biprojectiveWeight` assigns weights `(1,0)` and `(0,1)` to the two blocks;
+  `weight_biprojectiveWeight` proves that the weight of a monomial is exactly the pair of blockwise
+  exponent sums;
+  `biprojExponentEquiv` identifies exponents of bidegree `(p,q)` with a pair of weak compositions;
+  `biprojectiveMonomialBasis` is the resulting explicit basis of the `(p,q)` piece; and
+
+  ```text
+  finrank_biprojectivePiece :
+    dim_K R_(p,q) = choose(p+m,m) * choose(q+n,n).
+  ```
+
+  This is the denominator coefficient
+  `C(p+m,m) C(q+n,n)` used by `alternating_sum_choose_mul_choose`; previously only the numerical
+  identity existed, with no formal coordinate-ring graded piece feeding it.  Foreground leaf check,
+  `lake build GaloisForLFunctions.HTGeometry.BiprojectiveGradedPiece` (`1566` jobs), and scratch
+  axiom audit all pass.
+
+  Exact next dependency: for a regular sequence of `(1,1)` forms, formalize the short exact
+  recurrence on successive quotient bigraded pieces.  Iterating that recurrence feeds these
+  dimensions into `alternating_sum_choose_mul_choose`; evaluation on the reduced finite critical
+  fibre then identifies the eventual quotient dimension with its point count.

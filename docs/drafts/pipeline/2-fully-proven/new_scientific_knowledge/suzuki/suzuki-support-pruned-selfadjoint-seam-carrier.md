@@ -203,7 +203,45 @@ adjacency, orthogonal support compression, and self-adjointness—is formalized 
 ```text
 formal/GaloisForLFunctions/RHTower/
   SuzukiSupportPrunedSelfAdjointSeamCarrier.lean
+  SuzukiSupportPrunedSeamCarrierBounds.lean
 ```
+
+The first module carries the carrier, the oriented shift `(3)`, the symmetric step, the finite
+prime adjacency `(6)`, the compression `(7)`, the Gamma-normalized sign `(7a)`, self-adjointness of
+all three, and the endpoint non-admissibility of section 2:
+
+```text
+suzukiSeamLocation, suzukiAdmissibleSeamVertices, suzukiSeamHilbert
+suzukiSeamShift, suzukiSeamShift_apply
+suzukiSymmetricSeamStep, suzukiSymmetricSeamStep_apply
+suzukiSymmetricSeamStep_isSelfAdjoint
+suzukiFinitePrimeAdjacency, suzukiFinitePrimeAdjacency_isSelfAdjoint
+suzukiSupportPrunedPrimeAdjacency, suzukiSupportPrunedPrimeAdjacency_isSelfAdjoint
+suzukiGammaPositivePrimeAdjacency, suzukiGammaPositivePrimeAdjacency_isSelfAdjoint
+suzukiSeamRoot_left_not_admissible, suzukiSeamRoot_right_not_admissible
+```
+
+The second module closes the two remaining statements of the theorem — the adjoint law
+`U_delta^* = U_(-delta)`, the norm bound `(8)`, and the explicit pruned action `(9)`:
+
+```text
+suzukiSeamShift_adjoint                        U_delta^* = U_(-delta)
+norm_suzukiSeamShift_le                        ‖U_delta‖ ≤ 1
+norm_suzukiSymmetricSeamStep_le                ‖U_delta + U_delta^*‖ ≤ 2
+norm_suzukiFinitePrimeAdjacency_le             (8): ‖A_a^prime‖ ≤ 2 ∑ |w|
+suzukiFinitePrimeAdjacency_apply               coordinatewise action of A_a^prime
+suzukiSupportPrunedPrimeAdjacency_apply        (9): the pruned action, with the aperture
+                                               indicator applied to every neighbour
+norm_lpCoordinateProjection_le                 the aperture compression is a contraction
+norm_suzukiSupportPrunedPrimeAdjacency_le      ‖T_a‖ ≤ 2 ∑ |w|
+norm_suzukiGammaPositivePrimeAdjacency_le      ‖T_a^Gamma‖ ≤ 2 ∑ |w|
+```
+
+Formula `(9)` is the exact source of the "no path is restored after leaving the interval" claim:
+each of the two neighbours enters only through its own aperture indicator, and a vertex outside the
+aperture is annihilated outright.  Since `T_a = P A P` with `P` idempotent, every power `T_a^k`
+inserts `P` before and after each `A`, so only prime words all of whose intermediate vertices stay
+admissible survive.
 
 Lean deliberately does not contain a theorem asserting the unproved completed-domain arrow in
 `(11)`.

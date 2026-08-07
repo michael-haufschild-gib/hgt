@@ -187,3 +187,38 @@ still requires a quenched lower bound on the nonzero replica gap.  Scalar
 recurrence, lag ambiguity, adaptive continuum selectors, and the positive
 near-action crowding floor have been removed from the reporter on which that
 remaining shellwise bound must act.
+
+## Conjecturing loop — observer critical carriers, 2026-08-07
+
+7. `[FALSIFIED AS REPRESENTATION]` Minimum-replica-gap control.  It asks for
+   anti-concentration of every integer spectral relation, including relations
+   unrelated to a shortcut, and its discriminant degree grows with both
+   Hilbert dimension and replica order.  This is stronger than the event that
+   must be controlled and does not preserve observer geometry.
+8. `[LEAN-PROVED] [FRONTIER ADVANCE] [APPLICATION NOVELTY UNVERIFIED]`
+   Universal observer critical-carrier confinement.  For every globally
+   analytic finite-dimensional endpoint, one nonzero selected observer
+   Jacobian minor at the zero coefficient forces the entire rank-deficient
+   locus to be null under Lebesgue and standard Gaussian laws.  The same
+   critical set works for every target.  Every exact target carrier on its
+   complement has Hausdorff dimension at most parameter dimension minus
+   observer dimension.
+9. `[LEAN-PROVED] [AUTONOMOUS SPECIALIZATION]` For every real Banach algebra,
+   every linear autonomous generator map `L`, and every linear reporter `R`,
+   the endpoint `x ↦ R(exp(L x))` is globally real analytic and its derivative
+   at zero is exactly `R ∘ L`.  Hence a single visible-generator determinant
+   proves the target-independent Gaussian-null and exact-carrier dimension
+   laws for the full nonlinear exponential evolution.
+
+Formal modules:
+
+- `HTGeometry/RadialAnalyticZeroSetNullLaw.lean`
+- `HTGeometry/ObserverCriticalCarrierConfinementLaw.lean`
+- `HTGeometry/AutonomousExponentialObserverCarrierLaw.lean`
+
+This closes hostile falsifier 2 for **exact** lower-codimension carriers: such
+carriers can only lie in one Gaussian-null critical locus.  It does not close
+the approximate shortcut problem.  The quantitative open core is now the
+lower tail of the observer-Jacobian pseudodeterminant (or a comparable coarea
+invariant) for the local-Hamiltonian growing-replica reporter.  A minimum
+spectral-gap bound is no longer the designated invariant.

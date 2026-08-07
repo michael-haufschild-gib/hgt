@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CDGARelTensorShift
+import GaloisForLFunctions.HTGeometry.CDGARelTensorConst
 
 /-!
 # The shift comparison descends to the tensor product over the algebra
@@ -8,6 +9,7 @@ The relations are stable under the shift comparison, which is exactly the hypoth
 
 * `HTGeometry.relTensorShiftMap` : the descended comparison.
 * `HTGeometry.relTensorRel_shift_of_forall` : and it is injective.
+* `HTGeometry.relTensorConstMap` : the constant exchange descends too.
 -/
 
 universe u v w
@@ -188,5 +190,163 @@ noncomputable def relTensorShiftEquiv (n : ℕ) :
   LinearEquiv.ofBijective (relTensorShiftMap P Q k n) (relTensorShiftMap_bijective P Q k n)
 
 end ShiftDescent
+
+section ConstDescent
+
+variable (P : CDGAModuleStructure A M) (Q : CDGAModuleStructure A N)
+  {V : Type w} [AddCommGroup V] [Module R V]
+
+/-- The constant exchange as a bilinear map into the quotient. -/
+noncomputable def relTensorConstBil (n : ℕ) :
+    TensorCarrier (R := R) M N n →ₗ[R] V →ₗ[R]
+      RelTensorCarrier P (tensorConstModule Q V) n :=
+  TensorProduct.curry
+    ((relTensorRel P (tensorConstModule Q V) n).mkQ.comp
+      (tensorConstExchange (R := R) (M := M) (N := N) V n).toLinearMap)
+
+@[simp] theorem relTensorConstBil_apply (n : ℕ) (x : TensorCarrier (R := R) M N n) (w : V) :
+    relTensorConstBil P Q (V := V) n x w
+      = Submodule.Quotient.mk
+        (tensorConstExchange (R := R) (M := M) (N := N) V n (x ⊗ₜ[R] w)) := rfl
+
+/-- It kills the relations in the first slot. -/
+theorem relTensorConstBil_ker (n : ℕ) (x : TensorCarrier (R := R) M N n)
+    (hx : x ∈ relTensorRel P Q n) : relTensorConstBil P Q (V := V) n x = 0 := by
+  refine LinearMap.ext fun w => ?_
+  show Submodule.Quotient.mk
+    (tensorConstExchange (R := R) (M := M) (N := N) V n (x ⊗ₜ[R] w)) = 0
+  refine (Submodule.Quotient.mk_eq_zero _).2 ?_
+  refine relTensorRel_tensorConstExchange P Q n (x ⊗ₜ[R] w) ?_
+  exact Submodule.subset_span ⟨x, hx, w, rfl⟩
+
+/-- The descended bilinear map. -/
+noncomputable def relTensorConstBilQ (n : ℕ) :
+    RelTensorCarrier P Q n →ₗ[R] V →ₗ[R] RelTensorCarrier P (tensorConstModule Q V) n :=
+  Submodule.liftQ _ (relTensorConstBil P Q (V := V) n)
+    (fun x hx => relTensorConstBil_ker P Q n x hx)
+
+/-- **The constant exchange descends to the tensor product over the algebra.** -/
+noncomputable def relTensorConstMap (n : ℕ) :
+    TensorProduct R (RelTensorCarrier P Q n) V →ₗ[R]
+      RelTensorCarrier P (tensorConstModule Q V) n :=
+  TensorProduct.lift (relTensorConstBilQ P Q (V := V) n)
+
+@[simp] theorem relTensorConstMap_mk_tmul (n : ℕ) (x : TensorCarrier (R := R) M N n) (w : V) :
+    relTensorConstMap P Q (V := V) n (Submodule.Quotient.mk x ⊗ₜ[R] w)
+      = Submodule.Quotient.mk
+        (tensorConstExchange (R := R) (M := M) (N := N) V n (x ⊗ₜ[R] w)) := rfl
+
+/-- The descended map computes the exchange on the whole tensor product. -/
+theorem relTensorConstMap_rTensor (n : ℕ)
+    (y : TensorProduct R (TensorCarrier (R := R) M N n) V) :
+    relTensorConstMap P Q (V := V) n
+        (LinearMap.rTensor V (relTensorRel P Q n).mkQ y)
+      = Submodule.Quotient.mk
+        (tensorConstExchange (R := R) (M := M) (N := N) V n y) := by
+  induction y using TensorProduct.induction_on with
+  | zero => simp
+  | tmul x w => rfl
+  | add y y' hy hy' =>
+      rw [map_add, map_add, hy, hy', map_add, Submodule.Quotient.mk_add]
+
+/-- **The descended map is surjective.** -/
+theorem relTensorConstMap_surjective (n : ℕ) :
+    Function.Surjective (relTensorConstMap P Q (V := V) n) := by
+  intro g
+  refine Quotient.inductionOn' g fun z => ?_
+  refine ⟨LinearMap.rTensor V (relTensorRel P Q n).mkQ
+    ((tensorConstExchange (R := R) (M := M) (N := N) V n).symm z), ?_⟩
+  rw [relTensorConstMap_rTensor, LinearEquiv.apply_symm_apply]
+  rfl
+
+/-- A relator is additive in its cell argument. -/
+theorem relTensorRelator_add_cell {c a b n α β : ℕ} (hα : c + a = α) (hβ : c + b = β)
+    (hn : (α, b).1 + (α, b).2 = n) (hn' : (a, β).1 + (a, β).2 = n) (x : X c) (m : M a)
+    (v v' : N b) :
+    relTensorRelator P Q hα hβ hn hn' x m (v + v')
+      = relTensorRelator P Q hα hβ hn hn' x m v + relTensorRelator P Q hα hβ hn hn' x m v' := by
+  simp only [relTensorRelator]
+  rw [TensorProduct.tmul_add, tensorSingle_add, Q.act_add_right, TensorProduct.tmul_add,
+    tensorSingle_add, smul_add]
+  abel
+
+/-- The inverse of the descended constant exchange, before descent. -/
+noncomputable def relTensorConstInvPre (n : ℕ) :
+    TensorCarrier (R := R) M (fun m => TensorProduct R (N m) V) n →ₗ[R]
+      TensorProduct R (RelTensorCarrier P Q n) V :=
+  (LinearMap.rTensor V (relTensorRel P Q n).mkQ).comp
+    (tensorConstExchange (R := R) (M := M) (N := N) V n).symm.toLinearMap
+
+theorem relTensorConstInvPre_ker (n : ℕ)
+    (z : TensorCarrier (R := R) M (fun m => TensorProduct R (N m) V) n)
+    (hz : z ∈ relTensorRel P (tensorConstModule Q V) n) :
+    relTensorConstInvPre P Q (V := V) n z = 0 := by
+  refine Submodule.span_induction
+    (p := fun g _ => relTensorConstInvPre P Q (V := V) n g = 0) ?_ ?_ ?_ ?_ hz
+  · rintro g ⟨c, a, b, α, β, hα, hβ, hn, hn', x, m, u, rfl⟩
+    induction u using TensorProduct.induction_on with
+    | zero =>
+        rw [relTensorRelator_zero_cell P (tensorConstModule Q V) hα hβ hn hn' x m, map_zero]
+    | tmul v w =>
+        rw [← tensorConstExchange_relTensorRelator P Q hα hβ hn hn' x m v w]
+        show LinearMap.rTensor V (relTensorRel P Q n).mkQ
+          ((tensorConstExchange (R := R) (M := M) (N := N) V n).symm
+            ((tensorConstExchange (R := R) (M := M) (N := N) V n)
+              (relTensorRelator P Q hα hβ hn hn' x m v ⊗ₜ[R] w))) = 0
+        rw [LinearEquiv.symm_apply_apply, LinearMap.rTensor_tmul,
+          show (relTensorRel P Q n).mkQ (relTensorRelator P Q hα hβ hn hn' x m v) = 0 from
+            (Submodule.Quotient.mk_eq_zero _).2
+              (relTensorRelator_mem P Q hα hβ hn hn' x m v),
+          TensorProduct.zero_tmul]
+    | add u u' hu hu' =>
+        rw [relTensorRelator_add_cell P (tensorConstModule Q V) hα hβ hn hn' x m u u',
+          map_add, hu, hu', add_zero]
+  · exact map_zero _
+  · intro g g' _ _ hg hg'
+    rw [map_add, hg, hg', add_zero]
+  · intro r g _ hg
+    rw [map_smul, hg, smul_zero]
+
+/-- **The inverse of the descended constant exchange.** -/
+noncomputable def relTensorConstInv (n : ℕ) :
+    RelTensorCarrier P (tensorConstModule Q V) n →ₗ[R]
+      TensorProduct R (RelTensorCarrier P Q n) V :=
+  Submodule.liftQ _ (relTensorConstInvPre P Q (V := V) n)
+    (fun z hz => relTensorConstInvPre_ker P Q n z hz)
+
+/-- **The descended constant exchange is injective.** -/
+theorem relTensorConstMap_injective (n : ℕ) :
+    Function.Injective (relTensorConstMap P Q (V := V) n) := by
+  have hleft : ∀ y : TensorProduct R (RelTensorCarrier P Q n) V,
+      relTensorConstInv P Q (V := V) n (relTensorConstMap P Q (V := V) n y) = y := by
+    intro y
+    induction y using TensorProduct.induction_on with
+    | zero => simp
+    | tmul u w =>
+        refine Quotient.inductionOn' u fun x => ?_
+        show relTensorConstInv P Q (V := V) n
+          (Submodule.Quotient.mk
+            (tensorConstExchange (R := R) (M := M) (N := N) V n (x ⊗ₜ[R] w))) = _
+        show LinearMap.rTensor V (relTensorRel P Q n).mkQ
+          ((tensorConstExchange (R := R) (M := M) (N := N) V n).symm
+            ((tensorConstExchange (R := R) (M := M) (N := N) V n) (x ⊗ₜ[R] w))) = _
+        rw [LinearEquiv.symm_apply_apply, LinearMap.rTensor_tmul]
+        rfl
+    | add y y' hy hy' =>
+        rw [map_add, map_add, hy, hy']
+  exact Function.LeftInverse.injective hleft
+
+theorem relTensorConstMap_bijective (n : ℕ) :
+    Function.Bijective (relTensorConstMap P Q (V := V) n) :=
+  ⟨relTensorConstMap_injective P Q n, relTensorConstMap_surjective P Q n⟩
+
+/-- **Tensoring over the algebra commutes with a constant coefficient module.** -/
+noncomputable def relTensorConstEquiv (n : ℕ) :
+    TensorProduct R (RelTensorCarrier P Q n) V
+      ≃ₗ[R] RelTensorCarrier P (tensorConstModule Q V) n :=
+  LinearEquiv.ofBijective (relTensorConstMap P Q (V := V) n)
+    (relTensorConstMap_bijective P Q n)
+
+end ConstDescent
 
 end GaloisForLFunctions.HTGeometry

@@ -117,7 +117,8 @@ formal/GaloisForLFunctions/RHTower/BurnolSoninEvaluationNonvanishing.lean  -- pl
 - [x] strong continuity of the normalized dilation group on `L²(R)` (Lean)
 - [x] the two divided-shift operators, their integrability and norm bounds `(2)`,`(3)` (Lean)
 - [x] the cosine exchange `(4)` (Lean)
-- [ ] pointwise a.e. formula for `A_w`
+- [x] pointwise a.e. formula for `A_w` (`coe_burnolShift_ae`; product integrability, indicator
+      test vectors, Fubini)
 - [ ] head laws `(5)`,`(6)`
 - [ ] extended-Sonine invariance under the assumption `k_{w,a} = 0`
 - [ ] Mellin multiplier `(7)`

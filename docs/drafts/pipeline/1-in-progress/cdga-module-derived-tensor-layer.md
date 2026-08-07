@@ -939,3 +939,42 @@ The same four steps for the constant exchange — its relator correspondence and
 proved, so what is left is the descent (`Submodule.liftQ`), the converse, and the packaging.  Then
 `relTensorShiftEquiv` and that equivalence, composed with `relUnitorHom`, give the free-cell
 computation for `⊗_A` and discharge `hcell` there.
+
+## The constant descent, and the free cell computed over the algebra
+
+`CDGARelTensorDescent.lean` is now complete on both sides, and `CDGARelFreeCell.lean` composes them.
+
+* `relTensorConstBil`, `relTensorConstBil_ker`, `relTensorConstBilQ`, **`relTensorConstMap`** — the
+  constant exchange descends.  The map out of `(M ⊗_A N) ⊗ V` is built as `TensorProduct.lift` of a
+  bilinear map whose first slot is itself a `Submodule.liftQ`; `TensorProduct.curry` is what turns
+  the composite `mkQ ∘ exchange` into that bilinear map without any explicit construction.
+* `relTensorConstMap_rTensor`, **`relTensorConstMap_surjective`**.
+* `relTensorRelator_add_cell` — a relator is *additive* in its cell argument.  This is what lets the
+  converse be proved by `TensorProduct.induction_on` on the cell argument, and it is the second time
+  linearity of the relator in that slot has been the decisive fact (the first was
+  `relTensorRel_of_prodRight`).
+* `relTensorConstInvPre`, `relTensorConstInv`, **`relTensorConstMap_injective`**,
+  **`relTensorConstEquiv : (M ⊗_A N) ⊗ V ≃ₗ M ⊗_A (N ⊗ V)`**.  Injectivity is obtained from an
+  explicit left inverse rather than a kernel computation, which avoids needing right-exactness of
+  the tensor product from mathlib.
+
+And then:
+
+* **`relTensorFreeCellEquiv : M ⊗_A (A[−k] ⊗ V) ≃ₗ (M ⊗ V)[−k]`**, degreewise — the composite of
+  the shift descent, the constant descent and the unitor, exactly as the plan predicted.  Nothing new
+  was needed to assemble it: `freeCellModule_eq` makes the source literally
+  `M ⊗_A Shift(tensorConst (selfModule A) V, k)`, and the three equivalences chain by
+  `LinearEquiv.trans` and `LinearEquiv.piCongrRight`.
+
+Axioms: `propext, Classical.choice, Quot.sound`; `relTensorRelator_add_cell` needs only
+`propext, Quot.sound`.
+
+## Next
+
+`relTensorFreeCellEquiv` is a degreewise linear isomorphism; to discharge `hcell` for `⊗_A` it has
+to be upgraded to a `CDGAModuleHom` and shown natural in `P`.  Each of its three factors is already
+known to respect the structure maps in the unquotiented setting — `relUnitorHom` is a
+`CDGAModuleHom`, and the two exchanges were built from `tensorShiftMap` and `tensorConstExchange`,
+whose compatibility with `d` and the action is the same computation as `constCellTensorHom`'s.  With
+that, two out of three against `freeCellFunctor_isQuasiIsoFull` closes the last row of the parity
+table.

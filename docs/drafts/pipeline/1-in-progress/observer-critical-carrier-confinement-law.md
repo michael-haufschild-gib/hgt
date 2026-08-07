@@ -1,6 +1,6 @@
 # Observer critical-carrier confinement law
 
-**Status:** CONJECTURE — paper proof written; Lean verification in progress  
+**Status:** EXACT LAW FORMALIZED — quantitative approximate-carrier successor open  
 **Route:** autonomous-local-Hamiltonian complexity / quenched growing replicas  
 **Novelty:** UNVERIFIED; generic analytic ingredients are classical, proposed autonomous observer application requires external priority audit
 
@@ -82,3 +82,55 @@ If the reported generator action has rank \(v\), Conjecture OCCC applies. This w
 - [ ] Lean theorem: autonomous endpoint derivative at zero.
 - [ ] External priority audit for exact application.
 - [ ] Quantitative observer-Jacobian lower tail or explicit proof that current assumptions cannot supply it.
+
+## Formal result — 2026-08-07
+
+The exact law is now formalized, including its autonomous exponential
+specialization.
+
+- `volume_zero_zeroSet_of_radial_analytic`: radial analytic certificate
+  nullity in every finite dimension, including dimension zero.
+- `analytic_observer_criticalSet_volume_zero` and
+  `analytic_observer_criticalSet_stdGaussian_zero`: one nonzero observer minor
+  makes the entire critical locus null.
+- `observer_exactCarrier_dimH_le`: every exact carrier in a regular target
+  fibre has Hausdorff dimension at most `m - v`.
+- `analytic_observer_universal_exactCarrierLaw`: one common Gaussian-null
+  critical set and the carrier bound for every target and every carrier.
+- `autonomousExponentialEndpoint_fderiv_zero`: for `x ↦ R(exp(L x))`, the
+  derivative at zero is exactly `R ∘ L`.
+- `autonomousExponential_universal_exactCarrierLaw`: the universal law for
+  autonomous exponential evolution in every real Banach algebra.
+
+All three modules compile with `lake env lean`.  `#print axioms` reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+### Updated completion gate
+
+- [x] Radial analytic zero set is volume-null.
+- [x] One full-rank analytic jet makes critical set Gaussian-null.
+- [x] Every exact regular carrier obeys the observer-codimension dimension cap.
+- [x] Autonomous exponential endpoint is analytic and has derivative `R ∘ L`
+  at zero.
+- [x] Targeted external audit against quantum-control endpoint singularity and
+  transversality literature.
+- [ ] Quantitative observer-Jacobian lower tail strong enough for approximate
+  circuit and replica unions.
+
+### Priority audit verdict
+
+The radial analytic-null argument, regular-level-set geometry, and generic
+transversality ingredients are classical.  Quantum-control literature studies
+singular time-dependent controls and generic trap-free landscapes.  The audit
+found no theorem at the precise interface of one autonomous static generator
+ensemble, one target-independent critical locus, every exact adaptive target
+carrier, and the sharp `m - v` Hausdorff-dimension ceiling.  Priority for that
+assembled application remains **plausible but unverified**, not established.
+
+### Hostile significance verdict
+
+This is a real frontier advance because it eliminates the exact nonlinear
+carrier loophole globally and replaces the over-strong minimum-gap program by
+the correct observer-Jacobian invariant.  It is not a Brown--Susskind plateau
+theorem and is not a Nature-level standalone result.  Approximate tube volume,
+growing-replica scaling, and the circuit union remain open.

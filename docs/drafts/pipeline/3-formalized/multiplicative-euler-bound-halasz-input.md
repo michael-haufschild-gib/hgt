@@ -186,3 +186,55 @@ hold for the Dirichlet series itself:
 This is the object Perron inversion consumes. The Euler-product and large-values sides of Halász's
 method are now both stated for the series; what remains is the passage from the discrete frequency sum
 to the `t`-integral (Gallagher/Sobolev step) and the Perron assembly.
+
+## Large values are confined to one window
+
+`formal/GaloisForLFunctions/RHTower/Sieve/HalaszLargeValueWindow.lean` (9067 jobs, exit 0,
+axiom-clean).
+
+The damping bound and the corpus's window estimate combine into the statement that converts pointwise
+damping into a measure bound:
+
+- `abs_sub_mul_log_le_of_abs_sub_le` — on an interval of length `π / log z` the window lemma's
+  smallness hypothesis `|(t−u) log p| ≤ π` holds automatically for every `p ≤ z`.
+- `sub_sq_mul_logSqWeight_le_of_norm_gt` — if the series exceeds the damped bound at both `t` and `u`,
+  then both frequencies are close (contrapositive of `norm_tsum_twistedSummand_le_of_far`), so
+  `(t−u)² · logSqWeight z ≤ 2π²δ²`.
+- `abs_sub_le_of_norm_gt` — hence `|t − u| ≤ √(2π²δ² / logSqWeight z)`, i.e. the large-value set has
+  diameter `O(δ / log z)`.
+
+So on any interval of length `π / log z`, the set where `‖∑_n f(n)n^{-σ-it}‖` exceeds
+`(1 + 1/(σ−1)) e^{7/2+shift−δ²}` is contained in a single window of width `O(δ / log z)`; everywhere
+else the series obeys the damped bound. Integrating over a long range requires covering it by such
+intervals — that covering step, and the Perron assembly, are what remain.
+
+## The covering step — a measure bound over a long range
+
+`formal/GaloisForLFunctions/HTGeometry/DiameterCoveringMeasure.lean` (2480 jobs) — a general
+real-analysis device, stated without reference to Dirichlet series:
+
+- `volume_le_of_pairwise_dist_le` — a pairwise-`w`-close set of reals has measure at most `2w` (it lies
+  in an interval of length `2w`; only monotonicity of the outer measure is used, so no measurability
+  hypothesis).
+- `volume_inter_Icc_le_of_cells` — if the set is only thin *cell by cell*, i.e. its intersection with
+  every interval of length `h` is pairwise-`w`-close, then covering `[-T, T]` by `⌊2T/h⌋ + 1` cells
+  gives `volume (A ∩ [-T,T]) ≤ (2T/h + 1)·2w`.
+
+The cell count must be `⌊2T/h⌋ + 1`, not `⌈2T/h⌉`: at the right endpoint with `2T/h` an integer the
+ceiling count leaves the last point uncovered.
+
+`RHTower/Sieve/HalaszLargeValueWindow.lean`, appended (9068 jobs, exit 0, axiom-clean):
+
+- `volume_largeValues_le` — **the measure bound**:
+
+  `volume {t ∈ [-T,T] : ‖∑_n f(n)n^{-σ-it}‖ > (1+1/(σ−1))e^{7/2+shift−δ²}}
+     ≤ (2T·log z/π + 1) · 2√(2π²δ²/logSqWeight z)`.
+
+  Cells of length `π/log z` make the window lemma's smallness hypothesis automatic, and inside each
+  cell the large-value set has diameter `O(δ/log z)`. Since `logSqWeight z ≍ (log z)²/2`, the
+  right-hand side is `O(T·δ) + O(δ/log z)`: the large-value set occupies a proportion `O(δ)` of the
+  range.
+
+With `integral_norm_dirPoly_halasz`-style splitting (`∫₀^T|F| ≤ V·T + M·|{|F| ≥ V}|`, already in
+`DirichletMeasureLargeValues`) this is the last geometric input to the `t`-integral; the Perron
+assembly is what remains.
