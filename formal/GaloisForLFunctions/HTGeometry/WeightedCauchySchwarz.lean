@@ -374,3 +374,77 @@ theorem sqrt_integral_normSq_add_mul_weight_le {g₁ g₂ W : ℝ → ℂ}
 
 end GaloisForLFunctions.HTGeometry
 end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open MeasureTheory Finset
+
+/-- The weighted mean square of a finite sum is integrable when each part's is. -/
+theorem integrable_normSq_sum_mul_weight {ι : Type*} (s : Finset ι) (g : ι → ℝ → ℂ) (W : ℝ → ℂ)
+    (hm : ∀ i ∈ s, AEStronglyMeasurable (g i) volume) (hmW : AEStronglyMeasurable W volume)
+    (h : ∀ i ∈ s, Integrable fun y => ‖g i y‖ ^ 2 * ‖W y‖) :
+    Integrable fun y => ‖∑ i ∈ s, g i y‖ ^ 2 * ‖W y‖ := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+      simp
+  | insert a s ha ih =>
+      have hma : AEStronglyMeasurable (g a) volume := hm a (Finset.mem_insert_self a s)
+      have hmsum : AEStronglyMeasurable (fun y : ℝ => ∑ i ∈ s, g i y) volume := by
+        have h := Finset.aestronglyMeasurable_sum s fun i hi =>
+          hm i (Finset.mem_insert_of_mem hi)
+        have heq : (∑ i ∈ s, g i) = fun y : ℝ => ∑ i ∈ s, g i y := by
+          funext y
+          simp [Finset.sum_apply]
+        rwa [heq] at h
+      have hia : Integrable fun y : ℝ => ‖g a y‖ ^ 2 * ‖W y‖ :=
+        h a (Finset.mem_insert_self a s)
+      have hisum : Integrable fun y : ℝ => ‖∑ i ∈ s, g i y‖ ^ 2 * ‖W y‖ :=
+        ih (fun i hi => hm i (Finset.mem_insert_of_mem hi))
+          (fun i hi => h i (Finset.mem_insert_of_mem hi))
+      have hcomb := integrable_normSq_add_mul_weight hma hmsum hmW hia hisum
+      refine hcomb.congr (Filter.Eventually.of_forall fun y => ?_)
+      dsimp only
+      rw [Finset.sum_insert ha]
+
+/-- **Minkowski's inequality for a finite sum.**  The weighted mean square is subadditive over any finite
+decomposition, so a Dirichlet polynomial may be split into blocks and each block estimated on its own
+terms. -/
+theorem sqrt_integral_normSq_sum_mul_weight_le {ι : Type*} (s : Finset ι) (g : ι → ℝ → ℂ)
+    (W : ℝ → ℂ) (hm : ∀ i ∈ s, AEStronglyMeasurable (g i) volume)
+    (hmW : AEStronglyMeasurable W volume)
+    (h : ∀ i ∈ s, Integrable fun y => ‖g i y‖ ^ 2 * ‖W y‖) :
+    Real.sqrt (∫ y : ℝ, ‖∑ i ∈ s, g i y‖ ^ 2 * ‖W y‖)
+      ≤ ∑ i ∈ s, Real.sqrt (∫ y : ℝ, ‖g i y‖ ^ 2 * ‖W y‖) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+      simp
+  | insert a s ha ih =>
+      have hma : AEStronglyMeasurable (g a) volume := hm a (Finset.mem_insert_self a s)
+      have hmsum : AEStronglyMeasurable (fun y : ℝ => ∑ i ∈ s, g i y) volume := by
+        have h := Finset.aestronglyMeasurable_sum s fun i hi =>
+          hm i (Finset.mem_insert_of_mem hi)
+        have heq : (∑ i ∈ s, g i) = fun y : ℝ => ∑ i ∈ s, g i y := by
+          funext y
+          simp [Finset.sum_apply]
+        rwa [heq] at h
+      have hia : Integrable fun y : ℝ => ‖g a y‖ ^ 2 * ‖W y‖ :=
+        h a (Finset.mem_insert_self a s)
+      have hisum : Integrable fun y : ℝ => ‖∑ i ∈ s, g i y‖ ^ 2 * ‖W y‖ :=
+        integrable_normSq_sum_mul_weight s g W
+          (fun i hi => hm i (Finset.mem_insert_of_mem hi)) hmW
+          (fun i hi => h i (Finset.mem_insert_of_mem hi))
+      have hcongr : (∫ y : ℝ, ‖∑ i ∈ insert a s, g i y‖ ^ 2 * ‖W y‖)
+          = ∫ y : ℝ, ‖g a y + ∑ i ∈ s, g i y‖ ^ 2 * ‖W y‖ := by
+        refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+        dsimp only
+        rw [Finset.sum_insert ha]
+      rw [hcongr, Finset.sum_insert ha]
+      refine le_trans (sqrt_integral_normSq_add_mul_weight_le hma hmsum hmW hia hisum) ?_
+      have hrest := ih (fun i hi => hm i (Finset.mem_insert_of_mem hi))
+        (fun i hi => h i (Finset.mem_insert_of_mem hi))
+      linarith [hrest]
+
+end GaloisForLFunctions.HTGeometry
+end

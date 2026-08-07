@@ -1074,3 +1074,20 @@ proof now delegates).
 This is the device the per-block sieve level requires: a Dirichlet polynomial may be split into blocks, each
 block's mean square estimated with **its own** sieve level `Y_j ≈ 2^{j/2}`, and the results added.  The excess
 factor `(log N)²/log Y` identified above becomes `∑_j (1/j)`-shaped instead of a single global `1/log Y`.
+
+## Minkowski over a finite decomposition
+
+`HTGeometry/WeightedCauchySchwarz.lean` (appended; green, axiom-clean).
+
+* `integrable_normSq_sum_mul_weight` — the weighted mean square of a finite sum is integrable when each
+  part's is;
+* `sqrt_integral_normSq_sum_mul_weight_le` — `√(∫‖∑_i g_i‖²‖W‖) ≤ ∑_i √(∫‖g_i‖²‖W‖)` over an arbitrary
+  `Finset` of indices.
+
+Both by induction on the index set from the two-term case; the index type is arbitrary, so the same statement
+serves dyadic blocks, prime-support fibres, or any other decomposition.
+
+With this the per-block estimate is available in the form the argument needs: writing the prime polynomial as
+`∑_j` over dyadic blocks, its Lorentzian mean square is at most `(∑_j √(block j))²`, and each block may be
+sieved at its own level.  What remains for the block route is the decomposition itself — `L(a, σ+iy)` as the
+finite sum of the `L` of the blocks, which is the fibrewise splitting of a finite sum and needs no analysis.
