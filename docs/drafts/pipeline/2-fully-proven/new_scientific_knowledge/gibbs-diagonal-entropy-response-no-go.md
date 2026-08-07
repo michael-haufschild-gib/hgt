@@ -1,7 +1,7 @@
 # Gibbs diagonal entropy-response no-go
 
 - **ID:** `gibbs-diagonal-entropy-response-no-go`
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven
 - **Type:** THEOREM / NO-GO CLOSURE
 - **Conjecture label:** C14
 - **Inputs:** `GibbsAntiscaleFirstTraceFrame`, `ThermodynamicAffinityHolonomy`,
@@ -42,5 +42,19 @@ Cauchy sum makes every summand, hence the response, zero.
 
 - [x] Exact failure and positive survivor frozen
 - [x] Dependency-closed paper proof
-- [ ] Lean formalization and axiom audit
+- [x] Lean formalization and axiom audit
 
+## Novelty audit
+
+Physics literature treats dynamical response as controlled by off-diagonal observable matrix
+elements, so the abstract diagonal-vanishing principle is not claimed globally new. New content is
+the exact corpus-level consequence: Route E's diagonal antiscale first trace cannot inhabit the
+prime--archimedean entropy-response producer, while its cross-leaf dispersion is the forced next
+carrier.
+
+## Formalization
+
+`GaloisForLFunctions.HTGeometry.ThermodynamicDiagonalResponseNoGo` proves both intensity and
+response vanishing, is wired into `HTGeometry.lean`, and passes exact `lake env lean` source
+verification. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`. No umbrella
+build was run.

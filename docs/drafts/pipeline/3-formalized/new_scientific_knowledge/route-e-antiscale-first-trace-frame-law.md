@@ -304,6 +304,5 @@ Verification on 2026-08-07:
 - targeted `#print axioms`: only `propext`, `Classical.choice`, and `Quot.sound`;
 - no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration occurs in module.
 
-Repository-wide formal lint was also attempted.  Its only failures were concurrently added,
-unwired `Prolate*` modules outside this card's scope; this Route E module was reachable from its
-umbrella and was not named by lint.  No full build was run.
+After concurrent umbrella work settled, `python3 scripts/formal_tools.py lint` passed
+repository-wide.  No full build was run.

@@ -61,7 +61,6 @@ theorem gevrey_upper_bound {s M : ℝ} {b Z : ℕ → ℝ} (hZ : ∀ k, 1 ≤ Z 
       = 2 * Real.Gamma (1 + s * k) * M := by
     rw [inv_pow]
     field_simp
-    ring
   rw [hexp]
   linarith
 

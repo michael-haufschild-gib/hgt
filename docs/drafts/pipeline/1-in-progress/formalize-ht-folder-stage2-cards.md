@@ -238,3 +238,14 @@ HTGeometry/PrimeSupportNotFinitelyGenerated.lean  primeSupport_not_finitelyGener
 Card 4's algebraic core (including the telescoping identity
 `TelescopeIdeal.iInf_span_singleton_eq_span_prod_of_primes`) is audited axiom-clean; its remaining
 statements rest on the exact-image parent of the all-depth card, not on anything of this card's own.
+
+
+## Built this cycle (cards 8, 9)
+
+```text
+HTGeometry/PrimeSupportNotFinitelyGenerated.lean  primeSupport_not_finitelyGenerated — Pong's
+                                                   hypothesis, discharged once for every character
+HTGeometry/GevreyZetaTailBounds.lean              gevrey_exact_order — the exact Gevrey order of the
+                                                   zeta tail in the Gamma normalization, with no
+                                                   Stirling estimate needed
+```

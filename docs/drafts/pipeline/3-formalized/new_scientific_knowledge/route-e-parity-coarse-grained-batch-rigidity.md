@@ -281,4 +281,5 @@ Verification on 2026-08-07:
   (`9712/9712`), used only for this module's missing `.olean`;
 - targeted `#print axioms`: only `propext`, `Classical.choice`, and `Quot.sound`;
 - no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration occurs in module;
+- `python3 scripts/formal_tools.py lint`: pass;
 - no full build was run.

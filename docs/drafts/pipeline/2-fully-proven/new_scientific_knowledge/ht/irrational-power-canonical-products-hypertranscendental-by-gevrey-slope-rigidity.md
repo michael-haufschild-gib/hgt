@@ -362,3 +362,22 @@ each time, so it must vanish, making `α k` an integer and `α` rational.
 
 Remaining for `(9)` and `(11)`: two-sided Stirling for `Γ(1 + sk)` against `(k!)^s`, together with
 the `ζ` functional equation (mathlib has the latter).  Then `(12)` is immediate.
+
+## Lean progress — §3 is closed in the Gamma normalization
+
+`GaloisForLFunctions/HTGeometry/GevreyZetaTailBounds.lean` (wired, axiom-clean):
+
+    two_pi_rpow_split     `(2π)^(1+sk) = 2π · ((2π)^s)^k`
+    gevrey_upper_bound    `(9)`: from `|sin| ≤ 1` and `ζ(1+sk) ≤ ζ(1+s)`
+    gevrey_lower_bound    `(11)`: from `ζ(1+sk) ≥ 1` and `|sin(π s k/2)| ≥ 1/2`
+    gevrey_exact_order    both halves together, the lower bound holding on the infinite set supplied
+                          by `infinite_setOf_half_le_abs_sin_half`
+
+So `(12)` — the exact Gevrey order is `s` — is formal, *in the Gamma normalization* of Gevrey order
+(`|b_k| ≤ C A^k Γ(1 + r k)`).  This is the point the card's §3 makes, and it needs no Stirling
+estimate at all: the closed modulus `(8)` already carries `Γ(1 + sk)`, and Stirling was only being
+used to translate `Γ(1 + sk)` into `(k!)^s`.
+
+What remains of §3 is therefore only the normalization change (two-sided Stirling for `Γ` against
+the factorial), and of the card the two genuine analytic layers: the Barnes expansion `(4)`--`(6)`
+that produces the closed modulus, and the Sibuya--Ramis exact-order theorem.

@@ -2502,3 +2502,30 @@ from the pole. The asymmetry is real and is a property of the pole, not an overs
 
 Next: write step 1 with that integrability hypothesis, then steps 2–3. Every estimate they need is
 built (BE, BI, section T's first moment).
+
+## BK. Step 1 is built — the near part of the transport integral
+
+`GammaTransportKernel.lean` is now at 28 declarations, all `#print axioms` clean.
+
+- `neg_le_integral_transport_near` — on the window `(0, X/2]`,
+
+      ∫ secondDifference f X s · k(s) ds  ≥  −C · ∫ s k(s) ds,
+      C = 2δ/√X + 2(f X + δ√X/2)/X.
+
+  The integrability of the transport integrand is a **hypothesis**, per section BJ: the maximizer's
+  inequalities are one-sided and cannot bound the second difference from above, so existence of the
+  transport integral is what the equation `(18)` supplies. Everything else — the pointwise
+  linearised bound, the first moment, the constant extraction — is discharged.
+
+That is step 1 of section BH's three. Both halves of the split now exist:
+
+    near  (0, X/2]   neg_le_integral_transport_near      ≥ −C ∫_0^{X/2} s k(s) ds
+    far   (X/2, ∞)   abs_integral_transport_far_le       ≤ 4 M q(X/2)
+
+with `C = O(δ) + O(1/X)` and `q(X/2) → 0`, so both vanish along `δ_n → 0`, `X_n → ∞`.
+
+### Remaining
+
+Steps 2–3: add the two halves to bound `R_full f_ε(X_n)` below, substitute into `(18)` with `(19)`
+and `(20)`, and take `n → ∞` to read off `M ≤ liminf H`. This is the card-level derivation; it uses
+no estimate that is not already built.

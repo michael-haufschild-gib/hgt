@@ -544,4 +544,74 @@ theorem neg_mul_le_secondDifference_of_weighted {f : ℝ → ℝ} {X s δ : ℝ}
   rw [hexp]
   linarith [hbase, hstep, hfirst.le, hfirst.ge]
 
+/-! ## The near part of the transport integral
+
+Integrating the linearised bound against the kernel over the near window gives a lower bound
+proportional to the kernel's first moment there.  The integrability of the transport integrand is
+*hypothesis*, not conclusion: the maximizer's inequalities are one-sided and cannot bound the second
+difference from above, so existence of the transport integral comes from the equation being solved.
+-/
+
+/-- **The near part is bounded below by the first moment.**  On the window `(0, X/2]` the transport
+integrand is at least `−C s k(s)` with `C = 2δ/√X + 2(f X + δ√X/2)/X`, so its integral is at least
+`−C` times the kernel's first moment over that window. -/
+theorem neg_le_integral_transport_near {f : ℝ → ℝ} {X δ : ℝ} (hX : 0 < X) (hδ : 0 ≤ δ)
+    (hf : 0 ≤ f X)
+    (hint : IntegrableOn (fun s => secondDifference f X s * gammaTransportKernel s)
+      (Ioc 0 (X / 2)))
+    (hp : ∀ s, 0 ≤ s → s ≤ X / 2 →
+      Real.sqrt (X + s) * f (X + s) ≤ Real.sqrt X * f X + δ * s)
+    (hm : ∀ s, 0 ≤ s → s ≤ X / 2 →
+      Real.sqrt (X - s) * f (X - s) ≤ Real.sqrt X * f X + δ * s) :
+    -((2 * δ / Real.sqrt X + 2 * (f X + δ * Real.sqrt X / 2) / X)
+        * ∫ s in Ioc 0 (X / 2), s * gammaTransportKernel s)
+      ≤ ∫ s in Ioc 0 (X / 2), secondDifference f X s * gammaTransportKernel s := by
+  set C : ℝ := 2 * δ / Real.sqrt X + 2 * (f X + δ * Real.sqrt X / 2) / X with hC
+  have hmom : IntegrableOn (fun s => s * gammaTransportKernel s) (Ioc 0 (X / 2)) :=
+    integrableOn_id_mul_gammaTransportKernel_Ioi_zero.mono_set fun x hx => hx.1
+  have hdom : IntegrableOn (fun s => -(C * (s * gammaTransportKernel s))) (Ioc 0 (X / 2)) :=
+    (hmom.const_mul C).neg
+  have hptw : ∀ s ∈ Ioc (0:ℝ) (X / 2),
+      -(C * (s * gammaTransportKernel s))
+        ≤ secondDifference f X s * gammaTransportKernel s := by
+    intro s hs
+    have hs0 : 0 ≤ s := hs.1.le
+    have hk : 0 < gammaTransportKernel s := gammaTransportKernel_pos hs.1
+    have hlin := neg_mul_le_secondDifference_of_weighted hX hs0 hs.2 hδ hf
+      (hp s hs0 hs.2) (hm s hs0 hs.2)
+    nlinarith [hlin, hk]
+  have hmono := setIntegral_mono_on hdom hint measurableSet_Ioc hptw
+  have hval : (∫ s in Ioc (0:ℝ) (X / 2), -(C * (s * gammaTransportKernel s)))
+      = -(C * ∫ s in Ioc (0:ℝ) (X / 2), s * gammaTransportKernel s) := by
+    rw [integral_neg, integral_const_mul]
+  rwa [hval] at hmono
+
+/-- **The transport integral splits at any radius.**  The near and far windows partition the
+positive ray, so the operator is the sum of the two pieces bounded separately above. -/
+theorem gammaTransport_split {f : ℝ → ℝ} {X : ℝ} (hX : 0 < X)
+    (hnear : IntegrableOn (fun s => secondDifference f X s * gammaTransportKernel s)
+      (Ioc 0 (X / 2)))
+    (hfar : IntegrableOn (fun s => secondDifference f X s * gammaTransportKernel s)
+      (Ioi (X / 2))) :
+    gammaTransport f X
+      = (∫ s in Ioc (0:ℝ) (X / 2), secondDifference f X s * gammaTransportKernel s)
+        + ∫ s in Ioi (X / 2), secondDifference f X s * gammaTransportKernel s := by
+  have hsplit : Ioi (0:ℝ) = Ioc 0 (X / 2) ∪ Ioi (X / 2) := by
+    ext x
+    simp only [mem_Ioi, mem_union, mem_Ioc]
+    constructor
+    · intro hx
+      rcases le_or_gt x (X / 2) with h | h
+      · exact Or.inl ⟨hx, h⟩
+      · exact Or.inr h
+    · rintro (⟨h1, _⟩ | h1)
+      · exact h1
+      · linarith
+  have hdisj : Disjoint (Ioc (0:ℝ) (X / 2)) (Ioi (X / 2)) := by
+    rw [Set.disjoint_left]
+    intro x hx hx'
+    exact absurd hx.2 (not_le.mpr hx')
+  unfold gammaTransport
+  rw [hsplit, setIntegral_union hdisj measurableSet_Ioi hnear hfar]
+
 end GaloisForLFunctions.HTGeometry

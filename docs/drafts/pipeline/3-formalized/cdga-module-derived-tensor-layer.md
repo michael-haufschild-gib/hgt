@@ -1621,10 +1621,36 @@ it, including flatness of semi-free resolutions — applies to algebras over a b
 
 Axioms: `propext, Quot.sound`.
 
-## Next
+## The relative tensor product of algebras: the sign computation
 
-The algebra structure on `A ⊗_C B`: the underlying module is `relTensorModule` of the two
-restrictions, and the product has to be shown to descend through the relations.  The descent is the
-same shape as the four already carried out in this layer — a relator correspondence in three
-rewrites, then stability by span induction, then `Submodule.liftQ` — with the new ingredient being
-that the product is bilinear rather than linear, so the induction runs in both variables.
+**`tensorAlgMul_tensorSingle_eq_single`** — the product of two single-bidegree elements is a
+single-bidegree element, at the sum of the two bidegrees, with the Koszul pairing as its value.
+That reduces the descent of the product through the relations to pure algebra on singles.
+
+The computation it enables is worth recording, because it is the whole content of the ideal
+property and the signs are not obvious.  Write `γ` for a cell of degree `c`, and let
+`u = x ⊗ y` with `|x| = a`, `|y| = b`.  The relator is
+
+  `rel(γ, x, y) = (−1)^{ca} · (γ ·_A u) − (γ ·_B u)`,
+
+where `·_A` multiplies the `X`-component by `f γ` and `·_B` the `Y`-component by `g γ`.  Against a
+second single `x' ⊗ y'` with `|x'| = a'`:
+
+* `(γ ·_A u) * (x' ⊗ y') = γ ·_A (u * (x' ⊗ y'))` — **no extra sign**, by associativity in `A`;
+* `(γ ·_B u) * (x' ⊗ y') = (−1)^{c a'} · γ ·_B (u * (x' ⊗ y'))` — the cell has to move past `x'`.
+
+So the product of the relator with `x' ⊗ y'` is
+
+  `(−1)^{ca} γ·_A(uw) − (−1)^{ca'} γ·_B(uw) = (−1)^{c a'} · [ (−1)^{c(a+a')} γ·_A(uw) − γ·_B(uw) ]`,
+
+and the bracket is exactly the relator at the product bidegree, whose sign is `(−1)^{c(a+a')}`.
+Including the Koszul sign `(−1)^{b a'}` of the product itself:
+
+> **a relator times a single-bidegree element is `(−1)^{(c+b)a'}` times the relator at the
+> product.**
+
+So the relations form an ideal, and the product descends — with no condition on the algebras beyond
+what is already assumed.  What is left is to write that computation in Lean and descend by
+`Submodule.liftQ` in each variable in turn.
+
+Axioms: `propext, Classical.choice, Quot.sound`.

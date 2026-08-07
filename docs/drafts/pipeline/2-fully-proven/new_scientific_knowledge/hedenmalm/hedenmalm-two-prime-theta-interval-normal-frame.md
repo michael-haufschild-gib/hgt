@@ -451,6 +451,8 @@ strengthens the corpus Kronecker theorem to arbitrarily large times, and
 | — | **Kronecker recurrence at arbitrarily large times** | `GaloisForLFunctions.kronecker_approx_atTop` |
 | `(24)` | the sine is dominated by the character defect | `abs_sin_le_norm_expChar_sub_one`, `sq_frameSymbol_le` |
 | `(25)` | **for every finite prime set the diagonal sum of squares drops below any tolerance at arbitrarily large times** | `exists_gt_sum_sq_frameSymbol_lt` |
+| `(24)` | the pointwise ceiling `b_p(t)^2 <= 4/p` | `sq_rpow_neg_half`, `sq_frameSymbol_le_four_div`, `summable_weighted_frameSymbol` |
+| `(26)`,`(27)` | **the summably weighted all-prime diagonal sum drops below any tolerance at arbitrarily large times** | `exists_gt_tsum_weighted_frameSymbol_lt` |
 
 **Positive-kernel self-adjoint channels.**  `formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeChannels.lean`
 (namespace `RHTower.HedenmalmThetaSource`).
@@ -471,13 +473,11 @@ requires Weierstrass products and Mittag-Leffler interpolation.  It is absent fr
 from mathlib, and it is the one real infrastructure gap left on this card; the analytic-cokernel
 half of `(17)` rests on it.
 
-Of the three frame obstructions, `(22)`/`(23)` (no bounded Bezout pair on the real axis) and
-`(25)` (the finite-prime Kronecker obstruction) are now formalized.  Only the summably weighted
-all-prime form `(27)` is left.  Its two inputs are in place --- `kronecker_approx_atTop` and the
-pointwise bound `frameSymbol p t ^ 2 <= 4 / p` --- and the remaining step is the head/tail split:
-choose a finite head `P` with `sum over the complement of 4 omega_p / p < delta / 2` (from
-`tendsto_tsum_compl_atTop_zero` applied to the summability hypothesis), then apply
-`exists_gt_sum_sq_frameSymbol_lt` to the head with tolerance `delta / 2`.
+**All three frame obstructions are formalized**: `(22)`/`(23)` (no bounded Bezout pair on the real
+axis), `(25)` (the finite-prime Kronecker obstruction) and `(26)`/`(27)` (the summably weighted
+all-prime form).  The last one is the head/tail split: a finite head chosen by
+`tendsto_tsum_compl_atTop_zero` on `sum of 4 omega_p / p`, then the finite theorem applied to the
+head with tolerance `delta / 2` and weight ceiling `sum over P of omega_p`.
 
 ## Gates
 

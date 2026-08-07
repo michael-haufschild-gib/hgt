@@ -87,6 +87,98 @@ theorem exists_gt_sum_sq_frameSymbol_lt (P : Finset Nat.Primes) {δ : ℝ} (hδ 
         field_simp
         nlinarith
 
+
+/-! ### The summably weighted all-prime obstruction -/
+
+theorem sq_rpow_neg_half {x : ℝ} (hx : 0 ≤ x) : (x ^ (-(1 / 2 : ℝ))) ^ 2 = x⁻¹ := by
+  rw [← Real.rpow_natCast (x ^ (-(1 / 2 : ℝ))) 2, ← Real.rpow_mul hx]
+  norm_num
+  rw [Real.rpow_neg_one]
+
+/-- The pointwise ceiling of the frame symbol square. -/
+theorem sq_frameSymbol_le_four_div {n : ℕ} (hn : 1 ≤ n) (t : ℝ) :
+    frameSymbol n t ^ 2 ≤ 4 / (n : ℝ) := by
+  have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hsq : frameSymbol n t ^ 2
+      = 4 * (n : ℝ)⁻¹ * Real.sin (t * Real.log n / 2) ^ 2 := by
+    rw [frameSymbol, mul_pow, mul_pow, sq_rpow_neg_half hn0.le]
+    ring
+  have hsin : Real.sin (t * Real.log n / 2) ^ 2 ≤ 1 := by
+    nlinarith [Real.sin_sq_add_cos_sq (t * Real.log n / 2),
+      sq_nonneg (Real.cos (t * Real.log n / 2))]
+  rw [hsq]
+  have h4inv : (0 : ℝ) ≤ 4 * (n : ℝ)⁻¹ := by positivity
+  calc 4 * (n : ℝ)⁻¹ * Real.sin (t * Real.log n / 2) ^ 2 ≤ 4 * (n : ℝ)⁻¹ * 1 :=
+        mul_le_mul_of_nonneg_left hsin h4inv
+    _ = 4 / (n : ℝ) := by rw [mul_one, div_eq_mul_inv]
+
+theorem summable_weighted_frameSymbol {ω : Nat.Primes → ℝ} (hω : ∀ p, 0 ≤ ω p)
+    (hsum : Summable fun p : Nat.Primes => ω p / ((p : ℕ) : ℝ)) (t : ℝ) :
+    Summable fun p : Nat.Primes => ω p * frameSymbol ((p : Nat.Primes) : ℕ) t ^ 2 := by
+  refine Summable.of_nonneg_of_le (fun p => mul_nonneg (hω p) (sq_nonneg _)) (fun p => ?_)
+    (hsum.mul_left 4)
+  have hn : 1 ≤ ((p : Nat.Primes) : ℕ) := p.2.one_lt.le
+  have hle := sq_frameSymbol_le_four_div hn t
+  have hp0 : (0 : ℝ) < ((p : ℕ) : ℝ) := by exact_mod_cast p.2.pos
+  calc ω p * frameSymbol ((p : Nat.Primes) : ℕ) t ^ 2
+      ≤ ω p * (4 / ((p : ℕ) : ℝ)) := mul_le_mul_of_nonneg_left hle (hω p)
+    _ = 4 * (ω p / ((p : ℕ) : ℝ)) := by ring
+
+/-- **The summably weighted all-prime frame obstruction.**  For every nonnegative weight with
+`∑ ω_p / p` finite the whole weighted diagonal sum of squares drops below any tolerance at
+arbitrarily large times.  The `Xi` normal line therefore has no summably weighted diagonal Hilbert
+frame rank. -/
+theorem exists_gt_tsum_weighted_frameSymbol_lt {ω : Nat.Primes → ℝ} (hω : ∀ p, 0 ≤ ω p)
+    (hsum : Summable fun p : Nat.Primes => ω p / ((p : ℕ) : ℝ)) {δ : ℝ} (hδ : 0 < δ) (T : ℝ) :
+    ∃ t : ℝ, T < t
+      ∧ (∑' p : Nat.Primes, ω p * frameSymbol ((p : Nat.Primes) : ℕ) t ^ 2) < δ := by
+  classical
+  have hsum4 : Summable fun p : Nat.Primes => 4 * (ω p / ((p : ℕ) : ℝ)) := hsum.mul_left 4
+  have hhalf : (0 : ℝ) < δ / 2 := by linarith
+  have htail : Filter.Tendsto (fun s : Finset Nat.Primes =>
+      ∑' p : {q : Nat.Primes // q ∉ s},
+        4 * (ω (p : Nat.Primes) / ((((p : Nat.Primes) : ℕ)) : ℝ))) Filter.atTop (nhds 0) :=
+    tendsto_tsum_compl_atTop_zero (fun q : Nat.Primes => 4 * (ω q / ((q : ℕ) : ℝ)))
+  obtain ⟨P, hPtail⟩ := (htail.eventually_lt_const hhalf).exists
+  set W : ℝ := ∑ p ∈ P, ω p with hW
+  have hW0 : 0 ≤ W := Finset.sum_nonneg fun p _ => hω p
+  have hdenom : (0 : ℝ) < W + 1 := by linarith
+  obtain ⟨t, ht, hhead⟩ := exists_gt_sum_sq_frameSymbol_lt P
+    (show (0 : ℝ) < (δ / 2) / (W + 1) from div_pos hhalf hdenom) T
+  refine ⟨t, ht, ?_⟩
+  have hsummable := summable_weighted_frameSymbol hω hsum t
+  have hsplit := hsummable.sum_add_tsum_compl (s := P)
+  have hheadbound : (∑ p ∈ P, ω p * frameSymbol ((p : Nat.Primes) : ℕ) t ^ 2) < δ / 2 := by
+    have hle : (∑ p ∈ P, ω p * frameSymbol ((p : Nat.Primes) : ℕ) t ^ 2)
+        ≤ W * ∑ p ∈ P, frameSymbol ((p : Nat.Primes) : ℕ) t ^ 2 := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_le_sum fun p hp => ?_
+      refine mul_le_mul_of_nonneg_right ?_ (sq_nonneg _)
+      exact Finset.single_le_sum (fun q _ => hω q) hp
+    have hpos : W * ∑ p ∈ P, frameSymbol ((p : Nat.Primes) : ℕ) t ^ 2
+        ≤ W * ((δ / 2) / (W + 1)) :=
+      mul_le_mul_of_nonneg_left hhead.le hW0
+    have hfin : W * ((δ / 2) / (W + 1)) < δ / 2 := by
+      rw [mul_div_assoc'] at *
+      rw [div_lt_iff₀ hdenom]
+      nlinarith
+    linarith
+  have htailbound : (∑' p : {q : Nat.Primes // q ∉ P},
+      ω (p : Nat.Primes) * frameSymbol (((p : Nat.Primes) : ℕ)) t ^ 2) < δ / 2 := by
+    refine lt_of_le_of_lt ?_ hPtail
+    refine Summable.tsum_le_tsum (fun p => ?_) (hsummable.subtype _) (hsum4.subtype _)
+    have hn : 1 ≤ (((p : Nat.Primes) : ℕ)) := (p : Nat.Primes).2.one_lt.le
+    have hle := sq_frameSymbol_le_four_div hn t
+    calc ω (p : Nat.Primes) * frameSymbol (((p : Nat.Primes) : ℕ)) t ^ 2
+        ≤ ω (p : Nat.Primes) * (4 / ((((p : Nat.Primes) : ℕ)) : ℝ)) :=
+          mul_le_mul_of_nonneg_left hle (hω _)
+      _ = 4 * (ω (p : Nat.Primes) / ((((p : Nat.Primes) : ℕ)) : ℝ)) := by ring
+  rw [← hsplit]
+  have htailbound' : (∑' x : ((↑P : Set Nat.Primes)ᶜ : Set Nat.Primes),
+      ω (x : Nat.Primes) * frameSymbol (((x : Nat.Primes) : ℕ)) t ^ 2) < δ / 2 := htailbound
+  linarith
+
+
 end HedenmalmThetaSource
 
 end

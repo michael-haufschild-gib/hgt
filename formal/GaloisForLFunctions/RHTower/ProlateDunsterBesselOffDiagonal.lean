@@ -799,9 +799,11 @@ theorem abs_firstRowRadialProduct_sub_bessel_le
   have hBEa := compactBesselProfileError_nonneg hs0 hs1 hc0 ha
   have hBEka := compactBesselProfileError_nonneg hs0 hs1 hc0 hka
   have hboundA : 0 ≤ compactBesselProfileError s c a +
-      Real.sqrt (2 / Real.pi) * ampFourth s a := by positivity
+      Real.sqrt (2 / Real.pi) * ampFourth s a :=
+    add_nonneg hBEa (mul_nonneg (Real.sqrt_nonneg _) (ampFourth_pos hs1 ha).le)
   have hboundKa : 0 ≤ compactBesselProfileError s c (k * a) +
-      Real.sqrt (2 / Real.pi) * ampFourth s (k * a) := by positivity
+      Real.sqrt (2 / Real.pi) * ampFourth s (k * a) :=
+    add_nonneg hBEka (mul_nonneg (Real.sqrt_nonneg _) (ampFourth_pos hs1 hka).le)
   have hfac : P * Q - B * D = (P - B) * (Q - D) + (P - B) * D + B * (Q - D) := by ring
   change |P * Q - B * D| ≤ _
   rw [compactExactFirstRowProductError, hfac]
@@ -874,6 +876,88 @@ theorem tendsto_compactExactFirstRowProductError_zero
     funext i
     rw [compactExactFirstRowProductError]]
   simpa only [zero_mul, zero_add, mul_zero] using (h1.add h2).add h3
+
+theorem abs_intervalIntegral_firstRowRadialProduct_sub_bessel_le
+    {s c k a b : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hc : 5 ≤ c)
+    (hab : a ≤ b) (ha : 1 < a) (haCross : dunsterEndpointCrossing c ≤ a)
+    (hcxi : 1 ≤ c * xiEndpointPhase s a)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    |(∫ x in a..b, firstRowRadialProduct c R k x) -
+        ∫ x in a..b, firstRowBesselProduct s c k x|
+      ≤ compactExactFirstRowProductError s c k a * |b - a| := by
+  have hRc : Continuous R :=
+    continuous_iff_continuousAt.mpr fun x => (hR x).continuousAt
+  have hExactCont : Continuous (firstRowRadialProduct c R k) := by
+    unfold firstRowRadialProduct radialProlateRescaledProfile
+    fun_prop
+  have hsub : uIcc a b ⊆ Ioi 1 := by
+    rw [uIcc_of_le hab]
+    exact fun _ hx => ha.trans_le hx.1
+  have hExactInt : IntervalIntegrable (firstRowRadialProduct c R k) volume a b :=
+    hExactCont.intervalIntegrable _ _
+  have hBesselInt : IntervalIntegrable (firstRowBesselProduct s c k) volume a b :=
+    ((continuousOn_firstRowBesselProduct hs0 hs1 hk).mono hsub).intervalIntegrable
+  rw [← intervalIntegral.integral_sub hExactInt hBesselInt, ← Real.norm_eq_abs]
+  apply intervalIntegral.norm_integral_le_of_norm_le_const
+  intro x hx
+  rw [uIoc_of_le hab] at hx
+  rw [Real.norm_eq_abs]
+  exact abs_firstRowRadialProduct_sub_bessel_le hs0 hs1 hk hc haCross ha hx.1.le
+    hcxi hR1 hR hDR hode
+
+/-- Exact endpoint-normalized first-row radial product cancellation on every fixed compact
+exterior interval. -/
+theorem tendsto_integral_firstRowRadialProduct
+    {ι : Type*} {l : Filter ι} {c s : ι → ℝ}
+    {R DR DDR : ι → ℝ → ℝ}
+    (hc : Tendsto c l atTop) (hs : Tendsto s l (nhds 0))
+    (hs0 : ∀ᶠ i in l, 0 ≤ s i)
+    (hR1 : ∀ i, R i 1 = 1)
+    (hR : ∀ (i : ι) (t : ℝ), HasDerivAt (R i) (DR i t) t)
+    (hDR : ∀ (i : ι) (t : ℝ), HasDerivAt (DR i) (DDR i t) t)
+    (hode : ∀ (i : ι) (t : ℝ), (t ^ 2 - 1) * DDR i t + 2 * t * DR i t
+      - (s i * c i ^ 2 - c i ^ 2 * t ^ 2) * R i t = 0)
+    {k a b : ℝ} (hk : 2 ≤ k) (hab : a ≤ b) (ha : 1 < a)
+    (haStationary : Real.sqrt (1 + 2 / k ^ 2) ≤ a) :
+    Tendsto (fun i => ∫ x in a..b, firstRowRadialProduct (c i) (R i) k x)
+      l (nhds 0) := by
+  have hbessel := tendsto_integral_firstRowBesselProduct hc hs hs0 hk hab ha haStationary
+  have hbudget := tendsto_compactExactFirstRowProductError_zero hc hs hs0 hk ha
+  have hmajor : Tendsto
+      (fun i => compactExactFirstRowProductError (s i) (c i) k a * |b - a|)
+      l (nhds 0) := by
+    simpa using hbudget.mul_const |b - a|
+  have hsHalf : ∀ᶠ i in l, s i ≤ 1 / 2 :=
+    (hs.eventually (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1 / 2))).mono
+      fun _ hi => hi.le
+  have hc5 : ∀ᶠ i in l, 5 ≤ c i := hc.eventually (eventually_ge_atTop 5)
+  have hcross := tendsto_dunsterEndpointCrossing_comp_atTop_one hc
+  have hcrossa : ∀ᶠ i in l, dunsterEndpointCrossing (c i) ≤ a :=
+    (hcross.eventually (eventually_lt_nhds ha)).mono fun _ hi => hi.le
+  have harg := tendsto_c_mul_xiEndpointPhase_fixed_radius_atTop hc hs hs0 ha
+  have hcxi : ∀ᶠ i in l, 1 ≤ c i * xiEndpointPhase (s i) a :=
+    harg.eventually (eventually_ge_atTop 1)
+  have hdiff : Tendsto (fun i =>
+      (∫ x in a..b, firstRowRadialProduct (c i) (R i) k x) -
+        ∫ x in a..b, firstRowBesselProduct (s i) (c i) k x) l (nhds 0) := by
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    simpa only [sub_zero, Real.norm_eq_abs] using squeeze_zero'
+      (Eventually.of_forall fun i => abs_nonneg
+        ((∫ x in a..b, firstRowRadialProduct (c i) (R i) k x) -
+          ∫ x in a..b, firstRowBesselProduct (s i) (c i) k x))
+      (by
+        filter_upwards [hs0, hsHalf, hc5, hcrossa, hcxi]
+          with i hsi0 hsi1 hci hcrossi hcxii
+        exact abs_intervalIntegral_firstRowRadialProduct_sub_bessel_le
+          hsi0 hsi1 hk hci hab ha hcrossi hcxii
+            (hR1 i) (hR i) (hDR i) (hode i))
+      hmajor
+  simpa only [sub_add_cancel, zero_add] using hdiff.add hbessel
 
 
 end GaloisForLFunctions.RHTower
