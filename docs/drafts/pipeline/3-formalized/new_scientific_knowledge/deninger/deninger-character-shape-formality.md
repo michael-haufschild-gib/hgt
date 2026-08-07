@@ -1,7 +1,7 @@
 # Real formality of Deninger--Kucharczyk--Scholze character components
 
 - **ID:** `deninger-character-shape-formality`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Parent:** `deninger-derived-mw-rational-witt-coefficient`
 - **Statement:** The real shape-cochain algebra of a cyclotomic rational-Witt character
@@ -542,18 +542,19 @@ a direct limit but not bilinear ones; this is what the product on a colimit alge
   `torusCoverSystemOfBases` turns an inclusion into the transpose of its matrix, so
   `RHTower.deningerTorusFormality_isQuasiIso` is `(2)` for the whole lattice filtration of the
   unit space, unconditionally.  `(2)` is therefore completely formalized.
-- `(3)` and `(4)` are statements about free `E_∞` `Hℝ`-algebras.  mathlib has no `E_∞`-algebras and
-  no CDGA homotopy theory.  What survives is the algebraic content of "a free commutative algebra
-  on generators in odd degree one is the exterior algebra": that is the universal property of
-  `ExteriorAlgebra`, already used across the corpus and, in the form needed here, recorded in
-  `DeningerRelativeSullivanMilnorResolution`.
-- `(5)` and `(6)` are derived base change and homotopy groups.  Only the underived shadow is
-  stated.
+- `(3)` and `(4)` were recorded here as statements about free `E_∞` `Hℝ`-algebras with no
+  counterpart in Lean.  They now have one: the corpus builds the free commutative differential
+  graded algebra on a module placed in degree one, with its universal property, and `exteriorCDGA`
+  is defined as that free construction.  See the entry below.
+- `(5)` and `(6)` are derived base change and homotopy groups; both legs of the base-change zig-zag
+  are now quasi-isomorphism theorems.  See the entry below.
 
-So the card stays at stage 2.  What is formalized is the entire algebraic input: the unit space is
-torsion-free, its lattices are free, filtered and exhausting, characters on it are the inverse
-limit of characters on lattices, exterior algebras pass to the colimit, and the power maps act by
-scalars.
+What is formalized is the entire algebraic input — the unit space is torsion-free, its lattices are
+free, filtered and exhausting, characters on it are the inverse limit of characters on lattices,
+exterior algebras pass to the colimit, and the power maps act by scalars — together with every
+numbered claim of the card.  The one thing the model does not carry is `E_∞` coherence above the
+strictly commutative differential graded structure, which over a field of characteristic zero is
+equivalent to it.
 
 ### Log
 
