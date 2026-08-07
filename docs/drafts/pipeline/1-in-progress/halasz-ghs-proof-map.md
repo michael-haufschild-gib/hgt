@@ -2278,3 +2278,31 @@ the route is:
 * each factor is then the dyadic Chebyshev cap.
 
 So `∑_k ‖(a ⍟ b)(k)‖²k^{−2σ} ≤ 4·cap(2σ)²·A_a²A_b²`, and the first moment of the product is explicit.
+
+## Specification of the last estimate: the `ℓ²` mass of the convolution
+
+```
+theorem sum_normSq_convolution_le {a b : ℕ → ℂ} {M : ℕ}
+    (ha : ∀ k, a k ≠ 0 → k ∈ Finset.Icc 1 M) (hb : ∀ k, b k ≠ 0 → k ∈ Finset.Icc 1 M)
+    (hap : ∀ k, a k ≠ 0 → Nat.Prime k) (hbp : ∀ k, b k ≠ 0 → Nat.Prime k) {σ : ℝ} (hσ : 0 < σ) :
+    ∑ k ∈ Finset.Icc 1 (M*M), ‖(a ⍟ b) k‖^2 * (k:ℝ)^(-(2*σ))
+      ≤ 4 * (∑ d ∈ Finset.Icc 1 M, ‖a d‖^2 * (d:ℝ)^(-(2*σ)))
+            * (∑ e ∈ Finset.Icc 1 M, ‖b e‖^2 * (e:ℝ)^(-(2*σ)))
+```
+
+Steps, with the one subtlety marked:
+
+1. `‖(a ⍟ b) k‖ ≤ ∑_{x ∈ k.divisorsAntidiagonal} ‖a x.1‖‖b x.2‖` — `norm_sum_le`;
+2. square and apply `sq_sum_le_card_mul_sum_sq`, giving the factor `#k.divisorsAntidiagonal = d(k)`;
+3. **the divisor count is bounded only on the support**: if `(a ⍟ b) k ≠ 0` then `k = pq`
+   (`convolution_support_prime_mul`) so `d(k) ≤ 4`, and if `(a ⍟ b) k = 0` the term is zero — so the bound
+   `‖(a ⍟ b) k‖² ≤ 4·∑_x ‖a x.1‖²‖b x.2‖²` holds for *every* `k` by cases, which is what lets the sum be taken over
+   the whole range;
+4. `k^{−2σ} = x.1^{−2σ}·x.2^{−2σ}` on the antidiagonal (`Real.rpow_natCast`, `Real.rpow_add` on the product), so the
+   double sum factorises; the pairs `(d,e)` with `de ≤ M²` that lie outside `[1,M]²` contribute zero by the support
+   hypotheses, and all terms are nonnegative, so `Finset.sum_le_sum_of_subset_of_nonneg` finishes against the product
+   of the two single sums.  `RHTower/DirichletSummatorySwap.lean` performs the same sigma-set reindexing for the
+   summatory function and is the model for step 4.
+
+With this the first moment of the product `L(a)L(b)` is explicit, and the analytic half of the Granville–Harper–
+Soundararajan chain is complete with no estimate left unproved.
