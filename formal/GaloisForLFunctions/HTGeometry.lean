@@ -475,6 +475,7 @@ import GaloisForLFunctions.HTGeometry.CDGAAugmentationIdealAlgebra
 import GaloisForLFunctions.HTGeometry.CDGABarDifferential
 import GaloisForLFunctions.HTGeometry.CDGABarHead
 import GaloisForLFunctions.HTGeometry.CDGABarCancel
+import GaloisForLFunctions.HTGeometry.CDGABarSquare
 import GaloisForLFunctions.HTGeometry.CDGABarMul
 import GaloisForLFunctions.HTGeometry.CDGACellInvariance
 import GaloisForLFunctions.HTGeometry.CDGACellTower
