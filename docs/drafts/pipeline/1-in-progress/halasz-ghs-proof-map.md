@@ -1938,3 +1938,25 @@ size, all others are damped.
 That converts the Halász dichotomy into an integral bound of the shape `Δ·(trivial) + T·(damped)` instead of
 `Tδ·(trivial) + T·(damped)`.  The next brick is the parity split, and then the balance — which no longer contains
 the product `T·δ` that defeated the previous three accountings.
+
+## The parity split: an integral against two well-spaced families
+
+`HTGeometry/CellMaxDiscretisation.lean` (appended; green, axiom-clean).
+
+* `cell_points_spaced` — maximisers of cells of the same parity are at distance at least `Δ`: distinct indices of
+  one parity differ by at least two, so a whole cell separates them;
+* `exists_spaced_families_integral_le` — hence for continuous `F`,
+
+  `∃ S₁ S₂ : Finset ℝ`, both `Δ`-spaced, with   `∫_a^{a+mΔ} F ≤ Δ·(∑_{t ∈ S₁} F t + ∑_{t ∈ S₂} F t)`.
+
+The spacing gives injectivity of the maximiser map on each parity class, so the sums over index sets become sums
+over sets of *points* — which is the form the corpus's `sum_norm_tsum_twistedSummand_le_of_spacing` consumes, its
+hypothesis being exactly `∀ t ∈ S, ∀ u ∈ S, t ≠ u → Δ ≤ |t − u|`.
+
+**The chain is now complete in shape.**  For the Halász integrand,
+
+`∫_{−T}^{T} ‖L(f,σ+it)‖ dt ≤ Δ·(∑_{S₁} + ∑_{S₂}) ≤ Δ·2·(1+1/(σ−1))e^{7/2+2(σ−1)(log z+log 4)}·(|S|e^{−δ²} + 1)`
+
+with `|S| ≤ T/Δ`, giving `≍ (log N)(T e^{−δ²} + Δ)`.  Choosing `Δ` small makes the second term negligible, and the
+first carries the damping — no `Tδ` term anywhere.  That is the bound the corpus's own assembly was missing, and
+with it the Halász mean-value theorem becomes a matter of choosing `δ` and `z`.

@@ -70,3 +70,101 @@ theorem exists_cell_max_integral_le {F : ℝ → ℝ} (hF : Continuous F) (a Δ 
 
 end GaloisForLFunctions.HTGeometry
 end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open MeasureTheory Finset
+
+/-- Maximisers of cells of the same parity are at distance at least the cell length: distinct indices of one
+parity differ by at least two, so a whole cell separates them. -/
+theorem cell_points_spaced {c : ℕ → ℝ} {a Δ : ℝ} (hΔ : 0 ≤ Δ) {m : ℕ}
+    (hc : ∀ k, k < m → c k ∈ Set.Icc (a + (k : ℝ) * Δ) (a + ((k : ℝ) + 1) * Δ))
+    {k k' : ℕ} (hk : k < m) (hk' : k' < m) (hpar : k % 2 = k' % 2) (hne : k ≠ k') :
+    Δ ≤ |c k - c k'| := by
+  rcases lt_or_gt_of_ne hne with hlt | hlt
+  · have hstep : k + 2 ≤ k' := by omega
+    have h1 := (hc k hk).2
+    have h2 := (hc k' hk').1
+    have hcast : (a + ((k : ℝ) + 1) * Δ) + Δ ≤ a + (k' : ℝ) * Δ := by
+      have hk2 : ((k : ℝ) + 2) ≤ (k' : ℝ) := by exact_mod_cast hstep
+      nlinarith [hΔ]
+    rw [abs_sub_comm, abs_of_nonneg (by linarith : (0 : ℝ) ≤ c k' - c k)]
+    linarith
+  · have hstep : k' + 2 ≤ k := by omega
+    have h1 := (hc k' hk').2
+    have h2 := (hc k hk).1
+    have hcast : (a + ((k' : ℝ) + 1) * Δ) + Δ ≤ a + (k : ℝ) * Δ := by
+      have hk2 : ((k' : ℝ) + 2) ≤ (k : ℝ) := by exact_mod_cast hstep
+      nlinarith [hΔ]
+    rw [abs_of_nonneg (by linarith : (0 : ℝ) ≤ c k - c k')]
+    linarith
+
+/-- **An integral against two well-spaced families.**  Discretising by cell maxima and splitting the cells by
+parity, a continuous integrand's integral is at most the cell length times the sum of its values over two
+`Δ`-spaced finite sets of points.  This is the form a Halász-type bound on spaced frequencies consumes. -/
+theorem exists_spaced_families_integral_le {F : ℝ → ℝ} (hF : Continuous F) (a Δ : ℝ) (hΔ : 0 < Δ)
+    (m : ℕ) :
+    ∃ S₁ S₂ : Finset ℝ,
+      (∀ t ∈ S₁, ∀ u ∈ S₁, t ≠ u → Δ ≤ |t - u|)
+      ∧ (∀ t ∈ S₂, ∀ u ∈ S₂, t ≠ u → Δ ≤ |t - u|)
+      ∧ (∫ t in a..(a + (m : ℝ) * Δ), F t) ≤ Δ * ((∑ t ∈ S₁, F t) + ∑ t ∈ S₂, F t) := by
+  classical
+  obtain ⟨c, hc, hint⟩ := exists_cell_max_integral_le hF a Δ hΔ m
+  set E : Finset ℕ := {k ∈ Finset.range m | k % 2 = 0} with hE
+  set O : Finset ℕ := {k ∈ Finset.range m | ¬(k % 2 = 0)} with hO
+  -- injectivity of `c` on each parity class
+  have hinj : ∀ (P : Finset ℕ), (∀ k ∈ P, k < m) →
+      (∀ k ∈ P, ∀ k' ∈ P, k % 2 = k' % 2) → Set.InjOn c P := by
+    intro P hPm hPpar k hk k' hk' hval
+    by_contra hne
+    have hsp := cell_points_spaced hΔ.le hc (hPm k hk) (hPm k' hk') (hPpar k hk k' hk') hne
+    rw [hval] at hsp
+    simp at hsp
+    linarith [hsp]
+  have hEm : ∀ k ∈ E, k < m := by
+    intro k hk
+    rw [hE, Finset.mem_filter, Finset.mem_range] at hk
+    exact hk.1
+  have hOm : ∀ k ∈ O, k < m := by
+    intro k hk
+    rw [hO, Finset.mem_filter, Finset.mem_range] at hk
+    exact hk.1
+  have hEpar : ∀ k ∈ E, ∀ k' ∈ E, k % 2 = k' % 2 := by
+    intro k hk k' hk'
+    rw [hE, Finset.mem_filter] at hk hk'
+    rw [hk.2, hk'.2]
+  have hOpar : ∀ k ∈ O, ∀ k' ∈ O, k % 2 = k' % 2 := by
+    intro k hk k' hk'
+    rw [hO, Finset.mem_filter] at hk hk'
+    omega
+  refine ⟨E.image c, O.image c, ?_, ?_, ?_⟩
+  · intro t ht u hu hne
+    rw [Finset.mem_image] at ht hu
+    obtain ⟨k, hk, hkt⟩ := ht
+    obtain ⟨k', hk', hku⟩ := hu
+    have hkk' : k ≠ k' := by
+      intro h
+      rw [h, hku] at hkt
+      exact hne hkt.symm
+    rw [← hkt, ← hku]
+    exact cell_points_spaced hΔ.le hc (hEm k hk) (hEm k' hk') (hEpar k hk k' hk') hkk'
+  · intro t ht u hu hne
+    rw [Finset.mem_image] at ht hu
+    obtain ⟨k, hk, hkt⟩ := ht
+    obtain ⟨k', hk', hku⟩ := hu
+    have hkk' : k ≠ k' := by
+      intro h
+      rw [h, hku] at hkt
+      exact hne hkt.symm
+    rw [← hkt, ← hku]
+    exact cell_points_spaced hΔ.le hc (hOm k hk) (hOm k' hk') (hOpar k hk k' hk') hkk'
+  · refine hint.trans (le_of_eq ?_)
+    rw [Finset.sum_image (fun k hk k' hk' h => hinj E hEm hEpar hk hk' h),
+      Finset.sum_image (fun k hk k' hk' h => hinj O hOm hOpar hk hk' h)]
+    rw [hE, hO, ← Finset.mul_sum]
+    congr 1
+    exact (Finset.sum_filter_add_sum_filter_not (Finset.range m) (fun k => k % 2 = 0)
+      (fun k => F (c k))).symm
+
+end GaloisForLFunctions.HTGeometry
+end
