@@ -80,7 +80,8 @@ theorem norm_integral_mul_three_le_truncated_add_tail {g₁ g₂ g₃ W : ℝ �
     hT hMg0 hC0 hg hdecay hint
   refine hsplit.trans ?_
   have hmain := GaloisForLFunctions.HTGeometry.norm_integral_mul_three_le_sup_mul_sqrt_measure
-    (μ := volume.restrict (Set.Icc (-T) T)) hm1 hm2 hM0 hWsup0 hM hW h1 h2
+    (μ := volume.restrict (Set.Icc (-T) T)) hm1 hm2 hM0 hWsup0
+    (Filter.Eventually.of_forall hM) (Filter.Eventually.of_forall hW) h1 h2
   linarith [hmain]
 
 end RHTower.Sieve

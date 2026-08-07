@@ -1609,3 +1609,28 @@ Both pieces are instances of `norm_integral_mul_three_le_sup_mul_sqrt_measure` a
 that lemma is stated for an arbitrary measure and takes the bound on `g₃` as a hypothesis.  So the next brick is
 not a new device but a second instantiation of one already built, together with the corpus's large-value window
 measure.  **Recorded so the next attempt starts from the dichotomy rather than from the trivial bound.**
+
+## The three-factor inequality split across a set: the dichotomy's architecture
+
+`HTGeometry/WeightedHolder.lean` (green, axiom-clean; the three-factor lemma's hypotheses weakened, one new
+theorem).
+
+Two changes, the first enabling the second:
+
+* the bounds on `g₃` and `W` in `norm_integral_mul_three_le_sup_mul_sqrt_measure` are now **a.e.** rather than
+  pointwise.  This is what lets the lemma be applied on a restricted measure, where only a bound *on the set* is
+  available; the pointwise callers pass `Filter.Eventually.of_forall`.
+* `norm_integral_mul_three_le_split` :
+
+  `‖∫ g₁g₂g₃W ∂μ‖ ≤ M₁·Wsup·√(∫_S‖g₁‖²)√(∫_S‖g₂‖²) + M₂·Wsup·√(∫_{Sᶜ}‖g₁‖²)√(∫_{Sᶜ}‖g₂‖²)`,
+
+  the bounded factor bounded **differently on the two pieces**, for any measurable `S` and any measure.
+
+This is the architecture the previous entry said was missing.  In the Halász application `S` is the window around
+the exceptional frequency: on `S` the third factor has only its trivial bound `M₁ ≍ log N`, but `S` has measure
+`O(δ/log z)` so the mean squares over `S` are small; off `S` the factor is damped, `M₂ ≍ e^{−δ²}·log N`.  Neither
+piece uses the trivial bound over the whole range, which is what made the previous accounting collapse.
+
+The pieces to supply now are the two corpus facts the corpus's own assembly already uses:
+`norm_tsum_twistedSummand_le_of_far` for `M₂` and `volume_halaszLargeValues_le` for the measure of `S` — with the
+mean square over `S` bounded by the window mean value theorem at width `|S|` rather than at width `T`.

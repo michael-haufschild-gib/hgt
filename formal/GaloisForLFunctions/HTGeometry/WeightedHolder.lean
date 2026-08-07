@@ -145,25 +145,25 @@ On a bounded height range this is the form a smoothed Perron kernel supports wit
 carries none of the penalty of its global quadratic-decay bound. -/
 theorem norm_integral_mul_three_le_sup_mul_sqrt_measure {g₁ g₂ g₃ W : α → ℂ} {M Wsup : ℝ}
     (hm1 : AEStronglyMeasurable g₁ μ) (hm2 : AEStronglyMeasurable g₂ μ)
-    (hM0 : 0 ≤ M) (hW0 : 0 ≤ Wsup) (hM : ∀ y, ‖g₃ y‖ ≤ M) (hW : ∀ y, ‖W y‖ ≤ Wsup)
+    (hM0 : 0 ≤ M) (hW0 : 0 ≤ Wsup) (hM : ∀ᵐ y ∂μ, ‖g₃ y‖ ≤ M) (hW : ∀ᵐ y ∂μ, ‖W y‖ ≤ Wsup)
     (h1 : Integrable (fun y => ‖g₁ y‖ ^ 2) μ) (h2 : Integrable (fun y => ‖g₂ y‖ ^ 2) μ) :
     ‖∫ y, g₁ y * g₂ y * g₃ y * W y ∂μ‖
       ≤ M * Wsup * (Real.sqrt (∫ y, ‖g₁ y‖ ^ 2 ∂μ) * Real.sqrt (∫ y, ‖g₂ y‖ ^ 2 ∂μ)) := by
   classical
   have hcross := integrable_mul_norm_of_integrable_sq hm1 hm2 h1 h2
   refine le_trans (norm_integral_le_integral_norm _) ?_
-  have hbound : ∀ y, ‖g₁ y * g₂ y * g₃ y * W y‖ ≤ M * Wsup * (‖g₁ y‖ * ‖g₂ y‖) := by
-    intro y
+  have hbound : ∀ᵐ y ∂μ, ‖g₁ y * g₂ y * g₃ y * W y‖ ≤ M * Wsup * (‖g₁ y‖ * ‖g₂ y‖) := by
+    filter_upwards [hM, hW] with y hMy hWy
     rw [norm_mul, norm_mul, norm_mul]
     calc ‖g₁ y‖ * ‖g₂ y‖ * ‖g₃ y‖ * ‖W y‖
         ≤ ‖g₁ y‖ * ‖g₂ y‖ * M * Wsup := by
-          refine mul_le_mul (mul_le_mul_of_nonneg_left (hM y) (by positivity)) (hW y)
+          refine mul_le_mul (mul_le_mul_of_nonneg_left hMy (by positivity)) hWy
             (norm_nonneg _) (by positivity)
       _ = M * Wsup * (‖g₁ y‖ * ‖g₂ y‖) := by ring
   have hmono : (∫ y, ‖g₁ y * g₂ y * g₃ y * W y‖ ∂μ)
       ≤ ∫ y, M * Wsup * (‖g₁ y‖ * ‖g₂ y‖) ∂μ := by
     refine integral_mono_of_nonneg (Filter.Eventually.of_forall fun y => norm_nonneg _)
-      (hcross.const_mul (M * Wsup)) (Filter.Eventually.of_forall hbound)
+      (hcross.const_mul (M * Wsup)) hbound
   refine hmono.trans ?_
   rw [integral_const_mul]
   refine mul_le_mul_of_nonneg_left ?_ (mul_nonneg hM0 hW0)
@@ -289,6 +289,48 @@ theorem sqrt_integral_normSq_sum_le_measure {ι : Type*} (s : Finset ι) (g : ι
       have hrest := ih (fun i hi => hm i (Finset.mem_insert_of_mem hi))
         (fun i hi => h i (Finset.mem_insert_of_mem hi))
       linarith [sqrt_integral_normSq_add_le_measure hma hmsum hia hisum, hrest]
+
+end GaloisForLFunctions.HTGeometry
+end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open MeasureTheory
+
+variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
+
+/-- **The three-factor inequality split across a set and its complement.**  The bounded factor may be bounded
+differently on the two pieces:
+
+`‖∫ g₁g₂g₃W ∂μ‖ ≤ M₁·Wsup·√(∫_S‖g₁‖²)√(∫_S‖g₂‖²) + M₂·Wsup·√(∫_{Sᶜ}‖g₁‖²)√(∫_{Sᶜ}‖g₂‖²)`.
+
+This is the architecture a Halász-type argument needs: on the window around the exceptional frequency the third
+factor is only bounded trivially, but the window is short, and off it the factor is damped.  The mean square is
+what converts "the window is short" into a saving. -/
+theorem norm_integral_mul_three_le_split {g₁ g₂ g₃ W : α → ℂ} {S : Set α} (hS : MeasurableSet S)
+    {M₁ M₂ Wsup : ℝ} (hM₁0 : 0 ≤ M₁) (hM₂0 : 0 ≤ M₂) (hW0 : 0 ≤ Wsup)
+    (hm1 : AEStronglyMeasurable g₁ μ) (hm2 : AEStronglyMeasurable g₂ μ)
+    (hM₁ : ∀ y ∈ S, ‖g₃ y‖ ≤ M₁) (hM₂ : ∀ y ∈ Sᶜ, ‖g₃ y‖ ≤ M₂)
+    (hW : ∀ y, ‖W y‖ ≤ Wsup)
+    (hint : Integrable (fun y => g₁ y * g₂ y * g₃ y * W y) μ)
+    (h1 : Integrable (fun y => ‖g₁ y‖ ^ 2) μ) (h2 : Integrable (fun y => ‖g₂ y‖ ^ 2) μ) :
+    ‖∫ y, g₁ y * g₂ y * g₃ y * W y ∂μ‖
+      ≤ M₁ * Wsup * (Real.sqrt (∫ y in S, ‖g₁ y‖ ^ 2 ∂μ)
+            * Real.sqrt (∫ y in S, ‖g₂ y‖ ^ 2 ∂μ))
+        + M₂ * Wsup * (Real.sqrt (∫ y in Sᶜ, ‖g₁ y‖ ^ 2 ∂μ)
+            * Real.sqrt (∫ y in Sᶜ, ‖g₂ y‖ ^ 2 ∂μ)) := by
+  have hsplit := integral_add_compl hS hint
+  rw [← hsplit]
+  refine le_trans (norm_add_le _ _) ?_
+  have hone := norm_integral_mul_three_le_sup_mul_sqrt_measure (μ := μ.restrict S)
+    hm1.restrict hm2.restrict hM₁0 hW0
+    ((ae_restrict_iff' hS).2 (Filter.Eventually.of_forall hM₁))
+    (Filter.Eventually.of_forall hW) (h1.restrict) (h2.restrict)
+  have htwo := norm_integral_mul_three_le_sup_mul_sqrt_measure (μ := μ.restrict Sᶜ)
+    hm1.restrict hm2.restrict hM₂0 hW0
+    ((ae_restrict_iff' hS.compl).2 (Filter.Eventually.of_forall hM₂))
+    (Filter.Eventually.of_forall hW) (h1.restrict) (h2.restrict)
+  linarith [hone, htwo]
 
 end GaloisForLFunctions.HTGeometry
 end
