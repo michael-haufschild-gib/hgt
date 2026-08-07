@@ -112,3 +112,23 @@ Mertens bookkeeping) and the outer Perron passage for `S_k(x)`.
 
 Only step 4's outer Perron passage remains (extract the initial-segment sum from its Dirichlet series);
 candidate is `SmoothWeightPerron.tsum_mul_smoothWeight_eq_integral` with `H = N/(log N)³`.
+
+## Update 6: step 4 needs truncated Perron; the smoothing routes are dead
+
+All of step 4's devices are built (`TripleConvolutionPerron`, `WeightedCauchySchwarz`,
+`LorentzianPrimeSupport`, `SmoothWeightWindow` — the last now has the sharper
+`norm_weighted_sub_partialSum_le_sqrt`, `≤ √H·√(window ℓ²)`, committed by another session with a missing
+`Mathlib.Algebra.Order.Chebyshev` import that I fixed).
+
+**No-go recorded on the card:** for the triple convolution `‖d(n)‖ ≲ (log x)²d₃(n)`, every *smoothed*
+route needs a short-interval divisor estimate (Shiu, or Piltz with a power-saving error): fine smoothing
+`H = x/(log x)^A` leaves `∑_{x<n≤x+H}d₃(n)`, and coarse smoothing (`H ≍ x`, i.e. PNTPlus's exact
+`x^s/(s(s+1))` Cesàro formula) leaves `∑_{n≤x}d(n)n/x ≍ x(log x)⁴`, which is not small.  Higher-order
+Riesz means return to the window sum.
+
+Only **truncated Perron with the `1/s` kernel** avoids it: its error is the *global*
+`(x^σ/T)∑_n‖d(n)‖/n^σ ≍ x(log x)^c/T`, needing no short-interval input.  So the one remaining analytic
+development is Perron's lemma,
+`|(1/2πi)∫_{σ−iT}^{σ+iT} y^s ds/s − 1_{y>1}| ≪ y^σ min(1, 1/(T|log y|))`,
+by contour shift plus the residue at `s = 0`.  PNTPlus's `Rectangle`/`ResidueCalcOnRectangles` machinery
+is reusable; its own `PerronFormula.lean` is the `x^s/(s(s+1))` kernel and is NOT usable here.

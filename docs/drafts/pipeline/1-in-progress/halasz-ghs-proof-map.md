@@ -410,3 +410,33 @@ With this, every passage of step 4 is available in the corpus:
 What is left is not a missing device but the instantiation: choosing `H = N/(log N)³`, naming the three
 coefficient sequences produced by steps 2–3, defining `L(x)`, and estimating the window mass of the triple
 convolution.
+
+## Which Perron device step 4 must use — and why the cheap ones fail
+
+The smoothing error is now available in the sharp form
+`‖smoothed − sharp‖ ≤ √H · √(∑_{K<n≤⌊K+H⌋} ‖d(n)‖²)` (`norm_weighted_sub_partialSum_le_sqrt`), so the
+remaining question is which quantity one is willing to estimate for the triple-convolution coefficients
+`d = a ⍟ (b ⍟ c)`, whose size is `‖d(n)‖ ≲ (log x)² d₃(n)`.
+
+Three routes were considered and two are dead:
+
+1. **Fine smoothing** (`H = x/(log x)^A`).  The error needs `∑_{x<n≤x+H} d₃(n)²` or `∑_{x<n≤x+H} d₃(n)`
+   — a *short-interval* divisor estimate.  An upper bound for `∑_{n≤x} d₃(n)` does not give it; one needs
+   either Shiu's theorem or the Piltz asymptotic with a power-saving error.  Both are substantial.
+2. **Coarse smoothing** (`H ≍ x`, e.g. the Cesàro weight of PNTPlus's `x^s/(s(s+1))` Perron formula,
+   which is *exact* and needs no error analysis).  Here the sharp-versus-smoothed difference is
+   `∑_{n≤x} d(n)·(n/x)`, a full sum of size `≍ x(log x)⁴`, not small.  Higher-order Riesz means move the
+   problem back to a window sum, i.e. back to route 1.
+3. **Truncated Perron with the `1/s` kernel.**  Its error is the *global* sum
+   `≪ (x^σ/T) ∑_n ‖d(n)‖/n^σ` at `σ = 1 + 1/log x`, which is `≍ x(log x)^c/T` — bounded by a
+   Mertens-type global estimate only, with no short-interval input at all.  With `T` a fixed power of
+   `log x` the error is `x/(log x)^{B−c}`, inside GHS's budget.
+
+So the crux is genuinely Perron's lemma: for `y > 0`, `y ≠ 1`, `σ > 0`, `T > 0`,
+
+`|(1/2πi)∫_{σ−iT}^{σ+iT} y^s ds/s − 1_{y>1}| ≪ y^σ · min(1, 1/(T|log y|))`,
+
+whose proof is a contour shift plus the residue at `s = 0`.  PNTPlus supplies the rectangle machinery
+(`Rectangle`, `ResidueCalcOnRectangles`, `RectangleIntegral`) but its own Perron file works with the
+absolutely integrable kernel `x^s/(s(s+1))`, which is route 2 and therefore not usable here.  This is the
+one remaining analytic development of the whole chain, and it is classical and unconditional.
