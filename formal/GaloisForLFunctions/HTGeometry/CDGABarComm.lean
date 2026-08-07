@@ -150,6 +150,68 @@ theorem barHead_tail_term (n c r : ℕ) (hq : c + r = n + 1) (a a' : ℕ) (hs : 
   rw [barHeadTermₗ_eq_comp]
   exact barMulTail_second ε hs (g r) _
 
+set_option maxHeartbeats 1000000 in
+/-- **The head and a tail of a tail cancel**, componentwise. -/
+theorem barHead_comm_tail_apply (n c e : ℕ) (hp : c + e = n + 1 + 1)
+    (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1))
+    (F : TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε) N) n) :
+    barHeadₗ ε N' (n + 1)
+        (tensorRightDegOneₗ (M := barShiftFamily ε)
+          (fun b => tensorRightDegOneₗ (M := barShiftFamily ε) g b) n F) ⟨(c, e), hp⟩
+      + tensorRightDegOneₗ (M := barShiftFamily ε) g (n + 1)
+        (barHeadₗ ε N n F) ⟨(c, e), hp⟩ = 0 := by
+  cases e with
+  | zero =>
+      rw [tensorRightDegOneₗ_zero, add_zero, barHead_apply]
+      refine Finset.sum_eq_zero fun s _ => ?_
+      obtain ⟨⟨a, a'⟩, hsa⟩ := s
+      have hpc : c + 0 = n + 1 + 1 := hp
+      rw [barHeadTermₗ_eq_comp]
+      cases a' with
+      | zero =>
+          have hsc : a + 0 + 1 = c := hsa
+          rw [show tensorRightDegOneₗ (M := barShiftFamily ε)
+                (fun b => tensorRightDegOneₗ (M := barShiftFamily ε) g b) n F
+                ⟨(a, 0 + 0), by omega⟩ = 0 from
+              tensorRightDegOneₗ_zero (M := barShiftFamily ε)
+                (fun b => tensorRightDegOneₗ (M := barShiftFamily ε) g b) n a F _,
+            map_zero, map_zero, map_zero]
+      | succ a'' =>
+          have hsc : a + (a'' + 1) + 1 = c := hsa
+          rw [show tensorRightDegOneₗ (M := barShiftFamily ε)
+                (fun b => tensorRightDegOneₗ (M := barShiftFamily ε) g b) n F
+                ⟨(a, a'' + 1 + 0), by omega⟩
+              = ((-1 : R)) ^ a • TensorProduct.map LinearMap.id
+                (tensorRightDegOneₗ (M := barShiftFamily ε) g a'')
+                (F ⟨(a, a''), by omega⟩) from
+              tensorRightDegOneₗ_succ (M := barShiftFamily ε)
+                (fun b => tensorRightDegOneₗ (M := barShiftFamily ε) g b) n a a'' F _,
+            map_smul, map_smul, map_smul, ← LinearMap.comp_apply, ← TensorProduct.map_comp,
+            LinearMap.comp_id,
+            show (barProj (M := barShiftFamily ε) (N := N') ⟨(a'' + 1, 0), rfl⟩).comp
+                (tensorRightDegOneₗ (M := barShiftFamily ε) g a'') = 0 from by
+              refine LinearMap.ext fun V => ?_
+              show tensorRightDegOneₗ (M := barShiftFamily ε) g a'' V ⟨(a'' + 1, 0), rfl⟩ = _
+              rw [tensorRightDegOneₗ_zero]
+              rfl,
+            TensorProduct.map_zero_right, LinearMap.zero_apply, map_zero, map_zero, smul_zero]
+  | succ r =>
+      rw [barHead_apply,
+        show tensorRightDegOneₗ (M := barShiftFamily ε) g (n + 1) (barHeadₗ ε N n F)
+            ⟨(c, r + 1), hp⟩
+          = ((-1 : R)) ^ c • TensorProduct.map LinearMap.id (g r)
+            (barHeadₗ ε N n F ⟨(c, r), by omega⟩) from
+          tensorRightDegOneₗ_succ (M := barShiftFamily ε) g (n + 1) c r (barHeadₗ ε N n F) _,
+        barHead_apply, map_sum, Finset.smul_sum, ← Finset.sum_add_distrib]
+      refine Finset.sum_eq_zero fun s _ => ?_
+      obtain ⟨⟨a, a'⟩, hsa⟩ := s
+      have hsc : a + a' + 1 = c := hsa
+      have hpc : c + (r + 1) = n + 1 + 1 := hp
+      rw [barHead_tailtail_term ε n c r hp a a' hsa g F (by omega),
+        barHead_tail_term ε n c r (by omega) a a' hsa g F (by omega)]
+      exact barMulTail_cancel ε hsa (g r) _
+
 end Componentwise
 
 end GaloisForLFunctions.HTGeometry
