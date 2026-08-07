@@ -46,6 +46,20 @@ theorem exteriorPower_rank_one_eq_bot (j : ℕ) (hj : 2 ≤ j) : (⋀[R]^j R) = 
     rw [h1, h2, smul_mul_assoc, mul_smul_comm, ExteriorAlgebra.ι_sq_zero, smul_zero, smul_zero]
   rw [hsq, zero_mul]
 
+/-- The exterior powers of a rank-one module are trivial above degree one. -/
+theorem exteriorPower_rank_one_subsingleton (j : ℕ) (hj : 2 ≤ j) :
+    Subsingleton (⋀[R]^j R) := by
+  rw [exteriorPower_rank_one_eq_bot j hj]
+  infer_instance
+
+/-- A tensor product with a trivial second factor is trivial. -/
+theorem tensorProduct_eq_zero_of_subsingleton_right {M N : Type u} [AddCommGroup M] [Module R M]
+    [AddCommGroup N] [Module R N] [Subsingleton N] (z : TensorProduct R M N) : z = 0 := by
+  induction z using TensorProduct.induction_on with
+  | zero => rfl
+  | tmul x y => rw [Subsingleton.elim y (0 : N), TensorProduct.tmul_zero]
+  | add a b ha hb => rw [ha, hb, add_zero]
+
 section ExteriorOne
 
 variable (R) (M : Type u) [AddCommGroup M] [Module R M]
@@ -145,6 +159,14 @@ theorem logResidue_inclusion (A : CDGAStructure R X) (k : ℕ) (x : X (k + 1)) :
     (TensorProduct.map LinearMap.id (exteriorOneEquiv R R).toLinearMap
       ((logInclusion A).toFun (k + 1) x ⟨(k, 1), by omega⟩)) = 0
   rw [hval, tensorSingle_ne _ hne, map_zero, map_zero]
+
+/-- **A logarithmic form has only two nonzero bidegrees.**  Every component whose exterior degree is
+at least two vanishes, because the exterior powers of a rank-one module do. -/
+theorem logCarrier_high_eq_zero {n : ℕ}
+    (F : TensorCarrier (R := R) X (fun m => ⋀[R]^m R) n)
+    (p : {ab : ℕ × ℕ // ab.1 + ab.2 = n}) (hp : 2 ≤ p.1.2) : F p = 0 := by
+  haveI := exteriorPower_rank_one_subsingleton (R := R) p.1.2 hp
+  exact tensorProduct_eq_zero_of_subsingleton_right (F p)
 
 end LogAlgebra
 

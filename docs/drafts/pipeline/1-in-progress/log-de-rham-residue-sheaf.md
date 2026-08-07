@@ -57,8 +57,19 @@ declarations: `propext, Classical.choice, Quot.sound`.
 - `logCDGAUnit`, `logInclusion` — its unit and the inclusion of the ordinary forms.
 - `logDlog` — **the class of `d log z`**, the adjoined generator, in degree one.
 
-Remaining: the Poincaré residue as the projection onto the bidegree carrying `d log z`, which needs
-the identification `⋀^1 M ≅ M` (mathlib has no such equivalence; it is the alternating-map
-correspondence in one argument); the residue sequence and its exactness, which is then the vanishing
-above; and the passage from the algebra to the sheaf, which the corpus's local-predicate machinery
-supports.
+- `exteriorιₗ`, `exteriorOneToBase`, `exteriorOneEquiv` — **the first exterior power of a module is
+  the module itself**.  mathlib has the alternating-map correspondence but not this instance of it;
+  the inverse is the class of a vector, and the round trips are the one-argument case of the
+  correspondence.
+- `logResidue` — **the Poincaré residue**: the component at the bidegree carrying the adjoined
+  generator, read through that identification.
+- `logResidue_inclusion` — an ordinary form has no residue.
+- `exteriorPower_rank_one_subsingleton`, `tensorProduct_eq_zero_of_subsingleton_right`,
+  `logCarrier_high_eq_zero` — **a logarithmic form has only two nonzero bidegrees**: every component
+  of exterior degree at least two vanishes.  This is the structural fact that makes the residue
+  sequence exact.
+
+Remaining: exactness of `0 → Ω^• → Ω^•(log D) → Ω^{•-1} → 0` — surjectivity of the residue and the
+converse of `logResidue_inclusion`, both now reduced to the two-bidegree structure above — the
+anticommutation of the residue with the differential, and the passage from the algebra to the sheaf,
+which the corpus's local-predicate machinery supports.
