@@ -1182,3 +1182,26 @@ count contributes `2^{j}/j`, and `E_j = Y_j²e^{4c}(log z_j)⁴` must stay below
 `≍ 1/√(log N)`, which against the Euler factor `log N` and the kernel constant `N` gives
 `N(log N)^{1/2}` — below the trivial `N log N` by `√(log N)`.  Establishing that in Lean is the arithmetic
 that remains; the estimate above is the target, not a theorem.
+
+## The sieve level chosen per block
+
+`RHTower/Sieve/BlockSieveLevels.lean` (green, axiom-clean, wired).
+
+`blockSieveLevel j = max 2 (2^{⌊j/4⌋})`, `blockSieveModulus j = 2^{j+1}` — the level is a quarter of the
+block's logarithm, floored at `2`; the modulus is the block's right endpoint.  The quarter is what keeps the
+Selberg fibre error `E = Y²e^{4c}(log z)⁴` below the block's main term `2^{j+1}·2 sinh δ/log Y`, and the floor
+keeps `log Y > 0` on every block, including the first, where `⌊j/4⌋ = 0` would give `Y = 1`.  Admissibility on
+every block: `1 ≤ Y_j`, `2 ≤ Y_j`, `2 ≤ z_j`, `Y_j ≤ z_j`, `0 < log Y_j`, all four proved for all `j`, which is
+why the modulus is `2^{j+1}` and not `2^j` (at `j = 0` the latter is `1 < 2 = Y_0`).
+
+* `sqrt_integral_lorentz_normSq_LSeries_le_block_sum` — the mean square at these levels;
+* `sqrt_integral_lorentz_normSq_LSeries_le_block_sum_explicit` — with every block past the first replaced by
+  the closed-form estimate, so the right-hand side is a function of `j`, `σ` and `A` alone.
+
+**The parameters are now fixed and the remaining work is a single summation**: bounding
+
+`∑_{1 ≤ j ≤ log₂M} √( 25π²·(2^{j+1}log4/(j log2))·(2(2^{j+1}·2 sinh δ+1)/log Y_j + E_j + 2^{j+1})·(A(j+1)log2)²·2^{−2σj} )`
+
+by a closed expression in `σ` and `M`.  Each summand is `√` of a product of powers of `2^j` and polynomials in
+`j`; the `j`-dependence of `log Y_j = ⌊j/4⌋ log 2` is the only non-elementary piece, and it is bounded below by
+`(j−3)log 2/4`, which is enough.
