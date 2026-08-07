@@ -105,6 +105,49 @@ noncomputable def exteriorOneEquiv : (⋀[R]^1 M) ≃ₗ[R] M := by
     rw [exteriorPower.ιMulti_apply_coe, ExteriorAlgebra.ιMulti_succ_apply,
       ExteriorAlgebra.ιMulti_zero_apply, mul_one]
 
+/-- The unit of the zeroth exterior power. -/
+def exteriorZeroOne : (⋀[R]^0 M) := ⟨1, SetLike.one_mem_graded _⟩
+
+/-- The zeroth exterior power, to the ring. -/
+noncomputable def exteriorZeroToBase : (⋀[R]^0 M) →ₗ[R] R :=
+  exteriorPower.alternatingMapLinearEquiv (AlternatingMap.constOfIsEmpty R M (Fin 0) (1 : R))
+
+theorem exteriorZeroOne_eq_ιMulti (v : Fin 0 → M) :
+    exteriorZeroOne R M = exteriorPower.ιMulti R 0 v := by
+  refine Subtype.ext ?_
+  rw [exteriorPower.ιMulti_apply_coe, ExteriorAlgebra.ιMulti_zero_apply]
+  rfl
+
+theorem exteriorZeroToBase_one : exteriorZeroToBase R M (exteriorZeroOne R M) = 1 := by
+  rw [exteriorZeroOne_eq_ιMulti R M (fun i => i.elim0), exteriorZeroToBase,
+    exteriorPower.alternatingMapLinearEquiv_apply_ιMulti]
+  rfl
+
+/-- **Every element of the zeroth exterior power is a multiple of the unit.** -/
+theorem exteriorZero_eq_smul_one (z : ⋀[R]^0 M) :
+    z = exteriorZeroToBase R M z • exteriorZeroOne R M := by
+  have hmem : z ∈ Submodule.span R (Set.range (exteriorPower.ιMulti R 0 (M := M))) := by
+    rw [exteriorPower.ιMulti_span R 0 M]
+    trivial
+  refine Submodule.span_induction ?_ ?_ ?_ ?_ hmem
+  · rintro y ⟨v, rfl⟩
+    rw [← exteriorZeroOne_eq_ιMulti R M v, exteriorZeroToBase_one, one_smul]
+  · rw [map_zero, zero_smul]
+  · intro y y' _ _ hy hy'
+    rw [map_add, add_smul, ← hy, ← hy']
+  · intro c y _ hy
+    rw [map_smul, smul_assoc, ← hy]
+
+/-- **The zeroth exterior power is the ring.** -/
+noncomputable def exteriorZeroEquiv : (⋀[R]^0 M) ≃ₗ[R] R := by
+  refine LinearEquiv.ofLinear (exteriorZeroToBase R M)
+    ((LinearMap.id (R := R) (M := R)).smulRight (exteriorZeroOne R M)) ?_ ?_
+  · refine LinearMap.ext fun r => ?_
+    show exteriorZeroToBase R M (r • exteriorZeroOne R M) = r
+    rw [map_smul, exteriorZeroToBase_one, smul_eq_mul, mul_one]
+  · refine LinearMap.ext fun z => ?_
+    exact (exteriorZero_eq_smul_one R M z).symm
+
 end ExteriorOne
 
 section LogAlgebra
@@ -184,6 +227,87 @@ theorem logResidue_surjective (k : ℕ) : Function.Surjective (logResidue (R := 
   have hone : (exteriorOneEquiv R R) (exteriorιₗ R R (1 : R)) = (1 : R) :=
     exteriorOneToBase_ι R R (1 : R)
   rw [hone, TensorProduct.rid_tmul, one_smul]
+
+/-- The bidegree the residue reads, as an isomorphism. -/
+noncomputable def logResidueEquiv (k : ℕ) :
+    TensorProduct R (X k) (⋀[R]^1 R) ≃ₗ[R] X k :=
+  (TensorProduct.congr (LinearEquiv.refl R (X k)) (exteriorOneEquiv R R)).trans
+    (TensorProduct.rid R (X k))
+
+theorem logResidue_eq_equiv (k : ℕ)
+    (F : TensorCarrier (R := R) X (fun n => ⋀[R]^n R) (k + 1)) :
+    logResidue (X := X) k F
+      = logResidueEquiv (X := X) k (F ⟨(k, 1), by omega⟩) := rfl
+
+/-- The bidegree of the ordinary forms, as an isomorphism. -/
+noncomputable def logZeroEquiv (k : ℕ) :
+    TensorProduct R (X (k + 1)) (⋀[R]^0 R) ≃ₗ[R] X (k + 1) :=
+  (TensorProduct.congr (LinearEquiv.refl R (X (k + 1))) (exteriorZeroEquiv R R)).trans
+    (TensorProduct.rid R (X (k + 1)))
+
+theorem logZeroEquiv_symm (k : ℕ) (x : X (k + 1)) :
+    (logZeroEquiv (X := X) k).symm x = x ⊗ₜ[R] exteriorZeroOne R R := by
+  refine (logZeroEquiv (X := X) k).injective ?_
+  rw [LinearEquiv.apply_symm_apply]
+  show x = (TensorProduct.rid R (X (k + 1)))
+    (TensorProduct.congr (LinearEquiv.refl R (X (k + 1))) (exteriorZeroEquiv R R)
+      (x ⊗ₜ[R] exteriorZeroOne R R))
+  rw [TensorProduct.congr_tmul]
+  show x = (TensorProduct.rid R (X (k + 1)))
+    (x ⊗ₜ[R] exteriorZeroToBase R R (exteriorZeroOne R R))
+  rw [exteriorZeroToBase_one, TensorProduct.rid_tmul, one_smul]
+
+/-- **A logarithmic form with no residue is an ordinary form**, and conversely.  This is exactness of
+the residue sequence: a form is supported in the two bidegrees, and vanishing of the one carrying the
+generator leaves only the ordinary one. -/
+theorem logResidue_eq_zero_iff (A : CDGAStructure R X) (k : ℕ)
+    (F : TensorCarrier (R := R) X (fun n => ⋀[R]^n R) (k + 1)) :
+    logResidue (X := X) k F = 0 ↔ ∃ x : X (k + 1), F = (logInclusion A).toFun (k + 1) x := by
+  constructor
+  · intro hres
+    have h1 : F ⟨(k, 1), by omega⟩ = 0 := by
+      refine (logResidueEquiv (X := X) k).injective ?_
+      rw [map_zero, ← logResidue_eq_equiv]
+      exact hres
+    refine ⟨logZeroEquiv (X := X) k (F ⟨(k + 1, 0), by omega⟩), ?_⟩
+    funext q
+    obtain ⟨⟨qa, qb⟩, hq⟩ := q
+    have hval : (logInclusion A).toFun (k + 1)
+        (logZeroEquiv (X := X) k (F ⟨(k + 1, 0), by omega⟩))
+        = tensorSingle (M := X) (N := fun n => ⋀[R]^n R)
+          (⟨(k + 1, 0), by omega⟩ : {ab : ℕ × ℕ // ab.1 + ab.2 = k + 1})
+          (F ⟨(k + 1, 0), by omega⟩) := by
+      show tensorSingle (M := X) (N := fun n => ⋀[R]^n R)
+        (⟨(k + 1, 0), by omega⟩ : {ab : ℕ × ℕ // ab.1 + ab.2 = k + 1})
+        (logZeroEquiv (X := X) k (F ⟨(k + 1, 0), by omega⟩)
+          ⊗ₜ[R] (exteriorModuleCDGAUnit R R).one) = _
+      refine congrArg (tensorSingle _) ?_
+      have := logZeroEquiv_symm (R := R) (X := X) k
+        (logZeroEquiv (X := X) k (F ⟨(k + 1, 0), by omega⟩))
+      rw [LinearEquiv.symm_apply_apply] at this
+      exact this.symm
+    rw [hval]
+    rcases qb with _ | qb'
+    · have hqa : qa = k + 1 := by omega
+      subst hqa
+      rw [tensorSingle_same]
+    · rcases qb' with _ | b
+      · have hqa : qa = k := by omega
+        subst hqa
+        rw [h1]
+        refine (tensorSingle_ne (M := X) (N := fun n => ⋀[R]^n R) _ ?_).symm
+        intro hEq
+        have h2 : ((qa, 1) : ℕ × ℕ) = (qa + 1, 0) := congrArg Subtype.val hEq
+        have h3 : (1 : ℕ) = 0 := congrArg Prod.snd h2
+        exact absurd h3 (by omega)
+      · rw [logCarrier_high_eq_zero F ⟨(qa, b + 1 + 1), hq⟩ (show 2 ≤ b + 1 + 1 by omega)]
+        refine (tensorSingle_ne (M := X) (N := fun n => ⋀[R]^n R) _ ?_).symm
+        intro hEq
+        have h2 : ((qa, b + 1 + 1) : ℕ × ℕ) = (k + 1, 0) := congrArg Subtype.val hEq
+        have h3 : b + 1 + 1 = 0 := congrArg Prod.snd h2
+        exact absurd h3 (by omega)
+  · rintro ⟨x, rfl⟩
+    exact logResidue_inclusion A k x
 
 end LogAlgebra
 

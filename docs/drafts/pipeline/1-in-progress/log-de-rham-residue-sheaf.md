@@ -69,7 +69,15 @@ declarations: `propext, Classical.choice, Quot.sound`.
   of exterior degree at least two vanishes.  This is the structural fact that makes the residue
   sequence exact.
 
-Remaining: exactness of `0 → Ω^• → Ω^•(log D) → Ω^{•-1} → 0` — surjectivity of the residue and the
-converse of `logResidue_inclusion`, both now reduced to the two-bidegree structure above — the
-anticommutation of the residue with the differential, and the passage from the algebra to the sheaf,
-which the corpus's local-predicate machinery supports.
+- `logResidue_surjective` — **the residue is onto**: the form `x ∧ d log z` has residue `x`.
+- `exteriorZeroOne`, `exteriorZeroToBase`, `exteriorZero_eq_smul_one`, `exteriorZeroEquiv` — **the
+  zeroth exterior power is the ring**, every element being a multiple of the unit.
+- `logResidueEquiv`, `logZeroEquiv`, `logZeroEquiv_symm`, `logResidue_eq_zero_iff` — **exactness of
+  the residue sequence** `0 → Ω^• → Ω^•(log D) → Ω^{•-1} → 0`: a logarithmic form has no residue
+  exactly when it is an ordinary form.  The proof is the two-bidegree structure: everything of
+  exterior degree at least two vanishes, the bidegree carrying the generator is killed by the
+  hypothesis, and what is left is the ordinary bidegree.
+
+Remaining: the anticommutation of the residue with the differential, which makes it a morphism of
+complexes after the standard sign, and the passage from the algebra to the sheaf, which the corpus's
+local-predicate machinery supports.
