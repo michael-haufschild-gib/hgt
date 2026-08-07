@@ -193,11 +193,20 @@ the outer sign reads; and `barHead_tailtail_term`, `barHead_tail_term`,
 `tensorRightDegOne_add_map` splits a tail into its own head and tail, and `barD_succ_split` and
 `barTailFamily` fix the spelling the split needs.
 
-What is left is the induction itself.  It is blocked on nothing mathematical: `(barPower (k+1)).carrier`
-and `TensorCarrier S (barPower k).carrier` are *definitionally* equal but not syntactically so, and
-Lean elaborates the two summands of the inductive step against the two different spellings, so the
-`HAdd` instance for their sum is not found and the rewrite that splits the tail does not fire.  The
-fix is to force one spelling through the whole step — `barTailFamily` does it for the tail; the head
-and the outer differential need the same treatment.
+What is left is the induction itself, and the obstruction is now diagnosed exactly.  `barD` was
+rebuilt to name the tail's coefficient families explicitly, so the two summands of the inductive step
+have the same *type* spelling; that part is fixed.  What remains is one level deeper: the two
+summands still carry different **instances**.  `(barPower ε (k+1)).group b` — the `AddCommGroup` field
+that `Cochain.tensor` stores — and the `AddCommGroup (TensorCarrier …)` instance that
+`tensorRightDegOne` finds by synthesis are definitionally equal but not syntactically, so `simp` and
+`rw` both refuse the step with "the target expression is not type-correct under the `instances`
+transparency level".
+
+The fix is structural, not tactical: `Cochain` bundles its instances as fields, and a stage built by
+`Cochain.tensor` must expose the `TensorCarrier` instances *syntactically* rather than through the
+bundled fields.  Either `barPower` is defined so its `group` and `smul` at a successor reduce to the
+synthesised ones, or the bar layer works with the carrier and instances separately and never with the
+bundled `Cochain`.  Until then the induction cannot be written, even though every one of its three
+cancellations is proved.
 
 Everything the statement quantifies over is defined, and one of the four terms is proved.

@@ -26,10 +26,10 @@ noncomputable def barD : ∀ (k n : ℕ),
     (barPower ε (k + 1)).carrier n →ₗ[R] (barPower ε k).carrier (n + 1)
   | 0, _ => 0
   | (k + 1), n =>
-      (show (barPower ε (k + 1 + 1)).carrier n →ₗ[R] (barPower ε (k + 1)).carrier (n + 1) from
-        barHeadₗ ε (barPower ε k).carrier n)
-        + (show (barPower ε (k + 1 + 1)).carrier n →ₗ[R] (barPower ε (k + 1)).carrier (n + 1) from
-          tensorRightDegOneₗ (M := barShiftFamily ε) (fun b => barD k b) n)
+      barHeadₗ ε (barPower ε k).carrier n
+        + tensorRightDegOneₗ (M := barShiftFamily ε)
+          (N := fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b)
+          (N' := (barPower ε k).carrier) (fun b => barD k b) n
 
 theorem barD_zero (n : ℕ) : barD ε 0 n = 0 := rfl
 
@@ -57,10 +57,10 @@ theorem barD_comp_zero (n : ℕ) (F : (barPower ε 2).carrier n) :
 
 theorem barD_succ (k n : ℕ) :
     barD ε (k + 1) n
-      = (show (barPower ε (k + 1 + 1)).carrier n →ₗ[R] (barPower ε (k + 1)).carrier (n + 1) from
-          barHeadₗ ε (barPower ε k).carrier n)
-        + (show (barPower ε (k + 1 + 1)).carrier n →ₗ[R] (barPower ε (k + 1)).carrier (n + 1) from
-          tensorRightDegOneₗ (M := barShiftFamily ε) (fun b => barD ε k b) n) := rfl
+      = barHeadₗ ε (barPower ε k).carrier n
+        + tensorRightDegOneₗ (M := barShiftFamily ε)
+          (N := fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b)
+          (N' := (barPower ε k).carrier) (fun b => barD ε k b) n := rfl
 
 end GaloisForLFunctions.HTGeometry
 
