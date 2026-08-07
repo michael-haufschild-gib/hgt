@@ -1,4 +1,5 @@
 import Mathlib.NumberTheory.LSeries.Convolution
+import Mathlib.Data.Nat.Factorization.Basic
 
 /-!
 # A threefold convolution with prime-supported factors is polylogarithmic
@@ -152,6 +153,57 @@ theorem norm_convolution_triple_prime_support_le {a b c : ℕ → ℂ}
   rw [← Finset.sum_filter, Finset.sum_const, filter_prime_divisors_eq_primeFactors hn0,
     nsmul_eq_mul]
   exact le_of_eq (by ring)
+
+/-- **`2^ω(n) ≤ n`.**  The product of the distinct prime divisors divides `n`, and each factor is at
+least `2`. -/
+theorem two_pow_card_primeFactors_le {n : ℕ} (hn : 1 ≤ n) :
+    2 ^ n.primeFactors.card ≤ n := by
+  classical
+  have hprod : ∏ p ∈ n.primeFactors, p ∣ n := Nat.prod_primeFactors_dvd n
+  have hle : 2 ^ n.primeFactors.card ≤ ∏ p ∈ n.primeFactors, p := by
+    rw [← Finset.prod_const]
+    refine Finset.prod_le_prod' fun p hp => ?_
+    exact (Nat.prime_of_mem_primeFactors hp).two_le
+  exact le_trans hle (Nat.le_of_dvd (by omega) hprod)
+
+/-- **`ω(n) log 2 ≤ log n`.** -/
+theorem card_primeFactors_mul_log_two_le_log {n : ℕ} (hn : 1 ≤ n) :
+    (n.primeFactors.card : ℝ) * Real.log 2 ≤ Real.log n := by
+  have h := two_pow_card_primeFactors_le hn
+  have hR : ((2 : ℝ) ^ n.primeFactors.card) ≤ (n : ℝ) := by
+    have : ((2 ^ n.primeFactors.card : ℕ) : ℝ) ≤ (n : ℝ) := by exact_mod_cast h
+    simpa using this
+  have hpos : (0 : ℝ) < (2 : ℝ) ^ n.primeFactors.card := by positivity
+  have hlog := Real.log_le_log hpos hR
+  rwa [Real.log_pow] at hlog
+
+/-- **The triple convolution's coefficients are polylogarithmic, explicitly.**  For prime-supported
+`a, b` with `‖a_p‖ ≤ log p`, `‖b_q‖ ≤ log q` and `‖c‖ ≤ 1`,
+
+`‖(a ⍟ (b ⍟ c))(n)‖ ≤ (log n)⁴/(log 2)²`. -/
+theorem norm_convolution_triple_le_log_pow {a b c : ℕ → ℂ}
+    (ha : ∀ p : ℕ, a p ≠ 0 → Nat.Prime p) (haB : ∀ p : ℕ, ‖a p‖ ≤ Real.log p)
+    (hb : ∀ q : ℕ, b q ≠ 0 → Nat.Prime q) (hbB : ∀ q : ℕ, ‖b q‖ ≤ Real.log q)
+    (hc : ∀ k : ℕ, ‖c k‖ ≤ 1) {n : ℕ} (hn : 1 ≤ n) :
+    ‖(LSeries.convolution a (LSeries.convolution b c)) n‖
+      ≤ (Real.log n) ^ 4 / (Real.log 2) ^ 2 := by
+  have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
+  have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have hlogn : (0 : ℝ) ≤ Real.log n := Real.log_nonneg hnR
+  have hω := card_primeFactors_mul_log_two_le_log hn
+  have hωle : (n.primeFactors.card : ℝ) ≤ Real.log n / Real.log 2 := by
+    rw [le_div_iff₀ hlog2]
+    exact hω
+  have hbase := norm_convolution_triple_prime_support_le ha haB hb hbB hc hn
+  refine hbase.trans ?_
+  have hsq : (n.primeFactors.card : ℝ) ^ 2 ≤ (Real.log n / Real.log 2) ^ 2 := by
+    have hnn : (0 : ℝ) ≤ (n.primeFactors.card : ℝ) := Nat.cast_nonneg _
+    exact pow_le_pow_left₀ hnn hωle 2
+  calc (n.primeFactors.card : ℝ) ^ 2 * (Real.log n) ^ 2
+      ≤ (Real.log n / Real.log 2) ^ 2 * (Real.log n) ^ 2 := by
+        exact mul_le_mul_of_nonneg_right hsq (by positivity)
+    _ = (Real.log n) ^ 4 / (Real.log 2) ^ 2 := by
+        field_simp
 
 end RHTower.Sieve
 end

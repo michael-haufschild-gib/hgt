@@ -592,3 +592,15 @@ at most `log m`.  Iterating gives the square.
 With `ω(n) ≤ log n/log 2` this is `(log n)⁴/(log 2)²`, so the correction recorded above is now formal: the
 triple convolution's coefficients are polylogarithmic, and **no short-interval divisor estimate appears
 anywhere in the chain**.
+
+### The bound in closed form
+
+Appended to the same module:
+
+* `two_pow_card_primeFactors_le` — `2^{ω(n)} ≤ n`, from `Nat.prod_primeFactors_dvd` and `p ≥ 2`;
+* `card_primeFactors_mul_log_two_le_log` — hence `ω(n)·log 2 ≤ log n`;
+* `norm_convolution_triple_le_log_pow` — **`‖(a ⍟ (b ⍟ c))(n)‖ ≤ (log n)⁴/(log 2)²`**.
+
+That is the closed form the error budgets consume.  The window mass over `(K, K+H]` is at most
+`(H+1)(log(K+H))⁴/(log 2)²` with no arithmetic input at all, so the smoothing error at `H = x/(log x)⁶` is
+`O(x/(log x)²)` — inside GHS's budget by two logarithms.
