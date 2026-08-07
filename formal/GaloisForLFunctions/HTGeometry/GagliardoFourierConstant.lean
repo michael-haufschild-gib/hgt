@@ -241,4 +241,35 @@ theorem normSq_symbol_mul_weight (s ξ h : ℝ) :
       = 4 * Real.sin (Real.pi * (h * ξ)) ^ 2 * h ^ (-(1 + 2 * s)) := by
   rw [normSq_one_sub_fourierChar]
 
+/-! ## The difference operator as a Fourier multiplier
+
+The `L²` half needs no new construction: the corpus already carries Plancherel as an isometry and
+the bounded-symbol Fourier multiplier (`HTGeometry/L2FourierMultiplier.lean`).  The difference
+operator is the multiplier with symbol `1 − e^{2πihξ}`, whose modulus is bounded by `2` and whose
+squared modulus is the Gagliardo numerator.
+-/
+
+/-- The symbol of the difference operator at shift `h`. -/
+noncomputable def differenceSymbol (h ξ : ℝ) : ℂ := 1 - ((Real.fourierChar (h * ξ) : Circle) : ℂ)
+
+/-- The symbol is measurable. -/
+theorem measurable_differenceSymbol (h : ℝ) : Measurable (differenceSymbol h) := by
+  unfold differenceSymbol
+  have hc : Continuous fun ξ : ℝ => ((Real.fourierChar (h * ξ) : Circle) : ℂ) := by
+    fun_prop
+  exact (continuous_const.sub hc).measurable
+
+/-- **The symbol is bounded by two**, since a character has modulus one. -/
+theorem norm_differenceSymbol_le (h ξ : ℝ) : ‖differenceSymbol h ξ‖ ≤ 2 := by
+  unfold differenceSymbol
+  have hone : ‖((Real.fourierChar (h * ξ) : Circle) : ℂ)‖ = 1 := Circle.norm_coe _
+  calc ‖(1 : ℂ) - ((Real.fourierChar (h * ξ) : Circle) : ℂ)‖
+      ≤ ‖(1 : ℂ)‖ + ‖((Real.fourierChar (h * ξ) : Circle) : ℂ)‖ := norm_sub_le _ _
+    _ = 2 := by rw [hone, norm_one]; norm_num
+
+/-- **The squared symbol modulus is the Gagliardo numerator.** -/
+theorem normSq_differenceSymbol (h ξ : ℝ) :
+    ‖differenceSymbol h ξ‖ ^ 2 = 4 * Real.sin (Real.pi * (h * ξ)) ^ 2 :=
+  normSq_one_sub_fourierChar (h * ξ)
+
 end GaloisForLFunctions.HTGeometry

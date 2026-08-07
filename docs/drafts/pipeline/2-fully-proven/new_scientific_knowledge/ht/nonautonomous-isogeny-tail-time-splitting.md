@@ -1284,3 +1284,31 @@ hence (by the eigen-support law applied to its elements) contains a monomial, so
 with monomial denominator and the law applies directly to the numerator.  With that, the fixed field
 of a subgroup `S` of the constant torus is `L` adjoined the monomials annihilated by `S`, which with
 the row-lattice monotonicity gives the tail of a torus protocol as `C<x^(Λ_∞), velocities>`.
+
+## Lean progress — the multiplicative deck group and the Maurer--Cartan coordinate
+
+`GaloisForLFunctions/HTGeometry/FreeDifferentialScalingAutomorphism.lean` (wired, axiom-clean):
+
+    differentialJet_const_mul          scaling by a base constant multiplies every jet
+    differentialIndependent_const_mul  scaling preserves differential independence
+    differentialAdjoin_const_mul       and does not change the generated differential field
+    scalingAutomorphism                **the deck automorphism `y ↦ a·y`**, built from the two jet
+                                       evaluations rather than assumed
+    scalingAutomorphism_deriv          it is a differential automorphism
+    scalingAutomorphism_generator      it multiplies the generator by `a`
+
+`GaloisForLFunctions/HTGeometry/LogarithmicDerivativeFixedField.lean` (wired, axiom-clean):
+
+    scalingAutomorphism_logDeriv          the deck group fixes `ℓ = y′/y`
+    exists_logDerivField_coeff            every jet of `y` is an `F⟨ℓ⟩`-multiple of `y`
+    adjoin_generator_over_logDerivField   hence `F⟨ℓ⟩(y) = F⟨y⟩`: one ordinary adjunction
+
+This is the `G_m` instance of the card's position--velocity splitting `(2)`, `(6)`, `(7)`: the
+erased sector is the whole multiplicative group, the reversible position is trivial, and the
+persistent coordinate is the Maurer--Cartan velocity `ℓ`.  The deck automorphisms are constructed,
+not postulated: `scalingAutomorphism` is the composite of two jet-evaluation isomorphisms.
+
+Remaining for this instance: transcendence of `y` over `F⟨ℓ⟩` (the deck orbit of `y` is infinite,
+so `y` has infinitely many conjugates) and the resulting identification of the fixed field with
+`F⟨ℓ⟩`.  Remaining for the general statement `(2)`: a Rosenlicht-type differential-rational
+quotient theorem for an arbitrary connected commutative algebraic group.

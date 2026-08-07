@@ -89,6 +89,91 @@ theorem adjoin_generator_over_logDerivField {y : E} (hy0 : y ≠ 0)
   subst hx
   exact hjet n
 
+
+/-- The deck automorphism fixes the whole logarithmic-derivative field. -/
+theorem scalingAutomorphism_fixes_logDerivField (hF : ∀ a : F, (algebraMap F E a)′ = 0)
+    {a : F} (ha : a ≠ 0) {y : E} (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+    (hytop : differentialAdjoin F ({y} : Set E) = ⊤)
+    {z : E} (hz : z ∈ differentialAdjoin F ({y′ / y} : Set E)) :
+    scalingAutomorphism hF ha hy hytop z = z := by
+  set σ := scalingAutomorphism hF ha hy hytop with hσdef
+  set F0 : IntermediateField F E :=
+    { carrier := {w : E | σ w = w}
+      mul_mem' := by intro u v hu hv; simp only [Set.mem_setOf_eq] at *; rw [map_mul, hu, hv]
+      one_mem' := by simp
+      add_mem' := by intro u v hu hv; simp only [Set.mem_setOf_eq] at *; rw [map_add, hu, hv]
+      zero_mem' := by simp
+      algebraMap_mem' := by intro r; simp only [Set.mem_setOf_eq]; exact σ.commutes r
+      inv_mem' := by
+        intro u hu
+        simp only [Set.mem_setOf_eq] at *
+        rw [map_inv₀, hu] } with hF0def
+  have hclosed : DerivationClosed F0 := by
+    intro w hw
+    have hw' : σ w = w := hw
+    show σ (w′) = w′
+    rw [scalingAutomorphism_deriv hF ha hy hytop w, hw']
+  have hmem : (y′ / y) ∈ F0 := scalingAutomorphism_logDeriv hF ha hy hytop
+  have hle : differentialAdjoin F ({y′ / y} : Set E) ≤ F0 :=
+    differentialAdjoin_le F (by simpa using hmem) hclosed
+  exact hle hz
+
+/-- The deck automorphism, viewed as an automorphism over the logarithmic-derivative field. -/
+def scalingAutomorphismOverLogDeriv (hF : ∀ a : F, (algebraMap F E a)′ = 0)
+    {a : F} (ha : a ≠ 0) {y : E} (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+    (hytop : differentialAdjoin F ({y} : Set E) = ⊤) :
+    E ≃ₐ[↥(differentialAdjoin F ({y′ / y} : Set E))] E where
+  toFun := scalingAutomorphism hF ha hy hytop
+  invFun := (scalingAutomorphism hF ha hy hytop).symm
+  left_inv := (scalingAutomorphism hF ha hy hytop).left_inv
+  right_inv := (scalingAutomorphism hF ha hy hytop).right_inv
+  map_mul' := map_mul _
+  map_add' := map_add _
+  commutes' := fun l => scalingAutomorphism_fixes_logDerivField hF ha hy hytop l.2
+
+/-- **The generator is transcendental over the logarithmic-derivative field.**  The deck orbit of
+the generator is infinite, so it cannot sit inside the finite root set of a polynomial. -/
+theorem transcendental_over_logDerivField [CharZero F]
+    (hF : ∀ a : F, (algebraMap F E a)′ = 0)
+    {y : E} (hy : DifferentialIndependent F (fun _ : Unit ↦ y))
+    (hytop : differentialAdjoin F ({y} : Set E) = ⊤) (hy0 : y ≠ 0) :
+    Transcendental (↥(differentialAdjoin F ({y′ / y} : Set E))) y := by
+  classical
+  set L : IntermediateField F E := differentialAdjoin F ({y′ / y} : Set E) with hLdef
+  intro halg
+  obtain ⟨p, hp0, hpy⟩ := halg
+  have hmapne : p.map (algebraMap (↥L) E) ≠ 0 := by
+    intro h
+    exact hp0 ((Polynomial.map_eq_zero_iff (algebraMap (↥L) E).injective).mp h)
+  have hroot : ∀ a : F, a ≠ 0 → (p.map (algebraMap (↥L) E)).IsRoot (algebraMap F E a * y) := by
+    intro a ha
+    have hσ : (scalingAutomorphismOverLogDeriv hF ha hy hytop) y = algebraMap F E a * y :=
+      scalingAutomorphism_generator hF ha hy hytop
+    have hzero : Polynomial.aeval
+        ((scalingAutomorphismOverLogDeriv hF ha hy hytop).toAlgHom y) p = 0 := by
+      rw [Polynomial.aeval_algHom_apply, hpy, map_zero]
+    have hval : (scalingAutomorphismOverLogDeriv hF ha hy hytop).toAlgHom y
+        = algebraMap F E a * y := hσ
+    rw [hval] at hzero
+    simpa [Polynomial.IsRoot, Polynomial.eval_map, ← Polynomial.aeval_def] using hzero
+  have hinj : Function.Injective (fun a : F => algebraMap F E a * y) := by
+    intro a b hab
+    simp only at hab
+    exact (algebraMap F E).injective (mul_right_cancel₀ hy0 hab)
+  haveI : Infinite F := CharZero.infinite F
+  have hnz : {a : F | a ≠ 0}.Infinite := by
+    have hfin0 : ({0} : Set F).Finite := Set.finite_singleton 0
+    simpa [Set.compl_def] using hfin0.infinite_compl
+  have himg : ((fun a : F => algebraMap F E a * y) '' {a : F | a ≠ 0}).Infinite :=
+    hnz.image (Set.injOn_of_injective hinj)
+  have hsub : (fun a : F => algebraMap F E a * y) '' {a : F | a ≠ 0} ⊆
+      {x : E | (p.map (algebraMap (↥L) E)).IsRoot x} := by
+    rintro _ ⟨a, ha, rfl⟩
+    exact hroot a ha
+  have hfin : {x : E | (p.map (algebraMap (↥L) E)).IsRoot x}.Finite :=
+    (p.map (algebraMap (↥L) E)).setOf_isRoot_finite hmapne
+  exact himg (hfin.subset hsub)
+
 end
 
 end GaloisForLFunctions.HTGeometry

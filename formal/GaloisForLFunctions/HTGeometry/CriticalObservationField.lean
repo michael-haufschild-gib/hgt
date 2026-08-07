@@ -20,6 +20,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+universe u v
+
 /-- Canonical inclusion of the generic jet algebra into its fraction field. -/
 noncomputable def genericJetFieldMap (K : Type*) [Field K] (N : ℕ) :
     genericJetAlgebra K N →ₐ[K] genericJetField K N :=
@@ -160,35 +162,41 @@ noncomputable def criticalSourceFieldEquiv
 /-- Transcendence degree of a rational function field presented as the fraction field of a
 multivariable polynomial ring. -/
 theorem trdeg_fractionRing_mvPolynomial
-    (K : Type*) [Field K] (ι : Type*) :
-    Algebra.trdeg K (FractionRing (MvPolynomial ι K)) = Cardinal.mk ι := by
-  have hbasis : IsTranscendenceBasis K
-      (algebraMap (MvPolynomial ι K) (FractionRing (MvPolynomial ι K)) ∘
-        MvPolynomial.X) :=
-    (IsTranscendenceBasis.mvPolynomial ι K).algebraMap_comp
-  exact hbasis.cardinalMk_eq_trdeg.symm
+    (K : Type u) [Field K] (ι : Type v) :
+    Algebra.trdeg K (FractionRing (MvPolynomial ι K)) =
+      Cardinal.lift.{u} (Cardinal.mk ι) := by
+  letI : Algebra.IsAlgebraic (MvPolynomial ι K) (FractionRing (MvPolynomial ι K)) :=
+    IsLocalization.isAlgebraic _ (nonZeroDivisors (MvPolynomial ι K))
+  have h := trdeg_add_eq K (MvPolynomial ι K)
+    (A := FractionRing (MvPolynomial ι K))
+  rw [trdeg_eq_zero (R := MvPolynomial ι K)
+    (A := FractionRing (MvPolynomial ι K)), add_zero,
+    MvPolynomial.trdeg_of_isDomain] at h
+  exact h.symm
 
 /-- The actual critical observation field has transcendence degree `m+n`. -/
 theorem trdeg_criticalObservationField
-    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    (K : Type u) [Field K] [CharZero K] [IsAlgClosed K]
     {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
     Algebra.trdeg K (criticalObservationField K m n) = (m + n : Cardinal) := by
   calc
     Algebra.trdeg K (criticalObservationField K m n) =
         Algebra.trdeg K (FractionRing (MvPolynomial (Fin n ⊕ Fin m) K)) :=
       (criticalObservationFieldEquiv K hm hn).trdeg_eq.symm
-    _ = Cardinal.mk (Fin n ⊕ Fin m) := trdeg_fractionRing_mvPolynomial K _
-    _ = (m + n : Cardinal) := by simp
+    _ = Cardinal.lift.{u} (Cardinal.mk (Fin n ⊕ Fin m)) :=
+      trdeg_fractionRing_mvPolynomial K _
+    _ = (m + n : Cardinal) := by simp [add_comm]
 
 /-- The actual critical source field has the same transcendence degree `m+n`. -/
 theorem trdeg_criticalSourceField
-    (K : Type*) [Field K] (m n : ℕ) :
+    (K : Type u) [Field K] (m n : ℕ) :
     Algebra.trdeg K (criticalSourceField K m n) = (m + n : Cardinal) := by
   calc
     Algebra.trdeg K (criticalSourceField K m n) =
         Algebra.trdeg K (FractionRing (MvPolynomial (Fin (m + n)) K)) :=
       (criticalSourceFieldEquiv K m n).trdeg_eq.symm
-    _ = Cardinal.mk (Fin (m + n)) := trdeg_fractionRing_mvPolynomial K _
+    _ = Cardinal.lift.{u} (Cardinal.mk (Fin (m + n))) :=
+      trdeg_fractionRing_mvPolynomial K _
     _ = (m + n : Cardinal) := by simp
 
 /-- Every raw coordinate strictly below the postcritical order lies in the critical source field. -/
@@ -250,6 +258,18 @@ theorem criticalObservationField_le_criticalSourceField
   · exact criticalAmbientRaw_mem_criticalSourceField K (by omega)
   · exact criticalAmbientRecip_mem_criticalSourceField K (by omega)
 
+/-- The actual critical source field as an extension of the actual observation field. -/
+noncomputable instance criticalObservationSourceAlgebra
+    (K : Type*) [Field K] (m n : ℕ) :
+    Algebra (criticalObservationField K m n) (criticalSourceField K m n) :=
+  (IntermediateField.inclusion
+    (criticalObservationField_le_criticalSourceField K (m := m) (n := n))).toAlgebra
+
+instance criticalObservationSourceIsScalarTower
+    (K : Type*) [Field K] (m n : ℕ) :
+    IsScalarTower K (criticalObservationField K m n) (criticalSourceField K m n) :=
+  .of_algebraMap_eq fun _ => Subtype.ext rfl
+
 /-- **The actual critical source field is algebraic over the actual observation field.**  Both
 fields are rational of transcendence degree `m+n` over `K`; additivity of transcendence degree in
 the tower leaves relative transcendence degree zero. -/
@@ -257,21 +277,22 @@ theorem criticalSourceField_isAlgebraic_criticalObservationField
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
     {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
     Algebra.IsAlgebraic (criticalObservationField K m n) (criticalSourceField K m n) := by
-  let A := criticalObservationField K m n
-  let B := criticalSourceField K m n
-  have hAB : A ≤ B := criticalObservationField_le_criticalSourceField K
-  letI : Algebra A B := (IntermediateField.inclusion hAB).toAlgebra
-  haveI : IsScalarTower K A B := .of_algebraMap_eq fun _ => rfl
-  have hsum := trdeg_add_eq K A (A := B)
-  have hA : Algebra.trdeg K A = (m + n : Cardinal) :=
+  have hsum := trdeg_add_eq K (criticalObservationField K m n)
+    (A := criticalSourceField K m n)
+  have hA : Algebra.trdeg K (criticalObservationField K m n) = (m + n : Cardinal) :=
     trdeg_criticalObservationField K hm hn
-  have hB : Algebra.trdeg K B = (m + n : Cardinal) :=
+  have hB : Algebra.trdeg K (criticalSourceField K m n) = (m + n : Cardinal) :=
     trdeg_criticalSourceField K m n
   rw [hA, hB] at hsum
-  have hzero : Algebra.trdeg A B = 0 := by
+  have hzero : Algebra.trdeg (criticalObservationField K m n)
+      (criticalSourceField K m n) = 0 := by
     rcases Cardinal.add_eq_left_iff.mp hsum with hlarge | hzero
-    · exact False.elim ((not_le_of_gt (Cardinal.nat_lt_aleph0 (m + n)))
-        (le_trans le_max_left hlarge))
+    · have hlarge' : max Cardinal.aleph0
+          (Algebra.trdeg (criticalObservationField K m n) (criticalSourceField K m n)) ≤
+          (m + n : Cardinal) := by simpa using hlarge
+      exact False.elim ((not_le_of_gt (Cardinal.natCast_lt_aleph0 (n := m + n)))
+        (le_trans (le_max_left Cardinal.aleph0
+          (Algebra.trdeg (criticalObservationField K m n) (criticalSourceField K m n))) hlarge'))
     · exact hzero
   exact trdeg_eq_zero_iff.mp hzero
 

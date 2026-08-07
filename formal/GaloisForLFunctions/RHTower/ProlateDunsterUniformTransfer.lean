@@ -193,9 +193,11 @@ theorem abs_radialProlate_sub_regularModel_le {s c B x : ℝ} {R DR DDR : ℝ �
       rw [sub_eq_add_neg]
       simpa only [abs_neg] using
         abs_add_le (Ilog * lgBesselModel s c x) (-(Freg * lgBesselModel2 s c x))
-    exact htri.trans (by
-      have hsum := add_le_add h1 h2
-      convert hsum using 1 <;> ring)
+    refine htri.trans ?_
+    calc
+      |Ilog * lgBesselModel s c x| + |Freg * lgBesselModel2 s c x|
+          ≤ (141 / c) * E x + (18 / c) * E x := add_le_add h1 h2
+      _ = (159 / c) * E x := by ring
   have happx := happ x hx
   rw [hW] at happx
   have happform : |U x * (Real.pi / 4) -
@@ -203,7 +205,8 @@ theorem abs_radialProlate_sub_regularModel_le {s c B x : ℝ} {R DR DDR : ℝ �
       ≤ 2 * (K * (127 * C ^ 2 / c)) * E x := by
     dsimp [Flog, Freg, Ilog, U, DU, C, E]
     rw [lgEndpointLogIntegral, lgEndpointRegularIntegral]
-    convert happx using 1 <;> ring
+    convert happx using 1
+    all_goals first | rfl | ring
   have hscaled : |(Real.pi / 4) * (U x - lgBesselModel s c x)|
       ≤ (2 * (44 * Real.exp (68 * C ^ 2) * (127 * C ^ 2)) + 159) / c * E x := by
     have hid : (Real.pi / 4) * (U x - lgBesselModel s c x) =
@@ -226,8 +229,14 @@ theorem abs_radialProlate_sub_regularModel_le {s c B x : ℝ} {R DR DDR : ℝ �
           _ ≤ 44 * Real.exp (68 * C ^ 2) * (2 * 127 * (C ^ 2 / c)) := hmul
           _ = 2 * (44 * Real.exp (68 * C ^ 2) * (127 * C ^ 2)) / c := by ring
       exact mul_le_mul_of_nonneg_right hcoef hE0
-    have hsum := add_le_add (happform.trans hpert) hcombo
-    convert hsum using 1 <;> ring
+    calc
+      |U x * (Real.pi / 4) -
+          (Flog * lgBesselModel s c x - Freg * lgBesselModel2 s c x)| +
+          |Ilog * lgBesselModel s c x - Freg * lgBesselModel2 s c x|
+          ≤ (2 * (44 * Real.exp (68 * C ^ 2) * (127 * C ^ 2)) / c) * E x +
+            (159 / c) * E x := add_le_add (happform.trans hpert) hcombo
+      _ = (2 * (44 * Real.exp (68 * C ^ 2) * (127 * C ^ 2)) + 159) / c * E x := by
+        ring
   have habsW : |Real.pi / 4| = Real.pi / 4 := abs_of_pos (by positivity)
   rw [abs_mul, habsW] at hscaled
   have hdivide : |U x - lgBesselModel s c x|

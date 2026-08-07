@@ -1690,3 +1690,38 @@ Trap: after `rw [Circle.smul_def]` the goal still carries `•` rather than `*`;
 
 Piece (a) is done; (b) is an instantiation of an existing isometry, (c) is the only genuinely
 two-variable step left in this prerequisite.
+
+## AI. Piece (b) is an instantiation — the corpus already owns Plancherel and the multiplier
+
+**Checked before building.** `HTGeometry/L2FourierMultiplier.lean` already carries everything the
+`L²` half of prerequisite 1 needs:
+
+    fourierL2, fourierL2inv          Plancherel as a continuous linear map
+    norm_fourierL2_apply             ‖𝓕f‖ = ‖f‖ — the isometry itself
+    fourierMulCLM hφ hC0 hC          the Fourier multiplier with a bounded measurable symbol
+    norm_fourierMulCLM_le            ‖multiplier‖ ≤ symbol bound
+    fourierMulCLM_comp/_add/_sub/…   the full multiplier algebra
+
+So (b) is an **instantiation**, not a construction — exactly as the memory note
+`mathlib-has-plancherel` predicted. Do not build an `L²` Fourier theory.
+
+New in `GagliardoFourierConstant.lean` (16 declarations now, all axiom-clean):
+
+- `differenceSymbol h ξ = 1 − e^{2πihξ}`.
+- `measurable_differenceSymbol`, `norm_differenceSymbol_le` — measurable and bounded by `2`
+  (a character has modulus one, `Circle.norm_coe`). These are precisely the two arguments
+  `fourierMulCLM` takes, so `fourierMulCLM (measurable_differenceSymbol h) (by norm_num)
+  (norm_differenceSymbol_le h)` is the difference operator on `L²`.
+- `normSq_differenceSymbol` — `‖symbol‖² = 4 sin²(πhξ)`, the Gagliardo numerator.
+
+### Prerequisite 1 — remaining
+
+Only (c): Tonelli to exchange `dh` with `dξ`. Everything else is now either built or a one-line
+instantiation of corpus assets:
+
+    ∫_h ∫_ξ ‖symbol(h,ξ)‖² |û(ξ)|² |h|^{−(1+2s)}  =  ∫_ξ |û(ξ)|² (∫_h 4 sin²(πhξ) |h|^{−(1+2s)})
+                                                  =  c_s ∫_ξ |û(ξ)|² |ξ|^{2s}
+
+the inner integral being `integral_gagliardoIntegrand_scaling`. The integrand is nonnegative, so
+`lintegral` Tonelli applies with no integrability side conditions — use the `ℝ≥0∞` route rather
+than `integral_integral_swap`.

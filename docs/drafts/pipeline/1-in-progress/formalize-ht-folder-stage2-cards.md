@@ -151,11 +151,15 @@ data only.  Every card boundary note deferring to it is stale.
 
 ## Next concrete steps
 
-1. **Scaling-invariant field theorem** (serves card 7's `(2)`, `(6)`, `(7)`): in the free differential
-   field `C⟨y⟩`, the fixed field of the scaling action `y ↦ c·y`, `c ∈ C^×`, is `C⟨y′/y⟩`.
-   Mechanism: an invariant is a degree-zero homogeneous rational function of the jets, hence a
-   rational function of the ratios `y^{(n)}/y`, and `y^{(n)}/y ∈ C⟨y′/y⟩` by induction
-   (`y″/y = ℓ′ + ℓ²`).  This is the concrete `G_m` case of the position–velocity theorem.
+1. **Scaling-invariant field theorem** (card 7's `(2)`, `(6)`, `(7)` for `G_m`) — half done.
+   Built: `FreeDifferentialScalingAutomorphism.lean` (the deck automorphism `y ↦ a·y`, constructed
+   from the two jet evaluations) and `LogarithmicDerivativeFixedField.lean`
+   (`scalingAutomorphism_logDeriv`, `exists_logDerivField_coeff`,
+   `adjoin_generator_over_logDerivField` — `F⟨ℓ⟩(y) = F⟨y⟩` by one ordinary adjunction).
+   Left: `y` is transcendental over `F⟨ℓ⟩` (infinitely many deck conjugates), and then the fixed
+   field of the deck group is `F⟨ℓ⟩` — for the last step the classical route is that an invariant
+   `P(y)/Q(y)` forces `P(aY) = λ P(Y)`, `Q(aY) = λ Q(Y)`, so both are monomials of equal degree;
+   one scalar `a` with `a^i ≠ a^j` for `i ≠ j` already suffices in characteristic zero.
 2. Card 7's general `(2)` needs a Rosenlicht-type differential-rational quotient theorem.
 3. Cards 5 and 6 still need parabolic-orbifold uniformization and the complete-tail identification.
 4. Card 8 needs Pong 5.9, Andersson's arbitrary-divisor theorem and Saksman–Webb/Seip.
