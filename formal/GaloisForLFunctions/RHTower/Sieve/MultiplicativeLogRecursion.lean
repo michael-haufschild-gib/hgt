@@ -291,6 +291,33 @@ theorem abs_sum_Icc_mul_log_sub_sum_primes_le' (hf : ∀ m n : ℕ, f (m * n) = 
   rw [hexp]
   linarith
 
+/-- **The Möbius instance of the recursion.**  The same hyperbola swap, applied to the weight of the
+Möbius function `Λ_μ = −Λ`, is the classical identity
+
+`∑_{n ≤ N} μ(n) log n = −∑_{d ≤ N} Λ(d)·M(⌊N/d⌋)`,   `M(K) = ∑_{m ≤ K} μ(m)`.
+
+No hypotheses: the Möbius function is not completely multiplicative, so this is an instance of the
+general weight `Λ_f = f⁻¹ * (f·log)`, not of the completely multiplicative specialisation. -/
+theorem sum_Icc_moebius_mul_log_eq (N : ℕ) :
+    ∑ n ∈ Finset.Icc 1 N, ((ArithmeticFunction.moebius n : ℤ) : ℝ) * Real.log (n : ℝ)
+      = -∑ d ∈ Finset.Icc 1 N,
+          Λ d * ∑ m ∈ Finset.Icc 1 (N / d), ((ArithmeticFunction.moebius m : ℤ) : ℝ) := by
+  have hstep : ∑ n ∈ Finset.Icc 1 N,
+        ((ArithmeticFunction.moebius n : ℤ) : ℝ) * Real.log (n : ℝ)
+      = ∑ n ∈ Finset.Icc 1 N,
+          ((-Λ) * ((ArithmeticFunction.moebius : ArithmeticFunction ℤ) :
+            ArithmeticFunction ℝ)) n := by
+    refine Finset.sum_congr rfl fun n _ => ?_
+    have h : (pmul ((ArithmeticFunction.moebius : ArithmeticFunction ℤ) : ArithmeticFunction ℝ)
+          ArithmeticFunction.log) n
+        = ((ArithmeticFunction.moebius n : ℤ) : ℝ) * Real.log (n : ℝ) := by
+      rw [pmul_apply, intCoe_apply, ArithmeticFunction.log_apply]
+    rw [← h, pmul_moebius_log, mul_comm]
+  rw [hstep, RHTower.sum_Icc_mul_apply, ← Finset.sum_neg_distrib]
+  refine Finset.sum_congr rfl fun d _ => ?_
+  simp only [ArithmeticFunction.neg_apply, intCoe_apply]
+  ring
+
 end RHTower.Sieve
 
 end

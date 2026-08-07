@@ -5,7 +5,12 @@ axiom-clean, umbrella-wired.
 
 Entry point: `abs_sum_Icc_mul_log_sub_sum_primes_le'` —
 `|S_f(N) log N − ∑_{p ≤ N} f(p) log p S_f(⌊N/p⌋)| ≤ (9 + RHTower.Mertens.mertensTail) · N`
-for bounded completely multiplicative `f` with `f 1` invertible.
+for bounded completely multiplicative `f`.  The only hypotheses are `f (m*n) = f m * f n` and
+`|f n| ≤ 1` — the definition of the class.  Do NOT state the recursion through
+`vonMangoldtOf`/`dirichletInverse`: that drags in an `Invertible (f 1)` argument for nothing, since for
+completely multiplicative `f` the weight is the concrete `f·Λ`.  And do not add premises about `S_f`
+itself (e.g. "ε-small at all smaller scales"): such a premise is a fact about the object, cannot be
+discharged, and makes the theorem conditional.
 
 Built entirely from assets that already existed for other purposes:
 - `ArithmeticFunction.self_mul_dirichletInverse` (mathlib) gives `f·log = f * Λ_f` in three lines.

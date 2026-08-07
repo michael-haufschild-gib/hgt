@@ -61,6 +61,65 @@ theorem comparisonSol_prolateNormalForm_eq_div_xiAmplitude
   rw [← nfWeight_mul_xiAmplitude_eq_lgAmplitude hs0 hs1 hx]
   field_simp [hamp.ne', hnf.ne']
 
+/-- Derivative of Dunster's amplitude, written in the form whose endpoint boundedness is visible. -/
+def xiAmplitudeDeriv (s x : ℝ) : ℝ :=
+  xiAmplitude s x * (phaseLogDefect s x / 2 - x / (2 * (x ^ 2 - s)))
+
+theorem lgAmplitude_nfWeight_logDeriv_eq {s x : ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
+    lgFirstOrderCoeff s x / 2 - nfWeightDeriv x / nfWeight x =
+      phaseLogDefect s x / 2 - x / (2 * (x ^ 2 - s)) := by
+  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have hspeed := xiSpeed_pos hs1 hx
+  have hphase := xiEndpointPhase_pos hs0 hs1 hx
+  have hsqrt : Real.sqrt (x ^ 2 - 1) ^ 2 = x ^ 2 - 1 := Real.sq_sqrt hd.le
+  have hv := xiSpeedDeriv_div_xiSpeed_eq hs1 hx
+  rw [lgFirstOrderCoeff, phaseLogDefect, nfWeightDeriv, nfWeight, hv]
+  field_simp [hspeed.ne', hphase.ne', (Real.sqrt_pos.mpr hd).ne', hn.ne']
+  rw [hsqrt]
+  ring
+
+/-- Dunster's amplitude is differentiable throughout the exterior ray. -/
+theorem hasDerivAt_xiAmplitude {s x : ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
+    HasDerivAt (xiAmplitude s) (xiAmplitudeDeriv s x) x := by
+  have hnf : 0 < nfWeight x := by
+    rw [nfWeight]
+    have : 0 < x ^ 2 - 1 := by nlinarith
+    positivity
+  have heq : ∀ y : ℝ, 1 < y → xiAmplitude s y = lgAmplitude s y / nfWeight y := by
+    intro y hy
+    have hnf_y : 0 < nfWeight y := by
+      rw [nfWeight]
+      have : 0 < y ^ 2 - 1 := by nlinarith
+      positivity
+    have h := nfWeight_mul_xiAmplitude_eq_lgAmplitude hs0 hs1 hy
+    rw [eq_div_iff hnf_y.ne']
+    simpa only [mul_comm] using h
+  have hlocal : xiAmplitude s =ᶠ[nhds x] fun y => lgAmplitude s y / nfWeight y := by
+    filter_upwards [Ioi_mem_nhds hx] with y hy
+    exact heq y hy
+  have hquot := (hasDerivAt_lgAmplitude hs0 hs1 hx).fun_div
+    (hasDerivAt_nfWeight hx) hnf.ne'
+  have hder := hquot.congr_of_eventuallyEq hlocal
+  have hval :
+      (lgAmplitudeDeriv s x * nfWeight x - lgAmplitude s x * nfWeightDeriv x)
+          / nfWeight x ^ 2 = xiAmplitudeDeriv s x := by
+    rw [xiAmplitudeDeriv]
+    have hlog := lgAmplitude_nfWeight_logDeriv_eq hs0 hs1 hx
+    rw [lgAmplitudeDeriv]
+    field_simp [hnf.ne']
+    rw [← nfWeight_mul_xiAmplitude_eq_lgAmplitude hs0 hs1 hx]
+    have hbr : lgFirstOrderCoeff s x * nfWeight x - 2 * nfWeightDeriv x =
+        nfWeight x * (phaseLogDefect s x - x / (x ^ 2 - s)) := by
+      field_simp [hnf.ne'] at hlog
+      linarith
+    rw [hbr]
+    ring
+  rw [hval] at hder
+  exact hder
+
 open Filter Set
 
 /-- Quantitative endpoint squeeze for the fourth power of Dunster's amplitude. -/
