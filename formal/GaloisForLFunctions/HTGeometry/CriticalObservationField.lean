@@ -287,14 +287,89 @@ theorem criticalSourceField_isAlgebraic_criticalObservationField
   have hzero : Algebra.trdeg (criticalObservationField K m n)
       (criticalSourceField K m n) = 0 := by
     rcases Cardinal.add_eq_left_iff.mp hsum with hlarge | hzero
-    · have hlarge' : max Cardinal.aleph0
-          (Algebra.trdeg (criticalObservationField K m n) (criticalSourceField K m n)) ≤
-          (m + n : Cardinal) := by simpa using hlarge
-      exact False.elim ((not_le_of_gt (Cardinal.natCast_lt_aleph0 (n := m + n)))
+    · have hfinite : (m : Cardinal) + (n : Cardinal) < Cardinal.aleph0 := by
+        simpa using (Cardinal.natCast_lt_aleph0 (n := m + n))
+      exact False.elim ((not_le_of_gt hfinite)
         (le_trans (le_max_left Cardinal.aleph0
-          (Algebra.trdeg (criticalObservationField K m n) (criticalSourceField K m n))) hlarge'))
+          (Algebra.trdeg (criticalObservationField K m n) (criticalSourceField K m n))) hlarge))
     · exact hzero
   exact trdeg_eq_zero_iff.mp hzero
+
+/-- Raw generators, now regarded as elements of the actual critical source field. -/
+noncomputable def criticalSourceRaw
+    (K : Type*) [Field K] (m n : ℕ) (j : Fin (m + n)) :
+    criticalSourceField K m n :=
+  ⟨criticalAmbientRaw K m n (j : ℕ), criticalAmbientRaw_mem_criticalSourceField K j.isLt⟩
+
+/-- **The raw source coordinates generate the source field over the observation field.**  Enlarging
+the coefficient field from `K` to the contained observation field does not lose the original finite
+generating family. -/
+theorem criticalSourceRaw_adjoin_eq_top
+    (K : Type*) [Field K] (m n : ℕ) :
+    IntermediateField.adjoin (criticalObservationField K m n)
+      (Set.range (criticalSourceRaw K m n)) = ⊤ := by
+  let J := IntermediateField.adjoin (criticalObservationField K m n)
+    (Set.range (criticalSourceRaw K m n))
+  apply top_unique
+  intro b _
+  have hb : (b : genericJetField K (m + n)) ∈
+      IntermediateField.adjoin K
+        (Set.range (fun j : Fin (m + n) => criticalAmbientRaw K m n (j : ℕ))) := by
+    simpa [criticalSourceField] using b.property
+  let p : ∀ z, z ∈ IntermediateField.adjoin K
+      (Set.range (fun j : Fin (m + n) => criticalAmbientRaw K m n (j : ℕ))) → Prop :=
+    fun z hz => (⟨z, by simpa [criticalSourceField] using hz⟩ :
+      criticalSourceField K m n) ∈ J
+  change p (b : genericJetField K (m + n)) hb
+  refine IntermediateField.adjoin_induction K (p := p) ?_ ?_ ?_ ?_ ?_ hb
+  · intro z hz
+    obtain ⟨j, rfl⟩ := hz
+    simpa [p, J, criticalSourceRaw] using
+      (IntermediateField.subset_adjoin (criticalObservationField K m n)
+        (Set.range (criticalSourceRaw K m n))
+        (Set.mem_range_self j))
+  · intro z
+    change (⟨algebraMap K (genericJetField K (m + n)) z, _⟩ :
+      criticalSourceField K m n) ∈ J
+    have hz := IntermediateField.algebraMap_mem J
+      (algebraMap K (criticalObservationField K m n) z)
+    convert hz using 1
+    apply Subtype.ext
+    rfl
+  · intro z w hz hw hzJ hwJ
+    change (⟨z + w, _⟩ : criticalSourceField K m n) ∈ J
+    convert J.add_mem hzJ hwJ using 1
+    apply Subtype.ext
+    rfl
+  · intro z hz hzJ
+    change (⟨z⁻¹, _⟩ : criticalSourceField K m n) ∈ J
+    convert J.inv_mem hzJ using 1
+    apply Subtype.ext
+    rfl
+  · intro z w hz hw hzJ hwJ
+    change (⟨z * w, _⟩ : criticalSourceField K m n) ∈ J
+    convert J.mul_mem hzJ hwJ using 1
+    apply Subtype.ext
+    rfl
+
+/-- **The actual critical source is a finite extension of the actual observation field.** -/
+theorem criticalSourceField_finiteDimensional_criticalObservationField
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    FiniteDimensional (criticalObservationField K m n) (criticalSourceField K m n) := by
+  let x : Fin (m + n) → criticalSourceField K m n := criticalSourceRaw K m n
+  letI : Algebra.IsAlgebraic (criticalObservationField K m n)
+      (criticalSourceField K m n) :=
+    criticalSourceField_isAlgebraic_criticalObservationField K hm hn
+  have htop : IntermediateField.adjoin (criticalObservationField K m n) (Set.range x) = ⊤ := by
+    simpa [x] using criticalSourceRaw_adjoin_eq_top K m n
+  have hfg : (⊤ : IntermediateField (criticalObservationField K m n)
+      (criticalSourceField K m n)).FG := by
+    rw [← htop]
+    exact IntermediateField.fg_adjoin_of_finite (Set.finite_range x)
+  letI : Algebra.EssFiniteType (criticalObservationField K m n)
+      (criticalSourceField K m n) := IntermediateField.fg_top_iff.mp hfg
+  exact Algebra.finite_of_essFiniteType_of_isAlgebraic
 
 /-- The new raw and reciprocal coordinates at order `m+n`. -/
 noncomputable def postcriticalRawFieldElement (K : Type*) [Field K] (m n : ℕ) :

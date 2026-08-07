@@ -1312,3 +1312,16 @@ Remaining for this instance: transcendence of `y` over `F⟨ℓ⟩` (the deck or
 so `y` has infinitely many conjugates) and the resulting identification of the fixed field with
 `F⟨ℓ⟩`.  Remaining for the general statement `(2)`: a Rosenlicht-type differential-rational
 quotient theorem for an arbitrary connected commutative algebraic group.
+
+Added to `LogarithmicDerivativeFixedField.lean` (wired, axiom-clean):
+
+    scalingAutomorphism_fixes_logDerivField   the deck group fixes `F⟨ℓ⟩` pointwise
+    scalingAutomorphismOverLogDeriv           so it is a group of `F⟨ℓ⟩`-automorphisms
+    transcendental_over_logDerivField         **`y` is transcendental over `F⟨ℓ⟩`** — its deck orbit
+                                              is infinite and cannot lie in a finite root set
+
+So `E = F⟨ℓ⟩(y)` is a purely transcendental extension of the Maurer--Cartan field by one ordinary
+coordinate, and the deck group acts on that coordinate by scaling.  The last step of the `G_m`
+instance is that a scaling-invariant element of `F⟨ℓ⟩(y)` lies in `F⟨ℓ⟩`: writing it as `P(y)/Q(y)`
+with `P, Q` coprime, invariance forces `P(aY) = λ P(Y)` and `Q(aY) = λ Q(Y)`, so both are monomials
+of equal degree; in characteristic zero a single scalar with `a^i ≠ a^j` for `i ≠ j` suffices.

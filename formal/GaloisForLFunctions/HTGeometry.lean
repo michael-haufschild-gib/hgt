@@ -505,6 +505,7 @@ import GaloisForLFunctions.HTGeometry.CDGATensorConstExchange
 import GaloisForLFunctions.HTGeometry.CDGATensorLeft
 import GaloisForLFunctions.HTGeometry.CDGATensorShift
 import GaloisForLFunctions.HTGeometry.CDGATensorShiftHom
+import GaloisForLFunctions.HTGeometry.CDGATensorAlgebraUnit
 import GaloisForLFunctions.HTGeometry.CDGATensorAlgebraMap
 import GaloisForLFunctions.HTGeometry.CDGATensorAlgebra
 import GaloisForLFunctions.HTGeometry.CDGADerivedBaseChange

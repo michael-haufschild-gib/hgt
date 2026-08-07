@@ -1725,3 +1725,41 @@ instantiation of corpus assets:
 the inner integral being `integral_gagliardoIntegrand_scaling`. The integrand is nonnegative, so
 `lintegral` Tonelli applies with no integrability side conditions — use the `ℝ≥0∞` route rather
 than `integral_integral_swap`.
+
+## AJ. Piece (c) is closed — prerequisite 1's chain is complete
+
+`GagliardoFourierConstant.lean` is now at 18 declarations, all `#print axioms` clean.
+
+- `measurable_gagliardoKernel` — the two-variable kernel `(h,ξ) ↦ 4 sin²(πξh) h^{−(1+2s)}` is
+  measurable (`fun_prop` handles the `rpow` in the first coordinate).
+- `lintegral_gagliardo_swap` — **the Tonelli exchange**: the double integral over `Ioi 0 × Ioi 0`
+  may be exchanged with **no integrability side condition**, because the integrand is nonnegative
+  and the `ℝ≥0∞` route (`lintegral_lintegral_swap`) applies. This is the corpus's standing rule
+  (`mellin-dirichlet-does-the-interchange`) — do not reach for `integral_integral_swap` here.
+
+I wrote and then **deleted** a `lintegral_gagliardo_inner_eq`: it was literally
+`integral_gagliardoIntegrand_scaling` with two unused hypotheses bolted on. A restatement is a
+duplicate, not a lemma.
+
+### Prerequisite 1 — chain status
+
+Every named piece is now built and axiom-clean:
+
+| Step | Where |
+|---|---|
+| phase modulus `\|e^{iθ}−1\|² = 4sin²(θ/2)` | `normSq_exp_mul_I_sub_one_eq_four_mul_sin_sq` |
+| `c_s` exists exactly on `0<s<1` | `integrableOn_gagliardoIntegrand_Ioi_zero` |
+| `c_s` integrand positive on the unit window | `gagliardoIntegrand_pos` |
+| sharpness at `s ≥ 1/2` for the linear modulus | `not_integrableOn_rpow_neg_two_mul` |
+| scaling law `→ ξ^{2s} c_s` | `integral_gagliardoIntegrand_scaling` |
+| (a) symbol of the difference | `FourierDecayFromDerivative.fourier_sub_translate` |
+| symbol modulus = Gagliardo numerator | `normSq_one_sub_fourierChar`, `normSq_differenceSymbol` |
+| (b) `L²` multiplier + Plancherel | corpus: `L2FourierMultiplier` (instantiation only) |
+| (c) Tonelli exchange | `lintegral_gagliardo_swap` |
+
+What remains is **assembly**, not new mathematics: composing these into the single statement
+
+    ∫∫ |u(x+h) − u(x)|² |h|^{−(1+2s)} dh dx  =  c_s ∫ |û(ξ)|² |ξ|^{2s} dξ
+
+which requires carrying the `L²` representative through `Lp` coercions — bookkeeping that is
+genuinely fiddly in Lean but introduces no new analytic content.

@@ -160,7 +160,7 @@ theorem transcendental_over_logDerivField [CharZero F]
     intro a b hab
     simp only at hab
     exact (algebraMap F E).injective (mul_right_cancel₀ hy0 hab)
-  haveI : Infinite F := CharZero.infinite F
+  haveI : Infinite F := Infinite.of_injective Nat.cast Nat.cast_injective
   have hnz : {a : F | a ≠ 0}.Infinite := by
     have hfin0 : ({0} : Set F).Finite := Set.finite_singleton 0
     simpa [Set.compl_def] using hfin0.infinite_compl
@@ -171,7 +171,7 @@ theorem transcendental_over_logDerivField [CharZero F]
     rintro _ ⟨a, ha, rfl⟩
     exact hroot a ha
   have hfin : {x : E | (p.map (algebraMap (↥L) E)).IsRoot x}.Finite :=
-    (p.map (algebraMap (↥L) E)).setOf_isRoot_finite hmapne
+    Polynomial.finite_setOf_isRoot hmapne
   exact himg (hfin.subset hsub)
 
 end

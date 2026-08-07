@@ -272,4 +272,28 @@ theorem normSq_differenceSymbol (h ξ : ℝ) :
     ‖differenceSymbol h ξ‖ ^ 2 = 4 * Real.sin (Real.pi * (h * ξ)) ^ 2 :=
   normSq_one_sub_fourierChar (h * ξ)
 
+/-! ## The Tonelli exchange
+
+The Gagliardo double integral has a nonnegative integrand, so the order of integration may be
+exchanged with no integrability side condition: the `ℝ≥0∞` Tonelli theorem applies directly.  After
+the exchange the inner integral is the scaling law, which contributes `c_s |ξ|^{2s}` pointwise.
+-/
+
+/-- The two-variable Gagliardo kernel is measurable. -/
+theorem measurable_gagliardoKernel (s : ℝ) :
+    Measurable fun p : ℝ × ℝ =>
+      ENNReal.ofReal (4 * Real.sin (Real.pi * (p.2 * p.1)) ^ 2 * p.1 ^ (-(1 + 2 * s))) := by
+  fun_prop
+
+/-- **The Gagliardo double integral may be exchanged.**  Both variables run over the positive ray
+and the integrand is nonnegative, so Tonelli applies in `ℝ≥0∞` with no side conditions. -/
+theorem lintegral_gagliardo_swap {s : ℝ} {G : ℝ → ENNReal} (hG : Measurable G) :
+    (∫⁻ h in Ioi (0 : ℝ), ∫⁻ ξ in Ioi (0 : ℝ),
+        ENNReal.ofReal (4 * Real.sin (Real.pi * (ξ * h)) ^ 2 * h ^ (-(1 + 2 * s))) * G ξ)
+      = ∫⁻ ξ in Ioi (0 : ℝ), ∫⁻ h in Ioi (0 : ℝ),
+        ENNReal.ofReal (4 * Real.sin (Real.pi * (ξ * h)) ^ 2 * h ^ (-(1 + 2 * s))) * G ξ := by
+  refine MeasureTheory.lintegral_lintegral_swap ?_
+  refine Measurable.aemeasurable ?_
+  exact (measurable_gagliardoKernel s).mul (hG.comp measurable_snd)
+
 end GaloisForLFunctions.HTGeometry
