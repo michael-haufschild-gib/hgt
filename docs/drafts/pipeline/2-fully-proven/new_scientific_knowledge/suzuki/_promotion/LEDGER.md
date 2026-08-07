@@ -1317,3 +1317,37 @@ The card must be corrected before it is promoted — the paper statement as writ
 Trap: after `field_simp` the goal carries `√L ^ 2` rather than `L`; `nlinarith` will not close it.
 Supply `hsq2 : Real.sqrt L ^ 2 = L := Real.sq_sqrt hL.le` and finish with
 `linear_combination 4 * halfLinePrimitive F L * hsq2`.
+
+## W. `(12)`→`(13)` closed — the average is a genuine average
+
+`HalfLogCesaroAverage.lean` is now at 8 declarations, all `#print axioms` clean.
+
+The mechanism behind `(13)` is that `A` is a *probability*-weighted average of `H`. Writing
+`F(t) = H(t) t^{-1/2}` exhibits
+
+    Y(L) = ∫_0^L H(t) t^{-1/2} dt,     ∫_0^L t^{-1/2} dt = 2√L,
+
+so the weight `t^{-1/2}/(2√L)` has total mass exactly one on `[0,L]` — which is precisely why the
+normalisation `A = Y/(2√L)` (and not `Y/√L`) is the right one, confirming the reading in section V.
+
+- `integral_rpow_neg_half` — the weight has mass `2√L`. No positivity hypothesis on `L` is needed:
+  `Real.sqrt_eq_rpow` holds for negative arguments too (both sides vanish), so the binder was
+  dropped rather than carried.
+- `halfLogAverage_le` — if `√t F t ≤ c` on `(0,L]` then `A(L) ≤ c`.
+- `le_halfLogAverage` — if `c ≤ √t F t` on `(0,L]` then `c ≤ A(L)`.
+
+Together these are `(13)`: any bound trapping `H` traps `A`, so `liminf H ≤ α ≤ limsup H` whenever
+`α = lim A` exists.
+
+### Remaining on prerequisite 4
+
+Only §4's mollification commutator: `R_full` and `Y` commute with convolution, and only
+multiplication by `L` does not. The commutator `[L, ρ_ε*] = ε (ρ'_ε * ·)`-type identity is the
+content; everything else in §4 is bookkeeping.
+
+Traps: the endpoint `t = 0` must be excluded before comparing `F t` with `c t^{-1/2}` — at `t = 0`
+the rpow is `0`, so the pointwise inequality is simply false there. Exclude it with
+`ae_restrict_of_ae` on `∀ᵐ t, t ≠ 0` rather than trying to prove it. `uIcc 0 L` is displayed as
+`Icc 0 L` after `integral_mono_ae_restrict`, so use `measurableSet_Icc`, not `measurableSet_uIcc`.
+For `t^{-1/2} = 1/√t` go through `Real.sqrt_eq_rpow, one_div, ← Real.rpow_neg`; `Real.rpow_neg_one`
+does not apply.

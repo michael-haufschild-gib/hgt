@@ -108,12 +108,7 @@ theorem hasDerivAt_windowFun {L : ℝ} (hL : 0 ≤ L) (x : ℝ) :
   have hbase := hasDerivAt_setIntegral_Iic hkcont hkC
   have hshift : HasDerivAt (fun t : ℝ => ∫ y in Iic (t + L), (thetaSource.k y : ℂ))
       ((thetaSource.k (x + L) : ℂ)) x := by
-    have hinner : HasDerivAt (fun t : ℝ => t + L) 1 x := by
-      simpa using (hasDerivAt_id x).add_const L
-    have hb : HasDerivAt (fun t : ℝ => ∫ y in Iic t, (thetaSource.k y : ℂ))
-        ((thetaSource.k (x + L) : ℂ)) ((fun t : ℝ => t + L) x) := hbase (x + L)
-    have h := hb.comp x hinner
-    simpa [Function.comp_def] using h
+    exact HasDerivAt.comp_add_const x L (hbase (x + L))
   have hmain := hshift.sub (hbase x)
   refine hmain.congr_of_eventuallyEq ?_
   filter_upwards with t
@@ -133,7 +128,7 @@ theorem continuous_windowFun {L : ℝ} (hL : 0 ≤ L) : Continuous (windowFun L)
 
 
 /-- The dominating profile of the window against the source character. -/
-theorem norm_windowFun_sourceChar_le {L : ℝ} (hL : 0 ≤ L) {z : ℂ} (hz : |z.im| < 1) (x : ℝ) :
+theorem norm_windowFun_sourceChar_le {L : ℝ} (hL : 0 ≤ L) {z : ℂ} (_hz : |z.im| < 1) (x : ℝ) :
     ‖windowFun L x * sourceChar z x‖
       ≤ (L * (thetaBound * Real.exp L)) * Real.exp (-((1 - |z.im|) * |x|)) := by
   have hCL : (0 : ℝ) ≤ L * (thetaBound * Real.exp L) := by
@@ -293,9 +288,75 @@ theorem integral_windowFun_sourceChar {L : ℝ} (hL : 0 ≤ L) {z : ℂ} (hz : |
   rw [hfirst] at hsplit
   have hJ : (∫ x : ℝ, windowFun L x * sourceChar z x) * (Complex.I * z)
       = (1 - Complex.exp (-(Complex.I * z * (L : ℂ)))) * XiC z := by
-    linear_combination -hsplit
+    linear_combination hsplit
   rw [div_mul_eq_mul_div, eq_div_iff hIz]
   exact hJ
+
+
+/-! ### The prime anomaly and the centered window -/
+
+/-- **The divisor factorization of the integer-shift anomaly.**  `r̂_n = q_n Ξ_C`. -/
+theorem integral_integerAnomaly_sourceChar {n : ℕ} (hn : 1 ≤ n) {z : ℂ} (hz : |z.im| < 1)
+    (hz0 : z ≠ 0) :
+    (∫ x : ℝ, integerAnomaly thetaSource n x * sourceChar z x)
+      = shiftMultiplier n z * XiC z := by
+  have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have hL : 0 ≤ Real.log n := Real.log_nonneg hn1
+  have hIz : Complex.I * z ≠ 0 := mul_ne_zero Complex.I_ne_zero hz0
+  have hpt : ∀ x : ℝ, integerAnomaly thetaSource n x * sourceChar z x
+      = (Complex.I * ((((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ)) : ℂ))
+        * (windowFun (Real.log n) x * sourceChar z x) := by
+    intro x
+    rw [integerAnomaly_eq_intervalMass thetaSource hn, windowFun]
+    push_cast
+    ring
+  rw [integral_congr_ae (Filter.Eventually.of_forall hpt), MeasureTheory.integral_const_mul,
+    integral_windowFun_sourceChar hL hz hz0, shiftMultiplier]
+  field_simp
+
+/-- **The divisor factorization of the centered window.**  `ĉ_n = a_n Ξ_C`. -/
+theorem integral_centeredWindow_sourceChar {n : ℕ} (hn : 1 ≤ n) {z : ℂ} (hz : |z.im| < 1)
+    (hz0 : z ≠ 0) :
+    (∫ x : ℝ, ((centeredWindow thetaSource n x : ℝ) : ℂ) * sourceChar z x)
+      = centeredMultiplier n z * XiC z := by
+  have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have hL : 0 ≤ Real.log n := Real.log_nonneg hn1
+  have hIz : Complex.I * z ≠ 0 := mul_ne_zero Complex.I_ne_zero hz0
+  set a : ℝ := Real.log n / 2 with ha
+  have hpt : ∀ x : ℝ, ((centeredWindow thetaSource n x : ℝ) : ℂ) * sourceChar z x
+      = (((((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ)) : ℂ) * Complex.exp (Complex.I * z * (a : ℂ)))
+        * (windowFun (Real.log n) (x - a) * sourceChar z (x - a)) := by
+    intro x
+    have hwin : windowFun (Real.log n) (x - a)
+        = ((intervalMass thetaSource (x - a) (x + a) : ℝ) : ℂ) := by
+      rw [windowFun]
+      congr 2
+      rw [ha]
+      ring
+    have hchar : sourceChar z x = sourceChar z (x - a) * Complex.exp (Complex.I * z * (a : ℂ)) := by
+      have := sourceChar_add z (x - a) a
+      rw [show x - a + a = x by ring] at this
+      exact this
+    rw [centeredWindow, hwin, hchar]
+    push_cast
+    ring
+  have hshift : (∫ x : ℝ, windowFun (Real.log n) (x - a) * sourceChar z (x - a))
+      = ∫ x : ℝ, windowFun (Real.log n) x * sourceChar z x :=
+    MeasureTheory.integral_sub_right_eq_self
+      (fun x : ℝ => windowFun (Real.log n) x * sourceChar z x) a
+  rw [integral_congr_ae (Filter.Eventually.of_forall hpt), MeasureTheory.integral_const_mul,
+    hshift, integral_windowFun_sourceChar hL hz hz0, centeredMultiplier]
+  have hexp : Complex.exp (Complex.I * z * (a : ℂ))
+      * (1 - Complex.exp (-(Complex.I * z * ((Real.log n : ℝ) : ℂ))))
+      = Complex.exp (Complex.I * z * ((a : ℝ) : ℂ))
+        - Complex.exp (-(Complex.I * z * ((a : ℝ) : ℂ))) := by
+    rw [mul_sub, mul_one, ← Complex.exp_add]
+    congr 2
+    rw [ha]
+    push_cast
+    ring
+  field_simp
+  linear_combination (((((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ)) : ℂ) * XiC z) * hexp
 
 end HedenmalmThetaSource
 
