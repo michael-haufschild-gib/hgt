@@ -360,11 +360,23 @@ turns an `L2` field of continuous functionals into an actual Hilbert--Schmidt op
 
 Both directions of the point-spectrum half of `(6)` are therefore available in explicit form.
 
+**Corpus audit correction.**  An earlier version of this section stated that no general `det_2`
+exists in the corpus or in mathlib.  That is false.  `HTGeometry/FredholmDeterminant.lean` builds
+the regularized Hilbert--Carleman determinant `det_2(1 - zK)` for an arbitrary Hilbert--Schmidt
+kernel, together with the Plemelj identity `logDeriv det_2(1 - zK) = -resolventTrace K z`
+(`fredholmExp`, `fredholmExp_summable`, `fredholmDet`, `logDeriv_fredholmDet`,
+`fredholmDet_ne_zero`, `hasDerivAt_fredholmDet`, `fredholmDet_differentiableOn`,
+`fredholmDet_weld`), and `HTGeometry/FredholmDeterminantInfinite.lean` supplies the countable
+diagonal case.  `HTGeometry/HilbertSchmidtMatrix.lean` supplies the operator/kernel bridge
+(`toOperator`, `matrixOf`, `isHS_matrixOf`, `matrixOf_toOperator`, `toOperator_matrixOf`), and
+`HTGeometry/HilbertSchmidtTrace.lean` the trace weld `HilbertSchmidt.opTrace_toOperator_comp`.
+None of this is to be rebuilt; `(8)` is a *transfer and identification* problem, not a missing-theory
+problem.
+
 Still missing: the **multiplicity clause** of
 `(6)` (the Grushin reduction to `diag(I, Xi_C)`; this clause is what
-`hedenmalm-prime-translation-rank-one-anomaly.md` cites for its Jordan length), the regularized
-determinant identity `(8)` --- no general `det_2` exists in the corpus or in mathlib, only the
-diagonal Fredholm product layer of `RHTower/ArithmeticDilationDeterminantZeros.lean` --- and the
+`hedenmalm-prime-translation-rank-one-anomaly.md` cites for its Jordan length), the identification
+`(8)` of the regularized determinant with `Xi_C(z)/Xi_C(0)`, and the
 trace calibration `(9)`.  Both ends of `(9)` are now formalized --- the source variance
 `M^(-1) integral of x^2 k` in quantile form, and the well-posedness of `tr(B^2)` on the operator
 side --- so what is left of `(9)` is the *equality* between them, i.e. the kernel evaluation of the

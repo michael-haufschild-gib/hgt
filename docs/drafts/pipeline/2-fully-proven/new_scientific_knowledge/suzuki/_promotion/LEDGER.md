@@ -2849,3 +2849,29 @@ collapse them into one statement with `hup`/`hlow` as hypotheses.
 
 `suzuki-weak-signed-half-log-trace` remains in stage 2 until that theorem exists and is
 axiom-clean.
+
+## BW. The operator-to-trace conversion is built
+
+`HalfLogCesaroAverage.lean` is now at 17 declarations, all `#print axioms` clean, no `sorry`.
+
+- `halfLog_le_of_logDirichlet_le` — `logDirichlet f X ≤ R  ⟹  √X f X ≤ R/(2√X) + A(X)`.
+- `le_halfLog_of_le_logDirichlet` — the reverse.
+
+Since `logDirichlet f X = 2X f X − Y X`, dividing by `2√X` turns the operator into the half-log
+trace minus the averaged trace. So a bound on the operator at a point **is** a bound on the trace
+there, offset by the average. This is the link that lets the equation control the profile, and it is
+the last piece of the derivation skeleton in section BV that was not a direct instantiation.
+
+Chained with the transport bounds of BU, at a penalized critical point `X`:
+
+    limsup side:  √X f X  ≤  (‖source‖ + C₊ m + 4 M q(X/2)) / (2√X)  +  A(X)
+    liminf side:  √X f X  ≥  −(‖source‖ + C₋ m + 4 M q(X/2)) / (2√X)  +  A(X)
+
+Along `δ_n → 0`, `X_n → ∞` the bracketed terms are bounded while `1/(2√X_n) → 0`, and `A(X_n) → α`
+by `tendsto_halfLogAverage` — so both sides converge to `α`.
+
+### Remaining
+
+Only the limit passage: instantiate the two critical-point families, apply the two displays above,
+and conclude `limsup H ≤ α ≤ liminf H`, then `tendsto_of_le_liminf_of_limsup_le`. Every inequality
+in the chain is now a built, axiom-clean lemma; what remains is quantifier bookkeeping over `n`.

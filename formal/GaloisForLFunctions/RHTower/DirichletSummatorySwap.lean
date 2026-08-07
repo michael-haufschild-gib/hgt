@@ -23,7 +23,7 @@ open ArithmeticFunction Finset
 /-- **Summatory swap**: the partial sum of a Dirichlet convolution is the
 hyperbola pairing of one factor against the floor-cut partial sums of the
 other. -/
-theorem sum_Icc_mul_apply (f g : ArithmeticFunction ℝ) (N : ℕ) :
+theorem sum_Icc_mul_apply {R : Type*} [Semiring R] (f g : ArithmeticFunction R) (N : ℕ) :
     ∑ n ∈ Finset.Icc 1 N, (f * g) n
       = ∑ d ∈ Finset.Icc 1 N, f d * ∑ m ∈ Finset.Icc 1 (N / d), g m := by
   have hexpand : ∑ n ∈ Finset.Icc 1 N, (f * g) n

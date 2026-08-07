@@ -1681,3 +1681,21 @@ differential of the quotient being the descent of the same `tensorD`.
 Axioms: `propext, Classical.choice, Quot.sound`.
 
 Axioms: `propext, Classical.choice, Quot.sound`.
+
+## Base change and the unit for the relative tensor product of algebras
+
+`CDGARelTensorAlgebraMap.lean` — **`CDGAHom.restrictHom`**,
+**`relTensorMapLeft_restrictHom_isQuasiIsoFull`**, **`relTensorCDGAUnit`**.
+
+A morphism of algebras *over the base* — one commuting with the two structure maps — becomes, after
+restriction of scalars, a morphism of modules over the base; its `map_act` is the morphism's own
+multiplicativity together with that commutation.  So the comparison it induces on relative tensor
+products is the module-level comparison in the left variable, and every invariance theorem of the
+module layer applies to it, exactly as `zeroActHom` did in the absolute case.  The unit is the class
+of `1 ⊗ 1`, both of its laws inherited from the absolute unit by induction on representatives.
+
+The relative algebra layer is therefore complete: product, differential, unit, functoriality, and
+base change, all reduced to statements already proved for modules.
+
+Axioms: `propext, Quot.sound` for `restrictHom`; `propext, Classical.choice, Quot.sound` for the
+rest.
