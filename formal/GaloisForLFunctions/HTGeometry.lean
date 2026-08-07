@@ -5913,3 +5913,4 @@ import GaloisForLFunctions.HTGeometry.BumpMollifierFamily
 import GaloisForLFunctions.HTGeometry.PenalizedMaximum
 import GaloisForLFunctions.HTGeometry.LogNormalEquationTrace
 import GaloisForLFunctions.HTGeometry.WeightedCauchySchwarz
+import GaloisForLFunctions.HTGeometry.SmoothWeightWindow

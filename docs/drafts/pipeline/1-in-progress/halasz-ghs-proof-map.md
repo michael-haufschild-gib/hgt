@@ -383,3 +383,30 @@ Euler-product bound against the Lorentzian-weighted mean square.
 
 The three analytic devices of step 4 — Perron for a triple convolution, Cauchy–Schwarz against the
 kernel, and the prime-supported mean square — are now all in the corpus.
+
+## Sixteenth brick: the smoothing error for unbounded coefficients
+
+`HTGeometry/SmoothWeightWindow.lean` (green, axiom-clean, wired):
+
+`‖∑_{n < m} a(n)·w(n) − ∑_{n ≤ K} a(n)‖ ≤ ∑_{K < n ≤ ⌊K+H⌋} ‖a(n)‖`   whenever `K + H ≤ m`,
+
+with **no hypothesis on the coefficients**.  Above `K+H` the weight vanishes and the sharp sum omits the
+term too, so the whole difference lives in the transition window, where the weight is in `[0,1]`.
+
+The corpus's `norm_weighted_sub_partialSum_le` is the unit-bounded case, where the window mass is `≤ H+1`.
+The general form is what the triple convolution needs: its coefficients carry two logarithms, so the window
+mass must be estimated arithmetically (a divisor-type bound) rather than by counting terms.
+
+With this, every passage of step 4 is available in the corpus:
+
+| Passage | Declaration |
+|---|---|
+| sharp cutoff → smoothed sum | `norm_weighted_sub_partialSum_le_window` |
+| smoothed sum → vertical integral | `tsum_mul_smoothWeight_convolution_eq_integral` |
+| integral → two mean squares | `norm_integral_mul_mul_le_sqrt_mul_sqrt` |
+| prime-supported mean square | `integral_lorentz_normSq_logPoly_le_prime_sieve` |
+| Lorentzian mean square of a general polynomial | `integral_lorentz_normSq_logPoly_le_count` |
+
+What is left is not a missing device but the instantiation: choosing `H = N/(log N)³`, naming the three
+coefficient sequences produced by steps 2–3, defining `L(x)`, and estimating the window mass of the triple
+convolution.
