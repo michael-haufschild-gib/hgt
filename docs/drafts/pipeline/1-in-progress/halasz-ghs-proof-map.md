@@ -2199,3 +2199,32 @@ cap controls.
 **This is the first bound in the programme that is both about the actual GHS weights and free of every structural
 defect diagnosed along the way.**  The outer weight follows the same route with its block-damped bound in place of
 `log q`, and then the two feed the Perron identity.
+
+## Both prime weights: one law, two instances
+
+`RHTower/Sieve/GhsInnerFirstMoment.lean` generalised (green, axiom-clean).
+
+`integral_norm_LSeries_prime_le` — for **any** coefficients supported on the primes of `[1, M]` with
+`‖a_k‖ ≤ A log k`:
+
+`∫_{|y| ≤ nΔ} ‖L(a, σ+iy)‖ dy ≤ 2Δ·√(n·((2n+1)Δ + 4M(1+log M))(1/Δ + 2 log M)·A²·cap(2σ))`.
+
+The two weights of the convolution are instances: `integral_norm_LSeries_ghsInner_le` at `A = 1`, and
+`integral_norm_LSeries_ghsOuter_le` at `A = 1/log 2`.  The inner theorem committed last round is now that instance,
+so its proof is no longer duplicated.
+
+**Status of the route.**  For the two prime polynomials the first moment on a vertical segment is bounded by an
+expression explicit in `n, Δ, M, σ` and free of every defect diagnosed in this programme.  Combined with the Perron
+identity for the triple convolution, the Euler bound for the third factor, the smoothing connector and the
+recursion half, the chain from `(∑_{n ≤ N} f(n))·log N` to explicit constants is closed **except** for one step: the
+Perron integrand is a *product* of three series, and the first-moment bound applies to one series at a time.  Two
+ways to close that gap, both available:
+
+* bound `‖L(a)L(b)‖` pointwise by `‖L(a)‖·(ℓ¹ mass of b)` and use the first moment for `L(a)` alone — cheap, loses
+  the second saving;
+* apply Cauchy–Schwarz to the pair and use the *mean square* (already in the corpus in both the Lorentzian and the
+  truncated form) for each factor — keeps both savings.
+
+The second is the GHS shape and the estimates for it are all present; the first is a fallback that still beats the
+trivial bound if the coefficient masses are small enough.  Deciding between them is the next step, and it is a
+choice about which bound to compose rather than a missing device.

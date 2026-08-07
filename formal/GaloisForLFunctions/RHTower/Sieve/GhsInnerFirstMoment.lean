@@ -33,31 +33,34 @@ theorem sum_fin_normSq_damped_eq (a : ℕ → ℂ) (M : ℕ) (σ : ℝ) :
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [← hterm ((i : ℕ) + 1)]
 
-/-- **The first moment of the inner prime weight's series, by large values.**  The `ℓ²` mass of its damped
-coefficients is a prime sum of squared logarithms, which the dyadic Chebyshev cap bounds. -/
-theorem integral_norm_LSeries_ghsInner_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {M : ℕ} (hM : 2 ≤ M)
-    {σ : ℝ} (hσ : 1 < σ) {Δ : ℝ} (hΔ : 0 < Δ) (n : ℕ) (hn : 1 ≤ n) :
+/-- **The first moment of a prime-supported series, by large values.**  For coefficients supported on the primes of
+`[1, M]` with `‖a_k‖ ≤ A log k`, the `ℓ²` mass of the damped coefficients is at most `A²` times the dyadic Chebyshev
+cap, so
+
+`∫_{|y| ≤ nΔ} ‖L(a, σ+iy)‖ dy ≤ 2Δ·√(n·((2n+1)Δ + 4M(1+log M))(1/Δ + 2 log M)·A²·cap(2σ))`.
+
+Everything on the right is explicit in `n, Δ, M, σ, A`: no window, no measure, and no trivial size of the series. -/
+theorem integral_norm_LSeries_prime_le {a : ℕ → ℂ} {A : ℝ} {M : ℕ} (hM : 2 ≤ M)
+    (hsupp : ∀ k : ℕ, a k ≠ 0 → k ∈ Finset.Icc 1 M) (hprime : ∀ k : ℕ, a k ≠ 0 → Nat.Prime k)
+    (hA : ∀ k : ℕ, ‖a k‖ ≤ A * Real.log k) {σ : ℝ} (hσ : 1 < σ) {Δ : ℝ} (hΔ : 0 < Δ) (n : ℕ)
+    (hn : 1 ≤ n) :
     (∫ y in (-(((2 * n : ℕ) : ℝ) * Δ / 2))..(((2 * n : ℕ) : ℝ) * Δ / 2),
-        ‖LSeries (ghsInner f M) ((σ : ℂ) + (y : ℝ) * I)‖)
+        ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖)
       ≤ 2 * Δ * Real.sqrt ((n : ℝ)
           * ((((2 * n + 1 : ℕ) : ℝ) * Δ + 4 * (M : ℝ) * (1 + Real.log M))
-              * (1 / Δ + 2 * Real.log M) * sieveCapPrime (2 * σ))) := by
+              * (1 / Δ + 2 * Real.log M) * (A ^ 2 * sieveCapPrime (2 * σ)))) := by
   classical
-  have hsupp : ∀ k : ℕ, ghsInner f M k ≠ 0 → k ∈ Finset.Icc 1 M :=
-    fun k hk => ghsInner_mem_Icc hk
   refine le_trans (integral_norm_LSeries_le_largeValues hM hsupp σ hΔ n hn) ?_
   refine mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt ?_) (by positivity)
   refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg n)
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-  -- the mass against the dyadic cap
   rw [sum_fin_normSq_damped_eq]
   have hw : (1 : ℝ) < 2 * σ := by linarith
   have hcap := sum_prime_logSq_rpow_neg_le hw M
-  refine le_trans ?_ (le_trans hcap (le_of_eq (by rw [sieveCapPrime])))
-  -- termwise: the coefficients vanish off the primes and are at most `log` there
+  have hA2 : (0 : ℝ) ≤ A ^ 2 := sq_nonneg A
   have hterm : ∀ k ∈ Finset.Icc 1 M,
-      ‖ghsInner f M k‖ ^ 2 * ((k : ℝ) ^ (-σ)) ^ 2
-        ≤ (if Nat.Prime k then (k : ℝ) ^ (-(2 * σ)) * (Real.log k) ^ 2 else 0) := by
+      ‖a k‖ ^ 2 * ((k : ℝ) ^ (-σ)) ^ 2
+        ≤ A ^ 2 * (if Nat.Prime k then (k : ℝ) ^ (-(2 * σ)) * (Real.log k) ^ 2 else 0) := by
     intro k hk
     rw [Finset.mem_Icc] at hk
     have hk1 : 1 ≤ k := hk.1
@@ -70,21 +73,46 @@ theorem integral_norm_LSeries_ghsInner_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n�
       ring_nf
     by_cases hp : Nat.Prime k
     · rw [if_pos hp, hsq]
-      have hb : ‖ghsInner f M k‖ ≤ Real.log k := norm_ghsInner_le hf M k
-      have hlogk : (0 : ℝ) ≤ Real.log k := by
-        have : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk1
-        exact Real.log_nonneg this
-      have hsqb : ‖ghsInner f M k‖ ^ 2 ≤ (Real.log k) ^ 2 :=
-        pow_le_pow_left₀ (norm_nonneg _) hb 2
-      exact mul_le_mul_of_nonneg_right hsqb (Real.rpow_nonneg hkpos.le _) |>.trans
-        (le_of_eq (by ring))
+      have hsqb : ‖a k‖ ^ 2 ≤ A ^ 2 * (Real.log k) ^ 2 := by
+        have h := hA k
+        have h0 : (0 : ℝ) ≤ ‖a k‖ := norm_nonneg _
+        calc ‖a k‖ ^ 2 ≤ (A * Real.log k) ^ 2 := pow_le_pow_left₀ h0 h 2
+          _ = A ^ 2 * (Real.log k) ^ 2 := by ring
+      have := mul_le_mul_of_nonneg_right hsqb (Real.rpow_nonneg hkpos.le (-(2 * σ)))
+      calc ‖a k‖ ^ 2 * (k : ℝ) ^ (-(2 * σ))
+          ≤ A ^ 2 * (Real.log k) ^ 2 * (k : ℝ) ^ (-(2 * σ)) := this
+        _ = A ^ 2 * ((k : ℝ) ^ (-(2 * σ)) * (Real.log k) ^ 2) := by ring
     · rw [if_neg hp]
-      have hzero : ghsInner f M k = 0 := by
-        rw [ghsInner, if_neg (by tauto)]
+      have hzero : a k = 0 := by
+        by_contra hne
+        exact hp (hprime k hne)
       rw [hzero, norm_zero]
       simp
   refine le_trans (Finset.sum_le_sum hterm) ?_
-  rw [← Finset.sum_filter]
+  rw [← Finset.mul_sum, ← Finset.sum_filter, sieveCapPrime]
+  exact mul_le_mul_of_nonneg_left hcap hA2
+
+/-- The inner prime weight: `A = 1`. -/
+theorem integral_norm_LSeries_ghsInner_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {M : ℕ} (hM : 2 ≤ M)
+    {σ : ℝ} (hσ : 1 < σ) {Δ : ℝ} (hΔ : 0 < Δ) (n : ℕ) (hn : 1 ≤ n) :
+    (∫ y in (-(((2 * n : ℕ) : ℝ) * Δ / 2))..(((2 * n : ℕ) : ℝ) * Δ / 2),
+        ‖LSeries (ghsInner f M) ((σ : ℂ) + (y : ℝ) * I)‖)
+      ≤ 2 * Δ * Real.sqrt ((n : ℝ)
+          * ((((2 * n + 1 : ℕ) : ℝ) * Δ + 4 * (M : ℝ) * (1 + Real.log M))
+              * (1 / Δ + 2 * Real.log M) * ((1 : ℝ) ^ 2 * sieveCapPrime (2 * σ)))) :=
+  integral_norm_LSeries_prime_le hM (fun _ hk => ghsInner_mem_Icc hk)
+    (fun _ hk => ghsInner_support hk) (by simpa using norm_ghsInner_le hf M) hσ hΔ n hn
+
+/-- The outer prime weight: `A = 1/log 2`. -/
+theorem integral_norm_LSeries_ghsOuter_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {N : ℕ} (hN : 2 ≤ N)
+    {σ : ℝ} (hσ : 1 < σ) {Δ : ℝ} (hΔ : 0 < Δ) (n : ℕ) (hn : 1 ≤ n) :
+    (∫ y in (-(((2 * n : ℕ) : ℝ) * Δ / 2))..(((2 * n : ℕ) : ℝ) * Δ / 2),
+        ‖LSeries (ghsOuter f N) ((σ : ℂ) + (y : ℝ) * I)‖)
+      ≤ 2 * Δ * Real.sqrt ((n : ℝ)
+          * ((((2 * n + 1 : ℕ) : ℝ) * Δ + 4 * (N : ℝ) * (1 + Real.log N))
+              * (1 / Δ + 2 * Real.log N) * ((1 / Real.log 2) ^ 2 * sieveCapPrime (2 * σ)))) :=
+  integral_norm_LSeries_prime_le hN (fun _ hk => ghsOuter_mem_Icc hk)
+    (fun _ hk => ghsOuter_support hk) (norm_ghsOuter_le hf N) hσ hΔ n hn
 
 end RHTower.Sieve
 end
