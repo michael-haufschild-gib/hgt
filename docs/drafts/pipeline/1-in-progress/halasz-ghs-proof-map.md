@@ -1852,3 +1852,37 @@ of `1/log log N` in the first against `1/log N` in the second.
 Both terms are now genuinely smaller than the main term, which is what the whole architecture was for.  What
 remains is to state the split with this window bound in place — the split lemma is unchanged, only its input on
 `S` — and to fix the parameters.
+
+## Correction: the diameter bound is per cell, not global — and the `T` tension is fundamental to the measure route
+
+Reading `abs_sub_le_of_norm_gt` closely corrects the previous entry.  Its hypotheses include the **spacing**
+condition `|t − u|·log z ≤ π`: the diameter bound holds only for pairs already within `π/log z` of each other.  The
+large-value set is therefore *not* of small diameter globally; it is small **inside each cell** of length
+`π/log z`, which is exactly why the corpus's `volume_halaszLargeValues_le` carries the covering factor
+`(2T log z/π + 1)`.  My previous entry claimed a global diameter; that was a misreading.
+
+With the per-cell diameter the window mean square is `∑_{cells} ∫_{S ∩ cell}`, and the new
+`integral_normSq_LSeries_le_of_diameter` bounds each cell's contribution by `2π(5R/4)·(sieve mass)` with
+`R ≍ δ/log z`.  Summing over `O(T log z)` cells gives `≍ Tδ·(sieve mass)`.  So replacing the trivial bound by the
+sieve did remove the `(ℓ¹)²`, but the factor `T` remains, and the tension is unresolved:
+
+* the **tail** of the height split needs `T ≳ Mg·C/(N log N) ≍ (log N)^{2k+4}`;
+* the **window** needs `Tδ·(sieve mass) ≪ 1`, i.e. `T ≪ 1/(δ(log N)²)`.
+
+These are incompatible for any `δ > 0`.  **The obstruction is structural to the measure-based treatment of the
+window**: bounding the window's contribution by (number of cells)×(per-cell mean square) charges every cell of
+`[−T,T]` whether or not the large-value set meets it.
+
+**The resolution the classical argument uses, and which the corpus already owns.**  Halász's method does not
+measure the exceptional set; it counts *well-spaced* large-value points and uses a large-values estimate — the
+number of `δ`-spaced points with `|L| > V` is `≪ T + (coefficient mass)/V²`, so the count is governed by `V`, not
+by `T` alone.  The corpus's `DirichletLargeValues`, `DirichletLargeValuesCount`, `DirichletMeasureLargeValues`,
+`LargeSieveGallagher` and `PrimePowerLargeValuesCount` are that layer, and `HalaszFullSeriesSum`'s
+`sum_norm_tsum_twistedSummand_le_of_spacing` is the corpus's own combination of a spacing hypothesis with the
+damped bound.
+
+So the next attempt should replace the "measure of the window" step by the corpus's spacing/count step:
+`sum_norm_tsum_twistedSummand_le_of_spacing` bounds a *sum over well-spaced frequencies*, which is what the
+Cauchy–Schwarz split should consume in place of an integral over `S`.  Recorded before attempting it — this is the
+third architectural correction in this programme, and each has come from computing the balance rather than from
+reading the construction.
