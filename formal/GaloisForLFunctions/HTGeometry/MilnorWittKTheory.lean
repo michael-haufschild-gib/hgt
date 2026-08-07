@@ -1,23 +1,25 @@
 import GaloisForLFunctions.HTGeometry.MilnorKTheory
 import Mathlib.Algebra.FreeAlgebra
+import Mathlib.Tactic.NoncommRing
 
 /-!
 # Milnor--Witt `K`-theory of a field
 
-Milnor--Witt `K`-theory is the ring presented by Morel's generators and relations: a symbol `[u]`
-for every unit and one further generator `η`, subject to the Steinberg relation, the twisted
-multiplicativity `[uv] = [u] + [v] + η[u][v]`, centrality of `η`, and `η·(η[-1] + 2) = 0`.
+Morel's presentation: the free `ℤ`-algebra on a symbol `[u]` for every unit `u` and one further
+symbol `η`, modulo the Steinberg relation `[u][1-u] = 0`, the twisted additivity
+`[uv] = [u] + [v] + η[u][v]`, the centrality of `η`, and the hyperbolic relation
+`η(η[-1] + 2) = 0`.
 
-Killing `η` collapses twisted multiplicativity to ordinary additivity of the symbol, so the
-presentation maps onto Milnor `K`-theory.  That forgetful morphism is one corner of the fundamental
-cartesian square of Milnor--Witt `K`-theory; the other corner needs the Witt ring, which is not
-available here.
+The grading is not part of the presentation — `[u]` has degree one and `η` degree minus one — and is
+not built here; what is built is the ring itself and the relations that make it, together with the
+consequences the Milnor--Witt cards use.
 
-* `MilnorWittK` : the ring, as a quotient of the free algebra on the generators.
-* `milnorWittSymbol`, `milnorWittEta` : the generators.
-* `milnorWittSymbol_mul_oneSub`, `milnorWittSymbol_mul`, `milnorWittEta_comm`,
-  `milnorWittEta_hyperbolic` : the four defining relations.
-* `milnorWittForget` : the forgetful morphism onto Milnor `K`-theory.
+* `MilnorWittK` : the Milnor--Witt `K`-ring.
+* `mwSymbol`, `mwEta` : the two families of generators.
+* `mwSymbol_mul` : twisted additivity.
+* `mwSymbol_mul_oneSub` : the Steinberg relation.
+* `mwSymbol_one` : the symbol of `1` vanishes, in a field with more than two elements.
+* `mwUnitForm` : the unit form `⟨u⟩ = 1 + η[u]`.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -26,144 +28,172 @@ section MilnorWitt
 
 variable (F : Type*) [Field F]
 
-/-- The generators of the Milnor--Witt presentation: the extra generator `η` and the unit
-symbols. -/
-inductive MWGen (F : Type*) [Field F]
-  | eta : MWGen F
-  | sym : Fˣ → MWGen F
+/-- `-1` as a unit. -/
+def negOneUnit : Fˣ := Units.mk0 (-1 : F) (neg_ne_zero.mpr one_ne_zero)
+
+@[simp] theorem negOneUnit_val : ((negOneUnit F : Fˣ) : F) = -1 := rfl
+
+/-- The generators of the Milnor--Witt presentation: a symbol for every unit, and `η`. -/
+inductive MilnorWittGen (F : Type*) [Field F]
+  | unit (u : Fˣ)
+  | eta
 
 /-- **Morel's relations** for Milnor--Witt `K`-theory. -/
 inductive MilnorWittRel :
-    FreeAlgebra ℤ (MWGen F) → FreeAlgebra ℤ (MWGen F) → Prop
-  | steinberg (a : Fˣ) (ha : (a : F) ≠ 1) :
+    FreeAlgebra ℤ (MilnorWittGen F) → FreeAlgebra ℤ (MilnorWittGen F) → Prop
+  | steinberg (u : Fˣ) (hu : (u : F) ≠ 1) :
       MilnorWittRel
-        (FreeAlgebra.ι ℤ (MWGen.sym a) * FreeAlgebra.ι ℤ (MWGen.sym (oneSubUnit ha))) 0
+        (FreeAlgebra.ι ℤ (MilnorWittGen.unit u) *
+          FreeAlgebra.ι ℤ (MilnorWittGen.unit (oneSubUnit hu))) 0
   | twisted (u v : Fˣ) :
-      MilnorWittRel (FreeAlgebra.ι ℤ (MWGen.sym (u * v)))
-        (FreeAlgebra.ι ℤ (MWGen.sym u) + FreeAlgebra.ι ℤ (MWGen.sym v) +
-          FreeAlgebra.ι ℤ (MWGen.eta) * FreeAlgebra.ι ℤ (MWGen.sym u) *
-            FreeAlgebra.ι ℤ (MWGen.sym v))
+      MilnorWittRel (FreeAlgebra.ι ℤ (MilnorWittGen.unit (u * v)))
+        (FreeAlgebra.ι ℤ (MilnorWittGen.unit u) + FreeAlgebra.ι ℤ (MilnorWittGen.unit v)
+          + FreeAlgebra.ι ℤ (MilnorWittGen.eta (F := F)) *
+            FreeAlgebra.ι ℤ (MilnorWittGen.unit u) * FreeAlgebra.ι ℤ (MilnorWittGen.unit v))
   | central (u : Fˣ) :
-      MilnorWittRel (FreeAlgebra.ι ℤ (MWGen.sym u) * FreeAlgebra.ι ℤ (MWGen.eta))
-        (FreeAlgebra.ι ℤ (MWGen.eta) * FreeAlgebra.ι ℤ (MWGen.sym u))
+      MilnorWittRel
+        (FreeAlgebra.ι ℤ (MilnorWittGen.eta (F := F)) * FreeAlgebra.ι ℤ (MilnorWittGen.unit u))
+        (FreeAlgebra.ι ℤ (MilnorWittGen.unit u) * FreeAlgebra.ι ℤ (MilnorWittGen.eta (F := F)))
   | hyperbolic :
       MilnorWittRel
-        (FreeAlgebra.ι ℤ (MWGen.eta) *
-          (FreeAlgebra.ι ℤ (MWGen.eta) * FreeAlgebra.ι ℤ (MWGen.sym (-1)) + 2)) 0
+        (FreeAlgebra.ι ℤ (MilnorWittGen.eta (F := F)) *
+          (FreeAlgebra.ι ℤ (MilnorWittGen.eta (F := F)) *
+            FreeAlgebra.ι ℤ (MilnorWittGen.unit (negOneUnit F)) + 2)) 0
 
 /-- **The Milnor--Witt `K`-ring of a field.** -/
 abbrev MilnorWittK : Type _ := RingQuot (MilnorWittRel F)
 
-/-- The quotient map onto the Milnor--Witt ring. -/
-def milnorWittMk : FreeAlgebra ℤ (MWGen F) →ₐ[ℤ] MilnorWittK F :=
+/-- The quotient map onto the Milnor--Witt `K`-ring. -/
+def mwMk : FreeAlgebra ℤ (MilnorWittGen F) →ₐ[ℤ] MilnorWittK F :=
   RingQuot.mkAlgHom ℤ (MilnorWittRel F)
+
+/-- **The generator `η`.** -/
+def mwEta : MilnorWittK F := mwMk F (FreeAlgebra.ι ℤ (MilnorWittGen.eta (F := F)))
 
 variable {F}
 
-/-- The Milnor--Witt symbol `[u]`. -/
-def milnorWittSymbol (u : Fˣ) : MilnorWittK F :=
-  milnorWittMk F (FreeAlgebra.ι ℤ (MWGen.sym u))
+/-- **The Milnor--Witt symbol** `[u]`. -/
+def mwSymbol (u : Fˣ) : MilnorWittK F :=
+  mwMk F (FreeAlgebra.ι ℤ (MilnorWittGen.unit u))
 
-variable (F) in
-/-- The Milnor--Witt generator `η`. -/
-def milnorWittEta : MilnorWittK F :=
-  milnorWittMk F (FreeAlgebra.ι ℤ MWGen.eta)
-
-/-- **The Steinberg relation.** -/
-theorem milnorWittSymbol_mul_oneSub {a : Fˣ} (ha : (a : F) ≠ 1) :
-    (milnorWittSymbol a : MilnorWittK F) * milnorWittSymbol (oneSubUnit ha) = 0 := by
-  have h := RingQuot.mkAlgHom_rel (S := ℤ) (MilnorWittRel.steinberg (F := F) a ha)
-  rw [milnorWittSymbol, milnorWittSymbol, milnorWittMk, ← map_mul, h, map_zero]
-
-/-- **Twisted multiplicativity**: `[uv] = [u] + [v] + η[u][v]`. -/
-theorem milnorWittSymbol_mul (u v : Fˣ) :
-    (milnorWittSymbol (u * v) : MilnorWittK F) =
-      milnorWittSymbol u + milnorWittSymbol v +
-        milnorWittEta F * milnorWittSymbol u * milnorWittSymbol v := by
+/-- **Twisted additivity**: `[uv] = [u] + [v] + η[u][v]`. -/
+theorem mwSymbol_mul (u v : Fˣ) :
+    (mwSymbol (u * v) : MilnorWittK F)
+      = mwSymbol u + mwSymbol v + mwEta F * mwSymbol u * mwSymbol v := by
   have h := RingQuot.mkAlgHom_rel (S := ℤ) (MilnorWittRel.twisted (F := F) u v)
-  rw [milnorWittSymbol, milnorWittSymbol, milnorWittSymbol, milnorWittEta, milnorWittMk]
-  rw [h, map_add, map_add, map_mul, map_mul]
+  simpa [mwSymbol, mwEta, mwMk] using h
 
-/-- **`η` is central against the symbols.** -/
-theorem milnorWittEta_comm (u : Fˣ) :
-    (milnorWittSymbol u : MilnorWittK F) * milnorWittEta F =
-      milnorWittEta F * milnorWittSymbol u := by
+/-- **The Steinberg relation**: `[u][1 - u] = 0`. -/
+theorem mwSymbol_mul_oneSub {u : Fˣ} (hu : (u : F) ≠ 1) :
+    (mwSymbol u : MilnorWittK F) * mwSymbol (oneSubUnit hu) = 0 := by
+  have h := RingQuot.mkAlgHom_rel (S := ℤ) (MilnorWittRel.steinberg (F := F) u hu)
+  simpa [mwSymbol, mwMk] using h
+
+/-- **`η` is central on the symbols**. -/
+theorem mwEta_mul_symbol (u : Fˣ) :
+    mwEta F * (mwSymbol u : MilnorWittK F) = mwSymbol u * mwEta F := by
   have h := RingQuot.mkAlgHom_rel (S := ℤ) (MilnorWittRel.central (F := F) u)
-  rw [milnorWittSymbol, milnorWittEta, milnorWittMk, ← map_mul, h, map_mul]
+  simpa [mwSymbol, mwEta, mwMk] using h
 
-/-- **The hyperbolic relation** `η·(η[-1] + 2) = 0`. -/
-theorem milnorWittEta_hyperbolic :
-    (milnorWittEta F) * (milnorWittEta F * milnorWittSymbol (-1) + 2) = 0 := by
+/-- **The hyperbolic relation**: `η(η[-1] + 2) = 0`. -/
+theorem mwEta_hyperbolic :
+    mwEta F * (mwEta F * mwSymbol (negOneUnit F) + 2) = 0 := by
   have h := RingQuot.mkAlgHom_rel (S := ℤ) (MilnorWittRel.hyperbolic (F := F))
-  rw [milnorWittEta, milnorWittSymbol, milnorWittMk]
-  rw [show ((2 : MilnorWittK F)) =
-      RingQuot.mkAlgHom ℤ (MilnorWittRel F) (2 : FreeAlgebra ℤ (MWGen F)) by
-    rw [map_ofNat]]
-  rw [← map_mul, ← map_add, ← map_mul, h, map_zero]
+  simpa [mwSymbol, mwEta, mwMk, map_ofNat] using h
 
-variable (F) in
-/-- The generator values of the forgetful morphism: `η` dies and `[u]` becomes the Milnor
-symbol. -/
-def milnorWittForgetGen : MWGen F → MilnorK F
-  | MWGen.eta => 0
-  | MWGen.sym u => milnorSymbol u
+/-- Twisted additivity with the first entry equal to one: `[1] + η[1][v] = 0`. -/
+theorem mwSymbol_one_add (v : Fˣ) :
+    (mwSymbol 1 : MilnorWittK F) + mwEta F * mwSymbol 1 * mwSymbol v = 0 := by
+  have h := mwSymbol_mul (F := F) 1 v
+  rw [one_mul] at h
+  have h0 : (mwSymbol 1 + mwSymbol v + mwEta F * mwSymbol 1 * mwSymbol v : MilnorWittK F)
+      - mwSymbol v = 0 := sub_eq_zero_of_eq h.symm
+  calc (mwSymbol 1 : MilnorWittK F) + mwEta F * mwSymbol 1 * mwSymbol v
+      = (mwSymbol 1 + mwSymbol v + mwEta F * mwSymbol 1 * mwSymbol v) - mwSymbol v := by abel
+    _ = 0 := h0
 
-theorem milnorWittForget_rel :
-    ∀ x y : FreeAlgebra ℤ (MWGen F), MilnorWittRel F x y →
-      FreeAlgebra.lift ℤ (milnorWittForgetGen F) x =
-        FreeAlgebra.lift ℤ (milnorWittForgetGen F) y := by
-  rintro _ _ (⟨a, ha⟩ | ⟨u, v⟩ | ⟨u⟩ | _)
-  · rw [map_mul, FreeAlgebra.lift_ι_apply, FreeAlgebra.lift_ι_apply, map_zero]
-    exact milnorSymbol_mul_oneSub ha
-  · rw [FreeAlgebra.lift_ι_apply, map_add, map_add, map_mul, map_mul,
-      FreeAlgebra.lift_ι_apply, FreeAlgebra.lift_ι_apply, FreeAlgebra.lift_ι_apply]
-    show milnorSymbol (u * v) = milnorSymbol u + milnorSymbol v + 0 * _ * _
-    rw [zero_mul, zero_mul, add_zero, milnorSymbol_mul]
-  · rw [map_mul, map_mul, FreeAlgebra.lift_ι_apply, FreeAlgebra.lift_ι_apply]
-    show milnorSymbol u * 0 = 0 * milnorSymbol u
-    rw [mul_zero, zero_mul]
-  · rw [map_mul, map_zero, FreeAlgebra.lift_ι_apply]
-    show (0 : MilnorK F) * _ = 0
-    rw [zero_mul]
+/-- **The symbol of `1` vanishes**, in a field with a unit other than `1`.  Multiplying twisted
+additivity by `η[1]` turns the left side into `[1]` and the right side into `η²[1][u][1-u]`, which
+the Steinberg relation kills. -/
+theorem mwSymbol_one (hF : ∃ u : Fˣ, (u : F) ≠ 1) : (mwSymbol 1 : MilnorWittK F) = 0 := by
+  obtain ⟨u, hu⟩ := hF
+  have hkey : ∀ v : Fˣ, mwEta F * (mwSymbol 1 : MilnorWittK F) * mwSymbol v = -mwSymbol 1 := by
+    intro v
+    have h := mwSymbol_one_add (F := F) v
+    have h' : mwEta F * (mwSymbol 1 : MilnorWittK F) * mwSymbol v + mwSymbol 1 = 0 := by
+      rw [← h]; abel
+    exact eq_neg_of_add_eq_zero_left h'
+  have hmul := mwSymbol_mul (F := F) u (oneSubUnit hu)
+  have hexpand : mwEta F * (mwSymbol 1 : MilnorWittK F) * mwSymbol (u * oneSubUnit hu)
+      = mwEta F * mwSymbol 1 * mwSymbol u + mwEta F * mwSymbol 1 * mwSymbol (oneSubUnit hu)
+        + mwEta F * mwSymbol 1 * (mwEta F * mwSymbol u * mwSymbol (oneSubUnit hu)) := by
+    rw [hmul]; noncomm_ring
+  rw [hkey (u * oneSubUnit hu), hkey u, hkey (oneSubUnit hu)] at hexpand
+  have hz : (-mwSymbol 1 : MilnorWittK F)
+      - (-mwSymbol 1 + -mwSymbol 1
+        + mwEta F * mwSymbol 1 * (mwEta F * mwSymbol u * mwSymbol (oneSubUnit hu))) = 0 :=
+    sub_eq_zero_of_eq hexpand
+  have hBT : (mwSymbol 1 : MilnorWittK F)
+      - mwEta F * mwSymbol 1 * (mwEta F * mwSymbol u * mwSymbol (oneSubUnit hu)) = 0 := by
+    calc (mwSymbol 1 : MilnorWittK F)
+        - mwEta F * mwSymbol 1 * (mwEta F * mwSymbol u * mwSymbol (oneSubUnit hu))
+        = (-mwSymbol 1 : MilnorWittK F)
+          - (-mwSymbol 1 + -mwSymbol 1
+            + mwEta F * mwSymbol 1 * (mwEta F * mwSymbol u * mwSymbol (oneSubUnit hu))) := by
+          abel
+      _ = 0 := hz
+  have hval := sub_eq_zero.mp hBT
+  have hst : mwEta F * (mwSymbol u : MilnorWittK F) * mwSymbol (oneSubUnit hu) = 0 := by
+    rw [mul_assoc, mwSymbol_mul_oneSub hu, mul_zero]
+  rw [hval, hst, mul_zero]
 
-variable (F) in
-/-- **The forgetful morphism onto Milnor `K`-theory.**  Killing `η` turns twisted multiplicativity
-into ordinary additivity of the symbol, which is exactly the Milnor relation. -/
-def milnorWittForget : MilnorWittK F →ₐ[ℤ] MilnorK F :=
-  RingQuot.liftAlgHom ℤ ⟨FreeAlgebra.lift ℤ (milnorWittForgetGen F), milnorWittForget_rel⟩
+/-- **The unit form** `⟨u⟩ = 1 + η[u]`. -/
+def mwUnitForm (u : Fˣ) : MilnorWittK F := 1 + mwEta F * mwSymbol u
 
-@[simp]
-theorem milnorWittForget_symbol (u : Fˣ) :
-    milnorWittForget F (milnorWittSymbol u) = milnorSymbol u := by
-  rw [milnorWittForget, milnorWittSymbol, milnorWittMk, RingQuot.liftAlgHom_mkAlgHom_apply]
-  exact FreeAlgebra.lift_ι_apply _ _
+/-- The unit form of a product, from twisted additivity. -/
+theorem mwUnitForm_mul (u v : Fˣ) :
+    (mwUnitForm (u * v) : MilnorWittK F)
+      = mwUnitForm u + mwUnitForm v - 1 + mwEta F * (mwEta F * mwSymbol u * mwSymbol v) := by
+  rw [mwUnitForm, mwUnitForm, mwUnitForm, mwSymbol_mul]
+  noncomm_ring
 
-@[simp]
-theorem milnorWittForget_eta : milnorWittForget F (milnorWittEta F) = 0 := by
-  rw [milnorWittForget, milnorWittEta, milnorWittMk, RingQuot.liftAlgHom_mkAlgHom_apply]
-  exact FreeAlgebra.lift_ι_apply _ _
+/-- The generators, sent to the Milnor symbols with `η` sent to zero. -/
+def mwToMilnorGen : MilnorWittGen F → MilnorK F
+  | MilnorWittGen.unit u => milnorSymbol u
+  | MilnorWittGen.eta => 0
 
-/-- **The forgetful morphism is surjective.**  Milnor `K`-theory is generated by the symbols, all
-of which are hit. -/
-theorem milnorWittForget_surjective : Function.Surjective (milnorWittForget F) := by
-  intro z
-  obtain ⟨w, rfl⟩ := RingQuot.mkAlgHom_surjective ℤ (MilnorKRel F) z
-  induction w using TensorAlgebra.induction with
-  | algebraMap r =>
-    refine ⟨algebraMap ℤ (MilnorWittK F) r, ?_⟩
-    rw [AlgHom.commutes, AlgHom.commutes]
-  | ι x =>
-    refine ⟨milnorWittSymbol (Additive.toMul x), ?_⟩
-    rw [milnorWittForget_symbol]
-    rfl
-  | mul a b ha hb =>
-    obtain ⟨a', ha'⟩ := ha
-    obtain ⟨b', hb'⟩ := hb
-    exact ⟨a' * b', by rw [map_mul, ha', hb', map_mul]⟩
-  | add a b ha hb =>
-    obtain ⟨a', ha'⟩ := ha
-    obtain ⟨b', hb'⟩ := hb
-    exact ⟨a' + b', by rw [map_add, ha', hb', map_add]⟩
+/-- **Killing `η` gives Milnor `K`-theory.**  Twisted additivity becomes ordinary additivity, the
+centrality and hyperbolic relations become `0 = 0`, and the Steinberg relation is the Steinberg
+relation. -/
+noncomputable def mwToMilnor : MilnorWittK F →ₐ[ℤ] MilnorK F :=
+  RingQuot.liftAlgHom ℤ ⟨FreeAlgebra.lift ℤ (mwToMilnorGen (F := F)), by
+    intro x y hxy
+    induction hxy with
+    | steinberg u hu =>
+        simp only [map_mul, map_zero, FreeAlgebra.lift_ι_apply, mwToMilnorGen]
+        exact milnorSymbol_mul_oneSub hu
+    | twisted u v =>
+        simp only [map_add, map_mul, FreeAlgebra.lift_ι_apply, mwToMilnorGen, zero_mul, add_zero]
+        exact milnorSymbol_mul u v
+    | central u =>
+        simp only [map_mul, FreeAlgebra.lift_ι_apply, mwToMilnorGen, zero_mul, mul_zero]
+    | hyperbolic =>
+        simp only [map_mul, map_zero, FreeAlgebra.lift_ι_apply, mwToMilnorGen, zero_mul]⟩
+
+@[simp] theorem mwToMilnor_symbol (u : Fˣ) :
+    mwToMilnor (mwSymbol u : MilnorWittK F) = milnorSymbol u := by
+  show RingQuot.liftAlgHom ℤ _ (RingQuot.mkAlgHom ℤ (MilnorWittRel F) _) = _
+  rw [RingQuot.liftAlgHom_mkAlgHom_apply]
+  show FreeAlgebra.lift ℤ (mwToMilnorGen (F := F)) (FreeAlgebra.ι ℤ _) = _
+  rw [FreeAlgebra.lift_ι_apply]
+  rfl
+
+@[simp] theorem mwToMilnor_eta : mwToMilnor (mwEta F) = (0 : MilnorK F) := by
+  show RingQuot.liftAlgHom ℤ _ (RingQuot.mkAlgHom ℤ (MilnorWittRel F) _) = _
+  rw [RingQuot.liftAlgHom_mkAlgHom_apply]
+  show FreeAlgebra.lift ℤ (mwToMilnorGen (F := F)) (FreeAlgebra.ι ℤ _) = _
+  rw [FreeAlgebra.lift_ι_apply]
+  rfl
 
 end MilnorWitt
 
