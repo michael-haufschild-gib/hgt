@@ -198,8 +198,7 @@ theorem barMulD_cancel {p q m : ℕ} (h : p + q + 1 = m)
                   (TensorProduct.map (augIdealShiftD ε p) LinearMap.id (x ⊗ₜ[R] V'))
                 + ((-1 : R)) ^ p • barMulTail ε (show p + (q + 1) + 1 = m + 1 by omega)
                   LinearMap.id (TensorProduct.map LinearMap.id
-                    (TensorProduct.map (augIdealShiftD ε q) LinearMap.id) (x ⊗ₜ[R] V'))) := by
-              abel
+                    (TensorProduct.map (augIdealShiftD ε q) LinearMap.id) (x ⊗ₜ[R] V'))) := by abel
             _ = 0 := by rw [hV, hV', add_zero]
       | tmul y w =>
           show augIdealShiftD ε m (augIdealShiftMulOf ε h x y) ⊗ₜ[R] w
