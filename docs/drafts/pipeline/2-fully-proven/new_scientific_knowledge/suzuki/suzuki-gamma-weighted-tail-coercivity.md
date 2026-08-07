@@ -334,9 +334,44 @@ suzukiGammaWeightedTail_derivative_norm_le
 ```
 
 The exact pointwise Gamma numerical-range loss, coercive Hilbert energy estimate, and recovery of
-the ordinary weighted derivative are therefore kernel-checked.  The distributional mollifier
-passage and Fourier realization of \(R_\sigma\) remain paper mathematics; Lean does not replace
-them by an assumed completed-source map.
+the ordinary weighted derivative are therefore kernel-checked.
+
+**`(3)`, `(10)` and the Plancherel step `(11)` are now formal**, in
+
+```text
+formal/GaloisForLFunctions/RHTower/SuzukiGammaShiftKappa.lean
+```
+
+```text
+suzukiGammaShiftLowerKernel_le_one          sigma ≤ 1: majorant ≤ 1 - e^{-s} ≤ 1, via the exact
+                                            identity 2(cosh s - 1) = e^{-s}(e^s-1)^2
+suzukiGammaShiftLowerKernel_le_exp          s ≥ 1: majorant ≤ 4 e^{-(1-sigma)s}
+integrableOn_suzukiGammaShiftLowerKernel    (3): the majorant is integrable on (0,∞) for
+                                            0 ≤ sigma < 1
+suzukiGammaShiftKappa                       kappa_sigma itself
+suzukiGammaShiftKappa_nonneg                kappa_sigma ≥ 0
+abs_suzukiGammaShiftRealIntegrand_le        |Re integrand| ≤ majorant + x^2 s^2/(e^s-1)
+integrableOn_cosineDefect                   the cosine defect term is integrable
+integrableOn_suzukiGammaShiftRealIntegrand  hence so is the exact integrand
+neg_suzukiGammaShiftKappa_le_integral       (10): -kappa_sigma ≤ ∫ Re r_sigma, every real x
+neg_mul_integral_normSq_le_integral_re_symbol
+                                            (11): a multiplication operator whose symbol has real
+                                            part ≥ -kappa has quadratic form ≥ -kappa ‖·‖²
+```
+
+The mollifier commutator `(17)` is formal too, as reusable geometry, in
+
+```text
+formal/GaloisForLFunctions/HTGeometry/MollifierPositionCommutator.lean
+  mollify, firstMomentKernel
+  mollify_position_eq   (17): rho ⋆ (L·U) = L·(rho ⋆ U) - (k ⋆ U),  k(s) = s rho(s)
+  mollify_add, mollify_zero
+```
+
+What is still paper mathematics is the *limit* in section 4 — that the mollified equation `(18)`
+passes to `(5)` as the mollifier concentrates — together with the identification of `R_sigma` with
+multiplication by `r_sigma` on the Fourier side.  Lean does not replace either by an assumed
+completed-source map.
 
 ## Gates
 

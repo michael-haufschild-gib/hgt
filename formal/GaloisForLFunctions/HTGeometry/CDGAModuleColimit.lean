@@ -130,8 +130,10 @@ noncomputable def colimModule : CDGAModuleStructure A (colimModuleDeg φ) where
 /-- **The canonical morphism from a stage into the colimit.** -/
 noncomputable def colimModuleOf (i : ι) : CDGAModuleHom (P i) (colimModule φ) where
   toFun n m := Module.DirectLimit.of R ι (fun i => M i n) (moduleDegTransition φ n) i m
-  map_add n m m' := map_add _ m m'
-  map_smul n c m := map_smul _ c m
+  map_add n m m' :=
+    map_add (Module.DirectLimit.of R ι (fun i => M i n) (moduleDegTransition φ n) i) m m'
+  map_smul n c m :=
+    map_smul (Module.DirectLimit.of R ι (fun i => M i n) (moduleDegTransition φ n) i) c m
   map_act h x m := (colimModuleAct_of φ h x i m).symm
   map_d n m := (colimModuleD_of φ n i m).symm
 
@@ -159,6 +161,9 @@ noncomputable def colimModuleHomFun (n : ℕ) : colimModuleDeg φ n →ₗ[R] co
   Module.DirectLimit.map (fun i => (Θ i).mapₗ n) (fun i j hij =>
     LinearMap.ext fun m => hΘ i j hij n m)
 
+omit [IsDirectedOrder ι] [Nonempty ι]
+  [∀ n : ℕ, DirectedSystem (fun i => M i n) fun i j h => moduleDegTransition φ n i j h]
+  [∀ n : ℕ, DirectedSystem (fun i => N i n) fun i j h => moduleDegTransition ψ n i j h] in
 @[simp] theorem colimModuleHomFun_of (n : ℕ) (i : ι) (m : M i n) :
     colimModuleHomFun φ ψ Θ hΘ n
         (Module.DirectLimit.of R ι (fun i => M i n) (moduleDegTransition φ n) i m)

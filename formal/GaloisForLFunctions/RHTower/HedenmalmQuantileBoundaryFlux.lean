@@ -136,6 +136,12 @@ private theorem sqrt_three_ne : ((Real.sqrt 3 : ℝ) : ℂ) ≠ 0 := by
   have h : (0 : ℝ) < Real.sqrt 3 := Real.sqrt_pos.mpr (by norm_num)
   exact_mod_cast h.ne'
 
+private theorem inv_two_sqrt_three : (1 / (2 * Real.sqrt 3) : ℝ) = Real.sqrt 3 / 6 := by
+  have h3 : (0 : ℝ) < Real.sqrt 3 := Real.sqrt_pos.mpr (by norm_num)
+  have hmul : Real.sqrt 3 * Real.sqrt 3 = 3 := Real.mul_self_sqrt (by norm_num)
+  rw [div_eq_div_iff (by positivity) (by norm_num)]
+  linear_combination (-2 : ℝ) * hmul
+
 /-- The `+1/√12` eigenvector of the boundary operator. -/
 def pinnedFluxPositive : H := pinnedOne - ((2 * Real.sqrt 3 : ℝ) : ℂ) • pinnedCenter
 
@@ -147,13 +153,14 @@ theorem pinnedBoundaryCLM_pinnedFluxPositive :
     pinnedBoundaryCLM pinnedFluxPositive
       = ((1 / (2 * Real.sqrt 3) : ℝ) : ℂ) • pinnedFluxPositive := by
   have hcoef : ((1 / (2 * Real.sqrt 3) : ℝ) : ℂ) * ((2 * Real.sqrt 3 : ℝ) : ℂ) = 1 := by
+    rw [inv_two_sqrt_three]
     push_cast
-    field_simp [sqrt_three_ne]
+    linear_combination (1 / 3 : ℂ) * sqrt_three_sq
   have hscale : ((2 * Real.sqrt 3 : ℝ) : ℂ) * -(1 / 12 : ℂ)
       = -((1 / (2 * Real.sqrt 3) : ℝ) : ℂ) := by
+    rw [inv_two_sqrt_three]
     push_cast
-    field_simp [sqrt_three_ne]
-    linear_combination (2 : ℂ) * sqrt_three_sq
+    ring
   have key : ((1 / (2 * Real.sqrt 3) : ℝ) : ℂ) • pinnedFluxPositive
       = ((1 / (2 * Real.sqrt 3) : ℝ) : ℂ) • pinnedOne - pinnedCenter := by
     rw [pinnedFluxPositive, smul_sub, smul_smul, hcoef, one_smul]
@@ -166,19 +173,100 @@ theorem pinnedBoundaryCLM_pinnedFluxNegative :
     pinnedBoundaryCLM pinnedFluxNegative
       = ((-(1 / (2 * Real.sqrt 3)) : ℝ) : ℂ) • pinnedFluxNegative := by
   have hcoef : ((-(1 / (2 * Real.sqrt 3)) : ℝ) : ℂ) * ((2 * Real.sqrt 3 : ℝ) : ℂ) = -1 := by
+    rw [inv_two_sqrt_three]
     push_cast
-    field_simp [sqrt_three_ne]
+    linear_combination (-1 / 3 : ℂ) * sqrt_three_sq
   have hscale : ((2 * Real.sqrt 3 : ℝ) : ℂ) * -(1 / 12 : ℂ)
       = ((-(1 / (2 * Real.sqrt 3)) : ℝ) : ℂ) := by
+    rw [inv_two_sqrt_three]
     push_cast
-    field_simp [sqrt_three_ne]
-    linear_combination (-10 : ℂ) * sqrt_three_sq
+    ring
   have key : ((-(1 / (2 * Real.sqrt 3)) : ℝ) : ℂ) • pinnedFluxNegative
       = ((-(1 / (2 * Real.sqrt 3)) : ℝ) : ℂ) • pinnedOne + (-1 : ℂ) • pinnedCenter := by
     rw [pinnedFluxNegative, smul_add, smul_smul, hcoef]
   rw [key, pinnedFluxNegative, map_add, map_smul, pinnedBoundaryCLM_pinnedOne_eq_neg_center,
     pinnedBoundaryCLM_pinnedCenter, smul_smul, hscale]
   module
+
+/-! ### The spectral flux law on a root mode -/
+
+namespace HedenmalmQuantile
+
+variable (S : PositiveDensitySource)
+
+/-- A quantile root mode at spectral value `lam`: the pointwise relation `i q (C g) = lam g`. -/
+def IsQuantileRootMode (lam : ℂ) (g : H) : Prop :=
+  (fun t => Complex.I * ((quantileSpeed S t : ℝ) : ℂ) * (pinnedVolterra g) t)
+    =ᵐ[unitIntervalMeasure] fun t => lam * g t
+
+theorem pinnedVolterra_ae_of_rootMode {lam : ℂ} {g : H}
+    (h : IsQuantileRootMode S lam g) :
+    (fun t => (pinnedVolterra g) t)
+      =ᵐ[unitIntervalMeasure] fun t => (-Complex.I * lam) * (metricSymbol S t * g t) := by
+  filter_upwards [h] with t ht
+  have hq : (0 : ℝ) < quantileSpeed S t := quantileSpeed_pos S t
+  have hqc : ((quantileSpeed S t : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hq.ne'
+  have hsym : metricSymbol S t = ((quantileSpeed S t : ℝ) : ℂ)⁻¹ := by
+    rw [metricSymbol_eq_inv_quantileSpeed]
+    push_cast
+    ring
+  rw [hsym]
+  have hIne : (Complex.I : ℂ) ≠ 0 := Complex.I_ne_zero
+  have hX : (pinnedVolterra g) t
+      = (Complex.I * ((quantileSpeed S t : ℝ) : ℂ))⁻¹ * (lam * g t) := by
+    rw [← ht]
+    field_simp
+  rw [hX, mul_inv, Complex.inv_I]
+  ring
+
+/-- The `C`-pairing of a root mode is a scalar multiple of the metric pairing. -/
+theorem inner_pinnedVolterra_rootMode {lam : ℂ} {g : H}
+    (h : IsQuantileRootMode S lam g) {C : ℝ} (hC0 : 0 ≤ C)
+    (hC : ∀ t, ‖metricSymbol S t‖ ≤ C) :
+    (inner ℂ (pinnedVolterra g) g : ℂ)
+      = (starRingEnd ℂ) (-Complex.I * lam) * inner ℂ (metricOperator S hC0 hC g) g := by
+  rw [inner_lp_eq, inner_lp_eq]
+  have hcongr : (fun t => (starRingEnd ℂ) ((pinnedVolterra g) t) * g t)
+      =ᵐ[unitIntervalMeasure] fun t => (starRingEnd ℂ) (-Complex.I * lam) *
+        ((starRingEnd ℂ) ((metricOperator S hC0 hC g) t) * g t) := by
+    filter_upwards [pinnedVolterra_ae_of_rootMode S h, metricOperator_coeFn S hC0 hC g]
+      with t h1 h2
+    rw [h1, h2, map_mul]
+    ring
+  rw [integral_congr_ae hcongr, MeasureTheory.integral_const_mul]
+
+/-- **The spectral flux law.**  On a quantile root mode the universal boundary form is twice the
+imaginary part of the spectral value times the canonical metric form. -/
+theorem inner_pinnedBoundaryCLM_rootMode {lam : ℂ} {g : H}
+    (h : IsQuantileRootMode S lam g) {C : ℝ} (hC0 : 0 ≤ C)
+    (hC : ∀ t, ‖metricSymbol S t‖ ≤ C) :
+    (inner ℂ (pinnedBoundaryCLM g) g : ℂ)
+      = ((2 * lam.im : ℝ) : ℂ) * inner ℂ (metricOperator S hC0 hC g) g := by
+  have hAreal : (starRingEnd ℂ) (inner ℂ (metricOperator S hC0 hC g) g : ℂ)
+      = inner ℂ (metricOperator S hC0 hC g) g := by
+    rw [inner_conj_symm, metricOperator_inner]
+  have hC1 := inner_pinnedVolterra_rootMode S h hC0 hC
+  have hsplit : (inner ℂ (pinnedBoundaryCLM g) g : ℂ)
+      = inner ℂ (pinnedVolterra g) g + (starRingEnd ℂ) (inner ℂ (pinnedVolterra g) g) := by
+    have hadj : (inner ℂ (pinnedVolterraAdjointCLM g) g : ℂ)
+        = (starRingEnd ℂ) (inner ℂ (pinnedVolterra g) g) := by
+      rw [pinnedVolterraAdjointCLM_eq_adjoint, ContinuousLinearMap.adjoint_inner_left,
+        ← inner_conj_symm]
+      rfl
+    rw [pinnedBoundaryCLM, add_apply, inner_add_left, hadj]
+    rfl
+  have hre : (starRingEnd ℂ) (-Complex.I * lam) + (-Complex.I * lam)
+      = ((2 * lam.im : ℝ) : ℂ) := by
+    rw [add_comm, Complex.add_conj]
+    norm_num
+  rw [hsplit, hC1,
+    show (starRingEnd ℂ) ((starRingEnd ℂ) (-Complex.I * lam) *
+        (inner ℂ (metricOperator S hC0 hC g) g : ℂ))
+        = (-Complex.I * lam) * (inner ℂ (metricOperator S hC0 hC g) g : ℂ) by
+      rw [map_mul, hAreal, Complex.conj_conj],
+    ← add_mul, hre]
+
+end HedenmalmQuantile
 
 end
 

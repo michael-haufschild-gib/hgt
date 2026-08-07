@@ -1,15 +1,15 @@
 # Burnol evaluator nonvanishing via the divided-shift geometric contradiction
 
 - **ID:** `burnol-evaluator-nonvanishing-divided-shift`
-- **Stage:** 1 — in progress
-- **Type:** THEOREM (paper proof complete here), `[FORMALIZATION IN FLIGHT]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM, `[PROVED HERE] [FORMALIZED] [NOT AN RH PROOF]`
 - **Serves:** the single load-bearing open gate of
-  `../2-fully-proven/new_scientific_knowledge/burnol/burnol-bilateral-aperture-defect-energy-law.md`
+  `burnol-bilateral-aperture-defect-energy-law.md`
   `(13)`/`(14)`→`(15)`,
-  `../2-fully-proven/new_scientific_knowledge/burnol/burnol-copoisson-berezin-diagonal-reflection-law.md` `(12)`/`(13)`,
-  `../2-fully-proven/new_scientific_knowledge/burnol/burnol-copoisson-quotient-bilateral-order-rh-law.md` `(8)`, the theorem,
+  `burnol-copoisson-berezin-diagonal-reflection-law.md` `(12)`/`(13)`,
+  `burnol-copoisson-quotient-bilateral-order-rh-law.md` `(8)`, the theorem,
   and the two open Lean gates of
-  `../2-fully-proven/new_scientific_knowledge/burnol/burnol-sonin-off-axis-aperture-type-rigidity.md`.
+  `burnol-sonin-off-axis-aperture-type-rigidity.md`.
 
 ## Statement
 
@@ -107,64 +107,64 @@ norm is the reciprocal distance to the critical line, while the multiplier blows
 ## Lean modules
 
 ```text
-formal/GaloisForLFunctions/RHTower/SoninDilationContinuity.lean      -- built, green
-formal/GaloisForLFunctions/RHTower/BurnolSoninDividedShift.lean      -- in flight
-formal/GaloisForLFunctions/RHTower/BurnolSoninEvaluationNonvanishing.lean  -- planned
+formal/GaloisForLFunctions/RHTower/SoninDilationContinuity.lean
+formal/GaloisForLFunctions/RHTower/BurnolSoninDividedShift.lean
+formal/GaloisForLFunctions/RHTower/BurnolSoninEvaluationNonvanishing.lean
 ```
+
+All three are wired into `GaloisForLFunctions.RHTower`.
 
 ## Gates
 
-- [x] strong continuity of the normalized dilation group on `L²(R)` (Lean)
-- [x] the two divided-shift operators, their integrability and norm bounds `(2)`,`(3)` (Lean)
-- [x] the cosine exchange `(4)` (Lean)
-- [x] pointwise a.e. formula for `A_w` (`coe_burnolShift_ae`; product integrability, indicator
-      test vectors, Fubini)
-- [x] head laws `(5)`,`(6)` (`burnolCoShiftFun_head_eq`, `burnolShiftFun_head_eq`)
+- [x] strong continuity of the normalized dilation group on `L²(R)`
+- [x] the two divided-shift operators, their integrability and norm bounds `(2)`,`(3)`
+- [x] the cosine exchange `(4)`
+- [x] pointwise a.e. formula for `A_w`
+- [x] head laws `(5)`,`(6)`
 - [x] extended-Sonine invariance under the assumption `k_{w,a} = 0`
-      (`burnolShift_mem_soninExtendedSpace`)
-- [x] Mellin multiplier `(7)` (`integral_burnolShiftFun_mellinKernel`)
-- [ ] geometric contradiction `(8)`,`(9)` and `(N)`
+- [x] Mellin multiplier `(7)`
+- [x] geometric contradiction `(8)`,`(9)` and `(N)`
 
-## Lean state
-
-`SoninDilationContinuity.lean` and `BurnolSoninDividedShift.lean` both compile clean under
-`lake env lean`.  Named endpoints already available:
+## Formal theorem chain
 
 ```text
-tendsto_norm_rayDilate_sub_self, continuousOn_rayDilate   -- strong continuity
-burnolShift, burnolCoShift, norm_burnolShift_le, norm_burnolCoShift_le
-soninCosineUnitary_burnolShift                            -- the cosine exchange (4)
-coe_burnolShift_ae, coe_burnolCoShift_ae                  -- pointwise a.e. forms
-burnolShiftFun_head_eq, burnolCoShiftFun_head_eq          -- head laws (6), (5)
-burnolShift_mem_soninExtendedSpace                        -- invariance
-integral_burnolShiftFun_mellinKernel                      -- the multiplier (7)
+1  tendsto_norm_rayDilate_sub_self, continuousOn_rayDilate
+     the normalized dilation group is strongly continuous on L²(R)
+2  burnolShift, burnolCoShift, norm_burnolShift_le, norm_burnolCoShift_le
+     the two divided shifts, each of norm at most 1/(Re w - 1/2)                    (2),(3)
+3  soninCosineUnitary_burnolShift
+     the cosine transform exchanges them                                            (4)
+4  coe_burnolShift_ae, coe_burnolCoShift_ae
+     both are the pointwise divided-shift integrals almost everywhere
+5  burnolCoShiftFun_head_eq, burnolShiftFun_head_eq
+     the two head laws                                                              (5),(6)
+6  burnolShift_mem_soninExtendedSpace
+     the extended Sonine space is invariant under A_w at an annihilated point
+7  integral_burnolShiftFun_mellinKernel
+     the Mellin multiplier 1/(w - v)                                                (7)
+8  eventually_riemannZeta_ne_zero_nhdsNE
+     the zeros of zeta are isolated in the critical strip
+9  burnolExtendedSoninEvaluationVector_ne_zero
+     k_{w,a} /= 0 for every 1/2 < Re w < 1 and every 0 < a < 1                       (N)
+10 exists_soninExtendedSpace_mellin_ne_zero
+     equivalently, the completed Mellin evaluation is a nonzero functional on L_a
 ```
 
-Remaining Lean work, all in one new module `BurnolSoninEvaluationNonvanishing.lean`:
-
-1. assume `k_{w,a} = 0`; `burnolExtendedSoninEvaluationVector_eq_zero_iff` plus
-   `mellinCompletionFactor_ne_zero` turn it into `∫ f t^(-w) dt = 0` for every `f in L_a`;
-2. iterate `h 0 = coPoissonIndicatorSoninCosine`, `h (k+1) = burnolShift w (h k)`; membership by
-   induction from `burnolShift_mem_soninExtendedSpace`;
-3. `‖h k‖ ≤ M^k ‖h 0‖` by induction from `norm_burnolShift_le`;
-4. `∫ (h k) t^(-v) dt = (∫ (h 0) t^(-v) dt)/(w-v)^k` by induction from
-   `integral_burnolShiftFun_mellinKernel` composed with `coe_burnolShift_ae`;
-5. pick `v = w - eps` with `eps in (0, Re w - 1/2)` and `zeta v /= 0`; conclude from
-   `norm_burnolExtendedSoninEvaluationLinearMap_le` that `|M(h 0)(v)| <= C (M eps)^k -> 0`,
-   contradicting `soninMellinEvaluation_coPoissonIndicatorSoninCosine_ne_zero_iff`.
-
-For step 5 the isolated-zero input is already a five-line corpus recipe, used verbatim in
-`BoundedClockZeroTransfer.lean` around line 234:
+## Verification
 
 ```text
-have hnotEventuallyZero : ¬ ∀ᶠ z in 𝓝 w, XiC z = 0 := fun hev =>
-  XiC_zero_ne (XiC_analytic.eqOn_zero_of_preconnected_of_eventuallyEq_zero
-    isPreconnected_univ (Set.mem_univ w) hev (Set.mem_univ 0))
-have hpunct : ∀ᶠ z in 𝓝[≠] w, XiC z ≠ 0 :=
-  (XiC_analytic w (Set.mem_univ w)).eventually_eq_zero_or_eventually_ne_zero.resolve_left
-    hnotEventuallyZero
+lake env lean GaloisForLFunctions/RHTower/SoninDilationContinuity.lean          -- clean
+lake env lean GaloisForLFunctions/RHTower/BurnolSoninDividedShift.lean          -- clean
+lake env lean GaloisForLFunctions/RHTower/BurnolSoninEvaluationNonvanishing.lean -- clean
+lake build GaloisForLFunctions.RHTower.BurnolSoninEvaluationNonvanishing        -- success
+#print axioms burnolExtendedSoninEvaluationVector_ne_zero
+  -> [propext, Classical.choice, Quot.sound]
+#print axioms exists_soninExtendedSpace_mellin_ne_zero
+  -> [propext, Classical.choice, Quot.sound]
 ```
 
-then transfer `XiC`/`xi` nonvanishing to `riemannZeta` on the strip with `xi_eq_zero_iff`.
+## Consumers
 
-Neither module is wired into `RHTower.lean` yet; wire both once the last two gates close.
+The nonvanishing discharges the load-bearing premise of four Burnol cards; the resulting
+unconditional RH interfaces are collected in
+`formal/GaloisForLFunctions/RHTower/BurnolBilateralApertureRH.lean`.

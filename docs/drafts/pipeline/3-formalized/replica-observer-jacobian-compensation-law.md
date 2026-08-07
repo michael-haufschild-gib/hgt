@@ -1,9 +1,9 @@
 # Replica observer-Jacobian compensation law
 
 - **ID:** `replica-observer-jacobian-compensation-law`
-- **Stage:** 1 — in progress
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** failure-driven frontier theorem / invariant correction
-- **Status:** `[PAPER-PROVED] [LEAN PENDING] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED]`
+- **Status:** `[LEAN-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED]`
 - **Parent:** `oriented-no-shortcut-without-return-law.md`
 - **Replaces:** raw growing-replica observer-Jacobian pseudodeterminant as the
   proposed complete-circuit-union invariant
@@ -137,11 +137,11 @@ bound needs two independent inputs:
    endpoint image is met by the shallow-circuit tube after longitudinal
    returns are removed.
 
-The first factor controls the volume of one genuinely different local sheet.
-The second controls how many such sheets the complete circuit union actually
-occupies.  Neither factor can be recovered from the other.  The new open
-quantity is therefore a coarea-weighted incidence action, not a raw
-pseudodeterminant:
+The first factor is intended to control the volume of one genuinely different
+local sheet.  The second must control how many such sheets the complete circuit
+union actually occupies.  Neither factor can be recovered from the proved
+determinant law.  The candidate open quantity is therefore a coarea-weighted
+incidence action, not a raw pseudodeterminant:
 
 \[
  \mathcal A_{t,s,\epsilon}
@@ -152,11 +152,13 @@ pseudodeterminant:
    d\mathcal H^v(y),                                  \tag{7}
 \]
 
-where `E_(s,epsilon)` is the complete shallow-circuit tube, `varphi` is the
-Gaussian coefficient density, and the inner integral includes all endpoint
-sheets.  Formula `(7)` is the coarea disintegration of the actual aggregate
-event.  A pointwise Jacobian lower tail sees the denominator but not fibre
-multiplicity or which part of the image is occupied by `E_(s,epsilon)`.
+where `E_(s,epsilon)` is intended to denote the complete shallow-circuit tube,
+`varphi` the Gaussian coefficient density, and the inner integral all endpoint
+sheets.  Equation `(7)` is a proposed normalization, not a proved or
+publication-authorized formula.  Its exact hypotheses, treatment of critical
+points, and equality with shortcut probability are part of the next open
+theorem.  A pointwise Jacobian lower tail alone contains neither fibre
+multiplicity nor the part of the image occupied by `E_(s,epsilon)`.
 
 The next risky conjecture is:
 
@@ -323,12 +325,31 @@ Primary sources checked:
 
 ## Formalization gate
 
-- [ ] Uniform reporter-duplication Gram identity.
-- [ ] Determinant scaling and normalized determinant invariance.
-- [ ] Exact lower-tail set/measure invariance.
-- [ ] Power-threshold equivalence under arbitrary complete target union.
-- [ ] Pure-state tensor-replica projective Gram scaling.
-- [ ] Axiom audit and umbrella reachability.
-- [ ] Update parent frontier: raw pseudodeterminant retired; incidence-normalized
+- [x] Uniform reporter-duplication Gram identity.
+- [x] Determinant scaling and normalized determinant invariance.
+- [x] Exact lower-tail set/measure invariance.
+- [x] Power-threshold equivalence under arbitrary complete target union.
+- [x] Pure-state tensor-replica projective Gram scaling.
+- [x] Axiom audit and umbrella reachability.
+- [x] Update parent frontier: raw pseudodeterminant retired; incidence-normalized
       action becomes open core.
 
+Formal modules:
+
+- `HTGeometry/ReplicaObserverJacobianCompensationLaw.lean`
+- `HTGeometry/PureStateReplicaProjectiveGramLaw.lean`
+
+The first module proves the reporter-duplication Gram law, rank-`v`
+determinant scaling, normalized lower-tail equality under every measure, and
+matched power-tube equality under an arbitrary target type.  The second proves
+the finite-dimensional pure-state tensor bridge: projective Gram scaling,
+determinant scaling, tensor-overlap powers, complete matched target-union
+invariance, and the combined compensation capstone.  The full-rank Gram
+subclass alone is enough to falsify any proposed universal raw
+pseudodeterminant decay law; no unformalized varying-rank pseudodeterminant
+identity is used.
+
+`lake env lean` passes for both modules.  Final module builds and the
+`GaloisForLFunctions.HTGeometry` umbrella build pass.  `#print axioms` on both
+capstones and their quantum bridge reports only `propext`,
+`Classical.choice`, and `Quot.sound`.

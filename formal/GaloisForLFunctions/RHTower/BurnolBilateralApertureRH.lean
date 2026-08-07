@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.BurnolSoninEvaluationNonvanishing
 import GaloisForLFunctions.RHTower.BurnolCoPoissonBerezinReflection
 import GaloisForLFunctions.RHTower.BurnolCoPoissonQuotientOrder
 import GaloisForLFunctions.RHTower.ReflectionCocycleClass
+import GaloisForLFunctions.RHTower.BurnolSoninCrossApertureRiesz
 
 /-!
 # The source-side consumers of the bilateral aperture-defect energy law
@@ -124,29 +125,58 @@ theorem burnolCoPoissonNormalizedHolonomy_pos_of_annihilator
   have harg : 0 < 2 * Real.log r * (w.re - 1 / 2) := by
     have : 0 < w.re - 1 / 2 := by linarith
     positivity
-  have := Real.sinh_pos.mpr harg
+  have := Real.sinh_pos_iff.mpr harg
   linarith
 
-/-- **The Berezin sign on the co-Poisson annihilator spectrum implies RH.**
+/-- **No right-half co-Poisson annihilator character survives a nonpositive Berezin reader.**
 
-This is the top-down reduction of the co-Poisson Berezin diagonal reflection law: a source theorem
-forcing the normalized finite-holonomy Berezin value to be nonpositive at every right-half
-annihilator character leaves no zeta zero in the right half strip. -/
-theorem riemannHypothesis_of_burnolCoPoissonNormalizedHolonomy_nonpos
-    {a r : ℝ} (ha : 0 < a) (ha1 : a < 1) (hr : 1 < r)
-    (h : ∀ (w : ℂ) (hlo : 1 / 2 < w.re) (hhi : w.re < 1),
-      BurnolCoPoissonAnnihilatorPoint w (r⁻¹ * a) hlo hhi
-        (mul_pos (inv_pos.mpr (zero_lt_one.trans hr)) ha) →
-      burnolCoPoissonNormalizedHolonomy hlo hhi ha hr ≤ 0) :
-    RiemannHypothesis := by
-  rw [riemannHypothesis_iff_riemannZeta_ne_zero_of_mem_upper_strip]
-  intro s hlo hhi hzero
-  have hann : BurnolCoPoissonAnnihilatorPoint s (r⁻¹ * a) hlo hhi
-      (mul_pos (inv_pos.mpr (zero_lt_one.trans hr)) ha) := by
-    intro u hu
-    exact inner_eq_zero_of_mem_burnolCoPoissonVectorSpace
-      (mul_pos (inv_pos.mpr (zero_lt_one.trans hr)) ha) hlo hhi hzero u hu
-  exact absurd (h s hlo hhi hann)
+This is the exact contrapositive of the top-down reduction of the Berezin diagonal reflection law:
+the normalized finite-holonomy Berezin value is strictly positive on every right-half annihilator
+fibre, so a source theorem forcing it to be nonpositive leaves no such fibre. -/
+theorem not_burnolCoPoissonAnnihilatorPoint_of_normalizedHolonomy_nonpos
+    {w : ℂ} (hlo : 1 / 2 < w.re) (hhi : w.re < 1) {a r : ℝ} (ha : 0 < a) (ha1 : a < 1)
+    (hr : 1 < r) (hnonpos : burnolCoPoissonNormalizedHolonomy hlo hhi ha hr ≤ 0) :
+    ¬ BurnolCoPoissonAnnihilatorPoint w (r⁻¹ * a) hlo hhi
+        (mul_pos (inv_pos.mpr (zero_lt_one.trans hr)) ha) := by
+  intro hann
+  exact absurd hnonpos
     (not_le.mpr (burnolCoPoissonNormalizedHolonomy_pos_of_annihilator hlo hhi ha ha1 hr hann))
+
+
+/-! ## The aperture-type law without its nonvanishing premise -/
+
+/-- **Unconditional aperture-type exponent.**  The logarithmic growth of the norms of the
+completed-Mellin evaluation vectors along a geometric aperture tower is exactly the horizontal
+displacement `|Re w - 1/2|`, at every point of the open right half of the critical strip.  The
+nonzero-fibre premise of the two-sided law is now discharged. -/
+theorem tendsto_log_norm_burnolExtendedSoninEvaluationVector_unconditional
+    {w : ℂ} (hlo : 1 / 2 < w.re) (hhi : w.re < 1) {a r : ℝ} (ha : 0 < a) (ha1 : a < 1)
+    (hr : 1 < r) :
+    Filter.Tendsto
+      (fun N : ℕ => Real.log ‖burnolExtendedSoninEvaluationVector w ((r ^ N)⁻¹ * a) hlo hhi
+        (mul_pos (inv_pos.mpr (pow_pos (zero_lt_one.trans hr) N)) ha)‖ / (N * Real.log r))
+      Filter.atTop (nhds |w.re - 1 / 2|) :=
+  tendsto_log_norm_burnolExtendedSoninEvaluationVector hlo hhi ha hr
+    (burnolExtendedSoninEvaluationVector_ne_zero hlo hhi ha ha1)
+
+/-! ## The co-Poisson quotient evaluation vectors -/
+
+/-- **The co-Poisson quotient evaluation vector is nonzero on a right-half annihilator fibre.**
+
+On an annihilator fibre the quotient kernel is the ambient Sonine kernel, and that kernel never
+vanishes on the open right half of the critical strip.  This is the quotient-side counterpart of
+the annihilation statement: the co-Poisson quotient is inhabited by the actual evaluation vector
+at every such point. -/
+theorem burnolCoPoissonQuotientEvaluationVector_ne_zero_of_annihilator
+    {w : ℂ} (hlo : 1 / 2 < w.re) (hhi : w.re < 1) {b : ℝ} (hb : 0 < b) (hb1 : b < 1)
+    (hann : BurnolCoPoissonAnnihilatorPoint w b hlo hhi hb) :
+    burnolCoPoissonQuotientEvaluationVector w b hlo hhi hb ≠ 0 := by
+  intro hzero
+  have hcoe := coe_burnolCoPoissonQuotientEvaluationVector_eq_of_annihilator hlo hhi hb hann
+  rw [hzero] at hcoe
+  have hk : (burnolExtendedSoninEvaluationVector w b hlo hhi hb : evenSubspace) = 0 := by
+    rw [← hcoe]
+    rfl
+  exact burnolExtendedSoninEvaluationVector_ne_zero hlo hhi hb hb1 (Subtype.ext hk)
 
 end RHTower

@@ -5171,3 +5171,20 @@ receive a new title and an independent significance audit.
   Brown--Susskind frontier: bound `Z_r` (or its ensemble quantiles) at growing
   replica order for ordinary local Hamiltonians, then extract the physical
   cut/plateau scale and matching low-complexity recurrence time.
+- 2026-08-07 -- Retired the proposed raw observer-Jacobian pseudodeterminant
+  lower tail by an exact replica-compensation theorem.  Uniform reporter
+  duplication multiplies a rank-`v` Gram determinant by `k^v` without changing
+  any matched event.  More decisively, physical iid pure-state replication
+  multiplies the projective Gram by `r`, while tensor fidelity and its matched
+  threshold both acquire the same `r`th power.  Thus the normalized determinant
+  lower-tail probability and the complete matched target-union event are
+  pointwise replica-invariant under every source law and every target type.
+  Lean modules:
+  `HTGeometry/ReplicaObserverJacobianCompensationLaw.lean` and
+  `HTGeometry/PureStateReplicaProjectiveGramLaw.lean`; card:
+  `../3-formalized/replica-observer-jacobian-compensation-law.md`.
+  This is a no-go for the designated invariant, not O4 closure.  The surviving
+  fixed-time frontier is a quenched bound on intrinsic, incidence-normalized
+  coarea mass of the complete circuit tube after return removal; unlike a raw
+  pointwise determinant, it must retain fibre-sheet multiplicity and occupied
+  endpoint image.

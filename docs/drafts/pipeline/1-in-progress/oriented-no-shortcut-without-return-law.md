@@ -181,12 +181,14 @@ are dependency-closed and formalized unconditionally.
 The surviving `[OPEN CORE]` is strictly narrower than `(2)`: prove a quenched,
 shellwise growing-replica bound for **zero-anchor traceless targets in one
 fixed finite word dictionary of enlarged depth `r+s`**, strong enough to beat
-its exact cardinality after a finite dyadic-scale union.  This union is
-logarithmic in the required action-resolution ratio, but controlling that ratio
-still requires a quenched lower bound on the nonzero replica gap.  Scalar
-recurrence, lag ambiguity, adaptive continuum selectors, and the positive
-near-action crowding floor have been removed from the reporter on which that
-remaining shellwise bound must act.
+its exact cardinality after a finite dyadic-scale union.  Neither a minimum
+replica gap nor a raw observer-Jacobian determinant can supply this theorem.
+The former controls irrelevant spectral relations; the latter scales under
+observer duplication and physical tensor replication without shrinking the
+matched shortcut event.  Scalar recurrence, lag ambiguity, adaptive continuum
+selectors, and the positive near-action crowding floor have already been
+removed.  The remaining quantity must jointly control intrinsic transverse
+sheet volume and endpoint--circuit incidence after return removal.
 
 ## Conjecturing loop — observer critical carriers, 2026-08-07
 
@@ -209,16 +211,30 @@ remaining shellwise bound must act.
    at zero is exactly `R ∘ L`.  Hence a single visible-generator determinant
    proves the target-independent Gaussian-null and exact-carrier dimension
    laws for the full nonlinear exponential evolution.
+10. `[LEAN-PROVED] [FALSIFICATION]` Raw observer-Jacobian replica
+    amplification.  Repeating every reporter coordinate `k` times multiplies
+    a rank-`v` Gram determinant by `k^v` without changing a matched event.
+    For physical iid pure states, the projective Gram likewise scales by `r`,
+    while fidelity and its matched threshold both acquire the same `r`th
+    power.  Normalized determinant lower-tail probability and the complete
+    target-union event are therefore exactly replica-invariant.
+11. `[OPEN]` Incidence-normalized coarea action.  Bound the aggregate coarea
+    mass of the complete shallow-circuit tube, including every endpoint fibre
+    sheet, after quotienting reporter metric dilation and removing permitted
+    returns.  This is the first surviving invariant that contains both local
+    transversality and complete-union occupancy.
 
 Formal modules:
 
 - `HTGeometry/RadialAnalyticZeroSetNullLaw.lean`
 - `HTGeometry/ObserverCriticalCarrierConfinementLaw.lean`
 - `HTGeometry/AutonomousExponentialObserverCarrierLaw.lean`
+- `HTGeometry/ReplicaObserverJacobianCompensationLaw.lean`
+- `HTGeometry/PureStateReplicaProjectiveGramLaw.lean`
 
 This closes hostile falsifier 2 for **exact** lower-codimension carriers: such
 carriers can only lie in one Gaussian-null critical locus.  It does not close
-the approximate shortcut problem.  The quantitative open core is now the
-lower tail of the observer-Jacobian pseudodeterminant (or a comparable coarea
-invariant) for the local-Hamiltonian growing-replica reporter.  A minimum
-spectral-gap bound is no longer the designated invariant.
+the approximate shortcut problem.  The raw observer-Jacobian lower-tail route
+is now also retired by an exact compensation law.  The quantitative open core
+is the incidence-normalized coarea action of the complete circuit tube, not a
+minimum spectral gap and not a raw pseudodeterminant.

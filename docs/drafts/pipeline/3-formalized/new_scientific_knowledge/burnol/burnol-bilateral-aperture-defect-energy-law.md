@@ -1,7 +1,7 @@
 # Burnol bilateral aperture-defect energy law
 
 - **ID:** `burnol-bilateral-aperture-defect-energy-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[VALUE RELATION] [RH INTERFACE]`
 - **Scientific status:** `[PROVED HERE] [NOT AN RH PROOF]`
 - **Parents:** normalized Mellin dilation covariance; the projected evaluator transport in
@@ -221,9 +221,9 @@ co-Poisson/time-band lift -> prime-charge coherence -> charge decay -> RH.
 - `formal/GaloisForLFunctions/RHTower/XiPrimeSeamCoherenceCollapse.lean` supplies a longer
   prime-charge consumer, but is not needed for `(15)`.
 
-The formal corpus does not yet define Burnol's continuous evaluation vectors, so no Lean wrapper is
-added.  The source-side dilation inclusions needed for their future formalization are already
-present.
+The formal corpus now defines Burnol's continuous evaluation vectors, proves `(1)`--`(11)` on
+them, and proves that they never vanish on the open right half of the critical strip, so `(13)`
+and the chain `(14)`--`(15)` are unconditional Lean theorems.  See the formalized companion card.
 
 ## Literature boundary
 
@@ -244,6 +244,8 @@ present.
 - [x] finite projection-curvature and Fourier-odd reflection forms
 - [x] identification with the existing infinitesimal phase-polarization operator
 - [x] critical-line balance and one-sided RH consumer
+- [x] formalize `(1)`--`(11)` on the concrete continuous Sonin evaluation vectors
+- [x] discharge the nonzero-evaluator input: `k_{w,a}` is never zero on the open right half strip
+- [x] formalize `(13)`,`(14)`--`(15)`: the one-sided defect contraction on the actual zeta zeros
+      of the right half strip implies RH, unconditionally
 - [ ] derive the same-point defect contraction from the canonical source
-- [ ] formalize only after continuous Sonin evaluation vectors enter Lean
-- [ ] compose an unconditional source proof of `(14)` with `(15)`

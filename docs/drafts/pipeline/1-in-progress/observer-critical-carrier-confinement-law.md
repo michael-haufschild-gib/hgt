@@ -1,6 +1,6 @@
 # Observer critical-carrier confinement law
 
-**Status:** EXACT LAW FORMALIZED — quantitative approximate-carrier successor open  
+**Status:** EXACT LAW FORMALIZED — raw quantitative successor falsified; incidence successor open
 **Route:** autonomous-local-Hamiltonian complexity / quenched growing replicas  
 **Novelty:** UNVERIFIED; generic analytic ingredients are classical, proposed autonomous observer application requires external priority audit
 
@@ -10,7 +10,7 @@ The current recurrence/complexity route has already removed exact spectral reson
 
 Bounding the minimum replica spectral gap attacks the wrong object. It asks for anti-concentration of every integer relation, including relations unrelated to any shortcut, and its discriminant degree grows with the Hilbert-space dimension and replica order. This over-strong reduction is retired.
 
-## Proposed replacement invariant
+## Exact-carrier invariant
 
 For an analytic observer endpoint map
 
@@ -64,7 +64,8 @@ If the reported generator action has rank \(v\), Conjecture OCCC applies. This w
 1. **Minimum replica-gap anti-concentration.** Falsified as a representation of the shortcut event: relation degree and union size encode worst-spectrum data unrelated to the observer.
 2. **Target-by-target transversality.** Incomplete: uncountably many adaptive targets can defeat a naive union of null fibres.
 3. **Universal critical-carrier confinement.** Survives paper attack: one nonzero Jacobian minor controls every target and every lower-codimension exact carrier at once.
-4. **Quantitative successor.** Seek a quenched lower-tail law for the observer Jacobian pseudodeterminant, strong enough that coarea tube bounds survive circuit and replica unions. This is the remaining quantitative frontier.
+4. **Raw quantitative successor.** Falsified. Reporter duplication multiplies a rank-`v` Gram determinant by `k^v` without changing the event. Physical iid replication has the same compensation: projective Gram scales by `r`, while fidelity and its matched threshold both acquire the `r`th power. Normalized lower-tail probability and the complete target-union event are exactly replica-invariant.
+5. **Incidence quantitative successor.** Open. The surviving object is aggregate coarea mass of the complete circuit tube, normalized by reporter metric and including fibre-sheet multiplicity after return removal. This contains information absent from any pointwise Jacobian lower tail.
 
 ## Hostile review
 
@@ -81,7 +82,8 @@ If the reported generator action has rank \(v\), Conjecture OCCC applies. This w
 - [ ] Lean theorem: lower-codimension constant carriers lie in critical set.
 - [ ] Lean theorem: autonomous endpoint derivative at zero.
 - [ ] External priority audit for exact application.
-- [ ] Quantitative observer-Jacobian lower tail or explicit proof that current assumptions cannot supply it.
+- [x] Explicit proof that raw observer-Jacobian lower tails cannot supply growing-replica decay.
+- [ ] Quenched incidence-normalized coarea bound strong enough for approximate circuit union.
 
 ## Formal result — 2026-08-07
 
@@ -114,8 +116,10 @@ All three modules compile with `lake env lean`.  `#print axioms` reports only
   at zero.
 - [x] Targeted external audit against quantum-control endpoint singularity and
   transversality literature.
-- [ ] Quantitative observer-Jacobian lower tail strong enough for approximate
-  circuit and replica unions.
+- [x] Raw observer-Jacobian replica lower tail classified exactly: normalized
+  law is invariant, not decaying, and matched complete target union is unchanged.
+- [ ] Incidence-normalized coarea bound strong enough for approximate circuit
+  union.
 
 ### Priority audit verdict
 
@@ -130,7 +134,9 @@ assembled application remains **plausible but unverified**, not established.
 ### Hostile significance verdict
 
 This is a real frontier advance because it eliminates the exact nonlinear
-carrier loophole globally and replaces the over-strong minimum-gap program by
-the correct observer-Jacobian invariant.  It is not a Brown--Susskind plateau
-theorem and is not a Nature-level standalone result.  Approximate tube volume,
-growing-replica scaling, and the circuit union remain open.
+carrier loophole globally.  Subsequent formal work shows that the raw
+observer-Jacobian determinant is not the quantitative replacement: its
+replica gain is exactly cancelled by observer/tube replication.  The correct
+open object must combine intrinsic transversality with aggregate
+endpoint--circuit incidence.  This is not a Brown--Susskind plateau theorem or
+a Nature-level standalone result; the incidence estimate remains open.

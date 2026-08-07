@@ -1,7 +1,7 @@
 # Burnol co-Poisson bilateral dilation source covariance
 
 - **ID:** `burnol-copoisson-bilateral-dilation-source-covariance`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3-formalized
 - **Type:** `[LITERATURE] [BRIDGE] [PAPER-PROVED]`
 - **Route:** R, Gamma–co-Poisson–Sonin source-normal landing
 - **Lean target:** `RHTower/BurnolCoPoissonDilationSourceCovariance.lean`

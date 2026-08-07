@@ -1,7 +1,7 @@
 # Burnol co-Poisson quotient bilateral-order RH law
 
 - **ID:** `burnol-copoisson-quotient-bilateral-order-rh-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[SOURCE-PURE RH PREDECESSOR] [OPERATOR ORDER]`
 - **Scientific status:** `[PROVED HERE] [NOT AN RH PROOF]`
 - **Parents:** Burnol's co-Poisson orthogonal-complement theorem; normalized forward/inverse
@@ -410,7 +410,9 @@ characters as zeta zeros and assumes the desired character modulus is circular.
   ordinate-diagonal horizontal leakage.  Equations `(K2)`--`(K3)` give a concrete co-Poisson
   quotient realization of its linear orientation reader, without proving the reader's sign.
 
-No Lean file is added because the formal tree does not yet contain the extended Sonin space,
+The formal tree now contains the extended Sonin space; the passage below is retained for the
+record of what was missing at the time of writing.  No Lean file was added then because the formal
+tree did not yet contain the extended Sonin space,
 continuous evaluation vectors, or closed co-Poisson subspace.  Adding only the abstract projection
 inequality wrapper would not formalize the source theorem.
 
@@ -443,8 +445,10 @@ that any one of them is a source-pure sufficient condition for RH.
 - [x] ambient two-projection supersymmetry and sharp contraction bound located in Lean
 - [x] Douglas contractive-factorization reformulation
 - [x] distinction from the Calkin/coherence/common-charge route
-- [ ] prove `B_+B_-^*=0`, construct `C_r`, or otherwise prove quotient flatness `(9)`
 - [x] construct a source-defined Berezin diagonal satisfying `(K2)`
+- [x] formalize the extended Sonin and co-Poisson interfaces
+- [x] formalize the theorem `(4)`--`(8)`: the finite-holonomy order on the actual zeta-zero fibres
+      implies RH, unconditionally
+- [ ] prove `B_+B_-^*=0`, construct `C_r`, or otherwise prove quotient flatness `(9)`
 - [ ] prove the scalar Berezin sign on the co-Poisson annihilator spectrum
-- [ ] formalize the extended Sonin and co-Poisson interfaces
 - [ ] compose a source proof of `(R5)` to RH

@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.SlepianKernelFubini
 import GaloisForLFunctions.RHTower.ConstrainedProlatePointwiseRepresentative
 import GaloisForLFunctions.RHTower.ProlateJointEigenExistence
+import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Analysis.ODE.ExistUnique
 import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
 
 /-!
@@ -870,5 +872,280 @@ theorem eventually_exists_joint_even_prolate_band_eigen_of_signedMode (n : ℕ) 
   filter_upwards [Filter.eventually_gt_atTop (0 : ℝ),
     eventually_evenProlateSignedValue_ne_zero n] with a ha hvalue
   exact exists_joint_even_prolate_band_eigen_of_signedMode ha n hvalue
+
+/-! ## Uniqueness of the regular even prolate mode
+
+The singular endpoints prevent a global Lipschitz estimate after solving the prolate equation for
+the second derivative.  On every strictly interior compact interval, however, the equation is a
+uniformly Lipschitz first-order system.  This is the exact uniqueness input needed for classical
+mode identification; no boundary regularity or spectral simplicity is assumed.
+-/
+
+/-- Value/derivative state of a scalar prolate solution. -/
+def prolateODEState (Phi : ℝ → ℝ) (x : ℝ) : ℝ × ℝ :=
+  (Phi x, deriv Phi x)
+
+/-- First-order vector field equivalent to the prolate equation away from `x = ±1`. -/
+def prolateODEField (c chi x : ℝ) (z : ℝ × ℝ) : ℝ × ℝ :=
+  (z.2, ((chi + c ^ 2 * x ^ 2) * z.1 + 2 * x * z.2) / (1 - x ^ 2))
+
+/-- Uniform state-space Lipschitz bound on a strict interior interval `|x| ≤ r < 1`. -/
+theorem lipschitzWith_prolateODEField {c chi r x : ℝ}
+    (hr0 : 0 ≤ r) (hr1 : r < 1) (hx : |x| ≤ r) :
+    LipschitzWith
+      (Real.toNNReal
+        (1 + (|chi| + c ^ 2 * r ^ 2 + 2 * r) / (1 - r ^ 2)))
+      (prolateODEField c chi x) := by
+  let N : ℝ := |chi| + c ^ 2 * r ^ 2 + 2 * r
+  let M : ℝ := 1 + N / (1 - r ^ 2)
+  have hrden : 0 < 1 - r ^ 2 := by nlinarith
+  have hx_sq : x ^ 2 ≤ r ^ 2 := by
+    nlinarith [sq_abs x,
+      mul_nonneg (sub_nonneg.mpr hx) (add_nonneg hr0 (abs_nonneg x))]
+  have hxden : 0 < 1 - x ^ 2 := by nlinarith
+  have hN0 : 0 ≤ N := by
+    dsimp [N]
+    positivity
+  have hcoef : |chi + c ^ 2 * x ^ 2| + |2 * x| ≤ N := by
+    have hcpart : |c ^ 2 * x ^ 2| = c ^ 2 * x ^ 2 := abs_of_nonneg (by positivity)
+    have hxpart : |2 * x| = 2 * |x| := by rw [abs_mul]; norm_num
+    calc
+      |chi + c ^ 2 * x ^ 2| + |2 * x|
+          ≤ (|chi| + |c ^ 2 * x ^ 2|) + |2 * x| := by
+            gcongr
+            exact abs_add_le chi (c ^ 2 * x ^ 2)
+      _ = |chi| + c ^ 2 * x ^ 2 + 2 * |x| := by rw [hcpart, hxpart]
+      _ ≤ N := by
+        dsimp [N]
+        nlinarith [sq_nonneg c]
+  have hfrac0 : 0 ≤ N / (1 - r ^ 2) := div_nonneg hN0 hrden.le
+  have hM0 : 0 ≤ M := by dsimp [M]; linarith
+  have hM1 : 1 ≤ M := by dsimp [M]; linarith
+  change LipschitzWith (Real.toNNReal M) (prolateODEField c chi x)
+  refine LipschitzWith.of_dist_le_mul fun z w => ?_
+  rw [Real.coe_toNNReal M hM0, Prod.dist_eq]
+  apply max_le
+  · calc
+      dist z.2 w.2 ≤ dist z w := by rw [Prod.dist_eq]; exact le_max_right _ _
+      _ ≤ M * dist z w := by
+        exact (le_mul_of_one_le_left dist_nonneg hM1)
+  · rw [Real.dist_eq]
+    have hz1 : |z.1 - w.1| ≤ dist z w := by
+      rw [← Real.dist_eq, Prod.dist_eq]
+      exact le_max_left _ _
+    have hz2 : |z.2 - w.2| ≤ dist z w := by
+      rw [← Real.dist_eq, Prod.dist_eq]
+      exact le_max_right _ _
+    have hnum :
+        |(chi + c ^ 2 * x ^ 2) * (z.1 - w.1) + 2 * x * (z.2 - w.2)|
+          ≤ N * dist z w := by
+      calc
+        |(chi + c ^ 2 * x ^ 2) * (z.1 - w.1) + 2 * x * (z.2 - w.2)|
+            ≤ |(chi + c ^ 2 * x ^ 2) * (z.1 - w.1)| +
+                |2 * x * (z.2 - w.2)| :=
+              abs_add_le _ _
+        _ = |chi + c ^ 2 * x ^ 2| * |z.1 - w.1| +
+                |2 * x| * |z.2 - w.2| := by rw [abs_mul, abs_mul]
+        _ ≤ |chi + c ^ 2 * x ^ 2| * dist z w + |2 * x| * dist z w :=
+              add_le_add
+                (mul_le_mul_of_nonneg_left hz1 (abs_nonneg _))
+                (mul_le_mul_of_nonneg_left hz2 (abs_nonneg _))
+        _ = (|chi + c ^ 2 * x ^ 2| + |2 * x|) * dist z w := by ring
+        _ ≤ N * dist z w := mul_le_mul_of_nonneg_right hcoef dist_nonneg
+    have hdencomp :
+        N * dist z w / (1 - x ^ 2) ≤ N * dist z w / (1 - r ^ 2) :=
+      div_le_div_of_nonneg_left (mul_nonneg hN0 dist_nonneg) hrden (by nlinarith)
+    have hsecond :
+        dist
+            (prolateODEField c chi x z).2
+            (prolateODEField c chi x w).2
+          ≤ (N / (1 - r ^ 2)) * dist z w := by
+      rw [Real.dist_eq]
+      change
+        |(((chi + c ^ 2 * x ^ 2) * z.1 + 2 * x * z.2) / (1 - x ^ 2)) -
+            (((chi + c ^ 2 * x ^ 2) * w.1 + 2 * x * w.2) / (1 - x ^ 2))|
+          ≤ _
+      rw [← sub_div, show
+        (chi + c ^ 2 * x ^ 2) * z.1 + 2 * x * z.2 -
+            ((chi + c ^ 2 * x ^ 2) * w.1 + 2 * x * w.2) =
+          (chi + c ^ 2 * x ^ 2) * (z.1 - w.1) + 2 * x * (z.2 - w.2) by ring,
+        abs_div, abs_of_pos hxden]
+      calc
+        |(chi + c ^ 2 * x ^ 2) * (z.1 - w.1) + 2 * x * (z.2 - w.2)| /
+              (1 - x ^ 2)
+            ≤ N * dist z w / (1 - x ^ 2) := div_le_div_of_nonneg_right hnum hxden.le
+        _ ≤ N * dist z w / (1 - r ^ 2) := hdencomp
+        _ = (N / (1 - r ^ 2)) * dist z w := by ring
+    change dist (prolateODEField c chi x z).2 (prolateODEField c chi x w).2 ≤ _
+    exact hsecond.trans (mul_le_mul_of_nonneg_right (by dsimp [M]; linarith) dist_nonneg)
+
+/-- A smooth prolate solution gives an integral curve of `prolateODEField` on `(-1,1)`. -/
+theorem hasDerivAt_prolateODEState {c chi : ℝ} {Phi : ℝ → ℝ}
+    (hPhi1 : Differentiable ℝ Phi) (hPhi2 : Differentiable ℝ (deriv Phi))
+    (heig : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x)
+    {x : ℝ} (hx : x ∈ Set.Ioo (-1 : ℝ) 1) :
+    HasDerivAt (prolateODEState Phi) (prolateODEField c chi x (prolateODEState Phi x)) x := by
+  have hxden : 1 - x ^ 2 ≠ 0 := by
+    have : 0 < 1 - x ^ 2 := by nlinarith [hx.1, hx.2]
+    exact this.ne'
+  have hsecond :
+      deriv (deriv Phi) x =
+        ((chi + c ^ 2 * x ^ 2) * Phi x + 2 * x * deriv Phi x) / (1 - x ^ 2) := by
+    apply (eq_div_iff hxden).2
+    have h := heig x
+    simp only [prolateSLAction] at h
+    linarith
+  change HasDerivAt (fun y => (Phi y, deriv Phi y))
+    (prolateODEField c chi x (prolateODEState Phi x)) x
+  have hstate : HasDerivAt (fun y => (Phi y, deriv Phi y))
+      (deriv Phi x, deriv (deriv Phi) x) x :=
+    (hPhi1 x).hasDerivAt.prodMk (hPhi2 x).hasDerivAt
+  simpa [prolateODEState, prolateODEField, hsecond] using hstate
+
+/-- Two globally smooth solutions of the same prolate equation with equal value and derivative at
+zero agree throughout the regular interval `(-1,1)`. -/
+theorem eqOn_Ioo_of_prolateSLAction_eq_of_value_deriv_eq
+    {c chi : ℝ} {Phi Psi : ℝ → ℝ}
+    (hPhi1 : Differentiable ℝ Phi) (hPhi2 : Differentiable ℝ (deriv Phi))
+    (hPsi1 : Differentiable ℝ Psi) (hPsi2 : Differentiable ℝ (deriv Psi))
+    (hPhiEig : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x)
+    (hPsiEig : ∀ x : ℝ, prolateSLAction c Psi x = chi * Psi x)
+    (hvalue : Phi 0 = Psi 0) (hderiv : deriv Phi 0 = deriv Psi 0) :
+    Set.EqOn Phi Psi (Set.Ioo (-1 : ℝ) 1) := by
+  intro x hx
+  let r : ℝ := (|x| + 1) / 2
+  have hxabs : |x| < 1 := (abs_lt).2 hx
+  have hr0 : 0 ≤ r := by dsimp [r]; positivity
+  have hrpos : 0 < r := by dsimp [r]; positivity
+  have hr1 : r < 1 := by dsimp [r]; linarith
+  have hxmem : x ∈ Set.Ioo (-r) r := by
+    exact (abs_lt).1 (by dsimp [r]; linarith)
+  have hzero : (0 : ℝ) ∈ Set.Ioo (-r) r := by exact ⟨by linarith, hrpos⟩
+  have hstateEq : prolateODEState Phi 0 = prolateODEState Psi 0 := by
+    ext <;> simp [prolateODEState, hvalue, hderiv]
+  have hstates : Set.EqOn (prolateODEState Phi) (prolateODEState Psi) (Set.Ioo (-r) r) := by
+    apply ODE_solution_unique_of_mem_Ioo
+      (K := Real.toNNReal
+        (1 + (|chi| + c ^ 2 * r ^ 2 + 2 * r) / (1 - r ^ 2)))
+      (v := prolateODEField c chi) (s := fun _ => Set.univ) (t₀ := 0)
+    · intro t ht
+      exact (lipschitzWith_prolateODEField hr0 hr1
+        (abs_lt.mpr ht).le).lipschitzOnWith
+    · exact hzero
+    · intro t ht
+      exact ⟨hasDerivAt_prolateODEState hPhi1 hPhi2 hPhiEig
+        ⟨lt_trans (by linarith [hr1]) ht.1, lt_trans ht.2 hr1⟩, Set.mem_univ _⟩
+    · intro t ht
+      exact ⟨hasDerivAt_prolateODEState hPsi1 hPsi2 hPsiEig
+        ⟨lt_trans (by linarith [hr1]) ht.1, lt_trans ht.2 hr1⟩, Set.mem_univ _⟩
+    · exact hstateEq
+  exact congrArg Prod.fst (hstates hxmem)
+
+/-- An even function has zero derivative at the symmetry center. -/
+theorem deriv_zero_of_even {Phi : ℝ → ℝ} (hPhiEven : Function.Even Phi) :
+    deriv Phi 0 = 0 := by
+  have hfun : (fun y : ℝ => Phi (-y)) = Phi := funext hPhiEven
+  have h := congrArg (fun f : ℝ → ℝ => deriv f 0) hfun
+  rw [deriv_comp_neg] at h
+  have hneg : -deriv Phi 0 = deriv Phi 0 := by simpa using h
+  linarith
+
+/-- A nonzero smooth even joint band/prolate eigenfunction cannot vanish at the symmetry center.
+If it did, evenness would also kill its first derivative, ODE uniqueness would kill it on the
+aperture, and the nonzero band eigenvalue would then kill it globally. -/
+theorem value_zero_ne_of_even_joint_prolate_band_eigen
+    {c lam chi : ℝ} {Phi : ℝ → ℝ}
+    (hPhiSmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
+    (hPhiNe : Phi ≠ 0) (hPhiEven : Function.Even Phi) (hlam : lam ≠ 0)
+    (hBand : ∀ x : ℝ, bandTransform c Phi x = lam * Phi x)
+    (hProlate : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x) :
+    Phi 0 ≠ 0 := by
+  intro hPhi0
+  have hPhi1 : Differentiable ℝ Phi := (contDiff_infty_iff_deriv.mp hPhiSmooth).1
+  have hPhiDerivSmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (deriv Phi) :=
+    (contDiff_infty_iff_deriv.mp hPhiSmooth).2
+  have hPhi2 : Differentiable ℝ (deriv Phi) :=
+    (contDiff_infty_iff_deriv.mp hPhiDerivSmooth).1
+  have hzeroProlate : ∀ x : ℝ,
+      prolateSLAction c (fun _ : ℝ => 0) x = chi * (fun _ : ℝ => 0) x := by
+    intro x
+    simp [prolateSLAction]
+  have hzeroIoo : Set.EqOn Phi (fun _ : ℝ => 0) (Set.Ioo (-1 : ℝ) 1) :=
+    eqOn_Ioo_of_prolateSLAction_eq_of_value_deriv_eq
+      hPhi1 hPhi2 (by fun_prop) (by fun_prop) hProlate hzeroProlate
+      (by simpa using hPhi0) (by simp [deriv_zero_of_even hPhiEven])
+  have hclosure : Set.Icc (-1 : ℝ) 1 = closure (Set.Ioo (-1 : ℝ) 1) := by
+    rw [closure_Ioo (by norm_num : (-1 : ℝ) ≠ 1)]
+  have hzeroIcc : Set.EqOn Phi (fun _ : ℝ => 0) (Set.Icc (-1 : ℝ) 1) := by
+    rw [hclosure]
+    exact hzeroIoo.closure hPhi1.continuous continuous_const
+  have hBandZero : ∀ x : ℝ, bandTransform c Phi x = 0 := by
+    intro x
+    unfold bandTransform
+    calc
+      (∫ y in (-1 : ℝ)..1, sincKernelSmooth c x y * Phi y) =
+          ∫ _y in (-1 : ℝ)..1, 0 := by
+            apply intervalIntegral.integral_congr
+            intro y hy
+            have hy' : y ∈ Set.Icc (-1 : ℝ) 1 := by
+              simpa [Set.uIcc_of_le (by norm_num : (-1 : ℝ) ≤ 1)] using hy
+            have hyzero : Phi y = 0 := by simpa using hzeroIcc hy'
+            simp [hyzero]
+      _ = 0 := by simp
+  apply hPhiNe
+  funext x
+  have hxzero : lam * Phi x = 0 := by rw [← hBand x, hBandZero x]
+  exact (mul_eq_zero.mp hxzero).resolve_left hlam
+
+/-- Simplicity of a regular even prolate separation mode on the aperture.  Any two nonzero smooth
+even joint band/prolate eigenfunctions with the same separation value are scalar multiples on
+`[-1,1]`; their band eigenvalues may be different. -/
+theorem eqOn_Icc_const_mul_of_even_joint_prolate_eigen
+    {c lamPsi chi : ℝ} {Phi Psi : ℝ → ℝ}
+    (hPhiSmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
+    (hPsiSmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Psi)
+    (hPsiNe : Psi ≠ 0)
+    (hPhiEven : Function.Even Phi) (hPsiEven : Function.Even Psi)
+    (hlamPsi : lamPsi ≠ 0)
+    (hPsiBand : ∀ x : ℝ, bandTransform c Psi x = lamPsi * Psi x)
+    (hPhiProlate : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x)
+    (hPsiProlate : ∀ x : ℝ, prolateSLAction c Psi x = chi * Psi x) :
+    ∃ mu : ℝ, Set.EqOn Phi (fun x => mu * Psi x) (Set.Icc (-1 : ℝ) 1) := by
+  have hPhi1 : Differentiable ℝ Phi := (contDiff_infty_iff_deriv.mp hPhiSmooth).1
+  have hPhi2 : Differentiable ℝ (deriv Phi) :=
+    (contDiff_infty_iff_deriv.mp (contDiff_infty_iff_deriv.mp hPhiSmooth).2).1
+  have hPsi1 : Differentiable ℝ Psi := (contDiff_infty_iff_deriv.mp hPsiSmooth).1
+  have hPsi2 : Differentiable ℝ (deriv Psi) :=
+    (contDiff_infty_iff_deriv.mp (contDiff_infty_iff_deriv.mp hPsiSmooth).2).1
+  have hPsi0 : Psi 0 ≠ 0 := value_zero_ne_of_even_joint_prolate_band_eigen
+    hPsiSmooth hPsiNe hPsiEven hlamPsi hPsiBand hPsiProlate
+  let mu : ℝ := Phi 0 / Psi 0
+  have hscaled1 : Differentiable ℝ (fun x => mu * Psi x) := by fun_prop
+  have hscaledDeriv : deriv (fun x => mu * Psi x) = fun x => mu * deriv Psi x := by
+    funext x
+    exact deriv_const_mul mu (hPsi1 x)
+  have hscaled2 : Differentiable ℝ (deriv (fun x => mu * Psi x)) := by
+    rw [hscaledDeriv]
+    fun_prop
+  have hscaledProlate : ∀ x : ℝ,
+      prolateSLAction c (fun y => mu * Psi y) x = chi * (mu * Psi x) := by
+    intro x
+    rw [GaloisForLFunctions.RHTower.prolateSLAction_const_mul mu hPsi1 hPsi2 x,
+      hPsiProlate x]
+    ring
+  have hvalue : Phi 0 = mu * Psi 0 := by
+    dsimp [mu]
+    field_simp
+  have hderiv : deriv Phi 0 = deriv (fun x => mu * Psi x) 0 := by
+    rw [hscaledDeriv]
+    simp [deriv_zero_of_even hPhiEven, deriv_zero_of_even hPsiEven]
+  have hEqIoo : Set.EqOn Phi (fun x => mu * Psi x) (Set.Ioo (-1 : ℝ) 1) :=
+    eqOn_Ioo_of_prolateSLAction_eq_of_value_deriv_eq
+      hPhi1 hPhi2 hscaled1 hscaled2 hPhiProlate hscaledProlate hvalue hderiv
+  refine ⟨mu, ?_⟩
+  have hclosure : Set.Icc (-1 : ℝ) 1 = closure (Set.Ioo (-1 : ℝ) 1) := by
+    rw [closure_Ioo (by norm_num : (-1 : ℝ) ≠ 1)]
+  rw [hclosure]
+  exact hEqIoo.closure hPhi1.continuous hscaled1.continuous
 
 end RHTower

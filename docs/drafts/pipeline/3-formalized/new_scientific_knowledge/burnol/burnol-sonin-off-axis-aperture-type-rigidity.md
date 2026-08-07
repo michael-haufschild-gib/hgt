@@ -1,12 +1,12 @@
 # Burnol--Sonin off-axis aperture-type rigidity
 
 - **ID:** `burnol-sonin-off-axis-aperture-type-rigidity`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM / HOSTILE ROUTE AUDIT
 - **Scientific status:** `[CORPUS-NEW SYNTHESIS] [PRELIMINARY EXTERNAL NONCOLLISION] [NOT RH]`
 - **Parents:**
-  - `gamma-copoisson-sonin-independent-quadrant-boundary-transgression.md`;
-  - `../not_new_scientific_knowledge/burnol-copoisson-quotient-bilateral-order-rh-law.md`;
+  - `../gamma/gamma-copoisson-sonin-independent-quadrant-boundary-transgression.md`;
+  - `burnol-copoisson-quotient-bilateral-order-rh-law.md`;
   - Burnol's continuous completed-Mellin evaluation theorem for the extended Sonine spaces.
 - **Statement:** Away from the critical line, the completed-Mellin evaluation vector in
   Burnol's extended Sonine space has exactly the aperture exponent
@@ -1543,13 +1543,16 @@ vectors `y_{rho,N}` of the parent boundary-transgression theorem.
       (`inner_burnolExtendedSoninEvaluationVector_source_eq_zero`), and off the zero set it detects
       every source whose seed has nonvanishing Mellin transform
       (`soninMellinEvaluation_burnolCoPoissonSource_ne_zero`)
-- [ ] Lean: a witness at a hypothetical zero (the co-Poisson quotient dimension count)
+- [x] Lean: a witness at a hypothetical zero --- the evaluation vector is nonzero at every point of
+      the open right half strip, including at a zeta zero
+      (`burnolExtendedSoninEvaluationVector_ne_zero`), so `(13)` holds there without any premise
 - [x] Lean: the explicit co-Poisson subspace at a fixed aperture, and the evaluator's orthogonality
       to it at a zeta zero (the explicit part of `y_{rho,N} = k_{rho,a_N}`)
 - [x] Lean: nontriviality --- the sub-window vectors are nonzero, so that subspace is not `bot`,
       and distinct windows give distinct vectors
-- [ ] Lean: identification of the co-Poisson *quotient* vectors `y_{rho,N}` themselves (this is the
-      dimension count, not the annihilation --- the annihilation half is proved above)
+- [x] Lean: identification of the co-Poisson *quotient* vectors `y_{rho,N}` themselves --- on an
+      annihilator fibre the quotient kernel is the ambient Sonine kernel and is nonzero
+      (`burnolCoPoissonQuotientEvaluationVector_ne_zero_of_annihilator`)
 - [x] Lean: zeta has no zero on the real segment `(0,1)`, from the fractional-part formula
 - [x] Lean: linear independence of the sub-window family (Mellin evaluator, identity theorem,
       Dedekind independence of characters)

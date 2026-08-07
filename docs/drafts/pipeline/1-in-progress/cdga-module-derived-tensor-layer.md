@@ -1049,3 +1049,45 @@ and it is now unconditional.
 Semi-free resolutions: produce, for a given differential graded module, a tower of free cells with
 a full quasi-isomorphism onto it.  The invariance theorem above is what makes such a resolution
 compute a derived tensor product; the construction itself is the remaining work.
+
+## Filtered colimits of modules, and the colimit of a tower
+
+`CDGAModuleColimit.lean`, `CDGAModuleColimitQuasiIso.lean`, `CDGACellTowerColimit.lean`.
+
+* `CDGAModuleDirectedSystem`, `colimModuleDeg`, `colimModuleD`, `colimModuleAct`,
+  **`colimModule`**, `colimModuleOf`, `colimModuleHom`.  Every axiom of the colimit module is an
+  identity between elements of a direct limit, and every element of a direct limit comes from a
+  stage, so each one reduces to the same axiom at a stage.
+* `moduleCocycle_at_stage`, **`colimModuleHom_isQuasiIso`**, **`colimModuleHom_isQuasiIsoFull`**.
+  The degree-zero half is the same argument as the cohomology half with the quotient removed: a
+  cocycle of the colimit is a cocycle at a stage, and a vanishing in the colimit is a vanishing at a
+  later stage.
+* `twistedInl` — the base includes into a twisted extension by padding with zero; the twist
+  contributes nothing there, so it commutes with the deformed differential.
+* `towerTrans` — the transitions of a tower.  These are produced by `Nat.leRec`, which eliminates
+  `i ≤ j` into `Type`; the naive alternatives all fail, because `Nat.le` is a `Prop` and neither
+  `Nat.le.rec` nor destructing `Nat.le.dest` may produce data, while transporting along
+  `i + (j − i) = j` leaves a cast that no later proof can discharge, `i − i = 0` not being
+  definitional.
+* `towerDirectedSystem`, **`towerColim`**, **`towerColimHom_isQuasiIsoFull`**.
+
+Axioms: `propext, Classical.choice, Quot.sound` (`twistedInl` needs only `propext, Quot.sound`).
+
+## What the colimit still needs
+
+`towerColimHom_isQuasiIsoFull` compares the colimits of two towers.  To conclude flatness of an
+*infinite* semi-free module — that `− ⊗_A towerColim` preserves full quasi-isomorphisms — one more
+exchange is required:
+
+> `M ⊗_A colim N ≅ colim (M ⊗_A N)`.
+
+Its three steps, and the state of each:
+
+1. `M a ⊗ colim N b ≅ colim (M a ⊗ N b)` — mathlib has this as `TensorProduct.directLimitRight`.
+2. a *finite* product of direct limits is the direct limit of the products — not in mathlib; true
+   over a directed index because a finite family of stages has an upper bound.
+3. the quotient by the relations commutes with the colimit — the relators of the colimit are a
+   finite sum, so they are all visible at one stage, and what is left dies at a later one.
+
+Until then the flatness theorem covers every finite stage of a semi-free filtration, which is what
+a relative cell construction of finite length needs.

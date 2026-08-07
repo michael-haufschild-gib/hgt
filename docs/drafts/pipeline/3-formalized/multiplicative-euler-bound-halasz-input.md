@@ -340,3 +340,64 @@ left in this thread is arithmetic: choose the parameters (`σ = 1 + 1/log z`, `z
 `δ` from the corpus's uniform distance lower bound, `T` and `H` to balance the two terms) and check that
 the total is `o(1)` for a specific `f`. That is a calculation, not a missing theorem — but it is not done,
 so no decay statement is claimed.
+
+## Parameter audit — the assembled bound does NOT yet yield decay, and why
+
+Before choosing parameters I costed the assembled estimate. It does not close, for two independent
+reasons. Both are recorded here so the chain is not mistaken for a decay theorem.
+
+Write `σ = 1 + 1/log N`, `w = smoothWeight N H`, so the target is `‖∑ₙ f(n)w(n)‖ = o(N)`.
+
+**(1) The covering step is too lossy by a factor `T log z`.** `volume_largeValues_le` allows one
+exceptional window *per cell of length `π/log z`*, so over `[-T,T]` the large-value set has measure
+`≍ T·δ` — a fixed *proportion* of the range, not `O(δ/log z)`. Multiplied by the trivial size
+(`≍ log N`) and the kernel size (`≍ N`), the window term alone is `≍ N·log N·T·δ`, which is never
+`o(N)`.
+
+*The fix is available in the corpus.* The `π/log z` restriction comes from
+`HalaszWindow.sq_sub_mul_logSqWeight_le`, which uses `1 − cos x ≥ x²/π²` and so needs
+`|(t−u) log p| ≤ π`. Global uniqueness over the whole range follows instead from the triangle
+inequality of `DistanceTriangle` together with an *upper* bound for `∑_{p ≤ z} cos(v log p)/p`, i.e. an
+upper bound for `|ζ(1 + 1/log z + iv)|` — which `Sieve/ZetaOneLineBound.lean` supplies. That gives
+`D(n^{it}, n^{iu})² ≥ log log z − log log(2+|t−u|) − O(1)`, so two frequencies both within `δ` of `f`
+force `2δ ≥ √(log log z − log log T − O(1))`: for `δ` below that threshold the close frequency is
+unique in the *whole* range, and the exceptional set is one window of width `O(δ/log z)`.
+
+**(2) The kernel constant must be explicit.** With global uniqueness the window term becomes
+`N·log N·δ/log z`, which is fine, and the main term is `damped × ∫_ℝ ‖W‖`. But
+`exists_bound_mellin_smoothWeight_le`'s constant is existential, and the whole `1/log N` saving of
+Halász's theorem sits in the *dependence of that constant on `H`*: the second-order bound is
+`‖W(σ+iy)‖ ≲ (N+H)^σ/(H y²)`, so `∫_ℝ ‖W‖ ≍ N/H`, and the smoothing width `H = N/log N` is what
+converts `exp(P(σ)) ≍ log N` into `O(1)`. With an `∃ C` one cannot see this. The corpus's
+`SmoothWeightMellin.norm_mellin_smoothWeight_mul_eq` is the exact identity from which the explicit
+`C(N,H)` follows (it equates `‖s‖·∏_{i<j}‖s+1+i‖·‖mellin‖` with an explicit derivative integral).
+
+So the two upgrades needed, both with corpus inputs already present, are: replace the covering step by
+global uniqueness via the one-line `ζ` bound, and replace the existential kernel constant by the
+explicit second-order one. Until both are done the chain is an unconditional *estimate*, not a decay
+theorem, and this card claims nothing more.
+
+## Repair (1), first half: the window-free character distance
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PrimeCosineSumUpper.lean` and
+`.../CharacterDistanceLower.lean` (9339 jobs, exit 0, axiom-clean).
+
+- `sum_cos_div_prime_le_of_ge` — the **mirror** of the corpus's `sum_cos_div_prime_ge_of_le`: whatever
+  upper bound the Euler comparison gives for the prime series at `σ = 1 + 1/log z`, the finite cosine
+  sum inherits it up to the same two absolute constants (truncation, abscissa shift). Both corpus
+  devices (`abs_tsum_prime_tail_re_le`, `abs_sum_weight_shift_le`) are two-sided, so the proof is the
+  reflected one.
+- `charFn_mul_conj_re`, `mulDistSqPair_charFn_eq_sub` —
+  `D(n^{it}, n^{iu}; z)² = ∑_{p ≤ z} 1/p − ∑_{p ≤ z} cos((t−u) log p)/p`.
+- `le_mulDistSqPair_charFn` — **the window-free lower bound**:
+
+  `logLog z − mertensSecondLowerConst − L − C_tail − (1 + log 4) ≤ D(n^{it}, n^{iu}; z)²`
+
+  for any upper bound `L` on the prime series at frequency `t − u`, using the corpus's
+  `MertensSecond.le_mertensS`.
+
+This holds for **every** pair `t, u` — no `|t−u| log z ≤ π` restriction. That is exactly what the
+covering step lacked. Completing repair (1) now needs only `L ≍ log log(2+|t−u|)`, i.e. the classical
+one-line upper bound for `|ζ|`, for which `ZetaTruncated.norm_riemannZeta_le_log_uniform`
+(`‖ζ w‖ ≤ 2 + e log N + e/‖w−1‖ + 2e`) is the corpus's explicit form; then the triangle inequality of
+`DistanceTriangle` turns it into uniqueness of the close frequency over the whole range.

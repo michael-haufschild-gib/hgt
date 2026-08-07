@@ -1,7 +1,7 @@
 # Burnol prime-dilation co-Poisson quotient law
 
 - **ID:** `burnol-prime-dilation-copoisson-quotient-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** normalized Mellin dilation covariance; Burnol's continuous Sonine evaluators and
@@ -164,4 +164,5 @@ The operator problem isolated from it is
 - [x] explicit finite-log-support divided difference
 - [x] co-Poisson zero-radical quotient action
 - [x] exact prime-seam reflection split
-- [ ] formalize after the Sonine evaluation-vector and co-Poisson interfaces exist in Lean
+- [x] formalize `(1)`, `(2)`, the finite-log-support divided difference, the zero-radical quotient
+      action `(6)` and the prime-seam reflection split `(7)`

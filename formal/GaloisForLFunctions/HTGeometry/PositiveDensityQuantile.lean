@@ -107,6 +107,23 @@ theorem setIntegral_law {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (
   rw [show realDensity S.normalized x = ENNReal.ofReal (S.normalized x) from rfl,
     ENNReal.toReal_ofReal (S.normalized_pos x).le]
 
+theorem integrable_law_iff {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (g : ℝ → E) :
+    Integrable g S.law ↔ Integrable (fun x => S.normalized x • g x) volume := by
+  rw [law, integrable_withDensity_iff_integrable_smul'
+    (measurable_realDensity S.measurable_normalized)
+    (Filter.Eventually.of_forall fun x => by simp [realDensity])]
+  constructor
+  · intro h
+    refine h.congr ?_
+    filter_upwards with x
+    rw [show (realDensity S.normalized x).toReal = S.normalized x from
+      ENNReal.toReal_ofReal (S.normalized_pos x).le]
+  · intro h
+    refine h.congr ?_
+    filter_upwards with x
+    rw [show (realDensity S.normalized x).toReal = S.normalized x from
+      ENNReal.toReal_ofReal (S.normalized_pos x).le]
+
 /-! ### The distribution function -/
 
 /-- The distribution function `p x = M⁻¹ ∫_{-∞}^x k` of the source. -/
@@ -256,6 +273,20 @@ theorem measurePreserving_cdfFun :
   refine Measure.map_congr ?_
   filter_upwards [ae_restrict_mem measurableSet_Ioo] with t ht
   exact S.cdfFun_quantile ht
+
+/-- Integrability transported through the quantile: `g ∘ Q` is integrable on the unit interval
+exactly when `g` is integrable against the normalized density. -/
+theorem integrableOn_comp_quantileFun_iff {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {g : ℝ → E} (hg : AEStronglyMeasurable g volume) :
+    IntegrableOn (fun u => g (S.quantileFun u)) (Ioo (0 : ℝ) 1) volume
+      ↔ Integrable (fun x => S.normalized x • g x) volume := by
+  rw [← S.integrable_law_iff]
+  have hmap : AEStronglyMeasurable g (Measure.map S.quantileFun (volume.restrict (Ioo (0:ℝ) 1))) := by
+    rw [S.map_quantileFun_eq]
+    exact (S.aestronglyMeasurable_law_iff).mpr hg
+  have h := integrable_map_measure hmap S.measurable_quantileFun.aemeasurable
+  rw [S.map_quantileFun_eq] at h
+  exact h.symm
 
 end PositiveDensitySource
 

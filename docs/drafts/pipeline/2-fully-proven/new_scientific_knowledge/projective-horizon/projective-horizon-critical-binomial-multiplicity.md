@@ -2878,3 +2878,36 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   prove that this *concrete* list of `m+n` equations is regular over the generic tail field, then
   identify its stable bigraded quotient dimension with geometric fibre cardinality.  Neither fact
   is assumed by the new theorems.
+
+- 2026-08-07 — **Audit correction: Cox-ring regularity is the wrong global bridge.**  For
+  `m,n>1`, a list of `m+n` positive-bidegree forms cannot be a regular sequence in the full Cox
+  ring used by `BiprojectiveHilbertBezout`: every `(1,1)` form vanishes on each irrelevant affine
+  coordinate axis, so those axes are unavoidable low-codimension components.  Thus the previous
+  entry's proposed next step (prove the concrete list regular in that ring) is mathematically
+  impossible.  No theorem above asserts it, and no such hypothesis will be introduced.
+
+  Positive survivor: the exact multiplication/range/kernel/rank--nullity recurrence remains valid
+  and is the required local or diagonal-Segre calculation.  Correct global bridge must pass to the
+  saturated bihomogeneous quotient, equivalently the standard-graded Segre diagonal ring or sheaf
+  Koszul complex on `P^m x P^n`, where irrelevant axes are absent.
+
+  New module
+  `formal/GaloisForLFunctions/HTGeometry/PureCriticalFactorizationAlgebra.lean` supplies the special
+  fibre in precisely the algebraic form needed for that bridge.  It identifies monic factor pairs
+  with monic divisors, proves the universal pure factorization algebra finite etale (the universal
+  factors are coprime because their product `1+X^(m+n)` is separable), and proves
+
+  ```text
+  finrank_pureCriticalFactorizationAlgebra :
+    dim_K PureCriticalFactorizationAlgebra = choose(m+n,m).
+  ```
+
+  The dimension proof uses the representing equivalence for universal factorization rings and the
+  decomposition of a finite etale algebra over an algebraically closed field into one copy of the
+  field per prime.  Direct check, `lake build
+  GaloisForLFunctions.HTGeometry.PureCriticalFactorizationAlgebra` (`3167` jobs), and scratch axiom
+  audit pass with only `[propext, Classical.choice, Quot.sound]`.
+
+  Exact next dependency: construct the saturated/Segre projective family and apply finite-near-the-
+  pure-fibre plus Nakayama to obtain generic length at most this special-fibre dimension.  Existing
+  `exists_injective_deformed_fibre` supplies the matching `choose(m+n,m)` lower bound.

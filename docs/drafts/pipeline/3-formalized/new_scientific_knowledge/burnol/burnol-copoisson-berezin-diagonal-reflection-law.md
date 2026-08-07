@@ -1,7 +1,7 @@
 # Burnol co-Poisson Berezin diagonal reflection law
 
 - **ID:** `burnol-copoisson-berezin-diagonal-reflection-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[TOP-DOWN INTERFACE DISCHARGE]`, `[VALUE RELATION]`
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** Burnol's continuous-evaluation theorem and co-Poisson orthogonal-complement theorem;
@@ -258,6 +258,8 @@ the specialized value `(12)` or the top-down reduction `(13)`.
 - [x] quotient correction factored through the co-Poisson annihilator ideal
 - [ ] compare the ambient aperture-orientation term to the continued prime--Gamma source diagonal
 - [x] compare the ambient aperture-orientation term to explicit BV moving-prime Laurent residues
+- [x] formalize Burnol's extended Sonin/co-Poisson RKHS interfaces in Lean
+- [x] formalize the strict sign of `(12)` on every right-half annihilator fibre, and the exact
+      contrapositive of the top-down reduction `(13)`
 - [ ] prove the required scalar sign on the co-Poisson annihilator spectrum
-- [ ] formalize Burnol's extended Sonin/co-Poisson RKHS interfaces in Lean
 - [ ] compose a source sign proof to RH
