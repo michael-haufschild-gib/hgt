@@ -198,3 +198,27 @@ Card 5 remaining: (13)/(14) conormal generation — needs Wedderburn/Cartan B fo
 (two entire functions with no common zero generate the unit ideal).  ABSENT from corpus and
 mathlib; this is the real blocker.  Then (17) cokernel rests on (14); plus the two self-adjoint
 convolution channels and the three frame obstructions.
+
+## Card 6 statements (11) and (12) CLOSED and UNCONDITIONAL (2026-08-07)
+
+`formal/GaloisForLFunctions/RHTower/HedenmalmWeightedAdjointCore.lean` (wired, builds,
+axiom-clean).  `integral_weighted_symmetry` = the weighted formal symmetry
+`<D f, g>_{H_k} = <f, L g>_{H_k}`, `L = D + i k'/k`, on compactly supported differentiable data;
+`hasDerivAt_halfDensity_mul` = the half-density conjugation `(k^{1/2}f)' = k^{1/2}(f' + (a/2)f)`.
+Also `sourceDeriv`, `continuous_sourceDeriv`, `sourceLogDeriv`, `sourceWeightC` and its
+derivative — reusable for any later weighted-operator work.
+
+Method: build `F = f conj(g) / k`, note `HasCompactSupport F` (from `hfs.mul_right.mul_right`),
+get `HasCompactSupport (deriv F)` from `HasCompactSupport.deriv` after `deriv F = F'` by
+`funext fun x => (hderiv x).deriv`, then `integral_of_hasDerivAt_of_tendsto` with limits from
+`HasCompactSupport.is_zero_at_infty` + `cocompact_eq_atBot_atTop`.
+
+Traps: `HasCompactSupport.div_right` does NOT exist — rewrite `a / b` to `a * b⁻¹` by `funext` +
+`div_eq_mul_inv` and use `mul_right`.  `Continuous.integrable_of_hasCompactSupport` needs an
+explicit `(μ := (volume : Measure ℝ))` when the measure is not fixed by the goal.
+For `√k` algebra, `rw [← Real.mul_self_sqrt]` loops (it rewrites the `k` inside `√k`) — `set s :=
+Real.sqrt (...)` FIRST, then rewrite the bare `k`.
+
+Card 6 remaining: the passage from formal symmetry to `A^* = L` after closure (3), closedness +
+index −1 (4), compact resolvent, Witten square (8), SUSY Dirac (9), strict positivity (10).
+mathlib has `LinearPMap.adjoint/closure/IsClosable` but NO unbounded Fredholm theory.

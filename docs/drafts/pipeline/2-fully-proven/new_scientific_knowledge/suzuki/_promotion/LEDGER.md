@@ -1525,3 +1525,28 @@ another domination argument. It needs a distributional layer for `R_full`, or a 
 card's hypothesis in pointwise form (which weakens the theorem and must not be done silently).
 
 **Do not mark prerequisite 4 closed on the strength of the estimates alone.**
+
+## AC. The tested form of the operator — unconditional
+
+New module `formal/GaloisForLFunctions/HTGeometry/JumpFormAdjointness.lean`, wired into the
+`HTGeometry` umbrella. 6 declarations, all `#print axioms` clean, **no integrability hypotheses**.
+
+- `integral_translate_pairing` — `∫ f(L+s) w(L) dL = ∫ f(L) w(L−s) dL`. Unconditional: it is
+  translation invariance of Lebesgue measure (`integral_add_right_eq_self`).
+- `integral_firstDifference_pairing` — `∫ [f − f(·+s)] w = ∫ f [w − w(·−s)]`.
+- `integral_secondDifference_pairing` — `∫ [2f − f(·+s) − f(·−s)] w = ∫ f [2w − w(·−s) − w(·+s)]`.
+
+This is the tested (weak) form of the transport operator: the second difference moves onto the
+weight. It is what the card means by testing `(3)` against `w_M`, and it needs no distribution
+theory — every pairing is an ordinary integral and only translation invariance is used.
+
+**All integrability discharged.** The first draft carried five `Integrable` hypotheses; they are
+now proved from `Continuous f`, `HasCompactSupport f`, `Continuous w` via new helpers
+`integrable_mul_of_compactSupport`, `hasCompactSupport_shift`, `hasCompactSupport_shift'`.
+Object regularity only — no premises.
+
+Traps: `integral_add_right_eq_self` needs `(μ := volume)` supplied or the
+`Measure.IsAddRightInvariant` instance is stuck on a metavariable. Splitting a triple integral
+must be done **forward** (`integral_congr_ae` to the subtracted shape, then `integral_sub` twice
+left-to-right); rewriting backwards fails because the intermediate carries a `Pi`-form
+`(fun x => …) - (fun L => …)` that will not match the lambda.
