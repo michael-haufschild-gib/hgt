@@ -1331,3 +1331,41 @@ generator in degree `−1`.  In non-negative cohomological degrees that is not a
 construction but a fact about it, and it is why `resolutionMap_isQuasiIso` is stated as
 `IsQuasiIso` rather than `IsQuasiIsoFull`.  The flatness theorem is unaffected: it consumes a full
 quasi-isomorphism in the *other* variable and says nothing about the resolution's own `Z^0`.
+
+## The left unitor, and derived base change
+
+`CDGALeftUnitor.lean` — `leftActₗ`, `leftUnitorToₗ`, `leftUnitorToₗ_relTensorRelator`,
+`relLeftUnitorTo`, `leftUnitorFromₗ`, `leftUnitorToₗ_tensorAct`, `leftUnitorToₗ_tensorD`,
+`relLeftUnitor_single`, `relLeftUnitorEquiv`, **`relLeftUnitorHom`**,
+**`relLeftUnitorHom_isQuasiIsoFull`**: `A ⊗_A M ≅ M`.
+
+The mirror is *simpler* than `M ⊗_A A ≅ M`, not merely symmetric: the left comparison carries no
+sign at all.  On a relator the two terms differ by moving one algebra element past the other, and
+the sign of that move is exactly the relator's own sign, so they cancel; equivariance and the
+Leibniz rule then come out as `act_assoc` and `d_act` verbatim.
+
+`CDGADerivedBaseChange.lean` — `derivedBaseChangeMap`, **`derivedBaseChange_unit`**: if a
+differential graded module `C` is equivalent to the algebra, then `C ⊗^{L}_A K ≃ K`.  The proof is
+the composite the argument always is — the resolution computes the derived tensor product, base
+change along the equivalence is an equivalence because the resolution is semi-free, and the left
+unitor identifies `A ⊗_A F` with `F`.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+## Unconditionality audit
+
+No `sorry`, `admit`, `axiom`, `opaque` or `unsafe` occurs anywhere in the layer, and every
+declaration audits inside `propext, Classical.choice, Quot.sound`.  There is no `Prop` interface
+standing in for an unproved result.  What the statements do take is of exactly two kinds:
+
+* **data** — the algebra `A`, a unit `u : CDGAUnit A`, modules, morphisms, degrees, a basis of a
+  coefficient module;
+* **properties of that data** — `CDGAModuleUnital u P` (the unit acts as the identity, which is part
+  of what "unital module" means and is false for a general module), and `φ.IsQuasiIsoFull` (the
+  given comparison is a quasi-isomorphism, which is the hypothesis of the statement).
+
+Every intermediate invariance hypothesis is discharged at the point of use: `hbase`/`hcell` of
+`relTensorMapLeft_twisted_isQuasiIsoFull` by `relTensorMapLeft_freeCell_isQuasiIsoFull`, `h₀`/`hcell`
+of `relTensorMapLeft_tower_isQuasiIsoFull` inside `relTensorMapLeft_freeTower_isQuasiIsoFull`, and
+`h₀` of `killSeq_flat` inside `relTensorMapLeft_resolution_isQuasiIsoFull`, where the base is the
+concrete free cell on the cocycles of degree zero.

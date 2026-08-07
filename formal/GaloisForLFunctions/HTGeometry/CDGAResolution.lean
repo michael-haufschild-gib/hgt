@@ -59,9 +59,10 @@ theorem resolutionMap_cocyclesMap_zero_surjective (hP : CDGAModuleUnital u P) :
 
 section Flat
 
-variable {M' : ℕ → Type w} [∀ n, AddCommGroup (M' n)] [∀ n, Module R (M' n)]
+variable {L : ℕ → Type w} [∀ n, AddCommGroup (L n)] [∀ n, Module R (L n)]
+  {L' : ℕ → Type w} [∀ n, AddCommGroup (L' n)] [∀ n, Module R (L' n)]
   {N : ℕ → Type w} [∀ n, AddCommGroup (N n)] [∀ n, Module R (N n)]
-  (Q : CDGAModuleStructure A M) (Q' : CDGAModuleStructure A M')
+  (Q : CDGAModuleStructure A L) (Q' : CDGAModuleStructure A L')
   (φ : CDGAModuleHom Q Q')
 
 /-- **Every stage of a resolution is flat.**  Each stage is a twisted extension of the previous one
@@ -90,6 +91,10 @@ theorem relTensorMapLeft_killColim_isQuasiIsoFull (S : CDGAModuleStructure A N)
     (relTensorMapLeft φ (killColim S s₀)).IsQuasiIsoFull :=
   relTensorMapLeft_colim_isQuasiIsoFull Q (fun i _ h => killTrans S s₀ i h) Q' φ
     (killSeq_flat Q Q' φ S s₀ h₀ u hQ hQ' hφ)
+
+/-- The resolution is a unital module. -/
+theorem resolution_unital (u : CDGAUnit A) : CDGAModuleUnital u (resolution P) :=
+  killColim_unital P (resolutionBase P) (resolutionBase_unital P)
 
 /-- **The semi-free resolution is flat for the tensor product over the algebra.** -/
 theorem relTensorMapLeft_resolution_isQuasiIsoFull (u : CDGAUnit A)

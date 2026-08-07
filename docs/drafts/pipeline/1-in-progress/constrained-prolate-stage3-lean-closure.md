@@ -150,3 +150,14 @@ projective/trace-class/determinant consequences.
   `comparisonSol(prolateNormalFormSol R,s,x) -> 1` as `x -> 1+`.  This fixes the regular Dunster
   branch normalization and is the required input for eliminating the logarithmic second branch.
 - Verified both new modules with foreground `lake env lean <file>` checks.
+
+### 2026-08-07: exact regular Dunster branch and Green constant
+
+- Added `ProlateDunsterRegularBranch.lean`.
+- Proved the constructed second Bessel solution satisfies `besselK(u) -> -infinity` as `u -> 0+`.
+- Evaluated the positive Bessel weighted Wronskian exactly as `pi/4` on the whole positive ray.
+- Proved the Liouville phase tends to zero at `x -> 1+`, the regular model tends to one, and the
+  independent model tends to negative infinity.
+- Proved exact homogeneous branch rigidity: any fixed linear combination of the two model branches
+  with finite endpoint-normalized limit one has coefficients `(1,0)`.
+- Verified with `lake env lean GaloisForLFunctions/RHTower/ProlateDunsterRegularBranch.lean`.

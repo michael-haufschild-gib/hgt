@@ -3,8 +3,7 @@
 - **ID:** ghs-multiplicative-log-recursion
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Statement:** For every bounded completely multiplicative `f : ArithmeticFunction ℝ` with `f 1`
-  invertible,
+- **Statement:** For every bounded completely multiplicative `f : ArithmeticFunction ℝ`,
 
   `|S_f(N)·log N − ∑_{p ≤ N} f(p) log p · S_f(⌊N/p⌋)| ≤ (9 + mertensTail)·N`,
   where `S_f(M) = ∑_{m ≤ M} f(m)`.
@@ -36,8 +35,9 @@ Declarations, in dependency order:
    `f a · f b = f(ab)`, and `∑_{b ∣ n} Λ b = log n`.
 4. `abs_vonMangoldtOf_le_vonMangoldt` — `|Λ_f| ≤ Λ` for `|f| ≤ 1`.
 5. `sum_Icc_mul_log_eq` — **the recursion**
-   `∑_{n ≤ N} f(n) log n = ∑_{d ≤ N} Λ_f(d)·S_f(⌊N/d⌋)`, by the corpus's own hyperbola swap
-   `RHTower.sum_Icc_mul_apply`.
+   `∑_{n ≤ N} f(n) log n = ∑_{d ≤ N} f(d) Λ(d)·S_f(⌊N/d⌋)`, by the corpus's own hyperbola swap
+   `RHTower.sum_Icc_mul_apply`.  Stated for the concrete weight `f·Λ`, so the whole recursion chain
+   needs only `f(mn) = f(m)f(n)` and `|f| ≤ 1` — no invertibility of `f 1`, and no Dirichlet inverse.
 6. `sum_Icc_log_eq_log_factorial`, `abs_sum_Icc_mul_log_sub_le` — replacing the weight `log n` by
    `log N` costs `N log N − log N! ≤ N`, using the corpus's `le_log_factorial`.
 7. `abs_sum_notPrimeVonMangoldt_weight_le` — **the prime-power excess is `O(N)`**: the corpus's Abel
@@ -46,6 +46,11 @@ Declarations, in dependency order:
 8. `abs_sum_Icc_mul_log_sub_sum_primes_le` — the signed prime-only identity.
 9. `abs_sum_Icc_mul_log_sub_sum_primes_le'` — **the entry point**, the statement above.
 10. `abs_sum_Icc_mul_log_le`, `abs_sum_Icc_mul_log_le_primes` — the absolute-value forms.
+
+The only hypotheses anywhere in the chain are the two that define the function class,
+`f(mn) = f(m)f(n)` and `|f(n)| ≤ 1`.  Nothing is assumed about the partial sums of `f`, at any scale:
+statements of the form "if `S_f` is small below `N` then it is small at `N`" are excluded from this card,
+because their premise is a fact about the object that cannot be discharged.
 
 Everything reuses corpus assets rather than rebuilding them: the hyperbola swap, Stirling's lower bound
 for `log N!`, and the Abel estimate for `ψ − θ` against the reciprocal weight were all already proved

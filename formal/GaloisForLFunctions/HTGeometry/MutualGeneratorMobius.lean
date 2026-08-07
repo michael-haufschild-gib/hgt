@@ -98,6 +98,99 @@ theorem deriv_ne_zero_of_hypertranscendentalOver {u : E} (hu : Hypertranscendent
   exact hjet isAlgebraic_zero
 
 omit [CharZero E] [Differential C] [Differential E] [DifferentialAlgebra C E] in
+/-- **The coefficient matrix of a fractional-linear relation at a transcendental element is
+determined up to a scalar.**  Two nondegenerate coefficient quadruples producing the same value are
+proportional, so the transition is a well-defined element of the projective linear group. -/
+theorem mobius_coefficients_unique {u w : E} (htu : Transcendental C u)
+    {a b c d a' b' c' d' : C}
+    (hdet : a * d - b * c ≠ 0) (hdet' : a' * d' - b' * c' ≠ 0)
+    (h : w * (algebraMap C E c * u + algebraMap C E d)
+      = algebraMap C E a * u + algebraMap C E b)
+    (h' : w * (algebraMap C E c' * u + algebraMap C E d')
+      = algebraMap C E a' * u + algebraMap C E b') :
+    ∃ t : C, t ≠ 0 ∧ a' = t * a ∧ b' = t * b ∧ c' = t * c ∧ d' = t * d := by
+  classical
+  have hpoly : algebraMap C E (a * c' - a' * c) * u ^ 2
+      + algebraMap C E (a * d' + b * c' - a' * d - b' * c) * u
+      + algebraMap C E (b * d' - b' * d) = 0 := by
+    simp only [map_sub, map_add, map_mul]
+    linear_combination (algebraMap C E c * u + algebraMap C E d) * h'
+      - (algebraMap C E c' * u + algebraMap C E d') * h
+  have hP : (Polynomial.C (a * c' - a' * c) * Polynomial.X ^ 2
+      + Polynomial.C (a * d' + b * c' - a' * d - b' * c) * Polynomial.X
+      + Polynomial.C (b * d' - b' * d) : Polynomial C) = 0 := by
+    by_contra hne
+    exact htu ⟨_, hne, by simpa using hpoly⟩
+  have e2 : a * c' = a' * c := by
+    have hc := congrArg (fun p : Polynomial C => Polynomial.coeff p 2) hP
+    simp only [Polynomial.coeff_add, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
+      Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_zero] at hc
+    norm_num at hc
+    linear_combination hc
+  have e1 : a * d' + b * c' = a' * d + b' * c := by
+    have hc := congrArg (fun p : Polynomial C => Polynomial.coeff p 1) hP
+    simp only [Polynomial.coeff_add, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
+      Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_zero] at hc
+    norm_num at hc
+    linear_combination hc
+  have e0 : b * d' = b' * d := by
+    have hc := congrArg (fun p : Polynomial C => Polynomial.coeff p 0) hP
+    simp only [Polynomial.coeff_add, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
+      Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_zero] at hc
+    norm_num at hc
+    linear_combination hc
+  have hcd : ¬ (c = 0 ∧ d = 0) := by
+    rintro ⟨rfl, rfl⟩
+    exact hdet (by ring)
+  by_cases ha : a = 0
+  · have hbc : b * c ≠ 0 := by
+      intro hz
+      exact hdet (by rw [ha]; linear_combination -hz)
+    have hb : b ≠ 0 := left_ne_zero_of_mul hbc
+    have hc : c ≠ 0 := right_ne_zero_of_mul hbc
+    have ha' : a' = 0 := by
+      have hz : a' * c = 0 := by rw [ha] at e2; linear_combination -e2
+      exact (mul_eq_zero.mp hz).resolve_right hc
+    rw [ha, ha'] at e1
+    refine ⟨b' / b, ?_, ?_, ?_, ?_, ?_⟩
+    · intro ht0
+      have hb'0 : b' = 0 := (div_eq_zero_iff.mp ht0).resolve_right hb
+      exact hdet' (by rw [ha', hb'0]; ring)
+    · rw [ha', ha]; ring
+    · field_simp
+    · field_simp
+      linear_combination e1
+    · field_simp
+      linear_combination e0
+  · have hta : a' = a' / a * a := by field_simp
+    have htc : c' = a' / a * c := by
+      field_simp
+      linear_combination e2
+    have hA : a * (d' - a' / a * d) = (b' - a' / a * b) * c := by
+      field_simp
+      linear_combination a * e1 - b * e2
+    have hB : b * (d' - a' / a * d) = (b' - a' / a * b) * d := by
+      field_simp
+      linear_combination a * e0
+    have hd0 : d' - a' / a * d = 0 := by
+      have hkey : (a * d - b * c) * (d' - a' / a * d) = 0 := by
+        linear_combination d * hA - c * hB
+      exact (mul_eq_zero.mp hkey).resolve_left hdet
+    have hb0 : b' - a' / a * b = 0 := by
+      have hc0 : (b' - a' / a * b) * c = 0 := by rw [← hA, hd0]; ring
+      have hdd0 : (b' - a' / a * b) * d = 0 := by rw [← hB, hd0]; ring
+      by_contra hne
+      exact hcd ⟨(mul_eq_zero.mp hc0).resolve_left hne,
+        (mul_eq_zero.mp hdd0).resolve_left hne⟩
+    refine ⟨a' / a, ?_, hta, ?_, htc, ?_⟩
+    · intro ht0
+      have ha'0 : a' = 0 := by rw [hta, ht0]; ring
+      have hb'0 : b' = 0 := by rw [ht0] at hb0; linear_combination hb0
+      exact hdet' (by rw [ha'0, hb'0]; ring)
+    · linear_combination hb0
+    · linear_combination hd0
+
+omit [CharZero E] [Differential C] [Differential E] [DifferentialAlgebra C E] in
 /-- A nondegenerate coefficient matrix stays nondegenerate in the extension. -/
 theorem mobius_det_ne_zero_algebraMap {a b c d : C} (hdet : a * d - b * c ≠ 0) :
     algebraMap C E a * algebraMap C E d - algebraMap C E b * algebraMap C E c ≠ 0 := by

@@ -111,15 +111,60 @@ theorem sub_mul_truncPos_sub_ge (t r s : ℝ) :
       exact this.2
     nlinarith [sub_nonneg.mpr hmono]
 
+/-- The truncation of a compactly supported function is compactly supported, for a nonnegative
+level. -/
+theorem hasCompactSupport_truncPos {u : ℝ → ℝ} (hc : HasCompactSupport u) {t : ℝ} (ht : 0 ≤ t) :
+    HasCompactSupport (truncPos t ∘ u) := by
+  refine HasCompactSupport.intro hc fun x hx => ?_
+  have hzero : u x = 0 := image_eq_zero_of_notMem_tsupport hx
+  simp [Function.comp, truncPos, hzero, neg_nonpos.mpr ht]
+
 /-- **Truncation coercivity.**  Testing the jump form of `u` against its truncation dominates the
-jump form of the truncation, which is itself nonnegative. -/
-theorem jumpForm_truncPos_ge {u : ℝ → ℝ} (h t : ℝ)
-    (hcross : Integrable fun x => (u (x + h) - u x) * (truncPos t (u (x + h)) - truncPos t (u x)))
-    (hself : Integrable fun x =>
-      (truncPos t (u (x + h)) - truncPos t (u x)) * (truncPos t (u (x + h)) - truncPos t (u x))) :
+jump form of the truncation, which is itself nonnegative.  Both integrability facts are discharged
+from continuity and compact support of `u`, not assumed. -/
+theorem jumpForm_truncPos_ge {u : ℝ → ℝ} (hu : Continuous u) (hcu : HasCompactSupport u)
+    (h : ℝ) {t : ℝ} (ht : 0 ≤ t) :
     0 ≤ jumpForm h (truncPos t ∘ u) (truncPos t ∘ u) ∧
       jumpForm h (truncPos t ∘ u) (truncPos t ∘ u) ≤
         jumpForm h u (truncPos t ∘ u) := by
+  have hTcont : Continuous (truncPos t ∘ u) := by
+    refine Continuous.comp ?_ hu
+    unfold truncPos
+    fun_prop
+  have hTsupp : HasCompactSupport (truncPos t ∘ u) := hasCompactSupport_truncPos hcu ht
+  have hself : Integrable fun x =>
+      (truncPos t (u (x + h)) - truncPos t (u x)) * (truncPos t (u (x + h)) - truncPos t (u x)) := by
+    have hcont : Continuous fun x : ℝ =>
+        (truncPos t (u (x + h)) - truncPos t (u x)) * (truncPos t (u (x + h)) - truncPos t (u x)) :=
+      ((hTcont.comp (continuous_id.add continuous_const)).sub hTcont).mul
+        ((hTcont.comp (continuous_id.add continuous_const)).sub hTcont)
+    refine hcont.integrable_of_hasCompactSupport ?_
+    refine HasCompactSupport.intro
+      (hTsupp.union (hTsupp.comp_homeomorph (Homeomorph.addRight h))) fun x hx => ?_
+    have h1 : truncPos t (u x) = 0 :=
+      image_eq_zero_of_notMem_tsupport (f := truncPos t ∘ u)
+        fun hmem => hx (Set.mem_union_left _ hmem)
+    have h2 : truncPos t (u (x + h)) = 0 :=
+      image_eq_zero_of_notMem_tsupport (f := (truncPos t ∘ u) ∘ (Homeomorph.addRight h))
+        fun hmem => hx (Set.mem_union_right _ hmem)
+    rw [h1, h2]
+    ring
+  have hcross : Integrable fun x =>
+      (u (x + h) - u x) * (truncPos t (u (x + h)) - truncPos t (u x)) := by
+    have hcont : Continuous fun x : ℝ =>
+        (u (x + h) - u x) * (truncPos t (u (x + h)) - truncPos t (u x)) :=
+      ((hu.comp (continuous_id.add continuous_const)).sub hu).mul
+        ((hTcont.comp (continuous_id.add continuous_const)).sub hTcont)
+    refine hcont.integrable_of_hasCompactSupport ?_
+    refine HasCompactSupport.intro
+      (hcu.union (hcu.comp_homeomorph (Homeomorph.addRight h))) fun x hx => ?_
+    have h1 : u x = 0 :=
+      image_eq_zero_of_notMem_tsupport fun hmem => hx (Set.mem_union_left _ hmem)
+    have h2 : u (x + h) = 0 :=
+      image_eq_zero_of_notMem_tsupport (f := u ∘ (Homeomorph.addRight h))
+        fun hmem => hx (Set.mem_union_right _ hmem)
+    rw [h1, h2]
+    ring
   have hself' : jumpForm h (truncPos t ∘ u) (truncPos t ∘ u) =
       ∫ x, (truncPos t (u (x + h)) - truncPos t (u x)) *
         (truncPos t (u (x + h)) - truncPos t (u x)) := rfl
@@ -130,8 +175,8 @@ theorem jumpForm_truncPos_ge {u : ℝ → ℝ} (h t : ℝ)
     exact integral_nonneg fun x => mul_self_nonneg _
   · rw [hself', hcross']
     refine integral_mono hself hcross fun x => ?_
-    have := sub_mul_truncPos_sub_ge t (u (x + h)) (u x)
-    nlinarith [this]
+    have hpt := sub_mul_truncPos_sub_ge t (u (x + h)) (u x)
+    nlinarith [hpt]
 
 /-! ## The source weights -/
 

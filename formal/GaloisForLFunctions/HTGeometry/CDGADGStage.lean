@@ -25,6 +25,18 @@ variable {R : Type w} [CommRing R] {X : ℕ → Type w} [∀ n, AddCommGroup (X 
   [∀ n, Module R (X n)] {A : CDGAStructure R X}
   {M : ℕ → Type w} [∀ n, AddCommGroup (M n)] [∀ n, Module R (M n)]
 
+/-- A filtered colimit of unital modules is unital. -/
+theorem colimModule_unital {u : CDGAUnit A} {ι : Type} [Preorder ι] [IsDirectedOrder ι]
+    [Nonempty ι] [DecidableEq ι] {N : ι → ℕ → Type w} [∀ i n, AddCommGroup (N i n)]
+    [∀ i n, Module R (N i n)] {Q : ∀ i, CDGAModuleStructure A (N i)}
+    (ψ : ∀ i j, i ≤ j → CDGAModuleHom (Q i) (Q j))
+    [∀ n : ℕ, DirectedSystem (fun i => N i n) fun i j h => moduleDegTransition ψ n i j h]
+    (hQ : ∀ i, CDGAModuleUnital u (Q i)) : CDGAModuleUnital u (colimModule ψ) := by
+  refine ⟨fun b z => ?_⟩
+  obtain ⟨i, m, rfl⟩ := colimModuleOf_exists ψ b z
+  show colimModuleAct ψ (Nat.zero_add b) u.one ((colimModuleOf ψ i).toFun b m) = _
+  rw [colimModuleAct_colimOf, (hQ i).act_one b m]
+
 /-- **A stage of a relative cell construction**: a differential graded module together with a
 comparison to the target, carrying its own instances so that a recursion may produce it. -/
 structure DGStage (A : CDGAStructure R X) (P : CDGAModuleStructure A M) where
@@ -334,6 +346,11 @@ theorem killSeq_covers (s₀ : DGStage A P) (hs₀ : CDGAModuleUnital u s₀.str
       freeCellExtendₗ_gen u (Nat.unpair j).2 P hP
         (cellG P (killSeq P s₀ j) (Nat.unpair j).2) (Finsupp.single (Sum.inl z) 1),
       cellG_single_inl]
+
+/-- The colimit of the sequence of stages is unital. -/
+theorem killColim_unital (s₀ : DGStage A P) (hs₀ : CDGAModuleUnital u s₀.str) :
+    CDGAModuleUnital u (killColim P s₀) :=
+  colimModule_unital (fun i _ h => killTrans P s₀ i h) (killSeq_unital P s₀ hs₀)
 
 /-- **The comparison from the colimit hits every cocycle of the target.** -/
 theorem killColimMap_surjective_on_cocycles (s₀ : DGStage A P)

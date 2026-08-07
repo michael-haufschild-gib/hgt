@@ -148,4 +148,16 @@ theorem sq_mul_integral_normSq_le (σ : ℝ) {Y : ℝ → ℂ} (hdiff : Differen
     MeasureTheory.integral_nonneg fun _ => by positivity
   linarith
 
+/-- **The resolvent estimate in norm form.**  Taking square roots turns the coercivity into the
+shape the flux system consumes: `|σ| ‖Y‖₂ ≤ ‖Y' − σY‖₂`. -/
+theorem abs_mul_sqrt_integral_normSq_le (σ : ℝ) {Y : ℝ → ℂ} (hdiff : Differentiable ℝ Y)
+    (hcont : Continuous (deriv Y)) (hc : HasCompactSupport Y) :
+    |σ| * Real.sqrt (∫ x, ‖Y x‖ ^ 2) ≤ Real.sqrt (∫ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ 2) := by
+  have hsq := sq_mul_integral_normSq_le σ hdiff hcont hc
+  have hAnn : 0 ≤ ∫ x, ‖Y x‖ ^ 2 :=
+    MeasureTheory.integral_nonneg fun _ => by positivity
+  have hstep : Real.sqrt (σ ^ 2 * ∫ x, ‖Y x‖ ^ 2) ≤
+      Real.sqrt (∫ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ 2) := Real.sqrt_le_sqrt hsq
+  rwa [Real.sqrt_mul (sq_nonneg σ), Real.sqrt_sq_eq_abs] at hstep
+
 end GaloisForLFunctions.HTGeometry

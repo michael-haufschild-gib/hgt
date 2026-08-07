@@ -1,4 +1,4 @@
-import Mathlib
+import GaloisForLFunctions.HTGeometry.ShiftedDerivativeCoercivity
 
 /-!
 # Stability of a first-order graph flux system
@@ -78,5 +78,42 @@ theorem neg_norm_mul_normSq_le_inner_neg_apply (B : E →L[ℝ] E) (v : E) :
   nlinarith [habs.2, habs.1, hop, hv]
 
 end
+
+/-! ## The resolvent input, discharged
+
+The scalar estimates above take `σ ‖Y‖ ≤ d ‖V‖ + ‖H‖` as an input.  That input is not an
+assumption: it is the coercivity of the shifted derivative applied to the graph equation.  The
+results below chain the two, so the state bound rests only on the flux equation itself.
+-/
+
+section FluxEquation
+
+open MeasureTheory
+
+/-- **The resolvent estimate on a solution of the flux equation.**  If `Y` solves
+`(∂ − σ)Y = W` then `σ ‖Y‖₂ ≤ ‖W‖₂`.  Nothing is assumed about `W` beyond the equation. -/
+theorem sigma_mul_l2_le_of_flux_equation {σ : ℝ} (hσ : 0 < σ) {Y W : ℝ → ℂ}
+    (hdiff : Differentiable ℝ Y) (hcont : Continuous (deriv Y)) (hc : HasCompactSupport Y)
+    (heq : ∀ x, deriv Y x - (σ : ℂ) * Y x = W x) :
+    σ * Real.sqrt (∫ x, ‖Y x‖ ^ 2) ≤ Real.sqrt (∫ x, ‖W x‖ ^ 2) := by
+  have hkey := abs_mul_sqrt_integral_normSq_le σ hdiff hcont hc
+  rw [abs_of_pos hσ] at hkey
+  have hcongr : (∫ x, ‖deriv Y x - (σ : ℂ) * Y x‖ ^ 2) = ∫ x, ‖W x‖ ^ 2 :=
+    integral_congr_ae (Filter.Eventually.of_forall fun x => by simp only [heq x])
+  rwa [hcongr] at hkey
+
+/-- **The graph flux state bound with every input discharged.**  The only hypotheses left are the
+flux equation, the coupling bound on the source, the coercivity estimate for the graph equation,
+and the spectral gap.  The resolvent estimate `(13)` is no longer assumed — it is derived. -/
+theorem graphFlux_state_bound_of_flux_equation {c d σ V G H : ℝ} (hσ : 0 < σ) {Y W : ℝ → ℂ}
+    (hdiff : Differentiable ℝ Y) (hcont : Continuous (deriv Y)) (hc : HasCompactSupport Y)
+    (heq : ∀ x, deriv Y x - (σ : ℂ) * Y x = W x)
+    (hsrc : Real.sqrt (∫ x, ‖W x‖ ^ 2) ≤ d * V + H)
+    (hcoup : c * V ≤ Real.sqrt (∫ x, ‖Y x‖ ^ 2) + G) (hgap : d / σ < c) :
+    V ≤ (c - d / σ)⁻¹ * (G + σ⁻¹ * H) :=
+  graphFlux_state_bound hσ hcoup
+    ((sigma_mul_l2_le_of_flux_equation hσ hdiff hcont hc heq).trans hsrc) hgap
+
+end FluxEquation
 
 end GaloisForLFunctions.HTGeometry

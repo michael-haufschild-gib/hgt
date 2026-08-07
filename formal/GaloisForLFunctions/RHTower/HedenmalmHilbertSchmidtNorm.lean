@@ -336,8 +336,12 @@ theorem pinnedSliceVec_coeFn (t : ℝ) :
       (hs := measurableSet_Iic (a := t)) (hμs := measure_ne_top unitIntervalMeasure _) (c := (1 : ℂ)),
     Lp.coeFn_smul ((t : ℂ)) pinnedOne, pinnedOne_coeFn] with u h1 h2 h3 h4
   show (pinnedSliceVec t : ℝ → ℂ) u = _
-  rw [pinnedSliceVec, h1, h2, h3, h4]
-  simp only [Pi.smul_apply, smul_eq_mul, mul_one, Set.indicator_apply, Set.mem_Iic]
+  rw [pinnedSliceVec, h1]
+  simp only [Pi.sub_apply]
+  rw [h2, h3]
+  simp only [Pi.smul_apply, smul_eq_mul]
+  rw [h4]
+  simp only [mul_one, Set.indicator_apply, Set.mem_Iic]
   rw [pinnedKernelSlice]
   by_cases h : u ≤ t <;> simp [h]
 
@@ -353,6 +357,112 @@ theorem pinnedKernelVec_eq_smul {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) :
   rw [pinnedKernelVec, h1, h2]
   simp only [Pi.smul_apply, smul_eq_mul]
   rw [h3, pinnedKernelFun]
+
+
+
+/-- The difference of two half-line indicators is the indicator of the intervening interval. -/
+theorem indicatorConstLp_Iic_sub {s t : ℝ} (hst : s ≤ t) :
+    indicatorConstLp 2 (measurableSet_Iic (a := t))
+        (measure_ne_top unitIntervalMeasure _) (1 : ℂ)
+      - indicatorConstLp 2 (measurableSet_Iic (a := s))
+        (measure_ne_top unitIntervalMeasure _) (1 : ℂ)
+      = indicatorConstLp 2 (measurableSet_Ioc (a := s) (b := t))
+        (measure_ne_top unitIntervalMeasure _) (1 : ℂ) := by
+  apply Lp.ext
+  filter_upwards [Lp.coeFn_sub
+      (indicatorConstLp 2 (measurableSet_Iic (a := t))
+        (measure_ne_top unitIntervalMeasure _) (1 : ℂ))
+      (indicatorConstLp 2 (measurableSet_Iic (a := s))
+        (measure_ne_top unitIntervalMeasure _) (1 : ℂ)),
+    indicatorConstLp_coeFn (p := 2) (μ := unitIntervalMeasure)
+      (hs := measurableSet_Iic (a := t)) (hμs := measure_ne_top unitIntervalMeasure _)
+      (c := (1 : ℂ)),
+    indicatorConstLp_coeFn (p := 2) (μ := unitIntervalMeasure)
+      (hs := measurableSet_Iic (a := s)) (hμs := measure_ne_top unitIntervalMeasure _)
+      (c := (1 : ℂ)),
+    indicatorConstLp_coeFn (p := 2) (μ := unitIntervalMeasure)
+      (hs := measurableSet_Ioc (a := s) (b := t)) (hμs := measure_ne_top unitIntervalMeasure _)
+      (c := (1 : ℂ))] with u h1 h2 h3 h4
+  rw [h1]
+  simp only [Pi.sub_apply]
+  rw [h2, h3, h4]
+  simp only [Set.indicator_apply, Set.mem_Iic, Set.mem_Ioc]
+  by_cases hu : u ≤ s
+  · rw [if_pos hu, if_pos (le_trans hu hst), if_neg (by simp [hu])]
+    ring
+  · rw [if_neg hu]
+    by_cases hu' : u ≤ t
+    · rw [if_pos hu', if_pos ⟨not_le.mp hu, hu'⟩]
+      ring
+    · rw [if_neg hu', if_neg (by simp [hu'])]
+      ring
+
+
+
+/-- **Hölder-1/2 continuity of the slice family**, in bound form. -/
+theorem norm_pinnedSliceVec_sub_le {s t : ℝ} (hst : s ≤ t) :
+    ‖pinnedSliceVec t - pinnedSliceVec s‖
+      ≤ Real.sqrt (t - s) + (t - s) * ‖pinnedOne‖ := by
+  have hdiff : pinnedSliceVec t - pinnedSliceVec s
+      = indicatorConstLp 2 (measurableSet_Ioc (a := s) (b := t))
+          (measure_ne_top unitIntervalMeasure _) (1 : ℂ)
+        - (((t : ℂ) - (s : ℂ))) • pinnedOne := by
+    rw [pinnedSliceVec, pinnedSliceVec, ← indicatorConstLp_Iic_sub hst]
+    module
+  have hmeasle : unitIntervalMeasure.real (Ioc s t) ≤ t - s := by
+    have hle : unitIntervalMeasure (Ioc s t) ≤ ENNReal.ofReal (t - s) := by
+      rw [unitIntervalMeasure, Measure.restrict_apply measurableSet_Ioc]
+      refine le_trans (measure_mono Set.inter_subset_left) ?_
+      rw [Real.volume_Ioc]
+    have := ENNReal.toReal_mono ENNReal.ofReal_ne_top hle
+    rwa [ENNReal.toReal_ofReal (by linarith)] at this
+  have hind : ‖indicatorConstLp 2 (measurableSet_Ioc (a := s) (b := t))
+      (measure_ne_top unitIntervalMeasure _) (1 : ℂ)‖ ≤ Real.sqrt (t - s) := by
+    rw [norm_indicatorConstLp (by norm_num) (by norm_num), norm_one, one_mul,
+      Real.sqrt_eq_rpow]
+    have h2 : ((2 : ENNReal).toReal) = 2 := by norm_num
+    rw [h2]
+    exact Real.rpow_le_rpow (by positivity) hmeasle (by norm_num)
+  rw [hdiff]
+  refine le_trans (norm_sub_le _ _) ?_
+  refine add_le_add hind ?_
+  rw [norm_smul]
+  refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
+  rw [← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith)]
+
+
+
+theorem norm_pinnedSliceVec_sub_le' (s t : ℝ) :
+    ‖pinnedSliceVec t - pinnedSliceVec s‖ ≤ Real.sqrt |t - s| + |t - s| * ‖pinnedOne‖ := by
+  rcases le_total s t with h | h
+  · rw [abs_of_nonneg (by linarith : (0:ℝ) ≤ t - s)]
+    exact norm_pinnedSliceVec_sub_le h
+  · rw [norm_sub_rev, abs_of_nonpos (by linarith : t - s ≤ 0)]
+    have := norm_pinnedSliceVec_sub_le h
+    rw [show -(t - s) = s - t by ring]
+    exact this
+
+/-- **The slice family is continuous in the parameter.** -/
+theorem continuous_pinnedSliceVec : Continuous (fun t : ℝ => pinnedSliceVec t) := by
+  refine continuous_iff_continuousAt.mpr fun b => ?_
+  have h1 : Filter.Tendsto (fun t : ℝ => |t - b|) (nhds b) (nhds 0) := by
+    have hc : Continuous (fun t : ℝ => |t - b|) :=
+      continuous_abs.comp (continuous_sub_right b)
+    have := hc.tendsto b
+    simpa using this
+  have h2 : Filter.Tendsto (fun t : ℝ => Real.sqrt |t - b|) (nhds b) (nhds 0) := by
+    have hc : Continuous (fun t : ℝ => Real.sqrt |t - b|) :=
+      Real.continuous_sqrt.comp (continuous_abs.comp (continuous_sub_right b))
+    have := hc.tendsto b
+    simpa using this
+  have h3 : Filter.Tendsto (fun t : ℝ => |t - b| * ‖pinnedOne‖) (nhds b) (nhds 0) := by
+    have := h1.mul_const ‖pinnedOne‖
+    simpa using this
+  have hg : Filter.Tendsto (fun t : ℝ => Real.sqrt |t - b| + |t - b| * ‖pinnedOne‖)
+      (nhds b) (nhds 0) := by
+    simpa using h2.add h3
+  rw [ContinuousAt, tendsto_iff_norm_sub_tendsto_zero]
+  exact squeeze_zero (fun t => norm_nonneg _) (fun t => norm_pinnedSliceVec_sub_le' b t) hg
 
 
 end HedenmalmHilbertSchmidt

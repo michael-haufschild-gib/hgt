@@ -863,3 +863,60 @@ conclude by integral_mono
 Note the orientation of `integrable_uncurry_norm_shear` was chosen (J.7) so that
 `integral_integral_swap` produces exactly the direction needed here — `s` outer, `x` inner — with no
 re-proof.
+
+### J.10 The modulus bound is proved — section J is complete
+
+```text
+integral_norm_translation_le
+  (∫ x, ‖f (x + h) - f x‖) ≤ h * ∫ x, ‖deriv f x‖        for 0 ≤ h
+```
+
+in `HTGeometry/TranslationModulus.lean`.  No bounded variation, no Stieltjes integration by parts.
+
+Name traps hit on the way, all fixed:
+
+* `Integrable` unfolds to an `And`, so dot notation on a hypothesis of that type resolves to
+  `And.*`.  Fully qualify: `MeasureTheory.Integrable.integral_prod_left`.
+* It is `integral_prod_left` (integrate out the *second* variable, leaving the first), not
+  `integral_prod_right`; and there is no primed `'` variant at `Integrable` level, only at
+  `StronglyMeasurable` level.
+* `Integrable.swap` needs an explicit type ascription to be usable, because its stated type is the
+  unfolded conjunction.
+
+**Section J now closes end to end**:
+
+```text
+integral_norm_translation_le            ∫‖f(·+h) - f‖ ≤ h‖f'‖₁
+two_mul_norm_fourier_le_translationDistance   2‖𝓕 f ξ‖ ≤ ∫‖f - f(·+1/(2ξ))‖
+  ⟹ ‖𝓕 f ξ‖ ≤ ‖f'‖₁ / (4|ξ|)
+memSobolevWeight_of_decay               ⟹ H^s membership for every s < 1/2
+```
+
+so the profile membership needed by `suzuki-two-port-return-redundancy-and-interior-null-core` §4
+and by `suzuki-carleman-flat-port-weighted-strip-barrier` is available.
+
+### J.11 Honest scope check before promoting
+
+`integral_norm_translation_le` assumes `Differentiable ℝ f` and `Continuous (deriv f)`.  The card's
+profile
+
+```text
+u (a - r) = exp (-sqrt (log (1/r))),   cut off on a collar
+```
+
+is **not** differentiable at `x = a`: the difference quotient is `-exp(-sqrt(log(1/r)))/r`, which is
+`-e^{L - sqrt L}` at `r = e^{-L}` and diverges.  So section J as proved covers `C¹` profiles, not
+this one, and `suzuki-two-port-return-redundancy-and-interior-null-core` must **not** be promoted on
+it.
+
+Closing the mismatch needs the estimate for *absolutely continuous* `f`, i.e. replacing the FTC step
+
+```text
+intervalIntegral.integral_eq_sub_of_hasDerivAt   (needs HasDerivAt at every point)
+```
+
+by its a.e. form for an `AC` function.  In mathlib that is
+`MeasureTheory.integral_eq_sub_of_hasDerivAt_of_le` (derivative a.e. on the interior, plus
+continuity on the closed interval and integrability of the derivative) — exactly the hypotheses the
+monotone bounded profile satisfies.  Everything downstream of the FTC step is unchanged, since
+`integral_integral_shear_eq` and the swap never touch differentiability.
