@@ -361,3 +361,25 @@ So the whole outer passage is assembly, and step 4 now has both of its analytic 
 `integral_lorentz_normSq_logPoly_le_prime_sieve` (Lemma 1 over the whole line).  What remains is the
 Cauchy–Schwarz assembly itself, the definition of `L(x)`, and the smoothing-versus-sharp-cutoff error at
 `H = N/(log N)³`.
+
+## Fifteenth brick: the Cauchy–Schwarz device of step 4
+
+`HTGeometry/WeightedCauchySchwarz.lean` (green, axiom-clean, wired):
+
+`‖∫ g₁ g₂ W‖ ≤ (∫ ‖g₁‖²‖W‖)^{1/2}·(∫ ‖g₂‖²‖W‖)^{1/2}`,
+
+for any measurable `g₁, g₂, W` whose two weighted mean squares are integrable.  Splitting the weight
+symmetrically, `‖g₁ g₂ W‖ = (‖g₁‖√‖W‖)(‖g₂‖√‖W‖)`, reduces it to Hölder with conjugate exponents `2, 2`
+(mathlib's `integral_mul_le_Lp_mul_Lq_of_nonneg`, `Real.HolderConjugate.two_two`).
+
+It lives in `HTGeometry` because nothing about it is arithmetic.  Combined with
+`tsum_mul_smoothWeight_convolution_eq_integral` it is GHS's step-4 split: with `g₁ = A`, `g₂ = B·F` and
+`W` the smoothing kernel,
+
+`‖2π ∑ₙ (a ⍟ (b ⍟ c))(n) w(n)‖ ≤ (∫ ‖A‖²‖W‖)^{1/2}·(∫ ‖B F‖²‖W‖)^{1/2}`,
+
+in which the first factor is a prime-supported mean square (`Lemma 1`) and the second pairs the pointwise
+Euler-product bound against the Lorentzian-weighted mean square.
+
+The three analytic devices of step 4 — Perron for a triple convolution, Cauchy–Schwarz against the
+kernel, and the prime-supported mean square — are now all in the corpus.
