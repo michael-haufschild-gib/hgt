@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SlepianKernelFubini
 import GaloisForLFunctions.RHTower.ConstrainedProlatePointwiseRepresentative
+import GaloisForLFunctions.RHTower.ProlateJointEigenExistence
 import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
 
 /-!
@@ -167,6 +168,86 @@ theorem scaled_sincIntegral_eq_bandIntegral
 
 /-! ## Concrete signed prolate modes -/
 
+/-- A normalized canonical signed-mode source cannot vanish throughout the open physical
+aperture. -/
+theorem exists_evenProlateSignedPointwiseSource_ne_zero_interior
+    {a : ℝ} (ha : 0 < a) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0) :
+    ∃ x ∈ Set.Ioo (-a) a, evenProlateSignedPointwiseSource a n hvalue x ≠ 0 := by
+  by_contra hnone
+  have hzero : ∀ x ∈ Set.Ioo (-a) a,
+      evenProlateSignedPointwiseSource a n hvalue x = 0 := by
+    intro x hx
+    by_contra hxne
+    exact hnone ⟨x, hx, hxne⟩
+  have hae : evenProlateSignedPointwiseSource a n hvalue =ᵐ[volume] 0 := by
+    filter_upwards [Ioo_ae_eq_Icc] with x hx
+    by_cases hxcc : x ∈ Set.Icc (-a) a
+    · exact hzero x (hx.mpr hxcc)
+    · exact timeBandEigenPointwiseSource_eq_zero_of_not_mem_Icc
+        a ha.le (evenProlateSignedMode a n) (evenProlateSignedValue a n : ℂ)
+        (Complex.ofReal_ne_zero.mpr hvalue) (evenTimeBandFourier_apply_signedMode a n) hxcc
+  have hnorm := integral_norm_sq_evenProlateSignedPointwiseSource_eq_one
+    a ha.le n hvalue
+  have haeNorm :
+      (fun x : ℝ => ‖evenProlateSignedPointwiseSource a n hvalue x‖ ^ 2) =ᵐ[volume]
+        fun _ : ℝ => 0 := by
+    filter_upwards [hae] with x hx
+    rw [hx]
+    simp
+  have hzeroIntegral :
+      (∫ x : ℝ, ‖evenProlateSignedPointwiseSource a n hvalue x‖ ^ 2) = 0 := by
+    rw [integral_congr_ae haeNorm]
+    simp
+  linarith
+
+/-- After unit rescaling, a normalized canonical signed-mode source is nonzero at an interior
+point. -/
+theorem exists_rescaled_evenProlateSignedPointwiseSource_ne_zero
+    {a : ℝ} (ha : 0 < a) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0) :
+    ∃ x ∈ Set.Ioo (-1 : ℝ) 1,
+      evenProlateSignedPointwiseSource a n hvalue (a * x) ≠ 0 := by
+  obtain ⟨y, hy, hyne⟩ :=
+    exists_evenProlateSignedPointwiseSource_ne_zero_interior ha n hvalue
+  refine ⟨y / a, ?_, ?_⟩
+  · constructor
+    · exact (lt_div_iff₀ ha).mpr (by linarith [hy.1])
+    · exact (div_lt_iff₀ ha).mpr (by simpa using hy.2)
+  · rwa [mul_div_cancel₀ y ha.ne']
+
+/-- Global smooth unit-band extension of the canonical signed-mode source.  On the open unit
+band it is the source itself after physical rescaling. -/
+def evenProlateSignedUnitExtension
+    (a : ℝ) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0) (x : ℝ) : ℂ :=
+  (evenProlateSignedValue a n : ℂ)⁻¹ *
+    evenProlateSignedFourierRepresentative a n hvalue (a * x)
+
+theorem continuous_evenProlateSignedUnitExtension
+    (a : ℝ) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0) :
+    Continuous (evenProlateSignedUnitExtension a n hvalue) := by
+  exact continuous_const.mul
+    ((evenProlateSignedFourierRepresentative a n hvalue).continuous.comp (by fun_prop))
+
+theorem even_evenProlateSignedUnitExtension
+    (a : ℝ) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0) :
+    Function.Even (evenProlateSignedUnitExtension a n hvalue) := by
+  intro x
+  rw [evenProlateSignedUnitExtension, evenProlateSignedUnitExtension,
+    show a * -x = -(a * x) by ring,
+    even_evenProlateSignedFourierRepresentative a n hvalue (a * x)]
+
+theorem evenProlateSignedUnitExtension_eq_source
+    {a : ℝ} (ha : 0 < a) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0)
+    {x : ℝ} (hx : x ∈ Set.Ioo (-1 : ℝ) 1) :
+    evenProlateSignedUnitExtension a n hvalue x =
+      evenProlateSignedPointwiseSource a n hvalue (a * x) := by
+  have hax : a * x ∈ Set.Ioo (-a) a := by
+    constructor <;> nlinarith [hx.1, hx.2]
+  have hsource := evenProlateSignedPointwiseSource_eq_inv_mul_fourier_interior
+    ha.le n hvalue hax
+  rw [fourier_evenProlateSignedPointwiseSource_eq_representative
+    a ha.le n hvalue (a * x)] at hsource
+  exact hsource.symm
+
 /-- The unit-scaled canonical representative of every live signed prolate mode is an exact
 Slepian concentration eigenfunction, with eigenvalue equal to the square of its signed
 finite-Fourier eigenvalue. -/
@@ -270,5 +351,298 @@ theorem evenProlateSignedPointwiseSource_bandTransform_eigen
           rw [heig hx]
     _ = χ ^ 2 * g x := by
           ring
+
+/-- The global smooth unit-band extension obeys the same Slepian concentration equation on the
+open band. -/
+theorem evenProlateSignedUnitExtension_bandIntegral_eigen
+    {a : ℝ} (ha : 0 < a) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0)
+    {x : ℝ} (hx : x ∈ Set.Ioo (-1 : ℝ) 1) :
+    (∫ t in Set.Icc (-1 : ℝ) 1,
+        ((sincKernelSmooth (2 * Real.pi * a ^ 2) x t : ℝ) : ℂ) *
+          evenProlateSignedUnitExtension a n hvalue t) =
+      (evenProlateSignedValue a n : ℂ) ^ 2 *
+        evenProlateSignedUnitExtension a n hvalue x := by
+  calc
+    (∫ t in Set.Icc (-1 : ℝ) 1,
+        ((sincKernelSmooth (2 * Real.pi * a ^ 2) x t : ℝ) : ℂ) *
+          evenProlateSignedUnitExtension a n hvalue t) =
+      ∫ t in Set.Icc (-1 : ℝ) 1,
+        ((sincKernelSmooth (2 * Real.pi * a ^ 2) x t : ℝ) : ℂ) *
+          evenProlateSignedPointwiseSource a n hvalue (a * t) := by
+        refine setIntegral_congr_ae measurableSet_Icc ?_
+        filter_upwards [Ioo_ae_eq_Icc] with t ht
+        intro htcc
+        rw [evenProlateSignedUnitExtension_eq_source ha n hvalue (ht.mpr htcc)]
+    _ = (evenProlateSignedValue a n : ℂ) ^ 2 *
+          evenProlateSignedPointwiseSource a n hvalue (a * x) :=
+      evenProlateSignedPointwiseSource_bandTransform_eigen ha n hvalue hx
+    _ = (evenProlateSignedValue a n : ℂ) ^ 2 *
+          evenProlateSignedUnitExtension a n hvalue x := by
+      rw [evenProlateSignedUnitExtension_eq_source ha n hvalue hx]
+
+/-- Real part of the smooth extension is an exact real Slepian eigenfunction on the open band. -/
+theorem bandTransform_evenProlateSignedUnitExtension_re
+    {a : ℝ} (ha : 0 < a) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0)
+    {x : ℝ} (hx : x ∈ Set.Ioo (-1 : ℝ) 1) :
+    bandTransform (2 * Real.pi * a ^ 2)
+        (fun t => (evenProlateSignedUnitExtension a n hvalue t).re) x =
+      evenProlateSignedValue a n ^ 2 *
+        (evenProlateSignedUnitExtension a n hvalue x).re := by
+  let q := evenProlateSignedUnitExtension a n hvalue
+  let c := 2 * Real.pi * a ^ 2
+  have hq : Continuous q := continuous_evenProlateSignedUnitExtension a n hvalue
+  have hint : IntegrableOn
+      (fun t : ℝ => ((sincKernelSmooth c x t : ℝ) : ℂ) * q t)
+      (Set.Icc (-1 : ℝ) 1) volume := by
+    exact ((Complex.continuous_ofReal.comp
+      ((contDiff_sincSmooth c).continuous.comp (by fun_prop))).mul hq).integrableOn_Icc
+  have hcplx := evenProlateSignedUnitExtension_bandIntegral_eigen ha n hvalue hx
+  change (∫ t in Set.Icc (-1 : ℝ) 1,
+      ((sincKernelSmooth c x t : ℝ) : ℂ) * q t) =
+    (evenProlateSignedValue a n : ℂ) ^ 2 * q x at hcplx
+  calc
+    bandTransform c (fun t => (q t).re) x =
+        ∫ t in Set.Icc (-1 : ℝ) 1, sincKernelSmooth c x t * (q t).re := by
+          rw [bandTransform, intervalIntegral.integral_of_le (by norm_num),
+            ← integral_Icc_eq_integral_Ioc]
+    _ = (∫ t in Set.Icc (-1 : ℝ) 1,
+          ((sincKernelSmooth c x t : ℝ) : ℂ) * q t).re := by
+          calc
+            (∫ t in Set.Icc (-1 : ℝ) 1, sincKernelSmooth c x t * (q t).re) =
+                ∫ t in Set.Icc (-1 : ℝ) 1,
+                  (((sincKernelSmooth c x t : ℝ) : ℂ) * q t).re := by
+                    refine setIntegral_congr_fun measurableSet_Icc fun t _ => ?_
+                    simp
+            _ = (∫ t in Set.Icc (-1 : ℝ) 1,
+                  ((sincKernelSmooth c x t : ℝ) : ℂ) * q t).re := integral_re hint
+    _ = ((evenProlateSignedValue a n : ℂ) ^ 2 * q x).re := by
+          rw [hcplx]
+    _ = evenProlateSignedValue a n ^ 2 * (q x).re := by
+          rw [← Complex.ofReal_pow, Complex.mul_re]
+          simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
+
+/-- Imaginary part of the smooth extension is an exact real Slepian eigenfunction on the open
+band. -/
+theorem bandTransform_evenProlateSignedUnitExtension_im
+    {a : ℝ} (ha : 0 < a) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0)
+    {x : ℝ} (hx : x ∈ Set.Ioo (-1 : ℝ) 1) :
+    bandTransform (2 * Real.pi * a ^ 2)
+        (fun t => (evenProlateSignedUnitExtension a n hvalue t).im) x =
+      evenProlateSignedValue a n ^ 2 *
+        (evenProlateSignedUnitExtension a n hvalue x).im := by
+  let q := evenProlateSignedUnitExtension a n hvalue
+  let c := 2 * Real.pi * a ^ 2
+  have hq : Continuous q := continuous_evenProlateSignedUnitExtension a n hvalue
+  have hint : IntegrableOn
+      (fun t : ℝ => ((sincKernelSmooth c x t : ℝ) : ℂ) * q t)
+      (Set.Icc (-1 : ℝ) 1) volume := by
+    exact ((Complex.continuous_ofReal.comp
+      ((contDiff_sincSmooth c).continuous.comp (by fun_prop))).mul hq).integrableOn_Icc
+  have hcplx := evenProlateSignedUnitExtension_bandIntegral_eigen ha n hvalue hx
+  change (∫ t in Set.Icc (-1 : ℝ) 1,
+      ((sincKernelSmooth c x t : ℝ) : ℂ) * q t) =
+    (evenProlateSignedValue a n : ℂ) ^ 2 * q x at hcplx
+  calc
+    bandTransform c (fun t => (q t).im) x =
+        ∫ t in Set.Icc (-1 : ℝ) 1, sincKernelSmooth c x t * (q t).im := by
+          rw [bandTransform, intervalIntegral.integral_of_le (by norm_num),
+            ← integral_Icc_eq_integral_Ioc]
+    _ = (∫ t in Set.Icc (-1 : ℝ) 1,
+          ((sincKernelSmooth c x t : ℝ) : ℂ) * q t).im := by
+          calc
+            (∫ t in Set.Icc (-1 : ℝ) 1, sincKernelSmooth c x t * (q t).im) =
+                ∫ t in Set.Icc (-1 : ℝ) 1,
+                  (((sincKernelSmooth c x t : ℝ) : ℂ) * q t).im := by
+                    refine setIntegral_congr_fun measurableSet_Icc fun t _ => ?_
+                    simp
+            _ = (∫ t in Set.Icc (-1 : ℝ) 1,
+                  ((sincKernelSmooth c x t : ℝ) : ℂ) * q t).im := integral_im hint
+    _ = ((evenProlateSignedValue a n : ℂ) ^ 2 * q x).im := by
+          rw [hcplx]
+    _ = evenProlateSignedValue a n ^ 2 * (q x).im := by
+          rw [← Complex.ofReal_pow, Complex.mul_im]
+          simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero]
+
+/-- Every live signed prolate mode supplies a nonzero continuous even real eigenfunction of the
+unit-band Slepian transform.  No phase convention is imposed: whichever of real or imaginary
+channel is nonzero is selected. -/
+theorem exists_continuous_even_real_bandEigen_of_signedMode
+    {a : ℝ} (ha : 0 < a) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0) :
+    ∃ (ψ : ℝ → ℝ) (x₀ : ℝ),
+      Continuous ψ ∧ Function.Even ψ ∧ x₀ ∈ Set.Ioo (-1 : ℝ) 1 ∧ ψ x₀ ≠ 0 ∧
+        ∀ x ∈ Set.Ioo (-1 : ℝ) 1,
+          bandTransform (2 * Real.pi * a ^ 2) ψ x =
+            evenProlateSignedValue a n ^ 2 * ψ x := by
+  obtain ⟨x₀, hx₀, hx₀ne⟩ :=
+    exists_rescaled_evenProlateSignedPointwiseSource_ne_zero ha n hvalue
+  let q := evenProlateSignedUnitExtension a n hvalue
+  have hqcont : Continuous q := continuous_evenProlateSignedUnitExtension a n hvalue
+  have hqeven : Function.Even q := even_evenProlateSignedUnitExtension a n hvalue
+  have hqne : q x₀ ≠ 0 := by
+    change evenProlateSignedUnitExtension a n hvalue x₀ ≠ 0
+    rw [evenProlateSignedUnitExtension_eq_source ha n hvalue hx₀]
+    exact hx₀ne
+  by_cases hre : (q x₀).re ≠ 0
+  · refine ⟨fun x => (q x).re, x₀, Complex.continuous_re.comp hqcont, ?_, hx₀, hre, ?_⟩
+    · intro x
+      exact congrArg Complex.re (hqeven x)
+    · intro x hx
+      exact bandTransform_evenProlateSignedUnitExtension_re ha n hvalue hx
+  · have him : (q x₀).im ≠ 0 := by
+      intro him
+      apply hqne
+      apply Complex.ext
+      · simpa using not_ne_iff.mp hre
+      · simpa using him
+    refine ⟨fun x => (q x).im, x₀, Complex.continuous_im.comp hqcont, ?_, hx₀, him, ?_⟩
+    · intro x
+      exact congrArg Complex.im (hqeven x)
+    · intro x hx
+      exact bandTransform_evenProlateSignedUnitExtension_im ha n hvalue hx
+
+/-! ## Even `L²` band eigenspaces -/
+
+/-- Extending the band class of a continuous function is exactly the inverse-eigenvalue-scaled
+band transform of that function. -/
+theorem eigenExtension_bandClass_eq_inv_mul_bandTransform
+    (c lam : ℝ) {Φ : ℝ → ℝ} (hΦ : Continuous Φ) (x : ℝ) :
+    GaloisForLFunctions.RHTower.eigenExtension c lam
+        (GaloisForLFunctions.RHTower.bandClass Φ hΦ) x =
+      lam⁻¹ * bandTransform c Φ x := by
+  rw [GaloisForLFunctions.RHTower.eigenExtension, bandTransform,
+    ← GaloisForLFunctions.RHTower.integral_subtype_unit]
+  congr 1
+  apply MeasureTheory.integral_congr_ae
+  filter_upwards [GaloisForLFunctions.RHTower.coeFn_bandClass Φ hΦ] with y hy
+  rw [hy]
+
+/-- A continuous pointwise band eigenfunction is recovered globally from its `L²` band class. -/
+theorem eigenExtension_bandClass_eq_self_of_bandEigen
+    {c lam : ℝ} (hlam : lam ≠ 0) {Φ : ℝ → ℝ} (hΦ : Continuous Φ)
+    (heig : ∀ x : ℝ, bandTransform c Φ x = lam * Φ x) :
+    GaloisForLFunctions.RHTower.eigenExtension c lam
+        (GaloisForLFunctions.RHTower.bandClass Φ hΦ) = Φ := by
+  funext x
+  rw [eigenExtension_bandClass_eq_inv_mul_bandTransform c lam hΦ x, heig x]
+  field_simp
+
+/-- The Slepian band transform preserves evenness. -/
+theorem even_bandTransform (c : ℝ) {Φ : ℝ → ℝ} (_hΦ : Continuous Φ)
+    (hΦeven : Function.Even Φ) : Function.Even (bandTransform c Φ) := by
+  intro x
+  rw [bandTransform, bandTransform]
+  have hneg :
+      (∫ y in (-1 : ℝ)..1,
+          sincKernelSmooth c (-x) (-y) * Φ (-y)) =
+        ∫ y in (-1 : ℝ)..1, sincKernelSmooth c (-x) y * Φ y := by
+    have h := intervalIntegral.integral_comp_neg
+      (a := (-1 : ℝ)) (b := 1)
+      (fun y : ℝ => sincKernelSmooth c (-x) y * Φ y)
+    simpa using h
+  rw [← hneg]
+  apply intervalIntegral.integral_congr
+  intro y _hy
+  rw [hΦeven y]
+  unfold sincKernelSmooth
+  rw [show -x - -y = -(x - y) by ring, sincSmooth_even]
+
+/-- The prolate Sturm--Liouville action preserves evenness. -/
+theorem even_prolateSLAction (c : ℝ) {Φ : ℝ → ℝ} (hΦ : Function.Even Φ) :
+    Function.Even (prolateSLAction c Φ) := by
+  intro x
+  have hderiv : deriv Φ (-x) = -deriv Φ x := by
+    have hfun : (fun y : ℝ => Φ (-y)) = Φ := funext hΦ
+    have h := congrArg (fun f : ℝ → ℝ => deriv f x) hfun
+    rw [deriv_comp_neg] at h
+    linarith
+  have hderiv2 : deriv (deriv Φ) (-x) = deriv (deriv Φ) x := by
+    have hfun : (fun y : ℝ => deriv Φ (-y)) = fun y : ℝ => -deriv Φ y :=
+      funext fun y => hderiv y
+    have h := congrArg (fun f : ℝ → ℝ => deriv f x) hfun
+    rw [deriv_comp_neg, deriv.neg] at h
+    linarith
+  unfold prolateSLAction
+  rw [hΦ x, hderiv, hderiv2]
+  ring
+
+/-- Every live signed prolate mode produces a nonzero eigenvector of the established real
+`L²[-1,1]` Slepian operator, at the squared signed eigenvalue. -/
+theorem exists_realIntervalL2_bandEigen_of_signedMode
+    {a : ℝ} (ha : 0 < a) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0) :
+    ∃ ψ₀ : GaloisForLFunctions.RHTower.RealIntervalL2 (-1 : ℝ) 1,
+      ψ₀ ≠ 0 ∧
+        GaloisForLFunctions.RHTower.bandOperatorL2 (2 * Real.pi * a ^ 2) ψ₀ =
+          evenProlateSignedValue a n ^ 2 • ψ₀ ∧
+        Function.Even
+          (GaloisForLFunctions.RHTower.eigenExtension (2 * Real.pi * a ^ 2)
+            (evenProlateSignedValue a n ^ 2) ψ₀) := by
+  obtain ⟨ψ, x₀, hψ, hψeven, hx₀, hψx₀, heig⟩ :=
+    exists_continuous_even_real_bandEigen_of_signedMode ha n hvalue
+  let c : ℝ := 2 * Real.pi * a ^ 2
+  let lam : ℝ := evenProlateSignedValue a n ^ 2
+  have htransform : Continuous (bandTransform c ψ) :=
+    GaloisForLFunctions.RHTower.continuous_bandTransform c hψ
+  have hmul : Continuous fun x => lam * ψ x := continuous_const.mul hψ
+  have heigIcc : ∀ x ∈ Set.Icc (-1 : ℝ) 1, bandTransform c ψ x = lam * ψ x := by
+    intro x hx
+    have hclosure : Set.Icc (-1 : ℝ) 1 = closure (Set.Ioo (-1 : ℝ) 1) := by
+      rw [closure_Ioo (by norm_num : (-1 : ℝ) ≠ 1)]
+    rw [hclosure] at hx
+    exact (Set.EqOn.closure (fun y hy => heig y hy) htransform hmul) hx
+  let ψ₀ : GaloisForLFunctions.RHTower.RealIntervalL2 (-1 : ℝ) 1 :=
+    GaloisForLFunctions.RHTower.bandClass ψ hψ
+  have hψ₀ne : ψ₀ ≠ 0 := by
+    intro hzero
+    have hclassZero :
+        GaloisForLFunctions.RHTower.bandClass ψ hψ =
+          GaloisForLFunctions.RHTower.bandClass (fun _ : ℝ => 0) continuous_const := by
+      rw [show GaloisForLFunctions.RHTower.bandClass ψ hψ = 0 from hzero,
+        GaloisForLFunctions.RHTower.bandClass_zero]
+    have hpoint := GaloisForLFunctions.RHTower.eqOn_of_bandClass_eq
+      hψ continuous_const hclassZero x₀ (Set.Ioo_subset_Icc_self hx₀)
+    exact hψx₀ (by simpa using hpoint)
+  have hclassEig :
+      GaloisForLFunctions.RHTower.bandClass (bandTransform c ψ) htransform =
+        GaloisForLFunctions.RHTower.bandClass (fun x => lam * ψ x) hmul := by
+    apply Lp.ext
+    filter_upwards [GaloisForLFunctions.RHTower.coeFn_bandClass (bandTransform c ψ) htransform,
+      GaloisForLFunctions.RHTower.coeFn_bandClass (fun x => lam * ψ x) hmul] with x hx₁ hx₂
+    rw [hx₁, hx₂]
+    exact heigIcc x x.property
+  have hψ₀eig : GaloisForLFunctions.RHTower.bandOperatorL2 c ψ₀ = lam • ψ₀ := by
+    rw [show ψ₀ = GaloisForLFunctions.RHTower.bandClass ψ hψ from rfl,
+      GaloisForLFunctions.RHTower.bandOperatorL2_bandClass, hclassEig,
+      GaloisForLFunctions.RHTower.bandClass_smul]
+  have hextEven : Function.Even
+      (GaloisForLFunctions.RHTower.eigenExtension c lam ψ₀) := by
+    have htransformEven : Function.Even (bandTransform c ψ) :=
+      even_bandTransform c hψ hψeven
+    have hext : GaloisForLFunctions.RHTower.eigenExtension c lam ψ₀ =
+        fun x => lam⁻¹ * bandTransform c ψ x := by
+      funext x
+      exact eigenExtension_bandClass_eq_inv_mul_bandTransform c lam hψ x
+    rw [hext]
+    intro x
+    rw [htransformEven x]
+  exact ⟨ψ₀, hψ₀ne, hψ₀eig, hextEven⟩
+
+/-- Every live signed finite-Fourier mode has a nonzero smooth representative which is
+simultaneously an eigenfunction of the Slepian band transform and the prolate
+Sturm--Liouville action.  The band eigenvalue is the square of the signed finite-Fourier
+eigenvalue, with exact rescaled bandwidth `2πa²`. -/
+theorem exists_joint_prolate_band_eigen_of_signedMode
+    {a : ℝ} (ha : 0 < a) (n : ℕ) (hvalue : evenProlateSignedValue a n ≠ 0) :
+    ∃ (Φ : ℝ → ℝ) (η : ℝ),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ ∧
+        Φ ≠ 0 ∧
+        (∀ x : ℝ,
+          bandTransform (2 * Real.pi * a ^ 2) Φ x =
+            evenProlateSignedValue a n ^ 2 * Φ x) ∧
+        (∀ x ∈ Set.Icc (-1 : ℝ) 1,
+          prolateSLAction (2 * Real.pi * a ^ 2) Φ x = η * Φ x) := by
+  obtain ⟨ψ₀, hψ₀ne, hψ₀eig, _hψ₀even⟩ :=
+    exists_realIntervalL2_bandEigen_of_signedMode ha n hvalue
+  exact GaloisForLFunctions.RHTower.exists_joint_prolate_band_eigen
+    (by positivity) (pow_ne_zero 2 hvalue) hψ₀eig hψ₀ne
 
 end RHTower

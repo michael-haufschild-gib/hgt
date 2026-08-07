@@ -625,7 +625,7 @@ bounded self-adjoint prime-seam adjacency into a skew frequency generator, so
 is conserved. Hence every homogeneous seam state in `L2(dL)` is zero, including rapidly
 oscillating inverse-log-flat states outside all conormal classes. The remaining trace-zero gate is
 now the literal completed-carrier connector.  The abstract carrier itself is constructed in
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-support-pruned-selfadjoint-seam-carrier.md`:
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-support-pruned-selfadjoint-seam-carrier.md`:
 it is the exact orthogonal compression of the visible real Laurent adjacency and is bounded
 self-adjoint after support pruning.
 

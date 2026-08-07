@@ -119,7 +119,52 @@ formal/GaloisForLFunctions/RHTower/BurnolSoninEvaluationNonvanishing.lean  -- pl
 - [x] the cosine exchange `(4)` (Lean)
 - [x] pointwise a.e. formula for `A_w` (`coe_burnolShift_ae`; product integrability, indicator
       test vectors, Fubini)
-- [ ] head laws `(5)`,`(6)`
-- [ ] extended-Sonine invariance under the assumption `k_{w,a} = 0`
-- [ ] Mellin multiplier `(7)`
+- [x] head laws `(5)`,`(6)` (`burnolCoShiftFun_head_eq`, `burnolShiftFun_head_eq`)
+- [x] extended-Sonine invariance under the assumption `k_{w,a} = 0`
+      (`burnolShift_mem_soninExtendedSpace`)
+- [x] Mellin multiplier `(7)` (`integral_burnolShiftFun_mellinKernel`)
 - [ ] geometric contradiction `(8)`,`(9)` and `(N)`
+
+## Lean state
+
+`SoninDilationContinuity.lean` and `BurnolSoninDividedShift.lean` both compile clean under
+`lake env lean`.  Named endpoints already available:
+
+```text
+tendsto_norm_rayDilate_sub_self, continuousOn_rayDilate   -- strong continuity
+burnolShift, burnolCoShift, norm_burnolShift_le, norm_burnolCoShift_le
+soninCosineUnitary_burnolShift                            -- the cosine exchange (4)
+coe_burnolShift_ae, coe_burnolCoShift_ae                  -- pointwise a.e. forms
+burnolShiftFun_head_eq, burnolCoShiftFun_head_eq          -- head laws (6), (5)
+burnolShift_mem_soninExtendedSpace                        -- invariance
+integral_burnolShiftFun_mellinKernel                      -- the multiplier (7)
+```
+
+Remaining Lean work, all in one new module `BurnolSoninEvaluationNonvanishing.lean`:
+
+1. assume `k_{w,a} = 0`; `burnolExtendedSoninEvaluationVector_eq_zero_iff` plus
+   `mellinCompletionFactor_ne_zero` turn it into `∫ f t^(-w) dt = 0` for every `f in L_a`;
+2. iterate `h 0 = coPoissonIndicatorSoninCosine`, `h (k+1) = burnolShift w (h k)`; membership by
+   induction from `burnolShift_mem_soninExtendedSpace`;
+3. `‖h k‖ ≤ M^k ‖h 0‖` by induction from `norm_burnolShift_le`;
+4. `∫ (h k) t^(-v) dt = (∫ (h 0) t^(-v) dt)/(w-v)^k` by induction from
+   `integral_burnolShiftFun_mellinKernel` composed with `coe_burnolShift_ae`;
+5. pick `v = w - eps` with `eps in (0, Re w - 1/2)` and `zeta v /= 0`; conclude from
+   `norm_burnolExtendedSoninEvaluationLinearMap_le` that `|M(h 0)(v)| <= C (M eps)^k -> 0`,
+   contradicting `soninMellinEvaluation_coPoissonIndicatorSoninCosine_ne_zero_iff`.
+
+For step 5 the isolated-zero input is already a five-line corpus recipe, used verbatim in
+`BoundedClockZeroTransfer.lean` around line 234:
+
+```text
+have hnotEventuallyZero : ¬ ∀ᶠ z in 𝓝 w, XiC z = 0 := fun hev =>
+  XiC_zero_ne (XiC_analytic.eqOn_zero_of_preconnected_of_eventuallyEq_zero
+    isPreconnected_univ (Set.mem_univ w) hev (Set.mem_univ 0))
+have hpunct : ∀ᶠ z in 𝓝[≠] w, XiC z ≠ 0 :=
+  (XiC_analytic w (Set.mem_univ w)).eventually_eq_zero_or_eventually_ne_zero.resolve_left
+    hnotEventuallyZero
+```
+
+then transfer `XiC`/`xi` nonvanishing to `riemannZeta` on the strip with `xi_eq_zero_iff`.
+
+Neither module is wired into `RHTower.lean` yet; wire both once the last two gates close.

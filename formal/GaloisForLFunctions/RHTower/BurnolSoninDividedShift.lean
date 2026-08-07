@@ -777,9 +777,8 @@ theorem burnolShiftFun_head_eq {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (hρ1 : ρ.re < 
       rw [← Complex.cpow_add _ _ htne]
       congr 1
       ring
-    rw [hpow, real_smul]
+    rw [hpow, real_smul, Complex.ofReal_inv]
     field_simp
-    ring
   -- tail Mellin mass
   have hunion2 : Ioo (0 : ℝ) a ∪ Ici a = Ioi (0 : ℝ) := Ioo_union_Ici_eq_Ioi ha
   have hdisj2 : Disjoint (Ioo (0 : ℝ) a) (Ici a) :=
@@ -817,5 +816,406 @@ theorem burnolShiftFun_head_eq {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (hρ1 : ρ.re < 
   rw [hRpow]
   field_simp
   ring
+
+/-! ## Pointwise form and head law of the reflected divided shift -/
+
+/-- Globally measurable form of the reflected divided-shift kernel. -/
+def burnolCoShiftKernel (ρ : ℂ) (u : ℝ) : ℂ := Complex.exp ((Real.log u : ℂ) * (ρ - 1))
+
+theorem burnolCoShiftKernel_eq_cpow {u : ℝ} (hu : 0 < u) (ρ : ℂ) :
+    burnolCoShiftKernel ρ u = (u : ℂ) ^ (ρ - 1) := by
+  rw [burnolCoShiftKernel, Complex.cpow_def_of_ne_zero
+    (by exact_mod_cast ne_of_gt hu : ((u : ℝ) : ℂ) ≠ 0), ← Complex.ofReal_log hu.le]
+
+theorem norm_burnolCoShiftKernel {u : ℝ} (hu : 0 < u) (ρ : ℂ) :
+    ‖burnolCoShiftKernel ρ u‖ = u ^ (ρ.re - 1) := by
+  rw [burnolCoShiftKernel_eq_cpow hu, Complex.norm_cpow_eq_rpow_re_of_pos hu, Complex.sub_re]
+  norm_num
+
+theorem measurable_burnolCoShiftKernel (ρ : ℂ) : Measurable (burnolCoShiftKernel ρ) := by
+  apply Complex.measurable_exp.comp
+  exact (Complex.measurable_ofReal.comp Real.measurable_log).mul measurable_const
+
+theorem burnolCoShiftKernel_mul_sqrt {u : ℝ} (hu : 0 < u) (ρ : ℂ) :
+    burnolCoShiftWeight ρ u * (Real.sqrt u : ℂ) = burnolCoShiftKernel ρ u := by
+  rw [burnolCoShiftKernel_eq_cpow hu, burnolCoShiftWeight]
+  have hune : ((u : ℝ) : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hu
+  have hsq : ((Real.sqrt u : ℝ) : ℂ) = ((u : ℝ) : ℂ) ^ ((1 : ℂ) / 2) := by
+    rw [show ((1 : ℂ) / 2) = (((1 : ℝ) / 2 : ℝ) : ℂ) by norm_num,
+      ← Complex.ofReal_cpow hu.le]
+    norm_cast
+    exact Real.sqrt_eq_rpow u
+  rw [hsq, ← Complex.cpow_add _ _ hune]
+  congr 1
+  ring
+
+/-- The pointwise reflected divided shift of a function on the line. -/
+def burnolCoShiftFun (ρ : ℂ) (F : ℝ → ℂ) (t : ℝ) : ℂ :=
+  ∫ u in Ioo (0 : ℝ) 1, burnolCoShiftKernel ρ u * F (u * t)
+
+theorem stronglyMeasurable_burnolCoShiftIntegrand (ρ : ℂ) {F : ℝ → ℂ}
+    (hF : StronglyMeasurable F) :
+    StronglyMeasurable (fun p : ℝ × ℝ => burnolCoShiftKernel ρ p.2 * F (p.2 * p.1)) := by
+  refine StronglyMeasurable.mul ?_ ?_
+  · exact ((measurable_burnolCoShiftKernel ρ).comp measurable_snd).stronglyMeasurable
+  · exact hF.comp_measurable (measurable_snd.mul measurable_fst)
+
+theorem stronglyMeasurable_burnolCoShiftIntegrand_swap (ρ : ℂ) {F : ℝ → ℂ}
+    (hF : StronglyMeasurable F) :
+    StronglyMeasurable (fun q : ℝ × ℝ => burnolCoShiftKernel ρ q.1 * F (q.1 * q.2)) := by
+  refine StronglyMeasurable.mul ?_ ?_
+  · exact ((measurable_burnolCoShiftKernel ρ).comp measurable_fst).stronglyMeasurable
+  · exact hF.comp_measurable (measurable_fst.mul measurable_snd)
+
+/-- Product integrability of the reflected divided-shift integrand over a finite-measure slab. -/
+theorem integrable_burnolCoShiftIntegrand_prod {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (f : evenSubspace)
+    {s : Set ℝ} (hs : MeasurableSet s) (hsfin : volume s ≠ ⊤) :
+    Integrable (fun p : ℝ × ℝ => burnolCoShiftKernel ρ p.2 *
+        (((f : evenSubspace) : SoninL2) : ℝ → ℂ) (p.2 * p.1))
+      ((volume.restrict s).prod (volume.restrict (Ioo (0 : ℝ) 1))) := by
+  set F : ℝ → ℂ := (((f : evenSubspace) : SoninL2) : ℝ → ℂ) with hFdef
+  have hFm : StronglyMeasurable F := Lp.stronglyMeasurable _
+  have hmeas : AEStronglyMeasurable
+      (fun p : ℝ × ℝ => burnolCoShiftKernel ρ p.2 * F (p.2 * p.1))
+      ((volume.restrict s).prod (volume.restrict (Ioo (0 : ℝ) 1))) :=
+    (stronglyMeasurable_burnolCoShiftIntegrand ρ hFm).aestronglyMeasurable
+  rw [integrable_prod_iff' hmeas]
+  constructor
+  · filter_upwards [ae_restrict_mem measurableSet_Ioo] with u hu
+    exact (integrableOn_dilate_representative hu.1 f hsfin).const_mul _
+  · have hswap : StronglyMeasurable
+        (fun q : ℝ × ℝ => ‖burnolCoShiftKernel ρ q.1 * F (q.1 * q.2)‖) :=
+      (stronglyMeasurable_burnolCoShiftIntegrand_swap ρ hFm).norm
+    have hmeasint : StronglyMeasurable
+        (fun u : ℝ => ∫ t in s, ‖burnolCoShiftKernel ρ u * F (u * t)‖) :=
+      hswap.integral_prod_right'
+    set C : ℝ := (volume.real s + ‖f‖ ^ 2) / 2 with hC
+    have hboundint : IntegrableOn (fun u : ℝ => u ^ (ρ.re - 3 / 2) * C) (Ioo (0 : ℝ) 1) volume := by
+      apply Integrable.mul_const
+      have hint : IntervalIntegrable (fun u : ℝ => u ^ (ρ.re - 3 / 2)) volume 0 1 :=
+        intervalIntegral.intervalIntegrable_rpow' (by linarith)
+      rw [intervalIntegrable_iff_integrableOn_Ioo_of_le zero_le_one] at hint
+      exact hint
+    refine Integrable.mono' hboundint hmeasint.aestronglyMeasurable ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioo] with u hu
+    have hu0 : 0 < u := hu.1
+    have hnn : 0 ≤ ∫ t in s, ‖burnolCoShiftKernel ρ u * F (u * t)‖ :=
+      setIntegral_nonneg hs fun t _ => norm_nonneg _
+    rw [Real.norm_eq_abs, abs_of_nonneg hnn]
+    have hpull : (∫ t in s, ‖burnolCoShiftKernel ρ u * F (u * t)‖) =
+        u ^ (ρ.re - 1) * ∫ t in s, ‖F (u * t)‖ := by
+      rw [← integral_const_mul]
+      apply setIntegral_congr_fun hs
+      intro t _
+      dsimp only
+      rw [norm_mul, norm_burnolCoShiftKernel hu0]
+    rw [hpull]
+    have hkey := setIntegral_norm_dilate_le hu0 f hs hsfin
+    have hupos : (0:ℝ) < u ^ (ρ.re - 1) := Real.rpow_pos_of_pos hu0 _
+    have hsplit : u ^ (ρ.re - 3 / 2) = u ^ (ρ.re - 1) * u ^ (-(1:ℝ)/2) := by
+      rw [← Real.rpow_add hu0]
+      congr 1
+      ring
+    rw [hsplit, mul_assoc]
+    exact mul_le_mul_of_nonneg_left hkey hupos.le
+
+theorem integrableOn_burnolCoShiftFun {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (f : evenSubspace)
+    {s : Set ℝ} (hs : MeasurableSet s) (hsfin : volume s ≠ ⊤) :
+    IntegrableOn (burnolCoShiftFun ρ (((f : evenSubspace) : SoninL2) : ℝ → ℂ)) s volume :=
+  (integrable_burnolCoShiftIntegrand_prod hρ f hs hsfin).integral_prod_left
+
+theorem setIntegral_burnolCoShift {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (f : evenSubspace)
+    {s : Set ℝ} (hs : MeasurableSet s) (hsfin : volume s ≠ ⊤) :
+    (∫ t in s, (((burnolCoShift ρ f : evenSubspace) : SoninL2) : ℝ → ℂ) t) =
+      ∫ t in s, burnolCoShiftFun ρ (((f : evenSubspace) : SoninL2) : ℝ → ℂ) t := by
+  set F : ℝ → ℂ := (((f : evenSubspace) : SoninL2) : ℝ → ℂ) with hFdef
+  rw [← inner_evenIndicatorTest hs hsfin (burnolCoShift ρ f),
+    inner_burnolCoShift hρ (evenIndicatorTest hs hsfin) f]
+  have hstep : ∀ u ∈ Ioo (0 : ℝ) 1,
+      burnolCoShiftWeight ρ u * ⟪evenIndicatorTest hs hsfin, evenRayDilate u f⟫_ℂ =
+        ∫ t in s, burnolCoShiftKernel ρ u * F (u * t) := by
+    intro u hu
+    have hu0 : 0 < u := hu.1
+    rw [inner_evenIndicatorTest hs hsfin (evenRayDilate u f)]
+    have hcongr : (∫ t in s, (((evenRayDilate u f : evenSubspace) : SoninL2) : ℝ → ℂ) t) =
+        ∫ t in s, (Real.sqrt u : ℂ) * F (u * t) := by
+      apply integral_congr_ae
+      filter_upwards [ae_restrict_of_ae (evenRayDilate_ae hu0 f)] with t ht
+      rw [ht]
+    rw [hcongr, ← integral_const_mul]
+    apply setIntegral_congr_fun hs
+    intro t _
+    dsimp only
+    rw [← mul_assoc, burnolCoShiftKernel_mul_sqrt hu0]
+  rw [setIntegral_congr_fun measurableSet_Ioo hstep]
+  exact (integral_integral_swap
+    (integrable_burnolCoShiftIntegrand_prod hρ f hs hsfin)).symm
+
+/-- **The reflected divided shift is the pointwise reflected divided-shift integral.** -/
+theorem coe_burnolCoShift_ae {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (f : evenSubspace) :
+    (((burnolCoShift ρ f : evenSubspace) : SoninL2) : ℝ → ℂ) =ᵐ[volume]
+      burnolCoShiftFun ρ (((f : evenSubspace) : SoninL2) : ℝ → ℂ) := by
+  refine ae_eq_of_forall_setIntegral_eq_of_sigmaFinite ?_ ?_ ?_
+  · intro s hs hsfin
+    haveI : IsFiniteMeasure (volume.restrict s) := isFiniteMeasure_restrict.mpr hsfin.ne
+    exact ((Lp.memLp ((burnolCoShift ρ f : evenSubspace) : SoninL2)).restrict s).integrable
+      (by norm_num)
+  · intro s hs hsfin
+    exact integrableOn_burnolCoShiftFun hρ f hs hsfin.ne
+  · intro s hs hsfin
+    exact setIntegral_burnolCoShift hρ f hs hsfin.ne
+
+/-- **Head law for the reflected divided shift.**  It is unconditional. -/
+theorem burnolCoShiftFun_head_eq {ρ : ℂ} (hρ : 1 / 2 < ρ.re)
+    {a : ℝ} (ha : 0 < a) (f : evenSubspace) {c : ℂ}
+    (hc : ∀ᵐ s ∂volume, s ∈ Ioo (0 : ℝ) a → (((f : evenSubspace) : SoninL2) : ℝ → ℂ) s = c)
+    {t : ℝ} (ht0 : 0 < t) (hta : t < a) :
+    burnolCoShiftFun ρ (((f : evenSubspace) : SoninL2) : ℝ → ℂ) t = c / ρ := by
+  set F : ℝ → ℂ := (((f : evenSubspace) : SoninL2) : ℝ → ℂ) with hFdef
+  have hρ0 : ρ ≠ 0 := by
+    intro h
+    rw [h] at hρ
+    norm_num at hρ
+  have hzre : (-1 : ℝ) < (ρ - 1).re := by
+    rw [Complex.sub_re]
+    norm_num
+    linarith
+  have hcshift : ∀ᵐ u ∂volume, t * u ∈ Ioo (0 : ℝ) a → F (t * u) = c :=
+    ((realMul_quasiMeasurePreserving t ht0.ne').tendsto_ae).eventually hc
+  have hcongr : burnolCoShiftFun ρ F t = ∫ u in Ioo (0 : ℝ) 1, ((u : ℂ) ^ (ρ - 1)) * c := by
+    rw [burnolCoShiftFun]
+    apply integral_congr_ae
+    filter_upwards [ae_restrict_mem measurableSet_Ioo,
+      ae_restrict_of_ae hcshift] with u hu hval
+    have hu0 : 0 < u := hu.1
+    have hmem : t * u ∈ Ioo (0 : ℝ) a := by
+      constructor
+      · positivity
+      · calc t * u < t * 1 := by exact mul_lt_mul_of_pos_left hu.2 ht0
+          _ = t := mul_one t
+          _ < a := hta
+    rw [burnolCoShiftKernel_eq_cpow hu0, mul_comm u t, hval hmem]
+  rw [hcongr, integral_mul_const, integral_Ioo_ofReal_cpow one_pos hzre]
+  rw [Complex.ofReal_one, Complex.one_cpow]
+  rw [show ρ - 1 + 1 = ρ by ring]
+  ring
+
+/-! ## Invariance of the extended Sonine space -/
+
+/-- **The forward divided shift preserves the extended Sonine space at an annihilated point.** -/
+theorem burnolShift_mem_soninExtendedSpace {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (hρ1 : ρ.re < 1)
+    {a : ℝ} (ha : 0 < a) {g : evenSubspace} (hg : g ∈ soninExtendedSpace a)
+    (hvanish : (∫ s in Ioi (0 : ℝ),
+      (((g : evenSubspace) : SoninL2) : ℝ → ℂ) s * soninMellinKernel ρ s) = 0) :
+    burnolShift ρ g ∈ soninExtendedSpace a := by
+  obtain ⟨hhead, hcoshead⟩ := mem_soninExtendedSpace.mp hg
+  obtain ⟨c, hc⟩ := hhead
+  obtain ⟨d, hd⟩ := hcoshead
+  have hcae : ∀ᵐ s ∂volume, s ∈ Ioo (0 : ℝ) a →
+      (((g : evenSubspace) : SoninL2) : ℝ → ℂ) s = c := by
+    rw [← ae_restrict_iff' measurableSet_Ioo]
+    exact hc
+  have hdae : ∀ᵐ s ∂volume, s ∈ Ioo (0 : ℝ) a →
+      (((soninCosineUnitary g : evenSubspace) : SoninL2) : ℝ → ℂ) s = d := by
+    rw [← ae_restrict_iff' measurableSet_Ioo]
+    exact hd
+  have hint : IntegrableOn (fun s : ℝ =>
+      (((g : evenSubspace) : SoninL2) : ℝ → ℂ) s * ((s : ℂ) ^ (-ρ))) (Ioi (0 : ℝ)) volume :=
+    integrableOn_extendedSonin_mul_mellinKernel hρ hρ1 ha ⟨g, hg⟩
+  refine mem_soninExtendedSpace.mpr ⟨⟨-c / (1 - ρ), ?_⟩, ⟨d / ρ, ?_⟩⟩
+  · filter_upwards [ae_restrict_of_ae (coe_burnolShift_ae hρ g),
+      ae_restrict_mem measurableSet_Ioo] with t ht hmem
+    rw [ht]
+    exact burnolShiftFun_head_eq hρ hρ1 ha g hcae hint hvanish hmem.1 hmem.2
+  · rw [soninCosineUnitary_burnolShift hρ]
+    filter_upwards [ae_restrict_of_ae (coe_burnolCoShift_ae hρ (soninCosineUnitary g)),
+      ae_restrict_mem measurableSet_Ioo] with t ht hmem
+    rw [ht]
+    exact burnolCoShiftFun_head_eq hρ ha (soninCosineUnitary g) hdae hmem.1 hmem.2
+
+/-! ## The Mellin multiplier -/
+
+theorem dilate_mellinKernel {u t : ℝ} (hu : 0 < u) (ht : 0 < t) (v : ℂ) :
+    soninMellinKernel v t = ((u : ℂ) ^ v) * soninMellinKernel v (u * t) := by
+  have hune : ((u : ℝ) : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hu
+  have htne : ((t : ℝ) : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt ht
+  rw [soninMellinKernel, soninMellinKernel, Complex.ofReal_mul,
+    Complex.mul_cpow_ofReal_nonneg hu.le ht.le, ← mul_assoc]
+  rw [show ((u : ℝ) : ℂ) ^ v * (((u : ℝ) : ℂ) ^ (-v)) = 1 by
+    rw [← Complex.cpow_add _ _ hune]; norm_num]
+  rw [one_mul]
+
+theorem integrableOn_dilate_mellinKernel {u : ℝ} (hu : 0 < u) {v : ℂ} {F : ℝ → ℂ}
+    (hF : IntegrableOn (fun s : ℝ => F s * soninMellinKernel v s) (Ioi (0 : ℝ)) volume) :
+    IntegrableOn (fun t : ℝ => F (u * t) * soninMellinKernel v t) (Ioi (0 : ℝ)) volume := by
+  have hcomp : IntegrableOn
+      (fun t : ℝ => F (u * t) * soninMellinKernel v (u * t)) (Ioi (0 : ℝ)) volume := by
+    have hkey := (integrableOn_Ioi_comp_mul_left_iff
+      (fun s : ℝ => F s * soninMellinKernel v s) 0 hu).mpr (by rwa [mul_zero])
+    exact hkey
+  have := hcomp.const_mul ((u : ℂ) ^ v)
+  refine (integrableOn_congr_fun ?_ measurableSet_Ioi).mpr this
+  intro t ht
+  have ht0 : 0 < t := ht
+  dsimp only
+  rw [dilate_mellinKernel hu ht0 v]
+  ring
+
+theorem integral_dilate_mellinKernel {u : ℝ} (hu : 0 < u) {v : ℂ} {F : ℝ → ℂ} :
+    (∫ t in Ioi (0 : ℝ), F (u * t) * soninMellinKernel v t) =
+      ((u : ℂ) ^ (v - 1)) * ∫ x in Ioi (0 : ℝ), F x * soninMellinKernel v x := by
+  have hcongr : (∫ t in Ioi (0 : ℝ), F (u * t) * soninMellinKernel v t) =
+      ∫ t in Ioi (0 : ℝ), ((u : ℂ) ^ v) *
+        ((fun s : ℝ => F s * soninMellinKernel v s) (u * t)) := by
+    apply setIntegral_congr_fun measurableSet_Ioi
+    intro t ht
+    have ht0 : 0 < t := ht
+    dsimp only
+    rw [dilate_mellinKernel hu ht0 v]
+    ring
+  rw [hcongr, integral_const_mul,
+    integral_comp_mul_left_Ioi (fun s : ℝ => F s * soninMellinKernel v s) 0 hu, mul_zero]
+  have hune : ((u : ℝ) : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hu
+  have hpow : ((u : ℂ) ^ v) = (u : ℂ) * ((u : ℂ) ^ (v - 1)) := by
+    nth_rewrite 2 [show ((u : ℝ) : ℂ) = ((u : ℝ) : ℂ) ^ (1 : ℂ) from (Complex.cpow_one _).symm]
+    rw [← Complex.cpow_add _ _ hune]
+    congr 1
+    ring
+  rw [hpow, real_smul, Complex.ofReal_inv]
+  field_simp
+
+theorem burnolShiftKernel_eq_mellinKernel {t : ℝ} (ht : 0 < t) (v : ℂ) :
+    burnolShiftKernel v t = soninMellinKernel v t := by
+  rw [burnolShiftKernel_eq_cpow ht, soninMellinKernel]
+
+/-- **Mellin multiplier of the forward divided shift.**  On the strip strictly to the left of
+`Re ρ` the divided shift multiplies the uncompleted Mellin transform by `1/(ρ - v)`. -/
+theorem integral_burnolShiftFun_mellinKernel {ρ v : ℂ} (hρ : 1 / 2 < ρ.re)
+    (hvlo : 1 / 2 < v.re) (hvhi : v.re < 1) (hvρ : v.re < ρ.re)
+    {a : ℝ} (ha : 0 < a) {g : evenSubspace} (hg : g ∈ soninExtendedSpace a) :
+    (∫ t in Ioi (0 : ℝ),
+        burnolShiftFun ρ (((g : evenSubspace) : SoninL2) : ℝ → ℂ) t * soninMellinKernel v t) =
+      (∫ t in Ioi (0 : ℝ),
+        (((g : evenSubspace) : SoninL2) : ℝ → ℂ) t * soninMellinKernel v t) / (ρ - v) := by
+  set F : ℝ → ℂ := (((g : evenSubspace) : SoninL2) : ℝ → ℂ) with hFdef
+  have hFm : StronglyMeasurable F := Lp.stronglyMeasurable _
+  have hintv : IntegrableOn (fun s : ℝ => F s * soninMellinKernel v s) (Ioi (0 : ℝ)) volume :=
+    integrableOn_extendedSonin_mul_mellinKernel hvlo hvhi ha ⟨g, hg⟩
+  set Φ : ℝ → ℝ := fun s : ℝ => ‖F s * soninMellinKernel v s‖ with hΦ
+  set C : ℝ := ∫ s in Ioi (0 : ℝ), Φ s with hCdef
+  have hΦint : IntegrableOn Φ (Ioi (0 : ℝ)) volume := hintv.norm
+  -- product integrability
+  have hprodmeas : StronglyMeasurable
+      (fun p : ℝ × ℝ => (burnolShiftKernel ρ p.2 * F (p.2 * p.1)) * burnolShiftKernel v p.1) :=
+    (stronglyMeasurable_burnolShiftIntegrand ρ hFm).mul
+      ((measurable_burnolShiftKernel v).comp measurable_fst).stronglyMeasurable
+  have hprod : Integrable
+      (fun p : ℝ × ℝ => (burnolShiftKernel ρ p.2 * F (p.2 * p.1)) * burnolShiftKernel v p.1)
+      ((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (1 : ℝ)))) := by
+    rw [integrable_prod_iff' hprodmeas.aestronglyMeasurable]
+    constructor
+    · filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
+      have hu0 : 0 < u := lt_trans zero_lt_one hu
+      have hbase := integrableOn_dilate_mellinKernel hu0 (v := v) (F := F) hintv
+      have hconst := hbase.const_mul (burnolShiftKernel ρ u)
+      refine (integrableOn_congr_fun ?_ measurableSet_Ioi).mpr hconst
+      intro t ht
+      have ht0 : 0 < t := ht
+      dsimp only
+      rw [burnolShiftKernel_eq_mellinKernel ht0 v]
+      ring
+    · have hswap : StronglyMeasurable
+          (fun q : ℝ × ℝ =>
+            ‖(burnolShiftKernel ρ q.1 * F (q.1 * q.2)) * burnolShiftKernel v q.2‖) :=
+        ((stronglyMeasurable_burnolShiftIntegrand_swap ρ hFm).mul
+          ((measurable_burnolShiftKernel v).comp measurable_snd).stronglyMeasurable).norm
+      have hmeasint : StronglyMeasurable (fun u : ℝ => ∫ t in Ioi (0 : ℝ),
+          ‖(burnolShiftKernel ρ u * F (u * t)) * burnolShiftKernel v t‖) :=
+        hswap.integral_prod_right'
+      have hboundint : IntegrableOn
+          (fun u : ℝ => u ^ (-ρ.re + (v.re - 1)) * C) (Ioi (1 : ℝ)) volume := by
+        apply Integrable.mul_const
+        exact (integrableOn_Ioi_rpow_iff zero_lt_one).mpr (by linarith)
+      refine Integrable.mono' hboundint hmeasint.aestronglyMeasurable ?_
+      filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
+      have hu0 : 0 < u := lt_trans zero_lt_one hu
+      have hnn : 0 ≤ ∫ t in Ioi (0 : ℝ),
+          ‖(burnolShiftKernel ρ u * F (u * t)) * burnolShiftKernel v t‖ :=
+        setIntegral_nonneg measurableSet_Ioi fun t _ => norm_nonneg _
+      rw [Real.norm_eq_abs, abs_of_nonneg hnn]
+      have hpull : (∫ t in Ioi (0 : ℝ),
+            ‖(burnolShiftKernel ρ u * F (u * t)) * burnolShiftKernel v t‖) =
+          u ^ (-ρ.re) * (u ^ (v.re) * (u⁻¹ * C)) := by
+        have hstep : ∀ t ∈ Ioi (0 : ℝ),
+            ‖(burnolShiftKernel ρ u * F (u * t)) * burnolShiftKernel v t‖ =
+              u ^ (-ρ.re) * (u ^ (v.re) * Φ (u * t)) := by
+          intro t ht
+          have ht0 : 0 < t := ht
+          rw [norm_mul, norm_mul, norm_burnolShiftKernel hu0,
+            burnolShiftKernel_eq_mellinKernel ht0 v,
+            dilate_mellinKernel hu0 ht0 v, hΦ]
+          dsimp only
+          rw [norm_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hu0]
+          ring
+        rw [setIntegral_congr_fun measurableSet_Ioi hstep, integral_const_mul,
+          integral_const_mul, hCdef,
+          integral_comp_mul_left_Ioi Φ 0 hu0, mul_zero, smul_eq_mul]
+      rw [hpull]
+      have hcomb : u ^ (-ρ.re) * (u ^ v.re * u⁻¹) = u ^ (-ρ.re + (v.re - 1)) := by
+        rw [show u⁻¹ = u ^ (-1 : ℝ) by rw [Real.rpow_neg_one], ← Real.rpow_add hu0,
+          ← Real.rpow_add hu0, show -ρ.re + (v.re + -1) = -ρ.re + (v.re - 1) by ring]
+      have heq : u ^ (-ρ.re) * (u ^ v.re * (u⁻¹ * C)) = u ^ (-ρ.re + (v.re - 1)) * C := by
+        rw [← hcomb]
+        ring
+      rw [heq]
+  -- swap and evaluate
+  have hlhs : (∫ t in Ioi (0 : ℝ), burnolShiftFun ρ F t * soninMellinKernel v t) =
+      ∫ t in Ioi (0 : ℝ), ∫ u in Ioi (1 : ℝ),
+        (burnolShiftKernel ρ u * F (u * t)) * burnolShiftKernel v t := by
+    apply setIntegral_congr_fun measurableSet_Ioi
+    intro t ht
+    have ht0 : 0 < t := ht
+    dsimp only
+    rw [burnolShiftFun, ← integral_mul_const, burnolShiftKernel_eq_mellinKernel ht0 v]
+  rw [hlhs, integral_integral_swap hprod]
+  have hinner : ∀ u ∈ Ioi (1 : ℝ),
+      (∫ t in Ioi (0 : ℝ), (burnolShiftKernel ρ u * F (u * t)) * burnolShiftKernel v t) =
+        burnolShiftKernel ρ u * ((u : ℂ) ^ (v - 1)) *
+          ∫ x in Ioi (0 : ℝ), F x * soninMellinKernel v x := by
+    intro u hu
+    have hu0 : 0 < u := lt_trans zero_lt_one hu
+    have hcongr : (∫ t in Ioi (0 : ℝ),
+          (burnolShiftKernel ρ u * F (u * t)) * burnolShiftKernel v t) =
+        burnolShiftKernel ρ u * ∫ t in Ioi (0 : ℝ), F (u * t) * soninMellinKernel v t := by
+      rw [← integral_const_mul]
+      apply setIntegral_congr_fun measurableSet_Ioi
+      intro t ht
+      have ht0 : 0 < t := ht
+      dsimp only
+      rw [burnolShiftKernel_eq_mellinKernel ht0 v]
+      ring
+    rw [hcongr, integral_dilate_mellinKernel hu0, ← mul_assoc]
+  rw [setIntegral_congr_fun measurableSet_Ioi hinner, integral_mul_const]
+  have hchar : ∀ u ∈ Ioi (1 : ℝ),
+      burnolShiftKernel ρ u * ((u : ℂ) ^ (v - 1)) = (u : ℂ) ^ (v - ρ - 1) := by
+    intro u hu
+    have hu0 : 0 < u := lt_trans zero_lt_one hu
+    have hune : ((u : ℝ) : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hu0
+    rw [burnolShiftKernel_eq_cpow hu0, ← Complex.cpow_add _ _ hune]
+    congr 1
+    ring
+  rw [setIntegral_congr_fun measurableSet_Ioi hchar]
+  have hlt : (v - ρ - 1).re < -1 := by
+    rw [Complex.sub_re, Complex.sub_re]
+    norm_num
+    linarith
+  rw [integral_Ioi_cpow_of_lt hlt zero_lt_one, Complex.ofReal_one, Complex.one_cpow]
+  have hne : ρ - v ≠ 0 := by
+    intro h
+    have : v = ρ := by linear_combination -h
+    rw [this] at hvρ
+    linarith
+  rw [show v - ρ - 1 + 1 = -(ρ - v) by ring]
+  field_simp
 
 end RHTower

@@ -2,7 +2,7 @@
 
 - **Status:** formalized analytic interface
 - **Source theorem:**
-  `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki-donoghue-defect-spectral-measure-law.md`
+  `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki/suzuki-donoghue-defect-spectral-measure-law.md`
 - **Lean module:**
   `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueSpectralMeasure.lean`
 - **Unconditional:** yes

@@ -238,3 +238,85 @@ ceiling count leaves the last point uncovered.
 With `integral_norm_dirPoly_halasz`-style splitting (`∫₀^T|F| ≤ V·T + M·|{|F| ≥ V}|`, already in
 `DirichletMeasureLargeValues`) this is the last geometric input to the `t`-integral; the Perron
 assembly is what remains.
+
+## The `t`-integral — Halász's mean-value estimate for the series
+
+`formal/GaloisForLFunctions/RHTower/Sieve/HalaszIntegralBound.lean` (9069 jobs, exit 0, axiom-clean).
+
+- `continuous_tsum_twistedSummand` — the series is continuous in the frequency, by the Weierstrass test
+  (`continuous_tsum`) against `∑_n n^{-σ}`. Hence the large-value set is *open*, so measurable, and the
+  covering bound applies to it.
+- `integral_norm_tsum_twistedSummand_le` — **the mean-value bound**:
+
+  `∫_{-T}^{T} ‖∑_n f(n)n^{-σ-it}‖ dt ≤ damped·2T + trivial·(2T log z/π + 1)·2√(2π²δ²/logSqWeight z)`
+
+  with `damped = (1 + 1/(σ−1))e^{7/2+shift−δ²}` and `trivial = (1 + 1/(σ−1))e^{7/2}`. The proof splits
+  the integral at the damped level (`integral_inter_add_sdiff`): off the exceptional window the damped
+  bound holds pointwise, on it the trivial bound holds, and the window is thin by the covering estimate.
+
+Every constant is explicit and absolute; the only inputs are `|f| ≤ 1`, multiplicativity on coprime
+arguments, and `σ > 1`. This is Halász's mean-value estimate for the object Perron inversion consumes.
+
+## State of the thread
+
+| Step | Module | Status |
+|---|---|---|
+| local Euler factor | `MultiplicativeEulerBound` | done |
+| full-series Euler bound | `MultiplicativeEulerBound` | done |
+| trivial size `P(σ) ≤ log(1+1/(σ−1))+1` | `PrimeAbscissaSumBound` | done |
+| bridge to the harmonic distance | `DistanceAbscissaBridge` | done |
+| dichotomy + discrete large values | `HalaszFullSeriesSum` | done |
+| large values confined to one window | `HalaszLargeValueWindow` | done |
+| covering ⇒ measure bound | `DiameterCoveringMeasure` + `HalaszLargeValueWindow` | done |
+| `t`-integral | `HalaszIntegralBound` | done |
+| Perron assembly | `HTGeometry.SmoothWeightPerron` | **remaining** |
+
+The Perron step is the only one left, and its inputs are already generic: `SmoothWeightPerron` is
+stated for an arbitrary coefficient sequence with `‖a n‖ ≤ 1`.
+
+## The Perron assembly — the chain is closed
+
+`formal/GaloisForLFunctions/RHTower/Sieve/HalaszPerronAssembly.lean` (9074 jobs, exit 0, axiom-clean).
+
+- `perronKernel σ N H y = mellin (smoothWeight N H) (σ + iy)` — the vertical kernel.
+- `norm_tsum_mul_smoothWeight_le` — **the assembled bound**:
+
+  `2π ‖∑ₙ f(n) w(n)‖ ≤ Wsup · (Halász integral bound) + trivial · ∫_{(|y| ≤ T)ᶜ} ‖W‖`
+
+  for any uniform kernel bound `Wsup`. Proof: the corpus's `SmoothWeightPerron.
+  tsum_mul_smoothWeight_eq_integral` (stated for arbitrary unit-bounded coefficients) turns the
+  smoothed sum into the vertical integral; `norm_integral_le_integral_norm` passes to moduli;
+  `integral_add_compl` splits at height `T`; the range piece is bounded by `Wsup` times the mean-value
+  bound of `HalaszIntegralBound`, the tail piece by the trivial size times the kernel tail.
+  Integrability of the product comes from `Integrable.mono'` against `triv · ‖W‖`.
+
+So every step of Halász's method is now formalized for the actual Dirichlet series, with all constants
+explicit and no `sorry`, `axiom` or interface hypothesis anywhere in the chain:
+
+`local factor → full series → trivial size → harmonic distance → dichotomy → discrete large values →
+window confinement → covering measure → t-integral → Perron`.
+
+**What is still parametric.** The assembled bound takes the two kernel quantities as inputs: a uniform
+bound `Wsup` on `‖mellin (smoothWeight N H) (σ+iy)‖` and the tail integral
+`∫_{|y| > T} ‖mellin (smoothWeight N H) (σ+iy)‖`. Neither is an open problem — the corpus's
+`HTGeometry/SmoothWeightMellin.norm_mellin_smoothWeight_le_pow` and `PerronKernelBound` bound exactly
+these — but instantiating them (and then choosing `z`, `δ`, `T`, `H` to make the total decay) is the
+next mechanical step, and only after it does a decay statement for a specific `f` follow.
+
+## One of the two kernel parameters is now discharged
+
+Appended to `HalaszPerronAssembly.lean` (9074 jobs, exit 0, axiom-clean):
+
+- `norm_perronKernel_le` — `‖perronKernel σ N H y‖ ≤ (N+H)^σ / σ`, **uniformly in `y`**, from the
+  corpus's `SmoothWeightMellin.norm_mellin_smoothWeight_le_pow` (the cutoff has modulus ≤ 1 and
+  vanishes past `N+H`).
+- `norm_tsum_mul_smoothWeight_le_explicit` — the assembled bound with `Wsup` replaced by that explicit
+  value:
+
+  `2π‖∑ₙ f(n)w(n)‖ ≤ ((N+H)^σ/σ)·(Halász integral bound) + trivial·∫_{|y|>T} ‖perronKernel‖`.
+
+Only the kernel *tail* is still free. The corpus's `SmoothWeightInversion.
+exists_bound_mellin_smoothWeight_line` supplies `∃ C > 0, ∀ y, ‖W(σ+iy)‖ ≤ C/(1+y²)`, so the tail is
+at most `C·(π − 2 arctan T)` — an explicit computation via `intervalIntegral.integral_one_div_one_add_sq`
+that would close the last parameter. After that, choosing `z, δ, T, H, σ` is arithmetic, and only then
+does a decay statement for a specific `f` follow.

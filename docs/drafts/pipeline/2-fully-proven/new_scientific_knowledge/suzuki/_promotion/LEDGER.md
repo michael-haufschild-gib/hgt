@@ -15,57 +15,132 @@ that name and its relative links deepened by one level.  Inbound links are repai
 restricted-Weil trace", "specialist novelty review", "3 → 4 publication-ready") do not block
 promotion; gates that name missing Lean do.
 
-## A. Promoted
+## A. Promoted (65 of 103)
 
-| card | note |
-|---|---|
-| `suzuki-affine-resolvent-krein-defect` | |
-| `suzuki-affine-sewn-weil-robin-far-tail-factorization` | |
-| `suzuki-bicausal-no-free-splice-classification` | |
-| `suzuki-causal-depth-frostman-transfer` | |
-| `suzuki-causal-depth-rectangular-caratheodory-growth` | |
-| `suzuki-causal-entry-third-jet-boundary-law` | gap closed: `SuzukiCausalEntryMovingCutRealization.lean` |
-| `suzuki-causal-hinge-boundary-tail-green-law` | |
-| `suzuki-causal-weil-robin-green-identity` | |
-| `suzuki-coherent-causal-depth-fusion` | |
-| `suzuki-coherent-response-gain-no-go` | |
-| `suzuki-critical-affine-cauchy-residual-divergence` | |
-| `suzuki-critical-aperture-quarter-shift-current` | gap closed: `SuzukiCriticalAperturePrimeCurrent.lean` |
-| `suzuki-critical-apex-vacuum-capacity-no-go` | |
-| `suzuki-critical-entry-wall-quarter-shift-green-law` | |
-| `suzuki-critical-rooted-bianchi-cofinal-no-go` | |
-| `suzuki-critical-wall-field-resolvent-dressing-law` | |
-| `suzuki-critical-wall-field-square-root-weld` | |
-| `suzuki-global-local-compound-bezoutian-weld` | |
-| `suzuki-ground-edge-aperture-robin-obstruction` | |
-| `suzuki-jump-kernel-loewner-growth-gap` | |
-| `suzuki-mangoldt-apex-lock-rigidity` | |
-| `suzuki-mangoldt-log-haar-bicausal-transport` | sharp branch conditional on cited Ramaré capacity; unconditional `W`-radius branch is complete |
-| `suzuki-mangoldt-macroscopic-prime-block-surplus` | |
-| `suzuki-mangoldt-uniform-dyadic-block-surplus` | |
-| `suzuki-marked-secant-midpoint-lorentz-completion` | |
-| `suzuki-rectangular-positive-arch-lag-completion` | |
-| `suzuki-rectangular-ward-defect-semiboundedness` | |
-| `suzuki-shifted-xi-target-flat-pencil` | |
-| `suzuki-volterra-cartesian-phase-defect` | |
-| `suzuki-wall-field-projective-density-separation-law` | |
+- `suzuki-affine-resolvent-krein-defect`
+- `suzuki-affine-sewn-weil-robin-far-tail-factorization`
+- `suzuki-aperture-rees-superpolynomial-conditioning`
+- `suzuki-bicausal-displacement-overlap-conservation`
+- `suzuki-bicausal-no-free-splice-classification`
+- `suzuki-causal-depth-frostman-transfer`
+- `suzuki-causal-depth-rectangular-caratheodory-growth`
+- `suzuki-causal-entry-third-jet-boundary-law`
+- `suzuki-causal-hinge-boundary-tail-green-law`
+- `suzuki-causal-weil-robin-green-identity`
+- `suzuki-coherent-causal-depth-fusion`
+- `suzuki-coherent-response-gain-no-go`
+- `suzuki-compactified-inverse-phase-lattice-holography`
+- `suzuki-critical-affine-cauchy-residual-divergence`
+- `suzuki-critical-aperture-quarter-shift-current`
+- `suzuki-critical-apex-vacuum-capacity-no-go`
+- `suzuki-critical-entry-wall-quarter-shift-green-law`
+- `suzuki-critical-rooted-bianchi-cofinal-no-go`
+- `suzuki-critical-wall-field-resolvent-dressing-law`
+- `suzuki-critical-wall-field-square-root-weld`
+- `suzuki-donoghue-defect-spectral-measure-law`
+- `suzuki-dyadic-orbit-chart-h1-coverage`
+- `suzuki-finite-morse-resolvent-jet-completion`
+- `suzuki-finite-shift-flat-projective-resolvent-holonomy`
+- `suzuki-full-frequency-neumann-holonomy-survivor`
+- `suzuki-global-local-compound-bezoutian-weld`
+- `suzuki-global-phase-conjugacy-divisor-flow`
+- `suzuki-ground-edge-aperture-robin-obstruction`
+- `suzuki-ground-residue-polarization-selection`
+- `suzuki-high-clock-prime-tangent-tomography`
+- `suzuki-homogeneous-projective-resolvent-plucker-lift`
+- `suzuki-interior-excursion-shift-selection`
+- `suzuki-jump-kernel-loewner-growth-gap`
+- `suzuki-localized-orbit-lift-selfadjointness-trilemma`
+- `suzuki-low-frequency-boundary-counterterm-renormalization`
+- `suzuki-mangoldt-apex-lock-rigidity`
+- `suzuki-mangoldt-log-haar-bicausal-transport`
+- `suzuki-mangoldt-macroscopic-prime-block-surplus`
+- `suzuki-mangoldt-uniform-dyadic-block-surplus`
+- `suzuki-marked-secant-midpoint-lorentz-completion`
+- `suzuki-negative-projector-coherent-completion`
+- `suzuki-negative-shift-defect-escape`
+- `suzuki-parity-hankel-infinite-negative-index`
+- `suzuki-parity-hankel-infinite-rank-no-go`
+- `suzuki-parity-resolvent-transport-budget`
+- `suzuki-physical-log-low-frequency-boundary-lock`
+- `suzuki-position-torque-prime-clock-irreducibility`
+- `suzuki-prime-clock-atom-velocity-transference`
+- `suzuki-prime-seam-parity-hankel-strong-indefiniteness`
+- `suzuki-projective-affine-secant-tensor-lift`
+- `suzuki-rectangular-positive-arch-lag-completion`
+- `suzuki-rectangular-ward-defect-semiboundedness`
+- `suzuki-resolvent-jet-homogeneous-plucker-tomography`
+- `suzuki-screw-cesaro-curvature-recurrence`
+- `suzuki-screw-compact-hull-parity-law`
+- `suzuki-shift-spectral-monotone-likelihood-transfer`
+- `suzuki-shifted-xi-target-flat-pencil`
+- `suzuki-support-pruned-evaluation-rigging-fracture`
+- `suzuki-support-pruned-selfadjoint-seam-carrier`
+- `suzuki-two-jet-shifted-hankel-gate`
+- `suzuki-volterra-cartesian-phase-defect`
+- `suzuki-wall-field-projective-density-separation-law`
+- `suzuki-xi-first-defect-jet-gap`
+- `suzuki-xireal-fe-bipolarization-completion`
+- `suzuki-zero-trace-cofinal-convex-recurrence`
 
-## B. Verified complete, companion written, awaiting promotion
+## New Lean modules written for this promotion
 
-`suzuki-bicausal-displacement-overlap-conservation`,
-`suzuki-boundary-log-nonclock-nonflat-tangent`,
-`suzuki-full-frequency-neumann-holonomy-survivor`,
-`suzuki-homogeneous-projective-resolvent-plucker-lift`,
-`suzuki-interior-excursion-shift-selection`,
-`suzuki-negative-projector-coherent-completion`,
-`suzuki-parity-hankel-infinite-negative-index`,
-`suzuki-parity-hankel-infinite-rank-no-go`,
-`suzuki-parity-resolvent-transport-budget`,
-`suzuki-position-torque-prime-clock-irreducibility`,
-`suzuki-prime-seam-parity-hankel-strong-indefiniteness`,
-`suzuki-support-pruned-selfadjoint-seam-carrier` (gap closed:
-`SuzukiSupportPrunedSeamCarrierBounds.lean`),
-`suzuki-xireal-fe-bipolarization-completion`.
+```text
+HTGeometry/AlternatingChordLaw.lean                  2-alternating chord law + exterior instance
+HTGeometry/DyadicLatticeCover.lean                   lattice window cover, finite subcover, weight
+RHTower/SuzukiCausalEntryMovingCutRealization.lean   moving-cut integrals, their three derivative
+                                                     laws, hypothesis-free jet chain, entry law
+RHTower/SuzukiCriticalAperturePrimeCurrent.lean      absolute prime summability of the critical
+                                                     quarter-shift current; cofinal current
+RHTower/SuzukiPrimeClockPhysicalSine.lean            velocity = truncated critical sine transform
+RHTower/SuzukiProjectiveResolventBlade.lean          Plücker blade form of the resolvent chord
+RHTower/SuzukiSupportPrunedSeamCarrierBounds.lean    adjoint law, norm bounds, pruned action
+```
+
+All seven are wired into their area umbrella, build green, and are axiom-clean.
+
+## B. Remaining (38)
+
+- `bv-copoisson-sharp-critical-half-weight-log-flux`
+- `suzuki-arithmetic-tangent-inverse-moment-holography`
+- `suzuki-boundary-log-nonclock-nonflat-tangent`
+- `suzuki-carleman-flat-port-weighted-strip-barrier`
+- `suzuki-complementary-primitive-flux-derivative-recovery`
+- `suzuki-completed-eigenmode-atomic-jump-boundedness`
+- `suzuki-coordinate-cutoff-covariance-classification`
+- `suzuki-coordinate-cutoff-primitive-flux-identity`
+- `suzuki-exact-log-remainder-signed-trace-rigidity`
+- `suzuki-exterior-feshbach-pruning-law`
+- `suzuki-exterior-residual-rigged-wiener-realization`
+- `suzuki-finite-aperture-boundary-phase-locking`
+- `suzuki-flat-primitive-flux-volterra-liouville`
+- `suzuki-forced-gamma-upper-strip-gluing`
+- `suzuki-gamma-homogeneous-half-log-scattering-classification`
+- `suzuki-gamma-prime-normal-corona-equivalence`
+- `suzuki-gamma-skew-frequency-flux-liouville`
+- `suzuki-gamma-three-grade-delay-root-observability`
+- `suzuki-gamma-wall-block-hardy-and-derivative-scattering`
+- `suzuki-gamma-weighted-tail-coercivity`
+- `suzuki-interior-seam-indicial-dipole-exclusion`
+- `suzuki-log-recurrence-polynomial-carrier-trichotomy`
+- `suzuki-neumann-dominated-shift-cone-obstruction`
+- `suzuki-paired-seam-carleman-logistic-normal-form`
+- `suzuki-physical-log-grade-nuclear-summability`
+- `suzuki-polar-remainder-lipschitz-gamma-subcriticality`
+- `suzuki-prime-normal-binomial-resolvent`
+- `suzuki-primitive-flux-nonnormal-graph-reduction`
+- `suzuki-residual-overcrowding-entire-pair-closure`
+- `suzuki-root-retained-exterior-dilation`
+- `suzuki-scalar-analytic-forcing-trace-zero-h1`
+- `suzuki-tempered-orbit-carrier-aperture-recurrence-dichotomy`
+- `suzuki-two-port-return-redundancy-and-interior-null-core`
+- `suzuki-weak-signed-half-log-trace`
+- `suzuki-weil-position-torque-recurrence`
+- `suzuki-wiener-cutoff-closed-graph-relation`
+- `suzuki-wiener-neumann-plancherel-order-repair`
+- `suzuki-wiener-nuclear-boundary-carrier`
+
+Every one is listed in section C with the exact Lean object it still needs.
 
 ## C. Open Lean debt — the remaining work
 

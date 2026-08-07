@@ -7,7 +7,7 @@
 - **Failed claim:** direct Neumann comparison channel cancels from the full affine-sewn source,
   so a prime--Gamma-only resolvent square can produce the jump Pick kernel
 - **Positive survivor:**
-  `../2-fully-proven/new_scientific_knowledge/suzuki-full-frequency-neumann-holonomy-survivor.md`
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-full-frequency-neumann-holonomy-survivor.md`
 - **RH used:** no
 - **Computation used:** no
 

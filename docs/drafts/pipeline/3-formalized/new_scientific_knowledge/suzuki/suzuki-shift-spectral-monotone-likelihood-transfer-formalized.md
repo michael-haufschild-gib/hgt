@@ -1,0 +1,230 @@
+# Suzuki shift-spectral monotone-likelihood transfer — Lean certificate
+
+- **ID:** `suzuki-shift-spectral-monotone-likelihood-transfer-formalized`
+- **Stage:** 3 — formalized in Lean 4
+- **Paper proof:** `./suzuki-shift-spectral-monotone-likelihood-transfer.md`
+- **Status:** `[LEAN-PROVED] [UNCONDITIONAL] [AXIOM-CLEAN]`
+
+## Lean modules
+
+- `formal/GaloisForLFunctions/HTGeometry/CompactClusterLimit.lean`
+- `formal/GaloisForLFunctions/HTGeometry/LinearPartialFractions.lean`
+- `formal/GaloisForLFunctions/HTGeometry/MonotoneLikelihoodRatio.lean`
+- `formal/GaloisForLFunctions/HTGeometry/PoissonBoundaryPositivity.lean`
+- `formal/GaloisForLFunctions/RHTower/SuzukiAntiPickIdentity.lean`
+- `formal/GaloisForLFunctions/RHTower/SuzukiCrossResolventInstantiation.lean`
+- `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueHerglotzTransform.lean`
+- `formal/GaloisForLFunctions/RHTower/SuzukiHalfPlaneHerglotz.lean`
+- `formal/GaloisForLFunctions/RHTower/SuzukiMeasureAntiPick.lean`
+- `formal/GaloisForLFunctions/RHTower/SuzukiShiftSpectralMonotoneRatio.lean`
+
+## Formal theorem surface
+
+Every declaration below was resolved against the tree and its axiom surface checked.
+
+`GaloisForLFunctions.HTGeometry.CompactClusterLimit`:
+
+```text
+GaloisForLFunctions.HTGeometry.eq_of_clusterPt_of_tendsto
+GaloisForLFunctions.HTGeometry.exists_clusterPt_closure_of_isCompact
+GaloisForLFunctions.HTGeometry.exists_mem_closure_of_tendsto_of_isCompact
+GaloisForLFunctions.HTGeometry.exists_mem_of_tendsto_of_isCompact
+```
+
+`GaloisForLFunctions.HTGeometry.LinearPartialFractions`:
+
+```text
+GaloisForLFunctions.HTGeometry.div_eq_add_sum_const_of_isRoot
+GaloisForLFunctions.HTGeometry.div_linear_prod_eq_add_sum_const
+GaloisForLFunctions.HTGeometry.eq_C_mul_prod_X_sub_C
+GaloisForLFunctions.HTGeometry.eq_C_of_degree_lt_one
+GaloisForLFunctions.HTGeometry.prod_X_sub_C_dvd_of_isRoot
+```
+
+`GaloisForLFunctions.HTGeometry.MonotoneLikelihoodRatio`:
+
+```text
+HTGeometry.integral_mul_integral_le_of_monotoneLikelihoodKernel
+```
+
+`GaloisForLFunctions.HTGeometry.PoissonBoundaryPositivity`:
+
+```text
+GaloisForLFunctions.HTGeometry.Icc_subset_biUnion_Icc
+GaloisForLFunctions.HTGeometry.circleMap_zero_eq_mul
+GaloisForLFunctions.HTGeometry.closedBall_subset_ball_one
+GaloisForLFunctions.HTGeometry.continuousAt_dilate
+GaloisForLFunctions.HTGeometry.continuous_poissonKernel_circleMap
+GaloisForLFunctions.HTGeometry.eq_zero_of_center_eq_zero
+GaloisForLFunctions.HTGeometry.eq_zero_of_center_eq_zero_ball
+GaloisForLFunctions.HTGeometry.exists_poissonRepresentation
+GaloisForLFunctions.HTGeometry.harmonicAt_neg_im
+GaloisForLFunctions.HTGeometry.harmonicContOnCl_of_lt_one
+GaloisForLFunctions.HTGeometry.integral_one_poissonBoundaryMeasure
+GaloisForLFunctions.HTGeometry.integral_poissonBoundaryMeasure
+GaloisForLFunctions.HTGeometry.integral_poissonKernel_poissonBoundaryMeasure
+GaloisForLFunctions.HTGeometry.integral_unitPoissonKernel_normalized
+GaloisForLFunctions.HTGeometry.integral_unitPoissonKernel_poissonBoundaryMeasure
+GaloisForLFunctions.HTGeometry.isFiniteMeasure_poissonBoundaryMeasure
+GaloisForLFunctions.HTGeometry.isProbabilityMeasure_poissonBoundaryMeasure_smul
+GaloisForLFunctions.HTGeometry.isTightMeasureSet_of_forall_compl_eq_zero
+GaloisForLFunctions.HTGeometry.isTightMeasureSet_poissonBoundaryMeasure
+GaloisForLFunctions.HTGeometry.le_poissonKernel_circleMap_one
+GaloisForLFunctions.HTGeometry.le_poissonKernel_of_close
+GaloisForLFunctions.HTGeometry.measureReal_Icc_eq_zero_of_radial_tendsto_zero
+GaloisForLFunctions.HTGeometry.measureReal_Icc_le
+GaloisForLFunctions.HTGeometry.measureReal_Icc_le_of_bddAbove
+GaloisForLFunctions.HTGeometry.measureReal_Icc_le_of_radial_bound
+GaloisForLFunctions.HTGeometry.measureReal_Icc_le_of_uniform_radial_bound
+GaloisForLFunctions.HTGeometry.measureReal_Icc_le_radial
+GaloisForLFunctions.HTGeometry.measureReal_le_of_close
+GaloisForLFunctions.HTGeometry.measureReal_singleton_eq_zero_of_bddAbove
+GaloisForLFunctions.HTGeometry.measureReal_singleton_mul_le
+GaloisForLFunctions.HTGeometry.nonneg_neg_im_of_antiHerglotz_on_sphere
+GaloisForLFunctions.HTGeometry.nonneg_neg_im_on_sphere
+GaloisForLFunctions.HTGeometry.nonneg_of_nonneg_on_sphere
+GaloisForLFunctions.HTGeometry.norm_circleMap_sub_circleMap_le
+GaloisForLFunctions.HTGeometry.norm_circleMap_sub_le
+GaloisForLFunctions.HTGeometry.norm_circleMap_sub_smul
+GaloisForLFunctions.HTGeometry.one_sub_norm_le_norm_circleMap_sub
+GaloisForLFunctions.HTGeometry.poissonBoundaryData
+GaloisForLFunctions.HTGeometry.poissonBoundaryMeasure
+GaloisForLFunctions.HTGeometry.poissonBoundaryMeasure_compl_Icc_eq_zero
+GaloisForLFunctions.HTGeometry.poissonBoundaryMeasure_compl_eq_zero
+GaloisForLFunctions.HTGeometry.poissonBoundaryMeasure_eq_zero
+GaloisForLFunctions.HTGeometry.poissonBoundaryMeasure_univ
+GaloisForLFunctions.HTGeometry.poissonKernel_circleMap_one
+GaloisForLFunctions.HTGeometry.poissonKernel_circleMap_one_center
+GaloisForLFunctions.HTGeometry.poissonKernel_circleMap_one_le
+GaloisForLFunctions.HTGeometry.poissonKernel_circleMap_one_nonneg
+GaloisForLFunctions.HTGeometry.poissonKernel_mul_ofReal
+GaloisForLFunctions.HTGeometry.poissonKernel_pos
+GaloisForLFunctions.HTGeometry.poissonKernel_radial
+GaloisForLFunctions.HTGeometry.tendsto_dilate
+GaloisForLFunctions.HTGeometry.unitPoissonTest
+```
+
+`GaloisForLFunctions.RHTower.SuzukiAntiPickIdentity`:
+
+```text
+RHTower.aeval_cauchyClearedPoly
+RHTower.antiPick_sum_nonneg
+RHTower.cauchyClearedPoly
+RHTower.cauchyClearedPoly_ne_zero
+RHTower.cauchyRatio_eq_polyRatio
+RHTower.cauchySum_ne_zero
+RHTower.cauchySum_ne_zero_of_im_ne_zero
+RHTower.continuousOn_cauchySumReal
+RHTower.deriv_cauchySumReal_pos
+RHTower.eval_cauchyClearedPoly
+RHTower.existsUnique_zero_in_gap
+RHTower.existsUnique_zero_of_sign_change
+RHTower.exists_factorization_cauchyClearedPoly
+RHTower.exists_injective_gapRoots
+RHTower.exists_mem_Ioo_cauchySumReal_neg
+RHTower.exists_partialFractions_shiftRatio
+RHTower.exists_zero_of_sign_change
+RHTower.hasDerivAt_cauchySumReal
+RHTower.im_antiPick_nonpos
+RHTower.im_antiPick_sum
+RHTower.im_cauchySum_neg
+RHTower.im_cauchySum_pos
+RHTower.im_cauchyTerm
+RHTower.im_cauchy_mul_conj
+RHTower.im_div_eq_im_mul_conj
+RHTower.im_numerator_mul_conj_denominator
+RHTower.im_poleTerm
+RHTower.im_ratio_nonpos_of_im_mul_conj_nonpos
+RHTower.im_shiftRatio_nonpos
+RHTower.injOn_cauchySumReal
+RHTower.isRoot_cauchyClearedPoly
+RHTower.natDegree_cauchyClearedPoly_le
+RHTower.numerator_sub_ell_mul
+RHTower.poleCoeff_eq_residue
+RHTower.poleCoeff_nonneg_iff_im_nonpos
+RHTower.prod_mul_cauchySum
+RHTower.prod_mul_cauchySumReal_eq_eval
+RHTower.prod_mul_cauchySum_eq_aeval
+RHTower.prod_node_ne_zero
+RHTower.ratio_sub_ell_eq
+RHTower.residue_poleTerm
+RHTower.shiftRatio_eq_const_of_response_const
+RHTower.strictMonoOn_cauchySumReal
+RHTower.sum_sum_add_swap
+RHTower.sum_weight_sub_ell_eq_zero
+RHTower.suzukiShiftEll
+RHTower.tendsto_cauchySumReal_atBot
+RHTower.tendsto_cauchyTerm_atBot
+RHTower.tendsto_cauchyTerm_atTop
+RHTower.tendsto_residue_of_simple_zero
+```
+
+`GaloisForLFunctions.RHTower.SuzukiCrossResolventInstantiation`:
+
+```text
+RHTower.crossResponse
+RHTower.crossWeight
+RHTower.crossWeight_self_nonneg
+RHTower.im_crossResolventRatio_nonpos
+RHTower.inner_spectralResolvent
+RHTower.inner_spectralResolvent_denominator
+RHTower.inner_spectralResolvent_numerator
+RHTower.spectralOperator
+RHTower.spectralOperator_basis
+RHTower.spectralOperator_spectralResolvent
+RHTower.spectralResolvent
+```
+
+`GaloisForLFunctions.RHTower.SuzukiDonoghueHerglotzTransform`:
+
+```text
+GaloisForLFunctions.RHTower.herglotzOfCayley
+GaloisForLFunctions.RHTower.im_herglotzOfCayley_pos
+```
+
+`GaloisForLFunctions.RHTower.SuzukiHalfPlaneHerglotz`:
+
+```text
+GaloisForLFunctions.RHTower.analyticAt_herglotzOfCayley
+GaloisForLFunctions.RHTower.exists_poissonRepresentation_antiHerglotz
+GaloisForLFunctions.RHTower.exists_poissonRepresentation_antiHerglotz_vanishing
+GaloisForLFunctions.RHTower.exists_poissonRepresentation_upperHalfPlane
+GaloisForLFunctions.RHTower.harmonicOnNhd_neg_im_comp
+```
+
+`GaloisForLFunctions.RHTower.SuzukiMeasureAntiPick`:
+
+```text
+RHTower.cauchyKernel_cross_eq
+RHTower.im_measureNumerator_mul_conj_denominator
+RHTower.im_measureShiftRatio_nonpos
+RHTower.integral_cauchyKernel_crossWronskian_le
+RHTower.monotoneLikelihood_cauchyKernel
+```
+
+`GaloisForLFunctions.RHTower.SuzukiShiftSpectralMonotoneRatio`:
+
+```text
+RHTower.deriv_suzukiShiftRatio_nonpos
+RHTower.hasDerivAt_integral_weighted_suzukiShiftResolventKernel
+RHTower.hasDerivAt_suzukiShiftRatio
+RHTower.hasDerivAt_suzukiShiftResolventKernel
+RHTower.suzukiShiftSpectralMonotoneRatio_derivativeNumerator_nonpos
+```
+
+## Verification
+
+- every module above passes `lake env lean`;
+- `#print axioms` on all 140 resolved declarations reports only `propext`,
+  `Classical.choice`, `Quot.sound`;
+- no `sorry`, `admit`, user `axiom`, `opaque`, or `unsafe` declaration is reachable;
+- no RH premise and no numerical computation is used.
+
+## Open gates carried by the paper card
+
+- prove or falsify actual source coefficient laws `(8)`
+- prove chord-mass gap for one source-selected pair
+- prove full normalized jump Pick kernel
+- RH
+
+These are research frontier items, not formalization debt.

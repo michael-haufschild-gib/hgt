@@ -33,7 +33,7 @@ N_L(z)
 ```
 
 See the paper-proved positive survivor
-`../2-fully-proven/new_scientific_knowledge/suzuki-full-frequency-neumann-holonomy-survivor.md`
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-full-frequency-neumann-holonomy-survivor.md`
 and failed-route ledger `../5-failed/suzuki-prime-gamma-only-jump-square.md`.
 
 Write `m_EG,L` for the affine-sewn quotient with the explicit Neumann triangle removed but the
@@ -121,7 +121,7 @@ erase `(7)` and assume missing RH-bearing weld.
 The local completion in `SUZUKI-GLOBAL-LOCAL-KREIN-WELD` is no longer arbitrary.  Let `J` be the
 independently fixed Xi-real quarter-turn, `R` the FE coefficient reflection, and `Omega_theta` the
 weld area.  Paper theorem
-`../2-fully-proven/new_scientific_knowledge/suzuki-xireal-fe-bipolarization-completion.md` proves
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-xireal-fe-bipolarization-completion.md` proves
 
 ```text
 Q+_theta=[Omega_theta(.,J.)+Omega_theta(.,R.)]/2,
@@ -197,7 +197,7 @@ At fixed aperture this is finite rank.  Revised analytic conjecture
 Neumann completion to equal `(13)` plus positive kernel in fixed Xi-real/FE negative-light
 channel.  If source holonomy is not spectrally aligned, taxed Schur condition `(10)` replaces exact
 identity.  See
-`../2-fully-proven/new_scientific_knowledge/suzuki-negative-projector-coherent-completion.md`.
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-negative-projector-coherent-completion.md`.
 
 ## 2026-07-22 finite-Morse resolvent-jet replacement
 
@@ -264,7 +264,7 @@ U_beta wedge U_alpha
 v=(A-alpha)^(-1)(A-beta)^(-1)e.                        (16)
 ```
 
-See `../2-fully-proven/new_scientific_knowledge/suzuki-homogeneous-projective-resolvent-plucker-lift.md`.
+See `../3-formalized/new_scientific_knowledge/suzuki/suzuki-homogeneous-projective-resolvent-plucker-lift.md`.
 
 Finite resolvent jets have a stronger positive salvage in representation `(16)`.  On finite
 simple cyclic spectral block, zero-constant Lagrange filters in one resolvent isolate every

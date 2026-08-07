@@ -80,6 +80,10 @@ theorem law_ae_eq {β : Type*} {f g : ℝ → β} :
     f =ᵐ[S.law] g ↔ f =ᵐ[volume] g :=
   withDensity_realDensity_ae_eq S.measurable_normalized S.normalized_pos
 
+theorem aestronglyMeasurable_law_iff {β : Type*} [TopologicalSpace β] {g : ℝ → β} :
+    AEStronglyMeasurable g S.law ↔ AEStronglyMeasurable g volume :=
+  aestronglyMeasurable_withDensity_realDensity_iff S.measurable_normalized S.normalized_pos
+
 /-- Integration against the source law is integration against the normalized density. -/
 theorem integral_law {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (g : ℝ → E) :
     ∫ x, g x ∂S.law = ∫ x, S.normalized x • g x := by
@@ -254,6 +258,32 @@ theorem measurePreserving_cdfFun :
   exact S.cdfFun_quantile ht
 
 end PositiveDensitySource
+
+/-! ### The hypothesis class is inhabited -/
+
+/-- The Gaussian source `k(x) = e^{-x²}`: continuous, everywhere positive, integrable. -/
+def gaussianSource : PositiveDensitySource where
+  k x := Real.exp (-x ^ 2)
+  continuous_k := Real.continuous_exp.comp (continuous_pow 2).neg
+  pos_k x := Real.exp_pos _
+  integrable_k := by
+    have h := integrable_exp_neg_mul_sq (b := 1) (by norm_num)
+    simpa using h
+
+theorem gaussianSource_le_one (x : ℝ) : gaussianSource.k x ≤ 1 := by
+  show Real.exp (-x ^ 2) ≤ 1
+  rw [Real.exp_le_one_iff]
+  simpa using sq_nonneg x
+
+theorem tendsto_gaussianSource_atBot :
+    Filter.Tendsto gaussianSource.k Filter.atBot (𝓝 0) := by
+  have hsq : Filter.Tendsto (fun x : ℝ => x ^ 2) Filter.atBot Filter.atTop := by
+    have h1 : Filter.Tendsto (fun x : ℝ => -x) Filter.atBot Filter.atTop := tendsto_neg_atBot_atTop
+    have h2 : Filter.Tendsto (fun y : ℝ => y ^ 2) Filter.atTop Filter.atTop :=
+      tendsto_pow_atTop (by norm_num)
+    refine (h2.comp h1).congr fun x => ?_
+    simp [Function.comp_apply]
+  exact Real.tendsto_exp_atBot.comp (tendsto_neg_atTop_atBot.comp hsq)
 
 end
 

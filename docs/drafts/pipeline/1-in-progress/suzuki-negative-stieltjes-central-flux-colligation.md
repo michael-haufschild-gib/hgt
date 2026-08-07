@@ -256,7 +256,7 @@ spectral variable `z`, is current operator frontier. Existing finite Donoghue me
 `-iW_1/W_-1`, has opposite divisor, and cannot discharge `(S3)`.
 
 The corpus successor
-`../2-fully-proven/new_scientific_knowledge/suzuki-shift-spectral-monotone-likelihood-transfer.md`
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-shift-spectral-monotone-likelihood-transfer.md`
 now proves a sharper positive mechanism for first sign. If spectral expansions factor as
 
 ```text

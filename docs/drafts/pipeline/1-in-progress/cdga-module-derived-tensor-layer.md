@@ -978,3 +978,34 @@ known to respect the structure maps in the unquotiented setting — `relUnitorHo
 whose compatibility with `d` and the action is the same computation as `constCellTensorHom`'s.  With
 that, two out of three against `freeCellFunctor_isQuasiIsoFull` closes the last row of the parity
 table.
+
+## The shift comparison is a map of differential graded modules
+
+`CDGATensorShiftHom.lean`.
+
+* `tensorShiftMap_tensorAct` — equivariance.  The action is diagonal on both sides; the only care is
+  that `b ≤ p'.1.1` implies `b ≤ r.1` but not conversely, so the boundary case where the action is
+  in range for the shifted degree but not for the bidegree has to be treated separately (both sides
+  are zero there).
+* `tensorShiftMap_tensorDL`, `tensorShiftMap_tensorDR` — the two halves of the differential.  The
+  left half is untouched by the shift; the right half is intertwined by `shiftEvalAt_shiftD`, the
+  identity that already made the shift a differential graded module in the first place.
+* **`tensorShiftHom`** and **`tensorShiftHom_isQuasiIsoFull`**.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+Two `Nat` traps, both new and both recorded because they will recur in the constant-exchange
+version:
+
+* `0 + (k'' + 1)` is definitionally `(0 + k'') + 1` but **not syntactically**, so `rw
+  [tensorDR_succ]` fails on it; a `have hval : … = 0` proved by `show` (which works up to defeq)
+  gets past it where `rw` cannot.
+* `rw [zero_add]` on a goal containing an index `0 + k` rewrites the *index* and breaks the motive.
+  Reordering so the summand is literally `0` first and then using `add_zero` avoids touching it.
+
+## Next
+
+The same upgrade for `tensorConstExchange` — a `CDGAModuleHom` from
+`tensorModule P (tensorConstModule Q V)` — after which both descents are morphisms, the composite
+`relTensorFreeCellEquiv` is a morphism, and naturality in `P` plus two out of three against
+`freeCellFunctor_isQuasiIsoFull` discharges `hcell` for `⊗_A`.

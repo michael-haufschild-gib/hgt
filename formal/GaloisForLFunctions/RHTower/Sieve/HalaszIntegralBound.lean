@@ -87,7 +87,7 @@ theorem integral_norm_tsum_twistedSummand_le
   -- split at the damped level
   have hsplit : (∫ t in Set.Icc (-T) T ∩ A, G t) + ∫ t in Set.Icc (-T) T \ A, G t
       = ∫ t in Set.Icc (-T) T, G t :=
-    setIntegral_inter_add_diff hAmeas hGint
+    integral_inter_add_sdiff hAmeas hGint
   -- on the window, the trivial bound
   have hwindow : (∫ t in Set.Icc (-T) T ∩ A, G t)
       ≤ (volume (Set.Icc (-T) T ∩ A)).toReal * triv := by
@@ -102,7 +102,7 @@ theorem integral_norm_tsum_twistedSummand_le
     have hfin : volume (Set.Icc (-T) T ∩ A) ≠ ⊤ :=
       ne_top_of_le_ne_top (by simp [Real.volume_Icc]) (measure_mono inter_subset_left)
     have hint2 : IntegrableOn (fun _ : ℝ => triv) (Set.Icc (-T) T ∩ A) :=
-      integrableOn_const_of_ne_top hfin
+      integrableOn_const hfin
     refine le_trans (setIntegral_mono_on (hGint.mono_set inter_subset_left) hint2 hmeas hbound) ?_
     rw [setIntegral_const, measureReal_def, smul_eq_mul]
   -- off the window, the damped bound
@@ -112,24 +112,24 @@ theorem integral_norm_tsum_twistedSummand_le
       have : ¬ (damped < G t) := by
         intro hlt
         exact ht.2 hlt
-      exact le_of_not_lt this
+      exact not_lt.mp this
     have hmeas : MeasurableSet (Set.Icc (-T) T \ A) := measurableSet_Icc.diff hAmeas
     have hfin : volume (Set.Icc (-T) T \ A) ≠ ⊤ :=
-      ne_top_of_le_ne_top (by simp [Real.volume_Icc]) (measure_mono diff_subset)
+      ne_top_of_le_ne_top (by simp [Real.volume_Icc]) (measure_mono sdiff_subset)
     have hint2 : IntegrableOn (fun _ : ℝ => damped) (Set.Icc (-T) T \ A) :=
-      integrableOn_const_of_ne_top hfin
-    refine le_trans (setIntegral_mono_on (hGint.mono_set diff_subset) hint2 hmeas hbound) ?_
+      integrableOn_const hfin
+    refine le_trans (setIntegral_mono_on (hGint.mono_set sdiff_subset) hint2 hmeas hbound) ?_
     rw [setIntegral_const, measureReal_def, smul_eq_mul]
     have hvol : (volume (Set.Icc (-T) T \ A)).toReal ≤ 2 * T := by
       have hle : volume (Set.Icc (-T) T \ A) ≤ volume (Set.Icc (-T) T) :=
-        measure_mono diff_subset
+        measure_mono sdiff_subset
       have hIcc : (volume (Set.Icc (-T) T)).toReal = 2 * T := by
         rw [Real.volume_Icc, ENNReal.toReal_ofReal (by linarith)]
         ring
       have hfin2 : volume (Set.Icc (-T) T) ≠ ⊤ := by simp [Real.volume_Icc]
       have := ENNReal.toReal_mono hfin2 hle
       rwa [hIcc] at this
-    exact mul_le_mul_of_nonneg_right hvol hdamped0
+    exact le_trans (mul_le_mul_of_nonneg_right hvol hdamped0) (le_of_eq (mul_comm _ _))
   -- the measure of the window
   have hvolA : (volume (Set.Icc (-T) T ∩ A)).toReal ≤
       (2 * T * Real.log (z : ℝ) / Real.pi + 1) *

@@ -5,7 +5,7 @@
 - **Type:** THEOREM (LEAN)
 - **Scientific status:** `[LEAN-PROVED] [UNCONDITIONAL] [NOT RH]`
 - **Paper parent:**
-  `../../2-fully-proven/new_scientific_knowledge/suzuki-shift-spectral-monotone-likelihood-transfer.md`
+  `../../3-formalized/new_scientific_knowledge/suzuki/suzuki-shift-spectral-monotone-likelihood-transfer.md`
 - **RH used:** no
 - **Computation used:** no
 

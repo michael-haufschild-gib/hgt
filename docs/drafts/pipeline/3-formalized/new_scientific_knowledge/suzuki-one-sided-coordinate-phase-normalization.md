@@ -132,7 +132,7 @@ alpha beta sin(az)/(2z(beta-alpha))
 
 Thus the central phase correction here remains valid, while any prime--Gamma-only full Pick
 factorization must be replaced by a Neumann-holonomy-compensated one.  See
-`../../2-fully-proven/new_scientific_knowledge/suzuki-full-frequency-neumann-holonomy-survivor.md`.
+`../../3-formalized/new_scientific_knowledge/suzuki/suzuki-full-frequency-neumann-holonomy-survivor.md`.
 In the exact centered parameter `eta=-i lambda/2`, the normalized central direct channel has slope
 `i a`, not `i a/2`.
 

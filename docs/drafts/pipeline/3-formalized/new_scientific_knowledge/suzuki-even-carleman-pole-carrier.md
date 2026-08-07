@@ -505,7 +505,7 @@ alpha beta sin(az)/(2z(beta-alpha))
 ```
 
 Its universal central pole cancels, giving `(N5)`, but its higher jets generally survive.  See
-`../../2-fully-proven/new_scientific_knowledge/suzuki-full-frequency-neumann-holonomy-survivor.md`.
+`../../3-formalized/new_scientific_knowledge/suzuki/suzuki-full-frequency-neumann-holonomy-survivor.md`.
 
 ## Active frontier conjecture and decisive tests
 
