@@ -3296,6 +3296,7 @@ import GaloisForLFunctions.RHTower.ProjectiveSmallBallComplexityLaw
 import GaloisForLFunctions.RHTower.ProjectiveWeightedBoundedDensityQuantile
 import GaloisForLFunctions.RHTower.ProjectiveWeightedTargetVolumeLower
 import GaloisForLFunctions.RHTower.ProlateBandSymmetric
+import GaloisForLFunctions.RHTower.ProlateCCMArcsineWeakLimit
 import GaloisForLFunctions.RHTower.ProlateDiagonalization
 import GaloisForLFunctions.RHTower.ProlateEndpointLowerBound
 import GaloisForLFunctions.RHTower.ProlateJointEigen
@@ -6101,3 +6102,4 @@ import GaloisForLFunctions.RHTower.Sieve.LorentzianMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.LorentzianDirPoly
 import GaloisForLFunctions.RHTower.Sieve.LorentzianPrimeSupport
 import GaloisForLFunctions.RHTower.Sieve.MertensBlock
+import GaloisForLFunctions.RHTower.Sieve.MultiplicativePrimeAverage

@@ -419,4 +419,36 @@ theorem integral_Ioi_gammaTransportKernel_reflect {F : ℝ → ℝ} {L : ℝ} (h
     rw [zeroExtend_reflect_eq_zero (mem_Ioi.mp hs), sub_zero]
   rw [hcongr, MeasureTheory.integral_mul_const, integral_Ioi_gammaTransportKernel hL]
 
+/-! ## The transport term at a penalized maximizer
+
+At a maximizer of a penalized profile the one-sided inequalities bound the second difference from
+below by `−2 c s`, linear in the shift.  Against the transport kernel this is integrable on the
+whole positive ray, because the kernel has a finite first moment: the simple pole is exactly
+cancelled by the linear vanishing.  So the transport term is bounded below by a quantity
+proportional to the penalty slope, which is what drives the slope to zero.
+-/
+
+/-- **One-sided inequalities bound the second difference.**  If a profile exceeds its value at `X`
+by at most `c s` in both directions, its symmetric second difference is at least `−2 c s`. -/
+theorem neg_le_secondDifference_of_one_sided {F : ℝ → ℝ} {X c s : ℝ}
+    (hp : F (X + s) ≤ F X + c * s) (hm : F (X - s) ≤ F X + c * s) :
+    -(2 * c * s) ≤ secondDifference F X s := by
+  unfold secondDifference
+  linarith
+
+/-- The same bound against the kernel, which is positive on the ray. -/
+theorem neg_le_transport_integrand_of_one_sided {F : ℝ → ℝ} {X c s : ℝ} (hs : 0 < s)
+    (hp : F (X + s) ≤ F X + c * s) (hm : F (X - s) ≤ F X + c * s) :
+    -(2 * c * (s * gammaTransportKernel s))
+      ≤ secondDifference F X s * gammaTransportKernel s := by
+  have hk : 0 < gammaTransportKernel s := gammaTransportKernel_pos hs
+  have h := neg_le_secondDifference_of_one_sided hp hm
+  nlinarith [h, hk]
+
+/-- **The lower bound is integrable.**  Linear vanishing against a kernel of finite first moment
+integrates on the whole positive ray — the simple pole is exactly absorbed. -/
+theorem integrable_transport_lower_bound (c : ℝ) :
+    IntegrableOn (fun s => -(2 * c * (s * gammaTransportKernel s))) (Ioi 0) :=
+  (integrableOn_id_mul_gammaTransportKernel_Ioi_zero.const_mul (2 * c)).neg
+
 end GaloisForLFunctions.HTGeometry

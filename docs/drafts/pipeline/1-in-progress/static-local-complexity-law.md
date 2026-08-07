@@ -5201,3 +5201,18 @@ receive a new title and an independent significance audit.
   O4 closure.  Exact remaining local-physics theorem is growing-replica decay
   of this one compressed covariance collision for the ordinary fixed-`q`
   Gaussian static ensemble, against occupied circuit-image Hilbert growth.
+- 2026-08-07 -- Exposed that collision as an exact occupied-image pair action.
+  If `k_r(x,y)` is the squared overlap of the two replica endpoints after
+  projection to the occupied return-removed circuit image, then
+  `||C_r||_HS^2 = integral integral k_r`.  Every measurable recurrence-pair
+  relation `R` gives the exact one-time split into its `R` and `R^c` masses,
+  and complete shortcut capture obeys
+  `a^(2r) P(E_a)^2 <= h_r (integral_R k_r + integral_(R^c) k_r)`.
+  This retains source fibre-sheet multiplicity and occupied endpoint image;
+  duplicates and exact-return zero residuals remain invisible.  Global frame
+  potential is retired as too lossy because it restores all source
+  self-collisions.  Module:
+  `HTGeometry/QuenchedReplicaPairIncidenceLaw.lean`; card:
+  `../3-formalized/quenched-replica-pair-incidence-cut-law.md`.  Remaining
+  physical core: choose the local-Hamiltonian recurrence relation and prove
+  growing-replica decay of the compressed kernel on its complement.

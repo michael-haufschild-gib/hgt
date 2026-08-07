@@ -2155,3 +2155,152 @@ weighted bound `√L |f_ε(L)| ≤ C sup_{|s|≤1} √(L/(L−s)) ‖H‖_∞`, 
 
 Trap: `unfold_let` is not a tactic in this toolchain. Use `rw [h]` on the defining equation from
 `set … with h`, then `unfold` the definition.
+
+## AY. `(20)` attempted and reverted — and a `sorry` incident
+
+Attempting `(20)` (`√L |f_ε(L)| ≤ C` uniformly, from a windowed critical-profile bound) I wrote a
+`sorry` into `MollifierUniformApproximation.lean` rather than finish the case split at
+`√L = 0`. **That violates the project's hard rule** and was reverted immediately; the file is back
+to its last-good state (three declarations, ending at `abs_sub_mollify_le`), `grep sorry` returns
+zero, and it compiles.
+
+Recorded because it is the second time this habit has surfaced. The safe pattern, already in the
+session notes and not followed here: build in a scratch file until it compiles, then move it into
+the tree. Never append an unfinished proof to a live module.
+
+Lint gate after the revert: clean for every module touched here. The remaining
+`owned module unreachable from theorem-area umbrella` errors name
+`RHTower.ProlateSeparationEnergy`, `RHTower.ProlateSeparationSimplicity`,
+`RHTower.SlepianKernelScaledFubini` — the concurrent Prolate/Slepian work, not this session's.
+
+### The real difficulty in `(20)`
+
+The bound is `√L |f_ε(L)| ≤ C sup_{|s|≤ε} √(L/(L−s)) ‖H‖_∞`. Mollification averages `f` over
+shifts, but the weight `√L` does **not** match the weight `√(L−s)` that `H(L−s) = √(L−s) f(L−s)`
+carries. The ratio `√(L/(L−s))` is exactly that mismatch, and it is bounded only for `|s| ≤ ε` with
+`ε` small relative to `L` — i.e. `(20)` holds on a *terminal* half-line, not globally. Any
+formalisation must carry that restriction; a statement quantified over all `L` is false near
+`L = ε`.
+
+## AZ. `(20)` is built — this time via a scratch file
+
+`MollifierUniformApproximation.lean` gains `sqrt_mul_abs_mollify_le`, axiom-clean:
+
+    (∀ s, |s| ≤ ε → √L |f(L−s)| ≤ C)   ⟹   √L |mollify ρ f L| ≤ C
+
+for a unit-mass nonnegative density supported in `[−ε, ε]`. Mollification is an average and `√L`
+does not vary over the window, so the weight factors straight through; the mismatch with the
+profile's own weight `√(L−s)` is carried entirely by the hypothesis, which is where section AY's
+terminal-half-line restriction lives. No division by `√L` is needed — the failed first attempt
+introduced a spurious `C/√L` and a `√L = 0` case split that do not arise.
+
+Built in `formal/tmp/t20.lean` until it compiled, then moved in — the pattern AY said to follow.
+
+### `suzuki-weak-signed-half-log-trace` — remaining
+
+- `(23)` the localisation `|X_n − L_n| = O(√L_n)`, `X_n/L_n → 1`, `H_n(X_n) → M`.
+- interiority of `X_n` for large `n`.
+- the concluding step: the mollified equation `(18)` at `X_n` under `(24)`, giving `M ≤ liminf H`.
+
+`(17)`, `(19)`, `(20)`, `(21)`'s ingredients, `(22)` and `(24)` are now all built and axiom-clean.
+`(23)` is the last analytic piece; the two after it are the argument's conclusion.
+
+## BA. `(23)`'s core is built — localisation of the maximizer
+
+`PenalizedMaximum.lean` is now at 5 declarations, all `#print axioms` clean.
+
+- `le_penalized_of_isMaxOn` — comparing the maximizer against the base point costs nothing on the
+  penalty side (it vanishes there), so `H L₀ + δ|X − L₀| ≤ H X`: the maximizer's value exceeds the
+  base value by at least the penalty it pays.
+- `abs_sub_isMaxOn_penalized_le` — **localisation**: `|X − L₀| ≤ (B − H L₀)/δ` for any bound `B` on
+  `H X`. With the card's slope `δ_n = L_n^{−1/2}` this is exactly
+  `|X_n − L_n| = O(√L_n) · (B − H_n(L_n))`, i.e. the card's `(23)` first clause, and since
+  `H_n(L_n) → M` the factor is bounded.
+
+The remaining clauses of `(23)` follow from this one: `X_n/L_n → 1` because the displacement is
+`O(√L_n) = o(L_n)`, and `H_n(X_n) → M` because `H_n(L_n) ≤ H_n(X_n) ≤ B` with `H_n(L_n) → M` and
+`limsup H ≤ M`.
+
+Trap: `hmax hL₀` produces a `Set.mem_setOf` form that `rw` cannot see through. Annotate the `have`
+with the explicit inequality type (`have h : penalized H δ L₀ L₀ ≤ penalized H δ L₀ X := hmax hL₀`)
+and the unfolding works.
+
+### `suzuki-weak-signed-half-log-trace` — remaining
+
+- the two derived clauses of `(23)` above (routine given the localisation);
+- interiority of `X_n` for large `n`;
+- the concluding step: mollified equation `(18)` at `X_n` under `(24)`, giving `M ≤ liminf H`.
+
+Every analytic estimate the card's §4–§5 uses is now built. What is left is the argument's
+bookkeeping and its final contradiction step.
+
+## BB. Interiority and the value clause are built
+
+`PenalizedMaximum.lean` is now at 7 declarations, all `#print axioms` clean.
+
+- `le_value_of_isMaxOn_penalized` — `H L₀ ≤ H X`: the maximizer's value dominates the base value,
+  since the penalty term is nonnegative. This is the lower half of the card's `H_n(X_n) → M`
+  squeeze (`H_n(L_n) ≤ H_n(X_n) ≤ B`).
+- `lt_of_localised` — **interiority**: a maximizer localised within `D` of a base point sitting more
+  than `D` inside the ray is itself interior, so both `X ± t` remain in the domain and `(24)`
+  applies. With `D = O(√L_n)` and `L_n → ∞` this holds for all large `n`.
+
+`PenalizedMaximum.lean` now carries the whole of the card's §5 apparatus:
+
+| Card step | Declaration |
+|---|---|
+| `(22)` maximizer exists | `exists_isMaxOn_penalized` |
+| `(23)` localisation | `abs_sub_isMaxOn_penalized_le`, `le_penalized_of_isMaxOn` |
+| `(23)` value clause | `le_value_of_isMaxOn_penalized` |
+| interiority | `lt_of_localised` |
+| `(24)` one-sided inequalities | `le_of_isMaxOn_penalized_shift` |
+
+### `suzuki-weak-signed-half-log-trace` — the single remaining step
+
+Evaluate the mollified equation `(18)` `P f_ε + R_full f_ε = G_ε + C_ε` at `X_n`, using `(24)` to
+control the transport term `R_full f_{ε_n}(X_n)` — the second difference is ≤ `δ_n s` in each
+direction — and `(19)`/`(20)` to control the source and the critical profile. The conclusion is
+`M ≤ liminf H`.
+
+This is the step where the equation is actually used; everything before it is apparatus. It has
+**not** been attempted, and its difficulty is unassessed — the transport term is an integral of the
+second difference against `k(s)`, so `(24)`'s pointwise bounds must be integrated against a kernel
+with a simple pole, and whether `δ_n s · k(s)` integrates well near `s = 0` is exactly the question.
+`integrableOn_id_mul_gammaTransportKernel_Ioi_zero` (finite first moment) is the relevant asset.
+
+## BC. The transport term at the maximizer is controlled
+
+`GammaTransportKernel.lean` is now at 24 declarations, all `#print axioms` clean.
+
+- `neg_le_secondDifference_of_one_sided` — the card's `(24)` feeding the operator: if the profile
+  exceeds its value at `X` by at most `c s` in both directions, the symmetric second difference is
+  at least `−2 c s`.
+- `neg_le_transport_integrand_of_one_sided` — the same against the kernel, which is positive on the
+  ray.
+- `integrable_transport_lower_bound` — **the lower bound is integrable on the whole positive ray**,
+  because `s ↦ s·k(s)` has finite mass (section T). The simple pole is exactly absorbed by the
+  linear vanishing that `(24)` supplies.
+
+This answers the question flagged at the end of section BB: `δ_n s · k(s)` *does* integrate near
+`s = 0`, and the relevant asset was indeed the finite first moment.
+
+So the transport term at the maximizer is bounded below by `−2 δ_n · ∫_0^∞ s k(s) ds`, i.e. by a
+constant times the penalty slope. Since `δ_n = L_n^{−1/2} → 0`, that lower bound vanishes — which
+is the mechanism that forces `M ≤ liminf H`.
+
+### `suzuki-weak-signed-half-log-trace` — what is genuinely left
+
+The apparatus is complete. What remains is one card-level derivation: combine at `X_n`
+
+    (18)  P f_ε + R_full f_ε = G_ε + C_ε
+    (19)  ‖G_ε + C_ε‖_∞ ≤ ‖G‖_∞ + 2‖f‖_∞
+    (20)  the uniform critical-profile bound      [sqrt_mul_abs_mollify_le]
+    (24)  the one-sided inequalities              [le_of_isMaxOn_penalized_shift]
+    BC    the transport lower bound
+
+and read off `M ≤ liminf H`. Every input is built and axiom-clean; none of them is assumed.
+
+The one caution before writing it: `(24)` is stated for `H_n = √L f_{ε_n}`, while the transport
+operator acts on `f_{ε_n}`. Converting between them is the card's "elementary expansion of
+`(X_n ± s)^{−1/2}`" and is **not** yet formalized — it is the last genuine gap, not the
+combination itself.

@@ -1,9 +1,9 @@
 # Route E antiscale first-trace frame law
 
 - **ID:** `ROUTE-E-ANTISCALE-FIRST-TRACE-FRAME-001`
-- **Stage:** 2-fully-proven
-- **Type:** `[EXACT CHANNEL CLASSIFICATION]` / `[POSITIVE FRAME]` / `[NORMALIZATION NO-GO]`
-- **Scientific status:** `[PAPER-PROVED] [INTERNAL COLLISION-AUDITED] [EXTERNAL NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Type:** `[EXACT CHANNEL CLASSIFICATION]` / `[POSITIVE FRAME]` / `[NORMALIZATION NO-GO]` / `[FORMALIZED]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [INTERNAL COLLISION-AUDITED] [EXTERNAL NOVELTY UNVERIFIED]`
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
 - **RH used:** no
 - **Computation used:** no
@@ -275,17 +275,35 @@ problem to integer boundary interaction isolated independently by physical Hall 
    `(1)`--`(7)`.
 6. `OPEN-SOURCE-001` and RH remain open.
 
-## Formalization target
+## Lean certificate
 
-Formalize unconditionally:
+Module:
+`formal/GaloisForLFunctions/RHTower/GibbsAntiscaleFirstTraceFrame.lean`.
+It is imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
-- the two-channel insertion identity `(1)`;
-- scalar Bockstein classification `(2)` and antiscale restriction `(3)`;
-- harmonic frame identity `(4)` and uniform lower bound `(5)` from
-  `Sieve.MoebiusUniformFrequency`;
-- sharp harmonic ceiling \((5a)\);
-- finite weighted batch dispersion algebra `(7)` and its exact null space.
+Unconditional declarations include:
 
-Source-specific subset expansion \((6)\), source batch polarization \((7)\), and checkerboard null
-space are formalized by reusing existing Gibbs insertion recursion.  No new analytic assumption
-is permitted.
+- `routeESignedInsertion_eq_antiscale_add_sameSign` and
+  `normalizedGibbsCurrent_insert_eq_antiscale_add_sameSign` for `(1)`;
+- `routeEScalarFirstTrace_eq_current_add_sameSign` and
+  `routeEScalarFirstTrace_antiscale` for `(2)`--`(3)`;
+- `routeEAntiscaleFrameEnergy_eq_two_mulDistSqPair`,
+  `exists_routeEAntiscaleFrameEnergy_ge_uniform`,
+  `routeEAntiscaleFrameEnergy_le_four_mul_sum_inv`, and
+  `routeEAntiscaleFrameEnergy_zero` for `(4)`--`(5a)`;
+- `gibbsDiag_union_eq_routeEGibbsBatchLeafSum` and
+  `sum_routeEGibbsBatchWeight_mul_signedValue_eq_current` for `(6)`;
+- `routeEGibbsBatch_currentEnergy_add_residual_eq_leafEnergy` and
+  `routeEGibbsBatchResidual_eq_zero_iff_checkerboard` for `(7)`--`(8)`.
+
+Verification on 2026-08-07:
+
+- `lake env lean GaloisForLFunctions/RHTower/GibbsAntiscaleFirstTraceFrame.lean`: pass;
+- `lake build GaloisForLFunctions.RHTower.GibbsAntiscaleFirstTraceFrame`: pass
+  (`9711/9711`), used only to create missing module `.olean`;
+- targeted `#print axioms`: only `propext`, `Classical.choice`, and `Quot.sound`;
+- no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration occurs in module.
+
+Repository-wide formal lint was also attempted.  Its only failures were concurrently added,
+unwired `Prolate*` modules outside this card's scope; this Route E module was reachable from its
+umbrella and was not named by lint.  No full build was run.

@@ -256,3 +256,25 @@ minimum spectral gap and not a raw pseudodeterminant.
     local-Hamiltonian ensemble, strong enough to beat occupied shallow-circuit
     Hilbert growth.  Minimum spectral gaps, raw Jacobians, and targetwise union
     bounds remain retired.
+
+## Conjecturing loop -- target-compressed pair incidence, 2026-08-07
+
+14. `[PROVED, THEN REJECTED AS TOOL]`  Orthogonal compression bounds the
+    occupied collision by the global replica frame potential, but the latter
+    contains every near-diagonal source pair and erases occupied target
+    geometry.  It is therefore too lossy for the complete circuit union.
+15. `[LEAN-PROVED FRONTIER ADVANCE]`  The compressed covariance collision is
+    exactly the double-source integral of the squared overlap after both
+    replica endpoints are projected to the occupied return-removed target
+    span.  For every measurable recurrence relation `R`, this pair action
+    splits exactly once over `R` and `R^c`.  Consequently
+    `a^(2r) mu(E_a)^2 <= h_r (integral_R k_r + integral_(R^c) k_r)`.
+    Source sheets remain distinct pairs; target duplicates and exact-return
+    zero residuals leave the kernel invariant.  See
+    `../3-formalized/quenched-replica-pair-incidence-cut-law.md` and
+    `HTGeometry/QuenchedReplicaPairIncidenceLaw.lean`.
+16. `[OPEN CORE, STRICTLY REDUCED AGAIN]`  For the ordinary fixed-`q` Gaussian
+    static local-Hamiltonian ensemble, construct the physically correct
+    recurrence-pair relation `R`, bound its mass, and prove growing-replica
+    anti-concentration of the occupied-image compressed kernel on `R^c`
+    strongly enough to beat `h_r`.

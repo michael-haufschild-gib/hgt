@@ -87,4 +87,51 @@ theorem exists_isMaxOn_penalized {H : ℝ → ℝ} {δ L₀ a B : ℝ} (hδ : 0 
     have haIcc : a ∈ Icc a R := ⟨le_refl a, haR⟩
     exact le_of_lt (lt_of_lt_of_le hfar (hXmax haIcc))
 
+/-! ## Localisation of the maximizer
+
+Comparing the maximizer against the base point costs nothing on the penalty side, since the penalty
+vanishes there.  So the maximizer's value exceeds the base value by at least the penalty it pays,
+and the displacement is bounded by the value gap over the penalty slope.
+-/
+
+/-- **The maximizer pays for its displacement.**  Its value exceeds the base value by at least the
+penalty charged for moving there. -/
+theorem le_penalized_of_isMaxOn {H : ℝ → ℝ} {δ L₀ X : ℝ} {s : Set ℝ}
+    (hmax : IsMaxOn (penalized H δ L₀) s X) (hL₀ : L₀ ∈ s) :
+    H L₀ + δ * |X - L₀| ≤ H X := by
+  have h : penalized H δ L₀ L₀ ≤ penalized H δ L₀ X := hmax hL₀
+  unfold penalized at h
+  rw [sub_self, abs_zero, mul_zero, sub_zero] at h
+  linarith
+
+/-- **Localisation.**  The displacement of the maximizer is bounded by the value gap divided by
+the penalty slope.  With slope `L₀^{-1/2}` and a bounded profile this is the card's
+`|X − L₀| = O(√L₀)`. -/
+theorem abs_sub_isMaxOn_penalized_le {H : ℝ → ℝ} {δ L₀ X B : ℝ} {s : Set ℝ}
+    (hmax : IsMaxOn (penalized H δ L₀) s X) (hδ : 0 < δ) (hL₀ : L₀ ∈ s)
+    (hB : H X ≤ B) : |X - L₀| ≤ (B - H L₀) / δ := by
+  have h := le_penalized_of_isMaxOn hmax hL₀
+  rw [le_div_iff₀ hδ]
+  nlinarith [h, hB]
+
+/-! ## Value and interiority at the maximizer
+
+Two immediate consequences of localisation: the maximizer's value dominates the base value, and a
+maximizer localised near a base point that is far inside the ray is itself interior.
+-/
+
+/-- The maximizer's value dominates the base value. -/
+theorem le_value_of_isMaxOn_penalized {H : ℝ → ℝ} {δ L₀ X : ℝ} {s : Set ℝ}
+    (hmax : IsMaxOn (penalized H δ L₀) s X) (hδ : 0 ≤ δ) (hL₀ : L₀ ∈ s) :
+    H L₀ ≤ H X := by
+  have h := le_penalized_of_isMaxOn hmax hL₀
+  have hpen : 0 ≤ δ * |X - L₀| := mul_nonneg hδ (abs_nonneg _)
+  linarith
+
+/-- **Interiority.**  A maximizer localised within `D` of a base point that sits more than `D`
+inside the ray is itself interior, so both `X ± t` remain available for small `t`. -/
+theorem lt_of_localised {L₀ X D a : ℝ} (hloc : |X - L₀| ≤ D) (hgap : a < L₀ - D) : a < X := by
+  have h := abs_le.mp hloc
+  linarith [h.1]
+
 end GaloisForLFunctions.HTGeometry

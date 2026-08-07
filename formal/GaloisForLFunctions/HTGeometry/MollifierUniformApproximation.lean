@@ -68,35 +68,46 @@ theorem abs_sub_mollify_le {ρ u : ℝ → ℝ} {ε M : ℝ} (hρ : Continuous �
 
 /-! ## Weighted bounds survive mollification
 
-Mollification is an average, so any bound holding uniformly across the averaging window passes to
-the mollified profile.  In particular a critical-profile bound `√L |f(L−s)| ≤ C` valid for every
-shift in the support transfers verbatim, with no loss.
+Mollification is an average, so a bound holding uniformly across the averaging window passes to the
+mollified profile with no loss.  The weight `√L` does not vary over the window, so it factors
+straight through the average; the mismatch with the profile's own weight `√(L−s)` is carried by the
+hypothesis, which is where the restriction to a terminal half-line lives.
 -/
 
-/-- **A weighted bound uniform on the window passes to the mollification.**  This is the mechanism
-behind the card's uniform critical-profile bound for the smooth approximants. -/
+/-- **A weighted bound uniform on the window passes to the mollification.**  If `√L |f(L−s)| ≤ C`
+for every shift in the mollifier's support, the same bound holds for the mollified profile. -/
 theorem sqrt_mul_abs_mollify_le {ρ f : ℝ → ℝ} {ε L C : ℝ} (hρc : Continuous ρ)
     (hfc : Continuous f) (hcρ : HasCompactSupport ρ) (hnn : ∀ t, 0 ≤ ρ t)
     (hint : Integrable ρ) (hmass : (∫ t, ρ t) = 1) (hsupp : ∀ t, ε < |t| → ρ t = 0)
-    (hL : 0 ≤ Real.sqrt L) (hC : 0 ≤ C)
     (hbd : ∀ s, |s| ≤ ε → Real.sqrt L * |f (L - s)| ≤ C) :
     Real.sqrt L * |mollify ρ f L| ≤ C := by
+  have hL : 0 ≤ Real.sqrt L := Real.sqrt_nonneg L
   have hik : Integrable fun s => ρ s * f (L - s) := integrable_mollifyKernel hρc hfc hcρ L
-  have hdom : Integrable fun s => ρ s * C := hint.mul_const C
-  have hptwise : ∀ s : ℝ, ‖ρ s * f (L - s)‖ ≤ ρ s * (C / Real.sqrt L) ∨ Real.sqrt L = 0 := by
-    intro s
-    rcases eq_or_lt_of_le hL with h0 | h0
-    · exact Or.inr h0.symm
-    · refine Or.inl ?_
-      rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hnn s)]
-      refine mul_le_mul_of_nonneg_left ?_ (hnn s)
+  have habs : Integrable fun s => ρ s * |f (L - s)| := by
+    have hcont : Continuous fun s : ℝ => ρ s * |f (L - s)| :=
+      hρc.mul ((hfc.comp (continuous_const.sub continuous_id)).abs)
+    exact hcont.integrable_of_hasCompactSupport hcρ.mul_right
+  have hstep1 : |mollify ρ f L| ≤ ∫ s, ρ s * |f (L - s)| := by
+    unfold mollify
+    have h1 : ‖∫ t, ρ t * f (L - t)‖ ≤ ∫ t, ‖ρ t * f (L - t)‖ :=
+      norm_integral_le_integral_norm _
+    have h2 : (∫ t, ‖ρ t * f (L - t)‖) ≤ ∫ s, ρ s * |f (L - s)| :=
+      integral_mono hik.norm habs fun s =>
+        le_of_eq (by rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hnn s)])
+    rw [← Real.norm_eq_abs]
+    exact le_trans h1 h2
+  have hstep2 : Real.sqrt L * (∫ s, ρ s * |f (L - s)|) ≤ C := by
+    rw [← MeasureTheory.integral_const_mul]
+    have hmono : (∫ s, Real.sqrt L * (ρ s * |f (L - s)|)) ≤ ∫ s, ρ s * C := by
+      refine integral_mono (habs.const_mul _) (hint.mul_const C) fun s => ?_
       rcases le_or_gt |s| ε with hs | hs
-      · rw [le_div_iff₀ h0, mul_comm]
-        exact hbd s hs
-      · rw [hsupp s hs] at hik ⊢
-        exact le_of_eq (by
-          have : |f (L - s)| = |f (L - s)| := rfl
-          simp) |>.trans (by positivity)
-  sorry
+      · have := hbd s hs
+        nlinarith [hnn s, this]
+      · rw [hsupp s hs]
+        simp
+    rwa [MeasureTheory.integral_mul_const, hmass, one_mul] at hmono
+  calc Real.sqrt L * |mollify ρ f L|
+      ≤ Real.sqrt L * ∫ s, ρ s * |f (L - s)| := mul_le_mul_of_nonneg_left hstep1 hL
+    _ ≤ C := hstep2
 
 end GaloisForLFunctions.HTGeometry

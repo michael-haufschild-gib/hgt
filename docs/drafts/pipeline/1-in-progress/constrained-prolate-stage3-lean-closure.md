@@ -217,3 +217,18 @@ projective/trace-class/determinant consequences.
   every interval beyond `B(c)`.
 - This is the previously missing actual-PSWF-to-leading-Dunster-model theorem required by the
   radial leakage, weak-measure, off-diagonal, and arithmetic projective-limit cards.
+
+### 2026-08-07: exact radial density transfer and global weak tail law
+
+- Added `ProlateDunsterDensityTransfer.lean`.  Squared the exact uniform profile estimate without
+  losing tail integrability, proved fixed profile-weight envelopes for exact and Bessel densities,
+  and closed the global `L1` exact-to-Bessel error bound `O(1/c)` on every tail beyond `B(c)`.
+- Added `ProlateDunsterWeakLimit.lean`.  Proved fixed-radius phase divergence, compact-interval
+  Bessel-density averaging, uniform tail gluing, and global tail-mass convergence to
+  `profileDensity` for the literal Bessel density.
+- Composed the global `L1` transfer with compact-tail averaging.  Every smooth even
+  endpoint-normalized radial prolate solution with `c -> infinity` and `s -> 0` now has exact tail
+  masses converging to the universal profile-density tail.  The proof is direct weak convergence;
+  it does not assert the false pointwise convergence of oscillatory squared densities.
+- Both new modules pass foreground `lake env lean <file>` checks; dependency `.olean` artifacts
+  were regenerated for continued module work.

@@ -240,3 +240,26 @@ for the bound and the reality.  At t = 0 the symbol is 0 by the `/z` convention,
 
 Traps: `MeasureTheory.integral_conj` does not exist — the name is bare `integral_conj`.
 `Real.rpow_nonneg` takes the base nonnegativity FIRST.
+
+## Card 5 frame obstruction (22)/(23) CLOSED (2026-08-07)
+
+In `HedenmalmTwoPrimeNormalFrame.lean`: `frameSymbol n t = 2 n^{-1/2} sin(t log n / 2)`,
+`mul_centeredMultiplier_eq_frameSymbol` (t·a_n(t) = b_n(t)), `abs_frameSymbol_le`,
+`norm_centeredMultiplier_le` (≤ 2 n^{-1/2}/|t|), `tendsto_norm_centeredMultiplier_atTop`.
+
+### The route for the remaining two Kronecker obstructions (25), (27)
+BOTH inputs already exist — do not rebuild:
+* `GaloisForLFunctions.linearIndependent_log_primes` (`Core.lean:284`) — ℚ-independence of
+  `Real.log p` over `Nat.Primes`.
+* `GaloisForLFunctions.kronecker_approx` (`HTGeometry/KroneckerWeylDensity.lean:277`) —
+  Kronecker approximation for a ℚ-independent frequency family.
+
+The ONLY gap: `kronecker_approx` returns some `t`, but (25) needs `t` arbitrarily large.
+Its proof is a Bohr-mean contradiction, and a Bohr mean only sees the tail, so the identical
+argument gives `∀ T, ∃ t > T, …`.  Strengthen `kronecker_approx` in place (add the `T` and change
+`hpoint` to quantify over `t > T`), rather than trying to derive the large-`t` version from the
+existing statement — there is no cheap derivation, since a bounded good set can still be infinite.
+
+For (27): split the prime sum into a finite head and a tail bounded by `4 ∑ ω_p / p`; apply the
+strengthened Kronecker to the head.  Note `|b_p|` is EVEN in t, so `liminf_{t→+∞}` and
+`liminf_{|t|→∞}` agree.
