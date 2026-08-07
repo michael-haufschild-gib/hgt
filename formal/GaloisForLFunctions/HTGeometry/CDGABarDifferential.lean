@@ -33,6 +33,25 @@ noncomputable def barD : ∀ (k n : ℕ),
 
 theorem barD_zero (n : ℕ) : barD ε 0 n = 0 := rfl
 
+/-- **On two factors the bar differential is the head alone**, since there is no tail to
+differentiate. -/
+theorem barD_one (n : ℕ) (F : (barPower ε 2).carrier n) :
+    barD ε 1 n F = barHeadₗ ε (barPower ε 0).carrier n F := by
+  show barHeadₗ ε (barPower ε 0).carrier n F
+      + tensorRightDegOneₗ (M := barShiftFamily ε) (fun b => barD ε 0 b) n F = _
+  show barHeadₗ ε (barPower ε 0).carrier n F
+      + tensorRightDegOne (M := barShiftFamily ε) (fun b => barD ε 0 b) n F = _
+  rw [show (fun b => barD ε 0 b) = (fun b => (0 : (barPower ε 1).carrier b →ₗ[R]
+      (barPower ε 0).carrier (b + 1))) from funext fun b => barD_zero ε b,
+    tensorRightDegOne_zero_map, add_zero]
+
+/-- **The bar differential of two factors is killed by the next one**, which has nothing left to
+multiply. -/
+theorem barD_comp_zero (n : ℕ) (F : (barPower ε 2).carrier n) :
+    barD ε 0 (n + 1) (barD ε 1 n F) = 0 := by
+  rw [barD_zero]
+  rfl
+
 theorem barD_succ (k n : ℕ) :
     barD ε (k + 1) n
       = (show (barPower ε (k + 1 + 1)).carrier n →ₗ[R] (barPower ε (k + 1)).carrier (n + 1) from

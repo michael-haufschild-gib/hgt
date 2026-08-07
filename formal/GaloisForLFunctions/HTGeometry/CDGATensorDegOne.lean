@@ -129,6 +129,19 @@ def tensorRightDegOneₗ (g : ∀ b : ℕ, N b →ₗ[R] N' (b + 1)) (n : ℕ) :
   map_add' := tensorRightDegOne_add g n
   map_smul' := tensorRightDegOne_smul g n
 
+/-- The right-factor construction of the zero family is zero. -/
+theorem tensorRightDegOne_zero_map (n : ℕ) (F : TensorCarrier (R := R) M N n) :
+    tensorRightDegOne (M := M) (fun b => (0 : N b →ₗ[R] N' (b + 1))) n F = 0 := by
+  funext p
+  obtain ⟨⟨a, b⟩, h⟩ := p
+  cases b with
+  | zero => rw [tensorRightDegOne_zero]; rfl
+  | succ b' =>
+      show ((-1 : R)) ^ a • TensorProduct.map LinearMap.id (0 : N b' →ₗ[R] N' (b' + 1))
+        (F ⟨(a, b'), by omega⟩) = _
+      rw [TensorProduct.map_zero_right, LinearMap.zero_apply, smul_zero]
+      rfl
+
 variable {N'' : ℕ → Type w} [∀ n, AddCommGroup (N'' n)] [∀ n, Module R (N'' n)]
 
 /-- **Two degree-one maps on the right factor compose without a sign**: the two Koszul signs are the
