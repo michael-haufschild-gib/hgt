@@ -83,4 +83,29 @@ theorem lpBoundedMulCLM_not_mem_orthogonal_of_strictAccretive
     hφ hC0 hC hacc hδ hne hf
     (Submodule.inner_right_of_mem_orthogonal hfS hperp)
 
+/-- Quantitative leakage floor.  If `p` is any source component whose remainder is orthogonal to
+the source subspace, exact accretivity forces `δ ‖T f‖² ≤ ‖f‖ ‖p‖`.  Taking `p` to be the
+orthogonal projection gives the sharp fixed-source obstruction used downstream. -/
+theorem lpBoundedMulCLM_sourceComponent_lower_bound
+    (hφ : Measurable φ) (hC0 : 0 ≤ C) (hC : ∀ x, ‖φ x‖ ≤ C)
+    (hacc : ∀ x, (φ x).re = δ * Complex.normSq (φ x))
+    (S : Submodule ℂ (Lp ℂ 2 μ)) {f p : Lp ℂ 2 μ}
+    (hfS : f ∈ S)
+    (hperp : lpBoundedMulCLM (p := 2) (μ := μ) hφ hC0 hC f - p ∈ Sᗮ) :
+    δ * ‖lpBoundedMulCLM (p := 2) (μ := μ) hφ hC0 hC f‖ ^ 2 ≤
+      ‖f‖ * ‖p‖ := by
+  let T := lpBoundedMulCLM (p := 2) (μ := μ) hφ hC0 hC
+  have hzero : inner ℂ f (T f - p) = 0 :=
+    Submodule.inner_right_of_mem_orthogonal hfS hperp
+  have heq : inner ℂ f (T f) = inner ℂ f p := by
+    rw [inner_sub_right] at hzero
+    exact sub_eq_zero.mp hzero
+  calc
+    δ * ‖T f‖ ^ 2 = (inner ℂ f (T f)).re :=
+      (lpBoundedMulCLM_re_inner_eq hφ hC0 hC hacc f).symm
+    _ = (inner ℂ f p).re := congrArg Complex.re heq
+    _ ≤ |(inner ℂ f p).re| := le_abs_self _
+    _ ≤ ‖inner ℂ f p‖ := Complex.abs_re_le_norm _
+    _ ≤ ‖f‖ * ‖p‖ := norm_inner_le_norm _ _
+
 end GaloisForLFunctions.HTGeometry

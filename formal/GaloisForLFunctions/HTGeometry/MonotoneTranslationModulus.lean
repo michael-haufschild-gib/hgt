@@ -73,8 +73,7 @@ theorem integral_translate_sub_le {g : ℝ → ℝ} (hg : Monotone g) {a b h : �
 
 /-- **The `L¹` modulus of continuity in absolute value.**  For a monotone function and a
 nonnegative shift the integrand is already nonnegative, so the absolute value costs nothing. -/
-theorem integral_abs_translate_sub_le {g : ℝ → ℝ} (hg : Monotone g) {a b h : ℝ} (hab : a ≤ b)
-    (hh : 0 ≤ h) :
+theorem integral_abs_translate_sub_le {g : ℝ → ℝ} (hg : Monotone g) {a b h : ℝ} (hh : 0 ≤ h) :
     (∫ x in a..b, |g (x + h) - g x|) ≤ h * (g (b + h) - g a) := by
   have hcongr : (∫ x in a..b, |g (x + h) - g x|) = ∫ x in a..b, (g (x + h) - g x) := by
     refine intervalIntegral.integral_congr fun x _ => ?_
@@ -86,9 +85,119 @@ theorem integral_abs_translate_sub_le {g : ℝ → ℝ} (hg : Monotone g) {a b h
 the whole enlarged window, its `L¹` translation modulus is at most `V · h`.  This is the estimate
 that feeds the fractional Sobolev criterion. -/
 theorem integral_abs_translate_sub_le_variation {g : ℝ → ℝ} (hg : Monotone g) {a b h V : ℝ}
-    (hab : a ≤ b) (hh : 0 ≤ h) (hV : g (b + h) - g a ≤ V) :
+    (hh : 0 ≤ h) (hV : g (b + h) - g a ≤ V) :
     (∫ x in a..b, |g (x + h) - g x|) ≤ V * h := by
-  have hmain := integral_abs_translate_sub_le hg hab hh
+  have hmain := integral_abs_translate_sub_le hg (a := a) (b := b) hh
   nlinarith [hmain, hV, hh]
+
+
+/-! ## Interpolation: the `L²` translation modulus
+
+Squaring costs a sup norm.  Combining the `L¹` bound above with the uniform bound gives the
+`L²` modulus of continuity, which is the quantity the fractional Sobolev criterion integrates
+against `|h|^{-(1+2s)}`.
+-/
+
+namespace MonotoneTranslation
+
+open Set
+
+/-- The translation difference of a monotone function is interval integrable. -/
+theorem intervalIntegrable_translate_sub {g : ℝ → ℝ} (hg : Monotone g) (h a b : ℝ) :
+    IntervalIntegrable (fun x => g (x + h) - g x) volume a b :=
+  (monotone_comp_add_right hg h).intervalIntegrable.sub hg.intervalIntegrable
+
+/-- The squared translation difference of a bounded monotone function is interval integrable:
+it is measurable and dominated by a constant multiple of the difference itself. -/
+theorem intervalIntegrable_translate_sub_sq {g : ℝ → ℝ} (hg : Monotone g) {h M : ℝ} (hM : 0 ≤ M)
+    (hbd : ∀ x, |g (x + h) - g x| ≤ M) (a b : ℝ) :
+    IntervalIntegrable (fun x => (g (x + h) - g x) ^ 2) volume a b := by
+  refine IntervalIntegrable.mono_fun
+    (((intervalIntegrable_translate_sub hg h a b).norm).const_mul M) ?_ ?_
+  · exact (((monotone_comp_add_right hg h).measurable.sub hg.measurable).pow_const
+      2).aestronglyMeasurable
+  · filter_upwards with x
+    have hsq : |(g (x + h) - g x) ^ 2| = |g (x + h) - g x| * |g (x + h) - g x| := by
+      rw [sq, abs_mul]
+    simp only [Real.norm_eq_abs, hsq, abs_mul, abs_abs, abs_of_nonneg hM]
+    exact mul_le_mul_of_nonneg_right (hbd x) (abs_nonneg _)
+
+/-- **The `L²` modulus of continuity of a bounded monotone function.**  Interpolating the `L¹`
+bound against the uniform bound gives a modulus linear in the shift.  Linearity in `|h|` is
+exactly the borderline that puts the profile in every `H^s` with `s < 1/2`. -/
+theorem integral_sq_translate_sub_le {g : ℝ → ℝ} (hg : Monotone g) {a b h M V : ℝ}
+    (hh : 0 ≤ h) (hM : 0 ≤ M) (hbd : ∀ x, |g (x + h) - g x| ≤ M)
+    (hV : g (b + h) - g a ≤ V) (hab : a ≤ b) :
+    (∫ x in a..b, (g (x + h) - g x) ^ 2) ≤ M * (V * h) := by
+  have hstep : (∫ x in a..b, (g (x + h) - g x) ^ 2) ≤ ∫ x in a..b, M * |g (x + h) - g x| := by
+    refine intervalIntegral.integral_mono_on hab
+      (intervalIntegrable_translate_sub_sq hg hM hbd a b)
+      (((intervalIntegrable_translate_sub hg h a b).abs).const_mul M) fun x _ => ?_
+    have hsq : (g (x + h) - g x) ^ 2 = |g (x + h) - g x| * |g (x + h) - g x| := by
+      rw [sq, abs_mul_abs_self]
+    rw [hsq]
+    exact mul_le_mul_of_nonneg_right (hbd x) (abs_nonneg _)
+  rw [intervalIntegral.integral_const_mul] at hstep
+  have hL1 := integral_abs_translate_sub_le_variation hg (a := a) (b := b) hh hV
+  nlinarith [hstep, hL1, hM, hh]
+
+
+/-! ## The Gagliardo integral converges exactly below one half
+
+A modulus linear in the shift makes the Gagliardo integrand `‖Δ_h u‖₂² / |h|^{1+2s}` dominated by
+`C |h|^{-2s}`, which is integrable near the origin precisely when `s < 1/2`.  This is the
+threshold: the estimate is sharp, and a bounded-variation profile sits in every `H^s` below one
+half and in none at or above it.
+-/
+
+/-- The Gagliardo dominating power is integrable near the origin exactly below the threshold. -/
+theorem integrableOn_rpow_neg_two_mul {s : ℝ} (hs : s < 1 / 2) :
+    IntegrableOn (fun h : ℝ => h ^ (-(2 * s))) (Ioo 0 1) := by
+  rw [intervalIntegral.integrableOn_Ioo_rpow_iff zero_lt_one]
+  linarith
+
+/-- Conversely, at or above the threshold the dominating power is not integrable — the exponent
+`1/2` is not an artefact of the estimate. -/
+theorem not_integrableOn_rpow_neg_two_mul {s : ℝ} (hs : 1 / 2 ≤ s) :
+    ¬ IntegrableOn (fun h : ℝ => h ^ (-(2 * s))) (Ioo 0 1) := by
+  rw [intervalIntegral.integrableOn_Ioo_rpow_iff zero_lt_one]
+  intro hcon
+  linarith
+
+/-- The Gagliardo quotient of a linear modulus is the dominating power. -/
+theorem div_rpow_eq_rpow_neg_two_mul {s h : ℝ} (hpos : 0 < h) :
+    h / h ^ (1 + 2 * s) = h ^ (-(2 * s)) := by
+  have hsub : h ^ (1 : ℝ) / h ^ (1 + 2 * s) = h ^ ((1 : ℝ) - (1 + 2 * s)) :=
+    (Real.rpow_sub hpos _ _).symm
+  rw [Real.rpow_one] at hsub
+  rw [hsub]
+  congr 1
+  ring
+
+/-- **The Gagliardo seminorm is finite below one half.**  Any nonnegative modulus that is linear
+in the shift makes the Gagliardo integrand integrable on the unit window for every `s < 1/2`. -/
+theorem integrableOn_gagliardo_quotient {s C : ℝ} (hs : s < 1 / 2) {F : ℝ → ℝ}
+    (hmeas : AEStronglyMeasurable F (volume.restrict (Ioo (0 : ℝ) 1)))
+    (hnn : ∀ h ∈ Ioo (0 : ℝ) 1, 0 ≤ F h) (hbd : ∀ h ∈ Ioo (0 : ℝ) 1, F h ≤ C * h) :
+    IntegrableOn (fun h => F h / h ^ (1 + 2 * s)) (Ioo (0 : ℝ) 1) := by
+  have hdom : IntegrableOn (fun h : ℝ => C * h ^ (-(2 * s))) (Ioo (0 : ℝ) 1) :=
+    (integrableOn_rpow_neg_two_mul hs).const_mul C
+  have hm : Measurable fun h : ℝ => h ^ (1 + 2 * s) := by fun_prop
+  have hq : AEStronglyMeasurable (fun h => F h / h ^ (1 + 2 * s))
+      (volume.restrict (Ioo (0 : ℝ) 1)) := by
+    simp only [div_eq_mul_inv]
+    exact hmeas.mul (hm.inv).aestronglyMeasurable
+  refine MeasureTheory.Integrable.mono' hdom hq ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioo] with h hh
+  have hpos : (0 : ℝ) < h := hh.1
+  have hden : (0 : ℝ) < h ^ (1 + 2 * s) := Real.rpow_pos_of_pos hpos _
+  have hsplit := div_rpow_eq_rpow_neg_two_mul (s := s) hpos
+  have hquot : F h / h ^ (1 + 2 * s) ≤ C * h ^ (-(2 * s)) := by
+    rw [← hsplit, ← mul_div_assoc, div_le_div_iff_of_pos_right hden]
+    exact hbd h hh
+  rw [Real.norm_eq_abs, abs_of_nonneg (div_nonneg (hnn h hh) hden.le)]
+  exact hquot
+
+end MonotoneTranslation
 
 end GaloisForLFunctions.HTGeometry

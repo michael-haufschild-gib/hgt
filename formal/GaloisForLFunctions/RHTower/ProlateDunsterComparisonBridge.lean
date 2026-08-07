@@ -120,6 +120,120 @@ theorem hasDerivAt_xiAmplitude {s x : ℝ}
   rw [hval] at hder
   exact hder
 
+/-- Derivative of the endpoint-normalized radial comparison unknown `R / A_s`. -/
+def radialComparisonDeriv (R DR : ℝ → ℝ) (s x : ℝ) : ℝ :=
+  (DR x * xiAmplitude s x - R x * xiAmplitudeDeriv s x) / xiAmplitude s x ^ 2
+
+theorem hasDerivAt_radialComparison {s x : ℝ} {R DR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
+    (hR : HasDerivAt R (DR x) x) :
+    HasDerivAt (comparisonSol (prolateNormalFormSol R) s)
+      (radialComparisonDeriv R DR s x) x := by
+  have hamp := xiAmplitude_pos hs0 hs1 hx
+  have hquot := hR.fun_div (hasDerivAt_xiAmplitude hs0 hs1 hx) hamp.ne'
+  have heq : comparisonSol (prolateNormalFormSol R) s =ᶠ[nhds x]
+      fun y => R y / xiAmplitude s y := by
+    filter_upwards [Ioi_mem_nhds hx] with y hy
+    exact comparisonSol_prolateNormalForm_eq_div_xiAmplitude hs0 hs1 hy
+  exact hquot.congr_of_eventuallyEq heq
+
+theorem comparisonSolDeriv_prolateNormalForm_eq_radialComparisonDeriv
+    {s x : ℝ} {R DR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
+    (hR : HasDerivAt R (DR x) x) :
+    comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s x =
+      radialComparisonDeriv R DR s x := by
+  have hnf := hasDerivAt_prolateNormalFormSol hx hR
+  exact HasDerivAt.unique
+    (hasDerivAt_comparisonSol hs0 hs1 hx hnf)
+    (hasDerivAt_radialComparison hs0 hs1 hx hR)
+
+/-- The derivative of a smooth radial comparison profile stays bounded at the regular endpoint. -/
+theorem eventually_bounded_comparisonSolDeriv
+    {s : ℝ} {R DR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hRc : ContinuousAt R 1) (hDRc : ContinuousAt DR 1)
+    (hR : ∀ x : ℝ, 1 < x → HasDerivAt R (DR x) x) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ x : ℝ in nhdsWithin 1 (Ioi 1),
+      |comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s x| ≤ C := by
+  let C : ℝ := 100 * (|R 1| + |DR 1| + 1)
+  refine ⟨C, by positivity, ?_⟩
+  have hRt : Tendsto R (nhdsWithin 1 (Ioi 1)) (nhds (R 1)) :=
+    hRc.tendsto.mono_left inf_le_left
+  have hDRt : Tendsto DR (nhdsWithin 1 (Ioi 1)) (nhds (DR 1)) :=
+    hDRc.tendsto.mono_left inf_le_left
+  have hRb : ∀ᶠ x : ℝ in nhdsWithin 1 (Ioi 1), |R x - R 1| < 1 := by
+    simpa only [Real.dist_eq] using hRt.eventually (Metric.ball_mem_nhds (R 1) one_pos)
+  have hDRb : ∀ᶠ x : ℝ in nhdsWithin 1 (Ioi 1), |DR x - DR 1| < 1 := by
+    simpa only [Real.dist_eq] using hDRt.eventually (Metric.ball_mem_nhds (DR 1) one_pos)
+  have hAb : ∀ᶠ x : ℝ in nhdsWithin 1 (Ioi 1),
+      xiAmplitude s x ∈ Ioo (1 / 2 : ℝ) 2 :=
+    (xiAmplitude_tendsto_one_at_endpoint hs0 hs1).eventually
+      (Ioo_mem_nhds (by norm_num) (by norm_num))
+  have hxb : ∀ᶠ x : ℝ in nhdsWithin 1 (Ioi 1), x < 2 := by
+    have hid : Tendsto (fun x : ℝ => x) (nhdsWithin 1 (Ioi 1)) (nhds 1) :=
+      tendsto_id.mono_left inf_le_left
+    exact hid.eventually (Iio_mem_nhds (by norm_num))
+  filter_upwards [self_mem_nhdsWithin, hxb, hRb, hDRb, hAb]
+      with x hxmem hx2 hRx hDRx hAx
+  have hx : (1 : ℝ) < x := hxmem
+  rw [comparisonSolDeriv_prolateNormalForm_eq_radialComparisonDeriv hs0 hs1 hx (hR x hx),
+    radialComparisonDeriv]
+  have hRabs : |R x| ≤ |R 1| + 1 := by
+    calc
+      |R x| = |(R x - R 1) + R 1| := by ring_nf
+      _ ≤ |R x - R 1| + |R 1| := abs_add_le _ _
+      _ ≤ |R 1| + 1 := by linarith
+  have hDRabs : |DR x| ≤ |DR 1| + 1 := by
+    calc
+      |DR x| = |(DR x - DR 1) + DR 1| := by ring_nf
+      _ ≤ |DR x - DR 1| + |DR 1| := abs_add_le _ _
+      _ ≤ |DR 1| + 1 := by linarith
+  have hn : (0 : ℝ) < x ^ 2 - s := by nlinarith [sq_nonneg (x - 1)]
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hratio : |x / (x ^ 2 - s)| ≤ 4 := by
+    rw [abs_of_pos (div_pos hx0 hn), div_le_iff₀ hn]
+    nlinarith [sq_nonneg (x - 1)]
+  have hphase := abs_phaseLogDefect_le_near hs0 hs1 hx hx2.le
+  have hApos : 0 < xiAmplitude s x := lt_trans (by norm_num) hAx.1
+  have hAabs : |xiAmplitude s x| ≤ 2 := by
+    rw [abs_of_pos hApos]
+    exact hAx.2.le
+  have hAderiv : |xiAmplitudeDeriv s x| ≤ 6 := by
+    rw [xiAmplitudeDeriv, abs_mul]
+    have hsub := abs_sub (phaseLogDefect s x / 2) (x / (2 * (x ^ 2 - s)))
+    have hhalf : x / (2 * (x ^ 2 - s)) = (x / (x ^ 2 - s)) / 2 := by
+      field_simp [hn.ne']
+    rw [abs_div, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2), hhalf,
+      abs_div, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)] at hsub
+    have hsub' :
+        |phaseLogDefect s x / 2 - x / (2 * (x ^ 2 - s))|
+          ≤ |phaseLogDefect s x| / 2 + |x / (x ^ 2 - s)| / 2 := by
+      rw [hhalf]
+      exact hsub
+    calc
+      |xiAmplitude s x| * |phaseLogDefect s x / 2 - x / (2 * (x ^ 2 - s))|
+          ≤ 2 * (|phaseLogDefect s x| / 2 + |x / (x ^ 2 - s)| / 2) :=
+            mul_le_mul hAabs hsub' (abs_nonneg _) (by positivity)
+      _ ≤ 6 := by linarith
+  rw [abs_div, abs_pow]
+  rw [abs_of_pos hApos, div_le_iff₀ (sq_pos_of_pos hApos)]
+  have hnum : |DR x * xiAmplitude s x - R x * xiAmplitudeDeriv s x|
+      ≤ 2 * (|DR 1| + 1) + 6 * (|R 1| + 1) := by
+    calc
+      |DR x * xiAmplitude s x - R x * xiAmplitudeDeriv s x|
+          ≤ |DR x * xiAmplitude s x| + |R x * xiAmplitudeDeriv s x| := abs_sub _ _
+      _ = |DR x| * |xiAmplitude s x| + |R x| * |xiAmplitudeDeriv s x| := by
+        rw [abs_mul, abs_mul]
+      _ ≤ (|DR 1| + 1) * 2 + (|R 1| + 1) * 6 := by gcongr
+      _ = 2 * (|DR 1| + 1) + 6 * (|R 1| + 1) := by ring
+  have hA2 : (1 / 4 : ℝ) ≤ xiAmplitude s x ^ 2 := by
+    have hprod : 0 ≤ (xiAmplitude s x - 1 / 2) * (xiAmplitude s x + 1 / 2) := by
+      exact mul_nonneg (by linarith [hAx.1]) (by linarith [hAx.1])
+    nlinarith
+  dsimp [C]
+  nlinarith [abs_nonneg (R 1), abs_nonneg (DR 1)]
+
 open Filter Set
 
 /-- Quantitative endpoint squeeze for the fourth power of Dunster's amplitude. -/

@@ -86,12 +86,110 @@ theorem tensorPair_comm {a₁ a₂ b₁ b₂ n₁ n₂ : ℕ} (h₁ : a₁ + b�
             B.mul_comm h₂' h₂ y₂ y₁]
           simp only [TensorProduct.smul_tmul', TensorProduct.tmul_smul, smul_smul, ← pow_add]
           refine congrArg (fun r : R => r • (A.mul h₁ x₁ x₂ ⊗ₜ[R] B.mul h₂ y₁ y₂)) ?_
-          refine neg_one_pow_eq_of_even_add _ _ (a₁ * b₁ + a₂ * b₂ + a₁ * b₂) ?_
+          refine neg_one_pow_eq_of_even_add _ _ (a₁ * b₁ + a₂ * b₂ + a₁ * b₂ + a₂ * b₁) ?_
           ring
       | add w w' hw hw' =>
-          rw [map_add, map_add, hw, hw', smul_add]
+          rw [map_add, map_add, LinearMap.add_apply, hw, hw', smul_add]
   | add z z' hz hz' =>
       rw [map_add, LinearMap.add_apply, hz, hz', map_add, smul_add]
+
+/-- **Associativity of the Koszul product**, bidegree by bidegree.  The three Koszul signs on each
+side are the same three products of degrees. -/
+theorem tensorPair_assoc {a₁ a₂ b₁ b₂ c₁ c₂ m₁ m₂ n₁ n₂ p₁ p₂ : ℕ}
+    (h₁ : a₁ + b₁ = m₁) (h₂ : a₂ + b₂ = m₂) (k₁ : m₁ + c₁ = n₁) (k₂ : m₂ + c₂ = n₂)
+    (l₁ : b₁ + c₁ = p₁) (l₂ : b₂ + c₂ = p₂) (e₁ : a₁ + p₁ = n₁) (e₂ : a₂ + p₂ = n₂)
+    (z : TensorProduct R (X a₁) (Y a₂)) (w : TensorProduct R (X b₁) (Y b₂))
+    (v : TensorProduct R (X c₁) (Y c₂)) :
+    tensorPairₗ A B k₁ k₂ (tensorPairₗ A B h₁ h₂ z w) v
+      = tensorPairₗ A B e₁ e₂ z (tensorPairₗ A B l₁ l₂ w v) := by
+  induction z using TensorProduct.induction_on with
+  | zero => simp
+  | tmul x₁ y₁ =>
+      induction w using TensorProduct.induction_on with
+      | zero => simp
+      | tmul x₂ y₂ =>
+          induction v using TensorProduct.induction_on with
+          | zero => simp
+          | tmul x₃ y₃ =>
+              simp only [tensorPairₗ_tmul, map_smul, LinearMap.smul_apply, smul_smul, ← pow_add]
+              rw [A.mul_assoc h₁ k₁ l₁ e₁ x₁ x₂ x₃, B.mul_assoc h₂ k₂ l₂ e₂ y₁ y₂ y₃]
+              refine congrArg (fun r : R =>
+                r • (A.mul e₁ x₁ (A.mul l₁ x₂ x₃) ⊗ₜ[R] B.mul e₂ y₁ (B.mul l₂ y₂ y₃))) ?_
+              refine congrArg (fun t : ℕ => ((-1 : R)) ^ t) ?_
+              subst h₁
+              subst h₂
+              subst l₁
+              subst l₂
+              ring
+          | add v v' hv hv' =>
+              simp only [map_add, hv, hv']
+      | add w w' hw hw' =>
+          simp only [map_add, LinearMap.add_apply, hw, hw']
+  | add z z' hz hz' =>
+      simp only [map_add, LinearMap.add_apply, hz, hz']
+
+/-- **The Leibniz rule for the first differential**, bidegree by bidegree. -/
+theorem tensorPair_dL {a₁ a₂ b₁ b₂ n₁ n₂ : ℕ} (h₁ : a₁ + b₁ = n₁) (h₂ : a₂ + b₂ = n₂)
+    (hl : a₁ + 1 + b₁ = n₁ + 1) (hr : a₁ + (b₁ + 1) = n₁ + 1)
+    (z : TensorProduct R (X a₁) (Y a₂)) (w : TensorProduct R (X b₁) (Y b₂)) :
+    TensorProduct.map (A.dₗ n₁) LinearMap.id (tensorPairₗ A B h₁ h₂ z w)
+      = tensorPairₗ A B hl h₂ (TensorProduct.map (A.dₗ a₁) LinearMap.id z) w
+        + ((-1 : R)) ^ (a₁ + a₂) •
+          tensorPairₗ A B hr h₂ z (TensorProduct.map (A.dₗ b₁) LinearMap.id w) := by
+  induction z using TensorProduct.induction_on with
+  | zero => simp
+  | tmul x₁ y₁ =>
+      induction w using TensorProduct.induction_on with
+      | zero => simp
+      | tmul x₂ y₂ =>
+          simp only [tensorPairₗ_tmul, TensorProduct.map_tmul, map_smul, smul_smul, ← pow_add]
+          show ((-1 : R)) ^ (a₂ * b₁) • (A.d n₁ (A.mul h₁ x₁ x₂) ⊗ₜ[R]
+              (LinearMap.id (B.mul h₂ y₁ y₂) : Y n₂)) = _
+          rw [A.d_mul h₁ x₁ x₂, TensorProduct.add_tmul, smul_add]
+          refine congrArg₂ (· + ·) ?_ ?_
+          · rfl
+          · rw [TensorProduct.smul_tmul', smul_smul, ← pow_add]
+            refine congrArg (fun r : R =>
+              r • (A.mul (show a₁ + (b₁ + 1) = n₁ + 1 by omega) x₁ (A.d b₁ x₂) ⊗ₜ[R]
+                B.mul h₂ y₁ y₂)) ?_
+            refine neg_one_pow_eq_of_even_add _ _ (a₂ * b₁ + a₁ + a₂) ?_
+            ring
+      | add w w' hw hw' => simp only [map_add, hw, hw', smul_add]; abel
+  | add z z' hz hz' => simp only [map_add, LinearMap.add_apply, hz, hz', smul_add]; abel
+
+/-- **The Leibniz rule for the second differential**, bidegree by bidegree. -/
+theorem tensorPair_dR {a₁ a₂ b₁ b₂ n₁ n₂ : ℕ} (h₁ : a₁ + b₁ = n₁) (h₂ : a₂ + b₂ = n₂)
+    (hl : a₂ + 1 + b₂ = n₂ + 1) (hr : a₂ + (b₂ + 1) = n₂ + 1)
+    (z : TensorProduct R (X a₁) (Y a₂)) (w : TensorProduct R (X b₁) (Y b₂)) :
+    TensorProduct.map LinearMap.id (B.dₗ n₂) (tensorPairₗ A B h₁ h₂ z w)
+      = ((-1 : R)) ^ b₁ •
+          tensorPairₗ A B h₁ hl (TensorProduct.map LinearMap.id (B.dₗ a₂) z) w
+        + ((-1 : R)) ^ a₂ •
+          tensorPairₗ A B h₁ hr z (TensorProduct.map LinearMap.id (B.dₗ b₂) w) := by
+  induction z using TensorProduct.induction_on with
+  | zero => simp
+  | tmul x₁ y₁ =>
+      induction w using TensorProduct.induction_on with
+      | zero => simp
+      | tmul x₂ y₂ =>
+          simp only [tensorPairₗ_tmul, TensorProduct.map_tmul, map_smul, smul_smul, ← pow_add]
+          show ((-1 : R)) ^ (a₂ * b₁) • ((LinearMap.id (A.mul h₁ x₁ x₂) : X n₁) ⊗ₜ[R]
+              B.d n₂ (B.mul h₂ y₁ y₂)) = _
+          rw [B.d_mul h₂ y₁ y₂, TensorProduct.tmul_add, smul_add]
+          refine congrArg₂ (· + ·) ?_ ?_
+          · refine congrArg (fun r : R =>
+              r • (A.mul h₁ x₁ x₂ ⊗ₜ[R]
+                B.mul (show a₂ + 1 + b₂ = n₂ + 1 by omega) (B.d a₂ y₁) y₂)) ?_
+            refine neg_one_pow_eq_of_even_add _ _ (a₂ * b₁ + b₁) ?_
+            ring
+          · rw [TensorProduct.tmul_smul, smul_smul, ← pow_add]
+            refine congrArg (fun r : R =>
+              r • (A.mul h₁ x₁ x₂ ⊗ₜ[R]
+                B.mul (show a₂ + (b₂ + 1) = n₂ + 1 by omega) y₁ (B.d b₂ y₂))) ?_
+            refine neg_one_pow_eq_of_even_add _ _ (a₂ * b₁ + a₂) ?_
+            ring
+      | add w w' hw hw' => simp only [map_add, hw, hw', smul_add]; abel
+  | add z z' hz hz' => simp only [map_add, LinearMap.add_apply, hz, hz', smul_add]; abel
 
 end Pair
 

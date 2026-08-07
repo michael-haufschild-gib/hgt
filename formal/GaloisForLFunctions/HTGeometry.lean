@@ -504,6 +504,7 @@ import GaloisForLFunctions.HTGeometry.CDGATensorConstExchange
 import GaloisForLFunctions.HTGeometry.CDGATensorLeft
 import GaloisForLFunctions.HTGeometry.CDGATensorShift
 import GaloisForLFunctions.HTGeometry.CDGATensorShiftHom
+import GaloisForLFunctions.HTGeometry.CDGATensorAlgebra
 import GaloisForLFunctions.HTGeometry.CDGADerivedBaseChange
 import GaloisForLFunctions.HTGeometry.CDGALeftUnitor
 import GaloisForLFunctions.HTGeometry.CDGAResolution
@@ -2076,6 +2077,7 @@ import GaloisForLFunctions.HTGeometry.FreeLocallyConvexSeminorm
 import GaloisForLFunctions.HTGeometry.FreeModuleCoproduct
 import GaloisForLFunctions.HTGeometry.FreeParameterBaseChange
 import GaloisForLFunctions.HTGeometry.FundamentalGroupTopologicalGroup
+import GaloisForLFunctions.HTGeometry.FiniteAbelianCyclicQuotient
 import GaloisForLFunctions.HTGeometry.FreeRankGluingWitnesses
 import GaloisForLFunctions.HTGeometry.FreeShiftOneSliceNonsummability
 import GaloisForLFunctions.HTGeometry.FreeShiftTransport

@@ -969,3 +969,44 @@ one-sided derivative at the endpoint. The profile *is* monotone on the endpoint 
 `boundedVariationOn_of_piecewise_monotone` is the right entry point: prove the telescoping L¹
 bound for a monotone-on-`[c,d]`, zero-outside function first, then transfer along the cutoff via
 `BoundedVariationOn.mul_of_norm_le_of_lipschitzOn`.
+
+## M. The BV translation gap of section L is closed (monotone case)
+
+New module `formal/GaloisForLFunctions/HTGeometry/MonotoneTranslationModulus.lean`, wired into the
+`HTGeometry` umbrella. 14 theorems, all `#print axioms` clean (propext / Classical.choice /
+Quot.sound only). No differentiability is used anywhere — which is the point, since the card's
+profile has infinite one-sided derivative at the endpoint.
+
+The chain, in the card's numbering:
+
+- `integral_translate_sub_eq_end_windows` — translating the variable moves the window, so
+  `∫_a^b (g(x+h) − g(x)) = ∫_b^{b+h} g − ∫_a^{a+h} g`. Exact, no hypotheses beyond monotonicity.
+- `integral_le_length_mul_right`, `length_mul_left_le_integral` — the two short end windows.
+- `integral_abs_translate_sub_le`, `integral_abs_translate_sub_le_variation` — the **L¹ modulus**
+  `∫_a^b |g(x+h) − g(x)| ≤ V·h`. This is the input section L said neither mathlib nor the corpus
+  owned. The ordering hypothesis `a ≤ b` turned out to be unnecessary and was dropped: the
+  telescoping identity holds for signed intervals, and the absolute value is absorbed by the
+  congruence step, so the bound is valid for all `a, b`.
+- `intervalIntegrable_translate_sub`, `intervalIntegrable_translate_sub_sq` — integrability of the
+  difference and its square, by domination rather than by any smoothness.
+- `integral_sq_translate_sub_le` — **`(11)`**: `∫ |Δ_h u|² ≤ M·V·h`, the L² modulus linear in `h`.
+- `integrableOn_rpow_neg_two_mul`, `div_rpow_eq_rpow_neg_two_mul`,
+  `integrableOn_gagliardo_quotient` — **`(12)`**: a modulus linear in the shift makes the Gagliardo
+  integrand `F(h)/h^{1+2s}` integrable on `(0,1)` for every `s < 1/2`.
+- `not_integrableOn_rpow_neg_two_mul` — the converse half of `(12)`: at `s ≥ 1/2` the dominating
+  power is *not* integrable. The threshold is proved sharp, not asserted.
+
+Traps hit, for reuse:
+
+- `AEStronglyMeasurable.div` on `ℝ` demands `Group ℝ` and fails. Route through
+  `simp only [div_eq_mul_inv]` then `.mul` and `Measurable.inv`.
+- `Real.measurable_rpow_const` does not exist here; `by fun_prop` proves
+  `Measurable fun h : ℝ => h ^ (1 + 2*s)` directly.
+- `intervalIntegral.integrableOn_Ioo_rpow_iff` is the Ioo criterion (the unqualified
+  `integrableOn_Ioo_rpow_iff` does not resolve).
+- Dominating by `M * |·|` leaves `|M|` on the right after `abs_mul`; add `abs_of_nonneg hM` to the
+  same `simp only` set.
+
+Still open on the two-port card: transferring this monotone estimate along the smooth endpoint
+cutoff (`BoundedVariationOn.mul_of_norm_le_of_lipschitzOn` in
+`HTGeometry/BoundedVariationRiemannSum.lean`), and `(13)` `log⟨ξ⟩ ≤ C_s(1+|ξ|^s)`.

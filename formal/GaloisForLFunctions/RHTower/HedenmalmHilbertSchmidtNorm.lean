@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.HedenmalmThetaSeriesExpansion
+import GaloisForLFunctions.RHTower.SoninTimeBandHilbertSchmidt
 
 /-!
 # The Hilbert--Schmidt energy of the source inverse
@@ -464,6 +465,123 @@ theorem continuous_pinnedSliceVec : Continuous (fun t : ℝ => pinnedSliceVec t)
   rw [ContinuousAt, tendsto_iff_norm_sub_tendsto_zero]
   exact squeeze_zero (fun t => norm_nonneg _) (fun t => norm_pinnedSliceVec_sub_le' b t) hg
 
+
+/-! ### The kernel field as a square-integrable field of functionals
+
+The row map `t ↦ K(t, ·)` is assembled into an actual element of `L²((0,1); H*)`, which is the
+input format of the corpus kernel theorem.  The assembly needs three facts: the row is the
+scalar multiple `i q(t)` of the slice family, the slice family is `L²`-continuous, and the row
+energy `q(t)² t(1-t)` is integrable. -/
+
+local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+
+theorem ae_unitIntervalMeasure_mem_Ioo :
+    ∀ᵐ t ∂unitIntervalMeasure, t ∈ Ioo (0 : ℝ) 1 := by
+  have hrw : unitIntervalMeasure = (volume : Measure ℝ).restrict (Ioo 0 1) := by
+    rw [unitIntervalMeasure, restrict_Ioo_eq_restrict_Icc]
+  rw [hrw]
+  exact ae_restrict_mem measurableSet_Ioo
+
+/-- **The slice energy.**  The pinned slice has squared norm `t(1-t)`. -/
+theorem norm_sq_pinnedSliceVec {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1) :
+    ‖pinnedSliceVec t‖ ^ 2 = t * (1 - t) := by
+  set G : PositiveDensitySource := gaussianSource with hG
+  have hq : 0 < quantileSpeed G t := quantileSpeed_pos G t
+  have hnorm : ‖pinnedKernelVec G (Ioo_subset_Icc_self ht)‖
+      = quantileSpeed G t * ‖pinnedSliceVec t‖ := by
+    rw [pinnedKernelVec_eq_smul G (Ioo_subset_Icc_self ht), norm_smul]
+    congr 1
+    rw [norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos hq]
+  have h := norm_sq_pinnedKernelVec G ht
+  rw [hnorm, mul_pow] at h
+  exact mul_left_cancel₀ (pow_ne_zero 2 hq.ne') h
+
+/-- The kernel field of the source inverse: the continuous functional
+`f ↦ ∫₀¹ K(t,u) f(u) du`. -/
+def pinnedKernelField (t : ℝ) : (Lp ℂ 2 unitIntervalMeasure) →L[ℂ] ℂ :=
+  innerSL ℂ ((-(Complex.I * ((quantileSpeed S t : ℝ) : ℂ))) • pinnedSliceVec t)
+
+/-- **The kernel field really is the integral against the kernel row.** -/
+theorem pinnedKernelField_apply (t : ℝ) (f : Lp ℂ 2 unitIntervalMeasure) :
+    pinnedKernelField S t f = ∫ u, pinnedKernelFun S t u * f u ∂unitIntervalMeasure := by
+  show (inner ℂ ((-(Complex.I * ((quantileSpeed S t : ℝ) : ℂ))) • pinnedSliceVec t) f : ℂ) = _
+  rw [MeasureTheory.L2.inner_def]
+  refine integral_congr_ae ?_
+  filter_upwards [Lp.coeFn_smul (-(Complex.I * ((quantileSpeed S t : ℝ) : ℂ)))
+      (pinnedSliceVec t), pinnedSliceVec_coeFn t] with u h1 h2
+  show (inner ℂ ((((-(Complex.I * ((quantileSpeed S t : ℝ) : ℂ))) • pinnedSliceVec t :
+    Lp ℂ 2 unitIntervalMeasure) : ℝ → ℂ) u) (f u) : ℂ) = _
+  rw [h1]
+  simp only [Pi.smul_apply, smul_eq_mul]
+  rw [h2, RCLike.inner_apply', pinnedKernelFun]
+  simp only [map_mul, map_neg, Complex.conj_I, Complex.conj_ofReal]
+  ring
+
+theorem norm_pinnedKernelField (t : ℝ) :
+    ‖pinnedKernelField S t‖ = quantileSpeed S t * ‖pinnedSliceVec t‖ := by
+  rw [pinnedKernelField, innerSL_apply_norm, norm_smul]
+  congr 1
+  rw [norm_neg, norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos (quantileSpeed_pos S t)]
+
+theorem continuousOn_quantileSpeed : ContinuousOn (quantileSpeed S) (Ioo (0 : ℝ) 1) := by
+  refine continuousOn_const.div ?_ (fun t _ => (S.pos_k _).ne')
+  exact S.continuous_k.comp_continuousOn (continuousOn_quantileFun S)
+
+theorem continuousOn_pinnedKernelField :
+    ContinuousOn (pinnedKernelField S) (Ioo (0 : ℝ) 1) := by
+  have hscal : ContinuousOn (fun t : ℝ => -(Complex.I * ((quantileSpeed S t : ℝ) : ℂ)))
+      (Ioo (0 : ℝ) 1) := by
+    refine ContinuousOn.neg (continuousOn_const.mul ?_)
+    exact Complex.continuous_ofReal.comp_continuousOn (continuousOn_quantileSpeed S)
+  have hvec : ContinuousOn
+      (fun t : ℝ => (-(Complex.I * ((quantileSpeed S t : ℝ) : ℂ))) • pinnedSliceVec t)
+      (Ioo (0 : ℝ) 1) :=
+    hscal.smul (continuous_pinnedSliceVec.continuousOn (s := Ioo (0 : ℝ) 1))
+  exact (innerSL (𝕜 := ℂ) (E := Lp ℂ 2 unitIntervalMeasure)).continuous.comp_continuousOn hvec
+
+theorem aestronglyMeasurable_pinnedKernelField :
+    AEStronglyMeasurable (pinnedKernelField S) unitIntervalMeasure := by
+  have hres : unitIntervalMeasure.restrict (Ioo (0 : ℝ) 1) = unitIntervalMeasure := by
+    rw [unitIntervalMeasure, Measure.restrict_restrict measurableSet_Ioo,
+      Set.inter_eq_left.mpr Ioo_subset_Icc_self, restrict_Ioo_eq_restrict_Icc]
+  have h := (continuousOn_pinnedKernelField S).aestronglyMeasurable
+    (μ := unitIntervalMeasure) measurableSet_Ioo
+  rwa [hres] at h
+
+/-- The theta-tail energy of the source is finite: the exact square-integrability of the kernel
+field, written in the quantile coordinate. -/
+def HasFiniteKernelEnergy : Prop :=
+  Integrable (fun t => quantileSpeed S t ^ 2 * (t * (1 - t))) unitIntervalMeasure
+
+theorem memLp_pinnedKernelField (hfin : HasFiniteKernelEnergy S) :
+    MemLp (pinnedKernelField S) 2 unitIntervalMeasure := by
+  refine (memLp_two_iff_integrable_sq_norm (aestronglyMeasurable_pinnedKernelField S)).mpr ?_
+  refine (hfin : Integrable _ _).congr ?_
+  filter_upwards [ae_unitIntervalMeasure_mem_Ioo] with t ht
+  rw [norm_pinnedKernelField, mul_pow, norm_sq_pinnedSliceVec ht]
+
+/-- The kernel field of the source inverse as an element of `L²((0,1); H*)`. -/
+def pinnedKernelL2 (hfin : HasFiniteKernelEnergy S) :
+    Lp ((Lp ℂ 2 unitIntervalMeasure) →L[ℂ] ℂ) 2 unitIntervalMeasure :=
+  (memLp_pinnedKernelField S hfin).toLp _
+
+/-- **The source inverse is a Hilbert--Schmidt operator.**  In the quantile coordinate its kernel
+row field is square integrable with energy `∫₀¹ q(t)² t(1-t) dt`, so the corpus kernel theorem
+applies verbatim. -/
+theorem isHilbertSchmidt_pinnedKernelOperator (hfin : HasFiniteKernelEnergy S) :
+    ContinuousLinearMap.IsHilbertSchmidt
+      (kernelOperator (E := Lp ℂ 2 unitIntervalMeasure) unitIntervalMeasure
+        (pinnedKernelL2 S hfin)) :=
+  isHilbertSchmidt_kernelOperator _ _
+
+/-- **The source inverse is compact.** -/
+theorem isCompactOperator_pinnedKernelOperator (hfin : HasFiniteKernelEnergy S) :
+    IsCompactOperator
+      (kernelOperator (E := Lp ℂ 2 unitIntervalMeasure) unitIntervalMeasure
+        (pinnedKernelL2 S hfin)) :=
+  (isHilbertSchmidt_pinnedKernelOperator S hfin).isCompactOperator
 
 end HedenmalmHilbertSchmidt
 
