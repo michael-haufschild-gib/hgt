@@ -1426,3 +1426,33 @@ inequality, the uniform kernel bound (`norm_perronKernel_le`), the decay constan
 (`exists_bound_mellin_smoothWeight_line`), the Euler bound, this `ℓ¹` bound, and the truncated prime-sieve mean
 square.  Assembling them is the next step, and then the accounting with `Wsup ≍ N` — the quantity that replaces
 the `C ≍ N(log N)⁶` which capped the global route.
+
+## Step 4 assembled on a truncated height range
+
+`RHTower/Sieve/GhsStepFourTruncated.lean` (green, axiom-clean, wired).
+
+`exists_norm_tsum_ghs_smoothWeight_le_truncated` :
+
+`2π‖∑ₙ (a ⍟ (b ⍟ f))(n)w(n)‖
+    ≤ E·((N+H)^σ/σ)·√(truncSieveSum a)·√(truncSieveSum b) + (ℓ¹a)(ℓ¹b)·E·C·(π − 2 arctan T)`,
+
+for every bounded multiplicative `f`, every `N₀`, cutoff `N, H > 0`, `σ > 1`, height `T > 0` and admissible
+sieve level, with `E = (1 + 1/(σ−1))e^{7/2}` and `dampedL1`, `truncSieveSum` naming the two auxiliary
+quantities.
+
+**The whole point is which constant multiplies the mean squares.**  Here it is `(N+H)^σ/σ`, the uniform size of
+the kernel — of order `N` — while the global assembly multiplies them by `C ≍ N^σ(N/H)²`, and no `H` reconciles
+that with the smoothing error `H(log N)⁴`.  In this form `C` appears only against `π − 2 arctan T ≍ 1/T`.
+
+Everything is now in place for the accounting that the global route failed:
+
+* `Wsup ≍ N` (was `C ≍ N(log N)⁶`);
+* the truncated sieve sum's leading term is `T`-free, so its size is the same
+  `≍ ∑_p p(log p)²p^{−2σ}/log Y` as before;
+* the tail is `(ℓ¹a)(ℓ¹b)·E·C/T`, and `ℓ¹` masses of the two prime weights are `O((log N)²)` at `σ` near `1`,
+  so `T` polynomial in `N` kills it;
+* the smoothing error stays `H(log N)⁴` with `H` free up to `N`.
+
+With `Wsup ≍ N` in place of `N(log N)⁶` the earlier deficit of `(log N)⁸` becomes `(log N)²`, and the two
+remaining logarithms are the ones already identified: the outer weight's discarded `1/log⌊N/p⌋` damping, and the
+per-block sieve levels.  Both devices exist; the next step is to combine them in this truncated form.
