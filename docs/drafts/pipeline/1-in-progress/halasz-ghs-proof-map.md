@@ -604,3 +604,21 @@ Appended to the same module:
 That is the closed form the error budgets consume.  The window mass over `(K, K+H]` is at most
 `(H+1)(log(K+H))⁴/(log 2)²` with no arithmetic input at all, so the smoothing error at `H = x/(log x)⁶` is
 `O(x/(log x)²)` — inside GHS's budget by two logarithms.
+
+## Twenty-second brick: the smoothing error of the triple convolution, closed form
+
+`RHTower/Sieve/ConvolutionSmoothingError.lean` (green, axiom-clean, wired):
+
+`‖∑_{n<m} d(n)·w(n) − ∑_{n≤K} d(n)‖ ≤ (⌊K+H⌋ − K)·(log⌊K+H⌋)⁴/(log 2)²`   whenever `K + H ≤ m`,
+
+for `d = a ⍟ (b ⍟ c)` with `a, b` prime-supported (`‖a_p‖ ≤ log p`, `‖b_q‖ ≤ log q`, `‖c‖ ≤ 1`).
+
+This is the window bound against the pointwise coefficient bound: `⌊K+H⌋ − K` terms, each at most
+`(log⌊K+H⌋)⁴/(log 2)²`.  At `H = K/(log K)⁶` it reads `O(K/(log K)²)`.
+
+**Step 4's chain is now closed end to end with explicit constants**: sharp cutoff → smoothed sum (this
+brick) → vertical integral (`tsum_mul_smoothWeight_convolution_eq_integral`) → two mean squares
+(`norm_integral_mul_mul_le_sqrt_mul_sqrt`) → prime-supported mean square
+(`integral_lorentz_normSq_logPoly_le_prime_sieve`) and Lorentzian mean square
+(`integral_lorentz_normSq_logPoly_le_count`).  No step is conditional and no step needs an arithmetic
+input that is not already in the tree.
