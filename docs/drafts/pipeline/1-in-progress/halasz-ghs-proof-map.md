@@ -458,3 +458,22 @@ need a short-interval divisor estimate.
 Remaining for Perron's lemma: the contour shift itself (residue `1` at `s = 0` for `y > 1`, none for
 `y < 1`) and the vanishing of the left edge as `A → ∞`.  PNTPlus's `Rectangle` and
 `ResidueCalcOnRectangles` are the intended tools.
+
+### The other two elementary pieces of Perron's lemma
+
+Also in `HTGeometry/PerronKernelSegments.lean`:
+
+* `norm_integral_vertical_edge_cpow_le` — on the line `Re s = a` (`a ≠ 0`) the truncated edge satisfies
+  `‖∫_{−T}^{T} y^{a+it}/(a+it) dt‖ ≤ 2T·y^a/|a|`.  For `y > 1` and `a = −A` this tends to `0` as
+  `A → ∞`, which is what licenses the leftward contour shift; for `y < 1` and `a = +A` likewise.
+* `norm_integral_horizontal_le'` — the `y < 1` companion of the horizontal bound, shifting rightwards:
+  `‖∫_σ^A y^{u+iT}/(u+iT) du‖ ≤ y^σ/(T|log y|)`, uniformly in `A`.
+
+Both are elementary: `‖y^s‖ = y^{Re s}`, and `‖s‖` is at least `|Re s|` on a vertical line and at least
+`|Im s|` on a horizontal one.  Note the name `norm_integral_vertical_edge_le` was already taken in
+`RHTower.Sieve` (`VerticalMassSharp`, a different statement about the smoothing kernel), hence the
+`_cpow_` in this one.
+
+With the three segment bounds in place, what is left of Perron's lemma is purely the residue calculus:
+the rectangle `[−A, σ] × [−T, T]` winds once around `s = 0` with residue `1` when `y > 1`, and the
+rectangle `[σ, A] × [−T, T]` contains no pole when `y < 1`.
