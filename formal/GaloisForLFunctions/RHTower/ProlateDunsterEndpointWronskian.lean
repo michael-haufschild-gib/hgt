@@ -43,7 +43,9 @@ theorem sub_one_sq_mul_log_phase_tendsto_zero {s c : ℝ}
   have hdpos : ∀ᶠ x : ℝ in l, x ^ 2 - 1 ∈ Ioi (0 : ℝ) := by
     filter_upwards [self_mem_nhdsWithin] with x hx
     change 1 < x at hx
-    nlinarith [mul_pos (sub_pos.mpr hx) (by linarith : 0 < x + 1)]
+    calc
+      0 < (x - 1) * (x + 1) := mul_pos (sub_pos.mpr hx) (by linarith)
+      _ = x ^ 2 - 1 := by ring
   have hdwithin : Tendsto (fun x : ℝ => x ^ 2 - 1) l (nhdsWithin 0 (Ioi 0)) :=
     tendsto_nhdsWithin_iff.2 ⟨hd, hdpos⟩
   have hdlog : Tendsto (fun x : ℝ => (x ^ 2 - 1) * Real.log (x ^ 2 - 1)) l (nhds 0) := by

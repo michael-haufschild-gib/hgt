@@ -1428,3 +1428,15 @@ Three laws, all reindexing on top of the bidegree lemmas already proved:
 
 None of the three needs a new sign identity; the signs are all in `tensorPair_comm`,
 `tensorPair_assoc`, `tensorPair_dL` and `tensorPair_dR`.
+
+The reindexing is set up: `coIndex`, `coIndex_apply`, `coIndex_fits`, **`coIndex_coIndex`** — the
+complementary bidegree `p − r`, an involution on the bidegrees that fit inside `p`.  It is total
+(junk outside the fitting set), which is what `Finset.sum_nbij'` needs, and `coIndex_coIndex` is the
+involutivity.  Both sums restrict to the fitting set because the non-fitting summands are `0` by
+the `dite`.
+
+The one real obstacle in the summand step is dependent rewriting: identifying
+`coIndex a p (coIndex b p r)` with `r` inside `f (…)` changes the *type* of the argument, so `rw`
+hits a motive problem.  The way through is to destructure the indices into naturals first and
+introduce the complement as a variable — `obtain ⟨c, rfl⟩ : ∃ c, p₁ = r₁ + c` — after which every
+identification is a rewrite of a natural number inside `X (…)`, whose motive is type-correct.
