@@ -790,3 +790,23 @@ of logarithmically bounded coefficients, the Euler bound, the master three-facto
 and GHS Lemma 1 on the Perron line.  **What remains is not a device but a computation**: choosing
 `σ = 1 + 1/log x`, the sieve level, `H`, and evaluating the two sieve sums — the first of which is where
 the `(1+M)e^{-M}` shape of the sharp Halász theorem finally appears.
+
+## The two halves meet: the recursion output is the convolution's summatory function
+
+`RHTower/Sieve/ConvolutionSummatorySwap.lean` and `RHTower/Sieve/GhsRecursionJoin.lean` (green, axiom-clean,
+wired).  **Every statement in both modules is hypothesis-free.**
+
+* `sum_Icc_convolution_apply`, `sum_Icc_convolution_triple_apply` — the summatory swap for plain sequences
+  `ℕ → R` over any semiring, with no condition at `0`: a convolution evaluated at `n ≥ 1` never reads the
+  value at `0`, so the corpus's arithmetic-function swap applies verbatim to the zero-extended sequences.
+  `∑_{n ≤ N} (a ⍟ (b ⍟ c))(n) = ∑_{p ≤ N} a_p ∑_{q ≤ N/p} b_q ∑_{k ≤ N/p/q} c_k`.
+* `sum_Icc_ghsTriple_eq_prime_double_average` — the join:
+
+  `∑_{n ≤ N} (a ⍟ (b ⍟ f))(n) = ∑_p f(p)·log p/log⌊N₀/p⌋ ∑_q f(q)·log q ∑_{k ≤ N/pq} f(k)`,
+
+  outer sum over primes `p ≤ N` with `⌊N₀/p⌋ ≥ 2`, inner over primes `q ≤ min(N/p, M)`.
+
+The left side is what the Perron and mean-square steps estimate; the right side is what two applications of
+the logarithmic recursion produce.  With this identity the two halves of the programme are the same object,
+and the chain from `(∑_{n≤N} f(n))·log N` to the sieve mean squares is closed except for the numerical choice
+of `σ, z, Y, H` and the evaluation of the two sieve sums.
