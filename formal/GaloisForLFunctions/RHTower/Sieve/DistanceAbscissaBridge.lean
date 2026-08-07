@@ -105,21 +105,47 @@ variable {f : ℕ → ℂ} {s : ℂ}
 theorem sum_primesLE_le_mulDistSqTsum (hbdd : ∀ n, ‖f n‖ ≤ 1) (hs : 1 < s.re) (z : ℕ) :
     ∑ p ∈ Nat.primesLE z, ((((p : ℕ)) : ℝ)) ^ (-s.re) * distDefect f s.im p ≤
       mulDistSqTsum f s := by
-  have hsummable := summable_mulDistSqTsum hbdd hs
-  have hsumT : ∑ q ∈ (Nat.primesLE z).subtype Nat.Prime,
-        ((((q : ℕ)) : ℝ)) ^ (-s.re) * distDefect f s.im (q : ℕ) =
-      ∑ p ∈ Nat.primesLE z, ((((p : ℕ)) : ℝ)) ^ (-s.re) * distDefect f s.im p := by
-    rw [Finset.sum_subtype_eq_sum_filter
-        (fun n : ℕ => ((n : ℝ)) ^ (-s.re) * distDefect f s.im n),
-      Finset.filter_true_of_mem fun p hp => Nat.prime_of_mem_primesLE hp]
-  have hterm : ∀ q ∈ (Nat.primesLE z).subtype Nat.Prime,
-      ((((q : ℕ)) : ℝ)) ^ (-s.re) * distDefect f s.im (q : ℕ) =
-        ((((q : ℕ)) : ℝ)) ^ (-s.re) - (twistedSummand f s ((q : ℕ))).re := by
-    intro q _
+  classical
+  set G : ℕ → ℝ := fun n =>
+    if n.Prime then ((n : ℝ)) ^ (-s.re) * distDefect f s.im n else 0 with hG
+  have hGnn : ∀ n, 0 ≤ G n := by
+    intro n
+    rw [hG]
+    by_cases hp : n.Prime
+    · simp only [if_pos hp]
+      exact mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg n) _)
+        (distDefect_nonneg hbdd s.im n)
+    · simp only [if_neg hp]
+      exact le_rfl
+  have hGeq : ∀ q : Nat.Primes, G (q : ℕ) =
+      ((((q : ℕ)) : ℝ)) ^ (-s.re) - (twistedSummand f s ((q : ℕ))).re := by
+    intro q
+    rw [hG]
+    simp only [if_pos q.2]
     exact (rpow_sub_re_twistedSummand q.2.pos).symm
-  rw [← hsumT, Finset.sum_congr rfl hterm, mulDistSqTsum]
-  exact hsummable.sum_le_tsum ((Nat.primesLE z).subtype Nat.Prime)
-    (fun q _ => mulDistSqTsum_term_nonneg hbdd q)
+  have hzero : ∀ n ∉ Set.range (fun q : Nat.Primes => (q : ℕ)), G n = 0 := by
+    intro n hn
+    have hnp : ¬ n.Prime := fun hp => hn ⟨⟨n, hp⟩, rfl⟩
+    rw [hG]
+    simp only [if_neg hnp]
+  have hsupp : Function.support G ⊆ Set.range (fun q : Nat.Primes => (q : ℕ)) := by
+    intro n hn
+    by_contra hcon
+    exact hn (hzero n hcon)
+  have hGsummable : Summable G :=
+    (Function.Injective.summable_iff (fun a b h => Subtype.ext h) hzero).mp
+      ((summable_mulDistSqTsum hbdd hs).congr fun q => (hGeq q).symm)
+  have htsum : ∑' n : ℕ, G n = mulDistSqTsum f s := by
+    rw [← Function.Injective.tsum_eq (f := G) (g := fun q : Nat.Primes => (q : ℕ))
+      (fun a b h => Subtype.ext h) hsupp, mulDistSqTsum]
+    exact tsum_congr hGeq
+  have hfin : ∑ p ∈ Nat.primesLE z, ((((p : ℕ)) : ℝ)) ^ (-s.re) * distDefect f s.im p
+      = ∑ n ∈ Nat.primesLE z, G n := by
+    refine Finset.sum_congr rfl fun p hp => ?_
+    rw [hG]
+    simp only [if_pos (Nat.prime_of_mem_primesLE hp)]
+  rw [hfin, ← htsum]
+  exact hGsummable.sum_le_tsum (Nat.primesLE z) (fun n _ => hGnn n)
 
 /-- **The bridge.**  The harmonic distance over the primes up to `z` exceeds the abscissa-weighted
 distance over all primes by at most the shift cost. -/

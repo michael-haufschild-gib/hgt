@@ -1,11 +1,12 @@
 # Every rank-one projective horizon has full symmetric monodromy
 
 - **ID:** `projective-horizon-rank-one-full-monodromy`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM / GENERIC CRITICAL MONODROMY
-- **Scientific status:** `[PROVED ON PAPER] [NOVELTY PROVISIONAL] [SIGNIFICANCE LIMITED]`
-- **Formal status:** `(5)`--`(12)` formalized in Lean, unconditionally, as one continuous chain from
-  the reciprocal jet to the non-squareness of the fibre discriminant; see the Log.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / GENERIC CRITICAL MONODROMY
+- **Scientific status:** `[LEAN-PROVED] [NOVELTY PROVISIONAL] [SIGNIFICANCE LIMITED]`
+- **Formal status:** Exact rank-one theorem formalized unconditionally: reciprocal fibre equation,
+  triangular parameter change, tail/centered coefficient-field equivalence, full symmetric
+  monodromy in even and odd Kummer cases, quadratic edge case, and reciprocal duality; see the Log.
 - **Parent:** `projective-horizon-irreducible-simple-ramification`
 - **Lane:** source-pure hypertranscendental geometry; static branch topology
 
@@ -3419,3 +3420,29 @@ dividing the discriminant.
   The section's remaining purpose is the *sibling* card `projective-horizon-full-symmetric-
   monodromy`, whose open input is the classification of finite etale covers of
   `(G_m)^2 x A^(L-2)` as torus Kummer covers — not a field-theoretic step at all.
+
+- 2026-08-07 — **Stage-3 audit complete.**  The exact theorem is represented without route
+  assumptions by the following continuous Lean chain:
+
+  - `pow_mul_eq_paramCoeff_sum` identifies the rank-one reciprocal fibre equation with the
+    triangular coefficient polynomial;
+  - `tailParameterChange`, `tailCenteredCoeffEquiv`, and `coe_tailCenteredCoeffEquiv` identify its
+    algebraically independent parameter field with the universal centered coefficient field and
+    its Kummer extension;
+  - `centeredParameterMonodromy` and `centeredParameterMonodromyOdd` give the full symmetric group
+    in the even and odd exponent cases, while `quadraticParameterMonodromy` closes `n = 1`;
+  - `coeff_mul_pow_eq_tail_sum_reciprocal` and `criticalFibreSwap` formalize reciprocal duality.
+
+  Foreground checks passed with `lake env lean` on every owning leaf.  Final batched module audit:
+
+  ```text
+  lake build GaloisForLFunctions.HTGeometry.ReciprocalParameterBridge \
+    GaloisForLFunctions.HTGeometry.TailParameterChange \
+    GaloisForLFunctions.HTGeometry.TailCenteredCoefficientMatch \
+    GaloisForLFunctions.HTGeometry.CenteredParameterMonodromy \
+    GaloisForLFunctions.HTGeometry.ReciprocalFiberEquation
+  ```
+
+  passed (`8800` jobs).  Scratch `#print axioms` for all capstones reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.  No `sorry`, `admit`, project axiom, `opaque`, or `unsafe`
+  declaration is used.  Card promoted to Stage 3.

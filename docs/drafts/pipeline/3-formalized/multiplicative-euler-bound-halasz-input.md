@@ -125,3 +125,64 @@ nothing about `f` beyond `|f| ≤ 1` and multiplicativity on coprime arguments i
 2. **Integrate over `t`.** With the closed form above, Halász's mean-value theorem needs the measure of
    the set where `D²` is small — which is what `HalaszWindow`/`HalaszUniqueClose` control — against the
    Perron kernel of `SmoothWeightPerron`.
+
+## The bridge to the harmonic distance — the layer is now closed end-to-end
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DistanceAbscissaBridge.lean` (9026 jobs, exit 0,
+axiom-clean).
+
+The Euler bound damps by `exp(−D²)` with `D²` weighted by `p^{-σ}` over *all* primes, while every
+distance lower bound in the corpus is weighted by `1/p` over the primes *up to `z`*. The bridge:
+
+- `natCast_cpow_neg_eq_mul` — the polar split `p^{-s} = p^{-Re s} · conj(charFn (Im s) p)`, via
+  `Complex.cpow_add`, `Complex.ofReal_cpow` and `Complex.ofReal_log`.
+- `distDefect f t p = 1 − Re(f(p) conj(charFn t p))`, with `mulDistSqPair f (charFn t) P =
+  ∑_{p ∈ P} distDefect f t p / p` true by `rfl`, and `distDefect_nonneg`, `distDefect_le_two`.
+- `rpow_sub_re_twistedSummand` — each abscissa-weighted term *is* `p^{-σ}` times the harmonic defect.
+- `sum_primesLE_le_mulDistSqTsum` — the finite prime sum is at most the infinite one.
+- `mulDistSqPair_le_mulDistSqTsum_add` — **the bridge**:
+  `mulDistSqPair f (charFn t) (primesLE z) ≤ mulDistSqTsum f s + 2(σ−1)(log z + log 4)`,
+  the shift cost coming from the corpus's own `PrimeSigmaShift.abs_sum_weight_shift_le` applied to the
+  defects halved (so the weights have modulus ≤ 1). At `σ = 1 + 1/log z` the cost is `O(1)`.
+- `norm_tsum_twistedSummand_le_of_mulDistSqPair` — **the closed layer**:
+
+  `‖∑_n f(n) n^{-s}‖ ≤ (1 + 1/(σ−1)) · exp(7/2 + 2(σ−1)(log z + log 4) − mulDistSqPair f (charFn t) (primesLE z))`.
+
+The right-hand side now contains *exactly* the quantity the corpus bounds from below — e.g.
+`MoebiusUniformFrequency.exists_mulDistSqPair_ge_uniform` (`≥ log log z − 7 log log T − C`, uniform over
+`|t| ≤ T`). Substituting it is a direct instantiation, no new analysis.
+
+What is still missing for Halász's mean-value theorem is only the `t`-integration against the Perron
+kernel; the Euler-product side of the argument is complete.
+
+## Lean notes worth keeping
+
+- `Finset.subtype Nat.Prime s : Finset {x // Nat.Prime x}` breaks instance search for
+  `(SummationFilter.unconditional Nat.Primes).NeBot` in `Summable.sum_le_tsum`. Transport through an
+  `ℕ`-indexed indicator plus `Function.Injective.summable_iff` / `Function.Injective.tsum_eq` instead —
+  over `ℕ` the instances are unproblematic.
+
+## The discrete large-values input, for the whole series
+
+`formal/GaloisForLFunctions/RHTower/Sieve/HalaszFullSeriesSum.lean` (9066 jobs, exit 0, axiom-clean).
+
+The corpus's `HalaszDichotomy` / `HalaszUniqueClose` prove the dichotomy and the separated-set sum for
+the squarefree smooth proxy `smoothMulSum`. With the closed Euler layer the same three statements now
+hold for the Dirichlet series itself:
+
+- `norm_tsum_twistedSummand_le_trivial` — `‖∑_n f(n)n^{-s}‖ ≤ (1 + 1/(σ−1)) e^{7/2}`, the trivial size
+  (distance is nonnegative).
+- `norm_tsum_twistedSummand_le_of_far` — a frequency at distance `≥ δ` gives
+  `‖∑_n f(n)n^{-s}‖ ≤ (1 + 1/(σ−1)) exp(7/2 + shift − δ²)`.
+- `sum_norm_tsum_twistedSummand_le_of_card` and `sum_norm_tsum_twistedSummand_le_of_spacing` —
+  **the discrete large-values input**: for a frequency set `S` with mesh exceeding the corpus's
+  frequency window,
+
+  `∑_{t ∈ S} ‖∑_n f(n) n^{-σ-it}‖ ≤ (1 + 1/(σ−1)) · e^{7/2+shift} · (|S| e^{-δ²} + 1)`.
+
+  The uniqueness input is the corpus's own `card_filter_close_le_one_of_spacing`; only the close point
+  pays the trivial size, every other point is damped.
+
+This is the object Perron inversion consumes. The Euler-product and large-values sides of Halász's
+method are now both stated for the series; what remains is the passage from the discrete frequency sum
+to the `t`-integral (Gallagher/Sobolev step) and the Perron assembly.

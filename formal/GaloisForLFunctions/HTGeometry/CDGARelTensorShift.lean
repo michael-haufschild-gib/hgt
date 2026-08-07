@@ -9,6 +9,7 @@ lower: the shift moves the cell argument but changes neither the sign nor the sh
 action on a shift is the action, read off above the shift.
 
 * `HTGeometry.tensorShiftMap_relTensorRelator` : the relator correspondence.
+* `HTGeometry.relTensorRel_tensorShiftMap` : the relations are stable under the comparison.
 -/
 
 universe u v w
@@ -63,5 +64,48 @@ theorem tensorShiftMap_relTensorRelator (P : CDGAModuleStructure A M)
   rw [shiftEvalAt_shiftAct Q k (show c + (γ + k) = c + γ + k by omega) (rfl : γ + k = γ + k)
     (rfl : c + γ + k = c + γ + k) (rfl : c + γ = c + γ) x v]
   rfl
+
+section Stability
+
+variable (P : CDGAModuleStructure A M) (Q : CDGAModuleStructure A N)
+
+/-- A relator vanishes when its cell argument does. -/
+theorem relTensorRelator_zero_cell {c a b n α β : ℕ} (hα : c + a = α) (hβ : c + b = β)
+    (hn : (α, b).1 + (α, b).2 = n) (hn' : (a, β).1 + (a, β).2 = n) (x : X c) (m : M a) :
+    relTensorRelator P Q hα hβ hn hn' x m (0 : N b) = 0 := by
+  simp only [relTensorRelator]
+  rw [show Q.act hβ x (0 : N b) = 0 from (Q.actₗ hβ x).map_zero,
+    TensorProduct.tmul_zero, TensorProduct.tmul_zero, tensorSingle_zero, tensorSingle_zero,
+    smul_zero, sub_zero]
+
+/-- **The comparison preserves the relations.** -/
+theorem relTensorRel_tensorShiftMap (k n : ℕ)
+    (f : TensorCarrier (R := R) M (ShiftCarrier N k) n)
+    (hf : f ∈ relTensorRel P (shiftModule Q k) n) (r : {a' : ℕ // a' + k = n}) :
+    tensorShiftMap (R := R) (M := M) (N := N) k n f r ∈ relTensorRel P Q r.1 := by
+  refine Submodule.span_induction
+    (p := fun g _ => tensorShiftMap (R := R) (M := M) (N := N) k n g r
+      ∈ relTensorRel P Q r.1) ?_ ?_ ?_ ?_ hf
+  · rintro g ⟨c, a, b, α, β, hα, hβ, hn, hn', x, m, v, rfl⟩
+    subst hα
+    by_cases hb : k ≤ b
+    · obtain ⟨γ, rfl⟩ : ∃ γ, γ + k = b := ⟨b - k, by omega⟩
+      obtain rfl : β = c + γ + k := by omega
+      rw [tensorShiftMap_relTensorRelator P Q k hn hn' x m v r]
+      exact relTensorRelator_mem P Q _ _ _ _ x m _
+    · haveI := shiftCarrier_subsingleton (M := N) (k := k) (n := b) (by omega)
+      rw [show v = 0 from Subsingleton.elim _ _,
+        relTensorRelator_zero_cell P (shiftModule Q k) rfl hβ hn hn' x m, map_zero]
+      exact Submodule.zero_mem _
+  · rw [map_zero]
+    exact Submodule.zero_mem _
+  · intro g g' _ _ hg hg'
+    rw [map_add]
+    exact Submodule.add_mem _ hg hg'
+  · intro r' g _ hg
+    rw [map_smul]
+    exact Submodule.smul_mem _ _ hg
+
+end Stability
 
 end GaloisForLFunctions.HTGeometry

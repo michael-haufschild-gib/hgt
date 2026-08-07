@@ -861,3 +861,53 @@ with `relUnitorHom` gives
 
 and then `hcell` for `⊗_A` follows exactly as `tensorMapLeft_constCell_isQuasiIsoFull` did for
 `⊗_R`, closing the last row of the parity table.
+
+## Both exchanges preserve the relations
+
+* **`relTensorRel_tensorShiftMap`** (`CDGARelTensorShift.lean`) — the shift comparison sends the
+  relations of `M ⊗ N[−k]` into the relations of `M ⊗ N`, in every shifted degree.  The span
+  induction needs one case split the earlier stability proofs did not: a relator whose cell argument
+  sits *below* the shift has that argument in a trivial module, so the relator is zero
+  (`relTensorRelator_zero_cell`); above the shift the correspondence applies.
+* **`relTensorRel_tensorConstExchange`** (`CDGARelTensorConst.lean`) — the constant exchange sends
+  `relTensorConstRel` (relators tensored with coefficients) into the relations of `M ⊗ (N ⊗ V)`.
+  This one is a *nested* span induction — outer over the generators `x ⊗ w`, inner over `x` in the
+  relator submodule — which is a shape that had not appeared before in this layer.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+A degree-substitution note worth keeping: after `rintro` on a relator's existential, `subst` on the
+degree equations must be done in the right order and sometimes *replaced* by an `obtain rfl` in the
+opposite direction.  Here `subst hβ` produces the index `c + (γ + k)` while the correspondence
+lemma is stated at `c + γ + k`, and those are propositionally but not definitionally equal;
+`obtain rfl : β = c + γ + k := by omega` puts the index in the form the lemma expects.
+
+## Next
+
+The two stability results are exactly the hypotheses of `Submodule.liftQ`, so each exchange now
+descends to the quotient.  Composing the two descents with `relUnitorHom` gives the free-cell
+computation for `⊗_A` and discharges `hcell` there.
+
+## The shift descent
+
+`CDGARelTensorDescent.lean`.
+
+* `relTensorShiftPre`, `relTensorShiftPre_ker`, **`relTensorShiftMap`** — the shift comparison
+  descends: `M ⊗_A N[−k]` maps to the shift of `M ⊗_A N`, degree by degree, by `Submodule.liftQ`
+  on the stability result.
+* **`relTensorShiftMap_surjective`** — surjective, because the comparison is surjective upstairs and
+  the quotient maps are.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+## Next
+
+Injectivity of `relTensorShiftMap` is the remaining half, and it is the *converse* of stability: if
+`tensorShiftMap z` lands in the relations in every shifted degree then `z` was already a relation.
+The route is the one that worked for `relTensorRel_of_prodRight` — exhibit the preimage of a relator
+explicitly.  Here the shift index is a **subsingleton** (`shiftIndexUnique`), so an element of the
+target is determined by its value at the single index, and the preimage of `rel(x, m, v₀)` is
+`rel(x, m, (shiftEvalAt …).symm v₀)`; that is the one computation left.
+
+With injectivity the shift descent is an isomorphism, and together with the same two steps for the
+constant exchange (whose stability is already proved) the free-cell computation for `⊗_A` closes.

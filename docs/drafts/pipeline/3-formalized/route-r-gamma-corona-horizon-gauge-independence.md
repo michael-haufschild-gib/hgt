@@ -1,10 +1,10 @@
 # Route R Gamma-corona horizon gauge independence
 
 - **ID:** `route-r-gamma-corona-horizon-gauge-independence`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Status:** `[PAPER-PROVED] [CORPUS-NEW CLASSIFICATION] [NOT RH]`
-- **Parent:** `../3-formalized/route-r-degree-six-gamma-corona-local-global-fracture.md`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean 4)
+- **Status:** `[LEAN-PROVED] [CORPUS-NEW CLASSIFICATION] [NOT RH]`
+- **Parent:** `route-r-degree-six-gamma-corona-local-global-fracture.md`
 
 ## Exact statement
 
@@ -146,13 +146,33 @@ work may use any intrinsic nonzero arithmetic horizon; no normalization, uniquen
 theorem remains in the proof burden.  The sole unresolved content stays the singular
 Cartier/Stokes law annihilating the horizon-independent scalar port.
 
+## Lean certificate
+
+Module:
+`GaloisForLFunctions/RHTower/RouteRGammaCoronaHorizonGaugeIndependence.lean`.
+
+Principal declarations:
+
+- `routeRTwoThreeGammaCorona_global_eq_local_at_iff_port_eq_zero` classifies every nonzero
+  singular-corona direction;
+- `summable_norm_sq_routeRCrossPrimeArithmeticHorizonCoefficient` constructs the intrinsic
+  `1/(p*q)` packet in `ell^2`;
+- `routeRCrossPrimeArithmeticHorizon_not_mem_arithmeticCore` proves retention in the singular
+  corona;
+- `routeRCrossPrimeArithmeticHorizonCoefficient_swap` proves orientation symmetry;
+- `routeRTwoThreeGammaCorona_original_globalization_iff_arithmetic` transports the exact
+  all-divisor globalization obligation between the encoded and arithmetic horizons.
+
+Audit: direct `lake env lean`, targeted module build, formal lint, and `#print axioms` all pass.
+The principal theorems use only `[propext, Classical.choice, Quot.sound]`.
+
 ## Gates
 
 - [x] internal source and failed-route audit
 - [x] external parent-theory audit
 - [x] conjecture-failure-replacement loop C23--C26
 - [x] dependency-closed paper proof
-- [ ] exact unconditional Lean proof
+- [x] exact unconditional Lean proof
 - [ ] source-globalization producer
 - [ ] RH
 
@@ -160,3 +180,5 @@ Cartier/Stokes law annihilating the horizon-independent scalar port.
 
 - 2026-08-07 — C23--C25 falsified; C26 proved on paper after changing primitive from canonical
   horizon vector to pointed nonzero corona line.
+- 2026-08-07 — C26 formalized unconditionally; intrinsic arithmetic horizon constructed and
+  original/arithmetic globalization equivalence wired into the `RHTower` umbrella.

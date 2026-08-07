@@ -5747,6 +5747,7 @@ import GaloisForLFunctions.HTGeometry.CDGAUnital
 import GaloisForLFunctions.HTGeometry.CDGARelTensor
 import GaloisForLFunctions.HTGeometry.CDGARelTensorConst
 import GaloisForLFunctions.HTGeometry.CDGARelTensorShift
+import GaloisForLFunctions.HTGeometry.CDGARelTensorDescent
 import GaloisForLFunctions.HTGeometry.CDGARelTensorTwist
 import GaloisForLFunctions.HTGeometry.CDGARelTensorTower
 import GaloisForLFunctions.HTGeometry.CDGAUnitor

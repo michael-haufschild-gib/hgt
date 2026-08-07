@@ -3,8 +3,9 @@
 - **Stage:** 3-formalized
 - **Paper proof:**
   `../../2-fully-proven/new_scientific_knowledge/suzuki-causal-entry-third-jet-boundary-law.md`
-- **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCausalEntryThirdJetBoundaryLaw.lean`
+- **Lean modules:**
+  `formal/GaloisForLFunctions/RHTower/SuzukiCausalEntryThirdJetBoundaryLaw.lean`,
+  `formal/GaloisForLFunctions/RHTower/SuzukiCausalEntryMovingCutRealization.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 
@@ -44,6 +45,53 @@ suzukiDelayedHingeCompletedJet3_entryWall_sub
 suzukiAffineSewnIntervalPart_entryThirdJet_sub
 suzukiAffineSewnEntryThirdJet_commonNormalizedTrace
 ```
+
+## Moving-cut realization: the derivative hypotheses are theorems
+
+`SuzukiCausalEntryMovingCutRealization` defines the actual moving-cut integrals
+
+```text
+suzukiMovingCutMass v a ell        = ∫_{-a}^{a-ell} v,
+suzukiMovingCutFirstMoment v a ell = ∫_{-a}^{a-ell} (a-ell-y) v(y) dy,
+suzukiMovingCutHighMoment v z a ell = ∫_{a-ell}^{a} v(y) exp(I z y) dy,
+suzukiApertureCharacteristic v z a  = ∫_{-a}^{a} v(y) exp(I z y) dy,
+```
+
+and proves the three transport laws `(4)` for every continuous source `v`:
+
+```text
+hasDerivAt_suzukiMovingCutMass          B' = -v(a-ell)
+hasDerivAt_suzukiMovingCutFirstMoment   A' = -B
+hasDerivAt_suzukiMovingCutHighMoment    H' = exp(I z (a-ell)) v(a-ell)
+```
+
+The first moment is differentiated without differentiating under the integral sign: the identity
+`suzukiMovingCutFirstMoment_eq` rewrites it as `(a-ell)·B(ell) − ∫_{-a}^{a-ell} y v(y) dy`, whose
+two moving-endpoint contributions cancel.  Instantiating the abstract chain then gives the
+hypothesis-free transport theorems
+
+```text
+hasDerivAt_suzukiDelayedHingeNearCompletedJet0_movingCut
+hasDerivAt_suzukiDelayedHingeEntryCurrent_movingCut
+hasDerivAt_suzukiDelayedHingeNearCompletedJet1_movingCut
+hasDerivAt_suzukiDelayedHingeNearCompletedJet2_movingCut
+```
+
+and the entry-wall classification for the realized channels
+
+```text
+suzukiMovingCutMass_entryWall,  suzukiMovingCutFirstMoment_entryWall,
+suzukiMovingCutHighMoment_entryWall
+suzukiDelayedHingeNearCompletedJet0_movingCut_entryWall
+suzukiDelayedHingeNearCompletedJet1_movingCut_entryWall
+suzukiDelayedHingeNearCompletedJet2_movingCut_entryWall
+suzukiDelayedHingeNearCompletedJet3_movingCut_entryWall_sub
+suzukiDelayedHingeNearCompletedJet3_movingCut_entryWall_eq_of_dirichlet
+```
+
+The last two are `(12)` and its Dirichlet corollary literally: the wall defect of the realized
+channel is exactly `z^2 exp(I a z) v(-a)`, and it vanishes when the source obeys the Dirichlet
+boundary condition at `-a`.
 
 ## Scope and frontier
 

@@ -203,8 +203,14 @@ The source-specific synthesis is `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`; priorit
 - [x] entry-wall order and endpoint coefficient
 - [x] affine-sewn marked trace
 - [x] Lean formalization of transport algebra and wall jets
+- [x] moving-cut derivative laws `(4)` discharged in Lean for a continuous source, so the whole
+      transport chain and the entry-wall classification are hypothesis-free
 - [ ] actual endpoint-trace/quarter-shift source identification
 - [ ] rectangular third-jet Ward-defect lower bound and RH
 
-Lean module:
-`formal/GaloisForLFunctions/RHTower/SuzukiCausalEntryThirdJetBoundaryLaw.lean`.
+Lean modules:
+`formal/GaloisForLFunctions/RHTower/SuzukiCausalEntryThirdJetBoundaryLaw.lean` (transport algebra
+and wall jets) and
+`formal/GaloisForLFunctions/RHTower/SuzukiCausalEntryMovingCutRealization.lean` (the moving-cut
+integrals `A`, `B`, `H`, `W`, their three derivative laws `(4)` for a continuous source, and the
+resulting hypothesis-free jet chain and third-jet entry law).

@@ -12,6 +12,7 @@ and carries `V` along, which is exactly what the exchange does.
 * `HTGeometry.tensorConstExchange_tmul` : the exchange on a pure tensor.
 * `HTGeometry.tensorConstExchange_tensorSingle` : on a single-bidegree element.
 * `HTGeometry.tensorConstExchange_relTensorRelator` : the relator correspondence.
+* `HTGeometry.relTensorRel_tensorConstExchange` : the relations are stable under the exchange.
 -/
 
 universe u v w
@@ -78,6 +79,44 @@ theorem tensorConstExchange_relTensorRelator {c a b n α β : ℕ} (hα : c + a 
     map_sub, map_smul, tensorConstExchange_tensorSingle, tensorConstExchange_tensorSingle,
     TensorProduct.map_tmul, TensorProduct.map_tmul]
   rfl
+
+/-- The relations of the source of the exchange: relators tensored with coefficients. -/
+noncomputable def relTensorConstRel (n : ℕ) :
+    Submodule R (TensorProduct R (TensorCarrier (R := R) M N n) V) :=
+  Submodule.span R {u | ∃ x ∈ relTensorRel P Q n, ∃ w : V, u = x ⊗ₜ[R] w}
+
+/-- **The exchange preserves the relations.** -/
+theorem relTensorRel_tensorConstExchange (n : ℕ)
+    (z : TensorProduct R (TensorCarrier (R := R) M N n) V)
+    (hz : z ∈ relTensorConstRel P Q (V := V) n) :
+    tensorConstExchange (R := R) (M := M) (N := N) V n z
+      ∈ relTensorRel P (tensorConstModule Q V) n := by
+  refine Submodule.span_induction
+    (p := fun g _ => tensorConstExchange (R := R) (M := M) (N := N) V n g
+      ∈ relTensorRel P (tensorConstModule Q V) n) ?_ ?_ ?_ ?_ hz
+  · rintro u ⟨y, hy, w, rfl⟩
+    refine Submodule.span_induction
+      (p := fun y' _ => tensorConstExchange (R := R) (M := M) (N := N) V n (y' ⊗ₜ[R] w)
+        ∈ relTensorRel P (tensorConstModule Q V) n) ?_ ?_ ?_ ?_ hy
+    · rintro y' ⟨c, a, b, α, β, hα, hβ, hn, hn', x', m, v, rfl⟩
+      rw [tensorConstExchange_relTensorRelator P Q hα hβ hn hn' x' m v w]
+      exact relTensorRelator_mem P (tensorConstModule Q V) hα hβ hn hn' x' m (v ⊗ₜ[R] w)
+    · rw [TensorProduct.zero_tmul, map_zero]
+      exact Submodule.zero_mem _
+    · intro y₁ y₂ _ _ h₁ h₂
+      rw [TensorProduct.add_tmul, map_add]
+      exact Submodule.add_mem _ h₁ h₂
+    · intro r y₁ _ h₁
+      rw [← TensorProduct.smul_tmul', map_smul]
+      exact Submodule.smul_mem _ _ h₁
+  · rw [map_zero]
+    exact Submodule.zero_mem _
+  · intro g g' _ _ hg hg'
+    rw [map_add]
+    exact Submodule.add_mem _ hg hg'
+  · intro r g _ hg
+    rw [map_smul]
+    exact Submodule.smul_mem _ _ hg
 
 end Relator
 
