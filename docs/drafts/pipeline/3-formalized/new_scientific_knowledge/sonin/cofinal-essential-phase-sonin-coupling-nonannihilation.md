@@ -1,8 +1,8 @@
 # Cofinal essential-phase Sonin coupling nonannihilation
 
 - **ID:** `cofinal-essential-phase-sonin-coupling-nonannihilation`
-- **Stage:** 2-fully-proven
-- **Formalized companion:** `../../../3-formalized/new_scientific_knowledge/cofinal-essential-phase-sonin-coupling-nonannihilation.md`
+- **Stage:** 3-formalized
+- **Formalized companion:** `cofinal-essential-phase-sonin-coupling-nonannihilation-formalized.md`
 - **Type:** THEOREM (paper) / SOURCE-TEST BOUNDARY CONSTRUCTION
 - **Scientific status:** `[PROVED HERE] [CORPUS-NEW] [EXTERNAL NOVELTY PROVISIONAL] [NOT RH]`
 - **Parents:** `sonin-principal-shell-cyclic-trace.md`,

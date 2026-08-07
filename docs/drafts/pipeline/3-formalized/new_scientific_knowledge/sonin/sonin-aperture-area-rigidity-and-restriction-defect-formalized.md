@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Scientific status:** `[LEAN-PROVED] [CORPUS-NEW WELD] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/sonin/sonin-aperture-area-rigidity-and-restriction-defect.md`
+  `sonin-aperture-area-rigidity-and-restriction-defect.md`
 - **Status:** unconditional; no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
 
 ## Lean modules

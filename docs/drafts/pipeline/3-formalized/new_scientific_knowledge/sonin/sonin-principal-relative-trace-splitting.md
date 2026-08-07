@@ -1,12 +1,12 @@
 # Sonin principal-relative trace splitting and unique finite-part anomaly
 
 - **ID:** `sonin-principal-relative-trace-splitting`
-- **Stage:** 2-fully-proven
-- **Formalized companion:** `../../../3-formalized/new_scientific_knowledge/sonin-principal-relative-trace-splitting.md`
+- **Stage:** 3-formalized
+- **Formalized companion:** `sonin-principal-relative-trace-splitting-formalized.md`
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[PAPER-PROVED] [CORPUS-NEW WELD] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:** `sonin-principal-shell-cyclic-trace.md`,
-  `../1-in-progress/sonin-log-shell-cyclic-finite-part-descent.md`
+  `../../../1-in-progress/sonin-log-shell-cyclic-finite-part-descent.md`
 - **Statement:** Every finite injective prime Sonin Gram system has a unique direct splitting into
   its logarithmic principal shell and the exact Schatten-1 relative ideal; this splitting carries
   a unique signed finite part equal to Euler orbital trace plus one ordinary trace-class anomaly.

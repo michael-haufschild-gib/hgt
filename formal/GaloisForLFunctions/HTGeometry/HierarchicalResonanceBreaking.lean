@@ -176,7 +176,7 @@ theorem near_balanced_atom_count_eq_and_supportMax_lt_of_geometric_lower
           have hNsplit : N - magnitudeMaxXDegree Q + magnitudeMaxXDegree Q = N :=
             Nat.sub_add_cancel hNZ.le
           omega
-        have hfactor := lowerDegree_max_ge_ratio_factor hD hDtwo hDqMax
+        have hfactor := lowerDegree_max_ge_ratio_factor hDtwo hDqMax
           ((le_max_left _ _).trans hqthreshold)
         have hqDK : 2 * D * (B + K) ≤ q := by
           simpa only [B] using (le_max_right _ _).trans hqthreshold

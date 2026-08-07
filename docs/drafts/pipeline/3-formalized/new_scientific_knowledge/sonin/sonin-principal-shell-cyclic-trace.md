@@ -1,8 +1,8 @@
 # Canonical cyclic trace law for faithful Sonin principal shells
 
 - **ID:** `sonin-principal-shell-cyclic-trace`
-- **Stage:** 2-fully-proven
-- **Formalized companion:** `../../../3-formalized/new_scientific_knowledge/sonin-principal-shell-cyclic-trace.md`
+- **Stage:** 3-formalized
+- **Formalized companion:** `sonin-principal-shell-cyclic-trace-formalized.md`
 - **Type:** THEOREM / source-specific principal finite-part descent
 - **Scientific status:** `[CORPUS-NEW] [EXTERNAL NOVELTY PROVISIONAL] [NOT RH]`
 - **Parents:** `CCMSoninFiniteWordNormalForm.lean`,

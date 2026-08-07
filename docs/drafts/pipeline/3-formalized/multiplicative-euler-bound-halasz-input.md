@@ -69,3 +69,22 @@ obstruction from that programme; it does not close it, and it is not an RH advan
 - 2026-08-07 — created directly in 3-formalized. Reuses `norm_one_add_le_exp` and
   `sum_primesBelow_one_div_sq_le` rather than reproving them; mathlib's `EulerProduct` supplies the
   product identity.
+
+## The bound in distance form
+
+Same module, appended:
+
+- `primeAbscissaSum σ = ∑'_p p^{-σ}` — the trivial size of the prime sum at the abscissa.
+- `mulDistSqTsum f s = ∑'_p (p^{-Re s} − Re(f(p) p^{-s}))` — the distance of `f` from the character at
+  `s`, weighted at the abscissa. Termwise this is `p^{-Re s}(1 − Re(f(p)p^{-i Im s}))`, but written as a
+  difference it needs no polar decomposition, and each term is nonnegative for `|f| ≤ 1` directly from
+  `Re z ≤ ‖z‖`. With `mulDistSqTsum_term_nonneg`, `summable_mulDistSqTsum`, `mulDistSqTsum_nonneg`.
+- `tsum_re_twistedSummand_eq_sub` — `∑'_p Re(f(p)p^{-s}) = primeAbscissaSum (Re s) − mulDistSqTsum f s`.
+- `norm_tsum_twistedSummand_le_exp_sub_dist` — **the Halász shape**:
+
+  `‖∑_n f(n) n^{-s}‖ ≤ exp(primeAbscissaSum (Re s) − mulDistSqTsum f s + 5/2)`.
+
+Every unit of distance from the character costs the series one factor of `e^{-1}` against its trivial
+size. At `σ = 1 + 1/log x` the trivial term is of order `log log x`, which is why a distance surplus
+above `log log x` is what produces decay — the mechanism the corpus's
+`MoebiusUniformFrequency`/`HalaszWindow` layer supplies on the distance side.

@@ -777,3 +777,33 @@ Two smaller traps, both cost a cycle:
 bidegree index (`tensorIndexEquiv`) makes the `Pi`-`⊗` exchange available via
 `TensorProduct.piRight` and `TensorProduct.comm`.  Then `tensorShiftMap` and that exchange, composed
 with `relUnitorHom`, give the free-cell computation and hence `hcell` for `⊗_A`.
+
+## Tensoring with a constant module passes through the graded tensor product
+
+`CDGATensorConstExchange.lean`.
+
+* **`tensorConstExchange V n : (TensorCarrier M N n) ⊗ V ≃ₗ TensorCarrier M (fun m => N m ⊗ V) n`**,
+  with `tensorConstExchange_bijective`.
+
+Unlike everything else in this layer the proof is a one-liner, because the three mathlib equivalences
+compose exactly: `comm`, then `TensorProduct.piRight`, then `piCongrRight (comm ≪≫ assoc)`.  What
+makes `piRight` applicable is **finiteness of the bidegree index**, which is `tensorIndexFintype` —
+the instance built earlier for the unitor's sum.  Without it the map exists but is not an
+isomorphism, and the whole exchange fails.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+## Next
+
+The free-cell computation for `⊗_A` is now a composition of things that all exist:
+
+  `M ⊗_A (A[−k] ⊗ V)`
+    ─ `freeCellModule_eq` ─ `M ⊗_A Shift(A ⊗ V, k)`
+    ─ `tensorShiftMap` ─ `Shift(M ⊗ (A ⊗ V), k)`
+    ─ `tensorConstExchange` ─ `Shift((M ⊗ A) ⊗ V, k)`
+    ─ `relUnitorHom` ─ `Shift(M ⊗ V, k)`.
+
+What remains is to check that the relators correspond under each of the two exchanges — the same
+kind of computation as `tensorProdRight_relTensorRelator`, which was short once the single-bidegree
+lemmas were available.  After that `hcell` for `⊗_A` follows exactly as
+`tensorMapLeft_constCell_isQuasiIsoFull` did for `⊗_R`, and the last row of the parity table closes.

@@ -540,3 +540,30 @@ hypothesis, so there is nothing to derive it from. That is the correct stopping 
 Sweep recipe worth reusing: for each theorem head, take the text after the last `) :` and test
 whether a candidate premise's binder name occurs there. If it does not, the premise is proof-only
 and can be discharged from a sibling hypothesis; if it does, it is part of the statement and cannot.
+
+## Arithmetically redundant premises (generalized sweep, 2026-08-07)
+
+Generalized the classifier beyond zero-hypotheses to implication pairs between premises:
+`1 ≤ x ⟹ 0 < x`, `0 < re s ⟹ s ≠ 0`, `re s < 1 ⟹ s ≠ 1`, `1 < re s ⟹ s ≠ 1 / 0 < re s`.
+Script kept at scratchpad/sweep.py. 10 raw hits, 7 real after hand-checking.
+
+Discharged:
+- `ScrewOffCriticalAmplitude.amplitude_strictMono` — dropped `z ≠ 0` (from `0 < re z`).
+- `XiCentralDiscBound.riemannZeta_ne_zero_of_dist_le_one` — dropped `s ≠ 0`.
+- `XiWardCriticalBudgetProbe.riemannZeta_ne_zero_of_im_sq_le` — dropped `s ≠ 0`.
+- `Sieve/ZetaTruncated.norm_riemannZeta_le_truncated_of_lt_one` — dropped `w ≠ 1` (from `re w < 1`).
+- `CCMFirstRowEnvelopeTail.integrableOn_envelopeTail` — dropped `0 < a` (from `1 ≤ a`); 5 call sites.
+- `GammaProjectiveBoundary.norm_polygammaKernel_sum_le` and
+  `norm_iteratedDeriv_digamma_vertical_le` — dropped `0 < t` (from `1 ≤ t`).
+
+Two classifier false positives (hand-caught, do NOT retry): the two
+`GammaCoPoissonSoninQuadrantSection.even{,Inverse}Dilation_mem_soninExtendedSpace_succ`. Their
+`0 < r` occurs inside the CONCLUSION term (`evenDilationCLM r hr f`, `evenDilationCLM r⁻¹
+(inv_pos.mpr hr) f`), so it is proof-carrying. The `) :`-split heuristic misses binders used inside
+the conclusion when the conclusion spans the split — always eyeball the statement.
+
+Trap: dropping a binder that the proof body still names fails at build. `GammaProjectiveBoundary`
+needed `have ht : 0 < t := lt_of_lt_of_le zero_lt_one ht1` re-introduced inside the proof.
+
+Deliberately NOT done: `XiShiftPrimeExposure.logDeriv_archFactor_closed` (drop `h0` from `0 < re s`)
+— 18 call sites and it unlocks nothing; cosmetic only.

@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean)
 - **Scientific status:** `[LEAN-PROVED] [CORPUS-NEW] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/sonin/sonin-principal-shell-cyclic-trace.md`
+  `sonin-principal-shell-cyclic-trace.md`
 - **Status:** unconditional; no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
 
 ## Lean modules

@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean)
 - **Scientific status:** `[LEAN-PROVED] [CORPUS-NEW] [EXTERNAL NOVELTY PROVISIONAL] [NOT RH]`
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/sonin/cofinal-essential-phase-sonin-coupling-nonannihilation.md`
+  `cofinal-essential-phase-sonin-coupling-nonannihilation.md`
 - **Status:** unconditional; no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
 
 ## Lean modules

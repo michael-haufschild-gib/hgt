@@ -213,11 +213,12 @@ theorem exists_const_mul_pow_lt_of_ratio_tendsto_gt_one {b : ℕ → ℝ} {lam :
 
 /-- The index-mass constraint forces every lower-degree atom a fixed linear distance beyond the
 balanced top-degree scale. -/
-theorem lowerDegree_max_ge_ratio_factor {D q J Z imax : ℕ} (hD : 0 < D)
+theorem lowerDegree_max_ge_ratio_factor {D q J Z imax : ℕ}
     (hcount : 2 ≤ D)
     (hDqMax : D * q ≤ imax * (D - 1) + J + Z)
     (hqthreshold : 2 * (J + Z) + 2 ≤ q) :
     (1 + 1 / (2 * (D : ℝ))) * (q : ℝ) ≤ (imax : ℝ) := by
+  have hD : 0 < D := lt_of_lt_of_le two_pos hcount
   by_contra hnot
   have hlt : (imax : ℝ) < (1 + 1 / (2 * (D : ℝ))) * (q : ℝ) := lt_of_not_ge hnot
   have hDsub : (((D - 1 : ℕ) : ℝ)) = (D : ℝ) - 1 := by
@@ -364,7 +365,7 @@ theorem near_balanced_atom_count_eq_and_supportMax_lt
           have hNsplit : N - magnitudeMaxXDegree Q + magnitudeMaxXDegree Q = N :=
             Nat.sub_add_cancel hNZ.le
           omega
-        have hfactor := lowerDegree_max_ge_ratio_factor hD hDtwo hDqMax
+        have hfactor := lowerDegree_max_ge_ratio_factor hDtwo hDqMax
           ((le_max_left _ _).trans hqthreshold)
         have hqDK : 2 * D * K ≤ q := (le_max_right _ _).trans hqthreshold
         have hDr : (0 : ℝ) < 2 * D := by positivity

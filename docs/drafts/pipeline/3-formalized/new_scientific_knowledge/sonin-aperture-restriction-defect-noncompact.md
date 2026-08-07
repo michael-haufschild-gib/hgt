@@ -5,7 +5,7 @@
 - **Type:** THEOREM / FRONTIER NO-GO WITH POSITIVE SURVIVOR
 - **Scientific status:** `[FORMALIZED] [CORPUS-NEW] [NOVELTY PROVISIONAL] [NOT RH]`
 - **Paper source:**
-  `../../2-fully-proven/new_scientific_knowledge/sonin-aperture-area-rigidity-and-restriction-defect.md`
+  `sonin/sonin-aperture-area-rigidity-and-restriction-defect.md`
 - **Lean endpoint:**
   `formal/GaloisForLFunctions/RHTower/SoninApertureRestrictionDefect.lean`
 

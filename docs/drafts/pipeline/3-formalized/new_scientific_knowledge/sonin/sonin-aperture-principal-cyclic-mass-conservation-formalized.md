@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean)
 - **Scientific status:** `[LEAN-PROVED] [SOURCE THEOREM] [NOT RH]`
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/sonin/sonin-aperture-principal-cyclic-mass-conservation.md`
+  `sonin-aperture-principal-cyclic-mass-conservation.md`
 - **Status:** unconditional; no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
 
 ## Lean modules

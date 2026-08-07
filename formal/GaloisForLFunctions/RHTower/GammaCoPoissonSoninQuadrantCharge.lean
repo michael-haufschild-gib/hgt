@@ -39,8 +39,9 @@ theorem log_norm_soninLadderCharacter_mul_eq_centeredXiAffineResidue {r : ℝ} (
   ring
 
 /-- The quadrant escape exponent vanishes exactly on the critical line. -/
-theorem log_norm_soninLadderCharacter_eq_zero_iff {r : ℝ} (hr : 0 < r) (hr1 : 1 < r) (w : ℂ) :
+theorem log_norm_soninLadderCharacter_eq_zero_iff {r : ℝ} (hr1 : 1 < r) (w : ℂ) :
     Real.log ‖soninLadderCharacter w r‖ = 0 ↔ w.re = 1 / 2 := by
+  have hr : 0 < r := lt_trans zero_lt_one hr1
   have hlogr : Real.log r ≠ 0 := ne_of_gt (Real.log_pos hr1)
   rw [log_norm_soninLadderCharacter hr, mul_eq_zero]
   simp only [hlogr, or_false]
