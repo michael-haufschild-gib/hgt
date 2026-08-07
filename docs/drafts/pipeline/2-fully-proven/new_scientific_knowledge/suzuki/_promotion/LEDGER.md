@@ -1636,3 +1636,29 @@ Every scalar ingredient is now built: the phase modulus (`normSq_exp_mul_I_sub_o
 constant's existence on `0 < s < 1` and positivity on the unit window, and the scaling law above.
 What remains is the two-variable measure-theoretic step, and mathlib's Plancherel
 (`mathlib-has-plancherel`) supplies the isometry half.
+
+## AG. The Fourier symbol meets the Gagliardo integrand
+
+`GagliardoFourierConstant.lean` is now at 13 declarations, all `#print axioms` clean.
+
+- `normSq_one_sub_fourierChar` — **the symbol modulus is the Gagliardo numerator**:
+  `|1 − e^{2πiθ}|² = 4 sin²(πθ)`, from `normSq_exp_mul_I_sub_one_eq_four_mul_sin_sq` at `θ ↦ 2πθ`.
+- `normSq_symbol_mul_weight` — hence the symbol against the fractional weight *is* the Gagliardo
+  integrand at frequency `ξ`.
+
+This is the identification that makes the two descriptions of the fractional weight the same
+object: the difference operator's Fourier symbol, squared and weighted, is exactly what the
+difference-quotient integral integrates.
+
+**Not built, and deliberately so:** `fourier_sub_translate`, the statement that the transform of
+`f − f(·+h)` is `(1 − e^{2πihξ}) f̂(ξ)`. `VectorFourier.fourierIntegral_sub` **does not exist** in
+this toolchain — only `fourierIntegral_add`. The subtraction has to go through
+`fourierIntegral_add` plus `fourierIntegral_const_smul` with `(-1 : ℂ)`, exactly as
+`FourierDecayFromDerivative.two_mul_norm_fourier_le_translationDistance` already does for the
+half-period case. That is the pattern to copy; do not look for a `_sub` lemma.
+
+### Prerequisite 1 — remaining
+
+The Plancherel/Tonelli step, now reduced to: (a) the translate-symbol identity above, by the
+add/neg route; (b) Plancherel `∫|Δ_h u|² = ∫ |symbol|²|û|²`; (c) Tonelli to exchange `dh` and `dξ`,
+after which `integral_gagliardoIntegrand_scaling` supplies `c_s |ξ|^{2s}` pointwise in `ξ`.

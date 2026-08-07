@@ -89,7 +89,10 @@ nonzero `f in S_b`; `(2)` gives both nonvanishing claims in `(4)`.  Finally, con
   after adding a compensating boundary/source port.  Any direct same-space identification is
   mathematically forbidden.  The next legitimate conjecture must specify that port and prove a
   neutral conservative Green identity before specializing to the Xi divisor.
-- **Status:** dependency-closed paper proof.  Exact Lean formalization is next.
+- **Status:** dependency-closed paper proof and exact Lean formalization in
+  `GaloisForLFunctions.RHTower.BurnolDividedShiftEvaluationSeparation`.  Module-only build and
+  axiom audit pass.  Stage promotion waits for the repository lint gate, currently blocked by
+  unrelated newly added prolate modules missing from the `RHTower` umbrella.
 
 ## Novelty audit
 
@@ -112,9 +115,14 @@ Primary sources checked:
 
 - [x] 0 -> 1 in-progress: source-pure statement and attack
 - [x] 1 -> 2 fully-proven: complete dependency-closed paper proof, `[PROVED HERE]`
-- [ ] 2 -> 3 formalized: exact Lean projection identity, lower bound, and non-landing theorem
+- [ ] 2 -> 3 formalized: exact Lean projection identity, both lower bounds, and non-landing theorem
+  compile and are umbrella-wired; global lint still fails only on unrelated prolate reachability
 - [ ] 3 -> 4 publication-ready: external mathematical audit and standalone exposition
 
 ## Log
 
 - 2026-08-07 — frozen, proved, and passed targeted internal/primary-literature novelty audit.
+- 2026-08-07 — formalized five unconditional theorems in
+  `BurnolDividedShiftEvaluationSeparation.lean`; exact `lake env lean` and module-only `lake build`
+  pass.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  Global lint is
+  blocked by 17 unrelated prolate modules not yet wired into `RHTower.lean`.

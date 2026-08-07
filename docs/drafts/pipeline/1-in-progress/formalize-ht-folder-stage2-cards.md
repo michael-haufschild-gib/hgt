@@ -19,11 +19,11 @@ prove its properties rather than assuming them.
 |---|---|
 | `nonautonomous-ht-tail-projective-time-law` | **DONE — promoted to 3-formalized** |
 | `triptic-orbit-residue-reciprocity` | **both unconditional theorems formalized** — additive and multiplicative reciprocity |
-| `triptic-ht-kummer-content-root-classification` | pending — child of the reciprocity card |
-| `hypertranscendental-pair-localization-noncompression` | pending — algebraic core exists |
-| `nonautonomous-rational-first-order-tail-orbifold-law` | pending |
-| `nonautonomous-rational-complete-tail-orbifold-classification` | pending |
-| `nonautonomous-isogeny-tail-time-splitting` | pending |
+| `triptic-ht-kummer-content-root-classification` | abstract Kummer core audited axiom-clean; divisor layer built |
+| `hypertranscendental-pair-localization-noncompression` | algebraic core audited axiom-clean |
+| `nonautonomous-rational-first-order-tail-orbifold-law` | Euclidean signature classification closed |
+| `nonautonomous-rational-complete-tail-orbifold-classification` | Euclidean signature classification closed |
+| `nonautonomous-isogeny-tail-time-splitting` | (1),(3),(4),(5) formal; (2),(6),(7) open |
 | `helson-universal-ht-arbitrary-divisor-orthogonality` | pending |
 | `irrational-power-canonical-products-…-gevrey-slope-rigidity` | pending |
 
@@ -115,3 +115,48 @@ reduced points pairwise distinct from ℤ-independence of the periods, then cont
    simple-pole rectangle version.
 4. Then audit `triptic-ht-kummer-content-root-classification` and
    `hypertranscendental-pair-localization-noncompression` against their existing Lean cores.
+
+
+## Closed: the Euclidean signature classification (cards 5 and 6)
+
+```text
+HTGeometry/EuclideanConeSignature.lean            euclidean_cone_triple, cone_pair_eq_two,
+                                                   cone_quad_eq_two, parabolic_signature_classification
+HTGeometry/ParabolicSignatureClassification.lean  parabolicSphereSignature_iff — the six recorded
+                                                   signatures are exactly the solutions of
+                                                   c + ∑(1 - 1/ν) = 2
+```
+
+## Closed: the triptic source divisor (cards 2 and 3)
+
+```text
+HTGeometry/MeromorphicLogDerivResidue.lean   laurentCoeff_logDeriv_eq_order — the local argument
+                                              principle; mathlib has no complex residue
+HTGeometry/TripticSourceDivisor.lean         shiftOrder, shiftOrder_mul (additive under products),
+                                              shiftOrder_period, meromorphicOrderAt_comp_add
+```
+
+## Audited: the two algebraic cores
+
+`PairFacePrivateSector.lean` (9 declarations) and `MinimalHTCompletionArchitecture.lean`'s abstract
+Kummer layer (4 declarations) all resolve and all report
+`[propext, Classical.choice, Quot.sound]`.  Those two cards' unconditional content is in Lean.
+
+## Correction that changes several cards
+
+The order-one **elliptic-gamma atomic theorem is corpus-owned**, not an external unaudited parent:
+`EllipticGammaAtomicOverDAExtension.lean`,
+`ellipticGammaExternalDefectFamily_differentialIndependent_daExtension`, axiom-clean, hypotheses are
+data only.  Every card boundary note deferring to it is stale.
+
+## Next concrete steps
+
+1. **Scaling-invariant field theorem** (serves card 7's `(2)`, `(6)`, `(7)`): in the free differential
+   field `C⟨y⟩`, the fixed field of the scaling action `y ↦ c·y`, `c ∈ C^×`, is `C⟨y′/y⟩`.
+   Mechanism: an invariant is a degree-zero homogeneous rational function of the jets, hence a
+   rational function of the ratios `y^{(n)}/y`, and `y^{(n)}/y ∈ C⟨y′/y⟩` by induction
+   (`y″/y = ℓ′ + ℓ²`).  This is the concrete `G_m` case of the position–velocity theorem.
+2. Card 7's general `(2)` needs a Rosenlicht-type differential-rational quotient theorem.
+3. Cards 5 and 6 still need parabolic-orbifold uniformization and the complete-tail identification.
+4. Card 8 needs Pong 5.9, Andersson's arbitrary-divisor theorem and Saksman–Webb/Seip.
+5. Card 9 needs Barnes asymptotics and the Sibuya–Ramis exact Gevrey-order theorem.

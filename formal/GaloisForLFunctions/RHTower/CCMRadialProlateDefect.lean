@@ -1324,7 +1324,7 @@ theorem abs_radialProlate_sub_model_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
     (hDR : ∀ x ∈ Set.Icc A B, HasDerivAt DR (DDR x) x)
     (hode : ∀ x ∈ Set.Icc A B,
       (x ^ 2 - 1) * DDR x + 2 * x * DR x - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0) :
-    ∃ C K : ℝ, 0 ≤ C ∧ 0 ≤ K ∧
+    ∃ C K : ℝ, 0 ≤ C ∧ C = lgBesselCommonEnvelopeConstant ∧ 0 ≤ K ∧
       (∀ s' c' x' : ℝ, 1 ≤ c' * xiEndpointPhase s' x' →
         |lgBesselModel s' c' x'| ≤ C / Real.sqrt (c' * xiEndpointPhase s' x') ∧
         |lgBesselModel2 s' c' x'| ≤ C / Real.sqrt (c' * xiEndpointPhase s' x')) ∧
@@ -1340,7 +1340,12 @@ theorem abs_radialProlate_sub_model_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
                 - comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s A
                   * lgBesselModel s c A)) * lgBesselModel2 s c x)|
         ≤ 2 * (K * (127 * C ^ 2 / c)) * (C / Real.sqrt (c * xiEndpointPhase s x)) := by
-  obtain ⟨C, hC0, hC⟩ := exists_lgBesselModel_common_envelope
+  let C : ℝ := lgBesselCommonEnvelopeConstant
+  have hC0 : 0 ≤ C := lgBesselCommonEnvelopeConstant_nonneg
+  have hC : ∀ s' c' x' : ℝ, 1 ≤ c' * xiEndpointPhase s' x' →
+      |lgBesselModel s' c' x'| ≤ C / Real.sqrt (c' * xiEndpointPhase s' x') ∧
+      |lgBesselModel2 s' c' x'| ≤ C / Real.sqrt (c' * xiEndpointPhase s' x') :=
+    fun s' c' x' hx' => lgBesselCommonEnvelopeConstant_spec s' c' x' hx'
   have hsub : Set.Icc A B ⊆ Set.Ioi 1 := fun t ht => lt_of_lt_of_le hA ht.1
   have hW : 0 < besselWronskian (c * xiEndpointPhase s A) :=
     besselWronskian_phase_pos hs0 hs1 hc hA
@@ -1432,7 +1437,7 @@ theorem abs_radialProlate_sub_model_le {s c A B : ℝ} {R DR DDR : ℝ → ℝ}
     exact (((((continuousOn_lgWeight hs0 hs1).mono hIoi).mul
       ((continuousOn_lgNormalFormDefect_radialProlate hs0 hs1).mono hIoi)).mul
       ((hUcont.mono hxsub).mul (hV.mono hIoi)))).intervalIntegrable
-  refine ⟨C, K, hC0, hK0, hC, ?_, ?_⟩
+  refine ⟨C, K, hC0, rfl, hK0, hC, ?_, ?_⟩
   · rw [hKdef, hSdef, radialProlateVolterraK, radialProlateVolterraDatum]
   refine abs_perturbed_sub_model_le (a := fun t : ℝ => lgNormalFormDefect s c (radialProlateQ s c) t)
     (E := fun t : ℝ => C / Real.sqrt (c * xiEndpointPhase s t)) (K := K)

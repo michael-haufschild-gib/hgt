@@ -217,4 +217,28 @@ theorem integral_gagliardoIntegrand_scaling {s ξ : ℝ} (hξ : 0 < ξ) :
   congr 1
   ring
 
+/-! ## The Fourier symbol of the difference operator
+
+Translating multiplies the transform by a character, so the difference operator has symbol
+`1 − e^{2πihξ}`.  Its squared modulus is exactly the numerator of the Gagliardo integrand — which
+is why the difference-quotient and Fourier descriptions of the fractional weight agree, and why the
+constant `c_s` computed above is the conversion factor.
+-/
+
+/-- **The symbol modulus is the Gagliardo numerator.**  `|1 − e^{2πiθ}|² = 4 sin²(πθ)`. -/
+theorem normSq_one_sub_fourierChar (θ : ℝ) :
+    ‖1 - ((Real.fourierChar θ : Circle) : ℂ)‖ ^ 2 = 4 * Real.sin (Real.pi * θ) ^ 2 := by
+  have hchar : ((Real.fourierChar θ : Circle) : ℂ)
+      = Complex.exp (((2 * Real.pi * θ : ℝ) : ℂ) * Complex.I) := by
+    rw [Real.fourierChar_apply]
+  rw [← norm_neg, neg_sub, hchar]
+  rw [normSq_exp_mul_I_sub_one_eq_four_mul_sin_sq,
+    show (2 * Real.pi * θ) / 2 = Real.pi * θ by ring]
+
+/-- The symbol modulus against the fractional weight is the Gagliardo integrand at frequency `ξ`. -/
+theorem normSq_symbol_mul_weight (s ξ h : ℝ) :
+    ‖1 - ((Real.fourierChar (h * ξ) : Circle) : ℂ)‖ ^ 2 * h ^ (-(1 + 2 * s))
+      = 4 * Real.sin (Real.pi * (h * ξ)) ^ 2 * h ^ (-(1 + 2 * s)) := by
+  rw [normSq_one_sub_fourierChar]
+
 end GaloisForLFunctions.HTGeometry

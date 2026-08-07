@@ -58,7 +58,7 @@ theorem tendsto_quantileFun_nhdsGT_zero : Tendsto S.quantileFun (𝓝[>] (0 : �
   refine tendsto_atBot.mpr fun M => ?_
   have hc : S.cdfFun M ∈ Ioo (0 : ℝ) 1 := S.cdfFun_mem_Ioo M
   have hmem : Ioo (0 : ℝ) (S.cdfFun M) ∈ 𝓝[>] (0 : ℝ) :=
-    Ioo_mem_nhdsWithin_Ioi ⟨le_rfl, hc.1⟩
+    Ioo_mem_nhdsGT hc.1
   filter_upwards [hmem] with t ht
   have htmem : t ∈ Ioo (0 : ℝ) 1 := ⟨ht.1, lt_trans ht.2 hc.2⟩
   have hlt := S.strictMonoOn_quantileFun htmem hc ht.2
@@ -69,12 +69,21 @@ theorem tendsto_quantileFun_nhdsLT_one : Tendsto S.quantileFun (𝓝[<] (1 : ℝ
   refine tendsto_atTop.mpr fun M => ?_
   have hc : S.cdfFun M ∈ Ioo (0 : ℝ) 1 := S.cdfFun_mem_Ioo M
   have hmem : Ioo (S.cdfFun M) (1 : ℝ) ∈ 𝓝[<] (1 : ℝ) :=
-    Ioo_mem_nhdsWithin_Iio ⟨hc.2, le_rfl⟩
+    Ioo_mem_nhdsLT hc.2
   filter_upwards [hmem] with t ht
   have htmem : t ∈ Ioo (0 : ℝ) 1 := ⟨lt_trans hc.1 ht.1, ht.2⟩
   have hlt := S.strictMonoOn_quantileFun hc htmem ht.1
   rw [S.quantile_cdfFun] at hlt
   exact hlt.le
+
+
+theorem rootH_eq_sourceModeU (z : ℂ) {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1) :
+    rootH S z t = (-Complex.I / (S.mass : ℂ)) * sourceModeU S z (S.quantileFun t) := by
+  have hM : ((S.mass : ℝ) : ℂ) ≠ 0 := by exact_mod_cast S.mass_ne_zero
+  have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
+  rw [rootH, rootA_eq_sourceModeI S z ht, sourceModeU, rootFactor]
+  field_simp
+  linear_combination (-(sourceModeI S z (S.quantileFun t))) * hI
 
 end HedenmalmThetaSource
 
