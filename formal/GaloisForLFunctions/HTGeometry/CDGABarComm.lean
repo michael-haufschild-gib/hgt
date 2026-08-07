@@ -90,6 +90,62 @@ theorem barMulTail_second {p q m : ℕ} (h : p + q + 1 = m) (g : W →ₗ[R] W')
           rw [hV, hV']
       | tmul y z => rfl
 
+section General
+
+/-- The head of a bar differential at a stage, in the spelling instance synthesis produces. -/
+noncomputable abbrev barH (k m : ℕ) :
+    TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier) m
+      →ₗ[R] TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier (m + 1) :=
+  barHeadₗ ε (barPower ε k).carrier m
+
+/-- The tail of a bar differential at a stage, in the spelling instance synthesis produces. -/
+noncomputable abbrev barT (k m : ℕ) :
+    TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier) m
+      →ₗ[R] TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier (m + 1) :=
+  tensorRightDegOneₗ (M := barShiftFamily ε)
+    (N := fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b)
+    (N' := (barPower ε k).carrier) (fun b => barD ε k b) m
+
+/-- The head one stage up, with the coefficient family unfolded so that all three terms of the
+inductive step share one spelling. -/
+noncomputable abbrev barHsucc (k m : ℕ) :
+    TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε)
+          (fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b)) m
+      →ₗ[R] TensorCarrier (R := R) (barShiftFamily ε)
+        (fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b) (m + 1) :=
+  barHeadₗ ε (fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b) m
+
+/-- The tail of the tail, in the same spelling. -/
+noncomputable abbrev barTT (k m : ℕ) :
+    TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε)
+          (fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b)) m
+      →ₗ[R] TensorCarrier (R := R) (barShiftFamily ε)
+        (fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b) (m + 1) :=
+  tensorRightDegOneₗ (M := barShiftFamily ε)
+    (N := fun b => TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier) b)
+    (N' := fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b)
+    (fun b => barT ε k b) m
+
+/-- The tail of the head, in the same spelling. -/
+noncomputable abbrev barTH (k m : ℕ) :
+    TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε)
+          (fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b)) m
+      →ₗ[R] TensorCarrier (R := R) (barShiftFamily ε)
+        (fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b) (m + 1) :=
+  tensorRightDegOneₗ (M := barShiftFamily ε)
+    (N := fun b => TensorCarrier (R := R) (barShiftFamily ε)
+      (TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier) b)
+    (N' := fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b)
+    (fun b => barH ε k b) m
+
+end General
+
 section Componentwise
 
 variable {N N' : ℕ → Type u} [∀ n, AddCommGroup (N n)] [∀ n, Module R (N n)]
@@ -211,6 +267,88 @@ theorem barHead_comm_tail_apply (n c e : ℕ) (hp : c + e = n + 1 + 1)
       rw [barHead_tailtail_term ε n c r hp a a' hsa g F (by omega),
         barHead_tail_term ε n c r (by omega) a a' hsa g F (by omega)]
       exact barMulTail_cancel ε hsa (g r) _
+
+section Induction
+
+set_option maxHeartbeats 1000000 in
+/-- **The bar differential squares to zero.** -/
+theorem barD_sq : ∀ (k n : ℕ) (F : (barPower ε (k + 2)).carrier n),
+    barD ε k (n + 1) (barD ε (k + 1) n F) = 0
+  | 0, n, F => by
+      rw [barD_zero]
+      rfl
+  | (k + 1), n, F => by
+    have hIH : ∀ (b : ℕ) (G : (barPower ε (k + 2)).carrier b),
+        barD ε k (b + 1) (barD ε (k + 1) b G) = 0 := fun b G => barD_sq k b G
+    have hsplit : barD ε (k + 2) n F
+        = barHsucc ε k n F + (barTH ε k n F + barTT ε k n F) := by
+      show barHsucc ε k n F
+          + tensorRightDegOneₗ (M := barShiftFamily ε)
+            (N := fun b => TensorCarrier (R := R) (barShiftFamily ε)
+              (TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier) b)
+            (N' := fun b => TensorCarrier (R := R) (barShiftFamily ε)
+              (barPower ε k).carrier b) (fun b => barD ε (k + 1) b) n F = _
+      refine congrArg (fun z => barHsucc ε k n F + z) ?_
+      rw [show (fun b => barD ε (k + 1) b) = (fun b => barH ε k b + barT ε k b) from
+        funext fun b => barD_succ ε k b]
+      exact tensorRightDegOne_add_map (M := barShiftFamily ε) _ _ n F
+    have hout : ∀ V : TensorCarrier (R := R) (barShiftFamily ε)
+        (TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier) (n + 1),
+        barD ε (k + 1) (n + 1) V = barH ε k (n + 1) V + barT ε k (n + 1) V := fun V => by
+      rw [barD_succ]
+      rfl
+    have hzero : barT ε k (n + 1) (barTH ε k n F + barTT ε k n F) = 0 := by
+      have hcomp := tensorRightDegOne_comp (M := barShiftFamily ε)
+        (N := fun b => TensorCarrier (R := R) (barShiftFamily ε)
+          (TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier) b)
+        (N' := fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b)
+        (N'' := (barPower ε k).carrier)
+        (fun b => barD ε (k + 1) b) (fun b => barD ε k b)
+        (fun b => LinearMap.ext fun G => hIH b G) n F
+      show barT ε k (n + 1) (barTH ε k n F + barTT ε k n F) = 0
+      rw [show barTH ε k n F + barTT ε k n F
+          = tensorRightDegOneₗ (M := barShiftFamily ε)
+            (N := fun b => TensorCarrier (R := R) (barShiftFamily ε)
+              (TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier) b)
+            (N' := fun b => TensorCarrier (R := R) (barShiftFamily ε)
+              (barPower ε k).carrier b) (fun b => barD ε (k + 1) b) n F from by
+        rw [show (fun b => barD ε (k + 1) b) = (fun b => barH ε k b + barT ε k b) from
+          funext fun b => barD_succ ε k b]
+        exact (tensorRightDegOne_add_map (M := barShiftFamily ε) _ _ n F).symm]
+      exact hcomp
+    rw [hsplit, hout, map_add, map_add]
+    funext p
+    obtain ⟨⟨c, e⟩, hp⟩ := p
+    have h12 := barHead_sq_add (ε := ε) (Z := (barPower ε k).carrier) n c e hp F
+    have h34 := barHead_comm_tail_apply (ε := ε)
+      (N := fun b => TensorCarrier (R := R) (barShiftFamily ε) (barPower ε k).carrier b)
+      (N' := (barPower ε k).carrier) n c e hp (fun b => barD ε k b) F
+    have h56 : barT ε k (n + 1) (barTH ε k n F + barTT ε k n F) ⟨(c, e), hp⟩ = 0 := by
+      rw [hzero]
+      rfl
+    show (barH ε k (n + 1) (barHsucc ε k n F) ⟨(c, e), hp⟩
+        + (barH ε k (n + 1) (barTH ε k n F) ⟨(c, e), hp⟩
+          + barH ε k (n + 1) (barTT ε k n F) ⟨(c, e), hp⟩))
+      + barT ε k (n + 1) (barHsucc ε k n F + (barTH ε k n F + barTT ε k n F))
+        ⟨(c, e), hp⟩ = 0
+    rw [map_add]
+    show (barH ε k (n + 1) (barHsucc ε k n F) ⟨(c, e), hp⟩
+        + (barH ε k (n + 1) (barTH ε k n F) ⟨(c, e), hp⟩
+          + barH ε k (n + 1) (barTT ε k n F) ⟨(c, e), hp⟩))
+      + (barT ε k (n + 1) (barHsucc ε k n F) ⟨(c, e), hp⟩
+        + barT ε k (n + 1) (barTH ε k n F + barTT ε k n F) ⟨(c, e), hp⟩) = 0
+    rw [h56, add_zero]
+    calc barH ε k (n + 1) (barHsucc ε k n F) ⟨(c, e), hp⟩
+          + (barH ε k (n + 1) (barTH ε k n F) ⟨(c, e), hp⟩
+            + barH ε k (n + 1) (barTT ε k n F) ⟨(c, e), hp⟩)
+          + barT ε k (n + 1) (barHsucc ε k n F) ⟨(c, e), hp⟩
+        = (barH ε k (n + 1) (barHsucc ε k n F) ⟨(c, e), hp⟩
+            + barH ε k (n + 1) (barTH ε k n F) ⟨(c, e), hp⟩)
+          + (barH ε k (n + 1) (barTT ε k n F) ⟨(c, e), hp⟩
+            + barT ε k (n + 1) (barHsucc ε k n F) ⟨(c, e), hp⟩) := by abel
+      _ = 0 := by rw [h12, h34, add_zero]
+
+end Induction
 
 end Componentwise
 

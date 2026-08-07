@@ -172,41 +172,32 @@ the two triple bijections composed, and cancels them term by term with `barTripl
 `barHead_sq` is the same as an identity of maps, and **`barD_two_sq` is `d² = 0` for the bar
 differential on three factors** — the first case with content, since on two factors the tail is zero.
 
-## Status of `d² = 0`
+## `d² = 0`
 
-**Proved for three factors** (`barD_two_sq`), and every ingredient of the general statement is proved.
-Writing the inductive step as `barD (k+1) = H_k + R(barD k)`, the square has four terms and each has
-its reason:
+**Proved, in general**: `barD_sq` in `formal/GaloisForLFunctions/HTGeometry/CDGABarComm.lean`, axiom
+audit `propext, Classical.choice, Quot.sound`.  Writing the inductive step as
+`barD (k+1) = H_k + R(barD k)`, the square has six terms and they cancel in three pairs:
 
-| term | proved by |
+| pair | proved by |
 |---|---|
-| `H ∘ H` and `H ∘ R(H)` | `barHead_sq` — stated for an arbitrary coefficient family, so it applies at every `k` |
-| `H ∘ R(R(barD))` and `R(barD) ∘ H` | `barHead_comm_tail_apply` in `CDGABarComm.lean` |
-| `R(barD) ∘ R(barD)` | `tensorRightDegOne_comp` together with the inductive hypothesis |
+| `H ∘ H` and `H ∘ R(H)` | `barHead_sq_add` — stated for an arbitrary coefficient family, so it applies at every stage |
+| `H ∘ R(R(barD))` and `R(barD) ∘ H` | `barHead_comm_tail_apply` |
+| `R(barD) ∘ R(H)` and `R(barD) ∘ R(R(barD))` | together they are `R(barD) ∘ R(barD (k+1))`, killed by `tensorRightDegOne_comp` and the inductive hypothesis |
 
-`CDGABarComm.lean` builds the second of the two classical cancellations from scratch: `barMulTail`,
-the map that multiplies the first two factors and acts on the third; `barMulTail_first` and
-`barMulTail_second`, which show both orders compose to it; `barMulTail_cancel`, which cancels them
-because the two Koszul signs differ by exactly one — the multiplication raises the degree of the slot
-the outer sign reads; and `barHead_tailtail_term`, `barHead_tail_term`,
-`barHead_comm_tail_apply`, which identify the two halves componentwise and cancel them.
-`tensorRightDegOne_add_map` splits a tail into its own head and tail, and `barD_succ_split` and
-`barTailFamily` fix the spelling the split needs.
+The first pair is associativity of the shifted product against the sign the tail contributes; the
+second is that multiplications at distance commute, their Koszul signs differing by exactly one
+because the multiplication raises the degree of the slot the outer sign reads; the third is that two
+degree-one maps on the right factor compose without a sign, so the two signs cancel outright.
 
-What is left is the induction itself, and the obstruction is now diagnosed exactly.  `barD` was
-rebuilt to name the tail's coefficient families explicitly, so the two summands of the inductive step
-have the same *type* spelling; that part is fixed.  What remains is one level deeper: the two
-summands still carry different **instances**.  `(barPower ε (k+1)).group b` — the `AddCommGroup` field
-that `Cochain.tensor` stores — and the `AddCommGroup (TensorCarrier …)` instance that
-`tensorRightDegOne` finds by synthesis are definitionally equal but not syntactically, so `simp` and
-`rw` both refuse the step with "the target expression is not type-correct under the `instances`
+### The Lean obstacle, and what dissolved it
+
+`(barPower (k+1)).carrier` and `TensorCarrier S (barPower k).carrier` are definitionally equal but not
+syntactically, and the same is true one level deeper of the *instances*: the `AddCommGroup` a
+`Cochain` stores as a field against the one synthesis produces for `TensorCarrier`.  `rw` and `simp`
+both refuse to cross that gap — "the target expression is not type-correct under the `instances`
 transparency level".
 
-The fix is structural, not tactical: `Cochain` bundles its instances as fields, and a stage built by
-`Cochain.tensor` must expose the `TensorCarrier` instances *syntactically* rather than through the
-bundled fields.  Either `barPower` is defined so its `group` and `smul` at a successor reduce to the
-synthesised ones, or the bar layer works with the carrier and instances separately and never with the
-bundled `Cochain`.  Until then the induction cannot be written, even though every one of its three
-cancellations is proved.
-
-Everything the statement quantifies over is defined, and one of the four terms is proved.
+The `show` tactic does not: it checks with `isDefEq` at default transparency, which unfolds
+everything.  So the step is written by naming every operand in the synthesised spelling —
+`barH`, `barT`, `barHsucc`, `barTH`, `barTT` — and moving the goal into that spelling with `show`
+once at each stage.  No redesign of `Cochain` was needed.
