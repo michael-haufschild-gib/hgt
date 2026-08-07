@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CriticalGeometricSheetFibre
+import GaloisForLFunctions.HTGeometry.FreeJetTranslationFixedField
 import GaloisForLFunctions.HTGeometry.PowerSeriesCommonScaleIndependence
 import Mathlib.FieldTheory.IsAlgClosed.Basic
 
@@ -122,18 +123,30 @@ theorem criticalObservationFieldEquiv_symm_recip
     {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (i : Fin n) :
     criticalObservationArcEmbedding K hm hn (criticalObservationRaw K m n i) =
       criticalArcObservation K m n (Sum.inl i) := by
-  rw [criticalObservationArcEmbedding, criticalObservationFieldEquiv_symm_raw K hm hn]
-  rw [AlgebraicIndependent.aevalEquivField_algebraMap_apply_coe]
-  simp
+  change ((IntermediateField.adjoin K (Set.range (criticalArcObservation K m n))).val
+      ((algebraicIndependent_criticalArcObservation K m n).aevalEquivField
+        ((criticalObservationFieldEquiv K hm hn).symm
+          (criticalObservationRaw K m n i)))) = _
+  rw [criticalObservationFieldEquiv_symm_raw K hm hn]
+  have h := AlgebraicIndependent.aevalEquivField_algebraMap_apply_coe
+    (algebraicIndependent_criticalArcObservation K m n)
+    (MvPolynomial.X (Sum.inl i))
+  simpa using congrArg Subtype.val h
 
 @[simp] theorem criticalObservationArcEmbedding_recip
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
     {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (j : Fin m) :
     criticalObservationArcEmbedding K hm hn (criticalObservationRecip K m n j) =
       criticalArcObservation K m n (Sum.inr j) := by
-  rw [criticalObservationArcEmbedding, criticalObservationFieldEquiv_symm_recip K hm hn]
-  rw [AlgebraicIndependent.aevalEquivField_algebraMap_apply_coe]
-  simp
+  change ((IntermediateField.adjoin K (Set.range (criticalArcObservation K m n))).val
+      ((algebraicIndependent_criticalArcObservation K m n).aevalEquivField
+        ((criticalObservationFieldEquiv K hm hn).symm
+          (criticalObservationRecip K m n j)))) = _
+  rw [criticalObservationFieldEquiv_symm_recip K hm hn]
+  have h := AlgebraicIndependent.aevalEquivField_algebraMap_apply_coe
+    (algebraicIndependent_criticalArcObservation K m n)
+    (MvPolynomial.X (Sum.inr j))
+  simpa using congrArg Subtype.val h
 
 end
 

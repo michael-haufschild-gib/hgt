@@ -249,3 +249,27 @@ HTGeometry/GevreyZetaTailBounds.lean              gevrey_exact_order — the exa
                                                    zeta tail in the Gamma normalization, with no
                                                    Stirling estimate needed
 ```
+
+
+## Next executable step, stated precisely
+
+Generalize `ScalingInvariantRationalFunction.natDegree_eq_zero_of_scaling_invariant` from one
+scalar to a *family*: replace `hsep : ∀ i j, i ≠ j → a^i ≠ a^j` by a family `A : ι → L` such that
+for every pair `i ≠ j` of exponents some `A t` has `(A t)^i ≠ (A t)^j`, with the cross identity
+assumed for every member.  The proof is unchanged except that the monomial step chooses a witness
+per pair of indices.
+
+That single generalization does three things at once:
+
+- it covers the deck group of a power map (roots of unity of unbounded order), which closes the
+  `(∞,∞)` cusp branch of both orbifold cards without any uniformization;
+- it strengthens the isogeny card's `G_m` theorem to the deck groups that actually occur;
+- it is the shape needed for the compact signatures once their deck groups are available.
+
+After that, the remaining blocks are: the rectangle residue theorem with higher-order poles
+(card 2's `(A2)`; `PNTPlus/ResidueCalcOnRectangles.lean` supplies the rectangle API, the simple-pole
+case, `RectanglePullToNhdOfPole` and `HolomorphicOn.vanishesOnRectangle`, so what is missing is the
+vanishing of the rectangle integral of `(z-p)^{-k}` for `k ≥ 2`, provable from the primitive
+`(z-p)^{1-k}/(1-k)` by four applications of the fundamental theorem of calculus);
+Rosenlicht quotients (card 7's general `(2)`); Pong's conclusion and the Helson inputs (card 8);
+and Barnes plus Sibuya--Ramis (card 9).

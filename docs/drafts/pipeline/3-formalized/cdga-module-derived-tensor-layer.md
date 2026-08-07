@@ -1650,7 +1650,17 @@ Including the Koszul sign `(−1)^{b a'}` of the product itself:
 > product.**
 
 So the relations form an ideal, and the product descends — with no condition on the algebras beyond
-what is already assumed.  What is left is to write that computation in Lean and descend by
-`Submodule.liftQ` in each variable in turn.
+what is already assumed.
+
+`CDGARelTensorAlgebra.lean` — `tensorAlgMul_sub_left`, **`tensorAlgMul_relTensorRelator`**: that
+computation, in Lean.  Substituting the two degree definitions `c + a = α`, `c + b = β` before
+touching the signs is what makes it short — otherwise every exponent carries an `α` that has to be
+unfolded at each step.  The two associativity rewrites are `A.mul_assoc` and `B.mul_assoc` applied
+to `f γ` and `g γ`, which is exactly the content of `restrictModule`'s `act_assoc`.
+
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+What is left is the descent itself: span induction to lift the relator statement to the whole
+relation submodule, then `Submodule.liftQ` in each variable in turn.
 
 Axioms: `propext, Classical.choice, Quot.sound`.

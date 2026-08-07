@@ -326,3 +326,35 @@ Added to `ParabolicSignatureClassification.lean` (wired, axiom-clean):
 This is the passage from the divisor-degree budget of an `ℓ`-differential on the sphere to the
 parabolic equation and its classification — steps `(10)`, `(11)` and the signature list of the
 proof, now formal end to end.
+
+## Lean plan — the cusp case needs no uniformization
+
+The `b = 2` branch of the classification, signature `(∞,∞)`, does not need orbifold uniformization
+at all: the card itself says the maps are monomials after projective coordinates and that `dz/z`
+is transported up to a scalar.  That is exactly the `G_m` position--velocity theorem already proved
+for the isogeny card:
+
+    HTGeometry/LogarithmicDerivativeFixedField.lean
+      fixedField_scaling_eq_logDerivField : {x | ∀ a ≠ 0, σ_a x = x} = F⟨y′/y⟩
+
+What is missing to apply it to a power protocol `R_i(z) = z^{d_i}` is one generalization: the deck
+group of a power map is the group of `d`-th roots of unity, not a single scalar with pairwise
+distinct powers.  So `ScalingInvariantRationalFunction.lean`'s
+`natDegree_eq_zero_of_scaling_invariant` should be restated for a *family* of scalars with the
+property that for every pair of indices `i ≠ j` some member `a` of the family has `a^i ≠ a^j` —
+which a sequence of roots of unity of unbounded order satisfies.  With that, the tail of a
+degree-expanding power protocol is `C⟨y′/y⟩`, the cusp case is closed, and uniformization is needed
+only for the compact signatures.
+
+Added (wired, axiom-clean):
+
+    ScalingInvariantRationalFunction.lean
+      eq_monomial_of_comp_scaling_family
+      natDegree_eq_zero_of_scaling_invariant_family
+    LogarithmicDerivativeFixedField.lean
+      mem_logDerivField_of_scaling_invariant_family
+
+The deck group no longer has to contain a single scalar with pairwise distinct powers: a family
+that separates every pair of exponents suffices, and roots of unity of unbounded order do that
+although no single root of unity does.  This is exactly the deck group of a degree-expanding power
+protocol, so the cusp signature `(∞,∞)` is now reachable without any uniformization input.

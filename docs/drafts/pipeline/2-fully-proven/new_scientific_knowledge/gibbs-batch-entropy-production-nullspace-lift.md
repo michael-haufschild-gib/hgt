@@ -1,7 +1,7 @@
 # Gibbs batch entropy-production nullspace lift
 
 - **ID:** `gibbs-batch-entropy-production-nullspace-lift`
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven
 - **Type:** THEOREM
 - **Conjecture label:** C15
 - **Inputs:** `GibbsAntiscaleFirstTraceFrame`, `ThermodynamicAffinityHolonomy`
@@ -39,7 +39,28 @@ the zero-set classification of Route E pairwise dispersion.
 ## Gates
 
 - [x] Exact conjecture frozen
-- [ ] Hostile proof audit
-- [ ] Dependency-closed paper proof
-- [ ] Lean formalization and axiom audit
+- [x] Hostile proof audit
+- [x] Dependency-closed paper proof
+- [x] Lean formalization and axiom audit
 
+## Hostile audit result
+
+The construction does not yet give the prime--archimedean response limit: its transition
+frequencies are differences of chosen batch values. What it proves is exact and weaker: diagonal
+inertness is repaired canonically, positivity is unconditional, and no batch-escape information is
+lost at the nullspace level.
+
+## Novelty audit
+
+Lehmann/KMS response and weighted pairwise dispersion are individually standard. Targeted searches
+found no theorem identifying the nullspace of this canonical square-root-weight KMS lift with the
+Route E batch residual. Provisional novelty passes as a new cross-corpus synthesis; no claim is made
+that the abstract physical mechanism is literature-new.
+
+## Formalization
+
+`GaloisForLFunctions.RHTower.GibbsBatchEntropyProductionLift` proves the Hermitian amplitude,
+edge positivity classification, total-production zero classification, and exact equivalence with
+Route E pairwise-dispersion vanishing. Exact `lake env lean` verification passes; axiom audit
+reports only `propext`, `Classical.choice`, and `Quot.sound`. Module is wired into `RHTower.lean`.
+No umbrella build was run.

@@ -321,6 +321,60 @@ noncomputable def criticalGeometricSheetAmbient
       criticalSourceAlgebraicClosure K m n :=
   (criticalNormalClosure K m n).val.comp σ
 
+/-- Explicit observation-field inclusion into the chosen source algebraic closure. -/
+noncomputable def criticalObservationSourceAlgebraicClosureMap
+    (K : Type*) [Field K] (m n : ℕ) :
+    criticalObservationField K m n →+* criticalSourceAlgebraicClosure K m n :=
+  (algebraMap (criticalSourceField K m n) (criticalSourceAlgebraicClosure K m n)).comp
+    (algebraMap (criticalObservationField K m n) (criticalSourceField K m n))
+
+theorem X_pow_dvd_criticalObservationRawTail_map_algebraicClosure
+    (K : Type*) [Field K] (m n : ℕ) :
+    (X : (criticalSourceAlgebraicClosure K m n)[X]) ^ m ∣
+      (criticalObservationRawTail K m n).map
+        (criticalObservationSourceAlgebraicClosureMap K m n) :=
+  by
+    simpa using Polynomial.map_dvd
+      (criticalObservationSourceAlgebraicClosureMap K m n)
+      (X_pow_dvd_criticalObservationRawTail K m n)
+
+theorem X_pow_dvd_criticalObservationReciprocalTail_map_algebraicClosure
+    (K : Type*) [Field K] (m n : ℕ) :
+    (X : (criticalSourceAlgebraicClosure K m n)[X]) ^ n ∣
+      (criticalObservationReciprocalTail K m n).map
+        (criticalObservationSourceAlgebraicClosureMap K m n) :=
+  by
+    simpa using Polynomial.map_dvd
+      (criticalObservationSourceAlgebraicClosureMap K m n)
+      (X_pow_dvd_criticalObservationReciprocalTail K m n)
+
+/-- Mapping the actual generic inverse identity along a geometric sheet gives inverse coefficient
+blocks in the chosen algebraic closure. -/
+theorem criticalGeometricSheet_mapped_inverse
+    (K : Type*) [Field K] (m n : ℕ) (σ : criticalGeometricSheet K m n) :
+    (X : (criticalSourceAlgebraicClosure K m n)[X]) ^ (m + n) ∣
+      ((criticalSourceRawLow K m n).map
+          (criticalGeometricSheetAmbient K m n σ).toRingHom +
+        (criticalObservationRawTail K m n).map
+          (criticalObservationSourceAlgebraicClosureMap K m n)) *
+      ((criticalSourceReciprocalLow K m n).map
+          (criticalGeometricSheetAmbient K m n σ).toRingHom +
+        (criticalObservationReciprocalTail K m n).map
+          (criticalObservationSourceAlgebraicClosureMap K m n)) - 1 := by
+  let ρ := criticalGeometricSheetAmbient K m n σ
+  have h := Polynomial.map_dvd ρ.toRingHom
+    (X_pow_dvd_criticalSourceRaw_mul_reciprocal_sub_one K m n)
+  rw [criticalSourceRawPolynomial_eq_low_add_tail,
+    criticalSourceReciprocalPolynomial_eq_low_add_tail] at h
+  have hcomp : ρ.toRingHom.comp
+      (algebraMap (criticalObservationField K m n) (criticalSourceField K m n)) =
+    criticalObservationSourceAlgebraicClosureMap K m n := by
+    ext z
+    exact ρ.commutes z
+  simpa only [ρ, Polynomial.map_sub, Polynomial.map_mul, Polynomial.map_add,
+    Polynomial.map_one, Polynomial.map_map, Polynomial.map_pow, Polynomial.map_X,
+    hcomp] using h
+
 /-- A geometric sheet evaluated on the low coefficient blocks is an actual critical-fibre point
 over the chosen source algebraic closure. -/
 noncomputable def criticalGeometricSheetToFibre
@@ -328,11 +382,9 @@ noncomputable def criticalGeometricSheetToFibre
     criticalGeometricSheet K m n →
       criticalFibre (criticalSourceAlgebraicClosure K m n) m n
         ((criticalObservationRawTail K m n).map
-          (algebraMap (criticalObservationField K m n)
-            (criticalSourceAlgebraicClosure K m n)))
+          (criticalObservationSourceAlgebraicClosureMap K m n))
         ((criticalObservationReciprocalTail K m n).map
-          (algebraMap (criticalObservationField K m n)
-            (criticalSourceAlgebraicClosure K m n))) := by
+          (criticalObservationSourceAlgebraicClosureMap K m n)) := by
   intro σ
   let ρ := criticalGeometricSheetAmbient K m n σ
   let A := (criticalSourceRawLow K m n).map ρ.toRingHom
@@ -341,20 +393,9 @@ noncomputable def criticalGeometricSheetToFibre
   · exact lt_of_le_of_lt Polynomial.degree_map_le (lowPolynomial_degree_lt _)
   · exact lt_of_le_of_lt Polynomial.degree_map_le (lowPolynomial_degree_lt _)
   · apply (dvd_criticalLowProduct_sub_one_iff_mul_sub_one
-      (Polynomial.map_dvd _ (X_pow_dvd_criticalObservationRawTail K m n))
-      (Polynomial.map_dvd _ (X_pow_dvd_criticalObservationReciprocalTail K m n)) A B).2
-    have h := Polynomial.map_dvd ρ.toRingHom
-      (X_pow_dvd_criticalSourceRaw_mul_reciprocal_sub_one K m n)
-    rw [criticalSourceRawPolynomial_eq_low_add_tail,
-      criticalSourceReciprocalPolynomial_eq_low_add_tail] at h
-    have hcomp : ρ.toRingHom.comp
-        (algebraMap (criticalObservationField K m n) (criticalSourceField K m n)) =
-      algebraMap (criticalObservationField K m n)
-        (criticalSourceAlgebraicClosure K m n) := by
-      ext z
-      exact ρ.commutes z
-    simpa only [A, B, Polynomial.map_sub, Polynomial.map_mul, Polynomial.map_add,
-      Polynomial.map_one, Polynomial.map_map, hcomp] using h
+      (X_pow_dvd_criticalObservationRawTail_map_algebraicClosure K m n)
+      (X_pow_dvd_criticalObservationReciprocalTail_map_algebraicClosure K m n) A B).2
+    exact criticalGeometricSheet_mapped_inverse K m n σ
 
 /-- Distinct geometric sheets give distinct compatible critical states. -/
 theorem criticalGeometricSheetToFibre_injective
@@ -389,7 +430,11 @@ theorem criticalGeometricSheetToFibre_injective
               algebraMap (criticalObservationField K m n) (criticalSourceField K m n)
                 (criticalObservationRaw K m n i) := by
             apply Subtype.ext
-            simp [criticalSourceRaw, criticalObservationRaw, i, Nat.add_sub_of_le hjm]
+            change criticalAmbientRaw K m n (j : ℕ) =
+              criticalAmbientRaw K m n (m + (i : ℕ))
+            congr 1
+            dsimp [i]
+            omega
           rw [hcoord, ρσ.commutes, ρτ.commutes])
       (fun z => by rw [ρσ.commutes, ρτ.commutes])
       (fun _ _ _ _ hz hw => by rw [map_add, map_add, hz, hw])

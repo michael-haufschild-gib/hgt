@@ -16,6 +16,22 @@ open Filter MeasureTheory Set
 
 namespace GaloisForLFunctions.RHTower
 
+/-! ## Monotonicity of the squared-profile envelope -/
+
+/-- The Dunster squared-profile weight decreases throughout the strict exterior ray. -/
+theorem profileWeight_antitoneOn {s : ℝ} (hs1 : s ≤ 1 / 2) :
+    AntitoneOn (profileWeight s) (Ioi 1) := by
+  apply antitoneOn_of_deriv_nonpos (convex_Ioi 1)
+  · intro x hx
+    exact (hasDerivAt_profileWeight hs1 hx).continuousAt.continuousWithinAt
+  · intro x hx
+    rw [interior_Ioi] at hx
+    exact (hasDerivAt_profileWeight hs1 hx).differentiableAt.differentiableWithinAt
+  · intro x hx
+    rw [interior_Ioi] at hx
+    rw [(hasDerivAt_profileWeight hs1 hx).deriv]
+    exact profileWeightDeriv_nonpos hs1 hx
+
 /-! ## Sum phase -/
 
 /-- Sum of the two exterior Liouville phases in the first radial row. -/
@@ -326,6 +342,111 @@ theorem abs_integral_firstRowLeadingProduct_le {s c k a b : ℝ}
     _ ≤ (1 / Real.pi) *
         (340 / (Real.sqrt c * k ^ 2) +
           4 * ampFourthRoot s k a / (c * (1 + k))) := by gcongr
+
+/-- Leading-product cancellation when the left endpoint lies before the stationary window.
+The only additional term is the exact integrable endpoint mass on `[1,a]`. -/
+theorem abs_integral_firstRowLeadingProduct_le_endpoint {s c k a b : ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k)
+    (hc : 3 * k ≤ c) (hab : a ≤ b) (ha : 1 < a)
+    (hbCross : Real.sqrt (1 + 2 / k ^ 2) ≤ b) :
+    |∫ x in a..b, firstRowLeadingProduct s c k x|
+      ≤ (1 / Real.pi) *
+        (170 / (Real.sqrt c * k ^ 2) +
+          4 / 3 * Real.sqrt (Real.sqrt 2) / k * (a - 1) ^ ((3 : ℝ) / 4) +
+          4 * ampFourthRoot s k a / (c * (1 + k))) := by
+  have hc0 : 0 < c := by linarith
+  have hdiffFull := abs_integral_firstRow_leading_le hs0 hs1 hk hc hbCross
+  let f : ℝ → ℝ := fun x =>
+    ampFourthRoot s k x * Real.cos (c * xiDiffPhase s k x)
+  have hint : ∀ p q : ℝ, 1 ≤ p → p ≤ q → IntervalIntegrable f volume p q := by
+    intro p q hp hpq
+    rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hpq]
+    have hbig : IntegrableOn (ampFourthRoot s k) (Ioc 1 q) volume :=
+      integrableOn_ampFourthRoot hs0 hs1 hk (hp.trans hpq)
+    have hsub : Ioc p q ⊆ Ioi 1 := fun _ hx => lt_of_le_of_lt hp hx.1
+    have hdom : IntegrableOn (ampFourthRoot s k) (Ioc p q) volume :=
+      hbig.mono_set (fun _ hx => ⟨lt_of_le_of_lt hp hx.1, hx.2⟩)
+    have hmeas : AEStronglyMeasurable f (volume.restrict (Ioc p q)) := by
+      refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioc
+      exact ((continuousOn_ampFourthRoot hs1 hk).mono hsub).mul
+        (Real.continuous_cos.comp_continuousOn
+          (continuousOn_const.mul ((continuousOn_xiDiffPhase hs0 hk).mono hsub)))
+    refine Integrable.mono' hdom hmeas ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
+    have hx1 : 1 < x := lt_of_le_of_lt hp hx.1
+    have hamp := (ampFourthRoot_pos hs1 hk hx1).le
+    dsimp [f]
+    rw [abs_mul, abs_of_nonneg hamp]
+    nlinarith [Real.abs_cos_le_one (c * xiDiffPhase s k x)]
+  have hdiffLeft : |∫ x in (1 : ℝ)..a, f x|
+      ≤ 4 / 3 * Real.sqrt (Real.sqrt 2) / k * (a - 1) ^ ((3 : ℝ) / 4) := by
+    have hIab : IntegrableOn f (Ioc 1 a) volume := by
+      have h := hint 1 a le_rfl ha.le
+      rwa [intervalIntegrable_iff_integrableOn_Ioc_of_le ha.le] at h
+    have hnorm : ‖∫ x in Ioc (1 : ℝ) a, f x‖
+        ≤ ∫ x in Ioc (1 : ℝ) a, ‖f x‖ := norm_integral_le_integral_norm _
+    have hmono : (∫ x in Ioc (1 : ℝ) a, ‖f x‖)
+        ≤ ∫ x in Ioc (1 : ℝ) a, ampFourthRoot s k x := by
+      refine setIntegral_mono_on hIab.norm
+        (integrableOn_ampFourthRoot hs0 hs1 hk ha.le) measurableSet_Ioc fun x hx => ?_
+      have hamp := (ampFourthRoot_pos hs1 hk hx.1).le
+      dsimp [f]
+      rw [abs_mul, abs_of_nonneg hamp]
+      nlinarith [Real.abs_cos_le_one (c * xiDiffPhase s k x)]
+    have hend := integral_Ioc_ampFourthRoot_le
+      (s := s) (k := k) (X := a) hs0 hs1 hk ha.le
+    rw [intervalIntegral.integral_of_le ha.le, ← Real.norm_eq_abs]
+    linarith
+  have hdiff : |∫ x in a..b, f x| ≤
+      170 / (Real.sqrt c * k ^ 2) +
+        4 / 3 * Real.sqrt (Real.sqrt 2) / k * (a - 1) ^ ((3 : ℝ) / 4) := by
+    have hsplit : (∫ x in (1 : ℝ)..b, f x) =
+        (∫ x in (1 : ℝ)..a, f x) + ∫ x in a..b, f x := by
+      simpa using (intervalIntegral.integral_add_adjacent_intervals
+        (hint 1 a le_rfl ha.le) (hint a b ha.le hab)).symm
+    have heq : (∫ x in a..b, f x) =
+        (∫ x in (1 : ℝ)..b, f x) - ∫ x in (1 : ℝ)..a, f x := by
+      linarith [hsplit]
+    rw [heq]
+    exact (abs_sub _ _).trans (add_le_add hdiffFull hdiffLeft)
+  have hsum := abs_integral_firstRow_sum_le hs0 hs1 hk hc0 hab ha
+  have hpoint : ∀ x ∈ uIcc a b, firstRowLeadingProduct s c k x =
+      (1 / Real.pi) * (f x +
+        ampFourthRoot s k x * Real.cos (c * xiSumPhase s k x - Real.pi / 2)) := by
+    intro x hx
+    have hx' : 1 < x := by rw [uIcc_of_le hab] at hx; exact ha.trans_le hx.1
+    rw [firstRowLeadingProduct_eq_phase_sum hs1 hk hx']
+    dsimp [f]
+    ring
+  rw [intervalIntegral.integral_congr hpoint, intervalIntegral.integral_const_mul]
+  have hsub : uIcc a b ⊆ Ioi 1 := by
+    rw [uIcc_of_le hab]
+    exact fun _ hx => ha.trans_le hx.1
+  have hdiffInt : IntervalIntegrable f volume a b := hint a b ha.le hab
+  have hsumInt : IntervalIntegrable
+      (fun x => ampFourthRoot s k x * Real.cos (c * xiSumPhase s k x - Real.pi / 2))
+      volume a b :=
+    (((continuousOn_ampFourthRoot hs1 hk).mono hsub).mul
+      (Real.continuous_cos.comp_continuousOn
+        ((continuousOn_const.mul ((continuousOn_xiSumPhase hs0 hk).mono hsub)).sub
+          continuousOn_const))).intervalIntegrable
+  rw [intervalIntegral.integral_add hdiffInt hsumInt, abs_mul,
+    abs_of_nonneg (by positivity : 0 ≤ 1 / Real.pi)]
+  calc
+    1 / Real.pi * |(∫ x in a..b, f x) +
+        ∫ x in a..b, ampFourthRoot s k x *
+          Real.cos (c * xiSumPhase s k x - Real.pi / 2)|
+        ≤ (1 / Real.pi) *
+          (|(∫ x in a..b, f x)| +
+            |∫ x in a..b, ampFourthRoot s k x *
+              Real.cos (c * xiSumPhase s k x - Real.pi / 2)|) := by
+          gcongr
+          exact abs_add_le _ _
+    _ ≤ (1 / Real.pi) *
+        (170 / (Real.sqrt c * k ^ 2) +
+          4 / 3 * Real.sqrt (Real.sqrt 2) / k * (a - 1) ^ ((3 : ℝ) / 4) +
+          4 * ampFourthRoot s k a / (c * (1 + k))) := by
+        gcongr
 
 /-- The leading first-row Bessel product vanishes on every fixed compact exterior interval. -/
 theorem tendsto_integral_firstRowLeadingProduct

@@ -321,6 +321,29 @@ Targeted searches for `punctured Riesz trace`, `essential inverse flow`, compact
 essential-singular traces, and Xi inverse Fredholm models found no direct match.  This is only a
 preliminary noncollision result; `[NOVELTY UNVERIFIED]` remains mandatory.
 
+## Lean status
+
+`[PARTIAL]`  `formal/GaloisForLFunctions/RHTower/HedenmalmEssentialFlowSymbol.lean`
+(namespace `RHTower.HedenmalmThetaSource`).  All declarations are `#print axioms`-clean.
+
+| # | statement | Lean declaration |
+|---|---|---|
+| `(3)` | the fixed-width tomography symbol in the compact reciprocal coordinate | `essentialFlowSymbol` |
+| `(5)` | the fixed-width amplitude `A_L` and the Weil sample `F_(a,L)` | `weilWidthAmplitude`, `weilFixedWidthSample` |
+| `(3)`,`(5)` | the common closed form of both on a root block | `rootBlockForm`, `essentialFlowSymbol_eq_rootBlockForm`, `weilFixedWidthSample_eq_rootBlockForm` |
+| `(3)`,`(5)` | **`Phi_(a,L)(-1/z) = F_(a,L)(i z)`**: the symbol reproduces the Weil sample on every root block | `essentialFlowSymbol_root` |
+
+This is the spectral-sample matching of the card at the level of the symbols, which is what `(5)`
+compares term by term; it needs no operator theory.  The parent compact reciprocal coordinate is
+`RHTower.HedenmalmThetaSource.compactNormalMultiplier` of the two-prime frame card, whose special
+case `a = L/2` is `essentialFlowSymbol` up to the prime normalization.
+
+Still missing, and all of it inherited from the unformalized part of the parent card
+`hedenmalm-theta-source-compressed-inverse-determinant.md`: the Riesz projections `P_epsilon`, the
+finite-dimensional holomorphic functional calculus on their ranges, the trace `(4)` and its
+cutoff-independent limit `(1)`, the divisor sum `(5)` itself, and the prime--Gamma sampling `(6)`.
+None of these can be built before the multiplicity clause and the trace layer of the parent.
+
 ## Gates
 
 - [x] source-derived compact carrier

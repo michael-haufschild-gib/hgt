@@ -614,4 +614,47 @@ theorem gammaTransport_split {f : ℝ → ℝ} {X : ℝ} (hX : 0 < X)
   unfold gammaTransport
   rw [hsplit, setIntegral_union hdisj measurableSet_Ioi hnear hfar]
 
+/-! ## The transport operator at a penalized maximizer
+
+Assembling the two windows: at a maximizer of the weighted profile the transport operator is
+bounded below by a quantity built from the penalty slope and the far-tail mass, both of which
+vanish as the maximizer runs to infinity with the slope going to zero.
+-/
+
+/-- **The transport operator is bounded below at a penalized maximizer.**  The near window
+contributes `−C` times the kernel's first moment there, the far window at most `4M q(X/2)`.  Only
+the near integrability is assumed — the far one is derived from boundedness. -/
+theorem neg_le_gammaTransport_of_maximizer {f : ℝ → ℝ} {X δ M : ℝ} (hX : 0 < X) (hδ : 0 ≤ δ)
+    (hf : 0 ≤ f X) (hFb : ∀ x, |f x| ≤ M) (hmeas : Measurable f)
+    (hnear : IntegrableOn (fun s => secondDifference f X s * gammaTransportKernel s)
+      (Ioc 0 (X / 2)))
+    (hp : ∀ s, 0 ≤ s → s ≤ X / 2 →
+      Real.sqrt (X + s) * f (X + s) ≤ Real.sqrt X * f X + δ * s)
+    (hm : ∀ s, 0 ≤ s → s ≤ X / 2 →
+      Real.sqrt (X - s) * f (X - s) ≤ Real.sqrt X * f X + δ * s) :
+    -((2 * δ / Real.sqrt X + 2 * (f X + δ * Real.sqrt X / 2) / X)
+        * (∫ s in Ioc (0:ℝ) (X / 2), s * gammaTransportKernel s)
+      + 4 * M * (-Real.log (1 - Real.exp (-(X / 2))))) ≤ gammaTransport f X := by
+  have hX2 : (0:ℝ) < X / 2 := by linarith
+  have hsd : Measurable fun s => secondDifference f X s := by
+    unfold secondDifference; fun_prop
+  have hfar : IntegrableOn (fun s => secondDifference f X s * gammaTransportKernel s)
+      (Ioi (X / 2)) := by
+    have hdom : IntegrableOn (fun s => 4 * M * gammaTransportKernel s) (Ioi (X / 2)) :=
+      (integrableOn_gammaTransportKernel_Ioi hX2).const_mul _
+    refine Integrable.mono' hdom (hsd.mul measurable_gammaTransportKernel).aestronglyMeasurable ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with s hs
+    have hpos : 0 < s := lt_trans hX2 hs
+    have hk := gammaTransportKernel_pos hpos
+    rw [Real.norm_eq_abs, abs_mul, abs_of_pos hk]
+    exact mul_le_mul_of_nonneg_right (abs_secondDifference_le_of_bounded hFb X s) hk.le
+  have hsplit := gammaTransport_split hX hnear hfar
+  have hnearbd := neg_le_integral_transport_near hX hδ hf hnear hp hm
+  have hfarbd := abs_integral_transport_far_le (F := f) X hX2 hFb hmeas
+  have hfarlow : -(4 * M * (-Real.log (1 - Real.exp (-(X / 2)))))
+      ≤ ∫ s in Ioi (X / 2), secondDifference f X s * gammaTransportKernel s :=
+    neg_le_of_abs_le hfarbd
+  rw [hsplit]
+  linarith [hnearbd, hfarlow]
+
 end GaloisForLFunctions.HTGeometry

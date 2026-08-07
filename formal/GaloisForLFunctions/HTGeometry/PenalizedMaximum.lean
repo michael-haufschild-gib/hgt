@@ -214,4 +214,29 @@ theorem le_of_weighted_le_backward {f : ℝ → ℝ} {X s δ : ℝ} (hX : 0 < X)
     _ ≤ (f X + δ * s / Real.sqrt X) * (1 + 2 * (s / X)) :=
         mul_le_mul_of_nonneg_left hinv hnum
 
+/-! ## The mirrored chain
+
+The lower limit needs the same construction applied to the negated profile: a penalized *minimum*
+of `H` is a penalized maximum of `−H`.  Stating the mirrored results in terms of
+`penalized (−H)` lets the whole maximum apparatus be reused with the inequalities flipped once, at
+the point of use, rather than duplicated.
+-/
+
+/-- **The mirrored one-sided inequalities.**  At a penalized maximizer of `−H`, the profile `H`
+drops by at most `δ t` in either direction — the reverse of the maximizer case. -/
+theorem le_of_isMaxOn_penalized_neg_shift {H : ℝ → ℝ} {δ L₀ X : ℝ} {s : Set ℝ}
+    (hmax : IsMaxOn (penalized (fun x => -H x) δ L₀) s X) (hδ : 0 ≤ δ) {t : ℝ} (ht : 0 ≤ t)
+    (hp : X + t ∈ s) (hm : X - t ∈ s) :
+    H X - δ * t ≤ H (X + t) ∧ H X - δ * t ≤ H (X - t) := by
+  obtain ⟨h1, h2⟩ := le_of_isMaxOn_penalized_shift hmax hδ ht hp hm
+  exact ⟨by linarith [h1], by linarith [h2]⟩
+
+/-- **The mirrored maximizer exists**, for a profile bounded below. -/
+theorem exists_isMaxOn_penalized_neg {H : ℝ → ℝ} {δ L₀ a B : ℝ} (hδ : 0 < δ)
+    (hcont : ContinuousOn H (Ici a)) (hB : ∀ L ∈ Ici a, -B ≤ H L) :
+    ∃ X ∈ Ici a, IsMaxOn (penalized (fun x => -H x) δ L₀) (Ici a) X := by
+  refine exists_isMaxOn_penalized (B := B) hδ hcont.neg fun L hL => ?_
+  have := hB L hL
+  linarith
+
 end GaloisForLFunctions.HTGeometry

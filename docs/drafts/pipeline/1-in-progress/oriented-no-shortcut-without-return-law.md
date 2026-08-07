@@ -278,3 +278,24 @@ minimum spectral gap and not a raw pseudodeterminant.
     recurrence-pair relation `R`, bound its mass, and prove growing-replica
     anti-concentration of the occupied-image compressed kernel on `R^c`
     strongly enough to beat `h_r`.
+
+## Conjecturing loop -- approximate-return shell incidence, 2026-08-07
+
+17. `[LEAN-PROVED FRONTIER ADVANCE]`  The unit-ball projection law discarded
+    quantitative norm erased by approximate return removal.  Partition the
+    return-removed occupied image into finitely many residual squared-radius
+    shells `rho_b`.  If `S_(b,r)` is shell `b`'s occupied replica span and
+    `q_(b,r)` its projection mass, complete residual capture obeys
+    `a^r mu(E_a) <= integral sum_b rho_b^r q_(b,r)`.  Source fibre sheets stay
+    inside the integral; duplicate labels within every shell and exact-return
+    zeros change nothing.  For static Choi targets, the radius is exact:
+    `||phi_perp||^2 = 1 - |<Phi_H(u),phi>|^2`.  See
+    `../3-formalized/return-shell-replica-coarea-incidence-law.md`,
+    `HTGeometry/ReplicaReturnShellCoareaIncidenceLaw.lean`, and
+    `RHTower/StaticChoiReturnShellCoareaIncidenceLaw.lean`.
+18. `[OPEN CORE, SHARPENED]`  Bound the finite radius-weighted family of
+    occupied-shell pair actions for the ordinary fixed-`q` Gaussian static
+    ensemble.  Approximate longitudinal history now pays its replica power
+    before integration; only genuinely transverse occupied image remains for
+    coefficient-space anti-concentration.  Shell count may not scale with
+    circuit-word count.

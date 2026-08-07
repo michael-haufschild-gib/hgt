@@ -5216,3 +5216,16 @@ receive a new title and an independent significance audit.
   `../3-formalized/quenched-replica-pair-incidence-cut-law.md`.  Remaining
   physical core: choose the local-Hamiltonian recurrence relation and prove
   growing-replica decay of the compressed kernel on its complement.
+- 2026-08-07 -- Strengthened exact-return zero removal to quantitative
+  approximate-return removal.  Return-removed targets are grouped by residual
+  squared-radius `rho_b`; each shell enters one complete occupied-image
+  reporter with weight `rho_b^r`.  The resulting Lean-proved quenched law is
+  `a^r P(E_a) <= integral sum_b rho_b^r q_(b,r)`.  It retains every source
+  fibre sheet, ignores duplicate circuit labels inside each shell, and gives
+  exact returns zero contribution.  Static-Choi Pythagoras identifies the
+  exact radius as `1 - |<Phi_H(u),phi>|^2`.  Modules:
+  `HTGeometry/ReplicaReturnShellCoareaIncidenceLaw.lean` and
+  `RHTower/StaticChoiReturnShellCoareaIncidenceLaw.lean`; card:
+  `../3-formalized/return-shell-replica-coarea-incidence-law.md`.  This does
+  not close O4: genuinely transverse radius-one shells still require the
+  ordinary-local-Hamiltonian compressed-kernel estimate.

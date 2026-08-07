@@ -2529,3 +2529,111 @@ with `C = O(δ) + O(1/X)` and `q(X/2) → 0`, so both vanish along `δ_n → 0`,
 Steps 2–3: add the two halves to bound `R_full f_ε(X_n)` below, substitute into `(18)` with `(19)`
 and `(20)`, and take `n → ∞` to read off `M ≤ liminf H`. This is the card-level derivation; it uses
 no estimate that is not already built.
+
+## BL. Step 2's split is built
+
+`GammaTransportKernel.lean` is now at 29 declarations, all `#print axioms` clean.
+
+- `gammaTransport_split` — `gammaTransport f X` is the sum of its near and far pieces at radius
+  `X/2`: `Ioi 0 = Ioc 0 (X/2) ∪ Ioi (X/2)`, disjoint, via `setIntegral_union`.
+
+Combining with BK and BE this gives the lower bound the argument needs:
+
+    gammaTransport f X  ≥  −C · ∫_0^{X/2} s k(s) ds  −  4 M q(X/2)
+
+with `C = 2δ/√X + 2(f X + δ√X/2)/X` and `q(X/2) = −log(1 − e^{−X/2})`.
+
+Trap: the additivity lemma is `setIntegral_union`, not `integral_union` — the latter does not
+resolve here.
+
+### Remaining — step 3 only
+
+Substitute the display above into `(18)` `P f_ε + R_full f_ε = G_ε + C_ε`, use `(19)`'s uniform
+source bound and `(20)`'s critical-profile bound, and take `n → ∞` along the maximizers
+(`δ_n = L_n^{−1/2} → 0`, `X_n → ∞`, `f X_n` bounded) so that both `C` and `q(X_n/2)` vanish. The
+conclusion is `M ≤ liminf H`, which with `M = limsup H` closes `(4)`.
+
+Every estimate step 3 consumes is now built and axiom-clean. What remains is the derivation itself
+— stating the card's hypotheses `(1)` and `(3)` in Lean and threading them through.
+
+## BM. The transport operator is bounded below at a penalized maximizer
+
+`GammaTransportKernel.lean` is now at 30 declarations, all `#print axioms` clean.
+
+- `neg_le_gammaTransport_of_maximizer` — the assembled bound:
+
+      gammaTransport f X  ≥  −[ C · ∫_0^{X/2} s k(s) ds  +  4 M q(X/2) ],
+      C = 2δ/√X + 2(f X + δ√X/2)/X,   q(X/2) = −log(1 − e^{−X/2}),
+
+  for a bounded measurable profile whose weighted values obey the maximizer inequalities on
+  `0 ≤ s ≤ X/2`. **Only the near integrability is assumed** (per BJ); the far one is *derived* from
+  boundedness plus `integrableOn_gammaTransportKernel_Ioi`.
+
+This closes steps 1–2 and the analytic half of step 3 of section BH's plan. The right-hand side is
+`O(δ) + O(1/X) + O(q(X/2))`, and every term vanishes along `δ_n → 0`, `X_n → ∞`.
+
+### `suzuki-weak-signed-half-log-trace` — what is left
+
+Only the card-level statement: state `(1)` and `(3)`, instantiate the maximizer family via
+`exists_isMaxOn_penalized` + `le_of_isMaxOn_penalized_shift` to supply this theorem's `hp`/`hm`,
+substitute into `(18)` with `(19)`/`(20)`, and pass to the limit. Every analytic input exists and is
+axiom-clean.
+
+The one thing to check when writing it: this theorem's `hp`/`hm` are stated for the *weighted*
+profile `√· f(·)` compared at `X`, which is exactly the shape `le_of_isMaxOn_penalized_shift`
+produces for `H = √L f(L)` — so the two interfaces match without further conversion. That was the
+point of building the weight removal inside `neg_le_secondDifference_of_weighted` rather than at
+the call site.
+
+## BN. The capstone is already mathlib — and the argument must be run twice
+
+Tested the final assembly in `formal/tmp/t36.lean`. Two findings, and **nothing was added to the
+tree**, deliberately.
+
+1. **The convergence capstone is already in mathlib**: `tendsto_of_le_liminf_of_limsup_le` takes
+   `α ≤ liminf u`, `limsup u ≤ α` and two boundedness side conditions and returns
+   `Tendsto u atTop (nhds α)`. Wrapping it under a project name would be a rename, not a lemma —
+   the same duplication rule applied in section AJ. Use it directly.
+
+2. **The maximizer argument has to be run twice.** Section BM produces
+   `limsup H ≤ α` (via `M = limsup H` and the penalized *maximum*). But the capstone also needs
+   `α ≤ liminf H`, and section W's `(13)` gives only `liminf H ≤ α ≤ limsup H` — the wrong
+   direction. The missing half comes from the mirrored argument: a penalized **minimum** of `H`,
+   i.e. the same construction applied to `−H`, yielding `liminf H ≥ α`.
+
+   Every asset in `PenalizedMaximum.lean` is stated for a maximum. The mirrored versions are not
+   built. They are not new mathematics — apply the existing results to `−H` and negate — but the
+   `IsMaxOn`/`IsMinOn` bookkeeping is real, and `neg_le_secondDifference_of_weighted` would need its
+   inequality directions flipped throughout.
+
+So the remaining work on `suzuki-weak-signed-half-log-trace` is: mirror the penalized-maximum chain
+to a penalized-minimum chain, then invoke `tendsto_of_le_liminf_of_limsup_le`. This was **not**
+visible before attempting the assembly — sections BK–BM all read as if one direction sufficed.
+
+## BO. The mirrored chain is started
+
+`PenalizedMaximum.lean` is now at 12 declarations, all `#print axioms` clean.
+
+A penalized *minimum* of `H` is a penalized maximum of `−H`, so the mirrored results are stated in
+terms of `penalized (fun x => −H x)` and reuse the maximum apparatus rather than duplicating it:
+
+- `exists_isMaxOn_penalized_neg` — the mirrored maximizer exists, for a profile bounded **below**.
+- `le_of_isMaxOn_penalized_neg_shift` — the mirrored one-sided inequalities:
+
+      H X − δ t ≤ H (X + t)     and     H X − δ t ≤ H (X − t),
+
+  i.e. `H` *drops* by at most `δt` in either direction. Exactly the reverse of `(24)`.
+
+### Remaining on the mirrored side
+
+The transport chain still has to be mirrored: `neg_le_secondDifference_of_weighted` and everything
+downstream (`neg_mul_le_…`, `neg_le_integral_transport_near`, `neg_le_gammaTransport_of_maximizer`)
+bound the second difference from **below** at a maximizer. At a minimizer the same construction
+bounds it from **above**, giving `gammaTransport f X ≤ +[…]`, and the weight-removal lemmas need
+their directions flipped too (`le_of_weighted_le_forward`/`_backward` currently take an upper bound
+on `√· f(·)` and produce an upper bound on `f`).
+
+That is mechanical but not free: roughly the six results from BD–BM restated with reversed
+inequalities. Once done, `tendsto_of_le_liminf_of_limsup_le` (mathlib, section BN) closes `(4)`.
+
+`suzuki-weak-signed-half-log-trace` remains in stage 2.

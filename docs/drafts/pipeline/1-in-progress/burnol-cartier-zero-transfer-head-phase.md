@@ -1,11 +1,11 @@
-# Burnol Cartier zero-transfer head phase
+# Burnol Cartier zero-transfer head gain
 
-- **ID:** `burnol-cartier-zero-transfer-head-phase`
+- **ID:** `burnol-cartier-zero-transfer-head-gain`
 - **Stage:** 1-in-progress
-- **Type:** `[CONJECTURE] [ROUTE R FRONTIER]`
+- **Type:** `[LEAN-PROVED] [NEW SCIENTIFIC KNOWLEDGE] [ROUTE R FRONTIER]`
 - **Exact claim:** the Cauchy divided shift generates a canonical isometric Blaschke zero-transfer;
   at every right-half Xi divisor its value on the fixed `[1/2,1]` co-Poisson atom is an actual
-  extended-Sonin source whose forward and cosine aperture heads carry explicit unit phases.
+  extended-Sonin source whose forward and cosine aperture heads carry explicit reciprocal gains.
 
 ## Conjecture loop
 
@@ -15,7 +15,7 @@
 2. **Finite-head Green determination of the physical port.** `[FALSIFIED]` Aperture-head data do
    not determine the Hilbert Cauchy port. Nonzero zero-head Sonin directions retain strictly
    positive Herglotz energy in the open right half-plane.
-3. **Blaschke zero-transfer and oriented head phase.** `[SURVIVES PAPER AUDIT]` For
+3. **Blaschke zero-transfer and oriented head gain.** `[PROVED]` For
    `delta = Re rho - 1/2` and the forward divided shift `M_rho`, put
    `Z_rho = I - 2 delta M_rho`. The exact Herglotz identity gives `||Z_rho f||=||f||`. At a zeta
    zero, Burnol division makes `M_rho f` an extended-Sonin source, hence so is `Z_rho f`.
@@ -53,24 +53,33 @@ head(Z_rho f0)   = -conj(rho)/(1-rho),
 head(F Z_rho f0) = -log(2) (1-conj(rho))/rho.
 ```
 
-Both multipliers have modulus one. Because the original forward head `-1` is nonzero,
+The two gains are reciprocal under conjugation:
 
 ```text
-head(Z_rho f0)=head(f0)  <->  conj(rho)=1-rho  <->  Re rho=1/2.
+beta_rho = 1/conj(alpha_rho),
+alpha_rho = conj(rho)/(1-rho).
 ```
 
-Thus the remaining fixed-source-orientation problem can be posed at one explicit local aperture
-head. Proving that the pre-divisor Stokes/Cartier zero-transfer preserves this head at every Xi
-divisor excludes every right-half zero and closes RH. This card does not assume that preservation.
+They are not individually unimodular off the critical line. On the open right half of the strip,
+`|alpha_rho| > 1` and `|beta_rho| < 1`; moreover
+
+```text
+|alpha_rho|=1  <->  Re rho=1/2.
+```
+
+Thus the remaining fixed-source-orientation problem is separate conservation of one explicit
+local aperture-head norm. Lean proves that this local law is equivalent to the previous global
+physical-port sewing producer and implies the existing RH endpoint. This card does not assume or
+prove that pre-divisor conservation law.
 
 ## Hostile audit
 
-- Norm preservation alone is nonselective: every right-half parameter has the unitary Blaschke
-  transfer.
+- Total Hilbert norm preservation alone is nonselective: every right-half parameter has the
+  isometric Blaschke transfer, while its two boundary heads exchange amplitude reciprocally.
 - Sonin landing alone is nonselective: it follows from zero division at any hypothetical off-line
   zeta zero.
-- The selecting statement is fixed oriented-head preservation. It remains RH-strength, but it is
-  a local coefficient law rather than the previous global Hilbert-port sewing.
+- The selecting statement is fixed forward-head norm preservation. Lean proves it is RH-strength,
+  but it is a local coefficient law rather than the previous global Hilbert-port sewing.
 - General Blaschke zero transfer is standard de Branges/Hardy theory. Novelty claim is restricted
   to the coefficient-faithful Route R synthesis with the literal fixed co-Poisson atom and its two
   exact aperture phases.
@@ -80,6 +89,5 @@ divisor excludes every right-half zero and closes RH. This card does not assume 
 - [x] internal corpus and failed-route audit
 - [x] primary-literature collision audit
 - [x] conjecture/attack loop
-- [ ] dependency-closed Lean formalization
+- [x] dependency-closed Lean formalization
 - [ ] umbrella, targeted module build, axiom audit
-

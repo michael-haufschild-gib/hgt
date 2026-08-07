@@ -29,25 +29,17 @@ theorem norm_sq_finitePureTensorPowerEuclidean_eq_pow
     {α : Type*} [Fintype α] (r : ℕ) (ψ : α → ℂ) :
     ‖finitePureTensorPowerEuclidean r ψ‖ ^ 2 =
       (‖WithLp.toLp 2 ψ‖ ^ 2) ^ r := by
-  have hreplica :
-      ((‖finitePureTensorPowerEuclidean r ψ‖ ^ 2 : ℝ) : ℂ) =
-        inner ℂ (finitePureTensorPowerEuclidean r ψ)
-          (finitePureTensorPowerEuclidean r ψ) := by
-    rw [inner_self_eq_norm_sq_to_K]
-  have hone :
-      (((‖WithLp.toLp 2 ψ‖ ^ 2 : ℝ) : ℂ)) =
-        inner ℂ (WithLp.toLp 2 ψ) (WithLp.toLp 2 ψ) := by
-    rw [inner_self_eq_norm_sq_to_K]
-  apply Complex.ofReal_injective
-  push_cast
-  rw [hreplica, inner_finitePureTensorPowerEuclidean,
-    inner_toLp_eq_finiteComplexInner, ← hone, map_pow]
+  have hreplica := inner_finitePureTensorPowerEuclidean r ψ ψ
+  rw [inner_self_eq_norm_sq_to_K] at hreplica
+  have hone := inner_toLp_eq_finiteComplexInner ψ ψ
+  rw [inner_self_eq_norm_sq_to_K] at hone
+  rw [← hone] at hreplica
+  exact_mod_cast hreplica
 
 /-- A one-copy squared-radius cap becomes its `r`th power after replica
 lifting. -/
 theorem norm_sq_finitePureTensorPowerEuclidean_le_radius_pow
     {α : Type*} [Fintype α] (r : ℕ) (ψ : α → ℂ) {radius : ℝ}
-    (hradius : 0 ≤ radius)
     (hψ : ‖WithLp.toLp 2 ψ‖ ^ 2 ≤ radius) :
     ‖finitePureTensorPowerEuclidean r ψ‖ ^ 2 ≤ radius ^ r := by
   rw [norm_sq_finitePureTensorPowerEuclidean_eq_pow]
@@ -114,6 +106,12 @@ theorem replicaReturnShellProjectionMass_nonneg
   exact Finset.sum_nonneg fun b _ =>
     mul_nonneg (pow_nonneg (hradius b) r) (sq_nonneg _)
 
+private theorem le_sum_univ_of_nonneg
+    {B : Type*} [Fintype B] (f : B → ℝ)
+    (hf : ∀ b, 0 ≤ f b) (b : B) :
+    f b ≤ ∑ j, f j := by
+  exact Finset.single_le_sum (fun j _ => hf j) (Finset.mem_univ b)
+
 /-- Duplicating every target label inside every shell changes neither the
 weighted reporter nor its occupied image. -/
 theorem replicaReturnShellProjectionMass_duplicated
@@ -166,7 +164,7 @@ theorem completePureStateReturnShellCapture_subset_projectionMass
       ‖finitePureTensorPowerEuclidean r (target b c)‖ ^ 2 ≤
         radius b ^ r :=
     norm_sq_finitePureTensorPowerEuclidean_le_radius_pow
-      r (target b c) (hradius b) (htarget b c)
+      r (target b c) (htarget b c)
   have hqnonneg :
       0 ≤ replicaTargetProjectionMass r (target b) (state x) :=
     sq_nonneg _
@@ -184,9 +182,12 @@ theorem completePureStateReturnShellCapture_subset_projectionMass
       exact mul_le_mul_of_nonneg_right hnorm hqnonneg
     _ ≤ replicaReturnShellProjectionMass r C target radius (state x) := by
       unfold replicaReturnShellProjectionMass
-      exact Finset.single_le_sum
-        (fun j _ => mul_nonneg (pow_nonneg (hradius j) r) (sq_nonneg _))
-        (Finset.mem_univ b)
+      let f : B → ℝ := fun j => radius j ^ r *
+        replicaTargetProjectionMass r (target j) (state x)
+      change f b ≤ ∑ j, f j
+      apply le_sum_univ_of_nonneg f
+      intro j
+      exact mul_nonneg (pow_nonneg (hradius j) r) (sq_nonneg _)
 
 /-- **Quenched return-shell coarea bound.**  The complete approximate-target
 event is bounded by one shell-weighted replica moment.  Integration remains on

@@ -1359,3 +1359,16 @@ vacuous.
 
 The general `(2)` for an arbitrary connected commutative algebraic group still needs a
 Rosenlicht-type differential-rational quotient theorem.
+
+Added (wired, axiom-clean):
+
+    ScalingInvariantRationalFunction.lean
+      eq_monomial_of_comp_scaling_family
+      natDegree_eq_zero_of_scaling_invariant_family
+    LogarithmicDerivativeFixedField.lean
+      mem_logDerivField_of_scaling_invariant_family
+
+The deck group no longer has to contain a single scalar with pairwise distinct powers: a family
+that separates every pair of exponents suffices, and roots of unity of unbounded order do that
+although no single root of unity does.  This is exactly the deck group of a degree-expanding power
+protocol, so the cusp signature `(∞,∞)` is now reachable without any uniformization input.

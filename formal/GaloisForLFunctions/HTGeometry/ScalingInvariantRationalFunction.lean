@@ -128,4 +128,79 @@ theorem natDegree_eq_zero_of_scaling_invariant {a : L} (ha : a ≠ 0)
     exact (Polynomial.not_isUnit_X (R := L)) (hcop.isUnit_of_dvd' hdvdXP hdvdXQ)
   exact ⟨hzero, hdegEq ▸ hzero⟩
 
+
+/-! ### The family version: a deck group instead of a single scalar -/
+
+/-- A polynomial fixed up to a scalar by a whole family of scalings is a monomial, provided the
+family separates every pair of exponents. -/
+theorem eq_monomial_of_comp_scaling_family {ι : Type*} {A : ι → L}
+    (hsep : ∀ i j : ℕ, i ≠ j → ∃ t : ι, (A t) ^ i ≠ (A t) ^ j)
+    {P : Polynomial L}
+    (hlam : ∀ t : ι, ∃ lam : L,
+      P.comp (Polynomial.C (A t) * Polynomial.X) = Polynomial.C lam * P) :
+    P = Polynomial.C (P.coeff P.natDegree) * Polynomial.X ^ P.natDegree := by
+  classical
+  rcases eq_or_ne P 0 with rfl | hP0
+  · simp
+  ext i
+  rcases eq_or_ne i P.natDegree with rfl | hi
+  · simp
+  · have hzero : P.coeff i = 0 := by
+      by_contra hne
+      obtain ⟨t, hts⟩ := hsep i P.natDegree hi
+      obtain ⟨lam, hl⟩ := hlam t
+      have hlv : lam = (A t) ^ P.natDegree := scaling_eigenvalue_eq_pow hP0 hl
+      have hc := congrArg (fun R : Polynomial L => R.coeff i) hl
+      simp only [Polynomial.comp_C_mul_X_coeff, Polynomial.coeff_C_mul] at hc
+      rw [hlv, mul_comm ((A t) ^ P.natDegree)] at hc
+      exact hts (mul_left_cancel₀ hne hc)
+    simp [hzero, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, hi]
+
+/-- **A fraction invariant under a separating family of scalings is constant.**  This is the form
+the deck group of a power map needs: roots of unity of unbounded order separate every pair of
+exponents, although no single root of unity does. -/
+theorem natDegree_eq_zero_of_scaling_invariant_family {ι : Type*} [Nonempty ι] {A : ι → L}
+    (hA : ∀ t : ι, A t ≠ 0)
+    (hsep : ∀ i j : ℕ, i ≠ j → ∃ t : ι, (A t) ^ i ≠ (A t) ^ j)
+    {P Q : Polynomial L} (hP0 : P ≠ 0) (hQ0 : Q ≠ 0) (hcop : IsCoprime P Q)
+    (heq : ∀ t : ι, P.comp (Polynomial.C (A t) * Polynomial.X) * Q
+      = P * Q.comp (Polynomial.C (A t) * Polynomial.X)) :
+    P.natDegree = 0 ∧ Q.natDegree = 0 := by
+  classical
+  have hlamP : ∀ t : ι, ∃ lam : L,
+      P.comp (Polynomial.C (A t) * Polynomial.X) = Polynomial.C lam * P := by
+    intro t
+    exact exists_scaling_eigenvalue (hA t) hP0
+      (hcop.dvd_of_dvd_mul_right ⟨Q.comp (Polynomial.C (A t) * Polynomial.X), heq t⟩)
+  have hlamQ : ∀ t : ι, ∃ lam : L,
+      Q.comp (Polynomial.C (A t) * Polynomial.X) = Polynomial.C lam * Q := by
+    intro t
+    exact exists_scaling_eigenvalue (hA t) hQ0
+      (hcop.symm.dvd_of_dvd_mul_right
+        ⟨P.comp (Polynomial.C (A t) * Polynomial.X), by linear_combination -(heq t)⟩)
+  have hPmon := eq_monomial_of_comp_scaling_family hsep hlamP
+  have hQmon := eq_monomial_of_comp_scaling_family hsep hlamQ
+  have hdegEq : P.natDegree = Q.natDegree := by
+    by_contra hne
+    obtain ⟨t, hts⟩ := hsep P.natDegree Q.natDegree hne
+    obtain ⟨lamP, hlP⟩ := hlamP t
+    obtain ⟨lamQ, hlQ⟩ := hlamQ t
+    have h1 : lamP = (A t) ^ P.natDegree := scaling_eigenvalue_eq_pow hP0 hlP
+    have h2 : lamQ = (A t) ^ Q.natDegree := scaling_eigenvalue_eq_pow hQ0 hlQ
+    have hlamEq : lamP = lamQ := by
+      have h3 : Polynomial.C lamP * (P * Q) = Polynomial.C lamQ * (P * Q) := by
+        have h4 : Polynomial.C lamP * P * Q = P * (Polynomial.C lamQ * Q) := by
+          rw [← hlP, ← hlQ]; exact heq t
+        linear_combination h4
+      exact Polynomial.C_injective (mul_right_cancel₀ (mul_ne_zero hP0 hQ0) h3)
+    exact hts (by rw [← h1, ← h2, hlamEq])
+  have hzero : P.natDegree = 0 := by
+    by_contra hd
+    have hdvdXP : (Polynomial.X : Polynomial L) ∣ P := by
+      rw [hPmon]; exact Dvd.dvd.mul_left (dvd_pow_self _ hd) _
+    have hdvdXQ : (Polynomial.X : Polynomial L) ∣ Q := by
+      rw [hQmon]; exact Dvd.dvd.mul_left (dvd_pow_self _ (hdegEq ▸ hd)) _
+    exact (Polynomial.not_isUnit_X (R := L)) (hcop.isUnit_of_dvd' hdvdXP hdvdXQ)
+  exact ⟨hzero, hdegEq ▸ hzero⟩
+
 end GaloisForLFunctions.HTGeometry
