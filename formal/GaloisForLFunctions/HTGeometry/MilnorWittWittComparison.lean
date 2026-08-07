@@ -49,12 +49,12 @@ theorem milnorWittToWitt_rel :
     rw [pfisterOne_mul]
     ring
   · rw [map_mul, map_mul, FreeAlgebra.lift_ι_apply, FreeAlgebra.lift_ι_apply]
-    show pfisterOne F u * (-1) = -1 * pfisterOne F u
+    show (-1 : WittRing F) * pfisterOne F u = pfisterOne F u * (-1)
     ring
   · rw [map_mul, map_zero, map_add, map_mul, FreeAlgebra.lift_ι_apply,
       FreeAlgebra.lift_ι_apply, map_ofNat]
-    show (-1 : WittRing F) * (-1 * pfisterOne F (-1) + 2) = 0
-    rw [pfisterOne_neg_one]
+    show (-1 : WittRing F) * (-1 * pfisterOne F (negOneUnit F) + 2) = 0
+    rw [negOneUnit_eq, pfisterOne_neg_one]
     ring
 
 /-- **The comparison map onto the Witt ring.**  The value `-1` for `η` is forced by the sign in the

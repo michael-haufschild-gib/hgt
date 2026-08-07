@@ -50,7 +50,7 @@ theorem milnorWittForget_rel_eta :
   rw [milnorWittForget_eta, map_zero]
 
 /-- **The forgetful morphism on the quotient by `η`.** -/
-def milnorWittEtaForget : MilnorWittModEta F →ₐ[ℤ] MilnorK F :=
+noncomputable def milnorWittEtaForget : MilnorWittModEta F →ₐ[ℤ] MilnorK F :=
   RingQuot.liftAlgHom ℤ ⟨milnorWittForget F, milnorWittForget_rel_eta F⟩
 
 @[simp]
@@ -145,7 +145,7 @@ theorem milnorWittEtaForget_rightInverse (z : MilnorK F) :
 
 /-- **`K^{MW}(F)/(η) ≅ K^M(F)`.**  Killing `η` turns twisted multiplicativity into ordinary
 additivity of the symbol, which is the only difference between the two presentations. -/
-def milnorWittEtaEquiv : MilnorWittModEta F ≃ₐ[ℤ] MilnorK F where
+noncomputable def milnorWittEtaEquiv : MilnorWittModEta F ≃ₐ[ℤ] MilnorK F where
   toFun := milnorWittEtaForget F
   invFun := milnorEtaLift F
   left_inv := milnorWittEtaForget_leftInverse F

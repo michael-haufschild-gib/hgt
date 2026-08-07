@@ -45,7 +45,7 @@ theorem milnorWittEta_central (x : MilnorWittK F) :
   | grade1 g =>
     cases g with
     | eta => rfl
-    | sym u => exact (milnorWittEta_comm u).symm
+    | sym u => exact milnorWittEta_comm u
   | mul a b ha hb =>
     rw [map_mul, ← mul_assoc, ha, mul_assoc, hb, ← mul_assoc]
   | add a b ha hb =>
@@ -107,7 +107,7 @@ theorem milnorWittEta_symbol_one : milnorWittEta F * milnorWittSymbol (1 : Fˣ) 
   rw [mul_add] at hE
   have hhyp : (milnorWittSymbol (1 : Fˣ) : MilnorWittK F) *
       (milnorWittEta F * (milnorWittEta F * milnorWittSymbol (-1 : Fˣ) + 2)) = 0 := by
-    rw [milnorWittEta_hyperbolic, mul_zero]
+    rw [← negOneUnit_eq, milnorWittEta_hyperbolic, mul_zero]
   have expand : (milnorWittSymbol (1 : Fˣ) : MilnorWittK F) *
       (milnorWittEta F * (milnorWittEta F * milnorWittSymbol (-1 : Fˣ) + 2)) =
       milnorWittEta F * (milnorWittEta F * milnorWittSymbol 1 * milnorWittSymbol (-1 : Fˣ)) +
@@ -215,7 +215,8 @@ theorem milnorWittForm_add_neg (a : Fˣ) :
     abel
   have hkey : ((1 : MilnorWittK F) + milnorWittForm (-1 : Fˣ)) *
       (milnorWittEta F * milnorWittSymbol a) = 0 := by
-    rw [milnorWittEta_mul_left, hh, ← mul_assoc, milnorWittEta_hyperbolic, zero_mul]
+    rw [milnorWittEta_mul_left, hh, ← mul_assoc, ← negOneUnit_eq, milnorWittEta_hyperbolic,
+      zero_mul]
   have hneg : (-a : Fˣ) = (-1 : Fˣ) * a := by
     refine Units.ext ?_
     push_cast
