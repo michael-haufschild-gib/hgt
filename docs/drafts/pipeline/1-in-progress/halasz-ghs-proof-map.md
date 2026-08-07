@@ -2254,3 +2254,27 @@ estimate the route needs.
 Recorded as the specification.  Note that this also retires the `dampedL1`/`truncSieveSum` pair from the truncated
 step 4: with the product handled as one series, the two mean squares of that assembly are replaced by a single mass,
 and the Euler factor multiplies nothing of length.
+
+## The support of the convolution
+
+`RHTower/Sieve/ConvolutionSupport.lean` (green, axiom-clean, wired).
+
+* `convolution_mem_Icc_of_support` — a convolution of two sequences supported in `[1, M]` is supported in `[1, M²]`;
+* `convolution_support_prime_mul` — a convolution of two prime-supported sequences is carried by products of two
+  primes.
+
+Both from `Finset.exists_ne_zero_of_sum_ne_zero` on the antidiagonal: a nonzero coefficient forces a factorisation
+with both factors in the supports.
+
+With these the product `L(a,s)L(b,s) = L(a ⍟ b, s)` is a single finitely supported Dirichlet series of length `M²`,
+so `integral_norm_LSeries_le_largeValues` applies to it.  The remaining input is the `ℓ²` mass of `a ⍟ b`, for which
+the route is:
+
+* expand `(a ⍟ b)(k)` over the antidiagonal and apply `sq_sum_le_card_mul_sum_sq`, giving
+  `‖(a ⍟ b)(k)‖² ≤ d(k)·∑_{de=k} ‖a_d‖²‖b_e‖²`;
+* on the support `d(k) ≤ 4`, since `k` is a product of two primes (`convolution_support_prime_mul`);
+* swap the double sum to a product of two single sums — the sigma-set swap in `RHTower/DirichletSummatorySwap.lean`
+  does exactly this reindexing for the summatory function and is the model to follow;
+* each factor is then the dyadic Chebyshev cap.
+
+So `∑_k ‖(a ⍟ b)(k)‖²k^{−2σ} ≤ 4·cap(2σ)²·A_a²A_b²`, and the first moment of the product is explicit.
