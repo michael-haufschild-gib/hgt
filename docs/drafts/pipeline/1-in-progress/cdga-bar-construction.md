@@ -95,8 +95,21 @@ Both pieces of step 5's head are now landed as well.
   the splits `a + a' + 1 = c` of "project the inner factor at `(a', e)`, reassociate with the
   ordinary associator of tensor products, multiply the first two slots".
 
-What remains for step 5 is the linearity of `barHead`, the total differential
-`d_int + barHead + (id ⊗ d_bar)` assembled by recursion on the number of factors, and `d² = 0` —
-the double-sum cancellation between the head applied twice, which uses associativity of the ideal's
-product, and the cross terms between the head and the internal differential, which use the Leibniz
-rule.
+The head is linear by construction — each term is a composition of projections, the associator and
+the multiplication, and it is the *composition* that is transported along the degree identification,
+not its value — and the bar differential itself is assembled:
+
+- `formal/GaloisForLFunctions/HTGeometry/CDGABarDifferential.lean` — **`barD`**: on `k + 1` factors,
+  the head plus the bar differential of the last `k` tensored with the identity, carrying the Koszul
+  sign of the first factor; on one factor there is no adjacent pair, so it is zero.
+
+One Lean point worth keeping: the two summands of the recursive step have syntactically different
+source types, `TensorCarrier sĀ (barPower (k+1))` and `TensorCarrier sĀ (TensorCarrier sĀ
+(barPower k))`.  They are definitionally equal, but instance resolution for `HAdd` runs at reducible
+transparency and does not see it; ascribing both summands to the same type with `show … from` is what
+lets the sum elaborate.
+
+What remains for step 5 is `d² = 0`: the double-sum cancellation of the head against itself, which
+is associativity of the ideal's product together with the sign of the shift, and the cross terms
+between the head and the internal differential, which are the Leibniz rule.  Then step 6, the total
+object `⨁_k (sĀ)^{⊗k}` with the counit.
