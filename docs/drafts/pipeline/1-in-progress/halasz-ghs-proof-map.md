@@ -2107,3 +2107,30 @@ The `n = 0` case is excluded by `hn` only for convenience: there both sides vani
 
 Recorded at this level of detail because the composition is mechanical and long; the next pass should be able to
 write it without re-deriving any of the alignment.
+
+## The composition, done
+
+`RHTower/Sieve/DirichletFirstMomentLargeValues.lean` (green, axiom-clean, wired).
+
+`integral_norm_dirPoly_le_largeValues` :
+
+`∫_{Δ/2}^{Δ/2+2nΔ} ‖D(t)‖ dt ≤ 2Δ·√(n·((2n+1)Δ + 4N(1+log N))(1/Δ + 2 log N)·∑_i ‖a_i‖²)`
+
+for every Dirichlet polynomial of length `N ≥ 2`, every cell length `Δ > 0` and every `n ≥ 1`.  It compiled from the
+specification without correction, which is what the specification was for.
+
+**No window and no measure appears anywhere in the bound.**  It is governed by the number of cells and the `ℓ²` mass
+of the coefficients; the trivial size of the integrand multiplies nothing.  That is the property the four
+measure-based accountings in this programme all lacked, and it is why the earlier routes could not reach below the
+trivial bound however the parameters were chosen.
+
+Sizes, for the record.  With `Δ = 1/log N` and `2nΔ = 2T₀` (so `n ≍ T₀ log N`), the bound is
+
+`≍ (1/log N)·√(T₀ log N·(T₀ + N log N)·(log N)·(ℓ² mass))`,
+
+so the first moment over a height range `T₀` is `≍ √(T₀(T₀ + N log N)(ℓ² mass))/√(log N)` — square-root cancellation
+in the height, which is the Montgomery–Halász gain and exactly what a mean-value theorem for the partial sums needs.
+
+This closes the analytic half of the programme in a form that can beat the trivial bound.  What remains is to feed it
+the two prime polynomials of the Granville–Harper–Soundararajan convolution, whose `ℓ²` masses the dyadic Chebyshev
+cap already controls, and to fix the parameters.
