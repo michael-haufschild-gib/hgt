@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.StrictAccretiveMultiplier
 import GaloisForLFunctions.RHTower.HardyTitchmarshEulerConcrete
 import GaloisForLFunctions.RHTower.BurnolCoPoissonBerezin
 import GaloisForLFunctions.RHTower.BurnolCoPoissonSubWindowSource
+import GaloisForLFunctions.RHTower.RiemannTower
 import GaloisForLFunctions.RHTower.XiCanonicalProduct
 
 /-!
@@ -233,5 +234,26 @@ theorem xiDivisor_burnolSubWindow_mellinDividedShift_sourceProjection_lower_boun
     (rho := (rho : ℂ)) h
   exact (burnolCoPoissonAlgebraicSourceSpace (subWindowAperture c d)).le_topologicalClosure
     (Submodule.subset_span ⟨coPoissonSubWindowSource hc hcd.le, Or.inl rfl⟩)
+
+/-- The one-coordinate pre-divisor source-flatness producer now sufficient for Route R. -/
+def BurnolXiDividedShiftSourceFlatness : Prop :=
+  ∀ (rho : XiDivisorSupport) (h : 1 / 2 < (rho : ℂ).re),
+    burnolCoPoissonSourceProjection (subWindowAperture (1 / 2) 1)
+      (burnolMellinDividedShift (rho := (rho : ℂ)) h
+        (coPoissonSubWindowEven (c := (1 / 2 : ℝ)) (d := 1)
+          (by norm_num) (by norm_num))) = 0
+
+/-- A pre-divisor proof of the fixed source-flatness coordinate closes RH. -/
+theorem riemannHypothesis_of_burnolXiDividedShiftSourceFlatness
+    (hflat : BurnolXiDividedShiftSourceFlatness) : RiemannHypothesis := by
+  unfold BurnolXiDividedShiftSourceFlatness at hflat
+  rw [rh_iff_xi_ne_zero_right]
+  intro z hzright hz
+  let rho : XiDivisorSupport := ⟨z, mem_xi_divisor_support_of_eq_zero hz⟩
+  have hright : 1 / 2 < (rho : ℂ).re := by
+    simpa [rho] using mem_rightHalf.mp hzright
+  have hne := xiDivisor_burnolSubWindow_mellinDividedShift_sourceProjection_ne_zero
+    rho hright (c := (1 / 2 : ℝ)) (d := 1) (by norm_num) (by norm_num)
+  exact hne (hflat rho hright)
 
 end RHTower

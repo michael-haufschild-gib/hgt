@@ -137,4 +137,62 @@ theorem finite_setOf_laurentCoeff_ne_zero_of_bounded {f : ℂ → ℂ} (hf : Mer
   rintro a ⟨hmem, hne⟩
   exact ⟨hR hmem, hne⟩
 
+
+/-! ### Meromorphy and linearity in the translated variable -/
+
+theorem meromorphicAt_comp_add {f : ℂ → ℂ} {a h : ℂ} :
+    MeromorphicAt (fun z => f (z + h)) a ↔ MeromorphicAt f (a + h) := by
+  rw [meromorphicAt_iff_exists_analyticAt_laurentShift,
+    meromorphicAt_iff_exists_analyticAt_laurentShift]
+  simp only [laurentShift_comp_add]
+
+/-- Additivity of the Laurent coefficients. -/
+theorem laurentCoeff_add {f g : ℂ → ℂ} {a : ℂ} (hf : MeromorphicAt f a) (hg : MeromorphicAt g a)
+    (ℓ : ℤ) :
+    laurentCoeff (fun z => f z + g z) a ℓ = laurentCoeff f a ℓ + laurentCoeff g a ℓ := by
+  have h := laurentCoeff_sum (Finset.univ : Finset (Fin 2)) ![f, g] ![1, 1] a ℓ
+    (by intro i _; fin_cases i <;> simpa using ‹_›)
+  simpa [Fin.sum_univ_two] using h
+
+/-- Subtractivity of the Laurent coefficients. -/
+theorem laurentCoeff_sub {f g : ℂ → ℂ} {a : ℂ} (hf : MeromorphicAt f a) (hg : MeromorphicAt g a)
+    (ℓ : ℤ) :
+    laurentCoeff (fun z => f z - g z) a ℓ = laurentCoeff f a ℓ - laurentCoeff g a ℓ := by
+  have h := laurentCoeff_sum (Finset.univ : Finset (Fin 2)) ![f, g] ![1, -1] a ℓ
+    (by intro i _; fin_cases i <;> simpa using ‹_›)
+  simpa [Fin.sum_univ_two, sub_eq_add_neg] using h
+
+/-- Adding a constant does not change a negative Laurent coefficient. -/
+theorem laurentCoeff_add_const {f : ℂ → ℂ} {a : ℂ} (hf : MeromorphicAt f a) (Cst : ℂ)
+    {ℓ : ℤ} (hℓ : ℓ < 0) :
+    laurentCoeff (fun z => f z + Cst) a ℓ = laurentCoeff f a ℓ := by
+  rw [laurentCoeff_add hf (analyticAt_const.meromorphicAt) ℓ,
+    laurentCoeff_eq_zero_of_analyticAt (analyticAt_const (v := Cst)) hℓ, add_zero]
+
+/-- **The difference quotient of a translation.**  The principal-part coefficients of
+`z ↦ f (z + h) - f z` are the differences of the coefficients of `f` at the two translates. -/
+theorem laurentCoeff_shiftDiff {f : ℂ → ℂ} (hf : MeromorphicOn f Set.univ) (h a : ℂ) (ℓ : ℤ) :
+    laurentCoeff (fun z => f (z + h) - f z) a ℓ
+      = laurentCoeff f (a + h) ℓ - laurentCoeff f a ℓ := by
+  have hshift : MeromorphicAt (fun z => f (z + h)) a :=
+    meromorphicAt_comp_add.mpr (hf (a + h) (Set.mem_univ _))
+  rw [laurentCoeff_sub hshift (hf a (Set.mem_univ a)) ℓ, laurentCoeff_comp_add]
+
+/-- A period of the coefficient function is a period for every integer multiple. -/
+theorem laurentCoeff_add_zsmul_of_period {f : ℂ → ℂ} {ℓ : ℤ} {h : ℂ}
+    (hp : ∀ z : ℂ, laurentCoeff f (z + h) ℓ = laurentCoeff f z ℓ) (z : ℂ) (n : ℤ) :
+    laurentCoeff f (z + (n : ℂ) * h) ℓ = laurentCoeff f z ℓ := by
+  induction n using Int.induction_on with
+  | zero => simp
+  | succ k ih =>
+      have hstep : z + (((k : ℤ) + 1 : ℤ) : ℂ) * h = (z + ((k : ℤ) : ℂ) * h) + h := by
+        push_cast; ring
+      rw [hstep, hp, ih]
+  | pred k ih =>
+      have hstep : (z + ((-(k : ℤ) - 1 : ℤ) : ℂ) * h) + h = z + ((-(k : ℤ) : ℤ) : ℂ) * h := by
+        push_cast; ring
+      have hh := hp (z + ((-(k : ℤ) - 1 : ℤ) : ℂ) * h)
+      rw [hstep, ih] at hh
+      exact hh.symm
+
 end GaloisForLFunctions.HTGeometry
