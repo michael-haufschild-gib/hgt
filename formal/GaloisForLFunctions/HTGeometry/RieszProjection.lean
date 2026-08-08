@@ -16,6 +16,9 @@ Main results:
 * `commute_resolvent`, `rieszProjection_commute` — the projection commutes with `a`.
 * `rieszProjection_eq_of_annulus` — **contour independence**: the projection depends only on which
   part of the spectrum the circle encloses.
+* `resolventCauchyTransform`, `differentiableOn_resolventCauchyTransform` — the Cauchy transform of
+  the resolvent along a circle is holomorphic inside it.
+* `rieszProjection_mul_self` — **idempotence** `P ^ 2 = P`.
 * `rieszProjection` — the definition.
 * `circleIntegrable_resolvent` — the resolvent is circle-integrable on a contour in the resolvent
   set.
@@ -151,5 +154,138 @@ theorem rieszProjection_eq_of_annulus (a : A) {c : ℂ} {r R : ℝ} (h0 : 0 < r)
   · exact ((spectrum.hasDerivAt_resolvent_const_left (h lam hlam)).continuousAt).continuousWithinAt
   · refine (spectrum.hasDerivAt_resolvent_const_left (h lam ?_)).differentiableAt
     exact ⟨ball_subset_closedBall hlam.1.1, fun hb => hlam.1.2 (ball_subset_closedBall hb)⟩
+
+/-! ## Idempotence
+
+The two-contour argument.  For `lam` on the small circle and `mu` on the large one the resolvent
+identity turns the product `R(lam) R(mu)` into a difference of Cauchy kernels; integrating over the
+large circle produces `2 pi i` times `R(lam)` plus the Cauchy transform of the resolvent, and the
+latter is holomorphic inside the large circle, so its integral over the small one vanishes.  No
+Fubini theorem for the operator-valued double circle integral is needed. -/
+
+/-- **The Cauchy transform of the resolvent** along a circle. -/
+noncomputable def resolventCauchyTransform (a : A) (c : ℂ) (R : ℝ) (w : ℂ) : A :=
+  ∮ mu in C(c, R), (mu - w)⁻¹ • resolvent a mu
+
+/-- **The Cauchy transform of the resolvent is holomorphic inside the circle**, even where the
+resolvent itself does not extend. -/
+theorem differentiableOn_resolventCauchyTransform (a : A) {c : ℂ} {R : ℝ} (hR : 0 < R)
+    (h : ∀ mu ∈ sphere c R, mu ∈ resolventSet ℂ a) :
+    DifferentiableOn ℂ (resolventCauchyTransform a c R) (ball c R) := by
+  have hci : CircleIntegrable (resolvent a) c R := circleIntegrable_resolvent hR.le h
+  obtain ⟨Rn, hRn⟩ : ∃ Rn : NNReal, (Rn : ℝ) = R := ⟨⟨R, hR.le⟩, rfl⟩
+  have hpos : 0 < Rn := by rw [← NNReal.coe_pos, hRn]; exact hR
+  have hdiff := (hasFPowerSeriesOn_cauchy_integral (f := resolvent a) (c := c) (R := Rn)
+    (by rw [hRn]; exact hci) hpos).differentiableOn
+  rw [Metric.eball_coe, hRn] at hdiff
+  have hfe : resolventCauchyTransform a c R
+      = (2 * Real.pi * Complex.I : ℂ) •
+        fun w => (2 * Real.pi * Complex.I : ℂ)⁻¹ • ∮ z in C(c, R), (z - w)⁻¹ • resolvent a z := by
+    funext w
+    show (∮ mu in C(c, R), (mu - w)⁻¹ • resolvent a mu) = _
+    simp only [Pi.smul_apply, smul_smul, mul_inv_cancel₀ Complex.two_pi_I_ne_zero, one_smul]
+  rw [hfe]
+  exact hdiff.const_smul _
+
+/-- **The resolvent identity, integrated over the outer circle.**  For `lam` on the inner circle,
+`∮ R(lam) R(mu) dmu = 2 pi i · R(lam) − (Cauchy transform of the resolvent at `lam`)`. -/
+theorem circleIntegral_resolvent_mul (a : A) {c : ℂ} {r R : ℝ} (h0 : 0 < r) (hrR : r < R)
+    (h : ∀ lam ∈ closedBall c R \ ball c r, lam ∈ resolventSet ℂ a)
+    {lam : ℂ} (hlam : lam ∈ sphere c r) :
+    (∮ mu in C(c, R), resolvent a lam * resolvent a mu)
+      = (2 * Real.pi * Complex.I : ℂ) • resolvent a lam - resolventCauchyTransform a c R lam := by
+  have hR : 0 < R := lt_trans h0 hrR
+  have hdl : dist lam c = r := hlam
+  have hres_R : ∀ mu ∈ sphere c R, mu ∈ resolventSet ℂ a := by
+    intro mu hmu
+    have hd : dist mu c = R := hmu
+    refine h mu ⟨?_, ?_⟩
+    · rw [mem_closedBall, hd]
+    · intro hb; rw [mem_ball, hd] at hb; linarith
+  have hres_lam : lam ∈ resolventSet ℂ a := by
+    refine h lam ⟨?_, ?_⟩
+    · rw [mem_closedBall, hdl]; linarith
+    · intro hb; rw [mem_ball, hdl] at hb; linarith
+  have hlamball : lam ∈ ball c R := by rw [mem_ball, hdl]; exact hrR
+  have hne : ∀ mu ∈ sphere c R, mu - lam ≠ 0 := by
+    intro mu hmu he
+    have hd : dist mu c = R := hmu
+    rw [sub_eq_zero.mp he, hdl] at hd
+    linarith
+  have hpt : ∀ mu ∈ sphere c R, resolvent a lam * resolvent a mu
+      = (mu - lam)⁻¹ • resolvent a lam - (mu - lam)⁻¹ • resolvent a mu := by
+    intro mu hmu
+    rw [← smul_sub, resolvent_sub_resolvent hres_lam (hres_R mu hmu), smul_smul,
+      inv_mul_cancel₀ (hne mu hmu), one_smul]
+  have hkern : ContinuousOn (fun mu : ℂ => (mu - lam)⁻¹) (sphere c R) :=
+    ContinuousOn.inv₀ ((continuous_id.sub continuous_const).continuousOn) hne
+  have hci1 : CircleIntegrable (fun mu => (mu - lam)⁻¹ • resolvent a lam) c R :=
+    ContinuousOn.circleIntegrable hR.le (hkern.smul continuousOn_const)
+  have hci2 : CircleIntegrable (fun mu => (mu - lam)⁻¹ • resolvent a mu) c R :=
+    ContinuousOn.circleIntegrable hR.le (hkern.smul fun mu hmu =>
+      ((spectrum.hasDerivAt_resolvent_const_left (hres_R mu hmu)).continuousAt).continuousWithinAt)
+  rw [circleIntegral.integral_congr hR.le hpt, circleIntegral.integral_sub hci1 hci2,
+    circleIntegral.integral_smul_const, circleIntegral.integral_sub_inv_of_mem_ball hlamball]
+  rfl
+
+/-- **The Riesz projection is idempotent.** -/
+theorem rieszProjection_mul_self (a : A) {c : ℂ} {r R : ℝ} (h0 : 0 < r) (hrR : r < R)
+    (h : ∀ lam ∈ closedBall c R \ ball c r, lam ∈ resolventSet ℂ a) :
+    rieszProjection a c r * rieszProjection a c r = rieszProjection a c r := by
+  have hR : 0 < R := lt_trans h0 hrR
+  have hres_r : ∀ lam ∈ sphere c r, lam ∈ resolventSet ℂ a := by
+    intro lam hlam
+    have hd : dist lam c = r := hlam
+    refine h lam ⟨?_, ?_⟩
+    · rw [mem_closedBall, hd]; linarith
+    · intro hb; rw [mem_ball, hd] at hb; linarith
+  have hres_R : ∀ mu ∈ sphere c R, mu ∈ resolventSet ℂ a := by
+    intro mu hmu
+    have hd : dist mu c = R := hmu
+    refine h mu ⟨?_, ?_⟩
+    · rw [mem_closedBall, hd]
+    · intro hb; rw [mem_ball, hd] at hb; linarith
+  have hci_r : CircleIntegrable (resolvent a) c r := circleIntegrable_resolvent h0.le hres_r
+  have hci_R : CircleIntegrable (resolvent a) c R := circleIntegrable_resolvent hR.le hres_R
+  have hcont_r : ContinuousOn (resolvent a) (sphere c r) := fun lam hlam =>
+    ((spectrum.hasDerivAt_resolvent_const_left (hres_r lam hlam)).continuousAt).continuousWithinAt
+  have hcia : CircleIntegrable
+      (fun lam => (2 * Real.pi * Complex.I : ℂ) • resolvent a lam) c r :=
+    ContinuousOn.circleIntegrable h0.le (continuousOn_const.smul hcont_r)
+  have hG : DifferentiableOn ℂ (resolventCauchyTransform a c R) (ball c R) :=
+    differentiableOn_resolventCauchyTransform a hR hres_R
+  have hsub : closedBall c r ⊆ ball c R := closedBall_subset_ball hrR
+  have hciG : CircleIntegrable (resolventCauchyTransform a c R) c r :=
+    ContinuousOn.circleIntegrable h0.le
+      ((hG.mono hsub).continuousOn.mono sphere_subset_closedBall)
+  have hG0 : (∮ lam in C(c, r), resolventCauchyTransform a c R lam) = 0 := by
+    refine Complex.circleIntegral_eq_zero_of_differentiable_on_off_countable h0.le
+      Set.countable_empty ((hG.mono hsub).continuousOn) (fun z hz => ?_)
+    exact hG.differentiableAt (isOpen_ball.mem_nhds (ball_subset_ball hrR.le hz.1))
+  have hcancel : ∀ Y : A,
+      (2 * Real.pi * Complex.I : ℂ)⁻¹ • ((2 * Real.pi * Complex.I : ℂ) • Y) = Y := by
+    intro Y; rw [smul_smul, inv_mul_cancel₀ Complex.two_pi_I_ne_zero, one_smul]
+  have key : ∀ lam ∈ sphere c r, resolvent a lam * rieszProjection a c R
+      = (2 * Real.pi * Complex.I : ℂ)⁻¹ •
+        ((2 * Real.pi * Complex.I : ℂ) • resolvent a lam
+          - resolventCauchyTransform a c R lam) := by
+    intro lam hlam
+    rw [rieszProjection, Algebra.mul_smul_comm, circleIntegral_mul_left hci_R,
+      circleIntegral_resolvent_mul a h0 hrR h hlam]
+  have e1 : rieszProjection a c r * rieszProjection a c R
+      = (2 * Real.pi * Complex.I : ℂ)⁻¹ •
+        ∮ lam in C(c, r), resolvent a lam * rieszProjection a c R := by
+    rw [show rieszProjection a c r
+        = (2 * Real.pi * Complex.I : ℂ)⁻¹ • ∮ lam in C(c, r), resolvent a lam from rfl,
+      Algebra.smul_mul_assoc, circleIntegral_mul_right hci_r]
+  have e2 : (∮ lam in C(c, r), resolvent a lam * rieszProjection a c R)
+      = ∮ lam in C(c, r), resolvent a lam := by
+    rw [circleIntegral.integral_congr h0.le key, circleIntegral.integral_smul,
+      circleIntegral.integral_sub hcia hciG, circleIntegral.integral_smul, hG0, sub_zero, hcancel]
+  have hPeq : rieszProjection a c R = rieszProjection a c r :=
+    rieszProjection_eq_of_annulus a h0 hrR.le h
+  have main : rieszProjection a c r * rieszProjection a c R = rieszProjection a c r := by
+    rw [e1, e2]; rfl
+  rwa [hPeq] at main
 
 end GaloisForLFunctions.HTGeometry
