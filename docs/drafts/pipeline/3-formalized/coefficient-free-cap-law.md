@@ -178,3 +178,21 @@ Taken with the coefficient-free cap, the two obstructions now cover the folder's
 a route is capped either because its bound is blind to the coefficients, or — if it does carry a genuine
 distance input — because the uniform distance is the prime mass and the Euler bound sits exactly on the
 borderline. Both are theorems, not estimates.
+
+## The same shape already existed, for verdicts
+
+`RHTower/DeciderBarrier.lean` states the invisibility barrier for *decision procedures*: a decider
+factoring through an invariant is blind to any pass/fail pair the invariant collapses
+(`decider_blind_of_invariant_collision`), with instances on the deck charge and on reflection parity. Its
+docstring names the pattern: "a natural invariant is blind to the distinction that decides a rung".
+
+The caps proved here are the same shape for *bounds*, and that sibling was missing from the family. Added
+as `le_bound_of_invariant_collision`: a majorant factoring through an invariant is at least the majorised
+quantity at both members of a collided pair, so it cannot certify a gap between them. Where the decider
+form says "no verdict separates them", this says "no bound separates them" — which is the form an
+inequality-based route must be tested against.
+
+`max_le_of_modulusOnly_bound` restates the modulus-only cap through the barrier: the invariant is the
+sequence of moduli, the collided pair is a unimodular completely multiplicative sequence and the constant
+one. So the corpus's two families of no-go — for verdicts, and for bounds — are one principle with two
+instantiations, and a future route can be tested against whichever form matches its output type.

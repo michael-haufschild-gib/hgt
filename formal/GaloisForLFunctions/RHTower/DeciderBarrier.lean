@@ -38,6 +38,18 @@ decider separates a collision. -/
 theorem decider_blind_of_invariant_collision {X M : Type*} (I : X → M) {pass fail : X}
     (hcoll : I pass = I fail) (D : M → Prop) : D (I pass) ↔ D (I fail) := by rw [hcoll]
 
+/-- **The quantitative barrier.**  The same shape for *bounds* rather than verdicts: a majorant
+factoring through an invariant is at least the value of the majorised quantity at *both* members of a
+collided pair, so it cannot certify a gap between them.  Where the decider form says "no verdict
+separates them", this says "no bound separates them", which is what an inequality-based route needs to be
+tested against. -/
+theorem le_bound_of_invariant_collision {X M : Type*} (I : X → M) (B : M → ℝ) (Φ : X → ℝ)
+    (hB : ∀ x, Φ x ≤ B (I x)) {pass fail : X} (hcoll : I pass = I fail) :
+    max (Φ pass) (Φ fail) ≤ B (I pass) := by
+  refine max_le (hB pass) ?_
+  rw [hcoll]
+  exact hB fail
+
 /-! ### Instantiation A — the modulus-`n` quotient barrier -/
 
 /-- **The deck-charge quotient barrier.**  For every decider `D` factoring through the modulus-`n`

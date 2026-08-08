@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.CesaroDyadicTrivialCap
+import GaloisForLFunctions.RHTower.DeciderBarrier
 
 /-!
 # Coefficient-free bounds cannot beat the constant sequence
@@ -78,6 +79,20 @@ theorem trivial_le_cesaro_dyadic_bound_of_law {N : ℕ} (hN : 1 ≤ N) {σ T : �
       linarith
     rw [abs_of_nonneg hnn]
     exact sum_Icc_log_div_ge
+
+/-- **The caps are instances of the quantitative barrier.**  `DeciderBarrier.le_bound_of_invariant_collision`
+is the abstract form: a majorant factoring through an invariant is at least the majorised quantity at both
+members of a collided pair.  Here the invariant is the sequence of moduli, the collided pair is a
+unimodular completely multiplicative sequence and the constant one, and the conclusion is that the bound
+majorises both — so it cannot certify a gap.  Restating the modulus-only cap through the barrier shows the
+two families of no-go in this corpus, for verdicts and for bounds, are one shape. -/
+theorem max_le_of_modulusOnly_bound {Φ : (ℕ → ℂ) → ℝ} {B : (ℕ → ℝ) → ℝ}
+    (hB : ∀ g : ℕ → ℂ, Φ g ≤ B (fun n => ‖g n‖)) {f : ℕ → ℂ} (hf : ∀ n : ℕ, ‖f n‖ = 1) :
+    max (Φ f) (Φ (fun _ => (1 : ℂ))) ≤ B (fun n => ‖f n‖) := by
+  have hcoll : (fun n : ℕ => ‖f n‖) = (fun n : ℕ => ‖(1 : ℂ)‖) := by
+    funext n
+    rw [hf n, norm_one]
+  exact RHTower.le_bound_of_invariant_collision (fun g : ℕ → ℂ => fun n => ‖g n‖) B Φ hB hcoll
 
 end RHTower.Sieve
 end
