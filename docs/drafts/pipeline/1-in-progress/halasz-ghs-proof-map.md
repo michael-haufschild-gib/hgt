@@ -3194,3 +3194,77 @@ particular grouping.  At `σ = 1 + A/log N`, where `x^σ(1 + 1/(σ−1)) ≍ eN 
 term is `≍ N log N·√Q_c·e^{−δ²}/√t₀ ≍ N(log N)²e^{−δ²}`, and the strip supplies `e^{−δ²} ≍ 1/log N`.
 Closing the last logarithm requires the second moment of `L(f)` in place of a pointwise bound on it —
 Halász's `(1+m)e^{−m}` — which is now the single remaining device.
+
+## One kernel constant per block, and where the last logarithm actually sits
+
+`formal/GaloisForLFunctions/HTGeometry/VerticalKernelBlockConstants.lean`:
+
+- `integral_mul_kernel_le_sum_dyadic_var` — the dyadic decomposition with `G ≤ C_m/t` on the `m`-th block
+  instead of `G ≤ C/t` throughout.
+- `integral_mul_kernel_le_of_affine_block_moment_var` — against a block moment
+  `K√(t₀2^{m+1}) + L(t₀2^{m+1})`:
+
+  `∫_{t₀}^{t₀2^M} F·G ≤ ∑_{m<M} C_m·((K√2/√t₀)(√2/2)^m + 2L)`.
+
+- `integral_norm_mul_kernel_le_of_affine_meanSquare_var` and
+  `integral_symm_norm_mul_kernel_var_le` — the same at a mean square, and over a symmetric range.  The
+  symmetric version states the kernel bound in `|t|`, which removes the evenness hypothesis `G(−t) = G t`
+  of the constant-`C` version: both flanks read the block constant off `|t|`.
+
+Taking `C_m` constant recovers the old statements, since `∑(√2/2)^m ≤ (1 − √2/2)⁻¹` and `∑_{m<M}1 = M`.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PerronVerticalPairBlockBound.lean`:
+`perron_kernel_norm_le_abs` (`x^σ/‖σ+it‖ ≤ x^σ/|t|`, valid on both sides),
+`perronVerticalPairBlockBound` and `integral_symm_norm_perron_pair_block_le` — the pair estimate with the
+second factor charged one pointwise bound per block and one on the low range.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PairBlockDampedChain.lean`:
+`norm_LSeries_truncSeq_line_le_damped_at` — the damped Euler bound is *pointwise* in the frequency
+(`norm_tsum_twistedSummand_le_of_far` asks only for the distance at `s.im`), so it can be applied one
+block at a time; `norm_sum_Icc_pair_block_near_le` and `norm_sum_Icc_mul_log_le_pair_block_damped`.
+
+### The accounting, and the identification of the last logarithm
+
+With `σ = 1 + A/log N`, `x^σ ≍ N`, `t₀ ≍ 1`, and `m` the uniform distance over the range, the chain gives
+
+`‖∑_{n ≤ N}f(n)‖/N ≲ 1/log N + (log N)·e^{−m}`,
+
+against Halász's `(1+m)e^{−m} + 1/log N`.  The deficit is exactly one factor `log N`, and the
+block-varying kernel does *not* remove it: the binding term is the **first** block, where the kernel has
+no decay and the mean square of `L(f·Λ)` is `Q_c ≍ (log N)²`.  Two independent checks:
+
+* charging the second factor its block maxima gains only the difference between `∑_{m<M}e^{−m_j}` and
+  `M·e^{−m}`, which for the zero-free-strip distance `m_j ≍ log log N − 7 log log(t₀2^j)` is a constant
+  factor, not a power;
+* swapping the roles — `L(f·Λ)` pointwise (`≍ log N`, no saving) against the mean square of `L(f)`
+  (`Q_f ≍ log N`) — gives `M(log N)e^{−m}`, worse by the block count.
+
+At `f = λ` the chain therefore yields `O(1)` where Halász yields `log log N/log N`.  The `log N` is
+`1/(σ−1)`, and both factors of the product pay it once: `√Q_c ≍ 1/(σ−1)` from the `Λ`-mass and
+`dampedSize ≍ 1/(σ−1)` from the Euler bound.  Since `L(f·Λ)·L(f) = −F′`, this is the statement that
+`|F′(σ+it)| ≲ (σ−1)^{−2}e^{−m}` is all the product structure can give, and it is sharp.
+
+### The route that does not pay it: the Cesàro kernel `x^s/s²`
+
+The weight `log(N/n)` in place of `log n` changes everything, because it needs **no convolution at all**:
+
+`∑_{n ≤ N} f(n)·log(N/n) = (1/2πi)∫ F(s)·x^s/s² ds`,   `F = L(f_{≤N})`,
+
+with the *exact* kernel `x^s/s²` — no window, no smoothing error, no second factor.  Then
+
+`|∫| ≤ x^σ·max_{|t| ≤ T}‖F(σ+it)‖·∫_ℝ dt/|σ+it|² = x^σ·dampedSize·π/σ ≍ N·(log N)e^{−m}`,
+
+because `∫_ℝ dt/(σ² + t²) = π/σ` converges: the kernel's *second-order* decay removes the block count,
+the mean square, and the `Λ`-mass in one stroke.  At `m ≍ log log N` this is `≍ N`, so
+
+`∑_{n ≤ N}f(n)log(N/n) ≪ N·(log N)e^{−m}`,
+
+which at `f = λ` is `≪ N` — already the strength Halász's theorem has for the *logarithmic average*.
+What remains between that and `S(N)` is the Tauberian step: `∑_{n≤N}f(n)log(N/n) = ∫_1^N S(t)dt/t`, so
+the bound controls the logarithmic average of `S(t)/t` and not `S(N)` itself.  Passing from one to the
+other is where Granville–Soundararajan's Lipschitz estimate for the multiplicative distance enters, and
+where the factor `(1+m)` of the sharp statement comes from.
+
+So the next two bricks are named: the Cesàro Perron formula with kernel `x^s/s²` (a residue computation
+at a double pole, and `∫_ℝ dt/|σ+it|² = π/σ`), and the Tauberian passage from the logarithmic average of
+`S` to `S` itself.
