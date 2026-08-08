@@ -145,5 +145,43 @@ theorem norm_sum_Icc_ghsTriple_damped_near_le {f : ℕ → ℂ} (hf1 : f 1 = 1)
     zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K
     (fun _ ht => norm_LSeries_truncSeq_line_le_damped hf1 hmul hbdd hσ hz hδ hunif hL ht)
 
+/-- **The Perron step of the recursion with the damped third factor, at per-block sieve levels and the
+near-diagonal truncation error.**  All three improvements at once: the sieve level grows with the block,
+the truncation error is free of its factor `N`, and the distance saving `e^{−δ²}` enters through
+`dampedSize`. -/
+theorem norm_sum_Icc_ghsTriple_damped_block_near_le {f : ℕ → ℂ} (hf1 : f 1 = 1)
+    (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n) (hbdd : ∀ n, ‖f n‖ ≤ 1)
+    {N₀ M L N : ℕ} (hprod : 1 ≤ N₀ * (M * L)) (hL : 1 ≤ L)
+    {σ t₀ δ : ℝ} (hσ : 1 < σ) (ht₀ : 1 ≤ t₀) (hδ : 0 ≤ δ) {z : ℕ} (hz : 1 ≤ z) (K : ℕ)
+    (hunif : ∀ t : ℝ, |t| ≤ t₀ * 2 ^ K →
+      δ ≤ Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z)))
+    (ZA YlA ZB YlB : ℕ → ℕ)
+    (hYA : ∀ j, 1 ≤ YlA j) (hYzA : ∀ j, YlA j ≤ ZA j) (hzA : ∀ j, 2 ≤ ZA j)
+    (hlogA : ∀ j, 0 < Real.log (YlA j))
+    (hYB : ∀ j, 1 ≤ YlB j) (hYzB : ∀ j, YlB j ≤ ZB j) (hzB : ∀ j, 2 ≤ ZB j)
+    (hlogB : ∀ j, 0 < Real.log (YlB j)) :
+    ‖∑ n ∈ Finset.Icc 1 (min (N₀ * (M * L)) N),
+        (LSeries.convolution (ghsOuter f N₀)
+          (LSeries.convolution (ghsInner f M) (truncSeq f L))) n‖
+      ≤ ((Real.log ((N₀ * (M * L) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+              * (((N : ℝ) + 1 / 2)) ^ σ
+              * (5 * (1 + Real.log ((N₀ * (M * L) : ℕ) : ℝ)) + 4 * (1 + Real.log N))
+              / (Real.pi * (t₀ * 2 ^ K))
+          + (1 / (2 * Real.pi))
+              * (2 * perronVerticalAffineProductBound σ ((N : ℝ) + 1 / 2) t₀
+                    (dampedSize σ δ z L)
+                    (blockAffineConst (ghsOuter f N₀) N₀ σ ZA YlA)
+                    (blockAffineRate (ghsOuter f N₀) N₀ σ ZA YlA)
+                    (blockAffineConst (ghsInner f M) M σ ZB YlB)
+                    (blockAffineRate (ghsInner f M) M σ ZB YlB) K
+                  + ((dampedSize σ δ z L) * ((N : ℝ) + 1 / 2) ^ σ / σ)
+                      * (Real.sqrt (blockAffineConst (ghsOuter f N₀) N₀ σ ZA YlA
+                            + blockAffineRate (ghsOuter f N₀) N₀ σ ZA YlA * t₀)
+                          * Real.sqrt (blockAffineConst (ghsInner f M) M σ ZB YlB
+                            + blockAffineRate (ghsInner f M) M σ ZB YlB * t₀))) :=
+  norm_sum_Icc_ghsTriple_of_bound_block_near_le hbdd hprod (dampedSize_nonneg hσ z L) hσ.le ht₀
+    ZA YlA ZB YlB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K
+    (fun _ ht => norm_LSeries_truncSeq_line_le_damped hf1 hmul hbdd hσ hz hδ hunif hL ht)
+
 end RHTower.Sieve
 end

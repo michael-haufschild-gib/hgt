@@ -3001,3 +3001,46 @@ truncation term in the master bound is now
 `((log N³)^4/(log 2)^3)·(N + 1/2)^σ·(5(1 + log N³) + 4(1 + log N))/(π t₀2^K)`,
 
 whose only dependence on the length of the sum is `N^σ log N` — where before it was `N^{σ+1} log N`.
+
+## The block sieve wired into the chain
+
+The block-level mean square existed but nothing consumed it, because the triple-product estimate was
+stated against `sieveMeanSquareConst/Rate` rather than against an affine mean square.  The fix is the
+same move as for the truncation error: make the mean squares parameters.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PerronVerticalTripleBound.lean`:
+
+- `perronVerticalAffineProductBound σ x t₀ V Q_A κ_A Q_B κ_B M` — the dyadic-split bound in terms of
+  four real numbers, and `perronVerticalProductBound_eq`, which is `rfl`: the prime-sieve bound *is* the
+  affine bound at the single-level sieve constants.
+- `integral_norm_perron_triple_affine_le`, `integral_symm_norm_perron_triple_affine_le`,
+  `integral_symm_norm_perron_triple_l1_low_affine_le` — the three estimates against hypotheses
+  `∫_{|y| ≤ U} ‖L(·,σ+iy)‖² ≤ Q + κU` (`U ≥ 1`).  Primality and the sieve pairs disappear from these
+  statements entirely; they were only ever used to produce the mean square.
+- The three original theorems are now one-line corollaries with unchanged statements.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/BlockAffineMeanSquare.lean`:
+`blockAffineConst`, `blockAffineRate` name the two coefficients of
+`integral_Icc_normSq_LSeries_le_block_affine`, and `integral_Icc_normSq_LSeries_le_blockAffine` is that
+bound in the shape the affine law consumes.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PerronVerticalBlockTripleBound.lean`:
+`integral_symm_norm_perron_triple_block_le` and `integral_symm_norm_perron_triple_l1_low_block_le` — the
+affine law at the block-sieve mean squares.  The two prime weights now carry a level function
+`Yl : ℕ → ℕ` and a modulus function `Z : ℕ → ℕ` instead of a single pair.
+
+The block chain then runs to the end, each step a delegation:
+
+- `norm_sum_Icc_triple_block_near_le`,
+- `norm_sum_Icc_ghsTriple_of_bound_block_near_le`, `norm_sum_Icc_ghsTriple_block_near_le`,
+- `norm_sum_Icc_ghsTriple_damped_block_near_le`,
+- `norm_sum_Icc_mul_log_le_damped_block_near`,
+- `exists_norm_sum_Icc_liouvilleC_mul_log_block_near_le`.
+
+Both structural improvements are therefore now in one statement: the sieve level may grow with the
+dyadic block of the support, and the truncation error costs `x^σ log N` rather than `N x^σ log N`.  What
+remains between this and the sharp form is arithmetic only — evaluating `blockAffineConst`,
+`blockAffineRate` for `ghsOuter`/`ghsInner` at a concrete level schedule (the prime sums
+`∑_{p ≤ N/2}(log p/log(N/p))²/p ≍ log N`, `∑_{q ≤ M}(log q)²/q ≍ (log M)²`, `∑_p (log p)²p^{−2σ} = O(1)`,
+`ℓ¹(ghsOuter) ≍ log log N`, `ℓ¹(ghsInner) ≍ log M`), the restriction of the outer weight to `p ≤ √N`
+with GHS's induction on the discarded range, and the exceptional-frequency composition.
