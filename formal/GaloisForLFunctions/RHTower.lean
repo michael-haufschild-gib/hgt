@@ -697,6 +697,7 @@ import GaloisForLFunctions.RHTower.CharacterAverageSuppression
 import GaloisForLFunctions.RHTower.ChargeMotion
 import GaloisForLFunctions.RHTower.ChargeTomography
 import GaloisForLFunctions.RHTower.ChebyshevPsiLogSummatory
+import GaloisForLFunctions.RHTower.ChebyshevPsiScaling
 import GaloisForLFunctions.RHTower.ChebyshevPsiPowerLogPNT
 import GaloisForLFunctions.RHTower.ChebyshevStieltjesMeasure
 import GaloisForLFunctions.RHTower.ChebyshevThetaPowerLog
@@ -3425,6 +3426,7 @@ import GaloisForLFunctions.RHTower.RectangularTentReduction
 import GaloisForLFunctions.RHTower.RectangularWindowAmplitudeAnalytic
 import GaloisForLFunctions.RHTower.RecurrenceTypeDichotomy
 import GaloisForLFunctions.RHTower.RecurrenceZeroDensity
+import GaloisForLFunctions.RHTower.RawMobiusHermitianExcursionLaw
 import GaloisForLFunctions.RHTower.ReducedFrequencyMobiusAliasCollapse
 import GaloisForLFunctions.RHTower.ReducedSubsetSumPoly
 import GaloisForLFunctions.RHTower.ReesGradeFiltrationFlatRadicalLaw
@@ -4190,6 +4192,7 @@ import GaloisForLFunctions.RHTower.Sieve.PrimeInterval
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogQuotientSum
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogSqLower
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogWindowCount
+import GaloisForLFunctions.RHTower.Sieve.PrimeProfileExponentTransfer
 import GaloisForLFunctions.RHTower.Sieve.PrimePowerLargeValuesCount
 import GaloisForLFunctions.RHTower.Sieve.PrimePowerSum
 import GaloisForLFunctions.RHTower.Sieve.PrimePowerSupport
@@ -6265,3 +6268,6 @@ import GaloisForLFunctions.RHTower.Sieve.CesaroPerronBridge
 import GaloisForLFunctions.RHTower.Sieve.CesaroPerronReduction
 import GaloisForLFunctions.RHTower.Sieve.LogLogAntiderivative
 import GaloisForLFunctions.RHTower.Sieve.CesaroPerronExplicit
+import GaloisForLFunctions.RHTower.Sieve.CesaroFiniteSum
+import GaloisForLFunctions.RHTower.Sieve.CesaroLogWeightBound
+import GaloisForLFunctions.RHTower.Sieve.CesaroDampedChain

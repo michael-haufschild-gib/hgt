@@ -3443,3 +3443,53 @@ pointwise bound.
 What remains for the Cesàro route to sharp Halász is exactly one thing: the Tauberian passage from
 `∑_{n ≤ N}f(n)log(N/n) = ∫_1^N S(t)dt/t` to `S(N)`, where Granville–Soundararajan's Lipschitz estimate
 for the multiplicative distance produces the factor `(1+m)`.
+
+## The Cesàro route, end to end
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CesaroFiniteSum.lean`:
+
+- `cesaroVertical σ T y`, `cesaroError σ T y`, `continuous_cesaro_kernel`, `continuous_cesaroTerm`,
+  `integral_cesaroTerm_eq`.
+- `norm_cesaroVertical_sub_log_le` — the truncated Cesàro Perron formula at one frequency:
+  `‖cesaroVertical σ T y − log y‖ ≤ cesaroError σ T y`, obtained from the averaged form by adding back
+  the pure second-order pole (`‖∫dt/(σ+it)²‖ ≤ 2/T`).
+- `norm_sum_Icc_mul_log_div_sub_cesaro_le` — the formula for a finite Dirichlet polynomial whose support
+  lies below the cutoff:
+
+  `‖∑_{n ≤ M} c_n log(x/n) − (1/2π)∫_{|t| ≤ T}L(c,σ+it)x^s/s²dt‖ ≤ ∑_{n ≤ M} ‖c_n‖·E(σ,T,x/n)`.
+
+  The support-below-cutoff hypothesis is not a restriction: it is exactly the single-factor case, where
+  the polynomial is `L(f_{≤N})` and the cutoff is `N`, so no vanishing case arises at all.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CesaroLogWeightBound.lean`:
+`norm_sum_Icc_mul_log_div_le_cesaro` — both halves joined, for `‖f‖ ≤ 1`:
+
+`‖∑_{n ≤ N} f(n)log(N/n)‖ ≤ ∑_{n ≤ N} E(σ,T,N/n) + (1/2π)·V·N^σ·π/σ`
+
+with `V` any pointwise bound on `L(f_{≤N})` over `|t| ≤ T`.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CesaroDampedChain.lean`:
+`norm_sum_Icc_mul_log_div_le_cesaro_damped` (at `V = dampedSize σ δ z N`) and
+`exists_norm_sum_Icc_liouvilleC_mul_log_div_le_cesaro` (at the Liouville function, distance from the
+zero-free strip).
+
+### What the route now contains, and what it does not
+
+Contains: one identity (`log y = ∫_1^y du/u`), one Fubini on a box, three antiderivatives
+(`i/(σ+it)`, `u^s/s`, `log log`), Perron's lemma as already owned, the damped Euler bound as already
+owned, and `∫_ℝ dt/(σ²+t²) = π/σ`.
+
+Does not contain, and does not need: the Selberg sieve, the almost-diagonal mean value theorem, affine
+mean squares, the dyadic height split, block moments, the `Λ`-mass `∑Λ(n)²/n ≍ (log N)²`, the threefold
+GHS recursion, the near-diagonal Perron analysis, or any convolution at all.  Each of those was built
+for the first-order kernel `x^s/s`, whose vertical integral `∫dt/|t|` diverges; at second order the
+integral converges and the whole apparatus is unnecessary.
+
+Accounting: with `σ = 1 + A/log N` and `T` polylogarithmic, `∑_{n ≤ N}E(σ,T,N/n) ≍ N/σ + N^σ log N/(σT)`
+and the analytic term is `≍ N^σ·dampedSize ≍ N(log N)e^{−δ²}`; at `δ² ≍ log log N` the total is `≍ N`.
+So `∑_{n ≤ N}λ(n)log(N/n) ≪ N` unconditionally at the right parameters — Halász's strength for the
+logarithmic average.
+
+**One brick remains for sharp Halász**: the Tauberian passage from `∑_{n ≤ N}f(n)log(N/n) = ∫_1^N S(t)dt/t`
+to `S(N)`, where Granville–Soundararajan's Lipschitz estimate for the multiplicative distance produces the
+factor `(1+m)`.
