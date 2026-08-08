@@ -4888,14 +4888,69 @@ observation.  Parity would then force it to vanish and prove RH.  Prime--Gamma C
 reconstructs the Gaussian zero-jet unconditionally; the missing non-theatrical step is a matching
 moment-jet landing whose exterior determinant factors through an invariant completed observation.
 
+### C43-AL — the moment jet has an unconditional prime--Gamma Cauchy landing
+
+The first half of that proposed gate is not open.  Put
+
+\[
+ z_q=-i(\rho_q-1/2),\qquad t_0=\frac1{4\pi},\qquad
+ G_0(z)=e^{-t_0z^2},\qquad
+ G_1(z)=\frac{iz}{2\pi}e^{-t_0z^2}.                     \tag{24.180}
+\]
+
+Then `G_0(z_q)` and `G_1(z_q)` are exactly the corpus zero and first reflected-Gaussian Mellin
+jets `u(q)` and `v(q)`.  For `r=0,1` define the two-safe-line boundary field
+
+\[
+ B_r(x,q)=\frac1{2\pi i}\left(
+   \frac{G_r(x+i)}{z_q-(x+i)}-
+   \frac{G_r(x-i)}{z_q-(x-i)}\right).
+\]
+
+Both fields are Bochner integrable in the multiplicity-exact Xi divisor `ell^2` carrier and
+
+\[
+ \int_{\mathbb R}B_0(x)\,dx=u,\qquad
+ \int_{\mathbb R}B_1(x)\,dx=v.                          \tag{24.181}
+\]
+
+Indeed the corpus proves (24.181) for `r=0`.  On either safe line,
+`|G_1(x+/-i)|` is bounded by `C(1+|x|)exp(-t_0x^2)`, while the completed Cauchy-column norm is
+`O(1+x^2)`.  Their product is integrable.  The same rectangle Cauchy formula applies because
+`G_1` is entire and its vertical sides have polynomial times Gaussian decay.  Continuous
+coordinate evaluation then gives the second identity in (24.181).  This proof uses only the two
+absolute-Euler safe lines and corpus Cauchy-column estimates; no evaluation-continuity premise at
+a divisor character is inserted.
+
+Consequently the source Wronskian itself has the pointwise absolutely convergent boundary formula
+
+\[
+ \boxed{\quad
+ \mathcal W(q)=\iint_{\mathbb R^2}
+ \bigl(B_1(x,q)B_0(y,q^\#)-B_0(x,q)B_1(y,q^\#)\bigr)\,dx\,dy.
+ \quad}                                                  \tag{24.182}
+\]
+
+Absolute Fubini is legal because each evaluated boundary column is `L^1`, and the two product
+majorants factor.  Thus the conjectured moment-jet infrastructure succeeds: the horizontal
+charge is already a literal completed prime--Gamma boundary determinant, not an unevaluated
+divisor heat sum.
+
+The stronger conjecture that Cauchy landing itself makes (24.182) reflection invariant fails.
+The oriented denominators retain which member of `{q,q#}` is first; exchanging them negates the
+determinant, exactly as it must off line.  The sole remaining gate is therefore sharper than a
+second landing theorem: factor this explicit double boundary kernel through an arithmetic
+observation that forgets line-reflection orientation.  Any argument merely symmetrizing the two
+columns kills the desired determinant by definition and supplies no factorization.
+
 **Novelty audit.**  `PrimeHeatBumpLocation` already contains the single-atom peak law, and the
 digamma asymptotic and Gaussian Fourier identities are classical.  Corpus and arXiv searches found
 no statement combining exact mass-parabolic source, the polar residue repair, superexponential
 complete-prime-jet suppression, strict finite-degree heat-Hankel positivity, the universal
 degree--time wedge, filtered-Turan completeness, prime information cone, eventual curvature, and
 exponential-height repair, three-prime Lorentz compression, prime-square mean--variance defect,
-Cartan--parabolic source transmutation, and Gaussian Wronskian--Turan identity.  Novelty claim is
-synthesis (24.128)--(24.179), not any ingredient in
+Cartan--parabolic source transmutation, Gaussian Wronskian--Turan identity, and the moment-jet
+prime--Gamma double-boundary landing.  Novelty claim is synthesis (24.128)--(24.182), not any ingredient in
 isolation.  Closest located arXiv neighbours concern de Bruijn--Newman deformation
 ([arXiv:1904.12438](https://arxiv.org/abs/1904.12438)), Jensen-polynomial hyperbolicity
 ([arXiv:1910.01227](https://arxiv.org/abs/1910.01227)), and a coefficient-side uniform Toeplitz
@@ -5083,3 +5138,8 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   Wronskian is horizontal displacement times positive density, and an isolated mass-Turan pair at
   time `1/(2*pi)` is exactly its negative ordinate-weighted squared energy.  Global cross-shell
   terms block direct norm closure; invariant arithmetic factorization is the surviving avenue.
+- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` the reflected-Gaussian moment jet admits the same
+  unconditional two-safe-line prime--Gamma Cauchy landing as the zero jet.  Their exterior product
+  is an absolutely convergent double boundary formula for the horizontal Wronskian.  Landing
+  itself retains orientation; only factorization through a line-reflection-invariant arithmetic
+  observation remains open.
