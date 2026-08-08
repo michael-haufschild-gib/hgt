@@ -2411,3 +2411,25 @@ dyadic block `|t| ≍ 2^m` is divided by `2^m`.  That is the shape in which the 
 So the next brick is the dyadic-in-height decomposition of the vertical integral against the `1/|t|` kernel, with the
 first moment applied on each block and the uniform bound used only on `|t| ≤ 1`.  Recorded before building: the
 accounting says `j = 0` and dyadic blocks in `t`, not `j = 1` and not a uniform bound.
+
+## The vertical integral against a first-order kernel is bounded independently of the height
+
+`formal/GaloisForLFunctions/HTGeometry/VerticalKernelDyadicSplit.lean`:
+
+- `integral_mul_kernel_le_sum_dyadic` — for `F ≥ 0` and a kernel `G t ≤ C/t` on `[t₀,∞)`,
+  `∫_{t₀}^{t₀2^M} F·G ≤ ∑_{m<M} (C/(t₀2^m))·∫_{block m} F`, where block `m` is `[t₀2^m, t₀2^{m+1}]`.
+- `dyadic_sqrt_term_eq` — if the block moment is `K·√(height)`, the `m`-th term equals
+  `(C K √2/√t₀)·(√2/2)^m`.
+- `integral_mul_kernel_le_of_sqrt_block_moment` — hence the whole integral is at most
+  `C·K·√2·(1−√2/2)⁻¹/√t₀`, with no dependence on `M` and therefore none on the height of the range.
+- `exists_bound_mellin_smoothWeight_first_order`, `exists_bound_mellin_smoothWeight_height` — the
+  `j = 0` case of the corpus Mellin bound: `‖W(σ+iy)‖ ≤ C/√(σ²+y²) ≤ C/y`, constant `≍ N^σ(N/H)`.
+
+The device is stated for a general nonnegative `F`, so it is the same lemma for a first moment of a
+Dirichlet polynomial, of a full series, or of any product of them.  With `t₀ = 2Δ` every dyadic block
+has length exactly `2·2^m·Δ`, i.e. exactly `2^m` cells of the cell-maximum discretisation, so the
+shifted first moment applies to each block with `n = 2^m`.
+
+Square-root growth of the block moment is the shape a mean-value estimate produces, and it is exactly
+half the growth of the length: a kernel decaying like `1/t` therefore beats it by a factor `√2/2` per
+block.  This is the mechanism that removes the `√T` growth diagnosed in the uniform-kernel accounting.
