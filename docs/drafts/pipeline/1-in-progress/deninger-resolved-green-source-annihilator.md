@@ -57,20 +57,24 @@ the literal chain identity
 \tag{1}
 \]
 
-Construction must also identify the already-existing singular Gamma/Calderón transport with the
-fixed Möbius--Fourier observation:
+Construction must also supply the already-existing coefficient-faithful Xi-jet evaluation
+\(\operatorname{Ev}_\rho\) on the singular Gamma/Calderón target and identify that target with
+the fixed Möbius--Fourier observation:
 
 \[
  \boxed{\qquad
- \mathfrak S_\mu\mathcal R_2(Dw_{23})
- \quad\longleftrightarrow\quad
- c_\rho\bigl(g_2(\rho)-g_3(\rho)\bigr)
+ \operatorname{Ev}_\rho\!\left(
+   \mathfrak S_\mu\mathcal R_2(Dw_{23})
+ \right)
+ =c_\rho\bigl(g_2(\rho)-g_3(\rho)\bigr),
+ \qquad c_\rho\ne0,
  \qquad}
 \tag{2}
 \]
 
-coefficient-faithfully at every Xi divisor jet. Equation `(1)` makes the left side of `(2)` zero
-by the already-proved exact kernel theorem. The fixed two-prime wall converts this into RH.
+for every Xi divisor point \(\rho\), preserving its leading nonzero jet. Equation `(1)` puts
+\(\mathcal R_2(Dw_{23})\) in \(Z(H_\cap)=\ker\mathfrak S_\mu\), so the left side of `(2)` is zero.
+Because \(c_\rho\ne0\), the fixed two-prime wall then gives \(\Re\rho=1/2\).
 
 Equivalently, construct a jointly conservative family of source observations \(A_j\) on the
 resolved Green carrier such that

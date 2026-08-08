@@ -34,7 +34,7 @@ theorem factorization_even_of_isSquare {n : ℕ} (h : IsSquare n) (p : ℕ) :
 theorem isSquare_of_factorization_even {n : ℕ} (hn : n ≠ 0)
     (h : ∀ p, Even (n.factorization p)) : IsSquare n := by
   refine ⟨n.factorization.prod fun p e => p ^ (e / 2), ?_⟩
-  conv_lhs => rw [← Nat.factorization_prod_pow_eq_self hn]
+  conv_lhs => rw [← Nat.prod_factorization_pow_eq_self hn]
   rw [Finsupp.prod, Finsupp.prod, ← Finset.prod_mul_distrib]
   refine Finset.prod_congr rfl fun p _ => ?_
   rw [← pow_add]
@@ -76,14 +76,15 @@ theorem liouvilleC_two : liouvilleC 2 = -1 := by
 
 theorem norm_liouvilleC_le_one (n : ℕ) : ‖liouvilleC n‖ ≤ 1 := by
   rcases eq_or_ne n 0 with rfl | hn
-  · simp [liouvilleC_apply]
+  · simp
   · rw [liouvilleC_apply, ArithmeticFunction.liouville_apply hn]
     push_cast
     rw [norm_pow]
     simp
 
 theorem conj_liouvilleC (n : ℕ) : (starRingEnd ℂ) (liouvilleC n) = liouvilleC n := by
-  rw [liouvilleC_apply, Complex.conj_intCast]
+  rw [liouvilleC_apply]
+  exact map_intCast (starRingEnd ℂ) _
 
 /-! ### The square-indicator convolution -/
 
@@ -99,6 +100,7 @@ theorem sum_divisors_liouvilleC {n : ℕ} (hn : n ≠ 0) :
         if Even k then 1 else 0 := by
     intro p k hp
     rw [ArithmeticFunction.coe_zeta_mul_apply, Nat.divisors_prime_pow hp, Finset.sum_map]
+    simp only [Function.Embedding.coeFn_mk]
     have : ∀ j ∈ Finset.range (k + 1), liouvilleC (p ^ j) = (-1 : ℂ) ^ j := by
       intro j _
       exact liouvilleC_prime_pow hp j
@@ -117,12 +119,12 @@ theorem sum_divisors_liouvilleC {n : ℕ} (hn : n ≠ 0) :
   · rw [if_neg hsq]
     obtain ⟨p, hp⟩ : ∃ p, ¬ Even (n.factorization p) := by
       by_contra hcon
-      push_neg at hcon
-      exact hsq (isSquare_of_factorization_even hn fun p => not_not.mp (hcon p))
+      push Not at hcon
+      exact hsq (isSquare_of_factorization_even hn hcon)
     have hpsupp : p ∈ n.factorization.support := by
       rw [Finsupp.mem_support_iff]
       intro h0
-      exact hp (by rw [h0]; exact even_zero)
+      exact hp (by rw [h0]; simp)
     have hprime : p.Prime :=
       Nat.prime_of_mem_primeFactors (by simpa [Nat.support_factorization] using hpsupp)
     refine Finset.prod_eq_zero hpsupp ?_
@@ -152,7 +154,7 @@ theorem LSeries_squareIndicator {s : ℂ} (hs : 1 < (2 * s).re) :
     · simp [LSeries.term]
     · have hk2 : (k : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hk
       have hknz : k ^ 2 ≠ 0 := pow_ne_zero 2 hk
-      have hcast : ((k ^ 2 : ℕ) : ℂ) = ((((k : ℝ) * (k : ℝ)) : ℝ) : ℂ) := by push_cast; ring
+      have hcast : ((k ^ 2 : ℕ) : ℂ) = ((k : ℝ) : ℂ) * ((k : ℝ) : ℂ) := by push_cast; ring
       have hcpow : ((k ^ 2 : ℕ) : ℂ) ^ s = (k : ℂ) ^ s * (k : ℂ) ^ s := by
         rw [hcast, Complex.mul_cpow_ofReal_nonneg (Nat.cast_nonneg k) (Nat.cast_nonneg k)]
         norm_cast
@@ -192,10 +194,13 @@ theorem LSeries_liouvilleC_mul_riemannZeta {s : ℂ} (hs : 1 < s.re) :
       (LSeriesSummable_zetaC hs) (LSeriesSummable_liouvilleC hs)
   have hcongr : LSeries ↗((ArithmeticFunction.zeta : ArithmeticFunction ℂ) * liouvilleC) s =
       LSeries squareIndicator s := by
-    refine LSeries_congr s fun n hn => ?_
+    refine LSeries_congr (fun {n} hn => ?_) s
     rw [← sum_divisors_liouvilleC hn, ArithmeticFunction.coe_zeta_mul_apply]
   rw [hcongr, LSeries_squareIndicator hs2] at hprod
-  rw [← hprod, ArithmeticFunction.LSeries_zeta_eq_riemannZeta hs]
+  have hzeta : LSeries ↗(ArithmeticFunction.zeta : ArithmeticFunction ℂ) s = riemannZeta s := by
+    rw [← ArithmeticFunction.LSeries_zeta_eq_riemannZeta hs]
+    exact LSeries_congr (fun {n} _ => by simp [ArithmeticFunction.natCoe_apply]) s
+  rw [hprod, hzeta]
   ring
 
 end RHTower

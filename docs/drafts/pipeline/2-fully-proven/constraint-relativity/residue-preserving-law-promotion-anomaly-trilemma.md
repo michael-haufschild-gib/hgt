@@ -309,7 +309,7 @@ On complement of discrete zero set of `c`, Wirtinger derivative is
  \tag{21}
 \]
 
-Holomorphic function has zero `bar-partial`; meromorphic function is holomorphic away from its
+Holomorphic function has zero \(\bar\partial\); meromorphic function is holomorphic away from its
 discrete poles. Therefore neither can equal `-a_n` on open set where `c` is nonzero. QED.
 
 For fixed pre-divisor Xi grade `k`, filtered landing coefficient `c_k(s)` is holomorphic. Thus no
@@ -317,6 +317,69 @@ purely holomorphic Hedenmalm/Xi module, even infinite-dimensional and coordinate
 the required opposite residue grade-wise. Any source-generated compensator must be genuinely
 mixed in `s` and `bar s` (or singular enough to leave ordinary meromorphic category), and must
 retain dagger/reflection before scalarization.
+
+## Theorem 7: exact mixed separation rank and minimal two-leg law
+
+Let `U,V` be connected open subsets of `C`, let `n>1`, and let `c:U->C` be holomorphic and not
+identically zero. Before imposing reflection diagonal `t=bar s`, define
+
+\[
+ A_n(s,t)=\bigl(n^{s+t-1}-1\bigr)c(s),
+ \qquad (s,t)\in U\times V.
+ \tag{22}
+\]
+
+The holomorphic separation rank of `A_n` on `U times V` is exactly two. Explicitly,
+
+\[
+ A_n(s,t)
+ =\bigl(n^{s-1/2}c(s)\bigr)n^{t-1/2}-c(s),
+ \tag{23}
+\]
+
+so two separated legs suffice, while no factorization `A_n(s,t)=f(s)g(t)` is possible on any
+product open set on which `c` is not identically zero.
+
+### Proof
+
+Equation `(23)` gives separation rank at most two. To prove it is not one, choose
+`s_1,s_2 in U` with `c(s_1)c(s_2) nonzero` and
+
+\[
+ n^{s_1-1/2}\ne n^{s_2-1/2}.
+\]
+
+Such a pair exists because zeros of `c` are discrete and nonconstant exponential cannot be
+constant on an open set. Likewise choose `t_1,t_2 in V` with
+
+\[
+ n^{t_1-1/2}\ne n^{t_2-1/2}.
+\]
+
+Write `X_i=n^{s_i-1/2}` and `Y_j=n^{t_j-1/2}`. Evaluation matrix has determinant
+
+\[
+ \begin{aligned}
+ \det\bigl(A_n(s_i,t_j)\bigr)_{i,j=1}^2
+ &=c(s_1)c(s_2)
+   \det\begin{pmatrix}
+    X_1Y_1-1&X_1Y_2-1\\
+    X_2Y_1-1&X_2Y_2-1
+   \end{pmatrix}\\
+ &=c(s_1)c(s_2)(X_1-X_2)(Y_2-Y_1),
+ \end{aligned}
+ \tag{24}
+\]
+
+which is nonzero. Every separation-rank-one function has all such `2 by 2` evaluation
+determinants zero. Hence rank is at least two and therefore exactly two. QED.
+
+On reflected diagonal `t=bar s`, `(22)` becomes charge `(19)`. Therefore no single
+holomorphic-by-antiholomorphic leg can carry required opposite charge. Ordered two-leg carrier is
+minimal. This explains, without assuming RH, why source/physical comparisons repeatedly require
+mate pair before reflection or codiagonalization. It does **not** select critical line: physical
+two-leg carrier already realizes rank-two charge off line. Selection still requires a
+source-generated relation between two legs that is not fitted contractible compensation.
 
 ## Literal Riemann-source application
 
@@ -329,7 +392,7 @@ cyclic-to-paracyclic defect satisfies
  \qquad
  \delta_n(\rho)=e^{(2\Re\rho-1)\log n},
  \qquad c_\rho\ne0.
- \tag{22}
+ \tag{25}
 \]
 
 Take `V=k`, `Z(1)=D_{n,rho}x_p`, and `W=k`. Then
@@ -342,7 +405,7 @@ Take `V=k`, `Z(1)=D_{n,rho}x_p`, and `W=k`. Then
  0,&\Re\rho=\tfrac12,\\
  1,&\Re\rho\ne\tfrac12.
  \end{cases}}
- \tag{23}
+ \tag{26}
 \]
 
 ### Proof
@@ -370,6 +433,9 @@ geometry.” Any proposed Nomotopic law promotion is classified:
    generator, every genuine candidate is infinite-dimensional.
 6. **Pre-divisor type law:** no holomorphic/meromorphic Xi module can carry opposite charge;
    candidate must be mixed `s,bar s`, dagger-dependent, or singular beyond meromorphic category.
+7. **Mixed-rank law:** opposite charge has exact separation rank two before reflection. One leg is
+   impossible; two legs are necessary but not sufficient. Missing selector must constrain their
+   relation before codiagonalization.
 
 This is unconditional route leverage: it rules out free cell attachment, rank-minimal fitted
 compensation, Koszul--Tate repair, exact completion, and abstract “obstruction becomes law” as

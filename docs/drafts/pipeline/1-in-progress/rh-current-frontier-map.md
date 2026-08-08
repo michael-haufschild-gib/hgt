@@ -6041,20 +6041,17 @@ equivalent wrapper around one of them does not advance source acquisition.
    reflection discriminant to vanish. If it is not the existing Route-R current, it must receive
    separate route ownership. Backlog card:
    `../0-backlog/post-j-preprojection-principal-relative-current.md`.
-3. **Route L strict source sewing.** On the already-constructed pro-Stein residue-fibre
-   coefficient and strict `H^1=M_zeta` Poisson model, construct the strict cofinal defect of the
-   finite gauge-exact Euler connection and identify its Gamma/co-Poisson transgression as a
-   non-diagonal source differential. Prove the corresponding unsquared Green--Stokes identity
-   annihilates the resolved Green defect before Hermitian polarization. The actual Gamma boundary,
-   Green primitive, transport, admitted-sector kernel, physical coefficient, and Calderón--Witt
-   incidence already exist and must not be reconstructed. Critical Floquet subtraction already
-   recovers the exact von Mangoldt current, while the universal two-bump sign wall excludes every
-   diagonal positive prime-weight repair.
-   Then derive corrected Tate--Floquet/Möbius Poisson descent on the canonical closed
-   zero-periodization sector. Pointwise right inversion and its exact `H_cap`-regularity range
-   classification are already proved; the induced interface must realize that defect without
-   quotient relabeling, be nuclear-topology continuous, and glue through real Fourier and centered
-   flow.
+3. **Route L resolved-Green source annihilator.** The strict all-prime Euler--Gamma/Möbius
+   differential, PNT endpoint, unsquared Green--Stokes transgression, literal Poisson kernel, and
+   corrected Tate--Floquet boundary interface are closed on paper and must not be reconstructed.
+   On the already-constructed pro-Stein residue-fibre coefficient and strict `H^1=M_zeta` Poisson
+   model, construct from independent rational-Witt/Milnor incidence a relevant-complex chain map
+   `R_2 D = Z R_1`. Prove its Möbius--Fourier image is the existing singular
+   Gamma/Calderón transport coefficient-faithfully, before Hermitian polarization, retaining both
+   prime labels and every leading nonzero Xi jet. The fixed `w_23` comparison is the
+   RH-equivalent endpoint falsifier, not a premise. Critical Floquet subtraction already recovers
+   the exact von Mangoldt current, while the universal two-bump sign wall excludes every diagonal
+   positive prime-weight repair.
    Produce the Hodge-symmetric almost-involution, then prove exact Green-energy
    radical and chirality-kernel vanishing, form exact Hardy projectors by polar sign, compare their
    oriented trace with Paugam, and build resolvent-faithful Hodge--Schwartz core.
@@ -6151,10 +6148,12 @@ the following status.
   Calderón--Witt incidence are proved. Critical Floquet subtraction recovers the exact von
   Mangoldt current but is universally indefinite. Pointwise Möbius right inversion and exact
   `H_cap`-regularity classification already cut the reflected graph to the literal boundary set.
-  Missing theorem must construct the strict cofinal Euler--Gamma/Möbius gauge defect and prove its
-  non-diagonal unsquared Green--Stokes annihilation before polarization; corrected
-  Tate--Floquet/Möbius descent is the induced real-Fourier/centered-flow boundary interface.
-  Sullivan/pro-Stein comparison is an optional realization, not the first frontier.
+  The strict cofinal Euler--Gamma/Möbius gauge defect, its non-diagonal unsquared Green--Stokes
+  law, and corrected real-Fourier/centered-flow Tate--Floquet interface are now paper-proved.
+  Missing theorem must instead derive `R_2 D = Z R_1` from independent rational-Witt/Milnor
+  incidence and identify its Möbius--Fourier image coefficient-faithfully with the existing
+  singular resolved Gamma/Calderón transport. Sullivan/pro-Stein comparison is one possible
+  realization, not the theorem itself.
   The independent prime-isotropy relative complex and period-one Stokes regulator supply strict
   resolved provenance but still do not prove endpoint descent or scalar Cartier descent.
 - `real-corona-isotropy-clifford-transgression-law` and the exact nonunital CCM modules establish
@@ -6430,10 +6429,8 @@ both unconditional and useful, the corpus has formalized or scheduled its precis
 content. No located primary source supplies Route R's global two-orientation source nonerasure
 law, C1-CCM's
 positive bivariant/intersection pairing on the exact recipient, the post-J pre-projection current,
-Route L's strict cofinal Euler--Gamma/Möbius gauge defect and its non-diagonal unsquared
-Green--Stokes annihilation of the resolved Green defect, the induced corrected
-Tate--Floquet/Möbius interface on the canonical Euler-depleted zero-periodization sector, its
-real-Fourier/centered-flow compatibility,
+Route L's rational-Witt/Milnor relevant-complex chain map into the literal Meyer Poisson kernel,
+or its coefficient-faithful identification with the singular resolved Gamma/Calderón transport,
 Green-radical/chirality-kernel theorem, oriented
 Paugam trace comparison, and resolvent-faithful Hodge completion, CCM-FU's prelimit
 noncompact Ward incidence, Route E's
@@ -6457,10 +6454,12 @@ the moving-prime comparison for `n≥19` is open.
 > regularity of its preimage. Critical Floquet renormalization identifies the exact von Mangoldt
 > current but a universal two-bump sign wall excludes diagonal positive repair. Actual
 > Gamma/co-Poisson Green transport and Calderón--Witt incidence already recover the physical
-> coefficient without selecting it. Route L asks first for the strict cofinal
-> Euler--Gamma/Möbius gauge defect and a non-diagonal unsquared source Green--Stokes identity
-> annihilating the resolved Green defect before polarization; corrected Tate--Floquet/Möbius
-> descent is its induced real-Fourier-compatible boundary interface. Then
+> coefficient without selecting it. Its strict all-prime Euler--Gamma/Möbius gauge defect,
+> PNT endpoint, non-diagonal unsquared Green--Stokes identity, and corrected
+> Tate--Floquet/Möbius boundary interface are closed on paper. Route L asks first for the
+> rational-Witt/Milnor source chain identity `R_2 D = Z R_1` landing resolved arithmetic
+> incidence in the literal Poisson kernel, together with coefficient-faithful singular comparison.
+> Then
 > Green-radical/chirality-kernel exactness, oriented Paugam trace comparison, and
 > resolvent-faithful comparison to its fixed
 > two-prime endpoint test; CCM-FU for a moving noncompact four-unit Ward
@@ -7889,3 +7888,99 @@ prove cofinal lower frame bound for (E-63) retaining literal recurrence weights,
 prime-dilation intervals, alternating finite-volume signs, normalized Gibbs denominator, and
 co-moving seam.  This is precise source-faithful content of shell descent, not generic Tauberian
 positivity.
+
+## 2026-08-08 Route E source-faithful Euler-edge unit-shell update
+
+Exact Gibbs-to-Euler tilt now removes ambiguity in shell descent.  For every finite prime aperture
+and every \(\sigma>0\), with independent
+\(q_{p,\sigma}=p^{-\sigma}/(1+p^{-\sigma})\), occupancy \(N\), and log-energy \(E\),
+
+\[
+ \boxed{
+ \psi_S(x)=
+ \frac{\mathbb E_\sigma[(-1)^N e^{\sigma E-xe^E}]}
+      {\mathbb E_\sigma[e^{\sigma E-xe^E}]}.}
+\tag{E-64}
+\]
+
+This is literal source identity, not independent-prime approximation: Bernoulli factor
+\(m^{-\sigma}\) cancels \(e^{\sigma E}=m^\sigma\) subset by subset.  Physical multiplier has
+exact profile
+
+\[
+ \boxed{
+ \frac{W(E^*+u)}{W(E^*)}=e^{\sigma(u+1-e^u)},
+ \qquad E^*=\log(\sigma/x).}
+\tag{E-65}
+\]
+
+Hence source-faithful localization has bounded width in \(\log m\).  It is not broad Gaussian
+shell of variance comparable to \(\operatorname{Var}E\).
+
+For canonical cofinal aperture
+
+\[
+ Y=2x^{-1}\log(1/x)(1+o(1)),
+ \qquad \ell=\log Y,
+\]
+
+unique Bernoulli tilt whose mean energy equals physical saddle satisfies
+
+\[
+ \boxed{
+ \sigma_x=1+\frac{2\log\ell}{\ell^2}
+             +O\!\left(\frac1{\ell^2}
+               +\frac{(\log\ell)^2}{\ell^3}\right).}
+\tag{E-66}
+\]
+
+Thus literal cofinal source forces slightly supercritical moving Euler edge, not any fixed
+\(\sigma<1\).  In this regime
+
+\[
+ \begin{aligned}
+ A&=\log\ell+O(1),\\
+ B&=\ell-\log\ell+O(1),\\
+ C&=\tfrac12\ell^2+O(\ell\log\ell),\\
+ t^*&=2\pi/\ell+O(\log\ell/\ell^2),\\
+ D&=\pi^2\log\ell+O(1).
+ \end{aligned}
+\tag{E-67}
+\]
+
+Every terminal band \(Y/\ell^K<p\le Y\) carries only
+\(O(\log\ell/\ell)=o(1)\) harmonic variance.  Fixed-\(\sigma\) terminal Gaussian proof therefore
+does not continue to source-faithful regime: escape variance is distributed over all logarithmic
+prime scales and higher cumulants remain leading.
+
+Two further exact asymptotics expose escape:
+
+\[
+ \boxed{
+ t^*E^*=2\pi+O(\log\ell/\ell),
+ \qquad
+ \left|\mathbb E_{\sigma_x}e^{i(\pi N-t^*E)}\right|
+ =\ell^{-2}e^{O(1)}.}
+\tag{E-68}
+\]
+
+Raw parity is phase-compatible with antiscale mode throughout physical unit shell; unconditioned
+Euler product supplies only known logarithmic-square contraction.  Broad Gaussian theorem
+(E-61) remains a genuine source theorem but cannot by itself descend to literal cofinal Gibbs
+current.
+
+Route E bifurcation now recombines.  Product-truncated theorem (E-58) supplies harmonic row mass
+under subpower displacement, and source-faithful tilt (E-64)--(E-68) forces missing descent into
+same bounded physical log-product shells.  Exact remaining hybrid premise is
+
+**UNIT-LOG-SHELL-E3-PARITY-CARLESON-AND-RECURRENCE-SEAM**:
+
+construct source-predeclared local \(E_3\)/reservoir relation inside every required bounded
+physical log-product shell; prove unit column Carleson load and oriented zero/one-large-prime seam
+flux; push those same weights through exact recurrence with prime-dilation intervals and
+alternating finite-volume signs.  State incidence/frame inequalities before endpoint current is
+formed, so accumulation equivalence (A10) is not reused as its own proof.
+
+Paper proof:
+`../2-fully-proven/new_scientific_knowledge/route-e-source-faithful-euler-tilt-unit-shell-law.md`.
+No Lean file was edited or built.  Route E and RH remain open.

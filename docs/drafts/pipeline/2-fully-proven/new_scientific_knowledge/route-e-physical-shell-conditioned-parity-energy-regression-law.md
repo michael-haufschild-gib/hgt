@@ -644,3 +644,50 @@ off-diagonal covariance (49), so shellwise lower bounds cannot be summed indepen
 
 Positive survivor (49) is not a restatement of RH: it is exact finite polarization identity
 specifying additional cross-scale theorem required before any Mertens conclusion.
+
+## 12. Subsequent source-faithful unit-shell correction
+
+Paper theorem `route-e-source-faithful-euler-tilt-unit-shell-law.md` identifies exact descent
+coordinate without a signed shell decomposition.  For every finite aperture and every
+\(\sigma>0\),
+
+\[
+ \psi_S(x)=
+ \frac{\mathbb E_\sigma[(-1)^N e^{\sigma E-xe^E}]}
+      {\mathbb E_\sigma[e^{\sigma E-xe^E}]}.
+\tag{50}
+\]
+
+The physical factor has exact centered profile
+
+\[
+ \frac{W(E^*+u)}{W(E^*)}=e^{\sigma(u+1-e^u)},
+ \qquad E^*=\log(\sigma/x),
+\tag{51}
+\]
+
+so source-faithful shell has bounded log-energy width.  At canonical cofinal aperture
+\(Y\asymp x^{-1}\log(1/x)\), centering forces
+
+\[
+ \sigma_x=1+\frac{2\log\log Y}{(\log Y)^2}
+            +O((\log Y)^{-2}),
+\tag{52}
+\]
+
+not fixed \(\sigma<1\).  Escape variance is then all-scale,
+\(D=\pi^2\log\log Y+O(1)\); every terminal band carries only \(o(1)\).  Moreover
+
+\[
+ t^*E^*=2\pi+o(1),
+\tag{53}
+\]
+
+so raw parity is phase-compatible with antiscale escape throughout unit shell.  Therefore theorem
+(13) remains valid and new for its broad Gaussian finite Euler source, but it is not central
+asymptotic for literal cofinal Gibbs gas.  Exact descendant is no longer arbitrary cross-shell
+frame (49); exact tilt (50) reduces it to bounded physical log-product window where arithmetic
+incidence and recurrence must be controlled together.
+
+Revised source target is
+`UNIT-LOG-SHELL-E3-PARITY-CARLESON-AND-RECURRENCE-SEAM`.

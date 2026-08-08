@@ -813,3 +813,330 @@ theorem re_eq_half_of_primeFoldMu_real {ρ : ℂ}
 end
 
 end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+open Complex Filter Function MeasureTheory Set TopologicalSpace
+open scoped BigOperators Distributions ENNReal
+
+/-! ## The transport law as an identity of positive-time distributions -/
+
+theorem primeFoldBranch_locallyIntegrableOn (P : ℂ → ℂ) (lam : ℂ) :
+    LocallyIntegrableOn (primeFoldBranch P lam) (Ioi 0) volume := by
+  classical
+  rw [MeasureTheory.locallyIntegrableOn_iff isOpen_Ioi.isLocallyClosed]
+  intro K _hKsub hK
+  obtain ⟨B, hB⟩ := bddAbove_def.mp hK.bddAbove
+  have hhom : IntegrableOn (fun L : ℝ => Complex.exp (lam * (L : ℂ)) * P lam) K volume :=
+    ContinuousOn.integrableOn_compact hK (by fun_prop)
+  have hatom : ∀ n : DeningerPrimePowerIndex,
+      IntegrableOn (primeFoldCausalAtom lam n) K volume := by
+    intro n
+    have hcont : IntegrableOn (fun L : ℝ => (criticalPrimeTailAtomWeight n : ℂ) *
+        Complex.exp (lam * ((L - deningerPrimePowerTime n : ℝ) : ℂ))) K volume :=
+      ContinuousOn.integrableOn_compact hK (by fun_prop)
+    rw [primeFoldCausalAtom_eq_indicator]
+    exact hcont.indicator measurableSet_Ioi
+  have hsum : IntegrableOn
+      (fun L : ℝ => ∑ n ∈ primeFoldBelowFinset B, primeFoldCausalAtom lam n L) K volume :=
+    integrable_finsetSum _ fun n _ => hatom n
+  refine (hhom.sub hsum).congr_fun ?_ hK.measurableSet
+  intro L hLK
+  simp only [Pi.sub_apply]
+  rw [primeFoldBranch, primeFoldCausalTail_eq_sum lam (hB L hLK)]
+
+/-- Regular distribution carried by a completed prime-tail branch on positive time. -/
+def primeFoldBranchDistribution (P : ℂ → ℂ) (lam : ℂ) : DeningerTimeDistribution :=
+  deningerRegularTimeDistribution (primeFoldBranch P lam)
+
+@[simp]
+theorem primeFoldBranchDistribution_apply (P : ℂ → ℂ) (lam : ℂ)
+    (φ : DeningerTimeTestFunction) :
+    primeFoldBranchDistribution P lam φ =
+      ∫ L : ℝ, (φ L : ℂ) * primeFoldBranch P lam L :=
+  deningerRegularTimeDistribution_apply (primeFoldBranch_locallyIntegrableOn P lam) φ
+
+theorem deningerTimeDistributionDeriv_apply
+    (T : DeningerTimeDistribution) (φ : DeningerTimeTestFunction) :
+    deningerTimeDistributionDeriv T φ = -T (deningerTimeTestDerivative φ) := by
+  rw [deningerTimeDistributionDeriv, Distribution.lineDerivCLM_apply]
+  rfl
+
+theorem contDiff_ofReal_testFunction (φ : DeningerTimeTestFunction) (k : ℕ) :
+    ContDiff ℝ k (fun x : ℝ => (φ x : ℂ)) := by
+  simpa [Function.comp_def] using
+    (Complex.ofRealCLM.contDiff.comp (φ.contDiff.of_le le_top))
+
+theorem hasCompactSupport_ofReal_testFunction (φ : DeningerTimeTestFunction) :
+    HasCompactSupport (fun x : ℝ => (φ x : ℂ)) := by
+  simpa only [Function.comp_apply] using!
+    (φ.hasCompactSupport.comp_left (g := fun r : ℝ => (r : ℂ)) rfl)
+
+theorem continuous_ofReal_testFunction (φ : DeningerTimeTestFunction) :
+    Continuous (fun x : ℝ => (φ x : ℂ)) :=
+  Complex.continuous_ofReal.comp φ.continuous
+
+theorem deriv_ofReal_testFunction (φ : DeningerTimeTestFunction) :
+    deriv (fun x : ℝ => (φ x : ℂ)) =
+      fun L : ℝ => ((deningerTimeTestDerivative φ L : ℝ) : ℂ) := by
+  funext L
+  have hφ : HasDerivAt (fun x : ℝ => φ x) (deriv (fun x : ℝ => φ x) L) L :=
+    (φ.contDiff.differentiable (by simp)).differentiableAt.hasDerivAt
+  rw [hφ.ofReal_comp.deriv, deningerTimeTestDerivative_apply_eq_deriv]
+
+theorem integral_ofReal_test_mul_primeFoldBranch_add
+    (P : ℂ → ℂ) (lam : ℂ) (φ : DeningerTimeTestFunction) :
+    (∫ L : ℝ, (((deningerTimeTestDerivative φ L : ℝ) : ℂ) + lam * (φ L : ℂ)) *
+        primeFoldBranch P lam L) =
+      (∫ L : ℝ, ((deningerTimeTestDerivative φ L : ℝ) : ℂ) * primeFoldBranch P lam L) +
+        lam * ∫ L : ℝ, (φ L : ℂ) * primeFoldBranch P lam L := by
+  have hd1 : Integrable (fun L : ℝ =>
+      ((deningerTimeTestDerivative φ L : ℝ) : ℂ) * primeFoldBranch P lam L) :=
+    integrable_mul_primeFoldBranch P lam
+      (continuous_ofReal_testFunction (deningerTimeTestDerivative φ))
+      (hasCompactSupport_ofReal_testFunction (deningerTimeTestDerivative φ))
+  have hd2 : Integrable (fun L : ℝ => (lam * (φ L : ℂ)) * primeFoldBranch P lam L) :=
+    integrable_mul_primeFoldBranch P lam
+      (continuous_const.mul (continuous_ofReal_testFunction φ))
+      (hasCompactSupport_ofReal_testFunction φ).mul_left
+  rw [show (fun L : ℝ => (((deningerTimeTestDerivative φ L : ℝ) : ℂ) + lam * (φ L : ℂ)) *
+      primeFoldBranch P lam L) =
+      fun L : ℝ => ((deningerTimeTestDerivative φ L : ℝ) : ℂ) * primeFoldBranch P lam L +
+        (lam * (φ L : ℂ)) * primeFoldBranch P lam L from by funext L; ring,
+    integral_add hd1 hd2]
+  congr 1
+  rw [← integral_const_mul]
+  exact integral_congr_ae (Filter.Eventually.of_forall (fun L => by ring))
+
+/-- **Equation (6).**  On positive time the completed prime-tail branch transports the literal
+ordinary-integer forcing measure, for every homogeneous datum and every folded parameter. -/
+theorem primeFoldBranch_transport_distribution (P : ℂ → ℂ) (lam : ℂ) :
+    deningerTimeDistributionDeriv (primeFoldBranchDistribution P lam) -
+        lam • primeFoldBranchDistribution P lam =
+      -criticalPrimeTailForcingDistribution := by
+  ext φ
+  have hmain := integral_primeFoldBranch_transport P lam
+    (contDiff_ofReal_testFunction φ 1) (hasCompactSupport_ofReal_testFunction φ)
+  rw [deriv_ofReal_testFunction φ, integral_ofReal_test_mul_primeFoldBranch_add P lam φ] at hmain
+  have hderiv : deningerTimeDistributionDeriv (primeFoldBranchDistribution P lam) φ =
+      -∫ L : ℝ, ((deningerTimeTestDerivative φ L : ℝ) : ℂ) * primeFoldBranch P lam L := by
+    rw [deningerTimeDistributionDeriv_apply, primeFoldBranchDistribution_apply]
+  have hsmul : (lam • primeFoldBranchDistribution P lam) φ =
+      lam * ∫ L : ℝ, (φ L : ℂ) * primeFoldBranch P lam L := by
+    rw [smul_apply, primeFoldBranchDistribution_apply, smul_eq_mul]
+  rw [sub_apply, hderiv, hsmul, neg_apply,
+    criticalPrimeTailForcingDistribution_apply]
+  rw [show primeFoldForcing (fun x : ℝ => (φ x : ℂ)) =
+      ∑' n : DeningerPrimePowerIndex,
+        (criticalPrimeTailAtomWeight n : ℂ) * (φ (deningerPrimePowerTime n) : ℂ) from rfl] at hmain
+  linear_combination -hmain
+
+/-! ## The folded distributions -/
+
+/-- Even reflection fold at the level of positive-time distributions. -/
+def primeFoldEvenDistribution (P : ℂ → ℂ) (lam : ℂ) : DeningerTimeDistribution :=
+  (2 : ℂ)⁻¹ • (primeFoldBranchDistribution P lam + primeFoldBranchDistribution P (-lam))
+
+/-- Odd reflection fold at the level of positive-time distributions. -/
+def primeFoldOddDistribution (P : ℂ → ℂ) (lam : ℂ) : DeningerTimeDistribution :=
+  (2 * lam)⁻¹ • (primeFoldBranchDistribution P lam - primeFoldBranchDistribution P (-lam))
+
+theorem primeFoldEvenDistribution_apply (P : ℂ → ℂ) (lam : ℂ)
+    (φ : DeningerTimeTestFunction) :
+    primeFoldEvenDistribution P lam φ =
+      ∫ L : ℝ, (φ L : ℂ) * primeFoldEven P lam L := by
+  have hu : Integrable (fun L : ℝ => (φ L : ℂ) * primeFoldBranch P lam L) :=
+    integrable_mul_primeFoldBranch P lam
+      (continuous_ofReal_testFunction φ) (hasCompactSupport_ofReal_testFunction φ)
+  have hv : Integrable (fun L : ℝ => (φ L : ℂ) * primeFoldBranch P (-lam) L) :=
+    integrable_mul_primeFoldBranch P (-lam)
+      (continuous_ofReal_testFunction φ) (hasCompactSupport_ofReal_testFunction φ)
+  rw [primeFoldEvenDistribution, smul_apply,
+    add_apply, primeFoldBranchDistribution_apply,
+    primeFoldBranchDistribution_apply, smul_eq_mul]
+  rw [show (fun L : ℝ => (φ L : ℂ) * primeFoldEven P lam L) =
+      fun L : ℝ => ((φ L : ℂ) * primeFoldBranch P lam L +
+        (φ L : ℂ) * primeFoldBranch P (-lam) L) / 2 from by
+    funext L; rw [primeFoldEven]; ring]
+  rw [integral_div, integral_add hu hv]
+  ring
+
+theorem primeFoldOddDistribution_apply (P : ℂ → ℂ) (lam : ℂ)
+    (φ : DeningerTimeTestFunction) :
+    primeFoldOddDistribution P lam φ =
+      ∫ L : ℝ, (φ L : ℂ) * primeFoldOdd P lam L := by
+  have hu : Integrable (fun L : ℝ => (φ L : ℂ) * primeFoldBranch P lam L) :=
+    integrable_mul_primeFoldBranch P lam
+      (continuous_ofReal_testFunction φ) (hasCompactSupport_ofReal_testFunction φ)
+  have hv : Integrable (fun L : ℝ => (φ L : ℂ) * primeFoldBranch P (-lam) L) :=
+    integrable_mul_primeFoldBranch P (-lam)
+      (continuous_ofReal_testFunction φ) (hasCompactSupport_ofReal_testFunction φ)
+  rw [primeFoldOddDistribution, smul_apply,
+    sub_apply, primeFoldBranchDistribution_apply,
+    primeFoldBranchDistribution_apply, smul_eq_mul]
+  rw [show (fun L : ℝ => (φ L : ℂ) * primeFoldOdd P lam L) =
+      fun L : ℝ => ((φ L : ℂ) * primeFoldBranch P lam L -
+        (φ L : ℂ) * primeFoldBranch P (-lam) L) / (2 * lam) from by
+    funext L; rw [primeFoldOdd]; ring]
+  rw [integral_div, integral_sub hu hv]
+  ring
+
+theorem deriv_deriv_ofReal_testFunction (φ : DeningerTimeTestFunction) :
+    deriv (deriv (fun x : ℝ => (φ x : ℂ))) =
+      fun L : ℝ =>
+        ((deningerTimeTestDerivative (deningerTimeTestDerivative φ) L : ℝ) : ℂ) := by
+  rw [deriv_ofReal_testFunction φ]
+  exact deriv_ofReal_testFunction (deningerTimeTestDerivative φ)
+
+theorem secondOrder_pairing_apply
+    (T : DeningerTimeDistribution) (lam : ℂ) (φ : DeningerTimeTestFunction) :
+    (deningerTimeDistributionDeriv (deningerTimeDistributionDeriv T) -
+        (lam ^ 2) • T) φ =
+      T (deningerTimeTestDerivative (deningerTimeTestDerivative φ)) - lam ^ 2 * T φ := by
+  rw [sub_apply, deningerTimeDistributionDeriv_apply,
+    deningerTimeDistributionDeriv_apply, smul_apply, smul_eq_mul]
+  ring
+
+/-- **Theorem 1, odd part.**  The divided difference of the two reflected branches obeys the
+parameter-independent second-order equation `(∂_L² - lam²) S_lam = -Π₀`. -/
+theorem primeFoldOdd_secondOrder_distribution
+    (P : ℂ → ℂ) {lam : ℂ} (hlam : lam ≠ 0) :
+    deningerTimeDistributionDeriv
+        (deningerTimeDistributionDeriv (primeFoldOddDistribution P lam)) -
+        (lam ^ 2) • primeFoldOddDistribution P lam =
+      -criticalPrimeTailForcingDistribution := by
+  ext φ
+  have hmain := integral_primeFoldOdd_secondOrder P hlam
+    (contDiff_ofReal_testFunction φ 2) (hasCompactSupport_ofReal_testFunction φ)
+  rw [deriv_deriv_ofReal_testFunction φ] at hmain
+  have hsplit : (∫ L : ℝ,
+      (((deningerTimeTestDerivative (deningerTimeTestDerivative φ) L : ℝ) : ℂ) -
+        lam ^ 2 * (φ L : ℂ)) * primeFoldOdd P lam L) =
+      primeFoldOddDistribution P lam
+          (deningerTimeTestDerivative (deningerTimeTestDerivative φ)) -
+        lam ^ 2 * primeFoldOddDistribution P lam φ := by
+    rw [primeFoldOddDistribution_apply, primeFoldOddDistribution_apply]
+    have h1 : Integrable (fun L : ℝ =>
+        ((deningerTimeTestDerivative (deningerTimeTestDerivative φ) L : ℝ) : ℂ) *
+          primeFoldOdd P lam L) := by
+      have := (integrable_mul_primeFoldBranch P lam
+        (continuous_ofReal_testFunction
+          (deningerTimeTestDerivative (deningerTimeTestDerivative φ)))
+        (hasCompactSupport_ofReal_testFunction
+          (deningerTimeTestDerivative (deningerTimeTestDerivative φ)))).sub
+        (integrable_mul_primeFoldBranch P (-lam)
+        (continuous_ofReal_testFunction
+          (deningerTimeTestDerivative (deningerTimeTestDerivative φ)))
+        (hasCompactSupport_ofReal_testFunction
+          (deningerTimeTestDerivative (deningerTimeTestDerivative φ))))
+      refine (this.div_const (2 * lam)).congr ?_
+      filter_upwards [] with L
+      simp only [Pi.sub_apply]
+      rw [primeFoldOdd]
+      ring
+    have h2 : Integrable (fun L : ℝ => (lam ^ 2 * (φ L : ℂ)) * primeFoldOdd P lam L) := by
+      have := (integrable_mul_primeFoldBranch P lam
+        (continuous_const.mul (continuous_ofReal_testFunction φ))
+        ((hasCompactSupport_ofReal_testFunction φ).mul_left)).sub
+        (integrable_mul_primeFoldBranch P (-lam)
+        (continuous_const.mul (continuous_ofReal_testFunction φ))
+        ((hasCompactSupport_ofReal_testFunction φ).mul_left))
+      refine (this.div_const (2 * lam)).congr ?_
+      filter_upwards [] with L
+      simp only [Pi.sub_apply]
+      rw [primeFoldOdd]
+      ring
+    rw [show (fun L : ℝ =>
+        (((deningerTimeTestDerivative (deningerTimeTestDerivative φ) L : ℝ) : ℂ) -
+          lam ^ 2 * (φ L : ℂ)) * primeFoldOdd P lam L) =
+        fun L : ℝ =>
+          ((deningerTimeTestDerivative (deningerTimeTestDerivative φ) L : ℝ) : ℂ) *
+            primeFoldOdd P lam L -
+            (lam ^ 2 * (φ L : ℂ)) * primeFoldOdd P lam L from by funext L; ring,
+      integral_sub h1 h2]
+    congr 1
+    rw [← integral_const_mul]
+    exact integral_congr_ae (Filter.Eventually.of_forall (fun L => by ring))
+  rw [hsplit] at hmain
+  rw [secondOrder_pairing_apply, neg_apply,
+    criticalPrimeTailForcingDistribution_apply]
+  rw [show primeFoldForcing (fun x : ℝ => (φ x : ℂ)) =
+      ∑' n : DeningerPrimePowerIndex,
+        (criticalPrimeTailAtomWeight n : ℂ) * (φ (deningerPrimePowerTime n) : ℂ) from rfl] at hmain
+  exact hmain
+
+/-- **Theorem 1, even part.**  The half-sum of the two reflected branches obeys
+`(∂_L² - lam²) C_lam = -∂_L Π₀`. -/
+theorem primeFoldEven_secondOrder_distribution (P : ℂ → ℂ) (lam : ℂ) :
+    deningerTimeDistributionDeriv
+        (deningerTimeDistributionDeriv (primeFoldEvenDistribution P lam)) -
+        (lam ^ 2) • primeFoldEvenDistribution P lam =
+      -deningerTimeDistributionDeriv criticalPrimeTailForcingDistribution := by
+  ext φ
+  have hmain := integral_primeFoldEven_secondOrder P lam
+    (contDiff_ofReal_testFunction φ 2) (hasCompactSupport_ofReal_testFunction φ)
+  rw [deriv_deriv_ofReal_testFunction φ, deriv_ofReal_testFunction φ] at hmain
+  have hsplit : (∫ L : ℝ,
+      (((deningerTimeTestDerivative (deningerTimeTestDerivative φ) L : ℝ) : ℂ) -
+        lam ^ 2 * (φ L : ℂ)) * primeFoldEven P lam L) =
+      primeFoldEvenDistribution P lam
+          (deningerTimeTestDerivative (deningerTimeTestDerivative φ)) -
+        lam ^ 2 * primeFoldEvenDistribution P lam φ := by
+    rw [primeFoldEvenDistribution_apply, primeFoldEvenDistribution_apply]
+    have h1 : Integrable (fun L : ℝ =>
+        ((deningerTimeTestDerivative (deningerTimeTestDerivative φ) L : ℝ) : ℂ) *
+          primeFoldEven P lam L) := by
+      have := (integrable_mul_primeFoldBranch P lam
+        (continuous_ofReal_testFunction
+          (deningerTimeTestDerivative (deningerTimeTestDerivative φ)))
+        (hasCompactSupport_ofReal_testFunction
+          (deningerTimeTestDerivative (deningerTimeTestDerivative φ)))).add
+        (integrable_mul_primeFoldBranch P (-lam)
+        (continuous_ofReal_testFunction
+          (deningerTimeTestDerivative (deningerTimeTestDerivative φ)))
+        (hasCompactSupport_ofReal_testFunction
+          (deningerTimeTestDerivative (deningerTimeTestDerivative φ))))
+      refine (this.div_const 2).congr ?_
+      filter_upwards [] with L
+      simp only [Pi.add_apply]
+      rw [primeFoldEven]
+      ring
+    have h2 : Integrable (fun L : ℝ => (lam ^ 2 * (φ L : ℂ)) * primeFoldEven P lam L) := by
+      have := (integrable_mul_primeFoldBranch P lam
+        (continuous_const.mul (continuous_ofReal_testFunction φ))
+        ((hasCompactSupport_ofReal_testFunction φ).mul_left)).add
+        (integrable_mul_primeFoldBranch P (-lam)
+        (continuous_const.mul (continuous_ofReal_testFunction φ))
+        ((hasCompactSupport_ofReal_testFunction φ).mul_left))
+      refine (this.div_const 2).congr ?_
+      filter_upwards [] with L
+      simp only [Pi.add_apply]
+      rw [primeFoldEven]
+      ring
+    rw [show (fun L : ℝ =>
+        (((deningerTimeTestDerivative (deningerTimeTestDerivative φ) L : ℝ) : ℂ) -
+          lam ^ 2 * (φ L : ℂ)) * primeFoldEven P lam L) =
+        fun L : ℝ =>
+          ((deningerTimeTestDerivative (deningerTimeTestDerivative φ) L : ℝ) : ℂ) *
+            primeFoldEven P lam L -
+            (lam ^ 2 * (φ L : ℂ)) * primeFoldEven P lam L from by funext L; ring,
+      integral_sub h1 h2]
+    congr 1
+    rw [← integral_const_mul]
+    exact integral_congr_ae (Filter.Eventually.of_forall (fun L => by ring))
+  rw [hsplit] at hmain
+  rw [secondOrder_pairing_apply, neg_apply,
+    deningerTimeDistributionDeriv_apply, criticalPrimeTailForcingDistribution_apply]
+  rw [show primeFoldForcing
+      (fun x : ℝ => ((deningerTimeTestDerivative φ x : ℝ) : ℂ)) =
+      ∑' n : DeningerPrimePowerIndex,
+        (criticalPrimeTailAtomWeight n : ℂ) *
+          (deningerTimeTestDerivative φ (deningerPrimePowerTime n) : ℂ) from rfl] at hmain
+  rw [hmain]
+  ring
+
+end
+
+end RHTower

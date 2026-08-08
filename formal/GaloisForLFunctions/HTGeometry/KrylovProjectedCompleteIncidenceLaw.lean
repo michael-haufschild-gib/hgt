@@ -725,6 +725,35 @@ theorem realLinearHamiltonianKrylovIncidenceAction_smul
   exact realLinearHamiltonianFamily_incidence_smul
     A x ψ K r target hc t
 
+/-- **Unconditional Gaussian independent-product incidence law.**  Gaussian
+coefficient averaging equals averaging over an independent normalized uniform
+direction and chi radius, with the radius transported entirely into time. -/
+theorem integral_stdGaussian_realLinearHamiltonianKrylovIncidenceAction_product
+    {m : ℕ} (hm : 0 < m) {C α : Type*} [Fintype α]
+    (A : Fin m → EuclideanSpace ℂ α →L[ℂ] EuclideanSpace ℂ α)
+    (ψ : EuclideanSpace ℂ α) (K r : ℕ) (target : C → α → ℂ)
+    (t : ℝ) :
+    (∫ x, realLinearHamiltonianKrylovIncidenceAction
+        A ψ K r target x t
+      ∂(ProbabilityTheory.stdGaussian (EuclideanSpace ℝ (Fin m)))) =
+      ∫ p : Metric.sphere (0 : EuclideanSpace ℝ (Fin m)) 1 × Set.Ioi (0 : ℝ),
+        realLinearHamiltonianKrylovIncidenceAction
+          A ψ K r target p.1.1 (p.2.1 * t)
+        ∂((gaussianAngularMeasure m).prod (gaussianRadiusMeasure m)) := by
+  have hcoord (direction : Metric.sphere
+      (0 : EuclideanSpace ℝ (Fin m)) 1) (radius : ℝ) :
+      (fun j => (radius • direction.1 : EuclideanSpace ℝ (Fin m)) j) =
+        radius • (fun j => direction.1 j) := by
+    funext j
+    rfl
+  refine integral_stdGaussian_radialTimeProduct hm
+    (fun x time => realLinearHamiltonianKrylovIncidenceAction
+      A ψ K r target (fun j => x j) time) ?_ t
+  intro direction radius hradius time
+  rw [hcoord]
+  exact realLinearHamiltonianKrylovIncidenceAction_smul
+    A ψ K r target (fun j => direction.1 j) hradius.ne' time
+
 /-- **Gaussian fixed-shell temporal mixture.**  A standard Gaussian
 Hamiltonian coefficient vector is exactly a chi-radius mixture of uniform
 fixed-shell Krylov incidence actions, with radius transported into time. -/

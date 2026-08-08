@@ -5,11 +5,11 @@ import GaloisForLFunctions.HTGeometry.GaussianRadialPolarLaw
 
 The standard multivariate Gaussian disintegrates exactly into an independent
 chi-distributed radius and normalized uniform direction on the Euclidean unit
-sphere.  Unlike a radius-only polar formula, this theorem applies to arbitrary
+sphere. Unlike a radius-only polar formula, this theorem applies to arbitrary
 Banach-valued observables and therefore retains angular Hamiltonian geometry.
 
-The final radial-time mixture theorem applies whenever scaling the coefficient
-vector only rescales the observable's time parameter.
+Both a premise-free independent-product identity and the usual iterated
+radial-time mixture (under integrability) are proved.
 -/
 
 open MeasureTheory ProbabilityTheory Metric Set
@@ -107,6 +107,19 @@ def gaussianAngularNormalization (m : ℕ) : ℝ :=
     ((2 : ℝ) ^ (1 - (m : ℝ) / 2) /
       Real.Gamma ((m : ℝ) / 2))
 
+def gaussianRadialConstant (m : ℕ) : ℝ :=
+  (2 : ℝ) ^ (1 - (m : ℝ) / 2) /
+    Real.Gamma ((m : ℝ) / 2)
+
+def gaussianAngularMeasure (m : ℕ) :
+    Measure (sphere (0 : EuclideanSpace ℝ (Fin m)) 1) :=
+  (volume : Measure (EuclideanSpace ℝ (Fin m))).toSphere.withDensity
+    (fun _ => ENNReal.ofReal (gaussianAngularNormalization m))
+
+def gaussianRadiusMeasure (m : ℕ) : Measure (Ioi (0 : ℝ)) :=
+  (Measure.volumeIoiPow (m - 1)).withDensity fun r =>
+    ENNReal.ofReal (gaussianRadialConstant m * Real.exp (-r.1 ^ 2 / 2))
+
 def gaussianSphereAverage (m : ℕ)
     (f : sphere (0 : EuclideanSpace ℝ (Fin m)) 1 → F) : F :=
   gaussianAngularNormalization m •
@@ -156,6 +169,67 @@ theorem gaussianSphereAverage_const {m : ℕ} (hm : 0 < m)
   change (gaussianAngularNormalization m *
     (volume : Measure (EuclideanSpace ℝ (Fin m))).toSphere.real Set.univ) • v = v
   rw [gaussianAngularNormalization_mul_sphereMass hm, one_smul]
+
+theorem gaussianAngularMeasure_prod_gaussianRadiusMeasure
+    {m : ℕ} (hm : 0 < m) :
+    (gaussianAngularMeasure m).prod (gaussianRadiusMeasure m) =
+      ((volume : Measure (EuclideanSpace ℝ (Fin m))).toSphere.prod
+        (Measure.volumeIoiPow (m - 1))).withDensity
+          (fun p => ENNReal.ofReal
+            ((Real.sqrt (2 * Real.pi))⁻¹ ^ m *
+              Real.exp (-p.2.1 ^ 2 / 2))) := by
+  have hmpos : (0 : ℝ) < (m : ℝ) / 2 := by positivity
+  have hGamma : 0 < Real.Gamma ((m : ℝ) / 2) :=
+    Real.Gamma_pos_of_pos hmpos
+  have hchi : gaussianRadialConstant m ≠ 0 := by
+    unfold gaussianRadialConstant
+    positivity
+  have hangular : 0 ≤ gaussianAngularNormalization m := by
+    unfold gaussianAngularNormalization
+    positivity
+  rw [gaussianAngularMeasure, gaussianRadiusMeasure,
+    prod_withDensity (by fun_prop) (by fun_prop)]
+  congr 1
+  funext p
+  rw [← ENNReal.ofReal_mul hangular]
+  congr 1
+  unfold gaussianAngularNormalization gaussianRadialConstant
+  field_simp
+
+theorem integral_stdGaussian_independent_polar
+    {m : ℕ} (hm : 0 < m) (f : EuclideanSpace ℝ (Fin m) → F) :
+    ∫ x, f x ∂(stdGaussian (EuclideanSpace ℝ (Fin m))) =
+      ∫ p : sphere (0 : EuclideanSpace ℝ (Fin m)) 1 × Ioi (0 : ℝ),
+        f (p.2.1 • p.1.1)
+        ∂((gaussianAngularMeasure m).prod (gaussianRadiusMeasure m)) := by
+  rw [integral_stdGaussian_fullPolar hm f,
+    gaussianAngularMeasure_prod_gaussianRadiusMeasure hm]
+  simp only [ENNReal.ofReal]
+  rw [integral_withDensity_eq_integral_smul]
+  · apply integral_congr_ae
+    filter_upwards with p
+    have hcoeff : 0 ≤ (Real.sqrt (2 * Real.pi))⁻¹ ^ m *
+        Real.exp (-p.2.1 ^ 2 / 2) := by positivity
+    rw [NNReal.smul_def, Real.coe_toNNReal _ hcoeff]
+  · fun_prop
+
+/-- Unconditional independent-product form of the radial-time mixture law.
+Unlike iterated Bochner notation, this identity needs no integrability premise. -/
+theorem integral_stdGaussian_radialTimeProduct
+    {m : ℕ} (hm : 0 < m)
+    (Q : EuclideanSpace ℝ (Fin m) → ℝ → F)
+    (hradial : ∀ (ω : sphere (0 : EuclideanSpace ℝ (Fin m)) 1)
+      (r : ℝ), 0 < r → ∀ t,
+        Q (r • ω.1) t = Q ω.1 (r * t))
+    (t : ℝ) :
+    ∫ x, Q x t ∂(stdGaussian (EuclideanSpace ℝ (Fin m))) =
+      ∫ p : sphere (0 : EuclideanSpace ℝ (Fin m)) 1 × Ioi (0 : ℝ),
+        Q p.1.1 (p.2.1 * t)
+        ∂((gaussianAngularMeasure m).prod (gaussianRadiusMeasure m)) := by
+  rw [integral_stdGaussian_independent_polar hm (fun x => Q x t)]
+  apply integral_congr_ae
+  filter_upwards with p
+  exact hradial p.1 p.2.1 p.2.2 t
 
 theorem integral_stdGaussian_sphere_radius {m : ℕ} (hm : 0 < m)
     [CompleteSpace F]

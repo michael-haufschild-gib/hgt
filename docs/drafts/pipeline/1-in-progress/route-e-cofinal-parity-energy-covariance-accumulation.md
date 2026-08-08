@@ -778,3 +778,62 @@ intervals, before invoking (A7) or (A10).  Merely concluding
 remains circular by existing theorem.
 
 Lean corpus was inspected read-only.  No Lean edit or build was performed for this splice.
+
+## 2026-08-08 source-faithful Euler-edge unit-shell splice
+
+New paper theorem
+`../2-fully-proven/new_scientific_knowledge/route-e-source-faithful-euler-tilt-unit-shell-law.md`
+replaces abstract shell decomposition by exact identity.  Under Euler Bernoulli tilt
+\(q_{p,\sigma}=p^{-\sigma}/(1+p^{-\sigma})\),
+
+\[
+ Z_S(x)=\mathcal P_{\sigma,S}\mathbb E_\sigma[e^{\sigma E-xe^E}],
+ \qquad
+ J_S(x)=\mathcal P_{\sigma,S}\mathbb E_\sigma[(-1)^Ne^{\sigma E-xe^E}].
+\tag{A32}
+\]
+
+Physical multiplier is exact unit-log shell:
+
+\[
+ \frac{W(E^*+u)}{W(E^*)}=e^{\sigma(u+1-e^u)},
+ \qquad E^*=\log(\sigma/x).
+\tag{A33}
+\]
+
+For canonical cofinal aperture \(Y\asymp x^{-1}\log(1/x)\), its central tilt is forced to
+
+\[
+ \sigma_x=1+\frac{2\log\log Y}{(\log Y)^2}+O((\log Y)^{-2}).
+\tag{A34}
+\]
+
+This invalidates fixed-\(\sigma<1\) broad-shell descent at actual aperture.  At moving Euler edge,
+regression frequency obeys
+
+\[
+ t^*=\frac{2\pi}{\log Y}
+      +O\!\left(\frac{\log\log Y}{(\log Y)^2}\right),
+ \qquad
+ t^*E^*=2\pi+o(1),
+\tag{A35}
+\]
+
+and unconditioned all-cumulant antiscale amplitude is exactly
+
+\[
+ \left|\mathbb E_{\sigma_x}e^{i(\pi N-t^*E)}\right|
+ =(\log Y)^{-2}e^{O(1)}.
+\tag{A36}
+\]
+
+Thus raw parity is compatible with escape on physical unit shell, while Euler accumulation alone
+stops at harmonic ceiling.  Missing theorem is neither diagonal broad-shell transversality nor
+endpoint restatement (A10).  Analytic and incidence branches now meet in one source premise:
+
+**UNIT-LOG-SHELL-E3-PARITY-CARLESON-AND-RECURRENCE-SEAM** -- within bounded physical log-product
+shells, construct source-predeclared local \(E_3\)/reservoir relation, prove unit column load and
+oriented seam flux, and transport same weights through exact prime-dilation recurrence before
+forming endpoint current.
+
+No Lean file was edited or built.
