@@ -4,7 +4,7 @@
 - **Stage:** 2 -- fully proved on paper
 - **Type:** theorem / Brown-scale route-killer / positive representation law
 - **Parents:** `fixed-shell-transversality-onset-hardening-cone-law.md`,
-  `replica-crowding-central-limit-floor.md`
+  `../3-formalized/replica-crowding-central-limit-floor.md`
 - **Status:** `[PAPER-PROVED] [FRONTIER CORRECTION] [ABSOLUTE-TRANSVERSALITY ROUTE RETIRED]
   [SIGNED PACKET CORE OPEN] [LEAN DEFERRED] [NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-08

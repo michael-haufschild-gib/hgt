@@ -299,3 +299,40 @@ This is substantially stronger than a three-column analogy and may demote “twi
 A second route-independent law has fallen out of the same object.
 For any quotient group \(G/H\), every continuous map to a Hausdorff group automatically factors through \(G/\overline H\). So the directions erased by closure are invisible to every regular Hausdorff observer—not just one chosen norm or route.
 In multiple-Gamma, the universal Hausdorff observer jumps from a circle to a torus exactly when HT depth drops from \(1\) to \(0\). This gives another conservation law, not analogy.
+
+
+### Constitutive Lawstack Geometry (CLG)
+The candidate field is now Constitutive Lawstack Geometry (CLG): geometry of source laws under lossy observation.
+Its primitive is not “one curvature,” but
+\[
+(\text{source lawstack},\ \text{native observers},\ \text{marked relations},
+\ \text{history filtration},\ \text{vertical symbols},\ \text{action}).
+\]Key corrections and results:
+Routes are observer charts; only invertible overlaps are gauges.
+
+Čech descent, native effectivity, and relative homotopy are universal observer kinematics.
+
+Hypertranscendence is not local holonomy noncompactness. Hurwitz functions can have finite local monodromy yet full differential rank.
+
+Full marked holonomy relations classify the Hurwitz differential matroid; unbounded branch history supplies its analytic realization.
+
+Positivity is phase quotient only in determinant-holonomy sectors.
+
+Compact recurrence does not bound lifted history or complexity.
+
+No scalar equation can couple HT rank, inertia, and recurrence universally.
+
+Minimal dynamics consists of three independent laws:
+- D: coherent source response;
+- S_D: vertical-symbol conservativity;
+- P: relative action coercivity.
+
+A new exact theorem proves that weighted finite-support histories have finite action sublevels, while every new history introduced by compact completion has infinite relaxed action. This is a rigorous model of closed observer projection with open lifted history—relevant to recurrence and possible horizon/interior geometry, but not yet a black-hole identification.
+
+One unconditional leverage theorem has survived: ordinary-prime scale geometry is too split to generate the missing selector. Every fixed-prime subgroup is a direct summand of \(\mathbb Q_{>0}^{\times}\); its Euler/transgression class vanishes. Inverse-monodromy cyclic totalization can cancel the defect but cannot force either monodromy to be trivial. This moves the field target from “more cyclic homology” to a genuinely non-split prime–infinity duality field.
+
+A second, stronger cross-route law is now exact. Hurwitz branch increments and the arithmetic Gamma/Stokes defect are two shadows of one marked half-character \(u\) with coarse holonomy \(z=u^2\): even curvature \(K=z-1\), odd soldering \(S=u-u^{-1}\), and energy \(-KJ(K)=S^2\). The half-character lives on a \(\mu_2\) root torsor and cannot be recovered from coarse holonomy. At all primes, finite-place equivalence becomes a one-way non-split map because its inverse fails the fixed \(\ell^1\) quotient. This is a genuine field theorem, though it still does not select \(u=1\).
+
+First hostile verdict: field survives only as a serious Stage‑1 programme, not yet “GR established.” Two real repairs matter: separate three distinct phase/root quotients, and weaken “cofinal nonsplitting” to the theorem actually proved—loss of the canonical diagonal inverse. I’m patching those claims rather than defending inflated wording.
+
+Physics audit produced a useful correction and theorem: root parity is only a finite \(\mu_2\) memory, not Brown–Susskind history. Full winding \(n\in\mathbb Z\) plus a coercive action is required. I’m adding the exact recurrence/action inequality and explicitly separating split-real arithmetic positivity from compact-phase recurrence.

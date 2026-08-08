@@ -4,11 +4,14 @@
 - **Stage:** 2 — fully proven on paper
 - **Type:** THEOREM (paper) / SOURCE-TRANSGRESSION NO-GO / POSITIVE SURVIVOR
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [SOURCE-PURE]`
-  `[NON-SPLIT DUALITY REQUIRED] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+  `[COFRAME ANOMALY REQUIRED] [BOUNDED COUPLING SPLITS]`
+  `[WITHIN CONNECTING-EXTENSION ANSATZ: NON-SPLIT CHAIN EXTENSION REQUIRED]`
+  `[NOT RH] [NO LEAN WRITTEN OR BUILT]`
 - **Statement:** The fixed-prime scale extension inside
-  `Q_(>0)^times` splits, so its Euler class and every induced ordinary transgression vanish;
-  inverse-monodromy paracyclic totalization cancels the mate defect without selecting trivial
-  monodromy.
+  `Q_(>0)^times` splits, so its Euler/cap-product transgression—equivalently the
+  Lyndon--Hochschild--Serre `d_2` of the kernel `H^1(C_p;Z)` generator with trivial
+  coefficients—vanishes; inverse-monodromy paracyclic totalization cancels the mate defect without
+  selecting trivial monodromy.
 
 ## Goal
 
@@ -35,7 +38,7 @@ for a fixed ordinary prime `p`.
 Unique factorization gives canonical isomorphisms
 
 \[
- G\simeq\bigoplus_{\ell\ {m prime}}\mathbb Z,
+ G\simeq\bigoplus_{\ell\ \mathrm{prime}}\mathbb Z,
  \qquad
  G=C_p\times G^{(p)},
  \qquad
@@ -89,14 +92,21 @@ prime-period, relation-kernel, Kummer, or Bockstein calibrator.
 
 #### Proof
 
-Cap product by `e_p` is zero by `(4)`. The corpus prime calibrators named in the conclusion have
-already-proved nonzero value on the trace-one ordinary-prime class, so they cannot be this zero
-operator. QED.
+Cap product by `e_p` is zero by `(4)`. The corpus prime calibrators named in the conclusion vanish
+at neutral grade but have already-proved nonzero value on the trace-one ordinary-prime class at
+every nonneutral specialization. They therefore cannot be the identically zero Euler operator.
+QED.
 
 Ponge's crossed-product theorem is an exact instance: for an abelian group `Gamma=G` and
 infinite-order `phi=p`, one has `Gamma_phi=G` and
 `bar Gamma_phi=G/<p>`. Under the theorem's additional good-action hypotheses, the periodicity
 operator is described by the Euler class of exactly `(3)`, hence vanishes here.
+
+Precisely, Ponge assumes a unital algebra over a coefficient ring containing `Q`, an
+infinite-order element `phi`, and a good action for which projection of the `phi`-parachain
+complex to `phi`-coinvariants is a quasi-isomorphism. Under these hypotheses the periodicity
+operator is cap product by `e_phi`. The conclusion here concerns that Euler-generated operator;
+it does not say that every unrelated class in `H^2(G/C_p;M)` vanishes.
 
 ## 2. Inverse-monodromy totalization theorem
 
@@ -136,9 +146,10 @@ field,
 \tag{8}
 \]
 
-satisfies `(7)`. Therefore a construction that pairs the physical mate gain with its inverse can
-produce an honest total mixed complex for every nontrivial gain. It cancels monodromy by design;
-it does not prove the individual monodromy is one.
+satisfies `(7)`. Therefore, whenever the remaining cylindrical face, degeneracy, and compatibility
+identities are supplied, condition `(7)` permits an honest total mixed complex for every
+nontrivial inverse pair. The monodromy condition cancels monodromy by design; it does not prove
+the individual monodromy is one.
 
 #### Proof
 
@@ -146,14 +157,138 @@ The product in `(8)` is the identity for every nonzero `lambda`. If `lambda != 1
 is the identity although the total cylindrical condition holds. Thus total cyclicity cannot imply
 factorwise cyclicity. QED.
 
-At a Riemann divisor point one may set `lambda=delta_n(rho)`. The model then totalizes equally
-well for `Re(rho)=1/2` and `Re(rho) != 1/2`. It cannot prove RH.
+At a Riemann divisor point one may set `lambda=delta_n(rho)`. The cylindrical monodromy condition
+is then equally compatible with `Re(rho)=1/2` and `Re(rho) != 1/2`. It cannot prove RH.
 
-Getzler's normalization criterion is compatible with this boundary: a paracyclic module becomes
-cyclic only when the cyclic projection acts as the identity on the normalized complex.
-Normalization does not manufacture this equality.
+Getzler's normalization criterion is compatible with this boundary: cyclicity is equivalent to
+the Dwyer--Kan operator being the identity on normalized chains, where it identifies with
+monodromy. Normalization does not manufacture this equality.
 
-## 3. Combined source no-go
+## 3. Hostile limit: flat and split do not imply non-nullity
+
+Theorems 1.1 and 2.1 rule out named transgression mechanisms. They do **not** imply that every
+flat, primewise split source preserves its prime classes.
+
+### Counterexample 3.1
+
+Over a field `k`, take the direct sum of two-term complexes
+
+\[
+ C=\bigoplus_p\left(kh_p\xrightarrow{\ b\ }ku_p\right),
+ \qquad b(h_p)=u_p.
+\tag{9}
+\]
+
+Give it the zero connection and the completely split prime-coordinate scale action. Every `u_p`
+is a boundary. Thus source flatness and primewise splitting alone neither forbid nullhomotopies nor
+force a prime--infinity datum.
+
+The literal rational-adelic source is different for a precise reason: it carries a coefficient-
+faithful valuation/Kummer coframe.
+
+### Theorem 3.2 — coframe-extension nonerasure
+
+Let `C,C_hat` be chain complexes over a field `k`, let `f:C->C_hat` be a chain map, and suppose
+`u_p in C_n` are cycles. For every prime `ell`, let
+`phi_ell in Hom_k(C_n,k)` be a cocycle with
+
+\[
+ \phi_\ell(u_p)=-\delta_{\ell p}.
+\tag{10}
+\]
+
+If every `phi_ell` extends to a cocycle `phi_hat_ell in Hom_k((C_hat)_n,k)` satisfying
+`phi_hat_ell circ f=phi_ell`, then the images of the classes `[u_p]` are linearly independent in
+`H_n(C_hat)`. In particular no nonzero finite linear combination of them becomes a boundary.
+
+#### Proof
+
+Suppose `sum_p c_p f(u_p)=b_hat v` in `C_hat`, with finite support. Apply the closed cochain
+`phi_hat_ell`. It kills the boundary and gives `-c_ell=0`. This holds for every `ell`, so all
+coefficients vanish. QED.
+
+The literal coframe realization is paper-proved in
+`../constraint-relativity/prime-valuation-cyclic-coframe-and-diagonal-dagger-defect-law.md`.
+Therefore any exactification that kills a literal prime class must make at least one valuation
+cochain fail to extend as an admitted closed reader. The possible anomaly may be algebraic,
+topological, continuity-based, or domain-based; flatness alone does not locate it.
+
+### Corollary 3.2a — connecting transgression forces coframe anomaly
+
+In a short exact sequence of complexes
+
+\[
+ 0\longrightarrow C\longrightarrow E\longrightarrow I\longrightarrow0,
+\tag{10a}
+\]
+
+if the full coframe extends closedly to `E`, then the image of the connecting map
+
+\[
+ \partial:H_{n+1}(I)\longrightarrow H_n(C)
+\]
+
+has zero intersection with the finite prime span. If `(10a)` splits as complexes, then
+`partial=0`.
+
+#### Proof
+
+Exactness gives `i_* partial=0`. Theorem 3.2 makes `i_*` injective on the prime span, so no nonzero
+prime combination lies in the connecting image. A split short exact sequence has zero connecting
+map. QED.
+
+### Theorem 3.3 — bounded logarithmic prime--infinity coupling splits
+
+Let `X` be a solid Banach sequence space on the ordinary-prime index set, meaning bounded
+coordinate multipliers act boundedly. This includes `ell^q(P)` for `1<=q<=infinity` and
+`c_0(P)`. Let
+
+\[
+ (\Lambda x)_p=(\log p)x_p
+\]
+
+with its maximal domain, and let `b in X`. On `Dom(Lambda) direct-sum k`, define
+
+\[
+ A_b(x,c)=(\Lambda x+cb,0).
+\tag{11}
+\]
+
+Then `A_b` is boundedly similar to the split operator `A_0`. Explicitly,
+
+\[
+ h=-\Lambda^{-1}b,
+ \qquad
+ S_h(x,c)=(x+ch,c)
+\tag{12}
+\]
+
+is bounded and invertible on `X direct-sum k` and on `Dom(Lambda) direct-sum k` with the graph
+norm, preserves the operator domain, and satisfies
+
+\[
+ S_h^{-1}A_bS_h=A_0.
+\tag{13}
+\]
+
+#### Proof
+
+Because `p>=2`, the diagonal multiplier `1/log p` is bounded. Hence `h in X`, and
+`Lambda h=-b in X`, so `h in Dom(Lambda)`. The shear `S_h` and its inverse `S_(-h)` are bounded
+and preserve the domain. Finally,
+
+\[
+ A_bS_h(x,c)=(\Lambda x+c\Lambda h+cb,0)=(\Lambda x,0),
+\]
+
+and applying `S_h^{-1}` changes nothing because the second coordinate is zero. This proves
+`(13)`. QED.
+
+Thus a bounded off-diagonal infinity port does not provide the missing non-split law on ordinary
+sequence completions. A useful coupling must be singular/unbounded, order-sensitive,
+domain-obstructed, or carried by a topology in which `Lambda^{-1}b` is not an admitted shear.
+
+## 4. Combined source no-go
 
 The two theorems eliminate opposite repairs:
 
@@ -163,19 +298,31 @@ The two theorems eliminate opposite repairs:
 
 Hence the current literal scale/cyclic source has neither a nonzero fixed-prime Euler
 transgression nor a factor-selecting cylindrical totalization. More Hochschild degree, ordinary
-group cohomology, or inverse mate doubling does not change this conclusion.
+group cohomology, or inverse mate doubling does not revive either named mechanism without
+introducing a class not generated by the split fixed-prime extension.
 
 This result is consistent with the independent radial-gauge theorem: the identity-total-grade
 cyclic source and its Kummer cocycles are equivariant under the full radial family. The present
 theorem identifies a second reason the same source cannot break that symmetry: its coordinate
 prime extensions are already split.
 
-## 4. Strongest positive survivor — non-split local-to-global duality
+## 5. Strongest positive survivor — coframe anomaly; local-to-global duality as design target
 
-The first carrier not excluded by Theorems 1.1 and 2.1 must couple at least two law directions by
-a source-derived non-split class. A minimal algebraic normal form is a nonzero alternating
-rank-two extension/Heisenberg class joining a finite-prime direction to an independently defined
-infinity direction.
+Within a prime--infinity connecting-extension ansatz, a nonzero connecting transgression requires
+a source-derived non-split chain extension. Theorem 3.3 further proves that its ordinary
+sequence-space realization cannot be a bounded logarithmic rank-one coupling.
+
+This necessity is conditional on the extension ansatz. For example, the short exact sequence with
+`C=k[0]`, `I=k[1]`, and middle complex `E=(k ->^(id) k)` has connecting map
+`H_1(I)->H_0(C)` equal to the identity and involves no alternating Heisenberg class.
+Counterexample 3.1 also shows that other nullhomotopy mechanisms exist. The unconditional
+literal-source statement is Theorem 3.2: any successful mechanism must cause a valuation-coframe
+extension anomaly.
+
+**Conjectural design target.** A nonzero alternating rank-two extension/Heisenberg class joining a
+finite-prime direction to an independently defined infinity direction is one possible algebraic
+normal form, provided singular source topology or domain data prevents the shear `(12)`. It is not
+proved necessary.
 
 Adding such a class by hand is tautological. A viable source mechanism must instead construct a
 local-to-global duality cone whose self-duality produces:
@@ -188,20 +335,24 @@ local-to-global duality cone whose self-duality produces:
 Poitou--Tate/Selmer duality is a precise parent for this *type* of datum, not a solution. Existing
 derived Galois results obtain shifted symplectic/Lagrangian structures and determinant lines only
 after a genuine Galois representation, local conditions, perfectness, and duality hypotheses are
-specified. No current theorem realizes the HGT rational-adelic source as such a self-dual cone.
+specified. At odd `p`, ordinary real-place `p`-adic cohomology can also be weak because `2` is
+invertible; a genuine infinity line may require adelic fppf Tate modification or an
+Arakelov/Deligne regulator cone. No current theorem realizes the HGT rational-adelic source as
+such a self-dual cone.
 
 Thus the surviving field-level conjecture is:
 
 > The missing constitutive law is not another class internal to the split prime-scale groupoid.
-> It is a source-constructed, non-split prime--infinity duality field whose transgression is
-> visible before divisor specialization and whose ordinary-prime shadow is the existing nonzero
-> Kummer/Bockstein class.
+> It must either be a source-constructed singular, non-split prime--infinity duality field or an
+> independently typed anomaly in extension of the full valuation coframe. Its transgression must
+> be visible before divisor specialization and retain the existing nonzero Kummer/Bockstein
+> prime shadow.
 
 This conjecture is falsified by either an existing nonzero source Euler class within the split
 coordinate extension, or a source-independent inverse-monodromy totalization that forces each
 factor to be one.
 
-## 5. Literature boundary
+## 6. Literature boundary
 
 - Ponge, *Cyclic Homology and Group Actions*:
   <https://arxiv.org/abs/1706.08992>.
@@ -213,6 +364,10 @@ factor to be one.
   <https://arxiv.org/abs/2205.02292>.
 - Macias Castillo--Sano, 2026 Selmer/Poitou--Tate complexes, Stark systems, and derived heights:
   <https://arxiv.org/abs/2603.23978>.
+- Česnavičius, Poitou--Tate without order restrictions and Tate-modified archimedean terms:
+  <https://arxiv.org/abs/1410.2621>.
+- Holmström--Scholbach, Arakelov motivic cohomology:
+  <https://arxiv.org/abs/1012.2523>.
 
 These papers supply parent mechanisms. None constructs the required HGT source realization or
 proves a critical-line statement.
@@ -222,10 +377,12 @@ proves a critical-line statement.
 - **Exact killing theorem/mechanism:** Unique factorization makes every coordinate-prime subgroup
   a direct factor, so its extension/Euler class is zero. Cylindrical inverse-monodromy
   totalization enforces only product-one monodromy.
-- **Strongest positive survivor:** A non-split, source-derived local-to-global duality cone with a
-  finite-prime/infinity pairing and determinant line.
-- **New insight:** Current arithmetic source is not missing more cyclic degree. It is missing a
-  duality coupling that is absent from the split scale group itself.
+- **Strongest positive survivor:** Coframe-extension anomaly theorem; within a connecting
+  prime--infinity ansatz, a non-split chain extension is necessary, while a singular self-dual
+  local-to-global cone is only a design target.
+- **New insight:** Current arithmetic source is not missing more cyclic degree. Any killing
+  exactification must lose extension of an already coefficient-faithful valuation reader, while
+  every bounded logarithmic infinity coupling on standard sequence spaces is gauge-split.
 - **Status:** Paper proof dependency-closed. Arithmetic realization of the survivor remains open
   and RH-bearing only after comparison to the Xi physical defect.
 
@@ -234,6 +391,9 @@ proves a critical-line statement.
 - [x] exact split-prime theorem
 - [x] Euler-class/transgression consequence
 - [x] inverse-monodromy countermodel
+- [x] flat/split nullhomology counterexample
+- [x] coframe-extension nonerasure theorem
+- [x] bounded logarithmic coupling split theorem
 - [x] strongest positive survivor isolated
 - [x] current primary literature boundary checked
 - [ ] construct HGT local-to-global duality cone

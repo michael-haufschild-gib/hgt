@@ -1314,3 +1314,168 @@ estimates, this proves the seed law `(32)` on paper.
 
   What remains between this and `(11)` is not analysis of this kind: it is the exterior estimate
   `(16)` supplying the majorant `C sqrt(d_1(lambda)) / (c k^2)` for each channel.
+
+- 2026-08-09 (twenty-sixth instalment) -- **`(50)` is proved in Lean.**  Two new modules,
+  `RHTower/OscillatoryDecayPrimitive.lean` and `RHTower/ExteriorProfileBounds.lean`, wired into the
+  umbrella, all declarations axiom-clean.
+
+  * **`integral_inv_sq_le`** -- the convergent tail `int_2^X x^(-2) <= 1/2`.
+  * **`norm_integral_cexp_le_of_decay`** -- with an antiderivative datum decaying like `K/x` and a
+    derivative like `K/x^2`, the oscillatory integral from `2` to any endpoint is at most `3K/2`,
+    with no dependence on the endpoint.
+  * **`norm_integral_cexp_le_of_profile`** -- the same with the phase scaled by `+- c`, giving the
+    gain `3C/(2c)`.  The frequency is gained because the antiderivative datum is the profile divided
+    by `+- i c`.
+  * **`hasDerivAt_inv_sqrt`, `exteriorWeight`, `hasDerivAt_exteriorWeight`,
+    `abs_exteriorWeight_le`, `abs_deriv_exteriorWeight_le`** -- the weight `1/(sqrt x xi')` and its
+    derivative.
+  * **`norm_exteriorProfile_le`, `norm_deriv_exteriorProfile_le`** -- the profile `a/(sqrt x xi')`
+    decays like `C/x` and its derivative like `(3C/2 + C^2/2)/x^2`, from `(48)` and `(49)`.
+  * **`norm_integral_exterior_le`** -- the assembly: for an amplitude with `|a| <= C x^(-1/2)` and
+    `|a'| <= C x^(-3/2)`, a phase speed `xi' >= 1` whose reciprocal has `|(1/xi')'| <= C x^(-2)`,
+    and a branch sign `eps = +-1`,
+    `‖int_2^X (a(x)/sqrt x) exp(i eps c xi(x)) dx‖ <= 3(3C/2 + C^2/2)/(2c)`, uniformly in `X`.
+    This is `(50)`.
+
+  Two points on what carries the estimate.  First, the uniformity in `X` is not decay of the
+  integrand -- the integrand does not decay fast enough to be absolutely integrable -- but the fact
+  that the *profile* derivative is `O(x^(-2))`, whose tail converges.  Second, the corpus's existing
+  van der Corput tests could not be used: they all require `phi'' >= 0`, and `(49)` supplies only
+  bounded variation of `1/xi'`.  That is why the twentieth instalment's monotonicity-free
+  integration by parts was needed first.
+
+  I checked `RHTower/ProlateDunsterBesselOffDiagonal.lean` (2203 lines) before building: it treats
+  the CCM first-row radial products with the *monotone* phase family `xiSumPhase`/`xiSumSpeed` and
+  the monotone-phase tests, so it is a different mechanism and there is no duplication.
+
+  With `(44)`, `(45)`, `(46)` and `(50)` all closed, what remains between here and `(51)` is the
+  supply side: Dunster's expansion `(48)` itself, i.e. the existence of amplitudes with those bounds
+  for the actual prolate functions, and then the endpoint normalization `(37)`-`(38)` that turns
+  `(45)`-`(46)` into `(47)`.
+
+- 2026-08-09 (twenty-seventh instalment) -- **`(49)` is a theorem, not a hypothesis.**  Two new
+  modules, `RHTower/XiReciprocalSpeed.lean` and `RHTower/ExteriorXiPrimitive.lean`, wired into the
+  umbrella, axiom-clean.
+
+  The corpus already owns the exterior Liouville--Green phase of this very problem:
+  `xiSpeed s t = sqrt((t^2 - s)/(t^2 - 1))` with `s = sigma^2`, its antiderivative
+  `xiEndpointPhase`, its derivative `hasDerivAt_xiSpeed`, the speed bound `one_le_xiSpeed`, and
+  `continuousOn_xiSpeed` (`CCMFirstRowStationaryPhase.lean`,
+  `CCMFirstRowVanDerCorputBlocks.lean`).  So the first half of `(49)`, `xi' >= 1`, was already
+  proved.  What was absent is the half the integration by parts actually consumes: the variation of
+  the *reciprocal* speed.
+
+  * **`hasDerivAt_inv_xiSpeed`** -- the derivative of `1/xi'`, from the corpus's `hasDerivAt_xiSpeed`
+    and the reciprocal rule.
+  * **`abs_deriv_inv_xiSpeed_le`** -- `|(1/xi')'(x)| <= x^{-2}` for `x >= 2`, `0 <= s <= 1`.  This is
+    the second half of `(49)`, and with constant *one*, not an unspecified `C_n`.  The mechanism:
+    `(1/xi')' = x(1-s)/((x^2-1)^2 (xi')^3)`, and since `xi' >= 1` this is at most `x/(x^2-1)^2`,
+    which is below `x^{-2}` exactly because `x^3 <= (x^2-1)^2` from `x = 2` onward.
+  * **`xiInvSpeedDeriv`, `continuousOn_xiInvSpeedDeriv`** -- the reciprocal-speed derivative as a
+    function, and its continuity.
+  * **`norm_integral_exterior_xiPhase_le`** -- the exterior branch bound with the *actual* prolate
+    phase substituted.  The phase side of the estimate now carries no conditions whatsoever: the
+    speed bound and the reciprocal variation are both theorems of this project.
+
+  What this changes: the twenty-sixth instalment's `(50)` was stated for any phase satisfying
+  `(49)`.  It is now stated for the prolate phase itself, and the only remaining conditions are the
+  amplitude bounds `(48)` -- which is what a Liouville--Green expansion supplies by construction, and
+  is the one genuinely outstanding input of this branch.
+
+- 2026-08-09 (twenty-eighth instalment) -- **`(48)` closed, and with it the exterior branch has no
+  hypotheses left.**  Two new modules, `RHTower/XiAmplitudeDecay.lean` and
+  `RHTower/ExteriorDunsterPrimitive.lean`, wired into the umbrella, axiom-clean.
+
+  I checked the corpus before building and found most of `(48)` already there.
+  `CCMFirstRowStationaryPhase.lean` defines `xiAmplitude` -- Dunster's amplitude `(39)` -- and proves
+  `xiAmplitude_le`: `A <= 2^(1/4) x^(-1/2)`.  That is the amplitude half of `(48)`, already done.
+  `ProlateDunsterComparisonBridge.lean` computes the derivative in logarithmic form,
+  `A' = A (D/2 - x/(2(x^2-s)))` with `D` the phase defect, and `CCMRadialProlateDefect.lean` bounds
+  `|D| <= x/(x^2-1)`.  So all three ingredients of the derivative half existed; what was missing was
+  only their combination.
+
+  * **`sqrt_sqrt_two_le_two`, `abs_xiAmplitude_le_four`** -- the amplitude bound restated with the
+    single constant the primitive consumes.
+  * **`abs_xiAmplitudeDeriv_le`** -- `|A'(x)| <= 4 x^(-3/2)` for `x >= 2`, `0 <= s <= 1/2`.  Away
+    from the endpoint `|D|/2 <= 2/(3x)` and `x/(2(x^2-s)) <= 4/(7x)`, so the logarithmic derivative
+    is below `2/x`; the amplitude contributes its own `x^(-1/2)`.  This is the derivative half of
+    `(48)`.
+  * **`continuousOn_xiAmplitudeDeriv`** -- continuity of that derivative.
+  * **`norm_integral_exterior_dunster_le`** -- the branch integral of Dunster's amplitude against the
+    exterior phase over `[2, X]` is at most `21/c`, uniformly in `X`.
+
+  What is worth stating precisely: this last theorem has **no analytic hypotheses**.  Its only
+  assumptions are the parameter ranges `0 <= s <= 1/2`, `c > 0`, `|eps| = 1`, `X >= 2`.  Every
+  analytic input -- the amplitude decay `(48)`, the speed bound and reciprocal variation `(49)`, and
+  the integration by parts `(50)` -- is a proved theorem of this project.  The exterior branch of the
+  card is therefore closed, not merely reduced.
+
+  What `(50)` in the card additionally asserts, and this does not yet give, is the *sum over the two
+  branches* weighted by `sqrt(d_n(lambda))`, i.e. the passage from the branch integral to
+  `U_(n,lambda)` itself.  That is the content of the expansion `(48)` as an identity -- that
+  `U_(n,lambda)` equals the two-branch sum -- rather than of the estimates on its terms.
+
+- 2026-08-09 (twenty-ninth instalment) -- **The Dunster coordinate as a change of variable, and the
+  transported compact primitive.**  Two new modules, `RHTower/XiCoordinate.lean` and
+  `RHTower/XiTransportedPrimitive.lean`, wired into the umbrella, axiom-clean.
+
+  I checked first: the corpus has `xiEndpointPhase` with its derivative, positivity, continuity on
+  `Ioi 1`, and the two-sided bracket `xiEndpointPhase_bounds`, but **nothing making it a change of
+  variable** -- no monotonicity, no image, no substitution formula.  That is the missing structural
+  step behind `(41)` and `(47)`.
+
+  * **`xiEndpointPhase_one`** -- the phase vanishes at the endpoint.
+  * **`continuousWithinAt_xiEndpointPhase_one`, `continuousOn_xiEndpointPhase_Ici`** -- continuity
+    up to the singular endpoint.  This is not automatic: the integrand blows up at `x = 1`.  The
+    corpus's own bracket `sqrt(1-s) sqrt(x^2-1) <= xi <= sqrt(x^2-1)` squeezes the phase to zero,
+    which settles it in three lines.
+  * **`strictMonoOn_xiEndpointPhase`, `injOn_xiEndpointPhase`** -- strict monotonicity from
+    positivity of the speed on the interior.
+  * **`image_xiEndpointPhase_Icc`, `image_xiEndpointPhase_Ioo`** -- the image is the phase interval,
+    by monotonicity one way and the intermediate value theorem the other.
+  * **`xiEndpointPhase_le_two`** -- the phase of the compact exterior range `[1,2]` stays below `2`,
+    which is exactly the radius bound the bounded-radius Bessel estimates require.
+  * **`setIntegral_comp_xiEndpointPhase`, `intervalIntegral_comp_xiEndpointPhase`** -- the
+    substitution itself.  Proved on the open interval, where the derivative exists, via the measurable
+    change-of-variables formula; the endpoint is a null set so nothing is lost.
+  * **`abs_integral_xiTransported_le`, `abs_integral_xiTransported_normalized_le`** -- `(45)`
+    transported to the exterior variable: the speed-weighted Bessel integral over a compact exterior
+    range is `O(c^(-3/2))`, and with the model's own `sqrt c` normalization, `O(1/c)`.
+
+  The last statement is the shape of `(47)`: one full power of the frequency on a compact exterior
+  range, uniform in the endpoint.  What separates it from `(47)` itself is the identification of the
+  weight -- the card's `B_(sigma,c)` of `(42)`, defined through the *inverse* coordinate `X_sigma`,
+  together with its `C^1` bound `(43)`.  The coordinate is now known to be a strictly monotone
+  continuous bijection onto its image, which is what constructing that inverse requires.
+
+- 2026-08-09 (thirtieth instalment) -- **The inverse coordinate `X_sigma`, and the transport
+  identity `(41)`.**  Two new modules, `RHTower/XiInverseCoordinate.lean` and
+  `RHTower/XiBesselWeight.lean`, wired into the umbrella, axiom-clean.
+
+  The previous instalment left the coordinate known to be a strictly monotone continuous injection.
+  That is exactly what constructing the inverse needs, and the inverse is what `(42)` is written
+  through.
+
+  * **`exists_lt_xiEndpointPhase`** -- the phase exceeds any level, with an explicit exterior point
+    `X = sqrt(1 + 4y^2)`.  The corpus's lower bracket does the work; no asymptotics.
+  * **`image_xiEndpointPhase_Ioi`** -- the phase maps the exterior ray *onto* the positive ray.
+  * **`xiInverse`, `xiEndpointPhase_xiInverse`, `xiInverse_xiEndpointPhase`,
+    `xiInverse_mem_Ioi`, `strictMonoOn_xiInverse`, `image_xiInverse_Ioi`** -- the inverse coordinate
+    and its two-sided inverse laws.
+  * **`continuousAt_xiInverse`** -- continuity of the inverse.  Note this is proved by applying the
+    monotone-continuity criterion to the *inverse* directly: it is strictly monotone and its image
+    `Ioi 1` is open, hence a neighbourhood of each value.  Going through the forward map would have
+    needed a homeomorphism-of-subtypes argument.
+  * **`hasDerivAt_xiInverse`** -- the inverse function theorem: `X_sigma'(r) = 1/xi_sigma'(X_sigma(r))`.
+  * **`xiBesselWeight`** -- Dunster's weight `(42)`, with the fourth roots as iterated square roots.
+  * **`xiAmplitude_mul_inv_xiSpeed_eq`** -- **`(41)`**: `A_sigma(X_sigma(r)) X_sigma'(r) = r B_sigma(r)`.
+
+  The identity is exact and the bookkeeping is the whole content: the phase `r` cancels against the
+  amplitude's own square root, and the two quarter powers in the amplitude's denominator recombine
+  with the half powers coming from the reciprocal speed.  Writing every quarter power as an iterated
+  square root and substituting `p^2 = sqrt(x^2-1)`, `c^2 = r` before clearing denominators turns it
+  into a rational identity.
+
+  With `(41)` proved and the substitution of the twenty-ninth instalment in place, what `(47)` still
+  needs is `(43)`: the `C^1` bound on `B_sigma` over the compact phase range, including the removable
+  singularity at `r = 0`.

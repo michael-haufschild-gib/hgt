@@ -122,6 +122,8 @@ theorem norm_integral_cexp_le_of_profile
     have hcast : ((eps * c * ξ' x : ℝ) : ℂ) = ((eps * c : ℝ) : ℂ) * (ξ' x : ℂ) := by
       push_cast
       ring
+    have hcne : ((eps * c : ℝ) : ℂ) ≠ 0 := by
+      exact_mod_cast mul_ne_zero hepsne (ne_of_gt hc)
     rw [hcast, ← hrel x hx, hd]
     field_simp
   have hK : (0 : ℝ) ≤ C / c := by positivity
@@ -144,7 +146,6 @@ theorem norm_integral_cexp_le_of_profile
   have hmain := norm_integral_cexp_le_of_decay (K := C / c) hX hK hφ hB hB'c hAc hrel' hBd hB'd
   have hval : 3 * (C / c) / 2 = 3 * C / (2 * c) := by
     field_simp
-    ring
   rwa [hval] at hmain
 
 

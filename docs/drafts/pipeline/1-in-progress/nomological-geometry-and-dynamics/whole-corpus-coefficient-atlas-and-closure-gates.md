@@ -3,12 +3,15 @@
 - **ID:** `ngd-whole-corpus-coefficient-atlas`
 - **Stage:** 1 — in progress
 - **Type:** FIELD CENSUS / HOSTILE COVERAGE GATE
-- **Status:** `[51 PUBLICATION UNITS CENSUSED] [EXTENSIONAL COVERAGE PASSES]`
+- **Higher field:** `constraint-motive-relativity.md`; this atlas is taxonomic input, not its
+  construction.
+- **Status:** `[51 PUBLICATION UNITS TAXONOMICALLY CENSUSED] [51 OBSERVER REALIZATIONS OPEN]`
   `[FIRST CROSS-ROUTE TRANSFORMS PROVED] [INTENSIONAL UNIFICATION OPEN]`
   `[FORMAL SUPPORT SCOPE UNRESOLVED] [NO LEAN WRITTEN]`
-- **Statement:** Every canonical publication-ready unit admits a typed NGD placement, but placement
-  is not unification; NGD remains preliminary until a coefficient-changing exchange/Jacobi theorem
-  links nonisomorphic families.
+- **Statement:** Every canonical publication-ready unit has a provisional typed NGD placement, but
+  placement is not a constructed observer realization or unification. NGD remains preliminary
+  until source objects, observer functors, comparison cells, and coefficient-changing theorems
+  link nonisomorphic families.
 
 ## Codes
 
@@ -116,7 +119,9 @@ must be explicitly absorbed or declared support-only before a whole-formal-corpu
 
 ## Closure gates
 
-- [x] all 51 publication-ready units placed without scalar collapse
+- [x] all 51 publication-ready units taxonomically placed without scalar collapse
+- [ ] all 51 rows supplied with source object, observer functor, ambient category, invariant,
+  theorem/card, proof status, and cross-family comparison
 - [x] formal namespace boundary counted
 - [x] coefficient bag rejected; fibred stable core/modalities/valuations adopted
 - [x] canonical exchange versus type fracture distinguished
@@ -140,6 +145,9 @@ must be explicitly absorbed or declared support-only before a whole-formal-corpu
   normalization
 - [x] weighted finite-support history action has finite sublevels and assigns infinite relaxed
   action to every new compact-completion boundary history
+- [x] one Euler prime-log orbit simultaneously computes arithmetic coefficient, finite
+  prolongation rank, compact recurrence, open logarithmic lift, polar phase loss, and cofinal
+  half-density Hilbert wall
 - [ ] one presentation-invariant descent/stability theorem proved across nonisomorphic families
 - [ ] one Jacobi complex simultaneously computes two publication invariants
 - [ ] one source intervention independently calibrates connection/dynamics
@@ -148,10 +156,11 @@ must be explicitly absorbed or declared support-only before a whole-formal-corpu
 
 ## Verdict
 
-NGD/CLG passes extensional coverage and now has one exact non-RH source lawstack producing
-nonisomorphic organs, but still fails the stronger constitutive/descent gate. It remains a field
-programme, not an established field. Next decisive theorem must derive a normalized metric/cost or
-construct a presentation-invariant pro/twistor descent object rather than append observer data.
+NGD/CLG passes a whole-publication taxonomy census, not extensional realization coverage. It has
+one exact non-RH source lawstack producing nonisomorphic organs, but still fails the stronger
+constitutive/descent gate. It remains a field programme, not an established field. Next decisive
+theorem must derive a normalized metric/cost or construct a presentation-invariant pro/twistor
+descent object rather than append observer data.
 
 ## Log
 

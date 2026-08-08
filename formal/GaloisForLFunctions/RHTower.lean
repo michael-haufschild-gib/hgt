@@ -5247,6 +5247,8 @@ import GaloisForLFunctions.RHTower.XiAmplitudeDecay
 import GaloisForLFunctions.RHTower.ExteriorDunsterPrimitive
 import GaloisForLFunctions.RHTower.XiCoordinate
 import GaloisForLFunctions.RHTower.XiTransportedPrimitive
+import GaloisForLFunctions.RHTower.XiInverseCoordinate
+import GaloisForLFunctions.RHTower.XiBesselWeight
 import GaloisForLFunctions.RHTower.VanDerCorputLocal
 import GaloisForLFunctions.RHTower.VanDerCorputSecond
 import GaloisForLFunctions.RHTower.VanDerCorputWeighted

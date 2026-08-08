@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.JetGradientRecursion
+import GaloisForLFunctions.HTGeometry.LogJetHeightThreeNonvanishing
 
 /-!
 # Degree in one coordinate, and the value at infinity
@@ -45,21 +46,11 @@ theorem TopDegLE.mono {m : ℕ} {d d' : ℤ} (hdd : d ≤ d') {f : CascadeField}
   obtain ⟨N, D, hD, hf, hdeg⟩ := h
   exact ⟨N, D, hD, hf, by linarith⟩
 
-theorem degreeOf_X_pow_self (m k : ℕ) :
-    degreeOf m ((MvPolynomial.X m : MvPolynomial ℕ ℂ) ^ k) = k := by
-  classical
-  induction k with
-  | zero => simp
-  | succ k ih =>
-      rw [pow_succ, degreeOf_mul_eq (pow_ne_zero k (MvPolynomial.X_ne_zero m))
-        (MvPolynomial.X_ne_zero m), ih, degreeOf_X]
-      simp
-
 theorem topDegLE_zero (m : ℕ) (d : ℤ) : TopDegLE m d (0 : CascadeField) := by
   classical
   refine ⟨0, (MvPolynomial.X m : MvPolynomial ℕ ℂ) ^ (-d).toNat,
     pow_ne_zero _ (MvPolynomial.X_ne_zero m), by simp, ?_⟩
-  rw [degreeOf_X_pow_self, MvPolynomial.degreeOf_zero]
+  rw [MvPolynomial.degreeOf_X_self_pow, MvPolynomial.degreeOf_zero]
   omega
 
 theorem topFree_zero (m : ℕ) : TopFree m (0 : CascadeField) :=
@@ -338,44 +329,33 @@ theorem coeff_univFactor_single (p : Polynomial ℂ) (m i : ℕ) :
           = MvPolynomial.C a * (MvPolynomial.X m : MvPolynomial ℕ ℂ) ^ (n + 1) := by
         simp [univFactor]
       rw [h, MvPolynomial.coeff_C_mul, MvPolynomial.X_pow_eq_monomial,
-        MvPolynomial.coeff_monomial, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow]
+        MvPolynomial.coeff_monomial, Polynomial.coeff_C_mul]
       by_cases hi : i = n + 1
-      · subst hi; simp
-      · rw [if_neg (fun hc => hi (by
-          have := congrArg (fun t : ℕ →₀ ℕ => t m) hc
-          simpa using this.symm)), if_neg (fun hc => hi hc.symm)]
-        ring
+      · subst hi
+        simp
+      · have h1 : ¬ ((Finsupp.single m i : ℕ →₀ ℕ) = Finsupp.single m (n + 1)) := by
+          intro hc
+          have hh := congrArg (fun t : ℕ →₀ ℕ => t m) hc
+          simp only [Finsupp.single_eq_same] at hh
+          exact hi hh
+        rw [if_neg (fun hc => h1 hc.symm)]
+        simp [Polynomial.coeff_X_pow, hi]
 
 theorem degreeOf_univFactor_le (m : ℕ) (p : Polynomial ℂ) :
     degreeOf m (univFactor p m) ≤ p.natDegree := by
   classical
-  induction p using Polynomial.induction_on with
-  | C a =>
-      have h : univFactor (Polynomial.C a) m = MvPolynomial.C a := by simp [univFactor]
-      rw [h]
-      simp
-  | add p q hp hq =>
-      have h : univFactor (p + q) m = univFactor p m + univFactor q m := by simp [univFactor]
-      rw [h]
-      refine le_trans (degreeOf_add_le _ _ _) ?_
-      have hd := Polynomial.natDegree_add_le p q
-      omega
-  | monomial n a _ =>
-      rcases eq_or_ne a 0 with rfl | ha
-      · have h : univFactor ((0 : Polynomial ℂ) * Polynomial.X ^ (n + 1)) m = 0 := by
-          simp [univFactor]
-        simp only [map_zero, zero_mul] at h ⊢
-        rw [h]
-        simp
-      · have h : univFactor (Polynomial.C a * Polynomial.X ^ (n + 1)) m
-            = MvPolynomial.C a * (MvPolynomial.X m : MvPolynomial ℕ ℂ) ^ (n + 1) := by
-          simp [univFactor]
-        have hdeg : (Polynomial.C a * Polynomial.X ^ (n + 1)).natDegree = n + 1 := by
-          rw [Polynomial.natDegree_C_mul_X_pow _ _ ha]
-        rw [h, hdeg]
-        refine le_trans (degreeOf_mul_le _ _ _) ?_
-        rw [degreeOf_C, degreeOf_X_pow_self]
-        omega
+  rw [univFactor, Polynomial.aeval_eq_sum_range]
+  refine le_trans (MvPolynomial.degreeOf_sum_le m _ _) (Finset.sup_le fun i hi => ?_)
+  have hi' : i ≤ p.natDegree := by
+    have := Finset.mem_range.mp hi
+    omega
+  rw [Algebra.smul_def]
+  refine le_trans (degreeOf_mul_le _ _ _) ?_
+  rw [MvPolynomial.degreeOf_X_self_pow]
+  have hC : degreeOf m (algebraMap ℂ (MvPolynomial ℕ ℂ) (p.coeff i)) = 0 := by
+    rw [show algebraMap ℂ (MvPolynomial ℕ ℂ) (p.coeff i) = MvPolynomial.C (p.coeff i) from rfl]
+    exact degreeOf_C _ _
+  omega
 
 theorem degreeOf_univFactor_eq (m : ℕ) {p : Polynomial ℂ} (hp : p ≠ 0) :
     degreeOf m (univFactor p m) = p.natDegree := by
@@ -427,7 +407,7 @@ theorem topFree_inv_fact {m j : ℕ} (h : m ≠ j) (p : Polynomial ℂ) :
   rcases eq_or_ne (fact p j) 0 with h0 | h0
   · rw [h0, inv_zero]
     exact topFree_zero m
-  · exact ⟨1, univFactor p j, ?_, ?_, by simp, degreeOf_univFactor_of_ne h p⟩
+  · refine ⟨1, univFactor p j, ?_, ?_, by simp, degreeOf_univFactor_of_ne h p⟩
     · intro hc
       exact h0 (by rw [fact, hc, map_zero])
     · rw [show algebraMap (MvPolynomial ℕ ℂ) CascadeField (univFactor p j) = fact p j from rfl,
@@ -474,6 +454,39 @@ theorem topFree_prodHead {Q : ℕ → Polynomial ℂ} {m k : ℕ} (h : k ≤ m) 
   refine topFree_prod _ _ fun j hj => ?_
   have hjk : j < k := Finset.mem_range.mp hj
   exact topFree_fact (by omega) (Q j)
+
+
+/-! ## The residue of a logarithmic factor -/
+
+theorem fact_X (m : ℕ) : fact Polynomial.X m = fx m := by
+  rw [fact_eq_aeval, Polynomial.aeval_X]
+
+/-- **The residue at infinity of a logarithmic factor is its degree.**  This is the coefficient the
+peel of the newest column reads off. -/
+theorem topLim_fx_mul_logFactor (m : ℕ) {p : Polynomial ℂ} (hp : 1 ≤ p.natDegree) :
+    TopLim m (fx m * logFactor p m) (algebraMap ℂ CascadeField (p.natDegree : ℂ)) := by
+  have hp0 : p ≠ 0 := fun h => by simp [h] at hp
+  have hne : fact p m ≠ 0 := fact_ne_zero hp0 m
+  set r : Polynomial ℂ :=
+    Polynomial.X * p.derivative - Polynomial.C ((p.natDegree : ℂ)) * p with hr
+  have hrdeg : r.natDegree ≤ p.natDegree - 1 := by
+    have h := natDegree_reduced_le (Q := p) (v := Polynomial.X) hp Polynomial.natDegree_X
+    simpa [hr] using h
+  have hval : fx m * logFactor p m - algebraMap ℂ CascadeField (p.natDegree : ℂ)
+      = fact r m / fact p m := by
+    rw [hr, fact_sub, fact_mul, fact_mul, fact_X, fact_C, logFactor]
+    field_simp
+  rw [TopLim, hval]
+  refine ⟨univFactor r m, univFactor p m, ?_, ?_, ?_⟩
+  · intro hc
+    exact hne (by rw [fact, hc, map_zero])
+  · rw [show algebraMap (MvPolynomial ℕ ℂ) CascadeField (univFactor p m) = fact p m from rfl,
+      show algebraMap (MvPolynomial ℕ ℂ) CascadeField (univFactor r m) = fact r m from rfl,
+      mul_div_cancel₀ _ hne]
+  · have h1 : degreeOf m (univFactor r m) ≤ r.natDegree := degreeOf_univFactor_le m r
+    have h2 : degreeOf m (univFactor p m) = p.natDegree := degreeOf_univFactor_eq m hp0
+    rw [h2]
+    omega
 
 /-! ## Determinants inherit the value at infinity -/
 

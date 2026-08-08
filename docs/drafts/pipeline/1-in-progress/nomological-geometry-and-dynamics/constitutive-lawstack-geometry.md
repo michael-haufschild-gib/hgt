@@ -3,13 +3,15 @@
 - **ID:** `ngd-constitutive-lawstack-geometry`
 - **Stage:** 1 — in progress
 - **Working name:** **Constitutive Lawstack Geometry (CLG)**
-- **Type:** CANDIDATE GENERAL FIELD / COORDINATE-FREE REINTERPRETATION
+- **Type:** LOCAL LAW-GEOMETRY ATLAS / COORDINATE-FREE REINTERPRETATION
+- **Higher field candidate:** `constraint-motive-relativity.md`.
 - **Status:** `[CONJECTURAL FIELD SCHEMA] [LOCAL EVIDENCE ONLY]`
   `[THREE NON-RH CALIBRATIONS PROVED] [BRANCH-HISTORY HT CHART PROVED]`
   `[UNIVERSAL HAUSDORFF OBSERVER THEOREM PROVED]`
   `[RESTRICTED-HISTORY COMPLETION/SATURATION PROVED]`
   `[WEIGHTED HISTORY COERCIVITY PROVED]`
   `[CARTAN DEFECT SPECTRUM TYPED] [MULTI-ROUTE SOURCE CURRENT PROVED]`
+  `[ONE-ORBIT SIX-SHADOW CALIBRATION PROVED]`
   `[SPLIT-PRIME TRANSGRESSION NO-GO PROVED]`
   `[WHOLE-CORPUS TARGET] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
 - **Exact calibrations:** `multiple-gamma-period-action-lawstack-three-shadow-theorem.md` and
@@ -19,11 +21,18 @@
   parent: `../../3-formalized/graded-principal-symbol-characteristic-arrangement.md`; source
   current: `dirichlet-maurer-cartan-mellin-orbit-law.md` and
   `critical-euler-mass-weil-stokes-shadow-law.md`; source-transgression boundary:
-  `split-prime-euler-class-and-inverse-monodromy-totalization-no-go.md`.
+  `split-prime-euler-class-and-inverse-monodromy-totalization-no-go.md`; cross-family marked
+  transgression:
+  `marked-half-character-duality-soldering-and-cofinal-diagonal-inverse-obstruction-law.md`; higher source-orbit
+  synthesis: `euler-prime-orbit-prolongation-recurrence-polar-cofinal-law.md`.
 
 ## 0. Answer to the core question
 
-> The common object is a source-indexed derived lawstack: a moduli stack of possible law frames,
+CLG is now the local-atlas answer, not the final higher primitive. Constraint-Motive Relativity
+places such atlases in a fibration where exactness, topology, order, completion, and cost themselves
+vary by observer doctrine. The paragraph below describes one fibre of that higher geometry.
+
+> **Conjecture.** The candidate common object is a source-indexed derived lawstack: a moduli stack of possible law frames,
 > their symmetries, histories, and compatible exactifications. Proof routes are observer maps or
 > local presentations of this stack. Arithmetic relations are isotropy, spectral transport is
 > linearized monodromy, geometric zeros are derived incidence, some determinant positivity is a
@@ -116,8 +125,10 @@ can be installed by choosing `c`, the field is tautological.
 
 ### 2A. Cartan completion of the primitive
 
-The preceding stack becomes a law geometry only after carrying the following typed fields on a
-law-frame stack `F -> L`:
+Work in an additive indexed category with a declared pseudofunctorial pushforward `f_!`, chosen
+associators, and additive Hom groups in which the displayed differences are typed. The preceding
+stack becomes a law geometry only after carrying the following typed fields on a law-frame stack
+`F -> L`:
 
 \[
  K\quad\text{(deformation/prolongation)},\qquad
@@ -156,7 +167,8 @@ This is already paper-proved in the bivariant-law sector. A field equation `Q=J`
 only when `s` belongs to a source-normalized nonzero constitutive class and `J` is independently
 constructed; then `(CLG.4e)` is a compulsory consistency equation for `J`.
 
-The GR-level dictionary is therefore structural, not poetic:
+The candidate GR-level dictionary is structural and testable, but not yet a theorem identifying
+all corpus organs:
 
 | Cartan/metric-affine organ | lawstack organ |
 |---|---|
@@ -164,10 +176,10 @@ The GR-level dictionary is therefore structural, not poetic:
 | tangent/cotangent soldering | `s:K->T` between deformation and observer response |
 | connection | source-history and observer transport |
 | curvature | failure of legal two-step transports/comparisons to compose |
-| torsion/source forcing | `Q-J`, failure of soldering transport to match source current |
-| nonmetricity | failure of polarization/duality to be transported by the same connection |
+| torsion/source forcing | candidate `Q-J`; literal torsion requires a defined covariant derivative `d_nabla s` |
+| nonmetricity | explicit `nabla h`, when a polarization/metric field and compatible connection exist |
 | horizon/degenerate metric | rank/Fitting/discriminant wall of the constitutive map |
-| geodesic completeness | relative properness of lifted action |
+| completeness analogue | relative properness of lifted action; not identified with geodesic completeness |
 | holonomy | nontrivial lifted history above a recurrent observer loop |
 
 Thus the user's “all no-gos are curvature” becomes a precise stronger statement: all no-gos must
@@ -261,18 +273,20 @@ realization.  It does not imply local holonomy density, analytic noncompactness,
 or metric escape.  In the Hurwitz chart, the exact proof carrier is degree-dependent growth of
 independently marked branch support; other charts require their own realization theorem.
 
-### Law VII — constitutive completeness is three typed laws, not one scalar equation
+### Law VII — a tested typed package, not one scalar equation
 
-The minimal non-tautological package is:
+The smallest non-tautological package tested across the present calibration families is:
 
 1. `D`: a source-normalized response with full Cech/Bianchi coherence;
 2. `S_D`: a vertical symbol conservative on each declared complexity-`D` test class;
 3. `P`: a lifted action inf-compact relative to observed history.
 
-The three laws are independent.  Exact one-dimensional countermodels realize any two without the
-third, and product charts show that HT rank, inertia, and recurrence rank obey no nonzero universal
-polynomial scalar equation.  A CLG field equation must therefore be a cartesian family of typed
-constitutive laws across coefficient fibres, not an equality of heterogeneous numbers.
+The three laws are independent within those calibration families. Exact one-dimensional
+countermodels realize any two without the third, and product charts show that HT rank, inertia,
+and recurrence rank obey no nonzero universal polynomial scalar equation. This disproves the
+proposed scalar collapse; it does not prove that `D,S,P` are a universally minimal axiom system.
+A CLG field equation must at least retain a typed family of constitutive laws across coefficient
+fibres.
 
 ## 5. First exact lawstack theorem
 
@@ -384,11 +398,13 @@ The Hurwitz and GHZ countermodels, together with the determinant-holonomy energy
 \tag{CLG.9}
 \]
 
-In the rank-one determinant sector, positivity is exactly radial energy on the quotient
-`C^x/U(1)` and therefore erases phase.  This is not a definition of positivity in general.  A CLG
-chart must carry prolongation, polar quotient, phase closure, support filtration, and action as
-separate typed organs.  Any implication among them is a constitutive theorem to be proved, not
-part of the vocabulary.
+In the rank-one determinant sector, positivity is radial energy on the polar quotient
+`C^x/U(1)` and therefore erases continuous phase. This is distinct from the half-character root
+quotient `u mapsto u^2`, whose deck group is `mu_2`, and from the inversion/coorientation quotient
+`S mapsto S^2`, which forgets `S mapsto -S`. None defines positivity in general. A CLG chart must
+carry prolongation, polar quotient, root/sign line, coorientation quotient, phase closure, support
+filtration, and action as separate typed organs. Any implication among them is a constitutive
+theorem to be proved, not part of the vocabulary.
 
 ### Exact filtered-symbol subtheory
 
@@ -461,6 +477,55 @@ capacity transport—not assigned to arithmetic charge in isolation. The same so
 select Route-E allocation or Gamma normalization; those are independently proved constitutive
 nonselection laws.
 
+Abstractly, a finite-dimensional self-adjoint generator with simple integrally independent
+spectrum and a vector meeting every eigenspace has a Vandermonde-cyclic prolongation, dense
+recurrent phase orbit, constant positive norm, and unbounded logarithmic lift. The finite prime-log
+orbit of this same current supplies the arithmetic calibration. For finite `F`, the
+vectors `v,Dv,...,D^(|F|-1)v`, with `v(p)=log(p)/sqrt(p)`, form a Vandermonde basis; its phase orbit
+is dense and recurrent on a compact torus; its logarithmic lift is unbounded; its positive norm is
+constant on the whole torus; and its compatible cofinal vector fails to lie in `ell^2` at half
+density. Thus arithmetic, spectral phase, positivity, recurrence, unbounded prolongation, and
+completion failure arise from one source orbit. This is stronger than route placement, while still
+not proving HT of a named function or RH. See
+`../../2-fully-proven/nomological-geometry-and-dynamics/euler-prime-orbit-prolongation-recurrence-polar-cofinal-law.md`.
+
+### First marked half-character law across HT and RH charts
+
+An unframed transformation into strict Čech `Z^1` cannot be Morita-natural: the point groupoid and
+two-object pair groupoid present the same stack, but the second has nonzero exact one-cocycles.
+Passing to `H^1` erases them. CLG must therefore retain a source-normalized marked primitive when
+the physical symbol is an exact cocycle.
+
+With marked half-character `u`, coarse holonomy `z=u^2`, and duality `J(u)=u^(-1)`, define
+
+\[
+ S=u-u^{-1},\qquad \kappa=z-1.
+\]
+
+The exact Cartan law is
+
+\[
+ \boxed{\kappa=uS,\qquad \kappa+zJ(\kappa)=0,\qquad -\kappa J(\kappa)=S^2.}
+\tag{CLG.14}
+\]
+
+The square map has no global continuous or algebraic section, so the odd soldering `S` lives on a
+`mu_2` sign/root line and cannot be recovered from coarse `z`. This one law has two independent
+realizations:
+
+1. Hurwitz branch increment is `(e^(-2 pi i s)-1)theta=kappa theta`;
+2. arithmetic Gamma Bockstein is
+   `b_t(p)=-d(p)(1+p^(-t))kappa_t(p)`, while the physical paracyclic residue is
+   `kappa_t(p)c`.
+
+Thus the Bockstein is a duality-weighted copy of the same finite-prime curvature, not an
+independent cancelling current. On the all-prime quotient `C^P/ell^1`, multiplication by the
+weight `d(p)(1+p^(-t))` descends but its reciprocal does not. Finite-place equivalence loses its
+canonical diagonal inverse at the cofinal boundary; this is not categorical nonsplitting. This is
+the first exact CLG law joining a
+non-RH hypertranscendental branch chart to the live arithmetic Stokes chart without using a Xi
+zero to define the common object.
+
 The split-prime theorem sharpens the remaining dynamics. Since
 `Q_(>0)^times = direct-sum_p Z`, every coordinate-prime extension splits and has zero Euler class.
 Inverse-monodromy paracyclic totalization can make the total complex cyclic for every reciprocal
@@ -492,36 +557,51 @@ literal realization is not enough.
 Rows are research questions, not explanations. Each becomes science only after constructing the
 observer map and computing an invariant.
 
-## 8. Route-independent predictions
+## 8. Route-independent targets and theorem-backed predictions
 
-1. **Marked-lattice migration target.** For `p:Z^N->V_R` with fixed `N` and fixed real-span
+Items 1--7 are `[DESIGN TARGETS]`: they state exact gates for future realizations, not established
+universal laws. Items 8--11 are backed by the displayed source-orbit/no-go theorems.
+
+1. **[TARGET] Marked-lattice migration.** For `p:Z^N->V_R` with fixed `N` and fixed real-span
    dimension `d`, effective-period excess and kernel rank are complementary. Calling this migration
    requires a constructed specialization/transport functor and a relative `K`-, determinant-, or
    Ext-class. No general perfect-complex Euler theorem follows from this mixed `Z`/`R` rank ledger.
-2. **Separation/isotropy exchange.** Families may regularize coarse topology by creating stack
+2. **[TARGET] Separation/isotropy exchange.** Families may regularize coarse topology by creating stack
    isotropy. Coarse observers will report “improvement” while hidden symmetry increases.
-3. **Phase erasure.** Any positive/coarse quotient invariant is blind to the part of orientation
+3. **[TARGET] Phase erasure.** Any positive/coarse quotient invariant is blind to the part of orientation
    carried only by its inertia fibre.
-4. **Cofinal blindness.** If every finite observer is an equivalence but the pro-observer is not,
-   the defect must occur in nonproper descent, a derived inverse-limit term, or failure of uniform
-   constitution—not a fixed finite coordinate.
-5. **Recurrence split.** Closed observer recurrence with open lifted history occurs precisely when
-   `Path(L)->Path(O)` has nontrivial relative homotopy/holonomy; cost still requires a constitutive
-   action.
-6. **Twistor conditionality.** Arithmetic, spectral, and positive faces form a twistor family only
+4. **[TARGET] Cofinal blindness.** A coherent levelwise equivalence is already an equivalence of
+   pro-objects. A new defect can appear only after applying an additional non-exact operation—such
+   as ordinary inverse limit, completion, closure, or a uniform boundedness requirement—or when
+   the finite inverses were never coherent. The relevant invariant is then a named `lim^1`,
+   nonclosed range, nonproperness, or conditioning defect, not an unspecified “pro-observer.”
+5. **[TARGET] Recurrence split.** For a declared fibration or fibre sequence
+   `Path_rel -> Path(L) -> Path(O)`, an observed loop has an open lift exactly when its connecting
+   class or relative holonomy is nontrivial. Without such a lifting structure this implication is
+   only metaphor. Cost still requires an independently normalized constitutive action.
+6. **[TARGET] Twistor conditionality.** Arithmetic, spectral, and positive faces form a twistor family only
    when a non-isotrivial Rees/`lambda` construction exists. Otherwise they remain distinct observer
    maps of the same lawstack.
-7. **RH as later global section problem.** If a zeta lawstack is eventually constructed, RH must
+7. **[TARGET] RH as later global section problem.** If a zeta lawstack is eventually constructed, RH must
    become a global statement about its normalized real/positive section. That statement cannot be
    used to define CLG.
-8. **Flat-source localization.** For the Euler--Möbius current, any nonzero route curvature must
+8. **[PROVED] Flat-source localization.** For the Euler--Möbius current, any nonzero route curvature must
    occur in comparison, admission, completion, polarization, boundary, or capacity. A theory that
    attributes it to source Maurer--Cartan curvature is falsified.
-9. **Singular duality requirement.** A fixed-prime Euler transgression internal to the positive-
+9. **[PROVED/CONDITIONAL] Singular duality requirement.** A fixed-prime Euler transgression internal to the positive-
    rational scale group cannot select the central radial character. Within a prime--infinity
    extension mechanism, the extension must be non-split; on ordinary sequence spaces every
    bounded logarithmic coupling splits by an admitted shear, so the useful comparison must be
    singular, domain-sensitive, order-sensitive, or topologically nontrivial.
+10. **[PROVED LOCAL LAW] Half-character polarity.** Whenever an observer records only coarse holonomy `z=u^2`, odd
+    orientation and time direction live on the `mu_2` root line. Positive energy can detect
+    `S^2` but cannot reconstruct the sheet of `S=u-u^(-1)`. Any route claiming otherwise must
+    provide a source-selected square root or an equivalent marked sign bundle.
+11. **[PROVED] Prime-orbit six-shadow law.** At every finite prime cutoff, prolongation is full rank and the
+    spectral projection is compact recurrent, while the logarithmic lift is unbounded and polar
+    energy is phase-blind. At half density the cofinal Hilbert vector does not exist. Any common
+    geometry must retain these four facts simultaneously; identifying recurrence, positivity,
+    prolongation, or completion by one scalar is falsified.
 
 ## 9. Conjecture / proof / fail loop
 
@@ -548,23 +628,28 @@ observer map and computing an invariant.
 
 ## 10. Make-or-break questions
 
-1. Can the exact Hurwitz branch-history atlas realization be descended to a Morita-natural map of
-   analytic history groupoids?  The differential-rank classification itself is already closed by
-   the `C/Z` partition matroid.
-2. Can source normalization derive a Hilbert/Krein metric or cost rather than append it?
-3. Can one construct a presentation-invariant pro-observer defect invisible at every finite level?
-4. Can an optional non-isotrivial twistor enhancement be built over one lawstack and map one class
-   to arithmetic, spectral, and positive invariants?
-5. Can one construct before target specialization a Morita-natural transgression
-   `tau_s:Theta_s->Z^1(N(q);E_s)` whose vertical symbols are the Hurwitz branch increments, Stokes
-   polarity, and recurrence deck displacement under named comparison functors, and whose source
-   polarization derives the weighted action rather than appending it?
-6. Which virtual class is conserved when obstruction changes type across a wall?
-7. Can the GHZ phase-history theorem be extended to a genuine horizon algebra with independently
-   normalized length/charge?
-8. Can the rational-adelic source be realized as a singular self-dual local-to-global cone whose
-   determinant/pairing supplies the constitutive soldering and whose finite-prime shadow is the
-   existing Kummer class?
+These questions are deliberately above any RH route endpoint:
+
+1. Can one construct a single non-product source lawstack with named observer functors into
+   arithmetic, spectral, HT, positive/order, recurrence, and completion sectors?
+2. What is the equivalence principle: which marked Morita/presentation changes preserve the full
+   constitutive geometry, and can invariance be proved?
+3. Is there one graded relative defect object whose functorial truncations compute curvature,
+   isotropy, derived thickness, admission failure, nonproperness, inertia, and holonomy—or can one
+   prove that a higher multi-object is unavoidable?
+4. Can source normalization derive a Hilbert/Krein polarization and proper action rather than
+   append them?
+5. Can one coefficient-changing Beck--Chevalley/Jacobi theorem compute at least two nonisomorphic
+   publication invariants and then predict a third not used in its construction?
+6. Can analytic HT be characterized geometrically as failure of every finite prolongation observer
+   to be conservative, followed by a proved non-finite-presentation theorem for the lawstack?
+7. Can recurrence/horizon physics be realized by a source-derived integer history charge,
+   polarization, and length operator, with a reconstruction map—not by root parity or metaphor?
+8. Which virtual class or exact triangle is conserved when an obstruction changes type across a
+   wall?
+
+The local Hurwitz descent, Stokes source comparison, and prime--infinity questions remain useful
+calibrations, but none is allowed to define the field or dominate this agenda.
 
 ## 11. Falsifiers
 
@@ -578,10 +663,11 @@ CLG is theatre if:
 6. zeta/RH data are needed to define the field;
 7. exact counterexamples violate the claimed virtual-rank or descent laws.
 
-The multiple-Gamma, framed-GHZ, and Hurwitz theorems weaken Falsifier 3 locally in three different
-sectors; the GHZ chart derives a normalized Fubini--Study history cost, and Hurwitz supplies an
-explicit covariant branch-history atlas realization.  The latter does not yet descend to a
-presentation-invariant observer functor.  They do not defeat the other falsifiers globally.
+The multiple-Gamma, framed-GHZ, Hurwitz, and Euler prime-orbit theorems weaken Falsifier 3 locally;
+the prime orbit alone has six computed shadows. The GHZ chart derives a normalized Fubini--Study
+history cost, and Hurwitz supplies an explicit covariant branch-history atlas realization. The
+latter does not yet descend to a presentation-invariant observer functor. None defeats the other
+falsifiers globally or constructs the whole-corpus source lawstack.
 
 ## 12. Current literature interface
 

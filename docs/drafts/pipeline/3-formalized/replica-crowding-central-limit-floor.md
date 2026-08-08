@@ -1,10 +1,11 @@
 # Replica crowding central-limit floor
 
 - **ID:** `replica-crowding-central-limit-floor`
-- **Stage:** 2 — fully proven on paper
-- **Type:** THEOREM (paper)
-- **Status:** `[PAPER-PROVED] [LEAN PENDING] [ROUTE-KILLER]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean)
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [ROUTE-KILLER]`
 - **Parent:** `../1-in-progress/scalar-recurrence-traceless-replica-decoupling-law.md`
+- **Formalized companion:** `replica-crowding-central-limit-floor-formalized.md`
 - **Statement:** Every finite spectral probability law has off-collision
   replica crowding at least its central-bin coincidence mass minus exact
   collisions; hence positive `Z_r` has a universal `delta/sqrt(r)` floor.
@@ -146,10 +147,19 @@ been removed.
 
 - [x] 0 -> 1: well-posed and hostile-tested
 - [x] 1 -> 2: complete finite proof above
-- [ ] 2 -> 3: Lean theorem and axiom audit
+- [x] 2 -> 3: Lean theorem and axiom audit — see
+  `replica-crowding-central-limit-floor-formalized.md`
 - [ ] 3 -> 4: manuscript use only after formalization and priority audit
 
 ## Log
 
 - 2026-08-06 — Derived central-bin lower bound and local-Pauli specialization;
   killed exponential positive-`Z_r` strategy and isolated scalar recurrence.
+- 2026-08-09 — Formalized unconditionally in Lean 4.  `(3)` is
+  `fidelityReplicaNearActionMass_crowding_floor`, its `sigma sqrt r` form is
+  `fidelityReplicaNearActionMass_crowding_floor_sigma_sqrt`, and `(4)` is
+  `fidelityReplicaNearActionMass_microcanonical_floor`.  The variance step
+  `Var(S_r) = r sigma^2` is proved combinatorially, without measure-theoretic
+  independence, from a multinomial Pascal rule
+  (`multinomial_sum_update_pred`) and the resulting amplitude recursion
+  (`replicaAmplitudeMoment_succ`).

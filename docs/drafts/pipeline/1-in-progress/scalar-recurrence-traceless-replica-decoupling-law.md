@@ -31,7 +31,7 @@ the identity target contributes to the positive replica partition
 \]
 
 whenever the circuit dictionary contains the empty circuit.  The companion
-card `../2-fully-proven/replica-crowding-central-limit-floor.md` proves that
+card `../3-formalized/replica-crowding-central-limit-floor.md` proves that
 this one contribution is at least
 
 \[

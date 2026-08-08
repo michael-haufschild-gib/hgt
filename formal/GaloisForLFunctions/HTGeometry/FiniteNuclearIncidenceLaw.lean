@@ -38,6 +38,50 @@ theorem Matrix.PosSemidef.trace_sqrt_re_eq_sum_sqrt_eigenvalues
     Matrix.trace_diagonal]
   simp [Function.comp_def, hA.eigenvalues_nonneg]
 
+/-- Positive square root commutes with multiplication by a nonnegative real
+scalar on finite positive semidefinite matrices. -/
+theorem finiteMatrix_cfcSqrt_smul_nonneg
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (r : ℝ) (hr : 0 ≤ r) {A : Matrix n n ℂ} (hA : A.PosSemidef) :
+    CFC.sqrt (r • A) = Real.sqrt r • CFC.sqrt A := by
+  apply CFC.sqrt_unique
+  · rw [smul_mul_smul]
+    rw [Real.mul_self_sqrt hr, CFC.sqrt_mul_sqrt_self A hA.nonneg]
+  · exact smul_nonneg (Real.sqrt_nonneg r) (CFC.sqrt_nonneg A)
+
+/-- The finite nuclear norm is the real trace of the positive square root of
+the target-side Gram operator. -/
+theorem finiteMatrixNuclearNorm_eq_trace_sqrt_re
+    {m n : Type*} [Fintype m] [Fintype n] [DecidableEq n]
+    (K : Matrix m n ℂ) :
+    finiteMatrixNuclearNorm K =
+      (CFC.sqrt (Kᴴ * K)).trace.re := by
+  simpa [finiteMatrixNuclearNorm] using
+    (Matrix.PosSemidef.trace_sqrt_re_eq_sum_sqrt_eigenvalues
+      (Matrix.posSemidef_conjTranspose_mul_self K)).symm
+
+/-- Finite nuclear mass is positively homogeneous under nonnegative real
+scaling, including the singular scalar `0`. -/
+theorem finiteMatrixNuclearNorm_smul_nonneg
+    {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n]
+    (r : ℝ) (hr : 0 ≤ r) (K : Matrix m n ℂ) :
+    finiteMatrixNuclearNorm (r • K) = r * finiteMatrixNuclearNorm K := by
+  have hGram : (r • K)ᴴ * (r • K) =
+      (r ^ 2) • (Kᴴ * K) := by
+    ext i j
+    simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Pi.smul_apply,
+      RCLike.star_def, map_mul, Complex.conj_ofReal, smul_eq_mul, pow_two]
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro x _
+    ring
+  rw [finiteMatrixNuclearNorm_eq_trace_sqrt_re, hGram,
+    finiteMatrix_cfcSqrt_smul_nonneg (r ^ 2) (sq_nonneg r)
+      (Matrix.posSemidef_conjTranspose_mul_self K),
+    finiteMatrixNuclearNorm_eq_trace_sqrt_re]
+  simp [Real.sqrt_sq_eq_abs, abs_of_nonneg hr]
+
 /-- Rectangular Gram duality: `AᴴA` and `AAᴴ` have the same positive spectral mass, including
 multiplicity.  Dimension mismatch contributes only zero roots and hence no square-root mass. -/
 theorem sum_sqrt_eigenvalues_conjTranspose_mul_self_eq_self_mul_conjTranspose
@@ -369,6 +413,64 @@ theorem finiteMatrixHilbertSchmidtSq_le_nuclearNorm_sq
     _ ≤ (∑ j, Real.sqrt (e j)) ^ 2 := hsum
     _ = finiteMatrixNuclearNorm K ^ 2 := rfl
 
+theorem finiteMatrixNuclearNorm_nonneg
+    {m n : Type*} [Fintype m] [Fintype n] [DecidableEq n]
+    (K : Matrix m n ℂ) : 0 ≤ finiteMatrixNuclearNorm K := by
+  unfold finiteMatrixNuclearNorm
+  exact Finset.sum_nonneg fun j _ => Real.sqrt_nonneg _
+
+/-- Finite nuclear mass is faithful: it vanishes exactly on the zero
+rectangular matrix. -/
+theorem finiteMatrixNuclearNorm_eq_zero_iff
+    {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n]
+    (K : Matrix m n ℂ) : finiteMatrixNuclearNorm K = 0 ↔ K = 0 := by
+  constructor
+  · intro hnuclear
+    have hle := finiteMatrixHilbertSchmidtSq_le_nuclearNorm_sq K
+    have hhs_le : finiteMatrixHilbertSchmidtSq K ≤ 0 := by
+      simpa [hnuclear] using hle
+    have hhs_nonneg : 0 ≤ finiteMatrixHilbertSchmidtSq K := by
+      rw [finiteMatrixHilbertSchmidtSq_eq_sum_norm_sq]
+      positivity
+    have hhs : finiteMatrixHilbertSchmidtSq K = 0 :=
+      le_antisymm hhs_le hhs_nonneg
+    rw [finiteMatrixHilbertSchmidtSq_eq_sum_norm_sq] at hhs
+    ext i j
+    have hi : (∑ k, ‖K i k‖ ^ 2) = 0 :=
+      (Finset.sum_eq_zero_iff_of_nonneg
+        (fun a _ => Finset.sum_nonneg (fun b _ => sq_nonneg ‖K a b‖))).mp
+          hhs i (Finset.mem_univ i)
+    have hij : ‖K i j‖ ^ 2 = 0 :=
+      (Finset.sum_eq_zero_iff_of_nonneg
+        (fun b _ => sq_nonneg ‖K i b‖)).mp hi j (Finset.mem_univ j)
+    have hnorm : ‖K i j‖ = 0 := by
+      nlinarith [norm_nonneg (K i j)]
+    exact norm_eq_zero.mp hnorm
+  · intro hK
+    subst K
+    have hsq := finiteMatrixNuclearNorm_sq_le_rank_mul_hilbertSchmidtSq
+      (0 : Matrix m n ℂ)
+    have hn := finiteMatrixNuclearNorm_nonneg (0 : Matrix m n ℂ)
+    have hsq0 : finiteMatrixNuclearNorm (0 : Matrix m n ℂ) ^ 2 ≤ 0 := by
+      simpa [finiteMatrixHilbertSchmidtSq] using hsq
+    nlinarith
+
+/-- Nuclear mass is invariant under rectangular adjoint. -/
+theorem finiteMatrixNuclearNorm_conjTranspose
+    {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n]
+    (K : Matrix m n ℂ) :
+    finiteMatrixNuclearNorm Kᴴ = finiteMatrixNuclearNorm K := by
+  calc
+    finiteMatrixNuclearNorm Kᴴ =
+        ∑ i, Real.sqrt
+          ((Matrix.posSemidef_self_mul_conjTranspose K).1.eigenvalues i) := by
+      unfold finiteMatrixNuclearNorm
+      simp only [Matrix.conjTranspose_conjTranspose]
+    _ = finiteMatrixNuclearNorm K :=
+      (finiteMatrixNuclearNorm_eq_sum_sqrt_self_mul_conjTranspose K).symm
+
 /-- A finite matrix of rank at most one has nuclear mass squared exactly
 equal to its Hilbert--Schmidt mass. -/
 theorem finiteMatrixNuclearNorm_sq_eq_hilbertSchmidtSq_of_rank_le_one
@@ -388,6 +490,178 @@ theorem finiteMatrixNuclearNorm_sq_eq_hilbertSchmidtSq_of_rank_le_one
           positivity
       _ = finiteMatrixHilbertSchmidtSq K := one_mul _
   · exact finiteMatrixHilbertSchmidtSq_le_nuclearNorm_sq K
+
+/-- Bures root fidelity is symmetric for arbitrary finite positive
+semidefinite matrices. -/
+theorem finiteBuresTrace_comm
+    {n : Type*} [Fintype n] [DecidableEq n]
+    {C M : Matrix n n ℂ} (hC : C.PosSemidef) (hM : M.PosSemidef) :
+    (CFC.sqrt (CFC.conjSqrt C M)).trace.re =
+      (CFC.sqrt (CFC.conjSqrt M C)).trace.re := by
+  let U : Matrix n n ℂ := CFC.sqrt C
+  let V : Matrix n n ℂ := CFC.sqrt M
+  have hUH : Uᴴ = U := by
+    simpa [U, Matrix.star_eq_conjTranspose] using
+      (CFC.sqrt_nonneg C).star_eq
+  have hVH : Vᴴ = V := by
+    simpa [V, Matrix.star_eq_conjTranspose] using
+      (CFC.sqrt_nonneg M).star_eq
+  have hU2 : U * U = C := by
+    simpa [U, pow_two] using CFC.sq_sqrt C hC.nonneg
+  have hV2 : V * V = M := by
+    simpa [V, pow_two] using CFC.sq_sqrt M hM.nonneg
+  have hcovU : U * Uᴴ = C := by rw [hUH, hU2]
+  have hcovV : V * Vᴴ = M := by rw [hVH, hV2]
+  have hCM := finiteMatrixNuclearNorm_conjTranspose_mul_eq_buresTrace U V
+  have hMC := finiteMatrixNuclearNorm_conjTranspose_mul_eq_buresTrace V U
+  rw [hcovU, hcovV] at hCM hMC
+  calc
+    (CFC.sqrt (CFC.conjSqrt C M)).trace.re =
+        finiteMatrixNuclearNorm (Uᴴ * V) := hCM.symm
+    _ = finiteMatrixNuclearNorm ((Uᴴ * V)ᴴ) :=
+      (finiteMatrixNuclearNorm_conjTranspose (Uᴴ * V)).symm
+    _ = finiteMatrixNuclearNorm (Vᴴ * U) := by
+      rw [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose]
+    _ = (CFC.sqrt (CFC.conjSqrt M C)).trace.re := hMC
+
+/-- Bures root fidelity is homogeneous of degree one half in its first
+positive-semidefinite argument, including zero scaling. -/
+theorem finiteBuresTrace_smul_left
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (r : ℝ) (hr : 0 ≤ r) {C M : Matrix n n ℂ}
+    (hC : C.PosSemidef) (hM : M.PosSemidef) :
+    (CFC.sqrt (CFC.conjSqrt (r • C) M)).trace.re =
+      Real.sqrt r * (CFC.sqrt (CFC.conjSqrt C M)).trace.re := by
+  let U : Matrix n n ℂ := CFC.sqrt C
+  let V : Matrix n n ℂ := CFC.sqrt M
+  let s : ℝ := Real.sqrt r
+  let Ur : Matrix n n ℂ := s • U
+  have hUH : Uᴴ = U := by
+    simpa [U, Matrix.star_eq_conjTranspose] using
+      (CFC.sqrt_nonneg C).star_eq
+  have hVH : Vᴴ = V := by
+    simpa [V, Matrix.star_eq_conjTranspose] using
+      (CFC.sqrt_nonneg M).star_eq
+  have hU2 : U * U = C := by
+    simpa [U, pow_two] using CFC.sq_sqrt C hC.nonneg
+  have hV2 : V * V = M := by
+    simpa [V, pow_two] using CFC.sq_sqrt M hM.nonneg
+  have hcovU : U * Uᴴ = C := by rw [hUH, hU2]
+  have hcovV : V * Vᴴ = M := by rw [hVH, hV2]
+  have hcovUr : Ur * Urᴴ = r • C := by
+    simp [Ur, s, hUH, hU2]
+    rw [smul_smul, Real.mul_self_sqrt hr]
+  have hinc : Urᴴ * V = s • (Uᴴ * V) := by
+    simp [Ur, mul_smul_comm]
+  have hfidr := finiteMatrixNuclearNorm_conjTranspose_mul_eq_buresTrace Ur V
+  have hfid := finiteMatrixNuclearNorm_conjTranspose_mul_eq_buresTrace U V
+  rw [hcovUr, hcovV] at hfidr
+  rw [hcovU, hcovV] at hfid
+  calc
+    (CFC.sqrt (CFC.conjSqrt (r • C) M)).trace.re =
+        finiteMatrixNuclearNorm (Urᴴ * V) := hfidr.symm
+    _ = finiteMatrixNuclearNorm (s • (Uᴴ * V)) := by rw [hinc]
+    _ = s * finiteMatrixNuclearNorm (Uᴴ * V) :=
+      finiteMatrixNuclearNorm_smul_nonneg s (Real.sqrt_nonneg r) (Uᴴ * V)
+    _ = Real.sqrt r *
+        (CFC.sqrt (CFC.conjSqrt C M)).trace.re := by
+      rw [hfid]
+
+/-- Bures root fidelity is homogeneous of degree one half in its second
+positive-semidefinite argument. -/
+theorem finiteBuresTrace_smul_right
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (r : ℝ) (hr : 0 ≤ r) {C M : Matrix n n ℂ}
+    (hC : C.PosSemidef) (hM : M.PosSemidef) :
+    (CFC.sqrt (CFC.conjSqrt C (r • M))).trace.re =
+      Real.sqrt r * (CFC.sqrt (CFC.conjSqrt C M)).trace.re := by
+  have hrM : (r • M).PosSemidef := hM.smul hr
+  calc
+    (CFC.sqrt (CFC.conjSqrt C (r • M))).trace.re =
+        (CFC.sqrt (CFC.conjSqrt (r • M) C)).trace.re :=
+      finiteBuresTrace_comm hC hrM
+    _ = Real.sqrt r *
+        (CFC.sqrt (CFC.conjSqrt M C)).trace.re :=
+      finiteBuresTrace_smul_left r hr hM hC
+    _ = Real.sqrt r *
+        (CFC.sqrt (CFC.conjSqrt C M)).trace.re := by
+      rw [finiteBuresTrace_comm hM hC]
+
+/-- Squared Bures fidelity is linear under nonnegative scaling of its first
+argument. -/
+theorem finiteBuresTrace_sq_smul_left
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (r : ℝ) (hr : 0 ≤ r) {C M : Matrix n n ℂ}
+    (hC : C.PosSemidef) (hM : M.PosSemidef) :
+    (CFC.sqrt (CFC.conjSqrt (r • C) M)).trace.re ^ 2 =
+      r * (CFC.sqrt (CFC.conjSqrt C M)).trace.re ^ 2 := by
+  rw [finiteBuresTrace_smul_left r hr hC hM]
+  rw [mul_pow, Real.sq_sqrt hr]
+
+/-- Squared Bures fidelity is linear under nonnegative scaling of its second
+argument. -/
+theorem finiteBuresTrace_sq_smul_right
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (r : ℝ) (hr : 0 ≤ r) {C M : Matrix n n ℂ}
+    (hC : C.PosSemidef) (hM : M.PosSemidef) :
+    (CFC.sqrt (CFC.conjSqrt C (r • M))).trace.re ^ 2 =
+      r * (CFC.sqrt (CFC.conjSqrt C M)).trace.re ^ 2 := by
+  rw [finiteBuresTrace_smul_right r hr hC hM]
+  rw [mul_pow, Real.sq_sqrt hr]
+
+/-- Self-fidelity is exactly positive trace, including singular matrices. -/
+theorem finiteBuresTrace_self_eq_trace
+    {n : Type*} [Fintype n] [DecidableEq n]
+    {C : Matrix n n ℂ} (hC : C.PosSemidef) :
+    (CFC.sqrt (CFC.conjSqrt C C)).trace.re = C.trace.re := by
+  let S : Matrix n n ℂ := CFC.sqrt C
+  have hS2 : S * S = C := by
+    simpa [S, pow_two] using CFC.sq_sqrt C hC.nonneg
+  have hconj : CFC.conjSqrt C C = C ^ 2 := by
+    rw [CFC.conjSqrt_apply]
+    change S * C * S = C ^ 2
+    rw [← hS2]
+    simp [pow_two, Matrix.mul_assoc]
+  rw [hconj, CFC.sqrt_sq C hC.nonneg]
+
+/-- Bures root fidelity vanishes exactly when the two covariance square
+roots have zero product. -/
+theorem finiteBuresTrace_eq_zero_iff_sqrt_mul_sqrt_eq_zero
+    {n : Type*} [Fintype n] [DecidableEq n]
+    {C M : Matrix n n ℂ} (hC : C.PosSemidef) (hM : M.PosSemidef) :
+    (CFC.sqrt (CFC.conjSqrt C M)).trace.re = 0 ↔
+      CFC.sqrt C * CFC.sqrt M = 0 := by
+  let U : Matrix n n ℂ := CFC.sqrt C
+  let V : Matrix n n ℂ := CFC.sqrt M
+  let K : Matrix n n ℂ := Uᴴ * V
+  have hUH : Uᴴ = U := by
+    simpa [U, Matrix.star_eq_conjTranspose] using
+      (CFC.sqrt_nonneg C).star_eq
+  have hVH : Vᴴ = V := by
+    simpa [V, Matrix.star_eq_conjTranspose] using
+      (CFC.sqrt_nonneg M).star_eq
+  have hU2 : U * U = C := by
+    simpa [U, pow_two] using CFC.sq_sqrt C hC.nonneg
+  have hV2 : V * V = M := by
+    simpa [V, pow_two] using CFC.sq_sqrt M hM.nonneg
+  have hcovU : U * Uᴴ = C := by rw [hUH, hU2]
+  have hcovV : V * Vᴴ = M := by rw [hVH, hV2]
+  have hfid : finiteMatrixNuclearNorm K =
+      (CFC.sqrt (CFC.conjSqrt C M)).trace.re := by
+    simpa [K, hcovU, hcovV] using
+      (finiteMatrixNuclearNorm_conjTranspose_mul_eq_buresTrace U V)
+  constructor
+  · intro hzero
+    have hnuclear : finiteMatrixNuclearNorm K = 0 := hfid.trans hzero
+    have hK : K = 0 :=
+      (finiteMatrixNuclearNorm_eq_zero_iff K).mp hnuclear
+    simpa [K, hUH, U, V] using hK
+  · intro hzero
+    have hK : K = 0 := by
+      simpa [K, hUH, U, V] using hzero
+    have hnuclear : finiteMatrixNuclearNorm K = 0 :=
+      (finiteMatrixNuclearNorm_eq_zero_iff K).mpr hK
+    exact hfid.symm.trans hnuclear
 
 /-- **Pure-source Bures identity.**  Fidelity against a rank-one source ray
 is exactly its quadratic expectation in the target, including singular and
@@ -447,6 +721,128 @@ theorem finiteBuresTrace_sq_rankOne_left
     _ = finiteMatrixHilbertSchmidtSq K :=
       finiteMatrixNuclearNorm_sq_eq_hilbertSchmidtSq_of_rank_le_one K hKrank
     _ = (finiteComplexInner u (M *ᵥ u)).re := hhs
+
+/-- Pure-target form of the rank-one Bures identity. -/
+theorem finiteBuresTrace_sq_rankOne_right
+    {n : Type*} [Fintype n] [DecidableEq n]
+    {C : Matrix n n ℂ} (hC : C.PosSemidef) (v : n → ℂ) :
+    (CFC.sqrt (CFC.conjSqrt C (Matrix.vecMulVec v (star v)))).trace.re ^ 2 =
+      (finiteComplexInner v (C *ᵥ v)).re := by
+  have hRay : (Matrix.vecMulVec v (star v)).PosSemidef :=
+    Matrix.posSemidef_vecMulVec_self_star v
+  calc
+    (CFC.sqrt (CFC.conjSqrt C (Matrix.vecMulVec v (star v)))).trace.re ^ 2 =
+        (CFC.sqrt (CFC.conjSqrt (Matrix.vecMulVec v (star v)) C)).trace.re ^ 2 :=
+      congrArg (fun x : ℝ => x ^ 2) (finiteBuresTrace_comm hC hRay)
+    _ = (finiteComplexInner v (C *ᵥ v)).re :=
+      finiteBuresTrace_sq_rankOne_left v hC
+
+/-- **Rank-one support law `(14)`.**  Bures incidence with one occupied ray
+vanishes exactly when source covariance annihilates that target vector. -/
+theorem finiteBuresTrace_sq_rankOne_right_eq_zero_iff
+    {n : Type*} [Fintype n] [DecidableEq n]
+    {C : Matrix n n ℂ} (hC : C.PosSemidef) (v : n → ℂ) :
+    (CFC.sqrt (CFC.conjSqrt C (Matrix.vecMulVec v (star v)))).trace.re ^ 2 = 0 ↔
+      C *ᵥ v = 0 := by
+  rw [finiteBuresTrace_sq_rankOne_right hC v]
+  let q : ℂ := star v ⬝ᵥ C *ᵥ v
+  have hq : 0 ≤ q := hC.dotProduct_mulVec_nonneg v
+  have hinner : finiteComplexInner v (C *ᵥ v) = q := by
+    unfold finiteComplexInner q dotProduct
+    apply Finset.sum_congr rfl
+    intro i _
+    simp only [Pi.star_apply, RCLike.star_def]
+  rw [hinner]
+  have hreal : q.re = 0 ↔ q = 0 := by
+    constructor
+    · intro hre
+      apply Complex.ext
+      · simpa using hre
+      · simpa using (Complex.nonneg_iff.mp hq).2.symm
+    · intro hq0
+      simp [hq0]
+  rw [hreal]
+  exact hC.dotProduct_mulVec_zero_iff v
+
+/-- Positive square root and the original covariance have exactly the same
+kernel. -/
+theorem finiteMatrix_sqrt_mulVec_eq_zero_iff
+    {n : Type*} [Fintype n] [DecidableEq n]
+    {C : Matrix n n ℂ} (hC : C.PosSemidef) (v : n → ℂ) :
+    CFC.sqrt C *ᵥ v = 0 ↔ C *ᵥ v = 0 := by
+  let S : Matrix n n ℂ := CFC.sqrt C
+  have hSH : Sᴴ = S := by
+    simpa [S, Matrix.star_eq_conjTranspose] using
+      (CFC.sqrt_nonneg C).star_eq
+  have hS2 : S * S = C := by
+    simpa [S, pow_two] using CFC.sq_sqrt C hC.nonneg
+  have hker := Matrix.conjTranspose_mul_self_mulVec_eq_zero S v
+  rw [hSH, hS2] at hker
+  exact hker.symm
+
+/-- **Complete finite occupied-support law `(14)`.**  Fidelity from a
+positive source to every probability mixture of occupied rays vanishes
+exactly when source covariance annihilates every occupied target.  The
+forward direction tests Dirac mixtures; the reverse direction keeps every
+weighted sheet in the synthesis matrix. -/
+theorem finiteBuresTrace_allWeightedTargetMixtures_eq_zero_iff
+    {i : Type*} [Fintype i] [Nonempty i] {n : ℕ}
+    {C : Matrix (Fin n) (Fin n) ℂ} (hC : C.PosSemidef)
+    (target : i → Fin n → ℂ) :
+    (∀ weight : i → ℝ≥0, (∑ j, weight j) = 1 →
+      (CFC.sqrt (CFC.conjSqrt C
+        (finiteWeightedCovarianceMatrix weight target))).trace.re = 0) ↔
+      ∀ j, C *ᵥ target j = 0 := by
+  classical
+  constructor
+  · intro hall j
+    let weight : i → ℝ≥0 := Pi.single j 1
+    have hweight : (∑ k, weight k) = 1 := by simp [weight]
+    have hzero := hall weight hweight
+    have hcov : finiteWeightedCovarianceMatrix weight target =
+        Matrix.vecMulVec (target j) (star (target j)) := by
+      ext a b
+      simp [finiteWeightedCovarianceMatrix, weight]
+    rw [hcov] at hzero
+    have hsqzero := congrArg (fun x : ℝ => x ^ 2) hzero
+    exact (finiteBuresTrace_sq_rankOne_right_eq_zero_iff
+      hC (target j)).mp (by simpa using hsqzero)
+  · intro hkill weight _
+    let U : Matrix (Fin n) (Fin n) ℂ := CFC.sqrt C
+    let V : Matrix (Fin n) i ℂ :=
+      finiteWeightedSynthesisMatrix weight target
+    have hUH : Uᴴ = U := by
+      simpa [U, Matrix.star_eq_conjTranspose] using
+        (CFC.sqrt_nonneg C).star_eq
+    have hU2 : U * U = C := by
+      simpa [U, pow_two] using CFC.sq_sqrt C hC.nonneg
+    have hcovU : U * Uᴴ = C := by rw [hUH, hU2]
+    have hcovV : V * Vᴴ = finiteWeightedCovarianceMatrix weight target := by
+      exact finiteWeightedSynthesisMatrix_mul_conjTranspose weight target
+    have hUV : U * V = 0 := by
+      ext a j
+      have hj : U *ᵥ target j = 0 :=
+        (finiteMatrix_sqrt_mulVec_eq_zero_iff hC (target j)).2 (hkill j)
+      have hja : (∑ k, U a k * target j k) = 0 := by
+        simpa [Matrix.mulVec, dotProduct] using congrFun hj a
+      change (∑ k, U a k *
+        ((NNReal.sqrt (weight j) : ℂ) * target j k)) = 0
+      calc
+        (∑ k, U a k *
+            ((NNReal.sqrt (weight j) : ℂ) * target j k)) =
+            (NNReal.sqrt (weight j) : ℂ) *
+              ∑ k, U a k * target j k := by
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro k _
+          ring
+        _ = 0 := by rw [hja, mul_zero]
+    have hK : Uᴴ * V = 0 := by simpa [hUH] using hUV
+    have hfid := finiteMatrixNuclearNorm_conjTranspose_mul_eq_buresTrace U V
+    rw [hcovU, hcovV] at hfid
+    have hnuclear : finiteMatrixNuclearNorm (Uᴴ * V) = 0 :=
+      (finiteMatrixNuclearNorm_eq_zero_iff (Uᴴ * V)).2 hK
+    exact hfid.symm.trans hnuclear
 
 theorem star_dotProduct_eq_finiteComplexInner
     {n : Type*} [Fintype n] (u v : n → ℂ) :

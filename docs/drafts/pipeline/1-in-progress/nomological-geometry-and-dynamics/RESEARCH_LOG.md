@@ -388,3 +388,146 @@ RH statement remains circular until that construction precedes Xi-zero specializ
   `tau_s:Theta_s->Z^1(N(q);E_s)` defined before target specialization, Morita-natural, whose named
   realizations yield at least two nonisomorphic corpus symbols and whose source polarization derives
   action.  Without this, CLG remains a typed recipe rather than a field.
+
+## 2026-08-09 — Cartan completion and first multi-route source current
+
+- Reinterpreted CLG as a Cartan-type lawstack rather than one moduli space.  Primitive fields are
+  deformation/prolongation `K`, observer-response/duality `T`, constitutive soldering `s:K->T`,
+  source-history transports, polarization/order `h`, action `A`, and independently normalized
+  source current `J`.
+- Exact curved Bianchi law from the bivariant sector:
+  `delta Q = F^T s - s F^K`, with `Q_f=T_f f_!(s_A)-s_BK_f`.  This turns the GR analogy into a
+  typed defect spectrum: curvature, torsion/current mismatch, nonmetricity, rank/Fitting horizon,
+  admission wall, nonproper boundary, and holonomy are distinct organs.
+- Integrated first genuine multi-route current.  The Kähler logarithmic source form
+  `omega_E=M*dE`, contracted by logarithmic derivation, is `Lambda`.  Its exact shadows are Route-L
+  dilation connection, Mass half-density prime boundary, reflection-odd Weil/Suzuki current, and
+  Stokes prime rapidity.  It is source-flat, so nonzero route curvature must occur in comparison,
+  admission, completion, polarization, boundary, or capacity.
+- This defeats the criticism that CLG only classifies routes: one source differential object now
+  has several named coefficient-changing realizations.  It still does not select Route-E flow,
+  Gamma normalization, or RH.
+
+## 2026-08-09 — split-prime transgression no-go and coframe anomaly theorem
+
+- Proved `Q_(>0)^times = <p> times ker(v_p)` for every ordinary prime.  Hence the fixed-prime
+  central extension splits, its Euler class is zero, and the Euler/cap-product periodicity and
+  corresponding extension-generated `d_2` vanish.  This does not kill unrelated `H^2` classes.
+- Para-`S`/cylindrical inverse-monodromy totalization uses only `T_h T_v=1`.  Scalar
+  `T_h=lambda`, `T_v=lambda^(-1)` proves this monodromy condition permits nontrivial inverse
+  factors whenever the remaining cylindrical identities are supplied; it cannot select the
+  critical line.
+- Hostile correction: flatness plus primewise splitting does not forbid nullhomology.  Direct-sum
+  complexes `h_p -> u_p` are flat, split, and kill every prime class.
+- Exact literal-source survivor: if the full valuation coframe `phi_ell(u_p)=-delta_(ell,p)` extends
+  as closed cochains across an exactification, finite prime span injects into its homology.  Any
+  source nullhomology must therefore create a coframe-extension anomaly.
+- In a prime--infinity extension ansatz, nonzero connecting transgression requires a nonsplit chain
+  extension.  On every solid prime Banach sequence space, any bounded off-diagonal coupling to the
+  logarithmic generator splits by the bounded shear `h_p=-b_p/log p`.  Viable coupling must be
+  singular/unbounded, order-sensitive, domain-obstructed, spectrally resonant, or carried by a
+  topology in which this shear is inadmissible.
+- New Stage-2 card:
+  `split-prime-euler-class-and-inverse-monodromy-totalization-no-go.md`.
+- Current primary parents checked: Ponge crossed-product/para-`S` theory, Getzler 2026 paracyclic
+  normalization, Pridham shifted symplectic arithmetic duality, Česnavičius adelic fppf
+  Poitou--Tate, and Macias Castillo--Sano 2026 Selmer/Poitou--Tate determinant/Bockstein theory.
+  None supplies the literal HGT realization.
+
+## 2026-08-09 — marked half-character law joins Hurwitz and arithmetic Stokes
+
+- Proved strict normalized `Z^1` is not an unframed Morita-invariant presentation object: point
+  groupoid and pair groupoid are Morita equivalent, but the pair presentation has nonzero exact
+  1-cocycles. This does not forbid zero transformations. A construction retaining the nonzero
+  representative needs a marked local source vector/primitive or equivalent descent enhancement.
+- For half-character `u`, coarse holonomy `z=u^2`, odd soldering `S=u-u^(-1)`, even curvature
+  `kappa=z-1`, and duality `J(u)=u^(-1)`, proved
+  `kappa=uS`, `kappa+zJ(kappa)=0`, and `-kappa J(kappa)=S^2`. The square map on complex `G_m` has
+  no global algebraic or continuous section. On the positive-real arithmetic locus the positive
+  square root is canonical; energy loses reflection/coorientation, not an unavailable root.
+- Exact Hurwitz realization: each marked branch increment is `(q_j-1)theta=K(q_j)theta`, with
+  source exponent `s_j` supplying `u_j=e^(-pi i s_j)`.  Shifting `s_j` by one fixes coarse
+  monodromy and flips the half-character.
+- Exact arithmetic realization: with `t=2 Re(s)-1`, `z_p=p^t`,
+  `b_t(p)=-d(p)(1+p^(-t))kappa_t(p)`, while physical paracyclic residue is `kappa_t(p)c`. Therefore the
+  Gamma Bockstein is not an independent cancelling current; it is a duality-weighted copy of the
+  same finite-prime curvature.  Reflected energy is the square of the odd half-character.
+- New unconditional cofinal theorem: on the algebraic quotient `C^P/ell^1`, multiplication by
+  `r_t(p)=d(p)(1+p^(-t))` descends for `|t|<1`, is surjective and noninjective, but reciprocal
+  multiplication does not preserve `ell^1`. Finite-place Bockstein/dagger equivalence loses its
+  canonical diagonal inverse at the all-prime boundary. This is not categorical nonsplitting;
+  noncanonical algebraic right splittings exist.
+- New Stage-2 card:
+  `marked-half-character-duality-soldering-and-cofinal-diagonal-inverse-obstruction-law.md`.
+- This is first exact CLG law with one source-normal local algebra and two independently realized
+  families: Hurwitz branch history and arithmetic Stokes/Bockstein.  It does not select `u=1`,
+  prove HT by itself, or prove RH.
+
+## 2026-08-09 — higher pivot: one Euler prime orbit, six shadows
+
+- Stopped treating the half-character or prime--infinity selector as field core. Those are local
+  calibrations. Higher question is whether one source history object produces arithmetic,
+  spectral, positive, recurrence, prolongation, and completion organs simultaneously.
+- Proved coordinate-free finite normal form: if self-adjoint `D` has simple integrally independent
+  spectrum and `v` meets every eigenspace, then `v,Dv,...` is Vandermonde-cyclic, the unitary orbit
+  is dense/recurrent on its spectral phase torus, norm-square is constant there, and the universal
+  phase lift is unbounded. This is the first non-route-specific kinematic theorem of the field.
+- For finite prime set `F`, set `v(p)=log(p)/sqrt(p)` and `D(p)=log p`. Proved the Vandermonde basis
+  theorem: `v,Dv,...,D^(|F|-1)v` spans every prime direction. Required prolongation order grows
+  with cutoff, giving an exact non-finite-type source filtration without claiming analytic HT.
+- The same Mellin orbit `e^(-itD)v` is dense/recurrent on its finite prime-radius torus by unique
+  factorization and Kronecker--Weyl. Its logarithmic lift `(-t log p)` is unbounded.
+- Its positive energy `sum_(p in F)(log p)^2/p` is constant on the entire torus and therefore
+  maximally phase-blind. Full autocorrelation retains the prime-frequency measure.
+- Cofinally, `((log p)p^(-sigma))_p` lies in `ell^2(P)` exactly for `sigma>1/2`; at half density
+  every finite observer is compact/recurrent while the standard Hilbert limit does not exist.
+- New Stage-2 card:
+  `euler-prime-orbit-prolongation-recurrence-polar-cofinal-law.md`.
+- This is the strongest current anti-regression result: one pre-divisor source orbit has six
+  nonisomorphic shadows. It still does not produce a whole-corpus lawstack, actual analytic HT,
+  Route-E capacity, Gamma normalization, or wormhole length.
+
+## 2026-08-09 — higher field pivot: Constraint-Motive Relativity
+
+- Demoted CLG from final field primitive to local atlas. Higher working field is
+  **Constraint-Motive Relativity (CMR)**: exactness, topology, order, completion, and cost are
+  observer doctrines in a stable fibration, not fixed background structures.
+- Candidate law is a source-selected self-dual section `Delta` through those doctrines. Doctrine
+  changes carry typed Beck--Chevalley mates; invertibility on the `Delta`-generated thick sector is
+  the constraint equivalence principle. Missing comparison cells are fracture defects, not
+  curvature.
+- Exact perfect five-shadow theorem: one finite complex with holonomy has cancelling `K_0`,
+  cohomology, supertrace, superdeterminant, positive modulus-square, and recurrence-power shadows.
+  Unitary determinant energy is phase-blind. Equal shadows still do not determine extension data.
+- Proved no single ordinary defect complex can contain curvature, cohomology, Tate boundary,
+  order, and holonomy. Higher carrier is a self-dual Tate fracture totalization with
+  `D=sum_r D_r`, `D^2=0`.
+- Exact obstruction--Bianchi law: `O_n=sum_(r+s=n,r,s>=1)D_rD_s` is `D_0`-closed and vanishes in
+  endomorphism cohomology exactly when `D_n` can be adjoined. Thus `O_2=D_1^2` is curvature,
+  `D_2` its nullhomotopy, and `O_3=D_1D_2+D_2D_1` the next Bianchi obstruction.
+- Finite vertical amplitude kills high `D_r` and makes `Tot_direct-sum=Tot_product`; indefinite
+  coherence migration and nonzero completion boundary force unbounded amplitude. HT may supply
+  this amplitude but nonperfectness alone is not HT.
+- New Stage-1 card: `constraint-motive-relativity.md`.
+- New Stage-2 card: `perfect-defect-motive-five-shadow-law.md` and
+  `tate-fracture-obstruction-bianchi-amplitude-law.md`.
+
+## 2026-08-09 — positive-correspondence dynamics and completeness
+
+- Replaced quotient-only observer in the positive sector by faithful differential conditional
+  expectation `E:A->B`. Its covariance tensor is
+  `Gamma_E(a,b)=phi(E(a^*b)-E(a^*)E(b))`.
+- If `f` is relatively jet-free modulo `B`, every covariance jet Gram matrix is positive definite
+  of rank `N+1`. This is an exact HT-to-hidden-rank theorem under stated observer admission.
+- Infinite covariance rank makes the canonical positive norm noncoercive: the hidden unit sphere
+  contains an orthonormal sequence. Positivity does not imply completeness.
+- Exact repair classification: for positive self-adjoint `L`, action
+  `||xi||^2+||L^(1/2)xi||^2` has compact sublevels iff `(I+L)^(-1)` is compact. Compact resolvent is
+  necessary and sufficient in the Hilbert chart; source must derive `L`.
+- Connected filtered products are covariance defects and satisfy Gram positivity. A faithful
+  multiplicative observer cannot erase nonzero HT modes.
+- This yields exact closed-observer/open-lift examples and a sharp physics boundary: covariance is
+  compatible with filtered wormhole terms, but no horizon algebra, bulk reconstruction, or length
+  operator follows without source-derived `E` and `L`.
+- New Stage-2 card:
+  `positive-observer-covariance-hypertranscendence-compact-resolvent-law.md`.
