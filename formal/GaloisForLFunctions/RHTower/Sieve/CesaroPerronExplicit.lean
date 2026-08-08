@@ -49,50 +49,50 @@ theorem rpow_le_four {σ u : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hu1 : 1 �
   linarith
 
 /-- **The first piece.**  On the interval of length `1/T` at the cutoff, the trivial bound. -/
-theorem cesaro_piece_one_le {σ T : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hT : 2 ≤ T) {a : ℝ}
+theorem cesaro_piece_one_le {σ T : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hT : 1 ≤ T) {a : ℝ}
     (ha1 : 1 ≤ a) (ha2 : a ≤ 1 + 1 / T) :
     (∫ u in (1 : ℝ)..a, ‖perronVerticalClamped σ T u - 1‖ / u)
-      ≤ (4 * (1 + Real.log (T / σ)) / Real.pi + 1) / T := by
+      ≤ (4 * (1 + Real.log (1 + T / σ)) / Real.pi + 1) / T := by
   have hT0 : (0 : ℝ) < T := by linarith
   have hσ0 : (0 : ℝ) < σ := by linarith
-  have hσT : σ ≤ T := by linarith
-  have hlognn : (0 : ℝ) ≤ Real.log (T / σ) := Real.log_nonneg ((one_le_div hσ0).2 hσT)
+  have hTσ0 : (0 : ℝ) ≤ T / σ := by positivity
+  have hlognn : (0 : ℝ) ≤ Real.log (1 + T / σ) := Real.log_nonneg (by linarith)
   have hinvT : 1 / T ≤ 1 := by
     rw [div_le_one hT0]; linarith
   have ha2' : a ≤ 2 := by linarith
   have hpt : ∀ u ∈ Set.Icc (1 : ℝ) a,
       ‖perronVerticalClamped σ T u - 1‖ / u
-        ≤ 4 * (1 + Real.log (T / σ)) / Real.pi + 1 := by
+        ≤ 4 * (1 + Real.log (1 + T / σ)) / Real.pi + 1 := by
     intro u hu
     rw [Set.mem_Icc] at hu
     have hu1 : (1 : ℝ) ≤ u := hu.1
     have hu0 : (0 : ℝ) < u := by linarith
-    have hbase := norm_perronVerticalClamped_sub_one_le_log hσ0 hσT hu1
+    have hbase := norm_perronVerticalClamped_sub_one_le_log hσ0 hT0.le hu1
     have hfour : u ^ σ ≤ 4 := rpow_le_four hσ1 hσ2 hu1 (by linarith [hu.2])
     have hstep : ‖perronVerticalClamped σ T u - 1‖
-        ≤ 4 * (1 + Real.log (T / σ)) / Real.pi + 1 := by
+        ≤ 4 * (1 + Real.log (1 + T / σ)) / Real.pi + 1 := by
       refine le_trans hbase ?_
-      have hd : u ^ σ * (1 + Real.log (T / σ)) / Real.pi
-          ≤ 4 * (1 + Real.log (T / σ)) / Real.pi := by
+      have hd : u ^ σ * (1 + Real.log (1 + T / σ)) / Real.pi
+          ≤ 4 * (1 + Real.log (1 + T / σ)) / Real.pi := by
         refine div_le_div_of_nonneg_right ?_ (by positivity)
         exact mul_le_mul_of_nonneg_right hfour (by linarith)
       linarith
     calc ‖perronVerticalClamped σ T u - 1‖ / u ≤ ‖perronVerticalClamped σ T u - 1‖ / 1 := by
           refine div_le_div_of_nonneg_left (norm_nonneg _) zero_lt_one hu1
       _ = ‖perronVerticalClamped σ T u - 1‖ := by rw [div_one]
-      _ ≤ 4 * (1 + Real.log (T / σ)) / Real.pi + 1 := hstep
+      _ ≤ 4 * (1 + Real.log (1 + T / σ)) / Real.pi + 1 := hstep
   have hmono := intervalIntegral.integral_mono_on ha1
     (intervalIntegrable_cesaro_integrand hσ0 T zero_lt_one ha1)
-    ((continuous_const (y := 4 * (1 + Real.log (T / σ)) / Real.pi + 1)).intervalIntegrable
+    ((continuous_const (y := 4 * (1 + Real.log (1 + T / σ)) / Real.pi + 1)).intervalIntegrable
       (μ := volume) 1 a) hpt
   rw [intervalIntegral.integral_const, smul_eq_mul] at hmono
   have hlen : a - 1 ≤ 1 / T := by linarith
-  have hCnn : (0 : ℝ) ≤ 4 * (1 + Real.log (T / σ)) / Real.pi + 1 := by positivity
-  have hfin : (a - 1) * (4 * (1 + Real.log (T / σ)) / Real.pi + 1)
-      ≤ (1 / T) * (4 * (1 + Real.log (T / σ)) / Real.pi + 1) :=
+  have hCnn : (0 : ℝ) ≤ 4 * (1 + Real.log (1 + T / σ)) / Real.pi + 1 := by positivity
+  have hfin : (a - 1) * (4 * (1 + Real.log (1 + T / σ)) / Real.pi + 1)
+      ≤ (1 / T) * (4 * (1 + Real.log (1 + T / σ)) / Real.pi + 1) :=
     mul_le_mul_of_nonneg_right hlen hCnn
-  have hval : (1 / T) * (4 * (1 + Real.log (T / σ)) / Real.pi + 1)
-      = (4 * (1 + Real.log (T / σ)) / Real.pi + 1) / T := by ring
+  have hval : (1 / T) * (4 * (1 + Real.log (1 + T / σ)) / Real.pi + 1)
+      = (4 * (1 + Real.log (1 + T / σ)) / Real.pi + 1) / T := by ring
   rw [hval] at hfin
   linarith
 
@@ -204,12 +204,12 @@ theorem cesaro_piece_three_le {σ T : ℝ} (hσ1 : 1 ≤ σ) (hT : 1 ≤ T) {a y
 
 No factor `N`, no `1/log y`: the logarithmic average of the sharp-cutoff error is finite where the
 pointwise error is not. -/
-theorem norm_perron_cesaro_sub_log_le_explicit {σ T : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hT : 2 ≤ T)
+theorem norm_perron_cesaro_sub_log_le_explicit {σ T : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hT : 1 ≤ T)
     {y : ℝ} (hy : 1 ≤ y) :
     ‖((1 / (2 * Real.pi) : ℝ) : ℂ) * (∫ t in (-T)..T,
           (((y : ℝ) : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) - 1) / ((σ : ℂ) + (t : ℝ) * I) ^ 2)
         - ((Real.log y : ℝ) : ℂ)‖
-      ≤ (4 * (1 + Real.log (T / σ)) / Real.pi + 1) / T
+      ≤ (4 * (1 + Real.log (1 + T / σ)) / Real.pi + 1) / T
         + (4 / (Real.pi * T)) * (Real.log (Real.log 2) - Real.log (Real.log (1 + 1 / T)))
         + y ^ σ / (Real.pi * T * σ * Real.log 2) := by
   have hT0 : (0 : ℝ) < T := by linarith
@@ -228,7 +228,7 @@ theorem norm_perron_cesaro_sub_log_le_explicit {σ T : ℝ} (hσ1 : 1 ≤ σ) (h
     have hyσ : (0 : ℝ) ≤ y ^ σ := Real.rpow_nonneg (by linarith) σ
     positivity
   have hbound : (∫ u in (1 : ℝ)..y, ‖perronVerticalClamped σ T u - 1‖ / u)
-      ≤ (4 * (1 + Real.log (T / σ)) / Real.pi + 1) / T
+      ≤ (4 * (1 + Real.log (1 + T / σ)) / Real.pi + 1) / T
         + (4 / (Real.pi * T)) * (Real.log (Real.log 2) - Real.log (Real.log (1 + 1 / T)))
         + y ^ σ / (Real.pi * T * σ * Real.log 2) := by
     rcases le_total y (1 + 1 / T) with hcase | hcase

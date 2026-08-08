@@ -27,7 +27,7 @@ open Complex MeasureTheory Set
 /-- **The logarithmically weighted partial sum against the Cesàro kernel.**  The arithmetic half is the
 truncated Cesàro Perron formula, the analytic half the integrable second-order decay. -/
 theorem norm_sum_Icc_mul_log_div_le_cesaro {f : ℕ → ℂ} (hbdd : ∀ n, ‖f n‖ ≤ 1) {N : ℕ}
-    (hN : 1 ≤ N) {V σ T x : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hT : 2 ≤ T) (hV : 0 ≤ V)
+    (hN : 1 ≤ N) {V σ T x : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hT : 1 ≤ T) (hV : 0 ≤ V)
     (hxN : (N : ℝ) ≤ x)
     (hgV : ∀ t : ℝ, |t| ≤ T → ‖LSeries (truncSeq f N) ((σ : ℂ) + (t : ℝ) * I)‖ ≤ V) :
     ‖∑ n ∈ Finset.Icc 1 N, truncSeq f N n * ((Real.log (x / n) : ℝ) : ℂ)‖
@@ -106,9 +106,9 @@ theorem norm_sum_Icc_mul_log_div_le_cesaro {f : ℕ → ℂ} (hbdd : ∀ n, ‖f
       have hP2 : (0 : ℝ) ≤ (4 / (Real.pi * T))
           * (Real.log (Real.log 2) - Real.log (Real.log (1 + 1 / T))) :=
         mul_nonneg (by positivity) (by linarith)
-      have hσT : σ ≤ T := by linarith
-      have hlogT : (0 : ℝ) ≤ Real.log (T / σ) := Real.log_nonneg ((one_le_div hσ0).2 hσT)
-      have hP1 : (0 : ℝ) ≤ (4 * (1 + Real.log (T / σ)) / Real.pi + 1) / T := by positivity
+      have hTσ0 : (0 : ℝ) ≤ T / σ := by positivity
+      have hlogT : (0 : ℝ) ≤ Real.log (1 + T / σ) := Real.log_nonneg (by linarith)
+      have hP1 : (0 : ℝ) ≤ (4 * (1 + Real.log (1 + T / σ)) / Real.pi + 1) / T := by positivity
       have hP3 : (0 : ℝ) ≤ (x / n) ^ σ / (Real.pi * T * σ * Real.log 2) := by positivity
       have hP4 : (0 : ℝ) ≤ 1 / (Real.pi * T) := by positivity
       linarith
