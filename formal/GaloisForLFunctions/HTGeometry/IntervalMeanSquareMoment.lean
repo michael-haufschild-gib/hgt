@@ -57,12 +57,12 @@ theorem integral_norm_le_sqrt_length_mul_sqrt_meanSquare {D : ℝ → ℂ} (hD :
   rw [hconv (fun t => ‖D t‖), hconv (fun t => ‖D t‖ ^ 2), mul_comm]
   exact hcs
 
-/-- **The first moment from an affine mean square.**  If the mean square over `|t| ≤ U` is at most
-`Q + κU`, then the first moment over any interval inside `[0, b]` is at most `√Q·√b + √κ·b`. -/
+/-- **The first moment from an affine mean square.**  If the mean square over `|t| ≤ b` is at most
+`Q + κb`, then the first moment over any interval inside `[0, b]` is at most `√Q·√b + √κ·b`. -/
 theorem integral_norm_le_sqrt_affine {D : ℝ → ℂ} (hD : Continuous D) {Q κ : ℝ} (hQ : 0 ≤ Q)
-    (hκ : 0 ≤ κ)
-    (hms : ∀ U : ℝ, 0 < U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2) ≤ Q + κ * U)
-    {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) (hb : 0 < b) :
+    (hκ : 0 ≤ κ) {a b : ℝ}
+    (hms : (∫ t in Set.Icc (-b) b, ‖D t‖ ^ 2) ≤ Q + κ * b)
+    (ha : 0 ≤ a) (hab : a ≤ b) (hb : 0 < b) :
     (∫ t in a..b, ‖D t‖) ≤ Real.sqrt Q * Real.sqrt b + Real.sqrt κ * b := by
   have hsq : Integrable (fun y => ‖D y‖ ^ 2) (volume.restrict (Set.Icc (-b) b)) :=
     (hD.norm.pow 2).integrableOn_Icc
@@ -73,7 +73,7 @@ theorem integral_norm_le_sqrt_affine {D : ℝ → ℂ} (hD : Continuous D) {Q κ
       positivity
     · refine Filter.Eventually.of_forall fun t ht => ?_
       exact Set.mem_Icc.2 ⟨by linarith [ht.1], ht.2⟩
-  have hbnd : (∫ t in a..b, ‖D t‖ ^ 2) ≤ Q + κ * b := le_trans hmono (hms b hb)
+  have hbnd : (∫ t in a..b, ‖D t‖ ^ 2) ≤ Q + κ * b := le_trans hmono hms
   have hlen : Real.sqrt (b - a) ≤ Real.sqrt b := Real.sqrt_le_sqrt (by linarith)
   calc (∫ t in a..b, ‖D t‖)
       ≤ Real.sqrt (b - a) * Real.sqrt (∫ t in a..b, ‖D t‖ ^ 2) :=
@@ -101,12 +101,16 @@ block, and it therefore costs a factor logarithmic in the height. -/
 theorem integral_norm_mul_kernel_le_of_affine_meanSquare {D : ℝ → ℂ} (hD : Continuous D)
     {G : ℝ → ℝ} (hGc : Continuous G) {Q κ C t₀ : ℝ} (hQ : 0 ≤ Q) (hκ : 0 ≤ κ) (hC : 0 ≤ C)
     (ht₀ : 0 < t₀)
-    (hms : ∀ U : ℝ, 0 < U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2) ≤ Q + κ * U)
+    (hms : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2) ≤ Q + κ * U)
     (hG : ∀ t, t₀ ≤ t → G t ≤ C / t) (M : ℕ) :
     (∫ t in t₀..(t₀ * 2 ^ M), ‖D t‖ * G t)
       ≤ (C * Real.sqrt Q * Real.sqrt 2 / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹
           + 2 * C * Real.sqrt κ * M := by
   have hpow : ∀ m : ℕ, (0 : ℝ) < t₀ * 2 ^ m := fun m => by positivity
+  have hge : ∀ m : ℕ, t₀ ≤ t₀ * 2 ^ m := by
+    intro m
+    have h1 : (1 : ℝ) ≤ 2 ^ m := one_le_pow₀ (by norm_num)
+    nlinarith [ht₀.le]
   have hstep : ∀ m : ℕ, t₀ * 2 ^ m ≤ t₀ * 2 ^ (m + 1) := by
     intro m
     exact mul_le_mul_of_nonneg_left (pow_le_pow_right₀ (by norm_num) (by omega)) ht₀.le
@@ -115,7 +119,8 @@ theorem integral_norm_mul_kernel_le_of_affine_meanSquare {D : ℝ → ℂ} (hD :
     (fun m _ => (hD.norm.intervalIntegrable _ _))
     (fun m _ => ((hD.norm.mul hGc).intervalIntegrable _ _))
     (fun m _ => ?_)
-  exact integral_norm_le_sqrt_affine hD hQ hκ hms (hpow m).le (hstep m) (hpow (m + 1))
+  exact integral_norm_le_sqrt_affine hD hQ hκ (hms _ (hge (m + 1))) (hpow m).le (hstep m)
+    (hpow (m + 1))
 
 end GaloisForLFunctions.HTGeometry
 end

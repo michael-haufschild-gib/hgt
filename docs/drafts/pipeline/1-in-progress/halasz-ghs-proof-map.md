@@ -2529,3 +2529,35 @@ size as the main term, so a truncation at `T = N` demands the near-diagonal harm
 `≍ B x^{σ−1}(1 + log M)`, polylogarithmic when `B` is; and the height enters the main term only through
 the *number* of dyadic blocks, `M ≍ log₂ T`, so doubling `log T` costs one factor of two in a single
 additive term.  Cheap height therefore replaces a sharp near-diagonal estimate entirely.
+
+## The analytic half, assembled: prime-sieve mean square against the sharp Perron kernel
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PrimeSieveAffineMeanSquare.lean`:
+
+- `exp_sub_exp_neg_le` — `e^u − e^{−u} ≤ 2u e^u`, unconditionally in `u`.
+- `mul_exp_sub_exp_neg_le` — hence `T(e^{1/T} − e^{−1/T}) ≤ 2e` for `T ≥ 1`: the window width `1/T`
+  the truncation forces cancels the factor `T` in front of the neighbour count.
+- `sieveMeanSquareConst a s σ Y = 10πe·(∑_n n‖a_n n^{−σ}‖²)/log Y`,
+  `sieveMeanSquareRate a s σ z Y = (5π/2)·∑_n (2/log Y + selbergFibreError z Y + z)‖a_n n^{−σ}‖²`.
+- `integral_Icc_normSq_LSeries_le_affine` — the corpus prime-sieve mean square in affine form:
+  `∫_{|y| ≤ T} ‖L(a,σ+iy)‖² ≤ sieveMeanSquareConst + sieveMeanSquareRate·T` for `T ≥ 1`.
+- `le_affine_of_sqrt_le` — a square-root bound `√(MS U) ≤ A + B√U` gives the affine form
+  `MS U ≤ (A² + AB) + (AB + B²)U`, the connector for the block-sieve version.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PerronVerticalPrimeBound.lean`:
+
+- `norm_perron_integrand` — `‖D·x^{σ+it}/(σ+it)‖ = ‖D‖·x^σ/‖σ+it‖`.
+- `continuous_perron_kernel_norm`, `perron_kernel_norm_le` — the kernel is continuous and `≤ x^σ/t`.
+- `integral_norm_perron_integrand_le` — **the analytic half**: for `a` supported on primes in a finite
+  set, `σ > 0`, `t₀ ≥ 1`,
+
+  `∫_{t₀}^{t₀2^M} ‖L(a,σ+it)·x^{σ+it}/(σ+it)‖ dt
+     ≤ x^σ√(sieveMeanSquareConst)·√2(1−√2/2)⁻¹/√t₀ + 2x^σ√(sieveMeanSquareRate)·M`.
+
+The `n`-weighting inside `sieveMeanSquareConst` is the reason this is not trivial: for prime weights
+`∑_p p·(log p)²p^{−2σ}` is a convergent prime sum, not a multiple of the length of the support, which is
+what the crude `(T + M)·mass` form of the mean value theorem would have charged.  Nothing in the bound
+depends on the height of the range except the block count `M`.
+
+Remaining for the route: the low range `|t| ≤ t₀` (kernel bounded by `x^σ/σ`), the reflection to
+negative heights, and the choice of `z, Y` per dyadic coefficient block.
