@@ -288,3 +288,93 @@ theorem deningerCoordMul_comp_restrict :
 end RestrictMorphism
 
 end RHTower
+
+namespace RHTower
+
+open CategoryTheory TopologicalSpace Opposite TopCat Complex HTGeometry
+
+section CoordinateMono
+
+variable {n : ℕ} {Ω : Opens (Fin n → ℂ)}
+
+/-- **A form killed by multiplication by a coordinate vanishes.**  Off the zero set of the
+coordinate this is immediate; on it the value is a limit of values off it, because a form is
+continuous. -/
+theorem deningerCoordSection_eq_zero {q : ℕ} {i : Fin n} {U : Opens (deningerSpace Ω)}
+    {f : ↥U → DeningerFormVal n} (hf : DeningerFormPred q f)
+    (h0 : ∀ (x : ↥U) (S : Finset (Fin n)), (x.1.1 : Fin n → ℂ) i * f x S = 0)
+    (x : ↥U) (S : Finset (Fin n)) : f x S = 0 := by
+  by_cases hxi : (x.1.1 : Fin n → ℂ) i = 0
+  · obtain ⟨g, N, hg, hgd, hNopen, hxN, hNeq⟩ := hf.exists_model_open x
+    set c : Fin n → ℂ := (x.1.1 : Fin n → ℂ) with hc
+    have hgz : ∀ z ∈ N ∩ (deningerAmb U : Set (Fin n → ℂ)), z i ≠ 0 → g S z = 0 := by
+      intro z hz hzi
+      have hval := hNeq z hz.1 S
+      rw [← hval, deningerExtend_of_mem f hz.2]
+      have hzero := h0 (deningerPt hz.2) S
+      rw [deningerPt_val hz.2] at hzero
+      exact (mul_eq_zero.1 hzero).resolve_left hzi
+    have hupd : Function.update c i 0 = c := by
+      funext k
+      by_cases hk : k = i
+      · subst hk
+        rw [Function.update_self, hxi]
+      · rw [Function.update_of_ne hk]
+    have hcontupd : Continuous (fun t : ℂ => Function.update c i t) :=
+      continuous_const.update i continuous_id
+    have hopen : IsOpen (N ∩ (deningerAmb U : Set (Fin n → ℂ))) :=
+      hNopen.inter (deningerAmb U).2
+    have hpre : ∀ᶠ t in nhds (0 : ℂ),
+        Function.update c i t ∈ N ∩ (deningerAmb U : Set (Fin n → ℂ)) := by
+      refine hcontupd.continuousAt.eventually_mem ?_
+      rw [hupd]
+      exact hopen.mem_nhds ⟨hxN, deningerAmb_mem_of_mem x⟩
+    have hev : (fun _ : ℂ => (0 : ℂ))
+        =ᶠ[nhdsWithin (0 : ℂ) {0}ᶜ] fun t => g S (Function.update c i t) := by
+      filter_upwards [nhdsWithin_le_nhds hpre, self_mem_nhdsWithin] with t ht ht0
+      refine (hgz _ ht ?_).symm
+      rw [Function.update_self]
+      exact ht0
+    have h1 : Filter.Tendsto (fun t : ℂ => g S (Function.update c i t))
+        (nhdsWithin (0 : ℂ) {0}ᶜ) (nhds (g S c)) := by
+      have hcw : ContinuousWithinAt (fun t : ℂ => g S (Function.update c i t)) {0}ᶜ 0 :=
+        (((hg S).continuous.comp hcontupd).continuousAt).continuousWithinAt
+      simpa only [ContinuousWithinAt, hupd] using hcw
+    have h2 : Filter.Tendsto (fun t : ℂ => g S (Function.update c i t))
+        (nhdsWithin (0 : ℂ) {0}ᶜ) (nhds 0) := Filter.Tendsto.congr' hev tendsto_const_nhds
+    have hgc : g S c = 0 := tendsto_nhds_unique h1 h2
+    have hfx : deningerExtend f c S = g S c := hNeq c hxN S
+    rw [deningerExtend_apply f x] at hfx
+    rw [hfx, hgc]
+  · exact (mul_eq_zero.1 (h0 x S)).resolve_left hxi
+
+instance deningerCoordMul_mono (Ω : Opens (Fin n → ℂ)) (q : ℕ) (i : Fin n) :
+    Mono (deningerCoordMul Ω q i) := by
+  haveI : ∀ U, Mono ((deningerCoordMul Ω q i).1.app U) := by
+    intro U
+    rw [AddCommGrpCat.mono_iff_injective]
+    intro a b hab
+    have h : ∀ (x : ↥(unop U)) (S : Finset (Fin n)),
+        (x.1.1 : Fin n → ℂ) i * (a.1 x S - b.1 x S) = 0 := by
+      intro x S
+      have h1 : (ConcreteCategory.hom ((deningerCoordMul Ω q i).1.app U) a).1
+          = (ConcreteCategory.hom ((deningerCoordMul Ω q i).1.app U) b).1 := by rw [hab]
+      have h2 : (x.1.1 : Fin n → ℂ) i * a.1 x S = (x.1.1 : Fin n → ℂ) i * b.1 x S :=
+        congrFun (congrFun h1 x) S
+      rw [mul_sub, h2, sub_self]
+    refine Subtype.ext (funext fun x => funext fun S => ?_)
+    have hsub : (fun x : ↥(unop U) => fun S => a.1 x S - b.1 x S) = fun x => a.1 x - b.1 x := rfl
+    have hpred : DeningerFormPred q (fun x : ↥(unop U) => a.1 x - b.1 x) := by
+      have := DeningerFormPred.add q a.2.1 (DeningerFormPred.neg q b.2.1)
+      exact this
+    have := deningerCoordSection_eq_zero (i := i) (q := q) hpred (by
+      intro x S
+      exact h x S) x S
+    have hzero : a.1 x S - b.1 x S = 0 := this
+    exact sub_eq_zero.1 hzero
+  haveI : Mono (deningerCoordMul Ω q i).1 := NatTrans.mono_of_mono_app _
+  exact CategoryTheory.Sheaf.Hom.mono_of_presheaf_mono _ _ _
+
+end CoordinateMono
+
+end RHTower

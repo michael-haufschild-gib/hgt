@@ -87,3 +87,59 @@ Remaining: the passage from the algebra to the sheaf, which the corpus's local-p
 supports.  The algebraic content of `(6)`--`(7)` of the residue-square card — the logarithmic
 complex, the unique expression `α + (dz/z) ∧ β`, the Poincaré residue `β`, and the residue sequence
 — is complete.
+
+## The sheaf layer: what is built
+
+The passage from the algebra to the sheaf is the ideal sequence of a coordinate divisor,
+`0 → O --·z--> O --restrict--> i_* O_D → 0`, from which the residue sequence for `k`-forms is
+obtained by taking the direct sum over the `k`-subsets of the coordinates: on a subset not
+containing the last direction the sequence is the identity, on one containing it the sequence above.
+
+Landed, axiom audit `propext, Classical.choice, Quot.sound` for every declaration:
+
+- `formal/GaloisForLFunctions/HTGeometry/DbarCoordinateProduct.lean` — `dzbarAt_mul`, **the Leibniz
+  rule for the antiholomorphic derivative**, from the product rule for the Fréchet derivative and
+  the complex homogeneity of the antiholomorphic Wirtinger functional; `dzbarAt_coord`, a
+  coordinate is holomorphic; `coordSetForm` and **`setDbar_coordSetForm`**: multiplying a form by a
+  coordinate commutes with the Dolbeault operator.
+- `formal/GaloisForLFunctions/RHTower/DeningerDivisorInclusion.lean` — `deningerDivisorMap`,
+  appending a zero last coordinate; its injectivity, continuity, and the fact that it commutes with
+  updating an earlier coordinate; **`dzbarAt_comp_divisorMap`**: the antiholomorphic derivatives
+  restrict to the divisor, which is a definitional consequence of that commutation;
+  `deningerDivisorPullback` and `setDbar_deningerDivisorPullback`.
+- `formal/GaloisForLFunctions/RHTower/DeningerStructureSheafMaps.lean` — **`deningerCoordMul`**,
+  multiplication by a coordinate as an endomorphism of the sheaf of holomorphic functions;
+  **`deningerDivisorInclusion`**, the divisor as a map of spaces; **`deningerDivisorRestrict`**,
+  restriction to the divisor as a morphism to the direct image of the structure sheaf of the
+  divisor; **`deningerCoordMul_comp_restrict`**, the composite vanishes; and
+  **`deningerCoordMul_mono`**: multiplication by a coordinate is a monomorphism, because a form it
+  kills vanishes off the coordinate's zero set and hence, being continuous, on it too.
+- `formal/GaloisForLFunctions/RHTower/DeningerDivisorExtension.lean` — `deningerChopMap`, forgetting
+  the last coordinate, with the two computations of the antiholomorphic derivatives of a function
+  pulled back along it; **`deningerDivisorRestrict_locallySurjective`** and
+  **`deningerDivisorRestrict_epi`**: off the divisor the trace of a small neighbourhood is empty, so
+  the zero section works, and on the divisor a local model of the given function read through the
+  map forgetting the last coordinate is a holomorphic extension.
+
+## What is left, and exactly what it is
+
+Exactness of `0 → O --·z--> O --restrict--> i_* O_D → 0` in the middle.  That is the statement that
+**a holomorphic function vanishing on a coordinate hyperplane is divisible by that coordinate** —
+the Nullstellensatz for a smooth divisor, in the one case that is needed.  It is a genuine theorem
+of several complex variables, and the corpus does not have it.
+
+The route that fits the corpus's tools: for `f` holomorphic near a point of the divisor and
+vanishing on it, put
+\[
+ u(x)=\frac1{2\pi i}\oint_{|\zeta|=r}\frac{f(x_1,\dots,x_n,\zeta)}{\zeta(\zeta-x_{n+1})}\,d\zeta .
+\]
+For each `ζ` on the circle the integrand is complex Fréchet differentiable in `x`, so
+`hasFDerivAt_integral_of_dominated_loc_of_lip` — which mathlib states over an `RCLike` field, so
+over `ℂ` — makes `u` complex differentiable, hence analytic by `DifferentiableOn.analyticOnNhd`,
+hence a section of the structure sheaf by `analyticOnNhd_of_dzbarAt_eq_zero` read backwards.  The
+identity `x_{n+1}·u = f` is the one-variable Cauchy formula applied to `ζ ↦ f(x',ζ)/ζ`, which is
+holomorphic on the disc because `f` vanishes at `ζ = 0`.
+
+With that in hand the residue sequence is the direct sum of `C(n,k-1)` copies of the ideal sequence
+and `C(n,k) - C(n,k-1)` copies of the identity, its terms are free analytic sheaves of finite rank
+and so acyclic by `deningerFree_ext_eq_zero`, and steps 1--4 of this card are closed.
