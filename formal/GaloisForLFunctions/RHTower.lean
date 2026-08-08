@@ -6321,3 +6321,4 @@ import GaloisForLFunctions.RHTower.Sieve.GallagherAffineMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.PrimeAffineFirstMoment
 import GaloisForLFunctions.RHTower.Sieve.GhsMasterTrivialCap
 import GaloisForLFunctions.RHTower.Sieve.MoebiusPairDamping
+import GaloisForLFunctions.RHTower.Sieve.MoebiusFejerDistance

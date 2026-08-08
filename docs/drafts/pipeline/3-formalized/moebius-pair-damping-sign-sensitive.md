@@ -51,3 +51,33 @@ Unconditional: `[propext, Classical.choice, Quot.sound]`.
 
 ## Log
 - 2026-08-08 — created in 3-formalized; the sign-sensitive identity given its first consumer.
+
+## The ratio tends to 1
+
+The `2/5` is the case `K = 2` of a family. With `θ_p = t·log p`, the positivity of the
+pair-correlation form — `0 ≤ ∑_{j,k < K+1} cos((j−k)θ)`, which is `|∑_{j<K+1}e^{ijθ}|² ≥ 0`, the Fejér
+kernel, and is already in the corpus as `RHTower.pair_correlation_nonneg` — gives
+
+`∑_{j,k < K+1} 𝔻(f, n^{i(j−k)t})² ≥ (K+1)²·A`,   `A = ∑_{p ∈ P}1/p`,
+
+while the `K+1` diagonal terms contribute exactly `2(K+1)A`. Averaging over the `(K+1)K` off-diagonal
+pairs and using that the distance is even in the frequency,
+
+`∃ k ∈ [1,K],  𝔻(f, n^{ikt})² ≥ ((K−1)/K)·A`
+
+(`exists_mulDistSqPair_ge_of_neg_one`). At `K = 2` this is the `2/5`; the ratio tends to `A` itself.
+Feeding it into the damped Euler bound:
+
+`∃ k ∈ [1,K],  ‖S(kt)‖ ≤ exp(A/K + B)`
+
+(`exists_norm_smoothMulSum_le_of_neg_one`), against the trivial `exp(A + B)`. At `P = {p ≤ z}` the
+saving is `(log z)^{-(1-1/K)}`, so for every `ε > 0` some frequency among `t, 2t, …, Kt` has a smooth sum
+of size `(log z)^{ε}` — unconditional, no zero-free region, no distance hypothesis. Only the sign
+`f(p) = −1` is used, which is exactly what the two architectural no-gos say a route must use.
+
+| Statement | Module |
+|---|---|
+| `mulDistSqPair_neg_one_charFn_neg` | `RHTower/Sieve/MoebiusFejerDistance.lean` |
+| `sq_le_sum_sum_mulDistSqPair` | `RHTower/Sieve/MoebiusFejerDistance.lean` |
+| `exists_mulDistSqPair_ge_of_neg_one` | `RHTower/Sieve/MoebiusFejerDistance.lean` |
+| `exists_norm_smoothMulSum_le_of_neg_one` | `RHTower/Sieve/MoebiusFejerDistance.lean` |
