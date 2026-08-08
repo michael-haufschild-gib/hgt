@@ -48,6 +48,12 @@ eigenspace, and the continuity of the projection under norm perturbation.
 | nearby idempotents are conjugate, hence equirank | `idempotentIntertwiner`, `exists_eq_conj_of_norm_sub_lt_one`, `finrank_range_eq_of_norm_sub_lt_one` |
 | second resolvent identity and its quantitative form | `resolvent_sub_resolvent_perturb`, `norm_resolvent_sub_le_of_norm_sub_le` |
 | **the Riesz projection is norm continuous in the element** | `exists_norm_resolvent_le_on_sphere`, `norm_rieszProjection_sub_le` |
+| the projection evaluated at a vector | `circleIntegral_apply`, `rieszProjection_apply` |
+| the finite Laurent expansion of the resolvent on a generalized eigenvector | `sub_smul_pow_sum`, `resolvent_apply_of_pow_eq_zero`, `circleIntegral_inv_pow` |
+| **generalized eigenvectors inside are fixed; eigenvectors outside are annihilated** | `rieszProjection_apply_eq_self`, `rieszProjection_apply_eq_zero_of_eigenvector` |
+| a nonzero generalized eigenvector yields an eigenvector | `exists_eigenvector_of_mem_maxGenEigenspace` |
+| restriction to an invariant submodule commutes with the algebra | `coe_restrict_pow`, `restrict_sub_smul`, `coe_pow_sub_smul` |
+| **`ran P` is the generalized eigenspace** | `maxGenEigenspace_le_range_rieszProjection`, `range_rieszProjection_le_maxGenEigenspace`, `range_rieszProjection_eq_maxGenEigenspace` |
 
 ## Route
 
@@ -76,14 +82,22 @@ Step 5 is the one the determinant card needs; 1--4 are its prerequisites.
 - [x] nearby idempotents are conjugate and equirank
 - [x] norm continuity of the projection in the element
 - [x] commutation with `a` (`rieszProjection_commute`)
-- [ ] range = generalized eigenspace
+- [x] range = generalized eigenspace (`range_rieszProjection_eq_maxGenEigenspace`), modulo the
+      finite-dimensionality of `ran P`, which the finite-section transfer supplies
 - [ ] finite-section stability of the rank
 
 ## Log
 - 2026-08-08 — created; definition and the Cauchy vanishing formalized.
+- 2026-08-08 — `ran P = maxGenEigenspace T lam0` formalized, under three explicit hypotheses:
+  idempotence of `P` (supplied by `rieszProjection_mul_self`), spectral separation (every eigenvalue
+  other than `lam0` lies outside the closed disc), and finite-dimensionality of `ran P`.  The proof
+  is elementary: inclusion one is the finite Laurent expansion of the resolvent on a generalized
+  eigenvector (only the simple pole survives the contour integral); inclusion two restricts `T` to
+  `ran P`, observes that an eigenvector there for an eigenvalue outside the disc would be both fixed
+  and annihilated by `P`, and concludes with `Module.End.iSup_maxGenEigenspace_eq_top`.  One gate
+  remains: the finite-section transfer, which also supplies the finite-dimensionality hypothesis.
 - 2026-08-08 — idempotence, the conjugacy of nearby idempotents (hence equality of rank), and the
-  norm continuity of the projection in the element are formalized.  Two gates remain: the
-  identification of `ran P` with the generalized eigenspace, and the finite-section transfer.
+  norm continuity of the projection in the element are formalized.
 - 2026-08-08 — contour independence formalized.
 - 2026-08-08 — commutation with `a` formalized, together with the two lemmas pulling
   multiplication through a Banach-valued circle integral (`ContinuousLinearMap.mul` and its `flip`,

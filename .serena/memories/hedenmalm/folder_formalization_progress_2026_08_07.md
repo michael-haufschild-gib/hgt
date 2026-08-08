@@ -2046,3 +2046,25 @@ contour (`IsCompact.exists_bound_of_continuousOn`), and
 Traps: `omit [...] in` goes **before** the docstring, not after.  `simpa using congrArg (fun f => f x) u.mul_inv`
 oversimplifies to `True`; use `simp only [mul_apply_eq_comp, one_apply_eq_self]`
 (`ContinuousLinearMap.mul_apply`/`one_apply` are deprecated).
+
+### 2026-08-08 — Riesz gate 5: the range of the projection is the generalized eigenspace
+
+`range_rieszProjection_eq_maxGenEigenspace`, under three hypotheses that the finite-section transfer
+will supply: idempotence, spectral separation (every eigenvalue other than `lam0` is outside the
+closed disc), and `FiniteDimensional (ran P)`.
+
+Inclusion `maxGen ≤ ran P` is quantitative and needs **no** hypothesis: on a generalized eigenvector
+the resolvent is the finite Laurent polynomial `sum_k (lam-lam0)^(-k-1) N^k x`
+(`resolvent_apply_of_pow_eq_zero`, proved by telescoping with `Finset.sum_range_sub'`), and
+`circleIntegral.integral_sub_zpow_of_ne` kills every term but the simple pole.
+
+Inclusion `ran P ≤ maxGen` restricts `T` to `ran P` (invariant because `P` commutes with `T`); an
+eigenvector there for an eigenvalue outside the disc is fixed by `P` (idempotence) and annihilated
+by `P` (`rieszProjection_apply_eq_zero_of_eigenvector`), hence zero.  So `lam0` is the only
+eigenvalue, and `Module.End.iSup_maxGenEigenspace_eq_top` collapses the supremum.
+
+Traps: `LinearMap.one_apply` does not exist — `(g - mu • 1) v = 0` is **defeq** to
+`g v - mu • v = 0`, so `have h3 : ... := hstep` typechecks directly.  `rw [LinearMap.restrict_apply]`
+fails with a motive error inside a coercion; state the coerced equation as a `have` and close it
+with `rfl`.  `∃ j, ((g - mu • 1) ^ j) w = 0` needs `(1 : Module.End K V)` ascribed or the
+elaborator cannot apply the power.
