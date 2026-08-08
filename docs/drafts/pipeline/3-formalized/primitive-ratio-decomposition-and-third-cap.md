@@ -56,17 +56,29 @@ anything can be won, and passing to `‖C‖` at any point reinstates the cap of
 `CoefficientFreeCap.le_of_coefficientFree_bound` one level deeper. This is the third member of the family
 (`modulus-first-vertical-integral-no-go`, `ghs-prime-saving-master-bound-is-trivial`, this).
 
-*Positive.* The identity is exact and its right-hand side is an explicit Hermitian form: the weight
+*Structural.* The identity is exact and its right-hand side is an explicit Hermitian form: the weight
 `⌊N/max(m,n)⌋` is real and positive, the kernel satisfies `K_T(n,m) = conj K_T(m,n)`, and all of the
 arithmetic is the phase vector `(g(m))_{m ≤ N}` tested against a **fixed** matrix supported on the coprime
-off-diagonal. Non-negativity of `∫|F|²` is exactly the statement that this matrix is `⪰ −T·I` on the
-unimodular vectors. That is a spectral question about an explicit arithmetic matrix, in the same family as
-the Hilbert-matrix layer the corpus already owns (`hilbert-matrix-operator-theory-corpus`), and it is the
-first formulation in this folder in which the coefficients appear *only* as a unit vector — no moduli, no
-majorisation, hence no cap applies to it by construction.
+off-diagonal — no moduli occur anywhere in the statement.
+
+That is *not*, however, a route by itself, and the temptation to read it as one should be recorded as
+resisted. Non-negativity of `∫|F|²` says the matrix is `⪰ −T·I` on unimodular vectors, and the smallest
+eigenvalue is a **worst case over unimodular vectors** — a functional of the coefficient moduli alone,
+hence capped by `CoefficientFreeCap.le_of_modulusOnly_bound` exactly like everything else in the layer.
+The identity localises the arithmetic; it does not by itself escape. Concretely: the mean square of
+*every* unimodular completely multiplicative sequence is `TN + O(N²)`, so no `L²` statement can separate
+`μ` from `1`. This is the structural reason the whole `Sieve` mean-square layer is capped, and it is worth
+stating plainly: the caps are not three accidents but one fact — `L²` data is modulus data.
 
 ## Next
 
-The live question is the smallest eigenvalue of `M_{mn} = [m ⊥ n, m ≠ n] ⌊N/max(m,n)⌋ K_T(m,n)` on
-unimodular vectors, and whether the corpus's Hilbert-matrix norm bound (`‖H‖ ≤ π`) transfers to it after
-the dyadic decomposition of `⌊N/max⌋`.
+What is *not* capped is the evaluation of the form at a specific `g`, using arithmetic of `g` beyond
+`|g|`. The identity makes one such structure visible: for completely multiplicative `g` and coprime
+`m, n`, `g(m) g(n) = g(mn)`, so with `g = μ` the off-diagonal is
+
+`∑_{k} μ(k) · ( ∑_{k = mn, m ⊥ n, m ≠ n} ⌊N/max(m,n)⌋ K_T(m,n) )`,
+
+a Möbius sum whose weight is indexed by the *unitary divisors* of `k`. That is the only object this card
+produces which is not a function of the coefficient moduli. Formalising the coprime-pair ↔
+(integer, unitary divisor) bijection is the concrete next step; whether the resulting weight is tractable
+is open, and it should be costed against `cost-work-from-what-lemmas-consume` before any Lean is written.
