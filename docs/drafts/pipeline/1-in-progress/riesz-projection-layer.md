@@ -43,18 +43,22 @@ eigenspace, and the continuity of the projection under norm perturbation.
 | the resolvent commutes with the element | `commute_resolvent` |
 | **the projection commutes with the element** | `rieszProjection_commute` |
 | **contour independence** through a spectrum-free annulus | `rieszProjection_eq_of_annulus` |
+| the Cauchy transform of the resolvent is holomorphic inside the circle | `resolventCauchyTransform`, `differentiableOn_resolventCauchyTransform` |
+| **idempotence** `P ^ 2 = P` | `rieszProjection_mul_self` |
+| nearby idempotents are conjugate, hence equirank | `idempotentIntertwiner`, `exists_eq_conj_of_norm_sub_lt_one`, `finrank_range_eq_of_norm_sub_lt_one` |
+| second resolvent identity and its quantitative form | `resolvent_sub_resolvent_perturb`, `norm_resolvent_sub_le_of_norm_sub_le` |
+| **the Riesz projection is norm continuous in the element** | `exists_norm_resolvent_le_on_sphere`, `norm_rieszProjection_sub_le` |
 
 ## Route
 
 1. **Resolvent identity** `R(l) - R(m) = (m - l) R(l) R(m)`, from `resolvent` and `Ring.inverse`.
-2. **Idempotence** `P^2 = P`, by the standard two-contour argument (radii `r < r'`, both in the
-   resolvent set except for the enclosed spectral point), using 1 and Fubini for the double circle
-   integral.  Contour independence (`rieszProjection_eq_of_annulus`, from mathlib's
-   `Complex.circleIntegral_eq_of_differentiable_on_annulus_off_countable`) is already available, so
-   the only missing input is the Fubini swap for the operator-valued double circle integral,
-   together with the two scalar evaluations
-   `∮_{r'} dm/(m - l) = 2 pi i` (`circleIntegral.integral_sub_inv_of_mem_ball`, `l` inside) and
-   `∮_r dl/(m - l) = 0` (Cauchy, `m` outside).
+2. **Idempotence** `P^2 = P`, proved.  The Fubini swap of the operator-valued double circle
+   integral turned out to be avoidable: for `lam` on the inner circle the resolvent identity turns
+   `R(lam) R(mu)` into a difference of Cauchy kernels, and the inner integral is
+   `2 pi i · R(lam)` minus the **Cauchy transform of the resolvent**, which is holomorphic inside
+   the outer circle by mathlib's `hasFPowerSeriesOn_cauchy_integral` (no differentiability of the
+   integrand is required, only circle integrability).  Its integral over the inner circle therefore
+   vanishes by Cauchy's theorem, and no double integral is ever interchanged.
 3. **`P` commutes with `a`**, since each resolvent does; needs
    `L (int f) = int (L o f)` for the bounded maps `x |-> a x` and `x |-> x a`.
 4. **`ran P` is the generalized eigenspace** when the contour encircles one isolated spectral point
@@ -68,15 +72,19 @@ Step 5 is the one the determinant card needs; 1--4 are its prerequisites.
 - [x] definition, circle integrability, and the Cauchy vanishing
 - [x] resolvent identity (`resolvent_sub_resolvent`); mathlib has none
 - [x] contour independence (`rieszProjection_eq_of_annulus`)
-- [ ] idempotence
+- [x] idempotence (`rieszProjection_mul_self`)
+- [x] nearby idempotents are conjugate and equirank
+- [x] norm continuity of the projection in the element
 - [x] commutation with `a` (`rieszProjection_commute`)
 - [ ] range = generalized eigenspace
 - [ ] finite-section stability of the rank
 
 ## Log
 - 2026-08-08 — created; definition and the Cauchy vanishing formalized.
-- 2026-08-08 — contour independence formalized; the only missing input for idempotence is now the
-  Fubini swap of the operator-valued double circle integral.
+- 2026-08-08 — idempotence, the conjugacy of nearby idempotents (hence equality of rank), and the
+  norm continuity of the projection in the element are formalized.  Two gates remain: the
+  identification of `ran P` with the generalized eigenspace, and the finite-section transfer.
+- 2026-08-08 — contour independence formalized.
 - 2026-08-08 — commutation with `a` formalized, together with the two lemmas pulling
   multiplication through a Banach-valued circle integral (`ContinuousLinearMap.mul` and its `flip`,
   then `ContinuousLinearMap.intervalIntegral_comp_comm`).

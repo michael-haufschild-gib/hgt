@@ -2020,3 +2020,29 @@ For **idempotence** the only missing input is now the Fubini swap of the operato
 circle integral; the rest of the two-contour argument is
 `resolvent_sub_resolvent` plus `circleIntegral.integral_sub_inv_of_mem_ball` (inner circle, `l`
 inside, gives `2 pi i`) and Cauchy (outer, `m` outside, gives `0`).
+
+### 2026-08-08 — Riesz gates 4-6a: idempotence without Fubini, and rank stability
+
+`rieszProjection_mul_self`.  The two-contour argument does **not** need a Fubini theorem for the
+operator-valued double circle integral.  For `lam` on the inner circle the resolvent identity gives
+`R(lam) R(mu) = (mu-lam)^(-1)(R(lam) - R(mu))`; integrating over the outer circle produces
+`2 pi i · R(lam)` minus the Cauchy transform `∮ (mu-lam)^(-1) • R(mu) dmu`.  mathlib's
+`hasFPowerSeriesOn_cauchy_integral` (in `MeasureTheory/Integral/CircleIntegral.lean`, **not** the
+`Complex/CauchyIntegral.lean` family, which all assume the integrand is already holomorphic) says
+that transform is holomorphic on the open disc for a *merely circle-integrable* integrand, so its
+integral over the inner circle vanishes by Cauchy.  No interchange of integrals anywhere.
+
+`IdempotentSimilarity.lean`: `u = q p + (1-q)(1-p)` satisfies `u * (p q + (1-p)(1-q)) = 1 - (p-q)^2`
+and `u p = q u`; with `‖p-q‖ < 1` the right side is a unit by `isUnit_one_sub_of_norm_lt_one`, and a
+left inverse plus a right inverse make `u` a unit.  Consequence for operators:
+`finrank_range_eq_of_norm_sub_lt_one` — nearby idempotent operators have the same rank
+(`LinearMap.range_comp` + `Submodule.equivMapOfInjective`).
+
+`ResolventPerturbation.lean`: second resolvent identity `R_b - R_a = R_b (b-a) R_a`, stability of
+the resolvent set, `‖R_b - R_a‖ ≤ 2 M^2 ‖b-a‖` when `2‖b-a‖M ≤ 1`, a uniform resolvent bound on a
+contour (`IsCompact.exists_bound_of_continuousOn`), and
+`‖P_b - P_a‖ ≤ r (2 M^2 ‖b-a‖)`.
+
+Traps: `omit [...] in` goes **before** the docstring, not after.  `simpa using congrArg (fun f => f x) u.mul_inv`
+oversimplifies to `True`; use `simp only [mul_apply_eq_comp, one_apply_eq_self]`
+(`ContinuousLinearMap.mul_apply`/`one_apply` are deprecated).
