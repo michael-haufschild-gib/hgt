@@ -13,6 +13,7 @@ zero projection.
 
 Main results:
 * `resolvent_sub_resolvent` — the **resolvent identity**.
+* `commute_resolvent`, `rieszProjection_commute` — the projection commutes with `a`.
 * `rieszProjection` — the definition.
 * `circleIntegrable_resolvent` — the resolvent is circle-integrable on a contour in the resolvent
   set.
@@ -86,5 +87,52 @@ theorem resolvent_sub_resolvent {a : A} {l m : ℂ} (hl : l ∈ resolventSet ℂ
   have hdiff : (algebraMap ℂ A m - a) - (algebraMap ℂ A l - a) = (m - l) • (1 : A) := by
     rw [sub_sub_sub_cancel_right, ← map_sub, Algebra.algebraMap_eq_smul_one]
   rw [hstep, hdiff, mul_smul_comm, mul_one, smul_mul_assoc]
+
+/-! ## Commutation with `a` -/
+
+theorem circleIntegral_mul_left {a : A} {f : ℂ → A} {c : ℂ} {r : ℝ}
+    (hf : CircleIntegrable f c r) :
+    a * (∮ z in C(c, r), f z) = ∮ z in C(c, r), a * f z := by
+  have key := (ContinuousLinearMap.intervalIntegral_comp_comm
+    ((ContinuousLinearMap.mul ℂ A) a) hf.out).symm
+  simp only [ContinuousLinearMap.mul_apply'] at key
+  simp only [circleIntegral]
+  rw [key]
+  exact intervalIntegral.integral_congr fun θ _ => mul_smul_comm _ _ _
+
+theorem circleIntegral_mul_right {a : A} {f : ℂ → A} {c : ℂ} {r : ℝ}
+    (hf : CircleIntegrable f c r) :
+    (∮ z in C(c, r), f z) * a = ∮ z in C(c, r), f z * a := by
+  have key := (ContinuousLinearMap.intervalIntegral_comp_comm
+    (((ContinuousLinearMap.mul ℂ A).flip) a) hf.out).symm
+  simp only [ContinuousLinearMap.flip_apply, ContinuousLinearMap.mul_apply'] at key
+  simp only [circleIntegral]
+  rw [key]
+  exact intervalIntegral.integral_congr fun θ _ => smul_mul_assoc _ _ _
+
+omit [CompleteSpace A] in
+/-- The resolvent commutes with the element. -/
+theorem commute_resolvent (a : A) {l : ℂ} (hl : l ∈ resolventSet ℂ a) :
+    a * resolvent a l = resolvent a l * a := by
+  have h1 : resolvent a l * (algebraMap ℂ A l - a) = 1 := resolvent_mul_sub hl
+  have h2 : (algebraMap ℂ A l - a) * resolvent a l = 1 := sub_mul_resolvent hl
+  have hcomm : a * (algebraMap ℂ A l - a) = (algebraMap ℂ A l - a) * a := by
+    rw [mul_sub, sub_mul, Algebra.commutes]
+  calc a * resolvent a l
+      = (resolvent a l * (algebraMap ℂ A l - a)) * (a * resolvent a l) := by rw [h1, one_mul]
+    _ = resolvent a l * (((algebraMap ℂ A l - a) * a) * resolvent a l) := by noncomm_ring
+    _ = resolvent a l * ((a * (algebraMap ℂ A l - a)) * resolvent a l) := by rw [hcomm]
+    _ = resolvent a l * a * ((algebraMap ℂ A l - a) * resolvent a l) := by noncomm_ring
+    _ = resolvent a l * a := by rw [h2, mul_one]
+
+/-- **The Riesz projection commutes with the element.** -/
+theorem rieszProjection_commute (a : A) {c : ℂ} {r : ℝ} (hr : 0 ≤ r)
+    (h : ∀ lam ∈ sphere c r, lam ∈ resolventSet ℂ a) :
+    a * rieszProjection a c r = rieszProjection a c r * a := by
+  have hci : CircleIntegrable (resolvent a) c r := circleIntegrable_resolvent hr h
+  rw [rieszProjection, Algebra.mul_smul_comm, Algebra.smul_mul_assoc,
+    circleIntegral_mul_left hci, circleIntegral_mul_right hci]
+  congr 1
+  exact circleIntegral.integral_congr hr fun lam hlam => commute_resolvent a (h lam hlam)
 
 end GaloisForLFunctions.HTGeometry
