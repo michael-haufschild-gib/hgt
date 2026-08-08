@@ -3083,3 +3083,63 @@ So the next device cannot be another arrangement of the mean square.  It has to 
 route — `RHTower.Sieve.integral_norm_LSeries_le_largeValues`, whose first moment involves only the
 number of cells and an `ℓ²` mass, with the trivial size of the integrand appearing nowhere — which is
 also where the sharp `(1+m)e^{−m}` shape of Halász's theorem comes from.
+
+## The mean square without primality, and the pair grouping
+
+Where the level cap turned out to be an illusion, a second look at the *same* almost-diagonal mean value
+theorem gives something real.  Its output is the neighbour count `#{m ∈ s : |log n − log m| < δ}`, and
+the Selberg sieve is only one way to bound it: for **any** support of positive integers the count is at
+most the number of integers in the window.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/GeneralAffineMeanSquare.lean`:
+
+- `logNeighbourCount_le_card_Ioc`, `logNeighbourCount_le_window` — the count is at most
+  `n(e^δ − e^{−δ}) + 1`, with no hypothesis on the support but `0 ∉ s`.  The proof of the prime version
+  used primality only to know `m ≥ 2`; `m ≥ 1` is all it needs.
+- `integral_Icc_normSq_logPoly_le_general`, `integral_Icc_normSq_LSeries_le_general` — the mean value
+  theorem and its transport to the Perron line.
+- `generalMeanSquareConst a s σ = 5πe·∑_n n‖a_n n^{−σ}‖²`,
+  `generalMeanSquareRate a s σ = (5π/2)·∑_n ‖a_n n^{−σ}‖²`, and
+  `integral_Icc_normSq_LSeries_le_general_affine`:
+
+  `∫_{|y| ≤ T} ‖L(a,σ+iy)‖² ≤ 5πe·∑_n n‖a_n n^{−σ}‖² + (5π/2)T·∑_n ‖a_n n^{−σ}‖²`   (`T ≥ 1`).
+
+Against the prime-sieve version the constant is worse by the single factor `2/log Y` — and the rate is
+better by the *whole* `selbergFibreError z Y + z`.  Since the sieve level is capped at `log Y = O(1)`
+anyway (this is the one part of the earlier level analysis that survives), the general estimate loses
+nothing and gains the entire fibre error.  It also applies where the sieve cannot: to a convolution of
+two prime weights.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/ConvolutionAlgebra.lean`: `convolution_assoc` — the Dirichlet
+convolution of sequences vanishing at `0` is associative, transported from mathlib's monoid structure on
+`ArithmeticFunction ℂ` through `toArith`.  This is what makes a threefold product regroupable: the same
+`L(A)L(B)L(g)` may be read as a pair convolved with a third factor.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PerronVerticalPairBound.lean`:
+`perronVerticalPairBound σ x t₀ V Q κ M` and `integral_symm_norm_perron_pair_le` — the vertical integral
+of `L(c)L(g)x^s/s` with the first factor charged one affine mean square and the second a pointwise bound.
+The device is that the majorant kernel `V·x^σ/‖s‖` is *even*, so `integral_symm_norm_mul_kernel_le`
+applies to both flanks and the low range at once.  `integral_symm_norm_perron_pair_general_le` is the
+instance at the general affine mean square: no primality anywhere.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PairConvolutionPerronSum.lean`:
+`norm_sum_Icc_pair_of_error_and_analytic_le` (both estimates as parameters) and
+`norm_sum_Icc_pair_general_near_le`, the instance at the near-diagonal truncation error and the general
+mean square.  No primality, no sieve level, no lower bound on the cutoff.
+
+### What the pair grouping does and does not buy
+
+For the GHS triple the pair grouping is *neutral in the constant*: the `n`-weighted mass of `A ⍟ B`
+factors as `≍ (∑_p p‖A_p p^{−σ}‖²)(∑_q q‖B_q q^{−σ}‖²) = Q_AQ_B`, so `√Q_pair ≍ √Q_A√Q_B` — exactly the
+Cauchy–Schwarz loss.  What it buys is the *rate*: `κ_pair ≍ (∑_p‖A_p‖²)(∑_q‖B_q‖²) = O(1)` with no
+fibre error and no `z`, where the split version carried `√(κ_Aκ_B)·K` with `κ` containing
+`selbergFibreError z Y + z`.  And it buys the applicability: the estimate no longer asks for a prime
+support, so it is available for the single-convolution form of the recursion,
+`f(n)log n = ((f·Λ) ⍟ f)(n)`, where `Q_c = 5πe∑_{n ≤ N}Λ(n)²n^{1−2σ}‖f_n‖² ≍ (log N)²/2` and
+`κ_c ≍ O(1)`.
+
+The deficit is unchanged at a factor `log N`, and the reason is now visible in one line: at
+`σ = 1 + A/log N` the product `x^σ·(1 + 1/(σ−1)) ≍ eN log N` is minimal, `√Q ≍ log N` for every grouping
+because `∑_n Λ(n)²/n ≍ (log N)²`, and the distance supplies only `e^{−δ²} ≍ 1/log N`.  Closing it needs
+the `(1+m)e^{−m}` shape, which comes from the second moment of `L(f)` itself rather than from a
+pointwise bound on it — the next device to build.
