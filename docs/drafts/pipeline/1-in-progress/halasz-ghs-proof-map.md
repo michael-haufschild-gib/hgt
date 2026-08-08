@@ -3690,3 +3690,42 @@ window versus complement — and that is an accounting question, not a missing t
 against the kernel's mass profile.  The Cesàro kernel `1/‖s‖²` concentrates its mass at `|t| ≲ σ`, so the
 balance there is different from Halász's `dt/(1+|t|)`; deciding which kernel makes the two terms meet is
 the next accounting step, and both kernels are now available with their full error terms.
+
+## Correction: what remains is a theorem, not an accounting
+
+The previous section said the balance of the split integral is "an accounting question, not a missing
+theorem".  That is wrong, and working the accounting out is what shows it.
+
+Write `L = logLog z` (so `e^L ≍ log z`), `m = min_{|t| ≤ T} 𝔻(f, n^{it}; z)²`, and `u = t − t₀` with `t₀`
+a minimiser.  The dyadic scales `|u| ≍ 2^j/log z`, `j ≤ log₂ log z`, are the right decomposition: the
+`j`-th scale has measure `≍ 2^j/log z` and `charSepLower ≍ j log 2` on it.  Halász's `(1+m)e^{−m}` is
+exactly the sum over those scales **provided** the distance satisfies
+
+`𝔻(f, n^{it}; z)² ≥ m + log(|u|·log z) − C`,      (★)
+
+for then `W ≤ (log z)e^{−m}2^{−j}` on scale `j`, the scale contributes
+`(log z)e^{−m}2^{−j}·2^j/log z = e^{−m}`, and summing the `≍ 1 + m` scales gives `(1+m)e^{−m}`.  The
+`(1+m)` *is* the number of dyadic scales between `1/log z` and `1`.
+
+**The triangle inequality cannot give (★).**  What it gives (`sqrt_charSepLower_sub_le_...`) is
+`𝔻² ≥ (√S − √m)² = S − 2√(Sm) + m` with `S = charSepLower`.  The cross term `2√(Sm)` dominates `S`
+whenever `S ≪ m`, which is the whole range of small scales, so the bound degenerates to `𝔻² ≥ m` there —
+no gain.  Concretely, for the Liouville function `m ≍ L` and the triangle bound exceeds `m` only once
+`S > 4m`, i.e. `|u| > e^{4m−L} = e^{3L}`, far outside the admissible range `|u| ≤ 2`.  Keeping only
+`𝔻² ≥ S/2` instead gives `W ≍ (log z)2^{−j/2}` and a divergent scale sum `∑_j 2^{j/2} ≍ (log z)^{1/2}`.
+
+So the missing input is (★) itself: the distance must exceed its minimum *additively* by the logarithm of
+the separation.  That is the Halász / Granville–Soundararajan decay lemma, and it is a theorem about two
+frequencies at once, not a consequence of the metric axioms:
+
+`𝔻(f, n^{it})² − 𝔻(f, n^{it₀})² = ∑_p Re(f(p)p^{−it₀})·(1 − cos(u log p))/p + (odd part)`,
+
+so a lower bound needs control of the *sign* of `Re(f(p)p^{−it₀})` on average — i.e. a two-point
+inequality relating `|F(σ+it₀)|` and `|F(σ+it)|`.  The corpus already owns the classical instrument for
+exactly that shape: `RHTower/Sieve/ZetaThreeFourOne.lean`, the `3-4-1` inequality.  The named target is
+therefore a `3-4-1`-style two-point inequality for `mulDistSqPair`, with (★) as its corollary.
+
+What is settled and reusable regardless: the pole supplier, `charSepLower`, and the triangle transfer
+(this session), and the fact that `1/(σ−1)` is the exact pointwise ceiling.  What is now precisely
+located: (★), with a known instrument and a known constant (`c = 1`, since `c < 1` makes the scale sum
+diverge and `c > 1` is not needed).
