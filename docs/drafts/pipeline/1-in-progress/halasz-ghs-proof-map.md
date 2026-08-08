@@ -3268,3 +3268,46 @@ where the factor `(1+m)` of the sharp statement comes from.
 So the next two bricks are named: the Cesàro Perron formula with kernel `x^s/s²` (a residue computation
 at a double pole, and `∫_ℝ dt/|σ+it|² = π/σ`), and the Tauberian passage from the logarithmic average of
 `S` to `S` itself.
+
+## The Cesàro vertical bound, built
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CesaroKernelVertical.lean`:
+
+- `normSq_line` — `‖σ+it‖² = σ² + t²`.
+- `continuous_inv_normSq_line`, `integral_symm_inv_normSq_le` —
+  `∫_{-T}^{T} dt/‖σ+it‖² ≤ π/σ`, **uniformly in `T`**, from the corpus's `integral_re_pole_line`
+  (`∫_{-T}^{T} σ/(σ²+t²) = 2 arctan(T/σ)`) and `arctan < π/2`.
+- `norm_cesaro_integrand`, `integral_symm_norm_cesaro_le` — the analytic side of the Cesàro route:
+
+  `∫_{|t| ≤ T} ‖L(g,σ+it)·x^s/s²‖ ≤ V·x^σ·π/σ`
+
+  from a pointwise bound `V` on the range of integration and nothing else.  No mean square, no
+  Cauchy–Schwarz, no dyadic split, no block count, and no dependence on `T`.
+
+The contrast with the first-order kernel is the whole point.  `∫dt/|t|` diverges logarithmically, and the
+entire apparatus of block moments — dyadic split, affine mean squares, Selberg sieve, the `Λ`-mass
+`Q ≍ (log N)²` — exists to substitute for that divergence.  At second order the integral converges and
+all of it becomes unnecessary; substituting `V = dampedSize ≍ (log N)e^{−m}` gives
+
+`|∑_{n ≤ N} f(n)log(N/n)| ≪ N·(log N)e^{−m}`,
+
+which at `m ≍ log log N` is `≪ N` — the strength of Halász's theorem for the logarithmic average, with a
+one-page analytic side.
+
+### The two bricks that remain
+
+1. **The exact Cesàro Perron identity.**  `(1/2πi)∫_{(σ)} y^s/s² ds = log y` for `y ≥ 1` and `0` for
+   `y ≤ 1`, hence
+   `∑_{n ≤ x} c_n log(x/n) = (1/2πi)∫_{(σ)} L(c,s)x^s/s² ds` with **no truncation error**, the kernel
+   being absolutely integrable and the series absolutely convergent for `σ > 1`.  The corpus's residue
+   tool `ResidueTheoremOnRectangleWithSimplePole'` handles simple poles only; the double pole splits as
+   `y^s/s² = (y^s − 1)/s² + 1/s²`, whose first summand has a *simple* pole with residue `log y` and whose
+   second has an antiderivative `−1/s` on `ℂ∖{0}`, so its integral over the closed rectangle vanishes.
+   Alternatively the identity follows from the first-order one by Fubini in `y`:
+   `∫_1^y u^{s−1}du = (y^s − 1)/s`.
+2. **The Tauberian passage.**  `∑_{n ≤ N}f(n)log(N/n) = ∫_1^N S(t)dt/t` bounds the logarithmic average
+   of `S(t)/t`, not `S(N)`.  Getting `S(N)` from it is where Granville–Soundararajan's Lipschitz estimate
+   for the multiplicative distance enters, and where the `(1+m)` of the sharp statement is produced.
+
+Both are named, self-contained, and independent of everything built so far; the vertical bound above is
+already unconditional and waits only on the first.
