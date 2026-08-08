@@ -1,7 +1,7 @@
 # The logarithmic de Rham complex and the Poincaré residue, as sheaves
 
 - **ID:** `log-de-rham-residue-sheaf`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** INFRASTRUCTURE
 - **Parents:** `deninger-pro-log-stein-kummer-residue-square`,
   `deninger-strict-pro-log-collar-trace-kernel`

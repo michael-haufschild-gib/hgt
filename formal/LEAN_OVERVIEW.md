@@ -7,8 +7,8 @@ Use this as the quick map before opening large proof files.
 
 | Area | Umbrella | Lean modules | Declarations | Capstones |
 |---|---|---:|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 6552 | 71884 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
-| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 6239 | 58739 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 6573 | 72138 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 6285 | 59093 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 58 | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 74 | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
 | `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 379 | 5391 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
@@ -19,7 +19,7 @@ Use this as the quick map before opening large proof files.
 
 - Root imports `GaloisForLFunctions.MainTheorems`: **yes**.
 - Package-level declarations outside the five theorem areas: **4157**.
-- Active proof-debt findings: **0**.
+- Active proof-debt findings: **1**.
 
 ## Local Commands
 
@@ -40,9 +40,9 @@ Use this as the quick map before opening large proof files.
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
 | 6316 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularDivision/StructuredCircuit.lean` |
+| 6231 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 6194 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Decomposition.lean` |
-| 6192 | `formal/GaloisForLFunctions/RHTower.lean` |
-| 6018 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 6064 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 5058 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 4763 | `formal/GaloisForLFunctions/HTGeometry/GaussianTorsionLanguageTailLock.lean` |
 | 4479 | `formal/GaloisForLFunctions/QuantumAlg/Core/Components/EncodedBitGates.lean` |
