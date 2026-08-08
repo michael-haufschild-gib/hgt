@@ -33,18 +33,20 @@ namespace GaloisForLFunctions.HTGeometry
 
 open Matrix Finset
 
-variable {n : ℕ}
+variable {m : Type*} [Fintype m] [DecidableEq m]
 
 /-! ## The Hilbert–Schmidt norm of a matrix -/
 
 /-- The squared Hilbert–Schmidt norm `∑ᵢⱼ ‖Mᵢⱼ‖²` of a square matrix. -/
-noncomputable def matHSNormSq (M : Matrix (Fin n) (Fin n) ℂ) : ℝ := ∑ i, ∑ j, ‖M i j‖ ^ 2
+noncomputable def matHSNormSq (M : Matrix m m ℂ) : ℝ := ∑ i, ∑ j, ‖M i j‖ ^ 2
 
-theorem matHSNormSq_nonneg (M : Matrix (Fin n) (Fin n) ℂ) : 0 ≤ matHSNormSq M := by
+omit [DecidableEq m] in
+theorem matHSNormSq_nonneg (M : Matrix m m ℂ) : 0 ≤ matHSNormSq M := by
   unfold matHSNormSq; positivity
 
+omit [DecidableEq m] in
 /-- The Hilbert–Schmidt norm squared is the trace of `Mᴴ M`. -/
-theorem matHSNormSq_eq_trace (M : Matrix (Fin n) (Fin n) ℂ) :
+theorem matHSNormSq_eq_trace (M : Matrix m m ℂ) :
     ((matHSNormSq M : ℝ) : ℂ) = (Mᴴ * M).trace := by
   simp only [matHSNormSq, Matrix.trace, Matrix.diag_apply, Matrix.mul_apply,
     Matrix.conjTranspose_apply, RCLike.star_def, Complex.ofReal_sum]
@@ -53,7 +55,7 @@ theorem matHSNormSq_eq_trace (M : Matrix (Fin n) (Fin n) ℂ) :
   rw [← Complex.normSq_eq_conj_mul_self, Complex.normSq_eq_norm_sq]
 
 /-- **Unitary invariance of the Hilbert–Schmidt norm.** -/
-theorem matHSNormSq_conj {M U : Matrix (Fin n) (Fin n) ℂ} (hU2 : U * Uᴴ = 1) :
+theorem matHSNormSq_conj {M U : Matrix m m ℂ} (hU2 : U * Uᴴ = 1) :
     matHSNormSq (Uᴴ * M * U) = matHSNormSq M := by
   have hC : ((matHSNormSq (Uᴴ * M * U) : ℝ) : ℂ) = ((matHSNormSq M : ℝ) : ℂ) := by
     rw [matHSNormSq_eq_trace, matHSNormSq_eq_trace]
@@ -67,8 +69,9 @@ theorem matHSNormSq_conj {M U : Matrix (Fin n) (Fin n) ℂ} (hU2 : U * Uᴴ = 1)
       _ = (Mᴴ * M).trace := by rw [← Matrix.mul_assoc, hU2, Matrix.one_mul]
   exact_mod_cast hC
 
+omit [DecidableEq m] in
 /-- The diagonal energy is at most the total Hilbert–Schmidt energy. -/
-theorem sum_diag_normSq_le (M : Matrix (Fin n) (Fin n) ℂ) :
+theorem sum_diag_normSq_le (M : Matrix m m ℂ) :
     ∑ i, ‖M i i‖ ^ 2 ≤ matHSNormSq M := by
   refine Finset.sum_le_sum fun i _ => ?_
   refine Finset.single_le_sum (f := fun j => ‖M i j‖ ^ 2) (fun j _ => by positivity)
@@ -76,8 +79,9 @@ theorem sum_diag_normSq_le (M : Matrix (Fin n) (Fin n) ℂ) :
 
 /-! ## Diagonal of a power of a triangular matrix -/
 
-theorem diag_mul_of_blockTriangular {A B : Matrix (Fin n) (Fin n) ℂ}
-    (hA : A.BlockTriangular id) (hB : B.BlockTriangular id) (i : Fin n) :
+omit [DecidableEq m] in
+theorem diag_mul_of_blockTriangular [LinearOrder m] {A B : Matrix m m ℂ}
+    (hA : A.BlockTriangular id) (hB : B.BlockTriangular id) (i : m) :
     (A * B) i i = A i i * B i i := by
   rw [Matrix.mul_apply]
   rw [Finset.sum_eq_single i]
@@ -87,16 +91,16 @@ theorem diag_mul_of_blockTriangular {A B : Matrix (Fin n) (Fin n) ℂ}
     · rw [hB (show id i < id k from h), mul_zero]
   · intro h; exact absurd (Finset.mem_univ i) h
 
-theorem diag_pow_of_blockTriangular {T : Matrix (Fin n) (Fin n) ℂ}
-    (hT : T.BlockTriangular id) (m : ℕ) (i : Fin n) : (T ^ m) i i = (T i i) ^ m := by
-  induction m with
+theorem diag_pow_of_blockTriangular [LinearOrder m] {T : Matrix m m ℂ}
+    (hT : T.BlockTriangular id) (k : ℕ) (i : m) : (T ^ k) i i = (T i i) ^ k := by
+  induction k with
   | zero => simp
-  | succ m ih =>
-    rw [pow_succ, diag_mul_of_blockTriangular (hT.pow m) hT i, ih, pow_succ]
+  | succ k ih =>
+    rw [pow_succ, diag_mul_of_blockTriangular (hT.pow k) hT i, ih, pow_succ]
 
 /-! ## Schur consequences -/
 
-variable {M U T : Matrix (Fin n) (Fin n) ℂ}
+variable {M U T : Matrix m m ℂ}
 
 theorem eq_conj_of_schur (hU2 : U * Uᴴ = 1) (hMT : Uᴴ * M * U = T) :
     M = U * T * Uᴴ := by
@@ -108,17 +112,17 @@ theorem det_unitary_mul_det_conjTranspose (hU2 : U * Uᴴ = 1) : U.det * Uᴴ.de
   rw [← Matrix.det_mul, hU2, Matrix.det_one]
 
 /-- `det(1 + zM) = ∏ᵢ (1 + z·Tᵢᵢ)` for a Schur triangulation `T` of `M`. -/
-theorem det_one_add_smul_eq_prod (hU2 : U * Uᴴ = 1)
+theorem det_one_add_smul_eq_prod [LinearOrder m] (hU2 : U * Uᴴ = 1)
     (hT : T.BlockTriangular id) (hMT : Uᴴ * M * U = T) (z : ℂ) :
     (1 + z • M).det = ∏ i, (1 + z * T i i) := by
   have hM := eq_conj_of_schur hU2 hMT
-  have hconj : (1 : Matrix (Fin n) (Fin n) ℂ) + z • M = U * (1 + z • T) * Uᴴ := by
+  have hconj : (1 : Matrix m m ℂ) + z • M = U * (1 + z • T) * Uᴴ := by
     rw [hM, Matrix.mul_add, Matrix.add_mul, Matrix.mul_one, hU2, Matrix.mul_smul, Matrix.smul_mul]
   rw [hconj, Matrix.det_mul, Matrix.det_mul]
-  have htri : ((1 : Matrix (Fin n) (Fin n) ℂ) + z • T).BlockTriangular id :=
+  have htri : ((1 : Matrix m m ℂ) + z • T).BlockTriangular id :=
     blockTriangular_one.add (fun i j hij => by simp [hT hij])
   rw [Matrix.det_of_upperTriangular htri]
-  have : ∀ i, ((1 : Matrix (Fin n) (Fin n) ℂ) + z • T) i i = 1 + z * T i i := by
+  have : ∀ i, ((1 : Matrix m m ℂ) + z • T) i i = 1 + z * T i i := by
     intro i; simp
   simp only [this]
   rw [mul_comm (U.det), mul_assoc, det_unitary_mul_det_conjTranspose hU2, mul_one]
@@ -133,21 +137,23 @@ theorem trace_eq_sum_diag (hU1 : Uᴴ * U = 1) (hU2 : U * Uᴴ = 1) (hMT : Uᴴ 
     _ = ∑ i, T i i := rfl
 
 /-- `tr(Mᵐ) = ∑ᵢ Tᵢᵢᵐ` for a Schur triangulation `T` of `M`. -/
-theorem trace_pow_eq_sum_diag (hU1 : Uᴴ * U = 1) (hU2 : U * Uᴴ = 1)
-    (hT : T.BlockTriangular id) (hMT : Uᴴ * M * U = T) (m : ℕ) :
-    (M ^ m).trace = ∑ i, (T i i) ^ m := by
+theorem trace_pow_eq_sum_diag [LinearOrder m] (hU1 : Uᴴ * U = 1) (hU2 : U * Uᴴ = 1)
+    (hT : T.BlockTriangular id) (hMT : Uᴴ * M * U = T) (k : ℕ) :
+    (M ^ k).trace = ∑ i, (T i i) ^ k := by
   have hM := eq_conj_of_schur hU2 hMT
-  have hpow : M ^ m = U * T ^ m * Uᴴ := by
-    induction m with
+  have hpow : M ^ k = U * T ^ k * Uᴴ := by
+    induction k with
     | zero => simp [hU2]
-    | succ m ih =>
+    | succ k ih =>
       rw [pow_succ, ih, hM, pow_succ]
-      calc U * T ^ m * Uᴴ * (U * T * Uᴴ) = U * T ^ m * (Uᴴ * U) * T * Uᴴ := by noncomm_ring
-        _ = U * (T ^ m * T) * Uᴴ := by rw [hU1]; noncomm_ring
+      calc U * T ^ k * Uᴴ * (U * T * Uᴴ) = U * T ^ k * (Uᴴ * U) * T * Uᴴ := by noncomm_ring
+        _ = U * (T ^ k * T) * Uᴴ := by rw [hU1]; noncomm_ring
   rw [hpow]
-  calc (U * T ^ m * Uᴴ).trace = (Uᴴ * (U * T ^ m)).trace := Matrix.trace_mul_comm (U * T ^ m) Uᴴ
-    _ = (T ^ m).trace := by rw [← Matrix.mul_assoc, hU1, Matrix.one_mul]
-    _ = ∑ i, (T i i) ^ m := Finset.sum_congr rfl fun i _ => diag_pow_of_blockTriangular hT m i
+  calc (U * T ^ k * Uᴴ).trace = (Uᴴ * (U * T ^ k)).trace := Matrix.trace_mul_comm (U * T ^ k) Uᴴ
+    _ = (T ^ k).trace := by rw [← Matrix.mul_assoc, hU1, Matrix.one_mul]
+    _ = ∑ i, (T i i) ^ k := by
+        simp only [Matrix.trace, Matrix.diag_apply]
+        exact Finset.sum_congr rfl fun i _ => diag_pow_of_blockTriangular hT k i
 
 /-- **Schur's inequality.**  The eigenvalue energy of a matrix is at most its Hilbert–Schmidt
 energy. -/
@@ -190,18 +196,18 @@ theorem norm_one_add_mul_exp_neg_le (w : ℂ) :
 
 /-- The **regularized determinant** `det₂(1 + zM) = det(1 + zM)·exp(−z·tr M)` of a finite
 matrix. -/
-noncomputable def finiteDet2 (M : Matrix (Fin n) (Fin n) ℂ) (z : ℂ) : ℂ :=
+noncomputable def finiteDet2 (M : Matrix m m ℂ) (z : ℂ) : ℂ :=
   (1 + z • M).det * Complex.exp (-(z * M.trace))
 
 /-- The regularized determinant is entire in `z`: the determinant is a polynomial. -/
-theorem differentiable_finiteDet2 (M : Matrix (Fin n) (Fin n) ℂ) :
+theorem differentiable_finiteDet2 (M : Matrix m m ℂ) :
     Differentiable ℂ (finiteDet2 M) := by
-  have hentry : ∀ (z : ℂ) (a b : Fin n), ((1 : Matrix (Fin n) (Fin n) ℂ) + z • M) a b
+  have hentry : ∀ (z : ℂ) (a b : m), ((1 : Matrix m m ℂ) + z • M) a b
       = (if a = b then (1 : ℂ) else 0) + z * M a b := by
     intro z a b; simp [Matrix.one_apply]
-  have hdet : Differentiable ℂ (fun z : ℂ => ((1 : Matrix (Fin n) (Fin n) ℂ) + z • M).det) := by
-    have hrw : (fun z : ℂ => ((1 : Matrix (Fin n) (Fin n) ℂ) + z • M).det)
-        = fun z : ℂ => ∑ σ : Equiv.Perm (Fin n), (Equiv.Perm.sign σ : ℂ) *
+  have hdet : Differentiable ℂ (fun z : ℂ => ((1 : Matrix m m ℂ) + z • M).det) := by
+    have hrw : (fun z : ℂ => ((1 : Matrix m m ℂ) + z • M).det)
+        = fun z : ℂ => ∑ σ : Equiv.Perm m, (Equiv.Perm.sign σ : ℂ) *
             ∏ i, ((if σ i = i then (1 : ℂ) else 0) + z * M (σ i) i) := by
       funext z
       rw [Matrix.det_apply']
@@ -212,7 +218,7 @@ theorem differentiable_finiteDet2 (M : Matrix (Fin n) (Fin n) ℂ) :
   exact hdet.mul ((Complex.differentiable_exp).comp (by fun_prop))
 
 /-- The regularized determinant in Schur coordinates: a product of scalar factors. -/
-theorem finiteDet2_eq_prod (hU1 : Uᴴ * U = 1) (hU2 : U * Uᴴ = 1)
+theorem finiteDet2_eq_prod [LinearOrder m] (hU1 : Uᴴ * U = 1) (hU2 : U * Uᴴ = 1)
     (hT : T.BlockTriangular id) (hMT : Uᴴ * M * U = T) (z : ℂ) :
     finiteDet2 M z = ∏ i, ((1 + z * T i i) * Complex.exp (-(z * T i i))) := by
   unfold finiteDet2
@@ -224,9 +230,9 @@ theorem finiteDet2_eq_prod (hU1 : Uᴴ * U = 1) (hU2 : U * Uᴴ = 1)
   rw [Finset.mul_sum, neg_eq_neg_one_mul, Finset.mul_sum]
   exact Finset.sum_congr rfl fun i _ => by ring
 
-/-- **The Carleman bound.**  `‖det₂(1 + zM)‖ ≤ exp(‖z‖²‖M‖²_HS/2)` — the growth is controlled by
-the Hilbert–Schmidt norm alone. -/
-theorem norm_finiteDet2_le (M : Matrix (Fin n) (Fin n) ℂ) (z : ℂ) :
+/-- The Carleman bound for a matrix indexed by `Fin n`, where the Schur decomposition is available
+directly. -/
+theorem norm_finiteDet2_fin_le {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (z : ℂ) :
     ‖finiteDet2 M z‖ ≤ Real.exp (‖z‖ ^ 2 * matHSNormSq M / 2) := by
   obtain ⟨U, T, hU1, hU2, hT, hMT⟩ := exists_schur_triangulation n M
   rw [finiteDet2_eq_prod hU1 hU2 hT hMT z, norm_prod]
@@ -244,5 +250,38 @@ theorem norm_finiteDet2_le (M : Matrix (Fin n) (Fin n) ℂ) (z : ℂ) :
         have := sum_diag_normSq_le_matHSNormSq hU2 hMT
         have hz : (0 : ℝ) ≤ ‖z‖ ^ 2 := by positivity
         nlinarith
+
+
+/-! ## Reindexing -/
+
+omit [DecidableEq m] in
+theorem matHSNormSq_submatrix {p : Type*} [Fintype p] [DecidableEq p] (e : p ≃ m)
+    (M : Matrix m m ℂ) : matHSNormSq (M.submatrix e e) = matHSNormSq M := by
+  unfold matHSNormSq
+  simp only [Matrix.submatrix_apply]
+  rw [← Equiv.sum_comp e fun i => ∑ j, ‖M i j‖ ^ 2]
+  exact Finset.sum_congr rfl fun i _ => Equiv.sum_comp e fun j => ‖M (e i) j‖ ^ 2
+
+omit [DecidableEq m] in
+theorem trace_submatrix_equiv {p : Type*} [Fintype p] [DecidableEq p] (e : p ≃ m)
+    (M : Matrix m m ℂ) : (M.submatrix e e).trace = M.trace := by
+  simp only [Matrix.trace, Matrix.diag_apply, Matrix.submatrix_apply]
+  exact Equiv.sum_comp e fun i => M i i
+
+theorem finiteDet2_submatrix {p : Type*} [Fintype p] [DecidableEq p] (e : p ≃ m)
+    (M : Matrix m m ℂ) (z : ℂ) : finiteDet2 (M.submatrix e e) z = finiteDet2 M z := by
+  have hone : ((1 : Matrix m m ℂ) + z • M).submatrix e e = 1 + z • M.submatrix e e := by
+    ext i j
+    simp [Matrix.submatrix_apply, Matrix.one_apply, e.injective.eq_iff]
+  unfold finiteDet2
+  rw [← hone, Matrix.det_submatrix_equiv_self e, trace_submatrix_equiv e]
+
+/-- **The Carleman bound.**  `‖det₂(1 + zM)‖ ≤ exp(‖z‖²‖M‖²_HS/2)` — the growth is controlled by
+the Hilbert–Schmidt norm alone, for a matrix indexed by any finite type. -/
+theorem norm_finiteDet2_le (M : Matrix m m ℂ) (z : ℂ) :
+    ‖finiteDet2 M z‖ ≤ Real.exp (‖z‖ ^ 2 * matHSNormSq M / 2) := by
+  set e : Fin (Fintype.card m) ≃ m := (Fintype.equivFin m).symm with he
+  rw [← finiteDet2_submatrix e M z, ← matHSNormSq_submatrix e M]
+  exact norm_finiteDet2_fin_le (M.submatrix e e) z
 
 end GaloisForLFunctions.HTGeometry

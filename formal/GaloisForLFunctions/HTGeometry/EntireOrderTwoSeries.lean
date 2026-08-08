@@ -139,13 +139,13 @@ theorem differentiable_entireOfCoeffs {a : ℕ → ℂ} {c : ℝ}
 
 /-! ## The Carleman coefficient bound of a matrix determinant -/
 
-variable {n : ℕ}
+variable {m : Type*} [Fintype m] [DecidableEq m]
 
 /-- **The Carleman coefficient bound.**  Every Taylor coefficient of `det₂(1 + zM)` obeys the
 order-two bound with constant the Hilbert–Schmidt energy of `M`, uniformly in the size of `M`. -/
-theorem norm_taylorCoeff_finiteDet2_le (M : Matrix (Fin n) (Fin n) ℂ) {R : ℝ} (hR : 0 < R) (m : ℕ) :
-    ‖taylorCoeff (finiteDet2 M) m‖ ≤ Real.exp (R ^ 2 * matHSNormSq M / 2) / R ^ m := by
-  refine norm_taylorCoeff_le (differentiable_finiteDet2 M) hR (fun z hz => ?_) m
+theorem norm_taylorCoeff_finiteDet2_le (M : Matrix m m ℂ) {R : ℝ} (hR : 0 < R) (k : ℕ) :
+    ‖taylorCoeff (finiteDet2 M) k‖ ≤ Real.exp (R ^ 2 * matHSNormSq M / 2) / R ^ k := by
+  refine norm_taylorCoeff_le (differentiable_finiteDet2 M) hR (fun z hz => ?_) k
   have := norm_finiteDet2_le M z
   rwa [hz] at this
 
