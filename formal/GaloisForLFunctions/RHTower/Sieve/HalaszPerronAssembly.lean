@@ -193,16 +193,17 @@ theorem integral_compl_Icc_inv_one_add_sq_le {T : ℝ} (hT : 0 ≤ T) :
   rw [hunion, integral_Iic_inv_one_add_sq, integral_Ioi_inv_one_add_sq, Real.arctan_neg]
   ring
 
-/-- **The assembled bound with both kernel quantities discharged.**  The only free parameters left are
-the arithmetic ones: the prime range `z`, the distance level `δ`, the height `T`, and the cutoff data
-`N, H`. -/
-theorem exists_norm_tsum_mul_smoothWeight_le
+/-- **The assembled bound with the kernel tail as a parameter.**  The `∃ C` of the assembled form hides
+a bound for the Mellin kernel that depends only on `N`, `H`, `σ` — not on the coefficient sequence — so
+it belongs in the hypotheses.  Stated this way the constant can be chosen once and used for every
+sequence, which is what an asymptotic statement needs. -/
+theorem norm_tsum_mul_smoothWeight_le_of_kernelBound
     (hf1 : f 1 = 1) (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n)
     (hbdd : ∀ n, ‖f n‖ ≤ 1) (hf0 : f 0 = 0)
     {σ : ℝ} (hσ : 1 < σ) {z : ℕ} (hz2 : 2 ≤ z) {δ : ℝ} (hδ : 0 ≤ δ)
     (hWz : 0 < logSqWeight z) {N H : ℝ} (hN : 0 < N) (hH : 0 < H)
-    {T : ℝ} (hT : 0 ≤ T) :
-    ∃ C : ℝ, 0 ≤ C ∧
+    {T : ℝ} (hT : 0 ≤ T) {C : ℝ} (hC0 : 0 ≤ C)
+    (hCbound : ∀ y : ℝ, ‖perronKernel σ N H y‖ ≤ C * (1 + y ^ 2)⁻¹) :
       (2 * Real.pi) *
           ‖∑' n : ℕ, f n *
             ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ)‖ ≤
@@ -213,9 +214,6 @@ theorem exists_norm_tsum_mul_smoothWeight_le
                 (2 * Real.sqrt (2 * Real.pi ^ 2 * δ ^ 2 / logSqWeight z))))
           + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
               (C * (Real.pi - 2 * Real.arctan T)) := by
-  obtain ⟨C, hC0, hCbound⟩ :=
-    exists_bound_mellin_smoothWeight_line hN hH (show (0 : ℝ) < σ by linarith)
-  refine ⟨C, hC0, ?_⟩
   have htriv0 : (0 : ℝ) ≤ (1 + 1 / (σ - 1)) * Real.exp (7 / 2) := by
     have h1 : 0 < σ - 1 := by linarith
     positivity
@@ -239,6 +237,29 @@ theorem exists_norm_tsum_mul_smoothWeight_le
     mul_le_mul_of_nonneg_left htail htriv0
   linarith
 
+/-- **The assembled bound with both kernel quantities discharged.**  The instance at the Mellin kernel
+bound. -/
+theorem exists_norm_tsum_mul_smoothWeight_le
+    (hf1 : f 1 = 1) (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n)
+    (hbdd : ∀ n, ‖f n‖ ≤ 1) (hf0 : f 0 = 0)
+    {σ : ℝ} (hσ : 1 < σ) {z : ℕ} (hz2 : 2 ≤ z) {δ : ℝ} (hδ : 0 ≤ δ)
+    (hWz : 0 < logSqWeight z) {N H : ℝ} (hN : 0 < N) (hH : 0 < H)
+    {T : ℝ} (hT : 0 ≤ T) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      (2 * Real.pi) *
+          ‖∑' n : ℕ, f n *
+            ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ)‖ ≤
+        ((N + H) ^ σ / σ) * ((1 + 1 / (σ - 1)) *
+              Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2) * (2 * T)
+            + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
+              ((2 * T * Real.log (z : ℝ) / Real.pi + 1) *
+                (2 * Real.sqrt (2 * Real.pi ^ 2 * δ ^ 2 / logSqWeight z))))
+          + (1 + 1 / (σ - 1)) * Real.exp (7 / 2) *
+              (C * (Real.pi - 2 * Real.arctan T)) := by
+  obtain ⟨C, hC0, hCbound⟩ :=
+    exists_bound_mellin_smoothWeight_line hN hH (show (0 : ℝ) < σ by linarith)
+  exact ⟨C, hC0, norm_tsum_mul_smoothWeight_le_of_kernelBound hf1 hmul hbdd hf0 hσ hz2 hδ hWz
+    hN hH hT hC0 hCbound⟩
 
 end
 

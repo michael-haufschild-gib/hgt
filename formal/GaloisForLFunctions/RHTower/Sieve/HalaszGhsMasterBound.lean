@@ -85,11 +85,14 @@ theorem norm_tsum_ghs_smoothWeight_sub_sum_Icc_le (hbdd : ∀ n : ℕ, ‖f n‖
 with every term explicit: the recursion errors are `O(N log log N)`, the smoothing error is
 `(H+1)(log⌊N+H⌋)⁴/(log 2)³`, and the analytic term is the three-factor Cauchy–Schwarz bound of the vertical
 integral.  Nothing is assumed: the whole Granville–Harper–Soundararajan chain is discharged. -/
-theorem exists_norm_sum_Icc_mul_log_le (hf1 : f 1 = 1)
+theorem norm_sum_Icc_mul_log_le_of_kernelBound (hf1 : f 1 = 1)
     (hfmul : ∀ a b : ℕ, f (a * b) = f a * f b) (hbdd : ∀ n : ℕ, ‖f n‖ ≤ 1)
     (N : ℕ) (hN : 2 ≤ N) {H : ℝ} (hH : 0 < H) {σ : ℝ} (hσ : 1 < σ)
-    (z Y : ℕ) (hY : 1 ≤ Y) (hYz : Y ≤ z) (hz : 2 ≤ z) (hlog : 0 < Real.log Y) :
-    ∃ C : ℝ, 0 ≤ C ∧
+    (z Y : ℕ) (hY : 1 ≤ Y) (hYz : Y ≤ z) (hz : 2 ≤ z) (hlog : 0 < Real.log Y)
+    {C : ℝ} (hC0 : 0 ≤ C)
+    (hCb : ∀ y : ℝ, ‖mellin (fun x : ℝ =>
+        ((GaloisForLFunctions.HTGeometry.smoothWeight ((N : ℕ) : ℝ) H x : ℝ) : ℂ))
+          ((σ : ℂ) + (y : ℝ) * Complex.I)‖ ≤ C * (1 + y ^ 2)⁻¹) :
       ‖∑ n ∈ Finset.Icc 1 N, f n‖ * Real.log (N : ℝ)
         ≤ ((9 + RHTower.Mertens.mertensTail) * (N : ℝ) + (N : ℝ) * Real.log 4
             + (9 + RHTower.Mertens.mertensTail)
@@ -111,9 +114,8 @@ theorem exists_norm_sum_Icc_mul_log_le (hf1 : f 1 = 1)
   have hNpos : (0 : ℝ) < (N : ℝ) := by linarith
   have hlogN : (0 : ℝ) ≤ Real.log (N : ℝ) := Real.log_nonneg (by linarith)
   have hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n := fun {m n} _ => hfmul m n
-  obtain ⟨C, hC0, hstep4⟩ :=
-    exists_norm_tsum_ghs_smoothWeight_le hf1 hmul hbdd N N hNpos hH hσ z Y hY hYz hz hlog
-  refine ⟨C, hC0, ?_⟩
+  have hstep4 := norm_tsum_ghs_smoothWeight_le_of_kernelBound hf1 hmul hbdd N N hNpos hH hσ
+    z Y hY hYz hz hlog hC0 hCb
   set d : ℕ → ℂ :=
     LSeries.convolution (ghsOuter f N) (LSeries.convolution (ghsInner f N) f) with hd
   set Sconv : ℂ := ∑ n ∈ Finset.Icc 1 N, d n with hSconv
@@ -161,6 +163,34 @@ theorem exists_norm_sum_Icc_mul_log_le (hf1 : f 1 = 1)
     rw [hSconv, hd]
     exact hpaper
   linarith [ht1, ht2, hpaper', hsmooth', hanalytic]
+
+/-- **The master bound with the kernel constant discharged.**  The instance at the Mellin kernel bound,
+whose constant depends only on `N`, `H`, `σ` — in particular not on `f`. -/
+theorem exists_norm_sum_Icc_mul_log_le (hf1 : f 1 = 1)
+    (hfmul : ∀ a b : ℕ, f (a * b) = f a * f b) (hbdd : ∀ n : ℕ, ‖f n‖ ≤ 1)
+    (N : ℕ) (hN : 2 ≤ N) {H : ℝ} (hH : 0 < H) {σ : ℝ} (hσ : 1 < σ)
+    (z Y : ℕ) (hY : 1 ≤ Y) (hYz : Y ≤ z) (hz : 2 ≤ z) (hlog : 0 < Real.log Y) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ‖∑ n ∈ Finset.Icc 1 N, f n‖ * Real.log (N : ℝ)
+        ≤ ((9 + RHTower.Mertens.mertensTail) * (N : ℝ) + (N : ℝ) * Real.log 4
+            + (9 + RHTower.Mertens.mertensTail)
+                * ((N : ℝ)
+                    * (((Real.log 3 + 2 * ((Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)))
+                          / Real.log 2)
+                        * (1 + Real.log ((Nat.log 2 N : ℕ) : ℝ)))))
+          + (H + 1) * ((Real.log ((⌊(N : ℝ) + H⌋₊ : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+          + (1 / (2 * Real.pi))
+              * (((1 + 1 / (σ - 1)) * Real.exp (7 / 2)) * C
+                  * (Real.sqrt
+                        (25 * Real.pi ^ 2 * sieveMeanSquare (ghsOuter f N) (Finset.Icc 1 N) σ z Y)
+                      * Real.sqrt
+                          (25 * Real.pi ^ 2
+                            * sieveMeanSquare (ghsInner f N) (Finset.Icc 1 N) σ z Y))) := by
+  have hNR : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  obtain ⟨C, hC0, hCb⟩ := GaloisForLFunctions.HTGeometry.exists_bound_mellin_smoothWeight_line
+    (show (0 : ℝ) < ((N : ℕ) : ℝ) by linarith) hH (show (0 : ℝ) < σ by linarith)
+  exact ⟨C, hC0, norm_sum_Icc_mul_log_le_of_kernelBound hf1 hfmul hbdd N hN hH hσ z Y hY hYz hz
+    hlog hC0 hCb⟩
 
 end RHTower.Sieve
 end

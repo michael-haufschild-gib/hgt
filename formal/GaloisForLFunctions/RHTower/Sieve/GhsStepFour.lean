@@ -87,11 +87,14 @@ where `C` is the quadratic-decay constant of the smoothing kernel and the two si
 Selberg-sieve mean-square majorants of the two prime weights.  Every ingredient is unconditional: the
 Perron identity, the Euler bound on the pointwise factor, Cauchy–Schwarz against the kernel, and GHS
 Lemma 1 for the two prime-supported polynomials. -/
-theorem exists_norm_tsum_ghs_smoothWeight_le {f : ℕ → ℂ} (hf1 : f 1 = 1)
+theorem norm_tsum_ghs_smoothWeight_le_of_kernelBound {f : ℕ → ℂ} (hf1 : f 1 = 1)
     (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n) (hbdd : ∀ n, ‖f n‖ ≤ 1)
     (N₀ M : ℕ) {N H : ℝ} (hN : 0 < N) (hH : 0 < H) {σ : ℝ} (hσ : 1 < σ)
-    (z Y : ℕ) (hY : 1 ≤ Y) (hYz : Y ≤ z) (hz : 2 ≤ z) (hlog : 0 < Real.log Y) :
-    ∃ C : ℝ, 0 ≤ C ∧
+    (z Y : ℕ) (hY : 1 ≤ Y) (hYz : Y ≤ z) (hz : 2 ≤ z) (hlog : 0 < Real.log Y)
+    {C : ℝ} (hC0 : 0 ≤ C)
+    (hCb : ∀ y : ℝ, ‖mellin (fun x : ℝ =>
+        ((GaloisForLFunctions.HTGeometry.smoothWeight N H x : ℝ) : ℂ))
+          ((σ : ℂ) + (y : ℝ) * I)‖ ≤ C * (1 + y ^ 2)⁻¹) :
       (2 * Real.pi) * ‖∑' n : ℕ,
             (LSeries.convolution (ghsOuter f N₀) (LSeries.convolution (ghsInner f M) f)) n
               * ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ)‖
@@ -100,9 +103,6 @@ theorem exists_norm_tsum_ghs_smoothWeight_le {f : ℕ → ℂ} (hf1 : f 1 = 1)
               * Real.sqrt
                   (25 * Real.pi ^ 2 * sieveMeanSquare (ghsInner f M) (Finset.Icc 1 M) σ z Y)) := by
   classical
-  obtain ⟨C, hC0, hCb⟩ :=
-    exists_bound_mellin_smoothWeight_line hN hH (show (0 : ℝ) < σ by linarith)
-  refine ⟨C, hC0, ?_⟩
   set a : ℕ → ℂ := ghsOuter f N₀ with ha
   set b : ℕ → ℂ := ghsInner f M with hb
   set W : ℝ → ℂ := fun y =>
@@ -154,5 +154,23 @@ theorem exists_norm_tsum_ghs_smoothWeight_le {f : ℕ → ℂ} (hf1 : f 1 = 1)
   exact mul_le_mul (Real.sqrt_le_sqrt hb1) (Real.sqrt_le_sqrt hb2) (Real.sqrt_nonneg _)
     (Real.sqrt_nonneg _)
 
+/-- **The GHS step-four bound with the kernel constant discharged.**  The instance at the Mellin kernel
+bound, whose constant depends only on `N`, `H`, `σ`. -/
+theorem exists_norm_tsum_ghs_smoothWeight_le {f : ℕ → ℂ} (hf1 : f 1 = 1)
+    (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n) (hbdd : ∀ n, ‖f n‖ ≤ 1)
+    (N₀ M : ℕ) {N H : ℝ} (hN : 0 < N) (hH : 0 < H) {σ : ℝ} (hσ : 1 < σ)
+    (z Y : ℕ) (hY : 1 ≤ Y) (hYz : Y ≤ z) (hz : 2 ≤ z) (hlog : 0 < Real.log Y) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      (2 * Real.pi) * ‖∑' n : ℕ,
+            (LSeries.convolution (ghsOuter f N₀) (LSeries.convolution (ghsInner f M) f)) n
+              * ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ)‖
+        ≤ ((1 + 1 / (σ - 1)) * Real.exp (7 / 2)) * C
+            * (Real.sqrt (25 * Real.pi ^ 2 * sieveMeanSquare (ghsOuter f N₀) (Finset.Icc 1 N₀) σ z Y)
+              * Real.sqrt
+                  (25 * Real.pi ^ 2 * sieveMeanSquare (ghsInner f M) (Finset.Icc 1 M) σ z Y)) := by
+  obtain ⟨C, hC0, hCb⟩ :=
+    exists_bound_mellin_smoothWeight_line hN hH (show (0 : ℝ) < σ by linarith)
+  exact ⟨C, hC0, norm_tsum_ghs_smoothWeight_le_of_kernelBound hf1 hmul hbdd N₀ M hN hH hσ z Y hY
+    hYz hz hlog hC0 hCb⟩
+
 end RHTower.Sieve
-end
