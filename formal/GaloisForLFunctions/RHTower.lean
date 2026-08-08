@@ -4200,6 +4200,7 @@ import GaloisForLFunctions.RHTower.Sieve.PrimeSupportedConvolutionBound
 import GaloisForLFunctions.RHTower.Sieve.PrimeTailBound
 import GaloisForLFunctions.RHTower.Sieve.PrimeWindow
 import GaloisForLFunctions.RHTower.Sieve.PrimeWindowDyadic
+import GaloisForLFunctions.RHTower.Sieve.PrimeWindowExponentLimit
 import GaloisForLFunctions.RHTower.Sieve.PrimeWindowUpper
 import GaloisForLFunctions.RHTower.Sieve.ProdIdxFibreDivisorBound
 import GaloisForLFunctions.RHTower.Sieve.RamareBilinearSplit
@@ -5173,6 +5174,7 @@ import GaloisForLFunctions.RHTower.TwistedMobiusOrderLowerBound
 import GaloisForLFunctions.RHTower.TwistedMobiusPerronShift
 import GaloisForLFunctions.RHTower.TwistedMobiusPositiveExcursion
 import GaloisForLFunctions.RHTower.TwistedMobiusZeroObstruction
+import GaloisForLFunctions.RHTower.TwistedOrderLawExact
 import GaloisForLFunctions.RHTower.TwistedOrderLawTheta
 import GaloisForLFunctions.RHTower.TwoBoundaryExteriorArityThreshold
 import GaloisForLFunctions.RHTower.TwoEdgeWindowAutocorrelation
@@ -6262,3 +6264,4 @@ import GaloisForLFunctions.RHTower.Sieve.CesaroKernelPrimitives
 import GaloisForLFunctions.RHTower.Sieve.CesaroPerronBridge
 import GaloisForLFunctions.RHTower.Sieve.CesaroPerronReduction
 import GaloisForLFunctions.RHTower.Sieve.LogLogAntiderivative
+import GaloisForLFunctions.RHTower.Sieve.CesaroPerronExplicit

@@ -3413,3 +3413,33 @@ Total `≍ 1/σ + log T/T + y^σ/(σT)`.  Summed against coefficients bounded by
 `[1, M]`, the Cesàro truncation error is therefore `≍ B(x^σ(1 + log M)/T + M/σ)` — no factor `N`, no
 near-diagonal analysis, no `1/log(x/n)`.  Every ingredient is now in the corpus; only this three-piece
 splitting remains, and `y = 1` is the degenerate case where all three integrals are empty.
+
+## The truncated Cesàro Perron formula, complete
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CesaroPerronExplicit.lean`:
+
+- `intervalIntegrable_cesaro_integrand`, `rpow_le_four` — the two housekeeping facts.
+- `cesaro_piece_one_le` — on `[1, a]` with `a ≤ 1 + 1/T`: `≤ 4/(πσ) + 1/T`.  The trivial bound is `≍ T/σ`
+  there and the interval has length `1/T`, so the `T` cancels exactly.
+- `cesaro_piece_two_le` — on `[a, b]` with `1 + 1/T ≤ a ≤ b ≤ 2`:
+  `≤ (4/(πT))(log log 2 − log log(1 + 1/T))`, by Perron's lemma against `integral_inv_mul_log_eq`.
+- `cesaro_piece_three_le` — on `[a, y]` with `2 ≤ a`: `≤ y^σ/(πTσ log 2)`, by `log u ≥ log 2` and
+  `integral_rpow`.
+- `norm_perron_cesaro_sub_log_le_explicit` — the assembly, by three-way case analysis on `y` against
+  `1 + 1/T` and `2`:
+
+  `‖(1/2π)∫_{|t| ≤ T}(y^s − 1)/s²dt − log y‖
+      ≤ (4/(πσ) + 1/T) + (4/(πT))(log log 2 − log log(1 + 1/T)) + y^σ/(πTσ log 2)`
+
+  for `1 ≤ σ ≤ 2`, `T ≥ 1`, uniformly in `y ≥ 1`.
+
+**The brick named two sections ago is closed.**  Every term is `O(1) + O(log T/T) + O(y^σ/(σT))`: no
+factor `N`, no `1/log y`, no near-diagonal analysis.  Together with `norm_integral_inv_sq_line_le`
+(`‖∫dt/(σ+it)²‖ ≤ 2/T`, which converts `(y^s − 1)/s²` to `y^s/s²`) this is the truncated Cesàro Perron
+formula; summed against coefficients bounded by `B` and supported in `[1,M]` it gives a truncation error
+`≍ B(x^σ(1 + log M)/(σT) + M/σ)`, and the analytic side `integral_symm_norm_cesaro_le` needs only a
+pointwise bound.
+
+What remains for the Cesàro route to sharp Halász is exactly one thing: the Tauberian passage from
+`∑_{n ≤ N}f(n)log(N/n) = ∫_1^N S(t)dt/t` to `S(N)`, where Granville–Soundararajan's Lipschitz estimate
+for the multiplicative distance produces the factor `(1+m)`.
