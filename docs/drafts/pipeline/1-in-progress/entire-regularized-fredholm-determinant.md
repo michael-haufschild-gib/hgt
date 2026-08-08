@@ -180,7 +180,8 @@ formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
 | 9 | the divisor of `(z - c)^d`, and global factorization of an isolated zero | `analyticOrderAt_sub_pow_self`, `analyticOrderAt_sub_pow_of_ne`, `exists_entire_factor_of_analyticOrderAt` |
 | 9 | **the argument principle for a single isolated zero** | `circleIntegral_logDeriv_eq_analyticOrder` |
 | 10 | the logarithmic derivative of a matrix determinant, factor by factor | `logDeriv_schurFactor`, `logDeriv_finiteDet2` |
-| 10 | **each Schur factor contributes `2 pi i` or `0` according to whether `-1/t_i` is inside** | `circleIntegral_schurFactor_inside`, `circleIntegral_schurFactor_outside` |
+| 10 | **each Schur factor contributes `2 pi i` or `0` according to whether `-1/t_i` is inside** | `circleIntegral_schurFactor_inside`, `circleIntegral_schurFactor_outside`, `circleIntegrable_schurFactor` |
+| 10 | **the argument principle for a matrix determinant**: the contour integral counts the Schur eigenvalues with `-1/t_i` inside | `circleIntegral_logDeriv_finiteDet2` |
 | — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
@@ -216,12 +217,14 @@ formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
       The **single-zero** argument principle is now complete
       (`circleIntegral_logDeriv_eq_analyticOrder`), using analytic division
       (`exists_entire_factor_of_analyticOrderAt`, built on the corpus `exists_entire_quotient`).
-      The several-zero case for the **block determinants** is now reduced to summation: their
-      logarithmic derivative splits factor by factor (`logDeriv_finiteDet2`) and each factor
-      contributes `2 pi i` or `0` (`circleIntegral_schurFactor_inside/_outside`).  What is left is
-      assembling that sum into `∮ det_2'/det_2 = 2 pi i * (eigenvalue count)`, and then the passage
-      to the limit `∮ f_n'/f_n -> ∮ f'/f`, which needs uniform convergence of `f_n` **and** `f_n'`
-      on the circle together with `f != 0` there
+      The several-zero case for the **block determinants** is now **complete**:
+      `circleIntegral_logDeriv_finiteDet2` says the contour integral of their logarithmic
+      derivative is `2 pi i` times the number of Schur eigenvalues `t_i` with `-1/t_i` inside the
+      circle — the eigenvalue count with algebraic multiplicity.  What is left is the single
+      passage to the limit `∮ f_n'/f_n -> ∮ f'/f`, which needs uniform convergence of `f_n`
+      **and** `f_n'` on the circle (the first is already proved,
+      `tendstoUniformlyOn_finiteDet2_entireDet2`; the second follows from it by Cauchy's estimate)
+      together with `f != 0` there (Hurwitz, already proved)
 - [ ] Plemelj identity on the full resolvent set
 - [ ] 1 -> 2  paper proof complete
 - [ ] 2 -> 3  Lean
@@ -298,6 +301,9 @@ construction; the general construction is what the *multiplicity* clause needs.
   (`thetaEntireDet2`), and the computational core of the argument principle was built
   (`circleIntegral_logDeriv_of_factor`), since mathlib has neither the argument principle nor
   Rouche nor Montel.
+- 2026-08-08 — the **argument principle for a matrix regularized determinant** is complete:
+  `circleIntegral_logDeriv_finiteDet2`.  Only the limit passage separates it from
+  `order of vanishing of det_2 = algebraic multiplicity`.
 - 2026-08-08 — the **single-zero argument principle** is complete:
   `circleIntegral_logDeriv_eq_analyticOrder`.  The global factorization
   `f = (z - c)^d g` with `g` entire and nowhere zero comes from the corpus analytic-division

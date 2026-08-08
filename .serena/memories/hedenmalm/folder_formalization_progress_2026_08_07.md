@@ -1848,3 +1848,26 @@ Lean traps recorded: `logDeriv_mul` and `logDeriv_prod` both mis-unify unless `f
 given by name; and `logDeriv_prod`'s left side elaborates to the **beta-reduced**
 `logDeriv (fun x => prod ... x)`, so a calc step must be written in that form, not as
 `logDeriv (prod of lambdas)`.
+
+### 2026-08-08 — the argument principle for a matrix determinant
+
+`circleIntegral_logDeriv_finiteDet2`:
+
+```text
+∮ z in C(c,r), logDeriv (finiteDet2 M) z
+  = 2 pi I * #{i | T i i ≠ 0 ∧ -(T i i)⁻¹ ∈ ball c r}
+```
+
+i.e. the contour integral counts the Schur eigenvalues whose negative reciprocal is inside — the
+eigenvalue count with algebraic multiplicity.  Assembled from `logDeriv_finiteDet2`,
+`circleIntegral.integral_fun_sum`, `circleIntegral_schurFactor_inside/_outside` and
+`circleIntegrable_schurFactor`; the tail is `← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul`.
+The statement needs `open scoped Classical in` for the filter's `DecidablePred`.
+
+**Only the limit passage now separates this from "order of vanishing = algebraic multiplicity":**
+`∮ f_n'/f_n -> ∮ f'/f`, needing uniform convergence of `f_n` (proved:
+`tendstoUniformlyOn_finiteDet2_entireDet2`) and of `f_n'` (follows by Cauchy's estimate on the
+difference), plus `f != 0` on the circle (proved: `exists_radius_isolating`).
+
+Note: a concurrent session's blanket `git add -A` commit swept this file in; verified with
+`git show HEAD:<path>` that the content is the one built here.
