@@ -179,3 +179,30 @@ computed as `∫₀¹ fderiv ℝ (F · t)`, the antiholomorphic derivatives of `
 antiholomorphic Wirtinger functional is continuous linear and so commutes with the integral, and
 each integrand is holomorphic.  Then `analyticOnNhd_of_dzbarAt_eq_zero` makes `u` analytic and the
 residue sequence is exact.
+
+### The parametric-integral step, written out
+
+`coordContract` and its two structural lemmas for that step are landed too:
+`coordContract_eq` writes the contraction as `coordDrop + t • coordKeepLast`, so it is continuous
+— indeed affine — in the parameter as a map into the space of continuous linear maps;
+`continuous_coordContract` is that continuity; and **`coordContract_dist_le`** is that the
+contraction does not increase distances, for a parameter in `[0,1]`.
+
+The remaining application of `hasFDerivAt_integral_of_dominated_loc_of_lip` (with `𝕜 = ℂ`, which
+the lemma allows since it is stated over an `RCLike` field, so the derivative comes out complex
+linear and no `∂̄` argument is needed) then needs, with `μ = volume.restrict (Ioc 0 1)`,
+`s = ball c ρ` for some `dist x₀ c < ρ < r`, and
+`F' t = (fderiv ℂ (coordDeriv f) (coordContract t x₀)).comp (coordContract t)`:
+
+- the Lipschitz bound: `C = sup ‖fderiv ℂ (coordDeriv f)‖` on `closedBall c ρ`, finite by
+  compactness and the continuity of the derivative of an analytic function; then
+  `Convex.norm_image_sub_le_of_norm_hasFDerivWithin_le` on the ball and `coordContract_dist_le`
+  give `‖F x t − F y t‖ ≤ C‖x − y‖` uniformly in `t`;
+- measurability of `F x` and of `F'`: both are **continuous on `Icc 0 1` only** — the contraction
+  leaves the polydisc for a parameter outside `[0,1]` — so the route is
+  `ContinuousOn.aestronglyMeasurable` against `μ`, not `Continuous.aestronglyMeasurable`;
+- integrability of `F x₀` and of the constant bound: continuity on a set of finite measure.
+
+Then `coordDivQuotient f` is complex differentiable on the polydisc, hence analytic, hence a section
+of the structure sheaf, and `deningerCoordMul` composed with it recovers the given section — which
+is exactness of the ideal sequence in the middle, and with it the residue sequence.
