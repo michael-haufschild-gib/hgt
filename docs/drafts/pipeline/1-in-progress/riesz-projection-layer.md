@@ -54,6 +54,10 @@ eigenspace, and the continuity of the projection under norm perturbation.
 | a nonzero generalized eigenvector yields an eigenvector | `exists_eigenvector_of_mem_maxGenEigenspace` |
 | restriction to an invariant submodule commutes with the algebra | `coe_restrict_pow`, `restrict_sub_smul`, `coe_pow_sub_smul` |
 | **`ran P` is the generalized eigenspace** | `maxGenEigenspace_le_range_rieszProjection`, `range_rieszProjection_le_maxGenEigenspace`, `range_rieszProjection_eq_maxGenEigenspace` |
+| uniform resolvent bound on a compact set, and its perturbation | `exists_norm_resolvent_le_on_compact`, `forall_mem_resolventSet_of_norm_sub_le` |
+| the projection factors through the element when the contour avoids the origin | `rieszProjection_eq_mul`, `range_rieszProjection_le_range` |
+| finite-dimensionality transfers between nearby idempotents | `finiteDimensional_range_of_norm_sub_lt_one` |
+| **the rank of the projection is locally constant in the element** | `exists_eps_finrank_range_rieszProjection_eq` |
 
 ## Route
 
@@ -84,10 +88,17 @@ Step 5 is the one the determinant card needs; 1--4 are its prerequisites.
 - [x] commutation with `a` (`rieszProjection_commute`)
 - [x] range = generalized eigenspace (`range_rieszProjection_eq_maxGenEigenspace`), modulo the
       finite-dimensionality of `ran P`, which the finite-section transfer supplies
-- [ ] finite-section stability of the rank
+- [x] finite-section stability of the rank (`exists_eps_finrank_range_rieszProjection_eq`)
 
 ## Log
 - 2026-08-08 — created; definition and the Cauchy vanishing formalized.
+- 2026-08-08 — **all six gates closed.**  `exists_eps_finrank_range_rieszProjection_eq`: for every
+  operator within an explicit `eps` of `T` the annulus stays in the resolvent set, the two Riesz
+  projections have the same rank, and finite-dimensionality of the range transfers.  The `eps` is
+  `min (1/(2M)) (1/(r(2M^2)+1))` where `M` bounds the resolvent on the closed annulus.  What the
+  determinant card now needs from this layer is the *multi-point* identification in finite
+  dimensions, `ran P = sup over the enclosed eigenvalues of the generalized eigenspaces`, plus the
+  bridge from the corpus's finite-section matrices to operators on the Hilbert space.
 - 2026-08-08 — `ran P = maxGenEigenspace T lam0` formalized, under three explicit hypotheses:
   idempotence of `P` (supplied by `rieszProjection_mul_self`), spectral separation (every eigenvalue
   other than `lam0` lies outside the closed disc), and finite-dimensionality of `ran P`.  The proof

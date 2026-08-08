@@ -2068,3 +2068,27 @@ Traps: `LinearMap.one_apply` does not exist — `(g - mu • 1) v = 0` is **defe
 fails with a motive error inside a coercion; state the coerced equation as a `have` and close it
 with `rfl`.  `∃ j, ((g - mu • 1) ^ j) w = 0` needs `(1 : Module.End K V)` ascribed or the
 elaborator cannot apply the power.
+
+### 2026-08-08 — Riesz gate 6: the layer is closed
+
+`exists_eps_finrank_range_rieszProjection_eq` (in `RieszProjectionFiniteSection.lean`).  For every
+`S` with `‖S - T‖ < min (1/(2M)) (1/(r(2M^2)+1))`, where `M` bounds `‖resolvent T‖` on the closed
+annulus: the annulus stays in the resolvent set of `S`, `finrank (ran P_T) = finrank (ran P_S)`, and
+`FiniteDimensional (ran P_S) -> FiniteDimensional (ran P_T)`.
+
+Also `rieszProjection_eq_mul`: when the contour avoids the origin,
+`P = a * ((2 pi i)^(-1) ∮ lam^(-1) • resolvent a lam)` — because `lam • R(lam) = 1 + a R(lam)` and
+`∮ lam^(-1) dlam = 0`.  Hence `ran P ≤ ran a`, so a finite-rank element has a finite-rank
+projection: this is what seeds the finite-dimensionality hypothesis of gate 5.
+
+**All six Riesz gates are closed.**  What the determinant card still needs is not another Riesz
+gate but two assembly bricks:
+1. the *multi-point* identification in finite dimensions,
+   `ran P = ⨆_{mu in ball c r} maxGenEigenspace T mu`, which needs the generalized-eigenvector
+   version of `rieszProjection_apply_eq_zero_of_eigenvector` (same Laurent expansion, every term
+   now integrating to zero because the pole is outside);
+2. the bridge from the corpus's finite-section *matrices* (`blockMatrix`, Schur) to operators on
+   the Hilbert space.
+
+Trap: `simp only [hrw]` with `hrw : ∀ lam, lam⁻¹ = (lam - 0)⁻¹` loops (max recursion); apply the
+Cauchy vanishing theorem to `lam⁻¹` directly instead of rewriting it as `(lam - 0)⁻¹`.
