@@ -44,3 +44,16 @@
 ## Log
 - 2026-08-08 — created; the chain parametrised on the kernel bound, the quantifiers exchanged, and the
   trivial lower bound for the right-hand side proved by instantiation at the constant sequence.
+
+## The truncated branch, parametrised too
+
+`GhsStepFourTruncated.exists_norm_tsum_ghs_smoothWeight_le_truncated` obtains its constant from the same
+Mellin kernel bound, so it carried the same inert quantifier; it is now
+`norm_tsum_ghs_smoothWeight_le_truncated_of_kernelBound` with the original as its instance. Its
+conclusion bounds a *smoothed* sum rather than a partial sum, so the instantiate-at-`1` argument does not
+apply to it directly — the cap is a statement about the master bound, not about this step. Parametrising
+it is nonetheless what makes it composable with the rest of the chain.
+
+Checked and sound: the Chebyshev rate family (`exists_norm_sum_vonMangoldt_sub_self_kappa_one_rate` and
+its siblings) is quantified `∃ B, 0 ≤ B ∧ ∀ᶠ N in atTop, …` — the constant is outside the limit, so those
+are genuine rate statements with no inversion defect.

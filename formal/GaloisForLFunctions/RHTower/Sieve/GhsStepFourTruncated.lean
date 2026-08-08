@@ -38,11 +38,14 @@ kernel's decay above it:
 `2π‖∑ₙ (a ⍟ (b ⍟ f))(n)w(n)‖ ≤ E·((N+H)^σ/σ)·√(trunc a)·√(trunc b) + (ℓ¹a)(ℓ¹b)E·C·(π − 2 arctan T)`,
 
 `E = (1 + 1/(σ−1))e^{7/2}` the Euler bound.  The quadratic-decay constant `C` appears only in the tail. -/
-theorem exists_norm_tsum_ghs_smoothWeight_le_truncated {f : ℕ → ℂ} (hf1 : f 1 = 1)
+theorem norm_tsum_ghs_smoothWeight_le_truncated_of_kernelBound {f : ℕ → ℂ} (hf1 : f 1 = 1)
     (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n) (hbdd : ∀ n, ‖f n‖ ≤ 1)
     (N₀ : ℕ) {N H : ℝ} (hN : 0 < N) (hH : 0 < H) {σ : ℝ} (hσ : 1 < σ) {T : ℝ} (hT : 0 < T)
-    (z Y : ℕ) (hY : 1 ≤ Y) (hYz : Y ≤ z) (hz : 2 ≤ z) (hlog : 0 < Real.log Y) :
-    ∃ C : ℝ, 0 ≤ C ∧
+    (z Y : ℕ) (hY : 1 ≤ Y) (hYz : Y ≤ z) (hz : 2 ≤ z) (hlog : 0 < Real.log Y)
+    {C : ℝ} (hC0 : 0 ≤ C)
+    (hCb : ∀ y : ℝ, ‖mellin (fun x : ℝ =>
+        ((GaloisForLFunctions.HTGeometry.smoothWeight N H x : ℝ) : ℂ))
+          ((σ : ℂ) + (y : ℝ) * I)‖ ≤ C * (1 + y ^ 2)⁻¹) :
       (2 * Real.pi) * ‖∑' n : ℕ,
             (LSeries.convolution (ghsOuter f N₀) (LSeries.convolution (ghsInner f N₀) f)) n
               * ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ)‖
@@ -59,9 +62,6 @@ theorem exists_norm_tsum_ghs_smoothWeight_le_truncated {f : ℕ → ℂ} (hf1 : 
     have h1 : 0 < σ - 1 := by linarith
     positivity
   have hWsup0 : (0 : ℝ) ≤ (N + H) ^ σ / σ := by positivity
-  obtain ⟨C, hC0, hCb⟩ := GaloisForLFunctions.HTGeometry.exists_bound_mellin_smoothWeight_line
-    hN hH hσ0
-  refine ⟨C, hC0, ?_⟩
   set a : ℕ → ℂ := ghsOuter f N₀ with ha
   set b : ℕ → ℂ := ghsInner f N₀ with hb
   set s : Finset ℕ := Finset.Icc 1 N₀ with hs
@@ -130,6 +130,28 @@ theorem exists_norm_tsum_ghs_smoothWeight_le_truncated {f : ℕ → ℂ} (hf1 : 
   rw [truncSieveSum, truncSieveSum]
   exact mul_le_mul (Real.sqrt_le_sqrt hb1) (Real.sqrt_le_sqrt hb2) (Real.sqrt_nonneg _)
     (Real.sqrt_nonneg _)
+
+/-- **The truncated GHS step-four bound with the kernel constant discharged.**  The instance at the
+Mellin kernel bound, whose constant depends only on `N`, `H`, `σ`. -/
+theorem exists_norm_tsum_ghs_smoothWeight_le_truncated {f : ℕ → ℂ} (hf1 : f 1 = 1)
+    (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n) (hbdd : ∀ n, ‖f n‖ ≤ 1)
+    (N₀ : ℕ) {N H : ℝ} (hN : 0 < N) (hH : 0 < H) {σ : ℝ} (hσ : 1 < σ) {T : ℝ} (hT : 0 < T)
+    (z Y : ℕ) (hY : 1 ≤ Y) (hYz : Y ≤ z) (hz : 2 ≤ z) (hlog : 0 < Real.log Y) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      (2 * Real.pi) * ‖∑' n : ℕ,
+            (LSeries.convolution (ghsOuter f N₀) (LSeries.convolution (ghsInner f N₀) f)) n
+              * ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ)‖
+        ≤ ((1 + 1 / (σ - 1)) * Real.exp (7 / 2)) * ((N + H) ^ σ / σ)
+              * (Real.sqrt (truncSieveSum (ghsOuter f N₀) (Finset.Icc 1 N₀) σ T z Y)
+                  * Real.sqrt (truncSieveSum (ghsInner f N₀) (Finset.Icc 1 N₀) σ T z Y))
+          + (dampedL1 (ghsOuter f N₀) (Finset.Icc 1 N₀) σ
+                * dampedL1 (ghsInner f N₀) (Finset.Icc 1 N₀) σ
+                * ((1 + 1 / (σ - 1)) * Real.exp (7 / 2)))
+              * C * (Real.pi - 2 * Real.arctan T) := by
+  obtain ⟨C, hC0, hCb⟩ := GaloisForLFunctions.HTGeometry.exists_bound_mellin_smoothWeight_line
+    hN hH (show (0 : ℝ) < σ by linarith)
+  exact ⟨C, hC0, norm_tsum_ghs_smoothWeight_le_truncated_of_kernelBound hf1 hmul hbdd N₀ hN hH hσ
+    hT z Y hY hYz hz hlog hC0 hCb⟩
 
 end RHTower.Sieve
 end
