@@ -2593,3 +2593,26 @@ For the triple convolution the integrand is a *product*, so the block moment acq
 This is the shape the GHS triple convolution needs: the two prime weights supply the two affine mean
 squares through the sieve, and the third factor `f` supplies only a pointwise bound on the range —
 which is where a distance/Euler saving enters.
+
+## The chain closes: a partial sum bounded through the sharp Perron formula
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PerronPrimeSumBound.lean`:
+
+- `sum_mul_cpow_neg_eq_LSeries` — a finitely supported Dirichlet series is the finite sum
+  `∑ a_n n^{−w}`, so the Perron formula's polynomial *is* the `LSeries` the mean-square layer speaks about.
+- `perronVerticalPrimeBound a s σ x t₀ z Y M` — the analytic bound, named.
+- `norm_sum_Icc_prime_le` — **unconditional**: for `a` supported on primes in `[1, M]`, `‖a_n‖ ≤ B`,
+  `M ≤ N`, `σ ≥ 1`, `t₀ ≥ 1`, any sieve modulus `z` and level `Y`, and any number `K` of dyadic blocks,
+
+  `‖∑_{n ≤ M} a_n‖ ≤ 2(N+1)B x^σ(1 + log M)/(π·t₀2^K) + (1/2π)·perronVerticalPrimeBound … K`,
+  `x = N + 1/2`.
+
+Both halves are now formal and joined: Perron's lemma with its half-integer truncation error, and the
+dyadic height split against the prime-sieve mean square.  The only arithmetic inputs are the two sieve
+constants, and the free parameters are exactly the ones the accounting needs — `σ`, the height `t₀2^K`,
+the cutoff `N`, and the sieve pair `(z, Y)`.
+
+What remains for a Halász-type conclusion is the *choice* of those parameters together with the
+product form: `integral_norm_mul_norm_mul_kernel_le` already accepts two affine mean squares and a
+kernel constant scaled by a pointwise bound on the third factor, so the GHS triple convolution needs
+only its two prime weights fed through the sieve and its third factor fed a distance bound.
