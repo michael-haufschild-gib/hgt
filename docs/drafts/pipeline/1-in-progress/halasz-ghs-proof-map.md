@@ -2378,3 +2378,36 @@ the two, squared, is `O((log N)⁴)`, which is the mass that enters the first mo
 
 with every quantity a named theorem.  The remaining step is the choice of `Δ, n, σ, H, M` — arithmetic in one
 expression, with no device or estimate outstanding.
+
+## Accounting first, this time: the uniform kernel bound is the wrong one, and `j = 0` is the right one
+
+Following the lesson of the three earlier caps, the balance was computed *before* building anything on the assembled
+first moment.  It rules out the kernel bound the truncated route uses.
+
+With `Δ = 1/log N`, `M = N`, `T = nΔ`, `σ = 1 + 1/log N`, and the `ℓ¹` masses `O(log N)`:
+
+`√(n·((2n+1)Δ + 4M²(1+log M²))(1/Δ + 2 log M²)·((ℓ¹a)(ℓ¹b))²) ≍ N√T·(log N)³`,
+
+because the mean-value theorem's own `4M²(1 + log M²) ≍ N² log N` contributes `N` after the square root.  Multiplied
+by the uniform kernel bound `Wsup ≍ N` this gives `≍ N²√T(log N)³` — catastrophically worse than `N log N`.
+
+**The diagnosis.**  `|W| ≤ (N+H)^σ/σ` is the kernel's size *near `t = 0`*; using it across `[−T, T]` discards the
+decay, and the first moment grows with `T`, so the product grows with `T` too.  The `T`-tension of the earlier
+accountings reappears in the first-moment form, and no choice of `T` escapes it: small `T` fails the tail, large `T`
+fails the main term.
+
+**The resolution, and it is in the corpus.**  `exists_bound_mellin_smoothWeight` is stated for every `j`:
+
+`‖s‖·∏_{i<j}‖s+1+i‖·‖mellin(w)(s)‖ ≤ C_j/H^{j+1}·(N+H+1)^{σmax+j}·|N+H+1−N/2|`.
+
+* `j = 1` — quadratic decay, constant `≍ N^σ(N/H)²`: the penalty that capped the Lorentzian route;
+* the uniform bound — no decay, and the first moment then grows linearly in `T`: the cap above;
+* **`j = 0` — first-order decay `|W| ≤ N^σ(N/H)/|s|`, constant `≍ N^σ(N/H)`**.
+
+At `H = N/(log N)^k` the cost of `j = 0` is `(N/H) = (log N)^k` — a logarithmic factor, not a power — and the
+resulting integral `∫_{|t| ≤ T} |D(σ+it)|/|t| dt` grows only *logarithmically* in `T`, since the first moment over a
+dyadic block `|t| ≍ 2^m` is divided by `2^m`.  That is the shape in which the height is finally free.
+
+So the next brick is the dyadic-in-height decomposition of the vertical integral against the `1/|t|` kernel, with the
+first moment applied on each block and the uniform bound used only on `|t| ≤ 1`.  Recorded before building: the
+accounting says `j = 0` and dyadic blocks in `t`, not `j = 1` and not a uniform bound.
