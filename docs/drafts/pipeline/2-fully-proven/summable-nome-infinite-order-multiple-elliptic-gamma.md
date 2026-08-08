@@ -649,3 +649,46 @@ synthesis with the infinite-nome elliptic-gamma limit, parity obstruction,
 real critical exponent, full genus spectrum, scheme-change torsor, scaling
 boundary, complete counterterm jet, and finite differential-phase
 invariance.
+
+## Formalization ledger
+
+Namespace `HTGeometry`, area umbrella `GaloisForLFunctions.HTGeometry`.  All entries below have a
+clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
+
+### Closed in Lean
+
+| Card item | Lean |
+|---|---|
+| Lemma 1, (C1) at integer genus | `nomeOccupationMass_eq_iSup_finset` |
+| Lemma 1, (C1) at every real exponent | `nomeOccupationMass_rpow_eq_iSup_finset` |
+| Lemma 1, (3) at integer genus | `summable_nomeMonomial_pow_iff` |
+| Lemma 1, (3) at every real exponent | `summable_nomeMonomial_rpow_iff` |
+| Lemma 1, (C2) | `nomeOccupationSummabilitySpectrum_eq` |
+| Lemma 1, upper-ray classification | `summable_nome_rpow_mono`, `summable_nomeMonomial_rpow_mono` |
+| Lemma 2, sufficiency (6) | `infiniteMultipleEllipticGamma_hasProdLocallyUniformlyOn`, `infiniteMultipleEllipticGamma_analytic` |
+| Lemma 2, (4) — the exact primary-factor logarithm | `primaryFactor_eq_exp_neg_primaryLogTail` |
+| Lemma 2, (5)/(7) — necessity of the genus | `primaryFactor_sub_one_norm_ge`, `summable_pow_of_normal_majorant`, `summable_nome_pow_of_normal_majorant` |
+| Lemma 2, the exact criterion | `summable_nome_pow_iff_exists_normal_majorant` |
+| Lemma 3, (10) | `finiteNomeSection`, `tendsto_finiteNomeSection` |
+| Lemma 5, (14) | `infiniteMultipleEllipticGamma_tower_hasProd`, `infiniteMultipleEllipticGamma_coface` |
+| Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
+
+New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
+`HTGeometry/InfiniteMultipleEllipticGammaSharpness.lean`.
+
+### Open in Lean
+
+1. Lemma 2, values and free energy: `𝒢(0)=1`, `𝒢(1)=0`, nonconstancy, and (8)
+   `log 𝒢_{A,g}(x) = -∑_{m≥d} x^m M_{A,m}/m` on `|x|<1`.
+2. Lemma 4: `Q_S → 0`, `F_{S,g} → 1`, `F_{S,g}^{-1} → 1`, `H_{S,g} → 𝒢_{A,g}`, and the parity
+   obstruction — reciprocal cluster limits along the two parity subposets, hence necessity of the
+   normalization.
+3. Lemma 5, second half: every nome contributes, i.e. `x ↦ 𝒢_{A,g}(p_a x)` is nonconstant.
+4. Lemma 6: the two-coordinate scaling boundary `xy = 0` and the limit table (16).
+5. Lemma 7: the all-order counterterm jet (C3)/(20).
+6. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
+   order-`d` regularized determinant identity (23)/(24).
+
+Item 2 needs the finite-section convergence of Lemma 3 upgraded from pointwise to locally uniform,
+or a direct uniform-in-`S` estimate `|Φ_{S,g}(t) - 1| ≤ ε` for small `|t|`; the latter is the
+cheaper route and is what the `‖E_g(w)-1‖ ≤ e^g‖w‖^{g+1}` bound already supports.
