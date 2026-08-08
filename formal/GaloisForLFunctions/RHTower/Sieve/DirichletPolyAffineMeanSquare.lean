@@ -6,6 +6,7 @@ import GaloisForLFunctions.RHTower.Sieve.HalaszMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.MoebiusSmoothCancellation
 import GaloisForLFunctions.RHTower.Sieve.PerronNearDiagonal
 import GaloisForLFunctions.HTGeometry.IntervalMeanSquareMoment
+import GaloisForLFunctions.RHTower.Sieve.CesaroDyadicMeanSquare
 
 /-!
 # The mean square of a Dirichlet polynomial is affine in the height
@@ -227,6 +228,29 @@ theorem integral_Icc_normSq_dirPoly_le_affine_max {N : ℕ} (a : Fin N → ℂ) 
       exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
     have h1 := integral_Icc_normSq_dirPoly_le_affine a (le_refl (1 : ℝ))
     linarith
+
+
+/-- **The first moment of a Dirichlet polynomial against the second-order kernel.**  The affine mean
+square feeds the dyadic block law, so the bound is uniform in the height. -/
+theorem integral_symm_norm_dirPoly_mul_cesaroKernel_le {N : ℕ} (a : Fin N → ℂ) {σ x T : ℝ}
+    (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hx : 0 < x) (hT : 0 ≤ T) :
+    (∫ t in (-T)..T, ‖dirPoly N a t‖ * (x ^ σ / ‖(σ : ℂ) + (t : ℝ) * I‖ ^ 2))
+      ≤ 8 * x ^ σ * Real.sqrt (5 * Real.pi * Real.exp 1
+            * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2))
+        + 12 * x ^ σ * Real.sqrt ((5 * Real.pi / 2) * (∑ m : Fin N, ‖a m‖ ^ 2)) := by
+  have hQ0 : (0 : ℝ) ≤ 5 * Real.pi * Real.exp 1
+      * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2) := by
+    have : (0 : ℝ) ≤ ∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2 :=
+      Finset.sum_nonneg fun m _ => by positivity
+    positivity
+  have hκ0 : (0 : ℝ) ≤ (5 * Real.pi / 2) * (∑ m : Fin N, ‖a m‖ ^ 2) := by
+    have : (0 : ℝ) ≤ ∑ m : Fin N, ‖a m‖ ^ 2 := Finset.sum_nonneg fun m _ => by positivity
+    positivity
+  refine integral_symm_norm_mul_cesaroKernel_le_of_meanSquare (continuous_dirPoly N a) hQ0 hκ0
+    hσ1 hσ2 hx hT ?_
+  intro U hU
+  have h := integral_Icc_normSq_dirPoly_le_affine a (by linarith : (1 : ℝ) ≤ U)
+  linarith
 
 
 section

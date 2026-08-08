@@ -63,25 +63,18 @@ theorem sum_range_block_kernel_le {A B x σ : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B)
   have h2 := mul_le_mul_of_nonneg_left hgeo2 hB0
   linarith
 
-/-- **The Cesàro vertical integral, uniformly in the height.**  The dyadic split with a decaying block
-constant: no dependence on `T` at all. -/
-theorem integral_symm_norm_cesaro_le_of_meanSquare_dyadic {g : ℕ → ℂ} {sg : Finset ℕ}
-    (hg0 : 0 ∉ sg) (hgsupp : ∀ n : ℕ, g n ≠ 0 → n ∈ sg) {σ x T : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2)
-    (hx : 0 < x) (hT : 0 ≤ T) :
-    (∫ t in (-T)..T,
-        ‖LSeries g ((σ : ℂ) + (t : ℝ) * I)
-            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I) ^ 2)‖)
-      ≤ 8 * x ^ σ * Real.sqrt (generalMeanSquareConst g sg σ)
-        + 12 * x ^ σ * Real.sqrt (generalMeanSquareRate g sg σ) := by
+/-- **The first moment against the second-order kernel, uniformly in the height.**  The dyadic split
+with a block constant that decays: any object with an affine mean square on the ranges beyond the base
+scale `σ` obeys the same bound, with no dependence on `T` at all. -/
+theorem integral_symm_norm_mul_cesaroKernel_le_of_meanSquare {D : ℝ → ℂ} (hDc : Continuous D)
+    {Q κ σ x T : ℝ} (hQ0 : 0 ≤ Q) (hκ0 : 0 ≤ κ) (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hx : 0 < x)
+    (hT : 0 ≤ T)
+    (hms : ∀ U : ℝ, σ ≤ U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2) ≤ Q + κ * U) :
+    (∫ t in (-T)..T, ‖D t‖ * (x ^ σ / ‖(σ : ℂ) + (t : ℝ) * I‖ ^ 2))
+      ≤ 8 * x ^ σ * Real.sqrt Q + 12 * x ^ σ * Real.sqrt κ := by
   have hσ0 : (0 : ℝ) < σ := by linarith
   have hxσ : (0 : ℝ) < x ^ σ := Real.rpow_pos_of_pos hx σ
-  set Q : ℝ := generalMeanSquareConst g sg σ with hQdef
-  set κ : ℝ := generalMeanSquareRate g sg σ with hκdef
-  have hQ0 : (0 : ℝ) ≤ Q := generalMeanSquareConst_nonneg g sg σ
-  have hκ0 : (0 : ℝ) ≤ κ := generalMeanSquareRate_nonneg g sg σ
-  set D : ℝ → ℂ := fun t => LSeries g ((σ : ℂ) + (t : ℝ) * I) with hD
   set G : ℝ → ℝ := fun t => x ^ σ / ‖(σ : ℂ) + (t : ℝ) * I‖ ^ 2 with hG
-  have hDc : Continuous D := continuous_LSeries_line_of_support hg0 hgsupp σ
   have hGc : Continuous G := by
     have hKeq : G = fun t : ℝ => x ^ σ * (1 / ‖(σ : ℂ) + (t : ℝ) * I‖ ^ 2) := by
       funext t
@@ -91,10 +84,6 @@ theorem integral_symm_norm_cesaro_le_of_meanSquare_dyadic {g : ℕ → ℂ} {sg 
   have hGnn : ∀ t : ℝ, 0 ≤ G t := fun t => by
     rw [hG]
     exact div_nonneg hxσ.le (by positivity)
-  -- the mean square on every range beyond the base scale
-  have hms : ∀ U : ℝ, σ ≤ U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2) ≤ Q + κ * U := by
-    intro U hU
-    exact integral_Icc_normSq_LSeries_le_general_affine hg0 hgsupp σ (by linarith)
   -- the kernel below the base scale
   have hσle : ∀ t : ℝ, σ ≤ ‖(σ : ℂ) + (t : ℝ) * I‖ := by
     intro t
@@ -229,15 +218,31 @@ theorem integral_symm_norm_cesaro_le_of_meanSquare_dyadic {g : ℕ → ℂ} {sg 
       ((hDc.norm.mul hGc).intervalIntegrable (μ := volume) _ _)
     filter_upwards with t
     exact hnn t
-  have hcongr : (∫ t in (-T)..T,
-        ‖LSeries g ((σ : ℂ) + (t : ℝ) * I)
-            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I) ^ 2)‖)
-      = ∫ t in (-T)..T, ‖D t‖ * G t :=
-    intervalIntegral.integral_congr fun t _ => norm_cesaro_integrand hx _ σ t
-  rw [hcongr]
   have hfin := hmain M
   have hs := hsum M
   linarith [hmono, hfin, hs, hlow, mul_nonneg hxσ.le (Real.sqrt_nonneg κ)]
+
+/-- **The Cesàro vertical integral of a finitely supported Dirichlet series, uniformly in the
+height.** -/
+theorem integral_symm_norm_cesaro_le_of_meanSquare_dyadic {g : ℕ → ℂ} {sg : Finset ℕ}
+    (hg0 : 0 ∉ sg) (hgsupp : ∀ n : ℕ, g n ≠ 0 → n ∈ sg) {σ x T : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2)
+    (hx : 0 < x) (hT : 0 ≤ T) :
+    (∫ t in (-T)..T,
+        ‖LSeries g ((σ : ℂ) + (t : ℝ) * I)
+            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I) ^ 2)‖)
+      ≤ 8 * x ^ σ * Real.sqrt (generalMeanSquareConst g sg σ)
+        + 12 * x ^ σ * Real.sqrt (generalMeanSquareRate g sg σ) := by
+  have hcongr : (∫ t in (-T)..T,
+        ‖LSeries g ((σ : ℂ) + (t : ℝ) * I)
+            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I) ^ 2)‖)
+      = ∫ t in (-T)..T, ‖LSeries g ((σ : ℂ) + (t : ℝ) * I)‖
+          * (x ^ σ / ‖(σ : ℂ) + (t : ℝ) * I‖ ^ 2) :=
+    intervalIntegral.integral_congr fun t _ => norm_cesaro_integrand hx _ σ t
+  rw [hcongr]
+  exact integral_symm_norm_mul_cesaroKernel_le_of_meanSquare
+    (continuous_LSeries_line_of_support hg0 hgsupp σ)
+    (generalMeanSquareConst_nonneg g sg σ) (generalMeanSquareRate_nonneg g sg σ) hσ1 hσ2 hx hT
+    (fun U hU => integral_Icc_normSq_LSeries_le_general_affine hg0 hgsupp σ (by linarith))
 
 /-- **The Cesàro chain with a height-free analytic term.**  For every bounded `f` truncated at `N`, the
 analytic side is `≍ x^σ√(log N)` uniformly in the height, with no distance hypothesis. -/

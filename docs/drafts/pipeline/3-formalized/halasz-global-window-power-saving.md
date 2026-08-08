@@ -198,3 +198,17 @@ bounded above *and below* on a set of measure `≍ 1` — `norm_riemannZeta_le_i
 the cancellation lives in the phase of the integrand, which no absolute-value bound sees. The
 `√(log N)` above is therefore within one square root of the best this family can do, and the family
 cannot reach the goal.
+
+## The dyadic law, stated for its own hypothesis
+
+The dyadic block estimate uses nothing about the object beyond continuity and an affine mean square on
+the ranges past the base scale, so it is stated that way:
+
+`∫_{|t| ≤ T} ‖D t‖·x^σ/‖σ+it‖² dt ≤ 8x^σ√Q + 12x^σ√κ`   whenever `∫_{|u| ≤ U}‖D‖² ≤ Q + κU` for `U ≥ σ`
+
+(`integral_symm_norm_mul_cesaroKernel_le_of_meanSquare`), with `1 ≤ σ ≤ 2` and no constraint on `T`.
+The Dirichlet-series version is the instance at `Q`, `κ` from `GeneralAffineMeanSquare`; the Dirichlet
+*polynomial* version is the instance at the affine mean square of
+`docs/drafts/pipeline/3-formalized/dirichlet-polynomial-affine-mean-square.md`
+(`integral_symm_norm_dirPoly_mul_cesaroKernel_le`). Any further object with an affine mean square
+inherits the bound for free.
