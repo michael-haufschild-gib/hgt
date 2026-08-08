@@ -3385,3 +3385,31 @@ So the Cesàro Perron formula is now a matter of choosing `E`: the trivial bound
 `O(1/σ)`, since the interval has length `1/T` and the bound is `≍ T/σ` there) and Perron's lemma
 `u^σ/(πT log u)` beyond it, split again at `u = 2` so that `∫_{1+1/T}^{2}du/(u log u) ≍ log T` and
 `∫_2^y u^{σ−1}du/(T log 2) ≍ y^σ/(σT)`.  The only missing antiderivative is `∫du/(u log u) = log log u`.
+
+## The last antiderivative
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LogLogAntiderivative.lean`: `hasDerivAt_log_log`,
+`continuousOn_inv_mul_log`, `integral_inv_mul_log_eq` —
+
+`∫_a^b du/(u log u) = log log b − log log a`   for `1 < a ≤ b`.
+
+This is the integral that makes the Cesàro error finite.  Perron's lemma bounds the sharp error by
+`u^σ/(πT log u)`, whose `1/log u` diverges at the cutoff; under `du/u` it becomes `1/(u log u)`, and from
+`1 + 1/T` to `2` its integral is `log log 2 − log log(1 + 1/T) ≍ log T`.  A single logarithm of the height
+in place of the factor `N` the sharp-cutoff route pays.
+
+### The assembly, fully specified
+
+With `a₁ = min y (1 + 1/T)` and `a₂ = min y 2` (so `1 ≤ a₁ ≤ a₂ ≤ y` once `T ≥ 1`), split
+`∫_1^y = ∫_1^{a₁} + ∫_{a₁}^{a₂} + ∫_{a₂}^y` and charge each piece its own bound:
+
+* `[1, a₁]`: `norm_perronVerticalClamped_sub_one_le_trivial`, integrand `≤ 4T/(πσ) + 1` (as `a₁ ≤ 2` and
+  `σ ≤ 2`), length `≤ 1/T`, so the piece is `≤ 4/(πσ) + 1/T`;
+* `[a₁, a₂]`: `norm_perronVerticalClamped_sub_one_le` and `integral_inv_mul_log_eq`, giving
+  `≤ (4/(πT))(log log a₂ − log log a₁) ≍ log T/T`;
+* `[a₂, y]`: `log u ≥ log 2` and `∫ u^{σ−1}du ≤ y^σ/σ`, giving `≤ y^σ/(πTσ log 2)`.
+
+Total `≍ 1/σ + log T/T + y^σ/(σT)`.  Summed against coefficients bounded by `B` and supported in
+`[1, M]`, the Cesàro truncation error is therefore `≍ B(x^σ(1 + log M)/T + M/σ)` — no factor `N`, no
+near-diagonal analysis, no `1/log(x/n)`.  Every ingredient is now in the corpus; only this three-piece
+splitting remains, and `y = 1` is the degenerate case where all three integrals are empty.
