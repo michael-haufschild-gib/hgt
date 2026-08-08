@@ -1493,3 +1493,74 @@ So the 7 remaining cards reduce to THREE research-level layers:
   (II)  unbounded weighted Fredholm theory   → card 6   (abstract half BUILT: HTGeometry/UnboundedFredholm.lean)
   (III) closability + closed-form Guinand–Weil → card 9
 plus promotion of the two theta-compact cards, which another session appears to have finished.
+
+## 2026-08-08 — session 3
+
+### Promotions (stage 2 -> stage 3)
+
+Three cards were already fully formalized by a concurrent session and were verified and promoted:
+
+* `theta-compact-boundary-flux-energy` (`HedenmalmThetaCompactFluxEnergy.lean`)
+* `theta-compact-squared-seam-pencil` (`HedenmalmThetaSquaredSeamPencil.lean`)
+* `theta-compact-source-entropy-boundary-weld` (`HedenmalmThetaSourceEntropyBoundaryWeld.lean`)
+
+Each got a `-formalized.md` certificate.  All declarations `#print axioms`-clean.
+Folder state is now **7 of 12 in stage 3**; the five still in stage 2 are
+
+| card | what is missing |
+|---|---|
+| `prime-translation-rank-one-anomaly` | Jordan length of `(16)` = algebraic multiplicity |
+| `supersymmetric-fredholm-range-divisor` | the operator-level weighted Fredholm theorem |
+| `theta-source-compressed-inverse-determinant` | multiplicity clause of `(6)`, and `(8)` |
+| `essential-inverse-flow-prime-tomography` | everything inherited from the card above |
+| `pair-weil-polarization-law` | closed-form Guinand--Weil extension; closability/domain |
+
+### New infrastructure: the entire regularized determinant, route C
+
+Route C is **finite sections + Cauchy's estimate**.  It gives the Carleman coefficient bound for
+free and needs neither Hadamard's inequality nor exterior powers.  Steps 1--3 are formalized:
+
+* `HTGeometry/SchurTriangulation.lean` — `exists_eigenpair`, `exists_unitary_col_zero`,
+  `embedSucc`, **`exists_schur_triangulation`**.  Mathlib has **no** Schur decomposition (verified
+  by grep over the whole tree); this is new corpus infrastructure and reusable far beyond this card.
+* `HTGeometry/FiniteRegularizedDeterminant.lean` — `matHSNormSq` and its unitary invariance,
+  `diag_pow_of_blockTriangular`, `det_one_add_smul_eq_prod`, `trace_eq_sum_diag`,
+  `trace_pow_eq_sum_diag`, **Schur's inequality** `sum_diag_normSq_le_matHSNormSq`, the scalar
+  inequality **`norm_one_add_mul_exp_neg_le`** (`|(1+w)e^{-w}| <= exp(|w|^2/2)`, which is just
+  `log u <= u - 1` for `u = |1+w|^2`), `finiteDet2`, `differentiable_finiteDet2`,
+  `finiteDet2_eq_prod`, and **`norm_finiteDet2_le`** (the Carleman growth bound).
+* `HTGeometry/EntireOrderTwoSeries.lean` — `taylorCoeff`, `hasSum_taylorCoeff`,
+  **`norm_taylorCoeff_le`** (Cauchy's estimate in coefficient form, from mathlib's
+  `Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le`), `summable_of_orderTwo_bound`,
+  `entireOfCoeffs`, `differentiable_entireOfCoeffs`, `norm_taylorCoeff_finiteDet2_le`.
+* `HTGeometry/RegularizedDeterminantEntire.lean` — **`IsRegularizedDet`**, `.unique`,
+  `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq`.
+
+Two facts worth remembering:
+
+1. **No optimisation of `R` is needed.**  For a coefficient bound `|a_n| <= exp(R^2 c/2)/R^n` valid
+   for every `R > 0`, the single choice `R = 2|z|` turns `sum |a_n||z|^n` into
+   `exp(2|z|^2 c) sum 2^-n`.  Carleman's `(e/n)^(n/2)` is never needed.
+2. **The general existence theorem is not needed for card `theta-source-compressed-inverse-determinant`.**
+   `IsRegularizedDet K D` is *defined* by "entire and equal to `fredholmDet K` on a disc"; it is
+   unique by the identity theorem, and for the theta kernel the witness is `Xi_C(z)/Xi_C(0)` itself
+   (entire, and nonvanishing on `|z| ‖B‖_HS < 1` because a zero forces `|1/z| <= ‖B‖_op`).  So `(8)`
+   reduces, via `isRegularizedDet_of_logDeriv_eq`, to the **single trace formula**
+
+   ```text
+   Xi_C'(z)/Xi_C(z) = - resolventTrace (-B) z = sum_{n>=1} (-1)^n z^n tr(B^{n+1}).
+   ```
+
+   That trace formula is the remaining hard core of `(8)`.  The general `det_2` construction is what
+   the *multiplicity* clause of `(6)` needs, and that is a separate obligation.
+
+### Still to build for route C
+
+* truncation of a Hilbert--Schmidt kernel: `‖K_s‖_HS <= ‖K‖_HS` and `tr(K_s^m) -> tr(K^m)`
+  (best done through `hsTrace_hsPow_succ` + submultiplicativity, i.e. continuity of the trace in
+  HS norm, not by a multi-index limit);
+* the matrix/kernel bridge identifying `finiteDet2` of the truncation with `fredholmDet` of the
+  truncated kernel on the disc;
+* zeros = reciprocal eigenvalues, and order of vanishing = algebraic multiplicity.
+
+Card: `docs/drafts/pipeline/1-in-progress/entire-regularized-fredholm-determinant.md`.
