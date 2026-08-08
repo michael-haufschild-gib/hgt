@@ -2306,3 +2306,27 @@ Steps, with the one subtlety marked:
 
 With this the first moment of the product `L(a)L(b)` is explicit, and the analytic half of the Granville–Harper–
 Soundararajan chain is complete with no estimate left unproved.
+
+## The masses of a convolution — the last estimate, and an easier route than specified
+
+`RHTower/Sieve/ConvolutionMasses.lean` (green, axiom-clean, wired).
+
+* `sum_norm_convolution_mul_rpow_le` — the damped `ℓ¹` mass is submultiplicative:
+  `∑_{k ≤ M²} ‖(a ⍟ b)(k)‖k^{−σ} ≤ (∑_d ‖a_d‖d^{−σ})(∑_e ‖b_e‖e^{−σ})`.  `Finset.sum_fiberwise_of_maps_to` groups the
+  product set `[1,M]²` by the value of the product; each fibre dominates the corresponding coefficient because a
+  nonzero antidiagonal term has both factors in the supports (`Finset.sum_filter_ne_zero` to drop the rest).
+* `sum_sq_le_sq_sum_of_nonneg`, `sum_normSq_convolution_le` — a sum of squares is at most the square of the sum, so
+  the `ℓ²` mass of the convolution is at most the square of that product.
+
+**This replaces the estimate specified last round, and is both easier and sharper here.**  The specification called for
+`4·(ℓ² mass)(ℓ² mass)` via a divisor-count case analysis; the `ℓ¹` route needs no case analysis, and for prime weights
+with logarithmic coefficients it is the better bound: `(∑_p log p·p^{−σ})² ≍ (log N)²` against `4·cap(2σ)² ≍ (log N)⁴`
+at `σ = 1 + 1/log N`.  The sharper-looking route was the worse one.
+
+**The analytic half is now complete with no estimate unproved.**  For the product of the two prime polynomials,
+
+`∫_{|y| ≤ nΔ} ‖L(a,σ+iy)L(b,σ+iy)‖ dy
+    ≤ 2Δ·√(n·((2n+1)Δ + 4M²(1+log M²))(1/Δ + 2 log M²)·((ℓ¹a)(ℓ¹b))²)`,
+
+every factor explicit.  What remains is the parameter choice — and the `ℓ¹` masses of the two weights are Mertens
+sums, `∑_p log p·p^{−σ}`, which the corpus's Mertens layer bounds.
