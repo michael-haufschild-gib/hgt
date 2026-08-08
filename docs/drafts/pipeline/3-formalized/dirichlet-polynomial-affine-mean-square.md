@@ -148,3 +148,21 @@ Balancing over `W` turns `α·δ + β·δ²` into the two contributions, so for 
 `[1,N]` the bound is `≍ δN + δ²N²` where the previous instance gave `≍ δN + δ²N²log N`. Against the
 trivial `δ(∑|a_n|)² ≍ δN²`, the old form was an improvement only for `δ ≪ 1/log N`; the affine form is
 an improvement for every `δ ≪ 1`. That logarithm was the one the dyadic tail had left behind.
+
+## Large values: where the discretisation earns its keep
+
+For *counting* large values the discrete estimate is the right tool, and it too was carrying the lossy
+factor. Its proof — Gallagher's reduction of the discrete sum to `∫‖F‖²` and `∫2‖F‖‖F'‖`, then the AM–GM
+split at the balancing parameter `log N` — uses nothing about the two energies beyond their values, so
+it is now stated with them as parameters (`largeValues_dirPoly_of_energy`):
+
+`∑_{r ≤ R}‖F(λ_r)‖² ≤ δ^{-1}E + (log N)E + (log N)^{-1}E'`   for `∫_0^T‖F‖² ≤ E`, `∫_0^T‖F'‖² ≤ E'`.
+
+`largeValues_dirPoly` is its instance at the mean value theorem's energies; the affine instance
+(`largeValues_dirPoly_affine`) gives
+
+`∑_{r ≤ R}‖F(λ_r)‖² ≤ (δ^{-1} + 2 log N)(5πe∑_m(m+1)|a_m|² + (5π/2)(∑_m|a_m|²)max(T,1))`,
+
+using `∑_m(m+1)‖(dirDerivCoeff a)_m‖² ≤ (log N)²∑_m(m+1)|a_m|²`
+(`sum_mul_normSq_dirDerivCoeff_le`, the `n`-weighted companion of the existing plain-mass bound). So the
+whole large-values chain — count, measure, Halász mean value — now runs on the `n`-weighted mass.

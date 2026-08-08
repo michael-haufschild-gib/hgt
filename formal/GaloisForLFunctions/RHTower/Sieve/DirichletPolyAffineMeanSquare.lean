@@ -8,6 +8,8 @@ import GaloisForLFunctions.RHTower.Sieve.PerronNearDiagonal
 import GaloisForLFunctions.HTGeometry.IntervalMeanSquareMoment
 import GaloisForLFunctions.RHTower.Sieve.CesaroDyadicMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.AffineMeanSquareL1
+import GaloisForLFunctions.RHTower.Sieve.DirichletLargeValuesCount
+import GaloisForLFunctions.RHTower.Sieve.DirichletDerivEnergy
 
 /-!
 # The mean square of a Dirichlet polynomial is affine in the height
@@ -282,6 +284,94 @@ theorem integral_Icc_norm_dirPoly_le_sqrt_affine {N : ℕ} (a : Fin N → ℂ) {
     (Real.sqrt_le_sqrt ?_)
   rw [generalMeanSquareConst, generalMeanSquareRate, sum_Icc_mul_norm_sq_dirSeq,
     sum_Icc_norm_sq_dirSeq]
+
+
+/-- The `n`-weighted mass of the derivative coefficients costs `(log N)²`. -/
+theorem sum_mul_normSq_dirDerivCoeff_le (N : ℕ) (a : Fin N → ℂ) :
+    ∑ n : Fin N, (((n : ℕ) : ℝ) + 1) * ‖dirDerivCoeff N a n‖ ^ 2
+      ≤ (Real.log N) ^ 2 * ∑ n : Fin N, (((n : ℕ) : ℝ) + 1) * ‖a n‖ ^ 2 := by
+  rw [Finset.mul_sum]
+  refine Finset.sum_le_sum fun n _ => ?_
+  have hlog : (0 : ℝ) ≤ Real.log (((n : ℕ) : ℝ) + 1) := by
+    refine Real.log_nonneg ?_
+    have : (0 : ℝ) ≤ ((n : ℕ) : ℝ) := by positivity
+    linarith
+  have hle : ((n : ℕ) : ℝ) + 1 ≤ (N : ℝ) := by
+    have h := n.isLt
+    have : (((n : ℕ) : ℝ)) + 1 ≤ ((N : ℕ) : ℝ) := by
+      have hcast : (((n : ℕ) + 1 : ℕ) : ℝ) ≤ ((N : ℕ) : ℝ) := by
+        exact_mod_cast (by omega : (n : ℕ) + 1 ≤ N)
+      push_cast at hcast
+      linarith
+    linarith
+  have hmono : Real.log (((n : ℕ) : ℝ) + 1) ≤ Real.log N :=
+    Real.log_le_log (by positivity) hle
+  have hsq : ‖dirDerivCoeff N a n‖ ^ 2 ≤ (Real.log N) ^ 2 * ‖a n‖ ^ 2 := by
+    rw [norm_dirDerivCoeff, mul_pow]
+    refine mul_le_mul_of_nonneg_right ?_ (sq_nonneg _)
+    exact pow_le_pow_left₀ hlog hmono 2
+  calc (((n : ℕ) : ℝ) + 1) * ‖dirDerivCoeff N a n‖ ^ 2
+      ≤ (((n : ℕ) : ℝ) + 1) * ((Real.log N) ^ 2 * ‖a n‖ ^ 2) :=
+        mul_le_mul_of_nonneg_left hsq (by positivity)
+    _ = (Real.log N) ^ 2 * ((((n : ℕ) : ℝ) + 1) * ‖a n‖ ^ 2) := by ring
+
+/-- **The large-values estimate with the affine mean square.**  The factor
+`T + 4N(1 + log N)` of `largeValues_dirPoly` becomes `5πe` times the `n`-weighted mass plus
+`(5π/2)max(T,1)` times the plain mass. -/
+theorem largeValues_dirPoly_affine (N : ℕ) (hN : 2 ≤ N) (a : Fin N → ℂ) {lam : ℕ → ℝ} {δ T : ℝ}
+    (hδ : 0 < δ) (hT : 0 ≤ T)
+    (hgap : ∀ i, lam i + δ ≤ lam (i + 1)) (hlow : δ / 2 ≤ lam 0) (R : ℕ)
+    (hhigh : lam R + δ / 2 ≤ T) :
+    ∑ r ∈ Finset.range (R + 1), ‖dirPoly N a (lam r)‖ ^ 2
+      ≤ (1 / δ + 2 * Real.log N)
+          * (5 * Real.pi * Real.exp 1 * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2)
+            + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a m‖ ^ 2) * max T 1) := by
+  have hNR : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hlogpos : (0 : ℝ) < Real.log N := Real.log_pos (by linarith)
+  have hW : (0 : ℝ) ≤ ∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2 :=
+    Finset.sum_nonneg fun m _ => by positivity
+  have hS : (0 : ℝ) ≤ ∑ m : Fin N, ‖a m‖ ^ 2 := Finset.sum_nonneg fun m _ => by positivity
+  -- the two energies, from the affine mean square on the symmetric range
+  have hhalf : ∀ c : Fin N → ℂ, (∫ t in (0 : ℝ)..T, ‖dirPoly N c t‖ ^ 2)
+      ≤ ∫ t in Set.Icc (-T) T, ‖dirPoly N c t‖ ^ 2 := by
+    intro c
+    have hcont : Continuous fun t : ℝ => ‖dirPoly N c t‖ ^ 2 :=
+      ((continuous_dirPoly N c).norm).pow 2
+    have hIoc : (∫ t in (0 : ℝ)..T, ‖dirPoly N c t‖ ^ 2)
+        = ∫ t in Set.Ioc (0 : ℝ) T, ‖dirPoly N c t‖ ^ 2 :=
+      intervalIntegral.integral_of_le hT
+    rw [hIoc]
+    refine MeasureTheory.setIntegral_mono_set hcont.integrableOn_Icc
+      (Filter.Eventually.of_forall fun t => by positivity)
+      (Filter.Eventually.of_forall fun t ht => ?_)
+    exact ⟨by linarith [ht.1], ht.2⟩
+  have hE : (∫ t in (0 : ℝ)..T, ‖dirPoly N a t‖ ^ 2)
+      ≤ 5 * Real.pi * Real.exp 1 * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2)
+        + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a m‖ ^ 2) * max T 1 :=
+    le_trans (hhalf a) (integral_Icc_normSq_dirPoly_le_affine_max a T)
+  have hE' : (∫ t in (0 : ℝ)..T, ‖dirPoly N (dirDerivCoeff N a) t‖ ^ 2)
+      ≤ (Real.log N) ^ 2
+        * (5 * Real.pi * Real.exp 1 * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2)
+          + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a m‖ ^ 2) * max T 1) := by
+    refine le_trans (le_trans (hhalf (dirDerivCoeff N a))
+      (integral_Icc_normSq_dirPoly_le_affine_max (dirDerivCoeff N a) T)) ?_
+    have h1 := sum_mul_normSq_dirDerivCoeff_le N a
+    have h2 := sum_normSq_dirDerivCoeff_le N a
+    have hmax : (0 : ℝ) ≤ max T 1 := le_trans zero_le_one (le_max_right T 1)
+    have hstep1 : 5 * Real.pi * Real.exp 1
+          * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖dirDerivCoeff N a m‖ ^ 2)
+        ≤ 5 * Real.pi * Real.exp 1
+          * ((Real.log N) ^ 2 * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2)) :=
+      mul_le_mul_of_nonneg_left h1 (by positivity)
+    have hstep2 : (5 * Real.pi / 2) * (∑ m : Fin N, ‖dirDerivCoeff N a m‖ ^ 2) * max T 1
+        ≤ (5 * Real.pi / 2) * ((Real.log N) ^ 2 * (∑ m : Fin N, ‖a m‖ ^ 2)) * max T 1 := by
+      refine mul_le_mul_of_nonneg_right ?_ hmax
+      exact mul_le_mul_of_nonneg_left h2 (by positivity)
+    nlinarith [hstep1, hstep2]
+  have hmain := largeValues_dirPoly_of_energy N hN a hδ hT hgap hlow R hhigh hE hE'
+  refine le_trans hmain (le_of_eq ?_)
+  field_simp
+  ring
 
 
 section
