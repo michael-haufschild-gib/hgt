@@ -47,7 +47,7 @@ theorem exists_eigenvector_of_tendsto_of_isCompactOperator {α : Type*} {p : Fil
     {T : H →L[ℂ] H} (hT : IsCompactOperator (T : H →ₗ[ℂ] H))
     {S : α → H →L[ℂ] H} {v : α → H} {lam : α → ℂ} {l : ℂ}
     (hS : Tendsto (fun a => ‖S a - T‖) p (𝓝 0))
-    (hv1 : ∀ a, ‖v a‖ = 1) (heig : ∀ a, S a (v a) = lam a • v a)
+    (hv1 : ∀ᶠ a in p, ‖v a‖ = 1) (heig : ∀ᶠ a in p, S a (v a) = lam a • v a)
     (hlam : Tendsto lam p (𝓝 l)) (hl : l ≠ 0) :
     ∃ w : H, w ≠ 0 ∧ T w = l • w := by
   classical
@@ -55,12 +55,12 @@ theorem exists_eigenvector_of_tendsto_of_isCompactOperator {α : Type*} {p : Fil
   -- the family `u` lives in a fixed compact set
   have hcompact : IsCompact (closure ((T : H →ₗ[ℂ] H) '' closedBall (0 : H) 1)) :=
     hT.isCompact_closure_image_closedBall 1
-  have hmem : ∀ a, u a ∈ closure ((T : H →ₗ[ℂ] H) '' closedBall (0 : H) 1) := by
-    intro a
+  have hmem : ∀ᶠ a in p, u a ∈ closure ((T : H →ₗ[ℂ] H) '' closedBall (0 : H) 1) := by
+    filter_upwards [hv1] with a ha
     refine subset_closure ⟨v a, ?_, rfl⟩
-    simp [mem_closedBall, dist_eq_norm, hv1 a]
+    simp [mem_closedBall, dist_eq_norm, ha]
   obtain ⟨w, _, hw⟩ := hcompact.exists_mapClusterPt (f := p) (u := u)
-    (le_principal_iff.mpr (Filter.Eventually.of_forall (f := p) hmem))
+    (le_principal_iff.mpr hmem)
   -- the finer filter along which `u` converges to `w`
   set q : Filter α := p ⊓ comap u (𝓝 w) with hq
   have hqne : q.NeBot := by
@@ -71,12 +71,13 @@ theorem exists_eigenvector_of_tendsto_of_isCompactOperator {α : Type*} {p : Fil
     le_trans (Filter.map_mono inf_le_right) Filter.map_comap_le
   -- the eigenvector family converges to `l⁻¹ • w`
   have herr : Tendsto (fun a => ‖lam a • v a - u a‖) p (𝓝 0) := by
-    refine squeeze_zero (fun a => norm_nonneg _) (fun a => ?_) hS
+    refine squeeze_zero' (Eventually.of_forall fun a => norm_nonneg _) ?_ hS
+    filter_upwards [hv1, heig] with a ha1 ha2
     have hrw : lam a • v a - u a = (S a - T) (v a) := by
-      rw [sub_apply, heig a, hu]
+      rw [sub_apply, ha2, hu]
     rw [hrw]
     calc ‖(S a - T) (v a)‖ ≤ ‖S a - T‖ * ‖v a‖ := (S a - T).le_opNorm _
-      _ = ‖S a - T‖ := by rw [hv1 a, mul_one]
+      _ = ‖S a - T‖ := by rw [ha1, mul_one]
   have hlv : Tendsto (fun a => lam a • v a) q (𝓝 w) := by
     have hz : Tendsto (fun a => lam a • v a - u a) q (𝓝 0) := by
       refine tendsto_zero_iff_norm_tendsto_zero.mpr ?_
@@ -97,8 +98,9 @@ theorem exists_eigenvector_of_tendsto_of_isCompactOperator {α : Type*} {p : Fil
   have hnorm : ‖l⁻¹ • w‖ = 1 := by
     have h1 : Tendsto (fun a => ‖v a‖) q (𝓝 ‖l⁻¹ • w‖) := hv.norm
     have h2 : Tendsto (fun a => ‖v a‖) q (𝓝 1) := by
-      simp only [hv1]
-      exact tendsto_const_nhds
+      refine Tendsto.congr' ?_ (tendsto_const_nhds (x := (1 : ℝ)))
+      filter_upwards [hv1.filter_mono hqle] with a ha
+      exact ha.symm
     exact tendsto_nhds_unique h1 h2
   have hne : (l⁻¹ • w) ≠ 0 := by
     intro h
