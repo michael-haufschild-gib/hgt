@@ -3360,3 +3360,28 @@ The remaining step in this brick is that piecewise integration (`[1, 1+1/T]` tri
 `[2, y]` against `norm_perronVertical_sub_one_le`), after which the Cesàro Perron formula is complete and
 the analytic side is already built (`integral_symm_norm_cesaro_le`).  Then only the Tauberian passage
 from `∫_1^N S(t)dt/t` to `S(N)` separates the chain from sharp Halász.
+
+## The Cesàro error reduced to the sharp error
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CesaroPerronReduction.lean`:
+
+- `perronBox`, `continuous_perronBox`, `perronVerticalClamped`, `continuous_perronVerticalClamped`,
+  `perronVerticalClamped_eq` — the truncated Perron integral as a *continuous function of the cutoff*,
+  via mathlib's `continuous_parametric_intervalIntegral_of_continuous'` and the same `max u 1` clamp.
+  Continuity in the cutoff is what the averaging identity needs to be differenced.
+- `norm_perronVertical_le_trivial` — `‖perronVertical σ T y‖ ≤ y^σT/(πσ)`: the kernel is at most `y^σ/σ`
+  on the whole line.  Crude in `T`, but it is what covers the neighbourhood of `u = 1` where Perron's
+  lemma degenerates, and there the interval has length `1/T`, so the crudeness cancels.
+- `norm_perron_cesaro_sub_log_le_integral` — the reduction, using `log y = ∫_1^y du/u`:
+
+  `‖(1/2π)∫_{|t| ≤ T}(y^s − 1)/s² dt − log y‖ ≤ ∫_1^y ‖perronVertical σ T u − 1‖ du/u`.
+
+- `norm_perronVerticalClamped_sub_one_le`, `norm_perronVerticalClamped_sub_one_le_trivial` — the two
+  pointwise inputs in clamped form.
+- `norm_perron_cesaro_sub_log_le_of_bound` — the universal form: *any* pointwise bound `E` on the sharp
+  error, integrable against `du/u`, gives `‖Cesàro error‖ ≤ ∫_1^y E(u)du/u`.
+
+So the Cesàro Perron formula is now a matter of choosing `E`: the trivial bound on `[1, 1+1/T]` (cost
+`O(1/σ)`, since the interval has length `1/T` and the bound is `≍ T/σ` there) and Perron's lemma
+`u^σ/(πT log u)` beyond it, split again at `u = 2` so that `∫_{1+1/T}^{2}du/(u log u) ≍ log T` and
+`∫_2^y u^{σ−1}du/(T log 2) ≍ y^σ/(σT)`.  The only missing antiderivative is `∫du/(u log u) = log log u`.
