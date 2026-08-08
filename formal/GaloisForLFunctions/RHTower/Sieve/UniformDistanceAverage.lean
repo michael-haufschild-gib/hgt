@@ -242,5 +242,35 @@ theorem exists_mulDistSqPair_le_prime_mass {f : ℕ → ℂ} (hf : ∀ n, ‖f n
   have hC := primeInvLogConst_pos
   linarith [hmono, hup]
 
+/-- **A uniform distance hypothesis is bounded by the prime mass.**  Whatever supplies the level `δ` —
+zero-free region, sieve, anything — if it holds uniformly on `|t| ≤ T` then `δ² ≤ ∑_{p ≤ z}1/p + O(1/T)`. -/
+theorem sq_le_prime_mass_of_uniform {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {z : ℕ} {δ T : ℝ}
+    (hδ : 0 ≤ δ) (hT : 0 < T)
+    (hunif : ∀ t : ℝ, |t| ≤ T → δ ≤ Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z))) :
+    δ ^ 2 ≤ (∑ p ∈ Nat.primesLE z, 1 / (p : ℝ)) + 4 * primeInvLogConst / T := by
+  obtain ⟨t, ht, hle⟩ := exists_mulDistSqPair_le_prime_mass hf z hT
+  rw [Set.mem_Icc] at ht
+  have habs : |t| ≤ T := by
+    rw [abs_of_nonneg ht.1]
+    exact ht.2
+  have hnn : 0 ≤ mulDistSqPair f (charFn t) (Nat.primesLE z) :=
+    mulDistSqPair_nonneg_disc (fun p _ => hf p) (fun p _ => (norm_charFn t p).le)
+      (fun p hp => (Nat.prime_of_mem_primesLE hp).pos)
+  have hsq : δ ^ 2 ≤ mulDistSqPair f (charFn t) (Nat.primesLE z) := by
+    have h := pow_le_pow_left₀ hδ (hunif t habs) 2
+    rwa [Real.sq_sqrt hnn] at h
+  exact le_trans hsq hle
+
+/-- **The damped size, floored by the prime mass.**  The fully assembled unconditional obstruction: no
+uniform distance level can push `dampedSize` below this, whatever arithmetic input supplies it. -/
+theorem dampedSize_ge_of_uniform {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {z : ℕ} {σ δ T : ℝ}
+    (hσ : 1 < σ) (hδ : 0 ≤ δ) (hT : 0 < T) (L : ℕ)
+    (hunif : ∀ t : ℝ, |t| ≤ T → δ ≤ Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z))) :
+    (1 + 1 / (σ - 1))
+        * Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4)
+            - ((∑ p ∈ Nat.primesLE z, 1 / (p : ℝ)) + 4 * primeInvLogConst / T))
+      ≤ dampedSize σ δ z L :=
+  dampedSize_ge_of_sq_le hσ z L (sq_le_prime_mass_of_uniform hf hδ hT hunif)
+
 end RHTower.Sieve
 end

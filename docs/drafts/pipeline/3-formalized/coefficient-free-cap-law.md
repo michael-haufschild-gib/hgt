@@ -157,3 +157,24 @@ So the uniform distance level available to a damped route is the prime mass up t
 `z`-dependence at all — never the `2∑_p 1/p` that a single frequency can attain. That is the sharp input
 to the `dampedSize` floor: `e^{−δ²} ≳ e^{−∑_p 1/p} ≍ (log z)^{-1}` uniformly, so the floor is `Θ(1)` and
 the Euler borderline is unconditional.
+
+### The assembled obstruction
+
+Whatever supplies the distance level — zero-free region, sieve, anything — if it holds uniformly on
+`|t| ≤ T` then the averaging theorem caps it:
+
+`δ² ≤ ∑_{p ≤ z}1/p + 4·primeInvLogConst/T`   (`sq_le_prime_mass_of_uniform`),
+
+and substituting into the monotone form of the damped size gives, unconditionally,
+
+`dampedSize σ δ z L ≥ (1 + 1/(σ−1))·exp(7/2 + 2(σ−1)(log z + log 4) − ∑_{p ≤ z}1/p − 4·primeInvLogConst/T)`
+
+(`dampedSize_ge_of_uniform`). This is the statement a damped route has to confront. Nothing in it
+mentions how `δ` was obtained, so no improvement in the arithmetic input moves it: `e^{−δ²}` cannot beat
+`e^{−∑_{p ≤ z}1/p} ≍ (log z)^{-1}` uniformly in the frequency, the `(1 + 1/(σ−1))e^{2(σ−1)log z}` factor
+has minimum `≍ log z` over the abscissa, and the product is `Θ(1)`.
+
+Taken with the coefficient-free cap, the two obstructions now cover the folder's whole Perron layer:
+a route is capped either because its bound is blind to the coefficients, or — if it does carry a genuine
+distance input — because the uniform distance is the prime mass and the Euler bound sits exactly on the
+borderline. Both are theorems, not estimates.
