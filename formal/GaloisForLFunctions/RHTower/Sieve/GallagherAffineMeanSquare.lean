@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.GallagherMeanValue
+import GaloisForLFunctions.RHTower.Sieve.GallagherDyadicTail
 import GaloisForLFunctions.RHTower.Sieve.DirichletPolyAffineMeanSquare
 
 /-!
@@ -50,6 +51,64 @@ theorem gallagher_meanValue_le_affine (a : ℕ → ℂ) (N : ℕ) {δ W : ℝ} (
     intro w
     exact pow_le_pow_left₀ (norm_nonneg _) (norm_logPoly_le a (Finset.Icc 1 N) w) 2
   exact gallagher_split_integral a (Finset.Icc 1 N) hδ hW (by positivity) hI hM₂
+
+/-- **The affine majorant of the frequency mean square.**  `max(2πT, 1) ≤ 2πT + 1` turns the affine
+form into the shape the dyadic tail consumes, with no condition on `W` beyond positivity. -/
+theorem integral_Icc_normSq_logPoly_le_affine_majorant (a : ℕ → ℂ) (N : ℕ) {T : ℝ} (hT : 0 ≤ T) :
+    (∫ w in Set.Icc (-T) T, ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2)
+      ≤ (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2) * T
+        + ((5 * Real.exp 1 / 2) * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2)
+          + (5 / 4) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)) := by
+  have hS : (0 : ℝ) ≤ ∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2 :=
+    Finset.sum_nonneg fun m _ => by positivity
+  have hW' : (0 : ℝ) ≤ ∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2 :=
+    Finset.sum_nonneg fun m _ => by positivity
+  have hbase := integral_Icc_normSq_logPoly_le_affine a N hT
+  have hmax : max (2 * Real.pi * T) 1 ≤ 2 * Real.pi * T + 1 := by
+    refine max_le ?_ ?_
+    · have : (0 : ℝ) ≤ 2 * Real.pi * T := by positivity
+      linarith
+    · have : (0 : ℝ) ≤ 2 * Real.pi * T := by positivity
+      linarith
+  have hstep : (2 * Real.pi)⁻¹
+        * (5 * Real.pi * Real.exp 1
+              * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2)
+            + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)
+              * max (2 * Real.pi * T) 1)
+      ≤ (2 * Real.pi)⁻¹
+        * (5 * Real.pi * Real.exp 1
+              * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2)
+            + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)
+              * (2 * Real.pi * T + 1)) := by
+    refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+    have hmul : (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)
+          * max (2 * Real.pi * T) 1
+        ≤ (5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2) * (2 * Real.pi * T + 1) :=
+      mul_le_mul_of_nonneg_left hmax (by positivity)
+    linarith
+  refine le_trans (le_trans hbase hstep) (le_of_eq ?_)
+  field_simp
+  ring
+
+/-- **Gallagher's dyadic tail with the affine mean square.**  The rate is `(5π/2)` times the plain
+mass and the constant is `(5e/2)` times the `n`-weighted mass, where the previous instance carried
+`4N(1 + log N)/π` times the plain mass. -/
+theorem gallagher_meanValue_dyadic_le_affine (a : ℕ → ℂ) (N : ℕ) {δ W : ℝ} (hδ : 0 < δ)
+    (hW : 0 < W) :
+    (∫ u : ℝ, ‖logWindowSum a (Finset.Icc 1 N) δ u‖ ^ 2)
+      ≤ 2 * δ ^ 2
+          * ((5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2) * W
+            + ((5 * Real.exp 1 / 2)
+                * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2)
+              + (5 / 4) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)))
+        + (4 * ((5 * Real.pi / 2) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2)) / (Real.pi ^ 2 * W)
+            + 4 * ((5 * Real.exp 1 / 2)
+                  * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a ((m : ℕ) + 1)‖ ^ 2)
+                + (5 / 4) * (∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2))
+              / (3 * Real.pi ^ 2 * W ^ 2)) := by
+  refine gallagher_split_integral_dyadic a (Finset.Icc 1 N) hδ hW ?_
+  intro T hT
+  exact integral_Icc_normSq_logPoly_le_affine_majorant a N (le_trans hW.le hT)
 
 end RHTower.Sieve
 end

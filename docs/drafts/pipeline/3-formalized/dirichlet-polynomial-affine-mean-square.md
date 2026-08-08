@@ -131,3 +131,20 @@ coefficients of constant size. Gallagher's bound inherits it verbatim
 | `integral_Icc_normSq_logPoly_le_affine` | `RHTower/Sieve/GallagherAffineMeanSquare.lean` |
 | `gallagher_meanValue_le_affine` | `RHTower/Sieve/GallagherAffineMeanSquare.lean` |
 | `integral_Icc_norm_dirPoly_le_sqrt_affine` | `RHTower/Sieve/DirichletPolyAffineMeanSquare.lean` |
+
+## Gallagher's dyadic tail: the last logarithm
+
+`GallagherDyadicTail.gallagher_split_integral_dyadic` already takes the affine majorant `α·T + β` of the
+frequency mean square as a hypothesis, so it inherits the improvement directly. Its previous instance
+used `α = 2∑|a_m|²`, `β = (4N(1 + log N)/π)∑|a_m|²`; the affine one gives
+
+`α = (5π/2)∑_m|a_{m+1}|²`,  `β = (5e/2)∑_m(m+1)|a_{m+1}|² + (5/4)∑_m|a_{m+1}|²`
+
+(`gallagher_meanValue_dyadic_le_affine`, with the majorant form
+`integral_Icc_normSq_logPoly_le_affine_majorant` obtained from `max(2πT,1) ≤ 2πT + 1`, so no condition
+on `W` beyond positivity is needed).
+
+Balancing over `W` turns `α·δ + β·δ²` into the two contributions, so for coefficients bounded by `1` on
+`[1,N]` the bound is `≍ δN + δ²N²` where the previous instance gave `≍ δN + δ²N²log N`. Against the
+trivial `δ(∑|a_n|)² ≍ δN²`, the old form was an improvement only for `δ ≪ 1/log N`; the affine form is
+an improvement for every `δ ≪ 1`. That logarithm was the one the dyadic tail had left behind.
