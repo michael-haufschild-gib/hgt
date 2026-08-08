@@ -1,11 +1,13 @@
-# The prime-saving GHS master bound cannot beat the trivial bound
+# No coefficient-free majorisation lets the GHS master bound beat the trivial bound
 
 - **ID:** ghs-prime-saving-trivial
 - **Stage:** 5-failed
 - **Type:** FALSIFIED (architecture, not an estimate)
-- **Statement:** There is a constant `C ≥ 0`, depending only on `N`, `H`, `σ`, such that
-  `‖∑_{n ≤ N} f(n)‖·log N ≤ ghsPrimeMasterBound N H σ z Y C` for *every* bounded completely
-  multiplicative `f`, and `N·log N ≤ ghsPrimeMasterBound N H σ z Y C`.
+- **Statement:** Let `Bout`, `Bin` be *any* majorants of the two GHS sieve mean squares valid for every
+  bounded completely multiplicative sequence. Then there is a `C ≥ 0`, depending only on `N`, `H`, `σ`,
+  with `‖∑_{n ≤ N} f(n)‖·log N ≤ ghsMasterBound N H σ Bout Bin C` for every such `f`, and
+  `N·log N ≤ ghsMasterBound N H σ Bout Bin C`. Both `sieveBound` and `sieveBoundPrime` are such
+  majorants.
 
 ## No-go closure
 
