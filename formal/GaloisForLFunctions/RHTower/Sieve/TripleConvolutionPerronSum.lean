@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.Sieve.PerronVerticalTripleBound
 import GaloisForLFunctions.RHTower.Sieve.PerronPrimeSumBound
 import GaloisForLFunctions.RHTower.Sieve.PerronNearDiagonal
+import GaloisForLFunctions.RHTower.Sieve.PerronVerticalBlockTripleBound
 import GaloisForLFunctions.RHTower.Sieve.ConvolutionSupport
 import GaloisForLFunctions.RHTower.Sieve.ProductFirstMoment
 
@@ -274,6 +275,46 @@ theorem norm_sum_Icc_triple_near_le {A B g : ℕ → ℂ} {MA MB Mg N : ℕ}
   exact integral_symm_norm_perron_triple_le hA0 hAsupp hAprime hB0 hBsupp hBprime
     (by linarith) hx ht₀ hV (continuous_LSeries_line_of_support hg0 hgsupp σ)
     zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K hgV
+
+/-- **The partial sum of a triple convolution at per-block sieve levels and the near-diagonal
+truncation error.**  Both improvements at once: the level is no longer forced to be bounded, and the
+height no longer has to grow with the length of the sum. -/
+theorem norm_sum_Icc_triple_block_near_le {A B g : ℕ → ℂ} {MA MB Mg N : ℕ}
+    (hAsupp : ∀ n : ℕ, A n ≠ 0 → n ∈ Finset.Icc 1 MA)
+    (hAprime : ∀ n ∈ Finset.Icc 1 MA, A n ≠ 0 → n.Prime)
+    (hBsupp : ∀ n : ℕ, B n ≠ 0 → n ∈ Finset.Icc 1 MB)
+    (hBprime : ∀ n ∈ Finset.Icc 1 MB, B n ≠ 0 → n.Prime)
+    (hgsupp : ∀ n : ℕ, g n ≠ 0 → n ∈ Finset.Icc 1 Mg)
+    {Bc V σ t₀ : ℝ}
+    (hBc : ∀ n, ‖(LSeries.convolution A (LSeries.convolution B g)) n‖ ≤ Bc) (hV : 0 ≤ V)
+    (hσ : 1 ≤ σ) (ht₀ : 1 ≤ t₀)
+    (ZA YlA ZB YlB : ℕ → ℕ)
+    (hYA : ∀ j, 1 ≤ YlA j) (hYzA : ∀ j, YlA j ≤ ZA j) (hzA : ∀ j, 2 ≤ ZA j)
+    (hlogA : ∀ j, 0 < Real.log (YlA j))
+    (hYB : ∀ j, 1 ≤ YlB j) (hYzB : ∀ j, YlB j ≤ ZB j) (hzB : ∀ j, 2 ≤ ZB j)
+    (hlogB : ∀ j, 0 < Real.log (YlB j)) (K : ℕ)
+    (hgV : ∀ t : ℝ, |t| ≤ t₀ * 2 ^ K → ‖LSeries g ((σ : ℂ) + (t : ℝ) * I)‖ ≤ V) :
+    ‖∑ n ∈ Finset.Icc 1 (min (MA * (MB * Mg)) N),
+        (LSeries.convolution A (LSeries.convolution B g)) n‖
+      ≤ Bc * (((N : ℝ) + 1 / 2)) ^ σ
+              * (5 * (1 + Real.log ((MA * (MB * Mg) : ℕ) : ℝ)) + 4 * (1 + Real.log N))
+              / (Real.pi * (t₀ * 2 ^ K))
+          + (1 / (2 * Real.pi))
+              * (2 * perronVerticalAffineProductBound σ ((N : ℝ) + 1 / 2) t₀ V
+                    (blockAffineConst A MA σ ZA YlA) (blockAffineRate A MA σ ZA YlA)
+                    (blockAffineConst B MB σ ZB YlB) (blockAffineRate B MB σ ZB YlB) K
+                  + (V * ((N : ℝ) + 1 / 2) ^ σ / σ)
+                      * (Real.sqrt (blockAffineConst A MA σ ZA YlA
+                            + blockAffineRate A MA σ ZA YlA * t₀)
+                          * Real.sqrt (blockAffineConst B MB σ ZB YlB
+                            + blockAffineRate B MB σ ZB YlB * t₀))) := by
+  have hg0 : (0 : ℕ) ∉ Finset.Icc 1 Mg := by simp
+  have hN0 : (0 : ℝ) ≤ (N : ℝ) := Nat.cast_nonneg N
+  have hx : (0 : ℝ) < (N : ℝ) + 1 / 2 := by linarith
+  refine norm_sum_Icc_triple_of_analytic_near_le hAsupp hBsupp hgsupp hBc hσ ht₀ K ?_
+  exact integral_symm_norm_perron_triple_block_le hAsupp hAprime hBsupp hBprime
+    (by linarith) hx ht₀ hV (continuous_LSeries_line_of_support hg0 hgsupp σ)
+    ZA YlA ZB YlB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K hgV
 
 end RHTower.Sieve
 end

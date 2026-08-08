@@ -6075,3 +6075,311 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   Mangoldt autocorrelation form on the two-dimensional Gaussian jet plane.  Universal two-bump
   indefiniteness forbids global diagonal positivity.  Surviving avenue is an exact Gamma-sewn
   Schur residual on this plane, needing at most three compressed aggregate prime rates.
+
+## Addendum: safe-shift dispersion, arcsine recession, and terminal boundary flux
+
+### C43-BD — the safe-shift first gate reduces to one coefficient-of-variation floor
+
+Write one shifted reciprocal atom as `lambda=a+ib`, and use the exact response coordinates from
+`SuzukiSafeShiftResponseChargeCancellation`
+
+\[
+ e=a,\qquad x={a^2-b^2\over a},\qquad
+ \chi={b^2(a^2+b^2)\over a}.
+\]
+
+For `A=sum e`, `mu=(sum ex)/A`, the first shifted Hankel minor is exactly
+
+\[
+ \boxed{\quad
+ m_0m_2-m_1^2
+ =D-Q,\qquad
+ D=A\sum e(x-\mu)^2,\qquad Q=A\sum\chi.
+ \quad}                                                    \tag{24.239}
+\]
+
+Corpus sector bound `b^2/a^2<=1/84` gives the pointwise sharp consequence
+
+\[
+ {\chi\over ex^2}
+ ={b^2(a^2+b^2)\over(a^2-b^2)^2}
+ \le {85\over83^2}={85\over6889}.                         \tag{24.240}
+\]
+
+Hence, with expectation taken under probability weights `e/A`,
+
+\[
+ {\operatorname {Var}_e(x)\over \mathbb E_e(x^2)}
+ \ge {85\over6889}
+ \quad\Longrightarrow\quad D\ge Q
+ \quad\Longrightarrow\quad m_0m_2-m_1^2\ge0.             \tag{24.241}
+\]
+
+This is a genuine proof-burden reduction: Suzuki's first nonlinear Schur gate needs only a
+dimensionless longitudinal dispersion floor of about the same size as the corpus transverse
+sector cap.  Existing corpus proves `D>0` but not this quantitative ratio.  Its explicit bound
+`Q(1)<116/7968750000` would also close the gate from any source-derived lower bound of that size
+for `D(1)`.
+
+The natural attempt to manufacture that floor from the present zero-distribution corpus fails.
+Infinite support, `sum 1/|rho|=infinity`, square summability, and the upper count `O(T log T)` do
+not imply any prescribed lower tail for `sum 1/|rho|^2`.  Indeed, choose rapidly increasing
+`R_j` and put `M_j` points in the `j`th shell with `M_j` comparable to `R_j/j`.  Then
+
+\[
+ \sum_j{M_j\over R_j}=\infty,\qquad
+ \sum_j{M_j\over R_j^2}\asymp\sum_j{1\over jR_j}<\infty,  \tag{24.242}
+\]
+
+while sufficiently rapid shell spacing respects every upper `O(T log T)` count.  The square tail
+can be made arbitrarily small after a chosen height.  A quantitative dispersion proof therefore
+needs a lower local zero-density input or a different source identity; current upper-density and
+harmonic-divergence theorems cannot supply it.
+
+### C43-BE — no finite right shift makes all polynomial atoms positive
+
+A tempting conjecture was that a sufficiently large real shift narrows every reciprocal atom so
+much that all degree-`d` polynomial squares become atomwise positive.  It already fails for
+degree one.  If `lambda` is nonreal, the real-linear map
+
+\[
+ (u,v)\longmapsto u+v\lambda
+\]
+
+is onto `C`.  Choose `z` with `Re(lambda z^2)<0` and solve `u+v lambda=z`; then the real linear
+polynomial `p(X)=u+vX` obeys
+
+\[
+ \Re\bigl(\lambda p(\lambda)^2\bigr)<0.                  \tag{24.243}
+\]
+
+Thus angular narrowing helps a coefficient-conditioned test, never the whole degree cone.
+There is no degree-only finite shift giving termwise positivity unless every atom is already
+real.  Generic Krylov/replica projection laws cannot repair this: they have no connector to the
+Xi source moments and would merely hide the same unbounded coefficient conditioning.
+
+### C43-BF — all shifted moments have a universal arcsine far-right limit
+
+Put
+
+\[
+ m_k(y):=\Re\,\xiShiftedReciprocalMoment(y,k),\qquad
+ L(w):=\xiRealLogDeriv(w),\qquad y=w^2.
+\]
+
+The new `CompletedPrimeGammaMomentFarRightAsymptotic` corpus contains all ingredients needed beyond
+its stated odd-moment corollary.  `xiLogDeriv_split`, the horizontal digamma asymptotic, and first-
+prime Euler decay give
+
+\[
+ {L(w)\over\log w}\longrightarrow {1\over2},\qquad
+ w^jL^{(j)}(w)\longrightarrow
+ {(-1)^{j+1}(j-1)!\over2}\quad(j\ge1).                  \tag{24.244}
+\]
+
+For completeness, the horizontal digamma limit on the full real ray follows from the corpus
+integer-shift limit by squeezing between adjacent integers, using strict monotonicity of real
+digamma and monotonicity of `log`; no unproved continuous asymptotic is being imported.
+
+Let `A=(2w)^(-1)d/dw=d/dy`.  Induction gives constants `c_(k,j)` such that
+
+\[
+ A^k\!\left({L(w)\over w}\right)
+ =\sum_{j=0}^k c_{k,j}w^{-(2k+1-j)}L^{(j)}(w),\qquad
+ c_{k,0}=(-1)^k(1/2)_k.                                  \tag{24.245}
+\]
+
+All terms with `j>=1` are `O(w^(-2k-1))`; only `j=0` carries `log w`.  Combining
+`xiRealLogDeriv_eq_mul_re_xiShiftedReciprocalMoment` with
+`iteratedDeriv_squaredXiRadialField` therefore proves, for every fixed `k`,
+
+\[
+ \boxed{\quad
+ \lim_{y\to\infty}{4y^{k+1/2}\over\log y}\,m_k(y)
+ =c_k:={(1/2)_k\over k!}={\binom{2k}{k}\over4^k}.
+ \quad}                                                    \tag{24.246}
+\]
+
+These constants are not an arbitrary positive sequence.  They are the arcsine moments
+
+\[
+ c_k={1\over\pi}\int_0^1{x^k\over\sqrt{x(1-x)}}\,dx.     \tag{24.247}
+\]
+
+Let `H_n(y)=(m_(i+j)(y))_(0<=i,j<n)` and
+
+\[
+ R_n(y)=\operatorname {diag}_{0\le i<n}
+ \left({2y^{i+1/4}\over\sqrt{\log y}}\right).
+\]
+
+Then entrywise
+
+\[
+ R_n(y)H_n(y)R_n(y)\longrightarrow C_n:=(c_{i+j})_{i,j<n}. \tag{24.248}
+\]
+
+For every nonzero real polynomial `p` of degree below `n`, (24.247) gives
+`p^T C_n p=int p(x)^2 dnu_arc(x)>0`; hence `C_n` is strictly positive definite.  Openness of the
+finite-dimensional positive-definite cone now proves unconditionally:
+
+> For every fixed `n`, `H_n(y)` is strictly positive definite for all sufficiently large `y`.
+
+Consequently, if RH is false, the least degree of a shifted-Hankel defect is finite at every fixed
+shift but tends to infinity with the shift.  Off-line information does not disappear; it recedes
+to polynomial degree infinity.  This is the resolvent analogue of Gaussian cooling recession,
+now derived directly from the completed Gamma--Euler source.
+
+### C43-BG — finite Hankel evolution is a Lyapunov flow with one terminal flux
+
+Exact moment differentiation is
+
+\[
+ m_k'(y)=-(k+1)m_{k+1}(y).
+\]
+
+Let `T_n` be the weighted upper shift `(T_n)_(i,i+1)=i+1/2`, let `e=e_(n-1)`, and put
+`v_n(y)_j=(n-1/2)m_(n+j)(y)`.  Entrywise algebra gives the exact finite-dimensional law
+
+\[
+ \boxed{\quad
+ H_n'=-T_nH_n-H_nT_n^T-(ev_n^T+v_ne^T).
+ \quad}                                                    \tag{24.249}
+\]
+
+For `E_y(s)=exp((s-y)T_n)`, this integrates to
+
+\[
+ H_n(y)=E_y(Y)H_n(Y)E_y(Y)^T
+ +\int_y^Y E_y(s)(ev_n(s)^T+v_n(s)e^T)E_y(s)^T\,ds.       \tag{24.250}
+\]
+
+Thus interior shift transport is pure congruence and cannot change inertia.  Every possible sign
+change enters through one rank-two terminal boundary flux.  This is the higher principle shadowed
+by the earlier rank-one leverage and finite-part failures.
+
+Let `D_n=det H_n`, and let `A_n` be the bordered Hankel determinant obtained by replacing the last
+row `(m_(n-1+j))_j` by `(m_(n+j))_j`.  Jacobi's formula and (24.249) give, wherever `H_n` is
+invertible and hence everywhere by polynomial continuation,
+
+\[
+ D_n'=-(2n-1)A_n,qquad
+ D_n(y)=(2n-1)\int_y^\infty A_n(s)\,ds.                  \tag{24.251}
+\]
+
+The second identity uses `D_n(infinity)=0`, supplied by (24.246).  More precisely, the arcsine
+limit gives
+
+\[
+ D_n(y)\sim {\det C_n\over4^n}
+ { (\log y)^n\over y^{n^2-n/2}},\qquad
+ A_n(y)\sim {n\over2y}D_n(y)>0.                           \tag{24.252}
+\]
+
+The derivative asymptotic is justified by the full jet limits (24.244)--(24.246), not by
+formally differentiating an uncontrolled little-`o`.  Every fixed boundary flux is therefore
+eventually oriented positively.  The exact core is now a finite-position flux reversal problem,
+not construction of a positive far boundary.
+
+### C43-BH — Möbius half-density transport explains degree-infinity inflow
+
+For the shifted atom `lambda_y=(y+w)^(-1)` and `t>=0`,
+
+\[
+ \lambda_{y+t}={\lambda_y\over1+t\lambda_y}.             \tag{24.253}
+\]
+
+If
+
+\[
+ \Phi_y[p]:=\Re\sum_q\lambda_{y,q}p(\lambda_{y,q})^2,
+\]
+
+define the half-density Möbius semigroup
+
+\[
+ (\mathcal S_t p)(z):=(1+tz)^{-1/2}
+ p\!\left({z\over1+tz}\right).
+\]
+
+Then absolute divisor convergence gives the exact transport identity
+
+\[
+ \boxed{\quad \Phi_{y+t}[p]=\Phi_y[\mathcal S_t p].\quad} \tag{24.254}
+\]
+
+Its generator is `-z^2 d/dz-z/2`, whose monomial matrix is `-T_infinity^T`.  Formula (24.249) is
+exactly the leakage created by truncating this infinite congruence at degree `n`.  Backward
+transport is
+
+\[
+ (\mathcal S_{-t}p)(z)=(1-tz)^{-1/2}
+ p\!\left({z\over1-tz}\right),                            \tag{24.255}
+\]
+
+with a singularity at `z=1/t`.  Since `Re w_q>0`, far-shift atoms obey
+`|t lambda_(y+t,q)|<t/(y+t)`.  A uniform Taylor connector therefore has geometric ratio
+`r=t/(y+t)=1-y/(y+t)`; even for `p=1`, its omitted tail contains
+`c_(N+1)r^(N+1)`.  Fixed accuracy as `t->infinity` needs degree at least of order `t/y`.
+This is the exact degree horizon behind every failed attempt to transport fixed-degree far-right
+positivity back to shift one.  `KrylovProjectedCompleteIncidenceLaw` supplies factorial bounds for
+bounded generators, but this Möbius generator is degree-raising and unbounded; there is no Xi
+connector that changes the horizon.
+
+### C43-BI — first loss is a real-rooted terminal anti-Stieltjes event
+
+Suppose a block first reaches the positive-semidefinite boundary while every smaller leading block
+is positive definite.  Its Schur-null vector has last coefficient one; write it as the monic
+polynomial `p(X)=sum_(j=0)^(n-1)c_jX^j`.  Then
+
+\[
+ \mathcal L_y(X^jp)=0\quad(0\le j<n),\qquad
+ \mathcal L_y(f):=\Re\sum_q\lambda_{y,q}f(\lambda_{y,q}). \tag{24.256}
+\]
+
+Contracting (24.249) with this null vector kills both congruence terms and leaves
+
+\[
+ c^TH_n'(y)c=-(2n-1)\mathcal L_y(X^np).                  \tag{24.257}
+\]
+
+At the first crossing from an indefinite block to the far-right positive chamber, the left side
+is nonnegative.  Hence every RH failure produces a boundary witness with
+
+\[
+ \mathcal L_y(X^np)\le0.                                 \tag{24.258}
+\]
+
+Moreover, positivity of all preceding leading minors makes the monic orthogonal polynomial `p`
+the characteristic polynomial of a real symmetric Jacobi compression.  Its roots are real and
+simple.  Therefore it is enough to prove one source theorem:
+
+> every monic real-rooted null polynomial satisfying (24.256) has
+> `mathcal L_y(X^n p)>0`.
+
+This criterion is equivalent to preventing all finite-degree inflow from the arcsine chamber.  It
+is materially narrower than arbitrary polynomial-square positivity: hard witnesses are forced to
+the Schur boundary, are real-rooted, and require only one next mixed moment.  It is not yet proved.
+`PrimeTailReflectionFoldedSecondOrderResolvent` reconstructs literal prime forcing against compact
+supports, but only as a linear transport equality with arbitrary homogeneous datum; it supplies no
+quadratic Gamma completion or sign for (24.258).  `EvenIndexHermitianDyadicOrbit` likewise needs an
+exact dyadic coefficient recursion absent from the Xi shifted-moment tower.  Importing either as a
+positivity argument would be theatre.
+
+### Research status after C43-BI
+
+- `[PROVED HERE; LEAN DEFERRED BY USER]` sector cap reduces first Suzuki gate to exact weighted
+  coefficient-of-variation floor (24.241).
+- `[FAILED]` present zero upper density plus harmonic divergence cannot provide quantitative
+  dispersion floor; sparse-shell model (24.242) is class-complete obstruction.
+- `[FAILED]` no finite right shift gives atomwise positivity for all degree-one tests (24.243).
+- `[PROVED HERE; LEAN DEFERRED BY USER]` every fixed shifted Hankel block converges after diagonal
+  normalization to strictly positive arcsine moment block (24.246)--(24.248).
+- `[PROVED HERE; LEAN DEFERRED BY USER]` exact finite Lyapunov law, Duhamel formula, bordered
+  determinant flux identity, and positive far-right flux asymptotic (24.249)--(24.252).
+- `[PROVED HERE; LEAN DEFERRED BY USER]` exact Möbius half-density semigroup and linear inverse
+  degree horizon (24.253)--(24.255).
+- `[PROVED HERE; LEAN DEFERRED BY USER]` any first loss is a real-rooted null polynomial with a
+  nonpositive terminal mixed moment (24.256)--(24.258).
+- `[OPEN]` prove terminal anti-Stieltjes exclusion directly from completed prime--Gamma source.
+  This is current noncircular frontier.  RH is not proved.

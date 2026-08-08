@@ -96,5 +96,40 @@ theorem integral_Icc_normSq_LSeries_le_block_affine {a : ℕ → ℂ} {M : ℕ}
     (blockMeanSquareRate_nonneg a M σ Z Yl) hMS0 (by linarith)
     (sqrt_integral_Icc_normSq_LSeries_le_block_affine hsupp hprime σ Z Yl hY hYz hz hlog hU)
 
+/-- The height-independent coefficient of the block-sieve mean square in affine form. -/
+def blockAffineConst (a : ℕ → ℂ) (M : ℕ) (σ : ℝ) (Z Yl : ℕ → ℕ) : ℝ :=
+  (blockMeanSquareConst a M σ Yl) ^ 2
+    + blockMeanSquareConst a M σ Yl * blockMeanSquareRate a M σ Z Yl
+
+/-- The height-linear coefficient of the block-sieve mean square in affine form. -/
+def blockAffineRate (a : ℕ → ℂ) (M : ℕ) (σ : ℝ) (Z Yl : ℕ → ℕ) : ℝ :=
+  blockMeanSquareConst a M σ Yl * blockMeanSquareRate a M σ Z Yl
+    + (blockMeanSquareRate a M σ Z Yl) ^ 2
+
+theorem blockAffineConst_nonneg (a : ℕ → ℂ) (M : ℕ) (σ : ℝ) (Z Yl : ℕ → ℕ) :
+    0 ≤ blockAffineConst a M σ Z Yl := by
+  have h1 := blockMeanSquareConst_nonneg a M σ Yl
+  have h2 := blockMeanSquareRate_nonneg a M σ Z Yl
+  rw [blockAffineConst]
+  positivity
+
+theorem blockAffineRate_nonneg (a : ℕ → ℂ) (M : ℕ) (σ : ℝ) (Z Yl : ℕ → ℕ) :
+    0 ≤ blockAffineRate a M σ Z Yl := by
+  have h1 := blockMeanSquareConst_nonneg a M σ Yl
+  have h2 := blockMeanSquareRate_nonneg a M σ Z Yl
+  rw [blockAffineRate]
+  positivity
+
+/-- **The block-sieve mean square in the affine shape the dyadic height split consumes.**  The same
+bound as `integral_Icc_normSq_LSeries_le_block_affine`, with its two coefficients named. -/
+theorem integral_Icc_normSq_LSeries_le_blockAffine {a : ℕ → ℂ} {M : ℕ}
+    (hsupp : ∀ n : ℕ, a n ≠ 0 → n ∈ Finset.Icc 1 M)
+    (hprime : ∀ n ∈ Finset.Icc 1 M, a n ≠ 0 → n.Prime) (σ : ℝ) (Z Yl : ℕ → ℕ)
+    (hY : ∀ j, 1 ≤ Yl j) (hYz : ∀ j, Yl j ≤ Z j) (hz : ∀ j, 2 ≤ Z j)
+    (hlog : ∀ j, 0 < Real.log (Yl j)) {U : ℝ} (hU : 1 ≤ U) :
+    (∫ y in Set.Icc (-U) U, ‖LSeries a ((σ : ℂ) + (y : ℝ) * I)‖ ^ 2)
+      ≤ blockAffineConst a M σ Z Yl + blockAffineRate a M σ Z Yl * U :=
+  integral_Icc_normSq_LSeries_le_block_affine hsupp hprime σ Z Yl hY hYz hz hlog hU
+
 end RHTower.Sieve
 end

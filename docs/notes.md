@@ -2,3 +2,5 @@
 Nomotopy’s first hard verdict is now clear: existing literal source has exact radial gauge symmetry. No amount of ordinary cyclic degree, Kummer detection, Cartier/Bockstein bookkeeping, reciprocity, reflection, or finite-prime data can select the critical line.
 
 First precise prediction survived: off-line residue is intrinsically two-legged. As a function of independent source and reflected variables, its separation rank is exactly two—never one. This proves why every successful carrier keeps an ordered pair before codiagonalization, while also showing that “two legs” alone is only representation, not selection.
+
+Second hard gain: scalar Kummer regulator was a projection. Literal source carries one cyclic valuation cocycle per prime, forming a countable coframe with \(\phi_\ell(u_p)=-\delta_{\ell p}\). Off line, dagger defect is diagonal and injective in this coframe. Therefore cross-prime cancellation, more primes, or faithful completion of current complex cannot solve obstruction. Missing law must change differential so valuation cocycles themselves transgress.
