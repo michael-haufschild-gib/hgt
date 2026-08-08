@@ -106,6 +106,7 @@ formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtBlockMatrix.lean
 formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantLogSeries.lean
 formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantExists.lean
 formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantLimit.lean
+formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantZeros.lean
 ```
 
 | step | statement | Lean declaration |
@@ -147,7 +148,12 @@ formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantLimit.lean
 | 5 | **the exponent is Lipschitz in the Hilbert--Schmidt norm** (`k+2` cancels `1/(k+2)`) | `norm_fredholmExp_sub_le` |
 | 5 | hence the determinants converge uniformly on a closed disc | `norm_fredholmDet_sub_le` |
 | 5 | Cauchy's estimate on a disc, not only for entire functions | `norm_taylorCoeff_le'`, `diffContOnCl_of_differentiableOn_ball` |
+| 5 | the canonical radius and the limit coefficients | `detRadius`, `detCoeff`, `detCoeff_truncKernel`, `norm_detCoeff_truncKernel_le`, `tendsto_detCoeff_truncKernel`, `norm_detCoeff_le` |
+| 5 | **the entire regularized determinant, as a named function** | `entireDet2`, `differentiable_entireDet2`, `isRegularizedDet_entireDet2` |
 | 5 | **every Hilbert--Schmidt kernel has an entire regularized determinant** | `exists_isRegularizedDet` |
+| 5 | **it is the pointwise limit of the finite block determinants** | `tendsto_finiteDet2_entireDet2` |
+| 6 | the zeros of a finite determinant are the reciprocal eigenvalues | `finiteDet2_eq_zero_iff_det`, `finiteDet2_eq_zero_iff_exists_eigenvector` |
+| 6 | **the order of vanishing of a finite determinant is the eigenvalue multiplicity** | `finiteDet2_factor` |
 | — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
@@ -160,7 +166,13 @@ formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantLimit.lean
 - [x] the matrix/kernel bridge: `finiteDet2` of the block matrix is `fredholmDet` of the truncated
       kernel on the disc
 - [x] entire `det_2` **exists** for every Hilbert--Schmidt kernel (`exists_isRegularizedDet`)
-- [ ] `det_2(1 - zK) = 0` iff `1/z` is an eigenvalue
+- [x] the *finite* case of both zero statements (`finiteDet2_eq_zero_iff_exists_eigenvector`,
+      `finiteDet2_factor`), and the limit that must carry them (`tendsto_finiteDet2_entireDet2`)
+- [ ] `det_2(1 - zK) = 0` iff `1/z` is an eigenvalue.  The pointwise limit is in place; what is
+      missing is **Hurwitz's theorem**, absent from mathlib: a locally uniform limit of nowhere-zero
+      analytic functions is nowhere zero or identically zero, and zeros of the limit are limits of
+      zeros with matching multiplicity.  Note `tendsto_finiteDet2_entireDet2` is currently only
+      *pointwise*; upgrading it to locally uniform is the prerequisite
 - [ ] order of vanishing = algebraic multiplicity
 - [ ] Plemelj identity on the full resolvent set
 - [ ] 1 -> 2  paper proof complete
@@ -210,3 +222,10 @@ construction; the general construction is what the *multiplicity* clause needs.
   Hilbert--Schmidt kernel over any index type with decidable equality: `exists_isRegularizedDet`.
   Together with `IsRegularizedDet.unique` the phrase "the regularized determinant of `K`" is a
   well-posed Lean object.  The three remaining gates are about its *zeros*.
+- 2026-08-08 — the determinant is now a **named** function `entireDet2 K` with its construction
+  exposed (`detRadius`, `detCoeff`, and the convergence and bound lemmas), and it is the pointwise
+  limit of the finite block determinants (`tendsto_finiteDet2_entireDet2`).  The finite-dimensional
+  zero theory is complete: `finiteDet2_eq_zero_iff_exists_eigenvector` and the explicit
+  factorization `finiteDet2_factor` giving the order of vanishing as the number of Schur diagonal
+  entries equal to `-1/z_0`.  Carrying these to the limit needs Hurwitz's theorem, which mathlib
+  does not have.

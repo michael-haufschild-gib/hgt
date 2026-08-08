@@ -1664,3 +1664,36 @@ Xi_C'(z)/Xi_C(z) = - resolventTrace (-B) z    on |z| ‖B‖_HS < 1,
 
 and `IsRegularizedDet.unique` makes "the regularized determinant" unambiguous.  That trace formula
 is the remaining hard core of the card.
+
+### 2026-08-08 — the determinant is a named function; finite zero theory complete
+
+`entireDet2 K` (in `HTGeometry/RegularizedDeterminantLimit.lean`) is now a **definition**, not an
+existential, with `isRegularizedDet_entireDet2`, `differentiable_entireDet2`, and
+
+```text
+tendsto_finiteDet2_entireDet2 : Tendsto (fun s => finiteDet2 (-(blockMatrix K s)) z) atTop
+    (nhds (entireDet2 K z))
+```
+
+(pointwise; via `tendsto_tsum_of_dominated_convergence`, mathlib's Tannery theorem).  Supporting
+API: `detRadius` (= `1/(2(‖K‖_HS + 1))`, so `r·(‖K‖_HS+1) = 1/2` and no `K = 0` case split is
+needed), `detCoeff`, `detCoeff_truncKernel`, `norm_detCoeff_truncKernel_le`,
+`tendsto_detCoeff_truncKernel`, `norm_detCoeff_le`.
+
+`HTGeometry/FiniteDeterminantZeros.lean` finishes the finite-dimensional zero theory:
+`finiteDet2_eq_zero_iff_det`, `finiteDet2_eq_zero_iff_exists_eigenvector`, and
+
+```text
+finiteDet2_factor : ∃ G entire, G z_0 ≠ 0 ∧ ∀ z, finiteDet2 M z = (z - z_0)^d * G z,
+   d = #{i | T i i = -z_0⁻¹}
+```
+
+i.e. the order of vanishing **is** the eigenvalue multiplicity, by grouping the Schur product.
+
+**The next obstruction is named: Hurwitz's theorem.**  Mathlib has Weierstrass
+(`TendstoLocallyUniformlyOn.differentiableOn`) but no Hurwitz and no Montel.  To carry the finite
+zero/multiplicity statements to `entireDet2` one needs (a) to upgrade
+`tendsto_finiteDet2_entireDet2` from pointwise to locally uniform — which the existing coefficient
+bound already gives, by the same `2^-n` majorant argument applied uniformly on a disc — and (b)
+Hurwitz, provable from the argument principle (`Complex.circleIntegral` + `logDeriv`), which mathlib
+does have the ingredients for.
