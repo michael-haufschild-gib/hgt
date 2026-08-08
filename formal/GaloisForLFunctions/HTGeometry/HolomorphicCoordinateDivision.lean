@@ -435,3 +435,77 @@ theorem exists_analyticOnNhd_coord_mul (hf : AnalyticOnNhd ℂ f (Metric.ball c 
 end Capstone
 
 end HTGeometry
+
+namespace HTGeometry
+
+open Complex
+
+section LocalCauchyRiemann
+
+variable {m : ℕ} {F : (Fin m → ℂ) → ℂ}
+
+/-- **The Cauchy–Riemann equations in one direction, at a single point.**  The corpus's global
+statement uses the vanishing of the antiholomorphic derivative only at the point in question. -/
+theorem map_I_single_at (hF : Differentiable ℝ F) {z : Fin m → ℂ}
+    (hbar : ∀ j : Fin m, dzbarAt F j z = 0) (j : Fin m) (v : ℂ) :
+    (fderiv ℝ F z) (Pi.single j (Complex.I * v))
+      = Complex.I * (fderiv ℝ F z) (Pi.single j v) := by
+  have hslice := hasFDerivAt_dbarSlice hF j z
+  have hz : dzbar (dbarSlice F j z) (z j) = 0 := hbar j
+  rw [dzbar_eq_of_hasFDerivAt hslice] at hz
+  have hlin := (wirtingerAntihol_eq_zero_iff _).1 hz
+  have h1 := hlin (Complex.I * v)
+  have h2 := hlin v
+  have hsingle : ∀ w : ℂ, ((fderiv ℝ F z).comp
+      (ContinuousLinearMap.single ℝ (fun _ : Fin m => ℂ) j)) w
+      = (fderiv ℝ F z) (Pi.single j w) := fun w => rfl
+  rw [hsingle] at h1 h2
+  rw [h1, h2]
+  ring
+
+/-- **The several-variable Cauchy–Riemann equations at a single point.** -/
+theorem map_I_at (hF : Differentiable ℝ F) {z : Fin m → ℂ}
+    (hbar : ∀ j : Fin m, dzbarAt F j z = 0) (v : Fin m → ℂ) :
+    (fderiv ℝ F z) (Complex.I • v) = Complex.I * (fderiv ℝ F z) v := by
+  have hv : v = ∑ j : Fin m, Pi.single j (v j) := by
+    funext i
+    simp
+  have hIv : (Complex.I • v) = ∑ j : Fin m, Pi.single j (Complex.I * v j) := by
+    funext i
+    simp
+  calc (fderiv ℝ F z) (Complex.I • v)
+      = ∑ j : Fin m, (fderiv ℝ F z) (Pi.single j (Complex.I * v j)) := by
+        rw [hIv, map_sum]
+    _ = ∑ j : Fin m, Complex.I * (fderiv ℝ F z) (Pi.single j (v j)) :=
+        Finset.sum_congr rfl fun j _ => map_I_single_at hF hbar j (v j)
+    _ = Complex.I * ∑ j : Fin m, (fderiv ℝ F z) (Pi.single j (v j)) := by
+        rw [Finset.mul_sum]
+    _ = Complex.I * (fderiv ℝ F z) v := by
+        rw [← map_sum]
+        congr 2
+        exact hv.symm
+
+/-- **A vanishing antiholomorphic derivative at a point makes the function holomorphic there.** -/
+theorem differentiableAt_complex_of_dzbarAt_eq_zero (hF : Differentiable ℝ F) {z : Fin m → ℂ}
+    (hbar : ∀ j : Fin m, dzbarAt F j z = 0) : DifferentiableAt ℂ F z := by
+  refine ⟨{ toFun := fderiv ℝ F z
+            map_add' := (fderiv ℝ F z).map_add
+            map_smul' := fun c x => map_smul_of_map_I (fderiv ℝ F z)
+              (fun x => map_I_at hF hbar x) c x
+            cont := (fderiv ℝ F z).continuous }, ?_⟩
+  have h := (hF z).hasFDerivAt
+  rw [hasFDerivAt_iff_isLittleO] at h ⊢
+  exact h
+
+/-- **A smooth function whose antiholomorphic derivatives vanish on an open set is analytic
+there.** -/
+theorem analyticOnNhd_of_dzbarAt_eq_zero_on (hF : Differentiable ℝ F)
+    {W : Set (Fin m → ℂ)} (hW : IsOpen W) (hbar : ∀ z ∈ W, ∀ j : Fin m, dzbarAt F j z = 0) :
+    AnalyticOnNhd ℂ F W := by
+  have hdiff : DifferentiableOn ℂ F W := fun z hz =>
+    (differentiableAt_complex_of_dzbarAt_eq_zero hF (hbar z hz)).differentiableWithinAt
+  exact fun z hz => GaloisForLFunctions.HTGeometry.analyticAt_of_differentiableOn hW hdiff hz
+
+end LocalCauchyRiemann
+
+end HTGeometry

@@ -1,0 +1,271 @@
+import GaloisForLFunctions.RHTower.DeningerDivisorExtension
+import GaloisForLFunctions.HTGeometry.HolomorphicCoordinateDivision
+
+/-!
+# The ideal of a coordinate divisor
+
+The sections of the structure sheaf that vanish on the divisor of the last coordinate form a
+subsheaf, cut out by a pointwise condition, and that subsheaf is a kernel of restriction to the
+divisor: restriction is evaluation at the points of the divisor, so a section killed by it vanishes
+there.  Multiplication by the coordinate factors through this subsheaf, and the factorisation is a
+monomorphism.
+
+* `RHTower.deningerVanishSheaf` : the sections vanishing on the divisor.
+* `RHTower.deningerVanishIncl_isKernel` : it is a kernel of restriction to the divisor.
+* `RHTower.deningerCoordMulVanish` : the factorisation of multiplication by the coordinate.
+-/
+
+namespace RHTower
+
+open CategoryTheory CategoryTheory.Limits TopologicalSpace Opposite TopCat Complex HTGeometry
+
+section VanishSheaf
+
+variable {n : ℕ} {Ω : Opens (Fin (n + 1) → ℂ)}
+
+/-- A holomorphic section vanishing on the divisor of the last coordinate. -/
+def DeningerVanishPred {U : Opens (deningerSpace Ω)} (f : ↥U → DeningerFormVal (n + 1)) : Prop :=
+  DeningerClosedFormPred 0 f ∧
+    ∀ (x : ↥U) (S : Finset (Fin (n + 1))),
+      (x.1.1 : Fin (n + 1) → ℂ) (Fin.last n) = 0 → f x S = 0
+
+theorem DeningerVanishPred.res {U W : Opens (deningerSpace Ω)} (h : W ≤ U)
+    {f : ↥U → DeningerFormVal (n + 1)} (hf : DeningerVanishPred f) :
+    DeningerVanishPred (fun x : ↥W => f ⟨x.1, h x.2⟩) :=
+  ⟨DeningerClosedFormPred.res 0 h hf.1, fun x S hx => hf.2 ⟨x.1, h x.2⟩ S hx⟩
+
+theorem DeningerVanishPred.locality {U : Opens (deningerSpace Ω)}
+    (f : ↥U → DeningerFormVal (n + 1))
+    (hloc : ∀ x : ↥U, ∃ (W : Opens (deningerSpace Ω)) (hW : W ≤ U), x.1 ∈ W ∧
+      DeningerVanishPred (fun y : ↥W => f ⟨y.1, hW y.2⟩)) :
+    DeningerVanishPred f := by
+  refine ⟨DeningerClosedFormPred.locality 0 f fun x => ?_, fun x S hx => ?_⟩
+  · obtain ⟨W, hW, hxW, hpred⟩ := hloc x
+    exact ⟨W, hW, hxW, hpred.1⟩
+  · obtain ⟨W, hW, hxW, hpred⟩ := hloc x
+    exact hpred.2 ⟨x.1, hxW⟩ S hx
+
+theorem DeningerVanishPred.zero (U : Opens (deningerSpace Ω)) :
+    DeningerVanishPred (fun _ : ↥U => (0 : DeningerFormVal (n + 1))) :=
+  ⟨DeningerClosedFormPred.zero 0 U, fun _ _ _ => rfl⟩
+
+theorem DeningerVanishPred.add {U : Opens (deningerSpace Ω)}
+    {f g : ↥U → DeningerFormVal (n + 1)} (hf : DeningerVanishPred f)
+    (hg : DeningerVanishPred g) : DeningerVanishPred (fun x => f x + g x) := by
+  refine ⟨DeningerClosedFormPred.add 0 hf.1 hg.1, fun x S hx => ?_⟩
+  show f x S + g x S = 0
+  rw [hf.2 x S hx, hg.2 x S hx, add_zero]
+
+theorem DeningerVanishPred.neg {U : Opens (deningerSpace Ω)}
+    {f : ↥U → DeningerFormVal (n + 1)} (hf : DeningerVanishPred f) :
+    DeningerVanishPred (fun x => -f x) := by
+  refine ⟨DeningerClosedFormPred.neg 0 hf.1, fun x S hx => ?_⟩
+  show -f x S = 0
+  rw [hf.2 x S hx, neg_zero]
+
+/-- The local predicate cutting out the sections vanishing on the divisor. -/
+noncomputable def deningerVanishLocalPredicate (Ω : Opens (Fin (n + 1) → ℂ)) :
+    TopCat.LocalPredicate (fun _ : (deningerSpace Ω : Type) => DeningerFormVal (n + 1)) where
+  pred {_} f := DeningerVanishPred f
+  res {_ _} i _ hf := DeningerVanishPred.res i.le hf
+  locality {_} f hf := by
+    refine DeningerVanishPred.locality f fun x => ?_
+    obtain ⟨W, hxW, i, hpred⟩ := hf x
+    exact ⟨W, i.le, hxW, hpred⟩
+
+/-- The data cutting out the ideal sheaf of the divisor. -/
+noncomputable def deningerVanishData (Ω : Opens (Fin (n + 1) → ℂ)) :
+    DeningerLocalGroupData (deningerSpace Ω) (DeningerFormVal (n + 1)) where
+  toLocalPredicate := deningerVanishLocalPredicate Ω
+  pred_zero U := DeningerVanishPred.zero U
+  pred_add _ _ _ hf hg := DeningerVanishPred.add hf hg
+  pred_neg _ _ hf := DeningerVanishPred.neg hf
+
+/-- **The ideal sheaf of the divisor of the last coordinate**: the holomorphic functions vanishing
+on it. -/
+noncomputable def deningerVanishSheaf (Ω : Opens (Fin (n + 1) → ℂ)) :
+    TopCat.Sheaf AddCommGrpCat.{0} (deningerSpace Ω) :=
+  (deningerVanishData Ω).sheaf
+
+/-- **The inclusion of the ideal sheaf into the structure sheaf.** -/
+noncomputable def deningerVanishIncl (Ω : Opens (Fin (n + 1) → ℂ)) :
+    deningerVanishSheaf Ω ⟶ deningerClosedFormSheaf Ω 0 :=
+  ⟨{ app := fun _ => AddCommGrpCat.ofHom
+      { toFun := fun f => ⟨f.1, f.2.1⟩
+        map_zero' := rfl
+        map_add' := fun _ _ => rfl }
+     naturality := fun _ _ _ => rfl }⟩
+
+instance deningerVanishIncl_mono (Ω : Opens (Fin (n + 1) → ℂ)) :
+    Mono (deningerVanishIncl Ω) := by
+  haveI : ∀ U, Mono ((deningerVanishIncl Ω).1.app U) := by
+    intro U
+    rw [AddCommGrpCat.mono_iff_injective]
+    intro a b hab
+    have h : (ConcreteCategory.hom ((deningerVanishIncl Ω).1.app U) a).1
+        = (ConcreteCategory.hom ((deningerVanishIncl Ω).1.app U) b).1 := by rw [hab]
+    exact Subtype.ext h
+  haveI : Mono (deningerVanishIncl Ω).1 := NatTrans.mono_of_mono_app _
+  exact CategoryTheory.Sheaf.Hom.mono_of_presheaf_mono _ _ _
+
+end VanishSheaf
+
+end RHTower
+
+namespace RHTower
+
+open CategoryTheory CategoryTheory.Limits TopologicalSpace Opposite TopCat Complex HTGeometry
+
+section Kernel
+
+variable {n : ℕ} {Ω : Opens (Fin (n + 1) → ℂ)} {Ω' : Opens (Fin n → ℂ)}
+  (hmap : ∀ w ∈ Ω', deningerDivisorMap w ∈ Ω)
+
+/-- **A section vanishing on the divisor restricts to zero.** -/
+theorem deningerVanishIncl_comp_restrict :
+    deningerVanishIncl Ω ≫ deningerDivisorRestrict hmap = 0 := by
+  refine CategoryTheory.ObjectProperty.hom_ext _ ?_
+  ext U f
+  refine Subtype.ext (funext fun y => funext fun S => ?_)
+  show deningerRestrictVal (f.1 ⟨(deningerDivisorInclusion hmap) y.1, y.2⟩) S = 0
+  by_cases hS : S = ∅
+  · subst hS
+    rw [deningerRestrictVal_empty]
+    exact f.2.2 ⟨(deningerDivisorInclusion hmap) y.1, y.2⟩ ∅
+      (deningerDivisorMap_last (y.1.1 : Fin n → ℂ))
+  · rw [deningerRestrictVal_ne _ hS]
+
+/-- A section killed by restriction to the divisor vanishes on the divisor. -/
+theorem deningerVanishPred_of_restrict_eq_zero
+    (hfull : ∀ w : Fin n → ℂ, deningerDivisorMap w ∈ Ω → w ∈ Ω')
+    {T : TopCat.Sheaf AddCommGrpCat.{0} (deningerSpace Ω)}
+    (k : T ⟶ deningerClosedFormSheaf Ω 0) (hk : k ≫ deningerDivisorRestrict hmap = 0)
+    (U : (Opens (deningerSpace Ω))ᵒᵖ) (t : ToType (T.1.obj U)) :
+    DeningerVanishPred (ConcreteCategory.hom (k.1.app U) t).1 := by
+  refine ⟨(ConcreteCategory.hom (k.1.app U) t).2, fun x S hx => ?_⟩
+  by_cases hS : S = ∅
+  · subst hS
+    have hwΩ' : deningerChopMap (x.1.1 : Fin (n + 1) → ℂ) ∈ Ω' :=
+      hfull _ (by rw [deningerDivisorMap_chopMap hx]; exact x.1.2)
+    have hxpt : (deningerDivisorInclusion hmap)
+        (⟨deningerChopMap (x.1.1 : Fin (n + 1) → ℂ), hwΩ'⟩ : deningerSpace Ω') = x.1 :=
+      Subtype.ext (deningerDivisorMap_chopMap hx)
+    have hyU : (⟨deningerChopMap (x.1.1 : Fin (n + 1) → ℂ), hwΩ'⟩ : deningerSpace Ω')
+        ∈ (Opens.map (deningerDivisorInclusion hmap)).obj U.unop := by
+      show (deningerDivisorInclusion hmap) _ ∈ U.unop
+      rw [hxpt]
+      exact x.2
+    have h0 := congrArg
+      (fun ψ : T ⟶ (TopCat.Sheaf.pushforward AddCommGrpCat.{0}
+          (deningerDivisorInclusion hmap)).obj (deningerClosedFormSheaf Ω' 0) =>
+        ConcreteCategory.hom (ψ.1.app U) t) hk
+    have h1 := congrFun (congrFun (Subtype.ext_iff.1 h0)
+      (⟨⟨deningerChopMap (x.1.1 : Fin (n + 1) → ℂ), hwΩ'⟩, hyU⟩)) ∅
+    show (ConcreteCategory.hom (k.1.app U) t).1 x ∅ = 0
+    have hx' : x = ⟨(deningerDivisorInclusion hmap)
+        (⟨deningerChopMap (x.1.1 : Fin (n + 1) → ℂ), hwΩ'⟩ : deningerSpace Ω'), hyU⟩ :=
+      Subtype.ext hxpt.symm
+    rw [hx']
+    exact h1
+  · exact (ConcreteCategory.hom (k.1.app U) t).2.1.1 x S (fun hc => hS (Finset.card_eq_zero.1 hc))
+
+/-- The factorisation of a map killed by restriction through the ideal sheaf. -/
+noncomputable def deningerVanishKernelLift
+    (hfull : ∀ w : Fin n → ℂ, deningerDivisorMap w ∈ Ω → w ∈ Ω')
+    {T : TopCat.Sheaf AddCommGrpCat.{0} (deningerSpace Ω)}
+    (k : T ⟶ deningerClosedFormSheaf Ω 0) (hk : k ≫ deningerDivisorRestrict hmap = 0) :
+    T ⟶ deningerVanishSheaf Ω :=
+  ⟨{ app := fun U => AddCommGrpCat.ofHom
+      { toFun := fun t => ⟨(ConcreteCategory.hom (k.1.app U) t).1,
+          deningerVanishPred_of_restrict_eq_zero hmap hfull k hk U t⟩
+        map_zero' := by
+          refine Subtype.ext (funext fun x => funext fun S => ?_)
+          show (ConcreteCategory.hom (k.1.app U) 0).1 x S = _
+          rw [map_zero]
+          rfl
+        map_add' := fun a b => by
+          refine Subtype.ext (funext fun x => funext fun S => ?_)
+          show (ConcreteCategory.hom (k.1.app U) (a + b)).1 x S = _
+          rw [map_add]
+          rfl }
+     naturality := fun U W i => by
+       ext t
+       refine Subtype.ext (funext fun x => ?_)
+       have hnat := congrFun (congrArg
+         (fun ψ : T.1.obj U ⟶ (deningerClosedFormSheaf Ω 0).1.obj W =>
+           (ConcreteCategory.hom ψ :
+             ToType (T.1.obj U) → ToType ((deningerClosedFormSheaf Ω 0).1.obj W)))
+         (k.1.naturality i)) t
+       exact congrFun (congrArg Subtype.val hnat) x }⟩
+
+theorem deningerVanishKernelLift_comp
+    (hfull : ∀ w : Fin n → ℂ, deningerDivisorMap w ∈ Ω → w ∈ Ω')
+    {T : TopCat.Sheaf AddCommGrpCat.{0} (deningerSpace Ω)}
+    (k : T ⟶ deningerClosedFormSheaf Ω 0) (hk : k ≫ deningerDivisorRestrict hmap = 0) :
+    deningerVanishKernelLift hmap hfull k hk ≫ deningerVanishIncl Ω = k := by
+  refine CategoryTheory.ObjectProperty.hom_ext _ ?_
+  ext U t
+  rfl
+
+/-- **The ideal sheaf is a kernel of restriction to the divisor.** -/
+noncomputable def deningerVanishIncl_isKernel
+    (hfull : ∀ w : Fin n → ℂ, deningerDivisorMap w ∈ Ω → w ∈ Ω') :
+    IsLimit (KernelFork.ofι (deningerVanishIncl Ω) (deningerVanishIncl_comp_restrict hmap)) :=
+  KernelFork.IsLimit.ofι _ _
+    (fun {_} k hk => deningerVanishKernelLift hmap hfull k hk)
+    (fun {_} k hk => deningerVanishKernelLift_comp hmap hfull k hk)
+    (fun {_} k hk l hl => by
+      have hmono := deningerVanishIncl_mono Ω
+      refine (cancel_mono (deningerVanishIncl Ω)).1 ?_
+      rw [hl, deningerVanishKernelLift_comp])
+
+end Kernel
+
+end RHTower
+
+namespace RHTower
+
+open CategoryTheory CategoryTheory.Limits TopologicalSpace Opposite TopCat Complex HTGeometry
+
+section Factorisation
+
+variable {n : ℕ} (Ω : Opens (Fin (n + 1) → ℂ))
+
+theorem DeningerClosedFormPred.coordVanish {U : Opens (deningerSpace Ω)}
+    {f : ↥U → DeningerFormVal (n + 1)} (hf : DeningerClosedFormPred 0 f) :
+    DeningerVanishPred (deningerCoordSection (Fin.last n) f) := by
+  refine ⟨hf.coord (Fin.last n), fun x S hx => ?_⟩
+  show (x.1.1 : Fin (n + 1) → ℂ) (Fin.last n) * f x S = 0
+  rw [hx, zero_mul]
+
+/-- **Multiplication by the last coordinate, into the ideal sheaf of its divisor.** -/
+noncomputable def deningerCoordMulVanish :
+    deningerClosedFormSheaf Ω 0 ⟶ deningerVanishSheaf Ω :=
+  ⟨{ app := fun _ => AddCommGrpCat.ofHom
+      { toFun := fun f => ⟨deningerCoordSection (Fin.last n) f.1, f.2.coordVanish⟩
+        map_zero' := Subtype.ext (funext fun x => funext fun S => by
+          show (x.1.1 : Fin (n + 1) → ℂ) (Fin.last n) * 0 = 0
+          rw [mul_zero])
+        map_add' := fun a b => Subtype.ext (funext fun x => funext fun S => by
+          show (x.1.1 : Fin (n + 1) → ℂ) (Fin.last n) * (a.1 x S + b.1 x S)
+            = (x.1.1 : Fin (n + 1) → ℂ) (Fin.last n) * a.1 x S
+              + (x.1.1 : Fin (n + 1) → ℂ) (Fin.last n) * b.1 x S
+          rw [mul_add]) }
+     naturality := fun _ _ _ => rfl }⟩
+
+/-- The factorisation recovers multiplication by the coordinate. -/
+theorem deningerCoordMulVanish_comp :
+    deningerCoordMulVanish Ω ≫ deningerVanishIncl Ω = deningerCoordMul Ω 0 (Fin.last n) := by
+  refine CategoryTheory.ObjectProperty.hom_ext _ ?_
+  ext U f
+  rfl
+
+instance deningerCoordMulVanish_mono : Mono (deningerCoordMulVanish Ω) := by
+  haveI : Mono (deningerCoordMulVanish Ω ≫ deningerVanishIncl Ω) := by
+    rw [deningerCoordMulVanish_comp]
+    exact deningerCoordMul_mono Ω 0 (Fin.last n)
+  exact mono_of_mono (deningerCoordMulVanish Ω) (deningerVanishIncl Ω)
+
+end Factorisation
+
+end RHTower
