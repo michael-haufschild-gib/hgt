@@ -5192,6 +5192,391 @@ prime rates need enter each moment packet.  A successful four-rate identificatio
 (24.195); absent the exact residual equality, generic Schur positivity is unrelated and must not
 be counted as progress.
 
+### C43-AQ — Suzuki's new second jet forbids the even-Gaussian transplant
+
+`SuzukiXiSecondDefectJet` and `SuzukiXiSecondDefectJetSource` supply a sharp hostile test for the
+mass plane.  If `F` is even, then `F(-i)=F(i)` and `F'(-i)=-F'(i)`.  The exact reflected-Fourier
+source formula therefore gives
+
+\[
+ \left.\partial_w^2\left[
+   w\frac{F(\operatorname{Cayley}^{-1}w)}
+           {F(-\operatorname{Cayley}^{-1}w)}\right]\right|_{w=0}
+ =4i\frac{F'(i)F(-i)+F(i)F'(-i)}{F(-i)^2}=0.             \tag{24.196}
+\]
+
+Every mass heat Fourier profile `F(z)=Q(z^2)e^{-tz^2}` is even.  By contrast the normalized Xi
+target has the source-only second disk jet
+
+\[
+ \kappa_{\Xi,2}=8\left(\frac{2C}{A}-\frac BA-
+          \left(\frac BA\right)^2\right)<0,
+ \quad A=\Re M_0(1),\ B=\Re M_1(1),\ C=\Re M_2(1).       \tag{24.197}
+\]
+
+Hence no family staying inside the even Gaussian-polynomial plane can identify the Suzuki Xi
+target locally uniformly.  This is not merely a parity aesthetic: the second derivative is
+identically zero for every member while the target value is strictly negative.  The new Suzuki
+jet does not directly discharge mass curvature.  Its positive survivor is precise: any Suzuki
+coupling must introduce an odd/reflection-asymmetric source leg before quotienting, while the mass
+Turan determinant must retain its even two-replica form.  Matching only the positive coalescing
+rate or the first defect scalar is rigorously insufficient.
+
+### C43-AR — heat and shifted resolvents are two charts of one Laplace--Hankel kernel
+
+The failed scalar transplant hides a common two-variable object.  Write
+`H(t)=sum_q exp(-t w_q)` and, on packet classes for which Fubini is justified, define
+
+\[
+ \mathfrak B_H(f,g)=\int_0^\infty\!\int_0^\infty
+      f(s)g(r)H(s+r)\,ds\,dr.
+                                                               \tag{24.198}
+\]
+
+Absolute convergence of the Xi divisor gives the exact Laplace landing
+
+\[
+ \mathfrak B_H(f,g)=\sum_q (\mathcal Lf)(w_q)(\mathcal Lg)(w_q). \tag{24.199}
+\]
+
+For `nu>0`, let
+
+\[
+ \gamma_{\nu,y}(s)=\frac{s^{\nu-1}e^{-ys}}{\Gamma(\nu)},
+ \qquad \mathcal L\gamma_{\nu,y}(w)=(y+w)^{-\nu}.        \tag{24.200}
+\]
+
+If `P(X)=sum_i c_i X^i` and
+`f_(P,M,y)=sum_i c_i gamma_(M+i+1/2,y)`, then
+
+\[
+ \mathfrak B_H(f_{P,M,y},f_{P,M,y})
+ =\sum_q (y+w_q)^{-2M-1}
+      P((y+w_q)^{-1})^2.                                  \tag{24.201}
+\]
+
+Thus the complete shifted-reciprocal Hankel tail is the fractional-Gamma interior chart of
+`mathfrak B_H`.  The half-integer is forced: it is exactly the square root of the leading
+resolvent factor.
+
+The mass chart is the confluent boundary chart.  In the distributional packet space put
+`T_(Q,k,t)=partial_s^k Q(partial_s) delta_(t/2)`.  Its Laplace transform is
+`w^k Q(w)e^{-tw/2}`, and therefore
+
+\[
+ \bigl(\mathfrak B_H(T_{Q,i,t},T_{Q,j,t})\bigr)_{i,j=0}^1
+ =\begin{pmatrix}H_{Q,0}&H_{Q,1}\\H_{Q,1}&H_{Q,2}\end{pmatrix},
+ \qquad \Delta_Q=\det\bigl(\mathfrak B_H|_{\langle T_{Q,0,t},T_{Q,1,t}\rangle}\bigr).
+                                                               \tag{24.202}
+\]
+
+This is a genuine reduction of the bridge problem: Suzuki resolvent packets, mass heat jets, and
+the Floquet two-plane are not three unrelated positivity analogies.  They are interior,
+confluent-boundary, and prime-autocorrelation presentations of one completed two-time kernel.
+
+A one-variable positive averaging argument cannot replace this kernel.  Direct Laplace expansion
+gives
+
+\[
+ \sum_q\lambda_qP(\lambda_q)^2
+ =\int_0^\infty e^{-yt}K_P(t)H(t)\,dt,
+ \quad K_P(t)=\sum_{i,j}c_ic_j\frac{t^{i+j}}{(i+j)!},
+ \quad \lambda_q=(y+w_q)^{-1}.                            \tag{24.203}
+\]
+
+For `P(X)=1-X`, `K_P(2)=1-4+2=-1`.  Equivalently `K_P` is the derivative of the
+self-convolution of the exponential-generating polynomial `sum c_i t^i/i!`, not a square.
+Therefore neither the positive theta endpoint moment measure nor heat positivity transfers by a
+scalar positive kernel.  Any valid transfer must preserve the two-time Gram variables.
+
+### C43-AS — radical-anchor coercivity reverses under heat ordering
+
+The new Suzuki critical-radical theorem pays every sufficiently high off-line reciprocal atom
+with a fixed critical-line atom.  Its mass analogue fails for an exact structural reason.  For an
+off-line heat pair `z=a+ib`, `conj z=a-ib`, and a real critical anchor `c`, the unordered pair
+contributions to heat curvature are
+
+\[
+ C_{z,\bar z}(t)=-4b^2e^{-2at},
+\quad
+ C_{z,c}(t)+C_{\bar z,c}(t)
+ =2e^{-(a+c)t}\bigl(((a-c)^2-b^2)\cos(bt)
+       +2b(a-c)\sin(bt)\bigr).                            \tag{24.204}
+\]
+
+If `c>a`, the second expression divided by `|C_(z,conj z)|` is
+`O(e^{-(c-a)t})` and tends to zero.  If `c<a`, it can dominate along a phase-recurrence sequence,
+but the filtered bottom-shell detector deliberately makes `Q(c)=0` for every lower real shell.
+Real points with `c=a` are removed as well.  The next-shell gap then makes the sum of all surviving
+higher anchors exponentially negligible.
+
+So Suzuki's cofinite radical payment cannot reduce the mass proof burden.  Möbius resolvent
+compactification makes a fixed radical atom dominate the remote tail; heat flow orders by least
+real part, and the polynomial shell filter removes exactly the only anchors capable of paying the
+least off-line shell.  This explains, rather than merely restates, why filtered Turan completeness
+and the Suzuki finite-head reduction point in opposite directions.
+
+### C43-AT — the Gaussian prime jet is an Euler-square/Fisher jet
+
+The common-kernel picture does expose one coefficient-faithful source match.  For `Q=1`, let
+`ell=log n`, `E=ell/2`, and
+`phi_t(ell)=sqrt(pi/t) exp(-ell^2/(4t))`.  The normalized prime score and local curvature are
+
+\[
+ s_E(t)=-\partial_t\log\phi_t
+      =\frac1{2t}-\frac{E^2}{t^2},
+ \qquad
+ c_E(t)=\partial_t^2\log\phi_t
+      =\frac1{2t^2}-\frac{2E^2}{t^3}.                    \tag{24.205}
+\]
+
+Consequently, for the positive tilted prime law `mu`,
+
+\[
+ \frac{P_0P_2-P_1^2}{P_0^2}
+ =\frac1{2t^2}-\frac{2}{t^3}\,\mathbb E_\mu E^2
+   +\frac1{2t^4}\mathbb E_{\mu\otimes\mu}
+      (E^2-E'^2)^2.                                      \tag{24.206}
+\]
+
+This is exactly source-visible in the new Gamma-sewn stack.  On a prime-power cell
+`n=p^(e+1)`, corpus Euler calibration gives
+
+\[
+ E=\frac12\,H_\Gamma(p,e)+\frac14\log p,
+ \qquad
+ (\log p)^2=\frac32\bigl(K_2(p,e)+H_\Gamma(p,e)^2\bigr), \tag{24.207}
+\]
+
+where `K_2` is the boundary second-jet clock.  Thus both `E^2` and the exterior difference
+`E^2-E'^2=(E+E')(E-E')` are reconstructed by the calibrated first and second Gamma boundary
+jets; no fitted prime statistic is needed.  This is the correct use of the four-rate Fisher
+corpus: it supplies the literal prime-square clock in (24.206), not generic Schur positivity.
+
+The bridge is not yet a proof.  Formula (24.206) handles the `Q=1` prime--prime block only;
+unfiltered curvature is not RH-complete, and the polar--Gamma/mixed blocks in (24.195) remain.
+For general shell filter `Q`, the Gaussian transform is still a finite polynomial in `E^2` times
+the same exponential, so the surviving avenue is now exact: build the completed two-time kernel
+on polynomial functions of the calibrated Euler-square clock and prove its confluent boundary
+Gram determinant nonnegative.  This replaces the vague search for arbitrary four-rate matching
+by one coefficient-forced clock-extension theorem.
+
+### C43-AU — the proved Suzuki coefficient cone cannot reach a positive-time heat jet
+
+The common-kernel atlas suggests taking fractional-Gamma packets to the confluent mass boundary.
+The unconditional Suzuki sector-circle cone cannot support that limit.  This has an exact Hardy
+space proof, independent of asymptotic estimates.
+
+Fix a valuation `M`, put `nu=M+1/2`, and work at the actual safe shift `y=1`.  After removing the
+canonical power `X^M`, write `P(X)=b_0R(X)`, where `R(0)=1`.  Every fixed coefficient aperture in
+the proved sector cone has the form
+
+\[
+ R(X)=1+\sum_{j\ge1}d_jX^j,
+ \qquad \sum_{j\ge1}|d_j|^2\le C.                       \tag{24.208}
+\]
+
+The normalized Laplace transform of the corresponding fractional-Gamma packet is, with
+`x=(1+w)^(-1)`,
+
+\[
+ L_R(w)=\frac{(1+w)^{-\nu}P((1+w)^{-1})}{P(1)}
+       =x^\nu\frac{R(x)}{R(1)}.                          \tag{24.209}
+\]
+
+**Fixed-aperture nonconfluence theorem.**  For every fixed `M`, `C`, and `tau>0`, no sequence of
+polynomials satisfying (24.208), with `R_N(1)ne0`, can obey
+
+\[
+ L_{R_N}(w)\longrightarrow e^{-\tau w}
+ \quad\hbox{for every }w\ge0.                            \tag{24.210}
+\]
+
+Indeed (24.208) puts `R_N` in a bounded ball of Hardy `H^2(D)` and fixes `R_N(0)=1`; hence it is a
+normal family on every compact subdisk.  If `|R_N(1)|` is unbounded along a subsequence, then for
+every fixed `0<x<1` the numerator `R_N(x)` is uniformly bounded and (24.209) tends to zero,
+contradicting (24.210).  If `R_N(1)->0`, boundedness of (24.209) forces `R_N(x)->0` for every
+`0<x<1`; a locally uniform subsequential limit would vanish on an interval while retaining value
+one at zero, another contradiction.  On the remaining subsequence
+`R_N(1)->D` with `0<|D|<infinity`, and local normal convergence gives an analytic `R` with
+`R(0)=1`.  Equations (24.209)--(24.210) would force
+
+```text
+R(x)=D x^(-nu) exp(-tau(1/x-1)),   0<x<1.
+```
+
+The right side tends to zero as `x->0+`, contradicting `R(0)=1`.
+
+This closes the tempting passage from the thirteen unconditional shifted circle states to mass
+curvature.  A positive-time delta has an essential-flat reciprocal-origin germ, whereas every
+fixed-valuation, fixed-aperture Suzuki packet remains in a compact `H^2` resolvent chart.  Thus a
+genuine confluent bridge must escape through growing coefficient aperture or valuation, or prove
+new completed polar--Gamma positivity before taking the limit.  Existing sector positivity does
+none of these, so it does not reduce the exact open core.
+
+### C43-AV — mass heat is a bounded positive reweighting of Xi-shift valuation innovation
+
+The newest `GammaSewnXiShiftTangentInnovation` corpus retains exactly the coordinate lost by the
+endpoint tangent kernel.  At physical aperture one its depth law is
+
+\[
+ \pi_p(e)=(1-p^{-2})p^{-2e},
+ \qquad
+ \nu(p,e)=(\log p)\pi_p(e),                              \tag{24.211}
+\]
+
+and `nu(p,e)` is literally the forward difference of two adjacent prime-power coefficients of
+the completed `+2` Xi-shift source.  Put `y_(p,e)=(e+1)log p` and, for `Q=1`, let the mass-prime
+weight be
+
+\[
+ a_t(p,e)=\frac{\log p}{\pi},p^{-(e+1)/2}\phi_t(y_{p,e}),
+ \qquad \phi_t(y)=\sqrt{\frac\pi t}e^{-y^2/(4t)}.
+\]
+
+Then direct cancellation, with no asymptotic input, gives the exact Radon--Nikodym identity
+
+\[
+ \boxed{\quad a_t(p,e)=\nu(p,e)R_t(p,e),\qquad
+ R_t(p,e)=\frac{\phi_t(y_{p,e})e^{3y_{p,e}/2}}
+                  {\pi(p^2-1)}
+ =\frac{e^{9t/4-(y_{p,e}-3t)^2/(4t)}}
+        {\sqrt{\pi t}(p^2-1)}.\quad}                    \tag{24.212}
+\]
+
+In particular
+
+\[
+ 0<R_t(p,e)\le \frac{e^{9t/4}}{3\sqrt{\pi t}},           \tag{24.213}
+\]
+
+so every Gaussian half-density prime packet is an `L^infinity` positive reweighting of a literal
+source-derived, depth-resolved innovation measure.  For a positive-root shell filter `Q_A`, replace
+`phi_t(y)` in (24.212) by
+`widehat{Q_A(x^2)^2e^{-tx^2}}(y)`.  Eventual Fourier positivity (24.190) makes the new density
+positive, and polynomial-times-Gaussian decay makes it bounded.  Thus this is not restricted to
+unfiltered curvature.
+
+The gain is exact preservation of coherent covariance.  For any cell score `s`, the variance term
+is
+
+\[
+ P^2\operatorname{Var}_\mu(s)=\frac12
+ \sum_{p,e}\sum_{q,f}\nu(p,e)\nu(q,f)R(p,e)R(q,f)
+       (s(p,e)-s(q,f))^2.                                \tag{24.214}
+\]
+
+This includes pairs with the same prime and different valuation depths.  Consequently the new
+prime-only Gamma--Jordan response-gap Laplacian cannot equal mass covariance: its edge weight
+vanishes on `p=q`, whereas (24.214) is strictly positive on `p=q,e ne f` whenever the heat score
+separates depths.  Equivalently, conditional variance splits (24.214) into a strictly positive
+within-prime depth term plus a between-prime endpoint term; endpoint tangent synthesis sees only
+the latter.
+
+The negative result exposes a better avenue.  The mass prime law already lives on the literal
+Xi-shift innovation carrier, so no abstract source-span closure is needed.  Required construction
+is a **depth-resolved Gamma--Jordan Schur lift before endpoint synthesis**, followed by adjoining
+the polar states.  Its target coefficients are forced by (24.212), and its two-jet exterior energy
+is exactly (24.214).  This is narrower than the previous arbitrary four-rate matching problem and
+retains the same-prime valuation curvature that every prime-only kernel discards.
+
+### C43-AW — positive aperture mixing has the wrong valuation curvature
+
+Could (24.212) be generated from corpus's positive synchronized aperture family and then inherit
+its Fisher/Schur inequalities automatically?  No.  Fix one prime `p`.  Every positive mixture of
+the geometric aperture laws has depth sequence
+
+\[
+ m_e=\int_{x>0}(1-p^{-2x})p^{-2xe}\,d\eta(x)
+     =\int_{[0,1)}(1-r)r^e\,d\widetilde\eta(r).           \tag{24.215}
+\]
+
+Cauchy--Schwarz applied to `sqrt(1-r) r^((e-1)/2)` and
+`sqrt(1-r) r^((e+1)/2)` forces the Hausdorff log-convexity law
+
+\[
+ m_e^2\le m_{e-1}m_{e+1}\qquad(e\ge1).                  \tag{24.216}
+\]
+
+By contrast, after deleting constants independent of `e`, the mass heat depth weight is
+
+```text
+h_e=exp(-(e+1)log(p)/2-(e+1)^2 log(p)^2/(4t)).
+```
+
+Its adjacent quotient is strictly decreasing, and exactly
+
+\[
+ \frac{h_e^2}{h_{e-1}h_{e+1}}
+   =\exp\!\left(\frac{(\log p)^2}{2t}\right)>1.          \tag{24.217}
+\]
+
+Therefore no finite or infinite positive mixture of synchronized Gamma apertures, even one chosen
+separately for each prime, reproduces the mass heat depth law.  This is the valuation version of
+the indefinite scalar kernel (24.203): resolvent/aperture packets are completely monotone in
+depth, while parabolic heat is strictly log-concave there.
+
+Positive survivor is forced.  Use (24.212) as a diagonal multiplication operator on the literal
+innovation `L^2` space; do not average apertures.  Positivity of that reweighting is automatic, but
+the completed theorem still requires a coefficient-exact Gamma/polar Schur row whose elimination
+leaves this reweighted two-jet covariance.  Existing unweighted valuation Schur block proves the
+right architecture, while (24.217) proves that its aperture-mixture closure cannot supply the
+needed coefficients.
+
+### C43-AX — coherent Gamma capacity survives the exact heat diagonal
+
+`XiTransverseGammaValuationCoherence` removes one obstacle left in C43-AB.  Put `x_p=p^{-1}` and
+
+\[
+ h_e(p)=\sqrt{x_p}(1-x_p)x_p^e,
+ \qquad \kappa=\frac{3\sqrt2}{4},\qquad \kappa^2=\frac98. \tag{24.218}
+\]
+
+Corpus proves that the corrected Gamma cross-coordinate is exactly `-kappa h_0(p)` and that its
+Schur elimination deletes depth zero, leaving the shifted Szego kernel.  The literal innovation
+weight (24.211) is a prime-diagonal congruence of the same feature:
+
+\[
+ \nu(p,e)=d_p^2h_e(p)^2,
+ \qquad d_p^2=\frac{p(p+1)\log p}{p-1}.                  \tag{24.219}
+\]
+
+There is a stronger weighted consequence not stated in that module.  For arbitrary finitely
+supported real coefficients `u_(p,e)` and arbitrary weights `r_(p,e)>=0`, set
+
+```text
+S_e=sum_p sqrt(r_(p,e)) d_p h_e(p) u_(p,e).
+```
+
+Then the coherent Gamma block has the exact square decomposition
+
+\[
+ \boxed{\quad
+ \sum_{e\ge0}S_e^2-2\kappa vS_0+\frac98v^2
+   =(S_0-\kappa v)^2+\sum_{e\ge1}S_e^2\ge0.
+ \quad}                                                   \tag{24.220}
+\]
+
+Thus every nonnegative diagonal congruence preserves the fixed conductor capacity; no sum of
+one-prime Schur costs occurs.  Taking `r_(p,e)=R_(Q,t)(p,e)` from (24.212), or its eventually
+positive filtered version, makes
+
+\[
+ \sqrt{r_{p,e}},d_ph_e(p)=\sqrt{a_{Q,t}(p,e)}.           \tag{24.221}
+\]
+
+Absolute Gaussian decay extends (24.220) from finite packets to the complete source by ordinary
+square-summable exhaustion.  Hence the earlier nonsummable scalar-conductor wall is resolved for
+the exact heat diagonal, not merely for an abstract valuation model.
+
+This still does not prove completed curvature.  Kernel (24.220) is diagonal in valuation depth
+before its prime sum, whereas mass exterior energy (24.214) couples every pair `(e,f)` after the
+two-jet determinant; moreover the local-curvature part of `P_2` is signed.  Corpus has not proved
+that the reweighted Gamma cross in (24.220) equals the polar--prime mixed coefficients in
+(24.148).  Exact remaining theorem is therefore smaller: add the missing cross-depth two-jet row
+and prove its Gamma/polar coefficient equality.  Capacity and heat reweighting no longer need to
+be invented.
+
 **Novelty audit.**  `PrimeHeatBumpLocation` already contains the single-atom peak law, and the
 digamma asymptotic and Gaussian Fourier identities are classical.  Corpus and arXiv searches found
 no statement combining exact mass-parabolic source, the polar residue repair, superexponential
@@ -5202,14 +5587,20 @@ Cartan--parabolic source transmutation, Gaussian Wronskian--Turan identity, the 
 prime--Gamma double-boundary landing, and its one-dimensional Cauchy-transgression obstruction.
 Novelty claim also includes the oscillator-action no-bootstrap law tying the universal wedge to
 stable heat transport and eventual Fourier positivity/Fisher reduction for positive-root shell
-filters, plus the Gaussian two-jet/Floquet Gram bridge.  Synthesis is (24.128)--(24.195), not any ingredient in
-isolation.  Closest located arXiv neighbours concern de Bruijn--Newman deformation
+filters, the Gaussian two-jet/Floquet Gram bridge, the even-Gaussian Suzuki second-jet obstruction,
+the two-time Laplace--Hankel atlas, reversal of radical-anchor coercivity under heat order, the
+Euler-square/Fisher clock identification, and the fixed-aperture nonconfluence theorem.  Synthesis
+also includes the bounded positive reweighting of literal Xi-shift valuation innovations and its
+endpoint-collapse obstruction, plus the log-convex/log-concave aperture-mixture separation.  It is
+also includes heat-diagonal stability of coherent `9/8` Gamma capacity.  The synthesis is
+(24.128)--(24.221), not any ingredient in isolation.  Closest located arXiv neighbours concern de Bruijn--Newman deformation
 ([arXiv:1904.12438](https://arxiv.org/abs/1904.12438)), Jensen-polynomial hyperbolicity
 ([arXiv:1910.01227](https://arxiv.org/abs/1910.01227)), and a coefficient-side uniform Toeplitz
 wedge ([arXiv:2607.16795](https://arxiv.org/abs/2607.16795)); none states divisor-heat
 filtered-Turan criterion or prime-information-cone theorem above.
 
-**Higher universal principle.**  Mass-shifted propagation has two inequivalent scaling faces.
+**Higher universal principle.**  Mass-shifted propagation has two inequivalent scaling faces and
+one two-time kernel behind them.
 Vertical timelike scaling preserves exponential type and creates the Bessel caustic; co-moving
 mass then erases off-line charge beyond the square-root horizon.  Real parabolic scaling removes
 the universal rest mass and retains the squared divisor as Gaussian heat.  The former is a
@@ -5217,8 +5608,10 @@ transport/type problem; the latter is a reflection-positivity problem.  Earlier 
 shadows of using the transport topology after its inverse had become exponentially ill-conditioned.
 The parabolic face is the first route here that simultaneously preserves the full Xi geometry and
 keeps the literal source absolutely convergent.  Its remaining obstacle is now sharply isolated:
-prove coherent completed curvature (24.148)--(24.150), not another mass asymptotic or scalar
-trace estimate.
+prove coherent completed curvature (24.148)--(24.150), equivalently the confluent Gram sign of
+`mathfrak B_H`, not another mass asymptotic or scalar trace estimate.  Resolvent compactification
+and heat order reverse which spectral atoms are coercive; treating them as the same topology was
+the hidden reason radical payment and positive scalar averaging both failed.
 
 **Higher principle.**  Three failures are one phenomenon.  Local Lipschitz control, ordinary floor
 averaging, and finite-aperture mean square each erase the primitive scalar mode in a topology whose

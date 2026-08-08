@@ -185,6 +185,31 @@ theorem tendsto_suzukiXiCoalescingDefect_rate :
   field_simp [hcne]
   ring
 
+/-- The movable Xi defect itself converges to the pure even endpoint. -/
+theorem tendsto_suzukiXiCoalescingDefect_one :
+    Tendsto suzukiXiCoalescingDefect
+      (𝓝[>] (0 : ℝ)) (𝓝 1) := by
+  have hsq : Tendsto (fun c : ℝ => 2 * c ^ 2)
+      (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have hcont : ContinuousAt (fun c : ℝ => 2 * c ^ 2) 0 := by fun_prop
+    simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
+  have hgapScaled := tendsto_suzukiXiCoalescingDefect_rate.mul hsq
+  have hgapScaled' : Tendsto
+      (fun c : ℝ =>
+        (1 - suzukiXiCoalescingDefect c) / (2 * c ^ 2) * (2 * c ^ 2))
+      (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    simpa using hgapScaled
+  have hgap : Tendsto (fun c : ℝ => 1 - suzukiXiCoalescingDefect c)
+      (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    apply hgapScaled'.congr'
+    filter_upwards [self_mem_nhdsWithin] with c hc
+    have hcne : c ≠ 0 := hc.ne'
+    field_simp [hcne]
+  have hone : Tendsto (fun _ : ℝ => (1 : ℝ))
+      (𝓝[>] (0 : ℝ)) (𝓝 1) := tendsto_const_nhds
+  have h := hone.sub hgap
+  simpa only [sub_zero, sub_sub_cancel] using h
+
 end
 
 end RHTower
