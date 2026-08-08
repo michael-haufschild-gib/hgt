@@ -2463,3 +2463,24 @@ prime-sieve mean square — whose leading term `∑_n n‖a_n n^{−σ}‖²/log
 `√(length)·√(mean square) ≍ K√(height)`, exactly the hypothesis of
 `integral_mul_kernel_le_of_sqrt_block_moment`.  The remaining loss is a single `log T` from using a
 pointwise bound on the third factor on every block; that is what the large-values estimate is for.
+
+## The truncated Perron formula, with no interchange theorem
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PerronFiniteSum.lean`:
+
+`norm_sum_lt_sub_perron_integral_le` — for `c` supported on a finite set `s` of positive integers,
+none of them equal to `x`, and `σ, T > 0`:
+
+`‖∑_{n ∈ s, n < x} c_n − (1/2π)∫_{−T}^{T} (∑_{n ∈ s} c_n n^{−(σ+it)})·x^{σ+it}/(σ+it) dt‖
+   ≤ ∑_{n ∈ s} ‖c_n‖·(x/n)^σ/(πT|log(x/n)|)`.
+
+The sum being finite, the integral of the sum is the sum of the integrals — `integral_finsetSum`
+against the continuity of each term — and each term is Perron's lemma at `y = x/n`, with the
+indicator `1_{n<x}` supplied by which of the two cases applies.  Supporting pieces:
+`ofReal_div_cpow_eq_mul_cpow_neg` (`(x/y)^w = x^w y^{−w}`, from multiplicativity of the complex power
+on the nonnegative reals), `continuous_perronTerm`, `integral_perronTerm_eq`.
+
+This is the entry point the route needs: the coefficient sequence of the GHS triple convolution *is*
+finitely supported, so no Fubini or Dirichlet-series convergence argument enters the Perron step at
+all, and the smoothing layer — with its `H(log N)^4` window error and its `(N/H)` kernel constant —
+is no longer on the critical path.
