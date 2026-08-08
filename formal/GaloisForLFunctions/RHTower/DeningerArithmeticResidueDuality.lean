@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerArithmeticPoincareDuality
+import GaloisForLFunctions.RHTower.XiFirstDividedSourceNumericalSector
 
 /-!
 # Source quotient evaluations in compact-support cohomology
@@ -41,10 +42,8 @@ theorem deningerEntireEvaluation_apply
 /-- The centered completed Xi source vanishes at every divisor support point. -/
 theorem XiC_xiSpectralPointSupport_eq_zero_source
     (rho : XiDivisorSupport) :
-    XiC (xiSpectralPointSupport rho) = 0 := by
-  simpa only [xiThetaDividedChain_zero] using
-    xiThetaDividedChain_vanish_before_multiplicity rho
-      (xiSupportMultiplicity_pos rho)
+    XiC (xiSpectralPointSupport rho) = 0 :=
+  XiC_xiSpectralPointSupport_eq_zero rho
 
 /-- Evaluation at a Xi point descends to a character of source middle cohomology. -/
 def deningerArithmeticEvaluation

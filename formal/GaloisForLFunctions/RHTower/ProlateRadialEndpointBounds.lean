@@ -58,11 +58,12 @@ theorem radialProlate_unit_bounds_to_crossing {s c x : ℝ} {R DR DDR : ℝ → 
   have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
   have hB1 := (dunsterEndpointCrossing_gt_one hc0).le
   have hB2 := dunsterEndpointCrossing_le_eleven_tenths hc
-  have hpos := radialProlate_pos_endpoint_collar hs0 hs1 hB1 hB2
+  have hpos := radialProlate_pos_endpoint_collar hs0 (by linarith : s ≤ 1) hB1 hB2
     (dunsterEndpointCrossing_short hc0) hR1 hR hDR hode
   have hnonneg : ∀ t ∈ Icc (1 : ℝ) (dunsterEndpointCrossing c), 0 ≤ R t :=
     fun t ht => (hpos t ht).le
-  have hanti := radialProlate_antitoneOn_of_nonnegative hs1 hB1 hR hDR hode hnonneg
+  have hanti := radialProlate_antitoneOn_of_nonnegative (by linarith : s ≤ 1)
+    hB1 hR hDR hode hnonneg
   refine ⟨hpos x hx, ?_⟩
   simpa only [hR1] using hanti ⟨le_rfl, hB1⟩ hx hx.1
 

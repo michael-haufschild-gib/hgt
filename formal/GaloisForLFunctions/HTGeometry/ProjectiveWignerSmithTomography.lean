@@ -178,6 +178,73 @@ theorem matrixTracelessPart_add_scalar {n : ℕ}
   rw [projectiveDelayPanel_tracelessPart, projectiveDelayPanel_tracelessPart,
     projectiveDelayPanel_add_scalar]
 
+/-! ## Exact reporter minimality -/
+
+/-- The projective delay panel is injective on the traceless matrix space. -/
+theorem projectiveDelayPanel_traceLinearMap_ker_injective (n : ℕ) :
+    Function.Injective (fun Q :
+      LinearMap.ker (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ) =>
+        projectiveDelayPanel (Q : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ)) := by
+  intro Q R hQR
+  apply Subtype.ext
+  apply projectiveDelayPanel_injective_on_trace_zero
+  · have hQ := Q.property
+    rw [LinearMap.mem_ker, Matrix.traceLinearMap_apply] at hQ
+    exact hQ
+  · have hR := R.property
+    rw [LinearMap.mem_ker, Matrix.traceLinearMap_apply] at hR
+    exact hR
+  · exact hQR
+
+/-- Complex dimension of the traceless `(n+1) × (n+1)` matrices. -/
+theorem finrank_traceLinearMap_ker_fin_add_one (n : ℕ) :
+    Module.finrank ℂ
+        (LinearMap.ker (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ)) =
+      (n + 1) ^ 2 - 1 := by
+  have hsurj : Function.Surjective (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ) := by
+    intro c
+    refine ⟨(c / ((n + 1 : ℕ) : ℂ)) • 1, ?_⟩
+    rw [Matrix.traceLinearMap_apply, Matrix.trace_smul, Matrix.trace_one,
+      Fintype.card_fin, smul_eq_mul, div_mul_cancel₀]
+    exact_mod_cast Nat.succ_ne_zero n
+  have hrange : Module.finrank ℂ
+      (LinearMap.range (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ)) = 1 := by
+    rw [LinearMap.range_eq_top.mpr hsurj, finrank_top, Module.finrank_self]
+  have hrn :=
+    (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ).finrank_range_add_finrank_ker
+  rw [hrange] at hrn
+  simp only [Module.finrank_matrix, Fintype.card_fin, Module.finrank_self, mul_one] at hrn
+  simpa [pow_two] using (show Module.finrank ℂ
+      (LinearMap.ker (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ)) =
+        (n + 1) * (n + 1) - 1 by omega)
+
+/-- Any scalar linear reporter family reconstructing every traceless `(n+1) × (n+1)` matrix has
+at least `(n+1)²-1` reporters. -/
+theorem projectiveDelayReporter_card_lower_bound {n : ℕ} {J : Type*} [Fintype J]
+    (R : LinearMap.ker (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ) →ₗ[ℂ] (J → ℂ))
+    (hR : Function.Injective R) :
+    (n + 1) ^ 2 - 1 ≤ Fintype.card J := by
+  have hdim := R.finrank_le_finrank_of_injective hR
+  rw [finrank_traceLinearMap_ker_fin_add_one] at hdim
+  simpa only [Module.finrank_fintype_fun_eq_card] using hdim
+
+/-- **Exact minimality of projective delay tomography.**  The canonical panel reconstructs every
+traceless matrix using exactly `(n+1)²-1` scalar reporters, and no injective linear scalar reporter
+family can use fewer. -/
+theorem projectiveDelayPanel_minimal (n : ℕ) :
+    Function.Injective (fun Q :
+      LinearMap.ker (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ) =>
+        projectiveDelayPanel (Q : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ)) ∧
+      Fintype.card (ProjectiveDelayIndex n) = (n + 1) ^ 2 - 1 ∧
+      ∀ {J : Type*} [Fintype J]
+        (R : LinearMap.ker (Matrix.traceLinearMap (Fin (n + 1)) ℂ ℂ) →ₗ[ℂ] (J → ℂ)),
+        Function.Injective R → Fintype.card (ProjectiveDelayIndex n) ≤ Fintype.card J := by
+  refine ⟨projectiveDelayPanel_traceLinearMap_ker_injective n,
+    projectiveDelayIndex_card n, ?_⟩
+  intro J _ R hR
+  rw [projectiveDelayIndex_card]
+  exact projectiveDelayReporter_card_lower_bound R hR
+
 end
 
 

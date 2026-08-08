@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.MultiplicativeEulerBound
+import GaloisForLFunctions.RHTower.Sieve.ZetaRealBound
 import GaloisForLFunctions.RHTower.Sieve.ZetaLogPrimeSum
 import GaloisForLFunctions.HTGeometry.ZetaGammaFieldHypertranscendence
 import Mathlib.Analysis.SumIntegralComparisons
@@ -77,12 +78,6 @@ theorem zetaHalfPlaneBound_le {σ : ℝ} (hσ : 1 < σ) :
   rw [GaloisForLFunctions.zetaHalfPlaneBound, tsum_congr hterm, hsplit, h1]
   have := tsum_shift_rpow_neg_le hσ
   linarith
-
-theorem norm_riemannZeta_real_le {σ : ℝ} (hσ : 1 < σ) :
-    ‖riemannZeta ((σ : ℝ) : ℂ)‖ ≤ 1 + 1 / (σ - 1) := by
-  refine le_trans (GaloisForLFunctions.norm_riemannZeta_le_halfPlane hσ ?_)
-    (zetaHalfPlaneBound_le hσ)
-  simp
 
 /-! ## The prime sum at a real abscissa -/
 

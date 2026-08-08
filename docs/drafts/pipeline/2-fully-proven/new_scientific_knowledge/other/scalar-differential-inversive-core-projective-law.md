@@ -196,16 +196,25 @@ differential automorphism and its inverse have order zero on a free generator.
 the genuine projective automorphism classification on `C(u)`, including explicit Möbius
 automorphisms and their conjugacy normal forms.  Their exact leaf builds and axiom audits are green.
 
-The card remains at stage 2 only because the unrestricted Ritt--Kolchin differential Lüroth theorem
-for an arbitrary intermediate differential field, and its final assembly with the stable core,
-remain under active formalization.  No axiom or opaque placeholder is used for that missing parent.
+`DifferentialLurothSingleGenerator.lean` now proves unrestricted Ritt--Kolchin differential Lüroth
+for arbitrary derivation-closed intermediate fields.  The final assembly is formalized in
+`ScalarDifferentialInversiveCoreProjectiveLaw.lean`: the stable core is mapped onto itself; every
+nontrivial core has a hypertranscendental generator; the endomorphism acts on it by a nondegenerate
+Möbius transformation; and the coefficient quadruple is unique up to a nonzero scalar.  The
+canonical `JetField C Unit` capstone discharges constant-base behavior, source differential
+independence, and whole-field generation internally.
+
+Direct Lean check and targeted module build pass.  Scratch axiom reports for the helper, general
+assembly, and closed canonical capstone contain only `propext`, `Classical.choice`, and
+`Quot.sound`.  Targeted forbidden-token audit is clean, and the module is wired into the
+`HTGeometry` umbrella.
 
 ## Gates
 
 - [x] 0 -> 1 in-progress: exact theorem and proof architecture identified
 - [x] 1 -> 2 fully-proven: complete paper proof with classical parent isolated
-- [ ] 2 -> 3 formalized: stable-core automorphism, differential order, and projective
-  classification are Lean-certified; unrestricted differential Luroth and final assembly remain
+- [x] 2 -> 3 formalized: unrestricted differential Luroth and the exact exclusive
+  constants-versus-projective stable-core assembly are Lean-certified
 - [ ] 3 -> 4 publication-ready: external novelty audit and standalone exposition
 
 ## Primary references checked

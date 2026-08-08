@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteHorizonCStarPerturbationLaw
+import GaloisForLFunctions.HTGeometry.LinearVersusAlgebraicCollapse
 import Mathlib.LinearAlgebra.Countable
 import Mathlib.Algebra.AlgebraicCard
 import Mathlib.Analysis.Real.Cardinality
@@ -81,17 +82,6 @@ theorem rationalCoordinateRank_pow_of_transcendental {θ : ℝ} (h : Transcenden
     rationalCoordinateRank (fun i : Fin k => θ ^ (i : ℕ)) = k := by
   rw [rationalCoordinateRank]
   simpa using finrank_span_eq_card (linearIndependent_pow_of_transcendental h k)
-
-/-- Transcendental reals exist: the algebraic ones are countable. -/
-theorem exists_transcendental_real : ∃ θ : ℝ, Transcendental ℚ θ := by
-  by_contra hcon
-  push Not at hcon
-  have hall : {x : ℝ | IsAlgebraic ℚ x} = Set.univ := by
-    ext x
-    simp only [Set.mem_setOf_eq, Set.mem_univ, iff_true]
-    simpa [Transcendental] using hcon x
-  have hcount : (Set.univ : Set ℝ).Countable := hall ▸ Algebraic.countable ℚ ℝ
-  exact Cardinal.not_countable_real hcount
 
 /-- **A rational subspace of the reals containing one is dense.**  This is the card's step
 "since `ℚ ⊂ V_k` and `ℚ` is dense in `ℝ`, `V_k` is dense in `ℝ`". -/

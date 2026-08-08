@@ -1,15 +1,17 @@
 # Barnes differential source-face matrix factorization
 
 - **ID:** `barnes-differential-source-face-matrix-factorization`
-- **Stage:** 2-fully-proven / algebraic core Lean-formalized
+- **Stage:** 2-fully-proven / exact theorem Lean-formalized
 - **Type:** THEOREM / DERIVED SOURCE-FACE CONSERVATION / NONPERIODIC HT MODEL
-- **Scientific status:** `[PAPER PROOF COMPLETE] [LEAN CORE FORMALIZED]`
+- **Scientific status:** `[PAPER PROOF COMPLETE] [LEAN FORMALIZED]`
   `[NOVELTY PROVISIONAL PASS AS PART OF THE BARNES CHARACTERISTIC THEOREM]`
   `[SIGNIFICANCE PASS] [NOT AN RH RESULT]`
 - **Analytic parent theorem:**
   `barnes-multiple-gamma-translation-annihilator.md`
 - **Lean:**
   `formal/GaloisForLFunctions/HTGeometry/NormalCrossingFaceMatrixFactorization.lean`
+  `formal/GaloisForLFunctions/HTGeometry/PrincipalQuotientBaseChangeTor.lean`
+  `formal/GaloisForLFunctions/HTGeometry/BarnesSourceFaceTor.lean`
 
 ## The theorem
 
@@ -206,8 +208,33 @@ range_normalCrossingRightFactor_eq_ker_leftFactor;
 normalCrossingFactorization_twoPeriodicExact.
 ```
 
-No analytic Barnes theorem is inserted as an axiom.  The special-function identification `(1)`
-remains the paper theorem; Lean certifies its complete local algebraic consequence.
+`PrincipalQuotientBaseChangeTor.lean` proves the actual free resolution
+
+```text
+0 -> A --f-> A -> A/(f) -> 0
+```
+
+is exact for every nonzero `f` in a commutative domain, defines its base-changed homology, and
+proves that when `f` maps to zero the degree-zero and degree-one groups are canonically the target
+algebra while every degree at least two is zero.
+
+`BarnesSourceFaceTor.lean` then proves the exact card statement in both operator presentations:
+
+```text
+barnesDiffAnnihilator_eq_principalIdeal;
+barnesPolynomialToLaurent_injective;
+barnesPolynomialAnnihilator_map_eq_laurent;
+barnesLaurentAnnihilatorModule_freeResolution_exact;
+barnesLaurentSelectedFaceFactorization_twoPeriodicExact;
+barnesLaurentSourceFaceTor_zero_equiv;
+barnesLaurentSourceFaceTor_one_equiv;
+barnesLaurentSourceFaceTor_subsingleton_of_two_le.
+```
+
+Thus Lean connects the proved analytic Barnes source to its principal polynomial annihilator,
+extends that ideal faithfully to the exact Laurent ring
+`C[delta,T_1^(+-1),...,T_N^(+-1)]`, and proves `(1)`--`(4)` there.  No analytic Barnes theorem is
+inserted as an axiom.
 
 ## Gates
 
@@ -217,6 +244,9 @@ remains the paper theorem; Lean certifies its complete local algebraic consequen
 - [x] universal higher-face-depth conjecture falsified by a nonperiodic HT family
 - [x] nontrivial positive two-degree conservation law isolated
 - [x] algebraic core formalized unconditionally in Lean
+- [x] exact length-one free resolution and all-degree face Tor law formalized
+- [x] polynomial annihilator extended faithfully to the Laurent operator ring of the theorem
+- [x] analytic Barnes annihilator, Laurent module, matrix factorization, and face Tor assembled
 - [x] direct Barnes/matrix-factorization literature search found no exact match
 - [ ] full-text Nishizawa audit inherited from the analytic parent theorem
 - [ ] independent specialist novelty and significance review

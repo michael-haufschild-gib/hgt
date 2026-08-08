@@ -12,8 +12,6 @@ so the Deninger recursion is not an independent result; and the uniqueness half,
 layer never proved, transfers with it.  This file records the instantiation and the consequences
 the Deninger side was missing:
 
-* `deningerConstantForm_eq_zero` — a constant form that is exact with a `2πi`-periodic primitive
-  vanishes;
 * `deningerPeriodic_const_add_exact_unique` — the constant form of the decomposition is unique;
 * `deningerPeriodic_closed_eq_const_add_exact_of_periodic` — the existence half, with the Deninger
   averaging recursion replaced by the general instantiation.
@@ -36,17 +34,6 @@ variable {r n : ℕ}
 theorem deningerPeriod_ne_zero : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := by
   refine mul_ne_zero (mul_ne_zero two_ne_zero ?_) Complex.I_ne_zero
   exact_mod_cast Real.pi_ne_zero
-
-/-- **A constant form exact with a `2πi`-periodic primitive vanishes.**  The Deninger case of
-`constantForm_eq_zero`. -/
-theorem deningerConstantForm_eq_zero
-    (α : (Fin r → ℂ) [⋀^Fin (n + 1)]→L[ℂ] ℂ)
-    (η : (Fin r → ℂ) → (Fin r → ℂ) [⋀^Fin n]→L[ℂ] ℂ)
-    (hdiff : Differentiable ℂ η) (hcont' : Continuous (fderiv ℂ η))
-    (hper : ∀ (l : Fin r) (w : Fin r → ℂ),
-      η (w + (2 * Real.pi * Complex.I) • (Pi.single l (1 : ℂ) : Fin r → ℂ)) = η w)
-    (hd : ∀ w : Fin r → ℂ, extDeriv η w = α) : α = 0 :=
-  constantForm_eq_zero deningerPeriod_ne_zero n α η hdiff hcont' hper hd
 
 /-- **The constant form of the Deninger decomposition is unique.**  The Deninger case of
 `periodic_const_add_exact_unique`; the Deninger averaging layer proved existence only. -/

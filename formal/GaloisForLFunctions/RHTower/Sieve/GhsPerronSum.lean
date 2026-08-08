@@ -106,10 +106,41 @@ theorem norm_ghsTriple_trunc_le_uniform {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖
         = (Real.log n) ^ 4 / (Real.log 2) ^ 3 by field_simp]
     exact div_le_div_of_nonneg_right hpow (by positivity)
 
-/-- **The Perron step of the Granville–Harper–Soundararajan recursion.**  The partial sum of the triple
-convolution of the two prime weights with a truncated `f`, bounded unconditionally: the truncation error
-of the sharp Perron formula plus the dyadic split of the vertical integral against the two prime-sieve
-mean squares, the third factor entering only through `1 + log L`. -/
+/-- **The Perron step of the Granville–Harper–Soundararajan recursion, with the third factor's size
+free.**  Supports, primality and the coefficient bound are discharged from the corpus; the only input
+left open is a bound `V` on the size of the truncated third factor on the range of integration. -/
+theorem norm_sum_Icc_ghsTriple_of_bound_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {N₀ M L N : ℕ}
+    (hprod : 1 ≤ N₀ * (M * L)) (hN : 1 ≤ N)
+    {V σ t₀ : ℝ} (hV : 0 ≤ V) (hσ : 1 ≤ σ) (ht₀ : 1 ≤ t₀)
+    (zA YA zB YB : ℕ) (hYA : 1 ≤ YA) (hYzA : YA ≤ zA) (hzA : 2 ≤ zA) (hlogA : 0 < Real.log YA)
+    (hYB : 1 ≤ YB) (hYzB : YB ≤ zB) (hzB : 2 ≤ zB) (hlogB : 0 < Real.log YB) (K : ℕ)
+    (hgV : ∀ t : ℝ, |t| ≤ t₀ * 2 ^ K →
+      ‖LSeries (truncSeq f L) ((σ : ℂ) + (t : ℝ) * I)‖ ≤ V) :
+    ‖∑ n ∈ Finset.Icc 1 (min (N₀ * (M * L)) N),
+        (LSeries.convolution (ghsOuter f N₀)
+          (LSeries.convolution (ghsInner f M) (truncSeq f L))) n‖
+      ≤ 2 * ((N : ℝ) + 1) * ((Real.log ((N₀ * (M * L) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+              * (((N : ℝ) + 1 / 2)) ^ σ
+              * (1 + Real.log ((N₀ * (M * L) : ℕ) : ℝ)) / (Real.pi * (t₀ * 2 ^ K))
+          + (1 / (2 * Real.pi))
+              * (2 * perronVerticalProductBound (ghsOuter f N₀) (ghsInner f M)
+                    (Finset.Icc 1 N₀) (Finset.Icc 1 M) σ ((N : ℝ) + 1 / 2) t₀ V
+                    zA YA zB YB K
+                  + (V * ((N : ℝ) + 1 / 2) ^ σ / σ)
+                      * (Real.sqrt (sieveMeanSquareConst (ghsOuter f N₀) (Finset.Icc 1 N₀) σ YA
+                            + sieveMeanSquareRate (ghsOuter f N₀) (Finset.Icc 1 N₀) σ zA YA * t₀)
+                          * Real.sqrt (sieveMeanSquareConst (ghsInner f M) (Finset.Icc 1 M) σ YB
+                            + sieveMeanSquareRate (ghsInner f M) (Finset.Icc 1 M) σ zB YB
+                                * t₀))) :=
+  norm_sum_Icc_triple_le (A := ghsOuter f N₀) (B := ghsInner f M) (g := truncSeq f L)
+    (fun _ hn => ghsOuter_mem_Icc hn) (fun _ _ hn => ghsOuter_support hn)
+    (fun _ hn => ghsInner_mem_Icc hn) (fun _ _ hn => ghsInner_support hn)
+    (fun _ hn => truncSeq_support hn) hN
+    (norm_ghsTriple_trunc_le_uniform hf hprod) hV hσ ht₀
+    zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K hgV
+
+/-- **The Perron step with the third factor at its `ℓ¹` size.**  The damped `ℓ¹` mass `1 + log L` needs no
+hypothesis on `f` beyond boundedness. -/
 theorem norm_sum_Icc_ghsTriple_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {N₀ M L N : ℕ}
     (hprod : 1 ≤ N₀ * (M * L)) (hN : 1 ≤ N)
     {σ t₀ : ℝ} (hσ : 1 ≤ σ) (ht₀ : 1 ≤ t₀)
@@ -135,13 +166,9 @@ theorem norm_sum_Icc_ghsTriple_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1
     rcases Nat.eq_zero_or_pos L with rfl | hL
     · simp
     · exact Real.log_nonneg (by exact_mod_cast hL)
-  exact norm_sum_Icc_triple_le (A := ghsOuter f N₀) (B := ghsInner f M) (g := truncSeq f L)
-    (fun n hn => ghsOuter_mem_Icc hn) (fun n _ hn => ghsOuter_support hn)
-    (fun n hn => ghsInner_mem_Icc hn) (fun n _ hn => ghsInner_support hn)
-    (fun n hn => truncSeq_support hn) hN
-    (norm_ghsTriple_trunc_le_uniform hf hprod) (by linarith)
-    (fun t => norm_LSeries_truncSeq_line_le hf L hσ t) hσ ht₀
+  exact norm_sum_Icc_ghsTriple_of_bound_le hf hprod hN (by linarith) hσ ht₀
     zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K
+    (fun t _ => norm_LSeries_truncSeq_line_le hf L hσ t)
 
 end RHTower.Sieve
 end

@@ -10,7 +10,7 @@ For a radial prolate solution
 ```
 
 the singular endpoint sets the flux to zero without an extra boundary condition.  Integrating from
-`1` gives an exact flux representation.  In the low-separation regime `0 <= s <= 1/2`, a
+`1` gives an exact flux representation.  In the forbidden-endpoint regime `0 <= s <= 1`, a
 nonnegative endpoint-normalized solution is decreasing.  A quantitative integration of the same
 identity then proves that the solution has no zero in an explicit `O(c^-2)` collar.  This is the
 endpoint continuation input for the pole-uniform Dunster comparison.
@@ -60,9 +60,9 @@ theorem radialProlateFlux_eq_integral {s c x : ℝ} {R DR DDR : ℝ → ℝ}
   have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
   simpa using hFTC.symm
 
-/-- A nonnegative low-separation radial profile has nonpositive exterior flux. -/
+/-- A nonnegative radial profile with `s ≤ 1` has nonpositive exterior flux. -/
 theorem radialProlateFlux_nonpos_of_nonnegative {s c x : ℝ} {R DR DDR : ℝ → ℝ}
-    (hs : s ≤ 1 / 2) (hx : 1 ≤ x)
+    (hs : s ≤ 1) (hx : 1 ≤ x)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
     (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
@@ -78,10 +78,10 @@ theorem radialProlateFlux_nonpos_of_nonnegative {s c x : ℝ} {R DR DDR : ℝ �
   rw [intervalIntegral.integral_neg] at hnonneg
   linarith
 
-/-- While a low-separation profile remains nonnegative, its derivative is nonpositive outside the
+/-- While an `s ≤ 1` profile remains nonnegative, its derivative is nonpositive outside the
 singular endpoint. -/
 theorem radialProlate_deriv_nonpos_of_nonnegative {s c x : ℝ} {R DR DDR : ℝ → ℝ}
-    (hs : s ≤ 1 / 2) (hx : 1 < x)
+    (hs : s ≤ 1) (hx : 1 < x)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
     (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
@@ -93,9 +93,9 @@ theorem radialProlate_deriv_nonpos_of_nonnegative {s c x : ℝ} {R DR DDR : ℝ 
   have hweight : 0 < x ^ 2 - 1 := by nlinarith
   nlinarith
 
-/-- Nonnegative low-separation radial profiles are antitone on every exterior interval. -/
+/-- Nonnegative radial profiles with `s ≤ 1` are antitone on every exterior interval. -/
 theorem radialProlate_antitoneOn_of_nonnegative {s c B : ℝ} {R DR DDR : ℝ → ℝ}
-    (hs : s ≤ 1 / 2) (_hB : 1 ≤ B)
+    (hs : s ≤ 1) (_hB : 1 ≤ B)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
     (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
@@ -115,9 +115,9 @@ theorem radialProlate_antitoneOn_of_nonnegative {s c B : ℝ} {R DR DDR : ℝ �
   exact radialProlate_deriv_nonpos_of_nonnegative hs hx.1 hR hDR hode hposx
 
 /-- Quantitative derivative bound in the endpoint collar.  The constant `3/5` is uniform in
-`0 <= s <= 1/2`. -/
+`0 <= s <= 1`. -/
 theorem radialProlate_deriv_lower_bound_endpoint_collar {s c x : ℝ} {R DR DDR : ℝ → ℝ}
-    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx1 : 1 < x) (hx2 : x ≤ 11 / 10)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1) (hx1 : 1 < x) (hx2 : x ≤ 11 / 10)
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
@@ -166,7 +166,7 @@ theorem radialProlate_deriv_lower_bound_endpoint_collar {s c x : ℝ} {R DR DDR 
 /-- Integrating the collar derivative bound gives an explicit lower bound for every nonnegative
 endpoint-normalized solution. -/
 theorem radialProlate_value_lower_bound_endpoint_collar {s c x : ℝ} {R DR DDR : ℝ → ℝ}
-    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx1 : 1 ≤ x) (hx2 : x ≤ 11 / 10)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1) (hx1 : 1 ≤ x) (hx2 : x ≤ 11 / 10)
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
     (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
@@ -197,10 +197,10 @@ theorem radialProlate_value_lower_bound_endpoint_collar {s c x : ℝ} {R DR DDR 
   rw [hR1] at hFTC
   linarith
 
-/-- **Explicit zero-free collar.**  If `3 c^2 (B-1) < 5`, an endpoint-normalized low-separation
+/-- **Explicit zero-free collar.**  If `3 c^2 (B-1) < 5`, an endpoint-normalized `s ≤ 1`
 radial solution is strictly positive on `[1,B]`. -/
 theorem radialProlate_pos_endpoint_collar {s c B : ℝ} {R DR DDR : ℝ → ℝ}
-    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (_hB1 : 1 ≤ B) (hB2 : B ≤ 11 / 10)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1) (_hB1 : 1 ≤ B) (hB2 : B ≤ 11 / 10)
     (hshort : 3 * c ^ 2 * (B - 1) < 5)
     (hR1 : R 1 = 1)
     (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
@@ -257,6 +257,384 @@ theorem radialProlate_pos_endpoint_collar {s c B : ℝ} {R DR DDR : ℝ → ℝ}
     exact lt_of_le_of_lt (mul_le_mul_of_nonneg_left this hc2) hshort
   rw [hyzero] at hlower
   nlinarith
+
+/-- A short inverse-square collar used only for exterior-mass extraction. -/
+def radialExteriorCollarEnd (c : ℝ) : ℝ := 1 + 1 / (2 * c ^ 2)
+
+/-- Endpoint-normalized solutions with `s ≥ 1` are also positive on the inverse-square exterior
+collar.  If the potential remains positive they are increasing.  Otherwise a maximum-principle
+estimate bounds their entire relative variation on the collar by less than one quarter. -/
+theorem radialProlate_pos_endpoint_collar_of_one_le
+    {s c : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs1 : 1 ≤ s) (hc : 5 ≤ c)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    ∀ x ∈ Icc (1 : ℝ) (radialExteriorCollarEnd c), 1 / 2 ≤ R x := by
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
+  have hB1 : 1 ≤ radialExteriorCollarEnd c := by
+    rw [radialExteriorCollarEnd]
+    exact le_add_of_nonneg_right (div_nonneg zero_le_one (by positivity))
+  have hB2 : radialExteriorCollarEnd c ≤ 11 / 10 := by
+    rw [radialExteriorCollarEnd]
+    have hcSq : (5 : ℝ) ^ 2 ≤ c ^ 2 :=
+      (sq_le_sq₀ (by norm_num : (0 : ℝ) ≤ 5) hc0.le).2 hc
+    have hfrac : 1 / (2 * c ^ 2) ≤ (1 : ℝ) / 10 := by
+      rw [div_le_div_iff₀ (by positivity : 0 < 2 * c ^ 2) (by norm_num : (0 : ℝ) < 10)]
+      nlinarith
+    nlinarith
+  intro x hx
+  by_contra hnot
+  push Not at hnot
+  have hcont : Continuous R := continuous_iff_continuousAt.mpr fun t => (hR t).continuousAt
+  have hzeroExists : ∃ z ∈ Icc (1 : ℝ) x, R z = 1 / 2 := by
+    have hzeroMem : (1 / 2 : ℝ) ∈ uIcc (R 1) (R x) := by
+      rw [hR1, uIcc_of_ge (by linarith : R x ≤ (1 : ℝ))]
+      exact ⟨hnot.le, by norm_num⟩
+    obtain ⟨z, hz, hzeq⟩ :=
+      (intermediate_value_uIcc hcont.continuousOn) hzeroMem
+    refine ⟨z, ?_, hzeq⟩
+    simpa only [uIcc_of_le hx.1] using hz
+  let H : Set ℝ := Icc (1 : ℝ) (radialExteriorCollarEnd c) ∩ {t : ℝ | R t = 1 / 2}
+  have hHcompact : IsCompact H :=
+    isCompact_Icc.inter_right (isClosed_eq hcont continuous_const)
+  have hHne : H.Nonempty := by
+    obtain ⟨z, hz, hzeq⟩ := hzeroExists
+    exact ⟨z, ⟨⟨hz.1, hz.2.trans hx.2⟩, hzeq⟩⟩
+  obtain ⟨y, hyH, hyleast⟩ := hHcompact.exists_isLeast hHne
+  have hyIcc : y ∈ Icc (1 : ℝ) (radialExteriorCollarEnd c) := hyH.1
+  have hyzero : R y = 1 / 2 := hyH.2
+  have hpos : ∀ t ∈ Icc (1 : ℝ) y, 1 / 2 ≤ R t := by
+    intro t ht
+    by_contra htneg
+    push Not at htneg
+    have hzeroMem : (1 / 2 : ℝ) ∈ uIcc (R 1) (R t) := by
+      rw [hR1, uIcc_of_ge (by linarith : R t ≤ (1 : ℝ))]
+      exact ⟨htneg.le, by norm_num⟩
+    obtain ⟨z, hz, hzeq⟩ :=
+      (intermediate_value_uIcc hcont.continuousOn) hzeroMem
+    have hzIcc : z ∈ Icc (1 : ℝ) t := by
+      simpa only [uIcc_of_le ht.1] using hz
+    have hzH : z ∈ H :=
+      ⟨⟨hzIcc.1, (hzIcc.2.trans ht.2).trans hyIcc.2⟩, hzeq⟩
+    have hyz := hyleast hzH
+    have : z = y := le_antisymm (hzIcc.2.trans ht.2) hyz
+    subst z
+    have : t = y := le_antisymm ht.2 hzIcc.2
+    subst t
+    linarith [hyzero]
+  have hsy : s < y ^ 2 := by
+    by_contra hnotSy
+    have hys : y ^ 2 ≤ s := le_of_not_gt hnotSy
+    have hderiv0 : ∀ t ∈ Icc (1 : ℝ) y, 0 ≤ DR t := by
+      intro t ht
+      rcases eq_or_lt_of_le ht.1 with rfl | ht1
+      · have hone := hode 1
+        rw [hR1] at hone
+        norm_num only [one_pow, sub_self, zero_mul, zero_add, mul_one] at hone
+        nlinarith [mul_nonneg (sub_nonneg.2 hs1) (sq_nonneg c)]
+      · have hflux := radialProlateFlux_eq_integral ht1.le hR hDR hode
+        have hint0 : 0 ≤ ∫ u in 1..t, c ^ 2 * (s - u ^ 2) * R u := by
+          refine intervalIntegral.integral_nonneg ht1.le fun u hu => ?_
+          have hu0 : 0 ≤ u := by linarith [hu.1]
+          have huy : u ≤ y := hu.2.trans ht.2
+          have husq : u ^ 2 ≤ y ^ 2 :=
+            (sq_le_sq₀ hu0 (by linarith [hyIcc.1])).2 huy
+          exact mul_nonneg
+            (mul_nonneg (sq_nonneg c) (sub_nonneg.2 (husq.trans hys)))
+            (by linarith [hpos u ⟨hu.1, huy⟩])
+        rw [radialProlateFlux] at hflux
+        have hweight : 0 < t ^ 2 - 1 := by nlinarith
+        nlinarith
+    have hderivInt : 0 ≤ ∫ t in 1..y, DR t :=
+      intervalIntegral.integral_nonneg hyIcc.1 hderiv0
+    have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt
+      (f := R) (f' := DR) (fun t _ => hR t)
+      ((continuous_iff_continuousAt.mpr fun t => (hDR t).continuousAt).intervalIntegrable 1 y)
+    rw [hFTC, hR1, hyzero] at hderivInt
+    linarith
+  obtain ⟨m, hm, hmax⟩ := isCompact_Icc.exists_isMaxOn
+    (nonempty_Icc.mpr hyIcc.1) hcont.abs.continuousOn
+  let M : ℝ := |R m|
+  have hM0 : 0 ≤ M := abs_nonneg _
+  have hbound : ∀ t ∈ Icc (1 : ℝ) y, |R t| ≤ M := by
+    intro t ht
+    exact isMaxOn_iff.mp hmax t ht
+  have hM1 : 1 ≤ M := by
+    have := hbound 1 ⟨le_rfl, hyIcc.1⟩
+    rw [hR1, abs_one] at this
+    exact this
+  let B : ℝ := radialExteriorCollarEnd c
+  let K : ℝ := c ^ 2 * (B ^ 2 - 1)
+  have hB0 : 0 ≤ B := le_trans (by norm_num) hB1
+  have hy0 : 0 ≤ y := le_trans (by norm_num) hyIcc.1
+  have hySqB : y ^ 2 ≤ B ^ 2 :=
+    (sq_le_sq₀ hy0 hB0).2 hyIcc.2
+  have hsB : s ≤ B ^ 2 := (le_of_lt hsy).trans hySqB
+  have hK0 : 0 ≤ K := by
+    dsimp only [K, B]
+    have : 1 ≤ radialExteriorCollarEnd c ^ 2 :=
+      by nlinarith [sq_nonneg (radialExteriorCollarEnd c - 1)]
+    positivity
+  have hcoeff : ∀ t ∈ Icc (1 : ℝ) y, |c ^ 2 * (s - t ^ 2)| ≤ K := by
+    intro t ht
+    have ht0 : 0 ≤ t := by linarith [ht.1]
+    have htB : t ≤ B := ht.2.trans hyIcc.2
+    have htSqB : t ^ 2 ≤ B ^ 2 := (sq_le_sq₀ ht0 hB0).2 htB
+    have htSq1 : 1 ≤ t ^ 2 := by nlinarith [ht.1]
+    have habs : |s - t ^ 2| ≤ B ^ 2 - 1 := (abs_le).2 ⟨by linarith, by linarith⟩
+    rw [abs_mul, abs_of_nonneg (sq_nonneg c)]
+    exact mul_le_mul_of_nonneg_left habs (sq_nonneg c)
+  have hderivBound : ∀ t ∈ Icc (1 : ℝ) y, |DR t| ≤ K * M := by
+    intro t ht
+    rcases eq_or_lt_of_le ht.1 with rfl | ht1
+    · have hone := hode 1
+      rw [hR1] at hone
+      norm_num only [one_pow, sub_self, zero_mul, zero_add, mul_one] at hone
+      have hsDiff : s - 1 ≤ B ^ 2 - 1 := by linarith
+      have hmul := mul_le_mul_of_nonneg_right hsDiff (sq_nonneg c)
+      have hDR0 : 0 ≤ DR 1 := by
+        nlinarith [mul_nonneg (sub_nonneg.2 hs1) (sq_nonneg c)]
+      rw [abs_of_nonneg hDR0]
+      dsimp only [K]
+      nlinarith [hM1]
+    · have hflux := radialProlateFlux_eq_integral ht1.le hR hDR hode
+      have hintegrand : ∀ u ∈ Icc (1 : ℝ) t,
+          |c ^ 2 * (s - u ^ 2) * R u| ≤ K * M := by
+        intro u hu
+        rw [abs_mul]
+        exact mul_le_mul (hcoeff u ⟨hu.1, hu.2.trans ht.2⟩)
+          (hbound u ⟨hu.1, hu.2.trans ht.2⟩) (abs_nonneg _) hK0
+      have hintBound :
+          |∫ u in 1..t, c ^ 2 * (s - u ^ 2) * R u| ≤
+            (t - 1) * (K * M) := by
+        have hnorm := intervalIntegral.norm_integral_le_of_norm_le_const
+          (f := fun u : ℝ => c ^ 2 * (s - u ^ 2) * R u) (C := K * M)
+          (fun u hu => hintegrand u (by
+            rw [← uIcc_of_le ht1.le]
+            exact uIoc_subset_uIcc hu))
+        simpa [Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.2 ht1.le), mul_comm] using hnorm
+      rw [radialProlateFlux] at hflux
+      have hweight : 0 ≤ t ^ 2 - 1 := by nlinarith
+      have hfluxBound : |(t ^ 2 - 1) * DR t| ≤ (t - 1) * (K * M) := by
+        rw [hflux]
+        exact hintBound
+      rw [abs_mul, abs_of_nonneg hweight] at hfluxBound
+      have hfactor : t ^ 2 - 1 = (t - 1) * (t + 1) := by ring
+      rw [hfactor] at hfluxBound
+      have hcancel : (t + 1) * |DR t| ≤ K * M := by
+        have htSub : 0 < t - 1 := by linarith
+        apply le_of_mul_le_mul_left (a := t - 1) _ htSub
+        simpa only [mul_assoc, mul_left_comm, mul_comm] using hfluxBound
+      exact le_trans (by nlinarith [abs_nonneg (DR t)]) hcancel
+  have hpointBound : ∀ t ∈ Icc (1 : ℝ) y,
+      |R t - 1| ≤ (t - 1) * (K * M) := by
+    intro t ht
+    have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt
+      (f := R) (f' := DR) (fun u _ => hR u)
+      ((continuous_iff_continuousAt.mpr fun u => (hDR u).continuousAt).intervalIntegrable 1 t)
+    have hnorm := intervalIntegral.norm_integral_le_of_norm_le_const
+      (f := DR) (C := K * M) (fun u hu => by
+        simpa only [Real.norm_eq_abs] using hderivBound u (by
+          have hu' : u ∈ Icc (1 : ℝ) t := by
+            rw [← uIcc_of_le ht.1]
+            exact uIoc_subset_uIcc hu
+          exact ⟨hu'.1, hu'.2.trans ht.2⟩))
+    rw [hFTC, hR1] at hnorm
+    simpa [Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.2 ht.1), mul_comm] using hnorm
+  have hBsq : B ^ 2 - 1 ≤ 21 / 100 := by
+    have := (sq_le_sq₀ hB0 (by norm_num : (0 : ℝ) ≤ 11 / 10)).2 hB2
+    nlinarith
+  have hwidth : B - 1 = 1 / (2 * c ^ 2) := by
+    dsimp only [B, radialExteriorCollarEnd]
+    ring
+  have halpha : (B - 1) * K ≤ 1 / 4 := by
+    have hposden : 0 < 2 * c ^ 2 := by positivity
+    have hidentity : (B - 1) * K = (B ^ 2 - 1) / 2 := by
+      dsimp only [K]
+      rw [hwidth]
+      field_simp [hc0.ne']
+    rw [hidentity]
+    nlinarith
+  have hmIcc : m ∈ Icc (1 : ℝ) y := hm
+  have hmWidth : m - 1 ≤ B - 1 := by linarith [hm.2, hyIcc.2]
+  have hmScale : (m - 1) * (K * M) ≤ (1 / 4) * M := by
+    have hKM0 : 0 ≤ K * M := mul_nonneg hK0 hM0
+    have hfirst := mul_le_mul_of_nonneg_right hmWidth hKM0
+    have hsecond := mul_le_mul_of_nonneg_right halpha hM0
+    nlinarith
+  have hmPoint := (hpointBound m hmIcc).trans hmScale
+  have hRm0 : 0 ≤ R m := by linarith [hpos m hmIcc]
+  have hMeq : M = R m := by dsimp only [M]; rw [abs_of_nonneg hRm0]
+  have hMupper : M ≤ 4 / 3 := by
+    rw [hMeq] at hmPoint ⊢
+    nlinarith [le_abs_self (R m - 1)]
+  have hyWidth : y - 1 ≤ B - 1 := by linarith [hyIcc.2]
+  have hyScale : (y - 1) * (K * M) ≤ (1 / 4) * M := by
+    have hKM0 : 0 ≤ K * M := mul_nonneg hK0 hM0
+    have hfirst := mul_le_mul_of_nonneg_right hyWidth hKM0
+    have hsecond := mul_le_mul_of_nonneg_right halpha hM0
+    nlinarith
+  have hyPoint := (hpointBound y ⟨hyIcc.1, le_rfl⟩).trans hyScale
+  rw [hyzero] at hyPoint
+  norm_num at hyPoint
+  nlinarith
+
+/-- Endpoint-normalized radial profiles stay above `13/40` throughout a fixed
+inverse-square collar, uniformly for `0 ≤ s ≤ 1`. -/
+theorem radialProlate_value_ge_thirteen_fortieth_to_crossing
+    {s c x : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1) (hc : 5 ≤ c)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
+    (hx : x ∈ Icc (1 : ℝ) (radialExteriorCollarEnd c)) :
+    13 / 40 ≤ R x := by
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
+  have hB1 : 1 ≤ radialExteriorCollarEnd c := by
+    rw [radialExteriorCollarEnd]
+    exact le_add_of_nonneg_right (div_nonneg zero_le_one (by positivity))
+  have hB2 : radialExteriorCollarEnd c ≤ 11 / 10 := by
+    rw [radialExteriorCollarEnd]
+    have hcSq : (5 : ℝ) ^ 2 ≤ c ^ 2 :=
+      (sq_le_sq₀ (by norm_num : (0 : ℝ) ≤ 5) hc0.le).2 hc
+    have hfrac : 1 / (2 * c ^ 2) ≤ (1 : ℝ) / 10 := by
+      rw [div_le_div_iff₀ (by positivity : 0 < 2 * c ^ 2) (by norm_num : (0 : ℝ) < 10)]
+      nlinarith
+    nlinarith
+  have hshort : 3 * c ^ 2 * (radialExteriorCollarEnd c - 1) < 5 := by
+    rw [radialExteriorCollarEnd]
+    field_simp [hc0.ne']
+    norm_num
+  have hpos := radialProlate_pos_endpoint_collar hs0 hs1 hB1 hB2
+    hshort hR1 hR hDR hode
+  have hlower := radialProlate_value_lower_bound_endpoint_collar hs0 hs1 hx.1
+    (hx.2.trans hB2) hR1 hR hDR hode
+    (fun t ht => (hpos t ⟨ht.1, ht.2.trans hx.2⟩).le)
+  have hxsub : x - 1 ≤ 1 / (2 * c ^ 2) := by
+    rw [radialExteriorCollarEnd] at hx
+    linarith [hx.2]
+  have hscaled := mul_le_mul_of_nonneg_left hxsub
+    (mul_nonneg (by norm_num : (0 : ℝ) ≤ 3 / 5) (sq_nonneg c))
+  have hconst : (3 / 5 : ℝ) * c ^ 2 * (1 / (2 * c ^ 2)) = 3 / 10 := by
+    field_simp [hc0.ne']
+    ring
+  rw [hconst] at hscaled
+  nlinarith
+
+/-- The positive exterior collar carries an explicit polynomial amount of squared mass. -/
+theorem one_div_thirty_two_c_sq_le_integral_sq_endpoint_collar
+    {s c : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1) (hc : 5 ≤ c)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    1 / (32 * c ^ 2) ≤
+      ∫ x in (1 : ℝ)..radialExteriorCollarEnd c, R x ^ 2 := by
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
+  have hB1 : 1 ≤ radialExteriorCollarEnd c := by
+    rw [radialExteriorCollarEnd]
+    exact le_add_of_nonneg_right (div_nonneg zero_le_one (by positivity))
+  have hint : IntervalIntegrable (fun x : ℝ => R x ^ 2) volume 1
+      (radialExteriorCollarEnd c) :=
+    ((continuous_iff_continuousAt.mpr fun x => (hR x).continuousAt).pow 2).intervalIntegrable _ _
+  have hpoint : ∀ x ∈ Icc (1 : ℝ) (radialExteriorCollarEnd c),
+      (1 / 16 : ℝ) ≤ R x ^ 2 := by
+    intro x hx
+    have hRlower := radialProlate_value_ge_thirteen_fortieth_to_crossing
+      hs0 hs1 hc hR1 hR hDR hode hx
+    have hquarter : (1 / 4 : ℝ) ≤ R x := by linarith
+    have hsquare := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 1 / 4) hquarter 2
+    norm_num at hsquare ⊢
+    exact hsquare
+  have hmono := intervalIntegral.integral_mono_on hB1 intervalIntegrable_const hint hpoint
+  have hleft : (∫ _x in (1 : ℝ)..radialExteriorCollarEnd c, (1 / 16 : ℝ)) =
+      1 / (32 * c ^ 2) := by
+    rw [intervalIntegral.integral_const, smul_eq_mul, radialExteriorCollarEnd]
+    field_simp [hc0.ne']
+    ring
+  rw [hleft] at hmono
+  exact hmono
+
+/-- The positive endpoint collar is contained, up to its null left endpoint, in the exterior of
+the aperture. -/
+theorem integral_sq_endpoint_collar_le_integral_outside
+    {c : ℝ} {R : ℝ → ℝ} (hc : 0 < c)
+    (hint : IntegrableOn (fun x : ℝ => R x ^ 2) (Icc (-1 : ℝ) 1)ᶜ) :
+    (∫ x in (1 : ℝ)..radialExteriorCollarEnd c, R x ^ 2) ≤
+      ∫ x in (Icc (-1 : ℝ) 1)ᶜ, R x ^ 2 := by
+  have hB1 : 1 ≤ radialExteriorCollarEnd c := by
+    rw [radialExteriorCollarEnd]
+    exact le_add_of_nonneg_right (div_nonneg zero_le_one (by positivity))
+  rw [intervalIntegral.integral_of_le hB1]
+  apply integral_mono_measure
+    (Measure.restrict_mono (show Ioc (1 : ℝ) (radialExteriorCollarEnd c) ⊆
+        (Icc (-1 : ℝ) 1)ᶜ by
+      intro x hx
+      simp only [mem_compl_iff, mem_Icc, not_and, not_le]
+      intro _
+      exact hx.1) le_rfl)
+  · filter_upwards with x
+    exact sq_nonneg (R x)
+  · exact hint
+
+/-- **Polynomial exterior-mass floor.**  Every endpoint-normalized radial solution with
+`0 ≤ s ≤ 1` carries at least `1/(32c²)` mass outside the aperture. -/
+theorem one_div_thirty_two_c_sq_le_integral_outside_sq_radialProlate
+    {s c : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1) (hc : 5 ≤ c)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
+    (hint : IntegrableOn (fun x : ℝ => R x ^ 2) (Icc (-1 : ℝ) 1)ᶜ) :
+    1 / (32 * c ^ 2) ≤ ∫ x in (Icc (-1 : ℝ) 1)ᶜ, R x ^ 2 := by
+  exact (one_div_thirty_two_c_sq_le_integral_sq_endpoint_collar
+    hs0 hs1 hc hR1 hR hDR hode).trans
+      (integral_sq_endpoint_collar_le_integral_outside
+        (lt_of_lt_of_le (by norm_num) hc) hint)
+
+/-- **High-separation exterior-mass floor.**  When `s ≥ 1`, endpoint growth gives the stronger
+collar bound `1/(8c²)`. -/
+theorem one_div_eight_c_sq_le_integral_outside_sq_radialProlate_of_one_le
+    {s c : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs1 : 1 ≤ s) (hc : 5 ≤ c)
+    (hR1 : R 1 = 1)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t)
+    (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0)
+    (hint : IntegrableOn (fun x : ℝ => R x ^ 2) (Icc (-1 : ℝ) 1)ᶜ) :
+    1 / (8 * c ^ 2) ≤ ∫ x in (Icc (-1 : ℝ) 1)ᶜ, R x ^ 2 := by
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
+  have hB1 : 1 ≤ radialExteriorCollarEnd c := by
+    rw [radialExteriorCollarEnd]
+    exact le_add_of_nonneg_right (div_nonneg zero_le_one (by positivity))
+  have hRint : IntervalIntegrable (fun x : ℝ => R x ^ 2) volume 1
+      (radialExteriorCollarEnd c) :=
+    ((continuous_iff_continuousAt.mpr fun x => (hR x).continuousAt).pow 2).intervalIntegrable _ _
+  have hpos := radialProlate_pos_endpoint_collar_of_one_le hs1 hc hR1 hR hDR hode
+  have hpoint : ∀ x ∈ Icc (1 : ℝ) (radialExteriorCollarEnd c),
+      (1 / 4 : ℝ) ≤ R x ^ 2 := by
+    intro x hx
+    have hsquare := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 1 / 2) (hpos x hx) 2
+    norm_num at hsquare ⊢
+    exact hsquare
+  have hmono := intervalIntegral.integral_mono_on hB1 intervalIntegrable_const hRint hpoint
+  have hleft : (∫ _x in (1 : ℝ)..radialExteriorCollarEnd c, (1 / 4 : ℝ)) =
+      1 / (8 * c ^ 2) := by
+    rw [intervalIntegral.integral_const, smul_eq_mul, radialExteriorCollarEnd]
+    field_simp [hc0.ne']
+    ring
+  rw [hleft] at hmono
+  exact hmono.trans (integral_sq_endpoint_collar_le_integral_outside hc0 hint)
 
 end GaloisForLFunctions.RHTower
 

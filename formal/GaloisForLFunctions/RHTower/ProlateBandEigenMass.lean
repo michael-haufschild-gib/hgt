@@ -53,6 +53,21 @@ theorem bandOperatorL2_bandClass_eq_smul_of_global_band_eigen
     bandClass_congr (continuous_bandTransform c hΦ) hmul hfun,
     bandClass_smul hΦ ν hmul]
 
+/-- Every continuous global eigenfunction at a nonzero band eigenvalue has integrable squared
+mass on the whole line. -/
+theorem integrable_sq_global_band_eigen
+    {c ν : ℝ} (hc : 0 < c) (hν : ν ≠ 0) {Φ : ℝ → ℝ} (hΦ : Continuous Φ)
+    (heig : ∀ x : ℝ, bandTransform c Φ x = ν * Φ x) :
+    Integrable (fun x : ℝ => Φ x ^ 2) (volume : Measure ℝ) := by
+  have htransform := integrable_sq_bandTransform hc hΦ
+  have hscaled : Integrable
+      (fun x : ℝ => (ν ^ 2)⁻¹ * (bandTransform c Φ x) ^ 2)
+      (volume : Measure ℝ) := htransform.const_mul _
+  refine hscaled.congr ?_
+  filter_upwards with x
+  rw [heig x]
+  field_simp [pow_ne_zero 2 hν]
+
 /-- The whole-line energy of a continuous global band eigenfunction is its aperture energy divided
 by the band eigenvalue. -/
 theorem integral_sq_global_band_eigen

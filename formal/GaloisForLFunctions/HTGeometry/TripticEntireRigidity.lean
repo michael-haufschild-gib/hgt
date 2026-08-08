@@ -145,6 +145,37 @@ theorem const_of_entire_of_periodic_of_mixed_const_zero {ω₁ τ σ : ℂ}
     linear_combination this
   exact (const_of_entire_periodic_of_shift_const hindepσ hf h₁ hshift).1
 
+/-- **The mixed constant is forced to vanish.**  An entire function with a genuine period `ω₁` whose
+mixed second difference along `τ` and `σ` is the constant `C` is itself constant, and `C = 0`.  The
+single difference `Δ_σ f` is entire, `ω₁`-periodic and changes by `C` under `τ`, so the rigidity
+theorem applies to it first and returns `C = 0`, and then to `f`. -/
+theorem const_of_entire_of_periodic_of_mixed_const {ω₁ τ σ : ℂ}
+    (hindepτ : LinearIndependent ℝ ![ω₁, τ]) (hindepσ : LinearIndependent ℝ ![ω₁, σ])
+    {f : ℂ → ℂ} (hf : Differentiable ℂ f) (h₁ : Function.Periodic f ω₁) {C : ℂ}
+    (hmix : ∀ z, f (z + τ + σ) - f (z + τ) - (f (z + σ) - f z) = C) :
+    (∀ x y, f x = f y) ∧ C = 0 := by
+  set U : ℂ → ℂ := fun z => f (z + σ) - f z with hU
+  have hUdiff : Differentiable ℂ U := by
+    refine Differentiable.sub ?_ hf
+    exact hf.comp (differentiable_id.add_const σ)
+  have hUω₁ : Function.Periodic U ω₁ := by
+    intro z
+    simp only [hU]
+    rw [show z + ω₁ + σ = z + σ + ω₁ by ring, h₁ (z + σ), h₁ z]
+  have hUshift : ∀ z, U (z + τ) = U z + C := by
+    intro z
+    simp only [hU]
+    have := hmix z
+    linear_combination this
+  obtain ⟨hUconst, hC⟩ := const_of_entire_periodic_of_shift_const hindepτ hUdiff hUω₁ hUshift
+  refine ⟨?_, hC⟩
+  have hshift : ∀ z, f (z + σ) = f z + U 0 := by
+    intro z
+    have := hUconst z 0
+    simp only [hU] at this
+    linear_combination this
+  exact (const_of_entire_periodic_of_shift_const hindepσ hf h₁ hshift).1
+
 /-- The entire members of the mixed-constraint class are differentially algebraic, being constant. -/
 theorem differentiallyAlgebraic_of_entire_of_periodic_of_mixed_const_zero {ω₁ τ σ : ℂ}
     (hindepτ : LinearIndependent ℝ ![ω₁, τ]) (hindepσ : LinearIndependent ℝ ![ω₁, σ])

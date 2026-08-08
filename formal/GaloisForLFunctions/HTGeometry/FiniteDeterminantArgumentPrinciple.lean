@@ -6,10 +6,14 @@ its logarithmic derivative is `∑ᵢ (tᵢ/(1 + z tᵢ) − tᵢ)` and the cont
 factor: the constant terms integrate to zero, and `tᵢ/(1 + z tᵢ) = (z − (−1/tᵢ))⁻¹` contributes
 `2πi` exactly when `−1/tᵢ` lies inside the circle.
 
+Hence `∮ det₂′/det₂ = 2πi · #{i : tᵢ ≠ 0 and −1/tᵢ inside}` — the eigenvalue count with algebraic
+multiplicity, since the `tᵢ` are the Schur diagonal.
+
 Main results:
 * `logDeriv_schurFactor`, `logDeriv_finiteDet2` — the logarithmic derivative, factor by factor.
 * `circleIntegral_schurFactor_inside`, `circleIntegral_schurFactor_outside` — each factor's
   contribution to the contour integral.
+* `circleIntegral_logDeriv_finiteDet2` — **the argument principle for a matrix determinant**.
 -/
 import GaloisForLFunctions.HTGeometry.FiniteDeterminantZeros
 import GaloisForLFunctions.HTGeometry.ArgumentPrincipleSingleZero
@@ -129,5 +133,54 @@ theorem circleIntegral_schurFactor_outside {t c : ℂ} {r : ℝ} (hr : 0 < r) (h
       exact (differentiableAt_id.sub_const _).inv hzne
   rw [circleIntegral.integral_sub hci1 hci2, circleIntegral_const_eq_zero t c hr.le, sub_zero,
     circleIntegral.integral_congr hr.le hrw, hzero]
+
+/-- Circle integrability of a Schur factor's logarithmic derivative. -/
+theorem circleIntegrable_schurFactor {t c : ℂ} {r : ℝ} (hr : 0 < r)
+    (hne : ∀ z ∈ sphere c r, 1 + z * t ≠ 0) :
+    CircleIntegrable (fun z : ℂ => t / (1 + z * t) - t) c r := by
+  refine ContinuousOn.circleIntegrable hr.le fun z hz => ?_
+  exact ((continuousAt_const.div
+    (continuousAt_const.add (continuousAt_id.mul continuousAt_const))
+    (hne z hz)).sub continuousAt_const).continuousWithinAt
+
+open scoped Classical in
+/-- **The argument principle for the regularized determinant of a matrix.**  The contour integral
+of its logarithmic derivative counts the Schur eigenvalues whose negative reciprocal lies inside
+the circle — that is, the zeros of the determinant with their multiplicity. -/
+theorem circleIntegral_logDeriv_finiteDet2 (hU1 : Uᴴ * U = 1) (hU2 : U * Uᴴ = 1)
+    (hT : T.BlockTriangular id) (hMT : Uᴴ * M * U = T) {c : ℂ} {r : ℝ} (hr : 0 < r)
+    (hne : ∀ z ∈ sphere c r, ∀ i, 1 + z * T i i ≠ 0) :
+    (∮ z in C(c, r), logDeriv (finiteDet2 M) z)
+      = 2 * Real.pi * Complex.I *
+        ((Finset.univ.filter fun i : m => T i i ≠ 0 ∧ -(T i i)⁻¹ ∈ ball c r).card : ℂ) := by
+  have hcong : ∀ z ∈ sphere c r,
+      logDeriv (finiteDet2 M) z = ∑ i : m, (T i i / (1 + z * T i i) - T i i) := fun z hz =>
+    logDeriv_finiteDet2 hU1 hU2 hT hMT (hne z hz)
+  have hci : ∀ i : m, CircleIntegrable (fun z : ℂ => T i i / (1 + z * T i i) - T i i) c r :=
+    fun i => circleIntegrable_schurFactor hr (fun z hz => hne z hz i)
+  have hterm : ∀ i : m, (∮ z in C(c, r), (T i i / (1 + z * T i i) - T i i))
+      = if T i i ≠ 0 ∧ -(T i i)⁻¹ ∈ ball c r then 2 * Real.pi * Complex.I else 0 := by
+    intro i
+    by_cases ht : T i i = 0
+    · rw [if_neg (by simp [ht]),
+        show (fun z : ℂ => T i i / (1 + z * T i i) - T i i) = fun _ : ℂ => (0 : ℂ) from
+          funext fun z => by rw [ht]; simp]
+      exact circleIntegral_const_eq_zero 0 c hr.le
+    · by_cases hin : -(T i i)⁻¹ ∈ ball c r
+      · rw [if_pos ⟨ht, hin⟩]
+        exact circleIntegral_schurFactor_inside hr ht (fun z hz => hne z hz i) hin
+      · rw [if_neg (by tauto)]
+        exact circleIntegral_schurFactor_outside hr ht (fun z hz => hne z hz i) hin
+  calc (∮ z in C(c, r), logDeriv (finiteDet2 M) z)
+      = ∮ z in C(c, r), ∑ i : m, (T i i / (1 + z * T i i) - T i i) :=
+        circleIntegral.integral_congr hr.le hcong
+    _ = ∑ i : m, ∮ z in C(c, r), (T i i / (1 + z * T i i) - T i i) :=
+        circleIntegral.integral_fun_sum fun i _ => hci i
+    _ = ∑ i : m, if T i i ≠ 0 ∧ -(T i i)⁻¹ ∈ ball c r then 2 * Real.pi * Complex.I else 0 :=
+        Finset.sum_congr rfl fun i _ => hterm i
+    _ = 2 * Real.pi * Complex.I *
+        ((Finset.univ.filter fun i : m => T i i ≠ 0 ∧ -(T i i)⁻¹ ∈ ball c r).card : ℂ) := by
+        rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
+        ring
 
 end GaloisForLFunctions.HTGeometry

@@ -152,21 +152,21 @@ noncomputable def toContinuousSesquilinearFormOn (Q : ContinuousSchwartzSesquili
     Q.toContinuousSesquilinearFormOn u v = Q u v := rfl
 
 /-- The left radical of a continuous sesquilinear form on Schwartz space. -/
-noncomputable def leftRadical (Q : ContinuousSchwartzSesquilinearForm) :
+noncomputable def generalLeftRadical (Q : ContinuousSchwartzSesquilinearForm) :
     Submodule ℂ 𝓢(ℝ, ℂ) :=
   Q.toContinuousSesquilinearFormOn.leftRadical
 
-theorem mem_leftRadical_iff (Q : ContinuousSchwartzSesquilinearForm) (u : 𝓢(ℝ, ℂ)) :
-    u ∈ Q.leftRadical ↔ ∀ v, Q u v = 0 := Iff.rfl
+theorem mem_generalLeftRadical_iff (Q : ContinuousSchwartzSesquilinearForm) (u : 𝓢(ℝ, ℂ)) :
+    u ∈ Q.generalLeftRadical ↔ ∀ v, Q u v = 0 := Iff.rfl
 
 /-- **The left radical of a continuous sesquilinear form on Schwartz space is closed.** -/
-theorem isClosed_leftRadical (Q : ContinuousSchwartzSesquilinearForm) :
-    IsClosed (Q.leftRadical : Set 𝓢(ℝ, ℂ)) :=
+theorem isClosed_generalLeftRadical (Q : ContinuousSchwartzSesquilinearForm) :
+    IsClosed (Q.generalLeftRadical : Set 𝓢(ℝ, ℂ)) :=
   Q.toContinuousSesquilinearFormOn.isClosed_leftRadical
 
 /-- **A form with dense left radical on Schwartz space vanishes.** -/
-theorem eq_zero_of_dense_leftRadical (Q : ContinuousSchwartzSesquilinearForm)
-    (hdense : Dense (Q.leftRadical : Set 𝓢(ℝ, ℂ))) (u v : 𝓢(ℝ, ℂ)) : Q u v = 0 :=
+theorem eq_zero_of_dense_generalLeftRadical (Q : ContinuousSchwartzSesquilinearForm)
+    (hdense : Dense (Q.generalLeftRadical : Set 𝓢(ℝ, ℂ))) (u v : 𝓢(ℝ, ℂ)) : Q u v = 0 :=
   Q.toContinuousSesquilinearFormOn.eq_zero_of_dense_leftRadical hdense u v
 
 end ContinuousSchwartzSesquilinearForm

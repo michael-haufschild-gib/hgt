@@ -283,40 +283,27 @@ not an RH result.
 
 ## Lean status
 
-The formal surface already verifies the algebraic kernels:
+`[LEAN-PROVED]` The closed capstone is
+`freeScalar_completePersistentGaugeReduction` in
+`formal/GaloisForLFunctions/HTGeometry/CompleteScalarPersistentGaugeReduction.lean`.
 
-```text
-stableRangeCoreAlgEquiv
-map_stableRangeCore_eq_of_commuting_algEquiv
-stableRangeCoreSymmetryAlgEquiv
-algHom_preserves_character_of_commuting
-logDeriv_fixed_of_eigenvector
-logDeriv_unit_character_of_semilinear
-deriv_fixed_of_translation
-pow_fixed_of_eigenvector
-schwarzian_fixed_of_projective_semiconjugacy
-```
+Lean now proves, without theorem hypotheses replacing mathematical content:
 
-The branch infrastructure is now substantially stronger:
+- exact erased-versus-nonerased stable-core XOR on the canonical scalar free differential field;
+- unrestricted differential Lüroth generation inside the induced stable-core differential field;
+- exhaustive and pairwise mutually exclusive `1`, `mu_N`, `G_m`, and `G_a` branches, including a
+  cross-coordinate proof that multiplicative and additive Möbius generators cannot coexist;
+- exact cyclic fixed fields, hypertranscendental boundary generators, reconstruction, rank-one
+  differential equations, and derivation-preserving Galois groups in every branch;
+- the hypertranscendental Schwarzian differential field as a universal projective boundary inside
+  the exact cyclic fixed field; and
+- charged clock compatibility through `persistent_core_clock_character_dichotomy`.
 
-- `ScalarDifferentialRationalOrder` proves differential-order additivity and forces a differential
-  automorphism and its inverse to have order zero on a free generator.
-- `RatFuncMobiusEquiv`, `RatFuncAffineNormalForm`, `RatFuncProjectiveNormalForm`, and
-  `RatFuncProjectiveCyclicClassification` construct every projective coordinate automorphism and
-  classify it as identity, nontrivial finite cyclic scaling, infinite-order scaling, or unit
-  translation over an algebraically closed field.
-- `ScalarLogCurrentReconstruction`, `ScalarDifferentialTorsor`, and
-  `ScalarFiniteDifferentialTorsor` prove the charged `G_m` and `mu_N` reconstruction, exact fixed
-  fields, and derivation-preserving Galois groups.
-- `ScalarAdditiveDifferentialTorsor` proves the `G_a` derivative field, exact additive fixed field,
-  and derivation-preserving Galois group.
-
-All of these leaves have exact green builds and standard-axiom audits.  The remaining theorem-level
-core is unrestricted differential Lüroth for an arbitrary intermediate differential field, its
-application to the stable intersection, the exact cyclic-closure packaging, and the single
-mutually-exclusive four-branch capstone.  The differential-Lüroth characteristic relation,
-pseudo-reduction, saturation, and coefficient-ratio foundations are active implementation work;
-no placeholder axiom is introduced.
+Supporting leaves are `ScalarPersistentGaugeBranchInvariants`,
+`ScalarRadicalDifferentialEquation`, `JetFieldConstantKernel`, and
+`ScalarDifferentialInversiveCoreProjectiveLaw`. Direct Lean checks and targeted builds pass. Axiom
+audits report only `propext`, `Classical.choice`, and `Quot.sound`; targeted forbidden-token scans
+find no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration.
 
 ## Gates
 
@@ -328,7 +315,7 @@ no placeholder axiom is introduced.
 - [x] differential automorphism order-zero and projective cyclic normal-form parents formalized
 - [x] finite multiplicative, infinite multiplicative, and additive differential torsors and exact
   branch fixed fields formalized
-- [ ] 2 -> 3 formalized: finish unrestricted differential Luroth, stable-core assembly, cyclic
+- [x] 2 -> 3 formalized: unrestricted differential Luroth, stable-core assembly, cyclic
   closure packaging, and the mutually-exclusive four-branch capstone
 - [ ] 3 -> 4 publication-ready: specialist external novelty audit and standalone scalar paper
 

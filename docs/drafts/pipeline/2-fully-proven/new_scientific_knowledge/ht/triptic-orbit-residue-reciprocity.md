@@ -868,3 +868,42 @@ cone-source terms pair off under `logDeriv_coneProduct_shift` into four single-i
 pair off under `logDeriv_singleProduct_shift` into two atoms; and `expChar_atom_sum` evaluates the
 two atoms to `-1`, giving the constant `-2πi`.  No analytic input beyond the two product shift
 relations is used.
+
+## Lean progress — the residue normal form on one orbit
+
+The kernel identification is now formal down to a single remaining step.  Five new modules, all
+wired into `GaloisForLFunctions.HTGeometry`, all `#print axioms`-clean:
+
+```text
+TripticEntireRigidity          const_of_entire_of_periodic_of_mixed_const — an ENTIRE member of `Q`
+                                is constant AND its mixed constant `C` is forced to `0`.  Two
+                                Liouvilles: `Δ_σ f` is entire, `1`-periodic and changes by `C` under
+                                `τ`, so its derivative is lattice-periodic hence constant, so it is
+                                affine, and a genuine period kills both the slope and `C`
+MeromorphicLogDerivLocalForm   laurentCoeff_logDeriv_eq_zero_of_le — a logarithmic derivative has NO
+                                Laurent coefficient below the residue.  The corpus previously
+                                computed only the residue itself
+JacobiThetaSourcePrincipalPart analyticOrderAt_jacobiTheta₂_eq_one (every theta zero is simple) and
+                                the COMPLETE principal part of `Ψ_θ = δ log θ`: residue `1` on the
+                                odd half-period orbit, nothing anywhere else
+TripticSeparatedPrincipalPart  exists_finiteSupport_separation_of_orbit_sum_eq_zero — a vanishing
+                                orbital divisor makes both separated families of the coefficient
+                                array FINITELY SUPPORTED, i.e. confines the poles to finitely many
+                                full `σ`-lines and finitely many full `τ`-lines
+TripticLineAtom /              rowAtom, colAtom and the incidence law: a `σ`-line atom has residue
+TripticAtomIncidence /          `1` at every orbit point of its own row and `0` on every other row,
+TripticResidueNormalForm        by `ℚ`-independence alone; hence
+                                exists_atomCombination_residue_normalForm — every source of
+                                vanishing orbital divisor has the residues of an explicit finite
+                                combination of theta-source translates at every orbit point
+```
+
+Also built and reusable well beyond this card:
+`DifferentialAlgebraicAntiderivative.differentialAlgebraicOver_of_deriv` — differential algebraicity
+is stable under **integration**, not only differentiation (`k⟨y′⟩` has finite transcendence degree,
+`y` satisfies `y′ = c` over it, then finite-transcendence descent), together with its analytic form
+`differentiallyAlgebraic_of_deriv`, a pure jet reindexing.
+
+What is left is the extension from order `-1` to all orders (the jets of the theta source, with pole
+order `j+1`), the passage from one orbit to the finitely many that occur, and the application of
+`const_of_entire_of_periodic_of_mixed_const` to the pole-free remainder.

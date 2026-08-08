@@ -715,6 +715,8 @@ significant new classification or a routine synthesis once the question is posed
 
 ## Gates
 
+- [x] 2 -> 3: exact imaginary-ray source and annihilator theorem formalized unconditionally,
+  umbrella-wired, targeted-build verified, and axiom-audited;
 - [x] double-sine logarithmic-derivative equations isolated;
 - [x] common-constant collapse proved;
 - [x] two-cylinder coefficient field separated;

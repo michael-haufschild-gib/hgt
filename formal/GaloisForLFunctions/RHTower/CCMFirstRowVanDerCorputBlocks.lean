@@ -329,10 +329,10 @@ Bessel symbols.  The endpoint phases cancel identically, leaving an elementary a
 with no integral in it at all. -/
 def ampFourthRoot (s k x : ℝ) : ℝ := 1 / Real.sqrt (Real.sqrt (ampPoly s k x))
 
-theorem ampPoly_pos {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x) :
+theorem ampPoly_pos_of_one_lt {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 1 < k) (hx : 1 < x) :
     0 < ampPoly s k x := by
-  have hk0 : (0 : ℝ) < k := by linarith
-  have hksq : (4 : ℝ) ≤ k ^ 2 := by nlinarith
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk
+  have hksq : (1 : ℝ) < k ^ 2 := by nlinarith
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
   have hx1 : (1 : ℝ) < x ^ 2 := by nlinarith
   have h1 : (0 : ℝ) < x ^ 2 - 1 := by linarith
@@ -342,10 +342,16 @@ theorem ampPoly_pos {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x
   rw [ampPoly]
   positivity
 
-theorem ampPolyDeriv_pos {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x) :
+/-- Compatibility wrapper for the uniform integer-dilation regime. -/
+theorem ampPoly_pos {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x) :
+    0 < ampPoly s k x :=
+  ampPoly_pos_of_one_lt hs1 (by linarith) hx
+
+theorem ampPolyDeriv_pos_of_one_lt {s k x : ℝ}
+    (hs1 : s ≤ 1 / 2) (hk : 1 < k) (hx : 1 < x) :
     0 < ampPolyDeriv s k x := by
-  have hk0 : (0 : ℝ) < k := by linarith
-  have hksq : (4 : ℝ) ≤ k ^ 2 := by nlinarith
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk
+  have hksq : (1 : ℝ) < k ^ 2 := by nlinarith
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
   have hx1 : (1 : ℝ) < x ^ 2 := by nlinarith
   have h1 : (0 : ℝ) < x ^ 2 - 1 := by linarith
@@ -354,6 +360,11 @@ theorem ampPolyDeriv_pos {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 
   have h4 : (0 : ℝ) < k ^ 2 * x ^ 2 - s := by nlinarith
   rw [ampPolyDeriv]
   positivity
+
+/-- Compatibility wrapper for the uniform integer-dilation regime. -/
+theorem ampPolyDeriv_pos {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x) :
+    0 < ampPolyDeriv s k x :=
+  ampPolyDeriv_pos_of_one_lt hs1 (by linarith) hx
 
 theorem hasDerivAt_ampPoly (s k x : ℝ) : HasDerivAt (ampPoly s k) (ampPolyDeriv s k x) x := by
   have hsq : HasDerivAt (fun t : ℝ => t ^ 2) (2 * x) x := by
@@ -383,12 +394,13 @@ theorem hasDerivAt_ampPoly (s k x : ℝ) : HasDerivAt (ampPoly s k) (ampPolyDeri
 /-- **The phase factors cancel.**  The product of the two Liouville–Green amplitudes against the two
 Bessel symbol prefactors is the elementary fourth root: the two `xi^{1/2}` numerators of the
 amplitudes cancel the two `xi^{-1/2}` symbol factors exactly. -/
-theorem xiAmplitude_mul_eq {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x) :
+theorem xiAmplitude_mul_eq_of_one_lt {s k x : ℝ}
+    (hs1 : s ≤ 1 / 2) (hk : 1 < k) (hx : 1 < x) :
     xiAmplitude s x * xiAmplitude s (k * x)
       = ampFourthRoot s k x
         * (Real.sqrt (xiEndpointPhase s x) * Real.sqrt (xiEndpointPhase s (k * x))) := by
-  have hk0 : (0 : ℝ) < k := by linarith
-  have hksq : (4 : ℝ) ≤ k ^ 2 := by nlinarith
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk
+  have hksq : (1 : ℝ) < k ^ 2 := by nlinarith
   have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
   have hx1 : (1 : ℝ) < x ^ 2 := by nlinarith
   have h1 : (0 : ℝ) < x ^ 2 - 1 := by linarith
@@ -410,6 +422,13 @@ theorem xiAmplitude_mul_eq {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx 
     positivity
   rw [xiAmplitude, xiAmplitude, ampFourthRoot, hden]
   field_simp
+
+/-- Compatibility wrapper for the uniform integer-dilation regime. -/
+theorem xiAmplitude_mul_eq {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x) :
+    xiAmplitude s x * xiAmplitude s (k * x)
+      = ampFourthRoot s k x
+        * (Real.sqrt (xiEndpointPhase s x) * Real.sqrt (xiEndpointPhase s (k * x))) :=
+  xiAmplitude_mul_eq_of_one_lt hs1 (by linarith) hx
 
 /-- The amplitude is bounded by `2 k^{-1/2}` from the window on: the two far factors contribute `k²`
 and the near ones a constant. -/
@@ -463,9 +482,10 @@ theorem ampFourthRoot_le {s k x : ℝ} (_hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk 
 def ampFourthRootDeriv (s k x : ℝ) : ℝ :=
   -(ampPolyDeriv s k x) / (4 * ampPoly s k x * Real.sqrt (Real.sqrt (ampPoly s k x)))
 
-theorem hasDerivAt_ampFourthRoot {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x) :
+theorem hasDerivAt_ampFourthRoot_of_one_lt {s k x : ℝ}
+    (hs1 : s ≤ 1 / 2) (hk : 1 < k) (hx : 1 < x) :
     HasDerivAt (ampFourthRoot s k) (ampFourthRootDeriv s k x) x := by
-  have hW : 0 < ampPoly s k x := ampPoly_pos hs1 hk hx
+  have hW : 0 < ampPoly s k x := ampPoly_pos_of_one_lt hs1 hk hx
   have hGpos : 0 < Real.sqrt (ampPoly s k x) := Real.sqrt_pos.mpr hW
   have hFpos : 0 < Real.sqrt (Real.sqrt (ampPoly s k x)) := Real.sqrt_pos.mpr hGpos
   have hfun : ampFourthRoot s k = fun t => (Real.sqrt (Real.sqrt (ampPoly s k t)))⁻¹ := by
@@ -495,25 +515,39 @@ theorem hasDerivAt_ampFourthRoot {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k
   rw [hfun, ← hval]
   exact h3
 
-theorem ampFourthRootDeriv_nonpos {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x) :
+/-- Compatibility wrapper for the uniform integer-dilation regime. -/
+theorem hasDerivAt_ampFourthRoot {s k x : ℝ}
+    (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x) :
+    HasDerivAt (ampFourthRoot s k) (ampFourthRootDeriv s k x) x :=
+  hasDerivAt_ampFourthRoot_of_one_lt hs1 (by linarith) hx
+
+theorem ampFourthRootDeriv_nonpos_of_one_lt {s k x : ℝ}
+    (hs1 : s ≤ 1 / 2) (hk : 1 < k) (hx : 1 < x) :
     ampFourthRootDeriv s k x ≤ 0 := by
-  have hW : 0 < ampPoly s k x := ampPoly_pos hs1 hk hx
-  have hD : 0 < ampPolyDeriv s k x := ampPolyDeriv_pos hs1 hk hx
+  have hW : 0 < ampPoly s k x := ampPoly_pos_of_one_lt hs1 hk hx
+  have hD : 0 < ampPolyDeriv s k x := ampPolyDeriv_pos_of_one_lt hs1 hk hx
   have hFpos : 0 < Real.sqrt (Real.sqrt (ampPoly s k x)) :=
     Real.sqrt_pos.mpr (Real.sqrt_pos.mpr hW)
   rw [ampFourthRootDeriv, div_nonpos_iff]
   right
   exact ⟨by linarith, mul_nonneg (by linarith) hFpos.le⟩
 
+/-- Compatibility wrapper for the uniform integer-dilation regime. -/
+theorem ampFourthRootDeriv_nonpos {s k x : ℝ}
+    (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x) :
+    ampFourthRootDeriv s k x ≤ 0 :=
+  ampFourthRootDeriv_nonpos_of_one_lt hs1 (by linarith) hx
+
 theorem continuousOn_ampPoly (s k : ℝ) : ContinuousOn (ampPoly s k) (Set.Ioi 1) := by
   unfold ampPoly
   fun_prop
 
-theorem continuousOn_ampFourthRootDeriv {s k : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) :
+theorem continuousOn_ampFourthRootDeriv_of_one_lt {s k : ℝ}
+    (hs1 : s ≤ 1 / 2) (hk : 1 < k) :
     ContinuousOn (ampFourthRootDeriv s k) (Set.Ioi 1) := by
   intro x hx
   have hx1 : (1 : ℝ) < x := hx
-  have hW : 0 < ampPoly s k x := ampPoly_pos hs1 hk hx1
+  have hW : 0 < ampPoly s k x := ampPoly_pos_of_one_lt hs1 hk hx1
   have hnum : ContinuousWithinAt (fun t : ℝ => -(ampPolyDeriv s k t)) (Set.Ioi 1) x := by
     refine ContinuousWithinAt.neg ?_
     refine ContinuousAt.continuousWithinAt ?_
@@ -530,14 +564,25 @@ theorem continuousOn_ampFourthRootDeriv {s k : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 
     positivity
   exact hnum.div hden hne
 
+/-- Compatibility wrapper for the uniform integer-dilation regime. -/
+theorem continuousOn_ampFourthRootDeriv {s k : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) :
+    ContinuousOn (ampFourthRootDeriv s k) (Set.Ioi 1) :=
+  continuousOn_ampFourthRootDeriv_of_one_lt hs1 (by linarith)
+
 /-- The amplitude of the leading term is positive. -/
-theorem ampFourthRoot_pos {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x) :
+theorem ampFourthRoot_pos_of_one_lt {s k x : ℝ}
+    (hs1 : s ≤ 1 / 2) (hk : 1 < k) (hx : 1 < x) :
     0 < ampFourthRoot s k x := by
-  have hW : 0 < ampPoly s k x := ampPoly_pos hs1 hk hx
+  have hW : 0 < ampPoly s k x := ampPoly_pos_of_one_lt hs1 hk hx
   have hFpos : 0 < Real.sqrt (Real.sqrt (ampPoly s k x)) :=
     Real.sqrt_pos.mpr (Real.sqrt_pos.mpr hW)
   rw [ampFourthRoot]
   positivity
+
+/-- Compatibility wrapper for the uniform integer-dilation regime. -/
+theorem ampFourthRoot_pos {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x) :
+    0 < ampFourthRoot s k x :=
+  ampFourthRoot_pos_of_one_lt hs1 (by linarith) hx
 
 /-! ## Strict concavity of the difference phase -/
 
@@ -617,6 +662,252 @@ theorem continuousOn_xiSpeedDeriv {s : ℝ} (hs1 : s ≤ 1) :
     fun_prop
   have hne : ((t ^ 2 - 1) ^ 2 * xiSpeed s t) ≠ 0 := by positivity
   exact hnum.div hden hne
+
+/-! ## Fixed-ratio first-derivative blocks -/
+
+/-- On every fixed compact exterior block, strict concavity has a positive curvature floor uniform
+over `0 ≤ s ≤ 1/2`. -/
+theorem exists_fixedRatioCurvatureFloor {k p q : ℝ}
+    (hk : 1 < k) (hp : 1 < p) (hpq : p ≤ q) :
+    ∃ η : ℝ, 0 < η ∧ ∀ s ∈ Set.Icc (0 : ℝ) (1 / 2), ∀ x ∈ Set.Icc p q,
+      η ≤ -(xiSpeedDeriv s x - k ^ 2 * xiSpeedDeriv s (k * x)) := by
+  let K : Set (ℝ × ℝ) := Set.Icc (0 : ℝ) (1 / 2) ×ˢ Set.Icc p q
+  let F : ℝ × ℝ → ℝ := fun z =>
+    -(xiSpeedDeriv z.1 z.2 - k ^ 2 * xiSpeedDeriv z.1 (k * z.2))
+  have hK : IsCompact K := isCompact_Icc.prod isCompact_Icc
+  have hKne : K.Nonempty := by
+    exact (Set.nonempty_Icc.mpr (by norm_num)).prod (Set.nonempty_Icc.mpr hpq)
+  have hFcont : ContinuousOn F K := by
+    intro z hz
+    have hx : 1 < z.2 := hp.trans_le hz.2.1
+    have hk0 : 0 < k := lt_trans zero_lt_one hk
+    have hkx : 1 < k * z.2 := by nlinarith
+    have hs1 : z.1 ≤ 1 / 2 := hz.1.2
+    have hnearRad : 0 < (z.2 ^ 2 - z.1) / (z.2 ^ 2 - 1) := by
+      apply div_pos <;> nlinarith
+    have hfarRad : 0 < ((k * z.2) ^ 2 - z.1) / ((k * z.2) ^ 2 - 1) := by
+      apply div_pos <;> nlinarith
+    have hnearSqrt : Real.sqrt ((z.2 ^ 2 - z.1) / (z.2 ^ 2 - 1)) ≠ 0 :=
+      (Real.sqrt_pos.mpr hnearRad).ne'
+    have hfarSqrt : Real.sqrt (((k * z.2) ^ 2 - z.1) / ((k * z.2) ^ 2 - 1)) ≠ 0 :=
+      (Real.sqrt_pos.mpr hfarRad).ne'
+    have hnearBase : z.2 ^ 2 - 1 ≠ 0 := by nlinarith
+    have hfarBase : (k * z.2) ^ 2 - 1 ≠ 0 := by nlinarith
+    have hnearDen :
+        (z.2 ^ 2 - 1) ^ 2 * Real.sqrt ((z.2 ^ 2 - z.1) / (z.2 ^ 2 - 1)) ≠ 0 := by
+      exact mul_ne_zero (pow_ne_zero _ hnearBase) hnearSqrt
+    have hfarDen :
+        ((k * z.2) ^ 2 - 1) ^ 2 *
+          Real.sqrt (((k * z.2) ^ 2 - z.1) / ((k * z.2) ^ 2 - 1)) ≠ 0 := by
+      exact mul_ne_zero (pow_ne_zero _ hfarBase) hfarSqrt
+    have hnearRadCont : ContinuousAt
+        (fun w : ℝ × ℝ => (w.2 ^ 2 - w.1) / (w.2 ^ 2 - 1)) z := by
+      exact (by fun_prop).div (by fun_prop) hnearBase
+    have hfarRadCont : ContinuousAt
+        (fun w : ℝ × ℝ => ((k * w.2) ^ 2 - w.1) / ((k * w.2) ^ 2 - 1)) z := by
+      exact (by fun_prop).div (by fun_prop) hfarBase
+    have hnearTerm : ContinuousAt (fun w : ℝ × ℝ =>
+        w.2 * (w.1 - 1) /
+          ((w.2 ^ 2 - 1) ^ 2 * Real.sqrt ((w.2 ^ 2 - w.1) / (w.2 ^ 2 - 1)))) z := by
+      exact (by fun_prop).div ((by fun_prop).mul hnearRadCont.sqrt) hnearDen
+    have hfarTerm : ContinuousAt (fun w : ℝ × ℝ =>
+        k * w.2 * (w.1 - 1) /
+          (((k * w.2) ^ 2 - 1) ^ 2 *
+            Real.sqrt (((k * w.2) ^ 2 - w.1) / ((k * w.2) ^ 2 - 1)))) z := by
+      exact (by fun_prop).div ((by fun_prop).mul hfarRadCont.sqrt) hfarDen
+    apply ContinuousAt.continuousWithinAt
+    dsimp only [F]
+    unfold xiSpeedDeriv xiSpeed
+    exact (hnearTerm.sub (continuousAt_const.mul hfarTerm)).neg
+  obtain ⟨z₀, hz₀, hmin⟩ := hK.exists_isMinOn hKne hFcont
+  have hpos : ∀ z ∈ K, 0 < F z := by
+    intro z hz
+    exact neg_pos.mpr (xiDiffSecond_neg hz.1.2 hk (hp.trans_le hz.2.1))
+  refine ⟨F z₀, hpos z₀ hz₀, ?_⟩
+  intro s hs x hx
+  exact (isMinOn_iff.mp hmin) (s, x) ⟨hs, hx⟩
+
+/-- Weighted stationary-phase cancellation on a block with an arbitrary supplied lower curvature
+bound.  This is the fixed-ratio counterpart of the explicit uniform window theorem below. -/
+theorem norm_integral_neg_diffPhase_block_le_of_second_ge
+    {s c k a b η : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 1 < k)
+    (hc : 0 < c) (hη : 0 < η) (hab : a ≤ b) (ha : 1 < a)
+    (hcurv : ∀ x ∈ Set.uIcc a b,
+      η ≤ -(xiSpeedDeriv s x - k ^ 2 * xiSpeedDeriv s (k * x))) :
+    ‖∫ x in a..b, (ampFourthRoot s k x : ℂ)
+        * Complex.exp (((-(c * xiDiffPhase s k x) : ℝ) : ℂ) * Complex.I)‖
+      ≤ 10 * ampFourthRoot s k a / Real.sqrt (c * η) := by
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk
+  have hsub : Set.uIcc a b ⊆ Set.Ioi 1 := by
+    rw [Set.uIcc_of_le hab]
+    intro x hx
+    exact lt_of_lt_of_le ha hx.1
+  have hx1 : ∀ x ∈ Set.uIcc a b, (1 : ℝ) < x := fun x hx => hsub hx
+  have hkx : ∀ x ∈ Set.uIcc a b, (1 : ℝ) < k * x := by
+    intro x hx
+    have := hx1 x hx
+    nlinarith
+  set lam : ℝ := c * η with hlamdef
+  have hlam : 0 < lam := by rw [hlamdef]; positivity
+  have hw : ∀ x ∈ Set.uIcc a b,
+      HasDerivAt (ampFourthRoot s k) (ampFourthRootDeriv s k x) x :=
+    fun x hx => hasDerivAt_ampFourthRoot_of_one_lt hs1 hk (hx1 x hx)
+  have hw'c : ContinuousOn (ampFourthRootDeriv s k) (Set.uIcc a b) :=
+    (continuousOn_ampFourthRootDeriv_of_one_lt hs1 hk).mono hsub
+  have hwnn : ∀ x ∈ Set.uIcc a b, 0 ≤ ampFourthRoot s k x :=
+    fun x hx => (ampFourthRoot_pos_of_one_lt hs1 hk (hx1 x hx)).le
+  have hwanti : ∀ x ∈ Set.uIcc a b, ampFourthRootDeriv s k x ≤ 0 :=
+    fun x hx => ampFourthRootDeriv_nonpos_of_one_lt hs1 hk (hx1 x hx)
+  have hg : ∀ x ∈ Set.uIcc a b,
+      HasDerivAt (fun t : ℝ => -(c * xiDiffPhase s k t)) (-(c * xiDiffSpeed s k x)) x :=
+    fun x hx => ((hasDerivAt_xiDiffPhase hs0 (hx1 x hx) (hkx x hx)).const_mul c).neg
+  have hg' : ∀ x ∈ Set.uIcc a b,
+      HasDerivAt (fun t : ℝ => -(c * xiDiffSpeed s k t))
+        (-(c * (xiSpeedDeriv s x - k ^ 2 * xiSpeedDeriv s (k * x)))) x :=
+    fun x hx => ((hasDerivAt_xiDiffSpeed (by linarith) (hx1 x hx) (hkx x hx)).const_mul c).neg
+  have hg''c : ContinuousOn
+      (fun t : ℝ => -(c * (xiSpeedDeriv s t - k ^ 2 * xiSpeedDeriv s (k * t))))
+      (Set.uIcc a b) := by
+    have h1 : ContinuousOn (xiSpeedDeriv s) (Set.uIcc a b) :=
+      (continuousOn_xiSpeedDeriv (by linarith)).mono hsub
+    have h2 : ContinuousOn (fun t : ℝ => xiSpeedDeriv s (k * t)) (Set.uIcc a b) := by
+      refine (continuousOn_xiSpeedDeriv (s := s) (by linarith)).comp
+        ((continuous_const.mul continuous_id).continuousOn) ?_
+      intro x hx
+      exact hkx x hx
+    exact (continuousOn_const.mul (h1.sub (continuousOn_const.mul h2))).neg
+  have hg''lb : ∀ x ∈ Set.uIcc a b,
+      lam ≤ -(c * (xiSpeedDeriv s x - k ^ 2 * xiSpeedDeriv s (k * x))) := by
+    intro x hx
+    rw [hlamdef]
+    have hmul := mul_le_mul_of_nonneg_left (hcurv x hx) hc.le
+    nlinarith
+  have hmain := _root_.RHTower.norm_integral_weight_cexp_secondDeriv hab hlam hw hw'c hwnn hwanti
+    hg hg' hg''c hg''lb
+  simpa [hlamdef] using hmain
+
+/-- Weighted first-derivative cancellation before the stationary point, with an arbitrary supplied
+speed floor.  Unlike the uniform integer-dilation estimate below, this theorem only needs `k > 1`. -/
+theorem norm_integral_diffPhase_block_le_of_speed_ge
+    {s c k a b η : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 1 < k)
+    (hc : 0 < c) (hη : 0 < η) (hab : a ≤ b) (ha : 1 < a)
+    (hfloor : ∀ x ∈ Set.uIcc a b, η ≤ xiDiffSpeed s k x) :
+    ‖∫ x in a..b, (ampFourthRoot s k x : ℂ)
+        * Complex.exp (((c * xiDiffPhase s k x : ℝ) : ℂ) * Complex.I)‖
+      ≤ 4 * ampFourthRoot s k a / (c * η) := by
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk
+  have hsub : Set.uIcc a b ⊆ Set.Ioi 1 := by
+    rw [Set.uIcc_of_le hab]
+    intro x hx
+    exact lt_of_lt_of_le ha hx.1
+  have hx1 : ∀ x ∈ Set.uIcc a b, (1 : ℝ) < x := fun x hx => hsub hx
+  have hkx : ∀ x ∈ Set.uIcc a b, (1 : ℝ) < k * x := by
+    intro x hx
+    have := hx1 x hx
+    nlinarith
+  set lam : ℝ := c * η with hlamdef
+  have hlam : 0 < lam := by rw [hlamdef]; positivity
+  have hw : ∀ x ∈ Set.uIcc a b,
+      HasDerivAt (ampFourthRoot s k) (ampFourthRootDeriv s k x) x :=
+    fun x hx => hasDerivAt_ampFourthRoot_of_one_lt hs1 hk (hx1 x hx)
+  have hw'c : ContinuousOn (ampFourthRootDeriv s k) (Set.uIcc a b) :=
+    (continuousOn_ampFourthRootDeriv_of_one_lt hs1 hk).mono hsub
+  have hwnn : ∀ x ∈ Set.uIcc a b, 0 ≤ ampFourthRoot s k x :=
+    fun x hx => (ampFourthRoot_pos_of_one_lt hs1 hk (hx1 x hx)).le
+  have hwanti : ∀ x ∈ Set.uIcc a b, ampFourthRootDeriv s k x ≤ 0 :=
+    fun x hx => ampFourthRootDeriv_nonpos_of_one_lt hs1 hk (hx1 x hx)
+  have hg : ∀ x ∈ Set.uIcc a b,
+      HasDerivAt (fun t : ℝ => c * xiDiffPhase s k t) (c * xiDiffSpeed s k x) x :=
+    fun x hx => (hasDerivAt_xiDiffPhase hs0 (hx1 x hx) (hkx x hx)).const_mul c
+  have hg' : ∀ x ∈ Set.uIcc a b,
+      HasDerivAt (fun t : ℝ => c * xiDiffSpeed s k t)
+        (c * (xiSpeedDeriv s x - k ^ 2 * xiSpeedDeriv s (k * x))) x :=
+    fun x hx => (hasDerivAt_xiDiffSpeed (by linarith) (hx1 x hx) (hkx x hx)).const_mul c
+  have hg''c : ContinuousOn
+      (fun t : ℝ => c * (xiSpeedDeriv s t - k ^ 2 * xiSpeedDeriv s (k * t)))
+      (Set.uIcc a b) := by
+    have h1 : ContinuousOn (xiSpeedDeriv s) (Set.uIcc a b) :=
+      (continuousOn_xiSpeedDeriv (by linarith)).mono hsub
+    have h2 : ContinuousOn (fun t : ℝ => xiSpeedDeriv s (k * t)) (Set.uIcc a b) := by
+      refine (continuousOn_xiSpeedDeriv (s := s) (by linarith)).comp
+        ((continuous_const.mul continuous_id).continuousOn) ?_
+      intro x hx
+      exact hkx x hx
+    exact continuousOn_const.mul (h1.sub (continuousOn_const.mul h2))
+  have hg'lb : ∀ x ∈ Set.uIcc a b, lam ≤ c * xiDiffSpeed s k x := by
+    intro x hx
+    rw [hlamdef]
+    exact mul_le_mul_of_nonneg_left (hfloor x hx) hc.le
+  have hg''np : ∀ x ∈ Set.uIcc a b,
+      c * (xiSpeedDeriv s x - k ^ 2 * xiSpeedDeriv s (k * x)) ≤ 0 := by
+    intro x hx
+    have hneg := xiDiffSecond_neg (k := k) hs1 hk (hx1 x hx)
+    nlinarith [hneg, hc.le]
+  have hmain := _root_.RHTower.norm_integral_weight_cexp_le_anti hab hlam hw hw'c hwnn hwanti
+    hg hg' hg''c hg'lb hg''np
+  simpa [hlamdef] using hmain
+
+/-- Weighted first-derivative cancellation after the stationary point, with an arbitrary supplied
+negative speed floor. -/
+theorem norm_integral_neg_diffPhase_block_le_of_speed_le
+    {s c k a b η : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 1 < k)
+    (hc : 0 < c) (hη : 0 < η) (hab : a ≤ b) (ha : 1 < a)
+    (hfloor : ∀ x ∈ Set.uIcc a b, xiDiffSpeed s k x ≤ -η) :
+    ‖∫ x in a..b, (ampFourthRoot s k x : ℂ)
+        * Complex.exp (((-(c * xiDiffPhase s k x) : ℝ) : ℂ) * Complex.I)‖
+      ≤ 4 * ampFourthRoot s k a / (c * η) := by
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk
+  have hsub : Set.uIcc a b ⊆ Set.Ioi 1 := by
+    rw [Set.uIcc_of_le hab]
+    intro x hx
+    exact lt_of_lt_of_le ha hx.1
+  have hx1 : ∀ x ∈ Set.uIcc a b, (1 : ℝ) < x := fun x hx => hsub hx
+  have hkx : ∀ x ∈ Set.uIcc a b, (1 : ℝ) < k * x := by
+    intro x hx
+    have := hx1 x hx
+    nlinarith
+  set lam : ℝ := c * η with hlamdef
+  have hlam : 0 < lam := by rw [hlamdef]; positivity
+  have hw : ∀ x ∈ Set.uIcc a b,
+      HasDerivAt (ampFourthRoot s k) (ampFourthRootDeriv s k x) x :=
+    fun x hx => hasDerivAt_ampFourthRoot_of_one_lt hs1 hk (hx1 x hx)
+  have hw'c : ContinuousOn (ampFourthRootDeriv s k) (Set.uIcc a b) :=
+    (continuousOn_ampFourthRootDeriv_of_one_lt hs1 hk).mono hsub
+  have hwnn : ∀ x ∈ Set.uIcc a b, 0 ≤ ampFourthRoot s k x :=
+    fun x hx => (ampFourthRoot_pos_of_one_lt hs1 hk (hx1 x hx)).le
+  have hwanti : ∀ x ∈ Set.uIcc a b, ampFourthRootDeriv s k x ≤ 0 :=
+    fun x hx => ampFourthRootDeriv_nonpos_of_one_lt hs1 hk (hx1 x hx)
+  have hg : ∀ x ∈ Set.uIcc a b,
+      HasDerivAt (fun t : ℝ => -(c * xiDiffPhase s k t)) (-(c * xiDiffSpeed s k x)) x :=
+    fun x hx => ((hasDerivAt_xiDiffPhase hs0 (hx1 x hx) (hkx x hx)).const_mul c).neg
+  have hg' : ∀ x ∈ Set.uIcc a b,
+      HasDerivAt (fun t : ℝ => -(c * xiDiffSpeed s k t))
+        (-(c * (xiSpeedDeriv s x - k ^ 2 * xiSpeedDeriv s (k * x)))) x :=
+    fun x hx => ((hasDerivAt_xiDiffSpeed (by linarith) (hx1 x hx) (hkx x hx)).const_mul c).neg
+  have hg''c : ContinuousOn
+      (fun t : ℝ => -(c * (xiSpeedDeriv s t - k ^ 2 * xiSpeedDeriv s (k * t))))
+      (Set.uIcc a b) := by
+    have h1 : ContinuousOn (xiSpeedDeriv s) (Set.uIcc a b) :=
+      (continuousOn_xiSpeedDeriv (by linarith)).mono hsub
+    have h2 : ContinuousOn (fun t : ℝ => xiSpeedDeriv s (k * t)) (Set.uIcc a b) := by
+      refine (continuousOn_xiSpeedDeriv (s := s) (by linarith)).comp
+        ((continuous_const.mul continuous_id).continuousOn) ?_
+      intro x hx
+      exact hkx x hx
+    exact (continuousOn_const.mul (h1.sub (continuousOn_const.mul h2))).neg
+  have hg'lb : ∀ x ∈ Set.uIcc a b, lam ≤ -(c * xiDiffSpeed s k x) := by
+    intro x hx
+    rw [hlamdef]
+    have hmul := mul_le_mul_of_nonneg_left (hfloor x hx) hc.le
+    nlinarith
+  have hg''nn : ∀ x ∈ Set.uIcc a b,
+      0 ≤ -(c * (xiSpeedDeriv s x - k ^ 2 * xiSpeedDeriv s (k * x))) := by
+    intro x hx
+    have hneg := xiDiffSecond_neg (k := k) hs1 hk (hx1 x hx)
+    nlinarith [hneg, hc.le]
+  have hmain := _root_.RHTower.norm_integral_weight_cexp_le hab hlam hw hw'c hwnn hwanti
+    hg hg' hg''c hg'lb hg''nn
+  simpa [hlamdef] using hmain
 
 /-- **The window block of `(13)`.**  On any subinterval of the stationary window the leading Bessel
 term obeys the sharp bound `O(c^{-1/2} k^{-2})`, with the explicit constant `80`.

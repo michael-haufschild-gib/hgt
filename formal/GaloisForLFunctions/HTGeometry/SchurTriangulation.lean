@@ -13,7 +13,7 @@ hypothesis and embedded back as `1 ⊕ V`.
 
 Main results:
 * `exists_eigenpair` — a complex matrix of positive size has an eigenvector.
-* `exists_unitary_col_zero` — a unit vector is the first column of a unitary matrix.
+* `exists_unitary_firstColumn` — a unit vector is the first column of a unitary matrix.
 * `exists_schur_triangulation` — `Uᴴ M U = T`, `U` unitary, `T` upper triangular.
 -/
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
@@ -52,7 +52,7 @@ theorem exists_eigenpair (M : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) :
 
 /-- **A unit vector is the first column of a unitary matrix.**  Extend it to an orthonormal basis
 and use the basis vectors as columns. -/
-theorem exists_unitary_col_zero (w : Fin (n + 1) → ℂ)
+theorem exists_unitary_firstColumn (w : Fin (n + 1) → ℂ)
     (hw : ‖(WithLp.toLp 2 w : EuclideanSpace ℂ (Fin (n + 1)))‖ = 1) :
     ∃ U : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ,
       Uᴴ * U = 1 ∧ U * Uᴴ = 1 ∧ ∀ i, U i 0 = w i := by
@@ -146,7 +146,7 @@ theorem exists_schur_triangulation :
       have hcast : (WithLp.toLp 2 w : E) = ‖vE‖⁻¹ • vE := rfl
       rw [hcast]
       exact norm_smul_inv_norm hvE0
-    obtain ⟨U, hU1, hU2, hUcol⟩ := exists_unitary_col_zero w hwnorm
+    obtain ⟨U, hU1, hU2, hUcol⟩ := exists_unitary_firstColumn w hwnorm
     have hMw : M *ᵥ w = μ • w := by
       rw [hwdef, Matrix.mulVec_smul, hv, smul_comm]
     set N : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ := Uᴴ * M * U with hN

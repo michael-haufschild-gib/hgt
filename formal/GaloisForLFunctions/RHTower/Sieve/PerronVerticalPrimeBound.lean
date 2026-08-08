@@ -72,7 +72,7 @@ theorem integral_norm_perron_integrand_le {a : ℕ → ℂ} {s : Finset ℕ} (hs
   refine GaloisForLFunctions.HTGeometry.integral_norm_mul_kernel_le_of_affine_meanSquare hD
     (continuous_perron_kernel_norm hσ)
     (sieveMeanSquareConst_nonneg a s σ hlog) (sieveMeanSquareRate_nonneg a s σ hz hlog)
-    (Real.rpow_nonneg hx.le σ) ht₀0 (fun U hU => ?_) (fun t ht => ?_) M
+    (Real.rpow_nonneg hx.le σ) ht₀0 (fun U hU => ?_) M (fun t ht _ => ?_)
   · exact integral_Icc_normSq_LSeries_le_affine hs0 hsupp hprime σ (by linarith) z Y hY hYz hz hlog
   · exact perron_kernel_norm_le hx (lt_of_lt_of_le ht₀0 ht)
 
@@ -124,9 +124,9 @@ theorem integral_symm_norm_perron_integrand_le {a : ℕ → ℂ} {s : Finset ℕ
     (continuous_perron_kernel_norm hσ) (fun t => perron_kernel_norm_neg x σ t)
     (Real.rpow_nonneg hx.le σ) (by positivity)
     (sieveMeanSquareConst_nonneg a s σ hlog) (sieveMeanSquareRate_nonneg a s σ hz hlog) ht₀0
-    (perron_kernel_norm_le_const hx hσ) (fun t ht => ?_) (fun U hU => ?_) M
-  · exact perron_kernel_norm_le hx (lt_of_lt_of_le ht₀0 ht)
+    (fun t _ => perron_kernel_norm_le_const hx hσ t) (fun U hU => ?_) M (fun t ht _ => ?_)
   · exact integral_Icc_normSq_LSeries_le_affine hs0 hsupp hprime σ (by linarith) z Y hY hYz hz hlog
+  · exact perron_kernel_norm_le hx (lt_of_lt_of_le ht₀0 ht)
 
 end RHTower.Sieve
 end

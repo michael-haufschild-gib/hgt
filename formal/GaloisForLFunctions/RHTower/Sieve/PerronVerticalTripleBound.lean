@@ -53,9 +53,9 @@ theorem integral_norm_perron_triple_le {A B f : ℕ → ℂ} {sA sB : Finset ℕ
     (hBprime : ∀ n ∈ sB, B n ≠ 0 → n.Prime)
     {σ x t₀ V : ℝ} (hσ : 0 < σ) (hx : 0 < x) (ht₀ : 1 ≤ t₀) (hV : 0 ≤ V)
     (hFc : Continuous fun t : ℝ => LSeries f ((σ : ℂ) + (t : ℝ) * I))
-    (hFbound : ∀ t : ℝ, ‖LSeries f ((σ : ℂ) + (t : ℝ) * I)‖ ≤ V)
     (zA YA zB YB : ℕ) (hYA : 1 ≤ YA) (hYzA : YA ≤ zA) (hzA : 2 ≤ zA) (hlogA : 0 < Real.log YA)
-    (hYB : 1 ≤ YB) (hYzB : YB ≤ zB) (hzB : 2 ≤ zB) (hlogB : 0 < Real.log YB) (M : ℕ) :
+    (hYB : 1 ≤ YB) (hYzB : YB ≤ zB) (hzB : 2 ≤ zB) (hlogB : 0 < Real.log YB) (M : ℕ)
+    (hFbound : ∀ t : ℝ, |t| ≤ t₀ * 2 ^ M → ‖LSeries f ((σ : ℂ) + (t : ℝ) * I)‖ ≤ V) :
     (∫ t in t₀..(t₀ * 2 ^ M),
         ‖LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
             * LSeries f ((σ : ℂ) + (t : ℝ) * I)
@@ -76,15 +76,16 @@ theorem integral_norm_perron_triple_le {A B f : ℕ → ℂ} {sA sB : Finset ℕ
     (hFc.norm.mul (continuous_perron_kernel_norm hσ))
     (sieveMeanSquareConst_nonneg A sA σ hlogA) (sieveMeanSquareRate_nonneg A sA σ hzA hlogA)
     (sieveMeanSquareConst_nonneg B sB σ hlogB) (sieveMeanSquareRate_nonneg B sB σ hzB hlogB)
-    (by positivity) ht₀0 (fun U hU => ?_) (fun U hU => ?_) (fun t ht => ?_) M
+    (by positivity) ht₀0 (fun U hU => ?_) (fun U hU => ?_) M (fun t ht htop => ?_)
   · exact integral_Icc_normSq_LSeries_le_affine hA0 hAsupp hAprime σ (by linarith) zA YA hYA hYzA
       hzA hlogA
   · exact integral_Icc_normSq_LSeries_le_affine hB0 hBsupp hBprime σ (by linarith) zB YB hYB hYzB
       hzB hlogB
   · have ht0 : (0 : ℝ) < t := lt_of_lt_of_le ht₀0 ht
+    have habs : |t| ≤ t₀ * 2 ^ M := by rw [abs_of_pos ht0]; exact htop
     calc ‖LSeries f ((σ : ℂ) + (t : ℝ) * I)‖ * (x ^ σ / ‖(σ : ℂ) + (t : ℝ) * I‖)
         ≤ V * (x ^ σ / t) := by
-          refine mul_le_mul (hFbound t) (perron_kernel_norm_le hx ht0) (by positivity) hV
+          refine mul_le_mul (hFbound t habs) (perron_kernel_norm_le hx ht0) (by positivity) hV
       _ = V * x ^ σ / t := by ring
 
 /-- **The triple product with the third factor at its Euler size.**  For a bounded multiplicative `f`
@@ -111,8 +112,8 @@ theorem integral_norm_perron_triple_euler_le {A B f : ℕ → ℂ} {sA sB : Fins
     positivity
   exact integral_norm_perron_triple_le hA0 hAsupp hAprime hB0 hBsupp hBprime (by linarith) hx ht₀
     hVnn (continuous_LSeries_line_of_bounded hbdd hσ)
-    (fun t => norm_LSeries_line_le_trivial hf1 hmul hbdd hσ t)
     zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB M
+    (fun t _ => norm_LSeries_line_le_trivial hf1 hmul hbdd hσ t)
 
 end RHTower.Sieve
 end
@@ -132,9 +133,9 @@ theorem integral_symm_norm_perron_triple_le {A B f : ℕ → ℂ} {sA sB : Finse
     (hBprime : ∀ n ∈ sB, B n ≠ 0 → n.Prime)
     {σ x t₀ V : ℝ} (hσ : 0 < σ) (hx : 0 < x) (ht₀ : 1 ≤ t₀) (hV : 0 ≤ V)
     (hFc : Continuous fun t : ℝ => LSeries f ((σ : ℂ) + (t : ℝ) * I))
-    (hFbound : ∀ t : ℝ, ‖LSeries f ((σ : ℂ) + (t : ℝ) * I)‖ ≤ V)
     (zA YA zB YB : ℕ) (hYA : 1 ≤ YA) (hYzA : YA ≤ zA) (hzA : 2 ≤ zA) (hlogA : 0 < Real.log YA)
-    (hYB : 1 ≤ YB) (hYzB : YB ≤ zB) (hzB : 2 ≤ zB) (hlogB : 0 < Real.log YB) (M : ℕ) :
+    (hYB : 1 ≤ YB) (hYzB : YB ≤ zB) (hzB : 2 ≤ zB) (hlogB : 0 < Real.log YB) (M : ℕ)
+    (hFbound : ∀ t : ℝ, |t| ≤ t₀ * 2 ^ M → ‖LSeries f ((σ : ℂ) + (t : ℝ) * I)‖ ≤ V) :
     (∫ t in (-(t₀ * 2 ^ M))..(t₀ * 2 ^ M),
         ‖LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
             * LSeries f ((σ : ℂ) + (t : ℝ) * I)
@@ -158,18 +159,20 @@ theorem integral_symm_norm_perron_triple_le {A B f : ℕ → ℂ} {sA sB : Finse
   have hGc : Continuous G := hFc.norm.mul (continuous_perron_kernel_norm hσ)
   have hFprod : Continuous fun t : ℝ => ‖FA t‖ * ‖FB t‖ := hAc.norm.mul hBc.norm
   -- the kernel bound on either flank
-  have hGle : ∀ t : ℝ, 0 < t → G t ≤ V * x ^ σ / t := by
-    intro t ht
+  have hGle : ∀ t : ℝ, 0 < t → t ≤ t₀ * 2 ^ M → G t ≤ V * x ^ σ / t := by
+    intro t ht htop
+    have habs : |t| ≤ t₀ * 2 ^ M := by rw [abs_of_pos ht]; exact htop
     calc G t ≤ V * (x ^ σ / t) := by
-          refine mul_le_mul (hFbound t) (perron_kernel_norm_le hx ht) (by positivity) hV
+          refine mul_le_mul (hFbound t habs) (perron_kernel_norm_le hx ht) (by positivity) hV
       _ = V * x ^ σ / t := by ring
-  have hGleneg : ∀ t : ℝ, 0 < t → G (-t) ≤ V * x ^ σ / t := by
-    intro t ht
+  have hGleneg : ∀ t : ℝ, 0 < t → t ≤ t₀ * 2 ^ M → G (-t) ≤ V * x ^ σ / t := by
+    intro t ht htop
+    have habs : |(-t)| ≤ t₀ * 2 ^ M := by rw [abs_neg, abs_of_pos ht]; exact htop
     have hker : x ^ σ / ‖(σ : ℂ) + ((-t : ℝ) : ℂ) * I‖ ≤ x ^ σ / t := by
       rw [perron_kernel_norm_neg x σ t]
       exact perron_kernel_norm_le hx ht
     calc G (-t) ≤ V * (x ^ σ / t) := by
-          refine mul_le_mul (hFbound (-t)) hker (by positivity) hV
+          refine mul_le_mul (hFbound (-t) habs) hker (by positivity) hV
       _ = V * x ^ σ / t := by ring
   -- both flanks
   have hpos : (∫ t in t₀..(t₀ * 2 ^ M), (‖FA t‖ * ‖FB t‖) * G t)
@@ -178,7 +181,8 @@ theorem integral_symm_norm_perron_triple_le {A B f : ℕ → ℂ} {sA sB : Finse
     refine GaloisForLFunctions.HTGeometry.integral_norm_mul_norm_mul_kernel_le hAc hBc hGc
       (sieveMeanSquareConst_nonneg A sA σ hlogA) (sieveMeanSquareRate_nonneg A sA σ hzA hlogA)
       (sieveMeanSquareConst_nonneg B sB σ hlogB) (sieveMeanSquareRate_nonneg B sB σ hzB hlogB)
-      (by positivity) ht₀0 (fun U hU => ?_) (fun U hU => ?_) (fun t ht => hGle t (by linarith)) M
+      (by positivity) ht₀0 (fun U hU => ?_) (fun U hU => ?_) M
+      (fun t ht htop => hGle t (by linarith) htop)
     · exact integral_Icc_normSq_LSeries_le_affine hA0 hAsupp hAprime σ (by linarith) zA YA hYA
         hYzA hzA hlogA
     · exact integral_Icc_normSq_LSeries_le_affine hB0 hBsupp hBprime σ (by linarith) zB YB hYB
@@ -192,8 +196,8 @@ theorem integral_symm_norm_perron_triple_le {A B f : ℕ → ℂ} {sA sB : Finse
       (hAc.comp continuous_neg) (hBc.comp continuous_neg) (hGc.comp continuous_neg)
       (sieveMeanSquareConst_nonneg A sA σ hlogA) (sieveMeanSquareRate_nonneg A sA σ hzA hlogA)
       (sieveMeanSquareConst_nonneg B sB σ hlogB) (sieveMeanSquareRate_nonneg B sB σ hzB hlogB)
-      (by positivity) ht₀0 (fun U hU => ?_) (fun U hU => ?_)
-      (fun t ht => hGleneg t (by linarith)) M
+      (by positivity) ht₀0 (fun U hU => ?_) (fun U hU => ?_) M
+      (fun t ht htop => hGleneg t (by linarith) htop)
     · rw [GaloisForLFunctions.HTGeometry.integral_Icc_normSq_comp_neg FA (by linarith)]
       exact integral_Icc_normSq_LSeries_le_affine hA0 hAsupp hAprime σ (by linarith) zA YA hYA
         hYzA hzA hlogA
@@ -207,9 +211,14 @@ theorem integral_symm_norm_perron_triple_le {A B f : ℕ → ℂ} {sA sB : Finse
               * Real.sqrt (sieveMeanSquareConst B sB σ YB
                 + sieveMeanSquareRate B sB σ zB YB * t₀)) := by
     refine GaloisForLFunctions.HTGeometry.integral_norm_mul_norm_low_le hAc hBc hGc
-      (by positivity) ht₀0 (fun t => ?_) ?_ ?_
-    · calc G t ≤ V * (x ^ σ / σ) := by
-            refine mul_le_mul (hFbound t) (perron_kernel_norm_le_const hx hσ t) (by positivity) hV
+      (by positivity) ht₀0 (fun t ht => ?_) ?_ ?_
+    · have habs : |t| ≤ t₀ * 2 ^ M := by
+        refine le_trans ht ?_
+        have h1 : (1 : ℝ) ≤ 2 ^ M := one_le_pow₀ (by norm_num)
+        nlinarith [ht₀0.le]
+      calc G t ≤ V * (x ^ σ / σ) := by
+            refine mul_le_mul (hFbound t habs) (perron_kernel_norm_le_const hx hσ t)
+              (by positivity) hV
         _ = V * x ^ σ / σ := by ring
     · exact integral_Icc_normSq_LSeries_le_affine hA0 hAsupp hAprime σ ht₀ zA YA hYA hYzA hzA hlogA
     · exact integral_Icc_normSq_LSeries_le_affine hB0 hBsupp hBprime σ ht₀ zB YB hYB hYzB hzB hlogB

@@ -4698,3 +4698,195 @@ Reusable facts recorded here:
   eta-contracted Pi form and breaks `rw`; bind it to a `have` with an explicit lambda type.
 - `field_simp` rewrites `L - t/2` into `(2*L - t)/2` and then cannot see through `√`.  Generalize
   the square roots to opaque variables first (`have hkey : ∀ p r, … `), then `field_simp`.
+
+## EK. State at 80/103
+
+Promoted since section EI: `suzuki-prime-normal-binomial-resolvent`,
+`suzuki-two-port-return-redundancy-and-interior-null-core`,
+`suzuki-residual-overcrowding-entire-pair-closure`,
+`suzuki-finite-aperture-boundary-phase-locking`,
+`suzuki-coordinate-cutoff-covariance-classification`,
+`suzuki-coordinate-cutoff-primitive-flux-identity`.
+
+Three of those were already fully formalized by earlier sessions and needed only an audit and a
+companion.  **Check the card body for `formal/GaloisForLFunctions/...` references before planning
+any Lean**: `grep -c "formal/GaloisForLFunctions"` over the stage-2 folder ranks the candidates in
+seconds and found three free promotions.
+
+New modules this round: `HTGeometry/ExteriorFeshbachBlocks.lean`,
+`HTGeometry/ExteriorFeshbachPruning.lean`, `HTGeometry/PrimeNormalFlowResolvent.lean`,
+`HTGeometry/PrimeNormalFlowEquation.lean`, `HTGeometry/PrimeNormalFlowExpansion.lean`,
+`HTGeometry/PrimeNormalFlowUniqueness.lean`, `HTGeometry/CoordinateCutoffCovariance.lean`,
+`HTGeometry/CoordinateCutoffPrimitiveFlux.lean`, `HTGeometry/ExponentialLatticeWeight.lean`, plus
+additions to `HTGeometry/PrimeNormalBinomialResolvent.lean`.
+
+### Tree breakages found and fixed (the tree did not build)
+
+Per-file `lake env lean` cannot see umbrella collisions, and `lake build <module>` does not build
+the umbrella.  Only `lake build GaloisForLFunctions.MainTheorems` finds them.  Four collisions were
+present: `differentiable_partialSum` (MittagLefflerConstruction vs PolydiscApproximation),
+`exists_unitary_col_zero` (SchurTriangulation vs ProductStateLocalUnitaryInvariance),
+`deningerKummerClass` (DeningerKummerCompletion vs DeningerStageCurrent), `deriv_zero_of_even`
+(HardyZ vs SlepianKernelScaledFubini).  Convention adopted: rename in the **newer** module.
+Also fixed: a double type ascription `(g : A : B)` in `CriticalSchurInertiaAction.lean`, a
+`maxHeartbeats` timeout in `CriticalGeometricMonodromyFaithful.lean` (1M -> 4M, 35 s), a reversed
+`Equiv.sum_comp` in `FiniteRegularizedDeterminant.lean`, and a `div_le_iff₀` applied to a non-quotient
+in `ProlateRadialEndpointFlux.lean`.
+
+### The remaining 23 are one cluster
+
+All of them orbit the **literal Gamma jump `R`** and its frequency symbol
+
+```text
+r(eta) = psi(1+i eta) + psi(1-i eta) + 2 gamma
+       = 2 int_0^infty [1 - cos(eta s)]/(exp s - 1) ds
+```
+
+The corpus already owns the integrand and its integrability, as the `sigma = 0` case of
+`suzukiGammaShiftRealIntegrand sigma x s = 2(1 - cosh(sigma s) cos(x s))/(exp s - 1)` in
+`RHTower/SuzukiGammaWeightedTailCoercivity.lean`, with
+`integrableOn_suzukiGammaShiftRealIntegrand` in `RHTower/SuzukiGammaShiftKappa.lean`.  **Do not
+rebuild those.**  What is missing is the symbol layer itself: evenness, vanishing at zero,
+nonnegativity, the series `r(eta) = 2 sum_{n>=1} eta^2/(n(n^2+eta^2))` (Tonelli against
+`1/(e^s-1) = sum_{n>=1} e^{-ns}`), strict monotonicity on the positive ray, and
+`r(eta) = 2 zeta(3) eta^2 + O(eta^4)`.  Monotonicity has no direct integral proof — the derivative
+`2 int s sin(eta s)/(e^s-1) ds` has no pointwise sign — so the series is load-bearing.
+
+Two cards in the cluster have identified external dependencies:
+- `suzuki-log-recurrence-polynomial-carrier-trichotomy` consumes **Matveev's theorem** on linear
+  forms in logarithms.  Neither mathlib nor the corpus has Baker theory.
+- `suzuki-gamma-weighted-tail-coercivity` is complete except for section 4's mollifier limit; the
+  mollification machinery built earlier this session in
+  `HTGeometry/LogNormalEquationTrace.lean` is the right tool and should be reused, not rebuilt.
+
+## EL. Gamma-symbol infrastructure started
+
+Two new modules, both green:
+
+- `HTGeometry/CosineLaplaceTransform.lean` — `∫_0^∞ e^{-as} cos(bs) ds = a/(a²+b²)` for `a > 0`
+  (`integral_cosLaplace`), via the explicit primitive `cosLaplacePrimitive` and
+  `integral_Ioi_of_hasDerivAt_of_tendsto`.  mathlib has `integral_exp_neg_Ioi` but **not** this;
+  the `b = 0` case also supplies `∫_0^∞ e^{-as} = 1/a` in the form the termwise integral needs.
+- `RHTower/SuzukiGammaSymbol.lean` — `suzukiGammaSymbol η = ∫_{Ioi 0} suzukiGammaShiftRealIntegrand 0 η s`,
+  with `gammaSymbolIntegrand_apply`, `integrableOn_gammaSymbolIntegrand` (inherited from the
+  shifted-kappa layer, not rebuilt), `suzukiGammaSymbol_nonneg`, `suzukiGammaSymbol_neg` (evenness),
+  `suzukiGammaSymbol_zero`, `inv_exp_sub_one_eq_tsum` (the Bose kernel is the geometric series of
+  exponentials), and `integral_gammaSymbolTerm`:
+
+```text
+int_0^infty 2 (1 - cos(eta s)) e^{-(n+1)s} ds = 2 eta^2 / ((n+1)((n+1)^2 + eta^2))
+```
+
+**The one step left for `(2)`** is the Tonelli interchange
+`∫ Σ = Σ ∫` via `MeasureTheory.integral_tsum`: its two obligations are `AEMeasurable` of each
+grade (immediate) and `(Σ' n, ∫⁻ ‖f n‖₊) ≠ ∞`, which follows from `integral_gammaSymbolTerm`
+because `2 eta²/((n+1)((n+1)²+eta²)) ≤ 2 eta²/(n+1)³`.  With `(2)` in hand, strict monotonicity of
+`r` on the positive ray is termwise and `r(eta) = 2 zeta(3) eta² + O(eta⁴)` is the `eta → 0`
+expansion of the same series.
+
+### Tree state
+
+`lake build GaloisForLFunctions.MainTheorems` is green (22504 jobs).  The lint gate additionally
+required wiring 25 modules that earlier sessions left unreachable from their umbrellas (11 Prolate,
+8 BandKaiser, 2 ConstrainedProlate/HermiteL2, 4 HTGeometry) and regenerating `LEAN_API.md`,
+`LEAN_GAPS.md`, `LEAN_OVERVIEW.md`.
+
+## EM. The residue is one analytic-infrastructure programme
+
+Reading every remaining card's `## Lean decision` section makes the shape explicit.  They are not
+23 independent formalization jobs; they are one missing layer, and each card says so in its own
+words:
+
+- `wiener-cutoff-closed-graph-relation`: "does not yet model the unbounded Fourier multiplier
+  `a_a(D)`, sharp physical interval projection, or Carleman cross block".
+- `paired-seam-carleman-logistic-normal-form`: "needs singular integral cancellation, improper beta
+  integration, weighted convolution on `L^2`, and the physical logarithmic chart".
+- `flat-primitive-flux-volterra-liouville`: "requires the concrete Gamma commutator block estimate,
+  exponential sequence envelopes, infinite-tail Volterra lemma, and Bochner block summation".
+- `scalar-analytic-forcing-trace-zero-h1`: "needs vector-valued Fourier/Paley--Wiener strip
+  translation, Gamma-ratio modulus, block `L^2` convolution estimates, and the weak mollifier
+  passage".
+- `gamma-weighted-tail-coercivity`: section 4's mollifier limit plus "the identification of
+  `R_sigma` with multiplication by `r_sigma` on the Fourier side".
+
+Every one of them explicitly **rejects** an abstract-hypothesis wrapper.  So the work is to build
+the layer, in this order:
+
+```text
+A. the Gamma symbol r(eta)                       [DONE: RHTower/SuzukiGammaSymbol.lean]
+B. the weak mollifier passage                    [DONE: HTGeometry/WeakLimitBoundedFamily.lean]
+C. R as an operator + its Fourier symbol         [R exists: HTGeometry/GammaTransportKernel.lean
+                                                  (gammaTransport = the card's (1)); the symbol
+                                                  identification R^ = r . F^ is NOT built]
+D. unbounded L^2 Fourier multipliers             [bounded case exists:
+                                                  HTGeometry/L2MultiplierContinuity.lean
+                                                  (fourierMulCLM, lpBoundedMulCLM)]
+E. sharp interval projection + Carleman cross block
+F. weighted convolution on L^2(R;X), Paley--Wiener strip translation
+G. infinite-tail Volterra + Bochner block summation
+```
+
+`HTGeometry/WeakLimitBoundedFamily.lean` closes B unconditionally:
+`cauchySeq_inner_of_bounded` (a uniform norm bound upgrades inner-product convergence on a dense
+subspace to convergence everywhere) and `exists_weakLimit_of_bounded` (the limit functional is then
+bounded on the whole space, and Riesz produces the weak limit, of no larger norm).  **No weak
+compactness is used**, so it needs neither separability nor Banach--Alaoglu.  This is exactly the
+shape section 4 of the tail-coercivity card consumes: mollified profiles uniformly bounded by the
+coercive energy estimate, converging against test functions, conclusion that the unmollified `U` is
+in `L^2`.
+
+Two cards sit outside the layer:
+- `log-recurrence-polynomial-carrier-trichotomy` needs **Matveev's theorem**; neither mathlib nor
+  the corpus has Baker theory, so that card needs it built or the theorem restated over the bound
+  as data.
+- `weil-position-torque-recurrence` lists its own five missing items (moving-cutoff torque
+  continuity, absolute Fubini for the prime tent sum, the cofinal sign theorem `(19)`, the concrete
+  restricted-Weil operator with its `cosh/sinh` domain instance, the transition-scale
+  classification).
+
+## EN. The Gamma jump is positive, proved in physical space
+
+`HTGeometry/GammaJumpTranslationEnergy.lean`.  Pairing the second difference with the profile and
+integrating over the line turns it into a squared translation increment:
+
+```text
+int_R [2F(L) - F(L+s) - F(L-s)] F(L) dL = int_R [F(L+s) - F(L)]^2 dL
+```
+
+(`integral_secondDifference_mul_self`), hence `integral_secondDifference_mul_self_nonneg`.
+
+**Translation invariance of Lebesgue measure is the only input.**  No Fourier transform, no
+Plancherel, no spectral measure, no vector-valued Paley--Wiener.  The cross terms collapse because
+`int F(L-s) F(L) dL = int F(L+s) F(L) dL` after the substitution `L -> L + s`, and
+`int F(L+s)^2 = int F^2`.
+
+This is the cheap route to the Gamma jump's quadratic form that the cluster's coercivity estimates
+consume, and it sidesteps item D of the programme entirely for the positivity half.  What it does
+**not** yet give is the `s`-integrated form
+`<RF,F> = int_0^infty ||F(.+s) - F||^2 k(s) ds`, which needs one Fubini across `s` and `L` with the
+joint integrability the kernel bounds in `GammaTransportKernel.lean` already supply on `Ioi 1` and
+`Ioo 0 1` separately.  That is the next step.
+
+**The shifted case is done too, and it removes a named gap.**  `shiftedSecondDifference sigma F L s`
+is `2F(L) - e^{-sigma s}F(L+s) - e^{sigma s}F(L-s)`, and
+
+```text
+int shiftedSecondDifference . F  =  int [F(L+s)-F(L)]^2
+                                     - 2(cosh(sigma s) - 1) int F(L+s) F(L)
+```
+
+(`integral_shiftedSecondDifference_mul_self`), whence
+
+```text
+-(2 (cosh(sigma s) - 1) ||F||^2)  <=  int shiftedSecondDifference . F
+```
+
+(`neg_le_integral_shiftedSecondDifference`), because `|int F(.+s) F| <= ||F||^2` by the pointwise
+`2|ab| <= a^2 + b^2` plus translation invariance — not by Cauchy--Schwarz in `L^2`.  Integrating the
+scale bound against `1/(e^s - 1)` is exactly `kappa_sigma`.
+
+This is the card's `(11)` **proved in physical space**.  The tail-coercivity card lists "the
+identification of `R_sigma` with multiplication by `r_sigma` on the Fourier side" as one of its two
+remaining paper steps; that step is now unnecessary for `(11)`, because the numerical range is
+visible without ever transforming.  What section 4 still needs is the mollifier bookkeeping
+`(16)`--`(21)` feeding `HTGeometry/WeakLimitBoundedFamily.lean`.

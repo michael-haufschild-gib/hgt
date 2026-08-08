@@ -607,6 +607,106 @@ theorem continuousOn_ampFourthRoot {s k : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k
     ContinuousOn (ampFourthRoot s k) (Ioi 1) :=
   fun _ hx => ((hasDerivAt_ampFourthRoot hs1 hk hx).continuousAt).continuousWithinAt
 
+/-- Fixed-ratio endpoint constant.  It is finite and positive precisely when `k > 1`. -/
+def fixedRatioEndpointAmplitudeConstant (k : ℝ) : ℝ :=
+  1 / Real.sqrt (Real.sqrt ((k ^ 2 - 1) * (k ^ 2 - 1 / 2)))
+
+theorem fixedRatioEndpointAmplitudeConstant_pos {k : ℝ} (hk : 1 < k) :
+    0 < fixedRatioEndpointAmplitudeConstant k := by
+  have h1 : 0 < k ^ 2 - 1 := by nlinarith
+  have h2 : 0 < k ^ 2 - 1 / 2 := by nlinarith
+  rw [fixedRatioEndpointAmplitudeConstant]
+  positivity
+
+/-- Continuity of the leading amplitude on the exterior ray for every strict dilation. -/
+theorem continuousOn_ampFourthRoot_fixedRatio {s k : ℝ}
+    (hs1 : s ≤ 1 / 2) (hk : 1 < k) :
+    ContinuousOn (ampFourthRoot s k) (Ioi 1) := by
+  intro x hx
+  have hx1 : (1 : ℝ) < x := hx
+  have hW : 0 < ampPoly s k x := by
+    have h1 : 0 < x ^ 2 - 1 := by nlinarith
+    have h2 : 0 < x ^ 2 - s := by nlinarith
+    have h3 : 0 < k ^ 2 * x ^ 2 - 1 := by nlinarith
+    have h4 : 0 < k ^ 2 * x ^ 2 - s := by nlinarith
+    rw [ampPoly]
+    positivity
+  have hpoly : ContinuousAt (ampPoly s k) x := by
+    unfold ampPoly
+    fun_prop
+  have hden := hpoly.sqrt.sqrt
+  have hne : Real.sqrt (Real.sqrt (ampPoly s k x)) ≠ 0 := by positivity
+  exact (continuousAt_const.div hden hne).continuousWithinAt
+
+theorem ampFourthRoot_pos_fixedRatio {s k x : ℝ}
+    (hs1 : s ≤ 1 / 2) (hk : 1 < k) (hx : 1 < x) :
+    0 < ampFourthRoot s k x := by
+  have h1 : 0 < x ^ 2 - 1 := by nlinarith
+  have h2 : 0 < x ^ 2 - s := by nlinarith
+  have h3 : 0 < k ^ 2 * x ^ 2 - 1 := by nlinarith
+  have h4 : 0 < k ^ 2 * x ^ 2 - s := by nlinarith
+  have hW : 0 < ampPoly s k x := by rw [ampPoly]; positivity
+  rw [ampFourthRoot]
+  positivity
+
+/-- Endpoint `(x-1)^{-1/4}` majorant for every fixed strict dilation.  Constants are allowed to
+depend on `k`, which removes the artificial uniform restriction `k ≥ 2`. -/
+theorem ampFourthRoot_le_endpoint_fixedRatio {s k x : ℝ}
+    (_hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 1 < k) (hx : 1 < x) :
+    ampFourthRoot s k x ≤
+      fixedRatioEndpointAmplitudeConstant k * (x - 1) ^ (-(1 : ℝ) / 4) := by
+  have hk0 : 0 < k := lt_trans zero_lt_one hk
+  have hsub : 0 < x - 1 := by linarith
+  have hx0 : 0 < x := lt_trans zero_lt_one hx
+  have hxSq : 1 < x ^ 2 := by nlinarith
+  let D : ℝ := (k ^ 2 - 1) * (k ^ 2 - 1 / 2)
+  have hkSq : (1 : ℝ) < k ^ 2 := by nlinarith
+  have hD : 0 < D := by
+    dsimp [D]
+    exact mul_pos (by linarith) (by linarith)
+  have hW : (x - 1) * D ≤ ampPoly s k x := by
+    rw [ampPoly]
+    have h1 : 2 * (x - 1) ≤ x ^ 2 - 1 := by nlinarith
+    have h2 : (1 : ℝ) / 2 ≤ x ^ 2 - s := by linarith
+    have h3 : k ^ 2 - 1 ≤ k ^ 2 * x ^ 2 - 1 := by nlinarith
+    have h4 : k ^ 2 - 1 / 2 ≤ k ^ 2 * x ^ 2 - s := by nlinarith
+    have hnear : x - 1 ≤ (x ^ 2 - 1) * (x ^ 2 - s) := by
+      nlinarith [mul_le_mul h1 h2 (by norm_num : 0 ≤ (1 : ℝ) / 2)
+        (by nlinarith : 0 ≤ x ^ 2 - 1)]
+    have hfar : D ≤ (k ^ 2 * x ^ 2 - 1) * (k ^ 2 * x ^ 2 - s) := by
+      dsimp [D]
+      exact mul_le_mul h3 h4 (by nlinarith) (by nlinarith)
+    have hnearRhs : 0 ≤ (x ^ 2 - 1) * (x ^ 2 - s) := by positivity
+    have hprod := mul_le_mul hnear hfar hD.le hnearRhs
+    nlinarith
+  have hWpos : 0 < ampPoly s k x := by
+    rw [ampPoly]
+    have h1 : 0 < x ^ 2 - 1 := by nlinarith
+    have h2 : 0 < x ^ 2 - s := by nlinarith
+    have h3 : 0 < k ^ 2 * x ^ 2 - 1 := by nlinarith
+    have h4 : 0 < k ^ 2 * x ^ 2 - s := by nlinarith
+    positivity
+  have hroot : Real.sqrt (Real.sqrt ((x - 1) * D)) ≤
+      Real.sqrt (Real.sqrt (ampPoly s k x)) :=
+    Real.sqrt_le_sqrt (Real.sqrt_le_sqrt hW)
+  have hfactor : Real.sqrt (Real.sqrt ((x - 1) * D)) =
+      Real.sqrt (Real.sqrt (x - 1)) * Real.sqrt (Real.sqrt D) := by
+    rw [Real.sqrt_mul hsub.le, Real.sqrt_mul (Real.sqrt_nonneg _)]
+  have hquarter : (x - 1) ^ (-(1 : ℝ) / 4) =
+      1 / Real.sqrt (Real.sqrt (x - 1)) := rpow_neg_quarter hsub
+  have hleft : 0 < Real.sqrt (Real.sqrt (x - 1)) := by positivity
+  have hright : 0 < Real.sqrt (Real.sqrt D) := by positivity
+  rw [hfactor] at hroot
+  rw [ampFourthRoot, hquarter]
+  change 1 / Real.sqrt (Real.sqrt (ampPoly s k x)) ≤
+    (1 / Real.sqrt (Real.sqrt D)) * (1 / Real.sqrt (Real.sqrt (x - 1)))
+  calc
+    1 / Real.sqrt (Real.sqrt (ampPoly s k x)) ≤
+        1 / (Real.sqrt (Real.sqrt (x - 1)) * Real.sqrt (Real.sqrt D)) :=
+      one_div_le_one_div_of_le (mul_pos hleft hright) hroot
+    _ = (1 / Real.sqrt (Real.sqrt D)) * (1 / Real.sqrt (Real.sqrt (x - 1))) := by
+      field_simp
+
 /-- **The endpoint bound on the amplitude.**  Near the endpoint the amplitude has the exact
 `(x-1)^{-1/4}` singularity, with the far factors contributing `k^{-1}`. -/
 theorem ampFourthRoot_le_endpoint {s k x : ℝ} (_hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k)
@@ -683,6 +783,50 @@ theorem integral_Ioc_rpow_sub_one_gen {X : ℝ} (hX : 1 ≤ X) :
   rw [← intervalIntegral.integral_of_le hX, h]
   norm_num at hval ⊢
   exact hval
+
+/-- Integrability up to the endpoint for every fixed strict dilation. -/
+theorem integrableOn_ampFourthRoot_fixedRatio {s k X : ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 1 < k) (hX : 1 ≤ X) :
+    IntegrableOn (ampFourthRoot s k) (Ioc 1 X) volume := by
+  have hrpow : IntegrableOn (fun x : ℝ => (x - 1) ^ (-(1 : ℝ) / 4)) (Ioc 1 X) volume := by
+    have h := intervalIntegrable_rpow_sub_one_gen (r := -(1 : ℝ) / 4) (by norm_num) (x := X)
+    rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hX] at h
+    exact h
+  have hcomp : IntegrableOn
+      (fun x : ℝ => fixedRatioEndpointAmplitudeConstant k *
+        (x - 1) ^ (-(1 : ℝ) / 4)) (Ioc 1 X) volume :=
+    hrpow.const_mul _
+  have hmeas : AEStronglyMeasurable (ampFourthRoot s k) (volume.restrict (Ioc 1 X)) := by
+    refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioc
+    exact (continuousOn_ampFourthRoot_fixedRatio hs1 hk).mono (fun x hx => hx.1)
+  refine MeasureTheory.Integrable.mono' hcomp hmeas ?_
+  filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioc] with x hx
+  rw [Real.norm_eq_abs, abs_of_nonneg (ampFourthRoot_pos_fixedRatio hs1 hk hx.1).le]
+  exact ampFourthRoot_le_endpoint_fixedRatio hs0 hs1 hk hx.1
+
+/-- Fixed-ratio endpoint mass is `O((X-1)^(3/4))`, with a positive constant depending only on the
+dilation. -/
+theorem integral_Ioc_ampFourthRoot_le_fixedRatio {s k X : ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 1 < k) (hX : 1 ≤ X) :
+    (∫ x in Ioc (1 : ℝ) X, ampFourthRoot s k x) ≤
+      4 / 3 * fixedRatioEndpointAmplitudeConstant k * (X - 1) ^ ((3 : ℝ) / 4) := by
+  have hrpow : IntegrableOn (fun x : ℝ => (x - 1) ^ (-(1 : ℝ) / 4)) (Ioc 1 X) volume := by
+    have h := intervalIntegrable_rpow_sub_one_gen (r := -(1 : ℝ) / 4) (by norm_num) (x := X)
+    rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hX] at h
+    exact h
+  have hcomp : IntegrableOn
+      (fun x : ℝ => fixedRatioEndpointAmplitudeConstant k *
+        (x - 1) ^ (-(1 : ℝ) / 4)) (Ioc 1 X) volume :=
+    hrpow.const_mul _
+  have hamp := integrableOn_ampFourthRoot_fixedRatio hs0 hs1 hk hX
+  have hmono : (∫ x in Ioc (1 : ℝ) X, ampFourthRoot s k x) ≤
+      ∫ x in Ioc (1 : ℝ) X, fixedRatioEndpointAmplitudeConstant k *
+        (x - 1) ^ (-(1 : ℝ) / 4) := by
+    refine MeasureTheory.setIntegral_mono_on hamp hcomp measurableSet_Ioc fun x hx => ?_
+    exact ampFourthRoot_le_endpoint_fixedRatio hs0 hs1 hk hx.1
+  refine hmono.trans ?_
+  rw [MeasureTheory.integral_const_mul, integral_Ioc_rpow_sub_one_gen hX]
+  ring_nf
 
 theorem integrableOn_ampFourthRoot {s k X : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k)
     (hX : 1 ≤ X) : IntegrableOn (ampFourthRoot s k) (Ioc 1 X) volume := by

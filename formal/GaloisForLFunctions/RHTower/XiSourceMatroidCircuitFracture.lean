@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailCompletedDensityDeBrangesNoGo
 import GaloisForLFunctions.RHTower.XiHurwitzFEAnchorCircuitCollision
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
+import GaloisForLFunctions.RHTower.XiFirstDividedSourceNumericalSector
 
 /-!
 # Analytic--monodromy source-circuit fracture
@@ -38,11 +39,8 @@ theorem abs_im_xiSpectralPointSupport_lt_one (rho : XiDivisorSupport) :
 /-- XiC vanishes at the centered spectral coordinate of every Xi divisor point. -/
 theorem XiC_xiSpectralPointSupport_eq_zero_sourceCircuit
     (rho : XiDivisorSupport) :
-    XiC (xiSpectralPointSupport rho) = 0 := by
-  have hI : (-I : ℂ) * I = 1 := by
-    rw [neg_mul, I_mul_I, neg_neg]
-  rw [XiC, xiSpectralPointSupport, mul_assoc, hI, mul_one]
-  convert xi_eq_zero_of_mem_divisor_support rho using 1; ring
+    XiC (xiSpectralPointSupport rho) = 0 :=
+  XiC_xiSpectralPointSupport_eq_zero rho
 
 /-- The coefficient-bearing completed-density relation at an Xi divisor point.  It is called a
 relation rather than a matroid circuit because minimality and nonvanishing of the two coordinates

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.Sieve.Mertens
 import Mathlib.Data.Nat.Choose.Factorization
 import Mathlib.Analysis.PSeries
+import GaloisForLFunctions.HTGeometry.LogBelowLinear
 
 /-!
 # Mertens' first theorem
@@ -40,12 +41,8 @@ theorem div_le_factorization_factorial {p : ℕ} (hp : p.Prime) (n : ℕ) :
     simpa using this
 
 /-- `log k ≤ 2 √k`, the comparison making `∑ (log k)/k²` convergent. -/
-theorem log_le_two_mul_sqrt {x : ℝ} (hx : 0 < x) : Real.log x ≤ 2 * Real.sqrt x := by
-  have hs : 0 < Real.sqrt x := Real.sqrt_pos.2 hx
-  have hlog : Real.log (Real.sqrt x) ≤ Real.sqrt x - 1 := Real.log_le_sub_one_of_pos hs
-  have hhalf : Real.log (Real.sqrt x) = Real.log x / 2 := Real.log_sqrt hx.le
-  rw [hhalf] at hlog
-  linarith
+theorem log_le_two_mul_sqrt {x : ℝ} (hx : 0 < x) : Real.log x ≤ 2 * Real.sqrt x :=
+  GaloisForLFunctions.HTGeometry.log_le_two_mul_sqrt hx
 
 /-- `∑ (log k)/k²` converges. -/
 theorem summable_log_div_sq : Summable (fun k : ℕ => Real.log k / (k : ℝ) ^ 2) := by

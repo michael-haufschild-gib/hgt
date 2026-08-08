@@ -558,6 +558,23 @@ theorem stationaryPoint_sq {s k : ℝ} (hk : 1 ≤ k) (hs0 : 0 ≤ s) (hs1 : s �
     stationaryPoint s k ^ 2 = stationaryRoot s k :=
   Real.sq_sqrt (le_of_lt (lt_trans zero_lt_one (one_lt_stationaryRoot hk hs0 hs1)))
 
+/-- The displayed stationary root is the only root of the stationary quadratic above the radial
+endpoint.  The other algebraic root is forced below one. -/
+theorem eq_stationaryRoot_of_quadratic {s k y : ℝ} (hk : 1 ≤ k)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hy : 1 < y)
+    (hroot : k ^ 2 * y ^ 2 - (k ^ 2 + 1) * y + s = 0) :
+    y = stationaryRoot s k := by
+  have hY := stationaryRoot_isRoot (lt_of_lt_of_le zero_lt_one hk).ne' hs0 hs1
+  have hfac :
+      (y - stationaryRoot s k) *
+        (k ^ 2 * (y + stationaryRoot s k) - (k ^ 2 + 1)) = 0 := by
+    nlinarith
+  rcases mul_eq_zero.mp hfac with h | h
+  · linarith
+  · have hY1 := one_lt_stationaryRoot hk hs0 hs1
+    have hkSq : (1 : ℝ) ≤ k ^ 2 := by nlinarith
+    nlinarith
+
 theorem one_lt_stationaryPoint {s k : ℝ} (hk : 1 ≤ k) (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
     1 < stationaryPoint s k := by
   have h := one_lt_stationaryRoot hk hs0 hs1
@@ -612,6 +629,295 @@ theorem xiSpeed_far_stationaryPoint {s k : ℝ} (hk : 1 ≤ k) (hs0 : 0 ≤ s) (
   rw [xiSpeed, hquot]
   exact Real.sqrt_sq (stationaryPoint_nonneg s k)
 
+/-- The exact stationary point annihilates the difference-phase speed. -/
+theorem xiDiffSpeed_stationaryPoint_eq_zero {s k : ℝ} (hk : 1 ≤ k)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
+    xiDiffSpeed s k (stationaryPoint s k) = 0 := by
+  rw [xiDiffSpeed, xiSpeed_stationaryPoint hk hs0 hs1,
+    xiSpeed_far_stationaryPoint hk hs0 hs1]
+  ring
+
+/-- For a strict dilation, the displayed point is the only exterior stationary point of the
+difference phase. -/
+theorem eq_stationaryPoint_of_xiDiffSpeed_eq_zero {s k x : ℝ} (hk : 1 < k)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
+    (hzero : xiDiffSpeed s k x = 0) :
+    x = stationaryPoint s k := by
+  have hk1 : (1 : ℝ) ≤ k := hk.le
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk
+  have hkx : 1 < k * x := by nlinarith
+  have hdenNear : 0 < x ^ 2 - 1 := by nlinarith
+  have hdenFar : 0 < (k * x) ^ 2 - 1 := by nlinarith
+  have hdenFarPoly : k ^ 2 * x ^ 2 - 1 ≠ 0 := by nlinarith
+  have hdenFarPoly' : x ^ 2 * k ^ 2 - 1 ≠ 0 := by nlinarith
+  have hnumNear : 0 ≤ x ^ 2 - s := by nlinarith
+  have hnumFar : 0 ≤ (k * x) ^ 2 - s := by nlinarith
+  have hnearSq : xiSpeed s x ^ 2 = (x ^ 2 - s) / (x ^ 2 - 1) := by
+    rw [xiSpeed]
+    exact Real.sq_sqrt (div_nonneg hnumNear hdenNear.le)
+  have hfarSq : xiSpeed s (k * x) ^ 2 = ((k * x) ^ 2 - s) / ((k * x) ^ 2 - 1) := by
+    rw [xiSpeed]
+    exact Real.sq_sqrt (div_nonneg hnumFar hdenFar.le)
+  have hspeed : xiSpeed s x = k * xiSpeed s (k * x) := by
+    rw [xiDiffSpeed] at hzero
+    linarith
+  have hsq := congrArg (fun z : ℝ => z ^ 2) hspeed
+  rw [hnearSq, mul_pow, hfarSq] at hsq
+  have hcross :
+      (x ^ 2 - s) * (k ^ 2 * x ^ 2 - 1) =
+        k ^ 2 * ((k ^ 2 * x ^ 2 - s) * (x ^ 2 - 1)) := by
+    field_simp [hdenNear.ne', hdenFar.ne', hdenFarPoly, hdenFarPoly'] at hsq
+    field_simp [hdenFarPoly'] at hsq
+    nlinarith [hsq]
+  have hdiff :
+      (x ^ 2 - s) * (k ^ 2 * x ^ 2 - 1) -
+        k ^ 2 * ((k ^ 2 * x ^ 2 - s) * (x ^ 2 - 1)) = 0 := by
+    linarith
+  rw [stationary_equation_reduce] at hdiff
+  have hkfac : k ^ 2 - 1 ≠ 0 := by nlinarith
+  have hquadNeg := (mul_eq_zero.mp hdiff).resolve_left hkfac
+  have hquad : k ^ 2 * (x ^ 2) ^ 2 - (k ^ 2 + 1) * x ^ 2 + s = 0 := by
+    linarith
+  have hxroot := eq_stationaryRoot_of_quadratic hk1 hs0 hs1 (by nlinarith) hquad
+  have hstatSq := stationaryPoint_sq hk1 hs0 hs1
+  have hstat0 := stationaryPoint_nonneg s k
+  nlinarith
+
+/-- Rationalized square-speed identity.  It exposes the stationary quadratic as the exact sign
+carrier of the difference-phase derivative. -/
+theorem xiDiffSpeed_mul_sum_eq {s k x : ℝ} (hk : 1 < k)
+    (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
+    xiDiffSpeed s k x * (xiSpeed s x + k * xiSpeed s (k * x)) =
+      (k ^ 2 - 1) *
+          (-k ^ 2 * (x ^ 2) ^ 2 + (k ^ 2 + 1) * x ^ 2 - s) /
+        ((x ^ 2 - 1) * (k ^ 2 * x ^ 2 - 1)) := by
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk
+  have hkx : 1 < k * x := by nlinarith
+  have hdenNear : 0 < x ^ 2 - 1 := by nlinarith
+  have hdenFar : 0 < (k * x) ^ 2 - 1 := by nlinarith
+  have hdenFarPoly : k ^ 2 * x ^ 2 - 1 ≠ 0 := by nlinarith
+  have hdenFarPoly' : x ^ 2 * k ^ 2 - 1 ≠ 0 := by nlinarith
+  have hnumNear : 0 ≤ x ^ 2 - s := by nlinarith
+  have hnumFar : 0 ≤ (k * x) ^ 2 - s := by nlinarith
+  have hnearSq : xiSpeed s x ^ 2 = (x ^ 2 - s) / (x ^ 2 - 1) := by
+    rw [xiSpeed]
+    exact Real.sq_sqrt (div_nonneg hnumNear hdenNear.le)
+  have hfarSq : xiSpeed s (k * x) ^ 2 = ((k * x) ^ 2 - s) / ((k * x) ^ 2 - 1) := by
+    rw [xiSpeed]
+    exact Real.sq_sqrt (div_nonneg hnumFar hdenFar.le)
+  rw [xiDiffSpeed]
+  calc
+    (xiSpeed s x - k * xiSpeed s (k * x)) *
+          (xiSpeed s x + k * xiSpeed s (k * x)) =
+        xiSpeed s x ^ 2 - k ^ 2 * xiSpeed s (k * x) ^ 2 := by ring
+    _ = (x ^ 2 - s) / (x ^ 2 - 1) -
+          k ^ 2 * (((k * x) ^ 2 - s) / ((k * x) ^ 2 - 1)) := by
+      rw [hnearSq, hfarSq]
+    _ = ((x ^ 2 - s) * (k ^ 2 * x ^ 2 - 1) -
+          k ^ 2 * ((k ^ 2 * x ^ 2 - s) * (x ^ 2 - 1))) /
+          ((x ^ 2 - 1) * (k ^ 2 * x ^ 2 - 1)) := by
+      field_simp [hdenNear.ne', hdenFar.ne', hdenFarPoly, hdenFarPoly']
+    _ = _ := by rw [stationary_equation_reduce]; ring
+
+theorem stationaryQuadratic_neg_of_lt_root {s k y : ℝ} (hk : 1 < k)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hy : 1 < y)
+    (hyY : y < stationaryRoot s k) :
+    k ^ 2 * y ^ 2 - (k ^ 2 + 1) * y + s < 0 := by
+  have hk1 : (1 : ℝ) ≤ k := hk.le
+  have hY := stationaryRoot_isRoot (by nlinarith : k ≠ 0) hs0 hs1
+  have hY1 := one_lt_stationaryRoot hk1 hs0 hs1
+  have hkSq : (1 : ℝ) < k ^ 2 := by nlinarith
+  have hfac : 0 < k ^ 2 * (y + stationaryRoot s k) - (k ^ 2 + 1) := by
+    nlinarith
+  nlinarith [mul_neg_of_neg_of_pos (sub_neg.mpr hyY) hfac]
+
+theorem stationaryQuadratic_pos_of_root_lt {s k y : ℝ} (hk : 1 < k)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hy : 1 < y)
+    (hYy : stationaryRoot s k < y) :
+    0 < k ^ 2 * y ^ 2 - (k ^ 2 + 1) * y + s := by
+  have hk1 : (1 : ℝ) ≤ k := hk.le
+  have hY := stationaryRoot_isRoot (by nlinarith : k ≠ 0) hs0 hs1
+  have hY1 := one_lt_stationaryRoot hk1 hs0 hs1
+  have hkSq : (1 : ℝ) < k ^ 2 := by nlinarith
+  have hfac : 0 < k ^ 2 * (y + stationaryRoot s k) - (k ^ 2 + 1) := by
+    nlinarith
+  nlinarith [mul_pos (sub_pos.mpr hYy) hfac]
+
+/-- Difference-phase speed is positive before its unique stationary point. -/
+theorem xiDiffSpeed_pos_of_lt_stationaryPoint {s k x : ℝ} (hk : 1 < k)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
+    (hxstat : x < stationaryPoint s k) :
+    0 < xiDiffSpeed s k x := by
+  have hk1 : (1 : ℝ) ≤ k := hk.le
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk
+  have hkx : 1 < k * x := by nlinarith
+  have hstatSq := stationaryPoint_sq hk1 hs0 hs1
+  have hxRoot : x ^ 2 < stationaryRoot s k := by
+    have hstat0 := stationaryPoint_nonneg s k
+    nlinarith
+  have hpoly := stationaryQuadratic_neg_of_lt_root hk hs0 hs1 (by nlinarith) hxRoot
+  have hnear : 0 < xiSpeed s x := by
+    rw [xiSpeed]
+    exact Real.sqrt_pos.mpr (div_pos (by nlinarith) (by nlinarith))
+  have hfar : 0 < xiSpeed s (k * x) := by
+    rw [xiSpeed]
+    exact Real.sqrt_pos.mpr (div_pos (by nlinarith) (by nlinarith))
+  have hsum : 0 < xiSpeed s x + k * xiSpeed s (k * x) := by positivity
+  have hden : 0 < (x ^ 2 - 1) * (k ^ 2 * x ^ 2 - 1) := by
+    apply mul_pos <;> nlinarith
+  have hrhs : 0 <
+      (k ^ 2 - 1) *
+          (-k ^ 2 * (x ^ 2) ^ 2 + (k ^ 2 + 1) * x ^ 2 - s) /
+        ((x ^ 2 - 1) * (k ^ 2 * x ^ 2 - 1)) := by
+    apply div_pos
+    · apply mul_pos <;> nlinarith
+    · exact hden
+  have hid := xiDiffSpeed_mul_sum_eq hk hs1 hx
+  have hprod : 0 < xiDiffSpeed s k x *
+      (xiSpeed s x + k * xiSpeed s (k * x)) := hid.symm ▸ hrhs
+  rcases (mul_pos_iff.mp hprod) with h | h
+  · exact h.1
+  · linarith
+
+/-- Difference-phase speed is negative after its unique stationary point. -/
+theorem xiDiffSpeed_neg_of_stationaryPoint_lt {s k x : ℝ} (hk : 1 < k)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
+    (hstatx : stationaryPoint s k < x) :
+    xiDiffSpeed s k x < 0 := by
+  have hk1 : (1 : ℝ) ≤ k := hk.le
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk
+  have hkx : 1 < k * x := by nlinarith
+  have hstatSq := stationaryPoint_sq hk1 hs0 hs1
+  have hRootx : stationaryRoot s k < x ^ 2 := by
+    have hstat0 := stationaryPoint_nonneg s k
+    nlinarith
+  have hpoly := stationaryQuadratic_pos_of_root_lt hk hs0 hs1 (by nlinarith) hRootx
+  have hnear : 0 < xiSpeed s x := by
+    rw [xiSpeed]
+    exact Real.sqrt_pos.mpr (div_pos (by nlinarith) (by nlinarith))
+  have hfar : 0 < xiSpeed s (k * x) := by
+    rw [xiSpeed]
+    exact Real.sqrt_pos.mpr (div_pos (by nlinarith) (by nlinarith))
+  have hsum : 0 < xiSpeed s x + k * xiSpeed s (k * x) := by positivity
+  have hden : 0 < (x ^ 2 - 1) * (k ^ 2 * x ^ 2 - 1) := by
+    apply mul_pos <;> nlinarith
+  have hrhs :
+      (k ^ 2 - 1) *
+          (-k ^ 2 * (x ^ 2) ^ 2 + (k ^ 2 + 1) * x ^ 2 - s) /
+        ((x ^ 2 - 1) * (k ^ 2 * x ^ 2 - 1)) < 0 := by
+    apply div_neg_of_neg_of_pos
+    · apply mul_neg_of_pos_of_neg <;> nlinarith
+    · exact hden
+  have hid := xiDiffSpeed_mul_sum_eq hk hs1 hx
+  have hprod : xiDiffSpeed s k x *
+      (xiSpeed s x + k * xiSpeed s (k * x)) < 0 := hid.symm ▸ hrhs
+  rcases (mul_neg_iff.mp hprod) with h | h
+  · linarith
+  · exact h.1
+
+/-! ## Fixed-ratio localization cuts -/
+
+/-- A fixed cut uniformly to the left of the stationary point for `0 ≤ s ≤ 1/2`. -/
+def fixedRatioInnerCut (k : ℝ) : ℝ := Real.sqrt (1 + 1 / (4 * k ^ 2))
+
+/-- A fixed cut uniformly to the right of the stationary point for `0 ≤ s ≤ 1/2`. -/
+def fixedRatioOuterCut (k : ℝ) : ℝ := Real.sqrt (1 + 3 / k ^ 2)
+
+theorem one_lt_fixedRatioInnerCut {k : ℝ} (hk : 1 < k) : 1 < fixedRatioInnerCut k := by
+  have hk0 : 0 < k := lt_trans zero_lt_one hk
+  have hfrac : (0 : ℝ) < 1 / (4 * k ^ 2) := by positivity
+  have h : (1 : ℝ) < 1 + 1 / (4 * k ^ 2) := by linarith
+  simpa only [fixedRatioInnerCut, Real.sqrt_one] using Real.sqrt_lt_sqrt (by norm_num) h
+
+theorem fixedRatioInnerCut_lt_stationaryPoint {s k : ℝ} (hk : 1 < k)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
+    fixedRatioInnerCut k < stationaryPoint s k := by
+  have hk0 : 0 < k := lt_trans zero_lt_one hk
+  have hk1 : (1 : ℝ) ≤ k := hk.le
+  have harg : 0 ≤ 1 + 1 / (4 * k ^ 2) := by positivity
+  have hcutSq : fixedRatioInnerCut k ^ 2 = 1 + 1 / (4 * k ^ 2) := by
+    rw [fixedRatioInnerCut]
+    exact Real.sq_sqrt harg
+  have hstatSq := stationaryPoint_sq hk1 hs0 hs1
+  have hrootLower := (stationaryRoot_sub_one_bounds hk1 hs0 hs1).1
+  have hcut0 := Real.sqrt_nonneg (1 + 1 / (4 * k ^ 2))
+  change 0 ≤ fixedRatioInnerCut k at hcut0
+  have hstat0 := stationaryPoint_nonneg s k
+  have hsqLt : fixedRatioInnerCut k ^ 2 < stationaryPoint s k ^ 2 := by
+    rw [hcutSq, hstatSq]
+    have hfrac : 1 / (4 * k ^ 2) < 1 / (2 * k ^ 2) := by
+      rw [div_lt_div_iff₀ (by positivity) (by positivity)]
+      nlinarith
+    linarith
+  nlinarith
+
+theorem stationaryPoint_lt_fixedRatioOuterCut {s k : ℝ} (hk : 1 < k)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
+    stationaryPoint s k < fixedRatioOuterCut k := by
+  have hk0 : 0 < k := lt_trans zero_lt_one hk
+  have hk1 : (1 : ℝ) ≤ k := hk.le
+  have harg : 0 ≤ 1 + 3 / k ^ 2 := by positivity
+  have hcutSq : fixedRatioOuterCut k ^ 2 = 1 + 3 / k ^ 2 := by
+    rw [fixedRatioOuterCut]
+    exact Real.sq_sqrt harg
+  have hstatSq := stationaryPoint_sq hk1 hs0 hs1
+  have hrootUpper := (stationaryRoot_sub_one_bounds hk1 hs0 hs1).2
+  have hcut0 := Real.sqrt_nonneg (1 + 3 / k ^ 2)
+  change 0 ≤ fixedRatioOuterCut k at hcut0
+  have hstat0 := stationaryPoint_nonneg s k
+  have hsqLt : stationaryPoint s k ^ 2 < fixedRatioOuterCut k ^ 2 := by
+    rw [hstatSq, hcutSq]
+    have hfrac : 2 / k ^ 2 < 3 / k ^ 2 := by
+      rw [div_lt_div_iff₀ (by positivity) (by positivity)]
+      nlinarith
+    linarith
+  nlinarith
+
+/-- Compactness supplies a positive fixed-ratio speed floor at the inner cut, uniformly over the
+full eventual separation range. -/
+theorem exists_fixedRatioInnerSpeedFloor (k : ℝ) (hk : 1 < k) :
+    ∃ η : ℝ, 0 < η ∧ ∀ s : ℝ, 0 ≤ s → s ≤ 1 / 2 →
+      η ≤ xiDiffSpeed s k (fixedRatioInnerCut k) := by
+  let f : ℝ → ℝ := fun s => xiDiffSpeed s k (fixedRatioInnerCut k)
+  have hf : Continuous f := by
+    dsimp only [f]
+    unfold xiDiffSpeed xiSpeed
+    fun_prop
+  have hne : (Set.Icc (0 : ℝ) (1 / 2)).Nonempty := Set.nonempty_Icc.mpr (by norm_num)
+  obtain ⟨s₀, hs₀, hmin⟩ := isCompact_Icc.exists_isMinOn hne hf.continuousOn
+  have hpos : ∀ s ∈ Set.Icc (0 : ℝ) (1 / 2), 0 < f s := by
+    intro s hs
+    exact xiDiffSpeed_pos_of_lt_stationaryPoint hk hs.1 hs.2
+      (one_lt_fixedRatioInnerCut hk) (fixedRatioInnerCut_lt_stationaryPoint hk hs.1 hs.2)
+  refine ⟨f s₀, hpos s₀ hs₀, ?_⟩
+  intro s hs0 hs1
+  exact (isMinOn_iff.mp hmin) s ⟨hs0, hs1⟩
+
+/-- Compactness supplies a positive fixed-ratio magnitude floor at the outer cut, uniformly over
+the full eventual separation range. -/
+theorem exists_fixedRatioOuterSpeedFloor (k : ℝ) (hk : 1 < k) :
+    ∃ η : ℝ, 0 < η ∧ ∀ s : ℝ, 0 ≤ s → s ≤ 1 / 2 →
+      η ≤ -xiDiffSpeed s k (fixedRatioOuterCut k) := by
+  let f : ℝ → ℝ := fun s => -xiDiffSpeed s k (fixedRatioOuterCut k)
+  have hf : Continuous f := by
+    dsimp only [f]
+    unfold xiDiffSpeed xiSpeed
+    fun_prop
+  have hne : (Set.Icc (0 : ℝ) (1 / 2)).Nonempty := Set.nonempty_Icc.mpr (by norm_num)
+  obtain ⟨s₀, hs₀, hmin⟩ := isCompact_Icc.exists_isMinOn hne hf.continuousOn
+  have hpos : ∀ s ∈ Set.Icc (0 : ℝ) (1 / 2), 0 < f s := by
+    intro s hs
+    have houter1 : 1 < fixedRatioOuterCut k :=
+      (one_lt_fixedRatioInnerCut hk).trans
+        ((fixedRatioInnerCut_lt_stationaryPoint hk hs.1 hs.2).trans
+          (stationaryPoint_lt_fixedRatioOuterCut hk hs.1 hs.2))
+    exact neg_pos.mpr (xiDiffSpeed_neg_of_stationaryPoint_lt hk hs.1 hs.2
+      houter1
+      (stationaryPoint_lt_fixedRatioOuterCut hk hs.1 hs.2))
+  refine ⟨f s₀, hpos s₀ hs₀, ?_⟩
+  intro s hs0 hs1
+  exact (isMinOn_iff.mp hmin) s ⟨hs0, hs1⟩
+
 /-- **Equation (11), closed form.**  At the stationary point both Liouville speeds collapse to
 explicit algebraic values, so the second derivative of the difference phase is a rational expression
 in `k` and `y - 1`. -/
@@ -658,6 +964,49 @@ theorem xiDiffSecond_stationaryPoint_eq {s k : ℝ} (hk : 1 ≤ k) (hs0 : 0 ≤ 
   have hkne : k ≠ 0 := hk0.ne'
   have hsne : (1 : ℝ) - s ≠ 0 := hs.ne'
   field_simp
+
+/-- For every strict dilation `k > 1`, the second derivative at the stationary point is strictly
+negative.  The older uniform theory below assumes `k ≥ 2` only to obtain absolute numerical
+constants; strict curvature itself holds throughout the full off-diagonal range. -/
+theorem xiDiffSecond_stationaryPoint_neg {s k : ℝ} (hk : 1 < k)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
+    xiSpeedDeriv s (stationaryPoint s k)
+        - k ^ 2 * xiSpeedDeriv s (k * stationaryPoint s k) < 0 := by
+  have hk1 : (1 : ℝ) ≤ k := hk.le
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk
+  set d : ℝ := stationaryRoot s k - 1 with hddef
+  set A : ℝ := k ^ 2 * stationaryRoot s k - 1 with hAdef
+  have hd0 : 0 < d := by
+    have h := one_lt_stationaryRoot hk1 hs0 hs1
+    rw [hddef]
+    linarith
+  have hA0 : 0 < A := by
+    rw [hAdef]
+    exact zero_lt_stationaryRoot_far hk1 hs0 hs1
+  have hid : A * d = 1 - s := by
+    rw [hAdef, hddef]
+    exact stationaryRoot_mul_identity hk1 hs0 hs1
+  have hAd : k ^ 2 * d < A := by
+    rw [hAdef, hddef]
+    nlinarith
+  have hsq : k ^ 4 * d ^ 2 < A ^ 2 := by
+    have hmul := mul_self_lt_mul_self (by positivity : 0 ≤ k ^ 2 * d) hAd
+    nlinarith
+  have hsecond : k ^ 3 * d ^ 2 / (1 - s) ^ 2 = k ^ 3 / A ^ 2 := by
+    rw [← hid, mul_pow]
+    field_simp [hA0.ne', hd0.ne']
+  have hbracket : 0 < 1 / (k * d ^ 2) - k ^ 3 * d ^ 2 / (1 - s) ^ 2 := by
+    rw [hsecond, sub_pos, div_lt_div_iff₀ (sq_pos_of_pos hA0) (by positivity)]
+    nlinarith [hsq]
+  rw [xiDiffSecond_stationaryPoint_eq hk1 hs0 hs1, hddef.symm]
+  exact mul_neg_of_neg_of_pos (by linarith) hbracket
+
+/-- Strict stationary curvature implies nondegeneracy for every `k > 1`. -/
+theorem xiDiffSecond_stationaryPoint_ne_zero {s k : ℝ} (hk : 1 < k)
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) :
+    xiSpeedDeriv s (stationaryPoint s k)
+        - k ^ 2 * xiSpeedDeriv s (k * stationaryPoint s k) ≠ 0 :=
+  (xiDiffSecond_stationaryPoint_neg hk hs0 hs1).ne
 
 /-! ## The `k³` law -/
 

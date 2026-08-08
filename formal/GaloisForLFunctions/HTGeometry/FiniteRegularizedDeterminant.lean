@@ -259,8 +259,10 @@ theorem matHSNormSq_submatrix {p : Type*} [Fintype p] [DecidableEq p] (e : p ≃
     (M : Matrix m m ℂ) : matHSNormSq (M.submatrix e e) = matHSNormSq M := by
   unfold matHSNormSq
   simp only [Matrix.submatrix_apply]
-  rw [← Equiv.sum_comp e fun i => ∑ j, ‖M i j‖ ^ 2]
-  exact Finset.sum_congr rfl fun i _ => Equiv.sum_comp e fun j => ‖M (e i) j‖ ^ 2
+  calc ∑ i : p, ∑ j : p, ‖M (e i) (e j)‖ ^ 2
+      = ∑ i : p, ∑ j : m, ‖M (e i) j‖ ^ 2 :=
+        Finset.sum_congr rfl fun i _ => Equiv.sum_comp e (fun j => ‖M (e i) j‖ ^ 2)
+    _ = ∑ i : m, ∑ j : m, ‖M i j‖ ^ 2 := Equiv.sum_comp e (fun i => ∑ j, ‖M i j‖ ^ 2)
 
 omit [DecidableEq m] in
 theorem trace_submatrix_equiv {p : Type*} [Fintype p] [DecidableEq p] (e : p ≃ m)

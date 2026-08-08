@@ -34,16 +34,19 @@ theorem map_valuationNormalizedLowPolynomial
       (Polynomial.degree_lt_iff_coeff_zero A d).mp hA k (Nat.le_of_not_gt hk)
     rw [hAk, mul_zero]
 
-/-- Valuative criterion for the critical factorization fibre.  If integral tails specialize to
-`X^m` and `X^n`, every low coefficient of every factorization point is integral. -/
-theorem valuationSubring_criticalFibre_coefficients_mem
+/-- Valuative criterion for the critical factorization fibre with arbitrary marked reductions.  If
+the reduced tails are divisible by the corresponding powers of `X` and their marked coefficients
+are nonzero, every low coefficient of every factorization point is integral. -/
+theorem valuationSubring_criticalFibre_coefficients_mem_of_marked_reduction
     {L : Type*} [Field L] (O : ValuationSubring L)
     {m n : ℕ} (hm : 0 < m) (hn : 0 < n)
     (US VS : O[X])
-    (hUS : US.map (IsLocalRing.residue O) =
-      (X : (IsLocalRing.ResidueField O)[X]) ^ m)
-    (hVS : VS.map (IsLocalRing.residue O) =
-      (X : (IsLocalRing.ResidueField O)[X]) ^ n)
+    (hUSdvd : (X : (IsLocalRing.ResidueField O)[X]) ^ m ∣
+      US.map (IsLocalRing.residue O))
+    (hVSdvd : (X : (IsLocalRing.ResidueField O)[X]) ^ n ∣
+      VS.map (IsLocalRing.residue O))
+    (hUScoeff : (US.map (IsLocalRing.residue O)).coeff m ≠ 0)
+    (hVScoeff : (VS.map (IsLocalRing.residue O)).coeff n ≠ 0)
     (p : criticalFibre L m n (US.map O.subtype) (VS.map O.subtype)) :
     (∀ i : Fin m, p.1.1.coeff i ∈ O) ∧
       ∀ j : Fin n, p.1.2.coeff j ∈ O := by
@@ -52,6 +55,8 @@ theorem valuationSubring_criticalFibre_coefficients_mem
   let ε : O →+* IsLocalRing.ResidueField O := IsLocalRing.residue O
   let U : L[X] := US.map ι
   let V : L[X] := VS.map ι
+  let U0 : (IsLocalRing.ResidueField O)[X] := US.map ε
+  let V0 : (IsLocalRing.ResidueField O)[X] := VS.map ε
   let A : L[X] := p.1.1
   let B : L[X] := p.1.2
   let xA : Fin m ⊕ Unit → L := affineBlockCoordinates A
@@ -100,22 +105,25 @@ theorem valuationSubring_criticalFibre_coefficients_mem
   let α0 : IsLocalRing.ResidueField O := ε α
   let β0 : IsLocalRing.ResidueField O := ε β
   have htrunc0 : (X : (IsLocalRing.ResidueField O)[X]) ^ (m + n) ∣
-      homogeneousTruncatedCriticalDefect (X ^ m) (X ^ n) A0 B0 α0 β0 := by
+      homogeneousTruncatedCriticalDefect U0 V0 A0 B0 α0 β0 := by
     have h := Polynomial.map_dvd ε hHdvd
-    simpa [H, homogeneousTruncatedCriticalDefect, A0, B0, α0, β0, hUS, hVS, ε]
+    simpa [H, homogeneousTruncatedCriticalDefect, U0, V0, A0, B0, α0, β0, ε]
       using h
+  have htail0 : (X : (IsLocalRing.ResidueField O)[X]) ^ (m + n) ∣ U0 * V0 := by
+    have hmul := mul_dvd_mul hUSdvd hVSdvd
+    simpa [U0, V0, pow_add] using hmul
   have hboundary : (X : (IsLocalRing.ResidueField O)[X]) ^ (m + n) ∣
-      homogeneousCriticalDefect (X ^ m) (X ^ n) A0 B0 α0 β0 := by
+      homogeneousCriticalDefect U0 V0 A0 B0 α0 β0 := by
     have hextra : (X : (IsLocalRing.ResidueField O)[X]) ^ (m + n) ∣
-        C (α0 * β0) * X ^ (m + n) := by
-      exact dvd_mul_left _ _
+        C (α0 * β0) * (U0 * V0) := by
+      exact dvd_mul_of_dvd_right htail0 _
     rw [homogeneousCriticalDefect_eq]
     have hid :
-        A0 * B0 + A0 * (C β0 * X ^ n) + (C α0 * X ^ m) * B0 +
-              C (α0 * β0) * (X ^ m * X ^ n) - C (α0 * β0) =
-          homogeneousTruncatedCriticalDefect (X ^ m) (X ^ n) A0 B0 α0 β0 +
-            C (α0 * β0) * X ^ (m + n) := by
-      rw [homogeneousTruncatedCriticalDefect, pow_add]
+        A0 * B0 + A0 * (C β0 * V0) + (C α0 * U0) * B0 +
+              C (α0 * β0) * (U0 * V0) - C (α0 * β0) =
+          homogeneousTruncatedCriticalDefect U0 V0 A0 B0 α0 β0 +
+            C (α0 * β0) * (U0 * V0) := by
+      rw [homogeneousTruncatedCriticalDefect]
       ring
     rw [hid]
     exact dvd_add htrunc0 hextra
@@ -153,8 +161,16 @@ theorem valuationSubring_criticalFibre_coefficients_mem
       have hone : β0 = 1 := by
         simpa [β0, β] using congrArg ε hwiB
       exact zero_ne_one (hzero ▸ hone)
-  have hinfinity := critical_biprojective_boundary_exclusion hA0deg hB0deg hleft hright
-    (by simpa [homogeneousCriticalDefect] using hboundary)
+  have hU0coeff : U0.coeff m ≠ 0 := by
+    dsimp only [U0]
+    exact hUScoeff
+  have hV0coeff : V0.coeff n ≠ 0 := by
+    dsimp only [V0]
+    exact hVScoeff
+  have hinfinity := critical_biprojective_boundary_exclusion_of_marked_coefficients
+    hA0deg hB0deg hU0coeff hV0coeff
+    hleft hright
+    (by simpa only [homogeneousCriticalDefect] using hboundary)
   have hmemA : ∀ i, xA i ∈ O :=
     valuationSubring_all_mem_of_normalized_coordinate O
       (a := Sum.inr ()) rfl hc hmaxA hwA hinfinity.1
@@ -162,5 +178,26 @@ theorem valuationSubring_criticalFibre_coefficients_mem
     valuationSubring_all_mem_of_normalized_coordinate O
       (a := Sum.inr ()) rfl hd hmaxB hwB hinfinity.2
   exact ⟨fun i => hmemA (Sum.inl i), fun j => hmemB (Sum.inl j)⟩
+
+/-- Valuative criterion for the pure critical reduction. -/
+theorem valuationSubring_criticalFibre_coefficients_mem
+    {L : Type*} [Field L] (O : ValuationSubring L)
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n)
+    (US VS : O[X])
+    (hUS : US.map (IsLocalRing.residue O) =
+      (X : (IsLocalRing.ResidueField O)[X]) ^ m)
+    (hVS : VS.map (IsLocalRing.residue O) =
+      (X : (IsLocalRing.ResidueField O)[X]) ^ n)
+    (p : criticalFibre L m n (US.map O.subtype) (VS.map O.subtype)) :
+    (∀ i : Fin m, p.1.1.coeff i ∈ O) ∧
+      ∀ j : Fin n, p.1.2.coeff j ∈ O := by
+  apply valuationSubring_criticalFibre_coefficients_mem_of_marked_reduction
+    O hm hn US VS
+  · rw [hUS]
+  · rw [hVS]
+  · rw [hUS]
+    simp
+  · rw [hVS]
+    simp
 
 end GaloisForLFunctions.HTGeometry

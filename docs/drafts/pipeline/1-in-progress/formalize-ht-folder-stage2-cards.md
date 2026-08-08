@@ -541,3 +541,172 @@ sequences nonzero, tending to infinity, and disjoint from one another.
 This is the divisor-realization engine that card 8's Andersson input and cards 2–4's normal form
 both need; what those still add on top is the *arithmetic* side — that the realizing function can be
 taken to be a Helson zeta function, respectively an elliptic-gamma product.
+
+
+## Closed: the two rigidity ends of the kernel identification (cards 2, 3)
+
+The kernel identification `Y` DA `⟺` `D_Y = 0` needs three things: the *entire* end (what a member of
+the class with no poles can be), the *atom* end (what realizes a single line of poles), and the
+*array* step (what a vanishing divisor does to the coefficient array).  Two of the three are now
+formal, and the third is the assembly.
+
+```text
+HTGeometry/TripticEntireRigidity.lean         const_of_entire_of_periodic_of_mixed_const_zero —
+                                               an entire member of the class with vanishing mixed
+                                               difference is constant.  Two Liouvilles: the
+                                               derivative is lattice-periodic hence constant, so the
+                                               function is affine, and a genuine period kills the
+                                               slope
+HTGeometry/MeromorphicLogDerivLocalForm.lean  exists_analyticAt_logDeriv_local_form,
+                                               laurentCoeff_logDeriv_eq_zero_of_le — a logarithmic
+                                               derivative has NO Laurent coefficient below the
+                                               residue; the corpus previously computed only the
+                                               residue itself
+HTGeometry/DifferentialAlgebraicAntiderivative.lean
+                                              differentialAlgebraicOver_of_deriv (field form) and
+                                               differentiallyAlgebraic_of_deriv (analytic form) —
+                                               differential algebraicity is stable under
+                                               INTEGRATION, not only differentiation.  The field
+                                               proof is `k⟨y′⟩` has finite transcendence degree,
+                                               `y′ = c` over it, then finite-transcendence descent;
+                                               the analytic proof is a jet reindexing
+HTGeometry/JacobiThetaSourcePrincipalPart.lean
+                                              analyticOrderAt_jacobiTheta₂_eq_one — every theta zero
+                                               is simple; thetaSource, its `1`-periodicity, its
+                                               `2πi` quasiperiod drop, and its COMPLETE principal
+                                               part: residue `1` on the divisor, nothing anywhere
+                                               else
+HTGeometry/TripticSeparatedPrincipalPart.lean exists_finiteSupport_separation_of_orbit_sum_eq_zero —
+                                               a vanishing orbital divisor makes both separated
+                                               families of the coefficient array FINITELY SUPPORTED
+```
+
+### What the array theorem says, and why it is the crux
+
+For `F ∈ Q` the order-`ℓ` coefficients on a rank-two orbit form an array `c n m` that is additively
+separable, `c n m = aₙ + bₘ`, with each family eventually constant at both ends.  Reciprocity
+identifies the two total jumps.  When the divisor vanishes the two end values on each side coincide,
+and the mixed-corner identity forces the two limits to sum to `c 0 0`; subtracting them leaves
+`aₙ`, `bₘ` **finitely supported**.  Concretely: the poles of a source of vanishing divisor lie on
+finitely many full `σ`-lines and finitely many full `τ`-lines.
+
+That is exactly the shape the theta atom realizes.  A full `σ`-line of simple poles is
+`z ↦ thetaSource σ (z - q)`: `1`-periodic, dropping by `2πi` under a `σ`-step, hence with vanishing
+mixed difference, and with residue `1` at each point of the line and no other singularity.  Its own
+orbital divisor vanishes — consistent, since it is differentially algebraic.
+
+### Correction recorded
+
+`latticeTheta`/`latticeSource`, built this cycle from the `ExpConeProduct` half-line products, were
+**deleted**: the corpus already owns the lattice atom on mathlib's `jacobiTheta₂` (exact divisor,
+simple zeros, `thetaLogDerivMero` with both translation laws, and field-level differential
+algebraicity of every translate).  Only the pointwise simple-order statement was missing, and it is
+a corollary of the exact divisor plus derivative nonvanishing.
+
+### The remaining assembly, precisely
+
+1. the translated and differentiated atoms `δʲ (thetaSource σ)(· - q)` and their Laurent data
+   (pole order `j+1`, coefficient `(-1)ʲ j!`), with `Λ_σ`-periodicity for `j ≥ 1`;
+2. finiteness of the set of orbits and of the pole orders that occur — both from ellipticity of the
+   two boundary functions once the mixed constant is `0`, which `(A2)` supplies from the vanishing
+   divisor;
+3. subtract the finite atom sum and apply `const_of_entire_of_periodic_of_mixed_const_zero` to the
+   pole-free remainder;
+4. conclude in `meroField Set.univ`, where sums, differences and antiderivatives of differentially
+   algebraic elements are again differentially algebraic.
+
+
+## Built: all orders, the leading coefficient, and the pole-free end
+
+Five more modules, wired and axiom-clean, close everything the kernel identification needs except the
+final index bookkeeping.
+
+```text
+MeromorphicLaurentDerivative  laurentCoeff_deriv : c_ℓ(f′,a) = (ℓ+1)·c_{ℓ+1}(f,a).  Proved at the
+                               level of clearing shifts: with g(t) = tᵏ f(a+t), the clearing shift of
+                               f′ at exponent k+1 is t·g′(t) − k·g(t) on a WHOLE neighbourhood of the
+                               origin (both sides vanish at it), and reading Taylor coefficients
+                               gives m − k = ℓ+1.  Mathlib has no Laurent calculus at all
+MeromorphicLaurentJet         laurentCoeff_iteratedDeriv_eq — the falling-product jet law — together
+                               with its two evaluations: the product vanishes for −j ≤ ℓ ≤ −1, and
+                               equals (−1)ʲ j! at ℓ = −(j+1)
+TripticJetAtom                jetAtom, rowJetAtom, colJetAtom and their incidence laws.  The jets are
+                               PURE: an atom of order j+1 has no Laurent coefficient of any other
+                               negative index, anywhere.  So the order-by-order subtraction does not
+                               interfere with itself
+MeromorphicLaurentLeading     laurentCoeff_leading_ne_zero (the leading coefficient of a pole is
+                               nonzero) and its consequence
+                               meromorphicOrderAt_nonneg_of_laurentCoeff_neg_eq_zero — vanishing
+                               principal part forces nonnegative order
+TripticRemainderRigidity      differentiable_toMeromorphicNFOn_of_no_principal_part — the normal form
+                               of a function with no principal part is ENTIRE; and
+                               const_of_entire_of_class_off_countable — the class relations need only
+                               hold off a COUNTABLE set, since the complement of a countable set in
+                               `ℂ` is dense and both sides are continuous
+TripticLineFiniteness         meromorphicOrderAt_neg_iff_exists_laurentCoeff_ne_zero (a pole is
+                               exactly a nonzero negative Laurent coefficient) and
+                               exists_finset_pole_classes — poles with a translation-invariant pole
+                               set lie on finitely many lattice cosets
+```
+
+### The single remaining step
+
+Everything is now local except the *index set*.  What is left is to assemble, from
+`exists_finset_pole_classes` applied to the two boundary functions `Δ_τ F` and `Δ_σ F`, the finite
+family of `(line, order)` pairs that actually occur, choose the coefficients supplied per orbit by
+`exists_finiteSupport_separation_of_orbit_sum_eq_zero`, and check that the difference of `F` and the
+resulting finite atom sum has no Laurent coefficient of negative index at ANY point of the plane.
+`TripticRemainderRigidity` then makes that difference constant off a countable set, and
+`DifferentialAlgebraicAntiderivative` together with the corpus's field-level closure laws turn the
+finite sum into a proof that `F` is differentially algebraic.
+
+
+## Built: the base-point-free principal part and the finiteness of the line support
+
+```text
+TripticGlobalCoefficient      laurentCoeff_eq_transverse_sums — the principal part of a source of
+                               vanishing orbital divisor read off from its two boundary functions
+                               with NO choice of orbit representative:
+                                 c_ℓ(F,w) = −Σ_{k≥0} c_ℓ(Δ_τF, w+kτ) + Σ_{j≥1} c_ℓ(Δ_σF, w−jσ)
+TripticTransverseCoefficient  rowCoeff / colCoeff — the two transverse fields, the row field constant
+                               along `σ`-lines and the column field along `τ`-lines, both `1`-periodic.
+                               These are exactly the coefficients the line atoms carry
+FinsumIntSplit                finsum_int_split — a finitely supported integer sum splits into its
+                               forward and backward rays
+TripticIndexBound             finite_shift_indices — only finitely many transverse shift indices
+                               connect two points of a finite set modulo a lattice, because a second
+                               solution would be a nontrivial relation between `1`, `τ` and `σ`
+TripticLineSupportFinite      rowCoeff_eq_backward_sum (the row coefficient is ALSO the backward sum,
+                               since the total transverse mass vanishes) and
+                               exists_finset_rowCoeff_classes — hence a nonzero row coefficient forces
+                               a pole both forward and backward on the ray, the two poles reduce to a
+                               finite list of classes, the number of steps between them is bounded,
+                               and only FINITELY MANY `σ`-classes carry a nonzero row coefficient
+```
+
+The index set of the normal form is therefore finite and explicitly constructed.  What remains is the
+mechanical assembly: sum the atoms over that finite index set, evaluate the sum's Laurent coefficients
+by the incidence laws, and match against `laurentCoeff_eq_rowCoeff_add_colCoeff` to see the difference
+has no principal part; then `TripticRemainderRigidity` and the field-level closure laws finish.
+
+
+## Built: the finite index set is complete
+
+```text
+MeromorphicLaurentOrderVanishing  laurentCoeff_eq_zero_of_lt_meromorphicOrderAt — below the order
+                                   every Laurent coefficient vanishes; with the leading-coefficient
+                                   law this makes `meromorphicOrderAt` exactly the least index
+                                   carrying a nonzero coefficient
+TripticOrderBound                 colCoeff_eq_rowCoeff — the backward column sum IS the forward row
+                                   sum in the other direction, so everything is phrased with one
+                                   field used twice;
+                                  meromorphicOrderAt_eq_of_laurentCoeff_eq — the order is read off
+                                   the principal part, hence is lattice-invariant wherever the
+                                   principal parts are;
+                                  exists_order_bound_rowCoeff — only FINITELY MANY ORDERS carry a
+                                   nonzero row coefficient, the bound being the least order among
+                                   the finitely many pole classes
+```
+
+Both coordinates of the normal-form index set — the lines and the orders — are therefore finite and
+explicitly bounded, in each of the two lattice directions.

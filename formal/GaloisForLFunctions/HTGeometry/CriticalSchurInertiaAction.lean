@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CriticalGeometricMonodromyFaithful
 import GaloisForLFunctions.HTGeometry.CriticalNormalClosureSchurValuation
+import GaloisForLFunctions.HTGeometry.PermutationCollisionInertia
 
 /-!
 # Actual Schur inertia acting on actual critical sheets
@@ -65,6 +66,35 @@ theorem natCard_criticalSchurInertiaAction_range
   exact Nat.card_congr
     (Equiv.ofInjective (criticalSchurInertiaAction K hm hn)
       (criticalSchurInertiaAction_injective K hm hn)).symm
+
+noncomputable local instance criticalGeometricSheetDecidableEq
+    (K : Type*) [Field K] (m n : ℕ) :
+    DecidableEq (criticalGeometricSheet K m n) :=
+  Classical.decEq _
+
+/-- **Simple nontrivial inertia produces an actual geometric transposition.**  If every element of
+the Schur inertia group acts either trivially or by one swap, nontriviality of that inertia group
+and faithfulness of its action select a genuine swap in actual geometric monodromy. -/
+theorem exists_criticalGeometricMonodromy_isSwap_of_simple_nontrivial_inertia
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n)
+    [Nontrivial (criticalSchurInertiaGroup K hm hn)]
+    (hsimple : ∀ g : criticalSchurInertiaGroup K hm hn,
+      criticalSchurInertiaAction K hm hn g = 1 ∨
+        (criticalSchurInertiaAction K hm hn g).IsSwap) :
+    ∃ τ : Equiv.Perm (criticalGeometricSheet K m n),
+      τ.IsSwap ∧ τ ∈ criticalGeometricMonodromy K m n := by
+  classical
+  obtain ⟨g, hg⟩ := exists_ne (1 : criticalSchurInertiaGroup K hm hn)
+  have haction : criticalSchurInertiaAction K hm hn g ≠ 1 := by
+    intro h
+    apply hg
+    apply criticalSchurInertiaAction_injective K hm hn
+    simpa using h
+  rcases hsimple g with htrivial | hswap
+  · exact absurd htrivial haction
+  · refine ⟨criticalSchurInertiaAction K hm hn g, hswap, ?_⟩
+    exact criticalSchurInertiaAction_range_le_monodromy K hm hn ⟨g, rfl⟩
 
 end
 

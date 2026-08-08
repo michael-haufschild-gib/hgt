@@ -101,8 +101,8 @@ block, and it therefore costs a factor logarithmic in the height. -/
 theorem integral_norm_mul_kernel_le_of_affine_meanSquare {D : ℝ → ℂ} (hD : Continuous D)
     {G : ℝ → ℝ} (hGc : Continuous G) {Q κ C t₀ : ℝ} (hQ : 0 ≤ Q) (hκ : 0 ≤ κ) (hC : 0 ≤ C)
     (ht₀ : 0 < t₀)
-    (hms : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2) ≤ Q + κ * U)
-    (hG : ∀ t, t₀ ≤ t → G t ≤ C / t) (M : ℕ) :
+    (hms : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2) ≤ Q + κ * U) (M : ℕ)
+    (hG : ∀ t, t₀ ≤ t → t ≤ t₀ * 2 ^ M → G t ≤ C / t) :
     (∫ t in t₀..(t₀ * 2 ^ M), ‖D t‖ * G t)
       ≤ (C * Real.sqrt Q * Real.sqrt 2 / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹
           + 2 * C * Real.sqrt κ * M := by
@@ -144,15 +144,15 @@ theorem integral_Icc_normSq_comp_neg (D : ℝ → ℂ) {U : ℝ} (hU : 0 ≤ U) 
 against the mean square at height `t₀` bounds the contribution by `C₀·√(2t₀)·√(Q + κt₀)`. -/
 theorem integral_norm_mul_kernel_low_le {D : ℝ → ℂ} (hD : Continuous D) {G : ℝ → ℝ}
     (hGc : Continuous G) {C₀ Q κ t₀ : ℝ} (hC₀ : 0 ≤ C₀) (ht₀ : 0 < t₀)
-    (hGlow : ∀ t, G t ≤ C₀)
+    (hGlow : ∀ t, |t| ≤ t₀ → G t ≤ C₀)
     (hms : (∫ t in Set.Icc (-t₀) t₀, ‖D t‖ ^ 2) ≤ Q + κ * t₀) :
     (∫ t in (-t₀)..t₀, ‖D t‖ * G t) ≤ C₀ * (Real.sqrt (2 * t₀) * Real.sqrt (Q + κ * t₀)) := by
   have hle : -t₀ ≤ t₀ := by linarith
   have hmono : (∫ t in (-t₀)..t₀, ‖D t‖ * G t) ≤ ∫ t in (-t₀)..t₀, ‖D t‖ * C₀ := by
     refine intervalIntegral.integral_mono_on hle ((hD.norm.mul hGc).intervalIntegrable _ _)
       ((hD.norm.mul continuous_const).intervalIntegrable _ _) ?_
-    intro t _
-    exact mul_le_mul_of_nonneg_left (hGlow t) (norm_nonneg _)
+    intro t ht
+    exact mul_le_mul_of_nonneg_left (hGlow t (abs_le.2 ⟨ht.1, ht.2⟩)) (norm_nonneg _)
   rw [intervalIntegral.integral_mul_const] at hmono
   have hcs : (∫ t in (-t₀)..t₀, ‖D t‖)
       ≤ Real.sqrt (t₀ - -t₀) * Real.sqrt (∫ t in (-t₀)..t₀, ‖D t‖ ^ 2) :=
@@ -180,8 +180,9 @@ height. -/
 theorem integral_symm_norm_mul_kernel_le {D : ℝ → ℂ} (hD : Continuous D) {G : ℝ → ℝ}
     (hGc : Continuous G) (hGsym : ∀ t, G (-t) = G t)
     {C C₀ Q κ t₀ : ℝ} (hC : 0 ≤ C) (hC₀ : 0 ≤ C₀) (hQ : 0 ≤ Q) (hκ : 0 ≤ κ) (ht₀ : 0 < t₀)
-    (hGlow : ∀ t, G t ≤ C₀) (hG : ∀ t, t₀ ≤ t → G t ≤ C / t)
-    (hms : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2) ≤ Q + κ * U) (M : ℕ) :
+    (hGlow : ∀ t, |t| ≤ t₀ → G t ≤ C₀)
+    (hms : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2) ≤ Q + κ * U) (M : ℕ)
+    (hG : ∀ t, t₀ ≤ t → t ≤ t₀ * 2 ^ M → G t ≤ C / t) :
     (∫ t in (-(t₀ * 2 ^ M))..(t₀ * 2 ^ M), ‖D t‖ * G t)
       ≤ 2 * ((C * Real.sqrt Q * Real.sqrt 2 / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹
               + 2 * C * Real.sqrt κ * M)
@@ -202,7 +203,7 @@ theorem integral_symm_norm_mul_kernel_le {D : ℝ → ℂ} (hD : Continuous D) {
   have hpos : (∫ t in t₀..(t₀ * 2 ^ M), ‖D t‖ * G t)
       ≤ (C * Real.sqrt Q * Real.sqrt 2 / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹
           + 2 * C * Real.sqrt κ * M :=
-    integral_norm_mul_kernel_le_of_affine_meanSquare hD hGc hQ hκ hC ht₀ hms hG M
+    integral_norm_mul_kernel_le_of_affine_meanSquare hD hGc hQ hκ hC ht₀ hms M hG
   -- the negative flank, after reflection
   have hrefl : (∫ t in (-(t₀ * 2 ^ M))..(-t₀), ‖D t‖ * G t)
       = ∫ t in t₀..(t₀ * 2 ^ M), ‖D (-t)‖ * G (-t) := by
@@ -211,15 +212,15 @@ theorem integral_symm_norm_mul_kernel_le {D : ℝ → ℂ} (hD : Continuous D) {
     intro U hU
     rw [integral_Icc_normSq_comp_neg D (by linarith)]
     exact hms U hU
-  have hnegG : ∀ t, t₀ ≤ t → G (-t) ≤ C / t := by
-    intro t ht
+  have hnegG : ∀ t, t₀ ≤ t → t ≤ t₀ * 2 ^ M → G (-t) ≤ C / t := by
+    intro t ht htop
     rw [hGsym t]
-    exact hG t ht
+    exact hG t ht htop
   have hneg : (∫ t in t₀..(t₀ * 2 ^ M), ‖D (-t)‖ * G (-t))
       ≤ (C * Real.sqrt Q * Real.sqrt 2 / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹
           + 2 * C * Real.sqrt κ * M :=
     integral_norm_mul_kernel_le_of_affine_meanSquare (hD.comp continuous_neg)
-      (hGc.comp continuous_neg) hQ hκ hC ht₀ hnegms hnegG M
+      (hGc.comp continuous_neg) hQ hκ hC ht₀ hnegms M hnegG
   -- the low range
   have hlow : (∫ t in (-t₀)..t₀, ‖D t‖ * G t)
       ≤ C₀ * (Real.sqrt (2 * t₀) * Real.sqrt (Q + κ * t₀)) :=
@@ -311,8 +312,8 @@ theorem integral_norm_mul_norm_mul_kernel_le {A B : ℝ → ℂ} (hA : Continuou
     {G : ℝ → ℝ} (hGc : Continuous G) {QA κA QB κB C t₀ : ℝ} (hQA : 0 ≤ QA) (hκA : 0 ≤ κA)
     (hQB : 0 ≤ QB) (hκB : 0 ≤ κB) (hC : 0 ≤ C) (ht₀ : 0 < t₀)
     (hmsA : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖A t‖ ^ 2) ≤ QA + κA * U)
-    (hmsB : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖B t‖ ^ 2) ≤ QB + κB * U)
-    (hG : ∀ t, t₀ ≤ t → G t ≤ C / t) (M : ℕ) :
+    (hmsB : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖B t‖ ^ 2) ≤ QB + κB * U) (M : ℕ)
+    (hG : ∀ t, t₀ ≤ t → t ≤ t₀ * 2 ^ M → G t ≤ C / t) :
     (∫ t in t₀..(t₀ * 2 ^ M), (‖A t‖ * ‖B t‖) * G t)
       ≤ 2 * (C * (Real.sqrt QA * Real.sqrt QB) / t₀)
           + (C * (Real.sqrt QA * Real.sqrt κB + Real.sqrt κA * Real.sqrt QB) * Real.sqrt 2
@@ -345,7 +346,7 @@ open Complex MeasureTheory Set
 against the two mean squares at height `t₀` bounds the contribution. -/
 theorem integral_norm_mul_norm_low_le {A B : ℝ → ℂ} (hA : Continuous A) (hB : Continuous B)
     {G : ℝ → ℝ} (hGc : Continuous G) {C₀ QA κA QB κB t₀ : ℝ} (hC₀ : 0 ≤ C₀) (ht₀ : 0 < t₀)
-    (hGlow : ∀ t, G t ≤ C₀)
+    (hGlow : ∀ t, |t| ≤ t₀ → G t ≤ C₀)
     (hmsA : (∫ t in Set.Icc (-t₀) t₀, ‖A t‖ ^ 2) ≤ QA + κA * t₀)
     (hmsB : (∫ t in Set.Icc (-t₀) t₀, ‖B t‖ ^ 2) ≤ QB + κB * t₀) :
     (∫ t in (-t₀)..t₀, (‖A t‖ * ‖B t‖) * G t)
@@ -359,8 +360,8 @@ theorem integral_norm_mul_norm_low_le {A B : ℝ → ℂ} (hA : Continuous A) (h
     refine intervalIntegral.integral_mono_on hle
       (((hA.norm.mul hB.norm).mul hGc).intervalIntegrable _ _)
       (((hA.norm.mul hB.norm).mul continuous_const).intervalIntegrable _ _) ?_
-    intro t _
-    exact mul_le_mul_of_nonneg_left (hGlow t) (by positivity)
+    intro t ht
+    exact mul_le_mul_of_nonneg_left (hGlow t (abs_le.2 ⟨ht.1, ht.2⟩)) (by positivity)
   rw [intervalIntegral.integral_mul_const] at hmono
   have hcs : (∫ t in (-t₀)..t₀, ‖A t‖ * ‖B t‖)
       ≤ Real.sqrt (∫ t in (-t₀)..t₀, ‖A t‖ ^ 2) * Real.sqrt (∫ t in (-t₀)..t₀, ‖B t‖ ^ 2) :=

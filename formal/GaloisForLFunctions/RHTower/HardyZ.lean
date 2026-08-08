@@ -98,7 +98,7 @@ theorem deriv_neg_of_even {f : ℝ → ℝ} (heven : Function.Even f)
   linarith
 
 /-- A differentiable even real function has a stationary reflection centre. -/
-theorem deriv_zero_of_even {f : ℝ → ℝ} (heven : Function.Even f)
+theorem deriv_eq_zero_of_even_at_zero {f : ℝ → ℝ} (heven : Function.Even f)
     (hf : Differentiable ℝ f) : deriv f 0 = 0 := by
   have h := deriv_neg_of_even heven hf 0
   simp only [neg_zero] at h
@@ -562,7 +562,7 @@ theorem differentiable_hardyZ : Differentiable ℝ hardyZ :=
 
 /-- The critical-line reflection centre is a stationary point of Hardy Z. -/
 @[simp] theorem deriv_hardyZ_zero : deriv hardyZ 0 = 0 :=
-  deriv_zero_of_even even_hardyZ differentiable_hardyZ
+  deriv_eq_zero_of_even_at_zero even_hardyZ differentiable_hardyZ
 
 /-- The first-jet height reflection for every continuously oriented finite carrier. -/
 @[simp] theorem deriv_gammaHardyCarrier_neg (N : ℕ) (τ : ℝ) :
@@ -572,7 +572,7 @@ theorem differentiable_hardyZ : Differentiable ℝ hardyZ :=
 /-- Every continuously oriented finite carrier is stationary at the reflection centre. -/
 @[simp] theorem deriv_gammaHardyCarrier_zero (N : ℕ) :
     deriv (gammaHardyCarrier N) 0 = 0 :=
-  deriv_zero_of_even (even_gammaHardyCarrier N) (differentiable_gammaHardyCarrier N)
+  deriv_eq_zero_of_even_at_zero (even_gammaHardyCarrier N) (differentiable_gammaHardyCarrier N)
 
 /-- **Hardy Z is globally continuous.**  The proof uses the explicit continuous Gamma phase and
 therefore discharges the branch-continuity premise required by sign-change arguments. -/
@@ -739,7 +739,7 @@ theorem differentiable_hardySEM {N : ℕ} (hN : 1 ≤ N) :
 /-- Every nontrivial symmetrized-EM Hardy approximant is stationary at the reflection centre. -/
 @[simp] theorem deriv_hardySEM_zero {N : ℕ} (hN : 1 ≤ N) :
     deriv (hardySEM N) 0 = 0 :=
-  deriv_zero_of_even (even_hardySEM N) (differentiable_hardySEM hN)
+  deriv_eq_zero_of_even_at_zero (even_hardySEM N) (differentiable_hardySEM hN)
 
 /-- Every nontrivial real symmetrized Euler--Maclaurin approximation is continuous. -/
 theorem continuous_hardySEM {N : ℕ} (hN : 1 ≤ N) : Continuous (hardySEM N) :=

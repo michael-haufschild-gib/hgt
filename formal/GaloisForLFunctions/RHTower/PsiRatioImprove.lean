@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.PsiRatioRecursionStep
 import GaloisForLFunctions.HTGeometry.SqrtLogLinearDomination
+import GaloisForLFunctions.HTGeometry.LogBelowLinear
 
 /-!
 # The single-pass ψ-ratio improvement
@@ -27,14 +28,8 @@ open ArithmeticFunction Finset
 
 /-- `log x ≤ 2√x` for `0 < x`. -/
 theorem log_le_two_sqrt {x : ℝ} (hx : 0 < x) :
-    Real.log x ≤ 2 * Real.sqrt x := by
-  have h1 : Real.log (Real.sqrt x) = Real.log x / 2 :=
-    Real.log_sqrt hx.le
-  have h2 : Real.log (Real.sqrt x) ≤ Real.sqrt x - 1 :=
-    Real.log_le_sub_one_of_pos (Real.sqrt_pos.2 hx)
-  rw [h1] at h2
-  have h3 : 0 ≤ Real.sqrt x := Real.sqrt_nonneg x
-  linarith
+    Real.log x ≤ 2 * Real.sqrt x :=
+  GaloisForLFunctions.HTGeometry.log_le_two_mul_sqrt hx
 
 /-- Subadditivity of the square root. -/
 theorem sqrt_add_le_add_sqrt {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) :

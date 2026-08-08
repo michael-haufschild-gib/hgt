@@ -51,7 +51,7 @@ theorem sum_range_le_geometric {c r : ℝ} (hc : 0 ≤ c) (hr0 : 0 ≤ r) (hr1 :
 dyadic blocks of `C/(t₀·2^m)` times the moment of `F` over the block: the kernel's decay is charged
 once per block instead of being replaced by its size at the bottom of the range. -/
 theorem integral_mul_kernel_le_sum_dyadic {F G : ℝ → ℝ} {C t₀ : ℝ} (ht₀ : 0 < t₀) (hC : 0 ≤ C)
-    (hF : ∀ t, 0 ≤ F t) (hG : ∀ t, t₀ ≤ t → G t ≤ C / t) {M : ℕ}
+    (hF : ∀ t, 0 ≤ F t) {M : ℕ} (hG : ∀ t, t₀ ≤ t → t ≤ t₀ * 2 ^ M → G t ≤ C / t)
     (hFint : ∀ m, m < M → IntervalIntegrable F volume (t₀ * 2 ^ m) (t₀ * 2 ^ (m + 1)))
     (hFGint : ∀ m, m < M →
       IntervalIntegrable (fun t => F t * G t) volume (t₀ * 2 ^ m) (t₀ * 2 ^ (m + 1))) :
@@ -73,8 +73,12 @@ theorem integral_mul_kernel_le_sum_dyadic {F G : ℝ → ℝ} {C t₀ : ℝ} (ht
     intro t ht
     have ht1 : t₀ * 2 ^ m ≤ t := ht.1
     have ht0 : t₀ ≤ t := le_trans (by nlinarith) ht1
+    have htop : t ≤ t₀ * 2 ^ M := by
+      have hMle : (2 : ℝ) ^ (m + 1) ≤ 2 ^ M := pow_le_pow_right₀ (by norm_num) (by omega)
+      have := ht.2
+      nlinarith [ht₀.le]
     have hker : G t ≤ C / (t₀ * 2 ^ m) :=
-      le_trans (hG t ht0) (div_le_div_of_nonneg_left hC hpos ht1)
+      le_trans (hG t ht0 htop) (div_le_div_of_nonneg_left hC hpos ht1)
     exact mul_le_mul_of_nonneg_left hker (hF t)
   calc (∫ t in (t₀ * 2 ^ m)..(t₀ * 2 ^ (m + 1)), F t * G t)
       ≤ ∫ t in (t₀ * 2 ^ m)..(t₀ * 2 ^ (m + 1)), F t * (C / (t₀ * 2 ^ m)) :=
@@ -111,7 +115,8 @@ shape of a mean-value estimate for a Dirichlet polynomial — and the kernel dec
 with no dependence on `M`.  The square-root growth of the moment is exactly half of the linear
 growth of the range, so the kernel's first-order decay wins by a geometric factor per block. -/
 theorem integral_mul_kernel_le_of_sqrt_block_moment {F G : ℝ → ℝ} {C K t₀ : ℝ} (ht₀ : 0 < t₀)
-    (hC : 0 ≤ C) (hK : 0 ≤ K) (hF : ∀ t, 0 ≤ F t) (hG : ∀ t, t₀ ≤ t → G t ≤ C / t) {M : ℕ}
+    (hC : 0 ≤ C) (hK : 0 ≤ K) (hF : ∀ t, 0 ≤ F t) {M : ℕ}
+    (hG : ∀ t, t₀ ≤ t → t ≤ t₀ * 2 ^ M → G t ≤ C / t)
     (hFint : ∀ m, m < M → IntervalIntegrable F volume (t₀ * 2 ^ m) (t₀ * 2 ^ (m + 1)))
     (hFGint : ∀ m, m < M →
       IntervalIntegrable (fun t => F t * G t) volume (t₀ * 2 ^ m) (t₀ * 2 ^ (m + 1)))
@@ -184,8 +189,8 @@ geometric series by the kernel's decay, while the linear part is charged one con
 `2CL` times the number of blocks.  The linear part is the only source of a logarithmic dependence on
 the height of the range. -/
 theorem integral_mul_kernel_le_of_affine_block_moment {F G : ℝ → ℝ} {C K L t₀ : ℝ} (ht₀ : 0 < t₀)
-    (hC : 0 ≤ C) (hK : 0 ≤ K) (hF : ∀ t, 0 ≤ F t) (hG : ∀ t, t₀ ≤ t → G t ≤ C / t)
-    {M : ℕ}
+    (hC : 0 ≤ C) (hK : 0 ≤ K) (hF : ∀ t, 0 ≤ F t) {M : ℕ}
+    (hG : ∀ t, t₀ ≤ t → t ≤ t₀ * 2 ^ M → G t ≤ C / t)
     (hFint : ∀ m, m < M → IntervalIntegrable F volume (t₀ * 2 ^ m) (t₀ * 2 ^ (m + 1)))
     (hFGint : ∀ m, m < M →
       IntervalIntegrable (fun t => F t * G t) volume (t₀ * 2 ^ m) (t₀ * 2 ^ (m + 1)))
@@ -234,8 +239,8 @@ open Complex MeasureTheory Set
 moment `J + K√(height) + L·(height)` — the shape a product of two Dirichlet polynomials produces, each
 with an affine mean square — is charged two geometric series and one constant per block. -/
 theorem integral_mul_kernel_le_of_general_block_moment {F G : ℝ → ℝ} {C J K L t₀ : ℝ} (ht₀ : 0 < t₀)
-    (hC : 0 ≤ C) (hJ : 0 ≤ J) (hK : 0 ≤ K) (hF : ∀ t, 0 ≤ F t) (hG : ∀ t, t₀ ≤ t → G t ≤ C / t)
-    {M : ℕ}
+    (hC : 0 ≤ C) (hJ : 0 ≤ J) (hK : 0 ≤ K) (hF : ∀ t, 0 ≤ F t) {M : ℕ}
+    (hG : ∀ t, t₀ ≤ t → t ≤ t₀ * 2 ^ M → G t ≤ C / t)
     (hFint : ∀ m, m < M → IntervalIntegrable F volume (t₀ * 2 ^ m) (t₀ * 2 ^ (m + 1)))
     (hFGint : ∀ m, m < M →
       IntervalIntegrable (fun t => F t * G t) volume (t₀ * 2 ^ m) (t₀ * 2 ^ (m + 1)))

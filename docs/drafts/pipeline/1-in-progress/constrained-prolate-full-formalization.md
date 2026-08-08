@@ -1761,3 +1761,66 @@ yields the kernel form.  NOTE the composition `T∘T` produces the kernel argume
 `x − y`; the two agree **on the even carrier** after `y ↦ −y`, which is precisely why the cards
 work in `evenSubspace`.  That observation is the one piece of real content in the remaining step
 — the rest is Fubini bookkeeping on a product of finite-measure sets.
+
+## 2026-08-08: canonical radial separation and Gram layer closed unconditionally
+
+The previous status above is obsolete.  The Fourier/Slepian bridge, joint spectrum, radial ODE,
+Dunster density transfer, endpoint/tail bounds, Kaiser fixed-index trial spaces, and canonical
+radial-family infrastructure have since been built.  The decisive new capstone is
+`formal/GaloisForLFunctions/RHTower/ProlateCanonicalSeparationLimit.lean`.
+
+Closed in Lean, with no premises on the final fixed-index statements:
+
+* `eventually_signedModeRadial_tunneling_lower`: any fixed positive separation threshold forces a
+  radial leakage lower bound on a strictly slower exponential clock than the true signed-mode
+  Kaiser upper bound.  The low-separation branch uses WKB turning-layer tunneling; the
+  high-separation branch uses Sonin aperture control plus an exterior endpoint-collar mass floor.
+* `tendsto_signedModeRadialData_s_zero`: the selected exact joint radial line attached to every
+  fixed signed-greedy band value has separation ratio tending to zero.
+* `tendsto_integral_Ioi_signedModeRadialDensity_unconditional`: every fixed canonical radial tail
+  converges to the exact CCM arcsine density tail divided by `pi`.
+* `tendsto_integral_Ioi_signedModeFirstRowRadialProduct_unconditional`: fixed first-row canonical
+  overlaps vanish for dilation ratio at least two.
+* `signedModeRadialGramEntry_diag_eq` and
+  `tendsto_signedModeRadialGramEntry_diag`: exact dilation change of variables and unconditional
+  diagonal limit `arcsin(1/k)/(pi*k)`.
+* `signedModeRadialGramEntry_scale_left` and `signedModeRadialGramEntry_comm`: exact positive
+  dilation covariance and Gram symmetry.
+* `tendsto_integral_Ioi_signedModeFirstRowRadialProduct_from`: cancellation remains true after
+  discarding any fixed tail prefix whose base is at least two.
+* `tendsto_signedModeRadialGramEntry_of_separated`: every fixed canonical pair separated by a
+  factor of at least two has zero off-diagonal limit.
+
+The source module passes `lake env lean` in full.  A prior final-module build passed before the
+last Gram extensions; final `lake build` is intentionally deferred to the pipeline audit.
+
+The remaining radial analytic gap is now sharply smaller: extend fixed-ratio stationary phase from
+the uniform `k >= 2` regime to every fixed `k > 1`, which covers adjacent integer dilations.  The
+remaining identification gap is distinct: the canonical joint radial line carries the literal
+signed-greedy band eigenvalue, but equality with the chosen signed Fourier representative still
+requires finite-Fourier spectral simplicity (or an equivalent transfer theorem).  Do not conflate
+these two gates.
+
+### 2026-08-08 continuation: factor-two stationary-phase restriction removed structurally
+
+The `k >= 2` hypothesis in the existing first-row theorem mixed two different requirements:
+uniform-in-`k` numerical constants and fixed-`k` nondegeneracy.  The second requirement in fact only
+needs `k > 1`.  New axiom-clean infrastructure, each source-checked with `lake env lean`:
+
+* `CCMFirstRowStationaryPhase.lean`: uniqueness of the exterior stationary point; exact
+  rationalized speed identity; global speed sign before/after the point; strict negative curvature
+  for every `k > 1`; fixed inner/outer cuts; compactness-derived positive speed floors uniform in
+  `0 <= s <= 1/2`.
+* `CCMFirstRowVanDerCorputBlocks.lean`: all elementary amplitude positivity, differentiability, and
+  antitonicity facts now have strict-dilation variants; generic weighted first-derivative blocks for
+  arbitrary positive speed floors; generic weighted second-derivative block for an arbitrary
+  curvature floor; compactness-derived curvature floor on every fixed exterior block, uniform in
+  `0 <= s <= 1/2`.
+* `CCMFirstRowEnvelopeTail.lean`: a positive `k`-dependent endpoint amplitude constant for every
+  `k > 1`, the corresponding `(x-1)^(-1/4)` majorant, endpoint integrability, and the exact
+  `O((X-1)^(3/4))` endpoint-mass bound.
+
+Thus inner, stationary, outer, and endpoint estimates required for every fixed ratio `k > 1` are
+now individually formalized.  Remaining assembly work is to combine them with the already-proved
+sum-phase and Dunster exact-to-Bessel transfer, then lift through dilation covariance to every
+unequal integer Gram pair.  No mathematical nondegeneracy gap remains in this branch.

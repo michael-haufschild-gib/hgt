@@ -63,10 +63,10 @@ theorem norm_sum_Icc_triple_le {A B g : ℕ → ℂ} {MA MB Mg N : ℕ}
     (hN : 1 ≤ N)
     {Bc V σ t₀ : ℝ}
     (hBc : ∀ n, ‖(LSeries.convolution A (LSeries.convolution B g)) n‖ ≤ Bc) (hV : 0 ≤ V)
-    (hgV : ∀ t : ℝ, ‖LSeries g ((σ : ℂ) + (t : ℝ) * I)‖ ≤ V)
     (hσ : 1 ≤ σ) (ht₀ : 1 ≤ t₀)
     (zA YA zB YB : ℕ) (hYA : 1 ≤ YA) (hYzA : YA ≤ zA) (hzA : 2 ≤ zA) (hlogA : 0 < Real.log YA)
-    (hYB : 1 ≤ YB) (hYzB : YB ≤ zB) (hzB : 2 ≤ zB) (hlogB : 0 < Real.log YB) (K : ℕ) :
+    (hYB : 1 ≤ YB) (hYzB : YB ≤ zB) (hzB : 2 ≤ zB) (hlogB : 0 < Real.log YB) (K : ℕ)
+    (hgV : ∀ t : ℝ, |t| ≤ t₀ * 2 ^ K → ‖LSeries g ((σ : ℂ) + (t : ℝ) * I)‖ ≤ V) :
     ‖∑ n ∈ Finset.Icc 1 (min (MA * (MB * Mg)) N),
         (LSeries.convolution A (LSeries.convolution B g)) n‖
       ≤ 2 * ((N : ℝ) + 1) * Bc * (((N : ℝ) + 1 / 2)) ^ σ
@@ -121,7 +121,7 @@ theorem norm_sum_Icc_triple_le {A B g : ℕ → ℂ} {MA MB Mg N : ℕ}
   have hgc : Continuous fun t : ℝ => LSeries g ((σ : ℂ) + (t : ℝ) * I) :=
     continuous_LSeries_line_of_support hg0 hgsupp σ
   have hanalytic := integral_symm_norm_perron_triple_le hA0 hAsupp hAprime hB0 hBsupp hBprime
-    hσ0 hx ht₀ hV hgc hgV zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K
+    hσ0 hx ht₀ hV hgc zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K hgV
   have hnormint : ‖∫ t in (-T)..T,
         LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
             * LSeries g ((σ : ℂ) + (t : ℝ) * I)

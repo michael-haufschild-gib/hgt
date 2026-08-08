@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.DeLaValleePoussinInequality
+import GaloisForLFunctions.HTGeometry.LogBelowLinear
 
 /-!
 # A zero-free region of exponent one
@@ -21,11 +22,8 @@ namespace RHTower.Sieve
 open Complex
 
 /-- `log x ≤ 2 √x`. -/
-theorem log_le_two_sqrt {x : ℝ} (hx : 0 < x) : Real.log x ≤ 2 * Real.sqrt x := by
-  have hs : 0 < Real.sqrt x := Real.sqrt_pos.mpr hx
-  have h := Real.log_le_sub_one_of_pos hs
-  rw [Real.log_sqrt hx.le] at h
-  linarith
+theorem log_le_two_sqrt {x : ℝ} (hx : 0 < x) : Real.log x ≤ 2 * Real.sqrt x :=
+  GaloisForLFunctions.HTGeometry.log_le_two_mul_sqrt hx
 
 /-- The quadratic threshold that rules the inequality out. -/
 theorem quad_pos {u K : ℝ} (hu : 202 ≤ u) (huK : K + 1 ≤ u) :

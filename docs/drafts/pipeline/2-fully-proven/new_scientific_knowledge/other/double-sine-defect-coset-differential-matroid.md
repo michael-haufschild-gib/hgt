@@ -218,10 +218,13 @@ superpositions beyond their constant-coefficient operator rank.
    its periodic constant field is nontrivial.
 4. **Meromorphic category.** Dense-period constancy and rational-cylinder specialization use actual
    meromorphic functions, not formal solutions.
-5. **No Lean promotion yet.** The local tree has no multiple-sine analytic definition or
-   several-automorphism Picard--Vessiot theory. The genuine differential matroid, exact collision-
-   matroid criterion, and rank/gluing bridges are formalized, but an abstract wrapper assuming the
-   telescoper would still not formalize the scientific theorem.
+5. **Lean closure.** The local tree now constructs the genuine meromorphic double-sine source on
+   every positive imaginary-ray frame with irrational ratio, proves exact orbit independence and
+   same-coset differential algebraicity, and packages the defects as the pointed period-class
+   collision matroid over `ℂ(z)`.  Its rank is the number of distinct nonzero classes.  A separate
+   rational-base operator theorem proves the exact `ℂ(δ)` row rank of every finite separated
+   differential-translation superposition, closing the group-algebra clause without assuming a
+   telescoper or an abstract source.
 
 ## Parent-theory and literature gate
 
@@ -250,4 +253,6 @@ priority before scientific-novelty promotion.
 - [x] preliminary exact/equivalent/stronger literature search
 - [ ] independent audit of the several-translation telescoper in this specialization
 - [ ] independent specialist proof and novelty audit
-- [ ] unconditional analytic formalization in Lean
+- [x] unconditional analytic formalization in Lean
+- [x] 2 -> 3: exact defect matroid, nonzero-coset rank, and finite operator-row rank formalized in
+  `GaloisForLFunctions.HTGeometry.DoubleSineDefectCosetMatroid`
