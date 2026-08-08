@@ -1564,3 +1564,28 @@ Two facts worth remembering:
 * zeros = reciprocal eigenvalues, and order of vanishing = algebraic multiplicity.
 
 Card: `docs/drafts/pipeline/1-in-progress/entire-regularized-fredholm-determinant.md`.
+
+### 2026-08-08, later — step 4 of route C
+
+`HTGeometry/HilbertSchmidtContinuity.lean` and `HTGeometry/HilbertSchmidtTruncation.lean`:
+
+* the kernel-level Hilbert--Schmidt layer had **no** additivity at all (only the operator-level
+  `E →L[k] F` layer did) — `isHS_add`, `isHS_sub`, `hsNorm_add_le`, `hsNorm_neg`, `hsNorm_sub_le`,
+  `hsComp_sub_left/right`, `hsNorm_hsComp_le`, `hsInner_sub_left/right` are new;
+* `hsNorm_hsPow_sub_le` — powers are Lipschitz on a norm ball, from
+  `A^{m+1} - B^{m+1} = A(A^m - B^m) + (A - B)B^m`;
+* `hsTrace_hsPow_sub_norm_le` — **the power traces are Lipschitz**, via `hsTrace_hsPow_succ`
+  (`tr(K^{n+1}) = <K^H, K^n>_HS`) and Cauchy--Schwarz;
+* `truncKernel`, `tendsto_hsNorm_sub_truncKernel`, `tendsto_hsTrace_hsPow_truncKernel`.
+
+Two Lean traps recorded:
+
+* `tsum_subtype` will **not** unify `{x // x ∉ s ×ˢ s}` with `↥{x | x ∉ s ×ˢ s}` (the
+  `SummationFilter.unconditional` argument blocks it).  Avoid subtype tails entirely: write the
+  truncation energy as `hsNormSq K - ∑ p ∈ s ×ˢ s, ‖K p‖^2` and use `Summable.hasSum` directly as a
+  `Tendsto ... atTop`, composed with cofinality of square blocks.
+* `tsum_le_tsum` no longer exists as a root name; it is `Summable.tsum_le_tsum`.
+
+Also: the lint gate flagged `HedenmalmThetaSourceEntropyBoundaryWeld` as unreachable from the
+`RHTower` umbrella — a concurrent session had created the module without wiring it.  Wired.  The
+other ~24 unreachable-module lint errors belong to other sessions' in-flight work, not to this one.
