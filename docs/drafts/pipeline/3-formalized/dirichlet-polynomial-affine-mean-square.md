@@ -179,3 +179,17 @@ hypotheses exist only to produce the discrete mean-square bound. Stated with the
 each keeps one hypothesis. The originals are the instances at the mean value theorem, and
 `card_largeValues_le_affine` / `sum_norm_dirPoly_le_sqrt_affine` are the instances at the affine mean
 square. Nothing downstream changed statement.
+
+## The symmetric range, which is the one Gallagher needs
+
+Gallagher's identity integrates over `|w| ≤ W`, so the level-set measure has to be available there.
+`volume_largeValues_symm_le` and its sixth-power form both consumed the lossy symmetric mean square;
+Chebyshev uses nothing but a bound, so they are now instances of
+
+* `volume_largeValues_symm_le_of_bound` — `V²·|{t ∈ [-T,T] : V ≤ ‖F(t)‖}| ≤ B` from
+  `∫_{[-T,T]}‖F‖² ≤ B`;
+* `volume_largeValues_sixth_symm_le_of_bound` — the same with `V⁶` from a mean-square bound for the
+  cube,
+
+and both shed the hypothesis `0 ≤ T`, which neither proof used. The affine instance
+(`volume_largeValues_symm_le_affine`) needs no hypothesis on `T` at all.

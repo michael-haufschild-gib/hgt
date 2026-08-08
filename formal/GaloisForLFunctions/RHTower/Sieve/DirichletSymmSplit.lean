@@ -17,15 +17,15 @@ namespace RHTower.Sieve
 
 open MeasureTheory Finset
 
-/-- **The measure of a level set on a symmetric range.** -/
-theorem volume_largeValues_symm_le (N : ℕ) (c : Fin N → ℂ) {T V : ℝ} (hT : 0 ≤ T) (hV : 0 ≤ V) :
-    V ^ 2 * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N c t‖}
-      ≤ 2 * ((T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖c m‖ ^ 2) := by
+/-- **The measure of a level set on a symmetric range, from any mean-square bound.**  Chebyshev uses
+nothing but the bound. -/
+theorem volume_largeValues_symm_le_of_bound (N : ℕ) (c : Fin N → ℂ) {T V B : ℝ}
+    (hV : 0 ≤ V) (hA : (∫ t in Set.Icc (-T) T, ‖dirPoly N c t‖ ^ 2) ≤ B) :
+    V ^ 2 * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N c t‖} ≤ B := by
   classical
   set g : ℝ → ℝ := fun t => ‖dirPoly N c t‖ ^ 2 with hg
   have hgc : Continuous g := ((continuous_dirPoly N c).norm).pow 2
   have hint : IntegrableOn g (Set.Icc (-T) T) := hgc.integrableOn_Icc
-  have hA := integral_Icc_normSq_dirPoly_symm_le N c hT
   have hnn : 0 ≤ᵐ[volume.restrict (Set.Icc (-T) T)] g :=
     Filter.Eventually.of_forall fun t => by positivity
   have hmark := MeasureTheory.mul_meas_ge_le_integral_of_nonneg hnn hint (V ^ 2)
@@ -46,7 +46,24 @@ theorem volume_largeValues_symm_le (N : ℕ) (c : Fin N → ℂ) {T V : ℝ} (hT
       ≤ V ^ 2 * (volume.restrict (Set.Icc (-T) T)).real {x : ℝ | V ^ 2 ≤ g x} :=
         mul_le_mul_of_nonneg_left hmono hVsq
     _ ≤ ∫ t in Set.Icc (-T) T, g t := hmark
-    _ ≤ 2 * ((T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖c m‖ ^ 2) := hA
+    _ ≤ B := hA
+
+/-- **The measure of a level set on a symmetric range.**  The instance at the mean value theorem. -/
+theorem volume_largeValues_symm_le (N : ℕ) (c : Fin N → ℂ) {T V : ℝ} (hT : 0 ≤ T) (hV : 0 ≤ V) :
+    V ^ 2 * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N c t‖}
+      ≤ 2 * ((T + 4 * (N : ℝ) * (1 + Real.log N)) * ∑ m : Fin N, ‖c m‖ ^ 2) :=
+  volume_largeValues_symm_le_of_bound N c hV (integral_Icc_normSq_dirPoly_symm_le N c hT)
+
+/-- **The sixth-power level set on a symmetric range, from any mean-square bound for the cube.** -/
+theorem volume_largeValues_sixth_symm_le_of_bound (N : ℕ) (a : Fin N → ℂ) {T V B : ℝ}
+    (hV : 0 ≤ V)
+    (hA : (∫ t in Set.Icc (-T) T, ‖dirPoly (N ^ 3) (convCube N a) t‖ ^ 2) ≤ B) :
+    V ^ 6 * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N a t‖} ≤ B := by
+  have hV3 : (0 : ℝ) ≤ V ^ 3 := by positivity
+  have hbase := volume_largeValues_symm_le_of_bound (N ^ 3) (convCube N a) hV3 hA
+  rw [largeValues_cube_setOf N a (Set.Icc (-T) T) hV] at hbase
+  have hpow : (V ^ 3) ^ 2 = V ^ 6 := by ring
+  rwa [hpow] at hbase
 
 /-- **The measure of a level set on a symmetric range, sixth-power form.** -/
 theorem volume_largeValues_sixth_symm_le (N : ℕ) (a : Fin N → ℂ) {T V D : ℝ} (hT : 0 ≤ T)
@@ -54,12 +71,8 @@ theorem volume_largeValues_sixth_symm_le (N : ℕ) (a : Fin N → ℂ) {T V D : 
     V ^ 6 * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N a t‖}
       ≤ 2 * ((T + 4 * ((N ^ 3 : ℕ) : ℝ) * (1 + Real.log ((N ^ 3 : ℕ) : ℝ)))
           * (D * (∑ n : Fin N, ‖a n‖ ^ 2) ^ 3)) := by
-  have hV3 : (0 : ℝ) ≤ V ^ 3 := by positivity
-  have hbase := volume_largeValues_symm_le (N ^ 3) (convCube N a) hT hV3
-  rw [largeValues_cube_setOf N a (Set.Icc (-T) T) hV] at hbase
-  have hpow : (V ^ 3) ^ 2 = V ^ 6 := by ring
-  rw [hpow] at hbase
-  refine le_trans hbase ?_
+  refine volume_largeValues_sixth_symm_le_of_bound N a hV ?_
+  refine le_trans (integral_Icc_normSq_dirPoly_symm_le (N ^ 3) (convCube N a) hT) ?_
   have hlogN3 : (0 : ℝ) ≤ Real.log ((N ^ 3 : ℕ) : ℝ) := by
     rcases Nat.eq_zero_or_pos (N ^ 3) with h | h
     · simp [h]

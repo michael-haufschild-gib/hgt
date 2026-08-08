@@ -10,6 +10,7 @@ import GaloisForLFunctions.RHTower.Sieve.CesaroDyadicMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.AffineMeanSquareL1
 import GaloisForLFunctions.RHTower.Sieve.DirichletLargeValuesCount
 import GaloisForLFunctions.RHTower.Sieve.DirichletLargeValuesL1
+import GaloisForLFunctions.RHTower.Sieve.DirichletSymmSplit
 import GaloisForLFunctions.RHTower.Sieve.DirichletDerivEnergy
 
 /-!
@@ -400,6 +401,15 @@ theorem sum_norm_dirPoly_le_sqrt_affine (N : ℕ) (hN : 2 ≤ N) (a : Fin N → 
               + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a m‖ ^ 2) * max T 1))) :=
   sum_norm_dirPoly_le_sqrt_of_bound N a R
     (largeValues_dirPoly_affine N hN a hδ hT hgap hlow R hhigh)
+
+
+/-- **The measure of a level set on a symmetric range, with the affine mean square.**  This is the
+form Gallagher's identity consumes, since it integrates over a symmetric frequency range. -/
+theorem volume_largeValues_symm_le_affine (N : ℕ) (c : Fin N → ℂ) {T V : ℝ} (hV : 0 ≤ V) :
+    V ^ 2 * volume.real {t ∈ Set.Icc (-T) T | V ≤ ‖dirPoly N c t‖}
+      ≤ 5 * Real.pi * Real.exp 1 * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖c m‖ ^ 2)
+        + (5 * Real.pi / 2) * (∑ m : Fin N, ‖c m‖ ^ 2) * max T 1 :=
+  volume_largeValues_symm_le_of_bound N c hV (integral_Icc_normSq_dirPoly_le_affine_max c T)
 
 
 section
