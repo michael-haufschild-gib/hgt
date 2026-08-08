@@ -6291,3 +6291,4 @@ import GaloisForLFunctions.RHTower.Sieve.HalaszGlobalUniqueClose
 import GaloisForLFunctions.RHTower.Sieve.HalaszGlobalLargeValueWindow
 import GaloisForLFunctions.RHTower.Sieve.HalaszGlobalIntegralBound
 import GaloisForLFunctions.RHTower.Sieve.HalaszGlobalWindowExplicit
+import GaloisForLFunctions.RHTower.Sieve.AffineMeanSquareL1

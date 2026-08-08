@@ -78,3 +78,26 @@ instance at the cell-covering value of `W`.
 ## Log
 - 2026-08-08 — created in 3-formalized; the cell covering identified as the loss, the global window law
   proved, and the balanced power saving `(T log z)^{4/5}` formalized.
+
+## The first moment is better served by the mean square
+
+The affine mean square `integral_Icc_normSq_LSeries_le_general_affine` plus Cauchy–Schwarz against `1`
+gives, with no distance and no exceptional frequency,
+
+`∫_{|y| ≤ T} ‖L(a,σ+iy)‖ dy ≤ √(2T(Q₁ + Q₀T))`,   `Q₁ = 5πe∑_n n‖a_n n^{-σ}‖²`, `Q₀ = (5π/2)∑_n ‖a_n n^{-σ}‖²`,
+
+and for `|f| ≤ 1` truncated at `N` with `σ ≥ 1` the masses are `Q₁ ≤ 5πe(1 + log N)` and `Q₀ ≤ 5π`:
+
+`∫_{|y| ≤ T} ‖L(f_{≤N},σ+iy)‖ dy ≤ √(2T(5πe(1 + log N) + 5πT))`.
+
+At `T ≍ 1` this is `≍ √(log N)`, below the window route's `(log N)^{4/5}` and far below the trivial
+`≍ log N`. So for the *first moment* the square root of the mean square is the stronger of the two
+mechanisms, and the window law's value lies elsewhere: it is the only one of the two that locates the
+exceptional frequency, which is what a Halász-type dichotomy — as opposed to a mean bound — requires.
+
+| Statement | Module |
+|---|---|
+| `integral_Icc_norm_LSeries_le_sqrt_general_affine` | `RHTower/Sieve/AffineMeanSquareL1.lean` |
+| `norm_truncSeq_mul_rpow_sq_le` | `RHTower/Sieve/AffineMeanSquareL1.lean` |
+| `generalMeanSquareRate_truncSeq_le`, `generalMeanSquareConst_truncSeq_le` | `RHTower/Sieve/AffineMeanSquareL1.lean` |
+| `integral_Icc_norm_LSeries_truncSeq_le` | `RHTower/Sieve/AffineMeanSquareL1.lean` |
