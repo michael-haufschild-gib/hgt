@@ -1998,3 +1998,14 @@ Mathlib has **no** resolvent identity.  It is three lines from `Ring.inverse_mul
 *is* `IsUnit (algebraMap - a)` definitionally.
 
 Lean note: `omit [...] in` must come **after** the docstring, not before it.
+
+### 2026-08-08 — the Riesz projection commutes with the element
+
+`HTGeometry/RieszProjection.lean` gate 3: `circleIntegral_mul_left`, `circleIntegral_mul_right`
+(pull a multiplication through a Banach-valued circle integral, via `ContinuousLinearMap.mul ℂ A`
+and its `.flip`, then `ContinuousLinearMap.intervalIntegral_comp_comm`), `commute_resolvent`
+(`a R = R a`, five-step calc from `R u = 1 = u R` and `Algebra.commutes`), and
+**`rieszProjection_commute`**.
+
+Riesz gates: definition + Cauchy vanishing, resolvent identity, commutation — done.
+Left: idempotence, range = generalized eigenspace, finite-section stability of the rank.
