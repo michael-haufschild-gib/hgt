@@ -2761,3 +2761,44 @@ needed.  Correspondingly `hFbound`/`hgV` are now `∀ t, |t| ≤ t₀2^K → …
 This is the first bound in the chain that falls below the trivial size.  Every other ingredient — sieve
 mean squares, kernel, dyadic split, truncation error — is untouched by the substitution, which was the
 design goal recorded when the third factor was isolated.
+
+## Both halves joined: a Halász-type mean value bound
+
+`formal/GaloisForLFunctions/RHTower/Sieve/HalaszGhsSharpCutoff.lean`:
+
+- `convolution_truncSeq_eq_of_le`, `convolution_triple_truncSeq_eq_of_le`,
+  `sum_Icc_convolution_triple_truncSeq_eq` — truncating the third factor at any point beyond the range of
+  summation changes nothing, because every index a convolution touches at `n` divides `n`.  This is what
+  lets the paper half (untruncated `f`) and the analytic half (truncated `f`) speak about one object.
+- `norm_sum_Icc_mul_log_le_damped` — **unconditional**: for completely multiplicative `f` with `‖f‖ ≤ 1`
+  at multiplicative distance at least `δ` from every `n^{it}`, `|t| ≤ t₀2^K`,
+
+  `‖∑_{n ≤ N} f(n)‖·log N ≤ (recursion error, O(N log log N))
+       + (Perron truncation error) + (1/2π)(2·perronVerticalProductBound + low range)`,
+
+  with the distance entering only through `dampedSize σ δ z N`.
+
+Also: `integral_norm_mul_norm_low_le_pointwise` and `integral_symm_norm_perron_triple_l1_low_le` — on the
+low range the pointwise sizes may be charged instead of the mean squares, which for a prime weight is a
+logarithm cheaper; and `dampedSize` is now a named definition.
+
+### The accounting of the assembled bound
+
+With `σ = 1 + A/log N`, `x^σ ≍ N`, `T = t₀2^K ≍ N²`:
+
+* Perron truncation error `≍ N²(log N)^5/T ≍ (log N)^5` — negligible.
+* `Q_A ≍ ∑_{p ≤ N/2}(log p/log(N/p))²/p /log Y_A ≍ log N/log Y_A`; the mass concentrates at `p` near `N`,
+  where the recursion's own denominator `log⌊N/p⌋` is small.  Restricting the outer weight to `p ≤ √N`
+  would make `Q_A ≍ O(1)`.
+* `Q_B ≍ (log M)²/log Y_B`, `κ_A, κ_B ≍ z·∑‖a‖²p^{−2σ} ≍ O(z)`.
+* the sieve level is capped: `selbergFibreError = Y²e^{4c}(log z)^4` must stay below a main term of size
+  `O(1)` per pair, so `Y = O(1)` and `log Y = O(1)`.  **This cap, not the analysis, is what stands between
+  the present bound and sharp Halász.**
+* optimising `t₀` between the flank term `√(Q_AQ_B)/t₀` and the pointwise low range `t₀·ℓ¹(A)ℓ¹(B)` gives
+  their geometric mean; with `ℓ¹(A) ≍ log log N`, `ℓ¹(B) ≍ log M` the total is `≍ (log N)^{5/4}`.
+
+So `‖∑_{n≤N}f‖/N ≲ (log N)^{1/4+}·e^{−δ²}/δ² + log log N/log N`: a Halász-type theorem nontrivial once
+`δ² ≫ log log N`.  Sharp Halász needs `δ² ≫ 1`, and the gap is exactly the sieve level cap plus the outer
+weight's mass near `p = N`.  Two concrete next steps, both arithmetic: split the outer weight at `√N`, and
+replace the sieve count by a large-values count (`DirichletLargeValues`), whose gain is measure-theoretic
+rather than level-limited.

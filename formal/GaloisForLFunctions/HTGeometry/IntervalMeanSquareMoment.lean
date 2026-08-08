@@ -383,3 +383,37 @@ theorem integral_norm_mul_norm_low_le {A B : ℝ → ℂ} (hA : Continuous A) (h
 
 end GaloisForLFunctions.HTGeometry
 end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open Complex MeasureTheory Set
+
+/-- **The low range of a product integral, from pointwise bounds.**  On a bounded range the pointwise
+sizes of the two factors may beat their mean squares: Cauchy–Schwarz charges `√(Q_A Q_B)`, while the
+pointwise route charges `V_A V_B` times the length.  For a Dirichlet polynomial `V` is its damped `ℓ¹`
+mass, which for a prime weight is a logarithm smaller than the square root of its `n`-weighted mass. -/
+theorem integral_norm_mul_norm_low_le_pointwise {A B : ℝ → ℂ} (hA : Continuous A)
+    (hB : Continuous B) {G : ℝ → ℝ} (hGc : Continuous G) {C₀ VA VB t₀ : ℝ}
+    (ht₀ : 0 < t₀) (hVA : 0 ≤ VA) (hVB : 0 ≤ VB) (hG0 : ∀ t, 0 ≤ G t)
+    (hGlow : ∀ t, |t| ≤ t₀ → G t ≤ C₀)
+    (hAb : ∀ t, |t| ≤ t₀ → ‖A t‖ ≤ VA) (hBb : ∀ t, |t| ≤ t₀ → ‖B t‖ ≤ VB) :
+    (∫ t in (-t₀)..t₀, (‖A t‖ * ‖B t‖) * G t) ≤ (2 * t₀) * (VA * VB * C₀) := by
+  have hle : -t₀ ≤ t₀ := by linarith
+  have hmono : (∫ t in (-t₀)..t₀, (‖A t‖ * ‖B t‖) * G t)
+      ≤ ∫ _t in (-t₀)..t₀, VA * VB * C₀ := by
+    refine intervalIntegral.integral_mono_on hle
+      (((hA.norm.mul hB.norm).mul hGc).intervalIntegrable _ _)
+      (intervalIntegrable_const) ?_
+    intro t ht
+    have habs : |t| ≤ t₀ := abs_le.2 ⟨ht.1, ht.2⟩
+    calc (‖A t‖ * ‖B t‖) * G t ≤ (VA * VB) * C₀ :=
+          mul_le_mul (mul_le_mul (hAb t habs) (hBb t habs) (norm_nonneg _) hVA)
+            (hGlow t habs) (hG0 t) (by positivity)
+      _ = VA * VB * C₀ := by ring
+  refine le_trans hmono (le_of_eq ?_)
+  rw [intervalIntegral.integral_const]
+  have hlen : t₀ - -t₀ = 2 * t₀ := by ring
+  rw [hlen, smul_eq_mul]
+
+end GaloisForLFunctions.HTGeometry
+end

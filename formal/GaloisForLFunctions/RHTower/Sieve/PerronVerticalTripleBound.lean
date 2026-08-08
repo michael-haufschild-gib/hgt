@@ -229,3 +229,109 @@ theorem integral_symm_norm_perron_triple_le {A B f : ℕ → ℂ} {sA sB : Finse
 
 end RHTower.Sieve
 end
+
+noncomputable section
+namespace RHTower.Sieve
+open Complex MeasureTheory Set
+
+/-- **The triple Perron integral with the low range charged pointwise.**  Away from the flanks the
+kernel is bounded and the two prime polynomials may be charged their pointwise sizes instead of their
+mean squares.  For a prime weight the damped `ℓ¹` mass is smaller than the square root of the
+`n`-weighted mass by a logarithm, so on a bounded low range this is the better estimate. -/
+theorem integral_symm_norm_perron_triple_l1_low_le {A B f : ℕ → ℂ} {sA sB : Finset ℕ}
+    (hA0 : 0 ∉ sA) (hAsupp : ∀ n : ℕ, A n ≠ 0 → n ∈ sA)
+    (hAprime : ∀ n ∈ sA, A n ≠ 0 → n.Prime)
+    (hB0 : 0 ∉ sB) (hBsupp : ∀ n : ℕ, B n ≠ 0 → n ∈ sB)
+    (hBprime : ∀ n ∈ sB, B n ≠ 0 → n.Prime)
+    {σ x t₀ V VA VB : ℝ} (hσ : 0 < σ) (hx : 0 < x) (ht₀ : 1 ≤ t₀) (hV : 0 ≤ V)
+    (hVA : 0 ≤ VA) (hVB : 0 ≤ VB)
+    (hFc : Continuous fun t : ℝ => LSeries f ((σ : ℂ) + (t : ℝ) * I))
+    (zA YA zB YB : ℕ) (hYA : 1 ≤ YA) (hYzA : YA ≤ zA) (hzA : 2 ≤ zA) (hlogA : 0 < Real.log YA)
+    (hYB : 1 ≤ YB) (hYzB : YB ≤ zB) (hzB : 2 ≤ zB) (hlogB : 0 < Real.log YB) (M : ℕ)
+    (hFbound : ∀ t : ℝ, |t| ≤ t₀ * 2 ^ M → ‖LSeries f ((σ : ℂ) + (t : ℝ) * I)‖ ≤ V)
+    (hAb : ∀ t : ℝ, |t| ≤ t₀ → ‖LSeries A ((σ : ℂ) + (t : ℝ) * I)‖ ≤ VA)
+    (hBb : ∀ t : ℝ, |t| ≤ t₀ → ‖LSeries B ((σ : ℂ) + (t : ℝ) * I)‖ ≤ VB) :
+    (∫ t in (-(t₀ * 2 ^ M))..(t₀ * 2 ^ M),
+        ‖LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
+            * LSeries f ((σ : ℂ) + (t : ℝ) * I)
+            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖)
+      ≤ 2 * perronVerticalProductBound A B sA sB σ x t₀ V zA YA zB YB M
+          + (2 * t₀) * (VA * VB * (V * x ^ σ / σ)) := by
+  have ht₀0 : (0 : ℝ) < t₀ := by linarith
+  have hxσ : (0 : ℝ) ≤ x ^ σ := Real.rpow_nonneg hx.le σ
+  have hone : (1 : ℝ) ≤ 2 ^ M := one_le_pow₀ (by norm_num)
+  have hAc : Continuous fun t : ℝ => LSeries A ((σ : ℂ) + (t : ℝ) * I) :=
+    continuous_LSeries_line_of_support hA0 hAsupp σ
+  have hBc : Continuous fun t : ℝ => LSeries B ((σ : ℂ) + (t : ℝ) * I) :=
+    continuous_LSeries_line_of_support hB0 hBsupp σ
+  set FA : ℝ → ℂ := fun t => LSeries A ((σ : ℂ) + (t : ℝ) * I) with hFA
+  set FB : ℝ → ℂ := fun t => LSeries B ((σ : ℂ) + (t : ℝ) * I) with hFB
+  set G : ℝ → ℝ := fun t =>
+    ‖LSeries f ((σ : ℂ) + (t : ℝ) * I)‖ * (x ^ σ / ‖(σ : ℂ) + (t : ℝ) * I‖) with hG
+  have hGc : Continuous G := hFc.norm.mul (continuous_perron_kernel_norm hσ)
+  have hFprod : Continuous fun t : ℝ => ‖FA t‖ * ‖FB t‖ := hAc.norm.mul hBc.norm
+  have hG0 : ∀ t, 0 ≤ G t := by
+    intro t
+    rw [hG]
+    have : (0 : ℝ) ≤ x ^ σ / ‖(σ : ℂ) + (t : ℝ) * I‖ := by positivity
+    positivity
+  have hGle : ∀ t : ℝ, 0 < t → t ≤ t₀ * 2 ^ M → G t ≤ V * x ^ σ / t := by
+    intro t ht htop
+    have habs : |t| ≤ t₀ * 2 ^ M := by rw [abs_of_pos ht]; exact htop
+    calc G t ≤ V * (x ^ σ / t) := by
+          refine mul_le_mul (hFbound t habs) (perron_kernel_norm_le hx ht) (by positivity) hV
+      _ = V * x ^ σ / t := by ring
+  have hGleneg : ∀ t : ℝ, 0 < t → t ≤ t₀ * 2 ^ M → G (-t) ≤ V * x ^ σ / t := by
+    intro t ht htop
+    have habs : |(-t)| ≤ t₀ * 2 ^ M := by rw [abs_neg, abs_of_pos ht]; exact htop
+    have hker : x ^ σ / ‖(σ : ℂ) + ((-t : ℝ) : ℂ) * I‖ ≤ x ^ σ / t := by
+      rw [perron_kernel_norm_neg x σ t]
+      exact perron_kernel_norm_le hx ht
+    calc G (-t) ≤ V * (x ^ σ / t) := by
+          refine mul_le_mul (hFbound (-t) habs) hker (by positivity) hV
+      _ = V * x ^ σ / t := by ring
+  have hpos : (∫ t in t₀..(t₀ * 2 ^ M), (‖FA t‖ * ‖FB t‖) * G t)
+      ≤ perronVerticalProductBound A B sA sB σ x t₀ V zA YA zB YB M := by
+    rw [perronVerticalProductBound]
+    refine GaloisForLFunctions.HTGeometry.integral_norm_mul_norm_mul_kernel_le hAc hBc hGc
+      (sieveMeanSquareConst_nonneg A sA σ hlogA) (sieveMeanSquareRate_nonneg A sA σ hzA hlogA)
+      (sieveMeanSquareConst_nonneg B sB σ hlogB) (sieveMeanSquareRate_nonneg B sB σ hzB hlogB)
+      (by positivity) ht₀0 (fun U hU => ?_) (fun U hU => ?_) M
+      (fun t ht htop => hGle t (by linarith) htop)
+    · exact integral_Icc_normSq_LSeries_le_affine hA0 hAsupp hAprime σ (by linarith) zA YA hYA
+        hYzA hzA hlogA
+    · exact integral_Icc_normSq_LSeries_le_affine hB0 hBsupp hBprime σ (by linarith) zB YB hYB
+        hYzB hzB hlogB
+  have hneg : (∫ t in t₀..(t₀ * 2 ^ M), (‖FA (-t)‖ * ‖FB (-t)‖) * G (-t))
+      ≤ perronVerticalProductBound A B sA sB σ x t₀ V zA YA zB YB M := by
+    rw [perronVerticalProductBound]
+    refine GaloisForLFunctions.HTGeometry.integral_norm_mul_norm_mul_kernel_le
+      (A := fun t => FA (-t)) (B := fun t => FB (-t)) (G := fun t => G (-t))
+      (hAc.comp continuous_neg) (hBc.comp continuous_neg) (hGc.comp continuous_neg)
+      (sieveMeanSquareConst_nonneg A sA σ hlogA) (sieveMeanSquareRate_nonneg A sA σ hzA hlogA)
+      (sieveMeanSquareConst_nonneg B sB σ hlogB) (sieveMeanSquareRate_nonneg B sB σ hzB hlogB)
+      (by positivity) ht₀0 (fun U hU => ?_) (fun U hU => ?_) M
+      (fun t ht htop => hGleneg t (by linarith) htop)
+    · rw [GaloisForLFunctions.HTGeometry.integral_Icc_normSq_comp_neg FA (by linarith)]
+      exact integral_Icc_normSq_LSeries_le_affine hA0 hAsupp hAprime σ (by linarith) zA YA hYA
+        hYzA hzA hlogA
+    · rw [GaloisForLFunctions.HTGeometry.integral_Icc_normSq_comp_neg FB (by linarith)]
+      exact integral_Icc_normSq_LSeries_le_affine hB0 hBsupp hBprime σ (by linarith) zB YB hYB
+        hYzB hzB hlogB
+  have hlow : (∫ t in (-t₀)..t₀, (‖FA t‖ * ‖FB t‖) * G t)
+      ≤ (2 * t₀) * (VA * VB * (V * x ^ σ / σ)) := by
+    refine GaloisForLFunctions.HTGeometry.integral_norm_mul_norm_low_le_pointwise hAc hBc hGc
+      ht₀0 hVA hVB hG0 (fun t ht => ?_) (fun t ht => hAb t ht) (fun t ht => hBb t ht)
+    have habs : |t| ≤ t₀ * 2 ^ M := by
+      refine le_trans ht ?_
+      nlinarith [ht₀0.le]
+    calc G t ≤ V * (x ^ σ / σ) := by
+          refine mul_le_mul (hFbound t habs) (perron_kernel_norm_le_const hx hσ t)
+            (by positivity) hV
+      _ = V * x ^ σ / σ := by ring
+  rw [intervalIntegral.integral_congr (g := fun t : ℝ => (‖FA t‖ * ‖FB t‖) * G t)
+    (fun t _ => norm_perron_triple_integrand hx _ _ _ σ t)]
+  exact GaloisForLFunctions.HTGeometry.integral_symm_le_of_flanks hFprod hGc hpos hneg hlow
+
+end RHTower.Sieve
+end

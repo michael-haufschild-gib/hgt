@@ -23,6 +23,19 @@ noncomputable section
 namespace RHTower.Sieve
 open Complex MeasureTheory Set
 
+/-- The damped size of a truncated multiplicative Dirichlet series on a line: the damped Euler bound at
+distance `δ` from the characters up to `z`, plus the truncation tail at `L`. -/
+def dampedSize (σ δ : ℝ) (z L : ℕ) : ℝ :=
+  (1 + 1 / (σ - 1)) * Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2)
+    + ((L : ℝ)) ^ (1 - σ) / (σ - 1)
+
+theorem dampedSize_nonneg {σ δ : ℝ} (hσ : 1 < σ) (z L : ℕ) : 0 ≤ dampedSize σ δ z L := by
+  rw [dampedSize]
+  have hσ1 : (0 : ℝ) < σ - 1 := by linarith
+  have h1 : (0 : ℝ) ≤ ((L : ℝ)) ^ (1 - σ) := Real.rpow_nonneg (Nat.cast_nonneg L) _
+  have h2 : (0 : ℝ) ≤ 1 + 1 / (σ - 1) := by positivity
+  positivity
+
 /-- A truncated Dirichlet series is the partial sum of the twisted summands. -/
 theorem LSeries_truncSeq_eq_sum_range {f : ℕ → ℂ} {L : ℕ} {s : ℂ} (hs : s ≠ 0) :
     LSeries (truncSeq f L) s = ∑ n ∈ Finset.range (L + 1), twistedSummand f s n := by
@@ -48,10 +61,8 @@ theorem norm_LSeries_truncSeq_line_le_damped {f : ℕ → ℂ} (hf1 : f 1 = 1)
     (hunif : ∀ t : ℝ, |t| ≤ T →
       δ ≤ Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z)))
     {L : ℕ} (hL : 1 ≤ L) {t : ℝ} (ht : |t| ≤ T) :
-    ‖LSeries (truncSeq f L) ((σ : ℂ) + (t : ℝ) * I)‖
-      ≤ (1 + 1 / (σ - 1))
-            * Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2)
-          + ((L : ℝ)) ^ (1 - σ) / (σ - 1) := by
+    ‖LSeries (truncSeq f L) ((σ : ℂ) + (t : ℝ) * I)‖ ≤ dampedSize σ δ z L := by
+  rw [dampedSize]
   have hre : ((σ : ℂ) + (t : ℝ) * I).re = σ := by simp
   have hs : ((σ : ℂ) + (t : ℝ) * I) ≠ 0 := by
     intro h
@@ -91,27 +102,14 @@ theorem norm_sum_Icc_ghsTriple_damped_le {f : ℕ → ℂ} (hf1 : f 1 = 1)
           + (1 / (2 * Real.pi))
               * (2 * perronVerticalProductBound (ghsOuter f N₀) (ghsInner f M)
                     (Finset.Icc 1 N₀) (Finset.Icc 1 M) σ ((N : ℝ) + 1 / 2) t₀
-                    ((1 + 1 / (σ - 1))
-                        * Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2)
-                      + ((L : ℝ)) ^ (1 - σ) / (σ - 1))
-                    zA YA zB YB K
-                  + (((1 + 1 / (σ - 1))
-                          * Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2)
-                        + ((L : ℝ)) ^ (1 - σ) / (σ - 1))
-                      * ((N : ℝ) + 1 / 2) ^ σ / σ)
+                    (dampedSize σ δ z L) zA YA zB YB K
+                  + ((dampedSize σ δ z L) * ((N : ℝ) + 1 / 2) ^ σ / σ)
                       * (Real.sqrt (sieveMeanSquareConst (ghsOuter f N₀) (Finset.Icc 1 N₀) σ YA
                             + sieveMeanSquareRate (ghsOuter f N₀) (Finset.Icc 1 N₀) σ zA YA * t₀)
                           * Real.sqrt (sieveMeanSquareConst (ghsInner f M) (Finset.Icc 1 M) σ YB
                             + sieveMeanSquareRate (ghsInner f M) (Finset.Icc 1 M) σ zB YB
                                 * t₀))) := by
-  have hσ1 : (0 : ℝ) < σ - 1 := by linarith
-  have hVnn : (0 : ℝ) ≤ (1 + 1 / (σ - 1))
-      * Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2)
-      + ((L : ℝ)) ^ (1 - σ) / (σ - 1) := by
-    have h1 : (0 : ℝ) ≤ ((L : ℝ)) ^ (1 - σ) := Real.rpow_nonneg (Nat.cast_nonneg L) _
-    have h2 : (0 : ℝ) ≤ 1 + 1 / (σ - 1) := by positivity
-    positivity
-  exact norm_sum_Icc_ghsTriple_of_bound_le hbdd hprod hN hVnn hσ.le ht₀
+  exact norm_sum_Icc_ghsTriple_of_bound_le hbdd hprod hN (dampedSize_nonneg hσ z L) hσ.le ht₀
     zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K
     (fun t ht => norm_LSeries_truncSeq_line_le_damped hf1 hmul hbdd hσ hz hδ hunif hL ht)
 
