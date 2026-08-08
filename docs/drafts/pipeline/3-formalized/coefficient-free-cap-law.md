@@ -138,7 +138,22 @@ whose mass is at most `2 log 4`. Summing `1/k²` over `k ≤ Nat.log 2 x` with t
 
 `∑_{p ≤ x} 1/(p log p) ≤ 2·max(mertensBlockConst, 2 log 4)/(log 2)²`
 
-(`PrimeInvLogTail.sum_prime_inv_mul_log_le`), uniformly in `x`. So the frequency-average error of
-`UniformDistanceAverage` is `O(1/T)` after all, and the average of the distance over `[0,T]` is
-`∑_{p ∈ P}1/p + O(1/T)`: the uniform distance is the prime mass up to an error that vanishes with the
-height, with no dependence on `z` at all.
+(`PrimeInvLogTail.sum_prime_inv_mul_log_le`), uniformly in `x`.
+
+### The averaging theorem
+
+With the tail sum in hand the argument closes:
+
+`∫_0^T 𝔻(f, n^{it})² dt ≤ T·∑_{p ≤ x}1/p + 3·primeInvLogConst`
+(`UniformDistanceAverage.integral_mulDistSqPair_le`), hence
+
+`∃ t ∈ [0,T],  𝔻(f, n^{it})² ≤ ∑_{p ≤ x}1/p + 4·primeInvLogConst/T`
+
+(`exists_mulDistSqPair_le_prime_mass`), for every bounded `f` and every `T > 0`. The slack `4` rather
+than `3` avoids needing strict integral monotonicity: assuming the negation gives
+`T·A + 4C ≤ T·A + 3C`, so `C ≤ 0`, contradicting `primeInvLogConst_pos`.
+
+So the uniform distance level available to a damped route is the prime mass up to `O(1/T)`, with no
+`z`-dependence at all — never the `2∑_p 1/p` that a single frequency can attain. That is the sharp input
+to the `dampedSize` floor: `e^{−δ²} ≳ e^{−∑_p 1/p} ≍ (log z)^{-1}` uniformly, so the floor is `Θ(1)` and
+the Euler borderline is unconditional.
