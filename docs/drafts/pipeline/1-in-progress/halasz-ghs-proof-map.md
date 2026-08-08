@@ -2729,3 +2729,35 @@ At `N ≤ M` the sum is the partial sum up to `N` — the object of the recursio
 is unchanged, because the uniform logarithmic separation `|log((N+1/2)/n)| ≥ 1/(2N+2)` was proved for
 *every* integer `n ≥ 1`, not only for `n` below the cutoff, and the harmonic sum runs over the whole
 support.  This is why raising the height, not restricting the support, is what pays for the error.
+
+## The saving enters: the damped third factor
+
+Two changes, one structural and one mathematical.
+
+**Structural: the kernel hypotheses are now range-restricted.**  A distance bound is available only on a
+bounded range, so every kernel hypothesis of the device was weakened from `∀ t, t₀ ≤ t → G t ≤ C/t` to
+`∀ t, t₀ ≤ t → t ≤ t₀2^M → G t ≤ C/t`, and every low-range hypothesis from `∀ t, G t ≤ C₀` to
+`∀ t, |t| ≤ t₀ → G t ≤ C₀`: in `integral_mul_kernel_le_sum_dyadic`, the three block-moment lemmas,
+`integral_norm_mul_kernel_le_of_affine_meanSquare`, `integral_symm_norm_mul_kernel_le`, the two low-range
+lemmas, `integral_norm_mul_norm_mul_kernel_le`, and the Perron instances.  The device only ever evaluates
+the kernel inside the range, so nothing in the proofs changed — the hypotheses were simply stronger than
+needed.  Correspondingly `hFbound`/`hgV` are now `∀ t, |t| ≤ t₀2^K → …`.
+
+**Mathematical: `GhsPerronDamped.lean`.**
+
+- `LSeries_truncSeq_eq_sum_range` — a truncated series is the partial sum `∑_{n ≤ L}` of the twisted
+  summands, so the corpus's truncation error applies to it.
+- `norm_LSeries_truncSeq_line_le_damped` — under a uniform distance lower bound `δ` on `|t| ≤ T`,
+
+  `‖L(truncSeq f L, σ+it)‖ ≤ (1 + 1/(σ−1))e^{7/2 + 2(σ−1)(log z + log 4) − δ²} + L^{1−σ}/(σ−1)`,
+
+  the damped estimate of `HalaszUniformDistance` plus the truncation tail.  Both terms carry `1/(σ−1)`,
+  so at `σ = 1 + (δ²+1)/log L` they are of one order and the factor `e^{−δ²}` survives the truncation.
+- `norm_sum_Icc_ghsTriple_of_bound_le` — the GHS Perron step with the third factor's size left free
+  (supports, primality and the coefficient bound still discharged), with the `ℓ¹` version
+  `norm_sum_Icc_ghsTriple_le` as a corollary.
+- `norm_sum_Icc_ghsTriple_damped_le` — the Perron step carrying `e^{−δ²}`.
+
+This is the first bound in the chain that falls below the trivial size.  Every other ingredient — sieve
+mean squares, kernel, dyadic split, truncation error — is untouched by the substitution, which was the
+design goal recorded when the third factor was isolated.
