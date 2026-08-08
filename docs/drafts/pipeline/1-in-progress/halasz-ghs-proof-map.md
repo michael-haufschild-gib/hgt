@@ -2927,3 +2927,77 @@ trivial bound, and it also identifies the remaining prerequisite precisely: the 
 be the *near-diagonal* one (`1/|log(x/n)| ≤ max(x,n)/|x−n|`, giving `≍ Nx^{σ−1}B(1+log M)/T`), because the
 crude uniform separation used so far needs `T ≳ N`, and at that height the strip's `7 log log T` wipes out
 the distance.
+
+## The near-diagonal truncation error, built
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PerronNearDiagonal.lean`:
+
+- `abs_sub_le_add_mul_abs_log_div` — `|x − y| ≤ (x + y)·|log(x/y)|` for positive `x, y`.  This is
+  `log t ≥ 1 − 1/t` read on both sides of `1`, multiplied by the larger of the two arguments; the
+  symmetric form `x + y` in place of `max x y` costs a factor `2` and removes every case split
+  downstream.
+- `rpow_div_abs_log_le` — the pointwise Perron weight bound
+
+  `(x/y)^σ/|log(x/y)| ≤ x^σ·(1/y + 2/|x − y|)`   for `σ ≥ 1 ≤ y`, `x ≠ y`.
+
+  The proof multiplies the goal by `y|x − y|` and chains three inequalities: `(x/y)^σ·y ≤ x^σ` (the
+  exponent drops to one against a single factor `y`, since `(x/y)^σ y^σ = x^σ` and `y ≤ y^σ`),
+  `|x − y| ≤ (x + y)|log(x/y)|`, and the triangle inequality `x + y ≤ |x − y| + 2y`.  Notably the
+  partial-fraction identity that the `max`-form seems to need — `x/(y|x − y|) ≤ 1/y + 1/|x − y|` — is
+  exactly `x ≤ |x − y| + y`, so no case distinction between `y < x` and `y > x` survives.
+- `sum_inv_comp_le_one_add_log` — a reciprocal sum reindexed along any injection into `Icc 1 L` is at
+  most `1 + log L`.  This is the reusable shape of the two-sided harmonic reindexing.
+- `sum_Icc_inv_abs_sub_half_le` — `∑_{n ≤ M} 1/|N + 1/2 − n| ≤ 2(1 + log N) + 2(1 + log M)`: on each side
+  of the cutoff the distance is `k − 1/2` with `k ≥ 1`, so `1/|x − n| ≤ 2/k`, and the two reindexings
+  are `n ↦ N + 1 − n` into `Icc 1 N` and `n ↦ n − N` into `Icc 1 M`.
+- `perron_truncation_error_near_le` — the truncation error itself:
+
+  `∑_{n ∈ s} ‖c_n‖(x/n)^σ/(πT|log(x/n)|) ≤ B·x^σ·(5(1 + log M) + 4(1 + log N))/(πT)`,  `x = N + 1/2`.
+
+  Against the uniform-separation bound `2(N+1)·B·x^σ(1 + log M)/(πT)` this is smaller by the whole
+  factor `N` — and strictly smaller for every `N ≥ 2`, so nothing is lost by using it everywhere.  The
+  hypothesis `1 ≤ N` of the uniform version is not needed: the half-integer cutoff is admissible at
+  `N = 0` too.
+- `norm_sum_Icc_sub_perron_integral_near_le` — the same statement as the uniform truncated Perron
+  formula with the sharper error.
+
+### Why this is the brick the parameter balance asked for
+
+The error is now `≍ B·x^σ·log(MN)/T`, so `T` no longer has to grow with the length of the sum: at
+`σ = 1 + A/log N` and polylogarithmic `B` a height `T ≍ (log N)^{10}` already makes the truncation error
+`≪ N/log N`.  That is exactly the regime the block-level accounting needs, because the zero-free-strip
+distance degrades as `δ² ≥ log log z − 7 log log T − C`: at `T ≍ N` it is negative, at
+`T ≍ (log N)^{10}` it is `log log N − 7 log log log N − C > 0`, and the constraint `log z ≳ (log T)^9`
+that comes with it is `(10 log log N)^9 ≪ log N`, comfortably satisfied at `log z ≍ log N`.
+
+## The truncation error as a parameter: one universal law, two instances
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TripleConvolutionPerronSum.lean`:
+
+- `norm_sum_Icc_triple_of_error_and_analytic_le` — the Perron step of a threefold convolution with
+  *both* the truncation error `E` and the vertical integral bound `P` as parameters:
+
+  `‖∑_{n ≤ min(M_AM_BM_g, N)} (A ⍟ (B ⍟ g))(n)‖ ≤ E + (1/2π)·P`.
+
+  Only three things enter: the supports, the identification of the Dirichlet polynomial with
+  `L(A)L(B)L(g)`, and the triangle inequality.  The hypotheses `1 ≤ N` and `1 ≤ σ` of the previous
+  statement are not needed for this half of the argument at all, and `1 ≤ t₀` weakens to `0 ≤ t₀`.
+- `norm_sum_Icc_triple_of_analytic_le` is now this law at the uniform separation (statement unchanged,
+  so nothing downstream had to move) and `norm_sum_Icc_triple_of_analytic_near_le` is the same law at
+  the near-diagonal error.
+
+The near-diagonal error is then carried through every level of the chain, each a delegation:
+
+- `norm_sum_Icc_triple_near_le` (the mean-square analytic instance),
+- `norm_sum_Icc_ghsTriple_of_bound_near_le`, `norm_sum_Icc_ghsTriple_near_le` (GHS coefficients),
+- `norm_sum_Icc_ghsTriple_l1_low_near_le` (low range charged pointwise),
+- `norm_sum_Icc_ghsTriple_damped_near_le` (damped third factor),
+- `norm_sum_Icc_mul_log_le_damped_near` (the master mean value bound),
+- `exists_norm_sum_Icc_liouvilleC_mul_log_near_le` (the Liouville instance).
+
+Every one of these drops the hypothesis `1 ≤ N` that the uniform-separation error forced.  The
+truncation term in the master bound is now
+
+`((log N³)^4/(log 2)^3)·(N + 1/2)^σ·(5(1 + log N³) + 4(1 + log N))/(π t₀2^K)`,
+
+whose only dependence on the length of the sum is `N^σ log N` — where before it was `N^{σ+1} log N`.
