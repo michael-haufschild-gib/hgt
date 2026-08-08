@@ -350,6 +350,8 @@ whole layer at the actual arithmetic source, so the statements below carry **no 
 | `(8)` | the coordinate model: the quantile space is separable, so `B` transports to `l^2` and has a Hilbert--Schmidt kernel matrix | `separableSpace_unitIntervalL2`, `thetaIndex`, `thetaCoord`, `thetaKernelMatrixOperator`, `isHilbertSchmidt_thetaKernelMatrixOperator`, `thetaKernelMatrix`, `isHS_thetaKernelMatrix` |
 | `(8)` | **the regularized determinant of the source pencil is defined and nowhere zero** | `thetaFredholmDet`, `thetaFredholmDet_ne_zero` |
 | `(8)` | it is holomorphic on the Hilbert--Schmidt disc, and satisfies the **Plemelj identity** `logDeriv det_2 = -resolventTrace` | `differentiableOn_thetaFredholmDet`, `logDeriv_thetaFredholmDet` |
+| `(8)` | **the entire Hilbert--Carleman determinant of the source pencil now exists** and is the unique entire function agreeing with the local one near the origin | `thetaEntireDet2`, `differentiable_thetaEntireDet2`, `isRegularizedDet_thetaEntireDet2`, `thetaEntireDet2_zero`, `eq_thetaEntireDet2_of_isRegularizedDet`, `thetaEntireDet2_eq_thetaFredholmDet` |
+| `(8)`,`(6)` | **each nonzero zero of the entire determinant is a reciprocal eigenvalue of the source inverse itself** | `exists_eigenvector_of_thetaEntireDet2_eq_zero` |
 
 **Correction (2026-08-08).**  An earlier version of this section said that `(8)` was reduced to the
 single identification `resolventTrace = -Xi_C'/Xi_C`, with `HilbertSchmidt.fredholmDet_weld`
@@ -369,12 +371,26 @@ fredholmDet thetaKernelMatrix z = c * Xi_C(z) / Xi_C(0)   for |z| < 1 / ‖B‖_
 which is still a genuine theorem and still needs the trace formula
 `resolventTrace thetaKernelMatrix = -Xi_C'/Xi_C` on that disc.
 
-The **global** `(8)` needs the entire Hilbert--Carleman determinant --- the exterior-power series
-`det_2(1 - zK) = sum over n of z^n tr(Lambda^n K)` with its regularisation, an entire function of
-order two whose zeros are the reciprocal eigenvalues.  That object exists in neither the corpus nor
-mathlib and is a missing layer of the same size as the Weierstrass/interpolation layer built for the
-two-prime frame card.  It is also what the multiplicity clause of `(6)` needs, since "algebraic
-multiplicity" is the order of vanishing of that determinant.
+The **global** `(8)` needs the entire Hilbert--Carleman determinant.  **That object is now built**,
+by the finite-section route rather than by exterior powers, in
+`docs/drafts/pipeline/1-in-progress/entire-regularized-fredholm-determinant.md`:
+`GaloisForLFunctions.HTGeometry.entireDet2`, with existence
+(`exists_isRegularizedDet`), uniqueness (`IsRegularizedDet.unique`), the recognition criterion
+(`isRegularizedDet_of_logDeriv_eq`), and the divisor half
+`exists_eigenvector_of_entireDet2_eq_zero`.  Instantiated at the theta source it is
+`thetaEntireDet2`.
+
+What `(8)` still needs is the **trace formula**
+
+```text
+Xi_C'(z)/Xi_C(z) = - resolventTrace (-B) z    on |z| ‖B‖_HS < 1,
+```
+
+after which `isRegularizedDet_of_logDeriv_eq` gives `(8)` outright, with
+`eq_thetaEntireDet2_of_isRegularizedDet` making the identification unambiguous.  What the
+multiplicity clause of `(6)` still needs is `order of vanishing of det_2 = algebraic multiplicity`;
+one inclusion of the divisor statement (zeros of the determinant are reciprocal eigenvalues) is now
+formalized.
 | `(7)` | `R B R = -B` for the Riemann source | `thetaSource_even`, `sourceInverse_sourceReflection_theta` |
 | `(6)` | **a source solution with any nonzero coefficient forces `Xi_C(alpha) = 0`**, unconditionally | `XiC_eq_zero_of_solution_const` |
 | `(6)` | the source mode at a divisor point is integrable and vanishes at both ends | `integrable_sourceModeU`, `tendsto_sourceModeU_atBot`, `tendsto_sourceModeU_atTop` |

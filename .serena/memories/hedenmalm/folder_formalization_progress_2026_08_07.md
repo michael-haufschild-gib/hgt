@@ -1776,3 +1776,20 @@ identically-zero branch of `AnalyticAt.eventually_eq_zero_or_eventually_ne_zero`
 `exists_eigenvector_of_tendsto_of_isCompactOperator` was weakened to **eventual** hypotheses.
 
 Next: the converse (an eigenvalue is a zero), then order of vanishing = algebraic multiplicity.
+
+### 2026-08-08 — the entire determinant, instantiated at the theta source
+
+`RHTower/HedenmalmThetaEntireDeterminant.lean`: **`thetaEntireDet2 := entireDet2 thetaKernelMatrix`**,
+with `differentiable_thetaEntireDet2`, `isRegularizedDet_thetaEntireDet2`, `thetaEntireDet2_zero`
+(= 1), `eq_thetaEntireDet2_of_isRegularizedDet` (uniqueness), `thetaEntireDet2_eq_thetaFredholmDet`
+(agreement with the corpus disc-local object near the origin), and
+
+```text
+exists_eigenvector_of_thetaEntireDet2_eq_zero :
+  z_0 ≠ 0 -> thetaEntireDet2 z_0 = 0 -> ∃ f ≠ 0, thetaKernelOperator f = z_0⁻¹ • f
+```
+
+transported through `thetaCoord` using `toOperator_matrixOf`.  The card
+`hedenmalm-theta-source-compressed-inverse-determinant` was updated: its `(8)` no longer waits on a
+missing object, only on the **trace formula** `Xi_C'/Xi_C = -resolventTrace(-B)` on the disc, after
+which `isRegularizedDet_of_logDeriv_eq` + `eq_thetaEntireDet2_of_isRegularizedDet` close it.
