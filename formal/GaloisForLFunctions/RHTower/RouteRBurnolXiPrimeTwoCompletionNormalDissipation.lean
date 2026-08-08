@@ -220,7 +220,9 @@ private theorem two_cpow_criticalLineArgument_re (x : ℝ) :
   have hlogre : (Complex.log (2 : ℂ)).re = Real.log 2 :=
     Complex.log_ofReal_re 2
   have hlogim : (Complex.log (2 : ℂ)).im = 0 := by
-    rw [Complex.log_im, Complex.arg_ofReal_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
+    rw [Complex.log_im]
+    simpa using
+      (Complex.arg_ofReal_of_nonneg (x := (2 : ℝ)) (by norm_num : (0 : ℝ) ≤ 2))
   rw [Complex.cpow_def_of_ne_zero (by norm_num), Complex.exp_re]
   have hre : (Complex.log (2 : ℂ) * burnolXiCriticalLineArgument x).re = Real.log 2 / 2 := by
     rw [Complex.mul_re]
@@ -333,13 +335,7 @@ private theorem hasDerivAt_burnolXiCompletionMultiplier_logDerivative
   have hnum := (hid.pow 2).mul (hid.sub_const 1)
   have hden := (hasDerivAt_const (x := w) (c := (2 : ℂ))).mul (hq.sub_const 1)
   have hquot := hnum.div hden (mul_ne_zero two_ne_zero hqne)
-  have hraw : HasDerivAt burnolXiCompletionMultiplier
-      (((2 * w * (w - 1) + w ^ 2) * (2 * ((2 : ℂ) ^ w - 1)) -
-          (w ^ 2 * (w - 1)) * (2 * ((2 : ℂ) ^ w * Complex.log (2 : ℂ)))) /
-        (2 * ((2 : ℂ) ^ w - 1)) ^ 2) w := by
-    simpa only [burnolXiCompletionMultiplier, pow_two, mul_one, zero_mul, zero_add,
-      Nat.cast_ofNat] using hquot
-  convert hraw using 1
+  refine hquot.congr_deriv ?_
   have hlog : Complex.log (2 : ℂ) = (Real.log 2 : ℂ) :=
     (Complex.ofReal_log (by norm_num : (0 : ℝ) ≤ 2)).symm
   rw [hlog]
@@ -370,7 +366,9 @@ theorem hasDerivAt_burnolXiCompletion_critical_normal_logEnergy (x : ℝ) :
         (burnolXiCompletionMultiplier w * burnolXiCompletionLogDerivative w)
         (((1 / 2 : ℝ) : ℂ) + Complex.I * (x : ℂ)) := by
       simpa [w, burnolXiCriticalLineArgument] using hC
-    simpa only [Function.comp_apply, mul_one] using hC'.comp (1 / 2) hpath
+    have hcompF :=
+      (hC'.hasFDerivAt.restrictScalars ℝ).comp (1 / 2) hpath.hasFDerivAt
+    simpa [Function.comp_def, mul_one] using hcompF.hasDerivAt
   have hne : burnolXiCompletionMultiplier w ≠ 0 :=
     burnolXiCompletionMultiplier_ne_zero
       (by rw [hwre]; norm_num) (by rw [hwre]; norm_num)
@@ -423,7 +421,9 @@ theorem hasDerivAt_burnolXiCompletion_mul_critical_normal_logEnergy
         (burnolXiCompletionMultiplier w * burnolXiCompletionLogDerivative w)
         (((1 / 2 : ℝ) : ℂ) + Complex.I * (x : ℂ)) := by
       simpa [w, burnolXiCriticalLineArgument] using hC
-    simpa only [Function.comp_apply, mul_one] using hC'.comp (1 / 2) hpath
+    have hcompF :=
+      (hC'.hasFDerivAt.restrictScalars ℝ).comp (1 / 2) hpath.hasFDerivAt
+    simpa [Function.comp_def, mul_one] using hcompF.hasDerivAt
   have hCne : burnolXiCompletionMultiplier w ≠ 0 :=
     burnolXiCompletionMultiplier_ne_zero
       (by rw [hwre]; norm_num) (by rw [hwre]; norm_num)
@@ -437,9 +437,11 @@ theorem hasDerivAt_burnolXiCompletion_mul_critical_normal_logEnergy
     field_simp [hCne]
   rw [show burnolXiCompletionMultiplier
       (((1 / 2 : ℝ) : ℂ) + Complex.I * (x : ℂ)) =
-        burnolXiCompletionMultiplier w by simp [w, burnolXiCriticalLineArgument], hquot,
-    burnolXiCompletionLogDerivative_critical_re]
-  ring
+        burnolXiCompletionMultiplier w by simp [w, burnolXiCriticalLineArgument], hquot]
+  have hcritical : 2 * (burnolXiCompletionLogDerivative w).re =
+      burnolXiCompletionCriticalNormalLogEnergySlope x := by
+    simpa [w] using burnolXiCompletionLogDerivative_critical_re x
+  nlinarith
 
 /-! ## Reflection scattering across the critical seam -/
 
@@ -465,10 +467,14 @@ theorem hasDerivAt_burnolXiCompletionReflectionLogEnergy (x : ℝ) :
     simpa only [E] using hasDerivAt_burnolXiCompletion_critical_normal_logEnergy x
   have hreflect : HasDerivAt (fun σ : ℝ => 1 - σ) (-1) (1 / 2) := by
     simpa using (hasDerivAt_id (1 / 2 : ℝ)).const_sub 1
-  have hcomp := hE.comp (1 / 2) hreflect
-  have hsub := hE.sub hcomp
-  convert hsub using 1 <;>
-    simp only [burnolXiCompletionReflectionLogEnergy, E, Function.comp_apply] <;> ring
+  have hcomp := hE.comp_of_eq (1 / 2) hreflect (by norm_num)
+  have hcomp' : HasDerivAt (fun σ : ℝ => E (1 - σ))
+      (-burnolXiCompletionCriticalNormalLogEnergySlope x) (1 / 2) := by
+    simpa [Function.comp_def] using hcomp
+  change HasDerivAt (fun σ : ℝ => E σ - E (1 - σ))
+    (2 * burnolXiCompletionCriticalNormalLogEnergySlope x) (1 / 2)
+  refine (hE.sub hcomp').congr_deriv ?_
+  ring
 
 /-- **Strict reflected source orientation.**  The exact prime-two completion scattering loses
 more than one full logarithmic-energy unit when crossing the critical seam toward the right. -/

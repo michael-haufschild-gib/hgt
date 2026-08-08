@@ -78,6 +78,13 @@ work are not formalization debt unless the card labels them proved.
   Existing Erlang modules close exact finite-width DA/HT recovery. Direct source check, targeted
   build, and six-capstone standard-foundation-only axiom audit passed. Card promoted to
   `3-formalized/needs-audit`.
+- `mobius-gamma-euler-difference-tail-parity`: literal normalized Gamma height density and Fourier
+  characteristic, exact normalized squared Euler-factor tilt, finite iterated-difference
+  characteristic, exact energy insertion law, and existence of a third prime channel that raises
+  energy after two positive channels implemented in one wired connector module. Direct source,
+  targeted build, and seven-capstone standard-foundation-only axiom audit passed. Global lint
+  reaches the module and reports only five unrelated shared umbrella gaps. Card promoted to
+  `3-formalized/needs-audit`.
 
 ## Open core
 
@@ -110,3 +117,8 @@ work are not formalization debt unless the card labels them proved.
   compact smooth physical packet, exact reporter, `C^r` jet convergence, finite sample selection,
   robust law escape, and Erlang finite-width HT recovery all pass Lean, targeted build, umbrella,
   and axiom gates. Global lint reaches the module and reports only seven unrelated concurrent gaps.
+- 2026-08-08 — Möbius Gamma--Euler tail-parity card closed at literal physical strength: normalized
+  Gamma Fourier density, exact Euler norm-square insertion, arbitrary finite difference transport,
+  one-channel positivity, even-tail negativity, exact energy change, and an actual larger prime
+  causing contraction reversal all pass Lean. New connector is umbrella-wired; targeted build and
+  standard-foundation-only axiom audit pass.

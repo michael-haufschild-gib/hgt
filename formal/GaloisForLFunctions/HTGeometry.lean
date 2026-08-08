@@ -6129,3 +6129,4 @@ import GaloisForLFunctions.HTGeometry.ShiftedSecondDifferenceBounds
 import GaloisForLFunctions.HTGeometry.ReturnExcisedOptimalDesignCoareaLaw
 import GaloisForLFunctions.HTGeometry.GammaPairingMajorant
 import GaloisForLFunctions.HTGeometry.GammaPairingFubini
+import GaloisForLFunctions.HTGeometry.JacobianKaehlerAnnihilator

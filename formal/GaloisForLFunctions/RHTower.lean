@@ -6256,3 +6256,9 @@ import GaloisForLFunctions.RHTower.Sieve.TwistTransfer
 import GaloisForLFunctions.RHTower.Sieve.TwistedSequence
 import GaloisForLFunctions.RHTower.Sieve.LiouvilleChain
 import GaloisForLFunctions.RHTower.Sieve.BlockAffineMeanSquare
+import GaloisForLFunctions.RHTower.PrimeMassSharpUpper
+import GaloisForLFunctions.RHTower.ProlateCanonicalSeparationLimit
+import GaloisForLFunctions.RHTower.XiMassCriticalCenteredCosineCone
+import GaloisForLFunctions.RHTower.XiMassCriticalIntegerFace
+import GaloisForLFunctions.RHTower.XiMassCriticalPrimeCone
+import GaloisForLFunctions.RHTower.XiMassCriticalPrimeSquareTail

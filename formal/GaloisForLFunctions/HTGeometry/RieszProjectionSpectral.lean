@@ -14,6 +14,8 @@ Main results:
   algebra.
 * `maxGenEigenspace_le_range_rieszProjection`, `range_rieszProjection_le_maxGenEigenspace`,
   `range_rieszProjection_eq_maxGenEigenspace` — **the range of the Riesz projection**.
+* `range_rieszProjection_eq_iSup_maxGenEigenspace` — the multi-point form: without any separation
+  hypothesis the range is the span of all generalized eigenspaces inside the contour.
 -/
 import GaloisForLFunctions.HTGeometry.RieszProjectionRange
 import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
@@ -159,5 +161,87 @@ theorem range_rieszProjection_eq_maxGenEigenspace {T : H →L[ℂ] H} {c : ℂ} 
       = Module.End.maxGenEigenspace (T : H →ₗ[ℂ] H) lam0 :=
   le_antisymm (range_rieszProjection_le_maxGenEigenspace hr h hP hsep hfin)
     (maxGenEigenspace_le_range_rieszProjection hr h hlam0)
+
+/-- An eigenvalue is not in the resolvent set. -/
+theorem not_mem_resolventSet_of_eigenvector {T : H →L[ℂ] H} {mu : ℂ} {v : H} (hv : v ≠ 0)
+    (heig : T v = mu • v) : mu ∉ resolventSet ℂ T := by
+  intro hmu
+  have h0 : (algebraMap ℂ (H →L[ℂ] H) mu - T) v = 0 := by
+    simp [Algebra.algebraMap_eq_smul_one, heig]
+  have hv0 : v = resolvent T mu ((algebraMap ℂ (H →L[ℂ] H) mu - T) v) := by
+    calc v = (resolvent T mu * (algebraMap ℂ (H →L[ℂ] H) mu - T)) v := by
+          rw [resolvent_mul_sub hmu]; rfl
+      _ = resolvent T mu ((algebraMap ℂ (H →L[ℂ] H) mu - T) v) := rfl
+  rw [h0, map_zero] at hv0
+  exact hv hv0
+
+/-- **The range of the Riesz projection is spanned by the generalized eigenspaces inside the
+contour.**  No separation hypothesis is needed: the contour itself separates, because it lies in
+the resolvent set. -/
+theorem range_rieszProjection_eq_iSup_maxGenEigenspace {T : H →L[ℂ] H} {c : ℂ} {r : ℝ}
+    (hr : 0 ≤ r) (h : ∀ lam ∈ sphere c r, lam ∈ resolventSet ℂ T)
+    (hP : rieszProjection T c r * rieszProjection T c r = rieszProjection T c r)
+    (hfin : FiniteDimensional ℂ
+      (LinearMap.range ((rieszProjection T c r : H →L[ℂ] H) : H →ₗ[ℂ] H))) :
+    LinearMap.range ((rieszProjection T c r : H →L[ℂ] H) : H →ₗ[ℂ] H)
+      = ⨆ mu ∈ ball c r, Module.End.maxGenEigenspace (T : H →ₗ[ℂ] H) mu := by
+  set P := rieszProjection T c r with hPdef
+  set W := LinearMap.range ((P : H →L[ℂ] H) : H →ₗ[ℂ] H) with hWdef
+  have hfix : ∀ x ∈ W, P x = x := by
+    rintro x ⟨w, rfl⟩
+    calc P (P w) = (P * P) w := rfl
+      _ = P w := by rw [hP]
+  have hinv : ∀ x ∈ W, (T : H →ₗ[ℂ] H) x ∈ W := by
+    rintro x ⟨w, rfl⟩
+    exact ⟨T w, by
+      have hcomm := rieszProjection_commute T hr h
+      exact congrFun (congrArg (fun g : H →L[ℂ] H => (g : H → H)) hcomm.symm) w⟩
+  set g : Module.End ℂ W := (T : H →ₗ[ℂ] H).restrict hinv with hgdef
+  have htrans : ∀ (mu : ℂ) (w : W), w ∈ Module.End.maxGenEigenspace g mu →
+      (w : H) ∈ Module.End.maxGenEigenspace (T : H →ₗ[ℂ] H) mu := by
+    intro mu w hw
+    obtain ⟨k, hk⟩ := (Module.End.mem_maxGenEigenspace g mu w).mp hw
+    refine (Module.End.mem_maxGenEigenspace _ _ _).mpr ⟨k, ?_⟩
+    have hres := restrict_sub_smul (T : H →ₗ[ℂ] H) hinv mu
+    rw [hgdef, hres] at hk
+    have hcoe := congrArg (fun y : W => (y : H)) hk
+    rw [coe_restrict_pow] at hcoe
+    simpa using hcoe
+  have hmuball : ∀ mu : ℂ, Module.End.maxGenEigenspace g mu ≠ ⊥ → mu ∈ ball c r := by
+    intro mu hne
+    obtain ⟨w, hw, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
+    obtain ⟨v, hv0, hveig⟩ := exists_eigenvector_of_mem_maxGenEigenspace g mu hw0 hw
+    have hvH : (v : H) ≠ 0 := fun hcon => hv0 (Subtype.ext hcon)
+    have hTv : T (v : H) = mu • (v : H) := by
+      have hc := congrArg (fun y : W => (y : H)) hveig
+      simpa [hgdef, LinearMap.restrict_apply] using hc
+    have hnotsph : mu ∉ sphere c r := fun hcon =>
+      not_mem_resolventSet_of_eigenvector hvH hTv (h mu hcon)
+    by_contra hout
+    have hclosed : mu ∉ closedBall c r := by
+      intro hcon
+      rcases lt_or_eq_of_le (mem_closedBall.mp hcon) with hlt | heq
+      · exact hout (mem_ball.mpr hlt)
+      · exact hnotsph heq
+    have hzero : P (v : H) = 0 :=
+      rieszProjection_apply_eq_zero_of_eigenvector hr h hclosed hTv
+    exact hvH (by rw [← hfix (v : H) v.2, hzero])
+  refine le_antisymm ?_ (iSup₂_le fun mu hmu =>
+    maxGenEigenspace_le_range_rieszProjection hr h hmu)
+  intro x hx
+  have hxtop : (⟨x, hx⟩ : W) ∈ (⊤ : Submodule ℂ W) := trivial
+  rw [← Module.End.iSup_maxGenEigenspace_eq_top g] at hxtop
+  have hmap : Submodule.map W.subtype (⨆ mu, Module.End.maxGenEigenspace g mu)
+      ≤ ⨆ nu ∈ ball c r, Module.End.maxGenEigenspace (T : H →ₗ[ℂ] H) nu := by
+    rw [Submodule.map_iSup]
+    refine iSup_le fun mu => ?_
+    by_cases hb : Module.End.maxGenEigenspace g mu = ⊥
+    · rw [hb]
+      simp
+    · refine le_trans ?_ (le_iSup₂ (f := fun nu (_ : nu ∈ ball c r) =>
+        Module.End.maxGenEigenspace (T : H →ₗ[ℂ] H) nu) mu (hmuball mu hb))
+      rintro _ ⟨w, hw, rfl⟩
+      exact htrans mu w hw
+  exact hmap ⟨⟨x, hx⟩, hxtop, rfl⟩
 
 end GaloisForLFunctions.HTGeometry

@@ -5228,3 +5228,72 @@ isDefEq` at the default 200000 heartbeats on a general `AddCommGroup`; route thr
 
 What this does not give is Borel--Cantelli over the prime-log recurrence, which is the other half
 of that target and is genuinely probabilistic.
+
+## FA. Scale bounds for the conjugated second difference
+
+`HTGeometry/ShiftedSecondDifferenceBounds.lean`:
+
+```text
+abs_one_sub_exp_le                     |1 - e^x| <= |x| e^{|x|}
+abs_shiftedSecondDifference_le_mul     |D(L,s)| <= (2K + 2 B sigma e^{sigma s}) s   (Lipschitz F)
+abs_shiftedSecondDifference_le_exp     |D(L,s)| <= 4 B e^{sigma s}                  (bounded F)
+```
+
+These are the two ends of the scale ray, and they are what makes the Gamma pairing's double
+integral absolutely convergent:
+
+* near zero, `|D| = O(s)` and the kernel is `<= 1/s`, so the product is **bounded** on `(0,1]` —
+  integrable on a bounded interval without any further estimate;
+* far out, `|D| = O(e^{sigma s})` and the kernel is `<= 2 e^{-s}`, so the product is
+  `O(e^{-(1-sigma)s})` — convergent **exactly** when `sigma < 1`, which is where the card's
+  standing hypothesis `0 < sigma < 1` earns its keep.
+
+Only a *first*-order bound is needed, not Taylor to second order: the `1/s` singularity of the
+kernel is cancelled by one power of `s`, and a bounded function on a bounded interval is integrable.
+That observation removes the need for a `C^2` hypothesis on the profile.
+
+With these, the joint integrability for `integral_integral_swap` on the Gamma pairing is in reach,
+and with it `<R_sigma U, U> = shiftedGammaForm sigma U`, which is the last object standing between
+`suzuki-gamma-weighted-tail-coercivity` and promotion.
+
+## FB. The Gamma pairing's scale majorant
+
+`HTGeometry/GammaPairingMajorant.lean`:
+
+```text
+gammaPairingMajorant K B sigma s = if s <= 1 then 2K + 2 B sigma e^sigma
+                                             else 8 B e^{-(1-sigma) s}
+abs_shiftedSecondDifference_mul_kernel_le  |D(L,s) k(s)| <= gammaPairingMajorant K B sigma s
+integrableOn_gammaPairingMajorant          integrable on Ioi 0, for sigma < 1
+```
+
+The majorant **does not depend on the base point** `L`, which is the whole point: the Gamma
+pairing's double integrand is dominated by `gammaPairingMajorant(s) * |U(L)|`, a product of two
+separately integrable functions, so joint integrability on the product measure follows and
+`integral_integral_swap` becomes available for the Gamma pairing.
+
+`sigma < 1` is used in exactly one place — the far branch, where `e^{sigma s}` from the conjugation
+races `e^{-s}` from the kernel.  Below one the kernel wins; at one it does not.  That is the
+analytic content of the card's standing hypothesis.
+
+## FC. Joint integrability of the Gamma pairing — DONE
+
+`HTGeometry/GammaPairingFubini.lean`:
+
+```text
+ae_snd_pos_prod_restrict   on volume.prod (volume.restrict (Ioi 0)), the scale variable is positive
+integrable_gammaPairing    the double integrand D(L,s) k(s) U(L) is integrable on that product,
+                           for U Lipschitz, bounded, integrable and 0 <= sigma < 1
+```
+
+The hypothesis of `integral_integral_swap` for the Gamma pairing is therefore discharged, and the
+exchange `<R_sigma U, U> = shiftedGammaForm sigma U` is now mechanical.
+
+Two traps worth keeping:
+- `Integrable.mul_prod` is the name for `Integrable f mu -> Integrable g nu ->
+  Integrable (fun z => f z.1 * g z.2) (mu.prod nu)`; `exact?` finds it, `Integrable.prod_mul` does
+  not exist.
+- To get `forall^ae z, 0 < z.2` on `mu.prod (nu.restrict s)` you must first rewrite the measure as a
+  restriction of the *full* product: `Measure.prod_restrict` only fires when **both** factors are
+  restrictions, so replace `volume` by `volume.restrict univ` first (this is the same trap already
+  recorded for `Measure.prod_restrict` elsewhere in the corpus).

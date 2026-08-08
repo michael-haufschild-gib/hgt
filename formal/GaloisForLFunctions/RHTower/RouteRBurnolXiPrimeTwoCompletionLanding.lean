@@ -72,19 +72,6 @@ theorem differentiableAt_burnolFixedAtomCompletedMellin
       ((differentiableAt_riemannZeta hwne1).div differentiableAt_id hwne0))
   exact hformula.congr_of_eventuallyEq hlocal
 
-theorem differentiableAt_burnolXiCompletionMultiplier
-    {w : ℂ} (hw0 : 0 < w.re) (_hw1 : w.re < 1) :
-    DifferentiableAt ℂ burnolXiCompletionMultiplier w := by
-  have hden : 2 * ((2 : ℂ) ^ w - 1) ≠ 0 :=
-    mul_ne_zero two_ne_zero (two_cpow_sub_one_ne_zero hw0)
-  have hpow : DifferentiableAt ℂ (fun z : ℂ => (2 : ℂ) ^ z) w :=
-    differentiableAt_id.const_cpow (Or.inl (by norm_num : (2 : ℂ) ≠ 0))
-  unfold burnolXiCompletionMultiplier
-  exact ((differentiableAt_id.pow 2).mul
-      (differentiableAt_id.sub (differentiableAt_const (c := (1 : ℂ))))).div
-    ((differentiableAt_const (c := (2 : ℂ))).mul
-      (hpow.sub (differentiableAt_const (c := (1 : ℂ))))) hden
-
 theorem burnolFixedAtomCompletedMellin_eq_zero_of_xi_eq_zero
     {rho : ℂ} (hrho0 : 0 < rho.re) (hrho1 : rho.re < 1)
     (hxi : xi rho = 0) :

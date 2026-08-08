@@ -1,12 +1,14 @@
 # Möbius Gamma--Euler difference tail-parity obstruction
 
 - **ID:** `mobius-gamma-euler-difference-tail-parity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized / needs-audit
 - **Type:** THEOREM / NO-GO CLOSURE
-- **Status:** `[PAPER-PROVED] [ALGEBRAIC CORE LEAN-PROVED] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
+- **Status:** `[LEAN-PROVED] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
 - **Lean companion:**
-  `formal/GaloisForLFunctions/RHTower/MobiusGammaEulerDifferenceTailParity.lean`
-- **Parent:** `../../3-formalized/needs-audit/mobius-laplace-gamma-hankel-localization-wall.md`
+  `formal/GaloisForLFunctions/RHTower/GammaEulerPhysicalConnector.lean` and the imported
+  `GammaEulerCharacteristicPositivity.lean`, `MobiusGammaEulerDifferenceTailParity.lean`,
+  `GammaEulerAsymptoticTransport.lean`, and `GammaEulerTwoChannelAsymptotic.lean`
+- **Parent:** `mobius-laplace-gamma-hankel-localization-wall.md`
 
 ## Goal
 
@@ -149,8 +151,18 @@ at least three channels, or a genuinely all-prime identity.
 
 ## Lean certificate
 
-Lean proves exact exponential-mode algebra `(6)`, first two parity signs, and arbitrary finite-block
-sign parity:
+Lean proves the literal normalized Gamma density, its exact Fourier characteristic `(1)`, the
+normalized squared Euler-factor identity, its finite-tilt characteristic law `(2)`, the exact
+energy-change connector, and the larger-prime contraction reversal. It also proves exact
+exponential-mode algebra `(6)`, first two parity signs, and arbitrary finite-block sign parity:
+
+- `integral_cexp_mul_gammaHeightDensity`;
+- `gammaEulerNormalizedFactor_eq_normSq`;
+- `gammaEulerTiltedCharacteristic_eq_differenceList`;
+- `gammaEulerTiltedEnergy_cons`;
+- `gammaEulerTiltedCorrelation_singleton_pos`;
+- `gammaEulerTiltedCorrelation_eventually_neg`;
+- `exists_prime_gammaEulerTiltedEnergy_increase_after_two_channels`;
 
 - `gammaEulerCentralDifference_exp`;
 - `gammaEulerCentralDifferenceEigenvalue_base`;
@@ -166,9 +178,10 @@ lake env lean GaloisForLFunctions/RHTower/MobiusGammaEulerDifferenceTailParity.l
 ```
 
 The analytic asymptotic transport `(4)` is formalized for arbitrary finite blocks in
-`RHTower/GammaEulerTwoChannelAsymptotic.lean` (`gammaEulerDifferenceList_asymptotic`, with the
-even-block no-go `gammaEulerDifferenceList_eventually_neg`); Theorem 1 in
-`RHTower/GammaEulerCharacteristicPositivity.lean`.
+  `RHTower/GammaEulerTwoChannelAsymptotic.lean` (`gammaEulerDifferenceList_asymptotic`, with the
+  even-block no-go `gammaEulerDifferenceList_eventually_neg`); Theorem 1 is in
+  `RHTower/GammaEulerCharacteristicPositivity.lean`. `RHTower/GammaEulerPhysicalConnector.lean`
+  closes all analytic and literal-energy connectors and is imported by the `RHTower` umbrella.
 
 ## Literature boundary
 
@@ -185,8 +198,8 @@ claim is made.
   positivity `(3)`.
 - **New insight:** local Gamma sewing is genuinely positive for one channel but cannot be iterated
   monotonically.  Required cancellation starts at multi-prime block level.
-- **Status:** dependency-closed paper proof; exact eigenmode core formalized; full asymptotic Lean
-  proof and novelty audit open.
+- **Status:** dependency-closed unconditional Lean proof; only novelty audit and replacement/global
+  source-inequality research remain open.
 
 ## Gates
 
@@ -196,6 +209,9 @@ claim is made.
 - [x] two-to-third-channel contraction reversal proved
 - [x] exact eigenmode algebra and arbitrary finite-block coefficient parity formalized in Lean
 - [x] formalize asymptotic formula `(4)` (arbitrary finite block, `RHTower/GammaEulerTwoChannelAsymptotic.lean`)
+- [x] formalize normalized Gamma density and exact Fourier characteristic `(1)`
+- [x] formalize literal normalized squared Euler tilt and characteristic law `(2)`
+- [x] formalize exact energy change and larger-prime contraction reversal
 - [ ] specialist novelty audit
 - [ ] replace failed local induction by a block/global source inequality
 
@@ -282,3 +298,13 @@ claim is made.
   parity + this asymptotic transport), the card's full analytic no-go mechanism is now unconditional
   in Lean.  Remaining gates are non-Lean: specialist novelty audit; replacing the failed local
   induction by a block/global source inequality.
+- 2026-08-08 — **Literal Gamma--Euler and energy layer formalized unconditionally** in the new wired
+  `RHTower/GammaEulerPhysicalConnector.lean`. The module defines the normalized vertical
+  `|Gamma(r/2+it)|²` density for every `r>0`, proves mass one and characteristic
+  `cosh(u/2)^(-r)`, identifies each normalized cosine factor with the exact complex norm square,
+  proves the finite tilted characteristic is a positive multiple of the iterated central
+  difference, and derives the exact total-energy insertion law. The even-tail theorem plus
+  `Nat.exists_infinite_primes` then gives an actual prime whose third-channel insertion strictly
+  increases energy after two fixed positive channels. Direct source check and targeted build pass;
+  seven capstones use exactly `propext`, `Classical.choice`, and `Quot.sound`. Global lint reaches
+  the new module and reports only five unrelated concurrent umbrella-reachability gaps.

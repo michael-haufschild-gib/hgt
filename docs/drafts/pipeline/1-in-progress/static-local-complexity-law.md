@@ -5282,3 +5282,24 @@ receive a new title and an independent significance audit.
   not close ordinary-local-Hamiltonian frontier: remaining hard theorem is
   growing-replica decay of unchanged `A_R`, now required only against exact
   surviving source--target incidence rank `iota_R`, not full target rank.
+- 2026-08-08 -- Closed the dimension loss in complete endpoint incidence by
+  replacing maximal-volume basis selection with one determinant-optimal
+  probability design `lambda` on actual occupied replica endpoints.  Lean
+  proves every endpoint has design leverage at most occupied Hilbert number
+  `h_r`, hence, after any independently fixed measurable return excision,
+  `a^r P_(R^c)(E_a) <= h_r sum_z lambda_z M_r(z;R)` and
+  `P(E_a) <= P(R) + h_r a^(-r) sum_z lambda_z M_r(z;R)`.  Under a uniform
+  fixed-endpoint ceiling this costs `h_r`, improving the previous `h_r^2`.
+  Weights live on physical occupied endpoints; all integrals remain on the
+  original restricted source measure, so repeated fibre sheets retain full
+  multiplicity.  An orthonormal endpoint family formally proves no universal
+  probability-design coefficient below `h_r` is possible.  Classical
+  D/G-optimal equivalence supplies the finite design mechanism; new frontier
+  advance is its exact composition with growing replicas, complete endpoint
+  capture, and source-first return excision.  Module:
+  `HTGeometry/ReturnExcisedOptimalDesignCoareaLaw.lean`; card:
+  `../3-formalized/return-excised-optimal-design-coarea-law.md`.  This closes
+  the complete-circuit-union geometry, not Brown--Susskind O4: remaining
+  ordinary-local-Hamiltonian theorem is a quenched growing-replica ceiling on
+  the resulting design-averaged fixed-endpoint moment strong enough to beat
+  `h_r`, plus a small independent return tail.

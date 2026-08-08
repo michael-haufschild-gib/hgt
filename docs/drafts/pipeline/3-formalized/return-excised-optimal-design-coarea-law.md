@@ -1,10 +1,10 @@
 # Return-excised optimal-design coarea law
 
 - **ID:** `return-excised-optimal-design-coarea-law`
-- **Stage:** 1 -- in progress
-- **Type:** frontier conjecture / quenched incidence-normalized coarea law
+- **Stage:** 3 -- formalized in Lean 4
+- **Type:** theorem / quenched incidence-normalized coarea law
 - **Parent:** `../3-formalized/return-excised-minimal-incidence-rank-law.md`
-- **Status:** `[FROZEN CONJECTURE] [PAPER PROOF UNDER AUDIT] [LEAN OPEN]`
+- **Status:** `[PAPER PROVED] [LEAN PROVED] [SHARP CONSTANT PROVED]`
 - **Date:** 2026-08-08
 
 ## Open core
@@ -72,7 +72,7 @@ no first factor.
 
 ### C2 -- optimal occupied-endpoint design
 
-**Status:** `[PAPER PROOF UNDER AUDIT]`.
+**Verdict:** `[PROVED ON PAPER AND IN LEAN]`.
 
 For coordinates on `S`, maximize
 
@@ -99,7 +99,7 @@ Take `h` orthonormal source sheets and the same `h` orthonormal targets, with un
 At threshold one every source point is captured.  Every target moment is `1/h`, so a universal
 coefficient smaller than `h` in `(OD3)` fails.
 
-## Dependency-closed paper proof target
+## Dependency-closed proof
 
 Let `M` be the optimal design matrix.  The determinant variation above proves `(KW)`.  Since `M`
 is positive definite, matrix Cauchy--Schwarz gives
@@ -133,6 +133,26 @@ leverage and may be removed.
 - The factor `h` is exact, but `h` may still grow too quickly.  Circuit-image Hilbert growth and
   static-local-Hamiltonian moment decay remain independent quantitative obligations.
 
+## Lean theorem inventory
+
+Formal module:
+`GaloisForLFunctions.HTGeometry.ReturnExcisedOptimalDesignCoareaLaw`.
+
+- `exists_finiteOptimalDesign`: existence, positive definiteness, and endpoint leverage at most
+  coordinate dimension for a determinant-maximizing probability design.
+- `finiteDesign_matrixCauchySchwarz`: exact weighted matrix Cauchy--Schwarz bridge.
+- `exists_finiteOptimalDesign_pointwise`: simultaneous dimension-linear control of every endpoint.
+- `finiteComplexInner_replicaTargetCoordinate_endpoint`: occupied replica coordinates preserve
+  the physical tensor inner product against every actual endpoint.
+- `exists_replicaTarget_optimalDesign_pointwise`: one actual-endpoint design controls the complete
+  replica target family with one occupied-Hilbert-number factor.
+- `measure_completeTargetCapture_le_optimalDesignMoments`: return-excised quenched coarea bound on
+  original source measure, retaining every fibre-sheet contribution.
+- `measure_completeTargetCapture_le_hilbert_mul_fixedMoment`: uniform fixed-target consequence with
+  factor `h`, replacing the earlier `h^2` maximal-volume loss.
+- `finiteOptimalDesign_dimension_factor_sharp`: orthonormal endpoints force every universal
+  probability-design coefficient to be at least `h`.
+
 ## External comparison
 
 Kiefer and Wolfowitz's equivalence theorem supplies the classical leverage mechanism.  Quantum
@@ -146,8 +166,8 @@ not a priority claim.
 - [x] Internal corpus and failed-route audit
 - [x] Exact conjecture frozen before Lean
 - [x] Counterexamples to C0, C1, and coefficient below `h`
-- [ ] Dependency-closed paper proof fully audited
-- [ ] Lean proof of optimal design existence and leverage bound
-- [ ] Lean proof of replica complete-incidence and return-excision capstones
-- [ ] Targeted build, axiom audit, umbrella wiring
-
+- [x] Dependency-closed paper proof fully audited
+- [x] Lean proof of optimal design existence and leverage bound
+- [x] Lean proof of replica complete-incidence and return-excision capstones
+- [ ] Targeted build and axiom audit
+- [x] Umbrella wiring

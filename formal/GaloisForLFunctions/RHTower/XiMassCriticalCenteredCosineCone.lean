@@ -116,8 +116,8 @@ theorem xiMassCriticalCenteredAtomConeSum_eq_cosineConePairing
   have hxcast : ((-x : ℝ) : ℂ) = -(x : ℂ) := by
     push_cast
     rfl
-  rw [hxcast, xiMassAnalyticTest_neg]
-  rw [xiMassCriticalCenteredDirichletConePolynomial_add_neg_eq_cosine]
+  rw [hxcast, xiMassAnalyticTest_neg, ← mul_add,
+    xiMassCriticalCenteredDirichletConePolynomial_add_neg_eq_cosine]
   ring
 
 /-- Uniform bound for the exact one-sided centered cosine cone pairing. -/

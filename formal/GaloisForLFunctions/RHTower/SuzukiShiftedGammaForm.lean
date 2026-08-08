@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.GammaJumpTranslationEnergy
+import GaloisForLFunctions.HTGeometry.GammaPairingFubini
 import GaloisForLFunctions.RHTower.SuzukiGammaShiftKappa
 
 /-!
@@ -69,5 +69,48 @@ theorem shiftedGammaForm_zero_nonneg {F : ℝ → ℝ} (hmeas : AEStronglyMeasur
   rw [zero_mul, Real.cosh_zero] at hb
   simp only [sub_self, mul_zero, zero_mul, neg_zero] at hb
   exact mul_nonneg hb hk.le
+
+/-- The operator action of the conjugated Gamma jump: integrate the shifted second difference
+against the kernel over the scale ray. -/
+noncomputable def shiftedGammaJump (σ : ℝ) (F : ℝ → ℝ) (L : ℝ) : ℝ :=
+  ∫ s in Ioi (0 : ℝ), shiftedSecondDifference σ F L s * gammaTransportKernel s
+
+/-- **The operator pairing is the scale form.** -/
+theorem integral_shiftedGammaJump_mul_self {U : ℝ → ℝ} {K B σ : ℝ}
+    (hmeas : Measurable U)
+    (hK : ∀ x y : ℝ, |U x - U y| ≤ K * |x - y|) (hB : ∀ x, |U x| ≤ B)
+    (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hUint : Integrable U) :
+    (∫ L, shiftedGammaJump σ U L * U L) = shiftedGammaForm σ U :=
+  integral_gammaPairing_swap hmeas hK hB hσ0 hσ1 hUint
+
+/-- The scale form of a Lipschitz, bounded, integrable profile is integrable in the scale. -/
+theorem integrableOn_shiftedGammaFormIntegrand {U : ℝ → ℝ} {K B σ : ℝ}
+    (hmeas : Measurable U)
+    (hK : ∀ x y : ℝ, |U x - U y| ≤ K * |x - y|) (hB : ∀ x, |U x| ≤ B)
+    (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hUint : Integrable U) :
+    IntegrableOn
+      (fun s => (∫ L, shiftedSecondDifference σ U L s * U L) * gammaTransportKernel s)
+      (Ioi 0) := by
+  have h := (integrable_gammaPairing hmeas hK hB hσ0 hσ1 hUint).swap.integral_prod_left
+  refine h.congr ?_
+  filter_upwards with s
+  rw [← integral_mul_const]
+  refine integral_congr_ae ?_
+  filter_upwards with L
+  simp only [Function.comp_apply, Prod.swap_prod_mk, Function.uncurry_apply_pair]
+  ring
+
+/-- **The numerical-range bound in operator form.**  The conjugated Gamma jump loses at most
+`kappa_sigma` times the energy, on the class of Lipschitz, bounded, integrable profiles. -/
+theorem neg_suzukiGammaShiftKappa_mul_le_gammaJumpPairing {U : ℝ → ℝ} {K B σ : ℝ}
+    (hmeas : Measurable U)
+    (hK : ∀ x y : ℝ, |U x - U y| ≤ K * |x - y|) (hB : ∀ x, |U x| ≤ B)
+    (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hUint : Integrable U)
+    (hU2 : Integrable (fun L => U L ^ 2)) :
+    -(suzukiGammaShiftKappa σ * ∫ L, U L ^ 2) ≤ ∫ L, shiftedGammaJump σ U L * U L := by
+  rw [integral_shiftedGammaJump_mul_self hmeas hK hB hσ0 hσ1 hUint]
+  exact neg_suzukiGammaShiftKappa_mul_le_shiftedGammaForm hmeas.aestronglyMeasurable hU2 hσ0 hσ1
+    (integrableOn_shiftedGammaFormIntegrand hmeas hK hB hσ0 hσ1 hUint)
+
 
 end GaloisForLFunctions.RHTower

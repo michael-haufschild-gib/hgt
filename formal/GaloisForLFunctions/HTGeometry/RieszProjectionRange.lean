@@ -12,8 +12,9 @@ Main results:
 * `resolvent_apply_of_pow_eq_zero` — the finite Laurent expansion of the resolvent on a
   generalized eigenvector.
 * `rieszProjection_apply_eq_self` — **generalized eigenvectors inside the contour are fixed**.
-* `rieszProjection_apply_eq_zero_of_eigenvector` — **eigenvectors outside the closed disc are
-  annihilated**.
+* `rieszProjection_apply_eq_zero_of_eigenvector`,
+  `rieszProjection_apply_eq_zero_of_pow_eq_zero` — **(generalized) eigenvectors outside the closed
+  disc are annihilated**.
 -/
 import GaloisForLFunctions.HTGeometry.RieszProjection
 
@@ -176,5 +177,47 @@ theorem rieszProjection_apply_eq_zero_of_eigenvector {T : H →L[ℂ] H} {c : �
       exact fun hcon => hmu (hcon ▸ ball_subset_closedBall hlam.1)
   rw [rieszProjection_apply T hr h v, circleIntegral.integral_congr hr hres,
     circleIntegral.integral_smul_const, hzero, zero_smul, smul_zero]
+
+/-- Every negative power of a Cauchy kernel centred outside the closed disc integrates to zero. -/
+theorem circleIntegral_inv_pow_outside (c mu : ℂ) {r : ℝ} (hr : 0 ≤ r)
+    (hmu : mu ∉ closedBall c r) (k : ℕ) :
+    (∮ lam in C(c, r), ((lam - mu)⁻¹ ^ (k + 1))) = 0 := by
+  rcases Nat.eq_zero_or_pos k with hk | hk
+  · subst hk
+    simp only [zero_add, pow_one]
+    refine Complex.circleIntegral_eq_zero_of_differentiable_on_off_countable hr
+      Set.countable_empty ?_ (fun lam hlam => ?_)
+    · exact ContinuousOn.inv₀ ((continuous_id.sub continuous_const).continuousOn)
+        (fun lam hlam => sub_ne_zero.mpr (fun hcon => hmu (hcon ▸ hlam)))
+    · refine DifferentiableAt.inv (by fun_prop) (sub_ne_zero.mpr ?_)
+      exact fun hcon => hmu (hcon ▸ ball_subset_closedBall hlam.1)
+  · have hrw : ∀ lam : ℂ, (lam - mu)⁻¹ ^ (k + 1) = (lam - mu) ^ (-((k + 1 : ℕ) : ℤ)) := by
+      intro lam
+      rw [zpow_neg, zpow_natCast, inv_pow]
+    simp only [hrw]
+    exact circleIntegral.integral_sub_zpow_of_ne (by omega) c mu r
+
+/-- **A generalized eigenvector for an eigenvalue outside the closed disc is annihilated by the
+Riesz projection.** -/
+theorem rieszProjection_apply_eq_zero_of_pow_eq_zero {T : H →L[ℂ] H} {c : ℂ} {r : ℝ} {mu : ℂ}
+    {n : ℕ} {x : H} (hr : 0 ≤ r) (h : ∀ lam ∈ sphere c r, lam ∈ resolventSet ℂ T)
+    (hmu : mu ∉ closedBall c r) (hx : ((T - mu • (1 : H →L[ℂ] H)) ^ n) x = 0) :
+    rieszProjection T c r x = 0 := by
+  set N : H →L[ℂ] H := T - mu • (1 : H →L[ℂ] H) with hNdef
+  have hsphne : ∀ lam ∈ sphere c r, lam ≠ mu := fun lam hlam hcon =>
+    hmu (hcon ▸ sphere_subset_closedBall hlam)
+  have hci : ∀ k : ℕ, CircleIntegrable
+      (fun lam => ((lam - mu)⁻¹ ^ (k + 1)) • ((N ^ k) x)) c r := by
+    intro k
+    refine ContinuousOn.circleIntegrable hr (ContinuousOn.smul ?_ continuousOn_const)
+    exact ContinuousOn.pow (ContinuousOn.inv₀ ((continuous_id.sub continuous_const).continuousOn)
+      (fun lam hlam => sub_ne_zero.mpr (hsphne lam hlam))) _
+  have hexp : (∮ lam in C(c, r), resolvent T lam x) = 0 := by
+    rw [circleIntegral.integral_congr hr (fun lam hlam =>
+      resolvent_apply_of_pow_eq_zero (h lam hlam) (hsphne lam hlam) hx)]
+    rw [circleIntegral.integral_fun_sum (fun k _ => hci k)]
+    refine Finset.sum_eq_zero fun k _ => ?_
+    rw [circleIntegral.integral_smul_const, circleIntegral_inv_pow_outside c mu hr hmu k, zero_smul]
+  rw [rieszProjection_apply T hr h x, hexp, smul_zero]
 
 end GaloisForLFunctions.HTGeometry

@@ -62,4 +62,19 @@ theorem burnolXiCompletionMultiplier_ne_zero
     (mul_ne_zero (pow_ne_zero 2 hwne0) (sub_ne_zero.mpr hwne1))
     (mul_ne_zero two_ne_zero (two_cpow_sub_one_ne_zero hw0))
 
+/-- The coefficient-faithful completion multiplier is complex differentiable throughout the
+positive half-plane, hence in particular on the open critical strip. -/
+theorem differentiableAt_burnolXiCompletionMultiplier
+    {w : ℂ} (hw0 : 0 < w.re) (_hw1 : w.re < 1) :
+    DifferentiableAt ℂ burnolXiCompletionMultiplier w := by
+  have hden : 2 * ((2 : ℂ) ^ w - 1) ≠ 0 :=
+    mul_ne_zero two_ne_zero (two_cpow_sub_one_ne_zero hw0)
+  have hpow : DifferentiableAt ℂ (fun z : ℂ => (2 : ℂ) ^ z) w :=
+    differentiableAt_id.const_cpow (Or.inl (by norm_num : (2 : ℂ) ≠ 0))
+  unfold burnolXiCompletionMultiplier
+  exact ((differentiableAt_id.pow 2).mul
+      (differentiableAt_id.sub (differentiableAt_const (c := (1 : ℂ))))).div
+    ((differentiableAt_const (c := (2 : ℂ))).mul
+      (hpow.sub (differentiableAt_const (c := (1 : ℂ))))) hden
+
 end RHTower

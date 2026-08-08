@@ -34,8 +34,13 @@ theorem abs_one_sub_exp_le (x : ℝ) : |1 - Real.exp x| ≤ |x| * Real.exp |x| :
           nlinarith [neg_nonneg.mpr hx]
   · have h1 : (1 : ℝ) ≤ Real.exp x := Real.one_le_exp hx
     have h2 : Real.exp x - 1 ≤ x * Real.exp x := by
-      have := Real.add_one_le_exp (-x)
-      nlinarith [Real.exp_pos x, Real.exp_neg x, Real.exp_pos (-x)]
+      have hneg := Real.add_one_le_exp (-x)
+      have hex : (0 : ℝ) < Real.exp x := Real.exp_pos x
+      have hmul : Real.exp (-x) * Real.exp x = 1 := by
+        rw [← Real.exp_add]; simp
+      have hstep := mul_le_mul_of_nonneg_right hneg hex.le
+      rw [hmul] at hstep
+      nlinarith [hstep]
     rw [abs_of_nonpos (by linarith), abs_of_nonneg hx]
     linarith
 
