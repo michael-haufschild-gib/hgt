@@ -6192,3 +6192,4 @@ import GaloisForLFunctions.RHTower.DeningerFullAveragePeriodicBridge
 import GaloisForLFunctions.RHTower.Sieve.ConvolutionSupport
 import GaloisForLFunctions.RHTower.ContinuousSesquilinearFormBridge
 import GaloisForLFunctions.RHTower.Sieve.ConvolutionMasses
+import GaloisForLFunctions.RHTower.Sieve.ProductFirstMoment

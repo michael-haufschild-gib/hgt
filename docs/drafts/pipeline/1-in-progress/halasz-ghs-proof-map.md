@@ -2330,3 +2330,27 @@ at `σ = 1 + 1/log N`.  The sharper-looking route was the worse one.
 
 every factor explicit.  What remains is the parameter choice — and the `ℓ¹` masses of the two weights are Mertens
 sums, `∑_p log p·p^{−σ}`, which the corpus's Mertens layer bounds.
+
+## The first moment of the product — the analytic half, closed
+
+`RHTower/Sieve/ProductFirstMoment.lean` (green, axiom-clean, wired).
+
+* `LSeriesSummable_of_support` — a finitely supported series is summable at **every** point
+  (`summable_of_ne_finset_zero`), so `LSeries_convolution'` applies with no half-plane restriction;
+* `integral_norm_LSeries_mul_le_largeValues` :
+
+  `∫_{|y| ≤ nΔ} ‖L(a,σ+iy)L(b,σ+iy)‖ dy ≤ 2Δ·√(n·((2n+1)Δ + 4M²(1+log M²))(1/Δ + 2 log M²)·((ℓ¹a)(ℓ¹b))²)`.
+
+**The analytic half of the Granville–Harper–Soundararajan chain is closed.**  Every factor on the right is explicit in
+`n, Δ, M, σ` and the two `ℓ¹` masses; no Cauchy–Schwarz splitting, no window, no measure, and no trivial size of any
+factor appears.  Applied to the two prime weights, with `L(f)` bounded by its Euler product and the kernel by its
+uniform size, the Perron integral is bounded by
+
+`(Euler)·(kernel)·2Δ·√(n·(…)·((ℓ¹a)(ℓ¹b))²)`,
+
+and the `ℓ¹` masses are Mertens sums `∑_p log p·p^{−σ}` (times `1/log 2` for the outer weight).
+
+The remaining work is arithmetic in a single expression: choose `Δ`, `n` (equivalently the height `T = nΔ`), `σ`, `H`
+and `N₀ = M`, and bound the two Mertens sums.  Every device the choice needs is in the corpus, and the shape now has
+no term in which a trivial size multiplies a length — the property whose absence capped each of the three earlier
+architectures.
