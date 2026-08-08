@@ -101,3 +101,25 @@ The consumable form is the dichotomy `exists_two_le_mulDistSqPair_ge_of_close`: 
 then some *proper* multiple `kt`, `2 ≤ k ≤ K`, is far. A route can use this only if it is free to move
 the frequency it evaluates at — which is exactly the freedom a Perron contour does not have, and which
 a bilinear or short-interval formulation does.
+
+## How much a single positivity identity can buy: a constant, and no more
+
+The limit form is `exists_length_mulDistSqPair_ge_of_neg_one`: for every `ε > 0` there is a `K` with
+`∀ t, ∃ k ≤ K, 𝔻(f,n^{ikt})² ≥ (1 − ε)A`. So the *distance* statement is essentially optimal — the full
+mass `A` is reached in the limit. The *damping* statement, however, cannot be improved past a constant
+factor in any averaged consumer, and the accounting is short enough to settle here.
+
+A consumer that sums over a frequency set can only use chains `{t, 2t, …, Kt}`, and the bound damps one
+member of each chain while the other `K − 1` keep the trivial size. So
+
+`∑_{k ≤ K}‖S(kt)‖ ≤ (K−1)·exp(A + B) + exp(A/K + B)`,
+
+which is `(1 − 1/K + o(1))` times the trivial `K·exp(A+B)`. Small `K` maximises the saving — `K = 2` gives
+a factor near `1/2` — and large `K` destroys it, because the fraction of damped frequencies is `1/K`
+however strong the damping on that one frequency becomes. There is no choice of `K` giving a factor
+tending to zero.
+
+So: positivity of one nonnegative cosine polynomial yields a bounded saving. A saving that improves with
+`z` requires the sign to be usable at *every* frequency, not at one frequency per chain — and that
+uniformity is exactly what the zero-free region supplies (`MoebiusUniformFrequency`). The sign-sensitive
+lane is therefore real but shallow: it cannot replace the zero-free region, only avoid it for a constant.

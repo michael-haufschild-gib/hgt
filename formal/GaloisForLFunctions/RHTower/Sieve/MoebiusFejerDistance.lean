@@ -259,5 +259,36 @@ theorem exists_two_le_mulDistSqPair_ge_of_close {f : ℕ → ℂ} {P : Finset �
     linarith
   · exact hge
 
+/-- **The limit form.**  For every `ε > 0` there is a length `K` such that every frequency `t` has a
+multiple `kt`, `1 ≤ k ≤ K`, at squared distance at least `(1 − ε)∑_{p ∈ P}1/p`. -/
+theorem exists_length_mulDistSqPair_ge_of_neg_one {f : ℕ → ℂ} {P : Finset ℕ}
+    (hneg : ∀ p ∈ P, f p = -1) (hP : ∀ p ∈ P, 0 < p) {ε : ℝ} (hε : 0 < ε) :
+    ∃ K : ℕ, 1 ≤ K ∧ ∀ t : ℝ, ∃ k : ℕ, 1 ≤ k ∧ k ≤ K ∧
+      (1 - ε) * (∑ p ∈ P, 1 / (p : ℝ)) ≤ mulDistSqPair f (charFn ((k : ℝ) * t)) P := by
+  classical
+  obtain ⟨K, hK1, hKε⟩ : ∃ K : ℕ, 1 ≤ K ∧ 1 / ε ≤ (K : ℝ) := by
+    refine ⟨max 1 ⌈1 / ε⌉₊, le_max_left _ _, ?_⟩
+    have h1 : (1 / ε) ≤ (⌈1 / ε⌉₊ : ℝ) := Nat.le_ceil _
+    have h2 : ((⌈1 / ε⌉₊ : ℕ) : ℝ) ≤ ((max 1 ⌈1 / ε⌉₊ : ℕ) : ℝ) := by
+      exact_mod_cast Nat.cast_le.2 (le_max_right 1 ⌈1 / ε⌉₊)
+    linarith
+  have hK0 : (0 : ℝ) < (K : ℝ) := by
+    have : (1 : ℝ) ≤ (K : ℝ) := by exact_mod_cast hK1
+    linarith
+  have hA0 : (0 : ℝ) ≤ ∑ p ∈ P, 1 / (p : ℝ) := by
+    refine Finset.sum_nonneg fun p hp => ?_
+    have : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hP p hp
+    positivity
+  have hratio : 1 - ε ≤ ((K : ℝ) - 1) / (K : ℝ) := by
+    rw [le_div_iff₀ hK0]
+    have hinv : 1 ≤ ε * (K : ℝ) := by
+      rw [div_le_iff₀ hε] at hKε
+      linarith
+    nlinarith [hinv]
+  refine ⟨K, hK1, fun t => ?_⟩
+  obtain ⟨k, hk1, hkK, hk⟩ := exists_mulDistSqPair_ge_of_neg_one hneg hP hK1 t
+  refine ⟨k, hk1, hkK, le_trans ?_ hk⟩
+  exact mul_le_mul_of_nonneg_right hratio hA0
+
 end RHTower.Sieve
 end
