@@ -111,11 +111,11 @@ convolution of the two prime weights with a truncated `f`, bounded unconditional
 of the sharp Perron formula plus the dyadic split of the vertical integral against the two prime-sieve
 mean squares, the third factor entering only through `1 + log L`. -/
 theorem norm_sum_Icc_ghsTriple_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {N₀ M L N : ℕ}
-    (hprod : 1 ≤ N₀ * (M * L)) (hMN : N₀ * (M * L) ≤ N) (hN : 1 ≤ N)
+    (hprod : 1 ≤ N₀ * (M * L)) (hN : 1 ≤ N)
     {σ t₀ : ℝ} (hσ : 1 ≤ σ) (ht₀ : 1 ≤ t₀)
     (zA YA zB YB : ℕ) (hYA : 1 ≤ YA) (hYzA : YA ≤ zA) (hzA : 2 ≤ zA) (hlogA : 0 < Real.log YA)
     (hYB : 1 ≤ YB) (hYzB : YB ≤ zB) (hzB : 2 ≤ zB) (hlogB : 0 < Real.log YB) (K : ℕ) :
-    ‖∑ n ∈ Finset.Icc 1 (N₀ * (M * L)),
+    ‖∑ n ∈ Finset.Icc 1 (min (N₀ * (M * L)) N),
         (LSeries.convolution (ghsOuter f N₀)
           (LSeries.convolution (ghsInner f M) (truncSeq f L))) n‖
       ≤ 2 * ((N : ℝ) + 1) * ((Real.log ((N₀ * (M * L) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
@@ -138,7 +138,7 @@ theorem norm_sum_Icc_ghsTriple_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1
   exact norm_sum_Icc_triple_le (A := ghsOuter f N₀) (B := ghsInner f M) (g := truncSeq f L)
     (fun n hn => ghsOuter_mem_Icc hn) (fun n _ hn => ghsOuter_support hn)
     (fun n hn => ghsInner_mem_Icc hn) (fun n _ hn => ghsInner_support hn)
-    (fun n hn => truncSeq_support hn) hMN hN
+    (fun n hn => truncSeq_support hn) hN
     (norm_ghsTriple_trunc_le_uniform hf hprod) (by linarith)
     (fun t => norm_LSeries_truncSeq_line_le hf L hσ t) hσ ht₀
     zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K

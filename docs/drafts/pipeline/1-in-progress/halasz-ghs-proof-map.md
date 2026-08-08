@@ -2711,3 +2711,21 @@ Only the hypothesis `∀ n, ‖f n‖ ≤ 1` is assumed of `f`; multiplicativity
 because the third factor enters through its `ℓ¹` mass rather than through an Euler product.  A saving
 would enter by replacing `1 + log L` with a smaller bound on `sup_{|t| ≤ T} ‖L(truncSeq f L, σ+it)‖` — that
 substitution is the only change the rest of the chain would need.
+
+## Correction: the cutoff must be free to fall inside the support
+
+The first form of the Perron capstones carried a hypothesis `M ≤ N` — support inside the cutoff — which
+made `filter (· < N + 1/2) (Icc 1 M) = Icc 1 M` and so bounded the *total* sum of the coefficients.  For a
+convolution the total sum is `(∑A)(∑B)(∑g)`, a triviality; what the recursion needs is a partial sum with
+the cutoff *inside* the support.
+
+`filter_lt_half_integer` already gives `Icc 1 (min M N)` with no side condition, so the hypothesis was
+never needed.  All four capstones are now stated over `Icc 1 (min M N)`:
+
+- `norm_sum_Icc_sub_perron_integral_le` (the Perron formula),
+- `norm_sum_Icc_prime_le`, `norm_sum_Icc_triple_le`, `norm_sum_Icc_ghsTriple_le`.
+
+At `N ≤ M` the sum is the partial sum up to `N` — the object of the recursion — while the truncation error
+is unchanged, because the uniform logarithmic separation `|log((N+1/2)/n)| ≥ 1/(2N+2)` was proved for
+*every* integer `n ≥ 1`, not only for `n` below the cutoff, and the harmonic sum runs over the whole
+support.  This is why raising the height, not restricting the support, is what pays for the error.

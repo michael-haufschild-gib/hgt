@@ -185,13 +185,13 @@ theorem filter_lt_half_integer (M N : ℕ) :
     have : (n : ℝ) ≤ (N : ℝ) := by exact_mod_cast h3
     linarith
 
-/-- **The truncated Perron formula for a partial sum up to `N`.**  For coefficients supported in
-`[1, M]` with `M ≤ N`, bounded by `B`, the partial sum up to `N` is the truncated vertical integral of
-the Dirichlet polynomial against `x^s/s` at `x = N + 1/2`, with error
-`2(N+1)·B·x^σ·(1 + log M)/(πT)`. -/
-theorem norm_sum_Icc_sub_perron_integral_le {c : ℕ → ℂ} {M N : ℕ} (hMN : M ≤ N) (hN : 1 ≤ N)
+/-- **The truncated Perron formula at a cutoff anywhere.**  For coefficients supported in `[1, M]` and
+bounded by `B`, the partial sum below `N + 1/2` — that is, over `[1, min M N]`, the cutoff being free to
+fall inside or beyond the support — is the truncated vertical integral of the Dirichlet polynomial
+against `x^s/s`, with error `2(N+1)·B·x^σ·(1 + log M)/(πT)`. -/
+theorem norm_sum_Icc_sub_perron_integral_le {c : ℕ → ℂ} {M N : ℕ} (hN : 1 ≤ N)
     {B : ℝ} (hB : ∀ n, ‖c n‖ ≤ B) {σ T : ℝ} (hσ : 1 ≤ σ) (hT : 0 < T) :
-    ‖(∑ n ∈ Finset.Icc 1 M, c n)
+    ‖(∑ n ∈ Finset.Icc 1 (min M N), c n)
         - ((1 / (2 * Real.pi) : ℝ) : ℂ) * ∫ t in (-T)..T,
             (∑ n ∈ Finset.Icc 1 M, c n * ((n : ℂ) ^ (-((σ : ℂ) + (t : ℝ) * I))))
               * (((((N : ℝ) + 1 / 2) : ℝ) : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I)
@@ -207,11 +207,9 @@ theorem norm_sum_Icc_sub_perron_integral_le {c : ℕ → ℂ} {M N : ℕ} (hMN :
       have : ((2 * n : ℕ) : ℝ) = ((2 * N + 1 : ℕ) : ℝ) := by push_cast; linarith
       exact_mod_cast this
     omega
-  have hfilter := filter_lt_half_integer M N
-  rw [min_eq_left hMN] at hfilter
   have hmain := norm_sum_lt_sub_perron_integral_le (c := c) (s := Finset.Icc 1 M) hs0 hx hne
     (σ := σ) (T := T) (by linarith) hT
-  rw [hfilter] at hmain
+  rw [filter_lt_half_integer M N] at hmain
   refine le_trans hmain ?_
   exact perron_truncation_error_le (le_refl _) hB hN hσ hT
 

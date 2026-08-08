@@ -60,14 +60,14 @@ theorem norm_sum_Icc_triple_le {A B g : ℕ → ℂ} {MA MB Mg N : ℕ}
     (hBsupp : ∀ n : ℕ, B n ≠ 0 → n ∈ Finset.Icc 1 MB)
     (hBprime : ∀ n ∈ Finset.Icc 1 MB, B n ≠ 0 → n.Prime)
     (hgsupp : ∀ n : ℕ, g n ≠ 0 → n ∈ Finset.Icc 1 Mg)
-    (hMN : MA * (MB * Mg) ≤ N) (hN : 1 ≤ N)
+    (hN : 1 ≤ N)
     {Bc V σ t₀ : ℝ}
     (hBc : ∀ n, ‖(LSeries.convolution A (LSeries.convolution B g)) n‖ ≤ Bc) (hV : 0 ≤ V)
     (hgV : ∀ t : ℝ, ‖LSeries g ((σ : ℂ) + (t : ℝ) * I)‖ ≤ V)
     (hσ : 1 ≤ σ) (ht₀ : 1 ≤ t₀)
     (zA YA zB YB : ℕ) (hYA : 1 ≤ YA) (hYzA : YA ≤ zA) (hzA : 2 ≤ zA) (hlogA : 0 < Real.log YA)
     (hYB : 1 ≤ YB) (hYzB : YB ≤ zB) (hzB : 2 ≤ zB) (hlogB : 0 < Real.log YB) (K : ℕ) :
-    ‖∑ n ∈ Finset.Icc 1 (MA * (MB * Mg)),
+    ‖∑ n ∈ Finset.Icc 1 (min (MA * (MB * Mg)) N),
         (LSeries.convolution A (LSeries.convolution B g)) n‖
       ≤ 2 * ((N : ℝ) + 1) * Bc * (((N : ℝ) + 1 / 2)) ^ σ
               * (1 + Real.log ((MA * (MB * Mg) : ℕ) : ℝ)) / (Real.pi * (t₀ * 2 ^ K))
@@ -102,7 +102,7 @@ theorem norm_sum_Icc_triple_le {A B g : ℕ → ℂ} {MA MB Mg N : ℕ}
   have hcs0 : (0 : ℕ) ∉ Finset.Icc 1 (MA * (MB * Mg)) := by simp
   -- the Perron formula, with the polynomial recognised as the product of the three series
   have hP := norm_sum_Icc_sub_perron_integral_le (c := c) (M := MA * (MB * Mg)) (N := N)
-    hMN hN hBc (σ := σ) (T := T) hσ hT
+    hN hBc (σ := σ) (T := T) hσ hT
   have hbridge : ∀ t : ℝ,
       (∑ n ∈ Finset.Icc 1 (MA * (MB * Mg)), c n * (n : ℂ) ^ (-((σ : ℂ) + (t : ℝ) * I)))
           * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))
@@ -146,8 +146,8 @@ theorem norm_sum_Icc_triple_le {A B g : ℕ → ℂ} {MA MB Mg N : ℕ}
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (by positivity : (0 : ℝ) ≤ 1 / (2 * Real.pi))]
     exact mul_le_mul_of_nonneg_left (le_trans hnormint hanalytic) (by positivity)
-  have htri : ‖∑ n ∈ Finset.Icc 1 (MA * (MB * Mg)), c n‖
-      ≤ ‖(∑ n ∈ Finset.Icc 1 (MA * (MB * Mg)), c n) - ((1 / (2 * Real.pi) : ℝ) : ℂ) *
+  have htri : ‖∑ n ∈ Finset.Icc 1 (min (MA * (MB * Mg)) N), c n‖
+      ≤ ‖(∑ n ∈ Finset.Icc 1 (min (MA * (MB * Mg)) N), c n) - ((1 / (2 * Real.pi) : ℝ) : ℂ) *
             ∫ t in (-T)..T, LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
               * LSeries g ((σ : ℂ) + (t : ℝ) * I)
               * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖
@@ -155,7 +155,7 @@ theorem norm_sum_Icc_triple_le {A B g : ℕ → ℂ} {MA MB Mg N : ℕ}
             ∫ t in (-T)..T, LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
               * LSeries g ((σ : ℂ) + (t : ℝ) * I)
               * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖ := by
-    have := norm_add_le ((∑ n ∈ Finset.Icc 1 (MA * (MB * Mg)), c n)
+    have := norm_add_le ((∑ n ∈ Finset.Icc 1 (min (MA * (MB * Mg)) N), c n)
         - ((1 / (2 * Real.pi) : ℝ) : ℂ) * ∫ t in (-T)..T,
           LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
             * LSeries g ((σ : ℂ) + (t : ℝ) * I)
