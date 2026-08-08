@@ -2823,3 +2823,26 @@ Why this is the better low range: the `ℓ¹` mass of a prime weight sums `1/p` 
 outer weight and `log M` for the inner one), while the square root of the mean square sums `1/p` against
 `n`, giving `√(log N₀)` and `log M`.  On a bounded low range the pointwise product is therefore a
 logarithm cheaper, and the optimum over `t₀` improves from `(log N)^{3/2}` to `(log N)^{5/4}`.
+
+## The exceptional frequency: transferring a bound across a twist
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TwistTransfer.lean`:
+
+- `natCast_cpow_mul_I` — `n^{iτ} = exp(i·τ log n)` for `n ≥ 1`.
+- `sum_Icc_mul_phase_eq` — summation by parts for a twisted sum: the twisted partial sum is the untwisted
+  one at the top minus the untwisted partial sums against the increments of the twist.
+- `norm_phase_succ_sub_le` — `‖(n+1)^{iτ} − n^{iτ}‖ ≤ |τ|(log(n+1) − log n)`, from the corpus's
+  `DirichletLipschitz.norm_exp_phase_sub_le` (the chord never exceeds the arc).
+- `norm_sum_Icc_mul_phase_le`, `norm_sum_Icc_mul_cpow_mul_I_le` — **the transfer**:
+
+  `‖∑_{n ≤ N} g(n)n^{iτ}‖ ≤ (1 + |τ| log N)·max_{m ≤ N}‖∑_{n ≤ m} g(n)‖`,
+
+  the cost being the total variation of the twist along the integers, which telescopes to `|τ| log N`.
+
+Why this is the missing piece for the exceptional frequency.  The master bound's hypothesis is that `f` is
+at distance `≥ δ` from *every* character in the range — the non-exceptional case.  The corpus's
+`HalaszDichotomy.eq_of_both_close` shows at most one frequency can be close, but only *locally*: its
+spacing hypothesis `|(t−u)log p| ≤ π` confines the statement to one cell, so a globally uniform distance
+bound does not follow from uniqueness.  The standard resolution is to twist by the close frequency `τ` and
+estimate the twisted function, which *is* far from every character near the origin; this transfer is what
+carries the resulting bound back to `∑_{n ≤ N} f(n)`, and it needs nothing about `g` at all.
