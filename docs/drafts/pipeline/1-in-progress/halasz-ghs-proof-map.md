@@ -3574,3 +3574,58 @@ so **every term except `dampedSize` is beaten**, and the single remaining obstru
 where Halász gives `log log N/log N`.  That factor is sharp for a *pointwise* bound on `L(f,σ+it)`, so the
 last step must integrate the distance against the kernel — the distance growing away from the minimising
 frequency — rather than use one uniform `δ`.
+
+## Where the last factor lives, and what supplies it
+
+The pointwise Euler bound is *sharp*, so the remaining gap is not a lost constant.  Writing
+`𝔻(t)² = 𝔻(f, n^{it}; z)²`,
+
+`∑_{p ≤ z} Re(f(p)p^{−it})/p = logLog z − 𝔻(t)²`,   hence   `|L(f,σ+it)| ≍ (log z)·e^{−𝔻(t)²}`,
+
+and `log z ≍ 1/(σ−1)` at the only admissible abscissa (`(σ−1)log z = O(1)`, forced by the
+`exp(2(σ−1)(log z + log 4))` factor of `dampedSize`).  So `dampedSize ≍ (log z)e^{−m}` is exactly the
+pointwise truth, and *no* rearrangement of the kernel can improve
+`‖∑_{n ≤ N}f‖/N ≲ (log z)e^{−m}`: the maximum of `|L|` times the kernel mass is what it is.
+
+Halász's `(1+m)e^{−m}` therefore does not come from the pointwise bound at all.  It comes from the
+*width* of the near-minimum window:
+
+* `𝔻(t)² ≈ m` only for `|t − t₀| ≲ 1/log z`, because by the triangle inequality
+  `𝔻(t) ≥ 𝔻(charFn t₀, charFn t) − √m` and the character–character distance satisfies
+  `𝔻(charFn t₀, charFn t; z)² ≍ log(1 + |t − t₀|·log z)`;
+* the kernel mass on that window is `≍ 1/log z`, so the near-minimum contributes `e^{−m}/log z`;
+* the distance growth `log(|t − t₀|log z)` controls the rest, and the whole integral is
+  `≍ (1 + m)e^{−m}/log z`;
+* multiplying by the `1/(σ−1) ≍ log z` in front recovers `(1 + m)e^{−m}`.
+
+So the missing factor is `(1+m)/log z ≍ log log N/log N`, and the mechanism is entirely the
+*narrowness* of the window where `f` is close to a character.
+
+### The supplier chain, named
+
+The corpus already owns the two structural halves and is missing exactly one analytic input.
+
+* Owned: `sqrt_mulDistSqPair_triangle_disc` (the triangle inequality for `𝔻`) and
+  `CharacterDistanceLower.le_mulDistSqPair_charFn`, which gives
+  `𝔻(charFn t, charFn u; z)² ≥ logLog z − L − C` **for any upper bound `L` on the prime series at
+  frequency `t − u`**.
+* Missing: a supplier for `L` at *small* frequency.  Nothing in the folder consumes
+  `le_mulDistSqPair_charFn` — it is a parametric law with no instance.  What it needs is
+  `∑_p Re(p^{−σ−iv}) ≤ log(1/|v|) + C` for `1/log z ≤ |v| ≤ 1`, which is the pole of `ζ`:
+  `|ζ(σ+iv)| ≤ 5 + 1/|v|` for `1 ≤ σ ≤ 2`, `|v| ≤ 2`, directly from the corpus's
+  `ZetaVerticalLineBound.zeta_sub_emCarrier_norm_le` at `N = 1` (the Euler–Maclaurin pole term has
+  `‖s − 1‖ ≥ |v|`), followed by `∑_p Re(p^{−s}) ≤ log‖ζ(s)‖ + C`.
+  Feeding that into `le_mulDistSqPair_charFn` gives `𝔻(charFn t₀, charFn t)² ≥ log(|t−t₀| log z) − C`,
+  the distance growth, and with it the `(1+m)` mechanism.
+
+Note the contrast with the large-frequency supplier the corpus *does* use
+(`exists_mulDistSqPair_ge_uniform`, giving `logLog z − 7 log log T − C`): that one is the zero-free-region
+bound and it degrades in the height, which is why the uniform route caps at a constant.  The
+small-frequency supplier is the *pole* bound and degrades in `1/|v|`, which is what makes the window
+narrow rather than the distance small.
+
+### Deficit, restated exactly
+
+With `T ≍ (log N)(log log N)^7` the error sum is `o(N)` and the bound is
+`‖∑_{n ≤ N}λ(n)‖/N ≲ dampedSize ≍ e^{7/2 + C}(log log N)^7` — trivial by a **poly-log-log** factor, not
+by a power of `log N`.  Sharp Halász is `log log N/log N`.  Both gaps close with the same single input.
