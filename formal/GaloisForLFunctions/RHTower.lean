@@ -6288,3 +6288,6 @@ import GaloisForLFunctions.RHTower.Sieve.CesaroPartialSumBound
 import GaloisForLFunctions.RHTower.Sieve.PerronVerticalLogBound
 import GaloisForLFunctions.RHTower.Sieve.CharacterDistanceGrowth
 import GaloisForLFunctions.RHTower.Sieve.HalaszGlobalUniqueClose
+import GaloisForLFunctions.RHTower.Sieve.HalaszGlobalLargeValueWindow
+import GaloisForLFunctions.RHTower.Sieve.HalaszGlobalIntegralBound
+import GaloisForLFunctions.RHTower.Sieve.HalaszGlobalWindowExplicit
