@@ -101,3 +101,22 @@ exceptional frequency, which is what a Halász-type dichotomy — as opposed to 
 | `norm_truncSeq_mul_rpow_sq_le` | `RHTower/Sieve/AffineMeanSquareL1.lean` |
 | `generalMeanSquareRate_truncSeq_le`, `generalMeanSquareConst_truncSeq_le` | `RHTower/Sieve/AffineMeanSquareL1.lean` |
 | `integral_Icc_norm_LSeries_truncSeq_le` | `RHTower/Sieve/AffineMeanSquareL1.lean` |
+
+## The Cesàro chain, distance-free
+
+The arithmetic half of the Cesàro route never sees the analytic estimate, so the assembly holds with
+the vertical integral as a parameter, and `‖s‖ ≥ σ` on the line turns a first moment into a bound for
+the Cesàro integral:
+
+`‖∑_{n ≤ N} f(n)log(x/n)‖ ≤ ∑_{n ≤ N} E(σ,T,x/n) + (1/2π)·(x^σ/σ²)·√(2T(5πe(1+log N) + 5πT))`
+
+for every `|f| ≤ 1`, `1 ≤ σ ≤ 2`, `T ≥ 1`, `x ≥ N`. The analytic term is `≍ x^σ√(log N)` where the
+pointwise route gives `≍ x^σ log N` — a whole square root of the mass, with no distance hypothesis,
+no sieve level and no exceptional frequency. It is still `≫ x^σ`, so it does not reach `o(N)`; the
+Euler-bound wall is untouched. What it removes is the *logarithm*, not the wall.
+
+| Statement | Module |
+|---|---|
+| `norm_sum_Icc_mul_log_div_le_cesaro_of_integral` | `RHTower/Sieve/CesaroLogWeightL1.lean` |
+| `integral_symm_norm_cesaro_le_of_l1` | `RHTower/Sieve/CesaroLogWeightL1.lean` |
+| `norm_sum_Icc_mul_log_div_le_cesaro_l1` | `RHTower/Sieve/CesaroLogWeightL1.lean` |
