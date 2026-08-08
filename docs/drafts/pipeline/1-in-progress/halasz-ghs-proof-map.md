@@ -2354,3 +2354,27 @@ The remaining work is arithmetic in a single expression: choose `Δ`, `n` (equiv
 and `N₀ = M`, and bound the two Mertens sums.  Every device the choice needs is in the corpus, and the shape now has
 no term in which a trivial size multiplies a length — the property whose absence capped each of the three earlier
 architectures.
+
+## The `ℓ¹` masses: a bare geometric series
+
+`RHTower/Sieve/PrimeLogL1Mass.lean` (green, axiom-clean, wired).
+
+`sum_prime_log_rpow_neg_le` :
+
+`∑_{p ≤ N} log p·p^{−w} ≤ 2 log 4·(1 − 2^{1−w})⁻¹`,   `w > 1`, uniformly in `N`.
+
+Same dyadic architecture as the squared-logarithm cap, but **simpler**: a single power of the logarithm is absorbed by
+Chebyshev's `θ` itself, so no polynomial factor in the block index survives and the block sum is a bare geometric
+series `∑_j r^j = (1−r)⁻¹` with `r = 2^{1−w}`.  The squared cap needed `∑_j (j+1)r^j`.
+
+At `w = σ = 1 + 1/log N` this is `≍ log N/log 2`, so each prime weight's `ℓ¹` mass is `O(log N)` — and the product of
+the two, squared, is `O((log N)⁴)`, which is the mass that enters the first moment of the product.
+
+**Every arithmetic input of the route is now proved.**  The chain, end to end:
+
+`‖∑_{n ≤ N} f(n)‖·log N ≤ (recursion errors, O(N log log N))
+    + (smoothing error, (H+1)(log⌊N+H⌋)⁴/(log 2)³)
+    + (1/2π)·(Euler)·(kernel)·2Δ·√(n·((2n+1)Δ + 4M²(1+log M²))(1/Δ + 2 log M²)·((ℓ¹a)(ℓ¹b))²)`
+
+with every quantity a named theorem.  The remaining step is the choice of `Δ, n, σ, H, M` — arithmetic in one
+expression, with no device or estimate outstanding.
