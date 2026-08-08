@@ -163,7 +163,7 @@ and `xₙ₊₁·u = f` is the fundamental theorem of calculus along that segmen
   to it.  This is why the statement is local at a point of the divisor.
 - `hasDerivAt_coordContract` — the contraction is an affine path with constant velocity
   `Pi.single (last) xₙ₊₁`.
-- `coordDeriv`, `coordDivQuotient` — the last partial derivative and the quotient.
+- `lastCoordDeriv`, `coordDivQuotient` — the last partial derivative and the quotient.
 - `coordDeriv_analyticOnNhd` — the last partial derivative of an analytic function is analytic,
   since `fderiv` of an analytic function is analytic and evaluation is continuous linear.
 - `hasDerivAt_comp_coordContract`, `continuousOn_coordDeriv_path` — the chain rule along the path

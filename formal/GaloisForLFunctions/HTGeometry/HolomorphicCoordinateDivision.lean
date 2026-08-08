@@ -97,13 +97,13 @@ section Quotient
 variable {n : ℕ}
 
 /-- The last partial derivative of a function of several complex variables. -/
-noncomputable def coordDeriv (f : (Fin (n + 1) → ℂ) → ℂ) (x : Fin (n + 1) → ℂ) : ℂ :=
+noncomputable def lastCoordDeriv (f : (Fin (n + 1) → ℂ) → ℂ) (x : Fin (n + 1) → ℂ) : ℂ :=
   fderiv ℂ f x (Pi.single (Fin.last n) 1)
 
 /-- **The quotient of a function vanishing on the divisor by the last coordinate**: the average of
 the last partial derivative along the segment contracting that coordinate to zero. -/
 noncomputable def coordDivQuotient (f : (Fin (n + 1) → ℂ) → ℂ) (x : Fin (n + 1) → ℂ) : ℂ :=
-  ∫ t in (0 : ℝ)..1, coordDeriv f (coordContract (t : ℂ) x)
+  ∫ t in (0 : ℝ)..1, lastCoordDeriv f (coordContract (t : ℂ) x)
 
 /-- The contraction, as a function of the parameter, is an affine path with constant velocity. -/
 theorem hasDerivAt_coordContract (x : Fin (n + 1) → ℂ) (t : ℝ) :
@@ -152,7 +152,7 @@ variable {n : ℕ} {f : (Fin (n + 1) → ℂ) → ℂ} {c : Fin (n + 1) → ℂ}
 
 /-- The last partial derivative of an analytic function is analytic. -/
 theorem coordDeriv_analyticOnNhd (hf : AnalyticOnNhd ℂ f (Metric.ball c r)) :
-    AnalyticOnNhd ℂ (coordDeriv f) (Metric.ball c r) := by
+    AnalyticOnNhd ℂ (lastCoordDeriv f) (Metric.ball c r) := by
   have hev : AnalyticOnNhd ℂ (⇑(ContinuousLinearMap.apply ℂ ℂ
       ((Pi.single (Fin.last n) (1 : ℂ) : Fin (n + 1) → ℂ)))) Set.univ :=
     (ContinuousLinearMap.apply ℂ ℂ
@@ -164,7 +164,7 @@ theorem hasDerivAt_comp_coordContract (hf : AnalyticOnNhd ℂ f (Metric.ball c r
     (hc : c (Fin.last n) = 0) {x : Fin (n + 1) → ℂ} (hx : x ∈ Metric.ball c r) {t : ℝ}
     (ht : t ∈ Set.Icc (0 : ℝ) 1) :
     HasDerivAt (fun s : ℝ => f (coordContract (s : ℂ) x))
-      (x (Fin.last n) * coordDeriv f (coordContract (t : ℂ) x)) t := by
+      (x (Fin.last n) * lastCoordDeriv f (coordContract (t : ℂ) x)) t := by
   have hmem : coordContract (t : ℂ) x ∈ Metric.ball c r := coordContract_mem_ball hc hx ht
   have hfd : HasFDerivAt f (fderiv ℂ f (coordContract (t : ℂ) x)) (coordContract (t : ℂ) x) :=
     (hf _ hmem).differentiableAt.hasFDerivAt
@@ -183,7 +183,7 @@ theorem hasDerivAt_comp_coordContract (hf : AnalyticOnNhd ℂ f (Metric.ball c r
       rw [Pi.single_eq_of_ne hi, smul_zero]
   have hval : (ContinuousLinearMap.restrictScalars ℝ (fderiv ℂ f (coordContract (t : ℂ) x)))
         ((Pi.single (Fin.last n) (x (Fin.last n)) : Fin (n + 1) → ℂ))
-      = x (Fin.last n) * coordDeriv f (coordContract (t : ℂ) x) := by
+      = x (Fin.last n) * lastCoordDeriv f (coordContract (t : ℂ) x) := by
     show fderiv ℂ f (coordContract (t : ℂ) x)
       ((Pi.single (Fin.last n) (x (Fin.last n)) : Fin (n + 1) → ℂ)) = _
     rw [hsingle, map_smul, smul_eq_mul]
@@ -193,11 +193,11 @@ theorem hasDerivAt_comp_coordContract (hf : AnalyticOnNhd ℂ f (Metric.ball c r
 /-- The last partial derivative is continuous along the contraction path. -/
 theorem continuousOn_coordDeriv_path (hf : AnalyticOnNhd ℂ f (Metric.ball c r))
     (hc : c (Fin.last n) = 0) {x : Fin (n + 1) → ℂ} (hx : x ∈ Metric.ball c r) :
-    ContinuousOn (fun t : ℝ => coordDeriv f (coordContract (t : ℂ) x)) (Set.Icc 0 1) := by
+    ContinuousOn (fun t : ℝ => lastCoordDeriv f (coordContract (t : ℂ) x)) (Set.Icc 0 1) := by
   have hpath : Continuous (fun t : ℝ => coordContract (t : ℂ) x) :=
     continuous_iff_continuousAt.2 fun t => (hasDerivAt_coordContract x t).continuousAt
   intro t ht
-  show ContinuousWithinAt ((fun z => coordDeriv f z) ∘ fun s : ℝ => coordContract (s : ℂ) x)
+  show ContinuousWithinAt ((fun z => lastCoordDeriv f z) ∘ fun s : ℝ => coordContract (s : ℂ) x)
     (Set.Icc 0 1) t
   exact ContinuousAt.comp_continuousWithinAt
     ((coordDeriv_analyticOnNhd hf) _ (coordContract_mem_ball hc hx ht)).continuousAt
@@ -214,14 +214,14 @@ theorem coordDivQuotient_mul (hf : AnalyticOnNhd ℂ f (Metric.ball c r))
   have huIcc : Set.uIcc (0 : ℝ) 1 = Set.Icc 0 1 := Set.uIcc_of_le zero_le_one
   have hcont := continuousOn_coordDeriv_path hf hc hx
   have hint : IntervalIntegrable
-      (fun t : ℝ => x (Fin.last n) * coordDeriv f (coordContract (t : ℂ) x))
+      (fun t : ℝ => x (Fin.last n) * lastCoordDeriv f (coordContract (t : ℂ) x))
       volume 0 1 := by
     refine (ContinuousOn.intervalIntegrable ?_)
     rw [huIcc]
     exact continuousOn_const.mul hcont
   have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt
     (f := fun s : ℝ => f (coordContract (s : ℂ) x))
-    (f' := fun t : ℝ => x (Fin.last n) * coordDeriv f (coordContract (t : ℂ) x))
+    (f' := fun t : ℝ => x (Fin.last n) * lastCoordDeriv f (coordContract (t : ℂ) x))
     (fun t htu => hasDerivAt_comp_coordContract hf hc hx (huIcc ▸ htu)) hint
   rw [intervalIntegral.integral_const_mul] at hFTC
   have hzero : f (coordContract (((0 : ℝ)) : ℂ) x) = 0 :=
@@ -231,5 +231,71 @@ theorem coordDivQuotient_mul (hf : AnalyticOnNhd ℂ f (Metric.ball c r))
     show ((1 : ℝ) : ℂ) = (1 : ℂ) from Complex.ofReal_one, coordContract_one]
 
 end Division
+
+end HTGeometry
+
+namespace HTGeometry
+
+open Complex MeasureTheory intervalIntegral
+
+section Holomorphy
+
+variable {n : ℕ}
+
+/-- The part of a point away from the last coordinate. -/
+noncomputable def coordDrop : (Fin (n + 1) → ℂ) →L[ℂ] (Fin (n + 1) → ℂ) :=
+  ContinuousLinearMap.pi fun i => if i = Fin.last n then 0 else ContinuousLinearMap.proj i
+
+/-- The last coordinate of a point. -/
+noncomputable def coordKeepLast : (Fin (n + 1) → ℂ) →L[ℂ] (Fin (n + 1) → ℂ) :=
+  ContinuousLinearMap.pi fun i => if i = Fin.last n then ContinuousLinearMap.proj i else 0
+
+theorem coordContract_eq (t : ℂ) :
+    coordContract (n := n) t = coordDrop + t • coordKeepLast := by
+  refine ContinuousLinearMap.ext fun x => ?_
+  funext i
+  by_cases hi : i = Fin.last n
+  · subst hi
+    rw [coordContract_apply_last]
+    show _ = (if Fin.last n = Fin.last n then (0 : (Fin (n + 1) → ℂ) →L[ℂ] ℂ)
+        else ContinuousLinearMap.proj (Fin.last n)) x
+      + t • (if Fin.last n = Fin.last n
+        then ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin (n + 1) => ℂ) (Fin.last n)
+        else 0) x
+    rw [if_pos rfl, if_pos rfl]
+    show _ = 0 + t • x (Fin.last n)
+    rw [zero_add, smul_eq_mul]
+  · rw [coordContract_apply_of_ne _ _ hi]
+    show _ = (if i = Fin.last n then (0 : (Fin (n + 1) → ℂ) →L[ℂ] ℂ)
+        else ContinuousLinearMap.proj i) x
+      + t • (if i = Fin.last n
+        then ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin (n + 1) => ℂ) i
+        else 0) x
+    rw [if_neg hi, if_neg hi]
+    show _ = x i + t • (0 : ℂ)
+    rw [smul_zero, add_zero]
+
+theorem continuous_coordContract :
+    Continuous fun t : ℝ => coordContract (n := n) (t : ℂ) := by
+  simp only [coordContract_eq]
+  exact continuous_const.add (Complex.continuous_ofReal.smul continuous_const)
+
+/-- **The contraction does not increase distances.** -/
+theorem coordContract_dist_le {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) (x y : Fin (n + 1) → ℂ) :
+    dist (coordContract (t : ℂ) x) (coordContract (t : ℂ) y) ≤ dist x y := by
+  refine (dist_pi_le_iff (X := fun _ : Fin (n + 1) => ℂ) (r := dist x y) dist_nonneg).2 fun i => ?_
+  by_cases hi : i = Fin.last n
+  · subst hi
+    rw [coordContract_apply_last, coordContract_apply_last, dist_eq_norm, ← mul_sub, norm_mul,
+      Complex.norm_real, Real.norm_of_nonneg ht.1]
+    calc t * ‖x (Fin.last n) - y (Fin.last n)‖
+        ≤ 1 * ‖x (Fin.last n) - y (Fin.last n)‖ :=
+          mul_le_mul_of_nonneg_right ht.2 (norm_nonneg _)
+      _ = dist (x (Fin.last n)) (y (Fin.last n)) := by rw [one_mul, dist_eq_norm]
+      _ ≤ dist x y := dist_le_pi_dist x y (Fin.last n)
+  · rw [coordContract_apply_of_ne _ _ hi, coordContract_apply_of_ne _ _ hi]
+    exact dist_le_pi_dist x y i
+
+end Holomorphy
 
 end HTGeometry
