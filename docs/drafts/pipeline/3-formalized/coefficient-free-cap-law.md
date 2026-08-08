@@ -235,3 +235,33 @@ with `dampedExponent c = 1 − c/3` from the abscissa balance. The checked conte
 `x = N` never `o(N)`, which is the arithmetic form of the cap — together with `meanSquare_is_least`, the
 statement that the unconditional mean square beats every damped variant. That last comparison is exactly
 why the zero-free region is inert in this chain, and it is now an identity rather than an assertion.
+
+## Triage: what the caps ask of a candidate route
+
+The point of stating the caps abstractly is that a route can be tested before it is built. The test has
+three questions, in order of cost.
+
+**1. Is the bound's right-hand side a function of the coefficients only through `‖a_n‖`?** If yes, it is
+capped at the trivial size by `le_of_coefficientFree_bound` — no analytic sharpening helps. This convicts
+every mean square, sieve majorant, large-values estimate and modulus-first contour bound in the folder.
+
+Note the reach here: an `ℓ²`-majorised *bilinear* bound `|∑_{m,n}a_m b_n K(m,n)| ≤ ‖a‖₂‖b‖₂·(factor)` is
+also coefficient-free, so the bilinear family is capped whenever its input is of that shape. What escapes
+is a bilinear input that is a statement about the sequence's *own* correlations — `MRInterface.MRBilinear`
+compares the pair sum with the squared block mean, so it is not an `ℓ²` majorisation and the cap does not
+reach it. That is the structural reason Route E is not convicted by cap 1 while the GHS chain is.
+
+**2. Does it carry a distance level uniform over a frequency range?** If yes, `dampedSize_ge_of_uniform`
+applies: the level is at most the prime mass (`sq_le_prime_mass_of_uniform`), and the damped analytic term
+floors at `Θ(1)` — `PerronExponentBudget` records the exponent as `2/3` at best. This is what convicts
+routes that escaped question 1 by carrying arithmetic input.
+
+**3. Does it use the sign of the coefficients at only finitely many frequencies per point?** If yes, the
+Fejér ceiling applies (`moebius-pair-damping-sign-sensitive.md`): one nonnegative cosine polynomial damps
+one frequency per chain, so the saving is a bounded factor, not a growing one.
+
+A route surviving all three must use the signs at essentially every frequency, and must not reduce to a
+majorisation through `‖a_n‖`. The corpus's exact identities are the only objects in this folder with that
+shape — `DirichletDiagonal.integral_normSq_dirPoly_sub_diag` and
+`HTGeometry.GeneralizedDirichletMeanValue.genPoly_meanValue`, both of which keep the full off-diagonal
+with its phases. That is where the remaining work has to happen.
