@@ -3493,3 +3493,48 @@ logarithmic average.
 **One brick remains for sharp Halász**: the Tauberian passage from `∑_{n ≤ N}f(n)log(N/n) = ∫_1^N S(t)dt/t`
 to `S(N)`, where Granville–Soundararajan's Lipschitz estimate for the multiplicative distance produces the
 factor `(1+m)`.
+
+## The Tauberian brick does not exist: differencing the cutoff is exact
+
+The Cesàro kernel produces the weight `log(x/n)`, which vanishes at `n = x`, and the standard reading is
+that such a smoothed sum must be de-smoothed by a Tauberian argument.  That reading is wrong here,
+because the **coefficient support is fixed and only the cutoff moves**.  For `x, x' ≥ N`,
+
+`∑_{n ≤ N} f(n)log(x'/n) − ∑_{n ≤ N} f(n)log(x/n) = log(x'/x)·∑_{n ≤ N} f(n)`,
+
+*exactly* — `log(x'/n) − log(x/n) = log(x'/x)` term by term, with no error at all.  The Cesàro kernel
+smooths in the cutoff, which is a free parameter, not in the support.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CesaroPartialSumBound.lean`:
+
+- `sum_Icc_truncSeq_eq`, `sum_Icc_mul_log_sub_eq` — the identity above.
+- `norm_sum_Icc_le_cesaro_difference` —
+  `‖∑_{n ≤ N} f(n)‖·log(x'/x) ≤ (bound at x) + (bound at x')`, for any `N ≤ x ≤ x'`.
+- `norm_sum_Icc_le_cesaro_damped` and `exists_norm_sum_Icc_liouvilleC_le_cesaro` — the damped and
+  Liouville instances.
+
+At `x = N`, `x' = eN` the factor `log(x'/x)` is `1`, so this is a bound on `‖∑_{n ≤ N}λ(n)‖` itself, and
+the *whole* Cesàro route now runs from the definition of `λ` to the partial sum with no Tauberian step,
+no sieve, no mean square, no dyadic split and no recursion.  (`CesaroLogWeightBound` and
+`CesaroDampedChain` were generalised to a free cutoff `x ≥ N` to make this available.)
+
+### The ceiling, computed
+
+With `σ = 1 + A/log N`, `T` polylogarithmic and `x ≍ x' ≍ N`, the error sum is
+`∑_{n ≤ N}E(σ,T,x/n) ≍ N/σ + N log T/T + x^σ log N/(σT)` and the analytic term is
+`≍ V·x^σ/σ ≍ V·N`.  So
+
+`‖∑_{n ≤ N} f(n)‖/N ≲ 1/σ + (log T)/T + (log N)/T + V`,
+
+and with `V = dampedSize ≍ (log N)e^{−m}` the leading term is `(log N)e^{−m}` — *the same ceiling as the
+mean-square route*.  The reason is visible in one line: `dampedSize` contains `1 + 1/(σ−1) ≍ log N`, and
+`x^σ ≍ N`, so the analytic term is `≍ N(log N)e^{−m}` however the kernel is chosen.  The zero-free strip
+supplies `e^{−m} ≍ 1/log N`, so the bound is `O(1)` where Halász gives `log log N/log N`.
+
+Two consequences worth recording.  First, the `1/σ` term (from `cesaro_piece_one_le`'s `4/(πσ)`) is also
+`Θ(1)` and must be sharpened: it comes from bounding `‖perronVertical σ T u‖ ≤ u^σT/(πσ)` on
+`[1, 1+1/T]`, where the truth is `≍ log T` — the sharpening `∫_{-T}^{T}dt/‖σ+it‖ ≤ 2(1 + log(T/σ))`
+(split at `|t| = σ`) turns that term into `O(log T/T)` and is the next concrete step.  Second, after that
+sharpening the *only* obstruction left is the factor `1/(σ−1)` inside `dampedSize`: every route in this
+folder — mean square, pair, block, Cesàro — is capped at `(log N)e^{−m}` by it, and Halász's `(1+m)e^{−m}`
+must come from integrating the distance against the kernel rather than from a single uniform `m`.

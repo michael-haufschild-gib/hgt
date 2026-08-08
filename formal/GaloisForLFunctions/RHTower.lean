@@ -4193,6 +4193,10 @@ import GaloisForLFunctions.RHTower.Sieve.PrimeLogQuotientSum
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogSqLower
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogWindowCount
 import GaloisForLFunctions.RHTower.Sieve.PrimeProfileExponentTransfer
+import GaloisForLFunctions.RHTower.Sieve.PrimeProfileIntegralBound
+import GaloisForLFunctions.RHTower.Sieve.PrimeProfilePartitionSum
+import GaloisForLFunctions.RHTower.Sieve.PrimeProfileTransferLimit
+import GaloisForLFunctions.RHTower.Sieve.ProfileStepIntegralComparison
 import GaloisForLFunctions.RHTower.Sieve.PrimePowerLargeValuesCount
 import GaloisForLFunctions.RHTower.Sieve.PrimePowerSum
 import GaloisForLFunctions.RHTower.Sieve.PrimePowerSupport
@@ -5271,6 +5275,7 @@ import GaloisForLFunctions.RHTower.VonMangoldtHardyGramScaling
 import GaloisForLFunctions.RHTower.VonMangoldtLogHarmonicSummatory
 import GaloisForLFunctions.RHTower.VonMangoldtLogMomentHankel
 import GaloisForLFunctions.RHTower.VonMangoldtLogSummatory
+import GaloisForLFunctions.RHTower.VonMangoldtSignBlock
 import GaloisForLFunctions.RHTower.VonMangoldtSuccessorBianchiHankelWeld
 import GaloisForLFunctions.RHTower.VonMangoldtSuccessorDiracKreinEdge
 import GaloisForLFunctions.RHTower.VonMangoldtSuccessorPrincipalRelativeHankel
@@ -6271,3 +6276,4 @@ import GaloisForLFunctions.RHTower.Sieve.CesaroPerronExplicit
 import GaloisForLFunctions.RHTower.Sieve.CesaroFiniteSum
 import GaloisForLFunctions.RHTower.Sieve.CesaroLogWeightBound
 import GaloisForLFunctions.RHTower.Sieve.CesaroDampedChain
+import GaloisForLFunctions.RHTower.Sieve.CesaroPartialSumBound
