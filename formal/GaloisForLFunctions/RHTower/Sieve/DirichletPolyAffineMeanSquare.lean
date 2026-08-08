@@ -7,6 +7,7 @@ import GaloisForLFunctions.RHTower.Sieve.MoebiusSmoothCancellation
 import GaloisForLFunctions.RHTower.Sieve.PerronNearDiagonal
 import GaloisForLFunctions.HTGeometry.IntervalMeanSquareMoment
 import GaloisForLFunctions.RHTower.Sieve.CesaroDyadicMeanSquare
+import GaloisForLFunctions.RHTower.Sieve.AffineMeanSquareL1
 
 /-!
 # The mean square of a Dirichlet polynomial is affine in the height
@@ -251,6 +252,36 @@ theorem integral_symm_norm_dirPoly_mul_cesaroKernel_le {N : ℕ} (a : Fin N → 
   intro U hU
   have h := integral_Icc_normSq_dirPoly_le_affine a (by linarith : (1 : ℝ) ≤ U)
   linarith
+
+
+/-- **The first moment of a Dirichlet polynomial on a symmetric range.**  Cauchy–Schwarz against `1`
+and the affine mean square.  Against
+`DirichletFirstMomentLargeValues.integral_norm_dirPoly_le_largeValues`, which discretises by cell
+maxima and pays the harmonic cost `(1/Δ + 2 log N)` of the discrete mean value, this has the same shape
+with no logarithm and with the `n`-weighted mass in place of `N` times the plain mass. -/
+theorem integral_Icc_norm_dirPoly_le_sqrt_affine {N : ℕ} (a : Fin N → ℂ) {T : ℝ} (hT : 1 ≤ T) :
+    (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖)
+      ≤ Real.sqrt (2 * T
+          * (5 * Real.pi * Real.exp 1 * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2)
+            + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a m‖ ^ 2) * T)) := by
+  have hT0 : (0 : ℝ) ≤ T := by linarith
+  have hs0 : (0 : ℕ) ∉ Finset.Icc 1 N := by simp
+  have hsupp : ∀ n : ℕ, dirSeq a n ≠ 0 → n ∈ Finset.Icc 1 N := fun _ h => dirSeq_support a h
+  have hcongr : (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖)
+      = ∫ t in Set.Icc (-T) T, ‖LSeries (dirSeq a) (((0 : ℝ) : ℂ) + ((t : ℝ) : ℂ) * I)‖ := by
+    have hstep : (∫ t in Set.Icc (-T) T,
+          ‖LSeries (dirSeq a) (((0 : ℝ) : ℂ) + ((t : ℝ) : ℂ) * I)‖)
+        = ∫ t in Set.Icc (-T) T, ‖dirPoly N a (-t)‖ := by
+      refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun t _ => ?_
+      rw [LSeries_dirSeq_eq_dirPoly]
+    rw [hstep]
+    exact (GaloisForLFunctions.HTGeometry.integral_Icc_comp_neg
+      (fun t : ℝ => ‖dirPoly N a t‖) hT0).symm
+  rw [hcongr]
+  refine le_trans (integral_Icc_norm_LSeries_le_sqrt_general_affine hs0 hsupp (0 : ℝ) hT)
+    (Real.sqrt_le_sqrt ?_)
+  rw [generalMeanSquareConst, generalMeanSquareRate, sum_Icc_mul_norm_sq_dirSeq,
+    sum_Icc_norm_sq_dirSeq]
 
 
 section

@@ -92,3 +92,19 @@ gives `≍ (K T²)^{1/3}`, so
 So the bound moves from a height range no Perron truncation uses to the range they all use. The
 `√T`-free `max T 1` form (`integral_Icc_normSq_dirPoly_le_affine_max`) removes the last constraint
 `T ≥ 1`.
+
+## The first moment: Cauchy–Schwarz dominates the cell-maximum route
+
+`DirichletFirstMomentLargeValues.integral_norm_dirPoly_le_largeValues` bounds `∫‖F‖` by discretising
+into cells, splitting the cell maxima into two `Δ`-separated families and applying the *discrete* mean
+value, which costs the harmonic factor `(1/Δ + 2 log N)`. Unwinding its parameters at `T = 2nΔ` and
+`Δ ≤ 1/log N` gives `≍ √(T(T + 4N log N)∑|a_i|²)`. Plain Cauchy–Schwarz against the affine mean square
+gives
+
+`∫_{|t| ≤ T}‖dirPoly N a t‖ dt ≤ √(2T(5πe∑_m(m+1)|a_m|² + (5π/2)T∑_m|a_m|²))`
+
+(`integral_Icc_norm_dirPoly_le_sqrt_affine`) — the same shape with no logarithm and with the
+`n`-weighted mass in place of `N` times the plain mass. So the discretisation buys nothing for the
+first moment; its value lies only in *counting* large values, where the rarity of the exceptional set
+is the point. The reflection identity used here is stated once for an arbitrary integrand
+(`HTGeometry.integral_Icc_comp_neg`), with the mean-square version as its instance.

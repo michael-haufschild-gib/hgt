@@ -129,16 +129,21 @@ noncomputable section
 namespace GaloisForLFunctions.HTGeometry
 open Complex MeasureTheory Set
 
+/-- The integral over a symmetric range is invariant under reflection. -/
+theorem integral_Icc_comp_neg (f : ℝ → ℝ) {U : ℝ} (hU : 0 ≤ U) :
+    (∫ t in Set.Icc (-U) U, f (-t)) = ∫ t in Set.Icc (-U) U, f t := by
+  have hle : -U ≤ U := by linarith
+  have hconv : ∀ g : ℝ → ℝ, (∫ t in Set.Icc (-U) U, g t) = ∫ t in (-U)..U, g t := by
+    intro g
+    rw [intervalIntegral.integral_of_le hle, ← MeasureTheory.integral_Icc_eq_integral_Ioc]
+  rw [hconv (fun t => f (-t)), hconv f]
+  rw [intervalIntegral.integral_comp_neg f]
+  norm_num
+
 /-- The mean square over a symmetric range is invariant under reflection. -/
 theorem integral_Icc_normSq_comp_neg (D : ℝ → ℂ) {U : ℝ} (hU : 0 ≤ U) :
-    (∫ t in Set.Icc (-U) U, ‖D (-t)‖ ^ 2) = ∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2 := by
-  have hle : -U ≤ U := by linarith
-  have hconv : ∀ f : ℝ → ℝ, (∫ t in Set.Icc (-U) U, f t) = ∫ t in (-U)..U, f t := by
-    intro f
-    rw [intervalIntegral.integral_of_le hle, ← MeasureTheory.integral_Icc_eq_integral_Ioc]
-  rw [hconv (fun t => ‖D (-t)‖ ^ 2), hconv (fun t => ‖D t‖ ^ 2)]
-  rw [intervalIntegral.integral_comp_neg (fun t => ‖D t‖ ^ 2)]
-  norm_num
+    (∫ t in Set.Icc (-U) U, ‖D (-t)‖ ^ 2) = ∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2 :=
+  integral_Icc_comp_neg (fun t => ‖D t‖ ^ 2) hU
 
 /-- **The low range of a vertical integral.**  On `|t| ≤ t₀` the kernel is bounded, so Cauchy–Schwarz
 against the mean square at height `t₀` bounds the contribution by `C₀·√(2t₀)·√(Q + κt₀)`. -/
