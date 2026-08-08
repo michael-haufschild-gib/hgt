@@ -173,3 +173,55 @@ theorem exists_bound_mellin_smoothWeight_height {N H : ℝ} (hN : 0 < N) (hH : 0
 
 end GaloisForLFunctions.HTGeometry
 end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open Complex MeasureTheory Set
+
+/-- **The vertical integral against an affine block moment.**  A mean-square estimate whose bound is
+`Q + κ·(height)` gives a block moment `K·√(height) + L·(height)`: the square-root part is charged a
+geometric series by the kernel's decay, while the linear part is charged one constant per block, hence
+`2CL` times the number of blocks.  The linear part is the only source of a logarithmic dependence on
+the height of the range. -/
+theorem integral_mul_kernel_le_of_affine_block_moment {F G : ℝ → ℝ} {C K L t₀ : ℝ} (ht₀ : 0 < t₀)
+    (hC : 0 ≤ C) (hK : 0 ≤ K) (hF : ∀ t, 0 ≤ F t) (hG : ∀ t, t₀ ≤ t → G t ≤ C / t)
+    {M : ℕ}
+    (hFint : ∀ m, m < M → IntervalIntegrable F volume (t₀ * 2 ^ m) (t₀ * 2 ^ (m + 1)))
+    (hFGint : ∀ m, m < M →
+      IntervalIntegrable (fun t => F t * G t) volume (t₀ * 2 ^ m) (t₀ * 2 ^ (m + 1)))
+    (hmom : ∀ m, m < M → (∫ t in (t₀ * 2 ^ m)..(t₀ * 2 ^ (m + 1)), F t)
+      ≤ K * Real.sqrt (t₀ * 2 ^ (m + 1)) + L * (t₀ * 2 ^ (m + 1))) :
+    (∫ t in t₀..(t₀ * 2 ^ M), F t * G t)
+      ≤ (C * K * Real.sqrt 2 / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹ + 2 * C * L * M := by
+  have hs2nn : (0 : ℝ) ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
+  have hs2sq : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hs2lt : Real.sqrt 2 < 2 := by nlinarith
+  refine le_trans (integral_mul_kernel_le_sum_dyadic ht₀ hC hF hG hFint hFGint) ?_
+  have hbound : ∀ m ∈ Finset.range M,
+      (C / (t₀ * 2 ^ m)) * ∫ t in (t₀ * 2 ^ m)..(t₀ * 2 ^ (m + 1)), F t
+        ≤ (C * K * Real.sqrt 2 / Real.sqrt t₀) * (Real.sqrt 2 / 2) ^ m + 2 * C * L := by
+    intro m hm
+    have hker : (0 : ℝ) ≤ C / (t₀ * 2 ^ m) := by positivity
+    have hlin : (C / (t₀ * 2 ^ m)) * (L * (t₀ * 2 ^ (m + 1))) = 2 * C * L := by
+      have h2m : (t₀ : ℝ) * 2 ^ m ≠ 0 := by positivity
+      field_simp
+      ring
+    calc (C / (t₀ * 2 ^ m)) * ∫ t in (t₀ * 2 ^ m)..(t₀ * 2 ^ (m + 1)), F t
+        ≤ (C / (t₀ * 2 ^ m)) *
+            (K * Real.sqrt (t₀ * 2 ^ (m + 1)) + L * (t₀ * 2 ^ (m + 1))) :=
+          mul_le_mul_of_nonneg_left (hmom m (Finset.mem_range.1 hm)) hker
+      _ = (C / (t₀ * 2 ^ m)) * (K * Real.sqrt (t₀ * 2 ^ (m + 1)))
+            + (C / (t₀ * 2 ^ m)) * (L * (t₀ * 2 ^ (m + 1))) := by ring
+      _ = (C * K * Real.sqrt 2 / Real.sqrt t₀) * (Real.sqrt 2 / 2) ^ m + 2 * C * L := by
+          rw [dyadic_sqrt_term_eq ht₀ m, hlin]
+  refine le_trans (Finset.sum_le_sum hbound) ?_
+  rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+  have hgeom : ∑ m ∈ Finset.range M,
+      (C * K * Real.sqrt 2 / Real.sqrt t₀) * (Real.sqrt 2 / 2) ^ m
+        ≤ (C * K * Real.sqrt 2 / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹ :=
+    sum_range_le_geometric (by positivity) (by positivity) (by linarith) fun m _ => le_rfl
+  have hconst : (M : ℝ) * (2 * C * L) = 2 * C * L * M := by ring
+  linarith
+
+end GaloisForLFunctions.HTGeometry
+end

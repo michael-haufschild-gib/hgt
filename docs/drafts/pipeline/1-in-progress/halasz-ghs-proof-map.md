@@ -2484,3 +2484,26 @@ This is the entry point the route needs: the coefficient sequence of the GHS tri
 finitely supported, so no Fubini or Dirichlet-series convergence argument enters the Perron step at
 all, and the smoothing layer — with its `H(log N)^4` window error and its `(N/H)` kernel constant —
 is no longer on the critical path.
+
+## From a mean square to the vertical integral, in one inequality
+
+`formal/GaloisForLFunctions/HTGeometry/IntervalMeanSquareMoment.lean` and the second half of
+`VerticalKernelDyadicSplit.lean`:
+
+- `integral_norm_le_sqrt_length_mul_sqrt_meanSquare` — Cauchy–Schwarz on an interval, from the
+  measure-general weighted inequality at `W ≡ 1`, `g₂ ≡ 1`.
+- `integral_norm_le_sqrt_affine` — if the mean square over `|t| ≤ U` is at most `Q + κU`, the first
+  moment over any interval inside `[0, b]` is at most `√Q·√b + √κ·b`.
+- `integral_mul_kernel_le_of_affine_block_moment` — the dyadic split with a block moment of that
+  affine shape: the square-root part is charged a geometric series, the linear part `2CL` per block.
+- `integral_norm_mul_kernel_le_of_affine_meanSquare` — the composite:
+
+  `∫_{t₀}^{t₀2^M} ‖D(t)‖·G(t) dt ≤ C√Q√2(1 − √2/2)⁻¹/√t₀ + 2C√κ·M`   whenever `G ≤ C/t` beyond `t₀`.
+
+This isolates precisely what a mean-square estimate is worth against a first-order kernel.  The
+`U`-independent part `Q` of a mean square contributes a bound with *no* dependence on the height of
+the range; only the part growing linearly in `U` costs a factor logarithmic in the height.  The
+corpus's prime-sieve mean square (`TruncatedPrimeSieveMeanSquare.integral_Icc_normSq_LSeries_le_prime_sieve`)
+has exactly this shape, its `Q` being `≍ ∑_n n‖a_n n^{−σ}‖²/log Y` and its `κ` the additive
+`(5/4)·2π·(selbergFibreError + z)·∑‖a_n n^{−σ}‖²`, so the composite applies to it directly with
+`C = x^σ` — the constant of the sharp Perron kernel.
