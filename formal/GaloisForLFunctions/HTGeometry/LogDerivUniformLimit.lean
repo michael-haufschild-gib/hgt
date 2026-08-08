@@ -250,19 +250,21 @@ theorem eventually_zeroCount_eq_analyticOrder {α : Type*} {p : Filter α}
     {F : α → ℂ → ℂ} {f : ℂ → ℂ} (hF : ∀ a, Differentiable ℂ (F a)) (hf : Differentiable ℂ f)
     {c : ℂ} {R r : ℝ} (hr : 0 < r) (hrR : r < R)
     (huniform : TendstoUniformlyOn F f p (closedBall c R))
-    {d : ℕ} (hord : analyticOrderAt f c = (d : ℕ∞)) (hne : ∀ z, z ≠ c → f z ≠ 0)
+    {d : ℕ} {R' : ℝ} (hrR' : r < R') (hord : analyticOrderAt f c = (d : ℕ∞))
+    (hne : ∀ z ∈ closedBall c R', z ≠ c → f z ≠ 0)
     {n : α → ℕ} (hn : ∀ a, (∮ z in C(c, r), logDeriv (F a) z)
       = 2 * Real.pi * Complex.I * (n a : ℂ)) :
     ∀ᶠ a in p, n a = d := by
   have hfne : ∀ z ∈ sphere c r, f z ≠ 0 := by
     intro z hz
-    refine hne z fun hzc => ?_
     have hd : dist z c = r := Metric.mem_sphere.mp hz
+    refine hne z (by rw [mem_closedBall, hd]; linarith) fun hzc => ?_
     rw [hzc, dist_self] at hd
     exact hr.ne hd
   have hlim := tendsto_circleIntegral_logDeriv hF hf hr hrR huniform hfne
   have hf' : (∮ z in C(c, r), logDeriv f z) = 2 * Real.pi * Complex.I * (d : ℂ) := by
-    have := circleIntegral_logDeriv_eq_analyticOrder hf hord hne hr
+    have := circleIntegral_logDeriv_eq_analyticOrder_local (R := R') hf hord
+      (fun z hz hzc => hne z (ball_subset_closedBall hz) hzc) hr hrR'
     simpa [logDeriv_apply] using this
   have hconst : (2 : ℂ) * Real.pi * Complex.I ≠ 0 := by
     refine mul_ne_zero (mul_ne_zero two_ne_zero ?_) Complex.I_ne_zero
