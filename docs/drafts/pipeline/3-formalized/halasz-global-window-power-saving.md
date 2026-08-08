@@ -172,3 +172,29 @@ Euler-bound wall, untouched by any of the three.
 | `sqrt_two_le_three_halves`, `sum_range_block_kernel_le` | `RHTower/Sieve/CesaroDyadicMeanSquare.lean` |
 | `integral_symm_norm_cesaro_le_of_meanSquare_dyadic` | `RHTower/Sieve/CesaroDyadicMeanSquare.lean` |
 | `norm_sum_Icc_mul_log_div_le_cesaro_dyadic` | `RHTower/Sieve/CesaroDyadicMeanSquare.lean` |
+
+## One inequality
+
+Summing the truncation error over the range leaves no residual sums:
+
+`‖∑_{n ≤ N} f(n)log(x/n)‖
+   ≤ N((4(1 + log(1 + T/σ))/π + 1)/T + (4/(πT))(log log 2 − log log(1 + 1/T)) + 1/(πT))
+     + x^σ(1 + log N)/(πTσ log 2)
+     + (1/2π)(8x^σ√(5πe(1 + log N)) + 12x^σ√(5π))`
+
+for every `|f| ≤ 1`, `1 ≤ σ ≤ 2`, `T ≥ 1`, `x ≥ N ≥ 1` (`norm_sum_Icc_mul_log_div_le_cesaro_explicit`,
+with `sum_Icc_cesaroError_le` and `sum_Icc_rpow_div_le` in
+`RHTower/Sieve/CesaroExplicitChain.lean`). The height appears only in the first two terms, which decay
+like `(log T)/T`; at `x = N` and `T → ∞` the inequality reads `≍ N√(log N)`.
+
+## Where the wall actually is
+
+The remaining factor is not an artefact of any of the three estimates. Every route of this shape bounds
+`‖∫ L(f,s)x^s/s² ds‖` by `∫‖L(f,s)‖·|x^s/s²|`, so its best possible output is
+`x^σ·∫‖L(f,σ+it)‖dt/‖σ+it‖²`. For `f = μ` and `σ → 1` the integrand is `≍ |1/ζ(1+it)|`, which is
+bounded above *and below* on a set of measure `≍ 1` — `norm_riemannZeta_le_inv_abs_im` gives
+`‖ζ‖ ≤ 7` for `1/2 ≤ |t| ≤ 1`, hence `|1/ζ| ≥ 1/7` there. So the modulus-first family caps at
+`≍ x^σ ≍ N`, and `∑_{n ≤ N}μ(n) = o(N)` is out of its reach *whatever* the analytic estimate:
+the cancellation lives in the phase of the integrand, which no absolute-value bound sees. The
+`√(log N)` above is therefore within one square root of the best this family can do, and the family
+cannot reach the goal.
