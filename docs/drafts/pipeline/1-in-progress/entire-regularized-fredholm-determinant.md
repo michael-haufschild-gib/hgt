@@ -116,6 +116,7 @@ formal/GaloisForLFunctions/HTGeometry/ArgumentPrincipleSingleZero.lean
 formal/GaloisForLFunctions/HTGeometry/EntireZeroFactorization.lean
 formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantArgumentPrinciple.lean
 formal/GaloisForLFunctions/HTGeometry/LogDerivUniformLimit.lean
+formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantMultiplicity.lean
 formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
 ```
 
@@ -189,6 +190,9 @@ formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
 | 11 | **the contour integrals of the logarithmic derivatives converge** | `tendsto_circleIntegral_logDeriv` |
 | 11 | a convergent family of naturals is eventually constant | `eventually_eq_of_tendsto_natCast` |
 | 11 | **counting Hurwitz**: the eventual zero count of the approximants is the order of the limit | `eventually_zeroCount_eq_analyticOrder` |
+| 12 | the block reindexed to `Fin`, where Schur applies | `blockFin`, `finiteDet2_neg_blockFin` |
+| 12 | **the order of vanishing of `entireDet2 K` is the eventual block zero count** | `eventually_zeroCount_finiteDet2_eq_analyticOrder` |
+| 12 | **and the eventual Schur eigenvalue count** | `eventually_schurCount_eq_analyticOrder` |
 | — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
@@ -217,23 +221,16 @@ formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
       each block, the point of its spectrum **nearest** to `1/z_0` gives the single convergent
       family directly, because the block spectrum is closed and `ℂ` is proper
 - [ ] the converse: an eigenvalue of `K` is a zero of `det_2`
-- [ ] order of vanishing = algebraic multiplicity.  mathlib has **no argument principle** (and no
-      Rouche, no Montel), so the counting form of Hurwitz has to be built.  Its computational core
-      is now in place: `circleIntegral_logDeriv_of_factor` gives
-      `∮ f'/f = 2 pi i d` when `f = (z - c)^d g` with `g` analytic and nonvanishing on the disc.
-      The **single-zero** argument principle is now complete
-      (`circleIntegral_logDeriv_eq_analyticOrder`), using analytic division
-      (`exists_entire_factor_of_analyticOrderAt`, built on the corpus `exists_entire_quotient`).
-      The several-zero case for the **block determinants** is now **complete**:
-      `circleIntegral_logDeriv_finiteDet2` says the contour integral of their logarithmic
-      derivative is `2 pi i` times the number of Schur eigenvalues `t_i` with `-1/t_i` inside the
-      circle — the eigenvalue count with algebraic multiplicity.  The limit passage is also
-      complete: `tendsto_circleIntegral_logDeriv` and **`eventually_zeroCount_eq_analyticOrder`**
-      (counting Hurwitz).  **What remains is only to feed the theta data into it**: apply
-      `eventually_zeroCount_eq_analyticOrder` with `F s = finiteDet2 (-(blockMatrix K s))`,
-      `f = entireDet2 K`, `n s` the block eigenvalue count from
-      `circleIntegral_logDeriv_finiteDet2`, and `huniform` from
-      `tendstoUniformlyOn_finiteDet2_entireDet2` restricted to a disc around `z_0`
+- [x] **order of vanishing = eventual eigenvalue count of the finite blocks**
+      (`eventually_zeroCount_finiteDet2_eq_analyticOrder`, `eventually_schurCount_eq_analyticOrder`).
+      mathlib has **no argument principle, no Rouche, no Montel and no Hurwitz**; all of it is now
+      corpus-owned: `circleIntegral_logDeriv_of_factor`,
+      `circleIntegral_logDeriv_eq_analyticOrder(_local)`, `circleIntegral_logDeriv_finiteDet2`,
+      `tendsto_circleIntegral_logDeriv`, `eventually_zeroCount_eq_analyticOrder`
+- [ ] identify that eventual block count with the **algebraic multiplicity of the eigenvalue of `K`
+      itself** — i.e. `dim` of the generalized eigenspace.  The count is currently the number of
+      *block* eigenvalues near `-1/z_0`; passing it to the operator needs the Riesz projection of
+      `K` and its finite-section stability
 - [ ] Plemelj identity on the full resolvent set
 - [ ] 1 -> 2  paper proof complete
 - [ ] 2 -> 3  Lean

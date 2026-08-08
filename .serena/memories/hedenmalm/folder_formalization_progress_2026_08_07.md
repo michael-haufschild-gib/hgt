@@ -1916,3 +1916,31 @@ corpus-owned.**  The only step left for
 `f = entireDet2 K`, `n s` from `circleIntegral_logDeriv_finiteDet2`, and `huniform` from
 `tendstoUniformlyOn_finiteDet2_entireDet2` (restrict `closedBall z_0 R` into `closedBall 0 rho`
 with `TendstoUniformlyOn.mono`, as in `eventually_exists_blockEigenvalue_near`).
+
+### 2026-08-08 — order of vanishing = eventual block eigenvalue count
+
+`HTGeometry/RegularizedDeterminantMultiplicity.lean`:
+
+```text
+eventually_zeroCount_finiteDet2_eq_analyticOrder :
+  analyticOrderAt (entireDet2 K) z_0 = d ->
+  (entireDet2 K ≠ 0 on closedBall z_0 R minus z_0) ->
+  (∀ s, ∮ logDeriv (finiteDet2 (-(blockMatrix K s))) = 2 pi I (n s)) ->
+  ∀ᶠ s, n s = d
+
+eventually_schurCount_eq_analyticOrder :  the same with n s given by a Schur triangulation of
+  blockFin K s, as #{i | T s i i ≠ 0 ∧ -(T s i i)⁻¹ ∈ ball z_0 r}
+```
+
+Two adjustments were needed along the way and are worth remembering:
+* `exists_entire_factor_of_analyticOrder` (no `hne` hypothesis, conclusion only `g c ≠ 0`) —
+  because the divisor of `(z-c)^d` is `0` away from `c`, division needs **nothing** about the other
+  zeros of `f`.  From it, `circleIntegral_logDeriv_eq_analyticOrder_local` needs `f ≠ 0` only on a
+  *disc*, which is what an entire determinant with many zeros can supply.
+* the Schur decomposition lives on `Fin n`, and `↥s` has no `LinearOrder`; reindex through
+  `blockFin K s := (blockMatrix K s).submatrix (Fintype.equivFin ↥s).symm ...` and transport with
+  `finiteDet2_submatrix`.
+
+Remaining on this card: identify the eventual **block** count with the algebraic multiplicity of the
+eigenvalue of `K` itself (generalized eigenspace dimension) — needs the Riesz projection of `K` and
+its finite-section stability.
