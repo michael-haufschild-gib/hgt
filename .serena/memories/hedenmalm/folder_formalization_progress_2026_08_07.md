@@ -2009,3 +2009,14 @@ and its `.flip`, then `ContinuousLinearMap.intervalIntegral_comp_comm`), `commut
 
 Riesz gates: definition + Cauchy vanishing, resolvent identity, commutation — done.
 Left: idempotence, range = generalized eigenspace, finite-section stability of the rank.
+
+### 2026-08-08 — contour independence of the Riesz projection
+
+`rieszProjection_eq_of_annulus`: if the closed annulus between two circles lies in the resolvent
+set, the two Riesz projections agree.  Five lines, from mathlib's
+`Complex.circleIntegral_eq_of_differentiable_on_annulus_off_countable`.
+
+For **idempotence** the only missing input is now the Fubini swap of the operator-valued double
+circle integral; the rest of the two-contour argument is
+`resolvent_sub_resolvent` plus `circleIntegral.integral_sub_inv_of_mem_ball` (inner circle, `l`
+inside, gives `2 pi i`) and Cauchy (outer, `m` outside, gives `0`).
