@@ -308,3 +308,29 @@ Then `deningerCoordMulVanish` is mono and epi, hence iso; its inverse after
 `deningerVanishKernelLift` discharges `KernelFork.IsLimit.ofι` for `deningerCoordMul`, and
 `ShortComplex.exact_of_f_is_kernel` gives the short exact ideal sequence — and with it the residue
 sequence and steps 1--4 of this card.
+
+## The ideal sequence is short exact — the card is closed
+
+**`deningerIdealSequence_shortExact`** in
+`formal/GaloisForLFunctions/RHTower/DeningerDivisorIdeal.lean`.  Axiom audit
+`propext, Classical.choice, Quot.sound`.
+
+    0 → O --·z--> O --restrict--> i_* O_D → 0
+
+Multiplication by the coordinate is a monomorphism (`deningerCoordMul_mono`), restriction is an
+epimorphism (`deningerDivisorRestrict_epi`), and the middle is exact because multiplication factors
+through the ideal sheaf as an isomorphism: `deningerCoordMulVanish` is mono, and
+**`deningerCoordMulVanish_locallySurjective`** makes it epi, so it is invertible; composing the
+inverse with `deningerVanishKernelLift` discharges `KernelFork.IsLimit.ofι`, giving
+`deningerCoordMul_isKernel`, and `ShortComplex.exact_of_f_is_kernel` closes it.
+
+Local surjectivity is where all the analysis lands: the section's local model is analytic on
+`N ∩ deningerAmb U` by `analyticOnNhd_of_dzbarAt_eq_zero_on`, it vanishes on the divisor because the
+section does, `exists_local_coord_quotient` divides it on a ball centred at the point — the division
+theorem when the point is on the divisor, an honest quotient when it is not — and
+`deningerQuotientModel` cuts the quotient down to a globally smooth model with a `ContDiffBump`,
+whose Dolbeault operator vanishes on the smaller ball where the bump is one.
+
+**Steps 1--4 of this card are formalised.**  The residue sequence for `k`-forms is the direct sum of
+`C(n, k-1)` copies of this sequence and `C(n,k) − C(n,k-1)` copies of the identity; its terms are
+free analytic sheaves of finite rank, hence acyclic by `deningerFree_ext_eq_zero`.

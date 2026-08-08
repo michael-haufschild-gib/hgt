@@ -383,6 +383,129 @@ theorem setDbar_deningerQuotientModel {c : Fin (n + 1) → ℂ} {R : ℝ} (hR : 
       funext fun w => if_neg hk]
     exact dzbarAt_zero k z
 
+set_option maxHeartbeats 1000000 in
+/-- **Multiplication by the last coordinate is locally surjective onto the ideal sheaf of its
+divisor.**  A section vanishing on the divisor is, near each point, the coordinate times a
+holomorphic function: its local model is analytic, the division theorem divides it on a polydisc
+centred at the point, and a bump turns the quotient into a global smooth model. -/
+theorem deningerCoordMulVanish_locallySurjective (Ω : Opens (Fin (n + 1) → ℂ)) :
+    TopCat.Presheaf.IsLocallySurjective (deningerCoordMulVanish Ω).1 := by
+  refine (TopCat.Presheaf.isLocallySurjective_iff _).2 ?_
+  intro U h x hx
+  obtain ⟨g, N, hg, hgd, hNopen, hxN, hNeq⟩ := h.2.1.1.exists_model_open ⟨x, hx⟩
+  set Wset : Set (Fin (n + 1) → ℂ) := N ∩ (deningerAmb U : Set (Fin (n + 1) → ℂ)) with hWdef
+  have hWopen : IsOpen Wset := hNopen.inter (deningerAmb U).2
+  have hxW : (x.1 : Fin (n + 1) → ℂ) ∈ Wset := ⟨hxN, deningerAmb_mem_of_mem (⟨x, hx⟩ : ↥U)⟩
+  have hdz : ∀ z ∈ Wset, ∀ j, dzbarAt (g ∅) j z = 0 := fun z hz j =>
+    deningerDivisorModel_dzbar_eq_zero h.2.1 hNopen hNeq hz.1 hz.2 j
+  have han : AnalyticOnNhd ℂ (g ∅) Wset :=
+    analyticOnNhd_of_dzbarAt_eq_zero_on (hg.differentiable ∅) hWopen hdz
+  have hvan : ∀ z ∈ Wset, z (Fin.last n) = 0 → g ∅ z = 0 := by
+    intro z hz hz0
+    rw [← hNeq z hz.1 ∅, deningerExtend_of_mem h.1 hz.2]
+    exact h.2.2 (deningerPt hz.2) ∅ (by rw [deningerPt_val hz.2]; exact hz0)
+  obtain ⟨R, hR, hRsub, u, hu, humul⟩ := exists_local_coord_quotient hWopen han hvan hxW
+  set V : Opens (deningerSpace Ω) :=
+    deningerRestrictOpen Ω ⟨Metric.ball (x.1 : Fin (n + 1) → ℂ) (R / 3), Metric.isOpen_ball⟩ ⊓ U
+    with hVdef
+  have hxV : x ∈ V := ⟨Metric.mem_ball_self (by linarith), hx⟩
+  have hamb : ∀ z ∈ deningerAmb V, z ∈ Metric.ball (x.1 : Fin (n + 1) → ℂ) (R / 3) := fun z hz =>
+    deningerAmb_restrictOpen_le hz
+  have hmodel : ∀ y : ↥V, ∀ᶠ z in nhds ((y.1.1 : Fin (n + 1) → ℂ)), ∀ S,
+      deningerExtend (fun w : ↥V => fun S => if S = ∅ then u (w.1.1 : Fin (n + 1) → ℂ) else 0)
+        z S = deningerQuotientModel (x.1 : Fin (n + 1) → ℂ) R hR u S z := by
+    intro y
+    filter_upwards [(deningerAmb V).2.mem_nhds (deningerAmb_mem_of_mem y)] with z hz
+    intro S
+    rw [deningerExtend_of_mem _ hz]
+    by_cases hS : S = ∅
+    · subst hS
+      show (if (∅ : Finset (Fin (n + 1))) = ∅ then u ((deningerPt hz).1.1 : Fin (n + 1) → ℂ)
+        else 0) = _
+      rw [if_pos rfl, deningerPt_val hz,
+        deningerQuotientModel_eq_of_mem hR (Metric.ball_subset_closedBall (hamb z hz))]
+    · show (if S = ∅ then u ((deningerPt hz).1.1 : Fin (n + 1) → ℂ) else 0) = _
+      rw [if_neg hS, deningerQuotientModel, if_neg hS]
+  refine ⟨V, inf_le_right,
+    ⟨⟨fun y => fun S => if S = ∅ then u (y.1.1 : Fin (n + 1) → ℂ) else 0, ?_⟩, ?_⟩, hxV⟩
+  · refine ⟨⟨fun y S hS => if_neg (fun hc => hS (by rw [hc]; rfl)), fun y => ?_⟩, fun y S => ?_⟩
+    · exact ⟨deningerQuotientModel (x.1 : Fin (n + 1) → ℂ) R hR u,
+        deningerQuotientModel_smooth hR hu, deningerQuotientModel_deg _ _ hR u, hmodel y⟩
+    · rw [deningerSetDbar_model (hmodel y) S]
+      exact setDbar_deningerQuotientModel hR hu (hamb _ (deningerAmb_mem_of_mem y)) S
+  · refine Subtype.ext (funext fun y => funext fun S => ?_)
+    show (y.1.1 : Fin (n + 1) → ℂ) (Fin.last n)
+      * (if S = ∅ then u (y.1.1 : Fin (n + 1) → ℂ) else 0) = h.1 ⟨y.1, y.2.2⟩ S
+    by_cases hS : S = ∅
+    · subst hS
+      have hball : (y.1.1 : Fin (n + 1) → ℂ) ∈ Metric.ball (x.1 : Fin (n + 1) → ℂ) R :=
+        Metric.ball_subset_ball (by linarith) y.2.1
+      have hzN : (y.1.1 : Fin (n + 1) → ℂ) ∈ N := (hRsub hball).1
+      rw [if_pos rfl, humul _ hball, ← hNeq _ hzN ∅,
+        deningerExtend_apply h.1 (⟨y.1, y.2.2⟩ : ↥U)]
+    · rw [if_neg hS, mul_zero]
+      exact (h.2.1.1.1 ⟨y.1, y.2.2⟩ S (fun hc => hS (Finset.card_eq_zero.1 hc))).symm
+
 end Surjective
+
+end RHTower
+
+namespace RHTower
+
+open CategoryTheory CategoryTheory.Limits TopologicalSpace Opposite TopCat Complex HTGeometry
+
+section Exactness
+
+variable {n : ℕ} {Ω : Opens (Fin (n + 1) → ℂ)} {Ω' : Opens (Fin n → ℂ)}
+  (hmap : ∀ w ∈ Ω', deningerDivisorMap w ∈ Ω)
+
+theorem deningerCoordMulVanish_epi (Ω : Opens (Fin (n + 1) → ℂ)) :
+    Epi (deningerCoordMulVanish Ω) :=
+  (TopCat.Sheaf.isLocallySurjective_iff_epi _).1 (deningerCoordMulVanish_locallySurjective Ω)
+
+/-- **Multiplication by the coordinate is an isomorphism onto the ideal sheaf of its divisor.** -/
+instance deningerCoordMulVanish_isIso (Ω : Opens (Fin (n + 1) → ℂ)) :
+    IsIso (deningerCoordMulVanish Ω) := by
+  haveI := deningerCoordMulVanish_mono Ω
+  haveI := deningerCoordMulVanish_epi Ω
+  exact isIso_of_mono_of_epi _
+
+/-- **Multiplication by the last coordinate is a kernel of restriction to its divisor.** -/
+noncomputable def deningerCoordMul_isKernel
+    (hfull : ∀ w : Fin n → ℂ, deningerDivisorMap w ∈ Ω → w ∈ Ω') :
+    IsLimit (KernelFork.ofι (deningerCoordMul Ω 0 (Fin.last n))
+      (deningerCoordMul_comp_restrict hmap)) :=
+  KernelFork.IsLimit.ofι _ _
+    (fun {_} k hk => deningerVanishKernelLift hmap hfull k hk ≫ inv (deningerCoordMulVanish Ω))
+    (fun {_} k hk => by
+      rw [← deningerCoordMulVanish_comp Ω, Category.assoc, IsIso.inv_hom_id_assoc]
+      exact deningerVanishKernelLift_comp hmap hfull k hk)
+    (fun {_} k hk l hl => by
+      haveI := deningerCoordMul_mono Ω 0 (Fin.last n)
+      refine (cancel_mono (deningerCoordMul Ω 0 (Fin.last n))).1 ?_
+      rw [hl, ← deningerCoordMulVanish_comp Ω, Category.assoc, IsIso.inv_hom_id_assoc]
+      exact (deningerVanishKernelLift_comp hmap hfull k hk).symm)
+
+/-- The ideal sequence of the divisor of the last coordinate. -/
+noncomputable def deningerIdealSequence :
+    ShortComplex (TopCat.Sheaf AddCommGrpCat.{0} (deningerSpace Ω)) :=
+  ShortComplex.mk (deningerCoordMul Ω 0 (Fin.last n)) (deningerDivisorRestrict hmap)
+    (deningerCoordMul_comp_restrict hmap)
+
+theorem deningerIdealSequence_exact
+    (hfull : ∀ w : Fin n → ℂ, deningerDivisorMap w ∈ Ω → w ∈ Ω') :
+    (deningerIdealSequence hmap).Exact :=
+  ShortComplex.exact_of_f_is_kernel _ (deningerCoordMul_isKernel hmap hfull)
+
+/-- **The ideal sequence of a coordinate divisor is short exact**:
+`0 → O --·z--> O --restrict--> i_* O_D → 0`. -/
+theorem deningerIdealSequence_shortExact
+    (hfull : ∀ w : Fin n → ℂ, deningerDivisorMap w ∈ Ω → w ∈ Ω') :
+    (deningerIdealSequence hmap).ShortExact where
+  exact := deningerIdealSequence_exact hmap hfull
+  mono_f := deningerCoordMul_mono Ω 0 (Fin.last n)
+  epi_g := deningerDivisorRestrict_epi hmap hfull
+
+end Exactness
 
 end RHTower
