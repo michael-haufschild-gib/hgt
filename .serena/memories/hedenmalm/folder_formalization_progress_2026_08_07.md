@@ -1871,3 +1871,22 @@ difference), plus `f != 0` on the circle (proved: `exists_radius_isolating`).
 
 Note: a concurrent session's blanket `git add -A` commit swept this file in; verified with
 `git show HEAD:<path>` that the content is the one built here.
+
+### 2026-08-08 — the analytic inputs to the limit passage
+
+`HTGeometry/LogDerivUniformLimit.lean`:
+
+* `norm_deriv_le_of_forall_norm_le` — **Cauchy's estimate for the first derivative**: a sup bound
+  `eps` on a disc of radius `delta` around `z` gives `‖deriv h z‖ <= eps/delta`
+  (mathlib's `Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le` at `n = 1`).
+* `tendstoUniformlyOn_deriv_of_tendstoUniformlyOn` — uniform convergence on `closedBall c R` gives
+  uniform convergence of the derivatives on `closedBall c rho` for any `rho < R`.
+* `norm_logDeriv_sub_le` — from `F'/F - f'/f = (F' - f')/F + f'(f - F)/(F f)`:
+  `‖logDeriv F z - logDeriv f z‖ <= 2 eta/m + 2 M eta/m^2` when `‖f z‖ >= m`, `‖F z‖ >= m/2`,
+  `‖deriv f z‖ <= M`, and both differences are at most `eta`.
+
+**All the ingredients of "order of vanishing = algebraic multiplicity" now exist.**  What remains is
+purely assembly: combine these with `circleIntegral_logDeriv_finiteDet2`,
+`circleIntegral_logDeriv_eq_analyticOrder`, `tendstoUniformlyOn_finiteDet2_entireDet2` and
+`exists_radius_isolating`, bounding the contour integral of the difference by
+`circleIntegral.norm_integral_le_of_norm_le_const`.

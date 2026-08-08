@@ -115,6 +115,7 @@ formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEigenvalueLimit.lean
 formal/GaloisForLFunctions/HTGeometry/ArgumentPrincipleSingleZero.lean
 formal/GaloisForLFunctions/HTGeometry/EntireZeroFactorization.lean
 formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantArgumentPrinciple.lean
+formal/GaloisForLFunctions/HTGeometry/LogDerivUniformLimit.lean
 formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
 ```
 
@@ -182,6 +183,9 @@ formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
 | 10 | the logarithmic derivative of a matrix determinant, factor by factor | `logDeriv_schurFactor`, `logDeriv_finiteDet2` |
 | 10 | **each Schur factor contributes `2 pi i` or `0` according to whether `-1/t_i` is inside** | `circleIntegral_schurFactor_inside`, `circleIntegral_schurFactor_outside`, `circleIntegrable_schurFactor` |
 | 10 | **the argument principle for a matrix determinant**: the contour integral counts the Schur eigenvalues with `-1/t_i` inside | `circleIntegral_logDeriv_finiteDet2` |
+| 11 | **Cauchy's estimate for the first derivative** from a sup bound | `norm_deriv_le_of_forall_norm_le` |
+| 11 | **derivatives converge uniformly on a smaller disc** | `tendstoUniformlyOn_deriv_of_tendstoUniformlyOn` |
+| 11 | the pointwise bound on a difference of logarithmic derivatives | `norm_logDeriv_sub_le` |
 | — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
@@ -220,11 +224,13 @@ formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
       The several-zero case for the **block determinants** is now **complete**:
       `circleIntegral_logDeriv_finiteDet2` says the contour integral of their logarithmic
       derivative is `2 pi i` times the number of Schur eigenvalues `t_i` with `-1/t_i` inside the
-      circle — the eigenvalue count with algebraic multiplicity.  What is left is the single
-      passage to the limit `∮ f_n'/f_n -> ∮ f'/f`, which needs uniform convergence of `f_n`
-      **and** `f_n'` on the circle (the first is already proved,
-      `tendstoUniformlyOn_finiteDet2_entireDet2`; the second follows from it by Cauchy's estimate)
-      together with `f != 0` there (Hurwitz, already proved)
+      circle — the eigenvalue count with algebraic multiplicity.  The two analytic inputs to the
+      limit passage are also proved: `tendstoUniformlyOn_deriv_of_tendstoUniformlyOn` (derivatives
+      converge uniformly on a smaller disc, by Cauchy's estimate
+      `norm_deriv_le_of_forall_norm_le`) and `norm_logDeriv_sub_le` (the pointwise bound
+      `2 eta/m + 2 M eta/m^2` on the difference of logarithmic derivatives).  **What remains is only
+      their assembly** into `∮ f_n'/f_n -> ∮ f'/f`, via
+      `circleIntegral.norm_integral_le_of_norm_le_const`
 - [ ] Plemelj identity on the full resolvent set
 - [ ] 1 -> 2  paper proof complete
 - [ ] 2 -> 3  Lean
