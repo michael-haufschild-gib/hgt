@@ -113,6 +113,7 @@ formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtBlockEigenvector.lean
 formal/GaloisForLFunctions/HTGeometry/CompactOperatorSpectrumLimit.lean
 formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEigenvalueLimit.lean
 formal/GaloisForLFunctions/HTGeometry/ArgumentPrincipleSingleZero.lean
+formal/GaloisForLFunctions/HTGeometry/EntireZeroFactorization.lean
 formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
 ```
 
@@ -175,6 +176,8 @@ formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
 | 8 | **a zero of the entire determinant is a reciprocal eigenvalue of the kernel operator** | `exists_eigenvector_of_entireDet2_eq_zero` |
 | 8 | instantiated at the arithmetic source | `thetaEntireDet2`, `isRegularizedDet_thetaEntireDet2`, `eq_thetaEntireDet2_of_isRegularizedDet`, `exists_eigenvector_of_thetaEntireDet2_eq_zero` |
 | 9 | **the logarithmic-derivative residue at a zero of order `d`** | `circleIntegral_logDeriv_of_factor` |
+| 9 | the divisor of `(z - c)^d`, and global factorization of an isolated zero | `analyticOrderAt_sub_pow_self`, `analyticOrderAt_sub_pow_of_ne`, `exists_entire_factor_of_analyticOrderAt` |
+| 9 | **the argument principle for a single isolated zero** | `circleIntegral_logDeriv_eq_analyticOrder` |
 | — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
@@ -207,9 +210,13 @@ formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
       Rouche, no Montel), so the counting form of Hurwitz has to be built.  Its computational core
       is now in place: `circleIntegral_logDeriv_of_factor` gives
       `∮ f'/f = 2 pi i d` when `f = (z - c)^d g` with `g` analytic and nonvanishing on the disc.
-      What is left of the argument principle is the *global* factorization of an analytic function
-      with finitely many zeros in a disc, and then the passage to the limit in
-      `∮ f_n'/f_n -> ∮ f'/f`
+      The **single-zero** argument principle is now complete
+      (`circleIntegral_logDeriv_eq_analyticOrder`), using analytic division
+      (`exists_entire_factor_of_analyticOrderAt`, built on the corpus `exists_entire_quotient`).
+      What is left is the *several-zero* case — for the finite block determinants, whose Schur
+      product `prod_i (1 + z t_i) e^(-z t_i)` factors explicitly — and then the passage to the limit
+      `∮ f_n'/f_n -> ∮ f'/f`, which needs uniform convergence of `f_n` **and** `f_n'` on the circle
+      together with `f != 0` there
 - [ ] Plemelj identity on the full resolvent set
 - [ ] 1 -> 2  paper proof complete
 - [ ] 2 -> 3  Lean
@@ -286,3 +293,8 @@ construction; the general construction is what the *multiplicity* clause needs.
   (`thetaEntireDet2`), and the computational core of the argument principle was built
   (`circleIntegral_logDeriv_of_factor`), since mathlib has neither the argument principle nor
   Rouche nor Montel.
+- 2026-08-08 — the **single-zero argument principle** is complete:
+  `circleIntegral_logDeriv_eq_analyticOrder`.  The global factorization
+  `f = (z - c)^d g` with `g` entire and nowhere zero comes from the corpus analytic-division
+  theorem `exists_entire_quotient` applied to the divisor of `(z - c)^d`, which is `d` at `c` and
+  `0` elsewhere.

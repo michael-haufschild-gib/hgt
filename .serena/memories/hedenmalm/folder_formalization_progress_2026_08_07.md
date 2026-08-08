@@ -1815,3 +1815,23 @@ Trap: `circleIntegrable_sub_inv_iff.mpr (Or.inl rfl)` sends the elaborator into 
 
 Still missing for "order of vanishing = algebraic multiplicity": the *global* factorization of an
 analytic function with finitely many zeros in a disc, and the passage `∮ f_n'/f_n -> ∮ f'/f`.
+
+### 2026-08-08 — the single-zero argument principle is complete
+
+`HTGeometry/EntireZeroFactorization.lean`:
+
+```text
+exists_entire_factor_of_analyticOrderAt :
+  Differentiable ℂ f -> analyticOrderAt f c = d -> (∀ z ≠ c, f z ≠ 0) ->
+  ∃ g entire, (∀ z, g z ≠ 0) ∧ ∀ z, f z = (z - c)^d * g z
+
+circleIntegral_logDeriv_eq_analyticOrder :  ∮ z in C(c,r), deriv f z / f z = 2 pi I d
+```
+
+The factorization is **the corpus's own `exists_entire_quotient`** (analytic division, built for the
+two-prime frame card) applied to the divisor of `(z - c)^d` — `d` at `c` and `0` elsewhere
+(`analyticOrderAt_sub_pow_self`, `analyticOrderAt_sub_pow_of_ne`).  No new division theory needed.
+
+Left for the counting Hurwitz: the several-zero case (for the block determinants, whose Schur
+product factors explicitly) and `∮ f_n'/f_n -> ∮ f'/f`, needing uniform convergence of `f_n` *and*
+`f_n'` on the circle plus `f != 0` there.
