@@ -1621,3 +1621,46 @@ entire `det_2`.
 
 Lean names to reuse: `norm_taylorCoeff_le` (Cauchy), `summable_of_orderTwo_bound`,
 `differentiable_entireOfCoeffs`, `Complex.hasSum_taylorSeries_on_ball`, `fredholmDet_differentiableOn`.
+
+### 2026-08-08 — THE ENTIRE REGULARIZED DETERMINANT EXISTS IN LEAN
+
+`HTGeometry/RegularizedDeterminantExists.lean` and `HTGeometry/RegularizedDeterminantLimit.lean`
+close route C:
+
+```text
+exists_isRegularizedDet : IsHS K -> ∃ D, IsRegularizedDet K D
+```
+
+for a kernel over any index type with `DecidableEq`.  With `IsRegularizedDet.unique` (identity
+theorem) the entire Hilbert--Carleman determinant is now a well-posed Lean object.  Every
+declaration is `#print axioms`-clean.
+
+The proof, in the exact form that worked:
+
+* `M := ‖K‖_HS + 1`, `r := 1/(2M)`, so `rM = 1/2` — no case split on `K = 0` is needed.
+* `norm_fredholmExp_le` and **`norm_fredholmExp_sub_le`**: on `|z| <= r`,
+  `|fredholmExp A z - fredholmExp B z| <= ‖A - B‖_HS * r^2 M/(1 - rM)`.  The `(k+2)` of
+  `hsTrace_hsPow_sub_norm_le` cancels the `1/(k+2)` of the series; that cancellation is the whole
+  reason the estimate is clean.
+* `norm_fredholmDet_sub_le`: factor `e^{-E_A} - e^{-E_B} = e^{-E_B}(e^{E_B - E_A} - 1)` and use
+  `Complex.norm_exp_sub_one_le` (valid for `‖w‖ <= 1`, which holds eventually).
+* `norm_taylorCoeff_le'` — Cauchy's estimate for a function merely `DiffContOnCl` on a ball
+  (mathlib's `Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le`), applied to the
+  *difference*; `iteratedDeriv_sub` needs `ContDiffAt`, obtained from
+  `DifferentiableOn.analyticAt` + `AnalyticAt.contDiffAt`.
+* the limit coefficients inherit `‖a_n‖ <= exp(R^2 ‖K‖_HS^2/2)/R^n` by `le_of_tendsto`, and
+  `differentiable_entireOfCoeffs` makes `entireOfCoeffs a` entire; it equals `fredholmDet K` on
+  `ball 0 r` by `Complex.hasSum_taylorSeries_on_ball`.
+
+What is still open on that card: **the zeros**.  `det_2(1 - zK) = 0` iff `1/z` is an eigenvalue,
+order of vanishing = algebraic multiplicity, and the Plemelj identity on the full resolvent set.
+
+For `hedenmalm-theta-source-compressed-inverse-determinant` statement `(8)` the route is now
+completely mechanical *given* the trace formula: `isRegularizedDet_of_logDeriv_eq` turns `(8)` into
+
+```text
+Xi_C'(z)/Xi_C(z) = - resolventTrace (-B) z    on |z| ‖B‖_HS < 1,
+```
+
+and `IsRegularizedDet.unique` makes "the regularized determinant" unambiguous.  That trace formula
+is the remaining hard core of the card.

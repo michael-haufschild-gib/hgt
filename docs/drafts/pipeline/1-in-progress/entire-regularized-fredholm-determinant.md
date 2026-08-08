@@ -104,6 +104,8 @@ formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtContinuity.lean
 formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtTruncation.lean
 formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtBlockMatrix.lean
 formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantLogSeries.lean
+formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantExists.lean
+formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantLimit.lean
 ```
 
 | step | statement | Lean declaration |
@@ -141,6 +143,11 @@ formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantLogSeries.lean
 | 4 | **the determinant exponent of a finite matrix is its regularized determinant** | `exp_neg_traceSeries_eq_finiteDet2_neg` |
 | 4 | reindexing the determinant, energy and trace | `finiteDet2_submatrix`, `matHSNormSq_submatrix`, `trace_submatrix_equiv`, `trace_pow_submatrix` |
 | 4 | **the corpus determinant of a truncation is the finite one** | `fredholmDet_truncKernel_eq` |
+| 5 | the geometric bound on the exponent | `norm_fredholmExp_le` |
+| 5 | **the exponent is Lipschitz in the Hilbert--Schmidt norm** (`k+2` cancels `1/(k+2)`) | `norm_fredholmExp_sub_le` |
+| 5 | hence the determinants converge uniformly on a closed disc | `norm_fredholmDet_sub_le` |
+| 5 | Cauchy's estimate on a disc, not only for entire functions | `norm_taylorCoeff_le'`, `diffContOnCl_of_differentiableOn_ball` |
+| 5 | **every Hilbert--Schmidt kernel has an entire regularized determinant** | `exists_isRegularizedDet` |
 | — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
@@ -152,13 +159,7 @@ formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantLogSeries.lean
 - [x] the definition and uniqueness of the entire `det_2`, and the criterion that recognises it
 - [x] the matrix/kernel bridge: `finiteDet2` of the block matrix is `fredholmDet` of the truncated
       kernel on the disc
-- [ ] entire `det_2` **exists** for every Hilbert--Schmidt kernel.  What remains is the assembly:
-      the exponent difference obeys
-      `|fredholmExp K_s z - fredholmExp K z| <= ‖K_s - K‖_HS * r^2 M/(1 - rM)` on `|z| <= r`
-      (the factor `k+2` in `hsTrace_hsPow_sub_norm_le` cancels the `1/(k+2)` of the series), so the
-      truncated determinants converge **uniformly** on a small closed disc; Cauchy's estimate on the
-      difference then makes the Taylor coefficients converge, they inherit the order-two bound, and
-      `entireOfCoeffs` of the limit is the entire determinant
+- [x] entire `det_2` **exists** for every Hilbert--Schmidt kernel (`exists_isRegularizedDet`)
 - [ ] `det_2(1 - zK) = 0` iff `1/z` is an eigenvalue
 - [ ] order of vanishing = algebraic multiplicity
 - [ ] Plemelj identity on the full resolvent set
@@ -205,3 +206,7 @@ construction; the general construction is what the *multiplicity* clause needs.
   identifies the corpus determinant of a truncation with `finiteDet2` of the block, on the disc.
   The link is the scalar identity `sum_{k>=2} w^k/k = -log(1-w) - w` applied to each Schur
   eigenvalue.  Only the limit assembly is left.
+- 2026-08-08 — **the entire regularized determinant now exists in Lean**, unconditionally, for every
+  Hilbert--Schmidt kernel over any index type with decidable equality: `exists_isRegularizedDet`.
+  Together with `IsRegularizedDet.unique` the phrase "the regularized determinant of `K`" is a
+  well-posed Lean object.  The three remaining gates are about its *zeros*.
