@@ -120,3 +120,21 @@ Euler-bound wall is untouched. What it removes is the *logarithm*, not the wall.
 | `norm_sum_Icc_mul_log_div_le_cesaro_of_integral` | `RHTower/Sieve/CesaroLogWeightL1.lean` |
 | `integral_symm_norm_cesaro_le_of_l1` | `RHTower/Sieve/CesaroLogWeightL1.lean` |
 | `norm_sum_Icc_mul_log_div_le_cesaro_l1` | `RHTower/Sieve/CesaroLogWeightL1.lean` |
+
+## The kernel is its own weight
+
+Cauchy–Schwarz against the kernel `x^σ/‖s‖²` instead of against `1` replaces the range length `2T` by
+the kernel mass `x^σπ/σ`:
+
+`∫_{|t| ≤ T} ‖L(g,σ+it)x^s/s²‖ dt ≤ x^σ√(πQ/σ³)`   whenever `∫_{|t| ≤ T}‖L(g,σ+it)‖² ≤ Q`,
+
+which beats the unweighted `(x^σ/σ²)√(2TQ)` for every `T > π/2` and carries no `√T` in front. With the
+explicit mean square `Q ≤ 5πe(1 + log N) + 5πT` the Cesàro chain becomes
+
+`‖∑_{n ≤ N} f(n)log(x/n)‖ ≤ ∑_{n ≤ N} E(σ,T,x/n) + (1/2π)·x^σ√(π(5πe(1+log N) + 5πT)/σ³)`.
+
+| Statement | Module |
+|---|---|
+| `integral_symm_norm_cesaro_le_of_meanSquare` | `RHTower/Sieve/CesaroWeightedL1.lean` |
+| `integral_Icc_normSq_LSeries_truncSeq_le` | `RHTower/Sieve/CesaroWeightedL1.lean` |
+| `norm_sum_Icc_mul_log_div_le_cesaro_meanSquare` | `RHTower/Sieve/CesaroWeightedL1.lean` |
