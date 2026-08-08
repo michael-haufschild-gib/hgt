@@ -241,5 +241,23 @@ theorem exists_norm_smoothMulSum_le_of_neg_one {f : ℕ → ℂ} (hf : ∀ n, �
     ring
   linarith [hval]
 
+/-- **The dichotomy form.**  If `t` itself is close, then a *proper* multiple of it is far: the
+frequency produced by the Fejér bound cannot be `k = 1`. -/
+theorem exists_two_le_mulDistSqPair_ge_of_close {f : ℕ → ℂ} {P : Finset ℕ}
+    (hneg : ∀ p ∈ P, f p = -1) (hP : ∀ p ∈ P, 0 < p) {K : ℕ} (hK : 1 ≤ K) (t : ℝ)
+    (hclose : mulDistSqPair f (charFn t) P
+      < (((K : ℝ) - 1) / (K : ℝ)) * (∑ p ∈ P, 1 / (p : ℝ))) :
+    ∃ k : ℕ, 2 ≤ k ∧ k ≤ K ∧
+      (((K : ℝ) - 1) / (K : ℝ)) * (∑ p ∈ P, 1 / (p : ℝ))
+        ≤ mulDistSqPair f (charFn ((k : ℝ) * t)) P := by
+  obtain ⟨k, hk1, hkK, hk⟩ := exists_mulDistSqPair_ge_of_neg_one hneg hP hK t
+  refine ⟨k, ?_, hkK, hk⟩
+  rcases Nat.lt_or_ge k 2 with hlt | hge
+  · have hk1' : k = 1 := by omega
+    subst hk1'
+    rw [Nat.cast_one, one_mul] at hk
+    linarith
+  · exact hge
+
 end RHTower.Sieve
 end

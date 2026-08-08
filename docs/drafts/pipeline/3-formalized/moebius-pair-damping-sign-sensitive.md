@@ -81,3 +81,23 @@ of size `(log z)^{ε}` — unconditional, no zero-free region, no distance hypot
 | `sq_le_sum_sum_mulDistSqPair` | `RHTower/Sieve/MoebiusFejerDistance.lean` |
 | `exists_mulDistSqPair_ge_of_neg_one` | `RHTower/Sieve/MoebiusFejerDistance.lean` |
 | `exists_norm_smoothMulSum_le_of_neg_one` | `RHTower/Sieve/MoebiusFejerDistance.lean` |
+
+## Scope: the bound is unlocated, and that is not a small gap
+
+The Fejér statement produces a good `k`; it does not let one choose it. Sharpening it to a bound at a
+prescribed frequency is not available from the identity: the weighted form
+`∑_k (K+1−k)𝔻(χ_{kt})² ≥ ((K+1)K/2 − (K+1)/2)A` can be solved for the `k = 1` term only at the cost of
+`𝔻(χ_{kt})² ≤ 2A` on the others, which makes the resulting lower bound negative. So "some multiple of
+`t` is damped" is the whole content.
+
+Where that leaves it, against the corpus's other exceptional-set statement: the window law
+(`HalaszGlobalLargeValueWindow`) puts every close frequency in one interval of width `Δ` with
+`4δ² < charSepLower z Δ`, i.e. only for `δ² < (logLog z)/4`. The Fejér bound works at
+`δ² = (1 − 1/K)A ≈ logLog z`, the maximal distance scale, where the window law is vacuous. Conversely,
+for `u` larger than the window width the window law already forbids `{u, 2u, …, Ku}` from lying in the
+close set, so the Fejér bound adds nothing there. The two are complementary in `δ`, not nested.
+
+The consumable form is the dichotomy `exists_two_le_mulDistSqPair_ge_of_close`: if `t` itself is close
+then some *proper* multiple `kt`, `2 ≤ k ≤ K`, is far. A route can use this only if it is free to move
+the frequency it evaluates at — which is exactly the freedom a Perron contour does not have, and which
+a bilinear or short-interval formulation does.
