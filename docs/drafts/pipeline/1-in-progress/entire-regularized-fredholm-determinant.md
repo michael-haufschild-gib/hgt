@@ -117,6 +117,7 @@ formal/GaloisForLFunctions/HTGeometry/EntireZeroFactorization.lean
 formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantArgumentPrinciple.lean
 formal/GaloisForLFunctions/HTGeometry/LogDerivUniformLimit.lean
 formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantMultiplicity.lean
+formal/GaloisForLFunctions/HTGeometry/SchurCharpoly.lean
 formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
 ```
 
@@ -193,6 +194,9 @@ formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
 | 12 | the block reindexed to `Fin`, where Schur applies | `blockFin`, `finiteDet2_neg_blockFin` |
 | 12 | **the order of vanishing of `entireDet2 K` is the eventual block zero count** | `eventually_zeroCount_finiteDet2_eq_analyticOrder` |
 | 12 | **and the eventual Schur eigenvalue count** | `eventually_schurCount_eq_analyticOrder` |
+| 13 | the characteristic polynomial factors over the Schur diagonal | `charpoly_of_upperTriangular`, `charpoly_of_schur` |
+| 13 | root multiplicity = Schur diagonal count | `rootMultiplicity_charpoly_eq_schurCount` |
+| 13 | **algebraic multiplicity (generalized eigenspace dimension) = Schur diagonal count** | `finrank_maxGenEigenspace_eq_schurCount` |
 | — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
@@ -227,10 +231,12 @@ formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
       corpus-owned: `circleIntegral_logDeriv_of_factor`,
       `circleIntegral_logDeriv_eq_analyticOrder(_local)`, `circleIntegral_logDeriv_finiteDet2`,
       `tendsto_circleIntegral_logDeriv`, `eventually_zeroCount_eq_analyticOrder`
-- [ ] identify that eventual block count with the **algebraic multiplicity of the eigenvalue of `K`
-      itself** — i.e. `dim` of the generalized eigenspace.  The count is currently the number of
-      *block* eigenvalues near `-1/z_0`; passing it to the operator needs the Riesz projection of
-      `K` and its finite-section stability
+- [x] the block count **is** an algebraic multiplicity: for a matrix, the generalized-eigenspace
+      dimension equals the Schur diagonal count (`finrank_maxGenEigenspace_eq_schurCount`, via
+      mathlib's `LinearMap.finrank_maxGenEigenspace_eq` and `charpoly_of_schur`)
+- [ ] pass it from the **blocks** to the operator `K` itself: the eventual count is over the block
+      eigenvalues *near* `-1/z_0`, and identifying it with `dim` of the generalized eigenspace of
+      `K` needs the Riesz projection of `K` and its finite-section stability
 - [ ] Plemelj identity on the full resolvent set
 - [ ] 1 -> 2  paper proof complete
 - [ ] 2 -> 3  Lean

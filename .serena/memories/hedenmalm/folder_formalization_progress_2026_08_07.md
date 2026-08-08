@@ -1944,3 +1944,25 @@ Two adjustments were needed along the way and are worth remembering:
 Remaining on this card: identify the eventual **block** count with the algebraic multiplicity of the
 eigenvalue of `K` itself (generalized eigenspace dimension) — needs the Riesz projection of `K` and
 its finite-section stability.
+
+### 2026-08-08 — algebraic multiplicity is the Schur diagonal count
+
+`HTGeometry/SchurCharpoly.lean`: `charpoly_of_upperTriangular`, **`charpoly_of_schur`**
+(`M.charpoly = prod_i (X - C (T i i))`, via `Matrix.charpoly_units_conj` with the unit
+`⟨U, Uᴴ, hU2, hU1⟩` and `Matrix.inv_eq_right_inv`), `rootMultiplicity_charpoly_eq_schurCount`
+(through `Polynomial.roots_multiset_prod_X_sub_C` and `Multiset.count_map`), and
+
+```text
+finrank_maxGenEigenspace_eq_schurCount :
+  finrank ℂ (Module.End.maxGenEigenspace (Matrix.toLin' M) mu) = #{i | T i i = mu}
+```
+
+using mathlib's `LinearMap.finrank_maxGenEigenspace_eq`.  So the count appearing in
+`eventually_schurCount_eq_analyticOrder` **is** an algebraic multiplicity, in the intrinsic
+generalized-eigenspace sense, for each block.
+
+Lean note: `maxGenEigenspace` must be written `Module.End.maxGenEigenspace f mu` — dot notation on a
+term of type `M →ₗ[K] M` resolves to the nonexistent `LinearMap.maxGenEigenspace`.
+
+Remaining: pass the count from the **blocks** to the operator `K` (Riesz projection and
+finite-section stability).
