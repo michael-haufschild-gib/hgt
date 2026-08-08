@@ -3,7 +3,7 @@
 - **ID:** `ngd-universal-exchange-motive-localization-curvature`
 - **Stage:** 1 — in progress
 - **Type:** CONJECTURE / FOUNDATIONAL CONSTRUCTION
-- **Status:** `[MAKE-OR-BREAK FIELD THEOREM] [SOURCE-PURE REQUIRED]`
+- **Status:** `[ROUTE-L CALIBRATION PROGRAM] [NOT FIELD CORE] [SOURCE-PURE REQUIRED]`
   `[FIRST COEFFICIENT WELD PROVED] [COMPLETION-COFIBER TARGET FALSIFIED]`
   `[PRESENTATION INVARIANCE OPEN] [NOT RH] [NO LEAN WRITTEN]`
 - **Statement:** Construct one initial stable bivariant coefficient system whose canonical
@@ -12,8 +12,10 @@
 
 ## Why this card exists
 
-The 51-unit atlas proves only that NGD has enough vocabulary. A field begins when distinct organs
-are forced by one universal cell and its transition functors. This card isolates that theorem.
+The 51-unit atlas proves only that NGD has enough vocabulary. This card originally tried to found
+the field on a Route-L completion cell. Hostile review falsified that mechanism. The remaining
+relative-admission target is useful calibration but repeats a familiar route endpoint; Lawspace
+Twistor Geometry now carries the make-or-break field theorem.
 
 ## Conjecture A — universal exchange motive
 
@@ -107,7 +109,7 @@ is zero in `D'(R)`: both the atomic square and `(4)` are exact identities throug
 the odd comb is not admitted below the sharp wall `a=1/2`; the comparison cell is absent, not
 noninvertible. Completion therefore does not create the current.
 
-The corrected carrier is the relative admission group
+One possible Route-L successor carrier is the relative admission group
 
 \[
  \mathcal E^1(\mathcal R,\mathcal S)
@@ -115,10 +117,10 @@ The corrected carrier is the relative admission group
 \tag{5}
 \]
 
-where `S` is the strict/tempered source complex and `R` a larger distributional complex admitting
-the Green primitive. The next theorem target is to construct `(R,S)` source-natively and prove that
-Gamma endpoint transgression, odd Weil current, and arithmetic Cartier/Bockstein defect are
-jointly conservative realizations of one class in `(5)`.
+where `S` is a strict source complex and `R` a larger distributional complex admitting the Green
+primitive. The weld theorem does not prove the required nonadmission premise. Constructing such a
+pair and comparing Gamma, odd-Weil, and Cartier/Bockstein classes is a Route-L/R calibration, not
+the next universal field task.
 
 ## Conjecture/proof/fail loops
 

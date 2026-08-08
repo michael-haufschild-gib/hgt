@@ -4,7 +4,8 @@
 - **Stage:** 1 — in progress
 - **Type:** FIELD CENSUS / HOSTILE COVERAGE GATE
 - **Status:** `[51 PUBLICATION UNITS CENSUSED] [EXTENSIONAL COVERAGE PASSES]`
-  `[INTENSIONAL UNIFICATION OPEN] [FORMAL SUPPORT SCOPE UNRESOLVED] [NO LEAN WRITTEN]`
+  `[FIRST CROSS-ROUTE TRANSFORMS PROVED] [INTENSIONAL UNIFICATION OPEN]`
+  `[FORMAL SUPPORT SCOPE UNRESOLVED] [NO LEAN WRITTEN]`
 - **Statement:** Every canonical publication-ready unit admits a typed NGD placement, but placement
   is not unification; NGD remains preliminary until a coefficient-changing exchange/Jacobi theorem
   links nonisomorphic families.
@@ -120,7 +121,20 @@ must be explicitly absorbed or declared support-only before a whole-formal-corpu
 - [x] coefficient bag rejected; fibred stable core/modalities/valuations adopted
 - [x] canonical exchange versus type fracture distinguished
 - [x] deformation--obstruction/Jacobi triangle added
-- [ ] one coefficient-changing Beck--Chevalley theorem proved across nonisomorphic families
+- [x] exact Route-L operator/odd-distribution/Suzuki-aperture coefficient transforms proved
+- [x] finite abstract relation wall synchronizes kernel, positivity, determinant, inverse relation,
+  and cost
+- [x] non-RH multiple-Gamma wall synchronizes differential phase, integral clock relation, and
+  closed-range topology with finite-shadow blindness
+- [x] canonical marked multiple-Gamma translation lawstack computes nonisomorphic isotropy and
+  coarse-separation organs and the established HT depth, with exact rank complementarity
+- [x] framed-GHZ observer morphism computes phase-fibre homotopy and normalized Fubini--Study
+  history action while both boundary observers remain fixed
+- [x] universal Hausdorff reflection computes exactly what every continuous group observer loses;
+  multiple-Gamma observer dimension obeys exact three-way rank conservation
+- [x] Hurwitz common-loop lawstack computes monodromy-closure/resonance rank and its explicit
+  branch-deformation realization proves joint differential freedom in the full-closure chamber
+- [ ] one presentation-invariant descent/stability theorem proved across nonisomorphic families
 - [ ] one Jacobi complex simultaneously computes two publication invariants
 - [ ] one source intervention independently calibrates connection/dynamics
 - [ ] whole formal support scope declared or absorbed
@@ -128,9 +142,10 @@ must be explicitly absorbed or declared support-only before a whole-formal-corpu
 
 ## Verdict
 
-NGD passes extensional coverage and fails the stronger unification gate. It survives as a serious
-field programme, not yet an established mathematical field. Next decisive theorem must construct
-one universal exchange cell whose exact realizations compute genuinely different corpus organs.
+NGD/CLG passes extensional coverage and now has one exact non-RH source lawstack producing
+nonisomorphic organs, but still fails the stronger constitutive/descent gate. It remains a field
+programme, not an established field. Next decisive theorem must derive a normalized metric/cost or
+construct a presentation-invariant pro/twistor descent object rather than append observer data.
 
 ## Log
 

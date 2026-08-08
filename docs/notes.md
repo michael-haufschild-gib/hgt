@@ -253,3 +253,49 @@ Big-picture refinement: unification should not force all invariants into one gro
 Full-corpus pass found the central danger: a list of coefficient theories is another organ bag. Repairing it into a coefficient fibration with transition functors, plus a universal deformation–obstruction triangle. Also separating “comparison absent” from “comparison noninvertible”: only the latter is curvature.
 
 Literature pass sharpens NGD’s actual geometry: source-indexed proarrow equipment, not ordinary path category. Objects are observer presentations; reductions are horizontal correspondences; source histories are vertical; exchange squares carry Beck–Chevalley mates. Regular chambers mean representability/adjointability/base-change; horizons mean those properties fail.
+
+### Lawspace Twistor Geometry
+
+Field picture is now cleaner: NGD is spacetime/kinematics; Anexact Geometry is phase-bearing exactness geometry on it. New theorem connects arithmetic current, spectral operator, and odd geometric/Stokes current; admission topology supplies horizon. Remaining RH-bearing task is source-native relative lift/selection, explicitly not solved.
+
+New core question: what coordinate-free geometry has all proof routes as local gauges, all no-gos as curvature/holonomy shadows, hypertranscendence as its source of noncompactness, positivity as phase quotient, and recurrence as closed observer projection with open lifted history? If that geometry cannot produce route-independent theorems and predictions, it is theatre.
+
+Actual field-level move must be:
+- stop treating source selector as missing input;
+- make the space of exactness structures itself dynamical;
+- regard arithmetic, spectral, geometric, topological, positive, and temporal descriptions as coordinate charts on a higher law-space;
+- make selection a global consequence of its curvature/topology, as geodesic motion follows spacetime geometry—not an extra route lemma.
+
+Lawspace Twistor Geometry. Not every route is a gauge equivalence—many are irreversible reductions—so precise object is a derived/pro twistor stack with local polarizations, singular correspondences, real/positive quotient, and history fibration. Gauge language applies only in regular chambers. This distinction prevents immediate theatre.
+
+Hostile review found a deeper regression: κ(mn)=κ(m)+κ(n)+κ(m)κ(n) is linearized by log(1+κ). So “binary curvature” is coordinate artefact for positive radial characters, not invariant geometry. I’m retiring it as field producer. This strengthens LTG requirement: curvature must survive all admissible changes of law coordinates; stability type, holonomy, admission, and characteristic classes can—raw quadratic formulas cannot.
+
+Pivot is now concrete, not rhetorical. Field core has two coordinate-free candidates:
+1. global pro-wild twistor stack of law frames;
+2. local tangent model as source-forced closed relation, whose kernel, multivalued part, closure defect, polar square, determinant line, integral kernel, prolongations, and lift cost generate different route organs.
+
+Hostile test has already killed one tempting “curvature” and weakened several others:
+- multiplicative clock curvature vanished under log;
+- a homotopy fibre was not automatically a gerbe;
+- hypertranscendence gave tangent-kernel growth, not global noncompactness;
+- positivity did not universally mean phase quotient;
+- multiple-Gamma synchronized three shadows, but did not yet supply twistor gluing.
+
+Field-level progress now has a clean separation:
+- proved: one non-RH source wall simultaneously changes differential phase, integral relation lattice, and closed-range topology;
+- disproved: those three facts alone determine a geometry;
+- open decisive step: derive the topology/metric from one normalized constitutive law and realize the faces through non-isotrivial descent.
+
+### deeper lawstack geometry
+
+A higher pivot just emerged from the non-RH countermodel.
+The arbitrary incidence weight was the wrong object. Period source already defines a canonical translation action groupoid. Its quotient stack simultaneously contains:
+- integral relations as stabilizers;
+- topology as separation/properness of coarse orbit space;
+- hypertranscendental depth as excess rank of effective period action;
+- reflection as a groupoid involution.
+This is substantially stronger than a three-column analogy and may demote “twistor” from foundation to one realization of a deeper lawstack geometry.
+
+A second route-independent law has fallen out of the same object.
+For any quotient group \(G/H\), every continuous map to a Hausdorff group automatically factors through \(G/\overline H\). So the directions erased by closure are invisible to every regular Hausdorff observer—not just one chosen norm or route.
+In multiple-Gamma, the universal Hausdorff observer jumps from a circle to a torus exactly when HT depth drops from \(1\) to \(0\). This gives another conservation law, not analogy.

@@ -282,6 +282,34 @@ holonomy, a Moore path category or universal cover for executed history, source 
 connection, cost/metric, cotangent charge, and reconstruction map. This conclusion is unconditional for the finite model; it does not identify that geometry
 with a black-hole interior.
 
+## Constitutive-lawstack consequence
+
+Let `B_d` be the fixed ordered pair of boundary reductions in `(2)`. The boundary observer map on
+the framed pure-state sector is the constant morphism
+
+\[
+ q:\mathcal F_d\longrightarrow\{B_d\}.
+\tag{15}
+\]
+
+Its homotopy fibre is exactly `F_d`, not a declared hidden variable. The thin/Moore path object of
+that fibre has connected components of its loop space indexed by
+`pi_1(F_d)=Z^d/Z1`; the Fubini--Study metric and action are induced from the ambient projective
+Hilbert geometry, and `(8)` computes the minimum in every history class. Thus one canonical
+observer morphism produces three nonisomorphic organs:
+
+\[
+ \text{coarse boundary point},
+ \qquad
+ \text{phase-fibre homotopy},
+ \qquad
+ \text{metric history action}.
+\tag{16}
+\]
+
+This is a second exact non-RH Constitutive Lawstack Geometry chart. Unlike an arbitrary inserted
+cost, its metric is the normalized Fubini--Study metric inherited from the source Hilbert space.
+
 ## NGD consequence
 
 This chart realizes one exact noncommuting reduction phenomenon: boundary reduction erases all

@@ -18,7 +18,14 @@ Let
  (T_hg)(t)=g(t+h).
 \]
 
-On a compactly supported smooth core on `R_{>0}` define
+Put
+
+\[
+ E=C_c^\infty(\mathbb R_{>0}),\quad \bar E=C^\infty(\mathbb R_{>0}),\quad
+ H=C_c^\infty(\mathbb R),\quad \bar H=C^\infty(\mathbb R).
+\]
+
+For `a in C`, define the locally finite operators `A_a^\pm:E->bar E` by
 
 \[
  A_a^+=\sum_{n\ge2}\Lambda(n)n^{-a}U_n,
@@ -29,7 +36,7 @@ On a compactly supported smooth core on `R_{>0}` define
 \tag{1}
 \]
 
-For `b in R` put
+For `b in C` put, with `n^(-b)=exp(-b log n)`,
 
 \[
  D_b=\sum_{n\ge2}\Lambda(n)n^{-b}
@@ -37,17 +44,17 @@ For `b in R` put
 \tag{2}
 \]
 
-This is locally finite, hence a distribution in `D'(R)`, for every `b`.  Write
-`C_Dg=D*g` with the convention `(\delta_y*g)(t)=g(t-y)`.
+This is locally finite, hence a distribution in `D'(R)`, for every `b`. Write
+`C_D:H->bar H`, `C_Dg=D*g`, with the convention `(\delta_y*g)(t)=g(t-y)`.
 
 ## 2. Exact coefficient-changing identity
 
 ### Theorem 2.1 — half-density weld
 
-On `C_c^infty(R)`, equivalently on its inverse image under `L`,
+As an equality in `Hom(H,bar H)`,
 
 \[
- \boxed{\mathcal L\kappa_a\mathcal L^{-1}=C_{D_{a+1/2}}.}
+ \boxed{\mathcal L_1\kappa_a\mathcal L_0^{-1}=C_{D_{a+1/2}}.}
 \tag{3}
 \]
 
@@ -79,8 +86,9 @@ and
 
 By the convolution convention, `\delta_{\log n}` acts as `T_{-\log n}` and
 `\delta_{-\log n}` as `T_{\log n}`. Subtraction proves `(3)`. For fixed compact support only
-finitely many translated atoms meet a fixed compact test region, so every displayed sum is
-well-defined in `D'(R)`. ∎
+finitely many translated atoms meet a fixed compact output region, so every displayed operator is
+well-defined. The infinite sums need not preserve compact support; this is why the codomains are
+`bar E` and `bar H`. ∎
 
 ### Corollary 2.2 — odd normal derivative
 
@@ -88,7 +96,7 @@ The map `a -> D_{a+1/2}` is weakly entire in `D'(R)`, and
 
 \[
  \left.\partial_a\right|_{a=0}
-   \mathcal L\kappa_a\mathcal L^{-1}
+   \mathcal L_1\kappa_a\mathcal L_0^{-1}
  = C_{XK_{\rm pr}},
 \tag{4}
 \]
@@ -109,7 +117,10 @@ In particular, the coefficient at a prime `p` is
 \tag{6}
 \]
 
-the reflection-odd prime position/torque coefficient appearing in the Weil and Stokes charts.
+the coefficient in the imported reflection-odd prime position/torque current. The normalization
+and sign comparison are those of
+`critical-euler-mass-weil-stokes-shadow-law.md`, Sections 3--4, and
+`suzuki-weil-position-torque-recurrence.md`, equations (9)--(10).
 
 #### Proof
 
@@ -124,8 +135,9 @@ evaluation at `a=0` gives `(5)`. For prime `p`, `Lambda(p)=log p`, giving `(6)`.
 
 ## 3. Boundary-connection law
 
-Let `b_Gamma(F,G)=F-G` be the Euler--Gamma boundary map from the established Route-L complex and
-let `pi_-(F,G)=G` project to its second, physical Euler leg. Write
+Let `b_Gamma(F,G)=F-G` denote both continuous difference maps `E^2->E` and
+`bar E^2->bar E`, and let `pi_-(F,G)=G`. For `C^1` paths `(F_a,G_a)` in `E^2`, write the following
+operators with values in `bar E` and `bar E^2`:
 
 \[
  \nabla^-_a=\partial_a-A_a^-,\qquad
@@ -134,7 +146,7 @@ let `pi_-(F,G)=G` project to its second, physical Euler leg. Write
 
 ### Theorem 3.1 — exact connection transgression
 
-On the common algebraic core,
+For every such `C^1` path,
 
 \[
  \boxed{
@@ -156,48 +168,55 @@ Thus
  \end{aligned}
 \]
 
-Their difference is `(A_a^--A_a^+)G=kappa_a pi_-(F,G)`, proving `(7)`. Restricting to the
-horizontal lift `(F,G)=D_a u` gives the established Green--Stokes identity. ∎
+Their difference is `(A_a^--A_a^+)G=kappa_a pi_-(F,G)`, proving `(7)`. For real `a>0`, the
+imported Deninger theorem proves the same algebraic identity on its strict Route-L moment/
+distribution domain and applies it to the horizontal lift `D_a u`; see
+`deninger-euler-gamma-mobius-connection-transgression.md`, equations (9)--(10). ∎
 
 ### Corollary 3.2
 
-The operator-valued Route-L connection defect, the odd atomic Weil current, and the
-Green--Stokes boundary defect are not three fitted analogies. They are respectively the operator,
-distributional, and boundary-transgression realizations of the same coefficient family
-`kappa_a`.
+The Route-L dilation defect and odd convolution kernel are two coefficient realizations of the
+same family `kappa_a`. Green--Stokes is its covariant boundary transgression after applying
+`kappa_a pi_-` to the horizontal two-collar section; it is not a third literal realization.
 
 ## 4. Completion-cofiber no-go
 
-### Theorem 4.1 — completion does not create this defect
+### Theorem 4.1 — log-coordinate arrow equivalence has zero cofiber
 
-The atomic comparison
+Let `L_0:E->H` and `L_1:bar E->bar H` be the half-density isomorphisms. Theorem 2.1 is the
+commutative square
 
 \[
- X\iota_+(\Theta_a)=\iota_-(\delta\Theta_a)
+\begin{CD}
+ E @>{\kappa_a}>> \bar E\\
+ @V{\mathcal L_0}VV @VV{\mathcal L_1}V\\
+ H @>{C_{D_{a+1/2}}}>> \bar H.
+\end{CD}
 \tag{8}
 \]
 
-and the conjugacy `(3)` remain exact identities in `D'(R)` through `a=0`. Consequently their
-mapping cofibres are zero in any stable coefficient category faithfully realizing these
-identities. The nonzero current `kappa_a` already exists away from the endpoint; strict
-completion does not create it.
+Thus `(L_0,L_1)` is an equivalence from the arrow `kappa_a` to the arrow
+`C_(D_(a+1/2))` in the arrow category. Any stable realization sends this arrow-category
+equivalence to an equivalence, whose cofiber is zero. The nonzero arrow `kappa_a` already exists
+away from the endpoint; strict completion does not create it.
 
-If the coefficient category is restricted to tempered distributions, the comparison cell is
-absent below the admission threshold proved in the companion card. Absence of a morphism is not a
-noninvertible morphism and has no canonical cofiber.
+If a coefficient category requires convolution kernels to lie in `S'`, the kernel object is absent
+below the admission threshold proved in the companion card. The core operator
+`C_(D_b):H->bar H` still exists; it is the tempered-kernel realization that is unavailable.
+Absence of a morphism is not noninvertibility and has no canonical cofiber.
 
 #### Proof
 
-Equation `(8)` is coefficientwise. Theorem 2.1 proves `(3)` as an equality of distributional
-operators for every `a`. The cofiber of an isomorphism is zero. Restricting the codomain can make
-an object or morphism undefined, but cannot turn an undefined cell into a canonical nonzero
-cofiber. ∎
+The vertical maps are isomorphisms and commutativity is exactly Theorem 2.1. Hence they define an
+equivalence in the arrow category. Stable functors preserve equivalences, and the cofiber of an
+equivalence is zero. The final admission statement follows from the companion threshold theorem.
+∎
 
 ## 5. Anexact-geometric consequence
 
-The correct carrier is a **relative admission class**. If `S` is a strict/tempered complex inside
-a larger distributional complex `R`, then a primitive may exist in `R` while its differential is
-admitted in `S`. The exact carrier is
+A possible successor carrier is a **relative admission class**. Suppose complexes `S subset R`
+are constructed and one proves `b_Gamma in R^0 setminus S^0` while
+`d b_Gamma in S^1`. Then it defines
 
 \[
  \mathcal E^1(R,S)
@@ -205,10 +224,10 @@ admitted in `S`. The exact carrier is
 \tag{9}
 \]
 
-For Route L the desired arithmetic realization has `d b_Gamma=kappa_a pi_-` in the large
-coefficient system while `b_Gamma` is not an admitted strict primitive at the horizon. Gamma
-endpoint transgression, the odd comb, and the source Cartier/Bockstein class should be realizations
-of `(9)`. This last identification remains conjectural; Theorems 2.1--4.1 do not imply RH.
+The connection identity proves the formal differential
+`d b_Gamma=kappa_a pi_-` on the common core, but it does **not** prove the nonadmission premise.
+Constructing `S subset R`, proving that premise, and comparing Gamma endpoint, odd comb, and source
+Cartier/Bockstein remain conjectural. Theorems 2.1--4.1 do not imply RH.
 
 ## 6. Hostile loop ledger
 

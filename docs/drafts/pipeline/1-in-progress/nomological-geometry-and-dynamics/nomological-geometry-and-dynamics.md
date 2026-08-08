@@ -17,10 +17,10 @@
 
 ## 0. One-sentence answer
 
-> The thousands of corpus theorems and no-gos are shadows of a **source-indexed bivariant exchange
-> geometry of mathematical law**: arithmetic, Fourier/spectral, geometric, positive, topological,
-> cofinal, and physical descriptions are typed realizations of source-witnessed reduction cells;
-> failure of their canonical base-change exchange is curvature.
+> The thousands of corpus theorems and no-gos are shadows of a **source-indexed constitutive
+> lawstack**: arithmetic, spectral, geometric, positive, topological, cofinal, and temporal routes
+> are observer maps or local presentations; their stabilizers, relative cotangent complexes,
+> nonseparated quotients, derived fibres, and history holonomy record what each observer loses.
 
 This is the field hypothesis, not a proved universal theorem. The 51-unit publication census fits
 it extensionally. Intensional unification remains open until one coefficient-changing exchange or
@@ -30,9 +30,11 @@ When the declared observer family is jointly conservative on source provenance, 
 does not disappear when one route exactifies it. It is transported into another degree or another
 mathematical type: boundary current, vertical radical, missing orientation, negative index,
 capacity debt, derived-limit class, normalization freedom, or operational cost. Without joint
-conservativity, every observer may erase it. The apparent Heisenberg phenomenon is therefore not
-one scalar inequality. It is nonflatness of the reduction connection together with a nonerasing
-current totalization.
+conservativity, every observer may erase it. Raw local defect formulas are not automatically
+curvature: they must survive presentation and coordinate change. The invariant candidate is the
+equivalence type of the exactification lift stack, together with stability type only where a
+stability condition is independently constructed. It becomes a gerbe only after local
+nonemptiness, connectedness, descent, and a band are proved.
 
 ## 1. Newtonian constraint mechanics versus NGD
 
@@ -890,32 +892,40 @@ required theorem type and explains route-local stopping, not the theorem itself.
     coefficient fibre cannot improve its exponent without importing a source operation outside
     that fibre. A genuine same-semigroup improvement falsifies the method-curvature interpretation.
 
-## 14. Anexact Geometry: field carried on NGD spacetime
+## 14. Constitutive Lawstack Geometry and its twistor enhancement
+
+This section supersedes earlier speculative uses of “curvature,” “gerbe,” “stability,” and
+“equivalence principle” in this card wherever the hypotheses below have not been constructed.
 
 NGD is the kinematics: source histories, legal reductions, exchange cells, coefficient fibres,
-admission, and cost. **Anexact Geometry** is the proposed geometry carried on it. Its primitive is
-the phase-bearing compatibility of several exactifications, not another universal obstruction
-number.
+admission, and cost. **Constitutive Lawstack Geometry (CLG)** is now the broader candidate field:
+routes are observer morphisms from a source-indexed derived/pro lawstack, while constitutive
+sections determine polarization, admission, and cost. **Lawspace Twistor Geometry (LTG)** is an
+optional strong enhancement when a non-isotrivial Rees/`lambda` construction genuinely relates
+graded, flat, Betti, and real faces. A decorative `P^1` is not foundational.
 
-Each local law has an unsquared amplitude `s`, a dagger square `s^dagger s`, a groupoid of
-exactness trivializations, and coefficient-changing transports. The unsquared amplitude retains
-orientation but may have trivial singularity theory; the positive square creates doubled
-singularity while erasing phase. Target null-homotopy can be automatic although its lift through
-the source-realizable subcomplex has a nonzero relative class. This is the exact field-theoretic
-form of the corpus constraint uncertainty.
+The local tangent model is a source-forced closed relation with current, capacity cone, dagger,
+and orientation. Kernel, multivalued part, cokernel, range-closure defect, polar square,
+determinant, integral kernel, prolongations, and minimal lift cost are named functors—not one
+scalar. The global candidate is the exactification lift stack
+`fib(Triv_src -> holim Triv_alpha)`, required to be invariant under presentation and law-coordinate
+change. It is not called a gerbe unless descent, local nonemptiness and connectedness, and an
+automorphism band are proved.
 
-Four dependency-closed paper theorems now anchor the field:
+Anexact amplitude geometry survives only as a local dagger chart. Hostile review proved its raw
+binary clock term is linearized by `log(1+kappa)`, so it is not invariant curvature. The exact
+Route-L/odd-distribution weld, sharp admission wall, phase-loss models, and Suzuki aperture
+inversion are calibration theorems, not field completion.
 
-1. smooth-versus-doubled exactness horizons, phase torsors, and relative Connes lifting;
-2. source-normal Hochschild/Maurer--Cartan clock curvature and unary-selector no-gos;
-3. exact half-density conjugacy from Route-L connection defect to odd Weil/Stokes distribution;
-4. sharp tempered-admission wall for that odd arithmetic distribution.
-
-The third is a genuine coefficient-changing theorem, not route placement. It also falsifies the
-original completion-cofiber story: the comparison is exact in distributions and unavailable,
-not noninvertible, below the strict admission wall. Next carrier is a source-native relative
-admission/Cartier class. Field remains preliminary until that class is constructed and its
-arithmetic, spectral, positive, and topological realizations are proved jointly conservative.
+Field gate is now non-RH and route-independent. The multiple-Gamma translation quotient lawstack
+is the first exact source object: its isotropy, coarse separation, effective period excess, and
+reflection produce four distinct shadows, with conservation
+`d_DA + rank(stabilizer)=1`, where DA equality and normalized reflection use independent
+special-function theorems. Hurwitz monodromy supplies a second HT chart with
+`dim(orbit closure)+rank(resonance)=|I|` and an explicit analytic deformation realization; framed
+GHZ supplies phase-history homotopy and canonical Fubini--Study cost. Still open are a global
+constitutive response equation, presentation-invariant family/pro-descent, and optional
+non-isotrivial twistor gluing. A source-native RH selector is forbidden as foundational input.
 
 ## 15. First construction programme
 

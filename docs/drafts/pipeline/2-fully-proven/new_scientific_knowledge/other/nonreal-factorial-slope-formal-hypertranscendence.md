@@ -1,7 +1,7 @@
 # Nonreal factorial slope forces formal hypertranscendence
 
 - **ID:** `nonreal-factorial-slope-formal-hypertranscendence`
-- **Stage:** 2-fully-proven
+- **Stage:** 2-fully-proven / complete theorem surface Lean-proved
 - **Type:** GENERAL HYPERTRANSCENDENCE LAW
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
 - **Source:** the HTGeometry coefficient-face laws, Bender endpoint asymptotics for rapidly
@@ -401,8 +401,12 @@ factorial-slope theorem forces it to be HT at every off-critical point.  The dis
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure general theorem, exact attack, RH scope stated
 - [x] 1 -> 2 fully-proven: complete independent hostile audit of the factorial-endpoint core
-- [ ] 2 -> 3 formalized: formalize the exact endpoint theorem and zeta-moment application
-  without analytic hypotheses standing in for the actual sequence
+- [x] 2 -> 3 formalized: the exact endpoint theorem is formalized with no analytic hypothesis
+  standing in for the actual sequence — `aeval_formalJets_ne_zero` takes only the card's `(2)`
+  (packaged as `FactorialSlope`) and `Im α ≠ 0`, and concludes for every nonzero differential
+  polynomial with polynomial coefficients.  The zeta-moment application `(22)`--`(24)` is
+  formalized too: `zetaMoment_aeval_formalJets_ne_zero` takes only `Re α > 0` and `Im α ≠ 0` and
+  concludes for the actual sequence `(-1)^n zeta(-alpha n)`.
 - [ ] 3 -> 4 publication-ready: standalone theorem, primary-source comparison, Lean certificate
 
 ## Log
@@ -415,8 +419,13 @@ factorial-slope theorem forces it to be HT at every off-critical point.  The dis
   and isolated the source implication as the exact RH-bearing gap.
 - 2026-07-28 — Independently audited the complex envelope, mixed derivative weights, endpoint
   uniqueness, separant, and entropy remainder; promoted the exact theorem to Stage 2.
+- 2026-08-08 — Formalized the zeta-moment application `(22)`--`(24)` unconditionally.  Three new
+  layers: an exponential Dirichlet tail bound (the corpus only had the polynomial
+  `1/(Re s − 1)`), the functional equation with the dominant sine branch isolated, and
+  polynomial-shift invariance of hypertranscendence — the last needed because `(2)` is stated for
+  every `n` while the zeta sequence only meets it past a finite index.
 
-## Lean formalization (in progress)
+## Lean formalization (complete)
 
 Target statement.  With `formalJetsOver` (in `HTGeometry/AlgebraicallyIndependentCoefficientFormalGerm.lean`)
 the card's conclusion "satisfies no nonzero algebraic differential equation over `ℂ(z)`" is
@@ -455,7 +464,80 @@ Layer plan, bottom up.
 | F12 | **the jets are envelope-dominated**: `‖[X^n]F^{(j)}‖ ≤ K(n+1)^B·facEnv r 𝔞 n` — the hypothesis `exists_truncDom_aeval` needs | `HTGeometry/JetCoeffEnvelope.lean` | **done** |
 | F13 | the **univariate shadow**: a differential polynomial whose monomials involve no jet variable has a nonzero shadow under `X₀ ↦ X`, jets `↦ 0` — the base case that forbids a minimal relation from being jet-free | `HTGeometry/UnivariateShadow.lean` | **done** |
 | F14 | **`(14)` at a jet slot**: a jet-free nonzero polynomial does not annihilate (`aeval_jetFree_ne_zero`), hence a minimal relation has `∃ j ≠ 0` with `(∂ⱼP)(jets) ≠ 0` | `HTGeometry/JetFreeNonvanishing.lean` | **done** |
-| F15 | final assembly: choose `R`, feed F11 + F8 to F3, contradict F14 | — | open |
+| F15 | **one envelope for all jet slots**: `‖[X^n](jets i)‖ ≤ K(n+1)^B·facEnv r 𝔞 n` for every slot of `formalJetsOver`, including the variable slot | `HTGeometry/JetsEnvelope.lean` | **done** |
+| F16 | **the endpoint remainder bound**: one pair `(B, cc)` independent of `R` and `M` with `‖[X^{M+R}]P(S)‖ ≤ (cc·(2^R R!)^r·𝔞^R)·(M+R+1)^B·facEnv r 𝔞 M` | `HTGeometry/EndpointRemainderBound.lean` | **done** |
+| **F17** | **the capstone `aeval_formalJets_ne_zero`** — the card's exact theorem, unconditional | `HTGeometry/NonrealFactorialSlopeHT.lean` | **done** |
+| Z1 | **polynomial-shift invariance**: adding a finite-support series to a formal series preserves hypertranscendence — the jet translation `Yⱼ ↦ Yⱼ + Qⱼ(X)` is an automorphism, so an eventual coefficient asymptotic suffices | `HTGeometry/PolynomialShiftHT.lean` | **done** |
+| Z2 | the **Dirichlet tail**: `‖ζ(s) − 1‖ ≤ 4·2^{−Re s}` for `Re s ≥ 2` — exponential, unlike the corpus's `1/(Re s − 1)`; by the comparison `(k+2)^{−σ} = 2^{−σ}(2/(k+2))^σ ≤ 4·2^{−σ}(k+2)^{−2}` | `HTGeometry/ZetaTailBound.lean` | **done** |
+| Z3 | **`(22)`**: the functional equation with the dominant sine branch isolated — `(-1)ⁿζ(-αn) = C·Λⁿ·Γ(1+αn)·(ζ(1+αn)(1-qⁿ))`, `Λ = -e^{εiπα/2}(2π)^{-α}`, `C = -ε/(2πi)`, `q = e^{-εiπα}` | `HTGeometry/ZetaMomentFunctionalEquation.lean` | **done** |
+| **Z4** | **`(23)`--`(24)` and the application**: `‖q‖ = e^{-π|Im α|} < 1` and the tail bound give `FactorialSlope` past a finite index; the polynomial shift absorbs the initial terms; hence `zetaMoment_aeval_formalJets_ne_zero` | `HTGeometry/ZetaMomentSlope.lean` | **done** |
+
+### The capstone
+
+```
+aeval_formalJets_ne_zero :
+  FactorialSlope a α Λ Cc c → α.im ≠ 0 →
+  ∀ (m : ℕ) (P : MvPolynomial (Fin (m+2)) ℂ), P ≠ 0 →
+    MvPolynomial.aeval (formalJetsOver m (PowerSeries.mk a)) P ≠ 0
+```
+
+axioms: `propext`, `Classical.choice`, `Quot.sound`.  Clearing a denominator and a power of `z`
+turns a relation over `ℂ(z)` into one with polynomial coefficients, i.e. into an `MvPolynomial` in
+`X` together with the jets — so this is exactly the card's conclusion.
+
+Assembly, with every input named:
+
+1. suppose `P ≠ 0` annihilates; `exists_annihilator_with_nonvanishing_jet_pderiv` (F14) gives a
+   minimal such `P` and a slot `j₀ = j₁.succ ≠ 0` with `S := (∂_{j₀}P)(jets) ≠ 0`;
+2. pick `q₀` with `[X^{q₀}]S ≠ 0`;
+3. `exists_endpoint_remainder_bound` (F16) gives `(B, cc)`; `exists_slope_envelope` (F6) gives
+   `(B', K)`;
+4. choose `R ≥ max 2 (q₀ + 1)` with `α.re·(R − q₀) > B + B'` (possible since `α.re > 0`);
+5. index by `ι = Fin (m+1) × Fin R` with `A = endpointCoeff`, `ρ = endpointExponent`,
+   `k = endpointFreq`, `ε = slopeShiftDefect` (F10, F5);
+6. `A (j₁, q₀) ≠ 0` since `Λ^u ≠ 0` and `α^{αu} ≠ 0`; `exists_max_exponent_of_ne_zero` (F4) gives
+   `smax`, and `le_endpointExponent` + `sub_le_endpointShift` (F10) give
+   `smax ≥ α.re(R − q₀) > B + B'`;
+7. `coeff_aeval_div_eq_chirp_sum` (F11) with vanishing left side turns the chirp sum into
+   `−[X^{M+R}]P(S)/a_M`; dividing by `M^{smax}` and applying `tendsto_remainder_ratio` (F8) gives
+   the hypothesis of `chirp_coeff_eq_zero_of_tendsto` (F3);
+8. F3 (whose separation hypothesis is `endpoint_pair_separation`) forces `A = 0` on the maximal
+   layer — contradicting step 6.
+
+### The zeta-moment capstone
+
+```
+zetaMoment_aeval_formalJets_ne_zero :
+  0 < α.re → α.im ≠ 0 →
+  ∀ (m : ℕ) (P : MvPolynomial (Fin (m+2)) ℂ), P ≠ 0 →
+    MvPolynomial.aeval (formalJetsOver m (PowerSeries.mk (zetaMomentCoeff α))) P ≠ 0
+
+zetaMomentCoeff α n = (-1)^n * riemannZeta (-(α * n))
+```
+
+axioms: `propext`, `Classical.choice`, `Quot.sound`.  This is `(1)` together with `(23)`--`(24)`:
+the hypothesis is only `Re α > 0`, `Im α ≠ 0`, and the sequence is the actual zeta-moment sequence,
+not a model of it.
+
+Assembly:
+
+1. `zetaMomentCoeff_eq` (Z3) is the **exact** identity `aₙ = C·Λⁿ·Γ(1+αn)·Eₙ` with
+   `Eₙ = ζ(1+αn)(1 − qⁿ)`, valid for every `n ≥ 1`.  It needs `cos(π(1+αn)/2) = −sin(παn/2)`, the
+   branch split `sin w = ε e^{εiw}(1 − e^{−2εiw})/(2i)` (valid for either `ε² = 1`), and
+   `x^{z·n} = (x^z)^n`;
+2. `‖q‖ = e^{−π|Im α|}` (`norm_zetaMomentQ`) — this is where the choice `ε = −sign(Im α)` is used,
+   and the only place `Im α ≠ 0` enters the coefficient estimate;
+3. `‖ζ(1+αn) − 1‖ ≤ 2·2^{−n Re α}` from Z2 once `n Re α ≥ 1`;
+4. with `d = min(Re α·log 2, π|Im α|)`, steps 2--3 give `‖Eₙ − 1‖ ≤ 5e^{−dn}`, hence `≤ e^{−dn/2}`
+   for all large `n`: exactly the card's `(2)` with `c = d/2`;
+5. replacing the finitely many initial coefficients by the model gives a sequence satisfying
+   `FactorialSlope` for **every** `n`, to which F17 applies;
+6. the two series differ by a finite-support series, so `aeval_formalJets_ne_zero_of_polySeries_sub`
+   (Z1) transports the conclusion back to the actual sequence.
+
+Note that step 5 is not cosmetic: at `n = 0` the actual coefficient is `ζ(0) = −1/2` while the
+model is `C = −ε/(2πi)`, and `‖−1/2 − C‖ > ‖C‖`, so the `∀ n` form of `(2)` genuinely fails at the
+first index.
 | D1 | first-order Taylor expansion of an `MvPolynomial` at a perturbed point, defect in `J²` | `HTGeometry/MvPolynomialFirstOrderTaylor.lean` | **done** |
 | D2 | **`(15)`**: the endpoint expansion `[X^N]P(jets) = ∑ⱼ∑_{q<R} [X^q]((∂ⱼP)(jets))·[X^{N−q}](jetsⱼ) + [X^N]P(S)`, **exact** for `N ≥ 2R` | `HTGeometry/PowerSeriesEndpointExpansion.lean` | **done** |
 | D3 | **`(14)`**: a minimal nonzero relation has a nonvanishing separant | `HTGeometry/MinimalAnnihilator.lean` | **done** |

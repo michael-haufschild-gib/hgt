@@ -62,21 +62,27 @@ For `phi in S(R)`, group atoms with `k<=log n<k+1`. More directly, Chebyshev giv
  \le e^{-k}\psi(e^{k+1})=O(1).
 \]
 
-Hence
+Hence, with `p_2(phi)=sup_t (1+|t|)^2|phi(t)|`,
 
 \[
  |\langle D_1,\phi\rangle|
- \le C\sum_{k\ge0}
-   \sup_{k\le |t|<k+1}|\phi(t)|<\infty,
+ \le C p_2(\phi)\sum_{k\ge0}(1+k)^{-2}.
 \]
 
-continuously in a Schwartz seminorm. Therefore `D_1 in S'(R)`.
+Therefore `D_1 in S'(R)`. The prime number theorem `psi(x)=x+o(x)` and partial summation sharpen
+`(3)` to
+
+\[
+ \sum_{n\le x}\frac{\Lambda(n)}n=\log x+o(\log x),
+\]
+
+so its total variation is infinite. Only polynomial mass growth is needed for temperedness.
 
 ### Case `b<1`
 
-Choose a nonnegative `eta in C_c^infty((-1/4,1/4))` with `eta(0)>0`, and define translated
-test functions `eta_T(t)=eta(t-T)`. Every Schwartz seminorm of `eta_T` grows at most polynomially
-in `T`.
+Choose a nonnegative `eta in C_c^infty((-1/4,1/4))` with
+`eta(t)>=c_0>0` on `[0,1/8]`, and define translated test functions
+`eta_T(t)=eta(t-T)`. Every Schwartz seminorm of `eta_T` grows at most polynomially in `T`.
 
 By the prime number theorem, for all sufficiently large `X`,
 
@@ -85,8 +91,8 @@ By the prime number theorem, for all sufficiently large `X`,
 \tag{4}
 \]
 
-with an absolute `c>0`. Put `T=log X` and choose the fixed bump so that it is positive on the
-corresponding logarithmic interval. Only the positive atoms contribute there, and
+with an absolute `c>0`. Put `T=log X`. Only the positive atoms contribute there. If `b>=0`, then
+on this interval `n^(-b)>=e^(-b/8)X^(-b)`; if `b<0`, then `n^(-b)>=X^(-b)`. Consequently
 
 \[
  \langle D_b,\eta_T\rangle
@@ -109,15 +115,15 @@ Under the exact half-density weld
  \mathcal L\kappa_a\mathcal L^{-1}=C_{D_{a+1/2}},
 \]
 
-the distributional coefficient exists for every `a`, but its tempered realization exists exactly
-when
+the coefficient distribution is an object of `S'` exactly when
 
 \[
  a\ge\frac12.
 \]
 
-Thus the path from regular `a>1/2` to the critical value `a=0` crosses a genuine admission wall at
-`a=1/2`. At `a=0`, `D_{1/2}` is locally finite but non-tempered.
+For `a>1/2` it has finite total variation; at `a=1/2` it is tempered with infinite total
+variation; for `a<1/2` it is locally finite but non-tempered. Thus the path to `a=0` crosses a
+genuine coefficient-object admission wall at `a=1/2`.
 
 ### Corollary 3.2 — torque current
 
@@ -130,15 +136,16 @@ The derivative
 
 is not tempered. The additional logarithm only strengthens the translated-bump lower bound.
 
-### Corollary 3.3 — three distinct geometric states
+### Corollary 3.3 — admission is not noninvertibility
 
-This family separates:
+This family proves exactly two coefficient-object statuses:
 
-1. an admitted comparison cell (`b>=1` in `S'`);
-2. an existing but nonadmitted cell (`b<1` in `D'` but not `S'`);
-3. a noninvertible admitted comparison cell.
+1. `b>=1`: `D_b in S'`;
+2. `b<1`: `D_b in D' setminus S'`.
 
-Only the third has a canonical stable-category cofiber. Conflating states 2 and 3 creates a false
+It constructs no noninvertible admitted morphism. In a stable category an admitted equivalence has
+canonical zero cofiber, an admitted non-equivalence has a canonical generally nonzero cofiber, and
+an absent morphism has no cofiber. Conflating nonadmission with noninvertibility creates a false
 curvature object.
 
 ## 4. Hostile audit

@@ -2,13 +2,15 @@
 
 - **ID:** `ngd-anexact-geometry-polarized-law-amplitudes`
 - **Stage:** 1 — in progress
-- **Working field:** **Anexact Geometry**
-- **Type:** FROZEN FIELD CONJECTURE / GEOMETRY AND TOPOLOGY OF LAW
-- **Status:** `[GR-LEVEL FIELD CORE CANDIDATE] [PRELIMINARY] [EXACT LOCAL THEOREMS]`
-  `[SOURCE DYNAMICS OPEN] [NOT RH] [NO LEAN WRITTEN]`
-- **Relationship to NGD:** NGD supplies source-indexed reduction spacetime.  Anexact Geometry is
-  the proposed geometric field carried on it: amplitudes, polarizations, exactness
-  trivializations, phase holonomy, and composition curvature.
+- **Working field:** **Anexact Geometry**, now a local subtheory of Lawspace Twistor Geometry
+- **Type:** POLARIZED LOCAL MODEL / GEOMETRY OF DAGGER EXACTIFICATION
+- **Status:** `[PRECURSOR SUBTHEORY] [PRELIMINARY] [EXACT LOCAL THEOREMS]`
+  `[NOT WHOLE-CORPUS PRIMITIVE] [NOT RH] [NO LEAN WRITTEN]`
+- **Relationship to NGD/CLG/LTG:** NGD supplies source-indexed reduction spacetime. Constitutive
+  Lawstack Geometry is the broader candidate field; Lawspace Twistor Geometry is an optional
+  nonabelian-Hodge enhancement. Anexact Geometry describes dagger-symmetric amplitude/phase
+  charts; relations, differential matroids, nonlinear observers, and costs require named
+  modalities and cannot be reconstructed from one amplitude.
 
 ## 0. Public sentence
 
@@ -43,20 +45,20 @@ coorientation but may have trivial singularity theory; its positive square creat
 singularity while erasing phase.  Making one face fully precise changes what the other face can
 possibly observe.
 
-## 2. Primitive: polarized exactness field
+## 2. Local primitive: polarized exactness field
 
-Let `B_src` be the source-indexed bivariant reduction equipment of NGD.  An **anexact field** over
-`B_src` provisionally consists of:
+Fix a declared dagger symmetric-monoidal coefficient fibre `(C,tensor,1,dagger)` over the
+source-indexed reduction equipment. An **anexact chart** provisionally consists of:
 
 1. a source-framed stable/curved coefficient stack `E`;
-2. for each presentation `x`, an exactness amplitude or potential section
+2. for each presentation `x`, a dualizable law object `L_x` and exactness amplitude
 
    \[
-    s_x\in\Gamma(X_x,\mathcal L_x)
+    s_x:\mathbf1\longrightarrow\mathcal L_x
    \tag{AE.1}
    \]
 
-   in an oriented line, perfect complex, or higher invertible object;
+   in that fixed dagger fibre;
 3. a dagger/polarization producing an energy shadow
 
    \[
@@ -64,8 +66,8 @@ Let `B_src` be the source-indexed bivariant reduction equipment of NGD.  An **an
    \tag{AE.2}
    \]
 
-4. the derived zero/horizon `Z^der(s_x)` and the possibly nonreduced positive horizon
-   `Z^der(g_x)`;
+4. only when separately declared, nonlinear modalities sending these objects to derived zeros,
+   singularities, relations, ranks, or costs;
 5. a groupoid or `2`-groupoid `Triv_x` of admissible exactness trivializations;
 6. for each legal reduction, transport of amplitudes and trivializations, with canonical
    Beck--Chevalley exchange cells;
@@ -73,9 +75,11 @@ Let `B_src` be the source-indexed bivariant reduction equipment of NGD.  An **an
 8. a source current/intervention law that constrains the transition cells before target
    specialization.
 
-No scalar line is required globally.  In higher-rank charts `mathcal L_x` is a determinant,
-orientation, Tate, or Picard object extracted from a full deformation--obstruction complex.  The
-amplitude is therefore a **polarized law object**, not one universal number.
+No scalar line is required globally. In higher-rank charts `L_x` may be a determinant,
+orientation, Tate, or Picard object extracted by a named functor from a deformation--obstruction
+complex. Kernel pairs, differential matroids, closed relations, method exponents, and costs do not
+follow from `(AE.1)` without additional functors. This limitation is why Anexact Geometry is now a
+local LTG chart rather than the field primitive.
 
 ### Exactification phase space
 
@@ -113,7 +117,7 @@ The Pipeline-2 card
 6. the real source obstruction is the relative lift class of that null-homotopy.
 
 The Pipeline-2 card
-`source-normal-hochschild-maurer-cartan-clock-curvature-law.md` further proves:
+`source-normal-hochschild-maurer-cartan-clock-curvature-law.md` further proves and classifies:
 
 1. inner corrections preserve every trace--derivation cyclic period;
 2. product trace measures a normalized clock Hochschild boundary;
@@ -124,13 +128,13 @@ The Pipeline-2 card
    \tag{AE.4}
    \]
 
-4. no inner-corrected first-order/additive clock law can represent finite holonomy off the neutral
-   character;
-5. the quadratic composition representative is an ordinary group coboundary for every character,
-   so its useful content is secondary and primitive-sensitive rather than an `H^2` class.
+4. the raw coordinate `kappa` cannot itself be additive off the neutral character;
+5. the quadratic composition representative is an ordinary group coboundary for every character;
+6. `log(1+kappa)=log chi` linearizes the law for every positive radial character, so the
+   quadratic term is not invariant curvature and does not force a binary producer.
 
-These results are the first dynamics-relevant leverage: the live source-dagger producer is not a
-unary Bockstein or target null-homology.  It must act on binary law composition.
+These results close two false producers: neither inner unary correction nor raw binary
+nonadditivity supplies coordinate-free selection geometry.
 
 The Pipeline-2 cards
 `half-density-route-l-odd-weil-connection-weld.md` and
@@ -143,16 +147,16 @@ The Pipeline-2 cards
 \]
 
 with prime coefficient `-(log p)^2/sqrt(p)`. They also prove `D_b` is tempered exactly for
-`b>=1`. Hence Route-L operator connection, odd Weil/Stokes current, and strict admission horizon
-are exact coefficient shadows of one arithmetic family. Completion cofiber is nevertheless zero
-in distributions and absent below the tempered wall. The still-missing carrier is a source-native
-relative admission class, not another absolute defect.
+`b>=1`. Hence Route-L operator connection and odd atomic current are exact coefficient shadows of
+one arithmetic family, with a sharp admission horizon. Completion cofiber is nevertheless zero
+in distributions and absent below the tempered wall. A relative-admission construction remains a
+Route-L calibration problem, not the field core.
 
-## 4. Frozen universal conjecture
+## 4. Frozen local zeta calibration conjecture
 
 ### `SOURCE-POLARIZED-EXACTIFICATION-DESCENT`
 
-For the completed zeta source there exists a source-defined anexact field `A_zeta` over the legal
+For the completed zeta source there exists a source-defined anexact chart `A_zeta` over the legal
 reduction equipment such that:
 
 1. its arithmetic amplitude realization is the literal cyclic residue/conormal line;
@@ -161,16 +165,18 @@ reduction equipment such that:
    Weil tangent;
 4. its homological realization contains the relative Connes-lift class whose connecting boundary
    is the measured paracyclic defect;
-5. its binary composition curvature is the source-normal Maurer--Cartan term `(AE.4)`;
+5. its composition data are invariant under admissible law-coordinate changes; in particular the
+   logarithmic coordinate trivializes the raw term `(AE.4)` and must extend or fail for a named
+   global reason;
 6. its topology retains the all-prime phase/Tate transition object rather than scalarizing it;
 7. its source intervention law is fixed before divisor specialization and gives an independent
-   Bianchi/Stokes constraint on binary composition curvature;
+   stability/descent constraint;
 8. the arithmetic, spectral, positive, and phase realizations are jointly conservative on the
    source-generated exactification class.
 
-This conjecture does **not** say that all curvature vanishes.  It says that actual route organs are
-polarizations of one phase-bearing exactification field and that source dynamics constrains their
-composition before any zero is inspected.
+Items 7--8 carry the RH-bearing burden. This is a local zeta calibration conjecture, not the
+foundation of the field and not current explanatory evidence. Lawspace Twistor Geometry must first
+exist and pass a non-RH three-face calibration.
 
 ## 5. Field equations
 
@@ -186,11 +192,12 @@ An exactification is local to a polarization.  Transport between two polarizatio
 when its canonical exchange cell is invertible **and** its exactness trivializations are
 compatible.  Target exactness alone is insufficient.
 
-### Law C — composition Maurer--Cartan
+### Law C — reparametrization-invariant composition
 
-Finite transition amplitudes compose nonlinearly.  In a multiplicative clock chart the first
-curvature is `(AE.4)`, not the additive derivation.  Higher composition is encoded by coherent
-`A_infinity`/parachain/`2`-categorical cells rather than forced into one chain complex.
+Finite transition amplitudes may compose nonlinearly in a chosen coordinate. Raw nonlinear terms
+are not curvature unless they survive admissible coordinate change. In the positive radial clock
+chart, `log(1+kappa)` makes composition additive. Invariant content must instead lie in failure of
+such coordinates, daggers, admissions, or exactness frames to glue globally.
 
 ### Law D — relative uncurving
 
@@ -206,15 +213,16 @@ exactification history remains nontrivial.
 
 ### Law F — source dynamics
 
-Source identities constrain binary and higher composition cells.  They are not consequences of
-the geometry.  A candidate field equation must be natural before target specialization, preserve
-an independent source detector, and defeat explicit off-line/generalized-source countermodels.
+Source identities constrain transition and stability data. They are not consequences of local
+amplitude geometry. A candidate law must be natural before target specialization, invariant under
+admissible coordinates, preserve an independent source detector, and defeat explicit generalized-
+source countermodels.
 
 ## 6. Route and corpus shadows
 
 | Corpus organ | Anexact interpretation | Exact status |
 |---|---|---|
-| Route R / arithmetic dagger | `q-1` amplitude; squared Stokes energy; relative Connes lift | local trichotomy proved; binary source law open |
+| Route R / arithmetic dagger | `q-1` amplitude; squared Stokes energy; relative Connes lift | local trichotomy proved; global descent open |
 | Route L / Deninger | flat Euler source represented in two Fourier/Mellin polarizations; strict admission boundary | exact half-density weld and admission wall proved; relative strict class open |
 | Route E | source relation and directed capacity are extra polarization data, not implied by current | nonselection countermodel proved |
 | Mass trace route | arithmetic amplitude becomes chain boundary plus outgoing class; filling cost diverges | finite boundary law proved |
@@ -228,10 +236,10 @@ an independent source detector, and defeat explicit off-line/generalized-source 
 | black-hole boundary | positive/reduced boundary observer may lose relative phase/edge modes | split perturbative edge chart only |
 | wormhole interior | candidate is nonproduct phase-history lift with conjugate charge and independent length | conjectural; no arithmetic wormhole claimed |
 
-The table is not proof of the field.  Rows become one theory only through named coefficient-changing
-exchange theorems. The strict Route-L coefficient theorem is now proved and simultaneously
-falsifies completion cofiber as its carrier. The binary source-curvature and relative-admission
-theorems are the next tests.
+The table is not proof of the field. Rows become one theory only through presentation-invariant
+descent and stability theorems. The strict Route-L coefficient theorem is a calibration and
+simultaneously falsifies completion cofiber as its carrier. Lawspace Twistor Geometry now owns the
+field-level construction programme.
 
 ## 7. Phase geometry, recurrence, and horizons
 
@@ -252,7 +260,7 @@ Anexact Geometry predicts the same architecture at a genuine holographic horizon
 Without those items, “wormhole phase” is metaphor.  Brown--Susskind growth motivates the executed-
 history valuation; it does not identify that valuation with the arithmetic source amplitude.
 
-## 8. Constraint uncertainty becomes a theorem schema
+## 8. One-way phase loss theorem schema
 
 For a local law amplitude `a`, the pair
 
@@ -261,16 +269,18 @@ For a local law amplitude `a`, the pair
 \tag{AE.5}
 \]
 
-cannot be replaced by either entry alone:
+contains exactly the information of `a`, since first projection recovers it. The nontrivial
+forgetful map is one-way:
 
 - the unsquared entry retains orientation but may have no singularity category;
 - the squared entry creates nonreduced singularity but is invariant under phase reversal;
 - exactifying target monodromy may be canonical, while lifting that exactification to source is a
   nonzero relative class;
-- finite additive response is the tangent of multiplicative holonomy, not its composition law.
+- raw finite nonadditivity may disappear after logarithmic reparametrization.
 
-This is the mathematical content of “making one part precise makes another imprecise.”  It is not
-an information inequality; it is a change of coefficient type and automorphism group.
+Thus the theorem is not a symmetric uncertainty relation. It says the positive observer
+`a -> a^dagger a` is generally nonconservative and changes the automorphism group. Any stronger
+complementarity must come from incompatible global descent or stability, not from the pair itself.
 
 ## 9. Risky predictions
 
@@ -279,13 +289,15 @@ an information inequality; it is a change of coefficient type and automorphism g
    of such a realization falsifies common-source descent.
 2. **Relative-Connes prediction.** Any paracyclic target-nullhomology argument that does not compute
    a relative source-lift class is selection-blind.
-3. **Binary-clock prediction.** A genuine source-normal Stokes producer must control
-   `kappa(m)kappa(n)` and cannot factor through a unary derivation, ordinary Bockstein, inner
-   connection correction, determinant-one balance, or radial-gauge invariant.
+3. **Coordinate-invariance prediction.** Any genuine Stokes/source obstruction must survive
+   `kappa -> log(1+kappa)` wherever that coordinate is admitted. Therefore it must be a failure of
+   global logarithm, integral/real structure, stability, admission, or exactification descent—not
+   raw binary nonadditivity.
 4. **Route-L coefficient prediction — confirmed.** The strict Mellin/Fourier comparison satisfies
    `L(A_a^- -A_a^+)L^-1=C_{D_{a+1/2}}`, and its normal derivative at `a=0` is the odd
    Weil/Stokes prime current with coefficient `-(log p)^2/sqrt(p)`. The same calculation proves
-   that completion cofiber is zero or absent; the surviving carrier must be relative admission.
+   that completion cofiber is zero or absent; a possible Route-L successor carrier is relative
+   admission, not a necessity of the whole field.
 5. **Phase-history prediction.** Exact recurrence of every positive state observable cannot bound
    executed phase-history length without a separately declared history/cost structure.
 6. **Horizon prediction.** When positive squaring turns a smooth amplitude wall into a doubled
@@ -303,14 +315,16 @@ an information inequality; it is a change of coefficient type and automorphism g
    erases `mu_2` phase/coorientation.
 5. **Target paracyclic null-homology supplies selection.** Failed: Connes uncurving makes it
    automatic.
-6. **Kummer/derivation plus inner correction supplies finite holonomy.** Failed: prime period is
-   invariant and finite composition has quadratic curvature.
+6. **Kummer/derivation plus inner correction makes raw `kappa` additive.** Failed: prime period is
+   invariant and raw finite composition has a quadratic term.
 7. **Ordinary binary group cohomology supplies higher selection.** Failed: the quadratic term is
    `-d_grp(kappa)` for every character and its class is always zero.
-8. **Metaplectic phase torsor alone forces the critical line.** Failed: nonunitary radial holonomy
+8. **Raw quadratic term forces a binary producer.** Failed: logarithm linearizes it for every
+   positive radial character.
+9. **Metaplectic phase torsor alone forces the critical line.** Failed: nonunitary radial holonomy
    and adelic splitting countermodels survive.
-9. **Survivor.** A source-normal, binary and higher exactification law must constrain the relative
-   phase-lift class across Euler, Poisson/Fourier, and Gamma polarizations.
+10. **Survivor.** The reparametrization-invariant lift stack of exactness frames across
+    arithmetic, spectral, positive, and topological polarizations is the next universal object.
 
 ## 11. Falsifiers
 
@@ -320,9 +334,9 @@ Anexact Geometry, as applied here, fails if any of the following occurs:
    amplitude;
 2. a positive doubled horizon canonically recovers a nonzero oriented generator despite its phase
    automorphism;
-3. an inner-corrected unary derivation comparison reproduces finite multiplicative composition;
-4. a claimed binary source law also holds in the explicit off-line group-algebra character
-   countermodel;
+3. a claimed invariant curvature disappears under an admitted analytic coordinate change;
+4. a claimed global descent obstruction also occurs in a source-trivial calibration with a global
+   exactness frame;
 5. the source reporter domain assumes zero aperture, critical-line support, or vanishing of the
    physical class;
 6. the quantum/physical transfer equates phase fibre with interior length without an independent
@@ -331,17 +345,15 @@ Anexact Geometry, as applied here, fails if any of the following occurs:
 
 ## 12. Immediate research programme
 
-1. Finish the strict Route-L Mellin/Fourier admission theorem and compute its exact odd Weil
-   derivative.
-2. Construct the binary rational-adelic/Gamma exchange cell in
-   `binary-source-stokes-exchange-flatness.md`.
-3. Define the source-realizable homotopy subcomplex and compute the relative Connes class on the
-   trace-one prime simplex.
-4. Test whether Euler--Poisson--Gamma triple comparison supplies an **outer** phase-weight-one
-   reporter rather than another radial-gauge invariant.
-5. Build a non-zeta calibration family with nonzero vacuum/phase curvature and zero source
-   curvature, testing that field laws are not target-fitted.
-6. Only after one source law constrains the binary class should any RH implication return to Lean.
+1. Treat the strict Route-L weld and relative Connes class as local calibration theorems only.
+2. Construct the reparametrization-invariant exactification descent fibre
+   `fib(Triv_src -> holim Triv_alpha)` in a typed non-RH model.
+3. Prove its presentation invariance and compute two nonisomorphic boundary invariants.
+4. Embed this local dagger chart into the pro-wild twistor stack proposed by Lawspace Twistor
+   Geometry.
+5. Build a non-zeta three-face calibration linking arithmetic/graded, spectral/flat, and
+   positive/topological data through one stability wall.
+6. Only after that field exists should zeta or any RH implication return to the programme.
 
 ## 13. Literature boundary
 
@@ -361,12 +373,15 @@ Current primary anchors include:
 
 ## 14. Lean-return note
 
-No Lean code was written or built.  This is a field conjecture.  Only the two dependency-closed
-Pipeline-2 theorem cards are eligible for later formalization, after explicit user authorization
-and local declaration research.
+No Lean code was written or built. This is a local subtheory. Only dependency-closed Pipeline-2
+theorems are eligible for later formalization, after explicit user authorization and local
+declaration research.
 
 ## Log
 
 - 2026-08-08 — frozen after curvature-only NGD remained classificatory.  DVR
   orientation/singularity complementarity, relative Connes uncurving, and binary clock curvature
   identified the phase-bearing exactification field as the missing geometric primitive.
+- 2026-08-08 — hostile review found logarithmic linearization of raw clock curvature and proved
+  amplitude geometry too narrow for relation, matroid, topology, and cost organs. Demoted to local
+  dagger subtheory of Lawspace Twistor Geometry.

@@ -1,15 +1,15 @@
-# Source-normal Hochschild--Maurer--Cartan clock curvature law
+# Source-normal Hochschild clock coordinate and logarithmic-flatness law
 
-- **ID:** `ngd-source-normal-hochschild-maurer-cartan-clock-curvature`
+- **ID:** `ngd-source-normal-hochschild-clock-coordinate-logarithmic-flatness`
 - **Stage:** 2 — fully proved on paper
-- **Type:** UNCONDITIONAL SOURCE THEOREM / FIRST-ORDER NO-GO / BINARY CURVATURE
+- **Type:** UNCONDITIONAL SOURCE THEOREM / COORDINATE-DEPENDENCE NO-GO
 - **Status:** `[PAPER PROOF DEPENDENCY-CLOSED] [NOT RH] [NO LEAN WRITTEN]`
-  `[LIVE-OBSTRUCTION LEVERAGE]`
+  `[BINARY-PRODUCER INTERPRETATION FALSIFIED]`
 - **Statement:** Inner corrections cannot change a trace--derivation cyclic period, while the
-  nonadditivity of a finite multiplicative clock defect is a literal normalized Hochschild
-  boundary whose product trace is its curvature reporter.  Therefore the source-dagger problem
-  cannot be unary or first-order: its first possible producer is a binary, coefficient-changing
-  clock-composition law.
+  nonadditivity of a finite multiplicative clock defect is a literal product-normalized
+  Hochschild boundary measured by product trace. However, its quadratic term is globally
+  linearized by the logarithmic clock coordinate in the actual positive radial chart. It is not
+  invariant curvature and does not force a binary source producer.
 
 ## 1. Why this theorem changes the frontier
 
@@ -20,10 +20,10 @@ The literal rational-adelic source already has:
 - a pre-divisor two-leg comparison;
 - the exact physical residue `(delta-1)c`.
 
-Trying to make that residue an ordinary boundary conflicts with the nonzero Kummer period.  The
-theorem below shows this conflict survives every inner/gauge correction.  It then identifies the
-next algebraic layer: finite holonomy differs from its additive linearization by a quadratic
-Maurer--Cartan term, and that term is already a literal Hochschild boundary.
+Trying to make that residue an ordinary boundary conflicts with the nonzero Kummer period. The
+theorem below shows this conflict survives every inner correction. It also computes the quadratic
+term seen in the coordinate `kappa=chi-1`; logarithmic linearization then proves this term is a
+coordinate defect rather than a new geometric obstruction.
 
 ## 2. Inner corrections preserve the cyclic charge
 
@@ -182,9 +182,10 @@ Character multiplicativity gives
 
 This proves `(3.6)`.  Multiply `(3.4)` by `kappa(g)kappa(h)c` to obtain `(3.7)`. `QED`
 
-The right side of `(3.6)` is the multiplicative Maurer--Cartan curvature of the finite defect.
-It vanishes to second order at the neutral character, so a derivation sees only its tangent and
-cannot encode its finite composition law.
+The right side of `(3.6)` is the nonlinear term of the multiplicative formal group in the
+coordinate `kappa=chi-1`. It vanishes to second order at the neutral character. Whether it is
+geometric depends on invariance under admissible coordinate changes; Theorem 3.5 proves it is not
+invariant in the physical positive radial chart.
 
 ### Corollary 3.3 — square-clock rigidity
 
@@ -222,10 +223,51 @@ character, including every off-neutral character.
 The first equality is the inhomogeneous group-coboundary formula for trivial coefficients.  The
 second is Theorem 3.2 rearranged. `QED`
 
-Thus moving from unary homology to an ordinary `H^2` class still does not select.  The useful datum
-is a boundary-sensitive secondary reporter of the normalized representative `(3.7)`, with a
-source-fixed primitive and coefficient change.  Forgetting the primitive makes the curvature
-class identically zero.
+Thus moving from unary homology to an ordinary `H^2` class still does not select.
+
+### Theorem 3.5 — logarithmic flatness of the clock law
+
+Assume `chi:G->R_(>0)` and put
+
+\[
+ \ell(g)=\log\chi(g)=\log(1+\kappa(g)).
+\tag{3.10}
+\]
+
+Then `ell(gh)=ell(g)+ell(h)`. Equivalently, the formal group law
+
+\[
+ F(X,Y)=X+Y+XY
+\tag{3.11}
+\]
+
+is globally linearized on `X>-1` by `L(X)=log(1+X)` and formally linearized over `Q` by the same
+power series. In the actual radial Riemann chart,
+
+\[
+ \chi_t(n)=n^t,\qquad \ell_t(n)=t\log n
+\tag{3.12}
+\]
+
+for every real `t`, including every off-centre `t`.
+
+#### Proof
+
+Character multiplicativity and positivity give
+
+\[
+ \ell(gh)=\log(\chi(g)\chi(h))=\log\chi(g)+\log\chi(h).
+\]
+
+Also `1+F(X,Y)=(1+X)(1+Y)`, proving `(3.11)` and its logarithmic linearization. Substituting
+`chi_t(n)=n^t` proves `(3.12)`. `QED`
+
+### Corollary 3.6 — binary-curvature interpretation fails
+
+The representative `kappa(g)kappa(h)` is not invariant under admissible analytic clock
+reparametrization. Its vanishing characterizes the neutral point in the `kappa` coordinate, but
+its nonzero value cannot by itself be interpreted as coordinate-free lawspace curvature.
+Therefore Theorems 3.1--3.4 do not force a binary source law.
 
 ## 4. Exact Riemann-source instantiation
 
@@ -247,20 +289,21 @@ physical residue is
 \tag{4.2}
 \]
 
-Theorems 3.1--3.2 therefore construct, before any zero is selected, the normalized binary source
-simplex whose product-trace boundary reads
+Theorems 3.1--3.2 construct, before any zero is selected, the product-normalized source simplex
+whose product-trace boundary in the `kappa` coordinate reads
 
 \[
  \kappa_\rho(m)\kappa_\rho(n)c_\rho.
 \tag{4.3}
 \]
 
-For `m=n=p`, vanishing of `(4.3)` would force `Re(rho)=1/2`.  This last vanishing is **not** proved
-here; it is the RH-bearing consumer.  Unconditional progress is the exact production and typing of
-the binary curvature term and the proof that no inner-corrected unary Kummer comparison can replace
-it.
+For `m=n=p`, vanishing of `(4.3)` would force `Re(rho)=1/2`. This vanishing is **not** proved here.
+Theorem 3.5 shows that promoting `(4.3)` to invariant curvature was unjustified: the same off-line
+character has the additive coordinate `ell_rho(n)=t_rho log n`. The unconditional survivor is the
+inner-correction rigidity of the Kummer period and the exact classification of the raw clock
+coordinate.
 
-## 5. Exact first-order compatibility no-go
+## 5. Exact raw-coordinate compatibility law
 
 ### Theorem 5.1
 
@@ -270,9 +313,8 @@ Let `q>1`, `t in R`, and `c!=0`. Suppose a clock response `R_D` satisfies:
 2. `R_D(q^2)=2R_D(q)`;
 3. `R_D(q)=kappa_t(q)c` and `R_D(q^2)=kappa_t(q^2)c`.
 
-Then `t=0`. In particular, a response obtained only from the trace--derivation cyclic period and
-transported by inner corrections cannot agree additively with the off-neutral finite holonomy at
-both a clock and its square.
+Then `t=0`. This statement concerns additivity of the raw coordinate `kappa`. It is not invariant
+under passage to the logarithmic coordinate `ell`, which is additive for every `t`.
 
 #### Proof
 
@@ -297,14 +339,16 @@ factors through the trace--derivation cyclic period. `QED`
    is radial-gauge invariant; it proves non-erasure, not neutrality.
 4. **Correct Kummer transport by an inner connection.** Failed by Theorem 2.1: every prime period
    is unchanged.
-5. **Represent finite holonomy by an additive Bockstein/derivation.** Failed by Theorem 3.2: the
-   square-clock discrepancy is exactly `kappa(q)^2`.
+5. **Represent raw `kappa` by an additive Bockstein/derivation.** Failed by Theorem 3.2: the
+   square-clock discrepancy is exactly `kappa(q)^2`. This does not exclude the logarithmic
+   coordinate.
 6. **Use its ordinary group `H^2` class.** Failed by Theorem 3.4: the quadratic representative is
    already the coboundary `-d_grp(kappa)` for every radial rate.
-7. **Positive survivor.** The first possible producer is binary, coefficient-changing, and
-   secondary.  It
-   must compare multiplicative clock composition with additive/Baer composition and control the
-   explicit source boundary `(3.7)` through an independent conservative reporter.
+7. **Binary producer from `(3.6)`.** Failed by Theorem 3.5: `log(1+kappa)` linearizes the law for
+   every positive radial character.
+8. **Positive survivor.** Any geometric obstruction must survive admissible law-coordinate
+   changes. Candidate invariants are holonomy conjugacy, stability type, characteristic class,
+   admission failure, and relative exactification—not the raw quadratic term `(3.6)`.
 
 ## 7. Corpus support and scope
 
@@ -329,9 +373,9 @@ signs and source claims were spot-checked against the listed files.
 
 Para-`S` modules, crossed-product cyclic homology, and secondary Hochschild derivations are parent
 theories; see <https://arxiv.org/abs/1810.04835>, <https://arxiv.org/abs/2205.08880>, and
-<https://arxiv.org/abs/2302.11620>.  None supplies the arithmetic binary exchange law.  Ingredient
-novelty is not the gate; the gain is the exact retyping of the source-normal obstruction from unary
-null-homology to multiplicative clock-composition curvature.
+<https://arxiv.org/abs/2302.11620>. Ingredient novelty is not the gate. The gain is a closed no-go:
+neither inner unary correction nor raw multiplicative-coordinate nonadditivity supplies invariant
+selection geometry.
 
 ## 9. Lean-return note
 

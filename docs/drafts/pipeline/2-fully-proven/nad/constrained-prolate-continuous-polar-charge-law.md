@@ -730,3 +730,380 @@ estimates, this proves the seed law `(32)` on paper.
 - [x] prove the exterior seed law `(32)` on paper
 - [ ] formalize the concrete radial-PSWF/Bessel realization and `(51)` unconditionally in Lean
 - [ ] prove the true cofinal Weil floor (RH-bearing)
+
+- 2026-08-08 -- **The ordered-partition bridge of Lean-plan item 7 is built.**
+  `HTGeometry/DerivSignMonotone.lean`, unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`, wired into `GaloisForLFunctions.HTGeometry`.
+
+  `FiniteMonotonicityVariation.lean` already proves the variation law from a *monotonicity*
+  partition, and `ProlateOneTurningVariation.lean` already proves each one-sign Sturm cell contains
+  at most one critical point.  The missing link was the step between them: a cell with no critical
+  point is a monotonicity cell.
+
+  * **`sign_const_of_continuousOn_ne_zero`** -- a continuous nonvanishing function on a closed
+    interval has constant sign.  Taking both signs forces a zero by the intermediate value theorem,
+    applied on the subinterval between the endpoint and the offending point.
+  * **`monotoneOn_or_antitoneOn_of_deriv_ne_zero`** -- hence a cell free of critical points is a
+    monotonicity cell, via `strictMonoOn_of_deriv_pos` / `strictAntiOn_of_deriv_neg`.
+  * **`eVariationOn_le_of_no_critical_points`** -- the variation law restated with the hypothesis
+    the Sturm side actually supplies: an ordered partition whose cells carry no critical point has
+    variation at most `2 n B`.
+
+  The remaining Lean work on item 7 is unchanged in kind but smaller: the classical spheroidal
+  nodal-count instance producing the partition points, and the concrete pointwise representative.
+
+- 2026-08-08 (second instalment) -- **The ordered-partition assembly is complete**, and a defect in
+  the first instalment is corrected.  Same module, axiom-clean.
+
+  *Correction.*  The first instalment's bridge required the derivative to be nonvanishing on the
+  **closed** cell.  That hypothesis can never be met by a partition cut at the critical points,
+  which is exactly where the derivative vanishes.  The usable form asks for nonvanishing on the
+  open cell only, which is all `strictMonoOn_of_deriv_pos` ever needed, since it tests the interior.
+
+  * **`sign_const_of_continuousOn_ne_zero_Ioo`** -- constant sign on an open interval, proved by
+    running the intermediate value theorem on `uIcc c x` for a fixed interior base point `c`; the
+    open interval is ord-connected, so that segment stays inside it.
+  * **`monotoneOn_or_antitoneOn_of_deriv_ne_zero_Ioo`** and
+    **`eVariationOn_le_of_no_interior_critical_points`** -- the variation law in the form the Sturm
+    cell count actually supplies, with critical points permitted at the partition points.
+  * **`exists_partition_of_finite_critical`** -- the assembly itself.  Sorting the critical points
+    together with the two endpoints produces a monotone `I` with `I 0 = a`, `I (n) = b` and no
+    critical point in any open cell.  The construction is `Finset.orderIsoOfFin` on
+    `insert a (insert b S)`; the cell-emptiness clause is the strict monotonicity of that
+    enumeration, read back through natural-number indices so the index arithmetic stays in `omega`.
+
+  Lean-plan item 7 now has both abstract halves: the count of monotonicity cells (Sturm) and their
+  assembly into the variation bound.  What remains for it is the classical spheroidal nodal count
+  supplying the finite critical set, and the concrete pointwise representative.
+
+- 2026-08-08 (third instalment) -- **The abstract half of Lean-plan item 7 is closed.**  Same
+  module, axiom-clean.
+
+  * `exists_partition_of_finite_critical` now also returns the cell count, `n <= |S| + 1`, from
+    `Finset.card_insert_le` applied twice to `insert a (insert b S)`.
+  * **`eVariationOn_le_of_finite_critical`** -- the statement the Sturm side feeds and the envelope
+    side consumes: a bounded function whose critical points in the open interval are finitely many
+    has total variation at most `2 (|S| + 1) B`.  No monotonicity partition needs to be exhibited by
+    the caller; it is built from the critical set.
+  * **`boundedVariationOn_of_finite_critical`** -- the finiteness corollary, in the shape the BV
+    lattice-envelope modules take as hypothesis.
+
+  So item 7's abstract chain is complete end to end:
+
+  ```text
+  one-sign Sturm cell  ->  at most one critical point per cell   (ProlateOneTurningVariation)
+  finite critical set  ->  ordered monotonicity partition        (exists_partition_of_finite_critical)
+  monotonicity partition + uniform bound -> variation <= 2 n B   (FiniteMonotonicityVariation)
+  finite critical set + uniform bound    -> BV                   (this instalment)
+  ```
+
+  Its two remaining inputs are both concrete prolate facts rather than abstract ones: the classical
+  spheroidal nodal count, which supplies the finite critical set, and the canonical pointwise
+  representative `g_lambda`.
+
+- 2026-08-08 (fourth instalment) -- **The nodal count is reduced to a sign-change count.**  Same
+  module, axiom-clean.
+
+  * **`finite_criticalSet_of_cells`** -- if `[a,b]` is decomposed by a monotone `J` into `N` cells
+    each carrying at most one critical point, the whole critical set is finite.  Induction on `N`
+    with `Icc_union_Icc_eq_Icc`; each cell contributes a subsingleton, and a finite union of finite
+    sets is finite.
+  * **`boundedVariationOn_of_finite_criticalSet`** -- the bounded-variation conclusion stated for a
+    critical *set* rather than a finset, which is the form the previous item produces.
+
+  The classical spheroidal input is therefore no longer a nodal count in the analytic sense: what
+  the chain needs is only that the Sturm right-hand side `q f` changes sign finitely often on the
+  aperture interval, since `criticalSet_subsingleton_of_sturm_rhs_pos` and its negative branch
+  already turn each one-sign cell into a subsingleton.  Composed:
+
+  ```text
+  q f changes sign N times  ->  N one-sign cells
+                            ->  at most one critical point each     (ProlateOneTurningVariation)
+                            ->  finite critical set                 (finite_criticalSet_of_cells)
+                            ->  ordered monotonicity partition      (exists_partition_of_finite_critical)
+                            ->  variation <= 2 (N+1) B, hence BV    (this module)
+  ```
+
+  What is left for item 7 is the concrete spheroidal fact that `q f` has finitely many sign changes
+  on the aperture interval, and the canonical pointwise representative `g_lambda`.
+
+- 2026-08-08 (fifth instalment) -- **The one-turning-point argument is closed as a single theorem.**
+  Same module, axiom-clean.
+
+  * **`finite_criticalSet_of_finite_rhs_zeros`** -- if the Sturm right-hand side `q f` has finitely
+    many zeros in the open interval, the solution's critical set is finite.  The zero set partitions
+    the interval; on each open cell `q f` has constant sign by
+    `sign_const_of_continuousOn_ne_zero_Ioo`; the one-sign Sturm law then leaves at most one
+    critical point per cell; and `finite_criticalSet_of_cells` collects them.
+    The partition step reuses `exists_partition_of_finite_critical` unchanged -- that theorem was
+    stated for an arbitrary finite subset, so it applies to a zero set just as well as to a
+    critical set.
+  * **`boundedVariationOn_of_finite_rhs_zeros`** -- the whole one-turning-point argument in one
+    statement: a bounded Sturm solution whose right-hand side has finitely many zeros is of bounded
+    variation on the aperture interval.
+
+  This is the abstract theorem Lean-plan item 7 was after.  For the classical prolate equation
+  `((1-x^2) f')' + (chi - c^2 x^2) f = 0` the right-hand side is a quadratic times the solution, so
+  the hypothesis reduces to: the solution has finitely many zeros on the aperture interval.  That is
+  the only classical spheroidal input the chain still needs, together with the canonical pointwise
+  representative `g_lambda`.
+
+- 2026-08-08 (sixth instalment) -- **The zero-finiteness input is built.**  Same module,
+  axiom-clean.
+
+  * **`finite_zeros_of_deriv_ne_zero`** -- a differentiable function whose derivative is nonzero at
+    each of its zeros has finitely many zeros on a compact interval.  Each such zero is isolated
+    (`HasDerivAt.tendsto_nhdsNE`), the zero set is compact, and a discrete compact set is finite.
+    For a Sturm solution the hypothesis is exactly nontriviality: a common zero of the solution and
+    its derivative would make it vanish identically.
+  * **`finite_zeros_mul`** -- the zero set of a product is the union of the two zero sets, so the
+    right-hand side `q f` inherits finiteness from `q` and `f` separately.
+
+  For the classical prolate equation `q` is a quadratic, whose zeros are finite outright, so the
+  chain's only remaining classical input is that the solution itself has finitely many zeros -- and
+  `finite_zeros_of_deriv_ne_zero` reduces even that to nontriviality of the solution.
+
+  One note for future readers of the tree: mathlib's `HasDerivAt.eventually_ne`
+  (`Analysis/Calculus/Deriv/Inverse.lean`) is stated with an **unconstrained** section variable `c`,
+  so it reads as `f z != c` for arbitrary `c`.  This module deliberately routes through
+  `HasDerivAt.tendsto_nhdsNE` instead, which states the unambiguous fact
+  `Tendsto f (nhds[!=] x) (nhds[!=] f x)`.
+
+- 2026-08-08 (seventh instalment) -- **The universal variation lemma of `(19e)` is complete, and
+  the concrete obstruction is now named exactly.**
+
+  * `deriv_sturmFlux_eq_of_hasDerivAt`, `ode_of_hasDerivAt_on` -- the Sturm form is the derivative
+    of `y -> p y * deriv f y`, so a second-order equation feeds the chain directly.
+  * **`boundedVariationOn_of_secondOrder`** -- the whole one-turning-point law in the form a
+    concrete instance must meet: second-order equation in flux form, continuity of the flux and of
+    the right-hand side, finitely many right-hand-side zeros, and a uniform bound, giving bounded
+    variation on the aperture interval.
+
+  *The concrete obstruction, named.*  `ConstrainedProlatePointwiseRepresentative.lean` already
+  supplies the canonical representative and its two interior derivatives, and
+  `timeBandEigenPointwiseSource_unitScale_eigen` is its eigen-equation -- but that equation is in
+  **integral (finite-Fourier) form**, not in the second-order form the variation law consumes.
+  What the concrete spheroidal instance therefore needs is the classical commuting-operator step:
+  the prolate differential operator `((1-x^2) f')' + (chi - c^2 x^2) f` commutes with the finite
+  Fourier transform, so an eigenfunction of the integral operator satisfies the differential
+  equation.  Until that step exists, `(19e)` cannot be instantiated, and no abstract strengthening
+  of the variation law removes the need for it.
+
+  This is the sharpest statement of the remaining gap in item 7: not "the concrete spheroidal
+  instance" in general, but specifically the commuting-operator identity converting the integral
+  eigen-equation into the prolate ODE.
+
+- 2026-08-08 (eighth instalment) -- **The analytic heart of the commuting-operator step is built.**
+  `HTGeometry/SturmSelfAdjoint.lean`, unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`, wired into `GaloisForLFunctions.HTGeometry`.
+
+  * `integral_mul_sturm_eq_neg` -- one integration by parts against a weight vanishing at both
+    endpoints: `int u (w v')' = - int u' w v'`, the boundary term carrying the factor `w`.
+  * **`integral_mul_sturm_symm`** -- Lagrange's identity in the degenerate case: when the weight
+    vanishes at both endpoints the Sturm operator `u -> (w u')'` is symmetric,
+    `int u (w v')' = int (w u')' v`.  Both sides reduce to `- int w u' v'`.
+
+  This is exactly what makes the finite Fourier transform commute with the prolate differential
+  operator: the prolate weight `1 - t^2` vanishes precisely at the ends of the band, so no boundary
+  term survives.  The commuting identity now reduces to the kernel computation
+  `L_t exp(i c x t) = L_x exp(i c x t)`, which is symmetric in `x` and `t` by inspection, plus this
+  symmetry to move the operator across the integral.
+
+  Neither mathlib nor the corpus carried this degenerate Lagrange identity.
+
+- 2026-08-08 (ninth instalment) -- **The kernel half of the commuting-operator step is built.**
+  `HTGeometry/ProlateKernelSymmetry.lean`, unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`, wired into `GaloisForLFunctions.HTGeometry`.
+
+  * `prolateKernel c x t = exp (i c x t)` and the symbol
+    `prolateSymbol c x t = -2 i c x t - c^2 x^2 - c^2 t^2 + c^2 x^2 t^2`, with
+    **`prolateSymbol_symm`** and `prolateKernel_symm`: both are symmetric in `x` and `t`.
+  * **`hasDerivAt_prolateFlux`** -- the flux derivative of the kernel:
+    `d/dt [(1 - t^2) d/dt K] = (prolateSymbol + c^2 t^2) K`, so subtracting the operator's own
+    `c^2 t^2 K` leaves exactly `prolateSymbol * K` (`prolateOperator_kernel`).
+  * **`prolateOperator_kernel_symm`** -- therefore `L_t K = L_x K`.
+
+  Both halves of the commuting-operator step now exist: this kernel identity, and
+  `integral_mul_sturm_symm` from the previous instalment, which moves the Sturm operator across the
+  integral because `1 - t^2` vanishes at the ends of the band.  What remains is to combine them
+  against the corpus representative -- differentiating under the integral sign in
+  `timeBandEigenPointwiseSource_unitScale_eigen` -- which turns its integral eigen-equation into the
+  prolate differential equation and instantiates `(19e)`.
+
+- 2026-08-08 (tenth instalment) -- **Correction to the previous entry, and the missing logical
+  step.**
+
+  *Correction.*  The ninth instalment said that combining the kernel identity with Sturm symmetry
+  "turns the integral eigen-equation into the prolate differential equation".  That is too strong.
+  What the two halves give is **commutation**: `L` and the finite Fourier operator commute, so `L f`
+  is again an eigenfunction of the integral operator with the *same* eigenvalue.  Concluding
+  `L f = mu f` -- which is what `(19e)` needs -- additionally requires that eigenvalue to be simple.
+  Commutation alone does not yield the differential equation.
+
+  `HTGeometry/CommutingEigenvector.lean` supplies that step, unconditional and axiom-clean (the
+  first two results need only `[propext, Quot.sound]`):
+
+  * **`eigen_of_commute`** -- commuting operators preserve each other's eigenspaces: if `T f = chi f`
+    and `T L = L T` then `T (L f) = chi (L f)`.
+  * **`exists_smul_of_commute_of_eigenspace_le_span`** -- if in addition the `chi`-eigenspace is
+    spanned by `f`, then `L f = mu f` for some scalar.
+  * `isEigenvector_of_commute_of_simple` -- the same as a vanishing equation.
+
+  So the route to `(19e)` now has three named ingredients, two of them built: the kernel identity
+  (ninth instalment), Sturm symmetry with vanishing weight (eighth), and this reduction.  The
+  analytic work still outstanding is differentiation under the integral sign, which is what actually
+  produces the commutation from the two symmetries, together with simplicity of the eigenvalue in
+  the actual constrained spectrum -- the latter being the same `h_0, h_4` identification the card
+  already lists as open.
+
+- 2026-08-08 (eleventh instalment) -- **Kernel estimates for the differentiation step**, and an
+  honest note on what did not land.  `HTGeometry/ProlateKernelSymmetry.lean`, axiom-clean.
+
+  * **`norm_prolateKernel`** -- the kernel is unimodular, its exponent being purely imaginary.
+  * **`hasDerivAt_prolateKernel_fst`** -- the kernel differentiated in its *first* variable, which
+    is the one the transform is differentiated in.  It follows from the second-variable derivative
+    by the kernel symmetry, with no separate computation.
+  * **`norm_prolateKernel_deriv_le`** -- the parameter derivative is bounded by the bandwidth on the
+    band, `||i c t K|| <= |c|` for `|t| <= 1`.  This is the dominating estimate the
+    differentiation-under-the-integral theorem needs.
+
+  *What did not land.*  The differentiation-under-the-integral statement itself was attempted and
+  is not yet proved: assembling
+  `intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le` against this data ran into
+  three separate frictions -- `IntervalIntegrable.1` produces a measurability statement on
+  `Ioc (-1) 1` while the theorem wants `uIoc`, the dominating-bound rearrangement needs the norm
+  split in a different associativity, and the elaborator exceeds the heartbeat limit on the final
+  application.  None of these is a mathematical obstruction; all three are ordinary Lean friction.
+  The partially built module was removed rather than left in the tree, so nothing is wired to a
+  non-compiling file.  The three estimates above, which are the mathematical content of that step,
+  are proved and kept.
+
+- 2026-08-08 (twelfth instalment) -- **Differentiation under the integral is proved**, closing the
+  step the eleventh instalment failed to land.  `HTGeometry/ProlateTransformDeriv.lean`,
+  unconditional, axioms `[propext, Classical.choice, Quot.sound]`, wired into
+  `GaloisForLFunctions.HTGeometry`.
+
+  * `continuous_prolateKernel_snd`, and **`hasDerivAt_prolateTransform`**: for an integrable `f` on
+    the band, `y -> int_(-1)^(1) K(c,y,t) f(t) dt` is differentiable with derivative
+    `int i c t K(c,y,t) f(t) dt`, obtained by differentiating under the integral sign.
+
+  The three frictions recorded last time were all real and all mechanical.  For the record:
+  `IntervalIntegrable.1` measurability lands on `Ioc`, so `Set.uIoc_of_le` must be rewritten in
+  first; the domination hypothesis wants the plain `forall-ae t, t in uIoc -> ...` shape rather than
+  a restricted-measure `ae`; the derivative family `F'` and the bound must be passed explicitly or
+  unification blows the heartbeat limit; and the leading argument of the interval version is a
+  neighbourhood `Metric.ball x 1 in nhds x`, not a positive radius.  The name is also overloaded --
+  the `MeasureTheory` version takes `Integrable ... restrict` and must not be picked.
+
+  With this, all four ingredients of the commuting-operator route are theorems: the kernel identity,
+  Sturm symmetry with vanishing weight, differentiation under the integral, and the simple
+  eigenvalue reduction.  What remains for `(19e)` is the bookkeeping that composes them against the
+  corpus representative, plus the eigenvalue-simplicity input, which is the card's pre-existing
+  `h_0, h_4` identification gate.
+
+- 2026-08-08 (thirteenth instalment) -- **The prolate operator is pushed inside the transform.**
+  `HTGeometry/ProlateTransformDeriv.lean`, axiom-clean.
+
+  * `intervalIntegrable_mul_kernelFactor`, `intervalIntegrable_kernel_mul`,
+    `prolateTransform_factor` -- the bookkeeping that lets the parameter factor be absorbed into the
+    integrand.
+  * **`hasDerivAt_prolateTransform_deriv`** -- the second derivative of the transform, obtained by
+    applying the differentiation theorem to `i c t f(t)` rather than repeating the analysis.
+  * **`hasDerivAt_prolateTransformFlux`** -- the prolate flux of the transform:
+
+    ```text
+    d/dx [ (1 - x^2) d/dx (F f)(x) ]
+      = int_(-1)^(1) (prolateSymbol(c,x,t) + c^2 x^2) K(c,x,t) f(t) dt,
+    ```
+
+    so subtracting the operator's own `c^2 x^2 (F f)(x)` leaves exactly
+    `int prolateSymbol(c,x,t) K(c,x,t) f(t) dt`.  The whole prolate operator has been moved inside
+    the integral and become the symbol -- the same shape as `prolateOperator_kernel` for the bare
+    kernel.
+
+  Combined with `prolateSymbol_symm`, this says `L_x F f = int (L_t K) f`, which is one Sturm
+  integration by parts (`integral_mul_sturm_symm`) away from `F (L f)`.  That last composition, plus
+  the eigenvalue-simplicity input, is all that separates `(19e)` from its instantiation.
+
+- 2026-08-08 (fourteenth instalment) -- **The commuting-operator identity is assembled.**
+
+  * `HTGeometry/SturmSelfAdjoint.lean` generalised from real-valued to any normed *commutative*
+    algebra over the reals, which is what the complex kernel needs; the proof is unchanged, since
+    mathlib's interval integration by parts already lives in that generality.
+  * **`prolateSymbol_integral_eq`** (`ProlateTransformDeriv.lean`) -- the identity itself:
+
+    ```text
+    int_(-1)^(1) f(t) (L_t K)(x,t) dt = int_(-1)^(1) (L f)(t) K(x,t) dt,
+    ```
+
+    where `L_t K` is written through the symbol.  Composed with
+    `hasDerivAt_prolateTransformFlux`, which puts `L_x (F f)` into exactly that left-hand form, and
+    with `prolateSymbol_symm`, this says the prolate operator commutes with the finite Fourier
+    transform.
+
+  Every analytic ingredient of the route is now a theorem in the tree: the kernel identity, the
+  Sturm symmetry, differentiation under the integral, the operator pushed inside the transform, and
+  this transfer.  What `(19e)` still waits on is not analysis but the card's own open gate --
+  simplicity of the eigenvalue, i.e. the `h_0, h_4` identification -- after which
+  `CommutingEigenvector.exists_smul_of_commute_of_eigenspace_le_span` converts the commutation into
+  the differential equation and `boundedVariationOn_of_secondOrder` finishes.
+
+  One correction to the record: the derivative appearing in the transfer is the kernel's derivative
+  in its *second* variable, carrying the factor `i c x`, not `i c t`.  The first-variable derivative
+  is what the differentiation-under-the-integral step uses.  Both are proved; they are not
+  interchangeable.
+
+- 2026-08-08 (fifteenth instalment) -- **The simplicity engine is built.**
+  `HTGeometry/SturmWronskian.lean`, unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`, wired into `GaloisForLFunctions.HTGeometry`.
+
+  * **`hasDerivAt_sturmWronskian`** -- for two solutions of the *same* equation `(p u')' = q u`, the
+    weighted Wronskian `W = u (p v') - v (p u')` has vanishing derivative, because
+    `W' = u (p v')' - v (p u')' = u q v - v q u = 0`.
+  * **`sturmWronskian_eq_of_hasDerivAt`** -- hence `W` is constant on the interval.
+
+  This is the standard route to simplicity of a Sturm eigenvalue, and therefore the last generic
+  ingredient the `(19e)` chain was missing: if two eigenfunctions satisfy the same boundary
+  condition the Wronskian vanishes there, hence everywhere, and they are proportional.  What is left
+  is not generic -- it is the card's own `h_0, h_4` gate, which asks *which* classical modes sit in
+  the actual constrained spectrum, a question about the specific operator rather than about
+  Sturm--Liouville theory.
+
+  A note on scope: `SmallTranslationDerivInvariance.lean` mentions a Wronskian only to record that
+  its own argument does not need one; there is no duplication.
+
+- 2026-08-08 (sixteenth instalment) -- **Simplicity is completed from the Wronskian.**  Same module,
+  axiom-clean.
+
+  * **`div_eq_of_sturmWronskian_eq_zero`** -- where the first solution and the weight are nonzero, a
+    vanishing Wronskian makes the quotient `v/u` have vanishing derivative, hence constant.  The
+    quotient rule turns `p (u v' - v u') = 0` with `p != 0` into exactly the numerator of
+    `(v/u)'`.
+  * **`eq_const_mul_of_sturmWronskian_eq_zero`** -- therefore `v = (v(a)/u(a)) u` throughout: the
+    two solutions are proportional.
+
+  The generic Sturm--Liouville simplicity argument is now complete in the tree, from the Wronskian's
+  vanishing derivative through to proportionality.  Everything `(19e)` needs that is a statement
+  about Sturm--Liouville operators in general has been built; the only outstanding input is the
+  card's own `h_0, h_4` gate, which is a question about the actual constrained spectrum rather than
+  about the general theory.
+
+- 2026-08-08 (seventeenth instalment) -- **Simplicity is automatic at a singular endpoint.**  Same
+  module, axiom-clean.
+
+  * **`sturmWronskian_eq_zero_of_weight_eq_zero`** -- if the weight vanishes at an endpoint, the
+    Wronskian vanishes there, and being constant it vanishes identically.  No boundary condition has
+    to be imposed by hand.
+  * **`eq_const_mul_of_weight_eq_zero`** -- hence two solutions of the same Sturm equation on such
+    an interval are proportional.
+
+  This matters for the card because the prolate weight is `1 - t^2`, which vanishes exactly at the
+  ends of the band.  Simplicity of the prolate eigenvalue is therefore not an extra assumption to be
+  supplied from classical spheroidal theory: it follows from the singularity of the equation at the
+  band edges, by the same vanishing that made the finite Fourier transform commute with the operator
+  in the eighth instalment.  The two facts have a common source.
+
+  What this does *not* do is settle the card's `h_0, h_4` gate, which asks which classical modes
+  occupy the actual constrained spectrum -- a question about that operator's eigenvalues, not about
+  the dimension of its eigenspaces.  But the simplicity input that `(19e)` needed is now a theorem
+  rather than a hypothesis.
