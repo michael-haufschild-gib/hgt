@@ -150,6 +150,7 @@ import GaloisForLFunctions.RHTower.BesselBoundWitnesses
 import GaloisForLFunctions.RHTower.BesselJZeroConstant
 import GaloisForLFunctions.RHTower.BesselJZeroEnvelope
 import GaloisForLFunctions.RHTower.BesselJOneRecurrence
+import GaloisForLFunctions.RHTower.BesselJOneEnvelope
 import GaloisForLFunctions.RHTower.BesselJZeroODE
 import GaloisForLFunctions.RHTower.BesselJZeroPhase
 import GaloisForLFunctions.RHTower.BesselJZeroSecondSolution
@@ -6330,3 +6331,4 @@ import GaloisForLFunctions.RHTower.Sieve.LiouvilleCesaroUnconditional
 import GaloisForLFunctions.RHTower.Sieve.CesaroDyadicTrivialCap
 import GaloisForLFunctions.RHTower.Sieve.CoefficientFreeCap
 import GaloisForLFunctions.RHTower.Sieve.DampedSizeFloor
+import GaloisForLFunctions.RHTower.Sieve.UniformDistanceAverage

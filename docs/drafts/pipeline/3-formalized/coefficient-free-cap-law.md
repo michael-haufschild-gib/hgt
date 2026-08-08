@@ -91,3 +91,27 @@ for every admissible `σ` and `δ`, whatever zero-free region supplies the dista
 term is never `o(1)`, so that chain cannot reach `o(N)` either — and the reason is now separated from the
 coefficient-free cap: the damping available is bounded by the total prime mass, while the truncation tail
 forces the abscissa up and `e^{2(σ−1)log z}` charges it back.
+
+## The uniform distance, and why the borderline is a theorem
+
+The floor above used `δ² ≤ 2∑_p 1/p`, which is attained at a *single* frequency — for `f(p) = −1` at
+`t = 0`. A damped route needs a level uniform over a whole range, and averaging over the range halves it.
+Expanding `Re(f(p)·conj(charFn t p)) = Re(f(p))cos(t log p) + Im(f(p))sin(t log p)`
+(`UniformDistanceAverage.re_mul_conj_charFn`) and integrating the two elementary antiderivatives,
+
+`|∫_0^T Re(f(p)·conj(charFn t p)) dt| ≤ 3/log p`
+
+(`abs_integral_re_mul_conj_charFn_le`, unconditional for every `p ≥ 2` and every bounded `f`). Summing
+against `1/p`, the average of the distance over `[0,T]` is at most
+`∑_{p ∈ P}1/p + (3/T)∑_{p ∈ P}1/(p log p)`, so some frequency in the range attains that: the uniform level
+is the prime mass, not twice it.
+
+That is what makes the Euler bound's borderline a theorem rather than a limitation of the estimate. With
+`e^{−δ²} ≳ e^{−∑_p 1/p} ≍ (log z)^{-1}`, the first part of `dampedSize` is `≳ (log z/A)e^{2A}(log z)^{-1}`,
+whose minimum over `A = (σ−1)log z` is `Θ(1)`. So even with the truncation tail removed — the one part that
+was fixable — the damped analytic term is `Θ(x^σ)`, exactly the trivial size. The pointwise Euler route
+sits on the borderline by construction, and no choice of abscissa moves it off.
+
+What remains open is the tail sum `∑_p 1/(p log p) = O(1)`, needed to make the error term above absolute
+rather than `O(logLog z/T)`; by Mertens per dyadic block it is `≍ ∑_k 1/k²`, so it is a bounded quantity,
+but the corpus does not yet carry it.
