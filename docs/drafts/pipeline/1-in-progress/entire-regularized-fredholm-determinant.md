@@ -186,6 +186,9 @@ formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
 | 11 | **Cauchy's estimate for the first derivative** from a sup bound | `norm_deriv_le_of_forall_norm_le` |
 | 11 | **derivatives converge uniformly on a smaller disc** | `tendstoUniformlyOn_deriv_of_tendstoUniformlyOn` |
 | 11 | the pointwise bound on a difference of logarithmic derivatives | `norm_logDeriv_sub_le` |
+| 11 | **the contour integrals of the logarithmic derivatives converge** | `tendsto_circleIntegral_logDeriv` |
+| 11 | a convergent family of naturals is eventually constant | `eventually_eq_of_tendsto_natCast` |
+| 11 | **counting Hurwitz**: the eventual zero count of the approximants is the order of the limit | `eventually_zeroCount_eq_analyticOrder` |
 | — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
@@ -224,13 +227,13 @@ formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
       The several-zero case for the **block determinants** is now **complete**:
       `circleIntegral_logDeriv_finiteDet2` says the contour integral of their logarithmic
       derivative is `2 pi i` times the number of Schur eigenvalues `t_i` with `-1/t_i` inside the
-      circle — the eigenvalue count with algebraic multiplicity.  The two analytic inputs to the
-      limit passage are also proved: `tendstoUniformlyOn_deriv_of_tendstoUniformlyOn` (derivatives
-      converge uniformly on a smaller disc, by Cauchy's estimate
-      `norm_deriv_le_of_forall_norm_le`) and `norm_logDeriv_sub_le` (the pointwise bound
-      `2 eta/m + 2 M eta/m^2` on the difference of logarithmic derivatives).  **What remains is only
-      their assembly** into `∮ f_n'/f_n -> ∮ f'/f`, via
-      `circleIntegral.norm_integral_le_of_norm_le_const`
+      circle — the eigenvalue count with algebraic multiplicity.  The limit passage is also
+      complete: `tendsto_circleIntegral_logDeriv` and **`eventually_zeroCount_eq_analyticOrder`**
+      (counting Hurwitz).  **What remains is only to feed the theta data into it**: apply
+      `eventually_zeroCount_eq_analyticOrder` with `F s = finiteDet2 (-(blockMatrix K s))`,
+      `f = entireDet2 K`, `n s` the block eigenvalue count from
+      `circleIntegral_logDeriv_finiteDet2`, and `huniform` from
+      `tendstoUniformlyOn_finiteDet2_entireDet2` restricted to a disc around `z_0`
 - [ ] Plemelj identity on the full resolvent set
 - [ ] 1 -> 2  paper proof complete
 - [ ] 2 -> 3  Lean

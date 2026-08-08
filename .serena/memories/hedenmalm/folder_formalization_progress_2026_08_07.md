@@ -1890,3 +1890,29 @@ purely assembly: combine these with `circleIntegral_logDeriv_finiteDet2`,
 `circleIntegral_logDeriv_eq_analyticOrder`, `tendstoUniformlyOn_finiteDet2_entireDet2` and
 `exists_radius_isolating`, bounding the contour integral of the difference by
 `circleIntegral.norm_integral_le_of_norm_le_const`.
+
+### 2026-08-08 — counting Hurwitz is complete
+
+`HTGeometry/LogDerivUniformLimit.lean` now also carries:
+
+```text
+tendsto_circleIntegral_logDeriv :
+  F_a -> f uniformly on closedBall c R, f ≠ 0 on sphere c r, r < R
+  -> ∮ logDeriv (F a) -> ∮ logDeriv f
+
+eventually_zeroCount_eq_analyticOrder :
+  ... + analyticOrderAt f c = d + (∀ z ≠ c, f z ≠ 0)
+      + (∀ a, ∮ logDeriv (F a) = 2 pi I (n a))
+  -> ∀ᶠ a, n a = d
+```
+
+plus `differentiable_deriv_of_differentiable` and `eventually_eq_of_tendsto_natCast`
+(a convergent family of naturals is eventually constant — `abs_lt` then `omega`).
+
+**Mathlib has no Hurwitz at all; both the zero-persistence half and this counting half are now
+corpus-owned.**  The only step left for
+`order of vanishing of det_2 = algebraic multiplicity` is to instantiate
+`eventually_zeroCount_eq_analyticOrder` with `F s = finiteDet2 (-(blockMatrix K s))`,
+`f = entireDet2 K`, `n s` from `circleIntegral_logDeriv_finiteDet2`, and `huniform` from
+`tendstoUniformlyOn_finiteDet2_entireDet2` (restrict `closedBall z_0 R` into `closedBall 0 rho`
+with `TendstoUniformlyOn.mono`, as in `eventually_exists_blockEigenvalue_near`).
