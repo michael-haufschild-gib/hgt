@@ -509,3 +509,46 @@ theorem analyticOnNhd_of_dzbarAt_eq_zero_on (hF : Differentiable ℝ F)
 end LocalCauchyRiemann
 
 end HTGeometry
+
+namespace HTGeometry
+
+open Complex
+
+section HolomorphicSlices
+
+variable {m : ℕ}
+
+/-- The update of a point in one coordinate is an affine function of that coordinate. -/
+theorem update_eq_affine (z : Fin m → ℂ) (j : Fin m) :
+    (fun t : ℂ => Function.update z j t)
+      = fun t : ℂ => z + (t - z j) • (Pi.single j (1 : ℂ) : Fin m → ℂ) := by
+  funext t
+  funext i
+  by_cases hi : i = j
+  · subst hi
+    rw [Function.update_self]
+    show t = z i + (t - z i) • (Pi.single i (1 : ℂ) : Fin m → ℂ) i
+    rw [Pi.single_eq_same, smul_eq_mul, mul_one]
+    ring
+  · rw [Function.update_of_ne hi]
+    show z i = z i + (t - z j) • (Pi.single j (1 : ℂ) : Fin m → ℂ) i
+    rw [Pi.single_eq_of_ne hi, smul_zero, add_zero]
+
+theorem differentiableAt_update (z : Fin m → ℂ) (j : Fin m) (t : ℂ) :
+    DifferentiableAt ℂ (fun s : ℂ => Function.update z j s) t := by
+  rw [update_eq_affine]
+  exact (differentiableAt_const z).add
+    ((differentiableAt_id.sub (differentiableAt_const _)).smul_const _)
+
+/-- **A holomorphic function has vanishing antiholomorphic derivatives.** -/
+theorem dzbarAt_eq_zero_of_differentiableAt {F : (Fin m → ℂ) → ℂ} {z : Fin m → ℂ}
+    (hF : DifferentiableAt ℂ F z) (j : Fin m) : dzbarAt F j z = 0 := by
+  show dzbar (dbarSlice F j z) (z j) = 0
+  refine (dzbar_eq_zero_of_differentiableAt ?_).1
+  refine DifferentiableAt.comp (z j) ?_ (differentiableAt_update z j (z j))
+  rw [Function.update_eq_self]
+  exact hF
+
+end HolomorphicSlices
+
+end HTGeometry
