@@ -2802,3 +2802,24 @@ So `‖∑_{n≤N}f‖/N ≲ (log N)^{1/4+}·e^{−δ²}/δ² + log log N/log N`
 weight's mass near `p = N`.  Two concrete next steps, both arithmetic: split the outer weight at `√N`, and
 replace the sieve count by a large-values count (`DirichletLargeValues`), whose gain is measure-theoretic
 rather than level-limited.
+
+## The universal Perron law, and the pointwise low range through to the end
+
+`norm_sum_Icc_triple_of_analytic_le` (in `TripleConvolutionPerronSum.lean`) is the Perron step stripped of
+the analytic estimate: the truncated Perron formula, the identification of the polynomial with the product
+of the three series, and the triangle inequality, with the vertical integral left as a parameter `P`:
+
+`‖∑_{n ≤ min(M_AM_BM_g) N} (A ⍟ (B ⍟ g))(n)‖ ≤ 2(N+1)B_c x^σ(1 + log M')/(πT) + P/2π`.
+
+Every analytic estimate of the vertical integral — whatever device it uses on the flanks or the low range
+— yields a bound on the partial sum through this one law.  `norm_sum_Icc_triple_le` is now a six-line
+corollary of it, and the pointwise-low variant is another:
+
+`GhsPerronL1Low.lean`: `dampedL1_nonneg`, `norm_LSeries_line_le_dampedL1`, and
+`norm_sum_Icc_ghsTriple_l1_low_le` — the GHS Perron step whose flanks carry the sieve mean squares and
+whose low range carries the two damped `ℓ¹` masses `dampedL1 (ghsOuter f N₀) …`, `dampedL1 (ghsInner f M) …`.
+
+Why this is the better low range: the `ℓ¹` mass of a prime weight sums `1/p` (giving `log log N₀` for the
+outer weight and `log M` for the inner one), while the square root of the mean square sums `1/p` against
+`n`, giving `√(log N₀)` and `log M`.  On a bounded low range the pointwise product is therefore a
+logarithm cheaper, and the optimum over `t₀` improves from `(log N)^{3/2}` to `(log N)^{5/4}`.

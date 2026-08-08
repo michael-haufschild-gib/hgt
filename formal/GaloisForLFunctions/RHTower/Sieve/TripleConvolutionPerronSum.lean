@@ -51,9 +51,101 @@ theorem LSeries_convolution_triple_of_support {A B g : ℕ → ℂ} {MA MB Mg : 
     LSeries_convolution' (LSeriesSummable_of_support hBsupp w)
       (LSeriesSummable_of_support hgsupp w), mul_assoc]
 
-/-- **The partial sum of a triple convolution.**  Two prime-supported factors through the sieve, a
-finitely supported third factor through a bound on its size on the line, and the sharp Perron formula
-with its half-integer truncation error. -/
+/-- **The Perron step of a triple convolution, against any bound on its vertical integral.**  The
+truncated Perron formula, the identification of the Dirichlet polynomial with the product of the three
+series, and the triangle inequality — with the vertical integral left as a parameter.  Every analytic
+estimate of that integral, whatever device it uses on the low range or the flanks, yields a bound on the
+partial sum through this one law. -/
+theorem norm_sum_Icc_triple_of_analytic_le {A B g : ℕ → ℂ} {MA MB Mg N : ℕ}
+    (hAsupp : ∀ n : ℕ, A n ≠ 0 → n ∈ Finset.Icc 1 MA)
+    (hBsupp : ∀ n : ℕ, B n ≠ 0 → n ∈ Finset.Icc 1 MB)
+    (hgsupp : ∀ n : ℕ, g n ≠ 0 → n ∈ Finset.Icc 1 Mg)
+    (hN : 1 ≤ N) {Bc P σ t₀ : ℝ}
+    (hBc : ∀ n, ‖(LSeries.convolution A (LSeries.convolution B g)) n‖ ≤ Bc)
+    (hσ : 1 ≤ σ) (ht₀ : 1 ≤ t₀) (K : ℕ)
+    (hP : (∫ t in (-(t₀ * 2 ^ K))..(t₀ * 2 ^ K),
+        ‖LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
+            * LSeries g ((σ : ℂ) + (t : ℝ) * I)
+            * ((((N : ℝ) + 1 / 2 : ℝ) : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I)
+                / ((σ : ℂ) + (t : ℝ) * I))‖) ≤ P) :
+    ‖∑ n ∈ Finset.Icc 1 (min (MA * (MB * Mg)) N),
+        (LSeries.convolution A (LSeries.convolution B g)) n‖
+      ≤ 2 * ((N : ℝ) + 1) * Bc * (((N : ℝ) + 1 / 2)) ^ σ
+              * (1 + Real.log ((MA * (MB * Mg) : ℕ) : ℝ)) / (Real.pi * (t₀ * 2 ^ K))
+          + (1 / (2 * Real.pi)) * P := by
+  have hσ0 : (0 : ℝ) < σ := by linarith
+  have ht₀0 : (0 : ℝ) < t₀ := by linarith
+  have hone : (1 : ℝ) ≤ 2 ^ K := one_le_pow₀ (by norm_num)
+  have hT : (0 : ℝ) < t₀ * 2 ^ K := by positivity
+  have hTle : -(t₀ * 2 ^ K) ≤ t₀ * 2 ^ K := by linarith
+  have hN0 : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hx : (0 : ℝ) < (N : ℝ) + 1 / 2 := by linarith
+  set x : ℝ := (N : ℝ) + 1 / 2 with hxdef
+  set T : ℝ := t₀ * 2 ^ K with hTdef
+  set c : ℕ → ℂ := LSeries.convolution A (LSeries.convolution B g) with hc
+  have hBg : ∀ k : ℕ, (LSeries.convolution B g) k ≠ 0 → k ∈ Finset.Icc 1 (MB * Mg) :=
+    fun k hk => convolution_mem_Icc_of_support_mul hBsupp hgsupp hk
+  have hcsupp : ∀ k : ℕ, c k ≠ 0 → k ∈ Finset.Icc 1 (MA * (MB * Mg)) := by
+    intro k hk
+    rw [hc] at hk
+    exact convolution_mem_Icc_of_support_mul hAsupp hBg hk
+  have hcs0 : (0 : ℕ) ∉ Finset.Icc 1 (MA * (MB * Mg)) := by simp
+  have hPerron := norm_sum_Icc_sub_perron_integral_le (c := c) (M := MA * (MB * Mg)) (N := N)
+    hN hBc (σ := σ) (T := T) hσ hT
+  have hbridge : ∀ t : ℝ,
+      (∑ n ∈ Finset.Icc 1 (MA * (MB * Mg)), c n * (n : ℂ) ^ (-((σ : ℂ) + (t : ℝ) * I)))
+          * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))
+        = LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
+            * LSeries g ((σ : ℂ) + (t : ℝ) * I)
+            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I)) := by
+    intro t
+    rw [sum_mul_cpow_neg_eq_LSeries hcs0 hcsupp, hc,
+      LSeries_convolution_triple_of_support hAsupp hBsupp hgsupp]
+  rw [intervalIntegral.integral_congr (g := fun t : ℝ =>
+      LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
+          * LSeries g ((σ : ℂ) + (t : ℝ) * I)
+          * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I)))
+    (fun t _ => hbridge t)] at hPerron
+  have hnormint : ‖∫ t in (-T)..T,
+        LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
+            * LSeries g ((σ : ℂ) + (t : ℝ) * I)
+            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖
+      ≤ ∫ t in (-T)..T,
+        ‖LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
+            * LSeries g ((σ : ℂ) + (t : ℝ) * I)
+            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖ :=
+    intervalIntegral.norm_integral_le_integral_norm hTle
+  have hscale : ‖((1 / (2 * Real.pi) : ℝ) : ℂ) * ∫ t in (-T)..T,
+        LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
+            * LSeries g ((σ : ℂ) + (t : ℝ) * I)
+            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖
+      ≤ (1 / (2 * Real.pi)) * P := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (by positivity : (0 : ℝ) ≤ 1 / (2 * Real.pi))]
+    exact mul_le_mul_of_nonneg_left (le_trans hnormint hP) (by positivity)
+  have htri : ‖∑ n ∈ Finset.Icc 1 (min (MA * (MB * Mg)) N), c n‖
+      ≤ ‖(∑ n ∈ Finset.Icc 1 (min (MA * (MB * Mg)) N), c n) - ((1 / (2 * Real.pi) : ℝ) : ℂ) *
+            ∫ t in (-T)..T, LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
+              * LSeries g ((σ : ℂ) + (t : ℝ) * I)
+              * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖
+          + ‖((1 / (2 * Real.pi) : ℝ) : ℂ) *
+            ∫ t in (-T)..T, LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
+              * LSeries g ((σ : ℂ) + (t : ℝ) * I)
+              * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖ := by
+    have := norm_add_le ((∑ n ∈ Finset.Icc 1 (min (MA * (MB * Mg)) N), c n)
+        - ((1 / (2 * Real.pi) : ℝ) : ℂ) * ∫ t in (-T)..T,
+          LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
+            * LSeries g ((σ : ℂ) + (t : ℝ) * I)
+            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I)))
+      (((1 / (2 * Real.pi) : ℝ) : ℂ) * ∫ t in (-T)..T,
+        LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
+          * LSeries g ((σ : ℂ) + (t : ℝ) * I)
+          * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I)))
+    simpa using this
+  linarith [hPerron, hscale, htri]
+
+/-- **The partial sum of a triple convolution, through the mean-square analytic bound.**  The universal
+law at the symmetric mean-square estimate of the vertical integral. -/
 theorem norm_sum_Icc_triple_le {A B g : ℕ → ℂ} {MA MB Mg N : ℕ}
     (hAsupp : ∀ n : ℕ, A n ≠ 0 → n ∈ Finset.Icc 1 MA)
     (hAprime : ∀ n ∈ Finset.Icc 1 MA, A n ≠ 0 → n.Prime)
@@ -79,93 +171,15 @@ theorem norm_sum_Icc_triple_le {A B g : ℕ → ℂ} {MA MB Mg N : ℕ}
                             + sieveMeanSquareRate A (Finset.Icc 1 MA) σ zA YA * t₀)
                           * Real.sqrt (sieveMeanSquareConst B (Finset.Icc 1 MB) σ YB
                             + sieveMeanSquareRate B (Finset.Icc 1 MB) σ zB YB * t₀))) := by
-  have hσ0 : (0 : ℝ) < σ := by linarith
-  have ht₀0 : (0 : ℝ) < t₀ := by linarith
-  have hone : (1 : ℝ) ≤ 2 ^ K := one_le_pow₀ (by norm_num)
-  have hT : (0 : ℝ) < t₀ * 2 ^ K := by positivity
-  have hTle : -(t₀ * 2 ^ K) ≤ t₀ * 2 ^ K := by linarith
-  have hN0 : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
-  have hx : (0 : ℝ) < (N : ℝ) + 1 / 2 := by linarith
   have hA0 : (0 : ℕ) ∉ Finset.Icc 1 MA := by simp
   have hB0 : (0 : ℕ) ∉ Finset.Icc 1 MB := by simp
   have hg0 : (0 : ℕ) ∉ Finset.Icc 1 Mg := by simp
-  set x : ℝ := (N : ℝ) + 1 / 2 with hxdef
-  set T : ℝ := t₀ * 2 ^ K with hTdef
-  set c : ℕ → ℂ := LSeries.convolution A (LSeries.convolution B g) with hc
-  -- the convolution is supported in `[1, M_A M_B M_g]`
-  have hBg : ∀ k : ℕ, (LSeries.convolution B g) k ≠ 0 → k ∈ Finset.Icc 1 (MB * Mg) :=
-    fun k hk => convolution_mem_Icc_of_support_mul hBsupp hgsupp hk
-  have hcsupp : ∀ k : ℕ, c k ≠ 0 → k ∈ Finset.Icc 1 (MA * (MB * Mg)) := by
-    intro k hk
-    rw [hc] at hk
-    exact convolution_mem_Icc_of_support_mul hAsupp hBg hk
-  have hcs0 : (0 : ℕ) ∉ Finset.Icc 1 (MA * (MB * Mg)) := by simp
-  -- the Perron formula, with the polynomial recognised as the product of the three series
-  have hP := norm_sum_Icc_sub_perron_integral_le (c := c) (M := MA * (MB * Mg)) (N := N)
-    hN hBc (σ := σ) (T := T) hσ hT
-  have hbridge : ∀ t : ℝ,
-      (∑ n ∈ Finset.Icc 1 (MA * (MB * Mg)), c n * (n : ℂ) ^ (-((σ : ℂ) + (t : ℝ) * I)))
-          * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))
-        = LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
-            * LSeries g ((σ : ℂ) + (t : ℝ) * I)
-            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I)) := by
-    intro t
-    rw [sum_mul_cpow_neg_eq_LSeries hcs0 hcsupp, hc,
-      LSeries_convolution_triple_of_support hAsupp hBsupp hgsupp]
-  rw [intervalIntegral.integral_congr (g := fun t : ℝ =>
-      LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
-          * LSeries g ((σ : ℂ) + (t : ℝ) * I)
-          * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I)))
-    (fun t _ => hbridge t)] at hP
-  -- the vertical integral
-  have hgc : Continuous fun t : ℝ => LSeries g ((σ : ℂ) + (t : ℝ) * I) :=
-    continuous_LSeries_line_of_support hg0 hgsupp σ
-  have hanalytic := integral_symm_norm_perron_triple_le hA0 hAsupp hAprime hB0 hBsupp hBprime
-    hσ0 hx ht₀ hV hgc zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K hgV
-  have hnormint : ‖∫ t in (-T)..T,
-        LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
-            * LSeries g ((σ : ℂ) + (t : ℝ) * I)
-            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖
-      ≤ ∫ t in (-T)..T,
-        ‖LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
-            * LSeries g ((σ : ℂ) + (t : ℝ) * I)
-            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖ :=
-    intervalIntegral.norm_integral_le_integral_norm hTle
-  have hscale : ‖((1 / (2 * Real.pi) : ℝ) : ℂ) * ∫ t in (-T)..T,
-        LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
-            * LSeries g ((σ : ℂ) + (t : ℝ) * I)
-            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖
-      ≤ (1 / (2 * Real.pi))
-          * (2 * perronVerticalProductBound A B (Finset.Icc 1 MA) (Finset.Icc 1 MB) σ x t₀ V
-                zA YA zB YB K
-              + (V * x ^ σ / σ)
-                  * (Real.sqrt (sieveMeanSquareConst A (Finset.Icc 1 MA) σ YA
-                        + sieveMeanSquareRate A (Finset.Icc 1 MA) σ zA YA * t₀)
-                      * Real.sqrt (sieveMeanSquareConst B (Finset.Icc 1 MB) σ YB
-                        + sieveMeanSquareRate B (Finset.Icc 1 MB) σ zB YB * t₀))) := by
-    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
-      abs_of_nonneg (by positivity : (0 : ℝ) ≤ 1 / (2 * Real.pi))]
-    exact mul_le_mul_of_nonneg_left (le_trans hnormint hanalytic) (by positivity)
-  have htri : ‖∑ n ∈ Finset.Icc 1 (min (MA * (MB * Mg)) N), c n‖
-      ≤ ‖(∑ n ∈ Finset.Icc 1 (min (MA * (MB * Mg)) N), c n) - ((1 / (2 * Real.pi) : ℝ) : ℂ) *
-            ∫ t in (-T)..T, LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
-              * LSeries g ((σ : ℂ) + (t : ℝ) * I)
-              * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖
-          + ‖((1 / (2 * Real.pi) : ℝ) : ℂ) *
-            ∫ t in (-T)..T, LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
-              * LSeries g ((σ : ℂ) + (t : ℝ) * I)
-              * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖ := by
-    have := norm_add_le ((∑ n ∈ Finset.Icc 1 (min (MA * (MB * Mg)) N), c n)
-        - ((1 / (2 * Real.pi) : ℝ) : ℂ) * ∫ t in (-T)..T,
-          LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
-            * LSeries g ((σ : ℂ) + (t : ℝ) * I)
-            * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I)))
-      (((1 / (2 * Real.pi) : ℝ) : ℂ) * ∫ t in (-T)..T,
-        LSeries A ((σ : ℂ) + (t : ℝ) * I) * LSeries B ((σ : ℂ) + (t : ℝ) * I)
-          * LSeries g ((σ : ℂ) + (t : ℝ) * I)
-          * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I)))
-    simpa using this
-  linarith [hP, hscale, htri]
+  have hN0 : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hx : (0 : ℝ) < (N : ℝ) + 1 / 2 := by linarith
+  refine norm_sum_Icc_triple_of_analytic_le hAsupp hBsupp hgsupp hN hBc hσ ht₀ K ?_
+  exact integral_symm_norm_perron_triple_le hA0 hAsupp hAprime hB0 hBsupp hBprime
+    (by linarith) hx ht₀ hV (continuous_LSeries_line_of_support hg0 hgsupp σ)
+    zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K hgV
 
 end RHTower.Sieve
 end
