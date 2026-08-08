@@ -196,3 +196,21 @@ inequality-based route must be tested against.
 sequence of moduli, the collided pair is a unimodular completely multiplicative sequence and the constant
 one. So the corpus's two families of no-go — for verdicts, and for bounds — are one principle with two
 instantiations, and a future route can be tested against whichever form matches its output type.
+
+### Both directions: the distance *is* the prime mass
+
+The oscillatory estimate `|∫_0^T Re(f(p)·conj(charFn t p))dt| ≤ 3/log p` is two-sided, and only one side
+was used above. The other gives `T·∑_p 1/p − 3·primeInvLogConst ≤ ∫_0^T 𝔻²`
+(`le_integral_mulDistSqPair`), hence
+
+`∃ t ∈ [0,T],  ∑_{p ≤ x}1/p − 4·primeInvLogConst/T ≤ 𝔻(f, n^{it})²`
+
+(`exists_prime_mass_le_mulDistSqPair`), for every bounded `f`. Together with
+`exists_mulDistSqPair_le_prime_mass` this pins the distance from both sides: over any range of height `T`,
+some frequency has `𝔻² ≤ A + O(1/T)` and some has `𝔻² ≥ A − O(1/T)`, where `A = ∑_{p ≤ x}1/p`.
+
+So `e^{−δ²} ≍ e^{−A} ≍ (log z)^{-1}` is the *exact* achievable damping, not merely an upper bound on it:
+the Euler bound's `Θ(1)` borderline is now closed in both directions. Note this agrees with the
+sign-sensitive Fejér family from the other card, which produces levels `(1 − 1/K)A` at multiples of a
+frequency — also `A` up to a factor. Every mechanism in the folder, blind or sign-sensitive, lands on the
+same level, which is why the borderline is structural rather than an artefact of one estimate.

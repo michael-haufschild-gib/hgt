@@ -272,5 +272,108 @@ theorem dampedSize_ge_of_uniform {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1)
       ≤ dampedSize σ δ z L :=
   dampedSize_ge_of_sq_le hσ z L (sq_le_prime_mass_of_uniform hf hδ hT hunif)
 
+/-- **The average from below.**  The same oscillatory estimate, with the other sign. -/
+theorem le_integral_mulDistSqPair {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {x : ℕ} (T : ℝ) :
+    T * (∑ p ∈ Nat.primesLE x, 1 / (p : ℝ)) - 3 * primeInvLogConst
+      ≤ ∫ t in (0 : ℝ)..T, mulDistSqPair f (charFn t) (Nat.primesLE x) := by
+  classical
+  set P : Finset ℕ := Nat.primesLE x with hP
+  have hcont : ∀ p ∈ P, Continuous
+      (fun t : ℝ => (1 - (f p * (starRingEnd ℂ) (charFn t p)).re) / (p : ℝ)) := by
+    intro p _
+    have hexp : (fun t : ℝ => (1 - (f p * (starRingEnd ℂ) (charFn t p)).re) / (p : ℝ))
+        = fun t : ℝ => (1 - ((f p).re * Real.cos (t * Real.log (p : ℝ))
+            + (f p).im * Real.sin (t * Real.log (p : ℝ)))) / (p : ℝ) := by
+      funext t
+      rw [re_mul_conj_charFn]
+    rw [hexp]
+    fun_prop
+  have hsplit : (∫ t in (0 : ℝ)..T, mulDistSqPair f (charFn t) P)
+      = ∑ p ∈ P, ∫ t in (0 : ℝ)..T, (1 - (f p * (starRingEnd ℂ) (charFn t p)).re) / (p : ℝ) := by
+    rw [intervalIntegral.integral_congr (g := fun t : ℝ =>
+      ∑ p ∈ P, (1 - (f p * (starRingEnd ℂ) (charFn t p)).re) / (p : ℝ))
+      (fun t _ => by rw [mulDistSqPair])]
+    exact intervalIntegral.integral_finsetSum
+      (fun p hp => (hcont p hp).intervalIntegrable (μ := volume) _ _)
+  have hterm : ∀ p ∈ P,
+      T * (1 / (p : ℝ)) - 3 * (1 / ((p : ℝ) * Real.log (p : ℝ)))
+        ≤ ∫ t in (0 : ℝ)..T, (1 - (f p * (starRingEnd ℂ) (charFn t p)).re) / (p : ℝ) := by
+    intro p hp
+    rw [hP, Nat.mem_primesLE] at hp
+    have hp2 : 2 ≤ p := hp.2.two_le
+    have hpR : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp2
+    have hp0 : (0 : ℝ) < (p : ℝ) := by linarith
+    have hlogp : (0 : ℝ) < Real.log (p : ℝ) := Real.log_pos (by linarith)
+    have hcp : Continuous (fun t : ℝ => (f p * (starRingEnd ℂ) (charFn t p)).re) := by
+      have hexp : (fun t : ℝ => (f p * (starRingEnd ℂ) (charFn t p)).re)
+          = fun t : ℝ => (f p).re * Real.cos (t * Real.log (p : ℝ))
+              + (f p).im * Real.sin (t * Real.log (p : ℝ)) := by
+        funext t
+        rw [re_mul_conj_charFn]
+      rw [hexp]
+      fun_prop
+    have hdiv : (∫ t in (0 : ℝ)..T, (1 - (f p * (starRingEnd ℂ) (charFn t p)).re) / (p : ℝ))
+        = (T - ∫ t in (0 : ℝ)..T, (f p * (starRingEnd ℂ) (charFn t p)).re) / (p : ℝ) := by
+      rw [intervalIntegral.integral_div, intervalIntegral.integral_sub
+        (intervalIntegrable_const (μ := volume)) (hcp.intervalIntegrable (μ := volume) _ _),
+        intervalIntegral.integral_const, smul_eq_mul, mul_one, sub_zero]
+    rw [hdiv]
+    have hosc := abs_integral_re_mul_conj_charFn_le hf hp2 T
+    have hup : (∫ t in (0 : ℝ)..T, (f p * (starRingEnd ℂ) (charFn t p)).re)
+        ≤ 3 / Real.log (p : ℝ) := (abs_le.1 hosc).2
+    rw [le_div_iff₀ hp0]
+    have hval : (T * (1 / (p : ℝ)) - 3 * (1 / ((p : ℝ) * Real.log (p : ℝ)))) * (p : ℝ)
+        = T - 3 / Real.log (p : ℝ) := by
+      field_simp
+    rw [hval]
+    linarith
+  rw [hsplit]
+  refine le_trans ?_ (Finset.sum_le_sum hterm)
+  rw [Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
+  have htail := sum_prime_inv_mul_log_le x
+  rw [← hP] at htail
+  linarith [mul_le_mul_of_nonneg_left htail (by norm_num : (0 : ℝ) ≤ 3)]
+
+/-- **Some frequency in the range is at distance at least the prime mass.**  The companion of
+`exists_mulDistSqPair_le_prime_mass`: the maximum over the range is also the prime mass up to `O(1/T)`,
+so the achievable damping is exactly `e^{−∑_p 1/p}` in both directions. -/
+theorem exists_prime_mass_le_mulDistSqPair {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) (x : ℕ) {T : ℝ}
+    (hT : 0 < T) :
+    ∃ t ∈ Set.Icc (0 : ℝ) T,
+      (∑ p ∈ Nat.primesLE x, 1 / (p : ℝ)) - 4 * primeInvLogConst / T
+        ≤ mulDistSqPair f (charFn t) (Nat.primesLE x) := by
+  classical
+  by_contra hcon
+  push Not at hcon
+  set P : Finset ℕ := Nat.primesLE x with hP
+  set A : ℝ := ∑ p ∈ P, 1 / (p : ℝ) with hA
+  have hcont : Continuous (fun t : ℝ => mulDistSqPair f (charFn t) P) := by
+    have hfun : (fun t : ℝ => mulDistSqPair f (charFn t) P)
+        = fun t : ℝ => ∑ p ∈ P, (1 - (f p * (starRingEnd ℂ) (charFn t p)).re) / (p : ℝ) := by
+      funext t
+      rw [mulDistSqPair]
+    rw [hfun]
+    refine continuous_finsetSum _ fun p _ => ?_
+    have hexp : (fun t : ℝ => (1 - (f p * (starRingEnd ℂ) (charFn t p)).re) / (p : ℝ))
+        = fun t : ℝ => (1 - ((f p).re * Real.cos (t * Real.log (p : ℝ))
+            + (f p).im * Real.sin (t * Real.log (p : ℝ)))) / (p : ℝ) := by
+      funext t
+      rw [re_mul_conj_charFn]
+    rw [hexp]
+    fun_prop
+  have hupper : ∀ t ∈ Set.Icc (0 : ℝ) T,
+      mulDistSqPair f (charFn t) P ≤ A - 4 * primeInvLogConst / T := fun t ht =>
+    le_of_lt (hcon t ht)
+  have hmono := intervalIntegral.integral_mono_on hT.le
+    (hcont.intervalIntegrable (μ := volume) _ _) (intervalIntegrable_const (μ := volume)) hupper
+  rw [intervalIntegral.integral_const, smul_eq_mul, sub_zero] at hmono
+  have hlow := le_integral_mulDistSqPair hf (x := x) T
+  rw [← hP, ← hA] at hlow
+  have hval : T * (A - 4 * primeInvLogConst / T) = T * A - 4 * primeInvLogConst := by
+    field_simp
+  rw [hval] at hmono
+  have hC := primeInvLogConst_pos
+  linarith [hmono, hlow]
+
 end RHTower.Sieve
 end
