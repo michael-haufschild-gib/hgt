@@ -274,4 +274,129 @@ theorem tendsto_finiteDet2_entireDet2 {K : ι × ι → ℂ} (hK : IsHS K) (z : 
     rw [hgoal, entireDet2, entireOfCoeffs]
     exact hconv
 
+/-! ## Locally uniform convergence -/
+
+/-- The scalar majorant used on a closed disc of radius `ρ`: with `R = 2ρ` the Carleman bound turns
+into a geometric series. -/
+theorem norm_detCoeff_mul_pow_le {K : ι × ι → ℂ} (hK : IsHS K) {ρ : ℝ} (hρ : 0 < ρ) (n : ℕ) :
+    ‖detCoeff K n‖ * ρ ^ n
+      ≤ Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) * (1 / 2) ^ n := by
+  have hR : (0 : ℝ) < 2 * ρ := by positivity
+  have hkey : (Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) / (2 * ρ) ^ n) * ρ ^ n
+      = Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) * (1 / 2) ^ n := by
+    have hρn : ρ ^ n ≠ 0 := by positivity
+    rw [mul_pow, div_pow, one_pow]
+    field_simp
+    rw [mul_comm, ← mul_pow]
+  calc ‖detCoeff K n‖ * ρ ^ n
+      ≤ (Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) / (2 * ρ) ^ n) * ρ ^ n :=
+        mul_le_mul_of_nonneg_right (norm_detCoeff_le hK hR n) (by positivity)
+    _ = _ := hkey
+
+theorem norm_detCoeff_truncKernel_mul_pow_le {K : ι × ι → ℂ} (hK : IsHS K) (s : Finset ι)
+    {ρ : ℝ} (hρ : 0 < ρ) (n : ℕ) :
+    ‖detCoeff (truncKernel K s) n‖ * ρ ^ n
+      ≤ Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) * (1 / 2) ^ n := by
+  have hR : (0 : ℝ) < 2 * ρ := by positivity
+  have hkey : (Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) / (2 * ρ) ^ n) * ρ ^ n
+      = Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) * (1 / 2) ^ n := by
+    have hρn : ρ ^ n ≠ 0 := by positivity
+    rw [mul_pow, div_pow, one_pow]
+    field_simp
+    rw [mul_comm, ← mul_pow]
+  calc ‖detCoeff (truncKernel K s) n‖ * ρ ^ n
+      ≤ (Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) / (2 * ρ) ^ n) * ρ ^ n :=
+        mul_le_mul_of_nonneg_right (norm_detCoeff_truncKernel_le hK s hR n) (by positivity)
+    _ = _ := hkey
+
+/-- **The coefficient distance tends to zero**, summed against `ρⁿ`. -/
+theorem tendsto_tsum_norm_detCoeff_sub {K : ι × ι → ℂ} (hK : IsHS K) {ρ : ℝ} (hρ : 0 < ρ) :
+    Tendsto (fun s : Finset ι =>
+      ∑' n : ℕ, ‖detCoeff (truncKernel K s) n - detCoeff K n‖ * ρ ^ n) atTop (nhds 0) := by
+  set E : ℝ := Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) with hE
+  have hsumbnd : Summable fun n : ℕ => 2 * E * (1 / 2) ^ n :=
+    (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
+  have hbound : ∀ (s : Finset ι) (n : ℕ),
+      ‖‖detCoeff (truncKernel K s) n - detCoeff K n‖ * ρ ^ n‖ ≤ 2 * E * (1 / 2) ^ n := by
+    intro s n
+    have h1 := norm_detCoeff_truncKernel_mul_pow_le hK s hρ n
+    have h2 := norm_detCoeff_mul_pow_le hK hρ n
+    have hsplit : ‖detCoeff (truncKernel K s) n - detCoeff K n‖ * ρ ^ n
+        ≤ ‖detCoeff (truncKernel K s) n‖ * ρ ^ n + ‖detCoeff K n‖ * ρ ^ n := by
+      rw [← add_mul]
+      exact mul_le_mul_of_nonneg_right (norm_sub_le _ _) (by positivity)
+    rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    linarith
+  have hlim : ∀ n : ℕ, Tendsto
+      (fun s : Finset ι => ‖detCoeff (truncKernel K s) n - detCoeff K n‖ * ρ ^ n) atTop
+      (nhds ((0 : ℝ) * ρ ^ n)) := by
+    intro n
+    have h0 : Tendsto (fun s : Finset ι => ‖detCoeff (truncKernel K s) n - detCoeff K n‖) atTop
+        (nhds 0) := tendsto_iff_norm_sub_tendsto_zero.mp (tendsto_detCoeff_truncKernel hK n)
+    exact h0.mul_const (ρ ^ n)
+  have := tendsto_tsum_of_dominated_convergence (𝓕 := (atTop : Filter (Finset ι)))
+    (f := fun (s : Finset ι) (n : ℕ) => ‖detCoeff (truncKernel K s) n - detCoeff K n‖ * ρ ^ n)
+    (g := fun _ : ℕ => (0 : ℝ)) hsumbnd (by simpa using hlim)
+    (Eventually.of_forall hbound)
+  simpa using this
+
+/-- **Locally uniform convergence.**  The finite block determinants converge to the entire
+regularized determinant uniformly on every closed disc — the hypothesis every Hurwitz-type argument
+about the zeros needs. -/
+theorem tendstoUniformlyOn_finiteDet2_entireDet2 {K : ι × ι → ℂ} (hK : IsHS K) {ρ : ℝ}
+    (hρ : 0 < ρ) :
+    TendstoUniformlyOn (fun (s : Finset ι) (z : ℂ) => finiteDet2 (-(blockMatrix K s)) z)
+      (entireDet2 K) atTop (closedBall (0 : ℂ) ρ) := by
+  set E : ℝ := Real.exp ((2 * ρ) ^ 2 * hsNormSq K / 2) with hE
+  have hsumbnd : Summable fun n : ℕ => 2 * E * (1 / 2) ^ n :=
+    (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
+  have hsum_s : ∀ (s : Finset ι),
+      Summable fun n : ℕ => ‖detCoeff (truncKernel K s) n - detCoeff K n‖ * ρ ^ n := by
+    intro s
+    refine Summable.of_nonneg_of_le (fun n => by positivity) (fun n => ?_) hsumbnd
+    have h1 := norm_detCoeff_truncKernel_mul_pow_le hK s hρ n
+    have h2 := norm_detCoeff_mul_pow_le hK hρ n
+    have hsplit : ‖detCoeff (truncKernel K s) n - detCoeff K n‖ * ρ ^ n
+        ≤ ‖detCoeff (truncKernel K s) n‖ * ρ ^ n + ‖detCoeff K n‖ * ρ ^ n := by
+      rw [← add_mul]
+      exact mul_le_mul_of_nonneg_right (norm_sub_le _ _) (by positivity)
+    linarith
+  have hpt : ∀ (s : Finset ι) (z : ℂ), z ∈ closedBall (0 : ℂ) ρ →
+      dist (entireDet2 K z) (finiteDet2 (-(blockMatrix K s)) z)
+        ≤ ∑' n : ℕ, ‖detCoeff (truncKernel K s) n - detCoeff K n‖ * ρ ^ n := by
+    intro s z hz
+    have hzρ : ‖z‖ ≤ ρ := by simpa using mem_closedBall_zero_iff.mp hz
+    have hfin : finiteDet2 (-(blockMatrix K s)) z
+        = ∑' n : ℕ, detCoeff (truncKernel K s) n * z ^ n := by
+      have h := hasSum_taylorCoeff (differentiable_finiteDet2 (-(blockMatrix K s))) z
+      rw [← h.tsum_eq]
+      exact tsum_congr fun n => by rw [detCoeff_truncKernel hK s n]
+    have hsA : Summable fun n : ℕ => detCoeff (truncKernel K s) n * z ^ n :=
+      summable_of_orderTwo_bound (c := hsNormSq K)
+        (fun R hR n => norm_detCoeff_truncKernel_le hK s hR n) z
+    have hsB : Summable fun n : ℕ => detCoeff K n * z ^ n :=
+      summable_of_orderTwo_bound (c := hsNormSq K) (fun R hR n => norm_detCoeff_le hK hR n) z
+    have hnorms : Summable fun n : ℕ =>
+        ‖detCoeff (truncKernel K s) n * z ^ n - detCoeff K n * z ^ n‖ := by
+      refine Summable.of_nonneg_of_le (fun n => norm_nonneg _) (fun n => ?_) (hsum_s s)
+      rw [← sub_mul, norm_mul, norm_pow]
+      exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg z) hzρ n) (norm_nonneg _)
+    rw [entireDet2, entireOfCoeffs, hfin, Complex.dist_eq, ← hsB.tsum_sub hsA]
+    refine le_trans (norm_tsum_le_tsum_norm ?_) ?_
+    · refine Summable.of_nonneg_of_le (fun n => norm_nonneg _) (fun n => ?_) (hsum_s s)
+      rw [← sub_mul, norm_mul, norm_pow, norm_sub_rev]
+      exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg z) hzρ n) (norm_nonneg _)
+    · refine Summable.tsum_le_tsum (fun n => ?_) ?_ (hsum_s s)
+      · rw [← sub_mul, norm_mul, norm_pow, norm_sub_rev]
+        exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg z) hzρ n) (norm_nonneg _)
+      · refine Summable.of_nonneg_of_le (fun n => norm_nonneg _) (fun n => ?_) (hsum_s s)
+        rw [← sub_mul, norm_mul, norm_pow, norm_sub_rev]
+        exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg z) hzρ n) (norm_nonneg _)
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  have hdrop := (tendsto_tsum_norm_detCoeff_sub hK hρ).eventually
+    (eventually_lt_nhds (show (0 : ℝ) < ε from hε))
+  filter_upwards [hdrop] with s hs z hz
+  exact lt_of_le_of_lt (hpt s z hz) hs
+
 end GaloisForLFunctions.HTGeometry
