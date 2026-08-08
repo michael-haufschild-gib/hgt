@@ -236,7 +236,10 @@ formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
       mathlib's `LinearMap.finrank_maxGenEigenspace_eq` and `charpoly_of_schur`)
 - [ ] pass it from the **blocks** to the operator `K` itself: the eventual count is over the block
       eigenvalues *near* `-1/z_0`, and identifying it with `dim` of the generalized eigenspace of
-      `K` needs the Riesz projection of `K` and its finite-section stability
+      `K` needs the Riesz projection of `K` and its finite-section stability.  That layer now has
+      its own card, `riesz-projection-layer.md`, with the route and the first Lean bricks
+      (`rieszProjection`, `circleIntegrable_resolvent`,
+      `rieszProjection_eq_zero_of_closedBall_subset`)
 - [ ] Plemelj identity on the full resolvent set
 - [ ] 1 -> 2  paper proof complete
 - [ ] 2 -> 3  Lean

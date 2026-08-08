@@ -1966,3 +1966,20 @@ term of type `M →ₗ[K] M` resolves to the nonexistent `LinearMap.maxGenEigens
 
 Remaining: pass the count from the **blocks** to the operator `K` (Riesz projection and
 finite-section stability).
+
+### 2026-08-08 — the Riesz projection layer opened
+
+New card `docs/drafts/pipeline/1-in-progress/riesz-projection-layer.md` and
+`HTGeometry/RieszProjection.lean`:
+
+```text
+rieszProjection a c r := (2 pi I)⁻¹ • ∮ lam in C(c,r), resolvent a lam
+circleIntegrable_resolvent
+rieszProjection_eq_zero_of_closedBall_subset   -- Cauchy
+```
+
+Mathlib supplies `resolvent`, `resolventSet`, `spectrum.hasDerivAt_resolvent_const_left`
+(note: `spectrum.hasDerivAt_resolvent` is deprecated) and Banach-valued `circleIntegral`; it has
+**no Riesz projection**.  Route recorded on the card: resolvent identity -> idempotence ->
+commutation with `a` -> range = generalized eigenspace -> finite-section stability of the rank.
+Only the last is what the determinant card needs.
