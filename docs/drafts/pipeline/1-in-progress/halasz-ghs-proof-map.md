@@ -3665,3 +3665,28 @@ That window's narrowness is worth precisely the factor `1/(σ−1) ≍ log z` th
 and it is the content of Halász's `1 + m`.  The remaining assembly is: split the vertical integral into the
 near-`t₀` window and its complement, charge the window the pointwise damped bound and the complement the
 distance growth, and add.
+
+### The connector, built
+
+Same module: `charSepLower z v` names the explicit separation bound, and
+
+- `charSepLower_le_mulDistSqPair` — `charSepLower z (t−u) ≤ D(n^{it}, n^{iu}; z)²`;
+- `sqrt_charSepLower_sub_le_sqrt_mulDistSqPair` — the triangle inequality against it: if
+  `D(f, n^{it₀}; z)² ≤ m` then for `0 < |t−t₀| ≤ 2`
+
+  `√(charSepLower z (t−t₀)) − √m ≤ D(f, n^{it}; z)`;
+
+- `le_mulDistSqPair_charFn_of_close` — the squared form, once `√m ≤ √(charSepLower z (t−t₀))`.
+
+The un-squared statement is the honest one: it holds with no side condition, and squaring is the caller's
+business (the bound is vacuous exactly where the separation term has not yet overtaken the closeness).
+Since `charSepLower z v ≍ log(|v|·log z)`, the right side is positive as soon as `|t−t₀| ≫ e^m/log z`, so
+the window on which `f` can be close to *some* character has width `≍ e^m/log z`.
+
+All three ingredients of the `(1+m)` mechanism are now in the corpus: the pole supplier, the separation
+bound, and the triangle transfer.  What remains is the parameter optimisation of the split integral —
+window versus complement — and that is an accounting question, not a missing theorem: the window is worth
+`(log z)e^{−m}·(width)` and the complement is controlled by `charSepLower`, and the two must be balanced
+against the kernel's mass profile.  The Cesàro kernel `1/‖s‖²` concentrates its mass at `|t| ≲ σ`, so the
+balance there is different from Halász's `dt/(1+|t|)`; deciding which kernel makes the two terms meet is
+the next accounting step, and both kernels are now available with their full error terms.

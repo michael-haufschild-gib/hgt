@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.Sieve.CharacterDistanceLower
 import GaloisForLFunctions.RHTower.Sieve.ZetaLogPrimeSum
 import GaloisForLFunctions.RHTower.ZetaVerticalLineBound
+import GaloisForLFunctions.RHTower.Sieve.DistanceDiscTriangle
+import GaloisForLFunctions.RHTower.Sieve.CharacterSeparation
 
 /-!
 # The distance between two characters grows with their separation
@@ -146,6 +148,64 @@ theorem le_mulDistSqPair_charFn_small_freq {z : ℕ} (hz : 3 ≤ z) {t u : ℝ}
       exact hlogz1
     linarith
   exact le_mulDistSqPair_charFn hz (tsum_re_prime_cpow_le_small_freq hσ1 hσ2 hd hd0)
+
+/-- The explicit lower bound for the distance between two characters at separation `v`. -/
+def charSepLower (z : ℕ) (v : ℝ) : ℝ :=
+  logLog z - mertensSecondLowerConst - (Real.log (5 + 1 / |v|) + Real.pi ^ 2 / 6)
+    - 2 * (Real.log 2 + 2 * (2 * mertensFirstConst + 1 / 2)) / Real.log 2
+    - (1 + Real.log 4)
+
+theorem charSepLower_le_mulDistSqPair {z : ℕ} (hz : 3 ≤ z) {t u : ℝ}
+    (hd : |t - u| ≤ 2) (hd0 : t - u ≠ 0) :
+    charSepLower z (t - u) ≤ mulDistSqPair (charFn t) (charFn u) (Nat.primesLE z) :=
+  le_mulDistSqPair_charFn_small_freq hz hd hd0
+
+/-- **A function close to one character is far from every nearby character.**  The triangle inequality
+for the multiplicative distance against the character separation bound: if `f` is within `√m` of
+`charFn t₀`, then at separation `t − t₀` it is at least `√(charSepLower) − √m` from `charFn t`.
+
+This is the mechanism behind Halász's factor `1 + m`: the window on which `f` can be close to *some*
+character has width `≍ 1/log z`, because `charSepLower z v ≍ log(|v|·log z)` and the right side is
+positive as soon as `|v| ≫ e^m/log z`. -/
+theorem sqrt_charSepLower_sub_le_sqrt_mulDistSqPair {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {z : ℕ}
+    (hz : 3 ≤ z) {t₀ t m : ℝ} (hd : |t - t₀| ≤ 2) (hd0 : t - t₀ ≠ 0)
+    (hm : mulDistSqPair f (charFn t₀) (Nat.primesLE z) ≤ m) :
+    Real.sqrt (charSepLower z (t - t₀)) - Real.sqrt m
+      ≤ Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z)) := by
+  have hP : ∀ p ∈ Nat.primesLE z, 0 < p := fun p hp => (Nat.prime_of_mem_primesLE hp).pos
+  have hd' : |t₀ - t| ≤ 2 := by rwa [abs_sub_comm]
+  have hd0' : t₀ - t ≠ 0 := fun h => hd0 (by linarith [sub_eq_zero.1 h])
+  have hgrow := charSepLower_le_mulDistSqPair hz hd' hd0'
+  have hsep : charSepLower z (t₀ - t) = charSepLower z (t - t₀) := by
+    rw [charSepLower, charSepLower, abs_sub_comm]
+  rw [hsep] at hgrow
+  have htri := sqrt_mulDistSqPair_triangle_disc (f := charFn t₀) (g := f) (h := charFn t)
+    (fun p _ => (norm_charFn t₀ p).le) (fun p _ => hf p) (fun p _ => (norm_charFn t p).le) hP
+  have hcomm : mulDistSqPair (charFn t₀) f (Nat.primesLE z)
+      = mulDistSqPair f (charFn t₀) (Nat.primesLE z) := mulDistSqPair_comm _ _ _
+  rw [hcomm] at htri
+  have hm' : Real.sqrt (mulDistSqPair f (charFn t₀) (Nat.primesLE z)) ≤ Real.sqrt m :=
+    Real.sqrt_le_sqrt hm
+  have hlow : Real.sqrt (charSepLower z (t - t₀))
+      ≤ Real.sqrt (mulDistSqPair (charFn t₀) (charFn t) (Nat.primesLE z)) :=
+    Real.sqrt_le_sqrt hgrow
+  linarith [htri, hm', hlow]
+
+/-- The squared form, valid once the separation bound dominates the closeness. -/
+theorem le_mulDistSqPair_charFn_of_close {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {z : ℕ}
+    (hz : 3 ≤ z) {t₀ t m : ℝ} (hd : |t - t₀| ≤ 2) (hd0 : t - t₀ ≠ 0)
+    (hm : mulDistSqPair f (charFn t₀) (Nat.primesLE z) ≤ m)
+    (hle : Real.sqrt m ≤ Real.sqrt (charSepLower z (t - t₀))) :
+    (Real.sqrt (charSepLower z (t - t₀)) - Real.sqrt m) ^ 2
+      ≤ mulDistSqPair f (charFn t) (Nat.primesLE z) := by
+  have hP : ∀ p ∈ Nat.primesLE z, 0 < p := fun p hp => (Nat.prime_of_mem_primesLE hp).pos
+  have hnn : (0 : ℝ) ≤ mulDistSqPair f (charFn t) (Nat.primesLE z) :=
+    mulDistSqPair_nonneg_disc (fun p _ => hf p) (fun p _ => (norm_charFn t p).le) hP
+  have hstep := sqrt_charSepLower_sub_le_sqrt_mulDistSqPair hf hz hd hd0 hm
+  have hsq : Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z)) ^ 2
+      = mulDistSqPair f (charFn t) (Nat.primesLE z) := Real.sq_sqrt hnn
+  rw [← hsq]
+  exact pow_le_pow_left₀ (by linarith) hstep 2
 
 end RHTower.Sieve
 end
