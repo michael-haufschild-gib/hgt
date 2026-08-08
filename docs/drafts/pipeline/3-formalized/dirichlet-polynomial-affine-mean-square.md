@@ -193,3 +193,26 @@ Chebyshev uses nothing but a bound, so they are now instances of
 
 and both shed the hypothesis `0 ≤ T`, which neither proof used. The affine instance
 (`volume_largeValues_symm_le_affine`) needs no hypothesis on `T` at all.
+
+## Prime support: the `n`-weighted mass is a constant
+
+For a weight supported on the primes of `[1,M]` with `‖a_k‖ ≤ A log k`, *both* masses of the affine mean
+square are prime sums the dyadic Chebyshev cap bounds independently of `M`:
+
+`∑_p p^{-2σ}(log p)² ≤ cap(2σ)`,   `∑_p p·p^{-2σ}(log p)² = ∑_p p^{-(2σ-1)}(log p)² ≤ cap(2σ-1)`,
+
+the second needing only `σ > 1` — the very hypothesis the prime routes already carry. Cauchy–Schwarz
+then gives
+
+`∫_{|y| ≤ T}‖L(a,σ+iy)‖dy ≤ √(2T(5πe·A²·cap(2σ−1) + (5π/2)·A²·cap(2σ)·T))`
+
+(`integral_Icc_norm_LSeries_prime_le_affine`), where `GhsInnerFirstMoment.integral_norm_LSeries_prime_le`
+carries `M(1 + log M)` inside the root. So for prime-supported weights — the ones the GHS and Halász
+routes actually use — the improvement is a factor `√(M log M)` throughout the range `T ≤ M log M`, not
+merely a logarithm. That is the sharpest consequence of the whole sweep.
+
+| Statement | Module |
+|---|---|
+| `rpow_neg_sq_eq`, `mul_rpow_neg_sq_eq` | `RHTower/Sieve/PrimeAffineFirstMoment.lean` |
+| `generalMeanSquareRate_prime_le`, `generalMeanSquareConst_prime_le` | `RHTower/Sieve/PrimeAffineFirstMoment.lean` |
+| `integral_Icc_norm_LSeries_prime_le_affine` | `RHTower/Sieve/PrimeAffineFirstMoment.lean` |
